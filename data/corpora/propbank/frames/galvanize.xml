@@ -1,0 +1,86 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="galvanize">
+<note>
+  Frames file for 'galvanize' based on sentences in wsj.  Verbnet
+  entry 31.1, verbs of emotion, which seems inappropriate.
+</note>
+
+<roleset id="galvanize.01" name="motivate to do something" vncls="31.1">
+<roles>
+  <role descr="agent, galvanizer" n="0"><vnrole vncls="31.1" vntheta="Cause"/></role>
+  <role descr="impelled agent" n="1"><vnrole vncls="31.1" vntheta="Experiencer"/></role>
+  <role descr="impelled action" n="2"/>
+</roles>
+
+<example name="all args">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    The tragedy, he adds, ``galvanized me'' to look for a way to prevent similar cases. 
+</text>
+        <arg n="0">The tragedy</arg>
+        <rel>galvanized</rel>
+        <arg n="1">me</arg>
+        <arg n="2">to look for a way to prevent similar cases </arg>
+</example>
+
+<example name="unstated action">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Their report galvanized other molecular biologists. 
+</text>
+        <arg n="0">Their report</arg>
+        <rel>galvanized</rel>
+        <arg n="1">other molecular biologists</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="galvanize.02" name="cause a response" vncls="-">
+<roles>
+  <role descr="action" n="0"/>
+  <role descr="reaction" n="1"/>
+</roles>
+
+<example name="Newton was right!">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+ They say these are small prices to pay for *trace* galvanizing action
+ for the all-important cause.  
+</text>
+        <arg n="0">*trace*</arg>
+        <rel>galvanizing</rel>
+        <arg n="1">action</arg>
+        <arg f="PNC" n="M">for the all-important cause</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="galvanize.03" name="coat iron/steel with zinc" vncls="-">
+<roles>
+  <role descr="galvanizer" n="0"/>
+  <role descr="iron/steel thing" n="1"/>
+</roles>
+
+<example name="industrial applications are scarce">
+  <inflection aspect="ns" form="gerund" person="ns" tense="ns" voice="ns"/>
+  <text>
+    John devised a new process for *trace* galvanizing barbed wire.
+  </text>
+  <arg n="0">*trace*</arg>
+  <rel>galvanizing</rel>
+  <arg n="1">barbed wire</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

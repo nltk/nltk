@@ -1,0 +1,43 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="cater">
+<note>
+  Frames file for 'cater' based on sentences in financial subcorpus.
+  No access to verbnet.  No comparison.
+</note>
+
+<roleset id="cater.01" name="provide (food, in the default) for (a party)">
+<roles>
+  <role descr="caterer" n="0"/>
+  <role descr="thing (event?) catered" n="1"/>
+  <role descr="benefactive" n="2"/>
+</roles>
+
+<example name="nothing about food">
+<text>
+    The loudest of these reformers are money managers who *trace*
+    cater to smaller investors. 
+</text>
+        <arg n="0">*trace* -&gt;  who -&gt;  money managers</arg>
+        <rel>cater</rel>
+        <arg f="to" n="2">smaller investors</arg>
+</example>
+
+<example name="food usage">
+  <text>
+    John catered a party for his mother.
+  </text>
+  <arg n="0">John</arg>
+  <rel>catered</rel>
+  <arg n="1">a party</arg>
+  <arg f="for" n="2">his mother</arg>
+</example>
+
+<note>
+Perhaps these usages should be separate rolesets, but they seem to fit
+so nicely in my head.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

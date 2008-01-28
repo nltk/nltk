@@ -1,0 +1,67 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="swoop">
+<note>
+  Frames file for 'swoop' based on sentences in brown.  No Verbnet entry.
+</note>
+
+<roleset id="swoop.01" vncls="-" name="To make a sudden sweeping movement, as a bird descending upon its prey.">
+<roles>
+  <role n="0"  descr="swooper"/>
+</roles>
+
+<example name="destination">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+    The other trotted over and swooped at the tiny puddle.
+  </text>
+  <arg n="0"        >The other</arg>
+  <rel              >swooped</rel>
+  <arg n="m" f="DIR">at the tiny puddle</arg>
+</example>
+
+<example name="with particle of direction">
+  <inflection person="ns" tense="ns" aspect="progressive" voice="active" form="participle"/>
+  <text>
+     His hands snatched at an imaginary bucket, [*-3] swooping down
+     hard to grab it and coming away with equal snap like a ball
+     that's been bounced hard. 
+  </text>
+  <arg n="0"        >[*-3] -> His hands</arg>
+  <rel              >swooping</rel>
+  <arg n="m" f="DIR">down</arg>
+  <arg n="m" f="MNR">hard</arg>
+  <arg n="m" f="PNC">to grab it</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="swoop_up">
+
+<roleset id="swoop.02" vncls="-" name="to grab with a swooping motion">
+<roles>
+  <role n="0"  descr="grabber"/>
+  <role n="1"  descr="grabbed"/>
+</roles>
+
+<example name="swoop ya, there it is">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+    Maude swooped up the cup and hiked up her top hoop as if about to
+    take off with a racing start. 
+  </text>
+  <arg n="0"        >Maude</arg>
+  <rel              >[swooped][up]</rel>
+  <arg n="1"        >the cup</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

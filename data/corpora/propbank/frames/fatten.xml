@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="fatten">
+<note>
+  Frames file for 'fatten' based on sentences in wsj.  No Verbnet
+  entry available at the moment, but it's probably 45.4 &quot;other
+  causative&quot;.
+</note>
+
+<roleset id="fatten.01" name="make fatter" vncls="45.4">
+<roles>
+  <role descr="causal agent" n="0"><vnrole vncls="45.4" vntheta="Agent"/></role>
+  <role descr="thing getting fatter" n="1"><vnrole vncls="45.4" vntheta="Patient"/></role>
+</roles>
+
+<example name="a case for vegetarianism">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    Feedlots fatten young cattle for slaughter, so a decline signals a
+    tightening supply of beef. 
+</text>
+        <arg n="0">Feedlots</arg>
+        <rel>fatten</rel>
+        <arg n="1">young cattle</arg>
+        <arg f="PNC" n="M">for slaughter</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

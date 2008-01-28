@@ -1,0 +1,60 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="wander">
+<note>
+  Frames file for 'wander' based on transformation of Chris' old
+  frames.  Verbnet entries 51.3.2 and 47.4, Framenet entry Self motion.
+</note>
+
+<roleset id="wander.01" name="move randomly" vncls="51.3.2 47.4">
+<roles>
+  <role descr="entity in motion, wanderer" n="0"><vnrole vncls="47.4" vntheta="Theme"/><vnrole vncls="51.3.2" vntheta="Theme"/></role>
+  <role descr="path, range" n="1"><vnrole vncls="47.4" vntheta="Location"/><vnrole vncls="51.3.2" vntheta="Location"/></role>
+</roles>
+
+<example name="directional pp">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    Jackals roam the streets at night, and gemsbok, hardy antelope
+    with long straight horns, wander in from the desert to drink from
+    water sprinklers. 
+</text>
+        <arg n="0">gemsbok, hardy antelope with long straight horns,</arg>
+        <rel>wander</rel>
+        <arg f="DIR" n="M">in from the desert</arg>
+        <arg f="PNC" n="M">to drink from water sprinklers</arg>
+</example>
+
+<example name="with range">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Indeed, one of his first actions as leader was [*] to visit a
+    gritty machine factory on the outskirts of Berlin and wander among
+    the workers -- a la Gorbachev.
+</text>
+        <arg n="0">[*] -&gt;  his</arg>
+        <rel>wander</rel>
+        <arg f="among" n="1">the workers</arg>
+        <arg f="MNR" n="M">a la Gorbachev</arg>
+</example>
+
+<example name="underspecified range">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+    We still have people wandering around in a daze in San Francisco
+    worrying about whether it's going to rain tonight.'' 
+</text>
+        <arg n="0">people</arg>
+        <rel>wandering</rel>
+        <arg n="1">around</arg>
+        <arg f="MNR" n="M">in a daze</arg>
+        <arg f="LOC" n="M">in San Francisco</arg>
+        <arg n="M">worrying about whether it's going to rain
+        tonight</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

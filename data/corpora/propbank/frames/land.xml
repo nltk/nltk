@@ -1,0 +1,87 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="land">
+<note>
+  Frames file for 'land' based on sentences in financial subcorpus.
+  No access to verbnet.  Comparison to 'get'.
+</note>
+
+<roleset id="land.01" name="bring to land, from water or air" vncls="9.10">
+<roles>
+  <role descr="bringer, captain, pilot, agent" n="0">
+        <vnrole vncls="9.10" vntheta="Agent"/></role>
+  <role descr="thing landing" n="1">
+        <vnrole vncls="9.10" vntheta="Theme"/></role>
+</roles>
+
+<example name="ergative">
+<text>
+    For all that, the piece landed unperformed in a dusty archive
+    after Bologna refused to supply a chorus and orchestra. 
+</text>
+        <arg f="DIS" n="M">For all that</arg>
+        <arg n="1">the piece</arg>
+        <rel>landed</rel>
+        <arg f="PRD" n="M">unperformed</arg>
+        <arg f="LOC" n="M">in a dusty archive</arg>
+        <arg f="TMP" n="M">after Bologna refused to supply a chorus
+        and orchestra</arg> 
+</example>
+
+<example name="intransitive">
+<text>
+    At 18,000 feet, he says, he and his co-pilot ``were looking for an
+    interstate or a cornfield'' to land. 
+</text>
+        <arg n="0">*trace* -&gt;  he and his co-pilot</arg>
+        <rel>land</rel>
+<note>
+This sentence is beautiful.  It makes it sound like the pilot and
+co-pilot were flying an interstate or cornfield.
+</note>
+</example>
+
+<example name="transitive">
+  <text>
+    After struggling for over an hour, John finally landed the 5-inch
+    trout. 
+  </text>
+  <arg f="TMP" n="m">After struggling for over an hour</arg>
+  <arg n="0">John</arg>
+  <arg f="TMP" n="m">finally</arg>
+  <rel>landed</rel>
+  <arg n="1">the 5-inch trout</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="land.02" name="get" vncls="9.10">
+<roles>
+  <role descr="getter, lander" n="0">
+        <vnrole vncls="9.10" vntheta="Agent"/></role>
+  <role descr="thing gotten, landed" n="1">
+        <vnrole vncls="9.10" vntheta="Theme"/></role>
+  <role descr="giver?" n="2"/>
+</roles>
+
+<example name="transitive">
+<text>
+    Mr. Wolf's success in that job helped him land the top job with
+    UAL in December 1987. 
+</text>
+        <arg n="0">him</arg>
+        <rel>land</rel>
+        <arg n="1">the top job with UAL</arg>
+        <arg f="TMP" n="M">in December 1987</arg>
+</example>
+
+<note>
+I really don't know if the giver role can appear.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,59 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="rhyme">
+<note>
+  Frames file for 'rhyme' based on sentences in wsj.  No access to
+  Verbnet at the moment.
+</note>
+
+<roleset id="rhyme.01" name="find/have a similar syllable nucleus" vncls="22.2">
+<roles>
+  <role descr="agent, discoverer of rhyme" n="0"><vnrole vncls="22.2" vntheta="Agent"/></role>
+  <role descr="first or all rhyming words" n="1"><vnrole vncls="22.2" vntheta="Patient1"/></role>
+  <role descr="additional, if syntactically separate" n="2"><vnrole vncls="22.2" vntheta="Patient2"/></role>
+</roles>
+
+<example name="agentive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    With loving detail she recalls her Uncle Gabe, an Orthodox Jew and
+    song lyricist (who [*T*-1] rhymed river with liver in a love
+    song); and Uncle Len, a mysterious part-time investigator who
+    looked like Lincoln and carried a change of clothing in a Manila
+    envelope, like an ``undercover President on a good-will mission.'' 
+</text>
+        <arg n="0">[*T*-1] -&gt;  who -&gt;  an Orthodox Jew and song lyricist</arg>
+        <rel>rhymed</rel>
+        <arg n="1">river</arg>
+        <arg f="with" n="2">liver</arg>
+        <arg f="LOC" n="M">in a love song</arg>
+</example>
+
+
+<example name="unaccusative">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    Trouble with a capital T and that rhymes with P and that stands
+    for pool. 
+</text>
+        <arg n="1">that</arg>
+        <rel>rhymes</rel>
+        <arg f="with" n="2">P</arg>
+</example>
+
+<example name="merged args">
+  <inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+  <text>
+     Do `orange' and 'door hinge' rhyme?
+  </text>
+  <arg n="1">`orange' and 'door hinge'</arg>
+  <rel>rhyme</rel>
+<note>
+They do in some dialects of American English.  Not mine.
+</note>
+
+</example>
+
+</roleset>
+</predicate>
+</frameset>

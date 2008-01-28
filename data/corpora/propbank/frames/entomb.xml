@@ -1,0 +1,44 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="entomb">
+<note>
+  Frames file for 'entomb' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="entomb.01" name="put into a tomb" vncls="-">
+<roles>
+  <role descr="who put what where, agent" n="0"/>
+  <role descr="corpse (I hope)" n="1"/>
+  <role descr="tomb" n="2"/>
+</roles>
+
+<example name="mother of all trace chains">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    In Oakland, officials said the 57-year-old longshoreman who
+    [*T*-1] spent four days [*-2] entombed [*-3] in rubble was in
+    critical condition with slight improvement. 
+</text>
+        <rel>entombed</rel>
+        <arg n="1">[*-3] -&gt;  [*-2] -&gt;  [*T*-1] -&gt;  who -&gt;  the
+        57-year-old longshoreman</arg> 
+        <arg f="in" n="2">rubble</arg>
+</example>
+
+<example name="with agent">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    Mary entombed John in 15 tons of chocolate pudding.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>entombed</rel>
+  <arg n="1">John</arg>
+  <arg f="in" n="2">15 tons of chocolate pudding</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

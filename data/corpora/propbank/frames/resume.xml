@@ -1,0 +1,83 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="resume">
+<note>
+  Frames file for 'resume' based on sentences in financial subcorpus.
+  Verbnet class 55.1.  Comparison with 'start'.
+</note>
+
+<roleset id="resume.01" name="begin again" vncls="55.1">
+<roles>
+  <role descr="Agent" n="0">
+	  <vnrole vncls="55.1" vntheta="Agent"/></role>
+  <role descr="Theme(-Creation)" n="1">
+	  <vnrole vncls="55.1" vntheta="Theme"/></role>
+  <role descr="Instrument" n="2"/>
+</roles>
+
+<example name="nice simple transitive">
+<text>
+    Analysts said Mr. Stronach wants *trace* to resume a more
+    influential role in running the company. 
+</text>
+        <arg n="0">*trace* -&gt;  Mr. Stronach</arg>
+        <rel>resume</rel>
+        <arg n="1">a more influential role in  running the company</arg>
+</example>
+
+<example name="ergative">
+<text>
+    He said construction wouldn't resume until market conditions
+    warrant it. 
+</text>
+        <arg n="1">construction</arg>
+        <arg f="MOD" n="M">would</arg>
+        <arg f="NEG" n="M">n't</arg>
+        <rel>resume</rel>
+        <arg f="TMP" n="M">until market conditions warrant it</arg>
+</example>
+
+<example name="aspectual">
+<text>
+    The news told them it would be a while longer before UAL resumed
+    *trace* trading like a regular airline stock after months of
+    gyrations. 
+</text>
+        <rel>resumed</rel>
+        <arg n="1">[UAL][*trace* trading like a regular airline stock]</arg>
+</example>
+
+<example name="aspectual with agent">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+    After the restructuring of Waertsilae Marine and bolstered by
+    state loan guarantees, two big bank creditors, Union Bank of
+    Finland and state-controlled Postipankki, resumed [*-2] lending
+    the shipyard working capital.
+  </text>
+  <arg n="m" f="TMP">After the restructuring of Waertsilae Marine</arg>
+  <arg n="m" f="ADV">bolstered by state loan guarantees</arg>
+  <arg n="0"        >two big bank creditors, Union Bank of Finland and
+  state-controlled Postipankki</arg> 
+  <rel              >resumed</rel>
+  <arg n="1"        >[*-2] lending the shipyard working capital</arg>
+<note>
+Here the subject is clearly volitional and deserving of Agent status;
+the same is not true of UAL in the previous example.
+</note>
+
+</example>
+
+<example name="If an instrument appears, it'll look like this">
+  <text>
+    John resumed his argument by mocking his opponent's mother.
+  </text>
+  <arg n="0">John</arg>
+  <rel>resumed</rel>
+  <arg n="1"> his argument</arg>
+  <arg f="by" n="2">mocking his opponent's mother</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

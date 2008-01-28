@@ -1,0 +1,40 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="discharge">
+<note>
+  Frames file for 'discharge' based on sentences in financial
+  subcorpus.  Verbnet class remove-10.1, other framed members include
+  eliminate, reap.  Comparison with 'charge'.
+</note>
+
+<roleset id="discharge.01" name="remove supply, as with electricity" vncls="10.1">
+<roles>
+  <role descr="supplier" n="0">
+		
+  <vnrole vncls="10.1" vntheta="Agent"/></role>
+
+  <role descr="supply" n="1">
+		
+  <vnrole vncls="10.1" vntheta="Theme"/></role>
+
+</roles>
+
+<example name="zap">
+<text>
+    In all, the company hopes to repay $45 million in debt through the
+    sales, which *trace* will completely discharge its secured debt,
+    the company said. 
+</text>
+        <arg n="0">*trace* -&gt;  which -&gt;  the sales</arg>
+        <arg f="MOD" n="M">will</arg>
+        <rel>discharge</rel>
+        <arg n="1">its secured debt</arg>
+</example>
+
+<note>
+If other senses occur (but I doubt they will) refer to 'charge'.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

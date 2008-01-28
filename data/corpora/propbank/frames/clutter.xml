@@ -1,0 +1,57 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="clutter">
+<note>
+  Frames file for 'clutter' based on sentences in wsj.  Verbnet entry 9.8.
+</note>
+
+<roleset id="clutter.01" name="fill with random junk" vncls="9.8">
+<roles>
+  <role descr="agent of cluttering" n="0"><vnrole vncls="9.8" vntheta="Agent"/></role>
+  <role descr="container, space" n="1"><vnrole vncls="9.8" vntheta="Destination"/></role>
+  <role descr="random junk" n="2"><vnrole vncls="9.8" vntheta="Theme"/></role>
+</roles>
+
+<example name="adjectival">
+<inflection aspect="ns" form="participle" person="third" tense="present" voice="passive"/>
+<text>
+    ``Now the field is less cluttered,'' he added.
+</text>
+        <arg f="TMP" n="M">Now</arg>
+        <arg n="1">the field</arg>
+        <arg f="EXT" n="M">less</arg>
+        <rel>cluttered</rel>
+</example>
+
+
+<example name="verbal, agentive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+    After the confusion surrounding the change of the Coke formula in
+    1985, Coca-Cola was reluctant [*-1] to clutter the Classic name
+    with a brand extension. 
+</text>
+        <arg n="0">[*-1] -&gt;  Coca-Cola</arg>
+        <rel>clutter</rel>
+        <arg n="1">the Classic name</arg>
+        <arg f="with" n="2">a brand extension</arg>
+</example>
+
+<example name="unaccusative">
+  <inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+  <text>
+     Cast-off clothing, half-read books, pizza crusts, and the
+     occasional weapon of mass destruction clutter John's room.
+  </text>
+  <arg n="2">Cast-off clothing, half-read books, pizza crusts, and the
+     occasional weapon of mass destruction</arg>
+  <rel>clutter</rel>
+  <arg n="1">John's room</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

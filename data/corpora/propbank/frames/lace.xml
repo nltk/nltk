@@ -1,0 +1,56 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="lace">
+<note>
+  Frames file for 'lace' based on sentences in wsj.  Verbnet entry
+  22.4, Framenet entry Closure.
+</note>
+
+<roleset id="lace.01" name="intertwine, connect via a lace" vncls="22.4">
+<roles>
+  <role descr="lacer" n="0"><vnrole vncls="22.4" vntheta="Agent"/></role>
+  <role descr="things connected or intertwined" n="1"><vnrole vncls="22.4" vntheta="Patient"/></role>
+</roles>
+
+<example name="fingers">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John laced his fingers and stared Mary in the eye.
+  </text>
+  <arg n="0">John</arg>
+  <rel>laced</rel>
+  <arg n="1">his fingers</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="lace.02" name="add to, garnish" vncls="-">
+<roles>
+  <role descr="adder, agent" n="0"/>
+  <role descr="thing added to, garnished" n="1"/>
+  <role descr="special ingredient" n="2"/>
+</roles>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="third" tense="present" voice="passive"/>
+<text>
+    Final approval came on a simple voice vote in the Senate, and the
+    swift passage contrasted with months of negotiations over the
+    underlying bill which [*T*-2] is laced with special-interest
+    provisions for both members and the executive branch. 
+</text>
+        <arg n="1">[*T*-2] -&gt;  which -&gt;  the underlying bill</arg>
+        <rel>laced</rel>
+        <arg f="with" n="2">special-interest provisions for both
+        members and the executive branch</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,208 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="cross">
+<note>
+  Frames file for 'cross' based on sentences in wsj.  Verbnet entries
+  40.3.2 and 47.8; Framenet entries Body_movement and Path_shape.
+</note>
+
+<roleset id="cross.01" name="(cause) two things to intersect" vncls="40.3.2 47.8">
+<roles>
+  <role descr="crosser" n="0"><vnrole vncls="40.3.2" vntheta="Agent"/></role>
+  <role descr="two things" n="1"><vnrole vncls="47.8" vntheta="Theme1"/><vnrole vncls="40.3.2" vntheta="Patient"/></role>
+</roles>
+
+<example name="ergative">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+    He adds: ``The medical market and the fitness market parallel each
+    other and are going *trace* to cross real soon.''
+</text>
+        <arg n="1">*trace* -&gt;  The medical market and the fitness
+        market</arg> 
+        <rel>cross</rel>
+        <arg f="TMP" n="M">real soon</arg>
+</example>
+
+<example name="agentive">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    When Mr. Glass decides to get really fancy, he crosses his hands
+    and hits a resonant bass note with his right hand. 
+</text>
+        <arg n="0">he</arg>
+        <rel>crosses</rel>
+        <arg n="1">his hands</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="cross.02" name="move perpendicularly to some barrier" vncls="-">
+<roles>
+  <role descr="entity in motion" n="0"/>
+  <role descr="barrier" n="1"/>
+</roles>
+
+<example name="most obvious usage">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+    Cartoonist Garry Trudeau is suing the Writers Guild of America
+    East for $11 million, alleging it mounted a ``campaign to harass
+    and punish'' him for *trace* crossing a screenwriters' picket line.
+</text>
+        <arg n="0">*trace* -&gt;  him</arg>
+        <rel>crossing</rel>
+        <arg n="1">a screenwriters' picket line</arg>
+</example>
+
+<example name="source adverbial">
+<inflection aspect="ns" form="gerund" person="ns" tense="ns" voice="ns"/>
+<text>
+    South Africa accused armed Namibian nationalist guerrillas of
+    *trace* crossing from bases in neighboring Angola, violating
+    U.N.-supervised peace plans for the territory's independence from
+    Pretoria. 
+</text>
+        <arg n="0">*trace* -&gt;  armed Namibian nationalist guerrillas</arg>
+        <rel>crossing</rel>
+        <arg f="DIR" n="M">from bases in neighboring Angola</arg>
+        <arg n="M">violating U.N.-supervised peace plans for the
+        territory's independence from Pretoria</arg> 
+</example>
+
+<example name="destinatino adverbial">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    In a sign of easing tension between Beijing and Hong Kong, China
+    said it will again take back illegal immigrants caught *trace*
+    *trace* crossing into the British colony. 
+</text>
+        <arg n="0">*trace* -&gt; *trace* -&gt;  illegal immigrants</arg>
+        <rel>crossing</rel>
+        <arg f="into" n="1">the British colony</arg>
+</example>
+
+<example name="barrier as path over barrier">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    Although one transportation official said drivers who didn't use
+    car pools were committing ``an anti-social act,'' about two-thirds
+    of the motorists crossing the Golden Gate were alone, compared
+    with the normal 70% rate. 
+</text>
+        <arg n="0">the motorists</arg>
+        <rel>crossing</rel>
+        <arg n="1">the Golden Gate</arg>
+</example>
+
+<example name="unstated barrier">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    About 130,000 vehicles cross during a 24-hour period.
+</text>
+        <arg n="0">About 130,000 vehicles</arg>
+        <rel>cross</rel>
+        <arg f="TMP" n="M">during a 24-hour period</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="cross.04" name="eliminate from a list" vncls="-">
+<roles>
+  <role descr="crosser" n="0"/>
+  <role descr="item" n="1"/>
+  <role descr="list" n="2"/>
+</roles>
+
+<example name="all args">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    If Colgate toothpaste offers a tempting money-saving coupon,
+    she'll cross Crest off her shopping list without a second
+    thought. 
+</text>
+        <arg f="ADV" n="M">If Colgate toothpaste offers a tempting
+        money-saving coupon</arg> 
+        <arg n="0">she</arg>
+        <arg f="MOD" n="M">'ll</arg>
+        <rel>cross</rel>
+        <arg n="1">Crest</arg>
+        <arg f="off" n="2">her shopping list</arg>
+        <arg f="MNR" n="M">without a second thought</arg>
+</example>
+
+<example name="unstated list">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    As each animal entered the Ark, John crossed it off.
+  </text>
+  <arg f="TMP" n="m">As each animal entered the Ark</arg>
+  <arg n="0">John</arg>
+  <rel>crossed</rel>
+  <arg n="1">it</arg>
+  <arg n="2">off</arg>
+</example>
+
+<note>
+This is weird, but avoids adding a phrasal verb with the exact same framing.
+</note>
+
+</roleset>
+
+<roleset id="cross.05" name="make angry" vncls="-">
+<roles>
+  <role descr="maker" n="0"/>
+  <role descr="angry entity" n="1"/>
+</roles>
+
+<example name="an unfortunate example">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    In testimony recorded in the grand jury report, court employees
+    said the judge, now 59 years old, harassed his secretaries, made
+    imperial demands on his staff and hounded anyone who *trace*
+    crossed him. 
+</text>
+        <arg n="0">*trace* -&gt;  who -&gt;  anyone</arg>
+        <rel>crossed</rel>
+        <arg n="1">him</arg>
+</example>
+
+<note>
+This seems contrived to me, but I can't figure out any better way to
+handle the example.
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="cross_out">
+
+<roleset id="cross.03" name="eliminate" vncls="-">
+<roles>
+  <role descr="eliminator" n="0"/>
+  <role descr="eliminated" n="1"/>
+</roles>
+
+<example name="zap!">
+<inflection aspect="perfect" form="participle" person="ns" tense="past" voice="active"/>
+<text>
+    Mr. Guber says he had crossed out ``MGM'' with a red pen and
+    written in ``Columbia,'' giving the document to Mr. Semel. 
+</text>
+        <arg n="0">he</arg>
+        <rel>[ crossed] [ out]</rel>
+        <arg n="1">MGM</arg>
+        <arg f="MNR" n="M">with a red pen</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,42 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="legitimize">
+<note>
+  Frames file for 'legitimize'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="legitimize.01" name="to make legal or valid" vncls="-">
+<roles> 
+  <role descr="cause of legitimacy" n="0"/>   
+  <role descr="entity legitimized" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="future" voice="active"/>
+<text>
+ `` I believe [0] it will do more damage than good because it will legitimize people like Daniel Ortega , '' says [*T*-2] Curtin Windsor , who [*T*-1] served as U.S. ambassador to Costa Rica during the Reagan administration .
+</text>
+	<arg n="0">it</arg>
+	<arg f="MOD" n="M">will</arg>
+	<rel>legitimize</rel>
+	<arg n="1">people like Daniel Ortega</arg>
+</example>
+
+
+
+<example name="adjectival participle">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+ There , Mr. Shevardnadze felt legitimized [*-1] to unveil his own peace plan : The U.S.S.R. would prolong a suspension of arms shipments to Nicaragua after the February election if the U.S. did likewise with its allies in Central America .
+</text>
+	<arg n="1">[*-1] to unveil his own peace plan -&gt;  Mr. Shevardnadze</arg>
+	<rel>legitimized</rel>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

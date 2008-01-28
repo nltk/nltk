@@ -1,0 +1,98 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="switch">
+<note>
+  Frames file for 'switch' based on sentences in financial subcorpus.
+  No Verbnet entry.  Comparison with 'replace' and 'change'
+</note>
+
+<roleset id="switch.01" name="change, exchange">
+<roles>
+  <role descr="causer of transformation" n="0"/>
+  <role descr="thing changing" n="1"/>
+  <role descr="end state, attribute of arg1" n="2"/>
+  <role descr="start state" n="3"/>
+</roles>
+
+<example name="all arguments present">
+<text>
+    Both Shearson's Mr. Will and Stephen Reitman, European auto
+    analyst at the London brokerage firm UBS-Phillips &amp; Drew, recently
+    switched their Jaguar recommendations to hold from buy. 
+</text>
+        <arg n="0">Both Shearson's Mr. Will and Stephen Reitman,
+        European auto analyst at the London brokerage firm
+        UBS-Phillips &amp; Drew</arg> 
+        <arg f="TMP" n="M">recently</arg>
+        <rel>switched</rel>
+        <arg n="1">their Jaguar recommendations</arg>
+        <arg f="to" n="2">hold</arg>
+        <arg f="from" n="3">buy</arg>
+</example>
+
+<example name="unstated thing changing">
+<text>
+    Dealers said the multinational oil company was pressured by recent
+    brokerage recommendations urging investors *trace* to switch into
+    Shell Trading &amp; Transport. 
+</text>
+        <arg n="0">*trace* -&gt;  investors</arg>
+        <rel>switch</rel>
+        <arg f="into" n="2">Shell Trading &amp; Transport</arg>
+</example>
+
+<example name="ergative">
+<text>
+    ``Investor interest switches back and forth ceaselessly as they
+    are unable  to shift their weight to one side for sure,''
+    Mr. Mitsuoka of Daiwa Investment Trust said. 
+</text>
+        <arg n="1">Investor interest</arg>
+        <rel>switches</rel>
+        <arg f="MNR" n="M">back and forth</arg>
+        <arg f="MNR" n="M">ceaselessly</arg>
+        <arg f="TMP" n="M">as they are unable  to shift their weight
+        to one side for sure</arg> 
+</example>
+
+<example name="switch on/off">
+<inflection person="ns" tense="ns" aspect="ns" voice="ns" form="infinitive"/>
+<text>
+     Consumers will be able [*-2] to switch on their HDTV sets and get
+     all the viewing benefits the high-tech medium offers. 
+</text>
+	<arg n="0">[*-2] ->  Consumers</arg>
+	<rel>switch</rel>
+	<arg n="2">on</arg>
+	<arg n="1">their HDTV sets</arg>
+</example>
+</roleset>
+</predicate>
+
+<predicate lemma="switch over">
+
+<roleset id="switch.02" name="(ex)change">
+<roles>
+  <role descr="causer of transformation" n="0"/>
+  <role descr="thing changing" n="1"/>
+  <role descr="end state, attribute of arg1" n="2"/>
+  <role descr="start state" n="3"/>
+</roles>
+
+<example name="unstated thing changing">
+<text>
+    Burger King, which breaks thousands of fresh eggs each morning, is
+    quietly switching over to an alternative egg product made by
+    Michael Foods. 
+</text>
+        <arg n="0">Burger King , which  breaks thousands of fresh eggs
+        each morning,</arg> 
+        <arg f="MNR" n="M">quietly</arg>
+        <rel>[ switching] [ over]</rel>
+        <arg f="to" n="2">an alternative egg product made  by Michael
+        Foods</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

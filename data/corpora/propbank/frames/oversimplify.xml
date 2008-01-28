@@ -1,0 +1,39 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="simplify">
+<note>
+  Frames file for 'simplify' based on sentences in wsj.  No access to
+  verbnet at the moment.
+</note>
+
+<roleset id="oversimplify.01" name="make too simple" vncls="-">
+<roles>
+  <role descr="agent, causer" n="0"/>
+  <role descr="entity simplified" n="1"/>
+</roles>
+
+<example name="intransitive">
+<inflection aspect="ns" form="ns" person="ns" tense="ns" voice="ns"/>
+<text>
+    She said they have ``oversimplified and made some erroneous
+    assumptions that make their analysis completely off-base.'' 
+</text>
+        <arg n="0">they</arg>
+        <rel>oversimplified</rel>
+</example>
+
+<example name="transitive, from simplify">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+     RISC technology speeds up a computer by [*-1] oversimplifying the
+     internal software. 
+</text>
+	<arg n="0">[*-1] -&gt;  RISC technology</arg>
+	<rel>simplifying</rel>
+	<arg n="1">the internal software</arg>
+</example>
+
+
+</roleset>
+</predicate>
+</frameset>

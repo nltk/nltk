@@ -1,0 +1,48 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="entwine">
+<note>
+  Frames file for 'entwine' based on sentences in wsj.  Verbnet entry
+  22.2. 
+</note>
+
+<roleset id="entwine.01" name="get all tangled up" vncls="22.2">
+<roles>
+  <role descr="causer of mixture" n="0"><vnrole vncls="22.2" vntheta="Agent"/></role>
+  <role descr="first ingredient" n="1"><vnrole vncls="22.2" vntheta="Patient1"/></role>
+  <role descr="other(s)" n="2"><vnrole vncls="22.2" vntheta="Patient2"/></role>
+</roles>
+
+<example name="passive, verbal">
+<inflection aspect="ns" form="participle" person="third" tense="present" voice="passive"/>
+<text>
+    Foreign stock markets, with which the U.S. is entwined *trace*,
+    also have ended fixed commissions in recent years. 
+</text>
+        <arg n="1">the U.S.</arg>
+        <rel>entwined</rel>
+        <arg n="2">*trace* -&gt;  with which -&gt;  Foreign stock markets</arg>
+</example>
+
+
+<example name="passive, adjectival">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    The problems of the environment are so interrelated, so
+    inextricably entwined with our current way of life and so large
+    that it is unlikely we will be able to address them effectively
+    unless major changes are made in less than 10 years. 
+</text>
+        <arg n="1">The problems of the environment</arg>
+        <arg f="ADV" n="M">so</arg>
+        <arg f="ADV" n="M">inextricably</arg>
+        <rel>entwined</rel>
+        <arg f="with" n="2">our current way of life</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

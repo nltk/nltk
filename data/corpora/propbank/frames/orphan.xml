@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="orphan">
+<note>
+  Frames file for 'orphan' based on sentences in wsj.  Verbnet entry 29.7.
+</note>
+
+<roleset id="orphan.01" vncls="29.7" name="cause to not have parents">
+<roles>
+  <role n="0"  descr="causer"/>
+  <role n="1"  descr="orphan"/>
+</roles>
+
+<example name="a disney moment">
+<inflection person="ns" tense="past" aspect="ns" voice="passive" form="participle"/>
+<text>
+    But then, even a great many words couldn't summarize the
+    extraordinary pull of this movie about an orphaned bear who adopts
+    a parent.  
+</text>
+	<rel>orphaned</rel>
+	<arg n="1">bear</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,34 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="dot">
+<note>
+  Frames file for 'dot' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="dot.01" name="to mark or cover with or as if with dots" vncls="9.8">
+<roles>
+  <role descr="who put the dots there" n="0">
+        <vnrole vncls="9.8" vntheta="Agent"/></role>
+  <role descr="entity dotted" n="1">
+        <vnrole vncls="9.8" vntheta="Destination"/></role>
+  <role descr="dots" n="2"/>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ The fish often are plentiful around the pilings of the old gas wells that [*T*-1] dot the flat surface like the remains of sunken ships .
+</text>
+	<arg n="0">[*T*-1] -&gt;  that -&gt;  the old gas wells</arg>
+	<rel>dot</rel>
+	<arg n="1">the flat surface</arg>
+	<arg f="MNR" n="M">like the remains of sunken ships</arg>
+</example>
+
+</roleset>
+</predicate>
+
+
+</frameset>

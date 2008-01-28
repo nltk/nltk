@@ -1,0 +1,36 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="evaluate">
+<note>
+  Frames file for 'evaluate' based on annotation-on-the-fly of the
+  financial subcorpus, and comparison with 'consider'.  No entry in
+  verbnet.
+</note>
+
+<roleset id="evaluate.01" name="contemplate an action" vncls="34">
+<roles>
+  <role descr="thinker" n="0">
+		
+  <vnrole vncls="34" vntheta="Agent"/></role>
+
+  <role descr="action" n="1">
+		
+  <vnrole vncls="34" vntheta="Theme"/></role>
+
+</roles>
+
+<example name="transitive">
+  <text>
+  We evaluated *trace* raising our bid.
+  </text>
+  <arg n="0">We</arg>
+  <rel>evaluated</rel>
+  <arg n="1">*trace* raising our bid</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,117 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="pop">
+<note>
+Frames file for 'pop' based on sentences in financial subcorpus and
+automatic expansion via verbnet.
+</note>
+
+<roleset id="pop.01" name="make a popping sound" vncls="43.2">
+<roles>
+  <role descr="maker of sounds" n="0">
+        <vnrole vncls="43.2" vntheta="Agent"/></role>
+</roles>
+
+<example name="popcorn">
+  <inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+  <text>
+      John's knees pop every time he stands up.
+  </text>
+  <arg n="0">John's knees</arg>
+  <rel>pop</rel>
+  <arg f="TMP" n="m">every time he stands u</arg>
+</example>
+</roleset>
+
+<roleset id="pop.02" name="pop, burst" vncls="45.4">
+<roles>
+  <role descr="causer of popping" n="0">
+	<vnrole vncls="45.4" vntheta="Agent"/></role>
+  <role descr="thing popping, bubble" n="1">
+	<vnrole vncls="45.4" vntheta="Patient"/></role>
+</roles>
+
+<example name="popcorn">
+  <inflection aspect="progressive" form="participle" person="third" tense="present" voice="active"/>
+  <text>
+    John is popping popcorn in the microwave.
+  </text>
+  <arg n="0">John</arg>
+  <rel>popping</rel>
+  <arg n="1">popcorn</arg>
+  <arg f="LOC" n="m">in the microwave</arg>
+</example>
+
+<note>
+Another verb where the rolesets are obviously related--if you are
+bursting something, it is probably making a 'pop' sound.
+</note>
+
+</roleset>
+
+<roleset id="pop.04" vncls="-" name="move suddenly">
+<roles>
+  <role n="0"  descr="causer of motion"/>
+  <role n="1"  descr="entity in motion"/>
+  <role n="2"  descr="EXT, distance moved"/>
+  <role n="3"  descr="start point"/>
+  <role n="4"  descr="end point"/>
+  <role n="5"  descr="direction"/>
+</roles>
+
+<example name="a couple arguments">
+  <inflection person="ns" tense="ns" aspect="ns" voice="active" form="full"/>
+  <text>
+     ``I think the market could pop up to the $1.22 to $1.25 level
+     without too much difficulty,'' he said. 
+  </text>
+  <arg n="1"        >the market</arg>
+  <arg n="m" f="MOD">could</arg>
+  <rel              >pop</rel>
+  <arg n="2" f="DIR">up</arg>
+  <arg n="4" f="to">the $1.22 to $1.25 level</arg>
+  <arg n="m" f="MNR">without too much difficulty</arg>
+<note>
+Likewise pop over, pop down, etc.
+</note>
+</example>
+
+<example name="not just stocks">
+  <inflection person="third" tense="present" aspect="ns" voice="active" form="full"/>
+  <text>
+     Analysts and competitors said the move reflects a growing need by
+     the stores to expand their customer base beyond the traditional
+     blue-collar worker who [*T*-1] pops into a convenience store for
+     a sandwich, cigarettes, soda or beer. 
+  </text>
+  <arg n="1"        >[*T*-1] -> who -> the traditional blue-collar worker</arg>
+  <rel              >pops</rel>
+  <arg n="4" f="into">a convenience store</arg>
+  <arg n="m" f="PNC">for a sandwich, cigarettes, soda or beer</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="pop_up">
+<roleset id="pop.03" name="pop up: appear" vncls="-">
+<roles>
+  <role descr="thing appearing" n="1"/>
+</roles>
+
+<example name="unaccusative">
+<inflection aspect="progressive" form="full" person="third" tense="present" voice="active"/>
+<text>
+     Dealing with the sales this month could be particularly
+     challenging because almost every problem that has hobbled the
+     program in the past is popping up again. 
+</text>
+        <arg n="1">almost every problem that  has hobbled the program
+        in the past</arg> 
+        <rel>[ popping] [ up]</rel>
+        <arg f="TMP" n="M">again</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

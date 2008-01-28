@@ -1,0 +1,45 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="unleash">
+<note>
+  Frames file for 'unleash' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="unleash.01" name="let loose" vncls="-">
+<roles>
+  <role descr="letter loose" n="0"/>
+  <role descr="loose thing" n="1"/>
+</roles>
+
+<example name="loose the dogs of war">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+     Stung by the Giuliani ads, Mr. Dinkins's TV consultants, Robert
+     Shrum and David Doak, finally unleashed a negative ad of their
+     own. 
+</text>
+        <arg n="M">Stung  by the Giuliani ads</arg>
+        <arg n="0">Mr. Dinkins's TV consultants, Robert Shrum and
+        David Doak,</arg> 
+        <arg f="TMP" n="M">finally</arg>
+        <rel>unleashed</rel>
+        <arg n="1">a negative ad of their own</arg>
+</example>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    But ultimately he was undone by forces unleashed *trace* by his
+    own comrade, Mr. Gorbachev. 
+</text>
+        <rel>unleashed</rel>
+        <arg n="1">*trace* -&gt;  forces</arg>
+        <arg f="by" n="0">his own comrade, Mr. Gorbachev</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

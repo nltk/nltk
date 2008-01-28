@@ -1,0 +1,59 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="bludgeon">
+<note>
+  Frames file for 'bludgeon' based on sentences in wsj.  Verbnet entry 18.3.
+</note>
+
+<roleset id="bludgeon.01" vncls="18.3" name="hit hard">
+<roles>
+  <role descr="agent, hitter - animate only!" n="0">
+	<vnrole vncls="18.3" vntheta="Agent"/></role>
+  <role descr="thing hit" n="1">
+	<vnrole vncls="18.3" vntheta="Patient"/></role>
+  <role descr="instrument, thing hit by or with" n="2">
+	<vnrole vncls="18.3" vntheta="Instrument"/></role>
+</roles>
+
+<example name="active, no instrument">
+<inflection person="ns" tense="ns" aspect="ns" voice="active" form="infinitive"/>
+<text>
+    So far, Wall Street's Old Guard seems [*-1] to be winning the
+    program-trading battle, [*-2] successfully mobilizing public and
+    congressional opinion [*-3] to bludgeon their tormentors.  
+</text>
+	<arg n="0">[*-3] ->  [*-2] ->  [*-1] ->  Wall Street's Old Guard</arg>
+	<rel>bludgeon</rel>
+	<arg n="1">their tormentors</arg>
+</example>
+
+
+<example name="passive, no instrument">
+<inflection person="ns" tense="ns" aspect="ns" voice="passive" form="participle"/>
+<text>
+    First Interstate said the unit, bludgeoned [*] by Arizona's
+    worsening real-estate woes, will have a $174 million loss for the
+    quarter. 
+</text>
+	<rel>bludgeoned</rel>
+	<arg n="1">[*] ->  the unit</arg>
+	<arg n="0" f="by">Arizona's worsening real-estate woes</arg>
+</example>
+
+<example name="with instrument">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+   Mary bludgeoned John with a two-by-four.
+  </text>
+  <arg n="0"        >Mary</arg>
+  <rel              >bludgeoned</rel>
+  <arg n="1"        >John</arg>
+  <arg n="2" f="with">a two-by-four</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

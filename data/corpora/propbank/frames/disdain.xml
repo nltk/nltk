@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="disdain">
+<note>
+  Frames file for 'disdain' based on sentences in wsj.  Verbnet entry
+  31.2, Framenet entry Judgement.
+</note>
+
+<roleset id="disdain.01" name="look down upon, dislike" vncls="31.2">
+<roles>
+  <role descr="disdainer" n="0"><vnrole vncls="31.2" vntheta="Experiencer"/></role>
+  <role descr="disdained" n="1"><vnrole vncls="31.2" vntheta="Cause"/></role>
+</roles>
+
+<example name="boring">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    The old guard had every right, however , [*] to disdain the
+    newcomers' new ways of making money, such as greenmail. 
+</text>
+        <arg n="0">[*] -&gt;  The old guard</arg>
+        <rel>disdain</rel>
+        <arg n="1">the newcomers' new ways of making money, such as
+        greenmail</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

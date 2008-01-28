@@ -1,0 +1,51 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="alarm">
+<note>
+  Frames file for 'alarm' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="alarm.01" name="to give warning to, frighten" vncls="31.1">
+<roles>
+  <role descr="warning" n="0">
+		
+  <vnrole vncls="31.1" vntheta="Cause"/></role>
+
+  <role descr="entity alarmed" n="1">
+		
+  <vnrole vncls="31.1" vntheta="Experiencer"/></role>
+
+</roles>
+
+
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+ Some analysts at least are buying that argument , and were n't alarmed [*-1] by the losses .
+</text>
+	<arg f="NEG" n="M">n't</arg>
+	<rel>alarmed</rel>
+	<arg n="1">[*-1] -&gt;  Some analysts at least</arg>
+	<arg f="by" n="0">the losses</arg>
+</example>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ It raises the long-cherished hopes of many Germans for reunification -- a prospect that [*T*-1] almost equally alarms political leaders in Moscow , Washington and Western Europe .
+</text>
+	<arg n="0">[*T*-1] -&gt;  that -&gt;  a prospect</arg>
+	<arg f="MNR" n="M">almost equally</arg>
+	<rel>alarms</rel>
+	<arg n="1">political leaders in Moscow , Washington and Western Europe</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

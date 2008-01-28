@@ -1,0 +1,86 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="blame">
+<note>
+  Frames file for 'blame' based on sentences in financial subcorpus.
+  No access to verbnet.  No comparison.
+</note>
+
+<roleset id="blame.01" name="assign culpability">
+<roles>
+  <role descr="blamer" n="0"/>
+  <role descr="entity blamed" n="1"/>
+  <role descr="blamed for what?" n="2"/>
+</roles>
+
+<example name="active, arg1 as DO">
+<text>
+    The company blamed a number of factors for the earnings decline,
+    including softer sales of joint-implants. 
+</text>
+        <arg n="0">The company</arg>
+        <rel>blamed</rel>
+        <arg n="1">a number of factors </arg>
+        <arg f="for" n="2">the earnings decline</arg>
+        <arg n="M">including softer sales of joint-implants</arg>
+</example>
+
+<example name="passivized arg1">
+<text>
+    Uncertainty about the prospects for further action to curtail
+    stock-index arbitrage, a form of program trading blamed *trace*
+    for recent volatility in the market, also contributed to its lack
+    of direction, Mr. Puccio said. 
+</text>
+        <rel>blamed</rel>
+        <arg n="1">*trace* -&gt;  a form</arg>
+        <arg f="for" n="2">recent volatility in the market</arg>
+</example>
+
+<example name="active, arg2 as DO">
+<text>
+    And some carriers are facing other unexpected headaches: USAir,
+    for example, blamed some of its loss on merger expenses and on
+    disruptions caused by Hurricane Hugo last month. 
+</text>
+        <arg n="0">USAir</arg>
+        <arg f="DIS" n="M">for example</arg>
+        <rel>blamed</rel>
+        <arg n="2">some of its loss</arg>
+        <arg f="on" n="1">disruptions caused by Hurricane Hugo last
+        month</arg>
+</example> 
+
+<example name="passivized arg2">
+<text>
+    Much of the instability in stock prices lately has been blamed
+    *trace* on arbitrage trading, designed to profit from differences
+    in prices between stocks and index futures. 
+</text>
+        <arg f="TMP" n="M">lately</arg>
+        <rel>blamed</rel>
+        <arg n="2">*trace* -&gt;  Much of the instability in stock
+        prices</arg> 
+        <arg f="on" n="1">arbitrage trading, designed to profit from
+        differences in prices between stocks and index futures</arg> 
+</example>
+
+<example name="deciding case?">
+<text>
+    Fina blamed lower chemical prices, reduced gasoline margins and
+    refinery maintenance shutdowns. 
+</text>
+        <arg n="0">Fina</arg>
+        <rel>blamed</rel>
+        <arg n="1">lower chemical prices , reduced gasoline margins and refinery maintenance shutdowns</arg>
+</example>
+
+<note>
+The last example seems to leave aside the 'reason' argument, leading
+me to believe that should be arg2.  But it's pretty much a tossup
+either way.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

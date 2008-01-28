@@ -1,0 +1,95 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="reassert">
+<note>
+  Frames file for 'reassert' based on transformation of 'assert'
+  frames.  No actual examination of corpus.
+</note>
+
+<roleset id="reassert.01" name="speak up again" vncls="48.1.2">
+<roles>
+  <role descr="asserter" n="0">
+        <vnrole vncls="48.1.2" vntheta="Agent"/></role>
+  <role descr="thing asserted" n="1">
+        <vnrole vncls="48.1.2" vntheta="Theme"/></role>
+</roles>
+
+<example name="reflexive">
+  <text>
+  Wives are reasserting themselves more strongly.
+  </text>
+  <arg n="0">Wives</arg>
+  <rel>reasserting</rel>
+  <arg f="REC" n="1">themselves</arg>
+  <arg f="MNR" n="m">more strongly</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="reassert.02" name="say forcefully again" vncls="29.5">
+<roles>
+    <role descr="Sayer" n="0">
+          <vnrole vncls="29.5" vntheta="Agent"/></role>
+    <role descr="Utterance" n="1">
+          <vnrole vncls="29.5" vntheta="Theme"/></role>
+    <role descr="Hearer" n="2"/>
+    <role descr="Attribute of arg1" n="3">
+          <vnrole vncls="29.5" vntheta="Predicate"/></role>
+</roles>
+
+<example name="transitive, normal order">
+  <text>
+  Still another boy reasserted: to be a good Jew is to do no wrong; it's
+  to be a good person.
+  </text>
+  <arg n="0">Still another boy</arg>
+  <rel>reasserted</rel>
+  <arg n="1">to be a good Jew is to do no wrong; it's
+  to be a good person.</arg>
+</example>
+
+<note>
+Refer to 'say' for examples of other usages.
+</note>
+
+</roleset>
+
+<roleset id="reassert.03" name="claim again" vncls="29.5">
+<roles>
+  <role descr="claimer, asserter" n="0">
+        <vnrole vncls="29.5" vntheta="Agent"/></role>
+  <role descr="thing claimed, asserted" n="1">
+        <vnrole vncls="29.5" vntheta="Theme"/></role>
+  <role descr="benefactive, claimed/asserted for" n="2"/>
+  <role descr="attribute of arg1" n="3">
+        <vnrole vncls="29.5" vntheta="Predicate"/></role>
+</roles>
+
+<example name="simple transitive">
+  <text>
+  The President reasserted a power of excision.
+  </text>
+  <arg n="0">The President</arg>
+  <rel>reasserted</rel>
+  <arg n="1">a power of excision</arg>
+</example>
+
+<example name="with secondary predication">
+  <text>
+  The author had reasserted several points about Mr. Hubbard.
+  </text>
+  <arg n="0">The author</arg>
+  <rel>reasserted</rel>
+  <arg n="1">several points</arg>
+  <arg n="3">about Mr. Hubbard</arg>
+</example>
+
+<note>This could possibly be merged with the 'say' roleset
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,38 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="shepherd">
+<note>
+Frames file for 'shepherd' based on sentences in wsj and automatic
+expansion via verbnet.
+</note>
+
+<roleset id="shepherd.01" name="watch over" vncls="29.8">
+<roles>
+	<role descr="shepherd" n="0">
+		
+  <vnrole vncls="29.8" vntheta="Agent"/></role>
+
+	<role descr="sheep" n="1">
+		
+  <vnrole vncls="29.8" vntheta="Theme"/></role>
+
+</roles>
+
+<example name="the one example">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Producers Don Simpson and Jerry Bruckheimer, who *trace*
+    shepherded ``Flashdance'' through several scripts and ultimately
+    produced the movie, bristle when Messrs. Guber and Peters take
+    credit for the film. 
+</text>
+        <arg n="0">*trace* -&gt;  who -&gt;  Producers Don Simpson and Jerry
+        Bruckheimer</arg> 
+        <rel>shepherded</rel>
+        <arg n="1">Flashdance</arg>
+        <arg f="DIR" n="M">through several scripts</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

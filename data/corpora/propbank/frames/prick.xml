@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="prick">
+<note>
+  Frames file for 'prick' based on sentences in wsj.  No access to
+  Verbnet at the moment.
+</note>
+
+<roleset id="prick.01" name="poke with a pin, pop or burst" vncls="19">
+<roles>
+  <role descr="prick(er)" n="0"><vnrole vncls="19" vntheta="Agent"/></role>
+  <role descr="victim" n="1"><vnrole vncls="19" vntheta="Destination"/></role>
+</roles>
+
+<example name="the one example">
+<inflection aspect="ns" form="ns" person="ns" tense="ns" voice="ns"/>
+<text>
+    ``It seems to me that this is the pin that [*T*-1] has finally
+    pricked the balloon,'' says Mr. Rogers, a professor of finance at
+    Columbia University and former co-manager of one of the most
+    successful hedge funds in history, Quantum Fund. 
+</text>
+        <arg n="0">[*T*-1] -&gt;  that -&gt;  the pin</arg>
+        <rel>pricked</rel>
+        <arg n="1">the balloon</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="ache">
+<note>
+  Frames file for 'ache' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="ache.01" name="to suffer a dull pain" vncls="40.8.2">
+<roles>
+  <role descr="body part aching" n="0"><vnrole vncls="40.8.2" vntheta="Patient"/></role>
+</roles>
+
+<example name="intransitive">
+<inflection aspect="ns" form="gerund" person="ns" tense="ns" voice="active"/>
+<text>
+ [*-1] Having resided in the great state of California for the past seven years , I find it [*EXP*-3] hard [*] to ignore our environmental problems when I start my commute to work with eyes tearing [*RNR*-2] and head aching [*RNR*-2] from the polluted air [*T*-4] ; when I try [*-6] to enjoy the beaches and come home [*-6] covered [*-8] with tar and oil [*T*-5] ; when I hear of numerous deaths related [*] to irresponsible processing of cheese and use of chemicals in fruit growing [*T*-7] .
+</text>
+	<arg n="0">head</arg>
+	<rel>aching</rel>
+	<arg f="CAU" n="M">from the polluted air -&gt;  [*RNR*-2]</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

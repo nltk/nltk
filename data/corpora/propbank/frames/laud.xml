@@ -1,0 +1,44 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="laud">
+<note>
+  Frames file for 'laud' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="laud.01" name="to praise, glorify" vncls="33">
+<roles>
+  <role descr="praiser, agent" n="0">
+	<vnrole vncls="33" vntheta="Cause"/></role>
+  <role descr="entity praised" n="1"/>
+  <role descr="praised for what?" n="2"/>
+</roles>
+
+<example name="all arguments">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ Mrs. Hills lauded South Korea for [*-1] creating an intellectual-property task force and special enforcement teams of police officers and prosecutors trained [*] to pursue movie and book pirates .
+</text>
+	<arg n="0">Mrs. Hills</arg>
+	<rel>lauded</rel>
+	<arg n="1">South Korea</arg>
+	<arg f="for" n="2">[*-1] creating an intellectual-property task force and special enforcement teams of police officers and prosecutors trained [*] to pursue movie and book pirates</arg>
+</example>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ When he was hired [*-1] [*T*-2] , Mr. Payne lauded Mr. Decker 's `` extraordinary ... skills '' and his `` outstanding reputation as one of the West 's brightest bankers . ''
+</text>
+	<arg n="0">Mr. Payne</arg>
+	<rel>lauded</rel>
+	<arg n="1">Mr. Decker 's `` extraordinary ... skills '' and his `` outstanding reputation as one of the West 's brightest bankers . ''</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

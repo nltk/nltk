@@ -1,0 +1,39 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="relish">
+<note>
+  Frames file for 'relish' based on sentences in wsj.  Verbnet entry
+  31.2, Framenet entry Experiencer subj.
+</note>
+
+<roleset id="relish.01" name="enjoy" vncls="31.2">
+<roles>
+  <role descr="enjoyer" n="0"><vnrole vncls="31.2" vntheta="Experiencer"/></role>
+  <role descr="thing enjoyed" n="1"><vnrole vncls="31.2" vntheta="Cause"/></role>
+</roles>
+
+<example name="typical usage">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Mr. Wathen also relished the chance to demonstrate an entrepreneur
+    like himself, who'd spent his whole career in the security
+    business, could run Pinkerton's better than an unfocused
+    conglomerate or investment banker. 
+</text>
+        <arg n="0">Mr. Wathen</arg>
+        <arg f="DIS" n="M">also</arg>
+        <rel>relished</rel>
+        <arg n="1">the chance to demonstrate an entrepreneur like
+        himself, who'd spent his whole career in the security
+        business, could run Pinkerton's better than an unfocused
+        conglomerate or investment banker</arg> 
+</example>
+
+<note>
+Too bad this verb isn't also in class 9.9 (butter), or &quot;John relished
+his hot dog&quot; could be delightfully ambiguous.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

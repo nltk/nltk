@@ -1,0 +1,47 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="afflict">
+<note>
+  Frames file for 'afflict' based on sentences in wsj.  Verbnet entry 31.1.
+</note>
+
+<roleset id="afflict.01" name="suffer" vncls="31.1">
+<roles>
+  <role descr="causer of suffering" n="0"><vnrole vncls="31.1" vntheta="Cause"/></role>
+  <role descr="entity suffering" n="1"><vnrole vncls="31.1" vntheta="Experiencer"/></role>
+  <role descr="instrument, if separate from arg0" n="2"/>
+</roles>
+
+<example name="active, no instrument">
+<inflection aspect="perfect" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+    But the former U.S. president's sixth visit to China, during which
+    he spoke at length with Chinese leaders, was nowhere near as
+    successful at easing strains that *trace* have recently afflicted
+    the Sino-U.S. relationship. 
+</text>
+        <arg n="0">*trace* -&gt;  that -&gt;  strains</arg>
+        <arg f="TMP" n="M">recently</arg>
+        <rel>afflicted</rel>
+        <arg n="1">the Sino-U.S. relationship</arg>
+</example>
+
+<example name="passive, no instrument">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    Mr. Bennett declared in April that he would make Washington a
+    ``test case'' for how the Bush administration would aid cities
+    afflicted *trace* by heavy drug trafficking and violence. 
+</text>
+        <rel>afflicted</rel>
+        <arg n="1">*trace* -&gt;  cities</arg>
+        <arg n="0">heavy drug trafficking and violence</arg>
+</example>
+
+<note>
+I can't actually get any good readings with both agent and instrument.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="condone">
+<note>
+  Frames file for 'condone' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="condone.01" name="to excuse" vncls="-">
+<roles>
+  <role descr="excuser, agent" n="0"/>
+  <role descr="thing condoned" n="1"/>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ Morever , Mr. Addison has said [0] Southern Co. and its units do n't condone illegal political contributions .
+</text>
+	<arg n="0">Southern Co. and its units</arg>
+	<arg f="NEG" n="M">n't</arg>
+	<rel>condone</rel>
+	<arg n="1">illegal political contributions</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

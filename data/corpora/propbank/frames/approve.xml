@@ -1,0 +1,74 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="approve">
+<note>
+  Frames file for 'approve' based on survey of initial sentences of
+  big corpus.
+</note>
+
+<roleset id="approve.01" name="assent to" vncls="31.3">
+<roles>
+  <role descr="approver" n="0">
+		
+  <vnrole vncls="31.3" vntheta="Experiencer"/></role>
+
+  <role descr="thing approved" n="1">
+		
+  <vnrole vncls="31.3" vntheta="Cause"/></role>
+
+  <role descr="secondary attribute" n="2"/>
+</roles>
+
+<example name="NP approval">
+  <text>
+  Shareholders approved Pacific First Financial's acquisition by Royal
+  Trustco Ltd of Toronto for $27 a share, or $212 million.
+  </text>
+  <arg n="0">Shareholders</arg>
+  <rel>approved</rel>
+  <arg n="1">Pacific First Financial's acquisition by Royal
+  Trustco Ltd of Toronto for $27 a share, or $212 million.</arg>
+</example>
+
+<example name="PP approval">
+  <text>
+  50% of voters approve of the President's job performance.
+  </text>
+  <arg n="0">50% of voters</arg>
+  <rel>approve</rel>
+  <arg f="of" n="1">the President's job performance</arg>
+</example>
+
+<example name="attribute with as">
+  <inflection aspect="perfect" form="participle" person="ns" tense="past" voice="active"/>
+  <text>
+     On Friday, the Merc's board announced that it had approved Sabine
+     Pipe Line Co.'s Henry Hub in Erath, La., as the delivery sit for
+     its long-awaited natural gas futures contract.
+  </text>
+  <arg n="0">it</arg>
+  <rel>approved</rel>
+  <arg n="1">Sabine Pipe Line Co.'s Henry Hub in Erath, La.,</arg>
+  <arg f="as" n="2">the delivery sit for
+     its long-awaited natural gas futures contract</arg>
+</example>
+
+<example name="attribute with for">
+  <inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+  <text>
+    Traditionally, the medical establishment has waited two years
+    *trace* to approve adult treatments for pediatric uses, because of
+    a compbination of conservative safety standards and red tape.
+  </text>
+  <arg n="0">*trace* -&gt; the medical establishment</arg>
+  <rel>approve</rel>
+  <arg n="1">adult treatments</arg>
+  <arg f="for" n="2">pediatric uses</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

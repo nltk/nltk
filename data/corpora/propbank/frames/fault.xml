@@ -1,0 +1,52 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="fault">
+<note>
+  Frames file for 'fault' based on sentences in financial subcorpus.
+  No access to verbnet.  Comparison with 'blame'.
+</note>
+
+<roleset id="fault.01" name="assign culpability" vncls="33">
+<roles>
+  <role descr="blamer" n="0">
+		
+  <vnrole vncls="33" vntheta="Agent"/></role>
+
+  <role descr="entity blamed" n="1">
+		
+  <vnrole vncls="33" vntheta="Theme"/></role>
+
+  <role descr="blamed for what?" n="2">
+		
+  <vnrole vncls="33" vntheta="Cause"/></role>
+
+</roles>
+
+<example name="active, no grounds">
+<text>
+    And some investors fault Mr. Spiegel's life style; he earns
+    millions of dollars a year and flies around in Columbia's jet
+    planes. 
+</text>
+        <arg f="DIS" n="M">And</arg>
+        <arg n="0">some investors</arg>
+        <rel>fault</rel>
+        <arg n="1">Mr. Spiegel's life style</arg>
+</example>
+
+<example name="with grounds">
+  <text>
+    Mary faults John for his deplorable fashion sense.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>faults</rel>
+  <arg n="1">John</arg>
+  <arg f="for" n="2">his deplorable fashion sense</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,305 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="strike">
+<note>
+  Frames file for 'strike' based on sentences in financial subcorpus.
+  Verbnet entry hit-18.1, other framed members include batter, beat,
+  dash, kick.  Comparison to Chris' old frames file.
+</note>
+
+<roleset id="strike.01" name="hit" vncls="18.1">
+<roles>
+  <role descr="agent, hitter - animate only!" n="0">
+	<vnrole vncls="18.1" vntheta="Agent"/></role>
+  <role descr="thing hit" n="1">
+	<vnrole vncls="18.1" vntheta="Patient"/></role>
+  <role descr="instrument, thing hit by or with" n="2">
+	<vnrole vncls="18.1" vntheta="Instrument"/></role>
+</roles>
+
+<example name="instrumental subject">
+<text>
+    Sentiment was helped by the small gain made by New York stocks
+    Wednesday despite anxiety over possible effects of the major
+    earthquake that *trace* struck northern California Tuesday.
+</text>
+        <arg n="2">*trace* -&gt;  that -&gt;  the major earthquake</arg>
+        <rel>struck</rel>
+        <arg n="1">northern California</arg>
+        <arg f="TMP" n="M">Tuesday</arg>
+</example>
+
+<example name="agentive">
+  <text>
+    John struck the fence with a stick.
+  </text>
+  <arg n="0">John</arg>
+  <rel>struck</rel>
+  <arg n="1">the fence</arg>
+  <arg f="with" n="2">a stick</arg>
+</example>
+
+<example name="reversed syntax!">
+<inflection person="ns" tense="ns" aspect="ns" voice="ns" form="gerund"/>
+<text>
+     Mr. Auvil sees Fujis, in part, as [*-1] striking a blow against
+     the perversion of U.S. apples by supermarkets. 
+</text>
+        <arg n="0">[*-1] ->  Fujis</arg>
+        <rel>striking</rel>
+        <arg n="2">a blow</arg>
+        <arg n="1" f="against">the perversion of U.S. apples by
+        supermarkets</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="strike.02" name="refrain from working" vncls="-">
+<roles>
+  <role descr="workers" n="0"/>
+  <role descr="employer" n="1"/>
+</roles>
+
+<example name="work stoppage">
+<text>
+    ``United pilots have shown on a number of occasions they are
+    willing and able *trace* to strike,'' said an executive at Fuji
+    Bank.
+</text>
+        <arg n="0">*trace* -&gt;  they</arg>
+        <rel>strike</rel>
+</example>
+
+<example name="transitive">
+<inflection person="ns" tense="present" aspect="progressive" voice="active" form="participle"/>
+<text>
+    Ironically, many of the pilots involved have left Eastern or are
+    still striking the carrier, which filed for bankruptcy protection
+    March 9.  
+</text>
+        <arg n="M" f="DIS">Ironically</arg>
+        <arg n="0">many of the pilots involved</arg>
+        <arg n="M" f="TMP">still</arg>
+        <rel>striking</rel>
+        <arg n="1">the carrier, which filed for bankruptcy protection
+        March 9</arg> 
+</example>
+
+</roleset>
+
+<roleset id="strike.03" name="remove" vncls="-">
+<roles>
+  <role descr="remover" n="0"/>
+  <role descr="thing removed" n="1"/>
+  <role descr="source, removed from" n="2"/>
+</roles>
+
+<example name="all args">
+  <text>
+    John struck all of Mary's disparaging remarks about him from her
+    diary.
+  </text>
+  <arg n="0">John</arg>
+  <rel>struck</rel>
+  <arg n="1">all of Mary's disparaging remarks about him</arg>
+  <arg f="from" n="2">her diary</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="strike.04" name="appear, seem" vncls="-">
+<roles>
+  <role descr="thing seeming" n="1"/>
+  <role descr="attribute" n="2"/>
+  <role descr="viewer" n="3"/>
+</roles>
+
+<example name="all args">
+<text>
+    It struck me as a way to get back to what I really want to do.''
+</text>
+        <arg n="1">It</arg>
+        <rel>struck</rel>
+        <arg n="3">me</arg>
+        <arg f="as" n="2">a way to get back to what I really want to
+        do</arg> 
+</example>
+</roleset>
+
+<roleset id="strike.05" name="initiate" vncls="-">
+<roles>
+  <role descr="Agent" n="0"/>
+  <role descr="Theme(-Creation)" n="1"/>
+  <role descr="Instrument" n="2"/>
+</roles>
+
+<example name="passive with instrument">
+<text>
+    The deal, which will involve an initial $ 20 million investment,
+    was struck *trace* with a handshake, he added.
+</text>
+        <rel>struck</rel>
+        <arg n="1">*trace* -&gt;  The deal, which will involve an initial
+        $20 million investment,</arg> 
+        <arg f="with" n="2">a handshake</arg>
+</example>
+
+<example name="be careful with 'with' phrases">
+  <text>
+    John struck a deal with Mary.
+  </text>
+  <arg n="0">John</arg>
+  <rel>struck</rel>
+  <arg n="1">a deal with Mary</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="strike.10" vncls="-" name="strike a pose">
+<roles>
+  <role n="0"  descr="poseur"/>
+  <role n="1"  descr="pose"/>
+</roles>
+
+<example name="variation on 'initiate'?">
+<inflection person="ns" tense="present" aspect="ns" voice="active" form="full"/><text>
+     It is also the kind of libel politicians find useful, since it
+     helps them strike a friendly posture on behalf of an important
+     constituency. 
+</text>
+        <arg n="0">them</arg>
+        <rel>strike</rel>
+        <arg n="1">a friendly posture</arg>
+        <arg n="M" f="ADV">on behalf of an important constituency</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="strike_out">
+
+<roleset id="strike.06" name="baseball" vncls="-">
+<roles>
+  <role descr="pitcher" n="A"/>
+  <role descr="batter" n="0"/>
+  <role descr="with respect to" n="1"/>
+</roles>
+
+<example name="agentive">
+  <text>
+    John struck out every time he was at bat.
+  </text>
+  <arg n="0">John</arg>
+  <rel>struck out</rel>
+  <arg f="TMP" n="m">every time he was at bat</arg>
+</example>
+
+<example name="causal agent">
+  <text>
+    Mary struck John out with a vicious slider.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>struck out</rel>
+  <arg n="1">John</arg>
+  <arg f="MNR" n="m">with a vicious slider</arg>
+</example>
+
+<example name="arg1 only in metaphors">
+<inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+<text>
+     But he struck out with the decimal system of metric weights and
+     measures the French had invented. 
+</text>
+        <arg n="0">he</arg>
+        <rel>[ struck] [ out]</rel>
+        <arg n="1" f="with">the decimal system of metric weights and
+        measures the French had invented</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="strike.07" name="remove" vncls="-">
+<roles>
+  <role descr="remover" n="0"/>
+  <role descr="thing removed" n="1"/>
+  <role descr="source, removed from" n="2"/>
+</roles>
+
+<example name="legislative process">
+  <text>
+    John struck out many of the bill's riders.
+  </text>
+  <arg n="0">John</arg>
+  <rel>struck out</rel>
+  <arg n="1">many of the bill's riders</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="strike_down">
+
+<roleset id="strike.08" name="defeat, smite (cf. hit sense above)" vncls="-">
+<roles>
+  <role descr="agent, hitter - animate only!" n="0"/>
+  <role descr="thing hit" n="1"/>
+  <role descr="instrument, thing hit by or with" n="2"/>
+</roles>
+
+<example name="passivized">
+<text>
+    A natural gas rule was struck down *trace* by a federal appeals
+    court. 
+</text>
+        <rel>[ struck] [ down]</rel>
+        <arg n="1">*trace* -&gt;  A natural gas rule</arg>
+        <arg f="by" n="0">a federal appeals court</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="strike_up">
+
+<roleset id="strike.09" name="initiate" vncls="-">
+<roles>
+  <role descr="Agent" n="0"/>
+  <role descr="Theme(-Creation)" n="1"/>
+  <role descr="Instrument" n="2"/>
+</roles>
+
+<example name="transitive">
+<text>
+    And he managed *trace* to fend off further advances and even
+    strike up an unlikely friendship with the interloper. 
+</text>
+        <arg n="0">*trace* -&gt;  he</arg>
+        <arg f="DIS" n="M">even</arg>
+        <rel>[ strike] [ up]</rel>
+        <arg n="1">an unlikely friendship with the interloper</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

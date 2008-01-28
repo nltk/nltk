@@ -1,0 +1,63 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="discriminate">
+<note>
+  Frames file for 'discriminate' based on sentences in wsj.  No
+  Verbnet entry, Framenet entry Differentiation.
+</note>
+
+<roleset id="discriminate.01" name="tell the difference among" vncls="-">
+<roles>
+  <role descr="agent, person with keen taste" n="0"/>
+  <role descr="choices" n="1"/>
+</roles>
+
+<example name="usually adjectival">
+  <inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+  <text>
+     John is a discriminating diner.
+  </text>
+  <rel>discriminating</rel>
+  <arg n="0">diner</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="discriminate.02" name="illegal preferences" vncls="-">
+<roles>
+  <role descr="bigot, agent" n="0"/>
+  <role descr="victim" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="progressive" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+    But that doesn't necessarily mean thrifts are discriminating
+    against blacks, the agency said. 
+</text>
+        <arg n="0">thrifts</arg>
+        <rel>discriminating</rel>
+        <arg f="against" n="1">blacks</arg>
+</example>
+
+<example name="intransitive">
+<inflection aspect="progressive" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+    But John LaWare, a Fed governor, told the subcommittee the
+    evidence is mixed and that the Fed's believes the vast majority of
+    banks aren't discriminating. 
+</text>
+        <arg n="0">the vast majority of banks</arg>
+        <arg f="NEG" n="M">n't</arg>
+        <rel>discriminating</rel>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

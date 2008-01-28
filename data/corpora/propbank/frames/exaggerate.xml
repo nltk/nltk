@@ -1,0 +1,42 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="exaggerate">
+<note>
+  Frames file for 'exaggerate' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="exaggerate.01" name="make seem bigger" vncls="-">
+<roles>
+  <role descr="liar liar, agent" n="0"/>
+  <role descr="thing exaggerated" n="1"/>
+</roles>
+
+<example name="intransitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    They're bound *trace* to exaggerate.
+</text>
+        <arg n="0">*trace* -&gt;  They</arg>
+        <rel>exaggerate</rel>
+</example>
+
+<example name="transitive">
+<inflection aspect="perfect" form="participle" person="ns" tense="past" voice="active"/>
+<text>
+    In a letter to Mr. Bennett's office, released yesterday,
+    Washington's city administrator, Carol Thompson, complained that
+    the drug czar had exaggerated the amount of federal drug-related
+    assistance provided to the capital. 
+</text>
+        <arg n="0">the drug czar</arg>
+        <rel>exaggerated</rel>
+        <arg n="1">the amount of federal drug-related assistance
+        provided to the capital</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

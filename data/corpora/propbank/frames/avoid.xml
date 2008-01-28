@@ -1,0 +1,39 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="avoid">
+<note>
+  Frames file for 'avoid' based on survey of initial sentences of big
+  corpus.
+</note>
+
+<roleset id="avoid.01" name="stay away from" vncls="52">
+<roles>
+  <role descr="avoider" n="0">
+	  <vnrole vncls="52" vntheta="Agent"/></role>
+  <role descr="thing avoided" n="1">
+	  <vnrole vncls="52" vntheta="Theme"/></role>
+</roles>
+
+<example name="NP thing avoided">
+  <text>
+  She wanted *trace* to avoid the morale-damaging public disclosure
+  that a trial would bring.
+  </text>
+  <arg n="0">*trace*=She</arg>
+  <rel>avoid</rel>
+  <arg n="1">the morale-damaging public disclosure
+  that a trial would bring.</arg>
+</example>
+
+<example name="S thing avoided">
+  <text>
+  Mr. Stoll wanted *trace-1* to avoid *trace-2* arousing suspicion.
+  </text>
+  <arg n="0">*trace-1*=Mr. Stoll</arg>
+  <rel>avoid</rel>
+  <arg n="1">*trace-2* arousing suspicion</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

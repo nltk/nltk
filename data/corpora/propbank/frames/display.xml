@@ -1,0 +1,56 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="display">
+<note>
+  Frames file for 'display' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+
+<roleset id="display.01" name="to present, exhibit" vncls="-">
+<roles>
+  <role descr="displayer, agent" n="0"/>
+  <role descr="entity displayed" n="1"/>
+  <role descr="location" n="2"/>
+</roles>
+
+<example name="all arguments">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ She had gone so far as [*-1] to display the questions on an overhead projector and underline the answers .
+</text>
+	<arg n="0">[*-1] -&gt;  She</arg>
+	<rel>display</rel>
+	<arg n="1">the questions</arg>
+	<arg f="on" n="2">an overhead projector</arg>
+</example>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ The prime minister , whose hair [*T*-298] is thinning and gray and whose face [*T*-299] has a perpetual pallor , nonetheless continues [*-1] to display an energy , a precision of thought and a willingness [*] to say publicly what most other Asian leaders dare [*-2] say [*T*-300] only privately .
+</text>
+	<arg n="0">[*-1] -&gt;  The prime minister , whose hair [*T*-298] is thinning and gray and whose face [*T*-299] has a perpetual pallor ,</arg>
+	<rel>display</rel>
+	<arg n="1">an energy , a precision of thought and a willingness [*] to say publicly what most other Asian leaders dare [*-2] say [*T*-300] only privately</arg>
+</example>
+
+
+<example name="Arg2 as a subject">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ One color photo displays a rainbow of dress shirts tied [*] in a knot ; another picture shows neckties with bold designs .
+</text>
+	<arg n="2">One color photo</arg>
+	<rel>displays</rel>
+	<arg n="1">a rainbow of dress shirts tied [*] in a knot</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

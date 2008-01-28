@@ -1,0 +1,62 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="plot">
+<note>
+  Frames file for 'plot' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="plot.01" name="to take part in a plot, make a plan, draw" vncls="-">
+<roles>
+  <role descr="plotter(s), agent" n="0"/>
+  <role descr="plotted action, plan" n="1"/>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+ The 77-year-old Sisulu , sentenced [*] to life in 1964 along with black nationalist Nelson Mandela for [*-1] plotting [*-2] to overthrow the government , said [0] equality for blacks in South Africa was in reach .
+</text>
+	<arg n="0">[*-1] -&gt;  [*] -&gt;  The 77-year-old Sisulu</arg>
+	<rel>plotting</rel>
+	<arg n="1">[*-2] to overthrow the government</arg>
+</example>
+
+<example name="with direction">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ `` This is a watershed time , and we are trying [*-1] to plot our way ahead , '' he says [*T*-2] .
+</text>
+	<arg n="0">[*-1] -&gt;  we</arg>
+	<rel>plot</rel>
+	<arg n="1">our way</arg>
+	<arg f="DIR" n="M">ahead</arg>
+</example>
+</roleset>
+</predicate>
+
+<predicate lemma="plot_out">
+
+<roleset id="plot.02" name="to plan, draw" vncls="-">
+<roles>
+  <role descr="planner, agent" n="0"/>
+  <role descr="entity plotted" n="1"/>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="progressive" form="participle" person="ns" tense="past" voice="active"/>
+<text>
+ Other brokerage firms , including Merrill Lynch &amp; Co. , were plotting out potential new ad strategies .
+</text>
+	<arg n="0">Other brokerage firms , including Merrill Lynch &amp; Co. ,</arg>
+	<rel>[ plotting] [ out]</rel>
+	<arg n="1">potential new ad strategies</arg>
+</example>
+
+</roleset>
+</predicate>
+
+
+</frameset>

@@ -1,0 +1,72 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="straighten">
+<note>
+  Frames file for 'straighten' based on sentences in wsj.  Verbnet
+  entry 45.4.
+</note>
+
+<roleset id="straighten.01" name="make straight" vncls="45.4">
+<roles>
+  <role descr="cause of straightness, agent" n="0">
+        <vnrole vncls="45.4" vntheta="Agent"/></role>
+  <role descr="thing becoming straight" n="1">
+        <vnrole vncls="45.4" vntheta="Patient"/></role>
+  <role descr="instrument, when separate from arg0" n="2">
+        <vnrole vncls="45.4" vntheta="Instrument"/></role>
+</roles>
+
+<example name="right idea, wrong instrument">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John straightened his hair with a 16-ton hydraulic press.
+  </text>
+  <arg n="0">John</arg>
+  <rel>straightened</rel>
+  <arg n="1">his hair</arg>
+  <arg f="with" n="2">a 16-ton hydraulic press</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="straighten_out">
+
+<roleset id="straighten.02" name="make right" vncls="-">
+<roles>
+  <role descr="cause of rightness, agent" n="0"/>
+  <role descr="wrong to right" n="1"/>
+</roles>
+
+<example name="yeah, no kidding">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    ``I got *trace* to get back to school and straighten out my
+    English.'' 
+</text>
+        <arg n="0">*trace* -&gt;  I</arg>
+        <rel>[ straighten] [ out]</rel>
+        <arg n="1">my English</arg>
+</example>
+
+
+<example name="icky ergative">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    The market seems *trace* to be straightening out; we're taking a
+    wait-and-see attitude,'' says Cathleen B. Stewart, executive vice
+    president of marketing. 
+</text>
+        <arg n="1">*trace* -&gt;  The market</arg>
+        <rel>[ straightening] [ out]</rel>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

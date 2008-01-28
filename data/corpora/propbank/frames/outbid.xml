@@ -1,0 +1,41 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="outbid">
+<note>
+  Frames file for 'outbid' based on sentences in financial subcorpus.
+  No access to verbnet.  Minimal comparison with 'bid'.
+</note>
+
+<roleset id="outbid.01" name="bid more than">
+<roles>
+  <role descr="bidder" n="0"/>
+  <role descr="other, lesser bidder" n="1"/>
+  <role descr="goods" n="2"/>
+</roles>
+
+<example name="from corpus">
+<text>
+    Ratners Group PLC ... said it would be prepared *trace* to outbid
+        Ratners's initial offer.</text> 
+        <arg n="0">*trace* -&gt;  it</arg>
+        <rel>outbid</rel>
+        <arg n="1">Ratners's initial offer</arg>
+</example>
+
+<example name="with goods">
+  <text>
+    John desperately tried *trace* to outbid Mary for the priceless
+    coprolites.
+  </text>
+  <arg n="0">*trace* -&gt; John</arg>
+  <rel>outbid</rel>
+  <arg n="1">Mary</arg>
+  <arg f="for" n="2">the priceless coprolites.</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,71 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="team">
+<note>
+Frames file for 'team' based on sentences in financial subcorpus and
+automatic expansion via verbnet.
+</note>
+
+<roleset id="team.01" name="(cause to) be on a team" vncls="22.2">
+<roles>
+	<role descr="agent, entity causing some grouping" n="0">
+		
+  <vnrole vncls="22.2" vntheta="Agent"/></role>
+
+	<role descr="theme, thing being included in some group" n="1">
+		
+  <vnrole vncls="22.2" vntheta="Patient1"/></role>
+
+	<role descr="group, associated-with" n="2">
+		
+  <vnrole vncls="22.2" vntheta="Patient2"/></role>
+
+</roles>
+
+<example name="typically with agent" src="integrate.01">
+  <text>
+    John teamed his ideas with the professor's argument.
+  </text>
+  <arg n="0">John</arg>
+  <rel>teamed</rel>
+  <arg n="1">his ideas</arg>
+  <arg f="with" n="2">the professor's argument</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="team_up">
+
+<roleset id="team.02" name="(cause to) be on a team" vncls="22.2">
+<roles>
+	<role descr="agent, entity causing some grouping" n="0">
+		
+  <vnrole vncls="22.2" vntheta="Agent"/></role>
+
+	<role descr="theme, thing being included in some group" n="1">
+		
+  <vnrole vncls="22.2" vntheta="Patient1"/></role>
+
+	<role descr="group, associated-with" n="2">
+		
+  <vnrole vncls="22.2" vntheta="Patient2"/></role>
+
+</roles>
+
+<example name="typically without agent">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    But whether the pilots can team up with their longtime
+    adversaries, the machinists, is another question. 
+</text>
+        <arg n="1">the pilots</arg>
+        <arg f="MOD" n="M">can</arg>
+        <rel>[ team] [ up]</rel>
+        <arg f="with" n="2">their longtime adversaries, the
+        machinists,</arg> 
+</example>
+
+</roleset>
+
+</predicate>
+</frameset>

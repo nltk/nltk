@@ -1,0 +1,66 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="marry">
+<note>
+  Frames file for 'marry' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="marry.01" name="to take as a spouse, to join spouses,  combine agreeably" vncls="22.2">
+<roles>
+  <role descr="causer" n="0">
+		
+  <vnrole vncls="22.2" vntheta="Agent"/></role>
+
+  <role descr="one half" n="1">
+		
+  <vnrole vncls="22.2" vntheta="Patient1"/></role>
+
+  <role descr="second half" n="2">
+		
+  <vnrole vncls="22.2" vntheta="Patient2"/></role>
+  
+</roles>
+
+
+
+<example name="no causer">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+ `` My husband was instantly impoverished [*-2] by the very act of [*] marrying me , '' she says [*T*-1] .
+</text>
+	<arg n="1">[*] -&gt;  My husband</arg>
+	<rel>marrying</rel>
+	<arg n="2">me</arg>
+</example>
+
+
+<example name="with a causer">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+ GM officials also see a lot of potential in [*] marrying Jaguar 's cars to the technological know-how of Group Lotus PLC , a British engineering and specialty car maker [0] GM bought [*T*-1] in 1986 .
+</text>
+	<arg n="0">[*] -&gt;  GM officials</arg>
+	<rel>marrying</rel>
+	<arg n="1">Jaguar 's cars</arg>
+	<arg f="to" n="2">the technological know-how of Group Lotus PLC , a British engineering and specialty car maker [0] GM bought [*T*-1] in 1986</arg>
+</example>
+
+
+<example name="marry into">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+ While the company has always been family-run , Mr. Brawer is n't the first person [0] [*T*-1] to marry into the family and subsequently head Maidenform .
+</text>
+	<arg n="1">[*T*-1] -&gt;  [0] -&gt;  the first person</arg>
+	<rel>marry</rel>
+	<arg f="into" n="2">the family</arg>
+	<arg f="TMP" n="M">subsequently</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

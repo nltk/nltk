@@ -1,0 +1,44 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="empathize">
+<note>
+  Frames file for 'empathize' based on sentences in wsj.  No Verbnet
+  entry. 
+</note>
+
+<roleset id="empathize.01" name="feel for" vncls="-">
+<roles>
+  <role descr="empathizer" n="0"/>
+  <role descr="empathized with" n="1"/>
+</roles>
+
+<example name="is it transitive when there's a preposition?">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    These are the sensitive souls who *trace* can empathize with
+    *trace* and even enjoy hearing about other people's troubles, no
+    matter how haltingly or predictably the sad tale is told. 
+</text>
+        <arg n="0">*trace* -&gt;  who -&gt;  the sensitive souls</arg>
+        <arg f="MOD" n="M">can</arg>
+        <rel>empathize</rel>
+        <arg f="with" n="1">*trace* -&gt; other people 's troubles</arg>
+</example>
+
+
+<example name="intransitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    But Mr. Guber figured that Warner Communications Inc. chairman
+    Steven Ross, would empathize and let the producers go, knowing the
+    Sony offer was ``the culmination of a life's work.'' 
+</text>
+        <arg n="0">Warner Communications Inc. chairman Steven Ross</arg>
+        <arg f="MOD" n="M">would</arg>
+        <rel>empathize</rel>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

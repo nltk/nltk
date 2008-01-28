@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="infuriate">
+<note>
+  Frames file for 'infuriate' based on sentences in wsj.  Verbnet
+  entry 31.1, Framenet entry Experiencer obj.
+</note>
+
+<roleset id="infuriate.01" name="make angry" vncls="31.1">
+<roles>
+  <role descr="causer of anger" n="0"><vnrole vncls="31.1" vntheta="Cause"/></role>
+  <role descr="angry entity" n="1"><vnrole vncls="31.1" vntheta="Experiencer"/></role>
+</roles>
+
+<example name="instrumental subject">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+    The Commodity Futures Trading Commission plans to restrict dual
+    trading on commodity exchanges, a move almost certain [*] to
+    infuriate exchange officials and traders. 
+</text>
+        <arg n="0">[*] -&gt;  a move</arg>
+        <rel>infuriate</rel>
+        <arg n="1">exchange officials and traders</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

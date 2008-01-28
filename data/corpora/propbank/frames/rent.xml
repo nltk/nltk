@@ -1,0 +1,120 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="rent">
+<note>
+  Frames file for 'rent' based on sentences in financial subcorpus.
+  Verbnet entries 13.1, 13.5.1; other framed members include give,
+  lease, lend, pass, pay, refund, repay, sell, trade, accept,
+  collect, earn, fetch, and bunch of others.  Too many to list.
+  Framenet classes Commerce sell, Commerce buy, and Commerce.  This is
+  the canonical high-valency verb.  Comparison with 'lease'.
+</note>
+
+<roleset id="rent.01" name="be a renter" vncls="13.5.1">
+<roles>
+  <role descr="renter" n="0">
+		
+  <vnrole vncls="13.5.1" vntheta="Agent"/></role>
+
+  <role descr="thing rented (eg, apartment)" n="1">
+		
+  <vnrole vncls="13.5.1" vntheta="Theme"/></role>
+
+  <role descr="landlord" n="2">
+		
+  <vnrole vncls="13.5.1" vntheta="Source"/></role>
+
+  <role descr="rent" n="3">
+		
+  <vnrole vncls="13.5.1" vntheta="Asset"/></role>
+
+  <role descr="term" n="4"/>
+</roles>
+
+<example name="some args">
+  <inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+  <text>
+    John rents a room from Mary for a buck a week.
+  </text>
+  <arg n="0">John</arg>
+  <rel>rents</rel>
+  <arg n="1">a room</arg>
+  <arg f="from" n="2">Mary</arg>
+  <arg f="for" n="3">a buck a week</arg>
+</example>
+
+<example name="with term">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John rented a room from Mary for a year, then moved out.
+  </text>
+  <arg n="0">John</arg>
+  <rel>rented</rel>
+  <arg n="1">a room</arg>
+  <arg f="from" n="2">Mary</arg>
+  <arg f="for" n="4">a year</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="rent.02" name="be a landlord" vncls="13.1-1">
+<roles>
+  <role descr="landlord" n="0">
+		
+  <vnrole vncls="13.1-1" vntheta="Agent"/></role>
+
+  <role descr="thing rented (eg, apartment)" n="1">
+		
+  <vnrole vncls="13.1-1" vntheta="Theme"/></role>
+
+  <role descr="renter" n="2">
+		
+  <vnrole vncls="13.1-1" vntheta="Recipient"/></role>
+
+  <role descr="rent" n="3"/>
+  <role descr="term" n="4"/>
+</roles>
+
+<example name="automatically generated">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ Jayark , New York , distributes and rents audio-visual equipment and prints promotional ads for retailers .
+</text>
+        <arg n="0">Jayark , New York ,</arg>
+        <rel>rents</rel>
+        <arg n="1">audio-visual equipment</arg>
+</example>
+
+<example name="a bunch of args">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    Mary rented a room to John for a buck an hour.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>rented</rel>
+  <arg n="1">a room</arg>
+  <arg f="to" n="2">John</arg>
+  <arg f="for" n="3">a buck an hour</arg>
+</example>
+
+<example name="with term">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    Mary rented a room to John for a week, then evicted him.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>rented</rel>
+  <arg n="1">a room</arg>
+  <arg f="to" n="2">John</arg>
+  <arg f="for" n="4">a week</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,55 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="hum">
+<note>
+  Frames file for 'hum' based on sentences in wsj.  Verbnet entries
+  40.8.2, 43.2, 26.7; Framenet entry Perception noise.
+</note>
+
+<roleset id="hum.02" name="make a continuous   low sound, sing without words" vncls="40.8.2 43.2 26.7">
+<roles>
+  <role descr="entity humming" n="0"><vnrole vncls="43.2" vntheta="Theme"/><vnrole vncls="26.7" vntheta="Agent"/><vnrole vncls="40.8.2" vntheta="Patient"/></role>
+  <role descr="song or sound" n="1"><vnrole vncls="26.7" vntheta="Theme"/><vnrole vncls="40.8.2" vntheta="Cause"/></role>
+</roles>
+
+<example name="why do hummingbirds hum?">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John hummed a tune under his breath, knowing it would drive Mary nuts.
+  </text>
+  <arg n="0">John</arg>
+  <rel>hummed</rel>
+  <arg n="1">a tune</arg>
+  <arg f="MNR" n="m">under his breath</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="hum_along">
+
+<roleset id="hum.01" name="move along steadily" vncls="-">
+<roles>
+   <role descr="entity in motion" n="0"/>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+    The rest are split roughly between optimists who expect Hong Kong
+    to hum along as [*-4] [*?*] before and pessimists who foresee
+    irreparable chaos. 
+</text>
+	<arg n="0">Hong Kong</arg>
+	<rel>hum</rel>
+	<arg f="MNR" n="M">along</arg>
+	<arg f="MNR" n="M">as [*-4] [*?*] before</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

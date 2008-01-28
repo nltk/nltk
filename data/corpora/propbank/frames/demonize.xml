@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="demonize">
+<note>
+  Frames file for 'demonize' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="demonize.01" name="portray as a demon" vncls="-">
+<roles>
+  <role descr="portrayer, agent" n="0"/>
+  <role descr="demonic entity" n="1"/>
+</roles>
+
+<example name="th' vasty plains of hell">
+<inflection aspect="perfect" form="participle" person="ns" tense="past" voice="active"/>
+<text>
+    What shook America was not a battle for justice but for naked
+    power, in which an army of judicial activists rolled over a judge
+    [0] they had demonized [*T*-2]. 
+</text>
+        <arg n="0">they</arg>
+        <rel>demonized</rel>
+        <arg n="1">[*T*-2] -&gt;  [0] -&gt;  a judge</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

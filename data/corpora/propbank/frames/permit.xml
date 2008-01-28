@@ -1,0 +1,72 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="permit">
+<note>
+  Frames file for 'permit' based on sentences in financial subcorpus.
+  No verbnet entry.  Comparison with 'allow'.
+</note>
+
+<roleset id="permit.01" name="permit, let, allow">
+<roles>
+  <role descr="allower" n="0"/>
+  <role descr="action allowed" n="1"/>
+  <role descr="extracted allowed-agent" n="2"/>
+</roles>
+
+<example name="action is an NP">
+<text>
+    Proceeds of the loan agreement, together with funds from Vitro,
+    will permit the purchase of all shares outstanding of Anchor and
+    the payment of all related costs and expenses.
+</text>
+        <arg n="0">Proceeds of the loan agreement</arg>
+        <arg n="M">together with funds from Vitro</arg>
+        <arg f="MOD" n="M">will</arg>
+        <rel>permit</rel>
+        <arg n="1">the purchase of all shares outstanding of Anchor
+        and the payment of all related costs and expenses</arg> 
+</example>
+
+<example name="action is an S, includes embedded agent">
+<text>
+    A warrant permits a holder to acquire one share of common stock
+    for $17.50 a share .
+</text>
+        <arg n="0">A warrant</arg>
+        <rel>permits</rel>
+        <arg n="1">a holder to acquire one share of common stock for
+        $17.50 a share</arg>
+</example>
+
+<example name="passive extraction of secondary agent">
+<text>
+    U.S. investors will be permitted to buy the shares from EC
+    investors 90 days later. 
+</text>
+        <arg n="2">U.S. investors</arg>
+        <arg f="MOD" n="M">will</arg>
+        <rel>permitted</rel>
+        <arg n="1">to buy the shares from EC investors 90 days later</arg>
+</example>
+
+<example name="secondary agent in situ">
+<text>
+    Warner itself was in negotiations with MGM over certain movie and
+    other rights, and it was ``in Warner's interest to accommodate
+    MGM/UA, Guber and Peters by *trace* permitting them to become MGM
+    executives, ''Mr. Daly said in his affidavit. 
+</text>
+        <arg n="0">*trace* -&gt; *trace* -&gt;  it </arg>
+        <rel>permitting</rel>
+        <arg n="2">them</arg>
+        <arg n="1">to become MGM executives</arg>
+</example>
+
+<note>
+This last example and the action-as-S example show how Treebank was
+inconsistent in the parsing of embedded agents.  But whaddya gonna do?
+</note>
+
+</roleset>
+</predicate>
+</frameset>

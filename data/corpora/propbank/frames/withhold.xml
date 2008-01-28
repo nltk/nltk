@@ -1,0 +1,35 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="withhold">
+<note>
+  Frames file for 'withhold' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="withhold.01" name="to refrain from or deduct" vncls="-">
+<roles>
+  <role descr="withholder, agent" n="0"/>
+  <role descr="entity withheld" n="1"/>
+  <role descr="entity withheld from" n="2"/>
+</roles>
+
+
+
+<example name="all arguments">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ Prices closed mostly higher in relatively light trading as farmers continued [*-1] to withhold their crops from the marketplace in the hope of higher prices [0] [*T*-2] to come .
+</text>
+	<arg n="0">[*-1] -&gt;  farmers</arg>
+	<rel>withhold</rel>
+	<arg n="1">their crops</arg>
+	<arg f="from" n="2">the marketplace</arg>
+	<arg f="PNC" n="M">in the hope of higher prices [0] [*T*-2] to come</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

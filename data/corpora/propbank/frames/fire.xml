@@ -1,0 +1,101 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="fire">
+<note>
+  Frames file for 'fire' based on sentences in financial subcorpus.
+  Verbnet class throw-17.1, other framed members include 'hit',
+  'pass'.  That misses an entire roleset, though.
+</note>
+
+<roleset id="fire.01" name="fire a gun" vncls="17.1">
+<roles>
+  <role descr="shooter" n="0">
+	<vnrole vncls="17.1" vntheta="Agent"/></role>
+  <role descr="gun" n="1">
+	<vnrole vncls="17.1" vntheta="Patient"/></role>
+</roles>
+
+<example name="metaphorical">
+<text>
+    With three minutes left on the clock, Mr. Aikman takes the snap,
+    steps back and fires a 21-yard pass -- straight into the hands of
+    an Atlanta defensive back. 
+</text>
+        <arg f="TMP" n="M">With three minutes left on the clock</arg>
+        <arg n="0">Mr. Aikman</arg>
+        <rel>fires</rel>
+        <arg n="1">a 21-yard pass</arg>
+        <arg f="DIR" n="M">straight into the hands of an Atlanta
+        defensive back</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="fire.02" name="cause to cease employment" vncls="-">
+<roles>
+  <role descr="employer" n="0"/>
+  <role descr="ex-employee" n="1"/>
+  <role descr="job" n="2"/>
+</roles>
+
+<example name="most commonly passive">
+<text>
+    But people familiar with the agenda of the board's meeting last
+    week in London said Mr. McGovern was fired. 
+</text>
+        <rel>fired</rel>
+        <arg n="1">*trace* -&gt;  Mr. McGovern</arg>
+</example>
+
+<example name="passive with agent">
+<text>
+    The last time Columbia Pictures was looking for a studio chief,
+    they note, Warner released producer David Puttnam from his
+    contract, then took him back after he was subsequently fired
+    *trace* by his bosses at Columbia.
+</text>
+        <arg f="TMP" n="M">subsequently</arg>
+        <rel>fired</rel>
+        <arg n="1">*trace* -&gt;  he</arg>
+        <arg f="by" n="0">his bosses at Columbia</arg>
+</example>
+
+<example name="with former job">
+  <text>
+    John was fired *trace* from his job as chief burger-flipper.
+  </text>
+  <rel>fired</rel>
+  <arg n="1">*trace*=John</arg>
+  <arg f="from" n="2">his job as chief burger-flipper</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="fire.03" name="cause to burn or bake" vncls="-">
+<roles>
+  <role descr="baker, agent" n="0"/>
+  <role descr="thing burning or baking" n="1"/>
+</roles>
+
+<example name="pottery">
+  <text>
+    John fired his play-doh sculpture in the microwave.
+  </text>
+  <arg n="0">John</arg>
+  <rel>fired</rel>
+  <arg n="1">his play-doh sculpture</arg>
+  <arg f="LOC" n="M">in the microwave</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

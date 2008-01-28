@@ -1,0 +1,87 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="reserve">
+<note>
+  Frames file for 'reserve' based on sentences in financial
+  subcorpus.  Verbnet class get-13.5.1.  Bunch of other 'get'-style
+  verbs framed.  Comparison to 'hold'
+</note>
+
+<roleset id="reserve.01" name="hold back" vncls="13.5.1">
+<roles>
+  <role descr="reserver, holder back" n="0">
+		
+  <vnrole vncls="13.5.1" vntheta="Agent"/></role>
+
+  <role descr="thing reserved" n="1">
+		
+  <vnrole vncls="13.5.1" vntheta="Theme"/></role>
+
+  <role descr="benefactive" n="2">
+		
+  <vnrole vncls="13.5.1" vntheta="Beneficiary"/></role>
+
+  <role descr="secondary attribute of arg1" n="3"/>
+</roles>
+
+<example name="just transitive">
+<text>
+    Mr. Alito said his office ``just responded to an attorney's
+    question about whether we would go after attorney's fees, and that
+    is different from actually doing it, although we reserve that
+    right.'' 
+</text>
+        <arg n="0">we</arg>
+        <rel>reserve</rel>
+        <arg n="1">that right</arg>
+</example>
+
+<example name="with benefactive">
+<text>
+    That's why Columbia just wrote off $130 million of its junk and
+    reserved $227 million for future junk losses. 
+</text>
+        <arg n="0">Columbia</arg>
+        <arg f="ADV" n="M">just</arg>
+        <rel>reserved</rel>
+        <arg n="1">$227 million </arg>
+        <arg f="for" n="2">future junk losses</arg>
+</example>
+
+<example name="attributive, but not arg3">
+<text>
+    Gemina said in a statement that ``it reserves the right to take
+    any action to protect its rights as a member of the syndicate.'' 
+</text>
+        <arg n="0">it</arg>
+        <rel>reserves</rel>
+        <arg n="1">the right to take any action to protect its
+        rights</arg> 
+        <arg n="M">as a member of the syndicate</arg>
+</example>
+
+<note>
+I read the ArgM as modifying either &quot;its rights&quot; or the arg0 &quot;it&quot;.
+Either way, it's not attached to the reserving.
+</note>
+
+<example name="with arg3">
+  <text>
+    John reserved a table at McDonald's for Mary as part of their
+    anniversary celebration.
+  </text>
+  <arg n="0">John</arg>
+  <rel>reserved</rel>
+  <arg n="1">a table at McDonald's</arg>
+  <arg f="for" n="2">Mary</arg>
+  <arg f="as" n="3">part of their anniversary celebration.</arg>
+</example>
+
+<note>
+Not sure about that, after all.  Hopefully a better example will come
+up.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

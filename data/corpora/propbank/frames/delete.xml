@@ -1,0 +1,58 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="delete">
+<note>
+  Frames file for 'delete' based on sentences in wsj.  Verbnet entry 10.1.
+</note>
+
+<roleset id="delete.01" name="remove" vncls="10.1">
+<roles>
+  <role descr="entity removing" n="0"><vnrole vncls="10.1" vntheta="Agent"/></role>
+  <role descr="thing being removed" n="1"><vnrole vncls="10.1" vntheta="Theme"/></role>
+  <role descr="removed from" n="2"><vnrole vncls="10.1" vntheta="Source"/></role>
+</roles>
+
+<example name="no source">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    SHAREDATA Inc. said it will amend a registration statement filed
+    with the Securities and Exchange Commission *trace* to delete a
+    plan to sell 500,000 newly issued common shares. 
+</text>
+        <arg n="0">*trace* -&gt;  it</arg>
+        <rel>delete</rel>
+        <arg n="1">a plan to sell 500,000 newly issued common
+        shares</arg> 
+</example>
+
+<example name="with source">
+<inflection aspect="ns" form="participle" person="ns" tense="future" voice="passive"/>
+<text>
+    American Medical International Inc., a New York hospital operator,
+    will be deleted *trace* from the index at that time. 
+</text>
+        <arg f="MOD" n="M">will</arg>
+        <rel>deleted</rel>
+        <arg n="1">*trace* -&gt;  American Medical International Inc., a
+        New York hospital operator ,</arg> 
+        <arg f="from" n="2">the index</arg>
+        <arg f="TMP" n="M">at that time</arg>
+</example>
+
+<example name="passive/adjectival">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    As the violinist tells it, his grandmotherly looking teacher ``put
+    her hands on her hips, stomped her foot and said, `You've just got
+    to get the [expletive deleted *trace*] out of there.''' 
+</text>
+        <rel>deleted</rel>
+        <arg n="1">*trace* -&gt;  expletive</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

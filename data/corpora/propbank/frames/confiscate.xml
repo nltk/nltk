@@ -1,0 +1,49 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="confiscate">
+<note>
+Frames file for 'confiscate' based on sentences in financial subcorpus
+and automatic expansion via verbnet.
+</note>
+
+<roleset id="confiscate.01" name="take away" vncls="10.5">
+<roles>
+	<role descr="Taker" n="0">
+		
+  <vnrole vncls="10.5" vntheta="Agent"/></role>
+
+	<role descr="thing taken" n="1">
+		
+  <vnrole vncls="10.5" vntheta="Theme"/></role>
+
+	<role descr="entity taken from" n="2">
+		
+  <vnrole vncls="10.5" vntheta="Source"/></role>
+
+</roles>
+
+<example name="one arg, passive">
+<inflection aspect="perfect" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    A seizure also would make the case the largest -- and one of the
+        first -- in which lawyers' fees have been confiscated *trace*
+        in a prosecution unrelated to drugs.</text> 
+        <rel>confiscated</rel>
+        <arg n="1">*trace* -&gt;  lawyers ' fees</arg>
+        <arg f="LOC" n="M">in a prosecution unrelated to drugs</arg>
+</example>
+
+<example name="with arg2, verbnetted" src="regain.01">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    Mary confiscated the TV remote from John.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>regained</rel>
+  <arg n="1">the TV remote</arg>
+  <arg f="from" n="2">John</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

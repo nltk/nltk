@@ -1,0 +1,46 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="mold">
+<note>
+  Frames file for 'mold' based on sentences in wsj.  No access to
+  Verbnet at the moment.
+</note>
+
+<roleset id="mold.01" name="shape" vncls="26.1-1">
+<roles>
+  <role descr="shaper" n="0">
+	<vnrole vncls="26.1-1" vntheta="Agent"/></role>
+  <role descr="thing worked on" n="1">
+        <vnrole vncls="26.1-1" vntheta="Material"/></role>
+  <role descr="end state, if different from arg1" n="2">
+        <vnrole vncls="26.1-1" vntheta="Product"/></role>
+</roles>
+
+<example name="the one example">
+<inflection aspect="perfect" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    CNN's viewer habits have been molded [*-1] by its format. 
+</text>
+        <rel>molded</rel>
+        <arg n="1">[*-1] -&gt;  CNN's viewer habits</arg>
+        <arg f="by" n="0">its format</arg>
+</example>
+
+<example name="all args">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+      John's sullen insolence molded Mary into the violent abuser she
+      is today.
+  </text>
+  <arg n="0">John's sullen insolence</arg>
+  <rel>molded</rel>
+  <arg n="1">Mary</arg>
+  <arg f="into" n="2">the violent abuser she is today</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

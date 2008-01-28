@@ -1,0 +1,63 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="arrive">
+<note>
+  Frames file for 'arrive' based on sentences in financial subcorpus.
+  No access to verbnet.  Comparison to 'come'.
+</note>
+
+<roleset id="arrive.01" name="move, come to" vncls="51.1-2">
+<roles>
+  <role descr="entity in motion / 'comer'" n="1">
+		
+  <vnrole vncls="51.1-2" vntheta="Theme"/></role>
+
+  <role descr="extent -- rare)" n="2"/>
+  <role descr="start point -- also rare)" n="3"/>
+  <role descr="end point, destination" n="4"><vnrole vncls="51.1-2" vntheta="Location"/></role>
+</roles>
+
+<example name="unaccusative">
+<text>
+    But with the index proving somewhat better than expected and the
+    widely anticipated report on October employment scheduled *trace*
+    to arrive tomorrow, stock prices firmed only modestly in response
+    to the report and then faltered. 
+</text>
+        <arg n="1">*trace* -&gt; the widely anticipated report on October
+        employment</arg> 
+        <rel>arrive</rel>
+        <arg f="TMP" n="M">tomorrow</arg>
+</example>
+
+<example name="with end point, destination">
+<text>
+    When he arrived in the U.S. in 1969 -- the start of an eight-year
+    tour -- he tried selling Japanese yen-denominated bonds to
+    U.S. investors. 
+</text>
+        <arg n="1">he</arg>
+        <rel>arrived</rel>
+        <arg f="in" n="4">the U.S.</arg>
+        <arg f="TMP" n="M">in 1969 -- the start of an eight-year tour
+        --</arg> 
+</example>
+
+<example name="with start point">
+  <text>
+    John's flight arrives from Lower Slobovia tomorrow at noon.
+  </text>
+  <arg n="1">John's flight</arg>
+  <rel>arrives</rel>
+  <arg f="from" n="3">Lower Slobovia</arg>
+  <arg f="TMP" n="m">tomorrow at noon</arg>
+</example>
+
+<note>
+The start point could also be regarded as a misplaced modifier, since
+you can equally well say &quot;John's flight from Lower Slobovia...&quot;
+</note>
+
+</roleset>
+</predicate>
+</frameset>

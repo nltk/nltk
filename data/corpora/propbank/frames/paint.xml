@@ -1,0 +1,131 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="paint">
+<note>
+Frames file for 'paint' based on sentences in wsj and automatic
+expansion via verbnet.
+</note>
+
+<roleset id="paint.01" name="put paint on a surface" vncls="25.1">
+<roles>
+	<role descr="agent, painter" n="0">
+		
+  <vnrole vncls="25.1" vntheta="Agent"/></role>
+
+	<role descr="surface" n="1">
+		
+  <vnrole vncls="25.1" vntheta="Destination"/></role>
+
+	<role descr="explicit mention of paint" n="2">
+		
+  <vnrole vncls="25.1" vntheta="Theme"/></role>
+
+</roles>
+
+<example name="explicit mention of paint">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    They painted the apartment orange, pink and white, according to
+    her instructions. 
+</text>
+        <arg n="0">They</arg>
+        <rel>painted</rel>
+        <arg n="1">the apartment</arg>
+        <arg n="2">orange, pink and white</arg>
+        <arg f="ADV" n="M">according to her instructions</arg>
+</example>
+
+<example name="different mention">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    ``Lighthouse II'' was painted *trace* in oils by the playwright in
+    1901... 
+</text>
+        <rel>painted</rel>
+        <arg n="1">*trace* -&gt;  Lighthouse II</arg>
+        <arg f="in" n="2">oils</arg>
+        <arg f="by" n="0">the playwright</arg>
+        <arg f="TMP" n="M">in 1901</arg>
+</example>
+</roleset>
+
+<roleset id="paint.02" name="create pictures with paint" vncls="25.2 26.7-2">
+<roles>
+	<role descr="artist" n="0">
+		
+		
+  <vnrole vncls="26.7-2" vntheta="Agent"/><vnrole vncls="25.2" vntheta="Agent"/></role>
+
+	<role descr="art" n="1">
+		
+		
+  <vnrole vncls="26.7-2" vntheta="Theme"/><vnrole vncls="25.2" vntheta="Theme"/></role>
+
+	<role descr="benefactive" n="2">
+		
+  <vnrole vncls="26.7-2" vntheta="Beneficiary"/></role>
+
+</roles>
+
+<example name="intransitive verse">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+      With lipsticks, liners, lotions and creams,/
+      There are still beauty plans left to tackle:/
+      But as the years go by, it seems/
+      That before I paint, I should spackle.
+</text>
+        <arg n="0">I</arg>
+        <rel>paint</rel>
+</example>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    The allegations, ranging from theft and bribery to coercion and
+    lewdness, paint a disquieting picture. 
+</text>
+        <arg n="0">The allegations</arg>
+        <arg n="M">ranging from theft and bribery to coercion and
+        lewdness</arg>
+        <rel>paint</rel> 
+        <arg n="1">a disquieting picture</arg>
+</example>
+
+<example name="with benefactive" src="draw.01">
+  <text>
+    John painted a picture of a rose for Mary.
+  </text>
+  <arg n="0">John</arg>
+  <rel>painted</rel>
+  <arg n="1">a picture of a rose</arg>
+  <arg f="for" n="2">Mary</arg>
+</example>
+</roleset>
+
+<roleset id="paint.03" name="depict, describe" vncls="29.2">
+<roles>
+	<role descr="describer" n="0"><vnrole vncls="29.2" vntheta="Agent"/></role>
+	<role descr="thing described" n="1"><vnrole vncls="29.2" vntheta="Theme"/></role>
+	<role descr="secondary attribute, described-as" n="2"><vnrole vncls="29.2" vntheta="Predicate"/></role>
+</roles>
+
+<example name="all args">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    And the failures make it possible for Warner in its current
+    lawsuit to paint the producers as ingrates. 
+</text>
+        <arg n="0">Warner</arg>
+        <arg f="LOC" n="M">in its current lawsuit</arg>
+        <rel>paint</rel>
+        <arg n="1">the producers</arg>
+        <arg f="as" n="2">ingrates</arg>
+</example>
+</roleset>
+
+<note>
+In the absence of arg2's it will be very difficult to distinguish
+senses.  Bummer.
+</note>
+
+</predicate>
+</frameset>

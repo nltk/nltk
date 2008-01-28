@@ -1,0 +1,60 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="face">
+<note>
+  Frames file for 'face' based on Chris' old format for frames.
+  Probably some modification of PAS as well.
+</note>
+
+<roleset id="face.01" name="look across at" vncls="-">
+<roles>
+  <role descr="looker, facer" n="0"/>
+  <role descr="looked at, faced" n="1"/>
+</roles>
+
+<example name="active">
+  <text>
+  Commonwealth Edison now faces an additional court-ordered refund.
+  </text>
+  <arg n="0">Commonwealth Edison</arg>
+  <arg f="TMP" n="m">now</arg>
+  <rel>faces</rel>
+  <arg n="1">an additional court-ordered refund</arg>
+</example>
+
+<example name="passive">
+  <text>
+  John was faced with new evidence.
+  </text>
+  <arg n="1">John</arg>
+  <rel>faced</rel>
+  <arg f="with" n="0">new evidence</arg>
+</example>
+
+<note>
+We'll need to go back and change these from &quot;arg0-by&quot; to &quot;arg0-with&quot;
+at some point; the current annotator doesn't contain &quot;arg0-with&quot;.
+</note>
+
+<example name="reciprocal">
+  <text>
+  The house and the church face each other across a busy highway.
+  </text>
+  <arg n="0">The house and the church</arg>
+  <rel>face</rel>
+  <arg f="REC" n="1">each other</arg>
+  <arg f="LOC" n="m">across a busy highway</arg>
+</example>
+
+<example name="Arg1 as PP">
+  <text>
+  My hotel room faces onto the beach.
+  </text>
+  <arg n="0">My hotel room</arg>
+  <rel>faces</rel>
+  <arg f="onto" n="1">the beach</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,34 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="encase">
+<note>
+  Frames file for 'encase' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="encase.01" name="put in a case" vncls="-">
+<roles>
+  <role descr="putter" n="0"/>
+  <role descr="thing in a case" n="1"/>
+  <role descr="case" n="2"/>
+</roles>
+
+<example name="encase with">
+<inflection aspect="ns" form="gerund" person="ns" tense="ns" voice="ns"/>
+<text>
+    The procedure involves [*] encasing the concrete columns with
+    steel, then connecting them more securely to the double-decker
+    roadbed. 
+</text>
+        <arg n="0">[*]</arg>
+        <rel>encasing</rel>
+        <arg n="1">the concrete columns</arg>
+        <arg f="with" n="2">steel</arg>
+</example>
+
+<note>
+Could also have 'encase in.'
+</note>
+
+</roleset>
+</predicate>
+</frameset>

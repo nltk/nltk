@@ -1,0 +1,70 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="chew">
+<note>
+  Frames file for 'chew' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="chew.01" name="masticate" vncls="-">
+<roles>
+  <role descr="chewer" n="0"/>
+  <role descr="food" n="1"/>
+</roles>
+
+<example name="good example, awkward syntax">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    Michelle Pfeiffer can't chew gum and sing at the same time. 
+</text>
+        <arg n="0">Michelle Pfeiffer</arg>
+        <arg f="NEG" n="M">n't</arg>
+        <rel>chew</rel>
+        <arg n="1">gum</arg>
+        <arg f="TMP" n="M">at the same time</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="chew_up">
+
+<roleset id="chew.02" name="masticate completely" vncls="-">
+<roles>
+  <role descr="chewer" n="0"/>
+  <role descr="food" n="1"/>
+</roles>
+
+<example name="active">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Mr. Guber replies that ``this is a Goliath, this Time Warner,
+    trying *trace* to chew up two fellows who have done only well for
+    them for a long period of time.'' 
+</text>
+        <arg n="0">*trace* -&gt;  a Goliath, this Time Warner,</arg>
+        <rel>[ chew] [ up]</rel>
+        <arg n="1">two fellows who have done only well for them for a
+        long period of time</arg> 
+</example>
+
+<example name="passive">
+<inflection aspect="progressive" form="participle" person="third" tense="present" voice="passive"/>
+<text>
+    ``One of the three major markets in the world is getting chewed
+    *trace* up pretty bad.'' 
+</text>
+        <rel>[ chewed] [ up]</rel>
+        <arg n="1">*trace* -&gt;  One of the three major markets in the
+        world</arg>
+        <arg f="MNR" n="M">pretty bad</arg>
+</example>
+
+<note>
+Go look up 'masticate,' you dirty-minded little buggers.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

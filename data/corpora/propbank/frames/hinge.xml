@@ -1,0 +1,35 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="hinge">
+<note>
+  Frames file for 'hinge' based on sentences in wsj.  Verbnet entry
+  22.4.
+</note>
+
+<roleset id="hinge.01" name="depend, like a door on a hinge" vncls="22.4">
+<roles>
+  <role descr="thing dependent, hinging" n="1"><vnrole vncls="22.4" vntheta="Patient1"/></role>
+  <role descr="dependent on, hinged on" n="2"><vnrole vncls="22.4" vntheta="Patient2"/></role>
+</roles>
+
+<example name="the one example">
+<inflection aspect="ns" form="full" person="ns" tense="future" voice="active"/>
+<text>
+    Analysts say its chances of success will likely hinge on how well
+    Trelleborg manages to cooperate with Noranda in the Falconbridge
+    venture. 
+</text>
+        <arg n="1">its chances of success</arg>
+        <arg f="MOD" n="M">will</arg>
+        <arg f="DIS" n="M">likely</arg>
+        <rel>hinge</rel>
+        <arg f="on" n="2">how well Trelleborg manages to cooperate
+        with Noranda in the Falconbridge venture</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

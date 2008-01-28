@@ -1,0 +1,63 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="mushroom">
+<note>
+  Frames file for 'mushroom' based on sentences in wsj.  Verbnet entry 45.6.
+</note>
+
+<roleset id="mushroom.01" name="grow very rapidly, as mushrooms after rain" vncls="45.6">
+<roles>
+  <role descr="thing growing" n="1"><vnrole vncls="45.6" vntheta="Patient"/></role>
+  <role descr="EXT" n="2"><vnrole vncls="45.6" vntheta="Extent"/></role>
+  <role descr="start point" n="3"/>
+  <role descr="end point" n="4"/>
+</roles>
+
+<example name="missing EXT">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    From 1987 to 1988, the value of Chemical's option contracts
+    outstanding mushroomed to $37 billion from $17 billion. 
+</text>
+        <arg f="TMP" n="M">From 1987 to 1988</arg>
+        <arg n="1">the value of Chemical's option contracts
+        outstanding</arg> 
+        <rel>mushroomed</rel>
+        <arg f="to" n="4">$37 billion </arg>
+        <arg f="from" n="3">$17 billion </arg>
+</example>
+
+<example name="intransitive/ergative">
+<inflection aspect="perfect" form="participle" person="third" tense="present" voice="active"/>
+<text>
+    The number of computers has mushroomed in recent years, with
+    10,000 in use, as well as 30,000 miniature models. 
+</text>
+        <arg n="1">The number of computers</arg>
+        <rel>mushroomed</rel>
+        <arg f="TMP" n="M">in recent years</arg>
+        <arg n="M">with 10,000 in use, as well as 30,000 miniature
+        models</arg>
+</example> 
+
+<example name="inconvenient temporal">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Junk bonds, which  mushroomed from less than $ 2 billion at the
+    start of this decade, have been declining for months as issuer
+    after issuer sank beneath the weight of hefty interest payments. 
+</text>
+        <arg n="1">*trace* -&gt;  which -&gt;  Junk bonds</arg>
+        <rel>mushroomed</rel>
+        <arg f="from" n="3">[ less than $ 2 billion ] [ at the start
+        of this decade]</arg> 
+</example>
+
+<note>
+The temporal describes not the process of mushrooming, but the time at
+which the start state existed.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="fertilize">
+<note>
+  Frames file for 'fertilize' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="fertilize.01" name="bring male and female together" vncls="-">
+<roles>
+  <role descr="male part" n="0"/>
+  <role descr="female part" n="1"/>
+</roles>
+
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+     Such so-called male-sterile plants can then be fertilized [*-14]
+     by pollen from another strain of the plant, thereby producing
+     hybrid seed. 
+</text>
+	<arg f="MOD" n="M">can</arg>
+	<arg f="TMP" n="M">then</arg>
+	<rel>fertilized</rel>
+	<arg n="1">[*-14] -&gt;  Such so-called male-sterile plants</arg>
+	<arg f="by" n="0">pollen from another strain of the plant</arg>
+	<arg f="ADV" n="M">thereby [*] producing hybrid seed</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

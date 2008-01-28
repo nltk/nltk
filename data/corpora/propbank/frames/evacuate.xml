@@ -1,0 +1,65 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="evacuate">
+<note>
+  Frames file for 'evacuate' based on sentences in wsj.  Verbnet entry
+  10.2, Framenet entries Escaping and Removing.
+</note>
+
+<roleset id="evacuate.01" name="cause to be empty (of people)" vncls="10.2">
+<roles>
+  <role descr="causer of emptiness" n="0"><vnrole vncls="10.2" vntheta="Agent"/></role>
+  <role descr="enclosure, building, etc" n="1"><vnrole vncls="10.2" vntheta="Source"/></role>
+  <role descr="people" n="2"><vnrole vncls="10.2" vntheta="Theme"/></role>
+</roles>
+
+<example name="just enclosure">
+<inflection aspect="ns" form="participle" person="third" tense="past" voice="passive"/>
+<text>
+    The plant was evacuated [*-1] and workers sent home. 
+</text>
+        <rel>evacuated</rel>
+        <arg n="1">[*-1] -&gt;  The plant</arg>
+</example>
+
+<example name="just people">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+    Thousands of residents of low-lying areas were ordered [*-1] [*-2]
+    to evacuate as the storm headed north in the Gulf of Mexico with
+    80 mph winds. 
+</text>
+        <arg n="2">[*-2] -&gt;  [*-1] -&gt;  Thousands of residents of
+        low-lying areas</arg> 
+        <rel>evacuate</rel>
+</example>
+
+<example name="still missing an agent">
+<inflection aspect="ns" form="participle" person="third" tense="past" voice="passive"/>
+<text>
+    Major injuries weren't reported at Candlestick Park, where the
+    third game of baseball's World Series was canceled and fans
+    evacuated [*-4] from the stadium. 
+</text>
+        <rel>evacuated</rel>
+        <arg n="2">[*-4] -&gt;  fans</arg>
+        <arg f="from" n="1">the stadium</arg>
+</example>
+
+<example name="all args">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    The police evacuated John and Mary from their rickety love shack.
+  </text>
+  <arg n="0">The police</arg>
+  <rel>evacuated</rel>
+  <arg n="1">John and Mary</arg>
+  <arg f="from" n="2">their rickety love shack</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

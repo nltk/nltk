@@ -1,0 +1,62 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="lobby">
+<note>
+  Frames file for 'lobby' based on sentences in financial subcorpus.
+  No verbnet entry.  Comparison with 'ask' et al.
+</note>
+
+<roleset id="lobby.01" name="ask a favor, ask a request, ask for">
+<roles>
+  <role descr="asker" n="0"/>
+  <role descr="favor" n="1"/>
+  <role descr="hearer" n="2"/>
+</roles>
+
+<example name="favor as infinitive">
+<text>
+    Ford, which already has an unwelcome 13.2% holding, is prepared to
+    bid for the entire company and had lobbied the government to lift
+    the takeover restrictions early. 
+</text>
+        <arg n="0">Ford, which already has an unwelcome 13.2%
+        holding,</arg> 
+        <rel>lobbied</rel>
+        <arg n="2">the government</arg>
+        <arg n="1">to lift the takeover restrictions early</arg>
+</example>
+
+<note>
+This syntax will probably be misparsed consistently--you'll have to 
+--break up an S node.
+</note>
+
+<example name="favor as PP">
+<text>
+    That was seen as an advantage in *trace* lobbying airline
+    employees and Washington regulators for approval of the contested
+    takeover. 
+</text>
+        <arg n="0">*trace*</arg>
+        <rel>lobbying</rel>
+        <arg n="2">airline employees and Washington regulators</arg>
+        <arg f="for" n="1">approval of the contested takeover</arg>
+</example>
+
+<example name="just favor">
+<text>
+    AMR had also sought *trace* to foil Mr. Trump in Congress by
+    *trace* lobbying for legislation that would have bolstered the
+    authority of the Transportation Department to reject airline
+    buy-outs. 
+</text>
+        <arg n="0">*trace* -&gt; *trace* -&gt;  AMR</arg>
+        <rel>lobbying</rel>
+        <arg f="for" n="1">legislation that would have bolstered the
+        authority of the Transportation Department to reject airline
+        buy-outs</arg> 
+</example>
+
+</roleset>
+</predicate>
+</frameset>

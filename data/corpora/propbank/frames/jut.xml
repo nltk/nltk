@@ -1,0 +1,59 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="jut">
+<note>
+  Frames file for 'jut' based on sentences in wsj.  Verbnet entry 47.6.
+</note>
+
+<roleset id="jut.01" name="stick out" vncls="47.6">
+<roles>
+  <role descr="thing sticking out" n="1"><vnrole vncls="47.6" vntheta="Theme"/></role>
+  <role descr="into what" n="2"><vnrole vncls="47.6" vntheta="Location"/></role>
+</roles>
+
+<example name="both args">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    Then there is the artifical sea wall, 600 yards long and 60 yards
+    thick, jutting into the ocean. 
+</text>
+        <arg n="1">the artifical sea wall</arg>
+        <arg n="M">600 yards long and 60 yards thick</arg>
+        <rel>jutting</rel>
+        <arg f="into" n="2">the ocean</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="jut_out">
+
+<roleset id="jut.02" name="stick out, phrasal variant" vncls="47.6">
+<roles>
+  <role descr="thing sticking out" n="1"><vnrole vncls="47.6" vntheta="Theme"/></role>
+  <role descr="into what" n="2"><vnrole vncls="47.6" vntheta="Location"/></role>
+</roles>
+
+<example name="just jutter">
+<inflection aspect="progressive" form="participle" person="third" tense="present" voice="active"/>
+<text>
+    Jutting out just to the north of us is the Blackjack Peninsula
+    (after the oak, not the game) which forms the core of the Aransas
+    Wildlife Refuge. 
+</text>
+        <rel>[ Jutting] [ out]</rel>
+        <arg f="LOC" n="M">just to the north of us</arg>
+        <arg n="1">the Blackjack Peninsula (after the oak, not the
+        game) which forms the core of the Aransas Wildlife
+        Refuge</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

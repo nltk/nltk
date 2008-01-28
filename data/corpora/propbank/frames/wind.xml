@@ -1,0 +1,178 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="wind">
+<note>
+  Frames file for 'wind' based on sentences in financial subcorpus.
+  Verbnet classes coil-9.6 knead-26.5 meander-47.7 pit-10.7
+  roll-51.3.1, other framed members include: roll (coil); climb, drop,
+  run, turn, wander (meander); move, roll (roll).  Also comparison to
+  'end_up' for one of the 'wind_up' senses.
+</note>
+
+<roleset id="wind.01" name="move in circular fashion, cause to be coiled" vncls="9.6 10.7 26.5 51.3.1">
+<roles>
+  <role descr="roller" n="0">
+	<vnrole vncls="9.6" vntheta="Agent"/>
+        <vnrole vncls="26.5" vntheta="Agent"/>
+        <vnrole vncls="51.3.1" vntheta="Agent"/>
+        <vnrole vncls="10.7" vntheta="Agent"/></role>
+  <role descr="thing rolled or rolling" n="1">
+	<vnrole vncls="9.6" vntheta="Patient"/>
+        <vnrole vncls="26.5" vntheta="Material"/>
+        <vnrole vncls="51.3.1" vntheta="Theme"/>
+        <vnrole vncls="10.7" vntheta="Source"/></role>
+  <role descr="secondary attribute of arg1" n="2">
+        <vnrole vncls="9.6" vntheta="Location"/></role>
+</roles>
+
+<example name="all args">
+  <text>
+    John wound his watch very tight.
+  </text>
+  <arg n="0">John</arg>
+  <rel>wound</rel>
+  <arg n="1">his watch</arg>
+  <arg n="2">very tight</arg>
+</example>
+
+<example name="another example with arg2">
+  <text>
+    John wound the string around his finger.
+  </text>
+  <arg n="0">John</arg>
+  <rel>wound</rel>
+  <arg n="1">the string</arg>
+  <arg f="around" n="2">his finger</arg>
+</example>
+
+<example name="no secondary attribute">
+  <text>
+    John wound his watch.
+  </text>
+  <arg n="0">John</arg>
+  <rel>wound</rel>
+  <arg n="1">his watch</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="wind_up">
+
+<roleset id="wind.02" name="result in a condition" vncls="-">
+<roles>
+  <role descr="who/what's coming into a condition" n="1"/>
+  <role descr="the condition" n="2"/>
+</roles>
+
+<example name="arg2 as vp">
+<text>
+    One way out of that dilemma could be a partial recapitalization in
+    which the pilots would wind up sharing the value of their
+    concessions with public shareholders. 
+</text>
+        <arg n="1">the pilots</arg>
+        <arg f="MOD" n="M">would</arg>
+        <rel>[ wind] [ up]</rel>
+        <arg n="2">sharing the value of their concessions with
+        public shareholders</arg> 
+</example>
+
+<example name="arg2 as thing">
+<text>
+    As part of what a Recognition spokeswoman termed an ``amiable
+    agreement,'' Prospect Group will wind up with control of top
+    management posts and an increased stake in the maker of data
+    management equipment. 
+</text>
+        <arg f="ADV" n="M">As part of what a Recognition spokeswoman
+        termed an ``amiable agreement</arg>
+        <arg n="1">Prospect Group</arg>
+        <arg f="MOD" n="M">will</arg>
+        <rel>[ wind] [ up]</rel>
+        <arg f="with" n="2">control of top management posts and an
+        increased stake in the maker of data management
+        equipment</arg> 
+</example>
+
+</roleset>
+
+<roleset id="wind.03" name="move in circular fashion, cause to be coiled" vncls="9.6">
+<roles>
+  <role descr="roller" n="0">
+	  <vnrole vncls="9.6" vntheta="Agent"/></role>
+  <role descr="thing rolled or rolling" n="1">
+	  <vnrole vncls="9.6" vntheta="Patient"/></role>
+  <role descr="secondary attribute of arg1" n="2">
+          <vnrole vncls="9.6" vntheta="Location"/></role>
+</roles>
+
+<example name="all args">
+  <text>
+    John wound up his watch very tight.
+  </text>
+  <arg n="0">John</arg>
+  <rel>wound up</rel>
+  <arg n="1">his watch</arg>
+  <arg n="2">very tight</arg>
+</example>
+
+<note>
+Can you say this?
+</note>
+
+<example name="no secondary attribute">
+  <text>
+    John wound up his watch.
+  </text>
+  <arg n="0">John</arg>
+  <rel>wound up</rel>
+  <arg n="1">his watch</arg>
+</example>
+
+<note>
+Also &quot;John wound his watch up&quot;.
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="wind_down">
+
+<roleset id="wind.04" name="come/bring to a stop" vncls="-">
+<roles>
+  <role descr="entity causing something else to stop" n="0"/>
+  <role descr="thing stopping" n="1"/>
+</roles>
+
+<example name="transitive, unstated agent">
+<text>
+    The plan may include *trace* selling branches, consolidating or
+    eliminating departments, and winding down *trace* or disposing of
+    unprofitable units within 18 months. 
+</text>
+        <arg n="0">*trace*</arg>
+        <rel>[ winding] [ down]</rel>
+        <arg n="1">*trace* -&gt;  unprofitable units</arg>
+        <arg f="TMP" n="M">within 18 months</arg>
+</example>
+
+<example name="ergative">
+<text>
+    Only a week ago, when airline buy-out fever was already winding
+    down... 
+</text>
+        <arg n="1">airline buy-out fever</arg>
+        <arg f="TMP" n="M">already</arg>
+        <rel>[ winding] [ down]</rel>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

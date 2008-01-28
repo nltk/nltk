@@ -1,0 +1,45 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="border">
+<note>
+  Frames file for 'border' based on sentences in wsj.  Verbnet entry 47.8.
+</note>
+
+<roleset id="border.01" name="be one the edge of" vncls="47.8">
+<roles>
+  <role descr="edge of what" n="1"><vnrole vncls="47.8" vntheta="Theme1"/></role>
+  <role descr="thing on the edge" n="2"><vnrole vncls="47.8" vntheta="Theme2"/></role>
+</roles>
+
+<example name="border with">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    Still, it was in Argentine editions that his countrymen first read
+    his story of Pascal Duarte, a field worker who stabbed his mother
+    to death and has no regrets as he awaits his end in a prison cell:
+    ``Fate directs some men down the flower-bordered path, and others
+    down the road bordered [*] with thistles and prickly pears. 
+</text>
+        <rel>bordered</rel>
+        <arg n="1">[*] -&gt;  the road</arg>
+        <arg f="with" n="2">thistles and prickly pears</arg>
+</example>
+
+
+<example name="border on">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+    For such businessmen, the Canadian government is organizing 55
+    missions this year to U.S. states bordering on Canada. 
+</text>
+        <arg n="2">U.S. states</arg>
+        <rel>bordering</rel>
+        <arg f="on" n="1">Canada</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

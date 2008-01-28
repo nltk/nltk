@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="whirr">
+<note>
+  Frames file for 'whirr' based on sentences in wsj.  Verbnet entry 43.2.
+</note>
+
+<roleset id="whirr.01" vncls="43.2" name="emit whirring sound">
+<roles>
+  <role n="0"  descr="emitter"/>
+</roles>
+
+<example name="adjectival">
+<inflection person="ns" tense="ns" aspect="progressive" voice="active" form="participle"/>
+<text>
+    Mechanized vacuum cleaners probe the sand like giant anteaters; a
+    whirring ferris wheellike excavator, with buckets instead of
+    seats, chews through layers of compacted sand; tracks and conveyor
+    belts, shuttling sand to the screening plants, criss-cross the
+    beach.  
+</text>
+	<rel>whirring</rel>
+	<arg n="0">excavator</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

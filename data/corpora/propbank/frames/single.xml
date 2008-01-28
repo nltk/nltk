@@ -1,0 +1,50 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="single_out">
+<note>
+  Frames file for 'single_out' based on sentences in financial
+  subcorpus.  No access to verbnet.  Comparison to 'pick'.
+</note>
+
+<roleset id="single.01" name="pick just one">
+<roles>
+  <role descr="picker" n="0"/>
+  <role descr="the one" n="1"/>
+  <role descr="group?" n="2"/>
+  <role descr="attribute" n="3"/>
+</roles>
+
+<example name="boring transitive">
+<text>
+    Also, investors quickly singled out stocks of companies expected
+    to profit or suffer from the disaster. 
+</text>
+        <arg f="DIS" n="M">Also</arg>
+        <arg n="0">investors</arg>
+        <arg f="MNR" n="M">quickly</arg>
+        <rel>[ singled] [ out]</rel>
+        <arg n="1">stocks of companies expected to profit or suffer
+        from the disaster</arg> 
+</example>
+
+<example name="passive, with attribute">
+<text>
+    The graphics business, which *trace* also was singled out *trace*
+    by the chairman as a positive, saw its operating earnings for the
+    quarter jump 79% to $42.1 million from $23.5 million. 
+</text>
+        <arg f="DIS" n="M">also</arg>
+        <rel>[ singled] [ out]</rel>
+        <arg n="1">*trace* -&gt; *trace* -&gt;  which -&gt;  The graphics
+        business</arg> 
+        <arg f="by" n="0">the chairman</arg>
+        <arg f="as" n="3">a positive</arg>
+</example>
+
+<note>
+Dunno if group can/will appear.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

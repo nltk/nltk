@@ -1,0 +1,48 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="miscalculate">
+<note>
+  Frames file for 'miscalculate' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+
+<roleset id="miscalculate.01" name="to count or estimate incorrectly" vncls="-">
+<roles>
+  <role descr="calculator, agent" n="0"/>
+  <role descr="thing calculated" n="1"/>
+  <role descr="attribute" n="2"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ But Mr. Bush and his advisers miscalculated the politics of the abortion issue , [*-2] failing [*-3] to grasp how dramatically the abortion-rights movement would be aroused [*-1] [*T*-4] following last summer 's Supreme Court decision [*] to restrict those rights in the Webster case .
+</text>
+	<arg f="DIS" n="M">But</arg>
+	<arg n="0">Mr. Bush and his advisers</arg>
+	<rel>miscalculated</rel>
+	<arg n="1">the politics of the abortion issue</arg>
+	<arg f="ADV" n="M">[*-2] failing [*-3] to grasp how dramatically the abortion-rights movement would be aroused [*-1] [*T*-4] following last summer 's Supreme Court decision [*] to restrict those rights in the Webster case</arg>
+</example>
+
+
+<example name="with Arg2">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ When the market opened at 9:30 a.m. EST [*T*-1] , a reporter for the Reuters newswire miscalculated the industrial average 's drop as a 4 % decline when it really was down 0.7 % [*T*-2] .
+</text>
+	<arg f="TMP" n="M">When the market opened at 9:30 a.m. EST [*T*-1]</arg>
+	<arg n="0">a reporter for the Reuters newswire</arg>
+	<rel>miscalculated</rel>
+	<arg n="1">the industrial average 's drop</arg>
+	<arg n="2">as a 4 % decline</arg>
+	<arg f="TMP" n="M">when it really was down 0.7 % [*T*-2]</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

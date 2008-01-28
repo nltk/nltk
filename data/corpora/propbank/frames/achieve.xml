@@ -1,0 +1,43 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="achieve">
+<note>
+  Frames file for 'achieve' based on sentences in financial
+  subcorpus.  No verbnet entry.  Comparison with 'get' and 'win'.
+</note>
+
+<roleset id="achieve.01" name="achieve">
+<roles>
+  <role descr="achiever" n="0"/>
+  <role descr="thing achieved, gotten, accomplished" n="1"/>
+</roles>
+
+<example name="typical usage">
+<text>
+    The company expects *trace* to achieve the 20 % increase in
+    full-year earnings per share, as it projected in the spring, the
+    spokesman said. 
+</text>
+        <arg n="0">*trace* -&gt;  The company</arg>
+        <rel>achieve</rel>
+        <arg n="1">the 20 % increase in full-year earnings per share</arg>
+        <arg f="ADV" n="M">as it projected in the spring</arg>
+</example>
+
+<example name="instrument as manner">
+<text>
+    He said the improvement was a result of cost savings achieved
+    *trace* by consolidating manufacturing operations, blending two
+    sales organizations and focusing more carefully the company's
+    promotional activities. 
+</text>
+        <rel>achieved</rel>
+        <arg n="1">*trace* -&gt;  cost savings</arg>
+        <arg f="MNR" n="M">by  consolidating manufacturing operations,
+        blending two sales organizations and focusing more carefully
+        the company's promotional activities</arg> 
+</example>
+
+</roleset>
+</predicate>
+</frameset>

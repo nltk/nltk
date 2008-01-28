@@ -1,0 +1,51 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="corner">
+<note>
+  Frames file for 'corner' based on sentences in financial subcorpus.
+  No Verbnet entry, no Framenet entry.
+</note>
+
+<roleset id="corner.01" name="have a monopoly on" vncls="-">
+<roles>
+  <role descr="monopolist" n="0"/>
+  <role descr="thing monopolized" n="1"/>
+</roles>
+
+<example name="corner the market">
+<inflection aspect="perfect" form="participle" person="third" tense="present" voice="active"/>
+<text>
+    Since then, Intel has cornered a large part of the market with
+    successive generations of 16-bit and 32-bit chips, all of which
+    can run software written for previous models. 
+</text>
+        <arg f="TMP" n="M">Since then</arg>
+        <arg n="0">Intel</arg>
+        <rel>cornered</rel>
+        <arg n="1">a large part of the market</arg>
+        <arg f="MNR" n="M">with successive generations of 16-bit and
+        32-bit chips, all of which can run software written  for
+        previous models</arg> 
+</example>
+
+<example name="trap someone">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+   In order to get Mary's full attention when he wanted to ask her for
+   a date, John cornered Mary in the women's bathroom.
+  </text>
+  <arg f="PNC" n="m">In order to get Mary's full attention when he
+  wanted to ask her for a date</arg> 
+  <arg n="0">John</arg>
+  <rel>cornered</rel>
+  <arg n="1">Mary</arg>
+  <arg f="LOC" n="m">in the women's bathroom</arg>
+</example>
+
+<note>
+That was a surprisingly clunky example.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

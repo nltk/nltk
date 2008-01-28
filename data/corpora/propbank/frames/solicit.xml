@@ -1,0 +1,64 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="solicit">
+<note>
+  Frames file for solicit based on sentences in financial subcorpus.
+  No verbnet entry.  Comparison with 'request'.
+</note>
+
+<roleset id="solicit.01" name="request">
+<roles>
+  <role descr="solicitor" n="0"/>
+  <role descr="thing solicited (us. 'bids')" n="1"/>
+  <role descr="solicited from" n="2"/>
+</roles>
+
+<example name="transitive">
+<text>
+    USX announced in October that it was soliciting bids to sell TXO's
+    oil and gas reserves. 
+</text>
+        <arg n="0">it</arg>
+        <rel>soliciting</rel>
+        <arg n="1">bids to sell TXO's oil and gas reserves</arg>
+</example>
+
+<example name="with arg2">
+<text>
+    After Mr. Ackerman announced he was soliciting consents from
+    shareholders in order to wrest control of Datapoint from
+    Mr. Edelman, the corporate raider purchased 30% of Datapoint's
+    shares. 
+</text>
+        <arg n="0">he</arg>
+        <rel>soliciting</rel>
+        <arg n="1">consents</arg>
+        <arg f="from" n="2">shareholders</arg>
+        <arg f="PNC" n="M">in order to wrest control of Datapoint from
+        Mr. Edelman</arg>
+</example>
+
+
+<example name="misplaced modifier">
+<text>
+    Hilton currently is soliciting bids for a sale of part or all of
+    its hotel and casino businesses. 
+</text>
+        <arg n="0">Hilton</arg>
+        <arg f="TMP" n="M">currently</arg>
+        <rel>soliciting</rel>
+        <arg n="1">bids</arg>
+        <arg n="M">for a sale of part or all of its hotel and casino
+        businesses</arg> 
+</example>
+
+<note>
+The argM in the last example should really be part of the arg1; it's
+&quot;bids for a sale...&quot; that Hilton is soliciting; the given syntax
+implies that Hilton is soliciting bids on the behalf of a sale, which
+doesn't make any sense at all.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

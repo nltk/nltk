@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="bankroll">
+<note>
+  Frames file for 'bankroll' based on sentences in wsj.  No Verbnet
+  entry. 
+</note>
+
+<roleset id="bankroll.01" name="provide funding for" vncls="-">
+<roles>
+  <role descr="financ(i)er" n="0"/>
+  <role descr="thing financed" n="1"/>
+  <role descr="money" n="2"/>
+</roles>
+
+<example name="hollywood glitz">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Their stock in trade as ``executive producers'' is sniffing out
+    hot properties, locking them up and then getting big studios to
+    bankroll and distribute them. 
+</text>
+        <arg n="0">big studios</arg>
+        <rel>bankroll</rel>
+        <arg n="1">them</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

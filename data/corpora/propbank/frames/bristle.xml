@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="bristle">
+<note>
+  Frames file for 'bristle' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+
+<roleset id="bristle.01" name="to react in an angry manner" vncls="-">
+<roles>
+  <role descr="entity reacting, agent" n="0"/>
+  <role descr="bristle at" n="1"/>
+</roles>
+
+
+<example name="all arguments">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ Though Sassy has grown quickly since its debut in March 1988 , it has been the target of conservative lobbyists and skittish advertisers who [*T*-1] bristled at its frank editorial matter on teen-age problems .
+</text>
+	<arg n="0">[*T*-1] -&gt;  who -&gt;  conservative lobbyists and skittish advertisers</arg>
+	<rel>bristled</rel>
+	<arg f="at" n="1">its frank editorial matter on teen-age problems</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

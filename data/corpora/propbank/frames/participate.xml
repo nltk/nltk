@@ -1,0 +1,41 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="participate">
+<note>
+  Frames file for 'participate' based on sentences in financial
+  subcorpus.  No access to verbnet.  No comparison.
+</note>
+
+<roleset id="participate.01" name="take part in">
+<roles>
+  <role descr="agent, entity participating" n="0"/>
+  <role descr="participating in what?" n="1"/>
+</roles>
+
+<example name="typically transitive">
+<text>
+    Upjohn officials said they couldn't estimate the size of the
+    charge until they determine which employees, and how many, *trace*
+    will participate in the retirement plan. 
+</text>
+        <arg n="0">*trace* -&gt;  which employees , and how many ,</arg>
+        <arg f="MOD" n="M">will</arg>
+        <rel>participate</rel>
+        <arg f="in" n="1">the retirement plan</arg>
+</example>
+
+<example name="oddly intransitive">
+<text>
+    ``There are too many people participating,'' says Al Ries, of
+    Trout &amp; Ries, a Greenwich, Conn., marketing consulting firm. 
+</text>
+        <arg n="0">too many people</arg>
+        <rel>participating</rel>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

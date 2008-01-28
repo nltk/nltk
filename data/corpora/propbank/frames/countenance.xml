@@ -1,0 +1,34 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="countenance">
+<note>
+  Frames file for 'countenance' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+
+<roleset id="countenance.01" name="to approve, condone" vncls="-">
+<roles>
+  <role descr="agent, causer" n="0"/>
+  <role descr="thing approved" n="1"/>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ Although [*-2] encouraging dialogue between managers and workers , Mr. Smith does n't countenance what he considers [*T*-1] insubordination .
+</text>
+	<arg f="ADV" n="M">Although [*-2] encouraging dialogue between managers and workers</arg>
+	<arg n="0">Mr. Smith</arg>
+	<arg f="NEG" n="M">n't</arg>
+	<rel>countenance</rel>
+	<arg n="1">what he considers [*T*-1] insubordination</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

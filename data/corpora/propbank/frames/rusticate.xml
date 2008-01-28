@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="rusticate">
+<note>
+  Frames file for 'rusticate' based on sentences in wsj.  No Verbnet
+  entry, surprise surprise.
+</note>
+
+<roleset id="rusticate.01" name="make rustic?" vncls="-">
+<roles>
+  <role descr="rusticator" n="0"/>
+  <role descr="thing rusticated" n="1"/>
+</roles>
+
+<example name="I have no idea what this means">
+<inflection aspect="progressive" form="participle" person="third" tense="present" voice="passive"/>
+<text>
+    ``It took Zhao Ziyang (former premier and party chief) 10 years to
+    build a team of economists who understood how the Western
+    economies work and now that team is part in exile, part being
+    rusticated *trace* and part missing.'' 
+</text>
+	<rel>rusticated</rel>
+	<arg n="1">*trace* -&gt;  that team</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

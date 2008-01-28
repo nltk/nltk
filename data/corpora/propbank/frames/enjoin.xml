@@ -1,0 +1,37 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="enjoin">
+<note>
+  Frames file for 'enjoin' based on sentences in financial subcorpus.
+  No Verbnet entry.
+</note>
+
+<roleset id="enjoin.01" name="prohibit, prevent" vncls="-">
+<roles>
+  <role descr="prohibiter, Agent" n="0"/>
+  <role descr="Theme (action or object being prevented)" n="1"/>
+  <role descr="secondary predication on arg1 or action" n="2"/>
+  <role descr="instrument" n="3"/>
+</roles>
+
+<example name="just transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    The FTC said it would seek *trace* to enjoin the proposed
+    acquisition in a federal trial court, but declined to specify
+    which one. 
+</text>
+        <arg n="0">*trace* -&gt;  it</arg>
+        <rel>enjoin</rel>
+        <arg n="1">the proposed acquisition</arg>
+        <arg f="LOC" n="M">in a federal trial court</arg>
+</example>
+
+<note>
+Args 2 and 3 are predicted from 'prohibit' but may or may not occur
+with enjoin.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

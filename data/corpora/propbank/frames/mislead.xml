@@ -1,0 +1,61 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="mislead">
+<note>
+  Frames file for 'mislead' based on sentences in financial subcorpus.
+  No Verbnet entry.
+</note>
+
+<roleset id="mislead.01" name="not-quite lie to" vncls="-">
+<roles>
+  <role descr="liar liar" n="0"/>
+  <role descr="lied to" n="1"/>
+  <role descr="with respect to" n="2"/>
+</roles>
+
+<example name="pants on fire">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    The ruling stems from a 1984 suit filed by shareholders of Apple
+    Computer Inc., claiming that company officials misled investors
+    about the expected success of the Lisa computer, introduced  in
+    1983. 
+</text>
+        <arg n="0">company officials</arg>
+        <rel>misled</rel>
+        <arg n="1">investors</arg>
+        <arg f="about" n="2">the expected success of the Lisa
+        computer, introduced in 1983</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="mislead.02" name="impelled action" vncls="-">
+<roles>
+  <role descr="causal agent, misleader" n="0"/>
+  <role descr="impelled agent" n="1"/>
+  <role descr="impelled action" n="2"/>
+</roles>
+
+<example name="lead me not into tempation">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+     Last March, this newspaper reported on widespread allegations
+        that the company misled many customers into purchasing more
+        credit-data services than needed.</text> 
+        <arg n="0">the company</arg>
+        <rel>misled</rel>
+        <arg n="1">many customers</arg>
+        <arg f="into" n="2">purchasing more credit-data services than
+        needed</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

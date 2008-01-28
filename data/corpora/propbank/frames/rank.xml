@@ -1,0 +1,72 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="rank">
+<note>
+  Frames file for 'rank' based on sentences in financial subcorpus.
+  Verbnet entries 29.2 29.6, other framed members include count,
+  define, describe, employ, intend, portray, redefine, regard, treat.
+  Comparison with define.
+</note>
+
+<roleset id="rank.01" name="assign a position in a list" vncls="29.2 29.6">
+<roles>
+  <role descr="assigner" n="0">
+		
+		
+  <vnrole vncls="29.2" vntheta="Agent"/><vnrole vncls="29.6" vntheta="Agent"/></role>
+
+  <role descr="thing assigned a position" n="1">
+		
+		
+  <vnrole vncls="29.2" vntheta="Theme"/><vnrole vncls="29.6" vntheta="Theme"/></role>
+
+  <role descr="position" n="2">
+		
+		
+  <vnrole vncls="29.2" vntheta="Predicate"/><vnrole vncls="29.6" vntheta="Predicate"/></role>
+
+</roles>
+
+<example name="all args">
+<text>
+    Nearly 36% ranked housing problems as their most serious unmet
+    legal need. 
+</text>
+        <arg n="0">Nearly 36 %</arg>
+        <rel>ranked</rel>
+        <arg n="1">housing problems</arg>
+        <arg f="as" n="2">their most serious unmet legal need</arg>
+</example>
+
+<example name="ergative">
+<text>
+    Nekoosa ranked 11th with sales of $3.59 billion.
+</text>
+        <arg n="1">Nekoosa </arg>
+        <rel>ranked</rel>
+        <arg n="2">11th</arg>
+        <arg f="CAU" n="M">with sales of $3.59 billion</arg>
+</example>
+
+<example name="multiple rankings">
+<text>
+    Based on 1988 sales, Georgia-Pacific ranked third at $9.51
+    billion, behind Weyerhaeuser Co. at $10 billion and International
+    Paper Co. at $9.53 billion. 
+</text>
+        <arg n="1">Georgia-Pacific </arg>
+        <rel>ranked</rel>
+        <arg n="2">third</arg>
+        <arg f="at" n="2">$9.51 billion</arg>
+        <arg n="2">behind Weyerhaeuser Co. at $10 billion and
+        International Paper Co. at $9.53 billion</arg> 
+</example>
+
+<note>
+All the Arg2's in the last example are equivalent, so all need to be
+marked as arg2's.  They should not be merged into a single argument.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

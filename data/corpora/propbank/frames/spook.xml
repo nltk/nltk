@@ -1,0 +1,53 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="spook">
+<note>
+  Frames file for 'spook' based on sentences in financial subcorpus.
+  Verbnet class spook 31.1, no mention of other members.  No
+  comparison.  I think this is the first &quot;psych verb&quot; we've
+  encountered.
+</note>
+
+<roleset id="spook.01" name="scare" vncls="31.1">
+<roles>
+  <role descr="cause of fright" n="0">
+	<vnrole vncls="31.1" vntheta="Cause"/></role>
+  <role descr="scared entity" n="1">
+	<vnrole vncls="31.1" vntheta="Experiencer"/></role>
+  <role descr="instrument, if arg0 is also present" n="2"/>
+</roles>
+
+<example name="passivized">
+<text>
+    They are still trying to lure back small investors spooked *trace*
+    by the 1987 stock-market crash and the market's swings since
+    then. 
+</text>
+        <rel>spooked</rel>
+        <arg n="1">*trace* -&gt;  small investors</arg>
+        <arg f="by" n="0">the 1987 stock-market crash and the market's
+        swings since then</arg> 
+</example>
+
+<example name="with instrument">
+  <text>
+    Mary spooked John with her blood-red fingernails.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>spooked</rel>
+  <arg n="1">John</arg>
+  <arg f="with" n="2">her blood-red fingernails</arg>
+</example>
+
+<example name="instrumental subject">
+  <text>
+    Mary's blood-red nails spooked John.
+  </text>
+  <arg n="0">Mary's blood-red nails</arg>
+  <rel>spooked</rel>
+  <arg n="1">John</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

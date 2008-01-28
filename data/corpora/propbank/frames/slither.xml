@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="slither">
+<note>
+  Frames file for 'slither'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="slither.01" name="to glide or slide" vncls="51.3.2">
+<roles> 
+  <role descr="entity slithering" n="0"><vnrole vncls="51.3.2" vntheta="Theme"/></role>   
+</roles>
+
+<example name="with direction">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ We did n't stampede into it , we slithered and slipped down the long slope , and now we have as its quintessential symbol a former president huckstering for a foreign poohbah .
+</text>
+	<arg n="0">we</arg>
+	<rel>slithered</rel>
+	<arg f="DIR" n="M">down the long slope</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

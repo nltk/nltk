@@ -1,0 +1,37 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="intersperse">
+<note>
+  Frames file for 'intersperse'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="intersperse.01" name="to place at intervals" vncls="9.8 22.2">
+<roles> 
+  <role descr="arranger, placer" n="0">
+        <vnrole vncls="9.8" vntheta="Agent"/>
+        <vnrole vncls="22.2" vntheta="Agent"/></role>  
+  <role descr="entity interspersed" n="1">
+        <vnrole vncls="9.8" vntheta="Destination"/>
+        <vnrole vncls="22.2" vntheta="Patient1"/></role>
+ <role descr="entity interspersed with" n="2">
+        <vnrole vncls="9.8" vntheta="Theme"/>
+        <vnrole vncls="22.2" vntheta="Patient2"/></role>  
+</roles>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+ We see , smell and hear slums filled [*] with `` the echoes of hawkers advertising their wares interspersed [*] with abusive language , rattling coughs and the sound of people gathering spittle in their throats and spewing into the street . ''
+</text>
+	<rel>interspersed</rel>
+	<arg n="1">[*] -&gt;  the echoes of hawkers advertising their wares</arg>
+	<arg f="with" n="2">abusive language , rattling coughs and the sound of people gathering spittle in their throats and spewing into the street</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

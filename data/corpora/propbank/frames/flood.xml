@@ -1,0 +1,52 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="flood">
+<note>
+  Frames file for 'flood' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="flood.01" name="cover with a liquid, to fill with an excess" vncls="45.4">
+<roles>
+  <role descr="causer" n="0">
+		
+  <vnrole vncls="45.4" vntheta="Agent"/></role>
+
+  <role descr="theme" n="1">
+		
+  <vnrole vncls="45.4" vntheta="Patient"/></role>
+
+  <role descr="liquid" n="2"/>
+</roles>
+
+<example name="all arguments">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ When Mrs. Thatcher cut the top tax rate to 40 % [*T*-1] , Mr. Lawson flooded the country with money [*-2] to prevent the pound from [*-3] rising against the mark .
+</text>
+	<arg f="TMP" n="M">When Mrs. Thatcher cut the top tax rate to 40 % [*T*-1]</arg>
+	<arg n="0">Mr. Lawson</arg>
+	<rel>flooded</rel>
+	<arg n="1">the country</arg>
+	<arg f="with" n="2">money</arg>
+	<arg f="PNC" n="M">[*-2] to prevent the pound from [*-3] rising against the mark</arg>
+</example>
+
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+ In 1984 , the Costa Rican government requested help [*] to establish a radio station in the northern part of the country , flooded [*] by airwaves of Sandinista propaganda .
+</text>
+	<rel>flooded</rel>
+	<arg n="1">[*] -&gt;  the northern part</arg>
+	<arg f="by" n="2">airwaves of Sandinista propaganda</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

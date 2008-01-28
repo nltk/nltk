@@ -1,0 +1,51 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="reconstruct">
+<note>
+  Frames file for 'reconstruct' based on sentences in wsj.  No Verbnet
+  entry. 
+</note>
+
+<roleset id="reconstruct.01" name="rebuild" vncls="-">
+<roles>
+  <role descr="rebuilder" n="0"/>
+  <role descr="former ruins" n="1"/>
+  <role descr="material, start state" n="2"/>
+</roles>
+
+<example name="just transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+    ``If you can use data *trace* to reconstruct what happened in the
+    past, you have much more confidence in predictions for the
+    future,'' said Lonnie Thompson, a research scientist at Ohio State
+    who dug for and analyzed the ice samples. 
+</text>
+        <arg n="0">*trace* -&gt;  you</arg>
+        <rel>reconstruct</rel>
+        <arg n="1">what  happened in the past</arg>
+</example>
+
+<example name="with start state">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Accordingly, the hidebound traditionalist reconstructed
+    hypothetical organisms from the Burgess fossils in such a way that
+    they could be shoehorned into familiar categories. 
+</text>
+        <arg f="DIS" n="M">Accordingly</arg>
+        <arg n="0">the hidebound traditionalist</arg>
+        <rel>reconstructed</rel>
+        <arg n="1">hypothetical organisms</arg>
+        <arg f="from" n="2">the Burgess fossils</arg>
+        <arg f="MNR" n="M">in such a way that they could be shoehorned
+        into familiar categories</arg> 
+</example>
+
+<note>
+Perhaps also an end state (cf build)?  Hard to say.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

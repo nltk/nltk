@@ -1,0 +1,51 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="indict">
+<note>
+  Frames file for 'indict' based on sentences in financial subcorpus.
+  No Verbnet entry, no Framenet entry.
+</note>
+
+<roleset id="indict.01" name="accuse of a crime" vncls="-">
+<roles>
+  <role descr="accuser" n="0"/>
+  <role descr="accused" n="1"/>
+  <role descr="crime" n="2"/>
+</roles>
+
+<example name="just arg1">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    The issue has come to a boil in Newark, N.J., where federal
+    prosecutors have warned lawyers for Eddie Antar that if the
+    founder and former chairman of Crazy Eddie Inc. is indicted
+    *trace*, the government may move to seize the money that Mr. Antar
+    is using to pay legal fees. 
+</text>
+        <rel>indicted</rel>
+        <arg n="1">*trace* -&gt;  the founder and former chairman of
+        Crazy Eddie Inc.</arg> 
+</example>
+
+<example name="also with crime">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    The former executives were indicted *trace* last October on
+    charges of fraud, theft and conspiracy related to efforts by the
+    company to win $400 million in Postal Service contracts. 
+</text>
+        <rel>indicted</rel>
+        <arg n="1">*trace* -&gt;  The former executives</arg>
+        <arg f="TMP" n="M">last October</arg>
+        <arg f="on" n="2">charges of fraud, theft and conspiracy
+        related to efforts by the company to win $400 million in
+        Postal Service contracts</arg> 
+</example>
+
+<note>
+Can this occur with an agent?  We'll see.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

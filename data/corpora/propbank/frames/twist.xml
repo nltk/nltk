@@ -1,0 +1,47 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="twist">
+<note>
+  Frames file for 'twist' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="twist.01" name="to change form,  shape, etc" vncls="9.6 26.5">
+<roles>
+  <role descr="cause of change, agent" n="0">
+        <vnrole vncls="9.6" vntheta="Agent"/>
+        <vnrole vncls="26.5" vntheta="Agent"/></role>
+  <role descr="entity twisted" n="1">
+        <vnrole vncls="9.6" vntheta="Patient"/>
+        <vnrole vncls="26.5" vntheta="Material"/></role>
+</roles>
+
+
+<example name="transitive with manner">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ The husky blond guide with the Aggie cap twists his face in mock fury .
+</text>
+	<arg n="0">The husky blond guide with the Aggie cap</arg>
+	<rel>twists</rel>
+	<arg n="1">his face</arg>
+	<arg f="MNR" n="M">in mock fury</arg>
+</example>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ `` You twist people 's trust .
+</text>
+	<arg n="0">You</arg>
+	<rel>twist</rel>
+	<arg n="1">people 's trust</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

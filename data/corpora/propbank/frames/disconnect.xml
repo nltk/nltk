@@ -1,0 +1,65 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="disconnect">
+<note>
+Frames file for 'disconnect' based on wsj sentences and automatic
+expansion via verbnet.
+</note>
+
+<roleset id="disconnect.01" name="separate" vncls="23.1">
+<roles>
+	<role descr="entity causing separation" n="0">
+		
+  <vnrole vncls="23.1" vntheta="Agent"/></role>
+
+	<role descr="thing being divided" n="1">
+		
+  <vnrole vncls="23.1" vntheta="Patient1"/></role>
+
+	<role descr="divided among/between, if separate from arg0" n="2">
+		
+  <vnrole vncls="23.1" vntheta="Patient2"/></role>
+
+</roles>
+
+<example name="merged args 1 and 2">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Several moves were taken following the October 1987 crash *trace*
+    to coordinate *trace* -- and sometimes deliberately disconnect  -- the
+    stock and futures markets in times of heightened volatility. 
+</text>
+        <arg n="0">*trace*</arg>
+        <arg f="TMP" n="M">sometimes</arg>
+        <arg f="MNR" n="M">deliberately</arg>
+        <rel>disconnect</rel>
+        <arg n="1">*trace* -&gt; the stock and futures markets</arg>
+</example>
+
+<example name="separate args 1 and 2">
+<inflection aspect="ns" form="participle" person="third" tense="present" voice="passive"/>
+<text>
+    As usual the green lobby's proposal is disconnected *trace* from
+    scientific reality.
+</text>
+        <arg f="DIS" n="M">As usual</arg>
+        <rel>disconnected</rel>
+        <arg n="1">*trace* -&gt;  the green lobby's proposal</arg>
+        <arg f="from" n="2">scientific reality</arg>
+</example>
+
+
+<example name="ergative or adjectival">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    In its severest test, the $60 billion of portfolio insurance in
+    effect in the 1987 crash didn't work, as stock buyers disappeared
+    and stock and futures prices became disconnected. 
+</text>
+        <arg n="1">stock and futures prices</arg>
+        <rel>disconnected</rel>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

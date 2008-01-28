@@ -1,0 +1,100 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="dig">
+<note>
+  Frames file for 'dig' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="dig.01" name="turn over, remove soil" vncls="19 26.4-1">
+<roles>
+  <role descr="digger, agent" n="0">
+	<vnrole vncls="26.4-1" vntheta="Agent"/>
+        <vnrole vncls="19" vntheta="Agent"/></role>
+  <role descr="entity removed" n="1">
+	<vnrole vncls="26.4-1" vntheta="Product"/>
+        <vnrole vncls="19" vntheta="Destination"/></role>
+  <role descr="instrument" n="2">
+	<vnrole vncls="19" vntheta="Instrument"/></role>
+</roles>
+
+<example name="intransitive">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ CORPORATE DOWNSIZING digs deeper .
+</text>
+	<arg n="0">CORPORATE DOWNSIZING</arg>
+	<rel>digs</rel>
+	<arg f="MNR" n="M">deeper</arg>
+</example>
+
+<example name="transitive">
+<inflection aspect="ns" form="ns" person="ns" tense="past" voice="active"/>
+<text>
+ `` If you can use data [*-4] to reconstruct what [*T*-2] happened in the past , you have much more confidence in predictions for the future , '' said [*T*-5] Lonnie Thompson , a research scientist at Ohio State who [*T*-3] dug for [*RNR*-1] and analyzed [*RNR*-1] the ice samples .
+</text>
+	<arg n="0">[*T*-3] -&gt;  who -&gt;  Ohio State</arg>
+	<rel>dug</rel>
+	<arg f="for" n="1">the ice samples -&gt;  [*RNR*-1]</arg>
+</example>
+
+<example name="with adverbials">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+ They just keep [*-1] digging me in deeper until I reach the point where I give up and go away . ''
+</text>
+	<arg n="0">[*-1] -&gt;  They</arg>
+	<rel>digging</rel>
+	<arg n="1">me</arg>
+	<arg f="DIR" n="M">in</arg>
+	<arg f="DIR" n="M">deeper</arg>
+	<arg f="TMP" n="M">until I reach the point where I give up and go away</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="dig_up">
+
+<roleset id="dig.02" name="to excavate, turn up" vncls="-">
+<roles>
+  <role descr="digger, agent" n="0"/>
+  <role descr="entity turned up" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ Police suspect that the criminals , who [*T*-1] dig up the plants in the dead of night , are selling them to nurseries or landscapers .
+</text>
+	<arg n="0">[*T*-1] -&gt;  who -&gt;  the criminals</arg>
+	<rel>[ dig] [ up]</rel>
+	<arg n="1">the plants</arg>
+	<arg f="TMP" n="M">in the dead of night</arg>
+</example>
+</roleset>
+</predicate>
+
+<predicate lemma="dig_out">
+
+<roleset id="dig.03" name="to remove" vncls="-">
+<roles>
+  <role descr="digger, agent" n="0"/>
+  <role descr="entity removed" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ Days later , the thieves returned and dug out more , [*-1] this time adding insult to injury .
+</text>
+	<arg n="0">the thieves</arg>
+	<rel>[ dug] [ out]</rel>
+	<arg n="1">more</arg>
+</example>
+
+</roleset>
+</predicate>
+
+
+</frameset>

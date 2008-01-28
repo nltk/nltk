@@ -1,0 +1,618 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<note>
+Frames file for 'take' based on survey of sentences from big corpus
+</note>
+<predicate lemma="take">
+<roleset id="take.01" name="take, acquire, come to have" vncls="10.5 11.3">
+  <roles>
+    <role descr="Taker" n="0">
+	<vnrole vncls="10.5" vntheta="Agent"/>
+        <vnrole vncls="11.3" vntheta="Agent"/></role>
+    <role descr="thing taken" n="1">
+        <vnrole vncls="10.5" vntheta="Theme"/>
+        <vnrole vncls="11.3" vntheta="Theme"/></role>
+    <role descr="entity taken from, or prepositional complement of arg1" n="2">
+	<vnrole vncls="10.5" vntheta="Source"/>
+        <vnrole vncls="11.3" vntheta="Source"/></role>
+  </roles>
+
+<example name="take office">
+  <text>
+    President Carlos Menem took office July 8.
+  </text>
+  <arg n="0">President Carlos Menem</arg>
+  <rel>took</rel>
+  <arg n="1">office</arg>
+  <arg f="TMP" n="M">July 8</arg>
+</example>
+
+<example name="extract">
+  <text>
+    Sony took a lesson from the American management books.
+  </text>
+  <arg n="0">Sony</arg>
+  <rel>took</rel>
+  <arg n="1">a lesson</arg>
+  <arg f="from" n="2">the American management books</arg>
+</example>
+
+<example name="view">
+  <text>
+    Principals take cheating seriously
+  </text>
+  <arg n="0">Principals</arg>
+  <rel>take</rel>
+  <arg n="1">cheating</arg>
+  <arg f="MNR" n="M">seriously</arg>
+</example>
+
+<example name="take the law">
+  <text>
+    She took the law into her own hands
+  </text>
+  <arg n="0">She</arg>
+  <rel>took</rel>
+  <arg n="1">the law</arg>
+  <arg f="into" n="2">her own hands</arg>
+</example>
+
+<example name="take measures">
+  <text>
+    It has taken measures to prevent cheating.
+  </text>
+  <arg n="0">It</arg>
+  <rel>taken</rel>
+  <arg n="1">measures</arg>
+  <arg f="PNC" n="M">to prevent cheating</arg>
+</example>
+
+<example name="take advantage">
+  <inflection person="ns" tense="ns" aspect="ns" voice="active" form="infinitive"/>
+  <text>
+    According to industry lawyers, the ruling gives pipeline companies
+    an important second chance *trace* to resolve remaining disputes and take
+    advantage of the cost-sharing mechanism.  
+  </text>
+  <arg n="0"        >*trace* -> pipeline companies</arg>
+  <rel              >take</rel>
+  <arg n="1"        >advantage</arg>
+  <arg n="2" f="of">the cost-sharing mechanism</arg>
+</example>
+
+<example name="take some comfort">
+  <inflection person="ns" tense="ns" aspect="ns" voice="active" form="full"/>
+  <text>
+     Investors unsetled by the stock market's recent gyrations can
+     take some comfort in the predictable arrival of quarterly
+     dividend checks.
+  </text>
+  <arg n="0"        >Investors unsettled by the stock market's recent
+  gyrations</arg> 
+  <arg n="m" f="MOD">can</arg>
+  <rel              >take</rel>
+  <arg n="1"        >some comfort</arg>
+  <arg n="2" f="in">the predictable arrival of quarterly dividend checks</arg>
+</example>
+
+<example name="takin' care of business">
+  <inflection person="third" tense="present" aspect="ns" voice="active" form="full"/>
+  <text>
+     Frank plans the program, takes care of business, and approaches
+     the work like any other job. 
+  </text>
+  <arg n="0"        >Frank</arg>
+  <rel              >takes</rel>
+  <arg n="1"        >care</arg>
+  <arg n="2" f="of">business</arg>
+</example>
+</roleset>
+
+<roleset id="take.02" name="tolerate" vncls="-">
+<roles>
+  <role descr="tolerator" n="0"/>
+  <role descr="thing tolerated" n="1"/>
+</roles>
+
+<example name="put up or shut up">
+  <text>
+     John couldn't take his medicine like a man.
+  </text>
+  <arg n="0">John</arg>
+  <arg f="MOD" n="m">could</arg>
+  <arg f="NEG" n="m">n't</arg>
+  <rel>take</rel>
+  <arg n="1">his medicine </arg>
+  <arg f="MNR" n="m">like a man</arg>
+</example>
+
+<example name="tough movement">
+  <text>
+    That got hard *trace* to take.
+  </text>
+  <arg n="0">*trace*</arg>
+  <rel>take</rel>
+  <arg n="1">That</arg>
+<note>
+Trace might or might not be there, or there might be a trace in the
+object position pointing to the 'that'.  The underlying sentence is
+&quot;for (someone) to take that, is hard.&quot;
+</note>
+</example>
+
+</roleset>
+
+<roleset id="take.03" name="cause (to be)" vncls="-">
+<roles>
+  <role descr="impeller to action" n="0"/>
+  <role descr="impelled agent, topic" n="1"/>
+  <role descr="impelled action, attribute of arg1" n="2"/>
+</roles>
+
+<example name="resultative">
+  <text>
+    John took his company private.
+  </text>
+  <arg n="0">John</arg>
+  <rel>took</rel>
+  <arg n="1">his company</arg>
+  <arg n="2">private</arg>
+</example>
+
+</roleset>
+
+<roleset id="take.04" name="understand to be" vncls="29.2">
+<roles>
+  <role descr="understander" n="0">
+     <vnrole vncls="29.2" vntheta="Agent"/></role>
+  <role descr="thing" n="1">
+     <vnrole vncls="29.2" vntheta="Theme"/></role>
+  <role descr="attribute" n="2">
+     <vnrole vncls="29.2" vntheta="Predicate"/></role>
+</roles>
+
+<example name="bummer">
+  <text>
+    They took the announcement as bad news.
+  </text>
+  <arg n="0">They</arg>
+  <rel>took</rel>
+  <arg n="1">the announcement</arg>
+  <arg f="as" n="2">bad news</arg>
+</example>
+
+<example name="it support, kinda">
+  <text>
+    I take it, then, that John is a complete and utter idiot?
+  </text>
+  <arg n="0">I</arg>
+  <rel>take</rel>
+  <arg f="DIS" n="m">then</arg>
+  <arg n="1">John is a complete and utter idiot</arg>
+<note>
+Again, this is a 'dummy' it, without any real semantic substance.
+</note>
+</example>
+</roleset>
+
+<roleset id="take.14" name="fixed phrase: take place" vncls="-">
+<roles>
+  <role n="1" descr="thing occuring"/>
+  <role n="2" descr="fixed: place"/>
+</roles>
+
+<example name="take place">
+  <text>
+    These events took place 35 years ago.
+  </text>
+  <arg n="1">These events</arg>
+  <rel>took</rel>
+  <arg n="2">place</arg>
+  <arg f="TMP" n="M">35 years ago</arg>
+</example>
+</roleset>
+
+<roleset id="take.15" vncls="-" name="write-off, acknowledge a (financial) loss">
+<roles>
+  <role n="0"  descr="corporation, etc"/>
+  <role n="1"  descr="loss"/>
+  <role n="2"  descr="current financial holdings?"/>
+</roles>
+
+<example name="made up, but based on real">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+     John's company took a $5 million write-off due to unwise
+     investments in jellybeans.
+  </text>
+  <arg n="0"        >John's company</arg>
+  <rel              >took</rel>
+  <arg n="1"        >a $5 million write-off</arg>
+  <arg n="m" f="CAU">due to unwise investments in jellybeans</arg>
+</example>
+
+</roleset>
+
+<roleset id="take.10" name="need" vncls="-">
+<roles>
+  <role descr="requirer" n="0"/>
+  <role descr="thing required" n="1"/>
+  <role descr="required-of, required-from ('ablative')" n="2"/>
+</roles>
+
+<example name="active">
+  <text>
+  Being so fragile and minute, they will take special special
+  robotic handling equipment.
+  </text>
+  <arg f="CAU" n="m">Being so fragile and minute</arg>
+  <arg n="0">they</arg>
+  <arg f="MOD" n="m">will</arg>
+  <rel>take</rel>
+  <arg n="1">special special robotic handling equipment.</arg>
+</example>
+
+<example name="it-support">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+    It [*EXP*-1] took me a half-hour [*] to move 10 feet from my
+    parking spot in an outer lot to an aisle, and an additional hour
+    to reach an inner roadway a half-block away. 
+  </text>
+  <rel              >took</rel>
+  <arg n="2"        >me</arg>
+  <arg n="1"        >a half-hour</arg>
+  <arg n="0"        >[*] to move 10 feet from my parking spot in an
+  outer lot to an aisle</arg>
+<note>Be careful that you don't give an argument number to 'dummy' it</note>
+</example>
+
+<example name="typical out-of-order">
+  <inflection person="ns" tense="present" aspect="progressive" voice="active" form="participle"/>
+  <text>
+     Graduate students are taking longer than ever [*-1] to get their
+     doctor of philosophy degrees, the National Research Council says.   
+  </text>
+  <arg n="2"        >Graduate students</arg>
+  <rel              >taking</rel>
+  <arg n="1"        >longer than ever</arg>
+  <arg n="0"        >[*-1] to get their doctor of philosophy degrees</arg>
+<note>
+Gee, ya think?
+</note>
+
+</example>
+</roleset>
+
+<roleset id="take.16" vncls="-" name="take by surprise">
+<roles>
+  <role n="0"  descr="causer of surprise"/>
+  <role n="1"  descr="experiencer of surprise"/>
+  <role n="2"  descr="surprise"/>
+</roles>
+
+<example name="surprise!">
+<inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+<text>
+ Rumors of an impending devaluation have been circulating in Moscow for weeks , but the size of the cut took many Western bankers by surprise .
+</text>
+        <arg n="0">the size of the cut</arg>
+        <rel>took</rel>
+        <arg n="1">many Western bankers</arg>
+        <arg n="2" f="by">surprise</arg>
+</example>
+</roleset>
+
+<roleset id="take.17" vncls="-" name="become fond of">
+<roles>
+  <role n="0"  descr="entity becoming fond of something"/>
+  <role n="1"  descr="thing fond of"/>
+</roles>
+
+<example name="ballooning?  really?">
+<inflection person="ns" tense="present" aspect="perfect" voice="active" form="participle"/>
+<text>
+ Americans it seems [0] [*T*-1] have followed Malcolm Forbes 's hot-air lead and taken to ballooning in a heady way .
+</text>
+        <arg n="0">Americans</arg>
+        <arg n="M" f="DIS">it seems [0] [*T*-1]</arg>
+        <rel>taken</rel>
+        <arg n="1" f="to">ballooning</arg>
+        <arg n="M" f="MNR">in a heady way</arg>
+</example>
+</roleset>
+</predicate>
+
+<predicate lemma="take_away">
+<roleset id="take.05" name="take away: remove" vncls="10.5">
+<roles>
+  <role descr="taker" n="0">
+	<vnrole vncls="10.5" vntheta="Agent"/></role>
+  <role descr="thing removed" n="1">
+	<vnrole vncls="10.5" vntheta="Theme"/></role>
+</roles>
+
+<example name="Calgon, take me away!">
+  <text>
+    Marshall Coleman wants to *trace* take away your right to choose
+  </text>
+  <arg n="0">*trace* -> Marshall Coleman</arg>
+  <rel>take away</rel>
+  <arg n="1">your right to choose</arg>
+</example>
+</roleset>
+</predicate>
+
+<predicate lemma="take_in">
+<note>
+might be misparsed
+</note>
+<roleset id="take.06" name="take in: give shelter" vncls="-">
+<roles>
+  <role descr="entity giving shelter" n="0"/>
+  <role descr="entity taking shelter" n="1"/>
+</roles>
+
+<example name="Arg0 rel Arg1">
+  <text>
+    This exclusive club has taken in a host of flashy new members
+  </text>
+  <arg n="0">This exclusive club</arg>
+  <rel>taken in</rel>
+  <arg n="1">a host of flashy new members</arg>
+</example>
+</roleset>
+</predicate>
+
+<predicate lemma="take_off">
+<roleset id="take.07" name="take off: remove" vncls="10.5">
+<roles>
+  <role descr="entity removing something" n="0">
+	  <vnrole vncls="10.5" vntheta="Agent"/></role>
+  <role descr="thing being removed" n="1">
+	  <vnrole vncls="10.5" vntheta="Theme"/></role>
+</roles>
+
+<example name="take it all off">
+  <text>
+    John took off all his clothes in public.
+  </text>
+  <arg n="0">John</arg>
+  <rel>took off</rel>
+  <arg n="1">all his clothes</arg>
+  <arg f="LOC" n="M">in public</arg>
+</example>
+</roleset>
+
+<roleset id="take.08" name="take off: increase dramatically" vncls="-">
+<roles>
+  <role descr="thing increasing" n="1"/>
+</roles>
+
+<example name="zoom">
+  <text>
+    The pace has taken off. 
+  </text>
+  <arg n="1">The pace</arg>
+  <rel>taken off</rel>
+</example>
+</roleset>
+
+<roleset id="take.19" vncls="-" name="take off: like a plane">
+<roles>
+  <role n="1"  descr="airplane"/>
+  <role n="2"  descr="airport"/>
+</roles>
+
+<example name="leavin' on a jet plane...">
+<inflection person="third" tense="present" aspect="ns" voice="active" form="full"/>
+<text>
+     Keep in mind that this is the same movie in which a character is
+     flattened by a steamroller only to pop right back up and peer in
+     the window of a Boeing 747 -- from the outside -- as it takes
+     off. 
+</text>
+        <arg n="1">it</arg>
+        <rel>[ takes] [ off]</rel>
+</example>
+</roleset>
+
+<roleset id="take.18" vncls="-" name="take off: vacation">
+<roles>
+  <role n="0"  descr="entity taking a vacation"/>
+  <role n="1"  descr="'time'"/>
+  <role n="2"  descr="work, job, etc"/>
+</roles>
+
+<example name="mental health day">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+    And when Mr. Engelken asked him why he took time [*ICH*-1]
+    [*ICH*-2] off from work for somebody he didn't even know [*T*-4]
+    [*T*-5] [*T*-6]... 
+  </text>
+  <arg n="0"        >he</arg>
+  <rel              >[took][off]</rel>
+  <arg n="1"        >time [*ICH*-1] [*ICH*-2]</arg>
+  <arg n="2" f="from">work</arg>
+  <arg n="m" f="ADV">for someone he didn't even know</arg>
+<note>
+Nasty bit of syntax by the treebankers, there.
+</note>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="take_on">
+<roleset id="take.09" name="take on: acquire" vncls="-">
+<roles>
+  <role descr="entity acquiring something" n="0"/>
+  <role descr="thing being acquired" n="1"/>
+  <role descr="seller" n="2"/>
+  <role descr="price paid" n="3"/>
+  <role descr="benefactive" n="4"/>
+</roles>
+
+<example name="simple transitive">
+  <text>
+    A young, short-term employee can't take on any responsibility
+  </text>
+  <arg n="0">A young, short-term employee</arg>
+  <arg f="MOD" n="M">ca</arg>
+  <arg f="NEG" n="M">n't</arg>
+  <rel>take on</rel>
+  <arg n="1">any responsiblity</arg>
+</example>
+
+<note>
+refer to acquire and other verbs-of-acquisition for usage of
+higher-numbered args
+</note>
+
+</roleset>
+
+<roleset id="take.21" vncls="-" name="take on: (prepare for) battle">
+<roles>
+  <role n="0"  descr="hero"/>
+  <role n="1"  descr="adversary"/>
+</roles>
+
+<example name="David and Goliath">
+<inflection person="ns" tense="future" aspect="ns" voice="active" form="full"/>
+<text>
+     ``I will sit down and talk some of the problems out, but take on
+     the political system? Uh-uh,'' he says with a shake of the head. 
+</text>
+        <arg n="0">I</arg>
+        <arg n="M" f="MOD">will</arg>
+        <rel>[ take] [ on]</rel>
+        <arg n="1">the political system</arg>
+</example>
+</roleset>
+</predicate>
+
+<predicate lemma="take_out">
+<roleset id="take.11" name="take out: obtain, draw (out)" vncls="-">
+<roles>
+  <role descr="entity drawing something forth" n="0"/>
+  <role descr="thing taken out" n="1"/>
+</roles>
+
+<example name="take out an ad">
+  <text>
+    A company once     took out an ad.
+  </text>
+  <arg n="0">A company</arg>
+  <arg f="TMP" n="M">once</arg>
+  <rel>took out</rel>
+  <arg n="1">an ad</arg>
+</example>
+</roleset>
+</predicate>
+
+<predicate lemma="take_over">
+<roleset id="take.12" name="take over: become dominant" vncls="-">
+<roles>
+  <role descr="entity becoming dominant" n="0"/>
+  <role descr="entity being taken over" n="1"/>
+</roles>
+
+<example name="unstated object">
+  <text>
+    Mrs. Ward took over in 1986
+  </text>
+  <arg n="0">Mrs. Ward</arg>
+  <rel>took over</rel>
+  <arg f="TMP" n="M">in 1986</arg>
+</example>
+
+<example name="with object">
+  <text>
+    John took over the company.
+  </text>
+  <arg n="0">John</arg>
+  <rel>took over</rel>
+  <arg n="1">the company</arg>
+</example>
+
+<example name="with attribute">
+  <text>
+    John took over as president
+  </text>
+  <arg n="0">John</arg>
+  <rel>took over</rel>
+  <arg f="as" n="1">president</arg>
+</example>
+</roleset>
+</predicate>
+
+<predicate lemma="take_up">
+<roleset id="take.13" name="take up: occupy" vncls="-">
+<roles>
+  <role descr="entity taking" n="0"/>
+  <role descr="thing being occupied" n="1"/>
+  <role descr="collaborator, interlocutor" n="2"/>
+</roles>
+
+<example name="vaguely passive">
+  <text>
+    Most of the picture is taken up with endless scenes of talking heads.
+  </text>
+  <arg n="1">Most of the picture</arg>
+  <rel>taken up</rel>
+  <arg n="0">with endless scenes of talking heads</arg>
+</example>
+
+<example name="active">
+  <text>
+    The Senate will take up the measure quickly.
+  </text>
+  <arg n="0">The Senate</arg>
+  <rel>take up</rel>
+  <arg n="1">the measure</arg>
+  <arg f="TMP" n="M">quickly</arg>
+</example>
+
+<example name="with arg2">
+  <text>
+    They took it up with Warner.
+  </text>
+  <arg n="0">They</arg>
+  <rel>[took] [up]</rel>
+  <arg n="1">it</arg>
+  <arg f="with" n="2">Warner</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="take_aback">
+
+<roleset id="take.20" vncls="-" name="take aback: different kind of surprise">
+<roles>
+  <role n="1"  descr="surprised entity"/>
+</roles>
+
+<example name="only passive">
+<inflection person="ns" tense="present" aspect="ns" voice="passive" form="participle"/>
+<text>
+     He is taken [*-4] aback in an interview when asked whether, as
+     mayor, he plans on reforming the political ``fiefdoms'' that
+     perpetuate the monumental ineffectiveness of New York's school
+     system. 
+</text>
+        <rel>[ taken] [ aback]</rel>
+        <arg n="1">[*-4] ->  He</arg>
+        <arg n="M" f="LOC">in an interview</arg>
+        <arg n="M" f="TMP">when asked whether, as mayor, he plans on
+        reforming the political ``fiefdoms'' that perpetuate the
+        monumental ineffectiveness of New York's school system</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

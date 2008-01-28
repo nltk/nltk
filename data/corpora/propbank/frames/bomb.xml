@@ -1,0 +1,62 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="bomb">
+<note>
+  Frames file for 'bomb'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="bomb.01" name="to attack or damage" vncls="-">
+<roles> 
+  <role descr="attacker, agent" n="0"/>
+  <role descr="entity bombed" n="1"/>
+</roles>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="past" voice="passive"/>
+<text>
+ And only last week the newspaper Vanguardia Liberal in the city of Bucaramanga was bombed [*-1] , and its installations destroyed [*-2] .
+</text>
+	<arg f="TMP" n="M">only last week</arg>
+	<rel>bombed</rel>
+	<arg n="1">[*-1] -&gt;  the newspaper Vanguardia Liberal in the city of Bucaramanga</arg>
+</example>
+</roleset>
+
+<roleset id="bomb.02" name="to fail" vncls="-">
+<roles> 
+  <role descr="entity failing" n="1"/>
+  <role descr="task, test" n="2"/>
+</roles>
+
+
+<example name="intransitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ But the product , which [*T*-1] was n't as concentrated as the new Cheer , bombed in a market test in Denver and was dropped [*-2] .
+</text>
+	<arg n="0">the product , which [*T*-1] was n't as concentrated as the new Cheer ,</arg>
+	<rel>bombed</rel>
+	<arg f="LOC" n="M">in a market test in Denver</arg>
+</example>
+
+<example name="with task">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John, like, totally bombed his linguistics test.
+  </text>
+  <arg n="1">John</arg>
+  <arg f="DIS" n="m">like</arg>
+  <arg f="DIS" n="m">totally</arg>
+  <rel>bombed</rel>
+  <arg n="2">his linguistics test</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+
+</frameset>

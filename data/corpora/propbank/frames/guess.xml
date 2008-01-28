@@ -1,0 +1,49 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="guess">
+<note>
+Frames file for 'guess' based on sentences in financial subcorpus and
+automatic expansion via verbnet.
+</note>
+
+<roleset id="guess.01" name="default" vncls="29.5">
+<roles>
+	<role descr="guesser" n="0">
+		
+  <vnrole vncls="29.5" vntheta="Agent"/></role>
+
+	<role descr="guess" n="1">
+		
+  <vnrole vncls="29.5" vntheta="Theme"/></role>
+
+</roles>
+
+<example name="guess a wh-clause">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Every day, Mr. Levy checks orders from Campeau department store
+    chains, [*-2] trying [*-3] to guess if he will be paid [*-1].
+</text>
+        <arg n="0">[*-3] -&gt;  [*-2] -&gt;  Mr. Levy</arg>
+        <rel>guess</rel>
+        <arg n="1">if he will be paid [*-1]</arg>
+</example>
+
+
+<example name="guess a regular sentence">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+    ``I guess [0] we'll reluctantly go ahead and do it, vote for
+    Dinkins,'' says [*T*-2] Richard Wade, a politically active
+    professor who [*T*-1] supported Richard Ravitch, an also-ran in
+    the Democratic primary. 
+</text>
+        <arg n="0">I</arg>
+        <rel>guess</rel>
+        <arg n="1">we'll reluctantly go ahead and do it, vote for
+        Dinkins</arg> 
+</example>
+
+</roleset>
+</predicate>
+</frameset>

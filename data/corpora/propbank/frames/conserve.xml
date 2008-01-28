@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="conserve">
+<note>
+  Frames file for 'conserve' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="conserve.01" name="to preserve, economize" vncls="-">
+<roles>
+  <role descr="causer" n="0"/>
+  <role descr="entity conserved" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ In the past , the socialist policies of the government strictly limited the size of new steel mills , petrochemical plants , car factories and other industrial concerns [*] to conserve resources and restrict the profits [0] businessmen could make [*T*-1] .
+</text>
+	<arg n="0">[*] -&gt;  the size of new steel mills , petrochemical plants , car factories and other industrial concerns</arg>
+	<rel>conserve</rel>
+	<arg n="1">resources</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

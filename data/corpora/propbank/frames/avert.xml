@@ -1,0 +1,46 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="avert">
+<note>
+  Frames file for 'avert' based on sentences in financial subcorpus.
+  No verbnet entry.  Comparison with 'prevent'.
+</note>
+
+<roleset id="avert.01" name="stop, prevent, move away from, avoid">
+<roles>
+  <role descr="stopper, Agent" n="0"/>
+  <role descr="Theme (action or object being prevented)" n="1"/>
+  <role descr="thing being avoided" n="2"/>
+  <role descr="instrument" n="3"/>
+</roles>
+
+<example name="just transitive">
+<text>
+    Subcontractors will be offered a settlement and a swift transition
+    to new management is expected *trace* to avert an exodus of
+    skilled workers from Waertsilae Marine's two big shipyards,
+    government officials said. 
+</text>
+        <arg n="0">*trace* -&gt;  a swift transition to new management</arg>
+        <rel>avert</rel>
+        <arg n="1">an exodus of skilled workers from Waertsilae
+        Marine's two big shipyards</arg> 
+</example>
+
+<example name="with arg2">
+  <text>
+    John averted his gaze from Mary's overwhelming beauty.
+  </text>
+  <arg n="0">John</arg>
+  <rel>averted</rel>
+  <arg n="1">his gaze</arg>
+  <arg f="from" n="2">Mary's overwhelming beauty</arg>
+</example>
+
+<note>
+I can say this, at least.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

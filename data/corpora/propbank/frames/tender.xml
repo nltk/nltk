@@ -1,0 +1,68 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="tender">
+<note>
+  Frames file for 'tender' based on sentences in financial subcorpus.
+  No access to verbnet.  Comparison to 'offer'.
+</note>
+
+<roleset id="tender.01" name="light verb with 'offer' or 'bid'">
+<roles>
+  <role descr="entity making offer/bid" n="0"/>
+  <role descr="offer/bid, or shares if being tendered to an offer" n="1"/>
+  <role descr="offered to" n="2"/>
+</roles>
+
+<example name="expected transitive active">
+<text>
+    It shed about 7 pence, however, after dealers said the market was
+    disappointed that Ford didn't move *trace* to tender a bid for
+    control of the company. 
+</text>
+        <arg n="0">*trace* -&gt;  Ford</arg>
+        <rel>tender</rel>
+        <arg n="1">a bid for control of the company</arg>
+</example>
+
+<example name="expected passive">
+<text>
+    The offer, which was due to expire yesterday, is conditional on
+    50.1% of Dunkin's common shares, on a fully diluted basis, being
+    tendered *trace* and on the withdrawal of the company's poison
+    pill rights plan. 
+</text>
+        <rel>tendered</rel>
+        <arg n="1">*trace* -&gt;  50.1 % of Dunkin's common shares</arg>
+</example>
+
+<example name="active, unexpected arg2">
+<text>
+    LIN Broadcasting surged 4 5/8 to 112 5/8; LIN and BellSouth
+    sweetened their merger agreement in an attempt to keep
+    shareholders from *trace* tendering their shares to McCaw Cellular
+    Communications. 
+</text>
+        <arg n="0">*trace* -&gt;  shareholders</arg>
+        <rel>tendering</rel>
+        <arg n="1">their shares</arg>
+        <arg f="to" n="2">McCaw Cellular Communications</arg>
+</example>
+
+<example name="passive, unexpected arg2">
+<text>
+    At the close of business Thursday, Ciba-Geigy and Chiron said
+    11,580 common shares had been tendered *trace* to their offer. 
+</text>
+        <rel>tendered</rel>
+        <arg n="1">*trace* -&gt;  11,580 common shares</arg>
+        <arg f="to" n="2">their offer</arg>
+</example>
+
+<note>
+WSJ usage does not accord at all with my intuition.  It could be that
+this will have to be revamped to bring it more in line with 'offer'.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

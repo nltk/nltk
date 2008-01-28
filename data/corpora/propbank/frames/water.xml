@@ -1,0 +1,56 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="water">
+<note>
+  Frames file for 'water' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="water.01" name="to make wet" vncls="9.9">
+<roles>
+  <role descr="provider of water, agent" n="0">
+        <vnrole vncls="9.9" vntheta="Agent"/></role>
+  <role descr="entity watered" n="1">
+        <vnrole vncls="9.9" vntheta="Destination"/></role>
+</roles>
+
+
+
+<example name="transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ Last Sunday , Ms. Johnson finally got a chance [*-1] to water her plants , but stopped abruptly .
+</text>
+	<arg n="0">[*-1] -&gt;  Ms. Johnson</arg>
+	<rel>water</rel>
+	<arg n="1">her plants</arg>
+</example>
+</roleset>
+</predicate>
+
+<predicate lemma="water_down">
+
+<roleset id="water.02" name="to reduce the strength or effectiveness of" vncls="-">
+<roles>
+  <role descr="cause of lesser strength" n="0"/>
+  <role descr="entity watered down" n="1"/>
+</roles>
+
+
+
+<example name="transitive">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+ If it promotes fashion too much , the shop risks [*-1] alienating its old-line customers ; by [*-2] emphasizing `` value , '' it risks [*-2] watering down its high-minded mystique .
+</text>
+	<arg n="0">[*-2] -&gt;  it</arg>
+	<rel>[ watering] [ down]</rel>
+	<arg n="1">its high-minded mystique</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

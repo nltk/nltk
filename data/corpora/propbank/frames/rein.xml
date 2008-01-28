@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="rein_in">
+<note>
+  Frames file for 'rein' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="rein.01" name="to stop, slow up or control" vncls="-">
+<roles>
+  <role descr="slower, stopper, agent" n="0"/>
+  <role descr="entity reined " n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ If he were able [*-1] to construct a popular and efficient corporatist system , he or his heir would be wellplaced [*-2] to rein in political opposition , and to re-establish control in Eastern Europe .
+</text>
+	<arg n="0">[*-2] -&gt;  he or his heir</arg>
+	<rel>[ rein] [ in]</rel>
+	<arg n="1">political opposition</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

@@ -1,0 +1,36 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="aver">
+<note>
+  Frames file for 'aver' based on sentences in wsj.  No access to
+  Verbnet at the moment.
+</note>
+
+<roleset id="aver.01" name="assert to be true" vncls="-">
+<roles>
+  <role descr="agent, speaker" n="0"/>
+  <role descr="proposition held to be true" n="1"/>
+</roles>
+
+<example name="here a hapax, there a hapax...">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+     Globe columnist Mike Barnicle -- in the second attack on his
+     employer in as many weeks -- averred that his shadowy countenance
+     was so bad, it looked ``like a face you'd find on a bottle of
+     miracle elixir that promises to do away with diarrhea in our
+     lifetime.'' 
+</text>
+        <arg n="0">Globe columnist Mike Barnicle</arg>
+        <rel>averred</rel>
+        <arg n="1">his shadowy countenance was so bad, it looked
+        ``like a face you'd find on a bottle of miracle elixir that
+        promises to do away with diarrhea in our lifetime</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

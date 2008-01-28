@@ -1,0 +1,34 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="behead">
+<note>
+  Frames file for 'behead' based on sentences in wsj.  No Verbnet
+  entry?  How in the world did Levine miss putting this into the 'pit'
+  class?  I mean, come on.
+</note>
+
+<roleset id="behead.01" name="remove the head" vncls="10.7">
+<roles>
+  <role descr="axeman, agent" n="0"><vnrole vncls="10.7" vntheta="Agent"/></role> 
+  <role descr="entity now without a head" n="1"><vnrole vncls="10.7" vntheta="Source"/></role> 
+</roles>
+
+<example name="now that's a lovely example">
+<inflection aspect="ns" form="gerund" person="ns" tense="ns" voice="ns"/>
+<text>
+    [*] Beheading small children, stabbing elderly people to death,
+    raping and shooting women, and burying people alive are just a few
+    of the grisly activities that the Somali armed forces have been
+    engaged in over the past two years. 
+</text>
+        <arg n="0">[*]</arg>
+        <rel>Beheading</rel>
+        <arg n="1">small children</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

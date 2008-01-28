@@ -1,0 +1,46 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="entrance">
+<note>
+  Frames file for 'entrance' based on sentences in wsj.  Verbnet entry 31.1.
+</note>
+
+<roleset id="entrance.01" name="put into a trance-like state" vncls="31.1">
+<roles>
+  <role descr="causer of trance, agent" n="0">
+        <vnrole vncls="31.1" vntheta="Cause"/></role>
+  <role descr="victim" n="1">
+        <vnrole vncls="31.1" vntheta="Experiencer"/></role>
+  <role descr="instrument, when separate from arg0" n="2"/>
+</roles>
+
+<example name="passive/adjectival">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    And, if still conscious at the evening's end, you notice something
+    else: The audience, at first entranced and hypnotized by the
+    music, releases its pent-up feelings in collective gratitude.  
+</text>
+        <arg n="1">The audience</arg>
+        <arg n="M" f="TMP">at first</arg>
+        <rel>entranced</rel>
+        <arg n="0" f="by">the music</arg>
+</example>
+
+<example name="all args">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John entranced Mary with his soulful rendition of ``I'm a Little Teapot.''
+  </text>
+  <arg n="0">John</arg>
+  <rel>entranced</rel>
+  <arg n="1">Mary</arg>
+  <arg f="with" n="2">his soulful rendition of ``I'm a Little Teapot.''</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

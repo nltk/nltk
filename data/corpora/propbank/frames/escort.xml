@@ -1,0 +1,40 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="escort">
+<note>
+  Frames file for 'escort' based on sentences in wsj.  Verbnet entries
+  51.7 and 29.8, Framenet entry Cotheme.
+</note>
+
+<roleset id="escort.01" name="go along with" vncls="51.7 29.8">
+<roles>
+	<role descr="subject accompanier" n="0">
+		
+  <vnrole vncls="51.7" vntheta="Agent"/><vnrole vncls="29.8" vntheta="Agent"/></role>
+
+	<role descr="object accompanied" n="1">
+		
+  <vnrole vncls="51.7" vntheta="Theme"/><vnrole vncls="29.8" vntheta="Theme"/></role>
+
+	<role descr="start point" n="3"/>
+	<role descr="end point" n="4"/>
+</roles>
+
+<example name="once in the corpus">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+     His massage chair is kept in a closet, and a secretary escorts
+     him past security. 
+</text>
+        <arg n="0">a secretary</arg>
+        <rel>escorts</rel>
+        <arg n="1">him</arg>
+        <arg f="past" n="3">security</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

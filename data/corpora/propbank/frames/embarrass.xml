@@ -1,0 +1,100 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="embarrass">
+<note>
+  Frames file for 'embarrass' based on sentences in wsj.  Verbnet
+  entry 31.1, Framenet entry Experiencer obj.
+</note>
+
+<roleset id="embarrass.01" name="cause shame" vncls="31.1">
+<roles>
+  <role descr="causer of shame" n="0">
+        <vnrole vncls="31.1" vntheta="Cause"/></role>
+  <role descr="embarrassed entity" n="1">
+        <vnrole vncls="31.1" vntheta="Experiencer"/></role>
+  <role descr="instrument, if separate from arg0" n="2"/>
+</roles>
+
+<example name="nice easy transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    But State Department officials accuse Israel of *trace* leaking
+    questionable claims *trace* to embarrass the U.S. 
+</text>
+        <arg n="0">*trace* -&gt; *trace* -&gt;  Israel</arg>
+        <rel>embarrass</rel>
+        <arg n="1">the U.S.</arg>
+</example>
+
+<example name="passivized">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    Conservatives, embarrassed *trace* by Republican
+    influence-peddling scandals at the Department of Housing and Urban
+    Development, have used the issue in an effort to shift blame onto
+    a Democratic-controlled Congress. 
+</text>
+        <rel>embarrassed</rel>
+        <arg n="1">*trace* -&gt;  Conservatives</arg>
+        <arg f="by" n="0">Republican influence-peddling scandals at
+        the Department of Housing and Urban Development</arg> 
+</example>
+
+<example name="all args">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John embarrassed Mary by publically proclaiming his undying love
+     for her.
+  </text>
+  <arg n="0">John</arg>
+  <rel>embarrassed</rel>
+  <arg n="1">Mary</arg>
+  <arg f="by" n="2">publically proclaiming his undying love for her.</arg>
+</example>
+
+<example name="adjectival: progressive">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    Two such actions, both filed earlier this year in Georgia state
+    court in Atlanta, could be particularly embarrassing to the
+    industry: both name J. Chandler Peterson, an Atlanta financial
+    planner who is a founder and past chairman of the IAFP, as
+    defendant. 
+</text>
+        <arg n="0">Two such actions, both filed earlier this year in
+        Georgia state court in Atlanta,</arg> 
+        <arg f="MOD" n="M">could</arg>
+        <arg f="ADV" n="M">particularly</arg>
+        <rel>embarrassing</rel>
+        <arg f="to" n="1">the industry</arg>
+</example>
+
+
+<example name="adjectival: different preposition">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    Lincoln's treatment by former thrift regulators, in an agency
+    disbanded by the new law, has proved embarrassing for five
+    senators who received thousands of dollars in campaign
+    contributions from Mr. Keating. 
+</text>
+        <arg n="0">Lincoln's treatment by former thrift regulators, in
+        an agency disbanded  by the new law,</arg> 
+        <rel>embarrassing</rel>
+        <arg f="for" n="1">five senators who received thousands of
+        dollars in campaign contributions from Mr. Keating</arg> 
+</example>
+
+<example name="adjectival: passive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    People are too embarrassed *trace* to say they haven't done anything.''
+</text>
+        <arg n="1">People</arg>
+        <rel>embarrassed</rel>
+        <arg n="0">*trace* to say they haven't done anything</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

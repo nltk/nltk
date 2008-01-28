@@ -1,0 +1,131 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="shut">
+<note>
+  Frames file for 'shut' based on sentences in financial subcorpus.
+  Verbnet entry other_cos-45.4, other framed members include decrease,
+  halt, narrow, slow, sweeten.  Comparison with 'close' 'exclude' 'end'
+</note>
+
+<roleset id="shut.01" name="close" vncls="45.4">
+<roles>
+  <role descr="person doing the closing" n="0">
+	<vnrole vncls="45.4" vntheta="Agent"/></role>
+  <role descr="thing closing" n="1">
+	<vnrole vncls="45.4" vntheta="Patient"/></role>
+</roles>
+
+<example name="shut the door!">
+<text>
+    Caterpillar also said it will indefinitely lay off about 325
+    workers in the Peoria area and temporarily shut its plant in York,
+    Pa., for two weeks in both November and December. 
+</text>
+        <arg n="0">it</arg>
+        <arg f="MOD" n="M">will</arg>
+        <arg f="TMP" n="M">temporarily</arg>
+        <rel>shut</rel>
+        <arg n="1">its plant in York , Pa. ,</arg>
+        <arg f="TMP" n="M">for two weeks</arg>
+        <arg f="TMP" n="M">in both November and December</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="shut_out">
+
+<roleset id="shut.02" name="exclude, except" vncls="-">
+<roles>
+  <role descr="agent, excluder" n="0"/>
+  <role descr="patient, thing excluded" n="1"/>
+  <role descr="excluded-from" n="2"/>
+</roles>
+
+<example name="you're not invited">
+<text>
+    People close to the GM-Jaguar talks agreed that Ford now may be
+    able *trace* to shut out General Motors. 
+</text>
+        <arg n="0">*trace* -&gt;  Ford</arg>
+        <rel>[ shut] [ out]</rel>
+        <arg n="1">General Motors</arg>
+</example>
+</roleset>
+</predicate>
+
+<predicate lemma="shut_off">
+
+<roleset id="shut.03" name="exclude, except" vncls="-">
+<roles>
+  <role descr="agent, excluder" n="0"/>
+  <role descr="patient, thing excluded" n="1"/>
+  <role descr="excluded-from" n="2"/>
+</roles>
+
+<example name="all args">
+<text>
+    The petition challenged First Union's lending record in the state,
+    saying that the bank-holding company had ``shut itself off from
+    contact with the low-income community and is redlining almost
+    every black neighborhood that it serves in the state.'' 
+</text>
+        <arg n="0">the bank-holding company</arg>
+        <rel>[ shut] [ off]</rel>
+        <arg f="REC" n="1">itself</arg>
+        <arg f="from" n="2">contact with the low-income community</arg>
+</example>
+</roleset>
+
+<roleset id="shut.04" name="turn off, as a light" vncls="-">
+<roles>
+  <role descr="flipper of the switch, agent" n="0"/>
+  <role descr="light" n="1"/>
+</roles>
+
+<example name="darkness falls">
+  <text>
+    John shut off the light.
+  </text>
+  <arg n="0">John</arg>
+  <rel>shut off</rel>
+  <arg n="1">the light</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="shut_down">
+
+<roleset id="shut.05" name="cause to end" vncls="-">
+<roles>
+  <role descr="Intentional agent" n="0"/>
+  <role descr="Thing ending" n="1"/>
+  <role descr="Explicit instrument, thing ended with" n="2"/>
+  <role descr="point at which something ends" n="M"/>
+</roles>
+
+<example name="end">
+<text>
+    Asarco said it plans to shut down *trace* or sell its Rapatee coal
+    mine and will end its involvement in southern Illinois strip
+    mining. 
+</text>
+        <arg n="0">*trace* -&gt;  it</arg>
+        <rel>[ shut] [ down]</rel>
+        <arg n="1">*trace* -&gt; its involvement in southern Illinois
+        strip mining. </arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

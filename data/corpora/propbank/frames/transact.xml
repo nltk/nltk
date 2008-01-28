@@ -1,0 +1,48 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="transact">
+<note>
+  Frames file for 'transact' based on sentences in financial
+  subcorpus.  This is a stupid, stupid, stupid verb backformed from
+  'transaction'.  
+</note>
+
+<roleset id="transact.01" name="perform a transaction">
+<roles>
+  <role descr="entity performing the transaction" n="0"/>
+  <role n="1" descr="mention of the transaction itself"/>
+</roles>
+
+<example name="see what I mean?">
+<text>
+    The current opportunities arise because the process for executing
+    a buy or sell order in the actual stocks that make up the S&amp;P
+    500 is more cumbersome than *trace* transacting in the futures
+    market.  
+</text>
+	<arg n="0">*trace*</arg>
+	<rel>transacting</rel>
+	<arg f="LOC" n="M">in the futures market</arg>
+</example>
+
+<example name="with transaction">
+<inflection person="ns" tense="present" aspect="ns" voice="active" form="gerund"/>
+<text>
+    W.N. Whelen &amp; Co., of Georgetown, Del., and its president,
+    William N. Whelen Jr., also of Georgetown, were barred [*-1] from
+    [*-2] transacting principal trades for 90 days and were jointly
+    fined $15,000.
+</text>
+        <arg n="0">[*-2] ->  [*-1] ->  W.N. Whelen &amp; Co., of
+        Georgetown, Del., and its president, William N. Whelen Jr.,
+        also of Georgetown,</arg> 
+        <rel>transacting</rel>
+        <arg n="1">principal trades</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

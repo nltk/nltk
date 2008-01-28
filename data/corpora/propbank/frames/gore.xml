@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="gore">
+<note>
+  Frames file for 'gore' based on sentences in financial subcorpus.
+  No verbnet entry.  No comparison.
+</note>
+
+<roleset id="gore.01" name="impale">
+<roles>
+  <role descr="agent, gorer" n="0"/>
+  <role descr="victim, entity gored" n="1"/>
+  <role descr="instrument, by default 'horn'" n="2"/>
+</roles>
+
+<example name="passivized, no instrument">
+<text>
+    ``Wall Street 's cash cow has been gored *trace*, but I don't
+    think anyone has proven that index arbitrage is the problem.''  
+</text>
+	<rel>gored</rel>
+	<arg n="1">*trace* -&gt;  Wall Street 's cash cow</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

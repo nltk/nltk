@@ -1,0 +1,103 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="struggle">
+<note>
+Frames file for 'struggle' based on sentences in financial subcorpus
+and automatic expansion via verbnet.
+</note>
+
+<roleset id="struggle.01" name="struggle" vncls="36.1">
+<roles>
+  <role descr="first struggler" n="0">
+	  <vnrole vncls="36.1" vntheta="Actor1"/></role>
+  <role descr="second struggler" n="1">
+	  <vnrole vncls="36.1" vntheta="Actor2"/></role>
+  <role descr="topic or prize" n="2">
+	  <vnrole vncls="36.1" vntheta="Topic"/></role>
+</roles>
+
+<example name="with co-struggler">
+<inflection aspect="perfect" form="participle" person="third" tense="present" voice="active"/>
+<text>
+    Same store-sales for Kentucky Fried Chicken, which *trace* has
+    struggled with increased competition in the fast-food chicken
+    market and a lack of new products, rose only 1%. 
+</text>
+        <arg n="0">*trace* -&gt;  which -&gt;  Kentucky Fried Chicken</arg>
+        <rel>struggled</rel>
+        <arg f="with" n="1">increased competition in the fast-food
+        chicken market and a lack of new products</arg> 
+</example>
+
+<example name="merged strugglers" src="argue.02">
+  <text>
+    John and Mary struggled over the cause of his noxious foot odor.
+  </text>
+  <arg n="0">John and Mary</arg>
+  <rel>struggled</rel>
+  <arg f="over" n="2">the cause of his noxious foot odor</arg>
+</example>
+
+<example name="I can't believe this hasn't occurred yet" src="argue.02">
+  <text>
+    John struggled with Mary over the cause of his noxious foot odor.
+  </text>
+  <arg n="0">John</arg>
+  <rel>struggled</rel>
+  <arg f="with" n="1">Mary</arg>
+  <arg f="over" n="2">the cause of his noxious foot odor</arg>
+</example>
+
+<example name="Competitors merged" src="compete.01">
+  <text>
+    John and Mary struggle fiercely.
+  </text>
+  <arg n="0">John and Mary</arg>
+  <rel>struggle</rel>
+  <arg f="MNR" n="m">fiercely</arg>
+</example>
+
+<example name="with prize" src="compete.01">
+  <text>
+    John struggled with Mary for the last piece of cake.
+  </text>
+  <arg n="0">John</arg>
+  <rel>struggled</rel>
+  <arg f="with" n="1">Mary</arg>
+  <arg f="for" n="2">the last piece of cake</arg>
+</example>
+</roleset>
+
+<roleset id="struggle.02" name="try very hard" vncls="-">
+<roles>
+  <role descr="entity trying" n="0"/>
+  <role descr="predicative action" n="1"/>
+</roles>
+
+<example name="intransitive">
+<inflection aspect="progressive" form="participle" person="third" tense="present" voice="active"/>
+<text>
+    Sears, Roebuck &amp; Co. is struggling as it enters the critical
+    Christmas season. 
+</text>
+        <arg n="0">Sears, Roebuck &amp; Co.</arg>
+        <rel>struggling</rel>
+        <arg f="TMP" n="M">as it enters the critical Christmas season</arg>
+</example>
+
+<example name="with difficult action">
+<inflection aspect="progressive" form="participle" person="third" tense="present" voice="active"/>
+<text>
+    The results show Sears is struggling to attract shoppers.
+</text>
+        <arg n="0">Sears</arg>
+        <rel>struggling</rel>
+        <arg n="1">to attract shoppers</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

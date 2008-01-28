@@ -1,0 +1,143 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="stop">
+<note>
+  Frames file for 'stop' based on survey of initial sentences of big
+  corpus and comparison with 'start'
+</note>
+
+<roleset id="stop.01" name="stop" vncls="55.1">
+<roles>
+  <role descr="Agent" n="0">
+	<vnrole vncls="55.1" vntheta="Agent"/></role>
+  <role descr="Theme (action or object being stopped)" n="1">
+	<vnrole vncls="55.1" vntheta="Theme"/></role>
+  <role descr="Instrument" n="2"/>
+</roles>
+
+<example name="transitive, NP theme">
+  <text>
+  The ban won't stop privately-funded tissue-transplant research.
+  </text>
+  <arg n="0">The ban</arg>
+  <arg f="MOD" n="m">wo</arg>
+  <arg f="NEG" n="m">n't</arg>
+  <rel>stop</rel>
+  <arg n="1">privately-funded tissue-transplant research</arg>
+</example>
+
+<example name="transitive, S theme, agentive">
+  <text>
+  Lorillard Inc stopped using crocidolite in its Micronite cigarette
+  filters in 1956.
+  </text>
+  <arg n="0">Lorillard</arg>
+  <rel>stopped</rel>
+  <arg n="1">*trace* using crocidolite in its Micronite cigarette
+  filters</arg>
+  <arg f="TMP" n="m">in 1956</arg>
+<note>
+Note the volitional agent, compare with the following example.
+</note>
+</example>
+
+<example name="transitive, S theme, agentless">
+<inflection person="ns" tense="past" aspect="perfect" voice="active" form="participle"/>
+<text>
+     He said summer drought problems that had hit several southern
+     agricultural regions had stopped [*-1] being a major source of
+     price pressure in September. 
+</text>
+        <arg n="1">[summer drought problems that had hit several
+        southern agricultural regions][being a major source of price
+        pressure]</arg> 
+        <rel>stopped</rel>
+        <arg n="M" f="TMP">in September</arg>
+<note>
+Note that the droughts cannot volitionally be a source of price
+pressure, so they cannot be an agent.
+</note>
+</example>
+
+<example name="ergative">
+  <text>
+  Which flights stop in Minneapolis?
+  </text>
+  <arg n="1">Which flights</arg>
+  <rel>stop</rel>
+  <arg f="LOC" n="m">in Minneapolis</arg>
+</example>
+
+<example name="made up examples with instrument">
+  <text>
+  Mary stopped John's incessant chattering with a deep passionate kick
+  to the groin.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>stopped</rel>
+  <arg n="1">John's incessant chattering</arg>
+  <arg f="with" n="3">a deep passionate kick to the groin.</arg>
+</example>
+
+<note>
+I really didn't think this sentence was going to end this way.  Came
+as rather a surprise to me, to be honest.
+</note>
+
+<example name="and proving its an arg">
+  <text>
+  Mary's kick to the groin stopped John's incessant chattering.
+  </text>
+  <arg n="3">Mary's kick to the groin</arg>
+  <rel>stopped</rel>
+  <arg n="1">John's incessant chattering</arg>
+</example>
+
+</roleset>
+
+<roleset id="stop.03" vncls="-" name="stop from">
+<roles>
+  <role n="0"  descr="preventer, stopper"/>
+  <role n="1"  descr="stopped agent"/>
+  <role n="2"  descr="stopped action"/>
+</roles>
+
+<example name="stopped event">
+  <text>
+  ...measures *trace-1* to stop the market *trace-2* from plunging too
+  far too fast. 
+  </text>
+  <arg n="0">*trace-1* -> measures</arg>
+  <rel>stop</rel>
+  <arg n="1">the market</arg>
+  <arg n="2" f="from">plunging too far too fast</arg>
+</example>
+</roleset>
+</predicate>
+
+<predicate lemma="stop_by">
+
+<roleset id="stop.02" vncls="-" name="visit briefly">
+<roles>
+  <role n="0"  descr="visitor"/>
+  <role n="1"  descr="place visited"/>
+</roles>
+
+<example name="phrasal">
+<inflection person="ns" tense="ns" aspect="ns" voice="ns" form="ns"/>
+<text>
+    ``I feel like a little kid,'' says a gleeful Alex de Castro, a car
+    salesman, who [*T*-53] has stopped by a workout of the Suns to
+    slip six Campaneris cards to the Great Man Himself to be
+    autographed. 
+</text>
+        <arg n="0">[*T*-53] ->  who ->  a car salesman</arg>
+        <rel>[ stopped] [ by]</rel>
+        <arg n="1">a workout of the Suns</arg>
+        <arg n="M" f="PNC">to slip six Campaneris cards to the Great
+        Man Himself to be autographed</arg> 
+</example>
+
+</roleset>
+</predicate>
+</frameset>

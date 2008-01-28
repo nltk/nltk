@@ -1,0 +1,38 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="glisten">
+<note>
+  Frames file for 'glisten' based on sentences in brown.  Verbnet entry
+</note>
+
+<roleset id="glisten.01" vncls="-" name="reflect light moistly">
+<roles>
+  <role n="0"  descr="thing glistening"/>
+</roles>
+
+<example name="adjectival">
+  <inflection person="ns" tense="ns" aspect="progressive" voice="active" form="participle"/>
+  <text>
+     ..studded with water tanks of turquoise tile in which were
+     reflected the glistening blue curves of a hundred domes.
+  </text>
+  <arg n="0"        >[curves][of a hundred domes]</arg>
+  <rel              >glistening</rel>
+</example>
+
+<example name="verbal">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+     The fountain had brimmed over, the cannon were wet, the soldiers'
+     monument glistened.
+  </text>
+  <arg n="0"        >the soldiers' monument</arg>
+  <rel              >glistened</rel>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="profiteer">
+<note>
+  Frames file for 'profiteer' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="profiteer.01" name="take excessive profits, be a pirate" vncls="-">
+<roles>
+  <role descr="pirate" n="0"/>
+</roles>
+
+<example name="the one example">
+<inflection aspect="perfect" form="participle" person="third" tense="present" voice="active"/>
+<text>
+    ``Let's not forget this is the same company that *trace* has been
+    profiteering with this drug for 2 1/2 years,'' Mr. Weiss added. 
+</text>
+	<arg n="0">*trace* -&gt;  that -&gt;  the same company</arg>
+	<rel>profiteering</rel>
+	<arg f="MNR" n="M">with this drug</arg>
+	<arg f="TMP" n="M">for 2 1/2 years</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,51 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="nationalize">
+<note>
+  Frames file for 'nationalize' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="nationalize.01" name="gov't coopting private property" vncls="-">
+<roles>
+  <role descr="government, usually" n="0"/>
+  <role descr="property, usually industry" n="1"/>
+</roles>
+
+<example name="active">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    A long succession of Mexican presidents arbitrarily nationalized
+    whatever industry they took a fancy to, without having to answer
+    to the public. 
+</text>
+        <arg n="0">A long succession of Mexican presidents</arg>
+        <arg f="MNR" n="M">arbitrarily</arg>
+        <rel>nationalized</rel>
+        <arg n="1">whatever industry they took a fancy to</arg>
+        <arg f="ADV" n="M">without having to answer to the public</arg>
+</example>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    Despite fears the mine may be partially nationalized [*-2] by the
+    new Namibian government following next month's elections freeing
+    the country from South African control, De Beers engineers are
+    working to extend the mine's productive life for another 25 years,
+    from the current estimate of 10. 
+</text>
+        <arg f="MOD" n="M">may</arg>
+        <arg f="MNR" n="M">partially</arg>
+        <rel>nationalized</rel>
+        <arg n="1">[*-2] -&gt;  the mine</arg>
+        <arg f="by" n="0">the new Namibian government</arg>
+        <arg f="TMP" n="M">following next month's elections freeing
+        the country from South African control</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

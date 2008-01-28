@@ -1,0 +1,71 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="manufacture">
+<note>
+  Frames file for 'manufacture' based on sentences in financial
+  subcorpus.  Verbnet entry create-26.4, the only other verb that
+  mentions this class is 'mint' but there must be others.  Comparison
+  to 'make' and 'create'. 
+</note>
+
+<roleset id="manufacture.01" name="create" vncls="26.4">
+<roles>
+  <role descr="creator" n="0">
+		
+  <vnrole vncls="26.4" vntheta="Agent"/></role>
+
+  <role descr="creation" n="1">
+		
+  <vnrole vncls="26.4" vntheta="Product"/></role>
+
+  <role descr="created-from, thing changed" n="2">
+		
+  <vnrole vncls="26.4" vntheta="Material"/></role>
+
+  <role descr="benefactive" n="3">
+		
+  <vnrole vncls="26.4" vntheta="Beneficiary"/></role>
+
+</roles>
+
+<example name="transitive">
+<text>
+    The company has been manufacturing carpet since 1967. 
+</text>
+        <arg n="0">The company</arg>
+        <rel>manufacturing</rel>
+        <arg n="1">carpet</arg>
+        <arg f="TMP" n="M">since 1967</arg>
+</example>
+
+<example name="passive">
+<text>
+    That means goods could be manufactured *trace* closer to
+    customers, saving shipping costs, he said. 
+</text>
+        <arg f="MOD" n="M">could</arg>
+        <rel>manufactured</rel>
+        <arg n="1">*trace* -&gt;  goods</arg>
+        <arg f="LOC" n="M">closer to customers</arg>
+        <arg f="ADV" n="M">saving shipping costs</arg>
+</example>
+
+<example name="with benefactive">
+<text>
+    He said Tandy ``has done a decent job'' *trace* increasing sales
+    by *trace* manufacturing computers for others...
+</text>
+        <arg n="0">*trace* -&gt; *trace* -&gt;  Tandy</arg>
+        <rel>manufacturing</rel>
+        <arg n="1">computers</arg>
+        <arg f="for" n="3">others</arg>
+</example>
+
+<note>
+Source might not occur.  Do not tag adjectival or nominal usages: &quot;The
+manufacturing sector&quot; or &quot;Manufacturing causes pollution.&quot;
+</note>
+
+</roleset>
+</predicate>
+</frameset>

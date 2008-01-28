@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="hiss">
+<note>
+  Frames file for 'hiss' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="hiss.01" name="to utter with a hiss" vncls="37.3">
+<roles>
+  <role descr="speaker" n="0">
+        <vnrole vncls="37.3" vntheta="Agent"/></role>
+  <role descr="utterance" n="1">
+        <vnrole vncls="37.3" vntheta="Topic"/></role>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ `` What 's he doing [*T*-93] ? '' hissed [*T*-1] my companion , who [*T*-91] was the only other English-speaking member of the convention and whose knuckles [*T*-92] were white .
+</text>
+	<rel>hissed</rel>
+	<arg n="1">[*T*-1] -&gt;  What 's he doing [*T*-93]</arg>
+	<arg n="0">my companion , who [*T*-91] was the only other English-speaking member of the convention and whose knuckles [*T*-92] were white</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

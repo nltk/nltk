@@ -1,0 +1,60 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="pale">
+<note>
+Frames file for 'pale' based on sentences in financial subcorpus and
+automatic expansion via verbnet.
+</note>
+
+<roleset id="pale.01" name="become pale" vncls="45.4">
+<roles>
+    <role descr="thing becoming pale" n="1">
+		
+  <vnrole vncls="45.4" vntheta="Patient"/></role>
+
+</roles>
+
+<example name="opposite of blush">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John paled when he saw his reflection in the mirror.
+  </text>
+  <arg n="1">John</arg>
+  <rel>paled</rel>
+  <arg f="TMP" n="m">when he saw his reflection in the mirror</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="pale.02" name="seem weak by comparison" vncls="-">
+<roles>
+  <role descr="thing seeming pale, weak" n="1"/>
+  <role descr="in comparison to" n="2"/>
+</roles>
+
+<example name="usual usage">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/> 
+<text>
+    But those dollars at risk pale in comparison to the investment
+    required [*] [*] to make [*RNR*-3] and ship [*RNR*-3] [*ICH*-4]
+    spring goods to Campeau stores. 
+</text>
+        <arg f="DIS" n="M">But</arg>
+        <arg n="1">those dollars at risk</arg>
+        <rel>pale</rel>
+        <arg n="2">in comparison to the investment required [*] [*] to
+        make [*RNR*-3] and ship [*RNR*-3] [*ICH*-4] spring goods to
+        Campeau stores</arg> 
+</example>
+
+<note>
+Arg2 actually comes in a number of quasi-lexical variants: in
+comparison, by comparision, beside, etc.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

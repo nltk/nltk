@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="profit">
+<note>
+  Frames file for 'profit' based on sentences in financial subcorpus.
+  No verbnet entry.  No comparison.
+</note>
+
+<roleset id="profit.01" name="make money from">
+<roles>
+  <role descr="entity making money" n="0"/>
+  <role descr="source" n="1"/>
+</roles>
+
+<example name="transitive, typical">
+<text>
+    ...protects against stocks being relentlessly beaten downward by
+    those seeking *trace* to profit from lower prices. 
+</text>
+        <arg n="0">*trace* -&gt;  those</arg>
+        <rel>profit</rel>
+        <arg f="from" n="1">lower prices</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

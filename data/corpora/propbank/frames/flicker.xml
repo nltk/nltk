@@ -1,0 +1,34 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="flicker">
+<note>
+  Frames file for 'flicker' based on sentences in financial subcorpus.
+  Verbnet entry 43.1, no other framed members.  Framenet class Light
+  Emission.  No comparison.
+</note>
+
+<roleset id="flicker.01" name="emit light randomly" vncls="43.1">
+<roles>
+  <role descr="source of light" n="1">
+		
+  <vnrole vncls="43.1" vntheta="Theme"/></role>
+
+</roles>
+
+<example name="pretty simple, really">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Lights flickered on and off; plaster dropped from the ceiling, the
+    walls still shook and an evacuation alarm blared outside. 
+</text>
+        <arg n="1">Lights</arg>
+        <rel>flickered</rel>
+        <arg f="MNR" n="M">on and off</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

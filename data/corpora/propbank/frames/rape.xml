@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="rape">
+<note>
+  Frames file for 'rape' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="rape.01" name="to assault sexually" vncls="-">
+<roles>
+  <role descr="assaulter, agent" n="0"/>
+  <role descr="victim" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ I mean , [0] these folks are so uptight that they blame pretty Kate for the fact that when she was a teen-ager [*T*-1] , someone tied her hands behind her back , thrust her head into a gunny sack , brutally raped and beat her , and then left her to die in a cold-storage room .
+</text>
+	<arg n="0">someone</arg>
+	<arg f="MNR" n="M">brutally</arg>
+	<rel>raped</rel>
+	<arg n="1">her</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

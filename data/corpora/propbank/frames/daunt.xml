@@ -1,0 +1,34 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="daunt">
+<note>
+  Frames file for 'daunt' based on sentences in wsj.  No access to
+  Verbnet at the moment.
+</note>
+
+<roleset id="daunt.01" name="cause courage to flag" vncls="31.1">
+<roles>
+  <role descr="causer" n="0"><vnrole vncls="31.1" vntheta="Cause"/></role>
+  <role descr="momentarily courageless entity" n="1"><vnrole vncls="31.1" vntheta="Experiencer"/></role>
+</roles>
+
+<example name="almost always with NEG">
+<inflection aspect="ns" form="participle" person="third" tense="past" voice="passive"/>
+<text>
+    Denver-based portfolio manager James Craig wasn't daunted [*-2]
+    when Friday's rout shaved $40 million from the value of the $752
+    million Janus Fund he oversees. 
+</text>
+        <arg f="NEG" n="M">n't</arg>
+        <rel>daunted</rel>
+        <arg n="1">[*-2] -&gt;  Denver-based portfolio manager James Craig</arg>
+        <arg f="TMP" n="M">when Friday's rout shaved $40 million from
+        the value of the $752 million Janus Fund he oversees</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

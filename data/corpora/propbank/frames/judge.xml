@@ -1,0 +1,140 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="judge">
+<note>
+  Frames file for 'judge' based on sentences in wsj.  Verbnet entry 29.4.
+</note>
+
+<roleset id="judge.01" name="make a judgement" vncls="29.4">
+<roles>
+  <role descr="judge" n="0">
+        <vnrole vncls="29.4" vntheta="Agent"/></role>
+  <role descr="judged" n="1">
+        <vnrole vncls="29.4" vntheta="Theme"/></role>
+  <role descr="judgement, attribute of arg1" n="2">
+        <vnrole vncls="29.4" vntheta="Predicate"/></role>
+  <role descr="on what grounds" n="3"/>
+</roles>
+
+<example name="discourse usage">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="ns"/>
+<text>
+    *trace* Judging from the Americana in Haruki Murakami's ``A Wild
+     Sheep Chase'' Kodansha, 320 pages, $18.95, baby boomers on both
+     sides of the Pacific have a lot in common.  
+</text>
+        <arg n="0"/>
+        <rel>Judging</rel>
+        <arg f="from" n="3">the Americana in Haruki Murakami's ``A
+        Wild Sheep Chase'' Kodansha, 320 pages, $18.95</arg> 
+</example>
+
+<example name="grounds and subject">
+<inflection aspect="ns" form="participle" person="ns" tense="future" voice="passive"/>
+<text>
+    Earlier this week, Dr. Sullivan tried to defuse these charges by
+    stressing that candidates to head the NIH and the CDC will be
+    judged *trace* by ``standards of scientific and administrative
+    excellence,'' not politics. 
+</text>
+        <arg f="MOD" n="M">will</arg>
+        <rel>judged</rel>
+        <arg n="1">*trace* -&gt;  candidates to head the NIH and the CDC</arg>
+        <arg f="by" n="3">``standards of scientific and administrative
+        excellence,'' not politics</arg> 
+</example>
+
+<example name="just thing judged">
+<inflection aspect="perfect" form="participle" person="ns" tense="past" voice="passive"/>
+<text>
+    None of the grants had been requested by HUD, judged *trace*
+    competitively or were the subject of a single hearing. 
+</text>
+        <rel>judged</rel>
+        <arg n="1">*trace* -&gt;  None of the grants</arg>
+        <arg f="MNR" n="M">competitively</arg>
+</example>
+
+<example name="verbal predicate judgement">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    The implications for Britain, France and the rest of Europe of
+    having their currencies tied to the economic policy of a neutral
+    country need considering before we judge Mr. Lawson's resignation
+    to be unfortunate. 
+</text>
+        <arg n="0">we</arg>
+        <rel>judge</rel>
+        <arg n="1">Mr. Lawson's resignation</arg>
+        <arg n="2">to be unfortunate</arg>
+</example>
+
+<example name="simple transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+    ``You've got *trace* to judge where the network will be in three
+    years.'' 
+</text>
+        <arg n="0">*trace* -&gt;  You</arg>
+        <rel>judge</rel>
+        <arg n="1">where the network will be in three years</arg>
+</example>
+
+<example name="lest ye be judged">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+      *trace* Judge Not
+</text>
+        <arg n="0">*trace*</arg>
+        <rel>Judge</rel>
+        <arg f="NEG" n="M">Not</arg>
+</example>
+
+<example name="adjectival predicate judgement">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    Baker had bitter experience of bigotry from her St. Louis
+    childhood and her days in New York theater, where she was judged
+    *trace* too dark for an all-black chorus line performing of course
+    for all-white audiences. 
+</text>
+        <rel>judged</rel>
+        <arg n="1">*trace* -&gt;  she</arg>
+        <arg n="2">too dark for an all-black chorus line
+        performing of course for all-white audiences</arg> 
+</example>
+
+<example name="prepositional judgement">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    He chastises Jo Franklin-Trout for her inept presentation of
+    advocacy journalism, *trace* judging her project as
+    ``intellectually slipshod.'' 
+</text>
+        <arg n="0">*trace* -&gt;  He</arg>
+        <rel>judging</rel>
+        <arg n="1">her project</arg>
+        <arg f="as" n="2">``intellectually slipshod</arg>
+</example>
+
+<example name="missing subject of judgement">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+     Consider, for example, the greenhouse effect and climate change;
+     numerous blue-ribbon scientific committees, including one from
+     the National Academy of Science, judge there is a greater than
+     50% probability of a grave problem in the offing. 
+</text>
+        <arg n="0">numerous blue-ribbon scientific committees,
+        including one from the National Academy of Science,</arg> 
+        <rel>judge</rel>
+        <arg n="2">there is a greater than 50% probability of a grave
+        problem in the offing</arg> 
+</example>
+
+<note>
+Perhaps this last one should be split into a separate roleset
+('believe'), but I'd rather not.  It still fits (albeit somewhat
+awkwardly) into this one.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

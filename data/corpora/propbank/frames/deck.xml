@@ -1,0 +1,53 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="deck">
+<note>
+  Frames file for 'deck' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="deck.01" name="to decorate, adorn" vncls="-">
+<roles>
+  <role descr="decorator, agent" n="0"/>
+  <role descr="entity decked" n="1"/>
+  <role descr="decoration" n="2"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+ It [*EXP*-2] was hard [*] to see how photosynthesis would ever happen in South Gardens without [*] decking the walls in a Christmas-like array of Gro-Lites [*T*-1] .
+</text>
+	<arg n="0">[*]</arg>
+	<rel>decking</rel>
+	<arg n="1">the walls</arg>
+	<arg f="in" n="2">a Christmas-like array of Gro-Lites</arg>
+</example>
+</roleset>
+</predicate>
+
+<predicate lemma="deck_out">
+<roleset id="deck.02" name="to dress up" vncls="-">
+<roles>
+  <role descr="person putting on clothes" n="0"/>
+  <role descr="person wearing clothes" n="1"/>
+  <role descr="clothes" n="2"/>
+</roles>
+
+<example name="participle">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+ Mr. Roman , by contrast , seems [*-1] rarely to cut loose at all , although he did appear at Ogilvy 's Halloween party Friday [*-2] decked out in duck feet and a duck hat , [*-3] costumed as a `` lame duck . ''
+</text>
+	<arg n="1">[*-2] -&gt;  he</arg>
+	<rel>[ decked] [ out]</rel>
+	<arg f="in" n="2">duck feet and a duck hat</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

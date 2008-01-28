@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="customize">
+<note>
+  Frames file for 'customize' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="customize.01" name="adapt for a specific purpose/person" vncls="-">
+<roles>
+  <role descr="adaptor, agent" n="0"/>
+  <role descr="thing customized" n="1"/>
+  <role descr="purpose/beneficiary/target" n="2"/>
+</roles>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    Most of the mailers are free, but Denver-based Financial Programs
+    sells, for $15, a version customized [*] to the age of the child
+    and the college of choice. 
+</text>
+        <rel>customized</rel>
+        <arg n="1">[*] -&gt;  a version</arg>
+        <arg f="to" n="2">the age of the child and the college of choice</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="illuminate">
+<note>
+  Frames file for 'illuminate'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="illuminate.01" name="to provide with light, clarify" vncls="25.3">
+<roles> 
+  <role descr="causer" n="0"><vnrole vncls="25.3" vntheta="Agent"/></role>  
+  <role descr="entity illuminated" n="1"><vnrole vncls="25.3" vntheta="Destination"/></role> 
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ The danger that Ms. Bogart seems [*-2] to be courting [*T*-1] here is one of obfuscation rather than rejuvenation , a vision so at odds with the playwright 's that the two points of view nullify , rather than illuminate , each other .
+</text>
+	<arg n="0">the two points of view</arg>
+	<rel>illuminate</rel>
+	<arg n="1">each other</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

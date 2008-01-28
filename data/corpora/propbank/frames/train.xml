@@ -1,0 +1,94 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="train">
+<note>
+  Frames file for 'train' based on sentences in wsj.  No Verbnet entry
+  present at the moment. 
+</note>
+
+<roleset id="train.01" name="teach a skill" vncls="-">
+<roles>
+  <role descr="trainer" n="0"/>
+  <role descr="skill" n="1"/>
+  <role descr="trainee" n="2"/>
+</roles>
+
+<example name="all args">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    Trifari now trains sales help to advise customers on the best
+    earring styles. 
+</text>
+        <arg n="0">Trifari</arg>
+        <arg f="TMP" n="M">now</arg>
+        <rel>trains</rel>
+        <arg n="2">sales help</arg>
+        <arg n="1">to advise customers on the best earring
+        styles</arg> 
+</example>
+
+<example name="non-predicative skill">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="passive"/>
+<text>
+    Democrats argued that the training wage was a way of allowing
+    employers to pay less than the minimum wage, while new workers
+    need far less than six months *trace* to be trained *trace* for
+    their jobs. 
+</text>
+        <rel>trained</rel>
+        <arg n="2">*trace* -&gt; *trace* -&gt;  new workers</arg>
+        <arg f="for" n="1">their jobs</arg>
+</example>
+
+<example name="unmentioned skill">
+<inflection aspect="ns" form="gerund" person="ns" tense="ns" voice="ns"/>
+<text>
+    They also support a tax credit for employers to offset the cost of
+    *trace* hiring and training workers who temporarily replace
+    employees on parental leave. 
+</text>
+        <arg n="0">*trace* -&gt;  employers</arg>
+        <rel>training</rel>
+        <arg n="2">workers who  temporarily replace employees on
+        parental leave</arg> 
+</example>
+
+<example name="arg2-ergative">
+<inflection aspect="both" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+    Some have been training for months; others only recently left
+    active status. 
+</text>
+        <arg n="2">Some</arg>
+        <rel>training</rel>
+        <arg f="TMP" n="M">for months</arg>
+</example>
+
+<note>
+Argument order suggested by comparison with 'teach' (and assumptions
+of automatic tagger).
+</note>
+
+</roleset>
+
+<roleset id="train.02" name="aim, focus" vncls="-">
+<roles>
+  <role descr="agent, focusser" n="0"/>
+  <role descr="thing focussed" n="1"/>
+  <role descr="focussed-on" n="2"/>
+</roles>
+
+<example name="ready, aim, fire!">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    From the air, ribbons of yellow fire hose carry water from the bay
+    to high-pressure nozzles trained *trace* on the site. 
+</text>
+        <rel>trained</rel>
+        <arg n="1">*trace* -&gt;  high-pressure nozzles</arg>
+        <arg f="on" n="2">the site</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

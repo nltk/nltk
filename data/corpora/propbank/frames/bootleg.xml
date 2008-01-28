@@ -1,0 +1,40 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="bootleg">
+<note>
+  Frames file for 'bootleg' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="bootleg.01" vncls="-" name="copy or manufacture illegally">
+<roles>
+  <role n="0"  descr="copier, agent"/>
+  <role n="1"  descr="commodity"/>
+</roles>
+
+<example name="adjectival">
+<inflection person="ns" tense="ns" aspect="ns" voice="passive" form="participle"/>
+<text>
+     In September 1971 California officials seized ``bootlegged''
+lenses -- made by unlicensed companies -- after some showed traces of
+bacteria.  
+</text>
+	<rel>bootlegged</rel>
+	<arg n="1">lenses</arg>
+</example>
+
+<example name="verbal">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+     John bootlegged Mary's entire collection of ABBA tapes.
+  </text>
+  <arg n="0"        >John</arg>
+  <rel              >bootlegged</rel>
+  <arg n="1"        >Mary's entire collection of ABBA tapes</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

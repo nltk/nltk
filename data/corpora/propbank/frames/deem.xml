@@ -1,0 +1,73 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="deem">
+<note>
+Frames file for 'deem' based on sentences in wsj and automatic
+expansion via verbnet.
+</note>
+
+<roleset id="deem.01" name="assign a value" vncls="29.1">
+<roles>
+	<role descr="assigner" n="0">
+		
+  <vnrole vncls="29.1" vntheta="Agent"/></role>
+
+	<role descr="object, thing under consideration" n="1">
+		
+  <vnrole vncls="29.1" vntheta="Theme"/></role>
+
+	<role descr="value of arg1" n="2">
+		
+  <vnrole vncls="29.1" vntheta="Predicate"/></role>
+
+</roles>
+
+<example name="value as adjective phrase">
+<inflection aspect="perfect" form="participle" person="third" tense="present" voice="active"/>
+<text>
+    So far, Mrs. Hills hasn't deemed any cases bad enough to merit an
+    accelerated investigation under the so-called special 301
+    provision of the act. 
+</text>
+        <arg f="DIS" n="M">So far</arg>
+        <arg n="0">Mrs. Hills</arg>
+        <arg f="NEG" n="M">n't</arg>
+        <rel>deemed</rel>
+        <arg n="1">any cases</arg>
+        <arg n="2">bad enough to merit an accelerated
+        investigation under the so-called special 301 provision of the
+        act</arg> 
+</example>
+
+<example name="value as infinitive clause">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    In one feature, called ``In the Dumpster,'' editors point out a
+    product *trace* they deem *trace* to be a particularly bad
+    offender. 
+</text>
+        <arg n="0">they</arg>
+        <rel>deem</rel>
+        <arg n="1">*trace* -&gt; *trace* -&gt;  a product</arg>
+        <arg n="2">to be a particularly bad offender</arg>
+</example>
+
+<example name="with passive extraction">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    Those countries -- including Japan, Italy, Canada, Greece and
+    Spain -- are still of some concern to the U.S. but are deemed
+    *trace* to pose less-serious problems for American patent and
+    copyright owners than those on the ``priority'' list. 
+</text>
+        <rel>deemed</rel>
+        <arg n="1">*trace* -&gt;  Those countries -- including Japan,
+        Italy, Canada, Greece and Spain --</arg> 
+        <arg n="2">to pose less-serious problems for American
+        patent and copyright owners than those on the ``priority''
+        list</arg> 
+</example>
+
+</roleset>
+
+</predicate>
+</frameset>

@@ -1,0 +1,46 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="outstrip">
+<note>
+  Frames file for 'outstrip' based on sentences in financial
+  subcorpus.  No Verbnet entry, no framenet entry.  Comparison with 'exceed'.
+</note>
+
+<roleset id="outstrip.01" name="exceed, be more than" vncls="-">
+<roles>
+  <role descr="thing that's more" n="0"/>
+  <role descr="thing that's less" n="1"/>
+  <role descr="margin, difference" n="2"/>
+</roles>
+
+<example name="just transitive">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    And the number of stocks hitting new lows far outstrips the number
+    setting new highs. 
+</text>
+        <arg f="DIS" n="M">And</arg>
+        <arg n="0">the number of stocks hitting new lows</arg>
+        <arg f="MNR" n="M">far</arg>
+        <rel>outstrips</rel>
+        <arg n="1">the number setting new highs</arg>
+</example>
+
+<example name="with margin">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Declining issues on the Big Board outstripped gainers 1,141 to
+    406. 
+</text>
+        <arg n="0">Declining issues on the Big Board</arg>
+        <rel>outstripped</rel>
+        <arg n="1">gainers</arg>
+        <arg f="EXT" n="2">1,141 to 406</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

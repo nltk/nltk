@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="unplug">
+<note>
+  Frames file for 'unplug' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="unplug.01" name="pull the plug" vncls="-">
+<roles>
+  <role descr="puller, agent" n="0"/>
+  <role descr="thing unplugged" n="1"/>
+</roles>
+
+<example name="the one example">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+    Stanley Rose, a vice president, technological and strategic
+    planning at Bankers Trust, says that despite Digital's low prices,
+    ``we aren't about [*-1] to unplug our IBM mainframes for a DEC
+    machine. 
+</text>
+        <arg n="0">[*-1] -&gt;  we</arg>
+        <rel>unplug</rel>
+        <arg n="1">our IBM mainframes</arg>
+        <arg f="CAU" n="M">for a DEC machine</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

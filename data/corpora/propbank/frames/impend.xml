@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="impend">
+<note>
+  Frames file for 'impend' based on sentences in wsj.  no Verbnet entry.
+</note>
+
+<roleset id="impend.01" vncls="-" name="happen soon">
+<roles>
+  <role n="1"  descr="anticipated event"/>
+</roles>
+
+<example name="here it comes!">
+  <inflection person="ns" tense="ns" aspect="progressive" voice="active" form="participle"/>
+  <text>
+     Rumors of an impending devaluation have been circulating in
+     Moscow for weeks, but the size of the cut took many Western
+     bankers by surprise. 
+  </text>
+  <rel              >impending</rel>
+  <arg n=""        >devaluation</arg>
+</example>
+
+<note>
+Often as 'impending doom', I'll bet.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

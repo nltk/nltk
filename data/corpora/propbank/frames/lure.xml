@@ -1,0 +1,59 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="lure">
+<note>
+  Frames file for 'lure' based on sentences in financial subcorpus.
+  No verbnet entry.  Comparison with 'attract'.
+</note>
+
+<roleset id="lure.01" name="attract, draw near">
+<roles>
+  <role descr="attractor" n="0"/>
+  <role descr="thing attracted" n="1"/>
+  <role descr="thing attracted to, if separate from attractor,   or lured from" n="2"/>
+  <role descr="instrument, if separate from attractor" n="3"/>
+</roles>
+
+<example name="basic transitive">
+<text>
+    They are still trying *trace* to lure back small investors spooked
+    by the 1987 stock-market crash and the market's swings since then.  
+</text>
+	<arg n="0">*trace* -&gt;  They</arg>
+	<rel>lure</rel>
+	<arg f="DIR" n="M">back</arg>
+	<arg n="1">small investors spooked by the 1987 stock-market
+	crash and the market's swings since then</arg> 
+</example>
+
+<example name="lured from">
+<text>
+    United paid him a $375,000 bonus *trace* to lure him away from
+    American Airlines. 
+</text>
+	<arg n="0">*trace* -&gt; United</arg>
+	<rel>lure</rel>
+	<arg n="1">him</arg>
+	<arg f="away" n="2">from American Airlines</arg>
+</example>
+
+<example name="lured to, with instrument">
+  <text>
+    Mary lured John to his doom with the promise of a peanut-butter
+    sandwich.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>lured</rel>
+  <arg n="1">John</arg>
+  <arg f="to" n="2">his doom</arg>
+  <arg f="with" n="3">the promise of a peanut-butter sandwich.</arg>
+</example>
+
+<note>
+I'm gambling that lure-to and lure-from cannot cooccur.  If they do,
+I'm screwed.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

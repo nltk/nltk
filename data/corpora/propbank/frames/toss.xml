@@ -1,0 +1,87 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="toss">
+<note>
+  Frames file for 'toss' based on sentences in wsj.  Verbnet entries
+  17.1, 40.3.2 (but that seems bogus) and 26.3-1; Framenet entries
+  Body movement and Cause to move.
+</note>
+
+<roleset id="toss.01" name="throw randomly" vncls="17.1 40.3.2 26.3-1">
+<roles>
+  <role descr="tosser(s)" n="0">
+        <vnrole vncls="17.1" vntheta="Agent"/>
+        <vnrole vncls="26.3-1" vntheta="Agent"/>
+        <vnrole vncls="40.3.2" vntheta="Agent"/></role>
+  <role descr="thing tossed" n="1">
+        <vnrole vncls="17.1" vntheta="Patient"/>
+        <vnrole vncls="26.3-1" vntheta="Product"/>
+        <vnrole vncls="40.3.2" vntheta="Patient"/></role>
+</roles>
+
+<example name="pretty basic">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+     Unable to unload a large block of a French blue-chip company's
+     shares in Paris for two days last week, a frustrated Scottish
+     Amicable fund manager finally tossed down her phone in disgust
+     and called James Capel &amp; Co., a London brokerage firm. 
+</text>
+        <arg n="0">a frustrated Scottish Amicable fund manager</arg>
+        <arg f="TMP" n="M">finally</arg>
+        <rel>tossed</rel>
+        <arg f="DIR" n="M">down</arg>
+        <arg n="1">her phone</arg>
+        <arg f="MNR" n="M">in disgust</arg>
+</example>
+
+<example name="could be phrasal, could be not">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    We suggest that Mr. Fernandez find an incompetent principal, toss
+    him out of the building and let the forces of the status quo
+    explain to the parents whatever it is they're defending. 
+</text>
+        <arg n="0">Mr. Fernandez</arg>
+        <rel>toss</rel>
+        <arg n="1">him</arg>
+        <arg f="DIR" n="M">out of the building</arg>
+</example>
+
+<note>
+Compare to the phrasal example below.
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="toss_out">
+
+<roleset id="toss.02" name="get rid of" vncls="-">
+<roles>
+  <role descr="eliminator, agent" n="0"/>
+  <role descr="thing eliminated" n="1"/>
+</roles>
+
+<example name="yer outta here">
+<inflection aspect="perfect" form="ns" person="ns" tense="past" voice="active"/><text>
+    The judge handling the case in state Supreme Court, a trial court,
+    had tossed out the jury verdicts, ruling that the matter should
+    have been handled under federal Occupational Safety and Health
+    Administration rules. 
+</text>
+        <arg n="0">The judge handling the case in state Supreme Court,
+        a trial court,</arg> 
+        <rel>[ tossed] [ out]</rel>
+        <arg n="1">the jury verdicts</arg>
+        <arg f="ADV" n="M">ruling that the matter should have been
+        handled under federal Occupational Safety and Health
+        Administration rules</arg> 
+</example>
+
+<note>
+cf the second example in toss.01
+</note>
+
+</roleset>
+</predicate>
+</frameset>

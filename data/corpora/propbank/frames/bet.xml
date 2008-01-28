@@ -1,0 +1,89 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="bet">
+<note>
+  Frames file for 'bet' based on sentences in financial subcorpus.
+  Verbnet entry 54.5, no other framed members.  No comparison.
+</note>
+
+<roleset id="bet.01" name="wager" vncls="54.5">
+<roles>
+  <role descr="better" n="0">
+	  <vnrole vncls="54.5" vntheta="Agent"/></role>
+  <role descr="amount of bet" n="1">
+	  <vnrole vncls="54.5" vntheta="Asset"/></role>
+  <role descr="basis, proposition, bet-on" n="2">
+	  <vnrole vncls="54.5" vntheta="Cause"/></role>
+  <role descr="co-better" n="3"/>
+</roles>
+
+<example name="nominal proposition">
+<text>
+    Speculative investors, *trace* betting on an imminent clash
+    between Ford and GM, pushed up Jaguar's share price... 
+</text>
+        <arg n="0">*trace* -&gt;  Speculative investors</arg>
+        <rel>betting</rel>
+        <arg f="on" n="2">an imminent clash between Ford and GM</arg>
+</example>
+
+<example name="with amount">
+<text>
+    That would be a huge problem if it were to continue, because
+    Unisys is betting its business on the assumption that customers
+    want to move away from using operating systems that run on only
+    one manufacturer's equipment and toward systems -- mainly Unix --
+    that work on almost anyone's machines. 
+</text>
+        <arg n="0">Unisys</arg>
+        <rel>betting</rel>
+        <arg n="1">its business</arg>
+        <arg f="on" n="2">the assumption that customers want to move
+        away from using operating systems that run on only one
+        manufacturer's equipment and toward systems -- mainly Unix --
+        that work on almost anyone's machines</arg> 
+</example>
+
+<example name="sentential proposition">
+<text>
+    That indicates speculators are betting a higher offer is in the
+    wings. 
+</text>
+        <arg n="0">speculators</arg>
+        <rel>betting</rel>
+        <arg n="2">a higher offer is in the wings</arg>
+</example>
+
+<note>
+Leave the complementizer (if present) out of the proposition argument.
+</note>
+
+<example name="sentential proposition and dollar amount">
+  <text>
+    John bet his life that the stock market would never go down.
+  </text>
+  <arg n="0">John</arg>
+  <rel>bet</rel>
+  <arg n="1">his life</arg>
+  <arg n="2">the stock market would never go down</arg>
+</example>
+
+<example name="with co-better">
+<inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+<text>
+ Two years ago , a Canadian reader bet Omni Magazine $ 1,000 [*U*] that it could n't debunk the uncanny goings-on in `` the Oregon Vortex , '' a former Indian burial ground in southern Oregon .
+</text>
+        <arg n="M" f="TMP">Two years ago</arg>
+        <arg n="0">a Canadian reader</arg>
+        <rel>bet</rel>
+        <arg n="3">Omni Magazine</arg>
+        <arg n="1">$ 1,000 [*U*]</arg>
+        <arg n="2">it could n't debunk the uncanny goings-on in `` the Oregon Vortex , '' a former Indian burial ground in southern Oregon</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

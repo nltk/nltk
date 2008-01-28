@@ -1,0 +1,44 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="stub">
+<note>
+  Frames file for 'stub' based on sentences in wsj.  Verbnet entry
+  40.8.3, Framenet entry Experience bodily harm.
+</note>
+
+<roleset id="stub.01" name="whack the toe into   something hard" vncls="40.8.3">
+<roles>
+  <role descr="whacker" n="0"><vnrole vncls="40.8.3" vntheta="Experiencer"/></role>
+  <role descr="toe" n="1"><vnrole vncls="40.8.3" vntheta="Patient"/></role>
+  <role descr="obstacle" n="2"/>
+</roles>
+
+<example name="adjectival">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    NO MORE STUBBED toes or bruised shins, promises Geste Corp. of
+    Goshen, Ind., the designer of a bed support to replace traditional
+    frames. 
+</text>
+        <rel>STUBBED</rel>
+        <arg n="1">toes</arg>
+</example>
+
+<example name="all args">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     Mary stubbed her toe on John's skull, several times.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>stubbed</rel>
+  <arg n="1">her toe</arg>
+  <arg f="on" n="2">John's skull</arg>
+  <arg f="TMP" n="m">several times</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

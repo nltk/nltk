@@ -1,0 +1,52 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="pin">
+<note>
+  Frames file for 'pin' based on sentences in financial subcorpus.  No
+  access to verbnet.  Comparison to 'attach'.
+</note>
+
+<roleset id="pin.01" name="attach with a pin" vncls="22.4">
+<roles>
+  <role descr="agent, entity causing two objects to be attached" n="0">
+		
+  <vnrole vncls="22.4" vntheta="Agent"/></role>
+
+  <role descr="patient, thing(s) being tied" n="1">
+		
+  <vnrole vncls="22.4" vntheta="Patient1"/></role>
+
+  <role descr="instrument" n="2">
+		
+  <vnrole vncls="22.4" vntheta="Patient2"/></role>
+
+</roles>
+
+<example name="the one example">
+<text>
+    The release of MiniScribe's new balance sheet came one day after
+    it introduced its new line of one-inch disk drives, on which it is
+    pinning much of its hope for survival *trace*. 
+</text>
+        <arg n="0">it</arg>
+        <rel>pinning</rel>
+        <arg n="1">much of its hope for survival</arg>
+        <arg n="1">*trace* -&gt;  on which -&gt;  one-inch disk drives</arg>
+</example>
+
+<example name="ouch">
+  <text>
+    John pinned his heart to his sleeve.
+  </text>
+  <arg n="0">John</arg>
+  <rel>pinned</rel>
+  <arg n="1">his heart</arg>
+  <arg f="to" n="1">his sleeve</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

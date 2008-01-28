@@ -1,0 +1,77 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="conduct">
+
+<note>
+  Frames file for 'conduct' based on sentences in financial subcorpus.
+  Verbnet entry 51.7, no other framed members.  Framenet entry
+  Cotheme.  Comparison with lead. Additional sense added for NomBank
+</note>
+<roleset id="conduct.01" name="directed motion">
+<roles>
+  <role descr="conductor" n="0"/>
+  <role descr="thing led" n="1"/>
+</roles>
+
+<example name="lead an activity">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Urging LIN directors *trace* to conduct ``a fair auction on a
+    level playing field,'' ... 
+</text>
+        <arg n="0">*trace* -&gt;  LIN directors</arg>
+        <rel>conduct</rel>
+        <arg n="1">a fair auction</arg>
+        <arg f="LOC" n="M">on a level playing field</arg>
+</example>
+
+<example name="passivized">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    The study, conducted *trace* by a task force of the Brookings
+    Institution, suggests that Congress should require the courts to
+    develop the plans. 
+</text>
+        <rel>conducted</rel>
+        <arg n="1">*trace* -&gt;  The study</arg>
+        <arg f="by" n="0">a task force of the Brookings Institution</arg>
+</example>
+
+<example name="lead music">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    I, for instance, was perfectly happy at Avery Fisher Hall the
+    other day listening to Helmuth Rilling conduct the Messa per
+    Rossini, a strange piece written by 13 different Italian composers
+    to honor Rossini after his death in 1868. 
+</text>
+        <arg n="0">Helmuth Rilling</arg>
+        <rel>conduct</rel>
+        <arg n="1">the Messa per Rossini, a strange piece written by
+        13 different Italian composers to honor Rossini after his
+        death in 1868</arg> 
+</example>
+</roleset>
+
+<roleset id="conduct.02" name="behavior">
+<roles>
+  <role descr="agent" n="0"/>
+  <role descr="manner" n="1"/>
+</roles>
+
+<example>
+<text>
+We all thought little Max conducted himself very well.
+</text>
+        <arg n="0">little Max</arg> 
+        <rel>conduct</rel>
+	<arg  n="1">very well</arg>
+
+</example>
+
+</roleset>
+</predicate>
+<note>
+  frames updated by Ruth
+</note>
+
+</frameset>

@@ -1,0 +1,42 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="handcuff">
+<note>
+  Frames file for 'handcuff' based on sentences in wsj.  No access to verbnet
+  at the moment.
+</note>
+
+<roleset id="handcuff.01" name="attach with handcuffs" vncls="22.4">
+<roles>
+  <role descr="cop" n="0"><vnrole vncls="22.4" vntheta="Agent"/></role>
+  <role descr="criminal, thing(s) being attached" n="1"><vnrole vncls="22.4" vntheta="Patient1"/></role>
+  <role descr="handcuffs (probably unnecessary)" n="2"><vnrole vncls="22.4" vntheta="Patient2"/></role>
+</roles>
+
+<example name="adjectival">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+     This is keeping the gold traders handcuffed.''
+</text>
+        <arg n="1">the gold traders</arg>
+        <rel>handcuffed</rel>
+</example>
+
+<example name="kinky">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     Mary handcuffed John to the bed, then went out to a movie.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>handcuffed</rel>
+  <arg n="1">John</arg>
+  <arg f="to" n="1">the bed</arg>
+<note>
+Yes, those are BOTH arg1.
+</note>
+
+</example>
+
+</roleset>
+</predicate>
+</frameset>

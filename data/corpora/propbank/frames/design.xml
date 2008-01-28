@@ -1,0 +1,62 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="design">
+<note>
+  Frames file for 'design' based on survey of initial sentences of big
+  corpus and comparison with 'plan'
+</note>
+
+<roleset id="design.01" name="design" vncls="26.4-1">
+<roles>
+  <role descr="designer" n="0">
+		
+  <vnrole vncls="26.4-1" vntheta="Agent"/></role>
+
+  <role descr="thing designed" n="1">
+		
+  <vnrole vncls="26.4-1" vntheta="Product"/></role>
+
+  <role descr="benefactive" n="2">
+		
+  <vnrole vncls="26.4-1" vntheta="Beneficiary"/></role>
+
+  <role descr="purpose" n="3"/>
+</roles>
+
+<example name="active">
+  <text>
+  Fujitsu will design a computer system to map its waterworks.
+  </text>
+  <arg n="0">Fujitsu</arg>
+  <arg f="MOD" n="m">will</arg>
+  <rel>design</rel>
+  <arg n="1">a computer system</arg>
+  <arg n="3">to map its waterworks</arg>
+</example>
+
+<example name="passivized">
+  <text>
+  They are designed *trace* to eliminate the risk of prepayment.
+  </text>
+  <arg n="1">*trace=They*</arg>
+  <rel>designed</rel>
+  <arg n="3">to eliminate the risk of prepayment</arg>
+</example>
+
+<example name="with benefactive">
+  <text>
+    It will design a system for the Saitama prefectural library.
+  </text>
+  <arg n="0">It</arg>
+  <arg f="MOD" n="m">will</arg>
+  <rel>design</rel>
+  <arg n="1">a system</arg>
+  <arg f="for" n="2">the Saitama prefectural library</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,79 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="devise">
+<note>
+  Frames file for 'devise' based on sentences in wsj.  No Verbnet
+  entry. 
+</note>
+
+<roleset id="devise.01" name="come up with" vncls="-">
+<roles>
+  <role descr="deviser" n="0"/>
+  <role descr="thing dreamed up" n="1"/>
+  <role descr="secondary predication on arg1" n="2"/>
+</roles>
+
+<example name="simple transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Lawmakers representing some of the cleaner utilities have been
+    quietly working with the White House  to devise ways to tinker
+    with the administration bill to address their acid-rain concerns.
+</text>
+        <arg n="0">*trace* -&gt;  Lawmakers representing some of the
+        cleaner utilities</arg> 
+        <rel>devise</rel>
+        <arg n="1">ways to tinker with the administration bill to
+        address their acid-rain concerns</arg> 
+</example>
+
+<example name="with 2dy predication">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    Keeping the mood light, the two then chanted and chortled their
+    way through some murderous polyrhythms, devised *trace* by
+    Mr. Douglas as an alternative to Hindemith's dry theory-teaching
+    techniques, and then, with Mr. Gomez, soared and improvised on the
+    composer's tight ``Bebop Etudes.'' 
+</text>
+        <rel>devised</rel>
+        <arg n="1">*trace* -&gt;  some murderous polyrhythms</arg>
+        <arg f="by" n="0">Mr. Douglas</arg>
+        <arg f="as" n="2">as an alternative to Hindemith's dry
+        theory-teaching techniques</arg> 
+</example>
+
+<example name="with purpose">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    They devised a 69-point scale -- awarding one point for each
+    subskill measured on the CAT test -- to rate the closeness of test
+    preparatives to the fifth-grade CAT. 
+</text>
+        <arg n="0">They</arg>
+        <rel>devised</rel>
+        <arg n="1">a 69-point scale</arg>
+        <arg n="M">--  awarding one point for each subskill measured
+        on the CAT test --</arg> 
+        <arg f="PNC" n="M">to rate the closeness of test preparatives
+        to the fifth-grade CAT</arg> 
+</example>
+
+<example name="watch for to-clauses">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    The system worked the way *trace* we devised it to work *trace*.'' 
+</text>
+        <arg n="0">we</arg>
+        <rel>devised</rel>
+        <arg n="1">it</arg>
+        <arg n="2">to work</arg>
+        <arg f="MNR" n="M">*trace* -&gt; *trace* -&gt;  the way</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

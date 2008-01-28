@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="strive">
+<note>
+  Frames file for 'strive' based on sentences in financial subcorpus.
+  No verbnet entry.  Comparison with 'try'.  
+</note>
+
+<roleset id="strive.01" name="try, attempt">
+<roles>
+    <role descr="Agent/Entity Trying" n="0"/>
+    <role descr="thing tried" n="1"/>
+</roles>
+
+<example name="typical usage">
+<text>
+    Sotheby's, the auction house founded in London 1744 and now under
+    the umbrella of Sotheby's Holdings Inc., was hoping to stir up
+    interest in old masters as it strove to build its U.S. business. 
+</text>
+        <arg n="0">it</arg>
+        <rel>strove</rel>
+        <arg n="1">to build its U.S. business</arg>
+</example>
+
+<note>
+Frankly, I'm impressed the wordnet lemmatizer recognized &quot;strove&quot; as
+the past tense of &quot;strive&quot;.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

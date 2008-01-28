@@ -1,0 +1,47 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="rivet">
+<note>
+  Frames file for 'rivet' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+
+<roleset id="rivet.01" name="to focus or hold one's attention" vncls="-">
+<roles>
+  <role descr="cause of focussing" n="0"/>
+  <role descr="entity riveted" n="1"/>
+  <role descr="target of attention" n="2"/>
+</roles>
+
+
+
+<example name="Arg2 as a subject">
+<inflection aspect="perfect" form="participle" person="ns" tense="past" voice="active"/>
+<text>
+ The playoff series had riveted the 12-year-old Giants fan .
+</text>
+	<arg n="2">The playoff series</arg>
+	<rel>riveted</rel>
+	<arg n="1">the 12-year-old Giants fan</arg>
+</example>
+
+
+<example name="prepositional Arg2">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ But attention also rivets on who [*T*-1] finishes last , and Pine Bluff , Ark. -- which [*T*-2] finished third to last in 1981 and second to last in 1985 -- is certainly in the running .
+</text>
+	<arg f="DIS" n="M">But</arg>
+	<arg n="1">attention</arg>
+	<arg f="DIS" n="M">also</arg>
+	<rel>rivets</rel>
+	<arg f="on" n="2">who [*T*-1] finishes last</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

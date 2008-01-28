@@ -1,0 +1,43 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="comprise">
+<note>
+  Frames file for 'comprise' based on survey of sentences in the WSJ
+  corpus. Comparison with 'contain'.
+</note>
+
+<roleset id="comprise.01" name="to composed of, constitute" vncls="-">
+<roles>
+  <role descr="group" n="1"/>
+  <role descr="parts or members" n="2"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ One group is the Committee on State Taxation , which [*T*-283] comprises 330 multistate corporations and advises the Council of State Chambers of Commerce .
+</text>
+	<arg n="1">[*T*-283] -&gt;  which -&gt;  the Committee</arg>
+	<rel>comprises</rel>
+	<arg n="2">330 multistate corporations</arg>
+</example>
+
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+ The FADA real-estate package , with an asking price of $ 428 million [*U*] , is comprised [*-1] of 150 properties in Texas , California , Colorado , Arizona and Florida .
+</text>
+	<rel>comprised</rel>
+	<arg n="1">[*-1] -&gt;  The FADA real-estate package , with an asking price of $ 428 million [*U*] ,</arg>
+	<arg f="of" n="2">150 properties in Texas , California , Colorado , Arizona and Florida</arg>
+</example>
+
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

@@ -1,0 +1,43 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="detect">
+<note>
+  Frames file for 'detect' based on sentences in financial subcorpus.
+  Verbnet entry 30.1; other framed members include hear.  Framenet
+  class Perception_experience.  Comparison with 'hear' and 'find'.
+</note>
+
+<roleset id="detect.01" name="find, notice" vncls="30.1">
+<roles>
+  <role descr="detector" n="0">
+		
+  <vnrole vncls="30.1" vntheta="Experiencer"/></role>
+
+  <role descr="detected" n="1">
+		
+  <vnrole vncls="30.1" vntheta="Stimulus"/></role>
+
+  <role descr="instrument, if separate from arg0" n="2"/>
+</roles>
+
+<example name="all args">
+<inflection aspect="ns" form="full" person="ns" tense="ns" voice="ns"/>
+<text>
+    Recently, Gen-Probe received a broad U.S. patent for a technology
+    that *trace* helps detect, identify and quantify non-viral
+    organisms through the targeting of a form of genetic material
+    called ribosomal RNA. 
+</text>
+        <arg n="0">*trace* -&gt;  that -&gt;  a technology</arg>
+        <rel>detect</rel>
+        <arg n="1">non-viral organisms</arg>
+        <arg f="through" n="2">the targeting of a form of genetic
+        material called ribosomal RNA</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

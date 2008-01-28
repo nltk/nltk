@@ -1,0 +1,66 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="encourage">
+<note>
+  Frames file for 'encourage' based on sentences in financial
+  subcorpus.  Verbnet class 31.1, other framed members include
+  convince, interest, scare, spook, threaten, worry.  Comparison with
+  convince.
+</note>
+
+<roleset id="encourage.01" name="impelled action" vncls="-">
+<roles>
+  <role descr="convincer" n="0"/>
+  <role descr="impelled agent" n="1"/>
+  <role descr="impelled action" n="2"/>
+</roles>
+
+<example name="actor and action">
+<text>
+    In anticipation of that shift, he and other analysts are
+    encouraging their clients to buy such issues now. 
+</text>
+        <arg f="ADV" n="M">In anticipation of that shift ,</arg>
+        <arg n="0">he and other analysts</arg>
+        <rel>encouraging</rel>
+        <arg n="1">their clients</arg>
+        <arg n="2">to buy such issues now</arg>
+</example>
+</roleset>
+
+<roleset id="encourage.02" name="favor" vncls="31.1">
+<roles>
+  <role descr="outside agent" n="0">
+	<vnrole vncls="31.1" vntheta="Cause"/></role>
+  <role descr="thing favored" n="1">
+	<vnrole vncls="31.1" vntheta="Experiencer"/></role>
+  <role descr="instrument" n="2"/>
+</roles>
+
+<example name="transitive">
+<text>
+    This is one of the first bids under new takeover rules aimed at
+    *trace* encouraging open bids instead of gradual accumulation of
+    large stakes. 
+</text>
+        <arg n="0">*trace* -&gt;  new takeover rules</arg>
+        <rel>encouraging</rel>
+        <arg n="1">open bids instead of gradual accumulation of large
+        stakes</arg> 
+</example>
+
+<example name="with arg2">
+  <inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+  <text>
+    Mary encourages good behavior from John with unfulfilled promises
+    of sexual favors.  (What a tease.) 
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>encourages</rel>
+  <arg n="1">good behavior from John</arg>
+  <arg f="with" n="2">unfulfilled promises of sexual favors</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

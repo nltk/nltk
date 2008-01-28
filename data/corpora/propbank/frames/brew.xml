@@ -1,0 +1,56 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="brew">
+<note>
+Frames file for 'brew' based on sentences in financial subcorpus and
+automatic expansion via verbnet.
+</note>
+
+<roleset id="brew.01" name="create (beer)" vncls="26.3-1">
+<roles>
+	<role descr="creator, brewer" n="0">
+		
+  <vnrole vncls="26.3-1" vntheta="Agent"/></role>
+ 
+	<role descr="creation, beer" n="1">
+		
+  <vnrole vncls="26.3-1" vntheta="Product"/></role>
+ 
+	<role descr="created-from, thing changed" n="2"/> 
+	<role descr="benefactive" n="3">
+		
+  <vnrole vncls="26.3-1" vntheta="Beneficiary"/></role>
+ 
+</roles>
+
+<example name="literal!">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Although imports account for less than 1% of beer sales in Japan,
+    Asahi Breweries Ltd., which has been gaining share with its
+    popular dry beer, plans *trace* to fend off Japanese competitors
+    by *trace* pouring $1.06 billion into facilities *trace* to brew
+    50% more beer. 
+</text>
+        <arg n="0">*trace* -&gt; *trace* -&gt; *trace* -&gt;  Asahi Breweries
+        Ltd., which has been gaining share with its popular dry
+        beer,</arg> 
+        <rel>brew</rel>
+        <arg n="1">50 % more beer</arg>
+</example>
+
+<example name="this will occur eventually">
+  <inflection aspect="progressive" form="participle" person="third" tense="past" voice="active"/>
+  <text>
+    John knew that trouble was brewing.
+  </text>
+  <arg n="1">trouble</arg>
+  <rel>brewing</rel>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

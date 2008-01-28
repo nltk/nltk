@@ -1,0 +1,49 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="deplete">
+<note>
+  Frames file for 'deplete' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="deplete.01" name="to use up or empty out" vncls="10.6">
+<roles>
+  <role descr="user, emptier, agent" n="0">
+        <vnrole vncls="10.6" vntheta="Agent"/></role>
+  <role descr="entity depleted" n="1">
+        <vnrole vncls="10.6" vntheta="Theme"/></role>
+  <role descr="entity depleted of" n="2">
+        <vnrole vncls="10.6" vntheta="Source"/></role>
+</roles>
+
+
+
+<example name="all arguments">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ The earlier use of incentives depleted the market of `` scavengers '' for bargain-basement 1989 cars , he said [0] [*T*-1] .
+</text>
+	<arg n="0">The earlier use of incentives</arg>
+	<rel>depleted</rel>
+	<arg n="1">the market</arg>
+	<arg f="of" n="2">`` scavengers '' for bargain-basement 1989 cars</arg>
+</example>
+
+
+
+<example name="transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ If [*-2] passed [*-1] by the voters , the recently announced initiative would phase out major pesticides , reduce carbon dioxide emissions by 40 % , ban new offshore drilling , ban chemicals thought [*] to deplete the ozone layer , and create a new state environmental officer armed [*] with a $ 40 million [*U*] budget [0] [*] to sue any firm or agency [0] he thinks [0] [*T*-4] is being too dirty [*T*-3] .
+</text>
+	<arg n="0">[*] -&gt;  chemicals</arg>
+	<rel>deplete</rel>
+	<arg n="1">the ozone layer</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

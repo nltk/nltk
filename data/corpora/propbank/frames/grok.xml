@@ -1,0 +1,58 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="grok">
+<note>
+  Frames file for 'grok' based on sentences in brown.  Verbnet entry
+</note>
+
+<roleset id="grok.01" vncls="-" name="the great indefinable">
+<roles>
+  <role n="0"  descr="grokker"/>
+  <role n="1"  descr="grokked"/>
+</roles>
+
+<example name="transitive, NP">
+  <inflection person="ns" tense="ns" aspect="ns" voice="active" form="infinitive"/>
+  <text>
+    Mike remained in trance; there was much *trace-0* *trace-1* to
+    grok *trace-2* 
+  </text>
+  <arg n="0"        >*trace-1* -> Mike</arg>
+  <rel              >grok</rel>
+  <arg n="1"        >*trace-2* -> *trace-0* -> much</arg>
+</example>
+
+<example name="transitive, SBar">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+     Mike grokked this was true, but grokked that there was more to it.
+  </text>
+  <arg n="0"        >Mike</arg>
+  <rel              >grokked</rel>
+  <arg n="1"        >there was more to it</arg>
+</example>
+
+<example name="intransitive">
+  <inflection person="ns" tense="ns" aspect="ns" voice="active" form="infinitive"/>
+  <text>
+    Now that he knew himself to be self, he was free *trace* to grok
+    ever closer to his brothers, merge without let.
+  </text>
+  <arg n="0"        >*trace* -> he</arg>
+  <rel              >grok</rel>
+  <arg n="m" f="MNR">ever closer to his brothers</arg>
+</example>
+
+<note>
+This word was invented by Robert Heinlein in 'Stranger in a Strange
+Land' to denote an experience alien to the human condition. As such,
+it is largely undefined--indeed, most of the story is devoted to a
+human learning what 'grokking' is all about.  In later usage, 'grok'
+has been shifted to mean 'to understand (fully)' which, while taking
+the same argument structure (except not the intransitive), loses much
+of the magic of the original.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

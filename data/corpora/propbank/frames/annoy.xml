@@ -1,0 +1,67 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="annoy">
+<note>
+  Frames file for 'annoy' based on sentences in wsj.  Verbnet entry
+  31.1, Framenet entry Experiencer_obj.
+</note>
+
+<roleset id="annoy.01" name="annoy" vncls="31.1">
+<roles>
+  <role descr="annoyer" n="0"><vnrole vncls="31.1" vntheta="Cause"/></role>
+  <role descr="annoyed" n="1"><vnrole vncls="31.1" vntheta="Experiencer"/></role>
+  <role descr="instrument, if separate from arg0" n="2"/>
+</roles>
+
+<example name="boring transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    That response annoyed Rep. Markey, House aides said, and the
+    congressman snapped back that there had been enough studies of the
+    issue and that it was time for action on the matter. 
+</text>
+        <arg n="0">That response</arg>
+        <rel>annoyed</rel>
+        <arg n="1">Rep. Markey</arg>
+</example>
+
+<example name="passive with sentential 'agent'">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="passive"/>
+<text>
+    The 79-year-old Mississippian takes a more orthodox, entrenched
+    view of agriculture policy than those in the movement to reduce
+    chemical use, but as a master of pork-barrel politics, he is
+    believed *trace* to be annoyed as well that the project moved to
+    Arkansas from a Tennessee center near Memphis and the northern
+    Mississippi border. 
+</text>
+        <arg n="1">*trace* -&gt;  he</arg>
+        <rel>annoyed</rel>
+        <arg f="DIS" n="M">as well</arg>
+        <arg n="0">that the project moved to Arkansas from a Tennessee
+        center near Memphis and the northern Mississippi border</arg> 
+</example>
+
+<note>
+Note that you need to have the complementizer in the arg0 or it
+becomes ungrammatical.
+</note>
+
+<example name="with instrument">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John annoyed Mary by straining her coffee through his dirty socks.
+  </text>
+  <arg n="0">John</arg>
+  <rel>annoyed</rel>
+  <arg n="1">Mary</arg>
+  <arg f="by" n="2">straining her coffee through his dirty socks</arg>
+</example>
+
+<note>
+Can't say as I blame her.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

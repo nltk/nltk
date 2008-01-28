@@ -1,0 +1,88 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="polish">
+<note>
+  Frames file for 'polish' based on sentences in wsj.  Verbnet entries
+  9.9, 10.4.1.
+</note>
+
+<roleset id="polish.01" name="make shiny" vncls="9.9 10.4.1">
+<roles>
+  <role descr="polisher" n="0">
+        <vnrole vncls="9.9" vntheta="Agent"/>
+        <vnrole vncls="10.4.1" vntheta="Agent"/></role>
+  <role descr="thing getting shiny" n="1">
+        <vnrole vncls="9.9" vntheta="Destination"/>
+        <vnrole vncls="10.4.1" vntheta="Theme"/></role>
+  <role descr="instrument" n="2">
+        <vnrole vncls="9.9" vntheta="Theme"/></role>
+  <role descr="end state, attribute" n="3"/>
+</roles>
+
+<example name="now that's dedication">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    On weekends, she came to work to prepare study plans or sometimes,
+    even *trace* to polish the furniture in her classroom. 
+</text>
+        <arg f="TMP" n="M">sometimes</arg>
+        <arg f="DIS" n="M">even</arg>
+        <arg n="0">*trace* -&gt;  she</arg>
+        <rel>polish</rel>
+        <arg n="1">the furniture in her classroom</arg>
+</example>
+
+<example name="with instrument">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John polished the floor with motor oil.
+  </text>
+  <arg n="0">John</arg>
+  <rel>polished</rel>
+  <arg n="1">the floor</arg>
+  <arg f="with" n="2">motor oil</arg>
+</example>
+
+<example name="with end state">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John polished his head to a blinding glare.
+  </text>
+  <arg n="0">John</arg>
+  <rel>polished</rel>
+  <arg n="1">his head</arg>
+  <arg f="to" n="3">a blinding glare</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="polish_off">
+
+<roleset id="polish.02" name="finish" vncls="-">
+<roles>
+  <role descr="finisher, agent" n="0"/>
+  <role descr="thing finished" n="1"/>
+</roles>
+
+<example name="growing boy">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    In one sitting, John polished off a bag of Oreos, three pints of
+    Ben &amp; Jerry's, a whole watermelon, half a keg of beer, and a
+    pound of jellybeans, but he passed on the &quot;wafer-thin mints&quot;.
+  </text>
+  <arg f="TMP" n="m">In one sitting</arg>
+  <arg n="0">John</arg>
+  <rel>polished off</rel>
+  <arg n="1">a bag of Oreos, three pints of
+    Ben &amp; Jerry's, a whole watermelon, half a keg of beer, and a
+    pound of jellybeans</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

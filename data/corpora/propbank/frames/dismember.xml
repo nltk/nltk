@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="dismember">
+<note>
+  Frames file for 'dismember' based on sentences in financial
+  subcorpus.  No Verbnet entry.
+</note>
+
+<roleset id="dismember.01" name="take pieces off of" vncls="-">
+<roles>
+  <role descr="agent, butcher" n="0"/>
+  <role descr="victim" n="1"/>
+</roles>
+
+<example name="fortunately not a person">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Mr. Corry might have *trace* to dismember the company more than he
+    wants to. 
+</text>
+        <arg n="0">*trace* -&gt;  Mr. Corry</arg>
+        <rel>dismember</rel>
+        <arg n="1">the company</arg>
+        <arg f="MNR" n="M">more than he wants  to </arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

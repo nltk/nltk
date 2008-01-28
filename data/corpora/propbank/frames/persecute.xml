@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="persecute">
+<note>
+  Frames file for 'persecute' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="persecute.01" name="to oppress or harass" vncls="33">
+<roles>
+  <role descr="persecutor" n="0"><vnrole vncls="33" vntheta="Agent"/></role>
+  <role descr="persecutee" n="1"><vnrole vncls="33" vntheta="Theme"/></role>
+</roles>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+ Soviet police clashed with demonstrators in Moscow following a candlelight vigil around the KGB 's Lubyanka headquarters in memory of those persecuted [*] under Stalin .
+</text>
+	<rel>persecuted</rel>
+	<arg n="1">[*] -&gt;  those</arg>
+	<arg f="TMP" n="M">under Stalin</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

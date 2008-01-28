@@ -1,0 +1,37 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="neglect">
+<note>
+  Frames file for 'neglect' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="neglect.01" name="ignore" vncls="-">
+<roles>
+  <role descr="ignorer" n="0"/>
+  <role descr="thing ignored" n="1"/>
+</roles>
+
+<example name="pretty simple">
+<inflection aspect="progressive" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+    The Japanese are neglecting the opportunity to synthesize a new
+    corporate culture based on a fusion of the best aspects of both
+    national cultures. 
+</text>
+        <arg n="0">The Japanese</arg>
+        <rel>neglecting</rel>
+        <arg n="1">the opportunity to synthesize a new corporate
+        culture based on a fusion of the best aspects of both national
+        cultures</arg> 
+</example>
+
+<note>
+There's also a usage &quot;neglect to X&quot; (eg &quot;John neglected to mention to
+Mary that he hated her.&quot;) which might or might not fit into this
+roleset, depending on your viewpoint.  It doesn't occur in the corpus,
+though, so the point is somewhat moot.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

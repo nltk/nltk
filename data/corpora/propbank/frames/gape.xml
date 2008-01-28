@@ -1,0 +1,45 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="gape">
+<note>
+  Frames file for 'gape' based on sentences in wsj.  Verbnet entries
+  30.3 40.2.
+</note>
+
+<roleset id="gape.01" name="look at with mouth open" vncls="30.3 40.2">
+<roles>
+  <role descr="gaper" n="0"><vnrole vncls="30.3" vntheta="Experiencer"/><vnrole vncls="40.2" vntheta="Agent"/></role>
+  <role descr="thing looked at" n="1"><vnrole vncls="30.3" vntheta="Stimulus"/><vnrole vncls="40.2" vntheta="Theme"/></role>
+</roles>
+
+<example name="intransitive and metaphorical">
+<inflection aspect="perfect" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+    Many openings for mass cheating, such as questionable tax shelters
+    and home offices, have gaped so broadly that Congress has passed
+    stringent laws to close them. 
+</text>
+        <arg n="0">Many openings for mass cheating, such as
+        questionable tax shelters and home offices,</arg> 
+        <rel>gaped</rel>
+        <arg f="MNR" n="M">so broadly that Congress has passed
+        stringent laws to close them</arg> 
+</example>
+
+<example name="transitive and literal">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    Mary gaped at John's sparkling-clean room.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>gaped</rel>
+  <arg f="at" n="1">John's sparkling-clean room</arg>
+</example>
+
+<note>
+Intransitive often, and metaphorical always, means 'be wide open'.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

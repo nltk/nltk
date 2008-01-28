@@ -1,0 +1,51 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="advertise">
+<note>
+  Frames file for 'advertise' (or 'advertize') based on sentences in
+  financial subcorpus.  Verbnet class 35.2.
+</note>
+
+<roleset id="advertise.01" name="make a commercial pitch" vncls="35.2">
+<roles>
+  <role descr="advertiser" n="0">
+		
+  <vnrole vncls="35.2" vntheta="Agent"/></role>
+
+  <role descr="thing being pitched, advertised" n="1">
+		
+  <vnrole vncls="35.2" vntheta="Theme"/></role>
+
+</roles>
+
+<example name="intransitive agentive">
+<text>
+    Cotton Inc. will spend nearly $2 million on broadcasting on
+ Thanksgiving Day alone, *trace* advertising on such programs as
+ ``Good Morning America,'' ``Macy's Thanksgiving Day Parade'' and the
+ NFL holiday game. 
+</text>
+        <arg n="0">*trace* -&gt;  Cotton Inc.</arg>
+        <rel>advertising</rel>
+        <arg f="LOC" n="M">on such programs as ``Good Morning
+        America,'' ``Macy's Thanksgiving Day Parade'' and the NFL
+        holiday game</arg> 
+</example>
+
+<example name="transitive agentive">
+<text>
+    Pepsi said it will spend $10 million *trace* advertising the promotion.
+</text>
+        <arg n="0">*trace* -&gt;  it</arg>
+        <rel>advertising</rel>
+        <arg n="1">the promotion</arg>
+</example>
+
+<note>
+Many examples of adjectival or even nominal usages in the set--ignore --&gt;
+--these (but do not change existing annotations!).
+</note>
+
+</roleset>
+</predicate>
+</frameset>

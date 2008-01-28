@@ -1,0 +1,82 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="earn">
+<note>
+  Frames file for 'earn' based on survey of initial sentences of big
+  corpus
+</note>
+
+<roleset id="earn.01" name="wages" vncls="13.5.1">
+<roles>
+  <role descr="earner" n="0">
+		
+  <vnrole vncls="13.5.1" vntheta="Agent"/></role>
+
+  <role descr="wages" n="1">
+		
+  <vnrole vncls="13.5.1" vntheta="Theme"/></role>
+
+  <role descr="benefactive" n="2">
+		
+  <vnrole vncls="13.5.1" vntheta="Beneficiary"/></role>
+
+  <role descr="source" n="3">
+		
+  <vnrole vncls="13.5.1" vntheta="Source"/></role>
+
+</roles>
+
+<example name="it's a living">
+  <text>
+  Composer Marc Marder earns his living *trace* playing the double
+  bass in classical music ensembles.
+  </text>
+  <arg n="0">Composer Marc Marder</arg>
+  <rel>earns</rel>
+  <arg n="1">his living</arg>
+  <arg f="MNR" n="m">*trace* playing the double bass in classical
+  music ensembles.</arg> 
+</example>
+
+<example name="dividends">
+  <text>
+  In fiscal 1988 the company earned $17.3 million on revenue of $352.9
+  million.
+  </text>
+  <arg f="TMP" n="m">In fiscal 1988</arg>
+  <arg n="0">the company</arg>
+  <rel>earned</rel>
+  <arg n="1">$17.3 million</arg>
+  <arg n="m">on revenue of $352.9 million.</arg>
+</example>
+
+<example name="benefactive">
+  <text>
+  ...a relationship with the government that has earned the Mitsubishi
+  group the dubious moniker of &quot;seisho&quot;.
+  </text>
+  <arg n="0">that=a relationship</arg>
+  <rel>earned</rel>
+  <arg n="2">the Mitsubishi group</arg>
+  <arg n="1">the dubious moniker of &quot;seisho&quot;</arg>
+</example>
+
+<example name="with source">
+  <text>
+  Xerox Corp.'s third-quarter net income grew 6.2% on 7.3% higher revenue,
+  *trace* earning mixed reviews from Wall Street analysts.
+  </text>
+  <arg n="0">*trace*=Xerox Corp.'s third quarter net income</arg>
+  <rel>earning</rel>
+  <arg n="1">mixed reviews</arg>
+  <arg f="from" n="3">Wall Street analysts</arg>
+</example>
+
+<note>
+Arg3 could also be used for &quot;on holdings of $16 million&quot; when
+reporting dividend yield and such.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

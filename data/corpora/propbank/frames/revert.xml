@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="revert">
+<note>
+  Frames file for 'revert' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+
+<roleset id="revert.01" name="to return, turn back" vncls="-">
+<roles>
+  <role descr="entity going back" n="1"/>
+  <role descr="reverted to" n="2"/>
+</roles>
+
+<example name="both arguments">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ The committee is formulating Hong Kong 's constitution for when it reverts to Chinese control in 1997 [*T*-1] , and Chinese lawmakers said [0] the two can only return if they `` abandon their antagonistic stand against the Chinese government and their attempt [*] to nullify the Sino-British joint declaration on Hong Kong . ''
+</text>
+	<arg n="1">it</arg>
+	<rel>reverts</rel>
+	<arg f="to" n="2">Chinese control</arg>
+	<arg f="TMP" n="M">in 1997</arg>
+	<arg f="TMP" n="M">[*T*-1] -&gt;  when</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

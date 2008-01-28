@@ -1,0 +1,55 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="scream">
+<note>
+  Frames file for 'scream' based on sentences in financial subcorpus.
+  No access to verbnet at the moment.  Comparison with 'say'.
+</note>
+
+<roleset id="scream.01" name="speak very loudly" vncls="37.3 38 43.2">
+<roles>
+  <role descr="screamer" n="0">
+		
+  <vnrole vncls="43.2" vntheta="Agent"/><vnrole vncls="38" vntheta="Agent"/><vnrole vncls="37.3" vntheta="Agent"/></role>
+
+  <role descr="utterance" n="1">
+		
+  <vnrole vncls="43.2" vntheta="Theme"/><vnrole vncls="38" vntheta="Theme"/><vnrole vncls="37.3" vntheta="Topic"/></role>
+
+  <role descr="hearer" n="2">
+		
+  <vnrole vncls="38" vntheta="Recipient"/><vnrole vncls="37.3" vntheta="Recipient"/></role>
+
+</roles>
+
+<example name="buncha irrelevant args">
+<text>
+    It is interesting to see the fundamental stock pickers scream
+    ``foul'' on program trading when the markets decline, while
+    hailing the great values still abounding as the markets rise. 
+</text>
+	<arg n="0">the fundamental stock pickers</arg>
+	<rel>scream</rel>
+	<arg n="1">foul</arg>
+	<arg n="M">on program trading</arg>
+	<arg f="TMP" n="M">when the markets decline </arg>
+	<arg f="ADV" n="M">while hailing the great values still
+	abounding as the markets rise</arg> 
+</example>
+
+<example name="with hearer">
+  <text>
+    John screamed in Mary's ear.
+  </text>
+  <arg n="0">John</arg>
+  <rel>screamed</rel>
+  <arg f="in" n="2">Mary's ear</arg>
+</example>
+
+<note>
+OK, a stretch of 'hearer', but you get the point.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,47 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="smart">
+<note>
+  Frames file for 'smart' based on sentences in wsj.  Verbnet entry
+  40.8.2, Framenet entry Body.
+</note>
+
+<roleset id="smart.01" name="experience mild pain" vncls="40.8.2">
+<roles>
+  <role descr="entity which is experiencing pain" n="1">
+                
+  <vnrole vncls="40.8.2" vntheta="Experiencer"/></role>
+
+  <role descr="cause of pain (us. 'at')" n="2">
+                
+  <vnrole vncls="40.8.2" vntheta="Cause"/></role>
+</roles>
+
+<example name="one usage">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    That may be because Mr. Gargan, [*-1] smarting at what he
+    considered slurs on his membership standards made by the rival
+    group, enrolled his dog, Beauregard, as a member of the IAFP. 
+</text>
+        <arg n="1">[*-1] -&gt;  Mr. Gargan</arg>
+        <rel>smarting</rel>
+        <arg f="at" n="2">what he considered slurs on his membership
+        standards made by the rival group</arg> 
+</example>
+
+<example name="the other usage">
+  <inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+  <text>
+     ``Ooh, that smarts!'' John said after smashing his thumb with a hammer.
+  </text>
+  <arg n="2">that</arg>
+  <rel>smarts</rel>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

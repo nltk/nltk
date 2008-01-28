@@ -1,0 +1,56 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="subtitle">
+<note>
+  Frames file for 'subtitle' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="subtitle.01" name="provide translation" vncls="-">
+<roles>
+  <role descr="translator (rare)" n="0"/>
+  <role descr="movie, etc" n="1"/>
+  <role descr="target language" n="2"/>
+</roles>
+
+<example name="obscure movies">
+  <inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+  <text>
+    Fortunately for Mary, most of the weird Slovenian movies John
+    likes are subtitled *trace* in English.
+  </text>
+  <arg f="ADV" n="m">Fortunately for Mary</arg>
+  <rel>subtitled</rel>
+  <arg n="1">*trace* -&gt; most of the weird Slovenian movies John
+    likes</arg>
+  <arg f="in" n="2">English</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="subtitle.02" name="give a secondary title" vncls="-">
+<roles>
+  <role descr="author (rare)" n="0"/>
+  <role descr="magnum opus" n="1"/>
+  <role descr="secondary title" n="2"/>
+</roles>
+
+<example name="much like 'label'">
+<inflection aspect="ns" form="participle" person="third" tense="present" voice="passive"/>
+<text>
+    ``Mastergate'' is subtitled *trace* ``a play on words,'' and
+    Mr. Gelbart plays that game as well as anyone. 
+</text>
+        <rel>subtitled</rel>
+        <arg n="1">*trace* -&gt;  Mastergate</arg>
+        <arg n="2">a play on words</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

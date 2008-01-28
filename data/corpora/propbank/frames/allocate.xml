@@ -1,0 +1,43 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="allocate">
+<note>
+  Frames file for 'allocate' based on sentence in financial
+  subcorpus.  Verbnet class future_having-13.3, other framed members
+  include 'grant' and 'yield'.
+</note>
+
+<roleset id="allocate.01" name="give to, donate" vncls="13.3">
+<roles>
+  <role descr="granter" n="0">
+		
+  <vnrole vncls="13.3" vntheta="Agent"/></role>
+
+  <role descr="thing granted" n="1">
+		
+  <vnrole vncls="13.3" vntheta="Theme"/></role>
+
+  <role descr="benefactive, granted-to" n="2">
+		
+  <vnrole vncls="13.3" vntheta="Recipient"/></role>
+
+</roles>
+
+<example name="passivized">
+<text>
+    About $490 million of that would be allocated to the buy-back,
+    leaving about $130 million, he said. 
+</text>
+        <arg f="MOD" n="M">would</arg>
+        <rel>allocated</rel>
+        <arg n="1">*trace* -&gt;  About $490 million of that</arg>
+        <arg f="to" n="2">the buy-back</arg>
+        <arg f="ADV" n="M">leaving about $ 130 million </arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

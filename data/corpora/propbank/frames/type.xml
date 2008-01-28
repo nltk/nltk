@@ -1,0 +1,65 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="type">
+<note>
+  Frames file for 'type' based on sentences in wsj.  Verbnet entries
+  25.2 and 25.4; Framenet entry Text creation.
+</note>
+
+<roleset id="type.01" name="use a typewriter" vncls="25.2 25.4">
+<roles>
+  <role descr="writer" n="0"><vnrole vncls="25.2" vntheta="Agent"/><vnrole vncls="25.4" vntheta="Agent"/></role>
+  <role descr="text" n="1"><vnrole vncls="25.2" vntheta="Theme"/><vnrole vncls="25.4" vntheta="Theme"/></role>
+</roles>
+
+<example name="not sure what this means">
+<inflection aspect="progressive" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    This being typed [*-1] in a standing position.
+</text>
+        <rel>typed</rel>
+        <arg n="1">[*-1] -&gt;  This</arg>
+        <arg f="MNR" n="M">in a standing position</arg>
+</example>
+
+<example name="clearer">
+  <inflection aspect="ns" form="full" person="ns" tense="ns" voice="active"/>
+  <text>
+    John can type 500 words per minute.
+  </text>
+  <arg n="0">John</arg>
+  <arg f="MOD" n="m">can</arg>
+  <rel>type</rel>
+  <arg n="1">500 words per minute</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="type_up">
+<roleset id="type.02" name="phrasal typing" vncls="25.2 25.4">
+<roles>
+  <role descr="writer" n="0"><vnrole vncls="25.2" vntheta="Agent"/><vnrole vncls="25.4" vntheta="Agent"/></role>
+  <role descr="text" n="1"><vnrole vncls="25.2" vntheta="Theme"/><vnrole vncls="25.4" vntheta="Theme"/></role>
+</roles>
+
+<example name="now that's productivity">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John typed up his entire dissertation in one weekend.
+  </text>
+  <arg n="0">John</arg>
+  <rel>typed up</rel>
+  <arg n="1">his entire dissertation</arg>
+  <arg f="TMP" n="m">in one weekend</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

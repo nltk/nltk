@@ -1,0 +1,141 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<note>
+Frames file for 'name' based on survey of initial sentences from big corpus
+and comparison to 'call'.  Name is essentially equivalent to 'call' sense
+two, but 'name' Arg2 is 'call' Arg3.
+</note>
+
+<predicate lemma="name">
+<roleset id="name.01" name="call" vncls="29.3"> 
+<roles>
+  <role descr="namer" n="0">
+	  <vnrole vncls="29.3" vntheta="Agent"/></role>
+  <role descr="named" n="1">
+	  <vnrole vncls="29.3" vntheta="Theme"/></role>
+  <role descr="name of arg1" n="2">
+	  <vnrole vncls="29.3" vntheta="Predicate"/></role>
+</roles>
+
+<example name="passivized">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    The issue, formally named *trace* MNB Home Equity Loan Asset
+    Backed Certificates, Series 1989, will represent interest in a
+    trust fund...  
+</text>
+        <arg f="MNR" n="M">formally</arg>
+        <rel>named</rel>
+        <arg n="1">*trace* -&gt;  The issue</arg>
+        <arg n="2">MNB Home Equity Loan Asset Backed Certificates,
+        Series 1989,</arg> 
+</example>
+
+<example name="name as AS">
+  <text>
+    Polls named Tatsunori Hara as the male symbol of Japan.
+  </text>
+  <arg n="0">Polls</arg>
+  <rel>named</rel>
+  <arg n="1">Tatsunori Hara</arg>
+  <arg f="as" n="2">the male symbol of Japan</arg>
+</example>
+
+<example name="no name mentioned">
+  <text>
+    ...the man, whom it did not name *trace*
+  </text>
+  <arg n="0">it</arg>
+  <arg f="NEG" n="M">did not</arg>
+  <rel>name</rel>
+  <arg n="1">*trace* -&gt; whom</arg>
+</example>
+
+<example name="name as infinitive">
+  <text>
+    Lee Karns named James Nichol to succeed him.
+  </text>
+  <arg n="0">Lee Karns</arg>
+  <rel>named</rel>
+  <arg n="1">James Nichol</arg>
+  <arg n="2">to succeed him</arg>
+</example>
+
+<note>
+most commonly passive:
+</note>
+
+<example name="passivized">
+  <text>
+    Both these candidates are named *trace* Rudolph Giuliani.
+  </text>
+  <rel>are named</rel>
+  <arg n="1">*trace* -&gt; both candidates</arg>
+  <arg n="2">Rudolph Giuliani</arg>
+</example>
+
+<note>
+if only one arg is present (esp in passive) it will be Arg2:
+</note>
+
+<example name="name only">
+  <text>
+    No successor was named *trace*
+  </text>
+  <rel>was named</rel>
+  <arg n="2">*trace* -&gt; successor</arg>
+</example>
+
+<example name="underlying of above">
+  <text>
+    John Smith was named successor.
+  </text>
+  <arg n="1">John Smith</arg>
+  <rel>was named</rel>
+  <arg n="2">successor</arg>
+</example>
+
+<example name="active equivalent of above">
+  <text>
+    BigHugeCo named John Smith as successor.
+  </text>
+  <arg n="0">BigHugeCo</arg>
+  <rel>named</rel>
+  <arg n="1">John Smith</arg>
+  <arg f="as" n="2">successor</arg>
+</example>
+
+</roleset>
+
+<roleset id="name.02" name="give someone else's name" vncls="-">
+<roles>
+  <role descr="namer" n="0"/>
+  <role descr="named" n="1"/>
+  <role descr="named after, namesake" n="2"/>
+</roles>
+
+<example name="ozone hole">
+  <inflection aspect="ns" form="full" person="ns" tense="ns" voice="passive"/>
+  <text>
+    As an employee of a major refrigerator and freezer manufacturer, I
+    have been heavily involved in dealing with the political
+    manifestations of the Rowland-Molina theory (named [*] after the
+    researchers who found in 1974 that chlorofluorocarbons contributed
+    to the depletion of ozone in the earth's atmosphere) and the
+    Montreal Protocol. 
+  </text>
+  <rel>named</rel>
+  <arg n="1">[*] -&gt; Rowland-Molina theory</arg>
+  <arg f="after" n="2">the
+    researchers who found in 1974 that chlorofluorocarbons contributed
+    to the depletion of ozone in the earth's atmosphere</arg>
+</example>
+
+<note>
+Very similar to the other roleset, and only to be used when there is
+an 'after' present.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

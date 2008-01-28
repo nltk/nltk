@@ -1,0 +1,76 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="screen">
+<note>
+  Frames file for 'screen' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="screen.01" name="to test, examine, sort" vncls="-">
+<roles>
+  <role descr="tester, examiner" n="0"/>
+  <role descr="entity screened" n="1"/>
+  <role descr="screened for" n="2"/>
+</roles>
+
+<example name="all arguments">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ GMAC screened the card-member list for holders more than 30 years old with household incomes over $ 45,000 [*U*] who [*T*-54] had n't `` missed any payments , '' the Buick spokeswoman says [0] [*T*-1] .
+</text>
+	<arg n="0">GMAC</arg>
+	<rel>screened</rel>
+	<arg n="1">the card-member list</arg>
+	<arg f="for" n="2">holders more than 30 years old with household incomes over $ 45,000 [*U*] who [*T*-54] had n't `` missed any payments</arg>
+</example>
+</roleset>
+
+<roleset id="screen.03" vncls="-" name="show a movie">
+<roles>
+  <role n="0"  descr="agent"/>
+  <role n="1"  descr="movie"/>
+</roles>
+
+<example name="roll film!">
+  <inflection person="ns" tense="ns" aspect="ns" voice="active" form="full"/>
+  <text>
+    The editor also says the new producer on the film, Bruce Baird,
+    told editors [*-1] to screen the picture without telling stars
+    Sylvester Stallone and Kurt Russell or Mr. Peters. 
+  </text>
+  <arg n="0"        >[*-1] -> editors</arg>
+  <rel              >screen</rel>
+  <arg n="1"        >the picture</arg>
+  <arg n="m" f="MNR">without telling stars
+    Sylvester Stallone and Kurt Russell or Mr. Peters</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="screen_out">
+
+<roleset id="screen.02" name="filter" vncls="-">
+<roles>
+  <role descr="filterer" n="0"/>
+  <role descr="entity screened" n="1"/>
+  <role descr="screened for" n="2"/>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ They insist that CFCs are damaging the earth 's stratospheric ozone layer , which [*T*-1] screens out some of the sun 's ultraviolet rays .
+</text>
+	<arg n="0">[*T*-1] -&gt;  which -&gt;  the earth 's stratospheric ozone layer</arg>
+	<rel>[ screens] [ out]</rel>
+	<arg n="1">some of the sun 's ultraviolet rays</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

@@ -1,0 +1,75 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="signal">
+<note>
+  Frames file for 'signal' based on sentences in financial subcorpus.
+  No access to verbnet.  Comparison to 'show'.
+</note>
+
+<roleset id="signal.01" name="show, cause to see" vncls="37.4">
+<roles>
+  <role descr="shower" n="0">
+		
+  <vnrole vncls="37.4" vntheta="Agent"/></role>
+
+  <role descr="thing seen/shown" n="1">
+		
+  <vnrole vncls="37.4" vntheta="Topic"/></role>
+
+  <role descr="seer" n="2">
+		
+  <vnrole vncls="37.4" vntheta="Recipient"/></role>
+
+</roles>
+
+<example name="no seer, nominal thing seen">
+<text>
+    I would be very surprised if his departure signals any change in
+    strategy or change in profit expectations.'' 
+</text>
+        <arg n="0">his departure</arg>
+        <rel>signals</rel>
+        <arg n="1">any change in strategy or change in profit
+        expectations</arg>
+</example> 
+
+<example name="with seer, sentential thing seen">
+<text>
+    Moreover, some analysts said they expect a foreign paper company
+    with deeper pockets than Georgia-Pacific to end up acquiring
+    Nekoosa, *trace* signaling to the rest of the industry that
+    hostile bids are unproductive. 
+</text>
+        <arg n="0">*trace*</arg>
+        <rel>signaling</rel>
+        <arg f="to" n="2">the rest of the industry</arg>
+        <arg n="1">hostile bids are unproductive</arg>
+</example>
+
+<note>
+The target of the trace here is tough to spot; it's essentially the
+event of &quot;a foreign paper company acquiring Nekoosa&quot;, which isn't a
+constituent of any sort, so it the trace can be left with no target.
+</note>
+
+<example name="different kind of seer">
+<text>
+    Mr. Simmons said the results signal a turnaround for the maker of
+    wire and wire products, which has struggled to remain competitive
+    in the face of lower-priced, imported steel. 
+</text>
+        <arg n="0">the results</arg>
+        <rel>signal</rel>
+        <arg n="1">a turnaround</arg>
+        <arg f="for" n="2">the maker of wire and wire products, which
+        has struggled to remain competitive in the face of
+        lower-priced, imported steel</arg> 
+</example>
+
+<note>
+Be sure to skip 'that' complementizers.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

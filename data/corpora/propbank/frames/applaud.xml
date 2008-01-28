@@ -1,0 +1,77 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="applaud">
+<note>
+  Frames file for 'applaud' based on sentences in financial
+  subcorpus.  Verbnet class 33, no mention of other members.
+  Comparison with 'approve', but not really.
+</note>
+
+<roleset id="applaud.01" name="clap, sometimes metaphorically" vncls="33">
+<roles>
+  <role descr="clapper" n="0">
+		
+  <vnrole vncls="33" vntheta="Agent"/></role>
+
+  <role descr="thing approved of" n="1">
+		
+  <vnrole vncls="33" vntheta="Theme"/></role>
+
+  <role descr="grounds, reason for approval" n="2">
+		
+  <vnrole vncls="33" vntheta="Cause"/></role>
+
+</roles>
+
+<example name="intransitive">
+<text>
+    But some economists and government officials here aren't
+    applauding. 
+</text>
+        <arg f="DIS" n="M">But</arg>
+        <arg n="0">some economists and government officials here</arg>
+        <arg f="NEG" n="M">n't</arg>
+        <rel>applauding</rel>
+</example>
+
+<example name="transitive, NP arg1">
+<text>
+    Analysts said they expected the action, and investors applauded
+    the move. 
+</text>
+        <arg n="0">investors</arg>
+        <rel>applauded</rel>
+        <arg n="1">the move</arg>
+</example>
+
+<example name="transitive, PP arg1">
+  <text>
+    John applauded wildly for Mary's performance of &quot;Fox in Socks&quot;.
+  </text>
+  <arg n="0">John</arg>
+  <rel>applauded</rel>
+  <arg f="MNR" n="m">wildly</arg>
+  <arg f="for" n="1">Mary's performance of &quot;Fox in Socks&quot;</arg>
+</example>
+
+<example name="with grounds">
+<inflection aspect="ns" form="ns" person="ns" tense="ns" voice="ns"/>
+<text>
+    He applauds Toyota and Nissan Motor Co. for creating separate
+    divisions for their new luxury models, rather than simply adding
+    more nameplates to their standard car lines. 
+</text>
+        <arg n="0">He</arg>
+        <rel>applauds</rel>
+        <arg n="1">Toyota and Nissan Motor Co.</arg>
+        <arg f="for" n="2">creating separate divisions for their new luxury
+ models, rather than simply adding more nameplates to their standard
+        car lines</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

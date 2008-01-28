@@ -1,0 +1,28 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="boat">
+<note>
+  Frames file for 'boat' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="boat.01" name="to ride in a boat" vncls="51.4.1">
+<roles>
+  <role descr="boater, agent" n="0"><vnrole vncls="51.4.1" vntheta="Agent"/></role>
+</roles>
+
+<example name="intransitive">
+<inflection aspect="ns" form="gerund" person="ns" tense="ns" voice="active"/>
+<text>
+ [*-2] Surrounded [*-1] by stacks of paper , two computers and photos of himself boating and flying , Mr. Phillips laid out several changes [0] he hopes [*-3] to make [*T*-4] at the agency .
+</text>
+	<arg n="0">himself</arg>
+	<rel>boating</rel>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

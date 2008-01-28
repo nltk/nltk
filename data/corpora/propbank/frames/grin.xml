@@ -1,0 +1,56 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="grin">
+<note>
+  Frames file for 'grin' based on sentences in wsj.  No access to
+  Verbnet at the moment.
+</note>
+
+<roleset id="grin.01" name="smile broadly" vncls="40.2">
+<roles>
+  <role descr="grinner" n="0"><vnrole vncls="40.2" vntheta="Agent"/></role>
+</roles>
+
+<example name="happy happy">
+  <inflection aspect="progressive" form="participle" person="third" tense="past" voice="active"/>
+  <text>
+     John was grinning because he'd finally changed Mary's mind on the
+     whole violence issue.
+  </text>
+  <arg n="0">John</arg>
+  <rel>grinning</rel>
+  <arg f="CAU" n="m">because he'd finally changed Mary's mind on the
+  whole violence issue</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="grin.02" name="speak while grinning" vncls="40.2">
+<roles>
+  <role descr="grinner" n="0"><vnrole vncls="40.2" vntheta="Agent"/></role>
+  <role descr="utterance" n="1"><vnrole vncls="40.2" vntheta="Theme"/></role>
+  <role descr="listener" n="2"><vnrole vncls="40.2" vntheta="Recipient"/></role>
+</roles>
+
+<example name="figures that wsj uses the odd usage">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Grinned [*ICH*-1] Griffith Peck, a trader in Shearson Lehman
+    Hutton Inc.'s OTC department: ``I tell you, this market acts
+    healthy.'' 
+</text>
+        <rel>Grinned</rel>
+        <arg n="1">[*ICH*-1] -&gt; I tell you, this market acts healthy</arg>
+        <arg n="0">Griffith Peck, a trader in Shearson Lehman Hutton
+        Inc.'s OTC department</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

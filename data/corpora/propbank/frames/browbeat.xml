@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="browbeat">
+<note>
+  Frames file for 'browbeat' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="browbeat.01" name="to intimidate" vncls="31.1">
+<roles>
+  <role descr="agent, causer" n="0"><vnrole vncls="31.1" vntheta="Cause"/></role>
+  <role descr="entity intimidated" n="1"><vnrole vncls="31.1" vntheta="Experiencer"/></role>
+  <role descr="intimidated into" n="2"/>
+</roles>
+
+
+<example name="all arguments">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ In the year since the pill went on the French market , the National Organization for Women and its offshoot , former NOW President Eleanor Smeal 's Fund for a Feminist Majority , have been trying [*-1] to browbeat the U.S. pharmaceutical industry into [*-2] getting involved .
+</text>
+	<arg n="0">[*-1] -&gt;  the National Organization for Women and its offshoot , former NOW President Eleanor Smeal 's Fund for a Feminist Majority ,</arg>
+	<rel>browbeat</rel>
+	<arg n="1">the U.S. pharmaceutical industry</arg>
+	<arg f="into" n="2">[*-2] getting involved</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

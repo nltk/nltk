@@ -1,0 +1,55 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="reject">
+<note>
+  Frames file for 'reject' based on sentences in financial subcorpus.
+  No access to verbnet.  Comparison with 'decline' and 'accept'.
+</note>
+
+<roleset id="reject.01" name="reject, decline, turn down" vncls="29.2">
+<roles>
+  <role descr="rejecter" n="0">
+		
+  <vnrole vncls="29.2" vntheta="Agent"/></role>
+
+  <role descr="thing rejected" n="1">
+		
+  <vnrole vncls="29.2" vntheta="Theme"/></role>
+
+  <role descr="attribute" n="3">
+		
+  <vnrole vncls="29.2" vntheta="Predicate"/></role>
+
+</roles>
+
+<example name="just transitive">
+<text>
+    He also rejected reports that his departure stemmed from
+    disappointment the general manager's post hadn't also led to a
+    board directorship at the London-based news organization. 
+</text>
+        <arg n="0">He</arg>
+        <arg f="DIS" n="M">also</arg>
+        <rel>rejected</rel>
+        <arg n="1">reports that his departure stemmed from
+        disappointment the general manager's post hadn't also led to a
+        board directorship at the London-based news organization</arg> 
+</example>
+
+<example name="with attribute">
+<text>
+    Telerate's two independent directors have rejected the offer as
+    inadequate. 
+</text>
+        <arg n="0">Telerate's two independent directors</arg>
+        <rel>rejected</rel>
+        <arg n="1">the offer</arg>
+        <arg f="as" n="3">inadequate</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

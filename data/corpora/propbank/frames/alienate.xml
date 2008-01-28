@@ -1,0 +1,44 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="alienate">
+<note>
+  Frames file for 'alienate' based on sentences in wsj.  Verbnet entry 31.1.
+</note>
+
+<roleset id="alienate.01" name="piss off" vncls="31.1">
+<roles>
+  <role descr="causer of anger, agent" n="0"><vnrole vncls="31.1" vntheta="Cause"/></role>
+  <role descr="entity getting angry" n="1"><vnrole vncls="31.1" vntheta="Experiencer"/></role>
+  <role descr="instrument, if separate from agent" n="2"/>
+</roles>
+
+<example name="just transitive">
+<inflection aspect="perfect" form="participle" person="third" tense="present" voice="active"/>
+<text>
+    With only two issues under its belt, Garbage has alienated some
+    would-be advertisers and raised the ire of others.
+</text>
+        <arg n="M">With only two issues under its belt</arg>
+        <arg n="0">Garbage</arg>
+        <rel>alienated</rel>
+        <arg n="1">some would-be advertisers</arg>
+</example>
+
+<example name="with instrument">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    They chance *trace* alienating the customers they hope to woo by
+    looking like opportunistic sharks. 
+</text>
+        <arg n="0">*trace* -&gt;  They</arg>
+        <rel>alienating</rel>
+        <arg n="1">the customers  they hope  to woo </arg>
+        <arg f="by" n="2">looking like opportunistic sharks</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

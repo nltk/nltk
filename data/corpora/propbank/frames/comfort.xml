@@ -1,0 +1,54 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="comfort">
+<note>
+  Frames file for 'comfort' based on sentences in financial subcorpus.
+  Verbnet entry 31.1, other framed members include convince,
+  encourage, interest, scare, shock, spook, threaten, worry.  No
+  comparison. 
+</note>
+
+<roleset id="comfort.01" name="cause to be comfortable or happy" vncls="31.1">
+<roles>
+  <role descr="comforter" n="0">
+		
+  <vnrole vncls="31.1" vntheta="Cause"/></role>
+
+  <role descr="patient, comforted" n="1">
+		
+  <vnrole vncls="31.1" vntheta="Experiencer"/></role>
+
+  <role descr="instrument or manner" n="2"/>
+</roles>
+
+<example name="patient and instrument">
+<text>
+    In London, prices finished at intraday peaks, *trace* comforted
+    *trace* by a reassuring early performance on Wall Street and news
+    that the British government will waive its ``golden share'' in
+    auto maker Jaguar. 
+</text>
+        <rel>comforted</rel>
+        <arg n="1">*trace* -&gt; *trace* -&gt;  prices</arg>
+        <arg f="by" n="2">a reassuring early performance on Wall
+        Street and news that the British government will waive its
+        ``golden share'' in auto maker Jaguar</arg> 
+</example>
+
+<example name="agent and patient">
+  <text>
+    After a long hard day, Mary comforted John, but not the way he was
+    hoping.
+  </text>
+  <arg f="TMP" n="M">After a long hard day</arg>
+  <arg n="0">Mary</arg>
+  <rel>comforted</rel>
+  <arg n="1">John</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

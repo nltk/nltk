@@ -1,0 +1,56 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="entertain">
+<note>
+Frames file for 'entertain' based on annotation-on-the-fly on the financial
+subcorpus.
+</note>
+
+<roleset id="entertain.01" name="amuse" vncls="31.1">
+<roles>
+  <role descr="entertainer" n="0">
+		
+  <vnrole vncls="31.1" vntheta="Cause"/></role>
+
+  <role descr="entertained" n="1">
+		
+  <vnrole vncls="31.1" vntheta="Experiencer"/></role>
+
+  <role descr="instrument" n="2"/>
+</roles>
+
+<example name="all args">
+  <text>
+John can entertain himself for hours with a piece of string and a stick.
+  </text>
+  <arg n="0">John</arg>
+  <arg f="MOD" n="m">can</arg>
+  <rel>entertain</rel>
+  <arg n="1">himself</arg>
+  <arg f="TMP" n="m">for hours</arg>
+  <arg f="with" n="2">a piece of string and a stick</arg>
+</example>
+</roleset>
+
+<roleset id="entertain.02" name="consider">
+<roles>
+  <role descr="considerer" n="0"/>
+  <role descr="considered" n="1"/>
+</roles>
+
+<example name="transitive">
+  <text>
+    Judge Curry wouldn't entertain any appeals or other attempts to
+    block his orders.
+  </text>
+  <arg n="0">Judge Curry</arg>
+  <arg f="MOD" n="m">would</arg>
+  <arg f="NEG" n="m">n't</arg>
+  <rel>entertain</rel>
+  <arg n="1">any appeals or other attempts to
+    block his orders.</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

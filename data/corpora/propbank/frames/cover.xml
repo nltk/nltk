@@ -1,0 +1,123 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="cover">
+<note>
+  Frames file for 'cover' based on survey of initial sentences of big
+  corpus.
+</note>
+
+<roleset id="cover.01" name="has responsibility for, handles" vncls="9.8">
+<roles>
+  <role descr="coverer" n="0">
+	<vnrole vncls="9.8" vntheta="Agent"/></role>
+  <role descr="thing covered" n="1">
+	<vnrole vncls="9.8" vntheta="Destination"/></role>
+  <role descr="instrument, covered by" n="2">
+	<vnrole vncls="9.8" vntheta="Theme"/></role>
+</roles>
+
+<example name="agentive subject">
+  <text>
+  Market-makers are shopping *trace* to cover book requirements in
+  FTSE 100 shares.
+  </text>
+  <arg n="0">*trace*=Market-makers</arg>
+  <rel>cover</rel>
+  <arg n="1">book requirements in FTSE 100 shares.</arg>
+</example>
+
+<example name="instrumental subject">
+  <text>
+  The training wage covers only workers who are 16 to 19 years old.
+  </text>
+  <arg n="2">The training wage</arg>
+  <rel>covers</rel>
+  <arg f="ADV" n="m">only</arg>
+  <arg n="1">workers who are 16 to 19 years old</arg>
+</example>
+
+<example name="passive">
+  <text>
+  At least costs should be covered *trace*.
+  </text>
+  <arg f="DIS" n="m">At least</arg>
+  <arg n="1">*trace*=costs</arg>
+  <arg f="MOD" n="m">should</arg>
+  <rel>covered</rel>
+</example>
+</roleset>
+
+<roleset id="cover.02" name="smear, put over" vncls="9.8">
+<roles>
+  <role descr="causer of covering" n="0">
+	<vnrole vncls="9.8" vntheta="Agent"/></role>
+  <role descr="thing covered" n="1">
+	<vnrole vncls="9.8" vntheta="Destination"/></role>
+  <role descr="covered with" n="2">
+	<vnrole vncls="9.8" vntheta="Theme"/></role>
+</roles>
+
+<example name="lunchtime">
+  <text>
+  John covered the bread with peanut butter.
+  </text>
+  <arg n="0">John</arg>
+  <rel>covered</rel>
+  <arg n="1">the bread</arg>
+  <arg f="with" n="2">peanut butter</arg>
+</example>
+
+<note>
+Please note the similarity between the two rolesets, leading to the
+use of arg2 as subject in many sentences under the first roleset.
+</note>
+
+</roleset>
+
+<roleset id="cover.03" name="broadcast" vncls="-">
+<roles>
+  <role descr="news organization, media" n="0"/>
+  <role descr="event" n="1"/>
+</roles>
+
+<example name="broadcast news">
+  <text>
+  Give television a chance *trace* to cover live any breaking of the law...
+  </text>
+  <arg n="0">*trace*=television</arg>
+  <rel>cover</rel>
+  <arg f="MNR" n="m">live</arg>
+  <arg n="1">any breaking of the law</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="cover_up">
+
+<roleset id="cover.04" name="obscure" vncls="-">
+<roles>
+  <role descr="coverer" n="0"/>
+  <role descr="thing covered" n="1"/>
+</roles>
+
+<example name="CYA">
+  <text>
+  Its officials and utility subsidiaries tried *trace-1* to cover up their
+  accounting for spare parts *trace-2* to evade federal income taxes.
+  </text>
+  <arg n="0">*trace-1*=Its officials and utility subsidiaries</arg>
+  <rel>cover up</rel>
+  <arg n="1">their accounting for spare parts</arg>
+  <arg f="PNC" n="m">*trace-2* to evade federal income taxes</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

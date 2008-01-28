@@ -1,0 +1,47 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="relax">
+<note>
+Frames file for 'relax' based on sentences in financial subcorpus and
+automatic expansion via verbnet.
+</note>
+
+<roleset id="relax.01" name="(cause to) become less tight" vncls="31.1">
+<roles>
+	<role descr="thing causing relaxation" n="0">
+		
+  <vnrole vncls="31.1" vntheta="Cause"/></role>
+
+	<role descr="thing relaxing" n="1">
+		
+  <vnrole vncls="31.1" vntheta="Experiencer"/></role>
+
+</roles>
+
+<example name="agentive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Ford is willing to bid for 100% of Jaguar's shares if both the
+    government and Jaguar shareholders agree *trace* to relax the
+    anti-takeover barrier prematurely. 
+</text>
+        <arg n="0">*trace* -&gt;  both the government and Jaguar
+        shareholders</arg>        <rel>relax</rel> 
+        <arg n="1">the anti-takeover barrier</arg>
+        <arg f="TMP" n="M">prematurely</arg>
+</example>
+
+<example name="ergative">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    ``I don't want to give the impression that everybody can relax
+    now,'' he said. 
+</text>
+        <arg n="1">everybody</arg>
+        <arg f="MOD" n="M">can</arg>
+        <rel>relax</rel>
+        <arg f="TMP" n="M">now</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

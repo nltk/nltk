@@ -1,0 +1,50 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="reward">
+<note>
+Frames file for 'reward' based on sentences in financial subcorpus and
+automatic expansion via verbnet.
+</note>
+
+<roleset id="reward.01" name="give a reward" vncls="33">
+<roles>
+	<role descr="entity giving reward" n="0">
+		
+  <vnrole vncls="33" vntheta="Agent"/></role>
+
+	<role descr="entity being given to" n="1">
+		
+  <vnrole vncls="33" vntheta="Theme"/></role>
+
+	<role descr="because of what" n="2">
+		
+  <vnrole vncls="33" vntheta="Cause"/></role>
+
+</roles>
+
+<example name="reward itself usually unstated">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    The move rewards shareholders and should improve the stock's
+    liquidity, Oneida said. 
+</text>
+        <arg n="0">The move</arg>
+        <rel>rewards</rel>
+        <arg n="1">shareholders</arg>
+</example>
+
+<example name="with grounds as gerund" src="criticize.01">
+<text>
+    The internal investigation also rewarded MiniScribe's auditors,
+    Coopers &amp; Lybrand, for allegedly ignoring numerous red flags. 
+</text>
+        <arg n="0">The internal investigation</arg>
+        <arg f="DIS" n="M">also</arg>
+        <rel>rewarded</rel>
+        <arg n="1">MiniScribe's auditors, Coopers &amp; Lybrand,</arg>
+        <arg f="for" n="2">allegedly ignoring numerous red flags</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

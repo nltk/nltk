@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="slope">
+<note>
+  Frames file for 'slope' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="slope.01" name="to ascend or descend" vncls="-">
+<roles>
+  <role descr="entity sloping" n="0"/>  
+</roles>
+
+<example name="with direction">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ Scenario 1 , known [*] as the `` Constant Dollar Freeze , '' reimburses the Pentagon for inflation only -- it slopes upward at 4 % per year .
+</text>
+	<arg n="0">it</arg>
+	<rel>slopes</rel>
+	<arg f="DIR" n="M">upward</arg>
+	<arg f="MNR" n="M">at 4 % per year</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

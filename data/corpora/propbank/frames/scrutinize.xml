@@ -1,0 +1,59 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="scrutinize">
+<note>
+  Frames file for 'scrutinize' based on sentences in financial
+  subcorpus.  Verbnet classes 30.2 34 35.4, other framed members
+  include: regard, study; review, study; probably 'examine' should be
+  in there too.  Comparison to 'examine'.
+</note>
+
+<roleset id="scrutinize.01" name="examine closely" vncls="30.2 34 35.4">
+<roles>
+  <role descr="examiner" n="0">
+		
+		
+		
+  <vnrole vncls="30.2" vntheta="Experiencer"/><vnrole vncls="34" vntheta="Agent"/><vnrole vncls="35.4" vntheta="Agent"/></role>
+
+  <role descr="examined" n="1">
+		
+		
+		
+  <vnrole vncls="30.2" vntheta="Stimulus"/><vnrole vncls="34" vntheta="Theme"/><vnrole vncls="35.4" vntheta="Location"/></role>
+
+  <role descr="examined for" n="2">
+		
+		
+  <vnrole vncls="34" vntheta="Cause"/><vnrole vncls="35.4" vntheta="Theme"/></role>
+
+</roles>
+
+<example name="just transitive">
+<text>
+    And some investment bankers say a restructuring isn't feasible
+    while the SEC still is scrutinizing Mr. Spiegel's past junk-bond
+    trades. 
+</text>
+        <arg n="0">the SEC</arg>
+        <arg f="TMP" n="M">still</arg>
+        <rel>scrutinizing</rel>
+        <arg n="1">Mr. Spiegel's past junk-bond trades</arg>
+</example>
+
+<example name="with arg2">
+  <text>
+    Mary scrutinized John's research for signs of obvious plagiarism.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>scrutinized</rel>
+  <arg n="1">John's research</arg>
+  <arg f="for" n="2">signs of obvious plagiarism</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="scamper">
+<note>
+  Frames file for 'scamper'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="scamper.01" name="to move or proceed hurriedly" vncls="51.3.2">
+<roles> 
+  <role descr="entity in motion" n="0">
+        <vnrole vncls="51.3.2" vntheta="Theme"/></role>
+</roles>
+
+<example name="with direction">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ His characters practically scamper through a vast range of human emotions , like travelers doing 10 cities in eight days .
+</text>
+	<arg n="0">His characters</arg>
+	<arg f="ADV" n="M">practically</arg>
+	<rel>scamper</rel>
+	<arg f="DIR" n="M">through a vast range of human emotions</arg>
+	<arg f="MNR" n="M">like travelers doing 10 cities in eight days</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

@@ -1,0 +1,101 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="share">
+<note>
+  Frames file for 'share' based on sentences in financial subcorpus.
+  No Verbnet entry.
+</note>
+
+<roleset id="share.01" name="share" vncls="-">
+<roles>
+  <role descr="sharer" n="0"/>
+  <role descr="thing shared" n="1"/>
+  <role descr="shared with, if separate from arg0" n="2"/>
+</roles>
+
+<example name="no second sharer ">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    It hasn't diversified beyond steel, nor has it linked up with a
+    joint venture partner *trace* to share costs and risks. 
+</text>
+        <arg n="0">*trace* -&gt;  It</arg>
+        <rel>share</rel>
+        <arg n="1">costs and risks</arg>
+</example>
+
+<example name="sharers merged into arg0">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    I have never seen a case of incompetence shared *trace* by so many
+    participants.'' 
+</text>
+        <rel>shared</rel>
+        <arg n="1">*trace* -&gt;  incompetence</arg>
+        <arg f="by" n="0">so many participants</arg>
+</example>
+
+<example name="all args">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    One way out of that dilemma could be a partial recapitalization in
+    which the pilots would wind up *trace* sharing the value of their
+    concessions with public shareholders. 
+</text>
+        <arg n="0">*trace* -&gt;  the pilots</arg>
+        <rel>sharing</rel>
+        <arg n="1">the value of their concessions</arg>
+        <arg f="with" n="2">public shareholders</arg>
+</example>
+
+<example name="nominal">
+  <inflection person="ns" tense="ns" aspect="ns" voice="ns" form="ns"/>
+  <text>
+      ...a relatively small share of the $1.5 billion in U.S. watch
+      imports that year.
+  </text>
+  <arg n="m" f="Q">relatively small</arg>
+  <rel              >share</rel>
+  <arg n="1" f="of">the $1.5 billion in U.S. watch imports that year</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="share_out">
+
+<roleset id="share.02" name="distribute to shareholders" vncls="-">
+<roles>
+  <role descr="distributor" n="0"/>
+  <role descr="thing given out" n="1"/>
+  <role descr="shareholders" n="2"/>
+</roles>
+
+<example name="unmentioned shareholders">
+  <inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+  <text>
+     Seeking to to overcome the currency problems, Mr. Giffen's
+     American Trade Consortium, which comprises Chevron Corp., RJR,
+     Johnson &amp; Johnson, Eastman Kodak Co., and
+     Archer-Daniels-Midland Co., has concocted an elaborate scheme
+     *trace* to share out dollar earnings, largely from the revenues
+     of a planned Chevron oil project. 
+  </text>
+  <arg n="0">*trace* -&gt; Mr. Giffen's
+     American Trade Consortium, which comprises Chevron Corp., RJR,
+     Johnson &amp; Johnson, Eastman Kodak Co., and
+     Archer-Daniels-Midland Co.</arg>
+  <rel>share out</rel>
+  <arg n="1">dollar earnings, largely from the revenues
+     of a planned Chevron oil project</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,61 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="ferry">
+<note>
+  Frames file for 'ferry' based on sentences in wsj.  Verbnet entries
+  51.4.1 and 11.5, FRamenet entry Transportation.
+</note>
+
+<roleset id="ferry.01" name="move something back   and forth" vncls="51.4.1 11.5">
+<roles>
+  <role descr="agent, driver" n="0"><vnrole vncls="11.5" vntheta="Agent"/><vnrole vncls="51.4.1" vntheta="Agent"/></role>
+  <role descr="thing moved" n="1"><vnrole vncls="11.5" vntheta="Theme"/><vnrole vncls="51.4.1" vntheta="Theme"/></role>
+  <role descr="locations, or start point" n="2"><vnrole vncls="11.5" vntheta="Source"/><vnrole vncls="51.4.1" vntheta="Location"/></role>
+  <role descr="destination" n="3"><vnrole vncls="11.5" vntheta="Destination"/><vnrole vncls="51.4.1" vntheta="Location"/></role>
+</roles>
+
+<example name="all args">
+<inflection aspect="ns" form="gerund" person="ns" tense="ns" voice="ns"/>
+<text>
+    In fact, Aer Lingus started [*-1] ferrying Russians from Shannon
+    to New York when Washington stripped Aeroflot of its U.S. landing
+    rights. 
+</text>
+        <arg n="0">[*-1] -&gt;  Aer Lingus</arg>
+        <rel>ferrying</rel>
+        <arg n="1">Russians</arg>
+        <arg f="from" n="2">Shannon</arg>
+        <arg f="to" n="3">New York</arg>
+        <arg f="TMP" n="M">when Washington stripped Aeroflot of its
+        U.S. landing rights</arg> 
+</example>
+
+<example name="often missing start point">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+    The passenger railroad said it terminated some runs in Sacramento,
+    relying on buses [*-2] to ferry passengers to the Bay area. 
+</text>
+        <arg n="0">[*-2] -&gt;  buses</arg>
+        <rel>ferry</rel>
+        <arg n="1">passengers</arg>
+        <arg f="to" n="3">the Bay area</arg>
+</example>
+
+<example name="merged locations">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     Mary ferried John between jail and the mental ward.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>ferried</rel>
+  <arg n="1">John</arg>
+  <arg f="between" n="2">jail and the mental ward</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

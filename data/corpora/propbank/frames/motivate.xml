@@ -1,0 +1,105 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="motivate">
+<note>
+  Frames file for 'motivate' based on sentences in wsj.  No Verbnet
+  entry, Framenet entry Suasion2.
+</note>
+
+<roleset id="motivate.01" name="impelled action" vncls="-">
+<roles>
+  <role descr="motivation" n="0"/>
+  <role descr="impelled agent" n="1"/>
+  <role descr="impelled action" n="2"/>
+</roles>
+
+<example name="all args">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Jeffrey Nichols, president of APMS Canada, Toronto precious metals
+    advisers, said there is little *trace* *trace* to motivate gold
+    traders to buy the metal. 
+</text>
+        <arg n="0">*trace* -&gt; *trace* -&gt;  little</arg>
+        <rel>motivate</rel>
+        <arg n="1">gold traders</arg>
+        <arg n="2">to buy the metal</arg>
+</example>
+
+<example name="unstated action">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    But cosmetics firms still have one big marketing edge: They
+    motivate sales people with commissions. 
+</text>
+        <arg n="0">They</arg>
+        <rel>motivate</rel>
+        <arg n="1">sales people</arg>
+        <arg f="MNR" n="M">with commissions</arg>
+</example>
+
+<example name="passive, unstated action">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    The workers can be motivated *trace*, and the company reach its
+    full potential, only when management embraces the employees'
+    perspective. 
+</text>
+        <arg f="MOD" n="M">can</arg>
+        <rel>motivated</rel>
+        <arg n="1">*trace* -&gt;  The workers</arg>
+</example>
+
+<note>
+The unstated action seems to default to &quot;whatever arg1 does&quot;.
+</note>
+
+</roleset>
+
+<roleset id="motivate.02" name="justify" vncls="-">
+<roles>
+  <role descr="justifier" n="0"/>
+  <role descr="decision or attitude being shown to be right" n="1"/>
+  <role descr="explicit instrument" n="2"/>
+  <role descr="secondary predication on arg1" n="3"/>
+  <role descr="benefactive, justified to" n="4"/>
+</roles>
+
+<example name="only transitive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+     The UEP declines to comment, but the group's attorney, Alfred
+     Frawley, says the group's actions are motivated *trace* solely by
+     ``health concerns.'' 
+</text>
+        <rel>motivated</rel>
+        <arg n="1">*trace* -&gt;  the group's actions</arg>
+        <arg f="ADV" n="M">solely</arg>
+        <arg f="by" n="0">health concerns</arg>
+</example>
+
+<example name="all args">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John motivated his dissertation to his committee as worthy of
+     consideration by calling it &quot;super way-cool&quot;.
+  </text>
+  <arg n="0">John</arg>
+  <rel>motivated</rel>
+  <arg n="1">his dissertation</arg>
+  <arg f="to" n="4">his committee</arg>
+  <arg f="as" n="3">worthy of consideration</arg>
+  <arg f="by" n="2">calling it &quot;super way-cool&quot;</arg>
+</example>
+
+<note>
+Rolesets might be difficult to distinguish in the transitive.
+Ontology of the arg1 might be the key: only agentive entities can
+appear in arg1 of motivate.01, while objects and actions can
+appear as arg1 of motivate.02.  I'm not certain if agentive entities
+could appear as arg1 of motivate.02, but if they did, their agentive
+status would be external to the act of motivation.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,85 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="transform">
+<note>
+  Frames file for 'transform' based on survey of initial sentences of big
+  corpus and comparison with 'change'.
+</note>
+
+<roleset id="transform.01" name="change" vncls="26.6">
+<roles>
+  <role descr="causer of transformation" n="0">
+		
+  <vnrole vncls="26.6" vntheta="Agent"/></role>
+
+  <role descr="thing changing" n="1">
+		
+  <vnrole vncls="26.6" vntheta="Patient"/></role>
+
+  <role descr="end state" n="2">
+		
+  <vnrole vncls="26.6" vntheta="Product"/></role>
+
+  <role descr="start state" n="3">
+		
+  <vnrole vncls="26.6" vntheta="Material"/></role>
+
+</roles>
+
+<example name="agentive">
+  <text>
+  The commercial transformed the dynamics of the campaign.
+  </text>
+  <arg n="0">The commercial</arg>
+  <rel>transformed</rel>
+  <arg n="1">the dynamics of the campaign</arg>
+</example>
+
+<example name="ergative">
+  <text>
+  ...customers whose addresses have transformed during the past 3 1/2 years.
+  </text>
+  <arg n="1">whose addresses</arg>
+  <rel>transformed</rel>
+  <arg f="TMP" n="m">during the past 3 1/2 years</arg>
+</example>
+
+<example name="passive">
+  <text>
+  ...the areas that can be most easily transformed *trace*
+  </text>
+  <arg f="MOD" n="m">can</arg>
+  <arg f="MNR" n="m">most easily</arg>
+  <rel>transformed</rel>
+  <arg n="1">*trace*=the areas</arg>
+</example>
+
+<example name="with end state">
+  <text>
+  ...erasures transformed wrong answers to right ones on a statewide test.
+  </text>
+  <arg n="0">erasures</arg>
+  <rel>transformed</rel>
+  <arg n="1">wrong answers</arg>
+  <arg f="to" n="2">right ones</arg>
+  <arg f="LOC" n="m">on a statewide test</arg>
+</example>
+
+<note>
+&quot;Start state&quot; and &quot;thing changing&quot; are usually the same, but there can
+be cases where they are separate.  Reserve use of Arg3 for these cases.
+</note>
+
+<example name="explicit start state">
+  <text>
+  Customers transform from borrowers to savers/investors.
+  </text>
+  <arg n="1">Customers</arg>
+  <rel>transform</rel>
+  <arg f="from" n="3">borrowers</arg>
+  <arg f="to" n="2">savers/investors</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

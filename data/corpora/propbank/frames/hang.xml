@@ -1,0 +1,125 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="hang">
+<note>
+Frames file for 'hang' based on sentences in financial subcorpus and
+automatic expansion via verbnet.
+</note>
+
+<roleset id="hang.01" name="suspend" vncls="9.2-1 9.7-1">
+<roles>
+  <role descr="agent, entity causing something to be suspended" n="0">
+	<vnrole vncls="9.7-1" vntheta="Agent"/>
+        <vnrole vncls="9.2-1" vntheta="Agent"/></role>
+  <role descr="thing suspended" n="1">
+	<vnrole vncls="9.7-1" vntheta="Theme"/>
+        <vnrole vncls="9.2-1" vntheta="Theme"/></role>
+  <role descr="suspended from" n="2">
+	<vnrole vncls="9.7-1" vntheta="Destination"/>
+        <vnrole vncls="9.2-1" vntheta="Destination"/></role>
+</roles>
+
+<example name="usually ergative">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+    With uncertainty still hanging over interest rates and the dollar,
+    the market failed to find a focus that might lead to further
+    investor commitments, they said. 
+</text>
+        <arg n="1">uncertainty</arg>
+        <arg f="TMP" n="M">still</arg>
+        <rel>hanging</rel>
+        <arg f="LOC" n="m">over interest rates and the dollar</arg>
+</example>
+
+<example name="with agent" src="stand.01">
+  <text>
+    John hung his toy soldiers from the ceiling fan.
+  </text>
+  <arg n="0">John</arg>
+  <rel>stood</rel>
+  <arg n="1">his toy soldiers</arg>
+  <arg f="from" n="2">the ceiling fan</arg>
+</example>
+
+</roleset>
+
+<roleset id="hang.02" name="exist, be (cool)" vncls="47.6">
+<roles>
+  <role descr="entity in the position" n="1">
+	<vnrole vncls="47.6" vntheta="Theme"/></role>
+  <role descr="location or manner" n="2">
+	<vnrole vncls="47.6" vntheta="Location"/></role>
+</roles>
+
+<example name="semi-phrasal">
+<inflection aspect="progressive" form="participle" person="third" tense="present" voice="active"/>
+<text>
+    However, the only outsider who has emerged to lead such a
+    shareholder vote, Los Angeles investor Marvin Davis, who triggered
+    the buy-out with a $5.4 billion bid in early August, is hanging
+    back -- apparently to avoid being blamed for contributing to the
+    deal's collapse. 
+</text>
+        <arg n="1">the only outsider who has emerged to lead such a
+        shareholder vote, Los Angeles investor Marvin Davis, who
+        triggered the buy-out with a $5.4 billion bid in early
+        August</arg> 
+        <rel>hanging</rel>
+        <arg f="MNR" n="2">back</arg>
+        <arg f="DIS" n="M">apparently</arg>
+        <arg f="PNC" n="M">to avoid being blamed for contributing to
+        the deal's collapse</arg> 
+<note>
+Similarly 'hang out' etc.
+</note>
+</example>
+
+<example name="metaphorical and fixed">
+  <inflection person="ns" tense="ns" aspect="ns" voice="passive" form="participle"/>
+  <text>
+    The trial of the case lasted seven months and ended in September
+    with a hung jury. 
+  </text>
+  <rel              >hung</rel>
+  <arg n="1"        >jury</arg>
+</example>
+</roleset>
+</predicate>
+
+<predicate lemma="hang_up">
+
+<roleset id="hang.03" name="hang up: terminate a phone call" vncls="-">
+<roles>
+  <role descr="terminator" n="0"/>
+  <role descr="phone or other conversant" n="1"/>
+</roles>
+
+<example name="hang up on">
+  <inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+  <text>
+     John always hangs up on telemarketers.
+  </text>
+  <arg n="0">John</arg>
+  <arg f="TMP" n="m">always</arg>
+  <rel>hangs up</rel>
+  <arg f="on" n="1">telemarketers</arg>
+</example>
+
+<example name="just hang up">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John hung up the phone.
+  </text>
+  <arg n="0">John</arg>
+  <rel>hung up</rel>
+  <arg n="1">the phone</arg>
+</example>
+
+<note>
+I don't think 'the phone' and the other conversant can cooccur.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

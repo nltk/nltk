@@ -1,0 +1,59 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="extort">
+<note>
+  Frames file for 'extort' based on sentences in wsj.  Verbnet entry
+  10.5. 
+</note>
+
+<roleset id="extort.01" name="extract money from, under pressure" vncls="10.5">
+<roles>
+  <role descr="agent, extorter" n="0"><vnrole vncls="10.5" vntheta="Agent"/></role>
+  <role descr="money" n="1"><vnrole vncls="10.5" vntheta="Theme"/></role>
+  <role descr="source" n="2"><vnrole vncls="10.5" vntheta="Source"/></role>
+</roles>
+
+<example name="all args">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    According to testimony in a public, 80-page grand-jury report
+    handed up to the state attorney general, Judge O'Kicki extorted
+    cash from lawyers, muscled favorable loans from banks and bullied
+    local businesses for more than a decade. 
+</text>
+        <arg n="0">Judge O'Kicki</arg>
+        <rel>extorted</rel>
+        <arg n="1">cash</arg>
+        <arg f="from" n="2">lawyers</arg>
+        <arg f="TMP" n="M">for more than a decade</arg>
+</example>
+
+<example name="intransitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+    The judge now says it was ``unfortunate'' that he chose to write
+    the letter but says ``there was certainly no intent *trace* to
+    extort there.'' 
+</text>
+        <arg n="0">*trace*</arg>
+        <rel>extort</rel>
+</example>
+
+<example name="missing arg defaults to 'money'">
+<inflection aspect="ns" form="full" person="ns" tense="ns" voice="ns"/>
+<text>
+    The question is how much you get tied in with seedy characters so
+    they can extort you.'' 
+</text>
+        <arg n="0">they</arg>
+        <arg f="MOD" n="M">can</arg>
+        <rel>extort</rel>
+        <arg n="2">you</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

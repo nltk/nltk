@@ -1,0 +1,36 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="forward">
+<note>
+  Frames file for 'forward' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="forward.01" name="to send on" vncls="11.1-1">
+<roles>
+  <role descr="sender, agent" n="0">
+        <vnrole vncls="11.1-1" vntheta="Agent"/></role>
+  <role descr="entity forwarded" n="1">
+        <vnrole vncls="11.1-1" vntheta="Theme"/></role>
+  <role descr="destination" n="2">
+        <vnrole vncls="11.1-1" vntheta="Destination"/></role>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ Elcotel will provide a credit-card reader [0] for the machines to collect , store and forward billing data [*T*-1] .
+</text>
+	<arg n="0">the machines</arg>
+	<rel>forward</rel>
+	<arg n="1">billing data</arg>
+	<arg f="MNR" n="M">[*T*-1] -&gt;  [0] -&gt;  a credit-card reader</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

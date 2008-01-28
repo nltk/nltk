@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="grapple">
+<note>
+  Frames file for 'grapple' based on sentences in financial subcorpus.
+  No access to verbnet.  Comparison with 'cope' on the basis of
+  syntax, not meaning. 
+</note>
+
+<roleset id="grapple.01" name="deal with">
+<roles>
+  <role descr="entity grappling" n="0"/>
+  <role descr="grappling with what" n="1"/>
+</roles>
+
+<example name="transitive">
+<text>
+    The sad reality is that the retail investor continues to pursue
+    stellar performers first, while leaving institutions to grapple
+    with basis points of performance on large sums of money quarter by
+    quarter. 
+</text>
+	<arg n="0">institutions</arg>
+	<rel>grapple</rel>
+	<arg f="with" n="1">basis points of performance on large sums
+	of money</arg> 
+</example>
+
+
+</roleset>
+</predicate>
+</frameset>

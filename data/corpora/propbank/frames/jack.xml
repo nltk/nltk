@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="jack_up">
+<note>
+  Frames file for 'jack' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="jack.01" name="to raise, lift" vncls="-">
+<roles>
+  <role descr="raiser, agent" n="0"/>
+  <role descr="entity raised" n="1"/>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="gerund" person="ns" tense="ns" voice="active"/>
+<text>
+ But some industry executives said [0] ABC , in anticipation of a four-game sweep , limited its losses by [*-2] jacking up the number of commercials [0] it aired [*T*-1] in the third and fourth games .
+</text>
+	<arg n="0">[*-2] -&gt;  ABC</arg>
+	<rel>[ jacking] [ up]</rel>
+	<arg n="1">the number of commercials [0] it aired [*T*-1] in the third and fourth games</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

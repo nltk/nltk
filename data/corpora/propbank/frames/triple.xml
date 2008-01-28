@@ -1,0 +1,68 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="triple">
+<note>
+  Frames file for 'triple' based on survey of sentences in the WSJ
+  corpus. Comparison with 'double'.
+</note>
+
+<roleset id="triple.01" name="to make three times as great" vncls="45.4">
+<roles>
+  <role descr="agent, causer" n="0">
+		
+  <vnrole vncls="45.4" vntheta="Agent"/></role>
+
+  <role descr="entity increasing" n="1">
+		
+  <vnrole vncls="45.4" vntheta="Patient"/></role>
+
+  <role descr="EXT, never mentioned" n="2"/>
+  <role descr="start point" n="3"/>
+  <role descr="end point" n="4"/>
+</roles>
+
+
+<example name="with start and end points">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ Net income more than tripled to 4.898 billion yen from 1.457 billion yen a year earlier .
+</text>
+	<arg n="1">Net income</arg>
+	<rel>tripled</rel>
+	<arg f="to" n="4">4.898 billion yen</arg>
+	<arg f="from" n="3">1.457 billion yen</arg>
+	<arg f="TMP" n="M">a year earlier</arg>
+</example>
+
+
+<example name="intransitive with adverbials">
+<inflection aspect="perfect" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+ At Giant Bicycle Inc. , Rancho Dominguez , Calif. , sales have tripled since the company entered the U.S. mountain-bike business in 1987 .
+</text>
+	<arg f="LOC" n="M">At Giant Bicycle Inc. , Rancho Dominguez , Calif. ,</arg>
+	<arg n="1">sales</arg>
+	<rel>tripled</rel>
+	<arg f="TMP" n="M">since the company entered the U.S. mountain-bike business in 1987</arg>
+</example>
+
+
+<example name="with start point">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ Revenue last year increased by more than 11 % over 1988 , and net income nearly tripled from restated year-earlier net of $ 900 million [*U*] .
+</text>
+	<arg f="TMP" n="M">last year</arg>
+	<arg n="1">net income</arg>
+	<arg f="ADV" n="M">nearly</arg>
+	<rel>tripled</rel>
+	<arg f="from" n="3">restated year-earlier net of $ 900 million [*U*]</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

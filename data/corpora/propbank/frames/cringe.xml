@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="cringe">
+<note>
+  Frames file for 'cringe'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="cringe.01" name="to shrink back, as in fear" vncls="-">
+<roles> 
+  <role descr="fearful entity" n="0"/>
+</roles>
+
+<example name="intransitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ When he later sided with striking hospital workers [*T*-1] , some allies [*ICH*-2] cringed a little more , concerned that Mr. Dinkins was setting the wrong tone for coming contract negotiations with city employees .
+</text>
+	<arg f="TMP" n="M">When he later sided with striking hospital workers [*T*-1]</arg>
+	<arg n="0">[ some allies [*ICH*-2]] [ concerned that Mr. Dinkins was setting the wrong tone for coming contract negotiations with city employees]</arg>
+	<rel>cringed</rel>
+	<arg f="EXT" n="M">a little more</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

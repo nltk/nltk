@@ -1,0 +1,62 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="liquidate">
+<note>
+  Frames file for 'liquidate' based on sentences in financial
+  subcorpus.  Verbnet entry 42.1, other framed members include execute
+  and kill.  Framenet class Death.  Comparison with kill.
+</note>
+
+<roleset id="liquidate.01" name="cause to cease to exist" vncls="42.1">
+<roles>
+  <role descr="liquidator, agent" n="0">
+	<vnrole vncls="42.1" vntheta="Agent"/></role>
+  <role descr="thing being liquidated" n="1">
+	<vnrole vncls="42.1" vntheta="Patient"/></role>
+
+</roles>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="future" voice="passive"/>
+<text>
+    Erbamont will then be liquidated *trace*, with any remaining
+    Erbamont holders receiving a distribution of $37 a share. 
+</text>
+        <arg f="MOD" n="M">will</arg>
+        <rel>liquidated</rel>
+        <arg n="1">*trace* -&gt;  Erbamont</arg>
+        <arg n="M">with any remaining Erbamont holders receiving a
+        distribution of $ 37  a share</arg> 
+</example>
+
+<example name="active">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    A unit of DPC Acquisition Partners launched a $10-a-share tender
+    offer for the shares outstanding of Dataproducts Corp., and said
+    it would seek *trace* to liquidate the computer-printer maker ``as
+    soon as possible,'' even if a merger isn't consummated. 
+</text>
+        <arg n="0">*trace* -&gt;  it</arg>
+        <rel>liquidate</rel>
+        <arg n="1">the computer-printer maker</arg>
+        <arg f="TMP" n="M">as soon as possible</arg>
+</example>
+
+<example name="surprising intransitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+    Property Capital Trust said it dropped its plan *trace* to
+    liquidate because it wasn't able to realize the value it had
+    expected. 
+</text>
+        <arg n="0">*trace* -&gt;  Property Capital Trust</arg>
+        <rel>liquidate</rel>
+<note>
+I presume there's an unstated arg1-REC.
+</note>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,53 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="trigger">
+<note>
+  Frames file for 'trigger' based on sentences in financial
+  subcorpus.  No verbnet entry.  Comparison with 'start'.
+</note>
+
+<roleset id="trigger.01" name="begin">
+<roles>
+  <role descr="Agent" n="0"/>
+  <role descr="Theme(-Creation)" n="1"/>
+  <role descr="Instrument" n="2"/>
+  <role descr="secondary predication" n="3"/>
+</roles>
+
+<example name="transitive, active">
+<text>
+    Paper and forest-products stocks were especially strong, as the
+    offer for Great Northern Nekoosa by Georgia-Pacific triggered
+    speculation that the industry could be in for a wave of merger
+    activity. 
+</text>
+        <arg n="0">the offer for Great Northern Nekoosa by
+        Georgia-Pacific</arg>
+        <rel>triggered</rel>
+        <arg n="1">speculation that the industry could be in for a
+        wave of merger activity</arg> 
+</example>
+
+<example name="with instrument">
+<text>
+    However, the only outsider who has emerged to lead such a
+    shareholder vote, Los Angeles investor Marvin Davis, who *trace*
+    triggered the buy-out with a $5.4 billion bid in early August, is
+    hanging back -- apparently to avoid being blamed for contributing
+    to the deal's collapse. 
+</text>
+        <arg n="0">*trace* -&gt;  who -&gt; Los Angeles investor Marvin
+        Davis</arg> 
+        <rel>triggered</rel>
+        <arg n="1">the buy-out</arg>
+        <arg f="with" n="2">a $ 5.4 billion  bid in early August</arg>
+</example>
+
+<note>
+These seem to occur most often in the passive: be careful of trace
+chains.  I don't think the attributive will occur.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

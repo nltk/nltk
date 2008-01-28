@@ -1,0 +1,312 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<note>
+  Frames file for 'hold' based on survey of initial sentences from big corpus
+</note>
+
+<predicate lemma="hold">
+<roleset id="hold.01" name="grasp, bear" vncls="15.1">
+<roles>
+  <role descr="holder" n="0">
+	<vnrole vncls="15.1" vntheta="Agent"/></role>
+  <role descr="thing held" n="1">
+	<vnrole vncls="15.1" vntheta="Theme"/></role>
+  <role descr="benefactive" n="2"/>
+  <role descr="secondary attribute of arg1" n="3"/>
+</roles>
+
+<example name="just transitive">
+  <text>
+    WR Grace &amp; Co holds a 83.4% interest in the company.
+  </text>
+  <arg n="0">WR Grace &amp; Co</arg>
+  <rel>holds</rel>
+  <arg n="1">a 83.4% interest in the company</arg>
+</example>
+
+<example name="with secondary attribute">
+  <text>
+  Mr. Steinhardt holds USAir as a an investment.
+  </text>
+  <arg n="0">Mr. Steinhardt</arg>
+  <rel>holds</rel>
+  <arg n="1">USAir</arg>
+  <arg f="as" n="3">a an investment</arg>
+</example>
+</roleset>
+
+<roleset id="hold.02" name="attributive" vncls="29.5">
+<note>equiv to 'call' or 'think'</note>
+<roles>
+  <role descr="holder / thinker" n="0">
+        <vnrole vncls="29.5" vntheta="Agent"/></role>
+  <role descr="thing held" n="1">
+        <vnrole vncls="29.5" vntheta="Theme"/></role>
+  <role descr="attribute of arg1" n="2">
+        <vnrole vncls="29.5" vntheta="Predicate"/></role>
+</roles>
+
+<example name="apparently passive">
+  <text>
+    The refund pool may not be held *trace=pool* hostage
+  </text>
+  <rel>held</rel>
+  <arg n="1">*trace=pool*</arg>
+  <arg n="2">hostage</arg>
+</example>
+
+<example name="thing held is a sentence">
+  <text>
+    The Supreme Court held that legislative vetoes are unconstitutional.
+  </text>
+  <arg n="0">The Supreme Court</arg>
+  <rel>held</rel>
+  <arg n="1">legislative vetoes are unconstitutional</arg>
+</example>
+
+<example name="unaccusative">
+  <text>
+    The economy was holding steady.
+  </text>
+  <arg n="1">The economy</arg>
+  <rel>was holding</rel>
+  <arg n="2">steady</arg>
+</example>
+
+<note>hold against: (two meanings)</note>
+<example name="hold against">
+  <text>
+    John's violent outbursts are held against him.
+  </text>
+  <arg n="1">John's violent outbursts</arg>
+  <rel>are held</rel>
+  <arg f="against" n="2">him</arg>
+  <note>
+  and the ever-popular:
+  If I said you had a beautiful body, would you hold it against me?
+  </note>
+</example>
+</roleset>
+
+<roleset id="hold.03" name="last, persevere" vncls="-">
+<roles>
+  <role descr="thing lasting" n="1"/>
+  <role descr="description of arg1" n="2"/>
+</roles>
+
+<example name="stock report">
+  <text>
+  UAL held at a slightly lower level through most of the session.
+  </text>
+  <arg n="1">UAL</arg>
+  <rel>held</rel>
+  <arg n="2">at a slightly lower level</arg>
+  <arg f="TMP" n="m">through most of the session</arg>
+</example>
+
+<note>
+Compare this roleset to the attributive roleset above and to the
+hold_up roleset below.
+</note>
+
+</roleset>
+
+<roleset id="hold.04" name="conduct" vncls="-">
+<roles>
+  <role descr="conductor" n="0"/>
+  <role descr="thing held" n="1"/>
+  <role descr="with whom" n="2"/>
+</roles>
+
+<example name="let's have a meeting">
+  <text>
+  GM's UK unit holds crucial talks today with union officials.
+  </text>
+  <arg n="0">GM's UK unit</arg>
+  <rel>holds</rel>
+  <arg n="1">crucial talks</arg>
+  <arg f="TMP" n="m">today</arg>
+  <arg f="with" n="2">union officials</arg>
+</example>
+
+<example name="passive variant (took place)">
+  <text>
+    A buffet breakfast was held *trace* in the museum.
+  </text>
+  <rel>was held</rel>
+  <arg n="1">*trace* -> A buffet breakfast</arg>
+  <arg f="LOC" n="M">in the museum</arg>
+</example>
+
+<example name="Arg2 as benefactive">
+  <text>
+    John held a party for Mary
+  </text>
+  <arg n="0">John</arg>
+  <rel>held</rel>
+  <arg n="1">a party</arg>
+  <arg f="for" n="2">for Mary</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="hold_on">
+<roleset id="hold.05" name="wait" vncls="-">
+  <roles>
+    <role descr="entity waiting" n="1"/>
+  </roles>
+<note>
+  only as imperative, to my mind, and thus takes only a blank *trace* as Arg0
+</note>
+<example name="ok, I was wrong">
+  <text>
+  I'm going *trace* to hold on.
+  </text>
+  <arg n="1">*trace*=I</arg>
+  <rel>hold on</rel>
+</example>
+</roleset>
+
+<roleset id="hold.06" name="grasp" vncls="-">
+<roles>
+  <role descr="holder" n="0"/>
+  <role descr="thing held" n="1"/>
+  <role descr="benefactive" n="2"/>
+</roles>
+
+<example name="hold me loosely">
+  <text>
+  Spooked investors should hold on tight to their Jaguar shares.
+  </text>
+  <arg n="0">Spooked investors</arg>
+  <arg f="MOD" n="m">should</arg>
+  <rel>hold on</rel>
+  <arg f="MNR" n="m">tight</arg>
+  <arg f="to" n="1">their Jaguar shares</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="hold_back">
+<roleset id="hold.07" name="restrain" vncls="-">
+  <roles>
+    <role descr="restrainer" n="0"/>
+    <role descr="thing being restrained" n="1"/>
+    <role descr="thing being held back from" n="2"/>
+  </roles>
+
+<example name="march of progress, and all that">
+  <text>
+    You can't hold back technology.
+  </text>
+  <arg n="0">You</arg>
+  <arg f="NEG" n="M">n't</arg>
+  <rel>hold back</rel>
+  <arg n="1">technology</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="hold_off">
+<roleset id="hold.08" name="wait, delay" vncls="-">
+<roles>
+  <role descr="waiter, delayer" n="0"/>
+  <role descr="thing delayed" n="1"/>
+</roles>
+
+<example name="usually with temporal">
+  <text>
+    Many customers were holding off on purchase decisions until the
+    takeover was completed.
+  </text>
+  <arg n="0">Many customers</arg>
+  <rel>holding off</rel>
+  <arg f="on" n="1">purchase decisions</arg>
+  <arg f="TMP" n="M">until the takeover was completed.</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="hold_out">
+
+<roleset id="hold.09" name="wait" vncls="-">
+<roles>
+  <role descr="wait-er (not waiter, that's the other sense)" n="1"/>
+  <role descr="thing waited for" n="2"/>
+  <role descr="period of time waited through" f="TMP" n="m"/>
+</roles>
+
+<example name="a better offer">
+  <text>
+  UAL's board might hold out for a new bid much closer to the original
+  levels.
+  </text>
+  <arg n="1">UAL's board</arg>
+  <arg f="MOD" n="m">might</arg>
+  <rel>hold out</rel>
+  <arg f="for" n="2">a new bid much closer to the original
+  levels.</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="hold_up">
+<roleset id="hold.12" name="restrain" vncls="-">
+  <roles>
+    <role descr="restrainer" n="0"/>
+    <role descr="thing being restrained" n="1"/>
+    <role descr="thing being held back from" n="2"/>
+  </roles>
+</roleset>
+
+<roleset id="hold.10" name="restrain, delay" vncls="-">
+<roles>
+    <role descr="restrainer" n="0"/>
+    <role descr="thing being restrained" n="1"/>
+</roles>
+
+<example name="delay">
+  <text>
+  Nothing was going *trace* to hold up the long-delayed settlement of
+  Britton vs. Thomasini.
+  </text>
+  <arg n="0">*trace*=Nothing</arg>
+  <rel>hold up</rel>
+  <arg n="1">the long-delayed settlement of
+  Britton vs. Thomasini.</arg>
+</example>
+</roleset>
+
+<roleset id="hold.11" name="persevere, last" vncls="-">
+<roles>
+  <role descr="thing lasting" n="1"/>
+</roles>
+
+<example name="long lasting">
+  <text>
+  The company's price has held up well.
+  </text>
+  <arg n="1">The company's price</arg>
+  <rel>held up</rel>
+  <arg f="MNR" n="m">well</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+<note>
+Hold up can also be in the attributive roleset: Hold the book up: up
+is now an attribute of book.  Likewise hold down.
+</note>
+
+</predicate>
+</frameset>

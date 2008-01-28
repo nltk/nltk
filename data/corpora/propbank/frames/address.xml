@@ -1,0 +1,66 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="address">
+<note>
+Frames file for 'address' based on sentences in financial subcorpus
+and automatic expansion via verbnet.
+</note>
+
+<roleset id="address.01" name="put an address on an envelope" vncls="25.3">
+<roles>
+  <role descr="caller" n="0">
+	<vnrole vncls="25.3" vntheta="Agent"/></role>
+  <role descr="item being labelled" n="1">
+	<vnrole vncls="25.3" vntheta="Destination"/></role>
+  <role descr="recipient" n="2"/>
+</roles>
+
+<example name="not quite literal">
+<inflection aspect="ns" form="participle" person="ns" tense="past" voice="passive"/>
+<text>
+    Mr. Skase's statement was addressed *trace* to the stock exchange
+    and appeared to be a response to the inquiry. 
+</text>
+        <rel>addressed</rel>
+        <arg n="1">*trace* -&gt;  Mr. Skase's statement</arg>
+        <arg f="to" n="2">the stock exchange</arg>
+</example>
+</roleset>
+
+<roleset id="address.02" name="pay attention to, answer" vncls="29.2">
+<roles>
+  <role descr="agent, one paying attention" n="0">
+        <vnrole vncls="29.2" vntheta="Agent"/></role> 
+  <role descr="paying attention to what" n="1">
+        <vnrole vncls="29.2" vntheta="Theme"/></role> 
+  <role descr="answer" n="2">
+        <vnrole vncls="29.2" vntheta="Predicate"/></role>
+</roles>
+
+<example name="just transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    That should help IBM address the damage that a resurgent Storage
+    Technology Corp. has inflicted in that market. 
+</text>
+        <arg n="0">IBM</arg>
+        <rel>address</rel>
+        <arg n="1">the damage that a resurgent Storage Technology
+        Corp. has inflicted in that market</arg>
+</example>
+
+<example name="with answer">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Digital hopes *trace* to address that with the debut of its first
+    mainframe-class computers next Tuesday. 
+</text>
+        <arg n="0">*trace* -&gt;  Digital</arg>
+        <rel>address</rel>
+        <arg n="1">that</arg>
+        <arg f="with" n="2">the debut of its first mainframe-class
+        computers next Tuesday</arg> 
+</example>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,75 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="pave">
+<note>
+  Frames file for 'pave' based on sentences in wsj.  Verbnet entry
+  9.8, Framenet entry Adorning.
+</note>
+
+<roleset id="pave.01" name="cover a wide flat surface" vncls="9.8">
+<roles>
+  <role descr="applier of cover, agent" n="0">
+        <vnrole vncls="9.8" vntheta="Agent"/></role>
+  <role descr="surface" n="1">
+        <vnrole vncls="9.8" vntheta="Destination"/></role>
+  <role descr="paving material" n="2">
+        <vnrole vncls="9.8" vntheta="Theme"/></role>
+</roles>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    We have as much nostalgia as anyone for those leafy, breezy days
+    in Washington when honorable men and women dickered over budgets
+    and even log-rolled a bit to see that the bridges got build, roads
+    paved *trace*, soldiers paid or that the desperately poor were
+    cared for. 
+</text>
+        <rel>paved</rel>
+        <arg n="1">*trace* -&gt;  roads</arg>
+</example>
+
+<example name="all args">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    Tired of mowing, John paved his front yard with asphalt.
+  </text>
+  <arg n="m">Tired of mowing</arg>
+  <arg n="0">John</arg>
+  <rel>paved</rel>
+  <arg n="1">his front yard</arg>
+  <arg f="with" n="2">asphalt</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="pave.02" name="pave the way: prepare" vncls="-">
+<roles>
+  <role descr="preparer" n="0"/>
+  <role descr="the way" n="1"/>
+  <role descr="for what" n="2"/>
+</roles>
+
+<example name="typical usage">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    Were it true that a weak currency paves the way for trade
+    surpluses, then presumably Argentina would be the center of
+    today's global economy. 
+</text>
+        <arg n="0">a weak currency</arg>
+        <rel>paves</rel>
+        <arg n="1">the way</arg>
+        <arg f="for" n="2">trade surpluses</arg>
+</example>
+
+<note>
+Treebank uses at least three different syntaces for this usage.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

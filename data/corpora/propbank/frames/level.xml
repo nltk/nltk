@@ -1,0 +1,109 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="level">
+<note>
+  Frames file for 'level' based on sentences in financial subcorpus.
+  No access to verbnet.  No comparison.
+</note>
+
+<roleset id="level.01" name="cause to become level, even" vncls="45.4">
+<roles>
+  <role descr="cause, agent" n="0">
+	  <vnrole vncls="45.4" vntheta="Agent"/></role>
+  <role descr="thing becoming level" n="1">
+	  <vnrole vncls="45.4" vntheta="Patient"/></role>
+  <role descr="instrument, if separate from agent" n="2">
+	  <vnrole vncls="45.4" vntheta="Instrument"/></role>
+</roles>
+
+<example name="all args">
+  <text>
+    John levelled the cup of flour with the bottom of his shoe.
+  </text>
+  <arg n="0">John</arg>
+  <rel>levelled</rel>
+  <arg n="1">the cup of flour</arg>
+  <arg f="with" n="2">the bottom of his shoe</arg>
+</example>
+
+<example name="boom">
+  <inflection person="third" tense="past" aspect="ns" voice="passive" form="participle"/>
+  <text>
+    In May 1988, an ammonium perchlorate plant in Henderson owned by
+    an American Pacific Corp. unit was leveled [*-1] by a series of
+    explosions. 
+  </text>
+  <arg n="m" f="TMP">In May 1988</arg>
+  <rel              >leveled</rel>
+  <arg n="1"        >[*-1] -> an ammonium perchlorate plant in
+  Henderson owned by an American Pacific Corp. unit</arg>
+  <arg n="2" f="by">a series of explosions</arg>
+</example>
+
+</roleset>
+
+<roleset id="level.03" vncls="-" name="direct emphatically">
+<roles>
+  <role n="0"  descr="director, agent"/>
+  <role n="1"  descr="us. charges or accusations"/>
+  <role n="2"  descr="target"/>
+</roles>
+
+<example name="take that!">
+  <inflection person="ns" tense="ns" aspect="ns" voice="active" form="infinitive"/>
+  <text>
+     Warner Communications Inc. and Sony Corp. resumed settlement
+     talks on their legal battle over Hollywood producers Peter Guber
+     and Jon Peters, but continued [*-1] to level strong accusations
+     at each other in legal documents. 
+  </text>
+  <arg n="0"        >[*-1] -> Warner Communications Inc. and Sony Corp.</arg>
+  <rel              >level</rel>
+  <arg n="1"        >strong accusations</arg>
+  <arg n="2" f="at">each other</arg>
+  <arg n="m" f="LOC">in legal documents</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="level_off">
+<note>
+    Could be just an intensive of the previous sense, or an unaccusative.
+</note>
+
+<roleset id="level.02" name="level off: become level, even" vncls="45.4">
+<roles>
+  <role descr="cause, agent" n="0">
+	  <vnrole vncls="45.4" vntheta="Agent"/></role>
+  <role descr="thing becoming level" n="1">
+	  <vnrole vncls="45.4" vntheta="Patient"/></role>
+  <role descr="instrument, if separate from agent" n="2">
+	  <vnrole vncls="45.4" vntheta="Instrument"/></role>
+</roles>
+
+<example name="unaccusative">
+<text>
+    ECONOMIC GROWTH APPEARS *trace* to be leveling off, latest reports
+    suggest.  
+</text>
+        <arg n="1">*trace* -&gt; ECONOMIC GROWTH</arg>
+        <rel>[ leveling] [ off]</rel>
+</example>
+
+<example name="agentive">
+  <text>
+    John levelled off the cup of flour with the bottom of his shoe.
+  </text>
+  <arg n="0">John</arg>
+  <rel>[levelled] [off]</rel>
+  <arg n="1">the cup of flour</arg>
+  <arg f="with" n="2">the bottom of his shoe</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

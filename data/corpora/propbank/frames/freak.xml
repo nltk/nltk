@@ -1,0 +1,53 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="freak">
+<note>
+  Frames file for 'freak' based on sentences in wsj.  No Verbnet
+  entry, since it's hardly a verb.
+</note>
+
+<roleset id="freak.01" name="be freaky" vncls="-">
+<roles>
+  <role descr="freaked entity" n="1"/>
+</roles>
+
+<example name="adjectival!">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    We are all fine here, although Mame was extremely freaked.
+</text>
+        <arg n="1">Mame</arg>
+        <arg f="MNR" n="M">extremely</arg>
+        <rel>freaked</rel>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="freak_out">
+
+<roleset id="freak.02" name="cause to be freaky" vncls="-">
+<roles>
+  <role descr="causer" n="0"/>
+  <role descr="freaked entity" n="1"/>
+</roles>
+
+<example name="creepy">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     Mary's imitation of a kind, gentle, loving wife freaked John out.
+  </text>
+  <arg n="0">Mary's imitation of a kind, gentle, loving wife</arg>
+  <rel>freaked out</rel>
+  <arg n="1">John</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

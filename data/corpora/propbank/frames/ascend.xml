@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="ascend">
+<note>
+  Frames file for 'ascend' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="ascend.01" name="to rise, go up" vncls="51.1-1">
+<roles>
+  <role descr="entity rising" n="0"><vnrole vncls="51.1-1" vntheta="Theme"/></role>
+  <role descr="location" n="1"><vnrole vncls="51.1-1" vntheta="Location"/></role>
+</roles>
+
+<example name="intransitive">
+<inflection aspect="progressive" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+ At least not when you are ascending [*T*-1] . )
+</text>
+	<arg n="0">you</arg>
+	<rel>ascending</rel>
+	<arg f="TMP" n="M">[*T*-1] -&gt;  when</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

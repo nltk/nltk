@@ -1,0 +1,29 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="interlope">
+<note>
+  Frames file for 'interlope' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="interlope.01" vncls="-" name="trespass">
+<roles>
+  <role n="0"  descr="trespasser"/>
+</roles>
+
+<example name="gross example">
+<inflection person="ns" tense="ns" aspect="progressive" voice="active" form="participle"/>
+<text>
+    I was a last-minute ([*] read interloping) attendee at a French
+    journalism convention and so far the festivities had been taken up
+    entirely by eating, drinking, smoking, sleeping and drinking.  
+</text>
+	<arg n="0">I</arg>
+	<rel>interloping</rel>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

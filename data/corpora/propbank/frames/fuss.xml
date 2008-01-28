@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="fuss">
+<note>
+  Frames file for 'fuss' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="fuss.01" name="to worry or overprotect" vncls="-">
+<roles>
+  <role descr="fusser, agent" n="0"/>
+  <role descr="fussed over, target of emotion" n="1"/>
+</roles>
+
+<example name="with adverbials">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ He fusses endlessly over economic statistics , [*-1] dissecting them in dozens of ways , [*-1] probing for hours in search of potential problems .
+</text>
+	<arg n="0">He</arg>
+	<rel>fusses</rel>
+	<arg f="TMP" n="M">endlessly</arg>
+	<arg f="over" n="1">economic statistics</arg>
+	<arg f="ADV" n="M">[*-1] dissecting them in dozens of ways</arg>
+	<arg f="ADV" n="M">[*-1] probing for hours in search of potential problems</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

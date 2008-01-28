@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="brave">
+<note>
+  Frames file for 'brave' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="brave.01" name="to undergo or face courageously" vncls="-">
+<roles>
+  <role descr="facer of challenge, agent" n="0"/>
+  <role descr="challenge" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ I decided [*-1] to brave the storm .
+</text>
+	<arg n="0">[*-1] -&gt;  I</arg>
+	<rel>brave</rel>
+	<arg n="1">the storm</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

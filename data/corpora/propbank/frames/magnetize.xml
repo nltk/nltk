@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="magnetize">
+<note>
+  Frames file for 'magnetize' based on sentences in wsj.  Verbnet
+  entry 45.4.
+</note>
+
+<roleset id="magnetize.01" name="cause to have magnetic properties" vncls="45.4">
+<roles>
+  <role descr="causer of magnetism, agent" n="0">
+        <vnrole vncls="45.4" vntheta="Agent"/></role>
+  <role descr="patient, thing getting magnetized" n="1">
+        <vnrole vncls="45.4" vntheta="Patient"/></role>
+</roles>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    The crowd moved in clumps, clumps magnetized [*] around an
+    electronic nucleus. 
+</text>
+	<rel>magnetized</rel>
+	<arg n="1">[*] -&gt;  clumps</arg>
+	<arg f="LOC" n="M">around an electronic nucleus</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

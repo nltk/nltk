@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="sob">
+<note>
+  Frames file for 'sob'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="sob.01" name="to weep,  cry" vncls="40.2">
+<roles> 
+  <role descr="weeper" n="0">
+        <vnrole vncls="40.2" vntheta="Agent"/></role>
+</roles>
+
+<example name="intransitive">
+<inflection aspect="ns" form="full" person="ns" tense="future" voice="active"/>
+<text>
+ Yet there will be people who [*T*-1] will sob at `` Immediate Family , '' a limply constructed and offensive movie about adoption .
+</text>
+	<arg n="0">[*T*-1] -&gt;  who -&gt;  people</arg>
+	<arg f="MOD" n="M">will</arg>
+	<rel>sob</rel>
+	<arg f="LOC" n="M">at `` Immediate Family , '' a limply constructed and offensive movie about adoption</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

@@ -1,0 +1,76 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="declare">
+<note>
+  Frames file for 'declare' based on sentences in financial
+  subcorpus.  Verbnet classes 29.4, 37.7, 48.1.2.  Comparison with
+  'call.'
+</note>
+
+<roleset id="declare.01" name="call, label" vncls="29.4 48.1.2">
+<roles>
+  <role descr="declarer, labeller" n="0"><vnrole vncls="29.4" vntheta="Agent"/><vnrole vncls="48.1.2" vntheta="Agent"/></role>
+  <role descr="item being described" n="1"><vnrole vncls="29.4" vntheta="Theme"/><vnrole vncls="48.1.2" vntheta="Theme"/></role>
+  <role descr="attribute on arg1" n="2"><vnrole vncls="29.4" vntheta="Predicate"/></role>
+</roles>
+
+<note>
+This roleset id=&quot;declare.01&quot; is inconsistent with how the financial subcorpus was
+tagged for 'call', but consistent with how 'call' SHOULD be framed.
+Call will have to be repaired at some later date.
+</note>
+
+<example name="basic attributive">
+<text>
+    Integra-A Hotel &amp; Restaurant Co. said its planned rights offering to raise about $9 million was declared *trace* effective...
+</text>
+        <rel>declared</rel>
+        <arg n="1">*trace* -&gt; its planned rights offering to raise
+        about $9 million </arg>
+        <arg n="2">effective</arg>
+</example>
+
+<note>
+Read the sentences carefully to distinguish the item and
+attribute--Treebank likes to put them under a single node, and the --&gt;
+--tagger often follows that.
+</note>
+
+</roleset>
+
+<roleset id="declare.02" name="announce" vncls="37.7">
+<roles>
+  <role descr="announcer" n="0">
+		
+  <vnrole vncls="37.7" vntheta="Agent"/></role>
+
+  <role descr="utterance" n="1">
+		
+  <vnrole vncls="37.7" vntheta="Topic"/></role>
+
+  <role descr="hearer" n="2">
+		
+  <vnrole vncls="37.7" vntheta="Recipient"/></role>
+
+  <role descr="attributive" n="3"/>
+</roles>
+
+<example name="make an announcement">
+<text>
+    UNIFIRST Corp. declared a 2-for-1 stock split .
+</text>
+        <arg n="0">UNIFIRST Corp.</arg>
+        <rel>declared</rel>
+        <arg n="1">a 2-for-1 stock split</arg>
+</example>
+
+<note>
+Expect to see all the usual constructions for verbs-of-saying
+(fronted, split, etc).  Arg2 &quot;hearer&quot; will probably be rare, and Arg3
+&quot;attributive&quot; will probably not appear at all, falling instead under
+the other roleset.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,28 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="hulk">
+<note>
+  Frames file for 'hulk' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="hulk.01" vncls="-" name="be impressively large">
+<roles>
+  <role n="1"  descr="large thing"/>
+</roles>
+
+<example name="the incredible hulk">
+  <inflection person="ns" tense="ns" aspect="progressive" voice="active" form="participle"/>
+  <text>
+     This fall, Ford introduced only one new product: A restyled
+     version of its hulking Lincoln Town Car luxury model. 
+  </text>
+  <rel              >hulking</rel>
+  <arg n="1"        >Lincoln Town Car luxury model</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

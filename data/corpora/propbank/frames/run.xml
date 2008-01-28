@@ -1,0 +1,325 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="run">
+<note>
+  Frames file for 'run' based on survey of initial sentences of big
+  corpus and comparison with 'work'
+</note>
+
+<roleset id="run.01" name="operate, procede" vncls="-">
+<roles>
+  <role descr="operator" n="0"></role>
+  <role descr="machine, operation, procedure" n="1"/>
+  <role descr="employer" n="2"/>
+  <role descr="coworker" n="3"/>
+  <role descr="instrumental" n="4"/>
+</roles>
+
+<note>
+For additional examples for this sense/roleset, refer to work.01
+</note>
+
+<example name="agentive">
+  <text>
+  Mr. Stromach wants to resume a more influential role in *trace*
+  running the company.
+  </text>
+  <arg n="0">*trace*=Mr. Stromach</arg>
+  <rel>running</rel>
+  <arg n="1">the company</arg>
+</example>
+
+<example name="unaccusative">
+  <text>
+  Construction spending ran at an annual rate of $415.6 billion.
+  </text>
+  <arg n="1">Construction spending</arg>
+  <rel>ran</rel>
+  <arg f="MNR" n="m">at an annual rate of $415.6 billion</arg>
+</example>
+
+<note>
+Could be interpreted as &quot;walk quickly&quot; sense also.
+</note>
+
+<example name="with instrument">
+  <text>
+  65% or more of Brazil's newly made automobiles run on alcohol.
+  </text>
+  <arg n="1">65% or more of Brazil's newly made automobiles</arg>
+  <rel>run</rel>
+  <arg f="MNR" n="M">on alcohol</arg>
+</example>
+</roleset>
+
+<roleset id="run.02" name="walk quickly" vncls="51.3.2">
+<roles>
+  <role descr="runner" n="0">
+	<vnrole vncls="51.3.2" vntheta="Theme"/></role>
+  <role descr="course, race, distance" n="1">
+        <vnrole vncls="51.3.2" vntheta="Location"/></role>
+</roles>
+
+<example name="agentive race">
+  <text>
+  John ran the Boston Marathon.
+  </text>
+  <arg n="0">John</arg>
+  <rel>ran</rel>
+  <arg n="1">the Boston Marathon</arg>
+</example>
+
+<example name="high aspirations">
+  <inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+  <text>
+    John decided to run for President of the United States of America,
+    figuring that if a big lummox like George W. could do it, so could
+    he. 
+  </text>
+  <arg n="0">John</arg>
+  <rel>run</rel>
+  <arg f="for" n="1">President of the United States of America</arg>
+</example>
+
+<note>
+I am so going to get in trouble for that.
+</note>
+
+<example name="ergative race">
+  <text>
+  The Boston Marathon runs over Labor Day weekend.
+  </text>
+  <arg n="1">The Boston Marathon</arg>
+  <rel>runs</rel>
+  <arg f="TMP" n="m">over Labor Day weekend</arg>
+</example>
+
+<note>
+Probably more natural as a passive: &quot;The Boston Marathon is run over
+Labor Day weekend.&quot;
+</note>
+
+<example name="with direction">
+  <text>
+  A good number decide it's not worth it and run for home.
+  </text>
+  <arg n="0">A good number</arg>
+  <rel>run</rel>
+  <arg f="DIR" n="m">for home</arg>
+</example>
+
+<note>
+Beware of &quot;run out of the room&quot;, which could be misinterpreted as the
+phrasal &quot;run_out&quot;.
+</note>
+
+<example name="with pole position">
+  <inflection person="third" tense="present" aspect="ns" voice="active" form="full"/>
+  <text>
+     The fact is that as a savings or investment vehicle, insurance
+     generally runs a poor second to any direct investment you might
+     make in the same things the insurance company is putting your
+     money into. 
+  </text>
+  <arg n="m">as a savings or investment vehicle</arg>
+  <arg n="0"        >insurance</arg>
+  <arg n="m" f="ADV">generally</arg>
+  <rel              >runs</rel>
+  <arg n="2"        >a poor second to any direct investment you
+  might make in the same things the insurance ocmpany is putting your
+  money into</arg>
+</example>
+</roleset>
+
+<roleset id="run.03" name="cost" vncls="-">
+<roles>
+  <role descr="commodity" n="1"/>
+  <role descr="price" n="2"/>
+  <role descr="buyer" n="3"/>
+</roles>
+
+<example name="wino">
+  <text>
+  The spectacularly rich 1983 runs $179.
+  </text>
+  <arg n="1">The spectacularly rich 1983</arg>
+  <rel>runs</rel>
+  <arg n="2">$179</arg>
+</example>
+
+<example name="with buyer">
+  <text>
+  Mad Dog, on the other hand, will run you a buck a bottle.
+  </text>
+  <arg n="1">Mad Dog</arg>
+  <arg f="DIS" n="m">on the other hand</arg>
+  <arg f="MOD" n="m">will</arg>
+  <rel>run</rel>
+  <arg n="3">you</arg>
+  <arg n="2">a buck a bottle</arg>
+<note>
+I have no idea how much Mad Dog actually costs, just for the record.
+</note>
+</example>
+</roleset>
+
+<roleset id="run.04" name="range, extend" vncls="-">
+<roles>
+  <role descr="logical subject, thing ranging" n="1"/>
+  <role descr="EXT, distance run" n="2"/>
+  <role descr="start point" n="3"/>
+  <role descr="end point" n="4"/>
+  <role descr="medium" n="m"/>
+</roles>
+
+<example name="extend">
+  <text>
+  A variety of special interest amendments, running from an import
+  exemption for a California airplane museum to a small but intriguing
+  struggle among sugar producing nations over the fate of Panama's
+  quota of exports to the profitable US market.
+  </text>
+  <arg n="1">A variety of special interest amendments</arg>
+  <rel>running</rel>
+  <arg f="from" n="3">an import exemption for a California airplane
+  museum</arg> 
+  <arg f="to" n="4">a small but intriguing struggle among sugar
+  producing nations over the fate of Panama's quota of exports to the
+  profitable US market.</arg>
+</example>
+</roleset>
+
+<roleset id="run.07" name="encounter" vncls="-">
+<roles>
+  <role descr="encounterer" n="0"/>
+  <role descr="thing encountered" n="1"/>
+</roles>
+
+<example name="not from corpus">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John ran into problems with his dissertation.  Again.  And again.
+  </text>
+  <arg n="0">John</arg>
+  <rel>ran</rel>
+  <arg f="into" n="1">problems with his dissertation</arg>
+</example>
+
+</roleset>
+
+<roleset id="run.08" vncls="-" name="caused motion">
+<roles>
+  <role n="0"  descr="causer of motion"/>
+  <role n="1"  descr="entity in motion"/>
+  <role n="2"  descr="destination"/>
+  <role n="3"  descr="source"/>
+</roles>
+
+<example name="running guns">
+  <inflection person="ns" tense="ns" aspect="ns" voice="active" form="infinitive"/>
+  <text>
+     The CIA hired John *trace* to run guns into Peoria.
+  </text>
+  <arg n="0"        >*trace* -> John</arg>
+  <rel              >run</rel>
+  <arg n="1"        >guns</arg>
+  <arg n="2" f="into">Peoria</arg>
+</example>
+
+</roleset>
+
+<roleset id="run.09" vncls="-" name="cause to appear in media">
+<roles>
+  <role n="0"  descr="advertiser"/>
+  <role n="1"  descr="advertisement, series, etc"/>
+  <role n="2"  descr="medium"/>
+</roles>
+
+<example name="without medium">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+    The magazine's editors ran a giant diagram of the product with
+    arrows pointing to the packaging's polystyrene foam, polyproplene
+    and polyester film -- all plastic items they say are
+    non-biodegradable. 
+  </text>
+  <arg n="0"        >The magazine's editors</arg>
+  <rel              >ran</rel>
+  <arg n="1"        >a giant diagram of the product with
+    arrows pointing to the packaging's polystyrene foam, polyproplene
+    and polyester film -- all plastic items they say are
+    non-biodegradable.</arg>
+</example>
+
+<example name="with medium">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+     John ran a series of dirty haiku in the Daily Pennsylvanian.
+  </text>
+  <arg n="0"        >John</arg>
+  <rel              >ran</rel>
+  <arg n="1"        >a series of dirty haiku</arg>
+  <arg n="2" f="in">the Daily Pennsylvanian</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="run_out">
+
+<roleset id="run.05" name="run out: exhaust" vncls="-">
+<roles>
+  <role descr="commodity" n="1"/>
+  <role descr="benefactive" n="2"/>
+</roles>
+
+<example name="ergative">
+  <text>
+  ...before the number of available nations runs out.
+  </text>
+  <arg n="1">the number of available nations</arg>
+  <rel>runs out</rel>
+</example>
+
+<example name="with beneficiary">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    ``We flat ran out of financing resources,'' Mr. Jerritts said.
+  </text>
+  <arg n="2">We</arg>
+  <arg f="ADV" n="m">flat</arg>
+  <rel>ran out</rel>
+  <arg f="of" n="1">financing resources</arg>
+</example>
+
+<note>
+Compare to the &quot;walk quickly&quot; roleset id=&quot;run.08&quot; above.
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="run_up">
+
+<roleset id="run.06" name="run up: accumulate" vncls="-">
+<roles>
+  <role descr="entity accumulating something" n="0"/>
+  <role descr="thing/stuff accumulated" n="1"/>
+</roles>
+
+<example name="poor planning">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    The ruling could lead to the cancellation of huge bank debts
+    *trace* the London Borough of Hammersmith and Fulham ran up
+    *trace* after losing heavily on swap transactions.
+  </text>
+  <arg n="0">the London Borough of Hammersmith and Fulham</arg>
+  <rel>ran up</rel>
+  <arg n="1">*trace* -&gt; *trace* -&gt; huge bank debts</arg>
+  <arg f="TMP" n="m">after losing heavily on swap transactions</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

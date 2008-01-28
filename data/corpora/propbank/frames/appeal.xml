@@ -1,0 +1,74 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="appeal">
+<note>
+Frames file for 'appeal' based on annotation-on-the-fly on the financial
+ subcorpus.
+</note>
+
+<roleset id="appeal.01" name="legal transaction" vncls="-">
+<roles>
+  <role descr="appealer" n="0"/>
+  <role descr="decision disagreed with" n="1"/>
+  <role descr="appealed to" n="2"/>
+</roles>
+
+<example name="no arg2">
+  <text>
+     Commonwealth Edison is already appealing the underlying commission order.
+  </text>
+  <arg n="0">Commonwealth Edison</arg>
+  <arg f="TMP" n="m">already</arg>
+  <rel>appealing</rel>
+  <arg n="1">the underlying commission order</arg>
+</example>
+</roleset>
+
+<roleset id="appeal.02" name="beg" vncls="-">
+<roles>
+  <role descr="begger, appealer" n="0"/>
+  <role descr="appealed to, begged from" n="1"/>
+  <role descr="begged/appealed for" n="2"/>
+</roles>
+
+<example name="appeal to and for">
+  <text>
+  Jefferson appealed to the tribunal of the world for support of a
+  revolution justified by the laws of nature and of nature's God.
+  </text>
+  <arg n="0">Jefferson</arg>
+  <rel>appealed</rel>
+  <arg f="to" n="1">the tribunal of the world</arg>
+  <arg f="for" n="2">support of a
+  revolution justified by the laws of nature and of nature's God</arg>
+</example>
+
+</roleset>
+
+<roleset id="appeal.03" name="be attractive" vncls="31.4">
+<roles>
+  <role descr="appealing thing" n="0">
+		
+  <vnrole vncls="31.4" vntheta="Cause"/></role>
+
+  <role descr="entity attracted" n="1">
+		
+  <vnrole vncls="31.4" vntheta="Experiencer"/></role>
+
+</roles>
+
+<example name="find attractive">
+  <text>
+  ...an approach that *trace* has appealed to some choreographers...
+  </text>
+  <arg n="0">*trace*=that=an approach</arg>
+  <rel>appealed</rel>
+  <arg f="to" n="1">some choreographers</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

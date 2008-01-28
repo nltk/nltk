@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="romanticize">
+<note>
+  Frames file for 'romanticize' based on sentences in wsj.  No Verbnet
+  entry. 
+</note>
+
+<roleset id="romanticize.01" vncls="-" name="fit to a romantic ideal">
+<roles>
+  <role n="0"  descr="romantic fool"/>
+  <role n="1"  descr="romanticized thing"/>
+</roles>
+
+<example name="not nice adjectival">
+<inflection person="ns" tense="ns" aspect="ns" voice="passive" form="participle"/>
+<text>
+     Much of Mr. Lane's film takes a highly romanticized view of life
+     on the streets (though probably no more romanticized than
+     Mr. Chaplin's notion of the Tramp as the good-hearted free
+     spirit). 
+</text>
+	<arg n="1">[ view] [ of life on the streets]</arg>
+	<arg n="M" f="MNR">no more</arg>
+	<rel>romanticized</rel>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,36 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="quash">
+<note>
+  Frames file for 'quash' based on sentences in financial subcorpus.
+  Yes, it actually occurs more than once.  Variant of 'squash'.
+  Verbnet entries carve-21.2-1 funnel-9.3 knead-26.5; other framed
+  members include: push (variant), wind.
+</note>
+
+<roleset id="quash.01" name="squash">
+<roles>
+  <role descr="squasher" n="0"/>
+  <role descr="thing squashed" n="1"/>
+</roles>
+
+<example name="no arg2">
+<text>
+    UAL Corp.'s board quashed any prospects for an immediate revival
+    of a labor-management buy-out, saying United Airlines' parent
+    should remain independent for now. 
+</text>
+        <arg n="0">UAL Corp. 's board</arg>
+        <rel>quashed</rel>
+        <arg n="1">any prospects for an immediate revival of a
+        labor-management buy-out</arg> 
+        <arg f="ADV" n="M">saying United Airlines' parent should
+        remain independent for now</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

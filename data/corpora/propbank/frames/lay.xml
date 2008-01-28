@@ -1,0 +1,85 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="lay">
+<note>
+  Frames file for 'lay' based on sentences in financial subcorpus.
+  Verbnet class put_spatial-9.2, no other framed members.
+</note>
+
+<roleset id="lay.01" name="put, set, cause to exist at some location" vncls="9.2">
+<roles>
+  <role descr="layer" n="0">
+		
+  <vnrole vncls="9.2" vntheta="Agent"/></role>
+
+  <role descr="thing laid" n="1">
+		
+  <vnrole vncls="9.2" vntheta="Theme"/></role>
+
+  <role descr="location" n="2">
+		
+  <vnrole vncls="9.2" vntheta="Destination"/></role>
+
+</roles>
+
+<example name="lay hands on, uncertain tracing">
+<text>
+    That leaves the pilots still in need of cash totaling around $1
+    billion -- far more than either they or the flight attendants can
+    lay their hands on *trace* from retirement funds alone. 
+</text>
+        <arg n="0">either they or the flight attendants</arg>
+        <arg f="MOD" n="M">can</arg>
+        <rel>lay</rel>
+        <arg n="1">their hands</arg>
+        <arg f="on" n="2">*trace* -&gt;  far more</arg>
+        <arg n="M">from retirement funds alone</arg>
+</example>
+
+<example name="more transparent meaning">
+  <text>
+    John laid his books on the stove.
+  </text>
+  <arg n="0">John</arg>
+  <rel>laid</rel>
+  <arg n="1">his books</arg>
+  <arg f="on" n="2">the stove</arg>
+</example>
+
+<example name="without location">
+  <text>
+    Chickens lay eggs.
+  </text>
+  <arg n="0">Chickens</arg>
+  <rel>lay</rel>
+  <arg n="1">eggs</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="lay_off">
+
+<roleset id="lay.02" name="fire, cease employment" vncls="-">
+<roles>
+  <role descr="(former) employer" n="0"/>
+  <role descr="(former) employee" n="1"/>
+</roles>
+
+<example name="economic downturn">
+<text>
+    Xerox Corp. has told employees in its Crum &amp; Forster personal
+    insurance operations that it is laying off about 300 people, or
+    25% of the staff. 
+</text>
+        <arg n="0">it</arg>
+        <rel>[ laying] [ off]</rel>
+        <arg n="1">about 300 people , or 25 % of the staff</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

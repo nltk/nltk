@@ -1,0 +1,85 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="inform">
+<note>
+  Frames file for 'inform' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="inform.01" name="cause to know" vncls="-">
+<roles>
+  <role descr="informer" n="0"/>
+  <role descr="informed" n="1"/>
+  <role descr="information" n="2"/>
+</roles>
+
+<example name="inform an SBAR">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    But a much smaller mutual fund company, the USAA Investment
+    Management Co. unit of USAA, San Antonio, Texas, said  it informed
+    nine national brokerage firms that it will cease business with
+    them unless they stop index-arbitrage trading. 
+</text>
+        <arg n="0">it</arg>
+        <rel>informed</rel>
+        <arg n="1">nine national brokerage firms</arg>
+        <arg n="2">it will cease business with them unless they stop
+        index-arbitrage trading</arg> 
+</example>
+<note>
+As always, leave that-complementizers out of the arg.
+</note>
+
+<example name="inform a wh-clause">
+<inflection aspect="ns" form="participle" person="third" tense="past" voice="passive"/>
+<text>
+    One source familiar with the airline said, however, that Mr. Corr
+    wasn't informed *trace* in advance during the summer when
+    Mr. Lorenzo began discussions with potential buyers. 
+</text>
+        <arg f="NEG" n="M">n't</arg>
+        <rel>informed</rel>
+        <arg n="1">*trace* -&gt;  Mr. Corr</arg>
+        <arg f="TMP" n="M">in advance</arg>
+        <arg f="TMP" n="M">during the summer</arg>
+        <arg n="2">when Mr. Lorenzo began discussions with potential
+        buyers </arg> 
+</example>
+<note>
+Do include wh-complementizers, though.
+</note>
+
+<example name="inform of">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    During his tenure, Mr. Corr attempted through a series of meetings
+    *trace* to inform managers of some of the company's future plans,
+    traveled widely to talk to employees and backed training sessions
+    designed to improve the carrier's image. 
+</text>
+        <arg n="0">*trace* -&gt;  Mr. Corr</arg>
+        <rel>inform</rel>
+        <arg n="1">managers</arg>
+        <arg f="of" n="2">some of the company's future plans</arg>
+</example>
+
+<example name="inform about">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    New York authorities, informed *trace* yesterday about the move,
+    reacted with concern and even some anger to the idea of the
+    nation's third-largest corporation leaving without giving them an
+    opportunity to accommodate it. 
+</text>
+        <rel>informed</rel>
+        <arg n="1">*trace* -&gt;  New York authorities</arg>
+        <arg f="TMP" n="M">yesterday</arg>
+        <arg f="about" n="2">the move</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

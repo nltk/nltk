@@ -1,0 +1,89 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="heave">
+<note>
+  Frames file for 'heave' based on sentences in wsj.  Verbnet entries
+  12 and 11.4-1.
+</note>
+
+<roleset id="heave.01" name="move with difficulty" vncls="12">
+<roles>
+  <role descr="heaver, agent" n="0"><vnrole vncls="12" vntheta="Agent"/></role>
+  <role descr="thing moved" n="1"><vnrole vncls="12" vntheta="Theme"/></role>
+  <role descr="description of motion, path, source, destination" n="2"/>
+</roles>
+
+<example name="active">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    The cuckoo prefers the nests of other birds and heaves out their
+    eggs. 
+</text>
+        <arg n="0">The cuckoo</arg>
+        <rel>heaves</rel>
+        <arg n="2">out</arg>
+        <arg n="1">their eggs</arg>
+</example>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    That includes dwellings in the ravaged Marina district that must
+    be demolished, peeled business facades south of Market Street, and
+    houses in the city's outer Richmond district that [*T*-4] were
+    heaved [*-2] off their foundations. 
+</text>
+        <rel>heaved</rel>
+        <arg n="1">[*-2] -&gt;  [*T*-4] -&gt;  that -&gt;  houses</arg>
+        <arg n="2">off their foundations</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="heave.02" name="fixed phrase: heave a sigh" vncls="-">
+<roles>
+  <role descr="heaver, sigher" n="0"/>
+  <role descr="sigh" n="1"/>
+</roles>
+
+<example name="predictable">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Silicon Valley heaved a sigh of relief yesterday.
+</text>
+        <arg n="0">Silicon Valley</arg>
+        <rel>heaved</rel>
+        <arg n="1">a sigh of relief</arg>
+        <arg f="TMP" n="M">yesterday</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="heave.03" name="rise up, move unpleasantly" vncls="-">
+<roles>
+  <role descr="thing moving" n="1"/>
+</roles>
+
+<example name="mmm, home cooking">
+  <inflection aspect="progressive" form="participle" person="third" tense="past" voice="active"/>
+  <text>
+     John's stomach was heaving after eating the dinner that Mary made
+     for him.
+  </text>
+  <arg n="1">John's stomach</arg>
+  <rel>heaving</rel>
+  <arg f="TMP" n="m">after eating the dinner that Mary made for him</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

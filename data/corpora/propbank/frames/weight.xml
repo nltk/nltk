@@ -1,0 +1,69 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="weight">
+<note>
+  Frames file for 'weight' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="weight.01" name="to present with a bias" vncls="-">
+<roles>
+  <role descr="presenter of bias, agent" n="0"/>
+  <role descr="entity weighted" n="1"/>
+  <role descr="attribute" n="2"/>
+</roles>
+
+
+<example name="with Arg2">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+ At the very least , the odds are heavily weighted [*-1] against the prospects of [*] preventing the Khmer Rouge and Cambodia 's communists from [*-2] ultimately moving against their opponents .
+</text>
+	<arg f="DIS" n="M">At the very least</arg>
+	<arg f="MNR" n="M">heavily</arg>
+	<rel>weighted</rel>
+	<arg n="1">[*-1] -&gt;  the odds</arg>
+	<arg f="against" n="2">the prospects of [*] preventing the Khmer Rouge and Cambodia 's communists from [*-2] ultimately moving against their opponents</arg>
+</example>
+
+
+<example name="with adverbials">
+<inflection aspect="ns" form="participle" person="ns" tense="past" voice="passive"/>
+<text>
+ Responses were weighted [*-1] on the basis of age and gender [*-1] to conform with U.S. Census data .
+</text>
+	<rel>weighted</rel>
+	<arg n="1">[*-1] -&gt;  Responses</arg>
+	<arg f="MNR" n="M">on the basis of age and gender</arg>
+	<arg f="PNC" n="M">[*-1] to conform with U.S. Census data</arg>
+</example>
+
+
+
+</roleset>
+
+<roleset id="weight.02" name="press heavily upon (cf weigh)">
+<roles>
+  <role descr="presser" n="0"/>
+  <role descr="pressed (on)" n="1"/>
+</roles>
+
+<example name="typical usage">
+<text>
+    ...traders said profit-taking weighed on the market, with
+    blue-chips bearing the brunt of the selling. 
+</text>
+        <arg n="0">profit-taking</arg>
+        <rel>weighed</rel>
+        <arg f="on" n="1">the market</arg>
+        <arg n="M">with blue-chips bearing the brunt of the selling</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+
+</frameset>

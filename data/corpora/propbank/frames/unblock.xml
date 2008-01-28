@@ -1,0 +1,34 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="unblock">
+<note>
+  Frames file for 'unblock' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="unblock.01" name="remove obstacles" vncls="-">
+<roles>
+  <role descr="remover" n="0"/>
+  <role descr="thing blocked" n="1"/>
+</roles>
+
+<example name="someone tell wsj authors to stop making up words">
+<inflection aspect="ns" form="full" person="ns" tense="ns" voice="ns"/>
+<text>
+    In Honduras, where the Contras are a hot political issue, he
+    promised [*-1] to help unblock some $70 million in assistance
+    withheld due to the failure of local agencies to comply with
+    conditions agreed upon with Washington. 
+</text>
+        <arg n="0">[*-1] -&gt;  he</arg>
+        <rel>unblock</rel>
+        <arg n="1">some $70 million in assistance withheld due to the
+        failure of local agencies to comply with conditions agreed
+        upon with Washington</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

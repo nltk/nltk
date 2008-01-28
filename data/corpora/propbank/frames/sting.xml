@@ -1,0 +1,52 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="sting">
+<note>
+  Frames file for 'sting' based on sentences in financial subcorpus.
+  Verbnet entry touch-20, no other framed members.
+</note>
+
+<roleset id="sting.01" name="sting" vncls="20 31.1 40.8.2">
+<roles>
+  <role descr="stinger" n="0">
+		
+		
+  <vnrole vncls="31.1" vntheta="Cause"/><vnrole vncls="40.8.2" vntheta="Cause"/><vnrole vncls="20" vntheta="Agent"/></role>
+
+  <role descr="thing stung" n="1">
+		
+		
+  <vnrole vncls="31.1" vntheta="Experiencer"/><vnrole vncls="40.8.2" vntheta="Patient"/><vnrole vncls="20" vntheta="Experiencer"/></role>
+
+  <role descr="instrument, if separate from arg0" n="2">
+		
+  <vnrole vncls="20" vntheta="Instrument"/></role>
+
+</roles>
+
+<example name="always as headless relative?">
+<text>
+    Takeover-stock traders, stung *trace* by their huge losses in UAL
+    stock...
+</text>
+        <arg n="1">*trace* -&gt; Takeover-stock traders</arg>
+        <rel>stung</rel>
+        <arg f="by" n="0">their huge losses in UAL stock</arg>
+</example>
+
+<example name="with instrument">
+  <text>
+    The bees stung John with their steely poisoned barbs.
+  </text>
+  <arg n="0">The bees</arg>
+  <rel>stung</rel>
+  <arg n="1">John</arg>
+  <arg f="with" n="2">their steely poisoned barbs</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

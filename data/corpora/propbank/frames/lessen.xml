@@ -1,0 +1,52 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<note>
+Frames file for 'lessen' based on sentences in financial subcorpus and
+import from 'reduce' 
+</note>
+
+<predicate lemma="lessen">
+<roleset id="lessen.01" name="make less" vncls="45.4">
+  <roles>
+    <role descr="cause, agent" n="0">
+	  <vnrole vncls="45.4" vntheta="Agent"/></role>
+    <role descr="Logical subject, patient, thing falling" n="1">
+	  <vnrole vncls="45.4" vntheta="Patient"/></role>
+    <role descr="EXT, amount fallen" n="2"/>
+    <role descr="Start point" n="3"/>
+    <role descr="End point, end state of arg1" n="4"/>
+    <role descr="Medium" f="LOC" n="M"/>
+  </roles>
+
+<example name="simple transitive">
+<text>
+    Having two major products would lessen the company's vulnerability
+    to one market's down cycle and help smooth out the flow of cash
+    and earnings. 
+</text>
+	<arg n="0">Having two major products</arg>
+	<arg f="MOD" n="M">would</arg>
+	<rel>lessen</rel>
+	<arg n="1">the company's vulnerability to one market's down
+	cycle</arg> 
+</example>
+
+<example name="no target for trace">
+<text>
+     However, the junk-bond market has collapsed in recent weeks,
+     lessening the likelihood that such a transaction would succeed. 
+</text>
+        <arg n="0"/>
+        <rel>lessening</rel>
+        <arg n="1">the likelihood that such a transaction would
+        succeed</arg> 
+</example>
+
+<note>
+I doubt the higher-numbered args will appear; for usage of those cf
+reduce and other verbs-of-getting-less.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

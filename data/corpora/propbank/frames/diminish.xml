@@ -1,0 +1,71 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="diminish">
+<note>
+  Frames file for 'diminish' based on sentences in financial
+  subcorpus.  Verbnet entries 45.6, 45.4 (causatives); a multitude of
+  other framed members.  Framenet entry Scalar Position 2.  Comparison
+  with 'reduce'.
+</note>
+
+<roleset id="diminish.01" name="make smaller" vncls="45.4 45.6">
+<roles>
+  <role descr="causer of smallness, agent" n="0">
+	<vnrole vncls="45.4" vntheta="Agent"/></role>
+  <role descr="thing becoming smaller" n="1">
+	<vnrole vncls="45.4" vntheta="Patient"/>
+        <vnrole vncls="45.6" vntheta="Patient"/></role>
+  <role descr="EXT" n="2">
+	<vnrole vncls="45.6" vntheta="Extent"/></role>
+  <role descr="start point" n="3"/>
+  <role descr="end point" n="4"/>
+</roles>
+
+<example name="just transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+    The board added that McCaw would be able to control LIN's
+    operations and could, ``therefore, operate LIN in a manner which
+    *trace* could diminish its private market value and attractiveness
+    to a third-party purchaser in five years.'' 
+</text>
+        <arg n="0">*trace* -&gt;  which -&gt;  a manner</arg>
+        <arg f="MOD" n="M">could</arg>
+        <rel>diminish</rel>
+        <arg n="1">its private market value and attractiveness to a
+        third-party purchaser</arg> 
+        <arg f="TMP" n="M">in five years</arg>
+</example>
+
+<example name="ergative">
+<inflection aspect="perfect" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+    In following several other oil and gas partnerships that have made
+    the conversion to a corporation in the last year, NRM also noted
+    that tax advantages for partnerships have diminished under new tax
+    laws. 
+</text>
+        <arg n="1">tax advantages for partnerships</arg>
+        <rel>diminished</rel>
+        <arg f="LOC" n="M">under new tax laws</arg>
+</example>
+
+<example name="poor John">
+  <inflection aspect="ns" form="participle" person="third" tense="past" voice="passive"/>
+  <text>
+    John's role in the Christmas play was diminished *trace* from that
+    of a wise man to that of a camel.
+  </text>
+  <rel>diminished</rel>
+  <arg n="1">*trace* -&gt; John's role in the Christmas play</arg>
+  <arg f="from" n="3">that of a wise man</arg>
+  <arg f="to" n="4">that of a camel</arg>
+</example>
+
+<note>
+Expect also arg2-EXT and arg2-MNR.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,37 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="proliferate">
+<note>
+  Frames file for 'proliferate' based on sentences in wsj.  Verbnet
+  entry 45.4 'other causative'.  Not really causative, though, is it?
+</note>
+
+<roleset id="proliferate.01" name="prosper, become abundant" vncls="45.4">
+<roles>
+  <role descr="thing becoming abundant" n="0"><vnrole vncls="45.4" vntheta="Patient"/></role>
+</roles>
+
+<example name="basic usage">
+<inflection aspect="perfect" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+    Joint-research programs have proliferated as U.S. companies seek
+    to spread the risks and costs of commercializing new
+    superconductors and to meet the challenges posed by foreign
+    consortia, especially in Japan. 
+</text>
+        <arg n="0">Joint-research programs</arg>
+        <rel>proliferated</rel>
+        <arg f="CAU" n="M">as U.S. companies seek to spread the risks
+        and costs of commercializing new superconductors and to meet
+        the challenges posed by foreign consortia, especially in
+        Japan</arg> 
+</example>
+
+<note>
+For a second I misparsed 'proliferate' and thought it meant &quot;make into
+a foe of abortion&quot;.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

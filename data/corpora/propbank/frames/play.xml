@@ -1,0 +1,219 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="play">
+<note>
+  Frames file for 'play' based on Chris' old frames file for the
+  same.  Probably some major revision along the way.
+</note>
+
+<roleset id="play.01" name="play a game" vncls="26.7-1">
+<roles>
+  <role descr="player" n="0">
+	  <vnrole vncls="26.7-1" vntheta="Agent"/></role>
+  <role descr="game/music" n="1">
+	  <vnrole vncls="26.7-1" vntheta="Theme"/></role>
+  <role descr="instrument" n="2"/>
+</roles>
+
+<example name="intransitive">
+  <text>
+  John plays superbly.
+  </text>
+  <arg n="0">John</arg>
+  <rel>plays</rel>
+  <arg f="MNR" n="m">superbly</arg>
+</example>
+
+<example name="transitive with game">
+  <text>
+  The backers play a fiscal game of their own.
+  </text>
+  <arg n="0">The backers</arg>
+  <rel>play</rel>
+  <arg n="1">a fiscal game of their own</arg>
+</example>
+
+<example name="PP instrument">
+  <text>
+  John plays Mozart concerti on the harmonica.
+  </text>
+  <arg n="0">John</arg>
+  <rel>plays</rel>
+  <arg n="1">Mozart concerti</arg>
+  <arg f="on" n="2">the harmonica</arg>
+</example>
+
+<example name="NP instrument">
+  <text>
+  John plays the harmonica.
+  </text>
+  <arg n="0">John</arg>
+  <rel>plays</rel>
+  <arg n="2">the harmonica</arg>
+</example>
+
+<example name="specific game">
+  <text>
+  The Japanese are playing catch-up.
+  </text>
+  <arg n="0">The Japanese</arg>
+  <rel>playing</rel>
+  <arg n="1">catch-up</arg>
+</example>
+
+<example name="with manner">
+  <text>
+  John played his outfielders deep.
+  </text>
+  <arg n="0">John</arg>
+  <rel>played</rel>
+  <arg n="2">his outfielders</arg>
+  <arg f="PRD" n="m">deep</arg>
+</example>
+
+</roleset>
+
+<roleset id="play.02" name="play a role" vncls="-">
+<roles>
+  <role descr="actor" n="0"/>
+  <role descr="role" n="1"/>
+</roles>
+
+<example name="Hollywood passivized">
+  <text>
+  Abbie Hoffman, in this case, is played *trace* by Paul Lieber.
+  </text>
+  <arg n="1">*trace* -> Abbie Hoffman</arg>
+  <arg f="DIS" n="m">in this case</arg>
+  <rel>played</rel>
+  <arg f="by" n="0">Paul Lieber</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="play_out">
+
+<roleset id="play.03" name="play out: come to completion" vncls="-">
+<roles>
+  <role descr="agent, entity causing something to complete" n="0"/>
+  <role descr="thing coming to completion" n="1"/>
+</roles>
+
+<example name="battle">
+  <text>
+  The battle played out by Tuesday evening.
+  </text>
+  <arg n="1">The battle</arg>
+  <rel>played out</rel>
+  <arg f="TMP" n="m">by Tuesday evening</arg>
+</example>
+
+<example name="with agent">
+  <text>
+  The consumer played himself out.
+  </text>
+  <arg n="0">The consumer</arg>
+  <rel>played out</rel>
+  <arg n="1">himself</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="play_up">
+
+<roleset id="play.04" name="play up: emphasize, make sound better" vncls="-">
+<roles>
+  <role descr="emphasizer, agent" n="0"/>
+  <role descr="topic of discussion" n="1"/>
+</roles>
+
+<example name="spin control">
+  <text>
+  Boeing played up the downside.
+  </text>
+  <arg n="0">Boeing</arg>
+  <rel>played up</rel>
+  <arg n="1">the downside</arg>
+</example>
+</roleset>
+</predicate>
+
+<predicate lemma="play_down">
+
+<roleset id="play.07" vncls="-" name="play down: deemphasize, make sound less important">
+<roles>
+  <role n="0"  descr="deemphasizer, agent"/>
+  <role n="1"  descr="topic of discussion"/>
+</roles>
+
+<example name="pay no attention to the man behind the curtain">
+  <inflection person="ns" tense="ns" aspect="ns" voice="active" form="infinitive"/>
+  <text>
+     The Justice Department scrambled [*-1] to play down the
+     significance of revised guidelines concerning prosecutions under
+     the federal racketeering law. 
+  </text>
+  <arg n="0"        >[*-1] -> The Justice Department</arg>
+  <rel              >play down</rel>
+  <arg n="1"        >the significance of revised guidelines concerning
+  prosecutions under the federal racketeering law. </arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="play_off">
+
+<roleset id="play.05" name="play off: manipulate" vncls="-">
+<roles>
+  <role descr="manipulator" n="0"/>
+  <role descr="one victim" n="1"/>
+  <role descr="the other victim" n="2"/>
+</roles>
+
+<example name="Machiavellian">
+  <text>
+  John played Fred off Mary.
+  </text>
+  <arg n="0">John</arg>
+  <rel>played off</rel>
+  <arg n="1">Fred</arg>
+  <arg n="2">Mary</arg>
+</example>
+
+<example name="reflexive Machiavellian">
+  <text>
+  John played the two experts off each other.
+  </text>
+  <arg n="0">John</arg>
+  <rel>played off</rel>
+  <arg n="1">the two experts</arg>
+  <arg f="REC" n="2">each other</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="play_to">
+
+<roleset id="play.06" name="play to: butter up to, try to please" vncls="-">
+<roles>
+  <role descr="causer of pleasing, agent" n="0"/>
+  <role descr="entity being pleased" n="1"/>
+</roles>
+
+<example name="brown nosing">
+  <text>
+  Mr. Ortega's remarks also played to the suspicions of some US
+  officials.
+  </text>
+  <arg n="0">Mr. Ortega's remarks</arg>
+  <arg f="DIS" n="m">also</arg>
+  <rel>played to</rel>
+  <arg n="1">the suspicions of some US officials.</arg>
+</example>
+</roleset>
+</predicate>
+</frameset>

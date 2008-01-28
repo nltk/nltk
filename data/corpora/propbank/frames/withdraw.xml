@@ -1,0 +1,53 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="withdraw">
+<note>
+  Frames file for 'withdraw' based on annotation-on-the-fly on the
+  financial subcorpus.  No verbnet entry.  Comparison with 'leave'.
+</note>
+
+<roleset id="withdraw.01" name="withdraw, remove oneself" vncls="10.1 10.5">
+<roles>
+  <role descr="entity removing" n="0">
+		
+		
+  <vnrole vncls="10.5" vntheta="Agent"/><vnrole vncls="10.1" vntheta="Agent"/></role>
+
+  <role descr="thing being withdrawn (often understood as 'self')" n="1">
+		
+		
+  <vnrole vncls="10.5" vntheta="Theme"/><vnrole vncls="10.1" vntheta="Theme"/></role>
+
+  <role descr="removed from" n="2">
+		
+		
+  <vnrole vncls="10.5" vntheta="Source"/><vnrole vncls="10.1" vntheta="Source"/></role>
+
+</roles>
+
+<example name="unstated Arg1">
+  <text>
+  Many factors led to the company's decision *trace* to withdraw from
+  the bidding.
+  </text>
+  <arg n="0">*trace*=the company's</arg>
+  <rel>withdraw</rel>
+  <arg f="from" n="2">the bidding</arg>
+</example>
+
+<example name="with Arg1">
+  <text>
+  John withdrew his feet from his mouth.
+  </text>
+  <arg n="0">John</arg>
+  <rel>withdrew</rel>
+  <arg n="1">his feet</arg>
+  <arg f="from" n="2">his mouth</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

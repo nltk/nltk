@@ -1,0 +1,37 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="remand">
+<note>
+  Frames file for 'remand' based on sentences in financial subcorpus.
+  No Verbnet entry.
+</note>
+
+<roleset id="remand.01" name="send (a case) back to a lower   court, or a prisoner back to prison" vncls="-">
+<roles>
+  <role descr="agent, sender-back" n="0"/>
+  <role descr="thing sent" n="1"/>
+  <role descr="sent to" n="2"/>
+</roles>
+
+<example name="glad this showed all args">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    SciMed said the appeals court remanded the case back to the
+    district court for further proceedings. 
+</text>
+        <arg n="0">the appeals court</arg>
+        <rel>remanded</rel>
+        <arg n="1">the case</arg>
+        <arg f="DIR" n="2">back to the district court</arg>
+        <arg f="PNC" n="M">for further proceedings</arg>
+</example>
+
+<note>
+Use of DIR here is warranted because the 'back' was outside the
+to-phrase but formed a natural constituent.  Otherwise extract the
+preposition as usual.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

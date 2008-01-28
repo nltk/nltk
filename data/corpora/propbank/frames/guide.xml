@@ -1,0 +1,60 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="guide">
+<note>
+  Frames file for 'guide' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+
+<roleset id="guide.01" name="to direct" vncls="-">
+<roles>
+  <role descr="guide, agent" n="0"/>
+  <role descr="entity guided" n="1"/>
+  <role descr="guided in/through" n="2"/>
+</roles>
+
+
+<example name="guide through">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ In a joint-venture deal , Mitsui guided Candela through Tokyo 's bureaucratic maze .
+</text>
+	<arg f="LOC" n="M">In a joint-venture deal</arg>
+	<arg n="0">Mitsui</arg>
+	<rel>guided</rel>
+	<arg n="1">Candela</arg>
+	<arg f="through" n="2">Tokyo 's bureaucratic maze</arg>
+</example>
+
+
+<example name="guide in">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+ Unfortunately , though , recessions vary enough [*ICH*-1] in length so that the average ca n't reliably be used [*-2] [*] to guide investors in [*] timing stock sales or purchases .
+</text>
+	<arg n="0">[*] -&gt;  [*-2] -&gt;  the average</arg>
+	<rel>guide</rel>
+	<arg n="1">investors</arg>
+	<arg f="in" n="2">[*] timing stock sales or purchases</arg>
+</example>
+
+
+
+<example name="transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ Richard G. Sim , the man credited [*] with [*-2] transforming Applied Power Inc. from an underachiever into a feisty player in the global market for hydraulic tools , hopes [*-1] to guide a similar turnaround at the company 's latest acquisition , Barry Wright Corp .
+</text>
+	<arg n="0">[*-1] -&gt;  Richard G. Sim , the man credited [*] with [*-2] transforming Applied Power Inc. from an underachiever into a feisty player in the global market for hydraulic tools ,</arg>
+	<rel>guide</rel>
+	<arg n="1">a similar turnaround at the company 's latest acquisition , Barry Wright Corp</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

@@ -1,0 +1,96 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="fight">
+<note>
+  Frames file for 'fight' based on sentences in financial subcorpus.
+  Verbnet class fight 36.3, no mention of other members.  Comparison
+  with 'battle' and 'pit', since I just did those today.
+</note>
+
+<roleset id="fight.01" name="fight" vncls="36.3">
+<roles>
+  <role descr="first fighter" n="0">
+		
+  <vnrole vncls="36.3" vntheta="Actor1"/></role>
+
+  <role descr="second fighter, if separate" n="1">
+		
+  <vnrole vncls="36.3" vntheta="Actor2"/></role>
+
+  <role descr="spoils" n="2"/>
+</roles>
+
+<example name="all args">
+<text>
+    But it isn't clear how long GM would be willing *trace* to fight
+    Ford for Jaguar. 
+</text>
+        <arg n="0">*trace* -&gt; GM</arg>
+        <rel>fight</rel>
+        <arg n="1">Ford</arg>
+        <arg f="for" n="2">Jaguar</arg>
+</example>
+
+<example name="missing combatant">
+<text>
+    But the government's action, which caught Jaguar management
+    flat-footed, may scuttle the GM minority deal by forcing it to
+    fight for all of Jaguar. 
+</text>
+        <arg n="0">it</arg>
+        <rel>fight</rel>
+        <arg f="for" n="2">all of Jaguar</arg>
+</example>
+
+<example name="missing spoils">
+<text>
+    But healthy skepticism vanishes when they are solicited by an
+    organized charity *trace* to help fight cancer, famine, child
+    abuse, or what have you. 
+</text>
+        <arg n="0">*trace* -&gt; they</arg>
+        <rel>fight</rel>
+        <arg n="1">cancer, famine, child abuse, or what have you</arg> 
+</example>
+
+<example name="intransitive">
+<text>
+    However, Judge Hastings has said he will continue *trace* to fight
+    and is contemplating an appeal of any impeachment to the
+    U.S. Supreme Court. 
+</text>
+        <arg n="0">*trace* -&gt; he</arg>
+        <rel>fight</rel>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+<predicate lemma="fight_off">
+
+<roleset id="fight.02" name="repel, rebuff" vncls="-">
+<roles>
+  <role descr="fighter" n="0"/>
+  <role descr="thing repelled" n="1"/>
+  <role descr="instrument" n="2"/>
+</roles>
+
+<example name="no instrument">
+<text>
+    *trace* To fight off predators, B.A.T plans to spin off about $6
+    billion in assets... 
+</text>
+        <arg n="0">*trace* -&gt;  B.A.T</arg>
+        <rel>[ fight] [ off]</rel>
+        <arg n="1">predators</arg>
+</example>
+
+<note>
+Don't know if instrument will be needed, but there it is just in case.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="reside">
+<note>
+  Frames file for 'reside' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="reside.01" name="to live for an extended period" vncls="47.1-1">
+<roles>
+  <role descr="entity residing" n="0"><vnrole vncls="47.1-1" vntheta="Theme"/></role>
+  <role descr="location" n="1"><vnrole vncls="47.1-1" vntheta="Location"/></role>
+</roles>
+
+<example name="both arguments">
+<inflection aspect="perfect" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+ [*-1] Having resided in the great state of California for the past seven years , I find it [*EXP*-3] hard [*] to ignore our environmental problems when I start my commute to work with eyes tearing [*RNR*-2] and head aching [*RNR*-2] from the polluted air [*T*-4] ; when I try [*-6] to enjoy the beaches and come home [*-6] covered [*-8] with tar and oil [*T*-5] ; when I hear of numerous deaths related [*] to irresponsible processing of cheese and use of chemicals in fruit growing [*T*-7] .
+</text>
+	<arg n="0">I -&gt;  [*-1]</arg>
+	<rel>resided</rel>
+	<arg f="in" n="1">the great state of California</arg>
+	<arg f="TMP" n="M">for the past seven years</arg>
+</example>
+
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

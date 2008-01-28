@@ -1,0 +1,80 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="shop">
+<note>
+  Frames file for 'shop' based on sentences in financial subcorpus.
+  No access to verbnet.  Comparison with other verbs-of-trade.  'Tis
+  the season!
+</note>
+
+<roleset id="shop.01" name="look for something to buy" vncls="35.2">
+<roles>
+  <role descr="shopper" n="0">
+		
+  <vnrole vncls="35.2" vntheta="Agent"/></role>
+
+  <role descr="thing sought" n="1">
+		
+  <vnrole vncls="35.2" vntheta="Theme"/></role>
+
+  <role descr="benefactive" n="4"/>
+</roles>
+
+<example name="intransitive">
+<text>
+    The number of people who said they were more likely *trace* to
+    shop at Sears... 
+</text>
+        <arg n="0">*trace* -&gt;  they</arg>
+        <rel>shop</rel>
+        <arg f="LOC" n="M">at Sears</arg>
+</example>
+
+<example name="all args">
+  <text>
+     John, the hopeless romantic, was shopping for a new vacuum cleaner
+     for his girlfriend. 
+  </text>
+  <arg n="0">John, the hopeless romantic,</arg>
+  <rel>shopping</rel>
+  <arg f="for" n="1">a new vacuum cleaner</arg>
+  <arg f="for" n="4">his girlfriend</arg>
+</example>
+
+<note>
+Why do I pick on John so?
+</note>
+
+</roleset>
+
+<roleset id="shop.02" name="try to sell" vncls="-">
+  <roles>
+    <role descr="Seller" n="0"/>
+    <role descr="Thing Sold" n="1"/>
+    <role descr="Buyer" n="2"/>
+    <role descr="Price Paid" n="3"/>
+    <role descr="Benefactive" n="4"/>
+  </roles>
+
+<example name="with commodity and buyer">
+<text>
+    Some think  Columbia's thrift, which now is seeking a new chief
+    operating officer, might be capitalized at, say $300 million, and
+    shopped *trace* to a commercial bank that wants a California
+    presence. 
+</text>
+        <arg f="MOD" n="M">might</arg>
+        <rel>shopped</rel>
+        <arg n="1">*trace* -&gt;  Columbia's thrift, which now is seeking
+        a new chief operating officer,</arg> 
+        <arg f="to" n="2">a commercial bank that wants a California
+        presence</arg> 
+</example>
+
+<note>
+This usage is totally alien to me, but WSJ seems quite fond of it.  I
+don't know if args 3, 4 will appear.
+</note>
+</roleset>
+</predicate>
+</frameset>

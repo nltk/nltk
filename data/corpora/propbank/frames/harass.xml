@@ -1,0 +1,72 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="harass">
+<note>
+  Frames file for 'harass' based on sentences in wsj.  Verbnet entry
+  31.1, Framenet entry Suasion4.  Those refer to two different senses,
+  really. 
+</note>
+
+<roleset id="harass.01" name="bother" vncls="31.1">
+<roles>
+  <role descr="botherer, causer of annoyance" n="0">
+        <vnrole vncls="31.1" vntheta="Cause"/></role>
+  <role descr="harassed" n="1">
+        <vnrole vncls="31.1" vntheta="Experiencer"/></role>
+  <role descr="instrument, if separate from arg0" n="2"/>
+</roles>
+
+<example name="typical usage">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Moreover, police and soldiers continue *trace* to harass
+    Americans, who have filed several protests with the Foreign
+    Ministry in the past week. 
+</text>
+        <arg n="0">*trace* -&gt;  police and soldiers</arg>
+        <rel>harass</rel>
+        <arg n="1">Americans, who have filed several protests with the
+        Foreign Ministry in the past week</arg> 
+</example>
+
+<example name="with instrument">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John harassed Mary with constant requests for chocolate ice cream.
+  </text>
+  <arg n="0">John</arg>
+  <rel>harassed</rel>
+  <arg n="1">Mary</arg>
+  <arg f="with" n="2">constant requests for chocolate ice cream</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="harass.02" name="cause an action" vncls="-">
+<roles>
+  <role descr="causal agent, harasser" n="0"/>
+  <role descr="impelled agent" n="1"/>
+  <role descr="impelled action" n="2"/>
+</roles>
+
+<example name="all args">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John finally harassed Mary into giving him some ice cream.
+  </text>
+  <arg n="0">John</arg>
+  <arg f="TMP" n="M">finally</arg>
+  <rel>harassed</rel>
+  <arg n="1">Mary</arg>
+  <arg f="into" n="2">giving him some ice cream</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,43 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="affiliate">
+<note>
+  Frames file for 'affiliate' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="affiliate.01" name="to adopt or accept as a member" vncls="22.2">
+<roles>
+  <role descr="causer of affiliation, agent" n="0"><vnrole vncls="22.2" vntheta="Agent"/></role>
+  <role descr="entity affiliated" n="1"><vnrole vncls="22.2" vntheta="Patient1"/></role>
+  <role descr="affiliated with" n="2"><vnrole vncls="22.2" vntheta="Patient2"/></role>
+</roles>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+ One broadcasting executive familiar with the project said [0] the co-venture would target stations affiliated [*] with Fox because Fox has the desirable independent stations in most of the key cities .
+</text>
+	<rel>affiliated</rel>
+	<arg n="1">[*] -&gt;  stations</arg>
+	<arg f="with" n="2">Fox</arg>
+</example>
+
+
+<example name="intransitive">
+<inflection aspect="progressive" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+ Fulbright &amp; Jaworski of Houston and Fenerty , Robertson , Fraser &amp; Hatch of Calgary , Alberta , are affiliating [*-1] to help serve their energy-industry clients .
+</text>
+	<arg n="0">Fulbright &amp; Jaworski of Houston and Fenerty , Robertson , Fraser &amp; Hatch of Calgary , Alberta ,</arg>
+	<rel>affiliating</rel>
+	<arg f="PNC" n="M">[*-1] to help serve their energy-industry clients</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

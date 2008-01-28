@@ -1,0 +1,56 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="startle">
+<note>
+  Frames file for 'startle' based on sentences in brown.  Verbnet entry
+</note>
+
+<roleset id="startle.01" vncls="-" name="surprise">
+<roles>
+  <role n="0"  descr="cause of surprise"/>
+  <role n="1"  descr="experiencer of surprise"/>
+</roles>
+
+<example name="straight transitive">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+     The disclosure by Charles Bellows, chief defense counsel,
+     startled observers and was viewed as the prelude to a quarrel
+     between the six attorneys representing the eight former policemen
+     now on trial.
+  </text>
+  <arg n="0"        >the disclosure by Charles Bellows, chief defense
+  counsel</arg>
+  <rel              >startled</rel>
+  <arg n="1"        >observers</arg>
+</example>
+
+<example name="passive">
+  <inflection person="ns" tense="past" aspect="perfect" voice="passive" form="participle"/>
+  <text>
+    She could easily understand why the two men had been startled
+    *trace* to find a strange girl in the back seat of their car.
+  </text>
+  <arg n="1"        >the two men</arg>
+  <rel              >startled</rel>
+  <arg n="0">*trace* to find a strange girl in the back seat
+  of their car</arg>
+</example>
+
+<example name="with odd end result">
+  <inflection person="ns" tense="ns" aspect="ns" voice="passive" form="participle"/>
+  <text>
+    Maybe one could be startled into forgetfulness.
+  </text>
+  <arg n="1"        >one</arg>
+  <arg n="m" f="MOD">could</arg>
+  <rel              >startled</rel>
+  <arg n="m" f="PRD">into forgetfulness</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

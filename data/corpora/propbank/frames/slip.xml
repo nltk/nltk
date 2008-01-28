@@ -1,0 +1,122 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="slip">
+<note>
+  Frames file for 'slip' based on sentences in financial subcorpus.
+  Verbnet entries send-11.1-1 split-23.2, neither of which occured to
+  me at first.  Framed members include send, pass.  WSJ uses slip as
+  synonym of 'fall'.  Comparison with 'fall' and 'move' and 'send'.
+</note>
+
+<roleset id="slip.01" name="fall" vncls="-">
+<roles>
+  <role descr="Logical subject, patient, thing falling" n="1"/>
+  <role descr="EXT, amount fallen" n="2"/>
+  <role descr="start point" n="3"/>
+  <role descr="end point, end state of arg1" n="4"/>
+  <role descr="medium" f="LOC" n="M"/>
+</roles>
+
+<example name="all args present">
+<text>
+    Reed International PLC said that net income for the six months
+    ended Oct. 1 slipped 5% to #89.7 million [$ 141.9 million], or 16
+    pence a share, from #94.8 million [$149.9 million], or 17.3 pence
+    a share. 
+</text>
+        <arg n="1">net income for the six months ended Oct. 1</arg>
+        <rel>slipped</rel>
+        <arg f="EXT" n="2">5 %</arg>
+        <arg f="to" n="4"># 89.7 million [$141.9 million], or 16 pence
+        a share</arg> 
+        <arg f="from" n="3">#94.8 million [$149.9 million], or 17.3
+        pence a share</arg> 
+</example>
+
+<note>
+Usually one or two of the numbered args are missing; for additional
+examples see the other verbs-of-stock-reportage like 'rise' or 'fall'.
+</note>
+
+</roleset>
+
+<roleset id="slip.02" name="change location" vncls="-">
+<roles>
+  <role descr="mover" n="0"/>
+  <role descr="moved" n="1"/>
+  <role descr="destination" n="2"/>
+</roles>
+
+<example name="ergative">
+<text>
+    If the economy slips into a recession, then this isn't a level
+    that's going to hold.'' 
+</text>
+        <arg n="1">the economy</arg>
+        <rel>slips</rel>
+        <arg f="into" n="2">a recession</arg>
+</example>
+
+<example name="transitive">
+  <text>
+    While Mary's back was turned, John slipped a panful of hot cookies
+    into his pants.
+  </text>
+  <arg f="TMP" n="m">While Mary's back was turned</arg>
+  <arg n="0">John</arg>
+  <rel>slipped</rel>
+  <arg n="1">a panful of hot cookies</arg>
+  <arg f="into" n="2">his pants</arg>
+<note>
+Oh, that silly, silly John.
+</note>
+</example>
+</roleset>
+
+<roleset id="slip.03" name="give" vncls="11.1-1">
+<roles>
+  <role descr="sender" n="0">
+	  <vnrole vncls="11.1-1" vntheta="Agent"/></role>
+  <role descr="sent" n="1">
+	  <vnrole vncls="11.1-1" vntheta="Theme"/></role>
+  <role descr="sent-to" n="2">
+	  <vnrole vncls="11.1-1" vntheta="Destination"/></role>
+</roles>
+
+<example name="ditransitive">
+  <text>
+    John slipped Mary the note.
+  </text>
+  <arg n="0">John</arg>
+  <rel>slipped</rel>
+  <arg n="2">Mary</arg>
+  <arg n="1">the note</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="slip_in">
+
+<roleset id="slip.04" vncls="-" name="slip in: include stealthily">
+<roles>
+  <role n="0"  descr="stealthy includer"/>
+  <role n="1"  descr="stealthy inclusion"/>
+</roles>
+
+<example name="sneaky legislators">
+  <inflection person="ns" tense="ns" aspect="ns" voice="ns" form="gerund"/>
+  <text>
+    Members find it easy to doctor legislation by [*] slipping in
+    special provisions that could never survive in the cold light of
+    day.  
+  </text>
+  <arg n="0"        >[*] -> Members</arg>
+  <rel              >slipping in</rel>
+  <arg n="1"        >special provisions that could never survive in
+  the cold light of day</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

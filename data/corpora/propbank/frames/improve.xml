@@ -1,0 +1,108 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="improve">
+<note>
+  Frames file for 'improve' based on survey of initial sentences of
+  big corpus.
+</note>
+
+<roleset id="improve.01" name="make better" vncls="45.4">
+<roles>
+  <role descr="improver" n="0">
+		
+  <vnrole vncls="45.4" vntheta="Agent"/></role>
+
+  <role descr="thing improving" n="1">
+		
+  <vnrole vncls="45.4" vntheta="Patient"/></role>
+
+</roles>
+
+<example name="agentive">
+  <text>
+  ...if they don't improve their protection of intellectual property
+  by next spring.
+  </text>
+  <arg n="0">they</arg>
+  <arg f="NEG" n="m">n't</arg>
+  <rel>improve</rel>
+  <arg n="1">their protection of intellectual property</arg>
+  <arg f="TMP" n="m">by next spring</arg>
+</example>
+
+<example name="how?">
+  <text>
+  Taiwan has improved its standing with the US by initialing a
+  bilateral copyright agreement.
+  </text>
+  <arg n="0">Taiwan</arg>
+  <rel>improved</rel>
+  <arg n="1">its standing with the US</arg>
+  <arg f="MNR" n="m">by initialing a
+  bilateral copyright agreement.</arg>
+</example>
+
+<example name="ergative">
+  <text>
+  Business conditions will improve in the coming six months.
+  </text>
+  <arg n="1">Business conditions</arg>
+  <arg f="MOD" n="m">will</arg>
+  <rel>improve</rel>
+  <arg f="TMP" n="m">in the coming six months</arg>
+</example>
+
+<example name="unstated thing improving">
+  <text>
+  Dow will improve on its year-ago fourth-quarter net of $3.44 a share.
+  </text>
+  <arg n="0">Dow</arg>
+  <arg f="MOD" n="m">will</arg>
+  <rel>improve</rel>
+  <arg f="on" n="1">its year-ago fourth-quarter net of $3.44 a share</arg>
+</example>
+
+<note>
+I'm reading this as &quot;Dow will improve its performance past its
+year-ago net&quot;.  One could argue that this is a separate sense, but
+since only a slight paraphrase renders it into the &quot;make better&quot;
+sense, we'll leave it here for the moment.
+</note>
+
+<note>
+Do not tag adjectival usages like &quot;the improved test scores&quot;.
+</note>
+
+</roleset>
+
+<roleset id="improve.02" name="add, rise" vncls="45.4">
+<roles>
+    <role descr="Logical subject, patient, thing rising" n="1">
+		
+  <vnrole vncls="45.4" vntheta="Patient"/></role>
+
+    <role descr="EXT, amount risen" n="2"/>
+    <role descr="start point" n="3"/>
+    <role descr="end point" n="4"/>
+    <role descr="medium" f="LOC" n="M"/>
+ </roles>
+
+<example name="should have seen this coming">
+  <text>
+  National Market System volume improved to 94,425,00 shares from 71.7
+  million Monday.
+  </text>
+  <arg n="1">National Market System volume</arg>
+  <rel>improved</rel>
+  <arg f="to" n="4">94,425,00 shares</arg>
+  <arg f="from" n="3">71.7 million Monday.</arg>
+</example>
+
+<note>
+There's also a nice example of the two senses merging: &quot;Ekco [is] to
+improve on-time delivery of orders to about 95% from around 70%.&quot;
+</note>
+
+</roleset>
+</predicate>
+</frameset>

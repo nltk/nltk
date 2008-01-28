@@ -1,0 +1,75 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="staff">
+<note>
+  Frames file for 'staff' based on sentences in wsj.  Verbnet entry 9.8.
+</note>
+
+<roleset id="staff.01" name="provide manpower" vncls="9.8">
+<roles>
+  <role descr="agentive staffer, employment agency" n="0"><vnrole vncls="9.8" vntheta="Agent"/></role>
+  <role descr="workplace" n="1"><vnrole vncls="9.8" vntheta="Destination"/></role>
+  <role descr="staff, workers" n="2"><vnrole vncls="9.8" vntheta="Theme"/></role>
+</roles>
+
+<example name="all args">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+     To help residents in Northern California rebuild, FEMA intends to
+     set up 17 disaster assistance offices in the earthquake area in
+     the next several days and *trace* to staff them with 400 to 500
+     workers from various agencies, said Robert Volland, chief of the
+     agency's individual assistance division. 
+</text>
+        <arg n="0">*trace* -&gt;  FEMA</arg>
+        <rel>staff</rel>
+        <arg n="1">them</arg>
+        <arg f="with" n="2">400 to 500 workers from various agencies</arg>
+</example>
+
+<example name="active, worker in subject pos">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    To the extent we lack manpower *trace* *trace* to staff menial
+    jobs in hospitals, ... 
+</text>
+        <arg n="2">*trace* -&gt; *trace* -&gt;  manpower</arg>
+        <rel>staff</rel>
+        <arg n="1">menial jobs in hospitals</arg>
+</example>
+
+<example name="passive, worker in demoted subject pos">
+<inflection aspect="ns" form="participle" person="ns" tense="future" voice="passive"/>
+<text>
+    The Sidley-Ashurst venture will also be staffed *trace* by another
+    Sidley partner specializing in corporate law, a partner from
+    Ashurst concentrating on acquisitions and a Japanese attorney. 
+</text>
+        <arg f="MOD" n="M">will</arg>
+        <arg f="DIS" n="M">also</arg>
+        <rel>staffed</rel>
+        <arg n="1">*trace* -&gt;  The Sidley-Ashurst venture</arg>
+        <arg f="by" n="2">another Sidley partner specializing in
+        corporate law, a partner from Ashurst concentrating on
+        acquisitions and a Japanese attorney</arg> 
+</example>
+
+<example name="with job and agency">
+  <inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+  <text>
+     John works hard *trace* to staff the various cafeterias he's in
+     charge of.
+  </text>
+  <arg n="0">*trace* -&gt; John</arg>
+  <rel>staff</rel>
+  <arg n="1">the various cafeterias he's in charge of</arg>
+</example>
+
+<note>
+VERY IMPORTANT to distinguish between the staff working and the entity
+which causes those staff to work!  Be very careful!
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="zap">
+<note>
+  Frames file for 'zap' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="zap.01" name="destroy" vncls="-">
+<roles>
+  <role descr="destroyer" n="0"/>
+  <role descr="destroyed" n="1"/>
+</roles>
+
+<example name="the one example">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    This is not only because it kills the unborn, a job at which it
+    actually is not outstandingly efficient, *trace* zapping only 50%
+    to 85% of them depending on which study you read  (prostaglandin,
+    taken in conjunction with the pill, boosts the rate to 95%).  
+</text>
+        <arg n="0">*trace* -&gt;  it</arg>
+        <rel>zapping</rel>
+        <arg n="1">only 50% to 85% of them</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

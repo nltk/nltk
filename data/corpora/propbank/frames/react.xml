@@ -1,0 +1,67 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="react">
+<note>
+  Frames file for 'react' based on sentences in financial subcorpus.
+  Verbnet class 31.3, no mention of other members.  Minimal comparison
+  with 'answer' and 'respond'.
+</note>
+
+<roleset id="react.01" name="give a response, reaction" vncls="31.3">
+<roles>
+  <role descr="reactor" n="0">
+		
+  <vnrole vncls="31.3" vntheta="Experiencer"/></role>
+
+  <role descr="reacted-to" n="1">
+		
+  <vnrole vncls="31.3" vntheta="Cause"/></role>
+
+  <role descr="reaction" n="2"/>
+</roles>
+
+<example name="intransitive">
+<text>
+    Not everyone is reacting so calmly.
+</text>
+        <arg n="0">Not everyone</arg>
+        <rel>reacting</rel>
+        <arg f="MNR" n="M">so calmly</arg>
+</example>
+
+<example name="transitive, adverbial reaction">
+<text>
+    The stock market reacted strongly to the news.
+</text>
+        <arg n="0">The stock market</arg>
+        <rel>reacted</rel>
+        <arg f="MNR" n="M">strongly</arg>
+        <arg f="to" n="1">the news</arg>
+</example>
+
+<example name="transitive, arg2 reaction">
+<text>
+    Investors -- taking this as a sign that a broad industry slump was
+    in the offing -- reacted by selling the company's stock, which
+    lost $3.25 that day to close at $52 in national over-the-counter
+    trading. 
+</text>
+        <arg n="0">Investors</arg>
+        <arg n="M">-- taking this as a sign that a broad industry
+        slump was in the offing --</arg> 
+        <rel>reacted</rel>
+        <arg f="by" n="2">selling the company's stock, which lost
+        $3.25 that day to close at $52 in national over-the-counter
+        trading</arg> 
+</example>
+
+<note>
+ArgM-MNR and Arg2 can be hard to distinguish.  Use the following rule
+of thumb--if something is an adverb (X-ly) or can be easily restated --&gt;
+--as an adverb (&quot;with caution --&gt; cautiously&quot;) call it ArgM-MNR.
+Otherwise use Arg2.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,43 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="hemorrhage">
+<note>
+  Frames file for 'hemorrhage' based on sentences in financial
+  subcorpus.  No Verbnet entry, no Framenet entry.  No comparison.
+</note>
+
+<roleset id="hemorrhage.01" name="lose (blood) quickly">
+<roles>
+  <role descr="bleeder" n="0"/>
+  <role descr="blood (or metaphorical)" n="1"/>
+</roles>
+
+<example name="intransitive">
+<inflection aspect="progressive" form="participle" person="third" tense="past" voice="active"/>
+<text>
+    Control Data Corp., which just months ago *trace* was hemorrhaging
+    financially, thinks it will be healthy enough soon to consider
+    repurchasing public debt. 
+</text>
+        <arg n="0">*trace* -&gt;  which -&gt;  Control Data Corp.</arg>
+        <rel>hemorrhaging</rel>
+        <arg f="MNR" n="M">financially</arg>
+</example>
+
+<example name="transitive, metaphorical">
+  <inflection aspect="progressive" form="participle" person="third" tense="past" voice="active"/>
+  <text>
+    John's dot-com startup was hemorrhaging cash daily.
+  </text>
+  <arg n="0">John's dot-com startup</arg>
+  <rel>hemorrhaging</rel>
+  <arg n="1">cash</arg>
+  <arg f="TMP" n="m">daily</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

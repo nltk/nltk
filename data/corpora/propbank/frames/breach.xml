@@ -1,0 +1,37 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="breach">
+<note>
+  Frames file for 'breach' based on sentences in financial subcorpus.
+  No Verbnet entry, no Framenet entry.  Comparison with 'break'.
+</note>
+
+<roleset id="breach.01" name="break">
+<roles>
+  <role descr="breaker" n="0"/>
+  <role descr="thing broken" n="1"/>
+</roles>
+
+<example name="breach the agreement">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Under a merger agreement reached Sept. 14, the UAL board agreed to
+    reimburse certain of the buy-out group's expenses out of company
+    funds even if the transaction wasn't completed, provided the group
+    didn't breach the agreement. 
+</text>
+        <arg n="0">the group</arg>
+        <arg f="NEG" n="M">n't</arg>
+        <rel>breach</rel>
+        <arg n="1">the agreement</arg>
+</example>
+
+<note>
+This is rarely used as a real verb, instead usually occuring as a
+noun: &quot;A breach of contract&quot; etc.  It is also used as of a whale
+coming up for air, but let's just assume that sense won't occur in WSJ.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,43 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="queue">
+<note>
+  Frames file for 'queue' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="queue.01" name="[put|be] in a line" vncls="-">
+<roles>
+  <role descr="putter of something in a line" n="0"/>
+  <role descr="things in a line" n="1"/>
+</roles>
+
+<example name="agent and lined up things merged">
+<inflection aspect="progressive" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+    ``People are queuing at the door to take his product but he
+    doesn't have the working capital to make the thing and commercial
+    banks are very unsympathetic. 
+</text>
+        <arg n="0">People</arg>
+        <rel>queuing</rel>
+        <arg f="LOC" n="M">at the door</arg>
+        <arg f="PNC" n="M">to take his product</arg>
+</example>
+
+<example name="separated args">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John queued his car at the car wash.
+  </text>
+  <arg n="0">John</arg>
+  <rel>queued</rel>
+  <arg n="1">his car</arg>
+  <arg f="LOC" n="m">at the car wash</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

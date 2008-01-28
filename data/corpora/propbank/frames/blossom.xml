@@ -1,0 +1,29 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="blossom">
+<note>
+  Frames file for 'blossom'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="blossom.01" name="to develop, flourish" vncls="47.2">
+<roles> 
+  <role descr="entity blossoming" n="1"><vnrole vncls="47.2" vntheta="Theme"/></role>
+</roles>
+
+<example name="intransitive">
+<inflection aspect="perfect" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+ As ties between academia and venture capital have blossomed in recent years , governmental fear of abuse has risen .
+</text>
+	<arg n="1">ties between academia and venture capital</arg>
+	<rel>blossomed</rel>
+	<arg f="TMP" n="M">in recent years</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

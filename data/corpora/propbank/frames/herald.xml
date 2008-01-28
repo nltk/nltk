@@ -1,0 +1,49 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="herald">
+<note>
+  Frames file for 'herald' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="herald.01" name="to proclaim, announce" vncls="29.2">
+<roles>
+  <role descr="announcer" n="0">
+        <vnrole vncls="29.2" vntheta="Agent"/></role>
+  <role descr="thing announced" n="1">
+        <vnrole vncls="29.2" vntheta="Theme"/></role>
+  <role descr="attribute, announced as" n="2">
+        <vnrole vncls="29.2" vntheta="Predicate"/></role>
+</roles>
+
+
+
+<example name="transitive">
+<inflection aspect="perfect" form="participle" person="third" tense="present" voice="active"/>
+<text>
+ Mr. Shilling , who [*T*-1] was Merrill Lynch 's chief economist from 1967 to 1971 , has heralded a recession for months .
+</text>
+	<arg n="0">Mr. Shilling , who [*T*-1] was Merrill Lynch 's chief economist from 1967 to 1971 ,</arg>
+	<rel>heralded</rel>
+	<arg n="1">a recession</arg>
+	<arg f="TMP" n="M">for months</arg>
+</example>
+
+<example name="all arguments">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ Nevertheless , the New Democracy and Communist parties herald his assertions as proof of PASOK complicity .
+</text>
+	<arg f="DIS" n="M">Nevertheless</arg>
+	<arg n="0">the New Democracy and Communist parties</arg>
+	<rel>herald</rel>
+	<arg n="1">his assertions</arg>
+	<arg f="as" n="2">proof of PASOK complicity</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

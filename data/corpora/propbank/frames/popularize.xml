@@ -1,0 +1,51 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="popularize">
+<note>
+  Frames file for 'popularize' based on sentences in wsj.  No Verbnet
+  entry, but it should probably be in 45.4 'other causative'.
+</note>
+
+<roleset id="popularize.01" name="make popular" vncls="-">
+<roles>
+  <role descr="popularizer" n="0"/>
+  <role descr="thing now popular" n="1"/>
+  <role descr="instrument" n="2"/>
+</roles>
+
+<example name="no instrument">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+    It might be alleged that TV has done more than its share *trace*
+    to popularize and promote non-violent civil disobedience, so the
+    second situation hypothesized above would be simply a case of
+    ``chickens coming home to roost.'' 
+</text>
+        <arg n="0">*trace* -&gt;  TV</arg>
+        <rel>popularize</rel>
+        <arg n="1">non-violent civil disobedience</arg>
+</example>
+
+
+<example name="yes instrument">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Wells Rich first popularized the Benson &amp; Hedges brand more
+    than 20 years ago with ads portraying, among other things, an
+    elevator door closing on a passenger's cigarette. 
+</text>
+        <arg n="0">Wells Rich</arg>
+        <arg f="TMP" n="M">first</arg>
+        <rel>popularized</rel>
+        <arg n="1">the Benson &amp; Hedges brand</arg>
+        <arg f="TMP" n="M">more than 20 years ago</arg>
+        <arg f="with" n="2">ads portraying, among other things, an
+        elevator door closing on a passenger's cigarette</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

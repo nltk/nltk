@@ -1,0 +1,61 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="peak">
+<note>
+  Frames file for 'peak' based on sentences in financial subcorpus.
+  No Verbnet entry, no Framenet entry.  No comparison.
+</note>
+
+<roleset id="peak.01" name="reach a maximum" vncls="-">
+<roles>
+  <role descr="thing being described" n="1"/>
+  <role descr="maximum" n="2"/>
+  <role descr="benefactive" n="3"/>
+</roles>
+
+<example name="peak at">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    Since  peaking at 2791.41 on Oct. 9, the Dow Jones Industrial
+    Average has lost 194.69 points, or 7%, closing Friday at 2596.72,
+    down 17.01. 
+</text>
+        <arg n="1">the Dow Jones Industrial Average -&gt; *trace*</arg>
+        <rel>peaking</rel>
+        <arg f="at" n="2">2791.41</arg>
+        <arg f="TMP" n="M">on Oct. 9</arg>
+</example>
+
+<example name="unaccusative">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    The price war peaked in the third quarter as Big Three factory
+    discounts climbed to more than $1,000 a vehicle, according to
+    industry officials. 
+</text>
+        <arg n="1">The price war</arg>
+        <rel>peaked</rel>
+        <arg f="TMP" n="M">in the third quarter</arg>
+        <arg f="TMP" n="M">as Big Three factory discounts climbed to
+        more than $1,000 a vehicle</arg> 
+</example>
+
+<example name="with benefactive">
+<inflection aspect="perfect" form="participle" person="third" tense="present" voice="active"/>
+<text>
+    ``It's a good indication that level of profitability has peaked
+    for the industry,'' says Vahid Fathi, metals analyst with
+    Prescott, Ball &amp; Turben Inc., who had estimated Reynolds would
+    earn about $2.35 a share. 
+</text>
+        <arg n="1">level of profitability</arg>
+        <rel>peaked</rel>
+        <arg f="for" n="3">the industry</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

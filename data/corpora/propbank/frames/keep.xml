@@ -1,0 +1,222 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<note>
+Framed and reframed and reframed again on basis of much discussion
+about aspectual usages.  Ugh.
+</note>
+<predicate lemma="keep">
+<roleset id="keep.01" name="maintain possession" vncls="-">
+  <roles>
+    <role descr="Keeper" n="0"/>
+    <role descr="thing kept" n="1"/>
+  </roles>
+
+<example name="plain old transitive">
+  <text>
+    The Herald kept its old-time Hearst readership.
+  </text>
+  <arg n="0">The Herald</arg>
+  <rel>kept</rel>
+  <arg n="1">its old-time Hearst readership</arg>
+</example>
+
+</roleset>
+
+<roleset id="keep.02" name="aspectual" vncls="55.1">
+  <roles>
+    <role descr="causer of continued action" n="0">
+  <vnrole vncls="55.1" vntheta="Agent"/></role>
+    <role descr="continuing action or state" n="1">
+  <vnrole vncls="55.1" vntheta="Theme"/></role>
+  </roles>
+
+<example name="subject control">
+  <text>
+    John kept *trace* annotating.
+  </text>
+  <arg n="0">John</arg>
+  <rel>kept</rel>
+  <arg n="1">*trace* annotating</arg>
+</example>
+
+<example name="object control with sentential attribute">
+  <text>
+    Ringers keep the bells sounding in the many belfries of East Anglia.
+  </text>
+  <arg n="0">Ringers</arg>
+  <rel>keep</rel>
+  <arg n="1">[the bells][sounding in the many belfries of East Anglia]</arg>
+</example>
+
+<example name="object control with Adj attribute">
+  <text>
+    The captain kept the crew loyal.
+  </text>
+  <arg n="0">The captain</arg>
+  <rel>kept</rel>
+  <arg n="1">[the crew][loyal]</arg>
+</example>
+
+</roleset>
+
+<roleset id="keep.04" vncls="-" name="maintain some prepositional relationship">
+<roles>
+  <role n="0"  descr="causer of separation"/>
+  <role n="1"  descr="one noun"/>
+  <role n="2"  descr="other noun"/>
+</roles>
+
+<example name="be careful with 'from'!">
+  <inflection person="ns" tense="ns" aspect="ns" voice="active" form="full"/>
+  <text>
+     Growers can't always keep the worm from the apple.
+  </text>
+  <arg n="0"        >Growers</arg>
+  <arg n="m" f="MOD">ca</arg>
+  <arg n="m" f="NEG">n't</arg>
+  <arg n="m" f="TMP">always</arg>
+  <rel              >keep</rel>
+  <arg n="1"        >the worm</arg>
+  <arg n="2" f="from">the apple</arg>
+</example>
+
+<example name="keep from: quasi-aspectual">
+  <text>
+    Japanese demand has kept the U.S. currency from *trace* plunging.
+  </text>
+  <arg n="0">Japanese demand</arg>
+  <rel>kept</rel>
+  <arg n="1">the U.S. currency</arg>
+  <arg n="2" f="from">*trace* plunging</arg>
+</example>
+
+<example name="keep out">
+  <text>
+    Britain kept light tanks out of the talks.
+  </text>
+  <arg n="0">Britain</arg>
+  <rel>kept</rel>
+  <arg n="1">light tanks</arg>
+  <arg n="2" f="out">of the talks</arg>
+</example>
+
+<example name="keep off">
+  <text>
+    Keep your Foster Savings Institution off the federal budget deficit.
+  </text>
+  <arg n="0">*trace*</arg>
+  <rel>Keep</rel>
+  <arg n="1">your Foster Savings Institution</arg>
+  <arg n="2" f="off">the federal budget deficit</arg>
+</example>
+
+<example name="with attributive">
+  <text>
+    The Fed kept inflation-fighting as its top priority.
+  </text>
+  <arg n="0">The Fed</arg>
+  <rel>kept</rel>
+  <arg n="1">inflation-fighting</arg>
+  <arg n="2" f="as">its top priority</arg>
+</example>
+
+<note>
+This roleset shows some relationship between nouns or gerunds
+described by the preposition introducing the second noun, and the
+'keep' is causing or maintaining that relationship.
+</note>
+
+</roleset>
+
+<roleset id="keep.06" vncls="-" name="prepositional">
+<roles>
+    <note>This is a complex preposition and takes NO ARGUMENT STRUCTURE!</note>
+</roles>
+
+<example name="keep with">
+  <text>
+     ... in *trace=nothing* keeping with the reputation of the company.
+   </text>
+ </example>
+
+</roleset>
+
+<roleset id="keep.03" vncls="-" name="light verb">
+<roles>
+  <role n="0"  descr="agenty thing"/>
+  <role n="1"  descr="noun"/>
+  <role n="2"  descr="prepositional object"/>
+</roles>
+
+<example name="keep pace">
+  <text>
+    Newsweek keeps pace with its rival Time.
+  </text>
+  <arg n="0">Newsweek</arg>
+  <rel>keeps</rel>
+  <arg n="1">pace</arg>
+  <arg f="with" n="2">its rival Time</arg>
+</example>
+
+<example name="keep track">
+  <text>
+    The state keeps track of the achievement-test preparation booklets.
+  </text>
+  <arg n="0">The state</arg>
+  <rel>keeps</rel>
+  <arg n="1">track</arg>
+  <arg n="2" f="of">the achievement-test preprarion booklets</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="keep_up">
+
+<roleset id="keep.05" name="keep up: maintain position" vncls="-">
+<roles>
+  <role descr="maintainer of position" n="0"/>
+  <role descr="relative to what" n="1"/>
+</roles>
+
+<example name="keeping up with the Joneses">
+  <inflection aspect="ns" form="full" person="ns" tense="ns" voice="active"/>
+  <text>
+    John can't keep up with Mary's rapid mood swings.
+  </text>
+  <arg n="0">John</arg>
+  <arg f="MOD" n="m">ca</arg>
+  <arg f="NEG" n="m">n't</arg>
+  <rel>keep up</rel>
+  <arg f="with" n="1">Mary's rapid mood swings</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="keep_on">
+
+<roleset id="keep.08" vncls="-" name="keep on: aspectual">
+<roles>
+  <role n="1"  descr="event"/>
+</roles>
+
+<example name="aspectual">
+  <inflection person="ns" tense="future" aspect="ns" voice="active" form="full"/>
+  <text>
+     State monopolies will keep on [*-1] stifling trade, ``free''
+     prices or not, until something else replaces them. 
+  </text>
+  <arg n="1"        >[State monopolies][[*-1] stifling trade</arg>
+  <arg n="m" f="MOD">will</arg>
+  <rel              >keep on</rel>
+  <arg n="m" f="ADV">``free'' prices or not</arg>
+  <arg n="m" f="TMP">until something else replaces them</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

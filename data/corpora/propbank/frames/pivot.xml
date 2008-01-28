@@ -1,0 +1,46 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="pivot">
+<note>
+  Frames file for 'pivot' based on sentences in wsj.  No access to
+  Verbnet at the moment.
+</note>
+
+<roleset id="pivot.01" name="turn" vncls="-">
+<roles>
+  <role descr="agent, causer of rotation (rare)" n="0"/>
+  <role descr="thing turning" n="1"/>
+  <role descr="pivot point" n="2"/>
+</roles>
+
+<example name="this makes no sense to me">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+    ``Wheat prices will increasingly pivot off of Soviet demand'' in
+    coming weeks, predicted Richard Feltes, vice president, research,
+    for Refco Inc. in Chicago. 
+</text>
+        <arg n="1">Wheat prices</arg>
+        <arg f="MOD" n="M">will</arg>
+        <arg f="EXT" n="M">increasingly</arg>
+        <rel>pivot</rel>
+        <arg f="off" n="2">of Soviet demand</arg>
+        <arg f="TMP" n="M">in coming weeks</arg>
+</example>
+
+<example name="this is what I'm thinking about">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John pivoted on his heel and stalked out of the room.
+  </text>
+  <arg n="1">John</arg>
+  <rel>pivoted</rel>
+  <arg f="on" n="2">his heel</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

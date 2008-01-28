@@ -1,0 +1,139 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="lead">
+<note>
+  Frames file for 'lead' based on survey of initial sentences of big corpus
+</note>
+
+<note>
+Do not tag adjectival usages, like &quot;leading indicators&quot;
+</note>
+
+<roleset id="lead.01" name="directed motion" vncls="51.7">
+<roles>
+  <role descr="leader" n="0">
+	<vnrole vncls="51.7" vntheta="Agent"/></role>
+  <role descr="thing led" n="1">
+	<vnrole vncls="51.7" vntheta="Theme"/></role>
+  <role descr="start point" n="3"/>
+  <role descr="end point" n="4"/>
+</roles>
+
+<example name="cause to go">
+  <text>
+  John led the unhappy group of travellers from the frying pan to the fire.
+  </text>
+  <arg n="0">John</arg>
+  <rel>led </rel>
+  <arg n="1">the unhappy group of travellers</arg>
+  <arg f="from" n="3">the frying pan</arg>
+  <arg f="to" n="4">the fire</arg>
+</example>
+
+<example name="go before">
+  <text>
+  California led the nation with $6.5 billion in net cash income last year.
+  </text>
+  <arg n="0">California</arg>
+  <rel>led</rel>
+  <arg n="1">the nation </arg>
+  <arg f="MNR" n="m">with $6.5 billion in net cash income</arg>
+  <arg f="TMP" n="m">last year</arg>
+</example>
+
+</roleset>
+
+<roleset id="lead.02" name="act as project leader" vncls="51.7">
+<roles>
+  <role descr="leader" n="0">
+	  <vnrole vncls="51.7" vntheta="Agent"/></role>
+  <role descr="project or group" n="1">
+	  <vnrole vncls="51.7" vntheta="Theme"/></role>
+</roles>
+
+<example name="group">
+  <text>
+  Dr. Talcott led a team of researchers from the National Cancer
+  Institute and the medical schools of Harvard University and Boston
+  University.
+  </text>
+  <arg n="0">Dr. Talcott</arg>
+  <rel>led</rel>
+  <arg n="1">a team of researchers from the National Cancer
+  Institute and the medical schools of Harvard University and Boston
+  University</arg>
+</example>
+
+</roleset>
+
+<roleset id="lead.03" name="resulted" vncls="-">
+<roles>
+  <role descr="factors" n="0"/>
+  <role descr="led entity" n="1"/>
+  <role descr="result, action or attribute on arg1" n="2"/>
+</roles>
+
+<example name="NP complement">
+  <text>
+  It was just another one of the risk factors that *trace* led to the
+  company's decision to withdraw from the bidding.
+  </text>
+  <arg n="0">*trace=that=just another one of the risk factors*</arg>
+  <rel>led</rel>
+  <arg f="to" n="2">the company's decision to withdraw from the
+  bidding</arg>
+<note>
+This is interesting, because the arg1 is technically 'the company'.
+</note>
+</example>
+
+<example name="S complement">
+  <text>
+    It does lead you to suspect imports are going down.
+  </text>
+  <arg n="0">It</arg>
+  <rel>lead</rel>
+  <arg n="1">you</arg>
+  <arg n="2">to suspect imports are going down</arg>
+</example>
+
+<example name="passive">
+  <inflection person="third" tense="past" aspect="ns" voice="passive" form="participle"/>
+  <text>
+     John was led *trace* to believe that the moon was made of green cheese.
+  </text>
+  <rel              >led</rel>
+  <arg n="1"        >*trace* -> John</arg>
+  <arg n="2"        >to believe that the moon was made of green cheese</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="lead_off">
+
+<roleset id="lead.04" name="begin" vncls="-">
+<roles>
+  <role descr="creator, beginner, Agent" n="0"/>
+  <role descr="Theme(-Creation)" n="1"/>
+  <role descr="Instrument" n="2"/>
+  <role descr="secondary predication of arg1" n="3"/>
+</roles>
+
+<example name="begin">
+  <text>
+  John led off the party with a raunchy toast.
+  </text>
+  <arg n="0">John</arg>
+  <rel>led off</rel>
+  <arg n="1">the party</arg>
+  <arg f="with" n="2">a raunchy toast</arg>
+</example>
+
+<note>
+This probably won't occur, but for other possible structures refer to &quot;begin&quot;
+</note>
+
+</roleset>
+</predicate>
+</frameset>

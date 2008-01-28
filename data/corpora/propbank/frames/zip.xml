@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="zip">
+<note>
+  Frames file for 'zip' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="zip.01" name="to move very fast" vncls="-">
+<roles>
+  <role descr="entity in motion" n="0"/>
+</roles>
+
+
+<example name="intransitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ If [*-1] positioned over the brain 's motor-control area , the hand-held electromagnets generate nerve impulses that [*T*-309] zip down motor nerves and activate muscles , [*] making , say , a finger twitch .
+</text>
+	<arg n="0">[*T*-309] -&gt;  that -&gt;  nerve impulses</arg>
+	<rel>zip</rel>
+	<arg f="DIR" n="M">down motor nerves</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

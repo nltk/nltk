@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="beleaguer">
+<note>
+  Frames file for 'beleaguer' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="beleaguer.01" vncls="-" name="harass">
+<roles>
+  <role n="0"  descr="agent, beleaguer-er"/>
+  <role n="1"  descr="harassed entity"/>
+</roles>
+
+<example name="adjectival">
+<inflection person="ns" tense="ns" aspect="ns" voice="passive" form="participle"/>
+<text>
+    American Express Co. and General Motors Corp.'s beleaguered Buick
+    division are joining forces in a promotion aimed at boosting
+    Buick's sales while encouraging broader use of the American
+    Express card. 
+</text>
+	<rel>beleaguered</rel>
+	<arg n="1">division</arg>
+</example>
+
+<note>
+might be verbal, might not.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

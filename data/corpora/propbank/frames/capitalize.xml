@@ -1,0 +1,68 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="capitalize">
+<note>
+  Frames file for 'capitalize' based on sentences in financial
+  subcorpus.  No verbnet entry.  Comparison to 'take' and 'value'.
+</note>
+
+<roleset id="capitalize.01" name="provide with cash value">
+<roles>
+  <role descr="assigner" n="0"/>
+  <role descr="assigned to" n="1"/>
+  <role descr="value" n="2"/>
+</roles>
+
+<example name="passivized">
+<text>
+    Some think Columbia's thrift, which now is seeking a new chief
+    operating officer, might be capitalized *trace* at, say $300
+    million, and shopped to a commercial bank that wants a California
+    presence. 
+</text>
+        <arg f="MOD" n="M">might</arg>
+        <rel>capitalized</rel>
+        <arg n="1">*trace* -&gt;  Columbia's thrift, which now is seeking
+        a new chief operating officer,</arg> 
+        <arg f="DIS" n="M">, say</arg>
+        <arg f="at" n="2">$300 million</arg>
+</example>
+
+<example name="active, no value">
+  <inflection person="ns" tense="ns" aspect="ns" voice="active" form="infinitive"/>
+  <text>
+    You sell the good bank as an ongoing operation and use some of the
+    proceeds [*-1] to capitalize the bad bank,'' says thrift
+    specialist Lewis Ranieri of Ranieri Associates in New York. 
+  </text>
+  <arg n="0"        >[*-1] -> You</arg>
+  <rel              >capitalize</rel>
+  <arg n="1"        >the bad bank</arg>
+</example>
+
+</roleset>
+
+<roleset id="capitalize.02" name="take advantage of">
+<roles>
+  <role descr="exploiter" n="0"/>
+  <role descr="thing exploited" n="1"/>
+</roles>
+
+<example name="take advantage of">
+<text>
+    Sales climbed 71% to $6.36 billion from $3.72 billion as the
+    company capitalized on the ravenous global demand for commercial
+    airliners. 
+</text>
+        <arg n="0">the company</arg>
+        <rel>capitalized</rel>
+        <arg f="on" n="1">the ravenous global demand for commercial
+        airliners</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

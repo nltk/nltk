@@ -1,0 +1,44 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="rationalize">
+<note>
+  Frames file for 'rationalize' based on sentences in wsj.  No Verbnet
+  entry. 
+</note>
+
+<roleset id="rationalize.01" name="make sense of, make   excuses for" vncls="-">
+<roles>
+  <role descr="rationalizer" n="0"/>
+  <role descr="thing rationalized" n="1"/>
+  <role descr="instrument" n="2"/>
+</roles>
+
+<example name="just transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    It astounds me he can rationalize his self-righteous and greedy
+    actions in Utah. 
+</text>
+        <arg n="0">he</arg>
+        <arg f="MOD" n="M">can</arg>
+        <rel>rationalize</rel>
+        <arg n="1">his self-righteous and greedy actions in Utah</arg>
+</example>
+
+<example name="with instrument">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+     Let's rationalize our priorities by solving pollution problems at
+     the local level as heretofore.
+</text>
+        <arg n="0">*trace* -&gt;  's</arg>
+        <rel>rationalize</rel>
+        <arg n="1">our priorities</arg>
+        <arg f="by" n="2">solving pollution problems at the local
+        level as heretofore</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

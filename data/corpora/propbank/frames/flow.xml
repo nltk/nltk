@@ -1,0 +1,53 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="flow">
+<note>
+Frames file for 'flow' based on sentences in financial subcorpus and
+automatic generation via verbnet.
+</note>
+
+<roleset id="flow.01" name="move like water" vncls="47.2">
+<roles>
+	<role descr="substance (ie, water)" n="1">
+		
+  <vnrole vncls="47.2" vntheta="Theme"/></role>
+
+	<role descr="diretion or location or extent" n="m"/>
+</roles>
+
+<example name="flow out of">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Last week alone, an eye-popping $1.6 billion flowed out of the
+    junk funds, or nearly 5% of their total assets, according to
+    estimates by Dalbar Financial Services Inc., a Boston research
+    firm. 
+</text>
+        <arg f="TMP" n="M">Last week alone</arg>
+        <arg n="1">an eye-popping $1.6 billion  </arg>
+        <rel>flowed</rel>
+        <arg f="DIR" n="M">out of the junk funds</arg>
+        <arg n="M">or nearly 5% of their total assets</arg>
+        <arg n="M">according to estimates by Dalbar Financial Services
+        Inc., a Boston research firm</arg> 
+</example>
+
+<example name="flow through">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    The 4.9 million-share volume flowing through the Jacobson
+    specialist operation was about five times normal for the stock . 
+</text>
+        <arg n="1">The 4.9 million-share volume</arg>
+        <rel>flowing</rel>
+        <arg f="DIR" n="M">through the Jacobson specialist operation</arg>
+</example>
+
+<note>
+Levin/Verbnet predicts an agentive reading, meaning &quot;cause to flow&quot;,
+but we'll wait until we see an example.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

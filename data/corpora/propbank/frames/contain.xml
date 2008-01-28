@@ -1,0 +1,34 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="contain">
+<note>
+  Frames file for 'contain' based on survey of sentences in financial
+  subcorpus.  Verbnet class contiguous_location-47.8, other framed
+  members are cover.  Also comparison with 'hold'
+</note>
+
+<roleset id="contain.01" name="hold inside">
+<roles>
+  <role descr="container" n="0"/>
+  <role descr="contents" n="1"/>
+</roles>
+
+<example name="almost literal">
+  <text>
+    In addition, the Cray-3 will contain 16 processors -- twice as
+    many as the largest current supercomputer.
+  </text>
+  <arg f="DIS" n="m">In addition</arg>
+  <arg n="0">the Cray-3</arg>
+  <arg f="MOD" n="m">will</arg>
+  <rel>contain</rel>
+  <arg n="1">16 processors -- twice as
+    many as the largest current supercomputer</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

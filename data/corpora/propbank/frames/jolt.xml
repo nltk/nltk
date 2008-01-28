@@ -1,0 +1,70 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="jolt">
+<note>
+Frames file for 'jolt' based on sentences in financial subcorpus and
+automatic expansion via verbnet.
+</note>
+
+<roleset id="jolt.01" name="surprise, shock" vncls="31.1">
+<roles>
+	<role descr="jolter" n="0">
+		
+  <vnrole vncls="31.1" vntheta="Cause"/></role>
+
+	<role descr="person jolted" n="1">
+		
+  <vnrole vncls="31.1" vntheta="Experiencer"/></role>
+
+	<role descr="instrument, if separate from agent" n="2"/>
+</roles>
+
+<example name="just transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    The decline surprised analysts and jolted HomeFed's stock, which
+    lost 8.6% of its value, closing at $38.50 on the New York Stock
+    Exchange, down $3.625. 
+</text>
+        <arg n="0">The decline</arg>
+        <rel>jolted</rel>
+        <arg n="1">HomeFed's stock, which lost 8.6% of its value, closing at $38.50 on the New York Stock Exchange, down $3.625</arg>
+</example>
+
+<example name="with instrument">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John jolted Mary with his announcement that he was leaving for Zambia.
+  </text>
+  <arg n="0">John</arg>
+  <rel>jolted</rel>
+  <arg n="1">Mary</arg>
+  <arg f="with" n="2">his announcement that he was leaving for Zambia</arg>
+</example>
+
+</roleset>
+
+<roleset id="jolt.02" name="impelled action" vncls="-">
+<roles>
+  <role descr="jolter" n="0"/>
+  <role descr="impelled agent" n="1"/>
+  <role descr="impelled action" n="2"/>
+</roles>
+
+<example name="action as PP">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    The stock has fallen $87.25, or 31%, in the three trading days
+    since announcement of the collapse of the $300-a-share takeover
+    jolted the entire stock market into its second-worst plunge ever. 
+</text>
+        <arg n="0">announcement of the collapse of the $300-a-share
+        takeover</arg> 
+        <rel>jolted</rel>
+        <arg n="1">the entire stock market</arg>
+        <arg f="into" n="2">its second-worst plunge ever</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

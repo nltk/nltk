@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="harness">
+<note>
+  Frames file for 'harness' based on sentences in wsj.  No access to
+  Verbnet  at the moment.
+</note>
+
+<roleset id="harness.01" name="control" vncls="-">
+<roles>
+  <role descr="controller" n="0"/>
+  <role descr="controlled" n="1"/>
+</roles>
+
+<example name="the one example">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+    China's year-long austerity program has achieved some successes in
+    [*] harnessing runaway economic growth and stabilizing prices but
+    has failed to eliminate serious defects in state planning and an
+    alarming drain on state budgets. 
+</text>
+        <arg n="0">[*] -&gt;  China's year-long austerity program</arg>
+        <rel>harnessing</rel>
+        <arg n="1">runaway economic growth</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

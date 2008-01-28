@@ -1,0 +1,54 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="pine">
+<note>
+  Frames file for 'pine' based on sentences in wsj.  Verbnet entry
+  32.2, Framenet entry Experiencer_subj.
+</note>
+
+<roleset id="pine.01" name="long for, expire for lack of" vncls="32.2">
+<roles>
+  <role descr="piner" n="0"><vnrole vncls="32.2" vntheta="Experiencer"/></role>
+  <role descr="thing desired" n="1"><vnrole vncls="32.2" vntheta="Theme"/></role>
+</roles>
+
+<example name="the one example">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+     A high-balance customer that banks pine for *trace*, she didn't
+     give much thought to the rates she was receiving, nor to the fees
+     she was paying. 
+</text>
+        <arg n="0">banks</arg>
+        <rel>pine</rel>
+        <arg f="for" n="1">*trace* -&gt;  that -&gt;  A high-balance customer</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+<predicate lemma="pine_away">
+
+<roleset id="pine.02" name="long for, expire for lack of" vncls="32.2">
+<roles>
+  <role descr="piner" n="0"><vnrole vncls="32.2" vntheta="Experiencer"/></role>
+  <role descr="thing desired" n="1"><vnrole vncls="32.2" vntheta="Theme"/></role>
+</roles>
+
+<example name="phrasal variant">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John pined away for love of Mary.
+  </text>
+  <arg n="0">John</arg>
+  <rel>pined away</rel>
+  <arg f="for" n="1">love of Mary</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

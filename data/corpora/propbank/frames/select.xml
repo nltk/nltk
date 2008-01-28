@@ -1,0 +1,72 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="select">
+<note>
+  Frames file for 'select' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="select.01" name="to make a choice, to pick out" vncls="13.5.2">
+<roles>
+  <role descr="selector" n="0">
+        <vnrole vncls="13.5.2" vntheta="Agent"/></role>
+  <role descr="entity selected" n="1">
+        <vnrole vncls="13.5.2" vntheta="Theme"/></role>
+  <role descr="selected from" n="2">
+        <vnrole vncls="13.5.2" vntheta="Source"/></role>
+  <role descr="attribute, selected for/as" n="3"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ Such laws violate the provision in Article II that [*T*-1] requires the president to make recommendations to Congress , but which [*T*-41] gives the president the discretion [0] [*] to select the subject matter of those recommendations [*T*-2] .
+</text>
+	<arg n="0">[*] -&gt;  the president</arg>
+	<rel>select</rel>
+	<arg n="1">the subject matter of those recommendations</arg>
+</example>
+
+
+
+<example name="with Arg2">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ Buyers with $ 6 million [*U*] [0] [*] to spend [*T*-1] can select from 11 designs , including a Mediterranean-inspired California style , a traditional Yankee look and designs inspired [*] by Midwestern architect Frank Lloyd Wright .
+</text>
+	<arg n="0">Buyers with $ 6 million [*U*] [0] [*] to spend [*T*-1]</arg>
+	<arg f="MOD" n="M">can</arg>
+	<rel>select</rel>
+	<arg f="from" n="2">11 designs , including a Mediterranean-inspired California style , a traditional Yankee look and designs inspired [*] by Midwestern architect Frank Lloyd Wright</arg>
+</example>
+
+<example name="with Arg3">
+<inflection aspect="ns" form="participle" person="ns" tense="past" voice="passive"/>
+<text>
+ Torchmark also said that Samuel E. Upchurch Jr. , 37 , vice president and general counsel , was selected [*-2] to serve the remainder of the term vacated [*] by John S.P. Samford , who [*T*-1] resigned as director .
+</text>
+	<arg n="1">Samuel E. Upchurch Jr. , 37 , vice president and general counsel ,</arg>
+	<rel>selected</rel>
+	<arg n="3">[*-2] to serve the remainder of the term vacated [*] by John S.P. Samford , who [*T*-1] resigned as director</arg>
+</example>
+
+
+
+<example name="prepositional Arg3">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ Sterling , which [*T*-1] estimated the value of the contract at $ 150 million [*U*] , said [0] NASA selected another bidder for final negotiations .
+</text>
+	<arg n="0">NASA</arg>
+	<rel>selected</rel>
+	<arg n="1">another bidder</arg>
+	<arg f="for" n="3">final negotiations</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

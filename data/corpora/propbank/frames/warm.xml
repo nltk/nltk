@@ -1,0 +1,107 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="warm">
+<note>
+Frames file for 'warm' based on sentences in financial subcorpus and
+automatic expansion via verbnet.
+</note>
+
+<roleset id="warm.01" name="(cause to) become warm" vncls="45.4">
+<roles>
+  <role descr="cause of warmth" n="0">
+	<vnrole vncls="45.4" vntheta="Agent"/></role>
+  <role descr="thing becoming warm" n="1">
+	<vnrole vncls="45.4" vntheta="Patient"/></role>
+</roles>
+
+<example name="agentive">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John warmed his buns in the toaster.
+  </text>
+  <arg n="0">John</arg>
+  <rel>warmed</rel>
+  <arg n="1">his buns</arg>
+  <arg f="LOC" n="m">in the toaster</arg>
+</example>
+</roleset>
+
+<roleset id="warm.03" name="become receptive to" vncls="-">
+<roles>
+  <role descr="entity becoming receptive" n="0"/>
+  <role descr="to what?" n="1"/>
+</roles>
+
+<example name="is it getting warm in here?">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     William Lynes, a retired engineer from Lockheed Corp., says he
+     and his wife, Lily, warmed to the investment pitches of a
+     penny-stock peddler from Stuart-James Co. in Atlanta after the
+     broker told them he, too, had once worked with Lockheed.  
+  </text>
+  <arg n="0">he and his wife, Lily,</arg>
+  <rel>warmed</rel>
+  <arg f="to" n="1">the investment pitches of a
+     penny-stock peddler from Stuart-James Co. in Atlanta</arg>
+  <arg f="TMP" n="m">after the
+     broker told them he, too, had once worked with Lockheed.</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="warm_up">
+<roleset id="warm.02" name="(cause to) become warm" vncls="45.4">
+<roles>
+  <role descr="cause of warmth" n="0">
+	<vnrole vncls="45.4" vntheta="Agent"/></role>
+  <role descr="thing becoming warm" n="1">
+	<vnrole vncls="45.4" vntheta="Patient"/></role>
+</roles>
+
+<example name="ergative">
+  <inflection aspect="ns" form="full" person="ns" tense="ns" voice="ns"/>
+  <text>
+    Try as he might, John just couldn't warm up after coming in from
+    the storm.
+  </text>
+  <arg f="ADV" n="m">Try as he might</arg>
+  <arg n="1">John</arg>
+  <arg f="DIS" n="m">just</arg>
+  <arg f="MOD" n="m">could</arg>
+  <arg f="NEG" n="m">n't</arg>
+  <rel>warm up</rel>
+  <arg f="TMP" n="m">after coming in from the storm.</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+<predicate lemma="warm_over">
+
+<roleset id="warm.04" vncls="-" name="warm slightly">
+<roles>
+  <role n="0"  descr="causer of warming"/>
+  <role n="1"  descr="thing becoming warm"/>
+</roles>
+
+<example name="adjectival">
+  <inflection person="ns" tense="ns" aspect="ns" voice="passive" form="participle"/>
+  <text>
+     ``The branches are just warmed over, empty halls,'' says Mr. Konheim. 
+  </text>
+  <rel              >warmed over</rel>
+  <arg n=""        >halls</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

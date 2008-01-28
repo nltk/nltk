@@ -1,0 +1,35 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="costume">
+<note>
+  Frames file for 'costume' based on sentences in financial subcorpus.
+  No Verbnet entry.
+</note>
+
+<roleset id="costume.01" name="put into a costume" vncls="-">
+<roles>
+  <role descr="costumer, wardrobe designer" n="0"/>
+  <role descr="person wearing costume" n="1"/>
+  <role descr="costume" n="2"/>
+</roles>
+
+<example name="missing designer">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    *trace* Inexplicably costumed *trace* as a rabbinical student,
+     tottering around on lifts, Mr. Shicoff hardly seemed the fellow
+     to catch a fancy cocotte's eye. 
+</text>
+        <arg f="MNR" n="M">Inexplicably</arg>
+        <rel>costumed</rel>
+        <arg n="1">*trace* -&gt; *trace* -&gt; Mr. Shicoff</arg>
+        <arg f="as" n="2">a rabbinical student</arg>
+</example>
+
+<note>
+I wonder if this would ever occur in the active?
+</note>
+
+</roleset>
+</predicate>
+</frameset>

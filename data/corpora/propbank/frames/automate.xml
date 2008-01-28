@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="automate">
+<note>
+  Frames file for 'automate' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="automate.01" name="to make automatic" vncls="-">
+<roles>
+  <role descr="causer of automation, agent" n="0"/>
+  <role descr="entity automated" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+ Olivetti also plans [*-2] to sell the CP486 computer in the U.S. starting next year through Olivetti USA and through its ISC\/Bunker Ramo unit , which [*T*-1] specializes in [*-3] automating bank-branch networks .
+</text>
+	<arg n="0">[*-3] -&gt;  [*T*-1] -&gt;  which -&gt;  its ISC\/Bunker Ramo unit</arg>
+	<rel>automating</rel>
+	<arg n="1">bank-branch networks</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

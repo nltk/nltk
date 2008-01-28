@@ -1,0 +1,65 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="involve">
+<note>
+  Frames file for 'involve' based on survey of initial sentences of
+  big corpus and comparison with 'include'
+</note>
+
+<roleset id="involve.01" name="include">
+<roles>
+  <role n="0" descr="causer of inclusion"/>
+  <role descr="theme, thing being included into a group" n="1"/>
+  <role descr="group" n="2"/>
+</roles>
+
+<example name="ergative">
+  <text>
+  ...federally funded fetal-tissue research that *trace* doesn't involve
+  transplants.
+  </text>
+  <arg n="2">*trace=that=federally funded fetal-tissue research*</arg>
+  <arg f="NEG" n="m">n't</arg>
+  <rel>involve</rel>
+  <arg n="1">transplants</arg>
+</example>
+
+<example name="reversed ergative">
+  <text>
+  Another OTC bank stock involved in a buy-out deal...
+  </text>
+  <arg n="1">Another OTC bank stock</arg>
+  <rel>involved</rel>
+  <arg f="in" n="2">a buy-out deal</arg>
+</example>
+
+<example name="as post-nominal modifier">
+  <text>
+  In a well-known detective story involving church bells...
+  </text>
+  <arg n="2">a well-known detective story</arg>
+  <rel>involving</rel>
+  <arg n="1">church bells</arg>
+</example>
+
+<example name="with agent">
+<inflection person="ns" tense="ns" aspect="ns" voice="active" form="infinitive"/>
+<text>
+     He says Mr. Briggs told him he was being set up for a ``honey
+     trap,'' in which Mr. Noriega would try [*-2] to involve him in an
+     orgy and then record the event ``with sound and video.'' 
+</text>
+        <arg n="0">[*-2] ->  Mr. Noriega</arg>
+        <rel>involve</rel>
+        <arg n="1">him</arg>
+        <arg n="2" f="in">an orgy</arg>
+</example>
+
+<note>
+Avoid adjectives meaning 'complicated': The plot of the novel was very
+involved.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

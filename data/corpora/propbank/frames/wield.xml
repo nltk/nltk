@@ -1,0 +1,50 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="wield">
+<note>
+  Frames file for 'wield' based on sentence in financial subcorpus.
+  Verbnet class hold-15.1, other members include 'hold'.
+</note>
+
+<roleset id="wield.01" name="hold, brandish" vncls="15.1">
+<roles>
+  <role descr="holder" n="0">
+		
+  <vnrole vncls="15.1" vntheta="Agent"/></role>
+
+  <role descr="thing held" n="1">
+		
+  <vnrole vncls="15.1" vntheta="Theme"/></role>
+
+  <role descr="benefactive" n="2"/>
+  <role descr="secondary attribute of thing held" n="3"/>
+</roles>
+
+<example name="transitive">
+<text>
+    ...of the power that Dorrance family members intend *trace* to
+    wield *trace* in reshaping the troubled food company. 
+</text>
+        <arg n="0">*trace* -&gt;  Dorrance family members</arg>
+        <rel>wield</rel>
+        <arg n="1">*trace* -&gt;  that -&gt;  the power</arg>
+        <arg f="TMP" n="M">in  reshaping the troubled food company</arg>
+</example>
+
+<example name="with attribute">
+  <text>
+    John wielded the willow branch as a make-believe sword.
+  </text>
+  <arg n="0">John</arg>
+  <rel>wielded</rel>
+  <arg n="1">the willow branch</arg>
+  <arg f="as" n="3">a make-believe sword</arg>
+</example>
+
+<note>
+I doubt the benefactive will appear, but I've been wrong before.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

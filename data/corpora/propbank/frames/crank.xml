@@ -1,0 +1,66 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="crank_up">
+<note>
+  Frames file for 'crank' based on sentences in wsj.  No Verbnet
+  entry, no Framenet entry.
+</note>
+
+<roleset id="crank.01" name="increase intensity of" vncls="-">
+<roles>
+  <role descr="cranker" n="0"/>
+  <role descr="what's gotten more intense" n="1"/>
+</roles>
+
+<example name="kick it up a notch">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    And legal authorities cranked up an investigation worthy of a
+    murder case. 
+</text>
+        <arg f="DIS" n="M">And</arg>
+        <arg n="0">legal authorities</arg>
+        <rel>[ cranked] [ up]</rel>
+        <arg n="1">an investigation worthy of a murder case</arg>
+</example>
+
+<note>
+This is a weird sentence, causing weird framing; I feel there should
+probably be an arg for the intensity itself.
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="crank_out">
+
+<roleset id="crank.02" name="produce" vncls="-">
+<roles>
+  <role descr="producer, creator" n="0"/>
+  <role descr="product" n="1"/>
+</roles>
+
+<example name="no catchy name">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    While Remic issuance may slow in the coming days because of the
+    shift in the Treasury yield curve, underwriters continued *trace*
+    to crank out new real estate mortgage investment conduits
+    structured when the yield curve was more favorable. 
+</text>
+        <arg n="0">*trace* -&gt;  underwriters</arg>
+        <rel>[ crank] [ out]</rel>
+        <arg n="1">new real estate mortgage investment conduits
+        structured  when the yield curve was more favorable </arg> 
+</example>
+
+</roleset>
+</predicate>
+
+<note>
+There should also be a sense for 'turn violently', but it doesn't
+occur in the corpus (or in much of real English, for that matter), so
+I'm not going to worry about it.
+</note>
+
+</frameset>

@@ -1,0 +1,53 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="stun">
+<note>
+  Frames file for 'stun' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="stun.01" name="to shock or surprise" vncls="31.1">
+<roles>
+  <role descr="surprise" n="0">
+		
+  <vnrole vncls="31.1" vntheta="Cause"/></role>
+
+  <role descr="surprised" n="1">
+		
+  <vnrole vncls="31.1" vntheta="Experiencer"/></role>
+
+  <role descr="source, instrument" n="2"/>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ The decision [*] to put the entire collection on the block stunned many , since Mr. Dorrance had served as chairman of the Philadelphia Museum of Art , and it [*EXP*-3] had been assumed [*-1] [0] many of the works would be donated [*-2] to the institution .
+</text>
+	<arg n="0">The decision [*] to put the entire collection on the block</arg>
+	<rel>stunned</rel>
+	<arg n="1">many</arg>
+	<arg f="CAU" n="M">since Mr. Dorrance had served as chairman of the Philadelphia Museum of Art , and it [*EXP*-3] had been assumed [*-1] [0] many of the works would be donated [*-2] to the institution</arg>
+</example>
+
+
+
+<example name="all arguments">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ In July , the company stunned Wall Street with the prediction that growth in the personal computer business overall would be only 10 % [*ICH*-1] in 1990 , a modest increase when [*] compared [*-2] with the sizzling expansion of years past [*T*-3] .
+</text>
+	<arg f="TMP" n="M">In July</arg>
+	<arg n="0">the company</arg>
+	<rel>stunned</rel>
+	<arg n="1">Wall Street</arg>
+	<arg f="with" n="2">the prediction that growth in the personal computer business overall would be only 10 % [*ICH*-1] in 1990 , a modest increase when [*] compared [*-2] with the sizzling expansion of years past [*T*-3]</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

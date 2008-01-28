@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="specialize">
+<note>
+  Frames file for 'specialize' based on sentences in financial
+  subcorpus.  No Verbnet entry.
+</note>
+
+<roleset id="specialize.01" name="specialize">
+<roles>
+  <role descr="specialist" n="0"/>
+  <role descr="speciality" n="1"/>
+</roles>
+
+<example name="they all look like this">
+<text>
+    The company's chairman, Mr. Laidig, and a group of advisers met at
+    the offices of Wachtel Lipton Rosen &amp; Katz, a law firm
+    specializing in takeover defense. 
+</text>
+        <arg n="0">a law firm</arg>
+        <rel>specializing</rel>
+        <arg f="in" n="1">takeover defense</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

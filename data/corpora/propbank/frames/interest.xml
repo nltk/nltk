@@ -1,0 +1,73 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="interest">
+<note>
+  Frames file for 'interest' based on sentences in financial
+  subcorpus.  Verbnet class 31.4; no mention of other members.
+  Comparison with 'surprise'.
+</note>
+
+<roleset id="interest.01" name="provoke interest" vncls="31.4">
+<roles>
+  <role descr="agent, causer of interest" n="0">
+	<vnrole vncls="31.4" vntheta="Cause"/></role>
+  <role descr="interested entity" n="1">
+	<vnrole vncls="31.4" vntheta="Experiencer"/></role>
+  <role descr="interested in" n="2">
+        <vnrole vncls="31.4" vntheta="Theme"/></role>
+</roles>
+
+<example name="all args">
+<text>
+    Mr. Guber and Mr. Peters planned to run the nearly dormant MGM
+    studio, and the two even tried *trace* to interest Warner Bros.' President
+    Terry Semel in becoming a partner after he advised them on the
+    deal. 
+</text>
+        <arg n="0">*trace* -&gt;  the two</arg>
+        <rel>interest</rel>
+        <arg n="1">Warner Bros . ' President Terry Semel</arg>
+        <arg f="in" n="2">becoming a partner</arg>
+</example>
+
+<example name="missing arg2">
+<text>
+    Mr. Sim considers the new unit's operations ``fundamentally
+    sound'' and adds that Barry Wright has been fairly successful in
+    moving into markets that *trace* haven't interested larger competitors. 
+</text>
+        <arg n="0">*trace* -&gt;  that -&gt;  markets</arg>
+        <arg f="NEG" n="M">n't</arg>
+        <rel>interested</rel>
+        <arg n="1">larger competitors</arg>
+</example>
+
+<example name="adjectival, no arg2">
+<text>
+    But neither the pilots nor the machinists appear interested.
+</text>
+        <arg n="1">neither the pilots nor the machinists</arg>
+        <rel>interested</rel>
+</example>
+
+<example name="adjectival, with arg2">
+<text>
+    Jaguar assumed its recently customary place on the OTC most active
+    list as its American depository receipts gained 1/4 to 11 7/8 on
+    volume of 1.2 million shares and Daimler-Benz joined the list of
+    companies interested in the British car maker. 
+</text>
+        <arg n="1">companies</arg>
+        <rel>interested</rel>
+        <arg f="in" n="2">the British car maker</arg>
+</example>
+
+<note>
+The verbal and adjectival usages are very close, so go ahead and tag
+all.  There's at least one mistagged nominal usage: &quot;Business
+interests&quot;.  Skip that/those.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

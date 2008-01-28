@@ -1,0 +1,69 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="parachute">
+<note>
+  Frames file for 'parachute' based on sentences in wsj.  No Verbnet
+  entry. 
+</note>
+
+<roleset id="parachute.01" name="travel via parachute" vncls="-">
+<roles>
+  <role descr="causal agent" n="A"/>
+  <role descr="thing with a parachute" n="0"/>
+  <role descr="where?" n="1"/>
+</roles>
+
+<example name="with causal agent">
+<inflection aspect="ns" form="full" person="ns" tense="future" voice="active"/>
+<text>
+    If all goes well, it will parachute a probe into the dense Jovian
+    atmosphere in July 1995 to pick up detailed data about gases that
+    may be similar to the material from which the solar system was
+    formed 4.6 billion years ago. 
+</text>
+        <arg f="ADV" n="M">If all goes well</arg>
+        <arg n="A">it</arg>
+        <arg f="MOD" n="M">will</arg>
+        <rel>parachute</rel>
+        <arg n="0">a probe</arg>
+        <arg f="into" n="1">the dense Jovian atmosphere</arg>
+        <arg f="TMP" n="M">in July 1995</arg>
+        <arg f="PNC" n="M">to pick up detailed data about gases that
+        may be similar to the material from which the solar system was
+        formed 4.6 billion years ago</arg> 
+</example>
+
+<example name="just transitive">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    With airline deals in a tailspin, legendary Wall Street trader
+    Michael Steinhardt could have trouble *trace* parachuting out of
+    USAir Group, traders say. 
+</text>
+        <arg n="0">*trace* -&gt;  legendary Wall Street trader Michael
+        Steinhardt</arg> 
+        <rel>parachuting</rel>
+        <arg f="out" n="1">of USAir Group</arg>
+</example>
+
+<example name="note the arg1-DIR">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+    ``It doesn't make sense *trace* to parachute out at this price,
+    ''Mr. Steinhardt says, though he has stopped his takeover talk and
+    now commends USAir managers' ``operating skills.'' 
+</text>
+        <arg n="0">*trace*</arg>
+        <rel>parachute</rel>
+        <arg f="DIR" n="1">out</arg>
+        <arg f="MNR" n="M">at this price</arg>
+</example>
+
+<note>
+The use of ArgA is required because of the first example, making this
+another example of a verb-of-motion.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

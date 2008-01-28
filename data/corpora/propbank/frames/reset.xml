@@ -1,0 +1,56 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="reset">
+<note>
+  Frames file for 'reset' based on sentences in financial subcorpus.
+  No Verbnet entry.
+</note>
+
+<roleset id="reset.01" name="return to start value">
+<roles>
+  <role descr="resetter" n="0"/>
+  <role descr="thing being reset" n="1"/>
+  <role descr="value" n="2"/>
+</roles>
+
+<example name="passive">
+<text>
+    The rate on the notes will be reset annually to give the issue a
+    market value of 101.
+</text>
+        <arg n="1">The rate on the notes</arg>
+        <arg f="MOD" n="M">will</arg>
+        <rel>reset</rel>
+        <arg f="TMP" n="M">annually</arg>
+        <arg f="PNC" n="M">to give the issue a market value of 101</arg>
+</example>
+
+<example name="passive with value">
+<text>
+    However, the maximum coupon at which the notes can be reset is 16
+    1/4%. 
+</text>
+        <arg n="1">the notes</arg>
+        <arg f="MOD" n="M">can</arg>
+        <rel>reset</rel>
+        <arg n="2">*trace* -&gt;  at which -&gt;  the maximum coupon</arg>
+</example>
+
+<example name="active">
+  <text>
+    John reset the computer with a sledgehammer.
+  </text>
+  <arg n="0">John</arg>
+  <rel>reset</rel>
+  <arg n="1">the computer</arg>
+  <arg f="MNR" n="m">with a sledgehammer</arg>
+</example>
+
+<note>
+For sense as in &quot;John set and reset the table a hundred times before
+he was satisfied&quot; refer to 'set'.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

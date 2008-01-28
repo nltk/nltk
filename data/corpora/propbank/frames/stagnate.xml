@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="stagnate">
+<note>
+Frames file for 'stagnate' based on sentences in financial subcorpus
+and automatic expansion via verbnet.
+</note>
+
+<roleset id="stagnate.01" name="stagnate" vncls="45.5 47.2">
+<roles>
+	<role descr="thing stagnating" n="1">
+		
+		
+  <vnrole vncls="47.2" vntheta="Theme"/><vnrole vncls="45.5" vntheta="Patient"/></role>
+
+</roles>
+
+<example name="going nowhere, fast">
+<inflection aspect="progressive" form="participle" person="third" tense="past" voice="active"/>
+<text>
+    Applied, then a closely held company, was stagnating under the
+    management of its controlling family. 
+</text>
+        <arg n="1">Applied, then a closely held company,</arg>
+        <rel>stagnating</rel>
+        <arg f="LOC" n="M">under the management of its controlling
+        family</arg> 
+</example>
+
+</roleset>
+</predicate>
+</frameset>

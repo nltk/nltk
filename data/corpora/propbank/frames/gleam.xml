@@ -1,0 +1,28 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="gleam">
+<note>
+  Frames file for 'gleam' based on sentences in wsj.  Verbnet entry 43.1.
+</note>
+
+<roleset id="gleam.01" vncls="43.1" name="reflect light well">
+<roles>
+  <role n="0"  descr="gleaming thing"/>
+</roles>
+
+<example name="only adjectival">
+<inflection person="ns" tense="ns" aspect="progressive" voice="active" form="participle"/>
+<text>
+    At the GM stall, they barely looked at a gleaming Cadillac,
+    preferring to talk about cooperation possibilities.  
+</text>
+	<rel>gleaming</rel>
+	<arg n="0">Cadillac</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

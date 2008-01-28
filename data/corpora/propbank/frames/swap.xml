@@ -1,0 +1,59 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="swap">
+<note>
+  Frames file for 'swap' based on sentences in financial subcorpus.
+  Verbnet entry 13.6, no other framed members listed.  Framenet entry
+  Replacement.  Comparison with exchange.
+</note>
+
+<roleset id="swap.01" name="exchange one thing for another" vncls="13.6">
+<roles>
+    <role descr="agent, entity trading" n="0">
+		
+  <vnrole vncls="13.6" vntheta="Agent"/></role>
+
+    <role descr="thing being traded (away)" n="1">
+		
+  <vnrole vncls="13.6" vntheta="Theme1"/></role>
+
+    <role descr="other exchanger" n="2"/>
+    <role descr="other item in exchange, price, or premium,     traded for or at" n="3">
+		
+  <vnrole vncls="13.6" vntheta="Theme2"/></role>
+ 
+    <role descr="benefactive" n="4"/>
+</roles>
+
+<example name="most typical usage">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    The bank has a 45% reserve against the remaining C$349 million of
+    Mexican debt and expects *trace* to swap that for other Mexican
+    notes supported by U.S. Treasury zero-coupon bonds. 
+</text>
+        <arg n="0">*trace* -&gt;  The bank</arg>
+        <rel>swap</rel>
+        <arg n="1">that</arg>
+        <arg f="for" n="3">other Mexican notes supported by
+        U.S. Treasury zero-coupon bonds</arg> 
+</example>
+
+<example name="with another exchanger">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    Mary swapped germs with John last night.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>swapped</rel>
+  <arg n="1">germs</arg>
+  <arg f="with" n="2">John</arg>
+  <arg f="TMP" n="m">last night</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

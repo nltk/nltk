@@ -1,0 +1,61 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="assist">
+<note>
+  Frames file for 'assist' based on sentences in financial subcorpus.
+  No Verbnet entry.  Comparison with 'help'
+</note>
+
+<roleset id="assist.01" name="help, assist">
+<roles>
+  <role descr="assistant" n="0"/>
+  <role descr="assisted" n="1"/>
+  <role descr="project" n="2"/>
+</roles>
+
+<note>
+Args 2 and 3 are reversed from 'help'
+</note>
+
+<example name="all arguments present">
+<text>
+    Sotheby's vice president Diana Levitt says the auction house has
+    been ``assisting'' Mr. Paul in selling the paintings. 
+</text>
+        <arg n="0">the auction house</arg>
+        <rel>assisting</rel>
+        <arg n="1">Mr. Paul</arg>
+        <arg f="in" n="2">selling the paintings</arg>
+</example>
+
+<example name="missing assisted entity">
+<text>
+    Price Stern Sloan Inc. said it hired an investment banking firm
+    *trace* to assist in evaluating restructuring or merger
+    alternatives and reported a net loss of $8.1 million, or $2.14 a
+    share, for the third quarter ended Sept. 
+</text>
+        <arg n="0">*trace* -&gt; *trace* -&gt;  an investment banking
+        firm</arg>
+        <rel>assist</rel>
+        <arg f="in" n="2">evaluating restructuring or merger
+        alternatives</arg>
+</example>
+
+<example name="missing project">
+<text>
+    The troubled Minneapolis-based railroad concern said the committee
+    has the authority to hire financial and legal advisers *trace*
+    *trace* to assist it. 
+</text>
+        <arg n="0">*trace* -&gt; *trace* -&gt;  financial and legal advisers</arg>
+        <rel>assist</rel>
+        <arg n="1">it</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,74 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="watch">
+<note>
+  Frames file for 'watch' based on sentences in financial subcorpus.
+  Verbnet entries 30.2 35.2, other framed members include observe,
+  recognize, regard, scrutinize, study; advertise, search.  Comparison
+  with observe.
+</note>
+
+<roleset id="watch.01" name="look at" vncls="30.2">
+<roles>
+  <role descr="observer" n="0">
+		
+  <vnrole vncls="30.2" vntheta="Experiencer"/></role>
+
+  <role descr="thing looked at" n="1">
+		
+  <vnrole vncls="30.2" vntheta="Stimulus"/></role>
+
+</roles>
+
+<example name="transitive">
+<text>
+    But traders who *trace* watch the stocks warned the rise may be
+    yet another ``one-day phenomenon.'' 
+</text>
+        <arg n="0">*trace* -&gt;  who -&gt;  traders</arg>
+        <rel>watch</rel>
+        <arg n="1">the stocks</arg>
+</example>
+
+<note>
+It's possible that a benefactive argument will appear.  If so, call it
+arg2 and send me the example.
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="watch_out">
+
+<roleset id="watch.02" name="erwarten sich" vncls="35.2">
+<roles>
+  <role descr="watcher out" n="0">
+		
+  <vnrole vncls="35.2" vntheta="Agent"/></role>
+
+  <role descr="thing watched out for" n="1">
+		
+  <vnrole vncls="35.2" vntheta="Theme"/></role>
+
+</roles>
+
+<note>
+There's just not a nice way to say that in English.
+</note>
+
+<example name="look out!">
+<text>
+    ``You have *trace* to watch out for counterbids,'' said one
+    analyst. 
+</text>
+        <arg n="0">*trace* -&gt;  You</arg>
+        <rel>[ watch] [ out]</rel>
+        <arg f="for" n="1">counterbids</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

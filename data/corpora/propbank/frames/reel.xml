@@ -1,0 +1,77 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="reel">
+<note>
+  Frames file for 'reel' based on sentences in financial subcorpus.
+  Well butter my butt and call me a biscuit, it is in verbnet: class
+  40.8.2.  No mention of other members.  Comparison to ergative usage
+  of 'shake'.
+</note>
+
+<roleset id="reel.01" name="be astounded" vncls="40.8.2">
+<roles>
+  <role descr="entity which is astounded" n="1">
+		
+  <vnrole vncls="40.8.2" vntheta="Patient"/></role>
+
+  <role descr="cause of reeling (us. 'from')" n="2">
+		
+  <vnrole vncls="40.8.2" vntheta="Cause"/></role>
+
+</roles>
+
+<example name="ordinary ergative">
+<text>
+    For, just as Mr. Giuliani latches on to an issue that has
+    Mr. Dinkins reeling, ... 
+</text>
+        <arg n="1">Mr. Dinkins</arg>
+        <rel>reeling</rel>
+</example>
+
+<example name="with cause">
+<text>
+    Columbia Savings &amp; Loan Association, *trace* reeling from
+    thrift-accounting changes mandated  by Congress and the recent
+    collapse of the junk-bond market, announced a loss for the third
+    quarter of $226.3 million, or $11.57 a share. 
+</text>
+        <arg n="1">*trace* -&gt; Columbia Savings &amp; Loan Association</arg>
+        <rel>reeling</rel>
+        <arg f="from" n="2">thrift-accounting changes mandated by
+        Congress and the recent collapse of the junk-bond market</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="reel_off">
+
+<roleset id="reel.02" name="enumerate, announce" vncls="-">
+<roles>
+  <role descr="speaker, enumerator" n="0"/>
+  <role descr="list of things" n="1"/>
+</roles>
+
+<example name="automatically generated">
+<text>
+    The U.S. automotive loss was a sharp reversal for a company that
+    *trace* had reeled off 12 consecutive quarters of improved
+    earnings until the 1989 second quarter. 
+</text>
+        <arg n="0">*trace* -&gt; that -&gt; a company</arg>
+        <rel>[ reeled] [ off]</rel>
+        <arg n="1">12 consecutive quarters of improved earnings</arg>
+        <arg f="TMP" n="M">until the 1989 second quarter</arg>
+</example>
+
+<note>
+This is an odd usage of 'reel off', imho.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

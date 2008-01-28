@@ -1,0 +1,35 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="dye">
+<note>
+  Frames file for 'dye' based on sentences in wsj.  Verbnet entry 24 41.2.2.
+</note>
+
+<roleset id="dye.01" name="cause to have color" vncls="24 41.2.2">
+<roles>
+  <role descr="causer of coloration" n="0">
+        <vnrole vncls="41.2.2" vntheta="Agent"/>
+        <vnrole vncls="24" vntheta="Agent"/></role>
+  <role descr="thing with color" n="1">
+        <vnrole vncls="41.2.2" vntheta="Patient"/>
+        <vnrole vncls="24" vntheta="Patient"/></role>
+  <role descr="the color itself" n="2"/>
+</roles>
+
+<example name="all args">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John dyed his hair, and much of the bathroom, bright green.
+  </text>
+  <arg n="0">John</arg>
+  <rel>dyed</rel>
+  <arg n="1">his hair, and much of the bathroom,</arg>
+  <arg n="2">bright green</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

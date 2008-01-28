@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="redress">
+<note>
+  Frames file for 'redress' based on sentences in wsj.  No access to
+Verbnet at the moment.
+</note>
+
+<roleset id="redress.01" name="right a wrong" vncls="-">
+<roles>
+  <role descr="agent, redresser" n="0"/>
+  <role descr="wrong" n="1"/>
+</roles>
+
+<example name="two wrongs make a right?">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+    It now has the chance [*] to redress that record in Namibia. 
+</text>
+        <arg n="0">[*] -&gt;  It</arg>
+        <rel>redress</rel>
+        <arg n="1">that record</arg>
+        <arg f="LOC" n="M">in Namibia</arg>
+</example>
+
+<note>
+Technically, 'redress' could also have a sense of 'get dressed again,'
+but I doubt that would ever actually occur.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

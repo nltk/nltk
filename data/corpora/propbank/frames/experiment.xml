@@ -1,0 +1,58 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="experiment">
+<note>
+  Frames file for 'experiment' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="experiment.01" name="to conduct an experiment" vncls="-">
+<roles>
+  <role descr="scientist, agent" n="0"/>
+  <role descr="experimental subject" n="1"/>
+  <role descr="experimental method" n="2"/>
+</roles>
+
+<example name="experiment on">
+<inflection aspect="perfect" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+ The scientists have experimented on the tiny neck arteries of rats .
+</text>
+	<arg n="0">The scientists</arg>
+	<rel>experimented</rel>
+	<arg f="on" n="1">the tiny neck arteries of rats</arg>
+</example>
+
+
+<example name="experiment with">
+<inflection aspect="progressive" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+ They now are experimenting with [*] measuring blood flow .
+</text>
+	<arg n="0">They</arg>
+	<arg f="TMP" n="M">now</arg>
+	<rel>experimenting</rel>
+	<arg f="with" n="1">[*] measuring blood flow</arg>
+</example>
+
+<example name="both with and on">
+  <inflection aspect="progressive" form="participle" person="third" tense="present" voice="active"/>
+  <text>
+     He said the company is experimenting with the technique on
+     alfalfa, and plans to include cotton and corn, among other crops.  
+  </text>
+  <arg n="0">the company</arg>
+  <rel>experimenting</rel>
+  <arg f="with" n="2">the technique</arg>
+  <arg f="on" n="1">alfalfa</arg>
+</example>
+
+<note>
+Distinguishing subject and method can be difficult, when only one is
+present.  Be careful!
+</note>
+
+
+</roleset>
+</predicate>
+</frameset>

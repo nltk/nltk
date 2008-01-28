@@ -1,0 +1,212 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="bring">
+<note>
+  Frames file for 'bring' based on survey of initial sentences of big corpus
+</note>
+
+<roleset id="bring.01" name="carry along with" vncls="11.3">
+<roles>
+  <role descr="bringer" n="0">
+	<vnrole vncls="11.3" vntheta="Agent"/></role>
+  <role descr="thing brought" n="1">
+	<vnrole vncls="11.3" vntheta="Theme"/></role>
+  <role descr="benefactive, brought-for, brought-to" n="2">
+	<vnrole vncls="11.3" vntheta="Destination"/></role>
+  <role descr="attribute" n="3"/>
+  <role descr="ablative, brought-from" n="4">
+	<vnrole vncls="11.3" vntheta="Source"/></role>
+</roles>
+
+<example name="active, benefactive">
+  <text>
+  She brought them shame.
+  </text>
+  <arg n="0">She</arg>
+  <rel>brought</rel>
+  <arg n="2">them</arg>
+  <arg n="1">shame</arg>
+</example>
+
+<example name="active, attributive">
+  <text>
+  The surge brings to nearly 50 the number of country funds that are
+  listed in New York or London.
+  </text>
+  <arg n="0">The surge</arg>
+  <rel>brings</rel>
+  <arg f="to" n="3">nearly 50</arg>
+  <arg n="1">the number of country funds that are
+  listed in New York or London.</arg>
+</example>
+
+<note>
+This is arg3 not arg2 because now the &quot;number of country funds&quot; IS
+&quot;nearly 50&quot;, not HAS &quot;nearly 50&quot;.
+</note>
+
+<example name="with ablative">
+  <text>
+  They may risk *trace* bringing some damaging influence from outside
+  the markets.
+  </text>
+  <arg n="0">*trace*=They</arg>
+  <rel>bringing</rel>
+  <arg n="1">some damaging influence</arg>
+  <arg f="from" n="4">outside the markets.</arg>
+</example>
+
+<example name="active, attributive again">
+  <text>
+  Bush administration officials are looking to the Fed *trace* to
+  bring down rates.
+  </text>
+  <arg n="0">*trace*=the Fed</arg>
+  <rel>bring</rel>
+  <arg n="3">down</arg>
+  <arg n="1">rates</arg>
+</example>
+
+<note>
+Follow PReditor's suggestions for phrasal brings--the particle is
+often the same as an attribute, but they can cooccur (eg &quot;bring in as
+president&quot;).
+</note>
+
+<example name="passive, attributive">
+  <text>
+  ...the Whiting field, the first of five small fields scheduled
+  *trace1* to be brought *trace2* into production before the end of 1990.
+  </text>
+  <arg n="1">*trace2*=*trace1*=five small fields</arg>
+  <rel>brought</rel>
+  <arg n="3" f="into">production</arg>
+  <arg f="TMP" n="m">before the end of 1990</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="bring_up">
+
+<roleset id="bring.02" name="bring up: raise" vncls="-">
+<roles>
+    <role descr="causer of rising, Agent" n="0"/>
+    <role descr="Logical subject, patient, thing rising" n="1"/>
+    <role descr="EXT, amount risen" n="2"/>
+    <role descr="Start point" n="3"/>
+    <role descr="End point" n="4"/>
+    <role descr="Medium" f="LOC" n="M"/>
+</roles>
+
+<note>
+I don't know that all of these will be needed, but here they are just
+in case.
+</note>
+
+<example name="issues">
+  <text>
+  The meeting brought up important issues that everyone ignored.
+  </text>
+  <arg n="0">The meeting</arg>
+  <rel>brought up</rel>
+  <arg n="1">important issues that everyone ignored</arg>
+</example>
+
+<example name="children">
+  <text>
+  *trace* Bringing up children is hard on a graduate student's wages.
+  </text>
+  <arg n="0">*trace*</arg>
+  <rel>bringing up</rel>
+  <arg n="1">children</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="bring_down">
+
+<roleset id="bring.03" name="bring down: make fall" vncls="-">
+<roles>
+    <role descr="causer of fall, Agent" n="0"/>
+    <role descr="Logical subject, patient, thing falling" n="1"/>
+    <role descr="EXT, amount fallen" n="2"/>
+    <role descr="Start point" n="3"/>
+    <role descr="End point" n="4"/>
+    <role descr="Medium" f="LOC" n="M"/>
+</roles>
+
+<note>
+I don't know that all of these will be needed, but here they are just
+in case.
+</note>
+
+<example name="the government">
+  <text>
+  The vote could have brought down Pakistan's government.
+  </text>
+  <arg n="0">The vote</arg>
+  <arg f="MOD" n="m">could</arg>
+  <rel>brought down</rel>
+  <arg n="1">Pakistan's government</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="bring_along">
+<roleset id="bring.04" name="bring along: accompany" vncls="11.3">
+<roles>
+  <role descr="bringer" n="0">
+	<vnrole vncls="11.3" vntheta="Agent"/></role>
+  <role descr="thing brought" n="1">
+	<vnrole vncls="11.3" vntheta="Theme"/></role>
+  <role descr="benefactive, brought-for, brought-to" n="2">
+	<vnrole vncls="11.3" vntheta="Destination"/></role>
+  <role descr="attribute" n="3"/>
+  <role descr="ablative, brought-from" n="4">
+	<vnrole vncls="11.3" vntheta="Source"/></role>
+</roles>
+
+<example name="bring along">
+  <text>
+  She could bring along her humility and a little thespian skill.
+  </text>
+  <arg n="0">She</arg>
+  <arg f="MOD" n="m">could</arg>
+  <rel>bring along</rel>
+  <arg n="1">her humility and a little thespian skill</arg>
+</example>
+</roleset>
+</predicate>
+
+<predicate lemma="bring_about">
+
+<roleset id="bring.05" vncls="-" name="bring about: cause to be">
+<roles>
+  <role n="0"  descr="causer"/>
+  <role n="1"  descr="thing coming to be"/>
+</roles>
+
+<example name="and there was light">
+  <inflection person="ns" tense="ns" aspect="progressive" voice="active" form="participle"/>
+  <text>
+    ``You're telling someone they can spend the next three or four or
+    five or six years of their life [*-1] bringing about the most
+    difficult and costly modernization of an information system on the
+    civil side ever,'' Mr. Goldberg said. 
+  </text>
+  <arg n="0"        >[*] -> they</arg>
+  <rel              >bringing about</rel>
+  <arg n="1"        >the most
+    difficult and costly modernization of an information system on the
+    civil side ever</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="utter">
+<note>
+  Frames file for 'utter' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="utter.01" name="to pronounce or speak" vncls="-">
+<roles>
+  <role descr="speaker" n="0"/>
+  <role descr="utterance" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+ Congress learned during the Reagan administration that it could intimidate the executive branch by [*-1] uttering again and again the same seven words : `` Provided , that no funds shall be spent [*-48] ... . ''
+</text>
+	<arg n="0">[*-1] -&gt;  Congress</arg>
+	<rel>uttering</rel>
+	<arg f="TMP" n="M">again and again</arg>
+	<arg n="1">the same seven words : `` Provided , that no funds shall be spent [*-48]</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

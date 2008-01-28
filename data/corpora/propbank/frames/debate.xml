@@ -1,0 +1,49 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="debate">
+
+<roleset id="debate.01" name="to discuss or argue about">
+<roles>
+  <role descr="discussant(s), debater(s)" n="0"/>
+  <role descr="thing discussed" n="1"/>
+  <role descr="person debated against" n="2"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ The Diet does n't normally even debate bills because the opposition parties are so often [*ICH*-3] opposed to whatever LDP does [*T*-2] that it would be a waste of time .
+</text>
+	<arg n="0">The Diet</arg>
+	<arg f="NEG" n="M">n't</arg>
+	<arg f="TMP" n="M">normally</arg>
+	<rel>debate</rel>
+	<arg n="1">bills</arg>
+	<arg f="CAU" n="M">because the opposition parties are so often [*ICH*-3] opposed to whatever LDP does [*T*-2] that it would be a waste of time</arg>
+</example>
+
+<example name="meged debators">
+<text>
+Sherman and Martha debate on foreign policy all the time 
+</text>
+	<arg n="0">Sherman abd Martha</arg>
+	<rel>debate</rel>
+	<arg n="1">foreign policy</arg>
+	<arg f="TMP" n="M">all the time</arg>
+</example>
+
+<example name="all args">
+<text>
+Senator Rodam-Clinton will debate Governor Pataki on budget cuts
+</text>
+	<arg n="0">Senator Rodam-Clinton</arg>
+	<rel>debate</rel>
+	<arg n="1">on budget cuts</arg>
+	<arg n="2">Governor Pataki</arg>
+</example>
+
+</roleset>
+</predicate>
+
+
+</frameset>

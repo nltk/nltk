@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="glide">
+<note>
+  Frames file for 'glide'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="glide.01" name="to mov" vncls="51.3.2">
+<roles> 
+ <role descr="entity gliding" n="0"><vnrole vncls="51.3.2" vntheta="Theme"/></role>  
+</roles>
+
+
+<example name="with direction">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+ One 60-second TV spot features a diverse group of skiers gracefully gliding down sun-drenched slopes : senior citizens , minorities , families with children -- even a blind skier .
+</text>
+	<arg n="0">a diverse group</arg>
+	<arg f="MNR" n="M">gracefully</arg>
+	<rel>gliding</rel>
+	<arg f="DIR" n="M">down sun-drenched slopes</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

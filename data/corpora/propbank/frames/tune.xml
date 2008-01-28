@@ -1,0 +1,71 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="tune">
+<note>
+  Frames file for 'tune' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="tune.01" name="to adopt or adjust" vncls="-">
+<roles>
+  <role descr="causer" n="0"/>
+  <role descr="entity tuned" n="1"/>
+  <role descr="entity tuned for" n="2"/>
+</roles>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+     In a Madrid hotel room recently, a viewer caught the end of a
+     badly acted series about a fishing boat on Australia's Great
+     Barrier Reef, [*-2] only to be urged [*-6] by the British
+     announcer [*-3] to ``stay [*-4] tuned [*-5] for the further
+     adventures of Skippy the Kangaroo.'' 
+</text>
+	<rel>tuned</rel>
+	<arg n="1">[*-5] -&gt;  [*-4] -&gt;  [*-3] -&gt;  [*-6] -&gt;
+	[*-2] -&gt;  a viewer</arg> 
+	<arg f="for" n="2">the further adventures of Skippy the Kangaroo</arg>
+</example>
+</roleset>
+</predicate>
+
+
+<predicate lemma="tune_in">
+
+<roleset id="tune.02" name="to adjust the controls on a radio or television" vncls="-">
+<roles>
+  <role descr="adjuster of radio/tv" n="0"/>
+  <role descr="entity tuned (radio, etc)" n="1"/>
+  <role descr="broadcast" n="2"/>
+</roles>
+
+
+<example name="with broadcast">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+     You now may drop by the Voice of America offices in Washington
+     and read the text of what the Voice is broadcasting to those 130
+     million people around the world who [*T*-20] tune in to it each
+     week. 
+</text>
+	<arg n="0">[*T*-20] -&gt;  who -&gt;  those 130 million people</arg>
+	<rel>[ tune] [ in]</rel>
+	<arg f="to" n="2">it</arg>
+	<arg f="TMP" n="M">each week</arg>
+</example>
+
+<example name="with radio">
+  <inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+  <text>
+     What if I tune in my short-wave radio, transcribe an editorial or
+     program, and print it in my newspaper? 
+  </text>
+  <arg n="0">I</arg>
+  <rel>tune in</rel>
+  <arg n="1">my shortwave radio</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

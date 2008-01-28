@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="eye">
+<note>
+  Frames file for 'eye' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="eye.01" name="to watch closely" vncls="30.2">
+<roles>
+  <role descr="watcher" n="0">
+        <vnrole vncls="30.2" vntheta="Experiencer"/></role>
+  <role descr="entity eyed" n="1">
+        <vnrole vncls="30.2" vntheta="Stimulus"/></role>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="progressive" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+ Colleges , she says [0] [*T*-1] , are eyeing registration through 900 service .
+</text>
+	<arg n="0">Colleges</arg>
+	<rel>eyeing</rel>
+	<arg n="1">registration through 900 service</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

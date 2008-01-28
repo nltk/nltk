@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="foot">
+<note>
+  Frames file for 'foot' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="foot.01" name="idiomatic: pay for" vncls="-">
+<roles>
+  <role descr="payer" n="0"/>
+  <role descr="some variation on 'the bill'" n="1"/>
+</roles>
+
+<example name="relatively simple">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    Private companies, and ultimately their customers, will end up
+    [*-1] footing the huge bill. 
+</text>
+        <arg n="0">[*-1] -&gt;  Private companies, and ultimately their
+        customers,</arg> 
+        <rel>footing</rel>
+        <arg n="1">the huge bill</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,40 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="network">
+<note>
+  Frames file for 'network' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="network.01" vncls="-" name="connect into a network">
+<roles>
+  <role n="0"  descr="creator of network"/>
+  <role n="1"  descr="the network itself"/>
+</roles>
+
+<example name="not really verbal">
+  <inflection person="ns" tense="ns" aspect="progressive" voice="active" form="participle"/>
+  <text>
+    Novell, a computer networking concern, fell 1 1/2 to 30 on 152,000
+    shares. 
+  </text>
+  <arg n="1"        >computer</arg>
+  <rel              >networking</rel>
+  <arg n="0"        >concern</arg>
+</example>
+
+<example name="verbal">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+     John networked his house.
+  </text>
+  <arg n="0"        >John</arg>
+  <rel              >networked</rel>
+  <arg n="1"        >his house</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

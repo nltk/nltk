@@ -1,0 +1,75 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="snag">
+<note>
+  Frames file for 'snag' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="snag.01" name="get, capture" vncls="-">
+<roles>
+  <role descr="capturer" n="0"/>
+  <role descr="captured" n="1"/>
+  <role descr="instrument, hook" n="2"/>
+</roles>
+
+<example name="quasi-agentive">
+<inflection aspect="perfect" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    The employees also said the project may have been snagged *trace*
+    by budgetary concerns. 
+</text>
+        <arg f="MOD" n="M">may</arg>
+        <rel>snagged</rel>
+        <arg n="1">*trace* -&gt;  the project</arg>
+        <arg f="by" n="0">budgetary concerns</arg>
+</example>
+
+
+<example name="locative instrument">
+<inflection aspect="ns" form="participle" person="ns" tense="past" voice="passive"/>
+<text>
+    But the effort became snagged *trace* on the question of what
+    would become of other issues, ranging from cutting the
+    capital-gains tax to child care to repeal of catastrophic-illness
+    insurance. 
+</text>
+        <arg f="DIS" n="M">But</arg>
+        <rel>snagged</rel>
+        <arg n="1">*trace* -&gt;  the effort</arg>
+        <arg f="on" n="2">the question of what would become of other
+        issues, ranging from cutting the capital-gains tax to child
+        care to repeal of catastrophic-illness insurance</arg> 
+</example>
+
+
+<example name="different kind of instrument">
+<inflection aspect="ns" form="participle" person="ns" tense="past" voice="passive"/>
+<text>
+    The deficit-reduction bill became snagged over efforts to
+    streamline the House version of the legislation in advance of a
+    House-Senate conference. 
+</text>
+        <arg n="1">The deficit-reduction bill</arg>
+        <rel>snagged</rel>
+        <arg f="over" n="2">efforts to streamline the House version of
+        the legislation in advance of a House-Senate conference</arg> 
+</example>
+
+<example name="more obviously capture">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John snagged the frisbee out of mid-air with his teeth.
+  </text>
+  <arg n="0">John</arg>
+  <rel>snagged</rel>
+  <arg n="1">the frisbee</arg>
+  <arg f="LOC" n="m">out of mid-air</arg>
+  <arg f="with" n="2">his teeth</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

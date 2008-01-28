@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="approximate">
+<note>
+  Frames file for 'approximate'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="approximate.01" name="to be close or similar" vncls="-">
+<roles> 
+  <role descr="entity coming close" n="0"/>  
+  <role descr="entity coming close to" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ Frankly , the only way [0] I can think of [*T*-3] [0] [*] to accomplish this [*T*-4] is [*] to make it [*EXP*-1] possible for addicts to buy drugs at some regulated place at a price that [*T*-2] approximates their cost .
+</text>
+	<arg n="0">[*T*-2] -&gt;  that -&gt;  a price</arg>
+	<rel>approximates</rel>
+	<arg n="1">their cost</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="overthrow">
+<note>
+  Frames file for 'overthrow' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="overthrow.01" name="to bring down, overturn" vncls="-">
+<roles>
+  <role descr="victor, agent" n="0"/>
+  <role descr="entity overthrown" n="1"/>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ Here , at a soccer stadium near the black township of Soweto yesterday , were [*T*-2] eight leaders of the African National Congress , seven of whom [*T*-1] had spent most of their adult lives in prison for sabotage and conspiracy [*] to overthrow the government .
+</text>
+	<arg n="0">[*] -&gt;  [*T*-1] -&gt;  seven of whom</arg>
+	<rel>overthrow</rel>
+	<arg n="1">the government</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

@@ -1,0 +1,45 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="revive">
+<note>
+  Frames file for 'revive' based on sentences in financial subcorpus.
+  No access to verbnet.  No comparison.
+</note>
+
+<roleset id="revive.01" name="bring back to life">
+<roles>
+  <role descr="The Reanimator" n="0"/>
+  <role descr="thing brought back to life" n="1"/>
+</roles>
+
+<example name="nice and simple">
+<text>
+    One investment banker said Mr. Steinberg may be trying to position
+    himself as a friendly investor who could help UAL Chairman Stephen
+    Wolf revive a failed labor-management bid. 
+</text>
+        <arg n="0">UAL Chairman Stephen Wolf</arg>
+        <rel>revive</rel>
+        <arg n="1">a failed labor-management bid</arg>
+</example>
+
+<example name="targetless traces">
+<text>
+    Although takeover experts said they doubted Mr. Steinberg will
+    make a bid by himself, the application by his Reliance Group
+    Holdings Inc. could signal his interest in *trace* helping *trace*
+    revive a failed labor-management bid. 
+</text>
+        <arg n="0">*trace* -&gt; *trace*</arg>
+        <rel>revive</rel>
+        <arg n="1">a failed labor-management bid</arg>
+</example>
+
+<note>
+Resolving trace chains seems particularly difficult for this verb;
+dunno why.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,42 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="style">
+<note>
+  Frames file for 'style' based on sentences in wsj.  Verbnet entry
+  26.4 'create'.
+</note>
+
+<roleset id="style.01" name="put something into a style" vncls="26.4">
+<roles>
+  <role descr="stylist" n="0"><vnrole vncls="26.4" vntheta="Agent"/></role>
+  <role descr="thing being styled (hair, etc)" n="1"><vnrole vncls="26.4" vntheta="Product"/></role>
+  <role descr="style, attribute" n="2"/>
+</roles>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    The chairs are S-Cargo seats, and a gift shop sells such items as
+    alarm clocks styled *trace* like the Pao's oversized speedometer. 
+</text>
+        <rel>styled</rel>
+        <arg n="1">*trace* -&gt;  alarm clocks</arg>
+        <arg f="like" n="2">the Pao's oversized speedometer</arg>
+</example>
+
+<example name="with agent">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+   After one disastrous experiment, Mary never let John style her hair again.
+  </text>
+  <arg n="0">John</arg>
+  <rel>style</rel>
+  <arg n="1">her hair</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

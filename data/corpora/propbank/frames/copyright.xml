@@ -1,0 +1,41 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="copyright">
+<note>
+  Frames file for 'copyright' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="copyright.01" vncls="-" name="acquire exclusive rights to printed material">
+<roles>
+  <role n="0"  descr="copyrighter"/>
+  <role n="1"  descr="printed material"/>
+</roles>
+
+<example name="adjectival">
+<inflection person="ns" tense="ns" aspect="ns" voice="passive" form="participle"/>
+<text>
+     That finding, the report says, casts doubt on the record
+     industry's contention that the new generation of digital
+     recording equipment will inevitably lead to wholesale abuse of
+     copyrighted material by home tapers. 
+</text>
+	<rel>copyrighted</rel>
+	<arg n="1">material</arg>
+</example>
+
+<example name="agentive">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+     John copyrighted his disseratation.
+  </text>
+  <arg n="0"        >John</arg>
+  <rel              >copyrighted</rel>
+  <arg n="1"        >his dissertation</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

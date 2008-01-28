@@ -1,0 +1,79 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="thunder">
+<note>
+  Frames file for 'thunder' based on sentences in wsj.  No access to
+  verbnet at the moment.
+</note>
+
+<roleset id="thunder.01" name="make loud noises, speak loudly" vncls="37.3 43.2">
+<roles>
+  <role descr="thunderer" n="0"><vnrole vncls="43.2" vntheta="Theme"/><vnrole vncls="37.3" vntheta="Agent"/></role>
+  <role descr="utterance" n="1"><vnrole vncls="37.3" vntheta="Theme"/></role>
+  <role descr="listener" n="2"><vnrole vncls="37.3" vntheta="Recipient"/></role>
+</roles>
+
+<example name="as verb of speaking">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     Mary thundered her disapproval at John.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>thundered</rel>
+  <arg n="1">her disapproval</arg>
+  <arg f="at" n="2">John</arg>
+</example>
+
+<example name="as weather verb">
+  <inflection aspect="progressive" form="participle" person="third" tense="present" voice="active"/>
+  <text>
+     ``Wow,'' said John, ``it's really thundering outside.''
+  </text>
+  <arg f="DIS" n="m">really</arg>
+  <rel>thundering</rel>
+  <arg f="LOC" n="m">outside</arg>
+</example>
+
+<example name="unaccusative, too">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     Applause thundered through the auditorium after John's heartfelt
+     rendition of `Twinkle, Twinkle, Little Star.'
+  </text>
+  <arg n="1">Applause</arg>
+  <rel>thundered</rel>
+  <arg f="LOC" n="m">through the auditorium</arg>
+  <arg f="TMP" n="m">after John's heartfelt rendition of `Twinkle,
+  Twinkle, Little Star.'</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="thunder.02" name="effect a change by speaking loudly" vncls="-">
+<roles>
+  <role descr="speaker" n="0"/>
+  <role descr="thing affected" n="1"/>
+  <role descr="effect, attribute of arg1" n="2"/>
+</roles>
+
+<example name="wierd example">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Many delegates were willing to craft a compromise, but
+    U.S. delegate Constance Harriman and others thundered that down. 
+</text>
+        <arg n="0">U.S. delegate Constance Harriman and others</arg>
+        <rel>thundered</rel>
+        <arg n="1">that</arg>
+        <arg n="2">down</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

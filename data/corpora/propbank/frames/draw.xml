@@ -1,0 +1,211 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="draw">
+<note>
+  Frames file for 'draw' based on sentences in financial subcorpus and
+  comparison with Chris' old frames file.  I can't believe it's taken
+  me this long to redo this verb.
+</note>
+
+<roleset id="draw.01" name="art" vncls="25.2 26.7-2">
+<roles>
+  <role descr="artist" n="0">
+		
+		
+  <vnrole vncls="26.7-2" vntheta="Agent"/><vnrole vncls="25.2" vntheta="Agent"/></role>
+
+  <role descr="art" n="1">
+		
+		
+  <vnrole vncls="26.7-2" vntheta="Theme"/><vnrole vncls="25.2" vntheta="Theme"/></role>
+
+  <role descr="benefactive" n="2">
+		
+  <vnrole vncls="26.7-2" vntheta="Beneficiary"/></role>
+
+</roles>
+
+<example name="transitive">
+<text>
+    The only way you can make it a big deal is *trace* to draw
+    linkages that just don't make sense.'' 
+</text>
+        <arg n="0">*trace* -&gt;  you</arg>
+        <rel>draw</rel>
+        <arg n="1">linkages that just don't make sense</arg>
+</example>
+
+<example name="with benefactive">
+  <text>
+    John drew a picture of a rose for Mary.
+  </text>
+  <arg n="0">John</arg>
+  <rel>drew</rel>
+  <arg n="1">a picture of a rose</arg>
+  <arg f="for" n="2">Mary</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="draw.02" name="pull" vncls="10.1 12 23.2">
+<roles>
+  <role descr="puller" n="0">
+		
+		
+		
+  <vnrole vncls="23.2" vntheta="Agent"/><vnrole vncls="12" vntheta="Agent"/><vnrole vncls="10.1" vntheta="Agent"/></role>
+
+  <role descr="thing pulled" n="1">
+		
+		
+		
+  <vnrole vncls="23.2" vntheta="Patient1"/><vnrole vncls="12" vntheta="Theme"/><vnrole vncls="10.1" vntheta="Theme"/></role>
+
+  <role descr="source" n="2">
+		
+		
+  <vnrole vncls="23.2" vntheta="Patient2"/><vnrole vncls="10.1" vntheta="Source"/></role>
+
+</roles>
+
+<example name="all args">
+<text>
+    The dollar drew strength from the stock market's climb. 
+</text>
+        <arg n="0">The dollar</arg>
+        <rel>drew</rel>
+        <arg n="1">strength</arg>
+        <arg f="from" n="2">the stock market's climb</arg>
+</example>
+
+<example name="passive">
+<text>
+    An index of economic activity drawn *trace* from the survey...
+</text>
+        <rel>drawn</rel>
+        <arg n="1">*trace* -&gt;  An index</arg>
+        <arg f="from" n="2">the survey</arg>
+</example>
+
+<example name="ergative, with direction">
+<text>
+    As the London trading session drew to a close...
+</text>
+        <arg n="1">the London trading session</arg>
+        <rel>drew</rel>
+        <arg f="DIR" n="M">to a close</arg>
+</example>
+
+<example name="transitive with odd directional">
+<text>
+    DEC ``drew down its European backlog'' and had flat world-wide
+    orders overall. 
+</text>
+        <arg n="0">DEC</arg>
+        <rel>drew</rel>
+        <arg f="DIR" n="M">down</arg>
+        <arg n="1">its European backlog</arg>
+</example>
+
+<note>
+&quot;draw down&quot; seems to be a specific financial usage; I'm not sure what
+the exact meaning is.
+</note>
+
+</roleset>
+
+<roleset id="draw.05" name="brandish a weapon" vncls="-">
+<roles>
+  <role descr="armed one" n="0"/>
+  <role descr="weapon" n="1"/>
+  <role descr="adversary" n="2"/>
+</roles>
+
+<example name="violent tendencies">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John drew a knife on Mary.
+  </text>
+  <arg n="0">John</arg>
+  <rel>drew</rel>
+  <arg n="1">a knife</arg>
+  <arg f="on" n="2">Mary</arg>
+</example>
+
+<note>
+Note that this sentence can also be the 'art' sense, as seen by the
+addition of an instrument: John drew a knife on Mary with a purple
+marker.
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="draw_up">
+
+<roleset id="draw.03" name="art: compose" vncls="25.2 26.7-2">
+<roles>
+  <role descr="artist" n="0">
+		
+		
+  <vnrole vncls="26.7-2" vntheta="Agent"/><vnrole vncls="25.2" vntheta="Agent"/></role>
+
+  <role descr="thing drawn" n="1">
+		
+		
+  <vnrole vncls="26.7-2" vntheta="Theme"/><vnrole vncls="25.2" vntheta="Theme"/></role>
+
+  <role descr="benefactive" n="2">
+		
+  <vnrole vncls="26.7-2" vntheta="Beneficiary"/></role>
+
+</roles>
+
+<example name="transitive">
+<text>
+    Mr. Freeman said machinists' union advisers plan *trace* to meet
+    this week *trace* to try *trace* to draw up a blueprint for some
+    form of recapitalization that could include a special dividend for
+    shareholders, an employee stake and, perhaps, an equity investment
+    by a friendly investor. 
+</text>
+        <arg n="0">*trace* -&gt; *trace* -&gt; *trace* -&gt; machinists ' union
+        advisers</arg> 
+        <rel>[ draw] [ up]</rel>
+        <arg n="1">a blueprint for some form of recapitalization that
+        could include a special dividend for shareholders, an employee
+        stake and, perhaps, an equity investment by a friendly
+        investor</arg> 
+</example>
+
+<note>
+Except for the particle, identical to the &quot;art&quot; sense of &quot;draw&quot;.
+</note>
+
+</roleset>
+
+<roleset id="draw.04" name="move" vncls="-">
+<roles>
+  <role descr="entity in motion" n="1"/>
+</roles>
+
+<example name="always 'alongside'?">
+  <text>
+    John drew up alongside Mary in his customized hot-rod.  And she
+    laughed in his face.
+  </text>
+  <arg n="1">John</arg>
+  <rel>drew up</rel>
+  <arg f="LOC" n="m">alongside Mary</arg>
+  <arg f="LOC" n="m">in his customized hot-rod</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

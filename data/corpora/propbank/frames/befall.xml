@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="befall">
+<note>
+  Frames file for 'befall' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="befall.01" name="to happen" vncls="-">
+<roles>
+  <role descr="event" n="0"/>
+  <role descr="experiencer" n="1"/>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ The specific scene [0] he mentions [*T*-3] in which pet dogs are crushed [*-1] [*T*-4] is somewhat reminiscent of the continual plights that [*T*-2] befall the coyote in the old Warner Bros . `` Road Runner '' cartoons .
+</text>
+	<arg n="0">[*T*-2] -&gt;  that -&gt;  the continual plights</arg>
+	<rel>befall</rel>
+	<arg n="1">the coyote</arg>
+	<arg f="LOC" n="M">in the old Warner Bros . `` Road Runner '' cartoons</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

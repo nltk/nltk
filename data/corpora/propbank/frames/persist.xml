@@ -1,0 +1,44 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="persist">
+<note>
+Frames file for 'persist' based on sentences in financial subcorpus
+and automatic expansion via verbnet.
+</note>
+
+<roleset id="persist.01" name="continue" vncls="47.1-1 55.1">
+<roles>
+	<role descr="causal agent" n="0"><vnrole vncls="55.1" vntheta="Agent"/></role>
+	<role descr="thing continuing, persisting" n="1"><vnrole vncls="47.1-1" vntheta="Theme"/><vnrole vncls="55.1" vntheta="Theme"/></role>
+</roles>
+
+<example name="typically ergative">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    They said they expect the bearish mood to persist a while longer,
+    as trading volume is falling toward the end of the year and the
+    market is becoming more volatile. 
+</text>
+        <arg n="1">the bearish mood</arg>
+        <rel>persist</rel>
+        <arg f="TMP" n="M">a while longer</arg>
+</example>
+
+<example name="with agent">
+  <inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+  <text>
+    John persists in tormenting Mary.
+  </text>
+  <arg n="0">John</arg>
+  <rel>persists</rel>
+  <arg f="in" n="1">tormenting Mary</arg>
+</example>
+
+<note>
+The torment of Mary is what is really persisting; John is simply
+causing that torment to continue.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

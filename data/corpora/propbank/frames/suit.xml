@@ -1,0 +1,66 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="suit">
+<note>
+  Frames file for 'suit' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="suit.01" vncls="-" name="(cause to) be suitable for">
+<roles>
+  <role n="1"  descr="suitable thing"/>
+  <role n="2"  descr="suitable to/for"/>
+</roles>
+
+<example name="passive">
+<inflection person="ns" tense="ns" aspect="ns" voice="passive" form="participle"/>
+<text>
+     Both countries produce high-quality, low-sulfur crudes especially
+     suited [*] to making high-octane motor fuel at minimum refining
+     cost.  
+</text>
+        <arg n="M" f="MNR">especially</arg>
+        <rel>suited</rel>
+        <arg n="1">[*] ->  high-quality , low-sulfur crudes</arg>
+        <arg n="2" f="to">making high-octane motor fuel at minimum
+        refining cost</arg> 
+</example>
+
+<example name="unaccusative">
+<inflection person="third" tense="present" aspect="ns" voice="active" form="full"/>
+<text>
+    The supporting lineup is solid, the patter is amusing and there's
+    even a cameo by Bernie Ohls, the ``good cop'' of previous Chandler
+    books who still doesn't hesitate to have Marlowe jailed when it
+    suits his purposes. 
+</text>
+        <arg n="1">it</arg>
+        <rel>suits</rel>
+        <arg n="2">his purposes</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="suit.02" vncls="-" name="adapt, make pleasant to">
+<roles>
+  <role n="0"  descr="adapter, agent"/>
+  <role n="1"  descr="purpose"/>
+</roles>
+
+<example name="canonical purpose">
+<inflection person="ns" tense="ns" aspect="ns" voice="ns" form="infinitive"/>
+<text>
+    If President Bush fails to do so in his first year, he will invite
+    Congress, for the remainder of his presidency, [*-2] to rewrite
+    Article II of the Constitution [*-3] to suit its purposes. 
+</text>
+        <arg n="0">[*-3] ->  [*-2] ->  Congress</arg>
+        <rel>suit</rel>
+        <arg n="1">its purposes</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

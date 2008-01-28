@@ -1,0 +1,39 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="expunge">
+<note>
+  Frames file for 'expunge' based on sentences in wsj.  Verbnet entry
+  10.4.1, Framenet entry Removing.
+</note>
+
+<roleset id="expunge.01" name="remove" vncls="10.4.1">
+<roles>
+  <role descr="entity removing" n="0"><vnrole vncls="10.4.1" vntheta="Agent"/></role>
+  <role descr="thing being removed" n="1"><vnrole vncls="10.4.1" vntheta="Theme"/></role>
+  <role descr="removed from" n="2"><vnrole vncls="10.4.1" vntheta="Source"/></role>
+</roles>
+
+<example name="all args">
+<inflection aspect="perfect" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+    Partly because of the show, Mr. Watson says, the district decided
+    not to recommend Mrs. Yeargin for a first-time offenders program
+    that *trace* could have expunged the charges and the conviction
+    from her record. 
+</text>
+        <arg n="0">*trace* -&gt;  that -&gt;  a first-time offenders program</arg>
+        <arg f="MOD" n="M">could</arg>
+        <rel>expunged</rel>
+        <arg n="1">the charges and the conviction</arg>
+        <arg f="from" n="2">her record</arg>
+</example>
+
+<note>
+I also know of a usage which uses just the agent and &quot;source&quot;, as in
+&quot;John expunged his criminal record (of false charges)&quot;, which is
+similar to 'empty' (which actually hasn't been framed yet).
+</note>
+
+</roleset>
+</predicate>
+</frameset>

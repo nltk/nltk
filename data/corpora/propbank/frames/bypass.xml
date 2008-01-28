@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="bypass">
+<note>
+  Frames file for 'bypass' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="bypass.01" name="avoid, go around" vncls="-">
+<roles>
+  <role descr="thing going around" n="0"/>
+  <role descr="thing gone around" n="1"/>
+</roles>
+
+<example name="more earthquake damage">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+    Moreover, state officials are urging freight haulers [*-1] to
+    bypass many of the area's main highways and to travel late at
+    night or during predawn hours. 
+</text>
+        <arg n="0">[*-1] -&gt;  freight haulers</arg>
+        <rel>bypass</rel>
+        <arg n="1">many of the area's main highways</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

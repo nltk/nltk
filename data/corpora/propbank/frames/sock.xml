@@ -1,0 +1,59 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="sock">
+<note>
+  Frames file for 'sock' based on sentences in wsj.  Verbnet entry 18.3.
+</note>
+
+<roleset id="sock.01" name="manner of hitting" vncls="18.3">
+<roles>
+  <role descr="hitter" n="0"><vnrole vncls="18.3" vntheta="Agent"/></role>
+  <role descr="hit" n="1"><vnrole vncls="18.3" vntheta="Patient"/></role>
+  <role descr="hit with" n="2"><vnrole vncls="18.3" vntheta="Instrument"/></role>
+</roles>
+
+<example name="mild violence">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    Mary socked John with a sock.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>socked</rel>
+  <arg n="1">John</arg>
+  <arg f="with" n="2">a sock</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="sock_away">
+
+<roleset id="sock.02" name="put, save" vncls="-">
+<roles>
+  <role descr="putter" n="0"/>
+  <role descr="thing put" n="1"/>
+  <role descr="put where" n="2"/>
+</roles>
+
+<example name="automatically generated">
+<inflection aspect="ns" form="ns" person="ns" tense="ns" voice="ns"/>
+<text>
+ [*] Sock it away in long-term instruments ?
+</text>
+        <arg n="0">[*]</arg>
+        <rel>[ Sock] [ away]</rel>
+        <arg n="1">it</arg>
+        <arg f="in" n="2">long-term instruments</arg>
+</example>
+
+<note>
+I'm uncomfortable calling this a phrasal verb, but I don't see any
+alternative. 
+</note>
+
+</roleset>
+</predicate>
+</frameset>

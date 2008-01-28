@@ -1,0 +1,97 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="happen">
+<note>
+  Frames file for 'happen' based on survey of initial sentences of big
+  corpus and comparison with 'exist' and 'seem'
+</note>
+
+<roleset id="happen.01" name="occur, take place" vncls="48.3">
+<roles>
+  <role descr="event" n="1">
+	  <vnrole vncls="48.3" vntheta="Theme"/></role>
+  <role descr="benefactive" n="2"/>
+</roles>
+
+<example name="in questions">
+  <text>
+  What *trace* happens when you flush your toilet?
+  </text>
+  <arg n="1">*trace*=What</arg>
+  <rel>happens</rel>
+  <arg f="TMP" n="m">when you flush your toilet?</arg>
+</example>
+
+<note>
+I swear, this occurred in WSJ.
+</note>
+
+<example name="with benefactive">
+  <text>
+  It is happening with young wines just coming out.
+  </text>
+  <arg n="1">It</arg>
+  <rel>happening</rel>
+  <arg f="with" n="2">young wines just coming out</arg>
+</example>
+
+<example name="benefactive again">
+  <text>
+  What *trace* will happen to dividend growth next year?
+  </text>
+  <arg n="1">*trace*=What</arg>
+  <arg f="MOD" n="m">will</arg>
+  <rel>happen</rel>
+  <arg f="to" n="1">dividend growth</arg>
+  <arg f="TMP" n="m">next year?</arg>
+</example>
+
+</roleset>
+
+<roleset id="happen.02" name="denoting coincidence" vncls="-">
+<roles>
+  <role descr="coincidence" n="1"/>
+</roles>
+
+<example name="typical usage">
+  <text>
+  Its workforce happens *trace* to include its most productive members.
+  </text>
+  <arg n="1">[Its workforce][*trace* to include its most productive members]</arg>
+  <rel>happens</rel>
+</example>
+
+<example name="with it-support">
+  <inflection person="third" tense="present" aspect="ns" voice="active" form="full"/>
+  <text>
+    It happens that its workforce includes its most productive members.
+  </text>
+  <arg n="1"        >that its workforce includes its most productive members</arg>
+  <rel              >happens</rel>
+</example>
+
+</roleset>
+
+<roleset id="happen.03" name="find">
+<roles>
+  <role descr="finder" n="0"/>
+  <role descr="thing found" n="1"/>
+</roles>
+
+<example name="find">
+  <text>
+  During his daily walk through the park John happened upon a bag of cash.
+  </text>
+  <arg f="TMP" n="m">During his daily walk through the park</arg>
+  <arg n="0">John</arg>
+  <rel>happened</rel>
+  <arg f="upon" n="1">a bag of cash</arg>
+</example>
+
+<note>
+Might be better as phrasal &quot;happen_upon&quot;
+</note>
+
+</roleset>
+</predicate>
+</frameset>

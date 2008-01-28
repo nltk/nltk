@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="deflect">
+<note>
+  Frames file for 'deflect' based on sentences in financial subcorpus.
+  No Verbnet entry, no Framenet entry.
+</note>
+
+<roleset id="deflect.01" name="block, avoid" vncls="-">
+<roles>
+ <role descr="deflector" n="0"/>
+ <role descr="thing deflected" n="1"/>
+</roles>
+
+<example name="basic usage">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+   ...a topic of intense speculation on Wall Street since Mr. Stookey
+   deflected dividend questions in a Sept. 29 meeting with analysts. 
+</text>
+        <arg n="0">Mr. Stookey</arg>
+        <rel>deflected</rel>
+        <arg n="1">dividend questions</arg>
+        <arg f="LOC" n="M">in a Sept. 29 meeting with analysts</arg>
+</example>
+
+<note>
+Might take instrument?
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,47 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="maneuver">
+<note>
+  Frames file for 'maneuver'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="maneuver.01" name="to direct the course" vncls="-">
+<roles> 
+ <role descr="director, agent" n="0"/>
+ <role descr="entity maneuvered" n="1"/>
+ <role descr="destination" n="2"/>
+</roles>
+
+
+<example name="all arguments">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ [*-1] Playing black in the first game , the human champion maneuvered Deep Thought , known [*] for its attacking prowess , into a totally passive position .
+</text>
+	<arg n="0">the human champion</arg>
+	<rel>maneuvered</rel>
+	<arg n="1">Deep Thought , known [*] for its attacking prowess ,</arg>
+	<arg f="into" n="2">a totally passive position</arg>
+</example>
+
+
+
+
+<example name="maneuver his way">
+<inflection aspect="perfect" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+ In August 1983 , Mr. Noriega took over as General [*RNR*-2] and de-facto dictator [*RNR*-2] of Panama , [*] having maneuvered his way to the top only two years after the mysterious death in a plane crash of his old boss Omar Torrijos .
+</text>
+	<arg n="0">[*] -&gt;  Mr. Noriega</arg>
+	<rel>maneuvered</rel>
+	<arg n="1">his way</arg>
+	<arg f="to" n="2">the top</arg>
+	<arg f="TMP" n="M">only two years after the mysterious death in a plane crash of his old boss Omar Torrijos</arg>
+</example>
+
+</roleset>
+</predicate>
+
+
+</frameset>

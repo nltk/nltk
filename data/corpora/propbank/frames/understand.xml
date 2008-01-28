@@ -1,0 +1,74 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="understand">
+<note>
+  Frames file for 'understand' based on sentences in financial
+  subcorpus.  No verbnet entry.  No comparison.
+</note>
+
+<roleset id="understand.01" name="understand">
+<roles>
+  <role descr="understander" n="0"/>
+  <role descr="thing understood" n="1"/>
+  <role descr="attribute of arg1" n="2"/>
+</roles>
+
+<example name="grok">
+<text>
+    Program trading is here to stay, and computers are here to stay,
+    and we just need *trace* to understand it.'' 
+</text>
+        <arg n="0">*trace* -&gt;  we</arg>
+        <rel>understand</rel>
+        <arg n="1">it</arg>
+</example>
+
+<example name="split thing understood">
+<inflection person="ns" tense="ns" aspect="ns" voice="ns" form="ns"/>
+<text>
+ But Mr. Corr , a stunt pilot in his spare time , was understood [*-1] to be frustrated [*-2] by what he regarded [*T*-3] as limited freedom under Mr. Lorenzo .</text>
+        <arg n="1">[Mr. Corr , a stunt pilot in his spare time][[*-1] to be frustrated [*-2] by what he regarded [*T*-3] as limited freedom under Mr. Lorenzo]</arg>
+        <rel>understood</rel>
+</example>
+
+<note>
+The syntax will determine the difference between the first and second
+examples; by all rights &quot;John to be an idiot&quot; should be a single
+constituent which could be called Arg1 all by itself, but there might
+be cases with extraction (&quot;John was understood to be an idiot&quot;) or
+other cases where the two args are separate.  Try to keep things as a
+single arg, if possible, but don't use the [A] command--just use args 
+--1 and 2.
+</note>
+
+<example name="it support">
+<text>
+    It's understood that MGM/UA recently contacted Rupert Murdoch's
+    News Corp., which made two failed bids for the movie studio, to
+    see if the company was still interested. 
+</text>
+        <rel>understood</rel>
+        <arg n="1">MGM/UA recently contacted Rupert Murdoch's News
+        Corp., which made two failed bids for the movie studio, to see
+        if the company was still interested</arg> 
+</example>
+
+<note>
+Latter examples is particularly interesting, as it's effectively
+passivized, but the utterance is apparently too big to put in subject
+position.  Cool.
+</note>
+
+<example name="with attribute">
+<inflection person="ns" tense="ns" aspect="ns" voice="ns" form="ns"/>
+<text>
+ The three most important things [0] [*] to understand [*T*-1] about Mr. Allen is that he is a black conservative intellectual -- a triple threat to the liberal establishment .
+</text>
+        <rel>understand</rel>
+        <arg n="1">[*T*-1] ->  [*] ->  [0] ->  The three most important things</arg>
+        <arg n="2" f="about">Mr. Allen</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,29 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="outgrow">
+<note>
+  Frames file for 'outgrow' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="outgrow.01" name="become too big for" vncls="-">
+<roles>
+  <role descr="entity getting too big" n="0"/>
+  <role descr="too big for what" n="1"/>
+</roles>
+
+<example name="too big for your britches">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    ``In the past, customers had to go to IBM when they outgrew the VAX.
+</text>
+        <arg n="0">they</arg>
+        <rel>outgrew</rel>
+        <arg n="1">the VAX</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

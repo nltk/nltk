@@ -1,0 +1,51 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="thin">
+<note>
+  Frames file for 'thin' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="thin.01" name="to make or become thin or thinner" vncls="45.4">
+<roles>
+  <role descr="cause, agent" n="0">
+        <vnrole vncls="45.4" vntheta="Agent"/></role>
+  <role descr="entity getting thin" n="1">
+        <vnrole vncls="45.4" vntheta="Patient"/></role>
+</roles>
+
+<example name="intransitive">
+<inflection aspect="progressive" form="participle" person="third" tense="present" voice="active"/>
+<text>
+ The prime minister , whose hair [*T*-298] is thinning and gray and whose face [*T*-299] has a perpetual pallor , nonetheless continues [*-1] to display an energy , a precision of thought and a willingness [*] to say publicly what most other Asian leaders dare [*-2] say [*T*-300] only privately .
+</text>
+	<arg n="1">[*T*-298] -&gt;  whose hair</arg>
+	<rel>thinning</rel>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="thin_out">
+
+<roleset id="thin.02" name="to make or become sparse or sparser" vncls="-">
+<roles>
+  <role descr="cause, agent" n="0"/>
+  <role descr="entity getting thin" n="1"/>
+</roles>
+
+<example name="intransitive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+ For one thing , Pentagon officials , who [*T*-106] asked [*-3] not to be identified [*-4] , worry that the U.S. will have a much tougher time [*-2] persuading Europeans [*-5] to keep some short-range nuclear weapons on their soil once Soviet armored forces are thinned [*-1] out .
+</text>
+	<rel>[ thinned] [ out]</rel>
+	<arg n="1">[*-1] -&gt;  Soviet armored forces</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

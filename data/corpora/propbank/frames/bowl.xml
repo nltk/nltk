@@ -1,0 +1,53 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="bowl">
+<note>
+  Frames file for 'bowl' based on sentences in wsj.  Verbnet entry
+  51.3.2.  I'm not sure how that fits.
+</note>
+
+<roleset id="bowl.01" name="throw heavy balls at pins" vncls="51.3.2">
+<roles>
+  <role descr="bowler (not the hat)" n="0"><vnrole vncls="51.3.2" vntheta="Theme"/></role>
+</roles>
+
+<example name="strike!">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    The survey reported the number of people who said they bowl
+    regularly has fallen to just 8% from 17% in 1981. 
+</text>
+        <arg n="0">they</arg>
+        <rel>bowl</rel>
+        <arg f="TMP" n="M">regularly</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="bowl_over">
+
+<roleset id="bowl.02" name="astonish" vncls="-">
+<roles>
+  <role descr="causer of astonishment" n="0"/>
+  <role descr="astonished entity" n="1"/>
+</roles>
+
+<example name="I'm surprised this didn't occur">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    Mary's announcement bowled John over.
+  </text>
+  <arg n="0">Mary's announcement</arg>
+  <rel>bowled over</rel>
+  <arg n="1">John</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

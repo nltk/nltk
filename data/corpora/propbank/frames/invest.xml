@@ -1,0 +1,64 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="invest">
+<note>
+  Frames file for 'invest' based on sentences in financial subcorpus.
+  Verbnet entry equip-13.4.2.
+</note>
+
+<roleset id="invest.01" name="provide" vncls="13.4.2">
+<roles>
+  <role descr="investor" n="0">
+		
+  <vnrole vncls="13.4.2" vntheta="Agent"/></role>
+
+  <role descr="thing invested" n="1">
+		
+  <vnrole vncls="13.4.2" vntheta="Theme"/></role>
+
+  <role descr="invested in" n="2"/>
+</roles>
+
+<example name="all arguments present">
+<text>
+    They invested in the transaction only a small fraction of the
+    $114.3 million they stood to gain from sale of their UAL stock and
+    options. 
+</text>
+        <arg n="0">they</arg>
+        <rel>invested</rel>
+        <arg f="in" n="2">the transaction</arg>
+        <arg n="1">only a small fraction of the $114.3 million they
+        stood to gain from sale of their UAL stock and options</arg> 
+</example>
+
+<example name="arg1 defaults to 'money' and remains unstated">
+<text>
+    The fund invests mainly in gold and silver bullion .
+</text>
+        <arg n="0">The fund</arg>
+        <rel>invests</rel>
+        <arg f="ADV" n="M">mainly</arg>
+        <arg f="in" n="2">gold and silver bullion</arg>
+</example>
+
+<example name="unstated invested-in">
+<text>
+    At the same time, steelmakers are trying *trace* to invest more to
+    modernize technology and make themselves more competitive. 
+</text>
+        <arg n="0">*trace* -&gt;  steelmakers</arg>
+        <rel>invest</rel>
+        <arg n="1">more</arg>
+        <arg f="PNC" n="M">to modernize technology and make themselves
+        more competitive</arg> 
+</example>
+
+<note>
+Ignore adjectival usages like &quot;he is likely to remain fully invested
+at all times&quot; .
+</note>
+
+</roleset>
+</predicate>
+</frameset>

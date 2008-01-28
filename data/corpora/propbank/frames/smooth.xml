@@ -1,0 +1,102 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="smooth">
+<note>
+Frames file for 'smooth' based on sentences in financial subcorpus and
+automatic expansion via verbnet.
+</note>
+
+<roleset id="smooth.01" name="make smooth" vncls="45.4">
+<roles>
+  <role descr="agent, entity causing smoothness" n="0">
+	<vnrole vncls="45.4" vntheta="Agent"/></role>
+  <role descr="thing becoming smooth" n="1">
+	<vnrole vncls="45.4" vntheta="Patient"/></role>
+  <role descr="explicit instrument" n="2">
+	<vnrole vncls="45.4" vntheta="Instrument"/></role>
+</roles>
+
+<example name="modification of phrasal">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    However, shedding steel would run directly counter to
+    Mr. Roderick's original rationale for diversifying into oil and
+    gas: Having two major products would lessen the company's
+    vulnerability to one market's down cycle and help *trace* smooth
+    the flow of cash and earnings. 
+</text>
+        <arg n="0">*trace* -&gt;   Having two major products</arg>
+        <rel>smooth</rel>
+        <arg n="1">the flow of cash and earnings</arg>
+</example>
+
+<example name="with instrument">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John smoothed the icing on the cake with a handful of dried oak
+     leaves. 
+  </text>
+  <arg n="0">John</arg>
+  <rel>smoothed</rel>
+  <arg n="1">the icing on the cake</arg>
+  <arg f="with" n="2">a handful of dried oak leaves</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="smooth_out">
+
+<roleset id="smooth.02" name="smooth out: make smooth" vncls="45.4">
+<roles>
+  <role descr="agent, entity causing smoothness" n="0">
+	<vnrole vncls="45.4" vntheta="Agent"/></role>
+  <role descr="thing becoming smooth" n="1">
+	<vnrole vncls="45.4" vntheta="Patient"/></role>
+  <role descr="explicit instrument" n="2">
+	<vnrole vncls="45.4" vntheta="Instrument"/></role>
+</roles>
+
+<example name="no instrument">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+     However, shedding steel would run directly counter to
+     Mr. Roderick's original rationale for diversifying into oil and
+     gas: Having two major products would lessen the company's
+     vulnerability to one market's down cycle and help *trace* smooth
+     out the flow of cash and earnings. 
+</text>
+        <arg n="0">*trace* -&gt;   Having two major products</arg>
+        <rel>[ smooth] [ out]</rel>
+        <arg n="1">the flow of cash and earnings</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="smooth_over">
+
+<roleset id="smooth.03" vncls="-" name="smooth over: sooth difficulties">
+<roles>
+  <role n="0"  descr="soother"/>
+  <role n="1"  descr="hurts, difficulties"/>
+</roles>
+
+<example name="sooth != smooth">
+  <inflection person="ns" tense="ns" aspect="ns" voice="active" form="infinitive"/>
+  <text>
+     The CIA's Deputy Director of Operations, Richard Stoltz, tried
+     [*-1] to smooth things over a few days later, but instead simply
+     underlined Mr. Webster's point. 
+  </text>
+  <arg n="0"        >[*-1] -> The CIA's Deputy Director of Operations,
+  Richard Stoltz </arg>
+  <rel              >smooth over</rel>
+  <arg n="1"        >things</arg>
+  <arg n="m" f="TMP">a few days later</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,52 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="sentence">
+<note>
+  Frames file for 'sentence' based on sentences in wsj.  No Verbnet
+  entry. 
+</note>
+
+<roleset id="sentence.01" name="assign criminal punishment" vncls="-">
+<roles>
+  <role descr="judge/jury" n="0"/>
+  <role descr="criminal" n="1"/>
+  <role descr="punishment" n="2"/>
+  <role descr="crime" n="3"/>
+</roles>
+
+<example name="all args">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+    Dallas District Judge Jack Hampton had sparked calls for a
+    judicial inquiry with his remarks to the press last December, two
+    weeks after *trace* sentencing an 18-year-old defendant to 30
+    years in state prison for killing two homosexual men in a city
+    park. 
+</text>
+        <arg n="0">*trace* -&gt;  Dallas District Judge Jack Hampton</arg>
+        <rel>sentencing</rel>
+        <arg n="1">an 18-year-old defendant</arg>
+        <arg f="to" n="2">30 years in state prison</arg>
+        <arg f="for" n="3">killing two homosexual men in a city park</arg>
+</example>
+
+<example name="passive, without crime">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    He was sentenced *trace* to 500 hours of community service and
+    restitution to the museum of $45,000. 
+</text>
+        <rel>sentenced</rel>
+        <arg n="1">*trace* -&gt;  He</arg>
+        <arg f="to" n="2">500 hours of community service and
+        restitution to the museum of $45,000</arg> 
+</example>
+
+<note>
+The crime is often fairly remotely located, especially in cases of
+&quot;sentence and fine&quot;.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

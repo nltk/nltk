@@ -1,0 +1,50 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="expose">
+<note>
+  Frames file for 'expose' based on sentences in financial subcorpus.
+  No Verbnet entry, no Framenet entry.  Comparison to show.
+</note>
+
+<roleset id="expose.01" name="cause to be visible">
+<roles>
+  <role descr="exposer" n="0"/>
+  <role descr="thing seen/shown" n="1"/>
+  <role descr="seer" n="2"/>
+</roles>
+
+<example name="passive, with seer">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    Also, it isn't exposed *trace* to the weakening newsprint
+    business, and is strong in the less-cyclical tissue business. 
+</text>
+        <arg f="DIS" n="M">Also</arg>
+        <arg f="NEG" n="M">n't</arg>
+        <rel>exposed</rel>
+        <arg n="1">*trace* -&gt;  it</arg>
+        <arg f="to" n="2">the weakening newsprint business</arg>
+</example>
+
+<example name="active, no seer">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    The predicament, he added, was similar to the Hong Kong 1982-83
+    property-price collapse, which *trace* exposed the involvement of
+    Bank Bumiputra's former subsidiary in the colony in the largest
+    banking scandal in Malaysia's history. 
+</text>
+        <arg n="0">*trace* -&gt;  which -&gt;  the Hong Kong 1982-83
+        property-price collapse</arg> 
+        <rel>exposed</rel>
+        <arg n="1">the involvement of Bank Bumiputra's former
+        subsidiary in the colony in the largest banking scandal in
+        Malaysia's history</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

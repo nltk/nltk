@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="junk">
+<note>
+  Frames file for 'junk' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="junk.01" name="to discard as useless" vncls="-">
+<roles>
+  <role descr="discarder, agent" n="0"/>
+  <role descr="entity junked" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ It also would junk an innovative market-based system for [*] trading emissions credits among polluters .
+</text>
+	<arg n="0">It</arg>
+	<arg f="DIS" n="M">also</arg>
+	<arg f="MOD" n="M">would</arg>
+	<rel>junk</rel>
+	<arg n="1">an innovative market-based system for [*] trading emissions credits among polluters</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

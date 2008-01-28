@@ -1,0 +1,55 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="travel">
+<note>
+Frames file for 'travel' based on setences in financial subcorpus and
+automatic expansion via verbnet.
+</note>
+
+<roleset id="travel.01" name="travel" vncls="51.3.2">
+<roles>
+	<role descr="traveller" n="0">
+		
+  <vnrole vncls="51.3.2" vntheta="Theme"/></role>
+
+	<role descr="destination or path" n="1"/>
+</roles>
+
+<example name="intransitive">
+<inflection aspect="progressive" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+    This summer, the industry introduced a ``kids fly free'' program,
+    in which children were allowed to fly free if they were traveling
+    with an adult. 
+</text>
+        <arg n="0">they</arg>
+        <rel>traveling</rel>
+        <arg f="MNR" n="M">with an adult</arg>
+</example>
+
+<example name="with explicit path" src="run.02">
+  <text>
+  John travelled the world.
+  </text>
+  <arg n="0">John</arg>
+  <rel>travelled</rel>
+  <arg n="1">the world</arg>
+</example>
+
+<example name="prepositional path">
+<inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+<text>
+     The shocks generated nerve impulses that [*T*-306] traveled via
+     spine to brain and showed up clearly on a brain-wave monitor,
+     indicating no damage to the delicate spinal tissue. 
+</text>
+        <arg n="0">[*T*-306] ->  that ->  nerve impulses</arg>
+        <rel>traveled</rel>
+        <arg n="1" f="via">spine</arg>
+        <arg n="M" f="DIR">to brain</arg>
+</example>
+
+</roleset>
+
+</predicate>
+</frameset>

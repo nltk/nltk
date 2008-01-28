@@ -1,0 +1,81 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="comb">
+<note>
+  Frames file for 'comb' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="comb.01" name="to search, look through" vncls="35.2">
+<roles>
+  <role descr="searcher, agent" n="0">
+        <vnrole vncls="35.2" vntheta="Agent"/></role>
+  <role descr="area searched, combed through" n="1">
+        <vnrole vncls="35.2" vntheta="Location"/></role>
+  <role descr="combed for" n="2">
+        <vnrole vncls="35.2" vntheta="Theme"/></role>
+</roles>
+
+
+<example name="all arguments">
+<inflection aspect="progressive" form="participle" person="third" tense="present" voice="active"/>
+<text>
+ It is combing the town of 10,000 for about 200 extras .
+</text>
+	<arg n="0">It</arg>
+	<rel>combing</rel>
+	<arg n="1">the town of 10,000</arg>
+	<arg f="for" n="2">about 200 extras</arg>
+</example>
+
+
+<example name="transitive with adverbials">
+<inflection aspect="progressive" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+ Men are still combing the beach with shovels and hand brushes , [*-1] searching for that unusual glint .
+</text>
+	<arg n="0">Men</arg>
+	<arg f="TMP" n="M">still</arg>
+	<rel>combing</rel>
+	<arg n="1">the beach</arg>
+	<arg f="with" n="M">shovels and hand brushes</arg>
+	<arg n="M">[*-1] searching for that unusual glint</arg>
+</example>
+
+
+<example name="comb through">
+<inflection aspect="perfect" form="participle" person="third" tense="present" voice="active"/>
+<text>
+ The state has combed through records relating to architects , stockbrokers , lawyers in the New York City area , construction workers from out of the state , and homeowners who [*T*-1] claim [*-3] to be residents of other states -- especially Florida , which [*T*-2] has no personal income tax .
+</text>
+	<arg n="0">The state</arg>
+	<rel>combed</rel>
+	<arg f="through" n="1">records relating to architects , stockbrokers , lawyers in the New York City area , construction workers from out of the state , and homeowners who [*T*-1] claim [*-3] to be residents of other states -- especially Florida , which [*T*-2] has no personal income tax</arg>
+</example>
+</roleset>
+
+
+<roleset id="comb.02" name="to straighten with a comb" vncls="41.2.2">
+<roles>
+  <role descr="comber, agent" n="0">
+	<vnrole vncls="41.2.2" vntheta="Agent"/></role>
+  <role descr="hair" n="1">
+        <vnrole vncls="41.2.2" vntheta="Patient"/></role>
+</roles>
+
+
+<example name="not in the corpus">
+<text>
+ John combed his hair .
+</text>
+	<arg n="0">John</arg>
+	<rel>combed</rel>
+	<arg n="1">his hair</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

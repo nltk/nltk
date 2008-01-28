@@ -1,0 +1,68 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="disturb">
+<note>
+  Frames file for 'disturb' based on sentences in wsj.  Verbnet entry
+  31.1, Framenet entry Experiencer_obj.
+</note>
+
+<roleset id="disturb.01" name="bother" vncls="31.1">
+<roles>
+  <role descr="disturber" n="0"><vnrole vncls="31.1" vntheta="Cause"/></role>
+  <role descr="disturbed" n="1"><vnrole vncls="31.1" vntheta="Experiencer"/></role>
+  <role descr="instrument, if separate from arg0" n="2"/>
+</roles>
+
+<example name="active">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    But the administration's handling of the fetal-tissue transplant
+    issue disturbs many scientists. 
+</text>
+        <arg f="DIS" n="M">But</arg>
+        <arg n="0">the administration's handling of the fetal-tissue
+        transplant issue</arg> 
+        <rel>disturbs</rel>
+        <arg n="1">many scientists</arg>
+</example>
+
+<example name="normal passive">
+<inflection aspect="ns" form="participle" person="ns" tense="past" voice="passive"/>
+<text>
+    Some analysts also were disturbed *trace* by a pickup in the
+    growth of business inventories. 
+</text>
+        <arg f="DIS" n="M">also</arg>
+        <rel>disturbed</rel>
+        <arg n="1">*trace* -&gt;  Some analysts</arg>
+        <arg f="by" n="0">a pickup in the growth of business
+        inventories</arg> 
+</example>
+
+<example name="passivized subject introduced by weird preposition">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    They were disturbed *trace* at what they regarded as
+    Dr. Baltimore's confrontational attitude toward the Dingell
+    committee, which held hearings on a dispute over the lab notebooks
+    of a researcher who had co-authored a scientific paper with
+    Dr. Baltimore. 
+</text>
+        <rel>disturbed</rel>
+        <arg n="1">*trace* -&gt;  They</arg>
+        <arg f="at" n="0">what they regarded as Dr. Baltimore's
+        confrontational attitude toward the Dingell committee, which
+        held hearings on a dispute over the lab notebooks of a
+        researcher who had co-authored a scientific paper with
+        Dr. Baltimore</arg> 
+</example>
+
+<note>
+I don't read this at-phrase the same as I do the at-phrases for
+'frustrate'; this seems equivalent to a by-phrase, whereas for
+'frustrate' the two are not interchangeable.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

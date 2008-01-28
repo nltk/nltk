@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="retrace">
+<note>
+  Frames file for 'retrace' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="retrace.01" name="to trace again or back" vncls="-">
+<roles>
+  <role descr="tracer, agent" n="0"/>
+  <role descr="entity retraced" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ Gilts , or British government bonds , which [*T*-60] also fell sharply initially , retraced some of the losses [*-1] to end about 3\/8 point lower .
+</text>
+	<arg n="0">Gilts , or British government bonds , which [*T*-60] also fell sharply initially ,</arg>
+	<rel>retraced</rel>
+	<arg n="1">[ some of the losses] [ [*-1] to end about 3\/8 point lower]</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

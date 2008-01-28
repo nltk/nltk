@@ -1,0 +1,44 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="undo">
+<note>
+  Frames file for 'undo' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+
+<roleset id="undo.01" name="to reverse or annul" vncls="-">
+<roles>
+  <role descr="doer of deed, agent" n="0"/>
+  <role descr="entity undone" n="1"/>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ Despite warnings [*ICH*-1] from such leaders as former Federal Reserve Board Chairman William McChesney Martin that unfixed commissions would undo the industry , the SEC in September 1973 said [0] full competition must start May l , 1975 .
+</text>
+	<arg n="0">unfixed commissions</arg>
+	<arg f="MOD" n="M">would</arg>
+	<rel>undo</rel>
+	<arg n="1">the industry</arg>
+</example>
+
+
+<example name="passive">
+<inflection aspect="progressive" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+ The joint venture is being undone [*-1] , with McCall 's magazine being sold [*-2] last summer to the New York Times Co. 's Magazine Group for about $ 80 million [*U*] , and Time Warner agreeing [*-3] to sell back its 50 % interest in Working Woman and Working Mother to Mr. Lang .
+</text>
+	<rel>undone</rel>
+	<arg n="1">[*-1] -&gt;  The joint venture</arg>
+	<arg f="ADV" n="M">with McCall 's magazine being sold [*-2] last summer to the New York Times Co. 's Magazine Group for about $ 80 million [*U*] , and Time Warner agreeing [*-3] to sell back its 50 % interest in Working Woman and Working Mother to Mr. Lang</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

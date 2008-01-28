@@ -1,0 +1,59 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="quote">
+<note>
+  Frames file for 'quote' based on survey of initial sentences of big
+  corpus and comparison with 'say'.
+</note>
+
+<roleset id="quote.01" name="quote" vncls="37.1-1">
+<roles>
+  <role descr="quoter" n="0">
+	  <vnrole vncls="37.1-1" vntheta="Agent"/></role>
+  <role descr="quoted: speaker" n="1">
+	  <vnrole vncls="37.1-1" vntheta="Recipient"/></role>
+  <role descr="quote: utterance or attribute of arg1" n="2">
+	  <vnrole vncls="37.1-1" vntheta="Topic"/></role>
+</roles>
+
+<example name="quote as saying">
+  <text>
+  The company's prepared statement quoted him as saying &quot;The CEO
+  succession is well along and I've decided for personal reasons to
+  take early retirement.&quot;
+  </text>
+  <arg n="0">The company's prepared statement</arg>
+  <rel>quoted</rel>
+  <arg n="1">him</arg>
+  <arg f="as" n="2">saying &quot;The CEO succession is well along and I've
+  decided for personal reasons to take early retirement.&quot;</arg>
+</example>
+
+<example name="quote at; re: stocks">
+  <text>
+  Seats currently are quoted *trace* at $400,000 bid, $425,000 asked.
+  </text>
+  <arg n="1">*trace*=Seats</arg>
+  <arg f="TMP" n="m">currently</arg>
+  <rel>quoted</rel>
+  <arg f="at" n="2">$400,000 bid, $425,000 asked.</arg>
+</example>
+
+<example name="complex utterance">
+  <text>
+  The benchmark 30-year bond was quoted *trace* late at 102 12/32
+  *trace* to yield 7.90%.
+  </text>
+  <arg n="1">*trace*=The benchmark 30-year bond</arg>
+  <rel>quoted</rel>
+  <arg f="TMP" n="m">late</arg>
+  <arg f="at" n="2">102 12/32</arg>
+  <arg n="2">*trace* to yield 7.90%</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,47 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="re-elect">
+<note>
+  Frames file for 're-elect' based on adding 're' to the beginning of
+  each example of 'elect' in elect.xml.
+</note>
+
+<roleset id="re-elect.01" name="elect again" vncls="29.1">
+<roles>
+  <role descr="voters" n="0">
+		
+  <vnrole vncls="29.1" vntheta="Agent"/></role>
+
+  <role descr="candidate" n="1">
+		
+  <vnrole vncls="29.1" vntheta="Theme"/></role>
+
+  <role descr="office or position" n="2">
+		
+  <vnrole vncls="29.1" vntheta="Predicate"/></role>
+
+</roles>
+
+<example name="absentee voters">
+  <text>
+  JP Bolduc was re-elected *trace* a director.
+  </text>
+  <arg n="1">*trace*=JP Bolduc</arg>
+  <rel>re-elected</rel>
+  <arg n="2">a director</arg>
+</example>
+
+<example name="hey, whaddya know, it does occur in the active voice">
+  <text>
+  Holders at the meeting re-elected a full slate of Canadian Express
+  nominees to Enfield's 11-member board.
+  </text>
+  <arg n="0">Holders at the meeting</arg>
+  <rel>re-elected</rel>
+  <arg n="1">a full slate of Canadian Express nominees</arg>
+  <arg f="to" n="2">Enfield's 11-member board</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,35 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="prance">
+<note>
+  Frames file for 'prance' based on sentences in wsj.  Verbnet entry
+  51.3.2, Framenet entry Self motion.
+</note>
+
+<roleset id="prance.01" name="manner of motion" vncls="51.3.2">
+<roles>
+  <role descr="entity in motion" n="0"><vnrole vncls="51.3.2" vntheta="Theme"/></role>
+  <role descr="path" n="1"><vnrole vncls="51.3.2" vntheta="Location"/></role>
+</roles>
+
+<example name="the one example">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+    Here she delivers, especially during her enthusiastically awful
+    rendition of the ``Candy Man,'' which she sings while [*-21]
+    prancing around in a little cotton candy pink angora sweater that
+    couldn't be more perfect. 
+</text>
+        <arg n="0">[*-21] -&gt;  she</arg>
+        <rel>prancing</rel>
+        <arg n="1">around</arg>
+        <arg f="MNR" n="M">in a little cotton candy pink angora
+        sweater that couldn't be more perfect</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,92 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="combine">
+<note>
+  Frames file for 'combine' based on sentences in financial
+  subcorpus.  No access to verbnet.  Comparison with 'merge'.
+</note>
+
+<roleset id="combine.01" name="combine, mix" vncls="22.1-1">
+<roles>
+  <role descr="agent, mixer" n="0">
+		
+  <vnrole vncls="22.1-1" vntheta="Agent"/></role>
+
+  <role descr="ingredient one" n="1">
+		
+  <vnrole vncls="22.1-1" vntheta="Patient1"/></role>
+
+  <role descr="ingredient two" n="2">
+		
+  <vnrole vncls="22.1-1" vntheta="Patient2"/></role>
+
+  <role descr="end product" n="3"/>
+</roles>
+
+<example name="separate ingredients, and agent">
+<text>
+    The plan still calls for LIN to combine its cellular telephone
+    properties with BellSouth's and to spin off its broadcasting
+    operations. 
+</text>
+        <arg n="0">LIN</arg>
+        <rel>combine</rel>
+        <arg n="1">its cellular telephone properties</arg>
+        <arg f="with" n="2">BellSouth's</arg>
+</example>
+
+<example name="separate ingredients, passivized">
+<text>
+    GMAC profits are combined *trace* with earnings from the rest of
+    GM's operations and attributed to the company's traditional common
+    stock. 
+</text>
+        <rel>combined</rel>
+        <arg n="1">*trace* -&gt;  GMAC profits</arg>
+        <arg f="with" n="2">earnings from the rest of GM's operations</arg>
+</example>
+
+<example name="ergative, one ingredient">
+<text>
+    Mr. Bryant and other analysts hope all those moves will combine to
+    help Tandy's results improve in the important Christmas quarter. 
+</text>
+        <arg n="1">all those moves</arg>
+        <arg f="MOD" n="M">will</arg>
+        <rel>combine</rel>
+        <arg f="PNC" n="M">to help Tandy's results improve in the
+        important Christmas quarter</arg> 
+</example>
+
+<example name="ergative, two ingredients">
+<text>
+    Sterling's firm tone, combined with a steady opening on Wall
+    Street, also tempted some investors to come back to the market,
+    dealers said. 
+</text>
+        <arg n="1">Sterling 's firm tone</arg>
+        <rel>combined</rel>
+        <arg f="with" n="2">a steady opening on Wall Street</arg>
+</example>
+
+<example name="with end product">
+<text>
+    Further, he said, an internal reorganization *trace* *trace* to
+    combine several divisions into the Information Technology Group is
+    expected to affect fourth-quarter results by an undisclosed
+    amount. 
+</text>
+        <arg n="0">*trace* -&gt; *trace* -&gt;  an internal reorganization</arg>
+        <rel>combine</rel>
+        <arg n="1">several divisions</arg>
+        <arg f="into" n="3">the Information Technology Group</arg>
+</example>
+
+<note>
+Probably this verb should not show both ergative and passive
+formations; I think this is an(other) inconsistency in treebank.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

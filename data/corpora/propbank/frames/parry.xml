@@ -1,0 +1,45 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="parry">
+<note>
+  Frames file for 'parry' based on sentences in financial subcorpus.
+  No Verbnet entry.
+</note>
+
+<roleset id="parry.01" name="deflect an attack" vncls="-">
+<roles>
+  <role descr="defender" n="0"/>
+  <role descr="attack" n="1"/>
+  <role descr="instrument, defensive weapon" n="2"/>
+</roles>
+
+<example name="parry, dodge, spin, thrust">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+     The burning question is whether the new chief can parry Mr. Icahn
+     without being pushed into unwelcome moves. 
+</text>
+        <arg n="0">the new chief</arg>
+        <arg f="MOD" n="M">can</arg>
+        <rel>parry</rel>
+        <arg n="1">Mr. Icahn</arg>
+        <arg f="ADV" n="M">without being pushed into unwelcome
+        moves</arg> 
+</example>
+
+<example name="with instrument">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John deflected Mary's blows with a pillow.
+  </text>
+  <arg n="0">John</arg>
+  <rel>deflected</rel>
+  <arg n="1">Mary's blows</arg>
+  <arg f="with" n="2">a pillow</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

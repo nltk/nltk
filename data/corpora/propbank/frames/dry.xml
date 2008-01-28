@@ -1,0 +1,43 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="dry_up">
+<note>
+  Frames file for 'dry' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="dry.01" name="to make or become unproductive" vncls="-">
+<roles>
+  <role descr="entity causing unproductivity, agent" n="0"/>
+  <role descr="entity dried up" n="1"/>
+</roles>
+
+
+<example name="intransitive">
+<inflection aspect="progressive" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+ He wo n't for long , because his old state sources of rye and potatoes are drying up .
+</text>
+	<arg n="1">his old state sources of rye and potatoes</arg>
+	<rel>[ drying] [ up]</rel>
+</example>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ But in either case , the report says [0] [*T*-2] , China 's balance of payments would rapidly dry up foreign reserves , which [*T*-1] are used [*-3] [*] to finance the imbalance .
+</text>
+	<arg n="0">China 's balance of payments</arg>
+	<arg f="MOD" n="M">would</arg>
+	<arg f="MNR" n="M">rapidly</arg>
+	<rel>[ dry] [ up]</rel>
+	<arg n="1">foreign reserves , which [*T*-1] are used [*-3] [*] to finance the imbalance</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

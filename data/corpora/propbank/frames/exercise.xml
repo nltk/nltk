@@ -1,0 +1,83 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="exercise">
+<note>
+  Frames file for 'exercise' based on sentences in financial
+  subcorpus.  Verbnet class 41.1.1, no indication of other members.
+  Comparison to 'use' and 'work out'.
+</note>
+
+<roleset id="exercise.01" name="use" vncls="-">
+<roles>
+  <role descr="user" n="0"/>
+  <role descr="thing used, thing exercised" n="1"/>
+</roles>
+
+<example name="exercise your rights">
+<text>
+    In addition, New York-based LIN would exercise its right to buy
+    out for $1.9 billion the 55% equity interest of its partner,
+    Metromedia Co., in a New York cellular franchise. 
+</text>
+        <arg f="DIS" n="M">In addition</arg>
+        <arg n="0">New York-based LIN</arg>
+        <arg f="MOD" n="M">would</arg>
+        <rel>exercise</rel>
+        <arg n="1">its right to buy out for $1.9 billion the 55%
+        equity interest of its partner, Metromedia Co., in a New York
+        cellular franchise</arg> 
+</example>
+
+<example name="exercise caution">
+<text>
+    The Ministry of International Trade and Industry is so concerned
+    that it recently took the unusual step of urging Japanese auto
+    companies *trace* to exercise caution in capital spending. 
+</text>
+        <arg n="0">*trace* -&gt;  Japanese auto companies</arg>
+        <rel>exercise</rel>
+        <arg n="1">caution</arg>
+        <arg f="LOC" n="M">in capital spending</arg>
+</example>
+
+<example name="stranded modifier">
+<text>
+    The rights, which  expire Nov. 21, can be exercised *trace* for
+    $100 each. 
+</text>
+        <arg f="MOD" n="M">can</arg>
+        <rel>exercised</rel>
+        <arg n="1">*trace* -&gt;  The rights , which  expire Nov. 21 ,</arg>
+        <arg n="M">for $ 100  each</arg>
+</example>
+
+<note>
+This is really &quot;the rights to buy (something) for $100 each&quot;, but the
+&quot;buy&quot; has been elided.
+</note>
+
+</roleset>
+
+<roleset id="exercise.02" name="athletics" vncls="41.1.1">
+<roles>
+  <role descr="athlete" n="0">
+		
+  <vnrole vncls="41.1.1" vntheta="Agent"/></role>
+
+</roles>
+
+<example name="Go team!">
+  <text>
+    John exercises every day.
+  </text>
+  <arg n="0">John</arg>
+  <rel>exercises</rel>
+  <arg f="TMP" n="M">every day</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

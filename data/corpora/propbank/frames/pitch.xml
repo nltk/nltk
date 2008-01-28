@@ -1,0 +1,138 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="pitch">
+<note>
+Frames file for 'pitch' based on sentences in financial subcorpus and
+automatic expansion via verbnet.
+</note>
+
+<roleset id="pitch.01" name="throw" vncls="17.1">
+<roles>
+  <role descr="thrower" n="0">
+	<vnrole vncls="17.1" vntheta="Agent"/></role>
+   <role descr="thing thrown" n="1">
+	<vnrole vncls="17.1" vntheta="Patient"/></role>
+   <role descr="thrown at, to, over, etc" n="2">
+	<vnrole vncls="17.1" vntheta="Destination"/></role>
+ </roles>
+
+<example name="another direction" src="throw.01">
+<text>
+    ``Stocks were being pitched *trace* out of windows at any price.'' 
+</text>
+        <rel>pitched</rel>
+        <arg n="1">*trace* -&gt;  Stocks</arg>
+        <arg f="DIR" n="2">out of windows</arg>
+        <arg n="M">at any price</arg>
+</example>
+
+<example name="boring example" src="fling.01">
+<inflection aspect="ns" form="gerund" person="ns" tense="ns" voice="ns"/>
+<text>
+    He already has achieved vertical integration on a limited scale:
+    Quebecor can put a weekly newspaper on almost any Quebec doorstep
+    without using outside help, from chopping down the tree to making
+    the newsprint to *trace* pitching it up onto the porch. 
+</text>
+        <arg n="0">*trace* -&gt;  Quebecor</arg>
+        <rel>pitching</rel>
+        <arg n="1">it</arg>
+        <arg f="up" n="2">onto the porch</arg>
+</example>
+
+<example name="pitching as advertising">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    But now, Charlie Brown is about *trace* to start *trace* pitching
+    everything from Chex Party Mix to light bulbs. 
+</text>
+        <arg n="0">*trace* -&gt; *trace* -&gt;  Charlie Brown</arg>
+        <rel>pitching</rel>
+        <arg n="1">everything from Chex Party Mix to light bulbs</arg>
+</example>
+
+</roleset>
+
+<roleset id="pitch.02" name="set a musical tone" vncls="-">
+<roles>
+  <role descr="setter of tone, agent" n="0"/>
+  <role descr="tone" n="1"/>
+  <role descr="value" n="2"/>
+</roles>
+
+<example name="almost adjectival">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    It isn't every day that we hear a Violetta who can sing the first
+    act's high-flying music with all the little notes perfectly
+    pitched *trace* and neatly stitched together. 
+</text>
+        <arg f="MNR" n="M">perfectly</arg>
+        <rel>pitched</rel>
+        <arg n="1">*trace* -&gt;  all the little notes</arg>
+</example>
+
+<example name="more args">
+  <inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+  <text>
+     John pitches his voice as low as possible in order to attract babes.
+  </text>
+  <arg n="0">John</arg>
+  <rel>pitches</rel>
+  <arg n="1">his voice</arg>
+  <arg n="2">as low as possible</arg>
+  <arg f="PNC" n="m">in order to attract babes</arg>
+</example>
+
+<note>
+Verbal usage of this sense is vanishingly rare.
+</note>
+
+</roleset>
+
+<roleset id="pitch.04" vncls="-" name="advertise in strongly positive terms">
+<roles>
+  <role descr="advertiser, agent" n="0"/>
+  <role descr="thing touted" n="1"/>
+  <role descr="attribute of arg1" n="2"/>
+  <role descr="recipient" n="3"/>
+</roles>
+
+<example name="sales pitch">
+  <inflection person="third" tense="present" aspect="ns" voice="active" form="full"/>
+  <text>
+     Using cinema, television and print ads, the company pitches
+     Southern Comfort as a grand old drink of the antebellum American
+     South. 
+  </text>
+  <arg n="m" f="MNR">Using cinema, television and print ads</arg>
+  <arg n="0"        >the company</arg>
+  <rel              >pitches</rel>
+  <arg n="1"        >Southern Comfort</arg>
+  <arg n="2" f="as">a grand old drink of the antebellum American South</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="pitch_in">
+
+<roleset id="pitch.03" vncls="-" name="pitch in: cooperate">
+<roles>
+  <role n="0"  descr="cooperators"/>
+</roles>
+
+<example name="let's work together">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+     ``Everybody pretty much pitched in and cooperated,'' said Stan
+     Perez, a sergeant with the California Highway Patrol. 
+  </text>
+  <arg n="0"        >Everybody</arg>
+  <arg n="m" f="ADV">pretty much</arg>
+  <rel              >pitched in</rel>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

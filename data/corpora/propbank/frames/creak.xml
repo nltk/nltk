@@ -1,0 +1,27 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="creak">
+<note>
+  Frames file for 'creak'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="creak.01" name="to make a squeaking sound" vncls="43.2">
+<roles> 
+  <role descr="entity creaking" n="0"><vnrole vncls="43.2" vntheta="Agent"/></role>  
+</roles>
+
+<example name="intransitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ As Ms. Johnson stands outside the Hammack house after [*-2] winding up her chores there , the house begins [*-1] to creak and sway .
+</text>
+	<arg n="0">[*-1] -&gt;  the house</arg>
+	<rel>creak</rel>
+</example>
+
+</roleset>
+</predicate>
+
+
+</frameset>

@@ -1,0 +1,47 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="benefit">
+<note>
+  Frames file for 'benefit' based on sentences in financial
+  subcorpus.  No access to verbnet.  No comparison.
+</note>
+
+<roleset id="benefit.01" name="give advantage to">
+<roles>
+  <role descr="giver" n="0"/>
+  <role descr="benefactive, given-to" n="1"/>
+</roles>
+
+<example name="normal order">
+<text>
+    Mr. Edelman declined to specify what prompted the recent moves,
+    saying they are meant only *trace* to benefit shareholders when
+    ``the company is on a roll.''
+</text>
+        <arg n="0">*trace* -&gt;  they</arg>
+        <rel>benefit</rel>
+        <arg n="1">shareholders</arg>
+        <arg f="TMP" n="M">when ``the company is on a roll</arg>
+</example>
+
+
+<example name="agent in PP">
+<text>
+    The Continental Baking business benefited from higher margins on
+    bread and on increased cake sales, it added. 
+</text>
+        <arg n="1">The Continental Baking business</arg>
+        <rel>benefited</rel>
+        <arg f="from" n="0">higher margins on bread and on increased
+        cake sales</arg> 
+</example>
+
+<note>
+The &quot;benefited from&quot; construction is by far the more common, but it
+seems right to leave the &quot;entity benefiting&quot; in the Arg1/&quot;patient&quot;
+position, even if this means having many Arg0-from annotations.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

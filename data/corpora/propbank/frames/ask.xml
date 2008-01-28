@@ -1,0 +1,138 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="ask">
+<note>
+  Frames file for 'ask' based on survey of initial sentences of big
+  corpus and comparison with 'say'
+</note>
+
+<roleset id="ask.01" name="ask a question" vncls="37.1-1">
+<roles>
+  <role descr="asker" n="0">
+		
+  <vnrole vncls="37.1-1" vntheta="Agent"/></role>
+
+  <role descr="question" n="1">
+		
+  <vnrole vncls="37.1-1" vntheta="Topic"/></role>
+
+  <role descr="hearer" n="2">
+		
+  <vnrole vncls="37.1-1" vntheta="Recipient"/></role>
+
+  <role descr="attributive" n="3"/>
+</roles>
+
+<example name="direct question">
+  <text>
+    The mathematics section of the widely used California Achievement
+    Test asks fifth graders &quot;What is another name for the Roman
+    numeral IX?&quot;
+  </text>
+  <arg n="0">The mathematics section of the widely used
+  California Achievement Test</arg>
+  <rel>asks</rel>
+  <arg n="2">fifth graders</arg>
+  <arg n="1">&quot;What is another name for the Roman numeral IX?&quot;</arg>
+</example>
+
+<example name="indirect question">
+  <text>
+    *trace* ask him about this law he tried to pass.
+  </text>
+  <arg n="0">*trace*</arg>
+  <rel>ask</rel>
+  <arg n="2">him</arg>
+  <arg f="about" n="1">this law he tried to pass</arg>
+</example>
+
+<example name="proof of hearer as arg2">
+  <text>
+    John asked a question of his professor.
+  </text>
+  <arg n="0">John</arg>
+  <rel>asked</rel>
+  <arg n="1">a question</arg>
+  <arg f="of" n="2">his professor</arg>
+</example>
+
+<note>
+Please refer to the 'say' frames for the proper handling of the
+'inverted' and 'fronted' cases.
+</note>
+
+</roleset>
+
+<roleset id="ask.02" name="ask a favor, ask a request, ask for" vncls="37.1-1">
+<roles>
+  <role descr="asker" n="0">
+		
+  <vnrole vncls="37.1-1" vntheta="Agent"/></role>
+
+  <role descr="favor" n="1">
+		
+  <vnrole vncls="37.1-1" vntheta="Topic"/></role>
+
+  <role descr="hearer" n="2">
+		
+  <vnrole vncls="37.1-1" vntheta="Recipient"/></role>
+
+</roles>
+
+<example name="say please">
+  <text>
+    Argentina will ask creditor banks to halve its foreign debt of $64
+    billion.
+  </text>
+  <arg n="0">Argentina</arg>
+  <arg f="MOD" n="m">will</arg>
+  <rel>ask</rel>
+  <arg n="2">creditor banks</arg>
+  <arg n="1">to halve its foreign debt of $64 billion.</arg>
+</example>
+
+<example name="no hearer">
+  <text>
+    The National Institutes of Health asked for an HHS review of its
+    plan to implant fetal tissue into the brain of a patient suffering
+    from Alzheimers.
+  </text>
+  <arg n="0">The National Institutes of Health</arg>
+  <rel>asked</rel>
+  <arg f="for" n="1">an HHS review of its plan to implant fetal tissue
+  into the brain of a patient suffering from Alzheimers.</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="ask.03" name="buying and selling" vncls="-">
+<roles>
+  <role descr="seller" n="0"/>
+  <role descr="commodity" n="1"/>
+  <role descr="buyer" n="2"/>
+  <role descr="asking price" n="3"/>
+</roles>
+
+<example name="toldja">
+  <text>
+    The company was asking $100 million for an operation said to be
+    loseing about $20 million a year.
+  </text>
+  <arg n="0">The company</arg>
+  <rel>asking</rel>
+  <arg n="3">$100 million</arg>
+  <arg f="for" n="1">an operation said to be losing about $20 million
+  a year.</arg>
+</example>
+
+<note>
+The buyer may or may not appear in any sentences; I included it for
+completeness and comparability to 'sell'
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="tamper">
+<note>
+  Frames file for 'tamper' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="tamper.01" name="to interfere" vncls="-">
+<roles>
+  <role descr="interferer, agent" n="0"/>
+  <role descr="tamper with" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ David Sanders , a longtime pilot , bristles at the mere suggestion that a union might tamper with his flight schedule .
+</text>
+	<arg n="0">a union</arg>
+	<arg f="MOD" n="M">might</arg>
+	<rel>tamper</rel>
+	<arg f="with" n="1">his flight schedule</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

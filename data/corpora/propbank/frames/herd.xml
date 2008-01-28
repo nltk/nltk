@@ -1,0 +1,52 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="herd">
+<note>
+Frames file for 'herd' based on sentences in wsj and automatic
+expansion via verbnet.
+</note>
+
+<roleset id="herd.01" name="put into a group" vncls="47.5.2">
+<roles>
+	<role descr="agent, entity causing some grouping" n="0">
+		
+  <vnrole vncls="47.5.2" vntheta="Agent"/></role>
+
+	<role descr="theme, thing being included in some group" n="1">
+		
+  <vnrole vncls="47.5.2" vntheta="Theme"/></role>
+
+	<role descr="group" n="2"/>
+</roles>
+
+<example name="uninteresting transitive">
+<inflection aspect="progressive" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+    ``Institutions are herding animals,'' says Peter Anderson, who
+    heads the pension-fund management arm of IDS Financial Services
+    Inc. 
+</text>
+        <arg n="0">Institutions</arg>
+        <rel>herding</rel>
+        <arg n="1">animals</arg>
+</example>
+<note>
+I think that sentence is misparsed, too; it's not that the
+institutions are causing some animals to group together, but that
+institutions are animals that cause something else (customers?
+investors?) to group together.
+</note>
+
+<example name="both theme and group" src="assemble.02">
+  <text>
+    John herded the cats into a tight cluster.
+  </text>
+  <arg n="0">John</arg>
+  <rel>herded</rel>
+  <arg n="1">the cats</arg>
+  <arg f="into" n="2">a tight cluster</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,102 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="firm">
+<note>
+  Frames file for 'firm' based on sentences in financial subcorpus.
+  No access to verbnet.  No comparison.  Not really a verb, imho.
+</note>
+
+<roleset id="firm.01" name="(make) become firm" vncls="45.4">
+<roles>
+  <role descr="agent, entity making something else become firm" n="0">
+		
+  <vnrole vncls="45.4" vntheta="Agent"/></role>
+
+  <role descr="thing becoming firm" n="1">
+		
+  <vnrole vncls="45.4" vntheta="Patient"/></role>
+
+  <role descr="EXT, amount risen" n="2"/>
+  <role descr="start point" n="3"/>
+  <role descr="end point" n="4"/>
+</roles>
+
+<example name="most sensical usage">
+<text>
+    ...stock prices firmed only modestly in response to the report and
+    then faltered. 
+</text>
+        <arg n="1">stock prices</arg>
+        <rel>firmed</rel>
+        <arg f="MNR" n="M">only modestly</arg>
+        <arg f="ADV" n="M">in response to the report</arg>
+</example>
+
+<example name="agentive">
+<text>
+    It showed some early resilience after central bank support firmed
+    sterling... 
+</text>
+        <arg n="0">central bank support</arg>
+        <rel>firmed</rel>
+        <arg n="1">sterling</arg>
+</example>
+
+<example name="quantifiable">
+<text>
+    Pfizer gained 1 7/8 to 67 5/8, Schering-Plough added 2 1/4 to 75
+    3/4, Eli Lilly rose 1 3/8 to 62 1/8 and Upjohn firmed 3/4 to 38. 
+</text>
+        <arg n="1">Upjohn</arg>
+        <rel>firmed</rel>
+        <arg f="EXT" n="2">3\/4</arg>
+        <arg f="to" n="4">38</arg>
+</example>
+
+<note>
+This totally violates my lexicon, to make this a quantifiable verb.
+Icky icky icky.
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="firm_up">
+
+<roleset id="firm.02" name="make/become firm" vncls="45.4">
+<roles>
+  <role descr="agent, entity making something else become firm" n="0">
+		
+  <vnrole vncls="45.4" vntheta="Agent"/></role>
+
+  <role descr="thing becoming firm" n="1">
+		
+  <vnrole vncls="45.4" vntheta="Patient"/></role>
+
+</roles>
+
+<example name="transitive">
+<text>
+    He argues that efforts *trace* to firm up prices will be
+    undermined by producers' plans to expand production capacity. 
+</text>
+        <arg n="0"/>
+        <rel>[ firm] [ up]</rel>
+        <arg n="1">prices</arg>
+</example>
+
+<example name="intransitive">
+  <text>
+    John always decides *trace* to firm up after the holidays.
+  </text>
+  <arg n="0">*trace* -&gt; John</arg>
+  <rel>firm up</rel>
+  <arg f="TMP" n="m">after the holidays</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

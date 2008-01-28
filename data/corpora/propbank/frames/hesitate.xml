@@ -1,0 +1,45 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="hesitate">
+<note>
+  Frames file for 'hesitate' based on sentences in financial
+  subcorpus.  Verbnet entry 53.1, no other framed members.  No
+  comparison.
+</note>
+
+<roleset id="hesitate.01" name="hesitate" vncls="53.1">
+<roles>
+  <role descr="hesitator" n="0">
+		
+  <vnrole vncls="53.1" vntheta="Agent"/></role>
+
+  <role descr="secondary action" n="1"><vnrole vncls="53.1" vntheta="Theme"/></role>
+</roles>
+
+<example name="with secondary action">
+<text>
+    In years past, the ad industry's most distinguished executives
+    didn't hesitate to excorciate Mr. Achenbaum. 
+</text>
+        <arg f="TMP" n="M">In years past</arg>
+        <arg n="0">the ad industry 's most distinguished executives</arg>
+        <arg f="NEG" n="M">n't</arg>
+        <rel>hesitate</rel>
+        <arg n="1">to excorciate Mr. Achenbaum</arg>
+</example>
+
+
+<example name="no secondary action">
+<text>
+    Many companies are hesitating.
+</text>
+        <arg n="0">Many companies</arg>
+        <rel>hesitating</rel>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

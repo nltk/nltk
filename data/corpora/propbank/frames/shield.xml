@@ -1,0 +1,46 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="shield">
+<note>
+  Frames file for 'shield' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="shield.01" name="protect" vncls="-">
+<roles>
+  <role descr="protector" n="0"/>
+  <role descr="protected" n="1"/>
+  <role descr="danger" n="2"/>
+</roles>
+
+<example name="all args">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Researchers at Sandia National Laboratories in Albuquerque, N.M.,
+    reported they went so far as *trace* to take a ``cold fusion''
+    experiment and three neutron detectors into a tunnel under 300
+    feet of granite *trace* to shield the detectors from cosmic rays. 
+</text>
+        <arg n="0">*trace* -&gt; *trace* -&gt;  they</arg>
+        <rel>shield</rel>
+        <arg n="1">the detectors</arg>
+        <arg f="from" n="2">cosmic rays</arg>
+</example>
+
+<example name="unstated danger">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    But there were enough promoters announcing the end of history (in
+    this case suspension of normal laws of economic gravity) for
+    society to continue *trace* shielding its eyes. 
+</text>
+        <arg n="0">*trace* -&gt;  society</arg>
+        <rel>shielding</rel>
+        <arg n="1">its eyes</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

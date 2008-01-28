@@ -1,0 +1,181 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="lock">
+<note>
+  Frames file for 'lock' based on sentences in financial subcorpus.
+  Verbnet class tape-22.4, other framed members include clamp, link,
+  tie.  
+</note>
+
+<roleset id="lock.01" name="attach" vncls="22.4">
+<roles>
+  <role descr="agent, entity doing the locking" n="0">
+		
+  <vnrole vncls="22.4" vntheta="Agent"/></role>
+
+  <role descr="patient, thing(s) being locked" n="1">
+		
+  <vnrole vncls="22.4" vntheta="Patient1"/></role>
+
+  <role descr="instrument, string, lock" n="2">
+		
+  <vnrole vncls="22.4" vntheta="Patient2"/></role>
+
+</roles>
+
+<example name="passive">
+<text>
+    ``Then they said, `By the way, two of the doors are locked.'''
+</text>
+        <arg n="1">two of the doors</arg>
+        <rel>locked</rel>
+</example>
+
+<example name="two things connected">
+<text>
+    He said the move toward standard operating systems means customers
+    aren't locked *trace* into buying from their traditional computer
+    supplier and can force prices down. 
+</text>
+        <arg f="NEG" n="M">n't</arg>
+        <rel>locked</rel>
+        <arg n="1">*trace* -&gt; customers&gt;</arg>
+        <arg f="into" n="1">buying from their traditional computer
+        supplier</arg>
+</example>
+
+<example name="with instrument">
+  <text>
+    John locked his expensive bike with 50 yards of dental floss.
+  </text>
+  <arg n="0">John</arg>
+  <rel>locked</rel>
+  <arg n="1">his expensive bike</arg>
+  <arg f="with" n="2">50 yards of dental floss</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="lock_in">
+
+<roleset id="lock.02" name="establish surely" vncls="-">
+<roles>
+  <role descr="agent, fixer" n="0"/>
+  <role descr="thing made" n="1"/>
+  <role descr="benefactive" n="2"/>
+</roles>
+
+<example name="transitive">
+<text>
+    Most other supercomputer manufacturers have yet to adopt the Posix
+    standard, Mr. Paluck said, adding that they prefer to maintain
+    proprietary systems that *trace* lock in customers. 
+</text>
+        <arg n="0">*trace* -&gt;  that -&gt; proprietary systems</arg>
+        <rel>[ lock] [ in]</rel>
+        <arg n="1">customers</arg>
+</example>
+
+<example name="with attribute">
+<text>
+    When it occurs, the traders place orders via computers to buy the
+    basket of stocks in whichever market is cheaper and sell them in
+    the more expensive market; they lock in the difference in price as
+    profit. 
+</text>
+        <arg n="0">they</arg>
+        <rel>[ lock] [ in]</rel>
+        <arg n="1">the difference in price</arg>
+        <arg f="as" n="2">profit</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="lock_up">
+
+<roleset id="lock.03" name="throw in jail" vncls="-">
+<roles>
+  <role descr="officer of the court" n="0"/>
+  <role descr="criminal" n="1"/>
+  <role descr="secondary predication" n="2"/>
+</roles>
+
+<example name="criminal intent">
+  <text>
+    John was locked up *trace* as a menace to society.
+  </text>
+  <arg n="1">*trace* -&gt; John</arg>
+  <rel>locked up</rel>
+  <arg f="as" n="2">a menace to society</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="lock.04" name="secure" vncls="-">
+<roles>
+  <role descr="entity making something secure" n="0"/>
+  <role descr="thing made secure" n="1"/>
+</roles>
+
+<example name="got it">
+<text>
+    In any settlement, Warner is almost certain to demand rights to
+    most of the 50 or so projects *trace* Mr. Guber and Mr. Peters
+    have locked up *trace* for the next few years, notably sequels to
+    ``Batman.'' 
+</text>
+        <arg n="0">Mr. Guber and Mr. Peters</arg>
+        <rel>[ locked] [ up]</rel>
+        <arg n="1">*trace* -&gt; *trace* -&gt; the 50 or so projects</arg>
+        <arg f="TMP" n="M">for the next few years</arg>
+</example>
+
+<note>
+These two senses are very similar.
+</note>
+
+</roleset>
+</predicate>
+<predicate lemma="lock_out">
+
+<roleset id="lock.05" name="exclude" vncls="-">
+<roles>
+  <role descr="agent, entity being excluding" n="0"/>
+  <role descr="thing excluded" n="1"/>
+  <role descr="excluded from" n="2"/>
+</roles>
+
+<example name="transitive">
+<text>
+    The risk is that Jaguar's share price could slump if GM's
+    agreement with Jaguar effectively locks out its U.S. rival. 
+</text>
+        <arg n="0">GM 's agreement with Jaguar</arg>
+        <arg f="MNR" n="M">effectively</arg>
+        <rel>[ locks] [ out]</rel>
+        <arg n="1">its U.S. rival</arg>
+</example>
+
+<example name="oops">
+  <text>
+    John was locked out *trace* of his house.
+  </text>
+  <arg n="1">*trace* -&gt; John</arg>
+  <rel>locked out</rel>
+  <arg f="of" n="2">his house</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

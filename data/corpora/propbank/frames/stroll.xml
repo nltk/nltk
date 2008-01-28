@@ -1,0 +1,43 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="stroll">
+<note>
+  Frames file for 'stroll' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="stroll.01" name="to walk at a leisurely pace" vncls="51.3.2">
+<roles>
+  <role descr="walker, stroller" n="0">
+        <vnrole vncls="51.3.2" vntheta="Theme"/></role>
+  <role descr="path" n="1">
+        <vnrole vncls="51.3.2" vntheta="Location"/></role>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ They 're hiring models [0] [*T*-1] to stroll the aisles [*-2] sporting their jewels , and they 're even beginning [*-4] to borrow a perennial favorite of the beauty business -- [*] offering a gift when consumers make a purchase [*T*-3] .
+</text>
+	<arg n="0">[*T*-1] -&gt;  [0] -&gt;  models</arg>
+	<rel>stroll</rel>
+	<arg n="1">the aisles</arg>
+	<arg f="ADV" n="M">[*-2] sporting their jewels</arg>
+</example>
+
+
+<example name="intransitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ While she applauds the fact that more Americans are getting up from the television [*-2] to stroll or garden , she says [0] the percentage of Americans who [*T*-1] do `` real exercise [0] [*T*-3] to build the heart '' is only 10 % to 20 % [*U*] .
+</text>
+	<arg n="0">[*-2] -&gt;  more Americans</arg>
+	<rel>stroll</rel>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

@@ -1,0 +1,42 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="vitiate">
+<note>
+  Frames file for 'vitiate' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="vitiate.01" name="corrupt, impair, invalidate" vncls="-">
+<roles>
+  <role descr="corrupter, agent" n="0"/>
+  <role descr="patient, thing corrupted (etc)" n="1"/>
+</roles>
+
+<example name="run-on sentences R us">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    4. When a RICO TRO is being sought, the prosecutor is required, at
+       the earliest appropriate time, to state publicly that the
+       government's request for a TRO, and eventual forfeiture, is
+       made in full recognition of the rights of third parties -- that
+       is, in requesting the TRO, the government will not seek to
+       disrupt the normal, legitimate business activities of the
+       defendant; will not seek through use of the relation-back
+       doctrine to take from third parties assets legitimately
+       transferred to them; will not seek [*-6] to vitiate legitimate
+       business transactions occurring between the defendant and third
+       parties; and will, in all other respects, assist the court in
+       ensuring that the rights of third parties are protected,
+       through proceeding under } RICO { and otherwise.  
+</text>
+        <arg n="0">[*-6] -&gt;  the government</arg>
+        <rel>vitiate</rel>
+        <arg n="1">legitimate business transactions occurring between
+        the defendant and third parties</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="precipitate">
+<note>
+  Frames file for 'precipitate' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="precipitate.01" name="to cause to happen" vncls="-">
+<roles>
+  <role descr="cause" n="0"/>
+  <role descr="precipitated action" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ The British press , [*-2] making a mountain out of a molehill , precipitated an unnecessary economic crisis by [*-2] portraying Mrs. Thatcher as an autocrat who [*T*-1] had thrown economic policy into confusion by [*-3] driving a respected figure from her government .
+</text>
+	<arg n="0">The British press</arg>
+	<arg f="ADV" n="M">[*-2] making a mountain out of a molehill</arg>
+	<rel>precipitated</rel>
+	<arg n="1">an unnecessary economic crisis</arg>
+	<arg f="MNR" n="M">by [*-2] portraying Mrs. Thatcher as an autocrat who [*T*-1] had thrown economic policy into confusion by [*-3] driving a respected figure from her government</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="sandwich">
+<note>
+  Frames file for 'sandwich' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="sandwich.01" name="put between two things" vncls="-">
+<roles>
+  <role descr="sandwich builder" n="0"/>
+  <role descr="lunch meat (eg)" n="1"/>
+  <role descr="bread (eg)" n="2"/>
+</roles>
+
+<example name="literal or metaphorical?">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    He sandwiched his praise of constitutional meat between large
+    loaves of bilious commentary. 
+</text>
+        <arg n="0">He</arg>
+        <rel>sandwiched</rel>
+        <arg n="1">his praise of constitutional meat</arg>
+        <arg f="between" n="2">large loaves of bilious commentary</arg>
+</example>
+
+<note>
+I really think that's a beautiful sentence.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

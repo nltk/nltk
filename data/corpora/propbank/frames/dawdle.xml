@@ -1,0 +1,42 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="dawdle">
+<note>
+  Frames file for 'dawdle' based on sentences in wsj.  Verbnet entry 53.1.
+</note>
+
+<roleset id="dawdle.01" vncls="53.1" name="not be prompt">
+<roles>
+  <role n="0"  descr="dawdler"/>
+</roles>
+
+<example name="actually nominal">
+<inflection person="ns" tense="ns" aspect="ns" voice="ns" form="gerund"/>
+<text>
+    But now, with large amounts being raised from investors, the
+    government's dawdling on regulation and disclosure requirements
+    has a more dangerous aspect. 
+</text>
+	<arg n="0">the government's</arg>
+	<rel>dawdling</rel>
+</example>
+
+<example name="verbal">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+     John dawdled at school for hours, not wanting to go home to face
+     a violent Mary.
+  </text>
+  <arg n="0"        >John</arg>
+  <rel              >dawdled</rel>
+  <arg n="m" f="LOC">at school</arg>
+  <arg n="m" f="TMP">for hours</arg>
+  <arg n="m" f="ADV">not wanting to go home to face a violent Mary</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

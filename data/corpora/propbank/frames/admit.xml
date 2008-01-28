@@ -1,0 +1,94 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="admit">
+<note>
+Frames file for 'admit' based on sentences in financial subcorpus and
+automatic expansion via verbnet.
+</note>
+
+<roleset id="admit.01" name="acknowledge truth" vncls="29.5">
+<roles>
+  <role descr="admitter" n="0">
+	<vnrole vncls="29.5" vntheta="Agent"/></role>
+   <role descr="truth" n="1">
+	<vnrole vncls="29.5" vntheta="Predicate"/></role>
+   <role descr="Hearer" n="2">
+	<vnrole vncls="29.5" vntheta="Theme"/></role>
+</roles>
+
+<example name="admitted fragmentary S">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    The charity admits spending a lot on fund raising, but says that
+    was necessary to establish a donor base it can tap at much lower
+    cost in years to come. 
+</text>
+        <arg n="0">The charity</arg>
+        <rel>admits</rel>
+        <arg n="1">spending a lot on fund raising</arg>
+</example>
+
+<example name="admit a full S, inverted">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    ``We've had a few bombs,'' admits *trace* Mr. Peters. 
+</text>
+        <rel>admits</rel>
+        <arg n="1">*trace* -&gt;  We've had a few bombs</arg>
+        <arg n="0">Mr. Peters</arg>
+</example>
+
+<example name="admit a PP">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    Ramon Garcia, the Asset Trust's executive trustee, admits to what
+    he calls  ``temporary setbacks.'' 
+</text>
+        <arg n="0">Ramon Garcia, the Asset Trust's executive trustee,</arg>
+        <rel>admits</rel>
+        <arg f="to" n="1">what he calls ``temporary setbacks</arg>
+</example>
+
+<example name="with hearer">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John admitted to Mary that he secretly loathed her haircut.
+  </text>
+  <arg n="0">John</arg>
+  <rel>admitted</rel>
+  <arg f="to" n="2">Mary</arg>
+  <arg n="1">he secretly loathed her haircut</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="admit.02" name="allow to enter" vncls="-">
+<roles>
+  <role descr="allower (ticket)" n="0"/>
+  <role descr="enterer" n="1"/>
+  <role descr="place entered" n="2"/>
+</roles>
+
+<example name="admit one">
+  <inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+  <text>
+    John's rugged good looks admit him to the highest circles of
+    clandestine intelligence.
+  </text>
+  <arg n="0">John's rugged good looks</arg>
+  <rel>admit</rel>
+  <arg n="1">him</arg>
+  <arg f="to" n="2">the highest circles of clandestine intelligence</arg>
+</example>
+
+<note>
+This probably won't occur as a verb, but it will appear as a derived
+nominal (admission), so we might as well set up the structure now.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

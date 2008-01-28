@@ -1,0 +1,52 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="resent">
+<note>
+  Frames file for 'resent' based on sentence in financial subcorpus.
+  Verbnet class resent 31.2, no mention of other members.  Comparison
+  with 'like'.
+</note>
+
+<roleset id="resent.01" name="resent" vncls="31.2">
+<roles>
+  <role descr="resenter" n="0">
+		
+  <vnrole vncls="31.2" vntheta="Experiencer"/></role>
+
+  <role descr="thing or person resented" n="1">
+		
+  <vnrole vncls="31.2" vntheta="Cause"/></role>
+
+  <role descr="because-of" n="2"/>
+</roles>
+
+<example name="sentential resention">
+<text>
+    Corporate executives resent that their company's stock has been
+    transformed into a nameless piece of a stock-index basket. 
+</text>
+	<arg n="0">Corporate executives</arg>
+	<rel>resent</rel>
+	<arg n="1">their company's stock has been transformed into a
+	nameless piece of a stock-index basket</arg> 
+</example>
+
+<example name="with purpose">
+  <text>
+    John resents Mary for her perfect grade-point average.
+  </text>
+  <arg n="0">John</arg>
+  <rel>resents</rel>
+  <arg n="1">Mary</arg>
+  <arg f="for" n="2">her perfect grade-point average</arg>
+</example>
+
+<note>
+Note that args 1 and 2 can easily be merged: &quot;John resent's Mary's
+perfect GPA.&quot;  This is why the reason for resentment deserves to be a
+full-fledged Arg rather than an ArgM-PRP.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

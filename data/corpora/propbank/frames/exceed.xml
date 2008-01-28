@@ -1,0 +1,60 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="exceed">
+<note>
+  Frames file for 'exceed' based on sentences in financial subcorpus.
+  No access to verbnet.  No comparison.
+</note>
+
+<roleset id="exceed.01" name="be more than">
+<roles>
+  <role descr="thing that's more" n="0"/>
+  <role descr="thing that's less" n="1"/>
+  <role descr="margin, difference" n="2"/>
+</roles>
+
+<example name="just transitive">
+<text>
+    But the automotive parts and aerospace concern expects that net
+    for the year ending Nov. 30 will exceed last fiscal year's net of
+    $70 million, or $2.19 a share, primarily because of $200 million
+    in gains from sales of discontinued operations. 
+</text>
+        <arg n="0">net for the year ending Nov. 30</arg>
+        <arg f="MOD" n="M">will</arg>
+        <rel>exceed</rel>
+        <arg n="1">last fiscal year's net of $70 million, or $2.19 a
+        share</arg> 
+</example>
+
+<example name="margin, as PP">
+<text>
+    It expects to post a loss of 6.4 billion yen for the year ending
+    tomorrow and its liabilities currently exceed its assets by about
+    13.8 billion yen.
+</text>
+        <arg n="0">its liabilities</arg>
+        <arg f="TMP" n="M">currently</arg>
+        <rel>exceed</rel>
+        <arg n="1">its assets</arg>
+        <arg f="by" n="2">about 13.8 billion yen</arg>
+</example>
+
+<example name="margin as adverb">
+<text>
+    David J. Lothson, an industry analyst for PaineWebber Group Inc.,
+    said Johnson &amp; Johnson's results slightly exceeded his
+    expectations for the third quarter. 
+</text>
+        <arg n="0">Johnson &amp; Johnson's results</arg>
+        <arg f="MNR" n="2">slightly</arg>
+        <rel>exceeded</rel>
+        <arg n="1">his expectations for the third quarter</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

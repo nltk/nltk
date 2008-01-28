@@ -1,0 +1,52 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="overwhelm">
+<note>
+Frames file for 'overwhelm' based on sentences in financial subcorpus
+and automatic expansion via verbnet.
+</note>
+
+<roleset id="overwhelm.01" name="overwhelm" vncls="31.1">
+<roles>
+	<role descr="overwhelmer" n="0">
+		
+  <vnrole vncls="31.1" vntheta="Cause"/></role>
+
+	<role descr="patient, overwhelmed" n="1">
+		
+  <vnrole vncls="31.1" vntheta="Experiencer"/></role>
+
+	<role descr="instrument or manner" n="2"/>
+</roles>
+
+<example name="just transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    The issue's smooth absorption eased fears that supply would
+    overwhelm demand in coming sessions, traders said. 
+</text>
+        <arg n="0">supply</arg>
+        <arg f="MOD" n="M">would</arg>
+        <rel>overwhelm</rel>
+        <arg n="1">demand</arg>
+        <arg f="TMP" n="M">in coming sessions</arg>
+</example>
+
+<example name="all args">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John overwhelmed his dissertation committee with the brilliance of
+    his arguments.
+  </text>
+  <arg n="0">John</arg>
+  <rel>overwhelmed</rel>
+  <arg n="1">his dissertation committee</arg>
+  <arg f="with" n="2">the brilliance of his arguments</arg>
+</example>
+
+<note>
+Only use the instrument arg when the agent arg is also present.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

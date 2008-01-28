@@ -1,0 +1,75 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="connect">
+<note>
+Frames file for 'connect' based on sentences in financial subcorpus
+and automatic expansion via verbnet.
+</note>
+
+<roleset id="connect.01" name="attach" vncls="22.1-2">
+<roles>
+	<role descr="agent, entity doing the tying" n="0">
+		
+  <vnrole vncls="22.1-2" vntheta="Agent"/></role>
+
+	<role descr="patient, thing(s) being tied" n="1">
+		
+  <vnrole vncls="22.1-2" vntheta="Patient1"/></role>
+
+	<role descr="instrument, string" n="2">
+		
+  <vnrole vncls="22.1-2" vntheta="Patient2"/></role>
+
+</roles>
+
+<example name="plural arg1">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    Machines using the 486 are expected to challenge higher-priced
+    work stations and minicomputers in applications such as so-called
+    servers, which *trace* connect groups of computers together, and
+    in computer-aided design. 
+</text>
+        <arg n="0">*trace* -&gt;  which -&gt;  so-called servers</arg>
+        <rel>connect</rel>
+        <arg n="1">groups of computers</arg>
+        <arg n="M">together</arg>
+</example>
+
+<example name="conjoined arg1's">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    It is a maze of halls that *trace* connects film rooms, elaborate
+    spas and weight-training centers that testify to a richer, more
+    free-spending era. 
+</text>
+        <arg n="0">*trace* -&gt;  that -&gt;  a maze</arg>
+        <rel>connects</rel>
+        <arg n="1">film rooms, elaborate spas and weight-training
+        centers that testify to a richer, more free-spending era</arg> 
+</example>
+
+<example name="split arg1's">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    The subsidiary also increased reserves by $140 million, however,
+    and set aside an additional $25 million for claims connected with
+    Hurricane Hugo. 
+</text>
+        <rel>connected</rel>
+        <arg n="1">*trace* -&gt;  claims</arg>
+        <arg f="with" n="1">Hurricane Hugo</arg>
+</example>
+
+<example name="with instrument">
+  <text>
+    John connected the fragments of his coffee cup with duct tape.
+  </text>
+  <arg n="0">John</arg>
+  <rel>connected</rel>
+  <arg n="1">the fragments of his coffee cup</arg>
+  <arg f="with" n="2">duct tape</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,40 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="jiggle">
+<note>
+  Frames file for 'jiggle' based on sentences in wsj.  Verbnet entry
+  47.3, Framenet entry Body movement.
+</note>
+
+<roleset id="jiggle.01" name="jiggle" vncls="47.3">
+<roles>
+  <role descr="causer of jiggling" n="0"><vnrole vncls="47.3" vntheta="Agent"/></role>
+  <role descr="thing jiggling" n="1"><vnrole vncls="47.3" vntheta="Theme"/></role>
+</roles>
+
+<example name="ergative">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    Anatol Pawlowski's leg begins [*-1] jiggling beneath his desk.
+</text>
+        <arg n="1">[*-1] -&gt;  Anatol Pawlowski's leg</arg>
+        <rel>jiggling</rel>
+        <arg f="LOC" n="M">beneath his desk</arg>
+</example>
+
+<example name="agentive">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John jiggled the light switch, but the light didn't come on.
+  </text>
+  <arg n="0">John</arg>
+  <rel>jiggled</rel>
+  <arg n="1">the light switch</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

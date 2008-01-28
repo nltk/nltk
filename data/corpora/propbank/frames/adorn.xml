@@ -1,0 +1,43 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="adorn">
+<note>
+  Frames file for 'adorn' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="adorn.01" name="to decorate with or as if with ornaments" vncls="9.8 25.3">
+<roles>
+  <role descr="decorator, agent" n="0"><vnrole vncls="9.8" vntheta="Agent"/><vnrole vncls="25.3" vntheta="Agent"/></role>
+  <role descr="entity adorned" n="1"><vnrole vncls="9.8" vntheta="Destination"/><vnrole vncls="25.3" vntheta="Destination"/></role>
+  <role descr="ornaments" n="2"><vnrole vncls="9.8" vntheta="Theme"/><vnrole vncls="25.3" vntheta="Theme"/></role>
+</roles>
+
+<example name="non-agentive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ Baskets of roses and potted palms adorned his bench .
+</text>
+	<arg n="2">Baskets of roses and potted palms</arg>
+	<rel>adorned</rel>
+	<arg n="1">his bench</arg>
+</example>
+
+
+<example name="agentive">
+<inflection aspect="perfect" form="participle" person="third" tense="present" voice="active"/>
+<text>
+ They note that he has adorned his office with five photos of George Bush , one of them featuring the First Dog , Millie .
+</text>
+	<arg n="0">he</arg>
+	<rel>adorned</rel>
+	<arg n="1">his office</arg>
+	<arg f="with" n="2">five photos of George Bush , one of them featuring the First Dog , Millie</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

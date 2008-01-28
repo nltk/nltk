@@ -1,0 +1,62 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="snort">
+<note>
+  Frames file for 'snort' based on sentences in wsj.  Verbnet entries
+  38 and 40.2, Framenet entries Communication noise and Perception noise.
+</note>
+
+<roleset id="snort.01" name="emit a snorting sound,   say snortingly" vncls="38 40.2">
+<roles>
+  <role descr="snorter" n="0"><vnrole vncls="38" vntheta="Agent"/><vnrole vncls="40.2" vntheta="Agent"/></role>
+  <role descr="snort itself, utterance" n="1"><vnrole vncls="38" vntheta="Theme"/><vnrole vncls="40.2" vntheta="Theme"/></role>
+</roles>
+
+<example name="as 'speak'">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    ``Big business,'' Mr. Pawlowski snorts [*T*-1] in English.
+</text>
+        <arg n="0">Mr. Pawlowski</arg>
+        <rel>snorts</rel>
+        <arg n="1">[*T*-1] -&gt;  Big business</arg>
+        <arg f="MNR" n="M">in English</arg>
+</example>
+
+<example name="intransitive">
+  <inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+  <text>
+     When he laughs, John snorts like a pig.
+  </text>
+  <arg n="0">John</arg>
+  <rel>snorts</rel>
+  <arg f="MNR" n="m">like a pig</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="snort.02" name="ingest through the nose" vncls="-">
+<roles>
+  <role descr="snorter" n="0"/>
+  <role descr="substance ingested" n="1"/>
+</roles>
+
+<example name="drug use?">
+  <inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+  <text>
+     John used *trace* to snort Coke, but the bubbles irritated his sinuses.
+  </text>
+  <arg n="0">*trace* -&gt; John</arg>
+  <rel>snort</rel>
+  <arg n="1">Coke</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

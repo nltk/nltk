@@ -1,0 +1,115 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="drive">
+<note>
+  Frames file for 'drive' based on sentences in financial subcorpus.
+  Verbnet entries nonvehicle-51.4.2, drive-11.5-1.  Other framed
+  members include ride.  Comparison to ride and Chris' old frames
+  file.
+</note>
+
+<roleset id="drive.01" name="drive a vehicle" vncls="51.4.2 11.5-1">
+<roles>
+  <role descr="driver" n="0">
+	<vnrole vncls="11.5-1" vntheta="Agent"/>
+        <vnrole vncls="51.4.2" vntheta="Agent"/></role>
+  <role descr="vehicle or path" n="1">
+	<vnrole vncls="11.5-1" vntheta="Theme"/>
+        <vnrole vncls="51.4.2" vntheta="Theme"/></role>
+</roles>
+
+<example name="straightforward vehicle">
+  <text>
+    John drives a 1958 DeSoto.
+  </text>
+  <arg n="0">John</arg>
+  <rel>drives</rel>
+  <arg n="1">a 1958 DeSoto</arg>
+</example>
+
+<example name="somewhat idiomatic">
+<text>
+    ``The more variables that indicate risk, the more the investor is
+ going *trace* to drive a hard bargain.''
+</text>
+        <arg n="0">*trace* -&gt;  the investor</arg>
+        <rel>drive</rel>
+        <arg n="1">a hard bargain</arg>
+</example>
+
+<example name="now that's dedication">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+     John drove 50 miles in the driving snow to annotate
+     predicate-argument structure. 
+  </text>
+  <arg n="0"        >John</arg>
+  <rel              >drove</rel>
+  <arg n="1"        >50 miles</arg>
+  <arg n="m" f="LOC">in the driving snow</arg>
+  <arg n="m" f="PNC">to annotate predicate-argument structure</arg>
+</example>
+
+</roleset>
+
+<roleset id="drive.02" name="cause to move or become" vncls="11.5-1">
+<roles>
+  <role descr="driver" n="0">
+	<vnrole vncls="11.5-1" vntheta="Agent"/></role>
+  <role descr="thing in motion" n="1">
+	<vnrole vncls="11.5-1" vntheta="Theme"/></role>
+  <role descr="secondary predication on arg1" n="2"/>
+</roles>
+
+<example name="straightforward predication">
+<text>
+    In an invention that *trace* drives Verdi purists bananas,
+    Violetta lies dying in bed during the prelude, rising deliriously
+    when then she remembers the great parties she used to throw. 
+</text>
+        <arg n="0">*trace* -&gt;  that -&gt;  an invention</arg>
+        <rel>drives</rel>
+        <arg n="1">Verdi purists</arg>
+        <arg n="2">bananas</arg>
+</example>
+
+<example name="predication as direction">
+<text>
+    Each of them contributed a section at the behest of Verdi, who
+    *trace* was nearly driven *trace* to his own early grave by the
+    troublesome arrangements. 
+</text>
+        <arg f="ADV" n="M">nearly</arg>
+        <rel>driven</rel>
+        <arg n="1">*trace* -&gt; *trace* -&gt;  who -&gt;  Verdi</arg>
+        <arg f="DIR" n="2">to his own early grave</arg>
+        <arg f="by" n="0">the troublesome arrangements</arg>
+</example>
+
+<example name="stupid stock reports">
+<text>
+    Georgia-Pacific's $3.18 billion bid for Great Northern Nekoosa
+    helped *trace* drive the Dow Jones Industrial Average up 41.60
+    points, to 2645.08, in active trading. 
+</text>
+        <arg n="0">*trace* -&gt;  Georgia-Pacific's $3.18 billion bid for
+        Great Northern Nekoosa</arg>
+        <rel>drive</rel>
+        <arg n="1">the Dow Jones Industrial Average</arg>
+        <arg f="DIR" n="2">up 41.60 points</arg>
+        <arg f="DIR" n="M">to 2645.08</arg>
+</example>
+
+<note>
+The second direction is more clearly parenthetical, so it should stay
+as an ArgM while the other is an Arg2.
+</note>
+
+</roleset>
+
+<note>
+These two senses should probably be merged.
+</note>
+
+</predicate>
+</frameset>

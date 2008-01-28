@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="croak">
+<note>
+  Frames file for 'croak' based on sentences in wsj.  No access to
+  Verbnet at the moment.
+</note>
+
+<roleset id="croak.01" name="die" vncls="-">
+<roles>
+  <role descr="corpse" n="1"/>
+</roles>
+
+<example name="the one example, and misparsed at that">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+    ``If they croak stocks like that,'' he said, it presents an
+    opportunity that is ``the kind of thing you dream about.'' 
+</text>
+        <arg n="1">they</arg>
+        <rel>croak</rel>
+        <arg n="M">stocks like that</arg>
+<note>
+I take the 'stocks like that' as an appositive coindexed with 'they',
+and suggest that a better parse would be 'if they croak, stocks like
+that,...'  Croak just can't be a transitive verb.
+</note>
+
+</example>
+
+</roleset>
+</predicate>
+</frameset>

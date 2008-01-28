@@ -1,0 +1,40 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="pockmark">
+<note>
+  Frames file for 'pockmark' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="pockmark.01" vncls="-" name="mark with pox">
+<roles>
+  <role n="0"  descr="cause of pox, agent"/>
+  <role n="1"  descr="pockmarked entity"/>
+</roles>
+
+<example name="adjectival">
+<inflection person="ns" tense="ns" aspect="ns" voice="passive" form="participle"/>
+<text>
+    It was a heady experience for the pockmarked and slightly built
+    Mr. Noriega, who was known to his friends as Cara la Pina --
+    pineapple face. 
+</text>
+	<rel>pockmarked</rel>
+	<arg n="1">[ Mr.] [ Noriega]</arg>
+</example>
+
+<example name="bummer">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+    The brief summer hailstorm pockmarked John's brand-new car.
+  </text>
+  <arg n="0"        >The brief summer hailstorm</arg>
+  <rel              >pockmarked</rel>
+  <arg n="1"        >John's brand-new car</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

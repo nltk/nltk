@@ -1,0 +1,35 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="exhort">
+<note>
+  Frames file for 'exhort' based on sentences in wsj.  No access to
+  Verbnet at the moment.
+</note>
+
+<roleset id="exhort.01" name="urge" vncls="-">
+<roles>
+  <role descr="urger" n="0"/>
+  <role descr="impelled agent" n="1"/>
+  <role descr="impelled action" n="2"/>
+</roles>
+
+<example name="hortari, hortaristis, etc">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+    So far, the president seems ill-disposed to substitute any of the
+    omnibus for his own free-standing proposal to endow a ``Points of
+    Light'' foundation with $25 million to inform citizens of all ages
+    and exhort them to genuine volunteerism. 
+</text>
+        <arg n="0">[*] -&gt;  a ``Points of Light'' foundation</arg>
+        <rel>exhort</rel>
+        <arg n="1">them</arg>
+        <arg f="to" n="2">genuine volunteerism</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,119 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="hook">
+<note>
+  Frames file for 'hook' based on sentences in wsj.  Verbnet entries
+  10.5 and 22.4, Framenet entry Attaching.  I don't get the 'steal'
+  usages of hook.
+</note>
+
+<roleset id="hook.01" name="attach (as with a hook)" vncls="22.4">
+<roles>
+  <role descr="causer of attachment" n="0">
+        <vnrole vncls="22.4" vntheta="Agent"/></role>
+  <role descr="thing now attached" n="1">
+        <vnrole vncls="22.4" vntheta="Patient1"/></role>
+  <role descr="hook" n="2">
+        <vnrole vncls="22.4" vntheta="Patient2"/></role>
+  <role descr="attribute of arg1" n="3"/>
+</roles>
+
+<example name="metaphorical hook">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    P&amp;G and others also have tried repeatedly *trace* to hook
+    consumers on detergent and fabric softener combinations in
+    pouches, but they haven't sold well, despite the convenience. 
+</text>
+        <arg n="0">*trace* -&gt;  P&amp;G and others</arg>
+        <rel>hook</rel>
+        <arg n="1">consumers</arg>
+        <arg f="on" n="2">detergent and fabric softener combinations
+        in pouches</arg> 
+</example>
+
+<example name="with attribute">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+    IBM will face an uphill climb against Digital, given Digital's
+    reputation for *trace* being better than IBM at *trace* hooking
+    together different manufacturers' computers. 
+</text>
+        <arg n="0">*trace* -&gt; *trace* -&gt;  Digital</arg>
+        <rel>hooking</rel>
+        <arg n="3">together</arg>
+        <arg n="1">different manufacturers' computers</arg>
+</example>
+
+<note>
+I can't see hook and attribute cooccurring; maybe they should be in
+different rolesets.
+</note>
+
+</roleset>
+
+<roleset id="hook.03" name="exist in a hook shape" vncls="-">
+<roles>
+  <role descr="thing in hook shape" n="1"/>
+  <role descr="thing in middle of hook shape" n="2"/>
+</roles>
+
+<example name="somewhat odd usage">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    And most of the truly big scams in Orange County seem to originate
+    in Newport Beach or one of the other well-heeled communities that
+    surround this sliver-like city that *trace* hooks around a point
+    of land on the California coast south of Los Angeles. 
+</text>
+        <arg n="1">*trace* -&gt;  that -&gt;  this sliver-like city</arg>
+        <rel>hooks</rel>
+        <arg f="around" n="2">a point of land</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="hook_up">
+<roleset id="hook.02" name="attach, phrasal variant" vncls="22.4">
+<roles>
+  <role descr="causer of attachment" n="0">
+        <vnrole vncls="22.4" vntheta="Agent"/></role>
+  <role descr="thing now attached" n="1">
+        <vnrole vncls="22.4" vntheta="Patient1"/></role>
+  <role descr="hook" n="2">
+        <vnrole vncls="22.4" vntheta="Patient2"/></role>
+</roles>
+
+<example name="pseudopassive?">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    In the U.S., one-fifth of the office PCs are hooked up to some
+    sort of network. 
+</text>
+        <arg f="LOC" n="M">In the U.S.</arg>
+        <arg n="1">one-fifth of the office PCs</arg>
+        <rel>[ hooked] [ up]</rel>
+        <arg f="to" n="2">some sort of network</arg>
+</example>
+
+<example name="agentive">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John hooked up his computer to the network.
+  </text>
+  <arg n="0">John</arg>
+  <rel>hooked up</rel>
+  <arg n="1">his computer</arg>
+  <arg f="to" n="2">the network</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

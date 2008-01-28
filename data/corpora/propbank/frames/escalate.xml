@@ -1,0 +1,45 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="escalate">
+<note>
+  Frames file for 'escalate' based on sentences in financial
+  subcorpus.  No Verbnet entry, no Framenet entry.  Comparison with
+  increase.
+</note>
+
+<roleset id="escalate.01" name="(cause to) become higher">
+<roles>
+  <role descr="causer" n="0"/>
+  <role descr="thing becoming higher" n="1"/>
+</roles>
+
+<example name="agentive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Analysts said they expect McCaw to escalate the bidding again.
+</text>
+        <arg n="0">McCaw</arg>
+        <rel>escalate</rel>
+        <arg n="1">the bidding</arg>
+        <arg f="TMP" n="M">again</arg>
+</example>
+
+
+<example name="ergative">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+   ...reminiscent of those during the 1987 crash -- that as stock
+   prices plummeted and trading activity escalated, some phone calls
+   to market makers in over-the-counter stocks went unanswered. 
+</text>
+        <arg n="1">trading activity</arg>
+        <rel>escalated</rel>
+</example>
+
+<note>
+I'm really hoping this doesn't fall into the quantifiable-motion class.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

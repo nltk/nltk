@@ -1,0 +1,34 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="dwarf">
+<note>
+  Frames file for 'dwarf' based on sentences in financial subcorpus.
+  No Verbnet entry.  No comparison.
+</note>
+
+<roleset id="dwarf.01" name="be dramatically larger than">
+<roles>
+  <role descr="larger thing" n="0"/>
+  <role descr="smaller thing" n="1"/>
+</roles>
+
+<example name="passivized">
+<text>
+    Courtaulds' restructuring is among the largest thus far in
+    Britain, though it is dwarfed *trace* by B.A.T Industries PLC's
+    plans to spin off roughly #4 billion in assets to help fend off a
+    takeover bid from Anglo-French financier Sir James Goldsmith. 
+</text>
+        <rel>dwarfed</rel>
+        <arg n="1">*trace* -&gt;  it</arg>
+        <arg f="by" n="0">B.A.T Industries PLC 's plans  to spin off
+        roughly # 4 billion  in assets  to help  fend off a takeover
+        bid from Anglo-French financier Sir James Goldsmith</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

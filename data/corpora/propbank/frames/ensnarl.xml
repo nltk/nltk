@@ -1,0 +1,43 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="ensnarl">
+<note>
+  Frames file for 'ensnarl' based on sentences in wsj.  No Verbnet
+  entry. 
+</note>
+
+<roleset id="ensnarl.01" name="make into tangles" vncls="-">
+<roles>
+  <role descr="causer of tangle, agent" n="0"/>
+  <role descr="thing getting tangled" n="1"/>
+  <role descr="explicit mention of tangle" n="2"/>
+</roles>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="third" tense="present" voice="passive"/>
+<text>
+     Legislation to lift the debt ceiling is ensnarled *trace* in the
+     fight over cutting capital-gains taxes. 
+</text>
+        <rel>ensnarled</rel>
+        <arg n="1">*trace* -&gt;  Legislation to lift the debt ceiling</arg>
+        <arg f="in" n="2">the fight over cutting capital-gains taxes</arg>
+</example>
+
+<example name="well an agent COULD occur">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John ensnarled Mary in a convoluted plan to graduate on time.
+  </text>
+  <arg n="0">John</arg>
+  <rel>ensnarled</rel>
+  <arg n="1">Mary</arg>
+  <arg f="in" n="2">a convoluted plan to graduate on time</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="manifest">
+<note>
+  Frames file for 'manifest' based on sentences in wsj.  Verbnet entry 48.1.2.
+</note>
+
+<roleset id="manifest.01" name="come to appear" vncls="48.1.2">
+<roles>
+  <role descr="thing appearing" n="1"><vnrole vncls="48.1.2" vntheta="Theme"/></role>
+  <role descr="reflexive pronoun" n="2"><vnrole vncls="48.1.2" vntheta="Recipient"/></role>
+</roles>
+
+<example name="the one example">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    He said that ill effects from new carpets manifest themselves
+    immediately but that the Beebes' symptoms appeared months later. 
+</text>
+        <arg n="1">ill effects from new carpets</arg>
+        <rel>manifest</rel>
+        <arg f="REC" n="2">themselves</arg>
+        <arg f="TMP" n="M">immediately</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="better">
+<note>
+  Frames file for 'better' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+
+<roleset id="better.01" name="to improve" vncls="-">
+<roles>
+  <role descr="causer of improvement, agent" n="0"/>
+  <role descr="entity made better" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+ The computer maker , which [*T*-2] sells more than half its goods outside the U.S. , also said [0] the negative effect of a stronger U.S. dollar will `` adversely affect '' its fourth-quarter performance and `` make it [*EXP*-1] difficult '' [*] to better 1988 results .
+</text>
+	<arg n="0">[*]</arg>
+	<rel>better</rel>
+	<arg n="1">1988 results</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

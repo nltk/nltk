@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="revolve">
+<note>
+  Frames file for 'revolve' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="revolve.01" name="to move in a circle,  be centered" vncls="47.3">
+<roles>
+  <role descr="entity revolving" n="1"><vnrole vncls="47.3" vntheta="Theme"/></role>
+  <role descr="location" n="2"><vnrole vncls="47.3" vntheta="Location"/></role>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ The book revolves around John Mariotta , the founder of the company , and Fred Neuberger , who [*T*-1] became his partner soon after Wedtech 's creation .
+</text>
+	<arg n="1">The book</arg>
+	<rel>revolves</rel>
+	<arg f="around" n="2">John Mariotta , the founder of the company , and Fred Neuberger , who [*T*-1] became his partner soon after Wedtech 's creation</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

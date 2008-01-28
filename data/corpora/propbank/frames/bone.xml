@@ -1,0 +1,58 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="bone">
+<note>
+Frames file for 'bone' based on sentences in financial subcorpus and
+automatic expansion via verbnet.
+</note>
+
+<roleset id="bone.01" name="remove bones" vncls="10.7">
+<roles>
+	<role descr="remover" n="0">
+		
+  <vnrole vncls="10.7" vntheta="Agent"/></role>
+
+	<role descr="thing which used to have bones" n="1">
+		
+  <vnrole vncls="10.7" vntheta="Source"/></role>
+
+</roles>
+
+<example name="Eeeeewwww" src="scale.02">
+  <text>
+    John boned the fish.
+  </text>
+  <arg n="0">John</arg>
+  <rel>boned</rel>
+  <arg n="1">the fish</arg>
+</example>
+</roleset>
+</predicate>
+
+<predicate lemma="bone_up">
+
+<roleset id="bone.02" name="become more proficient" vncls="-">
+<roles>
+  <role descr="boner up" n="0"/>
+  <role descr="subject" n="1"/>
+</roles>
+
+<example name="stardard reading">
+<inflection aspect="perfect" form="participle" person="third" tense="present" voice="active"/>
+<text>
+    Mr. Corry, who *trace* has boned up on corporate raiders by
+    reading T. Boone Pickens's autobiography, had hoped the detente
+    would continue. 
+</text>
+        <arg n="0">*trace* -&gt;  who -&gt;  Mr. Corry</arg>
+        <rel>[ boned] [ up]</rel>
+        <arg f="on" n="1">corporate raiders</arg>
+        <arg f="MNR" n="M">by reading T. Boone Pickens's autobiography</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

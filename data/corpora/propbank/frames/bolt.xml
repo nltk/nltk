@@ -1,0 +1,68 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="bolt">
+<note>
+  Frames file for 'bolt' based on sentences in financial subcorpus.
+  Verbnet entries run-51.3.2, tape-22.4; other framed members include
+  charge, dash, float, leap, roll, scuttle, slide, sneak, spin, walk,
+  wind; clamp, link, lock, tie.  Framenet class Departing and Self
+  Motion.  Comparison to 'dash' and 'clamp'.
+</note>
+
+<roleset id="bolt.01" name="run away" vncls="51.3.2">
+<roles>
+  <role descr="runner" n="0">
+		
+  <vnrole vncls="51.3.2" vntheta="Theme"/></role>
+
+  <role descr="destination or path" n="m"/>
+</roles>
+
+<example name="intransitive">
+<inflection aspect="perfect" form="participle" person="ns" tense="past" voice="active"/>
+<text>
+    Indeed, the insurance adjusters had already bolted out of the
+    courtroom. 
+</text>
+        <arg f="DIS" n="M">Indeed</arg>
+        <arg n="0">the insurance adjusters</arg>
+        <arg f="TMP" n="M">already</arg>
+        <rel>bolted</rel>
+        <arg f="DIR" n="M">out of the courtroom</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="bolt.02" name="attach with a bolt" vncls="22.4">
+<roles>
+  <role descr="attacher, agent causing attachment" n="0">
+		
+  <vnrole vncls="22.4" vntheta="Agent"/></role>
+
+  <role descr="thing(s) being clamped" n="1">
+		
+  <vnrole vncls="22.4" vntheta="Patient"/></role>
+
+</roles>
+
+<example name="what was he thinking?">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John bolted all his furniture to the ceiling of his bedroom.
+  </text>
+  <arg n="0">John</arg>
+  <rel>bolted</rel>
+  <arg n="1">all his furniture</arg>
+  <arg f="to" n="1">the ceiling of his bedroom</arg>
+</example>
+
+<note>
+Yes, that's TWO arg1's.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

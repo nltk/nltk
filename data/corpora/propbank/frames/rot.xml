@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="rot">
+<note>
+  Frames file for 'rot'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="rot.01" name="to decompose or decay" vncls="47.2 45.5">
+<roles> 
+ <role descr="causer" n="0"/>
+ <role descr="entity decaying" n="1"><vnrole vncls="47.2" vntheta="Theme"/><vnrole vncls="45.5" vntheta="Patient"/></role>  
+</roles>
+
+<example name="intransitive">
+<inflection aspect="perfect" form="participle" person="ns" tense="past" voice="active"/>
+<text>
+ El Salvador is destroying more than 1.6 million pounds of food that [*T*-1] had rotted in government warehouses , government officials said [0] [*T*-2] .
+</text>
+	<arg n="1">[*T*-1] -&gt;  that -&gt;  food</arg>
+	<rel>rotted</rel>
+	<arg f="LOC" n="M">in government warehouses</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

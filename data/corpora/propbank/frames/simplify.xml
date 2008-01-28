@@ -1,0 +1,56 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="simplify">
+<note>
+  Frames file for 'simplify' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="simplify.01" name="make simple or simpler" vncls="-">
+<roles>
+  <role descr="agent, causer" n="0"/>
+  <role descr="entity simplified" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+ RISC technology speeds up a computer by [*-1] simplifying the internal software .
+</text>
+	<arg n="0">[*-1] -&gt;  RISC technology</arg>
+	<rel>simplifying</rel>
+	<arg n="1">the internal software</arg>
+</example>
+
+
+<example name="arbitrary subject">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ Long-debated proposals [*] to simplify the more than 150 civil penalties and make them fairer and easier [0] [*] to administer [*T*-1] are in the House tax bill .
+</text>
+	<arg n="0">[*]</arg>
+	<rel>simplify</rel>
+	<arg n="1">the more than 150 civil penalties</arg>
+</example>
+
+
+
+<example name="with manner adverbial">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ `` When there 's a clutter of brands [*T*-5] , consumers simplify the complexity by [*-6] telling themselves , ` All brands are the same so what difference does it [*EXP*-2] make [*T*-1] which I buy [*T*-3] , ' '' says [*T*-4] Karen Olshan , a senior vice president at BBDO .
+</text>
+	<arg n="0">consumers</arg>
+	<rel>simplify</rel>
+	<arg n="1">the complexity</arg>
+	<arg f="MNR" n="M">by [*-6] telling themselves , ` All brands are the same so what difference does it [*EXP*-2] make [*T*-1] which I buy [*T*-3]</arg>
+</example>
+
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

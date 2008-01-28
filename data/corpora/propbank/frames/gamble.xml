@@ -1,0 +1,55 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="gamble">
+<note>
+  Frames file for 'gamble'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="gamble.01" name="to take a risk" vncls="-">
+<roles> 
+  <role descr="gambler" n="0"/>  
+  <role descr="entity gambled with/on" n="1"/>
+</roles>
+
+
+<example name="intransitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ Although Mr. Morishita says little about his business , he offers one rule to success : [*] Never gamble too far .
+</text>
+	<arg n="0">[*]</arg>
+	<arg f="TMP" n="M">Never</arg>
+	<rel>gamble</rel>
+	<arg f="EXT" n="M">too far</arg>
+</example>
+
+
+<example name="gamble on">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ Investors were willing [*-1] to gamble on new technologies because `` we had exclusive rights to those technologies , '' he adds [0] [*T*-2] .
+</text>
+	<arg n="0">[*-1] -&gt;  Investors</arg>
+	<rel>gamble</rel>
+	<arg f="on" n="1">new technologies</arg>
+	<arg f="PNC" n="M">because `` we had exclusive rights to those technologies</arg>
+</example>
+
+
+<example name="gamble with">
+<inflection aspect="progressive" form="participle" person="ns" tense="past" voice="active"/>
+<text>
+ According to notes taken [*] by one of the participants at the meeting , the regulators said [0] Lincoln was gambling dangerously with depositors ' federally insured money and was `` a ticking time bomb . ''
+</text>
+	<arg n="0">Lincoln</arg>
+	<rel>gambling</rel>
+	<arg f="MNR" n="M">dangerously</arg>
+	<arg f="with" n="1">depositors ' federally insured money</arg>
+</example>
+
+</roleset>
+</predicate>
+
+
+</frameset>

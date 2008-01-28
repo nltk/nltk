@@ -1,0 +1,144 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="stand">
+<note>
+  Frames file for 'stand' based on sentences in financial subcorpus.
+  Verbnet classes assuming_position-50, put_spatial-9.2-1,
+  spatial_configuration-47.6.  
+</note>
+
+<roleset id="stand.01" name="(cause to) be in a vertical position" vncls="9.2-1 47.6 50">
+<roles>
+  <role descr="causal agent" n="0">
+	<vnrole vncls="47.6" vntheta="Agent"/>
+        <vnrole vncls="9.2-1" vntheta="Agent"/></role>
+  <role descr="thing standing" n="1">
+	<vnrole vncls="47.6" vntheta="Theme"/>
+        <vnrole vncls="9.2-1" vntheta="Theme"/>
+        <vnrole vncls="50" vntheta="Agent"/></role>
+  <role descr="location" n="2">
+	<vnrole vncls="47.6" vntheta="Location"/>
+        <vnrole vncls="9.2-1" vntheta="Destination"/>
+        <vnrole vncls="50" vntheta="Location"/></role>
+</roles>
+
+<example name="no agent">
+<text>
+    On one side of this power struggle stand *trace* the forces in
+    ascendency on Wall Street -- the New Guard -- consisting of
+    high-tech computer wizards at the major brokerage firms, their
+    pension fund clients with immense pools of money, and the traders
+    at the fast-growing Chicago futures exchanges. 
+</text>
+        <rel>stand</rel>
+        <arg f="LOC" n="2">*trace* -&gt;  On one side of this power struggle</arg>
+        <arg n="1">the forces in ascendency on Wall Street -- the New
+        Guard -- consisting of high-tech computer wizards at the major
+        brokerage firms, their pension fund clients with immense pools
+        of money, and the traders at the fast-growing Chicago futures
+        exchanges</arg> 
+</example>
+
+<example name="with agent">
+  <text>
+    John stood his toy soldiers against the wall.
+  </text>
+  <arg n="0">John</arg>
+  <rel>stood</rel>
+  <arg n="1">his toy soldiers</arg>
+  <arg f="LOC" n="2">against the wall</arg>
+</example>
+
+<example name="with agent, no location">
+<text>
+    The Supreme Court let stand a New York ruling that all
+    manufacturers of an anti-miscarriage drug are liable for injuries
+    or deaths if the actual maker is n't known. 
+</text>
+        <arg n="0">The Supreme Court</arg>
+        <rel>stand</rel>
+        <arg n="1">a New York ruling that all manufacturers of an
+        anti-miscarriage drug are liable for injuries or deaths if the
+        actual maker isn't known</arg> 
+</example>
+
+<note>
+This is possibly incorrect, since &quot;The Supreme Court&quot; properly goes
+with 'let' not 'stand'.
+</note>
+
+</roleset>
+
+<roleset id="stand.02" name="be poised for an action" vncls="-">
+<roles>
+  <role descr="entity poised" n="1"/>
+  <role descr="action" n="2"/>
+</roles>
+
+<example name="they all look like this">
+<text>
+    The management group owns about 18% of the stock, most purchased
+    at nominal prices, and would stand to gain millions of dollars if
+    the company were sold. 
+</text>
+        <arg n="1">The management group</arg>
+        <arg f="MOD" n="M">would</arg>
+        <rel>stand</rel>
+        <arg n="2">to gain millions of dollars if the company were
+        sold</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="stand.03" name="tolerate" vncls="31.2">
+<roles>
+  <role descr="tolerator" n="0">
+        <vnrole vncls="31.2" vntheta="Experiencer"/></role>
+  <role descr="thing tolerated" n="1">
+        <vnrole vncls="31.2" vntheta="Cause"/></role>
+</roles>
+
+<example name="That is something up with which I shall not put">
+<text>
+    An undistinguished college student who dabbled in zoology until he
+    concluded that he couldn't stand cutting up frogs, Mr. Corry
+    wanted to work for a big company ``that could do big things.'' 
+</text>
+        <arg n="0">he</arg>
+        <arg f="MOD" n="M">could</arg>
+        <arg f="NEG" n="M">n't</arg>
+        <rel>stand</rel>
+        <arg n="1">cutting up frogs</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="stand.04" name="be" vncls="-">
+<roles>
+  <role descr="focus" n="1"/>
+  <role descr="attribute" n="2"/>
+</roles>
+
+<example name="typical usage">
+<text>
+    An index of economic activity drawn from the survey stood last
+    month at 47.6%;  
+</text>
+        <arg n="0">An index of economic activity drawn  from the survey</arg>
+        <rel>stood</rel>
+        <arg f="TMP" n="M">last month</arg>
+        <arg n="2">at 47.6 %</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

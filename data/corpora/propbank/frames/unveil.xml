@@ -1,0 +1,42 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="unveil">
+<note>
+  Frames file for 'unveil' based on sentences in financial subcorpus.
+  No access to verbnet.  No comparison.
+</note>
+
+<roleset id="unveil.01" name="display, show, reveal">
+<roles>
+  <role descr="agent, entity revealing" n="0"/>
+  <role descr="thing shown" n="1"/>
+  <role descr="viewer" n="2"/>
+</roles>
+
+<example name="basic transitive">
+<text>
+    The Avon, Conn., company's stock hit a high in 1983 after it
+    unveiled its Adam home computer, but the product was plagued with
+    glitches and the company's fortunes plunged. 
+</text>
+        <arg n="0">it</arg>
+        <rel>unveiled</rel>
+        <arg n="1">its Adam home computer</arg>
+</example>
+
+<example name="with viewer">
+  <text>
+    John unveiled to his cat his plans for world domination.
+  </text>
+  <arg n="0">John</arg>
+  <rel>unveiled</rel>
+  <arg f="to" n="2">his cat</arg>
+  <arg n="1">his plans for world domination</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

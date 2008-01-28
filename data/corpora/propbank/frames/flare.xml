@@ -1,0 +1,36 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="flare_up">
+<note>
+  Frames file for 'flare' based on sentences in financial subcorpus.
+  Verbnet entry 43.1, other framed members include flicker.  Framenet
+  entry Light Emission.  I'm not sure about that.
+</note>
+
+<roleset id="flare.01" name="starting" vncls="43.1">
+<roles>
+  <role descr="thing starting" n="1">
+		
+  <vnrole vncls="43.1" vntheta="Theme"/></role>
+
+</roles>
+
+<example name="the only example?">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    He also said that the price wars flaring up in parts of the
+    computer industry will continue through next year. 
+</text>
+        <arg n="1">the price wars</arg>
+        <rel>[ flaring] [ up]</rel>
+        <arg f="LOC" n="M">in parts of the computer industry</arg>
+</example>
+
+<note>
+It's possible other rolesets will appear (specifically, without &quot;up&quot;)
+at which point I'll reconsider the framing.  Until then, use this.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,110 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="paint">
+<note>
+Frames file for 'repaint' based on transformation of frames for
+'paint'.  No actual sentences examined.
+</note>
+
+<roleset id="repaint.01" name="put paint on a surface, again" vncls="25.1">
+<roles>
+	<role descr="agent, painter" n="0">
+		
+  <vnrole vncls="25.1" vntheta="Agent"/></role>
+
+	<role descr="surface" n="1">
+		
+  <vnrole vncls="25.1" vntheta="Destination"/></role>
+
+	<role descr="explicit mention of paint" n="2">
+		
+  <vnrole vncls="25.1" vntheta="Theme"/></role>
+
+</roles>
+
+<example name="explicit mention of paint">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    They repainted the apartment orange, pink and white, according to
+    her instructions. 
+</text>
+        <arg n="0">They</arg>
+        <rel>repainted</rel>
+        <arg n="1">the apartment</arg>
+        <arg n="2">orange, pink and white</arg>
+        <arg f="ADV" n="M">according to her instructions</arg>
+</example>
+
+<example name="different mention">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    ``Lighthouse II'' was repainted *trace* in oils by the playwright in
+    1901... 
+</text>
+        <rel>repainted</rel>
+        <arg n="1">*trace* -&gt;  Lighthouse II</arg>
+        <arg f="in" n="2">oils</arg>
+        <arg f="by" n="0">the playwright</arg>
+        <arg f="TMP" n="M">in 1901</arg>
+</example>
+</roleset>
+
+<roleset id="repaint.02" name="create pictures with paint, again" vncls="25.2 26.7-2">
+<roles>
+	<role descr="artist" n="0">
+		
+		
+  <vnrole vncls="26.7-2" vntheta="Agent"/><vnrole vncls="25.2" vntheta="Agent"/></role>
+
+	<role descr="art" n="1">
+		
+		
+  <vnrole vncls="26.7-2" vntheta="Theme"/><vnrole vncls="25.2" vntheta="Theme"/></role>
+
+	<role descr="benefactive" n="2">
+		
+  <vnrole vncls="26.7-2" vntheta="Beneficiary"/><vnrole vncls="25.2" vntheta="Destination"/></role>
+
+</roles>
+
+<example name="intransitive verse">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+      With lipsticks, liners, lotions and creams,/
+      There are still beauty plans left to tackle:/
+      But as the years go by, it seems/
+      That before I repaint, I should spackle.
+</text>
+        <arg n="0">I</arg>
+        <rel>repaint</rel>
+</example>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    The allegations, ranging from theft and bribery to coercion and
+    lewdness, repaint a disquieting picture. 
+</text>
+        <arg n="0">The allegations</arg>
+        <arg n="M">ranging from theft and bribery to coercion and
+        lewdness</arg>
+        <rel>repaint</rel> 
+        <arg n="1">a disquieting picture</arg>
+</example>
+
+<example name="with benefactive" src="draw.01">
+  <text>
+    John repainted a picture of a rose for Mary.
+  </text>
+  <arg n="0">John</arg>
+  <rel>repainted</rel>
+  <arg n="1">a picture of a rose</arg>
+  <arg f="for" n="2">Mary</arg>
+</example>
+</roleset>
+
+<note>
+In the absence of arg2's it will be very difficult to distinguish
+senses.  Bummer.
+</note>
+
+</predicate>
+</frameset>

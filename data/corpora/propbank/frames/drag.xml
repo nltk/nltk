@@ -1,0 +1,43 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="drag">
+<note>
+  Frames file for 'drag' based on sentences in financial subcorpus.
+  Verbnet entry carry-11.4, other framed members include kick and
+  push.  Comparison with 'push'.
+</note>
+
+<roleset id="drag.01" name="(try to) cause motion" vncls="11.4 35.2">
+<roles>
+  <role descr="dragger" n="0">
+		
+  <vnrole vncls="11.4" vntheta="Agent"/><vnrole vncls="35.2" vntheta="Agent"/></role>
+
+  <role descr="thing dragged" n="1">
+		
+  <vnrole vncls="11.4" vntheta="Theme"/><vnrole vncls="35.2" vntheta="Theme"/></role>
+
+  <role descr="direction" f="DIR" n="2">
+		
+  <vnrole vncls="11.4" vntheta="Destination"/><vnrole vncls="35.2" vntheta="Location"/></role>
+
+</roles>
+
+<example name="typical usage">
+<text>
+    But, he observes, while makers suffer losses when program trading
+    drags the market down, they also make money when program trading
+    pushes the prices higher.
+</text>
+        <arg n="0">program trading</arg>
+        <rel>drags</rel>
+        <arg n="1">the market</arg>
+        <arg f="DIR" n="2">down</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

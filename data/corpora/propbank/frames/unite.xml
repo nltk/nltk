@@ -1,0 +1,65 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="unite">
+<note>
+  Frames file for 'unite' based on sentences in wsj.  Verbnet entries
+  22.2, Framenet entry Amalgamate.
+</note>
+
+<roleset id="unite.01" name="make into one" vncls="22.2">
+<roles>
+  <role descr="uniter, agent" n="0">
+        <vnrole vncls="22.2" vntheta="Agent"/></role>
+  <role descr="(first) thing(s) being unified" n="1">
+        <vnrole vncls="22.2" vntheta="Patient1"/></role>
+  <role descr="other things, if separate from arg1" n="2">
+        <vnrole vncls="22.2" vntheta="Patient2"/></role>
+  <role descr="unified whole" n="3"/>
+</roles>
+
+<example name="all args">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    This unification was to be brought about through policies and
+    institutions that *trace* would unite workers and employers with
+    government in a fully integrated and ``harmonic'' society. 
+</text>
+        <arg n="0">*trace* -&gt;  that -&gt;  policies and institutions</arg>
+        <arg f="MOD" n="M">would</arg>
+        <rel>unite</rel>
+        <arg n="1">workers and employers</arg>
+        <arg f="with" n="2">government</arg>
+        <arg f="in" n="3">a fully integrated and ``harmonic'' society</arg>
+</example>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    The oil and auto industries, united *trace* in their dislike of
+    President Bush's proposal for cars that run on alternative fuels,
+    announced a joint research program that could turn up a
+    cleaner-burning gasoline. 
+</text>
+        <rel>united</rel>
+        <arg n="1">*trace* -&gt;  The oil and auto industries</arg>
+        <arg f="LOC" n="M">in their dislike of President Bush's
+        proposal for cars that run on alternative fuels</arg> 
+</example>
+
+<example name="ergative!">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    Most political analysts say that if Mr. Gandhi's opposition unites
+    to field single candidates in most precincts, the Congress (I)
+    will lose big. 
+</text>
+        <arg n="1">Mr. Gandhi 's opposition</arg>
+        <rel>unites</rel>
+        <arg f="PNC" n="M">to field single candidates in most precincts</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

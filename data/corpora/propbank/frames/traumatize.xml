@@ -1,0 +1,51 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="traumatize">
+<note>
+  Frames file for 'traumatize' based on sentences in wsj.  No Verbnet
+  entry. 
+</note>
+
+<roleset id="traumatize.01" name="affect deeply and negatively" vncls="31.1">
+<roles>
+  <role descr="cause" n="0">
+	<vnrole vncls="31.1" vntheta="Cause"/></role>
+  <role descr="patient" n="1">
+	<vnrole vncls="31.1" vntheta="Experiencer"/></role>
+  <role descr="instrument" n="2"/>
+</roles>
+
+<example name="just transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    UAL, the hair-trigger stock that exploded Friday's market
+    bombshell, briefly traumatized traders again yesterday. 
+</text>
+        <arg n="0">UAL, the hair-trigger stock that exploded Friday's
+        market bombshell,</arg> 
+        <arg f="TMP" n="M">briefly</arg>
+        <rel>traumatized</rel>
+        <arg n="1">traders</arg>
+        <arg f="TMP" n="M">again</arg>
+        <arg f="TMP" n="M">yesterday</arg>
+</example>
+
+<example name="with instrument">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John traumatized Mary with his clown outfit.
+  </text>
+  <arg n="0">John</arg>
+  <rel>traumatized</rel>
+  <arg n="1">Mary</arg>
+  <arg f="with" n="2">his clown outfit</arg>
+</example>
+
+<note>
+Save the instrument arg for only those cases where the agent is also
+present. 
+</note>
+
+</roleset>
+</predicate>
+</frameset>

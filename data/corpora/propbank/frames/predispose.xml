@@ -1,0 +1,34 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="predispose">
+<note>
+  Frames file for 'predispose' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="predispose.01" name="to make susceptible" vncls="-">
+<roles>
+  <role descr="entity predisposing" n="0"/>
+  <role descr="entity predisposed" n="1"/>
+  <role descr="predisposed to" n="2"/>
+</roles>
+
+
+<example name="all arguments">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ The scientists say that since breast cancer often strikes multiple members of certain families , the gene , when [*] inherited in a damaged form [*T*-1] , may predispose women to the cancer .
+</text>
+	<arg n="0">the gene , when [*] inherited in a damaged form [*T*-1] ,</arg>
+	<arg f="MOD" n="M">may</arg>
+	<rel>predispose</rel>
+	<arg n="1">women</arg>
+	<arg f="to" n="2">the cancer</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

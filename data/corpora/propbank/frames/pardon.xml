@@ -1,0 +1,55 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="pardon">
+<note>
+  Frames file for 'pardon' based on sentences in wsj.  Verbnet entry
+  10.6, which doesn't seem quite right.
+</note>
+
+<roleset id="pardon.01" name="relieve of guilt" vncls="10.6">
+<roles>
+  <role descr="pardoner" n="0"><vnrole vncls="10.6" vntheta="Agent"/></role>
+  <role descr="guilty party" n="1"><vnrole vncls="10.6" vntheta="Source"/></role>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Under the guise of ``healing the wounds of the nation,'' President
+    Carter pardoned thousands of draft evaders, thus giving dignity to
+    their allegations of the war's ``immorality.'' 
+</text>
+        <arg f="LOC" n="M">Under the guise of ``healing the wounds of
+        the nation</arg> 
+        <arg n="0">President Carter</arg>
+        <rel>pardoned</rel>
+        <arg n="1">thousands of draft evaders</arg>
+        <arg f="ADV" n="M">thus giving dignity to their allegations of
+        the war's ``immorality</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="pardon.02" name="social construct" vncls="-">
+<roles>
+<note>Takes no argument structure!</note>
+</roles>
+
+<example name="lacking social mores">
+  <inflection aspect="ns" form="ns" person="ns" tense="ns" voice="ns"/>
+  <text>
+    &quot;Pardon me,&quot; John said after emitting a thunderclap-like belch at
+    the dinner table.
+  </text>
+  <rel>pardon</rel>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

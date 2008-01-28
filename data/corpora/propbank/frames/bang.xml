@@ -1,0 +1,65 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="bang">
+<note>
+  Frames file for 'bang' based on sentences in wsj.  Verbnet entries
+  18.1, 43.2, 18.4, and 9.3; Framenet entry Motion noise.
+</note>
+
+<roleset id="bang.01" name="emit banging noise" vncls="43.2">
+<roles>
+  <role descr="thing emitting noise" n="0">
+        <vnrole vncls="43.2" vntheta="Theme"/></role>
+</roles>
+
+<example name="bang!">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     The window shutters banged in the wind.
+  </text>
+  <arg n="0">The window shutters</arg>
+  <rel>banged</rel>
+  <arg f="LOC" n="m">in the wind</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="bang.02" name="strike so as to make banging noise" vncls="18.1 18.4-1">
+<roles>
+  <role descr="striker, agent" n="0">
+        <vnrole vncls="18.1" vntheta="Agent"/></role>
+  <role descr="thing hit" n="1">
+        <vnrole vncls="18.1" vntheta="Patient"/>
+        <vnrole vncls="18.4-1" vntheta="Theme"/></role>
+  <role descr="attribute of arg1" n="2"/>
+</roles>
+
+<example name="just transitive">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    He bangs on the piece of paper in frustration, then turns and
+    walks away. 
+</text>
+        <arg n="0">He</arg>
+        <rel>bangs</rel>
+        <arg f="on" n="1">the piece of paper</arg>
+        <arg f="MNR" n="M">in frustration</arg>
+</example>
+
+<example name="He's back!">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John banged open the lid of his coffin.
+  </text>
+  <arg n="0">John</arg>
+  <rel>banged</rel>
+  <arg n="2">open</arg>
+  <arg n="1">the lid of his coffin</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

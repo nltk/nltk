@@ -1,0 +1,113 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="impress">
+<note>
+Frames file for 'impress' based on sentences in wsj and automatic
+expansion via verbnet.
+</note>
+
+<roleset id="impress.01" name="make an impression" vncls="31.1">
+<roles>
+	<role descr="agent, thing making an impress" n="0">
+		
+  <vnrole vncls="31.1" vntheta="Cause"/></role>
+
+	<role descr="thing impressed" n="1">
+		
+  <vnrole vncls="31.1" vntheta="Experiencer"/></role>
+
+	<role descr="instrument or manner" n="2"/>
+</roles>
+
+<example name="oddly intransitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    Some shows just don't impress, he says, and this is one of them. 
+</text>
+        <arg n="0">Some shows</arg>
+        <arg f="DIS" n="M">just</arg>
+        <arg f="NEG" n="M">n't</arg>
+        <rel>impress</rel>
+</example>
+
+<example name="simple transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    That impressed Robert B. Pamplin, Georgia-Pacific's chief
+    executive at the time, whom Mr. Hahn had met while fundraising for
+    the institute. 
+</text>
+        <arg n="0">That</arg>
+        <rel>impressed</rel>
+        <arg n="1">Robert B. Pamplin, Georgia-Pacific's chief
+        executive at the time, whom Mr. Hahn had met while fundraising
+        for the institute</arg> 
+</example>
+
+<example name="passive with 'with'">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    Michael Burns, president of Telesystems, says his concern has only
+    benefited from the publicity surrounding the case, noting that
+    three other charities have signed on as clients because they were
+    impressed *trace* with the amount he raised for National
+    Children's.
+</text>
+        <rel>impressed</rel>
+        <arg n="1">*trace* -&gt;  they</arg>
+        <arg f="with" n="0">the amount he raised for National
+        Children's</arg> 
+</example>
+
+<example name="with instrument">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Messrs. Guber and Peters assiduously courted the man's widow for
+    months, showing her a tape of ``Gorillas in the Mist'' *trace* to
+    impress her with the quality of their work. 
+</text>
+        <arg n="0">*trace* -&gt; *trace* -&gt;  Messrs. Guber and Peters</arg>
+        <rel>impress</rel>
+        <arg n="1">her</arg>
+        <arg f="with" n="2">the quality of their work</arg>
+</example>
+
+<note>
+Reserve use of arg2 for only those cases where there's also a stated
+subject (arg0).  Otherwise the agent/instrument distinction gets
+impossible.
+</note>
+
+</roleset>
+
+<roleset id="impress.02" name="convince of importance" vncls="-">
+<roles>
+  <role descr="agent of convincing" n="0"/>
+  <role descr="entity convinced" n="1"/>
+  <role descr="proposition" n="2"/>
+</roles>
+
+<example name="impress on">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    ``It impresses on ordinary, young Filipinos that there's nothing
+    to feel inferior about in using their own language,'' says Randy
+    David, a sociologist and host of a popular television talk show. 
+</text>
+        <arg n="0">It</arg>
+        <rel>impresses</rel>
+        <arg f="on" n="1">ordinary , young Filipinos</arg>
+        <arg n="2">there's nothing to feel inferior about in using
+        their own language</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+<note>
+The two rolesets will be very difficult to distinguish without the
+arg2.  Bummer.
+</note>
+
+</frameset>

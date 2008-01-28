@@ -1,0 +1,39 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="ski">
+<note>
+  Frames file for 'ski' based on sentences in wsj.  Verbnet entry 51.4.1.
+</note>
+
+<roleset id="ski.01" name="slide over snow" vncls="51.4.1">
+<roles>
+  <role descr="skier" n="0"><vnrole vncls="51.4.1" vntheta="Agent"/></role>
+  <role descr="slope, trail" n="1"><vnrole vncls="51.4.1" vntheta="Location"/></role>
+</roles>
+
+<example name="usually intransitive">
+<inflection aspect="ns" form="ns" person="ns" tense="ns" voice="ns"/>
+<text>
+    Some have built health spas, business centers and shopping villages so visitors have more to do than ski .
+</text>
+        <arg n="0">visitors</arg>
+        <rel>ski</rel>
+</example>
+
+<example name="with slope">
+  <inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+  <text>
+    John only skis the double diamonds.
+  </text>
+  <arg n="0">John</arg>
+  <arg f="ADV" n="m">only</arg>
+  <rel>skis</rel>
+  <arg n="1">the double diamonds</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,44 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="lavish">
+<note>
+  Frames file for 'lavish' based on survey of sentences in the WSJ
+  corpus.  
+</note>
+
+
+<roleset id="lavish.01" name="to shower, give profusely" vncls="-">
+<roles>
+  <role descr="giver, agent" n="0"/>
+  <role descr="thing lavished" n="1"/>
+  <role descr="lavished on" n="2"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="progressive" form="participle" person="third" tense="present" voice="active"/>
+<text>
+ Fujitsu Ltd. is lavishing the most expensive promotion campaign in its history -- including a 100,000-guest bash at Tokyo Dome -- for its sophisticated sound\/graphics FM Towns machine , which it advertises [*T*-1] for everything from [*] balancing the family checkbook to [*] practicing karaoke , bar singing .
+</text>
+	<arg n="0">Fujitsu Ltd.</arg>
+	<rel>lavishing</rel>
+	<arg n="1">[ the most expensive promotion campaign in its history -- including a 100,000-guest bash at Tokyo Dome --] [ for its sophisticated sound\/graphics FM Towns machine , which it advertises [*T*-1] for everything from [*] balancing the family checkbook to [*] practicing karaoke , bar singing]</arg>
+</example>
+
+
+<example name="with Arg2">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+ The $ 12 million [*U*] lavished [*] on the Rubens , for example , was a record price for the artist and maybe twice its value , given a dispute among scholars about its provenance .
+</text>
+	<rel>lavished</rel>
+	<arg n="1">[*] -&gt;  The $ 12 million [*U*]</arg>
+	<arg f="on" n="2">the Rubens</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

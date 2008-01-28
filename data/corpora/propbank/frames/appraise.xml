@@ -1,0 +1,64 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="appraise">
+<note>
+  Frames file for 'appraise' based on sentences in wsj.  Verbnet entry 54.4.
+</note>
+
+<roleset id="appraise.01" name="set a price, value" vncls="54.4">
+<roles>
+  <role descr="seller" n="0">
+		
+  <vnrole vncls="54.4" vntheta="Agent"/></role>
+
+  <role descr="commodity" n="1">
+		
+  <vnrole vncls="54.4" vntheta="Theme"/></role>
+
+  <role descr="price" n="2">
+		
+  <vnrole vncls="54.4" vntheta="Attribute"/></role>
+</roles>
+
+<example name="surprised this didn't occur">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    Mary appraised the value of John's home at $3.14.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>appraised</rel>
+  <arg n="1">the value of John's home</arg>
+  <arg f="at" n="2">$3.14</arg>
+</example>
+
+<note>
+I suppose the 'the value' is redundant.
+</note>
+
+</roleset>
+
+<roleset id="appraise.02" name="come to understand" vncls="-">
+<roles>
+  <role descr="understanding entity" n="0"/>
+  <role descr="knowledge, topic" n="1"/>
+</roles>
+
+<example name="the one example">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    But institutional investors may wait a little longer [*-1] to
+    appraise the direction of the U.S. monetary policy and the dollar,
+    traders said.  
+</text>
+        <arg n="0">[*-1] -&gt;  institutional investors</arg>
+        <rel>appraise</rel>
+        <arg n="1">the direction of the U.S. monetary policy and the
+        dollar</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

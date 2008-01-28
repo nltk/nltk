@@ -1,0 +1,60 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="graze">
+<note>
+  Frames file for 'graze' based on sentences in wsj.  Verbnet entries 20 39.5.
+</note>
+
+<roleset id="graze.01" name="(allow to) eat grass" vncls="20 39.5">
+<roles>
+  <role descr="rancher" n="A"/>
+  <role descr="cow" n="0"><vnrole vncls="39.5" vntheta="Agent"/><vnrole vncls="20" vntheta="Experiencer"/></role>
+  <role descr="grass, pasture" n="1"><vnrole vncls="39.5" vntheta="Patient"/><vnrole vncls="20" vntheta="Instrument"/></role>
+</roles>
+
+<example name="basic transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    The Soviets' explanation is that the anthrax came from one lot of
+    animal feed made from the bones of cattle that [*T*-1] grazed on
+    soil that was naturally infected with anthrax spores.  
+</text>
+        <arg n="0">[*T*-1] -&gt;  that -&gt;  cattle</arg>
+        <rel>grazed</rel>
+        <arg f="on" n="1">soil that [*T*-2] was naturally infected
+        with anthrax spores</arg> 
+</example>
+
+
+<example name="intransitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    They graze at the Farmers Market, a combination gourmet food court
+    and grocery store, while a pianist accompanies the noon fashion
+    show with a selection of dreamy melodies. 
+</text>
+        <arg n="0">They</arg>
+        <rel>graze</rel>
+        <arg f="LOC" n="M">at the Farmers Market, a combination
+        gourmet food court and grocery store</arg> 
+        <arg f="TMP" n="M">while a pianist accompanies the noon
+        fashion show with a selection of dreamy melodies</arg> 
+</example>
+
+<example name="with causal agent">
+  <inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+  <text>
+    The local rancher grazes his cattle in John's front yard.
+  </text>
+  <arg n="0">The local rancher</arg>
+  <rel>grazes</rel>
+  <arg n="1">his cattle</arg>
+  <arg f="LOC" n="m">in John's front yard</arg>
+</example>
+
+<note>
+Can't deny that ArgA!
+</note>
+
+</roleset>
+</predicate>
+</frameset>

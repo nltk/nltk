@@ -1,0 +1,59 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="rate">
+<note>
+  Frames file for 'rate' based on survey of initial sentences of big
+  corpus and comparison with 'value'
+</note>
+
+<roleset id="rate.01" name="establish value or worth" vncls="29.1 29.6 54.4">
+<roles>
+  <role descr="entity establishing value" n="0">
+		
+		
+		
+  <vnrole vncls="29.1" vntheta="Agent"/><vnrole vncls="29.6" vntheta="Agent"/><vnrole vncls="54.4" vntheta="Agent"/></role>
+
+  <role descr="commodity or entity being evaluated" n="1">
+		
+		
+		
+  <vnrole vncls="29.1" vntheta="Theme"/><vnrole vncls="29.6" vntheta="Theme"/><vnrole vncls="54.4" vntheta="Theme"/></role>
+
+  <role descr="value, worth, grade" n="2">
+		
+		
+		
+  <vnrole vncls="29.1" vntheta="Predicate"/><vnrole vncls="29.6" vntheta="Predicate"/><vnrole vncls="54.4" vntheta="Attribute"/></role>
+
+</roles>
+
+<example name="active">
+  <text>
+  Friends of Education rates South Carolina one of the worst seven
+  states in its study on academic cheating.
+  </text>
+  <arg n="0">Friends of Education</arg>
+  <rel>rates</rel>
+  <arg n="1">South Carolina</arg>
+  <arg n="2">one of the worst seven states</arg>
+  <arg f="LOC" n="m">in its study on academic cheating</arg>
+</example>
+
+<example name="passive">
+  <text>
+  The bonds are rated single-A by S&amp;P, according to the lead underwriter.
+  </text>
+  <arg n="1">The bonds</arg>
+  <rel>rated</rel>
+  <arg n="2">single-A</arg>
+  <arg f="by" n="0">S&amp;P</arg>
+  <arg f="DIS" n="m">according to the lead underwriter</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

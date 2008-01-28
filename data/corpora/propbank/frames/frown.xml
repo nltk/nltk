@@ -1,0 +1,63 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="frown">
+<note>
+  Frames file for 'frown' based on sentences in brown.  Verbnet entry
+</note>
+
+<roleset id="frown.01" vncls="-" name="an upside-down smile">
+<roles>
+  <role n="0"  descr="frowner"/>
+</roles>
+
+<example name="bare participle">
+  <inflection person="ns" tense="ns" aspect="progressive" voice="active" form="participle"/>
+  <text>
+    She stood *trace* frowning and chewing her lip.
+  </text>
+  <arg n="0"        >*trace*-> She</arg>
+  <rel              >frowning</rel>
+</example>
+
+<note>
+could conceivably take a cognate object: 'frown a worried frown'
+</note>
+
+</roleset>
+
+<roleset id="frown.02" vncls="-" name="disapprove of">
+<roles>
+  <role n="0"  descr="disapprover"/>
+  <role n="1"  descr="disapproved action"/>
+</roles>
+
+<example name="for shame!">
+  <inflection person="third" tense="present" aspect="ns" voice="passive" form="participle"/>
+  <text>
+     It is like medical schools in India where, in that fairy-land of
+     religious inhibition, the dissection of dead bodies is frowned
+     upon *trace*.
+  </text>
+  <rel              >frowned</rel>
+  <arg n="1" f="upon">*trace* -> the dissection of dead bodies</arg>
+<note>Would they prefer the dissection of living bodies?</note>
+</example>
+
+<example name="both args">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+    When cattle became more valuable, ranch owners frowned upon this
+    practice and it was discontinued.
+  </text>
+  <arg n="m" f="TMP">When cattle became more valuable</arg>
+  <arg n="0"        >ranch owners</arg>
+  <rel              >frowned</rel>
+  <arg n="1" f="upon">this practice</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

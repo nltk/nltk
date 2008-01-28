@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="quell">
+<note>
+  Frames file for 'quell' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="quell.01" name="to quiet or supress" vncls="-">
+<roles>
+  <role descr="causer" n="0"/>
+  <role descr="entity quelled" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ Traders said that statements made [*] over the weekend [*] to quell concern about the stability of Prime Minister Margaret Thatcher 's government and the future of her economic program largely failed [*-2] to reassure investors and bolster the flagging British unit .
+</text>
+	<arg n="0">[*] -&gt;  [*] -&gt;  statements</arg>
+	<rel>quell</rel>
+	<arg n="1">concern about the stability of Prime Minister Margaret Thatcher 's government and the future of her economic program</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

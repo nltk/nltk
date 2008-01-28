@@ -1,0 +1,52 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="chase">
+<note>
+  Frames file for 'chase' based on sentences in financial subcorpus.
+  Verbnet entry chase-51.6, other framed members include 'follow' and
+  'pursue'.  Comparison with follow.
+</note>
+
+<roleset id="chase.01" name="follow, pursue" vncls="51.6">
+<roles>
+  <role descr="follower" n="0">
+		
+  <vnrole vncls="51.6" vntheta="Agent"/></role>
+
+  <role descr="thing followed" n="1">
+		
+  <vnrole vncls="51.6" vntheta="Theme"/></role>
+
+</roles>
+
+<example name="with causal agent">
+  <text>
+    John chased his dinner with a shot of antifreeze.
+  </text>
+  <arg n="A">John</arg>
+  <rel>chased</rel>
+  <arg n="1">his dinner</arg>
+  <arg f="MNR" n="M">a shot of antifreeze</arg>
+</example>
+
+<example name="with directional">
+<text>
+    Higher margins would chase away dozens of smaller traders who help
+    larger traders buy and sell, they say. 
+</text>
+	<arg n="0">Higher margins</arg>
+	<arg f="MOD" n="M">would</arg>
+	<rel>chase</rel>
+	<arg f="DIR" n="M">away</arg>
+	<arg n="1">dozens of smaller traders who  help larger traders
+	buy and sell</arg> 
+</example>
+
+<note>
+The directional changes the meaning so dramatically that it might be
+wise to make it a different roleset.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

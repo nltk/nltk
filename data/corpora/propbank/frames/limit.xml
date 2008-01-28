@@ -1,0 +1,45 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="limit">
+<note>
+  Frames file for 'limit' based on sentences in financial subcorpus.
+  No verbnet entry.  Comparison to 'curtail'.
+</note>
+
+<roleset id="limit.01" name="ensure something stays below a certain level">
+<roles>
+  <role descr="agent, limiter" n="0"/>
+  <role descr="thing limited" n="1"/>
+  <role descr="limit" n="2"/>
+</roles>
+
+<example name="unmentioned limit">
+<text>
+    The new company will attempt *trace* to limit the shipyard's
+    losses, participants said. 
+</text>
+        <arg n="0">*trace* -&gt;  The new company</arg>
+        <rel>limit</rel>
+        <arg n="1">the shipyard's losses</arg>
+</example>
+
+<example name="with limit">
+<text>
+    And powerful political pressures may convince the Conservative
+    government to keep its so-called golden share, which *trace*
+    limits any individual holding to 15%, until the restriction
+    expires on Dec. 31, 1990. 
+</text>
+        <arg n="0">*trace* -&gt;  which -&gt;  its so-called golden share</arg>
+        <rel>limits</rel>
+        <arg n="1">any individual holding</arg>
+        <arg f="to" n="2">15 %</arg>
+</example>
+
+<note>
+Ignore adjectival usages like &quot;a limited partnership&quot;.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

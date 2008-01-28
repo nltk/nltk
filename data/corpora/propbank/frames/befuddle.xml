@@ -1,0 +1,34 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="befuddle">
+<note>
+  Frames file for 'befuddle' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="befuddle.01" name="cause confusion" vncls="-">
+<roles>
+  <role descr="causer, agent" n="0"/>
+  <role descr="entity experiencing confusion" n="1"/>
+</roles>
+
+<example name="Elmer Befudd?">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    In 1975, Mr. Pamplin enticed Mr. Hahn into joining the company as
+    executive vice president in charge of chemicals; the move
+    befuddled many in Georgia-Pacific who didn't believe a university
+    administrator could make the transition to the corporate world. 
+</text>
+        <arg n="0">the move</arg>
+        <rel>befuddled</rel>
+        <arg n="1">many in Georgia-Pacific who didn't believe a
+        university administrator could make the transition to the
+        corporate world</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

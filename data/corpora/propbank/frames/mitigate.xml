@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="mitigate">
+<note>
+  Frames file for 'mitigate' based on sentences in financial
+  subcorpus.  No access to verbnet.  No comparison.
+</note>
+
+<roleset id="mitigate.01" name="reduce the impact of">
+<roles>
+  <role descr="reducer" n="0"/>
+  <role descr="thing reduced" n="1"/>
+</roles>
+
+<example name="only example">
+<text>
+    While many problems would attend a restructuring of Columbia,
+    investors say Mr. Spiegel is mulling such a plan *trace* to
+    mitigate Columbia's junk problems. 
+</text>
+        <arg n="0">*trace* -&gt; Mr. Spiegel</arg>
+        <rel>mitigate</rel>
+        <arg n="1">Columbia 's junk problems</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

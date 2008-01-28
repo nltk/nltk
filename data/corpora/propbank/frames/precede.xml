@@ -1,0 +1,49 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="precede">
+<note>
+Frames file for 'precede' based on sentences in financial subcorpus
+and automatic expansion via verbnet.
+</note>
+
+<roleset id="precede.01" name="go before" vncls="47.8">
+<roles>
+	<role descr="thing preceding" n="0">
+		
+  <vnrole vncls="47.8" vntheta="Theme1"/></role>
+
+	<role descr="thing preceded" n="1">
+		
+  <vnrole vncls="47.8" vntheta="Theme2"/></role>
+ 
+	<role descr="causal agent" n="A"/> 
+</roles>
+
+<example name="just transitive">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    Given the prelude's thematic connections with the music preceding
+    the last act,... 
+</text>
+        <arg n="0">the music</arg>
+        <rel>preceding</rel>
+        <arg n="1">the last act</arg>
+</example>
+<note>
+This is almost prepositional.
+</note>
+
+<example name="with causal agent" src="follow.01">
+  <text>
+    Mr. Simmons has preceded friendly offers with a hostile tender offer.
+  </text>
+  <arg n="A">Mr. Simmons</arg>
+  <rel>preceded</rel>
+  <arg n="1">friendly offers</arg>
+  <arg n="0">a hostile tender offer</arg>
+</example>
+
+</roleset>
+
+</predicate>
+</frameset>

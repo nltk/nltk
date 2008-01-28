@@ -1,0 +1,51 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="alternate">
+<note>
+  Frames file for 'alternate' based on sentences in wsj.  Verbnet
+  entries 22.2-4 and 22.2-6.
+</note>
+
+<roleset id="alternate.01" name="switch between   two possibilities" vncls="22.2">
+<roles>
+  <role descr="causer of switch" n="0"><vnrole vncls="22.2" vntheta="Agent"/></role>
+  <role descr="thing switching" n="1"><vnrole vncls="22.2" vntheta="Patient1"/></role>
+  <role descr="possibilities" n="2"><vnrole vncls="22.2" vntheta="Patient2"/></role>
+</roles>
+
+<example name="agentive, merged possibilities">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    The two leaders will meet on Dec. 2 and 3, *trace* alternating the
+    two days of meetings between a U.S. and a Soviet naval vessel in
+    the Mediterranean Sea. 
+</text>
+        <arg n="0">*trace* -&gt;  The two leaders</arg>
+        <rel>alternating</rel>
+        <arg n="1">the two days of meetings</arg>
+        <arg f="between" n="2">a U.S. and a Soviet naval vessel in the
+        Mediterranean Sea</arg> 
+</example>
+
+
+<example name="this isn't even a verb!">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+    ``Communism will reach its final stage of development in a
+    feckless Russo -- corporation-socialist in form, nationalistic in
+    content and Oriental in style -- that will puzzle the world with
+    alternating feats of realism and recklessness...'' 
+</text>
+        <rel>alternating</rel>
+        <arg n="1">feats of realism and recklessness</arg>
+</example>
+
+<note>
+Second example merges arg1 'thing switching' and arg2
+'possibilities'.  I don't think the possibilities can be separated
+into different args ('alternate from X to Y').
+</note>
+
+</roleset>
+</predicate>
+</frameset>

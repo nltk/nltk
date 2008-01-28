@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="reign">
+<note>
+  Frames file for 'reign'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="reign.01" name="to exercise sovereign power, dominate" vncls="-">
+<roles> 
+ <role descr="entity reigning" n="0"/>
+ <role descr="empire" n="1"/>  
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ President Carlos Salinas de Gortari used the army [*-3] to oust La Quina , who [*T*-1] reigned for 28 years over a graft-riddled empire that [*T*-2] made state-run Petroleos Mexicanos , or Pemex , one of the world 's most inefficient oil companies .
+</text>
+	<arg n="0">[*T*-1] -&gt;  who -&gt;  La Quina</arg>
+	<rel>reigned</rel>
+	<arg f="TMP" n="M">for 28 years</arg>
+	<arg f="over" n="1">a graft-riddled empire that [*T*-2] made state-run Petroleos Mexicanos , or Pemex , one of the world 's most inefficient oil companies</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

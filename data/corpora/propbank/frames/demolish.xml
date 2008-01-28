@@ -1,0 +1,58 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="demolish">
+<note>
+  Frames file for 'demolish' based on automatic expansion of 'destroy'
+  Levin class (cl 44).
+</note>
+
+<roleset id="demolish.01" name="destroy" vncls="31.1 44">
+<roles>
+  <role descr="destroyer" n="0">
+		
+  <vnrole vncls="44" vntheta="Agent"/><vnrole vncls="31.1" vntheta="Cause"/></role>
+
+  <role descr="thing destroyed" n="1">
+		
+  <vnrole vncls="44" vntheta="Patient"/><vnrole vncls="31.1" vntheta="Experiencer"/></role>
+
+  <role descr="instrument of destruction" n="2">
+		
+  <vnrole vncls="44" vntheta="Instrument"/></role>
+
+</roles>
+
+<example name="no instrument">
+<text>
+    Program traders argue that a reinstatement of the rule would
+    demolish the ``pricing efficiency'' of the futures and stock
+    markets. 
+</text>
+        <arg n="0">a reinstatement of the rule</arg>
+        <arg f="MOD" n="M">would</arg>
+        <rel>demolish</rel>
+        <arg n="1">the ``pricing efficiency'' of the futures and stock
+        markets</arg> 
+</example>
+
+<example name="with instrument">
+  <text>
+    Mary demolished John's fragile self-esteem with a single dirty look.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>demolished</rel>
+  <arg n="1">John's fragile self-esteem</arg>
+  <arg f="with" n="2">a single dirty look</arg>
+</example>
+
+<note>
+Verbnet predicts an instrumental subject.  They also bring the
+distinction between agent and instrument down to intentionality, which
+we've been trying to avoid.  If you feel you can consistently make
+that decision, go ahead; otherwise only use arg2 when there is also an
+arg0.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

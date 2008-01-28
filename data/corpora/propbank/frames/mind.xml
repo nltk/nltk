@@ -1,0 +1,107 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="mind">
+<note>
+Frames file for 'mind' based on sentences in corpus and automatic
+expansion via verbnet.
+</note>
+
+<roleset id="mind.01" name="be bothered by" vncls="31.3">
+<roles>
+	<role descr="entity being bothered" n="0">
+		
+  <vnrole vncls="31.3" vntheta="Experiencer"/></role>
+
+	<role descr="bothered by" n="1">
+		
+  <vnrole vncls="31.3" vntheta="Cause"/></role>
+
+</roles>
+
+<example name="normal">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    You have a right to read Voice of America scripts if you don't
+    mind traveling to Washington every week or so and visiting the
+    Voice office during business hours. 
+</text>
+        <arg n="0">you</arg>
+        <arg f="NEG" n="M">n't</arg>
+        <rel>mind</rel>
+        <arg n="1">traveling to Washington every week or so and
+        visiting the Voice office during business hours</arg> 
+</example>
+
+<example name="unstated or inconveniently-treed arg1">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    He said Apple's family of Macintosh computers, for instance, uses
+    four different buses ``and no one seems *trace* to mind.'' 
+</text>
+        <arg n="0">*trace* -&gt;  no one</arg>
+        <rel>mind</rel>
+</example>
+
+</roleset>
+
+<roleset id="mind.02" name="take care of, tend to" vncls="-">
+<roles> 
+  <role descr="caregiver" n="0"/>
+  <role descr="patient" n="1"/>
+</roles>
+
+<example name="mind the baby">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    The first episode concluded with a marvelously cute scene in which
+    the trading-room crew minded a baby, the casualty of a broken
+    marriage at the firm. 
+</text>
+        <arg n="0">the trading-room crew</arg>
+        <rel>minded</rel>
+        <arg n="1">a baby, the casualty of a broken marriage at the
+        firm</arg> 
+</example>
+
+</roleset>
+
+<roleset id="mind.03" name="make a note" vncls="-">
+<roles>
+  <role descr="noter" n="0"/>
+</roles>
+
+<example name="funky inverted discourse function">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+    A modest drop in the dollar -- only a modest one, *trace* mind you
+    -- would be welcomed by the U.S. 
+</text>
+        <arg n="0">you -&gt; *trace*</arg>
+        <rel>mind</rel>
+</example>
+
+<example name="another discourse syntax">
+<inflection aspect="ns" form="full" person="ns" tense="ns" voice="ns"/>
+<text>
+    Mind you, most of ``the volunteers'' would be unskilled 17- to
+    18-year-olds, some not even high school graduates, and many saving
+    money by living at home. 
+</text>
+        <rel>Mind</rel>
+        <arg n="0">you</arg>
+</example>
+
+<note>
+This hardly even deserves to be called a predicate--it's more of a
+fixed phrase.
+</note>
+
+</roleset>
+<note>
+There is also the usage of &quot;never mind&quot;--this is a nearly idiomatic
+(fixed) phrase, with no real argument structure (even in the
+'intensified' 'never you mind').  Ignore these usages, do not tag
+them.
+</note>
+
+</predicate>
+</frameset>

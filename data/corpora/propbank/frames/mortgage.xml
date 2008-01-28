@@ -1,0 +1,50 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="mortgage">
+<note>
+  Frames file for 'mortgage' based on sentences in financial
+  subcorpus.  No Verbnet entry, no Framenet entry.  Comparison with
+  'finance'.
+</note>
+
+<roleset id="mortgage.01" name="get money by giving up your possessions">
+<roles>
+  <role descr="mortgager" n="0"/>
+  <role descr="possession(s)" n="1"/>
+  <role descr="provider of money" n="2"/>
+  <role descr="money" n="3"/>
+</roles>
+
+<example name="no provider of money">
+<inflection aspect="ns" form="full" person="ns" tense="ns" voice="ns"/>
+<text>
+    The debt, estimated at $4.7 billion, could mortgage the cellular
+        company's future earning power in order to placate some LIN
+        holders in the short term.</text> 
+        <arg n="0">The debt, estimated at $4.7 billion,</arg>
+        <arg f="MOD" n="M">could</arg>
+        <rel>mortgage</rel>
+        <arg n="1">the cellular company 's future earning power</arg>
+        <arg f="PNC" n="M">in order  to placate some LIN holders in
+        the short term</arg> 
+</example>
+
+<example name="all args">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John mortgaged his future to Mary for $5.38.
+  </text>
+  <arg n="0">John</arg>
+  <rel>mortgaged</rel>
+  <arg n="1">his future</arg>
+  <arg f="to" n="2">Mary</arg>
+  <arg f="for" n="3">%5.38</arg>
+</example>
+
+<note>
+I doubt we'll see any examples with both arg2 and arg3.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

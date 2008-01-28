@@ -1,0 +1,75 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="unify">
+<note>
+  Frames file for 'unify' based on sentences in wsj.  Verbnet entry
+  22.2, Framenet entry Amalgamate.
+</note>
+
+<roleset id="unify.01" name="join together" vncls="22.2">
+<roles>
+  <role descr="joiner, agent" n="0">
+        <vnrole vncls="22.2" vntheta="Agent"/></role>
+  <role descr="(first) thing(s) being unified" n="1">
+        <vnrole vncls="22.2" vntheta="Patient1"/></role>
+  <role descr="other things, if separate from arg1" n="2">
+        <vnrole vncls="22.2" vntheta="Patient2"/></role>
+  <role descr="unified whole" n="3"/>
+</roles>
+
+<example name="simple transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+     Arguing that the separate financial marketplaces acted as one,
+     and concluding that the crash had ``raised the possibility of a
+     full-scale financial system breakdown,'' the presidential task
+     force called for establishing a super-regulator to oversee the
+     markets, to make margins consistent across markets, *trace* to
+     unify clearing systems and to install circuit breakers. 
+</text>
+        <arg n="0">*trace* -&gt;  a super-regulator</arg>
+        <rel>unify</rel>
+        <arg n="1">clearing systems</arg>
+</example>
+
+<example name="separate things">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John unified his sense of fair play with Mary's violent tendencies.
+  </text>
+  <arg n="0">John</arg>
+  <rel>unified</rel>
+  <arg n="1">his sense of fair play</arg>
+  <arg f="with" n="2">Mary's violent tendencies</arg>
+</example>
+
+<example name="pieces and whole">
+  <inflection aspect="ns" form="participle" person="ns" tense="past" voice="passive"/>
+  <text>
+     John's sense of fair play and Mary's violent tendencies were
+     unified *trace* into a very unhealthy living situation.
+  </text>
+  <rel>unified</rel>
+  <arg n="1">*trace* -&gt; John's sense of fair play and Mary's
+  violent tendencies</arg> 
+  <arg f="into" n="3">a very unhealthy living situation</arg>
+</example>
+
+<example name="adjectival">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    That's why ``we have been working hard to develop a single, more
+    unified presence in Europe,'' said A.J.C. Smith, Marsh &amp;
+    McLennan's president, at a London news conference yesterday. 
+</text>
+        <arg f="EXT" n="M">more</arg>
+        <rel>unified</rel>
+        <arg n="1">presence</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

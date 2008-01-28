@@ -1,0 +1,34 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="overwork">
+<note>
+  Frames file for 'overwork' based on sentences in financial
+  subcorpus.  No Verbnet entry.  Loose comparison with 'work'.
+  Actually, almost no comparison at all.
+</note>
+
+<roleset id="overwork.01" name="work too hard" vncls="-">
+<roles>
+  <role descr="employer" n="0"/>
+  <role descr="worker" n="1"/>
+</roles>
+
+<example name="very basic transitive">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    He adds that the company is trying *trace* to keep up with demand
+    ``by *trace* overworking'' its employees. 
+</text>
+        <arg n="0">*trace* -&gt; *trace* -&gt;  the company</arg>
+        <rel>overworking</rel>
+        <arg n="1">its employees</arg>
+</example>
+
+<note>
+I think I'm glad I didn't have to make a John sentence for this--I'd
+probably get in trouble.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

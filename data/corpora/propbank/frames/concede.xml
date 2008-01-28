@@ -1,0 +1,52 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="concede">
+<note>
+  Frames file for 'concede' based on sentences in financial
+  subcorpus.  Verbnet class future_having-13.3, but that's not a very
+  common sense.
+</note>
+
+<roleset id="concede.01" name="admit" vncls="13.3">
+<roles>
+  <role descr="entity admitting something" n="0">
+		
+  <vnrole vncls="13.3" vntheta="Agent"/></role>
+
+  <role descr="thing admitted, usually a proposition" n="1">
+		
+  <vnrole vncls="13.3" vntheta="Theme"/></role>
+
+</roles>
+
+<example name="sentential thing arg1">
+<text>
+   Reviewing the company's scrape with disaster, Mr. Price conceded it
+   had tried to do too much on its own. 
+</text>
+        <arg f="ADV" n="M">Reviewing the company's scrape with
+        disaster</arg> 
+        <arg n="0">Mr. Price</arg>
+        <rel>conceded</rel>
+        <arg n="1">it had tried to do too much on its own</arg>
+</example>
+
+<example name="nominal arg1, almost idiomatic">
+<text>
+    Because most businesses put market share above profitability, to
+    let a competitor's addition to capacity go unmatched is *trace* to
+    concede defeat. 
+</text>
+        <arg n="0">*trace*</arg>
+        <rel>concede</rel>
+        <arg n="1">defeat</arg>
+</example>
+
+<note>
+This is essentially another verb of saying, so expect some of the same
+constructions (fronted, split, etc) as in 'say' etc.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

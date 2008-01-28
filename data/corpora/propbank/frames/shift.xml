@@ -1,0 +1,84 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="shift">
+<note>
+  Frames file for 'shift' based on sentences in financial subcorpus.
+  Verbnet entry send-11.1, other framed members include mail, pass,
+  slip, sneak and transfer.  Comparison to 'slip'.
+</note>
+
+<roleset id="shift.01" name="change location" vncls="11.1">
+<roles>
+  <role descr="mover" n="0">
+		
+  <vnrole vncls="11.1" vntheta="Agent"/></role>
+
+  <role descr="moved" n="1">
+		
+  <vnrole vncls="11.1" vntheta="Theme"/></role>
+
+  <role descr="destination" n="2">
+		
+  <vnrole vncls="11.1" vntheta="Destination"/></role>
+
+  <role descr="source" n="3">
+		
+  <vnrole vncls="11.1" vntheta="Source"/></role>
+
+</roles>
+
+<example name="all args">
+<text>
+    Goldman Sachs placed the stock back on its list of recommended
+    issues, raised its 1990 earnings estimate and recommended that its
+    clients shift funds from Kellogg to General Mills. 
+</text>
+        <arg n="0">its clients</arg>
+        <rel>shift</rel>
+        <arg n="1">funds</arg>
+        <arg f="from" n="3">Kellogg</arg>
+        <arg f="to" n="2">General Mills</arg>
+</example>
+
+<example name="ergative">
+<text>
+    Investor focus shifted quickly, traders said.
+</text>
+        <arg n="1">Investor focus</arg>
+        <rel>shifted</rel>
+        <arg f="MNR" n="M">quickly</arg>
+</example>
+
+<example name="shift into high gear">
+<text>
+    Mr. Birnbaum recalls that Mr. Guber and Mr. Peters shifted into
+    high gear a few years back... 
+</text>
+        <arg n="1">Mr. Guber and Mr. Peters</arg>
+        <rel>shifted</rel>
+        <arg f="into" n="2">high gear</arg>
+        <arg f="TMP" n="M">a few years back</arg>
+</example>
+
+<example name="merged args 2 and 3">
+<text>
+   One new investment style called ``asset allocation'' shifts
+   portfolio weightings between stocks, bonds and cash when computer
+   models say one is more attractive. 
+</text>
+        <arg n="0">One new investment style called ``asset
+        allocation''</arg> 
+        <rel>shifts</rel>
+        <arg n="1">portfolio weightings</arg>
+        <arg f="between" n="2">stocks, bonds and cash</arg>
+        <arg f="TMP" n="M">when computer models say one is more
+        attractive</arg> 
+</example>
+
+<note>
+Likewise &quot;shift among&quot; etc.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

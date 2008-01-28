@@ -1,0 +1,85 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="gobble">
+<note>
+  Frames file for 'gobble' based on sentences in wsj.  Verbnet entries
+  39.3 and 38; Framenet entries Ingestion and Perception noise.
+</note>
+
+<roleset id="gobble.01" name="eat voraciously" vncls="39.3">
+<roles>
+  <role descr="eater" n="0"><vnrole vncls="39.3" vntheta="Agent"/></role>
+  <role descr="food" n="1"><vnrole vncls="39.3" vntheta="Patient"/></role>
+</roles>
+
+<example name="slightly odd without particle">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John gobbled the chocolate cake.
+  </text>
+  <arg n="0">John</arg>
+  <rel>gobbled</rel>
+  <arg n="1">the chocolate cake</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="gobble.02" name="make like a turkey" vncls="38">
+<roles>
+  <role descr="turkey" n="0"><vnrole vncls="38" vntheta="Agent"/></role>
+</roles>
+
+<example name="Old McDonald">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John gobbled, oinked, neighed, and did whatever gnu do.
+  </text>
+  <arg n="0">John</arg>
+  <rel>gobbled</rel>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="gobble_up">
+
+<roleset id="gobble.03" name="eat voraciously and completely" vncls="39.3">
+<roles>
+  <role descr="eater" n="0"><vnrole vncls="39.3" vntheta="Agent"/></role>
+  <role descr="food" n="1"><vnrole vncls="39.3" vntheta="Patient"/></role>
+</roles>
+
+<example name="the one example">
+<inflection aspect="progressive" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    More than ever, independent magazines and small publishing groups
+    are being gobbled [*-1] up by larger publishing groups, such as
+    American Express Publishing Corp., a unit of American Express Co.,
+    and Conde Nast Publications Inc., a unit of Advance Publications
+    Inc., which are consolidating in order to gain leverage with
+    advertisers. 
+</text>
+        <arg f="TMP" n="M">More than ever</arg>
+        <rel>[ gobbled] [ up]</rel>
+        <arg n="1">[*-1] -&gt;  independent magazines and small
+        publishing groups</arg> 
+        <arg f="by" n="0">larger publishing groups, such as American
+        Express Publishing Corp., a unit of American Express Co., and
+        Conde Nast Publications Inc., a unit of Advance Publications
+        Inc., which are consolidating in order to gain leverage with
+        advertisers</arg> 
+</example>
+
+<note>
+Probably also gobble down.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

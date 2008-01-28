@@ -1,0 +1,65 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="shout">
+<note>
+  Frames file for 'shout' based on sentences in wsj.  Verbnet entry
+  37.3, Framenet entry Communication manner.
+</note>
+
+<roleset id="shout.01" name="talk very loudly" vncls="37.3">
+<roles>
+  <role descr="shouter" n="0"><vnrole vncls="37.3" vntheta="Agent"/></role>
+  <role descr="utterance" n="1"><vnrole vncls="37.3" vntheta="Topic"/></role>
+  <role descr="listener" n="2"><vnrole vncls="37.3" vntheta="Recipient"/></role>
+</roles>
+
+<example name="normally transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Some members of the huge crowd shouted ``Viva peace, viva.''
+</text>
+        <arg n="0">Some members of the huge crowd</arg>
+        <rel>shouted</rel>
+        <arg n="1">Viva peace, viva</arg>
+</example>
+
+<example name="intransitive with manner">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Some 34,320 fans jammed the stands, and shouted at the top of
+    their lungs. 
+</text>
+        <arg n="0">Some 34,320 fans</arg>
+        <rel>shouted</rel>
+        <arg f="MNR" n="M">at the top of their lungs</arg>
+</example>
+
+<example name="almost idiomatic">
+<inflection aspect="progressive" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+    I know that I 'm shouting into the breeze here as far as what
+    we're doing now. 
+</text>
+        <arg n="0">I</arg>
+        <rel>shouting</rel>
+        <arg f="into" n="2">into the breeze</arg>
+        <arg f="DIS" n="M">here</arg>
+        <arg n="M">as far as what we're doing  now</arg>
+</example>
+
+<example name="with listener">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John shouted in Mary's ear.
+  </text>
+  <arg n="0">John</arg>
+  <rel>shouted</rel>
+  <arg f="in" n="2">Mary's ear</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

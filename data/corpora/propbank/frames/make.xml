@@ -1,0 +1,585 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<note>
+Frames file for 'make' based on initial sample of sentences from big corpus
+</note>
+
+<predicate lemma="make">
+<roleset id="make.01" name="create" vncls="26.1-1">
+<roles>
+  <role descr="creator" n="0">
+	<vnrole vncls="26.1-1" vntheta="Agent"/></role>
+  <role descr="creation" n="1">
+	<vnrole vncls="26.1-1" vntheta="Product"/></role>
+  <role descr="created-from, thing changed" n="2">
+	<vnrole vncls="26.1-1" vntheta="Material"/></role>
+  <role descr="benefactive" n="3">
+	<vnrole vncls="26.1-1" vntheta="Beneficiary"/></role>
+</roles>
+
+<example name="basic transitive">
+  <text>
+    Loews Corp makes Kent cigarettes.
+  </text>
+  <arg n="0">Loews Corp</arg>
+  <rel>makes</rel>     
+  <arg n="1">Kent cigarettes</arg>
+</example>
+
+<example name="source = subject">
+  <text>
+    A form of asbestos once used *trace=asbestos* *trace=empty* to make 
+    cigarettes.
+  </text>
+  <arg n="2">*trace=asbestos*</arg>
+  <arg n="0">*trace=empty*</arg>
+  <rel>to make</rel>
+  <arg n="1">cigarettes</arg>
+</example>
+
+<example name="passive, source as of-phrase">
+  <text>
+    Those chips are made *trace=chips* of gallium arsenide.
+  </text>
+  <rel>are made</rel>
+  <arg n="1">*trace=chips*</arg>
+  <arg f="of" n="2">gallium arsenide</arg>
+</example>
+
+<example name="mincemeat pie">
+<inflection person="third" tense="present" aspect="perfect" voice="active" form="participle"/>
+<text>
+     But the surprisingly durable seven-year economic expansion has
+     made mincemeat of more than one forecast.  
+</text>
+        <arg n="M" f="DIS">But</arg>
+        <arg n="0">the surprisingly durable seven-year economic expansion</arg>
+        <rel>made</rel>
+        <arg n="1">mincemeat</arg>
+        <arg n="2" f="of">more than one forecast</arg>
+</example>
+
+</roleset>
+<roleset id="make.02" name="cause (to be)" vncls="-">
+<roles>
+  <role descr="impeller to action" n="0"/>
+  <role descr="impelled agent" n="1"/>
+  <role descr="impelled action" n="2"/>
+</roles>
+
+<example name="verbal predicate">
+  <text>
+    Mary made John clean his room
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>made</rel>
+  <arg n="1">John</arg>
+  <arg n="2">clean his room</arg>
+</example>
+
+<example name="nominal predicate">
+  <text>
+    Financial problems make them unattractive takeover targets.
+  </text>
+  <arg n="0">Financial problems</arg>
+  <rel>make</rel>
+  <arg n="1">them</arg>
+  <arg n="2">unattractive takeover targets</arg>
+</example>
+
+<example name="adjectival predicate">
+  <text>
+    Asian nations' memories make them fearful of Japanese economic hegemony.
+  </text>
+  <arg n="0">Asian nations' memories</arg>
+  <rel>make</rel>
+  <arg n="1">them</arg>
+  <arg n="2">fearful of Japanese economic hegemony</arg>
+</example>
+
+<example name="with tough-movement">
+  <text>
+    SC Law makes it a crime  to breach test security.
+  </text>
+  <arg n="0">SC Law</arg>
+  <rel>makes</rel>
+  <arg n="2">a crime</arg>
+  <arg n="1">to breach test security</arg>
+</example>
+
+<note>
+Note that the sentence above is technically:
+</note>
+<example name="underlying structure of tough-movement">
+  <text>
+    SC Law makes to breach test security a crime.
+  </text>
+  <arg n="0">SC Law</arg>
+  <rel>makes</rel>
+  <arg n="1">to breach test security</arg>
+  <arg n="2">a crime</arg>
+</example>
+
+<example name="missing attribute">
+<inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+<text>
+     ``It made our New Year,'' says Mr. Quinlan. 
+</text>
+        <arg n="0">It</arg>
+        <rel>made</rel>
+        <arg n="1">our New Year</arg>
+</example>
+
+<example name="specialized cause to be">
+<inflection person="third" tense="present" aspect="perfect" voice="active" form="participle"/>
+<text>
+     For Zel Herring, owner and a cook at the Sandhills Luncheon Cafe,
+     a tin building in midtown, all this has made for a very good
+     year. 
+</text>
+        <arg n="M" f="ADV">For Zel Herring, owner and a cook at the
+        Sandhills Luncheon Cafe, a tin building in midtown</arg> 
+        <arg n="0">all this</arg>
+        <rel>made</rel>
+        <arg n="1" f="for">a very good year</arg>
+</example>
+
+<example name="make good on">
+<inflection person="ns" tense="ns" aspect="ns" voice="ns" form="infinitive"/>
+<text>
+     And that means 42-year-old Michael Carpenter, president and chief
+     executive since January, will for the first time take complete
+     control of Kidder and try [*-1] to make good on some grandiose
+     plans. 
+</text>
+        <arg n="0">[*-1] ->  42-year-old Michael Carpenter , president and chief executive since January ,</arg>
+        <rel>make</rel>
+        <arg n="2">good</arg>
+        <arg n="1">on some grandiose plans</arg>
+</example>
+
+</roleset>
+<roleset id="make.03" name="bid or purchase or whatever" vncls="-">
+<roles>
+  <role descr="maker" n="0"/>
+  <role descr="bid or purchase or whatever" n="1"/>
+  <role descr="benefactive" n="2"/>
+</roles>
+
+<example name="sorta light-verbish">
+  <text>
+    NE Edison made a bid
+  </text>
+  <arg n="0">NE Edison</arg>
+  <rel>made</rel>
+  <arg n="1">a bid</arg>
+</example>
+
+<example name="with benefactive">
+  <text>
+    Edison made refunds to its customers.
+  </text>
+  <arg n="0">Edison</arg>
+  <rel>made</rel>
+  <arg n="1">refunds</arg>
+  <arg f="to" n="2">its customers</arg>
+</example>
+
+<example name="with purpose">
+  <text>
+    Fujitsu made a similar bid to win a contract.
+  </text>
+  <arg n="0">Fujitsu</arg>
+  <rel>made</rel>
+  <arg n="1">a similar bid</arg>
+  <arg f="PNC" n="M">to win a contract</arg>
+</example>
+</roleset>
+
+<roleset id="make.04" name="true light verb" vncls="-">
+<roles>
+   <role n="0" descr="agentive subject"/>
+   <role n="1" descr="true predicate"/>
+   <role n="2" descr="object of true predicate"/>
+   <role n="3" descr="additional args of true predicate"/>
+</roles>
+
+<example name="token light verb example">
+  <text>
+     The companies made sure they understood the concern about such practices.
+  </text>
+  <arg n="0">The companies</arg>
+  <rel>made</rel>
+  <arg n="1">sure</arg>
+  <arg n="2">they understood the concern about such practices</arg>
+</example>
+
+<example name="some light verbs have more args">
+<inflection person="ns" tense="future" aspect="ns" voice="active" form="full"/>
+<text>
+     The department will make payment for bills maturing on Nov. 2 to
+     all investors who have requested reinvestment of their bills on
+     that date, as well as to all account holders who have previously
+     requested payment. 
+</text>
+        <arg n="0">The department</arg>
+        <arg n="M" f="MOD">will</arg>
+        <rel>make</rel>
+        <arg n="1">payment for bills maturing on Nov. 2</arg>
+        <arg n="2">to all investors who [*T*-1] have requested
+        reinvestment of their bills on that date , as well as to all
+        account holders who [*T*-2] have previously requested
+        payment</arg> 
+</example>
+
+<example name="endless idiomaticity">
+<inflection person="third" tense="present" aspect="ns" voice="active" form="full"/>
+<text>
+     Mr. Dave, its head, acts cheery and patient, but he makes no
+     bones about the need to get to work. 
+</text>
+        <arg n="0">he</arg>
+        <rel>makes</rel>
+        <arg n="1">no bones</arg>
+        <arg n="2">about the need to get to work</arg>
+</example>
+</roleset>
+
+<roleset id="make.05" name="earn cash or wages" vncls="-">
+<roles>
+  <role descr="earner" n="0"/>
+  <role descr="wages" n="1"/>
+  <role descr="job" n="2"/>
+</roles>
+
+<example name="make a quick buck">
+  <text>
+    If Bill Gates made a nickel every time Windows crashed...oh wait, he does. 
+  </text>
+  <arg n="0">Bill Gates</arg>
+  <rel>made</rel>
+  <arg n="1">a nickel</arg>
+  <arg f="TMP" n="M">every time Windows crashed</arg>
+</example>
+
+<example name="job as for-phrase">
+  <text>
+    Judy Rodin makes way too much money for what she does.
+  </text>
+  <arg n="0">Judy Rodin</arg>
+  <rel>makes</rel>
+  <arg n="1">way too much money</arg>
+  <arg f="for" n="2">what she does</arg>
+</example>
+
+<example name="job as as-phrase">
+  <text>
+    Judy Rodin makes way too much money as Penn's president.
+  </text>
+  <arg n="0">Judy Rodin</arg>
+  <rel>makes</rel>
+  <arg n="1">way too much money</arg>
+  <arg f="as" n="2">Penn's president</arg>
+</example>
+
+</roleset>
+
+<roleset id="make.06" name="be, seem" vncls="-">
+<roles>
+  <role descr="thing" n="1"/>
+  <role descr="attribute of arg1" n="2"/>
+</roles>
+
+<example name="take that, eh?">
+  <text>
+    Americans make better fishermen.
+  </text>
+  <arg n="1">Americans</arg>
+  <rel>make</rel>
+  <arg n="2">better fishermen</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="make_up">
+<roleset id="make.07" name="comprise" vncls="-">
+<roles>
+  <role descr="components" n="0"/>
+  <role descr="whole" n="1"/>
+</roles>
+
+<example name="passivized">
+  <text>
+    40% of the homeless population is made up of women and children.
+  </text>
+  <arg n="1">40% of the homeless population</arg>
+  <rel>is made up</rel>
+  <arg f="of" n="0">women and children</arg>
+</example>
+
+<example name="corresponding active">
+<text>
+    Women and children make up 40% of the homeless population
+</text>
+<arg n="0">Women and children</arg>
+<rel>make up</rel>
+<arg n="1">40% of the homeless population</arg>
+</example>
+
+</roleset>
+
+<roleset id="make.08" name="compose, set into place" vncls="-">
+<roles>
+  <role descr="composer" n="0"/>
+  <role descr="thing composed" n="1"/>
+</roles>
+
+<example name="basic transitive">
+  <text>
+    *trace=empty* Make up your own mind on the issue.
+  </text>
+  <arg n="0">*trace=empty*</arg>
+  <rel>Make up</rel>
+  <arg n="1">your own mind</arg>
+  <arg f="LOC" n="M">on the issue</arg>
+</example>
+
+</roleset>
+
+<roleset id="make.09" name="reconcile" vncls="-">
+<roles>
+  <role descr="one person" n="0"/>
+  <role descr="the other" n="1"/>
+</roles>
+
+<example name="intransitive, compound subject">
+  <text>
+    After fighting for a week, John and Mary finally kissed and made up.
+  </text>
+  <arg f="TMP" n="M">After fighting for a week</arg>
+  <arg n="0">John and Mary</arg>
+  <arg f="TMP" n="M">finally</arg>
+  <rel>made up</rel>
+ </example>
+
+<example name="split actors">
+  <text>
+    John finally made up with Mary.
+  </text>
+  <arg n="0">John</arg>
+  <arg n="M">finally</arg>
+  <rel>made up</rel>
+  <arg f="with" n="1">with Mary</arg>
+</example>
+</roleset>
+
+<roleset id="make.10" name="create" vncls="26.1-1">
+<roles>
+  <role descr="creator" n="0">
+	  <vnrole vncls="26.1-1" vntheta="Agent"/></role>
+  <role descr="creation" n="1">
+	  <vnrole vncls="26.1-1" vntheta="Product"/></role>
+  <role descr="created-from, thing changed" n="2">
+	  <vnrole vncls="26.1-1" vntheta="Material"/></role>
+  <role descr="benefactive" n="3">
+	  <vnrole vncls="26.1-1" vntheta="Beneficiary"/></role>
+</roles>
+
+<example name="transitive">
+  <text>
+    John made up all the answers on his midterm.
+  </text>
+  <arg n="0">John</arg>
+  <rel>made up</rel>
+  <arg n="1">all the answers</arg>
+  <arg f="LOC" n="M">on his midterm</arg>
+</example>
+
+</roleset>
+
+<roleset id="make.11" name="catch up" vncls="-">
+<roles>
+  <role descr="entity which is behind in something (eg payments)" n="1"/>
+  <role descr="the something" n="2"/>
+</roles>
+
+<example name="bad student">
+  <text>
+    John will have to make up the midterm at some later date.
+  </text>
+  <arg n="1">John</arg>
+  <arg f="MOD" n="m">will</arg>
+  <rel>make up</rel>
+  <arg n="2">the midterm</arg>
+  <arg f="TMP" n="m">at some later date</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="make.16" vncls="-" name="compensate (for)">
+<roles>
+  <role n="0"  descr="compensator, agent"/>
+  <role n="1"  descr="shortcoming"/>
+  <role n="2"  descr="means of repairing shortcoming"/>
+</roles>
+
+<example name="instrumental agent">
+  <inflection person="ns" tense="ns" aspect="ns" voice="active" form="full"/>
+  <text>
+    Some Democrats, led by Rep. Jack Brooks (D., Texas),
+    unsuccessfully opposed the measure because they fear that the fees
+    may not fully make up for the budget cuts. 
+  </text>
+  <arg n="2"        >the fees</arg>
+  <arg n="m" f="MOD">may</arg>
+  <arg n="m" f="NEG">not</arg>
+  <arg n="m" f="EXT">fully</arg>
+  <rel              >make up</rel>
+  <arg n="1" f="for">the budget cuts</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="make_out">
+<roleset id="make.12" name="discern" vncls="-">
+<roles>
+   <role descr="discerner, viewer, agent" n="0"/>
+   <role descr="patient, thing discerned" n="1"/>
+<note>
+(I haven't actually seen any of these in WSJ, but who knows?)
+</note>
+</roles>
+
+<example name="typical usage?">
+  <text>
+    I can't make out the handwriting on this letter.
+  </text>
+  <arg n="0">I</arg>
+  <arg f="MOD" n="8">ca</arg>
+  <arg f="NEG" n="M">n't</arg>
+  <rel>make out</rel>
+  <arg n="1">the handwriting</arg>
+  <arg f="LOC" n="M">on this letter</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="make_out">
+<roleset id="make.13" name="write" vncls="-">
+<roles>
+   <role descr="writer" n="0"/>
+   <role descr="thing written" n="1"/>
+   <role descr="written to" n="2"/>
+</roles>
+
+<example name="imperative">
+  <text>
+    Please make out the check to &quot;AT &amp; T&quot;
+  </text>
+  <rel>make out</rel>
+  <arg n="1">the check</arg>
+  <arg f="TO" n="2">to &quot;AT &amp; T&quot;</arg>
+</example>
+</roleset>
+
+<roleset id="make.15" vncls="-" name="proceed, meet with (success)">
+<roles>
+  <role n="1"  descr="topic"/>
+</roles>
+
+<example name="getting by">
+  <inflection person="ns" tense="future" aspect="ns" voice="active" form="full"/>
+  <text>
+     At his new job, as partner in charge of federal litigation in the
+     Sacramento office of Orrick, Herrington &amp; Sutcliffe, he will
+     make out much better. 
+  </text>
+  <arg n="m" f="LOC">At his new job, as partner in charge of federal
+  litigation in the Sacramento office of Orrick, Herrington &amp;
+  Sutcliffe</arg> 
+  <arg n="1"        >he</arg>
+  <arg n="m" f="MOD">will</arg>
+  <rel              >make out</rel>
+  <arg n="m" f="MNR">much better</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="make_it">
+
+<roleset id="make.14" vncls="-" name="achieve or arrive at">
+<roles>
+  <role n="0"  descr="traveller"/>
+  <role n="1"  descr="destination"/>
+</roles>
+
+<example name="without destination">
+  <inflection person="ns" tense="ns" aspect="ns" voice="active" form="full"/>
+  <text>
+    The governor couldn't make it, so the lieutenant governor welcomed
+    the special guests.
+  </text>
+  <arg n="0"        >The governor</arg>
+  <arg n="m" f="MOD">could</arg>
+  <arg n="m" f="NEG">n't</arg>
+  <rel              >make it</rel>
+</example>
+
+<example name="with destination">
+  <inflection person="ns" tense="ns" aspect="ns" voice="active" form="infinitive"/>
+  <text>
+     John couldn't be bothered *trace* to make it to his own funeral.
+  </text>
+  <arg n="0"        >*trace* -> John</arg>
+  <rel              >make it</rel>
+  <arg n="1" f="to">his own funeral</arg>
+</example>
+
+<example name="if I can make it there, I'll make it anywhere">
+<inflection person="third" tense="present" aspect="progressive" voice="active" form="participle"/>
+<text>
+    Mike Huber, a roustabout, is even making it in his new career as
+    an entrepreneur. 
+</text>
+        <arg n="0">Mike Huber , a roustabout ,</arg>
+        <arg n="M" f="ADV">even</arg>
+        <rel>[making][it]</rel>
+        <arg n="M" f="LOC">in his new career as an entrepreneur</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="make_off">
+
+<roleset id="make.17" vncls="-" name="escape (with)">
+<roles>
+  <role n="0"  descr="escaper"/>
+  <role n="1"  descr="luggage"/>
+</roles>
+
+<example name="bank robbers">
+<inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+<text>
+     When he initially refused, he says, they stabbed him in the back
+     and made off with $2,000 and 280 blank tickets. 
+</text>
+        <arg n="M" f="TMP">When he initially refused</arg>
+        <arg n="0">they</arg>
+        <rel>[ made] [ off]</rel>
+        <arg n="1" f="with">$2,000 and 280 blank tickets</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

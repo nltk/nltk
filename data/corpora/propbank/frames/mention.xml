@@ -1,0 +1,91 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="mention">
+<note>
+  Frames file for 'mention' based on sentences in financial subcorpus.
+  Verbnet entry say-37.7, comparison with other verbs of saying and
+  assigning attribute.
+</note>
+
+<roleset id="mention.01" name="say in passing" vncls="37.7">
+<roles>
+  <role descr="speaker" n="0">
+		
+  <vnrole vncls="37.7" vntheta="Agent"/></role>
+
+  <role descr="utterance, entity being mentioned" n="1">
+		
+  <vnrole vncls="37.7" vntheta="Topic"/></role>
+
+  <role descr="hearer" n="2">
+		
+  <vnrole vncls="37.7" vntheta="Recipient"/></role>
+
+  <role descr="secondary attribute of arg1" n="3"/>
+</roles>
+
+<example name="as phrase requires passive?">
+<text>
+    Among companies mentioned *trace* by analysts as possible
+    counterbidders for Nekoosa are International Paper, Weyerhaeuser,
+    Canadian Pacific Ltd. and MacMillan Bloedel Ltd. 
+</text>
+        <rel>mentioned</rel>
+        <arg n="1">*trace* -&gt;  companies</arg>
+        <arg f="by" n="0">analysts</arg>
+        <arg f="as" n="3">possible counterbidders for Nekoosa</arg>
+</example>
+
+<example name="discourse function: not to mention">
+<text>
+    For a while, it looked like the deal --  not to mention the
+    courtroom itself -- was on the verge of collapse. 
+</text>
+        <arg n="0"/>
+        <arg f="NEG" n="M">not</arg>
+        <rel>mention</rel>
+        <arg n="1">the courtroom itself</arg>
+</example>
+
+<example name="same function, different parse">
+<text>
+    It is Mr. Paul's art venture, however, that has drawn the most
+    attention from investors and regulators, not to mention galleries
+    throughout the world. 
+</text>
+        <arg f="NEG" n="m">not</arg>
+        <rel>mention</rel>
+        <arg n="1">galleries throughout the world</arg>
+</example>
+
+<example name="transitive">
+<text>
+    But the ad also mentions Sears's sales -- a topic that the
+    retailer has avoided since switching to everyday pricing. 
+</text>
+        <arg f="DIS" n="M">But</arg>
+        <arg n="0">the ad</arg>
+        <arg f="DIS" n="M">also</arg>
+        <rel>mentions</rel>
+        <arg n="1">Sears's sales -- a topic that the retailer has
+        avoided since switching to everyday pricing</arg> 
+</example>
+
+<example name="with hearer and more traditional utterance">
+  <text>
+    John mentioned to Mary that he was thinking of joining the Navy
+    Seals--despite the fact that he can't swim.
+  </text>
+  <arg n="0">John</arg>
+  <rel>mentioned</rel>
+  <arg f="to" n="2">Mary</arg>
+  <arg n="1">he was thinking of joining the Navy Seals</arg>
+  <arg n="m">despite the fact that he can't swim</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

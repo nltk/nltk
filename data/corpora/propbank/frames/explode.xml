@@ -1,0 +1,109 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="explode">
+<note>
+Frames file for 'explode' based on sentences in wsj and automatic
+expansion via verbnet.
+</note>
+
+<roleset id="explode.01" name="go boom" vncls="43.2">
+<roles>
+    <role descr="bomber, agent" n="0">
+          <vnrole vncls="43.2" vntheta="Agent"/></role>
+    <role descr="bomb" n="1">
+          <vnrole vncls="43.2" vntheta="Theme"/></role>
+    <role descr="attribute, end state" n="2"/>
+</roles>
+
+<example name="usually just ergative">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Pan Am has subpoenaed several government agencies, including the
+    CIA and FBI, to determine whether they were warned that a bomb had
+    been planted aboard a jet that *trace* exploded over Scotland last
+    December, killing 270 people. 
+</text>
+        <arg n="1">*trace* -&gt;  that -&gt;  a jet</arg>
+        <rel>exploded</rel>
+        <arg f="LOC" n="M">over Scotland</arg>
+        <arg f="TMP" n="M">last December</arg>
+        <arg n="M">killing 270 people</arg>
+</example>
+
+<example name="with attribute">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Onlookers say three persons died when one of the buildings
+    exploded into a fireball shortly after the quake struck. 
+</text>
+        <arg n="1">one of the buildings</arg>
+        <rel>exploded</rel>
+        <arg f="into" n="2">a fireball</arg>
+        <arg f="TMP" n="M">shortly after the quake struck</arg>
+</example>
+
+<example name="with agent">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    UAL, the hair-trigger stock that *trace* exploded Friday's market
+    bombshell, briefly traumatized traders again yesterday. 
+</text>
+        <arg n="0">*trace* -&gt;  that -&gt;  the hair-trigger stock</arg>
+        <rel>exploded</rel>
+        <arg n="1">Friday 's market bombshell</arg>
+</example>
+
+</roleset>
+
+<roleset id="explode.02" name="get bigger very quickly" vncls="45.4">
+<roles>
+  <role descr="causer of rapid growth, agent (rare)" n="0">
+	<vnrole vncls="45.4" vntheta="Agent"/></role>
+  <role descr="thing getting bigger" n="1">
+	<vnrole vncls="45.4" vntheta="Patient"/></role>
+  <role descr="amount increased by, EXT or MNR" n="2"/>
+  <role descr="start point" n="3"/>
+  <role descr="end point" n="4"/>
+</roles>
+
+<example name="most args">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John's monthly income exploded from $1.58 to almost $3.00 when he
+     got his PhD.
+  </text>
+  <arg n="1">John's monthly income</arg>
+  <rel>exploded</rel>
+  <arg f="from" n="3">$1.58</arg>
+  <arg f="to" n="4">almost $3.00</arg>
+  <arg f="TMP" n="m">when he got his PhD</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="explode.03" name="overflow" vncls="-">
+<roles>
+  <role descr="thing overflowing" n="1"/>
+  <role descr="substance" n="2"/>
+</roles>
+
+<example name="boom?">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Pockets exploded with one-yen coins.
+</text>
+        <arg n="1">Pockets</arg>
+        <rel>exploded</rel>
+        <arg f="with" n="2">one-yen coins</arg>
+</example>
+
+<note>
+This could perhaps be fit into explode.01, but I'm not sure how.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

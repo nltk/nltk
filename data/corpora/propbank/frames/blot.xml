@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="blot_out">
+<note>
+  Frames file for 'blot'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="blot.01" name="to obliterate, obscure" vncls="-">
+<roles> 
+ <role descr="blotter, agent" n="0"/>
+ <role descr="entity blotted" n="1"/> 
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+ She ran it the length of the South Gardens riverfront , [*] blotting out the city 's great natural water features , the harbor and the river .
+</text>
+	<arg n="0">[*] -&gt;  She</arg>
+	<rel>[ blotting] [ out]</rel>
+	<arg n="1">the city 's great natural water features , the harbor and the river</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

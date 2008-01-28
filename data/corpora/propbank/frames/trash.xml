@@ -1,0 +1,44 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="trash">
+<note>
+  Frames file for 'trash' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="trash.01" name="to dispose, tear apart" vncls="-">
+<roles>
+  <role descr="disposer, agent" n="0"/>
+  <role descr="entity trashed" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+ It [*EXP*-1] 's almost impossible [*] to track the number of companies trashing junk mail , since the decision is usually made in the mail room -- not the board room .
+</text>
+	<arg n="0">companies</arg>
+	<rel>trashing</rel>
+	<arg n="1">junk mail</arg>
+</example>
+
+
+<example name="transitive with adverbials">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ Why , when a key witness disappears [*T*-1] , does Mancuso trash her apartment [*T*-2] , [*-3] tearing down drapes , smashing walls ?
+</text>
+	<arg f="TMP" n="M">when a key witness disappears [*T*-1]</arg>
+	<arg n="0">Mancuso</arg>
+	<rel>trash</rel>
+	<arg n="1">her apartment</arg>
+	<arg f="PNC" n="M">[*T*-2] -&gt;  Why</arg>
+	<arg f="ADV" n="M">[*-3] tearing down drapes , smashing walls</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

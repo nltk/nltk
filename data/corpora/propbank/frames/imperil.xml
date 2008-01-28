@@ -1,0 +1,34 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="imperil">
+<note>
+  Frames file for 'imperil' based on sentences in financial subcorpus.
+  No Verbnet entry, surprise surprise.  No comparison.
+</note>
+
+<roleset id="imperil.01" name="put into danger">
+<roles>
+  <role descr="causer of danger (agent or instrument)" n="0"/>
+  <role descr="entity in danger" n="1"/>
+</roles>
+
+<example name="passive">
+<text>
+    It is possible then that Santa Fe's real estate -- even in a state
+    imperiled *trace* by earthquakes -- could, one day, fetch a king's
+    ransom. 
+</text>
+        <rel>imperiled</rel>
+        <arg n="1">*trace* -&gt;  a state</arg>
+        <arg f="by" n="0">earthquakes</arg>
+</example>
+
+<note>
+If we see any examples with both agent and instrument, arg0 will have
+to be split into arg0 'agent' and arg2 'instrument' and all sentences
+will have to make the distinction.  Otherwise let's not.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

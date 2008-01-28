@@ -1,0 +1,53 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="overheat">
+<note>
+  Frames file for 'overheat' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="overheat.01" vncls="-" name="(cause to) get overly hot">
+<roles>
+  <role n="0"  descr="agent (rare)"/>
+  <role n="1"  descr="hot thing"/>
+</roles>
+
+<example name="adjectival">
+<inflection person="ns" tense="ns" aspect="ns" voice="passive" form="participle"/>
+<text>
+    The economy's slowdown is due only partly to the austerity program
+    launched in September 1988 to cool an overheated economy and tame
+    inflation. 
+</text>
+	<rel>overheated</rel>
+	<arg n="1">economy</arg>
+</example>
+
+
+<example name="unaccusative">
+<inflection person="ns" tense="ns" aspect="ns" voice="ns" form="gerund"/>
+<text>
+     And unlike 1987, the economy doesn't appear [*-1] to be in any
+     danger of overheating. 
+</text>
+	<arg n="1">[*-1] ->  the economy</arg>
+	<rel>overheating</rel>
+</example>
+
+<example name="agentive">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+     John overheated the pan and burnt his pancakes.
+  </text>
+  <arg n="0"        >John</arg>
+  <rel              >overheated</rel>
+  <arg n="1"        >the pan</arg>
+
+<note>
+I think you'd see this more often hyphenated: John over-heated the pan.
+</note>
+
+</example>
+
+</roleset>
+</predicate>
+</frameset>

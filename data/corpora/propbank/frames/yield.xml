@@ -1,0 +1,125 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<note>
+Frames file for 'yield' based on survey of initial sentences of big corpus
+</note>
+<predicate lemma="yield">
+<roleset id="yield.01" name="Result in" vncls="-">
+  <roles>
+    <role descr="thing yielding" n="0"/>
+    <role descr="thing yielded" n="1"/>
+  </roles>
+
+<example name="transitive">
+  <text>
+    The top money market funds are currently yielding well over 9%.
+  </text>
+  <arg n="0">The top money market funds</arg>
+  <arg f="TMP" n="M">currently</arg>
+  <rel>yielding</rel>
+  <arg n="1">well over 9%</arg>
+</example>
+
+<example name="with temporal">
+  <text>
+    A single acre of grapes yielded a mere 75 cases in 1987.
+  </text>
+  <arg n="0">A single acre of grapes</arg>
+  <rel>yielded</rel>
+  <arg n="1">a mere 75 cases</arg>
+  <arg f="TMP" n="M">in 1987</arg>
+</example>
+
+<example name="Arg1 as range, non constituent">
+  <text>
+    Serial bonds yield from 6.20% in 1991 to 7% in 2000.
+  </text>
+  <arg n="0">Serial bonds</arg>
+  <rel>yield</rel>
+  <arg n="1">[from 6.20% in 1991] [to 7% in 2000]</arg>
+</example>
+
+<example name="arg1 as range, constituent">
+  <text>
+    They yield from 6.2% in 1991 to 7.272% in 2001.
+  </text>
+  <arg n="0">They</arg>
+  <rel>yield</rel>
+  <arg n="1">from 6.2% in 1991 to 7.272% in 2001</arg>
+</example>
+</roleset>
+
+<roleset id="yield.02" name="Give way" vncls="13.3">
+  <roles>
+    <role descr="Thing giving way" n="0">
+		
+  <vnrole vncls="13.3" vntheta="Agent"/></role>
+
+    <role descr="what's lost" n="1">
+		
+  <vnrole vncls="13.3" vntheta="Theme"/></role>
+
+    <role descr="what's preferred" n="2">
+		
+  <vnrole vncls="13.3" vntheta="Recipient"/></role>
+
+  </roles>
+
+<example name="all args">
+  <text>
+    John yielded the right-of-way to the Mack truck.
+  </text>
+  <arg n="0">John</arg>
+  <rel>yielded</rel>
+  <arg n="1">the right-of-way</arg>
+  <arg f="to" n="2">to the Mack truck</arg>
+</example>
+
+<example name="thing lost is usually skipped">
+  <text>
+    John yielded to Mary's wishes.
+  </text>
+  <arg n="0">John</arg>
+  <rel>yielded</rel>
+  <arg f="to" n="2">Mary's wishes</arg>
+</example>
+
+<example name="another lost thing lost">
+  <text>
+    The US yielded to the temptation to avoid the danger of combat.
+  </text>
+  <arg n="0">The US</arg>
+  <rel>yielded</rel>
+  <arg f="to" n="2">to the temptation to avoid the danger of combat.</arg>
+</example>
+</roleset>
+
+<roleset id="yield.03" name="give a dividend" vncls="-">
+<roles>
+  <role descr="thing providing a dividend" n="0"/>
+  <role descr="dividend, earnings" n="1"/>
+  <role descr="recipient" n="2"/>
+</roles>
+
+<example name="savings bond">
+  <inflection aspect="ns" form="full" person="ns" tense="future" voice="active"/>
+  <text>
+    The Canadian government announced a new, 12-year Canada Savings
+    Bond issue that *trace* will yield investors 10.5% in the first
+    year. 
+  </text>
+  <arg n="0">*trace* -&gt; that -&gt; a new, 12-year Canada Savings
+  Bond issue</arg>
+  <arg f="MOD" n="m">will</arg>
+  <rel>yield</rel>
+  <arg n="2">investors</arg>
+  <arg n="1">10.5%</arg>
+  <arg f="TMP" n="m">in the first year</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

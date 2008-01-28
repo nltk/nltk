@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="detail">
+<note>
+  Frames file for 'detail' based on sentences in financial subcorpus.
+  No Verbnet entry.  Comparison with list.  OK, maybe not.
+</note>
+
+<roleset id="detail.01" name="describe in detail">
+<roles>
+  <role descr="describer" n="0"/>
+  <role descr="details" n="1"/>
+</roles>
+
+<example name="boring">
+<text>
+    MiniScribe filed a status report with the NASD on Monday,
+    detailing its efforts to comply with listing requirements and
+    requesting an extension of the exception, but hasn't received a
+    response. 
+</text>
+        <arg n="0">a status report </arg>
+        <rel>detailing</rel>
+        <arg n="1">its efforts  to comply with listing requirements</arg>
+</example>
+
+<note>
+Might take an arg2 &quot;listener&quot;, but we'll wait and see.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

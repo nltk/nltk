@@ -1,0 +1,79 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="acknowledge">
+<note>
+  Frames file for 'acknowledge' based on sentences in financial
+  subcorpus.  Verbnet entry 29.1, other framed members include adopt.
+  Is that right?  No Framenet entry.  Comparison with 'claim'.
+</note>
+
+<roleset id="acknowledge.01" name="admit">
+<roles>
+  <role descr="admitter, claimer, speaker" n="0"/>
+  <role descr="proposition, claim, utterance" n="1"/>
+  <role descr="hearer" n="2"/>
+  <role descr="secondary predication" n="3"/>
+</roles>
+
+<example name="acknowledge a sentence">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Control Data's semiconductor business, VTC Inc., continues to lose
+    money, the executives acknowledged *trace*, but they said they
+    consider some of the technology vital to national defense and so
+    are reluctant to dispose of it. 
+</text>
+        <arg n="0">the executives</arg>
+        <rel>acknowledged</rel>
+        <arg n="1">*trace* -&gt; Control Data's semiconductor business,
+        VTC Inc., continues to lose money</arg> 
+</example>
+
+<note>
+This can occur in any of the 'say' frames: fronted, inverted, split;
+so be careful.
+</note>
+
+<example name="acknowledge an NP">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+   *trace* Apparently acknowledging weaker U.S. sales systemwide,
+    McDonald's vowed ``to use our size and muscle to do all that is
+    necessary to build the brand.'' 
+</text>
+        <arg f="ADV" n="M">Apparently</arg>
+        <rel>acknowledging</rel>
+        <arg n="1">weaker U.S. sales systemwide</arg>
+        <arg n="0">*trace* -&gt; McDonald's</arg>
+</example>
+
+<example name="with hearer">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John acknowledged to Mary that he was an idiot.
+  </text>
+  <arg n="0">John</arg>
+  <rel>acknowledged</rel>
+  <arg f="to" n="2">Mary</arg>
+  <arg n="1">he was an idiot</arg>
+</example>
+
+<example name="with attributive">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John acknowledged Mary as his illegitimate child--a claim she
+    denied vigorously, on the grounds that she's older than he is.
+  </text>
+  <arg n="0">John</arg>
+  <rel>acknowledged</rel>
+  <arg n="1">Mary</arg>
+  <arg f="as" n="3">his illegitimate child</arg>
+</example>
+
+<note>
+Should these be split into two senses?  Maybe.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,44 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="wallow">
+<note>
+  Frames file for 'wallow' based on sentence in financial subcorpus
+  (there are only 4 in the entire treebank corpus).  Verbnet entry 31.3.
+</note>
+
+<roleset id="wallow.01" name="wallow" vncls="31.3">
+<roles>
+  <role descr="wallower" n="0">
+	<vnrole vncls="31.3" vntheta="Experiencer"/></role>
+  <role descr="wallowed in" n="1">
+        <vnrole vncls="31.3" vntheta="Cause"/></role>
+</roles>
+
+<example name="adverbial phrase as loc">
+<text>
+    Magna recently cut its quarterly dividend in half and the
+    company's Class A shares are wallowing far below their 52-week
+    high of 16.125 Canadian dollars [US$ 13.73]. 
+</text>
+        <arg n="0">the company 's Class A shares</arg>
+        <rel>wallowing</rel>
+        <arg f="LOC" n="M">far below their 52-week high of 16.125
+        Canadian dollars [US$ 13.73]</arg> 
+</example>
+
+<example name="prepositional phrase as loc">
+  <text>
+    John is forever wallowing in self-pity.
+  </text>
+  <arg n="0">John</arg>
+  <arg f="TMP" n="m">forever</arg>
+  <rel>wallowing</rel>
+  <arg f="in" n="1">self-pity</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,28 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="bud">
+<note>
+  Frames file for 'bud' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="bud.01" vncls="-" name="start up, begin anew">
+<roles>
+  <role n="1"  descr="thing starting"/>
+</roles>
+
+<example name="adjectival">
+<inflection person="ns" tense="ns" aspect="progressive" voice="active" form="participle"/>
+<text>
+    She has indeed turned Hochiminh City Food into a budding
+    conglomerate, but the company itself remains state-owned. 
+</text>
+	<rel>budding</rel>
+	<arg n="1">conglomerate</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

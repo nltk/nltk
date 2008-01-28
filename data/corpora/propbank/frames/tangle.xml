@@ -1,0 +1,68 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="tangle">
+<note>
+  Frames file for 'tangle' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="tangle.01" name="to mix or twist together, drag in" vncls="-">
+<roles>
+  <role descr="causer" n="0"/>
+  <role descr="entity tangled" n="1"/>
+  <role descr="location" n="2"/>
+</roles>
+
+
+<example name="all arguments">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ The flying telephone : `` You tangle the base cord around a chair leg , and the receiver does seem [*-1] to fly off . ''
+</text>
+	<arg n="0">You</arg>
+	<rel>tangle</rel>
+	<arg n="1">the base cord</arg>
+	<arg f="around" n="2">a chair leg</arg>
+</example>
+
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+ But again , the themes get tangled [*-1] in Mr. Mahfouz 's elliptical storytelling .
+</text>
+	<arg f="DIS" n="M">But</arg>
+	<arg f="ADV" n="M">again</arg>
+	<rel>tangled</rel>
+	<arg n="1">[*-1] -&gt;  the themes</arg>
+	<arg f="LOC" n="M">in Mr. Mahfouz 's elliptical storytelling</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+<predicate lemma="tangle_up">
+<roleset id="tangle.02" vncls="-" name="phrasal variant of tangle.01">
+<roles>
+  <role descr="causer" n="0"/>
+  <role descr="entity tangled" n="1"/>
+  <role descr="location" n="2"/>
+</roles>
+
+<example name="all tangled up">
+<inflection person="ns" tense="present" aspect="ns" voice="passive" form="participle"/>
+<text>
+    FBI initially showed little interest, and he had the impression
+    other federal security agencies were tangled [*-100] up in legal
+    red tape. 
+</text>
+	<rel>[ tangled] [ up]</rel>
+	<arg n="1">[*-100] ->  other federal security agencies</arg>
+	<arg n="2" f="in">legal red tape</arg>
+</example>
+
+</roleset>
+</predicate>
+
+</frameset>

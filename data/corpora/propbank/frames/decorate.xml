@@ -1,0 +1,57 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="decorate">
+<note>
+  Frames file for 'decorate' based on sentences in wsj.  Verbnet
+  entries 9.8, 25.3, Framenet entry Adorning.
+</note>
+
+<roleset id="decorate.01" name="put on decorations" vncls="9.8 25.3">
+<roles>
+  <role descr="decorator" n="0"><vnrole vncls="9.8" vntheta="Agent"/><vnrole vncls="25.3" vntheta="Agent"/></role>
+  <role descr="thing decorated" n="1"><vnrole vncls="9.8" vntheta="Destination"/><vnrole vncls="25.3" vntheta="Destination"/></role>
+  <role descr="decorations" n="2"><vnrole vncls="9.8" vntheta="Theme"/><vnrole vncls="25.3" vntheta="Theme"/></role>
+</roles>
+
+<example name="passive as verb">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    The spaghetti is made by the Al Ghazel Macaroni Co. in Bethlehem
+    and is marketed in a package decorated *trace* with green, black,
+    red and white stripes. 
+</text>
+        <rel>decorated</rel>
+        <arg n="1">*trace* -&gt;  a package</arg>
+        <arg f="with" n="2">green, black, red and white stripes</arg>
+</example>
+
+
+<example name="passive as adjective">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    Linda and Michael (Ms. Close and Mr. Woods), who seem to be
+    pushing 40, live in a large and tastefully decorated home in
+    suburban Seattle. 
+</text>
+        <arg f="MNR" n="M">tastefully</arg>
+        <rel>decorated</rel>
+        <arg n="1">home</arg>
+</example>
+
+<example name="'tis the season" src="trim.03"> 
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John decorated his Christmas tree with dirty socks.
+  </text>
+  <arg n="0">John</arg>
+  <rel>decorated</rel>
+  <arg n="1">his Christmas tree</arg>
+  <arg f="with" n="2">dirty socks</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

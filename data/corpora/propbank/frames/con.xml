@@ -1,0 +1,82 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="con">
+<note>
+  Frames file for 'con' based on sentences in wsj.  Verbnet entry
+  10.6, Framenet entry Suasion4.
+</note>
+
+<roleset id="con.01" name="fool" vncls="-">
+<roles>
+  <role descr="con artist" n="0"/>
+  <role descr="victim" n="1"/>
+</roles>
+
+<example name="the one example">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    ``So, [*] don't come and try [*-1] to con us with a howdy y'all or
+    a cowboy hat.'' 
+</text>
+        <arg n="0">[*-1] -&gt;  [*]</arg>
+        <rel>con</rel>
+        <arg n="1">us</arg>
+        <arg f="MNR" n="M">with a howdy y'all or a cowboy hat</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="con.02" name="cheat, swindle" vncls="10.6">
+<roles>
+  <role descr="con artist" n="0"><vnrole vncls="10.6" vntheta="Agent"/></role>
+  <role descr="ill-gotten booty" n="1"><vnrole vncls="10.6" vntheta="Theme"/></role>
+  <role descr="victim" n="2"><vnrole vncls="10.6" vntheta="Source"/></role>
+</roles>
+
+<example name="that's hardly fair">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     Mary conned John out of all his desserts for the next month.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>conned</rel>
+  <arg n="2">John</arg>
+  <arg f="out" n="1">of all his desserts for the next month</arg>
+</example>
+
+<note>
+Argument numbering based on other verbs in 'cheat' class.
+</note>
+
+</roleset>
+
+<roleset id="con.03" name="trick into doing something" vncls="-">
+<roles>
+  <role descr="con artist" n="0"/>
+  <role descr="induced agent" n="1"/>
+  <role descr="induced action" n="2"/>
+</roles>
+
+<example name="induced action">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     Mary conned John into giving her all his desserts for the next month.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>conned</rel>
+  <arg n="1">John</arg>
+  <arg f="into" n="2">giving her all his desserts for the next month</arg>
+</example>
+
+</roleset>
+
+<note>
+Clearly there's really only one semantics at play here, but many
+different argument structures.  *grumble grumble grumble*
+</note>
+
+</predicate>
+</frameset>

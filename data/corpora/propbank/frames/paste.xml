@@ -1,0 +1,70 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="paste">
+<note>
+  Frames file for 'paste' based on sentences in wsj.  Verbnet entry 22.4.
+</note>
+
+<roleset id="paste.01" vncls="22.4" name="attach using paste">
+<roles>
+  <role descr="agent, entity doing the tying" n="0">
+	  <vnrole vncls="22.4" vntheta="Agent"/></role>
+  <role descr="patient, thing(s) being tied" n="1">
+	  <vnrole vncls="22.4" vntheta="Patient1"/></role>
+  <role descr="instrument, string" n="2">
+	  <vnrole vncls="22.4" vntheta="Patient2"/></role>
+  <role descr="attribute of arg1" n="3"/>
+</roles>
+
+<example name="with separate patients">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+     John pasted his socks to the door.
+  </text>
+  <arg n="0"        >John</arg>
+  <rel              >pasted</rel>
+  <arg n="1"        >his socks</arg>
+  <arg n="2" f="to">the door</arg>
+</example>
+
+<example name="with attribute">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+    John pasted all of Mary's books shut.
+  </text>
+  <arg n="0"        >John</arg>
+  <rel              >pasted</rel>
+  <arg n="1"        >all of Mary's books</arg>
+  <arg n="3"        >shut</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="paste.02" vncls="-" name="get beat up">
+<roles>
+  <role n="1"  descr="entity suffering"/>
+</roles>
+
+<example name="oof">
+<inflection person="ns" tense="ns" aspect="ns" voice="passive" form="participle"/>
+<text>
+     ``All the takeover stocks -- Scottish &amp; Newcastle, B.A.T, DRG
+     -- are getting pretty well pasted [*-2] this morning,'' Mr. Smith
+     said.  
+</text>
+	<arg n="M" f="MNR">pretty well</arg>
+	<rel>pasted</rel>
+	<arg n="1">[*-2] ->  All the takeover stocks -- Scottish &amp;
+	Newcastle, B.A.T, DRG --</arg> 
+	<arg n="M" f="TMP">this morning</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,162 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="sign">
+<note>
+  Frames file for 'sign' based on survey of initial sentences of big
+  corpus, comparison with 'write' and 'agree', and reference to verbnet
+  image_impression-25.1
+</note>
+
+<roleset id="sign.01" name="affix a signature" vncls="25.1">
+<roles>
+  <role descr="signer" n="0">
+	  <vnrole vncls="25.1" vntheta="Agent"/></role>
+  <role descr="document" n="1">
+	  <vnrole vncls="25.1" vntheta="Destination"/></role>
+  <role descr="signature" n="2">
+	  <vnrole vncls="25.1" vntheta="Theme"/></role>
+</roles>
+
+<example name="historical">
+  <text>
+  John's great-uncle Fred signed the Declaration of
+  Independence--unfortunately, in 1924.
+  </text>
+  <arg n="0">John's great-uncle Fred</arg>
+  <rel>signed</rel>
+  <arg n="1">the Declaration of Independence</arg>
+  <arg f="ADV" n="m">unfortunately, in 1924</arg>
+</example>
+
+<example name="with explicit signature">
+  <text>
+  One writer signed his letter as &quot;Red blooded, balanced male&quot;.
+  </text>
+  <arg n="0">One writer</arg>
+  <rel>signed</rel>
+  <arg n="1">his letter</arg>
+  <arg f="as" n="2">&quot;Red blooded, balanced male&quot;</arg>
+</example>
+
+</roleset>
+
+<roleset id="sign.02" name="enter into an agreement" vncls="37.4">
+<roles>
+  <role descr="signer, agreer" n="0">
+	  <vnrole vncls="37.4" vntheta="Agent"/></role>
+  <role descr="agreement" n="1">
+	  <vnrole vncls="37.4" vntheta="Topic"/></role>
+  <role descr="co-signer" n="2">
+	  <vnrole vncls="37.4" vntheta="Recipient"/></role>
+</roles>
+
+<example name="agreement">
+  <text>
+  First Constitution has signed a merger agreement with WFRR LP and
+  GHKM Corp.
+  </text>
+  <arg n="0">First Constitution</arg>
+  <rel>signed</rel>
+  <arg n="1">a merger agreement</arg>
+  <arg f="with" n="2">WFRR LP and GHKM Corp.</arg>
+</example>
+
+<example name="no co-signer">
+  <text>
+  An ultimatum: *trace* either sign new long-term commitments to buy
+  future episodes, or don't.
+  </text>
+  <arg n="0">*trace*</arg>
+  <rel>sign</rel>
+  <arg n="1">new long-term commitments to buy
+  future episodes</arg>
+</example>
+
+<note>
+These two senses would be easy to merge, since the assumption is that any
+agreement is based upon a signature on a piece of paper.
+</note>
+
+<example name="sign to">
+  <text>
+  John was signed to the Mudville Giants.
+  </text>
+  <arg n="2">John</arg>
+  <rel>signed</rel>
+  <arg f="to" n="1">the Mudville Giants</arg>
+<note>
+The logic here is that John is the cosigner of an agreement, under
+which he will play with the Mudville Giants.  Maybe it makes sense,
+maybe it doesn't.  Maybe it will occur, maybe it won't.
+</note>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="sign_up">
+<roleset id="sign.03" name="sign up: enroll, enter" vncls="-">
+<roles>
+  <role descr="signer, enroller" n="0"/>
+  <role descr="patient enrolled" n="1"/>
+  <role descr="co-signer" n="2"/>
+  <role descr="signed up for" n="3"/>
+</roles>
+
+<example name="non-agentive">
+  <text>
+  Only four securtities firms have signed up with the Bog Board to buy and sell
+ESPs as market makers.
+  </text>
+  <arg n="1">Only four secrurities firms</arg>
+  <rel>signed up</rel>
+  <arg f="with" n="2">the Big Board</arg>
+  <arg n="3">to buy and sell ESPs as market makers</arg>
+</example>  
+
+<example name="agentive">
+ <text>
+  Whittle said its field staff signed up the 500 schools in 238 school districts.
+  </text>
+  <arg n="0">its field staff</arg>
+  <rel>signed up</rel>
+  <arg n="1">the 500 schools in 238 school districts</arg>
+</example>  
+
+</roleset>
+</predicate>
+
+<predicate lemma="sign_on">
+
+<roleset id="sign.04" vncls="-" name="sign on: become associated with">
+<roles>
+  <role n="0"  descr="signer"/>
+  <role n="1"  descr="entity associated with"/>
+</roles>
+
+<example name="unnamed arg1">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+    Mr. Lorenzo, 49 years old, is reclaiming the job that was his
+    before Mr. Corr signed on. 
+  </text>
+  <arg n="0"        >Mr. Corr</arg>
+  <rel              >signed on</rel>
+</example>
+
+<example name="with arg1">
+  <inflection person="ns" tense="ns" aspect="ns" voice="ns" form="gerund"/>
+  <text>
+    If it finds one of those passwords, Mr. Alexander said, the worm
+    will do such things as change users' passwords to a series of
+    random numbers, preventing them from [*] signing on to the
+    network. 
+  </text>
+  <arg n="0"        >[*] -> them</arg>
+  <rel              >signing on</rel>
+  <arg n="1" f="to">the network</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

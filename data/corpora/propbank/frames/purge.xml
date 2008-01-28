@@ -1,0 +1,39 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="purge">
+<note>
+  Frames file for 'purge' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="purge.01" name="to free from impurities, purify" vncls="10.4.1 10.6">
+<roles>
+  <role descr="remover, agent" n="0">
+        <vnrole vncls="10.4.1" vntheta="Agent"/>
+        <vnrole vncls="10.6" vntheta="Agent"/></role>
+  <role descr="entity purged" n="1">
+        <vnrole vncls="10.4.1" vntheta="Source"/>
+        <vnrole vncls="10.6" vntheta="Source"/></role>
+  <role descr="entity purged of" n="2">
+        <vnrole vncls="10.4.1" vntheta="Theme"/>
+        <vnrole vncls="10.6" vntheta="Theme"/></role>
+</roles>
+
+<example name="all arguments">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ China 's Communist leadership voted [*-1] to purge the party of `` hostile and anti-party elements '' and wealthy private businessmen , whom they called [*T*-2] exploiters .
+</text>
+	<arg n="0">[*-1] -&gt;  China 's Communist leadership</arg>
+	<rel>purge</rel>
+	<arg n="1">the party</arg>
+	<arg f="of" n="2">`` hostile and anti-party elements '' and wealthy private businessmen , whom they called [*T*-2] exploiters</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

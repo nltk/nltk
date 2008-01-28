@@ -1,0 +1,155 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="vote">
+<note>
+  Frames file for 'vote' based on sentences in financial subcorpus.
+  Verbnet entries future_having-13.3 get-13.5.1, other framed members
+  include allocate, concede, grant; catch, entitle, extend, hire,
+  lease, pick, reserve, seize.
+</note>
+
+<roleset id="vote.01" name="cast a ballot" vncls="-">
+<roles>
+  <role descr="proxy voter" n="A"/>
+  <role descr="voter" n="0"/>
+  <role descr="candidate or ballot issue" n="1"/>
+  <role n="2" descr="numerical count of vote, margin"/>
+</roles>
+
+<example name="vote on an issue">
+<text>
+    NRM said it expects unitholders to vote on the restructuring at a
+    meeting Dec. 15. 
+</text>
+        <arg n="0">unitholders</arg>
+        <rel>vote</rel>
+        <arg f="on" n="1">the restructuring</arg>
+        <arg f="LOC" n="M">at a meeting Dec. 15</arg>
+</example>
+
+<example name="vote for a candidate">
+<text>
+    ``I guess we'll reluctantly go ahead and do it, vote for
+    Dinkins,'' says Richard Wade, a politically active professor who
+    supported Richard Ravitch, an also-ran in the Democratic primary. 
+</text>
+        <arg n="0">we</arg>
+	<arg f="MOD" n="m">'ll</arg>
+        <rel>vote</rel>
+        <arg f="for" n="1">Dinkins</arg>
+</example>
+
+<example name="arg1 as infinitive">
+<text>
+    Nekoosa's poison pill allows shareholders to vote to rescind
+    it...
+</text>
+        <arg n="0">shareholders</arg>
+        <rel>vote</rel>
+        <arg n="1">to rescind it</arg>
+</example>
+
+<example name="voting shares">
+<text>
+    The statement emphasized that holders representing 75% of the
+    shares voting at a special shareholders' meeting must agree to
+    lift the takeover restrictions. 
+</text>
+        <arg n="0">the shares</arg>
+        <rel>voting</rel>
+        <arg f="LOC" n="M">at a special shareholders' meeting</arg>
+</example>
+
+<example name="proxy voting">
+<text>
+    ``Thank God we have some deal on the table,'' said Stewart
+    Gilchrist, a director at Scottish Amicable Investment Managers,
+    which intends to vote its roughly 1% stake in favor of the
+    restructuring. 
+</text>
+        <arg n="A">*trace* -&gt; *trace* -&gt;  which -&gt;  Scottish Amicable
+        Investment Managers</arg> 
+        <rel>vote</rel>
+        <arg n="0">its roughly 1% stake</arg>
+        <arg n="1">in favor of the restructuring</arg>
+</example>
+
+<note>
+Two points about the last example: Scottish Amicable is not doing the
+voting, really, but rather the shares (cf the previous example).  Thus
+Scottish Amicable takes the causal agent role.  Also, &quot;in favor
+of&quot; is basically the same as &quot;for&quot;.
+</note>
+
+<example name="with outcome of vote">
+<inflection person="ns" tense="ns" aspect="ns" voice="ns" form="gerund"/>
+<text>
+    The Peugeot metalworkers began filing out of the shop, which makes
+    auto parts, at the plant in Mulhouse after [*] voting 589 to 193
+    [*-3] to abandon the occupation. 
+</text>
+	<arg n="0">[*] ->  The Peugeot metalworkers</arg>
+	<rel>voting</rel>
+	<arg n="2">589 to 193</arg>
+	<arg n="1">[*-3] to abandon the occupation</arg>
+</example>
+</roleset>
+
+<roleset id="vote.02" name="give via legislative process" vncls="13.3 13.5.1">
+<roles>
+  <role descr="giver" n="0">
+	<vnrole vncls="13.3" vntheta="Agent"/>
+        <vnrole vncls="13.5.1" vntheta="Agent"/></role>
+  <role descr="gift" n="1">
+	<vnrole vncls="13.3" vntheta="Theme"/>
+        <vnrole vncls="13.5.1" vntheta="Theme"/></role>
+  <role descr="recipient" n="2">
+	<vnrole vncls="13.3" vntheta="Recipient"/>
+        <vnrole vncls="13.5.1" vntheta="Beneficiary"/></role>
+</roles>
+
+<example name="graft">
+<text>
+    United's directors voted themselves, and their spouses, lifetime
+    access to the Friendly Skies -- free first-class travel, and
+    $20,000 a year for life as well. 
+</text>
+        <arg n="0">United 's directors</arg>
+        <rel>voted</rel>
+        <arg n="2">themselves, and their spouses,</arg>
+        <arg n="1">lifetime access to the Friendly Skies -- free
+        first-class travel, and $20,000 a year for life as well</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="vote_down">
+
+<roleset id="vote.03" vncls="-" name="vote against">
+<roles>
+  <role n="0"  descr="voter"/>
+  <role n="1"  descr="defeated issue"/>
+</roles>
+
+<example name="die die die!">
+<inflection person="third" tense="present" aspect="ns" voice="active" form="full"/>
+<text>
+     THE HOUSE votes down a proposal to put pension plans under the
+     control of joint labor-management boards.  
+</text>
+	<arg n="0">THE HOUSE</arg>
+	<rel>[ votes] [ down]</rel>
+	<arg n="1">a proposal to put pension plans under the control
+	of joint labor-management boards</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

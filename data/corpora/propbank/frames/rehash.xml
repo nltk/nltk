@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="rehash">
+<note>
+  Frames file for 'rehash'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="rehash.01" name="to discuss again" vncls="-">
+<roles> 
+  <role descr="discussants" n="0"/>
+  <role descr="topic of conversation" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+ The two men spent an hour at Exit 10 , [*-1] rehashing the event , `` [*-1] fulfilling the lifelong dream of a young boy now turned [*] 50 , '' Mr. Engelken says [*T*-2] .
+</text>
+	<arg n="0">[*-1] -&gt;  The two men</arg>
+	<rel>rehashing</rel>
+	<arg n="1">the event</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

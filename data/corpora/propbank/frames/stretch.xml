@@ -1,0 +1,93 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="stretch">
+<note>
+  Frames file for 'stretch' based on sentences in the financial subcorpus.
+  Comparison to 'extend'.
+</note>
+
+<roleset id="stretch.01" name="extend, lengthen" vncls="40.3.2 45.4">
+<roles>
+  <role descr="agent, entity making something be longer" n="0">
+	<vnrole vncls="40.3.2" vntheta="Agent"/>
+        <vnrole vncls="45.4" vntheta="Agent"/></role>
+  <role descr="patient, thing getting longer" n="1">
+	<vnrole vncls="40.3.2" vntheta="Patient"/>
+        <vnrole vncls="45.4" vntheta="Patient"/></role>
+  <role descr="EXT or TMP, by how much or until when" n="2"/>
+  <role descr="start point" n="3"/>
+  <role descr="end point" n="4"/>
+</roles>
+
+
+<example name="with EXT">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ The limits to legal absurdity stretched another notch this week.
+</text>
+	<arg n="1">The limits to legal absurdity</arg>
+	<rel>stretched</rel>
+	<arg f="EXT" n="2">another notch</arg>
+	<arg f="TMP" n="M">this week</arg>
+</example>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+ In the past year , both have tried [*-1] to stretch the limits of their businesses .
+</text>
+	<arg n="0">[*-1] -&gt;  both</arg>
+	<rel>stretch</rel>
+	<arg n="1">the limits of their businesses</arg>
+</example>
+
+
+<example name="with temporal EXT">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+ Most are from independent producers instead of regulated utilities , and Westinghouse believes [0] it will ride a wave of demand stretching over the next six years .
+</text>
+	<arg n="1">a wave</arg>
+	<rel>stretching</rel>
+	<arg f="over" n="2">the next six years</arg>
+</example>
+
+
+<example name="with start and end points">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+ Kingdom of Morocco -- $ 208 million [*U*] ( redemption amount ) of zero-coupon government trust certificates , with maturities stretching from May 15 , 1990 , to Nov. 15 , 1999 , priced [*] at yields ranging from 8.23 % to 8.43 % .
+</text>
+	<arg n="1">maturities</arg>
+	<rel>stretching</rel>
+	<arg f="from" n="3">May 15 , 1990 ,</arg>
+	<arg f="to" n="4">Nov. 15 , 1999 ,</arg>
+</example>
+
+
+</roleset>
+</predicate>
+<predicate lemma="stretch_out">
+<roleset id="stretch.02" name="to extend to a greater or the full length" vncls="-">
+<roles>
+  <role descr="cause of lengthening" n="0"/>
+  <role descr="patient, thing getting longer" n="1"/>  
+</roles>
+
+
+
+<example name="intransitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ Whereas conventional securities financings are structured [*-3] to be sold [*-1] quickly , Wall Street 's new penchant for leveraged buy-outs and junk bonds is resulting in long-term lending commitments that [*T*-2] stretch out for months or years .
+</text>
+	<arg n="1">[*T*-2] -&gt;  that -&gt;  long-term lending commitments</arg>
+	<rel>[ stretch] [ out]</rel>
+	<arg f="TMP" n="M">for months or years</arg>
+</example>
+
+
+</roleset>
+</predicate>
+</frameset>

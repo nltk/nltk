@@ -1,0 +1,43 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="convince">
+<note>
+  Frames file for 'convince' based on sentences in financial
+  subcorpus.  Verbnet class convince 31.1, no mention of other
+  members.  Comparison with other verbs of impelled action: cause,
+  force, order.
+</note>
+
+<roleset id="convince.01" name="impelled action" vncls="-">
+<roles>
+  <role descr="convincer" n="0"/>
+  <role descr="impelled agent" n="1"/>
+  <role descr="impelled action" n="2"/>
+</roles>
+
+<example name="clearly an action">
+<text>
+    And powerful political pressures may convince the Conservative
+        government to keep its so-called golden share</text> 
+        <arg n="0">powerful political pressures</arg>
+        <arg f="MOD" n="M">may</arg>
+        <rel>convince</rel>
+        <arg n="1">the Conservative government</arg>
+        <arg n="2">to keep its so-called golden share</arg>
+</example>
+
+<example name="not an action, but a proposition">
+<text>
+    Mr. Harper expressed confidence that he and Mr. Baum can convince
+    the board of their worthiness to run the company. 
+</text>
+        <arg n="0">he and Mr. Baum</arg>
+        <arg f="MOD" n="M">can</arg>
+        <rel>convince</rel>
+        <arg n="1">the board</arg>
+        <arg f="of" n="2">their worthiness  to run the company</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

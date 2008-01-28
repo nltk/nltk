@@ -1,0 +1,87 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="flash">
+<note>
+  Frames file for flash' based on sentences in the financial subcorpus.
+  No comparison.
+</note>
+
+<roleset id="flash.01" name="shine, show quickly" vncls="40.3.2 43.1">
+<roles>
+  <role descr="shower, agent" n="0">
+	<vnrole vncls="43.1" vntheta="Agent"/>
+        <vnrole vncls="40.3.2" vntheta="Agent"/></role>
+  <role descr="thing shining" n="1">
+	<vnrole vncls="43.1" vntheta="Theme"/>
+        <vnrole vncls="40.3.2" vntheta="Patient"/></role>
+  <role descr="location, such as screen" n="2">
+	<vnrole vncls="43.1" vntheta="Location"/>
+        <vnrole vncls="40.3.2" vntheta="Recipient"/></role>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ At the State University of New York at Brooklyn , researchers flash two groups of different letters on a computer screen in front of human guinea pigs .
+</text>
+	<arg f="LOC" n="M">At the State University of New York at Brooklyn</arg>
+	<arg n="0">researchers</arg>
+	<rel>flash</rel>
+	<arg n="1">two groups of different letters</arg>
+	<arg f="on" n="2">a computer screen in front of human guinea pigs</arg>
+</example>
+
+
+<example name="intransitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+ One protest did get past NASA 's guard , though ; a computer virus caused anti-Galileo messages to flash onto some computer screens at NASA centers .
+</text>
+	<arg n="1">anti-Galileo messages</arg>
+	<rel>flash</rel>
+	<arg f="onto" n="2">some computer screens</arg>
+	<arg f="LOC" n="M">at NASA centers</arg>
+</example>
+
+</roleset>
+
+<roleset id="flash.02" name="move quickly" vncls="-">
+<roles>
+  <role descr="causer of motion, agent" n="0"/>
+  <role descr="thing moving" n="1"/>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+ Then , [*-1] flashing a diamond ring as big as the Ritz ( `` my day diamond , darling '' ) , she told her two companions that she is on the `` board '' of the Vatican Museum in Rome .
+</text>
+	<rel>flashing</rel>
+	<arg n="1">a diamond ring as big as the Ritz ( `` my day diamond , darling '' )</arg>
+	<arg n="0">she -&gt;  [*-1]</arg>
+</example>
+</roleset>
+</predicate>
+<predicate lemma="flash_back">
+<roleset id="flash.03" name="return in time" vncls="-">
+
+<roles>
+  <role descr="entity returning" n="1"/>
+  <role descr="returning to" n="2"/>
+</roles>
+
+<example name="intransitive">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ The Bronx also figures in Bruce Jay Friedman 's latest novel , which [*T*-1] flashes back to the New York of the '50s .
+</text>
+	<arg n="1">[*T*-1] -&gt;  which -&gt;  Bruce Jay Friedman 's latest novel</arg>
+	<rel>[ flashes] [ back]</rel>
+	<arg f="to" n="2">the New York of the '50s</arg>
+</example>
+
+
+</roleset>
+</predicate>
+</frameset>

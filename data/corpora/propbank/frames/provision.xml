@@ -1,0 +1,44 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="provision">
+<note>
+  Frames file for 'provision' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="provision.01" vncls="-" name="provide provisions">
+<roles>
+  <role n="0"  descr="entity providing provisions"/>
+  <role n="1"  descr="entity receiving provisions"/>
+  <role n="2"  descr="provisions"/>
+</roles>
+
+<example name="only corpus exx are nominal">
+<inflection person="ns" tense="ns" aspect="ns" voice="ns" form="gerund"/>
+<text>
+     Mr. Bowder said the bank's experience with LDC debt has been
+     ``painful'' and this latest move represents the final phase of a
+     program begun seven years ago to reduce its exposure through
+     provisioning, debt sales and debt swaps. 
+</text>
+	<rel>provisioning</rel>
+</example>
+
+<example name="as a verb">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+     John provisioned Mary's road trip with a quarter-ton of beef
+     jerky and three pints of Gatorade.
+  </text>
+  <arg n="0"        >John</arg>
+  <rel              >provisioned</rel>
+  <arg n="1"        >Mary's road trip</arg>
+  <arg n="2" f="with">a quarter-ton of beef jerky and three pints of
+  Gatorade</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

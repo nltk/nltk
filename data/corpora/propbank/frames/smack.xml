@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="smack">
+<note>
+  Frames file for 'smack'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="smack.01" name="to give an indication, be suggestive" vncls="-">
+<roles> 
+ <role descr="entity being suggestive" n="0"/>
+ <role descr="entity suggested of" n="1"/> 
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="ns" voice="active"/>
+<text>
+ From the perspective of East Germany 's old guard , reforms that [*T*-1] smack of capitalism and Western-style democracy could eliminate their country 's reason for being .
+</text>
+	<arg n="0">[*T*-1] -&gt;  that -&gt;  reforms</arg>
+	<rel>smack</rel>
+	<arg f="of" n="1">capitalism and Western-style democracy</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

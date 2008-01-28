@@ -1,0 +1,44 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="vie">
+<note>
+  Frames file for 'vie' based on sentences in wsj.  Verbnet entry 36.1.
+</note>
+
+<roleset id="vie.01" name="compete" vncls="36.1">
+<roles>
+  <role descr="competitor" n="0">
+		
+  <vnrole vncls="36.1" vntheta="Actor1"/></role>
+
+  <role descr="opponent" n="1">
+		
+  <vnrole vncls="36.1" vntheta="Actor2"/></role>
+
+  <role descr="prize" n="2">
+		
+  <vnrole vncls="36.1" vntheta="Topic"/></role>
+</roles>
+
+<example name="sufficient explanation">
+<inflection aspect="progressive" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+    Big U.S. distillers are fiercely vying for this market, which grew
+    to $77 million last year from $33 million in 1987, according to
+    government figures. 
+</text>
+        <arg n="0">Big U.S. distillers</arg>
+        <arg f="MNR" n="M">fiercely</arg>
+        <rel>vying</rel>
+        <arg f="for" n="2">this market, which grew to $77 million last
+        year from $33 million in 1987, according to government
+        figures</arg> 
+</example>
+
+<note>
+Unstated arg1-with &quot;each other&quot;.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

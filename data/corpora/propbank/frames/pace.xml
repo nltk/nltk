@@ -1,0 +1,59 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="pace">
+<note>
+  Frames file for 'pace' based on sentences in wsj.  No Verbnet
+  entry. 
+</note>
+
+<roleset id="pace.01" name="move at same speed" vncls="-">
+<roles>
+  <role descr="subject-level mover" n="0"/>
+  <role descr="object-level mover" n="1"/>
+</roles>
+
+<example name="the one example">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Earnings continued *trace* to pace sales because of a lower tax
+    rate, profit from the renegotiation of the debt instrument
+    received from Faberge Inc. in connection with Lilly's sale of
+    Elizabeth Arden Inc. in 1987, and net proceeds from the settlement
+    of patent litigation at Lilly's Hybritech Inc. unit. 
+</text>
+        <arg n="0">*trace* -&gt;  Earnings</arg>
+        <rel>pace</rel>
+        <arg n="1">sales</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="pace.02" name="walk back and forth nervously" vncls="-">
+<roles>
+  <role descr="pacer" n="0"/>
+  <role descr="path" n="1"/>
+</roles>
+
+<example name="nervous Nelly">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John paced the floor all night, waiting for news about whether his
+    dissertation was accepted.
+  </text>
+  <arg n="0">John</arg>
+  <rel>paced</rel>
+  <arg n="1">the floor</arg>
+  <arg f="TMP" n="m">all night</arg>
+  <arg f="ADV" n="m">waiting for news about whether his
+    dissertation was accepted.</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

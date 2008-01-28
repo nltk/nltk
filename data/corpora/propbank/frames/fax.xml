@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="fax_in">
+<note>
+  Frames file for 'fax'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="fax.01" name="to send by fax" vncls="-">
+<roles> 
+  <role descr="sender, agent" n="0"/>
+  <role descr="entity sent, faxed" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ In a few instances , Aetna knew [0] it would probably be shelling out big bucks , even before a client called or faxed in a claim .
+</text>
+	<arg n="0">a client</arg>
+	<rel>[ faxed] [ in]</rel>
+	<arg n="1">a claim</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

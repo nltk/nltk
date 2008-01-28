@@ -1,0 +1,49 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="regard">
+<note>
+  Frames file for 'regard' based on sentences in financial subcorpus.
+  Verbnet classes 29.2, 30.2.  Other framed members include cite,
+  describe, see, take.  
+</note>
+
+<roleset id="regard.01" name="assign a label or attribute" vncls="29.2 30.2">
+<roles>
+  <role descr="describer" n="0">
+		
+		
+  <vnrole vncls="29.2" vntheta="Agent"/><vnrole vncls="30.2" vntheta="Experiencer"/></role>
+
+  <role descr="thing described" n="1">
+		
+		
+  <vnrole vncls="29.2" vntheta="Theme"/><vnrole vncls="30.2" vntheta="Stimulus"/></role>
+
+  <role descr="secondary attribute, described-as" n="2">
+		
+  <vnrole vncls="29.2" vntheta="Predicate"/></role>
+
+</roles>
+
+<example name="passivized">
+<text>
+    Until the collapse of this bid, Mr. Wolf was regarded *trace* as
+    one of the nation's savviest airline executives after engineering
+    turnarounds of Tiger International Inc. and Republic Airlines.
+</text>
+        <arg f="TMP" n="M"> Until the collapse of this bid</arg>
+        <rel> regarded</rel>
+        <arg n="1">*trace*=Mr. Wolf </arg>
+        <arg f="as" n="2"> one of the nation 's savviest airline
+        executives</arg> 
+        <arg f="TMP" n="M"> after  engineering turnarounds of Tiger
+        International Inc. and Republic Airlines</arg> 
+<note>Ignore prepositional usages as in &quot;One such proposal regarding
+stock-index futures...&quot;
+</note>
+</example>
+
+
+</roleset>
+</predicate>
+</frameset>

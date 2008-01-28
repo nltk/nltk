@@ -1,0 +1,79 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="segregate">
+<note>
+  Frames file for 'segregate' based on sentences in wsj.  Verbnet
+  entry 23.1, Framenet entry Separation.
+</note>
+
+<roleset id="segregate.01" name="separate" vncls="23.1">
+<roles>
+	<role descr="entity causing separation" n="0"><vnrole vncls="23.1" vntheta="Agent"/></role> 
+	<role descr="thing being divided" n="1"><vnrole vncls="23.1" vntheta="Patient1"/></role> 
+	<role descr="source, or destination" n="2"><vnrole vncls="23.1" vntheta="Patient2"/></role>
+</roles>
+
+<example name="intransitive">
+<inflection aspect="ns" form="full" person="ns" tense="ns" voice="ns"/>
+<text>
+    ``We must either integrate honestly or segregate honestly.''
+</text>
+        <arg n="0">We</arg>
+        <arg f="MOD" n="M">must</arg>
+        <rel>segregate</rel>
+        <arg f="MNR" n="M">honestly</arg>
+</example>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    The union sued the state in November 1985, alleging that it
+    intentionally segregated job classifications by sex and paid
+    employees in predominantly female jobs less than males in
+    comparable jobs. 
+</text>
+        <arg n="0">it</arg>
+        <arg f="MNR" n="M">intentionally</arg>
+        <rel>segregated</rel>
+        <arg n="1">job classifications</arg>
+        <arg f="MNR" n="M">by sex</arg>
+</example>
+
+<example name="with destination">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    ``By encouraging massive, routine, voluntary testing we can enable
+    society to voluntarily segregate itself sexually into two groups:
+    those who carry the virus and those who do not,'' the Indianapolis
+    research organization said in a new report. 
+</text>
+        <arg n="0">society</arg>
+        <arg f="MNR" n="M">voluntarily</arg>
+        <rel>segregate</rel>
+        <arg f="REC" n="1">itself</arg>
+        <arg f="MNR" n="M">sexually</arg>
+        <arg f="into" n="2">two groups: those who carry the virus and
+        those who do not</arg> 
+</example>
+
+<example name="with source">
+  <inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+  <text>
+    John failed *trace* to segregate his red socks from Mary's delicate white
+    underthings when doing laundry.
+  </text>
+  <arg n="0">*trace* -&gt; John</arg>
+  <rel>segregate</rel>
+  <arg n="1">his red socks</arg>
+  <arg f="from" n="2">Mary's delicate white underthings</arg>
+  <arg f="TMP" n="m">when doing laundry</arg>
+</example>
+
+<note>
+Difference between source and destination Arg2s can be determined by
+the introductory preposition, (in)to or from.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

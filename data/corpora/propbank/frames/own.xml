@@ -1,0 +1,53 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<note>
+Frames file for 'own' based on survey of initial sentences from big corpus
+</note>
+
+<predicate lemma="own">
+<roleset id="own.01" name="possess">
+<roles>
+  <role descr="owner" n="0"/>
+  <role descr="possession" n="1"/>
+</roles>
+
+<example name="straight transitive">
+  <text>
+    Faulding owns 33% of Moleculon's voting stock.
+  </text>
+  <arg n="0">Faulding</arg>
+  <rel>owns</rel>
+  <arg n="1">33% of Moleculon's voting stock</arg>
+</example>
+
+<example name="passivized">
+  <text> 
+    The plant is owned *trace=the plant* by Hollingsworth &amp; Vose Co.
+  </text>
+  <rel>is owned</rel>
+  <arg n="1">*trace=the plant*</arg>
+  <arg f="BY" n="0">by Hollingsworth &amp; Vose Co</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="own_up">
+<roleset id="own.02" name="confess">
+<roles>
+  <role descr="confessor" n="0"/>
+  <role descr="sin" n="1"/>
+</roles>
+
+<example name="both args">
+  <text>
+    John owned up to his theft of the cookies.
+  </text>
+  <arg n="0">John</arg>
+  <rel>owned up</rel>
+  <arg f="to" n="1">to his theft of the cookies</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

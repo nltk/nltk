@@ -1,0 +1,373 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="pass">
+<note>
+  Frames file for 'pass' based on survey of initial sentences of big
+  corpus and comparison with 'fail', 'give', 'send', and reference to
+  verbnet classes give-13.1, send-11.1, and throw-17.1.  There are
+  probably a million senses and phrasals I've missed; the syntax tends
+  to be pretty straightforward, so if you encounter them while tagging
+  just go ahead and add them.
+</note>
+
+<roleset id="pass.01" name="bill becomes law" vncls="-">
+<roles>
+  <role descr="legislative body" n="0"/>
+  <role descr="bill, state prior to passing" n="1"/>
+  <role descr="law, state after passing" n="2"/>
+</roles>
+
+<example name="passive">
+  <text>
+  The Senate-House conference committee is used when a bill is passed
+  *trace* by the House and Senate in different forms.
+  </text>
+  <arg n="1">*trace*=a bill</arg>
+  <rel>passed</rel>
+  <arg f="by" n="0">the House and Senate</arg>
+  <arg f="MNR" n="m">in different forms</arg>
+</example>
+
+<example name="distinguishing arg1 from arg2">
+  <text>
+  John passed the bill into law.
+  </text>
+  <arg n="0">John</arg>
+  <rel>passed</rel>
+  <arg n="1">the bill</arg>
+  <arg f="into" n="2">law</arg>
+</example>
+</roleset>
+
+<roleset id="pass.02" name="overtake" vncls="-">
+<roles>
+  <role descr="entity moving ahead" n="0"/>
+  <role descr="entity falling behind" n="1"/>
+</roles>
+
+<example name="transitive">
+  <text>
+  A couple of my law clerks were going *trace* to pass me in three or
+  four years.
+  </text>
+  <arg n="0">*trace*=A couple of my law clerks</arg>
+  <rel>pass</rel>
+  <arg n="1">me</arg>
+  <arg f="TMP" n="m">in three or four years.</arg>
+</example>
+</roleset>
+
+<roleset id="pass.03" name="go by" vncls="-">
+<roles>
+  <role descr="thing passing" n="1"/>
+</roles>
+
+<example name="time passes">
+  <text>
+  Hardly a day passes without news photos of the police dragging limp
+  protestors from some building.
+  </text>
+  <arg n="1">Hardly a day</arg>
+  <rel>passes</rel>
+  <arg f="ADV" n="m">without news photos of the police dragging limp
+  protestors from some building</arg>
+</example>
+</roleset>
+
+<roleset id="pass.04" name="allow to go by" vncls="-">
+<roles>
+  <role descr="allower" n="0"/>
+  <role descr="thing let go by" n="1"/>
+</roles>
+
+<example name="no object">
+  <text>
+  Faced with a losing poker hand, John passed.
+  </text>
+  <arg f="ADV" n="m">Faced with a losing poker hand</arg>
+  <arg n="0">John</arg>
+  <rel>passed</rel>
+</example>
+
+<example name="NP object">
+  <text>
+  Warner has passed *trace*, or chosen not to produce, at least 76.
+  </text>
+  <arg n="0">Warner</arg>
+  <rel>passed</rel>
+  <arg n="1">*trace*=at least 76</arg>
+</example>
+
+<example name="PP object">
+  <text>
+  John passed on the opportunity to go spelunking.  
+  </text>
+  <arg n="0">John</arg>
+  <rel>passed</rel>
+  <arg f="on" n="1">the opportunity to go spelunking</arg>
+</example>
+</roleset>
+
+<roleset id="pass.05" name="give" vncls="13.1-1">
+<roles>
+  <role descr="giver" n="0">
+	<vnrole vncls="13.1-1" vntheta="Agent"/></role>
+  <role descr="thing changing hands" n="1">
+	<vnrole vncls="13.1-1" vntheta="Theme"/></role>
+  <role descr="getter" n="2">
+	<vnrole vncls="13.1-1" vntheta="Recipient"/></role>
+</roles>
+
+<example name="idiomatic meaning, compositional syntax">
+  <text>
+  He is just passing the buck to young people.
+  </text>
+  <arg n="0">He</arg>
+  <arg f="DIS" n="m">just</arg>
+  <rel>passing</rel>
+  <arg n="1">the buck</arg>
+  <arg f="to" n="2">young people</arg>
+</example>
+
+<note>
+Similarly &quot;pass_along&quot;, which is often misparsed in Treebank.
+</note>
+</roleset>
+
+<roleset id="pass.06" name="suffice, get away (with)" vncls="-">
+<roles>
+  <role descr="thing passing" n="1"/>
+  <role descr="attributive" n="2"/>
+</roles>
+
+<example name="pass for">
+  <text>
+  ...the claptrap that *trace* passes for consensus in various
+  international institutions.
+  </text>
+  <arg n="1">*trace*=that=the claptrap</arg>
+  <rel>passes</rel>
+  <arg f="for" n="2">consensus</arg>
+  <arg f="LOC" n="m">in various international institutions.</arg>
+</example>
+
+<note>
+Can also be &quot;pass as&quot;
+</note>
+</roleset>
+
+<roleset id="pass.07" name="pass a class, pass a test" vncls="-">
+<roles>
+  <role descr="student" n="1"/>
+  <role descr="test" n="2"/>
+</roles>
+
+<example name="success!">
+  <text>
+  The number of balloonists who *trace* have passed  a Federal
+  Aviation Authority lighter-than-air test has doubled in the last year.
+  </text>
+  <arg n="1">*trace*=who=The number of balloonists</arg>
+  <rel>passed</rel>
+  <arg n="2">a Federal
+  Aviation Authority lighter-than-air test</arg>
+</example>
+
+<note>
+One presumes the test itself is not lighter than air.
+</note>
+</roleset>
+
+<roleset id="pass.08" name="variety of idioms" vncls="-">
+<roles>
+  <role descr="passer" n="0"/>
+  <role descr="thing passed" n="1"/>
+</roles>
+
+<example name="one of many">
+  <text>
+  Many are far enough from residential areas *trace* to pass public muster.
+  </text>
+  <arg n="0">*trace*=Many</arg>
+  <rel>pass</rel>
+  <arg n="1">public muster</arg>
+</example>
+
+<note>
+Similarly &quot;pass gas&quot;, etc.
+</note>
+</roleset>
+</predicate>
+
+<predicate lemma="pass_on">
+
+<roleset id="pass.09" name="give" vncls="13.1-1">
+<roles>
+  <role descr="giver" n="0">
+	<vnrole vncls="13.1-1" vntheta="Agent"/></role>
+  <role descr="thing changing hands" n="1">
+	<vnrole vncls="13.1-1" vntheta="Theme"/></role>
+  <role descr="getter" n="2">
+	</role>
+</roles>
+
+<example name="give">
+  <text>
+  Insurers typically pass on a small percentage of the risks they
+  underwrite (to their customers).
+  </text>
+  <arg n="0">Insurers</arg>
+  <arg f="TMP" n="m">typically</arg>
+  <rel>pass on</rel>
+  <arg n="1">a small percentage of the risks they underwrite</arg>
+  <arg f="to" n="2">their customers</arg>
+</example>
+</roleset>
+</predicate>
+
+<predicate lemma="pass_out">
+
+<roleset id="pass.10" name="distribute" vncls="11.1-1 13.1-1">
+<roles>
+  <role descr="distributor" n="0">
+		
+		
+  <vnrole vncls="11.1-1" vntheta="Agent"/><vnrole vncls="13.1-1" vntheta="Agent"/></role>
+
+  <role descr="thing distributed" n="1">
+		
+		
+  <vnrole vncls="11.1-1" vntheta="Theme"/><vnrole vncls="13.1-1" vntheta="Theme"/></role>
+
+  <role descr="distributed to" n="2">
+		
+		
+  <vnrole vncls="11.1-1" vntheta="Destination"/><vnrole vncls="13.1-1" vntheta="Recipient"/></role>
+
+</roles>
+
+<example name="passive">
+  <text>
+  The test booklets were passed *trace* out 48 hours ahead of time.
+  </text>
+  <arg n="1">*trace*=The test booklets</arg>
+  <rel>passed out</rel>
+  <arg f="TMP" n="m">48 hours ahead of time</arg>
+</example>
+</roleset>
+
+<roleset id="pass.11" name="faint" vncls="-">
+<roles>
+  <role descr="fainter" n="0"/>
+</roles>
+
+<example name="sexist, sorry">
+  <text>
+  Mary passes out at the sight of blood.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>passes out</rel>
+  <arg f="TMP" n="m">at the sight of blood</arg>
+</example>
+</roleset>
+</predicate>
+
+<predicate lemma="pass_over">
+
+<roleset id="pass.12" name="ignore, leave behind" vncls="-">
+<roles>
+  <role descr="ignorer" n="0"/>
+  <role descr="thing ignored" n="1"/>
+</roles>
+
+<example name="transitive active">
+  <text>
+  ...a small French merchant bank that Deutsche Bank had looked at and
+  passed *trace* over.
+  </text>
+  <arg n="0">Deutsche Bank</arg>
+  <rel>passed over</rel>
+  <arg n="1">*trace*=that=a small French merchant bank</arg>
+</example>
+</roleset>
+</predicate>
+
+<predicate lemma="pass_up">
+
+<roleset id="pass.13" name="relinquish" vncls="-">
+<roles>
+  <role descr="entity relinquishing one item" n="0"/>
+  <role descr="item relinquished" n="1"/>
+  <role descr="in favor of another" n="2"/>
+</roles>
+
+<example name="transitive">
+  <text>
+  Gorbachev is unlikely *trace* to pass up the opportunity to press
+  once again for negotiated cuts in the navies of both nations.
+  </text>
+  <arg n="0">*trace*=Gorbachev</arg>
+  <rel>pass up</rel>
+  <arg n="1">the opportunity to press
+  once again for negotiated cuts in the navies of both nations</arg>
+</example>
+
+<note>
+Similarly &quot;pass_by&quot;
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="pass_on">
+
+<roleset id="pass.14" name="transmit" vncls="11.1-1">
+<roles>
+  <role descr="transmitter" n="0">
+		
+  <vnrole vncls="11.1-1" vntheta="Agent"/></role>
+
+  <role descr="thing transmitted" n="1">
+		
+  <vnrole vncls="11.1-1" vntheta="Theme"/></role>
+
+  <role descr="transmitted to" n="2">
+		
+  <vnrole vncls="11.1-1" vntheta="Destination"/></role>
+
+</roles>
+
+<example name="passive">
+  <text>
+  Both the costs and the savings could be passed on to shippers on the
+  TransCanada pipeline.
+  </text>
+  <arg n="1">Both the costs and the savings</arg>
+  <arg f="MOD" n="m">could</arg>
+  <rel>passed on</rel>
+  <arg f="to" n="2">shippers on the
+  TransCanada pipeline.</arg>
+</example>
+</roleset>
+
+<roleset id="pass.15" name="die" vncls="-">
+<roles>
+  <role descr="thing dying" n="1"/>
+</roles>
+
+<example name="so sorry">
+  <text>
+  John's cat passed on last week.
+  </text>
+  <arg n="1">John's cat</arg>
+  <rel>passed on</rel>
+  <arg f="TMP" n="m">last week</arg>
+</example>
+
+<note>
+Similarly &quot;pass&quot; and &quot;pass_away&quot;
+</note>
+
+</roleset>
+</predicate>
+</frameset>

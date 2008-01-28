@@ -1,0 +1,45 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="revamp">
+<note>
+  Frames file for 'revamp' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="revamp.01" name="to revise, renovate" vncls="-">
+<roles>
+  <role descr="agent, causer" n="0"/>
+  <role descr="thing revamping" n="1"/>
+</roles>
+
+
+
+<example name="transitive">
+<inflection aspect="perfect" form="participle" person="third" tense="present" voice="active"/>
+<text>
+ But this year , Honda has revamped the Accord and made it a midsized car .
+</text>
+	<arg f="DIS" n="M">But</arg>
+	<arg f="TMP" n="M">this year</arg>
+	<arg n="0">Honda</arg>
+	<rel>revamped</rel>
+	<arg n="1">the Accord</arg>
+</example>
+
+
+<example name="inanimate causer">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+ Congress sent to President Bush an $ 8.5 billion [*U*] military construction bill that [*T*-1] cuts spending for new installations by 16 % while [*-2] revamping the Pentagon budget [*-3] to move more than $ 450 million [*U*] from foreign bases to home-state projects .
+</text>
+	<arg n="0">[*-2] -&gt;  [*T*-1] -&gt;  that -&gt;  an $ 8.5 billion [*U*] military construction bill</arg>
+	<rel>revamping</rel>
+	<arg n="1">the Pentagon budget</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

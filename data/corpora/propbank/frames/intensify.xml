@@ -1,0 +1,70 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="intensify">
+<note>
+Frames file for 'intensify' based on sentences in financial subcorpus
+and automatic expansion via verbnet.
+</note>
+
+<roleset id="intensify.01" name="make more intense" vncls="45.4">
+<roles>
+  <role descr="causer of intensity" n="0">
+	<vnrole vncls="45.4" vntheta="Agent"/></role>
+   <role descr="thing becoming intense" n="1">
+	<vnrole vncls="45.4" vntheta="Patient"/></role>
+   <role descr="instrument, if separate from agent" n="2">
+	<vnrole vncls="45.4" vntheta="Instrument"/></role>
+ </roles>
+
+<example name="ergative">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    The hottest rivalry in the computer industry intensified sharply
+    yesterday as Digital Equipment Corp. announced its first line of
+    mainframe computers, targeting International Business Machines
+    Corp.'s largest market. 
+</text>
+        <arg n="1">The hottest rivalry in the computer industry</arg>
+        <rel>intensified</rel>
+        <arg f="MNR" n="M">sharply</arg>
+        <arg f="TMP" n="M">yesterday</arg>
+        <arg f="ADV" n="M">as Digital Equipment Corp. announced its
+        first line of mainframe computers, targeting International
+        Business Machines Corp.'s largest market</arg> 
+</example>
+
+<example name="agentive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    The collapse Friday prompted speculation that Ford would intensify
+    its pursuit of Jaguar, which is negotiating a defensive alliance
+    with GM. 
+</text>
+        <arg n="0">Ford</arg>
+        <arg f="MOD" n="M">would</arg>
+        <rel>intensify</rel>
+        <arg n="1">its pursuit of Jaguar, which is negotiating a
+        defensive alliance with GM</arg> 
+</example>
+
+<example name="instrumental">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Ford Motor Co. intensified its battle with General Motors
+    Corp. over Jaguar PLC by saying it is prepared to make a bid for
+    all of the British auto maker when restrictions on its
+    shareholding are lifted. 
+</text>
+        <arg n="0">Ford Motor Co.</arg>
+        <rel>intensified</rel>
+        <arg n="1">its battle with General Motors Corp. over Jaguar PLC</arg>
+        <arg f="by" n="2">saying it is prepared to make a bid for all
+        of the British auto maker when restrictions on its
+        shareholding are lifted</arg> 
+</example>
+
+<note>
+It's possible this could take start/end points or EXT, but I doubt it.
+</note>
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,67 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="rage">
+<note>
+  Frames file for 'rage' based on sentences in wsj.  Verbnet entries
+  37.3, 47.2.
+</note>
+
+<roleset id="rage.01" name="speak angrily" vncls="37.3">
+<roles>
+  <role descr="speaker" n="0"><vnrole vncls="37.3" vntheta="Agent"/></role>
+  <role descr="utterance" n="1"><vnrole vncls="37.3" vntheta="Topic"/></role>
+  <role descr="hearer" n="2"><vnrole vncls="37.3" vntheta="Recipient"/></role>
+</roles>
+
+<example name="Mary's getting violent again">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    ``%*($*$)PO^%$!!!!'' raged Mary to John.
+  </text>
+  <arg n="1">``%*($*$)PO^%$!!!!''</arg>
+  <rel>raged</rel>
+  <arg n="0">Mary</arg>
+  <arg f="to" n="2">John</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="rage.02" name="be very angry, violent" vncls="47.2">
+<roles>
+  <role descr="angry entity" n="0"><vnrole vncls="47.2" vntheta="Theme"/></role>
+  <role descr="target of anger" n="1"><vnrole vncls="47.2" vntheta="Location"/></role>
+</roles>
+
+<example name="tempest in a teapot">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+    Therefore, the debate about poison pills will continue *trace* to
+    rage in the boardrooms of corporations and the halls of academia. 
+</text>
+        <arg n="0">*trace* -&gt;  the debate about poison pills</arg>
+        <rel>rage</rel>
+        <arg f="LOC" n="M">in the boardrooms of corporations and the
+        halls of academia</arg> 
+</example>
+
+<example name="with target">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     Mary, fed up with John's passivity, raged at him for over an
+     hour.  He didn't notice.
+  </text>
+  <arg n="0">Mary, fed up with John's passivity,</arg>
+  <rel>raged</rel>
+  <arg f="at" n="1">him</arg>
+  <arg f="TMP" n="m">for over an hour</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

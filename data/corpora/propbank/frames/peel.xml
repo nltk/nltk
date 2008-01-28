@@ -1,0 +1,55 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="peel">
+<note>
+  Frames file for 'peel' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="peel.01" name="to strip, pull off" vncls="10.7">
+<roles>
+  <role descr="remover, agent" n="0">
+        <vnrole vncls="10.7" vntheta="Agent"/></role> 
+  <role descr="entity peeled" n="1">
+        <vnrole vncls="10.7" vntheta="Source"/></role> 
+</roles>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="future" voice="passive"/>
+<text>
+ During the coming months , layers of management will be peeled [*-1] away and regional offices will become more autonomous .
+</text>
+	<arg f="TMP" n="M">During the coming months</arg>
+	<arg f="MOD" n="M">will</arg>
+	<rel>peeled</rel>
+	<arg n="1">[*-1] -&gt;  layers of management</arg>
+	<arg f="DIR" n="M">away</arg>
+</example>
+</roleset>
+</predicate>
+
+<predicate lemma="peel_off">
+<roleset id="peel.02" name="to cut away,  pare" vncls="-">
+<roles>
+  <role descr="remover, cutter, agent" n="0"/> 
+  <role descr="entity peeled off" n="1"/> 
+</roles>
+
+<example name="intransitive">
+<inflection aspect="perfect" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+ `` Rates have n't really peeled off that much , '' Mr. Regalia said [*T*-1] .
+</text>
+	<arg n="1">Rates</arg>
+	<arg f="NEG" n="M">n't</arg>
+	<arg f="ADV" n="M">really</arg>
+	<rel>[ peeled] [ off]</rel>
+	<arg f="EXT" n="M">that much</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

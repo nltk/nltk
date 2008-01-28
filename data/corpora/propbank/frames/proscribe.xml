@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="proscribe">
+<note>
+  Frames file for 'proscribe' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="proscribe.01" name="to prohibit, forbid" vncls="-">
+<roles>
+  <role descr="causer" n="0"/>
+  <role descr="thing proscribed" n="1"/>
+  <role descr="proscribed from" n="1"/>
+</roles>
+
+<example name="all arguments">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ `` The First Amendment proscribes the government from [*-2] passing laws abridging the right to free speech , '' Judge Donald O'Brien ruled [*T*-1] .
+</text>
+	<arg n="0">The First Amendment</arg>
+	<rel>proscribes</rel>
+	<arg n="1">the government</arg>
+	<arg f="from" n="2">[*-2] passing laws abridging the right to free speech</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

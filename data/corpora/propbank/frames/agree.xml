@@ -1,0 +1,72 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="agree">
+<note>
+  Frames file for 'agree' based on survey of initial sentences of big
+  corpus and comparison with 'say'
+</note>
+
+<roleset id="agree.01" name="agree">
+<roles>
+  <role descr="agreer" n="0"/>
+  <role descr="proposition" n="1"/>
+  <role descr="other entity agreeing" n="2"/>
+</roles>
+
+<example name="infinitival proposition">
+  <text> 
+    A federal bankruptcy court judge agreed *trace* to extend until
+    March 8, 1990, the period in which the steel, aerospace and energy
+    products company has the exclusive right to file a reorganization
+    plan.
+  </text>
+  <arg n="0">A federal bankruptcy court judge</arg>
+  <rel>agreed</rel>
+  <arg n="1">*trace* to extend until
+    March 8, 1990, the period in which the steel, aerospace and energy
+    products company has the exclusive right to file a reorganization
+    plan.</arg>
+</example>
+
+<example name="SBAR proposition">
+  <text>
+  The group agreed that it wouldn't make an offer unless it had
+  Georgia Gulf's consent.
+  </text>
+  <arg n="0">The group</arg>
+  <rel>agreed</rel>
+  <arg n="1">it wouldn't make an offer unless it had
+  Georgia Gulf's consent</arg>
+</example>
+
+<note>
+Note that the &quot;that&quot; complementizer is once again not included.
+</note>
+
+<example name="NP proposition">
+  <text>
+    The Stamford, CT, concern has agreed to a buy-out by Bank of Boston.
+  </text>
+  <arg n="0">The Stamford, CT, concern</arg>
+  <rel>agreed</rel>
+  <arg f="to" n="1">a buy-out by Bank of Boston</arg>
+</example>
+
+<note>
+Refer to 'say' for handling of fronted and inverted forms.
+</note>
+
+<example name="with co-agreer">
+  <text>
+  Usually John agrees with Mary on everything.
+  </text>
+  <arg f="TMP" n="m">Usually</arg>
+  <arg n="0">John</arg>
+  <rel>agrees</rel>
+  <arg f="with" n="2">Mary</arg>
+  <arg f="on" n="1">everything</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,59 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="unhinge">
+<note>
+  Frames file for 'unhinge' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="unhinge.01" name="to disrupt, confuse" vncls="-">
+<roles>
+  <role descr="cause, agent" n="0"/>
+  <role descr="entity unhinged" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="perfect" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+ [*-1] Testifying before a House subcommittee , Mr. Mulford said that if the Treasury had n't intervened in foreign-exchange markets in September and early October [*-2] to reduce the dollar 's value , the plunge in the stock market might have provoked a steep fall in the currency that [*T*-97] might have `` unhinged financial markets . ''
+</text>
+	<arg n="0">[*T*-97] -&gt;  that -&gt;  a steep fall</arg>
+	<arg f="MOD" n="M">might</arg>
+	<rel>unhinged</rel>
+	<arg n="1">financial markets</arg>
+</example>
+
+
+</roleset>
+
+<roleset id="unhinge.02" vncls="-" name="disconnect">
+<roles>
+  <role n="0"  descr="agent, causer of disconnection"/>
+  <role n="1"  descr="topic, focus"/>
+  <role n="2"  descr="disconnected from, if separate from arg1"/>
+</roles>
+
+<example name="passive">
+<inflection person="third" tense="past" aspect="ns" voice="passive" form="participle"/>
+<text>
+    On Friday, the stock-index futures market was unhinged [*-1] from
+    the stock market when the Chicago Mercantile Exchange halted
+    trading in Standard &amp; Poor's 500 futures contract -- a
+    ``circuit breaker'' procedure instituted after the 1987 crash and
+    implemented for the first time. 
+</text>
+	<arg n="M" f="TMP">On Friday</arg>
+	<rel>unhinged</rel>
+	<arg n="1">[*-1] ->  the stock-index futures market</arg>
+	<arg n="2" f="from">the stock market</arg>
+	<arg n="M" f="TMP">when the Chicago Mercantile Exchange halted
+	trading in Standard &amp; Poor's 500 futures contract</arg> 
+	<arg n="M">a ``circuit breaker'' procedure instituted after
+	the 1987 crash and implemented for the first time</arg> 
+</example>
+
+</roleset>
+</predicate>
+
+
+</frameset>

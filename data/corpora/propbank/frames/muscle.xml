@@ -1,0 +1,34 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="muscle">
+<note>
+  Frames file for 'muscle' based on sentences in financial subcorpus.
+  No access to verbnet.  Comparison with 'push'.
+</note>
+
+<roleset id="muscle.01" name="(try to) cause motion">
+<roles>
+  <role descr="pusher" n="0"/>
+  <role descr="thing pushed" n="1"/>
+  <role descr="direction" f="DIR" n="2"/>
+</roles>
+
+<example name="not exactly high-freq">
+<text>
+    For the year, electronics emerged as Rockwell's largest sector in
+    terms of sales and earnings, *trace* muscling out aerospace for
+    the first time. 
+</text>
+	<arg n="0">*trace* -&gt;  electronics</arg>
+	<rel>muscling</rel>
+	<arg f="DIR" n="2">out</arg>
+	<arg n="1">aerospace</arg>
+	<arg f="TMP" n="M">for the first time</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

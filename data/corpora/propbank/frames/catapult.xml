@@ -1,0 +1,56 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="catapult">
+<note>
+  Frames file for 'catapult' based on sentences in wsj.  Verbnet entry
+  17.1, Framenet entry Cause to move.
+</note>
+
+<roleset id="catapult.01" name="throw very energetically" vncls="17.1">
+<roles>
+  <role descr="thrower" n="0"><vnrole vncls="17.1" vntheta="Agent"/></role>
+  <role descr="thing thrown" n="1"><vnrole vncls="17.1" vntheta="Patient"/></role>
+  <role descr="thrown at, to, over, etc" n="2"><vnrole vncls="17.1" vntheta="Destination"/></role>
+</roles>
+
+<example name="typical usage">
+<inflection aspect="ns" form="full" person="ns" tense="future" voice="active"/>
+<text>
+    For Mitsubishi Estate, the Rockefeller purchase will catapult it
+    firmly into the overseas real estate business, the one area where
+    it has lagged notably behind Japanese competitors such as Mitsui,
+    which had purchased the Exxon Building.
+</text>
+        <arg f="ADV" n="M">For Mitsubishi Estate</arg>
+        <arg n="0">the Rockefeller purchase</arg>
+        <rel>catapult</rel>
+        <arg n="1">it</arg>
+        <arg f="MNR" n="M">firmly</arg>
+        <arg f="into" n="2">the overseas real estate business, the one
+        area where it has lagged notably behind Japanese competitors
+        such as Mitsui, which  had purchased the Exxon Building </arg> 
+</example>
+
+
+<example name="nasty ergative usage">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    Orders for military goods usually catapult in September,
+    government officials say, as the Pentagon scrambles to spend its
+    money before the new fiscal year begins Oct. 1. 
+</text>
+        <arg n="1">Orders for military goods</arg>
+        <arg f="TMP" n="M">usually</arg>
+        <rel>catapult</rel>
+        <arg f="TMP" n="M">in September</arg>
+        <arg f="TMP" n="M">as the Pentagon scrambles to spend its
+        money before the new fiscal year begins Oct. 1</arg> 
+</example>
+
+<note>
+I suppose the latter example is properly a different roleset/sense,
+meaning &quot;increase dramatically&quot;.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

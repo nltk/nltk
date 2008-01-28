@@ -1,0 +1,101 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="let">
+<note>
+  Frames file for 'let' based on survey of initial sentences of big
+  corpus and comparison with 'allow'
+</note>
+
+<roleset id="let.01" name="allow">
+<roles>
+  <role descr="allower" n="0"/>
+  <role descr="action allowed" n="1"/>
+</roles>
+
+<example name="allowed S">
+  <text>
+  Sony won't let a young short-term American employee take on any
+  responsibility.
+  </text>
+  <arg n="0">Sony</arg>
+  <arg f="MOD" n="m">wo</arg>
+  <arg f="NEG" n="m">n't</arg>
+  <rel>let</rel>
+  <arg n="1">a young short-term American employee take on any
+  responsibility.</arg>
+</example>
+
+<example name="allowed NP, really a shortening of allowed S">
+  <text>
+  They wanted to roll the dice and we're going *trace* to let them.
+  </text>
+  <arg n="0">*trace*=we</arg>
+  <rel>let</rel>
+  <arg n="1">them</arg>
+</example>
+
+<note>
+DO NOT TAG this discourse-level &quot;let alone&quot; (John can't remember his
+own name, let alone anyone else's).
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="let_on">
+
+<roleset id="let.02" name="give an indication" vncls="-">
+<roles>
+  <role descr="giver" n="0"/>
+  <role descr="getter" n="1"/>
+  <role descr="indication" n="2"/>
+</roles>
+
+<example name="typical usage">
+  <text>
+  The CIA was more interested than they let on to Mr. Stoll.
+  </text>
+  <arg n="0">they</arg>
+  <rel>let on</rel>
+  <arg f="to" n="1">Mr. Stoll</arg>
+</example>
+
+<example name="with explicit indication">
+  <text>
+  John never let on to Mary that he was secretly a Martian.
+  </text>
+  <arg n="0">John</arg>
+  <arg f="TMP" n="m">never</arg>
+  <rel>let on</rel>
+  <arg f="to" n="1">Mary</arg>
+  <arg n="2">that he was secretly a Martian</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="let_up">
+<roleset id="let.03" name="not be so harsh anymore" vncls="-">
+<roles>
+  <role descr="let uper" n="0"/>
+  <role descr="with respect to what?" n="1"/>
+</roles>
+
+<example name="take it easy, already">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    Ms. Browning says she believes  a recapitalization involving
+    employee ownership would succeed only if the pilots let up on
+    their demand for control.  
+</text>
+        <arg n="0">the pilots</arg>
+        <rel>let up</rel>
+        <arg f="on" n="1">their demand for control</arg>
+</example>
+
+<note>
+cf 'relent'
+</note>
+
+</roleset>
+</predicate>
+</frameset>

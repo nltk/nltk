@@ -1,0 +1,128 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="throw">
+<note>
+  Frames file for 'throw' based on sentences in financial subcorpus.
+  Verbnet entry throw-17.1, other framed members include fire kick and
+  pass.  Comparison to 'cast'.
+</note>
+
+<roleset id="throw.01" name="throw" vncls="17.1">
+<roles>
+  <role descr="thrower" n="0">
+		
+  <vnrole vncls="17.1" vntheta="Agent"/></role>
+
+  <role descr="thing thrown" n="1">
+		
+  <vnrole vncls="17.1" vntheta="Patient"/></role>
+
+  <role descr="thrown at, to, over, etc" n="2">
+		
+  <vnrole vncls="17.1" vntheta="Destination"/></role>
+
+</roles>
+
+<example name="idiom: throw in the towel">
+<text>
+    Thermo Electron acquired some 6% of Milton Roy's common stock
+    before *trace* throwing in the towel and reducing its stake in
+    early September. 
+</text>
+        <arg n="0">*trace* -&gt;  Thermo Electron</arg>
+        <rel>throwing</rel>
+        <arg f="DIR" n="2">in</arg>
+        <arg n="1">the towel</arg>
+        <arg f="TMP" n="M">in early September</arg>
+</example>
+
+<example name="throw into doubt">
+<text>
+    In the wake of Campeau's problems, prices of junk bonds tumbled,
+    *trace* throwing into doubt the ability of corporate acquirers to
+    finance large takeovers with the help of junk bond sales. 
+</text>
+        <arg n="0">*trace*</arg>
+        <rel>throwing</rel>
+        <arg f="DIR" n="2">into doubt</arg>
+        <arg n="1">the ability of corporate acquirers to finance large
+        takeovers with the help of junk bond sales</arg> 
+</example>
+
+<note>
+The trace points to the event of &quot;prices of junk bonds tumbled&quot;, which
+is not a constituent in the tree.  Therefore the trace gets no target.
+</note>
+
+<example name="another direction">
+<text>
+    ``Stocks were being thrown *trace* out of windows at any price.'' 
+</text>
+        <rel>thrown</rel>
+        <arg n="1">*trace* -&gt;  Stocks</arg>
+        <arg f="DIR" n="2">out of windows</arg>
+        <arg n="M">at any price</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="throw.03" name="hold" vncls="-">
+<roles>
+  <role descr="holder" n="0"/>
+  <role descr="thing held" n="1"/>
+</roles>
+
+<example name="throw a party">
+<text>
+    In an invention that drives Verdi purists bananas, Violetta lies
+    dying in bed during the prelude, rising deliriously when then she
+    remembers the great parties *trace-1* she used *trace-2* to throw
+    *trace-3*. 
+</text>
+        <arg n="0">*trace-2* -&gt;  she</arg>
+        <rel>throw</rel>
+        <arg n="1">*trace-3* -&gt; *trace-1* -&gt;  the great parties</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="throw_in">
+
+<roleset id="throw.02" name="include" vncls="-">
+<roles>
+  <role descr="agent, entity causing some grouping" n="0"/>
+  <role descr="theme, thing being included in some group" n="1"/>
+  <role descr="group" n="2"/>
+</roles>
+
+<example name="and a set of Ginsu knives">
+<text>
+    *trace* Throw in its railroad, minerals, pipeline and oil assets,
+    he and others argued, and the Chicago-based conglomerate should be
+    worth 30 a share. 
+</text>
+        <arg n="0">*trace*</arg>
+        <rel>[ Throw] [ in]</rel>
+        <arg n="1">its railroad, minerals, pipeline and oil
+        assets</arg> 
+</example>
+
+<note>
+No target for this trace, since it's an imperative.
+</note>
+
+</roleset>
+
+<note>
+Other senses will undoubtedly appear.
+</note>
+
+</predicate>
+</frameset>

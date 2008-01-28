@@ -1,0 +1,34 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="liken">
+<note>
+  Frames file for 'liken' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="liken.01" name="draw a similarity" vncls="-">
+<roles>
+  <role descr="entity making comparison, agent" n="0"/>
+  <role descr="topic" n="1"/>
+  <role descr="thing it's similar to" n="2"/>
+</roles>
+
+<example name="all args">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Raymond Chandler, in a 1950 letter defending a weak Hemingway
+    book, likened a champion writer to a baseball pitcher. 
+</text>
+        <arg n="0">Raymond Chandler</arg>
+        <arg f="LOC" n="M">in a 1950 letter defending a weak Hemingway
+        book</arg> 
+        <rel>likened</rel>
+        <arg n="1">a champion writer</arg>
+        <arg f="to" n="2">a baseball pitcher</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

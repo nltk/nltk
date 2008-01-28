@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="couch">
+<note>
+  Frames file for 'couch'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="couch.01" name="to word in a certain manner" vncls="-">
+<roles> 
+  <role descr="speaker, agent" n="0"/>
+  <role descr="utterance" n="1"/>
+  <role descr="manner" n="2"/> 
+</roles>
+
+<example name="all arguments">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+ But the proposals also display political savvy , [*] couching some of the most controversial ideas in cautious language so as not [*-3] to alienate powerful conservatives in the government who [*T*-2] stand [*-4] to lose out if they are implemented [*-1] .
+</text>
+	<arg n="0">[*] -&gt;  the proposals</arg>
+	<rel>couching</rel>
+	<arg n="1">some of the most controversial ideas</arg>
+	<arg f="in" n="2">cautious language</arg>
+	<arg f="PNC" n="M">so as not [*-3] to alienate powerful conservatives in the government who [*T*-2] stand [*-4] to lose out if they are implemented [*-1]</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

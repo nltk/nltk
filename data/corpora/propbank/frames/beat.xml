@@ -1,0 +1,171 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="beat">
+<note>
+  Frames file for 'beat' based on sentences in financial subcorpus.
+  Verbnet classes hit-18.1 knead-26.5 shake-22.3 shake-22.3-4, other
+  framed members include: hit, strike; shake, squash, wind, work;
+  append, attach, bind, collect, gather, roll.  Comparison with 'hit'
+  and 'win'.
+</note>
+
+<roleset id="beat.01" name="strike" vncls="18.1">
+<roles>
+  <role descr="agent, hitter - animate only!" n="0">
+		
+  <vnrole vncls="18.1" vntheta="Agent"/></role>
+
+  <role descr="thing hit" n="1">
+		
+  <vnrole vncls="18.1" vntheta="Patient"/></role>
+
+  <role descr="instrument, thing hit by or with" n="2">
+		
+  <vnrole vncls="18.1" vntheta="Instrument"/></role>
+
+</roles>
+
+<example name="violence">
+  <text>
+    Mary beat John with a wet noodle.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>beat</rel>
+  <arg n="1">John</arg>
+  <arg f="with" n="2">a wet noodle</arg>
+</example>
+
+</roleset>
+
+<roleset id="beat.02" name="push, cause motion" vncls="-">
+<roles>
+  <role descr="causer of motion" n="0"/>
+  <role descr="thing moving" n="1"/>
+  <role descr="direction, destination" n="2"/>
+</roles>
+
+<example name="all args, passivized">
+<text>
+    Another proposed reform is to have program traders answer to an
+    ``uptick rule'' a reform instituted after the Great Crash of 1929
+    that protects against stocks being relentlessly beaten *trace*
+    downward by those seeking to profit from lower prices, namely
+    short sellers.
+</text>
+        <arg n="1">*trace* -&gt; stocks</arg>
+        <arg f="MNR" n="M">relentlessly</arg>
+        <rel>beaten</rel>
+        <arg f="DIR" n="2">downward</arg>
+        <arg f="by" n="0">those seeking to profit from lower prices,
+        namely short sellers</arg> 
+</example>
+
+<note>
+I have the feeling this will always occur as &quot;beat down(ward)&quot;.
+</note>
+
+</roleset>
+<roleset id="beat.03" name="win over some competitor" vncls="-">
+<roles>
+  <role descr="winner" n="0"/>
+  <role descr="loser" n="1"/>
+  <role descr="competition" n="2"/>
+</roles>
+
+<example name="no stated competition">
+<text>
+    Now, after *trace* beating them, Mr. Achenbaum is joining them. 
+</text>
+        <arg n="0">*trace* -&gt;  Mr. Achenbaum</arg>
+        <rel>beating</rel>
+        <arg n="1">them</arg>
+</example>
+
+<example name="stated competition">
+<text>
+    The product isn't widely used yet, but Toshiba, which *trace* has
+    already beaten everyone else in producing the current-generation
+    one-megabit DRAMs...
+</text>
+        <arg n="0">*trace* -&gt;  which -&gt; Toshiba</arg>
+        <arg f="TMP" n="M">already</arg>
+        <rel>beaten</rel>
+        <arg n="1">everyone else</arg>
+        <arg f="in" n="2">producing the current-generation one-megabit
+        DRAMs</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="beat_out">
+<note>
+  Same as &quot;win&quot; sense above.
+</note>
+
+<roleset id="beat.04" name="win over some opponent" vncls="-">
+<roles>
+  <role descr="winner" n="0"/>
+  <role descr="loser" n="1"/>
+  <role descr="competition" n="2"/>
+</roles>
+
+<example name="success!">
+<text>
+    More recently, Guber Peters beat out a dozen other producers,
+    reportedly including Robert Redford and Ted Turner, for rights to
+    the life story of Chico Mendes, the murdered Brazilian union
+    leader who fought developers in the Amazon rain forest. 
+</text>
+        <arg f="TMP" n="M">More recently</arg>
+        <arg n="0">Guber Peters</arg>
+        <rel>[ beat] [ out]</rel>
+        <arg n="1">a dozen other producers, reportedly including
+        Robert Redford and Ted Turner,</arg>  
+        <arg f="for" n="2">rights to the life story of Chico Mendes,
+        the murdered Brazilian union leader who fought developers in
+        the Amazon rain forest</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="beat_up">
+
+<roleset id="beat.05" name="strike repeatedly">
+<roles>
+  <role descr="agent, hitter - animate only!" n="0"/>
+  <role descr="thing hit" n="1"/>
+  <role descr="instrument, thing hit by or with" n="2"/>
+</roles>
+
+<example name="more violence">
+  <text>
+    Mary beats up John every day after school.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>beats up</rel>
+  <arg n="1">John</arg>
+  <arg f="TMP" n="m">every day</arg>
+  <arg f="TMP" n="m">after school</arg>
+</example>
+
+<note>
+Poor John.
+</note>
+
+</roleset>
+
+<note>
+beat 0.2 and beat 0.3 not in Levin
+missing classes shake 22.3, knead 26.5, crane 40.3.2 and sound emission 43.2
+</note>
+
+</predicate>
+</frameset>

@@ -1,0 +1,44 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="damage">
+<note>
+  Frames file for 'damage' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="damage.01" name="to harm or spoil" vncls="-">
+<roles>
+  <role descr="agent, causer" n="0"/>
+  <role descr="entity damaged" n="1"/>
+  <role descr="instrument" n="2"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ `` The events of April through June damaged the respect and confidence which most Americans previously had [*T*-1] for the leaders of China . ''
+</text>
+	<arg n="0">The events of April through June</arg>
+	<rel>damaged</rel>
+	<arg n="1">the respect and confidence which most Americans previously had [*T*-1] for the leaders of China</arg>
+</example>
+
+
+<example name="passive with adverbials">
+<inflection aspect="ns" form="participle" person="ns" tense="past" voice="passive"/>
+<text>
+ Prices rose on the news that a sizable West German refinery was damaged [*-1] in a fire , [*] tightening an already tight European market .
+</text>
+	<rel>damaged</rel>
+	<arg n="1">[*-1] -&gt;  a sizable West German refinery</arg>
+	<arg f="LOC" n="M">in a fire</arg>
+	<arg f="ADV" n="M">[*] tightening an already tight European market</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

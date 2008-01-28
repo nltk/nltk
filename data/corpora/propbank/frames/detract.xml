@@ -1,0 +1,45 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="detract">
+<note>
+  Frames file for 'detract'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="detract.01" name="to divert" vncls="-">
+<roles> 
+  <role descr="causer of diversion, agent" n="0"/>
+  <role descr="entity detracted" n="1"/>
+  <role descr="entity detracted from" n="2"/>  
+</roles>
+
+
+<example name="non-agentive">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ One group says [0] the futures contribute to stock market volatility ; the other contends that futures are a sideshow of speculation that [*T*-1] detracts from the stock market 's basic function of [*] raising capital .
+</text>
+	<arg n="1">[*T*-1] -&gt;  that -&gt;  speculation</arg>
+	<rel>detracts</rel>
+	<arg f="from" n="2">the stock market 's basic function of [*] raising capital</arg>
+</example>
+
+
+<example name="with Arg0">
+<inflection aspect="ns" form="full" person="ns" tense="ns" voice="active"/>
+<text>
+ Dealers suggest that the only positive news on the horizon that [*T*-1] could detract attention from equities transactions is September 's U.S. consumer price data .
+</text>
+	<arg n="0">[*T*-1] -&gt;  that -&gt;  the only positive news</arg>
+	<arg f="MOD" n="M">could</arg>
+	<rel>detract</rel>
+	<arg n="1">attention</arg>
+	<arg f="from" n="2">equities transactions</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

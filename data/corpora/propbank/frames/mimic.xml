@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="mimic">
+<note>
+  Frames file for 'mimic' based on sentences in financial subcorpus.
+  No Verbnet entry.  No comparison.
+</note>
+
+<roleset id="mimic.01" name="imitate">
+<roles>
+  <role descr="copy" n="0"/>
+  <role descr="original" n="1"/>
+</roles>
+
+<example name="straightforward">
+<text>
+    At one point, almost all of the shares in the 20-stock Major
+    Market Index, which *trace* mimics the industrial average, were
+    sharply higher. 
+</text>
+        <arg n="0">*trace* -&gt;  which -&gt;  the 20-stock Major Market
+        Index</arg> 
+        <rel>mimics</rel>
+        <arg n="1">the industrial average</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

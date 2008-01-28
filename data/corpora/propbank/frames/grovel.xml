@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="grovel">
+<note>
+  Frames file for 'grovel' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="grovel.01" name="abase oneself" vncls="-">
+<roles>
+  <role descr="groveler" n="0"/>
+</roles>
+
+<example name="the one example">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    Frank grovels a little for the bookers, probably no more or less
+    than he would have to if he worked for a big corporation. 
+</text>
+        <arg n="0">Frank</arg>
+        <rel>grovels</rel>
+        <arg f="MNR" n="M">a little</arg>
+        <arg f="ADV" n="M">for the bookers</arg>
+        <arg n="M">probably no more or less than he would have to if
+        he worked for a big corporation</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

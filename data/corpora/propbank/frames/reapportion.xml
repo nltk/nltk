@@ -1,0 +1,67 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="reapportion">
+<note>
+  Frames file for 'reapportion' based on sentences in wsj.  No Verbnet
+  entry.  No 'apportion', either.
+</note>
+
+<roleset id="reapportion.01" name="distribute again" vncls="-">
+<roles>
+  <role descr="distributor, agent" n="0"/>
+  <role descr="thing apportioned, distributed" n="1"/>
+  <role descr="to/among" n="2"/>
+  <role descr="source" n="3"/>
+</roles>
+
+<example name="just theme">
+<inflection aspect="perfect" form="participle" person="third" tense="present" voice="passive"/>
+<text>
+    About a quarter of this share has already been reallocated [*-9],
+    according to the industry, but the remaining 23,403 tons are still
+    a lucrative target for growers because the current U.S. price of
+    18 cents a pound runs as much as a nickel a pound above the world
+    rate. 
+</text>
+        <arg f="TMP" n="M">already</arg>
+        <rel>reallocated</rel>
+        <arg n="1">[*-9] -&gt;  About a quarter of this share</arg>
+        <arg f="DIS" n="M">according to the industry</arg>
+</example>
+
+
+<example name="with source">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+    [*-1] To accommodate the additional cash assistance, the House
+    Appropriations Committee last week was required [*-1] to
+    reallocate an estimated $140 million [*U*] from the Pentagon. 
+</text>
+        <arg n="0">[*-1] -&gt;  the House Appropriations Committee</arg>
+        <rel>reallocate</rel>
+        <arg n="1">an estimated $ 140 million [*U*]</arg>
+        <arg f="from" n="3">the Pentagon</arg>
+</example>
+
+<note>
+I actually read the &quot;from the Pentagon&quot; as part of the $140 million,
+but Treebank disagrees with me.  As usual.
+</note>
+
+<example name="with destination">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John reapportioned the chocolate cake among all his friends.
+  </text>
+  <arg n="0">John</arg>
+  <rel>reapportioned</rel>
+  <arg n="1">the chocolate cake</arg>
+  <arg f="among" n="2">all his friends</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

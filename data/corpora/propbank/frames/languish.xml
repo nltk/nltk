@@ -1,0 +1,60 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="languish">
+<note>
+  Frames file for 'languish' based on sentences in financial
+  subcorpus.  Verbnet entry bulge-47.5.3, which makes no sense to me.
+  Comparison with 'lie'.
+</note>
+
+<roleset id="languish.01" name="rest" vncls="47.1-1">
+<roles>
+  <role descr="entity languishing" n="1">
+		
+  <vnrole vncls="47.1-1" vntheta="Theme"/></role>
+
+  <role descr="location or state" n="2">
+		
+  <vnrole vncls="47.1-1" vntheta="Location"/></role>
+
+</roles>
+
+<example name="stock prices, natch">
+<text>
+    The share price was languishing at about 400 pence before Ford's
+    Sept. 19 announcement of its interest in a minority stake. 
+</text>
+        <arg n="1">The share price</arg>
+        <rel>languishing</rel>
+        <arg f="at" n="2">about 400 pence</arg>
+        <arg f="TMP" n="M">before Ford's Sept. 19 announcement of its
+        interest in a minority stake</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="languish.02" name="crave">
+<roles>
+  <role descr="craver" n="0"/>
+  <role descr="thing craved" n="1"/>
+</roles>
+
+<example name="poor John">
+  <text>
+    John was languishing for a peanut butter and pickle sandwich.
+  </text>
+  <arg n="0">John</arg>
+  <rel>languishing</rel>
+  <arg f="for" n="1">a peanut butter and pickle sandwich</arg>
+</example>
+
+<note>
+I think I've read this sense before.  Maybe.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

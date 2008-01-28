@@ -1,0 +1,110 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="cool">
+<note>
+Frames file for 'cool' based on sentences in financial subcorpus and
+automatic expansion via verbnet.
+</note>
+
+<roleset id="cool.01" name="cause to be cool" vncls="45.4">
+<roles>
+	<role descr="person doing the cooling" n="0">
+		
+  <vnrole vncls="45.4" vntheta="Agent"/></role>
+
+	<role descr="thing cooling" n="1">
+		
+  <vnrole vncls="45.4" vntheta="Patient"/></role>
+
+</roles>
+
+<example name="agentive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    The machinists' criticisms of the labor-management bid and their
+    threats of a strike unless they received substantial wage
+    increases this year helped *trace* cool banks' interest in
+    financing the transaction. 
+</text>
+        <arg n="0">*trace* -&gt;  The machinists' criticisms of the
+        labor-management bid and their threats of a strike unless they
+        received substantial wage increases this year</arg> 
+        <rel>cool</rel>
+        <arg n="1">banks' interest in  financing the transaction</arg>
+</example>
+
+
+<example name="ergative">
+<inflection aspect="perfect" form="participle" person="third" tense="present" voice="active"/>
+<text>
+    Paribas plans a bid for another big French financial and
+    industrial firm, Navigation Mixte, a sign Europe's takeover fever
+    hasn't cooled. 
+</text>
+        <arg n="1">Europe's takeover fever</arg>
+        <arg f="NEG" n="M">n't</arg>
+        <rel>cooled</rel>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="cool_down">
+<roleset id="cool.02" name="cause to be cool" vncls="45.4">
+<roles>
+	<role descr="person doing the cooling" n="0">
+		
+  <vnrole vncls="45.4" vntheta="Agent"/></role>
+
+	<role descr="thing cooling" n="1">
+		
+  <vnrole vncls="45.4" vntheta="Patient"/></role>
+
+</roles>
+
+<example name="usually in ergative?">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+     ``Options traders, arbitrage traders -- everyone,'' said
+     Mr. Bates, *trace* cooling down with a carton of apple juice
+     after the close yesterday. 
+</text>
+        <arg n="1">*trace* -&gt;  Mr. Bates</arg>
+        <rel>[ cooling] [ down]</rel>
+        <arg f="MNR" n="M">with a carton of apple juice</arg>
+        <arg f="TMP" n="M">after the close</arg>
+        <arg f="TMP" n="M">yesterday</arg>
+</example>
+</roleset>
+</predicate>
+
+<predicate lemma="cool_off">
+<roleset id="cool.03" name="cause to be cool" vncls="45.4">
+<roles>
+	<role descr="person doing the cooling" n="0">
+		
+  <vnrole vncls="45.4" vntheta="Agent"/></role>
+
+	<role descr="thing cooling" n="1">
+		
+  <vnrole vncls="45.4" vntheta="Patient"/></role>
+
+	<role descr="start point" n="3"/>
+</roles>
+
+<example name="wierd usage with start point">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Trading activity cooled off from Monday's sizzling pace. 
+</text>
+        <arg n="1">Trading activity</arg>
+        <rel>[ cooled] [ off]</rel>
+        <arg f="from" n="3">Monday 's sizzling pace</arg>
+</example>
+
+</roleset>
+</predicate>
+<note>
+In theory all of these could take start and end points and EXT, but it
+seems very rare and even a little weird, to me.
+</note>
+</frameset>

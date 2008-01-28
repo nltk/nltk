@@ -1,0 +1,110 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="begin">
+
+<roleset id="begin.01" name="start" vncls="55.1">
+<roles>
+  <role descr="beginner, Agent" n="0">
+	<vnrole vncls="55.1" vntheta="Agent"/></role>
+  <role descr="Theme(-Creation)" n="1">
+	<vnrole vncls="55.1" vntheta="Theme"/></role>
+  <role descr="Instrument" n="2"/>
+</roles>
+
+<example name="basic transitive">
+  <text>John began a book</text>
+  <arg n="0">John</arg>
+  <rel>began</rel>
+  <arg n="1">a book</arg>
+</example>
+
+<example name="transitive-with">
+	<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>John began the book with a murder</text>
+  <arg n="0">John</arg>
+  <rel>began</rel>
+  <arg n="1">the book</arg>
+  <arg n="2">with a murder</arg>
+</example>
+
+<example name="transitive-by">
+  <text> John began the book by describing a murder </text>
+  <arg n="0">John</arg>
+  <rel>began</rel>
+  <arg n="1">the book</arg>
+  <arg n="2">describing a murder</arg>
+</example>
+
+<example name="objective subject">
+	<text>The book began with a murder</text>
+  <arg n="1">The book</arg>
+  <rel>began</rel>
+  <arg n="2">with a murder</arg>
+</example>
+
+<example name="instrumental subject">
+	<text>A murder began the book</text>
+  <arg n="2">A murder</arg>
+  <rel>began</rel>
+  <arg n="1">the book</arg>
+</example>
+
+<example name="with manner">
+	<text>John began the book with glee</text>
+  <arg n="0">John</arg>
+  <rel>began</rel>
+  <arg n="1">the book</arg>
+  <arg f="MNR" n="M">with glee</arg>
+</example>
+
+<example name="adverbial manner">
+	<text>John began the book gladly</text>
+  <arg n="0">John</arg>
+  <rel>began</rel>
+  <arg n="1">the book</arg>
+  <arg f="MNR" n="M">gladly</arg>
+</example>
+
+<example name="temporal">
+	<text>John began the book last night</text>
+  <arg n="0">John</arg>
+  <rel>began</rel>
+  <arg n="1">the book</arg>
+  <arg f="TMP" n="M">last night</arg>
+</example>
+
+<example name="inchoative">
+  <note>Arg1 began</note>
+  <text>A storm began</text>
+  <arg n="1">A storm</arg>
+  <rel>began</rel>
+</example>
+
+<example name="aspectual, no agent">
+  <text>John began to sweat</text>
+  <arg n="1">[John][to sweat]</arg>
+  <rel>began</rel>
+</example>
+
+<example name="a little nicer">
+  <text>The storm began to cause great destruction</text>
+  <arg n="1">[The storm][to cause great destruction]</arg>
+  <rel>began</rel>
+</example>
+
+<example name="aspectual, with agent">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+     John began to eat the entire cake, then thought better of it.
+  </text>
+  <arg n="0"        >John</arg>
+  <rel              >began</rel>
+  <arg n="1"        >to eat the entire cake</arg>
+<note>
+Unlike "John started to sweat", in this case John has control over the action of the lower clause.  Hence, his status as an agent here.
+</note>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,46 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="jerk">
+<note>
+  Frames file for 'jerk' based on sentences in wsj.  Verbnet entry
+  12-1, Framenet entry Body movement.
+</note>
+
+<roleset id="jerk.01" name="pull with sudden force" vncls="12-1">
+<roles>
+  <role descr="jerker" n="0"><vnrole vncls="12-1" vntheta="Agent"/></role>
+  <role descr="thing pulled (on)" n="1"><vnrole vncls="12-1" vntheta="Theme"/></role>
+  <role descr="direction" n="2"/>
+</roles>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    The main sensation, besides feeling like a puppet jerked *trace*
+    with invisible strings, is ``like a rap on the head,'' says Sam
+    Bridgers, a neurologist who has studied the brain stimulators at
+    Yale University. 
+</text>
+        <rel>jerked</rel>
+        <arg n="1">*trace* -&gt;  a puppet</arg>
+        <arg f="MNR" n="M">with invisible strings</arg>
+</example>
+
+<example name="all args">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    Mary jerked John out of the shower.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>jerked</rel>
+  <arg n="1">John</arg>
+  <arg f="DIR" n="2">out of the shower</arg>
+</example>
+
+<note>
+Include the preposition in the arg2.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

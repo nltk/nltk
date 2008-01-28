@@ -1,0 +1,98 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="refile">
+<note>
+  Frames file for 'refile' based on minimal modification of 'file' file.
+</note>
+
+<roleset id="refile.01" name="paperwork">
+<roles>
+  <role descr="refiler" n="0"/>
+  <role descr="file" n="1"/>
+  <role descr="refiled-with" n="2"/>
+  <role descr="refiled against" n="3"/>
+  <role descr="purpose of filing" n="4"/>
+</roles>
+
+<example name="active">
+  <text>
+    David Dinkins failed *trace* to refile his income taxes.
+  </text>
+  <arg n="0">*trace=David Dinkins*</arg>
+  <rel>refile</rel>
+  <arg n="1">his income taxes</arg>
+</example>
+
+<example name="lawsuit">
+  <text>
+    University Patents refiled a suit in federal court in Philadelphia
+    against Albert M. Kligman.
+  </text>
+  <arg n="0">University Patents</arg>
+  <rel>refiled</rel>
+  <arg n="1">a suit</arg>
+  <arg f="in" n="2">federal court</arg>
+  <arg f="loc" n="m">in Philadelphia</arg>
+  <arg f="against" n="3">Albert M. Kligman</arg>
+</example>
+
+<note>
+Sometimes the against phrase is included in the suit phrase.  You'll
+therefore need to delve deeper into the syntax to divide the two args.
+</note>
+
+<example name="passivized">
+  <text>
+    Documents refiled *trace* with the Securities and Exchange
+    Commission on the pending spinoff...
+  </text>
+  <arg n="1">*trace=Documents*</arg>
+  <rel>refiled</rel>
+  <arg f="with" n="2">the Securities and Exchange Commission</arg>
+  <arg n="m">on the pending spinoff</arg>
+</example>
+
+<note>
+This happens a lot, with something that looks (syntactically) like an
+argument of &quot;refile&quot; but is actually a modifier of the head NP--really 
+--this is &quot;documents on the pending spinoff were refiled with the SEC&quot; 
+--but the syntax has been bollixed.  Use ArgM for all these.
+</note>
+
+<example name="with purpose">
+  <text>
+  A group of investors refiled with federal antitrust regulators for
+  clearance to buy more than 50% of the stock of Rally's Inc.
+  </text>
+  <arg n="0">A group of investors</arg>
+  <rel>refiled</rel>
+  <arg f="with" n="2">federal antitrust regulators</arg>
+  <arg f="for" n="4">clearance to buy more than 50% of the stock of
+  Rally's Inc</arg>
+</example>
+
+</roleset>
+
+<roleset id="refile.02" name="seek, claim, call for">
+<roles>
+  <role descr="refiler" n="0"/>
+  <role descr="claim" n="1"/>
+</roles>
+
+<example name="">
+  <text>
+    One or more airlines have refiled for protection from creditors.
+  </text>
+  <arg n="0">One or more airlines</arg>
+  <rel>refiled</rel>
+  <arg f="for" n="1">protection from creditors</arg>
+</example>
+<note>
+The difference between this and the Arg-4 &quot;purpose&quot; is that in this
+case the paperwork cannot be mentioned.  With the roleset id=&quot;refile.03&quot; above, the
+paperwork need not be mentioned, but can be.  Other arguments
+(refiled-with, refiled-against) will probably be mentioned.
+</note>
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,41 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="hate">
+<note>
+  Frames file for 'hate' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="hate.01" name="to feel hatred" vncls="31.2">
+<roles>
+  <role descr="experiencer" n="0"><vnrole vncls="31.2" vntheta="Experiencer"/></role>
+  <role descr="target or hatred" n="1"><vnrole vncls="31.2" vntheta="Cause"/></role>
+</roles>
+
+
+<example name="Arg1 as a NP">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ Con men hate snow .
+</text>
+	<arg n="0">Con men</arg>
+	<rel>hate</rel>
+	<arg n="1">snow</arg>
+</example>
+
+
+<example name="sentential Arg1">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ `` I hate [*-1] to dignify the publication by [*-1] commenting on the obscene rating , '' Mayor Carolyn Robinson says [*T*-4] , [*-2] adding that cities have no way [0] [*] to rebut the book [*T*-5] .
+</text>
+	<arg n="0">I</arg>
+	<rel>hate</rel>
+	<arg n="1">[*-1] to dignify the publication by [*-1] commenting on the obscene rating</arg>
+</example>
+
+</roleset>
+</predicate>
+
+
+</frameset>

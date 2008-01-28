@@ -1,0 +1,46 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="emphasize">
+<note>
+  Frames file for 'emphasize' based on sentences in financial
+  subcorpus.  No Verbnet entry.  Comparison to 'say' et al.
+</note>
+
+<roleset id="emphasize.01" name="emphasize">
+<roles>
+  <role descr="emphasizer" n="0"/>
+  <role descr="utterance" n="1"/>
+  <role descr="hearer" n="2"/>
+</roles>
+
+<example name="transitive">
+<text>
+    The statement emphasized that holders representing 75% of the
+    shares voting at a special shareholders' meeting must agree to
+    lift the takeover restrictions. 
+</text>
+        <arg n="0">The statement</arg>
+        <rel>emphasized</rel>
+        <arg n="1">holders representing 75% of the shares voting at a
+        special shareholders' meeting must agree to lift the takeover
+        restrictions</arg> 
+</example>
+
+<example name="with hearer">
+  <text>
+    Mary emphasized to John that he must never ever call her
+    'Snoogie-wookums' in public.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>emphasized</rel>
+  <arg f="to" n="2">John</arg>
+  <arg n="1">he must never ever call her
+    'Snoogie-wookums' in public.</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

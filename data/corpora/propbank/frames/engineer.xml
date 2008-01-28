@@ -1,0 +1,67 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="engineer">
+<note>
+  Frames file for 'engineer' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="engineer.01" name="make, devise, with some difficulty" vncls="-">
+<roles>
+  <role descr="engineer" n="0"/>
+  <role descr="thing made" n="1"/>
+  <role descr="attribute of arg1" n="4"/>
+</roles>
+
+<example name="ordinary transitive">
+<inflection aspect="perfect" form="participle" person="third" tense="present" voice="active"/>
+<text>
+    Mr. Hahn also has engineered a surprising turnaround of
+    Georgia-Pacific. 
+</text>
+        <arg n="0">Mr. Hahn</arg>
+        <arg f="DIS" n="M">also</arg>
+        <rel>engineered</rel>
+        <arg n="1">a surprising turnaround of Georgia-Pacific</arg>
+</example>
+
+<example name="with 2dy attribute">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    Capitalism may now be engineered *trace* to withstand sudden
+    shocks, but there are fault lines -- the crisis in profits, the
+    assault on wages, the structural inequity of the system -- that
+    make fools of those who claim that the future is here and that
+    history is over. 
+</text>
+        <arg f="MOD" n="M">may</arg>
+        <arg f="TMP" n="M">now</arg>
+        <rel>engineered</rel>
+        <arg n="1">*trace* -&gt;  Capitalism</arg>
+        <arg n="4">to withstand sudden shocks</arg>
+</example>
+
+<note>
+Arg numbering dictated by comparison with 'create'; args 2 (source
+material) and 3 (benefactive) may appear with more examples.
+</note>
+
+<example name="adjectival, sorry">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    Mr. Robinson of Delta &amp; Pine, the seed producer in Scott,
+    Miss., said Plant Genetic's success in creating genetically
+    engineered male steriles doesn't automatically mean it would be
+    simple to create hybrids in all crops. 
+</text>
+        <arg f="MNR" n="M">genetically</arg>
+        <rel>engineered</rel>
+        <arg n="1">steriles</arg>
+</example>
+
+<note>
+We might as well tag these adjectives now.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

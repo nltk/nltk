@@ -1,0 +1,105 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="do">
+<note>
+based on survey of initial sentences of big corpus
+</note>
+
+<roleset id="do.01" name="auxiliary">
+  <roles>
+  </roles>
+  <example name="DO NOT TAG AUXILIARIES">
+  <text>
+    What flights do you have from Milwaukee to Tampa?
+  </text>
+</example>
+
+<example name="another auxiliary">
+  <text>
+    The US is one of the few industrialized nations that doesn't have a high
+    standard of regulation for asbestos.
+  </text>
+</example>
+</roleset>
+
+<roleset id="do.02" name="act" vncls="-">
+<roles>
+  <role descr="agent, doer" n="0"/>
+  <role descr="thing done" n="1"/>
+  <role descr="benefactive, done for or about" n="2"/>
+  <role descr="instrumental" n="3"/>
+  <role descr="comitative, companion while doing" n="4"/>
+</roles>
+
+<example>
+  <text>
+    In this department we are doing fine this fall.
+  </text>
+  <arg f="loc" n="m">In this department</arg>
+  <arg n="0">we </arg>
+  <rel>doing</rel>
+  <arg f="MNR" n="m">fine</arg>
+  <arg f="TMP" n="m">this fall</arg>
+</example>
+
+<example>
+  <text>
+    Seymour Cray can do it again.
+  </text>
+  <arg n="0">Seymour Cray</arg>
+  <arg f="MOD" n="m">can</arg>
+  <rel>do</rel>
+  <arg n="1">it</arg>
+  <arg f="TMP" n="m">again</arg>
+</example>
+
+<example name="with benefactive">
+  <text>
+  Congress will do stupid things with the Tax Code.
+  </text>
+  <arg n="0">Congress</arg>
+  <arg f="MOD" n="m">will</arg>
+  <rel>do</rel>
+  <arg n="1">stupid things</arg>
+  <arg f="with" n="2">the Tax Code</arg>
+</example>
+
+<example name="with instrument">
+  <text>
+  Anyone buying the stock now must do so *trace* using some guesswork.
+  </text>
+  <arg n="0">Anyone buying the stock now</arg>
+  <arg f="MOD" n="m">must</arg>
+  <rel>do</rel>
+  <arg n="1">so</arg>
+  <arg n="3">*trace* using some guesswork</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="do_in">
+
+<roleset id="do.03" vncls="-" name="kill">
+<roles>
+  <role n="0"  descr="killer"/>
+  <role n="1"  descr="corpse"/>
+</roles>
+
+<example name="passive">
+  <inflection person="ns" tense="ns" aspect="ns" voice="passive" form="participle"/>
+  <text>
+    I don't feel down or done in because I show British serials on my
+    television network or read their books. 
+  </text>
+  <arg n="1"        >I</arg>
+  <rel              >done in</rel>
+</example>
+
+<note>
+active sounds weird to me.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

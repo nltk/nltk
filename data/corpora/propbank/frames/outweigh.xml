@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="outweigh">
+<note>
+  Frames file for 'outweigh' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="outweigh.01" name="to weigh more,  be more significant than" vncls="-">
+<roles>
+  <role descr="entity weighed" n="0"/>
+  <role descr="entity compared to" n="1"/>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="ns" voice="active"/>
+<text>
+ In a decision in April of this year , Judge Roger Miner , [*-1] joined [*-2] by Judge Frank Altimari , agreed on [*] denying the injunction and did not doubt that `` Bare-Faced Messiah '' was a serious work but rejected Judge Leval 's argument that the public interest in scholarship could outweigh the sanctity of copyright .
+</text>
+	<arg n="0">the public interest in scholarship</arg>
+	<arg f="MOD" n="M">could</arg>
+	<rel>outweigh</rel>
+	<arg n="1">the sanctity of copyright</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

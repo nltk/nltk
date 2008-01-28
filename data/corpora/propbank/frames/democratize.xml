@@ -1,0 +1,45 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="democratize">
+<note>
+  Frames file for 'democratize' based on sentences in wsj.  Verbnet
+  entry 45.4.
+</note>
+
+<roleset id="democratize.01" name="make into a democracy" vncls="45.4">
+<roles>
+  <role descr="causer of democracy, agent" n="0">
+        <vnrole vncls="45.4" vntheta="Agent"/></role>
+  <role descr="thing now a democracy" n="1">
+        <vnrole vncls="45.4" vntheta="Patient"/></role>
+</roles>
+
+<example name="null-agent active">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    In Poland's rapid shift from socialism to an undefined
+    alternative, environmental issues have become a cutting edge of
+    broader movements [*] to restructure the economy, cut cumbersome
+    bureaucracies, and democratize local politics. 
+</text>
+        <arg n="0">[*]</arg>
+        <rel>democratize</rel>
+        <arg n="1">local politics</arg>
+</example>
+
+
+<example name="passive">
+<inflection aspect="perfect" form="participle" person="third" tense="present" voice="passive"/>
+<text>
+    Capital has been democratized [*-1], and people want in.
+</text>
+        <rel>democratized</rel>
+        <arg n="1">[*-1] -&gt;  Capital</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

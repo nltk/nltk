@@ -1,0 +1,74 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="eliminate">
+<note>
+  Frames file for 'eliminate' based on sentences in financial
+  subcorpus.  Verbnet entry remove-10.1; other framed members include
+  withdraw.  I can't believe I haven't done 'remove' yet.
+</note>
+
+<roleset id="eliminate.01" name="remove">
+<roles>
+  <role descr="entity removing" n="0"/>
+  <role descr="thing being removed" n="1"/>
+  <role descr="removed from" n="2"/>
+</roles>
+
+<example name="relatively clear subject">
+<text>
+    Dan E. Nelms, Valley Federal's president and chief executive
+    officer, said the one-time charge substantially eliminates future
+    losses associated with the unit.
+</text>
+        <arg n="0">the one-time charge</arg>
+        <arg f="MNR" n="M">substantially</arg>
+        <rel>eliminates</rel>
+        <arg n="1">future losses associated  with the unit</arg>
+</example>
+
+<example name="stretching the subject">
+<text>
+    The plan calls for *trace* closing at least nine plants and
+    eliminating about 3,600 jobs. 
+</text>
+        <arg n="0">*trace* -&gt;  The plan</arg>
+        <rel>eliminating</rel>
+        <arg n="1">about 3,600 jobs</arg>
+</example>
+
+<note>
+The plan isn't doing the eliminating, but rather some unnamed company
+which will be implementing the plan.  But close enough.
+</note>
+
+<example name="unstated subject">
+<text>
+    *trace* Eliminate arbitrage and liquidity will decline instead of
+    rising, creating more volatility instead of less.
+</text>
+        <arg n="0">*trace*</arg>
+        <rel>Eliminate</rel>
+        <arg n="1">arbitrage</arg>
+</example>
+
+<example name="untraceable subject">
+<text>
+    However, third-quarter operating profit fell 14%, as USX sold
+    sizable chunks of its diversified and steel segments, *trace*
+    eliminating income from those operations. 
+</text>
+        <arg n="0">*trace*</arg>
+        <rel>eliminating</rel>
+        <arg n="1">income from those operations</arg>
+</example>
+
+<note>
+The subject of eliminate is &quot;USX sold sizable chunks of its
+diversified and steel segments&quot;, but the syntax will not allow that
+string to be selected as target of the trace.  So leave the trace with
+no target.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

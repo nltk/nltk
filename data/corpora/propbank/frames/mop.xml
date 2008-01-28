@@ -1,0 +1,49 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="mop">
+<note>
+Frames file for 'mop' based on sentences in financial subcorpus and
+automatic expansion via verbnet.
+</note>
+
+<roleset id="mop.01" name="clean a surface of liquid" vncls="10.4.2">
+<roles>
+	<role descr="mopper" n="0">
+		
+  <vnrole vncls="10.4.2" vntheta="Agent"/></role>
+ 
+	<role descr="surface (ie, floor)" n="1">
+		
+  <vnrole vncls="10.4.2" vntheta="Source"/></role>
+ 
+	<role descr="instrument (defaults to 'mop')" n="2">
+		
+  <vnrole vncls="10.4.2" vntheta="Instrument"/></role>
+ 
+</roles>
+
+<example name="automatically generated">
+<inflection aspect="ns" form="full" person="ns" tense="ns" voice="active"/>
+<text>
+ Never once did she gasp for air or mop her brow .
+</text>
+        <arg f="TMP" n="M">Never once</arg>
+        <arg n="0">she</arg>
+        <rel>mop</rel>
+        <arg n="1">her brow</arg>
+</example>
+
+<example name="with mop">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John mopped the floor with Mary's expensive silk dress.
+  </text>
+  <arg n="0">John</arg>
+  <rel>mopped</rel>
+  <arg n="1">the floor</arg>
+  <arg f="with" n="2">Mary's expensive silk dress</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

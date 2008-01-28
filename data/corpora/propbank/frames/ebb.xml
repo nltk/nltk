@@ -1,0 +1,42 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="ebb">
+<note>
+  Frames file for 'ebb' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="ebb.01" name="become smaller/lower" vncls="-">
+<roles>
+  <role descr="thing getting smaller" n="1"/>
+</roles>
+
+<example name="unaccusative">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    Although viewership soars when big news breaks, it ebbs during
+    periods of calm. 
+</text>
+        <arg f="ADV" n="M">Although viewership soars when big news
+        breaks </arg>        
+	<arg n="1">it</arg> 
+        <rel>ebbs</rel>
+        <arg f="TMP" n="M">during periods of calm</arg>
+</example>
+
+<example name="with awkward modifier">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    Mr. Greenberg, noting that stock-index arbitrage rises and ebbs
+    with stock market's volatility, said... 
+</text>
+        <arg n="1">stock-index arbitrage</arg>
+        <rel>ebbs</rel>
+        <arg f="CAU" n="M">with stock market's volatility</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

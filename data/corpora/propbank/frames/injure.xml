@@ -1,0 +1,47 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="injure">
+<note>
+Frames file for 'injure' based on sentences in financial subcorpus and
+automatic expansion via verbnet.
+</note>
+
+<roleset id="injure.01" name="cause hurt" vncls="40.8.3-2">
+<roles>
+	<role descr="agent, entity causing damage" n="0"><vnrole vncls="40.8.3-2" vntheta="Experiencer"/></role> 
+	<role descr="patient, entity experiencing hurt/damage" n="1">
+		
+  <vnrole vncls="40.8.3-2" vntheta="Patient"/></role>
+ 
+	<role descr="instrument" n="2"/> 
+</roles>
+
+<example name="just transitive">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    A series of explosions tore through the huge Phillips Petroleum
+Co. plastics plant near here, *trace* injuring more than a hundred and
+closing parts of the Houston Ship Channel. 
+</text> 
+        <arg n="0">*trace* -&gt;  A series of explosions</arg>
+        <rel>injuring</rel>
+        <arg n="1">more than a hundred</arg>
+</example>
+
+<example name="with instrument">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John injured himself playing with firecrackers.
+  </text>
+  <arg n="0">John</arg>
+  <rel>injured</rel>
+  <arg f="REC" n="1">himself</arg>
+  <arg n="2">playing with firecrackers</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

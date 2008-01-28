@@ -1,0 +1,84 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="enlist">
+<note>
+Frames file for 'enlist' based on sentences in wsj and automatic
+expansion via verbnet.
+</note>
+
+<roleset id="enlist.01" name="sign up to do something" vncls="29.2">
+<roles>
+	<role descr="signer" n="0">
+		
+  <vnrole vncls="29.2" vntheta="Agent"/></role>
+
+	<role descr="impelled agent (often subsumed into arg0" n="1">
+		
+  <vnrole vncls="29.2" vntheta="Theme"/></role>
+
+	<role descr="impelled action" n="2">
+		
+  <vnrole vncls="29.2" vntheta="Predicate"/></role>
+
+</roles>
+
+<example name="arg2 subsumed into arg1">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Back in the chase car, we drove around some more, got stuck in a
+    ditch, enlisted the aid of a local farmer to get out the trailer
+    hitch and pull us out of the ditch. 
+</text>
+        <arg f="LOC" n="M">Back in the chase car</arg>
+        <arg n="0">we</arg>
+        <rel>enlisted</rel>
+        <arg n="1">the aid of a local farmer to get out the trailer
+        hitch and pull us out of the ditch</arg> 
+<note>
+It's because of &quot;the aid of&quot; that args1 and 2 can be merged.  Lower
+numbers always win!
+</note>
+</example>
+
+<example name="all args">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Rep. Dingell even managed *trace* to enlist the services of the
+    Secret Service in his investigation of the Baltimore paper. 
+</text>
+        <arg n="0">*trace* -&gt;  Rep. Dingell</arg>
+        <rel>enlist</rel>
+        <arg n="1">the services of the Secret Service</arg>
+        <arg f="in" n="2">his investigation of the Baltimore paper</arg>
+</example>
+
+<example name="unstated action">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Mr. Maynard, whose company at the time was based in Santa Ana,
+    Calif., enlisted his local congressman, and the battle was
+    joined. 
+</text>
+        <arg n="0">Mr. Maynard, whose company at the time was based in
+        Santa Ana, Calif.,</arg> 
+        <rel>enlisted</rel>
+        <arg n="1">his local congressman</arg>
+</example>
+
+<example name="missing arg1">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John enlisted in the Army.
+  </text>
+  <arg n="0">John</arg>
+  <rel>enlisted</rel>
+  <arg f="in" n="2">the Army</arg>
+</example>
+
+<note>
+The analysis is &quot;John enlisted himself in the Army.&quot;
+</note>
+
+</roleset>
+</predicate>
+</frameset>

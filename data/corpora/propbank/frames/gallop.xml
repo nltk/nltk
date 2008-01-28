@@ -1,0 +1,45 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="gallop">
+<note>
+  Frames file for 'gallop' based on sentences in wsj.  Verbnet entry
+  51.3.2. 
+</note>
+
+<roleset id="gallop.01" name="run very fast" vncls="51.3.2">
+<roles>
+  <role descr="causal agent" n="A"/>
+  <role descr="agent, thing running" n="0"><vnrole vncls="51.3.2" vntheta="Theme"/></role>
+  <role descr="path" n="1"><vnrole vncls="51.3.2" vntheta="Location"/></role>
+</roles>
+
+<example name="transitive">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+     Right now, Mr. Hulings is waving his racing program, cheering for
+     Karnak on the Nile, a sleek thoroughbred galloping down the home
+     stretch. 
+</text>
+        <arg n="0">a sleek thoroughbred</arg>
+        <rel>galloping</rel>
+        <arg f="down" n="1">the home stretch</arg>
+</example>
+
+<example name="canonical ArgA example">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John galloped the horse along the bridlepath.
+  </text>
+  <arg n="A">John</arg>
+  <rel>galloped</rel>
+  <arg n="0">the horse</arg>
+  <arg f="along" n="1">the bridlepath</arg>
+</example>
+
+<note>
+Ha!  Deny that ArgA, if you can!
+</note>
+
+</roleset>
+</predicate>
+</frameset>

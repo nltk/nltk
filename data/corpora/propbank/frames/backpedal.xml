@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="backpedal">
+<note>
+  Frames file for 'backpedal' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="backpedal.01" name="to retreat or withdraw" vncls="-">
+<roles>
+  <role descr="entity retreating, agent" n="0"/>
+  <role descr="thing backpedaled on" n="1"/>
+</roles>
+
+<example name="gerund">
+<inflection aspect="ns" form="gerund" person="ns" tense="ns" voice="active"/>
+<text>
+ The chief economist of Merrill Lynch &amp; Co. finds himself in such a position as he buzzes the Midwest on his first road trip since [*] backpedaling on a major prediction .
+</text>
+	<arg n="0">[*] -&gt;  he</arg>
+	<rel>backpedaling</rel>
+	<arg f="on" n="1">a major prediction</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

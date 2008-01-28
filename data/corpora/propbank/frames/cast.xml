@@ -1,0 +1,101 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="cast">
+<note>
+  Frames file for 'cast' based on sentences in financial subcorpus.
+  No access to verbnet.  Comparison to 'cover' and 'create' and 'name'.
+</note>
+
+<roleset id="cast.01" name="cover, throw" vncls="-">
+<roles>
+  <role descr="thrower" n="0"/>
+  <role descr="thing thrown" n="1"/>
+  <role descr="thrown over, covered" n="2"/>
+</roles>
+
+<example name="cast a pall">
+<text>
+    All this has cast a pall over Columbia Savings &amp; Loan
+    Association and its high-rolling 43-year-old chairman, Thomas
+    Spiegel, who built the $12.7 billion Beverly Hills, Calif., thrift
+    with high-yield junk bonds. 
+</text>
+        <arg n="1">a pall</arg>
+        <arg n="0">All this</arg>
+        <rel>cast</rel>
+        <arg f="over" n="2">Columbia Savings &amp; Loan Association
+        and its high-rolling 43-year-old chairman, Thomas Spiegel, who
+        built the $12.7 billion Beverly Hills, Calif., thrift with
+        high-yield junk bonds</arg> 
+</example>
+
+<example name="cast doubt">
+<text>
+    That collapse, following on the heels of disarray in the market
+    for high-risk, high-yield bonds, cast doubt on the entire takeover
+    business, which has fueled both big profits among Wall Street
+    securities firms and big gains in the stock market generally. 
+</text>
+        <arg n="0">That collapse, following on the heels of disarray
+        in the market for high-risk, high-yield bonds,</arg> 
+        <rel>cast</rel>
+        <arg n="1">doubt</arg>
+        <arg f="on" n="2">the entire takeover business</arg>
+</example>
+
+<note>
+I doubt this occurs except in these two idioms, and maybe flycasting
+(fishing).
+</note>
+
+</roleset>
+
+<roleset id="cast.02" name="name, assign a role" vncls="29.2">
+<roles>
+  <role descr="namer, assigner of a role" n="0"><vnrole vncls="29.2" vntheta="Agent"/></role>
+  <role descr="entity playing the role" n="1"><vnrole vncls="29.2" vntheta="Theme"/></role>
+  <role descr="role" n="2"><vnrole vncls="29.2" vntheta="Predicate"/></role>
+</roles>
+
+<example name="casting call">
+<text>
+    *trace-1* Cast *trace-2* as Violetta Valery in a new production of
+     Verdi's ``La Traviata,'' Ms. Gruberova last week did many things
+     nicely and others not so well. 
+</text>
+        <rel>Cast</rel>
+        <arg n="1">*trace-2* -&gt;  *trace-1* -&gt; Ms. Gruberova</arg>
+        <arg f="as" n="2">Violetta Valery</arg>
+        <arg f="LOC" n="M">in a new production of Verdi's ``La
+        Traviata</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="cast.03" vncls="-" name="blacksmithing">
+<roles>
+  <role n="0"  descr="metalworker, agent (possible but unlikely)"/>
+  <role n="1"  descr="metal"/>
+</roles>
+
+<example name="usually adjectival">
+  <inflection person="ns" tense="ns" aspect="ns" voice="passive" form="participle"/>
+  <text>
+    In fact, they've spent billions of dollars to boost the percentage
+    of continously cast steel to 60.9% in 1988, from 39.6% five years
+    before. 
+  </text>
+  <arg n="m" f="MNR">continuously</arg>
+  <rel              >cast</rel>
+  <arg n="1"        >steel</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

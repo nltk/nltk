@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="nibble">
+<note>
+  Frames file for 'nibble' based on sentences in wsj.  No access to
+  Verbnet at the moment.
+</note>
+
+<roleset id="nibble.01" name="eat lightly" vncls="39.2">
+<roles>
+  <role descr="eater" n="0"><vnrole vncls="39.2" vntheta="Agent"/></role>
+  <role descr="food" n="1"><vnrole vncls="39.2" vntheta="Patient"/></role>
+</roles>
+
+<example name="the one example">
+<inflection aspect="progressive" form="participle" person="third" tense="past" voice="active"/>
+<text>
+    He thinks another crash is ``unlikely,'' and says he was
+    ``nibbling at'' selected stocks during Friday's plunge. 
+</text>
+        <arg n="0">he</arg>
+        <rel>nibbling</rel>
+        <arg f="at" n="1">selected stocks</arg>
+        <arg f="TMP" n="M">during Friday's plunge</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

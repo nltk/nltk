@@ -1,0 +1,46 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="best">
+<note>
+  Frames file for 'best' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="best.01" name="triumph over, beat" vncls="-">
+<roles>
+  <role descr="winner" n="0"/>
+  <role descr="loser" n="1"/>
+  <role descr="contest" n="2"/>
+</roles>
+
+<example name="just transitive">
+<inflection aspect="perfect" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+    The fact that stock pickers have bested a randomly selected
+    portfolio in eight of 12 months has no bearing on the
+    efficient-market theory. 
+</text>
+        <arg n="0">stock pickers</arg>
+        <rel>bested</rel>
+        <arg n="1">a randomly selected portfolio</arg>
+        <arg f="TMP" n="M">in eight of 12 months</arg>
+</example>
+
+<example name="with contest">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John bested Mary in a battle of wits.  Then Mary beat him up.
+  </text>
+  <arg n="0">John</arg>
+  <rel>bested</rel>
+  <arg n="1">Mary</arg>
+  <arg f="in" n="2">a battle of wits</arg>
+</example>
+
+<note>
+Contest arg included b/c of comparison with other verbs of contests,
+such as 'beat'.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

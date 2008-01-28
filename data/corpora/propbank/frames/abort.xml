@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="abort">
+<note>
+  Frames file for 'abort' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="abort.01" name="to terminate" vncls="-">
+<roles>
+  <role descr="causer, agent" n="0"/>
+  <role descr="entity aborted" n="1"/>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="perfect" form="participle" person="third" tense="present" voice="active"/>
+<text>
+ Thus , a woman who [*T*-487] used RU-486 [*-3] to have an abortion would have [*-1] to make three trips to the clinic past those picket lines ; an initial visit for medical screening ( anemics and those with previous pregnancy problems are eliminated [*-4] ) and [*] to take the pill , a second trip 48 hours later for the prostaglandin , administered [*] either via injection or vaginal suppository , and a third trip a week later [*] to make sure [0] she has completely aborted .
+</text>
+	<arg n="0">she</arg>
+	<arg f="MNR" n="M">completely</arg>
+	<rel>aborted</rel>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

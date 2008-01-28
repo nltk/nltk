@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="clinch">
+<note>
+  Frames file for 'clinch' based on sentences in wsj.  No access to
+  verbnet at the moment.
+</note>
+
+<roleset id="clinch.01" name="make into a sure thing" vncls="-">
+<roles>
+  <role descr="causer of sureness" n="0"/>
+  <role descr="sure thing" n="1"/>
+</roles>
+
+<example name="Dewey Defeats Truman!">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    In the previous three general elections, similar national issues
+    clinched the vote. 
+</text>
+        <arg f="LOC" n="M">In the previous three general elections</arg>
+        <arg n="0">similar national issues</arg>
+        <rel>clinched</rel>
+        <arg n="1">the vote</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

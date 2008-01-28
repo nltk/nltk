@@ -1,0 +1,94 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="tax">
+<note>
+Frames file for 'tax' based on sentences in wsj and automatic
+expansion via verbnet.
+</note>
+
+<roleset id="tax.01" name="government charging money" vncls="54.5">
+<roles>
+	<role descr="taxer" n="0">
+		
+  <vnrole vncls="54.5" vntheta="Agent"/></role>
+
+	<role descr="amount of tax" n="1">
+		
+  <vnrole vncls="54.5" vntheta="Asset"/></role>
+
+	<role descr="taxpayer" n="2">
+		
+  <vnrole vncls="54.5" vntheta="Recipient"/></role>
+
+	<role descr="commodity" n="3">
+		
+  <vnrole vncls="54.5" vntheta="Cause"/></role>
+
+</roles>
+
+<example name="just commodity">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    The securities-turnover tax has been long criticized by the West
+    German financial community because it tends to drive securities
+    trading and other banking activities out of Frankfurt into rival
+    financial centers, especially London, where trading transactions
+    isn't taxed *trace* *trace*.
+</text>
+        <arg f="NEG" n="M">n't</arg>
+        <rel>taxed</rel>
+        <arg n="3">*trace* -&gt;  trading transactions</arg>
+        <arg f="LOC" n="M">*trace* -&gt;  where -&gt;  especially London</arg>
+</example>
+
+
+<example name="just taxpayer">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Congress still is struggling to dismantle the unpopular
+    Catastrophic Care Act of 1988, which *trace* boosted benefits for
+    the elderly and *trace* taxed them to pay for the new coverage. 
+</text>
+        <arg n="0">*trace* -&gt; *trace* -&gt;  which -&gt;  the unpopular
+        Catastrophic Care Act</arg> 
+        <rel>taxed</rel>
+        <arg n="2">them</arg>
+        <arg f="PNC" n="M">to pay for the new coverage</arg>
+</example>
+
+
+<example name="taxpayer and commodity">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    Well, notes IRS private ruling 8934014, ``a fundamental
+    principle'' is that income must be taxed *trace* to whoever earns
+    it. 
+</text>
+        <arg f="MOD" n="M">must</arg>
+        <rel>taxed</rel>
+        <arg n="3">*trace* -&gt;  income</arg>
+        <arg f="to" n="2">whoever earns it</arg>
+</example>
+
+<example name="same args, inverted syntax">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    Currently, even though the issuer doesn't pay tax, the debt holder
+    is taxed *trace* on the accrued interest. 
+</text>
+        <arg f="TMP" n="M">Currently</arg>
+        <arg n="M">even though the issuer doesn't pay tax</arg>
+        <rel>taxed</rel>
+        <arg n="2">*trace* -&gt;  the debt holder</arg>
+        <arg f="on" n="3">the accrued interest</arg>
+</example>
+
+<note>
+Arg1 doesn't seem to occur.  The arguments and their numbering are
+suggested by comparison with 'bill' and 'charge'.
+</note>
+
+</roleset>
+
+</predicate>
+</frameset>

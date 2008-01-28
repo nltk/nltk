@@ -1,0 +1,158 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="clear">
+<note>
+  Frames file for 'clear' based on sentences in financial subcorpus.
+  No access to verbnet.  Comparison to 'approve' for one roleset.
+</note>
+
+<roleset id="clear.01" name="clean, make clear or open" vncls="10.3-1 26.3-1 45.4">
+<roles>
+  <role descr="cleaner" n="0">
+	
+        
+        <vnrole vncls="26.3-1" vntheta="Agent"/><vnrole vncls="10.3-1" vntheta="Agent"/><vnrole vncls="45.4" vntheta="Agent"/></role>
+  <role descr="thing made clean" n="1">
+	
+        
+        <vnrole vncls="26.3-1" vntheta="Product"/><vnrole vncls="10.3-1" vntheta="Source"/><vnrole vncls="45.4" vntheta="Patient"/></role>
+  <role descr="dirt" n="2"/>
+</roles>
+
+<example name="transitive">
+  <text>
+    John cleared the crowded street.
+  </text>
+  <arg n="0">John</arg>
+  <rel>cleared</rel>
+  <arg n="1">the crowded street</arg>
+</example>
+
+<example name="with dirt">
+  <text>
+    Inquiry clears Texas judge of bias in comments on homosexual murder victims.
+  </text>
+  <arg n="0">Inquiry</arg>
+  <rel>clears</rel>
+  <arg n="1">Texas judge</arg>
+  <arg f="of" n="2">bias</arg>
+  <arg f="LOC" n="m">in comments on homosexual murder victims</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="clear.02" name="approve" vncls="45.4">
+<roles>
+  <role descr="agent, approver" n="0">
+	<vnrole vncls="45.4" vntheta="Agent"/></role>
+  <role descr="thing approved" n="1">
+	<vnrole vncls="45.4" vntheta="Patient"/></role>
+  <role descr="semi-idiomatic: 'the way'" n="2"/>
+</roles>
+
+<example name="just plain transitive">
+<text>
+    A.L. Williams Corp. was merged into Primerica Corp., New York,
+    after a special meeting of Williams shareholders cleared the
+    transaction, the companies said. 
+</text>
+        <arg n="0">a special meeting of Williams shareholders</arg>
+        <rel>cleared</rel>
+        <arg n="1">the transaction</arg>
+</example>
+
+<example name="clear the way">
+<text>
+   In a surprise move, the British government cleared the way for a
+   bidding war for Jaguar PLC by agreeing to remove an obstacle to a
+   takeover of the auto maker. 
+</text>
+        <arg f="LOC" n="M">In a surprise move</arg>
+        <arg n="0">the British government</arg>
+        <rel>cleared</rel>
+        <arg n="2">the way</arg>
+        <arg f="for" n="1">a bidding war for Jaguar PLC</arg>
+        <arg f="MNR" n="M">by agreeing to remove an obstacle to a
+        takeover of the auto maker</arg> 
+</example>
+
+<example name="passive extraction">
+<text>
+    Dime Savings Bank of New York was cleared *trace* by the Federal
+    Deposit Insurance Corp. to acquire Starpointe Savings Bank of
+    Somerset, N.J., the banks said. 
+</text>
+        <rel>cleared</rel>
+        <arg n="1">*trace* -&gt;  Dime Savings Bank of New York</arg>
+        <arg f="by" n="0">the Federal Deposit Insurance Corp.</arg>
+        <arg f="STR" n="1">to acquire Starpointe Savings Bank of
+        Somerset, N.J.,</arg> 
+</example>
+
+<note>
+The example with 'clear the way' is really a blend of the 'clean' and
+'approve' senses, but notice that &quot;a bidding war&quot; is still the thing
+approved--not &quot;the way&quot;!
+</note>
+
+</roleset>
+
+<roleset id="clear.03" name="escape, avoid" vncls="-">
+<roles>
+  <role descr="escaper" n="0"/>
+  <role descr="thing escaped" n="1"/>
+</roles>
+
+<example name="transitive">
+<text>
+    The compromise plan, which boosts the minimum wage for the first
+    time since 1981, is expected *trace* to clear the Senate soon. 
+</text>
+        <arg n="0">*trace* -&gt;  The compromise plan, which  boosts the
+        minimum wage for the first time since 1981,</arg> 
+        <rel>clear</rel>
+        <arg n="1">the Senate</arg>
+        <arg f="TMP" n="M">soon</arg>
+</example>
+
+<note>
+What's interesting about this roleset is that it's the exact opposite
+of the 'approve' roleset; you could also say 'the Senate cleared the
+compromise'.  Disambiguation machines are going to have a fit over this.
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="clear_up">
+
+<roleset id="clear.04" name="become/make clear, clean" vncls="10.3-1">
+<roles>
+  <role descr="cleaner" n="0">
+	<vnrole vncls="10.3-1" vntheta="Agent"/></role>
+  <role descr="thing becoming clean" n="1">
+	<vnrole vncls="10.3-1" vntheta="Source"/></role>
+</roles>
+
+<example name="clear up my acne?">
+<text>
+    But it is puzzling to some Hollywood executives that Sony rushed
+    to hire them without *trace* clearing up the Warner situation
+    first. 
+</text>
+        <arg n="0">*trace* -&gt;  Sony</arg>
+        <rel>[ clearing] [ up]</rel>
+        <arg n="1">the Warner situation</arg>
+        <arg f="TMP" n="M">first</arg>
+</example>
+
+<note>
+Essentially the same as the 'clean' roleset.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

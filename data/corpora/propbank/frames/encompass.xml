@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="encompass">
+<note>
+  Frames file for 'encompass' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="encompass.01" name="to constitute or include" vncls="-">
+<roles>
+  <role descr="entity encompassing" n="0"/>
+  <role descr="entity encompassed" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ The engine plant may encompass plans for a joint components venture with Jaguar .
+</text>
+	<arg n="0">The engine plant</arg>
+	<arg f="MOD" n="M">may</arg>
+	<rel>encompass</rel>
+	<arg n="1">plans for a joint components venture with Jaguar</arg>
+</example>
+
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

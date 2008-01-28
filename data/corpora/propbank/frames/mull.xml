@@ -1,0 +1,61 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="mull">
+<note>
+  Frames file for 'mull' based on sentences in financial subcorpus.
+  No access to verbnet.  Comparison with 'think'.
+</note>
+
+<roleset id="mull.01" name="think">
+<roles>
+  <role descr="thinker" n="0"/>
+  <role descr="thinking about" n="1"/>
+</roles>
+
+<example name="thought as NP">
+<text>
+    While many problems would attend a restructuring of Columbia,
+    investors say Mr. Spiegel is mulling such a plan to mitigate
+    Columbia's junk problems. 
+</text>
+        <arg n="0">Mr. Spiegel</arg>
+        <rel>mulling</rel>
+        <arg n="1">such a plan to mitigate Columbia's junk
+        problems</arg> 
+</example>
+
+<example name="thought as PP">
+  <text>
+    John was mulling over his recent losses in the school sandbox.
+  </text>
+  <arg n="0">John</arg>
+  <rel>mulling</rel>
+  <arg f="over" n="1">his recent losses in the school sandbox</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="mull.02" name="simmer with spices">
+<roles>
+  <role descr="cook" n="0"/>
+  <role descr="wine" n="1"/>
+</roles>
+
+<example name="yum">
+  <text>
+    Mary mulled a magnum of wine, then drank it all.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>mulled</rel>
+  <arg n="1">a magnum of wine</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

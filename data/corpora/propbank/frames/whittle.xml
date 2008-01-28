@@ -1,0 +1,72 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="whittle">
+<note>
+  Frames file for 'whittle' based on sentences in wsj.  Verbnet entry 26.1.
+</note>
+
+<roleset id="whittle.01" name="create by remove wood" vncls="26.1-1">
+<roles>
+  <role descr="builder" n="0">
+		
+  <vnrole vncls="26.1-1" vntheta="Agent"/></role>
+
+  <role descr="construction" n="1">
+		
+  <vnrole vncls="26.1-1" vntheta="Product"/></role>
+
+  <role descr="material, start state" n="2">
+		
+  <vnrole vncls="26.1-1" vntheta="Material"/></role>
+
+  <role descr="end state" n="4"><vnrole vncls="26.1-1" vntheta="Product"/></role>
+</roles>
+
+<example name="extremely obscure literary reference">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John whittle the small bone into the shape of a different small bone.
+  </text>
+  <arg n="0">John</arg>
+  <rel>whittled</rel>
+  <arg n="2">the small bone</arg>
+  <arg f="into" n="3">the shape of a different small bone</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="whittle_down">
+
+<roleset id="whittle.02" name="make smaller gradually" vncls="-">
+<roles>
+  <role descr="agent of making smaller" n="0"/>
+  <role descr="thing getting smaller" n="1"/>
+  <role descr="EXT" n="2"/>
+  <role descr="start point" n="3"/>
+  <role descr="end point" n="4"/>
+</roles>
+
+<example name="one example is enough">
+<inflection aspect="perfect" form="participle" person="third" tense="present" voice="passive"/>
+<text>
+    The spokesman said the vote at Sochaux is expected to be followed
+    by a similar move at the company's assembly plant at Mulhouse,
+    where the number of strikers has been whittled [*-2] down to 80
+    [*T*-4]. 
+</text>
+        <rel>[ whittled] [ down]</rel>
+        <arg n="1">[*-2] -&gt;  the number of strikers</arg>
+        <arg f="to" n="4">80</arg>
+        <arg f="LOC" n="M">[*T*-4] -&gt;  where -&gt;  Mulhouse</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

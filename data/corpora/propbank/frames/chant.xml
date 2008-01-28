@@ -1,0 +1,43 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="chant">
+<note>
+  Frames file for 'chant' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="chant.01" name="to recite as a chant, intone" vncls="-">
+<roles>
+  <role descr="reciter, agent" n="0"/>
+  <role descr="utterance" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ In the stands , people waved ANC flags , wore ANC T-shirts , sang ANC songs and chanted ANC slogans .
+</text>
+	<arg f="LOC" n="M">In the stands</arg>
+	<arg n="0">people</arg>
+	<rel>chanted</rel>
+	<arg n="1">ANC slogans</arg>
+</example>
+
+
+
+<example name="another transitive">
+<inflection aspect="progressive" form="participle" person="ns" tense="past" voice="active"/>
+<text>
+ The protesters who [*T*-1] greeted Mikhail Gorbachev at East Berlin 's airport earlier this month were n't shouting `` Go U.S.A '' -- they were chanting `` Gorby , [*] Help Us . ''
+</text>
+	<arg n="0">they</arg>
+	<rel>chanting</rel>
+	<arg n="1">Gorby , [*] Help Us</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

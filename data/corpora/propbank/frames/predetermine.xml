@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="predetermine">
+<note>
+  Frames file for 'predetermine' based on sentences in wsj.  No access
+  to Verbnet at the moment.
+</note>
+
+<roleset id="predetermine.01" name="determine ahead of time" vncls="-">
+<roles>
+  <role descr="determiner" n="0"/>
+  <role descr="determination" n="1"/>
+</roles>
+
+<example name="always passive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    But what about those of us whose views [*T*-2] are not
+    predetermined [*-1] by formula or ideology? 
+</text>
+        <arg f="NEG" n="M">not</arg>
+        <rel>predetermined</rel>
+        <arg n="1">[*-1] -&gt;  [*T*-2] -&gt;  whose views -&gt;  those</arg>
+        <arg f="by" n="0">formula or ideology</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

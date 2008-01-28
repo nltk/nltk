@@ -1,0 +1,108 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="allow">
+<note>
+  Frames file for 'allow' based on survey of initial sentences of big
+  corpus.
+</note>
+
+<roleset id="allow.01" name="let" vncls="29.5">
+<roles>
+  <role descr="allower" n="0">
+	<vnrole vncls="29.5" vntheta="Agent"/></role>
+  <role descr="action allowed" n="1">
+	<vnrole vncls="29.5" vntheta="Predicate"/></role>
+</roles>
+
+<example name="allowed NP">
+  <text>
+    Two New England states will allow broader interstate banking.
+  </text>
+  <arg n="0">Two New England states</arg>
+  <arg f="MOD" n="m">will</arg>
+  <rel>allow</rel>
+  <arg n="1">broader interstate banking</arg>
+</example>
+
+<example name="allowed S">
+  <text>
+  The reforms allow the Big Board to halt trading for one hour.
+  </text>
+  <arg n="0">The reforms</arg>
+  <rel>allow</rel>
+  <arg n="1">the Big Board to halt trading for one hour</arg>
+</example>
+
+<example name="allowed S with passive-extraction">
+  <text>
+  Brazilian growers won't be allowed *trace* to export sugar during the
+  current 1989-1990 season.
+  </text>
+  <arg n="1">Brazilian growers</arg>
+  <arg f="MOD" n="m">wo</arg>
+  <arg f="NEG" n="m">n't</arg>
+  <rel>allowed</rel>
+  <arg n="1">*trace* to export sugar during the current
+  1989-1990 season.</arg> 
+</example>
+
+<example name="allowed for NP">
+  <text>
+ Depreciation would allow for the gradual wearing our of french friers.
+  </text>
+  <arg n="0">Depreciation</arg>
+  <arg f="MOD" n="m">would</arg>
+  <rel>allow</rel>
+  <arg f="for" n="1">the gradual wearing out of french friers</arg>
+</example>
+</roleset>
+
+<roleset id="allow.02" name="allocate" vncls="-">
+<roles>
+  <role descr="allocator" n="0"/>
+  <role descr="thing allocated (us. time)" n="1"/>
+  <role descr="to some task" n="2"/>
+</roles>
+
+<example name="thrash out, man">
+  <inflection aspect="perfect" form="participle" person="third" tense="present" voice="active"/>
+  <text>
+     So far, neither the Bush administration nor arms-control experts
+     in Congress seem moved by arguments that these problems may take
+     more time *trace* to thrash out than President Bush has allowed
+     *trace*. 
+  </text>
+  <arg n="0">President Bush</arg>
+  <rel>allowed</rel>
+  <arg n="1">*trace* -&gt; *trace* -&gt; more time</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="allow.03" vncls="-" name="admit truth of proposition">
+<roles>
+  <role n="0"  descr="admitter"/>
+  <role n="1"  descr="true proposition"/>
+</roles>
+
+<example name="allowed S-BAR, essentially agree or say">
+  <text>
+  Editorials in the Greenville newspaper allowed that Mrs. Yeargin was
+  wrong.
+  </text>
+  <arg n="0">Editorials in the Greenville newspaper</arg>
+  <rel>allowed</rel>
+  <arg n="1">that Mrs. Yeargin was wrong.</arg>
+
+<note>
+The complementizer MUST be included--note that the sentence is --&gt;
+--ungrammatical otherwise.  *Editorials allowed Mrs. Yeargin was wrong.
+</note>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

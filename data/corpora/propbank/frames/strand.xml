@@ -1,0 +1,44 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="strand">
+<note>
+  Frames file for 'strand' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="strand.01" name="to leave stranded" vncls="-">
+<roles>
+  <role descr="leaver, agent" n="0"/>
+  <role descr="entity stranded" n="1"/>
+</roles>
+
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+ '' Or the one in which she and Josh are stranded [*-1] in the city [*T*-3] , and , after [*-2] insisting on separate motel rooms , she knocks on his door [*-2] to pour out her feelings about the rape -- [*-2] wearing nothing but a mini-slip and a push-up bra [*T*-3] .
+</text>
+	<rel>stranded</rel>
+	<arg n="1">[*-1] -&gt;  she and Josh</arg>
+	<arg f="LOC" n="M">in the city</arg>
+	<arg f="LOC" n="M">[*T*-3] -&gt;  in which -&gt;  the one</arg>
+</example>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+ Bus schedules were sometimes in disarray , [*] stranding commuters such as Marilyn Sullivan .
+</text>
+	<arg n="0">[*] -&gt;  Bus schedules</arg>
+	<rel>stranding</rel>
+	<arg n="1">commuters such as Marilyn Sullivan</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

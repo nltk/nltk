@@ -1,0 +1,62 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="excite">
+<note>
+  Frames file for 'excite' based on sentences in wsj.  Verbnet entry
+  31.1, Framenet entry Experiencer_obj.
+</note>
+
+<roleset id="excite.01" name="make excited" vncls="31.1">
+<roles>
+  <role descr="causer of excitement" n="0"><vnrole vncls="31.1" vntheta="Cause"/></role>
+  <role descr="excited entity" n="1"><vnrole vncls="31.1" vntheta="Experiencer"/></role>
+  <role descr="instrument, if separate from arg0" n="2"/>
+</roles>
+
+<example name="passive as adjective">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    ``There may be sticker-shock reaction initially,'' said
+    Mr. Pratt, ``but as the wine is talked about and starts to sell,
+    they eventually get excited and decide it's worth the astronomical
+    price to add it to their collection.'' 
+</text>
+        <arg f="TMP" n="M">as the wine is talked about and starts to
+        sell</arg> 
+        <arg n="1">they</arg>
+        <arg f="TMP" n="M">eventually</arg>
+        <rel>excited</rel>
+</example>
+
+
+<example name="transitive as 'cause'">
+<inflection aspect="perfect" form="participle" person="third" tense="present" voice="active"/>
+<text>
+    Even without bid talk, this year's surge in prices for Brussels
+    real estate has excited interest in AG. 
+</text>
+        <arg f="ADV" n="M">Even without bid talk</arg>
+        <arg n="0">this year's surge in prices for Brussels real
+        estate</arg> 
+        <rel>excited</rel>
+        <arg n="1">interest in AG</arg>
+</example>
+
+<example name="with instrument">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     Mary excited John with her talk of chocolate ice cream.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>excited</rel>
+  <arg n="1">John</arg>
+  <arg f="with" n="2">her talk of chocolate ice cream</arg>
+</example>
+
+<note>
+I do try to keep these things PG-rated, after all.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

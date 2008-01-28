@@ -1,0 +1,29 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="encrypt">
+<note>
+  Frames file for 'encrypt' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="encrypt.01" name="scramble digital information" vncls="-">
+<roles>
+  <role descr="scrambler, agent" n="0"/>
+  <role descr="information" n="1"/>
+</roles>
+
+<example name="blank agent">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+    Still, [*] encrypting corporate communications is only a partial remedy.
+</text>
+        <arg n="0">[*]</arg>
+        <rel>encrypting</rel>
+        <arg n="1">corporate communications</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

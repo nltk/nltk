@@ -1,0 +1,66 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="postpone">
+<note>
+  Frames file for 'postpone' based on sentences in financial
+  subcorpus.  No Verbnet entry, Framenet entry Relative time.  Other
+  framed members include delay.  Comparison with delay.
+</note>
+
+<roleset id="postpone.01" name="delay">
+<roles>
+  <role descr="agent, causer of delay" n="0"/>
+  <role descr="event delayed" n="1"/>
+  <role descr="delay itself, EXT, time period" n="2"/>
+  <role descr="original time" n="3"/>
+  <role descr="new time" n="4"/>
+</roles>
+
+<example name="just transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    A state judge postponed a decision on a move by holders of
+    Telerate Inc. to block the tender offer of Dow Jones &amp; Co. for
+    the 33% of Telerate it doesn't already own. 
+</text>
+        <arg n="0">A state judge</arg>
+        <rel>postponed</rel>
+        <arg n="1">a decision on a move by holders of Telerate Inc. to
+        block the tender offer of Dow Jones &amp; Co. for the 33% of
+        Telerate it doesn't already own</arg> 
+</example>
+
+<example name="with MNR">
+<inflection aspect="ns" form="full" person="ns" tense="future" voice="active"/>
+<text>
+    Separately, the Ontario Supreme Court said it will postpone
+    indefinitely a ruling on the lawsuit launched by the University of
+    Toronto against Connaught in connection with the Merieux bid. 
+</text>
+        <arg n="0">it</arg>
+        <arg f="MOD" n="M">will</arg>
+        <rel>postpone</rel>
+        <arg f="MNR" n="2">indefinitely</arg>
+        <arg n="1">a ruling on the lawsuit launched by the University
+        of Toronto against Connaught in connection with the Merieux
+        bid</arg> 
+</example>
+
+<example name="start and end points">
+<inflection aspect="ns" form="participle" person="ns" tense="past" voice="passive"/>
+<text>
+    TW's stockholder meeting was postponed *trace* from tomorrow to
+    Nov. 21. 
+</text>
+        <rel>postponed</rel>
+        <arg n="1">*trace* -&gt;  TW's stockholder meeting</arg>
+        <arg f="from" n="3">tomorrow</arg>
+        <arg f="to" n="4">Nov. 21</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

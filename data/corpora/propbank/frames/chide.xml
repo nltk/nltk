@@ -1,0 +1,51 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="chide">
+<note>
+  Frames file for 'chide' based on sentences in wsj.  Verbnet entry
+  33, Framenet entry Judgement.
+</note>
+
+<roleset id="chide.01" name="chastise, rebuke" vncls="33">
+<roles>
+  <role descr="chider, agent" n="0"><vnrole vncls="33" vntheta="Agent"/></role>
+  <role descr="recipient of chiding" n="1"><vnrole vncls="33" vntheta="Theme"/></role>
+  <role descr="cause" n="2"><vnrole vncls="33" vntheta="Cause"/></role>
+</roles>
+
+<example name="active">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    We recall that Mr. Roberts not only chides the Chancellor for
+    being too easy because of a desire to constrain sterling, but also
+    led the chorus saying that Mr. Volcker was too tight when he let
+    the dollar rise. 
+</text>
+        <arg n="0">Mr. Roberts</arg>
+        <rel>chides</rel>
+        <arg n="1">the Chancellor</arg>
+        <arg f="for" n="2">being too easy because of a desire to
+        constrain sterling</arg> 
+</example>
+
+<example name="passive">
+<inflection aspect="perfect" form="participle" person="third" tense="present" voice="passive"/>
+<text>
+    Mr. Bush has asked Congress to provide more than $400 million in
+    economic aid and food grants for Poland's new government, but has
+    been chided *trace* by Democrats for failing to do more. 
+</text>
+        <rel>chided</rel>
+        <arg n="1">*trace* -&gt;  Mr. Bush</arg>
+        <arg f="by" n="0">Democrats</arg>
+        <arg f="for" n="2">failing  to do more</arg>
+</example>
+
+<note>
+Could also be a verb of saying.  And shouldn't the past be &quot;chidd&quot;?
+Or, god forbid, &quot;chad&quot;?
+</note>
+
+</roleset>
+</predicate>
+</frameset>

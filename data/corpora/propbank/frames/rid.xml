@@ -1,0 +1,43 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="rid">
+<note>
+  Frames file for 'rid' based on sentences in financial subcorpus.
+  Verbnet entry cheat-10.6, other framed members include break.
+  Comparison with 'remove'
+</note>
+
+<roleset id="rid.01" name="get rid of, eliminate" vncls="10.6">
+<roles>
+  <role descr="entity removing" n="0">
+		
+  <vnrole vncls="10.6" vntheta="Agent"/></role>
+
+  <role descr="thing being removed" n="1">
+		
+  <vnrole vncls="10.6" vntheta="Theme"/></role>
+
+  <role descr="removed from" n="2">
+		
+  <vnrole vncls="10.6" vntheta="Source"/></role>
+
+</roles>
+
+<example name="automatically generated">
+<text>
+ The privatization program is designed  to rid the government of hundreds of ass
+ets and to raise critically needed funds .
+</text>
+        <arg n="0">*trace* -&gt;  The privatization program</arg>
+        <rel>rid</rel>
+        <arg n="2">the government</arg>
+        <arg f="of" n="1">hundreds of assets</arg>
+</example>
+
+<note>
+Both arg1 and arg2 seem to be required.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

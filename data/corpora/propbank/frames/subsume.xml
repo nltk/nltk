@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="subsume">
+<note>
+  Frames file for 'subsume' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="subsume.01" name="include, incorporate" vncls="-">
+<roles>
+  <role descr="thing included" n="1"/>
+  <role descr="included in, subsumed by" n="2"/>
+</roles>
+
+<example name="passive">
+  <inflection aspect="ns" form="participle" person="ns" tense="past" voice="passive"/>
+  <text>
+     The schools' central mission, educating children, became subsumed
+     [*-1] by the competing interests of bureaucrats, politicians and unions.
+  </text>
+  <rel>subsumed</rel>
+  <arg n="1">[*-1] -&gt; the schools' central mission, educating
+  children</arg> 
+  <arg f="by" n="2">the competing interests of bureaucrats,
+  politicians and unions</arg>
+</example>
+
+<note>
+Could there also be an agent?  I'm unsure.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

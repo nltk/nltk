@@ -1,0 +1,43 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="enclose">
+<note>
+  Frames file for 'enclose' based on sentences in wsj.  Verbnet entry 47.8.
+</note>
+
+<roleset id="enclose.01" name="(cause to) be around" vncls="47.8">
+<roles>
+  <role descr="causative agent" n="0"/>
+  <role descr="thing surrounding" n="1"><vnrole vncls="47.8" vntheta="Theme1"/></role>
+  <role descr="thing surrounded" n="2"><vnrole vncls="47.8" vntheta="Theme2"/></role>
+</roles>
+
+<example name="passive, no agent">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    The entire site is enclosed [*-1] by a 6-to-8-foot-high ornamental
+    iron fence with a small number of remote-controlled gates. 
+</text>
+        <rel>enclosed</rel>
+        <arg n="2">[*-1] -&gt;  The entire site</arg>
+        <arg n="1">a 6-to-8-foot-high ornamental iron fence with a
+        small number of remote-controlled gates</arg> 
+</example>
+
+<example name="with agent">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    Mary enclosed John's grave with a barbed-wire fence.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>enclosed</rel>
+  <arg n="2">John's grave</arg>
+  <arg f="with" n="1">a barbed-wire fence</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

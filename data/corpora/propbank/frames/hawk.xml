@@ -1,0 +1,50 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="hawk">
+<note>
+  Frames file for 'hawk' based on sentences in wsj.  No Verbnet
+  entry, Framenet entry Perception noise.
+</note>
+
+<roleset id="hawk.01" name="try to attract buyers" vncls="-">
+<roles>
+  <role descr="seller, salesperson" n="0"/>
+  <role descr="goods" n="1"/>
+</roles>
+
+<example name="one example">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    But Mr. Steidtmann predicts that healthy stores hawking mostly
+    apparel could ring up gains of as much as 25% to 30%. 
+</text>
+        <arg n="0">healthy stores</arg>
+        <rel>hawking</rel>
+        <arg n="1">mostly apparel</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="hawk.02" name="clear one's throat" vncls="-">
+<roles>
+  <role descr="hawker" n="0"/>
+</roles>
+
+<example name="ladylike behaviour">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     Mary hawked and spat.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>hawked</rel>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

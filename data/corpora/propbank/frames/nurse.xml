@@ -1,0 +1,47 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="nurse">
+<note>
+  Frames file for 'nurse' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="nurse.01" name="try to cure, treat carefully" vncls="29.8">
+<roles>
+  <role descr="nurse, agent" n="0">
+	<vnrole vncls="29.8" vntheta="Agent"/></role>
+  <role descr="entity nursed" n="1">
+	<vnrole vncls="29.8" vntheta="Theme"/></role>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+ This meant [*] returning to the golf course , where we watched a few French duffers maul the first tee while we sat under Cinzano umbrellas , me nursing an espresso and my ego [*T*-1] .
+</text>
+	<arg n="0">me</arg>
+	<rel>nursing</rel>
+	<arg n="1">an espresso and my ego</arg>
+</example>
+
+
+
+<example name="with a manner adverbial">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ In that case , Guber Peters acquired the rights in 1979 , nursed the movie through a dozen scripts , and were on the set in London for 11 months [*-1] hovering over the most minute changes in casting and production .
+</text>
+	<arg f="LOC" n="M">In that case</arg>
+	<arg n="0">Guber Peters</arg>
+	<rel>nursed</rel>
+	<arg n="1">the movie</arg>
+	<arg f="MNR" n="M">through a dozen scripts</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

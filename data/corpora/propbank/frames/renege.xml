@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="renege">
+<note>
+  Frames file for 'renege' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="renege.01" name="to fail to carry out" vncls="-">
+<roles>
+  <role descr="entities failing" n="0"/>
+  <role descr="renege on" n="1"/>
+</roles>
+
+<example name="with Arg1">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ Now UNESCO apologists are lobbying President Bush [*-1] to renege on President Reagan 's decision [*] to depart .
+</text>
+	<arg n="0">[*-1] -&gt;  President Bush</arg>
+	<rel>renege</rel>
+	<arg f="on" n="1">President Reagan 's decision [*] to depart</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

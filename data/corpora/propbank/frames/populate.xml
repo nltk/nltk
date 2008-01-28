@@ -1,0 +1,68 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="populate">
+<note>
+  Frames file for 'populate' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="populate.01" name="provide inhabitants for, fill with inhabitants" vncls="-">
+<roles>
+  <role descr="provider" n="0"/>
+  <role descr="area" n="1"/>
+  <role descr="population" n="2"/>
+</roles>
+
+<example name="area and population">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    With more than 15 million exercise bikes sold in the past five
+    years, he adds, ``a lot of garages, basements and attics must be
+    populated *trace* with them.'' 
+</text>
+        <arg f="ADV" n="M">With more than 15 million exercise bikes
+        sold  in the past five years</arg> 
+        <arg f="MOD" n="M">must</arg>
+        <rel>populated</rel>
+        <arg n="1">*trace* -&gt;  a lot of garages, basements and attics</arg>
+        <arg f="with" n="2">them</arg>
+</example>
+
+<example name="agent and area">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Las Colinas, once a huge Texas ranch, is a sprawling complex of
+    office buildings, homes and recreational facilities that its
+    developers have been struggling*trace*  to populate *trace* in
+    recent years. 
+</text>
+        <arg n="0">*trace* -&gt;  its developers</arg>
+        <rel>populate</rel>
+        <arg n="1">*trace* -&gt;  that -&gt;  a sprawling complex</arg>
+</example>
+
+
+<example name="population as subject">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+    There are moments in this ``Summerfolk'' when the characters
+    populating the vast multilevel country house (which  looks like a
+    parody of Frank Lloyd Wright and is designed by Victoria
+    Petrovich) spout philosophic bon mots with the self-conscious
+    rat-a-tat-tat pacing of ``Laugh In.'' 
+</text>
+        <arg n="2">the characters</arg>
+        <rel>populating</rel>
+        <arg n="1">the vast multilevel country house (which looks like
+        a parody of Frank Lloyd Wright and is designed by Victoria
+        Petrovich)</arg> 
+</example>
+
+<note>
+This is based on 'fill' and it is crucial to distinguish between the
+agent causing some area to have a population, and the population
+itself.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

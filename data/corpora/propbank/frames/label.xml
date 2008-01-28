@@ -1,0 +1,45 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="label">
+<note>
+  Frames file for 'label' based on sentences in financial subcorpus.
+  Verbnet classes butter-9.9, illustrate-25.3.  Comparison with
+  'call'. 
+</note>
+
+<roleset id="label.01" name="call" vncls="9.9 25.3 29.3">
+<roles>
+  <role descr="caller" n="0">
+		
+		
+  <vnrole vncls="29.3" vntheta="Agent"/><vnrole vncls="9.9" vntheta="Agent"/><vnrole vncls="25.3" vntheta="Agent"/></role>
+
+  <role descr="item being labelled" n="1">
+		
+		
+  <vnrole vncls="29.3" vntheta="Theme"/><vnrole vncls="9.9" vntheta="Destination"/><vnrole vncls="25.3" vntheta="Destination"/></role>
+
+  <role descr="attribute" n="2">
+		
+  <vnrole vncls="29.3" vntheta="Predicate"/><vnrole vncls="9.9" vntheta="Theme"/></role>
+
+</roles>
+
+<example name="doesn't get any simpler">
+<text>
+    We must be very cautious about *trace* labeling investors as
+    ``long-term'' or ``short-term.'' 
+</text>
+        <arg n="0">We -&gt; *trace*</arg>
+        <rel>labeling</rel>
+        <arg n="1">investors</arg>
+        <arg f="as" n="2">``long-term'' or ``short-term</arg>
+</example>
+
+<note>
+Automatic tagging often reverses Arg1 and Arg2.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

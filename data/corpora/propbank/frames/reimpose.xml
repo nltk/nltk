@@ -1,0 +1,55 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="reimpose">
+<note>
+  Frames file for 'reimpose' based on transformation of frames for 'impose.'
+</note>
+
+<roleset id="reimpose.01" name="be a bother">
+<roles>
+  <role descr="reimposer (not reimposter)" n="0"/>
+  <role descr="thing reimposed" n="1"/>
+  <role descr="reimposed on" n="2"/>
+</roles>
+
+<example name="all args">
+<text>
+    Among other reasons, high fees *trace* regulators reimposed *trace*
+    on certain transfers of thrift deposits to commercial banks
+    ``substantially altered the economics of the transaction for both
+    parties,'' Poughkeepsie said. 
+</text>
+        <arg n="0">regulators</arg>
+        <rel>reimposed</rel>
+        <arg n="1">*trace* -&gt; *trace* -&gt;  high fees</arg>
+        <arg f="on" n="2">certain transfers of thrift deposits to
+        commercial banks</arg> 
+</example>
+
+<example name="no 'benefactive'">
+<text>
+    Market Order: This is probably the most widely used order -- and 
+-- the one most open to abuse by unscrupulous floor brokers, since it 
+-- reimposes no price restrictions. 
+</text>
+        <arg n="0">it</arg>
+        <rel>reimposes</rel>
+        <arg n="1">no price restrictions</arg>
+</example>
+
+<example name="agent and 'benefactive'">
+  <text>
+    John always reimposes on Mary's good will.
+  </text>
+  <arg n="0">John</arg>
+  <arg f="TMP" n="m">always</arg>
+  <rel>reimposes</rel>
+  <arg f="on" n="2">Mary's good will</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,36 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="sidestep">
+<roleset id="sidestep.01" name="avoid" vncls="52">
+<roles>
+	<role descr="avoider" n="0">
+		
+  <vnrole vncls="52" vntheta="Agent"/></role>
+
+	<role descr="thing avoided" n="1">
+		
+  <vnrole vncls="52" vntheta="Theme"/></role>
+
+</roles>
+
+<example name="nice clean transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Campeau, owner of such retailers as Bloomingdale's , Bon Marche, and Jordan
+Marsh, sidestepped financial collapse last month after an emergency
+$250 million [*U*] loan from Olympia &amp; York Developments Ltd., a
+Canadian developer and a major shareholder in Campeau. 
+</text>
+        <arg n="0">Campeau, owner of such retailers as Bloomingdale's
+        , Bon Marche, and Jordan Marsh,</arg> 
+        <rel>sidestepped</rel>
+        <arg n="1">financial collapse</arg>
+        <arg f="TMP" n="M">last month</arg>
+        <arg f="TMP" n="M">after an emergency $250 million [*U*] loan
+        from Olympia &amp; York Developments Ltd., a Canadian
+        developer and a major shareholder in Campeau</arg> 
+</example>
+
+</roleset>
+</predicate>
+</frameset>

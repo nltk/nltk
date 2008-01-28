@@ -1,0 +1,50 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="disburse">
+<note>
+  Frames file for 'disburse' based on sentences in wsj.  Verbnet entry 13.2.
+</note>
+
+<roleset id="disburse.01" name="distribute money" vncls="13.2">
+<roles>
+  <role descr="bursar" n="0"><vnrole vncls="13.2" vntheta="Agent"/></role>
+  <role descr="money" n="1"><vnrole vncls="13.2" vntheta="Theme"/></role>
+  <role descr="recipient" n="2"><vnrole vncls="13.2" vntheta="Recipient"/></role>
+  <role descr="source of money" n="3"/>
+</roles>
+
+<example name="with recipient">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    Friday's auction will be limited to $150 million disbursed *trace*
+    by the Central Bank to potential investors. 
+</text>
+        <rel>disbursed</rel>
+        <arg n="1">*trace* -&gt;  $150 million </arg>
+        <arg f="by" n="0">the Central Bank</arg>
+        <arg f="to" n="2">potential investors</arg>
+</example>
+
+
+<example name="with source">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    And though federal law dictates that only $100 million can be
+    disbursed *trace* from that fund in any one state per disaster,
+    administration officials expect Congress to move in to authorize
+    spending more now in California. 
+</text>
+        <arg f="MOD" n="M">can</arg>
+        <rel>disbursed</rel>
+        <arg n="1">*trace* -&gt;  only $100 million</arg>
+        <arg f="from" n="3">that fund</arg>
+        <arg f="LOC" n="M">in any one state</arg>
+        <arg f="TMP" n="M">per disaster</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

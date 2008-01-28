@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="disgust">
+<note>
+  Frames file for 'disgust'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="disgust.01" name="to sicken or repel" vncls="31.1">
+<roles> 
+  <role descr="causer" n="0"><vnrole vncls="31.1" vntheta="Cause"/></role>
+  <role descr="experiencer" n="1"><vnrole vncls="31.1" vntheta="Experiencer"/></role>
+</roles>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+ Or maybe they are disgusted [*-1] by the literal-minded musical score ; when a character arrives at a major decision [*T*-3] her thoughts are revealed [*-2] by the sound of `` I Can See Clearly Now . ''
+</text>
+	<arg n="M">maybe</arg>
+	<rel>disgusted</rel>
+	<arg n="1">[*-1] -&gt;  they</arg>
+	<arg f="by" n="0">the literal-minded musical score</arg>
+</example>
+
+</roleset>
+</predicate>
+
+
+</frameset>

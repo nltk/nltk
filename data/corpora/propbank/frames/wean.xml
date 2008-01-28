@@ -1,0 +1,35 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="wean">
+<note>
+  Frames file for 'wean' based on sentences in wsj.  No access to
+  Verbnet at the moment.
+</note>
+
+<roleset id="wean.01" name="cause to be no longer dependent on" vncls="-">
+<roles>
+  <role descr="causer, agent" n="0"/>
+  <role descr="newly independent entity" n="1"/>
+  <role descr="former dependency" n="2"/>
+</roles>
+
+<example name="the one example">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+    But Time, as part of the more cost-conscious Time Warner, wants
+    [*-1] to wean itself away from expensive gimmicks. 
+</text>
+        <arg n="0">[*-1] -&gt;  Time</arg>
+        <rel>wean</rel>
+        <arg n="1">itself</arg>
+        <arg f="DIR" n="M">away</arg>
+        <arg f="from" n="2">expensive gimmicks</arg>
+</example>
+
+<note>
+Can also occur with arg2-off and arg2-of.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

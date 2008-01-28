@@ -1,0 +1,36 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="categorize">
+<note>
+  Frames file for 'categorize' based on sentences in wsj.  No Verbnet
+  entry, Framenet entry Categorization.  That was a toughie.
+</note>
+
+<roleset id="categorize.01" name="assign into a category" vncls="-">
+<roles>
+  <role descr="assigner" n="0"/>
+  <role descr="thing assigned" n="1"/>
+  <role descr="category" n="2"/>
+</roles>
+
+<example name="usually passive?">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="passive"/>
+<text>
+    The MIT project devised ways for E-mail to be automatically
+    categorized [*-1] as top priority if it comes from certain
+    designated senders or requires action in the next couple of days. 
+</text>
+        <arg f="MNR" n="M">automatically</arg>
+        <rel>categorized</rel>
+        <arg n="1">[*-1] -&gt;  E-mail</arg>
+        <arg f="as" n="2">top priority</arg>
+        <arg f="ADV" n="M">if it comes from certain designated senders
+        or requires action in the next couple of days</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

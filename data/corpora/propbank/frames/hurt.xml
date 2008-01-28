@@ -1,0 +1,72 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="hurt">
+<note>
+  Frames file for 'hurt' based on survey of initial sentences of big
+  corpus
+</note>
+
+<roleset id="hurt.01" name="cause damage to" vncls="31.1 40.8.3-2">
+<roles>
+  <role descr="agent, entity causing damage" n="0"><vnrole vncls="31.1" vntheta="Cause"/><vnrole vncls="40.8.3-2" vntheta="Experiencer"/></role>
+  <role descr="patient, entity experiencing hurt/damage" n="1">
+		
+  <vnrole vncls="31.1" vntheta="Experiencer"/><vnrole vncls="40.8.3-2" vntheta="Patient"/></role>
+
+  <role descr="instrument" n="2"/>
+  <role descr="benefactive" n="3"/>
+</roles>
+
+<example name="instrumental">
+  <text>
+  Countries with inadequate protections for intellectual-property
+  rights could be hurting themselves by discouraging their own
+  scientists and authors and by deterring US high-technology firms
+  from investing or marketing their best products there.
+  </text>
+  <arg n="0">Countries with inadequate protections for
+  intellectual-property right</arg> 
+  <arg f="MOD" n="m">could</arg>
+  <rel>hurting</rel>
+  <arg f="REC" n="1">themselves</arg>
+  <arg f="by" n="2">discouraging their own scientists and authors</arg>
+  <arg f="by" n="2">deterring US high-technology firms
+  from investing or marketing their best products there</arg>
+</example>
+
+<example name="with benefactive">
+  <text>
+  Lower prices hurt margins for most products.
+  </text>
+  <arg n="0">Lower prices</arg>
+  <rel>hurt</rel>
+  <arg n="1">margins</arg>
+  <arg f="for" n="3">most products</arg>
+</example>
+
+</roleset>
+
+<roleset id="hurt.02" name="be experiencing pain" vncls="40.8.1">
+<roles>
+  <role descr="patient, entity experiencing pain" n="1">
+	<vnrole vncls="40.8.1" vntheta="Experiencer"/></role>
+</roles>
+
+<example name="cf climb">
+  <text>
+  After climbing the mountain, John's arms and legs hurt bad..
+  </text>
+  <arg f="TMP" n="m">After climbing the mountain</arg>
+  <arg n="1">John's arms and legs</arg>
+  <rel>hurt</rel>
+  <arg f="MNR" n="m">bad</arg>
+</example>
+
+<note>
+It may be hard at times to distinguish between these two rolesets /
+senses.  Fortunately most of the argument structure maps easily.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

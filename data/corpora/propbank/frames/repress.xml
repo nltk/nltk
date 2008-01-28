@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="repress">
+<note>
+  Frames file for 'repress' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="repress.01" name="to hold back" vncls="-">
+<roles>
+  <role descr="holder back, agent" n="0"/>
+  <role descr="topic" n="1"/>
+</roles>
+
+<example name="gerund">
+<inflection aspect="ns" form="gerund" person="ns" tense="ns" voice="active"/>
+<text>
+ The sole sympathetic character is the prodigal daughter Kate ( Jaclyn Smith ) , and she is tolerable only by virtue of [*-2] having nothing in common with her kinfolk , a truly benighted pack of Southern Protestants whose grim existence [*T*-1] consists mostly of [*] growing peaches and repressing sex .
+</text>
+	<arg n="0">[*]</arg>
+	<rel>repressing</rel>
+	<arg n="1">sex</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

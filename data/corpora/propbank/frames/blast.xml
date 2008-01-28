@@ -1,0 +1,121 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="blast">
+<note>
+  Frames file for 'blast' based on sentences in wsj.  Verbnet entry
+  45.4, Framenet entries Perception noise and Judgment (that's two classes).
+</note>
+
+<roleset id="blast.01" name="make a loud noise" vncls="-">
+<roles>
+  <role descr="causer, agent" n="0"/>
+  <role descr="source of loud noise, noise itself" n="1"/>
+</roles>
+
+<example name="both args">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John blasted his stereo.
+  </text>
+  <arg n="0">John</arg>
+  <rel>blasted</rel>
+  <arg n="1">his stereo</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="blast.02" name="assign blame harshly" vncls="-">
+<roles>
+  <role descr="blamer" n="0"/>
+  <role descr="blamed" n="1"/>
+  <role descr="blamed for" n="2"/>
+</roles>
+
+<example name="all args">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+     Kemper also blasted the Big Board for ignoring the interests of
+     individual and institutional holders. 
+</text>
+        <arg n="0">Kemper</arg>
+        <arg f="DIS" n="M">also</arg>
+        <rel>blasted</rel>
+        <arg n="1">the Big Board</arg>
+        <arg f="for" n="2">ignoring the interests of individual and
+        institutional holders</arg> 
+</example>
+
+<example name="unstated reason">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Considering how tenuous the security of that runway is anyway, the
+    better option -- both morally and strategically -- would be for
+    the Bush administration to blast the regime publicly, in terms
+    clear enough for all influential Somalis to understand. 
+</text>
+        <arg n="0">the Bush administration</arg>
+        <rel>blast</rel>
+        <arg n="1">the regime</arg>
+        <arg f="MNR" n="M">publicly</arg>
+        <arg n="M">in terms clear enough for all influential Somalis
+        to understand</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="blast.04" name="mode of motion" vncls="51.3.2">
+<roles>
+  <role descr="entity in motion" n="0"><vnrole vncls="51.3.2" vntheta="Theme"/></role>
+</roles>
+
+<example name="3-2-1-blastoff!">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    The space shuttle Atlantis blasted into orbit from Cape Canaveral,
+    Fla., and its crew of five astronauts launched the nuclear-powered
+    Galileo space probe on a flight to the planet Jupiter. 
+</text>
+        <arg n="0">The space shuttle Atlantis</arg>
+        <rel>blasted</rel>
+        <arg f="DIR" n="M">into orbit</arg>
+        <arg f="DIR" n="M">from Cape Canaveral , Fla. ,</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="blast_away">
+
+<roleset id="blast.03" name="fire a gun haphazardly" vncls="-">
+<roles>
+  <role descr="shooter" n="0"/>
+  <role descr="target" n="1"/>
+</roles>
+
+<example name="ghostbusters">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    But they don't careen around in an old Cadillac, wear funny suits
+    or blast away at slimy spirits. 
+</text>
+        <arg f="DIS" n="M">But</arg>
+        <arg n="0">they</arg>
+        <arg f="NEG" n="M">n't</arg>
+        <rel>[ blast] [ away]</rel>
+        <arg f="at" n="1">slimy spirits</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

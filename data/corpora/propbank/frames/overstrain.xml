@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="overstrain">
+<note>
+  Frames file for 'overstrain' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="overstrain.01" vncls="-" name="strain too much">
+<roles>
+  <role n="0"  descr="causer of strain"/>
+  <role n="1"  descr="strained entity"/>
+</roles>
+
+<example name="adjectival">
+<inflection person="ns" tense="ns" aspect="ns" voice="passive" form="participle"/>
+<text>
+     Many of the toy makers' problems started well before June 4 as a
+     result of overstrained infrastructure and Beijing's austerity
+     programs launched late last year. 
+</text>
+	<rel>overstrained</rel>
+	<arg n="1">infrastructure</arg>
+</example>
+
+<note>
+cf. strain.01
+</note>
+
+</roleset>
+</predicate>
+</frameset>

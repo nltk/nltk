@@ -1,0 +1,34 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="roost">
+<note>
+  Frames file for 'roost' based on sentences in wsj.  Verbnet entry
+47.6 'spatial configuration', another largely meaningless class.
+</note>
+
+<roleset id="roost.01" name="be like a bird" vncls="47.6">
+<roles>
+  <role descr="bird" n="0"><vnrole vncls="47.6" vntheta="Theme"/></role>
+</roles>
+
+<example name="the one example">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    It might be alleged that TV has done more than its share to
+popularize and promote non-violent civil disobedience, so the second
+situation hypothesized above would be simply a case of ``chickens
+coming home *trace* to roost.'' 
+</text>
+        <arg n="0">*trace* -&gt;  chickens</arg>
+        <rel>roost</rel>
+</example>
+
+<note>
+Thank god we're avoiding the 'do agents always have intentionality'
+argument, or we'd have to argue about whether chickens have
+intentionality, which implies a degree of consciousness.  Yucko.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

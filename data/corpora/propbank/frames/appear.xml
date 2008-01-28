@@ -1,0 +1,75 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="appear">
+<note>
+  Frames file for 'appear' based on survey of initial sentences of big
+  corpus and comparison with 'seem'
+</note>
+
+<roleset id="appear.01" name="come to be visible">
+<roles>
+  <role descr="thing appearing" n="1"/>
+</roles>
+
+<example name="ergative">
+  <text>
+  The latest results appear in today's New England Journal of Medicine.  
+  </text>
+  <arg n="1">The latest results</arg>
+  <rel>appear</rel>
+  <arg f="LOC" n="m">in today's New England Journal of Medicine</arg>
+</example>
+
+</roleset>
+
+<roleset id="appear.02" name="seem">
+<roles>
+  <role descr="thing seeming" n="1"/>
+  <role descr="viewer" n="2"/>
+</roles>
+
+<example name="split thing seeming">
+  <text>
+  The percentage of lung cancer deaths among the workers at the West
+  Groton MA paper factory appears to be the highest for any asbestos
+  workers studied in Western industrialized countries.
+  </text>
+  <arg n="1">[The percentage of lung cancer deaths among the
+  workers at the West Groton MA paper factory][to be the highest for
+  any asbestos workers studied in Western industrialized countries]</arg>
+  <rel>appears</rel>
+</example>
+
+<example name="false it support">
+  <text>
+  It appears *trace* to be the sort of situation where anything can happen.
+  </text>
+  <arg n="1">[It][*trace* to be the sort of situation where
+  anything can happen]</arg> 
+  <rel>appears</rel>
+</example>
+
+<example name="real it support">
+  <text>
+  It appears that British Airways was angry.
+  </text>
+  <rel>appears</rel>
+  <arg n="1">that British Airways was angry</arg>
+</example>
+
+<example name="with viewer">
+  <text>
+  To Mary, John appears *trace* to be an idiot.
+  </text>
+  <arg f="to" n="2">Mary</arg>
+  <arg n="1">[John][*trace* to be an idiot]</arg>
+  <rel>appears</rel>
+</example>
+
+<note>
+I can say this; perhaps the writers in WSJ cannot.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

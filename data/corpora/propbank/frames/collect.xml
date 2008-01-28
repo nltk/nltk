@@ -1,0 +1,59 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="collect">
+<note>
+  Frames file for 'collect' based on annotation-on-the-fly on the
+  financial subcorpus and comparison with 'acquire'.  No verbnet entry.
+</note>
+
+<roleset id="collect.01" name="acquire" vncls="13.5.2 22.3-2 45.4">
+<roles>
+  <role descr="agent, entity acquiring something" n="0">
+		
+		
+		
+		
+  <vnrole vncls="13.5.2" vntheta="Agent"/><vnrole vncls="22.3-2" vntheta="Agent"/><vnrole vncls="45.4" vntheta="Agent"/></role>
+
+  <role descr="thing acquired" n="1">
+		
+		
+		
+  <vnrole vncls="13.5.2" vntheta="Theme"/><vnrole vncls="22.3-2" vntheta="Patient"/><vnrole vncls="45.4" vntheta="Patient"/></role>
+
+  <role descr="seller" n="2">
+		
+  <vnrole vncls="13.5.2" vntheta="Source"/></role>
+
+  <role descr="benefactive" n="4"/>
+</roles>
+
+<example name="simple transitive">
+  <text>
+  Commonwealth Edison collected illegal rates for cost overruns on a
+  nuclear power plant.
+  </text>
+  <arg n="0">Commonwealth Edison</arg>
+  <rel>collected</rel>
+  <arg n="1">illegal rates</arg>
+  <arg f="for" n="4">cost overruns on a nuclear power plant.</arg>
+</example>
+
+<example name="all args">
+  <text>
+  John collected $1.15 from passers-by for his &quot;Save the Leprous
+  Monkeys&quot; campaign.
+  </text>
+  <arg n="0">John</arg>
+  <rel>collected</rel>
+  <arg n="1">$1.15</arg>
+  <arg f="from" n="2">passers-by </arg>
+  <arg f="for" n="4">his &quot;Save the Leprous Monkeys&quot; campaign.</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

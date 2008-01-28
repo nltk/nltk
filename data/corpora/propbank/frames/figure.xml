@@ -1,0 +1,145 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="figure">
+<note>
+  Frames file for 'figure' based on sentences in financial subcorpus.
+  Verbnet entry 29.5, other framed members include assert, deny,
+  observe and recognize.  No Framenet entry.
+</note>
+
+<roleset id="figure.01" name="think" vncls="29.5">
+<roles>
+  <role descr="thinker" n="0">
+	  <vnrole vncls="29.5" vntheta="Agent"/></role>
+  <role descr="thought" n="1">
+	  <vnrole vncls="29.5" vntheta="Theme"/></role>
+</roles>
+
+<example name="most common usage">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    He figures P&amp;G will expand its personal-care product line in
+    Japan to ``continue that momentum.'' 
+</text>
+        <arg n="0">He</arg>
+        <rel>figures</rel>
+        <arg n="1">P&amp;G will expand its personal-care product line
+        in Japan  to ``continue that momentum</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="figure.02" name="plan" vncls="29.5">
+<roles>
+  <role descr="planner" n="0">
+	  <vnrole vncls="29.5" vntheta="Agent"/></role>
+  <role descr="thing planned" n="1">
+	  <vnrole vncls="29.5" vntheta="Theme"/></role>
+  <role descr="grounds for planning" f="on" n="2"/>
+</roles>
+
+<example name="plan an infinite-S">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    Pierre Peladeau, a Canadian newspaper publisher little-known in
+    the U.S., figures to become a big player in North American
+    printing -- and his ambitions don't end there. 
+</text>
+        <arg n="0">Pierre Peladeau , a Canadian newspaper publisher little-known in the U.S. ,</arg>
+        <rel>figures</rel>
+        <arg n="1">to become a big player in North American printing</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="figure.03" name="play a role" vncls="-">
+<roles>
+  <role descr="actor" n="0"/>
+  <role descr="role" n="1"/>
+</roles>
+
+<example name="not exactly a role">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    The Chicago office figured prominently in the bank's problems
+    earlier this year, when $65 million in loans to Chicago
+    businessman William Stoecker went sour. 
+</text>
+        <arg n="0">The Chicago office</arg>
+        <rel>figured</rel>
+        <arg f="MNR" n="M">prominently</arg>
+        <arg f="in" n="1">the bank's problems earlier this year, when
+        $65 million in loans to Chicago businessman William Stoecker
+        went sour </arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="figure.04" name="determine, calculate" vncls="29.5">
+<roles>
+  <role descr="decider" n="0">
+	  <vnrole vncls="29.5" vntheta="Agent"/></role>
+  <role descr="thing determined" n="1">
+	  <vnrole vncls="29.5" vntheta="Theme"/></role>
+  <role descr="grounds" n="2"/>
+  <role descr="attribute of arg1" n="3">
+	  <vnrole vncls="29.5" vntheta="Predicate"/></role>
+</roles>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="third" tense="past" voice="passive"/>
+<text>
+    This had been the exclusive province of those rich enough to use
+    six-figure sums to get income that *trace* was figured *trace*
+    beyond the third or fourth decimal place. 
+</text>
+        <rel>figured</rel>
+        <arg n="1">*trace* -&gt; *trace* -&gt;  that -&gt;  income</arg>
+        <arg f="MNR" n="M">beyond the third or fourth decimal place</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="figure_out">
+
+<roleset id="figure.05" name="determine" vncls="29.5">
+<roles>
+  <role descr="decider" n="0">
+	  <vnrole vncls="29.5" vntheta="Agent"/></role>
+  <role descr="thing determined" n="1">
+	  <vnrole vncls="29.5" vntheta="Theme"/></role>
+  <role descr="grounds" n="2"/>
+  <role descr="attribute of arg1" n="3">
+	  <vnrole vncls="29.5" vntheta="Predicate"/></role>
+</roles>
+
+<example name="you figure it out">
+<inflection aspect="ns" form="gerund" person="ns" tense="ns" voice="ns"/>
+<text>
+    James Cleveland, a courier who earned a Bravo Zulu for *trace*
+    figuring out how to get a major customer's 1,100-parcel-a-week
+    load to its doorstep by 8 a.m., considers himself far more than a
+    courier. 
+</text>
+        <arg n="0">*trace* -&gt; *trace* -&gt;  who -&gt;  a courier</arg>
+        <rel>[ figuring] [ out]</rel>
+        <arg n="1">how to get a major customer's 1,100-parcel-a-week
+        load to its doorstep by 8 a.m.</arg> 
+</example>
+
+</roleset>
+</predicate>
+</frameset>

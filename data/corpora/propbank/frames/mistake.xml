@@ -1,0 +1,46 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="mistake">
+<note>
+  Frames file for 'mistake' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="mistake.01" name="take incorrectly, assume incorrectly" vncls="-">
+<roles>
+  <role descr="entity making an assumption, agent" n="0"/>
+  <role descr="thing mistaken" n="1"/>
+  <role descr="frequently: assumption" n="2"/>
+</roles>
+
+<example name="infrequent verbal usage">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John mistook Mary for an ax murderer, when in truth she prefers a chainsaw.
+  </text>
+  <arg n="0">John</arg>
+  <rel>mistook</rel>
+  <arg n="1">Mary</arg>
+  <arg f="for" n="2">an ax murderer</arg>
+  <arg f="TMP" n="m">when in truth she prefers a chainsaw</arg>
+</example>
+
+<example name="more frequently adjectival">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    Scientists [*ICH*-2] are mistaken who still think that the
+    anti-science movement in this country isn't their concern or that
+    a David Baltimore could have somehow placated a John Dingell. 
+</text>
+        <arg n="1">[ Scientists] [ [*ICH*-2]] [ who still think that
+        the anti-science movement in this country isn't their concern
+        or that a David Baltimore could have somehow placated a John
+        Dingell]</arg> 
+        <rel>mistaken</rel>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

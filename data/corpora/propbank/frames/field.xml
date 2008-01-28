@@ -1,0 +1,46 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="field">
+<note>
+  Frames file for 'field' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="field.01" name="to answer successfully or put into action" vncls="-">
+<roles>
+  <role descr="fielder, agent" n="0"/>
+  <role descr="question, proposal" n="1"/>
+</roles>
+
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="past" voice="passive"/>
+<text>
+ Then , in 1988 , a proposal [*] to keep better track of income by [*] selling prepaid cards for pachinko was fielded [*-1] in parliament .
+</text>
+	<arg f="TMP" n="M">Then</arg>
+	<arg f="TMP" n="M">in 1988</arg>
+	<rel>fielded</rel>
+	<arg n="1">[*-1] -&gt;  a proposal [*] to keep better track of income by [*] selling prepaid cards for pachinko</arg>
+	<arg f="LOC" n="M">in parliament</arg>
+</example>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ He puts in busy six-day weeks ( excluding game days ) , and on one recent afternoon fielded questions [*ICH*-1] , in the course of an hour , from a TV producer , his luxury-suite marketing manager , a disgruntled customer and a roomful of Arkansas reporters .
+</text>
+	<arg n="0">He</arg>
+	<arg f="TMP" n="M">on one recent afternoon</arg>
+	<rel>fielded</rel>
+	<arg n="1">[ questions [*ICH*-1]] [ from a TV producer , his luxury-suite marketing manager , a disgruntled customer and a roomful of Arkansas reporters]</arg>
+	<arg f="TMP" n="M">in the course of an hour</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

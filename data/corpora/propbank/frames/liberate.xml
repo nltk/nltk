@@ -1,0 +1,36 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="liberate">
+<note>
+  Frames file for 'liberate' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="liberate.01" name="to set free" vncls="10.5">
+<roles>
+  <role descr="cause of freedom, agent" n="0">
+        <vnrole vncls="10.5" vntheta="Agent"/></role>
+  <role descr="entity liberated" n="1">
+	<vnrole vncls="10.5" vntheta="Theme"/></role>
+  <role descr="entity liberated from" n="2">
+	<vnrole vncls="10.5" vntheta="Source"/></role>
+</roles>
+
+<example name="all arguments">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ In fact , he liberated the U.S. from one of the world 's most corrupt organizations -- UNESCO .
+</text>
+	<arg f="DIS" n="M">In fact</arg>
+	<arg n="0">he</arg>
+	<rel>liberated</rel>
+	<arg n="1">the U.S.</arg>
+	<arg f="from" n="2">one of the world 's most corrupt organizations -- UNESCO</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

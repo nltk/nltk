@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="voice">
+<note>
+  Frames file for 'voice' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="voice.01" name="say" vncls="-">
+<roles>
+  <role descr="speaker" n="0"/>
+  <role descr="utterance" n="1"/>
+  <role descr="hearer" n="2"/>
+</roles>
+
+<example name="always just transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    While U.S. officials voice optimism about Japan's enlarged role in
+    Asia, they also convey an undertone of caution. 
+</text>
+        <arg n="0">U.S. officials</arg>
+        <rel>voice</rel>
+        <arg n="1">optimism about Japan's enlarged role in Asia</arg>
+</example>
+
+<note>
+I'm not sure the verb even could take a hearer arg; it sounds a little
+weird  me.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

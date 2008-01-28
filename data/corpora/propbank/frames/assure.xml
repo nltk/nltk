@@ -1,0 +1,55 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="assure">
+<note>
+  Frames file for 'assure' based on sentences in financial subcorpus.
+  No verbnet entry.  Comparison to 'surprise'.
+</note>
+
+<roleset id="assure.01" name="calm someone's nerves">
+<roles>
+  <role descr="causer of assurance" n="0"/>
+  <role descr="assured one" n="1"/>
+  <role descr="assurance, utterance" n="2"/>
+</roles>
+
+<example name="all args">
+<text>
+    A spokesman for AMR Corp. said Boeing has assured American
+    Airlines it will deliver a 757 on time later this month. 
+</text>
+        <arg n="0">Boeing</arg>
+        <rel>assured</rel>
+        <arg n="1">American Airlines</arg>
+        <arg n="2">it will deliver a 757 on time later this month</arg>
+</example>
+
+<example name="passivized">
+<text>
+    They also worry that if the government applies asset-forfeiture
+    laws broadly, the best defense lawyers will be unwilling to take
+    criminal cases unless they are assured *trace* of being paid. 
+</text>
+        <rel>assured</rel>
+        <arg n="1">*trace* -&gt;  they</arg>
+        <arg f="of" n="2">being paid </arg>
+</example>
+
+<example name="almost adjectival">
+<text>
+    It was in Jaguar's best interests ``for the company's future to be
+    assured and the present climate of uncertainty resolved as quickly
+    as possible,'' Mr. Ridley said. 
+</text>
+        <arg n="1">the company 's future</arg>
+        <rel>assured</rel>
+</example>
+
+<note>
+The line between passive and adjectival is very thin, so go ahead and
+tag everything.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

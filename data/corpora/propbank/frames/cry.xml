@@ -1,0 +1,93 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="cry">
+<note>
+  Frames file for 'cry' based on sentences in wsj.  Verbnet entries
+  37.3 &quot;manner speaking&quot;, 40.1.2 &quot;breathe&quot;, 40.2 &quot;nonverbal
+  expression&quot;.  Framenet entry Communication Noise.
+</note>
+
+<roleset id="cry.01" name="speak loudly, yell, speak   while weeping" vncls="37.3">
+<roles>
+  <role descr="speaker" n="0"><vnrole vncls="37.3" vntheta="Agent"/></role>
+  <role descr="utterance" n="1"><vnrole vncls="37.3" vntheta="Topic"/></role>
+  <role descr="hearer" n="2"><vnrole vncls="37.3" vntheta="Recipient"/></role>
+</roles>
+
+<example name="stupid split construction">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    The only fraud involved, cry *trace* Mr. Courter's partisans, is
+    the Florio commercial itself, and so the Courter campaign has
+    responded with its own Pinocchio commercial, produced by
+    Mr. Ailes. 
+</text>
+        <rel>cry</rel>
+        <arg n="1">[ The only fraud involved] [ ] [ is the Florio
+        commercial itself]</arg> 
+        <arg n="0">Mr. Courter's partisans</arg>
+</example>
+
+</roleset>
+
+<roleset id="cry.02" name="cry, weep" vncls="40.1.2-1 40.2">
+<roles>
+  <role descr="cryer" n="0"><vnrole vncls="40.1.2-1" vntheta="Agent"/><vnrole vncls="40.2" vntheta="Agent"/></role>
+  <role descr="cognate object" n="1"><vnrole vncls="40.1.2-1" vntheta="Theme"/><vnrole vncls="40.2" vntheta="Theme"/></role>
+</roles>
+
+<example name="intransitive">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    ``I've never seen so many people crying in one place at one
+    time,'' said Bill Johnson, an assistant city editor. 
+</text>
+        <arg n="0">so many people</arg>
+        <rel>crying</rel>
+        <arg f="LOC" n="M">in one place</arg>
+        <arg f="TMP" n="M">at one time</arg>
+</example>
+
+<example name="cognate object?">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John cried a good long cry, then got back to work.
+  </text>
+  <arg n="0">John</arg>
+  <rel>cried</rel>
+  <arg n="1">a good long cry</arg>
+</example>
+
+<note>
+Sounds a little weird to me, but possible.
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="cry_out">
+
+<roleset id="cry.03" name="speak loudly, yell, speak   while weeping" vncls="37.3">
+<roles>
+  <role descr="speaker" n="0"><vnrole vncls="37.3" vntheta="Agent"/></role>
+  <role descr="utterance" n="1"><vnrole vncls="37.3" vntheta="Topic"/></role>
+  <role descr="hearer" n="2"><vnrole vncls="37.3" vntheta="Recipient"/></role>
+</roles>
+
+<example name="yikes!">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    ``Ski school is great,'' cries out *trace* a tot, bundled in a
+    snowsuit as he plows down a bunny slope. 
+</text>
+        <rel>[ cries] [ out]</rel>
+        <arg n="1">*trace* -&gt;  Ski school is great</arg>
+        <arg n="0">a tot, bundled  in a snowsuit</arg>
+        <arg f="TMP" n="M">as he plows down a bunny slope</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

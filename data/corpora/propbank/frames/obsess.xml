@@ -1,0 +1,46 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="obsess">
+<note>
+  Frames file for 'obsess' based on sentences in wsj.  Verbnet entries
+  31.1 and 31.3, verbs of emotion.  31.1 at least is inaccurate.
+</note>
+
+<roleset id="obsess.01" name="monomania" vncls="31.3">
+<roles>
+  <role descr="obsessed entity" n="0"><vnrole vncls="31.3" vntheta="Experiencer"/></role>
+  <role descr="obsession" n="1"><vnrole vncls="31.3" vntheta="Cause"/></role>
+</roles>
+
+<example name="actually adjectival">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    But it is Mr. Lane, as movie director, producer and writer, who
+    has been obsessed with *trace* refitting Chaplin's Little Tramp in
+    a contemporary way. 
+</text>
+        <arg n="0">*trace* -&gt;  who -&gt;  Mr. Lane, as movie director,
+        producer and writer,</arg> 
+        <rel>obsessed</rel>
+        <arg f="with" n="1">refitting Chaplin's Little Tramp in a
+        contemporary way</arg> 
+</example>
+
+<example name="verbal">
+  <inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+  <text>
+    John obsesses over the smallest details.
+  </text>
+  <arg n="0">John</arg>
+  <rel>obsesses</rel>
+  <arg f="over" n="1">the smallest details</arg>
+</example>
+
+<note>
+Not actually worth annotating in tb, because the one example is
+adjectival, but included in frames for completeness.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

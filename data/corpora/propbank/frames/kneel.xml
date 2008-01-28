@@ -1,0 +1,38 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="kneel">
+<note>
+  Frames file for 'kneel' based on sentences in brown.  Verbnet entry
+</note>
+
+<roleset id="kneel.01" vncls="-" name="on bended knee">
+<roles>
+  <role n="0"  descr="kneeler"/>
+</roles>
+
+<example name="participial">
+  <inflection person="ns" tense="ns" aspect="progressive" voice="active" form="participle"/>
+  <text>
+     ...their exquisitely graceful nude and draped torsos and the
+     kneeling Atlantes are well preserved in their perfect proportions.
+  </text>
+  <rel              >kneeling</rel>
+  <arg n="0"        >Atlantes</arg>
+</example>
+
+<example name="pure verbal">
+  <inflection person="ns" tense="future" aspect="ns" voice="active" form="full"/>
+  <text>
+    They will kneel and plead for Boris' leadership.
+  </text>
+  <arg n="0"        >They</arg>
+  <arg n="m" f="MOD">will</arg>
+  <rel              >kneel</rel>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

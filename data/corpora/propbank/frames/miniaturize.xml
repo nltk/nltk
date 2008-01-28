@@ -1,0 +1,40 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="miniaturize">
+<note>
+  Frames file for 'miniaturize' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="miniaturize.01" vncls="-" name="make very small">
+<roles>
+  <role n="0"  descr="cause of smallness, agent"/>
+  <role n="1"  descr="small thing"/>
+</roles>
+
+<example name="adjectival">
+<inflection person="ns" tense="ns" aspect="ns" voice="passive" form="participle"/>
+<text>
+    But in recent years, the market has moved toward less expensive
+    ``mini-component'' sets, miniaturized amplifiers and receivers and
+    software players that could be stacked on top of each other. 
+</text>
+	<rel>miniaturized</rel>
+	<arg n="1">amplifiers and receivers and software players</arg>
+</example>
+
+<example name="bummer">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+     John miniaturized his head.
+  </text>
+  <arg n="0"        >John</arg>
+  <rel              >miniaturized</rel>
+  <arg n="1"        >his head</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

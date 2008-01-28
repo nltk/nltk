@@ -1,0 +1,197 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="tie">
+<note>
+  Frames file for 'tie' based on survey of sentences in financial
+  corpus.  Verbnet class tape-22.4; this is the first member to be
+  framed.  Comparison to 'match' to avoid whole figure/ground issue.
+</note>
+
+<roleset id="tie.01" name="attach" vncls="22.4">
+<roles>
+  <role descr="agent, entity doing the tying" n="0">
+		
+  <vnrole vncls="22.4" vntheta="Agent"/></role>
+
+  <role descr="patient, thing(s) being tied" n="1">
+		
+  <vnrole vncls="22.4" vntheta="Patient1"/></role>
+
+  <role descr="instrument, string" n="2">
+		
+  <vnrole vncls="22.4" vntheta="Patient2"/></role>
+
+  <role descr="attribute of arg1" n="3"/>
+</roles>
+
+<example name="two arg1s">
+  <text>
+    Not only is development of the new company's initial machine tied
+    *trace* directly to Mr. Cray, so is its balance sheet.
+  </text>
+  <arg n="1">*trace*=development of the new company's initial
+  machine</arg> 
+  <rel>tied</rel>
+  <arg f="ADV" n="m">directly</arg>
+  <arg f="to" n="1">Mr. Cray</arg>
+</example>
+
+<example name="with instrument">
+  <text>
+  John tied the packages with twine.
+  </text>
+  <arg n="0">John</arg>
+  <rel>tied</rel>
+  <arg n="1">the packages</arg>
+  <arg f="with" n="2">twine</arg>
+</example>
+
+<example name="with attributive">
+  <text>
+  John tied the packages together.
+  </text>
+  <arg n="0">John</arg>
+  <rel>tied</rel>
+  <arg n="1">the packages</arg>
+  <arg n="3">together</arg>
+</example>
+
+<note>
+This almost seems like a phrasal verb, but since the &quot;together&quot; now
+describes the state of the object-of-tying, let's treat it as an
+attributive.  Note that the same is not true of &quot;tie up&quot; &quot;tie down&quot;,
+etc.  These will take the same roleset as plain old &quot;tie&quot;, except for
+the attribute.
+</note>
+
+</roleset>
+
+<roleset id="tie.03" name="score the same" vncls="-">
+<roles>
+  <role descr="causer of equal score" n="0"/>
+  <role descr="in comparison to" n="1"/>
+</roles>
+
+<example name="pithiest? barrage? who swallowed the dictionary?">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     The pithiest testimony to their domination of the just-concluded
+     tournament came from Giants' manager Roger Craig after his team
+     had fallen in Game Three to a five-home-run barrage that *trace*
+     tied a 61-year-old Series record.
+  </text>
+  <arg n="0">*trace* -&gt; that -&gt; a five-home-run barrage</arg>
+  <rel>tied</rel>
+  <arg n="1">a 61-year-old Series record</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="tie_in">
+
+<roleset id="tie.02" name="attach" vncls="-">
+<roles>
+  <role descr="agent, entity doing the tying" n="0"/>
+  <role descr="patient, thing(s) being tied" n="1"/>
+</roles>
+
+<example name="passive">
+  <text>
+    For years, the company's ads were tied *trace* in with pitches for
+    Cannon sheets or Martex towels.
+  </text>
+  <arg f="TMP" n="m">For years</arg>
+  <arg n="1">*trace*=the company's ads</arg>
+  <rel>tied</rel>
+  <arg f="with" n="1">pitches for Cannon sheets or Martex towels.</arg>
+</example>
+
+<note>
+Basically the same as &quot;tie&quot; above but instrument and attribute are not
+expected to appear.
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="tie_up">
+
+<roleset id="tie.04" name="bind with rope (eg)" vncls="-">
+<roles>
+  <role descr="tie-er" n="0"/>
+  <role descr="tied" n="1"/>
+</roles>
+
+<example name="kinky stuff">
+  <inflection aspect="ns" form="full" person="ns" tense="ns" voice="active"/>
+  <text>
+     Mary likes *trace* to tie John up and tease him with chocolate cake.
+  </text>
+  <arg n="0">*trace* -&gt; Mary</arg>
+  <rel>tie up</rel>
+  <arg n="1">John</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="tie.05" name="be involved in" vncls="-">
+<roles>
+  <role descr="thing involved" n="1"/>
+  <role descr="thing involved in/with" n="2"/>
+</roles>
+
+<example name="not nearly as interesting">
+  <inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="passive"/>
+  <text>
+    About $70 billion is estimated *trace* to be tied up in the
+    short-term money market, which acts both as a hedge against
+    inflation for consumers and an accelerator of inflation and
+    deficits for the government.
+  </text>
+  <arg n="1">*trace* -&gt; $70 billion</arg>
+  <rel>tied up</rel>
+  <arg f="in" n="2">the short-term money market, which acts both as a
+  hedge against 
+    inflation for consumers and an accelerator of inflation and
+    deficits for the government</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="tie_down">
+
+<roleset id="tie.06" name="be stuck" vncls="-">
+<roles>
+  <role descr="stuck entity" n="1"/>
+  <role descr="cause of stuckness" n="2"/>
+</roles>
+
+<example name="no clever example name">
+  <inflection aspect="ns" form="participle" person="third" tense="present" voice="passive"/>
+  <text>
+     Mr. Mengistu is in an increasingly weak position: Half his army
+     is tied *trace* down defending the northern city of Asmara from
+     the Eritreans.
+  </text>
+  <arg n="1">*trace* -&gt; Half his army</arg>
+  <rel>tied down</rel>
+  <arg n="2">defending the northern city of Asmara from the Eritreans</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

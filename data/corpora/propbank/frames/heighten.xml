@@ -1,0 +1,51 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="heighten">
+<note>
+  Frames file for 'heighten' based on sentences in financial
+  subcorpus.  Verbnet entry 45.4 along with all the other causatives.
+</note>
+
+<roleset id="heighten.01" name="make higher" vncls="45.4">
+<roles>
+  <role descr="causal agent" n="0">
+		
+  <vnrole vncls="45.4" vntheta="Agent"/></role>
+
+  <role descr="thing becoming higher" n="1">
+		
+  <vnrole vncls="45.4" vntheta="Patient"/></role>
+
+</roles>
+
+<example name="agentive">
+<text>
+    The move is sure *trace* to heighten concerns about increased
+    Japanese investment in U.S. biotechnology firms. 
+</text>
+        <arg n="0">*trace* -&gt;  The move</arg>
+        <rel>heighten</rel>
+        <arg n="1">concerns about increased Japanese investment in
+        U.S. biotechnology firms</arg> 
+</example>
+
+<example name="ergative">
+<text>
+    CenTrust Savings Bank said federal thrift regulators ordered it to
+    suspend dividend payments on its two classes of preferred stock,
+    indicating that regulators' concerns about the troubled
+    institution have heightened. 
+</text>
+        <arg n="1">regulators' concerns about the troubled
+        institution</arg> 
+        <rel>heightened</rel>
+</example>
+
+<note>
+This picks up a lot of adjectival usages like &quot;there are heightened
+concerns about blah&quot;.  Ignore these for the time being.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

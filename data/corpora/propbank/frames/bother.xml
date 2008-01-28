@@ -1,0 +1,130 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="bother">
+<note>
+Frames file for 'bother' based on sentences in wsj and
+automatic expansion via verbnet.
+</note>
+
+<roleset id="bother.01" name="cause stress in" vncls="31.1">
+<roles>
+  <role descr="causer of bothering" n="0">
+	<vnrole vncls="31.1" vntheta="Cause"/></role>
+  <role descr="bothered" n="1">
+	<vnrole vncls="31.1" vntheta="Experiencer"/></role>
+  <role descr="instrument of bothering" n="2"/>
+</roles>
+
+<example name="just transitive">
+<inflection aspect="perfect" form="participle" person="third" tense="present" voice="ns"/>
+<text>
+    This hasn't much bothered the UNESCO delegates, who last week
+    couldn't even agree to raise funds by selling off a fancy
+    19th-century French chateau the agency somehow owns. 
+</text>
+        <arg n="0">This</arg>
+        <arg f="NEG" n="M">n't</arg>
+        <arg f="ADV" n="M">much</arg>
+        <rel>bothered</rel>
+        <arg n="1">the UNESCO delegates, who last week couldn't even
+        agree to raise funds by selling off a fancy 19th-century
+        French chateau the agency somehow owns </arg> 
+</example>
+
+<example name="adequate instrumental ex">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="ns"/>
+<text>
+    And if a user is busy, ``he can set it for crisis mode: `Don't
+    *trace* bother me with reports until Monday.''' 
+</text>
+        <arg n="0">*trace*</arg>
+        <arg f="NEG" n="M">n't</arg>
+        <rel>bother</rel>
+        <arg n="1">me</arg>
+        <arg f="with" n="2">reports</arg>
+        <arg f="TMP" n="M">until Monday</arg>
+</example>
+
+<example name="passivized with instrument" src="tempt.01">
+  <text>
+    John was sorely bothered *trace* by Mary's offer of freshly-baked
+    apple pie. 
+  </text>
+  <arg n="1">*trace* -&gt; John</arg>
+  <arg f="MNR" n="m">sorely</arg>
+  <rel>bothered</rel>
+  <arg f="by" n="2">Mary's offer of freshly-baked apple pie</arg>
+</example>
+
+<note>
+Save instrument for cases where there's also a clear agent.
+</note>
+
+</roleset>
+
+<roleset id="bother.02" name="semi-modal" vncls="-">
+<roles>
+  <role descr="botherer" n="0"/>
+  <role descr="real action" n="1"/>
+</roles>
+
+<example name="full clause action">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    There is no sign that you bothered to consider the inverse of your
+    logic: namely, that mental illness and substance abuse might be to
+    some degree consequences rather than causes of homelessness. 
+</text>
+        <arg n="0">you</arg>
+        <rel>bothered</rel>
+        <arg n="1">to consider the inverse of your logic:
+        namely, that mental illness and substance abuse might be to
+        some degree consequences rather than causes of
+        homelessness</arg> 
+</example>
+
+<example name="action as ing-clause">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    But skeptics ask why you should bother buying this stuff when you
+    can get only slightly lower yields on government-guaranteed
+    paper. 
+</text>
+        <arg n="0">you</arg>
+        <arg f="MOD" n="M">should</arg>
+        <rel>bother</rel>
+        <arg n="1">buying this stuff</arg>
+	<arg f="TMP" n="M">when you can get only slightly lower yields
+        on government-guaranteed paper</arg>
+</example>
+
+<example name="action as PP">
+<inflection aspect="ns" form="full" person="ns" tense="ns" voice="ns"/>
+<text>
+    ``Why should I bother with something that's an unknown for a very
+    small pickup in yield?'' he said. 
+</text>
+        <arg f="MOD" n="M">should</arg>
+        <arg n="0">I</arg>
+        <rel>bother</rel>
+        <arg f="with" n="1">something that's an unknown</arg>
+        <arg f="PNC" n="M">for a very small pickup in yield</arg>
+</example>
+
+<example name="no action at all">
+<inflection aspect="perfect" form="participle" person="ns" tense="ns" voice="ns"/>
+<text>
+    I thought and, I'm sure, others did: ``You shouldn't have
+    bothered.'' 
+</text>
+        <arg n="0">You</arg>
+        <arg f="MOD" n="M">should</arg>
+        <arg f="NEG" n="M">n't</arg>
+        <rel>bothered</rel>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

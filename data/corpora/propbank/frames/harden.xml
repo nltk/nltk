@@ -1,0 +1,42 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="harden">
+<note>
+  Frames file for 'harden' based on sentences in wsj.  Verbnet entry 45.4.
+</note>
+
+<roleset id="harden.01" vncls="45.4" name="make hard">
+<roles>
+  <role n="0"  descr="causer of hardness, agent"/>
+  <role n="1"  descr="thing becoming hard"/>
+</roles>
+
+<example name="adjectival">
+<inflection person="ns" tense="ns" aspect="ns" voice="passive" form="participle"/>
+<text>
+    Once the consolidation is complete, Bethlehem plans to concentrate
+    its forgings business on nuclear fabrication, hardened steel and
+    large-diameter steel rolls for rolling mills and selected
+    custom-die applications.  
+</text>
+	<rel>hardened</rel>
+	<arg n="1">steel</arg>
+</example>
+
+<example name="agentive">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+     After one too many disappointments, John hardened his heart.
+  </text>
+  <arg n="m" f="TMP">After one too many disappointments</arg>
+  <arg n="0"        >John</arg>
+  <rel              >hardened</rel>
+  <arg n="1"        >his heart</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

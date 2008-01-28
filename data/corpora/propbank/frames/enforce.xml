@@ -1,0 +1,47 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="enforce">
+<note>
+  Frames file for 'enforce' based on sentences in financial subcorpus.
+  No Verbnet entry, no Framenet entry.  No comparison.
+</note>
+
+<roleset id="enforce.01" name="make sure the rules are followed">
+<roles>
+  <role descr="enforcer" n="0"/>
+  <role descr="rule(s)" n="1"/>
+</roles>
+
+<example name="normal usage">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Japan agreed *trace* to enforce a decision  by an international
+    wildlife conference to ban all trade in ivory, a spokesman for the
+    Ministry of International Trade and Industry said. 
+</text>
+        <arg n="0">*trace* -&gt;  Japan</arg>
+        <rel>enforce</rel>
+        <arg n="1">a decision by an international wildlife conference
+        to ban all trade in ivory</arg> 
+</example>
+
+<example name="um, wrong word">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    The pilot union said the flight attendants' decision ``enforces
+    our belief that an all-employee owned airline is practical and
+    achievable.'' 
+</text>
+        <arg n="0">the flight attendants' decision</arg>
+        <rel>enforces</rel>
+        <arg n="1">our belief that an all-employee owned airline is
+        practical and achievable</arg> 
+</example>
+
+<note>
+I think they wanted 'reinforce,' which actually is related.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

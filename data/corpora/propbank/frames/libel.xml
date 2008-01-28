@@ -1,0 +1,35 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="libel">
+<note>
+  Frames file for 'libel' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="libel.01" name="tell lies about someone in print" vncls="-">
+<roles>
+  <role descr="agent, teller of lies" n="0"/>
+  <role descr="patient, subject of lies" n="1"/>
+</roles>
+
+<example name="the one example">
+<inflection aspect="perfect" form="participle" person="ns" tense="past" voice="active"/>
+<text>
+    But the panel dismissed the magazine's contention that it hadn't
+    libeled Mrs. Sutcliffe when it accused her of trying to sell her
+    story to capitalize on the notoriety of her husband.
+</text>
+        <arg n="0">it</arg>
+        <arg f="NEG" n="M">n't</arg>
+        <rel>libeled</rel>
+        <arg n="1">Mrs. Sutcliffe</arg>
+        <arg f="TMP" n="M">when it accused her of trying to sell her
+        story to capitalize on the notoriety of her husband</arg> 
+</example>
+
+<note>
+Slander is when you tell lies about someone vocally.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

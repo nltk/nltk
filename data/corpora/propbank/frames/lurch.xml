@@ -1,0 +1,47 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="lurch">
+<note>
+  Frames file for 'lurch'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="lurch.01" name="to move in an irregular way" vncls="-">
+<roles> 
+  <role descr="entity moving" n="0"/>
+  <role descr="path" n="1"/>
+</roles>
+
+<example name="with Arg1">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ A deep trench [*ICH*-1] now runs along its north wall , exposed [*] when the house lurched two feet off its foundation during last week 's earthquake [*T*-2] .
+</text>
+	<arg n="0">the house</arg>
+	<rel>lurched</rel>
+	<arg n="1">two feet</arg>
+	<arg f="DIR" n="M">off its foundation</arg>
+	<arg f="TMP" n="M">during last week 's earthquake</arg>
+	<arg f="TMP" n="M">[*T*-2] -&gt;  when</arg>
+</example>
+
+
+<example name="intransitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ As the stock market lurched into a 190-point free fall on Oct. 13 , Mr. Breeden found himself scurrying around the sixth floor of the SEC -- from his desk , where the New York Stock Exchange was on an open line [*T*-2] , to his assistant 's office , where the Commodity Futures Trading Commission was connected [*-1] [*T*-3] , to a third room , where a computer monitored market moves [*T*-4] .
+</text>
+	<arg n="0">the stock market</arg>
+	<rel>lurched</rel>
+	<arg f="DIR" n="M">into a 190-point free fall</arg>
+	<arg f="TMP" n="M">on Oct. 13</arg>
+</example>
+
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

@@ -1,0 +1,138 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="spread">
+<note>
+  Frames file for 'spread' based on sentences in financial subcorpus.
+  Verbnet classes spray-9.7-1 and entity_specific_modes_being-47.2;
+  no other framed members.  Comparison to 'apply'.
+</note>
+
+<roleset id="spread.01" name="smear, apply" vncls="9.7-1">
+<roles>
+  <role descr="applier, intentional agent" n="0">
+	  <vnrole vncls="9.7-1" vntheta="Agent"/></role>
+  <role descr="substance" n="1">
+	  <vnrole vncls="9.7-1" vntheta="Theme"/></role>
+  <role descr="surface" n="2">
+	  <vnrole vncls="9.7-1" vntheta="Destination"/></role>
+  <role descr="instrument, brush" n="3"/>
+</roles>
+
+<example name="passivized">
+<text>
+    She said the move would result in a after-tax charge of less than
+    $4 million *trace* *trace* to be spread *trace* over the next
+    three quarters. 
+</text>
+        <rel>spread</rel>
+        <arg n="1">*trace* -&gt; *trace* -&gt; *trace* -&gt;  a after-tax charge</arg>
+        <arg f="over" n="2">the next three quarters</arg>
+</example>
+
+<example name="all args, active">
+  <text>
+    John spread the peanut butter onto the bread with his fingers.
+  </text>
+  <arg n="0">John</arg>
+  <rel>spread</rel>
+  <arg n="1">the peanut butter</arg>
+  <arg f="onto" n="2">the bread</arg>
+  <arg f="with" n="3">his fingers</arg>
+</example>
+
+<example name="instrumental subject">
+  <text>
+    Feathers don't spread peanut butter very well.
+  </text>
+  <arg n="3">Feathers</arg>
+  <arg f="NEG" n="m">n't</arg>
+  <rel>spread</rel>
+  <arg n="1">peanut butter</arg>
+  <arg f="MNR" n="m">very well</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="spread.02" name="extend" vncls="47.2 48.1.1">
+<roles>
+  <role descr="substance" n="1">
+	<vnrole vncls="47.2" vntheta="Theme"/>
+        <vnrole vncls="48.1.1" vntheta="Theme"/></role>
+  <role descr="diretion or location or extent" n="m">
+  </role>
+</roles>
+
+<example name="ergative, with direction">
+<text>
+    ``The way that we've been managing Campbell U.S.A. can hopefully
+    spread to other areas of the company,'' Mr. Baum said. 
+</text>
+        <arg n="1">The way that we 've been managing Campbell U.S.A. </arg>
+        <arg f="MOD" n="M">can</arg>
+        <rel>spread</rel>
+        <arg f="DIR" n="M">to other areas of the company</arg>
+</example>
+
+<example name="ergative, no direction">
+<text>
+    But as panic spread...
+</text>
+        <arg n="1">panic</arg>
+        <rel>spread</rel>
+</example>
+
+<example name="ergative, with location">
+  <text>
+    The oil spread over the water.
+  </text>
+  <arg n="1">The oil</arg>
+  <rel>spread</rel>
+  <arg f="LOC" n="m">over the water</arg>
+</example>
+
+<note>
+This roleset id=&quot;spread.02&quot; can be distinguished from the other by the
+presence/absence of a trace in the object position, pointing to the
+Arg1.  If the above examples was &quot;The oil (was) spread *trace* over the
+water&quot; then &quot;the water&quot; would be an Arg2 &quot;surface&quot; not an ArgM.
+Follow the syntax!
+</note>
+
+</roleset>
+
+<roleset id="spread.03" name="cause to be widely located or distributed" vncls="-">
+<roles>
+  <role descr="distributor, agent" n="0"/>
+  <role descr="things distributed" n="1"/>
+</roles>
+
+<example name="with PRD">
+  <text>
+    John spread his arms wide.
+  </text>
+  <arg n="0">John</arg>
+  <rel>spread</rel>
+  <arg n="1">his arms</arg>
+  <arg f="PRD" n="m">wide</arg>
+</example>
+
+<example name="without PRD">
+  <text>
+    John spread his arms.
+  </text>
+  <arg n="0">John</arg>
+  <rel>spread</rel>
+  <arg n="1">his arms</arg>
+</example>
+
+<note>
+Actually quite similar to the &quot;smear&quot; roleset id=&quot;spread.05&quot; except for the semantic
+qualities of the Arg1.  And no surface or instrument.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,41 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="ground">
+<note>
+  Frames file for 'ground' based on sentences in the financial subcorpus.
+  No comparison.
+</note>
+
+<roleset id="ground.01" name="restrict to the ground" vncls="9.10">
+<roles>
+  <role descr="entity enforcing grounding" n="0">
+        <vnrole vncls="9.10" vntheta="Agent"/></role>
+  <role descr="thing grounded" n="1">
+        <vnrole vncls="9.10" vntheta="Theme"/></role>
+</roles>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="past" voice="passive"/>
+<text>
+ On routes to South America , the company had no backup jets [0] [*T*-2] to ensure delivery when planes were grounded [*-1] [*T*-3] .
+</text>
+	<rel>grounded</rel>
+	<arg n="1">[*-1] -&gt;  planes</arg>
+	<arg f="TMP" n="M">[*T*-3] -&gt;  when</arg>
+</example>
+
+
+<example name="agentive">
+<inflection aspect="ns" form="gerund" person="ns" tense="ns" voice="active"/>
+<text>
+ However , if the secretary concludes that a transaction has made a carrier unfit [*-1] to operate , the department may revoke its certificate , [*-2] grounding the airline .
+</text>
+	<arg n="0">[*-2] -&gt;  the department</arg>
+	<rel>grounding</rel>
+	<arg n="1">the airline</arg>
+</example>
+
+
+</roleset>
+</predicate>
+</frameset>

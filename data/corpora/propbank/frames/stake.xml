@@ -1,0 +1,67 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="stake">
+<note>
+  Frames file for 'stake' based on sentences in financial subcorpus.
+  No Verbnet entry, comparison with 'bet.'
+</note>
+
+<roleset id="stake.01" name="make a wager" vncls="-">
+<roles>
+  <role descr="better" n="0"/>
+  <role descr="amount of bet" n="1"/>
+  <role descr="basis, proposition, bet-on" n="2"/>
+</roles>
+
+<example name="with amount" src="bet.01">
+<text>
+    That would be a huge problem if it were to continue, because
+    Unisys is staking its business on the assumption that customers
+    want to move away from using operating systems that run on only
+    one manufacturer's equipment and toward systems -- mainly Unix --
+    that work on almost anyone's machines. 
+</text>
+        <arg n="0">Unisys</arg>
+        <rel>staking</rel>
+        <arg n="1">its business</arg>
+        <arg f="on" n="2">the assumption that customers want to move
+        away from using operating systems that run on only one
+        manufacturer's equipment and toward systems -- mainly Unix --
+        that work on almost anyone's machines</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="stake_out">
+
+<roleset id="stake.02" name="claim (as territory)" vncls="-">
+<roles>
+  <role descr="claimer, asserter" n="0"/>
+  <role descr="thing claimed, asserted" n="1"/>
+  <role descr="benefactive, claimed/asserted for" n="2"/>
+  <role descr="secondary predication" n="3"/>
+</roles>
+
+<example name="just transitive">
+<inflection aspect="perfect" form="participle" person="third" tense="present" voice="active"/>
+<text>
+    Although Digital has staked out a major presence in the booming
+    workstation market, profit margins in that market are much slimmer
+    than for mainframes. 
+</text>
+        <arg n="0">Digital</arg>
+        <rel>[ staked] [ out]</rel>
+        <arg n="1">a major presence in the booming workstation market</arg>
+</example>
+
+<note>
+I honestly don't know if the higher-numbered args will appear.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

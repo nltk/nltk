@@ -1,0 +1,50 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="interject">
+<note>
+  Frames file for 'interject' based on sentences in wsj.  No Verbnet
+  entry. 
+</note>
+
+<roleset id="interject.01" name="insert into a conversation" vncls="-">
+<roles>
+  <role descr="interjector, speaker" n="0"/>
+  <role descr="utterance" n="1"/>
+  <role descr="context" n="2"/>
+</roles>
+
+<example name="the one example">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    Then an announcer interjects: ``It was Douglas Wilder who
+    introduced a bill  to force rape victims age 13 and younger to be
+    interrogated about their private lives by lawyers for accused
+    rapists. 
+</text>
+        <arg f="TMP" n="M">Then</arg>
+        <arg n="0">an announcer</arg>
+        <rel>interjects</rel>
+        <arg n="1">It was Douglas Wilder who introduced a bill to
+        force rape victims age 13 and younger to be interrogated about
+        their private lives by lawyers for accused rapists</arg> 
+</example>
+
+<example name="with context">
+  <inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+  <text>
+    John insists upon *trace* interjecting facts about his
+    dissertation into every conversation, no matter the topic.
+  </text>
+  <arg n="0">*trace* -&gt; John</arg>
+  <rel>interjecting</rel>
+  <arg n="1">facts about his dissertation</arg>
+  <arg f="into" n="2">every conversation</arg>
+  <arg n="m">no matter the topic</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

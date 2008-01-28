@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="memorialize">
+<note>
+  Frames file for 'memorialize' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="memorialize.01" name="make a memorial to" vncls="-">
+<roles>
+  <role descr="maker of memorial, memorial itself, or agent" n="0"/>
+  <role descr="entity remembered" n="1"/>
+</roles>
+
+<example name="the one example">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    Some lawyers and scholars see the social scientists' vision of the
+    American jury system as a far cry from the ideal presented in
+    civics texts and memorialized [*] on the movie screen. 
+</text>
+        <rel>memorialized</rel>
+        <arg n="1">[*] -&gt;  the ideal</arg>
+        <arg f="LOC" n="M">on the movie screen</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

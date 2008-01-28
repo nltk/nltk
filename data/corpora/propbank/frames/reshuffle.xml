@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="reshuffle">
+<note>
+  Frames file for 'reshuffle' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="reshuffle.01" name="to arrange or organize anew" vncls="-">
+<roles>
+  <role descr="shuffler, agent" n="0"/>
+  <role descr="entity reshuffled" n="1"/>
+</roles>
+
+
+
+<example name="transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ He continues [*-1] to reshuffle the team , [*-1] trading famed running back Herschel Walker to the Minnesota Vikings this month for a slew of players and future draft picks .
+</text>
+	<arg n="0">[*-1] -&gt;  He</arg>
+	<rel>reshuffle</rel>
+	<arg n="1">the team</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

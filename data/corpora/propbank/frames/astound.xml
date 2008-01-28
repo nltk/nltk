@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="astound">
+<note>
+  Frames file for 'astound'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="astound.01" name="to surprise" vncls="31.1">
+<roles> 
+  <role descr="causer" n="0"><vnrole vncls="31.1" vntheta="Cause"/></role>
+  <role descr="experiencer" n="1"><vnrole vncls="31.1" vntheta="Experiencer"/></role> 
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ It [*EXP*-1] astounds me [0] he can rationalize his self-righteous and greedy actions in Utah .
+</text>
+	<arg n="0">[ It [*EXP*-1]] [ [0] he can rationalize his self-righteous and greedy actions in Utah]</arg>
+	<rel>astounds</rel>
+	<arg n="1">me</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

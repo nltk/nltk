@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="err">
+<note>
+  Frames file for 'err' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="err.01" name="to make an error or a mistake" vncls="-">
+<roles>
+  <role descr="mistaken entity, agent" n="0"/>
+</roles>
+
+<example name="with manner">
+<inflection aspect="perfect" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+ Of course , [*] simply buying computers does n't always solve problems , and many American companies have erred by [*-2] purchasing technology [0] they did n't understand [*T*-1] .
+</text>
+	<arg n="0">many American companies</arg>
+	<rel>erred</rel>
+	<arg f="MNR" n="M">by [*-2] purchasing technology [0] they did n't understand [*T*-1]</arg>
+</example>
+
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

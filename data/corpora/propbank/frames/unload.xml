@@ -1,0 +1,78 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="unload">
+<note>
+  Frames file for 'unload' based on sentences in financial subcorpus.
+  &quot;Un-&quot; verbs are not included in Verbnet (although 'unload' has at
+  least one sense very different from the opposite of 'load').  'Load'
+  is in class spray-9.7-2; no other framed members.  No comparison.
+</note>
+
+<roleset id="unload.01" name="get rid of">
+<roles>
+  <role descr="agent, entity getting rid of something" n="0"/>
+  <role descr="thing gotten rid of" n="1"/>
+  <role descr="instrument or manner, if separate from agent" n="2"/>
+</roles>
+
+<example name="basic transitive">
+<text>
+    So far, Mr. Paul has unloaded but three of his masterpieces, he
+    won't say to whom. 
+</text>
+        <arg f="TMP" n="M">So far</arg>
+        <arg n="0">Mr. Paul</arg>
+        <rel>unloaded</rel>
+        <arg n="1">but three of his masterpieces</arg>
+</example>
+
+<example name="with instrument">
+<text>
+    The thrift is also working *trace* to unload its junk-bond
+    portfolio by continuing to sell off the bonds... 
+</text>
+        <arg n="0">The thrift -&gt; *trace*</arg>
+        <rel>unload</rel>
+        <arg n="1">its junk-bond portfolio</arg>
+        <arg f="by" n="2">continuing  to sell off the bonds</arg>
+</example>
+
+</roleset>
+
+<roleset id="unload.02" name="cause to be unburdened">
+<roles>
+  <role descr="unloader, agent" n="0"/>
+  <role descr="beast of burden" n="1"/>
+  <role descr="cargo" n="2"/>
+  <role descr="instrument" n="3"/>
+</roles>
+
+<example name="all args">
+  <text>
+    John unloaded the delicate china from the truck with a forklift.
+  </text>
+  <arg n="0">John</arg>
+  <rel>unloaded</rel>
+  <arg n="2">the delicate china</arg>
+  <arg f="from" n="1">the truck</arg>
+  <arg f="with" n="3">a forklift</arg>
+</example>
+
+<example name="all args, different order">
+  <text>
+    John unloaded the truck of the delicate china with a forklift.
+  </text>
+  <arg n="0">John</arg>
+  <rel>unloaded</rel>
+  <arg n="1">the truck</arg>
+  <arg f="of" n="2">the delicate china</arg>
+  <arg f="with" n="3">a forklift</arg>
+</example>
+
+<note>
+Actually, I don't think this construction would occur with instrument.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

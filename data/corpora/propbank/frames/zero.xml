@@ -1,0 +1,62 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="zero_in">
+<note>
+  Frames file for 'zero' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="zero.01" name="target" vncls="-">
+<roles>
+  <role descr="targeter" n="0"/>
+  <role descr="thing aimed at" n="1"/>
+</roles>
+
+<example name="ready, aim, fire!">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    In making cases, the authorities frequently zero in on alleged
+    misrepresentations made by the charities' fund raisers. 
+</text>
+        <arg f="TMP" n="M">In  making cases</arg>
+        <arg n="0">the authorities</arg>
+        <arg f="TMP" n="M">frequently</arg>
+        <rel>[ zero] [ in]</rel>
+        <arg f="on" n="1">alleged misrepresentations made by the
+        charities' fund raisers</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="zero_out">
+
+<roleset id="zero.02" name="get rid of, remove" vncls="-">
+<roles>
+  <role descr="entity removing" n="0"/>
+  <role descr="thing being removed" n="1"/>
+</roles>
+
+<example name="graft">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    They were appalled, for instance, that he wanted *trace* to target
+    more of the $3 billion  Community Development Block Grant program
+    to low-income projects and zero out the notorious
+    ``discretionary'' funds that have allowed HUD officials to steer
+    contracts to political cronies. 
+</text>
+        <arg n="0">*trace* -&gt;  he</arg>
+        <rel>[ zero] [ out]</rel>
+        <arg n="1">the notorious ``discretionary'' funds that have
+        allowed HUD officials to steer contracts to political
+        cronies</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,101 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<note>
+Frames file for 'raise' based on survey of initial sentences of big corpus
+and comparison with 'rise'
+</note>
+<predicate lemma="raise">
+<roleset id="raise.01" name="go up quantifiably" vncls="9.4 40.3.2">
+  <roles>
+    <role descr="Agent" n="0">
+	<vnrole vncls="9.4" vntheta="Agent"/>
+        <vnrole vncls="40.3.2" vntheta="Agent"/></role>
+    <role descr="Logical subject, patient, thing rising" n="1">
+	<vnrole vncls="9.4" vntheta="Theme"/>
+        <vnrole vncls="40.3.2" vntheta="Patient"/></role>
+    <role descr="EXT, amount risen" n="2"/>
+    <role descr="Start point" n="3"/>
+    <role descr="End point" n="4"/>
+    <role descr="Medium" f="LOC" n="M"/>
+  </roles>
+
+<example name="straight transitive">
+  <text>
+    The securities will raise about $10 billion in cash.
+  </text>
+  <arg n="0">The securities</arg>
+  <rel>raise</rel>
+  <arg n="1">about $10 billion in cash</arg>
+</example>
+
+<example name="with extent and end point">
+  <text>
+    Oil production will be raised by 11k barrels/day to about 321k barrels.
+  </text>
+  <arg n="1">Oil production</arg>
+  <rel>raised</rel>
+  <arg f="EXT" n="2">by 11k barrels/day</arg>
+  <arg f="to" n="4">to about 321k barrels</arg>
+</example>
+
+<note>
+Let's use EXT for numericals only, otherwise Arg2-MNR:
+</note>
+
+<example name="with manner">
+  <text>
+    Companies raise their payouts most robustly only after profits are high.
+  </text>
+  <arg n="0">Companies</arg>
+  <rel>raise</rel>
+  <arg n="1">their payouts</arg>
+  <arg f="MNR" n="2">most robustly</arg>
+  <arg f="TMP" n="M">only after profits are high</arg>
+</example>
+
+<example name="locative">
+  <text>
+    The president raised a number of issues in his 20-minute speech.
+  </text>
+  <arg n="0">The president</arg>
+  <rel>raised</rel>
+  <arg f="MNR" n="1">a number of issues</arg>
+  <arg f="LOC" n="M">in his 20-minute speech</arg>
+</example>
+
+<example name="non-financial transitive">
+  <text>
+    Mr. Coleman raised questions about Mr. Courter's credibility.
+    Arg0	    rel    Arg1
+  </text>
+  <arg n="0">Mr Coleman</arg>
+  <rel>raised</rel>
+  <arg n="1">questions about Mr Courter's credibility</arg>
+</example>
+</roleset>
+
+<roleset id="raise.02" vncls="-" name="fundraising">
+<roles>
+  <role n="0"  descr="getter of money"/>
+  <role n="1"  descr="money"/>
+  <role n="2"  descr="giver of money"/>
+</roles>
+
+<example name="all args">
+  <inflection person="ns" tense="ns" aspect="ns" voice="ns" form="gerund"/>
+  <text>
+     The bankers also insist that the loans depend on the consortium
+     raising more money from new and existing backers. 
+  </text>
+  <arg n="0"        >the consortium</arg>
+  <rel              >raising</rel>
+  <arg n="1"        >more money</arg>
+  <arg n="2" f="from">new and existing backers</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

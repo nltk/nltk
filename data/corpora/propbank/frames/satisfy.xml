@@ -1,0 +1,97 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="satisfy">
+<note>
+Frames file for 'satisfy' based on sentences in financial subcorpus
+and automatic expansion via verbnet.
+</note>
+
+<roleset id="satisfy.01" name="make happy" vncls="31.1">
+<roles>
+  <role descr="agent, pleaser" n="0">
+	<vnrole vncls="31.1" vntheta="Cause"/></role>
+  <role descr="patient, entity pleased" n="1">
+	<vnrole vncls="31.1" vntheta="Experiencer"/></role>
+  <role descr="instrumental" n="2"/>
+</roles>
+
+<example name="instrumental subject">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    U.S. Banknote said it believes  the sale, if  completed,
+    apparently would satisfy antitrust issues raised  by the
+    U.S. Justice Department about U.S. Banknote's offer to buy
+    International Banknote. 
+</text>
+        <arg n="2">the sale</arg>
+        <arg f="ADV" n="M">if  completed </arg>
+        <arg f="DIS" n="M">apparently</arg>
+        <arg f="MOD" n="M">would</arg>
+        <rel>satisfy</rel>
+        <arg n="1">antitrust issues raised  by the U.S. Justice
+        Department about U.S. Banknote's offer to buy International
+        Banknote</arg> 
+</example>
+
+<example name="unaccusative" src="concern.01">
+<text>
+    ``We weren't satisfied until they became sell programs,'' says
+    Mr. DaPuzzo, who now thinks it adds unnecessary volatility. 
+</text>
+        <arg n="1">We</arg>
+        <arg f="NEG" n="M">n't</arg>
+        <rel>satisfied</rel>
+        <arg f="TMP" n="M">until they became sell programs</arg>
+<note>
+This is almost adjectival, actually.  Note that it can only occur in
+the participial form.
+</note>
+</example>
+
+<example name="all args">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John satisfied all Mary's concerns about his maturity with his
+    tantrum.
+  </text>
+  <arg n="0">John</arg>
+  <rel>satisfied</rel>
+  <arg n="1">all Mary's concerns about his maturity</arg>
+  <arg f="with" n="2">his tantrum</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="satisfy.02" name="convince" vncls="-">
+<roles>
+  <role descr="convincer" n="0"/>
+  <role descr="convinced" n="1"/>
+  <role descr="proposition" n="2"/>
+</roles>
+
+<example name="and reciprocal too">
+  <inflection aspect="ns" form="full" person="ns" tense="ns" voice="ns"/>
+  <text>
+   However, in light of the risks involved in such transactions, banks
+   should satisfy themselves that they have the skills to participate
+   in this market and clear policy guidelines on acceptable levels of
+   exposure to such transactions, he said.
+  </text>
+  <arg f="ADV" n="m">in light of the risks involved in such transactions</arg>
+  <arg n="0">banks</arg>
+  <arg f="MOD" n="m">should</arg>
+  <rel>satisfy</rel>
+  <arg f="REC" n="1">themselves</arg>
+  <arg n="2">they have the skills to participate
+   in this market and clear policy guidelines on acceptable levels of
+   exposure to such transactions</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

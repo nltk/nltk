@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="undulate">
+<note>
+  Frames file for 'undulate'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="undulate.01" name="to move in a wavy pattern" vncls="47.3">
+<roles> 
+  <role descr="cause of motion, agent" n="0">
+        <vnrole vncls="47.3" vntheta="Agent"/></role>  
+  <role descr="entity in motion" n="1">
+        <vnrole vncls="47.3" vntheta="Theme"/></role>  
+</roles>
+
+<example name="intransitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ A man said [0] he saw the upper rim undulate .
+</text>
+	<arg n="1">the upper rim</arg>
+	<rel>undulate</rel>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

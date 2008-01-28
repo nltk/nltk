@@ -1,0 +1,36 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="trouble">
+<note>
+Frames file for 'trouble' based on sentences in financial subcorpus
+and automatic expansion via verbnet.
+</note>
+
+<roleset id="trouble.01" name="upset slightly" vncls="31.1">
+<roles>
+  <role descr="cause of trouble" n="0">
+	<vnrole vncls="31.1" vntheta="Cause"/></role>
+  <role descr="experiencer, one upset" n="1">
+	<vnrole vncls="31.1" vntheta="Experiencer"/></role>
+  <role descr="instrument or manner" n="2"/>
+</roles>
+
+<example name="just transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    The volatility inherent in program trading troubled other traders,
+    too. 
+</text>
+        <arg n="0">The volatility inherent in program trading</arg>
+        <rel>troubled</rel>
+        <arg n="1">other traders</arg>
+        <arg f="DIS" n="M">too</arg>
+</example>
+
+<note>
+Only use the instrument arg when the agent is also present.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

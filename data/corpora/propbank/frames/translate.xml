@@ -1,0 +1,62 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="translate">
+<note>
+  Frames file for 'translate' based on sentences in financial
+  subcorpus.  No Verbnet entry.  Comparison with 'change'.
+</note>
+
+<roleset id="translate.01" name="change (language)" vncls="-">
+<roles>
+  <role descr="causer of transformation" n="0"/>
+  <role descr="thing changing" n="1"/>
+  <role descr="end state" n="2"/>
+  <role descr="start state" n="3"/>
+</roles>
+
+<example name="passive, unstated start state">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    The profit gain was made despite a weakening in the housing
+    market, for which the company is a supplier, and a strengthening
+    in the dollar, which lowers the value of overseas earnings when
+    they are translated *trace* into dollars. 
+</text>
+        <rel>translated</rel>
+        <arg n="1">*trace* -&gt;  they</arg>
+        <arg f="into" n="2">dollars</arg>
+</example>
+
+<example name="passive without trace">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    That gain probably translated into about 5% to 7% in dollar terms,
+    well below recent quarters' gains of above 20%, reckons Jay
+    Stevens of Dean Witter Reynolds. 
+</text>
+        <arg n="1">That gain</arg>
+        <arg f="DIS" n="M">probably</arg>
+        <rel>translated</rel>
+        <arg f="into" n="2">about 5 % to 7 %  in dollar terms , well
+        below recent quarters ' gains of above 20 %</arg> 
+</example>
+
+<example name="all args">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John translated his dissertation from English into Swahili,
+    Chinese, Russian, and Yiddish.
+  </text>
+  <arg n="0">John</arg>
+  <rel>translated</rel>
+  <arg n="1">his dissertation</arg>
+  <arg f="from" n="3">English</arg>
+  <arg f="into" n="2">Swahili, Chinese, Russian, and Yiddish.</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="instigate">
+<note>
+  Frames file for 'instigate' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="instigate.01" name="cause a response" vncls="-">
+<roles>
+  <role descr="instigator" n="0"/>
+  <role descr="reaction" n="1"/>
+</roles>
+
+<example name="the one example">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    The Mahatma, or ``great souled one,'' instigated several campaigns
+    of passive resistance against the British government in India. 
+</text>
+        <arg n="0">The Mahatma, or ``great souled one,''</arg>
+        <rel>instigated</rel>
+        <arg n="1">several campaigns of passive resistance against the
+        British government in India</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

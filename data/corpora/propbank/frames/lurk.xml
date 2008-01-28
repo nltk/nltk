@@ -1,0 +1,38 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="lurk">
+<note>
+  Frames file for 'lurk' based on sentences in wsj.  Verbnet entry 47.1.
+</note>
+
+<roleset id="lurk.01" vncls="47.1" name="sneak, hang around in dark places">
+<roles>
+  <role n="0"  descr="lurker"/>
+</roles>
+
+<example name="adjectival">
+<inflection person="ns" tense="ns" aspect="progressive" voice="active" form="participle"/>
+<text>
+    But the lurking shadow of 1987's stock-market crash still seems dark. 
+</text>
+	<rel>lurking</rel>
+	<arg n="0">shadow</arg>
+</example>
+
+<example name="boo!">
+  <inflection person="third" tense="present" aspect="ns" voice="active" form="full"/>
+  <text>
+    John lurks in dark corners, hoping to frighten Mary.
+  </text>
+  <arg n="0"        >John</arg>
+  <rel              >lurks</rel>
+  <arg n="m" f="LOC">in dark corners</arg>
+  <arg n="m"        >hoping to frighten Mary</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

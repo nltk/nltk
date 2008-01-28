@@ -1,0 +1,52 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="enjoy">
+<note>
+  Frames file for 'enjoy' based on sentences in financial subcorpus.
+  Verbnet entry enjoy 31.2, no mention of other members.  Comparison
+  with 'like'.
+</note>
+
+<roleset id="enjoy.01" name="take pleasure from" vncls="31.2">
+<roles>
+  <role descr="enjoyer" n="0">
+		
+  <vnrole vncls="31.2" vntheta="Experiencer"/></role>
+
+  <role descr="thing enjoyed" n="1">
+		
+  <vnrole vncls="31.2" vntheta="Cause"/></role>
+
+</roles>
+
+<example name="transitive">
+<text>
+    Short of a total ban, some anti-programmers have proposed several
+    middle-ground reforms, which they say would take away certain
+    advantages *trace* program traders currently enjoy *trace* in the
+    marketplace that other investors don't . 
+</text>
+        <arg n="0">program traders</arg>
+        <arg f="TMP" n="M">currently</arg>
+        <rel>enjoy</rel>
+        <arg n="1">*trace* -&gt; *trace* -&gt;  certain advantages</arg>
+        <arg f="LOC" n="M">in the marketplace</arg>
+</example>
+
+<example name="extremely metaphorical">
+<text>
+    In savings activity, Mr. Sandler said consumer deposits have
+    enjoyed a steady increase throughout 1989.  
+</text>
+        <arg n="0">consumer deposits</arg>
+        <rel>enjoyed</rel>
+        <arg n="1">a steady increase</arg>
+        <arg f="TMP" n="M">throughout 1989</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,35 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="redound">
+<note>
+  Frames file for 'redound' based on sentences in financial subcorpus.
+  No Verbnet entry.
+</note>
+
+<roleset id="redound.01" name="have a consequence" vncls="-">
+<roles>
+  <role descr="action with consequence" n="0"/>
+  <role descr="benefactive" n="1"/>
+</roles>
+
+<example name="proper usage, apparently">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    The law could redound to the advantage of brokers and banks, who
+    incur high administrative costs to deliver securities to
+    investors. 
+</text>
+        <arg n="0">The law</arg>
+        <arg f="MOD" n="M">could</arg>
+        <rel>redound</rel>
+        <arg f="to" n="1">the advantage of brokers and banks, who
+        incur high administrative costs to deliver securities to
+        investors</arg> 
+</example>
+
+<note>
+OK, I had to look this one up.  Not part of my vocabulary.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,89 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="knit">
+<note>
+  Frames file for 'knit' based on sentences in wsj.  Verbnet entries
+  40.3.2, 26.1.
+</note>
+
+<roleset id="knit.01" name="create by knotting yarn together" vncls="26.1">
+<roles>
+  <role descr="builder" n="0">
+        <vnrole vncls="26.1" vntheta="Agent"/></role>
+  <role descr="construction" n="1">
+        <vnrole vncls="26.1" vntheta="Product"/></role>
+  <role descr="material, start state" n="2">
+        <vnrole vncls="26.1" vntheta="Material"/></role>
+  <role descr="end state or attribute of arg1" n="4">
+        <vnrole vncls="26.1" vntheta="Product"/></role>
+</roles>
+
+<example name="with end state, sorta">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    The flow of Japanese funds has set in motion ``a process whereby
+    these economies will be knitted *trace* together by the great
+    Japanese investment machine,'' says Robert Hormats, vice chairman
+    of Goldman Sachs International Corp. 
+</text>
+        <arg f="MOD" n="M">will</arg>
+        <rel>knitted</rel>
+        <arg n="1">*trace* -&gt;  these economies</arg>
+        <arg n="4">together</arg>
+        <arg f="by" n="0">the great Japanese investment machine</arg>
+        <arg f="MNR" n="M">*trace* -&gt;  whereby -&gt;  a process</arg>
+</example>
+
+<example name="just transitive">
+<inflection aspect="progressive" form="participle" person="third" tense="present" voice="active"/>
+<text>
+    With one she is pregnant, with Major Battle she is knitting an
+    American flag, and as the vice president's wife she rushes in with
+    white hair, wearing a tailored suit and pearls, imitating Barbara
+    Bush's gestures down to the last detail. 
+</text>
+        <arg n="M">with Major Battle</arg>
+        <arg n="0">she</arg>
+        <rel>knitting</rel>
+        <arg n="1">an American flag</arg>
+</example>
+
+<example name="with material">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John knit a sweater out the hair he lost in the shower each morning.
+  </text>
+  <arg n="0">John</arg>
+  <rel>knit</rel>
+  <arg n="1">a sweater</arg>
+  <arg f="out" n="2">of the hair he lost in the shower each morning</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="knit.02" name="bones mending a break" vncls="40.3.2">
+<roles>
+  <role descr="bones" n="1">
+        <vnrole vncls="40.3.2" vntheta="Patient"/></role>
+</roles>
+
+<example name="ouch">
+  <inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+  <text>
+     John's armbones took only a week *trace* to knit after he fell
+     from the roof.
+  </text>
+  <arg n="1">*trace* -&gt; John's armbones</arg>
+  <rel>knit</rel>
+  <arg f="TMP" n="m">after he fell from the roof</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

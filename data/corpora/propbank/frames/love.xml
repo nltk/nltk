@@ -1,0 +1,53 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="love">
+<note>
+  Frames file for 'love' based on sentences in financial subcorpus.
+  Verbnet entry 31.2, other framed members include despise, dislike,
+  enjoy, favor, fear, resent.  Probably like too.  Comparison to like.
+</note>
+
+<roleset id="love.01" name="object of affection" vncls="31.2">
+<roles>
+  <role descr="lover" n="0">
+	  <vnrole vncls="31.2" vntheta="Experiencer"/></role>
+  <role descr="loved" n="1">
+	  <vnrole vncls="31.2" vntheta="Cause"/></role>
+</roles>
+
+<example name="active transitive">
+<text>
+    Some institutional traders loved the wild ride .
+</text>
+        <arg n="0">Some institutional traders</arg>
+        <rel>loved</rel>
+        <arg n="1">the wild ride</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="love.02" name="semi-modal">
+<roles>
+  <role descr="subject" n="0"/>
+  <role descr="phrasal complement" n="1"/>
+</roles>
+
+<example name="modal">
+<text>
+    One dealer, Martin Zimet of French &amp; Co. in New York, says he
+    ``would have loved to buy'' a Jan Davids de Heem painting from the
+    bank. 
+</text>
+        <arg n="0">he</arg>
+        <arg f="MOD" n="M">would</arg>
+        <rel>loved</rel>
+        <arg n="1">to buy ''a Jan Davids de Heem painting from
+        the bank</arg> 
+</example>
+
+</roleset>
+</predicate>
+</frameset>

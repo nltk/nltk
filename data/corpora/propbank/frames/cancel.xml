@@ -1,0 +1,51 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="cancel">
+<note>
+  Frames file for 'cancel' based on sentences in financial subcorpus.
+  No Verbnet entry.
+</note>
+
+<roleset id="cancel.01" name="cause to be not valid" vncls="-">
+<roles>
+  <role descr="canceller" n="0"/>
+  <role descr="cancelled" n="1"/>
+</roles>
+
+<example name="oddly intransitive">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    Once she did so, the big-souled German maestro with the shaky
+    nerves who *trace* so often cancels offered a limpid, flowing
+    performance that in its unswagged and unswaggering approach was
+    totally at odds with the staging. 
+</text>
+        <arg n="0">*trace* -&gt;  who -&gt;  the big-souled German maestro</arg>
+        <arg f="TMP" n="M">so often</arg>
+        <rel>cancels</rel>
+</example>
+
+<example name="sounds better transitive">
+<inflection aspect="perfect" form="participle" person="third" tense="present" voice="active"/>
+<text>
+     Speaking of dark nights, the Met's next-door neighbor, the New
+     York City Opera, has canceled its season after failing to reach a
+     settlement with its musicians, who wanted pay parity with the the
+     Chicago Lyric and San Francisco Opera orchestras. 
+</text>
+        <arg f="DIS" n="M">Speaking of dark nights</arg>
+        <arg n="0">the Met's next-door neighbor, the New York City
+        Opera,</arg> 
+        <rel>canceled</rel>
+        <arg n="1">its season</arg>
+        <arg f="TMP" n="M">after failing to reach a settlement with
+        its musicians, who wanted pay parity with the the Chicago
+        Lyric and San Francisco Opera orchestras</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

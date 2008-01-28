@@ -1,0 +1,61 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="saturate">
+<note>
+  Frames file for 'saturate' based on sentences in wsj.  Verbnet entry 9.8.
+</note>
+
+<roleset id="saturate.01" name="fill to capacity" vncls="9.8">
+<roles>
+  <role descr="agent of filling" n="0">
+        <vnrole vncls="9.8" vntheta="Agent"/></role>
+  <role descr="container" n="1">
+        <vnrole vncls="9.8" vntheta="Destination"/></role>
+  <role descr="substance" n="2">
+        <vnrole vncls="9.8" vntheta="Theme"/></role>
+</roles>
+
+<example name="agent and substance merged">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    As hamburger and pizza outlets saturate one area after another,
+    franchisers are struggling desperately for market share, slashing
+    prices and stepping up costly promotions. 
+</text>
+        <arg n="0">hamburger and pizza outlets</arg>
+        <rel>saturate</rel>
+        <arg n="1">one area after another</arg>
+</example>
+
+
+<example name="no substance mentioned">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    But low-priced and middle-priced furriers like Mr. Purnick, who
+    [*T*-1] once saturated the five-block Seventh Avenue fur district,
+    say imports have cut their sales. 
+</text>
+        <arg n="0">[*T*-1] -&gt;  who -&gt;  Mr. Purnick</arg>
+        <arg f="TMP" n="M">once</arg>
+        <rel>saturated</rel>
+        <arg n="1">the five-block Seventh Avenue fur district</arg>
+</example>
+
+
+<example name="no agent mentioned">
+<inflection aspect="ns" form="participle" person="third" tense="past" voice="passive"/>
+<text>
+    The day was saturated [*-1] with the weight of its own impending
+    history. 
+</text>
+        <rel>saturated</rel>
+        <arg n="1">[*-1] -&gt;  The day</arg>
+        <arg f="with" n="2">the weight of its own impending history</arg>
+</example>
+
+<note>
+It is very important to distinguish the agent of filling and the substance!
+</note>
+
+</roleset>
+</predicate>
+</frameset>

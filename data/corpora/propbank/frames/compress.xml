@@ -1,0 +1,35 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="compress">
+<note>
+  Frames file for 'compress' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="compress.01" name="to press together or make more compact" vncls="26.5">
+<roles>
+  <role descr="compressor, agent" n="0">
+        <vnrole vncls="26.5" vntheta="Agent"/></role>
+  <role descr="entity compressed" n="1">
+        <vnrole vncls="26.5" vntheta="Material"/></role>
+  <role descr="entity compressed into" n="2">
+        <vnrole vncls="26.5" vntheta="Product"/></role>
+</roles>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+ CFCs are the primary ingredient in a gas , often referred to [*] by the Du Pont trade name Freon , which [*T*-2] is compressed [*-1] to liquid form [*] to serve as the cooling agent in refrigeration and air-conditioning equipment .
+</text>
+	<rel>compressed</rel>
+	<arg n="1">[*-1] -&gt;  [*T*-2] -&gt;  which -&gt;  a gas</arg>
+	<arg f="to" n="2">liquid form</arg>
+	<arg f="PNC" n="M">[*] to serve as the cooling agent in refrigeration and air-conditioning equipment</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

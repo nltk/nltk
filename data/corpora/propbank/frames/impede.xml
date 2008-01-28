@@ -1,0 +1,48 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="impede">
+<note>
+  Frames file for 'impede' based on sentences in wsj.  No Verbnet
+  entry. 
+</note>
+
+<roleset id="impede.01" name="hinder, try to stop" vncls="-">
+<roles>
+  <role descr="entity attempting to stop something" n="0"/>
+  <role descr="Theme (action or object being prevented)" n="1"/>
+  <role descr="secondary predication or action" n="2"/>
+  <role descr="instrument" n="3"/>
+</roles>
+
+<example name="usually just transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    ``The purpose of the bill is to put the brakes on airline
+    acquisitions that would so load a carrier up with debt that it
+    would impede safety or a carrier's ability  to compete,''
+    Rep. John Paul Hammerschmidt, R., Ark. said. 
+</text>
+        <arg n="0">it</arg>
+        <arg f="MOD" n="M">would</arg>
+        <rel>impede</rel>
+        <arg n="1">safety or a carrier's ability to compete</arg>
+</example>
+
+<example name="with instrument?" src="hinder.01">
+  <text>
+    John impeded Mary from studying with his incessant pleas for sex.
+  </text>
+  <arg n="0">        John</arg>
+  <rel>impeded</rel>
+  <arg n="1">Mary</arg>
+  <arg f="from" n="2">studying</arg>
+  <arg f="with" n="3">his incessant pleas for sex</arg>
+</example>
+
+<note>
+I'm going to get in trouble for this example, I just know it.  Only
+use &quot;instrument&quot; when it is clearly separate from the agent.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

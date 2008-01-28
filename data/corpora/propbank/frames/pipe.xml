@@ -1,0 +1,85 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="pipe">
+<note>
+  Frames file for 'pipe' based on sentences in wsj.  Verbnet entries
+  38 and 43.2, which are both classes of sound emission.  Huh?
+</note>
+
+<roleset id="pipe.01" name="transport in a pipe" vncls="-">
+<roles>
+  <role descr="causer of motion" n="0"/>
+  <role descr="thing in motion" n="1"/>
+  <role descr="destination" n="2"/>
+  <role descr="source" n="3"/>
+</roles>
+
+<example name="all args">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    In his lifetime, 47 years, the Communists brought electricity to
+    his village and piped in drinking water from the reservoir. 
+</text>
+        <arg f="TMP" n="M">In his lifetime, 47 years,</arg>
+        <arg n="0">the Communists</arg>
+        <rel>piped</rel>
+        <arg f="DIR" n="2">in</arg>
+        <arg n="1">drinking water</arg>
+        <arg f="from" n="3">the reservoir</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="pipe_up">
+
+<roleset id="pipe.02" name="begin speaking" vncls="-">
+<roles>
+  <role descr="speaker" n="0"/>
+  <role descr="utterance" n="1"/>
+</roles>
+
+<example name="incautious statement">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     ``Gee Mary,'' piped up John, ``those pants make your butt look
+     really huge.''
+  </text>
+  <rel>piped up</rel>
+  <arg n="1">Gee Mary, those pants make your butt look really
+  huge</arg> 
+  <arg n="0">John</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="pipe_down">
+
+<roleset id="pipe.03" name="stop speaking" vncls="-">
+<roles>
+  <role descr="(non-) speaker" n="0"/>
+</roles>
+
+<example name="shut up!">
+  <inflection aspect="ns" form="full" person="ns" tense="ns" voice="active"/>
+  <text>
+     ``*trace* Pipe down in there!'' yelled John at the raucous party.
+  </text>
+  <arg n="0">*trace*</arg>
+  <rel>pipe down</rel>
+  <arg f="LOC" n="m">in there</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

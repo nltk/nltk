@@ -1,0 +1,59 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="dispatch">
+<note>
+  Frames file for 'dispatch' based on survey of sentences in the WSJ
+  corpus. Comparison with 'send'.
+</note>
+
+<roleset id="dispatch.01" name="to send" vncls="-">
+<roles>
+  <role descr="sender, agent" n="0"/>
+  <role descr="entity dispatched" n="1"/>
+  <role descr="dispatched to" n="2"/>
+</roles>
+
+
+<example name="all arguments">
+<inflection aspect="perfect" form="participle" person="third" tense="present" voice="active"/>
+<text>
+     Digital also said it has dispatched teams of technicians to California.
+</text>
+	<arg n="0">it</arg>
+	<rel>dispatched</rel>
+	<arg n="1">teams of technicians</arg>
+	<arg f="to" n="2">California</arg>
+</example>
+
+
+<example name="transitive with adverbials">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+     The company dispatched [*T*-2] as many as 200 people in the San
+     Francisco area [0] [*T*-3] to do the work, though most of the
+     rerouting was done by computer. 
+</text>
+	<arg n="0">The company</arg>
+	<rel>dispatched</rel>
+	<arg n="1">[*T*-2] as many as 200 people</arg>
+	<arg f="PNC" n="M">[0] [*T*-3] to do the work</arg>
+	<arg f="ADV" n="M">though most of the rerouting was done by
+	computer</arg> 
+</example>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+     The space shuttle Atlantis landed at a desert air strip at
+     Edwards Air Force Base, Calif., ending a five-day mission that
+     [*T*-1] dispatched the Jupiter-bound Galileo space probe. 
+</text>
+	<arg n="0">[*T*-1] -&gt;  that -&gt;  a five-day mission</arg>
+	<rel>dispatched</rel>
+	<arg n="1">the Jupiter-bound Galileo space probe</arg>
+</example>
+
+
+</roleset>
+</predicate>
+</frameset>

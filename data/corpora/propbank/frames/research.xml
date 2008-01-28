@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="research">
+<note>
+  Frames file for 'research' based on sentences in financial
+  subcorpus.  No Verbnet entry.  Comparison with 'study'
+</note>
+
+<roleset id="research.01" name="study very hard" vncls="-">
+<roles>
+  <role descr="student" n="0"/>
+  <role descr="subject" n="1"/>
+</roles>
+
+<example name="basic transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Johnnie Johnson, who worked for Mr. Corry in strategic planning,
+    recalls how his boss would routinely ask a subordinate *trace* to
+    research an entire industry to target acquisition candidates. 
+</text>
+        <arg n="0">*trace* -&gt;  a subordinate</arg>
+        <rel>research</rel>
+        <arg n="1">an entire industry</arg>
+        <arg f="PNC" n="M">to target acquisition candidates</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

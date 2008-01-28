@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="silt_up">
+<note>
+  Frames file for 'silt up' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="silt.01" name="fill with silt" vncls="-">
+<roles>
+  <role descr="cause of silting (but not the silt itself), agent" n="0"/>
+  <role descr="container, river, harbor, etc." n="1"/>
+</roles>
+
+<example name="usually unaccusative">
+<inflection aspect="perfect" form="participle" person="ns" tense="past" voice="active"/>
+<text>
+    But then it turned out that President Siad Barrah was not at all a
+    nice person and the Navy pointed out that the base he promised us
+    in Berbera had silted up about a hundred years ago and anyway was
+    1,244 miles from the mouth of the Gulf. 
+</text>
+        <arg n="1">the base he promised us in Berbera</arg>
+        <rel>[ silted] [ up]</rel>
+        <arg f="TMP" n="M">about a hundred years ago</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

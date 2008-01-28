@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="wag">
+<note>
+  Frames file for 'wag' based on sentences in wsj.  Verbnet entries
+  40.3.1 and 40.3.2; Framenet entry Body movement.
+</note>
+
+<roleset id="wag.01" name="move back and forth,   usually a body part" vncls="40.3.1 40.3.2">
+<roles>
+  <role descr="causer of motion" n="0"><vnrole vncls="40.3.1" vntheta="Agent"/><vnrole vncls="40.3.2" vntheta="Cause"/></role>
+  <role descr="thing wagging" n="1"><vnrole vncls="40.3.1" vntheta="Patient"/><vnrole vncls="40.3.2" vntheta="Patient"/></role>
+</roles>
+
+<example name="wag the dog">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John wagged his finger in Mary's face, so she bit it off.
+  </text>
+  <arg n="0">John</arg>
+  <rel>wagged</rel>
+  <arg n="1">his finger</arg>
+  <arg f="LOC" n="m">in Mary's face</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

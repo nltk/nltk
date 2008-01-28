@@ -1,0 +1,86 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="reflect">
+<note>
+  Frames file for 'reflect' based on survey of initial sentences of
+  big corpus.
+</note>
+
+<roleset id="reflect.01" name="cast an image back">
+<roles>
+  <role descr="thing casting a reflection" n="1"/>
+  <role descr="surface casting the reflection, image being reflected" n="2"/>
+</roles>
+
+<example name="literal, active">
+  <text>
+  The mirror reflected the enormous zit on John's nose.
+  </text>
+  <arg n="2">The mirror</arg>
+  <rel>reflected</rel>
+  <arg n="1">the enormous zit on John's nose</arg>
+</example>
+
+<example name="">
+  <text>
+  The enormous zit on John's nose was reflected by the mirror.
+  </text>
+  <arg n="1">the enormous zit on John's nose</arg>
+  <rel>reflected</rel>
+  <arg f="by" n="2">The mirror</arg>
+</example>
+
+<example name="metaphorical">
+  <text>
+  The protracted downturn reflects the intensity of Bank of Japan's
+  yen-support intervention.
+  </text>
+  <arg n="2">The protracted downturn</arg>
+  <rel>reflects</rel>
+  <arg n="1">the intensity of Bank of Japan's yen-support
+  intervention.</arg>
+</example>
+
+<example name="metaphorical, passivized">
+  <text>
+  The upbeat mood of stocks was reflected in demand for futures contracts.
+  </text>
+  <arg n="1">The upbeat mood of stocks</arg>
+  <rel>reflected</rel>
+  <arg f="in" n="2">demand for futures contracts</arg>
+</example>
+
+<example name="reflect on">
+  <text>
+  John's recent behavior reflects poorly on his ability to live alone.
+  </text>
+  <arg n="2">John's recent behavior</arg>
+  <rel>reflects</rel>
+  <arg f="MNR" n="m">poorly</arg>
+  <arg f="on" n="1">his ability to live alone</arg>
+</example>
+
+</roleset>
+
+<roleset id="reflect.02" name="think about">
+<roles>
+  <role descr="thinker" n="0"/>
+  <role descr="thoughts" n="1"/>
+</roles>
+
+<example name="think about">
+  <text>
+  John was ordered to sit in the corner and *trace* reflect on his actions.
+  </text>
+  <arg n="0">*trace*=John</arg>
+  <rel>reflect</rel>
+  <arg f="on" n="1">his actions</arg>
+</example>
+
+<note>
+Might also be phrasal &quot;reflect_on&quot;, if that's in the lexicon.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,49 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="airlift">
+<note>
+  Frames file for 'airlift' based on survey of sentences in the WSJ
+  corpus. Comparison with 'transfer'.
+</note>
+
+
+<roleset id="airlift.01" name="to transport in an airlift" vncls="-">
+<roles>
+  <role descr="agent, causer" n="0"/>
+  <role descr="entity transported" n="1"/>
+  <role descr="transported to" n="2"/>
+  <role descr="transported from" n="3"/>
+</roles>
+
+<example name="all arguments">
+<inflection aspect="perfect" form="participle" person="ns" tense="past" voice="active"/>
+<text>
+ Tiger itself was founded [*-1] by a band of gungho airmen who [*T*-2] had airlifted supplies `` over the Hump '' from India to China during World War II .
+</text>
+	<arg n="0">[*T*-2] -&gt;  who -&gt;  gungho airmen</arg>
+	<rel>airlifted</rel>
+	<arg n="1">supplies</arg>
+	<arg f="MNR" n="M">over the Hump</arg>
+	<arg f="from" n="3">India</arg>
+	<arg f="to" n="2">China</arg>
+	<arg f="TMP" n="M">during World War II</arg>
+</example>
+
+
+<example name="without Arg3">
+<inflection aspect="progressive" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ Rebel artillerists bombarded the capital of Afghanistan , [*-2] killing at least 12 people , as the Soviet Union was reported [*-1] to be airlifting arms and food to Kabul 's forces .
+</text>
+	<arg n="0">[*-1] -&gt;  the Soviet Union</arg>
+	<rel>airlifting</rel>
+	<arg n="1">arms and food</arg>
+	<arg f="to" n="2">Kabul 's forces</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

@@ -1,0 +1,80 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="unwind">
+<note>
+  Frames file for 'unwind' based on sentences in financial subcorpus.
+  No Verbnet entry, comparison with 'wind'.
+</note>
+
+<roleset id="unwind.01" name="(cause to) be uncoiled" vncls="-">
+<roles>
+  <role descr="unroller" n="0"/>
+  <role descr="thing unrolled or unrolling" n="1"/>
+</roles>
+
+<example name="specialized financial usage">
+<inflection aspect="ns" form="full" person="ns" tense="ns" voice="ns"/>
+<text>
+    And senior officials of two U.S. securities houses say they
+    switched trades in European stocks to the London market last week
+    when they couldn't unwind positions on the Continent. 
+</text>
+        <arg n="0">they</arg>
+        <arg f="MOD" n="M">could</arg>
+        <arg f="NEG" n="M">n't</arg>
+        <rel>unwind</rel>
+        <arg n="1">positions on the Continent</arg>
+<note>
+I have no idea what this means.
+</note>
+
+</example>
+
+<example name="literal, agentive">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John unwound his giant ball of shed hair.
+  </text>
+  <arg n="0">John</arg>
+  <rel>unwound</rel>
+  <arg n="1">his giant ball of shed hair</arg>
+</example>
+
+<example name="literal, ergative">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John's watch unwound quickly.
+  </text>
+  <arg n="1">John's watch</arg>
+  <rel>unwound</rel>
+  <arg f="MNR" n="m">quickly</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="unwind.02" name="relax" vncls="-">
+<roles>
+  <role descr="relaxer" n="1"/>
+  <role descr="instrument" n="2"/>
+</roles>
+
+<example name="hot summer days">
+  <inflection aspect="ns" form="full" person="ns" tense="ns" voice="active"/>
+  <text>
+    After a long day of work, John likes *trace* to relax with a nap
+    in his hammock. 
+  </text>
+  <arg n="1">*trace* -&gt; John</arg>
+  <rel>relax</rel>
+  <arg f="with" n="2">a nap in his hammock</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

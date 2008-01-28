@@ -1,0 +1,70 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<note>
+Frames file for 'seek' based on survey of initial sentences of big corpus
+and comparison with 'try' and 'want'
+</note>
+<predicate lemma="seek">
+<roleset id="seek.01" name="look for" vncls="35.6">
+  <roles>
+    <role descr="Agent / entity seeking" n="0">
+	<vnrole vncls="35.6" vntheta="Agent"/></role>
+    <role descr="thing sought, attempted action" n="1">
+	<vnrole vncls="35.6" vntheta="Theme"/></role>
+    <role descr="sought-from" n="2">
+	<vnrole vncls="35.6" vntheta="Location"/></role>
+  </roles>
+
+<example name="transitive">
+  <text>
+    Northeast is seeking approval of its possible purchase of PS of New 
+    Hampshire.
+  </text>
+  <arg n="0">Northeast</arg>
+  <rel>seeking</rel>
+  <arg n="1">approval of its possible purchase of PS of New Hampshire</arg>
+</example>
+
+<example name="arg1 as action">
+  <text>
+    A company is seeking *trace* to purchase a carrier.
+  </text>
+  <arg n="0">A company</arg>
+  <rel>seeking</rel>
+  <arg n="1">*trace* to purchase a carrier</arg>
+</example>
+
+<example name="with sought-from">
+  <text>
+    Czechoslovakia is seeking $2 billion from Hungary.
+  </text>
+  <arg n="0">Czechoslovakia</arg>
+  <rel>seeking</rel>
+  <arg n="1">$2 billion</arg>
+  <arg f="from" n="2">from Hungary</arg>
+</example>
+</roleset>
+</predicate>
+
+<predicate lemma="seek_out">
+<roleset id="seek.02" name="search diligently for" vncls="35.6">
+  <roles>
+    <role descr="Agent / entity seeking" n="0">
+	<vnrole vncls="35.6" vntheta="Agent"/></role>
+    <role descr="thing sought" n="1">
+	<vnrole vncls="35.6" vntheta="Theme"/></role>
+    <role descr="sought-from" n="2">
+	<vnrole vncls="35.6" vntheta="Location"/></role>
+  </roles>
+
+<example name="transitive">
+  <text>
+    Country funds seek out individual companies.
+  </text>
+  <arg n="0">Company funds</arg>
+  <rel>seek out</rel>
+  <arg n="1">individual companies</arg>
+</example>
+</roleset>
+</predicate>
+</frameset>

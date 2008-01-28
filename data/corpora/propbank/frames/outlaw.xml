@@ -1,0 +1,47 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="outlaw">
+<note>
+  Frames file for 'outlaw' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="outlaw.01" name="make illegal" vncls="-">
+<roles>
+  <role descr="judicial body, agent" n="0"/>
+  <role descr="criminal activity" n="1"/>
+</roles>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+     By 1997, almost all remaining uses of cancer-causing asbestos
+     will be outlawed. 
+</text>
+        <arg f="TMP" n="M">By 1997</arg>
+        <arg f="MOD" n="M">will</arg>
+        <rel>outlawed</rel>
+        <arg n="1">*trace* -&gt;  almost all remaining uses of
+        cancer-causing asbestos</arg> 
+</example>
+
+<example name="active">
+<inflection aspect="perfect" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+    So far, New York, New Jersey, Nebraska, Georgia, Michigan and
+    Minnesota have outlawed Mr. Maynard's device, citing health
+    concerns. 
+</text>
+        <arg f="TMP" n="M">So far</arg>
+        <arg n="0">New York, New Jersey, Nebraska, Georgia, Michigan
+        and Minnesota</arg> 
+        <rel>outlawed</rel>
+        <arg n="1">Mr. Maynard's device</arg>
+        <arg f="ADV" n="M">citing health concerns</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

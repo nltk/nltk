@@ -1,0 +1,34 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="reason">
+<note>
+  Frames file for 'reason' based on sentences in financial subcorpus.
+No Verbnet entry, no Framenet entry.  No comparison.
+</note>
+
+<roleset id="reason.01" name="think logically" vncls="-">
+<roles>
+  <role descr="thinker" n="0"/>
+  <role descr="thought" n="1"/>
+</roles>
+
+<example name="fronted">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    That is another small encouragement for the Federal Reserve to
+lower interest rates in coming weeks, they reasoned. 
+</text>
+        <arg n="0">they</arg>
+        <rel>reasoned</rel>
+        <arg n="1">*trace* -&gt;  That is another small encouragement for
+the Federal Reserve to lower interest rates in coming weeks</arg> 
+</example>
+
+<note>
+Expect to see the other constructions of saying, such as inverted and
+perhaps even split.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

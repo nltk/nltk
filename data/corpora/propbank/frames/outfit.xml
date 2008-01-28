@@ -1,0 +1,43 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="outfit">
+<note>
+  Frames file for 'outfit' based on sentences in wsj.  No Verbnet
+  entry, comparison with 'equip'.
+</note>
+
+<roleset id="outfit.01" name="provide with equipment" vncls="13.4.2">
+<roles>
+	<role descr="provider" n="0">
+		
+  <vnrole vncls="13.4.2" vntheta="Agent"/></role>
+
+	<role descr="entity getting equipment" n="1">
+		
+  <vnrole vncls="13.4.2" vntheta="Recipient"/></role>
+
+	<role descr="equipment" n="2">
+		
+  <vnrole vncls="13.4.2" vntheta="Theme"/></role>
+</roles>
+
+<example name="pretty easy">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Allied-Signal Aerospace Co. received a $65 million contract
+    *trace* to outfit Continental Airlines' 393 planes with the
+    Bendix/King Traffic Alert and Collision Avoidance System. 
+</text>
+        <arg n="0">*trace* -&gt;  Allied-Signal Aerospace Co.</arg>
+        <rel>outfit</rel>
+        <arg n="1">Continental Airlines' 393 planes</arg>
+        <arg f="with" n="2">the Bendix/King Traffic Alert and
+        Collision Avoidance System</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

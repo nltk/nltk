@@ -1,0 +1,60 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="gloat">
+<note>
+  Frames file for 'gloat' based on survey of sentences in the WSJ
+  corpus.  
+</note>
+
+
+<roleset id="gloat.01" name="to feel or express great self-satisfaction" vncls="31.3">
+<roles>
+  <role descr="person gloating" n="0">
+		
+  <vnrole vncls="31.3" vntheta="Experiencer"/></role>
+
+  <role descr="entity gloating at" n="1">
+		
+  <vnrole vncls="31.3" vntheta="Cause"/></role>
+
+</roles>
+
+<example name="Arg1 as a proposition">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ Mr. Hulings gloats that he sold all his stocks a week before the market plummeted 190 points on Oct. 13 , and he is using the money [*] to help [*-1] buy a 45-acre horse farm .
+</text>
+	<arg n="0">Mr. Hulings</arg>
+	<rel>gloats</rel>
+	<arg n="1">he sold all his stocks a week before the market plummeted 190 points on Oct. 13</arg>
+</example>
+
+
+<example name="gloat at">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ Though Democrats can gloat at all this for now , they may want [*-1] to contain their glee .
+</text>
+	<arg n="0">Democrats</arg>
+	<arg f="MOD" n="M">can</arg>
+	<rel>gloat</rel>
+	<arg f="at" n="1">all this</arg>
+	<arg f="TMP" n="M">for now</arg>
+</example>
+
+
+<example name="intransitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ Afterward , Mr. Paul is said by Mr. Guterman [*-1] to have phoned Mr. Guterman , the New York developer selling the collection , and gloated .
+</text>
+	<arg n="0">[*-1] -&gt;  Mr. Paul</arg>
+	<rel>gloated</rel>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

@@ -1,0 +1,90 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="warn">
+<note>
+  Frames file for 'warn' based on sentences in financial subcorpus.
+  No access to verbnet.  Comparison with 'advise'.
+</note>
+
+<roleset id="warn.01" name="give a warning" vncls="37.9-1">
+<roles>
+  <role descr="entity giving warning" n="0">
+	  <vnrole vncls="37.9-1" vntheta="Agent"/></role>
+  <role descr="warning, impelled action" n="1">
+	  <vnrole vncls="37.9-1" vntheta="Topic"/></role>
+  <role descr="entity getting warning, impelled agent" n="2">
+	  <vnrole vncls="37.9-1" vntheta="Recipient"/></role>
+</roles>
+
+<note>
+Args 1 and 2 are reversed from 'advise' but follow the pattern of
+'say' etc.
+</note>
+
+<example name="just the warning">
+<text>
+    Two antitrust agencies may face further cutbacks because of a
+    complicated new funding device, some Democrats in Congress are
+    warning *trace*. 
+</text>
+        <arg n="0">some Democrats in Congress</arg>
+        <rel>warning</rel>
+        <arg n="1">*trace* -&gt;  Two antitrust agencies may face further
+        cutbacks because of a complicated new funding device</arg> 
+</example>
+
+<example name="with entity warned">
+<text>
+    The issue has come to a boil in Newark, N.J., where federal
+    prosecutors have warned lawyers for Eddie Antar that if the
+    founder and former chairman of Crazy Eddie Inc. is indicted, the
+    government may move to seize the money that Mr. Antar is using to
+    pay legal fees. 
+</text>
+        <arg n="0">federal prosecutors</arg>
+        <rel>warned</rel>
+        <arg n="2">lawyers for Eddie Antar</arg>
+        <arg n="1">if the founder and former chairman of Crazy Eddie
+        Inc. is indicted, the government may move to seize the money
+        that Mr. Antar is using to pay legal fees</arg> 
+</example>
+
+<example name="warning as PP">
+<text>
+    Bay Financial Corp., Boston, which *trace* has been reporting big
+    losses and warning of a possible bankruptcy-law filing, said it
+    was sued by a holder. 
+</text>
+        <arg n="0">*trace* -&gt;  which -&gt;  Bay Financial Corp.</arg>
+        <rel>warning</rel>
+        <arg f="of" n="1">a possible bankruptcy-law filing</arg>
+</example>
+
+<example name="warning as infinitive">
+<text>
+    Mr. Thompson projected that Anheuser's statement of intent could
+    simply be a means of *trace* warning competitors to ease up on
+    price-cutting or face a costly and fruitless battle. 
+</text>
+        <arg n="0">*trace* -&gt; Anheuser 's statement of intent</arg>
+        <rel>warning</rel>
+        <arg n="2">competitors</arg>
+        <arg n="1">to ease up on price-cutting or face a
+        costly and fruitless battle</arg> 
+</example>
+
+<example name="just entity warned">
+  <text>
+    John said, &quot;I'm warning you!&quot;
+  </text>
+  <arg n="0">I</arg>
+  <rel>warning</rel>
+  <arg n="2">you</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

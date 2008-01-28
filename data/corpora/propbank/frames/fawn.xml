@@ -1,0 +1,35 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="fawn">
+<note>
+  Frames file for 'fawn' based on sentences in wsj.  Verbnet entry 28,
+  which has nothing to do with usage in wsj or anywhere else for that
+  matter. 
+</note>
+
+<roleset id="fawn.01" name="seek favor with" vncls="-">
+<roles>
+  <role descr="seeker" n="0"/>
+  <role descr="with whom, fawned-over" n="1"/>
+</roles>
+
+<example name="the one example">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+     In this era of frantic competition for ad dollars, a lot of
+     revenue-desperate magazines are getting pretty cozy with
+     advertisers -- *trace* fawning over them in articles and offering
+     pages of advertorial space. 
+</text>
+        <arg n="0">*trace* -&gt;  a lot of revenue-desperate magazines</arg>
+        <rel>fawning</rel>
+        <arg f="over" n="1">them</arg>
+        <arg f="LOC" n="M">in articles</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

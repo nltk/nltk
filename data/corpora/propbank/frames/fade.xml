@@ -1,0 +1,66 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="fade">
+<note>
+Frames file for 'fade' based on sentences in financial subcorpus and
+automatic expansion via verbnet.
+</note>
+
+<roleset id="fade.01" name="(cause to) become dim" vncls="45.4">
+<roles>
+	<role descr="agent, causing advance" n="0">
+		
+  <vnrole vncls="45.4" vntheta="Agent"/></role>
+ 
+	<role descr="thing advancing" n="1">
+		
+  <vnrole vncls="45.4" vntheta="Patient"/></role>
+ 
+	<role descr="EXT, amount advanced by" n="2"/> 
+	<role descr="start point" n="3"/> 
+	<role descr="end point" n="4"/> 
+</roles>
+
+<example name="typically ergative?">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Continental gave up some of its recent gains,  dropping 8 to 338,
+    as rumors of an impending takeover attempt for the tiremaker
+    faded, brokers said. 
+</text>
+        <arg n="1">rumors of an impending takeover attempt for the
+        tiremaker</arg> 
+        <rel>faded</rel>
+</example>
+
+<example name="with agent">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John faded his jeans.
+  </text>
+  <arg n="0">John</arg>
+  <rel>faded</rel>
+  <arg n="1">his jeans</arg>
+</example>
+
+<note>
+I think that works.
+</note>
+
+<example name="with start/end points">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John's sunburn faded from boiled-lobster red to a rosy blush.
+  </text>
+  <arg n="1">John's sunburn</arg>
+  <rel>faded</rel>
+  <arg f="from" n="3">boiled-lobster red</arg>
+  <arg f="to" n="4">a rosy blush</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

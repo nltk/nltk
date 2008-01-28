@@ -1,0 +1,46 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="outpace">
+<note>
+  Frames file for 'outpace' based on sentences in financial subcorpus.
+  No Verbnet entry, surprise surprise.  No comparison.
+</note>
+
+<roleset id="outpace.01" name="move more quickly">
+<roles>
+  <role descr="entity moving faster" n="0"/>
+  <role descr="entity moving slower" n="1"/>
+  <role descr="margin" n="2"/>
+</roles>
+
+<example name="arg2 as PP">
+<text>
+    Advancing OTC stocks outpaced decliners by 1,120 to 806. 
+</text>
+        <arg n="0">Advancing OTC stocks</arg>
+        <rel>outpaced</rel>
+        <arg n="1">decliners</arg>
+        <arg f="by" n="2">1,120 to 806</arg>
+</example>
+
+
+<example name="arg2 as EXT">
+<text>
+    Declining issues on the New York Stock Exchange outpaced
+    advancers, 1,012 to 501. 
+</text>
+        <arg n="0">Declining issues</arg>
+        <arg f="LOC" n="M">on the New York Stock Exchange</arg>
+        <rel>outpaced</rel>
+        <arg n="1">advancers</arg>
+        <arg f="EXT" n="2">1,012 to 501</arg>
+</example>
+
+<note>
+&quot;Outrun&quot; will take the same framing, although the margin will usually
+not occur.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

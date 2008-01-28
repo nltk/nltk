@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="barge">
+<note>
+  Frames file for 'barge' based on sentences in wsj.  Verbnet entry
+  11.5-1, Framenet entry Self motion.
+</note>
+
+<roleset id="barge.01" name="go rudely" vncls="11.5-1">
+<roles>
+  <role descr="entity in motion" n="0"><vnrole vncls="11.5-1" vntheta="Agent"/></role>
+  <role descr="path, destination" n="1"><vnrole vncls="11.5-1" vntheta="Destination"/></role>
+</roles>
+
+<example name="usually as 'enter'?">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    The farmer barges into the naczelnik's office.
+</text>
+        <arg n="0">The farmer</arg>
+        <rel>barges</rel>
+        <arg f="into" n="1">the naczelnik's office</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

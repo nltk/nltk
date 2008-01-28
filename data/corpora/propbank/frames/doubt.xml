@@ -1,0 +1,40 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="doubt">
+<note>
+  Frames file for 'doubt' based on sentences in financial subcorpus.
+  No access to verbnet.  Comparison with 'believe'.
+</note>
+
+<roleset id="doubt.01" name="doubt, disbelieve">
+<roles>
+  <role descr="disbeliever" n="0"/>
+  <role descr="disbelief" n="1"/>
+</roles>
+
+<example name="sentential disbelief">
+<text>
+    Although takeover experts said they doubted Mr. Steinberg will
+    make a bid by himself... 
+</text>
+        <arg n="0">they</arg>
+        <rel>doubted</rel>
+        <arg n="1">Mr. Steinberg will make a bid by himself</arg>
+</example>
+
+<note>
+As usual, leave 'that' complementizers out of the Arg1.
+</note>
+
+<example name="nominal disbelief">
+  <text>
+    John doubted Mary.
+  </text>
+  <arg n="0">John</arg>
+  <rel>doubted</rel>
+  <arg n="1">Mary</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

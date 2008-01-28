@@ -1,0 +1,46 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="enrage">
+<note>
+  Frames file for 'enrage' based on sentences in wsj.  Verbnet entry
+  31.1, Framenet entry Experiencer_obj.
+</note>
+
+<roleset id="enrage.01" name="make very very angry" vncls="31.1">
+<roles>
+  <role descr="causer of anger, agent" n="0">
+        <vnrole vncls="31.1" vntheta="Cause"/></role>
+  <role descr="angry entity" n="1">
+        <vnrole vncls="31.1" vntheta="Experiencer"/></role>
+  <role descr="instrument, if separate from arg0" n="2"/>
+</roles>
+
+<example name="just transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    The radio show ``enraged us,'' says Mrs. Ward. 
+</text>
+        <arg n="0">The radio show</arg>
+        <rel>enraged</rel>
+        <arg n="1">us</arg>
+</example>
+
+<example name="with instrument">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    Mary enraged John with her habit of leaving wet towels on the bed.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>enraged</rel>
+  <arg n="1">John</arg>
+  <arg f="with" n="2">her habit of leaving wet towels on the bed</arg>
+</example>
+
+<note>
+Do not try to make an agent/instrument distinction--only use arg2 when
+arg0 is also present.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,158 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="end">
+<note>
+  Frames file for 'end' based on survey of initial 100 or so sentences
+  from big corpus.  No related verbs yet surveyed.
+</note>
+<roleset id="end.01" name="cause to stop" vncls="55.1">
+<roles>
+  <role descr="Intentional agent" n="0">
+	  <vnrole vncls="55.1" vntheta="Agent"/></role>
+  <role descr="Thing ending" n="1">
+	  <vnrole vncls="55.1" vntheta="Theme"/></role>
+  <role descr="Explicit instrument, thing ended with" n="2"/>
+  <role descr="point at which something ends" n="M"/>
+</roles>
+
+<example name="nominal arg1">
+  <text>
+    The courts want *trace=courts* to end rigid affirmative action programs.
+  </text>
+  <arg n="0">*trace=courts*</arg>
+  <rel>to end</rel>
+  <arg n="1">rigid affirmative action programs</arg>
+</example>
+
+<example name="accusative, arg1 NP">
+  <text>
+    Such a countermove could end Jaguar's hopes for independence.
+  </text>
+  <arg n="0">Such a countermove</arg>
+  <rel>end</rel>
+  <arg n="1">Jaguar's hopes for independence</arg>
+</example>
+
+<example name="ergative">
+  <text>
+    The huge bronze bells...end, surprisingly, in the inverted position.
+  </text>
+  <arg n="1">[The huge bronze bells...][in the inverted position]</arg>
+  <rel>end</rel>
+  <arg f="DIS" n="M">surprisingly</arg>
+</example>
+
+<example name="with instrumental">
+  <text>
+    The movie ends with sound.
+  </text>
+  <arg n="1">The movie</arg>
+  <rel>ends</rel>
+  <arg f="with" n="2">with sound</arg>
+</example>
+
+<example name="different kind of instrument">
+  <text>
+    The first two GAF trials ended in mistrials earlier this year.
+  </text>
+  <arg n="1">The first two GAF trials</arg>
+  <rel>ended</rel>
+  <arg f="in" n="2">in mistrials</arg>
+  <arg f="TMP" n="M">earlier this year</arg>
+</example>
+
+<example name="a weird usage">
+  <text>
+    ...in the week ended Tuesday.
+  </text>
+  <arg n="1">...in the week</arg>
+  <rel>ended</rel>
+  <arg f="TMP" n="M">Tuesday</arg>
+</example>
+
+</roleset>
+
+<roleset id="end.02" name="terminate, esp stocks" vncls="55.1">
+
+<roles>
+  <role descr="thing closing" n="1">
+	  <vnrole vncls="55.1" vntheta="Agent"/></role>
+  <role n="2"  descr="EXT, amount-changed-by"/>
+  <role n="3"  descr="start point"/>
+  <role n="4"  descr="end point"/>
+</roles>
+
+<example name="damn stock reports">
+  <text>
+    Gilts ended about 3/8 point lower.
+  </text>
+  <arg n="1">Filts</arg>
+  <rel>ended</rel>
+  <arg f="EXT" n="2">about 3/8 point lower</arg>
+</example>
+
+<example name="with manner">
+  <text>
+    ...trading in Frankfurt ended higher.
+  </text>
+  <arg n="1">...trading in Frankfurt</arg>
+  <rel>ended</rel>
+  <arg f="MNR" n="M">higher</arg>
+</example>
+
+<example name="two senses at once?">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+     Japan's No. 111 4.6% bond due 1998 ended the day on brokers' screens at 95.11 [*-1] to yield 5.43%.
+  </text>
+  <arg n="1"        >Japan's No. 111 4.6% bond due 1998</arg>
+  <rel              >ended</rel>
+  <arg n="m" f="TMP">the day</arg>
+  <arg n="m" f="LOC">on brokers' screens</arg>
+  <arg n="4" f="at">95.11</arg>
+  <arg n="m" f="ADV">[*-1] to yield 5.43%</arg>
+</example>
+
+</roleset>
+
+</predicate>
+<predicate lemma="end_up">
+
+<roleset id="end.03" name="become" vncls="-">
+<roles>
+  <role n="1"  descr="entity changing"/>
+  <role n="2"  descr="new state"/>
+</roles>
+
+<example name="cash surplus">
+  <text>
+    Sea Containers would end up with a cash surplus of approx. $620 million.
+  </text>
+  <arg n="1">Sea Containers</arg>
+  <arg n="M" f="MOD">would</arg>
+  <rel>end up</rel>
+  <arg n="2">with a cash surplus of approx. $620 million</arg>
+</example>
+
+<example name="data">
+  <text>
+    That data could end up in the hands of prosecutors
+  </text>
+  <arg n="1">That data</arg>
+  <arg n="m" f="MOD">could</arg>
+  <rel>end up</rel>
+  <arg n="2">in the hands of prosecutors</arg>
+</example>
+
+<example name="false prediction">
+  <text>
+    Time Warner and Sony Corp could end up becoming partners.
+  </text>
+  <arg n="1">Time Warner and Sony Corp</arg>
+  <arg n="m" f="MOD">could</arg>
+  <rel>end up</rel>
+  <arg n="2">becoming partners</arg>
+</example>
+</roleset>
+</predicate>
+</frameset>

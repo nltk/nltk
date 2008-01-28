@@ -1,0 +1,37 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="rail">
+<note>
+  Frames file for 'rail' based on sentences in wsj.  No access to
+  Verbnet at the moment.
+</note>
+
+<roleset id="rail.01" name="raise an objection, diatribe" vncls="-">
+<roles>
+  <role descr="agent, speaker" n="0"/>
+  <role descr="thing objected to" n="1"/>
+</roles>
+
+<example name="the one example">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    Rival Boston Herald columnist Howie Carr, who [*T*-1] usually
+    rails at Statehouse ``hacks'' and nepotism, argued that the new
+    drawings were designed to hide Mr. Madden's ``rapidly growing
+    forehead'' and the facial defects of ``chinless'' Dan Shaughnessy,
+    a Globe sports columnist. 
+</text>
+        <arg n="0">[*T*-1] -&gt;  who -&gt;  Rival Boston Herald columnist
+        Howie Carr</arg> 
+        <arg f="TMP" n="M">usually</arg>
+        <rel>rails</rel>
+        <arg f="at" n="1">Statehouse ``hacks'' and nepotism</arg>
+</example>
+
+<note>
+Can also be 'rail against'
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,56 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="budge">
+<note>
+  Frames file for 'budge' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="budge.01" name="(cause to) alter a position or attitude, move slightly" vncls="-">
+<roles>
+  <role descr="causer, agent" n="0"/>
+  <role descr="entity budging" n="1"/>
+  <role descr="position, budged from" n="2"/>
+</roles>
+
+<example name="intransitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ -- Among married couples , the gap between blacks and whites narrowed sharply , as income of black families shot up 6.8 % while income of whites did n't budge .
+</text>
+	<arg n="1">income of whites</arg>
+	<arg f="NEG" n="M">n't</arg>
+	<rel>budge</rel>
+</example>
+
+
+<example name="with Arg2-from">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ Interest rates barely budged from Tuesday 's levels .
+</text>
+	<arg n="1">Interest rates</arg>
+	<arg f="ADV" n="M">barely</arg>
+	<rel>budged</rel>
+	<arg f="from" n="2">Tuesday 's levels</arg>
+</example>
+
+
+<example name="with Arg2-on">
+<inflection aspect="ns" form="full" person="ns" tense="future" voice="active"/>
+<text>
+ `` The company will not budge on anything , '' said [*T*-1] a spokesman for the union .
+</text>
+	<arg n="1">The company</arg>
+	<arg f="MOD" n="M">will</arg>
+	<arg f="NEG" n="M">not</arg>
+	<rel>budge</rel>
+	<arg f="on" n="2">anything</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

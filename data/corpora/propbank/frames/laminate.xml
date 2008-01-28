@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="laminate">
+<note>
+  Frames file for 'laminate' based on sentences in wsj.  No access to
+  Verbnet at the moment.
+</note>
+
+<roleset id="laminate.01" name="coat with plastic" vncls="-">
+<roles>
+  <role descr="applier of plastic, agent" n="0"/>
+  <role descr="thing covered with plastic" n="1"/>
+</roles>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    A four-page ad from Texas Instruments Inc., running in
+    approximately 140,000 issues of the Oct. 20 ``Corporate Elite''
+    issue of the McGraw-Hill Inc. publication, contains a speech
+    synthesizer laminated [*] between two of the pages. 
+</text>
+        <rel>laminated</rel>
+        <arg n="1">[*] -&gt;  a speech synthesizer</arg>
+        <arg f="LOC" n="M">between two of the pages</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

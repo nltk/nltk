@@ -1,0 +1,61 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="curse">
+<note>
+  Frames file for 'curse' based on sentences in wsj.  No access to
+  Verbnet at the moment.
+</note>
+
+<roleset id="curse.01" name="use bad language" vncls="-">
+<roles>
+  <role descr="speaker" n="0"/>
+  <role descr="utterance, four letter words" n="1"/>
+  <role descr="listener" n="2"/>
+</roles>
+
+<example name="intransitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Often the genteel, conservative, long-term-oriented investment
+    bankers were displaced by crude traders: ``When angered, he cursed
+    so forcefully that his face reddened and his pale-blue eyes
+    narrowed into tiny slits,'' the authors say of Lehman's Lewis
+    Glucksman. 
+</text>
+        <arg n="0">he</arg>
+        <rel>cursed</rel>
+        <arg f="MNR" n="M">so forcefully that his face reddened and
+        his pale-blue eyes narrowed into tiny slits</arg> 
+</example>
+
+<example name="with utterance">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     ``#$%&amp;)O(*&amp;^%&amp;^%#$('' John cursed.
+  </text>
+  <arg n="1">#$%&amp;)O(*&amp;^%&amp;^%#$(</arg>
+  <arg n="0">John</arg>
+  <rel>cursed</rel>
+</example>
+
+<note>
+I'm betting this usage doesn't occur much.
+</note>
+
+<example name="with listener">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John cursed eloquently in Frisian at Mary.
+  </text>
+  <arg n="0">John</arg>
+  <rel>cursed</rel>
+  <arg f="MNR" n="m">eloquently in Frisian</arg>
+  <arg f="at" n="2">at Mary</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,67 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="contribute">
+<note>
+  Frames file for 'contribute' based on survey of initial sentences of
+  big corpus and comparison with 'give'
+</note>
+
+<roleset id="contribute.01" name="give" vncls="13.2">
+<roles>
+  <role descr="giver" n="0">
+		
+  <vnrole vncls="13.2" vntheta="Agent"/></role>
+
+  <role descr="thing given" n="1">
+		
+  <vnrole vncls="13.2" vntheta="Theme"/></role>
+
+  <role descr="entity given to" n="2">
+		
+  <vnrole vncls="13.2" vntheta="Recipient"/></role>
+
+</roles>
+
+<example name="unstated thing given">
+  <text>
+  Pamela Sebastian in New York contributed to this article.
+  </text>
+  <arg n="0">Pamela Sebastian in New York</arg>
+  <rel>contributed</rel>
+  <arg f="to" n="2">this article</arg>
+</example>
+
+<example name="unstated benefactor">
+  <text>
+  Last year they contributed #34 million, before taxes.
+  </text>
+  <arg f="TMP" n="m">Last year</arg>
+  <arg n="0">they</arg>
+  <rel>contributed</rel>
+  <arg n="1">#34 million</arg>
+  <arg n="m">before taxes</arg>
+<note>
+The &quot;before taxes&quot; is misparsed--it should be part of the NP with #34 --&gt;
+--million.
+</note>
+</example>
+
+
+<example name="topicalized">
+  <text>
+  Also contributing to the firmness in copper was *trace* a report by
+  Chicago purchasing agents.
+  </text>
+  <arg f="DIS" n="m">Also</arg>
+  <rel>contributing</rel>
+  <arg f="to" n="2">the firmness in copper</arg>
+  <arg n="0">a report by Chicago purchasing agents.</arg>
+</example>
+
+<note>
+Ignore the trace--it links to the entire VP.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

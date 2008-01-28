@@ -1,0 +1,93 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="calm">
+<note>
+Frames file for 'calm' based on sentences in wsj and automatic
+expansion via verbnet.
+</note>
+
+<roleset id="calm.01" name="make calm" vncls="31.1">
+<roles>
+     <role descr="agent of calming" n="0">
+		
+  <vnrole vncls="31.1" vntheta="Cause"/></role>
+
+     <role descr="entity becoming calm" n="1">
+		
+  <vnrole vncls="31.1" vntheta="Experiencer"/></role>
+
+     <role descr="instrument of calming" n="2"/>
+</roles>
+
+<example name="just transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    He said  he's upset that Mr. Phelan, *trace* trying *trace* to
+    calm investors after the plunge, said that investors would simply
+    have to get used to the market's big price swings. 
+</text>
+        <arg n="0">*trace* -&gt; *trace* -&gt;  Mr. Phelan</arg>
+        <rel>calm</rel>
+        <arg n="1">investors</arg>
+</example>
+
+<example name="ergative!">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    Dealers said  London showed signs of *trace* calming in
+    midafternoon... 
+</text>
+        <arg n="1">*trace* -&gt;  London</arg>
+        <rel>calming</rel>
+<note>
+&quot;in midafternoon&quot; goes with showing signs, not calming.
+</note>
+</example>
+
+<example name="all args">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    In an unusual move, several funds moved *trace* to calm investors
+    with recordings on their toll-free phone lines. 
+</text>
+        <arg n="0">*trace* -&gt;  several funds</arg>
+        <rel>calm</rel>
+        <arg n="1">investors</arg>
+        <arg f="with" n="2">recordings</arg>
+        <arg f="LOC" n="M">on their toll-free phone lines</arg>
+</example>
+<note>
+Reserve the instrument case for sentences with both an agent and an
+instrument.
+</note>
+
+</roleset>
+
+</predicate>
+
+<predicate lemma="calm_down">
+
+<roleset id="calm.02" name="make calm, with particle" vncls="-">
+<roles>
+     <role descr="agent of calming" n="0"/>
+     <role descr="entity becoming calm" n="1"/>
+     <role descr="instrument of calming" n="2"/>
+</roles>
+
+<example name="ergative with particle">
+<inflection aspect="perfect" form="full" person="ns" tense="present" voice="active"/>
+<text>
+    Mideast politics have calmed down and the squabbling within the
+    Organization of Petroleum Exporting Countries seems under control
+    for now. 
+</text>
+        <arg n="1">Mideast politics</arg>
+        <rel>[ calmed] [ down]</rel>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

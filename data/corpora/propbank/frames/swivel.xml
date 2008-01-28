@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="swivel">
+<note>
+  Frames file for 'swivel' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="swivel.01" name="to turn or rotate" vncls="-">
+<roles>
+  <role descr="cause, agent" n="0"/>
+  <role descr="thing swiveled" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+ Mainstream economists and commentators , [*-3] craning their necks up at the great pyramids of junk financing , swiveling their heads [*-2] to watch the avalanche of leveraged buy-outs , claimed [0] the end result would be a leaner , meaner corporate America , with soaring productivity and profits and the weaker gone to the wall .
+</text>
+	<arg n="0">[*-3] -&gt;  Mainstream economists and commentators</arg>
+	<rel>swiveling</rel>
+	<arg n="1">their heads</arg>
+	<arg f="PNC" n="M">[*-2] to watch the avalanche of leveraged buy-outs</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

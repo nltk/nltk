@@ -1,0 +1,51 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="print">
+<note>
+  Frames file for 'print' based on sentences in financial subcorpus.
+  Verbnet entry 25.2, other framed members include draw, forge, and
+  write.  No Framenet entry.  Comparison with write.
+</note>
+
+<roleset id="print.01" name="put pen to paper" vncls="25.2">
+<roles>
+  <role descr="printer" n="0">
+		
+  <vnrole vncls="25.2" vntheta="Agent"/></role>
+
+  <role descr="document" n="1">
+		
+  <vnrole vncls="25.2" vntheta="Theme"/></role>
+
+  <role descr="benefactive" n="2"/>
+</roles>
+
+<example name="all args">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    Jayark, New York, distributes and rents audio-visual equipment and
+    prints promotional ads for retailers. 
+</text>
+        <arg n="0">Jayark, New York,</arg>
+        <rel>prints</rel>
+        <arg n="1">promotional ads</arg>
+        <arg f="for" n="2">retailers</arg>
+</example>
+
+<example name="with medium">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John printed his dissertation on fifteen rolls of toilet paper.
+  </text>
+  <arg n="0">John</arg>
+  <rel>printed</rel>
+  <arg n="1">his dissertation</arg>
+  <arg f="LOC" n="m">on fifteen rolls of toilet paper</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

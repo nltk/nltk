@@ -1,0 +1,116 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="sit">
+<note>
+  Frames file for 'sit' based on sentences in financial subcorpus.
+  Verbnet classes assuming_position-50 put_spatial-9.2-1
+  spatial_configuration-47.6, other framed members include: bow, lie,
+  rise, stand, open.  Comparison with 'set'.
+</note>
+
+<roleset id="sit.01" name="be in a position" vncls="9.2-1 47.6 50">
+<roles>
+  <role descr="thing sitting" n="1">
+		
+		
+		
+  <vnrole vncls="47.6" vntheta="Theme"/><vnrole vncls="9.2-1" vntheta="Theme"/><vnrole vncls="50" vntheta="Agent"/></role>
+
+  <role descr="location or position" f="LOC" n="2">
+		
+		
+		
+  <vnrole vncls="47.6" vntheta="Location"/><vnrole vncls="9.2-1" vntheta="Destination"/><vnrole vncls="50" vntheta="Location"/></role>
+
+</roles>
+
+<example name="explicit location">
+<text>
+    ``You've got two champions sitting right before you,'' said
+    Mr. Baum. 
+</text>
+        <arg n="1">two champions</arg>
+        <rel>sitting</rel>
+        <arg f="LOC" n="2">right before you</arg>
+</example>
+
+<example name="manner instead of position">
+<text>
+    Traders said most of their major institutional investors, on the
+    other hand, sat tight. 
+</text>
+        <arg n="1">most of their major institutional investors</arg>
+        <arg f="DIS" n="M">on the other hand</arg>
+        <rel>sat</rel>
+        <arg f="MNR" n="M">tight</arg>
+</example>
+
+<note>
+This roleset can get very metaphorical
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="sit_down">
+<note>
+  Special case of &quot;sit&quot; above.
+</note>
+
+<roleset id="sit.02" name="assume a seated position" vncls="50">
+<roles>
+  <role descr="sitter" n="1">
+		
+  <vnrole vncls="50" vntheta="Agent"/></role>
+
+</roles>
+
+<example name="and shut up">
+<text>
+    Doug Hammond, the federal mediator in Seattle, where Boeing is
+    based, said the parties will continue *trace* to sit down daily
+    until a new settlement proposal emerges or the talks break off
+    again. 
+</text>
+        <arg n="1">*trace* -&gt;  the parties</arg>
+        <rel>[sit] [down]</rel>
+        <arg f="TMP" n="M">daily</arg>
+        <arg f="TMP" n="M">until a new settlement proposal emerges or
+        the talks break off again</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="sit_up">
+<note>
+  Special case of &quot;sit&quot; above.
+</note>
+
+<roleset id="sit.03" name="assume an upright seated position" vncls="50">
+<roles>
+  <role descr="sitter" n="1">
+		
+  <vnrole vncls="50" vntheta="Agent"/></role>
+
+</roles>
+
+<example name="wakey wakey">
+<text>
+   ...the influence of the appeals court in New York ``will make
+   insurers sit up and listen.'' 
+</text>
+        <arg f="MOD" n="m">will</arg>
+        <arg n="1">insurers</arg>
+        <rel>[ sit] [ up]</rel>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

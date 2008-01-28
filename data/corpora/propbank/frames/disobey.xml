@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="disobey">
+<note>
+  Frames file for 'disobey' based on sentences in wsj.  No Verbnet
+  entry, although 'obey' is in Framenet class Compliance.
+</note>
+
+<roleset id="disobey.01" name="not obey" vncls="-">
+<roles>
+  <role descr="disobeyer" n="0"/>
+  <role descr="rule or rule-giver" n="1"/>
+</roles>
+
+<example name="the one example">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+    I am referring to those young men who *trace* chose *trace* to
+    disobey their country's call to arms during the Vietnam war and
+    fled to Canada or some other sanctuary to avoid combat. 
+</text>
+        <arg n="0">*trace* -&gt; *trace* -&gt;  who -&gt;  those young men</arg>
+        <rel>disobey</rel>
+        <arg n="1">their country's call to arms</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

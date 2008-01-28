@@ -1,0 +1,58 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="sketch">
+<note>
+  Frames file for 'sketch' based on sentences in wsj.  Verbnet entry 25.2
+</note>
+
+<roleset id="sketch.01" name="draw roughly" vncls="25.2">
+<roles>
+  <role descr="artist" n="0"><vnrole vncls="25.2" vntheta="Agent"/></role>
+  <role descr="art" n="1"><vnrole vncls="25.2" vntheta="Theme"/></role>
+  <role descr="benefactive" n="2"/>
+</roles>
+
+<example name="one of two">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    He spends his days *trace* sketching passers-by, or trying to. 
+</text>
+        <arg n="0">*trace* -&gt;  He</arg>
+        <rel>sketching</rel>
+        <arg n="1">passers-by</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="sketch_out">
+
+<roleset id="sketch.02" name="describe roughly" vncls="-">
+<roles>
+  <role descr="describer" n="0"/>
+  <role descr="thing described" n="1"/>
+</roles>
+
+<example name="better late than never">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    Five minutes before his dissertation defense, John sketched out
+    the structure of his argument.
+  </text>
+  <arg f="TMP" n="m">Five minutes before his dissertation defense</arg>
+  <arg n="0">John</arg>
+  <rel>sketched out</rel>
+  <arg n="1">the structure of his argument</arg>
+</example>
+
+<note>
+This doesn't actually occur in wsj, but it will appear somewhere,
+sometime, and I like to be prepared.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

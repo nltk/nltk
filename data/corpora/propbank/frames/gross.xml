@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="gross">
+<note>
+  Frames file for 'gross' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="gross.01" vncls="-" name="earn profits">
+<roles>
+  <role n="0"  descr="earner"/>
+  <role n="1"  descr="gross profits (not net)"/>
+</roles>
+
+<example name="in a noun phrase">
+<inflection person="ns" tense="ns" aspect="progressive" voice="active" form="participle"/>
+<text>
+    ``Batman'' alone has racked up more than $247 million in
+    box-office receipts to date, making it Warner Bros.' largest
+    grossing film ever.  
+</text>
+	<arg n="M" f="MNR">largest</arg>
+	<rel>grossing</rel>
+	<arg n="1">film</arg>
+	<arg n="M" f="TMP">ever</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

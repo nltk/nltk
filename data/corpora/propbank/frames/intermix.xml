@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="intermix">
+<note>
+  Frames file for 'intermix' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="intermix.01" name="to mix together" vncls="-">
+<roles>
+  <role descr="agent, entity mixing" n="0"/>
+  <role descr="entity mixed" n="1"/>
+  <role descr="entity mixed with" n="2"/>
+</roles>
+
+<example name="all arguments">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ Other ads do n't bother with the fundraising ; a touching , if self-congratulatory , American Telephone &amp; Telegraph ad that [*T*-1] aired Sunday intermixed footage of the devastation in San Francisco and Charleston , S.C. , with interviews of people recounting how AT&amp;T helped [*T*-2] .
+</text>
+	<arg n="0">a touching , if self-congratulatory , American Telephone &amp; Telegraph ad that [*T*-1] aired Sunday</arg>
+	<rel>intermixed</rel>
+	<arg n="1">footage of the devastation in San Francisco and Charleston , S.C. ,</arg>
+	<arg f="with" n="2">interviews of people recounting how AT&amp;T helped [*T*-2]</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

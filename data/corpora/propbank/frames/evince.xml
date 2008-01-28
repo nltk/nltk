@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="evince">
+<note>
+  Frames file for 'evince' based on survey of sentences in the WSJ
+  corpus. Comparison with 'show'.
+</note>
+
+<roleset id="evince.01" name="to show clearly" vncls="-">
+<roles>
+  <role descr="shower, agent" n="0"/>
+  <role descr="thing shown" n="1"/>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Some evinced an optimism that had been rewarded when they didn't
+    flee the market in 1987. 
+</text>
+	<arg n="0">Some</arg>
+	<rel>evinced</rel>
+	<arg n="1">an optimism that had been rewarded when they didn't
+	flee the market in 1987</arg> 
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

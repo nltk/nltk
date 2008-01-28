@@ -1,0 +1,95 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="clog">
+<note>
+  Frames file for 'clog' based on sentences in wsj.  Verbnet entries
+  51.5, 9.8, 45.4.
+</note>
+
+<roleset id="clog.01" name="style of dance" vncls="51.5">
+<roles>
+  <role descr="dancer" n="0"><vnrole vncls="51.5" vntheta="Theme"/></role>
+</roles>
+
+<example name="dance!">
+  <inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+  <text>
+     John clogs every week.
+  </text>
+  <arg n="0">John</arg>
+  <rel>clogs</rel>
+  <arg f="TMP" n="m">every week</arg>
+</example>
+
+<note>
+More usually as a process noun: &quot;John enjoys clogging.&quot;  Unlike many
+dance verbs, clog cannot take a cognate object.  Thus, you can waltz a
+waltz, but cannot clog a clog.
+</note>
+
+</roleset>
+
+<roleset id="clog.02" name="obstruct a passage" vncls="9.8 45.4">
+<roles>
+  <role descr="agent (only!)" n="0"><vnrole vncls="9.8" vntheta="Agent"/><vnrole vncls="45.4" vntheta="Agent"/></role>
+  <role descr="passage" n="1"><vnrole vncls="9.8" vntheta="Destination"/><vnrole vncls="45.4" vntheta="Patient"/></role>
+  <role descr="substance blocking passage, clog itself" n="2"><vnrole vncls="9.8" vntheta="Theme"/><vnrole vncls="45.4" vntheta="Instrument"/></role>
+</roles>
+
+<example name="just passage">
+<inflection aspect="ns" form="participle" person="third" tense="present" voice="passive"/>
+<text>
+    At present, doctors can see how badly an artery is clogged [*-1]
+    [*T*-3] only by inserting a thin catheter into the artery and
+    injecting a fluid that makes the arteries visible on X-rays. 
+</text>
+        <rel>clogged</rel>
+        <arg n="1">[*-1] -&gt;  an artery</arg>
+        <arg f="EXT" n="M">[*T*-3] -&gt;  how badly</arg>
+</example>
+
+<example name="all args">
+  <inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+  <text>
+    John clogs Mary's drains with the hair he sheds.
+  </text>
+  <arg n="0">John</arg>
+  <rel>clogs</rel>
+  <arg n="1">Mary's drains</arg>
+  <arg f="with" n="2">the hair he sheds</arg>
+</example>
+
+<note>
+It is VERY important to distinguish the agent and the clog!
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="clog_up">
+
+<roleset id="clog.03" name="obstruct a passage, phrasal" vncls="9.8 45.4">
+<roles>
+  <role descr="agent (only!)" n="0"><vnrole vncls="9.8" vntheta="Agent"/><vnrole vncls="45.4" vntheta="Agent"/></role>
+  <role descr="passage" n="1"><vnrole vncls="9.8" vntheta="Destination"/><vnrole vncls="45.4" vntheta="Patient"/></role>
+  <role descr="substance blocking passage, clog itself" n="2"><vnrole vncls="9.8" vntheta="Theme"/><vnrole vncls="45.4" vntheta="Instrument"/></role>
+</roles>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    The effect of Nixon era non-duck ducks was an economy clogged [*]
+    up with regulations and distortions. 
+</text>
+        <rel>[ clogged] [ up]</rel>
+        <arg n="1">[*] -&gt;  an economy</arg>
+        <arg f="with" n="2">regulations and distortions</arg>
+</example>
+
+<note>
+A more intensive version of clog.02
+</note>
+
+</roleset>
+</predicate>
+</frameset>

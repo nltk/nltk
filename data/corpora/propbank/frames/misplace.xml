@@ -1,0 +1,29 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="misplace">
+<note>
+  Frames file for 'misplace' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="misplace.01" name="to put in a wrong place" vncls="-">
+<roles>
+  <role descr="who put something down, agent" n="0"/>
+  <role descr="entity misplaced" n="1"/>
+</roles>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="past" voice="passive"/>
+<text>
+ The air-waybill number was changed [*-1] en route , and paper work showing that the crates had cleared customs was misplaced [*-2] , so it was a week before three of the four crates could be located [*-3] in a bonded warehouse and the Gauguin discovered [*-5] missing .
+</text>
+	<rel>misplaced</rel>
+	<arg n="1">[*-2] -&gt;  paper work showing that the crates had cleared customs</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

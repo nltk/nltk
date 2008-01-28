@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="suck">
+<note>
+  Frames file for 'suck'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="suck.01" name="to draw something in by or as if by suction" vncls="10.4.1">
+<roles> 
+  <role descr="agent, causer" n="0"><vnrole vncls="10.4.1" vntheta="Agent"/></role>
+  <role descr="entity sucked" n="1"><vnrole vncls="10.4.1" vntheta="Theme"/></role>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ After [*-2] clanging around for an hour or so , the shiny , hot money pours out of the cement chute , where a giant vacuum sucks away the dried mud and burnt wrappers [*T*-1] .
+</text>
+	<arg n="0">a giant vacuum</arg>
+	<rel>sucks</rel>
+	<arg f="DIR" n="M">away</arg>
+	<arg n="1">the dried mud and burnt wrappers</arg>
+	<arg f="LOC" n="M">[*T*-1] -&gt;  where -&gt;  the cement chute</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

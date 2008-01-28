@@ -1,0 +1,51 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="cost">
+<note>
+  Frames file for 'cost' based on survey of sentences in big corpus.
+</note>
+
+<roleset id="cost.01" name="requires cash" vncls="54.2">
+<roles>
+  <role descr="commodity" n="1">
+		
+  <vnrole vncls="54.2" vntheta="Theme"/></role>
+
+  <role descr="price" n="2">
+		
+  <vnrole vncls="54.2" vntheta="Attribute"/></role>
+
+  <role descr="buyer" n="3"/>
+</roles>
+
+<example name="with an extra modifier">
+  <text>
+    The new Mips machine will cost $150,000 for a basic system.
+  </text>
+  <arg n="1">The new Mips machine</arg>
+  <rel>cost</rel>
+  <arg n="2">$150,000</arg>
+  <arg f="ADV" n="M">for a basic system</arg>
+</example>
+
+<example name="price and commodity">
+  <text>
+    The increase in minimum wage will cost many thousands of jobs.
+  </text>
+  <arg n="1">The increas in minimum wage</arg>
+  <rel>cost</rel>
+  <arg n="2">many thousands of jobs</arg>
+</example>
+
+<example name="all args">
+  <text>
+    The service costs the caller 30 cents a minute
+  </text>
+  <arg n="1">The service</arg>
+  <rel>costs</rel>
+  <arg n="3">the caller</arg>
+  <arg n="2">30 cents a minute</arg>
+</example>
+</roleset>
+</predicate>
+</frameset>

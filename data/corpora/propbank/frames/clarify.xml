@@ -1,0 +1,46 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="clarify">
+<note>
+  Frames file for 'clarify' based on sentences in financial subcorpus.
+  No Verbnet entry, should be in 'other causative' class.
+</note>
+
+<roleset id="clarify.01" name="make clear(er)">
+<roles>
+  <role descr="causer of clarification, agent" n="0"/>
+  <role descr="thing becoming clearer" n="1"/>
+  <role descr="benefactive" n="2"/>
+</roles>
+
+<example name="transitive">
+<text>
+    As the London trading session drew to a close, the market was
+    still listening to the parliamentary debate on the economy, with
+    new Chancellor of the Exchequer John Major expected *trace* to
+    clarify his approach to the British economy and currency issues. 
+</text>
+        <arg n="0">*trace* -&gt;  new Chancellor of the Exchequer John
+        Major</arg> 
+        <rel>clarify</rel>
+        <arg n="1">his approach to the British economy and currency
+        issues</arg> 
+</example>
+
+<example name="with benefactive">
+  <text>
+    Mary clarified her reasons to John using very short words.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>clarified</rel>
+  <arg n="1">her reasons</arg>
+  <arg f="to" n="2">John</arg>
+  <arg f="MNR" n="m">using very short words</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

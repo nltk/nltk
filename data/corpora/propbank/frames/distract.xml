@@ -1,0 +1,45 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="distract">
+<note>
+  Frames file for 'distract' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="distract.01" name="to draw attention away from something" vncls="31.1">
+<roles>
+  <role descr="agent or causer" n="0"><vnrole vncls="31.1" vntheta="Cause"/></role>
+  <role descr="entity distracted" n="1"><vnrole vncls="31.1" vntheta="Experiencer"/></role>
+  <role descr="entity distracted from" n="2"/>
+</roles>
+
+<example name="all arguments">
+<inflection aspect="progressive" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+ `` It 's distracting attention from serious issues , like how [*] to make DEA , FBI and Customs work together '' on drug enforcement [*T*-1] .
+</text>
+	<arg n="0">It</arg>
+	<rel>distracting</rel>
+	<arg n="1">attention</arg>
+	<arg f="from" n="2">serious issues , like how [*] to make DEA , FBI and Customs work together '' on drug enforcement [*T*-1]</arg>
+</example>
+
+
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+ Troubled chains could see their sales drop as much as 8 % , he believes [0] [*T*-1] , as managers distracted [*] by fears about the future allow their stores to get sloppy .
+</text>
+	<rel>distracted</rel>
+	<arg n="1">[*] -&gt;  managers</arg>
+	<arg f="by" n="0">fears about the future</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

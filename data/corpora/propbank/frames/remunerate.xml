@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="remunerate">
+<note>
+  Frames file for 'remunerate' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="remunerate.01" name="to make a payment, compensate" vncls="-">
+<roles>
+  <role descr="payer, agent" n="0"/>
+  <role descr="entity remunerated" n="1"/>
+  <role descr="compensation" n="2"/>
+</roles>
+
+<example name="passive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="passive"/>
+<text>
+ The longstanding position of the Recording Industry Association of America , a trade group based [*] in Washington , D.C. , is that record companies , performers , songwriters and music publishers need [*-2] to be remunerated [*-1] by government-imposed fees on the sale of blank tapes and recording equipment [*] to make up for royalties lost [*] to home taping .
+</text>
+	<rel>remunerated</rel>
+	<arg n="1">[*-1] -&gt;  [*-2] -&gt;  record companies , performers , songwriters and music publishers</arg>
+	<arg f="by" n="2">government-imposed fees on the sale of blank tapes and recording equipment</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

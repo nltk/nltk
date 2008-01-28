@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="rarefy">
+<note>
+  Frames file for 'rarefy' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="rarefy.01" vncls="-" name="make rare">
+<roles>
+  <role n="0"  descr="cause, agent"/>
+  <role n="1"  descr="rare thing"/>
+</roles>
+
+<example name="adjectival">
+<inflection person="ns" tense="ns" aspect="ns" voice="passive" form="participle"/>
+<text>
+    For years, this group included a stable of classics -- Bordeaux
+    first growths (Lafite-Rothschild, Latour, Haut-Brion, Petrus),
+    Grand Cru Burgundies (Romanee-Conti and La Tache) deluxe
+    Champagnes (Dom Perignon or Roederer Cristal), rarefied sweet
+    wines (Chateau Yquem or Trockenbeerenauslesen Rieslings from
+    Germany, and Biondi-Santi Brunello Riserva from Tuscany). 
+</text>
+	<rel>rarefied</rel>
+	<arg n="1">wines</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="drum">
+</predicate>
+<predicate lemma="drum_up">
+<note>
+  Frames file for 'drum' based on sentences in the financial subcorpus.
+  No comparison.
+</note>
+
+<roleset id="drum.01" name="gather, bring about" vncls="-">
+<roles>
+  <role descr="gatherer, agent" n="0"/>
+  <role descr="thing brought about" n="1"/>
+</roles>
+
+
+
+<example name="transitive">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+ Illinois , for instance , currently has under investigation 10 of the 30 companies drumming up funds for charities soliciting there .
+</text>
+	<arg n="0">the 30 companies</arg>
+	<rel>[ drumming] [ up]</rel>
+	<arg n="1">funds for charities soliciting there</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+</frameset>

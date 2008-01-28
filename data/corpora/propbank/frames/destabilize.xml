@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="destabilize">
+<note>
+  Frames file for 'destabilize' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="destabilize.01" name="to upset the stability" vncls="45.4">
+<roles>
+  <role descr="agent, causer" n="0"><vnrole vncls="45.4" vntheta="Agent"/></role>
+  <role descr="entity destabilized" n="1"><vnrole vncls="45.4" vntheta="Patient"/></role>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="ns" voice="active"/>
+<text>
+ Krenz , however , vowed [*-1] to preserve the Communist Party 's hold on political power and said [0] East Germans should n't destabilize the nation with unrealistic demands .
+</text>
+	<arg n="0">East Germans</arg>
+	<arg f="MOD" n="M">should</arg>
+	<arg f="NEG" n="M">n't</arg>
+	<rel>destabilize</rel>
+	<arg n="1">the nation</arg>
+	<arg f="MNR" n="M">with unrealistic demands</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

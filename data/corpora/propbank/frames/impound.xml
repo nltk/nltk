@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="impound">
+<note>
+  Frames file for 'impound'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="impound.01" name="to hold or confine" vncls="10.5">
+<roles> 
+  <role descr="holder, agent" n="0">
+        <vnrole vncls="10.5" vntheta="Agent"/></role>
+  <role descr="entity impounded" n="1">
+        <vnrole vncls="10.5" vntheta="Theme"/></role>
+</roles>
+
+<example name="passive">
+<inflection aspect="perfect" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+ More than 300 planes and helicopters have been impounded [*-1] at airports , and a large number of vehicles and launches has been confiscated [*-2] .
+</text>
+	<rel>impounded</rel>
+	<arg n="1">[*-1] -&gt;  More than 300 planes and helicopters</arg>
+	<arg f="LOC" n="M">at airports</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

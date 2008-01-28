@@ -1,0 +1,57 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="crown">
+<note>
+  Frames file for 'crown' based on sentences in wsj.  No access to
+  Verbnet at the moment.
+</note>
+
+<roleset id="crown.01" name="put a crown on somebody/thing" vncls="29.1 29.3">
+<roles>
+  <role descr="putter of crown" n="0"><vnrole vncls="29.3" vntheta="Agent"/><vnrole vncls="29.1" vntheta="Agent"/></role>
+  <role descr="receiver of crown" n="1"><vnrole vncls="29.3" vntheta="Theme"/><vnrole vncls="29.1" vntheta="Theme"/></role>
+  <role descr="crown, or attribute of arg1" n="2"><vnrole vncls="29.3" vntheta="Predicate"/><vnrole vncls="29.1" vntheta="Predicate"/></role>
+</roles>
+
+<example name="unhelpful example">
+<inflection aspect="ns" form="participle" person="ns" tense="past" voice="passive"/><text>
+     In a sign of growing official tolerance for religion, Russian
+     Orthodox priests were allowed to celebrate the 400th anniversary
+     of the Moscow patriarchate in the Kremlin's 15th-century Uspensky
+     Cathedral, where czars were crowned [*-1] [*T*-3] ... . 
+</text>
+        <rel>crowned</rel>
+        <arg n="1">[*-1] -&gt;  czars</arg>
+        <arg f="LOC" n="M">[*T*-3] -&gt;  where -&gt;  the Kremlin's
+        15th-century Uspensky Cathedral</arg> 
+</example>
+
+<example name="with crown">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     Mary crowned John with a pot lid.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>crowned</rel>
+  <arg n="1">John</arg>
+  <arg f="with" n="2">a pot lid</arg>
+</example>
+
+<example name="with attribute">
+  <inflection aspect="ns" form="participle" person="third" tense="past" voice="passive"/>
+  <text>
+     John was crowned *trace* Emperor of Lower Slobovia.
+  </text>
+  <rel>crowned</rel>
+  <arg n="1">*trace* -&gt; John</arg>
+  <arg n="2">Emperor of Lower Slobovia</arg>
+</example>
+
+<note>
+The crown itself (physical artifact) is symbolic of the role or
+attribute, hence the ability to merge the two into one arg.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

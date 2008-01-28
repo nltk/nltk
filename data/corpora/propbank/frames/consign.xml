@@ -1,0 +1,34 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="consign">
+<note>
+  Frames file for 'consign' based on sentences in wsj.  No access to
+  verbnet at the moment.
+</note>
+
+<roleset id="consign.01" name="send to lesser status" vncls="-">
+<roles>
+  <role descr="sender, agent" n="0"/>
+  <role descr="trash" n="1"/>
+  <role descr="lesser status" n="2"/>
+</roles>
+
+<example name="all args">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    The move largely consigns them to roads used by motorized
+    vehicles. 
+</text>
+        <arg n="0">The move</arg>
+        <arg f="DIS" n="M">largely</arg>
+        <rel>consigns</rel>
+        <arg n="1">them</arg>
+        <arg f="to" n="2">roads used by motorized vehicles</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

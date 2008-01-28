@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+
+<frameset>
+<predicate lemma="woo">
+<note>
+  Frames file for 'woo' based on sentences in financial subcorpus.  No
+  access to verbnet, not that I think it'd be in there anyway.
+</note>
+
+<roleset id="woo.01" name="pursue with intent to marry">
+<roles>
+  <role descr="pursuer" n="0"/>
+  <role descr="pursued" n="1"/>
+</roles>
+
+<example name="metaphorical, (almost?) always">
+<text>
+    In using program trading as a whipping boy, fundamentalist
+    investors stand *trace* to gain the high ground in *trace* wooing
+    small investors for their existing stock-selection products. 
+</text>
+        <arg n="0">*trace* -&gt; *trace* -&gt;  fundamentalist investors</arg>
+        <rel>wooing</rel>
+        <arg n="1">small investors</arg>
+        <arg f="CAU" n="M">for their existing stock-selection products</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

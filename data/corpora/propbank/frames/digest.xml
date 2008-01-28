@@ -1,0 +1,43 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="digest">
+<note>
+  Frames file for 'digest' based on sentences in wsj.  No Verbnet
+  entry. 
+</note>
+
+<roleset id="digest.01" name="take in completely, like food" vncls="-">
+<roles>
+  <role descr="eater" n="0"/>
+  <role descr="nutrients" n="1"/>
+</roles>
+
+<example name="chew 100 times before swallowing">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    After *trace* thoroughly digesting reams of information, he often
+    concludes that more data are needed, and when he finally decides
+    to act, his movements sometimes seem excrutiatingly small. 
+</text>
+        <arg f="MNR" n="M">thoroughly</arg>
+        <rel>digesting</rel>
+        <arg n="1">reams of information</arg>
+        <arg n="0">*trace* -&gt; he</arg>
+</example>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    But once the new securities are digested *trace*, they expect
+    investors to focus on the weak economic data. 
+</text>
+        <rel>digested</rel>
+        <arg n="1">*trace* -&gt;  the new securities</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

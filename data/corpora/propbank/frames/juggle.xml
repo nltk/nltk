@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="juggle">
+<note>
+  Frames file for 'juggle' based on sentences in financial subcorpus.
+  No verbnet entry.  No comparison.
+</note>
+
+<roleset id="juggle.01" name="manage many different things at once">
+<roles>
+  <role descr="juggler" n="0"/>
+  <role descr="things juggled" n="1"/>
+</roles>
+
+<example name="the one example">
+<text>
+    Not surprisingly, old-style money managers have been losing
+    clients to giant stock-index funds that *trace* use computers
+    *trace* to juggle portfolios so they mirror the S&amp;P 500. 
+</text>
+        <arg n="0">*trace* -&gt; *trace* -&gt;  that -&gt; giant stock-index
+        funds</arg> 
+        <rel>juggle</rel>
+        <arg n="1">portfolios</arg>
+        <arg f="PNC" n="M">so they mirror the S&amp;P 500</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

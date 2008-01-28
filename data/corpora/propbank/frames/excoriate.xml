@@ -1,0 +1,43 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="excoriate">
+<note>
+  Frames file for 'excoriate' based on sentences in wsj.  No Verbnet
+  entry, Framenet entry Judgement communication.
+</note>
+
+<roleset id="excoriate.01" name="denounce" vncls="33">
+<roles>
+  <role descr="speaker" n="0">
+		
+  <vnrole vncls="33" vntheta="Agent"/></role>
+
+  <role descr="subject" n="1">
+		
+  <vnrole vncls="33" vntheta="Theme"/></role>
+
+  <role descr="grounds, reason" n="2">
+		
+  <vnrole vncls="33" vntheta="Cause"/></role>
+</roles>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    In return, Mrs. Thatcher is excoriated *trace* from Fleet Street
+    to Paris as an obstructionist. 
+</text>
+        <arg f="DIS" n="M">In return</arg>
+        <rel>excoriated</rel>
+        <arg n="1">*trace* -&gt;  Mrs. Thatcher</arg>
+        <arg f="LOC" n="M">from Fleet Street to Paris</arg>
+        <arg f="as" n="2">an obstructionist</arg>
+</example>
+
+<note>
+Literally 'to remove the skin,' and thus equivalent to 'flay'.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

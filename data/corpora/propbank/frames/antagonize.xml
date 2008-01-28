@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="antagonize">
+<note>
+  Frames file for 'antagonize' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="antagonize.01" name="to provoke the hostility of" vncls="31.1">
+<roles>
+  <role descr="causer" n="0"><vnrole vncls="31.1" vntheta="Cause"/></role>
+  <role descr="entity antagonized" n="1"><vnrole vncls="31.1" vntheta="Experiencer"/></role>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ Whatever the outcome of a test case [*T*-4] , President Bush would have [*-2] to move cautiously becase the very attempt would `` antagonize not just Democrats but Republicans , '' says [*T*-3] Louis Fisher , a scholar at the Congressional Research Service who [*T*-1] specializes in executive-legislative relations .
+</text>
+	<arg n="0">the very attempt</arg>
+	<arg f="MOD" n="M">would</arg>
+	<rel>antagonize</rel>
+	<arg n="1">not just Democrats but Republicans</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

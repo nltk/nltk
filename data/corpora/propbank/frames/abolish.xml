@@ -1,0 +1,34 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="abolish">
+<note>
+  Frames file for 'abolish' based on sentences in financial
+  subcorpus.  No access to verbnet.  No comparison.
+</note>
+
+<roleset id="abolish.01" name="get rid of, make illegal">
+<roles>
+  <role descr="entity getting rid of, outlawing something" n="0"/>
+  <role descr="thing abolished" n="1"/>
+</roles>
+
+<example name="typical usage">
+<text>
+    Secretary of State for Trade and Industry Nicholas Ridley said
+    later in the day that the government would abolish its golden
+    share in Jaguar, the luxury auto maker being stalked by General
+    Motors and Ford Motor. 
+</text>
+	<arg n="0">the government</arg>
+	<arg f="MOD" n="M">would</arg>
+	<rel>abolish</rel>
+	<arg n="1">its golden share in Jaguar, the luxury auto maker
+	being stalked by General Motors and Ford Motor</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

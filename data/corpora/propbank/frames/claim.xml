@@ -1,0 +1,105 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="claim">
+<note>
+  Frames file for 'claim' based on sentences in financial subcorpus.
+  Verbnet class claim 37.7, other framed members include declare(?).
+  Comparison with assert.
+</note>
+
+<roleset id="claim.01" name="assert" vncls="37.7">
+<roles>
+  <role descr="claimer, asserter" n="0">
+	  <vnrole vncls="37.7" vntheta="Agent"/></role>
+  <role descr="thing claimed, asserted" n="1">
+	  <vnrole vncls="37.7" vntheta="Topic"/></role>
+  <role descr="benefactive, claimed/asserted for" n="2">
+	  <vnrole vncls="37.7" vntheta="Recipient"/></role>
+</roles>
+
+<example name="arg1 as infinitive">
+<text>
+    That represents a very thin ``excess'' return, certainly far less
+    than what most fundamental stock pickers claim *trace* to seek as
+    their performance objective. 
+</text>
+        <arg n="0">most fundamental stock pickers</arg>
+        <rel>claim</rel>
+        <arg n="1">*trace* to seek as their performance
+        objective</arg> 
+</example>
+
+<example name="arg1 as full sentence">
+<text>
+    Some even claim the group has become a lagging, not leading,
+    indicator. 
+</text>
+        <arg n="0">Some</arg>
+        <arg f="DIS" n="M">even</arg>
+        <rel>claim</rel>
+        <arg n="1">the group has become a lagging, not leading,
+        indicator</arg> 
+</example>
+
+<note>
+As usual, discard the complementizer &quot;that&quot; in this type of
+construction
+</note>
+
+<example name="arg1 as NP">
+<text>
+    A shareholders' accord would provide the first restitution to
+    thousands of individuals and institutions claiming losses as a
+    result of insider trading by Boesky &amp; Co., once the largest
+    arbitrage fund in the U.S.. 
+</text>
+        <arg n="0">individuals and institutions</arg>
+        <rel>claiming</rel>
+        <arg n="1">losses as a result of insider trading by Boesky
+        &amp; Co., once the largest arbitrage fund in the U.S.</arg> 
+</example>
+
+<example name="passive extraction">
+<text>
+    DD Acquisition has launched a suit in a Delaware court seeking the
+    withdrawal of Dunkin's poison pill rights and employee stock
+    ownership plans, which it claims *trace* were put in place to
+    deter bidders. 
+</text>
+        <arg n="1">which -&gt;  Dunkin's poison pill rights and employee
+        stock ownership plans</arg> 
+        <arg n="0">it</arg>
+        <rel>claims</rel>
+        <arg f="STR" n="1">*trace* were put in place to deter
+        bidders</arg> 
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="claim">
+<roleset id="claim.02" name="seize">
+<roles>
+  <role descr="claim staker" n="0"/>
+  <role descr="property" n="1"/>
+  <role descr="beneficiary" n="2"/>
+</roles>
+
+<example name="made up">
+<text>
+Cortez claimed the new territory for Queen Anna
+</text>
+        <arg n="0">Cortez</arg>
+        <rel>claim</rel>
+        <arg n="1">the new territory</arg>
+        <arg f="for" n="2">Queen Anna</arg>
+</example>
+
+</roleset>
+
+</predicate>
+<note>
+  frames updated for Nombank by Ruth
+</note>
+
+</frameset>

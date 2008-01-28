@@ -1,0 +1,80 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="spurt">
+<note>
+  Frames file for 'spurt' based on sentences in wsj.  Verbnet entry 9.5.
+</note>
+
+<roleset id="spurt.01" name="sudden motion of liquid-like substance" vncls="9.5">
+<roles>
+  <role descr="liquid" n="1"><vnrole vncls="9.5" vntheta="Theme"/></role>
+  <role descr="source" n="2"><vnrole vncls="9.5" vntheta="Location"/></role>
+</roles>
+
+<example name="you call that a slogan?">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    ``Talk hurts from where it spurts,'' one of them says. 
+</text>
+        <arg n="1">it</arg>
+        <rel>spurts</rel>
+</example>
+
+<example name="that's gonna leave a stain">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    Ketchup spurted from the bottle onto John's tuxedo.
+  </text>
+  <arg n="1">Ketchup</arg>
+  <rel>spurted</rel>
+  <arg f="from" n="2">the bottle</arg>
+  <arg f="DIR" n="m">onto John's tuxedo</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="spurt.02" name="move (upward) suddenly" vncls="-">
+<roles>
+  <role descr="thing in motion" n="1"/>
+  <role descr="EXT" n="2"/>
+  <role descr="start point" n="3"/>
+  <role descr="end point" n="4"/>
+</roles>
+
+<example name="with EXT">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    In the 12 months ended in September, wages and salaries of
+    private-sector workers rose 4.4%, while health insurance costs
+    spurted by 13.7%. 
+</text>
+        <arg n="1">health insurance costs</arg>
+        <rel>spurted</rel>
+        <arg f="by" n="2">13.7%</arg>
+</example>
+
+<example name="other argms">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Crude prices spurted upward in brisk trading on the assumption
+    that heavy earthquake damage occurred to San Francisco area
+    refinery complexes, but the rise quickly fizzled when it became
+    apparent that oil operations weren't severely curtailed. 
+</text>
+        <arg n="1">Crude prices</arg>
+        <rel>spurted</rel>
+        <arg f="DIR" n="M">upward</arg>
+        <arg f="LOC" n="M">in brisk trading</arg>
+        <arg f="CAU" n="M">on the assumption that heavy earthquake
+        damage occurred to San Francisco area refinery complexes</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

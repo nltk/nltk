@@ -1,0 +1,87 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="pour">
+<roleset id="pour.01" name="move liquids" vncls="9.5 43.4">
+<roles>
+  <role descr="agent, pourer" n="0">
+	
+        <vnrole vncls="43.4" vntheta="Agent"/><vnrole vncls="9.5" vntheta="Agent"/></role>
+  <role descr="liquid" n="1">
+	
+        <vnrole vncls="43.4" vntheta="Theme"/><vnrole vncls="9.5" vntheta="Theme"/></role>
+<role descr="source" n="2">
+        
+        <vnrole vncls="43.4" vntheta="Location"/><vnrole vncls="9.5" vntheta="Location"/></role>
+<role descr="destination" n="3">
+        <vnrole vncls="9.5" vntheta="Location"/></role>
+</roles>
+
+<example name="all args">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    But at just that moment, he is interrupted in his office by a
+    servant in tuxedo who *trace* pours coffee from silver into a cup
+    of china and dabs the brim with linen.  
+</text>
+        <arg n="0">*trace* -&gt;  who -&gt;  a servant in tuxedo</arg>
+        <rel>pours</rel>
+        <arg n="1">coffee</arg>
+        <arg f="from" n="2">silver</arg>
+        <arg f="into" n="3">a cup of china</arg>
+</example>
+
+<example name="ergative, with source">
+<inflection aspect="progressive" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+    Billions of investors' dollars are pouring out of the nation's
+        junk-bond mutual funds, undermining a pillar of support in the
+        already reeling junk market.
+</text> 
+        <arg n="1">Billions of investors' dollars</arg>
+        <rel>pouring</rel>
+        <arg f="out" n="2">of the nation's junk-bond mutual funds</arg>
+        <arg f="ADV" n="M">undermining a pillar of support in the
+        already reeling junk market</arg> 
+</example>
+
+<example name="pouring beer">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    Although imports account for less than 1% of beer sales in Japan,
+    Asahi Breweries Ltd., which has been gaining share with its
+    popular dry beer, plans *trace* to fend off Japanese competitors
+    by *trace* pouring $1.06 billion into facilities to brew 50% more
+    beer. 
+</text>
+        <arg n="0">*trace* -&gt; *trace* -&gt;  Asahi Breweries Ltd., which
+        has been gaining share with its popular dry beer,</arg> 
+        <rel>pouring</rel>
+        <arg n="1">$1.06 billion </arg>
+        <arg f="into" n="3">facilities to brew 50% more beer</arg> 
+</example>
+
+</roleset>
+
+<roleset id="pour.02" name="rain very hard" vncls="-">
+<roles>
+<note>
+Takes no arguments!
+</note>
+</roles>
+
+<example name="all wet">
+  <inflection aspect="progressive" form="participle" person="third" tense="present" voice="active"/>
+  <text>
+    &quot;Be sure to wear your raincoat,&quot; Mary said to John.  &quot;It's pouring
+    outside.&quot;
+  </text>
+  <rel>pouring</rel>
+  <arg f="LOC" n="m">outside</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

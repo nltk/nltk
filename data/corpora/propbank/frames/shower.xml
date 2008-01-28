@@ -1,0 +1,45 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="shower">
+<note>
+  Frames file for 'shower' based on sentences in wsj.  Verbnet entries
+  57, 41.1.1, 9.7, 17.2; Framenet entries Mass motion, Grooming,
+  Filling, and Placing.
+</note>
+
+<roleset id="shower.01" name="fall, sprinkle, rain" vncls="9.7 17.2">
+<roles>
+  <role descr="causer of things falling" n="0"><vnrole vncls="17.2" vntheta="Agent"/><vnrole vncls="9.7" vntheta="Agent"/></role>
+  <role descr="things falling" n="1"><vnrole vncls="17.2" vntheta="Theme"/><vnrole vncls="9.7" vntheta="Theme"/></role>
+  <role descr="falling on what" n="2"><vnrole vncls="17.2" vntheta="Destination"/><vnrole vncls="9.7" vntheta="Destination"/></role>
+</roles>
+
+<example name="all args">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    Endless seconds wondering if those huge windows would buckle and
+    shower us with glass. 
+</text>
+        <arg n="0">those huge windows</arg>
+        <arg f="MOD" n="M">would</arg>
+        <rel>shower</rel>
+        <arg n="1">us</arg>
+        <arg f="with" n="2">glass</arg>
+</example>
+
+<example name="personal hygiene">
+  <inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+  <text>
+     John faithfully showers once a month.
+  </text>
+  <arg n="0">John</arg>
+  <arg f="MNR" n="m">faithfully</arg>
+  <rel>showers</rel>
+  <arg f="TMP" n="m">once a month</arg>
+<note>
+Effectively, &quot;John showers (himself) (with water).&quot;
+</note>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

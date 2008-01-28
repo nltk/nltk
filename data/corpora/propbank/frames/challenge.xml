@@ -1,0 +1,47 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="challenge">
+<note>
+  Frames file for 'challenge' based on sentences in financial
+  subcorpus.  No access to verbnet.  No comparison.
+</note>
+
+<roleset id="challenge.01" name="challenge">
+<roles>
+  <role descr="challenger" n="0"/>
+  <role descr="challenged (champion?)" n="1"/>
+  <role descr="challenged-to, heroic task" n="2"/>
+</roles>
+
+<example name="disagree with">
+<text>
+    The filing adds a new twist to market speculation that Coniston
+    Partners, a New York money manager, has bought more than 5% of UAL
+    stock and may challenge the UAL board's decision last week to
+    remain independent. 
+</text>
+        <arg n="0">Coniston Partners, a New York money manager,</arg>
+        <arg f="MOD" n="M">may</arg>
+        <rel>challenge</rel>
+        <arg n="1">the UAL board's decision last week to remain
+        independent</arg> 
+</example>
+
+<example name="with task">
+<text>
+    Barney Barnhardt, a 727 captain and leader of the pro-union
+    forces, said he has received two anonymous death threats and been
+    challenged *trace* to a fight with tire irons by a colleague. 
+</text>
+        <rel>challenged</rel>
+        <arg n="1">*trace* -&gt;  he</arg>
+        <arg f="to" n="2">a fight with tire irons</arg>
+        <arg f="by" n="0">a colleague</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

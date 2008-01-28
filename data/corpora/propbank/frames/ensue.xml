@@ -1,0 +1,44 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="ensue">
+<note>
+Frames file for 'ensue' based on sentences in financial subcorpus and
+automatic expansion via verbnet.
+</note>
+
+<roleset id="ensue.01" name="come about as a result of   some other action" vncls="48.3">
+<roles>
+	<role descr="event" n="1">
+		
+  <vnrole vncls="48.3" vntheta="Theme"/></role>
+
+	<role descr="other action, cause" n="2"/>
+</roles>
+
+<example name="unaccusative">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    ESB directors warmly accepted, but a whirlwind bidding match
+    ensued. 
+</text>
+        <arg n="1">a whirlwind bidding match</arg>
+        <rel>ensued</rel>
+</example>
+
+<example name="with cause">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    Much hilarity ensued from John's mistaking Mary's bedroom for his
+    own. 
+  </text>
+  <arg n="1">Much hilarity</arg>
+  <rel>ensued</rel>
+  <arg f="from" n="2">John's mistaking Mary's bedroom for his own</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

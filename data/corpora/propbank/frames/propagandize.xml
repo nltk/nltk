@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="propagandize">
+<note>
+  Frames file for 'propagandize' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="propagandize.01" name="to subject (a person or group) to a propaganda" vncls="-">
+<roles>
+  <role descr="propagandist, agent" n="0"/>
+  <role descr="person or group propagandized" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ The theory was that the Voice is a propaganda agency and this government should n't propagandize its own people .
+</text>
+	<arg n="0">this government</arg>
+	<arg f="MOD" n="M">should</arg>
+	<arg f="NEG" n="M">n't</arg>
+	<rel>propagandize</rel>
+	<arg n="1">its own people</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

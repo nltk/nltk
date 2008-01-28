@@ -1,0 +1,81 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="poke">
+<note>
+  Frames file for 'poke' based on sentences in wsj.  Verbnet entries
+  19 and 35.5.
+</note>
+
+<roleset id="poke.01" vncls="19" name="touch with long slender object">
+<roles>
+  <role n="0"  descr="toucher, agent"/>
+  <role n="1"  descr="thing touched"/>
+  <role n="2"  descr="long slender object"/>
+</roles>
+
+<example name="oddly inverted">
+<inflection person="ns" tense="present" aspect="ns" voice="active" form="gerund"/>
+<text>
+    [*] VISUALIZING BLOOD vessels without [*] poking catheters into
+    the body may come out of research at AT&amp;T Bell Laboratories. 
+</text>
+	<arg n="0">[*] ->  [*]</arg>
+	<rel>poking</rel>
+	<arg n="2">catheters</arg>
+	<arg n="1" f="into">the body</arg>
+</example>
+
+<example name="maybe a different roleset">
+<inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+<text>
+     Another poked a hole in the heel of his shoe .
+</text>
+	<arg n="0">Another</arg>
+	<rel>poked</rel>
+	<arg n="1">a hole</arg>
+	<arg n="M" f="LOC">in the heel of his shoe</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="poke_around">
+
+<roleset id="poke.02" vncls="35.5" name="rummage, look for idly">
+<roles>
+  <role n="0"  descr="looker, searcher, agent"/>
+  <role n="1"  descr="place looked in"/>
+  <role n="2"  descr="thing looked for, goal"/>
+</roles>
+
+<example name="almost argumentless">
+<inflection person="third" tense="present" aspect="ns" voice="active" form="full"/>
+<text>
+     Mr. Baker hears her out, pokes around a bit, asks a few questions
+     and proposes some explanations. 
+</text>
+	<arg n="0">Mr. Baker</arg>
+	<rel>[ pokes] [ around]</rel>
+	<arg n="M" f="MNR">a bit</arg>
+</example>
+
+<example name="all args">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+     John poked around in Mary's lingerie drawer for a can opener.
+  </text>
+  <arg n="0"        >John</arg>
+  <rel              >poked around</rel>
+  <arg n="1" f="in">Mary's lingerie drawer</arg>
+  <arg n="2" f="for">a can opener</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

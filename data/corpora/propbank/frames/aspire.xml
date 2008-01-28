@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="aspire">
+<note>
+  Frames file for 'aspire' based on sentences in financial subcorpus.
+  No Verbnet entry.  Comparison with 'hope'.
+</note>
+
+<roleset id="aspire.01" name="hope to" vncls="-">
+<roles>
+  <role descr="hoper" n="0"/>
+  <role descr="action hoped to" n="1"/>
+</roles>
+
+<example name="upward mobility">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    The 57-year-old tax attorney never even aspired to the job of
+        chief executive.</text> 
+        <arg n="0">The 57-year-old tax attorney</arg>
+        <arg f="TMP" n="M">never</arg>
+        <arg f="DIS" n="M">even</arg>
+        <rel>aspired</rel>
+        <arg f="to" n="1">the job of chief executive</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

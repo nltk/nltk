@@ -1,0 +1,67 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="express">
+<note>
+  Frames file for 'express' based on sentences in financial
+  subcorpus.  Verbnet suggests class send-11.1-2, but that's a
+  decidedly non-standard reading for 'express'.  Comparison with
+  'say' and all other verbs-of-talking.
+</note>
+
+<roleset id="express.01" name="say" vncls="48.1.2">
+<roles>
+  <role descr="speaker" n="0"><vnrole vncls="48.1.2" vntheta="Agent"/></role>
+  <role descr="utterance" n="1"><vnrole vncls="48.1.2" vntheta="Theme"/></role>
+  <role descr="hearer" n="2"><vnrole vncls="48.1.2" vntheta="Recipient"/></role>
+</roles>
+
+<example name="no hearer">
+<text>
+    Mr. Harper expressed confidence that he and Mr. Baum can convince
+    the board of their worthiness to run the company.
+</text>
+        <arg n="0">Mr. Harper</arg>
+        <rel>expressed</rel>
+        <arg n="1">confidence that he and Mr. Baum can convince the
+        board of their worthiness to run the company</arg> 
+</example>
+
+<note>
+This might not take a hearer.
+</note>
+
+</roleset>
+
+<roleset id="express.02" name="send very quickly" vncls="11.1-1">
+<roles>
+  <role descr="sender" n="0">
+		
+  <vnrole vncls="11.1-1" vntheta="Agent"/></role>
+
+  <role descr="thing sent" n="1">
+		
+  <vnrole vncls="11.1-1" vntheta="Theme"/></role>
+
+  <role descr="sent-to" n="2">
+		
+  <vnrole vncls="11.1-1" vntheta="Destination"/></role>
+
+</roles>
+
+<example name="FedEx">
+  <text>
+    John expressed his Christmas list to the North Pole.
+  </text>
+  <arg n="0">John</arg>
+  <rel>expressed</rel>
+  <arg n="1">his Christmas list</arg>
+  <arg f="to" n="2">the North Pole</arg>
+</example>
+
+<note>
+I really doubt this will occur in real life.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

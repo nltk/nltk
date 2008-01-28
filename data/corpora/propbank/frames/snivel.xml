@@ -1,0 +1,29 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="snivel">
+<note>
+  Frames file for 'snivel' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="snivel.01" vncls="-" name="have a drippy nose">
+<roles>
+  <role n="0"  descr="sniveller"/>
+</roles>
+
+<example name="always adjectival?">
+<inflection person="ns" tense="ns" aspect="progressive" voice="active" form="participle"/>
+<text>
+     Her sister-in-law (Amy Wright) is a sniveling prude afraid that
+     Kate will seduce all the married men in town... 
+</text>
+	<rel>sniveling</rel>
+	<arg n="0">prude</arg>
+</example>
+
+<note>
+related to sniffle?
+</note>
+
+</roleset>
+</predicate>
+</frameset>

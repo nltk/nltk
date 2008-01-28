@@ -1,0 +1,71 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="care">
+<note>
+  Frames file for 'care' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="care.01" name="to be concerned" vncls="31.3">
+<roles>
+  <role descr="carer, agent" n="0"><vnrole vncls="31.3" vntheta="Experiencer"/></role>
+  <role descr="thing cared for/about" n="1"><vnrole vncls="31.3" vntheta="Cause"/></role>
+</roles>
+
+
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ They desperately needed somebody who [*T*-93] showed [0] they cared for them , who [*T*-94] loved them .
+</text>
+	<arg n="0">they</arg>
+	<rel>cared</rel>
+	<arg f="for" n="1">them</arg>
+</example>
+
+
+<example name="intransitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ [*-1] Asked [*-2] whether potential advertisers will be scared [*-83] away by the magazine 's direct policy , Ms. Poore replies : `` I do n't know and I do n't care .
+</text>
+	<arg n="0">I</arg>
+	<arg f="NEG" n="M">n't</arg>
+	<rel>care</rel>
+</example>
+
+
+
+
+<example name="transitive with adverbials">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ `` An active 55-year-old in Boca Raton may care more about Senior Olympic games , while a 75-year-old in Panama City may care more about a seminar on health , '' she says [*T*-1] .
+</text>
+	<arg n="0">An active 55-year-old in Boca Raton</arg>
+	<arg n="M">may</arg>
+	<rel>care</rel>
+	<arg f="EXT" n="M">more</arg>
+	<arg f="about" n="1">Senior Olympic games</arg>
+	<arg f="ADV" n="M">while a 75-year-old in Panama City may care more about a seminar on health</arg>
+</example>
+
+
+<example name="sentential Arg1">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ `` [*] Give me four or five more Series with these guys , and I do n't care if I ever win a Cy Young , '' he said [*T*-1] , in reference to baseball 's best-pitcher award .
+</text>
+	<arg n="0">I</arg>
+	<arg f="NEG" n="M">n't</arg>
+	<rel>care</rel>
+	<arg n="1">if I ever win a Cy Young</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

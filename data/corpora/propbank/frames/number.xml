@@ -1,0 +1,40 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="number">
+<note>
+  Frames file for 'number' based on sentences in wsj.  No Verbnet
+  entry.  Comparison with 'total'.
+</note>
+
+<roleset id="number.01" name="have a certain quantity" vncls="-">
+<roles>
+  <role descr="thing being counted" n="1"/>
+  <role descr="count, number, quantity" n="2"/>
+</roles>
+
+<example name="ergative">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Items listed as being in short supply numbered only about a dozen,
+    but they included one newcomer: milk and milk powder.
+</text>
+        <arg n="1">Items listed  as  being in short supply</arg>
+        <rel>numbered</rel>
+        <arg n="2">only about a dozen</arg>
+</example>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    It is a certainty that Mr. Barre's days are numbered.
+</text>
+        <rel>numbered</rel>
+        <arg n="1">*trace* -&gt;  Mr. Barre's days</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

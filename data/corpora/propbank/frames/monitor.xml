@@ -1,0 +1,43 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="monitor">
+<note>
+  Frames file for 'monitor' based on sentences in financial subcorpus.
+  No Verbnet entry, comparison with 'watch'.
+</note>
+
+<roleset id="monitor.01" name="look closely at" vncls="-">
+<roles>
+  <role descr="observer" n="0"/>
+  <role descr="thing looked at" n="1"/>
+  <role descr="looking for what?" n="2"/>
+</roles>
+
+<example name="just transitive">
+<inflection aspect="progressive" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+    ``I'm now monitoring every major account.''
+</text>
+        <arg n="0">I</arg>
+        <arg f="TMP" n="M">now</arg>
+        <rel>monitoring</rel>
+        <arg n="1">every major account</arg>
+</example>
+
+<example name="all args">
+  <inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+  <text>
+    Mary monitors John's internet usage for anything inappropriate.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>monitors</rel>
+  <arg n="1">John's internet usage</arg>
+  <arg f="for" n="2">anything inappropriate</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

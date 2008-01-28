@@ -1,0 +1,61 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="overlook">
+<note>
+  Frames file for 'overlook' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="overlook.01" name="fail to notice" vncls="-">
+<roles>
+  <role descr="non-noticer, agent" n="0"/>
+  <role descr="thing overlooked" n="1"/>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ Mr. Lehman overlooks the fact that the Navy possesses its own air force ( the carrier fleet ) and its own army ( the Marines ) , which in turn [*T*-1] has its own air force .
+</text>
+	<arg n="0">Mr. Lehman</arg>
+	<rel>overlooks</rel>
+	<arg n="1">the fact that the Navy possesses its own air force ( the carrier fleet ) and its own army ( the Marines ) , which in turn [*T*-1] has its own air force</arg>
+</example>
+
+
+<example name="passive">
+<inflection aspect="progressive" form="participle" person="third" tense="present" voice="passive"/>
+<text>
+ But that rule is being virtually overlooked [*-1] by Wall Street , which [*T*-2] is concentrating on [*-3] coping with the deduction issue .
+</text>
+	<arg f="ADV" n="M">virtually</arg>
+	<rel>overlooked</rel>
+	<arg n="1">[*-1] -&gt;  that rule</arg>
+	<arg f="by" n="0">Wall Street , which [*T*-2] is concentrating on [*-3] coping with the deduction issue</arg>
+</example>
+</roleset>
+
+
+<roleset id="overlook.02" name="be oriented in a certain direction" vncls="-">
+<roles>
+  <role descr="place" n="0"/>
+  <role descr="direction" n="1"/>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+ In his office overlooking the runway of Shannon Airport , Mr. Ovcharenko enthusiastically throws out what he calls [*T*-1] `` just ideas '' :
+</text>
+	<arg n="0">his office</arg>
+	<rel>overlooking</rel>
+	<arg n="1">the runway of Shannon Airport</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+</frameset>

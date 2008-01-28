@@ -1,0 +1,45 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="allege">
+<note>
+  Frames file for 'allege' based on sentences in financial subcorpus.
+  No Verbnet entry.  Framenet entry Statement.  Comparison with verbs
+  of saying.
+</note>
+
+<roleset id="allege.01" name="say without proof">
+<roles>
+  <role descr="speaker, alleger" n="0"/>
+  <role descr="utterance, allegation" n="1"/>
+  <role descr="hearer" n="2"/>
+</roles>
+
+<example name="no hearer">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    The complaint alleges that the price is ``unfair and grossly
+    inadequate'' 
+</text>
+        <arg n="0">The complaint</arg>
+        <rel>alleges</rel>
+        <arg n="1">the price is ``unfair and grossly inadequate''</arg>
+</example>
+
+<example name="with hearer">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John alleged to Mary that he was wearing no underwear.
+  </text>
+  <arg n="0">John</arg>
+  <rel>alleged</rel>
+  <arg f="to" n="2">Mary</arg>
+  <arg n="1">he was wearing no underwear</arg>
+</example>
+
+<note>
+Remember to leave the complementizer out of the utterance.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

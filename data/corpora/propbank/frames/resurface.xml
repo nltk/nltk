@@ -1,0 +1,54 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="resurface">
+<note>
+  Frames file for 'resurface' based on sentences in financial
+  subcorpus.  No Verbnet entry.
+</note>
+
+<roleset id="resurface.01" name="put a new surface on something" vncls="-">
+<roles>
+  <role descr="applier of new surface, agent" n="0"/>
+  <role descr="thing getting a new surface" n="1"/>
+</roles>
+
+<example name="construction zone">
+  <inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+  <text>
+    John works part-time *trace* resurfacing highways.
+  </text>
+  <arg n="0">*trace* -&gt; John</arg>
+  <rel>resurfacing</rel>
+  <arg n="1">highways</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="resurface.02" name="reappear" vncls="-">
+<roles>
+  <role descr="thing appearing" n="1"/>
+</roles>
+
+<example name="I'm baaaaack!">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Differences between the Treasury and the Federal Reserve on the
+    usefulness of intervention to help restrain the dollar resurfaced
+    at the hearing. 
+</text>
+        <arg n="1">Differences between the Treasury and the Federal
+        Reserve on the usefulness of intervention   to help  restrain
+        the dollar</arg> 
+        <rel>resurfaced</rel>
+        <arg f="LOC" n="M">at the hearing</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

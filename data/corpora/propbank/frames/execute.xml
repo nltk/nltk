@@ -1,0 +1,68 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="execute">
+<note>
+  Frames file for 'execute' based on sentences in financial
+  subcorpus.  Verbnet class murder-42.1, other framed members include
+  kill.  That's only one of two senses.  Comparison with kill and do.
+</note>
+
+<roleset id="execute.01" name="kill" vncls="42.1">
+<roles>
+  <role descr="killer" n="0">
+		
+  <vnrole vncls="42.1" vntheta="Agent"/></role>
+
+  <role descr="corpse" n="1">
+		
+  <vnrole vncls="42.1" vntheta="Patient"/></role>
+
+  <role descr="instrument" n="2">
+		
+  <vnrole vncls="42.1" vntheta="Instrument"/></role>
+
+</roles>
+
+<example name="all args">
+  <text>
+    John executed the criminal with his umbrella.
+  </text>
+  <arg n="0">John</arg>
+  <rel>executed</rel>
+  <arg n="1">the criminal</arg>
+  <arg f="with" n="2">his umbrella</arg>
+</example>
+
+<note>
+This sentence is beautifully ambiguous, but I've chosen this
+interpretation.
+</note>
+
+</roleset>
+
+<roleset id="execute.02" name="enact">
+<roles>
+  <role descr="agent, doer" n="0"/>
+  <role descr="thing done" n="1"/>
+  <role descr="benefactive, done for or about" n="2"/>
+  <role descr="instrumental" n="3"/>
+</roles>
+
+<example name="with benefactive">
+<text>
+    Mr. Allen's Pittsburgh firm, Advanced Investment Management Inc.,
+    executes program trades for institutions. 
+</text>
+        <arg n="0">Mr. Allen's Pittsburgh firm, Advanced Investment
+        Management Inc.,</arg> 
+        <rel>executes</rel>
+        <arg n="1">program trades</arg>
+        <arg f="for" n="2">institutions</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

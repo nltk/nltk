@@ -1,0 +1,41 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="fireproof">
+<note>
+  Frames file for 'fireproof' based on sentences in wsj.  No Verbnet
+  entry, but should go into one of the causative categories.
+</note>
+
+<roleset id="fireproof.01" vncls="-" name="make fireproof">
+<roles>
+  <role n="0"  descr="fireproofer, agent or instrument/substance"/>
+  <role n="1"  descr="thing now fireproof"/>
+</roles>
+
+<example name="only corpus ex is nominal">
+<inflection person="ns" tense="ns" aspect="ns" voice="ns" form="gerund"/>
+<text>
+     A spokesman for the company said the verdict is thought to be the
+     first in favor of an asbestos manufacturer where the plaintiff
+     was a school and the asbestos in question was used for
+     fireproofing. 
+</text>
+	<rel>fireproofing</rel>
+</example>
+
+<example name="verbal">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+     John fireproofed his underwear.
+  </text>
+  <arg n="0"        >John</arg>
+  <rel              >fireproofed</rel>
+  <arg n="1"        >his underwear</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

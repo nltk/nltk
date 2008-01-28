@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="delist">
+<note>
+  Frames file for 'delist' based on sentences in financial subcorpus.
+  No verbnet entry.  Comparison with 'list'.
+</note>
+
+<roleset id="delist.01" name="take off of a list">
+<roles>
+  <role descr="lister" n="0"/>
+  <role descr="item" n="1"/>
+  <role descr="list" n="2"/>
+</roles>
+
+<example name="temporary">
+<inflection aspect="ns" form="participle" person="third" tense="past" voice="passive"/>
+<text>
+   John was delisted *trace* from Mary's list of &quot;people I'd consider kissing.&quot;
+</text>
+    <arg n="1">*trace* -&gt; John</arg>
+    <rel>delisted</rel>
+    <arg f="from" n="2">Mary's list of &quot;people I'd consider kissing.&quot;</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

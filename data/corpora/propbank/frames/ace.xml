@@ -1,0 +1,35 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="ace">
+<note>
+  Frames file for 'ace' based on sentences in wsj.  No Verbnet entry,
+  no Framenet entry.
+</note>
+
+<roleset id="ace.01" name="do perfectly" vncls="-">
+<roles>
+  <role descr="acer" n="0"/>
+  <role descr="test" n="1"/>
+</roles>
+
+<example name="French history">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    ``It's as if France decided to give only French history questions
+    to students in a European history class, and when everybody aces
+    the test, they say their kids are good in European history,'' says
+    John Cannell, an Albuquerque, N.M., psychiatrist and founder of an
+    educational research organization, Friends for Education, which
+    has studied standardized testing. 
+</text>
+        <arg n="0">everybody</arg>
+        <rel>aces</rel>
+        <arg n="1">the test</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

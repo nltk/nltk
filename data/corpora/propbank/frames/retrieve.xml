@@ -1,0 +1,71 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="retrieve">
+<note>
+  Frames file for 'retrieve' based on sentences in wsj.  Verbnet entry
+  13.5.2 'obtain'.
+</note>
+
+<roleset id="retrieve.01" name="get back" vncls="13.5.2">
+<roles>
+  <role descr="receiver" n="0"><vnrole vncls="13.5.2" vntheta="Agent"/></role>
+  <role descr="thing gotten" n="1"><vnrole vncls="13.5.2" vntheta="Theme"/></role>
+  <role descr="received from" n="2"><vnrole vncls="13.5.2" vntheta="Source"/></role>
+  <role descr="benefactive" n="3"/>
+</roles>
+
+<example name="basic transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    ``The cost (of magnetic stimulators) would seem like peanuts if we
+    could retrieve limb function'' in such people, Dr. Tator says. 
+</text>
+        <arg n="0">we</arg>
+        <arg f="MOD" n="M">could</arg>
+        <rel>retrieve</rel>
+        <arg n="1">limb function</arg>
+        <arg f="LOC" n="M">in such people</arg>
+</example>
+
+<example name="with benefactive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    He showed an unbroken, still-ticking pocket watch that he
+    retrieved *trace* for one woman. 
+</text>
+        <arg n="0">he</arg>
+        <rel>retrieved</rel>
+        <arg n="1">*trace* -&gt;  that -&gt;  an unbroken, still-ticking
+        pocket watch</arg> 
+        <arg f="for" n="3">one woman</arg>
+</example>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="third" tense="past" voice="passive"/>
+<text>
+    He said that Oliver North of Iran-Contra notoriety thought he had
+    erased his computer but that the information was later retrieved
+    *trace* for congressional committees to read. 
+</text>
+        <arg f="TMP" n="M">later</arg>
+        <rel>retrieved</rel>
+        <arg n="1">*trace* -&gt;  the information</arg>
+        <arg f="PNC" n="M">for congressional committees to read</arg>
+</example>
+
+<example name="with source">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John retrieved his teddy from Mary.  Teddy BEAR!  Teddy BEAR!  Sheesh.
+  </text>
+  <arg n="0">John</arg>
+  <rel>retrieved</rel>
+  <arg n="1">his teddy</arg>
+  <arg f="from" n="2">Mary</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

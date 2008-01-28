@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="ripple">
+<note>
+  Frames file for 'ripple' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="ripple.01" name="to cause to form small waves or undulations" vncls="-">
+<roles>
+  <role descr="causer" n="0"/>
+  <role descr="entity rippling" n="1"/>
+</roles>
+
+<example name="intransitive">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+ He is ogling the curtains rippling above the ventilation ducts .
+</text>
+	<arg n="1">the curtains</arg>
+	<rel>rippling</rel>
+	<arg f="LOC" n="M">above the ventilation ducts</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

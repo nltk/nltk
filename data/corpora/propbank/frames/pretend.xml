@@ -1,0 +1,39 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="pretend">
+<note>
+  Frames file for 'pretend' based on sentences in wsj.  No Verbnet
+  entry.
+</note>
+
+<roleset id="pretend.01" name="make-believe" vncls="-">
+<roles>
+  <role descr="pretender" n="0"/>
+  <role descr="premise" n="1"/>
+</roles>
+
+<example name="premise as full S">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+     It's just comic when they try *trace* to pretend they're still
+     the master race.'' 
+</text>
+        <arg n="0">*trace* -&gt;  they</arg>
+        <rel>pretend</rel>
+        <arg n="1">they 're still the master race</arg>
+</example>
+
+<example name="premise as infinitive">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    A Flemish game show has as its host a Belgian pretending to be
+    Italian. 
+</text>
+        <arg n="0">a Belgian</arg>
+        <rel>pretending</rel>
+        <arg n="1">to be Italian</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="barb">
+<note>
+  Frames file for 'barb' based on sentences in wsj.  no Verbnet entry.
+</note>
+
+<roleset id="barb.01" vncls="-" name="cause to have barbs">
+<roles>
+  <role n="0"  descr="causer of barbedness"/>
+  <role n="1"  descr="barbed thing"/>
+</roles>
+
+<example name="almost always adjectival">
+  <inflection person="ns" tense="ns" aspect="ns" voice="passive" form="participle"/>
+  <text>
+    The company claims a 40% share of the U.S. field fence business, a
+    35% share of poultry netting sales and a 30% share of barbed wire
+    sales.   
+  </text>
+  <rel              >barbed</rel>
+  <arg n="1"        >wire</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,34 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="substantiate">
+<note>
+  Frames file for 'substantiate' based on sentences in wsj.  No
+  Verbnet entry, Framenet entry Evidence.
+</note>
+
+<roleset id="substantiate.01" name="prove, justify" vncls="-">
+<roles>
+  <role descr="prover" n="0"/>
+  <role descr="justified" n="1"/>
+</roles>
+
+<example name="the one example">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Mr. Lewis said the company gave the Consumer Affairs department
+    ``volumes of documents'' *trace* to substantiate its statements,
+    and made ``every effort to comply'' with all the agency's
+    policies. 
+</text>
+        <arg n="0">*trace* -&gt;  the company</arg>
+        <rel>substantiate</rel>
+        <arg n="1">its statements</arg>
+</example>
+
+<note>
+More common in the negative adjectival 'unsubstantiated' (eg rumors).
+</note>
+
+</roleset>
+</predicate>
+</frameset>

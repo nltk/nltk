@@ -1,0 +1,34 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="incriminate">
+<note>
+  Frames file for 'incriminate' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="incriminate.01" name="cause to look like a criminal" vncls="-">
+<roles>
+  <role descr="agent, causer of incrimination" n="0"/>
+  <role descr="alleged criminal" n="1"/>
+  <role descr="secondary attribute" n="2"/>
+</roles>
+
+<example name="no attribute">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+    A federal judge ruled that Imelda Marcos wasn't brought to the
+    U.S. against her will and that marital privileges, which protect
+    spouses from *trace* incriminating each other, don't apply in her
+    case. 
+</text>
+        <arg n="0">*trace* -&gt;  spouses</arg>
+        <rel>incriminating</rel>
+        <arg f="REC" n="1">each other</arg>
+</example>
+
+<note>
+compare with other 'label' verbs.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

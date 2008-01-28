@@ -1,0 +1,40 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="suppress">
+<note>
+  Frames file for 'suppress' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="suppress.01" name="(attempt to) conceal, push down" vncls="-">
+<roles>
+  <role descr="suppressor" n="0"/>
+  <role descr="suppressed" n="1"/>
+</roles>
+
+<example name="push down">
+<inflection aspect="perfect" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+    Various cultural and economic forces have suppressed demand.
+</text>
+        <arg n="0">Various cultural and economic forces</arg>
+        <rel>suppressed</rel>
+        <arg n="1">demand</arg>
+</example>
+
+<example name="conceal">
+<inflection aspect="perfect" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    Had the suit been filed in time, they said, ``Bare-Faced Messiah''
+    would have been suppressed *trace*.  
+</text>
+        <arg f="MOD" n="M">would</arg>
+        <rel>suppressed</rel>
+        <arg n="1">*trace* -&gt;  Bare-Faced Messiah</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

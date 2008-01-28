@@ -1,0 +1,46 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="nick">
+<note>
+Frames file for 'nick' based on sentences in financial subcorpus and
+automatic expansion via verbnet.
+</note>
+
+<roleset id="nick.01" name="cut slightly" vncls="21.2-1 40.8.3-2">
+<roles>
+	<role descr="cutter" n="0">
+		
+  <vnrole vncls="40.8.3-2" vntheta="Experiencer"/><vnrole vncls="21.2-1" vntheta="Agent"/></role>
+
+	<role descr="thing cut" n="1">
+		
+		
+  <vnrole vncls="40.8.3-2" vntheta="Patient"/><vnrole vncls="21.2-1" vntheta="Patient"/></role>
+
+	<role descr="instrument" n="3">
+		
+  <vnrole vncls="21.2-1" vntheta="Instrument"/></role>
+
+</roles>
+
+<example name="cutter or instrument?">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+      The thrift said earnings also were nicked *trace* in the quarter
+      by a $4 million provision for losses associated with its
+      previously reported plan to liquidate a real-estate franchise
+      network. 
+</text>
+        <arg f="DIS" n="M">also</arg>
+        <rel>nicked</rel>
+        <arg n="1">*trace* -&gt;  earnings</arg>
+        <arg f="TMP" n="M">in the quarter</arg>
+        <arg f="by" n="0">a $4 million provision for losses associated
+        with its previously reported plan to liquidate a real-estate
+        franchise network</arg> 
+</example>
+
+</roleset>
+
+</predicate>
+</frameset>

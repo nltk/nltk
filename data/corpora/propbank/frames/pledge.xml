@@ -1,0 +1,47 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="pledge">
+<note>
+  Frames file for 'pledge' based on sentences in financial subcorpus.
+  No Verbnet entry, comparison with promise and give.
+</note>
+
+<roleset id="pledge.01" name="promise a thing to someone" vncls="-">
+<roles>
+  <role descr="promiser" n="0"/>
+  <role descr="person promised to" n="1"/>
+  <role descr="promised thing or action" n="2"/>
+</roles>
+
+<example name="pledge as give">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    Maxicare also will guarantee that the banks will realize at least
+    $7 million on certain notes pledged *trace* to them. 
+</text>
+        <rel>pledged</rel>
+        <arg n="1">*trace* -&gt;  certain notes</arg>
+        <arg f="to" n="2">them</arg>
+</example>
+
+
+<example name="pledge as promise">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    East Germany pledged to reduce alcohol consumption by boosting
+    production of soft drinks and fruit juices. 
+</text>
+        <arg n="0">East Germany</arg>
+        <rel>pledged</rel>
+        <arg n="2">to reduce alcohol consumption by boosting
+        production of soft drinks and fruit juices</arg> 
+</example>
+
+<note>
+These two senses should perhaps be distinguished since they do reverse
+the order of args 1 and 2.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

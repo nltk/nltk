@@ -1,0 +1,107 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="swing">
+<note>
+Frames file for 'swing' based on sentences in financial subcorpus and
+automatic expansion via verbnet.
+</note>
+
+<roleset id="swing.01" name="type of spatial configuation" vncls="47.6">
+<roles>
+  <role descr="thing swinging" n="1">
+	<vnrole vncls="47.6" vntheta="Theme"/></role>
+</roles>
+
+<example name="automatically generated">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+ They do n't like the risks  they are forced  to assume  when prices swing so drastically  .
+</text>
+        <arg n="1">prices</arg>
+        <rel>swing</rel>
+        <arg f="MNR" n="M">so drastically</arg>
+</example>
+
+<note>
+Usually takes adverbial of manner.
+</note>
+
+</roleset>
+
+<roleset id="swing.02" name="cause swinging motion" vncls="51.3.1">
+<roles>
+  <role descr="cause, agent" n="0">
+	<vnrole vncls="51.3.1" vntheta="Agent"/></role>
+  <role descr="thing swinging" n="1">
+	<vnrole vncls="51.3.1" vntheta="Theme"/></role>
+</roles>
+
+<example name="ay battah battah">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John swung the baseball bat.
+  </text>
+  <arg n="0">John</arg>
+  <rel>swung</rel>
+  <arg n="1">the baseball bat</arg>
+</example>
+
+<note>
+This could perhaps be merged with swing.01
+</note>
+
+</roleset>
+
+<roleset id="swing.03" name="quantifiable motion" vncls="-">
+<roles>
+  <role descr="thing in motion" n="1"/>
+  <role descr="EXT" n="2"/>
+  <role descr="start point" n="3"/>
+  <role descr="end point" n="4"/>
+</roles>
+
+<example name="stock report, natch">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    J.P. Morgan &amp; Co. swung to a loss in the third quarter, while
+    NCNB Corp. reported net income more than doubled, and Security
+    Pacific Corp. net rose 10%. 
+</text>
+        <arg n="1">J.P. Morgan &amp; Co.</arg>
+        <rel>swung</rel>
+        <arg f="to" n="4">a loss</arg>
+        <arg f="TMP" n="M">in the third quarter</arg>
+        <arg n="M">while NCNB Corp. reported net income more than
+        doubled, and Security Pacific Corp. net rose 10%</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="swing.04" vncls="-" name="said of music">
+<roles>
+  <role n="1"  descr="music"/>
+</roles>
+
+<example name="swing me baby, one more time">
+  <inflection person="third" tense="present" aspect="ns" voice="active" form="full"/>
+  <text>
+    Aided by the fluid playing of the St. Louis Symphony under Leonard
+    Slatkin's direction, this ``Serenade'' really swings. 
+  </text>
+  <arg n="m" f="ADV">Aided by the fluid playing of the St. Louis
+  Symphony under Leonard Slatkin's direction</arg>
+  <arg n="1"        >this ``Serenade''</arg>
+  <arg n="m" f="EXT">really</arg>
+  <rel              >swings</rel>
+<note>
+Technically this could be merged with swing.01, but the meaning is
+different enough to warrant a different roleset.
+</note>
+</example>
+
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,44 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="convict">
+<note>
+  Frames file for 'convict' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="convict.01" name="to find or prove guilty of an offense or crime" vncls="-">
+<roles>
+  <role descr="judge, jury, agent" n="0"/>
+  <role descr="person convicted" n="1"/>
+  <role descr="convicted of" n="2"/>
+</roles>
+
+
+<example name="all arguments">
+<inflection aspect="perfect" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+ Despite the strong evidence against Mrs. Yeargin , popular sentiment [*ICH*-1] was so strong [*ICH*-3] in her favor , Mrs. Ward says [0] [*T*-2] , that `` I 'm afraid [0] a jury would n't have convicted her .
+</text>
+	<arg n="0">a jury</arg>
+	<arg f="MOD" n="M">would</arg>
+	<arg f="NEG" n="M">n't</arg>
+	<rel>convicted</rel>
+	<arg n="1">her</arg>
+</example>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="past" voice="passive"/>
+<text>
+ He was convicted [*-1] of [*-2] charging interest rates much higher than what the law permitted [*T*-3] , and attempting [*-4] to evade income taxes by [*-5] using a double accounting system .
+</text>
+	<rel>convicted</rel>
+	<arg n="1">[*-1] -&gt;  He</arg>
+	<arg f="of" n="2">[*-2] charging interest rates much higher than what the law permitted [*T*-3] , and attempting [*-4] to evade income taxes by [*-5] using a double accounting system</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

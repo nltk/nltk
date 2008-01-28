@@ -1,0 +1,34 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="criminalize">
+<note>
+  Frames file for 'criminalize' based on sentences in wsj.  No access
+  to verbnet at the moment.
+</note>
+
+<roleset id="criminalize.01" name="make into a crime" vncls="-">
+<roles>
+  <role descr="agent, legislative body" n="0"/>
+  <role descr="crime" n="1"/>
+</roles>
+
+<example name="the one example">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+    At a stroke, this may criminalize all fiduciary breaches (and
+    possibly all misrepresentations by an agent or employee). 
+</text>
+        <arg f="MNR" n="M">At a stroke</arg>
+        <arg n="0">this</arg>
+        <arg f="MOD" n="M">may</arg>
+        <rel>criminalize</rel>
+        <arg n="1">all fiduciary breaches (and possibly all
+        misrepresentations by an agent or employee)</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

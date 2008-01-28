@@ -1,0 +1,192 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="fold">
+<note>
+  Frames file for 'fold' based on sentences in wsj.  Verbnet entries
+  26.5, 40.3.2, 26.1, 45.2
+</note>
+
+<roleset id="fold.01" name="mix ingredients gently" vncls="26.5">
+<roles>
+  <role descr="mixer" n="0"><vnrole vncls="26.5" vntheta="Agent"/></role>
+  <role descr="new ingredient" n="1"><vnrole vncls="26.5" vntheta="Material"/></role>
+  <role descr="medium" n="2"><vnrole vncls="26.5" vntheta="Product"/></role>
+</roles>
+
+<example name="not the context I expected">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+     To gain more leverage, abortion-rights advocates may seek *trace*
+     to fold the bill into an omnibus continuing resolution next
+     month. 
+</text>
+        <arg n="0">*trace* -&gt;  abortion-rights advocates</arg>
+        <rel>fold</rel>
+        <arg n="1">the bill</arg>
+        <arg f="into" n="2">an omnibus continuing resolution</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="fold.02" name="fold hands" vncls="40.3.2">
+<roles>
+  <role descr="person" n="0"><vnrole vncls="40.3.2" vntheta="Agent"/></role>
+  <role descr="hands" n="1"><vnrole vncls="40.3.2" vntheta="Patient"/></role>
+</roles>
+
+<example name="like a good boy">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John folded his hands neatly in Mary's lap.
+  </text>
+  <arg n="0">John</arg>
+  <rel>folded</rel>
+  <arg n="1">his hands</arg>
+  <arg f="MNR" n="m">neatly</arg>
+  <arg f="LOC" n="m">in Mary's lap</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="fold.03" name="origami" vncls="26.1">
+<roles>
+  <role descr="builder" n="0"><vnrole vncls="26.1" vntheta="Agent"/></role>
+  <role descr="construction" n="1"><vnrole vncls="26.1" vntheta="Product"/></role>
+  <role descr="material, start state" n="2"><vnrole vncls="26.1" vntheta="Material"/></role>
+  <role descr="benefactive" n="3"><vnrole vncls="26.1" vntheta="Beneficiary"/></role>
+  <role descr="end state" n="4"><vnrole vncls="26.1" vntheta="Product"/></role>
+</roles>
+
+<example name="transitive with material">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    A dozen white office workers fold newsletters and stuff them into
+    envelopes. 
+</text>
+        <arg n="0">A dozen white office workers</arg>
+        <rel>fold</rel>
+        <arg n="2">newsletters</arg>
+</example>
+
+<example name="construction as PP">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John folded the newspaper into a sailboat for Mary.
+  </text>
+  <arg n="0">John</arg>
+  <rel>folded</rel>
+  <arg n="2">the newspaper</arg>
+  <arg f="into" n="1">a sailboat</arg>
+  <arg f="for" n="3">Mary&quot;</arg>
+</example>
+
+<example name="material as PP">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John folded a sailboat out of newspaper.
+  </text>
+  <arg n="0">John</arg>
+  <rel>folded</rel>
+  <arg n="1">a sailboat</arg>
+  <arg f="out" n="2">of newspaper</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="fold.04" name="stop playing cards" vncls="-">
+<roles>
+  <role descr="cardplayer" n="0"/>
+</roles>
+
+<example name="not quite cards">
+<inflection aspect="ns" form="full" person="ns" tense="ns" voice="ns"/>
+<text>
+     Given that choice, associates of Mr. Hahn and industry observers
+     say the former university president -- who has developed a
+     reputation for not overpaying for anything -- would fold. 
+</text>
+        <arg n="0">the former university president -- who  has
+        developed a reputation for not overpaying for anything
+        --</arg> 
+        <arg f="MOD" n="M">would</arg>
+        <rel>fold</rel>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="fold.06" name="(terminate) a failing business" vncls="-">
+<roles>
+  <role descr="business owner" n="0"/>
+  <role descr="failing business" n="1"/>
+</roles>
+
+<example name="business as subject">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    The Herald joins the Baltimore News-American, which *trace*
+    folded, and the Boston Herald-American, which  was sold, as
+    cornerstones of the old Hearst newspaper empire abandoned by the
+    company in the 1980s. 
+</text>
+        <arg n="1">*trace* -&gt;  which -&gt;  the Baltimore News-American</arg>
+        <rel>folded</rel>
+</example>
+
+<example name="owner as subject">
+<inflection aspect="perfect" form="participle" person="third" tense="present" voice="active"/>
+<text>
+    Within the same nine months, News Corp. closed down In Fashion, a
+    once-promising young woman's fashion magazine, Drake Publications
+    Inc. has folded the long-troubled Venture magazine, and Lang
+    Communications has announced Ms. magazine, after 17 years, will no
+    longer carry advertising as of January. 
+</text>
+        <arg n="0">Drake Publications Inc.</arg>
+        <rel>folded</rel>
+        <arg n="1">the long-troubled Venture magazine</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="fold_up">
+<roleset id="fold.05" name="origami" vncls="26.1">
+<roles>
+  <role descr="builder" n="0"><vnrole vncls="26.1" vntheta="Agent"/></role>
+  <role descr="construction" n="1"><vnrole vncls="26.1" vntheta="Product"/></role>
+  <role descr="material, start state" n="2"><vnrole vncls="26.1" vntheta="Material"/></role>
+  <role descr="benefactive" n="3"><vnrole vncls="26.1" vntheta="Beneficiary"/></role>
+  <role descr="end state" n="4"><vnrole vncls="26.1" vntheta="Product"/></role>
+</roles>
+
+<example name="a token example">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    A dozen white office workers fold up newsletters and stuff them into
+    envelopes. 
+</text>
+        <arg n="0">A dozen white office workers</arg>
+        <rel>fold up</rel>
+        <arg n="2">newsletters</arg>
+</example>
+
+<note>
+Except for the particle, should be identical to fold.03.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

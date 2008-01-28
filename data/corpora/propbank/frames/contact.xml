@@ -1,0 +1,46 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="contact">
+<note>
+  Frames file for 'contact' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="contact.01" name="to bring or come into contact" vncls="-">
+<roles>
+  <role descr="contactor, agent" n="0"/>
+  <role descr="entity contacted" n="1"/>
+</roles>
+
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="past" voice="passive"/>
+<text>
+ He says [0] Campbell was n't even contacted [*-1] by the magazine for the opportunity [*] to comment .
+</text>
+	<arg f="NEG" n="M">n't</arg>
+	<arg f="ADV" n="M">even</arg>
+	<rel>contacted</rel>
+	<arg n="1">[*-1] -&gt;  Campbell</arg>
+	<arg f="by" n="0">the magazine</arg>
+	<arg f="PNC" n="M">for the opportunity [*] to comment</arg>
+</example>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ It 's understood that MGM\/UA recently contacted Rupert Murdoch 's News Corp. , which [*T*-1] made two failed bids for the movie studio , [*] to see if the company was still interested .
+</text>
+	<arg n="0">MGM\/UA</arg>
+	<arg f="TMP" n="M">recently</arg>
+	<rel>contacted</rel>
+	<arg n="1">Rupert Murdoch 's News Corp. , which [*T*-1] made two failed bids for the movie studio ,</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

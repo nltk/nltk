@@ -1,0 +1,50 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="divvy_up">
+<note>
+  Frames file for 'divvy up' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="divvy.01" name="divide, distribute" vncls="-">
+<roles>
+  <role descr="divider, agent" n="0"/>
+  <role descr="thing divided" n="1"/>
+  <role descr="portions, recipients" n="2"/>
+</roles>
+
+<example name="active, all args">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    A previously available program called Network Computing System,
+    developed by Hewlett-Packard's Apollo division, for instance,
+    takes a task and splits it up into parts, [*-1] divvying up those
+    parts to several computers in a network for simultaneous
+    processing. 
+</text>
+        <arg n="0">[*-1] -&gt;  A previously available program called
+        Network Computing System, developed by Hewlett-Packard's
+        Apollo division</arg> 
+        <rel>[ divvying] [ up]</rel>
+        <arg n="1">those parts</arg>
+        <arg f="to" n="2">several computers in a network</arg>
+        <arg f="PNC" n="M">for simultaneous processing</arg>
+</example>
+
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="ns"/>
+<text>
+    The amount of income divvied [*] up for each man, woman and child
+    was $16,489 in 1988, up 6.6% from $15,472 in 1987. 
+</text>
+        <rel>[ divvied] [ up]</rel>
+        <arg n="1">[*] -&gt;  The amount</arg>
+        <arg f="for" n="2">each man, woman and child</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

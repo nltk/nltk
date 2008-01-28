@@ -1,0 +1,36 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="articulate">
+<note>
+  Frames file for 'articulate' based on sentences in wsj.  Verbnet
+  entry 37.7.
+</note>
+
+<roleset id="articulate.01" name="speak clearly" vncls="37.7">
+<roles>
+  <role descr="speaker" n="0"><vnrole vncls="37.7" vntheta="Agent"/></role>
+  <role descr="utterance" n="1"><vnrole vncls="37.7" vntheta="Topic"/></role>
+  <role descr="hearer (in theory possible)" n="2"><vnrole vncls="37.7" vntheta="Recipient"/></role>
+</roles>
+
+<example name="just transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    If Mr. Mason had used less derogatory language [*-1] to articulate
+    his amateur analysis of the voting behavior of his fellow New
+    Yorkers, would the water be quite so hot? 
+</text>
+        <arg n="0">[*-1] -&gt;  Mr. Mason</arg>
+        <rel>articulate</rel>
+        <arg n="1">his amateur analysis of the voting behavior of his
+        fellow New Yorkers</arg> 
+</example>
+
+<note>
+I doubt the hearer arg would ever appear, but class membership
+predicts it.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

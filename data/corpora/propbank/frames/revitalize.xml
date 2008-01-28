@@ -1,0 +1,34 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="revitalize">
+<note>
+  Frames file for 'revitalize' based on sentences in wsj.  Verbnet
+  entry 31.1.
+</note>
+
+<roleset id="revitalize.01" name="make lively" vncls="31.1">
+<roles>
+  <role descr="giver of new life" n="0"><vnrole vncls="31.1" vntheta="Cause"/></role>
+  <role descr="thing that was dead" n="1"><vnrole vncls="31.1" vntheta="Experiencer"/></role>
+</roles>
+
+<example name="the one example">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+    The National Association of Broadcasters in June adopted an agenda
+    for *trace* revitalizing AM radio that includes, among other
+    things, pursuing further FCC action on selecting an AM stereo
+    standard and seeking a law requiring all stereo receivers to
+    include AM stereo. 
+</text>
+        <arg n="0">*trace* -&gt;  The National Association of Broadcasters</arg>
+        <rel>revitalizing</rel>
+        <arg n="1">AM radio</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

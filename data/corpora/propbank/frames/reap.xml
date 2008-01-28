@@ -1,0 +1,55 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="reap">
+<note>
+  Frames file for 'reap' based on sentences in financial subcorpus.
+  Verbnet class remove-10.1, other framed members include draw,
+  withdraw.  Comparison to 'obtain'.
+</note>
+
+<roleset id="reap.01" name="take as harvest" vncls="10.1">
+<roles>
+  <role descr="receiver" n="0">
+		
+  <vnrole vncls="10.1" vntheta="Agent"/></role>
+
+  <role descr="harvest" n="1">
+		
+  <vnrole vncls="10.1" vntheta="Theme"/></role>
+
+  <role descr="received from" n="2">
+		
+  <vnrole vncls="10.1" vntheta="Source"/></role>
+
+</roles>
+
+<example name="no received-from">
+<text>
+    The real battle is over who *trace* will control that market and
+    reap its huge rewards. 
+</text>
+        <arg n="0">who -&gt; *trace*</arg>
+        <arg f="MOD" n="M">will</arg>
+        <rel>reap</rel>
+        <arg n="1">its huge rewards</arg>
+</example>
+
+<example name="with received-from">
+<text>
+    In a prepared statement, GM suggested its plans for Jaguar would
+    be more valuable in the long run than the initial windfalls
+    *trace* investors might reap *trace* from a hostile Ford bid.
+</text>
+        <arg n="1">*trace* -&gt; *trace* -&gt; the initial windfalls</arg>
+        <arg n="0">investors</arg>
+        <arg f="MOD" n="M">might</arg>
+        <rel>reap</rel>
+        <arg f="from" n="2">a hostile Ford bid</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,47 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="gauge">
+<note>
+  Frames file for 'gauge' based on sentences in financial subcorpus.
+  No Verbnet entry, no Framenet entry.  Comparison with 'determine'.
+</note>
+
+<roleset id="gauge.01" name="determine, measure">
+<roles>
+  <role descr="decider" n="0"/>
+  <role descr="thing determined" n="1"/>
+  <role descr="grounds" n="2"/>
+  <role descr="attribute of arg1" n="3"/>
+</roles>
+
+<example name="not a good example">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Because it's impossible *trace* to gauge how long the walkout by
+    55,000 Machinists rank and file will last, the precise impact on
+    Boeing's sales, earnings, cash flow and short-term investment
+    position couldn't be determined. 
+</text>
+        <arg n="0">*trace*</arg>
+        <rel>gauge</rel>
+        <arg n="1">how long the walkout by 55,000 Machinists rank and
+        file will last </arg> 
+</example>
+
+<example name="with attribute">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    Mary gauged the depths of John's depravity as bottomless.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>gauged</rel>
+  <arg n="1">the depths of John's depravity</arg>
+  <arg f="as" n="3">bottomless</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

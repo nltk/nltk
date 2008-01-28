@@ -1,0 +1,67 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="float">
+<note>
+  Frames file for 'float' based on sentences in financial subcorpus.
+  Verbnet classes modes_of_being_with_motion-47.3 roll-51.3.1
+  run-51.3.2 slide-11.2-1; other framed members include: shake;
+  charge, leap, roll, sneak, walk, wind; halt, roll.  Comparison to
+  'roll' and 'wind'.
+</note>
+
+<roleset id="float.01" name="not sink in water" vncls="11.2-1 47.3 51.3.1 51.3.2">
+<roles>
+  <role descr="causative agent" n="0">
+		
+		
+		
+		
+  <vnrole vncls="47.3" vntheta="Agent"/><vnrole vncls="51.3.2" vntheta="Agent"/><vnrole vncls="11.2-1" vntheta="Agent"/><vnrole vncls="51.3.1" vntheta="Agent"/></role>
+
+  <role descr="thing floating" n="1">
+		
+		
+		
+		
+  <vnrole vncls="47.3" vntheta="Theme"/><vnrole vncls="51.3.2" vntheta="Theme"/><vnrole vncls="11.2-1" vntheta="Theme"/><vnrole vncls="51.3.1" vntheta="Theme"/></role>
+
+  <role descr="benefactive" n="2">
+		
+  <vnrole vncls="11.2-1" vntheta="Destination"/></role>
+
+</roles>
+
+<example name="ergative, with LOC">
+<text>
+    The second part, consisting of $100 million of senior subordinated
+    floating-rate notes, was priced at 99 3/4 to float 4.25% above the
+    three-month London interbank offered rate. 
+</text>
+        <arg n="1">*trace* -&gt; *trace* -&gt; The second part, consisting
+        of $100 million of senior subordinated floating-rate
+        notes</arg> 
+        <rel>float</rel>
+        <arg f="LOC" n="M">4.25% above the three-month London
+        interbank offered rate</arg> 
+</example>
+
+<example name="float as introduce">
+<text>
+    One trial balloon *trace-1* Mr. Spiegel is said *trace-2* to have
+    floated *trace-3* to investors: Columbia might be broken up, as
+    Mellon Bank was split into a good bank and a bad bank. 
+</text>
+        <arg n="1">*trace-3* -&gt; *trace-1* -&gt; One trial balloon</arg>
+        <arg n="0">*trace-2* -&gt; Mr. Spiegel</arg>
+        <rel>floated</rel>
+        <arg f="to" n="2">investors</arg>
+</example>
+
+<note>
+float-as-introduce might be properly pulled out as a separate roleset,
+but we'll leave them merged for the time being.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

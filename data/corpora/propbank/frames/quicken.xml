@@ -1,0 +1,34 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="quicken">
+<note>
+  Frames file for 'quicken' based on sentences in wsj.  No access to
+  Verbnet at the moment.
+</note>
+
+<roleset id="quicken.01" name="become faster" vncls="45.4">
+<roles>
+  <role descr="thing becoming faster" n="1"><vnrole vncls="45.4" vntheta="Patient"/></role>
+  <role descr="EXT" n="2"/>
+  <role descr="old speed" n="3"/>
+  <role descr="new speed" n="4"/>
+</roles>
+
+<example name="the quick and the dead">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+    Housing starts are expected [*] to quicken a bit from August's
+    annual pace of 1,350,000 units. 
+</text>
+        <arg n="1">[*] -&gt;  Housing starts</arg>
+        <rel>quicken</rel>
+        <arg f="EXT" n="2">a bit</arg>
+        <arg f="from" n="3">August's annual pace of 1,350,000 units</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

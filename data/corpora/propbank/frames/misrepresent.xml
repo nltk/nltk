@@ -1,0 +1,46 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="misrepresent">
+<note>
+  Frames file for 'misrepresent' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="misrepresent.01" name="portray falsely" vncls="-">
+<roles>
+  <role descr="misrepresenter" n="0"/>
+  <role descr="thing portrayed" n="1"/>
+  <role descr="attribute" n="2"/>
+</roles>
+
+<example name="no attribute">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    ``This is dangerous and misrepresents Abbie's life,'' says
+    Ms. Lawrenson, who has had an advance look at the 36-page script. 
+</text>
+        <arg n="0">This</arg>
+        <rel>misrepresents</rel>
+        <arg n="1">Abbie's life</arg>
+</example>
+
+<example name="with attribute">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    James Burke and Larry Evans, formerly owners of the now-defunct
+    Barclay Gallery, and Prudence Clark, a Barclay sales
+    representative, were charged with conducting high-pressure
+    telephone sales in which they misrepresented cheap copies of Dali
+    artwork as signed, limited-edition lithographs. 
+</text>
+        <arg n="0">they</arg>
+        <rel>misrepresented</rel>
+        <arg n="1">cheap copies of Dali artwork</arg>
+        <arg f="as" n="2">signed, limited-edition lithographs</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

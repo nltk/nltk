@@ -1,0 +1,50 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="compute">
+<note>
+  Frames file for 'compute' based on survey of sentences in the WSJ
+  corpus. Comparison with 'calculate'.
+</note>
+
+
+<roleset id="compute.01" name="to calculate" vncls="26.4">
+<roles>
+  <role descr="calculator, agent" n="0">
+	<vnrole vncls="26.4" vntheta="Agent"/></role>
+  <role descr="entity calculated" n="1">
+	<vnrole vncls="26.4" vntheta="Product"/></role>
+  <role descr="value" n="2">
+        <vnrole vncls="26.4" vntheta="Material"/></role>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ Jack Greenberg , executive vice president and chief financial officer of McDonald 's , says [0] the company does n't compute , much less disclose , inflation-adjusted , same-store sales .
+</text>
+	<arg n="0">the company</arg>
+	<arg f="NEG" n="M">n't</arg>
+	<rel>compute</rel>
+	<arg n="1">inflation-adjusted , same-store sales</arg>
+</example>
+
+
+
+<example name="with Arg2">
+<inflection aspect="ns" form="ns" person="ns" tense="ns" voice="ns"/>
+<text>
+ He said [0] the stock has n't traded below 1 1\/2 times book value [*ICH*-3] over the past 10 years , which at the moment [*T*-1] computes to a stock price of $ 100 [*U*] .
+</text>
+	<arg f="TMP" n="M">at the moment</arg>
+	<arg n="1">[*T*-1] -&gt;  which -&gt;  1 1\/2 times book value [*ICH*-3]</arg>
+	<rel>computes</rel>
+	<arg f="to" n="2">a stock price of $ 100 [*U*]</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

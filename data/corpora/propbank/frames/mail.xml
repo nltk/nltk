@@ -1,0 +1,57 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="mail">
+<note>
+  Frames file for 'mail' based on sentences in financial subcorpus.
+  Verbnet class send-11.1-1, other framed members include pass, send,
+  and slip.  Comparison with 'send'.
+</note>
+
+<roleset id="mail.01" name="send" vncls="11.1-1">
+<roles>
+  <role descr="mailer" n="0">
+		
+  <vnrole vncls="11.1-1" vntheta="Agent"/></role>
+
+  <role descr="letter" n="1">
+		
+  <vnrole vncls="11.1-1" vntheta="Theme"/></role>
+
+  <role descr="mailed-to" n="2">
+		
+  <vnrole vncls="11.1-1" vntheta="Destination"/></role>
+
+</roles>
+
+<example name="all args present">
+<text>
+    The directors said if Messrs. Drabinsky and Gottlieb mail an offer
+    to shareholders by Nov. 22,...
+</text>
+        <arg n="0">Messrs. Drabinsky and Gottlieb</arg>
+        <rel>mail</rel>
+        <arg n="1">an offer</arg>
+        <arg f="to" n="2">shareholders</arg>
+        <arg f="TMP" n="M">by Nov. 22</arg>
+</example>
+
+<example name="unstated recipient">
+<text>
+    Dow Jones said it extended the offer to allow shareholders time to
+    review a supplement to the Dow Jones tender offer circular that it
+    mailed *trace* last Friday. 
+</text>
+        <arg n="0">it</arg>
+        <rel>mailed</rel>
+        <arg n="1">*trace* -&gt;  that -&gt;  the Dow Jones tender offer
+        circular</arg>
+        <arg f="TMP" n="M">last Friday</arg>
+</example>
+
+<note>
+Anthrax jokes, anyone?
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,141 @@
+<!--
+                    dtd for predicate argument lexicon files
+
+ Each file will contain a set of predicates associated with a particular
+ lemma (including phrasal variants,  like 'keep_from', etc)
+
+ Each predicate will contain a set of roles in an entity called a roleset.  The
+ rolesets give mneumonics of the argument labels for each different set of
+ arguments.  Multiple rolesets per predicate are necessary for the accomodation
+ of different senses of the predicate.
+
+ Each roleset associates the argument labels with a set of examples
+ demonstrating some of the primary considerations in predicate argument
+ annotation for the predicate+roleset in consideration.  The examples contain
+ plain text sentences and then assign arguments to segments of the sentence.
+ The examples usually have names which are often space delimited descriptions
+ of the annotation.  The examples often have types which describe, in a
+ nutshell, some primary linguistic properties such as "benefactive" or
+ "agentive".  The type attribute may also include a phrasal particle variant
+ (eg type="keep pace") so as to indicate the guidelines for annotation of these
+ cases.
+
+ The entire document can be decorated with notes for unstructured description of
+ the information presented.
+-->
+<!ELEMENT frameset (note | predicate)*>
+<!ELEMENT note (#PCDATA)>
+
+<!ELEMENT predicate (note | roleset)*>
+<!ATTLIST predicate lemma CDATA #REQUIRED>
+
+<!--
+  The roleset's levine class attribute takes the following form:
+
+  -|\d+(\.\d+)*( \d+(\.\d+)*)*
+  
+  where '-' means there is no levine class
+  and something like 47.2 means 47.2 is a levine class of this
+  roleset.  The list of levine classes is space delimited
+-->
+  
+<!ELEMENT roleset (note*, roles, ( example | note )*)>
+<!ATTLIST roleset 
+  id   ID #REQUIRED
+  name CDATA #IMPLIED
+  vncls CDATA #IMPLIED
+  framnet CDATA #IMPLIED>
+<!ELEMENT roles   (note | role)*>
+
+<!ELEMENT role (vnrole*) >
+<!-- 
+  roles have a number (or actually a number or an "M" or an "A" associated
+  with them.  The "M" stands for modifier and the "A" stands for agent. 
+  The "A" is the agent only in the case where arg 0 is not agentive 
+  (eg verbs that can take causative constructions). This number is encoded in
+  the attribute 'n'
+
+  'f' is an attribute which may contain function tags.  The current list of 
+  available function tags are
+
+    EXT  extent
+    LOC  location
+    DIR  direction
+    NEG  negation  (not in PREDITOR)
+    MOD  general modification
+    ADV  adverbial modification
+    MNR  manner
+    PRD  secondary predication
+    REC  recipricol (eg herself, etc)
+    TMP  temporal
+    PRP  purpose - deprecated !!!
+    PNC  purpose no cause
+    CAU  cause
+  
+  additionally, function tags may be prepositions, indicating that the
+  preposition in question can be associated with the argument/role
+  presented.  For this reason, we can't restrict the values to an
+  enumeration :(.
+
+  The roles also have a 'vnr' attribute, which refers
+  to verbnet v0.2 thematic roles.  Verbnet thematic roles are 
+
+  Note That verbnet
+
+-->
+<!ATTLIST role 
+  n CDATA #REQUIRED
+  f CDATA #IMPLIED
+  descr CDATA #REQUIRED>
+
+<!ELEMENT vnrole EMPTY>
+<!ATTLIST vnrole
+  vncls CDATA #REQUIRED
+
+  vntheta (Actor1 | Actor2| Agent| Asset| Attribute| Beneficiary| Cause|
+  Destination| Experiencer| Extent| Instrument| Location| Material| Patient|
+  Patient1| Patient2| Predicate| Product| Recipient| Source| Stimulus| Theme|
+  Theme1| Theme2| Time| Topic) #REQUIRED>
+        
+
+
+<!--
+  examples may contain inflectional information and notes notes
+  After that, they contain the text of an example followed by
+  the argument structure.
+
+  The src attribute is for automatically retrieved examples
+  and refers to a roleset identifier.
+-->
+<!ELEMENT example (inflection?, note?, text, (arg | rel | note)*)>
+<!ATTLIST example
+  name CDATA #IMPLIED
+  type CDATA #IMPLIED
+  src  CDATA #IMPLIED>
+
+<!ELEMENT text (#PCDATA)>
+
+<!ELEMENT inflection EMPTY>
+<!ATTLIST inflection
+  person (third | other | ns) "ns"
+  tense  (present | past | future | ns) "ns"
+  aspect (perfect | progressive | both | ns) "ns"
+  voice  (active | passive | ns) "ns"
+  form   (infinitive | gerund | participle | full | ns) "ns">
+
+
+<!-- the n and f attributes corresponds to those of the roles
+     described above -->
+<!ELEMENT arg (#PCDATA)>
+<!ATTLIST arg
+  n CDATA #REQUIRED
+  f CDATA #IMPLIED>
+
+<!-- a rel can have an "f" attribute for a single reason, so that
+     auxilliary uses of the verb "have" can be marked as such.
+     There should be no other "f" attributes -->
+<!ELEMENT rel (#PCDATA)>
+<!ATTLIST rel
+  f CDATA #IMPLIED>
+
+

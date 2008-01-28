@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="supervise">
+<note>
+  Frames file for 'supervise' based on sentences in financial subcorpus.
+  No Verbnet entry.  Comparison with 'oversee'.
+</note>
+
+<roleset id="supervise.01" name="supervise">
+<roles>
+  <role descr="supervisor" n="0"/>
+  <role descr="thing supervised" n="1"/>
+</roles>
+
+<example name="typical">
+<text>
+    The bids remain subject to evaluation by the federal bankruptcy
+    court supervising PS of New Hampshire's reorganization. 
+</text>
+        <arg n="0">the federal bankruptcy court</arg>
+        <rel>supervising</rel>
+        <arg n="1">PS of New Hampshire's reorganization</arg>
+</example>
+
+<note>
+&quot;Oversee&quot; is a portmanteau for &quot;supervise&quot;; &quot;over&quot; = &quot;super&quot; and &quot;see&quot;
+= &quot;vise&quot; (eg, &quot;vision&quot; etc).
+</note>
+
+</roleset>
+</predicate>
+</frameset>

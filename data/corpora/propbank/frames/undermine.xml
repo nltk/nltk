@@ -1,0 +1,49 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="undermine">
+<note>
+  Frames file for 'undermine' based on sentences in financial
+  subcorpus.  No Verbnet entry, no Framenet entry.  Comparison with
+  weaken.
+</note>
+
+<roleset id="undermine.01" name="weaken, not quantifiable" vncls="-">
+<roles>
+  <role descr="causal agent" n="0"/>
+  <role descr="thing weakening" n="1"/>
+</roles>
+
+<example name="active">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    The index was under pressure for most of the morning over concerns
+    that the effects of Tuesday night's major earthquake in the San
+    Francisco area would undermine the U.S. market. 
+</text>
+        <arg n="0">the effects of Tuesday night's major earthquake in
+        the San Francisco area</arg> 
+        <arg f="MOD" n="M">would</arg>
+        <rel>undermine</rel>
+        <arg n="1">the U.S. market</arg>
+</example>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    He argues that efforts to firm up prices will be undermined
+    *trace* by producers' plans to expand production capacity. 
+</text>
+        <arg f="MOD" n="M">will</arg>
+        <rel>undermined</rel>
+        <arg n="1">*trace* -&gt;  efforts  to firm up prices</arg>
+        <arg f="by" n="0">producers' plans  to expand production
+        capacity</arg>
+</example> 
+
+<note>
+&quot;Not quantifiable&quot; means that undermine cannot take EXT, start or end
+point arguments, unlike weaken.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,124 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="recall">
+<note>
+Frames file for 'recall' based on sentences in financial subcorpus and
+automatic expansion via verbnet.
+</note>
+
+<roleset id="recall.01" name="manufactured defect" vncls="10.2">
+<roles>
+	<role descr="entity recalling, manufacturer" n="0">
+		
+  <vnrole vncls="10.2" vntheta="Agent"/></role>
+
+	<role descr="thing being recalled, defective thing" n="1">
+		
+  <vnrole vncls="10.2" vntheta="Theme"/></role>
+
+	<role descr="recalled from" n="2">
+		
+  <vnrole vncls="10.2" vntheta="Source"/></role>
+
+</roles>
+
+<example name="typical usage">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    IBM has no plans *trace* to recall its add-on cards, the
+    spokeswoman said, and could probably circumvent the bugs without
+    long product delays. 
+</text>
+        <arg n="0">*trace* -&gt;  IBM</arg>
+        <rel>recall</rel>
+        <arg n="1">its add-on cards</arg>
+</example>
+
+<note>
+Arg2 is predicted, but I doubt it will appear.
+</note>
+
+</roleset>
+
+<roleset id="recall.02" name="remember" vncls="29.2">
+<roles>
+  <role descr="rememberer" n="0"><vnrole vncls="29.2" vntheta="Agent"/></role>
+  <role descr="memory" n="1"><vnrole vncls="29.2" vntheta="Theme"/></role>
+  <role descr="secondary attribute" n="2"><vnrole vncls="29.2" vntheta="Predicate"/></role>
+  <role descr="hearer" n="3"/>
+</roles>
+
+<example name="straight transitive">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    The executive recalls Mr. Corry whispering to him and others,
+    ``Remember, this was Dave's deal.'' 
+</text>
+        <arg n="0">The executive</arg>
+        <rel>recalls</rel>
+        <arg n="1">Mr. Corry whispering to him and others, ``Remember,
+        this was Dave's deal</arg> 
+</example>
+
+<example name="fronted">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Upon returning to New York, ``Exhausted, I got into a taxicab, and
+    the woman driver said: `Americans make better fishermen,''' he
+    recalled *trace*. 
+</text>
+        <arg n="0">he</arg>
+        <rel>recalled</rel>
+        <arg n="1">*trace* -&gt;  Upon returning to New York,
+        ``Exhausted, I got into a taxicab, and the woman driver said:
+        `Americans make better fishermen,'''</arg> 
+</example>
+
+<example name="include wh-complementizers">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    In an interview a few months ago, he recalled how after some
+    training at Salomon Brothers Inc., he successfully bid for the
+    opportunity to sell portions of 20 U.S. corporate bond issues. 
+</text>
+        <arg f="LOC" n="M">In an interview</arg>
+        <arg f="TMP" n="M">a few months ago</arg>
+        <arg n="0">he</arg>
+        <rel>recalled</rel>
+        <arg n="1">how after some training at Salomon Brothers Inc.,
+        he successfully bid for the opportunity to sell portions of 20
+        U.S. corporate bond issues </arg> 
+</example>
+
+<example name="with secondary attribute">
+  <inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+  <text>
+    Mary recalls John as such a happy carefree boy.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>recalls</rel>
+  <arg n="1">John</arg>
+  <arg f="as" n="2">such a happy carefree boy</arg>
+</example>
+
+<example name="with hearer">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    He recalled to the audience a ``strange, infelicitous'' analogy he
+    once heard arguing ``now that we have finally recognized that
+    American blacks have rights, we need to do the same for animals.''
+  </text>
+  <arg n="0">He</arg>
+  <rel>recalled</rel>
+  <arg f="to" n="3">the audience</arg>
+  <arg n="1">a ``strange, infelicitous'' analogy he
+    once heard arguing ``now that we have finally recognized that
+    American blacks have rights, we need to do the same for animals.''</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

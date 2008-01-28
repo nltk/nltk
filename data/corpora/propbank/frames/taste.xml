@@ -1,0 +1,59 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="taste">
+<note>
+  Frames file for 'taste' based on sentences in wsj.  Verbnet entries
+  30.1, 30.4, 35.3; Framenet entries Perception experience,
+  Appearance, and Perception active.
+</note>
+
+<roleset id="taste.01" name="use one's tastebuds" vncls="30.1">
+<roles>
+  <role descr="taster" n="0"><vnrole vncls="30.1" vntheta="Experiencer"/></role>
+  <role descr="food" n="1"> <vnrole vncls="30.1" vntheta="Stimulus"/></role>
+</roles>
+
+<example name="nasty trace chains">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    ``Parties are rather a state of mind, '' she said, [*-3] pausing
+    only [*-4] to taste [*RNR*-1] and pass judgment on the Georgian
+    shashlik (``a little well done, but very good''). 
+</text>
+        <arg f="DIS" n="M">only</arg>
+        <arg n="0">[*-4] -&gt;  [*-3] -&gt;  she</arg>
+        <rel>taste</rel>
+        <arg n="1">[*RNR*-1] -&gt; the Georgian shashlik</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="taste.02" name="possess a flavor" vncls="30.4">
+<roles>
+  <role descr="thing with flavor" n="1">
+             
+  <vnrole vncls="30.4" vntheta="Stimulus"/></role>
+  <role descr="description of flavor" n="2">
+		
+  </role>
+</roles>
+
+<example name="beautiful metaphor">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    They still buy apples mainly for big, red good looks -- that's why
+    so many taste like woodchucks' punching bags. 
+</text>
+        <arg n="1">so many</arg>
+        <rel>taste</rel>
+        <arg f="like" n="2">woodchucks ' punching bags</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

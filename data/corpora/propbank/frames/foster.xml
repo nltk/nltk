@@ -1,0 +1,45 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="foster">
+<note>
+  Frames file for 'foster' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+
+<roleset id="foster.01" name="to promote the growth of" vncls="-">
+<roles>
+  <role descr="promoter of growth, agent" n="0"/>
+  <role descr="thing growing" n="1"/>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ The Los Alamos laboratory is one of three U.S. Department of Energy national laboratories designed [*] as pilot centers [*] to foster joint industry-government programs [0] [*T*-1] to speed the transfer of new superconductors to the marketplace .
+</text>
+	<arg n="0">[*] -&gt;  [*] -&gt;  three U.S. Department of Energy national laboratories</arg>
+	<rel>foster</rel>
+	<arg n="1">joint industry-government programs [0] [*T*-1] to speed the transfer of new superconductors to the marketplace</arg>
+</example>
+
+
+<example name="transitive with adverbials">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ The Fuji is a product of meticulous Japanese pomological engineering , which [*T*-1] fostered it 50 years ago at a government research orchard .
+</text>
+	<arg n="0">[*T*-1] -&gt;  which -&gt;  meticulous Japanese pomological engineering</arg>
+	<rel>fostered</rel>
+	<arg n="1">it</arg>
+	<arg f="TMP" n="M">50 years ago</arg>
+	<arg f="LOC" n="M">at a government research orchard</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

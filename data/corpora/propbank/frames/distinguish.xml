@@ -1,0 +1,81 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="distinguish">
+<note>
+  Frames file for 'distinguish' based on sentences in wsj.  Verbnet
+  entry 23.1, Framenet entry Differentiation.
+</note>
+
+<roleset id="distinguish.01" name="separate, divide" vncls="23.1">
+<roles>
+	<role descr="entity causing separation" n="0"><vnrole vncls="23.1" vntheta="Agent"/></role> 
+	<role descr="thing(s) being divided" n="1"><vnrole vncls="23.1" vntheta="Patient1"/></role> 
+	<role descr="source, separated from, if separate from arg1" n="2"><vnrole vncls="23.1" vntheta="Patient2"/></role>
+</roles>
+
+<example name="all args">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Soon the studio is producing a $40 million picture called ``Tet,
+    the Motion Picture,'' *trace* to distinguish it from ``Tet, the
+    Offensive,'' as well as ``Tet, the Book'' and ``Tet, the Album.'' 
+</text>
+        <arg n="0">*trace* -&gt;  the studio</arg>
+        <rel>distinguish</rel>
+        <arg n="1">it</arg>
+        <arg f="from" n="2">``Tet, the Offensive,'' as well as ``Tet,
+        the Book'' and ``Tet, the Album</arg> 
+</example>
+
+<example name="just transitive, singular arg1">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    In the classroom, students say, Mrs. Yeargin distinguished herself
+    by varying teaching approaches -- forcing kids to pair up to
+    complete classroom work or using college-bowl type competitions. 
+</text>
+        <arg f="LOC" n="M">In the classroom</arg>
+        <arg n="0">Mrs. Yeargin</arg>
+        <rel>distinguished</rel>
+        <arg f="REC" n="1">herself</arg>
+        <arg f="MNR" n="M">by  varying teaching approaches -- forcing
+        kids to pair up to complete classroom work or using
+        college-bowl type competitions</arg>
+</example>
+
+<example name="just transitive, plural arg1">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    He distinguished the two cases: In Salinger, Judge Leval noted,
+    the quotations were for the purpose of enlivening the biography
+    rather than of proving points about the subject. 
+</text>
+        <arg n="0">He</arg>
+        <rel>distinguished</rel>
+        <arg n="1">the two cases</arg>
+</example>
+
+<example name="Bork Bork Bork!">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Unfortunately, Mr. Bork failed *trace* to distinguish between such
+    pressures and the emergence of great issues critical to a society
+    that must be settled judicially if it is to cohere. 
+</text>
+        <arg n="0">*trace* -&gt;  Mr. Bork</arg>
+        <rel>distinguish</rel>
+        <arg f="between" n="1">such pressures and the emergence of
+        great issues critical to a society that must be settled
+        judicially if it is to cohere</arg> 
+</example>
+
+<note>
+When arg1 is singular, there's a default arg2 along the lines of &quot;from
+his/her/its peers&quot;.  When arg2 is plural and potentially introduced by
+a preposition like &quot;between&quot; or &quot;among&quot; the figure (arg1) and ground
+(arg2) have been merged.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

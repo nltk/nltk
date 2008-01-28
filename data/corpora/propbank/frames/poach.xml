@@ -1,0 +1,55 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="poach">
+<note>
+  Frames file for 'poach' based on sentences in wsj.  Verbnet entries
+  45.3 35.1 and 26.3; Framenet entry Apply heat.
+</note>
+
+<roleset id="poach.01" name="cook in water" vncls="45.3 26.3">
+<roles>
+  <role descr="cook" n="0"><vnrole vncls="26.3" vntheta="Agent"/><vnrole vncls="45.3" vntheta="Agent"/></role>
+  <role descr="food" n="1"><vnrole vncls="26.3" vntheta="Product"/><vnrole vncls="45.3" vntheta="Patient"/></role>
+  <role descr="water" n="2"><vnrole vncls="45.3" vntheta="Instrument"/></role>
+</roles>
+
+<example name="down home cookin'">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John poached his eggs in Mad Dog.
+  </text>
+  <arg n="0">John</arg>
+  <rel>poached</rel>
+  <arg n="1">his eggs</arg>
+  <arg f="in" n="2">Mad Dog</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="poach.02" name="hunt illegally" vncls="35.1">
+<roles>
+  <role descr="hunter" n="0"><vnrole vncls="35.1" vntheta="Agent"/></role>
+  <role descr="prey" n="1"><vnrole vncls="35.1" vntheta="Theme"/></role>
+</roles>
+
+<example name="not quite illegal">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+    That doesn't scare Digital, which [*T*-1] has grown to be the
+    world's second-largest computer maker by [*-2] poaching customers
+    of IBM's mid-range machines. 
+</text>
+        <arg n="0">[*-2] -&gt;  [*T*-1] -&gt;  which -&gt;  Digital</arg>
+        <rel>poaching</rel>
+        <arg n="1">customers of IBM's mid-range machines</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

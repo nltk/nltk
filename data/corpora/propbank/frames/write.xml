@@ -1,0 +1,223 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="write">
+<note>
+  Frames file for 'write' based on survey of initial sentences of big
+  corpus.
+</note>
+
+<roleset id="write.01" name="set pen to paper" vncls="25.2 26.7-2 37.1-1">
+<roles>
+  <role descr="writer" n="0">
+	<vnrole vncls="26.7-2" vntheta="Agent"/>
+        <vnrole vncls="25.2" vntheta="Agent"/></role>
+  <role descr="thing written" n="1">
+	<vnrole vncls="26.7-2" vntheta="Theme"/>
+        <vnrole vncls="25.2" vntheta="Theme"/></role>
+  <role descr="benefactive" n="2">
+	<vnrole vncls="26.7-2" vntheta="Beneficiary"/></role>
+</roles>
+
+<example name="write a letter">
+  <text>
+  Yasser Arafat has written to the chairman of the International
+  Olympic Committee, *trace* asking him to back a Palestinian bid to
+  join the committee.
+  </text>
+  <arg n="0">Yasser Arafat</arg>
+  <rel>written</rel>
+  <arg f="to" n="2">the chairman of the International
+  Olympic Committee</arg>
+  <arg f="PNC" n="m">*trace* asking him to back a Palestinian bid to
+  join the committee.</arg>
+</example>
+
+<example name="fronted">
+  <text>
+  &quot;It's precisely the kind of product that's created the municipal
+  landfill monster,&quot; the editors wrote *trace*.
+  </text>
+  <arg n="0">the editors</arg>
+  <rel>wrote</rel>
+  <arg n="1">*trace*=&quot;It's precisely the kind of product
+  that's created the municipal landfill monster,&quot;</arg>
+</example>
+
+<note>
+Other variations on this construction should be handled as in the
+other verbs-of-communication like &quot;say&quot;.
+</note>
+
+<example name="thing written as PP">
+  <text>
+  In June 1988 I wrote in this space about this issue.
+  </text>
+  <arg f="TMP" n="m">In June 1988</arg>
+  <arg n="0">I</arg>
+  <rel>wrote</rel>
+  <arg f="LOC" n="m">in this space</arg>
+  <arg f="about" n="1">this issue</arg>
+<note>
+The logic for this treatment is that &quot;about this issue&quot; is
+essentially standing for a fuller NP &quot;an article about this
+issue&quot; or some such. 
+</note>
+</example>
+
+<example name="writing optinos">
+<inflection person="ns" tense="present" aspect="ns" voice="passive" form="participle"/>
+<text>
+    The FASB rule will cover such financial instruments as interest
+    rate swaps, financial guarantees, foward interest rate contracts,
+    loan contracts, loan commitments and options written [*] on
+    securites held. 
+</text>
+        <rel>written</rel>
+        <arg n="1">[*] ->  options</arg>
+        <arg n="2" f="on">securites held</arg>
+</example>
+
+<note>
+The 'beneficiary' might be included within the 'thing written'; "John
+wrote a letter to Mary" can be parsed either as [a letter] [to Mary]
+or [a letter to Mary].  Follow whatever Treebank says.
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="write_off">
+
+<roleset id="write.02" vncls="-" name="acknowledge a (financial) loss">
+<roles>
+  <role n="0"  descr="corporation, etc"/>
+  <role n="1"  descr="loss"/>
+  <role n="2"  descr="current financial holdings?"/>
+</roles>
+
+<example name="big loss">
+<inflection person="ns" tense="present" aspect="ns" voice="active" form="full"/>
+<text>
+    In addition, Hadson said it will write off about $3.5 million in
+costs related to international exploration leases where exploration
+efforts have been unsuccessful. 
+</text>
+        <arg n="0">it</arg>
+        <arg n="M" f="MOD">will</arg>
+        <rel>[ write] [ off]</rel>
+        <arg n="1">about $3.5 million in costs related to
+        international exploration leases where exploration efforts
+        have been unsuccessful</arg> 
+</example>
+
+<example name="all args">
+<inflection person="ns" tense="ns" aspect="ns" voice="ns" form="infinitive"/>
+<text>
+     Ferranti has said that it would be forced [*-1] to write off #185
+     million against the phantom contracts, reducing its net asset
+     value by more than half. 
+</text>
+        <arg n="M">[*-1] ->  it</arg>
+        <rel>[ write] [ off]</rel>
+        <arg n="1">#185 million</arg>
+        <arg n="2" f="against">the phantom contracts</arg>
+        <arg n="M" f="ADV">reducing its net asset value by more than half</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="write_down">
+
+<roleset id="write.03" vncls="-" name="record on paper">
+<roles>
+  <role n="0"  descr="writer"/>
+  <role n="1"  descr="written, recorded"/>
+</roles>
+
+<example name="cheater cheater pumpkin eater">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+     John's students wrote down all the incorrect answers.
+  </text>
+  <arg n="0"        >John's students</arg>
+  <rel              >wrote down</rel>
+  <arg n="1"        >all the incorrect answers</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="write.04" vncls="-" name="lower monetary value">
+<roles>
+  <role n="0"  descr="changer of monetary value"/>
+  <role n="1"  descr="thing with value"/>
+  <role n="2"  descr="amount of change"/>
+  <role n="3"  descr="old high value"/>
+  <role n="4"  descr="new lower value"/>
+</roles>
+
+<example name="with target value">
+<inflection person="ns" tense="ns" aspect="ns" voice="active" form="infinitive"/>
+<text>
+     New rules force thrifts to write down their junk to market value,
+     then sell the bonds over five years. 
+</text>
+        <arg n="0">thrifts</arg>
+        <rel>[ write] [ down]</rel>
+        <arg n="1">their junk</arg>
+        <arg n="4" f="to">market value</arg>
+</example>
+
+<example name="with EXT">
+<inflection person="ns" tense="ns" aspect="ns" voice="active" form="infinitive"/>
+<text>
+    Granges said it also plans [*-1] in the third quarter to write
+    down the carrying value of the Tartan mine by 2.5 million Canadian
+    dollars (US$2.12 million), and to write off most of the C$6.3
+    million carrying value of its Windflower gold property in British
+    Columbia. 
+</text>
+        <arg n="0">[*-1] ->  it</arg>
+        <arg n="M" f="TMP">in the third quarter</arg>
+        <rel>[ write] [ down]</rel>
+        <arg n="1">the carrying value of the Tartan mine</arg>
+        <arg n="2" f="by">2.5 million Canadian dollars (US$2.12 million)</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="write_in">
+
+<roleset id="write.05" vncls="-" name="fill out form">
+<roles>
+  <role n="0"  descr="writer"/>
+  <role n="1"  descr="entry on form"/>
+</roles>
+
+<example name="write-in candidate">
+<inflection person="ns" tense="past" aspect="perfect" voice="active" form="participle"/>
+<text>
+    Mr. Guber says he had crossed out ``MGM'' with a red pen and
+    written in ``Columbia,'' giving the document to Mr. Semel. 
+</text>
+        <arg n="0">he</arg>
+        <rel>[ written] [ in]</rel>
+        <arg n="1">Columbia</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

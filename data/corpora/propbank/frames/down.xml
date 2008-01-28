@@ -1,0 +1,59 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="down">
+<note>
+  Frames file for 'down' based on sentences in wsj.  No Verbnet entry,
+  Framenet entry Ingestion.
+</note>
+
+<roleset id="down.01" name="cause to fall down" vncls="-">
+<roles>
+  <role descr="causer" n="0"/>
+  <role descr="faller" n="1"/>
+</roles>
+
+<example name="the bigger they are....">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    WHEN HURRICANE Hugo careened through the Caribbean and the
+    Atlantic coast states, it downed electric and telephone lines,
+    shot coconuts through cottage rooftops, shattered windows and
+    uprooted thousands of lives. 
+</text>
+        <arg n="0">it</arg>
+        <rel>downed</rel>
+        <arg n="1">electric and telephone lines</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="down.02" name="eat" vncls="-">
+<roles>
+  <role descr="eater" n="0"/>
+  <role descr="eaten" n="1"/>
+</roles>
+
+<example name="growing boy">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    In one sitting, John downed a bag of Oreos, three pints of
+    Ben &amp; Jerry's, a whole watermelon, half a keg of beer, and a
+    pound of jellybeans, but he passed on the &quot;wafer-thin mints&quot;.
+  </text>
+  <arg f="TMP" n="m">In one sitting</arg>
+  <arg n="0">John</arg>
+  <rel>downed</rel>
+  <arg n="1">a bag of Oreos, three pints of
+    Ben &amp; Jerry's, a whole watermelon, half a keg of beer, and a
+    pound of jellybeans</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

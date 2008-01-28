@@ -1,0 +1,36 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="capture">
+<note>
+  Frames file for 'recapture' based on remapping from 'capture.'
+</note>
+
+<roleset id="recapture.01" name="get again" vncls="10.5">
+<roles>
+  <role descr="getter" n="0">
+		
+  <vnrole vncls="10.5" vntheta="Agent"/></role>
+
+  <role descr="thing gotten" n="1">
+		
+  <vnrole vncls="10.5" vntheta="Theme"/></role>
+
+</roles>
+
+<example name="transitive">
+<text>
+    Most of the volume came from trades designed *trace* *trace* to
+    recapture the stock's next dividend; Texaco has a yield of 5.6% and
+    goes ex-dividend today. 
+</text>
+        <arg n="0">*trace* -&gt; *trace* -&gt; trades</arg>
+        <rel>recapture</rel>
+        <arg n="1">the stock 's next dividend</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

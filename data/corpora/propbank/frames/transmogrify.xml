@@ -1,0 +1,39 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="transmogrify">
+<note>
+  Frames file for 'transmogrify' based on sentences in wsj.  No access
+  to Verbnet at the moment.
+</note>
+
+<roleset id="transmogrify.01" name="change, transform" vncls="-">
+<roles>
+  <role descr="cause of change, agent" n="0"/>
+  <role descr="thing changing" n="1"/>
+  <role descr="start state" n="2"/>
+  <role descr="end state" n="3"/>
+</roles>
+
+<example name="the one example">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    When reduced to buzzword status in ex parte pledges, however, the
+    notion transmogrified into a promised assault, with targets
+    primarily for political gains, not justice. 
+</text>
+        <arg f="TMP" n="M">When reduced to buzzword status in ex parte
+        pledges</arg> 
+        <arg f="DIS" n="M">however</arg>
+        <arg n="1">the notion</arg>
+        <rel>transmogrified</rel>
+        <arg f="into" n="3">a promised assault</arg>
+        <arg n="M">with targets primarily for political gains, not
+        justice</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

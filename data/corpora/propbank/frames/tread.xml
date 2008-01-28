@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="tread">
+<note>
+  Frames file for 'tread'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="tread.01" name="to step" vncls="-">
+<roles> 
+  <role descr="entity treading" n="0"/>      
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="ns" person="ns" tense="ns" voice="active"/>
+<text>
+ When traders see [0] the Fed is in the exchange market [*T*-1] it may make them tread a little carefully , for fear of what the central bank may do [*T*-2] .
+</text>
+	<arg n="0">them</arg>
+	<rel>tread</rel>
+	<arg f="MNR" n="M">a little carefully</arg>
+	<arg f="PNC" n="M">for fear of what the central bank may do [*T*-2]</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

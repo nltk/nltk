@@ -1,0 +1,66 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="repeat">
+<note>
+  Frames file for 'repeat' based on sentences in financial subcorpus.
+  Verbnet entry 37.7, which is the class of 'saying' verbs.  No
+  Framenet entry.  Comparison with say.
+</note>
+
+<roleset id="repeat.01" name="say again" vncls="37.7 55.1">
+<roles>
+  <role descr="speaker" n="0">
+	<vnrole vncls="55.1" vntheta="Agent"/>
+        <vnrole vncls="37.7" vntheta="Agent"/></role>
+  <role descr="utterance or action" n="1">
+	<vnrole vncls="55.1" vntheta="Theme"/>
+        <vnrole vncls="37.7" vntheta="Topic"/></role>
+  <role descr="listener" n="2">
+	<vnrole vncls="37.7" vntheta="Recipient"/></role>
+  <role descr="number of repetitions" n="3"/>
+</roles>
+
+<example name="no listener">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Old Stone repeated projections that it will be profitable for the
+    fourth quarter and will about break even for the year. 
+</text>
+        <arg n="0">Old Stone</arg>
+        <rel>repeated</rel>
+        <arg n="1">projections that it will be profitable for the
+        fourth quarter and will about break even for the year</arg> 
+</example>
+
+<example name="with listener">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John repeated his talk about predicate argument structure to
+    anyone who didn't run away fast enough.
+  </text>
+  <arg n="0">John</arg>
+  <rel>repeated</rel>
+  <arg n="1">his talk about predicate argument structure</arg>
+  <arg f="to" n="2">anyone who didn't run away fast enough</arg>
+</example>
+
+<example name="with # of reps">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John repeated his objections to peanut butter a million times
+    before Mary stopped putting those sandwiches in his lunch.
+  </text>
+  <arg n="0">John</arg>
+  <rel>repeated</rel>
+  <arg n="1">his objections to peanut butter</arg>
+  <arg n="3">a million times</arg>
+  <arg f="TMP" n="m">before Mary stopped putting those sandwiches in
+  his lunch</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

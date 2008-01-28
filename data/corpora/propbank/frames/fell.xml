@@ -1,0 +1,46 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="fell">
+<note>
+  Frames file for 'fell' based on sentences in wsj.  No Verbnet
+  entry.  Very specific usage.
+</note>
+
+<roleset id="fell.01" name="cause to fall down" vncls="-">
+<roles>
+  <role descr="causer" n="0"/>
+  <role descr="faller (us. trees)" n="1"/>
+</roles>
+
+<example name="active">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    HUGO FELLED vast timberlands.
+</text>
+        <arg n="0">HUGO</arg>
+        <rel>FELLED</rel>
+        <arg n="1">vast timberlands</arg>
+</example>
+
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    Richard Secord, the retired Air Force general felled *trace* in
+    the Iran-Contra scandal, is all but ruined -- forced to sell his
+    Virginia home and pull his kids out of college, according to a
+    recent fund-raising appeal sent out on his behalf. 
+</text>
+        <rel>felled</rel>
+        <arg n="1">*trace* -&gt;  the retired Air Force general</arg>
+        <arg f="LOC" n="M">in the Iran-Contra scandal</arg>
+</example>
+
+<note>
+Another example of old Germanic ablaut as making a causative verb
+(set/sit(/seat), raise/rise being the others).  Beautiful!
+</note>
+
+</roleset>
+</predicate>
+</frameset>

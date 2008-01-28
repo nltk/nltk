@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="pulverize">
+<note>
+  Frames file for 'pulverize' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="pulverize.01" name="to crush into a powder or demolish" vncls="21.2-1 45.4">
+<roles>
+  <role descr="destructor, agent" n="0">
+        <vnrole vncls="45.4" vntheta="Agent"/>
+        <vnrole vncls="21.2-1" vntheta="Agent"/></role>
+  <role descr="entity pulverized" n="1">
+        <vnrole vncls="45.4" vntheta="Patient"/>
+        <vnrole vncls="21.2-1" vntheta="Patient"/></role>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="gerund" person="ns" tense="ns" voice="active"/>
+<text>
+ So far anyway , our alien visitors seem more intent on [*-1] brightening our skies than [*-1] pulverizing us .
+</text>
+	<arg n="0">[*-1] -&gt;  our alien visitors</arg>
+	<rel>pulverizing</rel>
+	<arg n="1">us</arg>
+</example>
+
+</roleset>
+</predicate>
+
+
+</frameset>

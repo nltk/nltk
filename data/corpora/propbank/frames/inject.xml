@@ -1,0 +1,57 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="inject">
+<note>
+  Frames file for 'inject' based on sentences in financial subcorpus.
+  Verbnet entry spray-9.7-1, other framed members include load, spread,
+  stack, unload.
+</note>
+
+<roleset id="inject.01" name="put X into Y" vncls="9.7-1">
+<roles>
+  <role descr="injector" n="0">
+		
+  <vnrole vncls="9.7-1" vntheta="Agent"/></role>
+
+  <role descr="stuff being put in" n="1">
+		
+  <vnrole vncls="9.7-1" vntheta="Theme"/></role>
+
+  <role descr="injected into what?" n="2">
+		
+  <vnrole vncls="9.7-1" vntheta="Destination"/></role>
+
+</roles>
+
+<example name="inject into">
+<text>
+    Analysts have estimated that Pinnacle West may have *trace* to
+    inject between $300 million and $400 million into the MeraBank
+    unit before turning the thrift over to federal regulators. 
+</text>
+        <arg n="0">*trace* -&gt;  Pinnacle West</arg>
+        <rel>inject</rel>
+        <arg n="1">between $300 million and $400 million</arg>
+        <arg f="into" n="2">the MeraBank unit</arg>
+        <arg f="TMP" n="M">before turning the thrift over to federal
+        regulators</arg> 
+</example>
+
+<example name="inject with">
+  <text>
+    Mary injected John with a truth serum, which couldn't overcome
+    John's inherent untrustworthiness.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>injected</rel>
+  <arg n="2">John</arg>
+  <arg f="with" n="1">a truth serum, which couldn't overcome
+    John's inherent untrustworthiness</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

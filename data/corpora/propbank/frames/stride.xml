@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="stride">
+<note>
+  Frames file for 'stride' based on sentences in wsj.  Verbnet entry
+  51.3.2, Framenet entry Self motion.
+</note>
+
+<roleset id="stride.01" name="manner of motion" vncls="51.3.2">
+<roles>
+  <role descr="strider" n="0"><vnrole vncls="51.3.2" vntheta="Theme"/></role>
+</roles>
+
+<example name="automatically generated">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    And when Mr. Kasparov strode into the playing hall [*T*-1], he
+    called the outcome. 
+</text>
+        <arg n="0">Mr. Kasparov</arg>
+        <rel>strode</rel>
+        <arg f="DIR" n="m">into the playing hall</arg>
+</example>
+
+<note>
+Direction and path are not the same; I don't think path could occur
+for this (John ran the Boston Marathon; John strode the Boston Marathon?).
+</note>
+
+</roleset>
+</predicate>
+</frameset>

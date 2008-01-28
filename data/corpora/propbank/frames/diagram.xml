@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="diagram">
+<note>
+  Frames file for 'diagram'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="diagram.01" name="to represent by a diagram" vncls="-">
+<roles> 
+  <role descr="diagrammer, agent" n="0"/>
+  <role descr="entity diagrammed" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+ Once inside , she spends nearly four hours [*-2] measuring and diagramming each room in the 80-year-old house , [*-2] gathering enough information [*] to estimate what it [*EXP*-3] would cost [*T*-1] [*] to rebuild it .
+</text>
+	<arg n="0">[*-2] -&gt;  she</arg>
+	<rel>diagramming</rel>
+	<arg n="1">each room in the 80-year-old house</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

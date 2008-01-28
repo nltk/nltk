@@ -1,0 +1,44 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="correct">
+<note>
+  Frames file for 'correct' based on sentences in financial subcorpus.
+  No Verbnet entry, no Framenet entry.  No comparison.
+</note>
+
+<roleset id="correct.01" name="make right" vncls="-">
+<roles>
+  <role descr="corrector" n="0"/>
+  <role descr="thing that was wrong" n="1"/>
+</roles>
+
+<example name="very straightforward">
+<inflection aspect="perfect" form="participle" person="ns" tense="past" voice="active"/>
+<text>
+    Intel said it had corrected the problems and would start producing
+    bugless chips next week. 
+</text>
+        <arg n="0">it</arg>
+        <rel>corrected</rel>
+        <arg n="1">the problems</arg>
+</example>
+
+<example name="targetless trace">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    The 1988 period was restated from net income of $8 million *trace*
+    to correct an overstatement in the company's Boston
+    Co. subsidiary. 
+</text>
+        <arg n="0"/>
+        <rel>correct</rel>
+        <arg n="1">an overstatement in the company's Boston
+        Co. subsidiary</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

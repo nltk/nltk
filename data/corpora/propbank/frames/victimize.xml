@@ -1,0 +1,50 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="victimize">
+<note>
+Frames file for 'victimize' based on sentences in wsj and automatic
+expansion via verbnet.
+</note>
+
+<roleset id="victimize.01" name="make into a victim" vncls="33">
+<roles>
+	<role descr="victimizer" n="0">
+		
+  <vnrole vncls="33" vntheta="Agent"/></role>
+
+	<role descr="victim" n="1">
+		
+  <vnrole vncls="33" vntheta="Theme"/></role>
+
+	<role descr="grounds" n="2">
+		
+  <vnrole vncls="33" vntheta="Cause"/></role>
+
+</roles>
+
+<example name="only passive examples">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    Almost all of us in comparable circumstances might be victimized
+    *trace* in some way,'' says Jerald Jellison, a psychology
+    professor at the University of Southern California in Los
+    Angeles. 
+</text>
+        <arg f="MOD" n="M">might</arg>
+        <rel>victimized</rel>
+        <arg n="1">*trace* -&gt;  Almost all of us in comparable
+        circumstances</arg> 
+        <arg f="MNR" n="M">in some way</arg>
+</example>
+
+<note>
+I really doubt the 'grounds' arg would ever occur; it doesn't sound
+natural to me.  It's here only for sake of coherence within the
+verbnet class (although perhaps this could be justification for
+splitting the class).
+</note>
+
+</roleset>
+
+</predicate>
+</frameset>

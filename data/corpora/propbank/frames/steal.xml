@@ -1,0 +1,53 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="steal">
+<note>
+  Frames file for 'steal' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+
+<roleset id="steal.01" name="to commit theft" vncls="10.5 13.5.1">
+<roles>
+  <role descr="thief, agent" n="0">
+	<vnrole vncls="10.5" vntheta="Agent"/>
+        <vnrole vncls="13.5.1" vntheta="Agent"/></role>
+  <role descr="thing stolen" n="1">
+	<vnrole vncls="10.5" vntheta="Theme"/>
+        <vnrole vncls="13.5.1" vntheta="Theme"/></role>
+  <role descr="stolen from" n="2">
+	<vnrole vncls="10.5" vntheta="Source"/>
+        <vnrole vncls="13.5.1" vntheta="Source"/></role>
+</roles>
+
+
+<example name="all arguments">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ Thieves stole a 12th century fresco from an abandoned church in Camerino , Italy , by [*-3] removing the entire wall on which the work had been painted [*-1] [*T*-4] , police said [0] [*T*-2] ... .
+</text>
+	<arg n="0">Thieves</arg>
+	<rel>stole</rel>
+	<arg n="1">a 12th century fresco</arg>
+	<arg f="from" n="2">an abandoned church in Camerino , Italy ,</arg>
+	<arg f="MNR" n="M">by [*-3] removing the entire wall on which the work had been painted [*-1] [*T*-4]</arg>
+</example>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ AIDS dementia -- which [*T*-1] gradually steals children 's ability [*] to speak , walk and think -- is often the most striking aspect of the pediatric syndrome .
+</text>
+	<arg n="0">[*T*-1] -&gt;  which -&gt;  AIDS dementia</arg>
+	<arg f="MNR" n="M">gradually</arg>
+	<rel>steals</rel>
+	<arg n="1">children 's ability [*] to speak , walk and think</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

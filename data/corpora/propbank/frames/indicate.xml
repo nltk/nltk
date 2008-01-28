@@ -1,0 +1,49 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="indicate">
+<note>
+  Frames file for 'indicate' based on survey of initial sentences of
+  big corpus and comparison with 'show'
+</note>
+
+<roleset id="indicate.01" name="show">
+<roles>
+  <role descr="indicator" n="0"/>
+  <role descr="thing indicated" n="1"/>
+  <role descr="indicated to" n="2"/>
+</roles>
+
+<example name="transitive, NP indication">
+  <text>
+  Longer maturities indicate declining interest rates.
+  </text>
+  <arg n="0">Longer maturities</arg>
+  <rel>indicate</rel>
+  <arg n="1">declining interest rates</arg>
+</example>
+
+<example name="transitive, S indication">
+  <text>
+  Its latest study indicated that the manufacturing economy contracted
+  in October for the sixth consecutive month.
+  </text>
+  <arg n="0">Its latest study</arg>
+  <rel>indicated</rel>
+  <arg n="1">that the manufacturing economy contracted
+  in October for the sixth consecutive month</arg>
+</example>
+
+<example name="with arg2">
+  <text>
+  Mary's emptying of his closets into a dumpster indicated to John
+  that he was no longer welcome.
+  </text>
+  <arg n="0">Mary's emptying of his closets into a dumpster</arg>
+  <rel>indicated</rel>
+  <arg f="to" n="2">John</arg>
+  <arg n="1">that he was no longer welcome</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

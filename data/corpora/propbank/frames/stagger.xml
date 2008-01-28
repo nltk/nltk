@@ -1,0 +1,53 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="stagger">
+<note>
+  Frames file for 'stagger' based on sentences in wsj.  Verbnet entry
+  51.3.2, Framenet entry Self motion.
+</note>
+
+<roleset id="stagger.01" name="move unsteadily" vncls="51.3.2">
+<roles>
+  <role descr="thing in motion" n="1"><vnrole vncls="51.3.2" vntheta="Theme"/></role>
+</roles>
+
+<example name="blah blah blah">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Bond prices staggered in seesaw trading, rising on reports of
+    economic weakness and falling on reports of economic strength. 
+</text>
+        <arg n="1">Bond prices</arg>
+        <rel>staggered</rel>
+        <arg f="LOC" n="M">in seesaw trading</arg>
+        <arg n="M">rising on reports of economic weakness and falling
+        on reports of economic strength</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="stagger.02" name="cause an emotional reaction" vncls="-">
+<roles>
+  <role descr="causer of reaction" n="0"/>
+  <role descr="thing reacting, staggering" n="1"/>
+</roles>
+
+<example name="semi-idiomatic">
+  <inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+  <text>
+    ``It staggers the imagination!'' exclaimed John.
+  </text>
+  <arg n="0">It</arg>
+  <rel>staggers</rel>
+  <arg n="1">the imagination</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

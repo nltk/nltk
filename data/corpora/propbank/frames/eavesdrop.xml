@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="eavesdrop">
+<note>
+  Frames file for 'eavesdrop' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="eavesdrop.01" name="listen surreptitiously" vncls="-">
+<roles>
+  <role descr="listener" n="0"/>
+  <role descr="listened-to" n="1"/>
+</roles>
+
+<example name="sneaky sneaky">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    ``But we were getting too many complaints that people were using
+    them [*-1] to eavesdrop on their neighbors.''  
+</text>
+        <arg n="0">[*-1] -&gt;  people</arg>
+        <rel>eavesdrop</rel>
+        <arg f="on" n="1">their neighbors</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

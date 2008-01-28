@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="part">
+<note>
+  Frames file for 'part'  based on survey of sentences in the WSJ
+  corpus. Comparison with 'separate'.
+</note>
+
+<roleset id="part.01" name="to separate, break up" vncls="23.1">
+<roles> 
+  <role descr="agent, causer" n="0"><vnrole vncls="23.1" vntheta="Agent"/></role>    
+  <role descr="entity/entities parted" n="1"><vnrole vncls="23.1" vntheta="Patient"/></role>  
+</roles>
+
+<example name="part with">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ Soviet firms that [*T*-1] hold some are unwilling [*-2] to part with it , and joint ventures are n't yet allowed [*-3] to participate .
+</text>
+	<arg n="0">[*-2] -&gt;  Soviet firms that [*T*-1] hold some</arg>
+	<rel>part</rel>
+	<arg f="with" n="1">it</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

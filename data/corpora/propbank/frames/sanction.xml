@@ -1,0 +1,43 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="sanction">
+<note>
+  Frames file for 'sanction' based on survey of sentences in the WSJ
+  corpus. Comparison with 'approve'.
+</note>
+
+<roleset id="sanction.01" name="approve" vncls="-">
+<roles>
+  <role descr="approver, agent" n="0"/>
+  <role descr="entity approved" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ `` Today is not the time [0] [*] to signal that Congress in any way sanctions the dismal state into which antitrust enforcement has fallen [*T*-3] [*T*-2] , '' Mr. Edwards argued [0] [*T*-1] .
+</text>
+	<arg n="0">Congress</arg>
+	<arg f="MNR" n="M">in any way</arg>
+	<rel>sanctions</rel>
+	<arg n="1">the dismal state into which antitrust enforcement has fallen [*T*-3]</arg>
+</example>
+
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+ Some forms of private property would be sanctioned [*-1] .
+</text>
+	<arg f="MOD" n="M">would</arg>
+	<rel>sanctioned</rel>
+	<arg n="1">[*-1] -&gt;  Some forms of private property</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

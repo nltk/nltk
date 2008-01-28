@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="reassess">
+<note>
+  Frames file for 'reassess' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="reassess.01" name="think about again" vncls="-">
+<roles>
+  <role descr="thinker" n="0"/>
+  <role descr="subject of thought" n="1"/>
+</roles>
+
+<example name="typical usage">
+<inflection aspect="progressive" form="participle" person="third" tense="present" voice="active"/>
+<text>
+    The Soviet Union has halted construction of two Chernobyl-type
+    nuclear reactors and is reassessing the future of 12 other
+    existing reactors. 
+</text>
+        <arg n="0">The Soviet Union</arg>
+        <rel>reassessing</rel>
+        <arg n="1">the future of 12 other existing reactors</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

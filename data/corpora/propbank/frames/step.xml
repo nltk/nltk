@@ -1,0 +1,142 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="step">
+<note>
+  Frames file for 'step' based on sentences of financial subcorpus.
+  No verbnet entry.  Comparison with 'move'
+</note>
+
+<roleset id="step.01" name="move incrementally">
+<roles>
+  <role descr="causer of movement" n="0"/>
+  <role descr="thing moving" n="1"/>
+  <role descr="destination, end state" n="2"/>
+  <role descr="source, start place or state" n="3"/>
+</roles>
+
+<example name="destination and direction">
+<text>
+    Maybe she could step across the plaza to the Met -- where she has
+    still to make her debut -- and help out her Czech compatriot by
+    singing the slow parts of ``Traviata.''
+</text>
+        <arg f="DIS" n="M">Maybe</arg>
+        <arg n="1">she</arg>
+        <arg f="MOD" n="M">could</arg>
+        <rel>step</rel>
+        <arg f="DIR" n="M">across the plaza</arg>
+        <arg f="to" n="2">the Met -- where she has still  to make her
+        debut  --</arg> 
+</example>
+
+<example name="direction only">
+<text>
+    A Ford takeover of Jaguar would ``have such implications for the
+    balance of power in the 1990s that General Motors can't afford
+    *trace* to step aside. 
+</text>
+        <arg n="1">*trace* -&gt;  General Motors</arg>
+        <rel>step</rel>
+        <arg f="DIR" n="M">aside</arg>
+</example>
+
+<example name="awkward parse">
+<text>
+    Institutions, meanwhile, stepped back to the sidelines as the
+    direction of U.S. interest rates remained unclear.
+</text>
+        <arg n="1">Institutions</arg>
+        <arg f="TMP" n="M">meanwhile</arg>
+        <rel>stepped</rel>
+        <arg f="DIR" n="M">back</arg>
+        <arg f="to" n="M">the sidelines</arg>
+        <arg f="TMP" n="M">as the direction of U.S. interest rates
+        remained unclear</arg> 
+</example>
+
+<note>
+Treebank parses &quot;back to the sidelines&quot; as a single constituent;
+you'll have to chop it up.
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="step_in">
+
+<roleset id="step.02" name="enter">
+<roles>
+  <role descr="entity entering" n="1"/>
+</roles>
+
+<example name="entry of the gladiators">
+<text>
+    International Paper or Weyerhaeuser could step in . ''
+</text>
+        <arg n="1">International Paper or Weyerhaeuser</arg>
+        <arg f="MOD" n="M">could</arg>
+        <rel>[ step] [ in]</rel>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="step_up">
+
+<roleset id="step.03" name="increase incrementally">
+<roles>
+    <role descr="cause of increase" n="0"/>
+    <role descr="thing increasing" n="1"/>
+</roles>
+
+<note>
+I don't expect to see additional args for &quot;step up&quot;, but if they do
+occur for this sense, refer to the frames for &quot;increase&quot;.
+</note>
+
+<example name="automatically generated">
+<text>
+    The offer, which follows a $55-a-share bid that was rejected in
+    September, steps up pressure on the chemicals concern. 
+</text>
+        <arg n="0">The offer , which  follows a $ 55-a-share  bid that
+        was rejected  in September ,</arg>
+        <rel>[ steps] [ up]</rel>
+        <arg n="1">pressure on the chemicals concern</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="step_down">
+
+<roleset id="step.04" name="resign">
+<roles>
+  <role descr="resigner" n="0"/>
+  <role descr="position resigned" n="1"/>
+</roles>
+
+<example name="resign">
+<text>
+    He succeeds James A. Taylor, who *trace* stepped down as chairman,
+    president and chief executive in March for health reasons.
+</text>
+        <arg n="0">*trace* -&gt;  who -&gt;  James A. Taylor</arg>
+        <rel>[ stepped] [ down]</rel>
+        <arg f="as" n="1">chairman , president and chief executive</arg>
+        <arg f="TMP" n="M">in March</arg>
+        <arg f="CAU" n="M">for health reasons</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,59 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="festoon">
+<note>
+  Frames file for 'festoon' based on sentences in wsj.  Verbnet entry
+  9.8, Framenet entry Adorning.
+</note>
+
+<roleset id="festoon.01" name="decorate" vncls="9.8">
+<roles>
+  <role descr="decorator" n="0"><vnrole vncls="9.8" vntheta="Agent"/></role>
+  <role descr="thing decorated" n="1"><vnrole vncls="9.8" vntheta="Destination"/></role>
+  <role descr="decorations" n="2"><vnrole vncls="9.8" vntheta="Theme"/></role>
+</roles>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    Besides term life and whole life (the old standbys), we now have
+    universal life, universal variable life, flexible adjustable
+    universal life, policies with persistency bonuses, policies
+    festooned [*] with exotic riders, living benefit policies, and on
+    and on. 
+</text>
+        <rel>festooned</rel>
+        <arg n="1">[*] -&gt;  policies</arg>
+        <arg f="with" n="2">exotic riders</arg>
+</example>
+
+<example name="instrumental subject!">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    A good deal of the book is boring, particularly the endless
+    allusions to high and pop culture and the frequent jokes
+    festooning the text.
+</text>
+        <arg n="2">the frequent jokes</arg>
+        <rel>festooning</rel>
+        <arg n="1">the text</arg>
+</example>
+
+<example name="agentive">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John festooned his bedroom with swags of burlap.
+  </text>
+  <arg n="0">John</arg>
+  <rel>festooned</rel>
+  <arg n="1">his bedroom</arg>
+  <arg f="with" n="2">swags of burlap</arg>
+</example>
+
+<note>
+What is a swag, exactly?
+</note>
+
+</roleset>
+</predicate>
+</frameset>

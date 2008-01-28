@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="undergo">
+<note>
+  Frames file for 'undergo' based on sentences in financial subcorpus.
+  No access to verbnet.  Comparison with 'go through'.
+</note>
+
+<roleset id="undergo.01" name="experience, undergo">
+<roles>
+  <role descr="experiencer" n="1"/>
+  <role descr="experienced" n="2"/>
+</roles>
+
+<example name="pretty typical">
+<text>
+    Periods before the advent of futures or program trading were often
+    more volatile, usually when fundamental market conditions were
+    undergoing change (1973-75, 1937-40, and 1928-33 for example). 
+</text>
+	<arg n="1">fundamental market conditions</arg>
+	<rel>undergoing</rel>
+	<arg n="2">change</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,71 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="worry">
+<note>
+  Frames file for 'worry' based on annotation-on-the-fly of the
+  financial subcorpus.
+</note>
+
+<roleset id="worry.01" name="worry with direct object" vncls="31.1">
+<roles>
+  <role descr="cause of worrying, troublesome topic" n="0">
+	<vnrole vncls="31.1" vntheta="Cause"/></role>
+  <role descr="worrier" n="1">
+	<vnrole vncls="31.1" vntheta="Experiencer"/></role>
+  <role descr="instrument" n="2"/>
+</roles>
+
+<example name="no reason">
+  <text>
+  John's mother worries constantly.
+  </text>
+  <arg n="1">John's mother</arg>
+  <rel>worries</rel>
+  <arg f="TMP" n="m">constantly</arg>
+</example>
+
+<example name="straight transitive">
+  <text>
+  Mr. Rowe also noted that political concerns also worried New England
+  Electric.
+  </text>
+  <arg n="0">political concerns</arg>
+  <arg f="DIS" n="m">also</arg>
+  <rel>worried</rel>
+  <arg n="1">New England Electric.</arg>
+</example>
+
+<example name="all args">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John worried his mother with his habit of talking to strangers.
+  </text>
+  <arg n="0">John</arg>
+  <rel>worried</rel>
+  <arg n="1">his mother</arg>
+  <arg f="with" n="2">his habit of talking to strangers</arg>
+</example>
+
+</roleset>
+
+<roleset id="worry.02" vncls="31.3" name="prepositional usage">
+<roles>
+  <role n="0"  descr="worrier">
+        <vnrole vncls="31.3" vntheta="Experiencer"/></role>
+  <role n="1"  descr="topic of worry">
+        <vnrole vncls="31.3" vntheta="Cause"/></role>
+</roles>
+
+<example name="worry about">
+  <text>
+  John's mother worries constantly about her baby.
+  </text>
+  <arg n="0">John's mother</arg>
+  <rel>worries</rel>
+  <arg f="TMP" n="m">constantly</arg>
+  <arg f="about" n="1">her baby</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

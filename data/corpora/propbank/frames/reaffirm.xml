@@ -1,0 +1,43 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="reaffirm">
+<note>
+  Frames file for 'reaffirm' based on survey of sentences in the WSJ
+  corpus. Comparison with 'affirm'.
+</note>
+
+<roleset id="reaffirm.01" name="to affirm or assert again" vncls="-">
+<roles>
+  <role descr="affirmer, agent" n="0"/>
+  <role descr="thing reaffirmed" n="1"/>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ While he reaffirmed support for the country 's Feb. 25 elections , Ortega indicated that renewed U.S. military aid to the Contras could thwart the balloting .
+</text>
+	<arg n="0">he</arg>
+	<rel>reaffirmed</rel>
+	<arg n="1">support for the country 's Feb. 25 elections</arg>
+</example>
+
+
+
+<example name="another transitive">
+<inflection aspect="ns" form="gerund" person="ns" tense="ns" voice="active"/>
+<text>
+ In [*-1] reaffirming the current monetary policy of [*] using high interest rates [*-2] to fight inflation and shore up the pound , Mr. Lawson dismissed other approaches to [*] managing the economy .
+</text>
+	<arg n="0">Mr. Lawson -&gt;  [*-1]</arg>
+	<rel>reaffirming</rel>
+	<arg n="1">the current monetary policy of [*] using high interest rates [*-2] to fight inflation and shore up the pound</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

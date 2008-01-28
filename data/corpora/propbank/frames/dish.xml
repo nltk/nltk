@@ -1,0 +1,86 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+
+<predicate lemma="dish">
+<note>
+  Frames file for 'dish' based on sentences in financial subcorpus.
+  No Verbnet entry.
+</note>
+
+<roleset id="dish.01" name="put onto a dish" vncls="-">
+<roles>
+  <role descr="disher" n="0"/>
+  <role descr="food" n="1"/>
+</roles>
+
+<example name="restaurant usage only?">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John dished the potatoes.
+  </text>
+  <arg n="0">John</arg>
+  <rel>dished</rel>
+  <arg n="1">the potatoes</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="dish_out">
+
+<roleset id="dish.02" name="distribute" vncls="-">
+<roles>
+  <role descr="distributor" n="0"/>
+  <role descr="thing distributed" n="1"/>
+  <role descr="distributed to" n="2"/>
+</roles>
+
+<example name="automatically generated">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+ About the only way  that USX now can get out of steel  is  to dish it out , piece by piece , in separate joint ventures , he adds   .
+</text>
+        <arg n="0"/>
+        <rel>[ dish] [ out]</rel>
+        <arg n="1">it</arg>
+        <arg f="MNR" n="M">piece by piece</arg>
+        <arg f="LOC" n="M">in separate joint ventures</arg>
+</example>
+
+<note>
+To my ear 'dish out' cannot take arg2.  It might appear, though.
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="dish_up">
+
+<roleset id="dish.03" name="serve" vncls="-">
+<roles>
+  <role descr="server" n="0"/>
+  <role descr="thing served" n="1"/>
+  <role descr="served to" n="2"/>
+</roles>
+
+<example name="dinner time">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John dished up a delicious dinner for Mary.
+  </text>
+  <arg n="0">John</arg>
+  <rel>dished up</rel>
+  <arg n="1">a delicious dinner</arg>
+  <arg f="for" n="2">Mary</arg>
+</example>
+
+<note>
+Usually will not take arg2.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

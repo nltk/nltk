@@ -1,0 +1,82 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="soak">
+<note>
+  Frames file for 'soak' based on sentences in financial subcorpus.
+  Verbnet entries fill-9.8, wipe_manner-10.4.1, other_caus-45.4.
+  Other framed members include spot, surround, trim; scour, squeeze;
+  and a whole bunch of others.  No explicit comparison.
+</note>
+
+<roleset id="soak.01" name="cause to become very very wet">
+<roles>
+  <role descr="causer" n="0"/>
+  <role descr="thing getting wet" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="gerund" person="ns" tense="ns" voice="ns"/>
+<text>
+    A 10-gallon water cooler had toppled onto the floor, *trace*
+    soaking the red carpeting. 
+</text>
+        <arg n="0">*trace* -&gt;  A 10-gallon water cooler</arg>
+        <rel>soaking</rel>
+        <arg n="1">the red carpeting</arg>
+</example>
+
+<example name="prepositional thing getting wet">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    The spilled milk slowly soaked into John's homework.
+  </text>
+  <arg n="0">The spilled milk</arg>
+  <arg f="MNR" n="m">slowly</arg>
+  <rel>soaked</rel>
+  <arg f="into" n="1">John's homework</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="soak_up">
+
+<roleset id="soak.02" name="absorb">
+<roles>
+  <role descr="absorber, agent" n="0"/>
+  <role descr="liquid" n="1"/>
+  <role descr="instrument, if separate from agent" n="2"/>
+</roles>
+
+<example name="no instrument">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    But the recent volatility in stock prices caused by the program
+    trading has made some market makers less willing *trace* to soak
+    up the stocks that are for sale. 
+</text>
+        <arg n="0">*trace* -&gt;  some market makers</arg>
+        <rel>[ soak] [ up]</rel>
+        <arg n="1">the stocks that are for sale</arg>
+</example>
+
+<example name="with instrument">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John soaked up the spilled milk with his linguistics homework.
+  </text>
+  <arg n="0">John</arg>
+  <rel>soaked up</rel>
+  <arg n="1">the spilled milk</arg>
+  <arg f="with" n="2">his linguistics homework</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

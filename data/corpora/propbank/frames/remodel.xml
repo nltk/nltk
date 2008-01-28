@@ -1,0 +1,34 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="remodel">
+<note>
+  Frames file for 'remodel' based on sentences in financial subcorpus.
+  No Verbnet entry.  
+</note>
+
+<roleset id="remodel.01" name="update structure" vncls="-">
+<roles>
+  <role descr="remodeler" n="0"/>
+  <role descr="thing remodel(l)ed" n="1"/>
+</roles>
+
+<example name="unspecified agent">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    Proceeds from the offering are expected to be used for *trace*
+    remodeling the company's Desert Inn resort in Las Vegas,
+    refurbishing certain aircraft of the MGM Grand Air unit, and to
+    acquire the property for the new resort. 
+</text>
+        <arg n="0">*trace*</arg>
+        <rel>remodeling</rel>
+        <arg n="1">the company's Desert Inn resort in Las Vegas</arg>
+</example>
+
+<note>
+Instrumental arg?  Perhaps.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,91 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="climb">
+<note>
+  Frames file for 'climb' based on survey of initial sentences of big
+  corpus and comparison with 'rise'
+</note>
+
+<roleset id="climb.01" name="intentional climber" vncls="51.1-1 51.3.2">
+<roles>
+  <role descr="climber" n="0">
+		
+		
+  <vnrole vncls="51.3.2" vntheta="Theme"/><vnrole vncls="51.1-1" vntheta="Theme"/></role>
+
+  <role descr="thing climbed (clomb?)" n="1">
+		
+  <vnrole vncls="51.3.2" vntheta="Location"/><vnrole vncls="51.1-1" vntheta="Location"/></role>
+
+</roles>
+
+<example name="with NP">
+  <text>
+  John likes *trace* to climb mountains.
+  </text>
+  <arg n="0">*trace*=John</arg>
+  <rel>climb</rel>
+  <arg n="1">mountains</arg>
+</example>
+
+<example name="with PP">
+  <text>
+  The four lawyers climbed out from under a table.
+  </text>
+  <arg n="0">The four lawyers</arg>
+  <rel>climbed</rel>
+  <arg f="out" n="1">from under a table</arg>
+</example>
+
+<note>
+True:  'clamber' is the same verb as 'climb'
+</note>
+
+</roleset>
+
+<roleset id="climb.02" name="non-intentional climber; cf rise" vncls="45.6 47.7">
+<roles>
+  <role descr="climber" n="1">
+		
+		
+  <vnrole vncls="47.7" vntheta="Theme"/><vnrole vncls="45.6" vntheta="Patient"/></role>
+
+    <role descr="EXT, amount risen" n="2">
+		
+  <vnrole vncls="45.6" vntheta="Extent"/></role>
+
+    <role descr="start point" n="3"/>
+    <role descr="end point" n="4"/>
+    <role descr="medium" f="LOC" n="M"/>
+</roles>
+
+<example name="stocks, natch">
+  <text>
+  Share prices of many of these funds this year have climbed much more
+  sharply than the foreign stocks.
+  </text>
+  <arg n="1">Share prices of many of these funds</arg>
+  <arg f="TMP" n="m">this year</arg>
+  <rel>climbed</rel>
+  <arg f="MNR" n="m">much more sharply than the foreign stocks.</arg>
+</example>
+
+<example name="with start and end points">
+  <text>
+  The mark climbed to 77.70 yen from 77.65 yen late Tuesday in New York.
+  </text>
+  <arg n="1">The mark</arg>
+  <rel>climbed</rel>
+  <arg f="to" n="4">77.70 yen</arg>
+  <arg f="from" n="3">77.65 yen</arg>
+  <arg f="TMP" n="m">late Tuesday </arg>
+  <arg f="LOC" n="m">in New York</arg>
+</example>
+
+<note>
+For usage of other argument refer to 'rise' frameset.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

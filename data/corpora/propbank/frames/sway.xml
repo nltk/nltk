@@ -1,0 +1,72 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="sway">
+<note>
+  Frames file for 'sway' based on sentences in wsj.  Verbnet entry
+  47.3, Framenet entry Suasion2.
+</note>
+
+<roleset id="sway.01" name="move " vncls="47.3">
+<roles>
+  <role descr="causer" n="0"><vnrole vncls="47.3" vntheta="Agent"/></role>
+  <role descr="thing swaying" n="1"><vnrole vncls="47.3" vntheta="Theme"/></role>
+  <role descr="degree of motion" n="2"/>
+</roles>
+
+<example name="normally intransitive">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    Suddenly the woman begins swaying and then writhing.
+</text>
+        <arg n="1">the woman</arg>
+        <rel>swaying</rel>
+</example>
+
+<example name="occasionally with EXT">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    Staffers at Thompson, whose offices are in the ultramodern
+    Embarcadero Center, watched pictures drop from the walls and then
+    felt the skyscraper sway seven to eight feet, according to a
+    spokeswoman. 
+</text>
+        <arg n="1">the skyscraper</arg>
+        <rel>sway</rel>
+        <arg f="EXT" n="2">seven to eight feet</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="sway.02" name="persuade (per-sway-d?)" vncls="-">
+<roles>
+  <role descr="persuader" n="0"/>
+  <role descr="persuaded" n="1"/>
+</roles>
+
+<example name="cause to change mind">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    As a result, many of those now planning to leave Hong Kong can't
+    easily be swayed *trace* by momentary improvements in the colony's
+    political and economic climate. 
+</text>
+        <arg f="DIS" n="M">As a result</arg>
+        <arg f="MOD" n="M">ca</arg>
+        <arg f="NEG" n="M">n't</arg>
+        <arg f="MNR" n="M">easily</arg>
+        <rel>swayed</rel>
+        <arg n="1">*trace* -&gt;  many of those now planning to leave
+        Hong Kong</arg> 
+        <arg f="by" n="0">momentary improvements in the colony's
+        political and economic climate</arg> 
+</example>
+
+<note>
+Never in active?
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,80 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="excuse">
+<note>
+  Frames file for 'excuse' based on sentences in wsj.  Verbnet entry
+  33, which is odd considering 'pardon' was in 10.6.
+</note>
+
+<roleset id="excuse.01" name="relieve of guilt" vncls="33">
+<roles>
+  <role descr="excuser" n="0"><vnrole vncls="33" vntheta="Agent"/></role>
+  <role descr="excused" n="1"><vnrole vncls="33" vntheta="Theme"/></role>
+  <role descr="crime" n="2"><vnrole vncls="33" vntheta="Cause"/></role>
+</roles>
+
+<example name="all args">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    Courts have ruled that taxpayers must submit to TCMP audits, but
+    the IRS will excuse from the fullscale rigors anyone who was
+    audited without change for either 1986 or 1987. 
+</text>
+        <arg n="0">the IRS</arg>
+        <arg f="MOD" n="M">will</arg>
+        <rel>excuse</rel>
+        <arg f="from" n="2">the fullscale rigors</arg>
+        <arg n="1">anyone who was audited without change for either
+        1986 or 1987</arg> 
+</example>
+
+
+<example name="missing excused">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    A GOP Senate fund-raising letter from Sen. Burns of Montana is
+    made to appear personally written, and its opening line is,
+    ``Please *trace* excuse my handwriting.'' 
+</text>
+        <arg n="0"/>
+        <rel>excuse</rel>
+        <arg n="2">my handwriting</arg>
+<note>
+There is effectively an arg1 &quot;me&quot;: Please excuse me for my
+handwriting.
+</note>
+</example>
+
+
+<example name="missing agent">
+<inflection aspect="ns" form="participle" person="ns" tense="past" voice="passive"/>
+<text>
+    In other earthquake-related news, Hambrecht &amp; Quist's OTC
+    market makers were excused *trace* from trading yesterday and its
+    positions were frozen for the day by the National Association of
+    Securities Dealers. 
+</text>
+        <arg f="LOC" n="M">In other earthquake-related news</arg>
+        <rel>excused</rel>
+        <arg n="1">*trace* -&gt;  Hambrecht &amp; Quist's OTC market makers</arg>
+        <arg f="from" n="2">trading</arg>
+        <arg f="TMP" n="M">yesterday</arg>
+</example>
+
+<example name="social construct">
+  <inflection aspect="ns" form="full" person="ns" tense="ns" voice="active"/>
+  <text>
+    &quot;*trace* Excuse me,&quot; John said after emitting a thunderclap-like belch at
+    the dinner table.
+  </text>
+  <arg n="0">*trace*</arg>
+  <rel>excuse</rel>
+  <arg n="1">me</arg>
+</example>
+
+<note>
+This actually is rather different than pardon, so perhaps the
+different classes are appropriate.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,37 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="vent">
+<note>
+  Frames file for 'vent' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+
+<roleset id="vent.01" name="to release through an opening" vncls="-">
+<roles>
+  <role descr="releaser" n="0"/>
+  <role descr="thing vented" n="1"/>
+</roles>
+
+
+
+<example name="with direction">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ Earlier repairs vented the CFCs out of the home through a hose directly into the atmosphere .
+</text>
+	<arg n="0">Earlier repairs</arg>
+	<rel>vented</rel>
+	<arg n="1">the CFCs</arg>
+	<arg f="DIR" n="M">out of the home</arg>
+	<arg f="MNR" n="M">through a hose</arg>
+	<arg f="DIR" n="M">directly into the atmosphere</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

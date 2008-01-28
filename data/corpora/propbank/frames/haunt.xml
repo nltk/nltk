@@ -1,0 +1,69 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="haunt">
+<note>
+  Frames file for 'haunt' based on sentences in wsj.  Verbnet entry
+  31.1.  Hmm.
+</note>
+
+<roleset id="haunt.01" name="act like a ghost" vncls="31.1">
+<roles>
+  <role descr="ghost" n="0"><vnrole vncls="31.1" vntheta="Cause"/></role>
+  <role descr="haunted house (eg)" n="1"><vnrole vncls="31.1" vntheta="Experiencer"/></role>
+</roles>
+
+<example name="literal (sorta)">
+<inflection aspect="progressive" form="participle" person="third" tense="past" voice="active"/>
+<text>
+    When a Louisville woman complained that a ghost was haunting her
+    attic, Mr. Baker discovered a rat dragging a trap across the
+    rafters. 
+</text>
+        <arg n="0">a ghost</arg>
+        <rel>haunting</rel>
+        <arg n="1">her attic</arg>
+</example>
+
+<example name="more adjectival">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    If psychics don't work, but your house still seems haunted, you
+    can call any one of a swelling band of skeptics such as Richard
+    Busch. 
+</text>
+        <arg n="1">your house</arg>
+        <rel>haunted</rel>
+</example>
+
+<example name="more metaphorical">
+<inflection aspect="progressive" form="participle" person="third" tense="present" voice="active"/>
+<text>
+    Nelson Bunker Hunt's attempted corner on silver a decade ago is
+    still haunting the market in this metal. 
+</text>
+        <arg n="0">Nelson Bunker Hunt's attempted corner on silver a
+        decade ago</arg> 
+        <arg f="TMP" n="M">still</arg>
+        <rel>haunting</rel>
+        <arg n="1">the market in this metal</arg>
+</example>
+
+<example name="more emotional">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    Lawmakers, *trace* haunted *trace* by charges that some of their
+    comments contributed to the 1987 crash, generally shy away from
+    calls for sweeping new legislation. 
+</text>
+        <rel>haunted</rel>
+        <arg n="1">*trace* -&gt;  Lawmakers</arg>
+        <arg f="by" n="0">charges that some of their comments
+        contributed to the 1987 crash</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

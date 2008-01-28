@@ -1,0 +1,56 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="deepen">
+<note>
+Frames file for 'deepen' based on sentences in wsj and automatic
+expansion via verbnet.
+</note>
+
+<roleset id="deepen.01" name="make/become deeper" vncls="45.4">
+<roles>
+	<role descr="agent, causer of deepening" n="0">
+		
+  <vnrole vncls="45.4" vntheta="Agent"/></role>
+
+	<role descr="thing getting deeper" n="1">
+		
+  <vnrole vncls="45.4" vntheta="Patient"/></role>
+
+</roles>
+
+<example name="pro-agentive">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    But it does that at the cost of *trace* deepening the taxpayer's
+    exposure if the FHA is forced to pay for more loans going sour. 
+</text>
+        <arg n="0"/>
+        <rel>deepening</rel>
+        <arg n="1">the taxpayer's exposure</arg>
+        <arg f="ADV" n="M">if the FHA is forced to pay for more loans
+        going sour</arg> 
+</example>
+
+
+<example name="ergative">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    UAL fell $6.25 a share to $191.75 on volume of 2.3 million shares
+    in composite trading on the New York Stock Exchange as concern
+    deepened among takeover stock traders about the length of time it
+    will take to revive the purchase. 
+</text>
+        <arg n="1">[ concern ] [about the length of time it will take
+        to revive the purchase]</arg> 
+        <rel>deepened</rel>
+        <arg f="LOC" n="M">among takeover stock traders</arg>
+</example>
+
+<note>
+EXT, start/end points?  I have no intuitions, and wsj doesn't provide
+examples.  Bogus.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

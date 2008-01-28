@@ -1,0 +1,45 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="magnify">
+<note>
+  Frames file for 'magnify' based on sentences in financial
+  subcorpus.  No access to verbnet.  No comparison.
+</note>
+
+<roleset id="magnify.01" name="make greater or bigger" vncls="45.4">
+<roles>
+  <role descr="causer of magnification" n="0">
+		
+  <vnrole vncls="45.4" vntheta="Agent"/></role>
+
+  <role descr="thing getting bigger/greater" n="1">
+		
+  <vnrole vncls="45.4" vntheta="Patient"/></role>
+
+</roles>
+
+<example name="passivized">
+<text>
+    A spokesman for the Stamford, Conn. based company said operations
+    had a loss of $5.5 million for the quarter; in addition, the loss
+    was magnified *trace* by nonrecurring charges totaling $23.5
+    million and $8.2 million in asset-valuation adjustments that he
+    described as ``unusual.'' 
+</text>
+        <arg f="DIS" n="M">in addition</arg>
+        <rel>magnified</rel>
+        <arg n="1">*trace* -&gt;  the loss</arg>
+        <arg f="by" n="0">nonrecurring charges totaling $23.5 million
+        and $8.2 million in asset-valuation adjustments that he
+        described as ``unusual</arg>
+</example>
+
+<note>
+It's possible, but unlikely, that this will be another quantifiable
+increase verb like 'rise', but be on the lookout for examples with EXT
+or start/end points.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

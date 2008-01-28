@@ -1,0 +1,54 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="re-emerge">
+<note>
+  Frames file for 're-emerge' based on morphing 'emerge' as 're-emerge'.
+</note>
+
+<roleset id="re-emerge.01" name="exit again" vncls="48.1.1">
+<roles>
+  <role descr="thing exiting" n="0"><vnrole vncls="48.1.1" vntheta="Theme"/></role>
+  <role descr="thing/place exited from" n="1"><vnrole vncls="48.1.1" vntheta="Location"/></role>
+</roles>
+
+<example name="exit, emerge">
+  <text>
+  PS of New Hampshire will re-emerge from bankruptcy proceedings.
+  </text>
+  <arg n="0">PS of New Hampshire</arg>
+  <arg f="MOD" n="m">will</arg>
+  <rel>re-emerge</rel>
+  <arg f="from" n="1">bankruptcy proceedings</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="re-emerge.02" name="come to be seen as (again)" vncls="-">
+<roles>
+  <role descr="thing emerging" n="0"/>
+  <role descr="as what" n="1"/>
+</roles>
+
+<example name="blessed are the peacemakers">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+   More importantly, he re-emerged as a peacemaker last summer after the
+   Central Park rape of a white jogger.
+  </text>
+  <arg f="DIS" n="m">More importantly</arg>
+  <arg n="0">he</arg>
+  <rel>re-emerged</rel>
+  <arg f="as" n="1">a peacemaker</arg>
+  <arg f="TMP" n="m">last summer</arg>
+  <arg f="TMP" n="m">after the Central Park rape of a white jogger.</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

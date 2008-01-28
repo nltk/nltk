@@ -1,0 +1,60 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="zoom">
+<note>
+  Frames file for 'zoom' based on sentences in the WSJ corpus and comparison with 'climb'
+</note>
+
+<roleset id="zoom.01" name="move quickly" vncls="51.3.2">
+<roles>
+  <role descr="entity moved" n="1">
+		
+  <vnrole vncls="51.3.2" vntheta="Theme"/></role>
+
+    <role descr="EXT" n="2"/>
+    <role descr="start point" n="3"/>
+    <role descr="end point" n="4"><vnrole vncls="51.3.2" vntheta="Location"/></role>
+    <role descr="medium" f="LOC" n="M"/>
+</roles>
+
+
+<example name="with end point">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ He believes [0] Jaguar 's share price could zoom to between # 8 and # 10 [*U*] ( $ 12.60 to $ 15.80 [*U*] ) .
+</text>
+	<arg n="1">Jaguar 's share price</arg>
+	<rel>zoom</rel>
+	<arg f="to" n="4">between # 8 and # 10 [*U*] ( $ 12.60 to $ 15.80 [*U*] )</arg>
+</example>
+
+
+<example name="with EXT">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ A minute later it soared 128 points , then zoomed back down 113 points , 69 below Friday 's close .
+</text>
+	<arg n="0">it</arg>
+	<rel>zoomed</rel>
+	<arg f="EXT" n="2">back down 113 points , 69 below Friday 's close</arg>
+</example>
+
+
+
+
+<example name="intransitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ But put-option prices may zoom when trading resumes today [*T*-1] .
+</text>
+	<arg f="DIS" n="M">But</arg>
+	<arg n="1">put-option prices</arg>
+	<arg f="MOD" n="M">may</arg>
+	<rel>zoom</rel>
+	<arg f="TMP" n="M">when trading resumes today [*T*-1]</arg>
+</example>
+
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,44 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="tally">
+<note>
+  Frames file for 'tally' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="tally.01" name="count, enumerate, come to a total" vncls="-">
+<roles>
+  <role descr="counter, agent" n="0"/>
+  <role descr="thing counted, summed" n="1"/>
+</roles>
+
+<example name="as 'sum, arrive at total'">
+<inflection aspect="progressive" form="participle" person="third" tense="present" voice="active"/>
+<text>
+    With most legislatures adjourned for the year, small business is
+    tallying its scorecard. 
+</text>
+        <arg f="ADV" n="M">With most legislatures adjourned for the year</arg>
+        <arg n="0">small business</arg>
+        <rel>tallying</rel>
+        <arg n="1">its scorecard</arg>
+</example>
+
+<example name="as 'count'">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    City crews tallied the wreckage to buildings, but lacked a clear
+    sense of how gravely transportation arteries were disabled. 
+</text>
+        <arg n="0">City crews</arg>
+        <rel>tallied</rel>
+        <arg n="1">the wreckage to buildings</arg>
+</example>
+
+<note>
+Also a phrasal variant 'tally up' that takes exactly the same meaning
+and argument structure.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

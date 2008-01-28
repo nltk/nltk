@@ -1,0 +1,44 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="undervalue">
+<note>
+  Frames file for 'undervalue' based on blind transformation of
+  'value' frameset and adaptation based on sentences in financial
+  subcorpus.
+</note>
+
+<roleset id="undervalue.01" name="establish a cost, value that's too low" vncls="-">
+<roles>
+  <role descr="entity establishing value" n="0"/>
+  <role descr="commodity being valued" n="1"/>
+  <role descr="difference from proper value, EXT" n="2"/>
+</roles>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    While some assets have been written down, others are undervalued
+    *trace* in the accounts, Mr. Bond maintained. 
+</text>
+        <rel>undervalued</rel>
+        <arg n="1">*trace* -&gt;  others</arg>
+        <arg f="LOC" n="M">in the accounts</arg>
+</example>
+
+
+<example name="passive with margin">
+<inflection aspect="ns" form="ns" person="ns" tense="ns" voice="ns"/>
+<text>
+    An investment in Chile's telephone company is carried at US$ 300
+    million but really worth US$ 500 million, and the company's
+    property portfolio is undervalued *trace* by at least A$ 250
+    million, Mr. Bond said. 
+</text>
+        <rel>undervalued</rel>
+        <arg n="1">*trace* -&gt;  the company's property portfolio</arg>
+        <arg f="by" n="2">at least A$ 250 million </arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

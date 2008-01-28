@@ -1,0 +1,59 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="tout">
+<note>
+  Frames file for 'tout' based on survey of sentences in the WSJ
+  corpus.  
+</note>
+
+
+<roleset id="tout.01" name="to solicit or advertise in strongly positive terms" vncls="-">
+<roles>
+  <role descr="advertiser" n="0"/>
+  <role descr="thing touted" n="1"/>
+  <role descr="attribute of arg1" n="2"/>
+  <role descr="recipient" n="3"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ Among other concerns , the agency says [0] researchers with business ties are more likely [*-1] to falsify findings in order [*-2] to tout new drugs .
+</text>
+	<arg n="0">[*-2] -&gt;  [*-1] -&gt;  researchers with business ties</arg>
+	<rel>tout</rel>
+	<arg n="1">new drugs</arg>
+</example>
+
+
+<example name="with Arg2">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ Cane &amp; Associates touts its $ 2-a-minute [*U*] service as the `` cheapest legal hour [0] you 'll ever find [*T*-1] . ''
+</text>
+	<arg n="0">Cane &amp; Associates</arg>
+	<rel>touts</rel>
+	<arg n="1">its $ 2-a-minute [*U*] service</arg>
+	<arg f="as" n="2">the `` cheapest legal hour [0] you 'll ever find [*T*-1]</arg>
+</example>
+
+
+<example name="all arguments">
+<inflection aspect="progressive" form="participle" person="third" tense="present" voice="active"/>
+<text>
+ Weirton Steel Corp. , Weirton , W. Va. , for example , is touting to homeowners fashionable steel doors , with leaded glass inserts , as a secure and energy-efficient alternative to wooden or aluminum ones .
+</text>
+	<arg n="0">Weirton Steel Corp. , Weirton , W. Va. ,</arg>
+	<arg f="DIS" n="M">for example</arg>
+	<rel>touting</rel>
+	<arg f="to" n="3">homeowners</arg>
+	<arg n="1">fashionable steel doors , with leaded glass inserts ,</arg>
+	<arg f="as" n="2">a secure and energy-efficient alternative to wooden or aluminum ones</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

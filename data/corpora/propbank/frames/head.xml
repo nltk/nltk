@@ -1,0 +1,78 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="head">
+<note>
+  Frames file for 'head' based on survey of initial sentences of big
+  corpus and comparison with 'lead'
+</note>
+
+<roleset id="head.01" name="lead" vncls="-">
+<roles>
+  <role descr="leader" n="0"/>
+  <role descr="organization" n="1"/>
+</roles>
+
+<example name="take me to your leader">
+  <text>
+  Michael Ross, a New York lawyer who *trace* heads the ABA's grand
+  jury committee...
+  </text>
+  <arg n="0">*trace*=who=a New York lawyer</arg>
+  <rel>heads</rel>
+  <arg n="1">the ABA's grand jury committee</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="head.02" name="moving towards" vncls="-">
+<roles>
+  <role descr="mover" n="0"/>
+  <role descr="destination" n="1"/>
+</roles>
+
+<example name="movin' and shakin'">
+  <text>
+  The exchange is headed for a real crisis if program trading isn't curbed.
+  </text>
+  <arg n="0">The exchange</arg>
+  <rel>headed</rel>
+  <arg f="for" n="1">a real crisis</arg>
+  <arg n="m">if program trading isn't curbed</arg>
+</example>
+
+<note>
+Similarly &quot;headed downhill&quot;, etc.
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="head_off">
+
+<roleset id="head.03" name="bring pursuit to an end">
+<roles>
+  <role descr="pursuer" n="0"/>
+  <role descr="pursued" n="1"/>
+  <role descr="location to end pursuit" n="2"/>
+</roles>
+
+<example name="Head them off at the pass!">
+  <text>
+  *trace* head them off at the pass!
+  </text>
+  <arg n="0">*trace*</arg>
+  <rel>head off</rel>
+  <arg n="1">them</arg>
+  <arg f="at" n="2">the pass</arg>
+</example>
+
+<note>
+Somehow, I doubt this will occur in WSJ.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

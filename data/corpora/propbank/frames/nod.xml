@@ -1,0 +1,46 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="nod">
+<note>
+  Frames file for 'nod' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+
+<roleset id="nod.01" name="to lower and raise the head or to express by nodding" vncls="40.3.1-1">
+<roles>
+  <role descr="entity with a bobbing head, agent" n="0">
+	<vnrole vncls="40.3.1-1" vntheta="Agent"/></role>
+  <role descr="thing expressed by nodding" n="1">
+	<vnrole vncls="40.3.1-1" vntheta="Theme"/></role>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ His brother , Parkhaji , whose head [*T*-2] is swathed [*-1] in a gorgeous crimson turban , nods vigorous assent .
+</text>
+	<arg n="0">His brother , Parkhaji , whose head [*T*-2] is swathed [*-1] in a gorgeous crimson turban ,</arg>
+	<rel>nods</rel>
+	<arg n="1">vigorous assent</arg>
+</example>
+
+
+<example name="intransitive">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ Mr. Paul nods in agreement .
+</text>
+	<arg n="0">Mr. Paul</arg>
+	<rel>nods</rel>
+	<arg f="ADV" n="M">in agreement</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

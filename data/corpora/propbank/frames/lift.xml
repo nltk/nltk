@@ -1,0 +1,107 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="lift">
+<note>
+  Frames file for 'lift' based on sentences in financial subcorpus.
+  Verbnet entries put_direction-9.4 steal-10.5, other framed members
+  include redeem, seize, sneak for the steal sense, no other members
+  for other sense.  Comparison to 'raise' and 'steal'.
+</note>
+
+<roleset id="lift.01" name="cause increase in elevation" vncls="9.4">
+<roles>
+    <role descr="elevator, Agent" n="0">
+	<vnrole vncls="9.4" vntheta="Agent"/></role>
+    <role descr="Logical subject, patient, thing rising" n="1">
+	<vnrole vncls="9.4" vntheta="Theme"/></role>
+    <role descr="EXT, amount risen" n="2"/>
+    <role descr="Start point" n="3"/>
+    <role descr="End point" n="4"/>
+    <role descr="Medium" f="LOC" n="M"/>
+</roles>
+
+<example name="raise the roof">
+<text>
+    Although the Treasury is expected to announce details of its
+    November quarterly refunding operation today, the Nov. 79 schedule
+    could be delayed unless Congress and the president act soon
+    *trace* to lift the nation's debt ceiling. 
+</text>
+        <arg n="0">*trace* -&gt;  Congress and the president</arg>
+        <rel>lift</rel>
+        <arg n="1">the nation's debt ceiling</arg>
+</example>
+
+<example name="with EXT">
+<text>
+   Seeing new office buildings sprout up and its sales soar, Daikin is
+   building another plant, which  will lift its production capacity
+   50%. 
+</text>
+        <arg n="0">*trace* -&gt;  which -&gt;  another plant</arg>
+        <arg f="MOD" n="M">will</arg>
+        <rel>lift</rel>
+        <arg n="1">its production capacity</arg>
+        <arg f="EXT" n="2">50%</arg>
+</example>
+
+<example name="start and end points">
+<text>
+    At about 10:40 a.m. EDT, several big buy orders hit the S&amp;P
+    pit simultaneously, *trace* lifting the futures up out of the
+    trading limit and eventually into ranges that caused
+    computer-driven program buying of stocks. 
+</text>
+        <arg n="0">*trace* -&gt;  several big buy orders</arg>
+        <rel>lifting</rel>
+        <arg n="1">the futures</arg>
+        <arg f="DIR" n="M">up</arg>
+        <arg f="out" n="3">of the trading limit</arg>
+        <arg f="TMP" n="M">eventually</arg>
+        <arg f="into" n="4">ranges that caused computer-driven program
+        buying of stocks</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="lift.02" name="acquire stealthily, remove" vncls="10.5">
+<roles>
+  <role descr="agent, entity acquiring/removing something" n="0">
+	<vnrole vncls="10.5" vntheta="Agent"/></role>
+  <role descr="thing acquired/removed" n="1">
+	<vnrole vncls="10.5" vntheta="Theme"/></role>
+  <role descr="acquired/removed-from" n="2">
+	<vnrole vncls="10.5" vntheta="Source"/></role>
+</roles>
+
+<example name="remove">
+<text>
+    The statement emphasized that holders representing 75% of the
+    shares voting at a special shareholders' meeting must agree
+    *trace* to lift the takeover restrictions.
+</text>
+        <arg n="0">*trace* -&gt;  holders representing 75% of the shares
+        voting at a special shareholders' meeting</arg>
+        <rel>lift</rel>
+        <arg n="1">the takeover restrictions</arg>
+</example>
+
+<example name="steal">
+  <text>
+    John lifted Mary's car keys from her purse.
+  </text>
+  <arg n="0">John</arg>
+  <rel>lifted</rel>
+  <arg n="1">Mary's car keys</arg>
+  <arg f="from" n="2">her purse</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

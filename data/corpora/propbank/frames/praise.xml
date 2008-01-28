@@ -1,0 +1,56 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="praise">
+<note>
+  Frames file for 'praise' based on sentences in financial subcorpus.
+No Verbnet entry.  No comparison.
+</note>
+
+<roleset id="praise.01" name="praise">
+<roles>
+  <role descr="praiser" n="0"/>
+  <role descr="praised" n="1"/>
+  <role descr="reason" n="2"/>
+</roles>
+
+<example name="no reason">
+<text>
+    Analysts and consultants had mixed reactions to yesterday's
+announcements,  praising Mr. Rifenburgh's efforts but questioning
+whether the company can survive in a highly competitive marketplace. 
+</text>
+        <arg n="0">*trace* -&gt;  Analysts and consultants</arg>
+        <rel>praising</rel>
+        <arg n="1">Mr. Rifenburgh's efforts</arg>
+</example>
+
+<example name="praise for">
+<text>
+    Big Board traders praised the Jacobson specialists for getting
+through yesterday without a trading halt. 
+</text>
+        <arg n="0">Big Board traders</arg>
+        <rel>praised</rel>
+        <arg n="1">the Jacobson specialists</arg>
+        <arg f="for" n="2">getting through yesterday without a trading
+halt</arg> 
+</example>
+
+<example name="praise as">
+<text>
+    Mr. Sloan praises the company as recession resistant and notes
+that it has an annual earnings growth rate of 32% a year over the past
+five years. 
+</text>
+        <arg n="0">Mr. Sloan</arg>
+        <rel>praises</rel>
+        <arg n="1">the company</arg>
+        <arg f="as" n="2">recession resistant</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

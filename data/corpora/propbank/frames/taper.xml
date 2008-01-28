@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="taper_off">
+<note>
+  Frames file for 'taper' based on sentences in wsj.  No Verbnet entry
+  at the moment, but it's probably 45.4 'other causative'.
+</note>
+
+<roleset id="taper.01" name="become slender" vncls="-">
+<roles>
+  <role descr="thing becoming slender" n="1"/>
+</roles>
+
+<example name="they all look like this">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Kenneth Mayland, economist for Society Corp., a Cleveland bank,
+    said demand for exports of factory goods is beginning *trace* to
+    taper off. 
+</text>
+        <arg n="1">*trace* -&gt;  demand for exports of factory goods</arg>
+        <rel>[ taper] [ off]</rel>
+</example>
+
+<note>
+Are other args possible?  Corpus doesn't give any examples, and
+everything sounds a little weird to me.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

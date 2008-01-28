@@ -1,0 +1,28 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="froth">
+<note>
+  Frames file for 'froth' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="froth.01" name="to foam, become bubbly" vncls="-">
+<roles>
+  <role descr="entity frothing" n="1"/>
+</roles>
+
+<example name="intransitive">
+<inflection aspect="ns" form="ns" person="ns" tense="ns" voice="active"/>
+<text>
+ At 4 1\/2 pounds , it may be too ambitiously named [*-1] , but it nevertheless opens up the kind of marketing possibilities that [*T*-2] make analysts froth .
+</text>
+	<arg n="1">analysts</arg>
+	<rel>froth</rel>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

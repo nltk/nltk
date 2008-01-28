@@ -1,0 +1,178 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<note>
+Frames file for 'look' based on survey of initial sentences from big corpus
+and some comparison with 'see'
+</note>
+
+<predicate lemma="look">
+<roleset id="look.01" name="vision" vncls="30.3 30.4 35.5"> 
+<roles>
+  <role descr="looker" n="0">
+	<vnrole vncls="30.4" vntheta="Experiencer"/>
+        <vnrole vncls="30.3" vntheta="Experiencer"/>
+        <vnrole vncls="35.5" vntheta="Agent"/></role>
+  <role descr="thing looked at or for or on" n="1">
+	<vnrole vncls="30.4" vntheta="Stimulus"/>
+        <vnrole vncls="30.3" vntheta="Stimulus"/>
+        <vnrole vncls="35.5" vntheta="Location"/></role>
+  <role descr="attribute of arg1" n="2">
+	<vnrole vncls="35.5" vntheta="Theme"/></role>
+</roles>
+
+<example name="just transitive">
+  <text>
+    A student was looking at a crib sheet.
+  </text>
+  <arg n="0">A student</arg>
+  <rel>looking</rel>
+  <arg f="at" n="1">a crib sheet</arg>
+</example> 
+
+<example name="intransitive with direction">
+  <text>
+    He never looked back.
+  </text>
+  <arg n="0">He</arg>
+  <arg f="TMP" n="m">never</arg>
+  <rel>looked</rel>
+  <arg f="DIR" n="M">back</arg>
+</example>
+
+<example name="look for">
+  <text>
+    A number of participants were looking for an index above 50.
+  </text>
+  <arg n="0">A number of participants</arg>
+  <rel>looking</rel>
+  <arg f="for" n="1">an index above 50</arg>
+</example>
+
+<example name="object control">
+  <text>
+    Bush administration officials look to the Fed to bring down rates.
+  </text>
+  <arg n="0">Bush administration officials</arg>
+  <rel>look</rel>
+  <arg f="to" n="1">the Fed</arg>
+  <arg n="2">to bring down rates</arg>
+</example>
+
+</roleset>
+
+<roleset id="look.02" name="seeming" vncls="-">
+<roles>
+  <role descr="seemer" n="0"/>
+  <role descr="seemed like, attribute of arg0" n="1"/>
+  <role descr="seemed to" n="2"/>
+</roles>
+
+<example name="look like">
+  <text>
+    Administrators look like they take cheating seriously.
+  </text>
+  <arg n="0">Administrators</arg>
+  <rel>look</rel>
+  <arg f="like" n="1">they take cheating seriously</arg>
+</example>
+
+<example name="look to be">
+  <text>
+    Stock prices might look fairly high.
+  </text>
+  <arg n="0">Stock prices</arg>
+  <arg f="MOD" n="M">might</arg>
+  <rel>might look</rel>
+  <arg n="1">fairly high</arg>
+</example>
+
+<example name="with viewer">
+  <text>
+    It looked to me like an attempt to push the dollar down.
+  </text>
+  <arg n="0">It</arg>
+  <rel>looked</rel>
+  <arg f="to" n="2">me</arg>
+  <arg f="like" n="1">an attempt to push the dollar down</arg>
+</example>
+
+</roleset>
+<roleset id="look.04" name="expect" vncls="-">
+<roles>
+  <role descr="expecter" n="0"/>
+  <role descr="thing expected" n="1"/>
+</roles>
+
+<example name="subject control">
+  <text>
+    People are looking *trace* to stake their claims
+  </text>
+  <arg n="0">People</arg>
+  <rel>looking</rel>
+  <arg n="1">*trace* to stake their claims</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="look_forward">
+<roleset id="look.03" name="look_forward" vncls="-">
+<roles>
+  <role descr="looker forward" n="0"/>
+  <role descr="thing looked forward to" n="1"/>
+</roles>
+
+<example name="look forward">
+  <text>
+    They're looking forward to their winter meeting.
+  </text>
+  <arg n="0">they</arg>
+  <rel>looking forward</rel>
+  <arg f="to" n="1">their winter meeting</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="look_up">
+
+<roleset id="look.05" name="seek" vncls="-">
+<roles>
+  <role descr="agent, seeker" n="0"/>
+  <role descr="thing sought" n="1"/>
+  <role descr="sought in, from" n="2"/>
+</roles>
+
+<example name="no source">
+  <inflection aspect="ns" form="full" person="ns" tense="ns" voice="active"/>
+  <text>
+    (Some courts release names and addresses, and researchers can
+    drive by houses, look up credit ratings, and even question
+    neighbors.) 
+  </text>
+  <arg n="0">researchers</arg>
+  <arg f="MOD" n="m">can</arg>
+  <rel>look up</rel>
+  <arg n="1">credit ratings</arg>
+</example>
+
+<example name="all args">
+  <inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+  <text>
+     John had to look up the word 'idiot' in the dictionary.
+  </text>
+  <arg n="0">John</arg>
+  <rel>look up</rel>
+  <arg n="1">the word 'idiot'</arg>
+  <arg f="in" n="2">the dictionary</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

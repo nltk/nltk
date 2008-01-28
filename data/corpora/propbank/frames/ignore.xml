@@ -1,0 +1,45 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="ignore">
+<note>
+  Frames file for 'ignore' based on sentences in financial subcorpus.
+  No verbnet entry.  No comparison.
+</note>
+
+<roleset id="ignore.01" name="not pay attention to">
+<roles>
+  <role descr="ignorer" n="0"/>
+  <role descr="thing ignored" n="1"/>
+</roles>
+
+<example name="ignore an NP">
+<text>
+    Susan Del Signore, head trader at Travelers Investment Management
+    Co., says critics are ignoring ``the role the (takeover stock)
+    speculator is taking in the market as a source of volatility.''
+</text>
+        <arg n="0">critics</arg>
+        <rel>ignoring</rel>
+        <arg n="1">the role the (takeover stock) speculator is taking
+        in the market</arg> 
+</example>
+
+<example name="ignore an S">
+<text>
+    Some people tend *trace* to ignore that a 50-point move is less in
+    percentage terms than it was when the stock market was lower. 
+</text>
+        <arg n="0">*trace* -&gt; Some people</arg>
+        <rel>ignore</rel>
+        <arg n="1">a 50-point move is less in percentage terms than it
+        was when the stock market was lower </arg> 
+</example>
+
+<note>
+When ignoring an S, be sure to not include the complementizer &quot;that&quot;,
+if it's present.  Just like all other verbs-of-saying.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,104 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="pinch">
+<note>
+  Frames file for 'pinch' based on sentences in wsj.  Verbnet entries
+  20 and 10.5, Framenet entries Manipulation and Theft.
+</note>
+
+<roleset id="pinch.01" name="squeeze tightly to cause pain" vncls="20">
+<roles>
+  <role descr="pincher, agent" n="0">
+	<vnrole vncls="20" vntheta="Agent"/></role>
+  <role descr="thing touched" n="1">
+	<vnrole vncls="20" vntheta="Experiencer"/></role>
+  <role descr="touched with, if separate from agent" n="2">
+	<vnrole vncls="20" vntheta="Instrument"/></role>
+</roles>
+
+<example name="transitive passive">
+<inflection aspect="perfect" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    A BMA spokesman said ``runaway medical costs'' have made health
+    insurance ``a significant challenge,'' and margins also have been
+    pinched [*-1] by changes in the mix of life-insurance products
+    consumers now demand. 
+</text>
+        <arg f="DIS" n="M">also</arg>
+        <rel>pinched</rel>
+        <arg n="1">[*-1] -&gt;  margins</arg>
+        <arg f="by" n="0">changes in the mix of life-insurance
+        products consumers now demand</arg> 
+</example>
+
+<example name="intransitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+    The imposition of austerity measures, starting last October,
+    already had begun [*-1] to pinch when the massacre in Tiananmen
+    Square on June 4 and subsequent events tugged the belt far
+    tighter. 
+</text>
+        <arg n="0">[*-1] -&gt;  The imposition of austerity measures,
+        starting last October,</arg> 
+        <rel>pinch</rel>
+        <arg f="TMP" n="M">when the massacre in Tiananmen Square on
+        June 4 and subsequent events tugged the belt far tighter</arg> 
+</example>
+
+<example name="semi-idiomatic">
+<inflection aspect="ns" form="gerund" person="ns" tense="ns" voice="ns"/>
+<text>
+     The deposits came from savings kept in a Tupperware breadbox; he
+     saved $47,000 in 1974-81 by living with family members and
+     pinching pennies and $45,000 of secret gifts from his remorseful
+     father, who had abandoned the family in 1955. 
+</text>
+        <arg n="0">[*-2] -&gt;  he</arg>
+        <rel>pinching</rel>
+        <arg n="1">pennies</arg>
+</example>
+
+<example name="all args">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    Mary pinched John's toes with a vise-grip.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>pinched</rel>
+  <arg n="1">John's toes</arg>
+  <arg f="with" n="2">a vise-grip</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="pinch.02" name="slangy steal" vncls="10.5">
+<roles>
+  <role descr="thief, agent" n="0">
+	<vnrole vncls="10.5" vntheta="Agent"/></role>
+  <role descr="thing stolen" n="1">
+	<vnrole vncls="10.5" vntheta="Theme"/></role>
+  <role descr="stolen from" n="2">
+	<vnrole vncls="10.5" vntheta="Source"/></role>
+</roles>
+
+<example name="just transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+     ... and, what PASOK's cut was from the $210 million [0]
+     Mr. Koskotas pinched [*T*-2].  
+</text>
+        <arg n="0">Mr. Koskotas</arg>
+        <rel>pinched</rel>
+        <arg n="1">[*T*-2] -&gt;  [0] -&gt;  the $210 million</arg>
+<note>
+Although not given in the above example, the arg2 would be &quot;from the
+company&quot; or something like that.
+</note>
+</example>
+</roleset>
+</predicate>
+</frameset>

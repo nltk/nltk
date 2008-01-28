@@ -1,0 +1,52 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="prime">
+<note>
+  Frames file for 'prime' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="prime.01" name="make ready" vncls="-">
+<roles>
+  <role descr="agent, primer" n="0"/>
+  <role descr="thing made ready" n="1"/>
+  <role descr="ready for what?" n="2"/>
+</roles>
+
+<example name="adjectival">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Rep. Gonzalez seems primed [*-1] to lash out at Mr. Wall when
+    hearings resume Thursday with testimony by two federal regulators
+    from San Francisco, William Black and Mike Patriarca. 
+</text>
+        <arg n="1">Rep. Gonzalez</arg>
+        <rel>primed</rel>
+        <arg f="PNC" n="M">[*-1] to lash out at Mr. Wall when hearings
+        resume Thursday with testimony by two federal regulators from
+        San Francisco , William Black and Mike Patriarca</arg> 
+</example>
+
+
+<example name="verbal">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    [*-2] Perhaps primed [*-3] by the daily diet of radio and TV
+    reporters thrusting microphones into people's faces and asking how
+    they ``feel'' about one calamity or another, fellow reporters and
+    civilians who spied my press credential were eager to chat. 
+</text>
+        <rel>primed</rel>
+        <arg n="0">[*-3] -&gt;  [*-2] -&gt; fellow reporters and civilians
+        who spied my press credential</arg> 
+        <arg f="by" n="0">the daily diet of radio and TV reporters
+        thrusting microphones into people's faces and asking how they
+        ``feel'' about one calamity or another</arg> 
+</example>
+
+<note>
+Adjectival and verbal senses actually aren't very closely related.  Hmm.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,54 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="cart">
+<note>
+  Frames file for 'cart'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="cart.01" name="to convey in a car or truck" vncls="-">
+<roles> 
+  <role descr="conveyor, agent" n="0"/>
+  <role descr="entity transported" n="1"/>   
+</roles>
+
+
+<example name="with direction">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ At closing time , farmers cart out most of what they carted [*T*-1] in .
+</text>
+	<arg f="TMP" n="M">At closing time</arg>
+	<arg n="0">farmers</arg>
+	<rel>cart</rel>
+	<arg f="DIR" n="M">out</arg>
+	<arg n="1">most of what they carted [*T*-1] in</arg>
+</example>
+</roleset>
+</predicate>
+
+<predicate lemma="cart_off">
+
+<roleset id="cart.02" name="to take away  in a car or truck" vncls="-">
+<roles> 
+  <role descr="transporter, agent" n="0"/>
+  <role descr="entity transported" n="1"/>
+  <role descr="entity transported from" n="2"/>   
+</roles>
+
+<example name="participle">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+ American journalist William L. Shirer , in his book `` The Rise and Fall of the Third Reich , '' wrote of how in Vienna he had witnessed `` squads of } Nazi { SS men carting off silver , tapestries , paintings and other loot from the Rothschild palace [*T*-2] . ''
+</text>
+	<arg n="0">`` squads of } Nazi { SS men</arg>
+	<rel>[ carting] [ off]</rel>
+	<arg n="1">silver , tapestries , paintings and other loot</arg>
+	<arg f="from" n="2">the Rothschild palace</arg>
+</example>
+
+</roleset>
+</predicate>
+
+
+</frameset>

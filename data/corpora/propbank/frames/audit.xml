@@ -1,0 +1,38 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="audit">
+<note>
+  Frames file for 'audit' based on sentences in financial subcorpus.
+  Verbnet class assessment-34; no other members of that class
+  currently framed.
+</note>
+
+<roleset id="audit.01" name="assess" vncls="34">
+<roles>
+  <role descr="auditor" n="0">
+		
+  <vnrole vncls="34" vntheta="Agent"/></role>
+
+  <role descr="audited" n="1">
+		
+  <vnrole vncls="34" vntheta="Theme"/></role>
+
+</roles>
+
+<example name="death and taxes">
+  <text>
+    The Illinois Supreme Court ordered the commission *trace* to audit
+    Commonwealth Edison's construction expenses and refund any
+    unreasonable expenses.
+  </text>
+  <arg n="0">*trace*=the commission</arg>
+  <rel>audit</rel>
+  <arg n="1">Commonwealth Edison's construction expenses</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

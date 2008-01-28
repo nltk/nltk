@@ -1,0 +1,59 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="pray">
+<note>
+  Frames file for 'pray' based on sentences in wsj.  Verbnet entry 32.2.
+</note>
+
+<roleset id="pray.01" name="talk to God" vncls="32.2">
+<roles>
+  <role descr="pray-er" n="0"><vnrole vncls="32.2" vntheta="Experiencer"/></role>
+  <role descr="prayer" n="1"><vnrole vncls="32.2" vntheta="Theme"/></role>
+  <role descr="God" n="2"/>
+</roles>
+
+<example name="intransitive">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    Father McKenna moves through the house *trace* praying in Latin,
+    urging the demon to split. 
+</text>
+        <arg n="0">*trace* -&gt;  Father McKenna</arg>
+        <rel>praying</rel>
+        <arg f="MNR" n="M">in Latin</arg>
+</example>
+
+<note>
+Why does he assume the demon speaks Latin?
+</note>
+
+<example name="pray for">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    When I realized it was over, I went and stood out in front of the
+    house, *trace* waiting and praying for Merrill to come home,
+    shivering as if it were 20 below zero until he got there. 
+</text>
+        <arg n="0">*trace* -&gt;  I</arg>
+        <rel>praying</rel>
+        <arg n="1">for Merrill to come home</arg>
+</example>
+
+<example name="with arg2">
+  <inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+  <text>
+    John prays daily to the ancient gods of his people: Santa Claus
+    and Elvis.
+  </text>
+  <arg n="0">John</arg>
+  <rel>prays</rel>
+  <arg f="TMP" n="m">daily</arg>
+  <arg f="to" n="2">the ancient gods of his people: Santa Claus and Elvis.</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,35 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="utilize">
+<note>
+  Frames file for 'utilize' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="utilize.01" name="to put to use" vncls="-">
+<roles>
+  <role descr="user, agent" n="0"/>
+  <role descr="entity utilized" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="future" voice="active"/>
+<text>
+ In addition , the two companies will develop new steam turbine technology , such as the plants ordered [*] by Florida Power , and even utilize each other 's plants at times [*-1] to take advantage of currency fluctuations .
+</text>
+	<arg f="DIS" n="M">In addition</arg>
+	<arg n="0">the two companies</arg>
+	<arg f="MOD" n="M">will</arg>
+	<arg f="ADV" n="M">even</arg>
+	<rel>utilize</rel>
+	<arg n="1">each other 's plants</arg>
+	<arg f="TMP" n="M">at times</arg>
+	<arg f="PNC" n="M">[*-1] to take advantage of currency fluctuations</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

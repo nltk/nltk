@@ -1,0 +1,39 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="unionize">
+<note>
+  Frames file for 'unionize' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+
+<roleset id="unionize.01" name="to organize or join a labor union" vncls="45.4">
+<roles>
+  <role descr="agent, causer" n="0">
+		
+  <vnrole vncls="45.4" vntheta="Agent"/></role>
+
+  <role descr="entity joining a union" n="1">
+		
+  <vnrole vncls="45.4" vntheta="Patient"/></role>
+
+</roles>
+
+<example name="automatically generated">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ But from early on , Tiger 's workers unionized , while Federal 's never have [*?*] .
+</text>
+	<arg f="DIS" n="M">But</arg>
+	<arg f="TMP" n="M">from early on</arg>
+	<arg n="1">Tiger 's workers</arg>
+	<rel>unionized</rel>
+	<arg f="ADV" n="M">while Federal 's never have [*?*]</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

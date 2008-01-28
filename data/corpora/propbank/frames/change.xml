@@ -1,0 +1,109 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="change">
+<note>
+  Frames file for 'change' based on survey of initial sentences of big
+  corpus and comparison with 'develop' and 'replace' and 'turn'
+</note>
+
+<roleset id="change.01" name="transform" vncls="26.6 45.4">
+<roles>
+  <role descr="causer of transformation" n="0">
+		
+		
+  <vnrole vncls="26.6" vntheta="Agent"/><vnrole vncls="45.4" vntheta="Agent"/></role>
+
+  <role descr="thing changing" n="1">
+		
+		
+  <vnrole vncls="26.6" vntheta="Patient"/><vnrole vncls="45.4" vntheta="Patient"/></role>
+
+  <role descr="end state" n="2">
+		
+  <vnrole vncls="26.6" vntheta="Product"/></role>
+
+  <role descr="start state" n="3">
+		
+  <vnrole vncls="26.6" vntheta="Material"/></role>
+
+</roles>
+
+<example name="agentive">
+  <text>
+  The commercial changed the dynamics of the campaign.
+  </text>
+  <arg n="0">The commercial</arg>
+  <rel>changed</rel>
+  <arg n="1">the dynamics of the campaign</arg>
+</example>
+
+<example name="ergative">
+  <text>
+  ...customers whose addresses have changed during the past 3 1/2 years.
+  </text>
+  <arg n="1">whose addresses</arg>
+  <rel>changed</rel>
+  <arg f="TMP" n="m">during the past 3 1/2 years</arg>
+</example>
+
+<example name="passive">
+  <text>
+  ...the areas that can be most easily changed *trace*
+  </text>
+  <arg f="MOD" n="m">can</arg>
+  <arg f="MNR" n="m">most easily</arg>
+  <rel>changed</rel>
+  <arg n="1">*trace*=the areas</arg>
+</example>
+
+<example name="with end state">
+  <text>
+  ...erasures changed wrong answers to right ones on a statewide test.
+  </text>
+  <arg n="0">erasures</arg>
+  <rel>changed</rel>
+  <arg n="1">wrong answers</arg>
+  <arg f="to" n="2">right ones</arg>
+  <arg f="LOC" n="m">on a statewide test</arg>
+</example>
+
+<note>
+&quot;Start state&quot; and &quot;thing changing&quot; are usually the same, but there can
+be cases where they are separate.  Reserve use of Arg3 for these cases.
+</note>
+
+<example name="explicit start state">
+  <text>
+  Customers change from borrowers to savers/investors.
+  </text>
+  <arg n="1">Customers</arg>
+  <rel>change</rel>
+  <arg f="from" n="3">borrowers</arg>
+  <arg f="to" n="2">savers/investors</arg>
+</example>
+
+</roleset>
+
+<roleset id="change.02" name="change hands" vncls="13.6">
+<roles>
+   <role descr="commodity being exchanged" n="1">
+		
+  <vnrole vncls="13.6" vntheta="Theme1"/></role>
+
+   <role descr="hands" n="2">
+		
+  <vnrole vncls="13.6" vntheta="Theme2"/></role>
+
+</roles>
+
+<example name="change hands">
+  <text>
+  4.4 million shares changed hands.
+  </text>
+  <arg n="1">4.4 million shares</arg>
+  <rel>changed</rel>
+  <arg n="2">hands</arg>
+</example>
+</roleset>
+</predicate>
+</frameset>

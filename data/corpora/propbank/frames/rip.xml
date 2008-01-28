@@ -1,0 +1,93 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="rip">
+<note>
+  Frames file for 'rip' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="rip.01" name="to tear apart" vncls="23.2 45.1">
+<roles>
+  <role descr="ripper, agent" n="0">
+	<vnrole vncls="23.2" vntheta="Agent"/>
+        <vnrole vncls="45.1" vntheta="Agent"/></role>
+  <role descr="entity ripped" n="1">
+	<vnrole vncls="23.2" vntheta="Patient"/>
+        <vnrole vncls="45.1" vntheta="Patient"/></role>
+</roles>
+
+<example name="intransitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ As a result , the link between the futures and stock markets ripped apart .
+</text>
+	<arg f="DIS" n="M">As a result</arg>
+	<arg n="1">the link between the futures and stock markets</arg>
+	<rel>ripped</rel>
+	<arg f="MNR" n="M">apart</arg>
+</example>
+</roleset>
+
+<roleset id="rip.02" name="to move violently" vncls="-">
+<roles>
+  <role descr="entity moving" n="1"/>
+</roles>
+
+
+<example name="with direction">
+<inflection aspect="ns" form="ns" person="ns" tense="past" voice="active"/>
+<text>
+ The estimated earthquake losses are low compared with the $ 4 billion [*U*] in claims that insurers face [*T*-2] from Hurricane Hugo , which [*T*-1] ripped through the Caribbean and the Carolinas last month .
+</text>
+	<arg n="1">[*T*-1] -&gt;  which -&gt;  Hurricane Hugo</arg>
+	<rel>ripped</rel>
+	<arg f="DIR" n="M">through the Caribbean and the Carolinas</arg>
+</example>
+</roleset>
+</predicate>
+
+<predicate lemma="rip_out">
+
+
+<roleset id="rip.03" name="to tear apart" vncls="-">
+<roles>
+  <role descr="ripper" n="0"/>
+  <role descr="entity ripped out" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="perfect" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+ `` I 've ripped out a lot of Delicious '' and grafted the trees with many different shoots , says [*T*-1] Steve Wood , a West Lebanon , N.H. , grower , [*-2] tramping through his 100-acre Poverty Lane Orchard on a crisp autumn day recently .
+</text>
+	<arg n="0">I</arg>
+	<rel>[ ripped] [ out]</rel>
+	<arg n="1">a lot of Delicious</arg>
+</example>
+</roleset>
+</predicate>
+
+<predicate lemma="rip_off">
+<roleset id="rip.04" name="to exploit, steal" vncls="-">
+<roles>
+  <role descr="exploiter" n="0"/>
+  <role descr="entity ripped off" n="1"/>
+</roles>
+
+<example name="passive">
+<inflection aspect="progressive" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+ She says [0] her group used [*-2] to give tips on [*] selecting planners -- [*] check educational and experience credentials , consult regulators and Better Business Bureaus -- but found that even some people who [*T*-1] took these steps `` were still getting ripped [*-3] off . ''
+</text>
+	<arg f="TMP" n="M">still</arg>
+	<rel>[ ripped] [ off]</rel>
+	<arg n="1">[*-3] -&gt;  even some people who [*T*-1] took these steps</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

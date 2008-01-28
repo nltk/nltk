@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="breed">
+<note>
+  Frames file for 'breed' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="breed.01" name="to cause to reproduce" vncls="-">
+<roles>
+  <role descr="causer, agent" n="0"/>
+  <role descr="entity bred" n="1"/>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ Charles O. Givens of Mount Vernon , Ind. - investment broker , ex-accountant , and son of a former stable owner - bred Tennessee Walking Horses for six years , raised cattle for four , and never made a profit on either .
+</text>
+	<arg n="0">Charles O. Givens of Mount Vernon , Ind. - investment broker , ex-accountant , and son of a former stable owner -</arg>
+	<rel>bred</rel>
+	<arg n="1">Tennessee Walking Horses</arg>
+	<arg f="TMP" n="M">for six years</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

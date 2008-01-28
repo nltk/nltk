@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="wade">
+<note>
+  Frames file for 'wade' based on sentences in wsj.  Verbnet entry
+  51.3.2, Framenet entry Self-motion.
+</note>
+
+<roleset id="wade.01" name="walk through water" vncls="51.3.2">
+<roles>
+  <role descr="wader" n="0"><vnrole vncls="51.3.2" vntheta="Theme"/></role>
+  <role descr="water" n="1"><vnrole vncls="51.3.2" vntheta="Location"/></role>
+</roles>
+
+<example name="metaphorical?">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Geoffrey Goodfellow, who dropped out of high school back in the
+    1970s to manage a computer network at a California research firm,
+    says: ``Old network hands have started to turn off the network
+    because they don't have time [*] to wade through the muck.'' 
+</text>
+        <arg n="0">[*] -&gt;  they</arg>
+        <rel>wade</rel>
+        <arg f="through" n="1">the muck</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

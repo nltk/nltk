@@ -1,0 +1,41 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="dissent">
+<note>
+  Frames file for 'dissent' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="dissent.01" name="to disagree" vncls="-">
+<roles>
+  <role descr="disagreer, agent" n="0"/>
+  <role descr="disagreement, dissent from" n="1"/>
+</roles>
+
+<example name="with Arg1">
+<inflection aspect="perfect" form="participle" person="ns" tense="past" voice="active"/>
+<text>
+ Fed Vice Chairman Manuel Johnson , who [*T*-98] had dissented from the Treasury 's policy , told lawmakers , `` I became convinced about what [*T*-99] looked to me like an attempt [*] to push the dollar down against the fundamentals in the market . ''
+</text>
+	<arg n="0">[*T*-98] -&gt;  who -&gt;  Fed Vice Chairman Manuel Johnson</arg>
+	<rel>dissented</rel>
+	<arg f="from" n="1">the Treasury 's policy</arg>
+</example>
+
+
+<example name="intransitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ Britain 's Prime Minister Thatcher alone dissented .
+</text>
+	<arg n="0">Britain 's Prime Minister Thatcher</arg>
+	<arg f="MNR" n="M">alone</arg>
+	<rel>dissented</rel>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

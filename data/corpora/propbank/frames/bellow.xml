@@ -1,0 +1,41 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="bellow">
+<note>
+  Frames file for 'bellow' based on sentences in wsj.  No access to
+  Verbnet at the moment, probably one of the manner-of-speaking classes.
+</note>
+
+<roleset id="bellow.01" name="yell" vncls="-">
+<roles>
+  <role descr="speaker" n="0"/>
+  <role descr="utterance" n="1"/>
+  <role descr="listener" n="2"/>
+</roles>
+
+<example name="no listener">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    `` `Get off your ...,' he would bellow [*T*-2],'' say the authors.
+</text>
+        <arg n="0">he</arg>
+        <arg f="MOD" n="M">would</arg>
+        <rel>bellow</rel>
+        <arg n="1">[*T*-2] -&gt;  Get off your ...</arg>
+</example>
+
+<example name="no utterance">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John bellowed at Mary.
+  </text>
+  <arg n="0">John</arg>
+  <rel>bellowed</rel>
+  <arg f="at" n="2">Mary</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

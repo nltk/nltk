@@ -1,0 +1,47 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="quit">
+<note>
+  Frames file for 'quit' based on sentences in financial subcorpus.
+  Verbnet entry 55.2, no other framed members mentioned.  Framenet
+  classes Process stop and Departing.  Comparison to 'stop' and
+  'leave'.
+</note>
+
+<roleset id="quit.01" name="leave your job">
+<roles>
+  <role descr="quitter" n="0"/>
+  <role descr="job" n="1"/>
+</roles>
+
+<example name="typically intransitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    The company's president quit suddenly. 
+</text>
+        <arg n="0">The company 's president</arg>
+        <rel>quit</rel>
+        <arg f="MNR" n="M">suddenly</arg>
+</example>
+
+<example name="leave or cause to end?">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Partly because of concern about the economy and partly because she
+    recently quit her job as a legal assistant to go to school, ``I
+    think at this point we want to be a lot more liquid.'' 
+</text>
+        <arg n="0">she</arg>
+        <arg f="TMP" n="M">recently</arg>
+        <rel>quit</rel>
+        <arg n="1">her job as a legal assistant</arg>
+        <arg f="PNC" n="M">to go to school</arg>
+</example>
+
+<note>
+The intransitive merely takes an assumed 'job' argument.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

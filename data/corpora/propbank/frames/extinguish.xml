@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="extinguish">
+<note>
+  Frames file for 'extinguish' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="extinguish.01" name="put out, like a fire" vncls="-">
+<roles>
+  <role descr="extinguisher, agent" n="0"/>
+  <role descr="fire" n="1"/>
+  <role descr="instrument, if separate from arg0" n="2"/>
+</roles>
+
+<example name="just transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    It would extinguish all of Eagle's existing capital stock and
+    issue new stock to York as sole holder. 
+</text>
+        <arg n="0">It</arg>
+        <arg f="MOD" n="M">would</arg>
+        <rel>extinguish</rel>
+        <arg n="1">all of Eagle's existing capital stock</arg>
+</example>
+
+<note>
+Not sure if instrument will actually occur.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

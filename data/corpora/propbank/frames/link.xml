@@ -1,0 +1,71 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="link">
+<note>
+  Frames file for 'link' based on survey of sentences in financial
+  subcorpus and comparison with 'tie'.  Verbnet classes tape-22.4,
+  mix-22.1-2.
+</note>
+
+<roleset id="link.01" name="attach" vncls="22.1-2 22.4">
+<roles>
+  <role descr="agent, entity doing the tying" n="0">
+	<vnrole vncls="22.1-2" vntheta="Agent"/>
+        <vnrole vncls="22.4" vntheta="Agent"/></role>
+  <role descr="patient, thing(s) being tied" n="1">
+	<vnrole vncls="22.1-2" vntheta="Patient1"/>
+        <vnrole vncls="22.4" vntheta="Patient1"/></role>
+  <role descr="instrument, string" n="2">
+	<vnrole vncls="22.1-2" vntheta="Patient2"/>
+        <vnrole vncls="22.4" vntheta="Patient2"/></role>
+</roles>
+
+<example name="">
+  <text>
+    Analysts noted yesterday that Cray Research's decision *trace* to
+    link its $98.3 million promissory note to Mr. Cray's presence will
+    complicate a valuation of the new company.
+  </text>
+  <arg n="0">*trace*=Cray Research'</arg>
+  <rel>link</rel>
+  <arg n="1">its $98.3 million promissory note</arg>
+  <arg f="to" n="1">Mr. Cray's presence</arg>
+</example>
+
+<note>
+Cf other verbs-of-attachment for additional examples.
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="link_up">
+
+<roleset id="link.02" name="join" vncls="22.1-2">
+<roles>
+  <role descr="agent, entity doing the tying" n="0">
+	<vnrole vncls="22.1-2" vntheta="Agent"/></role>
+  <role descr="patient, thing(s) being tied" n="1">
+	<vnrole vncls="22.1-2" vntheta="Patient1"/></role>
+  <role descr="instrument, string" n="2">
+	<vnrole vncls="22.1-2" vntheta="Patient2"/></role>
+</roles>
+
+<example name="tie">
+  <text>
+    It hasn't diversified beyond steel, nor has it linked up with a
+    joint venture partner to share costs and risks.
+  </text>
+  <arg n="0">it</arg>
+  <rel>linked up</rel>
+  <arg f="with" n="1">a joint venture partner</arg>
+  <arg f="PNC" n="m">to share costs and risks.</arg>
+</example>
+
+<note>
+I'm assuming an implicit &quot;itself&quot; as the other arg1.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

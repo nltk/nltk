@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="peruse">
+<note>
+  Frames file for 'peruse' based on sentences in wsj.  No Verbnet
+  entry, Framenet entry Scrutiny.
+</note>
+
+<roleset id="peruse.01" name="examine idly" vncls="-">
+<roles>
+  <role descr="examiner, agent" n="0"/>
+  <role descr="thing perused" n="1"/>
+</roles>
+
+<example name="awkward ellipsis">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    Investment letters now abound,/ I really like to read them;/ If I
+    peruse enough, I've found/ I've no time left to heed them! 
+</text>
+        <arg n="0">I</arg>
+        <rel>peruse</rel>
+        <arg n="1">enough</arg>
+</example>
+
+<note>
+Arg1 is effectively &quot;enough of them&quot;.  But that wouldn't fit the metre.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,60 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="banish">
+<note>
+  Frames file for 'banish' based on sentences in wsj.  Verbnet entry 10.2.
+</note>
+
+<roleset id="banish.01" name="send away, expel" vncls="10.2">
+<roles>
+  <role descr="banisher, agent" n="0"><vnrole vncls="10.2" vntheta="Agent"/></role>
+  <role descr="entity expelled" n="1"><vnrole vncls="10.2" vntheta="Theme"/></role>
+  <role descr="expelled from" n="2"><vnrole vncls="10.2" vntheta="Source"/></role>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    The whole idea of computer-integrated manufacturing, CIM, seems to
+    be making a comeback after losing a little luster over the past
+    couple of years when it became apparent that it wasn't a panacea
+    that [*T*-1] would make U.S. plants more efficient and banish
+    foreign competition. 
+</text>
+        <arg n="0">[*T*-1] -&gt;  that -&gt;  a panacea</arg>
+        <arg f="MOD" n="M">would</arg>
+        <rel>banish</rel>
+        <arg n="1">foreign competition</arg>
+</example>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    Meanwhile, they tackle the mounds of paper -- and fantasize about
+    a dream world where bulk-mail postal regulations and government
+    inspectors are banished [*-1]. 
+</text>
+        <rel>banished</rel>
+        <arg n="1">[*-1] -&gt;  bulk-mail postal regulations and
+        government inspectors</arg> 
+</example>
+
+<example name="all args">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     Mary banished John from her bedroom forever.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>banished</rel>
+  <arg n="1">John</arg>
+  <arg f="from" n="2">her bedroom</arg>
+  <arg f="TMP" n="m">forever</arg>
+</example>
+
+<note>
+I have an intuition about a destination arg also; &quot;banish to the
+hinterlands&quot;. 
+</note>
+
+</roleset>
+</predicate>
+</frameset>

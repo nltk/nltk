@@ -1,0 +1,34 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="void">
+<note>
+  Frames file for 'void' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+
+<roleset id="void.01" name="to invalidate" vncls="10.6">
+<roles>
+  <role descr="voider, invalidator, agent" n="0">
+	<vnrole vncls="10.6" vntheta="Agent"/></role>
+  <role descr="entity made void" n="1">
+	<vnrole vncls="10.6" vntheta="Source"/></role>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ Many funds allow investors to void orders before the close of trading .
+</text>
+	<arg n="0">investors</arg>
+	<rel>void</rel>
+	<arg n="1">orders</arg>
+	<arg f="TMP" n="M">before the close of trading</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

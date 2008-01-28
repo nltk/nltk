@@ -1,0 +1,89 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="base">
+<note>
+Frames file for 'base', based on first handful of sentences from big corpus
+</note>
+
+<roleset id="base.01" name="be located in">
+<roles>
+  <role descr="institution" n="1"/>
+  <role descr="location" f="LOC" n="M"/>
+</roles>
+
+<example name="showing physical location">
+  <text>
+    Hearst, based *trace* in New York, ....
+  </text>
+  <rel>based</rel>
+  <arg n="1">*trace* -> Hearst</arg>
+  <arg f="LOC" n="M">in New York</arg>
+</example>
+
+<note>
+    Could have an Arg0, also:
+    John based his corporate headquarters in Philadelphia.
+    But that would be a little odd.
+</note>
+</roleset>
+
+<roleset id="base.02" name="justified by">
+<roles>
+  <role descr="justifier, agent (rarely seen)" n="0"/>
+  <role descr="decision" n="1"/>
+  <role descr="justification" n="2"/>
+</roles>
+
+<example name="justify">
+  <text>
+    ...a market structure based *trace* on such variables
+  </text>
+  <rel>based</rel>
+  <arg n="1">*trace*=market structure</arg>
+  <arg f="on" n="2">on such variables</arg>
+</example>
+
+<example name="transitive, agentive">
+  <text>
+    John based his decision on gut instinct
+  </text>
+  <arg n="0">John</arg>
+  <rel>based</rel>
+  <arg n="1">his decision</arg>
+  <arg f="on" n="2">on gut instinct</arg>
+</example>
+
+<example name="adverbial, with trace">
+  <text>
+    Milton Roy will pay an initial $ 4 million *TRACE*-*U* for the
+    operations and additional payments during the next four years
+    based *TRACE*-* on the earnings performance of the businesses.
+  </text>
+  <arg n="1">*TRACE=additional payments during the next four years*</arg>
+  <rel>based</rel>
+  <arg f="on" n="2">the earnings performance of the businesses</arg>
+</example>
+
+<example name="adverbial, without trace">
+  <text>
+    The exact amount of the refund will be determined *TRACE*-*-16
+    next year based on actual collections made *TRACE*-* until Dec. 31
+    of this year.
+  </text>
+  <arg n="1">The exact amount of the refund</arg>
+  <rel>based</rel>
+  <arg f="on" n="2">actual collections made *TRACE*-* until Dec. 31 of
+  this year</arg> 
+</example>
+
+
+</roleset>
+<note>
+There are some sentences where the arg1 is effectively a VP, such as
+&quot;The bond is rated Triple-A based on the quality of the underlying
+loans&quot;.  As such, these do not lend themselves to having a nice arg1
+annotated, since there is no constituent holding the event (in this
+case, the rating) that does not also hold the basing event.  Bummer.
+</note>
+</predicate>
+</frameset>

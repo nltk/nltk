@@ -1,0 +1,86 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="donate">
+<note>
+Frames file for 'donate' based on sentences in wsj and automatic
+expansion via verbnet.
+</note>
+
+<roleset id="donate.01" name="give" vncls="13.2">
+<roles>
+	<role descr="giver" n="0">
+		
+  <vnrole vncls="13.2" vntheta="Agent"/></role>
+
+	<role descr="thing given" n="1">
+		
+  <vnrole vncls="13.2" vntheta="Theme"/></role>
+
+	<role descr="entity given to" n="2">
+		
+  <vnrole vncls="13.2" vntheta="Recipient"/></role>
+
+</roles>
+
+<example name="all args">
+<inflection aspect="perfect" form="participle" person="ns" tense="past" voice="active"/>
+<text>
+    The company's U.S. subsidiary, Matsushita Electric Corp. of
+    America, had donated over $35,000 worth of Matsushita-made
+    flashlights and batteries to residents shortly after the disaster,
+    a company spokesman said. 
+</text>
+        <arg n="0">The company's U.S. subsidiary, Matsushita Electric
+        Corp. of America,</arg> 
+        <rel>donated</rel>
+        <arg n="1">over $35,000 worth of Matsushita-made flashlights
+        and batteries</arg> 
+        <arg f="to" n="2">residents</arg>
+        <arg f="TMP" n="M">shortly after the disaster</arg>
+</example>
+
+<example name="unstated recipient">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Sumitomo Bank donated $500,000, Tokyo prefecture $15,000 and the
+    city of Osaka $10,000. 
+</text>
+        <arg n="0">Sumitomo Bank</arg>
+        <rel>donated</rel>
+        <arg n="1">$500,000 </arg>
+</example>
+
+<note>
+Also some nice gapping in that sentence.
+</note>
+
+<example name="unstated gift">
+<inflection aspect="perfect" form="participle" person="ns" tense="past" voice="active"/>
+<text>
+    Then the two camps upped the ante: Reports that Chosen Soren had
+    donated directly to JSP members were rapidly countered by
+    statements that the South Korean residents' organization had long
+    been donating directly to LDP members. 
+</text>
+        <arg n="0">Chosen Soren</arg>
+        <rel>donated</rel>
+        <arg f="MNR" n="M">directly</arg>
+        <arg f="to" n="2">JSP members</arg>
+</example>
+
+<example name="only giver">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    They say it's possible some of their members may be donating
+    privately. 
+</text>
+        <arg n="0">some of their members</arg>
+        <arg f="MOD" n="M">may</arg>
+        <rel>donating</rel>
+        <arg f="MNR" n="M">privately</arg>
+</example>
+
+</roleset>
+
+</predicate>
+</frameset>

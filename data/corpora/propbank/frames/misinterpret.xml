@@ -1,0 +1,57 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="misinterpret">
+<note>
+  Frames file for 'misinterpret' based on transformation of 'interpret'.
+  No actual examination of corpus.
+</note>
+
+<roleset id="misinterpret.01" name="to explain badly, make no sense" vncls="-">
+<roles>
+  <role descr="explainer, agent" n="0"/>
+  <role descr="entity misinterpreted" n="1"/>
+  <role descr="attribute" n="2"/>
+</roles>
+
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="past" voice="passive"/>
+<text>
+ His comments were misinterpreted [*-1] as a sign that higher interest rates are possible .
+</text>
+	<rel>misinterpreted</rel>
+	<arg n="1">[*-1] -&gt;  His comments</arg>
+	<arg f="as" n="2">a sign that higher interest rates are possible</arg>
+</example>
+
+
+
+<example name="transitive">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+ They simply got carried away with [*-2] misinterpreting what the executive order banning assassinations really meant [*T*-1] .
+</text>
+	<arg n="0">[*-2] -&gt;  They</arg>
+	<rel>misinterpreting</rel>
+	<arg n="1">what the executive order banning assassinations really meant [*T*-1]</arg>
+</example>
+
+
+
+<example name="all arguments">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ Investors misinterpreted the KKR move as a desire [*ICH*-1] by the firm [*] to wash its hands of SCI TV .
+</text>
+	<arg n="0">Investors</arg>
+	<rel>misinterpreted</rel>
+	<arg n="1">the KKR move</arg>
+	<arg f="as" n="2">a desire [*ICH*-1] by the firm [*] to wash its hands of SCI TV</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

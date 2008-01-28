@@ -1,0 +1,88 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="sweeten">
+<note>
+  Frames file for 'sweeten' based on sentences in financial
+  subcorpus.  Verbnet class other_cos-45.4, a host of other framed
+  members.  Comparison with 'change'.
+</note>
+
+<roleset id="sweeten.01" name="make sweet" vncls="45.4">
+<roles>
+  <role descr="agent, entity causing sweetness" n="0">
+		
+  <vnrole vncls="45.4" vntheta="Agent"/></role>
+
+  <role descr="thing becoming sweet" n="1">
+		
+  <vnrole vncls="45.4" vntheta="Patient"/></role>
+
+  <role descr="explicit instrument" n="2"/>
+</roles>
+
+<example name="high-fructose corn syrup">
+  <text>
+    John sweetens his breath with garlic.
+  </text>
+  <arg n="0">John</arg>
+  <rel>sweetens</rel>
+  <arg n="1">his breath</arg>
+  <arg f="with" n="2">garlic</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="sweeten.02" name="improve, make more palatable">
+<roles>
+  <role descr="improver" n="0"/>
+  <role descr="thing improved" n="1"/>
+  <role descr="end state" n="2"/>
+  <role descr="start state" n="3"/>
+</roles>
+
+<example name="straight transitive">
+<text>
+    B.A.T Industries, which is being pursued by Sir James Goldsmith's
+    Hoylake Investments, rose 9 to 753 on speculation that Hoylake
+    will sweeten its bid, dealers said. 
+</text>
+        <arg n="0">Hoylake</arg>
+        <arg f="MOD" n="M">will</arg>
+        <rel>sweeten</rel>
+        <arg n="1">its bid</arg>
+</example>
+
+<example name="with end state">
+<text>
+    In August, Temple sweetened the offer to $63 a share, or $963
+    million.
+</text>
+        <arg f="TMP" n="M">In August</arg>
+        <arg n="0">Temple</arg>
+        <rel>sweetened</rel>
+        <arg n="1">the offer</arg>
+        <arg f="to" n="2">$63 a share, or $963 million</arg>
+</example>
+
+<example name="with start state">
+<text>
+    Vitro S.A., a major Mexican glass maker, said yesterday that it
+    agreed to buy Anchor Glass Container in a tender offer for $21.25
+    a share, sweetened from the original $20-a-share offer Vitro
+    launched two months ago.
+</text>
+        <rel>sweetened</rel>
+        <arg n="1">*trace* -&gt;  a tender offer for $ 21.25  a share</arg>
+        <arg f="from" n="3">the original $20-a-share offer Vitro
+        launched two months ago</arg> 
+</example>
+
+<note>
+Ignore adjectival usages like &quot;sugar sweetened cereals.&quot;
+</note>
+
+</roleset></predicate>
+</frameset>

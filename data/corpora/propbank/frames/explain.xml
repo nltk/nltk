@@ -1,0 +1,95 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="explain">
+<note>
+Frames file for 'explain' based on sentences in financial subcorpus
+and automatic expansion via verbnet.
+</note>
+
+<roleset id="explain.01" name="explain" vncls="37.1">
+<roles>
+	<role descr="explainer" n="0">
+		
+  <vnrole vncls="37.1" vntheta="Agent"/></role>
+
+	<role descr="thing explained" n="1">
+		
+  <vnrole vncls="37.1" vntheta="Topic"/></role>
+
+	<role descr="explained to" n="2">
+		
+  <vnrole vncls="37.1" vntheta="Recipient"/></role>
+
+</roles>
+
+<example name="explain an NP">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    Chairman Thomas S. Murphy cited Capital Cities' nine daily
+    newspapers in *trace* explaining most of the gain. 
+</text>
+        <arg n="0">*trace* -&gt;  Chairman Thomas S. Murphy</arg>
+        <rel>explaining</rel>
+        <arg n="1">most of the gain</arg>
+</example>
+
+<example name="explain as verb of saying">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    ``When I made this investment, I made it on a lifetime basis,'' he
+    explains *trace*. 
+</text>
+        <arg n="0">he</arg>
+        <rel>explains</rel>
+        <arg n="1">*trace* -&gt;  ``When I made this investment, I made
+        it on a lifetime basis,''</arg> 
+</example>
+
+<example name="explain an SBAR">
+<inflection aspect="progressive" form="gerund" person="ns" tense="ns" voice="active"/>
+<text>
+    There are no plans to initiate a common stock dividend,
+    Mr. Johnson said, *trace* explaining that the board continues to
+    believe shareholders are best served by reinvesting excess cash. 
+</text>
+        <arg n="0">*trace* -&gt;  Mr. Johnson</arg>
+        <rel>explaining</rel>
+        <arg n="1">the board continues to believe shareholders are
+        best served by reinvesting excess cash</arg> 
+<note>
+Note that the complementizer is not included in the statement
+</note>
+</example>
+
+<example name="explain a WH-clause">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    He predicted the debt will be reduced by another A$3.8 billion
+    this fiscal year ending June 30, 1990, but didn't explain how this
+    will be achieved. 
+</text>
+        <arg n="0">He</arg>
+        <arg f="NEG" n="M">n't</arg>
+        <rel>explain</rel>
+        <arg n="1">how this will be achieved  </arg>
+<note>
+Note that wh-complementizers ARE included in the arg.
+</note>
+</example>
+
+<example name="with hearer">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     Mary explained to John for the hundredth time why she wouldn't
+     have sex with him.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>explained</rel>
+  <arg f="to" n="2">John</arg>
+  <arg f="TMP" n="m">for the hundredth time</arg>
+  <arg n="1">why she wouldn't have sex with him</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

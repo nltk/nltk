@@ -1,0 +1,57 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="triumph">
+<note>
+  Frames file for 'triumph' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="triumph.01" name="win" vncls="-">
+<roles>
+  <role descr="winner" n="0"/>
+  <role descr="loser" n="1"/>
+  <role descr="competition" n="2"/>
+</roles>
+
+<example name="just winner">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Unlike other writers who either battled the fascists during the
+    Civil War, or left Spain when Franco triumphed [*T*-2], Mr. Cela
+    fought briefly on the general's side, no doubt earning with his
+    war wound some forbearance when he went on to depict a country
+    with a high population of vagabonds, murderers and rural idiots
+    trudging aimlessly through a dried-out land. 
+</text>
+        <arg n="0">Franco</arg>
+        <rel>triumphed</rel>
+</example>
+
+<example name="winner and competition">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    So much, too, for the notion that we humans triumphed in the
+    Darwinian struggle by [*-1] evolving big brains. 
+</text>
+        <arg n="0">we humans</arg>
+        <rel>triumphed</rel>
+        <arg f="in" n="2">the Darwinian struggle</arg>
+        <arg f="MNR" n="M">by [*-1] evolving big brains</arg>
+</example>
+
+<example name="winner and loser">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John finally triumphed over Mary.
+  </text>
+  <arg n="0">John</arg>
+  <arg f="TMP" n="m">finally</arg>
+  <rel>triumphed</rel>
+  <arg f="over" n="1">Mary</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

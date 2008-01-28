@@ -1,0 +1,58 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="affect">
+<note>
+  Frames file for 'affect' based on survey of initial sentences of big
+  corpus.
+</note>
+
+<roleset id="affect.01" name="have an effect on" vncls="31.1">
+<roles>
+  <role descr="thing affecting--animate only!" n="0">
+	<vnrole vncls="31.1" vntheta="Cause"/></role>
+  <role descr="thing affected" n="1">
+	<vnrole vncls="31.1" vntheta="Experiencer"/></role>
+  <role descr="instrument" n="2"/>
+</roles>
+
+<example name="simple transitive">
+  <text>
+  The funding mechanism would affect the antitrust operations of the
+  Justice Department and the Federal Trade Commission.
+  </text>
+  <arg n="0">The funding mechanism</arg>
+  <arg f="MOD" n="m">would</arg>
+  <rel>affect</rel>
+  <arg n="1">the antitrust operations of the
+  Justice Department and the Federal Trade Commission</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="affect.02" name="assume, take on">
+<roles>
+  <role descr="agent, assumer" n="0"/>
+  <role descr="characteristic" n="1"/>
+</roles>
+
+<example name="copycat">
+  <text>
+  Salesmen will affect the accent of the region of the country they
+  are calling.
+  </text>
+  <arg n="0">Salesmen</arg>
+  <arg f="MOD" n="m">will</arg>
+  <rel>affect</rel>
+  <arg n="1">the accent of the region of the country they
+  are calling.</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

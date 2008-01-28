@@ -1,0 +1,66 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="rally">
+<note>
+  Frames file for 'rally' based on sentences in financial subcorpus.
+  No verbnet entry.  No comparison.
+</note>
+
+<roleset id="rally.01" name="summon to a cause">
+<roles>
+  <role descr="summoner" n="0"/>
+  <role descr="summoned" n="1"/>
+  <role descr="cause" n="2"/>
+</roles>
+
+<example name="rally 'round the flag">
+<text>
+    Charles Wohlstetter, the chairman of Contel Corp. who is rallying
+    other CEOs to the anti-program trading cause...
+</text>
+        <arg n="0">the chairman -&gt; *trace* -&gt;  who</arg>
+        <rel>rallying</rel>
+        <arg n="1">other CEOs</arg>
+        <arg f="to" n="2">the anti-program trading cause</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="rally.02" name="(cause to) suddenly show better performance">
+<roles>
+  <role descr="causative agent" n="0"/>
+  <role descr="performer" n="1"/>
+    <role descr="EXT, amount risen" n="2"/>
+    <role descr="start point" n="3"/>
+    <role descr="end point" n="4"/>
+</roles>
+
+<example name="ergative">
+<text>
+ Stock prices rallied in active trading .
+</text>
+        <arg n="1">Stock prices</arg>
+        <rel>rallied</rel>
+        <arg f="LOC" n="M">in active trading</arg>
+</example>
+
+<example name="quantifiable?  apparently">
+<text>
+    Elsewhere in the oil sector, Exxon rallied 7/8 to 45 3/4.
+</text>
+        <arg f="LOC" n="M">Elsewhere in the oil sector</arg>
+        <arg n="1">Exxon</arg>
+        <rel>rallied</rel>
+        <arg f="EXT" n="2">7\/8</arg>
+        <arg f="to" n="4">45 3\/4</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

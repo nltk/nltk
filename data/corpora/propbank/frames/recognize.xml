@@ -1,0 +1,100 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="recognize">
+<note>
+  Frames file for 'recognize' based on sentences in financial
+  subcorpus.  Verbnet classes 29.5 30.2, other framed members include
+  observe, deny; regard, scrutinize, study.  Comparison
+  with 
+</note>
+
+<roleset id="recognize.01" name="assign a label or attribute" vncls="29.5 30.2">
+<roles>
+  <role descr="describer" n="0">
+		
+		
+  <vnrole vncls="29.5" vntheta="Agent"/><vnrole vncls="30.2" vntheta="Experiencer"/></role>
+
+  <role descr="thing described, utterance" n="1">
+		
+		
+  <vnrole vncls="29.5" vntheta="Theme"/><vnrole vncls="30.2" vntheta="Stimulus"/></role>
+
+  <role descr="secondary attribute, described-as" n="2">
+		
+  <vnrole vncls="29.5" vntheta="Predicate"/></role>
+
+</roles>
+
+<example name="all args">
+<text>
+    I was pleased to note that your Oct. 23 Centennial Journal item
+    recognized the money-fund concept as one of the significant events
+    of the past century. 
+</text>
+        <arg n="0">your Oct. 23 Centennial Journal item</arg>
+        <rel>recognized</rel>
+        <arg n="1">the money-fund concept</arg>
+        <arg f="as" n="2">one of the significant events of the past
+        century</arg> 
+</example>
+
+<example name="just transitive">
+<text>
+    The company said the move recognizes its strong financial
+    position. 
+</text>
+        <arg n="0">the move</arg>
+        <rel>recognizes</rel>
+        <arg n="1">its strong financial position</arg>
+</example>
+
+<example name="passive with it support">
+<text>
+    People were interested in seeing him, but it was recognized
+    *trace* that the route was through Sotheby's and particularly
+    George Wachter.'' 
+</text>
+        <rel>recognized</rel>
+        <arg n="1">the route was through Sotheby's and particularly
+        George Wachter</arg> 
+</example>
+
+<note>
+The trace and coref'ed 'it' don't play any thematic role and should be
+ignored.
+</note>
+
+<note>
+Maybe this should be split into multiple senses.  We'll see.
+</note>
+
+</roleset>
+
+<roleset id="recognize.02" name="state as true" vncls="-">
+<roles>
+  <role descr="stater" n="0"/>
+  <role descr="true proposition" n="1"/>
+</roles>
+
+<example name="the public good">
+  <inflection aspect="perfect" form="participle" person="ns" tense="past" voice="active"/>
+  <text>
+     Decisions by the Second Circuit itself, Judge Oakes continued,
+  had recognized that public interest in the subject matter and the
+  indispensability in particular cases of verbatim quotations are
+  vital components of fair use. 
+</text>
+  <arg n="0">Decisions by the Second Circuit itself</arg>
+  <rel>recognized</rel>
+  <arg n="1">public interest in the subject matter and the
+  indispensability in particular cases of verbatim quotations are
+  vital components of fair use.</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

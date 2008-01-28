@@ -1,0 +1,63 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="dilute">
+<note>
+  Frames file for 'dilute' based on sentences in financial subcorpus.
+  No Verbnet entry.  Comparison with 'weaken'.
+</note>
+
+<roleset id="dilute.01" name="water down, make weaker">
+<roles>
+  <role descr="causal agent" n="0"/>
+  <role descr="thing weakening" n="1"/>
+  <role descr="EXT" n="2"/>
+  <role descr="start point" n="3"/>
+  <role descr="end point" n="4"/>
+  <role descr="instrument" n="5"/>
+</roles>
+
+<example name="just transitive">
+<text>
+    Mr. Hahn said Georgia-Pacific has accounted in its strategy for a
+    ``significant downturn'' in the pulp and paper industry, an event
+    that he said *trace* would temporarily dilute earnings. 
+</text>
+        <arg n="0">*trace* -&gt;  that -&gt;  an event</arg>
+        <arg f="MOD" n="M">would</arg>
+        <arg f="TMP" n="M">temporarily</arg>
+        <rel>dilute</rel>
+        <arg n="1">earnings</arg>
+</example>
+
+<example name="with extent">
+<text>
+    William O. McCoy, president of the company's BellSouth Enterprises
+    Inc. unit, said the revised agreement with LIN would dilute
+    BellSouth earnings by about 9% in both 1990 and 1991.  
+</text>
+        <arg n="0">the revised agreement with LIN</arg>
+        <arg f="MOD" n="M">would</arg>
+        <rel>dilute</rel>
+        <arg n="1">BellSouth earnings</arg>
+        <arg f="by" n="2">about 9%</arg>
+        <arg f="TMP" n="M">in both 1990 and 1991</arg>
+</example>
+
+<note>
+There's some financial usage of &quot;fully diluted stocks&quot; which I don't
+understand, but which is clearly adjectival and thus can be ignored.
+</note>
+
+<example name="with instrument">
+  <text>
+    John diluted the perfectly aged Bordeaux with Mad Dog.
+  </text>
+  <arg n="0">John</arg>
+  <rel>diluted</rel>
+  <arg n="1">the perfectly aged Bordeaux</arg>
+  <arg f="with" n="5">Mad Dog</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

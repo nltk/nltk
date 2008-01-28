@@ -1,0 +1,64 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="assess">
+<note>
+  Frames file for 'assess' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="assess.01" name="to evaluate, appraise" vncls="34 54.4">
+<roles>
+  <role descr="assessor, agent" n="0">
+	<vnrole vncls="34" vntheta="Agent"/>
+        <vnrole vncls="54.4" vntheta="Agent"/></role>
+  <role descr="entity assessed" n="1">
+	<vnrole vncls="34" vntheta="Theme"/>
+        <vnrole vncls="54.4" vntheta="Theme"/></role>
+  <role descr="value or attribute" n="2">
+	<vnrole vncls="34" vntheta="Cause"/>
+        <vnrole vncls="54.4" vntheta="Attribute"/></role>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ If both agencies find violations of the U.S. trade law , the U.S. would assess penalty duties on the imports , which [*T*-1] already are subject to import quotas under bilateral textile and apparel trade agreements .
+</text>
+	<arg f="ADV" n="M">If both agencies find violations of the U.S. trade law</arg>
+	<arg n="0">the U.S.</arg>
+	<arg f="MOD" n="M">would</arg>
+	<rel>assess</rel>
+	<arg n="1">[ penalty duties] [ on the imports , which [*T*-1] already are subject to import quotas under bilateral textile and apparel trade agreements]</arg>
+</example>
+
+
+<example name="Arg2 as a value">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ The IRS assessed the clinic $ 350,000 [*U*] in back payroll taxes .
+</text>
+	<arg n="0">The IRS</arg>
+	<rel>assessed</rel>
+	<arg n="1">the clinic</arg>
+	<arg n="2">$ 350,000 [*U*] in back payroll taxes</arg>
+</example>
+
+
+<example name="Arg2 as an attribute">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ It assessed nearly $ 500,000 [*U*] against a cruise-ship company that [*T*-1] carried about 100 deckhands , cooks , bartenders , entertainers and other employees as self-employed independents .
+</text>
+	<arg n="0">It</arg>
+	<rel>assessed</rel>
+	<arg n="1">nearly $ 500,000 [*U*]</arg>
+	<arg f="against" n="2">a cruise-ship company that [*T*-1] carried about 100 deckhands , cooks , bartenders , entertainers and other employees as self-employed independents</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

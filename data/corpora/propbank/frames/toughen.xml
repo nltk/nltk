@@ -1,0 +1,35 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="toughen">
+<note>
+  Frames file for 'toughen' based on sentences in wsj.  Verbnet entry 45.4.
+</note>
+
+<roleset id="toughen.01" name="make/be tough" vncls="45.4">
+<roles>
+  <role descr="cause of toughness, agent" n="0">
+        <vnrole vncls="45.4" vntheta="Agent"/></role>
+  <role descr="thing getting tough" n="1">
+        <vnrole vncls="45.4" vntheta="Patient"/></role>
+</roles>
+
+<example name="agentive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    The White House has likewise avoided any involvement in Florida's
+    recent special legislative session on abortion, which
+    anti-abortion forces had regarded as a key test of their ability
+    to get state lawmakers to toughen abortion restrictions. 
+</text>
+        <arg n="0">state lawmakers</arg>
+        <rel>toughen</rel>
+        <arg n="1">abortion restrictions</arg>
+</example>
+
+<note>
+could occur as ergative?
+</note>
+
+</roleset>
+</predicate>
+</frameset>

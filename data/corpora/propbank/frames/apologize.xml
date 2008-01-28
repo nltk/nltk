@@ -1,0 +1,61 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="apologize">
+<note>
+  Frames file for 'apologize' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="apologize.01" name="be contrite" vncls="-">
+<roles>
+  <role descr="apologist" n="0"/>
+  <role descr="apologize for" n="1"/>
+  <role descr="apologized to" n="2"/>
+</roles>
+
+<example name="intransitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    The company later apologized and agreed to make $8 million in
+    contributions to charities chosen by him. 
+</text>
+        <arg n="0">The company</arg>
+        <arg f="TMP" n="M">later</arg>
+        <rel>apologized</rel>
+</example>
+
+<example name="transitive">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+    Fujitsu Ltd.'s top executive took the unusual step of *trace*
+    publicly apologizing for his company's making bids of just one yen
+    for several local government projects, while computer rival NEC
+    Corp. made a written apology for indulging in the same practice. 
+</text>
+        <arg n="0">*trace* -&gt;  Fujitsu Ltd.'s top executive</arg>
+        <arg f="MNR" n="M">publicly</arg>
+        <rel>apologizing</rel>
+        <arg f="for" n="1">his company's making bids of just one yen
+        for several local government projects</arg> 
+</example>
+
+<example name="with apologized-to">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    Mary always apologized to John after hitting him, but she kept
+    doing it anyway.
+  </text>
+  <arg n="0">Mary</arg>
+  <arg f="TMP" n="m">always</arg>
+  <rel>apologized</rel>
+  <arg f="to" n="2">John</arg>
+  <arg f="TMP" n="m">after hitting him</arg>
+</example>
+
+<note>
+Could also be a verb of saying: &quot;'I'm sorry,' apologized Mary.&quot; but
+this doesn't occur in wsj.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

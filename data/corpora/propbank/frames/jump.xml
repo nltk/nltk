@@ -1,0 +1,98 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="jump">
+<note>
+  Frames file for 'jump' based on survey of initial sentences of big
+  corpus and comparison with 'increase'
+</note>
+
+<roleset id="jump.01" name="stock prices" vncls="45.6">
+<roles>
+  <role descr="thing jumping" n="1">
+	  <vnrole vncls="45.6" vntheta="Patient"/></role>
+  <role descr="EXT, amount jumped by" n="2">
+	  <vnrole vncls="45.6" vntheta="Extent"/></role>
+  <role descr="start point" n="3"/>
+  <role descr="end point or end state of arg1" n="4"/>
+</roles>
+
+<example name="">
+  <text>
+    Cray Research stock jumped $2.875 yesterday to close at $38.
+  </text>
+  <arg n="1">Cray Research stock</arg>
+  <rel>jumped</rel>
+  <arg n="2">$2.875</arg>
+  <arg f="TMP" n="m">yesterday</arg>
+  <arg n="4">to close at $38</arg>
+</example>
+
+<note>
+Recall from 'rise' and 'gain' etc that arg2 can also be a MNR, as in
+&quot;jumped sharply&quot;.
+</note>
+
+</roleset>
+
+<roleset id="jump.02" name="be excited for an opportunity" vncls="-">
+<roles>
+  <role descr="jumper" n="0"/>
+  <role descr="opportunity" n="1"/>
+</roles>
+
+<example name="opportunity knocks">
+  <text>
+    Several new funds have jumped to trade at big premiums.
+  </text>
+  <arg n="0">Several new funds</arg>
+  <rel>jumped</rel>
+  <arg n="1">to trade at big premiums</arg>
+</example>
+
+</roleset>
+
+<roleset id="jump.03" name="physically leap" vncls="51.3.2">
+<roles>
+  <role descr="jumper" n="0">
+	  <vnrole vncls="51.3.2" vntheta="Theme"/></role>
+</roles>
+
+<example name="leap">
+  <text>
+    John jumped off the roof.
+  </text>
+  <arg n="0">John</arg>
+  <rel>jumped</rel>
+  <arg f="DIR" n="m">off the roof</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="jump_in">
+<note>
+  basically the same as &quot;be excited at an opportunity&quot; roleset
+</note>
+
+<roleset id="jump.04" name="opportunity" vncls="-">
+<roles>
+  <role descr="jumper" n="0"/>
+  <role descr="opportunity" n="1"/>
+</roles>
+
+<example name="knock knock">
+  <text>
+    People are jumping in now to buy the funds.
+  </text>
+  <arg n="0">People</arg>
+  <rel>jumping_in</rel>
+  <arg f="TMP" n="m">now</arg>
+  <arg n="1">to buy the funds</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

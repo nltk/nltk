@@ -1,0 +1,117 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<note>
+Frames file for 'try' based on survey of initial sentences from big corpus
+</note>
+<predicate lemma="try">
+<roleset id="try.01" name="Attempt" vncls="-">
+  <roles>
+    <role descr="Agent/Entity Trying" n="0"/>
+    <role descr="thing tried" n="1"/>
+  </roles>
+
+<example name="predicative arg1">
+  <text>
+    Newsweek is trying to keep pace with rival Time magazine.
+  </text>
+  <arg n="0">Newsweek</arg>
+  <rel>trying</rel>
+  <arg n="1">to keep pace with rival Time magazine</arg>
+</example>
+
+<example name="nominal Arg1">
+  <text>  
+    Banks have tried packaging before.
+  </text>
+  <arg n="0">Banks</arg>
+  <rel>tried</rel>
+  <arg n="1">packaging</arg>
+  <arg f="TMP" n="M">before</arg>
+</example>
+
+<example name="serial verb, almost">
+  <inflection person="ns" tense="ns" aspect="ns" voice="active" form="infinitive"/>
+  <text>
+     But the effort is also being made * to try and cause jurors not
+     to decide things rationally.
+  </text>
+  <arg n="0"        >*</arg>
+  <rel              >try</rel>
+  <arg n="1">cause jurors not to decide things rationally</arg>
+</example>
+</roleset>
+
+<roleset id="try.02" name="Lawsuit" vncls="-">
+  <roles>
+    <role descr="Litigant" n="0"/>
+    <role descr="Lawsuit" n="1"/>
+  </roles>
+
+<example name="misparsed passive">
+  <text>
+    The case wasn't   tried in court.
+  </text>
+  <arg n="1">The case</arg>
+  <arg f="NEG" n="M">n't</arg>
+  <rel>tried</rel>
+  <arg f="LOC" n="M">in court</arg>
+</example>
+
+</roleset>
+
+<roleset id="try.04" vncls="-" name="idiom: try one's hand at">
+<roles>
+  <role n="0"  descr="tryer"/>
+  <role n="1"  descr="hand"/>
+  <role n="2"  descr="true task"/>
+</roles>
+
+<example name="go on, give it a shot">
+  <inflection person="ns" tense="ns" aspect="ns" voice="active" form="infinitive"/>
+  <text>
+     As previously reported, the account is troubled, with Philip
+     Morris asking Backer Spielvogel Bates, Ogilvy &amp; Mather, and
+     possibly others to try their hand at developing new creative
+     work. 
+  </text>
+  <arg n="0"        >Backer Spielvogel Bates, Ogilvy &amp; Mather, and
+  possibly others</arg>
+  <rel              >try</rel>
+  <arg n="1"        >their hand</arg>
+  <arg n="2" f="at">developing new creative work</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="try_out">
+
+<roleset id="try.03" vncls="-" name="audition">
+<roles>
+  <role descr="auditionee" n="0"/>
+  <role descr="role" n="1"/>
+  <role descr="casting agency" n="2"/>
+</roles>
+
+<example name="tryouts">
+  <inflection person="ns" tense="ns" aspect="ns" voice="active" form="infinitive"/>
+  <text>
+       The nagging memory of one afternoon fourteen years ago drove
+       Jim Gideon, a lean 36-year-old righthander to take a four-month
+       leave from selling insurance in Texas [*-1] to try out for
+       Mr. Weaver's team. 
+  </text>
+  <arg n="0"        >[*-1] -> Jim Gideon, a lean 36-year-old righthander</arg>
+  <rel              >[try] [out]</rel>
+  <arg n="1" f="for">Mr. Weaver's team</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

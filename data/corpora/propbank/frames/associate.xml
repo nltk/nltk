@@ -1,0 +1,61 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="associate">
+<note>
+  Frames file for 'associate' based on sentences in financial
+  subcorpus.  Verbnet entry amalgamate-22.3, 22.5; other framed
+  members include incorporate.  Comparison with 'include'
+</note>
+
+<roleset id="associate.01" name="include in some group" vncls="22.2">
+<roles>
+  <role descr="agent, entity causing some grouping, making an   association" n="0">
+		
+		
+  </role>
+ 
+  <role descr="theme, thing being included in some group" n="1">
+		
+		
+  <vnrole vncls="22.2" vntheta="Patient1"/></role>
+
+  <role descr="group, associated-with" n="2">
+		
+		
+  <vnrole vncls="22.2" vntheta="Patient2"/></role>
+
+</roles>
+
+<example name="typical, semi-prepositional usage">
+<text>
+    Dan E. Nelms, Valley Federal's president and chief executive
+    officer, said the one-time charge substantially eliminates future
+    losses associated *trace* with the unit . 
+</text>
+        <rel>associated</rel>
+        <arg n="1">*trace* -&gt;  future losses</arg>
+        <arg f="with" n="2">the unit</arg>
+</example>
+
+<note>
+The trace is rarely included in the automatic tagging (but should
+always be); occasionally treebank fails to put the tag in at all.
+</note>
+
+<example name="made-up agentive">
+  <text>
+    John associates the smell of roofing tar with his mother's cooking.
+  </text>
+  <arg n="0">John</arg>
+  <rel>associates</rel>
+  <arg n="1">the smell of roofing tar</arg>
+  <arg f="with" n="2">his mother's cooking</arg>
+</example>
+
+<note>
+I honestly have no idea where I get these examples from.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

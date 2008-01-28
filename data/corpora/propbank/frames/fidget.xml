@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="fidget">
+<note>
+  Frames file for 'fidget' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="fidget.01" name="to behave restlessly, play or fuss" vncls="49">
+<roles>
+  <role descr="restless entity, agent" n="0">
+        <vnrole vncls="49" vntheta="Agent"/></role>
+  <role descr="thing fidgeting with" n="1">
+        <vnrole vncls="49" vntheta="Patient"/></role>
+</roles>
+
+<example name="transitive">
+<inflection aspect="progressive" form="participle" person="third" tense="present" voice="active"/>
+<text>
+ It [*EXP*-2] is indeed hard [*] to back away from a widely publicized forecast , and Mr. Straszheim is fidgeting with the handcuffs on this trip .
+</text>
+	<arg n="0">Mr. Straszheim</arg>
+	<rel>fidgeting</rel>
+	<arg f="with" n="1">the handcuffs</arg>
+	<arg f="LOC" n="M">on this trip</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

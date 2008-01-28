@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="canvass">
+<note>
+  Frames file for 'canvass' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="canvass.01" name="to survey widely" vncls="-">
+<roles>
+  <role descr="surveyor, agent" n="0"/>
+  <role descr="entity canvassed" n="1"/>
+</roles>
+
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="future" voice="passive"/>
+<text>
+ Mr. Whittle said [0] private and parochial schools in both states will be canvassed [*-1] [*] to see if they are interested in [*-2] getting the programs .
+</text>
+	<arg f="MOD" n="M">will</arg>
+	<rel>canvassed</rel>
+	<arg n="1">[*-1] -&gt;  private and parochial schools in both states</arg>
+	<arg f="PNC" n="M">[*] to see if they are interested in [*-2] getting the programs</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

@@ -1,0 +1,56 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="amuse">
+<note>
+  Frames file for 'amuse' based on sentences in wsj.  Verbnet entry 31.1.
+</note>
+
+<roleset id="amuse.01" name="cause mirth" vncls="31.1">
+<roles>
+  <role descr="causer of mirth" n="0"><vnrole vncls="31.1" vntheta="Cause"/></role>
+  <role descr="mirthful entity" n="1"><vnrole vncls="31.1" vntheta="Experiencer"/></role>
+  <role descr="instrument" n="2"/>
+</roles>
+
+<example name="intransitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    Better to look in the corners for performances that [*T*-1]
+    inspire or amuse. 
+</text>
+        <arg n="0">[*T*-1] -&gt;  that -&gt;  performances</arg>
+        <rel>amuse</rel>
+</example>
+
+<example name="arg0 as SBAR">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    I was amused [*-2] to read your recent news stories on the banking
+    industry's reserve additions and concomitant threats to cease
+    making new loans to less-developed countries. 
+</text>
+        <arg n="1">I</arg>
+        <rel>amused</rel>
+        <arg n="0">[*-2] to read your recent news stories on the
+        banking industry's reserve additions and concomitant threats
+        to cease making new loans to less-developed countries</arg> 
+</example>
+
+<example name="all args">
+  <inflection aspect="ns" form="full" person="ns" tense="ns" voice="active"/>
+  <text>
+     John can amuse himself for hours with a piece of yarn.
+  </text>
+  <arg n="0">John</arg>
+  <arg f="MOD" n="m">can</arg>
+  <rel>amuse</rel>
+  <arg f="REC" n="1">himself</arg>
+  <arg f="TMP" n="m">for hours</arg>
+  <arg f="with" n="2">a piece of yarn</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

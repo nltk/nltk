@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="detest">
+<note>
+  Frames file for 'detest' based on sentences in wsj.  Verbnet entry
+  31.2, Framenet entry Experiencer subj.
+</note>
+
+<roleset id="detest.01" name="hate strongly" vncls="31.2">
+<roles>
+  <role descr="experiencer" n="0"><vnrole vncls="31.2" vntheta="Experiencer"/></role>
+  <role descr="target or hatred" n="1"><vnrole vncls="31.2" vntheta="Cause"/></role>
+</roles>
+
+<example name="pretty simple">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    But small business, which [*T*-1] generally detests
+    government-mandated benefits, has taken note of the growing number
+    of close votes. 
+</text>
+        <arg n="0">[*T*-1] -&gt;  which -&gt;  small business</arg>
+        <arg f="ADV" n="M">generally</arg>
+        <rel>detests</rel>
+        <arg n="1">government-mandated benefits</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

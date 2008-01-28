@@ -1,0 +1,72 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="produce">
+<note>
+  Frames file for 'produce' based on survey of initial sentences of
+  big corpus and comparison with 'make'
+</note>
+
+<roleset id="produce.01" name="create" vncls="26.4 26.7-2">
+<roles>
+  <role descr="creator" n="0">
+		
+		
+  <vnrole vncls="26.7-2" vntheta="Agent"/><vnrole vncls="26.4" vntheta="Agent"/></role>
+
+  <role descr="creation" n="1">
+		
+		
+  <vnrole vncls="26.7-2" vntheta="Theme"/><vnrole vncls="26.4" vntheta="Product"/></role>
+
+  <role descr="created-from, thing changed" n="2">
+		
+  <vnrole vncls="26.4" vntheta="Material"/></role>
+
+  <role descr="benefactive" n="3">
+		
+		
+  <vnrole vncls="26.7-2" vntheta="Beneficiary"/><vnrole vncls="26.4" vntheta="Beneficiary"/></role>
+
+</roles>
+
+<example name="straight transitive">
+  <text>
+  The plant will produce control devices used in motor vehicles and
+  household appliances.
+  </text>
+  <arg n="0">The plant</arg>
+  <arg f="MOD" n="m">will</arg>
+  <rel>produce</rel>
+  <arg n="1">control devices used in motor vehicles and
+  household appliances.</arg>
+</example>
+
+<example name="passivized">
+  <text>
+  The test and Learning Materials are both produced by the same
+  company, Macmillan/McGraw-Hill.
+  </text>
+  <arg n="1">The test and Learning Materials</arg>
+  <arg f="DIS" n="m">both</arg>
+  <rel>produced</rel>
+  <arg f="by" n="0">the same company, Macmillan/McGraw-Hill.</arg>
+</example>
+
+<example name="with benefactive">
+  <text>
+  A contractor will produce vital equipment for the Army and Navy.
+  </text>
+  <arg n="0">A contractor</arg>
+  <arg f="MOD" n="m">will</arg>
+  <rel>produce</rel>
+  <arg n="1">vital equipment</arg>
+  <arg f="for" n="3">the Army and Navy</arg>
+</example>
+
+<note>
+Avoid adjectival usages like &quot;sugar producing nations&quot;
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,43 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="oust">
+<note>
+  Frames file for 'oust' based on sentences in financial subcorpus.
+  No access to verbnet.  Comparison to 'eliminate' and 'fire'.
+</note>
+
+<roleset id="oust.01" name="cause to cease employment" vncls="10.1">
+<roles>
+  <role descr="employer" n="0">
+		
+  <vnrole vncls="10.1" vntheta="Agent"/></role>
+
+  <role descr="ex-employee" n="1">
+		
+  <vnrole vncls="10.1" vntheta="Theme"/></role>
+
+  <role descr="job" n="2">
+		
+  <vnrole vncls="10.1" vntheta="Source"/></role>
+
+</roles>
+
+<example name="all args">
+<text>
+    Mr. Ackerman already is seeking *trace* to oust Mr. Edelman as
+    chairman of Datapoint Corp., an Intelogic affiliate. 
+</text>
+        <arg n="0">*trace* -&gt;  Mr. Ackerman</arg>
+        <rel>oust</rel>
+        <arg n="1">Mr. Edelman</arg>
+        <arg f="as" n="2">chairman of Datapoint Corp., an Intelogic
+        affiliate</arg> 
+</example>
+
+<note>
+extrapolate passives, forms without job from here.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

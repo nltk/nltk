@@ -1,0 +1,52 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="enrich">
+<note>
+Frames file for 'enrich' based on sentences in wsj and automatic
+expansion via verbnet.
+</note>
+
+<roleset id="enrich.01" name="add value" vncls="9.8">
+<roles>
+  <role descr="entity adding value, agent" n="0">
+	<vnrole vncls="9.8" vntheta="Agent"/></role>
+  <role descr="thing becoming enriched" n="1">
+	<vnrole vncls="9.8" vntheta="Destination"/></role>
+  <role descr="vitamins (eg)" n="2">
+	<vnrole vncls="9.8" vntheta="Theme"/></role>
+</roles>
+
+<example name="just transitive">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    Mr. Steinhardt, who runs about $1.7 billion for Steinhardt
+    Partners, made his name as a gunslinging trader, *trace* moving in
+    and out of stocks with agility -- *trace* enriching himself and his
+    investment clients. 
+</text>
+        <arg n="0">*trace* -&gt; *trace* -&gt;  Mr. Steinhardt, who runs
+        about $1.7 billion for Steinhardt Partners,</arg> 
+        <rel>enriching</rel>
+        <arg n="1">himself and his investment clients</arg>
+</example>
+
+<example name="with vitamins" src="contaminate.01">
+  <inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+  <text>
+    John enriches any room he enters with his sparkling personality.
+  </text>
+  <arg n="0">John</arg>
+  <rel>contaminates</rel>
+  <arg n="1">any room he enters</arg>
+  <arg f="with" n="2">his sparkling personality</arg>
+</example>
+
+<note>
+Arg2 will probably not occur very often.  In financial usage it
+defaults to 'money'.
+</note>
+
+</roleset>
+
+</predicate>
+</frameset>

@@ -1,0 +1,53 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="chisel">
+<note>
+  Frames file for 'chisel' based on sentences in wsj.  Verbnet entry 26.1.
+</note>
+
+<roleset id="chisel.01" name="use a chisel to build something" vncls="26.1-1">
+<roles>
+  <role descr="builder" n="0">
+	<vnrole vncls="26.1-1" vntheta="Agent"/></role>
+  <role descr="construction" n="1">
+	<vnrole vncls="26.1-1" vntheta="Product"/></role>
+  <role descr="material, start state" n="2">
+	<vnrole vncls="26.1-1" vntheta="Material"/></role>
+  <role descr="end state of arg1" n="4">
+        <vnrole vncls="26.1-1" vntheta="Product"/></role>
+</roles>
+
+<example name="weird example">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+    Looking leaner than he has in a while, the younger Mr. Bridges's
+    Jack is sexy and cynical and a far sadder case than Frank, who
+    [*T*-1]'s managed [*-20] to chisel his dreams [*-2] to fit reality
+    without feeling too cheated. 
+</text>
+        <arg n="0">[*-20] -&gt;  [*T*-1] -&gt;  who -&gt;  Frank</arg>
+        <rel>chisel</rel>
+        <arg n="1">his dreams</arg>
+        <arg n="4">[*-2] to fit reality</arg>
+        <arg n="M">without feeling too cheated</arg>
+<note>I'm taking the 'fitting reality' as an end state of the dreams.
+        Like I said, a weird example.</note>
+</example>
+
+<example name="more clearly building">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John chiseled a perfect portrait of Mary out of a block of ice.
+  </text>
+  <arg n="0">John</arg>
+  <rel>chiseled</rel>
+  <arg n="1">a perfect portrait of Mary</arg>
+  <arg f="out of" n="2">a block of ice</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

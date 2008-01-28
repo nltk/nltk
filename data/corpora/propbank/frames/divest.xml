@@ -1,0 +1,54 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="divest">
+<note>
+Frames file for 'divest' based on sentences in financial subcorpus and
+automatic expansion via verbnet.
+</note>
+
+<roleset id="divest.01" name="get rid of" vncls="10.6">
+<roles>
+	<role descr="entity removing" n="0">
+		
+  <vnrole vncls="10.6" vntheta="Agent"/></role>
+
+	<role descr="thing being removed" n="1">
+		
+  <vnrole vncls="10.6" vntheta="Theme"/></role>
+
+	<role descr="removed from" n="2">
+		
+  <vnrole vncls="10.6" vntheta="Source"/></role>
+
+</roles>
+
+<example name="sometime without source">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+    The adjustments result from the recently passed thrift-industry
+    bailout legislation, which requires thrifts to divest all
+    high-yield bond investments by 1994. 
+</text>
+        <arg n="0">thrifts</arg>
+        <rel>divest</rel>
+        <arg n="1">all high-yield bond investments</arg>
+        <arg f="TMP" n="M">by 1994</arg>
+</example>
+
+
+<example name="but usually with">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    The question of control could further hinder long-delayed plans
+    for the government to divest itself of Philippine Airlines, in
+    which it has a 99% stake. 
+</text>
+        <arg n="0">the government</arg>
+        <rel>divest</rel>
+        <arg f="REC" n="2">itself</arg>
+        <arg f="of" n="1">Philippine Airlines , in which it has a 99 % stake </arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

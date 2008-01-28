@@ -1,0 +1,49 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="grab">
+<note>
+  Frames file for 'grab' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+
+<roleset id="grab.01" name="to capture, obtain" vncls="10.5 13.5.2">
+<roles>
+  <role descr="grabber" n="0">
+	<vnrole vncls="10.5" vntheta="Agent"/>
+        <vnrole vncls="13.5.2" vntheta="Agent"/></role>
+  <role descr="entity grabbed" n="1">
+	<vnrole vncls="10.5" vntheta="Theme"/>
+        <vnrole vncls="13.5.2" vntheta="Theme"/></role>
+</roles>
+
+<example name="transitive with adverbials">
+<inflection aspect="perfect" form="participle" person="third" tense="present" voice="active"/>
+<text>
+ Likewise , in the U.S. , Nissan has grabbed 5.2 % of the car market so far this year , up from 4.5 % a year ago .
+</text>
+	<arg f="DIS" n="M">Likewise</arg>
+	<arg f="LOC" n="M">in the U.S.</arg>
+	<arg n="0">Nissan</arg>
+	<rel>grabbed</rel>
+	<arg n="1">5.2 % of the car market</arg>
+	<arg f="TMP" n="M">so far this year</arg>
+	<arg f="ADV" n="M">up from 4.5 % a year ago</arg>
+</example>
+
+<example name="simply transitive">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+ But such convolutions would still block the networks from [*-1] grabbing a big chunk of the riches of syndication .
+</text>
+	<arg n="0">[*-1] -&gt;  the networks</arg>
+	<rel>grabbing</rel>
+	<arg n="1">a big chunk of the riches of syndication</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

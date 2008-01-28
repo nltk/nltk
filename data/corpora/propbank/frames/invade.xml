@@ -1,0 +1,35 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="invade">
+<note>
+  Frames file for 'invade' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="invade.01" name="enter violently" vncls="-">
+<roles>
+  <role descr="invader" n="0"/>
+  <role descr="place invaded" n="1"/>
+</roles>
+
+<example name="often with purpose clause">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    She has been on the move almost incessantly since last Thursday,
+    when an army of adjusters, employed by major insurers, invaded the
+    San Francisco area to help policyholders sift through the rubble
+    and restore some order to their lives *trace*. 
+</text>
+        <arg n="0">an army of adjusters, employed by major insurers,</arg>
+        <rel>invaded</rel>
+        <arg n="1">the San Francisco area</arg>
+        <arg f="PNC" n="M">to help policyholders sift through the
+        rubble and restore some order to their lives</arg> 
+        <arg f="TMP" n="M">*trace* -&gt;  when -&gt;  last Thursday</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,38 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="motorize">
+<note>
+  Frames file for 'motorize' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="motorize.01" vncls="-" name="attach a motor to, have a motor">
+<roles>
+  <role n="0"  descr="attacher of motor"/>
+  <role n="1"  descr="thing with motor"/>
+</roles>
+
+<example name="adjectival">
+<inflection person="ns" tense="ns" aspect="ns" voice="passive" form="participle"/>
+<text>
+    The move largely consigns them to roads used by motorized vehicles. 
+</text>
+	<rel>motorized</rel>
+	<arg n="1">vehicles</arg>
+</example>
+
+<example name="verbal">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+     John motorized Mary's bed.
+  </text>
+  <arg n="0"        >John</arg>
+  <rel              >motorized</rel>
+  <arg n="1"        >Mary's bed</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

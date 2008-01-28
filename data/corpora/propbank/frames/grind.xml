@@ -1,0 +1,134 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="grind">
+<note>
+  Frames file for 'grind' based on sentences in the financial subcorpus.
+  No comparison.
+</note>
+
+<roleset id="grind.01" name="make smaller, crush" vncls="21.2-1 26.1 40.3.2">
+<roles>
+  <role descr="grinder" n="0">
+	<vnrole vncls="26.1" vntheta="Agent"/>
+        <vnrole vncls="40.3.2" vntheta="Agent"/>
+        <vnrole vncls="21.2-1" vntheta="Agent"/></role>
+  <role descr="thing crushed" n="1">
+	<vnrole vncls="26.1" vntheta="Material"/>
+        <vnrole vncls="40.3.2" vntheta="Patient"/>
+        <vnrole vncls="21.2-1" vntheta="Patient"/></role>
+  <role descr="end state" n="2">
+	<vnrole vncls="26.1" vntheta="Product"/></role>
+</roles>
+
+<example name="ashes to ashes, dust to dust">
+  <inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+  <text>
+    Penn pays John big bucks for *trace* grinding rocks into sand.
+  </text>
+  <arg n="0">*trace* -&gt; John</arg>
+  <rel>grinding</rel>
+  <arg n="1">rocks</arg>
+  <arg f="into" n="2">sand</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="grind.03" name="emit grinding sound" vncls="-">
+<roles>
+  <role descr="thing making sound" n="1"/>
+</roles>
+
+<example name="holy shmoly">
+  <inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+  <text>
+    ''She's being attacked by the demon,'' Mrs. Warren stagewhispers
+    as the priest sprinkles holy water over the squirming woman, and
+    the television camera grinds.
+  </text>
+  <arg n="1">the television camera</arg>
+  <rel>grinds</rel>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="grind.04" name="idiomatic: grind to a [stop|halt]" vncls="-">
+<roles>
+  <role descr="causer of stopping" n="0"/>
+  <role descr="thing stopping" n="1"/>
+  <role descr="stop, halt, etc" n="2"/>
+</roles>
+
+<example name="intransitive">
+<inflection aspect="ns" form="gerund" person="ns" tense="ns" voice="active"/>
+<text>
+    But despite mounting recession fears, government data don't yet
+    show the economy grinding to a halt. 
+</text>
+	<arg n="1">the economy</arg>
+	<rel>grinding</rel>
+	<arg n="2">to a halt</arg>
+</example>
+
+</roleset>
+
+<roleset id="grind.05" name="move with difficulty" vncls="-">
+<roles>
+  <role descr="mover" n="0"/>
+  <role descr="moved" n="1"/>
+  <role descr="destination" n="2"/>
+</roles>
+
+<example name="mountain goats?">
+  <inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+  <text>
+    Kay Peterson mounts her bicycle and grinds up yet another steep,
+    rocky path seemingly suitable only for mountain goats.
+  </text>
+  <arg n="1">Kay Peterson</arg>
+  <rel>grinds</rel>
+  <arg f="up" n="2">yet another steep, rocky path seemingly suitable
+  only for mountain goats</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="grind_up">
+<roleset id="grind.02" name="make smaller, crush" vncls="-">
+<roles>
+  <role descr="agent" n="0"/>
+  <role descr="thing crushed" n="1"/>
+  <role descr="end state" n="2"/>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    At worst, he adds, ``They'd have [*-2] to grind them all up and
+    throw them away.'' 
+</text>
+	<arg n="0">[*-2] -&gt;  They</arg>
+	<rel>[ grind] [ up]</rel>
+	<arg n="1">[ them] [ all]</arg>
+</example>
+
+<note>
+  Some of the verbs are misparsed: the parser identifies them as the past tense
+form of 'grind' instead of the present tense of 'ground'.  See the frames for
+'ground' in such cases.
+</note>
+
+
+</roleset>
+</predicate>
+</frameset>

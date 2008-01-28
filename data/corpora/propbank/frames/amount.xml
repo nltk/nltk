@@ -1,0 +1,53 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="amount">
+<note>
+  Frames file for 'amount' based on sentences in financial subcorpus.
+  No verbnet entry.  Comparison with 'total'.  
+</note>
+
+<roleset id="amount.01" name="sums to">
+<roles>
+  <role descr="thing(s) being counted" n="1"/>
+  <role descr="count, total" n="2"/>
+</roles>
+
+<example name="add it up">
+<text>
+    Big Board volume amounted to 154,240,000 shares, down from 176.1
+    million Tuesday. 
+</text>
+        <arg n="1">Big Board volume</arg>
+        <rel>amounted</rel>
+        <arg f="to" n="2">154,240,000 shares , down from 176.1 million
+        Tuesday</arg> 
+</example>
+
+</roleset>
+
+<roleset id="amount.02" name="is equivalent to">
+<roles>
+  <role descr="focus" n="1"/>
+  <role descr="ground, introduced by 'to'" n="2"/>
+</roles>
+
+<example name="separate but not equal">
+<text>
+    But in 1986, program traders received what *trace* amounted to an
+    exemption from the uptick rule in certain situations, to make it
+    easier to link the stock and futures markets. 
+</text>
+        <arg n="1">*trace* -&gt;  what</arg>
+        <rel>amounted</rel>
+        <arg f="to" n="2">an exemption from the uptick rule in certain
+        situations</arg> 
+</example>
+
+<note>
+Really the second roleset id=&quot;amount.03&quot; is just a metaphorical extension of the
+first, but the distinction is pretty clear.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

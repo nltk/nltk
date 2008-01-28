@@ -1,0 +1,41 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="bread">
+<note>
+  Frames file for 'bread' based on sentences in wsj.  Verbnet entry 9.9.
+</note>
+
+<roleset id="bread.01" vncls="9.9" name="coat/cover with bread">
+<roles>
+  <role n="0"  descr="coverer, agent"/>
+  <role n="1"  descr="coated/covered thing"/>
+  <role n="2"  descr="bread, redundantly"/>
+</roles>
+
+<example name="adjectival">
+<inflection person="ns" tense="ns" aspect="ns" voice="passive" form="participle"/>
+<text>
+   Using direct mail for a TV show is like fishing for whale with a
+   breaded hook.  
+</text>
+	<rel>breaded</rel>
+	<arg n="1">hook</arg>
+</example>
+
+<example name="verbal">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+     John breaded the peanut-butter-and-banana sandwich, then
+     deep-fried it.
+  </text>
+  <arg n="0"        >John</arg>
+  <rel              >breaded</rel>
+  <arg n="1"        >the peanut-butter-and-banana sandwich</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

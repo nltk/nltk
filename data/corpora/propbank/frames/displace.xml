@@ -1,0 +1,45 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="displace">
+<note>
+  Frames file for 'displace' based on sentences in financial
+  subcorpus.  No Verbnet entry, no comparison.
+</note>
+
+<roleset id="displace.01" name="move out of place" vncls="-">
+<roles>
+  <role descr="mover" n="0"/>
+  <role descr="moved" n="1"/>
+  <role descr="place" n="2"/>
+</roles>
+
+<example name="no place mentioned">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Digital, however, doesn't expect *trace* to displace IBM
+    mainframes that are already installed at big companies. 
+</text>
+        <arg n="0">*trace* -&gt;  Digital</arg>
+        <rel>displace</rel>
+        <arg n="1">IBM mainframes that  are already installed at big
+        companies</arg> 
+</example>
+
+<example name="with place">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     Chocolate displaced Mary in first position on the list of John's
+     secret vices.
+  </text>
+  <arg n="0">Chocolate</arg>
+  <rel>displaced</rel>
+  <arg n="1">Mary</arg>
+  <arg f="in" n="2">first position on the list of John's secret vices</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

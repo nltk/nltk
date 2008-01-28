@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="disincline">
+<note>
+  Frames file for 'disincline' based on sentences in wsj.  No Verbnet
+  entry, hardly even a verb.  Comparison with 'incline'.
+</note>
+
+<roleset id="disincline.01" name="not want to" vncls="-">
+<roles>
+  <role descr="not wanter" n="0"/>
+  <role descr="action not wanted" n="1"/>
+</roles>
+
+<example name="the one example">
+<inflection aspect="ns" form="ns" person="ns" tense="ns" voice="ns"/>
+<text>
+    Analysts viewed the chairman's comments as an indication that the
+    central bank is disinclined to ease monetary policy further in the
+    near future. 
+</text>
+        <arg n="0">the central bank</arg>
+        <rel>disinclined</rel>
+        <arg n="1">to ease monetary policy further in the near
+        future</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

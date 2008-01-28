@@ -1,0 +1,44 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="found">
+<note>
+  Frames file for 'found' based on sentences in financial subcorpus.
+  No Verbnet entry.  Comparison with institute and set.
+</note>
+
+<roleset id="found.01" name="establish">
+<roles>
+  <role descr="agent, setter" n="0"/>
+  <role descr="thing set" n="1"/>
+  <role descr="attribute" n="2"/>
+</roles>
+
+<example name="transitive">
+<text>
+    Mr. Mingo was chief executive officer of the Mingo Group, which he
+    founded *trace* in 1977 and which created ads for the black
+    market. 
+</text>
+        <arg n="0">he</arg>
+        <rel>founded</rel>
+        <arg n="1">*trace* -&gt;  which -&gt;  the Mingo Group</arg>
+        <arg f="TMP" n="M">in 1977</arg>
+</example>
+
+<example name="with attribute">
+  <text>
+    John founded the city of Atlantis as a stronghold in times of
+    trouble. 
+  </text>
+  <arg n="0">John</arg>
+  <rel>founded</rel>
+  <arg n="1">the city of Atlantis</arg>
+  <arg f="as" n="2">a stronghold in times of trouble</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

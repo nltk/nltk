@@ -1,0 +1,36 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="spout">
+<note>
+  Frames file for 'spout' based on sentences in wsj.  Verbnet entry 43.4.
+</note>
+
+<roleset id="spout.01" name="emit liquid" vncls="43.4">
+<roles>
+  <role descr="spouter" n="0"><vnrole vncls="43.4" vntheta="Agent"/></role>
+  <role descr="liquid" n="1"><vnrole vncls="43.4" vntheta="Theme"/></role>
+</roles>
+
+<example name="metaphorical liquid">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    There are moments in this ``Summerfolk'' when the characters
+    populating the vast multilevel country house (which looks like a
+    parody of Frank Lloyd Wright and is designed by Victoria
+    Petrovich) spout philosophic bon mots with the self-conscious
+    rat-a-tat-tat pacing of ``Laugh In.'' 
+</text>
+        <arg n="0">the characters populating the vast multilevel
+        country house (which looks like a parody of Frank Lloyd Wright
+        and is designed by Victoria Petrovich)</arg> 
+        <rel>spout</rel>
+        <arg n="1">philosophic bon mots</arg>
+        <arg f="MNR" n="M">with the self-conscious rat-a-tat-tat
+        pacing of ``LaughIn</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

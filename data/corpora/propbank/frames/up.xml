@@ -1,0 +1,34 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="up">
+<note>
+  Frames file for 'up' based on sentences in wsj.  No Verbnet entry.
+  Usage limited to &quot;up the ante&quot;.
+</note>
+
+<roleset id="up.01" name="make higher" vncls="-">
+<roles>
+  <role descr="causer" n="0"/>
+  <role descr="ante" n="1"/>
+</roles>
+
+<example name="up yours!">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Then the two camps upped the ante: Reports that Chosen Soren had
+    donated directly to JSP members were rapidly countered  by
+    statements that the South Korean residents' organization had long
+    been donating directly to LDP members. 
+</text>
+        <arg f="TMP" n="M">Then</arg>
+        <arg n="0">the two camps</arg>
+        <rel>upped</rel>
+        <arg n="1">the ante</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,77 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="cure">
+<note>
+  Frames file for 'cure' based on sentences in wsj.  Verbnet entry
+  10.6, which seems a little odd to me.  (Cheat, but not treat?)
+</note>
+
+<roleset id="cure.01" name="treat an illness completely" vncls="10.6">
+<roles>
+  <role descr="doctor (etc)" n="0"><vnrole vncls="10.6" vntheta="Agent"/></role>
+  <role descr="patient" n="1"><vnrole vncls="10.6" vntheta="Source"/></role>
+  <role descr="illness or injury" n="2"><vnrole vncls="10.6" vntheta="Theme"/></role>
+  <role descr="instrument, treatment" n="3"/>
+</roles>
+
+<example name="doctor and patient">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Then, just as the Tramp is given *trace-1* a blind girl *trace-2*
+    *trace-3* to cure *trace-4* in ``City Lights,'' the Artist is put
+    in charge of returning a two-year-old waif (Nicole Alysia), whose
+    father has been murdered by thugs, to her mother. 
+</text>
+        <arg n="0">*trace-3* -&gt;  *trace-1* -&gt; the Tramp</arg>
+        <rel>cure</rel>
+        <arg n="1">*trace-4* -&gt; *trace-2* -&gt;  a blind girl</arg>
+</example>
+
+
+<example name="doctor and illness">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    The big question is whether the new president will have the
+    strength and the political support in Congress *trace* to take
+    steps *trace* to cure Brazil's economic ills. 
+</text>
+        <arg n="0">*trace* -&gt; *trace* -&gt;  the new president</arg>
+        <rel>cure</rel>
+        <arg n="2">Brazil's economic ills</arg>
+</example>
+
+
+<example name="treatment and illness">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    It could point to plenty of ailments that the Spanish economic
+    rejuvenation so far has failed *trace-1* to cure *trace-2*. 
+</text>
+        <arg n="3">*trace-1* -&gt;  the Spanish economic rejuvenation</arg>
+        <rel>cure</rel>
+        <arg n="2">*trace-2* -&gt;  that -&gt;  ailments</arg>
+</example>
+
+<note>
+This is by far the most common structure.
+</note>
+
+<example name="all args">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    Mary cured John of debilitating migraines with amputation.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>cured</rel>
+  <arg n="1">John</arg>
+  <arg f="of" n="2">debilitating migraines</arg>
+  <arg f="with" n="3">amputation</arg>
+</example>
+
+<note>
+Think about it.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

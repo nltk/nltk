@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="obstruct">
+<note>
+  Frames file for 'obstruct'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="obstruct.01" name="to block" vncls="-">
+<roles> 
+ <role descr="blocker, obstruction" n="0"/>
+ <role descr="thing obstructed" n="1"/> 
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ The 8 ft. hedges which [*T*-1] obstruct views in and out of small ` rooms ' insure ... that this garden will be a potential breeding ground for crime . ''
+</text>
+	<arg n="0">[*T*-1] -&gt;  which -&gt;  The 8 ft. hedges</arg>
+	<rel>obstruct</rel>
+	<arg n="1">views in and out of small ` rooms '</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

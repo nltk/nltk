@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="catalyze">
+<note>
+example found in the BNC
+</note>
+
+<roleset id="catalyze.01" name="to initiate change">
+<roles>
+  <role descr="agent" n="0"/>
+  <role descr="resultant state" n="1"/>
+</roles>
+
+
+<example name="transitive">
+<text>
+CFCs tend to inhibit the flow of infra-red radiation through the atmosphere; and they help to catalyze the breakdown of the ozone layer. 
+</text>
+	<arg n="0">t1 -> they</arg>
+	<rel>catalyze</rel>
+	<arg n="1">the breakdown of the ozone layer</arg>
+</example>
+
+
+</roleset>
+</predicate>
+<note>
+  frames created by Ruth
+</note>
+
+</frameset>
+

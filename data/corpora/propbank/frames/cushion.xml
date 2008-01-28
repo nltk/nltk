@@ -1,0 +1,59 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="cushion">
+<note>
+  Frames file for 'cushion' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="cushion.01" name="to protect from impact" vncls="-">
+<roles>
+  <role descr="protector, agent" n="0"/>
+  <role descr="entity cushioned" n="1"/>
+  <role descr="cushioned for/from/against" n="2"/>
+</roles>
+
+
+
+<example name="cushion for">
+<inflection aspect="progressive" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+ Denizens of London 's financial district are cushioning themselves for heavy blows .
+</text>
+	<arg n="0">Denizens of London 's financial district</arg>
+	<rel>cushioning</rel>
+	<arg n="1">themselves</arg>
+	<arg f="for" n="2">heavy blows</arg>
+</example>
+
+
+<example name="cushion from">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ For instance , the new U.S. package makes clear [0] there would be a transition period during which GATT members could use a combination of tariffs and quotas [*-1] to cushion their farmers from foreign competition [*T*-2] .
+</text>
+	<arg n="0">[*-1] -&gt;  GATT members</arg>
+	<rel>cushion</rel>
+	<arg n="1">their farmers</arg>
+	<arg f="from" n="2">foreign competition</arg>
+</example>
+
+
+
+<example name="cushion against">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+ But its competitors -- including Dow Chemical Co. , Union Carbide Corp. and several oil giants -- have much broader business interests and so are better cushioned [*-1] against price swings .
+</text>
+	<arg f="MNR" n="M">better</arg>
+	<rel>cushioned</rel>
+	<arg n="1">[*-1] -&gt;  its competitors -- including Dow Chemical Co. , Union Carbide Corp. and several oil giants --</arg>
+	<arg f="against" n="2">price swings</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

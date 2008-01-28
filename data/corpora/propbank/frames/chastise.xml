@@ -1,0 +1,51 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="chastise">
+<note>
+  Frames file for 'chastise' based on sentences in wsj.  Verbnet entry
+  33, Framenet entry Judgement.
+</note>
+
+<roleset id="chastise.01" name="give mild verbal punishment" vncls="33">
+<roles>
+  <role descr="chastiser, agent" n="0"><vnrole vncls="33" vntheta="Agent"/></role>
+  <role descr="entity being chastised" n="1"><vnrole vncls="33" vntheta="Theme"/></role>
+  <role descr="cause" n="2"><vnrole vncls="33" vntheta="Cause"/></role>
+</roles>
+
+<example name="all args">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    At the same time, though, he chastised the media for paying such
+    close attention to Japanese investment when other foreign
+    countries, notably Britain, are acquiring more American assets. 
+</text>
+        <arg f="TMP" n="M">At the same time</arg>
+        <arg f="DIS" n="M">though</arg>
+        <arg n="0">he</arg>
+        <rel>chastised</rel>
+        <arg n="1">the media</arg>
+        <arg f="for" n="2">paying such close attention to Japanese
+        investment when other foreign countries, notably Britain, are
+        acquiring more American assets </arg> 
+</example>
+
+<example name="passive, no cause">
+<inflection aspect="ns" form="participle" person="third" tense="past" voice="passive"/>
+<text>
+    Campbell Soup, for one, is furious: its Souper Combo microwave
+    product was chastised *trace* in the premiere ``In the Dumpster''
+    column. 
+</text>
+        <rel>chastised</rel>
+        <arg n="1">*trace* -&gt;  its Souper Combo microwave product</arg>
+        <arg f="LOC" n="M">in the premiere ``In the Dumpster'' column</arg>
+</example>
+
+<note>
+Does apparently mean &quot;make chaste&quot; although the etymology is troublesome.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

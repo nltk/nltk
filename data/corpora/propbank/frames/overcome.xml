@@ -1,0 +1,34 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="overcome">
+<note>
+  Frames file for 'overcome' based on sentences in financial
+  subcorpus.  No Verbnet entry, no Framenet entry.  Comparison with
+  'beat'.  Loosely.
+</note>
+
+<roleset id="overcome.01" name="conquer, get past">
+<roles>
+  <role descr="overcomer" n="0"/>
+  <role descr="difficulty" n="1"/>
+</roles>
+
+<example name="just transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Still, Unisys said its European business was weak during the
+    quarter, a worrisome sign given that the company has relied on
+    solid results overseas *trace* to overcome weakness in the
+    U.S. over the past several quarters. 
+</text>
+        <arg n="0">*trace* -&gt;  the company</arg>
+        <rel>overcome</rel>
+        <arg n="1">weakness in the U.S.</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

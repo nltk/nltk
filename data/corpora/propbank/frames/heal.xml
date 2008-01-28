@@ -1,0 +1,46 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="heal">
+<note>
+  Frames file for 'heal' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="heal.01" name="to cure or repair" vncls="45.4">
+<roles>
+  <role descr="entity causing cure" n="0">
+	<vnrole vncls="45.4" vntheta="Agent"/></role>
+  <role descr="entity healed" n="1">
+	<vnrole vncls="45.4" vntheta="Patient"/></role>
+</roles>
+
+
+<example name="intransitive">
+<inflection aspect="perfect" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+ The wounds from the 1987 crash have n't yet healed , and not all claims against the exchange clearinghouse -- by those who [*T*-2] bet [0] the Hang Seng index would fall -- have been settled [*-1] .
+</text>
+	<arg n="1">The wounds from the 1987 crash</arg>
+	<arg f="NEG" n="M">n't</arg>
+	<arg f="TMP" n="M">yet</arg>
+	<rel>healed</rel>
+</example>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ He defeated the contentious Mr. Koch in the Democratic primary partly because he seemed [*-1] to offer hope [0] he could heal the city 's racial and ethnic wounds .
+</text>
+	<arg n="0">he</arg>
+	<arg f="MOD" n="M">could</arg>
+	<rel>heal</rel>
+	<arg n="1">the city 's racial and ethnic wounds</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

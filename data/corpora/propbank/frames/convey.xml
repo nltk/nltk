@@ -1,0 +1,48 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="convey">
+<note>
+  Frames file for 'convey' based on sentences in wsj.  Verbnet entries
+  37.7 and 11.1-1, Framenet entry Statement.
+</note>
+
+<roleset id="convey.01" name="send (a statement)" vncls="37.7 11.1">
+<roles>
+  <role descr="sender, speaker" n="0"><vnrole vncls="11.1" vntheta="Agent"/><vnrole vncls="37.7" vntheta="Agent"/></role>
+  <role descr="thing sent, utterance" n="1"><vnrole vncls="11.1" vntheta="Theme"/><vnrole vncls="37.7" vntheta="Topic"/></role>
+  <role descr="recipient, hearer" n="2"><vnrole vncls="11.1" vntheta="Destination"/><vnrole vncls="37.7" vntheta="Recipient"/></role>
+</roles>
+
+<example name="just transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    While U.S. officials voice optimism about Japan's enlarged role in
+    Asia, they also convey an undertone of caution. 
+</text>
+        <arg f="TMP" n="M">While U.S. officials voice optimism about
+        Japan's enlarged role in Asia</arg> 
+        <arg n="0">they</arg>
+        <arg f="DIS" n="M">also</arg>
+        <rel>convey</rel>
+        <arg n="1">an undertone of caution</arg>
+</example>
+
+<example name="with recipient">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    He says that the Chinese never asked him *trace* to convey their
+    statements to President Bush, but that the White House
+    spontaneously invited him to do so. 
+</text>
+        <arg n="0">*trace* -&gt;  him</arg>
+        <rel>convey</rel>
+        <arg n="1">their statements</arg>
+        <arg f="to" n="2">President Bush</arg>
+</example>
+
+<note>
+I love how the two senses come together in the framing here.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

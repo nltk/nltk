@@ -1,0 +1,59 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="totter">
+<note>
+Frames file for 'totter' based on sentences in financial subcorpus and
+automatic expansion via verbnet.
+</note>
+
+<roleset id="totter.01" name="stand unsteadily" vncls="47.3">
+<roles>
+	<role descr="thing tottering" n="1">
+		
+  <vnrole vncls="47.3" vntheta="Theme"/></role>
+
+</roles>
+
+<example name="poor John">
+  <inflection aspect="progressive" form="participle" person="third" tense="past" voice="active"/>
+  <text>
+    After a round of Mary's skull-splitting cocktails, John was
+    tottering like a baby.
+  </text>
+  <arg f="TMP" n="m">After a round of Mary's skull-splitting cocktails</arg>
+  <arg n="1">John</arg>
+  <rel>tottering</rel>
+  <arg f="MNR" n="m">like a baby</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="totter_around">
+
+<roleset id="totter.02" name="move unsteadily" vncls="47.3">
+<roles>
+	<role descr="thing tottering" n="1">
+		
+  <vnrole vncls="47.3" vntheta="Theme"/></role>
+
+</roles>
+
+<example name="WSJ waxes eloquent ">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+    Inexplicably costumed as a rabbinical student, *trace* tottering
+    around on lifts, Mr. Shicoff hardly seemed the fellow to catch a
+    fancy cocotte's eye. 
+</text>
+        <rel>[ tottering] [ around]</rel>
+        <arg f="MNR" n="M">on lifts</arg>
+        <arg n="1">*trace* -&gt; Mr. Shicoff</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,80 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="differ">
+<note>
+Frames file for 'differ' based on sentences in financial subcorpus and
+automatic expansion via verbnet.
+</note>
+
+<roleset id="differ.01" name="disagree, argue" vncls="36.1">
+<roles>
+	<role descr="first arguer" n="0"><vnrole vncls="36.1" vntheta="Actor1"/></role> 
+	<role descr="second arguer" n="1"><vnrole vncls="36.1" vntheta="Actor2"/></role> 
+	<role descr="topic" n="2"><vnrole vncls="36.1" vntheta="Topic"/></role> 
+</roles>
+
+<example name="with prize" src="compete.01">
+  <text>
+    John differed with Mary over who deserved the last piece of cake.
+  </text>
+  <arg n="0">John</arg>
+  <rel>differed</rel>
+  <arg f="with" n="1">Mary</arg>
+  <arg f="over" n="2">who deserved the last piece of cake</arg>
+</example>
+
+<example name="more usual usage">
+  <inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+  <text>
+    John begs *trace* to differ.
+  </text>
+  <arg n="0">John</arg>
+  <rel>differ</rel>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="differ.02" name="be different" vncls="45.6">
+<roles>
+	<role descr="things that are different" n="1">
+		
+  <vnrole vncls="45.6" vntheta="Patient"/></role>
+
+	<role descr="EXT or MNR, how different" n="2">
+		
+  <vnrole vncls="45.6" vntheta="Extent"/></role>
+
+</roles>
+
+<example name="separated arg1s">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+     Digital, Maynard, Mass., insisted yesterday that its marketing
+     focus would differ sharply from IBM's. 
+</text>
+        <arg n="1">its marketing focus</arg>
+        <arg f="MOD" n="M">would</arg>
+        <rel>differ</rel>
+        <arg f="MNR" n="2">sharply</arg>
+        <arg f="from" n="1">IBM 's</arg>
+</example>
+
+<example name="merged differers, EXT">
+  <inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+  <text>
+     John and Mary's IQs differ by almost 50 points.
+  </text>
+  <arg n="1">John and Mary's IQs</arg>
+  <rel>differ</rel>
+  <arg f="by" n="2">almost 50 points</arg>
+</example>
+
+<note>
+Note that I am not saying if John's or Mary's is higher.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

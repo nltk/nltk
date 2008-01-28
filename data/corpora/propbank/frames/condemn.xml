@@ -1,0 +1,104 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="condemn">
+<note>
+Frames file for 'condemn' based on sentences in wsj and automatic
+expansion via verbnet.
+</note>
+
+<roleset id="condemn.01" name="express strong disapproval of" vncls="33">
+<roles>
+	<role descr="condemner" n="0">
+		
+  <vnrole vncls="33" vntheta="Agent"/></role>
+
+	<role descr="condemned" n="1">
+		
+  <vnrole vncls="33" vntheta="Theme"/></role>
+
+	<role descr="grounds for condemnation" n="2">
+		
+  <vnrole vncls="33" vntheta="Cause"/></role>
+
+	<role descr="destination" n="3"/>
+</roles>
+
+<example name="straight transitive">
+<inflection aspect="perfect" form="participle" person="ns" tense="past" voice="active"/>
+<text>
+    The two, Szeto Wah and Martin Lee, were deemed unfit because they
+    had condemned China's crackdown on its pro-democracy movement. 
+</text>
+        <arg n="0">they</arg>
+        <rel>condemned</rel>
+        <arg n="1">China's crackdown on its pro-democracy movement</arg>
+</example>
+
+<example name="condemn as">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    A White House spokesman condemned the truce suspension as
+    ``deplorable'' but brushed off talk of renewing military funding
+    for the insurgents. 
+</text>
+        <arg n="0">A White House spokesman</arg>
+        <rel>condemned</rel>
+        <arg n="1">the truce suspension</arg>
+        <arg f="as" n="2">deplorable</arg>
+</example>
+
+<example name="condemn to">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    For instance, juries would have *trace* to consider specific
+    ``aggravating'' and ``mitigating'' factors before *trace* deciding
+    whether *trace* to condemn someone to death. 
+</text>
+        <arg n="0">*trace* -&gt; *trace* -&gt; *trace* -&gt;  juries</arg>
+        <rel>condemn</rel>
+        <arg n="1">someone</arg>
+        <arg f="to" n="3">death</arg>
+</example>
+
+<example name="with grounds as gerund" src="criticize.01">
+<text>
+    The internal investigation also condemned MiniScribe's auditors,
+    Coopers &amp; Lybrand, for allegedly ignoring numerous red flags. 
+</text>
+        <arg n="0">The internal investigation</arg>
+        <arg f="DIS" n="M">also</arg>
+        <rel>condemned</rel>
+        <arg n="1">MiniScribe's auditors, Coopers &amp; Lybrand,</arg>
+        <arg f="for" n="2">allegedly ignoring numerous red flags</arg>
+</example>
+
+<example name="with grounds as full clause" src="criticize.01">
+<text>
+    A Poquet spokesman, for example, condemns the Atari Portfolio
+    because it requires three batteries while the Poquet needs only
+    two. 
+</text>
+        <arg n="0">A Poquet spokesman</arg>
+        <arg f="DIS" n="M">for example</arg>
+        <rel>condemns</rel>
+        <arg n="1">the Atari Portfolio</arg>
+        <arg n="2">because it requires three batteries while
+        the Poquet needs only two</arg> 
+</example>
+
+<example name="args 2 and 3 together">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    Mary condemned John to prison for his habit of waking her with
+    icy-cold water.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>condemned</rel>
+  <arg n="1">John</arg>
+  <arg f="to" n="2">prison</arg>
+  <arg f="for" n="3">his habit of waking her with icy-cold water</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

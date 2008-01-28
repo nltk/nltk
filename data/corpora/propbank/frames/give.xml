@@ -1,0 +1,292 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<note>
+  Frames file for 'give' based on survey of initial sentences of corpus
+  and comparison with 'take'
+</note>
+
+<predicate lemma="give">
+<roleset id="give.01" name="transfer" vncls="13.1-1">
+<roles>
+  <role descr="giver" n="0">
+	<vnrole vncls="13.1-1" vntheta="Agent"/></role>
+  <role descr="thing given" n="1">
+	<vnrole vncls="13.1-1" vntheta="Theme"/></role>
+  <role descr="entity given to" n="2">
+	<vnrole vncls="13.1-1" vntheta="Recipient"/></role>
+</roles>
+
+<example name="double object">
+  <text>
+    The executives gave the chefs a standing ovation.
+  </text>
+  <arg n="0">The executives</arg>
+  <rel>gave</rel>
+  <arg n="2">the chefs</arg>
+  <arg n="1">a standing ovation</arg>
+</example>
+
+<example name="ditransitive">
+  <text>
+    She had given the answers to two low-ability geography classes.
+  </text>
+  <arg n="0">She</arg>
+  <rel>had given</rel>
+	<arg n="1">the answers</arg>
+  <arg f="to" n="2">to two low ability geography classes</arg>
+</example>
+
+
+<example name="give way">
+  <text>
+    The Beatles give way  to baseball in the Nipponese version.
+  </text>
+  <arg n="0">The Beatles</arg>
+  <rel>give</rel>
+  <arg n="1">way</arg>
+  <arg f="to" n="2">to baseball</arg>
+</example>
+
+
+<example name="Odd discourse-level usage">
+  <text>
+    This is very odd, *trace* given uncertainties about the auction.
+  </text>
+  <note>*trace* is not linked to anything</note>
+  <arg n="2">*trace*</arg>
+  <rel>given</rel>
+  <arg n="1">uncertainties about the auction</arg>
+</example>
+
+<example name="another discourse-level usage">
+  <inflection person="ns" tense="ns" aspect="ns" voice="passive" form="participle"/>
+  <text>
+    Given the weakness in both the junk bond market and the stock
+    market, traders fear that these transactions may be revised yet
+    again. 
+  </text>
+  <rel              >given</rel>
+  <arg n="1"        >the weakness in both the junk bond market and the
+  stock market</arg>
+  <arg n="2"        >traders</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="give_away">
+<roleset id="give.02" name="give away: transfer" vncls="13.1-1">
+<roles>
+  <role descr="giver" n="0">
+	<vnrole vncls="13.1-1" vntheta="Agent"/></role>
+  <role descr="thing given" n="1">
+	<vnrole vncls="13.1-1" vntheta="Theme"/></role>
+  <role descr="entity given to" n="2">
+	<vnrole vncls="13.1-1" vntheta="Recipient"/></role>
+</roles>
+
+<example name="transitive">
+  <text>
+    They sometimes give away a few exact questions and answers
+  </text>
+  <arg n="0">They</arg>
+  <arg f="TMP" n="M">sometimes</arg>
+  <rel>give away</rel>
+  <arg n="1">a few exact questions and answers</arg>
+</example>
+
+<example name="another transitive">
+  <text>
+    Hearst might have virtually given the paper away
+  </text>
+  <arg n="0">Hearst</arg>
+  <arg f="MOD" n="M">might have</arg>
+  <arg f="MNR" n="M">virtually</arg>
+  <rel>given</rel>
+  <arg n="1">the paper</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="give_back">
+<note>
+Mostly identical to &quot;give&quot; roleset above
+</note>
+
+<roleset id="give.03" name="give back: return" vncls="13.1-1">
+<roles>
+  <role descr="giver" n="0">
+	  <vnrole vncls="13.1-1" vntheta="Agent"/></role>
+  <role descr="thing given" n="1">
+	  <vnrole vncls="13.1-1" vntheta="Theme"/></role>
+  <role descr="entity given to" n="2">
+	  <vnrole vncls="13.1-1" vntheta="Recipient"/></role>
+</roles>
+
+<example name="gimme gimme">
+  <text>
+  Stocks gave back some of their gains.
+  </text>
+  <arg n="0">Stocks</arg>
+  <rel>gave back</rel>
+  <arg n="1">some of their gains</arg>
+</example>
+</roleset>
+</predicate>
+
+<predicate lemma="give_off">
+<roleset id="give.04" name="give off: emit" vncls="-">
+<roles>
+  <role descr="emitter" n="0"/>
+  <role descr="thing emit(ted)" n="1"/>
+</roles>
+
+<example name="emit">
+  <text>
+    This radiator gives off a lot of heat.
+  </text>
+  <arg n="0">This radiator</arg>
+  <rel>gives off</rel>
+  <arg n="1">a lot of heat</arg>
+</example>
+</roleset>
+</predicate>
+
+<predicate lemma="give_out">
+<roleset id="give.05" name="give out: die" vncls="-">
+<roles>
+  <role descr="thing dying" n="1"/>
+</roles>
+
+<example name="die">
+  <text>
+    John's old truck finally gave out.
+  </text>
+  <arg n="1">John's old truc</arg>
+  <arg f="TMP" n="M">finally</arg>
+  <rel>gave out</rel>
+</example>
+</roleset>
+
+<roleset id="give.06" name="give out: distribute" vncls="-">
+<roles>
+  <role descr="distributor" n="0"/>
+  <role descr="thing distributed" n="1"/>
+  <role descr="distributed to" n="2"/>
+</roles>
+
+<example name="distribute">
+  <text>
+    John gives out lots of candy on Halloween to the kids on his block.
+  </text>
+  <arg n="0">John</arg>
+  <rel>gives out</rel>
+  <arg n="1">lots of candy</arg>
+  <arg f="TMP" n="M">on Halloween</arg>
+  <arg f="to" n="2">the kids on his block</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="give_up">
+<roleset id="give.07" name="give up: abandon">
+<roles>
+  <role descr="abandoner" n="0"/>
+  <role descr="project" n="1"/>
+</roles>
+
+<example name="no project mentioned">
+  <text>
+    John gave up after trying for a week.
+  </text>
+  <arg n="0">John</arg>
+  <rel>gave up</rel>
+  <arg f="TMP" n="M">after trying for a week</arg>
+</example>
+
+<example name="explicit project">
+  <text>
+    John gave up on the puzzle.
+  </text>
+  <arg n="0">John</arg>
+  <rel>gave up</rel>
+  <arg f="on" n="1">on the puzzle</arg>
+</example>
+
+<example name="somewhat idiomatic">
+  <text>
+    John's old truck gave up the ghost.
+  </text>
+  <arg n="0">John's old truck</arg>
+  <rel>gave up</rel>
+  <arg n="1">the ghost</arg>
+</example>
+
+</roleset>
+
+<roleset id="give.08" name="give up: surrender" vncls="-">
+<roles>
+  <role descr="giver" n="0"/>
+  <role descr="gift" n="1"/>
+  <role descr="given-to" n="2"/>
+</roles>
+
+<example name="all args">
+  <inflection aspect="ns" form="gerund" person="ns" tense="ns" voice="active"/>
+  <text>
+     Insurers buy this insurance protection for themselves by [*-3]
+     giving up a portion of the premiums they collect on a policy to
+     another firm -- a reinsurance company, which, in turn, accepts a
+     portion of any losses resulting from this policy. 
+  </text>
+  <arg n="0">[*-3] -&gt; Insurers</arg>
+  <rel>giving up</rel>
+  <arg n="1">a portion of the premiums they collect on a policy</arg>
+  <arg f="to" n="2">another firm -- a reinsurance company, which, in
+  turn, accepts a portion of any losses resulting from this policy</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="give_in">
+
+<roleset id="give.09" vncls="-" name="give in: yield">
+<roles>
+  <role n="0"  descr="entity giving way"/>
+  <role n="1"  descr="entity winning"/>
+</roles>
+
+<example name="wimps">
+  <inflection person="ns" tense="ns" aspect="ns" voice="ns" form="gerund"/>
+  <text>
+    Ms. Bartlett told her audience that she absolutely did not believe
+    in compromise or in [*] giving in to the client ``because I don't
+    think you can do watered-down versions of things.'' 
+  </text>
+  <arg n="0"        >[*] -> she</arg>
+  <rel              >giving in</rel>
+  <arg n="1" f="to">the clients</arg>
+</example>
+
+<example name="without mention of winner">
+  <inflection person="third" tense="present" aspect="ns" voice="active" form="full"/>
+  <text>
+    Finally, of course, the boss gives in, but he's still yelling: ``I
+    find myself explaining anything to Teddy Kennedy, you'll be
+    chasing stolen cars in Anchorage.'' 
+  </text>
+  <arg n="m" f="TMP">Finally</arg>
+  <arg n="m" f="DIS">of course</arg>
+  <arg n="0"        >the boss</arg>
+  <rel              >gives in</rel>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

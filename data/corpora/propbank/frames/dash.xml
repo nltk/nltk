@@ -1,0 +1,78 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="dash">
+<note>
+  Frames file for 'dash' based on sentences in financial subcorpus.
+  Verbnet entries hit-18.1 run-51.3.2, other framed members
+  include batter, beat, kick; charge, float, leap, roll, sneak, spin,
+  walk, wind.  Comparison to hit and run.
+</note>
+
+<roleset id="dash.01" name="hit" vncls="18.1">
+<roles>
+  <role descr="hitter" n="0">
+		
+  <vnrole vncls="18.1" vntheta="Agent"/></role>
+
+  <role descr="thing hit, dashed" n="1">
+		
+  <vnrole vncls="18.1" vntheta="Patient"/></role>
+
+</roles>
+
+<note>
+Verbnet predicts an instrument argument; I don't believe this
+will occur.  If it does, call it arg2
+</note>
+
+<example name="passivized">
+<text>
+    An official at Wako Securities said brokerages' excessive
+    expectations about recent advances in Tokyu Group shares and real
+    estate issues were dashed *trace* Friday. 
+</text>
+        <rel>dashed</rel>
+        <arg n="1">*trace* -&gt;  brokerages' excessive expectations
+        about recent advances in Tokyu Group shares and real estate
+        issues</arg> 
+        <arg f="TMP" n="M">Friday</arg>
+</example>
+
+<example name="active">
+  <text>
+    Mary dashed John's hopes for a ride home.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>dashed</rel>
+  <arg n="1">John's hopes for a ride home</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="dash.02" name="run for a short distance" vncls="51.3.2">
+<roles>
+  <role descr="runner" n="0">
+		
+  <vnrole vncls="51.3.2" vntheta="Theme"/></role>
+
+  <role descr="destination or path" n="1"><vnrole vncls="51.3.2" vntheta="Location"/></role>
+</roles>
+
+<example name="cf previous example">
+  <text>
+    John dashed home.
+  </text>
+  <arg n="0">John</arg>
+  <rel>dashed</rel>
+  <arg f="DIR" n="1">home</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

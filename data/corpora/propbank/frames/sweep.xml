@@ -1,0 +1,135 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="sweep">
+<note>
+  Frames file for 'sweep' based on sentences in financial subcorpus.
+Verbnet entries 51.3.2, 47.7, 10.4.1, 47.2, 9.3, many other framed
+members.  No Framenet entry.  Comparison with 'move' and 'wipe'.  God
+what a mess. 
+</note>
+
+<roleset id="sweep.01" name="wipe, clean by sweeping" vncls="10.4.1 9.3">
+<roles>
+  <role descr="agent" n="0">
+		
+		
+  <vnrole vncls="9.3" vntheta="Agent"/><vnrole vncls="10.4.1" vntheta="Agent"/></role>
+
+  <role descr="thing being cleaned (ie dirt)" n="1">
+		
+		
+  <vnrole vncls="9.3" vntheta="Theme"/><vnrole vncls="10.4.1" vntheta="Theme"/></role>
+
+  <role descr="source (ie floor) or destination" n="2">
+		
+		
+  <vnrole vncls="9.3" vntheta="Destination"/><vnrole vncls="10.4.1" vntheta="Source"/></role>
+
+  <role descr="instrument (ie, broom)" n="3"/>
+</roles>
+
+<example name="more or less canonical">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    One of the friends sweeps broken dishes and shattered glass from a
+    countertop and starts to pack what  can be salvaged from the
+    kitchen. 
+</text>
+        <arg n="0">One of the friends</arg>
+        <rel>sweeps</rel>
+        <arg n="1">broken dishes and shattered glass</arg>
+        <arg f="from" n="2">a countertop</arg>
+</example>
+
+<example name="arg2 as destination">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    ``We could sweep it under the rug and hide it, but I'm not going
+    to do it,'' he said in a speech last month. 
+</text>
+        <arg n="0">We</arg>
+        <rel>sweep</rel>
+        <arg n="1">it</arg>
+        <arg f="under" n="2">the rug</arg>
+</example>
+
+<example name="sweep away">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    Despite all these innovations, most of the diamonds are still
+    found in the sand swept *trace* away by the men wielding shovels
+    and brushes -- the ignominiously named ``bedrock sweepers'' who
+    toil in the wake of the excavators. 
+</text>
+        <rel>swept</rel>
+        <arg n="1">*trace* -&gt;  the sand</arg>
+        <arg f="DIR" n="M">away</arg>
+        <arg f="EXT" n="0">the men wielding shovels and brushes -- the
+        ignominiously named ``bedrock sweepers'' who  toil in the
+        wake of the excavators</arg> 
+</example>
+
+<note>
+Maybe source and destination should be separated, but I'd rather not.
+</note>
+
+</roleset>
+
+<roleset id="sweep.02" name="move in a sweeping manner" vncls="51.3.2 47.2">
+<roles>
+  <role descr="thing in motion" n="1">
+		
+  <vnrole vncls="51.3.2" vntheta="Theme"/></role>
+
+  <role descr="location" n="2">
+		
+  <vnrole vncls="51.3.2" vntheta="Location"/></role>
+
+  <role descr="destination" n="3"><vnrole vncls="51.3.2" vntheta="Location"/></role>
+</roles>
+
+<example name="arg2 nominal">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    It's the latest investment craze sweeping Wall Street: a rash of
+    new closed-end country funds, those publicly traded portfolios
+    that invest in stocks of a single foreign country. 
+</text>
+        <arg n="1">the latest investment craze</arg>
+        <rel>sweeping</rel>
+        <arg n="2">Wall Street</arg>
+</example>
+
+<example name="arg2 prepositional">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    There are, of course, analysts who view the near-panic that
+    *trace* briefly swept through investors on Oct. 13 and again on
+    Oct. 24 as momentary lapses of good judgment that have only
+    temporarily undermined a healthy stock market. 
+</text>
+        <arg n="1">*trace* -&gt;  that -&gt;  the near-panic</arg>
+        <rel>swept</rel>
+        <arg f="through" n="2">investors</arg>
+        <arg f="TMP" n="M">on Oct. 13 and again on Oct. 24</arg>
+</example>
+
+<note>
+I regard these two syntactic realizations as completely equivalent.
+</note>
+
+<example name="with destination">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John swept into the room wearing a long formal gown.
+  </text>
+  <arg n="1">John</arg>
+  <rel>swept</rel>
+  <arg f="into" n="3">the room</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

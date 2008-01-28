@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="skipper">
+<note>
+  Frames file for 'skipper' based on sentences in wsj.  Verbnet entry 29.8.
+</note>
+
+<roleset id="skipper.01" name="steer a small ship" vncls="29.8">
+<roles>
+  <role descr="skipper" n="0"><vnrole vncls="29.8" vntheta="Agent"/></role>
+  <role descr="boat" n="1"><vnrole vncls="29.8" vntheta="Theme"/></role>
+</roles>
+
+<example name="not a boat">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+    But spokesmen for both Mr. Isler and Mr. Conner say the formation
+    of the new syndicate has to do with Mr. Isler's desire [*] to
+    skipper his own team and begin planning now, rather than any
+    falling out between the two sportsmen. 
+</text>
+        <arg n="0">[*] -&gt;  Mr. Isler's</arg>
+        <rel>skipper</rel>
+        <arg n="1">his own team</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

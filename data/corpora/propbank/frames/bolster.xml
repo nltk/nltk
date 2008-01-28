@@ -1,0 +1,61 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="bolster">
+<note>
+  Frames file for 'bolster' based on sentences in financial
+  subcorpus.  No access to verbnet.  Comparison to 'stimulate' and
+  other verbs of increase.
+</note>
+
+<roleset id="bolster.01" name="cause a (small) increase in, strengthen">
+<roles>
+  <role descr="causer, agent" n="0"/>
+  <role descr="thing increasing or strengthened" n="1"/>
+  <role descr="amount increased, EXT" n="2"/>
+</roles>
+
+<example name="transitive active">
+<text>
+    In addition to those measures, the company spent heavily earlier
+    this year  to install displays at its customers' retail outlets --
+    a strategy that Mr. Stein said *trace* has helped *trace* bolster
+    awareness of the company's brands. 
+</text>
+        <arg n="0">*trace* -&gt; *trace* -&gt;  that -&gt;  a strategy</arg>
+        <rel>bolster</rel>
+        <arg n="1">awareness of the company's brands</arg>
+</example>
+
+<example name="transitive passive">
+<text>
+    London share prices were bolstered *trace* largely by continued
+    gains on Wall Street and technical factors affecting demand for
+    London's blue-chip stocks. 
+</text>
+        <rel>bolstered</rel>
+        <arg n="1">*trace* -&gt;  London share prices</arg>
+        <arg f="by" n="0">continued gains on Wall Street and technical
+        factors affecting demand for London's blue-chip stocks</arg> 
+</example>
+
+<example name="with quantification">
+<text>
+    The company also said the transaction would bolster after-tax
+    earnings by $3.25 a share when completed. 
+</text>
+        <arg n="0">the transaction</arg>
+        <arg f="MOD" n="M">would</arg>
+        <rel>bolster</rel>
+        <arg n="1">after-tax earnings</arg>
+        <arg f="EXT" n="2">by $3.25 a share</arg>
+        <arg f="TMP" n="M">when completed</arg>
+</example>
+
+<note>
+This verb might also show start and end points like 'rise' etc, but I
+doubt it.  If they do appear, refer to 'rise' for proper arg numbering.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

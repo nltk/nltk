@@ -1,0 +1,71 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="subscribe">
+<note>
+  Frames file for 'subscribe' based on sentences in financial
+  subcorpus.  No verbnet entry.  No comparison.
+</note>
+
+<roleset id="subscribe.01" name="like a magazine subscription, or belief system">
+<roles>
+  <role descr="subscriber" n="0"/>
+  <role descr="magazine or belief system" n="1"/>
+</roles>
+
+<example name="belief system">
+<text>
+    Goldman Sachs's Mr. Einhorn, for one, subscribes to that
+    scenario. 
+</text>
+        <arg n="0">Goldman Sachs's Mr. Einhorn, for one,</arg>
+        <rel>subscribes</rel>
+        <arg f="to" n="1">that scenario</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="subscribe.02" name="pledge or contribute or sign up(?)">
+<roles>
+  <role descr="contributor" n="0"/>
+  <role descr="thing contributed" n="1"/>
+</roles>
+
+<example name="contribute">
+<text>
+    Customers holding contracts for Waertsilae Marine's undelivered
+    ships are expected *trace* to subscribe most of the remaining 170
+    million markkaa in share capital, government officials said. 
+</text>
+        <arg n="0">*trace* -&gt;  Customers holding contracts for
+        Waertsilae Marine's undelivered ships</arg> 
+        <rel>subscribe</rel>
+        <arg n="1">most of the remaining 170 million markkaa</arg>
+        <arg n="M">in share capital</arg>
+</example>
+
+<example name="sign up for?">
+<text>
+    Canada's largest department store operator said the rights
+    offering will entitle holders of its ordinary shares, except
+    residents in the U.S. and Britain, to subscribe for two additional
+    shares for every five shares held at a price of C$31.25 a share. 
+</text>
+        <arg n="0">holders of its ordinary shares, except residents in
+        the U.S. and Britain,</arg> 
+        <rel>subscribe</rel>
+        <arg f="for" n="1">two additional shares for every five shares
+        held</arg> 
+        <arg f="MNR" n="M">at a price of C$31.25 a share</arg>
+</example>
+
+<note>
+I don't understand this usage at all--if you figure it out, explain it 
+--to me.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

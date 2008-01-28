@@ -1,0 +1,35 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="stray">
+<note>
+  Frames file for 'stray' based on sentences in wsj.  Verbnet entry 51.3.2.
+</note>
+
+<roleset id="stray.01" name="wander" vncls="51.3.2">
+<roles>
+  <role descr="entity in motion" n="0"><vnrole vncls="51.3.2" vntheta="Theme"/></role>
+  <role descr="source/path" n="1"><vnrole vncls="51.3.2" vntheta="Location"/></role>
+</roles>
+
+<example name="typical usage">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    It  is compromises such as this that convince Washington's
+    liberals that if they simply stay the course, this administration
+    will stray from its own course on this and other issues. 
+</text>
+        <arg f="ADV" n="M">if they simply stay the course</arg>
+        <arg n="0">this administration</arg>
+        <arg f="MOD" n="M">will</arg>
+        <rel>stray</rel>
+        <arg f="from" n="1">its own course</arg>
+        <arg f="LOC" n="M">on this and other issues</arg>
+</example>
+
+<note>
+Horrid, horrid stylistics in that sentence.  Someone actually got paid
+for that?
+</note>
+
+</roleset>
+</predicate>
+</frameset>

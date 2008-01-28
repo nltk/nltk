@@ -1,0 +1,60 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="perform">
+<note>
+  Frames file for 'perform' based on sentences in financial
+  subcorpus.  Verbnet class performance-26.7, other framed members
+  include play, draw.  Comparison with play.
+</note>
+
+<roleset id="perform.01" name="perform" vncls="26.7-1">
+<roles>
+  <role descr="performer" n="0">
+		
+  <vnrole vncls="26.7-1" vntheta="Agent"/></role>
+
+  <role descr="performance, thing performed" n="1">
+		
+  <vnrole vncls="26.7-1" vntheta="Theme"/></role>
+
+  <role descr="instrument" n="2"/>
+</roles>
+
+<example name="transitive">
+<text>
+    If the money manager performing this service is being paid by his
+    clients to match or beat the return of the S&amp;P 500 index, he
+    is likely to remain fully invested at all times. 
+</text>
+        <arg n="0">the money manager</arg>
+        <rel>performing</rel>
+        <arg n="1">this service</arg>
+</example>
+
+<example name="with manner">
+<text>
+    Analysts said the fall in pretax profit was due to the group's
+    recent restructuring and sale of peripheral units, and that its
+    remaining businesses are performing well. 
+</text>
+        <arg n="0">its remaining businesses</arg>
+        <rel>performing</rel>
+        <arg f="MNR" n="M">well</arg>
+</example>
+
+<example name="with instrument">
+  <text>
+    John performed Bach's &quot;St. Matthew's Passion&quot; on ukelele.
+  </text>
+  <arg n="0">John</arg>
+  <rel>performed</rel>
+  <arg n="1">Bach's &quot;St. Matthew's Passion&quot;</arg>
+  <arg f="on" n="2">ukelele</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,38 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="incline">
+<note>
+  Frames file for 'incline' based on sentences in wsj.  No Verbnet
+  entry, which isn't surprising since this isn't really verbal,
+  despite the morphology.
+</note>
+
+<roleset id="incline.01" name="want to" vncls="-">
+<roles>
+  <role descr="wanter" n="0"/>
+  <role descr="action wanted" n="1"/>
+</roles>
+
+<example name="typical usage">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    While no doubt agreeing with Mr. Lawson on everything else, Sir
+    Alan is a dyed-in-the-wool monetarist, inclined *trace* to defend
+    floating rates to the death. 
+</text>
+        <arg n="0">a dyed-in-the-wool monetarist</arg>
+        <rel>inclined</rel>
+        <arg n="1">*trace* to defend floating rates to the
+        death</arg> 
+</example>
+
+<note>
+The trace points back to the subject, but leave that for the
+subordinated verb.  Note that you can any instantiation of the
+'passive', with any tense or modal verbs, but there is no active
+equivalent: I incline him to...
+</note>
+
+</roleset>
+</predicate>
+</frameset>

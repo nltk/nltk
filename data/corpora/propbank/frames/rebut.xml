@@ -1,0 +1,34 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="rebut">
+<note>
+  Frames file for 'rebut' based on sentences in financial subcorpus.
+  No Verbnet entry, no Framenet entry, which isn't surprising because
+  this is a made-up verb, backformed from &quot;rebuttal&quot;.  No comparison.
+</note>
+
+<roleset id="rebut.01" name="make a rebuttal">
+<roles>
+  <role descr="entity making a rebuttal" n="0"/>
+  <role descr="in response to" n="1"/>
+</roles>
+
+<example name="the only example?">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Japanese government officials, *trace* eager *trace* to rebut
+    foreign criticism of Japanese investments overseas, hailed the
+    transaction as proof foreigners can make similar investments in
+    Japan. 
+</text>
+        <arg n="0">*trace* -&gt; *trace* -&gt;  Japanese government officials</arg>
+        <rel>rebut</rel>
+        <arg n="1">foreign criticism of Japanese investments overseas</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

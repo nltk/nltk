@@ -1,0 +1,45 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="park">
+<note>
+  Frames file for 'park' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="park.01" name="to leave temporarily " vncls="-">
+<roles>
+  <role descr="parker, agent" n="0"/>
+  <role descr="entity parked" n="1"/>
+  <role descr="parking place" n="2"/>
+</roles>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+ Much of the excess spending will be pushed [*-3] into fiscal 1991 , and in some cases is temporarily parked [*-3] in slow-spending accounts in anticipation of [*] being transferred [*-1] to faster-spending areas after the budget scorekeeping is completed [*-2] .
+</text>
+	<arg f="ADV" n="M">in some cases</arg>
+	<arg f="TMP" n="M">temporarily</arg>
+	<rel>parked</rel>
+	<arg n="1">[*-3] -&gt;  Much of the excess spending</arg>
+	<arg f="in" n="2">slow-spending accounts</arg>
+	<arg f="ADV" n="M">in anticipation of [*] being transferred [*-1] to faster-spending areas after the budget scorekeeping is completed [*-2]</arg>
+</example>
+
+
+<example name="infinitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ Its radio series features such spots as `` Floodlights : Evening Wear for Urban Structures '' and `` [*] Building a Place [0] [*] to Park [*T*-1] . ''
+</text>
+	<arg n="0">[*]</arg>
+	<rel>Park</rel>
+	<arg n="2">[*T*-1] -&gt;  [0] -&gt;  a Place</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

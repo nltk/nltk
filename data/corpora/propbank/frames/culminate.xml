@@ -1,0 +1,55 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="culminate">
+<note>
+  Frames file for 'culminate' based on survey of sentences in the WSJ
+  corpus.  
+</note>
+
+
+<roleset id="culminate.01" name="to reach the highest point, to end" vncls="-">
+<roles>
+  <role descr="entity ending" n="1"/>
+  <role descr="culmination point" n="2"/>
+</roles>
+
+
+<example name="intransitive">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+ In the six trading days since the UAL labor-management buy-out group failed [*-1] to get bank financing , [*] culminating Friday with the withdrawal of its partner British Airways PLC , UAL stock has plummeted by 41 % to 168 1\/2 from 285 1\/4 .
+</text>
+	<arg n="1">UAL stock -&gt;  [*]</arg>
+	<rel>culminating</rel>
+	<arg f="TMP" n="M">Friday</arg>
+	<arg f="ADV" n="M">with the withdrawal of its partner British Airways PLC</arg>
+</example>
+
+
+<example name="culminate in">
+<inflection aspect="perfect" form="participle" person="third" tense="present" voice="active"/>
+<text>
+ A licensed government intellectual , Francis Fukuyama , recently announced in The National Interest that history is , so [*] to speak [*T*-1] , at an end since the course of human progress has now culminated in the glorious full stop of American civilization .
+</text>
+	<arg n="1">the course of human progress</arg>
+	<arg f="TMP" n="M">now</arg>
+	<rel>culminated</rel>
+	<arg f="in" n="2">the glorious full stop of American civilization</arg>
+</example>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ Mr. Honecker 's ignoble fall culminates nearly two decades of iron-handed leadership during which Mr. Honecker , now 77 years old , built East Germany into the most economically advanced nation in the Soviet bloc [*T*-1] .
+</text>
+	<arg n="2">Mr. Honecker 's ignoble fall</arg>
+	<rel>culminates</rel>
+	<arg n="1">nearly two decades of iron-handed leadership during which Mr. Honecker , now 77 years old , built East Germany into the most economically advanced nation in the Soviet bloc [*T*-1]</arg>
+</example>
+
+</roleset>
+</predicate>
+
+
+</frameset>

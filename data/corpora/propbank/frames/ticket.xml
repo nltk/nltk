@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="ticket">
+<note>
+  Frames file for 'ticket'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="ticket.01" name="to designate for a specified use" vncls="-">
+<roles> 
+  <role descr="designator, agent" n="0"/>
+  <role descr="entity ticketed" n="1"/>
+  <role descr="use" n="2"/>
+</roles>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+ `` Never Too Young '' is a different sort of work , [*-1] focusing on the 1986 death from cocaine ingestion of Bias , a University of Maryland basketball star ticketed [*] for sure pro stardom .
+</text>
+	<rel>ticketed</rel>
+	<arg n="1">[*] -&gt;  a University of Maryland basketball star</arg>
+	<arg f="for" n="2">sure pro stardom</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

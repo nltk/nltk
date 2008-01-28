@@ -1,0 +1,66 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="underscore">
+<note>
+  Frames file for 'underscore' based on sentences in financial
+  subcorpus.  No Verbnet entry.  Comparison with 'emphasize'.
+</note>
+
+<roleset id="underscore.01" name="emphasize" vncls="-">
+<roles>
+  <role descr="emphasizer" n="0"/>
+  <role descr="utterance" n="1"/>
+  <role descr="hearer (rare)" n="2"/>
+</roles>
+
+<example name="active">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    The results underscore Sears's difficulties in implementing the
+    ``everyday low pricing'' strategy that it adopted in March as part
+    of a broad attempt to revive its retailing business. 
+</text>
+        <arg n="0">The results</arg>
+        <rel>underscore</rel>
+        <arg n="1">Sears's difficulties in implementing the ``everyday
+        low pricing'' strategy that it adopted  in March as part of a
+        broad attempt  to revive its retailing business</arg> 
+</example>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    Saab's problems were underscored *trace* Friday when the company
+    announced that its car division had a 1.2 billion kronor ($186.1
+    million) loss during the first eight months of this year, slightly
+    worse than Saab-Scania had forecast in its first-half report last
+    month. 
+</text>
+        <rel>underscored</rel>
+        <arg n="1">*trace* -&gt;  Saab's problems</arg>
+        <arg f="TMP" n="M">Friday</arg>
+        <arg f="TMP" n="M">when the company announced that its car
+        division had a 1.2 billion kronor ($186.1 million) loss during
+        the first eight months of this year, slightly worse than
+        Saab-Scania had forecast in its first-half report last month
+        </arg> 
+</example>
+
+<example name="with hearer" src="emphasize.01">
+  <text>
+    Mary underscored to John that he must never ever call her
+    'Snoogie-wookums' in public.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>underscored</rel>
+  <arg f="to" n="2">John</arg>
+  <arg n="1">he must never ever call her
+    'Snoogie-wookums' in public.</arg>
+</example>
+
+<note>
+I doubt the hearer arg will ever appear in real usage.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

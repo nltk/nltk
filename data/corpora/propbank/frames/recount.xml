@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="recount">
+<note>
+  Frames file for 'recount' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="recount.01" name="to describe or enumerate" vncls="-">
+<roles>
+  <role descr="teller of tale" n="0"/>
+  <role descr="tale" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ While [*-1] sipping a beer after practice , he vividly recounts [*-1] getting the Red Sox 's Carl Yastrzemski to pop out [*-2] to end the 1975 World Series , and repeating the feat against the Yankees ' Roy White in 1976 .
+</text>
+	<arg f="TMP" n="M">While [*-1] sipping a beer after practice</arg>
+	<arg n="0">he</arg>
+	<arg f="MNR" n="M">vividly</arg>
+	<rel>recounts</rel>
+	<arg n="1">[*-1] getting the Red Sox 's Carl Yastrzemski to pop out [*-2] to end the 1975 World Series , and repeating the feat against the Yankees ' Roy White in 1976</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

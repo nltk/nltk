@@ -1,0 +1,61 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="creep">
+<note>
+  Frames file for 'creep' based on sentences in wsj.  Verbnet entries
+  51.3.2, 47.3, 47.5.1-1; Framenet entry Self motion.
+</note>
+
+<roleset id="creep.01" name="manner of motion" vncls="51.3.2 47.3 47.5.1-1">
+<roles>
+  <role descr="creeper" n="0"><vnrole vncls="47.3" vntheta="Theme"/><vnrole vncls="51.3.2" vntheta="Theme"/><vnrole vncls="47.5.1-1" vntheta="Theme"/></role>
+  <role descr="path" n="1"><vnrole vncls="47.3" vntheta="Location"/><vnrole vncls="51.3.2" vntheta="Location"/><vnrole vncls="47.5.1-1" vntheta="Location"/></role>
+</roles>
+
+<example name="creep up: not phrasal">
+<inflection aspect="progressive" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+    Inventories are creeping up; car inventories are already high, and
+    big auto makers are idling plants. 
+</text>
+        <arg n="0">Inventories</arg>
+        <rel>creeping</rel>
+        <arg f="DIR" n="1">up</arg>
+</example>
+
+<note>
+'Up' is only one of many possible directions; expect to see also
+'higher' 'back' and others.
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="creep_up">
+
+<roleset id="creep.02" name="approach" vncls="-">
+<roles>
+  <role descr="creeper" n="0"/>
+  <role descr="target" n="1"/>
+</roles>
+
+<example name="creep up: phrasal">
+<inflection aspect="ns" form="gerund" person="ns" tense="ns" voice="ns"/>
+<text>
+    In Mr. Sohmer's film, by contrast, we are urged to share the
+    perverse excitement of the rapist creeping up on his victim, as
+    the camera ogles Kate in various stages of undress and lingers on
+    the sight of her trussed-up body during frequent flashbacks to the
+    rape. 
+</text>
+        <arg n="0">the rapist</arg>
+        <rel>[ creeping] [ up]</rel>
+        <arg f="on" n="1">his victim</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,40 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="blur">
+<note>
+  Frames file for 'blur' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="blur.01" name="to make indistinct" vncls="45.4">
+<roles>
+  <role descr="causer of blurriness, agent" n="0"><vnrole vncls="45.4" vntheta="Agent"/></role>
+  <role descr="entity blurred" n="1"><vnrole vncls="45.4" vntheta="Patient"/></role>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ The selective approach blurred themes such as domestic-demand issues , large-capitalization issues or high-technology shares , which [*T*-1] had been providing at least some trading direction over the past few weeks , Mr. Wada said [0] [*T*-2] .
+</text>
+	<arg n="0">The selective approach</arg>
+	<rel>blurred</rel>
+	<arg n="1">themes such as domestic-demand issues , large-capitalization issues or high-technology shares , which [*T*-1] had been providing at least some trading direction over the past few weeks</arg>
+</example>
+
+
+<example name="intransitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ In practice , however , the line between interpretation and redefinition of the criminal law long ago began [*-1] to blur .
+</text>
+	<arg n="1">[*-1] -&gt;  the line between interpretation and redefinition of the criminal law</arg>
+	<rel>blur</rel>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

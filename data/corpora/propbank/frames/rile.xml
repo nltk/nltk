@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="rile">
+<note>
+  Frames file for 'rile' based on sentences in wsj.  Verbnet entry
+  31.1, Framenet entry Experiencer obj.
+</note>
+
+<roleset id="rile.01" name="make angry" vncls="31.1">
+<roles>
+  <role descr="causer" n="0"><vnrole vncls="31.1" vntheta="Cause"/></role>
+  <role descr="angry entity" n="1"><vnrole vncls="31.1" vntheta="Experiencer"/></role>
+</roles>
+
+<example name="nice clear transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    The FASB since then has issued 102 rules, and some still rile
+    industry. 
+</text>
+        <arg n="0">some</arg>
+        <arg f="TMP" n="M">still</arg>
+        <rel>rile</rel>
+        <arg n="1">industry</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

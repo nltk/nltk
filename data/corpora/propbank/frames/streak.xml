@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="streak">
+<note>
+  Frames file for 'streak' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="streak.01" name="to move quickly" vncls="51.3.2">
+<roles>
+  <role descr="entity in motion" n="0">
+        <vnrole vncls="51.3.2" vntheta="Theme"/></role>
+</roles>
+
+<example name="intransitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ As we streaked by a blase gendarme , I could n't resist [*-1] rearing up on my soggy loafers and saluting .
+</text>
+	<arg n="0">we</arg>
+	<rel>streaked</rel>
+	<arg f="DIR" n="M">by a blase gendarme</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

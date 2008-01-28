@@ -1,0 +1,65 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="communicate">
+<note>
+  Frames file for 'communicate' based on sentences in wsj.  Verbnet
+  entry 36.1, Framenet entry Communication.
+</note>
+
+<roleset id="communicate.01" name="communicate" vncls="36.1">
+<roles>
+  <role descr="first (or all) communicator" n="0"><vnrole vncls="36.1" vntheta="Actor1"/></role>
+  <role descr="utterance" n="1"><vnrole vncls="36.1" vntheta="Topic"/></role>
+  <role descr="other communicator(s)" n="2"><vnrole vncls="36.1" vntheta="Actor2"/></role>
+</roles>
+
+<example name="all args">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+    Mr. Guber says that Mr. Semel did convey that information and that
+    Mr. Semel said Mr. Ross was ``crazy because of the Time deal,''
+    meaning, Mr. Guber says, that Mr. Ross ``did not want *trace* to
+    communicate to his new merger partner, Time Inc., that Warner's
+    agreements provided for our departure under these circumstances.'' 
+</text>
+        <arg n="0">*trace* -&gt;  Mr. Ross</arg>
+        <rel>communicate</rel>
+        <arg n="2">his new merger partner, Time Inc.,</arg>
+        <arg n="1">Warner's agreements provided for our departure
+        under these circumstances</arg> 
+</example>
+
+<example name="unstated communication">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+    We lost our chance *trace* to communicate with sweet-natured
+    visitors ``about four feet tall (who) looked as though they were
+    made of puffed-up marshmallow.'' 
+</text>
+        <arg n="0">*trace* -&gt;  We</arg>
+        <rel>communicate</rel>
+        <arg f="with" n="2">sweet-natured visitors ``about four feet
+        tall (who) looked as though they were made of puffed-up
+        marshmallow</arg> 
+</example>
+
+<note>
+Sometimes ya gotta wonder.
+</note>
+
+<example name="no co-communicator">
+  <inflection aspect="ns" form="gerund" person="ns" tense="ns" voice="ns"/>
+  <text>
+     John is not very good at *trace* communicating his wishes.
+  </text>
+  <arg n="0">*trace* -&gt; John</arg>
+  <rel>communicating</rel>
+  <arg n="1">his wishes</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

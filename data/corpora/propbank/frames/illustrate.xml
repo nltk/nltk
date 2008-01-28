@@ -1,0 +1,71 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="illustrate">
+<note>
+Frames file for 'illustrate' based on sentences in financial subcorpus
+and automatic expansion via verbnet.
+</note>
+
+<roleset id="illustrate.01" name="explain" vncls="-">
+<roles>
+	<role descr="illustrator" n="0"/>
+	<role descr="item being explained" n="1"/>
+	<role descr="explained to" n="2"/>
+</roles>
+
+<example name="basic transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    But GM's results also illustrate the increasing diversity of its
+    operations.
+</text>
+        <arg f="DIS" n="M">But</arg>
+        <arg n="0">GM's results</arg>
+        <arg f="DIS" n="M">also</arg>
+        <rel>illustrate</rel>
+        <arg n="1">the increasing diversity of its operations</arg>
+</example>
+
+<example name="with arg2">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John illustrated his point to Mary first with cool logic, then
+    with a tantrum.
+  </text>
+  <arg n="0">John</arg>
+  <rel>illustrated</rel>
+  <arg n="1">his point</arg>
+  <arg f="to" n="2">Mary</arg>
+  <arg f="TMP" n="m">first</arg>
+  <arg f="MNR" n="m">with cool logic</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="illustrate.02" name="draw, paint, make a picture" vncls="-">
+<roles>
+  <role descr="artist" n="0"/>
+  <role descr="art" n="1"/>
+  <role descr="benefactive" n="2"/>
+</roles>
+
+<example name="all args">
+  <inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+  <text>
+    John illustrates children's books for the local library.  They
+    wish he wouldn't.
+  </text>
+  <arg n="0">John</arg>
+  <rel>illustrates</rel>
+  <arg n="1">children's books</arg>
+  <arg f="for" n="2">the local library</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

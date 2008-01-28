@@ -1,0 +1,67 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="phone">
+<note>
+  Frames file for 'phone' based on survey of sentences in the WSJ
+  corpus.  
+</note>
+
+
+<roleset id="phone.01" name="to telephone" vncls="13.5.1 37.4">
+<roles>
+  <role descr="agent making a call" n="0">
+		
+		
+  <vnrole vncls="13.5.1" vntheta="Agent"/><vnrole vncls="37.4" vntheta="Agent"/></role>
+
+  <role descr="receiver" n="1">
+		
+  <vnrole vncls="37.4" vntheta="Recipient"/></role>
+
+  <role descr="message" n="2">
+		
+		
+  <vnrole vncls="13.5.1" vntheta="Theme"/><vnrole vncls="37.4" vntheta="Topic"/></role>
+
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ If directors or producers phone me and say [0] they know ` Liz , ' I know [0] they 've never met her .
+</text>
+	<arg n="0">directors or producers</arg>
+	<rel>phone</rel>
+	<arg n="1">me</arg>
+</example>
+
+
+<example name="prepositional Arg2">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ He phoned them with updates on the investment , such as `` funny things that [*T*-1] happened at the well that week , '' he says [0] [*T*-2] .
+</text>
+	<arg n="0">He</arg>
+	<rel>phoned</rel>
+	<arg n="1">them</arg>
+	<arg f="with" n="2">updates on the investment , such as `` funny things that [*T*-1] happened at the well that week</arg>
+</example>
+
+
+<example name="Arg2 as a VP">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ Mr. Seidman said yesterday , for example , that Sen. Dennis DeConcini ( D. , Ariz. ) , who [*T*-2] received $ 48,100 [*U*] in contributions from Mr. Keating , phoned Mr. Seidman [*] to request that he push for a sale of Lincoln before it would be seized [*-1] .
+</text>
+	<arg n="0">Sen. Dennis DeConcini ( D. , Ariz. ) , who [*T*-2] received $ 48,100 [*U*] in contributions from Mr. Keating ,</arg>
+	<rel>phoned</rel>
+	<arg n="1">Mr. Seidman</arg>
+	<arg n="2">[*] to request that he push for a sale of Lincoln before it would be seized [*-1]</arg>
+</example>
+
+</roleset>
+</predicate>
+
+
+</frameset>

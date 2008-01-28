@@ -1,0 +1,138 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="strip">
+<note>
+  Frames file for 'strip' based on sentences in wsj.  Verbnet entries
+  10.4.1 and 10.6, Framenet entries Emptying and Removing.
+</note>
+
+<roleset id="strip.01" name="remove" vncls="10.4.1 10.6">
+<roles>
+  <role descr="remover" n="0"><vnrole vncls="10.4.1" vntheta="Agent"/><vnrole vncls="10.6" vntheta="Agent"/></role>
+  <role descr="thing removed" n="1"><vnrole vncls="10.4.1" vntheta="Theme"/><vnrole vncls="10.6" vntheta="Theme"/></role>
+  <role descr="source" n="2"><vnrole vncls="10.4.1" vntheta="Source"/><vnrole vncls="10.6" vntheta="Source"/></role>
+</roles>
+
+<example name="source as direct object">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    The 1990 appropriations legislation attempts *trace* to strip the
+    president of his powers to make certain appointments as provided
+    by Article II. 
+</text>
+        <arg n="0">*trace* -&gt;  The 1990 appropriations legislation</arg>
+        <rel>strip</rel>
+        <arg n="2">the president</arg>
+        <arg f="of" n="1">his powers to make certain appointments as
+        provided by Article II</arg> 
+</example>
+
+<example name="removed substance as DO">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    When an agreement was reached *trace* to strip capital gains from
+    the legislation, Oregon Sen. Bob Packwood, the ranking GOP member
+    of the tax-writing Senate Finance Committee, hailed it. 
+</text>
+        <arg n="0">*trace*</arg>
+        <rel>strip</rel>
+        <arg n="1">capital gains</arg>
+        <arg f="from" n="2">the legislation</arg>
+</example>
+
+<example name="passivized substance">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    But they were stripped *trace* from the Senate bill after staffers
+    estimated penalty revenue would fall by $216 million over five
+    years. 
+</text>
+        <arg f="DIS" n="M">But</arg>
+        <rel>stripped</rel>
+        <arg n="1">*trace* -&gt;  they</arg>
+        <arg f="from" n="2">the Senate bill</arg>
+        <arg f="TMP" n="M">after staffers estimated penalty revenue
+        would fall by $216 million over five years</arg> 
+</example>
+
+<example name="no source mentioned">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+    And on back-to-back roll calls, 206-199 and 223-178, the
+    Appropriations Committee leadership turned back efforts *trace* to
+    weaken or strip the proposed restrictions first added by
+    Sen. Warren Rudman (R., N.H.). 
+</text>
+        <arg n="0">*trace*</arg>
+        <rel>strip</rel>
+        <arg n="1">the proposed restrictions</arg>
+</example>
+
+<example name="missing substance defaults to 'clothes'">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    The games Bronx children played (holding kids down and stripping
+    them, for example) seem tame by today's crack standards, but
+    Ms. Cunningham makes it all sound like a great adventure. 
+</text>
+        <arg n="0">*trace* -&gt;  Bronx children</arg>
+        <rel>stripping</rel>
+        <arg n="2">them</arg>
+</example>
+
+<example name="intransitive is the fun case!">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John stripped in front of Mary's dinner guests.
+  </text>
+  <arg n="0">John</arg>
+  <rel>stripped</rel>
+  <arg f="LOC" n="m">in front of Mary's dinner guests</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="strip_away">
+
+<roleset id="strip.02" name="remove" vncls="10.4.1 10.6">
+<roles>
+  <role descr="remover" n="0"><vnrole vncls="10.4.1" vntheta="Agent"/><vnrole vncls="10.6" vntheta="Agent"/></role>
+  <role descr="thing removed" n="1"><vnrole vncls="10.4.1" vntheta="Theme"/><vnrole vncls="10.6" vntheta="Theme"/></role>
+</roles>
+
+<example name="active">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+     Applying prowess gained during earlier stints at appliance maker
+     AB Electrolux, Mr. Andersson and a handful of loyal lieutenants
+     aggressively stripped away dead wood -- and got quick results. 
+</text>
+        <arg n="0">Mr. Andersson and a handful of loyal lieutenants</arg>
+        <arg f="MNR" n="M">aggressively</arg>
+        <rel>[ stripped] [ away]</rel>
+        <arg n="1">dead wood</arg>
+</example>
+
+<example name="passive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="passive"/>
+<text>
+    The insurance brokerage agency, just a fragment of Helmsley's vast
+        empire, would be the first piece of the company *trace*
+        *trace* to be stripped *trace* away since last summer when
+        Mr. Helmsley's wife, Leona Helmsley, was found guilty of tax
+        evasion.
+</text>
+        <rel>[ stripped] [ away]</rel>
+        <arg n="1">*trace* -&gt; *trace* -&gt; *trace* -&gt;  the first piece</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

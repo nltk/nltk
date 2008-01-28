@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="accuse">
+<note>
+  Frames file for 'accuse' based on sentences in financial subcorpus.
+  No Verbnet entry.  Comparison with 'charge'.
+</note>
+
+<roleset id="accuse.01" name="accuse of a crime">
+<roles>
+  <role descr="accuser" n="0"/>
+  <role descr="accused" n="1"/>
+  <role descr="crime" n="2"/>
+</roles>
+
+<example name="really simple">
+<text>
+    He accused Dow Jones of ``using unfair means to obtain the stock
+    at an unfair price.'' 
+</text>
+        <arg n="0">He</arg>
+        <rel>accused</rel>
+        <arg n="1">Dow Jones</arg>
+        <arg f="of" n="2">using unfair means to obtain the stock at an
+        unfair price</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

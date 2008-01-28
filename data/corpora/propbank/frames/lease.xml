@@ -1,0 +1,112 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="lease">
+<note>
+  Frames file for 'lease' based on sentences in financial subcorpus.
+  Verbnet classes get-13.5.1 give-13.1-1, other framed members include
+  buy, catch, hire, pick, reserve, seize; pass, refund.  Comparison to
+  'buy' and 'sell'.
+</note>
+
+<note>
+It is interesting that this verb, like 'rent', is its own antonym; how 
+can something mean both 'rent to' and 'rent from'?
+</note>
+
+<roleset id="lease.01" name="be a renter" vncls="13.5.1">
+<roles>
+  <role descr="renter" n="0">
+		
+  <vnrole vncls="13.5.1" vntheta="Agent"/></role>
+
+  <role descr="thing rented (eg, apartment)" n="1">
+		
+  <vnrole vncls="13.5.1" vntheta="Theme"/></role>
+
+  <role descr="landlord" n="2">
+		
+  <vnrole vncls="13.5.1" vntheta="Source"/></role>
+
+  <role descr="rent" n="3">
+		
+  <vnrole vncls="13.5.1" vntheta="Asset"/></role>
+
+  <role descr="term" n="4"/>
+</roles>
+
+<example name="just transitive">
+<text>
+    Once its ownership is finalized, the new company will open talks
+    with state-appointed receivers *trace* to buy or lease Waertsilae
+    Marine's shipyard facilities. 
+</text>
+        <arg n="0">*trace* -&gt;  the new company</arg>
+        <rel>lease</rel>
+        <arg n="1">Waertsilae Marine's shipyard facilities</arg>
+</example>
+
+<example name="all args except term">
+  <text>
+    John leased an apartment from Mary for a buck a minute.
+  </text>
+  <arg n="0">John</arg>
+  <rel>leased</rel>
+  <arg n="1">an apartment</arg>
+  <arg f="from" n="2">Mary</arg>
+  <arg f="for" n="3">a buck a minute</arg>
+</example>
+
+<note>
+The syntax only seems to allow for two prepositional args; I can't get
+a grammatical reading with both 'price' and 'term,' even though
+clearly the 'term' is a required semantic arg: 'John leased an
+apartment for a month.'
+</note>
+
+</roleset>
+
+<roleset id="lease.02" name="be a landlord" vncls="13.1-1">
+<roles>
+  <role descr="landlord" n="0">
+		
+  <vnrole vncls="13.1-1" vntheta="Agent"/></role>
+
+  <role descr="thing rented (eg, apartment)" n="1">
+		
+  <vnrole vncls="13.1-1" vntheta="Theme"/></role>
+
+  <role descr="renter" n="2">
+		
+  <vnrole vncls="13.1-1" vntheta="Recipient"/></role>
+
+  <role descr="rent" n="3"/>
+  <role descr="term" n="4"/>
+</roles>
+
+<example name="automatically generated">
+<text>
+ But he said  IBM would have won the business anyway as a sale to a third party 
+that  would have then leased the equipment to the customer .
+</text>
+        <arg n="0">*trace* -&gt;  that -&gt;  a third party</arg>
+        <arg f="MOD" n="M">would</arg>
+        <arg f="TMP" n="M">then</arg>
+        <rel>leased</rel>
+        <arg n="1">the equipment</arg>
+        <arg f="to" n="2">the customer</arg>
+</example>
+
+<example name="all args except term">
+  <text>
+    Mary leased an apartment to John for buck a minute.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>leased</rel>
+  <arg n="1">an apartment</arg>
+  <arg f="to" n="2">John</arg>
+  <arg f="for" n="3">buck a minute</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

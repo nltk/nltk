@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="centralize">
+<note>
+  Frames file for 'centralize' based on sentences in financial
+  subcorpus.  No access to verbnet.  No comparison.
+</note>
+
+<roleset id="centralize.01" name="collect into one location" vncls="45.4">
+<roles>
+  <role descr="collector" n="0"><vnrole vncls="45.4" vntheta="Agent"/></role>
+  <role descr="thing(s) collected" n="1"><vnrole vncls="45.4" vntheta="Patient"/></role>
+</roles>
+
+<example name="passivized">
+<text>
+    A spokeswoman for Crum &amp; Forster said employees were told
+    early this week that numerous staff functions for the personal
+    insurance lines were going *trace* to be centralized *trace* as a
+    cost-cutting move. 
+</text>
+	<rel>centralized</rel>
+	<arg n="1">*trace* -&gt; *trace* -&gt;  numerous staff functions for
+	the personal insurance lines</arg> 
+</example>
+
+<note>
+Not sure why that second trace is there.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

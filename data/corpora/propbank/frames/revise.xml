@@ -1,0 +1,49 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="revise">
+<note>
+  Frames file for 'revise' based on sentences in financial subcorpus.
+  No Verbnet entry, no Framenet entry.  Comparison with modify.
+</note>
+
+<roleset id="revise.01" name="change, modify">
+<roles>
+  <role descr="causer of transformation" n="0"/>
+  <role descr="thing changing" n="1"/>
+  <role descr="end state" n="2"/>
+  <role descr="start state" n="3"/>
+</roles>
+
+<example name="boring transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    The spokesman said that the proposed guidelines caused Crossland
+    to revise its business objectives... 
+</text>
+        <arg n="0">Crossland</arg>
+        <rel>revise</rel>
+        <arg n="1">its business objectives</arg>
+</example>
+
+<example name="all args">
+<inflection aspect="progressive" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+    ''Mr. Milunovich said he was revising his estimate for DEC's
+    current year from $8.20 a share to ``well below $8,'' although he
+    hasn't settled on a final number. 
+</text>
+        <arg n="0">he</arg>
+        <rel>revising</rel>
+        <arg n="1">his estimate for DEC 's current year</arg>
+        <arg f="from" n="3">$8.20 a share</arg>
+        <arg f="to" n="2">well below $8</arg>
+        <arg f="ADV" n="M">although he hasn't settled on a final
+        number</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

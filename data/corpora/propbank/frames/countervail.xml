@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="countervail">
+<note>
+  Frames file for 'countervail' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="countervail.01" vncls="-" name="act against">
+<roles>
+  <role n="0"  descr="countervailer"/>
+  <role n="1"  descr="thing acted against"/>
+</roles>
+
+<example name="adjectival">
+<inflection person="ns" tense="ns" aspect="progressive" voice="active" form="participle"/>
+<text>
+    ``In the kind of literature I read I come across countervailing
+    opinions quite frequently. 
+</text>
+	<rel>countervailing</rel>
+	<arg n="0">opinions</arg>
+</example>
+
+<note>
+this word is not in my vocabulary.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

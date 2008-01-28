@@ -1,0 +1,60 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="deserve">
+<note>
+  Frames file for 'deserve' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="deserve.01" name="deserve" vncls="-">
+<roles>
+  <role descr="deserving entity" n="0"/>
+  <role descr="thing deserved" n="1"/>
+  <role descr="in-exhange-for" n="2"/>
+</roles>
+
+<example name="verbal thing deserved">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    But she didn't deserve to have her head chopped off. 
+</text>
+        <arg f="DIS" n="M">But</arg>
+        <arg n="0">she</arg>
+        <arg f="NEG" n="M">n't</arg>
+        <rel>deserve</rel>
+        <arg n="1">to have her head chopped  off</arg>
+</example>
+
+<example name="with reason">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    ``I deserve something for my loyalty,'' she says.
+</text>
+        <arg n="0">I</arg>
+        <rel>deserve</rel>
+        <arg n="1">something</arg>
+        <arg f="for" n="2">my loyalty</arg>
+</example>
+
+<example name="not all causes are arg2">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    Democrats argue that Costa Rica deserves more assistance for the
+    same reason that Mr. Bush is attending the celebration this
+    weekend: to reward the country for its stability in a region
+    wracked with turmoil and for its efforts to promote peace in
+    Nicaragua. 
+</text>
+        <arg n="0">Costa Rica</arg>
+        <rel>deserves</rel>
+        <arg n="1">more assistance</arg>
+        <arg f="CAU" n="M">for the same reason that Mr. Bush is
+        attending the celebration this weekend: to reward the country
+        for its stability in a region wracked with turmoil and for its
+        efforts to promote peace in Nicaragua</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

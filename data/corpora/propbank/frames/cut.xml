@@ -1,0 +1,347 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="cut">
+<note>
+  Frames file for 'cut' based on survey of initial sentences of big
+  corpus and comparison with 'reduce'
+</note>
+
+<roleset id="cut.01" name="slice" vncls="21.1 23.2 26.1-1 40.8.3-2 41.2.2">
+<roles>
+  <role descr="cutter" n="0">
+	<vnrole vncls="41.2.2" vntheta="Agent"/>
+        <vnrole vncls="23.2" vntheta="Agent"/>
+        <vnrole vncls="21.1" vntheta="Agent"/>
+        <vnrole vncls="26.1-1" vntheta="Agent"/>
+        <vnrole vncls="40.8.3-2" vntheta="Experiencer"/></role>
+  <role descr="thing cut" n="1">
+	<vnrole vncls="41.2.2" vntheta="Patient"/>
+        <vnrole vncls="23.2" vntheta="Patient1"/>
+        <vnrole vncls="21.1" vntheta="Patient"/>
+        <vnrole vncls="26.1-1" vntheta="Product"/>
+        <vnrole vncls="40.8.3-2" vntheta="Patient"/></role>
+  <role descr="medium, source" n="2">
+	<vnrole vncls="23.2" vntheta="Patient2"/>
+        <vnrole vncls="26.1-1" vntheta="Material"/></role>
+  <role descr="instrument" n="3">
+	<vnrole vncls="21.1" vntheta="Instrument"/></role>
+  <role descr="beneficiary" n="4"/>
+</roles>
+
+<example name="it slices, it dices, it makes julienne fries!">
+  <text>
+    Trading companies can cut through the logjam that small-company
+    owners often face.
+  </text>
+  <arg n="0">Trading companies</arg>
+  <arg f="MOD" n="m">can</arg>
+  <rel>cut</rel>
+  <arg f="through" n="2">the logjam that small-company owners often
+  face.</arg> 
+</example>
+
+<example name="with source">
+  <text>
+  Longer production runs would cut inefficiencies from adjusting
+  machinery between production cycles.
+  </text>
+  <arg n="0">Longer production runs</arg>
+  <arg f="MOD" n="m">would</arg>
+  <rel>cut</rel>
+  <arg n="1">inefficiencies</arg>
+  <arg f="from" n="2">adjusting machinery between production cycles.</arg>
+<note>I think that's the wrong syntactic parse, actually, but we'll go
+with it.
+</note>
+</example>
+
+</roleset>
+
+<roleset id="cut.02" name="reduce" vncls="21.1">
+<roles>
+  <role descr="cutter" n="0">
+	<vnrole vncls="21.1" vntheta="Agent"/></role>
+  <role descr="thing reduced" n="1">
+	<vnrole vncls="21.1" vntheta="Patient"/></role>
+  <role descr="amount reduced by" n="2"/>
+  <role descr="start point" n="3"/>
+  <role descr="end point" n="4"/>
+</roles>
+
+<example name="with EXT">
+  <text>
+    Magna recently cut its quarterly divided in half.
+  </text>
+  <arg n="0">Magna</arg>
+  <arg f="TMP" n="m">recently</arg>
+  <rel>cut</rel>
+  <arg n="1">its quarterly divided</arg>
+  <arg f="EXT" n="2">in half</arg>
+</example>
+
+<example name="with start and end points">
+  <text>
+    Goody Products Inc cut its quarterly dividend to five cents a
+    share from 11.5 cents a share.
+  </text>
+  <arg n="0">Goody Products Inc</arg>
+  <rel>cut</rel>
+  <arg n="1">its quarterly dividend</arg>
+  <arg f="to" n="4">five cents a share</arg>
+  <arg f="from" n="3">11.5 cents a share</arg>
+</example>
+
+<example name="but usually with just arg1">
+  <text>
+    NL and Mr. Simmons cut the price they were proposing for Georgia Gulf.
+  </text>
+  <arg n="0">NL and Mr. Simmons</arg>
+  <rel>cut</rel>
+  <arg n="1">the price they were proposing for Georgia Gulf</arg>
+</example>
+
+<example name="cut into">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+    Net cash income -- the amount left in farmers' pockets after
+    deducting expenses from gross cash income -- increased in 33
+    states in 1988, as the drought cut into crop yields and drove up
+    commodity prices, the department's Economic Research Service
+    reported yesterday.  
+  </text>
+  <arg n="0"        >the drought</arg>
+  <rel              >cut</rel>
+  <arg n="1" f="into">crop yields</arg>
+</example>
+
+<example name="completely reduce">
+  <inflection person="ns" tense="ns" aspect="ns" voice="ns" form="gerund"/>
+  <text>
+    For the first time, the U.S. considered cutting Mr. Noriega from
+    its intelligence payroll -- and the deliberations were intense,
+    Mr. Turner says. 
+  </text>
+  <arg n="0"        >the U.S.</arg>
+  <rel              >cutting</rel>
+  <arg n="1"        >Mr. Noriega</arg>
+  <arg n="2" f="from">its intelligence payroll</arg>
+</example>
+
+</roleset>
+
+<roleset id="cut.03" name="various idiomatic usages" vncls="21.1">
+<roles>
+  <role descr="cutter" n="0">
+	<vnrole vncls="21.1" vntheta="Agent"/></role>
+  <role descr="thing cut" n="1">
+	<vnrole vncls="21.1" vntheta="Patient"/></role>
+</roles>
+
+<example name="cut class">
+  <text>
+    It was full of violence and gangs and kids cutting class
+  </text>
+  <arg n="0">kids</arg>
+  <rel>cutting</rel>
+  <arg n="1">class</arg>
+</example>
+
+<example name="cut it">
+  <text>
+    Many older athletes wonder if they can still cut it.
+  </text>
+  <arg n="0">they</arg>
+  <arg f="MOD" n="m">can</arg>
+  <arg f="TMP" n="m">still</arg>
+  <rel>cut</rel>
+  <arg n="1">it</arg>
+</example>
+
+<example name="cut corners">
+  <inflection person="ns" tense="present" aspect="ns" voice="active" form="full"/>
+  <text>
+     ``Most of us grew up [*-2] believing in the axioms `Haste makes
+     waste' and `[*] Don't cut corners,'...
+  </text>
+  <arg n="0"        >[*]</arg>
+  <arg n="m" f="NEG">n't</arg>
+  <rel              >cut</rel>
+  <arg n="1"        >corners</arg>
+</example>
+
+<example name="cut a deal">
+  <inflection person="ns" tense="ns" aspect="ns" voice="ns" form="gerund"/>
+  <text>
+    In addition, White House aides think that there are numerous other
+    important measures Democrats badly wanted passed -- such as the
+    scaling back of a controversial catastrophic health-care plan for
+    the elderly -- that might provide the president leverage in [*]
+    cutting deals with Democrats. 
+  </text>
+  <arg n="0"        >[*] -> the President</arg>
+  <rel              >cutting</rel>
+  <arg n="1"        >deals with Democrats</arg>
+<note>
+That's the way Treebank parses it, too.
+</note>
+</example>
+
+<note>
+This encompasses a wide range of senses, but they all take basically
+the same PAS.
+</note>
+</roleset>
+</predicate>
+
+<predicate lemma="cut_off">
+<roleset id="cut.04" name="cut off: slice off" vncls="21.1">
+<roles>
+  <role descr="cutter" n="0">
+    <vnrole vncls="21.1" vntheta="Agent"/></role>
+  <role descr="thing cut" n="1">
+    <vnrole vncls="21.1" vntheta="Patient"/></role>
+  <role descr="medium, source" n="2"/>
+  <role descr="instrument" n="3"/>
+  <role descr="beneficiary" n="4"/>
+</roles>
+
+<example name="detassling">
+  <text>
+    The seed companies cut off the tassels of each plant.
+  </text>
+  <arg n="0">The seed companies</arg>
+  <rel>cut_off</rel>
+  <arg n="1">the tassels of each plant</arg>
+<note>
+Just for the record, I'd like to point out that it isn't the seed
+companies that do this detasseling, but legions of Midwestern
+teenagers.
+</note>
+</example>
+</roleset>
+</predicate>
+
+<predicate lemma="cut_back">
+<roleset id="cut.05" name="cut back: reduce" vncls="21.1">
+<roles>
+  <role descr="cutter" n="0">	</role>
+  <role descr="thing reduced" n="1">	</role>
+  <role descr="amount reduced by" n="2"/>
+  <role descr="start point" n="3"/>
+  <role descr="end point" n="4"/>
+</roles>
+
+<example name="overeating">
+  <text>
+      ``Whoa,'' thought John, ``I've got to start cutting back on my
+      intake of chocolate.'' 
+  </text>
+  <arg n="0">I</arg>
+  <rel>cutting_back</rel>
+  <arg f="1" n="1">my intake of chocolate</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="cut_out">
+
+<roleset id="cut.06" vncls="-" name="cut out: eliminate">
+<roles>
+  <role n="0"  descr="eliminator"/>
+  <role n="1"  descr="thing eliminated"/>
+  <role n="2"  descr="source"/>
+</roles>
+
+<example name="now cut that out!">
+  <inflection person="ns" tense="future" aspect="ns" voice="active" form="full"/>
+  <text>
+    The move will cut out the cost of a middleman and give Specialized
+    more control over marketing and sales. 
+  </text>
+  <arg n="0"        >The move</arg>
+  <arg n="m" f="MOD">will</arg>
+  <rel              >cut out</rel>
+  <arg n="1"        >the cos of a middleman</arg>
+</example>
+
+</roleset>
+
+<roleset id="cut.09" vncls="-" name="cut out: arrange(d)">
+<roles>
+  <role n="1"  descr="thing arranged"/>
+  <role n="2"  descr="arranged for whome"/>
+</roles>
+
+<example name="here ya go">
+  <inflection person="ns" tense="ns" aspect="ns" voice="passive" form="participle"/>
+  <text>
+    As the building's new owner, Chase will have its work cut out for it.
+  </text>
+  <arg n="1"        >its work</arg>
+  <rel              >cut out</rel>
+  <arg n="2" f="for">it</arg>
+<note>
+Weird; I don't think the active can occur.
+</note>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="cut_loose">
+
+<roleset id="cut.07" vncls="-" name="cut loose: set or become free">
+<roles>
+  <role n="0"  descr="causer of freedom"/>
+  <role n="1"  descr="entity undergoing freedom"/>
+  <role n="2"  descr="source, cause of unfreedom"/>
+</roles>
+
+<example name="ergative">
+  <inflection person="ns" tense="ns" aspect="ns" voice="active" form="infinitive"/>
+  <text>
+    Mr. Roman, by contrast, seems [*-1] rarely to cut loose at all,
+    although he did appear at Ogilvy's Halloween party Friday decked
+    out in duck feet and a duck hat, costumed as a ``lame duck.'' 
+  </text>
+  <arg n="1"        >[*-1] -> Mr. Roman</arg>
+  <rel              >cut loose</rel>
+  <arg n="m" f="DIS">at all</arg>
+  <arg n="m" f="ADV">although he did appear at Ogilvy's Halloween
+  party Friday decked out in duck feet and a duck hat, costumed as a
+  ``lame duck.'' </arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="cut_up">
+
+<roleset id="cut.08" vncls="-" name="cut up: cut completely">
+<roles>
+  <role n="0"  descr="cutter"/>
+  <role n="1"  descr="thing now in pieces"/>
+</roles>
+
+<example name="PETA would be happy">
+  <inflection person="ns" tense="ns" aspect="ns" voice="ns" form="gerund"/>
+  <text>
+     An undistinguished college student who dabbled in zoology until
+     he concluded that he couldn't stand cutting up frogs, Mr. Corry
+     wanted to work for a big company ``that could do big things.'' 
+  </text>
+  <arg n="0"        >he</arg>
+  <rel              >cutting up</rel>
+  <arg n="1"        >frogs</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

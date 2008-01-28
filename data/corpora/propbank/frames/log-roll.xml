@@ -1,0 +1,36 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="log-roll">
+<note>
+  Frames file for 'log-roll' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="log-roll.01" name="exchange political favors in order to pass legislation" vncls="-">
+<roles>
+  <role descr="politicians" n="0"/>
+</roles>
+
+<example name="the one example">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    We have as much nostalgia as anyone for those leafy, breezy days
+    in Washington when honorable men and women dickered over budgets
+    and even log-rolled a bit [*-2] to see that the bridges got build,
+    roads paved, soldiers paid or that the desperately poor were cared
+    for. 
+</text>
+        <arg n="0">honorable men and women</arg>
+        <arg f="DIS" n="M">even</arg>
+        <rel>log-rolled</rel>
+        <arg f="MNR" n="M">a bit</arg>
+        <arg f="PNC" n="M">[*-2] to see that the bridges got build,
+        roads paved, soldiers paid or that the desperately poor were
+        cared for</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

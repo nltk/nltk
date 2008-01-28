@@ -1,0 +1,209 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="catch">
+<note>
+  Frames file for 'catch' based on sentences in financial subcorpus.
+  Verbnet class get-13.5.1, other framed members include buy, call,
+  find, gain, get, order, pull, reach, and win.  Comparison with 'get'.
+</note>
+
+<roleset id="catch.01" name="get" vncls="13.5.1">
+<roles>
+  <role descr="receiver" n="0">
+	  <vnrole vncls="13.5.1" vntheta="Agent"/></role>
+  <role descr="thing gotten" n="1">
+	  <vnrole vncls="13.5.1" vntheta="Theme"/></role>
+  <role descr="giver" n="2">
+	  <vnrole vncls="13.5.1" vntheta="Source"/></role>
+</roles>
+
+<example name="no giver">
+<text>
+    Inexplicably costumed as a rabbinical student, tottering around on
+    lifts, Mr. Shicoff hardly seemed the fellow *trace* to catch a
+    fancy cocotte's eye. 
+</text>
+        <arg n="0">*trace* -&gt; the fellow</arg>
+        <rel>catch</rel>
+        <arg n="1">a fancy cocotte 's eye</arg>
+</example>
+
+<example name="with giver">
+  <text>
+    John caught a long fly ball from his two-year old daughter.
+  </text>
+  <arg n="0">John</arg>
+  <rel>caught</rel>
+  <arg n="1">a long fly ball</arg>
+  <arg f="from" n="2">his two-year old daughter</arg>
+</example>
+
+<note>
+Roleset abbreviated from get.  Latter examples might be parsed as [a
+long fly ball from his two-year-old daughter].
+</note>
+
+</roleset>
+
+<roleset id="catch.02" name="come upon, find" vncls="-">
+<roles>
+  <role descr="events, usually" n="0"/>
+  <role descr="entity" n="1"/>
+  <role descr="attribute" n="2"/>
+</roles>
+
+<example name="typical usage">
+<text>
+    But the government's action, which *trace* caught Jaguar
+    management flat-footed,... 
+</text>
+        <arg n="0">the government's action -&gt; *trace* -&gt;  which</arg>
+        <rel>caught</rel>
+        <arg n="1">Jaguar management</arg>
+        <arg f="PRD" n="m">flat-footed</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="catch.03" name="trap" vncls="-">
+<roles>
+  <role descr="trapper" n="0"/>
+  <role descr="trapped" n="1"/>
+  <role descr="trap, either place or instrument" n="2"/>
+</roles>
+
+<example name="no trap mentioned">
+<text>
+    Program trading itself is merely caught *trace* in the middle of
+    this battle, unfairly labeled as the evil driving force of the
+    marketplace. 
+</text>
+        <arg n="1">Program trading itself -&gt; *trace*</arg>
+        <arg f="ADV" n="M">merely</arg>
+        <rel>caught</rel>
+        <arg f="LOC" n="M">in the middle of this battle</arg>
+        <arg n="M">unfairly labeled as the evil driving force of the
+        marketplace</arg> 
+</example>
+
+<example name="with trap">
+<text>
+    At the same time it has been caught *trace* in an earnings squeeze .
+</text>
+        <arg f="TMP" n="M">At the same time</arg>
+        <arg n="1">it -&gt; *trace*</arg>
+        <rel>caught</rel>
+        <arg f="in" n="2">an earnings squeeze</arg>
+</example>
+
+<example name="metaphorical trap?">
+<text>
+   The scope of the improvement in the U.S. business caught some
+   analysts by surprise. 
+</text>
+        <arg n="0">The scope of the improvement in the U.S. business</arg>
+        <rel>caught</rel>
+        <arg n="1">some analysts</arg>
+        <arg f="by" n="2">surprise</arg>
+</example>
+
+<note>
+This latter example could be regarded as the attributive 'come upon'
+sense; at least the tagging is basically the same.
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="catch_up">
+
+<roleset id="catch.04" name="catch up: come even with" vncls="-">
+<roles>
+  <role descr="entity in motion" n="1"/>
+  <role descr="goal" n="2"/>
+</roles>
+
+<example name="stated goal">
+<text>
+    Meanwhile, Shearson Lehman's Mr. Devario said that, to stay
+    competitive, the U.S. paper industry needs *trace* to catch up
+    with the European industry. 
+</text>
+        <arg n="1">*trace* -&gt; the U.S. paper industry</arg>
+        <rel>[ catch] [ up]</rel>
+        <arg f="with" n="2">the European industry</arg>
+</example>
+
+<example name="no goal">
+<text>
+    ``They are going *trace* to catch up,'' said David Claridge, an
+    analyst with Hambrecht &amp; Quist. 
+</text>
+        <arg n="1">*trace* -&gt; They</arg>
+        <rel>[ catch] [ up]</rel>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="catch_on">
+
+<roleset id="catch.05" name="catch on: become popular" vncls="-">
+<roles>
+  <role descr="thing becoming popular" n="1"/>
+  <role descr="popular with whom?" n="2"/>
+</roles>
+
+<example name="no audience">
+<text>
+   ...its Amiga, which has slick graphics yet has been slow *trace* to
+   catch on. 
+</text>
+        <arg n="0">*trace* -&gt; which -&gt; its Amiga</arg>
+        <rel>[ catch] [ on]</rel>
+</example>
+
+<example name="with audience">
+<text>
+    And, with many of his 70,000 workers, Mr. Smith's
+    damn-the-torpedoes attitude has caught on. 
+</text>
+        <arg f="DIS" n="M">And</arg>
+        <arg f="with" n="2">many of his 70,000 workers</arg>
+        <arg n="1">Mr. Smith 's damn-the-torpedoes attitude</arg>
+        <rel>[ caught] [ on]</rel>
+</example>
+
+<note>
+Latter examples nicely fronted.
+</note>
+
+</roleset>
+
+<roleset id="catch.06" vncls="-" name="catch on: become aware of">
+<roles>
+  <role n="0"  descr="aware entity"/>
+  <role n="1"  descr="aware of what?"/>
+</roles>
+
+<example name="you can't fool me!">
+  <inflection person="ns" tense="ns" aspect="ns" voice="ns" form="gerund"/>
+  <text>
+    At one point, the reader is two steps ahead of Marlowe in [*]
+    catching on to a double identity scam -- and Marlowe is supposed
+    to be the pro. 
+  </text>
+  <arg n="0"        >[*] -> Marlowe</arg>
+  <rel              >catching on</rel>
+  <arg n="1" f="to">a double identity scam</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

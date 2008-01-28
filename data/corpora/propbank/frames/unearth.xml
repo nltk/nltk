@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="unearth">
+<note>
+  Frames file for 'unearth' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="unearth.01" name="to uncover" vncls="-">
+<roles>
+  <role descr="agent, causer" n="0"/>
+  <role descr="thing uncovered" n="1"/>
+</roles>
+
+
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ It began in 1973 , when he was being considered [*-1] for deputy mayor , and a routine check unearthed the extraordinary fact that he had n't paid his income tax for the previous four years [*T*-2] .
+</text>
+	<arg n="0">a routine check</arg>
+	<rel>unearthed</rel>
+	<arg n="1">the extraordinary fact that he had n't paid his income tax for the previous four years</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

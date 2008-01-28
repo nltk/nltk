@@ -1,0 +1,186 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="carry">
+<note>
+  Frames file for 'carry' based on Chris' old frames file.  Some
+  modification required.
+</note>
+
+<roleset id="carry.01" name="bring with, have" vncls="11.4 54.2 54.3">
+<roles>
+  <role descr="carrier" n="0">
+	<vnrole vncls="11.4" vntheta="Agent"/>
+        <vnrole vncls="54.2" vntheta="Theme"/>
+        <vnrole vncls="54.3" vntheta="Location"/></role>
+  <role descr="thing carried" n="1">
+	<vnrole vncls="11.4" vntheta="Theme"/>
+        <vnrole vncls="54.2" vntheta="Attribute"/>
+        <vnrole vncls="54.3" vntheta="Attribute"/></role>
+  <role descr="instrument" n="2"/>
+  <role descr="'with' reflecting back on arg0" n="3"/>
+  <role descr="benefactive (predicted but not seen)" n="4"/>
+</roles>
+
+<example name="basic transitive">
+  <text>
+  Citibank carries $150 million in earthquake insurance.
+  </text>
+  <arg n="0">Citibank</arg>
+  <rel>carries</rel>
+  <arg n="1">$150 million in earthquake insurance</arg>
+</example>
+
+<example name="with instrument object">
+  <text>
+  T-shirts carried the school logo on the front.
+  </text>
+  <arg n="0">T-shirts</arg>
+  <rel>carried</rel>
+  <arg n="1">the school logo</arg>
+  <arg f="on" n="2">the front</arg>
+</example>
+
+<example name="with with">
+  <text>
+  The transportation bill carries with it a permanent smoking ban.
+  </text>
+  <arg n="0">The transportation bill</arg>
+  <rel>carries</rel>
+  <arg f="with" n="3">it</arg>
+  <arg n="1">a permanent smoking ban</arg>
+</example>
+
+<note>
+The Instrument tag should be reserved for overt object instruments (see above
+example), for reasons of consistency. 
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="carry_on">
+
+<roleset id="carry.02" name="carry on: continue">
+<roles>
+  <role descr="continuer" n="0"/>
+  <role descr="thing continuing" n="1"/>
+  <role descr="comitative, thing kept together" n="2"/>
+  <role descr="attributive of arg1" n="3"/>
+</roles>
+
+<example name="made up">
+  <text>
+  Mary will carry on with John's work.
+  </text>
+  <arg n="0">Mary</arg>
+  <arg f="MOD" n="m">will</arg>
+  <rel>carry on</rel>
+  <arg f="with" n="1">John's work</arg>
+</example>
+
+<example name="converted from 'continue'">
+  <text>
+  Investors carry on *trace* pouring cash into money funds.
+  </text>
+  <arg n="0">Investors</arg>
+  <rel>carry on</rel>
+  <arg n="1">*trace* pouring cash into money funds</arg>
+</example>
+
+<example name="made up, inverted">
+  <text>
+  Despite his death, John's work will carry on.
+  </text>
+  <arg f="ADV" n="m">Despite his death</arg>
+  <arg n="1">John's work</arg>
+  <arg f="MOD" n="m">will</arg>
+  <rel>carry on</rel>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="carry_out">
+
+<roleset id="carry.03" name="carry out: implement">
+<roles>
+  <role descr="implementer" n="0"/>
+  <role descr="thing implemented" n="1"/>
+</roles>
+
+<example name="transitive">
+  <text>
+  Management carried out the plan over the objections of the workers.
+  </text>
+  <arg n="0">Management</arg>
+  <rel>carried out</rel>
+  <arg n="1">the plan</arg>
+  <arg f="ADV" n="m">over the objections of the workers</arg>
+</example>
+</roleset>
+</predicate>
+
+<predicate lemma="carry_over">
+
+<roleset id="carry.04" name="carry over: continue">
+<roles>
+  <role descr="carrier" n="0"/>
+  <role descr="thing continuing" n="1"/>
+  <role descr="(from) whence?" n="2"/>
+  <role descr="(to) whither?" n="3"/>
+</roles>
+
+<example name="agentive">
+  <text>
+  John carried yesterday's discussion over into today's meeting.
+  </text>
+  <arg n="0">John</arg>
+  <rel>carried over</rel>
+  <arg n="1">yesterday's discussion</arg>
+  <arg f="into" n="3">today's meeting</arg>
+</example>
+
+<example name="ergative">
+  <text>
+  The discussion carried over from the meeting into lunch.
+  </text>
+  <arg n="1">The discussion</arg>
+  <rel>carried over</rel>
+  <arg f="from" n="2">the meeting</arg>
+  <arg f="into" n="3">lunch</arg>
+</example>
+
+<note>
+Yes, I know &quot;from whence&quot; and &quot;to whither&quot; are tautologies.  But do
+you know why?
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="carry_off">
+
+<roleset id="carry.05" vncls="-" name="carry off: accomplish">
+<roles>
+  <role n="0"  descr="accomplisher"/>
+  <role n="1"  descr="deed"/>
+</roles>
+
+<example name="can he do it?">
+  <inflection person="ns" tense="ns" aspect="ns" voice="active" form="full"/>
+  <text>
+    But can Mr. Hahn carry it off?
+  </text>
+  <arg n="m" f="DIS">But</arg>
+  <arg n="m" f="MOD">can</arg>
+  <arg n="0"        >Mr. Hahn</arg>
+  <rel              >carry off</rel>
+  <arg n="1"        >it</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

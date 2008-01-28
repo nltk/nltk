@@ -1,0 +1,57 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="delay">
+<note>
+  Frames file for 'delay' based on sentences in financial subcorpus.
+  No access to verbnet.  No comparison.
+</note>
+
+<roleset id="delay.01" name="cause to occur later in time than planned" vncls="53.1">
+<roles>
+  <role descr="agent, causer of delay" n="0">
+		
+  <vnrole vncls="53.1" vntheta="Agent"/></role>
+
+  <role descr="event delayed" n="1"><vnrole vncls="53.1" vntheta="Theme"/></role>
+  <role descr="delay itself, EXT, time period" n="2"/>
+</roles>
+
+<example name="just transitive">
+<text>
+    The company said it was delaying construction because of current
+    market conditions. 
+</text>
+        <arg n="0">it</arg>
+        <rel>delaying</rel>
+        <arg n="1">construction</arg>
+        <arg f="CAU" n="M">because of current market conditions</arg>
+</example>
+
+<example name="passivized">
+<text>
+    Subcontractors said they were told that equipment orders would be
+    delayed *trace*. 
+</text>
+        <arg f="MOD" n="M">would</arg>
+        <rel>delayed</rel>
+        <arg n="1">*trace* -&gt;  equipment orders</arg>
+</example>
+
+<example name="with EXT">
+<text>
+    After the opening was delayed *trace* 30 minutes because of the
+    crush of sell orders, Frankfurt's normal two-hour trading session
+    was extended 75 minutes  to handle the heavy volume. 
+</text>
+        <rel>delayed</rel>
+        <arg n="1">*trace* -&gt;  the opening</arg>
+        <arg f="EXT" n="2">30 minutes</arg>
+        <arg f="CAU" n="M">because of the crush of sell orders</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

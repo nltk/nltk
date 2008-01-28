@@ -1,0 +1,34 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="snoop">
+<note>
+  Frames file for 'snoop'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="snoop.01" name="to pry into the private affairs of others" vncls="30.3 35.5">
+<roles> 
+  <role descr="nosy entity" n="0">
+        <vnrole vncls="30.3" vntheta="Experiencer"/>
+        <vnrole vncls="35.5" vntheta="Agent"/></role>
+  <role descr="private affairs" n="1">
+        <vnrole vncls="30.3" vntheta="Stimulus"/>
+        <vnrole vncls="35.5" vntheta="Location"/></role>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="gerund" person="ns" tense="ns" voice="active"/>
+<text>
+ Some diaries simply are n't worth [*] snooping in [*?*] .
+</text>
+	<arg n="0">[*]</arg>
+	<rel>snooping</rel>
+	<arg f="in" n="1">[*?*] -&gt;  Some diaries</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

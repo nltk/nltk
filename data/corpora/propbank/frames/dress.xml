@@ -1,0 +1,122 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="dress">
+<note>
+  Frames file for 'dress' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+
+<roleset id="dress.01" name="to put on clothes, decorate" vncls="41.1.1">
+<roles>
+  <role descr="person putting on clothes" n="0">
+	<vnrole vncls="41.1.1" vntheta="Agent"/></role>
+  <role descr="person wearing clothes" n="1">
+	<vnrole vncls="41.1.1" vntheta="Patient"/></role>
+  <role descr="attribute" n="2"/>
+</roles>
+
+
+
+<example name="intransitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ `` If I go in there as I normally dress , they 'd ask , ` Who [*T*-1] is this hippie ? ' ''
+</text>
+	<arg n="0">I</arg>
+	<arg f="MNR" n="M">normally</arg>
+	<rel>dress</rel>
+</example>
+
+
+<example name="passive, with Arg2-in">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+ Kelly Siegler , an assistant district attorney who [*T*-1] was in the courtroom , disputed suggestions [0] the action was sexist , [*-2] saying [0] she had seen Judge Hancock turn away male defendants dressed [*] in shorts , tank tops or muscle shirts `` many times . ''
+</text>
+	<rel>dressed</rel>
+	<arg n="1">[*] -&gt;  male defendants</arg>
+	<arg f="in" n="2">shorts , tank tops or muscle shirts</arg>
+	<arg f="TMP" n="M">many times</arg>
+</example>
+
+
+<example name="with Arg2-as">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ Richard Chamberlain dresses as a `` Mainland haole , '' [*-1] tucking in a Hawaiian shirt and rolling up its long sleeves .
+</text>
+	<arg n="0">Richard Chamberlain</arg>
+	<rel>dresses</rel>
+	<arg f="as" n="2">a `` Mainland haole</arg>
+	<arg f="ADV" n="M">[*-1] tucking in a Hawaiian shirt and rolling up its long sleeves</arg>
+</example>
+
+<example name="with manner">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+ `` For women , [*-1] dressing for success in a real structured way is over . ''
+</text>
+	<arg n="0">[*-1] -&gt;  women</arg>
+	<rel>dressing</rel>
+	<arg f="PNC" n="M">for success</arg>
+	<arg f="MNR" n="M">in a real structured way</arg>
+</example>
+</roleset>
+</predicate>
+
+<predicate lemma="dress_up">
+
+<roleset id="dress.02" name="to put on or wear formal or fancy clothes, to decorate" vncls="41.3.2">
+<roles>
+  <role descr="entity putting on clothes" n="0">
+	<vnrole vncls="41.3.2" vntheta="Agent"/></role>
+  <role descr="entity dressed up, decorated, wearing clothes" n="1">
+	<vnrole vncls="41.3.2" vntheta="Patient"/></role>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ The three-page Crown Royal ad features a black-and-white shot of a boring holiday party -- and a set of colorful stickers with which readers can dress it up [*T*-1] .
+</text>
+	<arg n="0">readers</arg>
+	<arg f="MOD" n="M">can</arg>
+	<rel>[ dress] [ up]</rel>
+	<arg n="1">it</arg>
+	<arg f="MNR" n="M">[*T*-1] -&gt;  with which -&gt;  colorful stickers</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="dress_down">
+
+<roleset id="dress.03" name="to censure severely or angrily" vncls="-">
+<roles>
+  <role descr="angry entity, agent" n="0"/>
+  <role descr="entity dressed down" n="1"/>
+  <role descr="dress down for" n="2"/>  
+</roles>
+
+
+
+<example name="all arguments">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ When a large group of pilots once signed petitions opposing work-rule and compensation changes [*T*-1] , he called a meeting in a company hangar and dressed them down for [*-2] challenging his authority .
+</text>
+	<arg n="0">he</arg>
+	<rel>[ dressed] [ down]</rel>
+	<arg n="1">them</arg>
+	<arg f="for" n="2">[*-2] challenging his authority</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

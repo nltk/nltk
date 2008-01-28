@@ -1,0 +1,35 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="lop">
+<note>
+  Frames file for 'lop' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="lop.01" name="to cut off" vncls="10.1">
+<roles>
+  <role descr="cutter, agent" n="0">
+        <vnrole vncls="10.1" vntheta="Agent"/></role>
+  <role descr="entity lopped" n="1">
+        <vnrole vncls="10.1" vntheta="Theme"/></role>
+  <role descr="entity lopped off/from" n="2">
+        <vnrole vncls="10.1" vntheta="Source"/></role>
+</roles>
+
+<example name="all arguments">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ The executives were remarkably unperturbed by the plunge even though it lopped billions of dollars off the value of their companies -- and millions off their personal fortunes .
+</text>
+	<arg n="0">it</arg>
+	<rel>lopped</rel>
+	<arg n="1">billions of dollars</arg>
+	<arg f="off" n="2">the value of their companies</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

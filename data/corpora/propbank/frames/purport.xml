@@ -1,0 +1,37 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="purport">
+<note>
+  Frames file for 'purport' based on sentences in financial subcorpus.
+  No Verbnet entry, comparison with 'claim'.  It's a real pity this
+  verb isn't used more often.
+</note>
+
+<roleset id="purport.01" name="claim, pretend" vncls="-">
+<roles>
+  <role descr="claimer" n="0"/>
+  <role descr="thing claimed" n="1"/>
+</roles>
+
+<example name="they all look like this">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    The new letter purports to do this, saying that in addition to $7
+    a share in cash, StatesWest would offer one share of new 6%
+    convertible preferred stock of StatesWest it values at $3 a
+    share. 
+</text>
+        <arg n="0">The new letter</arg>
+        <rel>purports</rel>
+        <arg n="1">to do this</arg>
+        <arg f="ADV" n="M">saying that in addition to $7 a share in
+        cash, StatesWest would offer one share of new 6% convertible
+        preferred stock of StatesWest it values at $3 a share</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

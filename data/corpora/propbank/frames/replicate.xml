@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="replicate">
+<note>
+  Frames file for 'replicate' based on sentences in wsj.  No Verbnet
+  entry, Framenet entry Replication (go figger).
+</note>
+
+<roleset id="replicate.01" name="make a copy" vncls="-">
+<roles>
+  <role descr="copier, agent" n="0"/>
+  <role descr="original" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    He said authors of Scoring High ``scrupulously avoid'' *trace*
+    replicating exact questions, but he doesn't deny that some items
+    are similar. 
+</text>
+        <arg n="0">*trace* -&gt;  authors of Scoring High</arg>
+        <rel>replicating</rel>
+        <arg n="1">exact questions</arg>
+</example>
+
+<note>
+Copy not mentioned?
+</note>
+
+</roleset>
+</predicate>
+</frameset>

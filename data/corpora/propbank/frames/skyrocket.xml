@@ -1,0 +1,41 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="skyrocket">
+<note>
+  Frames file for 'skyrocket' based on sentences in financial
+  subcorpus.  Bite my butt, it is in verbnet: calibratable_cos-45.6.
+  Other framed members include: climb, decline, drop, fall, etc.
+  Comparison to 'rise'.
+</note>
+
+<roleset id="skyrocket.01" name="go up very fast" vncls="45.6">
+<roles>
+    <role descr="Logical subject, patient, thing rising" n="1">
+		
+  <vnrole vncls="45.6" vntheta="Patient"/></role>
+
+    <role descr="EXT, amount risen" n="2"/>
+    <role descr="start point" n="3">
+		
+  <vnrole vncls="45.6" vntheta="Extent"/></role>
+
+    <role descr="end point" n="4"/>
+    <role descr="medium" f="LOC" n="M"/>
+</roles>
+
+<example name="ergative, no other args">
+<text>
+   Art prices are skyrocketing...
+</text>
+        <arg n="1">Art prices</arg>
+        <rel>skyrocketing</rel>
+</example>
+
+<note>
+I doubt the higher numbered args will appear, but refer to 'rise' etc
+for usage if they do.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,72 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="rattle">
+<note>
+  Frames file for 'rattle' based on sentences in financial subcorpus.
+  Verbnet entry 43.2, other framed members include sputter.  Framenet
+  classes Communication Noise, Experiencer Object, Perception Noise.
+  Comparison with 'shake' and 'shock'.
+</note>
+
+<roleset id="rattle.01" name="cause to shake" vncls="43.2">
+<roles>
+  <role descr="shaker" n="0">
+		
+  <vnrole vncls="43.2" vntheta="Agent"/></role>
+
+  <role descr="thing shaking" n="1">
+		
+  <vnrole vncls="43.2" vntheta="Theme"/></role>
+
+</roles>
+
+<example name="literally">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John's teeth rattled in his mouth.
+  </text>
+  <arg n="1">John's teeth</arg>
+  <rel>rattled</rel>
+  <arg f="LOC" n="m">in his mouth</arg>
+</example>
+
+<example name="metaphorically">
+<inflection aspect="perfect" form="participle" person="third" tense="present" voice="active"/>
+<text>
+    It has also rattled Federal's strongly anti-union management,
+    which is already contending with melding far-flung operations and
+    with falling profits. 
+</text>
+        <arg n="0">It</arg>
+        <arg f="DIS" n="M">also</arg>
+        <rel>rattled</rel>
+        <arg n="1">Federal's strongly anti-union management, which is
+        already contending with melding far-flung operations and with
+        falling profits</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="rattle.02" vncls="-" name="emit rattling sounds">
+<roles>
+  <role n="0"  descr="rattler"/>
+</roles>
+
+<example name="not a snake">
+  <inflection person="ns" tense="ns" aspect="progressive" voice="active" form="participle"/>
+  <text>
+    We see, smell and hear slums filled with ``the echoes of hawkers
+    advertising their wares interspersed with abusive language,
+    rattling coughs and the sound of people gathering spittle in their
+    throats and spewing into the street.'' 
+  </text>
+  <rel              >rattling</rel>
+  <arg n="0"        >coughs</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

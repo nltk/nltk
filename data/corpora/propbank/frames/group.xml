@@ -1,0 +1,59 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="group">
+<note>
+  Frames file for 'group' based on sentences in wsj.  Verbnet entries
+  22.3 and 47.5.2.
+</note>
+
+<roleset id="group.01" name="put into some group" vncls="47.5.2 22.3-2">
+<roles>
+  <role descr="agent, entity causing some grouping" n="0">
+	<vnrole vncls="47.5.2" vntheta="Agent"/>
+        <vnrole vncls="22.3-2" vntheta="Agent"/></role>
+  <role descr="theme, thing being included in some group" n="1">
+	<vnrole vncls="47.5.2" vntheta="Theme"/>
+        <vnrole vncls="22.3-2" vntheta="Patient1"/></role>
+  <role descr="group" n="2">
+        <vnrole vncls="22.3-2" vntheta="Patient2"/></role>
+</roles>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    Shorn of all their riders, special provisions, and other bells and
+    whistles, insurance policies can still be grouped [*-1] under two
+    broad categories: so-called pure insurance, which amasses no cash
+    value in the policy and pays off only upon death, and permanent
+    insurance, which provides not only a death benefit but also a cash
+    value in the policy that can be used in various ways while the
+    insured is still alive. 
+</text>
+        <arg f="MOD" n="M">can</arg>
+        <rel>grouped</rel>
+        <arg n="1">[*-1] -&gt;  insurance policies</arg>
+        <arg f="under" n="2">two broad categories: so-called pure
+        insurance, which amasses no cash value in the policy and pays
+        off only upon death, and permanent insurance, which provides
+        not only a death benefit but also a cash value in the policy
+        that can be used in various ways while the insured is still
+        alive</arg> 
+</example>
+
+<example name="different kind of group">
+  <inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+  <text>
+    John groups all kinds of chocolate together.
+  </text>
+  <arg n="0">John</arg>
+  <rel>groups</rel>
+  <arg n="1">all kinds of chocolate</arg>
+  <arg f="PRD" n="m">together</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

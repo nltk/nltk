@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="overdose">
+<note>
+  Frames file for 'overdose' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="overdose.01" name="(cause to) consume too much narcotic" vncls="-">
+<roles>
+  <role descr="overdosed entity" n="0"/>
+  <role descr="narcotic" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="progressive" form="participle" person="third" tense="present" voice="active"/>
+<text>
+    It's a bizarre and totally inappropriate reaction, all to add more
+    pizzazz to a script that [*T*-1]'s already overdosing on pizzazz. 
+</text>
+        <arg n="0">[*T*-1] -&gt;  that -&gt;  a script</arg>
+        <arg f="TMP" n="M">already</arg>
+        <rel>overdosing</rel>
+        <arg f="on" n="1">pizzazz</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

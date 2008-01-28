@@ -1,0 +1,67 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="pose">
+<note>
+Frames file for 'pose' based on sentences in wsj and automatic
+expansion via verbnet.
+</note>
+
+<roleset id="pose.01" name="adopt an attitude, role" vncls="29.6">
+<roles>
+	<role descr="player" n="0"><vnrole vncls="29.6" vntheta="Agent"/></role>
+	<role descr="role" n="1"><vnrole vncls="29.6" vntheta="Predicate"/></role>
+</roles>
+
+<example name="context?  We don't need no steenkin' context!">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    A bunch of tans and bathing suits posing as lovable lifeguards .
+</text>
+        <arg n="0">A bunch of tans and bathing suits</arg>
+        <rel>posing</rel>
+        <arg f="as" n="1">lovable lifeguards</arg>
+</example>
+
+</roleset>
+
+<roleset id="pose.02" name="pose a question, problem, etc" vncls="37.1">
+<roles>
+	<role descr="poser" n="0"><vnrole vncls="37.1" vntheta="Agent"/></role>
+	<role descr="question, etc" n="1"><vnrole vncls="37.1" vntheta="Topic"/></role>
+	<role descr="hearer" n="2"><vnrole vncls="37.1" vntheta="Recipient"/></role>
+</roles>
+
+<example name="straight transitive">
+<inflection aspect="progressive" form="participle" person="third" tense="present" voice="active"/>
+<text>
+    But Japan's power in the region also is sparking fears of
+    domination and posing fresh policy questions. 
+</text>
+        <arg n="0">Japan's power in the region</arg>
+        <arg f="DIS" n="M">also</arg>
+        <rel>posing</rel>
+        <arg n="1">fresh policy questions</arg>
+</example>
+
+<example name="with hearer">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    It isn't clear, however, whether support for the proposal will be
+    broad enough *trace* to pose a serious challenge to the White
+    House's acid-rain plan. 
+</text>
+        <arg n="0">*trace* -&gt;  support for the proposal</arg>
+        <rel>pose</rel>
+        <arg n="1">a serious challenge</arg>
+        <arg f="to" n="2">the White House's acid-rain plan</arg>
+</example>
+
+<note>
+Treebank adopts a range of syntaces for 'pose a challenge to' 'pose a
+problem for' etc.  You may have to pull apart a constituent to get to
+the arguments.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,96 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="advise">
+<note>
+  Frames file for 'advise' based on sentences in financial subcorpus.
+  No access to verbnet.  Comparison to verbs of impelled action.
+</note>
+
+<roleset id="advise.01" name="give advice" vncls="37.9-1">
+<roles>
+  <role descr="entity giving advice" n="0">
+		
+  <vnrole vncls="37.9-1" vntheta="Agent"/></role>
+
+  <role descr="entity getting advice, impelled agent" n="1">
+		
+  <vnrole vncls="37.9-1" vntheta="Recipient"/></role>
+
+  <role descr="advice, impelled action" n="2">
+		
+  <vnrole vncls="37.9-1" vntheta="Topic"/></role>
+
+</roles>
+
+<example name="no advice mentioned">
+<text>
+    Nekoosa also is being advised *trace* by Goldman, Sachs and Co.
+</text>
+        <arg f="DIS" n="M">also</arg>
+        <rel>advised</rel>
+        <arg n="1">*trace* -&gt;  Nekoosa</arg>
+        <arg f="by" n="0">Goldman , Sachs and Co</arg>
+</example>
+
+<example name="advice as PP">
+<text>
+    They continually advise their clients on which individual stocks
+    to buy or sell, while their clients continue to hope for superior
+    performance. 
+</text>
+        <arg n="0">They</arg>
+        <arg f="TMP" n="M">continually</arg>
+        <rel>advise</rel>
+        <arg n="1">their clients</arg>
+        <arg f="on" n="2">which individual stocks to buy or sell </arg>
+        <arg f="ADV" n="M">while their clients continue to hope for
+        superior performance</arg> 
+</example>
+
+<example name="advice as pro-controlled S">
+<text>
+    ``We are advising a lot of our clients to make moves that make
+    sense to them, rather than waiting until the last minute, because
+    things have been so volatile,'' said William Sulya, head of OTC
+    trading at A.G. Edwards and Sons in St. Louis. 
+</text>
+        <arg n="0">We</arg>
+        <rel>advising</rel>
+        <arg n="1">a lot of our clients</arg>
+        <arg n="2">to make moves that  make sense to them, rather than
+        waiting until the last minute</arg> 
+        <arg f="CAU" n="M">because things have been so volatile</arg>
+</example>
+
+<example name="advice as VP, or whatever 'regarding' clauses are">
+<text>
+    The thrift hired an investment banker earlier this month *trace*
+    to advise it regarding a possible sale or merger. 
+</text>
+        <arg n="0">*trace* -&gt;  an investment banker</arg>
+        <rel>advise</rel>
+        <arg n="1">it</arg>
+        <arg n="2">regarding a possible sale or merger</arg>
+</example>
+
+<example name="advice as SBAR">
+<text>
+    Comprehensive Care said First Hospital had advised it that both
+    bank debt and senior notes would be repaid after the acquisition,
+    although it isn't assured the acquisition will be completed. 
+</text>
+        <arg n="0">First Hospital</arg>
+        <rel>advised</rel>
+        <arg n="1">it</arg>
+        <arg n="2">both bank debt and senior notes would be repaid
+        after the acquisition</arg> 
+</example>
+
+<note>
+Naturally the complementizer of SBARs isn't included, so it's more
+like advice as full S.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

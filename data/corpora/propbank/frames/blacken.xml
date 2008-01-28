@@ -1,0 +1,37 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="blacken">
+<note>
+  Frames file for 'blacken' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="blacken.01" name="to make black" vncls="45.4">
+<roles>
+  <role descr="causer of blackening, agent" n="0">
+		
+  <vnrole vncls="45.4" vntheta="Agent"/></role>
+
+  <role descr="thing made black" n="1">
+		
+  <vnrole vncls="45.4" vntheta="Patient"/></role>
+
+</roles>
+
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+ Although Exxon spent heavily during the latest quarter [*-2] to clean up the Alaskan shoreline blackened [*] by its huge oil spill , those expenses as well as the cost of a continuing spill-related program are covered [*-1] by $ 880 million [*U*] in charges taken [*] during the first half .
+</text>
+	<rel>blackened</rel>
+	<arg n="1">[*] -&gt;  the Alaskan shoreline</arg>
+	<arg n="0">its huge oil spill</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

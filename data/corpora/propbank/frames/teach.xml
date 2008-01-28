@@ -1,0 +1,96 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="teach">
+<note>
+Frames file for 'teach' based on sentences in financial subcorpus and
+automatic expansion via verbnet.
+</note>
+
+<roleset id="teach.01" name="(try to) make learn" vncls="37.1-1">
+<roles>
+	<role descr="teacher" n="0">
+		
+  <vnrole vncls="37.1-1" vntheta="Agent"/></role>
+
+	<role descr="subject" n="1">
+		
+  <vnrole vncls="37.1-1" vntheta="Topic"/></role>
+
+	<role descr="student(s)" n="2">
+		
+  <vnrole vncls="37.1-1" vntheta="Recipient"/></role>
+
+</roles>
+
+<example name="intransitive">
+<inflection aspect="ns" form="full" person="ns" tense="future" voice="active"/>
+<text>
+    She was an unstinting teacher who won laurels and inspired
+    students, but she will probably never teach again. 
+</text>
+        <arg n="0">she</arg>
+        <arg f="MOD" n="M">will</arg>
+        <arg f="ADV" n="M">probably</arg>
+        <arg f="TMP" n="M">never</arg>
+        <rel>teach</rel>
+        <arg f="TMP" n="M">again</arg>
+</example>
+
+<example name="just subject">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    The group says standardized achievement test scores are greatly
+    inflated because teachers often ``teach the test'' as Mrs. Yeargin
+    did, although most are never caught. 
+</text>
+        <arg n="0">teachers</arg>
+        <arg f="TMP" n="M">often</arg>
+        <rel>teach</rel>
+        <arg n="1">the test</arg>
+        <arg f="ADV" n="M">as Mrs. Yeargin did </arg>
+</example>
+
+<example name="just students">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+     Encouraged by Mrs. Ward, Mrs. Yeargin taught honor students in
+     the state ``teacher cadet'' program, a reform creation designed
+     to encourage good students to consider teaching as a career.
+</text>
+        <arg n="0">Mrs. Yeargin</arg>
+        <rel>taught</rel>
+        <arg n="2">honor students in the state ``teacher cadet''
+        program, a reform creation designed to encourage good students
+        to consider teaching as a career</arg> 
+</example>
+
+<example name="double object">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    ``She taught us more in Western Civilization than I've ever
+    learned in other classes,'' says Kelli Green, a Greenville
+    senior. 
+</text>
+        <arg n="0">She</arg>
+        <rel>taught</rel>
+        <arg n="2">us</arg>
+        <arg n="1">more in Western Civilization than I've ever learned
+        in other classes</arg> 
+</example>
+
+<example name="dative almost never occurs">
+  <inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+  <text>
+     John teaches quantum mechanics to kindergartners.
+  </text>
+  <arg n="0">John</arg>
+  <rel>teaches</rel>
+  <arg n="1">quantum mechanics</arg>
+  <arg f="to" n="2">kindergartners</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

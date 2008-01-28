@@ -1,0 +1,28 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="desist">
+<note>
+  Frames file for 'desist' based on sentences in wsj.  No Verbnet
+  entry, Framenet entry Process stop.
+</note>
+
+<roleset id="desist.01" name="stop it, already" vncls="-">
+<roles>
+  <role descr="stopper" n="0"/>
+</roles>
+
+<example name="cease and...">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+     Sen. Mitchell urged them [*-1] to desist.
+</text>
+        <arg n="0">[*-1] -&gt;  them</arg>
+        <rel>desist</rel>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

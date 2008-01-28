@@ -1,0 +1,35 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="pry">
+<note>
+  Frames file for 'pry' based on sentences in wsj.
+</note>
+
+<roleset id="pry.01" vncls="-" name="pull loose with some difficulty">
+<roles>
+  <role n="0"  descr="agent, pry-er"/>
+  <role n="1"  descr="thing pried"/>
+  <role n="2"  descr="end state/attribute of arg1"/>
+</roles>
+
+<example name="lexical error">
+<inflection aspect="ns" form="gerund" person="ns" tense="ns" voice="ns"/>
+<text>
+    And [*] try plying [sic] new dollars free in a market that is softening,
+    hurt by a strong dollar and concerned about overcapacity -- the
+    industry's Darth Vadar. 
+</text>
+        <arg n="0">[*]</arg>
+        <rel>plying</rel>
+        <arg n="1">new dollars</arg>
+        <arg n="2">free</arg>
+        <arg f="LOC" n="M">in a market that is softening, hurt by a
+        strong dollar and concerned about overcapacity -- the
+        industry's Darth Vadar</arg> 
+</example>
+
+</roleset>
+</predicate>
+</frameset>
+
+

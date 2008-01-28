@@ -1,0 +1,47 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="peek">
+<note>
+  Frames file for 'peek' based on sentences in wsj.  Verbnet entry
+  30.3, Framenet entry Perception active.
+</note>
+
+<roleset id="peek.01" name="look at, sneakily" vncls="30.3">
+<roles>
+  <role descr="looker" n="0">
+        
+      <vnrole vncls="30.3" vntheta="Experiencer"/></role>
+  <role descr="looked at" n="1">
+        
+      <vnrole vncls="30.3" vntheta="Stimulus"/></role>
+</roles>
+
+<example name="bad example">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    [*] Peeking Inside Arteries From Outside the Body
+</text>
+        <arg n="0">[*]</arg>
+        <rel>Peeking</rel>
+        <arg f="Inside" n="1">Arteries</arg>
+        <arg f="LOC" n="M">From Outside the Body</arg>
+</example>
+
+<example name="better example">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John peek at Mary while she was changing clothes.  Then she beat
+     him to a bloody pulp.
+  </text>
+  <arg n="0">John</arg>
+  <rel>peeked</rel>
+  <arg f="at" n="1">Mary</arg>
+  <arg f="TMP" n="M">while she was changing clothes.</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

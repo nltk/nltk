@@ -1,0 +1,88 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="recommend">
+<note>
+  Frames file for 'recommend' based on sentences in financial
+  subcorpus.  Verbnet entries 29.2 48.1.2, other framed members
+  include count, define, describe, employ, establish, intend, portray,
+  rank, redefine, regard, treat; arise, assert, declare, emerge,
+  exude, materialize.  Most of those don't make sense to me.
+  Comparison with 'refer'.
+</note>
+
+<roleset id="recommend.01" name="recommend" vncls="29.2 48.1.2">
+<roles>
+  <role descr="recommender" n="0">
+		
+		
+  <vnrole vncls="29.2" vntheta="Agent"/><vnrole vncls="48.1.2" vntheta="Agent"/></role>
+
+  <role descr="thing recommended" n="1">
+		
+		
+  <vnrole vncls="29.2" vntheta="Theme"/><vnrole vncls="48.1.2" vntheta="Theme"/></role>
+
+  <role descr="recommended to" n="2">
+		
+		
+  <vnrole vncls="29.2" vntheta="Predicate"/><vnrole vncls="48.1.2" vntheta="Recipient"/></role>
+
+  <role descr="secondary attribute" n="3"/>
+</roles>
+
+<example name="recommended an S">
+<text>
+    An advisory committee of the Food and Drug Administration
+    recommended that the agency approve Eminase, the company's heart
+    drug. 
+</text>
+        <arg n="0">An advisory committee of the Food and Drug
+        Administration</arg> 
+        <rel>recommended</rel>
+        <arg n="1">the agency approve Eminase, the company's heart
+        drug</arg> 
+</example>
+
+<example name="recommend an NP">
+<text>
+    The university had sought an injunction blocking Connaught's board
+    from *trace* recommending or supporting an offer for the company
+    by Merieux. 
+</text>
+        <arg n="0">*trace* -&gt;  Connaught's board</arg>
+        <rel>recommending</rel>
+        <arg n="1">an offer for the company by Merieux</arg>
+</example>
+
+<example name="recommended to">
+<text>
+    CMS ENERGY Corp. said management would recommend to its board
+    today that its common stock dividend be reinstated at a ``modest
+    level'' later this year. 
+</text>
+        <arg n="0">management</arg>
+        <arg f="MOD" n="M">would</arg>
+        <rel>recommend</rel>
+        <arg f="to" n="2">its board</arg>
+        <arg f="TMP" n="M">today</arg>
+        <arg n="1">its common stock dividend be reinstated at a
+        ``modest level'' later this year</arg> 
+</example>
+
+<example name="recommend as">
+<text>
+   ...at the brokerage firm of Salomon Brothers Inc., which *trace*
+   had recommended the stock as a good buy. 
+</text>
+        <arg n="0">*trace* -&gt;  which -&gt;  Salomon Brothers Inc.</arg>
+        <rel>recommended</rel>
+        <arg n="1">the stock</arg>
+        <arg f="as" n="3">a good buy</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

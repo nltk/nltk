@@ -1,0 +1,43 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="arch">
+<note>
+  Frames file for 'arch' based on sentences in wsj.  Verbnet entry
+  40.3.2, Framenet entry Body movement.
+</note>
+
+<roleset id="arch.01" name="be in arch-like configuration" vncls="40.3.2">
+<roles>
+  <role descr="causer of arching motion/state" n="0"><vnrole vncls="40.3.2" vntheta="Agent"/></role>
+  <role descr="thing in arch-like configuration" n="1"><vnrole vncls="40.3.2" vntheta="Patient"/></role>
+</roles>
+
+<example name="a collective eyebrow?">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    When the Trinity Repertory Theater named Anne Bogart its artistic
+    director last spring, the nation's theatrical cognoscenti arched a
+    collective eyebrow. 
+</text>
+        <arg n="0">the nation's theatrical cognoscenti</arg>
+        <rel>arched</rel>
+        <arg n="1">a collective eyebrow</arg>
+</example>
+
+<example name="prepositional arg0">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+     One of the busiest ghostbusters is Robert Baker, a 68-year-old
+     semi-retired University of Kentucky psychology professor whose
+     bushy gray eyebrows arch at the mere mention of a ghost. 
+</text>
+        <arg n="1">*trace* -&gt;  whose bushy gray eyebrows</arg>
+        <rel>arch</rel>
+        <arg f="at" n="0">the mere mention of a ghost</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

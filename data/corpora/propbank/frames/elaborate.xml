@@ -1,0 +1,43 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="elaborate">
+<note>
+  Frames file for 'elaborate' based on sentences in financial
+  subcorpus.  No verbnet entry.
+</note>
+
+<roleset id="elaborate.01" name="go into detail">
+<roles>
+  <role descr="speaker" n="0"/>
+  <role descr="subject gone into detail on" n="1"/>
+</roles>
+
+<example name="with subject">
+<text>
+    UAL wouldn't elaborate on a statement that it had been notified of
+    the filing by Reliance. 
+</text>
+        <arg n="0">UAL</arg>
+        <rel>would</rel>
+        <arg f="NEG" n="M">n't</arg>
+        <rel>elaborate</rel>
+        <arg f="on" n="1">a statement that it had been notified of the
+        filing by Reliance</arg> 
+</example>
+
+<example name="without subject">
+<text>
+    Reliance confirmed the filing but wouldn't elaborate. 
+</text>
+        <arg n="0">Reliance</arg>
+        <arg f="MOD" n="M">would</arg>
+        <arg f="NEG" n="M">n't</arg>
+        <rel>elaborate</rel>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

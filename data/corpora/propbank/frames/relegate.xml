@@ -1,0 +1,42 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="relegate">
+<note>
+  Frames file for 'relegate' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="relegate.01" name="consign, send" vncls="-">
+<roles>
+  <role descr="relegator" n="0"/>
+  <role descr="relegated" n="1"/>
+  <role descr="destination" n="2"/>
+</roles>
+
+<example name="I have no idea what this means">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    When you become a federal judge, all of a sudden you are relegated
+    *trace* to a paltry sum.'' 
+</text>
+        <rel>relegated</rel>
+        <arg n="1">*trace* -&gt;  you</arg>
+        <arg f="to" n="2">a paltry sum</arg>
+</example>
+
+<example name="with agent">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John relegated his memories of Mary to the dusty attics of his mind.
+  </text>
+  <arg n="0">John</arg>
+  <rel>relegated</rel>
+  <arg n="1">his memories of Mary</arg>
+  <arg f="to" n="2">the dusty attics of his mind</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

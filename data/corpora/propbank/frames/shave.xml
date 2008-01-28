@@ -1,0 +1,67 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="shave">
+<note>
+  Frames file for 'shave' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="shave.01" name="to cut" vncls="10.4.1">
+<roles>
+  <role descr="agent, cutter" n="0">
+		
+  <vnrole vncls="10.4.1" vntheta="Agent"/></role>
+
+  <role descr="thing or amount cut" n="1">
+		
+  <vnrole vncls="10.4.1" vntheta="Theme"/></role>
+
+  <role descr="source" n="2">
+		
+  <vnrole vncls="10.4.1" vntheta="Source"/></role>
+
+  <role descr="instrument" n="3"/>
+</roles>
+
+
+<example name="with direction">
+<inflection aspect="ns" form="gerund" person="ns" tense="ns" voice="active"/>
+<text>
+ Shaving away some of the gain in that unit was [*T*-1] a decline in U.S. oil production to 502,000 barrels of oil a day during the quarter from 527,000 barrels a day last year .
+</text>
+	<rel>Shaving</rel>
+	<arg f="DIR" n="M">away</arg>
+	<arg n="1">some of the gain in that unit</arg>
+</example>
+
+
+
+<example name="with Arg2">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ Some weeks when her supermarket runs a double-coupon promotion [*T*-1] , she boasts that she shaves $ 22 [*U*] off her bill .
+</text>
+	<arg n="0">she</arg>
+	<rel>shaves</rel>
+	<arg n="1">$ 22 [*U*]</arg>
+	<arg f="off" n="2">her bill</arg>
+</example>
+
+
+<example name="transitive">
+<inflection aspect="perfect" form="participle" person="ns" tense="past" voice="active"/>
+<text>
+ It attracts people with funny hair ( or with no hair -- in front of me a girl with spiked locks sat beside a boy who [*T*-1] had shaved his ) .
+</text>
+	<arg n="0">[*T*-1] -&gt;  who -&gt;  a boy</arg>
+	<rel>shaved</rel>
+	<arg n="1">his</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

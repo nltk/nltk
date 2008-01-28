@@ -1,0 +1,45 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="import">
+<note>
+  Frames file for 'import' based on sentences in financial subcorpus.
+  No Verbnet entry, no Framenet entry.  Comparison with 'get' and 'export'.
+</note>
+
+<roleset id="import.01" name="get a commodity in trade" vncls="-">
+<roles>
+  <role descr="importer" n="0"/>
+  <role descr="commodity" n="1"/>
+  <role descr="exporter" n="2"/>
+</roles>
+
+<example name="just transitive">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    Kofcoh is a New York holding company for Rosalco Inc., which
+    *trace* imports furniture and other items. 
+</text>
+        <arg n="0">*trace* -&gt;  which -&gt;  Rosalco Inc.</arg>
+        <rel>imports</rel>
+        <arg n="1">furniture and other items</arg>
+</example>
+
+<example name="with exporter">
+  <inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+  <text>
+    John imports a million dollars worth of cheap liquor from Mexico
+    each year.
+  </text>
+  <arg n="0">John</arg>
+  <rel>imports</rel>
+  <arg n="1">a million dollars worth of cheap liquor</arg>
+  <arg f="from" n="2">Mexico</arg>
+  <arg f="TMP" n="m">each year</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

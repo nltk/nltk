@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="stain">
+<note>
+  Frames file for 'stain' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="stain.01" name="to discolor, soil, or spot" vncls="24 9.8">
+<roles>
+  <role descr="causer" n="0"><vnrole vncls="24" vntheta="Agent"/><vnrole vncls="9.8" vntheta="Agent"/></role>
+  <role descr="entity stained" n="1"><vnrole vncls="24" vntheta="Patient"/><vnrole vncls="9.8" vntheta="Destination"/></role>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ It even directed newspapers not to publish anything that [*T*-1] might stain the honor of the Turkish sultan 's wives .
+</text>
+	<arg n="0">[*T*-1] -&gt;  that -&gt;  anything</arg>
+	<arg f="MOD" n="M">might</arg>
+	<rel>stain</rel>
+	<arg n="1">the honor of the Turkish sultan 's wives</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

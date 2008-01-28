@@ -1,0 +1,76 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="race">
+<note>
+Frames file for 'race' based on sentences in financial subcorpus and
+automatic expansion via verbnet.
+</note>
+
+<roleset id="race.01" name="run very fast" vncls="51.3.2">
+<roles>
+	<role descr="runner" n="0">
+		
+  <vnrole vncls="51.3.2" vntheta="Theme"/></role>
+
+	<role descr="destination or path" n="1"><vnrole vncls="51.3.2" vntheta="Location"/></role>
+</roles>
+
+<example name="unaccusative, traveller as subject" src="fly.01">
+<text>
+    And some investors fault Mr. Spiegel's life style; he earns
+    millions of dollars a year and races around in Columbia's jet
+    planes. 
+</text>
+        <arg n="0">he</arg>
+        <rel>races</rel>
+        <arg f="DIR" n="M">around</arg>
+        <arg f="LOC" n="M">in Columbia's jet planes</arg>
+</example>
+
+<example name="with direction" src="run.02">
+  <text>
+  A good number decide it's not worth it and race for home.
+  </text>
+  <arg n="0">A good number</arg>
+  <rel>race</rel>
+  <arg f="for" n="1">home</arg>
+</example>
+
+</roleset>
+
+<roleset id="race.02" name="compete in a race" vncls="36.1">
+<roles>
+  <role descr="competitor" n="0"><vnrole vncls="36.1" vntheta="Actor1"/></role>
+  <role descr="opponent" n="1"><vnrole vncls="36.1" vntheta="Actor2"/></role>
+  <role descr="prize or competition" n="2"><vnrole vncls="36.1" vntheta="Topic"/></role>
+</roles>
+
+<example name="unstated competition">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    Federal's employees work long hours and seem *trace* to thrive on
+    the stress of *trace* racing the clock. 
+</text>
+        <arg n="0">*trace* -&gt; *trace* -&gt;  Federal's employees</arg>
+        <rel>racing</rel>
+        <arg n="1">the clock</arg>
+</example>
+
+<example name="with competition">
+<inflection aspect="progressive" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+    The competition is even more heated in the auto industry, where companies are racing one another in a world-wide market *trace*.
+</text>
+        <arg n="0">companies</arg>
+        <rel>racing</rel>
+        <arg f="REC" n="1">one another</arg>
+        <arg f="in" n="2">a world-wide market</arg>
+        <arg f="LOC" n="M">*trace* -&gt;  where -&gt;  the auto industry</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

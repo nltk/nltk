@@ -1,0 +1,76 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="sweat">
+<note>
+Frames file for 'sweat' based on sentences in financial subcorpus and
+automatic expansion via verbnet.
+</note>
+
+<roleset id="sweat.01" name="sweat" vncls="43.4">
+<roles>
+  <role descr="sweater (no, not like your grandmother made for you)" n="0">
+        <vnrole vncls="43.4" vntheta="Agent"/></role>
+  <role descr="the sweat itself" n="1">
+	<vnrole vncls="43.4" vntheta="Theme"/></role>
+ </roles>
+
+<example name="manner, not arg!">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Mr. Jacobson, his gray hair flying, didn't wear out his
+    red-white-and-blue sneakers, but he sweat so much he considered
+    sending out for a new shirt. 
+</text>
+        <arg n="0">he</arg>
+        <rel>sweat</rel>
+        <arg f="MNR" n="M">so much  he considered  sending out for a
+        new shirt</arg> 
+</example>
+
+<example name="with arg1">
+  <inflection aspect="progressive" form="participle" person="third" tense="past" voice="active"/>
+  <text>
+    Before his big date with Mary, John was sweating bullets.
+  </text>
+  <arg f="TMP" n="m">Before his big date with Mary</arg>
+  <arg n="0">John</arg>
+  <rel>sweating</rel>
+  <arg n="1">bullets</arg>
+</example>
+
+<note>
+Arg1 defaults to 'sweat' and so only occurs when something else
+(metaphorically) is being swat.
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="sweat_out">
+
+<roleset id="sweat.02" vncls="-" name="endure, last through">
+<roles>
+  <role descr="experiencer" n="1"/>
+  <role descr="thing endured or period of time" n="2"/>
+</roles>
+
+<example name="not like a sauna">
+<inflection person="ns" tense="past" aspect="perfect" voice="active" form="participle"/>
+<text>
+     Baseball fans throughout New York had sweated out a long summer
+     with their teams, and now it had come to this: a battle between
+     the two for the National League pennant -- down to the last
+     inning of the last game, no less. 
+</text>
+	<arg n="0">Baseball fans throughout New York</arg>
+	<rel>[ sweated] [ out]</rel>
+	<arg n="1">a long summer</arg>
+	<arg n="M">with their teams</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

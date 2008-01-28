@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="discolor">
+<note>
+  Frames file for 'discolor' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="discolor.01" name="cause to have a bad color" vncls="-">
+<roles>
+  <role descr="causer of bad color" n="0"/>
+  <role descr="thing discolored" n="1"/>
+  <role descr="bad color" n="2"/>
+</roles>
+
+<example name="one example should be enough">
+<inflection aspect="ns" form="participle" person="third" tense="past" voice="passive"/>
+<text>
+    In one personal-injury case, a woman claimed she had been injured
+    when she slipped in a pool, but the fall didn't explain why one of
+    her arms was discolored [*-2] [*-5] bluish [*T*-4].
+</text>
+        <rel>discolored</rel>
+        <arg n="1">[*-2] -&gt;  one of her arms</arg>
+        <arg n="2">[*-5] bluish</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

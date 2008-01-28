@@ -1,0 +1,47 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="peer">
+<note>
+  Frames file for 'peer' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="peer.01" name="to look searchingly" vncls="30.3">
+<roles>
+  <role descr="looker, searcher, agent" n="0">
+        <vnrole vncls="30.3" vntheta="Experiencer"/></role>
+  <role descr="entity peered into/at/over..." n="1">
+        <vnrole vncls="30.3" vntheta="Stimulus"/></role>
+</roles>
+
+<example name="with direction">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ [*] Open it and two soulful eyes on a boy 's brown face peer out from the page , pleadingly .
+</text>
+	<arg n="0">two soulful eyes on a boy 's brown face</arg>
+	<rel>peer</rel>
+	<arg f="DIR" n="M">out</arg>
+	<arg f="DIR" n="M">the page</arg>
+	<arg f="MNR" n="M">pleadingly</arg>
+</example>
+
+
+<example name="with Arg1">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ [*] Keep in mind that this is the same movie in which a character is flattened [*-1] by a steamroller [*-1] only to pop right back up and peer in the window of a Boeing 747 -- from the outside -- as it takes off [*T*-2] .
+</text>
+	<arg n="0">[*-1] -&gt;  a character</arg>
+	<rel>peer</rel>
+	<arg f="in" n="1">the window of a Boeing 747</arg>
+	<arg f="DIR" n="M">from the outside</arg>
+	<arg f="TMP" n="M">as it takes off</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

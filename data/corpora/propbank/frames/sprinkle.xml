@@ -1,0 +1,67 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="sprinkle">
+<note>
+Frames file for 'sprinkle' based on sentences in financial subcorpus
+and automatic expansion via verbnet.
+</note>
+
+<roleset id="sprinkle.01" name="sprinkle" vncls="9.7-1">
+<roles>
+  <role descr="agent, sprinkler" n="0">
+	<vnrole vncls="9.7-1" vntheta="Agent"/></role>
+  <role descr="liquid" n="1">
+	<vnrole vncls="9.7-1" vntheta="Theme"/></role>
+  <role descr="sprinkled-upon" n="2">
+	<vnrole vncls="9.7-1" vntheta="Destination"/></role>
+</roles>
+
+<example name="sprinkle with">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    When the good fairy assigned to Slovakia hovered over the cradle
+    of Edita Gruberova many years ago in Bratislava, she sprinkled her
+    with high E flats, sparkling Ds, clean trills, and coloratura
+    ornaments silvery as magic dust. 
+</text>
+        <arg n="0">she</arg>
+        <rel>sprinkled</rel>
+        <arg n="2">her</arg>
+        <arg f="with" n="1">high E flats, sparkling Ds, clean trills,
+        and coloratura ornaments silvery as magic dust</arg> 
+</example>
+
+<example name="sprinkle on">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John sprinkled gooey chocolate pudding on Mary's back.
+  </text>
+  <arg n="0">John</arg>
+  <rel>sprinkled</rel>
+  <arg n="1">gooey chocolate pudding</arg>
+  <arg f="on" n="2">Mary's back</arg>
+</example>
+
+</roleset>
+
+<roleset id="sprinkle.02" name="weather phenomenon" vncls="57">
+<roles>
+<note>Takes NO arguments!</note>
+</roles>
+
+<example name="raining lightly">
+  <inflection aspect="progressive" form="participle" person="third" tense="present" voice="active"/>
+  <text>
+    It's sprinkling outside.
+  </text>
+  <rel>sprinkling</rel>
+  <arg f="LOC" n="m">outside</arg>
+</example>
+
+<note>
+Hooray, our first zero-valency verb!
+</note>
+
+</roleset>
+</predicate>
+</frameset>

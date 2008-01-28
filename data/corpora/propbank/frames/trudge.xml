@@ -1,0 +1,47 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="trudge">
+<note>
+  Frames file for 'trudge' based on sentences in wsj.  Verbnet entry
+  51.3.2, Framenet entry Self motion.
+</note>
+
+<roleset id="trudge.01" name="mode of motion" vncls="51.3.2">
+<roles>
+  <role descr="entity in motion" n="0"><vnrole vncls="51.3.2" vntheta="Theme"/></role>
+  <role descr="path" n="1"><vnrole vncls="51.3.2" vntheta="Location"/></role>
+</roles>
+
+<example name="intransitive">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+    Call it the uninformed trudging after the incomprehensible.
+</text>
+        <arg n="0">the uninformed</arg>
+        <rel>trudging</rel>
+        <arg f="DIR" n="M">after the incomprehensible</arg>
+</example>
+
+
+<example name="with path, sorta">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    Unlike other writers who either battled the fascists during the
+    Civil War, or left Spain when Franco triumphed, Mr. Cela fought
+    briefly on the general's side, no doubt earning with his war wound
+    some forbearance when he went on to depict a country with a high
+    population of vagabonds, murderers and rural idiots trudging
+    aimlessly through a dried-out land. 
+</text>
+        <arg n="0">vagabonds , murderers and rural idiots</arg>
+        <rel>trudging</rel>
+        <arg f="MNR" n="M">aimlessly</arg>
+        <arg f="through" n="1">a dried-out land</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

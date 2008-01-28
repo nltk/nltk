@@ -1,0 +1,66 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="visit">
+<note>
+Frames file for 'visit' based on sentences in financial subcorpus and
+automatic expansion via verbnet.
+</note>
+
+<roleset id="visit.01" name="visit, meet with" vncls="36.3">
+<roles>
+	<role descr="one party" n="0">
+		
+  <vnrole vncls="36.3" vntheta="Actor1"/></role>
+
+	<role descr="other party" n="1">
+		
+  <vnrole vncls="36.3" vntheta="Actor2"/></role>
+
+</roles>
+
+<example name="non-personal party" src="meet.03">
+  <text>
+    Argentine negotiator Carlos Carballo will visit with banks this week.
+  </text>
+  <arg n="0">Argentine negotiator Carlos Carballo</arg>
+  <arg f="mod" n="m">will</arg>
+  <rel>visit</rel>
+  <arg f="with" n="1">banks</arg>
+  <arg f="tmp" n="m">this week</arg>
+</example>
+
+<example name="usually visit a place?">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    Three Soviet government officials -- the ministers of railroads,
+    of foreign economic relations and of heavy-machine building --
+    will visit Tehran next month for talks, Iran's official news
+    agency reported. 
+</text>
+        <arg n="0">Three Soviet government officials -- the ministers
+        of railroads, of foreign economic relations and of
+        heavy-machine building --</arg> 
+        <arg f="MOD" n="M">will</arg>
+        <rel>visit</rel>
+        <arg n="1">Tehran</arg>
+        <arg f="TMP" n="M">next month</arg>
+        <arg f="PNC" n="M">for talks</arg>
+</example>
+
+<example name="all parties in arg0" src="meet.03">
+  <text>
+    The economic and foreign ministers of 12 Asian and Pacific nations
+    will visit in Australia next week to discuss the price of beans.
+  </text>
+  <arg n="0">The economic and foreign ministers of 12 Asian
+  and Pacific nations</arg> 
+  <arg f="mod" n="m">will</arg>
+  <rel>visit</rel>
+  <arg f="loc" n="m">in Australia</arg>
+  <arg f="tmp" n="m">next week</arg>
+  <arg f="PNC" n="m">to discuss the price of beans</arg>
+</example>
+
+</roleset>
+
+</predicate>
+</frameset>

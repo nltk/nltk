@@ -1,0 +1,29 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="atone">
+<note>
+  Frames file for 'atone'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="atone.01" name="to make amends" vncls="-">
+<roles> 
+  <role descr="atoner, sinner, agent" n="0"/>  
+  <role descr="sins" n="1"/>   
+</roles>
+
+<example name="intransitive">
+<inflection aspect="ns" form="full" person="ns" tense="ns" voice="active"/>
+<text>
+ [*] Atone
+</text>
+	<arg n="0">[*]</arg>
+	<rel>Atone</rel>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

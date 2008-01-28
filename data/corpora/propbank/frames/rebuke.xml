@@ -1,0 +1,45 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="rebuke">
+<note>
+  Frames file for 'rebuke' based on sentences in wsj.  Verbnet entry
+  33, Framenet entry Judgement.
+</note>
+
+<roleset id="rebuke.01" name="chastise" vncls="33">
+<roles>
+  <role descr="rebuker" n="0"><vnrole vncls="33" vntheta="Agent"/></role>
+  <role descr="rebuked" n="1"><vnrole vncls="33" vntheta="Theme"/></role>
+  <role descr="for what" n="2"><vnrole vncls="33" vntheta="Cause"/></role>
+</roles>
+
+<example name="just transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Meanwhile, business and government leaders rebuked the computer
+    makers, and fretted about the broader statement the companies'
+    actions make about Japanese cutthroat pricing. 
+</text>
+        <arg f="TMP" n="M">Meanwhile</arg>
+        <arg n="0">business and government leaders</arg>
+        <rel>rebuked</rel>
+        <arg n="1">the computer makers</arg>
+</example>
+
+<example name="with cause">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    Mary rebuked John for putting his dirty feet on the dinner table.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>rebuked</rel>
+  <arg n="1">John</arg>
+  <arg f="for" n="2">putting his dirty feet on the dinner table</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,43 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="realign">
+<note>
+Frames file for 'realign' based on transformation of 'align'.
+</note>
+
+<roleset id="realign.01" name="align again" vncls="31.1">
+<roles>
+  <role descr="arranger, agent" n="0">
+        <vnrole vncls="31.1" vntheta="Cause"/></role>
+  <role descr="thing being realigned" n="1">
+        <vnrole vncls="31.1" vntheta="Experiencer"/></role>
+  <role descr="standard of comparison, realigned-to" n="2"/>
+</roles>
+
+<example name="I don't know what this means">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+    At Chrysler's 1990 model preview last month, Chrysler Motors
+    President Robert A. Lutz said the No. 3 auto maker, along with
+    other U.S. manufacturers, might be forced *trace* to ``realign
+    ... capacity'' if market demand doesn't improve. 
+</text>
+        <arg n="0">*trace* -&gt;  the No. 3 auto maker</arg>
+        <rel>realign</rel>
+        <arg n="1">capacity</arg>
+</example>
+
+<example name="active, realign to">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John realigned his bed to the earth's magnetic field.
+  </text>
+  <arg n="0">John</arg>
+  <rel>realigned</rel>
+  <arg n="1">his bed</arg>
+  <arg f="to" n="2">the earth's magnetic field</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

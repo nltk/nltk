@@ -1,0 +1,60 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="hew">
+<note>
+  Frames file for 'hew' based on sentences in wsj.  Verbnet entry 21.1, 23.2.
+</note>
+
+<roleset id="hew.01" name="chop wood" vncls="21.1 23.2">
+<roles>
+  <role descr="chopper" n="0">
+        <vnrole vncls="23.2" vntheta="Agent"/>
+        <vnrole vncls="21.1" vntheta="Agent"/></role>
+  <role descr="wood" n="1">
+        <vnrole vncls="23.2" vntheta="Patient"/>
+        <vnrole vncls="21.1" vntheta="Patient"/></role>
+  <role descr="instrument (eg axe)" n="2">
+        <vnrole vncls="21.1" vntheta="Instrument"/></role>
+</roles>
+
+<example name="down home cooking">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John hewed at Mary's pot roast with a chainsaw.
+  </text>
+  <arg n="0">John</arg>
+  <rel>hewed</rel>
+  <arg f="at" n="1">Mary's pot roast</arg>
+  <arg f="with" n="2">a chainsaw</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="hew.02" name="adhere to" vncls="-">
+<roles>
+  <role descr="adherer" n="0"/>
+  <role descr="thing adhered to" n="1"/>
+</roles>
+
+<example name="veni vidi vici">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+     To wrestle with a demon in a house owned by a Litchfield, Conn.,
+     woman, the Warrens recently called in an exorcist, the
+     Rev. Robert McKenna, a dissident clergyman who *trace* hews to
+     the Catholic Church's old Latin liturgy. 
+</text>
+        <arg n="0">*trace* -&gt;  who -&gt;  a dissident clergyman</arg>
+        <rel>hews</rel>
+        <arg f="to" n="1">the Catholic Church's old Latin liturgy</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

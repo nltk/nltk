@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="dither">
+<note>
+  Frames file for 'dither' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="dither.01" vncls="-" name="noisily do nothing">
+<roles>
+  <role n="0"  descr="ditherer"/>
+</roles>
+
+<example name="dither dither dither">
+  <inflection person="ns" tense="ns" aspect="ns" voice="ns" form="gerund"/>
+  <text>
+    (In other words, after some highly visible dithering and public
+    airing of differences, the administration has come down on the
+    side of those who believe that what we are witnessing from Berlin
+    to Siberia is a good thing to be welcomed, rather than a new thing
+    to be feared or viewed with suspicion.) 
+  </text>
+  <rel              >dithering</rel>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

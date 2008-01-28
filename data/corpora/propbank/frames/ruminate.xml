@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="ruminate">
+<note>
+  Frames file for 'ruminate' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="ruminate.01" name="to reflect on over and over again" vncls="-">
+<roles>
+  <role descr="thinker" n="0"/>
+  <role descr="topic" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ The writer [*RNR*-3] and executive producer [*RNR*-3] of `` [*] Settle the Score , '' Steve Sohmer , is a graduate of Yale who [*T*-1] participated in a PBS documentary , aired [*] this summer , in which six members of the Yale class of 1963 ruminated about their lives since graduation [*T*-2] .
+</text>
+	<arg n="0">six members of the Yale class of 1963</arg>
+	<rel>ruminated</rel>
+	<arg f="about" n="1">their lives since graduation</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

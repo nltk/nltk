@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="waft">
+<note>
+  Frames file for 'waft' based on sentences in wsj.  Verbnet entry 47.3.
+</note>
+
+<roleset id="waft.01" vncls="47.3" name="(cause to) float lightly">
+<roles>
+  <role n="0"  descr="cause or agent (rare)"/>
+  <role n="1"  descr="thing floating"/>
+</roles>
+
+<example name="usually unaccusative">
+<inflection person="ns" tense="ns" aspect="progressive" voice="active" form="participle"/>
+<text>
+    The soft, wafting aromas will ``improve ride comfort,'' the
+    display attests, and a proud employee says Mazda hopes to move the
+    system out of the lab and into its cars in a year or two. 
+</text>
+	<rel>wafting</rel>
+	<arg n="1">aromas</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="conjure_up">
+
+<note>
+  Frames file for 'conjure' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="conjure.01" name="create magically" vncls="-">
+<roles>
+  <role descr="creator, magician" n="0"/>
+  <role descr="creation" n="1"/>
+</roles>
+
+<example name="automatically generated">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ This conjures up images of a nation full of trim , muscular folks , and suggests  couch potatoes are out of season .
+</text>
+        <arg n="0">This</arg>
+        <rel>[ conjures] [ up]</rel>
+        <arg n="1">images of a nation full of trim , muscular folks</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

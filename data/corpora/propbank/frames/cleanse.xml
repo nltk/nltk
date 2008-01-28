@@ -1,0 +1,34 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="cleanse">
+<note>
+  Frames file for 'cleanse' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="cleanse.01" name="make clean, empty" vncls="-">
+<roles>
+  <role descr="agent, cleaner" n="0"/>
+  <role descr="dirt" n="1"/>
+  <role descr="dirty thing, now clean" n="2"/>
+</roles>
+
+<example name="all args">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+    In the current mood of the Japanese people, journalists and even
+    some industrialists, [*] giving power to the Socialists might be
+    good for the LDP, [*] cleansing it of past sins. 
+</text>
+        <arg n="0">[*] -&gt;  [*] giving power to the Socialists</arg>
+        <rel>cleansing</rel>
+        <arg n="2">it</arg>
+        <arg f="of" n="1">past sins</arg>
+</example>
+
+<note>
+arg numbering suggested by 'remove' et al.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

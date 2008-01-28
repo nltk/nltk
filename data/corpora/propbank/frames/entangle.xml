@@ -1,0 +1,46 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="entangle">
+<note>
+  Frames file for 'entangle' based on sentences in wsj.  No access to
+  Verbnet at the moment.
+</note>
+
+<roleset id="entangle.01" name="cause to be tangled (in something)" vncls="22.2">
+<roles>
+  <role descr="causer" n="0"><vnrole vncls="22.2" vntheta="Agent"/></role>
+  <role descr="patient" n="1"><vnrole vncls="22.2" vntheta="Patient1"/></role>
+  <role descr="trap, etc" n="2"><vnrole vncls="22.2" vntheta="Patient2"/></role>
+</roles>
+
+<example name="traceless passive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Warner and Sony are entangled in a legal battle over movie
+    producers Peter Gruber and Jon Peters. 
+</text>
+        <arg n="1">Warner and Sony</arg>
+        <rel>entangled</rel>
+        <arg f="in" n="2">a legal battle over movie producers Peter
+        Gruber and Jon Peters</arg> 
+</example>
+
+<example name="all args">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+      Mary entangled John in a complicated scheme involving Hershey's
+      syrup, fifteen live toads, and the justices of the US Supreme Court.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>entangled</rel>
+  <arg n="1">John</arg>
+  <arg f="in" n="2">complicated scheme involving Hershey's
+      syrup, fifteen live toads, and the justices of the US Supreme Court</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

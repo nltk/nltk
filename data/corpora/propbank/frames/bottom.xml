@@ -1,0 +1,42 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="bottom_out">
+<note>
+  Frames file for 'bottom (out)' based on sentences in financial
+  subcorpus.  No Verbnet entry.
+</note>
+
+<roleset id="bottom.01" name="reach the bottom" vncls="-">
+<roles>
+  <role descr="thing reaching the bottom" n="0"/>
+</roles>
+
+<example name="unmodified">
+<inflection aspect="progressive" form="full" person="ns" tense="present" voice="active"/>
+<text>
+    Freight rates are bottoming out and starting to rebound.
+</text>
+        <arg n="0">Freight rates</arg>
+        <rel>[ bottoming] [ out]</rel>
+</example>
+
+<example name="with time and place">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    He expects stocks to decline an additional 5% to 30%, with the Dow
+    perhaps bottoming out between 2000 and 2100 ``between now and
+    June.'' 
+</text>
+        <arg n="0">the Dow</arg>
+        <arg f="DIS" n="M">perhaps</arg>
+        <rel>[ bottoming] [ out]</rel>
+        <arg f="LOC" n="M">between 2000 and 2100</arg>
+        <arg f="TMP" n="M">`` between now and June</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

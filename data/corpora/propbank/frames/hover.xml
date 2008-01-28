@@ -1,0 +1,57 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="hover">
+<note>
+  Frames file for 'hover' based on sentences in financial subcorpus.
+  Verbnet entries  modes_of_being_with_motion-47.3
+  spatial_configuration-47.6.  (I love these class names.)  Other
+  framed members include: float, shake; sit, lie.  Comparison with
+  'sit'.
+</note>
+
+<roleset id="hover.01" name="be in a position (usually just above some referent)" vncls="47.3 47.6">
+<roles>
+  <role descr="thing hovering" n="1">
+		
+		
+  <vnrole vncls="47.6" vntheta="Theme"/><vnrole vncls="47.3" vntheta="Theme"/></role>
+
+  <role descr="location or position" f="LOC" n="2">
+		
+		
+  <vnrole vncls="47.6" vntheta="Location"/><vnrole vncls="47.3" vntheta="Location"/></role>
+
+</roles>
+
+<example name="stock prices">
+<text>
+    For the past year or two, the carpet division's operating profit
+    margins have hovered around 5%.  
+</text>
+        <arg f="TMP" n="M">For the past year or two</arg>
+        <arg n="1">the carpet division's operating profit margins</arg>
+        <rel>hovered</rel>
+        <arg f="around" n="2">5 %</arg>
+</example>
+
+<example name="fairies?">
+<text>
+   When the good fairy assigned to Slovakia hovered over the cradle of
+   Edita Gruberova many years ago in Bratislava, she sprinkled her
+   with high E flats, sparkling Ds, clean trills, and coloratura
+   ornaments silvery as magic dust. 
+</text>
+        <arg n="1">the good fairy assigned  to Slovakia</arg>
+        <rel>hovered</rel>
+        <arg f="over" n="2">over the cradle of Edita Gruberova</arg>
+        <arg f="TMP" n="M">many years ago</arg>
+        <arg f="LOC" n="M">in Bratislava</arg>
+</example>
+
+<note>
+I just think that last sentence is truly beautiful.  What lovely imagery!
+</note>
+
+</roleset>
+</predicate>
+</frameset>

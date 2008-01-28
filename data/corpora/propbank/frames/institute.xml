@@ -1,0 +1,49 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="institute">
+<note>
+  Frames file for 'institute' based on sentences in financial
+  subcorpus.  No verbnet entry.  Comparison with 'establish' roleset
+  of 'set'.
+</note>
+
+<roleset id="institute.01" name="establish">
+<roles>
+  <role descr="agent, setter" n="0"/>
+  <role descr="thing set" n="1"/>
+  <role descr="attribute" n="2"/>
+</roles>
+
+<example name="transitive">
+<text>
+    Joseph Riccardo, an analyst with Bear, Stearns &amp; Co., said
+    that over the past few years most drug makers have shed their
+    slow-growing businesses and instituted other cost savings, such as
+    consolidating manufacturing plants and administrative staffs. 
+</text>
+        <arg f="TMP" n="M">over the past few years</arg>
+        <arg n="0">most drug makers</arg>
+        <rel>instituted</rel>
+        <arg n="1">other cost savings, such as consolidating
+        manufacturing plants and administrative staffs</arg> 
+</example>
+
+<example name="with attribute">
+  <text>
+    Mary instituted a curfew as a means of getting John home at a
+    reasonable hour.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>instituted</rel>
+  <arg n="1">a curfew</arg>
+  <arg f="as" n="2">a means of getting John home at a
+    reasonable hour.</arg>
+</example>
+
+<note>
+Not sure the latter is entirely good.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

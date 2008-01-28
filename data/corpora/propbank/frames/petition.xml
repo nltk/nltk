@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="petition">
+<note>
+  Frames file for 'petition' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="petition.01" name="to address a petition to, to make a request" vncls="-">
+<roles>
+  <role descr="asker, agent" n="0"/>
+  <role descr="request" n="1"/>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ Shareholders ' attorneys at the New York firm of Milberg , Weiss , Bershad , Specthrie &amp; Lerach last week petitioned for a rehearing of the case .
+</text>
+	<arg n="0">Shareholders ' attorneys at the New York firm of Milberg , Weiss , Bershad , Specthrie &amp; Lerach</arg>
+	<arg f="TMP" n="M">last week</arg>
+	<rel>petitioned</rel>
+	<arg f="for" n="1">a rehearing of the case</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

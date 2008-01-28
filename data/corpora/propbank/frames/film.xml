@@ -1,0 +1,59 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="film">
+<note>
+  Frames file for 'film' based on sentences in wsj.  Verbnet entry 25.4.
+</note>
+
+<roleset id="film.01" name="record on film" vncls="25.4">
+<roles>
+  <role descr="recorder, filmer" n="0"><vnrole vncls="25.4" vntheta="Agent"/></role>
+  <role descr="thing recorded, filmed" n="1"><vnrole vncls="25.4" vntheta="Theme"/></role>
+</roles>
+
+<example name="passive, with agent">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    *trace* Filmed *trace* in lovely black and white by Bill Dill, the
+     New York streets of ``Sidewalk Stories'' seem benign. 
+</text>
+        <rel>Filmed</rel>
+        <arg n="1">*trace* -&gt; *trace* -&gt; the New York streets of
+        ``Sidewalk Stories''</arg> 
+        <arg f="MNR" n="M">in lovely black and white</arg>
+        <arg f="by" n="0">Bill Dill</arg>
+</example>
+
+<example name="passive, no agent">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    Because the show has acquired a sense of place by *trace* being
+    filmed *trace* on location in Georgia, this episode -- in which
+    Althea gets raped by an arrogant white schoolteacher -- does a
+    decent job of tracing the social repercussions of the crime. 
+</text>
+        <rel>filmed</rel>
+        <arg n="1">*trace* -&gt; *trace* -&gt;  the show</arg>
+        <arg f="MNR" n="M">on location</arg>
+        <arg f="LOC" n="M">in Georgia</arg>
+</example>
+
+
+<example name="intransitive">
+<inflection aspect="progressive" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+    ``They're filming right now at the bank down the street, and they
+    want shots of people getting out of cars and kids on skateboards. 
+</text>
+        <arg n="0">They</arg>
+        <rel>filming</rel>
+        <arg f="TMP" n="M">right now</arg>
+        <arg f="LOC" n="M">at the bank down the street</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

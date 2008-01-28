@@ -1,0 +1,72 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="incorporate">
+<note>
+  Frames file for 'incorporate' based on sentences in financial
+  subcorpus.  Verbnet entries amalgamate-22.2,
+  other framed members include confuse, integrate, indroduce, oppose,
+  and wed.  None of those make any sense to me.  Comparison with
+  'base'.
+</note>
+
+<roleset id="incorporate.01" name="(cause) a corporate entity to have a certain tax status" vncls="22.2">
+<roles>
+  <role descr="causer of tax status" n="0">
+        <vnrole vncls="22.2" vntheta="Agent"/></role>
+  <role descr="corporation" n="1">
+        <vnrole vncls="22.2" vntheta="Patient"/></role>
+  <role descr="location" f="LOC" n="m"/>
+</roles>
+
+<example name="WSJ usage">
+<text>
+    Nekoosa is incorporated *trace* in Maine .
+</text>
+        <rel>incorporated</rel>
+        <arg n="1">*trace* -&gt;  Nekoosa</arg>
+        <arg f="LOC" n="M">in Maine</arg>
+</example>
+
+<example name="active variant?">
+  <text>
+    John incorporated his dot-com in North Dakota.
+  </text>
+  <arg n="0">John</arg>
+  <rel>incorporated</rel>
+  <arg n="1">his dot-com</arg>
+  <arg f="LOC" n="m">in North Dakota</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="incorporate.02" name="blend, mix" vncls="22.2 29.2">
+<roles>
+  <role descr="mixer, integrater" n="0">
+	<vnrole vncls="29.2" vntheta="Agent"/>
+        <vnrole vncls="22.2" vntheta="Agent"/></role>
+  <role descr="figure" n="1">
+	<vnrole vncls="29.2" vntheta="Theme"/>
+        <vnrole vncls="22.2" vntheta="Patient1"/></role>
+  <role descr="ground" n="2">
+	<vnrole vncls="29.2" vntheta="Predicate"/>
+        <vnrole vncls="22.2" vntheta="Patient2"/></role>
+</roles>
+
+<example name="all args">
+  <text>
+    John incorporated egg shells into his omelet, because he needed
+    more calcium in his diet.
+  </text>
+  <arg n="0">John</arg>
+  <rel>incorporated</rel>
+  <arg n="1">egg shells</arg>
+  <arg f="into" n="2">his omelet</arg>
+  <arg f="CAU" n="m">because he needed more calcium in his diet.</arg> 
+</example>
+
+</roleset>
+</predicate>
+</frameset>

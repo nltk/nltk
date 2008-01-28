@@ -1,0 +1,46 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="mend">
+<note>
+  Frames file for 'mend' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="mend.01" name="fix" vncls="-">
+<roles>
+  <role descr="mender" n="0"/>
+  <role descr="mended" n="1"/>
+</roles>
+
+<example name="agentive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Despite the harsh exchanges, the U.S. and China still seem *trace*
+    to be looking for a way *trace* to mend relations, which have
+    deteriorated into what Mr. Nixon referred to as ``the greatest
+    crisis in Chinese-American relations'' since his initial visit to
+    China 17 years ago. 
+</text>
+        <arg n="0">*trace* -&gt; *trace* -&gt;  the U.S. and China</arg>
+        <rel>mend</rel>
+        <arg n="1">relations, which have deteriorated into what
+        Mr. Nixon referred to as ``the greatest crisis in
+        Chinese-American relations'' since his initial visit to China
+        17 years ago</arg> 
+</example>
+
+<example name="ergative">
+  <inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+  <text>
+   It's a good thing John's bones mend quickly!
+  </text>
+  <arg n="1">John's bones</arg>
+  <rel>mend</rel>
+  <arg f="TMP" n="m">quickly</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

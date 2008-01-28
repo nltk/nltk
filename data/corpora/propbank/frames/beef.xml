@@ -1,0 +1,39 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="beef_up">
+<note>
+  Frames file for 'beef up' based on sentences in financial subcorpus.
+  No Verbnet entry.  Comparison with 'enhance'.
+</note>
+
+<roleset id="beef.01" name="make greater" vncls="-">
+<roles>
+  <role descr="entity causing beefiness, agent" n="0"/>
+  <role descr="thing enhanced" n="1"/>
+  <role descr="instrument" n="2"/>
+  <role descr="enhanced by how much, EXT or MNR" n="3"/>
+</roles>
+
+<example name="where's the beef?">
+<inflection aspect="perfect" form="participle" person="third" tense="present" voice="active"/>
+<text>
+    Mr. Jones has also beefed up his marketing staff to sell the 118
+    luxury suites topping Texas Stadium (his deal with Bum Bright
+    included operating rights for the stadium). 
+</text>
+        <arg n="0">Mr. Jones</arg>
+        <arg f="DIS" n="M">also</arg>
+        <rel>[ beefed] [ up]</rel>
+        <arg n="1">his marketing staff</arg>
+        <arg f="PNC" n="M">to sell the 118 luxury suites topping Texas
+        Stadium</arg> 
+</example>
+
+<note>
+I rather doubt the higher # args will appear, but they're there for
+completeness.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,41 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="skirmish">
+<note>
+  Frames file for 'skirmish' based on sentences in wsj.  No access to
+  Verbnet at the moment.
+</note>
+
+<roleset id="skirmish.01" name="fight sporadically" vncls="-">
+<roles>
+  <role descr="first or all combatants" n="0"/>
+  <role descr="additional combatants, if separate" n="1"/>
+</roles>
+
+<example name="merged combatants">
+<inflection aspect="perfect" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+    Off and on since then, the companies have skirmished in court. 
+</text>
+        <arg n="0">the companies</arg>
+        <rel>skirmished</rel>
+        <arg f="LOC" n="M">in court</arg>
+</example>
+
+<example name="separated combatants">
+  <inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+  <text>
+     John skirmishes with Mary most every day.
+  </text>
+  <arg n="0">John</arg>
+  <rel>skirmishes</rel>
+  <arg f="with" n="1">Mary</arg>
+  <arg f="TMP" n="m">most every day</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

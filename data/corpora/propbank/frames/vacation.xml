@@ -1,0 +1,42 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="vacation">
+<note>
+  Frames file for 'vacation' based on sentences in wsj.  Verbnet entry 56.
+</note>
+
+<roleset id="vacation.01" vncls="56" name="go on holiday">
+<roles>
+  <role n="0"  descr="vacationer(s)"/>
+  <role n="1"  descr="location of vacation"/>
+</roles>
+
+<example name="agentive adjective">
+<inflection person="ns" tense="ns" aspect="progressive" voice="active" form="participle"/>
+<text>
+    Circus Circus's flagship casino has become the envy of competitors
+    for its ability to vacuum cash from the pockets of vacationing
+    families.  
+</text>
+	<rel>vacationing</rel>
+	<arg n="0">families</arg>
+</example>
+
+<example name="with location">
+  <inflection person="third" tense="present" aspect="ns" voice="active" form="full"/>
+  <text>
+     Every summer John vacations in beautiful Gary, Indiana.
+  </text>
+  <arg n="m" f="TMP">Every summer</arg>
+  <arg n="0"        >John</arg>
+  <rel              >vacations</rel>
+  <arg n="1" f="in">beautiful Gary, Indiana</arg>
+</example>
+
+<note>
+Levin's class 56 is totally bogus.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

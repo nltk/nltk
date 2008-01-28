@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="romp">
+<note>
+  Frames file for 'romp' based on sentences in wsj.  Verbnet entry
+  51.3.2, Framenet entry Self motion.
+</note>
+
+<roleset id="romp.01" name="mode of motion" vncls="51.3.2">
+<roles>
+  <role descr="entity in motion" n="0"><vnrole vncls="51.3.2" vntheta="Theme"/></role>
+  <role descr="path" n="1"><vnrole vncls="51.3.2" vntheta="Location"/></role>
+</roles>
+
+<example name="not the flat-headed borer!">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    Some 500 insects and 150 diseases wiggle, chew and romp through
+    growers' nightmares, including maggots, mites, mildew, thrips,
+    black rot and the flat-headed borer. 
+</text>
+        <arg n="0">Some 500 insects and 150 diseases</arg>
+        <rel>romp</rel>
+        <arg f="through" n="1">growers' nightmares</arg>
+        <arg n="M">including maggots, mites, mildew, thrips, black rot
+        and the flat-headed borer</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

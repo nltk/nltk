@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="concur">
+<note>
+  Frames file for 'concur'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="concur.01" name="to agree or cooperate" vncls="36.1">
+<roles> 
+  <role descr="agreer(s), agent(s)" n="0"><vnrole vncls="36.1" vntheta="Actor1"/></role>
+  <role descr="thing concurred (with)" n="1"><vnrole vncls="36.1" vntheta="Topic"/></role>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ He said that in this case he concurred with the State Department 's decision that Mr. Ahmad should be extradited [*-1] .
+</text>
+	<arg f="LOC" n="M">in this case</arg>
+	<arg n="0">he</arg>
+	<rel>concurred</rel>
+	<arg f="with" n="1">the State Department 's decision that Mr. Ahmad should be extradited [*-1]</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

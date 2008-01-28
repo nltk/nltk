@@ -1,0 +1,54 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="purr">
+<note>
+  Frames file for 'purr' based on sentences in wsj.  Verbnet entry
+  37.3 &quot;manner of speaker&quot;, Framenet entries Motion Noise,
+  Communication Noise, and Perception Noise.
+</note>
+
+<roleset id="purr.01" name="emit purring noise" vncls="-">
+<roles>
+  <role descr="cat" n="0"/>
+</roles>
+
+<example name="ewwwww">
+  <inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+  <text>
+    John's bed purrs like a kitten -- if you put a quarter in the slot
+    first. 
+  </text>
+  <arg n="0">John's bed</arg>
+  <rel>purrs</rel>
+  <arg f="MNR" n="m">like a kitten</arg>
+  <arg f="ADV" n="m">if you put a quarter in the slot first</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="purr.02" name="speak in a purring fashion" vncls="37.3">
+<roles>
+  <role descr="speaker" n="0"><vnrole vncls="37.3" vntheta="Agent"/></role>
+  <role descr="utterance" n="1"><vnrole vncls="37.3" vntheta="Topic"/></role>
+  <role descr="hearer" n="2"><vnrole vncls="37.3" vntheta="Recipient"/></role>
+</roles>
+
+<example name="automatically generated">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ `` It 's like an oasis in this room , '' Ms. Foster purrs  .
+</text>
+        <arg n="0">Ms. Foster</arg>
+        <rel>purrs</rel>
+        <arg n="1">*trace* -&gt;  It 's like an oasis in this room</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

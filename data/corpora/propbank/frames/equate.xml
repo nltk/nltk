@@ -1,0 +1,57 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="equate">
+<note>
+  Frames file for 'equate' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="equate.01" name="declare equal" vncls="-">
+<roles>
+  <role descr="agent, declarer" n="0"/>
+  <role descr="first equal thing (or both)" n="1"/>
+  <role descr="second equal thing" n="2"/>
+</roles>
+
+<example name="all args">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    The public has a tendency *trace* to equate lawful demonstrations
+    with non-violent civil disobedience. 
+</text>
+        <arg n="0">*trace* -&gt;  The public</arg>
+        <rel>equate</rel>
+        <arg n="1">lawful demonstrations</arg>
+        <arg f="with" n="2">non-violent civil disobedience</arg>
+</example>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    In practice, it ends up *trace* being equated *trace* with a
+    ``self-expression'' that encourages the youngsters'
+    ``self-esteem.'' 
+</text>
+        <rel>equated</rel>
+        <arg n="1">*trace* -&gt; *trace* -&gt;  it</arg>
+        <arg f="with" n="2">a ``self-expression'' that encourages the
+        youngsters' ``self-esteem</arg> 
+</example>
+
+<example name="merged things">
+  <inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+  <text>
+    John equates Mary's violent and romantic tendencies, since both
+    cause great amounts of pain.
+  </text>
+  <arg n="0">John</arg>
+  <rel>equates</rel>
+  <arg n="1">Mary's violent and romantic tendencies</arg>
+  <arg f="CAU" n="m">since both cause great amounts of pain</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

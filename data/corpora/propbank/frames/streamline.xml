@@ -1,0 +1,45 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="streamline">
+<note>
+  Frames file for 'streamline' based on sentences in wsj.  No Verbnet
+  entry. 
+</note>
+
+<roleset id="streamline.01" name="make smoother" vncls="-">
+<roles>
+  <role descr="cause of smoothness" n="0"/>
+  <role descr="thing becoming smoother" n="1"/>
+</roles>
+
+<example name="oddly intransitive/middle voice">
+<inflection aspect="progressive" form="participle" person="third" tense="present" voice="ns"/>
+<text>
+    The British parent is also streamlining: Brooks Brothers, which
+    continues to make almost all of its merchandise, recently shut one
+    of its two shirt plants in Paterson, N.J., and has closed boys'
+    departments in all but 20 stores. 
+</text>
+        <arg n="0">The British parent</arg>
+        <arg f="DIS" n="M">also</arg>
+        <rel>streamlining</rel>
+</example>
+
+<example name="normally transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    But Mr. Luzon has moved swiftly *trace* to streamline bureaucracy,
+    cut costs, increase capital and build up new areas of business. 
+</text>
+        <arg n="0">*trace* -&gt;  Mr. Luzon</arg>
+        <rel>streamline</rel>
+        <arg n="1">bureaucracy</arg>
+</example>
+
+<note>
+Tracing gets weird; don't be afraid to leave arg0 as just a trace.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

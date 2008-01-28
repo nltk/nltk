@@ -1,0 +1,67 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="cobble">
+<note>
+  Frames file for 'cobble' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="cobble.01" name="build/create roughly" vncls="-">
+<roles>
+  <role descr="builder" n="0"/>
+  <role descr="built, creation, end state" n="1"/>
+  <role descr="material, start state" n="2"/>
+</roles>
+
+<example name="creation and attribute">
+<inflection aspect="ns" form="participle" person="third" tense="past" voice="passive"/>
+<text>
+    The bailout was cobbled [*-1] together over the weekend, with
+    officials from the Federal Reserve Board, Securities and Exchange
+    Commission, Comptroller of the Currency and Treasury as well as
+    the options exchanges. 
+</text>
+        <rel>cobbled</rel>
+        <arg n="1">[*-1] -&gt;  The bailout</arg>
+        <arg f="PRD" n="m">together</arg>
+        <arg f="TMP" n="M">over the weekend</arg>
+        <arg f="ADV" n="M">with officials from the Federal Reserve
+        Board, Securities and Exchange Commission, Comptroller of the
+        Currency and Treasury as well as the options exchanges</arg> 
+</example>
+
+<example name="creation and start state">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Mr. Van de Kamp is the one who [*T*-2] collected the plans from
+    the various radical environmental groups and cobbled them into a
+    single unwieldy initiative to be placed on the ballot for election
+    on Nov. 6, 1990. 
+</text>
+        <arg n="0">[*T*-2] -&gt;  who -&gt;  the one</arg>
+        <rel>cobbled</rel>
+        <arg n="2">them</arg>
+        <arg f="into" n="1">a single unwieldy initiative to be placed
+        on the ballot for election on Nov. 6, 1990</arg> 
+</example>
+
+<example name="creation and start state, different syntax">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Mr. Van de Kamp is the one who [*T*-2] collected the plans from
+    the various radical environmental groups and cobbled a
+    single unwieldy initiative to be placed on the ballot for election
+    on Nov. 6, 1990 out of them.
+</text>
+        <arg n="0">[*T*-2] -&gt;  who -&gt;  the one</arg>
+        <rel>cobbled</rel>
+        <arg n="1">a single unwieldy initiative to be placed
+        on the ballot for election on Nov. 6, 1990</arg> 
+        <arg f="out" n="2">of them</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

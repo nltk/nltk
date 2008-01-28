@@ -1,0 +1,43 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="account">
+<note>
+  Frames file for 'account' based on sentences in financial
+  subcorpus.  No access to verbnet.  Comparison with handle.
+</note>
+
+<roleset id="account.01" name="deal with, explain">
+<roles>
+  <role descr="accounter" n="0"/>
+  <role descr="thing accounted for, dealt with, explained" n="1"/>
+  <role descr="instrumental, accounted for with or by" n="2"/>
+</roles>
+
+<example name="the bulk of the examples look just like this">
+<text>
+    Profit-taking accounted for much of the slide in OTC stock prices,
+    according to David Mills, senior vice president of Boston Company
+    Advisers. 
+</text>
+        <arg n="0">Profit-taking</arg>
+        <rel>accounted</rel>
+        <arg f="for" n="1">much of the slide in OTC stock prices</arg>
+</example>
+
+<example name="adding instrumental">
+  <text>
+    John accounted for his absence from the meeting with a wild story
+    of alien abduction. 
+  </text>
+  <arg n="0">John</arg>
+  <rel>accounted</rel>
+  <arg f="for" n="1">his absence from the meeting</arg>
+  <arg f="with" n="2">a wild story of alien abduction</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

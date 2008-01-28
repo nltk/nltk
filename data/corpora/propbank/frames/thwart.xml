@@ -1,0 +1,51 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="thwart">
+<note>
+  Frames file for 'thwart' based on sentences in financial subcorpus.
+  No Verbnet entry, no Framenet entry.  No comparison.  This is truly
+  one of the most wondrous verbs of English.  I mean, just listen to
+  it: &quot;thwart&quot;.  Sounds like an obese toad falling six stories onto
+  pavement.
+</note>
+
+<roleset id="thwart.01" name="prevent" vncls="-">
+<roles>
+  <role descr="thwarter" n="0"/>
+  <role descr="thwartee" n="1"/>
+</roles>
+
+<example name="just transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    But the new pact will force huge debt on the new firm and could
+    still fail  to thwart rival suitor McCaw Cellular. 
+</text>
+        <arg n="0">*trace* -&gt;  the new pact</arg>
+        <rel>thwart</rel>
+        <arg n="1">rival suitor McCaw Cellular</arg>
+</example>
+
+<example name="with instrumental adjunct">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    In February 1987, Bally thwarted a possible hostile takeover bid
+    from Mr. Trump by agreeing to buy 2.6 million of Mr. Trump's 3.1
+    million Bally shares for $83.7 million  -- more than $18 million
+    above market price. 
+</text>
+        <arg f="TMP" n="M">In February 1987</arg>
+        <arg n="0">Bally</arg>
+        <rel>thwarted</rel>
+        <arg n="1">a possible hostile takeover bid from Mr. Trump</arg>
+        <arg f="MNR" n="M">by agreeing to buy 2.6 million of
+        Mr. Trump's 3.1 million Bally shares for $83.7 million -- more
+        than $18 million above market price</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

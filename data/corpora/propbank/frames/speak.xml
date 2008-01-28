@@ -1,0 +1,122 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="speak">
+<note>
+  Frames file for 'speak' based on sentences in financial subcorpus.
+  Verbnet entry talk-37.5, other member is talk.  Comparison to talk.
+</note>
+
+<roleset id="speak.01" name="speak" vncls="37.5">
+<roles>
+  <role descr="talker" n="0">
+	<vnrole vncls="37.5" vntheta="Actor1"/></role>
+  <role descr="subject" n="1">
+	<vnrole vncls="37.5" vntheta="Topic"/></role>
+  <role descr="hearer" n="2">
+	<vnrole vncls="37.5" vntheta="Actor2"/></role>
+</roles>
+
+<example name="just hearer">
+<text>
+    He added that he had spoken with Mr. Laidig, whom he referred to
+    as a friend, by telephone Monday evening.
+</text>
+        <arg n="0">he</arg>
+        <rel>spoken</rel>
+        <arg f="with" n="2">Mr. Laidig, whom he referred to as a
+        friend,</arg> 
+        <arg f="MNR" n="M">by telephone</arg>
+        <arg f="TMP" n="M">Monday evening</arg>
+</example>
+
+<example name="subject and hearer">
+  <text>
+    Mary spoke to John about his atrocious breath.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>spoke</rel>
+  <arg f="to" n="2">John</arg>
+  <arg f="about" n="1">his atrocious breath</arg>
+</example>
+
+<example name="just subject">
+  <text>
+    John spoke at length about the dangers of breathing paint fumes.
+  </text>
+  <arg n="0">John</arg>
+  <rel>spoke</rel>
+  <arg f="TMP" n="m">at length</arg>
+  <arg f="about" n="1">the dangers of breathing paint fumes</arg>
+</example>
+
+<example name="variant: speak a language">
+  <text>
+     John speaks 15 languages.
+  </text>
+  <arg n="0">John</arg>
+  <rel>speaks</rel>
+  <arg n="1">15 languages</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="speak_up">
+
+<roleset id="speak.02" name="speak up: make yourself heard" vncls="-">
+<roles>
+  <role descr="speaker" n="0"/>
+</roles>
+
+<example name="intransitive">
+<text>
+    If conservatives don't support an increase in the IMF's capital,
+    then it is incumbent on them *trace* to speak up now and explain
+    the alternative. 
+</text>
+        <arg n="0">*trace* -&gt;  them</arg>
+        <rel>[ speak] [ up]</rel>
+        <arg f="TMP" n="M">now</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="speak_out">
+
+<roleset id="speak.03" vncls="-" name="speak out: make yourself heard">
+<roles>
+  <role n="0"  descr="speaker"/>
+  <role n="1"  descr="topic"/>
+</roles>
+
+<example name="no topic">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+      Mr. Pilson says that when he spoke out a few years ago [*T*-1],
+      ``I didn't say forever, and I didn't say every property.''   
+  </text>
+  <arg n="0"        >he</arg>
+  <rel              >spoke out</rel>
+  <arg n="m" f="TMP">[*T*-1] -> when -> a few years ago</arg>
+</example>
+
+<example name="with topic">
+  <inflection person="ns" tense="present" aspect="perfect" voice="active" form="participle"/>
+  <text>
+     Several of the city's black leaders, including Democratic mayoral
+     nominee David Dinkins, have spoken out for racial gerrymandering
+     to accord blacks and Hispanics ``the fullest opportunity for
+     representation.'' 
+  </text>
+  <arg n="0"        >Several of the city's black leaders, including
+  Democratic mayoral nominee David Dinkins</arg>
+  <rel              >spoken out</rel>
+  <arg n="1" f="for">racial gerrymandering
+     to accord blacks and Hispanics ``the fullest opportunity for
+     representation</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

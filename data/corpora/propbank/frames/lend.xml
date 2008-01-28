@@ -1,0 +1,59 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="lend">
+<note>
+  Frames file for 'lend' based on sentences in financial subcorpus.
+  No access to verbnet.  Comparison to 'give'.
+</note>
+
+<roleset id="lend.01" name="give temporarily" vncls="13.1-1">
+<roles>
+  <role descr="lender" n="0">
+		
+  <vnrole vncls="13.1-1" vntheta="Agent"/></role>
+
+  <role descr="thing lent" n="1">
+		
+  <vnrole vncls="13.1-1" vntheta="Theme"/></role>
+
+  <role descr="lent-to" n="2">
+		
+  <vnrole vncls="13.1-1" vntheta="Recipient"/></role>
+
+</roles>
+
+<example name="nice and obvious">
+<text>
+    The McAlpine family, which operates a number of multinational
+    companies, including a London-based engineering and construction
+    company, also lent to Meridian National $500,000. 
+</text>
+        <arg n="0">The McAlpine family, which operates a number of
+        multinational companies, including a London-based engineering
+        and construction company,</arg> 
+        <arg f="DIS" n="M">also</arg>
+        <rel>lent</rel>
+        <arg f="to" n="2">Meridian National</arg>
+        <arg n="1">$ 500,000 </arg>
+</example>
+
+<example name="non-obvious benefactive">
+<text>
+    HomeFed had been one of the handful of large West Coast thrifts
+    that in recent quarters had counteracted interest-rate problems
+    dogging the industry by *trace* keeping a lid on problem assets
+    and lending heavily into the furious California housing market. 
+</text>
+        <arg n="0">*trace* -&gt;  large West Coast thrifts</arg>
+        <rel>lending</rel>
+        <arg f="MNR" n="M">heavily</arg>
+        <arg f="into" n="2">the furious California housing market</arg>
+</example>
+
+<note>
+The target of the trace is also not immediately obvious.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

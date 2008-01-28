@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="undersell">
+<note>
+  Frames file for 'undersell' based on sentences in wsj.  No access to
+  Verbnet at the moment.
+</note>
+
+<roleset id="undersell.01" name="sell some commodity at a   lower price than the competition" vncls="-">
+<roles>
+  <role descr="seller" n="0"/>
+  <role descr="competition" n="1"/>
+</roles>
+
+<example name="the one example">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+     But instead of a new customer -- part of a hoped-for bonanza from
+     [*] underselling Sony -- Justin got a costly legal morass. 
+</text>
+        <arg n="0">[*] -&gt; Justin</arg>
+        <rel>underselling</rel>
+        <arg n="1">Sony</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="itemize">
+<note>
+  Frames file for 'itemize' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="itemize.01" name="list each member of a group" vncls="-">
+<roles>
+  <role descr="lister" n="0"/>
+  <role descr="items" n="1"/>
+</roles>
+
+<example name="one example">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    Charitable groups are trying to reinstate the write-off for
+    contributions made by individuals who [*T*-1] don't itemize their
+    deductions. 
+</text>
+        <arg n="0">[*T*-1] -&gt;  who -&gt;  individuals</arg>
+        <arg f="NEG" n="M">n't</arg>
+        <rel>itemize</rel>
+        <arg n="1">their deductions</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

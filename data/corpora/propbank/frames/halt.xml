@@ -1,0 +1,49 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="halt">
+<note>
+  Frames file for 'halt' based on sentences in financial subcorpus.
+  Verbnet class other_cos-45.4, many many other framed members.
+  Comparison with 'stop'.
+</note>
+
+<roleset id="halt.01" name="stop" vncls="45.4 55.1">
+<roles>
+  <role descr="causer of stopping" n="0">
+	<vnrole vncls="55.1" vntheta="Agent"/>
+        <vnrole vncls="45.4" vntheta="Agent"/></role>
+  <role descr="Theme (action or object being stopped)" n="1">
+	<vnrole vncls="55.1" vntheta="Theme"/>
+        <vnrole vncls="45.4" vntheta="Patient"/></role>
+  <role descr="Instrument, if separate from arg0" n="2">
+	<vnrole vncls="45.4" vntheta="Instrument"/></role>
+</roles>
+
+<example name="transitive active">
+<text>
+    While program trades swiftly kicked in, a ``circuit breaker'' that
+    *trace* halted trading in stock futures in Chicago made some
+    program trading impossible. 
+</text>
+        <arg n="0">*trace* -&gt;  that -&gt; a ``circuit breaker''</arg>
+        <rel>halted</rel>
+        <arg n="1">trading in stock futures in Chicago</arg>
+</example>
+
+<example name="passivized">
+<text>
+    Cineplex traded on the New York Stock Exchange at $11.25 a share,
+    up $1.125, before trading was halted *trace*. 
+</text>
+        <rel>halted</rel>
+        <arg n="1">*trace* -&gt; trading</arg>
+</example>
+
+<note>
+Higher numbered args might or might not occur; refer to 'stop' for
+usage of them.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

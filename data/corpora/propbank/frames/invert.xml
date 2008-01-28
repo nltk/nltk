@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="invert">
+<note>
+  Frames file for 'invert' based on sentences in wsj.  No access to
+  verbnet at the moment.
+</note>
+
+<roleset id="invert.01" name="turn upside down" vncls="-">
+<roles>
+  <role descr="agent, turner" n="0"/>
+  <role descr="thing now upside down" n="1"/>
+</roles>
+
+<example name="the one example">
+<inflection aspect="perfect" form="participle" person="third" tense="present" voice="active"/>
+<text>
+    Mr. Glass has inverted the famous modernist dictum ``less is
+    more.'' 
+</text>
+        <arg n="0">Mr. Glass</arg>
+        <rel>inverted</rel>
+        <arg n="1">the famous modernist dictum ``less is more</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

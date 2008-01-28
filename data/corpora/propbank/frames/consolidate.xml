@@ -1,0 +1,66 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="consolidate">
+<note>
+  Frames file for 'consolidate' based on sentences in financial
+  subcorpus.  Verbnet entry amalgamate-22.2,
+  other framed members include confuse, engage, incorporate,
+  integrate, introduce, oppose and wed.  Comparison with 'integrate'.
+</note>
+
+<roleset id="consolidate.01" name="blend, mix" vncls="22.2">
+<roles>
+  <role descr="mixer, integrater" n="0">
+		
+		
+  <vnrole vncls="22.2" vntheta="Agent"/></role>
+
+  <role descr="figure, theme, topic" n="1">
+		
+		
+  <vnrole vncls="22.2" vntheta="Patient1"/></role>
+
+  <role descr="ground (into X)" n="2">
+		
+		
+  <vnrole vncls="22.2" vntheta="Patient2"/></role>
+
+  <role descr="explicit source" n="3"/>
+</roles>
+
+<example name="just transitive">
+<text>
+    Sales dropped to $441.1 million from $820.4 million, because the
+    company no longer consolidates its Eastern Steel division, which
+    is now a joint venture with Kawasaki Steel Corp. 
+</text>
+        <arg n="0">the company</arg>
+        <arg f="TMP" n="M">no longer</arg>
+        <rel>consolidates</rel>
+        <arg n="1">its Eastern Steel division, which is now a joint
+        venture with Kawasaki Steel Corp</arg> 
+</example>
+
+<example name="with ground and source">
+<text>
+    Next year Western Digital plans *trace* to consolidate its
+    operations from 11 buildings in Irvine into two buildings in the
+    same city, a new headquarters and, a block away, a modern $100
+    million silicon wafer fabrication plant. 
+</text>
+        <arg n="0">*trace* -&gt;  Western Digital</arg>
+        <rel>consolidate</rel>
+        <arg n="1">its operations</arg>
+        <arg f="from" n="3">11 buildings in Irvine</arg>
+        <arg f="into" n="2">two buildings in the same city, a new
+        headquarters and, a block away, a modern $100 million silicon
+        wafer fabrication plant</arg> 
+</example>
+
+<note>
+I think that makes sense.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

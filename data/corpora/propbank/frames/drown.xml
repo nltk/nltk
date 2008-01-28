@@ -1,0 +1,72 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="drown">
+<note>
+  Frames file for 'drown'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="drown.01" name="to cover completely or make imperceptible" vncls="-">
+<roles> 
+ <role descr="entity covering" n="0"/>
+ <role descr="entity covered" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+ For now , however , the naysayers ' voices are drowned [*-1] by the roar of cement mixers and the clanging of construction cranes along the Strip .
+</text>
+	<rel>drowned</rel>
+	<arg n="1">[*-1] -&gt;  the naysayers ' voices</arg>
+	<arg f="by" n="0">the roar of cement mixers and the clanging of construction cranes along the Strip</arg>
+</example>
+</roleset>
+
+
+<roleset id="drown.02" name="to die or kill by submerging in water" vncls="40.7 42.2">
+<roles> 
+ <role descr="killer" n="0"><vnrole vncls="42.2" vntheta="Agent"/><vnrole vncls="40.7" vntheta="Agent"/></role>
+ <role descr="person drowned" n="1"><vnrole vncls="42.2" vntheta="Patient"/><vnrole vncls="40.7" vntheta="Theme"/></role>
+</roles>
+
+<example name="intransitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ It 's what 1 ) [*T*-3] explains why we are like , well , ourselves rather than Bo Jackson [*T*-4] ; 2 ) [*T*-3] cautions that it [*EXP*-1] 's possible [*] to drown in a lake that [*T*-2] averages two feet deep ; and 3 ) [*T*-3] predicts that 10,000 monkeys placed [*] before 10,000 pianos would produce 1,118 publishable rock 'n' roll tunes .
+</text>
+	<arg n="1">[*]</arg>
+	<rel>drown</rel>
+	<arg f="LOC" n="M">in a lake that [*T*-2] averages two feet deep</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+<predicate lemma="drown_out">
+
+<roleset id="drown.03" name="to make imperceptible" vncls="-">
+<roles> 
+ <role descr="a louder sound" n="0"/>
+ <role descr="an imperceptible sound" n="1"/>
+</roles>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="past" voice="passive"/>
+<text>
+ When the Soviets announced [0] their last soldier had left Afghanistan in February [*T*-1] , the voices of skepticism were all but drowned out by an international chorus of euphoria .
+</text>
+	<arg n="1">the voices of skepticism</arg>
+	<arg f="ADV" n="M">all but</arg>
+	<rel>[ drowned] [ out]</rel>
+	<arg f="by" n="0">an international chorus of euphoria</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

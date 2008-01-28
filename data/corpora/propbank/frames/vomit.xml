@@ -1,0 +1,61 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="vomit">
+<note>
+  Frames file for 'vomit' based on sentences in wsj.  Verbnet entry 40.1.2.
+</note>
+
+<roleset id="vomit.01" vncls="40.1.2" name="puke">
+<roles>
+  <role n="0"  descr="poor schmo vomiting"/>
+</roles>
+
+<example name="nominal, no args">
+<inflection person="ns" tense="ns" aspect="ns" voice="ns" form="gerund"/>
+<text>
+    The council's annual report has psyllium on its last page, lumped
+    with such unglamorous export items as sarsaparilla and ``Nux
+    vomica,'' a plant that induces vomiting. 
+</text>
+	<rel>vomiting</rel>
+</example>
+
+<example name="verbal">
+  <inflection person="ns" tense="ns" aspect="ns" voice="active" form="full"/>
+  <text>
+     Mary's cooking made John vomit.
+  </text>
+  <arg n="0"        >John</arg>
+  <rel              >vomit</rel>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="vomit_up">
+
+<roleset id="vomit.02" vncls="-" name="puke with object">
+<roles>
+  <role n="0"  descr="puker"/>
+  <role n="1"  descr="former contents of stomach"/>
+</roles>
+
+<example name="down-home cooking">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+     John vomited up the dinner that Mary made for him
+  </text>
+  <arg n="0"        >John</arg>
+  <rel              >vomited up</rel>
+  <arg n="1"        >the dinner that Mary made for him</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

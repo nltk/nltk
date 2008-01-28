@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="recite">
+<note>
+  Frames file for 'recite' based on sentences in wsj.  Verbnet entries
+  26.7-1 and 37.1.
+</note>
+
+<roleset id="recite.01" name="utter memorized passage" vncls="26.7-1 37.1">
+<roles>
+  <role descr="speaker" n="0"><vnrole vncls="26.7-1" vntheta="Agent"/><vnrole vncls="37.1" vntheta="Agent"/></role>
+  <role descr="utterance" n="1"><vnrole vncls="26.7-1" vntheta="Theme"/><vnrole vncls="37.1" vntheta="Topic"/></role>
+</roles>
+
+<example name="pretty basic">
+<inflection aspect="ns" form="gerund" person="ns" tense="ns" voice="ns"/>
+<text>
+    Besides *trace* reciting the pardon for program trading contained
+    in the Brady Commission report, they said stock-index arbitrage
+    was actually needed Monday to restore the markets' equilibrium. 
+</text>
+        <arg n="0">*trace* -&gt; they</arg>
+        <rel>reciting</rel>
+        <arg n="1">the pardon for program trading contained in the
+        Brady Commission report</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

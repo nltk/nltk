@@ -1,0 +1,44 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="arm">
+<note>
+  Frames file for 'arm' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="arm.01" name="to equip or provide" vncls="-">
+<roles>
+  <role descr="equiper, provider, agent" n="0"/>
+  <role descr="entity armed" n="1"/>
+  <role descr="equipment" n="2"/>
+</roles>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+ [*-1] Armed [*-2] with this shared understanding and requisite background information , each department developed its specialized contribution to the proposal , [*-1] submitting data and cost estimates on a closely managed schedule .
+</text>
+	<rel>Armed</rel>
+	<arg n="1">each department -&gt;  [*-2] -&gt;  [*-1]</arg>
+	<arg f="with" n="2">this shared understanding and requisite background information</arg>
+</example>
+
+
+<example name="transitive with purpose">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ Thus [*-3] armed [*-2] for massive matching of documents by computer , they single out high-income groups , [*-3] looking primarily for people who [*T*-1] have n't filed New York income-tax returns .
+</text>
+	<arg f="DIS" n="M">Thus</arg>
+	<rel>armed</rel>
+	<arg n="1">they -&gt;  [*-2] -&gt;  [*-3]</arg>
+	<arg f="CAU" n="M">for massive matching of documents by computer</arg>
+	<arg n="0">they -&gt;  [*-3]</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

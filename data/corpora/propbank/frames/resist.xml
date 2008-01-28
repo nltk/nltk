@@ -1,0 +1,35 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="resist">
+<note>
+  Frames file for 'resist' based on sentences in financial subcorpus.
+  No Verbnet entry.  
+</note>
+
+<roleset id="resist.01" name="resist" vncls="-">
+<roles>
+  <role descr="resister" n="0"/>
+  <role descr="thing resisted" n="1"/>
+</roles>
+
+<example name="resistance is futile">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+    Stocks such as Hershey Foods Corp., Wal-Mart Stores Inc., American
+    International Group Inc. and Federal National Mortgage Association
+    became such bargains that he couldn't resist them, he says. 
+</text>
+        <arg n="0">he</arg>
+        <arg f="MOD" n="M">could</arg>
+        <arg f="NEG" n="M">n't</arg>
+        <rel>resist</rel>
+        <arg n="1">them</arg>
+</example>
+
+<note>
+You totally saw that example name coming, didn't you?
+</note>
+
+</roleset>
+</predicate>
+</frameset>

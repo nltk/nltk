@@ -1,0 +1,48 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="define">
+<note>
+  Frames file for 'define' based on sentences in financial subcorpus.
+  Verbnet entries  29.2 48.1.2, other framed members include count,
+  desribe, employ, intend, portray, regard, treat; arise, assert,
+  declare, emerge, exude, materialize.  Comparison with 'regard'.
+</note>
+
+<roleset id="define.01" name="assign a label or attribute" vncls="29.2 48.1.2">
+<roles>
+  <role descr="describer" n="0">
+		
+		
+  <vnrole vncls="29.2" vntheta="Agent"/><vnrole vncls="48.1.2" vntheta="Agent"/></role>
+
+  <role descr="thing defined" n="1">
+		
+		
+  <vnrole vncls="29.2" vntheta="Theme"/><vnrole vncls="48.1.2" vntheta="Theme"/></role>
+
+  <role descr="secondary attribute, described-as, definition" n="2">
+		
+  <vnrole vncls="29.2" vntheta="Predicate"/></role>
+
+</roles>
+
+<example name="all args">
+<text>
+    Time Warner emphasized in a news release that it should be
+    evaluated based on its cash flow, which the company defined
+    *trace* as earnings before interest, taxes, depreciation and
+    amortization. 
+</text>
+        <arg n="0">the company</arg>
+        <rel>defined</rel>
+        <arg n="1">*trace* -&gt;  which -&gt;  its cash flow</arg>
+        <arg f="as" n="2">earnings before interest, taxes,
+        depreciation and amortization</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

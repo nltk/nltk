@@ -1,0 +1,28 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="squeegee">
+<note>
+  Frames file for 'squeegee' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="squeegee.01" name="clean with a squeegee" vncls="-">
+<roles>
+  <role descr="squeegeer" n="0"/>
+  <role descr="squeegeed" n="1"/>
+</roles>
+
+<example name="the one example">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+     White children empty the wastepaper baskets and squeegee the windows.
+</text>
+        <arg n="0">White children</arg>
+        <rel>squeegee</rel>
+        <arg n="1">the windows</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

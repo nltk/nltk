@@ -1,0 +1,47 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="complicate">
+<note>
+  Frames file for 'complicate' based on survey of sentences in
+  financial subcorpus.  No verbnet entry.
+</note>
+
+<roleset id="complicate.01" name="make complicated">
+<roles>
+  <role descr="agent, entity causing something to become complicated" n="0"/>
+  <role descr="thing becoming complicated" n="1"/>
+  <role descr="benefactive" n="2"/>
+</roles>
+
+<example name="transitive">
+  <text>
+    Cray Research's decision to link its $98.3 million promissory note
+    to Mr. Cray's presence will complicate a valuation of the new
+    company.
+  </text>
+  <arg n="0">Cray Research's decision to link its $98.3
+  million promissory note to Mr. Cray's presence</arg>
+  <arg f="MOD" n="m">will</arg>
+  <rel>complicate</rel>
+  <arg n="1">a valuation of the new company.</arg>
+</example>
+
+<example name="with benefactive">
+  <text>
+    The new round of bidding would seem *trace* to complicate the
+    decision making for Judge James Yacos.
+  </text>
+  <arg n="0">*trace*=The new round of bidding</arg>
+  <rel>complicate</rel>
+  <arg n="1">the decision making</arg>
+  <arg f="for" n="2">Judge James Yacos</arg>
+</example>
+
+<note>
+Be careful for adjectival &quot;complicated&quot; usages confused with verbal
+&quot;complicated&quot; usages.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

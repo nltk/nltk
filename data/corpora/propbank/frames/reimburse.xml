@@ -1,0 +1,88 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="reimburse">
+<note>
+  Frames file for 'reimburse' based on sentences in financial
+  subcorpus.  No access to verbnet.  Comparison to 'pay'.
+</note>
+
+<roleset id="reimburse.01" name="pay back" vncls="13.2">
+<roles>
+  <role descr="payer" n="0">
+		
+  <vnrole vncls="13.2" vntheta="Agent"/></role>
+
+  <role descr="amount of cash" n="1">
+		
+  <vnrole vncls="13.2" vntheta="Theme"/></role>
+
+  <role descr="paid to" n="2">
+		
+  <vnrole vncls="13.2" vntheta="Recipient"/></role>
+
+  <role descr="in-exchange-for" n="3"/>
+</roles>
+
+<note>
+Note that args 1/3 are reversed from what they were in 'pay'.
+</note>
+
+<example name="payment">
+<text>
+    ...and $2.8 million in overhead costs that *trace* won't be
+    reimbursed *trace*. 
+</text>
+        <arg f="MOD" n="M">wo</arg>
+        <arg f="NEG" n="M">n't</arg>
+        <rel>reimbursed</rel>
+        <arg n="1">*trace* -&gt; *trace* -&gt;  that -&gt;  overhead costs</arg>
+</example>
+
+<example name="payee and in-exchange-for">
+<text>
+    Gulf Power had set up an elaborate payment system through which it
+    reimbursed outside vendors -- primarily three Florida advertising
+    agencies -- for making illegal political contributions on its
+    behalf. 
+</text>
+        <arg n="0">it</arg>
+        <rel>reimbursed</rel>
+        <arg n="2">outside vendors -- primarily three Florida
+        advertising agencies --</arg> 
+        <arg f="for" n="3">making illegal political contributions on
+        its behalf</arg> 
+</example>
+
+<example name="tenuous example with args 1-2-3">
+<text>
+    Douglas R. Pappas of Myerson &amp; Kuhn says about $5.3 million of
+    the award goes directly to the USFL *trace* to reimburse it for
+    fees already paid. 
+</text>
+        <arg n="1">*trace* -&gt;  about $5.3 million of the award</arg>
+        <rel>reimburse</rel>
+        <arg n="2">it</arg>
+        <arg f="for" n="3">fees already paid</arg>
+</example>
+
+<note>
+This is tenuous because the trace doesn't need to be linked to the
+money; it could be a targetless agent trace.  In general it seems like
+arg1 and args2/3 are mutually exclusive, depending on the
+grammaticality of the following:
+</note>
+
+<example name="all args?">
+  <text>
+    Mary reimbursed John $.25 for dinner.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>reimbursed</rel>
+  <arg n="2">John</arg>
+  <arg n="1">$.25</arg>
+  <arg f="for" n="3">dinner</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

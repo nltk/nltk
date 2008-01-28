@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="permeate">
+<note>
+  Frames file for 'permeate' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="permeate.01" name="to spread throughout" vncls="-">
+<roles>
+  <role descr="entity spreading" n="0"/>
+  <role descr="entity permeated" n="1"/>  
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+ This argument plays well in the atmosphere of gaming and mistrust permeating the Pentagon and Congress , and unfortunately , there is some truth to it .
+</text>
+	<arg n="0">the atmosphere</arg>
+	<rel>permeating</rel>
+	<arg n="1">the Pentagon and Congress</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

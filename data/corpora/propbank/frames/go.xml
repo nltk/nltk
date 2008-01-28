@@ -1,0 +1,656 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="go">
+<note>
+Frames file for 'go' based on survey of initial sentences from big corpus
+and comparison with 'rise' 'fall' 'become' and 'wander'
+</note>
+
+<roleset id="go.01" name="motion" vncls="47.7 51.1-2">
+<roles>
+  <role descr="entity in motion/goer" n="1">
+	<vnrole vncls="47.7" vntheta="Theme"/>
+        <vnrole vncls="51.1-2" vntheta="Theme"/></role>
+  <role descr="extent" n="2"/>
+  <role descr="start point" n="3"/>
+  <role descr="end point, end state of arg1" n="4"/>
+  <role descr="medium" f="LOC" n="M"/>
+  <role descr="direction (usually up or down)" f="DIR" n="M"/>
+</roles>
+
+<note>
+Treebank uses every possible syntax for the stock-report usage of this
+sense.  You'll have to dig into constituents to pull these args
+apart.  The &quot;direction&quot; arg is more mandatory than the ArgM label
+would suggest.
+</note>
+
+<example name="start and end points">
+  <text>
+    What flights go from Seattle to Boston via Minneapolis?
+  </text>
+  <arg n="1"> what flights </arg>
+  <rel> go </rel>
+  <arg f="from" n="3"> Seattle </arg>
+  <arg f="to" n="4"> Boston </arg>
+  <arg f="LOC" n="m"> via Minneapolis </arg> 
+</example>
+
+<example name="extent">
+  <text>
+    Imports have gone down 33%
+  </text>
+  <arg n="1"> Imports </arg>
+  <arg f="DIR" n="M"> down </arg>
+  <arg f="EXT" n="2"> 33% </arg>
+</example>
+
+<example name="extent and end point">
+  <text>
+    Woolworth went up 1 3/4 to 59 1/2.
+  </text>
+  <arg n="1"> Woolworth </arg>
+  <rel> went </rel>
+  <arg f="DIR" n="M"> up </arg>
+  <arg f="EXT" n="2"> 1 3/4 </arg>
+  <arg f="to" n="4"> 59 1/2 </arg>
+</example>
+
+<example name="with direction">
+  <text>
+    A lot of people would like TRACE to go back to 1970.
+  </text>
+  <arg n="1"> TRACE -&gt; a lot of people</arg>
+  <rel> go </rel>
+  <arg f="DIR" n="M"> back </arg>
+  <arg f="to" n="4"> 1970 </arg>
+</example>
+
+<example name="as 'extend'">
+<inflection person="ns" tense="present" aspect="ns" voice="active" form="full"/>
+<text>
+     At closely held Deltec Securities Corp., junk bond money managers
+     Amy K. Minella and Hannah H. Strasser say the problems of the
+     junk market go deeper than a temporary malaise. 
+</text>
+        <arg n="1">the problems of the junk market</arg>
+        <rel>go</rel>
+        <arg n="4">deeper than a temporary malaise</arg>
+</example>
+
+<example name="and keep going!">
+<inflection person="ns" tense="ns" aspect="ns" voice="active" form="full"/>
+<text>
+     The protesters who greeted Mikhail Gorbachev at East Berlin's
+     airport earlier this month weren't shouting ``Go U.S.A'' -- they
+     were chanting ``Gorby, Help Us.''
+</text>
+        <rel>Go</rel>
+        <arg n="1">U.S.A</arg>
+</example>
+</roleset>
+
+<roleset id="go.02" name="self-directed motion" vncls="51.1-2">
+
+<roles>
+  <role descr="goer" n="0">
+	<vnrole vncls="51.1-2" vntheta="Theme"/></role>
+  <role descr="journey" n="1"/>
+  <role descr="start point" n="3"/>
+  <role descr="end point" n="4">
+        <vnrole vncls="51.1-2" vntheta="Location"/></role>
+  <role descr="direction (usually up or down" f="DIR" n="M"/>
+</roles>
+
+<example name="journey">
+  <text>
+  He and two colleagues went on an overnight fishing trip.
+  </text>
+  <arg n="0">He and two colleagues</arg>
+  <rel>went</rel>
+  <arg f="on" n="1">an overnight fishing trip</arg>
+</example>
+
+<example name="end point">
+  <text>
+    The lawyers went to work
+  </text>
+  <arg n="0"> the lawyers </arg>
+  <rel>went</rel>
+  <arg f="to" n="4"> work </arg>
+</example>
+
+<example name="with manner">
+<inflection person="ns" tense="ns" aspect="ns" voice="ns" form="gerund"/>
+<text>
+      Currently in the middle of a four-week, 20-city tour as a solo
+      pianist, Mr. Glass has left behind his synthesizers, equipment
+      and collaborators in favor of [*-1] going it alone. 
+</text>
+        <arg n="0">[*-1] ->  Mr. Glass</arg>
+        <rel>going</rel>
+        <arg n="1">it</arg>
+        <arg n="M" f="MNR">alone</arg>
+</example>
+
+<example name="as nominal">
+<inflection person="ns" tense="ns" aspect="ns" voice="ns" form="gerund"/>
+<text>
+     ``I think Bush's going there is a helpful sign,'' said Sen. Terry
+     Sanford (D., N.C.) a member of the Foreign Relations Committee
+     who pushed to provide Costa Rica about the same amount of aid as
+     it received last year. 
+</text>
+        <arg n="0">Bush 's</arg>
+        <rel>going</rel>
+        <arg n="4">there</arg>
+</example>
+</roleset>
+
+<note>
+Could conflate the two above senses
+</note>
+
+<roleset id="go.03" name="pursue (often with after)" vncls="-">
+<roles>
+  <role descr="pursuer" n="0"/>
+  <role descr="goal" n="1"/>
+</roles>
+
+<example name="go after">
+  <text>
+    Portfolio managers go after the highest rates.
+  </text>
+  <arg n="0"> Portfolio managers </arg>
+  <rel> go </rel>
+  <arg f="after" n="1"> the highest rates </arg>
+</example>
+</roleset>
+
+<roleset id="go.04" name="modal / future" vncls="-">
+<roles/>
+<note>
+Tag ONLY with rel and ArgMs
+</note>
+<example name="modal">
+  <text>
+    I'm going to eat lunch now.
+  </text>
+</example>
+</roleset>
+
+<roleset id="go.05" name="serial verb construction" vncls="-">
+<roles>
+  <role descr="subject" n="0"/>
+  <role descr="subsequent action" n="1"/>
+</roles>
+
+<example name="very typical">
+  <text>
+  He went *trace* looking for a replacement for Mr. Landry.
+  </text>
+  <arg n="0">He</arg>
+  <rel>went</rel>
+  <arg n="1">*trace* looking for a replacement for Mr. Landry</arg>
+</example>
+
+<note>
+This is dangerously close to the modal construction, except there's no
+&quot;to&quot; (ie, &quot;I'm going to leave now&quot;).  Includes the idiom &quot;go begging&quot;.
+</note>
+
+</roleset>
+
+<roleset id="go.06" name="proceed (with a variety of prepositions)" vncls="-">
+<roles>
+  <role descr="entity proceeding" n="0"/> 
+  <role descr="project" n="1"/>
+  <role descr="direction, usually a particle" n="2"/>
+</roles>
+
+<example name="transitive and direction">
+  <text>
+    Boeing goes ahead    with its plans for the 767.
+  </text>
+  <arg n="0"> Boeing </arg>
+  <rel> goes </rel>
+  <arg f="DIR" n="2"> ahead </arg>
+  <arg f="with" n="1"> its plans for the 767 </arg>
+</example>
+
+<example name="intransitive, direction only">
+  <text>
+    Mrs. Yeagin went into education.
+  </text>
+  <arg n="0"> Mrs. Yeagin </arg>
+  <rel> went </rel>
+  <arg f="into" n="2"> education </arg>
+</example>
+
+<example name="ergative">
+  <text>
+    Boeing's plans for the 767 went without a hitch.
+  </text>
+  <arg n="1">Boeing's plans </arg>
+  <rel> went </rel>
+  <arg f="MNR" n="M"> without a hitch </arg>
+</example>
+
+<example name="transitive, no direction">
+  <text>
+    They went about it with a systematic approach.
+  </text>
+  <arg n="0"> they </arg>
+  <arg f="about" n="1"> it </arg>
+  <arg f="MNR" n="M"> with a systematic approach </arg>
+</example>
+
+</roleset>
+
+<roleset id="go.07" name="sell" vncls="-">
+<roles>
+  <role descr="commodity" n="1"/>
+  <role descr="buyer" n="2"/>
+  <role descr="price" n="3"/>
+</roles>
+
+<example name="unaccusative with price">
+  <text>
+    Chateau Yquem now goes for $100 a bottle
+  </text>
+  <arg n="1"> Chateau Yquem </arg>
+  <arg f="TMP" n="M"> now </arg>
+  <rel> goes </rel>
+  <arg f="for" n="3"> $100 a bottle </arg>
+</example>
+
+</roleset>
+
+<roleset id="go.08" name="become" vncls="-">
+<roles>
+  <role descr="object" n="1"/>
+  <role descr="attribute of arg1" n="2"/>
+  <role n="3" descr="with reference to what"/>
+</roles>
+
+<example name="go private">
+  <text>
+    Georgia Gulf will go  private.
+  </text>
+  <arg n="1"> Georgia Gulf </arg>
+  <rel> go </rel>
+  <arg n="2"> private </arg>
+</example>
+
+<example name="go off">
+  <text>
+    The lights went off last night.
+  </text>
+  <arg n="1">the lights</arg>
+  <rel> went </rel>
+  <arg n="2">off</arg>
+  <arg f="TMP" n="M">last night</arg>
+</example>
+
+<example name="with another argument">
+<inflection person="ns" tense="ns" aspect="ns" voice="ns" form="infinitive"/>
+<text>
+     Contel's Mr. Wohlstetter said the group of Big Board companies
+     isn't ready [*-1] to go public yet with its effort, and that he
+     doesn't plan to be the leader once it is public. 
+</text>
+        <arg n="1">[*-1] ->  the group of Big Board companies</arg>
+        <rel>go</rel>
+        <arg n="2">public</arg>
+        <arg n="M" f="TMP">yet</arg>
+        <arg n="3" f="with">its effort</arg>
+</example>
+
+<example name="less become, more continue">
+<inflection person="ns" tense="present" aspect="ns" voice="active" form="full"/>
+<text>
+     What's more, the losses they and the others caused ``are just
+     what we are stumbling over,'' says Mr. Stapf, adding that the
+     majority of misdeeds probably go [*-6] undetected. 
+</text>
+        <arg n="1">the majority of misdeeds</arg>
+        <arg n="M" f="ADV">probably</arg>
+        <rel>go</rel>
+        <arg n="2">[*-6] undetected</arg>
+</example>
+</roleset>
+
+<roleset id="go.09" name="operate" vncls="-">
+<roles>
+  <role descr="thing going" n="1"/>
+</roles>
+
+<example name="work">
+  <text>
+    The order printers start *trace* to go  on the trading floor.
+  </text>
+  <arg n="1"> *trace*=the order printers </arg>
+  <arg f="LOC" n="M"> on the trading floor </arg>
+</example>
+
+</roleset>
+
+<roleset id="go.10" name="benefactive" vncls="-">
+<roles>
+  <role descr="thing going" n="1"/>
+  <role descr="receiver" n="2"/>
+  <role descr="purpose" n="M"/>
+</roles>
+
+<example name="with receiver">
+  <text>
+    The rest went to investors from France and Hong Kong.
+  </text>
+  <arg n="1"> the rest </arg>
+  <rel> went </rel>
+  <arg f="to" n="2"> investors from France and Hong Kong </arg> 
+</example>
+
+<example name="with purpose">
+  <text>
+    $455 million will go for antitrust enforcement.
+  </text>
+  <arg n="1"> $455 million </arg>
+  <rel> go </rel>
+  <arg f="PNC" n="M"> for antitrust enforcement </arg>
+</example>
+
+<example name="go with">
+<inflection person="ns" tense="ns" aspect="ns" voice="ns" form="infinitive"/>
+<text>
+     Bethlehem had little choice but [*] to go with a European
+     steelmaker, because its competitors already have tapped the
+     Japanese and South Korean industry leaders, analysts noted. 
+</text>
+        <arg n="1">[*] ->  Bethlehem</arg>
+        <rel>go</rel>
+        <arg n="2" f="with">a European steelmaker</arg>
+</example>
+</roleset>
+
+<roleset id="go.11" name="serve" vncls="-">
+<roles>
+  <role descr="thing going" n="1"/>
+  <role descr="purpose" n="2"/>
+</roles>
+
+<example name="only in TV criminal/courtroom dramas?">
+  <text>
+  The crime goes to character.
+  </text>
+  <arg n="1">The crime</arg>
+  <rel>goes</rel>
+  <arg n="2">to character</arg>
+</example>
+
+<example name="goes without saying">
+<inflection person="third" tense="present" aspect="ns" voice="active" form="full"/>
+<text>
+     Which [*T*-1] goes [*-2] to show that the First Law applies in
+     insurance as in anything else: There is no free lunch, there is
+     only marketing. 
+</text>
+        <arg n="1">[*T*-1] ->  Which</arg>
+        <rel>goes</rel>
+        <arg n="2">[*-2] to show that the First Law applies in
+        insurance as in anything else: There is no free lunch, there
+        is only marketing</arg> 
+</example>
+
+<note>
+This seems close to the benefactive, hence its placement here.  I also
+read the purpose clause as goes &quot;to prove character&quot;.
+</note>
+</roleset>
+
+<roleset id="go.12" name="experience, undergo" vncls="-">
+<roles>
+  <role descr="experiencer" n="1"/>
+  <role descr="experienced" n="2"/>
+</roles>
+
+<example name="oh the agony">
+  <text>
+    This market is still going through its pains
+  </text>
+  <arg n="1"> the market </arg>
+  <arg f="DIS" n="m">still</arg>
+  <rel>              going</rel>
+  <arg f="through" n="2">its pains </arg>
+</example>
+
+<note>
+Be wary of the distinction with motion through some medium, such as
+&quot;John goes through the park on his way to school.&quot;
+</note>
+
+</roleset>
+
+<roleset id="go.13" name="disappear" vncls="-">
+<roles>
+  <role descr="thing disappearing" n="1"/>
+</roles>
+
+<example name="always in passive">
+  <text>
+  The opportunity to sell steel may be gone *trace* for now.
+  </text>
+  <arg n="1">*trace*=The opportunity to sell steel</arg>
+  <arg f="MOD" n="m">may</arg>
+  <rel>gone</rel>
+  <arg f="TMP" n="m">for now</arg>
+</example>
+
+<example name="and another passive">
+  <text>
+    The machine-gun-toting guards were gone.
+  </text>
+  <arg n="1"> the machine gun toting guards </arg>
+  <rel> gone </rel>
+</example>
+
+<note>
+This is an incorrect parse from Treebank; &quot;be gone&quot; is clearly not
+passive but rather copula+adjective.  I hope this is an isolated example.
+</note>
+
+</roleset>
+
+<roleset id="go.14" name="be left" vncls="-">
+<roles>
+  <role descr="thing left" n="1"/>
+</roles>
+
+<example name="left">
+  <text>
+  With 15 seconds of trading *trace-C* *trace* to go, ...
+  </text>
+  <arg n="1">*trace*=*trace-C*=With 15 seconds of trading</arg>
+  <rel>go</rel>
+</example>
+
+<note>
+always infinitival?
+</note>
+
+</roleset>
+
+<roleset id="go.21" vncls="-" name="have on your side">
+<roles>
+  <role n="1"  descr="thing on your side, supporter"/>
+  <role n="2"  descr="beneficiary, supported"/>
+</roles>
+
+<example name="the only thing?">
+<inflection person="ns" tense="ns" aspect="ns" voice="ns" form="gerund"/>
+<text>
+     The one thing [0] Mr. Phillips clearly does have [*T*-1] going for
+     him is continuity, although it isn't certain if that will be
+     enough. 
+</text>
+        <arg n="1">[*T*-1] -> [0] -> The one thing</arg>
+        <rel>going</rel>
+        <arg n="2" f="for">him</arg>
+</example>
+</roleset>
+
+<roleset id="go.22" vncls="-" name="go with, match, accompany">
+<roles>
+  <role n="1"  descr="topic"/>
+  <role n="2"  descr="what you get for free, matching thing"/>
+</roles>
+
+<example name="and a set of Ginsu knives">
+<inflection person="ns" tense="present" aspect="ns" voice="active" form="full"/>
+<text>
+    Instead, they focus on events in department stores and pour their
+    promotional budgets into gifts that [*T*-1] go along with
+    purchases. 
+</text>
+        <arg n="1">[*T*-1] ->  that ->  gifts</arg>
+        <rel>go</rel>
+        <arg n="2">along with purchases</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="go_on">
+<roleset id="go.15" name="go on: continue" vncls="-">
+<roles>
+  <role descr="thing/entity continuing" n="1"/>
+</roles>
+
+<example name="ergative">
+  <text>
+    The professor's droning voice goes on endlessly.
+  </text>
+  <arg n="1">the professor's droning voice </arg>
+  <rel>goes on</rel>
+  <arg f="MNR" n="M">endlessly</arg>
+</example>
+
+<example name="transitive">
+  <text>
+  A state court judge has allowed the charity to go on *trace*
+  soliciting funds.
+  </text>
+  <arg n="1">[the charity][*trace* soliciting funds]</arg>
+  <rel>go on</rel>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="go_off">
+
+<roleset id="go.16" name="go off: become on" vncls="-">
+<roles>
+  <role descr="thing becoming on, exploding" n="1"/>
+</roles>
+
+<example name="bomb goes off">
+  <text>
+  It's a time bomb just waiting *trace* to go off.
+  </text>
+  <arg n="1">*trace*=a time bomb</arg>
+  <rel>go off</rel>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="go_out">
+
+<roleset id="go.17" name="go out: leave" vncls="-">
+<roles>
+  <role descr="entity leaving" n="0"/>
+  <role descr="place left" n="1"/>
+</roles>
+
+<example name="like a lamb">
+  <text>
+  Airlines in 1989 came in like a bang and are going out like a whimper.
+  </text>
+  <arg n="1">Airlines in 1989</arg>
+  <rel>going out</rel>
+  <arg f="MNR" n="m">like a whimper</arg>
+</example>
+</roleset>
+
+<roleset id="go.18" name="go out: extinguish" vncls="-">
+<roles>
+  <role descr="thing being extinguished" n="1"/>
+</roles>
+
+<example name="nirvana">
+  <text>
+  The light went out.
+  </text>
+  <arg n="1">The light</arg>
+  <rel>went out</rel>
+</example>
+
+<note>
+&quot;Nirvana&quot; does mean &quot;going out, as a lamp&quot;.
+</note>
+</roleset>
+</predicate>
+
+<predicate lemma="go_back">
+
+<roleset id="go.19" name="go back: return to being" vncls="-">
+<roles>
+  <role descr="thing going back to previous state" n="1"/>
+  <role descr="previous state" n="2"/>
+</roles>
+
+<example name="return">
+  <text>
+  The board and UAL's management can't go back to business as usual.
+  </text>
+  <arg n="1">The board and UAL's management</arg>
+  <arg f="MOD" n="m">ca</arg>
+  <arg f="NEG" n="m">n't</arg>
+  <rel>go back</rel>
+  <arg f="to" n="2">business as usual</arg>
+</example>
+
+<note>
+Cf. get, return
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="go_through">
+
+<roleset id="go.20" name="go through: come to completion" vncls="-">
+<roles>
+  <role descr="thing coming to completion" n="1"/>
+</roles>
+
+<example name="let's make a deal">
+  <text>
+  We're in no way committed to a deal going through at all.
+  </text>
+  <arg n="1">a deal</arg>
+  <rel>going through</rel>
+  <arg f="ADV" n="m">at all</arg>
+</example>
+
+<note>
+Note the distinction between this and other &quot;go through&quot; usages
+(physical motion through a medium, undergoing some experience)
+</note>
+
+</roleset>
+</predicate>
+
+
+</frameset>

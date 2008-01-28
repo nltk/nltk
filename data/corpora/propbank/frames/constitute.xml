@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="constitute">
+<note>
+  Frames file for 'constitute' based on sentences in financial
+  subcorpus.  No verbnet entry.  Comparison to 'make_up',
+  unfortunately unframed in this sense.
+</note>
+
+<roleset id="constitute.01" name="comprise">
+<roles>
+  <role descr="components (almost always plural)" n="0"/>
+  <role descr="whole" n="1"/>
+</roles>
+
+<example name="typical usage">
+<text>
+    ...such as the 500 stocks that *trace* constitute the Standard
+    &amp; Poor's 500 stock index... 
+</text>
+        <arg n="0">*trace* -&gt;  that -&gt; the 500 stocks</arg>
+        <rel>constitute</rel>
+        <arg n="1">the Standard &amp; Poor's 500 stock index</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

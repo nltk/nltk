@@ -1,0 +1,49 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="syndicate">
+<note>
+  Frames file for 'syndicate' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="syndicate.01" name="distribute by proxy" vncls="-">
+<roles>
+  <role descr="giver, distributor, syndicator" n="0"/>
+  <role descr="thing given" n="1"/>
+  <role descr="given to" n="2"/>
+</roles>
+
+<example name="rarely active with all args">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    In fact, Manufacturers Hanover said in its third-quarter earnings
+    report that fees from *trace* syndicating loans to other banks
+    dropped 48%, to $21 million.  
+</text>
+        <arg n="0">*trace* -&gt;  Manufacturers Hanover</arg>
+        <rel>syndicating</rel>
+        <arg n="1">loans</arg>
+        <arg f="to" n="2">other banks</arg>
+</example>
+
+<example name="usually passive">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    Paramount Domestic TV and MCA TV formed a joint venture last
+    month, named Premier Advertiser Sales, to sell advertising in
+    programs syndicated *trace* by both companies, such as ``Star
+    Trek: the Next Generation,'' ``Charles in Charge'' and ``Friday
+    the 13th: the Series.'' 
+</text>
+        <rel>syndicated</rel>
+        <arg n="1">*trace* -&gt;  programs</arg>
+        <arg f="by" n="0">both companies</arg>
+</example>
+
+<note>
+Naturally this occurs most often as a passive participle aka
+adjective: &quot;many syndicated television shows&quot;.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

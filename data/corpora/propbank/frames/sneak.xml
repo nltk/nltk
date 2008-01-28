@@ -1,0 +1,85 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="sneak">
+<note>
+  Frames file for 'sneak' based on sentences in financial subcorpus.
+  Verbnet entries  run-51.3.2 send-11.1-1 steal-10.5, other framed
+  members include climb, drift, jump, leap, run, speed (run class);
+  return, transfer (send class); grab, lift, take (steal class).
+</note>
+
+<roleset id="sneak.01" name="move stealthily" vncls="51.3.2">
+<roles>
+  <role descr="entity sneaking" n="0">
+	<vnrole vncls="51.3.2" vntheta="Theme"/></role>
+  <role descr="destination" n="1">
+        <vnrole vncls="51.3.2" vntheta="Location"/></role>
+  <role descr="source" n="2">
+        <vnrole vncls="51.3.2" vntheta="Location"/></role>
+  <role n="3" descr="surreptitious cargo"/>
+</roles>
+
+<example name="no source">
+<text>
+    ...they waited a few months and then sneaked back into it. 
+</text>
+        <arg n="0">they</arg>
+        <arg f="TMP" n="M">then</arg>
+        <rel>sneaked</rel>
+        <arg f="DIR" n="M">back</arg>
+        <arg f="into" n="1">it</arg>
+</example>
+
+<example name="with source">
+  <text>
+    John sneaked from school to work.
+  </text>
+  <arg n="0">John</arg>
+  <rel>sneaked</rel>
+  <arg f="from" n="2">school</arg>
+  <arg f="to" n="1">work</arg>
+</example>
+
+<example name="with cargo">
+  <inflection person="ns" tense="ns" aspect="progressive" voice="active" form="participle"/>
+  <text>
+    British customs officers said they'd arrested eight men sneaking
+    111 rare snakes into Britain -- including one man who strapped a
+    pair of boa constrictors under his armpits. 
+  </text>
+  <arg n="0"        >eight men</arg>
+  <rel              >sneaking</rel>
+  <arg n="3"        >111 rare snakes</arg>
+  <arg n="1" f="into">Britain</arg>
+  <arg n="m" f="ADV">including one man who strapped a
+    pair of boa constrictors under his armpits</arg>
+</example>
+</roleset>
+
+<roleset id="sneak.02" name="steal" vncls="10.5">
+<roles>
+  <role descr="thief" n="0">
+	<vnrole vncls="10.5" vntheta="Agent"/></role>
+  <role descr="stolen object" n="1">
+	<vnrole vncls="10.5" vntheta="Theme"/></role>
+  <role descr="stolen-from" n="2">
+	<vnrole vncls="10.5" vntheta="Source"/></role>
+</roles>
+
+<example name="all args">
+  <text>
+    John sneaked (snuck?) a dozen hard-boiled eggs out of the dining
+    hall in his underwear.
+  </text>
+  <arg n="0">John</arg>
+  <rel>sneaked (snuck?)</rel>
+  <arg n="1">a dozen hard-boiled eggs</arg>
+  <arg f="out" n="2">of the dining hall</arg>
+  <arg f="MNR" n="m">in his underwear</arg>
+<note>
+Oh that silly, silly boy.
+</note>
+</example>
+</roleset>
+</predicate>
+</frameset>

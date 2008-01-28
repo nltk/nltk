@@ -1,0 +1,67 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="hobble">
+<note>
+Frames file for 'hobble' based on sentences in financial subcorpus and
+automatic expansion via verbnet.
+</note>
+
+<roleset id="hobble.01" name="walk as if feet tied together" vncls="51.3.2">
+<roles>
+	<role descr="walker" n="0">
+		
+  <vnrole vncls="51.3.2" vntheta="Theme"/></role>
+
+	<role descr="destination or path" n="m"/>
+</roles>
+
+<example name="with direction" src="run.02">
+  <text>
+  A good number decide it's not worth it and hobble for home.
+  </text>
+  <arg n="0">A good number</arg>
+  <rel>hobble</rel>
+  <arg f="DIR" n="m">for home</arg>
+</example>
+
+</roleset>
+
+<roleset id="hobble.02" name="tie the feet of,   metaphorically 'hinder'" vncls="-">
+<roles>
+  <role descr="tier, hinderer" n="0"/>
+  <role descr="tied, hindered" n="1"/>
+  <role descr="rope, instrument" n="2"/>
+</roles>
+
+<example name="agent or instrument subject?">
+<inflection aspect="perfect" form="participle" person="third" tense="present" voice="active"/>
+<text>
+     Dealing with the sales this month could be particularly
+     challenging because almost every problem that *trace* has hobbled
+     the program in the past is popping up again. 
+</text>
+        <arg n="0">*trace* -&gt;  that -&gt;  almost every problem</arg>
+        <rel>hobbled</rel>
+        <arg n="1">the program</arg>
+        <arg f="TMP" n="M">in the past</arg>
+</example>
+
+<example name="literal, all args">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    Mary hobbled John with silk scarves.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>hobbled</rel>
+  <arg n="1">John</arg>
+  <arg f="with" n="2">silk scarves</arg>
+</example>
+
+<note>
+It's easy to see how the two senses are related; nevertheless they
+should be distinguished.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

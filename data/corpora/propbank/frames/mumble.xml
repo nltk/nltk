@@ -1,0 +1,41 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="mumble">
+<note>
+  Frames file for 'mumble' based on sentences in wsj.  Verbnet entry 37.3.
+</note>
+
+<roleset id="mumble.01" vncls="37.3" name="speak unclearly">
+<roles>
+  <role n="0"  descr="speaker"/>
+  <role n="1"  descr="utterance"/>
+  <role n="2"  descr="listener"/>
+</roles>
+
+<example name="adjectival">
+<inflection person="ns" tense="ns" aspect="ns" voice="passive" form="participle"/>
+<text>
+     My questions on this subject ... were greeted with derision and
+     some mumbled comments about that report being discredited.  
+</text>
+	<rel>mumbled</rel>
+	<arg n="1">comments</arg>
+</example>
+
+<example name="all args">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+    John mumbled various incoherent threats to Mary.
+  </text>
+  <arg n="0"        >John</arg>
+  <rel              >mumbled</rel>
+  <arg n="1"        >various incoherent threats</arg>
+  <arg n="2" f="to">Mary</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

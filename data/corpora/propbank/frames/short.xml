@@ -1,0 +1,75 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="short">
+<note>
+  Frames file for 'short' based on sentences in wsj.  Verbnet entry 45.4.
+</note>
+
+<roleset id="short.01" name="sell stocks short" vncls="-">
+<roles>
+  <role descr="stock broker" n="0"/>
+  <role descr="stocks" n="1"/>
+</roles>
+
+<example name="wsj-ese strikes again!">
+<inflection aspect="ns" form="gerund" person="ns" tense="ns" voice="active"/>
+<text>
+    For example, an investor may seek [*-1] to profit during some
+    takeover situations by [*-2] buying stock in one company involved
+    and shorting the stock of the other.  
+</text>
+        <arg n="0">[*-2] -&gt;  [*-1] -&gt;  an investor</arg>
+        <rel>shorting</rel>
+        <arg n="1">the stock of the other</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="short.02" name="short-circuit" vncls="45.4">
+<roles>
+  <role descr="electrician" n="0"><vnrole vncls="45.4" vntheta="Agent"/></role>
+  <role descr="circuit, electrical appliance" n="1"><vnrole vncls="45.4" vntheta="Patient"/></role>
+</roles>
+
+<example name="usually ergative">
+<inflection aspect="ns" form="ns" person="ns" tense="ns" voice="ns"/>
+<text>
+    When the swaying of the building woke me up, I reasoned that a) I
+    was in Southern California; b) the bed was moving; c) it must be a
+    Magic Fingers bed that [*T*-1] had shorted. 
+</text>
+        <arg n="1">[*T*-1] -&gt;  that -&gt;  a Magic Fingers bed</arg>
+        <rel>shorted</rel>
+</example>
+
+</roleset>
+
+<roleset id="short.03" name="short change" vncls="-">
+<roles>
+  <role descr="giver of change" n="0"/>
+  <role descr="receiver of change" n="1"/>
+  <role descr="explicit mention of change" n="2"/>
+</roles>
+
+<example name="poor John">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    The clerk at Wawa shorted John of $58.13.
+  </text>
+  <arg n="0">The clerk at Wawa</arg>
+  <rel>shorted</rel>
+  <arg n="1">John</arg>
+  <arg f="of" n="2">$58.13</arg>
+</example>
+
+<note>
+Not restricted to money; can be used anytime someone doesn't receive
+everything they &quot;should&quot; be getting.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

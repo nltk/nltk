@@ -1,0 +1,92 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="receive">
+<note>
+  Frames file for 'receive' based on survey of initial sentences of
+  big corpus and comparison with 'get' and 'gain'
+</note>
+
+<roleset id="receive.01" name="get" vncls="13.5.2">
+<roles>
+  <role descr="receiver" n="0">
+	  <vnrole vncls="13.5.2" vntheta="Agent"/></role>
+  <role descr="thing gotten" n="1">
+	  <vnrole vncls="13.5.2" vntheta="Theme"/></role>
+  <role descr="received from" n="2">
+	  <vnrole vncls="13.5.2" vntheta="Source"/></role>
+  <role descr="price, in exchange for" n="3"/>
+  <role descr="attribute of arg1" n="4"/>
+</roles>
+
+<example name="basic">
+  <text>
+    Edison customers have received electric service since April 1985.
+  </text>
+  <arg n="0">Edison customers</arg>
+  <rel>receive</rel>
+  <arg n="1">electric service</arg>
+  <arg f="TMP" n="M">since April 1985</arg>
+</example>
+
+<example name="as exchange">
+  <text>
+    Stockholders will receive one Cray Computer share for every two
+    Cray Research shares they own in a distribution.
+  </text>
+  <arg n="0">Stockholders</arg>
+  <rel>receive</rel>
+  <arg n="1">one Cray Computer share</arg>
+  <arg n="3">for every two Cray Research shares they own</arg>
+  <arg f="LOC" n="M">in a distribution</arg>
+</example>
+
+<example name="with giver">
+  <text>
+    Anyone can receive more than $10k in cash from a client in one or
+    more related transactions.
+  </text>
+  <arg n="0">Anyone</arg>
+  <arg f="MOD" n="M">can</arg>
+  <rel>receive</rel>
+  <arg n="1">more than $10k in cash</arg>
+  <arg f="from" n="2">a client</arg>
+  <arg f="LOC" n="m">in one or more related transactions</arg>
+</example>
+
+<example name="with attribute">
+  <text>
+    The company hadn't yet received any documents from OSHA regarding
+    the penalty or fine.
+  </text>
+  <arg n="0">The company</arg>
+  <arg f="neg" n="m">n't</arg>
+  <arg f="tmp" n="m">yet</arg>
+  <rel>receive</rel>
+  <arg n="1">any documents</arg>
+  <arg f="from" n="2">OSHA</arg>
+  <arg n="4">regarding the penalty or fine.</arg>
+</example>
+
+<example name="another attribute">
+  <text>
+    Georgia Gulf received a new takeover bid from investor Harold
+    Simmons of $50 million a share.
+  </text>
+  <arg n="0">Georgia Gulf</arg>
+  <rel>received</rel>
+  <arg n="1">a new takeover bid</arg>
+  <arg f="from" n="2">investor Harold Simmons</arg>
+  <arg f="of" n="4">$50 million a share</arg>
+</example>
+
+<note>
+The attribute argument is necessary because of the way Treebank
+divides the constituent.  Really, the arg1 of each of the two
+sentences above are 'any documents regarding the penalty or fine' and
+'a new takeover bid of $50 million a share', but the 'giver' argument
+intervenes between the two, necessitating the additional argument.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

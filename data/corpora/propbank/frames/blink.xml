@@ -1,0 +1,45 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="blink">
+<note>
+  Frames file for 'blink' based on sentences in wsj.  Verbnet entry
+  40.3.1-1, Framenet entry Body_movement.
+</note>
+
+<roleset id="blink.01" name="close eyes for a second" vncls="40.3.1-1">
+<roles>
+  <role descr="blinker" n="0"><vnrole vncls="40.3.1-1" vntheta="Agent"/></role>
+  <role descr="eyes, usually unstated" n="1"><vnrole vncls="40.3.1-1" vntheta="Patient"/></role>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    You look around at professional ballplayers or accountants ... and
+    nobody blinks an eye. 
+</text>
+        <arg n="0">nobody</arg>
+        <rel>blinks</rel>
+        <arg n="1">an eye</arg>
+</example>
+
+
+<example name="intransitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    The White House had the perfect case, but Congress blinked before
+    it could go to court. 
+</text>
+        <arg n="0">Congress</arg>
+        <rel>blinked</rel>
+        <arg f="TMP" n="M">before it could go to court</arg>
+</example>
+
+<note>
+This kind of intransitive usage actually has a special meaning of
+&quot;back down&quot;, but it's not worth a separate sense.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

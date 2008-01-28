@@ -1,0 +1,71 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="budget">
+<note>
+  Frames file for 'budget' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="budget.01" name="allocate money to some purpose" vncls="-">
+<roles>
+  <role descr="allocator" n="0"/>
+  <role descr="money" n="1"/>
+  <role descr="purpose, project" n="2"/>
+</roles>
+
+<example name="perspicuous">
+<inflection aspect="perfect" form="participle" person="ns" tense="past" voice="active"/>
+<text>
+    Hiroshima's waterworks bureau said the municipal government had
+    budgeted about 11 million yen ($77,500) for the project. 
+</text>
+        <arg n="0">the municipal government</arg>
+        <rel>budgeted</rel>
+        <arg n="1">about 11 million yen ($77,500)</arg>
+        <arg f="for" n="2">the project</arg>
+</example>
+
+<example name="passivized project">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    Mitsubishi is also pushing ahead with a controversial plan to
+    redevelop Marunouchi into a business center of high-tech
+    buildings, a project budgeted *trace* for 30 years and six
+    trillion yen. 
+</text>
+        <rel>budgeted</rel>
+        <arg n="1">*trace* -&gt;  a project</arg>
+        <arg f="for" n="2">30 years and six trillion yen</arg>
+</example>
+
+<example name="passive, different prep">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    The move, budgeted *trace* at about $7 million, actually came in
+    at about $10 million, he said. 
+</text>
+        <rel>budgeted</rel>
+        <arg n="2">*trace* -&gt;  The move</arg>
+        <arg f="at" n="1">about $7 million </arg>
+</example>
+
+
+<example name="just project">
+<inflection aspect="perfect" form="participle" person="ns" tense="past" voice="passive"/>
+<text>
+    Knowledgeable employees said the retrofitting, which *trace*
+    hadn't yet been budgeted *trace*, was part of a planned,
+    three-stage reinforcement of the Cypress structure begun by the
+    California transportation department several years ago. 
+</text>
+        <arg f="NEG" n="M">n't</arg>
+        <arg f="TMP" n="M">yet</arg>
+        <rel>budgeted</rel>
+        <arg n="2">*trace* -&gt; *trace* -&gt;  which -&gt; the retrofitting</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

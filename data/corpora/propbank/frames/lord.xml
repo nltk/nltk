@@ -1,0 +1,42 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="lord">
+<note>
+  Frames file for 'lord' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="lord.01" name="act like a lord" vncls="-">
+<roles>
+  <role descr="lord" n="0"/>
+  <role descr="lordship, power" n="1"/>
+  <role descr="dominion" n="2"/>
+</roles>
+
+<example name="all args">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    They lorded it over me.
+</text>
+        <arg n="0">They</arg>
+        <rel>lorded</rel>
+        <arg n="1">it</arg>
+        <arg f="over" n="2">me</arg>
+</example>
+
+<example name="this feels more natural to me">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    Mary lorded over John like a queen over a serf.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>lorded</rel>
+  <arg f="over" n="2">John</arg>
+  <arg f="MNR" n="m">like a queen over a serf</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

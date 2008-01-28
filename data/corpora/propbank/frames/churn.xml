@@ -1,0 +1,48 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="churn">
+<note>
+  Frames file for 'churn' based on sentences in financial subcorpus.
+  Verbnet entry  build-26.1, other framed members include assemple,
+  build, reshape, roll, shape, spin, develop, grow, and probably
+  others.  Comparison with 'develop' and verbs of motion.
+</note>
+
+<roleset id="churn.01" name="move violently as a liquid" vncls="26.1">
+<roles>
+  <role descr="causer of violent motion, agent" n="0">
+	  <vnrole vncls="26.1" vntheta="Agent"/></role>
+  <role descr="liquid, thing in motion" n="1">
+	  <vnrole vncls="26.1" vntheta="Material"/></role>
+  <role descr="end product" n="2">
+	  <vnrole vncls="26.1" vntheta="Product"/></role>
+</roles>
+
+<example name="inchoative motion">
+<text>
+    The technology group is also split between large companies and
+    small, with the biggest stocks trading as blue-chip issues in the
+    institutional marketplace, while the smaller stocks churn on their
+    individual merits or faults, analysts say. 
+</text>
+        <arg n="1">the smaller stocks</arg>
+        <rel>churn</rel>
+        <arg f="CAU" n="M">on their individual merits or faults</arg>
+</example>
+
+<example name="as create">
+  <text>
+     John churned the cream into butter.
+  </text>
+  <arg n="0">John</arg>
+  <rel>churned</rel>
+  <arg n="1">the cream</arg>
+  <arg f="into" n="2">butter</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

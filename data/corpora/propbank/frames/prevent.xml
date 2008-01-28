@@ -1,0 +1,60 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="prevent">
+<note>
+  Frames file for 'prevent' based on survey of initial sentences of
+  big corpus and comparison with 'stop' and 'force' and 'keep_from'
+</note>
+
+<roleset id="prevent.01" name="stop, prevent">
+<roles>
+  <role descr="Agent" n="0"/>
+  <role descr="Theme (action or object being prevented)" n="1"/>
+  <role descr="secondary predication or action" n="2"/>
+  <role descr="instrument" n="3"/>
+</roles>
+
+<example name="simple transitive">
+  <text>
+  She wanted *trace* to prevent the damage to self-esteem that her
+  low-ability students would suffer from doing badly on the test.
+  </text>
+  <arg n="0">*trace*=She</arg>
+  <rel>prevent</rel>
+  <arg n="1">the damage to self-esteem that her
+  low-ability students would suffer from doing badly on the test</arg>
+</example>
+
+<example name="secondary predicate">
+  <text>
+  Lawyers seek *trace-1* to prevent the client from *trace-2*
+  committing a criminal act.
+  </text>
+  <arg n="0">*trace-1*=Lawyers</arg>
+  <rel>prevent</rel>
+  <arg n="1">the client</arg>
+  <arg f="from" n="2">*trace-2* committing a criminal act.</arg>
+</example>
+
+<example name="with instrument">
+  <text>
+  We could prevent many of these fatalities with minimum roof-crush
+  standards.
+  </text>
+  <arg n="0">We</arg>
+  <arg f="MOD" n="m">could</arg>
+  <rel>prevent</rel>
+  <arg n="1">many of these fatalities</arg>
+  <arg f="with" n="3">minimum roof-crush standards.</arg>
+</example>
+
+<note>
+Note that the instrument can appear in subject position as well
+(&quot;Minumum roof-crush standards could prevent many of these
+fatalities.&quot;)  This means there is a de facto intentionality or
+animacy criterion for agenthood.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

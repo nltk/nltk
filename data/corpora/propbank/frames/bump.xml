@@ -1,0 +1,119 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="bump">
+<note>
+Frames file for 'bump' based on sentences in wsj and automatic
+expansion via verbnet.
+</note>
+
+<roleset id="bump.01" name="hit gently" vncls="18.1">
+<roles>
+	<role descr="agent, hitter - animate only!" n="0">
+		
+  <vnrole vncls="18.1" vntheta="Agent"/></role>
+
+	<role descr="thing hit" n="1">
+		
+  <vnrole vncls="18.1" vntheta="Patient"/></role>
+
+	<role descr="instrument, thing hit by or with" n="2">
+		
+  <vnrole vncls="18.1" vntheta="Instrument"/></role>
+
+</roles>
+
+<example name="instrumental subject" src="strike.01">
+<text>
+    Sentiment was helped by the small gain made by New York stocks
+    Wednesday despite anxiety over possible effects of the major
+    earthquake that *trace* bumped northern California Tuesday.
+</text>
+        <arg n="2">*trace* -&gt;  that -&gt;  the major earthquake</arg>
+        <rel>bumped</rel>
+        <arg n="1">northern California</arg>
+        <arg f="TMP" n="M">Tuesday</arg>
+</example>
+
+<example name="agentive" src="strike.01">
+  <text>
+    John bumped the fence with a stick.
+  </text>
+  <arg n="0">John</arg>
+  <rel>bumped</rel>
+  <arg n="1">the fence</arg>
+  <arg f="with" n="2">a stick</arg>
+</example>
+
+</roleset>
+
+<roleset id="bump.02" name="move slightly" vncls="-">
+<roles>
+  <role descr="causer of motion" n="0"/>
+  <role descr="entity in motion" n="1"/>
+  <role descr="EXT" n="2"/>
+  <role descr="start point" n="3"/>
+  <role descr="end point" n="4"/>
+  <role descr="direction" n="5"/>
+</roles>
+
+<example name="direction and end point">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    Conceivably, in a scaled-back buy-out, they could be bumped
+    *trace* back to coach seats for life. 
+</text>
+        <arg f="DIS" n="M">Conceivably</arg>
+        <arg f="LOC" n="M">in a scaled-back buy-out</arg>
+        <arg f="MOD" n="M">could</arg>
+        <rel>bumped</rel>
+        <arg n="1">*trace* -&gt;  they</arg>
+        <arg f="DIR" n="5">back</arg>
+        <arg f="to" n="4">coach seats for life</arg>
+</example>
+
+
+<example name="agent and direction">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Yesterday, when similar securities rebounded, it bumped the
+    valuation up again. 
+</text>
+        <arg f="TMP" n="M">Yesterday, when similar securities
+        rebounded,</arg> 
+        <arg n="0">it</arg>
+        <rel>bumped</rel>
+        <arg n="1">the valuation</arg>
+        <arg f="DIR" n="5">up</arg>
+        <arg f="DIS" n="M">again</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="bump_up">
+
+<roleset id="bump.03" name="collide" vncls="-">
+<roles>
+  <role descr="one thing in collision" n="1"/>
+  <role descr="the other (usually prepositional)" n="2"/>
+</roles>
+
+<example name="different bump up">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+     Mr. Maynard isn't the first entrepreneur *trace* *trace* to bump
+     up against entrenched interests. 
+</text>
+        <arg n="1">*trace* -&gt; *trace* -&gt;  the first entrepreneur</arg>
+        <rel>[ bump] [ up]</rel>
+        <arg f="against" n="2">entrenched interests</arg>
+</example>
+
+</roleset>
+</predicate>
+<note>
+Note that there are at least two interpretations for any given &quot;bump
+up&quot;; make sure you choose the right one.
+</note>
+
+</frameset>

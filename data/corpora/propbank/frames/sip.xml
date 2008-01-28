@@ -1,0 +1,44 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="sip">
+<note>
+  Frames file for 'sip' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="sip.01" name="to drink in small quantities " vncls="39.2">
+<roles>
+  <role descr="drinker, agent" n="0">
+        <vnrole vncls="39.2" vntheta="Agent"/></role>
+  <role descr="drink" n="1">
+        <vnrole vncls="39.2" vntheta="Patient"/></role>
+  <role descr="container" n="2"/>
+</roles>
+
+
+<example name="all arguments">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ He sipped tea sweetened with honey from his high-backed leather chair at his bench , while [*-1] scribbling notes ordering spectators to stop whispering or to take off their hats in his courtroom .
+</text>
+	<arg n="0">He</arg>
+	<rel>sipped</rel>
+	<arg n="1">tea sweetened with honey</arg>
+	<arg f="LOC" n="M">his high-backed leather chair at his bench</arg>
+	<arg f="TMP" n="M">while [*-1] scribbling notes ordering spectators to stop whispering or to take off their hats in his courtroom</arg>
+</example>
+
+<example name="with arg2">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+     John sipped his beer from a 50-gallon drum.
+  </text>
+  <arg n="0"        >John</arg>
+  <rel              >sipped</rel>
+  <arg n="1"        >his beer</arg>
+  <arg n="2" f="from">from a 50-gallon drum</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

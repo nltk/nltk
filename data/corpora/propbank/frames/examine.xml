@@ -1,0 +1,53 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="examine">
+<note>
+  Frames file for 'examine' based on sentences in financial
+  subcorpus.  No access to verbnet.  Comparison to 'look' and 'study'.
+</note>
+
+<roleset id="examine.01" name="look at closely" vncls="30.2 35.4">
+<roles>
+  <role descr="examiner" n="0">
+		
+		
+  <vnrole vncls="30.2" vntheta="Experiencer"/><vnrole vncls="35.4" vntheta="Agent"/></role>
+
+  <role descr="thing examined" n="1">
+		
+		
+  <vnrole vncls="30.2" vntheta="Stimulus"/><vnrole vncls="35.4" vntheta="Location"/></role>
+
+</roles>
+
+<example name="passivized">
+<text>
+    Valley Federal is currently being examined *trace* by regulators. 
+</text>
+        <arg f="TMP" n="M">currently</arg>
+        <rel>examined</rel>
+        <arg n="1">*trace* -&gt;  Valley Federal</arg>
+        <arg f="by" n="0">regulators</arg>
+</example>
+
+
+<example name="active">
+<text>
+    Mr. Paul says that he has feelers out over much of the globe and
+    that potential buyers from as far away as Japan and Italy have
+    examined the collection. 
+</text>
+        <arg n="0">potential buyers from as far away as Japan and
+        Italy</arg> 
+        <rel>examined</rel>
+        <arg n="1">the collection</arg>
+</example>
+
+<note>
+I have the feeling an arg2 'examined for' might be necessary, but
+we'll wait for an example from the corpus before including it.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

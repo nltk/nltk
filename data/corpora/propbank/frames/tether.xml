@@ -1,0 +1,38 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="tether">
+<note>
+  Frames file for 'tether' based on sentences in wsj.  No access to
+  verbnet at the moment.
+</note>
+
+<roleset id="tether.01" name="attach, tie to" vncls="22.4">
+<roles>
+  <role descr="attacher, agent" n="0">
+        <vnrole vncls="22.4" vntheta="Agent"/></role>
+  <role descr="thing(s) being tied together" n="1">
+        <vnrole vncls="22.4" vntheta="Patient1"/></role>
+  <role descr="other things" n="2">
+        <vnrole vncls="22.4" vntheta="Patient2"/></role>
+</roles>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    This grandiose initiative will help California define itself for
+    the future either as a state still tethered [*] to economic and
+    scientific reality, or as one being led to wherever its la-la
+    activists want to take it. 
+</text>
+        <arg f="TMP" n="M">still</arg>
+        <rel>tethered</rel>
+        <arg n="1">[*] -&gt;  a state</arg>
+        <arg f="to" n="2">economic and scientific reality</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

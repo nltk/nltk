@@ -1,0 +1,208 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="back">
+<note>
+  Frames file for 'back' based on survey of initial sentences of big
+  corpus and comparison with 'face' and 'support'
+</note>
+
+<roleset id="back.01" name="support">
+<roles>
+  <role descr="supporter" n="0"/>
+  <role descr="thing being supported" n="1"/>
+</roles>
+
+<example name="support">
+  <text>
+  ...asking him *trace* to back a Palestinian bid to joing the committee.
+  </text>
+  <arg n="0">*trace*=him</arg>
+  <rel>back</rel>
+  <arg n="1">a Palestinian bid to joing the committee</arg>
+</example>
+
+<example name="cease support">
+  <text>
+  The big brokerage firms back out of program trading for their own
+  accounts or for clients.
+  </text>
+  <arg n="0">The big brokerage firms</arg>
+  <rel>back</rel>
+  <arg f="out" n="1">of program trading</arg>
+  <arg f="PNC" n="m">for their own accounts or for clients.</arg>
+</example>
+
+<note>
+Could be interpreted as phrasal &quot;back_out&quot; also (but I don't like
+that).  Follow Treebank's parsing.
+</note>
+
+<example name="cease support, with NP">
+  <text>
+  Eastern Airline's creditors committee backed off a move to come up
+  with its own alternative proposals to the carrier's bankruptcy
+  reorganization plans.
+  </text>
+  <arg n="0">Eastern Airline's creditors committee</arg>
+  <rel>backed</rel>
+  <arg f="off" n="1">a move to come up
+  with its own alternative proposals to the carrier's bankruptcy
+  reorganization plans.</arg>
+</example>
+
+</roleset>
+
+<roleset id="back.02" name="move backwards">
+<roles>
+  <role descr="causer of backwards motion" n="0"/>
+  <role descr="entity in motion" n="1"/>
+</roles>
+
+<example name="retreat">
+  <text>
+  The Soviets might back away from the current conciliatory attitude
+  </text>
+  <arg n="1">The Soviets</arg>
+  <arg f="MOD" n="m">might</arg>
+  <rel>back</rel>
+  <arg f="DIR" n="m">away from the current conciliatory attitude</arg>
+</example>
+
+<note>
+Could be interpreted as phrasal &quot;back_away&quot; also.  Follow
+the parsing given by Treebank.
+</note>
+
+</roleset>
+
+<roleset id="back.03" name="face backwards">
+<roles>
+  <role descr="looker, facer" n="0"/>
+  <role descr="looked at, faced" n="1"/>
+</roles>
+
+<example name="with PP">
+  <text>
+  John's house backs onto the city dump.
+  </text>
+  <arg n="0">John's house</arg>
+  <rel>backs</rel>
+  <arg f="onto" n="1">the city dump</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="back_up">
+<roleset id="back.04" name="back up: support">
+<roles>
+  <role descr="supporter" n="0"/>
+  <role descr="thing being supported" n="1"/>
+</roles>
+
+<example name="Reaganomics">
+  <text>
+  You should quote Mr. Reagan, the man who believed trees cause air
+  pollution, *trace* to back up your position that economics is more
+  important than the Earth.
+  </text>
+  <arg n="0">*trace*=You</arg>
+  <rel>back up</rel>
+  <arg n="1">your position that economics is more
+  important than the Earth.</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="back.06" name="back up: move backwards">
+<roles>
+  <role descr="causer of backwards motion" n="0"/>
+  <role descr="entity in motion" n="1"/>
+</roles>
+
+<example name="oops">
+  <text>
+  The garbage truck backed up into John's living room.
+  </text>
+  <arg n="1">The garbage truck</arg>
+  <rel>backed up</rel>
+  <arg f="DIR" n="m">into John's living room</arg>
+</example>
+
+
+<example name="double oops">
+  <text>
+  John backed the garbage truck up into Mary's living room.
+  </text>
+  <arg n="0">John</arg>
+  <rel>backed up</rel>
+  <arg n="1">the garbage truck</arg>
+  <arg f="DIR" n="m">into Mary's living room</arg>
+</example>
+</roleset>
+
+<roleset id="back.08" name="back up: face backwards">
+<roles>
+  <role descr="looker, facer" n="0"/>
+  <role descr="looked at, faced" n="1"/>
+</roles>
+
+<example name="icky">
+  <text>
+  John's house backs up to the city dump.
+  </text>
+  <arg n="0">John's house</arg>
+  <rel>backs up</rel>
+  <arg f="to" n="1">the city dump</arg>
+</example>
+
+</roleset>
+
+<roleset id="back.09" vncls="-" name="back up: preserve data">
+<roles>
+  <role n="0"  descr="preserver, agent"/>
+  <role n="1"  descr="data"/>
+  <role n="2"  descr="permanent storage device"/>
+</roles>
+
+<example name="instrumental subject">
+  <inflection person="ns" tense="ns" aspect="ns" voice="active" form="infinitive"/>
+  <text>
+    Exabyte Corp., a Boulder, Colo., maker of high-capacity tape
+    cartridge systems used [*] [*-1] to back up computer disk drives,
+    started OTC trading with the symbol EXBT. 
+  </text>
+  <arg n="2"        >[*-1] -> [*] -> high-capacity tape cartridge systems</arg>
+  <rel              >back up</rel>
+  <arg n="1"        >computer disk drives</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="back.10" vncls="-" name="back up: traffic">
+<roles>
+  <role n="1"  descr="traffic"/>
+</roles>
+
+<example name="Schuylkill expressway">
+  <inflection person="third" tense="present" aspect="ns" voice="active" form="full"/>
+  <text>
+    The companies block traffic much as highway on-ramps are blocked
+    when traffic backs up. 
+  </text>
+  <arg n="1"        >traffic</arg>
+  <rel              >backs up</rel>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,50 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="presume">
+<note>
+  Frames file for 'presume' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="presume.01" name="to assume, take for granted" vncls="29.4">
+<roles>
+  <role descr="presumer, agent" n="0">
+        <vnrole vncls="29.4" vntheta="Agent"/></role>
+  <role descr="entity presumed" n="1">
+        <vnrole vncls="29.4" vntheta="Theme"/></role>
+  <role descr="secondary predicate on arg1" n="2">
+        <vnrole vncls="29.4" vntheta="Predicate"/></role>
+</roles>
+
+
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ As it stands now , Congress presumes after the Reagan administration that the White House will take unconstitutional provisions in appropriations bills [*-1] lying down .
+</text>
+	<arg f="ADV" n="M">As it stands now</arg>
+	<arg n="0">Congress</arg>
+	<rel>presumes</rel>
+	<arg f="TMP" n="M">after the Reagan administration</arg>
+	<arg n="1">the White House will take unconstitutional provisions in appropriations bills [*-1] lying down</arg>
+</example>
+
+
+<example name="with Arg2">
+<inflection aspect="ns" form="participle" person="ns" tense="past" voice="passive"/>
+<text>
+ Company officials said [0] 22 workers were missing and presumed [*-1] dead .
+</text>
+	<arg n="1">22 workers</arg>
+	<rel>presumed</rel>
+	<arg n="2">[*-1] dead</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

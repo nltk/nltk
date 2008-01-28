@@ -1,0 +1,64 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="conclude">
+<note>
+  Frames file for 'conclude' based on sentences in financial
+  subcorpus.  No verbnet entry.  Comparison with 'decide' and 'end'.
+</note>
+
+<roleset id="conclude.01" name="decide">
+<roles>
+  <role descr="decider" n="0"/>
+  <role descr="decision" n="1"/>
+</roles>
+
+<example name="icky">
+<text>
+    An undistinguished college student who dabbled in zoology until he
+    concluded that he couldn't stand cutting up frogs, Mr. Corry
+    wanted to work for a big company ``that could do big things.'' 
+</text>
+        <arg n="0">he</arg>
+        <rel>concluded</rel>
+        <arg n="1">he couldn't stand cutting up frogs</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="conclude.02" name="bring to an end">
+<roles>
+  <role descr="Intentional agent" n="0"/>
+  <role descr="Thing ending" n="1"/>
+  <role descr="Explicit instrument, thing ended with" n="2"/>
+  <role descr="point at which something ends" n="M"/>
+</roles>
+
+<example name="only transitive">
+<text>
+    Mr. Nichol said he was ``extremely disappointed in the continuing
+    deterioration of the company's operations while it attempted
+    *trace* to conclude the reorganization during the past four
+    months.'' 
+</text>
+        <arg n="0">*trace* -&gt;  it</arg>
+        <rel>conclude</rel>
+        <arg n="1">the reorganization</arg>
+        <arg f="TMP" n="M">during the past four months</arg>
+</example>
+
+<example name="with instrument">
+  <text>
+    John concluded his after-dinner speech with a belch.
+  </text>
+  <arg n="0">John</arg>
+  <rel>concluded</rel>
+  <arg n="1">his after-dinner</arg>
+  <arg f="with" n="2">a belch</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

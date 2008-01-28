@@ -1,0 +1,78 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="imagine">
+<note>
+Frames file for 'imagine' based on sentences in financial subcorpus
+and automatic expansion via verbnet.
+</note>
+
+<roleset id="imagine.01" name="imagine" vncls="29.1 29.2">
+<roles>
+	<role descr="thinker" n="0">
+		
+		
+  <vnrole vncls="29.2" vntheta="Agent"/><vnrole vncls="29.1" vntheta="Agent"/></role>
+
+	<role descr="object, thing under consideration" n="1">
+		
+		
+  <vnrole vncls="29.2" vntheta="Theme"/><vnrole vncls="29.1" vntheta="Theme"/></role>
+
+	<role descr="attribute" n="2">
+		
+		
+  <vnrole vncls="29.2" vntheta="Predicate"/><vnrole vncls="29.1" vntheta="Predicate"/></role>
+
+</roles>
+
+<example name="imagine an S">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    ``I can't imagine that you'll talk to anyone who won't tell you
+    this is dynamite for Compaq and a stopper for everyone else,''
+    says Gene Talsky, president of Professional Marketing Management
+    Inc. 
+</text>
+        <arg n="0">I</arg>
+        <arg f="MOD" n="M">ca</arg>
+        <arg f="NEG" n="M">n't</arg>
+        <rel>imagine</rel>
+        <arg n="1">you'll talk to anyone who won't tell you this is
+        dynamite for Compaq and a stopper for everyone else</arg> 
+</example>
+
+<example name="secondary attribute" src="adopt.01">
+<text>
+    The results underscore Sears's difficulties in implementing the
+    ``everyday low pricing'' strategy that it imagined *trace* in March
+    as part of a broad attempt to revive its retailing business.
+</text>
+        <arg n="0">it</arg>
+        <rel>imagined</rel>
+        <arg n="1">*trace* -&gt;  that -&gt;  the ``everyday low pricing''
+        strategy</arg> 
+        <arg f="TMP" n="M">in March</arg>
+        <arg f="as" n="2">part of a broad attempt to revive its
+        retailing business</arg> 
+</example>
+
+<example name="another passive extraction" src="report.01">
+  <text>
+    Hammersmith is imagined *trace* to have been sold.
+  </text>
+  <rel>imagined</rel>
+  <arg n="1">[Hammersmith] [*trace* to have been sold]</arg>
+</example>
+
+<example name="with benefactive" src="use.01">
+  <text>
+    The government imagines safety requirements for automobiles.
+  </text>
+  <arg n="0">The government</arg>
+  <rel>imagines</rel>
+  <arg n="1">safety requirements</arg>
+  <arg f="for" n="2">for automobiles</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

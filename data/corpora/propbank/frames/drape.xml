@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="drape">
+<note>
+  Frames file for 'drape' based on sentences in wsj.  Verbnet entry
+  9.7-2, Framenet entries Filling and Placing.
+</note>
+
+<roleset id="drape.01" name="place loosely over" vncls="9.7-2">
+<roles>
+  <role descr="draper" n="0"><vnrole vncls="9.7-2" vntheta="Agent"/></role>
+  <role descr="draped, thing covered" n="1"><vnrole vncls="9.7-2" vntheta="Destination"/></role>
+  <role descr="drapes, cloth" n="2"><vnrole vncls="9.7-2" vntheta="Theme"/></role>
+</roles>
+
+<example name="patriotism">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+    Richard Winger, a partner at Boston Consulting Group, adds: ``
+    It's very popular *trace* to drape yourself in the flag these days.
+</text>
+        <arg n="0">*trace*</arg>
+        <rel>drape</rel>
+        <arg f="REC" n="1">yourself</arg>
+        <arg f="in" n="2">the flag</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,53 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="proffer">
+<note>
+Frames file for 'proffer' based on sentences in wsj and automatic
+expansion via verbnet.
+</note>
+
+<roleset id="proffer.01" name="offer, give" vncls="13.2">
+<roles>
+	<role descr="giver" n="0"><vnrole vncls="13.2" vntheta="Agent"/></role>
+	<role descr="thing given" n="1"><vnrole vncls="13.2" vntheta="Theme"/></role>
+	<role descr="entity given to" n="2"><vnrole vncls="13.2" vntheta="Recipient"/></role>
+</roles>
+
+<example name="one what?">
+<inflection aspect="perfect" form="participle" person="ns" tense="past" voice="active"/>
+<text>
+     To hear most U.S. growers tell it, we'd still be in Paradise if
+     the serpent had proffered one to Eve. 
+</text>
+        <arg n="0">the serpent</arg>
+        <rel>proffered</rel>
+        <arg n="1">one</arg>
+        <arg f="to" n="2">Eve</arg>
+</example>
+
+
+<example name="missing recipient">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Los Angeles financier Marvin Davis, who put United in play with a
+    $5.4 billion bid two months ago, last night proffered both a ray
+    of hope and an extra element of uncertainty by saying he remains
+    interested in acquiring UAL. 
+</text>
+        <arg n="0">Los Angeles financier Marvin Davis, who put United
+        in play with a $5.4 billion bid two months ago,</arg> 
+        <arg f="TMP" n="M">last night</arg>
+        <rel>proffered</rel>
+        <arg n="1">both a ray of hope and an extra element of
+        uncertainty</arg> 
+        <arg f="MNR" n="M">by saying he remains interested in
+        acquiring UAL</arg> 
+</example>
+
+<note>
+'Proffer' is really just a pretentious way of saying 'offer'.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

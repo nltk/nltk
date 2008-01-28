@@ -1,0 +1,64 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="tighten">
+<note>
+Frames file for 'tighten' based on sentences in financial subcorpus
+and automatic expansion via verbnet.
+</note>
+
+<roleset id="tighten.01" name="cause to be tight(er)" vncls="45.4">
+<roles>
+	<role descr="causer of tightening" n="0">
+		
+  <vnrole vncls="45.4" vntheta="Agent"/></role>
+
+	<role descr="thing tightening" n="1">
+		
+  <vnrole vncls="45.4" vntheta="Patient"/></role>
+
+</roles>
+
+<example name="automatically generated">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+ `` They have  to continue  to tighten their belts , '' said  Craig Kloner , an analyst at Goldman , Sachs &amp; Co .
+</text>
+        <arg n="0">*trace* -&gt; *trace* -&gt;  They</arg>
+        <rel>tighten</rel>
+        <arg n="1">their belts</arg>
+</example>
+
+<note>
+In theory this might take EXT, start and end points, but I really
+doubt it.
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="tighten_up">
+
+<roleset id="tighten.02" name="get tight over" vncls="-">
+<roles>
+  <role descr="thing getting tight" n="0"/>
+  <role descr="because of what" n="1"/>
+</roles>
+
+<example name="Congress gettin' tight">
+  <inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+  <text>
+   You'd think all the stories about well-heeled communities and
+   developers getting HUD grants would prompt Congress to tighten up
+   on upscale housing subsidies.
+  </text>
+  <arg n="0">Congress</arg>
+  <rel>tighten up</rel>
+  <arg f="on" n="1">upscale housing subsidies</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

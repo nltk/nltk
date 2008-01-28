@@ -1,0 +1,47 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="muse">
+<note>
+  Frames file for 'muse' based on sentences in wsj.  No access to
+  verbnet at the moment.
+</note>
+
+<roleset id="muse.01" name="think about" vncls="-">
+<roles>
+  <role descr="thinker" n="0"/>
+  <role descr="thought" n="1"/>
+</roles>
+
+<example name="thinking out loud">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    David Lindsey, chairman of the Fat Tire Bike celebration, muses
+    that the bike's popularity may be a combination of technology and
+    nostalgia. 
+</text>
+        <arg n="0">David Lindsey, chairman of the Fat Tire Bike
+        celebration,</arg>
+        <rel>muses</rel> 
+        <arg n="1">the bike's popularity may be a combination of
+        technology and nostalgia</arg> 
+</example>
+
+
+<example name="PP thought">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    All this causes Rep. Hyde to muse about an alternate way to drum
+    up more enthusiasm. 
+</text>
+        <arg n="0">Rep. Hyde</arg>
+        <rel>muse</rel>
+        <arg f="about" n="1">an alternate way to drum up more
+        enthusiasm</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,34 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="overhaul">
+<note>
+  Frames file for 'overhaul' based on sentences in financial subcorpus.
+  No Verbnet entry, no Framenet entry.  Comparison with modify.
+</note>
+
+<roleset id="overhaul.01" name="change, modify">
+<roles>
+  <role descr="causer of transformation" n="0"/>
+  <role descr="thing changing" n="1"/>
+  <role descr="end state" n="2"/>
+  <role descr="start state" n="3"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="progressive" form="participle" person="third" tense="present" voice="active"/>
+<text>
+    That, he said, is why Unisys is overhauling its whole business: It
+    needs to prepare for a world in which profit margins will be lower
+    than computer companies have been used to.  
+</text>
+        <arg n="0">Unisys</arg>
+        <rel>overhauling</rel>
+        <arg n="1">its whole business</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

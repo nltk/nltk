@@ -1,0 +1,204 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<note>
+Frames file for 'pay' based on survey of initial sentences of big corpus
+and comparison with 'buy' and 'sell'
+</note>
+
+<predicate lemma="pay">
+<roleset id="pay.01" name="cf buy and sell" vncls="13.1-1">
+<roles>
+  <role descr="payer or buyer" n="0">
+	<vnrole vncls="13.1-1" vntheta="Agent"/></role>
+  <role descr="money or attention" n="1">
+	<vnrole vncls="13.1-1" vntheta="Theme"/></role>
+  <role descr="person being paid, destination of attention" n="2">
+	<vnrole vncls="13.1-1" vntheta="Recipient"/></role>
+  <role descr="commodity, paid for what" n="3"/>
+</roles>
+
+<example name="price and commodity">
+  <text>
+    Investors pay higher prices for country funds.
+  </text>
+  <arg n="0">Investors</arg>
+  <rel>pay</rel>
+  <arg n="1">higher prices</arg>
+  <arg f="for" n="3">for country funds</arg>
+</example>
+
+<example name="seller and purpose">
+  <text>
+    Theatres pay movie producers for showing their films.
+  </text>
+  <arg n="0">Theatres</arg>
+  <rel>pay</rel>
+  <arg n="2">movie producers</arg>
+  <arg n="3">for showing their films</arg>
+</example>
+
+<example name="passive, price and receiver">
+  <text>
+    Mr. Cray was paid $600,000 at Cray Research last year.
+  </text>
+  <arg n="2">Mr. Cray</arg>
+  <rel>was paid</rel>
+  <arg n="1">$600,000</arg>
+  <arg f="LOC" n="M">at Cray Research</arg>
+  <arg f="TMP" n="M">last year</arg>
+</example>
+
+<example name="variant: pay on">
+  <text>
+    The Latin American nation has paid very little on its debt.
+  </text>
+  <arg n="0">The Latin American nation</arg>
+  <rel>has paid</rel>
+  <arg n="1">very little</arg>
+  <arg f="on" n="2">its debt</arg>
+</example>
+
+<example name="agentive passive">
+  <text>
+    ...the TV commercial paid for *trace* by Giuliani's campaign...
+  </text>
+  <rel>paid</rel>  
+  <arg f="for" n="3">*trace=commercial*</arg>
+  <arg f="by" n="0">by Giuliani's campaign</arg>
+</example>
+
+<example name="payer, payee, payment">
+  <text>
+    The transaction would pay shareholders $55 a share.
+  </text>
+  <arg n="0">The transaction</arg>
+  <arg f="MOD" n="M">would</arg>
+  <rel>pay</rel>
+  <arg n="2">shareholders</arg>
+  <arg n="1">$55 a share</arg>
+</example>
+
+
+<example name="pay attention">
+  <text>
+    The media pays attention to Japanese investment
+  </text>
+  <arg n="0">The media</arg>
+  <rel>pays</rel>
+  <arg n="1">attention</arg>
+  <arg f="to" n="2">to Japanese investment</arg>
+</example>
+</roleset>
+
+<roleset id="pay.04" vncls="-" name="succeed, work out">
+<roles>
+  <role n="1"  descr="thing succeeding or working out"/>
+</roles>
+
+<example name="crime doesn't pay">
+  <inflection person="ns" tense="present" aspect="ns" voice="active" form="full"/>
+  <text>
+    ``It's not easy to roll out something that comprehensive, and make
+    it pay,'' Mr. Jacob says. 
+  </text>
+  <arg n="1"        >it</arg>
+  <rel              >pay</rel>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="pay_off">
+<roleset id="pay.02" name="pay off" vncls="-">
+<roles>
+  <role descr="payer" n="0"/>
+  <role descr="debt" n="1"/>
+</roles>
+
+<example name="chump change">
+  <text>
+    The government paid off $13.8 billion in T-bills.
+  </text>
+  <arg n="0">The government</arg>
+  <rel>paid off</rel>
+  <arg n="1">$13.8 billion in T-bills</arg>
+</example>
+</roleset>
+
+<roleset id="pay.05" vncls="-" name="succeed, work out (phrasal)">
+<roles>
+  <role n="1"  descr="thing succeeding, working out"/>
+</roles>
+
+<example name="phrasal success">
+  <inflection person="ns" tense="ns" aspect="ns" voice="active" form="full"/>
+  <text>
+     That can pay off down the road as customers, especially the
+     younger ones, change from borrowers to savers/investors. 
+  </text>
+  <arg n="1"        >That</arg>
+  <arg n="m" f="MOD">can</arg>
+  <rel              >pay off</rel>
+  <arg n="m" f="TMP">down the road</arg>
+  <arg n="m" f="TMP">as customers, especially the
+     younger ones, change from borrowers to savers/investors</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="pay_out">
+<roleset id="pay.03" name="pay out" vncls="13.1-1">
+<roles>
+  <role descr="payer or buyer" n="0">
+	<vnrole vncls="13.1-1" vntheta="Agent"/></role>
+  <role descr="money or attention" n="1">
+	<vnrole vncls="13.1-1" vntheta="Theme"/></role>
+  <role descr="person being paid, destination of attention" n="2">
+	<vnrole vncls="13.1-1" vntheta="Recipient"/></role>
+  <role descr="commodity, paid for what" n="3"/>
+</roles>
+
+<example name="Arg0 rel Arg2 Arg3">
+  <text>
+    Businesses are paying out  a smaller percentage of their profits.
+  </text>
+  <arg n="0">Businesses</arg>
+  <rel>paying out</rel>
+  <arg n="1">a smaller percentage of their profits</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="pay_down">
+
+<roleset id="pay.06" vncls="-" name="reduce indebtedness">
+<roles>
+  <role descr="payer" n="0"/>
+  <role descr="debt" n="1"/>
+</roles>
+
+<example name="bastard child of pay (debt) and pay off (debt)">
+  <inflection person="ns" tense="ns" aspect="ns" voice="active" form="full"/>
+  <text>
+    But Mr. Wathen's team still must pay down about $82 million of
+    long-term bank debt from the acquisition within the next four
+    years. 
+  </text>
+  <arg n="m" f="DIS">But</arg>
+  <arg n="0"        >Mr. Wathen's team</arg>
+  <arg n="m" f="DIS">still</arg>
+  <arg n="m" f="MOD">must</arg>
+  <rel              >pay down</rel>
+  <arg n="1"        >about $82 million of long-term bank debt from the
+  acquisition</arg>
+  <arg n="m" f="TMP">within the next four years</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

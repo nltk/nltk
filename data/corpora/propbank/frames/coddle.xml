@@ -1,0 +1,49 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="coddle">
+<note>
+  Frames file for 'coddle' based on sentences in wsj.  Verbnet entry 45.3.
+</note>
+
+<roleset id="coddle.01" vncls="45.3" name="pamper">
+<roles>
+  <role n="0"  descr="coddler"/>
+  <role n="1"  descr="coddled"/>
+</roles>
+
+<example name="corporate welfare">
+<inflection person="ns" tense="ns" aspect="ns" voice="passive" form="participle"/>
+<text>
+    Instead, China is likely to shell out ever-greater subsidies to
+    its coddled state-run enterprises, which ate up $18 billion in
+    bailouts last year. 
+</text>
+	<rel>coddled</rel>
+	<arg n="1">enterprises</arg>
+</example>
+</roleset>
+
+<roleset id="coddle.02" vncls="-" name="cook in simmering water">
+<roles>
+  <role n="0"  descr="cook"/>
+  <role n="1"  descr="food"/>
+  <role n="2"  descr="beneficiary"/>
+</roles>
+
+<example name="breakfast">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+     Mary coddled three dozen eggs for John.
+  </text>
+  <arg n="0"        >Mary</arg>
+  <rel              >coddled</rel>
+  <arg n="1"        >three dozen eggs</arg>
+  <arg n="2" f="for">John</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="barrel">
+<note>
+  Frames file for 'barrel' based on sentences in wsj.  No Verbnet
+  entry. 
+</note>
+
+<roleset id="barrel.01" name="move with great intensity" vncls="-">
+<roles>
+  <role descr="thing in motion" n="1"/>
+  <role descr="direction, destination" n="2"/>
+</roles>
+
+<example name="I think this is consistent with other movement verbs">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    ``Jon Peters will come *trace* barreling into a room, say he's got
+    a great idea, and be gone. 
+</text>
+        <arg n="1">*trace* -&gt;  Jon Peters</arg>
+        <rel>barreling</rel>
+        <arg f="into" n="2">a room</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

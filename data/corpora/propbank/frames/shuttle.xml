@@ -1,0 +1,105 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="shuttle">
+<note>
+  Frames file for 'shuttle' based on sentences in wsj.  Verbnet entry
+  11.5-1. 
+</note>
+
+<roleset id="shuttle.01" name="move something back   and forth" vncls="11.5-1">
+<roles>
+  <role descr="mover" n="0"><vnrole vncls="11.5-1" vntheta="Agent"/></role>
+  <role descr="thing moved" n="1"><vnrole vncls="11.5-1" vntheta="Theme"/></role>
+  <role descr="one (or both) location(s), start point" n="2"><vnrole vncls="11.5-1" vntheta="Source"/></role>
+  <role descr="other location, destination" n="3"><vnrole vncls="11.5-1" vntheta="Destination"/></role>
+</roles>
+
+<example name="just destination">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    Mechanized vacuum cleaners probe the sand like giant anteaters; a
+    whirring ferris wheellike excavator, with buckets instead of
+    seats, chews through layers of compacted sand; tracks and conveyor
+    belts, [*-1] shuttling sand to the screening plants, criss-cross
+    the beach. 
+</text>
+        <arg n="0">[*-1] -&gt;  tracks and conveyor belts</arg>
+        <rel>shuttling</rel>
+        <arg n="1">sand</arg>
+        <arg f="to" n="3">the screening plants</arg>
+</example>
+
+<example name="merged locations">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Company officials and union representatives didn't meet face to
+    face, but the mediator shuttled between the two groups. 
+</text>
+        <arg n="1">the mediator</arg>
+        <rel>shuttled</rel>
+        <arg f="between" n="2">the two groups</arg>
+</example>
+
+<example name="all args">
+  <inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+  <text>
+    Every day Mary shuttles John from school to work.
+  </text>
+  <arg f="TMP" n="m">Every day</arg>
+  <arg n="0">Mary</arg>
+  <rel>shuttles</rel>
+  <arg n="1">John</arg>
+  <arg f="from" n="2">school</arg>
+  <arg f="to" n="3">work</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="shuttle_off">
+
+<roleset id="shuttle.02" name="move (away) with little fanfare" vncls="-">
+<roles>
+  <role descr="agent of motion" n="0"/>
+  <role descr="thing moved" n="1"/>
+  <role descr="destination" n="2"/>
+</roles>
+
+<example name="passive">
+<inflection aspect="ns" form="full" person="ns" tense="ns" voice="passive"/>
+<text>
+    The Turkish refugee tragedy and the ongoing crisis can not be
+    ignored and shuttled [*-2] off to that notorious dustbin of
+    history that has become so convenient recently. 
+</text>
+        <arg f="MOD" n="M">can</arg>
+        <arg f="NEG" n="M">not</arg>
+        <rel>shuttled</rel>
+        <arg n="1">[*-2] -&gt;  The Turkish refugee tragedy and the
+        ongoing crisis</arg> 
+        <arg f="to" n="2">that notorious dustbin of history that has
+        become so convenient recently</arg> 
+</example>
+
+<example name="all args">
+  <inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+  <text>
+    Whenever she's entertaining her friends, Mary shuttles John off to
+    the movies.
+  </text>
+  <arg f="TMP" n="m">Whenever she's entertaining her friends</arg>
+  <arg n="0">Mary</arg>
+  <rel>shuttles off</rel>
+  <arg n="1">John</arg>
+  <arg f="to" n="2">the movies</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

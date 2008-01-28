@@ -1,0 +1,45 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="assuage">
+<note>
+  Frames file for 'assuage' based on sentences in wsj.  Verbnet entry 31.1.
+</note>
+
+<roleset id="assuage.01" name="mend someone's hurt feelings" vncls="31.1">
+<roles>
+  <role descr="mender, causer, agent" n="0"><vnrole vncls="31.1" vntheta="Cause"/></role>
+  <role descr="hurt feelings, or person with hurt feelings" n="1"><vnrole vncls="31.1" vntheta="Experiencer"/></role>
+</roles>
+
+<example name="person with feelings">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Like all Americans seeking chronic prosperity, I do find it
+    necessary [*] to plunge certain funds into conservative monetary
+    tools, if only [*-3] to assuage my father-in-law, who believes in
+    such things. 
+</text>
+        <arg n="0">[*-3] -&gt;  [*] -&gt;  I</arg>
+        <rel>assuage</rel>
+        <arg n="1">my father-in-law, who believes in such things</arg>
+</example>
+
+
+<example name="feelings themselves">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Instead, he says, if the salespeople can get the customers to
+    consider Wang's products on their merits, he or a top financial
+    officer will try [*-2] to assuage the fears about finances. 
+</text>
+        <arg n="0">[*-2] -&gt;  he or a top financial officer</arg>
+        <rel>assuage</rel>
+        <arg n="1">the fears about finances</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

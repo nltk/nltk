@@ -1,0 +1,66 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<note>
+Frames file for 'propose' based on survey of initial sentences of big corpus
+and comparison with 'offer'
+</note>
+
+<predicate lemma="propose">
+<roleset id="propose.01" name="cf offer" vncls="37.7">
+<roles>
+  <role descr="entity proposing" n="0">
+		
+  <vnrole vncls="37.7" vntheta="Agent"/></role>
+
+  <role descr="thing proposed, proposition" n="1">
+		
+  <vnrole vncls="37.7" vntheta="Topic"/></role>
+
+  <role descr="label???" n="2"/>
+  <role descr="benefactive or entity proposed to" n="3">
+		
+  <vnrole vncls="37.7" vntheta="Recipient"/></role>
+
+</roles>
+
+<example name="with NP">
+  <text>
+    PS of New Hampshire has proposed an internal reorganization plan.
+  </text>
+  <arg n="0">PS of New Hampshire</arg>
+  <rel>has proposed</rel>
+  <arg n="1">an internal reorganization plan</arg>
+</example>
+
+<example name="with S">
+  <text>
+    Heritage Media proposed *trace=HM* acquiring POP Radio.
+  </text>
+  <arg n="0">Heritage Media</arg>
+  <rel>proposed</rel>
+  <arg n="1">*trace=HM* acquiring POP Radio</arg>
+</example>
+
+<example name="with benefactive">
+  <text>
+    John proposed marriage to Mary
+  </text>
+  <arg n="0">John</arg>
+  <rel>proposed</rel>
+  <arg n="1">marriage</arg>
+  <arg f="to" n="3">to Mary</arg>
+</example>
+
+<example name="with Arg2">
+  <text>
+    They proposed a ridiculous price for Georgia Gulf.
+  </text>
+  <arg n="0">They</arg>
+  <rel>proposed</rel>
+  <arg n="1">a ridiculous price</arg>
+  <arg f="for" n="2">for Georgia Gulf</arg>
+</example>
+  
+</roleset>
+</predicate>
+</frameset>

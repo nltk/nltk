@@ -1,0 +1,48 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="test">
+<note>
+  Frames file for 'test' based on sentences in financial subcorpus.
+  No Verbnet entry.
+</note>
+
+<roleset id="test.01" name="check (for), examine" vncls="-">
+<roles>
+  <role descr="examiner" n="0"/>
+  <role descr="examined" n="1"/>
+  <role descr="in search of, for what" n="2"/>
+</roles>
+
+<example name="just transitive">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    A Toto spokesman said the toilet not only tests blood pressure,
+    pulse and urine, it also stores the data for up to 130 days. 
+</text>
+        <arg n="0">the toilet</arg>
+        <arg f="DIS" n="M">not only</arg>
+        <rel>tests</rel>
+        <arg n="1">blood pressure, pulse and urine</arg>
+<note>
+I would love to see the rest of the context here.
+</note>
+</example>
+
+<example name="all args">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John tested Mary for violent tendencies.
+  </text>
+  <arg n="0">John</arg>
+  <rel>tested</rel>
+  <arg n="1">Mary</arg>
+  <arg f="for" n="2">violent tendencies</arg>
+</example>
+
+<note>
+I don't know that arg2 will ever actually appear.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,38 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="host">
+<note>
+  Frames file for 'host' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="host.01" name="to serve as a host" vncls="29.8">
+<roles>
+  <role descr="a host" n="0">
+		
+  <vnrole vncls="29.8" vntheta="Agent"/></role>
+
+  <role descr="guests, social event " n="1">
+		
+  <vnrole vncls="29.8" vntheta="Theme"/></role>
+
+</roles>
+
+
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ Judy Woodruff hosts this handsome four-part series about the history , economy , culture and politics of the island home of Chinese democracy and capitalism .
+</text>
+	<arg n="0">Judy Woodruff</arg>
+	<rel>hosts</rel>
+	<arg n="1">this handsome four-part series about the history , economy , culture and politics of the island home of Chinese democracy and capitalism</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

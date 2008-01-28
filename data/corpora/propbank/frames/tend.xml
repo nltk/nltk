@@ -1,0 +1,61 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="tend">
+<note>
+  Frames file for 'tend' based on sentences in financial subcorpus.
+  No Verbnet entry.  No comparison.
+</note>
+
+<roleset id="tend.01" name="care for">
+<roles>
+  <role descr="tender" n="0"/>
+  <role descr="thing tended (to)" n="1"/>
+</roles>
+
+<example name="object as NP">
+  <text>
+    John tends bar in a dive downtown.
+  </text>
+  <arg n="0">John</arg>
+  <rel>tends</rel>
+  <arg n="1">bar</arg>
+  <arg f="LOC" n="m">in a dive downtown</arg>
+</example>
+
+<example name="more commonly as PP">
+  <text>
+    John tends to the needs of his patrons.
+  </text>
+  <arg n="0">John</arg>
+  <rel>tends</rel>
+  <arg f="to" n="1">the needs of his patrons</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="tend.02" name="have a tendency">
+<roles>
+  <role descr="theme" n="1"/>
+  <role descr="attribute" n="2"/>
+</roles>
+
+<example name="very typical usage">
+<text>
+    The cost, or premium, tends to get fat in times of crisis.
+</text>
+        <arg n="1">The cost, or premium,</arg>
+        <rel>tends</rel>
+        <arg n="2">to get fat in times of crisis</arg>
+</example>
+
+<note>
+This really should be treated as a modal verb, almost, but we'll treat
+it instead like 'seem' et al.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

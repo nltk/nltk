@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="jostle">
+<note>
+  Frames file for 'jostle' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="jostle.01" name="fight mildly" vncls="-">
+<roles>
+  <role descr="fighters" n="0"/>
+  <role descr="prize" n="1"/>
+</roles>
+
+<example name="the one example">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    On Wall Street men and women walk with great purpose, noticing one
+    another only when they jostle for cabs. 
+</text>
+        <arg n="0">they</arg>
+        <rel>jostle</rel>
+        <arg f="for" n="1">cabs</arg>
+</example>
+
+<note>
+Unlike 'fight' (etc), this seems to only take a plural subject
+including both the fighter and the co-fighter(s), which are separate
+args for the 'fight' class.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

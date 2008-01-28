@@ -1,0 +1,73 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="wrap">
+<note>
+  Frames file for 'wrap' based on sentences in financial subcorpus.
+  Verbnet entry spray-9.7-2, other framed members include inject,
+  spread, stack, stock.  Framenet entries Up and Activity Finish.
+</note>
+
+<roleset id="wrap.01" name="enclose" vncls="9.7-2">
+<roles>
+  <role descr="cause of wrapping" n="0">
+	<vnrole vncls="9.7-2" vntheta="Agent"/></role>
+  <role descr="thing wrapped (ie, gift)" n="1">
+	<vnrole vncls="9.7-2" vntheta="Destination"/></role>
+  <role descr="wrapper (ie, paper)" n="2">
+	<vnrole vncls="9.7-2" vntheta="Theme"/></role>
+</roles>
+
+<example name="poor Mary">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John wrapped Mary's engagement ring in a dirty sock.
+  </text>
+  <arg n="0">John</arg>
+  <rel>wrapped</rel>
+  <arg n="1">Mary's engagement ring</arg>
+  <arg f="in" n="2">a dirty sock</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="wrap_up">
+
+<roleset id="wrap.02" name="finish" vncls="-">
+<roles>
+  <role descr="Intentional agent" n="0"/>
+  <role descr="Thing finishing" n="1"/>
+  <role descr="Explicit instrument, thing finished with" n="2"/>
+</roles>
+
+<example name="agentive, transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    And the lawyers were just as eager as the judge *trace* to wrap it
+    up.
+</text>
+        <arg n="0">*trace* -&gt;  the lawyers</arg>
+        <rel>[ wrap] [ up]</rel>
+        <arg n="1">it</arg>
+</example>
+
+<example name="ergative">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="ns"/>
+<text>
+    Jaguar executives said last week they expect to have a friendly
+    alliance with GM wrapped up by the end of the month. 
+</text>
+        <arg n="1">a friendly alliance with GM</arg>
+        <rel>[ wrapped] [ up]</rel>
+</example>
+
+<note>
+Maybe won't take instrument?
+</note>
+
+</roleset>
+</predicate>
+</frameset>

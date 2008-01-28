@@ -1,0 +1,37 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="disembark">
+<note>
+  Frames file for 'disembark' based on sentences in wsj.  No Verbnet
+  entry.  Comparison with 'embark'.  OK, nevermind.
+</note>
+
+<roleset id="disembark.01" name="get off of or out of a vehicle" vncls="-">
+<roles>
+  <role descr="passenger(s)" n="0"/>
+  <role descr="vehicle(s)" n="1"/>
+</roles>
+
+<example name="the one example">
+<inflection aspect="ns" form="ns" person="ns" tense="ns" voice="ns"/>
+<text>
+    At the ritzy Fashion Island Shopping Center, the tanned and
+    elegant ladies of this wealthy Southern California beach community
+    disembark from their Mercedes-Benzes and BMWs for another day of
+    exercising their credit cards. 
+</text>
+        <arg f="LOC" n="M">At the ritzy Fashion Island Shopping Center</arg>
+        <arg n="0">the tanned and elegant ladies of this wealthy
+        Southern California beach community</arg> 
+        <rel>disembark</rel>
+        <arg f="from" n="1">their Mercedes-Benzes and BMWs</arg>
+        <arg f="PNC" n="M">for another day of exercising their credit
+        cards</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

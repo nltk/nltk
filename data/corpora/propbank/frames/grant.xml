@@ -1,0 +1,63 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="grant">
+<note>
+  Frames file for 'grant' based on sentences in financial subcorpus.
+  Verbnet class &quot;future-having-13.3&quot;; framed members include issue
+  leave yield.  Comparison with 'deny' and 'allow'.
+</note>
+
+<roleset id="grant.01" name="request" vncls="13.3 29.5">
+<roles>
+  <role descr="granter" n="0">
+		
+  <vnrole vncls="29.5" vntheta="Agent"/><vnrole vncls="13.3" vntheta="Agent"/></role>
+
+  <role descr="thing granted" n="1">
+		
+  <vnrole vncls="29.5" vntheta="Predicate"/><vnrole vncls="13.3" vntheta="Theme"/></role>
+
+  <role descr="benefactive, granted-to" n="2">
+		
+  <vnrole vncls="29.5" vntheta="Theme"/><vnrole vncls="13.3" vntheta="Recipient"/></role>
+
+</roles>
+
+<example name="no benefactive">
+<text>
+    The White House said Mr. Bush decided *trace* to grant duty-free
+    status for 18 categories, but turned down such treatment for other
+    types of watches ``because of the potential for material injury to
+    watch producers located in the U.S. and the Virgin Islands.''
+</text>
+        <arg n="0">*trace*=Mr. Bush</arg>
+        <rel>grant</rel>
+        <arg n="1">duty-free status for 18 categories</arg>
+</example>
+
+<example name="passivized, with benefactive, benefactive fronted">
+<text>
+    That settlement represented the first time shareholders were
+    granted *trace* a major payment in a greenmail case. 
+</text>
+        <rel>granted</rel>
+        <arg n="2">*trace*=shareholders</arg>
+        <arg n="1">a major payment</arg>
+        <arg f="LOC" n="M">in a greenmail case</arg>
+</example>
+
+<example name="passivized, with benefactive, thing-granted fronted">
+  <text>
+    A special favor was granted *trace* to John.
+  </text>
+  <arg n="1">*trace*=A special favor</arg>
+  <rel>granted</rel>
+  <arg f="to" n="2">John</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="ramp_up">
+<note>
+  Frames file for 'ramp' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+
+<roleset id="ramp.01" name="to increase" vncls="-">
+<roles>
+  <role descr="cause of increase" n="0"/>
+  <role descr="activity increased" n="1"/>
+</roles>
+
+<example name="intransitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ `` A key part of the question is , how soon does this disk-drive come [*T*-1] and how soon does production ramp up [*T*-2] ? '' said [*T*-3] Steve Cohen at SoundView Financial Group .
+</text>
+	<arg n="1">production</arg>
+	<rel>[ ramp] [ up]</rel>
+	<arg f="TMP" n="M">[*T*-2] -&gt;  how soon</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

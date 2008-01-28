@@ -1,0 +1,156 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="feel">
+
+<note>
+  Frames file for 'feel' based on survey of initial sentences of big
+  corpus, and comparison with 'believe'
+</note>
+
+<roleset id="feel.01" name="emote" vncls="30.1 30.4">
+<roles>
+  <role descr="feeler, person experiencing emotion" n="0">
+	<vnrole vncls="30.4" vntheta="Experiencer"/>
+        <vnrole vncls="30.1" vntheta="Experiencer"/></role>
+  <role descr="emotion or sensation" n="1">
+	<vnrole vncls="30.4" vntheta="Stimulus"/>
+        <vnrole vncls="30.1" vntheta="Stimulus"/></role>
+  <role descr="entity to or for whom the emotion is directed" n="2"/>	 
+</roles>
+
+<example name="under pressure">
+  <text>
+  The colony's consumers feel more pressured than those in any of the
+  other surveyed markets.
+  </text>
+  <arg n="0">The colony's consumers</arg>
+  <rel>feel</rel>
+  <arg n="1">more pressured than those in any of the
+  other surveyed markets</arg>
+</example>
+
+<example name="all args">
+  <text>
+Andrew felt an almost unbearable tenderness for Addiline
+   </text>
+  <arg n="0">Andrew</arg>
+  <rel>feel</rel>
+  <arg n="1">an almost unbearable tendernes</arg>
+  <arg f="for" n="2">Addiline</arg>
+</example>
+</roleset>
+
+<roleset id="feel.02" name="believe" vncls="29.5">
+<roles>
+  <role descr="believer" n="0">
+	<vnrole vncls="29.5" vntheta="Agent"/></role>
+  <role descr="belief" n="1">
+	<vnrole vncls="29.5" vntheta="Theme"/></role>
+  <role descr="attributive" n="2">
+	<vnrole vncls="29.5" vntheta="Predicate"/></role>
+</roles>
+
+<example name="government believer">
+  <text>
+The government of President Carols Menem feels a significant reduction
+of principal and interest is the only way the debt problem may be solved.
+  </text>
+  <arg n="0">The government of President Carols Menem</arg>
+  <rel>feels</rel>
+  <arg n="1">a significant reduction
+  of principal and interest is the only way the debt problem may be 
+  solved</arg> 
+</example>
+
+<example name="both and emotion and a belief">
+  <text>
+  We feel very strongly that we really need action across the full
+  range of issues we've identified.
+  </text>
+  <arg n="0">We</arg>
+  <rel>feel</rel>
+  <arg f="MNR" n="m">very strongly</arg>
+  <arg n="1">we really need action across the full
+  range of issues we've identified</arg>
+</example>
+
+</roleset>
+
+<roleset id="feel.03" name="caress" vncls="31.3">
+<roles>
+  <role descr="feeler" n="0">
+	<vnrole vncls="31.3" vntheta="Experiencer"/></role>
+  <role descr="thing felt" n="1">
+	<vnrole vncls="31.3" vntheta="Cause"/></role>
+  <role descr="instrument" n="2"/>
+</roles>
+
+<example name="sensory">
+  <text>
+  John felt the lush grass on the skin of his back.
+  </text>
+  <arg n="0">John</arg>
+  <rel>felt</rel>
+  <arg n="1">the lush grass</arg>
+  <arg f="on" n="2">the skin of his back</arg>
+<note>
+&quot;On the skin of his back&quot; is not a locative because that would imply
+that the grass was growing on his back, which would be a little nasty.
+</note>
+</example>
+
+</roleset>
+
+<roleset id="feel.05" vncls="-" name="perceive to be">
+<roles>
+  <role n="1"  descr="stimulus"/>
+  <role n="2"  descr="perception"/>
+</roles>
+
+<example name="as comfy as">
+  <inflection person="third" tense="present" aspect="ns" voice="active" form="full"/>
+  <text>
+    ``The mountain bike feels as comfortable as the `paperboy' bike
+    you had as a kid, but it can do so much more,'' he says. 
+  </text>
+  <arg n="1"        >The mountain bike</arg>
+  <rel              >feels</rel>
+  <arg n="2" f="as">comfortable as the `paperboy' bike you had as a kid</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="feel_up">
+  <roleset id="feel.04" name="touch, phrasal" vncls="31.3">
+<roles>
+  <role descr="feeler" n="0">
+	<vnrole vncls="31.3" vntheta="Experiencer"/></role>
+  <role descr="thing felt" n="1">
+	<vnrole vncls="31.3" vntheta="Cause"/></role>
+  <role descr="instrument" n="2"/>
+</roles>
+
+<example name="hubba hubba">
+  <text>
+  John felt Mary up.
+  </text>
+  <arg n="0">John</arg>
+  <rel>felt up</rel>
+  <arg n="1">Mary</arg>
+</example>
+
+<note>
+The chances of this showing up in WSJ are about a gazillion to one,
+but here it is, just in case.
+</note>
+
+</roleset>
+
+</predicate>
+
+<note>
+  frames updated by Ruth for NomBank
+</note>
+
+</frameset>

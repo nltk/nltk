@@ -1,0 +1,78 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<note>
+Frames file for 'secure' based on sentences in financial subcorpus and
+automatic expansion via verbnet.
+</note>
+
+<predicate lemma="secure">
+<roleset id="secure.01" name="get" vncls="13.5.1">
+<roles>
+	<role descr="agent, entity acquiring something" n="0">
+		
+  <vnrole vncls="13.5.1" vntheta="Agent"/></role>
+
+	<role descr="thing acquired" n="1">
+		
+  <vnrole vncls="13.5.1" vntheta="Theme"/></role>
+
+	<role descr="source, gained from" n="2">
+		
+  <vnrole vncls="13.5.1" vntheta="Source"/></role>
+
+	<role descr="benefactive, gained for" n="3">
+		
+  <vnrole vncls="13.5.1" vntheta="Beneficiary"/></role>
+
+</roles>
+
+<example name="typically passive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    Financing plans include raising $170 million in debt secured
+    *trace* by the company's holdings in New Jersey. 
+</text>
+        <rel>secured</rel>
+        <arg n="1">*trace* -&gt;  debt</arg>
+        <arg f="by" n="0">the company 's holdings in New Jersey</arg>
+</example>
+
+<example name="with source">
+<inflection aspect="ns" form="ns" person="ns" tense="ns" voice="ns"/>
+<text>
+    McCaw said it has secured commitments from three banks to help
+    finance its $125-a-share bid for 22 million of Lin's shares. 
+</text>
+        <arg n="0">it</arg>
+        <rel>secured</rel>
+        <arg n="1">[ commitments ] [  to help finance its $125-a-share
+        bid for 22 million of Lin's shares]</arg> 
+        <arg f="from" n="2">three banks</arg>
+</example>
+</roleset>
+
+<roleset id="secure.02" name="make secure" vncls="-">
+<roles>
+  <role descr="maker" n="0"/>
+  <role descr="thing secured" n="1"/>
+  <role descr="instrument" n="2"/>
+</roles>
+
+<example name="poor John">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John secured his place in the Hall of Shame with his lousy
+    dissertation. 
+  </text>
+  <arg n="0">John</arg>
+  <rel>secured</rel>
+  <arg n="1">his place in the Hall of Shame</arg>
+  <arg f="with" n="2">his lousy dissertation.</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

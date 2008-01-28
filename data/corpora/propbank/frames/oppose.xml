@@ -1,0 +1,51 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="oppose">
+<note>
+  Frames file for 'oppose' based on sentences in financial subcorpus.
+  Verbnet class amalgamate-22.2.  No other members in same class.
+  Comparison to 'back' and 'support'.
+</note>
+
+<roleset id="oppose.01" name="oppose, object to" vncls="22.2 29.2">
+<roles>
+  <role descr="opposer" n="0">
+		
+  <vnrole vncls="29.2" vntheta="Agent"/><vnrole vncls="22.2" vntheta="Patient1"/></role>
+
+  <role descr="thing opposed to" n="1">
+		
+  <vnrole vncls="29.2" vntheta="Theme"/><vnrole vncls="22.2" vntheta="Patient2"/></role>
+
+</roles>
+
+<example name="nice simple transitive">
+<text>
+    MCA strongly opposed the Drabinsky group's move.
+</text>
+        <arg n="0">MCA</arg>
+        <arg f="MNR" n="M">strongly</arg>
+        <rel>opposed</rel>
+        <arg n="1">the Drabinsky group 's move</arg>
+</example>
+
+<example name="as opposed to">
+<text>
+    Mark Schoeppner, portfolio manager at Pittsburgh-based Quaker
+    Capital Management, says that in reaction to nervousness about
+    debt-laden buy-out transactions, analysts and investors now appear
+    to be ``valuing stock based on future earnings as *trace* opposed
+    to the amount of debt the company can support.'' 
+</text>
+        <arg n="0">*trace*</arg>
+        <rel>opposed</rel>
+        <arg f="to" n="1">the amount of debt  the company can support </arg>
+</example>
+
+<note>
+Avoid/ignore adjectival usages: &quot;I am opposed to tagging nouns&quot;.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

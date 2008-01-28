@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="rescind">
+<note>
+  Frames file for 'rescind' based on sentences in financial subcorpus.
+  No Verbnet entry.  No comparison.
+</note>
+
+<roleset id="rescind.01" name="take back">
+<roles>
+  <role descr="taker back, agent" n="0"/>
+  <role descr="thing taken back" n="1"/>
+</roles>
+
+<example name="boring transitive">
+<text>
+    Nekoosa's poison pill allows shareholders to vote *trace* to
+    rescind it... 
+</text>
+        <arg n="0">*trace* -&gt;  shareholders</arg>
+        <rel>rescind</rel>
+        <arg n="1">it</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

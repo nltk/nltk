@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="dictate">
+<note>
+  Frames file for 'dictate' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="dictate.01" name="to impose or command" vncls="37.1-1">
+<roles>
+  <role descr="dictator, agent" n="0"><vnrole vncls="37.1-1" vntheta="Agent"/></role>
+  <role descr="entity dictated" n="1"><vnrole vncls="37.1-1" vntheta="Recipient"/></role>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ The laws of heredity dictate that half of the plants springing from these greenhouse-produced seeds will be male sterile and herbicide resistant and half will be male fertile and herbicide susceptible .
+</text>
+	<arg n="0">The laws of heredity</arg>
+	<rel>dictate</rel>
+	<arg n="1">that half of the plants springing from these greenhouse-produced seeds will be male sterile and herbicide resistant and half will be male fertile and herbicide susceptible</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

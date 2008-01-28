@@ -1,0 +1,43 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="irradiate">
+<note>
+  Frames file for 'irradiate' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="irradiate.01" name="expose to radiation" vncls="-">
+<roles>
+  <role descr="exposer" n="0"/>
+  <role descr="thing exposed" n="1"/>
+  <role descr="radiation" n="2"/>
+</roles>
+
+<example name="the one example">
+<inflection aspect="ns" form="participle" person="ns" tense="past" voice="passive"/>
+<text>
+    ``The [stones] that *trace* were irradiated *trace* in the
+    U.S. are safe,'' says John Hickey, chief of the NRC operations
+    branch, Washington. 
+</text>
+        <rel>irradiated</rel>
+        <arg n="1">*trace* -&gt; *trace* -&gt;  that -&gt;  The [stones]</arg>
+        <arg f="LOC" n="M">in the U.S.</arg>
+</example>
+
+<example name="all args">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John irradiated his underwear with weapons-grade plutonium.
+  </text>
+  <arg n="0">John</arg>
+  <rel>irradiated</rel>
+  <arg n="1">his underwear</arg>
+  <arg f="with" n="2">weapons-grade plutonium</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

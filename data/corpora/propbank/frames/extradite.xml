@@ -1,0 +1,52 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="extradite">
+<note>
+  Frames file for 'extradite' based on sentences in wsj.  Verbnet
+  entry 10.2.
+</note>
+
+<roleset id="extradite.01" name="expel" vncls="10.2">
+<roles>
+  <role descr="expeller, agent" n="0">
+        <vnrole vncls="10.2" vntheta="Agent"/></role>
+  <role descr="entity expelled" n="1">
+        <vnrole vncls="10.2" vntheta="Theme"/></role>
+  <role descr="expelled from" n="2">
+        <vnrole vncls="10.2" vntheta="Source"/></role>
+  <role descr="expelled to" n="3">
+        <vnrole vncls="10.2" vntheta="Destination"/></role>
+</roles>
+
+<example name="with destination">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    U.S. District Judge Jack B. Weinstein of Brooklyn, N.Y., ruled
+    that a man implicated in an attack on an Israeli passenger bus in
+    1986 can be extradited [*-1] to Israel for trial. 
+</text>
+        <arg f="MOD" n="M">can</arg>
+        <rel>extradited</rel>
+        <arg n="1">[*-1] -&gt;  a man implicated in an attack on an
+        Israeli passenger bus in 1986</arg> 
+        <arg f="to" n="3">Israel</arg>
+        <arg f="PNC" n="M">for trial</arg>
+</example>
+
+<example name="with source">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     Mary was extradited [*] from Lower Slobovia for the murder of John.
+  </text>
+  <rel>extradited</rel>
+  <arg n="1">[*] -&gt; Mary</arg>
+  <arg f="from" n="2">Lower Slobovia</arg>
+  <arg f="CAU" n="m">for the murder of John</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

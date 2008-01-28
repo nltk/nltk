@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="fare">
+<note>
+  Frames file for 'fare' based on sentences in financial subcorpus.
+  No verbnet entry.  
+</note>
+
+<roleset id="fare.01" name="fare, manage, get along">
+<roles>
+  <role descr="thing faring, managing" n="0"/>
+  <role descr="how?" f="MNR" n="m"/>
+</roles>
+
+<example name="typical usage">
+<text>
+    Mr. Jennison said Northeast Bancorp also fared well because
+    takeover stocks have returned to favor among investors. 
+</text>
+        <arg n="0">Northeast Bancorp</arg>
+        <arg f="DIS" n="M">also</arg>
+        <rel>fared</rel>
+        <arg f="MNR" n="M">well</arg>
+        <arg f="CAU" n="M">because takeover stocks have returned to
+        favor among investors</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

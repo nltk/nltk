@@ -1,0 +1,28 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="smolder">
+<note>
+  Frames file for 'smolder' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="smolder.01" name="to burn with little smoke and no flame" vncls="-">
+<roles>
+  <role descr="entity burning" n="0"/>
+</roles>
+
+<example name="intransitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ But as they hurl fireballs that [*T*-2] smolder rather than burn , and relive old duels in the sun , it [*EXP*-1] 's clear that most are there [*-3] to make their fans cheer again or recapture the camaraderie of seasons past or prove to themselves and their colleagues that they still have it -- or something close to it .
+</text>
+	<arg n="0">[*T*-2] -&gt;  that -&gt;  fireballs</arg>
+	<rel>smolder</rel>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

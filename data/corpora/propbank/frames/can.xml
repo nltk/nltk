@@ -1,0 +1,75 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="can">
+<note>
+  Frames file for 'can' based on sentences in wsj.  Verbnet entry
+  9.10, Framenet entry Placing.
+</note>
+
+<roleset id="can.01" name="put into tins" vncls="9.10">
+<roles>
+  <role descr="canner, agent" n="0"><vnrole vncls="9.10" vntheta="Agent"/></role>
+  <role descr="substance" n="1"><vnrole vncls="9.10" vntheta="Theme"/></role>
+</roles>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="past" voice="passive"/>
+<text>
+    The agency won't allow mushrooms that [*T*-2] were canned [*-3] or
+    packed in brine at any Chinese plant to enter the U.S. until
+    ``satisfactory sanitation-control measures are implemented in
+    China to prevent'' bacterial contamination. 
+</text>
+        <rel>canned</rel>
+        <arg n="1">[*-3] -&gt;  [*T*-2] -&gt;  that -&gt;  mushrooms</arg>
+        <arg f="LOC" n="M">at any Chinese plant</arg>
+</example>
+
+
+<example name="almost agentive">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+    The outbreaks were traced to staphylococcus aureus, a type of
+    bacteria that produces a toxin capable of surviving the high
+    temperatures used in [*] canning vegetables. 
+</text>
+        <arg n="0">[*]</arg>
+        <rel>canning</rel>
+        <arg n="1">vegetables</arg>
+
+<note>
+So one time this British gentleman took a tour of the US and visited a
+farm in Iowa.  Astounded at the amount of produce being grown, he
+asked the farmer what was done with the vegetables.  The farmer
+replied, &quot;We eat what we can, and what we can't we can.&quot;  The British
+gent thought that was terribly clever and resolved to tell his friends
+when he returned home.  When the time came, though, he couldn't quite
+remember the punchline correctly and said instead, &quot;We eat what we
+can, and what we can't we do up into tins.&quot;
+</note>
+
+</example>
+</roleset>
+
+<roleset id="can.02" name="fire" vncls="-">
+<roles>
+  <role descr="employer" n="0"/>
+  <role descr="ex-employee" n="1"/>
+  <role descr="job" n="2"/>
+</roles>
+
+<example name="you get the picture">
+  <inflection aspect="ns" form="full" person="third" tense="past" voice="passive"/>
+  <text>
+     John was canned *trace* from his job at the weenie factory after
+     making one too many sexual innuendoes.
+  </text>
+  <rel>canned</rel>
+  <arg n="1">*trace* -&gt; John</arg>
+  <arg f="from" n="2">his job at the weenie factory</arg>
+  <arg f="TMP" n="m">after making one too many sexual innuendoes</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

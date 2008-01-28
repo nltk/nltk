@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="weather">
+<note>
+  Frames file for 'weather' based on sentences in financial subcorpus.
+  No Verbnet entry.  Comparison with 'tolerate' and 'survive'.
+</note>
+
+<roleset id="weather.01" name="live through rocky situation,   survive" vncls="-">
+<roles>
+  <role descr="survivor" n="0"/>
+  <role descr="situation" n="1"/>
+</roles>
+
+<example name="very typical">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+     Ford, which has long boasted of its ability *trace* to weather a
+     downturn, saw earnings take a beating. 
+</text>
+        <arg n="0">*trace* -&gt;  Ford</arg>
+        <rel>weather</rel>
+        <arg n="1">a downturn</arg>
+</example>
+
+<note>
+Be very careful with trace chains--they get tricky!
+</note>
+
+</roleset>
+</predicate>
+</frameset>

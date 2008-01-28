@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="acidify">
+<note>
+  Frames file for 'acidify' based on sentences in wsj.  Verbnet entry 45.4.
+</note>
+
+<roleset id="acidify.01" name="make acidic" vncls="45.4">
+<roles>
+  <role descr="causer of acidity, agent" n="0"><vnrole vncls="45.4" vntheta="Agent"/></role>
+  <role descr="thing now acidic" n="1"><vnrole vncls="45.4" vntheta="Patient"/></role>
+</roles>
+
+<example name="adjectival">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    Four-fifths of Poland's soils have become highly acidified; 70% of
+    its southern forests are projected to die by century's end. 
+</text>
+        <arg n="1">Four-fifths of Poland's soils</arg>
+        <arg f="EXT" n="M">highly</arg>
+        <rel>acidified</rel>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

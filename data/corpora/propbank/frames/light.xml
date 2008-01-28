@@ -1,0 +1,63 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="light">
+<note>
+  Frames file for 'light' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="light.01" name="to set on fire or make lighter" vncls="-">
+<roles>
+ <role descr="setter of fire, increaser of illumination, agent" n="0"/>
+ <role descr="entity lit" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ The diners at my table simply lit more Gauloises and scoffed at the suggestion of [*] interrupting a perfectly good Saturday morning [*-1] to go golfing or even montgolfing ( ballooning to you ; the brothers Montgolfier , French of course , were the world 's first hot-air balloonists ) .
+</text>
+	<arg n="0">The diners at my table</arg>
+	<arg f="MNR" n="M">simply</arg>
+	<rel>lit</rel>
+	<arg n="1">more Gauloises</arg>
+</example>
+</roleset>
+</predicate>
+
+<predicate lemma="light_up">
+
+<roleset id="light.02" name="to illuminate" vncls="-">
+<roles>
+ <role descr="causer of illumination or fire, agent" n="0"/>
+ <role descr="entity lit" n="1"/>
+</roles>
+
+<example name="intransitive = smoke a cigarette">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+ `` They are n't showing James Madison taking a puff or lighting up , '' says [*T*-1] Laurence Tribe , a professor of constitutional law at Harvard University .
+</text>
+	<arg n="0">James Madison</arg>
+	<rel>[ lighting] [ up]</rel>
+</example>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+ Oil-related properties suffered a huge decline until I divested myself of all such stocks in 1985 , at which point the industry , while [*-1] not lighting up any Christmas trees , began a slow recovery [*T*-2] .
+</text>
+	<arg n="0">[*-1] -&gt;  the industry</arg>
+	<arg f="NEG" n="M">not</arg>
+	<rel>[ lighting] [ up]</rel>
+	<arg n="1">any Christmas trees</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

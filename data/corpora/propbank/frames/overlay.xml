@@ -1,0 +1,48 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="overlay">
+<note>
+  Frames file for 'overlay' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="overlay.01" name="lay over" vncls="-">
+<roles>
+  <role descr="who's putting what where, agent" n="0"/>
+  <role descr="thing laid" n="1"/>
+  <role descr="over what" n="2"/>
+</roles>
+
+<example name="unaccusative">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    Its supposedly austere minimalism overlays a bombast that makes
+    one yearn for the astringency of neoclassical Stravinsky, the
+    genuinely radical minimalism of Berg and Webern, and what in
+    retrospect even seems like concision in Mahler. 
+</text>
+        <arg n="1">Its supposedly austere minimalism</arg>
+        <rel>overlays</rel>
+        <arg n="2">a bombast that makes one yearn for the astringency
+        of neoclassical Stravinsky, the genuinely radical minimalism
+        of Berg and Webern, and what in retrospect even seems like
+        concision in Mahler</arg> 
+</example>
+
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    ``The only thing you don't have,'' he said, ``is the `portfolio
+    insurance' phenomenon overlaid [*] on the rest.'' 
+</text>
+        <rel>overlaid</rel>
+        <arg n="1">[*] -&gt;  the `portfolio insurance' phenomenon</arg>
+        <arg f="on" n="2">the rest</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

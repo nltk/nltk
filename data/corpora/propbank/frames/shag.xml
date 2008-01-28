@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="shag">
+<note>
+  Frames file for 'shag' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="shag.01" name="to chase and catch fly balls in baseball" vncls="-">
+<roles>
+  <role descr="catcher" n="0"/>
+  <role descr="balls" n="1"/>
+</roles>
+
+<example name="shag-a-delic, baby!">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ In the outfield , Paul Blair , the Orioles ' eight-time Gold Glove winner , elegantly shags a fly .
+</text>
+	<arg f="LOC" n="M">In the outfield</arg>
+	<arg n="0">Paul Blair , the Orioles ' eight-time Gold Glove winner ,</arg>
+	<arg f="MNR" n="M">elegantly</arg>
+	<rel>shags</rel>
+	<arg n="1">a fly</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

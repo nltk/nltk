@@ -1,0 +1,61 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="contend">
+<note>
+  Frames file for 'contend' based on sentences in financial subcorpus.
+  No verbnet entry.  Comparison with 'believe' and 'say'.  
+</note>
+
+<roleset id="contend.01" name="hold and utter a belief">
+<roles>
+  <role descr="agent, entity uttering a belief" n="0"/>
+  <role descr="contension, belief" n="1"/>
+  <role descr="hearer" n="2"/>
+</roles>
+
+<example name="basic transitive">
+<text>
+    ``The buyers walk away, and the specialist is left alone'' as the
+    buyer of last resort for his stable of stocks, he contends
+    *trace*. 
+</text>
+        <arg n="0">he</arg>
+        <rel>contends</rel>
+        <arg n="1">*trace* -&gt; The buyers walk away, and the specialist
+        is left  alone'' as the buyer of last resort for his stable of
+        stocks</arg>
+</example>
+
+<note>
+Might or might not actually take a hearer.  Like other verbs of
+saying, this shows up in all the split/fronted/inverted
+constructions.  See 'say' for examples of how to tag these.
+</note>
+
+</roleset>
+
+<roleset id="contend.02" name="deal with, suffer through">
+<roles>
+  <role descr="contender" n="0"/>
+  <role descr="thing dealt with" n="1"/>
+</roles>
+
+<example name="transitive">
+<text>
+    It has also rattled Federal's strongly anti-union management,
+    which *trace* is already contending with melding far-flung
+    operations. 
+</text>
+        <arg n="0">*trace* -&gt;  which -&gt;  Federal's strongly anti-union
+        management</arg> 
+        <arg f="TMP" n="M">already</arg>
+        <rel>contending</rel>
+        <arg f="with" n="1">melding far-flung operations</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

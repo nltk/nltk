@@ -1,0 +1,49 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="infringe">
+<note>
+  Frames file for 'infringe' based on sentences in financial
+  subcorpus.  No Verbnet entry.
+</note>
+
+<roleset id="infringe.01" name="go where you don't have the right" vncls="-">
+<roles>
+  <role descr="infringer" n="0"/>
+  <role descr="infringed (up)on" n="1"/>
+</roles>
+
+<example name="usually prepositional">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    A lower court in St. Paul had ruled in September 1988 that a heart
+    catheter SciMed manufactures doesn't infringe on a patent owned by
+    Advanced Cardiovascular Systems, a unit of Eli Lilly &amp; Co. 
+</text>
+        <arg n="0">a heart catheter SciMed manufactures </arg>
+        <arg f="NEG" n="M">n't</arg>
+        <rel>infringe</rel>
+        <arg f="on" n="1">a patent owned by Advanced Cardiovascular
+        Systems, a unit of Eli Lilly &amp; Co</arg> 
+</example>
+
+
+<example name="occasionally not prepositional">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    SciMed said it ``remains committed'' both to the ``vigorous
+    defense'' of its position that the catheter doesn't infringe the
+    Lilly unit's patent, and to the pursuit of its own counterclaims,
+    which allege Lilly engaged in antitrust violations and other
+    wrongful acts. 
+</text>
+        <arg n="0">the catheter</arg>
+        <arg f="NEG" n="M">n't</arg>
+        <rel>infringe</rel>
+        <arg n="1">the Lilly unit 's patent</arg>
+</example>
+
+<note>
+The non-prepositional usage sounds wrong to me, but maybe it's dialectal.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

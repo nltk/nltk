@@ -1,0 +1,34 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="partake">
+<note>
+  Frames file for 'partake' based on survey of sentences in the WSJ
+  corpus. Comparison with 'participate'.
+</note>
+
+<roleset id="partake.01" name="to take or have a part in" vncls="-">
+<roles>
+  <role descr="agent, entity participating" n="0"/>
+  <role descr="take a part in what?" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ McDonald 's Corp. said [0] third-quarter earnings rose 14 % on a hefty sales gain , but domestic franchisees apparently did n't partake of the improvement .
+</text>
+	<arg f="DIS" n="M">but</arg>
+	<arg n="0">domestic franchisees</arg>
+	<arg f="ADV" n="M">apparently</arg>
+	<arg f="NEG" n="M">n't</arg>
+	<rel>partake</rel>
+	<arg f="of" n="1">the improvement</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

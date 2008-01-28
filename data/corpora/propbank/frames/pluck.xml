@@ -1,0 +1,42 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="pluck">
+<note>
+  Frames file for 'pluck' based on survey of sentences in the WSJ
+  corpus.  
+</note>
+
+
+<roleset id="pluck.01" name="to remove or detach" vncls="10.4.1 13.5.1 41.2.2">
+<roles>
+  <role descr="remover, agent" n="0">
+	<vnrole vncls="41.2.2" vntheta="Agent"/>
+        <vnrole vncls="13.5.1" vntheta="Agent"/>
+        <vnrole vncls="10.4.1" vntheta="Agent"/></role>
+  <role descr="entity plucked" n="1">
+	<vnrole vncls="41.2.2" vntheta="Patient"/>
+        <vnrole vncls="13.5.1" vntheta="Theme"/>
+        <vnrole vncls="10.4.1" vntheta="Theme"/></role>
+  <role descr="plucked from" n="2">
+	<vnrole vncls="13.5.1" vntheta="Source"/>
+        <vnrole vncls="10.4.1" vntheta="Source"/></role>
+</roles>
+
+<example name="all arguments">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ The researchers reported [0] they have been able [*-2] to pluck the five genes that [*T*-1] produced the toxin out of the pertussis bacterium .
+</text>
+	<arg n="0">[*-2] -&gt;  they</arg>
+	<rel>pluck</rel>
+	<arg n="1">the five genes that [*T*-1] produced the toxin</arg>
+	<arg f="out" n="2">of the pertussis bacterium</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

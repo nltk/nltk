@@ -1,0 +1,39 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="wrench">
+<note>
+  Frames file for 'wrench' based on sentences in wsj.  Verbnet entry
+  10.1.
+</note>
+
+<roleset id="wrench.01" name="rotate violently so as to remove" vncls="-">
+<roles>
+  <role descr="cause of rotation, remover" n="0"/>
+  <role descr="thing removed" n="1"/>
+  <role descr="from" n="2"/>
+</roles>
+
+<example name="ambiguous PP">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    State engineers have made a preliminary finding that it was
+    failure of the concrete columns, wrenched [*] and separated [*]
+    from the double-decker roadbed, that was responsible for the
+    collapse. 
+</text>
+        <rel>wrenched</rel>
+        <arg n="1">[*] -&gt;  the concrete columns</arg>
+</example>
+
+<note>
+The ambiguity is in the attachment of the &quot;from the roadbed&quot;; does it
+go only with 'separate' or with the conjoined 'wrenched and
+separated'?
+</note>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,34 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="quip">
+<note>
+  Frames file for 'quip' based on sentences in financial subcorpus.
+  No Verbnet entry.  Comparison with say.
+</note>
+
+<roleset id="quip.01" name="tell a little joke">
+<roles>
+  <role descr="speaker" n="0"/>
+  <role descr="joke" n="1"/>
+  <role descr="hearer" n="2"/>
+</roles>
+
+<example name="transitive">
+<text>
+    Yesterday, Mr. Matthews, now a consultant with the Stamford,
+        Conn., firm Matthews &amp; Johnston, quipped, ``I think he'll
+        be very good at that new job.
+</text> 
+        <arg f="TMP" n="M">Yesterday</arg>
+        <arg n="0">Mr. Matthews, now a consultant with the Stamford,
+        Conn., firm Matthews &amp; Johnston,</arg> 
+        <rel>quipped</rel>
+        <arg n="1">I think he'll be very good at that new job</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

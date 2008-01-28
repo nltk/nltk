@@ -1,0 +1,118 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="serve">
+<note>
+  Frames file for 'serve' based on sentences in financial subcorpus.
+  No access to verbnet at the moment.  Comparison to 'work'.  This
+  completely ignored Chris' frames file.  How 'bout that.
+</note>
+
+<roleset id="serve.01" name="act, work" vncls="29.6">
+<roles>
+  <role descr="worker" n="0">
+	<vnrole vncls="29.6" vntheta="Agent"/></role>
+  <role descr="job, project" n="1">
+	<vnrole vncls="29.6" vntheta="Predicate"/></role>
+  <role descr="employer" n="2">
+	<vnrole vncls="29.6" vntheta="Theme"/></role>
+</roles>
+
+<example name="just employer">
+<text>
+    Each new trading roadblock is likely to be beaten by institutions
+    seeking better ways *trace* to serve their high-volume clients,
+    here or overseas. 
+</text>
+        <arg n="0">*trace* -&gt;  institutions</arg>
+        <rel>serve</rel>
+        <arg n="2">their high-volume clients</arg>
+        <arg f="LOC" n="M">here or overseas</arg>
+</example>
+
+<example name="just job">
+<text>
+    Mr. Reupke was one of three executives on Reuters's eight-person
+    executive committee who didn't also serve on the company's board
+    of directors. 
+</text>
+        <arg n="0">*trace* -&gt;  who -&gt;  three executives</arg>
+        <arg f="NEG" n="M">n't</arg>
+        <arg f="DIS" n="M">also</arg>
+        <rel>serve</rel>
+        <arg f="on" n="1">the company's board of directors</arg>
+</example>
+
+<example name="job and employer">
+<text>
+    He has never met Lynn Williams, the president of the United
+    Steelworkers union, and isn't active in the industry's main trade
+    group, the American Iron and Steel Institute, which Mr. Roderick
+    served *trace* as chairman. 
+</text>
+        <rel>served</rel>
+        <arg n="2">*trace* -&gt;  which -&gt;  the American Iron and Steel
+        Institute</arg> 
+        <arg f="as" n="1">chairman</arg>
+</example>
+
+<example name="job as pro-controlled S">
+<text>
+    In a statement, Arnold B. McKinnon, chairman and chief executive
+    officer, noted that the new repurchase program ``should serve to
+    enhance shareholder value.'' 
+</text>
+        <arg n="0">the new repurchase program</arg>
+        <arg f="MOD" n="M">should</arg>
+        <rel>serve</rel>
+        <arg n="1">to enhance shareholder value</arg>
+</example>
+
+</roleset>
+
+<roleset id="serve.02" name="provide, give">
+<roles>
+  <role descr="server" n="0"/>
+  <role descr="thing served" n="1"/>
+  <role descr="served to" n="2"/>
+</roles>
+
+<example name="breakfast in bed">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John served runny eggs and burnt toast to Mary.
+  </text>
+  <arg n="0">John</arg>
+  <rel>served</rel>
+  <arg n="1">runny eggs and burnt toast</arg>
+  <arg f="to" n="2">Mary</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="serve_up">
+
+<roleset id="serve.03" vncls="-" name="provide, offer">
+<roles>
+  <role n="0"  descr="server"/>
+  <role n="1"  descr="served"/>
+  <role n="2"  descr="served to"/>
+</roles>
+
+<example name="unmentioned beneficiary">
+  <inflection person="ns" tense="ns" aspect="ns" voice="passive" form="participle"/>
+  <text>
+    [*-2] Served [*-1] up as a solo, however, the music lacks the
+    resonance provided by a context within another medium. 
+  </text>
+  <rel              >Served</rel>
+  <arg n="1"        >[*-1] -> [*-2] -> the music</arg>
+  <arg n="m" f="PRD">as a solo</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

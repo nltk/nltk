@@ -1,0 +1,36 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="complement">
+<note>
+  Frames file for 'complement' based on sentences in wsj.  No Verbnet
+  entry.
+</note>
+
+<roleset id="complement.01" name="go well with, fill out" vncls="-">
+<roles>
+  <role descr="thing complementing" n="1"/>
+  <role descr="thing complemented" n="2"/>
+</roles>
+
+<example name="this and that">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    The maker of telecommunications and defense equipment said Carol
+    Cable's portfolio and market focus would complement the company's
+    current wire and cable businesses. 
+</text>
+        <arg n="1">Carol Cable's portfolio and market focus</arg>
+        <arg f="MOD" n="M">would</arg>
+        <rel>complement</rel>
+        <arg n="2">the company's current wire and cable businesses</arg>
+</example>
+
+<note>
+I have a vague intuition that complement might take an agent at some
+point, hence starting arg numbering at 1.  And even if no agent ever
+appears, it seems weird to call the first half of a complementary pair
+the arg0, since it's not agentive.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

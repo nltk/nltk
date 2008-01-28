@@ -1,0 +1,53 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="reclassify">
+<note>
+  Frames file for 'reclassify' based on sentences in financial
+  subcorpus.  Verbnet entry 29.2, other framed members include count,
+  define, describe, employ, establish, intend, portray, rank,
+  recommend, redefine, regard, treat.  Comparison with define.
+</note>
+
+<roleset id="reclassify.01" name="assign a label or attribute">
+<roles>
+  <role descr="describer" n="0"/>
+  <role descr="thing defined" n="1"/>
+  <role descr="secondary attribute, described-as, definition" n="2"/>
+</roles>
+
+<example name="typical usage">
+<text>
+    Her recent report reclassifies the stock as a ``hold.''
+</text>
+        <arg n="0">Her recent report</arg>
+        <rel>reclassifies</rel>
+        <arg n="1">the stock</arg>
+        <arg f="as" n="2">a ``hold</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="reclassify.02" name="make/keep secret">
+<roles>
+  <role descr="secret-keeper" n="0"/>
+  <role descr="secret" n="1"/>
+</roles>
+
+<example name="in honor of the FBI goons">
+  <text>
+    The government reclassified John's dissertation.
+  </text>
+  <arg n="0">The government</arg>
+  <rel>reclassified</rel>
+  <arg n="1">John's dissertation</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

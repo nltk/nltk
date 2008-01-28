@@ -1,0 +1,70 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="scuttle">
+<note>
+  Frames file for 'scuttle' based on sentences in financial subcorpus.
+  Verbnet entry run-51.3.2, although that's not the usual sense.
+</note>
+
+<roleset id="scuttle.01" name="sink, as a ship" vncls="-">
+<roles>
+  <role descr="sinker" n="0"/>
+  <role descr="thing sinking" n="1"/>
+  <role descr="instrument" n="2"/>
+</roles>
+
+<example name="ya scurvy dogs!">
+<text>
+    Few petitions, however, have actually delayed or scuttled
+    mergers. 
+</text>
+        <arg n="0">Few petitions</arg>
+        <arg f="DIS" n="M">however</arg>
+        <arg f="DIS" n="M">actually</arg>
+        <rel>scuttled</rel>
+        <arg n="1">mergers</arg>
+</example>
+
+<example name="with instrument">
+<text>
+    But the government's action, which caught Jaguar management
+    flat-footed, may scuttle the GM minority deal by forcing it to
+    fight for all of Jaguar. 
+</text>
+        <arg n="0">the government's action, which caught Jaguar
+        management flat-footed,</arg> 
+        <arg f="MOD" n="M">may</arg>
+        <rel>scuttle</rel>
+        <arg n="1">the GM minority deal</arg>
+        <arg f="by" n="2">forcing it to fight for all of Jaguar</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="scuttle.02" name="run like a spider or crab" vncls="51.3.2">
+<roles>
+  <role descr="scuttler" n="0">
+		
+  <vnrole vncls="51.3.2" vntheta="Theme"/></role>
+
+</roles>
+
+<example name="example">
+  <text>
+    John scuttled across the room.
+  </text>
+  <arg n="0">John</arg>
+  <rel>scuttled</rel>
+  <arg f="DIR" n="m">across the room</arg>
+</example>
+
+<note>
+This sense will never, ever occur.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,47 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="accommodate">
+<note>
+  Frames file for 'accommodate' based on sentences in financial
+  subcorpus.  No Verbnet entry.  No comparison.
+</note>
+
+<roleset id="accommodate.01" name="allow, be helpful" vncls="-">
+<roles>
+  <role descr="accommodater" n="0"/>
+  <role descr="thing accommodated" n="1"/>
+</roles>
+
+<example name="active">
+<inflection aspect="ns" form="full" person="ns" tense="ns" voice="ns"/>
+<text>
+    ``We may be able to reach a tradeoff where we can accommodate the
+    pilot union's concerns and ours,'' said Brian M. Freeman, the
+    machinists' financial adviser. 
+</text>
+        <arg n="0">we</arg>
+        <arg n="M">can</arg>
+        <rel>accommodate</rel>
+        <arg n="1">the pilot union's concerns and ours</arg>
+</example>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    ``We're in a metro area with millions of Bear fans, and only a
+    small number can be accommodated *trace*.'' 
+</text>
+        <arg f="MOD" n="M">can</arg>
+        <rel>accommodated</rel>
+        <arg n="1">*trace* -&gt;  only a small number</arg>
+</example>
+
+<note>
+This second example might be a reference to the other sense of
+'accommodation', meaning 'dwelling place', but that sense otherwise
+does not occur as a verb.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

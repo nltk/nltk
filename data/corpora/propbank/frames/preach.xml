@@ -1,0 +1,45 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="preach">
+<note>
+  Frames file for 'preach' based on survey of sentences in the WSJ
+  corpus.  
+</note>
+
+
+<roleset id="preach.01" name="to proclaim or advocate" vncls="37.1">
+<roles>
+  <role descr="preacher, agent" n="0">
+	<vnrole vncls="37.1" vntheta="Agent"/></role>
+  <role descr="utterance" n="1">
+	<vnrole vncls="37.1" vntheta="Topic"/></role>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ Others preach the gospel of [*] buying only blue-chip growth stocks .
+</text>
+	<arg n="0">Others</arg>
+	<rel>preach</rel>
+	<arg n="1">the gospel of [*] buying only blue-chip growth stocks</arg>
+</example>
+
+
+<example name="preach about">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ Part of the problem is the tendency [*ICH*-1] of all sitcoms , ever since the didactic days of Norman Lear , [*] to preach about social issues .
+</text>
+	<arg n="0">[*] -&gt;  all sitcoms</arg>
+	<rel>preach</rel>
+	<arg f="about" n="1">social issues</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

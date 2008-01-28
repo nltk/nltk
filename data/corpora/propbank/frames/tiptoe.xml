@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="tiptoe">
+<note>
+  Frames file for 'tiptoe' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="tiptoe.01" name="to walk or move quietly on one's toes" vncls="51.3.2">
+<roles>
+  <role descr="entity walking" n="0">
+        <vnrole vncls="51.3.2" vntheta="Theme"/></role>
+</roles>
+
+<example name="with direction">
+<inflection aspect="perfect" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+ Small investors have tiptoed back into the market following Black Monday , but mostly through mutual funds .
+</text>
+	<arg n="0">Small investors</arg>
+	<rel>tiptoed</rel>
+	<arg f="DIR" n="M">back</arg>
+	<arg f="DIR" n="M">into the market</arg>
+	<arg f="TMP" n="M">following Black Monday</arg>
+	<arg f="MNR" n="M">, but mostly through mutual funds</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

@@ -1,0 +1,35 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="club">
+<note>
+  Frames file for 'club' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="club.01" name="to strike or beat with or as if with a club" vncls="18.3">
+<roles>
+  <role descr="striker, agent" n="0">
+        <vnrole vncls="18.3" vntheta="Agent"/></role>
+  <role descr="entity clubbed" n="1">
+        <vnrole vncls="18.3" vntheta="Patient"/></role>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ A splinter group demonstrated in Pushkin Square , where the police clubbed and detained a number of protesters [*T*-1] .
+</text>
+	<arg n="0">the police</arg>
+	<rel>clubbed</rel>
+	<arg n="1">a number of protesters</arg>
+	<arg f="LOC" n="M">[*T*-1] -&gt;  where -&gt;  Pushkin Square</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

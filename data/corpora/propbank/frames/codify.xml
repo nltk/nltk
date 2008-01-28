@@ -1,0 +1,49 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="codify">
+<note>
+  Frames file for 'codify' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="codify.01" name="arrange, systematize" vncls="-">
+<roles>
+  <role descr="arranger" n="0"/>
+  <role descr="thing being codified" n="1"/>
+  <role descr="end state" n="2"/>
+</roles>
+
+<example name="usually just transitive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    Shortly afterwards, Mr. Bush imposed a series of anti-China
+    sanctions, including suspension of most high-level talks, which
+    *trace* could be codified *trace* in U.S. congressional
+    legislation in the coming weeks. 
+</text>
+        <arg f="MOD" n="M">could</arg>
+        <rel>codified</rel>
+        <arg n="1">*trace* -&gt; *trace* -&gt;  which -&gt;  anti-China
+        sanctions</arg> 
+        <arg f="LOC" n="M">in U.S. congressional legislation</arg>
+        <arg f="TMP" n="M">in the coming weeks</arg>
+</example>
+
+<example name="with end state?">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    Mary codified her violence towards John into a neat weekly
+    schedule of beatings and other torture.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>codified</rel>
+  <arg n="1">her violence towards John</arg>
+  <arg f="into" n="2">a neat weekly schedule of beatings and other
+  torturee </arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

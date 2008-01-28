@@ -1,0 +1,66 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="drip">
+<note>
+  Frames file for 'drip' based on sentences in wsj.  Verbnet entry 9.5.
+</note>
+
+<roleset id="drip.01" name="(cause to) drip" vncls="9.5">
+<roles>
+  <role descr="causal agent" n="0"><vnrole vncls="9.5" vntheta="Agent"/></role>
+  <role descr="thing dripping, liquid" n="1"><vnrole vncls="9.5" vntheta="Theme"/></role>
+  <role descr="source" n="2"><vnrole vncls="9.5" vntheta="Location"/></role>
+  <role descr="destination" n="3"><vnrole vncls="9.5" vntheta="Location"/></role>
+</roles>
+
+<example name="all args">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John dripped paint from the can into Mary's glass of tea.
+  </text>
+  <arg n="0">John</arg>
+  <rel>dripped</rel>
+  <arg n="1">paint</arg>
+  <arg f="from" n="2">the can</arg>
+  <arg f="into" n="3">Mary's glass of tea</arg>
+</example>
+
+<example name="ergative">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    Paint dripped from the can into Mary's glass of tea.
+  </text>
+  <arg n="1">paint</arg>
+  <rel>dripped</rel>
+  <arg f="from" n="2">the can</arg>
+  <arg f="into" n="3">Mary's glass of tea</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="drip.02" name="description of liquid" vncls="-">
+<roles>
+  <role descr="thing dripping" n="1"/>
+  <role descr="descriptor" n="2"/>
+</roles>
+
+<example name="almost idiomatic?">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    ``A very striking illusion,'' Mr. Hyman says now, his voice
+    dripping with skepticism, ``but an illusion nevertheless.''  
+</text>
+        <arg n="1">his voice</arg>
+        <rel>dripping</rel>
+        <arg f="with" n="2">skepticism</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

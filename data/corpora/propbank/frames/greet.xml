@@ -1,0 +1,72 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="greet">
+
+<note>
+Frames file for 'greet' based on sentences in financial subcorpus and
+automatic generation from Verbnet classes.
+</note>
+
+<roleset id="greet.01" name="welcome, receive with a   specific reaction" vncls="33">
+<roles>
+<role descr="greeter" n="0">
+		
+  <vnrole vncls="33" vntheta="Agent"/></role>
+
+<role descr="thing greeted" n="1">
+		
+  <vnrole vncls="33" vntheta="Theme"/></role>
+
+<role descr="secondary attribute, greeted as" n="2">
+		
+  <vnrole vncls="33" vntheta="Cause"/></role>
+
+<role descr="specific reaction" n="3"/>
+</roles>
+
+<example name="straight transitive">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    ``I know it's not over,'' a sober-faced Mr. Corry acknowledged
+    while *trace* greeting steel suppliers in New York on Oct. 12 and
+    inviting them to a buffet of salmon and sushi in honor of Kobe
+    Steel Ltd., USX's partner in a steel mill in Lorain, Ohio. 
+</text>
+        <arg n="0">*trace* -&gt;  a sober-faced Mr. Corry</arg>
+        <rel>greeting</rel>
+        <arg n="1">steel suppliers</arg>
+        <arg f="LOC" n="M">in New York</arg>
+        <arg f="TMP" n="M">on Oct. 12</arg>
+</example>
+
+<example name="with specific reaction">
+<inflection aspect="perfect" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+     ``If this had happened a few months ago when the atmosphere was
+     still very positive it wouldn't have been greeted *trace* with
+     anything like the impact it has had  over the past two weeks,''
+     says Dennis Jarrett, a market strategist at Kidder Peabody. 
+</text>
+        <arg f="ADV" n="M">If this had happened a few months ago when
+        the atmosphere was still very positive </arg> 
+        <arg f="MOD" n="M">would</arg>
+        <arg f="NEG" n="M">n't</arg>
+        <rel>greeted</rel>
+        <arg n="1">*trace* -&gt;  it</arg>
+        <arg f="with" n="3">anything like the impact  it has had  over
+        the past two weeks</arg> 
+</example>
+
+<example name="with secondary attribute" src="hail.02">
+<text>
+    Mary greeted John as a long-lost enemy.
+</text>
+        <arg n="0">Mary</arg>
+        <rel>greeted</rel>
+        <arg n="1">John</arg>
+        <arg f="as" n="2">a long-lost enemy</arg>
+</example>
+</roleset>
+
+</predicate>
+</frameset>

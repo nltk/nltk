@@ -1,0 +1,66 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="matter">
+<note>
+  Frames file for 'matter' based on sentences in financial subcorpus.
+  No access to verbnet.  No comparison.
+</note>
+
+<roleset id="matter.01" name="be of importance" vncls="31.4">
+<roles>
+  <role descr="thing that matters" n="1"/>
+  <role descr="matters to whom" n="2">		
+  <vnrole vncls="31.4" vntheta="Cause"/></role>
+
+</roles>
+
+<example name="beautiful example">
+<text>
+    ``Size doesn't matter,'' Mr. Peladeau says.
+</text>
+        <arg n="1">Size</arg>
+        <arg f="NEG" n="M">n't</arg>
+        <rel>matter</rel>
+</example>
+
+<example name="it support">
+<text>
+    Spreads will become so tight that it won't matter which market an
+    investor chooses -- arbitrage will prevent him from gaining any
+    temporary profit. 
+</text>
+        <arg f="MOD" n="M">wo</arg>
+        <arg f="NEG" n="M">n't</arg>
+        <rel>matter</rel>
+        <arg n="1">which market an investor chooses</arg>
+</example>
+
+<example name="odd tracing">
+<text>
+    ``What *trace* really matters is the operating income of the
+    divisions.
+</text>
+        <arg n="1">*trace* -&gt;  What  --&gt;  the operating income of the
+        divisions</arg> 
+        <arg f="ADV" n="M">really</arg>
+        <rel>matters</rel>
+</example>
+
+
+<example name="with Arg2">
+<text>
+    GATT membership will not matter to Donbas coal miners short of soap
+</text>
+        <arg n="1">GATT membership</arg> 
+        <arg f="MOD" n="M">will</arg> 
+        <arg f="NEG" n="M">not</arg>
+        <rel>matter</rel>
+        <arg f="to" n="2">Donbas coal miners short of soap</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

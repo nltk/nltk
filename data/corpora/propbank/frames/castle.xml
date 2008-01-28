@@ -1,0 +1,29 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="castle">
+<note>
+  Frames file for 'castle' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="castle.01" name="chess move" vncls="-">
+<roles>
+  <role descr="chess player" n="0"/>
+</roles>
+
+<example name="Deep Thought">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+    Instead of [*] castling, a standard measure to safeguard the king,
+    D.T. made a second-rate rook maneuver at move 13; then it put a
+    knight offside on move 16. 
+</text>
+        <rel>castling</rel>
+        <arg n="0">D.T. -&gt;  [*]</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

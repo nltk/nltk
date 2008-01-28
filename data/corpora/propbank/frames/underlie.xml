@@ -1,0 +1,38 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="underlie">
+<note>
+  Frames file for 'underlie' based on sentences in financial
+  subcorpus.  No access to verbnet.  Irrelevant comparison to 'lie'.
+</note>
+
+<roleset id="underlie.01" name="act as the foundation for" vncls="47.8">
+<roles>
+  <role descr="thing acting as a foundation" n="0">
+		
+  <vnrole vncls="47.8" vntheta="Theme1"/></role>
+
+  <role descr="foundation for what?" n="1">
+		
+  <vnrole vncls="47.8" vntheta="Theme2"/></role>
+
+</roles>
+
+<example name="typical usage">
+<text>
+    Speculation, on the other hand, sparked buying in certain
+    incentive-backed issues, though rumors underlying such shares
+    eventually proved untrue. 
+</text>
+        <arg n="0">rumors</arg>
+        <rel>underlying</rel>
+        <arg n="1">such shares</arg>
+</example>
+
+<note>
+Ignore adjectival usages like &quot;the underlying causes of the recession.&quot;
+</note>
+
+</roleset>
+</predicate>
+</frameset>

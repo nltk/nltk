@@ -1,0 +1,68 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="spot">
+<note>
+  Frames file for 'spot' based on sentences in financial subcorpus.
+  Verbnet entry fill-9.8 which is very much a secondary sense.
+  Comparison with 'find'.
+</note>
+
+<roleset id="spot.01" name="discovery" vncls="30.2">
+<roles>
+  <role descr="finder" n="0"><vnrole vncls="30.2" vntheta="Experiencer"/></role>
+  <role descr="thing found" n="1"><vnrole vncls="30.2" vntheta="Stimulus"/></role>
+  <role descr="benefactive, found for" n="2"/>
+  <role descr="attribute" n="3"/>
+</roles>
+
+<example name="transitive">
+<text>
+    Messrs. Jacobson and Bates walked on the Big Board floor at about
+    8:45 a.m. yesterday and immediately spotted trouble. 
+</text>
+        <arg n="0">Messrs. Jacobson and Bates</arg>
+        <arg f="TMP" n="M">immediately</arg>
+        <rel>spotted</rel>
+        <arg n="1">trouble</arg>
+</example>
+
+<note>
+Will other roles appear?  Hard to say.  Check 'find' for more
+examples.
+</note>
+
+</roleset>
+
+<roleset id="spot.02" name="dab, create a spot on something" vncls="9.8">
+<roles>
+  <role descr="painter" n="0">
+		
+  <vnrole vncls="9.8" vntheta="Agent"/></role>
+
+  <role descr="canvas" n="1">
+		
+  <vnrole vncls="9.8" vntheta="Destination"/></role>
+
+  <role descr="paint" n="2">
+		
+  <vnrole vncls="9.8" vntheta="Theme"/></role>
+
+</roles>
+
+<example name="painter">
+  <text>
+    John spotted his car with purple daisies.
+  </text>
+  <arg n="0">John</arg>
+  <rel>spotted</rel>
+  <arg n="1">his car</arg>
+  <arg f="with" n="2">purple daisies</arg>
+</example>
+
+<note>
+Probably better in passive: the tablecloth was spotted with red wine.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,98 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="miss">
+<note>
+  Frames file for 'miss' based on sentences in financial subcorpus.
+  Verbnet entries 31.2, 47.8; other framed members include despise,
+  dislike, enjoy, favor, fear, love, resent; contain, dominate,
+  surround and top.  No Framenet entry.  Comparison with 'love' and
+  'surround'.
+</note>
+
+<roleset id="miss.01" name="long for" vncls="31.2">
+<roles>
+  <role descr="person experiencing emotion" n="0">
+	  <vnrole vncls="31.2" vntheta="Experiencer"/></role>
+  <role descr="thing longed for" n="1">
+	  <vnrole vncls="31.2" vntheta="Cause"/></role>
+</roles>
+
+<example name="Romeo, Romeo, where art thou Romeo?">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    Moreover, the price volatility that is amplified by program
+    trading is undercutting efforts to woo individual investors back
+    to an OTC market that *trace* sorely misses them. 
+</text>
+        <arg n="0">*trace* -&gt;  that -&gt;  an OTC market</arg>
+        <arg f="MNR" n="M">sorely</arg>
+        <rel>misses</rel>
+        <arg n="1">them</arg>
+</example>
+
+</roleset>
+
+<roleset id="miss.02" name="not hit, skip" vncls="-">
+<roles>
+  <role descr="misser" n="0"/>
+  <role descr="missed" n="1"/>
+  <role descr="instrument" n="2"/>
+</roles>
+
+<example name="oops">
+<inflection aspect="perfect" form="participle" person="third" tense="present" voice="active"/>
+<text>
+    The company has already missed its initial Oct. 1 target date for
+    completing the merger. 
+</text>
+        <arg n="0">The company</arg>
+        <arg f="TMP" n="M">already</arg>
+        <rel>missed</rel>
+        <arg n="1">its initial Oct. 1 target date for  completing the
+        merger</arg> 
+</example>
+
+<example name="you sank my battleship!">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    Mary missed John with the hammer.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>missed</rel>
+  <arg n="1">John</arg>
+  <arg f="with" n="2">the hammer</arg>
+</example>
+
+<note>
+Latter example is a little weird, but serves to distinguish the rolesets.
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="miss_out">
+
+<roleset id="miss.03" vncls="-" name="miss out: completely miss">
+<roles>
+  <role n="0"  descr="entity missing something"/>
+  <role n="1"  descr="thing missed"/>
+</roles>
+
+<example name="some guys have all the luck">
+  <inflection person="third" tense="present" aspect="perfect" voice="active" form="participle"/>
+  <text>
+    One was that, despite his 62 regular-season wins over the past
+    three seasons in the Land Beyond the Late News, he has been
+    overshadowed by his more-muscular mates and missed out on prizes
+    that might have been his due. 
+  </text>
+  <arg n="m" f="ADV">despite his 62 regular-season wins over the past
+    three seasons in the Land Beyond the Late News</arg>
+  <arg n="0"        >he</arg>
+  <rel              >missed out</rel>
+  <arg n="1" f="on">prizes that might have been his due</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,58 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="urge">
+<note>
+  Frames file for 'urge' based on sentences in financial subcorpus.
+  No Verbnet entry, Framenet entries Request and Suasion1.  Comparison
+  to verbs of compelled action (ie, force).
+</note>
+
+<roleset id="urge.01" name="impelled action">
+<roles>
+  <role descr="urger" n="0"/>
+  <role descr="impelled agent" n="1"/>
+  <role descr="impelled action" n="2"/>
+</roles>
+
+<example name="typical usage">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+    Dealers said the multinational oil company was pressured by recent
+    brokerage recommendations urging investors to switch into Shell
+    Trading &amp; Transport. 
+</text>
+        <arg n="0">recent brokerage recommendations</arg>
+        <rel>urging</rel>
+        <arg n="1">investors</arg>
+        <arg n="2">to switch into Shell Trading &amp; Transport</arg>
+</example>
+
+<example name="odd variant syntax">
+<inflection aspect="progressive" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+    Analysts continued to speculate late last week that Ford may try
+    to force the issue by calling for a special shareholder's meeting
+    and urging that the government and Jaguar holders remove the
+    barriers to a full bidding contest before December 1990. 
+</text>
+        <arg n="0">*trace* -&gt; *trace* -&gt;  Ford</arg>
+        <rel>urging</rel>
+        <arg n="1">the government and Jaguar holders</arg>
+        <arg n="2">remove the barriers to a full bidding contest
+        before December 1990</arg> 
+</example>
+
+<note>
+Note that this is exactly equivalent to &quot;Ford urged the gov't and Jag
+holders to remove the barriers...&quot;
+</note>
+
+<note>
+This verb highlights the similarity between &quot;force&quot; and &quot;request&quot;,
+which are currently framed oppositely.  One or the other will have to
+be changed, eventually.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

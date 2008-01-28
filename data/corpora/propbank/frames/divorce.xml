@@ -1,0 +1,53 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="divorce">
+<note>
+  Frames file for 'divorce' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="divorce.01" name="to obtain a divorce" vncls="-">
+<roles>
+  <role descr="initiator of end of marriage, agent" n="0"/>
+  <role descr="ex-spouse" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ He divorced his first wife three years ago and married the daughter of his court clerk .
+</text>
+	<arg n="0">He</arg>
+	<rel>divorced</rel>
+	<arg n="1">his first wife</arg>
+	<arg f="TMP" n="M">three years ago</arg>
+</example>
+</roleset>
+
+<roleset id="divorce.02" name="to separate" vncls="23.1">
+<roles>
+  <role descr="causer of separation, agent" n="0">
+        <vnrole vncls="23.1" vntheta="Agent"/></role>
+  <role descr="entity separated" n="1">
+        <vnrole vncls="23.1" vntheta="Patient1"/></role>
+  <role descr="entity separated from" n="2">
+        <vnrole vncls="23.1" vntheta="Patient2"/></role>
+</roles>
+
+
+<example name="with Arg2">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+ `` The } influence of the { U.S. is not being felt [*-2] in Central America ; Washington 's decisions do not respond to a policy , and are divorced [*-1] from reality , '' says [*T*-3] Fernando Volio , a Costa Rican congressman and former foreign minister .
+</text>
+	<arg f="NEG" n="M">not</arg>
+	<rel>divorced</rel>
+	<arg n="1">[*-1] -&gt;  Washington 's decisions</arg>
+	<arg f="from" n="2">reality</arg>
+</example>
+
+</roleset>
+</predicate>
+
+
+</frameset>

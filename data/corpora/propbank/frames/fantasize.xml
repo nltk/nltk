@@ -1,0 +1,34 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="fantasize">
+<note>
+  Frames file for 'fantasize' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="fantasize.01" name="dream" vncls="-">
+<roles>
+  <role descr="dreamer" n="0"/>
+  <role descr="dream" n="1"/>
+</roles>
+
+<example name="typical usage">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    Meanwhile, they tackle the mounds of paper -- and fantasize about
+    a dream world where bulk-mail postal regulations and government
+    inspectors are banished. 
+</text>
+        <arg f="DIS" n="M">Meanwhile</arg>
+        <arg n="0">they</arg>
+        <rel>fantasize</rel>
+        <arg f="about" n="1">a dream world where bulk-mail postal
+        regulations and government inspectors are banished</arg> 
+</example>
+
+<note>
+It's probably for the best that I didn't have to come up with a John
+example for this.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="fritter_away">
+<note>
+  Frames file for 'fritter'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="fritter.01" name="to spend frivolously" vncls="-">
+<roles> 
+  <role descr="spender, agent" n="0"/>
+  <role descr="money, resources, entity frittered" n="1"/>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="perfect" form="participle" person="third" tense="present" voice="active"/>
+<text>
+ Over the last few weeks , he has frittered away roughly half of what [*T*-1] was once a 33-point lead in the polls over Mr. Giuliani .
+</text>
+	<arg f="TMP" n="M">Over the last few weeks</arg>
+	<arg n="0">he</arg>
+	<rel>[ frittered] [ away]</rel>
+	<arg n="1">roughly half of what [*T*-1] was once a 33-point lead in the polls over Mr. Giuliani</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

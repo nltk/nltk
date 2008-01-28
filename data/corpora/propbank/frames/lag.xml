@@ -1,0 +1,66 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="lag">
+<note>
+  Frames file for 'lag' based on sentences in financial subcorpus.  No
+  Verbnet entry.  Comparison with 'outpace' which I fortunately just
+  framed.
+</note>
+
+<roleset id="lag.01" name="move more slowly">
+<roles>
+  <role descr="entity moving slower" n="0"/>
+  <role descr="entity moving faster" n="1"/>
+  <role descr="margin" n="2"/>
+</roles>
+
+<example name="lag behind">
+<text>
+    Yesterday, bank stocks lagged behind the overall OTC market. 
+</text>
+        <arg f="TMP" n="M">Yesterday</arg>
+        <arg n="0">bank stocks</arg>
+        <rel>lagged</rel>
+        <arg f="behind" n="1">the overall OTC market</arg>
+</example>
+
+<example name="NP object">
+<text>
+    But the move lagged a stronger rise in New York Stock Exchange
+    issues. 
+</text>
+        <arg f="DIS" n="M">But</arg>
+        <arg n="0">the move</arg>
+        <rel>lagged</rel>
+        <arg n="1">a stronger rise in New York Stock Exchange
+        issues</arg> 
+</example>
+
+<example name="with EXT">
+<text>
+    Advancers on the Big Board lagged decliners 662 to 829.
+</text>
+        <arg n="0">Advancers on the Big Board</arg>
+        <rel>lagged</rel>
+        <arg n="1">decliners</arg>
+        <arg f="EXT" n="2">662 to 829</arg>
+</example>
+
+<example name="with MNR">
+<text>
+    Amoco Corp. said third-quarter net income plunged 39% to $336
+    million as gasoline refining and marketing profits lagged
+    substantially behind last year's record level. 
+</text>
+        <arg n="0">gasoline refining and marketing profits</arg>
+        <rel>lagged</rel>
+        <arg f="MNR" n="2">substantially</arg>
+        <arg f="behind" n="1">last year's record level</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

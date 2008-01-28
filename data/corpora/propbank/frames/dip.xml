@@ -1,0 +1,71 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="dip">
+<note>
+  Frames file for 'dip' based on sentences in financial subcorpus.
+  Verbnet entry 9.3, other framed members include dump, push, quash,
+  shake, start; this is one of two possible senses.  Framenet class
+  Path_shape.   Other sense not in Verbnet or Framenet.  Comparison
+  with push and fall.
+</note>
+
+<roleset id="dip.01" name="fall slightly" vncls="-">
+<roles>
+  <role descr="thing falling" n="1"><vnrole vncls="9.3" vntheta="Theme"/></role>
+  <role descr="EXT" n="2"/>
+  <role descr="start point" n="3"/>
+  <role descr="end point" n="4"><vnrole vncls="9.3" vntheta="Destination"/></role>
+</roles>
+
+<example name="intransitive unaccusative">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Mercury attributed the loss to rapid prepayments of loans and
+    costs incurred  in  refinancing many house loans this past spring
+    and summer , when interest rates dipped. 
+</text>
+        <arg n="1">interest rates</arg>
+        <rel>dipped</rel>
+</example>
+
+<example name="all args">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Sales dipped 3.6% to $3.92 billion from $4.07 billion. 
+</text>
+        <arg n="1">Sales</arg>
+        <rel>dipped</rel>
+        <arg f="EXT" n="2">3.6%</arg>
+        <arg f="to" n="4">$3.92 billion </arg>
+        <arg f="from" n="3">$4.07 billion </arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="dip.02" name="spoon, ladle" vncls="9.3">
+<roles>
+  <role descr="agent, dipper" n="0"><vnrole vncls="9.3" vntheta="Agent"/></role>
+  <role descr="thing dipped" n="1"><vnrole vncls="9.3" vntheta="Theme"/></role>
+  <role descr="dipped into" n="2"><vnrole vncls="9.3" vntheta="Destination"/></role>
+</roles>
+
+<example name="doesn't actually occur in WSJ">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John dipped his toe into the scalding hot bathwater.
+  </text>
+  <arg n="0">John</arg>
+  <rel>dipped</rel>
+  <arg n="1">his toe</arg>
+  <arg f="into" n="2">the scalding hot bathwater</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

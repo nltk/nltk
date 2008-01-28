@@ -1,0 +1,56 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="taint">
+<note>
+Frames file for 'taint' based on sentences in financial subcorpus and
+automatic expansion via verbnet.
+</note>
+
+<roleset id="taint.01" name="contaminate" vncls="9.8">
+<roles>
+  <role descr="cause/source of contamination" n="0">
+	<vnrole vncls="9.8" vntheta="Agent"/></role>
+  <role descr="thing becoming contaminated" n="1">
+	<vnrole vncls="9.8" vntheta="Destination"/></role>
+  <role descr="contaminant" n="2">
+	<vnrole vncls="9.8" vntheta="Theme"/></role>
+</roles>
+
+<example name="note the instrument">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    According to department policy, prosecutors must make a strong
+    showing that lawyers' fees came from assets tainted *trace* by
+    illegal profits before any attempts at seizure are made.  
+</text>
+        <rel>tainted</rel>
+        <arg n="1">*trace* -&gt;  assets</arg>
+        <arg f="by" n="2">illegal profits</arg>
+</example>
+
+<example name="with contaminant" src="contaminate.01">
+  <inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+  <text>
+    John taints any room he enters with his foul stench.
+  </text>
+  <arg n="0">John</arg>
+  <rel>taints</rel>
+  <arg n="1">any room he enters</arg>
+  <arg f="with" n="2">his foul stench</arg>
+</example>
+
+<example name="transitive" src="contaminate.01">
+<inflection aspect="perfect" form="participle" person="ns" tense="past" voice="active"/>
+<text>
+    At stake was an $80,000 settlement involving who should pay what
+    share of cleanup costs at the site of a former gas station, where
+    underground fuel tanks had leaked and taintd the soil. 
+</text>
+        <arg n="0">underground fuel tanks</arg>
+        <rel>tainted</rel>
+        <arg n="1">the soil</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

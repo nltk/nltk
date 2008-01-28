@@ -1,0 +1,54 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="clamp">
+<note>
+  Frames file for 'clamp' based on sentence in financial subcorpus.
+  Verbnet class tape-22.4, other framed members include link and tie.
+</note>
+
+<roleset id="clamp.01" name="attach firmly" vncls="22.4">
+<roles>
+  <role descr="attacher, agent causing attachment" n="0">
+	  <vnrole vncls="22.4" vntheta="Agent"/></role>
+  <role descr="thing(s) being clamped" n="1">
+	  <vnrole vncls="22.4" vntheta="Patient"/></role>
+</roles>
+
+<example name="from the corpus">
+<text>
+    ``He has clamped on their ankle like a pit bull,'' says Paul
+    Leming, a vice president with Morgan Stanley &amp; Co. 
+</text>
+        <arg n="0">He</arg>
+        <rel>clamped</rel>
+        <arg f="on" n="1">their ankle</arg>
+        <arg f="MNR" n="M">like a pit bull</arg>
+</example>
+
+<example name="two explicit things being clamped">
+  <text>
+    John clamped his finger to the board.
+  </text>
+  <arg n="0">John</arg>
+  <rel>clamped</rel>
+  <arg n="1">his finger</arg>
+  <arg f="to" n="1">the board</arg>
+</example>
+
+<example name="with attributive">
+  <text>
+    John clamped his mouth shut.
+  </text>
+  <arg n="0">John</arg>
+  <rel>clamped</rel>
+  <arg n="1">his mouth</arg>
+  <arg f="PRD" n="m">shut</arg>
+</example>
+
+<note>
+All this fuss is probably unnecessary for a low-freq verb.  Oh well.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

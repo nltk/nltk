@@ -1,0 +1,42 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="embolden">
+<note>
+Frames file for 'embolden' based on sentences in financial subcorpus
+and automatic expansion via verbnet.
+</note>
+
+<roleset id="embolden.01" name="make be bold" vncls="31.1">
+<roles>
+	<role descr="thing causing boldness" n="0">
+		
+  <vnrole vncls="31.1" vntheta="Cause"/></role>
+
+	<role descr="thing becoming bold" n="1">
+		
+  <vnrole vncls="31.1" vntheta="Experiencer"/></role>
+
+	<role descr="instrument" n="2"/>
+</roles>
+
+<example name="passivization and rightward extraction--whee!">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    Another reason: *trace* Emboldened *trace* by their success in
+    helping to scuttle the previous transaction, the machinists are
+    likely to be more aggressive if a second buy-out attempt occurs. 
+</text>
+        <rel>Emboldened</rel>
+        <arg n="1">*trace* -&gt; *trace* -&gt; the machinists</arg>
+        <arg f="by" n="0">their success in  helping  to scuttle the previous transaction</arg>
+</example>
+
+<note>
+The set 31.1 usually suggests an instrumental arg2--this sounds really
+awkward to my ear.  Perhaps this verb doesn't belong to this class?
+Perhaps the class needs to be split?
+</note>
+
+</roleset>
+</predicate>
+</frameset>

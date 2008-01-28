@@ -1,0 +1,53 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="bruise">
+<note>
+  Frames file for 'bruise' based on sentences in wsj.  Verbnet entries
+  21.2 and 40.8.3, Framenet entry Cause harm.
+</note>
+
+<roleset id="bruise.01" name="bruise" vncls="21.2-1 40.8.3">
+<roles>
+  <role descr="bruiser" n="0"><vnrole vncls="40.8.3" vntheta="Experiencer"/><vnrole vncls="21.2-1" vntheta="Agent"/></role>
+  <role descr="bruised" n="1"><vnrole vncls="40.8.3" vntheta="Patient"/><vnrole vncls="21.2-1" vntheta="Patient"/></role>
+</roles>
+
+<example name="agentive adjective">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+     Leading up to the speech was a drumroll of economic statistics
+     suggesting that the British war on inflation will be more
+     bruising than previously assumed.
+</text>
+        <arg n="0">the British war on inflation</arg>
+        <rel>bruising</rel>
+</example>
+
+
+<example name="patientive(?) adjective">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    NO MORE STUBBED toes or bruised shins, promises Geste Corp. of
+    Goshen, Ind., the designer of a bed support to replace traditional
+    frames. 
+</text>
+        <rel>bruised</rel>
+        <arg n="1">shins</arg>
+</example>
+
+<example name="actually verbal">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    Mary bruised John's skull.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>bruised</rel>
+  <arg n="1">John's skull</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

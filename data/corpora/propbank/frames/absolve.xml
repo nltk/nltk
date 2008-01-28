@@ -1,0 +1,40 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="absolve">
+<note>
+  Frames file for 'absolve' based on sentences in wsj.  Verbnet entry
+  10.6. 
+</note>
+
+<roleset id="absolve.01" name="remove guilt" vncls="10.6">
+<roles>
+  <role descr="absolver, agent" n="0">
+             
+  <vnrole vncls="10.6" vntheta="Agent"/></role>
+  <role descr="guilty party" n="1">
+             
+  <vnrole vncls="10.6" vntheta="Source"/></role>
+  <role descr="guilt" n="2">
+             
+  <vnrole vncls="10.6" vntheta="Theme"/></role>
+</roles>
+
+<example name="standard usage">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+    On Friday, the firms filed a suit against West Virginia in New
+    York state court asking for a declaratory judgment absolving them
+    of liability. 
+</text>
+        <arg n="0">a declaratory judgment</arg>
+        <rel>absolving</rel>
+        <arg n="1">them</arg>
+        <arg f="of" n="2">liability</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

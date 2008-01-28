@@ -1,0 +1,103 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="pack">
+<note>
+Frames file for 'pack' based on sentences in wsj and automatic
+expansion via verbnet.
+</note>
+
+<roleset id="pack.01" name="fill, load" vncls="9.7-2">
+<roles>
+  <role descr="packer, agent" n="0">
+	<vnrole vncls="9.7-2" vntheta="Agent"/></role>
+  <role descr="beast of burden" n="1">
+	<vnrole vncls="9.7-2" vntheta="Destination"/></role>
+  <role descr="cargo" n="2">
+	<vnrole vncls="9.7-2" vntheta="Theme"/></role>
+</roles>
+
+<example name="transitive with arg1">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    The league's promoters hope retirees and tourists will join
+    die-hard fans like Mr. de Castro and pack the stands to see the
+    seniors. 
+</text>
+        <arg n="0">retirees and tourists</arg>
+        <arg f="MOD" n="M">will</arg>
+        <rel>pack</rel>
+        <arg n="1">the stands</arg>
+        <arg f="PNC" n="M">to see the seniors</arg>
+</example>
+
+<example name="arg1 as PP">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    The crowning moment in the career of Joseph F. O'Kicki came as 300
+    local and state dignitaries packed into his elegant,
+    marble-columned courtroom here last year for his swearing in as
+    President Judge of Cambria County. 
+</text>
+        <arg n="0">300 local and state dignitaries</arg>
+        <rel>packed</rel>
+        <arg f="into" n="1">his elegant , marble-columned courtroom here</arg>
+        <arg f="TMP" n="M">last year</arg>
+        <arg f="PNC" n="M">for his swearing in as President Judge of
+        Cambria County</arg> 
+</example>
+
+<example name="transitive with arg2">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    One of the friends sweeps broken dishes and shattered glass from a
+    countertop and starts *trace* to pack what can be salvaged from
+    the kitchen. 
+</text>
+        <arg n="0">*trace* -&gt;  One of the friends</arg>
+        <rel>pack</rel>
+        <arg n="2">what  can be salvaged  from the kitchen</arg>
+</example>
+
+<example name="all args">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    He returned home last Thursday, packed a bag with fresh clothes
+    and reported for duty Friday in Walnut Creek. 
+</text>
+        <arg n="0">He</arg>
+        <rel>packed</rel>
+        <arg n="1">a bag</arg>
+        <arg f="with" n="2">fresh clothes</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="pack_up">
+
+<roleset id="pack.02" name="fill up, load" vncls="-">
+<roles>
+  <role descr="agent, packer" n="0"/>
+  <role descr="pack, beast of burden" n="1"/>
+</roles>
+
+<example name="intransitive">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    ``This was an invisible, powerful force that's almost impossible
+    for a layman to contemplate,'' Mr. Warren says solemnly as the
+    ghostbusting entourage packs up to leave. 
+</text>
+        <arg n="0">the ghostbusting entourage</arg>
+        <rel>[ packs] [ up]</rel>
+        <arg f="PNC" n="M">to leave</arg>
+</example>
+
+<note>
+I can get a transitive with arg1 (&quot;John packed up his bags and left&quot;)
+but no reading with the arg2 (*&quot;John packed up (his bags) with smoked
+herring&quot;).
+</note>
+
+</roleset>
+</predicate>
+</frameset>

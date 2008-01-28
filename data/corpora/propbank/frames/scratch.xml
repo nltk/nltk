@@ -1,0 +1,146 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="scratch">
+<note>
+Frames file for 'scratch' based on sentences in wsj and, loosely,
+automatic expansion via verbnet.  Verbnet expansions don't look very
+good to me this time, though.
+</note>
+
+<roleset id="scratch.02" name="cut shallowly" vncls="21.1">
+<roles>
+	<role descr="cutter" n="0">
+		
+  <vnrole vncls="21.1" vntheta="Agent"/></role>
+
+	<role descr="thing cut" n="1">
+		
+  <vnrole vncls="21.1" vntheta="Patient"/></role>
+
+	<role descr="medium, source" n="2"/>
+	<role descr="instrument" n="3">
+		
+  <vnrole vncls="21.1" vntheta="Instrument"/></role>
+
+</roles>
+
+<example name="semi-idiomatic">
+<inflection aspect="progressive" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+    While they can target some of the most obvious miscreants,
+    enforcers concede that they are only scratching the surface. 
+</text>
+        <arg n="0">they</arg>
+        <arg f="DIS" n="M">only</arg>
+        <rel>scratching</rel>
+        <arg n="1">the surface</arg>
+</example>
+
+<example name="kitchen disaster" src="slash.01">
+  <text>
+  John scratched his hand with a butter knife.
+  </text>
+  <arg n="0">John</arg>
+  <rel>scratched</rel>
+  <arg n="1">his hand</arg>
+  <arg f="with" n="3">a butter knife</arg>
+</example>
+
+</roleset>
+<note>
+I don't think arg2 'medium' will ever occur; it just doesn't sound
+natural to me.
+</note>
+
+<roleset id="scratch.04" name="search" vncls="35.5">
+<roles>
+	<role descr="searcher, scratcher" n="0"><vnrole vncls="35.5" vntheta="Agent"/></role>
+	<role descr="searched for" n="1"><vnrole vncls="35.5" vntheta="Theme"/></role>
+</roles>
+
+<example name="I think this is right">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    This global warming must have been entirely natural -- nobody
+    would blame it on a few hundred thousand hunter-gatherers hunting
+    mammoths and scratching around in caves. 
+</text>
+        <arg n="0">a few hundred thousand hunter-gatherers</arg>
+        <rel>scratching</rel>
+        <arg f="MNR" n="M">around</arg>
+        <arg f="LOC" n="M">in caves</arg>
+</example>
+</roleset>
+</predicate>
+
+<predicate lemma="scratch_out">
+<roleset id="scratch.01" name="extract with difficulty" vncls="10.4.1">
+<roles>
+	<role descr="squeezer" n="0">
+		
+  <vnrole vncls="10.4.1" vntheta="Agent"/></role>
+
+	<role descr="extracted material (ie life)" n="1">
+		
+  <vnrole vncls="10.4.1" vntheta="Theme"/></role>
+
+	<role descr="source (ie, stony ground)" n="2">
+		
+  <vnrole vncls="10.4.1" vntheta="Source"/></role>
+
+</roles>
+
+<example name="squeeze out of" src="squeeze.02">
+<text>
+    But it's hard *trace* to scratch much profit out of the
+    personal-computer business these days, and the workstation market,
+    while important, is too small to rely on for much growth. 
+</text>
+        <arg n="0">*trace*</arg>
+        <rel>scratch out</rel>
+        <arg n="1">much profit</arg>
+        <arg f="of" n="2">the personal-computer business</arg>
+        <arg f="TMP" n="M">these days</arg>
+</example>
+
+</roleset>
+
+<roleset id="scratch.03" name="manner of writing" vncls="25.2">
+<roles>
+	<role descr="writer" n="0">
+		
+  <vnrole vncls="25.2" vntheta="Agent"/></role>
+
+	<role descr="thing written" n="1">
+		
+  <vnrole vncls="25.2" vntheta="Theme"/></role>
+
+	<role descr="benefactive" n="2"/>
+</roles>
+
+<example name="inkblot express">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    At Lloyd's of London, underwriters still scratch out policies
+    using fountain pens and blotting paper. 
+</text>
+        <arg f="LOC" n="M">At Lloyd's of London</arg>
+        <arg n="0">underwriters</arg>
+        <arg f="TMP" n="M">still</arg>
+        <rel>[ scratch] [ out]</rel>
+        <arg n="1">policies</arg>
+        <arg f="MNR" n="M">using fountain pens and blotting paper</arg>
+</example>
+
+<example name="with benefactive" src="draw.01">
+  <text>
+    John scratched out a picture of a rose for Mary.
+  </text>
+  <arg n="0">John</arg>
+  <rel>scratched out</rel>
+  <arg n="1">a picture of a rose</arg>
+  <arg f="for" n="2">Mary</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,44 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="blindfold">
+<note>
+  Frames file for 'blindfold' based on sentences in wsj.  Verbnet
+  entry 9.9.
+</note>
+
+<roleset id="blindfold.01" name="cover the eyes" vncls="9.9">
+<roles>
+  <role descr="coverer, agent" n="0"><vnrole vncls="9.9" vntheta="Agent"/></role>
+  <role descr="entity with covered eyes" n="1"><vnrole vncls="9.9" vntheta="Destination"/></role>
+  <role descr="explicit mention of blindfold" n="2"><vnrole vncls="9.9" vntheta="Theme"/></role>
+</roles>
+
+<example name="adjectival/adverbial">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    When it comes to investing, trying to weigh risk and reward can
+    seem like [*] throwing darts blindfolded: Investors don't know the
+    actual returns that securities will deliver, or the ups and downs
+    that will occur along the way. 
+</text>
+        <arg n="1">[*]</arg>
+        <rel>blindfolded</rel>
+</example>
+
+<example name="normal verb">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John blindfolded Mary with silk scarves and a burlap sack.
+  </text>
+  <arg n="0">John</arg>
+  <rel>blindfolded</rel>
+  <arg n="1">Mary</arg>
+  <arg f="with" n="2">silk scarves and a burlap sack</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,49 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="implicate">
+<note>
+  Frames file for 'implicate' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+
+
+<roleset id="implicate.01" name="to involve, connect, or imply" vncls="-">
+<roles>
+  <role descr="entity establishing a link" n="0"/>
+  <role descr="thing implicated" n="1"/>
+  <role descr="involved in what?" n="2"/>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ The conversation was taped [*-1] by federal investigators in what Mr. Lang said [*T*-2] was an effort [*] to get Mr. Lorin to implicate Mr. Laff .
+</text>
+	<arg n="0">Mr. Lorin</arg>
+	<rel>implicate</rel>
+	<arg n="1">Mr. Laff</arg>
+</example>
+
+
+
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="past" voice="passive"/>
+<text>
+ Capcom Futures is a Chicago subsidiary of Capcom Financial Services Ltd. , a London financial firm that [*T*-2] was implicated [*-1] last year in a scheme [*] to launder drug money .
+</text>
+	<rel>implicated</rel>
+	<arg n="1">[*-1] -&gt;  [*T*-2] -&gt;  that -&gt;  a London financial firm</arg>
+	<arg f="TMP" n="M">last year</arg>
+	<arg f="in" n="2">a scheme [*] to launder drug money</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

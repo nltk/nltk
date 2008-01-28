@@ -1,0 +1,35 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="awake">
+<note>
+  Frames file for 'awake' based on sentences in wsj.  Verbnet entries
+  48.1.1 and 45.4.  Basically the same as awaken but cannot take an agent.
+</note>
+
+<roleset id="awake.01" name="to wake or make aware" vncls="-">
+<roles>
+  <role descr="entity awake" n="1"/>
+  <role descr="entity becoming aware of" n="2"/>
+</roles>
+
+<example name="both args">
+<inflection aspect="ns" form="ns" person="ns" tense="ns" voice="ns"/>
+<text>
+    Edward Carlson awoke one morning last month [*-1] to find eight
+    holes in his front yard where his prized miniature palms, called
+    cycads, once stood. 
+</text>
+        <arg n="1">Edward Carlson</arg>
+        <rel>awoke</rel>
+        <arg f="TMP" n="M">one morning last month</arg>
+        <arg n="2">[*-1] to find eight holes in his front yard
+        where his prized miniature palms, called cycads, once
+        stood</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

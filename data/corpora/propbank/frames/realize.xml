@@ -1,0 +1,62 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="realize">
+<note>
+  Frames file for 'realize' based on sentences in financial
+  subcorpus.  No verbnet entry.  Comparison with 'know' and
+  'conclude'.
+</note>
+
+<roleset id="realize.01" name="come to know">
+<roles>
+  <role descr="new knower" n="0"/>
+  <role descr="new knowledge" n="1"/>
+</roles>
+
+<example name="duh!">
+<text>
+    Once he realized that Paribas's intentions weren't friendly, he
+    said, but before the bid was launched, he sought approval to boost
+    his Paribas stake above 10%. 
+</text>
+        <arg n="0">he</arg>
+        <rel>realized</rel>
+        <arg n="1">Paribas's intentions weren't friendly</arg>
+</example>
+
+</roleset>
+
+<roleset id="realize.02" name="cause to come about, create">
+<roles>
+  <role descr="creator" n="0"/>
+  <role descr="thing created" n="1"/>
+  <role descr="source, created from" n="2"/>
+</roles>
+
+<example name="strange source">
+<text>
+    Its cereal division realized higher operating profit on volume
+    increases, but also spent more on promotion.
+</text>
+        <arg n="0">Its cereal division</arg>
+        <rel>realized</rel>
+        <arg n="1">higher operating profit</arg>
+        <arg f="on" n="2">volume increases</arg>
+</example>
+
+<example name="more typical source">
+<text>
+    Profits realized *trace* from these trades would then be shared by
+    the conspiring brokers. 
+</text>
+        <rel>realized</rel>
+        <arg n="1">*trace* -&gt;  Profits</arg>
+        <arg f="from" n="2">these trades</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

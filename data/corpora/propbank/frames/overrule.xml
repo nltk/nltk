@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="overrule">
+<note>
+  Frames file for 'overrule' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="overrule.01" name="to prevail over or declare void" vncls="-">
+<roles>
+  <role descr="prevailer, agent" n="0"/>
+  <role descr="entity overruled" n="1"/>
+</roles>
+
+<example name="typical">
+<inflection aspect="ns" form="gerund" person="ns" tense="ns" voice="ns"/>
+<text>
+    That would be an ironic result of a case in which the Supreme
+    Court expressly stopped short of [*-2] overruling Roe vs. Wade. 
+</text>
+        <arg n="0">[*-2] -&gt;  the Supreme Court</arg>
+        <rel>overruling</rel>
+        <arg n="1">Roe vs. Wade</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

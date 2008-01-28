@@ -1,0 +1,45 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="vow">
+<note>
+  Frames file for 'vow' based on survey of sentences in the WSJ
+  corpus. Comparison with 'promise'.
+</note>
+
+<roleset id="vow.01" name="to promise" vncls="-">
+<roles>
+  <role descr="promiser, agent" n="0"/>
+  <role descr="promised action" n="1"/>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ Also in Beirut , a Moslem group vowed [*-1] to kill Americans if the U.S. implements a policy [0] [*T*-2] to seize suspects abroad .
+</text>
+	<arg f="DIS" n="M">Also</arg>
+	<arg f="LOC" n="M">in Beirut</arg>
+	<arg n="0">a Moslem group</arg>
+	<rel>vowed</rel>
+	<arg n="1">[*-1] to kill Americans if the U.S. implements a policy [0] [*T*-2] to seize suspects abroad</arg>
+</example>
+
+
+<example name="extracted Arg1">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ `` I 'm not going [*-1] to look stupid , '' vows [*T*-2] former Pittsburgh Pirate second baseman Rennie Stennett , sweat dotting his brow as he prepares for some practice swings .
+</text>
+	<rel>vows</rel>
+	<arg n="1">[*T*-2] -&gt;  I 'm not going [*-1] to look stupid</arg>
+	<arg n="0">former Pittsburgh Pirate second baseman Rennie Stennett</arg>
+	<arg f="ADV" n="M">sweat dotting his brow as he prepares for some practice swings</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

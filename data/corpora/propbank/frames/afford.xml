@@ -1,0 +1,61 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="afford">
+<note>
+  Frames file for 'afford' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="afford.01" name="be able to spare, have the financial means" vncls="-">
+<roles>
+  <role descr="haver of financial means, agent" n="0"/>
+  <role descr="costly thing, theme" n="1"/>
+</roles>
+
+
+<example name="transitive with adverbials">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+     These days Nissan can afford that strategy, even though profits
+     aren't exactly robust. 
+</text>
+	<arg f="TMP" n="M">These days</arg>
+	<arg n="0">Nissan</arg>
+	<arg f="MOD" n="M">can</arg>
+	<rel>afford</rel>
+	<arg n="1">that strategy</arg>
+	<arg f="ADV" n="M">even though profits aren't exactly robust</arg>
+</example>
+</roleset>
+
+
+<roleset id="afford.02" name="provide, make available" vncls="-">
+<roles>
+  <role descr="provider, agent" n="0"/>
+  <role descr="provided, theme" n="1"/>
+  <role descr="recipient" n="2"/>
+</roles>
+
+
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="past" voice="passive"/>
+<text>
+    Last year the public was afforded [*-1] a preview of
+    Ms. Bartlett's creation in a tablemodel version, at a BPC
+    exhibition. 
+</text>
+	<arg f="TMP" n="M">Last year</arg>
+	<rel>afforded</rel>
+	<arg n="2">[*-1] -&gt;  the public</arg>
+	<arg n="1">a preview of Ms. Bartlett 's creation</arg>
+	<arg f="MNR" n="M">in a tablemodel version</arg>
+	<arg f="LOC" n="M">at a BPC exhibition</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

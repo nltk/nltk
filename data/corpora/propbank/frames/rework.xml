@@ -1,0 +1,34 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="rework">
+<note>
+  Frames file for 'rework' based on sentences in financial subcorpus.
+  No Verbnet entry.
+</note>
+
+<roleset id="rework.01" name="update, improve" vncls="-">
+<roles>
+  <role descr="worker" n="0"/>
+  <role descr="thing improved" n="1"/>
+</roles>
+
+<example name="purpose should be arg?">
+<inflection aspect="ns" form="participle" person="third" tense="past" voice="passive"/>
+<text>
+    We know Verdi's own contribution was mighty impressive since the
+    operatic ``Libera me'' was reworked *trace* for the Manzoni
+    Requiem, of which he wrote every note himself having learned his
+    lesson. 
+</text>
+        <rel>reworked</rel>
+        <arg n="1">*trace* -&gt;  the operatic `` Libera me ''</arg>
+        <arg f="PNC" n="M">the Manzoni Requiem, of which he wrote
+        every note himself having learned his lesson</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

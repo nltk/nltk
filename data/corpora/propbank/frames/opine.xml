@@ -1,0 +1,47 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="opine">
+<note>
+  Frames file for 'opine' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="opine.01" name="express an opinion" vncls="-">
+<roles>
+  <role descr="speaker" n="0"/>
+  <role descr="opinion" n="1"/>
+  <role descr="hearer" n="2"/>
+</roles>
+
+<example name="just transitive">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+    You are absolutely wrong, however, in [*] opining that this
+    position is some kind of ``flip-flop,'' something newly arrived at
+    as a result of reading the opinion polls. 
+</text>
+        <arg n="0">[*] -&gt;  You</arg>
+        <rel>opining</rel>
+        <arg n="1">this position is some kind of ``flip-flop,''
+        something newly arrived at as a result of reading the opinion
+        polls</arg> 
+</example>
+
+<example name="with hearer">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     ``You know, ripe kumquats really are much better than green
+     ones,'' opined John to Mary.
+  </text>
+  <arg n="1">``You know, ripe kumquats really are much better
+  than green ones,''</arg> 
+  <rel>opined</rel>
+  <arg n="0">John</arg>
+  <arg f="to" n="2">Mary</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,42 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="peg">
+<note>
+  Frames file for 'peg' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="peg.01" name="stabilize (a price)" vncls="-">
+<roles>
+  <role descr="cause of stabilization, agent" n="0"/>
+  <role descr="entity pegged" n="1"/>
+  <role descr="pegged to/at" n="2"/>
+</roles>
+
+<example name="peg at">
+<inflection aspect="perfect" form="participle" person="ns" tense="past" voice="passive"/>
+<text>
+ While the minimum wage had traditionally been pegged [*-164] at half the average U.S. manufacturing wage , the level of $ 4.25 [*U*] an hour in 1991 will still be less than 35 % of average factory pay , Mr. Williams said [0] [*T*-1] .
+</text>
+	<rel>pegged</rel>
+	<arg n="1">[*-164] -&gt;  the minimum wage</arg>
+	<arg f="at" n="2">half the average U.S. manufacturing wage</arg>
+</example>
+
+
+<example name="peg to">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+ Even though the currency is pegged [*-1] to the U.S. dollar , with a fixed exchange rate of HK$ 7.8 [*U*] to the American currency , the U.S. and Hong Kong economies do n't always move in lock step , [*] making it [*EXP*-3] difficult [*] to predict where interest rates in the colony will go [*T*-2] .
+</text>
+	<rel>pegged</rel>
+	<arg n="1">[*-1] -&gt;  the currency</arg>
+	<arg f="to" n="2">the U.S. dollar</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

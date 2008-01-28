@@ -1,0 +1,45 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="implement">
+<note>
+  Frames file for 'implement' based on sentences in financial
+  subcorpus.  No verbnet entry.  No comparison.
+</note>
+
+<roleset id="implement.01" name="bring about">
+<roles>
+  <role descr="implementer" n="0"/>
+  <role descr="thing implemented" n="1"/>
+  <role descr="instrument" n="2"/>
+</roles>
+
+<example name="active">
+<text>
+    The results underscore Sears' difficulties in *trace* implementing
+    the ``everyday low pricing'' strategy that it adopted in March as
+    part of a broad attempt to revive its retailing business. 
+</text>
+        <arg n="0">*trace* -&gt;  Sears</arg>
+        <rel>implementing</rel>
+        <arg n="1">the ``everyday low pricing'' strategy that it
+        adopted in March as part of a broad attempt to revive its
+        retailing business</arg> 
+</example>
+
+<example name="passive">
+<text>
+    All arguments against program trading, even those pressed without
+    fact, conclude with three expected results after ``reforms'' are
+    implemented *trace*: [etc]
+</text>
+        <rel>implemented</rel>
+        <arg n="1">*trace* -&gt;  reforms</arg>
+</example>
+
+<note>
+subject traces seem unusually tricky for this verb.  Dunno why.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

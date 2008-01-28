@@ -1,0 +1,34 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="construe">
+<note>
+  Frames file for 'construe' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="construe.01" name="to interpret" vncls="-">
+<roles>
+  <role descr="interpreter, agent" n="0"/>
+  <role descr="entity construed" n="1"/>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ In the Lilly case , the appeals court broadly construed a federal statute to grant Medtronic , a medical device manufacturer , an exemption [0] [*] to infringe a patent under certain circumstances [*T*-1] .
+</text>
+	<arg f="LOC" n="M">In the Lilly case</arg>
+	<arg n="0">the appeals court</arg>
+	<arg f="MNR" n="M">broadly</arg>
+	<rel>construed</rel>
+	<arg n="1">a federal statute to grant Medtronic , a medical device manufacturer , an exemption [0] [*] to infringe a patent under certain circumstances [*T*-1]</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

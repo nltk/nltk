@@ -1,0 +1,63 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="remember">
+<note>
+Frames file for 'remember' based on sentences in financial subcorpus
+and automatic expansion via verbnet.
+</note>
+
+<roleset id="remember.01" name="default" vncls="29.2">
+<roles>
+  <role descr="rememberer" n="0">
+		
+  <vnrole vncls="29.2" vntheta="Agent"/></role>
+
+  <role descr="memory" n="1">
+		
+  <vnrole vncls="29.2" vntheta="Theme"/></role>
+
+  <role descr="secondary attribute" n="2">
+		
+  <vnrole vncls="29.2" vntheta="Predicate"/></role>
+
+</roles>
+
+<example name="remember a nominal">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    In an invention that drives Verdi purists bananas, Violetta lies
+    dying in bed during the prelude, rising deliriously when then she
+    remembers the great parties she used to throw. 
+</text>
+        <arg f="TMP" n="M">then</arg>
+        <arg n="0">she</arg>
+        <rel>remembers</rel>
+        <arg n="1">the great parties she used to throw</arg>
+</example>
+
+<example name="remember a sentence">
+<inflection aspect="ns" form="full" person="ns" tense="ns" voice="ns"/>
+<text>
+    The executive recalls Mr. Corry whispering to him and others,
+    ``*trace* Remember, this was Dave's deal.'' 
+</text>
+        <arg n="0"/>
+        <rel>Remember</rel>
+        <arg n="1">this was Dave's deal</arg> 
+</example>
+
+<example name="with attribute" src="identify.01">
+<text>
+    ``A lot of people are remembering a vote for representation as a
+    vote against Fred Smith,'' says J.X. Gollich, a
+    Tiger-turned-Federal pilot and union activist. 
+</text>
+        <arg n="0">A lot of people</arg>
+        <rel>remembering</rel>
+        <arg n="1">a vote for representation</arg>
+        <arg f="as" n="2">a vote against Fred Smith</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

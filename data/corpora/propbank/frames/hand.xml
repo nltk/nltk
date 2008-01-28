@@ -1,0 +1,102 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="hand">
+<note>
+Frames file for 'hand' based on sentences in financial subcorpus and
+automatic expansion via verbnet.
+</note>
+
+<roleset id="hand.01" name="give" vncls="11.1-1">
+<roles>
+	<role descr="giver" n="0">
+		
+  <vnrole vncls="11.1-1" vntheta="Agent"/></role>
+ 
+	<role descr="thing given" n="1">
+		
+  <vnrole vncls="11.1-1" vntheta="Theme"/></role>
+ 
+	<role descr="entity given to" n="2">
+		
+  <vnrole vncls="11.1-1" vntheta="Destination"/></role>
+ 
+</roles>
+
+<example name="double object">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+     ``We don't just hand the customer the package. 
+</text>
+        <arg n="0">We</arg>
+        <arg f="NEG" n="M">n't</arg>
+        <arg f="DIS" n="M">just</arg>
+        <rel>hand</rel>
+        <arg n="2">the customer</arg>
+        <arg n="1">the package</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="hand_over">
+<roleset id="hand.02" name="give" vncls="11.1-1">
+<roles>
+	<role descr="giver" n="0">
+		
+  <vnrole vncls="11.1-1" vntheta="Agent"/></role>
+ 
+	<role descr="thing given" n="1">
+		
+  <vnrole vncls="11.1-1" vntheta="Theme"/></role>
+ 
+	<role descr="entity given to" n="2">
+		
+  <vnrole vncls="11.1-1" vntheta="Destination"/></role>
+ 
+</roles>
+
+<example name="all args">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    As he handed over the reins to successor Charles A. Corry, steel
+    profits were close to a cyclical peak. 
+</text>
+        <arg n="0">he</arg>
+        <rel>[ handed] [ over]</rel>
+        <arg n="1">the reins</arg>
+        <arg f="to" n="2">successor Charles A. Corry</arg>
+</example>
+</roleset>
+</predicate>
+
+<predicate lemma="hand_out">
+
+<roleset id="hand.03" name="give" vncls="11.1-1">
+<roles>
+	<role descr="giver" n="0">
+		
+  <vnrole vncls="11.1-1" vntheta="Agent"/></role>
+ 
+	<role descr="thing given" n="1">
+		
+  <vnrole vncls="11.1-1" vntheta="Theme"/></role>
+ 
+	<role descr="entity given to" n="2">
+		
+  <vnrole vncls="11.1-1" vntheta="Destination"/></role>
+ 
+</roles>
+
+<example name="unstated recipient">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    But United Media says it's very scrupulous with the contracts it
+    hands *trace* out. 
+</text>
+        <arg n="0">it</arg>
+        <rel>[ hands] [ out]</rel>
+        <arg n="1">*trace* -&gt; *trace* -&gt;  the contracts</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

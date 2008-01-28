@@ -1,0 +1,99 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="whack">
+<note>
+Frames file for 'whack' based on sentences in financial subcorpus and
+automatic expansion via verbnet.
+</note>
+
+<roleset id="whack.01" name="hit" vncls="18.1">
+<roles>
+	<role descr="agent, hitter - animate only!" n="0">
+		
+  <vnrole vncls="18.1" vntheta="Agent"/></role>
+ 
+	<role descr="thing hit" n="1">
+		
+  <vnrole vncls="18.1" vntheta="Patient"/></role>
+ 
+	<role descr="instrument, thing hit by or with" n="2">
+		
+  <vnrole vncls="18.1" vntheta="Instrument"/></role>
+ 
+</roles>
+
+<example name="instrumental subject">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Some lousy earnings reports whacked the stock market, but bond
+    prices fell only slightly and the dollar rose a little against
+    most major currencies. 
+</text>
+        <arg n="2">Some lousy earnings reports</arg>
+        <rel>whacked</rel>
+        <arg n="1">the stock market</arg>
+</example>
+
+<example name="agentive" src="strike.01">
+  <text>
+    John whacked the fence with a stick.
+  </text>
+  <arg n="0">John</arg>
+  <rel>whacked</rel>
+  <arg n="1">the fence</arg>
+  <arg f="with" n="2">a stick</arg>
+</example>
+</roleset>
+</predicate>
+
+<predicate lemma="whack_off">
+<roleset id="whack.02" name="remove" vncls="10.1 10.2">
+<roles>
+  <role descr="entity removing" n="0">
+		
+		
+  <vnrole vncls="10.2" vntheta="Agent"/><vnrole vncls="10.1" vntheta="Agent"/></role>
+
+  <role descr="thing being removed" n="1">
+		
+		
+  <vnrole vncls="10.2" vntheta="Theme"/><vnrole vncls="10.1" vntheta="Theme"/></role>
+
+  <role descr="removed from" n="2">
+		
+		
+  <vnrole vncls="10.2" vntheta="Source"/><vnrole vncls="10.1" vntheta="Source"/></role>
+
+</roles>
+
+<example name="no source">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    ``It's madness -- that in an hour you can whack off so much
+    value,'' says Stanford Calderwood, chairman of Trinity Investment
+    Management Corp., Boston.
+</text>
+        <arg f="TMP" n="M">in an hour</arg>
+        <arg n="0">you</arg>
+        <arg f="MOD" n="M">can</arg>
+        <rel>[ whack] [ off]</rel>
+        <arg n="1">so much value</arg>
+</example>
+
+<example name="arg2 as source">
+<text>
+    It includes *trace* whacking $242 million in good will off of the
+    books... 
+</text>
+        <arg n="0"/>
+        <rel>whacking off</rel>
+        <arg n="1">$242 million in good will</arg>
+        <arg f="of" n="2">the books</arg>
+</example>
+
+<note>
+There's another sense for &quot;whack off&quot;, but I'm not going there.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

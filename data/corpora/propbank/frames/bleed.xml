@@ -1,0 +1,102 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="bleed">
+<note>
+  Frames file for 'bleed' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="bleed.01" name="to emit or lose blood, to be wounded" vncls="40.1.2 43.4">
+<roles>
+  <role descr="causer of bloodshed, agent" n="0">
+      <vnrole vncls="43.4" vntheta="Agent"/>
+      <vnrole vncls="40.1.2" vntheta="Agent"/></role>
+  <role descr="entity bleeding" n="1">
+      <vnrole vncls="43.4" vntheta="Theme"/>
+      <vnrole vncls="40.1.2" vntheta="Theme"/></role>
+</roles>
+
+<example name="intransitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ Prior to his term , a teacher bled to death in the halls , [*-1] stabbed [*-2] by a student .
+</text>
+	<arg n="1">a teacher</arg>
+	<rel>bled</rel>
+	<arg f="PRD" n="M">to death</arg>
+	<arg f="LOC" n="M">in the halls</arg>
+	<arg f="ADV" n="M">[*-1] stabbed [*-2] by a student</arg>
+</example>
+</roleset>
+
+<roleset id="bleed.02" name="to take money from" vncls="10.6">
+<roles>
+  <role descr="causer of bleeding, agent" n="0">
+	  <vnrole vncls="10.6" vntheta="Agent"/></role>
+  <role descr="entity losing money" n="1">
+	  <vnrole vncls="10.6" vntheta="Source"/></role>
+</roles>
+
+
+<example name="with predication">
+<inflection aspect="progressive" form="gerund" person="third" tense="present" voice="active"/>
+<text>
+ This wage inflation is bleeding the NFL dry , the owners contend [*T*-1] .
+</text>
+	<arg n="0">This wage inflation</arg>
+	<rel>bleeding</rel>
+	<arg n="1">the NFL</arg>
+	<arg f="PRD" n="M">dry</arg>
+</example>
+</roleset>
+
+<roleset id="bleed.03" name="to feel sympathetic grief" vncls="31.3">
+<roles>
+  <role descr="experiencer" n="0">
+        <vnrole vncls="31.3" vntheta="Experiencer"/></role>
+  <role descr="thing bleeding for" n="1">
+        <vnrole vncls="31.3" vntheta="Cause"/></role>
+</roles>
+
+
+<example name="automatically generated">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ The humor of the story owes much to the fact that no hearts ( even the characters ' own ) are likely [*-1] to bleed for the plight of health-food eaters .
+</text>
+	<arg n="0">[*-1] -&gt;  no hearts ( even the characters ' own )</arg>
+	<rel>bleed</rel>
+	<arg f="for" n="1">the plight of health-food eaters</arg>
+</example>
+</roleset>
+</predicate>
+
+<predicate lemma="bleed_off">
+
+<roleset id="bleed.04" name="to decrease" vncls="-">
+<roles>
+  <role descr="decreaser, agent" n="0"/>
+  <role descr="entity decreasing" n="1"/>
+</roles>
+
+
+<example name="automatically generated">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+    Mr. Keating is currently the subject of a $1.1 billion federal
+    anti-racketeering lawsuit accusing him of [*] bleeding off assets
+    of a California thrift he controlled, Lincoln Savings &amp; Loan
+    Association, and driving it into insolvency.
+</text>
+	<arg n="0">[*] -&gt;  him</arg>
+	<rel>[ bleeding] [ off]</rel>
+	<arg n="1">assets of a California thrift he controlled,
+	Lincoln Savings &amp; Loan Association,</arg> 
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

@@ -1,0 +1,50 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="contaminate">
+<note>
+  Frames file for 'contaminate' based on sentences in financial
+  subcorpus.  Verbnet entry fill-9.8, other framed members include
+  spot, surround, trim, soak.   
+</note>
+
+<roleset id="contaminate.01" name="befoul" vncls="9.8">
+<roles>
+  <role descr="causer of contamination" n="0">
+	  <vnrole vncls="9.8" vntheta="Agent"/></role>
+  <role descr="thing becoming contaminated" n="1">
+	  <vnrole vncls="9.8" vntheta="Destination"/></role>
+  <role descr="contaminant" n="2">
+	  <vnrole vncls="9.8" vntheta="Theme"/></role>
+</roles>
+
+<example name="transitive">
+<inflection aspect="perfect" form="participle" person="ns" tense="past" voice="active"/>
+<text>
+    At stake was an $80,000 settlement involving who should pay what
+    share of cleanup costs at the site of a former gas station, where
+    underground fuel tanks had leaked and contaminated the soil. 
+</text>
+        <arg n="0">underground fuel tanks</arg>
+        <rel>contaminated</rel>
+        <arg n="1">the soil</arg>
+</example>
+
+<example name="with contaminant">
+  <inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+  <text>
+    John contaminates any room he enters with his foul stench.
+  </text>
+  <arg n="0">John</arg>
+  <rel>contaminates</rel>
+  <arg n="1">any room he enters</arg>
+  <arg f="with" n="2">his foul stench</arg>
+</example>
+
+<note>
+Do try to distinguish between agent/source of contamination and the
+contaminant itself; this will result in some Arg2's being subjects.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

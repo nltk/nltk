@@ -1,0 +1,52 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="surge">
+<note>
+  Frames file for 'surge' based on survey of initial sentences of big
+  corpus and comparison with 'rise' and all them.
+</note>
+
+<roleset id="surge.01" name="rise" vncls="45.6 48.1.1">
+<roles>
+    <role descr="Logical subject, patient, thing rising" n="1">
+		
+  <vnrole vncls="48.1.1" vntheta="Theme"/><vnrole vncls="45.6" vntheta="Patient"/></role>
+
+    <role descr="EXT, amount risen" n="2">
+		
+  <vnrole vncls="45.6" vntheta="Extent"/></role>
+
+    <role descr="start point" n="3"/>
+    <role descr="end point" n="4"/>
+    <role descr="medium" f="LOC" n="M">
+        
+    </role>
+</roles>
+
+<example name="vague end point">
+  <text>
+  ...when the US currency temporarily surged above the 150 yen level.
+  </text>
+  <arg n="1">the US currency</arg>
+  <arg f="TMP" n="m">temporarily</arg>
+  <rel>surged</rel>
+  <arg f="above" n="4">the 150 yen level</arg>
+</example>
+
+<example name="multiple args">
+  <text>
+  Northeast Bancorp surged 7 3/4 to 69.
+  </text>
+  <arg n="1">Northeast Bancorp</arg>
+  <rel>surged</rel>
+  <arg f="EXT" n="2">7 3/4</arg>
+  <arg f="to" n="4">69</arg>
+</example>
+
+<note>
+For additional examples refer to 'rise'.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

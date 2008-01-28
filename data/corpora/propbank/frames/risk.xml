@@ -1,0 +1,56 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="risk">
+<note>
+  Frames file for 'risk' based on sentences in financial subcorpus.
+  No verbnet entry.  Comparison with 'try'.
+</note>
+
+<roleset id="risk.01" name="risk, attempt, try">
+<roles>
+  <role descr="entity risking something" n="0"/>
+  <role descr="thing risked, tried" n="1"/>
+</roles>
+
+<example name="transitive">
+<text>
+    They may, however, risk bringing some damaging interference from
+    outside the markets. 
+</text>
+        <arg n="0">They</arg>
+        <arg f="MOD" n="M">may</arg>
+	<arg f="DIS" n="M">however</arg>
+        <rel>risk</rel>
+        <arg n="1">bringing some damaging interference from
+        outside the markets</arg> 
+</example>
+
+<example name="with manner">
+<text>
+    Few, if any, index-fund managers will risk leveraging performance
+    by owning more than 100% exposure to stocks.  
+</text>
+        <arg n="0">Few, if any, index-fund managers</arg>
+        <arg f="MOD" n="M">will</arg>
+        <rel>risk</rel>
+        <arg n="1">leveraging performance</arg>
+        <arg f="MNR" n="M">by owning more than 100 % exposure to stocks</arg>
+</example>
+
+<example name="nominal arg1">
+<text>
+    But traders who *trace* risk money handling big blocks of stock
+    were shaken. 
+</text>
+        <arg n="0">*trace* -&gt;  who -&gt;  traders</arg>
+        <rel>risk</rel>
+        <arg n="1">money</arg>
+        <arg f="MNR" n="M">handling big blocks of stock</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,89 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="rest">
+<note>
+  Frames file for 'rest' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="rest.01" name="to be or place in a resting position" vncls="47.6 9.2-1">
+<roles>
+  <role descr="agent, causer" n="0">
+        <vnrole vncls="47.6" vntheta="Agent"/>
+        <vnrole vncls="9.2-1" vntheta="Agent"/></role>
+  <role descr="entity resting" n="1">
+        <vnrole vncls="47.6" vntheta="Theme"/>
+        <vnrole vncls="9.2-1" vntheta="Theme"/></role>
+</roles>
+
+<example name="intransitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ Well , mankind can rest easier for now .
+</text>
+	<arg n="1">mankind</arg>
+	<arg f="MOD" n="M">can</arg>
+	<rel>rest</rel>
+	<arg f="MNR" n="M">easier</arg>
+	<arg f="TMP" n="M">for now</arg>
+</example>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ Customers lean forward , rest their knees on side supports and bury their face in padding on the back of the chair .
+</text>
+	<arg n="0">Customers</arg>
+	<rel>rest</rel>
+	<arg n="1">their knees</arg>
+	<arg f="LOC" n="M">on side supports</arg>
+</example>
+
+<example name="with ArgM-MNR">
+<inflection aspect="ns" form="full" person="ns" tense="ns" voice="active"/>
+<text>
+ `` [*] Rest [*-1] assured , we proceed with exemplary fairness . ''
+</text>
+	<arg n="1">[*]</arg>
+	<rel>Rest</rel>
+	<arg f="MNR" n="M">[*-1] assured</arg>
+</example>
+</roleset>
+
+<roleset id="rest.02" name="to rely on, be imposed or vested" vncls="-">
+<roles>
+  <role descr="relier, agent" n="0"/>
+  <role descr="entity resting" n="1"/>
+  <role descr="rest with/on" n="2"/>
+</roles>
+
+
+<example name="rest with">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ Thus the conclusion is that the burden [*ICH*-1] rests with management [*] to understand\/adopt the culture and philosophy of the country in which they are operating [*T*-2] .
+</text>
+	<arg n="1">[ the burden [*ICH*-1]] [ [*] to understand\/adopt the culture and philosophy of the country in which they are operating [*T*-2]]</arg>
+	<rel>rests</rel>
+	<arg f="with" n="2">management</arg>
+</example>
+
+
+<example name="rest on">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ But these proposals do not rest on a view of what the Fed 's problem is [*T*-1].
+</text>
+	<arg f="DIS" n="M">But</arg>
+	<arg n="1">these proposals</arg>
+	<arg f="NEG" n="M">not</arg>
+	<rel>rest</rel>
+	<arg f="on" n="2">a view of what the Fed 's problem is [*T*-1]</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

@@ -1,0 +1,44 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="reintegrate">
+<note>
+  Frames file for 'reintegrate' based on sentences in wsj.  No Verbnet
+  entry, but 'integrate' is in 22.4.
+</note>
+
+<roleset id="reintegrate.01" vncls="-" name="make into one, again">
+<roles>
+  <role descr="mixer, integrater" n="0"/>
+  <role descr="figure" n="1"/>
+  <role descr="ground" n="2"/>
+</roles>
+
+<example name="adjectival, merged figure and ground">
+<inflection person="ns" tense="ns" aspect="ns" voice="passive" form="participle"/>
+<text>
+    A reintegrated Europe implies big changes in 40-year-old military
+    and economic policies.  
+</text>
+	<rel>reintegrated</rel>
+	<arg n="1">Europe</arg>
+</example>
+
+<example name="everything separate">
+  <inflection person="ns" tense="ns" aspect="ns" voice="active" form="full"/>
+  <text>
+     No marriage counselor could reintegrate John's new-found love for
+     freedom with Mary's violent tendencies.
+  </text>
+  <arg n="0"        >No marriage counselor</arg>
+  <arg n="m" f="MOD">could</arg>
+  <rel              >reintegrate</rel>
+  <arg n="1"        >John's new-found love for freedom</arg>
+  <arg n="2" f="with">Mary's violent tendencies</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

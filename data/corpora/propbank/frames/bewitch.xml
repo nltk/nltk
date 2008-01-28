@@ -1,0 +1,46 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="bewitch">
+<note>
+  Frames file for 'bewitch' based on sentences in wsj.  Verbnet entry 31.1.
+</note>
+
+<roleset id="bewitch.01" vncls="31.1" name="entrance">
+<roles>
+  <role descr="witch, agent" n="0">
+        <vnrole vncls="31.1" vntheta="Cause"/></role>
+  <role descr="victim" n="1">
+        <vnrole vncls="31.1" vntheta="Experiencer"/></role>
+  <role descr="instrument, when separate from arg0" n="2"/>
+</roles>
+
+<example name="adjectival">
+<inflection person="ns" tense="ns" aspect="ns" voice="passive" form="participle"/>
+<text>
+     That list includes last season's champs, the Los Angeles Dodgers,
+     who rode a miracle home run by Kirk Gibson and two faultless
+     pitching performances by Orel Hershiser to a five-game triumph
+     over a bewitched, bothered Oakland crew. 
+</text>
+	<rel>bewitched</rel>
+	<arg n="1">[ Oakland] [ crew]</arg>
+</example>
+
+<example name="verbal">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+     John bewitched Mary with his smoldering good looks and a can of
+     chloroform. 
+  </text>
+  <arg n="0"        >John</arg>
+  <rel              >bewitched</rel>
+  <arg n="1"        >Mary</arg>
+  <arg n="2" f="with">his smoldering good looks and a can of chloroform</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

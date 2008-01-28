@@ -1,0 +1,29 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="womanize">
+<note>
+  Frames file for 'womanize' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="womanize.01" name="pursue women excessively" vncls="-">
+<roles>
+  <role descr="womanizer" n="0"/>
+</roles>
+
+<example name="one example, one arg">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+    The opening show featured a secretary of defense designate accused
+    [*] of [*-1] womanizing (a la John Tower). 
+</text>
+        <arg n="0">[*-1] -&gt;  [*] -&gt;  a secretary of defense designate</arg>
+        <rel>womanizing</rel>
+        <arg f="MNR" n="M">(a la John Tower)</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

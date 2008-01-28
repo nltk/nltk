@@ -1,0 +1,47 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="mock">
+<note>
+  Frames file for 'mock' based on sentences in wsj.  Verbnet entry 33,
+  Framenet entry Judgement and Judgement communication.
+</note>
+
+<roleset id="mock.01" name="make fun of" vncls="33">
+<roles>
+  <role descr="mocker" n="0"><vnrole vncls="33" vntheta="Agent"/></role>
+  <role descr="mocked" n="1"><vnrole vncls="33" vntheta="Theme"/></role>
+  <role descr="reason, what's so funny" n="2"><vnrole vncls="33" vntheta="Cause"/></role>
+</roles>
+
+<example name="just transitive">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+     The latter typically is the humor of the underdog, and it was
+     perfected by both blacks and Jews on the minstrel and vaudeville
+     stage as a means of [*-1] mocking their white and gentile
+     audiences along with themselves. 
+</text>
+        <arg n="0">[*-1] -&gt;  it</arg>
+        <rel>mocking</rel>
+        <arg n="1">their white and gentile audiences along with
+        themselves</arg></example> 
+
+<example name="with reason">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    Mary mocked John for his habit of turning around three times
+    before going to bed.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>mocked</rel>
+  <arg n="1">John</arg>
+  <arg f="for" n="2">for his habit of turning around three times
+  before going to bed</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

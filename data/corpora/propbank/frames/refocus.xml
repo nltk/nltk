@@ -1,0 +1,69 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="refocus">
+<note>
+  Frames file for 'refocus' based on survey of sentences in the WSJ
+  corpus. Comparison with 'focus'.
+</note>
+
+<roleset id="refocus.01" name="to focus again" vncls="-">
+<roles>
+  <role descr="focusser, agent" n="0"/>
+  <role descr="thing focussed" n="1"/>
+  <role descr="focussed on" n="2"/>
+</roles>
+
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="future" voice="passive"/>
+<text>
+ As part of the plan , the Houston-based company 's 1,100 Stop 'N Go stores will be refocused [*-1] to target black , Hispanic , upscale or core middle-class customers .
+</text>
+	<arg f="ADV" n="M">As part of the plan</arg>
+	<arg n="1">the Houston-based company 's 1,100 Stop 'N Go stores</arg>
+	<arg f="MOD" n="M">will</arg>
+	<rel>refocused</rel>
+	<arg n="2">[*-1] to target black , Hispanic , upscale or core middle-class customers</arg>
+</example>
+
+
+<example name="without Arg1">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ Beghin-Say S.A. said that it plans [*-1] to sell its remaining paper operations by the end of January as part of a drive [*] to refocus on the food sector and lower its debt .
+</text>
+	<arg n="0">[*]</arg>
+	<rel>refocus</rel>
+	<arg f="on" n="2">the food sector</arg>
+</example>
+
+
+
+<example name="all arguments">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ The trade and CBI reports refocused attention on high interest rates and corporate profitability and helped rekindle underlying concerns over prospects for a recession in the U.K. , dealers said [0] [*T*-1] .
+</text>
+	<arg n="0">The trade and CBI reports</arg>
+	<rel>refocused</rel>
+	<arg n="1">attention</arg>
+	<arg f="on" n="2">high interest rates and corporate profitability</arg>
+</example>
+
+
+<example name="without Arg2">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ Asarco Inc. , [*-1] continuing its effort [*] to refocus its business , ended its involvement in asbestos mining in the third quarter and said [0] it would stop [*-2] mining and selling coal by year end .
+</text>
+	<arg n="0">[*] -&gt;  [*-1] -&gt;  Asarco Inc.</arg>
+	<rel>refocus</rel>
+	<arg n="1">its business</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

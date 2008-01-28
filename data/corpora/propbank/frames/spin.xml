@@ -1,0 +1,143 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="spin">
+<note>
+  Frames file for 'spin' based on sentences in financial subcorpus.
+  Verbnet classes build-26.1 coil-9.6 performance-26.7-2 roll-51.3.1;
+  other framed members include: reshape, roll, shape; direct, perform;
+  charge, float, leap, roll, sneak, walk, wind.  Comparison to 'roll'.
+</note>
+
+<roleset id="spin.01" name="move in circular fashion" vncls="9.6 26.1 51.3.1">
+<roles>
+  <role descr="causative agent" n="0">
+	<vnrole vncls="9.6" vntheta="Agent"/>
+        <vnrole vncls="26.1" vntheta="Agent"/>
+        <vnrole vncls="51.3.1" vntheta="Agent"/></role>
+  <role descr="thing spinning" n="1">
+	<vnrole vncls="9.6" vntheta="Patient"/>
+        <vnrole vncls="26.1" vntheta="Product"/>
+        <vnrole vncls="51.3.1" vntheta="Theme"/></role>
+</roles>
+
+<example name="poor John">
+  <text>
+    After drinking two glasses of wine, John's head was spinning.
+  </text>
+  <arg f="TMP" n="m">After drinking two glasses of wine</arg>
+  <arg n="1">John's head</arg>
+  <rel>spinning</rel>
+</example>
+</roleset>
+
+<roleset id="spin.03" vncls="-" name="tell tales">
+<roles>
+  <role n="0"  descr="storyteller"/>
+  <role n="1"  descr="story"/>
+</roles>
+
+<example name="always spin a tale or a yarn">
+  <inflection person="third" tense="present" aspect="ns" voice="active" form="full"/>
+  <text>
+    In ``The Cuckoo's Egg'' (Doubleday, 326 pages, $19.95), he spins a
+    remarkable tale of his efforts over 18 months to catch a computer
+    spy. 
+  </text>
+  <arg n="m" f="LOC">In ``The Cuckoo's Egg'' (Doubleday, 326 pages,
+  $19.95)</arg> 
+  <arg n="0"        >he</arg>
+  <rel              >spins</rel>
+  <arg n="1"        >a remarkable tale of his efforts over 18 months
+  to catch a computer spy</arg>
+</example>
+
+</roleset>
+
+<roleset id="spin.04" vncls="-" name="create through spinning">
+<roles>
+  <role n="0"  descr="creator"/>
+  <role n="1"  descr="creation"/>
+  <role n="2"  descr="raw material"/>
+</roles>
+
+<example name="more tale telling">
+  <inflection person="third" tense="present" aspect="ns" voice="active" form="full"/>
+  <text>
+     Mr. Parker spins it into a pretty satisfying tale involving
+     Poodle Springs high life, Hollywood low life and various folk who
+     hang their hats in both worlds. 
+  </text>
+  <arg n="0"        >Mr. Parker</arg>
+  <rel              >spins</rel>
+  <arg n="2"        >it</arg>
+  <arg n="1" f="into">a pretty satisfying tale involving
+     Poodle Springs high life, Hollywood low life and various folk who
+     hang their hats in both worlds</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="spin_off">
+
+<roleset id="spin.02" name="spin off: create a new entity based on an existing entity" vncls="-">
+<roles>
+  <role descr="creator" n="0"/>
+  <role descr="thing created" n="1"/>
+  <role descr="source" n="2"/>
+  <role descr="benefactive" n="3"/>
+  <role descr="attribute, secondary predication" n="4"/>
+</roles>
+
+<example name="just transitive">
+<text>
+    Its plan, instead, is *trace* to spin off the remainder of its
+    real estate unit and to possibly do the same with its mining and
+    energy assets. 
+</text>
+        <arg n="0">*trace* -&gt;  Its plan</arg>
+        <rel>[ spin] [ off]</rel>
+        <arg n="1">the remainder of its real estate unit</arg>
+</example>
+
+<example name="with benefactive">
+<text>
+    Courtaulds PLC announced plans *trace* to spin off its textiles
+    operations to existing shareholders in a restructuring to boost
+    shareholder value. 
+</text>
+        <arg n="0">*trace* -&gt; Courtaulds PLC</arg>
+        <rel>[ spin] [ off]</rel>
+        <arg n="1">its textiles operations</arg>
+        <arg f="to" n="3">existing shareholders</arg>
+        <arg f="LOC" n="M">in a restructuring</arg>
+        <arg f="PNC" n="M">to boost shareholder value</arg>
+</example>
+
+<example name="passive, with attribute">
+<text>
+    The previous-year quarter included $16.1 million from businesses
+    spun *trace* off as Tredegar Industries Inc. 
+</text>
+        <rel>[ spun] [ off]</rel>
+        <arg n="1">*trace* -&gt;  businesses</arg>
+        <arg f="as" n="4">Tredegar Industries Inc</arg>
+</example>
+
+<example name="with source">
+  <text>
+    John tried *trace* to spin off several new papers from his shoddy
+    research.
+  </text>
+  <arg n="0">*trace* -&gt; John</arg>
+  <rel>spin off </rel>
+  <arg n="1">several new papers</arg>
+  <arg f="from" n="2">his shoddy research.</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="sequester">
+<note>
+  Frames file for 'sequester' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="sequester.01" name="to isolate" vncls="16">
+<roles>
+  <role descr="cause of isolation" n="0">
+	<vnrole vncls="16" vntheta="Agent"/></role>
+  <role descr="entity sequestered" n="1">
+	<vnrole vncls="16" vntheta="Patient"/></role>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ Credit Agricole asked a Milan court [*-1] to sequester the Nuovo Banco shares , the Italian news agency ANSA reported [0] [*T*-2] .
+</text>
+	<arg n="0">[*-1] -&gt;  a Milan court</arg>
+	<rel>sequester</rel>
+	<arg n="1">the Nuovo Banco shares</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

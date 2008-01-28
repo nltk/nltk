@@ -1,0 +1,71 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="sap">
+<note>
+  Frames file for 'sap' based on sentences in wsj.  Verbnet entry 10.6.
+</note>
+
+<roleset id="sap.01" name="deplete of resources" vncls="10.6">
+<roles>
+  <role descr="remover" n="0"><vnrole vncls="10.6" vntheta="Agent"/></role>
+  <role descr="resources" n="1"><vnrole vncls="10.6" vntheta="Theme"/></role>
+  <role descr="source" n="2"><vnrole vncls="10.6" vntheta="Source"/></role>
+</roles>
+
+<example name="resources as DO">
+<inflection aspect="progressive" form="participle" person="third" tense="present" voice="active"/>
+<text>
+    ``The cost of health care is eroding standards of living and
+    sapping industrial strength,'' complains Walter Maher, a Chrysler
+    health-and-benefits specialist. 
+</text>
+        <arg n="0">The cost of health care</arg>
+        <rel>sapping</rel>
+        <arg n="1">industrial strength</arg>
+</example>
+
+<example name="source as DO">
+<inflection aspect="ns" form="participle" person="third" tense="past" voice="passive"/>
+<text>
+    Domestic demand continues to grow, but its contribution to higher
+    production was sapped *trace* in September by the estimated 2%
+    fall in imports, accompanied by a growing tendency for Japanese
+    manufacturers to build vehicles overseas, according to the
+    association. 
+</text>
+        <rel>sapped</rel>
+        <arg n="2">*trace* -&gt;  its contribution to higher production</arg>
+        <arg f="TMP" n="M">in September</arg>
+        <arg f="by" n="0">the estimated 2% fall in imports,
+        accompanied by a growing tendency for Japanese manufacturers
+        to build vehicles overseas</arg> 
+</example>
+
+<example name="all args">
+  <inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+  <text>
+    Constantly fighting with Mary saps John of all strength.
+  </text>
+  <arg n="0">Constantly fighting with Mary</arg>
+  <rel>saps</rel>
+  <arg n="2">John</arg>
+  <arg f="of" n="1">all strength</arg>
+</example>
+
+<example name="all args, different syntax">
+  <inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+  <text>
+    Constantly fighting with Mary saps all strength from John.
+  </text>
+  <arg n="0">Constantly fighting with Mary</arg>
+  <rel>saps</rel>
+  <arg n="1">all strength</arg>
+  <arg f="from" n="2">John</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

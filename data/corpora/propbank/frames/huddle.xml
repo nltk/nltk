@@ -1,0 +1,58 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="huddle">
+<roleset id="huddle.01" name="bend over" vncls="-">
+<roles>
+     <role descr="huddler" n="0"/>
+</roles>
+
+<example name="poor John">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John huddled in the corner.
+  </text>
+  <arg n="0">John</arg>
+  <rel>huddled</rel>
+  <arg f="LOC" n="m">in the corner</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="huddle.02" name="meet with football analogy" vncls="-">
+<roles>
+  <role descr="one party" n="0"/>
+  <role descr="other party" n="1"/>
+</roles>
+
+<example name="28-34-14, hike!">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    He huddled with directors at a special meeting two weeks ago and
+    tried to block his opponent.  
+</text>
+        <arg n="0">He</arg>
+        <rel>huddled</rel>
+        <arg f="with" n="1">directors</arg>
+        <arg f="LOC" n="M">at a special meeting</arg>
+        <arg f="TMP" n="M">two weeks ago</arg>
+</example>
+
+<example name="merged parties">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John and Mary huddled in the corner.
+  </text>
+  <arg n="0">John and Mary</arg>
+  <rel>huddled</rel>
+  <arg f="LOC" n="m">in the corner</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

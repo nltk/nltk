@@ -1,0 +1,42 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="stockpile">
+<note>
+  Frames file for 'stockpile' based on expansion of 'stock' frames.
+  No actual inspection of real sentences.
+</note>
+
+<roleset id="stockpile.01" name="store">
+<roles>
+  <role descr="agent, storer" n="0"/>
+  <role descr="commodity" n="1"/>
+  <role descr="location or destination" n="2"/>
+</roles>
+
+<example name="all args">
+  <text>
+    John stockpiled his fallout shelter with a year's supply of Twinkies
+    and YooHoo.
+  </text>
+  <arg n="0">John</arg>
+  <rel>stockpiled</rel>
+  <arg n="2">his fallout shelter</arg>
+  <arg f="with" n="1">a year's supply of Twinkies and YooHoo</arg>
+</example>
+
+<example name="no location">
+  <text>
+    John's hardware store doesn't stockpile any actual hardware.
+  </text>
+  <arg n="0">John's hardware store</arg>
+  <arg f="NEG" n="m">n't</arg>
+  <rel>stockpile</rel>
+  <arg n="1">any actual hardware</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

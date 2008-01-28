@@ -1,0 +1,82 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="weaken">
+<note>
+  Frames file for 'weaken' based on sentences in financial subcorpus.
+  Verbnet entry  other_cos-45.4, other framed members include
+  decrease, halt, narrow, shut, slow, sweeten and probably others.
+</note>
+
+<roleset id="weaken.01" name="make or become weaker" vncls="45.4">
+<roles>
+  <role descr="causal agent" n="0">
+		
+  <vnrole vncls="45.4" vntheta="Agent"/></role>
+
+  <role descr="thing weakening" n="1">
+		
+  <vnrole vncls="45.4" vntheta="Patient"/></role>
+
+  <role descr="EXT" n="2"/>
+  <role descr="start point" n="3"/>
+  <role descr="end point" n="4"/>
+</roles>
+
+<example name="passive">
+<text>
+    Jaguar's own defenses against a hostile bid are weakened *trace*,
+    analysts add, because fewer than 3% of its shares are owned by
+    employees and management. 
+</text>
+        <rel>weakened</rel>
+        <arg n="1">*trace* -&gt;  Jaguar's own defenses against a hostile
+        bid</arg> 
+        <arg f="CAU" n="M">because fewer than 3% of its shares are
+        owned by employees and management</arg>
+</example>
+
+<example name="ergative">
+<text>
+    According to the Value Line Investment Survey, demand for
+    Nekoosa's commodity paper has weakened, prompting earnings to
+    decline by 6.6% in the third quarter ended Sept. 30. 
+</text>
+        <arg f="DIS" n="M">According to the Value Line Investment
+        Survey</arg> 
+        <arg n="1">demand for Nekoosa's commodity paper</arg>
+        <rel>weakened</rel>
+        <arg n="M">prompting earnings to decline by 6.6% in the third
+        quarter ended Sept. 30</arg> 
+</example>
+
+<example name="agentive/transitive">
+<text>
+    However, people familiar with the buy-out group said Mr. Pope's
+    departure would weaken the airline's management at a critical
+    time. 
+</text>
+        <arg n="0">Mr. Pope's departure</arg>
+        <arg f="MOD" n="M">would</arg>
+        <rel>weaken</rel>
+        <arg n="1">the airline's management</arg>
+        <arg f="TMP" n="M">at a critical time</arg>
+</example>
+
+<example name="expected stock reports">
+  <text>
+    John's stocks weakened dramatically from $1000 a share to less
+    than $.50 a share.
+  </text>
+  <arg n="1">John's stocks</arg>
+  <rel>weakened</rel>
+  <arg f="MNR" n="2">dramatically</arg>
+  <arg f="from" n="3">$1000 a share</arg>
+  <arg f="to" n="4">less than $.50 a share.</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

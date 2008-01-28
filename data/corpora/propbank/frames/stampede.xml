@@ -1,0 +1,47 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="stampede">
+<note>
+  Frames file for 'stampede'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="stampede.01" name="to cause to act hurriedly" vncls="-">
+<roles> 
+  <role descr="causal agent" n="0"/>
+  <role descr="entity stampeding, in motion" n="1"/>
+  <role descr="stampeded into, path or direction" n="2"/>      
+</roles>
+
+
+
+<example name="non-agentive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ We did n't stampede into it , we slithered and slipped down the long slope , and now we have as its quintessential symbol a former president huckstering for a foreign poohbah .
+</text>
+	<arg n="1">We</arg>
+	<arg f="NEG" n="M">n't</arg>
+	<rel>stampede</rel>
+	<arg f="into" n="2">it</arg>
+</example>
+
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="future" voice="passive"/>
+<text>
+ `` The Fed wo n't be stampeded [*-3] into easing , '' Mr. Logan said [*T*-1] , [*-4] predicting that for now , interest rates will stay where they are [*T*-2] .
+</text>
+	<arg f="MOD" n="M">wo</arg>
+	<arg f="NEG" n="M">n't</arg>
+	<rel>stampeded</rel>
+	<arg n="1">[*-3] -&gt;  The Fed</arg>
+	<arg f="into" n="2">easing</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

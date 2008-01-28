@@ -1,0 +1,69 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="find">
+<note>
+  Frames file for 'find' based on file created by Chris, survey of
+  initial sentences of big corpus, and minimal comparison with 'receive'
+</note>
+
+<roleset id="find.01" name="discovery" vncls="13.5.1 29.4">
+<roles>
+  <role descr="finder" n="0">
+	<vnrole vncls="29.4" vntheta="Agent"/>
+        <vnrole vncls="13.5.1" vntheta="Agent"/></role>
+  <role descr="thing found" n="1">
+	<vnrole vncls="29.4" vntheta="Theme"/>
+        <vnrole vncls="13.5.1" vntheta="Theme"/></role>
+  <role descr="benefactive, found for" n="2">
+	<vnrole vncls="13.5.1" vntheta="Beneficiary"/></role>
+  <role descr="attribute of arg1" n="3">
+	<vnrole vncls="29.4" vntheta="Predicate"/>
+        <vnrole vncls="13.5.1" vntheta="Asset"/></role>
+</roles>
+
+<example name="basic transitive">
+  <text>
+    I'd like *trace=I* to find a flight that goes from Boston to Orlando.
+  </text>
+  <arg n="0">*trace=I*</arg>
+  <rel>find</rel>
+  <arg n="1">a flight that goes from Boston to Orlando</arg>
+</example>
+
+<example name="found a sentence!">
+  <text>
+    The study also found that the colony's consumers feel more
+    pressured than those in any of the other surveyed markets.
+  </text>
+  <arg n="0">The study</arg>
+  <arg f="DIS" n="m">also</arg>
+  <rel>found</rel>
+  <arg n="1">the colony's consumers feel more pressured than
+  those in any of the other surveyed markets</arg>
+</example>
+
+<note>
+Note again that the &quot;that&quot; is not included in the argument just as for
+all the verbs of saying.  If the complementizer is a wh-word (&quot;when&quot;,
+&quot;who&quot;, etc) or &quot;if&quot;, then it will be included.
+</note>
+
+<example name="with attributive">
+  <text>
+    State courts found the rates illegal.
+  </text>
+  <arg n="0">State courts</arg>
+  <rel>found </rel>
+  <arg n="1">the rates</arg>
+  <arg n="3">illegal</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="find_out">
+<note>
+  Identical to 'find' in all cases.
+</note>
+</predicate>
+</frameset>

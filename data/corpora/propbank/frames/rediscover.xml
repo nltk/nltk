@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="rediscover">
+<note>
+  Frames file for 'rediscover' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="rediscover.01" name="discover again" vncls="-">
+<roles>
+  <role descr="finder, discoverer" n="0"/>
+  <role descr="thing found, discovery" n="1"/>
+</roles>
+
+<example name="Peter the so-so">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+     Even the Soviet Union has Peter the Great [0] [*] to rediscover
+     [*T*-1], should it choose to. 
+</text>
+        <arg n="0">[*] -&gt;  Even the Soviet Union</arg>
+        <rel>rediscover</rel>
+        <arg n="1">[*T*-1] -&gt;  [0] -&gt;  Peter the Great</arg>
+        <arg f="ADV" n="M">should it choose [*-2] to [*?*]</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

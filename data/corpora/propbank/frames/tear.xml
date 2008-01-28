@@ -1,0 +1,149 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="tear">
+<note>
+  Frames file for 'tear' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="tear.01" name="to pull apart, separate forcefully" vncls="23.2 45.1">
+<roles>
+  <role descr="puller, tearer, separator, agent" n="0">
+	<vnrole vncls="23.2" vntheta="Agent"/>
+        <vnrole vncls="45.1" vntheta="Agent"/></role>
+  <role descr="thing torn" n="1">
+	<vnrole vncls="23.2" vntheta="Patient1"/>
+        <vnrole vncls="45.1" vntheta="Patient"/></role>
+  <role descr="torn between/from/out" n="2">
+	<vnrole vncls="23.2" vntheta="Patient2"/></role>
+</roles>
+
+
+<example name="torn out">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+ Republican Sen. William Cohen of Maine , the panel 's vice chairman , said of the disclosure that `` a text torn [*] out of context is a pretext , and it [*EXP*-2] is unfair for those in the White House who [*T*-1] are leaking to present the evidence in a selective fashion . ''
+</text>
+	<rel>torn</rel>
+	<arg n="1">[*] -&gt;  a text</arg>
+	<arg n="2">out of context</arg>
+</example>
+
+
+<example name="torn between">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+ Further , the Herald seemed [*-1] torn editorially between [*-3] keeping its old-time Hearst readership -- blue-collar and sports-oriented -- and trying [*-2] to provide a sprightly , upscale alternative to the sometimes staid Times .
+</text>
+	<arg n="1">[*-1] -&gt;  the Herald</arg>
+	<rel>torn</rel>
+	<arg f="MNR" n="M">editorially</arg>
+	<arg f="between" n="2">[*-3] keeping its old-time Hearst readership -- blue-collar and sports-oriented -- and trying [*-2] to provide a sprightly , upscale alternative to the sometimes staid Times</arg>
+</example>
+
+
+<example name="with direction">
+<inflection aspect="ns" form="participle" person="ns" tense="past" voice="passive"/>
+<text>
+ With Garpian randomness , a hotel across the street , the Amfac , had been hit [*-1] harder : A large sheet of its concrete facade and several window balconies were torn [*-2] away .
+</text>
+	<rel>torn</rel>
+	<arg n="1">[*-2] -&gt;  A large sheet of its concrete facade and several window balconies</arg>
+	<arg f="DIR" n="M">away</arg>
+</example>
+
+
+</roleset>
+
+<roleset id="tear.02" name="to rush, move hurriedly" vncls="51.3.2">
+<roles>
+  <role descr="entity rushing" n="0">
+	<vnrole vncls="51.3.2" vntheta="Theme"/></role>
+  <role descr="direction/location" n="1">
+        <vnrole vncls="51.3.2" vntheta="Location"/></role>
+</roles>
+
+
+
+<example name="tear through">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ A series of explosions tore through the huge Phillips Petroleum Co. plastics plant near here , [*] injuring more than a hundred and closing parts of the Houston Ship Channel .
+</text>
+	<arg n="0">A series of explosions</arg>
+	<rel>tore</rel>
+	<arg f="through" n="1">the huge Phillips Petroleum Co. plastics plant near here</arg>
+	<arg f="ADV" n="M">[*] injuring more than a hundred and closing parts of the Houston Ship Channel</arg>
+</example>
+
+
+</roleset>
+
+<roleset id="tear.03" name="to fill with tears" vncls="-">
+<roles>
+  <role descr="entity filled with tears" n="1"/>
+</roles>
+
+
+<example name="eyes tearing">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+ [*-1] Having resided in the great state of California for the past seven years , I find it [*EXP*-3] hard [*] to ignore our environmental problems when I start my commute to work with eyes tearing [*RNR*-2] and head aching [*RNR*-2] from the polluted air [*T*-4] ; when I try [*-6] to enjoy the beaches and come home [*-6] covered [*-8] with tar and oil [*T*-5] ; when I hear of numerous deaths related [*] to irresponsible processing of cheese and use of chemicals in fruit growing [*T*-7] .
+</text>
+	<arg n="1">eyes</arg>
+	<rel>tearing</rel>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="tear_up">
+
+<roleset id="tear.04" name="to tear to pieces" vncls="-">
+<roles>
+  <role descr="tearer" n="0"/>
+  <role descr="entity torn" n="1"/>
+</roles>
+
+
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ On Aug. 1 , the state tore up its controls , and food prices leaped .
+</text>
+	<arg f="TMP" n="M">On Aug. 1</arg>
+	<arg n="0">the state</arg>
+	<rel>[ tore] [ up]</rel>
+	<arg n="1">its controls</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+<predicate lemma="tear_down">
+
+<roleset id="tear.05" name="to demolish, take apart" vncls="-">
+<roles>
+  <role descr="demolisher, agent" n="0"/>
+  <role descr="entity torn" n="1"/>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ Witnesses shout , scream , pontificate : `` ... a dream that the planet could be saved [*-1] from itself and from the sadistic dumb creatures who [*T*-2] try [*-4] to tear down every decent man who [*T*-3] raises his voice . ''
+</text>
+	<arg n="0">[*-4] -&gt;  [*T*-2] -&gt;  who -&gt;  the sadistic dumb creatures</arg>
+	<rel>[ tear] [ down]</rel>
+	<arg n="1">every decent man who [*T*-3] raises his voice</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

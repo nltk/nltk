@@ -1,0 +1,108 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="comment">
+<note>
+based on survey of initial sentences of big corpus
+and comparison with 'say'
+</note>
+
+<roleset id="comment.01" name="intransitive">
+<roles>
+  <role descr="commentor" n="0"/>
+  <role descr="thing commented on" n="1"/>
+</roles>
+
+<example>
+  <text>
+    Judge Wapner commented publicly on a pending case.
+  </text>
+  <arg n="0">Judge Wapner</arg>
+  <rel>commented</rel>
+  <arg f="MNR" n="m">publically</arg>
+  <arg f="on" n="1">a pending case</arg>
+</example>
+</roleset>
+
+<roleset id="comment.02" name="basic transitive">
+<roles>
+  <role descr="commenter" n="0"/>
+  <role descr="utterance" n="1"/>
+  <role descr="hearer" n="2"/>
+  <role descr="attributive" n="3"/>
+</roles>
+
+
+<example name="transitive">
+  <text>
+    A Lorillard spokeswoman commented &quot;This is an old story.&quot;
+  </text>
+  <arg n="0">A Lorillard spokeswoman</arg>
+  <rel>commented</rel>
+  <arg n="1">&quot;This is an old story.&quot;</arg>
+</example>
+
+<example name="fronted">
+  <text>
+    Kent cigarettes were sold, the company commented *Trace*
+  </text>
+  <arg n="0">the company</arg>
+  <rel>commented</rel>
+  <arg n="1">*Trace*</arg>
+
+<note>*Trace* &gt; &quot;Kent cigarettes were sold&quot;</note>
+</example>
+
+<example name="Inverted (theoretically possible, but odd)">
+  <text>
+    What matters is what advertisers will pay, commented *T* Newsweek's chairman
+  </text>
+  <arg n="1">*T*</arg>
+  <rel>commented</rel>
+  <arg n="0">Newsweek's chairman</arg>
+  <note>
+    *T*  &quot;What matters is what advertisers will pay&quot;
+  </note>
+</example>
+
+<example name="split (theoretically possible, but odd)">
+  <text>
+    &quot;What you have to understand,&quot; commented John, &quot;is that Philly stinks.&quot;
+  </text>
+  <arg n="0">John</arg>
+  <arg n="1">&quot;What you have to understand, is that Philly literally stinks.&quot;</arg>
+</example>
+
+<example name="with listener">
+  <text>
+    John commented to Mary: &quot;you're an idiot.&quot;
+  </text>
+  <arg n="0">John</arg>
+  <rel>commented</rel>
+  <arg f="to" n="2">Mary</arg>
+  <arg n="1">&quot;you're an idiot.&quot;</arg>
+</example>
+
+<example name="weird, attributive usage: (theoretically possible, but odd)">
+  <text>
+    &quot;Well that's odd,&quot; commented John of the disappearance of his nose.
+  </text>
+  <arg n="1">&quot;Well that's odd,&quot;</arg>
+  <rel>commented</rel>
+  <arg n="0">John</arg>
+  <arg f="of" n="3">the disappearance of his nose.</arg>
+</example>
+
+<note>
+In most cases Treebank suggests an S-BAR as the object of &quot;announce&quot;; PReditor
+selects the S inside the S-BAR as the Arg1.  I feel it really should be the
+S-BAR, because of the cases like &quot;John said THAT he loved Mary&quot; where
+the S-BAR is selected as Arg1, but in actual usage the complementizer
+is usually dropped.  But since it would slow down throughput
+*enormously* to retag all of these cases, we'll accept what PReditor
+selects in both cases (with and without complementizer).
+</note>
+</roleset>
+
+</predicate>
+
+</frameset>

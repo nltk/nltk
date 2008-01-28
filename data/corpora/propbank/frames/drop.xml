@@ -1,0 +1,268 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="drop">
+
+<note>
+  Frames file for 'drop' based on survey of initial sentences from big corpus
+  and comparison with 'fall'
+</note>
+
+<roleset id="drop.01" name="go down, esp of financial usage" vncls="9.4 45.6 51.3.1">
+<roles>
+  <role descr="entity doing the dropping" n="0">
+	<vnrole vncls="9.4" vntheta="Agent"/>
+        <vnrole vncls="51.3.1" vntheta="Agent"/></role>
+    <role descr="Logical subject, patient, thing falling" n="1">
+	<vnrole vncls="9.4" vntheta="Theme"/>
+        <vnrole vncls="45.6" vntheta="Patient"/>
+        <vnrole vncls="51.3.1" vntheta="Theme"/></role>
+  <role descr="EXT, amount fallen" n="2">
+	<vnrole vncls="45.6" vntheta="Extent"/></role>
+  <role descr="start point" n="3"/>
+  <role descr="end point, end state of arg1" n="4">
+        <vnrole vncls="51.3.1" vntheta="Location"/></role>
+  <role descr="medium" f="LOC" n="M"/>
+</roles>
+
+<example name="start and end points">
+  <text>
+    The government's borrowing authority dropped to $2.8 trillion from
+    $2.87 trillion.  
+  </text>
+  <arg n="1">the government's borrowing authority</arg>
+  <rel>dropped</rel>
+  <arg f="to" n="4">$2.8 trillion</arg>
+  <arg f="from" n="3">$2.87 trillion</arg>
+</example>
+
+<example name="extent">
+  <text>
+    The stock market dropped nearly 7% Oct 13.
+  </text>
+  <arg n="1">The stock market</arg>
+  <rel>dropped</rel>
+  <arg f="EXT" n="2">nearly 7%</arg>
+  <arg f="TMP" n="M">Oct 13</arg>
+</example>
+
+<note>
+  Let's use EXT for numericals only, otherwise Arg2-MNR:
+</note>
+
+<example name="manner">
+  <text>
+    Yields on savings-type certificates of deposit dropped slightly
+    last week. 
+  </text>
+  <arg n="1">Yields on savings-type certificates of deposit</arg>
+  <rel>dropped</rel>
+  <arg f="MNR" n="2">slightly</arg>
+  <arg f="TMP" n="M">last week</arg>
+</example>
+
+<example name="agentive">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+     John dropped a penny from the top of the Empire State Building.
+  </text>
+  <arg n="0"        >John</arg>
+  <rel              >dropped</rel>
+  <arg n="1"        >a penny</arg>
+  <arg n="3" f="from">the top of the Empire State Building</arg>
+</example>
+
+</roleset>
+
+<roleset id="drop.05" vncls="-" name="remove">
+<roles>
+  <role n="0"  descr="remover"/>
+  <role n="1"  descr="removed"/>
+  <role n="2"  descr="source"/>
+</roles>
+
+<example name="all args">
+<inflection person="ns" tense="future" aspect="ns" voice="active" form="full"/>
+<text>
+     Mr. Koch already has announced he will drop 3,200 jobs from the
+     city payroll, but that won't be enough. 
+</text>
+        <arg n="0">he</arg>
+        <arg n="M" f="MOD">will</arg>
+        <rel>drop</rel>
+        <arg n="1">3,200 jobs</arg>
+        <arg n="2" f="from">the city payroll</arg>
+</example>
+
+<example name="no source">
+  <text>
+    It has dropped its long-standing opposition.
+  </text>
+  <arg n="0">It</arg>
+  <rel>has dropped</rel>
+  <arg n="1">its long standing opposition</arg>
+</example>
+
+<example name="oddly also with new preference">
+<inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+<text>
+     ``The World Series, seven nights, wasn't enough of an
+     incentive,'' says Arnold Klinsky of WHEC-TV in Rochester, which
+     [*T*-1] dropped CBS for NBC six weeks ago. 
+</text>
+        <arg n="0">[*T*-1] ->  which ->  WHEC-TV</arg>
+        <rel>dropped</rel>
+        <arg n="1">CBS</arg>
+        <arg n="M" f="ADV">for NBC</arg>
+        <arg n="M" f="TMP">six weeks ago</arg>
+</example>
+
+<example name="weight loss">
+<inflection person="ns" tense="ns" aspect="ns" voice="ns" form="infinitive"/>
+<text>
+    ``I don't trust people who don't eat,'' said Ms. Volokh, though
+    she herself stopped eating lunch a few years ago [*-3] to drop 25
+    pounds. 
+</text>
+        <arg n="0">[*-3] ->  she herself</arg>
+        <rel>drop</rel>
+        <arg n="1">25 pounds</arg>
+</example>
+
+</roleset>
+
+<roleset id="drop.06" vncls="-" name="drop names">
+<roles>
+  <role n="0"  descr="sycophant"/>
+  <role n="1"  descr="names"/>
+</roles>
+
+<example name="not much variation in syntax">
+<inflection person="ns" tense="ns" aspect="ns" voice="active" form="full"/>
+<text>
+     Some people must drop names -- call it an irresistible impulse.
+</text>
+        <arg n="0">Some people</arg>
+        <arg n="M" f="MOD">must</arg>
+        <rel>drop</rel>
+        <arg n="1">names</arg>
+</example>
+
+</roleset>
+
+<roleset id="drop.07" vncls="-" name="spend money">
+<roles>
+  <role n="0"  descr="big spender"/>
+  <role n="1"  descr="amount of money"/>
+  <role n="2"  descr="commodity"/>
+</roles>
+
+<example name="big spender">
+<inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+<text>
+     They'd actually left the Soviet Union with $480, but during a
+     stop in Italy Ms. Volokh dropped $80 on a black velvet suit. 
+</text>
+        <arg n="M" f="TMP">during a stop in Italy</arg>
+        <arg n="0">Ms. Volokh</arg>
+        <rel>dropped</rel>
+        <arg n="1">$80</arg>
+        <arg n="2" f="on">a black velvet suit</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="drop_by">
+
+<roleset id="drop.02" name="come" vncls="-">
+<roles>
+  <role descr="entity in motion / 'comer'" n="1"/>
+  <role descr="extent -- rare)" n="2"/>
+  <role descr="start point -- also rare)" n="3"/>
+  <role descr="end point" n="4"/>
+</roles>
+
+<example name="and bring the kids">
+  <text>
+  Maybe she could drop by at the Metropolitan Opera.
+  </text>
+  <arg f="DIS" n="m">Maybe</arg>
+  <arg n="1">she</arg>
+  <arg f="MOD" n="m">could</arg>
+  <rel>drop by</rel>
+  <arg f="at" n="4">the Metropolitan Opera</arg>
+</example>
+
+<example name="NP end point">
+  <text>
+    You  may drop by the VOA office in Washington.
+  </text>
+  <arg n="0">You</arg>
+  <arg f="MOD" n="M">may</arg>
+  <rel>drop by</rel>
+  <arg n="4">the VOA office in Washington</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="drop_off">
+<roleset id="drop.03" name="leave behind?" vncls="-">
+<roles>
+  <note> usually non financial usage</note>
+  <role descr="entity doing the dropping" n="0"/>  
+  <role descr="Logical subject, patient, thing falling" n="1"/>
+  <role descr="EXT, amount fallen" n="2"/>
+  <role descr="end point, end state" n="4"/>
+  <role descr="medium" f="LOC" n="M"/>
+</roles>
+
+<note>
+roles are same as above, except don't expect to see start point
+</note>
+
+<example name="end point">
+  <text>
+    John dropped his kids off at summer camp.
+  </text>
+  <arg n="0">John</arg>
+  <rel>dropped off</rel>
+  <arg n="1">his kids</arg>
+  <arg f="at" n="4">summer camp</arg>
+</example>
+
+<example name="intransitive">
+  <text>
+    John dropped off (to sleep)
+  </text>
+  <arg n="0">John</arg>
+  <rel>dropped off</rel>
+</example>
+</roleset>
+</predicate>
+
+<predicate lemma="drop_out">
+
+<roleset id="drop.04" name="quit">
+<roles>
+  <role descr="quitter" n="0"/>
+  <role descr="thing quit (usually of-phrase)" n="1"/>
+</roles>
+
+<example name="flunk">
+  <text>
+  John dropped out of school.
+  </text>
+  <arg n="0">John</arg>
+  <rel>dropped out</rel>
+  <arg f="of" n="1">school</arg>
+</example>
+
+<note>
+Also in intransitive.
+</note>
+
+</roleset>
+</predicate>
+
+</frameset>

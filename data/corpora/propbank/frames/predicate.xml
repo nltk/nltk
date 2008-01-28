@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="predicate">
+<note>
+  Frames file for 'predicate' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="predicate.01" name="to base or establish" vncls="-">
+<roles>
+  <role descr="establisher, agent" n="0"/>
+  <role descr="entity predicated" n="1"/>
+  <role descr="predicated on" n="2"/>
+</roles>
+
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+ This species of congressional action is predicated [*-50] on an interpretation of the appropriations clause that [*T*-1] is erroneous and unconstitutional .
+</text>
+	<rel>predicated</rel>
+	<arg n="1">[*-50] -&gt;  This species of congressional action</arg>
+	<arg f="on" n="2">an interpretation of the appropriations clause that [*T*-1] is erroneous and unconstitutional</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

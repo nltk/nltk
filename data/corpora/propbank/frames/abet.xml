@@ -1,0 +1,59 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="abet">
+<note>
+  Frames file for 'abet' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="abet.01" name="aid" vncls="-">
+<roles>
+  <role descr="agent of abetting" n="0"/>
+  <role descr="thing helped, action" n="1"/>
+</roles>
+
+<example name="active, normal">
+<inflection aspect="ns" form="gerund" person="ns" tense="ns" voice="ns"/>
+<text>
+    In addition to *trace* abetting in the alleged criminal breach of
+    trust, Kwek Hong Png was also charged with dishonestly receiving
+    S$500,000 that had been stolen. 
+</text>
+        <arg n="0">*trace* -&gt; Kwek Hong Png</arg>
+        <rel>abetting</rel>
+        <arg f="in" n="1">the alleged criminal breach of trust</arg>
+</example>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    Civilized discourse and an environment where compromise can begin
+    are lost in a hostile posture abetted *trace* by superficial media
+    interviews. 
+</text>
+        <rel>abetted</rel>
+        <arg n="1">*trace* -&gt;  a hostile posture</arg>
+        <arg f="by" n="0">superficial media interviews</arg>
+</example>
+
+<example name="very awkward active">
+<inflection aspect="ns" form="gerund" person="ns" tense="ns" voice="ns"/>
+<text>
+    Eight admissions representatives at two of Wilfred's former
+    Massachusetts schools previously pleaded guilty to charges of
+    *trace* aiding, abetting and counseling students to submit false
+    financial-aid applications. 
+</text>
+        <arg n="0">*trace* -&gt;  Eight admissions representatives at two
+        of Wilfred's former Massachusetts schools</arg> 
+        <rel>abetting</rel>
+        <arg n="1">students to submit false financial-aid applications</arg>
+
+<note>
+The action (submitting applications) is really connected with the PAS
+of 'counsel' more than aid or abet.
+</note>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

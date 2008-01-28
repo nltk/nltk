@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="foresee">
+<note>
+  Frames file for 'foresee' based on sentences in financial subcorpus.
+  No Verbnet entry.  Comparison with 'see'.
+</note>
+
+<roleset id="foresee.01" name="see into the future" vncls="-">
+<roles>
+  <role descr="seer" n="0"/>
+  <role descr="thing seen" n="1"/>
+</roles>
+
+<example name="very boring">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    Mr. Lego said the company foresees the need for a major boost in
+    new-generation capability throughout the 1990s. 
+</text>
+        <arg n="0">the company</arg>
+        <rel>foresees</rel>
+        <arg n="1">the need for a major boost in new-generation
+        capability throughout the 1990s</arg> 
+</example>
+
+<note>
+Heheheh, &quot;Mr. Lego.&quot;  Ah, the mental images.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

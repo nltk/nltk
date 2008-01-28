@@ -1,0 +1,128 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="weigh">
+<note>
+  Frames file for 'weigh' based on sentences in financial subcorpus.
+  No access to verbnet.  Many senses.  Comparison to 'measure' and
+  'press'. 
+</note>
+
+<roleset id="weigh.01" name="determine the weight" vncls="54.1">
+<roles>
+  <role descr="measurer" n="0"/>
+  <role descr="thing measured" n="1"/>
+  <role descr="yardstick, standard of measurement" n="2"/>
+  <role descr="measurement" n="3">
+	<vnrole vncls="54.1" vntheta="Attribute"/></role>
+</roles>
+
+<example name="and they're proud of this?">
+<text>
+    Conner is supplying hard-disk drives for the machine, which
+    *trace* weighs only six pounds and fits in a briefcase. 
+</text>
+        <arg n="1">*trace* -&gt;  which  -&gt; the machine</arg>
+        <rel>weighs</rel>
+        <arg n="3">only six pounds</arg>
+</example>
+
+<example name="agentive, with yardstick">
+  <text>
+    Mary weighed John's brain with a postal scale.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>weighed</rel>
+  <arg n="1">John's brain</arg>
+  <arg f="with" n="2">a postal scale</arg>
+</example>
+
+<note>
+Effectively this conflates two senses: &quot;determine the weight of&quot; and
+&quot;have a certain weight&quot;.  But they're so close!
+</note>
+
+</roleset>
+
+<roleset id="weigh.02" name="press heavily upon">
+<roles>
+  <role descr="presser" n="0"/>
+  <role descr="pressed (on)" n="1"/>
+</roles>
+
+<example name="typical usage">
+<text>
+    ...traders said profit-taking weighed on the market, with
+    blue-chips bearing the brunt of the selling. 
+</text>
+        <arg n="0">profit-taking</arg>
+        <rel>weighed</rel>
+        <arg f="on" n="1">the market</arg>
+        <arg n="M">with blue-chips bearing the brunt of the selling</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="weigh.04" vncls="-" name="compare X and Y, consider carefully">
+<roles>
+  <role n="0"  descr="agent, comparer, considerer"/>
+  <role n="1"  descr="X, thing considered"/>
+  <role n="2"  descr="Y, in comparison to"/>
+</roles>
+
+<example name="as compare">
+<inflection person="ns" tense="ns" aspect="ns" voice="ns" form="infinitive"/>
+<text>
+    The problem for Congress will be [*-3] to weigh what China is
+    saying to its people against the more conciliatory message it is
+    delivering to the Bush administration. 
+</text>
+        <arg n="0">[*-3] ->  Congress</arg>
+        <rel>weigh</rel>
+        <arg n="1">what China is saying to its people</arg>
+        <arg n="2" f="against">the more conciliatory message it is
+        delivering to the Bush administration</arg> 
+</example>
+
+<example name="as consider">
+<inflection person="ns" tense="ns" aspect="ns" voice="ns" form="infinitive"/>
+<text>
+     Theoretically, jurors are supposed [*-1] to weigh the evidence in
+     a case logically and objectively. 
+</text>
+        <arg n="0">[*-1] ->  jurors</arg>
+        <rel>weigh</rel>
+        <arg n="1">the evidence in a case</arg>
+        <arg n="M" f="MNR">logically and objectively</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="weigh_in">
+
+<roleset id="weigh.03" vncls="-" name="enter, contribute to discussion">
+<roles>
+  <role n="0"  descr="contributor, agent"/>
+  <role n="1"  descr="entry, thing contributed"/>
+</roles>
+
+<example name="our next caller...">
+<inflection person="ns" tense="present" aspect="ns" voice="active" form="full"/><text>
+    Diamond Creek 1985 Lake Vineyard Cabernet weighed in this fall
+    with a sticker price of $100 a bottle. 
+</text>
+        <arg n="0">Diamond Creek 1985 Lake Vineyard Cabernet</arg>
+        <rel>[ weighed] [ in]</rel>
+        <arg n="M" f="TMP">this fall</arg>
+        <arg n="1" f="with">a sticker price of $100 a bottle</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

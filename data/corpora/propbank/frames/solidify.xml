@@ -1,0 +1,45 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="solidify">
+<note>
+  Frames file for 'solidify' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+
+<roleset id="solidify.01" name="to make solid, strong, or united" vncls="45.4">
+<roles>
+  <role descr="cause of solidification" n="0">
+	<vnrole vncls="45.4" vntheta="Agent"/></role>
+  <role descr="entity made strong" n="1">
+	<vnrole vncls="45.4" vntheta="Patient"/></role>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ The additions solidify American 's position as the third-largest U.S. transatlantic carrier , behind PanAm Corp. 's Pan American World Airways and Trans World Airlines .
+</text>
+	<arg n="0">The additions</arg>
+	<rel>solidify</rel>
+	<arg n="1">American 's position as the third-largest U.S. transatlantic carrier , behind PanAm Corp. 's Pan American World Airways and Trans World Airlines</arg>
+</example>
+
+
+
+<example name="intransitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ Now , however , as the court 's new five-member conservative majority continues [*-1] to solidify , victories for the liberals are rare .
+</text>
+	<arg n="1">[*-1] -&gt;  the court 's new five-member conservative majority</arg>
+	<rel>solidify</rel>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

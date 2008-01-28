@@ -1,0 +1,90 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="erupt">
+<note>
+Frames file for 'erupt' based on sentences in wsj and automatic
+expansion via verbnet.
+</note>
+
+<roleset id="erupt.01" name="(cause to) spew forth" vncls="48.1.1">
+<roles>
+	<role descr="thing erupting" n="1">
+		
+  <vnrole vncls="48.1.1" vntheta="Theme"/></role>
+
+	<role descr="substance spewing forth" n="2">
+		
+  <vnrole vncls="48.1.1" vntheta="Location"/></role>
+
+</roles>
+
+<example name="straight unaccusative">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    On so-called Manic Monday, Oct. 16, stock prices plunged across
+    Europe and trading problems erupted. 
+</text>
+        <arg f="TMP" n="M">On so-called Manic Monday, Oct. 16,</arg>
+        <arg n="1">trading problems</arg>
+        <rel>erupted</rel>
+</example>
+
+<example name="misplaced modifier">
+<inflection aspect="perfect" form="participle" person="third" tense="present" voice="active"/>
+<text>
+    A bitter conflict with global implications has erupted between
+    Nomura Securities Co. and Industrial Bank of Japan, two of the
+    world's most powerful financial companies. 
+</text>
+        <arg n="1">A bitter conflict with global implications</arg>
+        <rel>erupted</rel>
+        <arg n="M">between Nomura Securities Co. and Industrial Bank
+        of Japan, two of the world's most powerful financial
+        companies</arg> 
+<note>
+The 'between...companies' bit properly belongs to the conflict, not to
+the eruption.
+</note>
+</example>
+
+<example name="with substance">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    The Senate's public gallery was packed with Judge Hastings'
+    supporters, who *trace* erupted into applause after he finished
+    his argument. 
+</text>
+        <arg n="1">*trace* -&gt;  who -&gt;  Judge Hastings' supporters</arg>
+        <rel>erupted</rel>
+        <arg f="into" n="2">applause</arg>
+        <arg f="TMP" n="M">after he finished his argument</arg>
+</example>
+
+</roleset>
+
+<roleset id="erupt.02" name="mode of speaking" vncls="-">
+<roles>
+  <role descr="speaker" n="0"/>
+  <role descr="utterance" n="1"/>
+  <role descr="hearer" n="2"/>
+</roles>
+
+<example name="blow your top">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    And Mancuso himself is investigating at the top of his lungs:
+    ``How the hell can you live with yourself?'' he erupts *trace* at
+    a politician. 
+</text>
+        <arg n="0">he</arg>
+        <rel>erupts</rel>
+        <arg n="1">*trace* -&gt;  How the hell can you live with yourself </arg>
+        <arg f="at" n="2">a politician</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

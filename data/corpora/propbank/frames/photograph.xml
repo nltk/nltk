@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="photograph">
+<note>
+  Frames file for 'photograph' based on sentences in wsj.  Verbnet
+  entry 25.4.  
+</note>
+
+<roleset id="photograph.01" name="take a picture" vncls="25.4">
+<roles>
+  <role descr="photographer" n="0"><vnrole vncls="25.4" vntheta="Agent"/></role>
+  <role descr="subject" n="1"><vnrole vncls="25.4" vntheta="Theme"/></role>
+</roles>
+
+<example name="Is this an ethnic slur?">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+    Japanese tourists will be told [*-1] to take care when [*-2]
+    photographing earthquake damage in San Francisco [*T*-4], the
+    Japan Association of Travel Agents said. 
+</text>
+        <arg n="0">[*-2] -&gt;  [*-1] -&gt;  Japanese tourists</arg>
+        <rel>photographing</rel>
+        <arg n="1">earthquake damage in San Francisco</arg>
+</example>
+
+<note>
+And don't the Japanese have enough earthquake damage at home?
+</note>
+
+</roleset>
+</predicate>
+</frameset>

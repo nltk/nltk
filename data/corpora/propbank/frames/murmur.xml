@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="murmur">
+<note>
+  Frames file for 'murmur' based on sentences in brown.  Verbnet entry
+</note>
+
+<roleset id="murmur.01" vncls="-" name="speak in soft low tones">
+<roles>
+  <role n="0"  descr="speaker"/>
+  <role n="1"  descr="utterance"/>
+  <role n="2"  descr="listener"/>
+</roles>
+
+<example name="no listener">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+    The sheik smiled and murmured: ``That is precisely correct''.
+  </text>
+  <arg n="0"        >The sheik</arg>
+  <rel              >murmured</rel>
+  <arg n="1"        >That is precisely correct</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

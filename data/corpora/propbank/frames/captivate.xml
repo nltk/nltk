@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="captivate">
+<note>
+  Frames file for 'captivate' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="captivate.01" name="to attract or charm" vncls="31.1">
+<roles>
+  <role descr="causer" n="0"><vnrole vncls="31.1" vntheta="Cause"/></role>
+  <role descr="experiencer" n="1"><vnrole vncls="31.1" vntheta="Experiencer"/></role>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+ Broadcasters have a healthy appreciation of the role [0] entertainment values play [*T*-1] in [*] captivating an audience .
+</text>
+	<arg n="0">[*] -&gt;  entertainment values</arg>
+	<rel>captivating</rel>
+	<arg n="1">an audience</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

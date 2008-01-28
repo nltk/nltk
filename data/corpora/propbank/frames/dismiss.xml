@@ -1,0 +1,105 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="dismiss">
+<note>
+Frames file for 'dismiss' based on sentences in financial subcorpus
+and automatic expansion via verbnet.
+</note>
+
+<roleset id="dismiss.01" name="remove, release" vncls="10.1">
+<roles>
+	<role descr="entity removing" n="0">
+		
+  <vnrole vncls="10.1" vntheta="Agent"/></role>
+
+	<role descr="thing being removed" n="1">
+		
+  <vnrole vncls="10.1" vntheta="Theme"/></role>
+
+	<role descr="removed from" n="2">
+		
+  <vnrole vncls="10.1" vntheta="Source"/></role>
+
+</roles>
+
+<example name="passive, one arg">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    He maintains that the information from the FBI will help him get
+    his 1968 conviction vacated and his bail-jumping indictment
+    dismissed *trace*. 
+</text>
+        <rel>dismissed</rel>
+        <arg n="1">*trace* -&gt;  his bail-jumping indictment</arg>
+</example>
+
+<example name="active, two args">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    The naming of FCB/Leber Katz Partners as agency of record for
+    Nabisco Brands Inc. and Planters LifeSavers Co. follows RJR
+    Nabisco's announcement last week that it will disband its RJR
+    Nabisco Broadcast division and dismiss its 14 employees Dec. 1. to
+    cut costs. 
+</text>
+        <arg n="0">it</arg>
+        <arg f="MOD" n="M">will</arg>
+        <rel>dismiss</rel>
+        <arg n="1">its 14 employees</arg>
+        <arg f="TMP" n="M">Dec. 1.</arg>
+        <arg f="PNC" n="M">to cut costs</arg>
+</example>
+
+<example name="all args" src="oust.01">
+<text>
+    Mr. Ackerman already is seeking *trace* to dismiss Mr. Edelman as
+    chairman of Datapoint Corp., an Intelogic affiliate. 
+</text>
+        <arg n="0">*trace* -&gt;  Mr. Ackerman</arg>
+        <rel>dismiss</rel>
+        <arg n="1">Mr. Edelman</arg>
+        <arg f="as" n="2">chairman of Datapoint Corp., an Intelogic
+        affiliate</arg> 
+</example>
+</roleset>
+
+<roleset id="dismiss.02" name="label contemptuously" vncls="-">
+<roles>
+  <role descr="labeller" n="0"/>
+  <role descr="labelled" n="1"/>
+  <role descr="labelled as" n="2"/>
+</roles>
+
+<example name="all args">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    Jonathan H. Kress, the son of the painting's former owner,
+    Mrs. Rush Kress, dismisses the price talk as ``sour grapes.'' 
+</text>
+        <arg n="0">Jonathan H. Kress, the son of the painting's former
+        owner, Mrs. Rush Kress,</arg> 
+        <rel>dismisses</rel>
+        <arg n="1">the price talk</arg>
+        <arg f="as" n="2">``sour grapes</arg>
+</example>
+
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    Both palmtops are dismissed *trace* by notebook makers, who argue
+    that they're too small -- a problem  Poquet also encountered in
+    focus groups, admits Gerry Purdy, director of marketing. 
+</text>
+        <rel>dismissed</rel>
+        <arg n="1">*trace* -&gt;  Both palmtops</arg>
+        <arg n="0">notebook makers, who argue that they're too small
+        -- a problem Poquet also encountered  in focus groups, admits
+        Gerry Purdy, director of marketing</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

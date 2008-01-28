@@ -1,0 +1,48 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="cheapen">
+<note>
+  Frames file for 'cheapen' based on sentences in wsj.  Verbnet entry
+  45.4, everyone's favorite meaningless class.
+</note>
+
+<roleset id="cheapen.01" name="cause to lose value" vncls="45.4">
+<roles>
+  <role descr="causer, agent" n="0"><vnrole vncls="45.4" vntheta="Agent"/></role>
+  <role descr="thing losing value" n="1"><vnrole vncls="45.4" vntheta="Patient"/></role>
+  <role descr="instrument" n="2"><vnrole vncls="45.4" vntheta="Instrument"/></role>
+</roles>
+
+<example name="just transitive">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    But ``on a new car, a rebate doesn't work well'' because it
+    cheapens the vehicle's image, contends Thomas D. Mignanelli,
+    executive vice president of Nissan's U.S. sales arm. 
+</text>
+        <arg n="0">it</arg>
+        <rel>cheapens</rel>
+        <arg n="1">the vehicle's image</arg>
+</example>
+
+<example name="with instrument">
+  <inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+  <text>
+    John cheapens his own image by associating with characters like
+    Mary.  (Oh, that's harsh.)
+  </text>
+  <arg n="0">John</arg>
+  <rel>cheapens</rel>
+  <arg n="1">his own image</arg>
+  <arg f="by" n="2">associating with characters like Mary</arg>
+</example>
+
+<note>
+Oddly, cheapen doesn't seem to mean &quot;reduce in price&quot;, which would
+also be a class 45.4 verb but with different PAS (requiring an EXT,
+start and end points).
+</note>
+
+</roleset>
+</predicate>
+</frameset>

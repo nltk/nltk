@@ -1,0 +1,79 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="flush">
+<note>
+Frames file for 'flush' based on sentences in wsj and automatic
+expansion via verbnet.
+</note>
+
+<roleset id="flush.01" name="remove" vncls="10.4.1">
+<roles>
+	<role descr="flusher" n="0">
+		
+  <vnrole vncls="10.4.1" vntheta="Agent"/></role>
+
+	<role descr="removed material" n="1">
+		
+  <vnrole vncls="10.4.1" vntheta="Theme"/></role>
+
+	<role descr="container, source" n="2">
+		
+  <vnrole vncls="10.4.1" vntheta="Source"/></role>
+
+</roles>
+
+<example name="unmentionable thing flushed">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    The magazine combines how-to pieces on topics like backyard
+    composting, explanatory essays on such things as what happens
+    after you flush your toilet, and hard-hitting pieces on alleged
+    environmental offenders. 
+</text>
+        <arg n="0">you</arg>
+        <rel>flush</rel>
+        <arg n="2">your toilet</arg>
+</example>
+
+<example name="flush out of" src="squeeze.02">
+<text>
+    But it's hard *trace* to flush much profit out of the
+    personal-computer business these days, and the workstation market,
+    while important, is too small to rely on for much growth. 
+</text>
+        <arg n="0">*trace*</arg>
+        <rel>flush</rel>
+        <arg n="1">much profit</arg>
+        <arg f="out" n="2">of the personal-computer business</arg>
+        <arg f="TMP" n="M">these days</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="flush_out">
+
+<roleset id="flush.02" name="cause to become visible, find" vncls="-">
+<roles>
+  <role descr="flusher" n="0"/>
+  <role descr="thing found" n="1"/>
+</roles>
+
+<example name="eureka!">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    The would-be raider even hired an investment banker to give teeth
+    to his takeover threat, which was widely interpreted *trace* as an
+    effort *trace* to flush out an acquirer for USAir, or for his own
+    stake. 
+</text>
+        <arg n="0">*trace* -&gt; *trace* -&gt;  which -&gt;  his takeover threat</arg>
+        <rel>[ flush] [ out]</rel>
+        <arg n="1">an acquirer for USAir , or for his own stake</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

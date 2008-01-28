@@ -1,0 +1,57 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<note>
+based on survey of initial sentences of big corpus
+</note>
+
+<predicate lemma="seem">
+<roleset id="seem.01" name="appear">
+<roles>
+  <role descr="thing seeming" n="1"/>
+  <role descr="seeming to" n="2"/>
+</roles>
+
+<example name="it support">
+  <text>
+    It seems that there's a race on to come up with the priciest
+    single bottle 
+  </text>
+  <arg n="1">there's a race on to come up with the priciest single
+  bottle</arg> 
+  <rel>seems</rel>
+  <note> Ignore the 'it'--it's just there for grammaticality </note>
+</example>
+
+<example name="X seems Y">
+  <text>
+    These prices seem rather modest.
+  </text>
+  <arg n="1">[These prices][rather modest]</arg>
+  <rel>seem</rel>
+</example>
+
+<example name="and again">
+  <text>
+    Financial markets seem *trace* to be expecting easier credit as well.
+  </text>
+  <arg n="1">[Financial markets][*trace* to be expecting easier credit
+  as well]</arg>
+  <rel>seem</rel>
+</example>
+
+<example name="with viewer">
+  <inflection person="third" tense="present" aspect="ns" voice="active" form="full"/>
+  <text>
+      It seems to Mary that John is an idiot.
+  </text>
+  <arg n="2" f="to">Mary</arg>
+  <rel              >seems</rel>
+  <arg n="1"        >that John is an idiot</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

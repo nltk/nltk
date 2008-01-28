@@ -1,0 +1,50 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="exhibit">
+<note>
+  Frames file for 'exhibit' based on sentences in financial subcorpus
+  and comparison with 'show' (show is nothing more than the
+  causative of see, after all).
+</note>
+
+<roleset id="exhibit.01" name="cause to see" vncls="29.5 37.1-1">
+<roles>
+  <role descr="exhibiter" n="0">
+	<vnrole vncls="29.5" vntheta="Agent"/>
+        <vnrole vncls="37.1-1" vntheta="Agent"/></role>
+  <role descr="thing seen/exhibition" n="1">
+	<vnrole vncls="29.5" vntheta="Predicate"/>
+        <vnrole vncls="37.1-1" vntheta="Topic"/></role>
+  <role descr="seer" n="2">
+	<vnrole vncls="29.5" vntheta="Theme"/>
+        <vnrole vncls="37.1-1" vntheta="Recipient"/></role>
+</roles>
+
+<example name="with WH-clause" src="show.01">
+  <text>
+    The case exhibited how testing was being overused.
+  </text>
+  <arg n="0">The case</arg>
+  <rel>exhibited</rel>
+  <arg n="1">how testing was being overused</arg>
+</example>
+
+<example name="all args">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John exhibited himself to the neighbors.
+  </text>
+  <arg n="0">John</arg>
+  <rel>exhibited</rel>
+  <arg f="REC" n="1">himself</arg>
+  <arg f="to" n="2">the neighbors</arg>
+</example>
+
+<note>
+Not a perfect synonym for 'show'; show can take the ditransitive (show
+me this) but exhibit cannot (*exhibit me this).
+</note>
+
+</roleset>
+</predicate>
+</frameset>

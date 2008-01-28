@@ -1,0 +1,51 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="rely">
+<note>
+  Frames file for 'rely' based on sentences in financial subcorpus.
+No Verbnet entry, no Framenet entry.  Comparison to need.
+</note>
+
+<roleset id="rely.01" name="need">
+<roles>
+  <role descr="relier, needer" n="0"/>
+  <role descr="thing needed, relied on" n="1"/>
+  <role descr="for, in order to" n="2"/>
+</roles>
+
+<example name="prepositional arg2">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    Michael, which also processes potatoes, still relies on
+spuds for about a fourth of its sales and nearly half its pretax
+profit. 
+</text>
+        <arg n="0">Michael, which also processes potatoes,</arg>
+        <arg f="TMP" n="M">still</arg>
+        <rel>relies</rel>
+        <arg f="on" n="1">spuds</arg>
+        <arg f="for" n="2">about a fourth of its sales and nearly half
+its pretax profit</arg> 
+</example>
+
+<example name="sentential arg2">
+<inflection aspect="perfect" form="participle" person="third" tense="present" voice="active"/>
+<text>
+    Still, Unisys said its European business was weak during the
+quarter, a worrisome sign given that the company has relied on solid
+results overseas to overcome weakness in the U.S. over the past
+several quarters. 
+</text>
+        <arg n="0">the company</arg>
+        <rel>relied</rel>
+        <arg f="on" n="1">solid results overseas</arg>
+        <arg n="2">to overcome weakness in the U.S.</arg>
+        <arg f="TMP" n="M">over the past several quarters</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

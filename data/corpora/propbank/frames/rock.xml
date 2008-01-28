@@ -1,0 +1,50 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="rock">
+<note>
+    Frames file for 'rock' based on transformation of 'shake' file.
+</note>
+
+<roleset id="rock.01" name="tremble" vncls="47.3 49">
+<roles>
+  <role descr="causer of trembling motion" n="0">
+		
+  <vnrole vncls="47.3" vntheta="Agent"/><vnrole vncls="49" vntheta="Agent"/></role>
+
+  <role descr="thing trembling" n="1">
+		
+  <vnrole vncls="47.3" vntheta="Theme"/><vnrole vncls="49" vntheta="Patient"/></role>
+
+</roles>
+
+<example name="ergative">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    The walls shook; the building rocked.
+</text>
+        <arg n="1">the building</arg>
+        <rel>rocked</rel>
+</example>
+
+<example name="agentive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Speaking to reporters this week after Bank Bumiputra's
+    shareholders approved a rescue plan, Tan Sri Basir said heavy
+    lending to the property sector rocked the bank when property
+    prices in Malaysia plummeted in 1984-85.  
+</text>
+        <arg n="0">heavy lending to the property sector</arg>
+        <rel>rocked</rel>
+        <arg n="1">the bank</arg>
+        <arg f="TMP" n="M">when property prices in Malaysia plummeted
+        in 1984-85 </arg> 
+</example>
+
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

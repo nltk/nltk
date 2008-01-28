@@ -1,0 +1,130 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<note>
+Frames file for 'grow' based on survey of initial sentences of big corpus
+and comparison with 'increase'
+</note>
+
+<predicate lemma="grow">
+<roleset id="grow.01" name="increase" vncls="45.4 45.6">
+<roles>
+  <role descr="[causer of growth - should be possible]" n="0">
+	<vnrole vncls="45.4" vntheta="Agent"/></role>
+  <role descr="thing grown" n="1">
+	<vnrole vncls="45.4" vntheta="Patient"/>
+        <vnrole vncls="45.6" vntheta="Patient"/></role>
+  <role descr="amount increased by, EXT or MNR" n="2">
+	<vnrole vncls="45.6" vntheta="Extent"/></role>
+  <role descr="start point" n="3"/>
+  <role descr="end point, end state of arg1" n="4"/>
+</roles>
+
+<example name="ergative, with EXT and end point">
+  <text>
+    Assets grew by $1.5 billion during the latest week to $352.7 billion.
+  </text>
+  <arg n="1">Assets</arg>
+  <rel>grew</rel>
+  <arg f="EXT" n="2">by $1.5 billion</arg>
+  <arg f="TMP" n="M">during the latest week</arg>
+  <arg f="to" n="4">to $352.7 billion</arg>
+</example>
+
+
+<note>Let's use EXT for numericals only, otherwise Arg2-MNR:</note>
+
+<example name="ergative with manner">
+  <text>
+    Their purchases are growing at a rapid pace.
+  </text>
+  <arg n="1">Their purchases</arg>
+  <rel>are growing</rel>
+  <arg f="MNR" n="2">at a rapid pace</arg>
+</example>
+
+<example name="different usage of Arg2">
+  <text>
+  Japan's marathon economy is growing at 4.3% this year.
+  </text>
+  <arg n="1">Japan's marathon economy</arg>
+  <rel>growing</rel>
+  <arg f="at" n="2">4.3%</arg>
+  <arg f="TMP" n="m">this year</arg>
+</example>
+
+
+</roleset>
+<roleset id="grow.02" name="become" vncls="48.1.1">
+<roles>
+  <role descr="thing becoming" n="1">
+         <vnrole vncls="48.1.1" vntheta="Theme"/></role>
+  <role descr="thing become = end state of arg1" n="2"/>
+  <role descr="source, start point" n="3">
+         <vnrole vncls="48.1.1" vntheta="Location"/></role>
+</roles>
+
+<example name="become">
+  <text>
+    Narrowly focused funds grew wildly popular
+  </text>
+  <arg n="1">Narrowly focused funds</arg>
+  <rel>grew</rel>
+  <arg n="2">wildly popular</arg>
+</example>
+
+<example name="another become">
+  <text>
+    We expect it *trace* to grow into something specific.
+  </text>
+  <arg n="1">*trace*=it</arg>
+  <rel>grow</rel>
+  <arg f="into" n="2">something specific</arg>
+</example>
+</roleset>
+
+<roleset id="grow.03" name="agriculture" vncls="26.1 26.2">
+<note>related to 'increase' in a subtle way</note>
+<roles>
+  <role descr="grower" n="0">
+	<vnrole vncls="26.1" vntheta="Agent"/>
+        <vnrole vncls="26.2" vntheta="Agent"/></role>
+  <role descr="crop" n="1">
+	<vnrole vncls="26.1" vntheta="Product"/>
+        <vnrole vncls="26.2" vntheta="Product"/></role>
+  <role descr="source" n="2">
+	<vnrole vncls="26.1" vntheta="Material"/>
+        <vnrole vncls="26.2" vntheta="Material"/></role>
+</roles>
+
+<example name="growing from source">
+  <text>
+    John grows tomatoes from seed.
+  </text>
+  <arg n="0">John</arg>
+  <rel>grows</rel>
+  <arg n="1">tomatoes</arg>
+  <arg f="from" n="2">from seed</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="grow_up">
+<roleset id="grow.04" name="go from child to adult">
+<roles>
+  <role descr="person aging" n="1"/>
+</roles>
+
+<example name="aging">
+  <text>
+    Mr. Corry grew up in Cincinnati.
+  </text>
+  <arg n="1">Mr. Corry</arg>
+  <rel>grew up</rel>
+  <arg f="LOC" n="m">in Cincinnati</arg>
+</example>
+</roleset>
+</predicate>
+
+
+</frameset>

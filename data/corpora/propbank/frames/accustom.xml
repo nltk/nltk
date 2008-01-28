@@ -1,0 +1,46 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="accustom">
+<note>
+  Frames file for 'accustom' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="accustom.01" name="make used to" vncls="-">
+<roles>
+  <role descr="rare causal agent" n="0"/>
+  <role descr="thing getting used to something" n="1"/>
+  <role descr="thing getting used to" n="2"/>
+</roles>
+
+<example name="usually passive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    But like other real estate professionals accustomed *trace* to
+    California's quake risks, Mr. Leventhal anticipates little
+    long-term change in the city's commercial real estate market. 
+</text>
+        <rel>accustomed</rel>
+        <arg n="1">*trace* -&gt;  other real estate professionals</arg>
+        <arg f="to" n="2">California's quake risks</arg>
+</example>
+
+<example name="a little weird with agent">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    Mary accustomed John to living without sleep.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>accustomed</rel>
+  <arg n="1">John</arg>
+  <arg f="to" n="2">living without sleep</arg>
+</example>
+
+<note>
+The active is so rare (and weird) that it's almost wrong to consider
+this a verb any more; it might be better to consider &quot;accustomed&quot; as
+an adjective.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

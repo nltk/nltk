@@ -1,0 +1,42 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="whistle">
+<note>
+  Frames file for 'whistle' based on sentences in wsj.  Verbnet
+  entries 26.7-1, 37.3, 40.2.
+</note>
+
+<roleset id="whistle.01" name="make a   whistling noise" vncls="26.7-1 37.3 40.2">
+<roles>
+  <role descr="maker of noise" n="0"><vnrole vncls="26.7-1" vntheta="Agent"/><vnrole vncls="40.2" vntheta="Agent"/><vnrole vncls="37.3" vntheta="Agent"/></role>
+  <role descr="noise itself, tune, utterance" n="1"><vnrole vncls="26.7-1" vntheta="Theme"/><vnrole vncls="40.2" vntheta="Theme"/><vnrole vncls="37.3" vntheta="Topic"/></role>
+  <role descr="hearer" n="2"><vnrole vncls="26.7-1" vntheta="Beneficiary"/><vnrole vncls="40.2" vntheta="Recipient"/><vnrole vncls="37.3" vntheta="Recipient"/></role>
+</roles>
+
+<example name="whistling Dixie">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    I don't think anyone left the place *trace* whistling Dixie.''
+</text>
+        <arg n="0">*trace* -&gt;  anyone</arg>
+        <rel>whistling</rel>
+        <arg n="1">Dixie</arg>
+</example>
+
+<example name="with hearer">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John whistled at Mary, whereupon she slugged him.
+  </text>
+  <arg n="0">John</arg>
+  <rel>whistled</rel>
+  <arg f="at" n="2">Mary</arg>
+</example>
+
+<note>
+Why, Mary, why are you so violent?
+</note>
+
+</roleset>
+</predicate>
+</frameset>

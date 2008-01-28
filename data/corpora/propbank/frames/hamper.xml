@@ -1,0 +1,56 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="hamper">
+<note>
+  Frames file for 'hamper' based on sentences in financial subcorpus.
+  No access to verbnet.  No comparison.
+</note>
+
+<roleset id="hamper.01" name="obstruct, hinder">
+<roles>
+  <role descr="obstruction" n="0"/>
+  <role descr="effort" n="1"/>
+  <role descr="secondary agent, agent of arg1" n="2"/>
+</roles>
+
+<example name="active">
+<text>
+    A lack of enthusiasm with the latest economic data hampered the
+    stock market's bid to extend Tuesday's sharp gains. 
+</text>
+        <arg n="0">A lack of enthusiasm with the latest economic
+        data</arg> 
+        <rel>hampered</rel>
+        <arg n="1">the stock market's bid to extend Tuesday's sharp
+        gains</arg> 
+</example>
+
+<example name="passive">
+<text>
+   ...the company's performance was hampered *trace* by problems tied
+   to the introduction of a major new family of computers in April. 
+</text>
+        <rel>hampered</rel>
+        <arg n="1">*trace* -&gt;  the company's performance</arg>
+        <arg f="by" n="0">problems tied to the introduction of a major
+        new family of computers in April</arg> 
+</example>
+
+<example name="with secondary agent">
+  <text>
+    John's stubbornness hampered Mary in her efforts to talk some
+    sense into him.
+  </text>
+  <arg n="0">John's stubbornness</arg>
+  <rel>hampered</rel>
+  <arg n="2">Mary</arg>
+  <arg f="in" n="1">her efforts to talk some sense into him</arg>
+</example>
+
+<note>
+Can anyone say, &quot;John hampers his clothes when he takes them off&quot;?
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,105 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<note>
+Frames file for 'tell' based on survey of initial sentences from big corpus
+and comparison with 'say' and 'give'
+</note>
+<predicate lemma="tell">
+<roleset id="tell.01" name="pass along information" vncls="37.1-1 37.2">
+  <roles>
+    <role descr="Speaker" n="0">
+		
+		
+  <vnrole vncls="37.1-1" vntheta="Agent"/><vnrole vncls="37.2" vntheta="Agent"/></role>
+
+    <role descr="Utterance" n="1">
+		
+		
+  <vnrole vncls="37.1-1" vntheta="Topic"/><vnrole vncls="37.2" vntheta="Topic"/></role>
+
+    <role descr="Hearer" n="2">
+		
+		
+  <vnrole vncls="37.1-1" vntheta="Recipient"/><vnrole vncls="37.2" vntheta="Recipient"/></role>
+
+  </roles>
+
+<example name="ditransitive">
+  <text>
+    The score tell you what the characters are thinking and feeling.
+  </text>
+  <arg n="0">The score</arg>
+  <rel>tell</rel>
+  <arg n="2">you</arg>
+  <arg n="1">what the characters are thinking and feeling</arg>
+</example>
+
+<example name="odd ditransitive">
+  <text>
+    What this tells us *trace* is that US trade law is working.
+  </text>
+  <arg n="0">this</arg>
+  <rel>tells</rel>
+  <arg n="2">us</arg>
+  <arg n="1">*trace* is that US trade law is working</arg>
+</example>
+
+<example name="prepositional arg2">
+  <text>
+    John told a story to Mary.
+  </text>
+  <arg n="0">John</arg>
+  <rel>told</rel>
+  <arg n="1">a story</arg>
+  <arg f="TO" n="2">to Mary</arg>
+</example>
+
+<example name="fronted">
+  <text>
+    &quot;Only Nixon could go to China,&quot; he told a group of Americans *trace*
+  </text>
+  <arg n="0">he</arg>
+  <rel>told</rel>
+  <arg n="2">a group of Americans</arg>
+  <arg n="1">*trace=Only Nixon could go to China*</arg>
+</example>
+</roleset>
+
+<roleset id="tell.02" vncls="23.1" name="distinguish, determine">
+<roles>
+	<role descr="entity causing separation" n="0"><vnrole vncls="23.1" vntheta="Agent"/></role> 
+	<role descr="thing(s) being divided" n="1"><vnrole vncls="23.1" vntheta="Patient1"/></role> 
+	<role descr="source, separated from, if separate from arg1" n="2"><vnrole vncls="23.1" vntheta="Patient2"/></role>
+</roles>
+
+<example name="merged objective args">
+<inflection person="ns" tense="present" aspect="ns" voice="active" form="full"/><text>
+     He says his team couldn't tell whether accounts receivable had
+     been paid or not. 
+</text>
+        <arg n="0">his team</arg>
+        <arg n="M" f="MOD">could</arg>
+        <arg n="M" f="NEG">n't</arg>
+        <rel>tell</rel>
+        <arg n="1">whether accounts receivable had been paid or not</arg>
+</example>
+
+<example name="all args">
+  <inflection person="ns" tense="ns" aspect="ns" voice="active" form="full"/>
+  <text>
+     John can't tell his head from his ass.
+  </text>
+  <arg n="0"        >John</arg>
+  <arg n="m" f="MOD">ca</arg>
+  <arg n="m" f="NEG">n't</arg>
+  <rel              >tell</rel>
+  <arg n="1"        >his head</arg>
+  <arg n="2" f="from">his ass</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

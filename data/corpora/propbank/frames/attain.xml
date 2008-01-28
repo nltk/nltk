@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="attain">
+<note>
+  Frames file for 'attain'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="attain.01" name="to reach or achieve" vncls="-">
+<roles> 
+  <role descr="reacher, agent" n="0"/>
+  <role descr="entity attained" n="1"/>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="perfect" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+ [*-3] Having attained positions of real influence or wealth , these men constitute the Old Guard of New York City black politics ; they are less confrontational than the younger , more activist black political community that [*T*-2] has been based [*-1] largely in Brooklyn .
+</text>
+	<arg n="0">these men -&gt;  [*-3]</arg>
+	<rel>attained</rel>
+	<arg n="1">positions of real influence or wealth</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

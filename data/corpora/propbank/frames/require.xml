@@ -1,0 +1,77 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="require">
+<note>
+  Frames file for 'require' based on survey of initial sentences of
+  big corpus and comparison with 'need' and 'ask'
+</note>
+
+<roleset id="require.01" name="need">
+<roles>
+  <role descr="requirer" n="0"/>
+  <role descr="thing required" n="1"/>
+  <role descr="required-of, required-from ('ablative')" n="2"/>
+</roles>
+
+<example name="active">
+  <text>
+  Being so fragile and minute, they will require special special
+  robotic handling equipment.
+  </text>
+  <arg f="CAU" n="m">Being so fragile and minute</arg>
+  <arg n="0">they</arg>
+  <arg f="MOD" n="m">will</arg>
+  <rel>require</rel>
+  <arg n="1">special special robotic handling equipment.</arg>
+</example>
+
+<example name="with ablative">
+  <text>
+  It may be the largest [settlement] ever required *trace* of a state
+  or local utility.
+  </text>
+  <arg n="1">*trace*=the largest [settlement]</arg>
+  <arg f="TMP" n="m">ever</arg>
+  <rel>required</rel>
+  <arg f="of" n="2">a state or local utility.</arg>
+</example>
+
+<example name="sentential complement">
+  <text>
+  The 1988 trade act requires Mrs. Hills to issue another review of
+  the performance of these countries by April 30.
+  </text>
+  <arg n="0">The 1988 trade act</arg>
+  <rel>requires</rel>
+  <arg n="2">Mrs. Hills</arg>
+  <arg n="1">to issue another review of
+  the performance of these countries by April 30.</arg>
+</example>
+
+<note>
+Splitting the clause up (in contrast to the treatment in 'need') is
+necessary because require predicates can be passivized, while 'need'
+predicates cannot
+</note>
+
+<example name="passivized">
+  <text>
+  Sea Containers' subsidiaries might be required *trace* to place
+  their shares in the open market.
+  </text>
+  <arg n="2">*trace*=Sea Containers' subsidiaries</arg>
+  <arg f="MOD" n="m">might</arg>
+  <rel>required</rel>
+  <arg n="1">to place their shares in the open market.</arg>
+</example>
+
+<note>
+Compare to &quot;The FCC needed Sea Containers' subsidiaries to place their
+shares on the open market&quot; and &quot;*Sea Containers' subsidiaries were
+needed to place their shares on the open market&quot;.  The latter is
+grammatical, but means something different.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

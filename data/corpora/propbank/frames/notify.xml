@@ -1,0 +1,45 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="notify">
+<note>
+  Frames file for 'notify' based on sentences in financial subcorpus.
+  No access to verbnet.  Comparison to 'tell'.
+</note>
+
+<roleset id="notify.01" name="tell, alert">
+<roles>
+  <role descr="notifier, teller" n="0"/>
+  <role descr="entity notified, told" n="1"/>
+  <role descr="utterance" n="2"/>
+</roles>
+
+<example name="active, sentential utterance">
+<text>
+    BellSouth has notified LIN that it would ``shortly respond to the
+    McCaw proposal in as full and effective a manner as is
+    warranted.'' 
+</text>
+        <arg n="0">BellSouth</arg>
+        <rel>notified</rel>
+        <arg n="1">LIN</arg>
+        <arg n="2">it would ``shortly respond to the McCaw proposal in
+        as full and effective a manner as is warranted</arg> 
+</example>
+
+<example name="passive, PP utterance">
+<text>
+    UAL wouldn't elaborate on a statement that it had been notified
+    *trace* of the filing by Reliance. 
+</text>
+        <rel>notified</rel>
+        <arg n="1">*trace* -&gt;  it</arg>
+        <arg f="of" n="2">the filing</arg>
+        <arg f="by" n="0">Reliance</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

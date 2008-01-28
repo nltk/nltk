@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="coin">
+<note>
+  Frames file for 'coin' based on sentences in wsj.  Verbnet entry
+  26.4, Framenet entry Invention.
+</note>
+
+<roleset id="coin.01" name="create something new" vncls="26.4">
+<roles>
+  <role descr="coiner" n="0"><vnrole vncls="26.4" vntheta="Agent"/></role>
+  <role descr="thing coined (rarely a coin)" n="1"><vnrole vncls="26.4" vntheta="Product"/></role>
+</roles>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="third" tense="past" voice="passive"/>
+<text>
+    The name Maidenform was coined [*-1] by a third business partner,
+    Enid Bissett. 
+</text>
+        <rel>coined</rel>
+        <arg n="1">[*-1] -&gt;  The name Maidenform</arg>
+        <arg f="by" n="0">a third business partner, Enid Bissett</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

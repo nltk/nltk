@@ -1,0 +1,94 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="owe">
+<note>
+  Frames file for 'owe' based on sentences in financial subcorpus.  No
+  access to verbnet.  Comparison to 'pay' et al.
+</note>
+
+<roleset id="owe.01" name="payment outstanding" vncls="13.3">
+<roles>
+  <role descr="payer or buyer" n="0">
+		
+  <vnrole vncls="13.3" vntheta="Agent"/></role>
+
+  <role descr="price paid" n="1"/>
+  <role descr="seller or person being paid" n="2">
+		
+  <vnrole vncls="13.3" vntheta="Recipient"/></role>
+
+  <role descr="commodity" n="3">
+		
+  <vnrole vncls="13.3" vntheta="Theme"/></role>
+
+</roles>
+
+<note>
+Note that price and commodity have been reversed from 'pay'
+</note>
+
+<example name="ditransitive">
+<text>
+    They have since mellowed, although one senior Young &amp; Rubicam
+    executive said ``I think ad agencies owe Carl Spielvogel a vote of
+    thanks for getting him out of the consulting business.'' 
+</text>
+        <arg n="0">ad agencies</arg>
+        <rel>owe</rel>
+        <arg n="2">Carl Spielvogel</arg>
+        <arg n="1">a vote of thanks for getting him out of the
+        consulting business</arg> 
+</example>
+
+<example name="prepositional arg2">
+<text>
+    Columbia owes its spectacular growth in recent years to its
+    junk-bond portfolio, the largest of any U.S. thrift. 
+</text>
+        <arg n="0">Columbia</arg>
+        <rel>owes</rel>
+        <arg n="1">its spectacular growth in recent years</arg>
+        <arg f="to" n="2">its junk-bond portfolio, the largest of any
+        U.S. thrift</arg> 
+</example>
+
+<example name="passivized price">
+<text>
+    The buy-out group has begun billing UAL for fees and expenses
+    *trace* it owes *trace* to investment bankers, law firms and
+    banks.  
+</text>
+        <arg n="1">*trace* -&gt; *trace* -&gt; fees and expenses</arg>
+        <arg n="0">it</arg>
+        <rel>owes</rel>
+        <arg f="to" n="2">investment bankers, law firms and banks</arg>
+</example>
+
+<example name="passivized 'seller'">
+<text>
+    Under the plan, unsecured creditors, who *trace* are owed *trace*
+        about $430 million, would receive about $92 million , or 21
+        cents for each dollar they are owed.</text> 
+        <rel>owed</rel>
+        <arg n="2">*trace* -&gt; *trace* -&gt;  who -&gt;  unsecured
+        creditors</arg> 
+        <arg n="1">about $ 430 million </arg>
+</example>
+
+<example name="double passive">
+<text>
+    Under the plan, unsecured creditors, who are owed about $430
+        million, would receive about $92 million, or 21 cents for each
+        dollar *trace-1* they are owed *trace-2* *trace-3*.</text> 
+        <rel>owed</rel>
+        <arg n="2">*trace-2* -&gt;  they</arg>
+        <arg n="1">*trace-3* -&gt; *trace-1* -&gt;  each dollar</arg>
+</example>
+
+<note>
+Double passives occur a lot; be VERY careful with trace chains.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

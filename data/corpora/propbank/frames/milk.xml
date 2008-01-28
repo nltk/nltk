@@ -1,0 +1,94 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+
+<note>
+Frames file for 'milk' based on sentences in financial subcorpus and
+automatic expansion via verbnet classes.
+</note>
+
+<predicate lemma="milk">
+<roleset id="milk.01" name="extract milk from a cow" vncls="10.7">
+<roles>
+  <role descr="farmer" n="0">
+	<vnrole vncls="10.7" vntheta="Agent"/></role>
+  <role descr="milk" n="1">
+        <vnrole vncls="10.7" vntheta="Theme"/></role>
+  <role descr="cow" n="2">
+	<vnrole vncls="10.7" vntheta="Source"/></role>
+</roles>
+
+<note>
+Most of the time you'll not see the milk argument--it only appears
+when the verb is being more explicitly metaphorically, as in the first
+example below.  Otherwise, the thing removed is mentioned within the
+verb itself. 
+</note>
+
+<example name="explicitly metaphorical">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    But Goya Foods Inc. believes it can milk some sales by bucking the
+    trend. 
+</text>
+        <arg n="0">it</arg>
+        <arg f="MOD" n="M">can</arg>
+        <rel>milk</rel>
+        <arg n="1">some sales</arg>
+        <arg f="MNR" n="M">by  bucking the trend</arg>
+</example>
+
+<example name="extremely literal">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    The young leave, especially girls who *trace* won't milk cows by
+    hand. 
+</text>
+        <arg n="0">*trace* -&gt;  who -&gt;  especially girls</arg>
+        <arg f="MOD" n="M">wo</arg>
+        <arg f="NEG" n="M">n't</arg>
+        <rel>milk</rel>
+        <arg n="2">cows</arg>
+        <arg f="MNR" n="M">by hand</arg>
+</example>
+
+<example name="metaphorical, unmentioned milk">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    He forecasts that the emphasis in mergers and acquisitions may
+    soon return to what he calls ``strategic deals, in which somebody
+    is taking over a company not *trace* to milk the cash flow, but
+    because it's a good fit.'' 
+</text>
+        <arg n="0">*trace* -&gt;  somebody</arg>
+        <rel>milk</rel>
+        <arg n="2">the cash flow</arg>
+</example>
+</roleset>
+
+<roleset id="milk.02" name="milk for variant: exploit" vncls="10.6">
+<roles>
+  <role descr="milker, agent" n="0">
+	<vnrole vncls="10.6" vntheta="Agent"/></role>
+  <role descr="thing milked" n="1">
+	<vnrole vncls="10.6" vntheta="Source"/></role>
+  <role descr="for all it's worth" n="2">
+	<vnrole vncls="10.6" vntheta="Theme"/></role>
+</roles>
+
+<example name="almost idiomatic">
+  <inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+  <text>
+    John milks his relationship with Mary for all it's worth.
+  </text>
+  <arg n="0">John</arg>
+  <rel>milks</rel>
+  <arg n="1">his relationship with Mary</arg>
+  <arg f="for" n="2">all it's worth</arg>
+</example>
+
+<note>
+Note that &quot;for all it's worth&quot; cannot be regarded as a PRP (if it IS a
+PRP, then it should go in the other roleset).
+</note>
+
+</roleset>
+</predicate>
+</frameset>

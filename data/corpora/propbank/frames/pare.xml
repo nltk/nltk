@@ -1,0 +1,111 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="pare">
+<note>
+  Frames file for 'pare' based on sentences in financial subcorpus.
+  No Verbnet entry.  Comparison with cut.
+</note>
+
+<roleset id="pare.01" name="cut off unnecessary bits, reduce size">
+<roles>
+  <role descr="cutter" n="0"/>
+  <role descr="thing cut" n="1"/>
+  <role descr="medium, source" n="2"/>
+  <role descr="instrument" n="3"/>
+</roles>
+
+<example name="cooking">
+  <text>
+    John pared the rind of fat from the ham with a chainsaw.
+  </text>
+  <arg n="0">John</arg>
+  <rel>pared</rel>
+  <arg n="1">the rind of fat</arg>
+  <arg f="from" n="2">the ham</arg>
+  <arg f="with" n="3">a chainsaw</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="pare.02" name="quantifiable reduction">
+<roles>
+  <role descr="cutter" n="0"/>
+  <role descr="thing being reduced" n="1"/>
+  <role descr="EXT" n="2"/>
+  <role descr="start point" n="3"/>
+  <role descr="end point" n="4"/>
+</roles>
+
+<example name="with start and end point">
+<text>
+    Since April, it has pared its high-yield bond holdings to about
+    $890 million from $1.35 billion. 
+</text>
+        <arg f="TMP" n="M">Since April</arg>
+        <arg n="0">it</arg>
+        <rel>pared</rel>
+        <arg n="1">its high-yield bond holdings</arg>
+        <arg f="to" n="4">about $ 890 million </arg>
+        <arg f="from" n="3">$ 1.35 billion </arg>
+</example>
+
+<note>
+etc.
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="pare_down">
+<roleset id="pare.03" name="phrasal cut off unnecessary bits, reduce size">
+<roles>
+  <role descr="cutter" n="0"/>
+  <role descr="thing cut" n="1"/>
+  <role descr="medium, source" n="2"/>
+  <role descr="instrument" n="3"/>
+</roles>
+
+<example name="cooking">
+  <text>
+    John pared down the rind of fat from the ham with a chainsaw.
+  </text>
+  <arg n="0">John</arg>
+  <rel>pared down</rel>
+  <arg n="1">the rind of fat</arg>
+  <arg f="from" n="2">the ham</arg>
+  <arg f="with" n="3">a chainsaw</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="pare.04" name="phrasal quantifiable reduction">
+<roles>
+  <role descr="cutter" n="0"/>
+  <role descr="thing being reduced" n="1"/>
+  <role descr="EXT" n="2"/>
+  <role descr="start point" n="3"/>
+  <role descr="end point" n="4"/>
+</roles>
+
+<example name="with start and end point">
+<text>
+    Since April, it has pared down its high-yield bond holdings to about
+    $890 million from $1.35 billion. 
+</text>
+        <arg f="TMP" n="M">Since April</arg>
+        <arg n="0">it</arg>
+        <rel>pared down</rel>
+        <arg n="1">its high-yield bond holdings</arg>
+        <arg f="to" n="4">about $ 890 million </arg>
+        <arg f="from" n="3">$ 1.35 billion </arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,104 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="pump">
+<note>
+  Frames file for 'pump' based on sentences in financial subcorpus.
+  Verbnet entry 9.7, other framed members include load, spread, stack,
+  stock, unload, and probably store.  Framenet classes FIlling and
+  Placing.  Comparison with 'load' and 'increase'
+</note>
+
+<roleset id="pump.01" name="fill" vncls="9.7-1">
+<roles>
+  <role descr="pumper" n="0">
+		
+  <vnrole vncls="9.7-1" vntheta="Agent"/></role>
+
+  <role descr="container" n="1">
+		
+  <vnrole vncls="9.7-1" vntheta="Destination"/></role>
+
+  <role descr="liquid" n="2">
+		
+  <vnrole vncls="9.7-1" vntheta="Theme"/></role>
+
+</roles>
+
+<example name="all args">
+<inflection aspect="ns" form="full" person="ns" tense="ns" voice="ns"/>
+<text>
+    Osamu Nagayama, deputy president of Chugai, which spends about 15%
+    of its sales on research and development, was unable to pinpoint
+    how much money Chugai would pump *trace* into Gen-Probe. 
+</text>
+        <arg n="0">Chugai</arg>
+        <arg f="MOD" n="M">would</arg>
+        <rel>pump</rel>
+        <arg n="2">*trace* -&gt;  how much money</arg>
+        <arg f="into" n="1">Gen-Probe</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="pump_up">
+
+<roleset id="pump.02" name="increase" vncls="-">
+<roles>
+  <role descr="pumper" n="0"/>
+  <role descr="thing increased" n="1"/>
+</roles>
+
+<example name="Hans und Franz">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    The SEC has alleged that Mr. Antar aimed *trace* to pump up the
+    company's stock price through false financial statements in order
+    to sell his stake and reap huge profits. 
+</text>
+        <arg n="0">*trace* -&gt;  Mr. Antar</arg>
+        <rel>[ pump] [ up]</rel>
+        <arg n="1">the company's stock price</arg>
+        <arg f="MNR" n="M">through false financial statements</arg>
+        <arg f="PNC" n="M">in order to sell his stake and reap huge
+        profits</arg> 
+</example>
+
+<note>
+Might take additional arguments (EXT, start point, end point), as per
+'increase', but we'll wait and see.
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="pump_out">
+
+<roleset id="pump.03" name="drain" vncls="-">
+<roles>
+  <role descr="pumper" n="0"/>
+  <role descr="thing drained" n="1"/>
+  <role descr="liquid" n="2"/>
+  <role descr="instrument" n="3"/>
+</roles>
+
+<example name="poor John">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John pumped out his basement apartment with a handpump.
+  </text>
+  <arg n="0">John</arg>
+  <rel>pumped out</rel>
+  <arg n="1">his basement apartment</arg>
+  <arg f="with" n="3">a handpump</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

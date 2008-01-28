@@ -1,0 +1,70 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="auction_off">
+<note>
+  Frames file for 'auction' based on sentences in financial subcorpus.
+  No Verbnet entry.
+</note>
+
+<roleset id="auction.01" name="sell at auction" vncls="-">
+<roles>
+  <role descr="seller" n="0"/>
+  <role descr="sold" n="1"/>
+  <role descr="highest bidder" n="2"/>
+  <role descr="Price Paid" n="3"/>
+  <role descr="Benefactive" n="4"/>
+</roles>
+
+<example name="just transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Indeed. Recently, the trust failed *trace* to auction off the
+    paper mill, a bank, an office building and a small cotton-ginning
+    plant. 
+</text>
+        <arg n="0">*trace* -&gt;  the trust</arg>
+        <rel>[ auction] [ off]</rel>
+        <arg n="1">the paper mill, a bank, an office building and a
+        small cotton-ginning plant</arg> 
+</example>
+
+<note>
+highest bidder/buyer will definitely occur at some point; I'm not sure
+about price and benefactive though.
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="auction">
+
+<roleset id="auction.02" name="sell at auction, no particle" vncls="-">
+<roles>
+  <role descr="seller" n="0"/>
+  <role descr="sold" n="1"/>
+  <role descr="highest bidder" n="2"/>
+  <role descr="Price Paid" n="3"/>
+  <role descr="Benefactive" n="4"/>
+</roles>
+
+<example name="just transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Indeed. Recently, the trust failed *trace* to auction the
+    paper mill, a bank, an office building and a small cotton-ginning
+    plant. 
+</text>
+        <arg n="0">*trace* -&gt;  the trust</arg>
+        <rel>auction</rel>
+        <arg n="1">the paper mill, a bank, an office building and a
+        small cotton-ginning plant</arg> 
+</example>
+
+<note>
+highest bidder/buyer will definitely occur at some point; I'm not sure
+about price and benefactive though.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

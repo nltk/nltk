@@ -1,0 +1,85 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="argue">
+<note>
+  Frames file for 'argue' based on sentences in financial subcorpus.
+  Verbnet classes argue 36.1 37.6, no mention of other members.
+  Comparison with compete, negotiate and say.
+</note>
+
+<roleset id="argue.01" name="provide an argument, say" vncls="37.6">
+<roles>
+  <role descr="speaker" n="0">
+		
+  <vnrole vncls="37.6" vntheta="Actor1"/></role>
+
+  <role descr="argument" n="1">
+		
+  <vnrole vncls="37.6" vntheta="Topic"/></role>
+
+  <role descr="listener" n="2">
+		
+  <vnrole vncls="37.6" vntheta="Actor2"/></role>
+
+</roles>
+
+<example name="typical usage">
+<text>
+    Program traders argue that a reinstatement of the rule would
+    destroy the ``pricing efficiency'' of the futures and stock
+    markets. 
+</text>
+        <arg n="0">Program traders</arg>
+        <rel>argue</rel>
+        <arg n="1">a reinstatement of the rule would destroy the
+        ``pricing efficiency'' of the futures and stock markets</arg> 
+</example>
+
+<example name="with listener">
+  <text>
+    John passionately argued his case to Mary.
+  </text>
+  <arg n="0">John</arg>
+  <arg f="MNR" n="m">passionately</arg>
+  <rel>argued</rel>
+  <arg n="1">his case</arg>
+  <arg f="to" n="2">Mary</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="argue.02" name="argue with" vncls="36.1">
+<roles>
+  <role descr="first arguer" n="0"><vnrole vncls="36.1" vntheta="Actor1"/></role>
+  <role descr="second arguer" n="1"><vnrole vncls="36.1" vntheta="Actor2"/></role>
+  <role descr="topic" n="2"><vnrole vncls="36.1" vntheta="Topic"/></role>
+</roles>
+
+<example name="I can't believe this hasn't occurred yet">
+  <text>
+    John argued with Mary about the cause of his noxious foot odor.
+  </text>
+  <arg n="0">John</arg>
+  <rel>argued</rel>
+  <arg f="with" n="1">Mary</arg>
+  <arg f="about" n="2">the cause of his noxious foot odor</arg>
+</example>
+
+<example name="merged arguers">
+  <text>
+    John and Mary argued about the cause of his noxious foot odor.
+  </text>
+  <arg n="0">John and Mary</arg>
+  <rel>argued</rel>
+  <arg f="about" n="2">the cause of his noxious foot odor</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

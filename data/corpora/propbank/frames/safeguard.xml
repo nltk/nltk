@@ -1,0 +1,43 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="safeguard">
+<note>
+  Frames file for 'safeguard' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="safeguard.01" name="to protect" vncls="-">
+<roles>
+  <role descr="protector" n="0"/>
+  <role descr="entity protected" n="1"/>
+  <role descr="entity protected from" n="2"/>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+ `` The big problem is that USX management has proved [*-1] unwilling [*-2] to devote the necessary resources and manpower to [*] removing hazards and to [*] safeguarding safety and health in the plants , '' said [*T*-3] Linda Anku , OSHA regional administrator in Philadelphia .
+</text>
+	<arg n="0">[*] -&gt;  [*-2] -&gt;  [*-1] -&gt;  USX management</arg>
+	<rel>safeguarding</rel>
+	<arg n="1">safety and health in the plants</arg>
+</example>
+
+
+<example name="all arguments">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ Undoubtedly Mr. Bush will be praised [*-1] by some Latin leaders prone [*] to pay lip service to nonintervention , while they privately encourage more assertive U.S. action [0] [*T*-2] to remove Gen. Manuel Noriega and safeguard their countries from a Sandinista onslaught .
+</text>
+	<arg n="0">[*T*-2] -&gt;  [0]</arg>
+	<rel>safeguard</rel>
+	<arg n="1">their countries</arg>
+	<arg f="from" n="2">a Sandinista onslaught</arg>
+</example>
+
+</roleset>
+</predicate>
+
+
+</frameset>

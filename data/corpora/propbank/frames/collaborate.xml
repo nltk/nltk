@@ -1,0 +1,59 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="collaborate">
+<note>
+  Frames file for 'collaborate' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="collaborate.01" name="to work together" vncls="36.1">
+<roles>
+  <role descr="focussed party, agent" n="0">
+        <vnrole vncls="36.1" vntheta="Actor1"/></role>
+  <role descr="second party" n="1">
+        <vnrole vncls="36.1" vntheta="Actor2"/></role>
+  <role descr="shared task" n="2">
+        <vnrole vncls="36.1" vntheta="Topic"/></role>
+</roles>
+
+<example name="two arguments">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ Du Pont Co. , Hewlett-Packard Co. and Los Alamos National Laboratory said [0] they signed a three-year , $ 11 million [*U*] agreement [*] to collaborate on superconductor research .
+</text>
+	<arg n="0">[*] -&gt;  they</arg>
+	<rel>collaborate</rel>
+	<arg f="on" n="2">superconductor research</arg>
+</example>
+
+
+<example name="all arguments">
+<inflection aspect="progressive" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+ Already two major pharmaceutical companies , the Squibb unit of Bristol-Myers Squibb Co. and Hoffmann-La Roche Inc. , are collaborating with gene hunters [*-1] to turn the anticipated cascade of discoveries into predictive tests and , maybe , new therapies .
+</text>
+	<arg f="TMP" n="M">Already</arg>
+	<arg n="0">two major pharmaceutical companies , the Squibb unit of Bristol-Myers Squibb Co. and Hoffmann-La Roche Inc. ,</arg>
+	<rel>collaborating</rel>
+	<arg f="with" n="1">gene hunters</arg>
+	<arg n="2">[*-1] to turn the anticipated cascade of discoveries into predictive tests and , maybe , new therapies</arg>
+</example>
+
+
+<example name="all arguments with prepositional Arg2">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ Also Jonathan Silvers , who [*T*-1] collaborated with Mr. Hoffman on two books .
+</text>
+	<arg n="0">[*T*-1] -&gt;  who -&gt;  Jonathan Silvers</arg>
+	<rel>collaborated</rel>
+	<arg f="with" n="1">Mr. Hoffman</arg>
+	<arg f="on" n="2">two books</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

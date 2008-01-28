@@ -1,0 +1,50 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="mean">
+<note>
+  Frames file for 'mean' based on survey of initial sentences of big
+  corpus.  Many senses to verb, but they all have the same structure.
+</note>
+
+<roleset id="mean.01" name="intend, explain, is equivalent to" vncls="29.5">
+<roles>
+  <role descr="agent, person doing explanation" n="0">
+		
+  <vnrole vncls="29.5" vntheta="Agent"/></role>
+
+  <role descr="thing meant, explanation" n="1">
+		
+  <vnrole vncls="29.5" vntheta="Theme"/></role>
+
+</roles>
+
+<example name="resulted in">
+  <text>
+  Huge gains by her students in 1987 and 1988 meant a total of $5000
+  in bonuses over two years.
+  </text>
+  <arg n="0">Huge gains by her students in 1987 and 1988</arg>
+  <rel>meant</rel>
+  <arg n="1">a total of $5000 in bonuses over two
+  years.</arg> 
+</example>
+
+<example name="this means that">
+  <text>
+  The leeway that Sea Containers has means that Temple would have to
+  substantially increase their bid.
+  </text>
+  <arg n="0">The leeway that Sea Containers has</arg>
+  <rel>means</rel>
+  <arg n="1">Temple would have to substantially increase their
+  bid.</arg> 
+</example>
+
+<note>
+Note that the complementizer &quot;that&quot; is not included--this is to be --&gt;
+--consistent with the verbs of saying.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

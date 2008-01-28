@@ -1,0 +1,45 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="influence">
+<note>
+  Frames file for 'influence' based on sentences in financial
+  subcorpus.  No Verbnet entry, Framenet entry Suasion3.  No
+  comparison.  Well, maybe 'force.'
+</note>
+
+<roleset id="influence.01" name="have sway over, induce an action">
+<roles>
+  <role descr="influencer" n="0"/>
+  <role descr="influenced" n="1"/>
+  <role descr="induced action" n="2"/>
+</roles>
+
+<example name="typically transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+    These big stocks greatly influence the Nasdaq Composite Index.
+</text>
+        <arg n="0">These big stocks</arg>
+        <arg f="MNR" n="M">greatly</arg>
+        <rel>influence</rel>
+        <arg n="1">the Nasdaq Composite Index</arg>
+</example>
+
+<example name="with induced action">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    Mary influenced John to eat his peas.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>influenced</rel>
+  <arg n="1">John</arg>
+  <arg n="2">to eat his peas</arg>
+</example>
+
+<note>
+Actually that sounds a little funky to me.  Maybe Arg2 isn't real.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

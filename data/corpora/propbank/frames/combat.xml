@@ -1,0 +1,50 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="combat">
+<note>
+Frames file for 'combat' based on sentences in financial subcorpus and
+automatic expansion via verbnet.
+</note>
+
+<roleset id="combat.01" name="fight" vncls="36.1">
+<roles>
+  <role descr="first fighter" n="0">
+		
+  <vnrole vncls="36.1" vntheta="Actor1"/></role>
+
+  <role descr="second fighter, if separate" n="1">
+		
+  <vnrole vncls="36.1" vntheta="Actor2"/></role>
+
+  <role descr="spoils" n="2">
+		
+  <vnrole vncls="36.1" vntheta="Topic"/></role>
+
+</roles>
+
+<example name="unspecified spoils">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Both Ford and GM badly need a luxury brand *trace* *trace* to
+    combat new competition from the Japanese in the European and
+    U.S. markets. 
+</text>
+        <arg n="0">*trace* -&gt; *trace* -&gt;  a luxury brand</arg>
+        <rel>combat</rel>
+        <arg n="1">new competition from the Japanese</arg>
+        <arg f="LOC" n="M">in the European and U.S. markets</arg>
+</example>
+
+<example name="with prize" src="compete.01">
+  <text>
+    John combated with Mary for the last piece of cake.
+  </text>
+  <arg n="0">John</arg>
+  <rel>combated</rel>
+  <arg f="with" n="1">Mary</arg>
+  <arg f="for" n="2">the last piece of cake</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

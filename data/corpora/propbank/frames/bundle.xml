@@ -1,0 +1,59 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="bundle">
+<note>
+  Frames file for 'bundle' based on sentences in wsj.  Verbnet entry
+  22.3-2.
+</note>
+
+<roleset id="bundle.01" name="put items together   into a bundle" vncls="22.3-2">
+<roles>
+  <role descr="bundler (not bungler)" n="0"><vnrole vncls="22.3-2" vntheta="Agent"/></role>
+  <role descr="items" n="1"><vnrole vncls="22.3-2" vntheta="Patient"/></role>
+  <role descr="bundle" n="2"/>
+</roles>
+
+<example name="banking services">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+    Instead, they are trying *trace* to build customer loyalty by
+    *trace* bundling their services into packages and targeting them
+    to small segments of the population. 
+</text>
+        <arg n="0">*trace* -&gt; *trace* -&gt;  they</arg>
+        <rel>bundling</rel>
+        <arg n="1">their services</arg>
+        <arg f="into" n="2">packages</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="bundle.02" name="dress warmly" vncls="-">
+<roles>
+  <role descr="causal agent of dressing" n="0"/>
+  <role descr="entity dressed" n="1"/>
+  <role descr="clothing" n="2"/>
+</roles>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    ``Ski school is great,'' cries out a tot, bundled in a snowsuit as
+    he plows down a bunny slope. 
+</text>
+        <rel>bundled</rel>
+        <arg n="1">*trace* -&gt;  a tot</arg>
+        <arg f="in" n="2">a snowsuit</arg>
+</example>
+
+<note>
+Two senses might be difficult to distinguish, except 'dressing' sense
+seems usually occur in the passive?
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,65 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="unfold">
+<note>
+  Frames file for 'unfold' based on sentences in financial subcorpus.
+  Verbnet entry 45.4 (other causative), g'zillion other framed
+  members.  No Framenet entry.  No comparison.
+</note>
+
+<roleset id="unfold.01" name="cause to become unfolded" vncls="45.4">
+<roles>
+  <role descr="unfolder" n="0">
+		
+  <vnrole vncls="45.4" vntheta="Agent"/></role>
+
+  <role descr="thing that used to be folded" n="1">
+		
+  <vnrole vncls="45.4" vntheta="Patient"/></role>
+
+</roles>
+
+<example name="transitive">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John carefully unfolded his laundry before dumping it on the floor.
+  </text>
+  <arg n="0">John</arg>
+  <arg f="MNR" n="m">carefully</arg>
+  <rel>unfolded</rel>
+  <arg n="1">his laundry</arg>
+  <arg f="TMP" n="m">before dumping it on the floor</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="unfold.02" name="progress, come about" vncls="-">
+<roles>
+  <role descr="topic" n="1"/>
+</roles>
+
+<example name="unaccusative">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    In fact, the earnings report unfolded as representatives of the
+    world's No. 1 jet maker and the striking Machinists union came
+    back to the negotiating table for their first meeting in two
+    weeks. 
+</text>
+        <arg f="DIS" n="M">In fact</arg>
+        <arg n="1">the earnings report</arg>
+        <rel>unfolded</rel>
+        <arg f="TMP" n="M">as representatives of the world's No. 1 jet
+        maker and the striking Machinists union came back to the
+        negotiating table for their first meeting in two weeks</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

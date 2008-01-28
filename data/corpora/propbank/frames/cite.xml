@@ -1,0 +1,77 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="cite">
+<note>
+  Frames file for 'cite' based on survey of initial sentences of big
+  corpus.
+</note>
+
+<roleset id="cite.01" name="refer to" vncls="29.2 37.1">
+<roles>
+  <role descr="citer" n="0">
+		
+  <vnrole vncls="29.2" vntheta="Agent"/><vnrole vncls="37.1" vntheta="Agent"/></role>
+
+  <role descr="thing cited" n="1">
+		
+  <vnrole vncls="29.2" vntheta="Theme"/><vnrole vncls="37.1" vntheta="Topic"/></role>
+
+  <role descr="secondary attribute, cited-as" n="2"><vnrole vncls="29.2" vntheta="Predicate"/></role>
+</roles>
+
+<example name="transitive agentive">
+  <text>
+  They cite a lack of imbalances that provide early warning signals of
+  a downturn.
+  </text>
+  <arg n="0">They</arg>
+  <rel>cite</rel>
+  <arg n="1">a lack of imbalances that provide early warning
+  signals of a downturn.</arg>
+</example>
+
+<example name="with attribute">
+  <text>
+  He cites the recent deal between Mitsubishi Estate Co and the
+  Rockefeller Group as evidence.
+  </text>
+  <arg n="0">He</arg>
+  <rel>cites</rel>
+  <arg n="1">the recent deal between Mitsubishi Estate Co and the
+  Rockefeller Group</arg>
+  <arg f="as" n="2">evidence</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="cite.02" name="give legal summons, ticket" vncls="-">
+<roles>
+  <role descr="giver of ticket" n="0"/>
+  <role descr="entity receiving citation" n="1"/>
+  <role descr="criminal misdeed" n="2"/>
+</roles>
+
+<example name="bummer dude">
+  <text>
+  The Labor Department cited USX Corp for numerous health and safety
+  violations at two Pennsylvania plants.
+  </text>
+  <arg n="0">The Labor Department</arg>
+  <rel>cited</rel>
+  <arg n="1">USX Corp</arg>
+  <arg f="for" n="2">numerous health and safety
+  violations at two Pennsylvania plants.</arg>
+</example>
+
+<note>
+These two senses can be difficult to distinguish, especially if it's a
+criminal misdeed that's being referred to.  Try to default to the
+&quot;refer&quot; sense, though, since that's less specific.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

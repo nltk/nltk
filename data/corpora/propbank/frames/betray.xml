@@ -1,0 +1,54 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="betray">
+<note>
+  Frames file for 'betray' based on sentences in wsj.  No access to
+  Verbnet at the moment.
+</note>
+
+<roleset id="betray.01" name="treason" vncls="-">
+<roles>
+  <role descr="betrayer" n="0"/>
+  <role descr="betrayed" n="1"/>
+</roles>
+
+<example name="adjectival, one arg">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    ``I felt betrayed,'' he later said.
+</text>
+        <arg n="1">I</arg>
+        <rel>betrayed</rel>
+</example>
+
+
+<example name="adjectival, both args">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    Next, he continued to court the communists -- many of whom [*T*-1]
+    feel betrayed by the left-right coalition's birth -- by bringing
+    into PASOK a well-respected Communist Party candidate. 
+</text>
+        <arg n="1">[*T*-1] -&gt;  many of whom -&gt;  the communists</arg>
+        <rel>betrayed</rel>
+        <arg f="by" n="0">the left-right coalition's birth</arg>
+</example>
+
+<example name="verbal">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    Mary betrayed John's trust in her every time she beat him up.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>betrayed</rel>
+  <arg n="1">John's trust in her</arg>
+  <arg f="TMP" n="m">every time she beat him up</arg>
+<note>
+The real question is, why didn't John catch on?
+</note>
+</example>
+
+
+</roleset>
+</predicate>
+</frameset>

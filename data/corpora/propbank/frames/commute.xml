@@ -1,0 +1,83 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="commute">
+<note>
+  Frames file for 'commute' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="commute.01" name="go back and forth to/from work" vncls="-">
+<roles>
+  <role descr="commuter" n="0"/>
+  <role descr="one (or both) location(s), start point" n="1"/>
+  <role descr="other location, destination" n="2"/>
+</roles>
+
+<example name="arg1 as start point">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    Of Bechtel's 17,500 employees, about 4,000 work in San Francisco
+    -- one-third of them commuting from stricken East Bay. 
+</text>
+        <arg n="0">one-third of them</arg>
+        <rel>commuting</rel>
+        <arg f="from" n="1">stricken East Bay</arg>
+</example>
+
+
+<example name="arg1 as both points">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+    Mr. Rosenblatt said he resigned because of difficulties with [*]
+    commuting between his home in New York and the magazine's
+    editorial offices in Washington. 
+</text>
+        <arg n="0">[*] -&gt;  he</arg>
+        <rel>commuting</rel>
+        
+        <arg f="between" n="1">[ his home in New York] [ and] [ the
+        magazine's editorial offices in Washington]</arg> 
+</example>
+
+<example name="separated points">
+  <inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+  <text>
+    Every day, John commutes from Heaven to Hell.
+  </text>
+  <arg f="TMP" n="m">Every day</arg>
+  <arg n="0">John</arg>
+  <rel>commutes</rel>
+  <arg f="from" n="1">Heaven</arg>
+  <arg f="to" n="2">Hell</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="commute.02" name="make a law sentence more lenient" vncls="-">
+<roles>
+  <role descr="judge" n="0"/>
+  <role descr="old sentence" n="1"/>
+  <role descr="new sentence" n="2"/>
+</roles>
+
+<example name="no resurrection yet">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    The judge commuted Mary's sentence for killing John to 'time
+    served,' saying that John really did have it coming.
+  </text>
+  <arg n="0">The judge</arg>
+  <rel>commuted</rel>
+  <arg n="1">Mary's sentence for killing John</arg>
+  <arg f="to" n="2">'time served,'</arg>
+  <arg f="ADV" n="m">saying that John really did have it coming</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

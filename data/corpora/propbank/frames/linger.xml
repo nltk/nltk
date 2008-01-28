@@ -1,0 +1,48 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="linger">
+<note>
+Frames file for 'linger' based on sentences in wsj and automatic
+expansion via verbnet.
+</note>
+
+<roleset id="linger.01" name="wait, stick around" vncls="47.1-1">
+<roles>
+	<role descr="entity lingering" n="1">
+		
+  <vnrole vncls="47.1-1" vntheta="Theme"/></role>
+
+	<role descr="location or state" n="2">
+		
+  <vnrole vncls="47.1-1" vntheta="Location"/></role>
+ 
+</roles>
+
+<example name="normally intransitive">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    The perception lingers, says an official at a major industrial
+    company. 
+</text>
+        <arg n="1">The perception</arg>
+        <rel>lingers</rel>
+</example>
+
+<example name="with arg1">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    In Mr. Sohmer's film, by contrast, we are urged to share the
+    perverse excitement of the rapist creeping up on his victim, as
+    the camera ogles Kate in various stages of undress and lingers on
+    the sight of her trussed-up body during frequent flashbacks to the
+    rape. 
+</text>
+        <arg n="1">the camera</arg>
+        <rel>lingers</rel>
+        <arg f="on" n="2">the sight of her trussed-up body</arg>
+        <arg f="TMP" n="M">during frequent flashbacks to the rape</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

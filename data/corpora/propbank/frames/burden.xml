@@ -1,0 +1,71 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="burden">
+<note>
+Frames file for 'burden' based on sentences in financial subcorpus and
+automatic expansion via verbnet.
+</note>
+
+<roleset id="burden.01" name="put a load on someone/thing" vncls="13.4.2">
+<roles>
+	<role descr="loader" n="0">
+		
+  <vnrole vncls="13.4.2" vntheta="Agent"/></role>
+
+	<role descr="carrier" n="1">
+		
+  <vnrole vncls="13.4.2" vntheta="Recipient"/></role>
+
+	<role descr="load" n="2">
+		
+  <vnrole vncls="13.4.2" vntheta="Theme"/></role>
+
+</roles>
+
+<example name="all args">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Avery paid $750 million, including various legal and financing
+    fees, to acquire Uniroyal Chemical, Middlebury, Conn., in 1986 --
+    a move that burdened Avery with debt. 
+</text>
+        <arg n="0">*trace* -&gt;  that -&gt;  a move</arg>
+        <rel>burdened</rel>
+        <arg n="1">Avery</arg>
+        <arg f="with" n="2">debt</arg>
+</example>
+
+<example name="passive with with">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    But some other analysts have a stormier forecast for the pound,
+    particularly because Britain's inflation is hovering at a
+    relatively lofty annual rate of about 7.6% and the nation is
+    burdened *trace* with a struggling government and large current
+    account and trade deficits. 
+</text>
+        <rel>burdened</rel>
+        <arg n="1">*trace* -&gt;  the nation</arg>
+        <arg f="with" n="2">a struggling government and large current
+        account  and trade  deficits</arg> 
+</example>
+
+<example name="careful: passive with by">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    If Sen. Bradley would permit a vote on capital gains, though, it
+    would pass, Christmas retail sales would be strong instead of
+    burdened by a falling stock market, the 1990 economy would be
+    robust, and the revenue gains at every level of government,
+    including New Jersey's, would be surprisingly high. 
+</text>
+        <arg n="1">Christmas retail sales</arg>
+        <arg f="MOD" n="M">would</arg>
+        <arg f="DIS" n="M">instead of</arg>
+        <rel>burdened</rel>
+        <arg f="by" n="2">a falling stock market</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

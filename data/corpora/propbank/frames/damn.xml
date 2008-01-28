@@ -1,0 +1,55 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="damn">
+<note>
+  Frames file for 'damn' based on sentences in brown.  Verbnet entry
+</note>
+
+<roleset id="damn.01" vncls="-" name="consign to hell">
+<roles>
+  <role n="0"  descr="damner, God"/>
+  <role n="1"  descr="damned, sinner"/>
+  <role n="2"  descr="explicit mention of hell (rare)"/>
+</roles>
+
+<example name="more or less purely verbal">
+  <inflection person="ns" tense="ns" aspect="progressive" voice="active" form="participle"/>
+  <text>
+     The volume is a piece of passional special pleading, written with
+     the heat...of a Liberal damning the shortsightedness of
+     politicians from 1782 to 1832.
+  </text>
+  <arg n="0"        >a Liberal</arg>
+  <rel              >damning</rel>
+  <arg n="1"        >the shortsightedness of politicians from 1782 to
+  1832</arg>
+</example>
+
+<example name="sorta verbal">
+  <inflection person="third" tense="past" aspect="ns" voice="passive" form="participle"/>
+  <text>
+     Docherty was damned if he would make a fool of himself again the
+     way he had earlier over the laundry truck.
+  </text>
+  <arg n="1"        >Docherty</arg>
+  <rel              >damned</rel>
+  <arg n="m" f="ADV">if he would make a fool of himself again the way
+  he had earlier over the laundry truck</arg>
+</example>
+
+<example name="almost purely adjectival">
+  <inflection person="ns" tense="ns" aspect="ns" voice="passive" form="participle"/>
+  <text>
+     Fight with Sam Schaeffer, fight with the whole damned Bureau.
+  </text>
+  <rel              >damned</rel>
+  <arg n="1"        >Bureau</arg>
+</example>
+
+<note>
+Often tagged as JJ, especially for uninflected forms ('the whole damn thing').
+</note>
+
+</roleset>
+</predicate>
+</frameset>

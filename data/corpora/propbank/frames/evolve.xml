@@ -1,0 +1,75 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="evolve">
+<note>
+  Frames file for 'evolve' based on sentences in financial subcorpus.
+  Verbnet class grow-26.2, other framed members include 'develop' and
+  'grow'.  Comparison with 'change'.  
+</note>
+
+<roleset id="evolve.01" name="change form" vncls="26.2 48.1.1">
+<roles>
+  <role descr="thing changing" n="1">
+	<vnrole vncls="48.1.1" vntheta="Theme"/>
+        <vnrole vncls="26.2" vntheta="Agent"/></role>
+  <role descr="end state" n="2">
+	<vnrole vncls="26.2" vntheta="Product"/></role>
+  <role descr="start state" n="3">
+	  <vnrole vncls="26.2" vntheta="Material"/></role>
+</roles>
+
+<example name="end state only">
+<text>
+    Pitney Bowes acquired the core of what *trace* evolved into
+    Wheeler Group in 1979 by buying Dictaphone Corp.  
+</text>
+	<arg n="1">*trace* -&gt;  what -&gt;  the core</arg>
+	<rel>evolved</rel>
+	<arg f="into" n="2">Wheeler Group</arg>
+</example>
+
+<example name="start and end states">
+  <text>
+    John slowly evolved from a slightly pathetic individual to a
+    full-blown loser.
+  </text>
+  <arg n="1">John</arg>
+  <arg f="MNR" n="m">slowly</arg>
+  <rel>evolved</rel>
+  <arg f="from" n="2">a slightly pathetic individual</arg>
+  <arg f="to" n="3">a full-blown loser</arg>
+</example>
+
+<note>
+The framing for the related verbs 'develop' 'grow' and 'change' are
+wildly dissimilar.  Yuck.
+</note>
+
+</roleset>
+
+<roleset id="evolve.02" vncls="-" name="acquire characteristics through evolution">
+<roles>
+  <role n="0"  descr="thing acquiring"/>
+  <role n="1"  descr="characteristics"/>
+</roles>
+
+<example name="darwin was right!">
+<inflection person="ns" tense="ns" aspect="ns" voice="ns" form="ns"/>
+<text>
+     These trade-offs would evolve priorities by revealing when the
+     cost of the B-2 became prohibitive. 
+</text>
+        <arg n="0">These trade-offs</arg>
+        <arg n="M" f="MOD">would</arg>
+        <rel>evolve</rel>
+        <arg n="1">priorities</arg>
+        <arg n="M" f="MNR">by revealing when the cost of the B-2
+        became prohibitive</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

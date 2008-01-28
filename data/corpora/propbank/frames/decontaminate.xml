@@ -1,0 +1,29 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="decontaminate">
+<note>
+  Frames file for 'decontaminate' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="decontaminate.01" name="clean completely" vncls="-">
+<roles>
+  <role descr="cleaner" n="0"/>
+  <role descr="dirty thing, now clean" n="1"/>
+</roles>
+
+<example name="passive suffices">
+<inflection aspect="perfect" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    Only 36 of 1,200 priority cleanup sites have been ``decontaminated
+    [*-1].'' 
+</text>
+        <rel>decontaminated</rel>
+        <arg n="1">[*-1] -&gt;  Only 36 of 1,200 priority cleanup sites</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

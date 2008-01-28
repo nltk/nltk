@@ -1,0 +1,61 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="borrow">
+<note>
+  Frames file for 'borrow' based on sentences in financial subcorpus.
+  Verbnet entry obtain 13.5.2, other framed members include regain and
+  seize, more remotely buy, catch, fetch, hire, lease, pick, reserve,
+  save, vote.  No Framenet entry.  Comparison with get and buy.
+</note>
+
+<roleset id="borrow.01" name="get temporarily" vncls="13.5.2">
+<roles>
+  <role descr="borrower" n="0">
+		
+  <vnrole vncls="13.5.2" vntheta="Agent"/></role>
+
+  <role descr="thing borrowed" n="1">
+		
+  <vnrole vncls="13.5.2" vntheta="Theme"/></role>
+
+  <role descr="loaner" n="2">
+		
+  <vnrole vncls="13.5.2" vntheta="Source"/></role>
+
+  <role descr="collateral" n="3"/>
+</roles>
+
+<example name="canonical form">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    What is it, *trace* to borrow a term from Coniston, that so
+    unsettled the market? 
+</text>
+        <arg n="0">*trace*</arg>
+        <rel>borrow</rel>
+        <arg n="1">a term</arg>
+        <arg f="from" n="2">Coniston</arg>
+</example>
+
+<example name="with collateral">
+<inflection aspect="ns" form="full" person="ns" tense="ns" voice="ns"/>
+<text>
+    The pilots could borrow against the value of their concessions,
+    using the proceeds to buy back stock from the public and give
+    themselves the majority control they have been seeking. 
+</text>
+        <arg n="0">The pilots</arg>
+        <arg f="MOD" n="M">could</arg>
+        <rel>borrow</rel>
+        <arg f="against" n="3">the value of their concessions</arg>
+        <arg f="ADV" n="M">using the proceeds to buy back stock from
+        the public and give themselves the majority control they have
+        been seeking </arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

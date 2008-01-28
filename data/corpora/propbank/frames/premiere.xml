@@ -1,0 +1,54 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="premiere">
+<note>
+  Frames file for 'premiere' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="premiere.01" name="give/have first performance" vncls="-">
+<roles>
+  <role descr="causal agent" n="0"/>
+  <role descr="thing premiering" n="1"/>
+</roles>
+
+<example name="ergative">
+<inflection aspect="ns" form="full" person="ns" tense="future" voice="active"/>
+<text>
+    The operator of cable-television networks said the new Turner
+    Pictures unit will produce movies that [*T*-1] will premiere on
+    Turner Broadcasting 's Turner Network Television channel, or TNT,
+    and then will be released internationally in movie theaters.  
+</text>
+        <arg n="1">[*T*-1] -&gt;  that -&gt;  movies</arg>
+        <arg f="MOD" n="M">will</arg>
+        <rel>premiere</rel>
+        <arg f="LOC" n="M">on Turner Broadcasting's Turner Network
+        Television channel, or TNT,</arg> 
+</example>
+
+<example name="agentive">
+<inflection aspect="ns" form="full" person="ns" tense="future" voice="active"/>
+<text>
+    Tonight, to kick off the effort, CNN will premiere its first
+    prime-time newscast in years, an hourlong show at 6 p.m. Eastern
+    time to air head-to-head against the network newscasts. 
+</text>
+        <arg f="TMP" n="M">Tonight</arg>
+        <arg f="PNC" n="M">to kick off the effort</arg>
+        <arg n="0">CNN</arg>
+        <arg f="MOD" n="M">will</arg>
+        <rel>premiere</rel>
+        <arg n="1">its first prime-time newscast in years, an hourlong
+        show at 6 p.m. Eastern time to air head-to-head against the
+        network newscasts</arg> 
+</example>
+
+<note>
+Quoth the American Heritage Dictionary: &quot;premiere as a verb is
+unacceptable to a large majority of the Usage Panel, despite its wide
+usage in the world of entertainment.&quot;
+</note>
+
+</roleset>
+</predicate>
+</frameset>

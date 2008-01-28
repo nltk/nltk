@@ -1,0 +1,87 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<note>
+Frames file for 'help' based on survey of initial sentences from big corpus
+</note>
+
+<predicate lemma="help">
+<roleset id="help.01" name="help, aid"><roles>
+  <role descr="helper" n="0"/>
+  <role descr="project" n="1"/>
+  <role descr="benefactive" n="2"/>
+</roles>
+
+<example name="sentential argument">
+  <text>
+    Japanese money will help *trace* turn SE Asia into a more cohesive
+    economic region.
+  </text>
+  <arg n="0">Japanese money</arg>
+  <arg f="MOD" n="m">will</arg>
+  <rel>help</rel>
+  <arg n="1">*trace* turn SE Asia into a more cohesive
+    economic region.</arg>
+</example>
+
+<example name="nominal argument">
+  <text>
+    She was out *trace* to help the poor underpriviledged child.
+  </text>
+  <arg n="0">*trace*=she</arg>
+  <rel>help</rel>
+  <arg n="1">the poor underpriviledged child</arg>
+</example>
+
+<example name="passivized">
+  <text>
+    The stocks of banking concerns weren't helped much by the announcement.
+  </text>
+  <arg n="1">The stocks of banking concerns</arg>
+  <arg f="NEG" n="m">n't</arg>
+  <rel>helped</rel>
+  <arg f="MNR" n="m">much</arg>
+  <arg f="by" n="0">the announcement</arg>
+</example>
+
+<note>
+  benefactive, only for when the benefactor and the project are split
+	under two nodes (no node contains both to the exclusion of other
+	material):
+</note>
+
+<example name="benefactive">
+  <text>
+    Mary helped John with his homework.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>helped</rel>
+  <arg n="2">John</arg>
+  <arg f="with" n="1">his homework</arg>
+</example>
+
+<example name="another transitive">
+  <text>
+    You'll be helping a neighborhood S&amp;L in areas crucial to its survival.
+  </text>
+  <arg n="0">You</arg>
+  <arg f="MOD" n="m">'ll</arg>
+  <rel>helping</rel>
+  <arg n="1">a neighborhood S&amp;L</arg>
+  <arg f="LOC" n="m">in areas crucial to its survival</arg>
+</example>
+
+<note>
+Sometimes one logical argument is split across a zillion nodes:
+
+Manufacturers' backlogs rose 0.5% in September to $4.36 billion, *trace*
+ helped *trace* by defense spending.
+
+Logically, the Arg1 of help is &quot;Manufacturers' backlogs rose 0.5% in
+September to $4.36 billion&quot;, but that material is spread across at least
+three nodes.  The lower trace of 'help' is linked to &quot;Manufacturers'
+backlogs&quot;, which is close enough to the truth for us to accept.
+
+</note>
+</roleset>
+</predicate>
+</frameset>

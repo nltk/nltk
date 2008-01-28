@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="overhang">
+<note>
+  Frames file for 'overhang' based on sentences in wsj.  Verbnet entry
+  47.8. 
+</note>
+
+<roleset id="overhang.01" name="hang over" vncls="47.8">
+<roles>
+  <role descr="thing hanging, thing over" n="0"><vnrole vncls="47.8" vntheta="Theme1"/></role>
+  <role descr="thing hung over, thing under" n="1"><vnrole vncls="47.8" vntheta="Theme2"/></role>
+</roles>
+
+<example name="sufficient demonstration">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    The refunding issue, which had been in the wings for two months,
+    was one of the chief offerings overhanging the market and limiting
+    price appreciation. 
+</text>
+        <arg n="0">the chief offerings</arg>
+        <rel>overhanging</rel>
+        <arg n="1">the market</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

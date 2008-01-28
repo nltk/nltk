@@ -1,0 +1,74 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="underestimate">
+<note>
+  Frames file for 'underestimate' based on sentences in wsj.  No
+  Verbnet entry. 
+</note>
+
+<roleset id="underestimate.01" name="underestimate" vncls="-">
+<roles>
+  <role descr="underestimator" n="0"/>
+  <role descr="thing underestimated" n="1"/>
+  <role descr="by how much" n="2"/>
+</roles>
+
+<example name="all args">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    John Wetherell, a Lloyd's underwriter, says he and his fellow
+    underwriters underestimated by as much as 50% the premiums they
+    should have charged for property risks from 1980 to 1985. 
+</text>
+        <arg n="0">he and his fellow underwriters</arg>
+        <rel>underestimated</rel>
+        <arg f="by" n="2">as much as 50%</arg>
+        <arg n="1">the premiums they should have charged for property
+        risks from 1980 to 1985</arg> 
+</example>
+
+<example name="missing extent">
+<inflection aspect="perfect" form="participle" person="ns" tense="past" voice="active"/>
+<text>
+    I had underestimated, however, both Mr. Gelbart's wit and the
+    persistence of scandal in Washington. 
+</text>
+        <arg n="0">I</arg>
+        <rel>underestimated</rel>
+        <arg f="DIS" n="M">however</arg>
+        <arg n="1">both Mr. Gelbart's wit and the persistence of
+        scandal in Washington</arg> 
+</example>
+
+<example name="missing agent">
+<inflection aspect="perfect" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    In other words, the growth rates of both total GNP and real
+    private business product per labor hour have been underestimated
+    [*-1] by about 20%. 
+</text>
+        <rel>underestimated</rel>
+        <arg n="1">[*-1] -&gt;  the growth rates of both total GNP and
+        real private business product per labor hour</arg> 
+        <arg f="by" n="2">about 20%</arg>
+</example>
+
+<example name="missing agent and EXT">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    But while verbal high jinks alone won't help PASOK regain power,
+    Mr. Papandreou should never be underestimated [*-1]. 
+</text>
+        <arg f="MOD" n="M">should</arg>
+        <arg f="TMP" n="M">never</arg>
+        <rel>underestimated</rel>
+        <arg n="1">[*-1] -&gt;  Mr. Papandreou</arg>
+</example>
+
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,54 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="glaze">
+<note>
+  Frames file for 'glaze' based on sentences in wsj.  Verbnet entry 24.
+</note>
+
+<roleset id="glaze.01" name="(cause to) have a sheen" vncls="24">
+<roles>
+  <role descr="glazer, agent" n="0"><vnrole vncls="24" vntheta="Agent"/></role>
+  <role descr="thing now shiny" n="1"><vnrole vncls="24" vntheta="Patient"/></role>
+</roles>
+
+<example name="the other example">
+  <inflection aspect="ns" form="full" person="ns" tense="ns" voice="active"/>
+  <text>
+    John likes *trace* to glaze donuts in his spare time.
+  </text>
+  <arg n="0">*trace* -&gt; John</arg>
+  <rel>glaze</rel>
+  <arg n="1">donuts</arg>
+  <arg f="TMP" n="m">in his spare time</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="glaze_over">
+
+<roleset id="glaze.02" name="come to have a glaze" vncls="-">
+<roles>
+  <role descr="thing now glazed" n="1"/>
+</roles>
+
+<example name="the one example">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    The approach worked well in the recent antitrust case in which
+    Energy Transportation Systems Inc. sued Santa Fe Pacific
+    Corp. over the transport of semi-liquefied coal -- the kind of
+    case likely to make almost anyone's eyes glaze over. 
+</text>
+        <arg n="1">almost anyone's eyes</arg>
+        <rel>[ glaze] [ over]</rel>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

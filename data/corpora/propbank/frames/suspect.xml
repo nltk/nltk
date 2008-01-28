@@ -1,0 +1,66 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="suspect">
+<note>
+  Frames file for 'suspect' based on sentences in financial
+  subcorpus.  No access to verbnet.  No comparison.
+</note>
+
+<roleset id="suspect.01" name="have a suspicion about something" vncls="29.5">
+<roles>
+  <role descr="suspecter" n="0">
+		
+  <vnrole vncls="29.5" vntheta="Agent"/></role>
+
+  <role descr="suspicion" n="1">
+		
+  <vnrole vncls="29.5" vntheta="Theme"/></role>
+
+  <role descr="about something" n="2">
+		
+  <vnrole vncls="29.5" vntheta="Predicate"/></role>
+
+</roles>
+
+<example name="just transitive">
+<text>
+    Mark Shepperd, an analyst at UBS Phillips &amp; Drew in London,
+    said, ``I suspect (the departure) will be fairly irrelevant for
+    the company. 
+</text>
+        <arg n="0">I</arg>
+        <rel>suspect</rel>
+        <arg n="1">(the departure) will be fairly irrelevant for the
+        company</arg> 
+</example>
+
+<example name="passive extraction">
+<text>
+    Those employees are suspected *trace* of illegally gaining an
+    estimated $376.8 million, the prosecutor was quoted as saying by
+    the Excelsior news service. 
+</text>
+        <rel>suspected</rel>
+        <arg n="2">*trace* -&gt;  Those employees</arg>
+        <arg f="of" n="1">illegally gaining an estimated $376.8
+        million</arg> 
+</example>
+
+<note>
+Note how extracting the subject of the embedded sentence forces the
+embedded sentence itself to be introduced by a preposition.
+</note>
+
+<example name="another prepositional example">
+  <text>
+    Mary suspects nothing but evil intentions of John.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>suspects</rel>
+  <arg n="1">nothing but evil intentions</arg>
+  <arg f="of" n="2">John</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

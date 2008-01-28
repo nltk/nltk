@@ -1,0 +1,149 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="carve">
+<note>
+Frames file for 'carve' based on sentences in wsj and automatic
+expansion via verbnet.
+</note>
+
+<roleset id="carve.01" name="cut carefully" vncls="21.2-2">
+<roles>
+	<role descr="carver" n="0">
+		
+  <vnrole vncls="21.2-2" vntheta="Agent"/></role>
+
+	<role descr="thing carved" n="1">
+		
+  <vnrole vncls="21.2-2" vntheta="Patient"/></role>
+
+	<role descr="instrument" n="2">
+		
+  <vnrole vncls="21.2-2" vntheta="Instrument"/></role>
+
+</roles>
+
+<example name="all args" src="chop.01">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John carved the delicate vegetables with a chainsaw.
+  </text>
+  <arg n="0">John</arg>
+  <rel>carved</rel>
+  <arg n="1">the delicate vegetables</arg>
+  <arg f="with" n="2">a chainsaw</arg>
+</example>
+
+</roleset>
+
+<roleset id="carve.02" name="create by carving" vncls="26.1-1">
+<roles>
+	<role descr="builder" n="0">
+		
+  <vnrole vncls="26.1-1" vntheta="Agent"/></role>
+
+	<role descr="construction" n="1">
+		
+  <vnrole vncls="26.1-1" vntheta="Product"/></role>
+
+	<role descr="material, start state" n="2">
+		
+  <vnrole vncls="26.1-1" vntheta="Material"/></role>
+
+</roles>
+
+<example name="with other args">
+  <text>
+    John carved the block of ice into a swan.
+  </text>
+  <arg n="0">John</arg>
+  <rel>carved</rel>
+  <arg n="2">the block of ice</arg>
+  <arg f="into" n="1">a swan</arg>
+</example>
+
+<example name="order reversed">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John carved a swan out of a block of ice.
+  </text>
+  <arg n="0">John</arg>
+  <rel>carved</rel>
+  <arg n="1">a swan</arg>
+  <arg f="out" n="2">of a block of ice</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="carve_out">
+
+<roleset id="carve.03" name="create variant" vncls="-">
+<roles>
+	<role descr="builder" n="0"/>
+	<role descr="construction" n="1"/>
+	<role descr="material, start state" n="2"/>
+	<role descr="benefactive" n="3"/>
+	<role descr="end state" n="4"/>
+</roles>
+
+<example name="just transitive">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    No federal court has ruled that the Voting Rights Act protects a
+    white minority, but in June the Justice Department approved a
+    districting plan for Birmingham that *trace* carves out three
+    white-majority districts and six black-majority districts. 
+</text>
+        <arg n="0">*trace* -&gt;  that -&gt;  a districting plan</arg>
+        <rel>[ carves] [ out]</rel>
+        <arg n="1">three white-majority districts and six
+        black-majority districts</arg> 
+</example>
+
+<example name="with benefactive">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+    The unusual situation in Birmingham vividly illustrates the
+    divisive consequences of *trace* carving out safe districts for
+    racial minorities. 
+</text>
+        <arg n="0">*trace*</arg>
+        <rel>[ carving] [ out]</rel>
+        <arg n="1">safe districts</arg>
+        <arg f="for" n="3">racial minorities</arg>
+</example>
+
+<example name="odd way to phrase start state/material">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="passive"/>
+<text>
+    But their ideal of an Afrikaner homeland, an all-white reserve
+    *trace* *trace* to be carved *trace* out of present-day South
+    Africa, is a mainstream desire of the right-wing, which embraces
+    about one-third of the country's five million whites. 
+</text>
+        <rel>[ carved] [ out]</rel>
+        <arg n="1">*trace* -&gt; *trace* -&gt; *trace* -&gt;  an all-white reserve</arg>
+        <arg f="of" n="2">present-day South Africa</arg>
+</example>
+
+<example name="odd way to phrase end state">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    But that has been the key to Compaq's success, he adds, whereas
+    Dell carved out its market niche as a direct seller of low-cost
+    but reliable computers -- and it might be too late in the game for
+    a shift in strategy. 
+</text>
+        <arg n="0">Dell</arg>
+        <rel>[ carved] [ out]</rel>
+        <arg n="1">its market niche</arg>
+        <arg f="as" n="4">a direct seller of low-cost but reliable
+        computers</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

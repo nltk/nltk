@@ -1,0 +1,49 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="shudder">
+<note>
+  Frames file for 'shudder' based on sentences in brown.  Verbnet entry
+</note>
+
+<roleset id="shudder.01" vncls="-" name="shudder">
+<roles>
+  <role n="1"  descr="entity shuddering"/>
+  <role n="2"  descr="fixed: at+NP"/>
+</roles>
+
+<example name="intransitive">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+     I shuddered and back out of the room.
+  </text>
+  <arg n="1"        >I</arg>
+  <rel              >shuddered</rel>
+</example>
+
+<example name="intransitive, inanimate">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+      Greg tightened his turn until the plane shuddered.
+  </text>
+  <arg n="1"        >the plane</arg>
+  <rel              >shuddered</rel>
+</example>
+
+<example name="with arg2">
+  <inflection person="ns" tense="present" aspect="ns" voice="active" form="full"/>
+  <text>
+    Both shudder at the thought of proceeding too far beyond the
+    sewage system and the electric light lines.
+  </text>
+  <arg n="1"        >Both</arg>
+  <rel              >shudder</rel>
+  <arg n="2" f="at">the thought of proceeding too far beyond the
+  sewage system and the electric light lines</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

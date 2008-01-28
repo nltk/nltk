@@ -1,0 +1,41 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="arouse">
+<note>
+  Frames file for 'arouse' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="arouse.01" name="to provoke, stir up" vncls="31.1">
+<roles>
+  <role descr="causer" n="0"><vnrole vncls="31.1" vntheta="Cause"/></role>
+  <role descr="entity aroused" n="1"><vnrole vncls="31.1" vntheta="Experiencer"/></role>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+ When the hacker moved [*T*-1] , Mr. Stoll moved too , [*-2] calling up other systems managers [*-3] to alert them but keeping his own system open [*-3] to avoid [*-4] arousing suspicion .
+</text>
+	<arg n="0">[*-4] -&gt;  [*-3] -&gt;  [*-2] -&gt;  Mr. Stoll</arg>
+	<rel>arousing</rel>
+	<arg n="1">suspicion</arg>
+</example>
+
+<example name="inanimate causer">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ `` My impression is that there is n't anything which [*T*-1] arouses our interest at first glance , '' says [*T*-2] an official from Japan 's Ministry of International Trade and Industry .
+</text>
+	<arg n="0">[*T*-1] -&gt;  which -&gt;  anything</arg>
+	<rel>arouses</rel>
+	<arg n="1">our interest</arg>
+	<arg f="TMP" n="M">at first glance</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

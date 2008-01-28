@@ -1,0 +1,48 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="process">
+<note>
+  Frames file for 'process' based on sentences in financial subcorpus.
+  No Verbnet entry, no Framenet entry.  No comparison.
+</note>
+
+<roleset id="process.01" name="do something to">
+<roles>
+  <role descr="processor" n="0"/>
+  <role descr="thing processed" n="1"/>
+  <role descr="end state" n="2"/>
+  <role descr="start state" n="3"/>
+</roles>
+
+<example name="boring but typical">
+  <inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+  <text>
+    Michael, which *trace* also processes potatoes, still relies on
+    spuds for about a fourth of its sales and nearly half its pretax
+    profit. 
+  </text>
+        <arg n="0">*trace* -&gt;  which -&gt;  Michael</arg>
+        <arg f="DIS" n="M">also</arg>
+        <rel>processes</rel>
+        <arg n="1">potatoes</arg>
+</example>
+
+<example name="start and end states">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John's word processor processed his dissertation from an orderly
+    progression of arguments into &quot;word salad&quot;.
+  </text>
+  <arg n="0">John's word processor</arg>
+  <rel>processed</rel>
+  <arg n="1">his dissertation</arg>
+  <arg f="from" n="3">an orderly progression of arguments</arg>
+  <arg f="into" n="2">&quot;word salad&quot;</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,92 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="forge">
+<note>
+  Frames file for 'forge' based on sentences in financial subcorpus.
+  Verbnet entries 25.2, 25.4, 26.1.  Other framed members include
+  arrange, assemble, build, churn, reshape, roll, shape and spin.
+  Nothing from 25.2/25.4, oddly.  Framenet entry Imitation.
+  Comparison with draw and build.
+</note>
+
+<roleset id="forge.01" name="create a counterfeit" vncls="25.2 25.4">
+<roles>
+  <role descr="counterfeiter" n="0">
+		
+		
+  <vnrole vncls="25.2" vntheta="Agent"/><vnrole vncls="25.4" vntheta="Agent"/></role>
+
+  <role descr="copied" n="1">
+		
+		
+  <vnrole vncls="25.2" vntheta="Theme"/><vnrole vncls="25.4" vntheta="Theme"/></role>
+
+</roles>
+
+<example name="bad John">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John forged his mother's signature.
+  </text>
+  <arg n="0">John</arg>
+  <rel>forged</rel>
+  <arg n="1">his mother's signature</arg>
+</example>
+
+<note>
+This is properly thought of as a special case of the other roleset,
+but since it can never take the other arguments, it is proper to keep
+the two separated.
+</note>
+
+</roleset>
+
+<roleset id="forge.02" name="make, create" vncls="26.1">
+<roles>
+  <role descr="builder" n="0">
+		
+  <vnrole vncls="26.1" vntheta="Agent"/></role>
+
+  <role descr="construction" n="1">
+		
+  <vnrole vncls="26.1" vntheta="Product"/></role>
+
+  <role descr="material, start state" n="2">
+		
+  <vnrole vncls="26.1" vntheta="Material"/></role>
+
+  <role descr="end state" n="4"><vnrole vncls="26.1" vntheta="Product"/></role>
+</roles>
+
+<example name="boring transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    With the golden share as protection, Jaguar officials have
+    rebuffed Ford's overtures, and moved instead *trace* to forge an
+    alliance with GM. 
+</text>
+        <arg n="0">*trace* -&gt;  Jaguar officials</arg>
+        <rel>forge</rel>
+        <arg n="1">an alliance with GM</arg>
+</example>
+
+<example name="all args">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John forged the iron from ingots into an elaborate contraption.
+  </text>
+  <arg n="0">John</arg>
+  <rel>forged</rel>
+  <arg n="1">the iron</arg>
+  <arg f="from" n="2">ingots</arg>
+  <arg f="into" n="4">an elaborate contraption</arg>
+</example>
+
+<note>
+The arg2 &quot;material&quot; and arg4 &quot;end state&quot; will always be introduced by
+prepositions, while the arg1 &quot;construction&quot; should always be an NP.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

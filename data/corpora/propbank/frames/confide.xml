@@ -1,0 +1,46 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="confide">
+<note>
+  Frames file for 'confide' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="confide.01" name="to entrust, tell in confidence" vncls="37.7">
+<roles>
+  <role descr="speaker, agent" n="0"><vnrole vncls="37.7" vntheta="Agent"/></role>
+  <role descr="utterance" n="1"><vnrole vncls="37.7" vntheta="Topic"/></role>
+  <role descr="person confided to" n="2"><vnrole vncls="37.7" vntheta="Recipient"/></role>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ A new in-house magazine , Kidder World -- which [*T*-1] will focus on the firm 's synergy strategy , says [0] [*T*-2] Mr. Carpenter -- confides that on weekends Mr. Newquist `` often gets value-added ideas while [*-3] flying his single-engine Cessna Centurion on the way to Nantucket . ''
+</text>
+	<arg n="0">A new in-house magazine , Kidder World -- which [*T*-1] will focus on the firm 's synergy strategy , says [0] [*T*-2] Mr. Carpenter --</arg>
+	<rel>confides</rel>
+	<arg n="1">that on weekends Mr. Newquist `` often gets value-added ideas while [*-3] flying his single-engine Cessna Centurion on the way to Nantucket</arg>
+</example>
+
+
+
+<example name="all arguments">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ The owner of the company , Stephen Smith , who [*T*-1] has since pleaded guilty to state and federal fraud charges , confided to investors that he had a secret agreement with Amoco Oil Co. and said [0] the location of his wells was confidential , according to a civil suit filed [*] in a Florida state court by the Florida comptroller 's office .
+</text>
+	<arg n="0">The owner of the company , Stephen Smith , who [*T*-1] has since pleaded guilty to state and federal fraud charges</arg>
+	<rel>confided</rel>
+	<arg f="to" n="2">investors</arg>
+	<arg n="1">that he had a secret agreement with Amoco Oil Co.</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

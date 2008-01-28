@@ -1,0 +1,54 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="veto">
+<note>
+  Frames file for 'veto' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="veto.01" name="to forbid or prevent" vncls="-">
+<roles>
+  <role descr="agent, causer" n="0"/>
+  <role descr="entity vetoed" n="1"/>
+  <role descr="attribute" n="2"/>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ During the coming weeks , President Bush must decide whether [*] to veto the bills containing them -- or , alternatively , [*] to sign these bills into law with a statement declaring their intrusions on executive power to be in violation of Article II , and thus void and severable .
+</text>
+	<arg n="0">[*] -&gt;  President Bush</arg>
+	<rel>veto</rel>
+	<arg n="1">the bills containing them</arg>
+</example>
+
+
+<example name="intransitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ Article I , Section 7 , Clause 3 says that whether it 's called [*-1] an `` order , resolution or vote '' or anything else , Presidents must have the chance [*] to veto .
+</text>
+	<arg n="0">[*] -&gt;  Presidents</arg>
+	<rel>veto</rel>
+</example>
+
+
+<example name="with attribute">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ President Reagan vetoed this as a First Amendment violation .
+</text>
+	<arg n="0">President Reagan</arg>
+	<rel>vetoed</rel>
+	<arg n="1">this</arg>
+	<arg f="as" n="2">a First Amendment violation</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

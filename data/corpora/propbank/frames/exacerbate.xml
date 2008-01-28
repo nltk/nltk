@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="exacerbate">
+<note>
+  Frames file for 'exacerbate' based on sentences in financial
+  subcorpus.  No verbnet entry.  No comparison.
+</note>
+
+<roleset id="exacerbate.01" name="make worse">
+<roles>
+  <role descr="causer" n="0"/>
+  <role descr="thing getting worse" n="1"/>
+</roles>
+
+<example name="typical usage">
+<text>
+    Some fund managers say negative publicity has exacerbated
+    investors' concern about recent declines in junk-bond prices.
+</text>
+        <arg n="0">negative publicity</arg>
+        <rel>exacerbated</rel>
+        <arg n="1">investors' concern about recent declines in
+        junk-bond prices</arg> 
+</example>
+
+<note>
+Trace chains can get funky.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

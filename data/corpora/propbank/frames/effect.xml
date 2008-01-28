@@ -1,0 +1,47 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="effect">
+<note>
+  Frames file for 'effect' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="effect.01" name="cause an effect" vncls="-">
+<roles>
+  <role descr="cause" n="0"/>
+  <role descr="effect, usually a change" n="1"/>
+</roles>
+
+<example name="perilous example">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+     Mr. Dang is alleged [*-1] to have used the account of Singapore
+     hotel and property magnate Ong Beng Seng [*-2] to effect the
+     transactions. 
+</text>
+        <arg n="0">[*-2] -&gt;  [*-1] -&gt;  Mr. Dang</arg>
+        <rel>effect</rel>
+        <arg n="1">the transactions</arg>
+</example>
+
+
+
+<example name="proper lexical item">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    But even if he effects a Hyde-to-Jekyll transformation, he will
+    face a serious ideological crisis and Reunification Scenario Two. 
+</text>
+        <arg n="0">he</arg>
+        <rel>effects</rel>
+        <arg n="1">a Hyde-to-Jekyll transformation</arg>
+</example>
+
+<note>
+The difference between 'effect' and 'affect' is one of the great
+pitfalls of English.  'Affect' means to influence, 'effect' means to
+bring about or execute.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

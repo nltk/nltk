@@ -1,0 +1,43 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="embody">
+<note>
+  Frames file for 'embody' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="embody.01" name="to represent in bodily form or incorporate" vncls="-">
+<roles>
+ <role descr="entity embodied" n="1"/>
+ <role descr="embodied in" n="2"/>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ The Bush administration plans [*-2] to announce a series of principles and to work with congressional leaders in [*-3] writing specific legislative proposals that [*T*-1] embody them .
+</text>
+	<arg n="2">[*T*-1] -&gt;  that -&gt;  specific legislative proposals</arg>
+	<rel>embody</rel>
+	<arg n="1">them</arg>
+</example>
+
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="past" voice="passive"/>
+<text>
+ It implies that the British Empire was rooted [*-1] in its subjects ' minds , manners and morals , and argues , tacitly , that its self-destructive flaws were embodied [*-2] in the defensive snobbery , willful blindness , role-playing and especially the locutions of its domestic servants .
+</text>
+	<rel>embodied</rel>
+	<arg n="1">[*-2] -&gt;  its self-destructive flaws</arg>
+	<arg f="in" n="2">the defensive snobbery , willful blindness , role-playing and especially the locutions of its domestic servants</arg>
+</example>
+
+</roleset>
+<note>
+Passive morphology suggests an agent role, but I can't get that reading.
+</note>
+
+</predicate>
+</frameset>

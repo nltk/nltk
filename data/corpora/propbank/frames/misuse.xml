@@ -1,0 +1,37 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="misuse">
+<note>
+  Frames file for 'misuse' based on sentences in wsj.  No Verbnet
+  entry.
+</note>
+
+<roleset id="misuse.01" name="use wrongly" vncls="-">
+<roles>
+    <role descr="User" n="0"/>
+    <role descr="thing used" n="1"/>
+</roles>
+
+<example name="one example">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    One suit, filed by more than three dozen investors, charges that
+    Mr. Peterson misused much of the $9.7 million put into a limited
+    partnership that he operated and promoted, spending some of it to
+    pay his own legal bills and to invest in other companies in which
+    he had an interest. 
+</text>
+        <arg n="0">Mr. Peterson</arg>
+        <rel>misused</rel>
+        <arg n="1">much of the $9.7 million put into a limited
+        partnership that he operated and promoted,</arg> 
+        <arg n="M">spending some of it to pay his own legal bills and
+        to invest in other companies in which he had an interest</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

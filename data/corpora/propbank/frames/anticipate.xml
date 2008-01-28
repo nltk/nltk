@@ -1,0 +1,88 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="anticipate">
+<note>
+  Frames file for 'anticipate' based on survey of sentences in
+  financial subcorpus.  No verbnet entry.  Comparison with 'expect'
+</note>
+
+<roleset id="anticipate.01" name="expect">
+<roles>
+  <role descr="anticipater" n="0"/>
+  <role descr="thing anticipated" n="1"/>
+</roles>
+
+<example name="active, light S as object">
+  <text>
+    The documents also said that Cray Computer anticipates *trace*
+    needing perhaps another $120 million in financing beginning next
+    September.
+  </text>
+  <arg n="0">Cray Computer</arg>
+  <rel>anticipates</rel>
+  <arg n="1">*trace*
+    needing perhaps another $120 million in financing beginning next
+    September.</arg>
+</example>
+
+<example name="active, SBAR as object">
+  <text>
+    But speculators, *trace* anticipating that Connecticut will
+    approve a law permitting such interstate banking soon, immediately
+    bid up shares of Connecticut banks on the news.
+  </text>
+  <arg n="0">*trace*=speculators</arg>
+  <rel>anticipating</rel>
+  <arg n="1">Connecticut will
+    approve a law permitting such interstate banking soon</arg>
+</example>
+
+<example name="passivized with extraction (perhaps not possible)">
+  <text>
+   John is anticipated *trace* to win the Nobel Prize.
+  </text>
+  <arg n="1">John</arg>
+  <rel>anticipated</rel>
+  <arg n="1">*trace* to win the Nobel Prize</arg>
+</example>
+
+<example name="with comparative">
+  <text>
+    ``This is all emotion right now, and when emotion starts to run,
+    it can run further than anyone anticipates,'' he said.
+  </text>
+  <arg n="0">anyone</arg>
+  <rel>anticipates</rel>
+</example>
+
+<note>
+Sometimes also with an empty Arg1 (trace only)
+</note>
+
+</roleset>
+
+<roleset id="anticipate.02" name="come before">
+<roles>
+  <role descr="thing coming before" n="0"/>
+  <role descr="thing coming after" n="1"/>
+</roles>
+
+<example name="active">
+  <text>
+    The downgrade anticipates completion of the IMA Holdings
+    acquisition today, Moody's said.
+  </text>
+  <arg n="0">The downgrade</arg>
+  <rel>anticipates</rel>
+  <arg n="1">completion of the IMA Holdings
+    acquisition today</arg>
+</example>
+
+<note>
+These two senses are very close in meaning, but fortunately the
+framing is the same.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

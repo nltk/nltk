@@ -1,0 +1,58 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="generate">
+<note>
+  Frames file for 'generate' based on sentences in financial
+  subcorpus.  Verbnet entry 27, no other framed members mentioned.
+  Comparison with 'create'.
+</note>
+
+<roleset id="generate.01" name="create" vncls="27">
+<roles>
+  <role descr="creator" n="0"/>
+  <role descr="thing created" n="1">
+		
+  <vnrole vncls="27" vntheta="Theme2"/></role>
+
+  <role descr="source" n="2">
+		
+  <vnrole vncls="27" vntheta="Theme1"/></role>
+
+  <role descr="benefactive" n="3"/>
+  <role descr="attribute, secondary predication" n="4"/>
+</roles>
+
+<example name="just transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+    But he said they are ``to a large degree, housekeeping,'' although
+    some may generate some disagreement. 
+</text>
+        <arg n="0">some</arg>
+        <arg f="MOD" n="M">may</arg>
+        <rel>generate</rel>
+        <arg n="1">some disagreement</arg>
+</example>
+
+<example name="with source">
+<inflection aspect="perfect" form="participle" person="ns" tense="past" voice="active"/>
+<text>
+    For the last year, Santa Fe Pacific has redirected its real estate
+    operations toward longer-term development of its properties,
+    hurting profits that the parent had generated *trace* in the past
+    from periodic sales from its portfolio. 
+</text>
+        <arg n="0">the parent</arg>
+        <rel>generated</rel>
+        <arg n="1">*trace* -&gt;  that -&gt;  profits</arg>
+        <arg f="TMP" n="M">in the past</arg>
+        <arg f="from" n="2">periodic sales from its portfolio</arg>
+</example>
+
+<note>
+Refer to 'create' for usage of args 3 and 4.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

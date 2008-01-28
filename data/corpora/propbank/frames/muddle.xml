@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="muddle">
+<note>
+  Frames file for 'muddle' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="muddle.01" name="to make muddy, confuse" vncls="-">
+<roles>
+  <role descr="causer of confusion, agent" n="0"/>
+  <role descr="entity muddled" n="1"/>
+</roles>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+ Free markets , free minds and free elections have an appeal that [*T*-32] seems [*-1] to get muddled [*-3] only when [*] delivered [*-4] through U.N. organizations -- which of course [*T*-33] are made [*-5] up largely of governments that [*T*-34] fear these principles at home [*T*-2] .
+</text>
+	<rel>muddled</rel>
+	<arg n="1">[*-3] -&gt;  [*-1] -&gt;  [*T*-32] -&gt;  that -&gt;  an appeal</arg>
+	<arg f="TMP" n="M">only when [*] delivered [*-4] through U.N. organizations -- which of course [*T*-33] are made [*-5] up largely of governments that [*T*-34] fear these principles at home [*T*-2]</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

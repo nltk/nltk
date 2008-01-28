@@ -1,0 +1,48 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="restrict">
+<note>
+  Frames file for 'restrict' based on sentences in financial
+  subcorpus.  No verbnet entry.  Comparison with 'limit'.
+</note>
+
+<roleset id="restrict.01" name="ensure something stays below a certain level">
+<roles>
+  <role descr="agent, limiter" n="0"/>
+  <role descr="thing limited" n="1"/>
+  <role descr="limit" n="2"/>
+</roles>
+
+<example name="restrict to">
+<text>
+    The golden share restricts any individual holding to 15% and
+    expires at the end of 1990. 
+</text>
+        <arg n="0">The golden share</arg>
+        <rel>restricts</rel>
+        <arg n="1">any individual holding</arg>
+        <arg f="to" n="2">15%</arg>
+</example>
+
+<example name="restrict from">
+<text>
+    The partnership said it is proposing the change largely because
+    the provisions of its senior notes restrict it from making
+    distributions on its units outstanding. 
+</text>
+        <arg n="0">the provisions of its senior notes</arg>
+        <rel>restrict</rel>
+        <arg n="1">it</arg>
+        <arg f="from" n="2">making distributions on its units
+        outstanding</arg> 
+</example>
+
+<note>
+Actually two quite different rolesets, but with the same PAS except
+for the prepositions each takes.  That difference makes the two senses
+easy to distinguish.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

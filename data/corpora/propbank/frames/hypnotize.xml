@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="hypnotize">
+<note>
+  Frames file for 'hypnotize' based on sentences in wsj.  Verbnet
+  entry 31.1, which seems right odd to me.
+</note>
+
+<roleset id="hypnotize.01" name="AHED says 'fascinate by hypnosis'" vncls="31.1">
+<roles>
+  <role descr="hypnotist" n="0"><vnrole vncls="31.1" vntheta="Cause"/></role>
+  <role descr="subject, victim" n="1"><vnrole vncls="31.1" vntheta="Experiencer"/></role>
+</roles>
+
+<example name="you are getting very sleepy">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    And, if still conscious at the evening's end, you notice something
+    else: The audience, at first entranced and hypnotized by the
+    music, releases its pent-up feelings in collective gratitude. 
+</text>
+        <arg n="1">The audience</arg>
+        <arg f="TMP" n="M">at first</arg>
+        <rel>hypnotized</rel>
+        <arg f="by" n="0">the music</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

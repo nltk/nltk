@@ -1,0 +1,35 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="cultivate">
+<note>
+  Frames file for 'cultivate' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="cultivate.01" name="to grow, develop, nurture" vncls="9.7-1">
+<roles>
+  <role descr="grower, developer, agent" n="0">
+	<vnrole vncls="9.7-1" vntheta="Agent"/></role>
+  <role descr="thing prospering, theme" n="1">
+	<vnrole vncls="9.7-1" vntheta="Theme"/></role>
+
+</roles>
+
+
+<example name="both arguments">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ At the very least , Mr. Jones , who [*T*-1] cultivates the society circuit as eagerly as his bench , can take comfort in one fact : These days , he is n't alone .
+</text>
+	<arg n="0">[*T*-1] -&gt;  who -&gt;  Mr. Jones</arg>
+	<rel>cultivates</rel>
+	<arg n="1">the society circuit</arg>
+	<arg f="MNR" n="M">as eagerly as his bench</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

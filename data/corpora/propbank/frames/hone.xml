@@ -1,0 +1,44 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="hone">
+<note>
+  Frames file for 'hone' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="hone.01" vncls="-" name="make sharp">
+<roles>
+  <role n="0"  descr="causer of sharpness"/>
+  <role n="1"  descr="thing becoming sharp"/>
+  <role n="2"  descr="whetstone, instrument"/>
+</roles>
+
+<example name="passive with instrument">
+<inflection person="ns" tense="ns" aspect="ns" voice="passive" form="participle"/>
+<text>
+    But some cosmetics-industry executives wonder whether techniques
+    honed [*] in packaged goods will translate to the cosmetics
+    business.  
+</text>
+	<rel>honed</rel>
+	<arg n="1">[*] ->  techniques</arg>
+	<arg n="2" f="in">packaged goods</arg>
+</example>
+
+
+<example name="active, agentive">
+<inflection person="ns" tense="ns" aspect="ns" voice="active" form="infinitive"/>
+<text>
+    Japanese researchers have bred dozens of strains of Fujis [*-1] to
+    hone its color, taste and shelf life. 
+</text>
+	<arg n="0">[*-1] ->  Japanese researchers</arg>
+	<rel>hone</rel>
+	<arg n="1">its color, taste and shelf life</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

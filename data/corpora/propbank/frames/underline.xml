@@ -1,0 +1,45 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="underline">
+<note>
+  Frames file for 'underline' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+
+<roleset id="underline.01" name="to draw a line under or emphasize" vncls="-">
+<roles>
+  <role descr="drawer of line, emphasizer, agent" n="0"/>
+  <role descr="entity underlined" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ She had gone so far as [*-1] to display the questions on an overhead projector and underline the answers .
+</text>
+	<arg n="0">[*-1] -&gt;  She</arg>
+	<rel>underline</rel>
+	<arg n="1">the answers</arg>
+</example>
+
+
+
+<example name="transitive with adverbials">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ The CIA 's Deputy Director of Operations , Richard Stoltz , tried [*-1] to smooth things over a few days later , but instead simply underlined Mr. Webster 's point .
+</text>
+	<arg n="0">The CIA 's Deputy Director of Operations , Richard Stoltz ,</arg>
+	<arg f="DIS" n="M">instead</arg>
+	<arg f="ADV" n="M">simply</arg>
+	<rel>underlined</rel>
+	<arg n="1">Mr. Webster 's point</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

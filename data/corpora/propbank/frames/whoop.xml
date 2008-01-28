@@ -1,0 +1,40 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="whoop">
+<note>
+  Frames file for 'whoop' based on sentences in wsj.  Verbnet entry 37.3
+</note>
+
+<roleset id="whoop.01" vncls="37.3" name="mode of speaking">
+<roles>
+  <role n="0"  descr="speaker"/>
+  <role n="1"  descr="utterance"/>
+  <role n="2"  descr="listener"/>
+</roles>
+
+<example name="barely applicable">
+<inflection person="ns" tense="ns" aspect="progressive" voice="active" form="participle"/>
+<text>
+    It is famous as the winter home of the whooping crane, that symbol
+    of the destruction of wild America. 
+</text>
+	<rel>whooping</rel>
+	<arg n="0">crane</arg>
+</example>
+
+<example name="name that movie">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+    ``I'm the king of the world!'' whooped John.
+  </text>
+  <arg n="1"        >``I'm the king of the world!''</arg>
+  <rel              >whooped</rel>
+  <arg n="0"        >John</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

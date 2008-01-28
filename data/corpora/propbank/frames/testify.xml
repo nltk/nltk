@@ -1,0 +1,73 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="testify">
+<note>
+  Frames file for 'testify' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="testify.01" name="give testimony, provide evidence" vncls="-">
+<roles>
+  <role descr="witness, agent" n="0"/>
+  <role descr="testimony, evidence for" n="1"/>
+  <role descr="person testified for/against" n="2"/>
+</roles>
+
+<example name="with Arg2">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+ The school-board hearing at which she was dismissed [*-2] [*T*-1] was crowded [*-4] with students , teachers and parents who [*T*-98] came [*-3] to testify on her behalf .
+</text>
+	<arg n="0">[*-3] -&gt;  [*T*-98] -&gt;  who -&gt;  students , teachers and parents</arg>
+	<rel>testify</rel>
+	<arg f="on" n="2">her behalf</arg>
+</example>
+
+<example name="with Arg1">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ One secretary testified that the judge once called her to his office while [*-1] wearing nothing at all .
+</text>
+	<arg n="0">One secretary</arg>
+	<rel>testified</rel>
+	<arg n="1">that the judge once called her to his office while [*-1] wearing nothing at all</arg>
+</example>
+
+
+<example name="with Arg2-against">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ The first one permits a witness [*-1] to refuse [*-2] to testify against her spouse .
+</text>
+	<arg n="0">[*-2] -&gt;  [*-1] -&gt;  a witness</arg>
+	<rel>testify</rel>
+	<arg f="against" n="2">her spouse</arg>
+</example>
+
+<example name="with Arg1-to">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ The vehemence of the emotions aroused [*] by the case testifies to its symbolic importance in the war that Thurber accepted [*T*-1] as an eternal part of the human condition .
+</text>
+	<arg n="0">The vehemence of the emotions aroused [*] by the case</arg>
+	<rel>testifies</rel>
+	<arg f="to" n="1">its symbolic importance in the war that Thurber accepted [*T*-1] as an eternal part of the human condition</arg>
+</example>
+
+
+<example name="with Arg1-about">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ `` There are some witnesses who [*T*-1] will be forced [*-2] to testify about their meetings with senators . ''
+</text>
+	<arg n="0">[*-2] -&gt;  [*T*-1] -&gt;  who -&gt;  some witnesses</arg>
+	<rel>testify</rel>
+	<arg f="about" n="1">their meetings with senators</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

@@ -1,0 +1,56 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="choose">
+<note>
+  Frames file for 'choose' based on sentences in financial subcorpus.
+  No access to verbnet.  Comparison to pick.
+</note>
+
+<roleset id="choose.01" name="choose, pick" vncls="13.5.1 29.2">
+<roles>
+  <role descr="picker" n="0">
+	<vnrole vncls="29.2" vntheta="Agent"/>
+        <vnrole vncls="13.5.1" vntheta="Agent"/></role>
+  <role descr="thing picked" n="1">
+	<vnrole vncls="29.2" vntheta="Predicate"/>
+        <vnrole vncls="13.5.1" vntheta="Theme"/></role>
+  <role descr="group or source" n="2">
+	<vnrole vncls="13.5.1" vntheta="Source"/></role>
+  <role descr="benefactive" n="3">
+	<vnrole vncls="29.2" vntheta="Theme"/>
+        <vnrole vncls="13.5.1" vntheta="Beneficiary"/></role>
+  <role descr="secondary attribute on arg1" n="4">
+        <vnrole vncls="13.5.1" vntheta="Asset"/></role>
+</roles>
+
+<example name="just thing picked">
+<text>
+    Spreads will become so tight that it won't matter which market an
+    investor chooses *trace* -- arbitrage will prevent him from
+    gaining any temporary profit. 
+</text>
+        <arg n="0">an investor</arg>
+        <rel>chooses</rel>
+        <arg n="1">*trace* -&gt;  which market</arg>
+</example>
+
+<example name="with attribute">
+<inflection aspect="perfect" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+    Health and Human Services Secretary Louis Sullivan has chosen
+    Antonia Novello to be the next surgeon general, Bush
+    administration officials said.  
+</text>
+        <arg n="0">Health</arg>
+        <rel>chosen</rel>
+        <arg n="1">Antonia Novello</arg>
+        <arg n="4">to be the next surgeon general</arg>
+</example>
+
+<note>
+Refer to 'pick' for usage of higher #'d args, if they appear.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

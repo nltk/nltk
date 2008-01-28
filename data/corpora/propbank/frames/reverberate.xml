@@ -1,0 +1,48 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="reverberate">
+<note>
+  Frames file for 'reverberate' based on sentences in wsj.  Verbnet
+  entry 47.4.
+</note>
+
+<roleset id="reverberate.01" name="qualitative emission   of sound" vncls="47.4">
+<roles>
+  <role descr="sound" n="1"><vnrole vncls="47.4" vntheta="Theme"/></role>
+</roles>
+
+<example name="inchoative">
+<inflection aspect="progressive" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+    ``The aftershocks of Oct. 13 (when the Dow Jones Industrial
+    Average dropped 190 points) are still reverberating.'' 
+</text>
+        <arg n="1">The aftershocks of Oct. 13 (when the Dow Jones
+        Industrial Average dropped 190 points)</arg> 
+        <arg f="TMP" n="M">still</arg>
+        <rel>reverberating</rel>
+</example>
+
+<example name="often with location">
+<inflection aspect="perfect" form="participle" person="third" tense="present" voice="active"/>
+<text>
+    The disarray in the junk-bond market that began last month with a
+    credit crunch at Campeau Corp. and the failure  of banks to
+    deliver financing for a leveraged buy-out of United Airlines
+    parent UAL Corp. has reverberated through some of the nation's
+    largest law firms. 
+</text>
+        <arg n="1">The disarray in the junk-bond market that began
+        last month with a credit crunch at Campeau Corp. and the
+        failure of banks to deliver financing for a leveraged buy-out
+        of United Airlines parent UAL Corp.</arg> 
+        <rel>reverberated</rel>
+        <arg f="LOC" n="M">through some of the nation's largest law
+        firms</arg></example> 
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

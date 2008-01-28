@@ -1,0 +1,48 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="mouth">
+<note>
+  Frames file for 'mouth' based on sentences in wsj.  No Verbnet
+  entry, Framenet entry Manner (of speaking).
+</note>
+
+<roleset id="mouth.01" name="say silently" vncls="-">
+<roles>
+  <role descr="speaker" n="0"/>
+  <role descr="utterance" n="1"/>
+  <role descr="hearer" n="2"/>
+</roles>
+
+<example name="no mentioned hearer">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    I felt the temblor begin and glanced at the table next to mine,
+    smiled that guilty smile and we both mouthed the words,
+    ``Earth-quake!'' together. 
+</text>
+        <arg n="0">we both</arg>
+        <rel>mouthed</rel>
+        <arg n="1">the words, ``Earth-quake!''</arg>
+        <arg f="MNR" n="M">together</arg>
+</example>
+
+<example name="with 'hearer'">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John mouthed, ``drop dead, you hateful bitch'' at Mary while her
+     back was turned.
+  </text>
+  <arg n="0">John</arg>
+  <rel>mouthed</rel>
+  <arg n="1">``drop dead, you hateful bitch''</arg>
+  <arg f="at" n="2">Mary</arg>
+  <arg f="TMP" n="m">while her back was turned</arg>
+</example>
+
+<note>
+Hmm, is John starting to stand up for himself?
+</note>
+
+</roleset>
+</predicate>
+</frameset>

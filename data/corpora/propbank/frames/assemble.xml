@@ -1,0 +1,94 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="assemble">
+<note>
+  Frames file for 'assemble' based on sentences in financial
+  subcorpus.  Verbnet classes build-26.1, herd-47.5.2 .  Other framed
+  members include arrange, build, grow (26.1), collect (47.5.2).
+</note>
+
+<roleset id="assemble.01" name="build" vncls="26.1">
+<roles>
+  <role descr="builder" n="0">
+		
+  <vnrole vncls="26.1" vntheta="Agent"/></role>
+
+  <role descr="construction" n="1">
+		
+  <vnrole vncls="26.1" vntheta="Product"/></role>
+
+  <role descr="material, start state" n="2">
+		
+  <vnrole vncls="26.1" vntheta="Material"/></role>
+
+  <role descr="end state" n="4"><vnrole vncls="26.1" vntheta="Product"/></role>
+</roles>
+
+<example name="basic frame, no start/end states">
+<text>
+    The Dearborn, Mich., auto maker ran a loss of $37 million on
+    *trace* assembling and marketing cars in the U.S.
+</text>
+        <arg n="0">*trace*=The Dearborn, Mich., auto maker</arg>
+        <rel>assembling</rel>
+        <arg n="1">cars</arg>
+        <arg f="LOC" n="M">in the U.S.</arg>
+</example>
+
+<example name="with start state">
+  <text>
+    John assembles miniature ships out of toothpicks.
+  </text>
+  <arg n="0">John</arg>
+  <rel>assembles</rel>
+  <arg n="1">miniature ships</arg>
+  <arg f="out" n="2">of toothpicks</arg>
+</example>
+
+<note>
+Might be hard to get both start and end state in a single example.
+But who knows?
+</note>
+
+</roleset>
+
+<roleset id="assemble.02" name="group" vncls="47.5.2">
+<roles>
+  <role descr="agent, entity causing some grouping" n="0">
+		
+  <vnrole vncls="47.5.2" vntheta="Agent"/></role>
+
+  <role descr="theme, thing being included in some group" n="1">
+		
+  <vnrole vncls="47.5.2" vntheta="Theme"/></role>
+
+  <role descr="group" n="2"/>
+</roles>
+
+<example name="no group">
+<text>
+   Commodore has assembled an experienced management team.
+</text>
+        <arg n="0">Commodore</arg>
+        <rel>assembled</rel>
+        <arg n="1">an experienced management team</arg>
+</example>
+
+<note>
+That could go either way; avoid using Arg2 unless both Arg1 and Arg2
+are explicit.
+</note>
+
+<example name="both theme and group">
+  <text>
+    John assembled his dirty socks into a formidable (and smelly) pile.
+  </text>
+  <arg n="0">John</arg>
+  <rel>assembled</rel>
+  <arg n="1">his dirty socks</arg>
+  <arg f="into" n="2">a formidable (and smelly) pile</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

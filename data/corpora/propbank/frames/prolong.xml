@@ -1,0 +1,61 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="prolong">
+<note>
+  Frames file for 'prolong' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="prolong.01" name="make longer" vncls="-">
+<roles>
+  <role descr="cause, agent" n="0"/>
+  <role descr="thing getting longer" n="1"/>
+  <role descr="EXT" n="2"/>
+  <role descr="start point" n="3"/>
+  <role descr="end point" n="4"/>
+</roles>
+
+<example name="just transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    There, Mr. Shevardnadze felt legitimized to unveil his own peace
+    plan: The U.S.S.R. would prolong a suspension of arms shipments to
+    Nicaragua after the February election if the U.S. did likewise
+    with its allies in Central America. 
+</text>
+        <arg n="0">The U.S.S.R.</arg>
+        <arg f="MOD" n="M">would</arg>
+        <rel>prolong</rel>
+        <arg n="1">a suspension of arms shipments to Nicaragua</arg>
+        <arg f="TMP" n="M">after the February election</arg>
+        <arg f="ADV" n="M">if the U.S. did likewise with its allies in
+        Central America</arg> 
+</example>
+
+
+<example name="with arg2, sorta">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    It does prolong the pain somewhat.''
+</text>
+        <arg n="0">It</arg>
+        <rel>prolong</rel>
+        <arg n="1">the pain</arg>
+        <arg f="MNR" n="2">somewhat</arg>
+</example>
+
+<example name="start and end points">
+  <inflection aspect="ns" form="participle" person="third" tense="past" voice="passive"/>
+  <text>
+    John's stay in graduate school was prolonged *trace* from five
+    years to fifteen. 
+  </text>
+  <rel>prolonged</rel>
+  <arg n="1">*trace* -&gt; John's stay in graduate school</arg>
+  <arg f="from" n="3">five years</arg>
+  <arg f="to" n="4">fifteen</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="secede">
+<note>
+  Frames file for 'secede' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="secede.01" name="to withdraw from an organization or communion" vncls="-">
+<roles>
+  <role descr="ex-member" n="0"/>
+  <role descr="organization" n="1"/>
+</roles>
+
+
+<example name="automatically generated">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ The Bougainville copper mine has been inoperative since May 15 because of attacks by native landowners who [*T*-1] want Bougainville to secede from Papua-New Guinea .
+</text>
+	<arg n="0">Bougainville</arg>
+	<rel>secede</rel>
+	<arg f="from" n="1">Papua-New Guinea</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

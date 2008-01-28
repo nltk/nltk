@@ -1,0 +1,44 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="stumble">
+<note>
+  Frames file for 'stumble' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="stumble.01" name="to miss a step while walking, to make an error" vncls="51.3.2">
+<roles>
+  <role descr="agent, entity stumbling" n="0">
+		
+  <vnrole vncls="51.3.2" vntheta="Theme"/></role>
+
+  <role descr="stumble over" n="1"><vnrole vncls="51.3.2" vntheta="Location"/></role>
+</roles>
+
+
+<example name="intransitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ The Japanese have watched the Europeans and Canadians stumble in the U.S. market , and they fret that business practices that [*T*-1] have won them huge profits at home wo n't translate into success in the U.S. .
+</text>
+	<arg n="0">the Europeans and Canadians</arg>
+	<rel>stumble</rel>
+	<arg f="LOC" n="M">in the U.S. market</arg>
+</example>
+
+
+<example name="transitive">
+<inflection aspect="progressive" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+ What [*T*-1] 's more , the losses [0] they and the others caused [*T*-3] `` are just what we are stumbling over [*T*-2] , '' says [0] [*T*-5] Mr. Stapf , [*-4] adding that the majority of misdeeds probably go [*-6] undetected .
+</text>
+	<arg n="0">we</arg>
+	<rel>stumbling</rel>
+	<arg f="over" n="1">[*T*-2] -&gt;  what -&gt;  the losses [0] they and the others caused [*T*-3]</arg>
+</example>
+
+</roleset>
+</predicate>
+
+
+</frameset>

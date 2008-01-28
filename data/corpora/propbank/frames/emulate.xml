@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="emulate">
+<note>
+  Frames file for 'emulate' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="emulate.01" name="to strive to equal, compete with sucessfully" vncls="-">
+<roles>
+  <role descr="agent or entity competing" n="0"/>
+  <role descr="entity emulated" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+ Diamond-Star Motors Corp. , a joint venture of Chrysler Corp. and Mitsubishi Motors Corp. said [0] it will begin [*-1] shipping Mitsubishi Eclipse cars to Japan next week , [*-1] emulating other Japanese auto ventures shipping U.S.-built vehicles back to Japan .
+</text>
+	<arg n="0">[*-1] -&gt;  it</arg>
+	<rel>emulating</rel>
+	<arg n="1">other Japanese auto ventures shipping U.S.-built vehicles back to Japan</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

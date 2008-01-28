@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="retake">
+<note>
+  Frames file for 'retake' based on sentences in wsj.  No Verbnet
+  entry.  Comparison to 'take'.
+</note>
+
+<roleset id="retake.01" name="take again, take back" vncls="-">
+<roles>
+  <role descr="taker" n="0"/>
+  <role descr="taken" n="1"/>
+</roles>
+
+<example name="the one example">
+<inflection aspect="progressive" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+    ``We are retaking the instruments of administration,'' says Raul
+    Robles, a Pemex subdirector. 
+</text>
+        <arg n="0">We</arg>
+        <rel>retaking</rel>
+        <arg n="1">the instruments of administration</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

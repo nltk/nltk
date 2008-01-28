@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="hearten">
+<note>
+  Frames file for 'hearten' based on sentences in wsj.  Verbnet entry
+  31.1 (verbs of emotion), Framenet entry Experiencer obj.
+</note>
+
+<roleset id="hearten.01" name="cause to feel better" vncls="31.1">
+<roles>
+  <role descr="causer of feeling better" n="0"><vnrole vncls="31.1" vntheta="Cause"/></role>
+  <role descr="entity feeling better" n="1"><vnrole vncls="31.1" vntheta="Experiencer"/></role>
+</roles>
+
+<example name="the one example">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    Plant operators are heartened *trace* by Mr. Ruffo's pledge to cut
+    corruption associated with the ruling party officials. 
+</text>
+        <rel>heartened</rel>
+        <arg n="1">*trace* -&gt;  Plant operators</arg>
+        <arg f="by" n="0">Mr. Ruffo's pledge to cut corruption
+        associated with the ruling party officials</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

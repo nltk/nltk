@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="underprice">
+<note>
+  Frames file for 'underprice' based on sentences in wsj.  No access
+  to Verbnet at the moment.
+</note>
+
+<roleset id="underprice.01" name="give a too-low price" vncls="-">
+<roles>
+  <role descr="giver of price" n="0"/>
+  <role descr="commodity" n="1"/>
+</roles>
+
+<example name="passive = adjectival">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+     In any event, some traders see stocks as underpriced today,
+     unlike 1987. 
+</text>
+        <arg n="1">stocks</arg>
+        <rel>underpriced</rel>
+        <arg f="TMP" n="M">today</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

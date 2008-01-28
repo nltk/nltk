@@ -1,0 +1,69 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="plague">
+<note>
+  Frames file for 'plague' based on sentences in financial subcorpus.
+  No access to verbnet.  No comparison.
+</note>
+
+<roleset id="plague.01" name="bother, pester, trouble" vncls="31.4">
+<roles>
+  <role descr="botherer, agent" n="0">
+	<vnrole vncls="31.4" vntheta="Cause"/></role>
+  <role descr="bothered" n="1">
+	<vnrole vncls="31.4" vntheta="Experiencer"/></role>
+  <role descr="bothered by, plagued with" n="2">
+        <vnrole vncls="31.4" vntheta="Theme"/></role>
+</roles>
+
+<example name="active">
+<text>
+    Many analysts said they weren't surprised that problems in many of
+    Ryder's lines of business continued *trace* to plague the
+    company. 
+</text>
+        <arg n="0">*trace* -&gt; problems in many of Ryder's lines of
+        business</arg> 
+        <rel>plague</rel>
+        <arg n="1">the company</arg>
+</example>
+
+<example name="passive">
+<text>
+    The Avon, Conn., company's stock hit a high in 1983 after it
+    unveiled its Adam home computer, but the product was plagued
+    *trace* with glitches and the company's fortunes plunged. 
+</text>
+        <rel>plagued</rel>
+        <arg n="1">*trace* -&gt;  the product</arg>
+        <arg f="with" n="2">glitches</arg>
+</example>
+
+<example name="different passive">
+<inflection person="ns" tense="ns" aspect="ns" voice="ns" form="ns"/>
+<text>
+    Par, a generic-drug maker that [*T*-2] has been plagued [*-1] by
+    management problems, was already the subject of a federal criminal
+    inquiry into the drug-approval process and a Food and Drug
+    Administration investigation. 
+</text>
+        <rel>plagued</rel>
+        <arg n="1">[*-1] ->  [*T*-2] ->  that ->  a generic-drug maker</arg>
+        <arg n="0" f="by">management problems</arg>
+</example>
+
+<example name="all args">
+  <inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+  <text>
+    John plagues Mary constantly with his whining for attention.
+  </text>
+  <arg n="0">John</arg>
+  <rel>plagues</rel>
+  <arg n="1">Mary</arg>
+  <arg f="TMP" n="m">constantly</arg>
+  <arg f="with" n="2">his whining for attention</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

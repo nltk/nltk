@@ -1,0 +1,55 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="reinforce">
+<note>
+  Frames file for 'reinforce' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+
+<roleset id="reinforce.01" name="to strengthen" vncls="-">
+<roles>
+  <role descr="strengthener" n="0"/>
+  <role descr="thing reinforced" n="1"/>
+  <role descr="instrument" n="2"/>
+</roles>
+
+
+
+<example name="with instrument">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+ Although the polyester and rayon markets remain mostly bleak , Akzo has high hopes for some emerging fiber businesses , such carbon fibers and aramid , extremely strong fibers used [*] [*-1] to reinforce tires and metals and to make such products as bullet-proof vests .
+</text>
+	<arg n="2">[*-1] -&gt;  [*] -&gt;  extremely strong fibers</arg>
+	<rel>reinforce</rel>
+	<arg n="1">tires and metals</arg>
+</example>
+
+
+<example name="inanimate causer">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ Graham Beale , manager of foreign-exchange operations at Hong Kong &amp; Shanghai Banking Corp. in New York , added that Mrs. Thatcher 's comments reinforced the market 's growing confidence about sterling and compounded the unit 's later decline .
+</text>
+	<arg n="0">Mrs. Thatcher 's comments</arg>
+	<rel>reinforced</rel>
+	<arg n="1">the market 's growing confidence about sterling</arg>
+</example>
+
+
+<example name="unspecified subject">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+ `` The only response to the challenge being presented [*] to us by the East , '' Mr. Mitterrand told [*T*-1] the European Parliament in Strasbourg yesterday , `` is [*] to reinforce and accelerate the union and cohesion of the European Community . ''
+</text>
+	<arg n="0">[*]</arg>
+	<rel>reinforce</rel>
+	<arg n="1">the union and cohesion of the European Community</arg>
+</example>
+
+</roleset>
+</predicate>
+
+
+</frameset>

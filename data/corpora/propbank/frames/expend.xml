@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="expend">
+<note>
+  Frames file for 'expend' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="expend.01" name="to spend, consume" vncls="-">
+<roles>
+  <role descr="spender, agent" n="0"/>
+  <role descr="entity expended" n="1"/>
+  <role descr="entity expended on" n="2"/>
+</roles>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="past" voice="passive"/>
+<text>
+ Mr. Good , who [*T*-1] documents these things as best he can [*?*] , provides an official explanation in the form of a memorandum from Chief of Staff George C. Marshall to President Roosevelt : `` 1,430 pounds of ammunition , '' he wrote his commander in chief [0] [*T*-2] , were expended [*-3] on `` unidentified aircraft , '' flying at speeds as slow as 200 mph and elevations between 9,000 and 18,000 feet .
+</text>
+	<rel>expended</rel>
+	<arg n="1">[*-3] -&gt;  1,430 pounds of ammunition</arg>
+	<arg f="on" n="2">`` unidentified aircraft , '' flying at speeds as slow as 200 mph and elevations between 9,000 and 18,000 feet</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

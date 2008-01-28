@@ -1,0 +1,40 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="dread">
+<note>
+  Frames file for 'dread' based on sentences in wsj.  Verbnet entry
+  31.2, Framenet entry Experiencer subj.
+</note>
+
+<roleset id="dread.01" name="fear a lot" vncls="31.2">
+<roles>
+  <role descr="afraid entity" n="0"><vnrole vncls="31.2" vntheta="Experiencer"/></role>
+  <role descr="what you're afraid of" n="1"><vnrole vncls="31.2" vntheta="Cause"/></role>
+</roles>
+
+<example name="adjectival">
+<inflection aspect="ns" form="participle" person="ns" tense="past" voice="passive"/>
+<text>
+    I guess we're all living very tentatively here, waiting for the
+    expected but dreaded aftershock. 
+</text>
+        <rel>dreaded</rel>
+        <arg n="1">aftershock</arg>
+</example>
+
+<example name="verbal">
+  <inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+  <text>
+     John dreads coming home to Mary each night.
+  </text>
+  <arg n="0">John</arg>
+  <rel>dreads</rel>
+  <arg n="1">coming home to Mary each night</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

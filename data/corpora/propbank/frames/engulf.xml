@@ -1,0 +1,43 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="engulf">
+<note>
+  Frames file for 'engulf' based on survey of sentences in the WSJ
+  corpus.  
+</note>
+
+
+<roleset id="engulf.01" name="to flow over or absorb" vncls="-">
+<roles>
+  <role descr="entity engulfing" n="0"/>
+  <role descr="entity engulfed" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ A landslide engulfed a hillside slum in Sao Paulo , Brazil , and at least 20 people , most of them children , were missing and feared [*-1] dead .
+</text>
+	<arg n="0">A landslide</arg>
+	<rel>engulfed</rel>
+	<arg n="1">a hillside slum in Sao Paulo , Brazil ,</arg>
+</example>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="future" voice="passive"/>
+<text>
+ If Washington 's elites ever succeed in [*-2] bursting the tax dam , Americans will be engulfed [*-1] in a red sea of new spending programs , such as federalized child care .
+</text>
+	<arg f="ADV" n="M">If Washington 's elites ever succeed in [*-2] bursting the tax dam</arg>
+	<arg f="MOD" n="M">will</arg>
+	<rel>engulfed</rel>
+	<arg n="1">[*-1] -&gt;  Americans</arg>
+	<arg f="in" n="0">a red sea of new spending programs , such as federalized child care</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

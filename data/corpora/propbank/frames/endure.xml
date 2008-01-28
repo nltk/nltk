@@ -1,0 +1,60 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="endure">
+<note>
+  Frames file for 'endure' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="endure.01" name="to last or experience for a long time" vncls="47.1-1">
+<roles>
+  <role descr="experiencer" n="1"/>
+  <role descr="thing endured or period of time" n="2">
+		
+  <vnrole vncls="47.1-1" vntheta="Theme"/></role>
+
+</roles>
+
+
+
+<example name="all arguments">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ This morning as I drove the 13 miles to my law office and endured the routine heavy traffic during that twice-daily journey , I thought of how fortunate it [*EXP*-2] was [*T*-4] that we made the decision [*] to be residents of an expanding community with so many opportunities and where so much is happening [*T*-3] .
+</text>
+	<arg n="1">I</arg>
+	<rel>endured</rel>
+	<arg n="2">the routine heavy traffic</arg>
+	<arg f="TMP" n="M">during that twice-daily journey</arg>
+</example>
+
+
+<example name="intransitive">
+<inflection aspect="ns" form="full" person="ns" tense="ns" voice="active"/>
+<text>
+ [*] Veiling his message has helped him endure .
+</text>
+	<arg n="1">him</arg>
+	<rel>endure</rel>
+</example>
+
+
+<example name="all arguments with adverbials">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ Now we must endure a rash of critics who [*T*-1] apparently wish [*-2] to know details of one side only .
+</text>
+	<arg f="TMP" n="M">Now</arg>
+	<arg n="1">we</arg>
+	<arg n="M">must</arg>
+	<rel>endure</rel>
+	<arg n="2">a rash of critics who [*T*-1] apparently wish [*-2] to know details of one side only</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

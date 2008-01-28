@@ -1,0 +1,65 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="object">
+<note>
+Frames file for 'object' based on sentences in wsj and automatic
+expansion via verbnet.
+</note>
+
+<roleset id="object.01" name="complain about" vncls="37.8">
+<roles>
+	<role descr="complainer" n="0">
+		
+  <vnrole vncls="37.8" vntheta="Agent"/></role>
+
+	<role descr="thing objected to" n="1">
+		
+  <vnrole vncls="37.8" vntheta="Topic"/></role>
+
+</roles>
+
+<example name="intransitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    Moreover, Mr. Guber claims, Mr. Semel told him that Mr. Ross
+    probably wouldn't object ``if it were anybody other than Sony. 
+</text>
+        <arg n="0">Mr. Ross</arg>
+        <arg f="ADV" n="M">probably</arg>
+        <arg f="MOD" n="M">would</arg>
+        <arg f="NEG" n="M">n't</arg>
+        <rel>object</rel>
+        <arg f="ADV" n="M">if it were anybody other than Sony</arg>
+</example>
+
+<example name="both args">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+     Meeting in Strasbourg Wednesday, the commission voted, as
+     expected, *trace* to formally object to the accord between Air
+     France, the state-owned airline, and state-controlled domestic
+     carrier Air Inter. 
+</text>
+        <arg n="0">*trace* -&gt;  the commission</arg>
+        <arg f="MNR" n="M">formally</arg>
+        <rel>object</rel>
+        <arg f="to" n="1">the accord between Air France, the
+        state-owned airline, and state-controlled domestic carrier Air
+        Inter</arg> 
+</example>
+
+<example name="tricky intransitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Rural Solidarity objected, to no avail, when Solidarity leader
+    Lech Walesa accepted the Peasants' support. 
+</text>
+        <arg n="0">Rural Solidarity</arg>
+        <rel>objected</rel>
+        <arg f="MNR" n="M">to no avail</arg>
+        <arg f="TMP" n="M">when Solidarity leader Lech Walesa accepted
+        the Peasants' support </arg> 
+</example>
+
+</roleset>
+</predicate>
+</frameset>

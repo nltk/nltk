@@ -1,0 +1,35 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="scribble">
+<note>
+  Frames file for 'scribble' based on sentences in wsj.  Verbnet entry 25.2.
+</note>
+
+<roleset id="scribble.01" name="draw/write untidily" vncls="25.2">
+<roles>
+  <role descr="scribbler" n="0"><vnrole vncls="25.2" vntheta="Agent"/></role>
+  <role descr="thing scribbled" n="1"><vnrole vncls="25.2" vntheta="Theme"/></role>
+  <role descr="benefactive" n="2"/>
+</roles>
+
+<example name="straight transitive">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    He sipped tea sweetened with honey from his high-backed leather
+    chair at his bench, while *trace* scribbling notes ordering
+    spectators to stop whispering or to take off their hats in his
+    courtroom. 
+</text>
+        <arg n="0">*trace* -&gt;  He</arg>
+        <rel>scribbling</rel>
+        <arg n="1">notes ordering spectators to stop whispering or to
+        take off their hats in his courtroom</arg> 
+</example>
+
+<note>
+I'm doubting the beneficiary can/will appear.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

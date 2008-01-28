@@ -1,0 +1,56 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="impose">
+<note>
+  Frames file for 'impose' based on sentences in financial subcorpus.
+  No Verbnet entry.  No comparison.
+</note>
+
+<roleset id="impose.01" name="be a bother">
+<roles>
+  <role descr="imposer (not imposter)" n="0"/>
+  <role descr="thing imposed" n="1"/>
+  <role descr="imposed on" n="2"/>
+</roles>
+
+<example name="all args">
+<text>
+    Among other reasons, high fees *trace* regulators imposed *trace*
+    on certain transfers of thrift deposits to commercial banks
+    ``substantially altered the economics of the transaction for both
+    parties,'' Poughkeepsie said. 
+</text>
+        <arg n="0">regulators</arg>
+        <rel>imposed</rel>
+        <arg n="1">*trace* -&gt; *trace* -&gt;  high fees</arg>
+        <arg f="on" n="2">certain transfers of thrift deposits to
+        commercial banks</arg> 
+</example>
+
+<example name="no 'benefactive'">
+<text>
+    Market Order: This is probably the most widely used order -- and 
+-- the one most open to abuse by unscrupulous floor brokers, since it 
+-- imposes no price restrictions. 
+</text>
+        <arg n="0">it</arg>
+        <rel>imposes</rel>
+        <arg n="1">no price restrictions</arg>
+</example>
+
+<example name="agent and 'benefactive'">
+  <text>
+    John always imposes on Mary's good will.
+  </text>
+  <arg n="0">John</arg>
+  <arg f="TMP" n="m">always</arg>
+  <rel>imposes</rel>
+  <arg f="on" n="2">Mary's good will</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,65 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="prune">
+<note>
+  Frames file for 'prune.01' based on sentences in wsj.  Verbnet
+  entries 21.2 and 10.4.1.
+</note>
+
+<roleset id="prune.01" name="remove branches" vncls="21.2-2 10.4.1">
+<roles>
+  <role descr="remover, agent" n="0">
+	<vnrole vncls="10.4.1" vntheta="Agent"/>
+        <vnrole vncls="21.2-2" vntheta="Agent"/></role>
+  <role descr="branches" n="1">
+	<vnrole vncls="10.4.1" vntheta="Theme"/>
+        <vnrole vncls="21.2-2" vntheta="Patient"/></role>
+  <role descr="whole plant" n="2">
+	<vnrole vncls="10.4.1" vntheta="Source"/></role>
+  <role descr="instrument, pruning shears" n="3">
+        <vnrole vncls="21.2-2" vntheta="Instrument"/></role>
+</roles>
+
+<example name="usual usage">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    ``We aren't inclined [*-1] to prune stock portfolios now,'' says
+    Steven G. Einhorn, chairman of the investment policy committee of
+    Goldman, Sachs &amp; Co. 
+</text>
+        <arg n="0">[*-1] -&gt;  We</arg>
+        <rel>prune</rel>
+        <arg n="2">stock portfolios</arg>
+        <arg f="TMP" n="M">now</arg>
+</example>
+
+<example name="with branches">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John pruned all the blooming flowers off the rose bush, leaving
+     only the deadheads.
+  </text>
+  <arg n="0">John</arg>
+  <rel>pruned</rel>
+  <arg n="1">all the blooming flowers</arg>
+  <arg f="off" n="2">the rose bush</arg>
+  <arg f="ADV" n="m">leaving on the deadheads</arg>
+</example>
+
+<example name="with instrument">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John pruned the rosebushes with a chainsaw.
+  </text>
+  <arg n="0">John</arg>
+  <rel>pruned</rel>
+  <arg n="2">the rosebushes</arg>
+  <arg f="with" n="3">a chainsaw</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

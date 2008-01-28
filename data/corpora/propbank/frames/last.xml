@@ -1,0 +1,55 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="last">
+<note>
+  Frames file for 'last' based on sentences in financial subcorpus.
+  Verbnet entry 54.2, no indication of other framed members.  No
+  Framenet entry.  No comparison.
+</note>
+
+<roleset id="last.01" name="extend for some period of time" vncls="54.2">
+<roles>
+  <role descr="thing that lasts" n="1">
+		
+  <vnrole vncls="54.2" vntheta="Theme"/></role>
+
+  <role descr="period of time" n="2">
+		
+  <vnrole vncls="54.2" vntheta="Attribute"/></role>
+
+</roles>
+
+<example name="prepositional period">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+   The turmoil in junk bonds may last for years, investors and traders
+   say. 
+</text>
+        <arg n="1">The turmoil in junk bonds</arg>
+        <arg f="MOD" n="M">may</arg>
+        <rel>last</rel>
+        <arg f="for" n="2">years</arg>
+</example>
+
+<example name="not prepositional">
+<inflection aspect="ns" form="full" person="ns" tense="future" voice="active"/>
+<text>
+    Some traders said the popularity of issues that gained yesterday
+    won't last long, as investors will rotate their buying choices
+    over the short term. 
+</text>
+        <arg n="1">the popularity of issues that  gained yesterday</arg>
+        <arg f="MOD" n="M">wo</arg>
+        <arg f="NEG" n="M">n't</arg>
+        <rel>last</rel>
+        <arg n="2">long</arg>
+        <arg f="CAU" n="M">as investors will rotate their buying
+        choices over the short term</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

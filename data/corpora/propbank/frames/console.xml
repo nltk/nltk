@@ -1,0 +1,35 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="console">
+<note>
+  Frames file for 'console' based on sentences in wsj.  Verbnet entry
+  31.1, Framenet entry Experiencer obj.
+</note>
+
+<roleset id="console.01" name="make feel better" vncls="31.1">
+<roles>
+  <role descr="consoler" n="0"><vnrole vncls="31.1" vntheta="Cause"/></role>
+  <role descr="consoled" n="1"><vnrole vncls="31.1" vntheta="Experiencer"/></role>
+  <role descr="consolation, instrument" n="2"/>
+</roles>
+
+<example name="all args">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    Yet Jack's the one who can remember every dive they ever played,
+    and when, and he dutifully shows up for work night after night (he
+    consoles himself with booze and by showing up at the last
+    minute). 
+</text>
+        <arg n="0">he</arg>
+        <rel>consoles</rel>
+        <arg f="REC" n="1">himself</arg>
+        <arg f="with" n="2">booze</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,100 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="deliver">
+<note>
+Frames file for 'deliver' based on sentences in wsj and automatic
+expansion via verbnet.
+</note>
+
+<roleset id="deliver.01" name="give, send" vncls="11.1">
+<roles>
+	<role descr="sender" n="0"><vnrole vncls="11.1" vntheta="Agent"/></role> 
+	<role descr="sent" n="1"><vnrole vncls="11.1" vntheta="Theme"/></role>
+	<role descr="sent-to" n="2"><vnrole vncls="11.1" vntheta="Destination"/></role>
+</roles>
+
+<example name="straight transitive">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    The two units are Prentice Hall Information Services, which
+    publishes tax, financial planning and business law information,
+    among other services, and Prentice Hall Information Network, which
+    *trace* electronically delivers tax information.
+</text>
+        <arg n="0">*trace* -&gt;  which -&gt;  Prentice Hall Information
+        Network</arg>
+        <arg f="MNR" n="M">electronically</arg> 
+        <rel>delivers</rel>
+        <arg n="1">tax information</arg>
+</example>
+
+<example name="passive, with recipient">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Two of the 757-200s are new aircraft *trace* *trace* to be
+    delivered *trace* to American Trans Air, the main subsidiary of
+    Amtran Inc., in December 1991 and January 1992. 
+</text>
+        <rel>delivered</rel>
+        <arg n="1">*trace* -&gt; *trace* -&gt; *trace* -&gt;  new aircraft</arg>
+        <arg f="to" n="2">American Trans Air, the main subsidiary of
+        Amtran Inc.,</arg> 
+        <arg f="TMP" n="M">in December 1991 and January 1992</arg>
+</example>
+
+<example name="prepositional arg1">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    The city's Department of Consumer Affairs charged Newmark &amp;
+    Lewis Inc. with *trace* failing *trace* to deliver on its promise
+    of lowering prices. 
+</text>
+        <arg n="0">*trace* -&gt; *trace* -&gt;  Newmark &amp; Lewis Inc.</arg>
+        <rel>deliver</rel>
+        <arg f="on" n="1">its promise of  lowering prices</arg>
+</example>
+
+<example name="ditransitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    The voters delivered Mr. Gonzalez a third mandate for his successes.
+</text>
+        <arg n="0">The voters</arg>
+        <rel>delivered</rel>
+        <arg n="2">Mr. Gonzalez</arg>
+        <arg n="1">a third mandate for his successes</arg>
+</example>
+
+<example name="just arg1">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="passive"/>
+<text>
+    The first five leased units were *trace* to be delivered *trace*
+    in 1991. 
+</text>
+        <rel>delivered</rel>
+        <arg n="1">*trace* -&gt; *trace* -&gt;  The first five leased
+        units</arg> 
+        <arg f="TMP" n="M">in 1991</arg>
+</example>
+
+<example name="intransitive!">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    Here she delivers, especially during her enthusiastically awful
+    rendition of the ``Candy Man,'' which she sings while prancing
+    around in a little cotton candy pink angora sweater that couldn't
+    be more perfect. 
+</text>
+        <arg f="LOC" n="M">Here</arg>
+        <arg n="0">she</arg>
+        <rel>delivers</rel>
+        <arg f="TMP" n="M">especially during her enthusiastically
+        awful rendition of the ``Candy Man,'' which she sings while
+        prancing around in a little cotton candy pink angora sweater
+        that couldn't be more perfect</arg> 
+</example>
+
+</roleset>
+
+</predicate>
+</frameset>

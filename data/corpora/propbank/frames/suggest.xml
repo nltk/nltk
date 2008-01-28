@@ -1,0 +1,47 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="suggest">
+<note>
+  Frames file for 'suggest' based on survey of initial sentences of
+  big corpus and comparison with 'say' and all the other
+  verbs-of-saying.
+</note>
+
+<roleset id="suggest.01" name="say" vncls="37.7">
+<roles>
+    <role descr="Sayer" n="0">
+	  <vnrole vncls="37.7" vntheta="Agent"/></role>
+    <role descr="Utterance (suggestion)" n="1">
+	  <vnrole vncls="37.7" vntheta="Topic"/></role>
+    <role descr="Hearer" n="2">
+	  <vnrole vncls="37.7" vntheta="Recipient"/></role>
+</roles>
+
+<example name="one of many variations">
+  <text>
+  The newly fattened premiums reflect the increasingly global
+  marketing of some country funds, Mr. Porter suggests *trace*.
+  </text>
+  <arg n="1">*trace*=The newly fattened premiums reflect the
+  increasingly global marketing of some country funds</arg>
+  <arg n="0">Mr. Porter</arg>
+  <rel>suggests</rel>
+</example>
+
+<example name="with all the args">
+  <text>
+  Mary suggested to John that he shower more frequently.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>suggested</rel>
+  <arg f="to" n="2">John</arg>
+  <arg n="1">that he shower more frequently</arg>
+</example>
+
+<note>
+Refer to 'say' for the other variations (inverted, normal, split).
+</note>
+
+</roleset>
+</predicate>
+</frameset>

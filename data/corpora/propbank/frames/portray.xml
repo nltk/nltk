@@ -1,0 +1,43 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="portray">
+<note>
+  Frames file for 'portray' based on sentences in financial
+  subcorpus.  Verbnet class portray 29.2, no mention of other
+  members.  Comparison with 'call' and 'play'.
+</note>
+
+<roleset id="portray.01" name="label" vncls="29.2">
+<roles>
+  <role descr="labeller" n="0">
+		
+  <vnrole vncls="29.2" vntheta="Agent"/></role>
+
+  <role descr="item being labelled" n="1">
+		
+  <vnrole vncls="29.2" vntheta="Theme"/></role>
+
+  <role descr="attribute" n="2">
+		
+  <vnrole vncls="29.2" vntheta="Predicate"/></role>
+
+</roles>
+
+<example name="typical usage">
+<text>
+    The program traders, on the other hand, portray old-fashioned
+    stock pickers as the Neanderthals of the industry. 
+</text>
+        <arg n="0">The program traders</arg>
+        <arg f="DIS" n="M">on the other hand</arg>
+        <rel>portray</rel>
+        <arg n="1">old-fashioned stock pickers</arg>
+        <arg f="as" n="2">the Neanderthals of the industry</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

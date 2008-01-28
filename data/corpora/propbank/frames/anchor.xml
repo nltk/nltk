@@ -1,0 +1,43 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="anchor">
+<note>
+  Frames file for 'anchor' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="anchor.01" name="to hold by or as if by an anchor or to form an anchor store " vncls="-">
+<roles>
+  <role descr="causer of anchorment, agent" n="0"/>
+  <role descr="thing anchored" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ As there is an effort [*] to `` anchor the dollar '' either to gold or other currencies , the dispute is worth [*] examining [*-1] .
+</text>
+	<arg n="0">[*]</arg>
+	<rel>anchor</rel>
+	<arg n="1">the dollar</arg>
+	<arg f="MNR" n="M">either to gold or other currencies</arg>
+</example>
+
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+ Most are anchored [*-1] by a K mart store .
+</text>
+	<rel>anchored</rel>
+	<arg n="1">[*-1] -&gt;  Most</arg>
+	<arg f="by" n="0">a K mart store</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

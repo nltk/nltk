@@ -1,0 +1,48 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="campaign">
+<note>
+  Frames file for 'campaign' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="campaign.01" name="work towards a goal" vncls="-">
+<roles>
+  <role descr="campaigner" n="0"/>
+  <role descr="cause, goal" n="1"/>
+</roles>
+
+<example name="positive campaign">
+<inflection aspect="perfect" form="participle" person="third" tense="present" voice="active"/>
+<text>
+    Mr. Bush has long campaigned for passage of a bill or a
+    constitutional amendment that would explicitly give him a
+    line-item veto, which would enable him to kill individual items in
+    a big spending bill without having to kill the entire bill. 
+</text>
+        <arg n="0">Mr. Bush</arg>
+        <arg f="TMP" n="M">long</arg>
+        <rel>campaigned</rel>
+        <arg f="for" n="1">passage of a bill or a constitutional
+        amendment that would explicitly give him a line-item veto,
+        which would enable him to kill individual items in a big
+        spending bill without having to kill the entire bill</arg> 
+</example>
+
+
+<example name="negative campaign">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+     The government, [*-1] campaigning against fixed brokerage
+     commissions, promptly sued the CBOE over its minimum-fee system. 
+</text>
+        <arg n="0">[*-1] -&gt;  The government</arg>
+        <rel>campaigning</rel>
+        <arg f="against" n="1">fixed brokerage commissions</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

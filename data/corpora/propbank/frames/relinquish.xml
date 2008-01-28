@@ -1,0 +1,42 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="relinquish">
+<note>
+  Frames file for 'relinquish' based on sentences in financial
+  subcorpus.  Verbnet class contribute-13.2, other framed members
+  include sacrifice, surrender, transfer.  Comparison with 'give_up'.
+</note>
+
+<roleset id="relinquish.01" name="abandon" vncls="13.2">
+<roles>
+  <role descr="abandoner" n="0">
+		
+  <vnrole vncls="13.2" vntheta="Agent"/></role>
+
+  <role descr="project" n="1">
+		
+  <vnrole vncls="13.2" vntheta="Theme"/></role>
+
+</roles>
+
+<example name="transitive, agentive">
+<text>
+    Trade and Industry Secretary Nicholas Ridley told the House of
+    Commons yesterday that he will relinquish the government's
+    so-called golden share in the company as long as Jaguar
+    shareholders agree. 
+</text>
+        <arg n="0">he</arg>
+        <arg f="MOD" n="M">will</arg>
+        <rel>relinquish</rel>
+        <arg n="1">the government's so-called golden share in the
+        company</arg> 
+        <arg f="ADV" n="M">as long as Jaguar shareholders agree</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

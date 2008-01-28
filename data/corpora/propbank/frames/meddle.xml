@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="meddle">
+<note>
+  Frames file for 'meddle' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="meddle.01" name="provide unwanted help" vncls="-">
+<roles>
+  <role descr="meddler" n="0"/>
+  <role descr="thing meddled in" n="1"/>
+</roles>
+
+<example name="nasty trace chain">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+    It originates in a Bush administration decision [*] not to
+    antagonize the U.S. Congress and avoid, at all costs, [*-2] being
+    accused [*-1] of [*-3] meddling in the region. 
+</text>
+        <arg n="0">[*-3] -&gt;  [*-1] -&gt;  [*-2] -&gt;  [*] -&gt;  administration</arg>
+        <rel>meddling</rel>
+        <arg f="in" n="1">the region</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

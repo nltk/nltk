@@ -1,0 +1,60 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="pit">
+<note>
+  Frames file for 'pit' based on sentences in financial subcorpus.
+  Verbnet class pit-10.7, but that sense doesn't seem to appear in
+  wsj.  
+</note>
+
+<roleset id="pit.01" name="establish a fight">
+<roles>
+  <role descr="entity setting up a fight" n="0"/>
+  <role descr="one combatant" n="1"/>
+  <role descr="other combatant" n="2"/>
+</roles>
+
+<example name="typical usage">
+<text>
+    The battle has turned into a civil war at some firms and
+    organizations, *trace* causing internal contradictions and pitting
+    employee against employee. 
+</text>
+        <arg n="0">*trace* -&gt; The battle</arg>
+        <rel>pitting</rel>
+        <arg n="1">employee</arg>
+        <arg f="against" n="2">employee</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="pit.02" name="remove the seeds" vncls="10.7">
+<roles>
+  <role descr="entity removing seeds" n="0">
+		
+  <vnrole vncls="10.7" vntheta="Agent"/></role>
+
+  <role descr="seeds" n="1">
+		
+  <vnrole vncls="10.7" vntheta="Source"/></role>
+
+</roles>
+
+<example name="transitive">
+  <text>
+    John pitted the cherries.
+  </text>
+  <arg n="0">John</arg>
+  <rel>pitted</rel>
+  <arg n="1">the cherries</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

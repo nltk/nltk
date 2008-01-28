@@ -1,0 +1,61 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="structure">
+<note>
+  Frames file for 'structure' based on sentences in financial
+  subcorpus.  No Verbnet entry, no Framenet entry.  Comparison with
+  arrange.
+</note>
+
+<roleset id="structure.01" name="arrange in a particular fashion" vncls="-">
+<roles>
+  <role descr="agent, structurer" n="0"/>
+  <role descr="thing structured, arranged" n="1"/>
+  <role descr="how or as" n="2"/>
+</roles>
+
+<example name="as manner">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    Jaguar and GM hope to win Jaguar shareholders' approval for the
+    accord partly by *trace* structuring it in a way that wouldn't
+    preclude a full Ford bid once the golden share expires. 
+</text>
+        <arg n="0">*trace* -&gt; *trace* -&gt;  Jaguar and GM</arg>
+        <rel>structuring</rel>
+        <arg n="1">it</arg>
+        <arg f="MNR" n="2">in a way that wouldn't preclude a full Ford
+        bid once the golden share expires</arg> 
+</example>
+
+<example name="as purpose">
+  <inflection aspect="ns" form="participle" person="third" tense="present" voice="passive"/>
+  <text>
+    John's class schedule is structured *trace* to let him sleep until
+    noon every day.
+  </text>
+  <rel>structured</rel>
+  <arg n="1">*trace* -&gt; John's class schedule</arg>
+  <arg f="PNC" n="2">to let him sleep until noon every day</arg>
+</example>
+
+<example name="as as">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John structured his dissertation as an exercise in obfuscation.
+  </text>
+  <arg n="0">John</arg>
+  <rel>structured</rel>
+  <arg n="1">his dissertation</arg>
+  <arg f="as" n="2">an exercise in obfuscation</arg>
+</example>
+
+<note>
+The arg2 is always some descriptor of the way the arg1 is arranged or
+set up.  That descriptor can take several different manifestations,
+hence the use of the functional tags on a numbered argument.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

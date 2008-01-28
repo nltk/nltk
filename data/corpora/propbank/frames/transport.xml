@@ -1,0 +1,63 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="transport">
+<note>
+  Frames file for 'transport' based on sentences in wsj.  Verbnet
+  entry 11.1-1.
+</note>
+
+<roleset id="transport.01" name="move from one place to   another" vncls="11.1">
+<roles>
+  <role descr="causer of motion" n="0"><vnrole vncls="11.1" vntheta="Agent"/></role>
+  <role descr="thing in motion" n="1"><vnrole vncls="11.1" vntheta="Theme"/></role>
+  <role descr="destination" n="2"><vnrole vncls="11.1" vntheta="Destination"/></role>
+  <role descr="source" n="3"><vnrole vncls="11.1" vntheta="Source"/></role>
+</roles>
+
+<example name="just transitive">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+    Consolidated Rail Corp. said it would spend more than $30 million
+    on 1,000 enclosed railcars for *trace* transporting autos. 
+</text>
+        <arg n="0">*trace* -&gt;  it</arg>
+        <rel>transporting</rel>
+        <arg n="1">autos</arg>
+</example>
+
+<example name="with destination">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    But Brooks declined, *trace* figuring that *trace* transporting
+    the mucked up money to Washington would cost the company thousands
+    more. 
+</text>
+        <arg n="0">*trace* -&gt; *trace* -&gt;  Brooks</arg>
+        <rel>transporting</rel>
+        <arg n="1">the mucked up money</arg>
+        <arg f="to" n="2">Washington</arg>
+</example>
+
+<example name="with source and destination">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Foothills Pipe Lines Ltd. filed an application  with Canadian
+    regulators to build a 4.4 billion Canadian dollar (US$ 3.74
+    billion) pipeline *trace* to transport natural gas from Canada's
+    Arctic to U.S. markets beginning in... 
+</text>
+        <arg n="0">*trace* -&gt;  a 4.4 billion Canadian dollar (US$ 3.74
+        billion) pipeline</arg> 
+        <rel>transport</rel>
+        <arg n="1">natural gas</arg>
+        <arg f="from" n="3">Canada's Arctic</arg>
+        <arg f="to" n="2">U.S. markets</arg>
+        <arg f="TMP" n="M">beginning in</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

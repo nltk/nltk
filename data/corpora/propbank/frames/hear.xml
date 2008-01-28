@@ -1,0 +1,67 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="hear">
+<note>
+  Frames file for 'hear' based on sentences in financial subcorpus.
+  Verbnet entry hear 30.1, no mention of other members.  Comparison
+  with 'say'.  
+</note>
+
+<roleset id="hear.01" name="hear" vncls="30.1">
+<roles>
+  <role descr="hearer" n="0">
+		
+  <vnrole vncls="30.1" vntheta="Experiencer"/></role>
+
+  <role descr="utterance, sound" n="1">
+		
+  <vnrole vncls="30.1" vntheta="Stimulus"/></role>
+
+  <role descr="speaker, source of sound" n="2"/>
+</roles>
+
+<example name="sound and speaker merged">
+<text>
+    ``When the sell programs hit, you can hear the order printers
+    start to go'' on the Big Board trading floor, says one specialist
+    there. 
+</text>
+        <arg n="0">you</arg>
+        <arg f="MOD" n="M">can</arg>
+        <rel>hear</rel>
+        <arg n="1">the order printers start to go'' on the Big Board
+        trading floor</arg> 
+</example>
+
+<example name="clear speaker">
+<text>
+    American Medical accepted the offer, meanwhile indicating it had
+    heard from two other suitors. 
+</text>
+        <arg n="0">it</arg>
+        <rel>heard</rel>
+        <arg f="from" n="2">two other suitors</arg>
+</example>
+
+<example name="speaker as utterance">
+<text>
+    It isn't every day that we hear a Violetta who can sing the first
+    act's high-flying music with all the little notes perfectly
+    pitched and neatly stitched together. 
+</text>
+        <arg n="0">we</arg>
+        <rel>hear</rel>
+        <arg n="1">a Violetta who can sing the first act's high-flying
+        music with all the little notes perfectly pitched and neatly
+        stitched together</arg> 
+</example>
+
+<note>
+Speaker and utterance can be very hard to distinguish.  In general,
+avoid using arg2 unless it's really obvious that the speaker is
+separate from the utterance.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

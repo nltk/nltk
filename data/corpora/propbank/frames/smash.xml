@@ -1,0 +1,56 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="smash">
+<note>
+  Frames file for 'smash' based on sentences in wsj.  Verbnet entries
+  17.1, 45.1 and 18.4; Framenet entry Cause harm.
+</note>
+
+<roleset id="smash.01" name="break violently" vncls="45.1">
+<roles>
+  <role descr="agent, smasher" n="0"><vnrole vncls="45.1" vntheta="Agent"/></role>
+  <role descr="patient, smashed" n="1"><vnrole vncls="45.1" vntheta="Patient"/></role>
+</roles>
+
+<example name="both args">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    Why, when a key witness disappears, does Mancuso trash her
+    apartment, [*-3] tearing down drapes, smashing walls? 
+</text>
+        <arg n="0">[*-3] -&gt;  Mancuso</arg>
+        <rel>smashing</rel>
+        <arg n="1">walls</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="smash.02" name="move violently, so as to break apart" vncls="-">
+<roles>
+  <role descr="thing in motion" n="1"/>
+</roles>
+
+<example name="crunch">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    The Boeing 727, en route to Honduras from Costa Rica via
+    Nicaragua, smashed into the hills outside Tegucigalpa as it
+    approached the capital's airport in high winds and low clouds. 
+</text>
+        <arg n="1">The Boeing 727, en route to Honduras from Costa
+        Rica via Nicaragua,</arg> 
+        <rel>smashed</rel>
+        <arg f="DIR" n="M">into the hills outside Tegucigalpa</arg>
+        <arg f="TMP" n="M">as it approached the capital's airport in
+        high winds and low clouds</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

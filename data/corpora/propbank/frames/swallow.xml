@@ -1,0 +1,42 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="swallow">
+<note>
+  Frames file for 'swallow' based on sentences in financial subcorpus.
+  No Verbnet entry.
+</note>
+
+<roleset id="swallow.01" name="cause to go down the throat" vncls="-">
+<roles>
+  <role descr="swallower" n="0"/>
+  <role descr="thing swallowed" n="1"/>
+</roles>
+
+<example name="complicated tracing">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    ``Sit tight'' through the coming volatility, Mr. Reitman suggests,
+    though he concedes that many small investors will find Jaguar's
+    zigzags ``too hard *trace-1* *trace-2* to swallow *trace-3*.'' 
+</text>
+        <arg n="0">*trace-2* -&gt;  many small investors</arg>
+        <rel>swallow</rel>
+        <arg n="1">*trace-3* -&gt; *trace-1* -&gt;  Jaguar 's zigzags</arg>
+</example>
+
+<example name="poor John">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John swallowed his pride and his chewing gum.
+  </text>
+  <arg n="0">John</arg>
+  <rel>swallowed</rel>
+  <arg n="1">his pride and his chewing gum</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

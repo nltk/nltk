@@ -1,0 +1,79 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="resign">
+<note>
+  Frames file for 'resign' based on survey of initial sentences of big
+  corpus
+</note>
+
+<roleset id="resign.01" name="quit, cease employment">
+<roles>
+  <role descr="resigner" n="0"/>
+  <role descr="position resigned" n="1"/>
+</roles>
+
+<example name="simple NP">
+  <text>
+  NW Ayer resigned the account about two weeks ago.
+  </text>
+  <arg n="0">NW Ayer</arg>
+  <rel>resigned</rel>
+  <arg n="1">the account</arg>
+  <arg f="TMP" n="m">about two weeks ago</arg>
+</example>
+
+<example name="conjoined">
+  <text>
+  Michael K. Russell will resign rather than relocate to Lower Slobovia.
+  </text>
+  <arg n="0">Michael K. Russell</arg>
+  <arg f="MOD" n="m">will</arg>
+  <rel>resign</rel>
+</example>
+
+<note>
+Ignore the &quot;rather than ...&quot;
+</note>
+
+<example name="with preposition">
+  <text>
+  Mr. Stromach resigned as chief executive officer last year.
+  </text>
+  <arg n="0">Mr. Stromach</arg>
+  <rel>resigned</rel>
+  <arg f="as" n="1">chief executive officer</arg>
+  <arg f="TMP" n="m">last year</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="resign.02" vncls="-" name="adjectival">
+<roles>
+  <role n="1"  descr="experiencer of emotional resignation"/>
+  <role n="2"  descr="resigned to what"/>
+</roles>
+
+<example name="sigh">
+<inflection person="ns" tense="ns" aspect="ns" voice="ns" form="ns"/>
+<text>
+     Mr. Jones, whose twangy voice and folksy ways belie an intense
+     businessman who works 16-hour days, is resigned [*-1] to the
+     hefty salaries he pays his players these days. 
+</text>
+        <rel>resigned</rel>
+        <arg n="1">[*-1] ->  Mr. Jones, whose twangy voice and folksy
+        ways belie an intense businessman who works 16-hour
+        days,</arg> 
+        <arg n="2" f="to">the hefty salaries he pays his players these
+        days</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

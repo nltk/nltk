@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="encapsulate">
+<note>
+  Frames file for 'encapsulate'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="encapsulate.01" name="to encase in a capsule" vncls="-">
+<roles> 
+  <role descr="encaser, agent" n="0"/>   
+  <role descr="entity encapsulated" n="1"/>  
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ Under the plan , the companies will use Calgene 's patented technology [*-1] to encapsulate microbes such as Bacillus subtilis , a bacterium , [*-2] to enhance their biological activity against plant diseases .
+</text>
+	<arg n="0">[*-1] -&gt;  the companies</arg>
+	<rel>encapsulate</rel>
+	<arg n="1">microbes such as Bacillus subtilis , a bacterium ,</arg>
+	<arg f="PNC" n="M">[*-2] to enhance their biological activity against plant diseases</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

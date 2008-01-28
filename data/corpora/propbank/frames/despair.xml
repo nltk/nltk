@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="despair">
+<note>
+  Frames file for 'despair'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="despair.01" name="to give up hope" vncls="31.3">
+<roles> 
+  <role descr="experiencer" n="0"><vnrole vncls="31.3" vntheta="Experiencer"/></role>  
+  <role descr="entity despaired of" n="1"><vnrole vncls="31.3" vntheta="Cause"/></role>  
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ In the play , the Duke of Vienna despairs over the licentiousness of his subjects and turns over the rule of the city to the puritanical Angelo , [*-1] hoping [0] he can set things right .
+</text>
+	<arg f="LOC" n="M">In the play</arg>
+	<arg n="0">the Duke of Vienna</arg>
+	<rel>despairs</rel>
+	<arg f="over" n="1">the licentiousness of his subjects</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

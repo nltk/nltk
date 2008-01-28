@@ -1,0 +1,73 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="trail">
+<note>
+  Frames file for 'trail' based on sentences in financial subcorpus.
+  No access to verbnet.  Comparison to 'follow'.
+</note>
+
+<roleset id="trail.01" name="be subsequent, temporally or spatially, or less than" vncls="51.6">
+<roles>
+  <role descr="thing following" n="0">
+		
+  <vnrole vncls="51.6" vntheta="Agent"/></role>
+
+  <role descr="thing followed" n="1">
+		
+  <vnrole vncls="51.6" vntheta="Theme"/></role>
+
+</roles>
+
+<example name="be less than">
+<text>
+    Hit by higher costs and lower sales, Caterpillar Inc. said
+    third-quarter earnings tumbled 43% and full-year earnings will
+    trail last year's results. 
+</text>
+        <arg n="0">full-year earnings</arg>
+        <arg f="MOD" n="M">will</arg>
+        <rel>trail</rel>
+        <arg n="1">last year's results</arg>
+</example>
+
+<example name="spatial">
+  <text>
+    John trailed the ferocious bunny rabbit through the woods.
+  </text>
+  <arg n="0">John</arg>
+  <rel>trailed</rel>
+  <arg n="1">the ferocious bunny rabbit</arg>
+  <arg f="DIR" n="m">through the woods</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="trail_off">
+
+<roleset id="trail.02" name="come to an end" vncls="-">
+<roles>
+  <role descr="thing ending" n="1"/>
+</roles>
+
+<example name="a sticky end">
+<text>
+    Commodore has said it expects sales to rebound, but market
+    researchers have said that sales of the low-end products may
+    finally be trailing off. 
+</text>
+        <arg n="1">sales of the low-end products</arg>
+        <arg f="MOD" n="M">may</arg>
+        <arg f="TMP" n="M">finally</arg>
+        <rel>[ trailing] [ off]</rel>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

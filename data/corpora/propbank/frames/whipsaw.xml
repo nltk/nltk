@@ -1,0 +1,42 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="whipsaw">
+<note>
+  Frames file for 'whipsaw' based on sentences in wsj.  No Verbnet
+  entry at the moment, and I'm not even entirely certain of the
+  meaning.  Syntax is pretty straightforward, though.
+</note>
+
+<roleset id="whipsaw.01" name="move back and forth violently?" vncls="-">
+<roles>
+  <role descr="mover" n="0"/>
+  <role descr="thing moved" n="1"/>
+</roles>
+
+<example name="active">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    Political and currency gyrations can whipsaw the funds.
+</text>
+        <arg n="0">Political and currency gyrations</arg>
+        <arg f="MOD" n="M">can</arg>
+        <rel>whipsaw</rel>
+        <arg n="1">the funds</arg>
+</example>
+
+<example name="passive">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    After *trace* being whipsawed *trace* by a volatile stock market,
+    Treasury bonds closed higher. 
+</text>
+        <rel>whipsawed</rel>
+        <arg n="1">*trace* -&gt; *trace* -&gt; Treasury bonds</arg>
+        <arg f="by" n="0">a volatile stock market</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

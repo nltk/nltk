@@ -1,0 +1,56 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="draft">
+<note>
+  Frames file for 'draft' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="draft.01" name="to compose or draw up a plan for" vncls="-">
+<roles>
+  <role descr="drafter, agent" n="0"/>
+  <role descr="plan, entity drafted" n="1"/>
+  <role descr="beneficiary" n="2"/>
+  <role descr="other participant" n="3"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ While [*-1] flying home from those discussions , Mr. Bush drafted a letter to Mr. Gorbachev suggesting an informal get-together [0] [*T*-2] to precede their formal summit next year .
+</text>
+	<arg f="TMP" n="M">While [*-1] flying home from those discussions</arg>
+	<arg n="0">Mr. Bush</arg>
+	<rel>drafted</rel>
+	<arg n="1">a letter to Mr. Gorbachev suggesting an informal get-together [0] [*T*-2] to precede their formal summit next year</arg>
+</example>
+
+
+<example name="passive">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+ Now comes word that IRS regulations being drafted [*] could put companies in violation of the tax code if they make loans to retiree shareholders and directors but do n't make them available to other former workers who [*T*-1] usually earned less .
+</text>
+	<rel>drafted</rel>
+	<arg n="1">[*] -&gt;  IRS regulations</arg>
+</example>
+
+
+<example name="all arguments">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ `` There was a lot of internal debate about that specific issue , '' said [*T*-1] Susan Bryant , Oklahoma 's chief securities regulator and president of the North American Securities Administrators Association , which [*T*-3] drafted a voluntary settlement plan for the states with Drexel .
+</text>
+	<arg n="0">[*T*-3] -&gt;  which -&gt;  the North American Securities Administrators Association</arg>
+	<rel>drafted</rel>
+	<arg n="1">a voluntary settlement plan</arg>
+	<arg f="for" n="2">the states</arg>
+	<arg f="with" n="3">Drexel</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

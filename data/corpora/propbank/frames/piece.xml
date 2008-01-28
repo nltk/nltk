@@ -1,0 +1,36 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="piece">
+<note>
+  Frames file for 'piece' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="piece.01" name="to assemble, put together" vncls="-">
+<roles>
+  <role descr="assembler, agent" n="0"/>
+  <role descr="entity pieced" n="1"/>
+  <role descr="pieces" n="2"/>
+  <role descr="together" n="3"/>
+</roles>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+ It 's a script pieced [*] together from interviews by CBS News for a re-enactment , a dramatic rendering by an actor of Mr. Hoffman 's ultimately unsuccessful struggle with depression .
+</text>
+	<rel>pieced</rel>
+	<arg n="1">[*] -&gt;  a script</arg>
+	<arg n="3">together</arg>
+	<arg f="from" n="2">interviews</arg>
+	<arg f="by" n="0">CBS News</arg>
+	<arg f="PNC" n="M">for a re-enactment , a dramatic rendering by an actor of Mr. Hoffman 's ultimately unsuccessful struggle with depression</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

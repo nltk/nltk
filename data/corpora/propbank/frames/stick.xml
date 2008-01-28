@@ -1,0 +1,157 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="stick">
+<note>
+  Frames file for 'stick' based on sentences in financial subcorpus.
+  No access to verbnet.  No comparison.
+</note>
+
+<roleset id="stick.01" name="(cause to) adhere" vncls="9.7-1 19 22.3-2">
+<roles>
+  <role descr="causal agent" n="0">
+	<vnrole vncls="9.7-1" vntheta="Agent"/>
+        <vnrole vncls="19" vntheta="Agent"/>
+        <vnrole vncls="22.3-2" vntheta="Agent"/></role>
+  <role descr="thing sticking, adhering" n="1">
+	<vnrole vncls="9.7-1" vntheta="Theme"/>
+        <vnrole vncls="19" vntheta="Instrument"/>
+        <vnrole vncls="22.3-2" vntheta="Patient1"/></role>
+  <role descr="stuck-to" n="2">
+	<vnrole vncls="9.7-1" vntheta="Destination"/>
+        <vnrole vncls="19" vntheta="Destination"/>
+        <vnrole vncls="22.3-2" vntheta="Patient2"/></role>
+</roles>
+
+<example name="ergative, no other args">
+<text>
+    The big questions are whether the increase, effective Jan. 1,
+    1990, will stick, and whether other major steelmakers will follow
+    suit. 
+</text>
+        <arg n="1">the increase, effective Jan. 1, 1990,</arg>
+        <arg f="MOD" n="M">will</arg>
+        <rel>stick</rel>
+</example>
+
+<example name="add stuck-to">
+<text>
+    Mr. Schneider of Bear Stearns says he is recalculating the worth
+    of the company's assets and, in the meantime, is sticking to his
+    ``buy'' recommendation on the belief that he will find ``values''
+    of 30 a share. 
+</text>
+        <arg n="1">he</arg>
+        <rel>sticking</rel>
+        <arg f="to" n="2">his ``buy'' recommendation</arg>
+        <arg f="CAU" n="M">on the belief that he will find ``values''
+        of 30 a share</arg> 
+</example>
+
+<example name="with agent">
+  <text>
+    John carefully stuck postage stamps to every square inch of his
+    body.
+  </text>
+  <arg n="0">John</arg>
+  <arg f="MNR" n="m">carefully</arg>
+  <rel>stuck</rel>
+  <arg n="1">postage stamps</arg>
+  <arg f="to" n="2">every square inch of his body</arg>
+</example>
+
+<example name="more insert than adhere">
+  <inflection person="ns" tense="present" aspect="ns" voice="active" form="full"/>
+  <text>
+    [*] Stick some money in an interest-bearing account and watch it
+    grow.
+  </text>
+  <arg n="0"        >[*]</arg>
+  <rel              >Stick</rel>
+  <arg n="1"        >some money</arg>
+  <arg n="2" f="in">an interest-bearing account</arg>
+</example>
+
+<note>
+Expect to see a wide range of prepositions on the arg2.  I saw 'stuck
+with' 'stuck to' and 'stuck by' at the least.
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="stick_out">
+
+<roleset id="stick.02" name="stick out: (cause to) extend" vncls="-">
+<roles>
+  <role descr="causal agent" n="0"/>
+  <role descr="thing extended" n="1"/>
+</roles>
+
+<example name="aggressive sticking">
+<text>
+    ``I sense that some people are reluctant *trace* to stick their
+    necks out in any aggressive way until after the figures come
+    out,'' said Richard Eakle, president of Eakle Associates, Fair
+    Haven, Conn.
+</text>
+        <arg n="0">*trace* -&gt; some people</arg>
+        <rel>[ stick] [ out]</rel>
+        <arg n="1">their necks</arg>
+        <arg f="MNR" n="M">in any aggressive way</arg>
+        <arg f="TMP" n="M">until after the figures come out</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="stick_around">
+
+<roleset id="stick.03" name="stick around: continue to be in a location, hang out" vncls="-">
+<roles>
+  <role descr="sticker around, hanger out" n="0"/>
+</roles>
+
+<example name="this is what it looks like">
+<text>
+    And defense lawyers are warning that they won't stick around if
+    they don't get paid. 
+</text>
+        <arg n="0">they</arg>
+        <arg f="MOD" n="M">wo</arg>
+        <arg f="NEG" n="M">n't</arg>
+        <rel>[ stick] [ around]</rel>
+        <arg f="ADV" n="M">if they don't get paid </arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="stick_up">
+
+<roleset id="stick.04" vncls="-" name="stick up: defend">
+<roles>
+  <role n="0"  descr="defender"/>
+  <role n="1"  descr="defended"/>
+</roles>
+
+<example name="stick up for your rights">
+  <inflection person="ns" tense="present" aspect="both" voice="active" form="participle"/>
+  <text>
+    Supporters of index arbitrage haven't been publicly sticking up
+    for the trading strategy, as some did during the post-crash outcry
+    of 1987. 
+  </text>
+  <arg n="0"        >Supporters of index arbitrage</arg>
+  <arg n="m" f="NEG">n't</arg>
+  <arg n="m" f="MNR">publically</arg>
+  <rel              >sticking up</rel>
+  <arg n="1" f="for">the trading strategy</arg>
+  <arg n="m" f="ADV">as some did during the post-crash outcry of 1987</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

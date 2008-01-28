@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="memorize">
+<note>
+  Frames file for 'memorize' based on sentences in wsj.  Verbnet entry 14.
+</note>
+
+<roleset id="memorize.01" name="commit to memory" vncls="14">
+<roles>
+  <role descr="memorizer" n="0"><vnrole vncls="14" vntheta="Agent"/></role>
+  <role descr="thing memorized" n="1"><vnrole vncls="14" vntheta="Topic"/></role>
+</roles>
+
+<example name="my favorite sentence in the whole corpus">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    Ringers memorize patterns of changes, known as ``methods,'' which
+    have odd-sounding names like Kent Treble Bob Major or Grandsire
+    Caters. 
+</text>
+        <arg n="0">Ringers</arg>
+        <rel>memorize</rel>
+        <arg n="1">patterns of changes, known as ``methods,'' which
+        have odd-sounding names like Kent Treble Bob Major or
+        Grandsire Caters</arg> 
+</example>
+
+<note>
+Someday I'll explain exactly what Kent Treble Bob Major is.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

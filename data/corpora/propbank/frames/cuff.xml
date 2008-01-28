@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="cuff">
+<note>
+  Frames file for 'cuff' based on sentences in wsj.  Verbnet entry
+  18.3, Framenet entry Cause harm.
+</note>
+
+<roleset id="cuff.01" name="hit in punishment" vncls="18.3">
+<roles>
+  <role descr="hitter" n="0"><vnrole vncls="18.3" vntheta="Agent"/></role>
+  <role descr="victim" n="1"><vnrole vncls="18.3" vntheta="Patient"/></role>
+</roles>
+
+<example name="whack!">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+    Ms. Parks's mother also gets [*-1] to cuff Mr. Alexander.
+</text>
+        <arg n="0">[*-1] -&gt;  Ms. Parks's mother</arg>
+        <rel>cuff</rel>
+        <arg n="1">Mr. Alexander</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

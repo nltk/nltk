@@ -1,0 +1,43 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="glow">
+<note>
+  Frames file for 'glow' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="glow.01" name="to shine brightly and steadily, to be radiant" vncls="43.1">
+<roles>
+  <role descr="entity glowing" n="0"><vnrole vncls="43.1" vntheta="Theme"/></role>
+  <role descr="fixed phrase: in the dark" n="1"/>
+</roles>
+
+<example name="intransitive">
+<inflection aspect="progressive" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+ `` When you leave the room after your massage [*T*-1] , people say [0] you look like you 're glowing . ''
+</text>
+	<arg n="0">you</arg>
+	<rel>glowing</rel>
+</example>
+
+<example name="fixed phrase, almost">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     The world had a big yuk recently when the Soviets reported a rash
+     of UFO landings, one of them bringing tall aliens who [*T*-1]
+     glowed in the dark to Voronezh. 
+  </text>
+  <arg n="0">[*T*-1] -&gt; who -&gt; tall aliens</arg>
+  <rel>glowed</rel>
+  <arg n="1">in the dark</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+
+</frameset>

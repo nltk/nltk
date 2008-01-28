@@ -1,0 +1,29 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="bare">
+<note>
+  Frames file for 'bare' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="bare.01" name="cause to not have covering" vncls="-">
+<roles>
+  <role descr="causer, agent" n="0"/>
+  <role descr="thing now uncovered" n="1"/>
+</roles>
+
+<example name="this will do">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John bared his arms, bulging with muscle.
+  </text>
+  <arg n="0">John</arg>
+  <rel>bared</rel>
+  <arg n="1">his arms, bulging with muscle</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

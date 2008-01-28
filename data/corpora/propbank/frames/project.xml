@@ -1,0 +1,76 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="project">
+<note>
+  Frames file for 'project' based on sentences in financial subcorpus.
+  Verbnet entry 47.6, other framed members include hover, lie, sit and
+  stand.  No Framenet entry.  No comparison.
+</note>
+
+<roleset id="project.01" name="(cause to) stick out" vncls="47.6">
+<roles>
+  <role descr="causer of projection" n="0">
+	  <vnrole vncls="47.6" vntheta="Agent"/></role>
+  <role descr="thing projected/projecting" n="1">
+	  <vnrole vncls="47.6" vntheta="Theme"/></role>
+  <role descr="into/onto" n="2">
+          <vnrole vncls="47.6" vntheta="Location"/></role>
+</roles>
+
+<example name="agentive">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John projected an enormous shadow onto the wall.
+  </text>
+  <arg n="0">John</arg>
+  <rel>projected</rel>
+  <arg n="1">an enormous shadow</arg>
+  <arg f="onto" n="2">the wall</arg>
+</example>
+
+<example name="ergative">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John's enormous shadow projected onto the wall.
+  </text>
+  <arg n="1">John's enormous shadow</arg>
+  <rel>projected</rel>
+  <arg f="onto" n="2">the wall</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="project.02" name="tell the future" vncls="-">
+<roles>
+  <role descr="fortune teller" n="0"/>
+  <role descr="prediction" n="1"/>
+</roles>
+
+<example name="normal usage">
+<inflection aspect="perfect" form="participle" person="ns" tense="past" voice="active"/>
+<text>
+    Analysts had been projecting fully diluted earnings in the third
+    quarter in the range of about $1.30 a share. 
+</text>
+        <arg n="0">Analysts</arg>
+        <rel>projecting</rel>
+        <arg n="1">fully diluted earnings in the third quarter in the
+        range of about $1.30 a share</arg> 
+</example>
+
+<example name="stupid passive extraction">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    On top of that, Boeing would make cost-of-living adjustments
+    projected to be 5% for each year of the contract. 
+</text>
+        <arg n="1">[cost-of-living adjustments][to be 5 % for each year of the contract]</arg>
+        <rel>projected</rel>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

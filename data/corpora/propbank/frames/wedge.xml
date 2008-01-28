@@ -1,0 +1,36 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="wedge">
+<note>
+  Frames file for 'wedge' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="wedge.01" name="to squeeze or stick" vncls="9.3">
+<roles>
+  <role descr="wedger, agent" n="0">
+        <vnrole vncls="9.3" vntheta="Agent"/></role>
+  <role descr="entity wedged" n="1">
+        <vnrole vncls="9.3" vntheta="Theme"/></role>
+  <role descr="wedged into" n="2">
+        <vnrole vncls="9.3" vntheta="Destination"/></role>
+</roles>
+
+
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+ Her friend Susan , whose parents [*T*-1] kept reminding her [0] she was unwanted , slept on a narrow bed wedged [*] into her parents ' bedroom , as though she were a temporary visitor .
+</text>
+	<rel>wedged</rel>
+	<arg n="1">[*] -&gt;  a narrow bed</arg>
+	<arg f="into" n="2">her parents ' bedroom</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

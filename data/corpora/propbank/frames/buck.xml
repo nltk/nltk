@@ -1,0 +1,56 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="buck">
+<note>
+  Frames file for 'buck' based on sentences in financial subcorpus.
+  Verbnet entry 49, no other framed members.  No Framenet entry.  No
+  comparison.
+</note>
+
+<roleset id="buck.01" name="go against some trend" vncls="49">
+<roles>
+  <role descr="bucker" n="0">
+		
+  <vnrole vncls="49" vntheta="Agent"/></role>
+
+  <role descr="trend" n="1">
+		
+  <vnrole vncls="49" vntheta="Patient"/></role>
+
+</roles>
+
+<example name="straight transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    In late trading Friday, Jaguar shares bucked the downward tide in
+    London's stock market and rose five pence to 725 pence ($11.44). 
+</text>
+        <arg f="LOC" n="M">In late trading</arg>
+        <arg f="TMP" n="M">Friday</arg>
+        <arg n="0">Jaguar shares</arg>
+        <rel>bucked</rel>
+        <arg n="1">the downward tide in London's stock market</arg>
+</example>
+
+<example name="with manner">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    But Texas Air, the owner of Continental and Eastern airlines,
+    bucked the group's decline by rising 7/8 to 14 5/8 in American
+    Stock Exchange trading. 
+</text>
+        <arg f="DIS" n="M">But</arg>
+        <arg n="0">Texas Air, the owner of Continental and Eastern
+        airlines,</arg> 
+        <rel>bucked</rel>
+        <arg n="1">the group 's decline</arg>
+        <arg f="MNR" n="M">by rising 7/8 to 14 5/8 in American Stock
+        Exchange trading</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

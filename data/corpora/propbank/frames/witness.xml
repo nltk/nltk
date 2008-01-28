@@ -1,0 +1,46 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="witness">
+<note>
+  Frames file for 'witness' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="witness.01" name="to observe, see, or be a site of " vncls="29.8 30.2">
+<roles>
+  <role descr="agent, entity witnessing" n="0"><vnrole vncls="29.8" vntheta="Agent"/><vnrole vncls="30.2" vntheta="Experiencer"/></role>
+  <role descr="thing witnessed" n="1"><vnrole vncls="29.8" vntheta="Theme"/><vnrole vncls="30.2" vntheta="Stimulus"/></role>
+</roles>
+
+
+
+<example name="transitive">
+<inflection aspect="progressive" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+ ( In other words , after some highly visible dithering and public airing of differences , the administration has come down on the side of those who [*T*-2] believe that what we are witnessing [*T*-3] from Berlin to Siberia is a good thing [0] [*T*-4] to be welcomed [*-1] , rather than a new thing [0] [*T*-5] to be feared [*-6] or viewed [*-6] with suspicion . )
+</text>
+	<arg n="0">we</arg>
+	<rel>witnessing</rel>
+	<arg n="1">[*T*-3] -&gt;  what -&gt;  [*T*-2]</arg>
+	<arg f="LOC" n="M">from Berlin to Siberia</arg>
+</example>
+
+
+
+<example name="non-agentive subject">
+<inflection aspect="perfect" form="participle" person="third" tense="present" voice="active"/>
+<text>
+ He adds : `` The junk market has witnessed some trouble and now some people think that if the equity market gets creamed [*-1] that means [0] the economy will be terrible and that 's bad for junk .
+</text>
+	<arg n="0">The junk market</arg>
+	<rel>witnessed</rel>
+	<arg n="1">some trouble</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

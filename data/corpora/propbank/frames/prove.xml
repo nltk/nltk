@@ -1,0 +1,84 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="prove">
+<note>
+  Frames file for 'prove' based on sentences in financial subcorpus.
+  Verbnet class prove 29.4, no indication of other members.
+</note>
+
+<roleset id="prove.01" name="establish the truth" vncls="29.4">
+<roles>
+  <role descr="prover" n="0">
+	<vnrole vncls="29.4" vntheta="Agent"/></role>
+  <role descr="proposition" n="1">
+	<vnrole vncls="29.4" vntheta="Predicate"/></role>
+  <role descr="benefactive, proved-to" n="2">
+	<vnrole vncls="29.4" vntheta="Theme"/></role>
+</roles>
+
+<example name="prove an NP">
+<text>
+    ``We look upon this as a great opportunity *trace* to prove the
+    fact that we have a tremendous management team,'' he said. 
+</text>
+        <arg n="0">*trace* -&gt;  We</arg>
+        <rel>prove</rel>
+        <arg n="1">the fact that we have a tremendous management team</arg>
+</example>
+
+<example name="prove an SBAR">
+<text>
+    ``Wall Street's cash cow has been gored, but I don't think anyone
+    has proven that index arbitrage is the problem.'' 
+</text>
+        <arg n="0">anyone</arg>
+        <rel>proven</rel>
+        <arg n="1">index arbitrage is the problem</arg>
+</example>
+
+<example name="unaccusative, adjectival predicate">
+<text>
+    Dealers said institutions were still largely hugging the sidelines
+    on fears that the market's recent technical rally might prove
+    fragile. 
+</text>
+        <arg n="1">[the market's recent technical rally][fragile]</arg>
+        <arg f="MOD" n="M">might</arg>
+        <rel>prove</rel>
+</example>
+
+<note>
+Compare the above to &quot;John proved that the market's recent technical
+rally was fragile&quot; or &quot;John proved the market's recent technical rally
+(to be) fragile.&quot;
+</note>
+
+<example name="unaccusative, NP predicate">
+<text>
+    His client contacts, meanwhile, could prove a gold mine for an
+    agency that  has had few new business wins of late. 
+</text>
+        <arg n="1">[His client contacts][a gold mine for an agency
+        that has had few new business wins of late]</arg>  
+        <arg f="TMP" n="M">meanwhile</arg>
+	<arg f="MOD" n="M">could</arg>
+        <rel>prove</rel>
+</example>
+
+<example name="with benefactive">
+  <text>
+    John proved to Mary that he could kiss his own elbow.
+  </text>
+  <arg n="0">John</arg>
+  <rel>proved</rel>
+  <arg f="to" n="3">Mary</arg>
+  <arg n="1">that he could kiss his own elbow</arg>
+<note>
+You try it.
+</note>
+
+</example>
+
+</roleset>
+</predicate>
+</frameset>

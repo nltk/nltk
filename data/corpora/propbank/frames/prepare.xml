@@ -1,0 +1,84 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="prepare">
+<note>
+  Frames file for 'prepare' based on survey of initial sentences of
+  big corpus and comparison with 'make' and reference to verbnet class
+  preparing-26.3.
+</note>
+
+<roleset id="prepare.01" name="prepare, make, create" vncls="26.3-1">
+<roles>
+  <role descr="creator" n="0">
+		
+  <vnrole vncls="26.3-1" vntheta="Agent"/></role>
+
+  <role descr="creation" n="1">
+		
+  <vnrole vncls="26.3-1" vntheta="Product"/></role>
+
+  <role descr="created-from, thing changed" n="2"/>
+  <role descr="benefactive" n="3">
+		
+  <vnrole vncls="26.3-1" vntheta="Beneficiary"/></role>
+
+</roles>
+
+<example name="simple transitive">
+  <text>
+  On weekends she came to work *trace* to prepare study plans.
+  </text>
+  <arg n="0">*trace*=she</arg>
+  <rel>prepare</rel>
+  <arg n="1">study plans</arg>
+</example>
+
+<example name="with benefactive">
+  <text>
+  ...sweat dotting his brow as he prepares for some practice swings.
+  </text>
+  <arg n="0">he</arg>
+  <rel>prepares</rel>
+  <arg f="for" n="3">some practice swings</arg>
+</example>
+
+<note>
+Unstated Arg1 is 'himself'
+</note>
+
+</roleset>
+
+<roleset id="prepare.02" name="make ready">
+<roles>
+  <role descr="preparer" n="0"/>
+  <role descr="thing made ready" n="1"/>
+  <role descr="ready for" n="2"/>
+</roles>
+
+<example name="transitive">
+  <text>
+  She hadn't prepared her low-ability geography students adequately.
+  </text>
+  <arg n="0">She</arg>
+  <arg f="NEG" n="m">n't</arg>
+  <rel>prepared</rel>
+  <arg n="1">her low-ability geography students</arg>
+  <arg f="MNR" n="m">adequately</arg>
+</example>
+
+<example name="passive = be ready">
+  <text>
+  ...the changes it was prepared *trace-1* to make *trace-2*.
+  </text>
+  <arg n="1">*trace-1*=it</arg>
+  <rel>prepared</rel>
+  <arg n="2">to make *trace-2*</arg>
+</example>
+
+<note>
+*trace-2*=changes, but that doesn't matter to the PAS of 'prepare'.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

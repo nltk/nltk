@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="stomp">
+<note>
+  Frames file for 'stomp' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="stomp.01" name="to tread or trample heavily " vncls="-">
+<roles>
+  <role descr="entity with heavy feet, agent" n="0"/>
+  <role descr="entity stomped (on)" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+ They led the Major Leagues in regular-season wins with 99 and flattened the Toronto Blue Jays four games to one for the American League pennant before [*-1] stomping their cross-bay rivals .
+</text>
+	<arg n="0">[*-1] -&gt;  They</arg>
+	<rel>stomping</rel>
+	<arg n="1">their cross-bay rivals</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

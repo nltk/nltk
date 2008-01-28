@@ -1,0 +1,42 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="lament">
+<note>
+  Frames file for 'lament' based on survey of sentences in the WSJ
+  corpus. Comparison with 'regret'. 
+</note>
+
+
+<roleset id="lament.01" name="to regret, express grief" vncls="-">
+<roles>
+  <role descr="regretter" n="0"/>
+  <role descr="thing regretted" n="1"/>
+</roles>
+
+<example name="Arg1 as a NP">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ Richard Arrington , Birmingham 's black mayor , lamented the consequences .
+</text>
+	<arg n="0">Richard Arrington , Birmingham 's black mayor ,</arg>
+	<rel>lamented</rel>
+	<arg n="1">the consequences</arg>
+</example>
+
+
+<example name="Arg1 as a proposition">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ Collectors do n't say `` It 's a van Gogh '' anymore , laments [0] [*T*-1] Harry Brooks , the president of Wildenstein &amp; Co. , a New York gallery .
+</text>
+	<rel>laments</rel>
+	<arg n="1">[0] [*T*-1] -&gt;  Collectors do n't say `` It 's a van Gogh '' anymore</arg>
+	<arg n="0">Harry Brooks , the president of Wildenstein &amp; Co. , a New York gallery</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

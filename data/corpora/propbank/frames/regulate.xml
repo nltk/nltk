@@ -1,0 +1,50 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="regulate">
+<note>
+  Frames file for 'regulate' based on sentences in wsj.  No Verbnet
+  entry. 
+</note>
+
+<roleset id="regulate.01" name="supervise, watch over" vncls="-">
+<roles>
+  <role descr="regulator" n="0"/>
+  <role descr="thing regulated" n="1"/>
+</roles>
+
+<example name="stated regulator">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    The finding probably will support those who argue that the
+    U.S. should regulate the class of asbestos including crocidolite
+    more stringently than the common kind of asbestos, chrysotile,
+    found in most schools and other buildings, Dr. Talcott said. 
+</text>
+        <arg n="0">the U.S.</arg>
+        <arg f="MOD" n="M">should</arg>
+        <rel>regulate</rel>
+        <arg n="1">the class of asbestos including crocidolite</arg>
+        <arg f="MNR" n="M">more stringently than the common kind of
+        asbestos, chrysotile, found in most schools and other
+        buildings</arg> 
+</example>
+
+<example name="unstated agent">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    ``Such research may ultimately result in the ability to regenerate
+    damaged tissues or to turn off genes that cause cancer'' or
+    *trace* to regulate genes that cause Down's syndrome, the leading
+    cause of mental retardation, according to an NIH summary. 
+</text>
+        <arg n="0"/>
+        <rel>regulate</rel>
+        <arg n="1">genes that cause Down's syndrome, the leading cause
+        of mental retardation, according to an NIH summary</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

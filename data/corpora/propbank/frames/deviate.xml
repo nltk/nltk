@@ -1,0 +1,35 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="deviate">
+<note>
+  Frames file for 'deviate' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="deviate.01" name="stray from the path" vncls="-">
+<roles>
+  <role descr="entity in motion" n="0"/>
+  <role descr="path" n="1"/>
+</roles>
+
+<example name="the one example">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    As early as move six, Mr. Kasparov deviated from a well-known
+    sequence of moves, [*-1] developing a knight instead of making a
+    standard bishop attack against the computer's advanced knight. 
+</text>
+        <arg f="TMP" n="M">As early as move six</arg>
+        <arg n="0">Mr. Kasparov</arg>
+        <rel>deviated</rel>
+        <arg f="from" n="1">a well-known sequence of moves</arg>
+        <arg n="M">[*-1] developing a knight instead of making a
+        standard bishop attack against the computer's advanced
+        knight</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

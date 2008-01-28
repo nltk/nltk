@@ -1,0 +1,46 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="extrapolate">
+<note>
+  Frames file for 'extrapolate' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="extrapolate.01" name="estimate by extending known information" vncls="-">
+<roles>
+  <role descr="thinker, agent" n="0"/>
+  <role descr="known information" n="1"/>
+  <role descr="new information" n="2"/>
+</roles>
+
+<example name="new info as PP">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+     The results can't be extrapolated [*-1] to all investors,
+     though. 
+</text>
+        <arg f="MOD" n="M">ca</arg>
+        <arg f="NEG" n="M">n't</arg>
+        <rel>extrapolated</rel>
+        <arg n="1">[*-1] -&gt;  The results</arg>
+        <arg f="to" n="2">all investors</arg>
+        <arg f="DIS" n="M">though</arg>
+</example>
+
+<example name="old info as PP">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John extrapolated Mary's future behavior from her past violence
+    towards him.
+  </text>
+  <arg n="0">John</arg>
+  <rel>extrapolated</rel>
+  <arg n="2">Mary's future behavior</arg>
+  <arg f="from" n="1">her past violence towards him</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

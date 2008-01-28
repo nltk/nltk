@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="enliven">
+<note>
+  Frames file for 'enliven'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="enliven.01" name="to make lively or spirited, animate" vncls="31.1">
+<roles> 
+  <role descr="causer" n="0"><vnrole vncls="31.1" vntheta="Cause"/></role> 
+  <role descr="entity animated" n="1"><vnrole vncls="31.1" vntheta="Experiencer"/></role>   
+</roles>
+
+<example name="gerund">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+ He distinguished the two cases : In Salinger , Judge Leval noted [0] [*T*-1] , the quotations were for the purpose of [*] enlivening the biography rather than of [*] proving points about the subject .
+</text>
+	<arg n="0">[*] -&gt;  the quotations</arg>
+	<rel>enlivening</rel>
+	<arg n="1">the biography</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+
+</frameset>

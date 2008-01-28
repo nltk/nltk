@@ -1,0 +1,42 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="dizzy">
+<note>
+  Frames file for 'dizzy' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="dizzy.01" vncls="-" name="cause to be dizzy">
+<roles>
+  <role n="0"  descr="causer of dizziness"/>
+  <role n="1"  descr="dizzy entity"/>
+</roles>
+
+<example name="agentive adjectival">
+<inflection person="ns" tense="ns" aspect="progressive" voice="active" form="participle"/>
+<text>
+    Western European leaders who favor speedy economic and monetary
+    union are adding a new argument to their arsenal: the dizzying
+    political changes under way in Eastern Europe. 
+</text>
+	<rel>dizzying</rel>
+	<arg n="0">[ political] [ changes]</arg>
+</example>
+
+<example name="all args">
+  <inflection person="third" tense="past" aspect="ns" voice="passive" form="participle"/>
+  <text>
+     John was dizzied *trace* by Mary's rapid switches between loving
+     tenderness and brutal violence.
+  </text>
+  <rel              >dizzied</rel>
+  <arg n="1"        >*trace* -> John</arg>
+  <arg n="0" f="by">Mary's rapid switches between loving tenderness
+  and brutal violence</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

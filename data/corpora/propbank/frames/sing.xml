@@ -1,0 +1,66 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="sing">
+<note>
+Frames file for 'sing' based on sentences in financial subcorpus and
+automatic expansion via verbnet.
+</note>
+
+<roleset id="sing.01" name="sing" vncls="26.7-1 37.3 43.2">
+<roles>
+	<role descr="singer" n="0">
+		
+		
+  <vnrole vncls="26.7-1" vntheta="Agent"/><vnrole vncls="43.2" vntheta="Agent"/><vnrole vncls="37.3" vntheta="Agent"/></role>
+
+	<role descr="song" n="1">
+		
+		
+  <vnrole vncls="26.7-1" vntheta="Theme"/><vnrole vncls="43.2" vntheta="Theme"/><vnrole vncls="37.3" vntheta="Topic"/></role>
+
+	<role descr="audience" n="2">
+		
+		
+  <vnrole vncls="26.7-1" vntheta="Beneficiary"/><vnrole vncls="37.3" vntheta="Recipient"/></role>
+
+</roles>
+
+<example name="transitive with manner">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    It isn't every day that we hear a Violetta who *trace* can sing
+    the first act's high-flying music with all the little notes
+    perfectly pitched and neatly stitched together.
+</text>
+        <arg n="0">*trace* -&gt;  who -&gt;  a Violetta</arg>
+        <arg f="MOD" n="M">can</arg>
+        <rel>sing</rel>
+        <arg n="1">the first act's high-flying music</arg>
+        <arg f="MNR" n="M">with all the little notes perfectly pitched
+        and neatly stitched  together</arg> 
+</example>
+
+<example name="passivized">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    His melodious ``Confutatis'' was smoothly sung *trace* by bass
+    Brian Matthews. 
+</text>
+        <arg f="MNR" n="M">smoothly</arg>
+        <rel>sung</rel>
+        <arg n="1">*trace* -&gt;  His melodious ``Confutatis''</arg>
+        <arg f="by" n="0">bass Brian Matthews</arg>
+</example>
+
+<example name="intransitive" src="play.01">
+  <text>
+  John sings superbly.
+  </text>
+  <arg n="0">John</arg>
+  <rel>sings</rel>
+  <arg f="MNR" n="m">superbly</arg>
+</example>
+
+</roleset>
+
+</predicate>
+</frameset>

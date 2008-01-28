@@ -1,0 +1,72 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="value">
+<note>
+  Frames file for 'value' based on survey of initial sentences of big
+  corpus and comparison with 'price'
+</note>
+
+<roleset id="value.01" name="establish a cost, value" vncls="29.2 31.2 54.4">
+<roles>
+  <role descr="entity establishing value" n="0">
+		
+		
+		
+  <vnrole vncls="29.2" vntheta="Agent"/><vnrole vncls="31.2" vntheta="Experiencer"/><vnrole vncls="54.4" vntheta="Agent"/></role>
+
+  <role descr="commodity being valued" n="1">
+		
+		
+		
+  <vnrole vncls="29.2" vntheta="Theme"/><vnrole vncls="31.2" vntheta="Cause"/><vnrole vncls="54.4" vntheta="Theme"/></role>
+
+  <role descr="value" n="2">
+		
+		
+  <vnrole vncls="29.2" vntheta="Predicate"/><vnrole vncls="54.4" vntheta="Attribute"/></role>
+
+</roles>
+
+<example name="transitive/agentive">
+  <text>
+  PS of New Hampshire values its internal reorganization plan at about
+  $2.2 billion.
+  </text>
+  <arg n="0">PS of New Hampshire</arg>
+  <rel>values</rel>
+  <arg n="1">its internal reorganization plan</arg>
+  <arg f="at" n="2">about $2.2 billion.</arg>
+</example>
+
+<example name="passive and conjoined">
+  <text>
+  Advertising time will be valued at more than $75 million in 1990 and
+  $150 million in 1991.
+  </text>
+  <arg n="1">Advertising time</arg>
+  <rel>valued</rel>
+  <arg f="at" n="2">more than $75 million</arg>
+  <arg f="TMP" n="m">in 1990</arg>
+<note>
+the 1991 value will be in a separate annotation.
+</note>
+</example>
+
+<example name="adverbial value">
+  <text>
+  John values his collection of bottle-tops highly.
+  </text>
+  <arg n="0">John</arg>
+  <rel>values</rel>
+  <arg n="1">his collection of bottle-tops</arg>
+  <arg n="2">highly</arg>
+</example>
+
+<note>
+If both an adverb and an &quot;at XXX&quot; phrase occur, make the adverb an
+ArgM-MNR.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

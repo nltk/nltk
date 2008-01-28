@@ -1,0 +1,49 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="restrain">
+<note>
+  Frames file for 'restrain' based on sentences in financial
+  subcorpus.  No Verbnet entry, comparison with prevent.
+</note>
+
+<roleset id="restrain.01" name="stop, prevent">
+<roles>
+  <role descr="Agent" n="0"/>
+  <role descr="Theme (action or object being prevented)" n="1"/>
+  <role descr="secondary predication or action" n="2"/>
+  <role descr="instrument" n="3"/>
+</roles>
+
+<example name="split secondary agent/action">
+<text>
+    Sea Containers said the offer will proceed after the Bermuda
+    Supreme Court lifts or modifies an interim injunction restraining
+    the company from buying its shares. 
+</text>
+        <arg n="0">an interim injunction</arg>
+        <rel>restraining</rel>
+        <arg n="1">the company</arg>
+        <arg f="from" n="2">buying its shares</arg>
+</example>
+
+
+<example name="only secondary action">
+<text>
+    Dun &amp; Bradstreet noted that price competition in its Nielsen
+    Marketing Research, Nielsen Clearing House and Donnelley Marketing
+    businesses also restrained revenue growth. 
+</text>
+        <arg n="0">price competition in its Nielsen Marketing
+        Research, Nielsen Clearing House and Donnelley Marketing
+        businesses</arg> 
+        <arg f="DIS" n="M">also</arg>
+        <rel>restrained</rel>
+        <arg n="1">revenue growth</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

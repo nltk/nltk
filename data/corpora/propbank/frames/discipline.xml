@@ -1,0 +1,65 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="discipline">
+<note>
+  Frames file for 'discipline' based on sentences in wsj.  No Verbnet
+  entry, although it really fits into 33.  Framenet entry Rewards and
+  Punishments.  That's one class, not two.
+</note>
+
+<roleset id="discipline.01" name="give punishment" vncls="-">
+<roles>
+  <role descr="discipliner" n="0"/>
+  <role descr="disciplined" n="1"/>
+  <role descr="cause" n="2"/>
+</roles>
+
+<example name="all args">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    The National Association of Securities Dealers, the
+    self-regulatory organization for the over-the-counter securities
+    markets, disciplined a number of firms and individuals for alleged
+    violations of industry rules. 
+</text>
+        <arg n="0">The National Association of Securities Dealers, the
+        self-regulatory organization for the over-the-counter
+        securities markets,</arg> 
+        <rel>disciplined</rel>
+        <arg n="1">a number of firms and individuals</arg>
+        <arg f="for" n="2">alleged violations of industry rules</arg>
+</example>
+
+<example name="no agent">
+<inflection aspect="perfect" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    Paul Kleinaitis, an analyst at Duff &amp; Phelps, says, ``Even
+    though they have borrowing power, they have been disciplined
+    *trace* about acquisitions.'' 
+</text>
+        <arg f="ADV" n="M">Even though they have borrowing power</arg>
+        <rel>disciplined</rel>
+        <arg n="1">*trace* -&gt;  they</arg>
+        <arg f="about" n="2">acquisitions</arg>
+</example>
+
+
+<example name="no cause">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    And security authority Robert L. Duston favors *trace*
+    disciplining all employees who cheat. 
+</text>
+        <arg n="0">*trace* -&gt;  security authority Robert L. Duston</arg>
+        <rel>disciplining</rel>
+        <arg n="1">all employees who  cheat</arg>
+</example>
+
+<note>
+Adjectival 'disciplined' doesn't mean punished but rather controlled,
+requiring different framing.  A note for the future.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

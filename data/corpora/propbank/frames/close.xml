@@ -1,0 +1,225 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="close">
+<note>
+  Frames file for 'close' based on first 50 or so sentences from big corpus
+</note>
+
+<roleset id="close.01" name="shut" vncls="40.3.2 45.4">
+<roles>
+  <role descr="person doing the closing" n="0">
+	<vnrole vncls="40.3.2" vntheta="Agent"/>
+        <vnrole vncls="45.4" vntheta="Agent"/></role>
+  <role descr="thing closing" n="1">
+	<vnrole vncls="40.3.2" vntheta="Patient"/>
+        <vnrole vncls="45.4" vntheta="Patient"/></role>
+  <role n="2" descr="anti-beneficiary"/>
+</roles>
+
+<example name="transitive agentive">
+  <text>
+    Investors want *trace*=investors to close its doors for good.
+  </text>
+  <arg n="0">*trace*=investors</arg>
+  <rel>to close</rel>
+  <arg n="1">its doors</arg>
+  <arg f="MNR" n="M">for good</arg>
+</example>
+
+<example name="ergative, sorta adjectival">
+  <text>
+    Paris, Brussels, and Milan were closed for a holiday.
+  </text>
+  <arg n="1">Paris, Brussels, and Milan</arg>
+  <rel>were closed</rel>
+  <arg f="PNC" n="M">for a holiday</arg>
+</example>
+
+<example name="with 'beneficiary'">
+  <inflection person="third" tense="present" aspect="perfect" voice="passive" form="participle"/>
+  <text>
+     Now the wildlife refuge has been closed [*-1] to the industry,
+     possibly for years. 
+  </text>
+  <arg n="m" f="TMP">Now</arg>
+  <rel              >closed</rel>
+  <arg n="1"        >[*-1] -> the wildlife refuge</arg>
+  <arg n="2" f="to">the industry</arg>
+  <arg n="m" f="TMP">possibly for years</arg>
+</example>
+
+</roleset>
+
+<roleset id="close.02" name="terminate" vncls="-">
+<note>
+  in this corpus, primarily of stocks
+</note>
+
+<roles>
+  <role descr="thing closing" n="1"/>
+  <role descr="up, down, or unchanged" f="MNR" n="M"/>
+  <role descr="end point" f="EXT" n="M"/>
+</roles>
+
+<example name="with EXT">
+  <text>
+    Cray Research closed yesterday at $38   in NYSE composite trading.
+  </text>
+  <arg n="1">Cray Research</arg>
+  <rel>closed</rel>
+  <arg f="TMP" n="M">yesterday</arg>
+  <arg f="EXT" n="M">at $38</arg>
+  <arg f="LOC" n="M">in NYSE composite tradeing.</arg>
+</example>
+
+<example name="and again">
+  <text> 
+    The FTSE index closed 17.5 points higher at 2160.1
+  </text>
+  <arg n="1">The FTSE index</arg>
+  <rel>closed</rel>
+  <arg f="MNR" n="M">17.5 points higher</arg>
+  <arg f="EXT" n="M">at 2160.1</arg>
+</example>
+
+</roleset>
+
+<roleset id="close.03" name="come about, come to completion (as of deals)" vncls="45.4">
+<roles>
+  <role descr="entity making the deal" n="0">
+	<vnrole vncls="45.4" vntheta="Agent"/></role>
+  <role descr="the deal" n="1">
+	<vnrole vncls="45.4" vntheta="Patient"/></role>
+</roles>
+
+<example name="ergative">
+  <text>
+    Sony's acquisition of Guber/Peters Entertainment closed Monday.
+  </text>
+  <arg n="1">Son's acquisition of Guber/Peters Entertainment</arg>
+  <rel>closed</rel>
+  <arg f="TMP" n="M">Monday</arg>
+</example>
+
+<example name="transitive/agentive">
+  <text>
+    Armstrong will close the sale of the color unit in late November.
+  </text>
+  <arg n="0">Armstrong</arg>
+  <rel>will close</rel>
+  <arg n="1">the sale of the color unit</arg>
+  <arg f="TMP" n="M">in late November</arg>
+</example>
+
+<note>
+  Beware of adjectival usages:
+  We need to keep closer track of blue books.
+  Warner Communications Inc is close to an agreement with Bugs Bunny.
+</note>
+
+</roleset>
+
+<roleset id="close.06" vncls="-" name="become nearer">
+<roles>
+  <role n="1"  descr="entity in motion"/>
+  <role n="2"  descr="target"/>
+</roles>
+
+<example name="here they come!">
+  <inflection person="ns" tense="present" aspect="progressive" voice="active" form="participle"/>
+  <text>
+    Another guy who thinks they're out there and closing fast is
+    Whitley Strieber, whose new novel, ``Majestic'' (Putnam, 317
+    pages, $18.95), takes a look at a reported 1947 UFO crash near the
+    Roswell Army Air Field in a New Mexico desert. 
+  </text>
+  <arg n="1"        >they</arg>
+  <rel              >closing</rel>
+  <arg n="m" f="MNR">fast</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="close_down">
+<roleset id="close.04" name="close down: terminate" vncls="45.4">
+<note>
+Much the same as the &quot;shut&quot; roleset id=&quot;close.05&quot; above.
+</note>
+
+<roles>
+  <role descr="person doing the closing" n="0">
+	<vnrole vncls="45.4" vntheta="Agent"/></role>
+  <role descr="thing closing" n="1">
+	<vnrole vncls="45.4" vntheta="Patient"/></role>
+</roles>
+
+<example name="agentive">
+  <text>  
+    John closed down the unprofitable business.
+  </text>
+  <arg n="0">John</arg>
+  <rel>closed down</rel>
+  <arg n="1">the unprofitable business.</arg>
+</example>
+<note>
+  Watch out for &quot;stocks closed down 15% yesterday&quot;
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="close_off">
+
+<roleset id="close.05" vncls="-" name="close off: shut">
+<roles>
+  <role descr="person doing the closing" n="0"/>
+  <role descr="thing closing" n="1"/>
+  <role n="2" descr="anti-beneficiary"/>
+</roles>
+
+<example name="spam spam spam, glorious spam">
+  <inflection person="ns" tense="ns" aspect="ns" voice="active" form="infinitive"/>
+  <text>
+    ``Why anyone would want [*-2] to close themselves off (from direct
+    mail), a priori, doesn't make any sense,'' says Michael Bronner of
+    Bronner Slosberg Associates, a Boston directmail firm. 
+  </text>
+  <arg n="0"        >[*-2] -> anyone</arg>
+  <rel              >close off</rel>
+  <arg n="1" f="REC">themselves</arg>
+  <arg n="2" f="from">direct mail</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="close_in">
+
+<roleset id="close.07" vncls="-" name="close in: become nearer">
+<roles>
+  <role n="1"  descr="entity in motion"/>
+  <role n="2"  descr="target"/>
+</roles>
+
+<example name="all args">
+  <inflection person="ns" tense="ns" aspect="progressive" voice="active" form="participle"/>
+  <text>
+    But yesterday, as Atlantis rumbled into a patch of clear sky above
+    Florida with storm clouds closing in on it, NASA sought to turn
+    Galileo into a symbol of triumph. 
+  </text>
+  <arg n="1"        >storm clouds</arg>
+  <rel              >closing in</rel>
+  <arg n="2" f="on">it</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

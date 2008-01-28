@@ -1,0 +1,51 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="gyrate">
+<note>
+Frames file for 'gyrate' based on sentences in financial subcorpus and
+automatic expansion via verbnet.
+</note>
+
+<roleset id="gyrate.01" name="move repeatedly in circular fashion" vncls="49">
+<roles>
+	<role descr="causer of gyration" n="0">
+		
+  <vnrole vncls="49" vntheta="Agent"/></role>
+
+	<role descr="thing gyrating" n="1">
+		
+  <vnrole vncls="49" vntheta="Patient"/></role>
+
+</roles>
+
+<example name="ergative">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Stock of United Airlines parent UAL Corp. gyrated wildly yesterday
+    amid speculation that one or more investors may challenge the UAL
+    board's decision to remain independent instead of pursuing a
+    buy-out or other transaction. 
+</text>
+        <arg n="1">Stock of United Airlines parent UAL Corp.</arg>
+        <rel>gyrated</rel>
+        <arg f="MNR" n="M">wildly</arg>
+        <arg f="TMP" n="M">yesterday</arg>
+        <arg f="LOC" n="M">amid speculation that one or more investors
+        may challenge the UAL board 's decision  to remain independent
+        instead of  pursuing a buy-out or other transaction</arg> 
+</example>
+
+<example name="with agent">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    Mary gyrated her hips and drove John mad.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>gyrated</rel>
+  <arg n="1">her hips</arg>
+</example>
+
+</roleset>
+
+</predicate>
+</frameset>

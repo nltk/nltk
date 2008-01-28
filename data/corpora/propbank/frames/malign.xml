@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="malign">
+<note>
+  Frames file for 'malign' based on sentences in wsj.  No access to
+  Verbnet at the moment.
+</note>
+
+<roleset id="malign.01" name="talk down, slander" vncls="-">
+<roles>
+  <role descr="maligner" n="0"/>
+  <role descr="maligned" n="1"/>
+</roles>
+
+<example name="can you justly malign anything?">
+<inflection aspect="perfect" form="participle" person="third" tense="present" voice="passive"/>
+<text>
+    The council's action is yet another blow to a sport that its fans
+    claim [*T*-2] has been maligned [*-1] unjustly for years. 
+</text>
+        <rel>maligned</rel>
+        <arg n="1">[*-1] -&gt;  [*T*-2] -&gt;  that -&gt;  a sport</arg>
+        <arg f="MNR" n="M">unjustly</arg>
+        <arg f="TMP" n="M">for years</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

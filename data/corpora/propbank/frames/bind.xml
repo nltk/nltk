@@ -1,0 +1,121 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="bind">
+<note>
+  Frames file for 'bind' based on sentences in wsj.  Verbnet entries
+  9.8 and 22.3-2, Framenet entry Attaching.
+</note>
+
+<roleset id="bind.01" name="attach tightly" vncls="9.8 22.3-2">
+<roles>
+  <role descr="attacher, agent" n="0"><vnrole vncls="9.8" vntheta="Agent"/><vnrole vncls="22.3-2" vntheta="Agent"/></role>
+  <role descr="thing bound" n="1"><vnrole vncls="9.8" vntheta="Destination"/><vnrole vncls="22.3-2" vntheta="Patient1"/></role>
+  <role descr="bound to what" n="2"/>
+  <role descr="with what" n="3"><vnrole vncls="9.8" vntheta="Theme"/></role>
+</roles>
+
+<example name="more or less clear">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Yet he is also firmly bound by his hard-line rhetoric and promises
+    he made to anti-abortion activists during his long pursuit of the
+    White House. 
+</text>
+        <arg f="DIS" n="M">Yet</arg>
+        <arg n="1">he</arg>
+        <arg f="DIS" n="M">also</arg>
+        <arg f="ADV" n="M">firmly</arg>
+        <rel>bound</rel>
+        <arg f="by" n="3">his hard-line rhetoric and promises he made
+        to anti-abortion activists during his long pursuit of the
+        White House</arg> 
+</example>
+
+<example name="nasty trace chains">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="passive"/>
+<text>
+    The fundamental rule of contract law applied to both cases was
+    that courts will not enforce agreements to which the parties did
+    not intend *trace-1* to be bound *trace-2* *trace-3*.
+</text>
+        <rel>bound</rel>
+        <arg n="1">*trace-2* -&gt; *trace-1* -&gt;  the parties</arg>
+        <arg n="2">*trace-3* -&gt;  to which -&gt;  agreements</arg>
+</example>
+
+
+<example name="some kind of understood agreement?">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="passive"/>
+<text>
+    In the Pennzoil/Texaco litigation, the courts found  Pennzoil and
+    Getty Oil intended *trace* to be bound *trace*; in Arcadian
+    Phosphates they found there was no intention to be bound. 
+</text>
+        <rel>bound</rel>
+        <arg n="1">*trace* -&gt; *trace* -&gt;  Pennzoil and Getty Oil</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="bind.02" name="be likely" vncls="-">
+<roles>
+  <role descr="thing that is likely" n="1"/>
+</roles>
+
+<example name="raising verb!">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    They're bound *trace* to exaggerate. 
+</text>
+        <rel>bound</rel>
+        <arg n="1">*trace* to exaggerate</arg>
+<note>
+trace points to 'they', but leave that aside.
+</note>
+</example>
+
+<example name="more than likely">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    In our system of advocacy, the trial lawyer is duty bound *trace*
+    to present the best case  he possibly can.'' 
+</text>
+        <arg f="LOC" n="M">In our system of advocacy</arg>
+        <arg f="MNR" n="M">duty</arg>
+        <rel>bound</rel>
+        <arg n="1">*trace* to present the best case he possibly can</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="bind.03" name="be destined for" vncls="-">
+<roles>
+  <role descr="thing destined" n="1"/>
+  <role descr="destiny" n="2"/>
+</roles>
+
+<example name="glory bound">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="passive"/>
+<text>
+    It is rumored *trace* to be bound *trace* for a new model in the
+    luxury Acura line in the U.S., but Honda officials wouldn't
+    comment. 
+</text>
+        <rel>bound</rel>
+        <arg n="1">*trace* -&gt; *trace* -&gt;  It</arg>
+        <arg f="for" n="2">a new model in the luxury Acura line in the
+        U.S.</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

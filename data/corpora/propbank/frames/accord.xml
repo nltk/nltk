@@ -1,0 +1,50 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="accord">
+<note>
+  Frames file for 'accord' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="accord.01" vncls="-" name="give">
+<roles>
+  <role n="0"  descr="giver"/>
+  <role n="1"  descr="gift"/>
+  <role n="2"  descr="given-to"/>
+</roles>
+
+<example name="passive">
+  <inflection person="ns" tense="ns" aspect="ns" voice="passive" form="participle"/>
+  <text>
+      The drug will be given treatment investigational new drug
+status, a label accorded [*] to drugs believed effective but lacking
+formal approval. 
+  </text>
+  <arg n="1"        >a label</arg>
+  <rel              >accorded</rel>
+  <arg n="2" f="to">drugs believed effective but lacking formal
+	approval. </arg> 
+<note>
+Do NOT assign any tagging to structures such as 'according to Mary,
+John is an idiot.'  That 'accord' is not a verb, but some kind of
+weird preposition.
+</note>
+
+</example>
+
+<example name="active">
+  <inflection person="ns" tense="ns" aspect="ns" voice="active" form="infinitive"/>
+  <text>
+     Several of the city's black leaders, including Democratic mayoral
+nominee David Dinkins, have spoken out for racial gerrymandering [0]
+[*T*-1] to accord blacks and Hispanics ``the fullest opportunity for
+representation.'' 
+  </text>
+  <arg n="0"        >[*T*-1] -> [0] -> racial gerrymandering</arg>
+  <rel              >accord</rel>
+  <arg n="2"        >blacks and Hispanics</arg>
+  <arg n="1"        >``the fullest opportunity for representation.''</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

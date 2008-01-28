@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="requisition">
+<note>
+  Frames file for 'requisition'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="requisition.01" name="to demand" vncls="-">
+<roles> 
+  <role descr="demander, agent" n="0"/>
+  <role descr="entity requisitioned" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ In another , she requisitioned topiary MX missile cones -- costing $ 10,000 [*U*] each -- in heights up to 20 feet .
+</text>
+	<arg f="LOC" n="M">In another</arg>
+	<arg n="0">she</arg>
+	<rel>requisitioned</rel>
+	<arg n="1">topiary MX missile cones -- costing $ 10,000 [*U*] each -- in heights up to 20 feet</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

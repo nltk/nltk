@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="short-circuit">
+<note>
+  Frames file for 'short-circuit' based on sentences in wsj.  Verbnet
+  entry 45.4. 
+</note>
+
+<roleset id="short-circuit.01" name="electrical problems" vncls="45.4">
+<roles>
+  <role descr="electrician" n="0"><vnrole vncls="45.4" vntheta="Agent"/></role>
+  <role descr="circuit, electrical appliance" n="1"><vnrole vncls="45.4" vntheta="Patient"/></role>
+</roles>
+
+<example name="usually ergative">
+<inflection aspect="ns" form="ns" person="ns" tense="ns" voice="ns"/>
+<text>
+    When the swaying of the building woke me up, I reasoned that a) I
+    was in Southern California; b) the bed was moving; c) it must be a
+    Magic Fingers bed that [*T*-1] had short-circuited. 
+</text>
+        <arg n="1">[*T*-1] -&gt;  that -&gt;  a Magic Fingers bed</arg>
+        <rel>short-circuited</rel>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

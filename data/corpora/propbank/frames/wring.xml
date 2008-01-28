@@ -1,0 +1,94 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="wring">
+<note>
+  Frames file for 'wring' based on sentences in wsj.  Verbnet entries
+  40.3.2, 10.4.1, 9.3; Framenet entry Manipulation.
+</note>
+
+<roleset id="wring.01" name="twist" vncls="40.3.2">
+<roles>
+  <role descr="twister" n="0"><vnrole vncls="40.3.2" vntheta="Agent"/></role>
+  <role descr="twisted" n="1"><vnrole vncls="40.3.2" vntheta="Patient"/></role>
+</roles>
+
+<example name="both args">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Tuesday's earthquake brought the San Francisco ad scene to a
+    screeching halt yesterday, with only a few staffers showing up at
+    their offices, [*-1] mainly to survey the damage or to wring their
+    hands about imminent new-business presentations. 
+</text>
+        <arg n="0">[*-1] -&gt;  only a few staffers</arg>
+        <arg f="MNR" n="M">mainly</arg>
+        <rel>wring</rel>
+        <arg n="1">their hands</arg>
+        <arg f="CAU" n="M">about imminent new-business presentations</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="wring.02" name="remove liquid from, by   twisting" vncls="10.4.1 9.3">
+<roles>
+  <role descr="remover" n="0"><vnrole vncls="9.3" vntheta="Agent"/><vnrole vncls="10.4.1" vntheta="Agent"/></role>
+  <role descr="liquid" n="1"><vnrole vncls="9.3" vntheta="Theme"/><vnrole vncls="10.4.1" vntheta="Theme"/></role>
+  <role descr="source; rag etc" n="2"><vnrole vncls="9.3" vntheta="Destination"/><vnrole vncls="10.4.1" vntheta="Source"/></role>
+</roles>
+
+<example name="badly parsed">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    In a speech prepared for delivery to London's financial community,
+    Mr. Lawson summed up current economic policy as a battle [*] to
+    wring inflation out of the British economy, using high interest
+    rates as ``the essential instrument'' to carry out the campaign. 
+</text>
+        <arg n="0">[*]</arg>
+        <rel>wring</rel>
+        <arg n="1">inflation</arg>
+        <arg n="2">out of the British economy</arg>
+        <arg f="MNR" n="M">using high interest rates as ``the
+        essential instrument'' to carry out the campaign</arg> 
+</example>
+
+<note>
+There are a variety of ways to handle the 'out of'; Treebank chooses
+among them, almost always incorrectly.  Do what you have to do.
+(Really, it should be a PP.)
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="wring_out">
+
+<roleset id="wring.03" name="drain completely" vncls="-">
+<roles>
+  <role descr="wringer" n="0"/>
+  <role descr="wrung" n="1"/>
+</roles>
+
+<example name="bell wringer">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     Cleaning the garage really wrung John out.
+  </text>
+  <arg n="0">Cleaning the garage</arg>
+  <arg f="ADV" n="m">really</arg>
+  <rel>wrung out</rel>
+  <arg n="1">John</arg>
+</example>
+
+<note>
+Be careful between this phrasal and wring.02 'remove' above.  The best
+distinction is to see if the 'out' can move around--if it can, then
+you're dealing with a phrasal.  If not, it's a PP.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

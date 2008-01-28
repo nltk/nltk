@@ -1,0 +1,45 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="administer">
+<note>
+  Frames file for 'administer' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="administer.01" name="to manage, distribute, or apply" vncls="-">
+<roles>
+  <role descr="administrator, agent" n="0"/>
+  <role descr="entity administered" n="1"/>
+  <role descr="administered to/upon" n="2"/>
+</roles>
+
+
+<example name="all arguments">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ Worse , it [*EXP*-4] remained to a well-meaning but naive president of the United States [*] to administer the final infamy upon those who [*T*-272] fought and died in Vietnam .
+</text>
+	<arg n="0">[*] -&gt;  a well-meaning but naive president of the United States</arg>
+	<rel>administer</rel>
+	<arg n="1">the final infamy</arg>
+	<arg f="upon" n="2">those who [*T*-272] fought and died in Vietnam</arg>
+</example>
+
+<example name="unspecified subject">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ The idea would be [*] to administer to patients the growth-controlling proteins made [*] by healthy versions of the damaged genes .
+</text>
+	<arg n="0">[*]</arg>
+	<rel>administer</rel>
+	<arg f="to" n="2">patients</arg>
+	<arg n="1">the growth-controlling proteins made [*] by healthy versions of the damaged genes</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

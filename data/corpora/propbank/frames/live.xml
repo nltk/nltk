@@ -1,0 +1,161 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="live">
+<note>
+  Frames file for 'live' based on sentences in financial subcorpus and
+  conversion from Chris' old file.  This should be amusing.  Verbnet
+  entry 47.1, other framed members include depend.  Framenet entry
+  Residence.
+</note>
+
+<roleset id="live.01" name="not be dead" vncls="39.6 46 47.1-1">
+<roles>
+  <role descr="alive entity" n="0">
+		
+  <vnrole vncls="39.6" vntheta="Agent"/><vnrole vncls="47.1-1" vntheta="Theme"/><vnrole vncls="46" vntheta="Theme"/></role>
+
+  <role descr="life" n="1"><vnrole vncls="39.6" vntheta="Patient"/></role>
+</roles>
+
+<example name="basic intransitive">
+  <inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+  <text>
+    John lives!
+  </text>
+  <arg n="0">John</arg>
+  <rel>lives</rel>
+</example>
+
+<example name="with location">
+  <inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+  <text>
+    John lives in a cardboard box under the Walnut Street bridge.
+  </text>
+  <arg n="0">John</arg>
+  <rel>lives</rel>
+  <arg f="LOC" n="m">in a cardboard box under the Walnut Street bridge</arg>
+</example>
+
+<example name="a kind of manner">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    He lived with her. 
+</text>
+        <arg n="0">He</arg>
+        <rel>lived</rel>
+        <arg f="MNR" n="M">with her</arg>
+</example>
+
+<example name="transitive">
+  <inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+  <text>
+    John lives a rich fulfilling life.  No, really, he does!
+  </text>
+  <arg n="0">John</arg>
+  <rel>lives</rel>
+  <arg n="1">a rich fulfilling life</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="live.02" name="endure" vncls="-">
+<roles>
+  <role descr="endurer, sufferer" n="0"/>
+  <role descr="malady" n="1"/>
+</roles>
+
+<example name="live with">
+<inflection aspect="ns" form="full" person="ns" tense="future" voice="active"/>
+<text>
+    Richard Bernstein, senior quantitative analyst at Merrill Lynch
+    &amp; Co, says, ``My gut feel is that we'll live with those
+    swings for a while.''
+</text>
+        <arg n="0">we</arg>
+        <arg f="MOD" n="M">'ll</arg>
+        <rel>live</rel>
+        <arg f="with" n="1">those swings</arg>
+        <arg f="TMP" n="M">for a while</arg>
+</example>
+
+<example name="endure an infinitive S">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Investors who sold everything after the crash of 1987 lived to
+    regret it. 
+</text>
+        <arg n="0">Investors who  sold everything after the crash of
+        1987</arg> 
+        <rel>lived</rel>
+        <arg n="1">to regret it</arg>
+</example>
+
+<example name="live through">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John lived through the scary thunderstorm.
+  </text>
+  <arg n="0">John</arg>
+  <rel>lived</rel>
+  <arg f="through" n="1">the scary thunderstorm</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="live_on">
+<roleset id="live.03" name="continue">
+<roles>
+  <role descr="thing continuing" n="1"/>
+  <role descr="comitative: group, things kept together" n="2"/>
+  <role descr="attributive" n="3"/>
+</roles>
+
+<example name="token">
+  <inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+  <text>
+    John washed his socks, but their stench lives on.
+  </text>
+  <arg n="1">their stench</arg>
+  <rel>lives on</rel>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="live_up">
+<roleset id="live.04" name="fulfill">
+<roles>
+  <role descr="fulfiller" n="0"/>
+  <role descr="fulfilled" n="1"/>
+</roles>
+
+<example name="typical usage">
+<inflection aspect="perfect" form="participle" person="third" tense="present" voice="active"/>
+<text>
+    The current dispute involves allegations that Charlotte,
+    N.C.-based First Union hasn't lived up to its responsibilities
+    under the reinvestment act. 
+</text>
+        <arg n="0">Charlotte, N.C.-based First Union</arg>
+        <arg f="NEG" n="M">n't</arg>
+        <rel>[ lived] [ up]</rel>
+        <arg f="to" n="1">its responsibilities under the reinvestment
+        act</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,67 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="confuse">
+<note>
+  Frames file for 'confuse' based on sentences in financial
+  subcorpus.  Verbnet class amalgamate-22.2-5, other framed members
+  include associate, but that's a different sense.
+</note>
+
+<roleset id="confuse.01" name="(cause to) be confused" vncls="22.2 31.1">
+<roles>
+  <role descr="agentive cause of confusion" n="0">
+	<vnrole vncls="31.1" vntheta="Cause"/>
+        <vnrole vncls="22.2" vntheta="Agent"/></role>
+  <role descr="entity experiencing confusion" n="1">
+	<vnrole vncls="31.1" vntheta="Experiencer"/>
+        <vnrole vncls="22.2" vntheta="Patient1"/></role>
+  <role descr="confused about or over what?" n="2">
+	<vnrole vncls="22.2" vntheta="Patient2"/></role>
+</roles>
+
+<example name="transitive">
+<text>
+    Temple, however, harshly criticized Sea Containers' plan
+    yesterday, characterizing it as a ``highly conditional device
+    designed *trace* to entrench management, confuse shareholders and
+    prevent them from accepting our superior cash offer.'' 
+</text>
+        <arg n="0">*trace* -&gt; *trace* -&gt;  a ``highly conditional device</arg>
+        <rel>confuse</rel>
+        <arg n="1">shareholders</arg>
+</example>
+
+<example name="one thing confused">
+<text>
+    He believes that the volatile conditions created by program
+    trading has ``thoroughly confused'' investors about where the
+    market is headed. 
+</text>
+        <arg n="0">the volatile conditions created by program
+        trading</arg>
+        <rel>confused</rel>
+        <arg n="1">investors</arg>
+        <arg f="about" n="2">where the market is headed</arg>
+</example>
+
+<example name="two things confused">
+  <inflection aspect="progressive" form="participle" person="ns" tense="present" voice="active"/>
+  <text>
+   I think the reason is that you are confusing tax ``rates'' with tax
+   ``payments.''
+  </text>
+  <arg n="1">you</arg>
+  <rel>confusing</rel>
+  <arg n="2">tax ``rates''</arg>
+  <arg f="with" n="2">tax ``payments''</arg>
+</example>
+
+<note>
+Ignore adjectival usages like &quot;everyone is confused&quot;.  (Test with
+&quot;very&quot; if you're unsure if a usage is verbal or adjectival: &quot;Everyone
+is very confused&quot; is adjectival, while &quot;Resetting the VCR clock
+(*very) confuses everyone&quot; is verbal.)
+</note>
+
+</roleset></predicate>
+</frameset>

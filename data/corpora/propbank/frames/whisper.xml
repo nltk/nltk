@@ -1,0 +1,48 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="whisper">
+<note>
+Frames file for 'whisper' based on sentences in financial subcorpus
+and automatic expansion via verbnet.
+</note>
+
+<roleset id="whisper.01" name="speak quietly" vncls="37.3">
+<roles>
+	<role descr="speaker" n="0">
+		
+  <vnrole vncls="37.3" vntheta="Agent"/></role>
+ 
+	<role descr="utterance" n="1">
+		
+  <vnrole vncls="37.3" vntheta="Topic"/></role>
+ 
+	<role descr="hearer" n="2">
+		
+  <vnrole vncls="37.3" vntheta="Recipient"/></role>
+ 
+</roles>
+
+<example name="all args">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    The executive recalls Mr. Corry whispering to him and others,
+    ``Remember, this was Dave's deal.'' 
+</text>
+        <arg n="0">Mr. Corry</arg>
+        <rel>whispering</rel>
+        <arg f="to" n="2">him and others</arg>
+        <arg n="1">Remember, this was Dave's deal</arg>
+</example>
+
+<example name="without utterance" src="scream.01">
+  <text>
+    John whispered in Mary's ear.
+  </text>
+  <arg n="0">John</arg>
+  <rel>whispered</rel>
+  <arg f="in" n="2">Mary's ear</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

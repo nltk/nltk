@@ -1,0 +1,83 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="mate">
+<note>
+  Frames file for 'mate' based on sentences in wsj.  Verbnet entries
+  22.2 and 36.1.
+</note>
+
+<roleset id="mate.01" name="pair, join, match" vncls="22.2">
+<roles>
+  <role descr="joiner" n="0"><vnrole vncls="22.2" vntheta="Agent"/></role>
+  <role descr="first thing, or both things" n="1"><vnrole vncls="22.2" vntheta="Patient1"/></role>
+  <role descr="second thing, if separate" n="2"><vnrole vncls="22.2" vntheta="Patient2"/></role>
+</roles>
+
+<example name="all args">
+  <inflection aspect="ns" form="full" person="ns" tense="ns" voice="active"/>
+  <text>
+    If we could just mate John's brilliant ideas with Mary's
+    get-it-done attitude, we'd take over the world.
+  </text>
+  <arg n="0">we</arg>
+  <arg f="MOD" n="m">could</arg>
+  <arg f="DIS" n="m">just</arg>
+  <rel>mate</rel>
+  <arg n="1">John's brilliant ideas</arg>
+  <arg f="with" n="2">Mary's get-it-done attitude</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="mate.02" name="copulate">
+<roles>
+  <role descr="causal agent" n="A"/>
+  <role descr="one (or both) actor(s)" n="0"/>
+  <role descr="the other actor" n="1"/>
+</roles>
+
+<example name="passivized arg0">
+<inflection aspect="ns" form="participle" person="ns" tense="past" voice="passive"/>
+<text>
+     In the experiment, mice with the defective gene were mated
+     [*-1]. 
+</text>
+        <arg f="LOC" n="M">In the experiment</arg>
+        <rel>mated</rel>
+        <arg n="0">[*-1] -&gt;  mice with the defective gene</arg>
+</example>
+
+<example name="with explicit ArgA">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     Scientists mated John's cat with a series of lab rats, hoping for
+     a bizarre Frankensteinian super-beast.
+  </text>
+  <arg n="A">Scientists</arg>
+  <rel>mated</rel>
+  <arg n="0">John's cat</arg>
+  <arg f="with" n="1">a series of lab rats</arg>
+  <arg n="m">hoping for a bizarre Frankensteinian super-beast</arg>
+</example>
+
+<example name="motivating arg0">
+  <inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+  <text>
+     John likes to watch the monkeys mating down at the zoo.
+  </text>
+  <arg n="0">the monkeys</arg>
+  <rel>mating</rel>
+  <arg f="LOC" n="m">down at the zoo</arg>
+</example>
+
+<note>
+Yes, I know we're supposed to avoid using ArgA.  But do you really
+want to make the entity/ies mating non-agentive?
+</note>
+
+</roleset>
+</predicate>
+</frameset>

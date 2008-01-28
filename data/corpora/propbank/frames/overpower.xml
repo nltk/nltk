@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="overpower">
+<note>
+  Frames file for 'overpower' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="overpower.01" name="conquer, sorta" vncls="-">
+<roles>
+  <role descr="entity with more power" n="0"/>
+  <role descr="entity with less" n="1"/>
+</roles>
+
+<example name="the one example">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+    As Ruth, Moira Harris, a large and beautiful woman who may be our
+    next Colleen Dewhurst, begins almost immediately [*-2] to
+    overpower each of the men. 
+</text>
+        <arg n="0">[*-2] -&gt;  Moira Harris, a large and beautiful woman
+        who may be our next Colleen Dewhurst,</arg> 
+        <rel>overpower</rel>
+        <arg n="1">each of the men</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

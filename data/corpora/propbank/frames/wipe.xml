@@ -1,0 +1,116 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="wipe">
+<note>
+Frames file for 'wipe' based on sentences in wsj and automatic
+expansion via verbnet.
+</note>
+
+<roleset id="wipe.01" name="move with wiping action" vncls="9.3 10.4.1">
+<roles>
+	<role descr="causer of motion, agent" n="0">
+	  <vnrole vncls="9.3" vntheta="Agent"/>
+          <vnrole vncls="10.4.1" vntheta="Agent"/></role>
+	<role descr="thing moved" n="1">
+	  <vnrole vncls="9.3" vntheta="Theme"/>
+          <vnrole vncls="10.4.1" vntheta="Theme"/></role>
+	<role descr="source" n="2">
+          <vnrole vncls="9.3" vntheta="Destination"/>
+          <vnrole vncls="10.4.1" vntheta="Source"/></role>
+	<role descr="instrument" n="3"/>
+</roles>
+
+<example name="with intensifier">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    It also has removed a ban on CIA use of a contingency fund for
+    covert acts and has agreed *trace* to wipe away some tortured and
+    legalistic restrictions on coup planning put in place to ensure
+    that the CIA didn't get back in the assassination game. 
+</text>
+        <arg n="0">*trace* -&gt;  It</arg>
+        <rel>wipe</rel>
+        <arg f="PRD" n="M">away</arg>
+        <arg n="1">some tortured and legalistic restrictions on coup
+        planning put in place to ensure that the CIA did n't get back
+        in the assassination game</arg> 
+</example>
+
+<example name="all args">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John wiped the crumbs from the table with a damp cloth (probably
+    Mary's wine-stained silk blouse).
+  </text>
+  <arg n="0">John</arg>
+  <rel>wiped</rel>
+  <arg n="1">the crumbs</arg>
+  <arg f="from" n="2">the table</arg>
+  <arg f="with" n="3">a damp cloth</arg>
+</example>
+
+<example name="inverted args">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John wiped the table of crumbs.
+  </text>
+  <arg n="0">John</arg>
+  <rel>wiped</rel>
+  <arg n="2">the table</arg>
+  <arg f="of" n="1">crumbs</arg>
+</example>
+
+<note>
+I can say that, at least.
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="wipe_out">
+
+<roleset id="wipe.02" name="exhaust, use up" vncls="-">
+<roles>
+  <role descr="user, exhauster, agent" n="0"/>
+  <role descr="thing becoming exhausted" n="1"/>
+  <role descr="instrument" n="2"/>
+</roles>
+
+<example name="active">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    When you do that you wipe out the criminal incentives, including,
+    I might say, the incentive that the drug pushers have to go around
+    and get kids addicted, so that they create a market for
+    themselves. 
+</text>
+        <arg n="0">you</arg>
+        <rel>[ wipe] [ out]</rel>
+        <arg n="1">the criminal incentives, including, I might say,
+        the incentive that the drug pushers have to go around and get
+        kids addicted, so that they create a market for
+        themselves</arg> 
+</example>
+
+<example name="more commonly passive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    The vast majority of them, however, were wiped *trace* out by a
+    succession of environmental upheavals that were too sudden and
+    catastrophic for the normal rules of natural selection to
+    operate. 
+</text>
+        <rel>[ wiped] [ out]</rel>
+        <arg n="1">*trace* -&gt;  The vast majority of them</arg>
+        <arg f="by" n="0">a succession of environmental upheavals that
+        were too sudden and catastrophic for the normal rules of
+        natural selection to operate</arg> 
+</example>
+
+<note>
+I can't come up with any natural-sounding examples with both agent and
+instrument; perhaps the instrument arg can be left out.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

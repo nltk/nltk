@@ -1,0 +1,39 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="scout_out">
+<note>
+Frames file for 'scout' based on sentences in financial subcorpus and
+automatic expansion via verbnet.
+</note>
+
+<roleset id="scout.01" name="search for" vncls="35.2">
+<roles>
+	<role descr="searcher" n="0">
+		
+  <vnrole vncls="35.2" vntheta="Agent"/></role>
+ 
+	<role descr="searched for" n="1">
+		
+  <vnrole vncls="35.2" vntheta="Theme"/></role>
+ 
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Should USX be left with only Marathon, Mr. Corry might well feel
+    pushed *trace* to scout out other energy companies. 
+</text>
+        <arg n="0">*trace* -&gt;  Mr. Corry</arg>
+        <rel>[ scout] [ out]</rel>
+        <arg n="1">other energy companies</arg>
+</example>
+
+</roleset>
+
+<note>
+Will this also take a non-phrasal pattern?
+</note>
+
+</predicate>
+</frameset>

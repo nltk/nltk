@@ -1,0 +1,57 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="shock">
+<note>
+  Frames file for 'shock' based on sentences in financial subcorpus.
+  Verbnet entry 31.1, other framed members include convince,
+  encourage, interest, scare, spook, threaten, worry, and probably
+  surprise.  Comparison with 'surprise'.
+</note>
+
+<roleset id="shock.01" name="surprise" vncls="31.1">
+<roles>
+  <role descr="surpriser" n="0">
+		
+  <vnrole vncls="31.1" vntheta="Cause"/></role>
+
+  <role descr="person surprised" n="1">
+		
+  <vnrole vncls="31.1" vntheta="Experiencer"/></role>
+
+  <role descr="instrument" n="2"/>
+</roles>
+
+<example name="passivized">
+<text>
+    Jaguar was shocked by Mr. Ridley's decision, because management
+    had believed the government wouldn't lift the golden share without
+    consulting the company first. 
+</text>
+        <rel>shocked</rel>
+        <arg n="1">*trace* -&gt;  Jaguar</arg>
+        <arg f="by" n="0">Mr. Ridley's decision</arg>
+        <arg f="CAU" n="M">because management had believed the
+        government wouldn't lift the golden share without consulting
+        the company first</arg> 
+</example>
+
+<example name="with instrument">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John shocked Mary by getting perfect scores on his GREs.
+  </text>
+  <arg n="0">John</arg>
+  <rel>shocked</rel>
+  <arg n="1">Mary</arg>
+  <arg f="by" n="2">getting perfect scores on his GREs</arg>
+</example>
+
+<note>
+I expect a lot of adjectival usages which should be virtually
+indistinguishable from passive usages.  Refer to 'surprise' for
+examples.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

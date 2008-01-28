@@ -1,0 +1,57 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="brief">
+<note>
+  Frames file for 'brief' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="brief.01" name="give a summary of information" vncls="-">
+<roles>
+  <role descr="giver" n="0"/>
+  <role descr="receiver of information, entity briefed" n="1"/>
+  <role descr="topic" n="2"/>
+</roles>
+
+<example name="all args">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Eventually, Mr. Stoll was invited *trace* to both the CIA and NSA
+    *trace* to brief high-ranking officers on computer theft. 
+</text>
+        <arg n="0">*trace* -&gt; *trace* -&gt;  Mr. Stoll</arg>
+        <rel>brief</rel>
+        <arg n="1">high-ranking officers</arg>
+        <arg f="on" n="2">computer theft</arg>
+</example>
+
+<example name="lacking topic">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    And he plans *trace* to brief the president at the end of the
+    week, U.S. sources said. 
+</text>
+        <arg n="0">*trace* -&gt;  he</arg>
+        <rel>brief</rel>
+        <arg n="1">the president</arg>
+        <arg f="TMP" n="M">at the end of the week</arg>
+</example>
+
+<example name="lacking agent too">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    Administration officials say President Bush was briefed *trace*
+    throughout Friday afternoon and evening, even after leaving for
+    Camp David. 
+</text>
+        <rel>briefed</rel>
+        <arg n="1">*trace* -&gt;  President Bush</arg>
+        <arg f="TMP" n="M">throughout Friday afternoon and evening</arg>
+        <arg n="M">even after  leaving for Camp David</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

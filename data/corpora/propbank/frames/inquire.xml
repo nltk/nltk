@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="inquire">
+<note>
+  Frames file for 'inquire' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="inquire.01" name="to ask about" vncls="-">
+<roles>
+  <role descr="asker" n="0"/>
+  <role descr="entity asked about" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+ Typically , these laws seek [*-1] to prevent executive branch officials from [*-2] inquiring into whether certain federal programs make any economic sense or proposing more market-oriented alternatives to regulations .
+</text>
+	<arg n="0">[*-2] -&gt;  executive branch officials</arg>
+	<rel>inquiring</rel>
+	<arg f="into" n="1">whether certain federal programs make any economic sense</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

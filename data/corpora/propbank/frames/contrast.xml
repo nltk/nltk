@@ -1,0 +1,64 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="contrast">
+<note>
+Frames file for 'contrast' based on sentences in financial subcorpus
+and automatic expansion via verbnet.
+</note>
+
+<roleset id="contrast.01" name="point out differences" vncls="22.2">
+<roles>
+	<role descr="entity making comparison" n="0">
+		
+  <vnrole vncls="22.2" vntheta="Agent"/></role>
+
+	<role descr="first item in comparison" n="1">
+		
+  <vnrole vncls="22.2" vntheta="Patient1"/></role>
+
+	<role descr="second item in comparison, usually prepositional" n="2">
+		
+  <vnrole vncls="22.2" vntheta="Patient2"/></role>
+
+</roles>
+
+<example name="as preposition">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    Its loss of $77.7 million, or $1.86 a share, contrasted with net
+    of $68.5 million, or $1.58a share, in the 1988 third quarter. 
+</text>
+        <arg n="1">Its loss of $77.7 million, or $1.86 a share,</arg>
+        <rel>contrasted</rel>
+        <arg f="with" n="2">net of $68.5 million, or $1.58 a share, in
+        the 1988 third quarter</arg> 
+</example>
+
+<example name="another prepositional usage">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    This contrasts with the year-ago quarter, when the company had net
+    income of $11.7 million, or 45 cents a share, on revenue of $75.7
+    million. 
+</text>
+        <arg n="1">This</arg>
+        <rel>contrasts</rel>
+        <arg f="with" n="2">the year-ago quarter, when the company had
+        net income of $11.7 million, or 45 cents a share, on revenue
+        of $75.7 million</arg> 
+</example>
+
+<example name="separate figure and ground" src="integrate.01">
+  <text>
+    John contrasted his ideas with the professor's argument.
+  </text>
+  <arg n="0">John</arg>
+  <rel>contrasted</rel>
+  <arg n="1">his ideas</arg>
+  <arg f="with" n="2">the professor's argument</arg>
+</example>
+
+</roleset>
+
+</predicate>
+</frameset>

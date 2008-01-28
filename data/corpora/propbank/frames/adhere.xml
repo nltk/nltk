@@ -1,0 +1,70 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="adhere">
+<note>
+  Frames file for 'adhere' based on sentences in wsj.  Verbnet entry
+  22.5, Framenet entry Compliance.
+</note>
+
+<roleset id="adhere.01" name="stick (to)" vncls="22.5">
+<roles>
+  <role descr="agent/causer of adhesion" n="0">
+      <vnrole vncls="22.5" vntheta="Agent"/></role>
+  <role descr="theme of adhesion" n="1">
+      <vnrole vncls="22.5" vntheta="Theme1"/></role>
+  <role descr="thing stuck to" n="2">
+      <vnrole vncls="22.5" vntheta="Theme2"/></role>
+</roles>
+
+<example name="unaccusative">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John's tongue adhered to the cold iron bar.
+  </text>
+  <arg n="1">John's tongue</arg>
+  <rel>adhered</rel>
+  <arg f="to" n="2">the cold iron bar</arg>
+</example>
+
+<example name="agentive?">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John adhered his tongue to the cold iron bar.
+  </text>
+  <arg n="0">John</arg>
+  <rel>adhered</rel>
+  <arg n="1">his tongue</arg>
+  <arg f="to" n="2">the cold iron bar</arg>
+<note>
+I can say this, but maybe I'm in the minority.
+</note>
+</example>
+
+
+</roleset>
+
+<roleset id="adhere.02" name="follow (policy, etc)" vncls="-">
+<roles>
+  <role descr="follower" n="0"/>
+  <role descr="policy, etc." n="1"/>
+</roles>
+
+<example name="do as I say">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+    Opponents of the project had claimed that the city and the state
+    of New York, which are co-sponsoring the project, had failed [*-2]
+    to adhere to environmental guidelines. 
+</text>
+        <arg n="0">[*-2] -&gt;  the city and the state of New York, which
+        are co-sponsoring the project,</arg> 
+        <rel>adhere</rel>
+        <arg f="to" n="1">environmental guidelines</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

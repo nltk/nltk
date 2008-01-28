@@ -1,0 +1,143 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="kick">
+<note>
+  Frames file for 'kick' based on sentences in financial subcorpus.
+  Verbnet classes carry-11.4-1 hit-18.1 split-23.2 throw-17.1; other
+  framed members include: push; hit, strike; cut, draw, pull, push,
+  roll, slip; fire, hit, pass.  Comparison with 'hit' and 'begin'.
+</note>
+
+<roleset id="kick.01" name="drive or impel with the foot" vncls="11.4-1 17.1 18.1 23.2 40.3.2 49">
+<roles>
+  <role descr="kicker" n="0">
+		
+		
+		
+		
+		
+  <vnrole vncls="23.2" vntheta="Agent"/><vnrole vncls="17.1" vntheta="Agent"/><vnrole vncls="49" vntheta="Agent"/><vnrole vncls="18.1" vntheta="Agent"/><vnrole vncls="40.3.2" vntheta="Agent"/><vnrole vncls="11.4-1" vntheta="Agent"/></role>
+
+  <role descr="thing kicked" n="1">
+		
+		
+		
+		
+		
+  <vnrole vncls="23.2" vntheta="Patient"/><vnrole vncls="17.1" vntheta="Patient"/><vnrole vncls="49" vntheta="Patient"/><vnrole vncls="18.1" vntheta="Patient"/><vnrole vncls="40.3.2" vntheta="Patient"/><vnrole vncls="11.4-1" vntheta="Theme"/></role>
+
+  <role descr="instrument (defaults to foot)" n="2">
+		
+  <vnrole vncls="18.1" vntheta="Instrument"/></role>
+</roles>
+
+<example name="not a foot">
+<text>
+    But two big New York banks seem *trace* to have kicked those
+    chances away, for the moment, with the embarrassing failure of
+    Citicorp and Chase Manhattan Corp. to deliver $7.2 billion in bank
+    financing for a leveraged buy-out of United Airlines parent UAL
+    Corp. 
+</text>
+        <arg n="0">*trace* -&gt; two big New York banks</arg>
+        <rel>kicked</rel>
+        <arg n="1">those chances</arg>
+        <arg f="DIR" n="M">away</arg>
+        <arg f="TMP" n="M">for the moment</arg>
+        <arg f="with" n="2">the embarrassing failure of Citicorp and
+        Chase Manhattan Corp. to deliver $7.2 billion in bank
+        financing for a leveraged buy-out of United Airlines parent
+        UAL Corp</arg> 
+</example>
+
+<example name="no instrument">
+  <text>
+    John tried *trace* to kick the football, but Mary pulled it away
+    at the last moment.
+  </text>
+  <arg n="0">*trace* -&gt; John</arg>
+  <rel>kick</rel>
+  <arg n="1">the football</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="kick_in">
+
+<roleset id="kick.02" name="begin" vncls="-">
+<roles>
+  <role descr="thing beginning" n="1"/>
+</roles>
+
+<example name="unaccusative">
+<text>
+    While program trades swiftly kicked in, a ``circuit breaker'' that
+    halted trading in stock futures in Chicago made some program
+    trading impossible. 
+</text>
+        <arg n="1">program trades</arg>
+        <arg f="MNR" n="M">swiftly</arg>
+        <rel>[ kicked] [ in]</rel>
+</example>
+
+</roleset>
+
+<roleset id="kick.03" name="contribute" vncls="-">
+<roles>
+  <role descr="contributor" n="0"/>
+  <role descr="contribution" n="1"/>
+  <role descr="given to" n="2"/>
+</roles>
+
+<example name="all args">
+  <text>
+    Mary gamely kicked in $5 to John's bail.
+  </text>
+  <arg n="0">Mary</arg>
+  <arg f="MNR" n="m">gamely</arg>
+  <rel>kicked in</rel>
+  <arg n="1">$5</arg>
+  <arg f="to" n="2">John's bail</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="kick_off">
+
+<roleset id="kick.04" name="begin, inaugurate">
+<roles>
+  <role descr="agent, beginner" n="0"/>
+  <role descr="theme, thing begun" n="1"/>
+  <role descr="instrument" n="2"/>
+</roles>
+
+<example name="all args">
+<text>
+    The yearlong schedule of festivities will be kicked *trace* off
+    officially with a combination live and animation half-time special
+    at the Super Bowl in January. 
+</text>
+        <arg n="1">*trace* The yearlong schedule of festivities</arg>
+        <arg f="MOD" n="M">will</arg>
+        <rel>[ kicked] [ off]</rel>
+        <arg f="MNR" n="M">officially</arg>
+        <arg f="with" n="2">a combination live and animation half-time
+        special</arg> 
+        <arg f="LOC" n="M">at the Super Bowl</arg>
+        <arg f="TMP" n="M">in January</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

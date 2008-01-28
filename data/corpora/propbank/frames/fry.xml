@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="fry">
+<note>
+  Frames file for 'fry' based on sentences in wsj.  No access to
+  verbnet at the moment.
+</note>
+
+<roleset id="fry.01" name="cook in oil" vncls="45.3">
+<roles>
+  <role descr="cook" n="0"><vnrole vncls="45.3" vntheta="Agent"/></role>
+  <role descr="food" n="1"><vnrole vncls="45.3" vntheta="Patient"/></role>
+</roles>
+
+<example name="oh, for context">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    Mr. Burt nonetheless paid the penalty as if he had lost, [*-1]
+    agreeing [*-2] to spend a day with West German Foreign Minister
+    Hans-Dietrich Genscher [*-3] frying and selling their combined
+    weight in potato pancakes. 
+</text>
+        <arg n="0">[*-3] -&gt;  [*-2] -&gt;  [*-1] -&gt;  Mr. Burt</arg>
+        <rel>frying</rel>
+        <arg n="1">their combined weight in potato pancakes</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,63 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="whirl">
+<note>
+  Frames file for 'whirl' based on sentences in brown.  Verbnet
+  entries 9.6, 51.3.1 
+</note>
+
+<roleset id="whirl.01" vncls="51.3.1 9.6" name="move in a circle or
+  spiral, quickly">
+<roles>
+  <role n="1"  descr="thing in motion"/>
+  <role n="2"  descr="axis (rare)"/>
+</roles>
+
+<example name="straight intransitive">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+    They whirled and saw him, standing there dim in the slatted light
+    from the boarded freight wall. 
+  </text>
+  <arg n="1"        >They</arg>
+  <rel              >whirled</rel>
+</example>
+
+<example name="particle as axis">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+    He whirled around, suddenly hot all over, finding the man who had
+    been standing before him a few moments back, nailing him to the
+    spot on which he now stood, open-mouthed. 
+  </text>
+  <arg n="1"        >He</arg>
+  <rel              >whirled</rel>
+  <arg n="2"        >around</arg>
+</example>
+
+<example name="not an axis">
+  <inflection person="ns" tense="ns" aspect="ns" voice="active" form="infinitive"/>
+  <text>
+     A tune began [*-1] to whirl inside his head .
+  </text>
+  <arg n="1"        >[*-1] -> A tune</arg>
+  <rel              >whirl</rel>
+  <arg n="m" f="LOC">inside his head</arg>
+</example>
+
+<example name="a real axis">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+     John whirled around the fencepost.
+  </text>
+  <arg n="1"        >John</arg>
+  <rel              >whirled</rel>
+  <arg n="2" f="around">the fencepost</arg>
+<note>
+or not
+</note>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

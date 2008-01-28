@@ -1,0 +1,35 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="demote">
+<note>
+  Frames file for 'demote' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="demote.01" name="diminish in rank" vncls="-">
+<roles>
+  <role descr="causer of motion, employer" n="0"/>
+  <role descr="thing in motion, employee" n="1"/>
+  <role descr="destination, new job" n="2"/>
+  <role descr="source, old job" n="3"/>
+</roles>
+
+<example name="no agent">
+<inflection aspect="both" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    The Volokhs were afraid that they'd end up like a friend of theirs
+    who [*T*-1]'d applied for a visa and waited for 10 years, [*-2]
+    having been demoted [*-3] from his profession of theoretical
+    mathematician to shipping clerk. 
+</text>
+        <rel>demoted</rel>
+        <arg n="1">[*-3] -&gt;  [*-2] -&gt;  [*T*-1] -&gt;  who -&gt;  a friend</arg>
+        <arg f="from" n="3">his profession of theoretical mathematician</arg>
+        <arg f="to" n="2">shipping clerk</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

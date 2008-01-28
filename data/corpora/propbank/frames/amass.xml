@@ -1,0 +1,57 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="amass">
+<note>
+  Frames file for 'amass' based on sentences in financial subcorpus.
+  No access to verbnet.  Comparison to purchase verbs.
+</note>
+
+<roleset id="amass.01" name="accumulate" vncls="47.5.2">
+<roles>
+  <role descr="entity accumulating something" n="0">
+		
+  <vnrole vncls="47.5.2" vntheta="Agent"/></role>
+
+  <role descr="thing/stuff accumulated" n="1">
+		
+  <vnrole vncls="47.5.2" vntheta="Theme"/></role>
+
+  <role descr="price" n="3"/>
+</roles>
+
+<example name="typical usage">
+<text>
+    Even with mutual funds, the little investor continues to tolerate
+    high fees, high commissions and poor performance, while index-fund
+    managers slowly amass a better record with lower fees, lower
+    commissions and less risk. 
+</text>
+        <arg n="0">index-fund managers</arg>
+        <arg f="MNR" n="M">slowly</arg>
+        <rel>amass</rel>
+        <arg n="1">a better record with lower fees, lower commissions
+        and less risk</arg> 
+</example>
+
+<example name="atypical usage: purchase">
+<text>
+    In an international buying spree that began barely two years ago,
+    Mr. Paul amassed a collection of about 30 pre-18th-century works,
+    including the Preti, at a total cost of $28 million. 
+</text>
+        <arg f="LOC" n="M">In an international buying spree that began
+        barely two years ago</arg> 
+        <arg n="0">Mr. Paul</arg>
+        <rel>amassed</rel>
+        <arg n="1">a collection of about 30 pre-18th-century works,
+        including the Preti</arg> 
+        <arg f="at" n="3">a total cost of $28 million</arg>
+</example>
+
+<note>
+If other purchase args show up (seller, etc) cf the purchase verb frame.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

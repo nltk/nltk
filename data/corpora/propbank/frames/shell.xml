@@ -1,0 +1,103 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="shell">
+<note>
+  Frames file for 'shell' based on sentences in wsj.  Verbnet entry
+  10.7--finally, an appropriate member of this class.
+</note>
+
+<roleset id="shell.01" name="remove shells from" vncls="10.7">
+<roles>
+  <role descr="sheller" n="0"><vnrole vncls="10.7" vntheta="Agent"/></role>
+  <role descr="thing that used to have a shell" n="1"><vnrole vncls="10.7" vntheta="Source"/></role>
+</roles>
+
+<example name="and it didn't even appear">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John shelled peanuts in Mary's bed.
+  </text>
+  <arg n="0">John</arg>
+  <rel>shelled</rel>
+  <arg n="1">peanuts</arg>
+  <arg f="LOC" n="m">in Mary's bed</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="shell.02" name="bomb" vncls="-">
+<roles>
+  <role descr="sheller" n="0"/>
+  <role descr="target" n="1"/>
+  <role descr="explicit mention of bombs, shells" n="2"/>
+</roles>
+
+<example name="boom">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    The rebels also reportedly tightened a blockade on roads leading
+    to the capital, and government forces shelled a guerrilla-held
+    area in western Afghanistan. 
+</text>
+        <arg n="0">government forces</arg>
+        <rel>shelled</rel>
+        <arg n="1">a guerrilla-held area in western Afghanistan</arg>
+</example>
+
+<note>
+Dunno about explicit use of bomb; sounds right for 'bomb' but not for
+'shell.' 
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="shell_out">
+
+<roleset id="shell.03" name="pay" vncls="-">
+<roles>
+  <role descr="payer or buyer" n="0"/>
+  <role descr="money" n="1"/>
+  <role descr="seller or person being paid" n="2"/>
+  <role descr="thing bought or paid for" n="3"/>
+</roles>
+
+<example name="with recipient">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Johnstown attorney Richard J. Green Jr. shelled out $500 in loans
+    to the judge over five years, he said in testimony to the grand
+    jury. 
+</text>
+        <arg n="0">Johnstown attorney Richard J. Green Jr.</arg>
+        <rel>[ shelled] [ out]</rel>
+        <arg n="1">$500 in loans</arg>
+        <arg f="to" n="2">the judge</arg>
+        <arg f="TMP" n="M">over five years</arg>
+</example>
+
+<example name="with commodity">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    And he isn't the only big spender: NBC will pay a record $401
+    million for the 1992 Summer Games, and ESPN, 80%-owned by Capital
+    Cities/ABC, will shell out $400 million for four years of
+    baseball,  airing 175 regular-season games a year. 
+</text>
+        <arg n="0">ESPN, 80%-owned by Capital Cities/ABC,</arg>
+        <arg f="MOD" n="M">will</arg>
+        <rel>[ shell] [ out]</rel>
+        <arg n="1">$400 million </arg>
+        <arg f="for" n="3">four years of baseball</arg>
+        <arg f="ADV" n="M">airing 175 regular-season games a year</arg>
+</example>
+
+<note>
+Args 1 and 3 reversed from 'pay'.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

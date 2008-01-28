@@ -1,0 +1,42 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="accrete">
+<note>
+  Frames file for 'accrete' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="accrete.01" vncls="-" name="accumulate, gain">
+<roles>
+  <role n="0"  descr="accreting entity"/>
+  <role n="1"  descr="stuff gained"/>
+</roles>
+
+<example name="adjectival object">
+<inflection person="ns" tense="ns" aspect="ns" voice="passive" form="participle"/>
+<text>
+    The fact sheet, dated April 1986, says on page three: ``If the
+    price paid for a CD purchased in the secondary market ... is
+    higher than the accreted value in the case of zero-coupon CDs, the
+    difference ... is not insured... 
+</text>
+	<rel>accreted</rel>
+	<arg n="1">value</arg>
+</example>
+
+<example name="verbal">
+  <inflection person="third" tense="present" aspect="ns" voice="active" form="full"/>
+  <text>
+     John accretes gorgeous babes the way a toad accretes warts.
+  </text>
+  <arg n="0"        >John</arg>
+  <rel              >accretes</rel>
+  <arg n="1"        >gorgeous babes</arg>
+  <arg n="m" f="MNR">the way a toad accretes warts</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

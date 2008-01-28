@@ -1,0 +1,157 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="leave">
+<note>
+  Frames file for 'leave' based on Chris' former frames file.  As much
+  care as possible being taken to change as little as possible, since
+  leave has already been tagged under the old frames format.
+  Everything may have to be redone at some point.  :(
+</note>
+
+<roleset id="leave.01" name="move away from" vncls="51.1-1 51.2">
+<roles>
+  <role descr="entity leaving" n="0">
+	<vnrole vncls="51.2" vntheta="Theme"/>
+        <vnrole vncls="51.1-1" vntheta="Theme"/></role>
+  <role descr="place left" n="1">
+	<vnrole vncls="51.2" vntheta="Source"/>
+        <vnrole vncls="51.1-1" vntheta="Location"/></role>
+  <role descr="attribute of arg1" n="2"/>
+</roles>
+
+<example name="intransitive">
+  <text>
+  John left.
+  </text>
+  <arg n="0">John</arg>
+  <rel>left</rel>
+</example>
+
+<example name="transitive">
+  <text>
+  This flight leaves Phoenix at midnight.
+  </text>
+  <arg n="0">This flight</arg>
+  <rel>leaves</rel>
+  <arg n="1">Phoenix</arg>
+  <arg f="TMP" n="m">at midnight</arg>
+</example>
+
+<example name="place-left as PP">
+  <text>
+  This flight leaves from Nashville.
+  </text>
+  <arg n="0">This flight</arg>
+  <rel>leaves</rel>
+  <arg f="from" n="1">Nashville</arg>
+</example>
+
+<example name="attribute">
+  <text>
+  The move left the companies as outside bidders.
+  </text>
+  <arg n="0">The move</arg>
+  <rel>left</rel>
+  <arg n="1">the companies</arg>
+  <arg f="as" n="2">outside bidders</arg>
+</example>
+
+<example name="secondary predication">
+  <text>
+  John left Mary alone.
+  </text>
+  <arg n="0">John</arg>
+  <rel>left</rel>
+  <arg n="1">Mary</arg>
+  <arg n="2">alone</arg>
+</example>
+</roleset>
+
+<roleset id="leave.02" name="give" vncls="13.3 13.4.1 13.5.1 15.2">
+<roles>
+  <role descr="giver / leaver" n="0">
+	<vnrole vncls="15.2" vntheta="Agent"/>
+        <vnrole vncls="13.3" vntheta="Agent"/>
+        <vnrole vncls="13.5.1" vntheta="Agent"/>
+        <vnrole vncls="13.4.1" vntheta="Agent"/></role>
+  <role descr="thing given" n="1">
+	<vnrole vncls="15.2" vntheta="Theme"/>
+        <vnrole vncls="13.3" vntheta="Theme"/>
+        <vnrole vncls="13.5.1" vntheta="Theme"/>
+        <vnrole vncls="13.4.1" vntheta="Theme"/></role>
+  <role descr="benefactive / given-to" n="2">
+	<vnrole vncls="15.2" vntheta="Location"/>
+        <vnrole vncls="13.3" vntheta="Recipient"/>
+        <vnrole vncls="13.5.1" vntheta="Beneficiary"/>
+        <vnrole vncls="13.4.1" vntheta="Recipient"/></role>
+</roles>
+
+<example name="transitive">
+  <text>
+  The buyout left about $130 million in the bank.
+  </text>
+  <arg n="0">The buyout</arg>
+  <rel>left</rel>
+  <arg n="1">about $130 million</arg>
+  <arg f="LOC" n="m">in the bank</arg>
+</example>
+
+<example name="ditransitive">
+  <text>
+  John left cookies for Mary.
+  </text>
+  <arg n="0">John</arg>
+  <rel>left</rel>
+  <arg n="1">cookies</arg>
+  <arg f="for" n="2">Mary</arg>
+</example>
+
+<example name="double object">
+  <text>
+  John left Mary a collection of run-down clocks.
+  </text>
+  <arg n="0">John</arg>
+  <rel>left</rel>
+  <arg n="2">Mary</arg>
+  <arg n="1">a collection of run-down clocks</arg>
+</example>
+
+<example name="with variant">
+  <text>
+  An ambitious expansion has left Magna with excess capacity.
+  </text>
+  <arg n="0">An ambitious expansion</arg>
+  <rel>left</rel>
+  <arg n="2">Magna</arg>
+  <arg f="with" n="1">excess capacity</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="leave_out">
+
+<roleset id="leave.03" name="exclude" vncls="-">
+<roles>
+  <role descr="excluder, agent" n="0"/>
+  <role descr="excluded entity" n="1"/>
+  <role descr="excluded from" n="2"/>
+</roles>
+
+<example name="passive-ish">
+  <inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+  <text>
+    We are almost left out of [campus] social activities.
+  </text>
+  <arg n="1">We</arg>
+  <arg f="ADV" n="m">almost</arg>
+  <rel>left out</rel>
+  <arg f="of" n="2">[campus] social activities</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

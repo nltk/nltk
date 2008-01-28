@@ -1,0 +1,52 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="foreshadow">
+<note>
+  Frames file for 'foreshadow' based on sentences in wsj.  No access
+  to verbnet at the moment.
+</note>
+
+<roleset id="foreshadow.01" name="augur, bode" vncls="-">
+<roles>
+  <role descr="predictor of future" n="0"/>
+  <role descr="prediction" n="1"/>
+  <role descr="means of prediction" n="2"/>
+</roles>
+
+<example name="plot device">
+<inflection aspect="ns" form="participle" person="ns" tense="past" voice="passive"/><text>
+     The new reports of sluggishness, which [*T*-2] were foreshadowed
+     [*-1] by an earlier Labor Department report that manufacturing
+     payrolls dropped by 105,000 in September, give the Fed another
+     reason to further ease its grip on credit and lower interest
+     rates. 
+</text>
+        <rel>foreshadowed</rel>
+        <arg n="1">[*-1] -&gt;  [*T*-2] -&gt;  which -&gt;  The new reports of
+        sluggishness</arg> 
+        <arg f="by" n="0">an earlier Labor Department report that
+        manufacturing payrolls dropped by 105,000 in September</arg> 
+</example>
+
+
+<example name="all args">
+<inflection aspect="perfect" form="participle" person="third" tense="present" voice="active"/>
+<text>
+    While Friday's plunging stock market prompted new fears about the
+    economy's prospects, a little-known indicator that [*T*-1] has
+    faithfully foreshadowed the economy's ups and downs by
+    exceptionally long lead times points to a sustained rise in
+    overall business activity. 
+</text>
+        <arg n="0">[*T*-1] -&gt;  that -&gt;  a little-known indicator</arg>
+        <rel>foreshadowed</rel>
+        <arg n="1">the economy's ups and downs</arg>
+        <arg f="by" n="2">exceptionally long lead times</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

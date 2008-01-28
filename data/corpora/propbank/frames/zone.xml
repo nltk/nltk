@@ -1,0 +1,41 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="zone">
+<note>
+  Frames file for 'zone' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="zone.01" vncls="-" name="establish areas for certain activities">
+<roles>
+  <role n="0"  descr="zoning board"/>
+  <role n="1"  descr="area"/>
+  <role n="2"  descr="activity"/>
+</roles>
+
+<example name="agentive adjective">
+<inflection person="ns" tense="ns" aspect="progressive" voice="active" form="participle"/>
+<text>
+     This would be the department's first suit challenging a local
+     zoning ordinance under 1988 amendments to the Fair Housing Act. 
+</text>
+	<rel>zoning</rel>
+	<arg n="0">ordinance</arg>
+</example>
+
+<example name="all args, verbal">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+     The county zoned John's property 'unfit for human habitation'.
+  </text>
+  <arg n="0"        >The county</arg>
+  <rel              >zoned</rel>
+  <arg n="1"        >John's property</arg>
+  <arg n="2"        >'unfit for human habitation'</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,48 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="adjust">
+<note>
+  Frames file for 'adjust' based on initial sentences of big corpus
+  and comparison with 'set' and 'change'
+</note>
+
+<roleset id="adjust.01" name="change (slightly)">
+<roles>
+  <role descr="causer of transformation" n="0"/>
+  <role descr="thing changing" n="1"/>
+  <role descr="end state" n="2"/>
+  <role descr="start state" n="3"/>
+  <role descr="purpose, reason for adjustment" n="4"/>
+</roles>
+
+<example name="simple transitive">
+  <text>
+  Banks adjusted payouts on CD's in the most recent week.
+  </text>
+  <arg n="0">Banks</arg>
+  <rel>adjusted</rel>
+  <arg n="1">payouts on CD's</arg>
+  <arg f="TMP" n="m">in the most recent week</arg>
+</example>
+
+<example name="with purpose">
+  <text>
+  All the figures are adjusted *trace* to remove usual seasonal patterns.
+  </text>
+  <arg n="1">*trace*=All the figures</arg>
+  <rel>adjusted</rel>
+  <arg n="4">to remove usual seasonal patterns</arg>
+</example>
+
+<example name="purpose transformed">
+  <text>
+  All the figures are adjusted for inflation.
+  </text>
+  <arg n="1">All the figures</arg>
+  <rel>adjusted</rel>
+  <arg f="for" n="4">inflation</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

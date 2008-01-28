@@ -1,0 +1,71 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="shatter">
+<note>
+Frames file for 'shatter' based on sentences in financial subcorpus
+and automatic expansion via verbnet.
+</note>
+
+<roleset id="shatter.01" name="break into a zillion pieces" vncls="45.1">
+<roles>
+	<role descr="breaker" n="0">
+		
+  <vnrole vncls="45.1" vntheta="Agent"/></role>
+ 
+	<role descr="thing broken" n="1">
+		
+  <vnrole vncls="45.1" vntheta="Patient"/></role>
+ 
+	<role descr="instrument" n="2">
+		
+  <vnrole vncls="45.1" vntheta="Instrument"/></role>
+ 
+	<role descr="pieces" n="3"/> 
+</roles>
+
+<example name="just transitive">
+<inflection aspect="perfect" form="participle" person="third" tense="present" voice="active"/>
+<text>
+    The fight has turned ugly and, among pilots at least, has
+    shattered the esprit de corps that Mr. Smith worked so hard to
+    build. 
+</text>
+        <arg n="0">The fight</arg>
+        <rel>shattered</rel>
+        <arg n="1">the esprit de corps that Mr. Smith worked so hard
+        to build</arg> 
+</example>
+
+<example name="odd location for instrument">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+     With his recent purchases of USX common stock, Mr. Icahn
+     shattered a three-year-old, unwritten standstill agreement with
+     Mr. Roderick. 
+</text>
+        <arg f="With" n="2">his recent purchases of USX common stock</arg>
+        <arg n="0">Mr. Icahn</arg>
+        <rel>shattered</rel>
+        <arg n="1">a three-year-old, unwritten standstill agreement
+        with Mr. Roderick</arg> 
+</example>
+
+<example name="with instrument and pieces">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John shattered the mirror into a million pieces with his face.
+  </text>
+  <arg n="0">John</arg>
+  <rel>shattered</rel>
+  <arg n="1">the mirror</arg>
+  <arg f="into" n="3">a million pieces</arg>
+  <arg f="with" n="2">his face</arg>
+</example>
+
+<note>
+Arg3 is largely redundant and will probably not appear often.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

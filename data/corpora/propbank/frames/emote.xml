@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="emote">
+<note>
+  Frames file for 'emote' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="emote.01" name="express emotion" vncls="-">
+<roles>
+  <role descr="expresser" n="0"/>
+</roles>
+
+<example name="the one example">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Sen. Kennedy, never mind his dubious credentials for the moral
+    high ground, emoted brilliantly. 
+</text>
+        <arg n="0">Sen. Kennedy</arg>
+        <rel>emoted</rel>
+        <arg f="MNR" n="M">brilliantly</arg>
+</example>
+
+<note>
+Back-formation from emotion.  Not really a verb, in other words.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

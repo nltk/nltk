@@ -1,0 +1,123 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="scare">
+<note>
+  Frames file for 'scare' based on sentences in financial subcorpus.
+  Verbnet class scare 31.1, no mention of other members.  Comparison
+  with 'spook'.
+</note>
+
+<roleset id="scare.01" name="scare" vncls="31.1">
+<roles>
+  <role descr="intentional agent of scaring" n="0">
+	  <vnrole vncls="31.1" vntheta="Cause"/></role>
+  <role descr="scared entity" n="1">
+	  <vnrole vncls="31.1" vntheta="Experiencer"/></role>
+  <role descr="instrument" n="2"/>
+  <role descr="intensifier" n="3"/>
+</roles>
+
+<example name="transitive">
+<text>
+    Such disclosures of big holdings often are used by raiders *trace*
+    to try *trace* to scare a company's managers. 
+</text>
+        <arg n="0">*trace* -&gt; *trace* -&gt;  raiders</arg>
+        <rel>scare</rel>
+        <arg n="1">a company 's managers</arg>
+</example>
+
+<example name="with instrument">
+  <text>
+    Mary scared John with her blood-red fingernails.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>scared</rel>
+  <arg n="1">John</arg>
+  <arg f="with" n="2">her blood-red fingernails</arg>
+</example>
+
+<example name="instrumental subject">
+  <text>
+    Mary's blood-red nails scared John.
+  </text>
+  <arg n="0">Mary's blood-red nails</arg>
+  <rel>scared</rel>
+  <arg n="1">John</arg>
+</example>
+
+<example name="with intensifier">
+<text>
+    It won't take much more *trace* to ``scare the hell out of retail
+    investors,'' he says. 
+</text>
+        <arg n="0">*trace* -&gt;  much more</arg>
+        <rel>scare</rel>
+        <arg n="3">the hell</arg>
+        <arg n="1">out of retail investors</arg>
+</example>
+
+<example name="another intensifier example">
+<text>
+    ``Small investors are absolutely dismayed that Wall Street is
+    stacking the deck against them, and these wide swings are scaring
+    them to death. 
+</text>
+        <arg n="0">these wide swings</arg>
+        <rel>scaring</rel>
+        <arg n="1">them</arg>
+        <arg n="3">to death</arg>
+</example>
+</roleset>
+
+<roleset id="scare.02" name="scare and make go away" vncls="31.1">
+<roles>
+  <role descr="intentional agent of scaring" n="0">
+	  <vnrole vncls="31.1" vntheta="Cause"/></role>
+  <role descr="scared entity" n="1">
+	  <vnrole vncls="31.1" vntheta="Experiencer"/></role>
+  <role descr="instrument" n="2"/>
+  <role n="3" descr="direction or resulting action"/>
+</roles>
+
+<example name="scare off">
+<text>
+ Their opposition helped *trace* scare off some Japanese banks .
+</text>
+        <arg n="0">*trace* -&gt;  Their opposition</arg>
+        <rel>scare</rel>
+        <arg n="3" f="DIR">off</arg>
+        <arg n="1">some Japanese banks</arg>
+</example>
+
+<example name="scare away">
+<text>
+    Mr. DaPuzzo also complained that the sharp swings in stock prices
+    lately is scaring away retail and foreign investors. 
+</text>
+        <arg n="0">the sharp swings in stock prices</arg>
+        <arg f="TMP" n="M">lately</arg>
+        <rel>scaring</rel>
+        <arg n="3" f="DIR">away</arg>
+        <arg n="1">retail and foreign investors</arg>
+</example>
+
+<example name="with resulting action">
+  <inflection person="ns" tense="present" aspect="progressive" voice="active" form="participle"/>
+  <text>
+    Mr. Brady also agreed with senators' concerns about recent
+    stock-market volatility, and said he realizes that the gyrations
+    are scaring investors from investing in stocks. 
+  </text>
+  <arg n="0"        >the gyrations</arg>
+  <rel              >scaring</rel>
+  <arg n="1"        >investors</arg>
+  <arg n="3" f="from">investing in stocks</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

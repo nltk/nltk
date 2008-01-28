@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="overarch">
+<note>
+  Frames file for 'overarch' based on sentences in wsj.  no Verbnet entry.
+</note>
+
+<roleset id="overarch.01" vncls="-" name="extend over, as an arch">
+<roles>
+  <role n="1"  descr="arch"/>
+</roles>
+
+<example name="arching over">
+  <inflection person="ns" tense="ns" aspect="progressive" voice="active" form="participle"/>
+  <text>
+    The most controversial of the Brady recommendations involved
+    establishing a single overarching regulator to handle crucial
+    cross-market questions, such as setting consistent margin
+    requirements for the stock and futures markets. 
+  </text>
+  <rel              >overarching</rel>
+  <arg n="1"        >regulator</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

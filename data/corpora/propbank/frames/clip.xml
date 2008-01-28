@@ -1,0 +1,66 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="clip">
+<note>
+  Frames file for 'clip' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="clip.01" name="to cut, cut off, or cut out" vncls="21.1">
+<roles>
+  <role descr="clipper, agent" n="0"><vnrole vncls="21.1" vntheta="Agent"/></role>
+  <role descr="thing clipped" n="1"><vnrole vncls="21.1" vntheta="Patient"/></role>
+  <role descr="clipped from" n="2"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ [*-1] Assuming [0] it was n't one of those columns that you clipped [*T*-2] and put [*T*-2] on the refrigerator door , I 'll review the facts .
+</text>
+	<arg n="0">you</arg>
+	<rel>clipped</rel>
+	<arg n="1">[*T*-2] -&gt;  that -&gt;  those columns</arg>
+</example>
+
+<example name="all arguments">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+ For another , sympathetic fans have sent Ms. Shere copies of her recipes clipped [*] from magazines over the years .
+</text>
+	<rel>clipped</rel>
+	<arg n="1">[*] -&gt;  copies</arg>
+	<arg f="from" n="2">magazines</arg>
+	<arg f="TMP" n="M">over the years</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="clip_off">
+
+<roleset id="clip.02" name="to cut, cut off, or cut out" vncls="21.1">
+<roles>
+  <role descr="clipper, agent" n="0"><vnrole vncls="21.1" vntheta="Agent"/></role>
+  <role descr="thing clipped" n="1"><vnrole vncls="21.1" vntheta="Patient"/></role>
+  <role descr="clipped from" n="2"/>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ The anthers in these plants are difficult [0] [*] to clip [*T*-1] off .
+</text>
+	<arg n="0">[*]</arg>
+	<rel>[ clip] [ off]</rel>
+	<arg n="1">[*T*-1] -&gt;  [0] -&gt;  The anthers in these plants</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

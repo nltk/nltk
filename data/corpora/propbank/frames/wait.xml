@@ -1,0 +1,90 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="wait">
+<note>
+  Frames file for 'wait' based on survey of initial sentences of big
+  corpus and comparison with 'remain' and 'exist' (so says verbnet).
+</note>
+
+<roleset id="wait.01" name="wait" vncls="47.1-1">
+<roles>
+  <role descr="wait-er (not waiter, that's the other sense)" n="1"/>
+  <role descr="thing waited for" n="2">
+	  <vnrole vncls="47.1-1" vntheta="Theme"/></role>
+  <role descr="period of time waited through" f="TMP" n="m"/>
+</roles>
+
+<example name="time period">
+  <text>
+  The Treasury may wait until Monday or Tuesday.
+  </text>
+  <arg n="1">The Treasury</arg>
+  <arg f="MOD" n="m">may</arg>
+  <rel>wait</rel>
+  <arg f="TMP" n="m">until Monday or Tuesday</arg>
+</example>
+
+<example name="waiting for Godot (you saw that coming, didn't you?)">
+  <text>
+  That permits them to wait for prices to rise.
+  </text>
+  <arg n="1">them</arg>
+  <rel>wait</rel>
+  <arg f="for" n="2">prices to rise</arg>
+</example>
+
+<note>
+&quot;Wait on&quot; is the same as &quot;wait for&quot;.  It seems to be dialectal
+variation, which is used.
+</note>
+
+</roleset>
+
+<roleset id="wait.02" name="wait tables" vncls="-">
+<roles>
+  <role descr="waiter" n="0"/>
+  <role descr="table" n="1"/>
+</roles>
+
+<example name="starving artist">
+  <text>
+  John is waiting tables in LA until he gets his big break.
+  </text>
+  <arg n="0">John</arg>
+  <rel>waiting</rel>
+  <arg n="1">tables</arg>
+  <arg f="LOC" n="m">in LA</arg>
+  <arg f="TMP" n="m">until he gets his big break</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="wait_out">
+
+<roleset id="wait.03" vncls="-" name="wait out: endure, outlast">
+<roles>
+  <role n="0"  descr="thing lasting longer"/>
+  <role n="1"  descr="thing lasting shorter"/>
+</roles>
+
+<example name="us. 'wait it out'">
+  <inflection person="ns" tense="ns" aspect="ns" voice="active" form="infinitive"/>
+  <text>
+    As the strike enters its 15th day today, some members are getting
+    nervous, the spokesman conceded, but the majority of the 55,000
+    Machinists are prepared [*-1] to ``wait it out as long as it
+    takes.'' 
+  </text>
+  <arg n="0"        >[*-1] -> the majority of the 55,000 Machinists</arg>
+  <rel              >wait out</rel>
+  <arg n="1"        >it</arg>
+  <arg n="m" f="TMP">as long as it takes</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

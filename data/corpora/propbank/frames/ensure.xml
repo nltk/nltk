@@ -1,0 +1,48 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="ensure">
+<note>
+  Frames file for 'ensure' based on sentences in financial subcorpus.
+  No Verbnet entry.  Comparison to 'guarantee'.
+</note>
+
+<roleset id="ensure.01" name="promise">
+<roles>
+  <role descr="entity making guarantee" n="0"/>
+  <role descr="guarantee" n="1"/>
+  <role descr="benefactive, guaranteed-to" n="2"/>
+</roles>
+
+<example name="sentential guarantee">
+<text>
+    Merieux previously said it would ensure its bid remained open
+    pending a final decision by Canadian regulators on whether to
+    approve the takeover. 
+</text>
+        <arg n="0">it</arg>
+        <arg f="MOD" n="M">would</arg>
+        <rel>ensure</rel>
+        <arg n="1">its bid remained open pending a final decision by
+        Canadian regulators on whether to approve the takeover</arg> 
+</example>
+
+<example name="NP guarantee">
+<text>
+    The complaint alleges that the price is ``unfair and grossly
+    inadequate'' and that the defendants are seeking *trace* to ensure
+    a ``lockup'' of the purchase of Unitel, thereby discouraging other
+    bids. 
+</text>
+        <arg n="0">*trace* -&gt;  the defendants</arg>
+        <rel>ensure</rel>
+        <arg n="1">a ``lockup'' of the purchase of Unitel</arg> 
+</example>
+
+<note>
+COMP should stay out of Arg1 for sentential guarantees.  The target of
+Arg0 traces can be very tricky--read the sentence carefully!
+</note>
+
+</roleset>
+</predicate>
+</frameset>

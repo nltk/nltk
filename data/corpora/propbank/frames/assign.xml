@@ -1,0 +1,40 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="assign">
+<note>
+  Frames file for 'assign' based on sentences in financial subcorpus.
+  Verbnet entry 13.3, other framed members include allocate, award,
+  concede, grant, promise and vote.  Comparison to those.  No Framenet
+  entry.
+</note>
+
+<roleset id="assign.01" name="give, associate with" vncls="13.3">
+<roles>
+  <role descr="agent, assigner" n="0">
+	  <vnrole vncls="13.3" vntheta="Agent"/></role>
+  <role descr="thing assigned" n="1">
+	  <vnrole vncls="13.3" vntheta="Theme"/></role>
+  <role descr="assigned to" n="2">
+	  <vnrole vncls="13.3" vntheta="Recipient"/></role>
+</roles>
+
+<example name="all args">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    It also owns Moody's Investors Service, which assigns
+    credit-ratings to bonds and preferred stock; A.C. Nielsen, known
+    for its data on television-viewing patterns, and Yellow-pages
+    publisher Donnelley. 
+</text>
+        <arg n="0">*trace* -&gt;  which -&gt;  Moody's Investors Service</arg>
+        <rel>assigns</rel>
+        <arg n="1">credit-ratings</arg>
+        <arg f="to" n="2">bonds and preferred stock</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

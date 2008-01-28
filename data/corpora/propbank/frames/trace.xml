@@ -1,0 +1,85 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="trace">
+<note>
+  Frames file for 'trace.01' based on sentences in wsj.  Verbnet entry
+  25.2. 
+</note>
+
+<roleset id="trace.01" name="copy" vncls="25.2">
+<roles>
+  <role descr="copier, agent" n="0">
+        <vnrole vncls="25.2" vntheta="Agent"/></role>
+  <role descr="original" n="1">
+        <vnrole vncls="25.2" vntheta="Theme"/></role>
+  <role descr="copy" n="2">
+        <vnrole vncls="25.2" vntheta="Destination"/></role>
+</roles>
+
+<example name="all args">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John traced the diagram onto tissue paper.
+  </text>
+  <arg n="0">John</arg>
+  <rel>traced</rel>
+  <arg n="1">the diagram</arg>
+  <arg f="onto" n="2">tissue paper</arg>
+</example>
+
+<note>
+In the absense of arg2 the two senses can be very difficult to
+distinguish, since both are essentially &quot;follow the lines&quot;.  The
+distinction might ultimately come down to the semantic ontology of the
+arg1--is it a picture?
+</note>
+
+</roleset>
+
+<roleset id="trace.02" name="follow to the source" vncls="-">
+<roles>
+  <role descr="follower" n="0"/>
+  <role descr="thing followed" n="1"/>
+  <role descr="source" n="2"/>
+</roles>
+
+<example name="all args">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Douglas Madison, a corporate trader with Bank of America in Los
+    Angeles, traced the dollar's recent solid performance against the
+    yen to purchases of securities by Japanese insurance companies and
+    trust banks and the sense that another wave of investment is
+    waiting in the wings. 
+</text>
+        <arg n="0">Douglas Madison, a corporate trader with Bank of
+        America in Los Angeles,</arg> 
+        <rel>traced</rel>
+        <arg n="1">the dollar's recent solid performance against the
+        yen</arg> 
+        <arg f="to" n="2">purchases of securities by Japanese
+        insurance companies and trust banks and the sense that another
+        wave of investment is waiting in the wings</arg> 
+</example>
+
+<example name="lacking source">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    The personal antics of agency Director Amadou-Mahtar M'Bow drew
+    much attention, such as when several of his top aides were
+    uncovered as KGB plants and ejected from France and when a
+    mysterious office fire was set just before Congress sent
+    accountants *trace* *trace* to trace U.S. funds. 
+</text>
+        <arg n="0">*trace* -&gt; *trace* -&gt;  accountants</arg>
+        <rel>trace</rel>
+        <arg n="1">U.S. funds</arg>
+</example>
+
+<note>
+Whence &quot;trace chain&quot;.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

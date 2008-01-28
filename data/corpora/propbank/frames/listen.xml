@@ -1,0 +1,48 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="listen">
+<note>
+  Frames file for 'listen' based on sentences in financial subcorpus.
+  Verbnet entries  30.3 35.5, no other framed members.  (?)
+  Comparison to 'hear'.
+</note>
+
+<roleset id="listen.01" name="attend to a sound" vncls="30.3 35.5">
+<roles>
+  <role descr="listener" n="0">
+		
+		
+  <vnrole vncls="30.3" vntheta="Experiencer"/><vnrole vncls="35.5" vntheta="Agent"/></role>
+
+  <role descr="sound or speaker" n="1">
+		
+		
+  <vnrole vncls="30.3" vntheta="Stimulus"/><vnrole vncls="35.5" vntheta="Theme"/></role>
+
+</roles>
+
+<example name="transitive">
+<text>
+    ``We watch the same indicators and listen to the same
+    prognosticators.'' 
+</text>
+        <arg n="0">We</arg>
+        <rel>listen</rel>
+        <arg f="to" n="1">the same prognosticators</arg>
+</example>
+
+<example name="intransitive">
+<text>
+    Willliam Greaney said that the influence of the appeals court in
+    New York ``will make insurers sit up and listen.'' 
+</text>
+        <arg n="0">insurers</arg>
+        <rel>listen</rel>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

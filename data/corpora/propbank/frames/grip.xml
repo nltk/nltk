@@ -1,0 +1,51 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="grip">
+<note>
+  Frames file for 'grip' based on sentences in wsj.  Verbnet entry
+  15.1, Framenet entry Manipulation.
+</note>
+
+<roleset id="grip.01" name="hold tight" vncls="15.1">
+<roles>
+  <role descr="holder" n="0"><vnrole vncls="15.1" vntheta="Agent"/></role>
+  <role descr="thing held" n="1"><vnrole vncls="15.1" vntheta="Theme"/></role>
+  <role descr="benefactive" n="2"/>
+  <role descr="secondary attribute of thing held" n="3"/>
+</roles>
+
+<example name="nice and simple">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Chinese leader Deng told former President Nixon that the U.S. was
+    deeply involved in ``the turmoil and counterrevolutionary
+    rebellion'' that *trace* gripped Beijing last spring. 
+</text>
+        <arg n="0">*trace* -&gt;  that -&gt;  ``the turmoil and
+        counterrevolutionary rebellion''</arg> 
+        <rel>gripped</rel>
+        <arg n="1">Beijing</arg>
+        <arg f="TMP" n="M">last spring</arg>
+</example>
+
+<example name="heavy-NP movement, or something like that">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    They note that when an unexpectedly sharp widening in the
+    U.S. trade gap in August was reported earlier this month, hopes
+    for a sustained narrowing of the trade deficit were dashed and
+    sentiment gripped the market that the U.S. economy was losing its
+    momentum. 
+</text>
+        <arg n="0">[ sentiment ] [ that the U.S. economy was losing
+        its momentum]</arg> 
+        <rel>gripped</rel>
+        <arg n="1">the market</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

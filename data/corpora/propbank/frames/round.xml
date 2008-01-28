@@ -1,0 +1,63 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="round_out">
+<note>
+  Frames file for 'round' based on sentences in wsj.  Verbnet entry
+  45.4, but I'm ignoring that because that doesn't match usage.
+</note>
+
+<roleset id="round.01" name="bring to completion, fulfill" vncls="-">
+<roles>
+  <role descr="bringer to completion" n="0"/>
+  <role descr="thing complete" n="1"/>
+</roles>
+
+<example name="blah blah blah">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+     Mr. Brawer's wife, Catherine, and Robert Stroup, Elizabeth's
+     husband, round out the five-member board. 
+</text>
+        <arg n="0">Mr. Brawer's wife, Catherine, and Robert Stroup,
+        Elizabeth's husband,</arg> 
+        <rel>[ round] [ out]</rel>
+        <arg n="1">the five-member board</arg>
+</example>
+
+<note>
+This could also take a causative agent (John rounded out his group
+with a group of stooges) but that complicates things enormously, and
+doesn't occur anyway.
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="round_up">
+
+<roleset id="round.02" name="procure, arrange, get" vncls="-">
+<roles>
+  <role descr="getter" n="0"/>
+  <role descr="thing got(ten)" n="1"/>
+</roles>
+
+<example name="like a cattle drive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+     After the vote, Connecticut Rep. Nancy Johnson rounded up nearly
+     as many signatures on a letter to Mr. Bush urging him not to
+     veto. 
+</text>
+        <arg f="TMP" n="M">After the vote</arg>
+        <arg n="0">Connecticut Rep. Nancy Johnson</arg>
+        <rel>[ rounded] [ up]</rel>
+        <arg n="1">nearly as many signatures</arg>
+        <arg f="LOC" n="M">on a letter to Mr. Bush urging him not to
+        veto</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

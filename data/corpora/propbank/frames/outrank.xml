@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="outrank">
+<note>
+  Frames file for 'outrank' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="outrank.01" name="surpass in rank" vncls="-">
+<roles>
+  <role descr="entity with higher rank" n="0"/>
+  <role descr="entity with lower rank" n="1"/>
+</roles>
+
+<example name="the one example">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    Japan not only outstrips the U.S. in investment flows but also
+    outranks it in trade with most Southeast Asian countries (although
+    the U.S. remains the leading trade partner for all of Asia). 
+</text>
+        <arg n="0">Japan</arg>
+        <arg f="DIS" n="M">but also</arg>
+        <rel>outranks</rel>
+        <arg n="1">it</arg>
+        <arg f="LOC" n="M">in trade with most Southeast Asian countries</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

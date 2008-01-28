@@ -1,0 +1,37 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="discard">
+<note>
+  Frames file for 'discard' based on sentences in wsj.  No Verbnet
+  entry, Framenet entry Removing.
+</note>
+
+<roleset id="discard.01" name="get rid of" vncls="-">
+<roles>
+  <role descr="discarder, remover" n="0"/>
+  <role descr="thing discarded" n="1"/>
+  <role descr="removed from, source" n="2"/>
+</roles>
+
+<example name="just transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Instead, they figure the culprit probably took money from
+    Ms. Shere's wallet and discarded all the tips in the
+    five-by-eight-inch looseleaf. 
+</text>
+        <arg n="0">the culprit</arg>
+        <arg f="DIS" n="M">probably</arg>
+        <rel>discarded</rel>
+        <arg n="1">all the tips in the five-by-eight-inch looseleaf</arg>
+</example>
+
+<note>
+Comparison with 'remove' (etc) suggests the 'source' argument, but
+that doesn't appear in wsj usage and I can't come up with a
+nice-sounding example.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

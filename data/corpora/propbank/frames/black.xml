@@ -1,0 +1,52 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="black_out">
+<note>
+  Frames file for 'black out' based on sentences in wsj.  No Verbnet
+  entry, Framenet entry Fall asleep.
+</note>
+
+<roleset id="black.01" name="fall asleep, faint" vncls="-">
+<roles>
+  <role descr="fainter" n="0"/>
+</roles>
+
+<example name="poor John">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John blacked out before Mary could hit him more than three or
+     four times.
+  </text>
+  <arg n="0">John</arg>
+  <rel>blacked out</rel>
+  <arg f="TMP" n="m">before Mary could hit him more than three or four
+  times</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="black.02" name="cause to not emit light" vncls="-">
+<roles>
+  <role descr="causer of non-emission, agent" n="0"/>
+  <role descr="non-emitter of light" n="1"/>
+</roles>
+
+<example name="misparsed passive">
+<inflection aspect="ns" form="participle" person="third" tense="past" voice="passive"/>
+<text>
+    In this way, while the Stick itself was blacked out, we kept up to
+    date on events. 
+</text>
+        <arg n="1">the Stick itself</arg>
+        <rel>[ blacked] [ out]</rel>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

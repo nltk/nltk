@@ -1,0 +1,94 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="laugh">
+<note>
+  Frames file for 'laugh' based on sentences in wsj.  Verbnet entry 40.2. 
+</note>
+
+<roleset id="laugh.01" name="laugh" vncls="40.2">
+<roles>
+  <role descr="laugher" n="0"><vnrole vncls="40.2" vntheta="Agent"/></role>
+  <role descr="cognate object" n="1"><vnrole vncls="40.2" vntheta="Theme"/></role>
+  <role descr="source of joy" n="2"><vnrole vncls="40.2" vntheta="Cause"/></role>
+</roles>
+
+<example name="intransitive">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    ``The Cosby Show'' may have single-handedly turned around ratings
+    at NBC since its debut in 1984, and the Huxtable family still
+    keeps millions of viewers laughing Thursday night on the network. 
+</text>
+        <arg n="0">millions of viewers</arg>
+        <rel>laughing</rel>
+        <arg f="TMP" n="M">Thursday night</arg>
+        <arg f="LOC" n="M">on the network</arg>
+</example>
+
+<example name="with source">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    ``It's hard to know whether it was intended to be funny,'' says
+    the East Berlin shopkeeper, ``But everyone I know laughed about
+    it. 
+</text>
+        <arg n="0">everyone I know </arg>
+        <rel>laughed</rel>
+        <arg f="about" n="2">it</arg>
+</example>
+
+<example name="just source">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="passive"/>
+<text>
+    Sex scandals make people look careless and silly, and one of the
+    worst sins in Washington is *trace* to be laughed at *trace*. 
+</text>
+        <rel>laughed</rel>
+        <arg f="at" n="2">*trace* -&gt; *trace*
+        in Washington</arg> 
+</example>
+
+<example name="with cognate object">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John laughed a good laugh at Mary's expense.
+  </text>
+  <arg n="0">John</arg>
+  <rel>laughed</rel>
+  <arg n="1">a good laugh</arg>
+  <arg f="at" n="2">Mary's expense</arg>
+</example>
+
+<note>
+Cognate object is arg1 for other verbs of this class, which don't take
+&quot;source&quot; args, forcing this numbering.
+</note>
+
+</roleset>
+
+<roleset id="laugh.02" name="manner of speaking" vncls="-">
+<roles>
+  <role descr="speaker" n="0"/>
+  <role descr="utterance" n="1"/>
+  <role descr="hearer" n="2"/>
+</roles>
+
+<example name="the usual">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    And don't expect many complete games by pitchers -- perhaps three
+    out of 288, laughs *trace* Mr. Fingers, the former Oakland
+    reliever. 
+</text>
+        <rel>laughs</rel>
+        <arg n="1">*trace* -&gt;   don't expect many complete games by
+        pitchers -- perhaps three out of 288</arg> 
+        <arg n="0">Mr. Fingers, the former Oakland reliever</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

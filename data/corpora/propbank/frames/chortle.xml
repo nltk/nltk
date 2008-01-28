@@ -1,0 +1,60 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="chortle">
+<note>
+  Frames file for 'chortle' based on sentences in wsj.  Verbnet entry
+  40.2.  The classic example of a blended neologism; dates to Lewis
+  Carroll and stems from chuckle+snort.
+</note>
+
+<roleset id="chortle.01" vncls="40.2" name="chuckle and snort">
+<roles>
+  <role n="0"  descr="chortler"/>
+</roles>
+
+<example name="basic usage">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+     John chortled softly.
+  </text>
+  <arg n="0"        >John</arg>
+  <rel              >chortled</rel>
+  <arg n="m" f="MNR">softly</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="chortle.02" vncls="-" name="move while chortling">
+<roles>
+  <role n="0"  descr="chortler"/>
+  <role n="1"  descr="path"/>
+</roles>
+
+<example name="chant and chortle both!">
+<inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+<text>
+    Keeping the mood light, the two then chanted and chortled their
+    way through some murderous polyrhythms, devised by Mr. Douglas as
+    an alternative to Hindemith's dry theory-teaching techniques, and
+    then, with Mr. Gomez, soared and improvised on the composer's
+    tight ``Bebop Etudes.'' 
+</text>
+	<arg n="M">Keeping the mood light</arg>
+	<arg n="0">the two</arg>
+	<arg n="M" f="TMP">then</arg>
+	<rel>chortled</rel>
+	<arg n="1">their way</arg>
+	<arg n="M" f="DIR">through some murderous polyrhythms, devised
+	by Mr. Douglas as an alternative to Hindemith's dry
+	theory-teaching techniques</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

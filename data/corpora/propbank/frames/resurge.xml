@@ -1,0 +1,29 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="resurge">
+<note>
+  Frames file for 'resurge' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="resurge.01" vncls="-" name="come back strongly">
+<roles>
+  <role n="0"  descr="thing resurging"/>
+</roles>
+
+<example name="adjectival">
+<inflection person="ns" tense="ns" aspect="progressive" voice="active" form="participle"/>
+<text>
+      Photographic companies are scrambling to tap the resurging
+      market, reviving some black-and-white product lines and
+      developing new ones.
+</text>
+	<rel>resurging</rel>
+	<arg n="0">market</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

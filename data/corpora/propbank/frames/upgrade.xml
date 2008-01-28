@@ -1,0 +1,62 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="upgrade">
+<note>
+  Frames file for 'upgrade' based on sentences in financial subcorpus.
+  No Verbnet entry.  Comparison with 'improve' and 'replace'.
+</note>
+
+<roleset id="upgrade.01" name="replace">
+<roles>
+  <role descr="replacer, agent" n="0"/>
+  <role descr="old thing" n="1"/>
+  <role descr="new thing" n="2"/>
+</roles>
+
+<example name="all args">
+<text>
+    Edward M. Esber attributed the decline to reduced domestic revenue
+    because of $4.9 million spent *trace* to upgrade existing software
+    inventories to the new database IV Version 1.1. 
+</text>
+        <arg n="0"/>
+        <rel>upgrade</rel>
+        <arg n="1">existing software inventories</arg>
+        <arg f="to" n="2">the new database IV Version 1.1</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="upgrade.02" name="improve">
+<roles>
+  <role descr="cause of improvement, agent" n="0"/>
+  <role descr="thing improving" n="1"/>
+  <role descr="amount, EXT" n="2"/>
+  <role descr="start point" n="3"/>
+  <role descr="end point" n="4"/>
+</roles>
+
+<example name="transitive">
+<text>
+    Recently it upgraded its plants so that it could make
+    stain-resistant products with higher quality dyes.
+</text>
+        <arg f="TMP" n="M">Recently</arg>
+        <arg n="0">it</arg>
+        <rel>upgraded</rel>
+        <arg n="1">its plants</arg>
+        <arg f="PNC" n="M">so that it could make stain-resistant
+        products with higher quality dyes</arg> 
+</example>
+
+<note>
+The 'improve' sense is really the same as the 'replace' sense with the
+two objective arguments merged.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

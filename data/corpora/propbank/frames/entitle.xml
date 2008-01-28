@@ -1,0 +1,101 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="entitle">
+<note>
+  Frames file for 'entitle' based on sentences in financial
+  subcorpus.  No verbnet entry.  Comparison with 'allow' and 'name'.
+</note>
+
+<roleset id="entitle.01" name="allow">
+<roles>
+  <role descr="allower" n="0"/>
+  <role descr="action allowed" n="1"/>
+  <role descr="explicit allowed-agent" n="2"/>
+</roles>
+
+<example name="sentential action">
+<text>
+    Each right entitles the shareholder to buy $100 face amount of
+    13.5% bonds due 1993 and warrants to buy 23.5 common shares at 30
+    cents a share. 
+</text>
+        <arg n="0">Each right</arg>
+        <rel>entitles</rel>
+        <arg n="1">the shareholder to buy $100 face amount of 13.5%
+        bonds due 1993 and warrants to buy 23.5 common shares at 30
+        cents a share</arg> 
+</example>
+
+<example name="sentential action with passive extraction">
+<text>
+    This is because a Delaware court earlier this year said that
+    Drexel is entitled to get its money back before or at the same
+    time as the limited partners. 
+</text>
+        <arg n="2">Drexel</arg>
+        <rel>entitled</rel>
+        <arg n="1">to get its money back before or at the same time as
+        the limited partners</arg> 
+</example>
+
+<example name="PP entitled-to, passivized">
+<text>
+    The buy-out group is also entitled to $16 million to repay a fund
+    created by the pilots union for an employee stock ownership plan.
+</text>
+        <arg n="2">The buy-out group</arg>
+        <arg f="DIS" n="M">also</arg>
+        <rel>entitled</rel>
+        <arg n="1">to $ 16 million to repay a fund created by the
+        pilots union for an employee stock ownership plan</arg> 
+</example>
+
+<example name="PP entitled-to, active">
+  <text>
+    John's medical condition entitles him to a primo parking place.
+  </text>
+  <arg n="0">John's medical condition</arg>
+  <rel>entitles</rel>
+  <arg n="2">him</arg>
+  <arg f="to" n="1">a primo parking place</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="entitle.02" name="assign a name">
+<roles>
+  <role descr="namer" n="0"/>
+  <role descr="named" n="1"/>
+  <role descr="name" n="2"/>
+</roles>
+
+<example name="all args">
+  <text>
+    John entitled his dissertation, &quot;Why Predicate Argument Tagging
+    Rocks.&quot;
+  </text>
+  <arg n="0">John</arg>
+  <rel>entitled</rel>
+  <arg n="1">his dissertation</arg>
+  <arg n="2">&quot;Why Predicate Argument Tagging Rocks.&quot;</arg>
+</example>
+
+<example name="headless relative">
+<text>
+    In a recent investment letter entitled ``Winners of the `Leverage
+    Wars,'''...
+</text>
+        <arg n="1">a recent investment letter</arg>
+        <rel>entitled</rel>
+        <arg n="2">Winners of the ` Leverage Wars</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,122 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<note>
+based on survey of initial sentences of big corpus
+</note>
+
+<predicate lemma="trade">
+<roleset id="trade.01" name="exchange" vncls="13.1 13.6">
+  <roles>
+    <role descr="agent, entity trading" n="0">
+	<vnrole vncls="13.1" vntheta="Agent"/>
+        <vnrole vncls="13.6" vntheta="Agent"/></role>
+    <role descr="thing being traded (away)" n="1">
+	<vnrole vncls="13.1" vntheta="Theme"/>
+        <vnrole vncls="13.6" vntheta="Theme1"/></role>
+    <role descr="other exchanger" n="2"/>
+    <role descr="other item in exchange, price, or premium, traded for or at" n="3">
+	<vnrole vncls="13.6" vntheta="Theme2"/></role>
+    <role descr="benefactive" n="4">
+        <vnrole vncls="13.1" vntheta="Recipient"/></role>
+  </roles>
+
+<example name="all args">
+  <text>
+    John traded his eternal soul to the devil for one good night's sleep.
+  </text>
+  <arg n="0">John</arg>
+  <rel>traded</rel>
+  <arg n="1">his eternal soul</arg>
+  <arg f="to" n="2">the devil</arg>
+  <arg f="for" n="3">one good night's sleep</arg>
+</example>
+
+<example name="ergative">
+  <text>
+    Bank of New England's shares are traded *trace* on the New York
+    Stock Exchange. 
+  </text>
+  <arg n="1">Bank of New England's shares</arg>
+  <rel>traded</rel>
+  <arg f="LOC" n="M">on the New York Stock Exchange</arg>
+</example>
+
+<example name="intransitive">
+  <text>
+    Some people use computers *trace* to trade.
+  </text>
+  <arg n="0">trace -&gt; some people</arg>
+  <rel>trade</rel>
+</example>
+
+<example name="another ergative">
+  <text>
+    Stock-index futures trade in Chicago.
+  </text>
+  <arg n="1">Stock-index futures</arg>
+  <arg f="LOC" n="M">in Chicago</arg>
+</example>
+
+<example name="with benefactive">
+  <text>
+    Dealers traded actively on Wednesday for their own accounts
+  </text>
+  <arg n="0">dealers</arg>
+  <rel>traded</rel>
+  <arg f="MNR" n="m">actively</arg>
+  <arg f="for" n="4">their own accounts</arg>
+</example>
+
+<example name="with price">
+  <text>
+    The issue trades at a premium to its face amount.
+  </text>
+  <arg n="1">the issue</arg>
+  <rel>trades</rel>
+  <arg f="at" n="3">a premium to its face amount</arg>
+</example>
+
+<example name="nominal, abstract">
+  <inflection person="ns" tense="ns" aspect="ns" voice="ns" form="gerund"/>
+  <text>
+    In late afternoon New York trading the currency was at 1.8500
+    margs and 143.80 yen compared with 1.8415 and 142.85 yen.
+  </text>
+  <arg n="m" f="TMP">late afternoon</arg>
+  <arg n="m" f="LOC">New York</arg>
+  <rel              >trading</rel>
+</example>
+
+<example name="nominal, semi-concrete">
+  <inflection person="ns" tense="ns" aspect="ns" voice="ns" form="gerund"/>
+  <text>
+    ...following a review of the tumultuous trading in stocks and
+    stock-index futures on Friday Oct. 13, when the Dow Jones
+    industrials plunged 190 points and stock-index futures prices
+    skidded as well.
+  </text>
+  <arg n="m" f="MNR">tumultuous</arg>
+  <rel              >trading</rel>
+  <arg n="1" f="in">stocks and stock-index futures</arg>
+  <arg n="m" f="TMP">on Friday Oct. 13, when the Dow Jones
+    industrials plunged 190 points and stock-index futures prices
+    skidded as well</arg>
+</example>
+
+<example name="nominal, with agent-ish">
+  <inflection person="ns" tense="ns" aspect="ns" voice="ns" form="gerund"/>
+  <text>
+     London serves increasingly as a conduit for program trading of
+     U.S. stocks.
+  </text>
+  <arg n="0"        >program</arg>
+  <rel              >trading</rel>
+  <arg n="1" f="of">U.S. stocks</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

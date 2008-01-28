@@ -1,0 +1,43 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="calculate">
+<note>
+  Frames file for 'calculate' based on sentences in financial
+  subcorpus.  No verbnet entry.  Comparison with 'think'
+</note>
+
+<roleset id="calculate.01" name="calculate, reckon, think">
+<roles>
+    <role descr="Thinker" n="0"/>
+    <role descr="Thought" n="1"/>
+    <role descr="Attributive" n="2"/>
+</roles>
+
+<example name="all args">
+  <text>
+    Analysts calculate Cray Computer's initial book value at about
+    $4.75 a share.
+  </text>
+  <arg n="0">Analysts</arg>
+  <rel>calculate</rel>
+  <arg n="1">Cray Computer's initial book value</arg>
+  <arg f="at" n="2">about $4.75 a share.</arg>
+</example>
+
+<example name="no attribute">
+  <text>
+    He calculates that the recent market slide translated into a 5% to
+    7% reduction in IPO proceeds to companies.
+  </text>
+  <arg n="0">He</arg>
+  <rel>calculates</rel>
+  <arg n="1">the recent market slide translated into a 5% to
+    7% reduction in IPO proceeds to companies</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

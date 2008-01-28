@@ -1,0 +1,42 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="ward_off">
+<note>
+  Frames file for 'ward off' based on sentences in financial
+  subcorpus.  No verbnet entry.  Comparison with 'avoid'.
+</note>
+
+<roleset id="ward.01" name="avoid, keep away">
+<roles>
+  <role descr="avoider, warder" n="0"/>
+  <role descr="thing avoided, warded off" n="1"/>
+  <role descr="explicit instrument" n="2"/>
+</roles>
+
+<example name="transitive">
+<text>
+    The company earlier this year adopted a shareholder-rights plan
+    *trace* to ward off unwanted suitors. 
+</text>
+        <arg n="0">*trace* -&gt;  The company</arg>
+        <rel>[ ward] [ off]</rel>
+        <arg n="1">unwanted suitors</arg>
+</example>
+
+<note>
+I haven't actually seen any explicit instruments, but it could happen, ie:
+</note>
+
+<example name="with instrument">
+  <text>
+    Mary warded off John's amorous advances with an icy stare.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>warded off</rel>
+  <arg n="1">John's amorous advances</arg>
+  <arg f="with" n="2">an icy stare</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

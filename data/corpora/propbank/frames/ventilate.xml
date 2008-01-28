@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="ventilate">
+<note>
+  Frames file for 'ventilate' based on sentences in financial
+  subcorpus.  No Verbnet entry.
+</note>
+
+<roleset id="ventilate.01" name="allow air circulation" vncls="-">
+<roles>
+  <role descr="allower, agent" n="0"/>
+  <role descr="stuffy room" n="1"/>
+</roles>
+
+<example name="sensible usage">
+  <inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+  <text>
+     John ventilates his bedroom once a week.
+  </text>
+  <arg n="0">John</arg>
+  <rel>ventilates</rel>
+  <arg n="1">his bedroom</arg>
+  <arg f="TMP" n="m">once a week</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

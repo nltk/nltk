@@ -1,0 +1,78 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="march">
+<note>
+  Frames file for 'march' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+
+<roleset id="march.01" name="to walk steadily" vncls="51.3.2">
+<roles>
+  <role descr="causer" n="A"/>
+  <role descr="agent walking" n="0">
+	<vnrole vncls="51.3.2" vntheta="Theme"/></role>
+</roles>
+
+
+<example name="with direction">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ As the judge marched down the center aisle in his flowing black robe , he was heralded [*-128] by a trumpet fanfare .
+</text>
+	<arg n="0">the judge</arg>
+	<rel>marched</rel>
+	<arg f="DIR" n="M">down the center aisle</arg>
+	<arg f="MNR" n="M">in his flowing black robe</arg>
+</example>
+
+
+<example name="with ArgA">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ Colleagues today recall with some humor how meetings would crawl into the early morning hours [*T*-1] as Mr. Dinkins would march his staff out of board meetings and into his private office [*-2] to discuss , en masse , certain controversial proposals .
+</text>
+	<arg n="A">Mr. Dinkins</arg>
+	<arg f="MOD" n="M">would</arg>
+	<rel>march</rel>
+	<arg n="0">his staff</arg>
+	<arg f="DIR" n="M">out of board meetings and into his private office</arg>
+	<arg f="PNC" n="M">[*-2] to discuss , en masse , certain controversial proposals</arg>
+</example>
+
+<example name="intransitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ About 200,000 East Germans marched in Leipzig and thousands more staged protests in three other cities in a fresh challenge [*ICH*-1] to the Communist leadership [*] to introduce democratic freedoms .
+</text>
+	<arg n="0">About 200,000 East Germans</arg>
+	<rel>marched</rel>
+	<arg f="LOC" n="M">in Leipzig</arg>
+</example>
+</roleset>
+
+
+<roleset id="march.02" name="to progress, advance" vncls="-">
+<roles>
+  <role descr="entity progressing" n="1"/>
+</roles>
+
+
+<example name="with direction">
+<inflection aspect="progressive" form="participle" person="ns" tense="past" voice="active"/>
+<text>
+ It was as short as 29 days at the start of this year , when rates were marching steadily upward [*T*-1] , and hit 42 days in August .
+</text>
+	<arg n="1">rates</arg>
+	<rel>marching</rel>
+	<arg f="MNR" n="M">steadily</arg>
+	<arg f="DIR" n="M">upward</arg>
+	<arg f="TMP" n="M">[*T*-1] -&gt;  when -&gt;  this year</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

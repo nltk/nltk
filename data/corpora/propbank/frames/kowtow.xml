@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="kowtow">
+<note>
+  Frames file for 'kowtow' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="kowtow.01" name="to kneel or fawn" vncls="-">
+<roles>
+  <role descr="subservient entity" n="0"/>
+  <role descr="entity kowtowed to" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ The Orwellian `` New World Information Order '' would give government officials rights against the press ; journalists would be obliged [*-1] to kowtow to their government , which [*T*-28] would have licensing and censorship powers and , indeed , duties [*] to block printing of `` wrong '' ideas .
+</text>
+	<arg n="0">[*-1] -&gt;  journalists</arg>
+	<rel>kowtow</rel>
+	<arg f="to" n="1">their government , which [*T*-28] would have licensing and censorship powers and , indeed , duties [*] to block printing of `` wrong '' ideas</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

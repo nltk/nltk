@@ -1,0 +1,134 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="open">
+<note>
+  Frames file for 'open' based on survey of initial sentences of big
+  corpus and comparison with 'close'
+</note>
+
+<roleset id="open.01" name="open" vncls="40.3.2 45.4 47.6">
+<roles>
+  <role descr="opener" n="0">
+	
+        
+        <vnrole vncls="47.6" vntheta="Agent"/><vnrole vncls="40.3.2" vntheta="Agent"/><vnrole vncls="45.4" vntheta="Agent"/></role>
+  <role descr="thing opening" n="1">
+	
+        
+        <vnrole vncls="47.6" vntheta="Theme"/><vnrole vncls="40.3.2" vntheta="Patient"/><vnrole vncls="45.4" vntheta="Patient"/></role>
+  <role descr="instrument" n="2">
+	<vnrole vncls="45.4" vntheta="Instrument"/></role>
+  <role descr="benefactive" n="3">
+	<vnrole vncls="40.3.2" vntheta="Recipient"/></role>
+</roles>
+
+<example name="agentive">
+  <text>
+  Texas Instruments Inc. opened a plant in South Korea to manufacture
+  control devices.
+  </text>
+  <arg n="0">Texas Instruments Inc.</arg>
+  <rel>opened</rel>
+  <arg n="1">a plant</arg>
+  <arg f="LOC" n="m">in South Korea</arg>
+  <arg f="PNC" n="m">to manufacture control devices.</arg>
+</example>
+
+<example name="ergative">
+  <text>
+  The branch of the the Bank for Foreign Economic Affairs opened in July.
+  </text>
+  <arg n="1">The branch of the the Bank for Foreign Economic
+  Affairs</arg> 
+  <rel>opened</rel>
+  <arg f="TMP" n="m">in July</arg>
+</example>
+
+<example name="instrumental">
+  <text>
+  Douglas Wilder opened his gubernatorial battle with Marshall Coleman
+  with an abortion commerical.
+  </text>
+  <arg n="0">Douglas Wilder</arg>
+  <rel>opened</rel>
+  <arg n="1">his gubernatorial battle with Marshall Coleman</arg>
+  <arg f="with" n="2">an abortion commerical</arg>
+</example>
+
+<example name="topicalized instrument">
+  <text>
+  This can opener opens bottles, too!
+  </text>
+  <arg n="2">This can opener</arg>
+  <rel>opens</rel>
+  <arg n="1">bottles</arg>
+  <arg f="DIS" n="m">too</arg>
+</example>
+
+<example name="benefactive">
+  <text>
+  South Korea has opened its market to foreign cigarettes.
+  </text>
+  <arg n="0">South Korea</arg>
+  <rel>opened</rel>
+  <arg n="1">its market</arg>
+  <arg f="to" n="3">foreign cigarettes</arg>
+</example>
+
+<note>
+Many examples of adjectival open: &quot;the open door&quot;.  Do not tag these.
+Watch out, also, for misparsed adjectives as in &quot;The market is open to
+all comers.&quot;  This is sometimes tagged (incorrectly) as a verb.
+</note>
+
+</roleset>
+<roleset id="open.02" name="begin" vncls="48.1.1">
+<note>
+As with 'close', mostly of stocks.
+</note>
+
+<roles>
+  <role descr="thing opening" n="1">
+        <vnrole vncls="48.1.1" vntheta="Theme"/></role>
+  <role descr="up, down, or unchanged" f="MNR" n="M"/>
+  <role descr="start point" f="EXT" n="M"/>
+</roles>
+
+<example name="ergative">
+  <text>
+  Thursday the US currency opened for trading at 143.93 yen.
+  </text>
+  <arg f="TMP" n="m">Thursday</arg>
+  <arg n="1">the US currency</arg>
+  <rel>opened</rel>
+  <arg f="PNC" n="m">for trading</arg>
+  <arg f="EXT" n="m">at 143.93 yen</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="open_up">
+  <roleset id="open.03" name="cause to be not closed" vncls="45.4">
+<roles>
+  <role descr="opener" n="0">
+        </role>
+  <role descr="thing opening" n="1">
+        <vnrole vncls="45.4" vntheta="Patient"/></role>
+  <role descr="instrument" n="2">
+	</role>
+  <role descr="benefactive" n="3"/>
+</roles>
+
+<example name="then again, maybe they are present after all">
+  <text>
+  The incentive pay thing has opened up a can of worms.
+  </text>
+  <arg n="2">The incentive pay thing</arg>
+  <rel>opened up</rel>
+  <arg n="1">a can of worms</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,47 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="outrage">
+<note>
+  Frames file for 'outrage' based on sentences in wsj.  Verbnet entry 31.1
+</note>
+
+<roleset id="outrage.01" name="make very angry" vncls="31.1">
+<roles>
+  <role descr="causer of anger" n="0"><vnrole vncls="31.1" vntheta="Cause"/></role>
+  <role descr="angry entity" n="1"><vnrole vncls="31.1" vntheta="Experiencer"/></role>
+</roles>
+
+<example name="active">
+<inflection aspect="perfect" form="participle" person="third" tense="present" voice="active"/>
+<text>
+    That has outraged some fans.
+</text>
+        <arg n="0">That</arg>
+        <rel>outraged</rel>
+        <arg n="1">some fans</arg>
+</example>
+
+
+<example name="passive/adjectival">
+<inflection aspect="ns" form="participle" person="third" tense="past" voice="passive"/>
+<text>
+    Sen. Lloyd Bentsen (D., Texas) was outraged after a private word
+    to John Motley, lobbyist for the National Federation of
+    Independent Business, resulted in a news release saying that the
+    Senate Finance Committee chairman would recommend repeal of
+    Section 89. 
+</text>
+        <arg n="1">Sen. Lloyd Bentsen (D., Texas)</arg>
+        <rel>outraged</rel>
+        <arg f="TMP" n="M">after a private word to John Motley,
+        lobbyist for the National Federation of Independent Business,
+        resulted in a news release saying that the Senate Finance
+        Committee chairman would recommend repeal of Section 89</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,35 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="violate">
+<note>
+  Frames file for 'violate' based on sentences in financial subcorpus.
+  No Verbnet entry.  No comparison.
+</note>
+
+<roleset id="violate.01" name="break some rule">
+<roles>
+  <role descr="violator" n="0"/>
+  <role descr="thing violated, usually a rule" n="1"/>
+</roles>
+
+<example name="they're all like this, basically">
+<text>
+   Gulf Power had been under investigation for *trace* violating the
+   Utility Holding Company Act, which prohibits public utilities from
+   making political contributions. 
+</text>
+        <arg n="0">*trace* -&gt;  Gulf Power</arg>
+        <rel>violating</rel>
+        <arg n="1">the Utility Holding Company Act, which prohibits
+        public utilities from making political contributions</arg> 
+</example>
+
+<note>
+Sometimes the 'rule' is hidden within another entity, such as &quot;John
+violated the sanctity of Mary's diary&quot;.  There's an implicit rule
+which says &quot;don't read someone else's diary.&quot;
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,40 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="hug">
+<note>
+  Frames file for 'hug' based on sentences in financial subcorpus.  No
+  access to verbnet.  No comparison.
+</note>
+
+<roleset id="hug.01" name="hug, embrace" vncls="36.2 47.8">
+<roles>
+  <role descr="hugger" n="0">
+	<vnrole vncls="47.8" vntheta="Theme1"/>
+        <vnrole vncls="36.2" vntheta="Actor1"/></role>
+  <role descr="hugged" n="1">
+        <vnrole vncls="47.8" vntheta="Theme2"/>
+        <vnrole vncls="36.2" vntheta="Actor2"/></role>
+</roles>
+
+<example name="only metaphorical, sadly">
+<text>
+    Dealers said institutions were still largely hugging the sidelines
+    on fears that the market's recent technical rally might prove
+    fragile. 
+</text>
+	<arg n="0">institutions</arg>
+	<arg f="TMP" n="M">still</arg>
+	<arg f="ADV" n="M">largely</arg>
+	<rel>hugging</rel>
+	<arg n="1">the sidelines</arg>
+	<arg f="CAU" n="M">on fears that the market's recent technical
+	rally might prove fragile</arg> 
+</example>
+
+<note>
+Somehow I'm not surprised that this doesn't occur frequently in WSJ.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

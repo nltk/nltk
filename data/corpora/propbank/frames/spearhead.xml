@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="spearhead">
+<note>
+  Frames file for 'spearhead' based on sentences in financial
+  subcorpus.  No Verbnet entry, comparison with 'lead'.
+</note>
+
+<roleset id="spearhead.01" name="be in the lead" vncls="-">
+<roles>
+  <role descr="leader" n="0"/>
+  <role descr="thing led" n="1"/>
+</roles>
+
+<example name="typical corporate-speak">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Mr. Lortie joined Provigo in 1985 and spearheaded the company's
+    drive to grow outside its traditional food business. 
+</text>
+        <arg n="0">Mr. Lortie</arg>
+        <rel>spearheaded</rel>
+        <arg n="1">the company's drive to grow outside its traditional
+        food business</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

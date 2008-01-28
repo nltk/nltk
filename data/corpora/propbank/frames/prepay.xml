@@ -1,0 +1,66 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="prepay">
+<note>
+  Frames file for 'prepay' based on sentences in wsj.  No Verbnet
+  entry. 
+</note>
+
+<roleset id="prepay.01" name="pay in advance" vncls="-">
+<roles>
+  <role descr="payer or buyer" n="0"/>
+  <role descr="thing paid for (often debt)" n="1"/>
+  <role descr="seller or person being paid" n="2"/>
+  <role descr="price paid" n="3"/>
+</roles>
+
+<example name="single arg">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    Since most mortgages can be prepaid or refinanced *trace* at any
+    time, issuers of mortgage securities retain the right to buy back
+    their bonds before maturity. 
+</text>
+        <rel>prepaid</rel>
+        <arg n="1">*trace* -&gt;  most mortgages</arg>
+        <arg f="TMP" n="M">at any time</arg>
+</example>
+
+<example name="with price and seller">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+    Weirton, of Weirton, W. Va., said $60.3 million of the proceeds
+    were used *trace* *trace* to prepay the remaining amounts on the
+    note outstanding to National Intergroup Inc., the parent of
+    National Steel.
+</text>
+        <arg n="3">*trace* -&gt; *trace* -&gt;  $60.3 million of the
+        proceeds</arg> 
+        <rel>prepay</rel>
+        <arg n="1">the remaining amounts on the note outstanding</arg>
+        <arg f="to" n="2">National Intergroup Inc., the parent of
+        National Steel</arg> 
+</example>
+
+<example name="with agent and price">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    MEDUSA Corp. said it voluntarily prepaid $7 million on its
+    original $75 million term loan, bringing the total debt reduction
+    for the year to $18 million. 
+</text>
+        <arg n="0">it</arg>
+        <arg f="MNR" n="M">voluntarily</arg>
+        <rel>prepaid</rel>
+        <arg n="3">$ 7 million </arg>
+        <arg f="on" n="1">its original $75 million term loan</arg> 
+        <arg n="M">bringing the total debt reduction for the year to
+        $18 million </arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

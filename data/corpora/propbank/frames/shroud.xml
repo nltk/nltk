@@ -1,0 +1,47 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="shroud">
+<note>
+  Frames file for 'shroud' based on sentences in wsj.  Verbnet entry 9.8.
+</note>
+
+<roleset id="shroud.01" name="cover with a shroud" vncls="9.8">
+<roles>
+  <role descr="applier of cover" n="0">
+	<vnrole vncls="9.8" vntheta="Agent"/></role>
+  <role descr="thing covered" n="1">
+	<vnrole vncls="9.8" vntheta="Destination"/></role>
+  <role descr="covered with" n="2">
+	<vnrole vncls="9.8" vntheta="Theme"/></role>
+</roles>
+
+<example name="instrumental subject">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Fog shrouded the base before touchdown.
+</text>
+        <arg n="2">Fog</arg>
+        <rel>shrouded</rel>
+        <arg n="1">the base</arg>
+        <arg f="TMP" n="M">before touchdown</arg>
+</example>
+
+<example name="with agent">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    Mary shrouded herself in veils at John's funeral to conceal her smile.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>shrouded</rel>
+  <arg f="REC" n="1">herself</arg>
+  <arg f="in" n="2">veils</arg>
+  <arg f="LOC" n="m">at John's funeral</arg>
+  <arg f="PNC" n="m">to conceal her smile</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

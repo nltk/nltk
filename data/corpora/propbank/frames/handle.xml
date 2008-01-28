@@ -1,0 +1,65 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="handle">
+<note>
+  Frames file for 'handle' based on sentences in financial subcorpus.
+  Verbnet class hold-15.1, other framed members include hold.
+  Comparison with 'hold'.
+</note>
+
+<roleset id="handle.01" name="hold, metaphorically deal with" vncls="15.1">
+<roles>
+  <role descr="handler" n="0">
+		
+  <vnrole vncls="15.1" vntheta="Agent"/></role>
+
+  <role descr="thing handled" n="1">
+		
+  <vnrole vncls="15.1" vntheta="Theme"/></role>
+
+  <role descr="handled for" n="2"/>
+  <role descr="handled with" n="3"/>
+</roles>
+
+<example name="just transitive">
+<text>
+    Even if the gross national product is either flat or in the growth
+    range of 2% to 2.5%, ``we can handle that,'' Mr. Marous said. 
+</text>
+        <arg n="0">we</arg>
+        <arg f="MOD" n="M">can</arg>
+        <rel>handle</rel>
+        <arg n="1">that</arg>
+</example>
+
+<example name="with benefactive">
+<text>
+    Shearson Lehman Hutton gave small investors some welcome news by
+    announcing that it would no longer handle index-arbitrage-related
+    program trades for its accounts. 
+</text>
+        <arg n="0">it</arg>
+        <arg f="MOD" n="M">would</arg>
+        <arg f="TMP" n="M">no longer</arg>
+        <rel>handle</rel>
+        <arg n="1">index-arbitrage-related program trades</arg>
+        <arg f="for" n="2">its accounts</arg>
+</example>
+
+<example name="with instrument">
+  <text>
+    Because of his temper, John must be handled *trace* with kid gloves.
+  </text>
+  <arg f="CAU" n="m">Because of his temper</arg>
+  <arg f="MOD" n="m">must</arg>
+  <rel>handled</rel>
+  <arg n="1">*trace* -&gt; John</arg>
+  <arg f="with" n="3">kid gloves</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

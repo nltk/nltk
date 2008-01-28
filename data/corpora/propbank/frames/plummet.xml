@@ -1,0 +1,61 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="plummet">
+<note>
+  Frames file for 'plummet' based on sentences in financial subcorpus.
+  Verbnet entry 45.6, other framed members include decrease and
+  increase, among many others.  Framenet entries Scalar Position 2,
+  Path Shape.  Comparison with 'plunge'.
+</note>
+
+<roleset id="plummet.01" name="fall dramatically" vncls="45.6">
+<roles>
+  <role descr="Logical subject, patient, thing falling" n="1">
+	  <vnrole vncls="45.6" vntheta="Patient"/></role>
+  <role descr="EXT, amount fallen" n="2">
+	  <vnrole vncls="45.6" vntheta="Extent"/></role>
+  <role descr="start point" n="3"/>
+  <role descr="end point, end state of arg1" n="4"/>
+  <role descr="medium" f="LOC" n="M"/>
+</roles>
+
+<example name="all args">
+<inflection aspect="perfect" form="participle" person="third" tense="present" voice="active"/>
+<text>
+    ...UAL stock has plummeted by 41% to 168 1/2 from 285 1/4. 
+</text>
+        <arg n="1">UAL stock</arg>
+        <rel>plummeted</rel>
+        <arg f="by" n="2">41%</arg>
+        <arg f="to" n="4">168 1/2</arg>
+        <arg f="from" n="3">285 1/4</arg>
+</example>
+
+<example name="with medium">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    UAL ... reversed course and plummeted in off-exchange trading
+    after the 5:09 p.m. EDT announcement. 
+</text>
+        <arg n="1">UAL</arg>
+        <rel>plummeted</rel>
+        <arg f="LOC" n="M">in off-exchange trading</arg>
+        <arg f="TMP" n="M">after the 5:09 p.m. EDT announcement</arg>
+</example>
+
+<example name="different kind of end point">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John plummeted to his death.
+  </text>
+  <arg n="1">John</arg>
+  <rel>plummeted</rel>
+  <arg f="to" n="4">his death</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

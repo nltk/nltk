@@ -1,0 +1,51 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="underpin">
+<note>
+  Frames file for 'underpin' based on sentences in financial
+  subcorpus.  No Verbnet entry, comparison with 'support'.
+</note>
+
+<roleset id="underpin.01" name="support" vncls="31.2">
+<roles>
+  <role descr="supporter" n="0">
+		
+  <vnrole vncls="31.2" vntheta="Experiencer"/></role>
+
+  <role descr="person or project being supported" n="1">
+		
+  <vnrole vncls="31.2" vntheta="Cause"/></role>
+
+</roles>
+
+<example name="active">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    The share buy-back plan is likely *trace* to underpin B.A.T's
+    share price. 
+</text>
+        <arg n="0">*trace* -&gt;  The share buy-back plan</arg>
+        <rel>underpin</rel>
+        <arg n="1">B.A.T 's share price</arg>
+</example>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    London share prices closed modestly higher largely on technical
+    factors, although the market was underpinned *trace* near the end
+    of the session by Wall Street's firmer trend. 
+</text>
+        <rel>underpinned</rel>
+        <arg n="1">*trace* -&gt;  the market</arg>
+        <arg f="TMP" n="M">near the end of the session</arg>
+        <arg f="by" n="0">Wall Street's firmer trend</arg>
+</example>
+
+<note>
+This is weird usage.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,43 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="immigrate">
+<note>
+  Frames file for 'immigrate' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="immigrate.01" name="move population" vncls="-">
+<roles>
+  <role descr="population" n="0"/>
+  <role descr="destination" n="1"/>
+  <role descr="source" n="2"/>
+</roles>
+
+<example name="usually without source">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+     When Anne Volokh and her family immigrated to the U.S. 14 years
+     ago, they started life in Los Angeles with only $400. 
+</text>
+        <arg n="0">Anne Volokh and her family</arg>
+        <rel>immigrated</rel>
+        <arg f="to" n="1">the U.S.</arg>
+        <arg f="TMP" n="M">14 years ago</arg>
+</example>
+
+<example name="with source">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John's family immigrated from Lower Slobovia in 1914.
+  </text>
+  <arg n="0">John's family</arg>
+  <rel>immigrated</rel>
+  <arg f="from" n="2">Lower Slobovia</arg>
+  <arg f="TMP" n="m">in 1914</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

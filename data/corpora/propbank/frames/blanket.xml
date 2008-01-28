@@ -1,0 +1,53 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="blanket">
+<note>
+Frames file for 'blanket' based on sentences in financial subcorpus
+and automatic expansion via verbnet.
+</note>
+
+<roleset id="blanket.01" name="cover heavily" vncls="9.8">
+<roles>
+	<role descr="coverer" n="0">
+		
+  <vnrole vncls="9.8" vntheta="Agent"/></role>
+ 
+	<role descr="thing covered" n="1">
+		
+  <vnrole vncls="9.8" vntheta="Destination"/></role>
+ 
+	<role descr="instrument, covered by" n="2">
+		
+  <vnrole vncls="9.8" vntheta="Theme"/></role>
+ 
+</roles>
+
+<example name="all args necessary">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    The number of people who said they were more likely to shop at
+    Sears fell in September to 37% from 66% in March, when Sears
+    blanketed the airwaves with ads about its new pricing strategy.  
+</text>
+        <arg n="0">Sears</arg>
+        <rel>blanketed</rel>
+        <arg n="1">the airwaves</arg>
+        <arg f="with" n="2">ads about its new pricing strategy</arg>
+</example>
+
+<example name="instrumental subject">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    (John saw that) Heavy snow blanketed the ground.  
+  </text>
+  <arg n="2">Heavy snow</arg>
+  <rel>blanketed</rel>
+  <arg n="1">the ground</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

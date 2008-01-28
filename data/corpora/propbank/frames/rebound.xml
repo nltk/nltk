@@ -1,0 +1,67 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="rebound">
+<note>
+  Frames file for 'rebound' based on sentences in financial
+  subcorpus.  No access to verbnet.  Comparison to other verbs of
+  motion.
+</note>
+
+<roleset id="rebound.01" name="recover from, bounce">
+<roles>
+  <role descr="thing rebounding" n="1"/>
+  <role descr="EXT or MNR" n="2"/>
+  <role descr="start point, rebounded from" n="3"/>
+  <role descr="end point, attribute of arg1" n="4"/>
+</roles>
+
+<example name="definite/numerical arg3">
+<text>
+    Speculation about Coniston has caused the stock to rebound from a
+    low of $145. 
+</text>
+        <arg n="1">the stock</arg>
+        <rel>rebound</rel>
+        <arg f="from" n="3">a low of $145</arg>
+</example>
+
+<example name="looser definition of start point">
+<text>
+    Tokyo stocks rebounded Tuesday from two consecutive daily losses
+    in relatively active dealings. 
+</text>
+        <arg n="1">Tokyo stocks</arg>
+        <rel>rebounded</rel>
+        <arg f="TMP" n="M">Tuesday</arg>
+        <arg f="from" n="3">two consecutive daily losses</arg>
+        <arg f="LOC" n="M">in relatively active dealings</arg>
+</example>
+
+<example name="with arg2-MNR">
+<text>
+   After plummeting 1.8% at one point during the day, the composite
+   rebounded a little, but finished down 5.52, at 461.70. 
+</text>
+        <arg f="TMP" n="M">After plummeting 1.8% at one point during
+        the day</arg> 
+        <arg n="1">the composite</arg>
+        <rel>rebounded</rel>
+        <arg f="MNR" n="2">a little</arg>
+</example>
+
+<example name="with end point">
+<text>
+    Then, it rebounded to finish down only 18.65 points. 
+</text>
+        <arg f="TMP" n="M">Then</arg>
+        <arg n="1">it</arg>
+        <rel>rebounded</rel>
+        <arg n="4">to finish down only 18.65 points</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

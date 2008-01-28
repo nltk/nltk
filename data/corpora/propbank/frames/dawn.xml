@@ -1,0 +1,53 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="dawn">
+<note>
+  Frames file for 'dawn' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="dawn.01" name="to become known" vncls="48.1.1">
+<roles>
+  <role descr="thing becoming known" n="1">
+		
+  <vnrole vncls="48.1.1" vntheta="Theme"/></role>
+
+  <role descr="experiencer" n="2"/>
+</roles>
+
+<example name="both arguments">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ It [*EXP*-1] suddenly dawns on Mr. Hammack that [*] rebuilding the house in Los Gatos , an affluent community in Santa Clara County , may cost more than Aetna 's policy will pay [*?*] .
+</text>
+	<arg f="TMP" n="M">suddenly</arg>
+	<rel>dawns</rel>
+	<arg f="on" n="2">Mr. Hammack</arg>
+	<arg n="1">that [*] rebuilding the house in Los Gatos , an affluent community in Santa Clara County , may cost more than Aetna 's policy will pay [*?*]</arg>
+</example>
+</roleset>
+
+<roleset id="dawn.02" name="to begin to become light in the morning" vncls="48.1.1">
+<roles>
+  <role descr="day dawning" n="1">
+		
+  <vnrole vncls="48.1.1" vntheta="Theme"/></role>
+
+</roles>
+
+<example name="intransitive">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+ With a new day dawning on the sport , Mr. Jones does n't see a place for this sort of luxury .
+</text>
+	<arg n="1">a new day</arg>
+	<rel>dawning</rel>
+	<arg f="LOC" n="M">on the sport</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

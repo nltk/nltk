@@ -1,0 +1,82 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="cram">
+<note>
+Frames file for 'cram' based on sentences in financial subcorpus and
+automatic expansion via verbnet.
+</note>
+
+<roleset id="cram.01" name="put stuff into a container" vncls="9.7-2">
+<roles>
+	<role descr="crammer" n="0">
+		
+  <vnrole vncls="9.7-2" vntheta="Agent"/></role>
+
+	<role descr="stuff being put in" n="1">
+		
+  <vnrole vncls="9.7-2" vntheta="Theme"/></role>
+
+	<role descr="container" n="2">
+		
+  <vnrole vncls="9.7-2" vntheta="Destination"/></role>
+
+</roles>
+
+<example name="canonical form">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    Unveiled last April, the chip crams 1.2 million transistors on a
+    sliver of silicon, more than four times as many as on Intel's
+    earlier model, 80386. 
+</text>
+        <arg n="0">the chip</arg>
+        <rel>crams</rel>
+        <arg n="1">1.2 million transistors </arg>
+        <arg f="on" n="2">a sliver of silicon</arg>
+        <arg n="M">more than four times as many as on Intel 's earlier
+        model , 80386</arg> 
+</example>
+
+<example name="unstated args">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    About 30 floor traders crammed near the UAL post most of the day...
+</text>
+        <arg n="0">About 30 floor traders</arg>
+        <rel>crammed</rel>
+        <arg f="LOC" n="M">near the UAL post</arg>
+        <arg f="TMP" n="M">most of the day</arg>
+<note>
+There are default args being used here: arg1 is presumably
+&quot;themselves&quot; and arg2 is something like &quot;the area&quot;.
+</note>
+</example>
+</roleset>
+
+<roleset id="cram.02" name="study very hard, very fast" vncls="14">
+<roles>
+	<role descr="student" n="0"><vnrole vncls="14" vntheta="Agent"/></role>
+	<role descr="subject" n="1"><vnrole vncls="14" vntheta="Topic"/></role>
+</roles>
+
+<example name="intransitive" src="study.01">
+  <text>
+    John crammed for his linguistics exam.
+  </text>
+  <arg n="0">John</arg>
+  <rel>studies</rel>
+  <arg f="PNC" n="m">for his linguistics exam</arg>
+</example>
+
+<example name="with subject" src="learn.01">
+  <text>
+    John crammed Levin classes for his linguistics exam.
+  </text>
+  <arg n="0">John</arg>
+  <rel>crammed</rel>
+  <arg n="1">Levin classes</arg>
+  <arg f="PNC" n="m">for his linguistics exam</arg>
+</example>
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,73 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="educate">
+<note>
+  Frames file for 'educate' based on sentences in wsj.  No Verbnet
+  entry. 
+</note>
+
+<roleset id="educate.01" name="teach" vncls="-">
+<roles>
+	<role descr="teacher" n="0"/>
+	<role descr="student(s)" n="1"/>
+	<role descr="subject" n="2"/>
+</roles>
+
+<example name="just transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    They feel the need from time to time *trace* to `educate' me.'' 
+</text>
+        <arg n="0">*trace* -&gt;  They</arg>
+        <rel>educate</rel>
+        <arg n="1">me</arg>
+</example>
+
+<example name="sentential subject (by which I mean object)">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Still, says Mr. Lee: ``We need *trace* to educate people that they
+    need to get to a phone somehow, some way, to let someone know what
+    their status is.'' 
+</text>
+        <arg n="0">*trace* -&gt;  We</arg>
+        <rel>educate</rel>
+        <arg n="1">people</arg>
+        <arg n="2">they need to get to a phone somehow, some way, to
+        let someone know what their status is </arg> 
+</example>
+
+<example name="prepositional subject ">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    If the media decide *trace* to work harder at *trace* educating
+    the public about these complex and technical issues, that hardly
+    can be termed non-objective journalism. 
+</text>
+        <arg n="0">*trace* -&gt; *trace* -&gt;  the media</arg>
+        <rel>educating</rel>
+        <arg n="1">the public</arg>
+        <arg f="about" n="2">these complex and technical issues</arg>
+</example>
+
+<example name="adjectival!!!!">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    But the kids with highly educated parents did 68% less housework
+    than those in less-educated families. 
+</text>
+        <arg n="M">highly</arg>
+        <rel>educated</rel>
+<note>
+Do not tag these!
+</note>
+</example>
+
+
+<note>
+Args 1 and 2 reversed from 'teach'.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

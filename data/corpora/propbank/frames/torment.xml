@@ -1,0 +1,51 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="torment">
+<note>
+  Frames file for 'torment' based on sentences in wsj.  Verbnet entry
+  31.1, no Framenet entry but it would probably fit in Experiencer obj.
+</note>
+
+<roleset id="torment.01" name="cause anguish" vncls="31.1">
+<roles>
+  <role descr="tormenter" n="0"><vnrole vncls="31.1" vntheta="Cause"/></role>
+  <role descr="tormented" n="1"><vnrole vncls="31.1" vntheta="Experiencer"/></role>
+  <role descr="instrument" n="2"/>
+</roles>
+
+<example name="just transitive">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    They concede that much of the government meddling that [*T*-1]
+    torments them is essential to the public good, and even to their
+    own businesses. 
+</text>
+        <arg n="0">[*T*-1] -&gt;  that -&gt;  much of the government meddling</arg>
+        <rel>torments</rel>
+        <arg n="1">them</arg>
+</example>
+
+<example name="with instrument">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    Far from being minimalist, the music unabatingly torments us with
+    apparent novelties not so cleverly disguised in the simplicities
+    of 4/4 time, octave intervals, and ragtime or gospel chord
+    progressions. 
+</text>
+        <arg f="ADV" n="M">Far from being minimalist</arg>
+        <arg n="0">the music</arg>
+        <arg f="MNR" n="M">unabatingly</arg>
+        <rel>torments</rel>
+        <arg n="1">us</arg>
+        <arg f="with" n="2">apparent novelties not so cleverly
+        disguised in the simplicities of 4/4 time, octave intervals,
+        and ragtime or gospel chord progressions</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

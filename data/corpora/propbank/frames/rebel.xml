@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="rebel">
+<note>
+  Frames file for 'rebel' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="rebel.01" name="to refuse allegiance to" vncls="-">
+<roles>
+  <role descr="rebel, agent" n="0"/>
+  <role descr="rebel against" n="1"/>
+</roles>
+
+<example name="intransitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ Until recently , Adobe had a lock on the market for image software , but last month Apple , Adobe 's biggest customer , and Microsoft rebelled .
+</text>
+	<arg f="TMP" n="M">last month</arg>
+	<arg n="0">Apple , Adobe 's biggest customer , and Microsoft</arg>
+	<rel>rebelled</rel>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

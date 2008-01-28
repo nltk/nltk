@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="personalize">
+<note>
+  Frames file for 'personalize' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="personalize.01" name="to make personal" vncls="-">
+<roles>
+  <role descr="cause, agent" n="0"/>
+  <role descr="entity personalized" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ A few of the executives here for the fall meeting of the Business Council , a group that [*T*-1] meets [*-2] to discuss national issues , were only too happy [*-3] to personalize their criticism .
+</text>
+	<arg n="0">[*-3] -&gt;  A few of the executives here for the fall meeting of the Business Council , a group that [*T*-1] meets [*-2] to discuss national issues ,</arg>
+	<rel>personalize</rel>
+	<arg n="1">their criticism</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="pawn">
+<note>
+  Frames file for 'pawn' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+
+<roleset id="pawn.01" name="to temporarily sell (personal property)" vncls="-">
+<roles>
+  <role descr="seller" n="0"/>
+  <role descr="thing deposited" n="1"/>
+</roles>
+
+<example name="automatically generated">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+ But quick turnover in artwork is `` like [*] pawning your jewelry -- you end up with 50 % .
+</text>
+	<arg n="0">[*]</arg>
+	<rel>pawning</rel>
+	<arg n="1">your jewelry</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

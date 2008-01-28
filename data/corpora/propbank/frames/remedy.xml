@@ -1,0 +1,39 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="remedy">
+<note>
+  Frames file for 'remedy' based on sentences in wsj.  No Verbnet
+  entry.
+</note>
+
+<roleset id="remedy.01" name="make better" vncls="-">
+<roles>
+  <role descr="causer of improvement, agent" n="0"/>
+  <role descr="thing getting better" n="1"/>
+  <role descr="instrument" n="2"/>
+</roles>
+
+<example name="all args">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Mr. Jobs moved *trace* to remedy a couple of his computer's
+    drawbacks yesterday by lowering the entry-level price for a Next
+    machine by $1,500, or 23%, if the buyer chooses a hard-disk drive
+    as an alternative to Next's optical-storage device. 
+</text>
+        <arg n="0">*trace* -&gt;  Mr. Jobs</arg>
+        <rel>remedy</rel>
+        <arg n="1">a couple of his computer's drawbacks</arg>
+        <arg f="TMP" n="M">yesterday</arg>
+        <arg f="MNR" n="M">by lowering the entry-level price for a
+        Next machine by $1,500, or 23%, if the buyer chooses a
+        hard-disk drive as an alternative to Next's optical-storage
+        device</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

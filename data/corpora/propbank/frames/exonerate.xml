@@ -1,0 +1,47 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="exonerate">
+<note>
+  Frames file for 'exonerate' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="exonerate.01" name="to free from blame or a responsibility" vncls="10.6">
+<roles>
+  <role descr="freer from blame, agent" n="0">
+        <vnrole vncls="10.6" vntheta="Agent"/></role>
+  <role descr="entity exonerated" n="1">
+        <vnrole vncls="10.6" vntheta="Theme"/></role>
+  <role descr="responsibility or blame" n="2"/>
+</roles>
+
+<example name="with Arg2-as">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ They noted that studies completed [*] after the 1987 crash exonerated program trading as a source of volatility .
+</text>
+	<arg n="0">studies completed [*] after the 1987 crash</arg>
+	<rel>exonerated</rel>
+	<arg n="1">program trading</arg>
+	<arg f="as" n="2">a source of volatility</arg>
+</example>
+
+
+<example name="with Arg-from">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+ Italian papers speculated [0] the briefcase contained papers either exonerating the Vatican bank from blame in the scandal , or showing that the bank , known [*] as the Istituto per le Opere di Religione , channeled funds to East bloc groups such as Solidarity in Poland .
+</text>
+	<arg n="0">papers</arg>
+	<rel>exonerating</rel>
+	<arg n="1">the Vatican bank</arg>
+	<arg f="from" n="2">blame in the scandal</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

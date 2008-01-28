@@ -1,0 +1,46 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="bedevil">
+<note>
+  Frames file for 'bedevil' based on sentences in financial subcorpus.
+  No Verbnet entry, comparison with 'plague'.
+</note>
+
+<roleset id="bedevil.01" name="bother, plague" vncls="-">
+<roles>
+  <role descr="botherer, devil, agent" n="0"/>
+  <role descr="bothered" n="1"/>
+  <role descr="bothered by, plagued with" n="2"/>
+</roles>
+
+<example name="no instrument">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    As many economists and businessmen see it, those incongruities
+    underscore a paradox that *trace* seems likely *trace* to bedevil
+    the economy throughout the 1990s. 
+</text>
+        <arg n="0">*trace* -&gt; *trace* -&gt;  that -&gt;  a paradox</arg>
+        <rel>bedevil</rel>
+        <arg n="1">the economy</arg>
+        <arg f="TMP" n="M">throughout the 1990s</arg>
+</example>
+
+<example name="all args">
+  <inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+  <text>
+    John plagues Mary constantly with his whining for attention.
+  </text>
+  <arg n="0">John</arg>
+  <rel>plagues</rel>
+  <arg n="1">Mary</arg>
+  <arg f="TMP" n="m">constantly</arg>
+  <arg f="with" n="2">his whining for attention</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

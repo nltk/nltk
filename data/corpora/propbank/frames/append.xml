@@ -1,0 +1,35 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="append">
+<note>
+  Frames file for 'append' based on sentences in wsj.  Verbnet entry
+  22.3-2, which seems a little weird to me.
+</note>
+
+<roleset id="append.01" name="attach to" vncls="22.3-2">
+<roles>
+  <role descr="attacher" n="0"><vnrole vncls="22.3-2" vntheta="Agent"/></role>
+  <role descr="attached" n="1"><vnrole vncls="22.3-2" vntheta="Patient1"/></role>
+  <role descr="attached to" n="2"><vnrole vncls="22.3-2" vntheta="Patient2"/></role>
+</roles>
+
+<example name="all args">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    The budget reconciliation had to be dealt with by the Oct. 15
+    deadline, and these Senate Democrats refused to agree to allow a
+    vote [0] [*T*-5] to append capital gains to the budget bill,
+    knowing it would pass. 
+</text>
+        <arg n="0">[*T*-5] -&gt;  [0] -&gt;  a vote</arg>
+        <rel>append</rel>
+        <arg n="1">capital gains</arg>
+        <arg f="to" n="2">the budget bill</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

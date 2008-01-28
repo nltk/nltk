@@ -1,0 +1,71 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="stare">
+<note>
+  Frames file for 'stare' based on sentences in wsj.  Verbnet entry
+  30.3, Framenet entry Perception_active.
+</note>
+
+<roleset id="stare.01" name="look intently" vncls="30.3">
+<roles>
+  <role descr="looker" n="0"><vnrole vncls="30.3" vntheta="Experiencer"/></role>
+  <role descr="looked at" n="1"><vnrole vncls="30.3" vntheta="Stimulus"/></role>
+</roles>
+
+<example name="I know the feeling">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+     Totally absorbed, the ringers stare straight ahead, using
+     peripheral vision (they call it ``rope-sight'') to watch the
+     other ropes and thus time their pulls. 
+</text>
+        <arg n="M">Totally absorbed</arg>
+        <arg n="0">the ringers</arg>
+        <rel>stare</rel>
+        <arg f="DIR" n="M">straight ahead</arg>
+        <arg f="ADV" n="M">using peripheral vision (they call it
+        ``rope-sight'') to watch the other ropes and thus time their
+        pulls</arg> 
+</example>
+
+<example name="with arg1">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    Mary stared at the enormous zit on John's nose.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>stared</rel>
+  <arg f="at" n="1">the enormous zit on John's nose</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="stare_down">
+
+<roleset id="stare.02" name="intimidate by staring" vncls="-">
+<roles>
+  <role descr="intimidator" n="0"/>
+  <role descr="intimidated" n="1"/>
+</roles>
+
+<example name="ay batta batta">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    The tension mounted as Ralph Branca, again on the mound, stared
+    down the batter. 
+</text>
+        <arg n="0">Ralph Branca</arg>
+        <arg f="LOC" n="M">again on the mound</arg>
+        <rel>[ stared] [ down]</rel>
+        <arg n="1">the batter</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

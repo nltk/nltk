@@ -1,0 +1,39 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="curb">
+<note>
+  Frames file for 'curb' based on sentences in financial subcorpus.
+  No verbnet entry.  Comparison with 'reduce', but not really.  I'd
+  rather have 'limit', but that hasn't been framed either.
+</note>
+
+<roleset id="curb.01" name="reduce">
+<roles>
+    <role descr="causer of reduction, Agent" n="0"/>
+    <role descr="Logical subject, patient, thing falling" n="1"/>
+    <role descr="EXT, amount fallen" n="2"/>
+    <role descr="Start point" n="3"/>
+    <role descr="End point, end state of arg1" n="4"/>
+    <role descr="Medium" f="LOC" n="M"/>
+</roles>
+
+<example name="typical usage">
+<text>
+    The CFTC plans *trace* to curb dual trading on commodities
+    markets, in which traders buy and sell both for their own account
+    and for clients. 
+</text>
+        <arg n="0">*trace* -&gt;  The CFTC</arg>
+        <rel>curb</rel>
+        <arg n="1">dual trading on commodities markets , in which traders buy and sell both for their own account and for clients</arg>
+</example>
+
+<note>
+I don't really expect the higher-numbered args to appear, but they're
+there for reference.  Neither do I expect the sense of &quot;please curb
+your dog&quot;.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

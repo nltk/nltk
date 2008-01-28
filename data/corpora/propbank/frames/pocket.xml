@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="pocket">
+<note>
+Frames file for 'pocket' based on sentences in wsj and automatic
+expansion via verbnet.
+</note>
+
+<roleset id="pocket.01" name="take" vncls="9.10">
+<roles>
+  <role descr="taker, agent" n="0">
+        <vnrole vncls="9.10" vntheta="Agent"/></role>
+  <role descr="thing taken" n="1">
+        <vnrole vncls="9.10" vntheta="Theme"/></role>
+</roles>
+
+<example name="corrupt judge">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    One former bailiff charged that the judge double-crossed him by
+    *trace* reneging on a promise of a better paying job after *trace*
+    pocketing a $500 bribe. 
+</text>
+        <arg n="0">*trace* -&gt; *trace* -&gt;  the judge</arg>
+        <rel>pocketing</rel>
+        <arg n="1">a $500 bribe</arg>
+</example>
+
+</roleset>
+
+</predicate>
+</frameset>

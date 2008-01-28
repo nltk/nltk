@@ -1,0 +1,56 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="bond">
+<note>
+  Frames file for 'bond' based on sentences in wsj.  Verbnet entry 22.3.
+</note>
+
+<roleset id="bond.01" vncls="22.3" name="attach, as with glue">
+<roles>
+  <role n="0"  descr="attacher, agent"/>
+  <role n="1"  descr="focus of attachment"/>
+  <role n="2"  descr="thing bonded to"/>
+  <role n="3"  descr="instrument of bonding, glue"/>
+</roles>
+
+<example name="sticky situation">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+     John bonded himself to the kitchen floor with Mary's inedible meringue.
+  </text>
+  <arg n="0"        >John</arg>
+  <rel              >bonded</rel>
+  <arg n="1" f="REC">himself</arg>
+  <arg n="2" f="to">the kitchen floor</arg>
+  <arg n="3" f="with">Mary's inedible meringue</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="bond.02" vncls="-" name="secure with financial bond">
+<roles>
+  <role n="1"  descr="secured item"/>
+</roles>
+
+<example name="adjectival">
+<inflection person="ns" tense="ns" aspect="ns" voice="passive" form="participle"/>
+<text>
+     The air-waybill number was changed en route, and paper work
+     showing that the crates had cleared customs was misplaced, so it
+     was a week before three of the four crates could be located in a
+     bonded warehouse and the Gauguin discovered missing. 
+</text>
+	<rel>bonded</rel>
+	<arg n="1">warehouse</arg>
+</example>
+
+<note>
+Takes additional args?
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,73 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="prevail">
+<note>
+  Frames file for 'prevail' based on sentences in financial subcorpus.
+  Verbnet entry 47.1, other framed members include depend and live.
+  That doesn't seem right to me.  Framenet class Suasion1.  Comparison
+  with 'beat' and 'win'.
+</note>
+
+<roleset id="prevail.01" name="win" vncls="-">
+<roles>
+  <role descr="winner" n="0"/>
+  <role descr="loser" n="1"/>
+  <role descr="competition" n="2"/>
+</roles>
+
+<example name="intranstive">
+<inflection aspect="ns" form="full" person="ns" tense="future" voice="active"/>
+<text>
+    Analysts questioned whether Georgia-Pacific will ultimately
+    prevail, saying other paper concerns may make competing bids. 
+</text>
+        <arg n="0">Georgia-Pacific</arg>
+        <arg f="MOD" n="M">will</arg>
+        <arg f="TMP" n="M">ultimately</arg>
+        <rel>prevail</rel>
+</example>
+
+<example name="all args">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John finally prevailed over Mary in their battle of wits.
+  </text>
+  <arg n="0">John</arg>
+  <arg f="TMP" n="m">finally</arg>
+  <rel>prevailed</rel>
+  <arg f="over" n="1">Mary</arg>
+  <arg f="in" n="2">their battle of wits</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="prevail.02" name="exist" vncls="47.1-1">
+<roles>
+  <role descr="thing that exists" n="1">
+		
+  <vnrole vncls="47.1-1" vntheta="Theme"/></role>
+
+</roles>
+
+<example name="unaccusative">
+<inflection aspect="perfect" form="participle" person="third" tense="present" voice="active"/>
+<text>
+    It said  debt remained at the $1.22 billion that *trace* has
+    prevailed since early 1989, although that compared with $911
+    million at Sept. 30, 1988. 
+</text>
+        <arg n="1">*trace* -&gt;  that -&gt;  the $1.22 billion </arg>
+        <rel>prevailed</rel>
+        <arg f="TMP" n="M">since early 1989</arg>
+</example>
+
+<note>
+This sets up the adjectival usage 'prevalent'.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

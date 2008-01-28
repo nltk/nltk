@@ -1,0 +1,49 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="fascinate">
+<note>
+  Frames file for 'fascinate' based on sentences in wsj.  Verbnet
+  entry 31.1, Framenet entry Experiencer obj.
+</note>
+
+<roleset id="fascinate.01" name="fascinate" vncls="31.1">
+<roles>
+  <role descr="causer of fascination" n="0"><vnrole vncls="31.1" vntheta="Cause"/></role>
+  <role descr="fascinated entity" n="1"><vnrole vncls="31.1" vntheta="Experiencer"/></role>
+  <role descr="instrument, if separate from arg0" n="2"/>
+</roles>
+
+<example name="passive">
+<inflection aspect="perfect" form="participle" person="third" tense="present" voice="passive"/>
+<text>
+    And, since the public has always been fascinated *trace* by gossip
+    and voyeurism, reporters and editors will strain for creative
+    angles to justify the inclusion of collateral facts about private
+    lives including sexual activities and domestic relationships,
+    activities of family members, and all matters about mental and
+    physical health. 
+</text>
+        <arg f="TMP" n="M">always</arg>
+        <rel>fascinated</rel>
+        <arg n="1">*trace* -&gt;  the public</arg>
+        <arg f="by" n="0">gossip and voyeurism</arg>
+</example>
+
+<example name="with instrument">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John fascinated Mary with his tales of adventure in the Great
+    White North.
+  </text>
+  <arg n="0">John</arg>
+  <rel>fascinated</rel>
+  <arg n="1">Mary</arg>
+  <arg f="with" n="2">his tales of adventure in the Great White North</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

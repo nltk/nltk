@@ -1,0 +1,40 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="band.01">
+<note>
+  Frames file for 'band' based on sentences in wsj.  Verbnet entries
+  22.4, 22.3-2.
+</note>
+
+<roleset id="band.01" name="attach" vncls="22.3-2 22.4">
+<roles>
+  <role descr="causer of banding together, agent" n="0">
+        <vnrole vncls="22.3-2" vntheta="Agent"/>
+        <vnrole vncls="22.4" vntheta="Agent"/></role>
+  <role descr="first (or all) thing(s) attached" n="1">
+        <vnrole vncls="22.3-2" vntheta="Patient1"/>
+        <vnrole vncls="22.4" vntheta="Patient1"/></role>
+  <role descr="other things, if present/separate" n="2">
+        <vnrole vncls="22.4" vntheta="Patient2"/></role>
+  <role descr="attribute of patients" n="3"/>
+</roles>
+
+<example name="always band together?">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Many of the companies are even dropping their traditional
+    independence and trying *trace* to band together to create some
+    sort of standard. 
+</text>
+        <arg n="1">*trace* -&gt;  Many of the companies</arg>
+        <rel>band</rel>
+        <arg n="3">together</arg>
+        <arg f="PNC" n="M">to create some sort of standard</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

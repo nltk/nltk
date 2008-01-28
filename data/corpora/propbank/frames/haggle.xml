@@ -1,0 +1,54 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="haggle">
+<note>
+  Frames file for 'haggle' based on sentences in financial subcorpus.
+  Verbnet entry 36.1; other framed members include argue, compete,
+  negotiate.  No Framenet entry.  Comparison with argue.
+</note>
+
+<roleset id="haggle.01" name="argue out (a price, us.)" vncls="36.1">
+<roles>
+  <role descr="subject haggler" n="0">
+		
+  <vnrole vncls="36.1" vntheta="Actor1"/></role>
+
+  <role descr="other haggler" n="1">
+		
+  <vnrole vncls="36.1" vntheta="Actor2"/></role>
+
+  <role descr="topic of argument" n="2">
+		
+  <vnrole vncls="36.1" vntheta="Topic"/></role>
+
+</roles>
+
+<example name="all args">
+<inflection aspect="ns" form="gerund" person="ns" tense="ns" voice="ns"/>
+<text>
+    On the afternoon of Oct. 17, after hours of *trace* haggling with
+    five insurance-claims adjusters over settling a toxic-waste suit,
+    four lawyers had an agreement in hand. 
+</text>
+        <arg n="0">four lawyers -&gt; *trace*</arg>
+        <rel>haggling</rel>
+        <arg f="with" n="1">five insurance-claims adjusters</arg>
+        <arg f="over" n="2">settling a toxic-waste suit</arg>
+</example>
+
+<example name="merged hagglers">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    No one knows, however, whether the new posted prices will stick
+    once producers and customers start *trace* to haggle. 
+</text>
+        <arg n="0">*trace* -&gt;  producers and customers</arg>
+        <rel>haggle</rel>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,44 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="offend">
+<note>
+  Frames file for 'offend' based on sentences in wsj.  Verbnet entry
+  31.1 (verbs of emotion).
+</note>
+
+<roleset id="offend.01" name="give offense, bother" vncls="31.1">
+<roles>
+  <role descr="offender" n="0"><vnrole vncls="31.1" vntheta="Cause"/></role>
+  <role descr="offended" n="1"><vnrole vncls="31.1" vntheta="Experiencer"/></role>
+  <role descr="instrument, if separate from arg0" n="2"/>
+</roles>
+
+<example name="mmmm, dog meat">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    A poll of South Koreans showed overwhelming opposition to efforts
+    to curb dog-meat consumption just because it offends foreigners. 
+</text>
+        <arg n="0">it</arg>
+        <rel>offends</rel>
+        <arg n="1">foreigners</arg>
+</example>
+
+<example name="with instrument">
+  <inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+  <text>
+    John offends Mary with every word he utters.  Mary needs to
+    lighten up.
+  </text>
+  <arg n="0">John</arg>
+  <rel>offends</rel>
+  <arg n="1">Mary</arg>
+  <arg f="with" n="2">every word he utters</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

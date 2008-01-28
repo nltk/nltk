@@ -1,0 +1,77 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="pool">
+<note>
+  Frames file for 'pool' based on sentences in wsj.  Verbnet entry 22.1-2.
+</note>
+
+<roleset id="pool.01" name="collect together" vncls="22.1-2">
+<roles>
+  <role descr="collector(s), agent(s)" n="0">
+        <vnrole vncls="22.1-2" vntheta="Agent"/></role>
+  <role descr="thing collected" n="1">
+        <vnrole vncls="22.1-2" vntheta="Patient"/></role>
+  <role descr="secondary attribute of arg1" n="2"/>
+</roles>
+
+<example name="active">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    If the three companies pool their air-freight businesses, their
+    clout would be considerable. 
+</text>
+        <arg n="0">the three companies</arg>
+        <rel>pool</rel>
+        <arg n="1">their air-freight businesses</arg>
+</example>
+
+<example name="passive">
+<inflection aspect="perfect" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    An increasing number of big Japanese investors are buying up
+    U.S. home mortgages that *trace* have been pooled *trace* and
+    packaged for sale as interest-bearing instruments known as
+    mortgage-backed securities. 
+</text>
+        <rel>pooled</rel>
+        <arg n="1">*trace* -&gt; *trace* -&gt;  that -&gt;  U.S. home mortgages</arg>
+</example>
+
+<example name="passive with secondary attribute">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+     The agency's first strips issue, collateralized by Freddie Mac 8%
+     securities pooled *trace* into a single security called a Giant,
+     will be divided into interest-only and principal-only
+     securities. 
+</text>
+        <rel>pooled</rel>
+        <arg n="1">*trace* -&gt;  Freddie Mac 8% securities</arg>
+        <arg f="into" n="2">a single security called a Giant</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="pool.02" name="form a puddle" vncls="-">
+<roles>
+  <role descr="thing forming a puddle" n="1"/>
+</roles>
+
+<example name="ouch">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John's hot spilled coffee pooled in his lap.
+  </text>
+  <arg n="1">John's hot spilled coffee</arg>
+  <rel>pooled</rel>
+  <arg f="LOC" n="m">in his lap</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

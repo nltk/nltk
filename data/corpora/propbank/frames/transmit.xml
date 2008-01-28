@@ -1,0 +1,43 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="transmit">
+<note>
+  Frames file for 'transmit' based on sentences in financial
+  subcorpus.  No Verbnet entry, comparison with 'send'.
+</note>
+
+<roleset id="transmit.01" name="send (electronically)" vncls="11.1-1">
+<roles>
+  <role descr="sender" n="0">
+		
+  <vnrole vncls="11.1-1" vntheta="Agent"/></role>
+
+  <role descr="sent" n="1">
+		
+  <vnrole vncls="11.1-1" vntheta="Theme"/></role>
+
+  <role descr="sent-to" n="2">
+		
+  <vnrole vncls="11.1-1" vntheta="Destination"/></role>
+
+</roles>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    Already entered in the Big Board's computers and transmitted
+    *trace* to their post were sell orders for 65,000 UAL shares. 
+</text>
+        <arg f="TMP" n="M">Already</arg>
+        <rel>transmitted</rel>
+        <arg n="1">*trace* -&gt; sell orders for 65,000 UAL shares</arg>
+        <arg f="to" n="2">their post</arg>
+</example>
+
+<note>
+I'll assume you can figure out an active example on your own.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

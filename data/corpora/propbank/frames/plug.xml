@@ -1,0 +1,108 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+
+<predicate lemma="plug">
+<note>
+  Frames file for 'plug' based on sentences in financial subcorpus and
+  automatic expansion via Verbnet, although that only caught one sense.
+</note>
+
+<roleset id="plug.02" name="advertise" vncls="-">
+<roles>
+  <role descr="advertiser" n="0"/>
+  <role descr="advertised" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    General Electric plans *trace* to use the characters *trace* to
+    plug its Miser light bulb. 
+</text>
+        <arg n="0">*trace* -&gt; *trace* -&gt;  General Electric</arg>
+        <rel>plug</rel>
+        <arg n="1">its Miser light bulb</arg>
+</example>
+
+</roleset>
+
+<roleset id="plug.04" name="put plug in socket, non-phrasal" vncls="-">
+<roles>
+  <role descr="plugger" n="0"/>
+  <role descr="(thing with) plug" n="1"/>
+  <role descr="socket" n="2"/>
+</roles>
+
+<example name="and there was light, with socket">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John plugged the lamp into the wrong outlet.
+  </text>
+  <arg n="0">John</arg>
+  <rel>plugged</rel>
+  <arg n="1">the lamp</arg>
+  <arg f="into" n="2">the wrong outlet</arg>
+</example>
+
+<example name="not just electrical appliances">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+     The company plugged itself right into Carter campaign rhetoric
+     about rebuilding the South Bronx and kept using the minority --
+     South Bronx angle through the Reagan '80s. 
+  </text>
+  <arg n="0"        >The company</arg>
+  <rel              >plugged</rel>
+  <arg n="1" f="REC">itself</arg>
+  <arg n="m" f="ADV">right</arg>
+  <arg n="2" f="into">Carter campaign rhetoric about rebuilding the
+  South Bronx</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="plug_up">
+<roleset id="plug.01" name="plug up: cause blockage" vncls="9.8">
+<roles>
+  <role descr="causer of blockage" n="0">
+	<vnrole vncls="9.8" vntheta="Agent"/></role>
+  <role descr="thing becoming blocked" n="1">
+	<vnrole vncls="9.8" vntheta="Destination"/></role>
+  <role descr="plug" n="2">
+	<vnrole vncls="9.8" vntheta="Theme"/></role>
+</roles>
+
+<example name="let's leave the plug unstated here">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John plugged up the toilet.
+  </text>
+  <arg n="0">John</arg>
+  <rel>plugged up</rel>
+  <arg n="1">the toilet</arg>
+</example>
+</roleset>
+</predicate>
+
+<predicate lemma="plug_in">
+
+<roleset id="plug.03" name="plug in: put in socket" vncls="-">
+<roles>
+  <role descr="plugger" n="0"/>
+  <role descr="(thing with) plug" n="1"/>
+</roles>
+
+<example name="and there was light">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John plugged the lamp in.
+  </text>
+  <arg n="0">John</arg>
+  <rel>plugged in</rel>
+  <arg n="1">the lamp</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

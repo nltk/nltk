@@ -1,0 +1,47 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="trap">
+<note>
+  Frames file for 'trap'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="trap.01" name="to catch in or as if in  a trap" vncls="9.10">
+<roles> 
+  <role descr="trapper, agent" n="0">
+        <vnrole vncls="9.10" vntheta="Agent"/></role>
+  <role descr="entity trapped" n="1">
+        <vnrole vncls="9.10" vntheta="Theme"/></role>
+  <role descr="location" n="2">
+        <vnrole vncls="9.10" vntheta="Location"/></role>
+</roles>
+
+
+<example name="non-agentive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ Now , some see Mr. Bush trapped in a position [0] he is neither comfortable with [*T*-1] nor able [*-2] to escape [*T*-1] .
+</text>
+	<arg n="1">Mr. Bush</arg>
+	<rel>trapped</rel>
+	<arg f="in" n="2">a position [0] he is neither comfortable with [*T*-1] nor able [*-2] to escape [*T*-1]</arg>
+</example>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+ Mr. Weisman predicts [0] stocks will appear [*-1] to stabilize in the next few days before [*-1] declining again , [*-2] trapping more investors .
+</text>
+	<arg n="0">[*-2] -&gt;  [*-1] -&gt;  stocks</arg>
+	<rel>trapping</rel>
+	<arg n="1">more investors</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

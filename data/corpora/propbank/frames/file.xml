@@ -1,0 +1,119 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="file">
+<note>
+  Frames file for 'file' based on survey of initial sentences of big corpus
+</note>
+
+<roleset id="file.01" name="paperwork" vncls="9.10">
+<roles>
+  <role descr="filer" n="0"><vnrole vncls="9.10" vntheta="Agent"/></role>
+  <role descr="file" n="1"><vnrole vncls="9.10" vntheta="Theme"/></role>
+  <role descr="filed-with" n="2"/>
+  <role descr="filed against" n="3"/>
+  <role descr="purpose of filing" n="4"/>
+</roles>
+
+<example name="active">
+  <text>
+    David Dinkins failed *trace* to file his income taxes.
+  </text>
+  <arg n="0">*trace=David Dinkins*</arg>
+  <rel>file</rel>
+  <arg n="1">his income taxes</arg>
+</example>
+
+<example name="lawsuit">
+  <text>
+    University Patents filed a suit in federal court in Philadelphia
+    against Albert M. Kligman.
+  </text>
+  <arg n="0">University Patents</arg>
+  <rel>filed</rel>
+  <arg n="1">a suit</arg>
+  <arg f="in" n="2">federal court</arg>
+  <arg f="loc" n="m">in Philadelphia</arg>
+  <arg f="against" n="3">Albert M. Kligman</arg>
+</example>
+
+<note>
+Sometimes the against phrase is included in the suit phrase.  You'll
+therefore need to delve deeper into the syntax to divide the two args.
+</note>
+
+<example name="passivized">
+  <text>
+    Documents filed *trace* with the Securities and Exchange
+    Commission on the pending spinoff...
+  </text>
+  <arg n="1">*trace=Documents*</arg>
+  <rel>filed</rel>
+  <arg f="with" n="2">the Securities and Exchange Commission</arg>
+  <arg n="m">on the pending spinoff</arg>
+</example>
+
+<note>
+This happens a lot, with something that looks (syntactically) like an
+argument of &quot;file&quot; but is actually a modifier of the head NP--really --&gt;
+--this is &quot;documents on the pending spinoff were filed with the SEC&quot; --&gt;
+--but the syntax has been bollixed.  Use ArgM for all these.
+</note>
+
+<example name="with purpose">
+  <text>
+  A group of investors filed with federal antitrust regulators for
+  clearance to buy more than 50% of the stock of Rally's Inc.
+  </text>
+  <arg n="0">A group of investors</arg>
+  <rel>filed</rel>
+  <arg f="with" n="2">federal antitrust regulators</arg>
+  <arg f="for" n="4">clearance to buy more than 50% of the stock of
+  Rally's Inc</arg>
+</example>
+
+</roleset>
+
+<roleset id="file.02" name="seek, claim, call for" vncls="-">
+<roles>
+  <role descr="filer" n="0"/>
+  <role descr="claim" n="1"/>
+</roles>
+
+<example name="">
+  <text>
+    One or more airlines have filed for protection from creditors.
+  </text>
+  <arg n="0">One or more airlines</arg>
+  <rel>filed</rel>
+  <arg f="for" n="1">protection from creditors</arg>
+</example>
+<note>
+The difference between this and the Arg-4 &quot;purpose&quot; is that in this
+case the paperwork cannot be mentioned.  With the roleset (file.01) above, the
+paperwork need not be mentioned, but can be.  Other arguments
+(filed-with, filed-against) will probably be mentioned.
+</note>
+</roleset>
+
+<roleset id="file.03" name="walk in a straight line">
+<roles>
+  <role descr="walker" n="0"/>
+</roles>
+
+<example name="gorgeous british slang">
+  <text>
+    A stream of tire-kickers and lookee-loos had filed through since.
+  </text>
+  <arg n="0">A stream of tire-kickers and lookee-loos</arg>
+  <rel>filed</rel>
+  <arg f="loc" n="m">through</arg>
+  <arg f="tmp" n="m">since</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+</predicate>
+</frameset>

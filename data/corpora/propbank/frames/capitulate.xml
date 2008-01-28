@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="capitulate">
+<note>
+  Frames file for 'capitulate' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="capitulate.01" name="give up, surrender" vncls="-">
+<roles>
+  <role descr="one surrendering" n="0"/>
+</roles>
+
+<example name="intransitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Maybe we should ask why it was that Du Pont so quickly capitulated
+    and issued a statement, giving it wide publicity, that it was
+    withdrawing CFCs. 
+</text>
+        <arg n="0">Du Pont</arg>
+        <arg f="MNR" n="M">so quickly</arg>
+        <rel>capitulated</rel>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,68 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="observe">
+<note>
+  Frames file for 'observe' based on sentences in financial subcorpus.
+  Verbnet entries 29.5 30.2 35.4 37.7, other framed members include:
+  assert, deny; regard, scrutinize, study; announce, claim, declare.
+  Comparison with 'look (at)' and 'say'.
+</note>
+
+<roleset id="observe.01" name="look at" vncls="30.2 35.4">
+<roles>
+  <role descr="observer" n="0"><vnrole vncls="30.2" vntheta="Experiencer"/><vnrole vncls="35.4" vntheta="Agent"/></role>
+  <role descr="thing looked at" n="1"><vnrole vncls="30.2" vntheta="Stimulus"/><vnrole vncls="35.4" vntheta="Location"/></role>
+</roles>
+
+<example name="like Jane Goodall">
+  <text>
+    Mary observed John's behavior in the classroom and shook her head
+    in disbelief.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>observed</rel>
+  <arg n="1">John's behavior in the classroom</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="observe.02" name="say, state" vncls="29.5 37.7">
+<roles>
+    <role descr="Sayer" n="0">
+		
+  <vnrole vncls="29.5" vntheta="Agent"/><vnrole vncls="37.7" vntheta="Agent"/></role>
+
+    <role descr="Utterance" n="1">
+		
+  <vnrole vncls="29.5" vntheta="Predicate"/><vnrole vncls="37.7" vntheta="Topic"/></role>
+
+    <role descr="Hearer" n="2">
+		
+  <vnrole vncls="29.5" vntheta="Theme"/><vnrole vncls="37.7" vntheta="Recipient"/></role>
+
+    <role descr="Attributive" n="3"/>
+</roles>
+
+<example name="inverted">
+<text>
+    Ford is ``in the driving seat at the moment,'' observed *trace*
+    Bob Barber, an auto analyst at brokers James Capel &amp; Co. 
+</text>
+        <rel>observed</rel>
+        <arg n="1">*trace* -&gt;  Ford is ``in the driving seat at the
+        moment</arg> 
+        <arg n="0">Bob Barber, an auto analyst at brokers James Capel
+        &amp; Co</arg> 
+</example>
+
+<note>
+All the usual suspects for possible syntactes--refer to (eg) say for --&gt;
+--details.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

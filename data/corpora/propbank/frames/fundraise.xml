@@ -1,0 +1,35 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="fundraise">
+<note>
+  Frames file for 'fundraise' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="fundraise.01" name="raise funds" vncls="-">
+<roles>
+  <role descr="raiser of funds" n="0"/>
+  <role descr="beneficiary" n="2"/>
+</roles>
+
+<example name="polysythesis?">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    That impressed Robert B. Pamplin, Georgia-Pacific's chief
+    executive at the time, whom Mr. Hahn had met while *trace*
+    fundraising for the institute. 
+</text>
+        <arg n="0">*trace* -&gt;  Mr. Hahn</arg>
+        <rel>fundraising</rel>
+        <arg f="for" n="2">the institute</arg>
+</example>
+
+<note>
+Ordinarily this would be &quot;so-and-so raised funds for X&quot; with &quot;funds&quot; in the
+arg1 position, but &quot;funds&quot; has been glommed onto the verbs itself and
+so cannot exist as an independent arg.  For consistency, though, the
+beneficiary is left in arg2.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

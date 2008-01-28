@@ -1,0 +1,59 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="quarrel">
+<note>
+  Frames file for 'quarrel' based on automatic expansion through verbnet and
+sentences in the WSJ corpus.
+</note>
+
+<roleset id="quarrel.01" name="disagree" vncls="36.1">
+<roles>
+  <role descr="a person engaged in a quarrel" n="0">
+		
+  <vnrole vncls="36.1" vntheta="Actor1"/></role>
+
+  <role descr="other person quarreling" n="1">
+		
+  <vnrole vncls="36.1" vntheta="Actor2"/></role>
+
+  <role descr="topic" n="2">
+		
+  <vnrole vncls="36.1" vntheta="Topic"/></role>
+
+</roles>
+
+<example name="Arg2 as  with-PP">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ Even some takeover-stock traders said [0] they could n't quarrel with the board 's logic .
+</text>
+	<arg n="0">they</arg>
+	<rel>quarrel</rel>
+	<arg f="with" n="2">the board 's logic</arg>
+</example>
+
+
+<example name="Arg2  as over-PP">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+ After years of [*] quarreling over Bonn 's `` Ostpolitik '' , West Germany and the U.S. appear [*-1] to have shifted onto a united course in Eastern Europe .
+</text>
+	<rel>quarreling</rel>
+	<arg f="over" n="2">Bonn 's `` Ostpolitik ''</arg>
+	<arg n="0">West Germany and the U.S. -&gt;  [*]</arg>
+</example>
+
+
+<example name="with Arg1">
+  <text>
+  John quarreled with Mary.
+  </text>
+  <arg n="0">John</arg>
+  <rel>quarreled</rel>
+  <arg f="with" n="1">Mary</arg>
+</example>
+
+
+</roleset>
+</predicate>
+</frameset>

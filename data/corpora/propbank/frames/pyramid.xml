@@ -1,0 +1,35 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="pyramid">
+<note>
+  Frames file for 'pyramid' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="pyramid.01" name="build up" vncls="-">
+<roles>
+  <role descr="builder, agent" n="0"/>
+  <role descr="thing built (pyramid)" n="1"/>
+</roles>
+
+<example name="the one example">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+    Federal examiner Alex Barabolak said Lincoln's operations amounted
+    to ``*trace* pyramiding debt to provide a luxurious life style for
+    its owners.'' 
+</text>
+        <arg n="0">*trace* -&gt;  Lincoln's operations</arg>
+        <rel>pyramiding</rel>
+        <arg n="1">debt</arg>
+        <arg f="PNC" n="M">to provide a luxurious life style for its
+        owners</arg> 
+</example>
+
+<note>
+Could potentially take other args from 'build' such as material,
+start/end states, but examples are wanting.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

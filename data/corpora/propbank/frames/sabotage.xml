@@ -1,0 +1,43 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="sabotage">
+<note>
+  Frames file for 'sabotage' based on sentences in wsj.  No Verbnet
+  entry. 
+</note>
+
+<roleset id="sabotage.01" name="wreck clandestinely" vncls="-">
+<roles>
+  <role descr="saboteur" n="0"/>
+  <role descr="thing wrecked" n="1"/>
+  <role descr="instrument" n="2"/>
+</roles>
+
+<example name="just transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Guerrilla leaders said Pretoria was attempting *trace* to sabotage
+    next week's elections in Namibia. 
+</text>
+        <arg n="0">*trace* -&gt;  Pretoria</arg>
+        <rel>sabotage</rel>
+        <arg n="1">next week 's elections in Namibia</arg>
+</example>
+
+<note>
+Not sure about the instrument arg; that's brought in from the
+'destroy' class but doesn't seem quite natural to me.
+</note>
+
+
+<note>
+Beautiful etymology behind this.  During the Industrial Revolution in
+France, disgruntled (and displaced) workers would toss their wooden
+shoes, called &quot;sabot&quot;s, into the machinery of the new factories,
+naturally causing the machinery to break.  This kind of willful
+destruction came to be called sabot-age.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

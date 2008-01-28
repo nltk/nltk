@@ -1,0 +1,61 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="batter">
+<note>
+  Frames file for 'batter' based on sentences in financial subcorpus.
+  Verbnet class hit-18.1.  Other framed members include hit, beat, and
+  kick.  Comparison to 'hit'.
+</note>
+
+<roleset id="batter.01" name="hit repeatedly" vncls="18.1">
+<roles>
+  <role descr="agent, hitter - animate only!" n="0">
+	  <vnrole vncls="18.1" vntheta="Agent"/></role>
+  <role descr="thing hit" n="1">
+	  <vnrole vncls="18.1" vntheta="Patient"/></role>
+  <role descr="instrument, thing hit by or with" n="2">
+	  <vnrole vncls="18.1" vntheta="Instrument"/></role>
+</roles>
+
+<example name="passive--most frequent">
+<text>
+    But its 17 big junk holdings at year end showed only a few bonds
+    that *trace* have been really battered *trace*. 
+</text>
+        <arg f="MNR" n="M">really</arg>
+        <rel>battered</rel>
+        <arg n="1">*trace* -&gt; *trace* -&gt;  that -&gt;  only a few
+        bonds</arg> 
+</example>
+
+<example name="passive, with instrument">
+<text>
+  Microsoft, *trace* battered *trace* by profit taking in recent
+  sessions, sank as much as 4; but it finished at 80 7/8, down 2 1/4
+  on volume of one million shares. 
+</text>
+        <rel>battered</rel>
+        <arg n="1">*trace* -&gt; *trace* -&gt;  Microsoft</arg>
+        <arg f="by" n="2">profit taking in recent sessions</arg>
+</example>
+
+<example name="instrumental subject">
+<text>
+    The early move essentially established the day's trading range,
+    and traders said they saw little of the program activity that
+    *trace* has battered the market recently. 
+</text>
+        <arg n="2">*trace* -&gt;  that -&gt;  the program activity</arg>
+        <rel>battered</rel>
+        <arg n="1">the market</arg>
+        <arg f="TMP" n="M">recently</arg>
+</example>
+
+<note>
+I'm really not sure if we'll see animate subjects: Mary battered John?
+John battered on the door?  Maybe.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

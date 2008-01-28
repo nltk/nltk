@@ -1,0 +1,43 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="circulate">
+<note>
+  Frames file for 'circulate' based on sentences in financial
+  subcorpus.  No Verbnet entry.  
+</note>
+
+<roleset id="circulate.01" name="(cause to) go around" vncls="-">
+<roles>
+  <role descr="causer" n="0"/>
+  <role descr="thing going 'round" n="1"/>
+</roles>
+
+<example name="ergative with medium">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    Asked whether a $230-a-share figure circulating in the market
+    yesterday is too low, he said, ``It's certainly not too low.'' 
+</text>
+        <arg n="1">a $230-a-share figure</arg>
+        <rel>circulating</rel>
+        <arg f="LOC" n="M">in the market</arg>
+</example>
+
+
+<example name="agentive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    The plaintiffs also alleged that prior to the fanfare, the company
+    circulated internal memos indicating problems with Lisa. 
+</text>
+        <arg n="0">the company</arg>
+        <rel>circulated</rel>
+        <arg n="1">internal memos indicating problems with Lisa</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

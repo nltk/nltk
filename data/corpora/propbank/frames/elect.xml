@@ -1,0 +1,51 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="elect">
+<note>
+  Frames file for 'elect' based on survey of initial sentences of big
+  corpus
+</note>
+
+<roleset id="elect.01" name="elect" vncls="29.1">
+<roles>
+  <role descr="voters" n="0">
+		
+  <vnrole vncls="29.1" vntheta="Agent"/></role>
+
+  <role descr="candidate" n="1">
+		
+  <vnrole vncls="29.1" vntheta="Theme"/></role>
+
+  <role descr="office or position" n="2">
+		
+  <vnrole vncls="29.1" vntheta="Predicate"/></role>
+
+</roles>
+
+<example name="absentee voters">
+  <text>
+  JP Bolduc was elected *trace* a director.
+  </text>
+  <arg n="1">*trace*=JP Bolduc</arg>
+  <rel>elected</rel>
+  <arg n="2">a director</arg>
+</example>
+
+<example name="hey, whaddya know, it does occur in the active voice">
+  <text>
+  Holders at the meeting elected a full slate of Canadian Express
+  nominees to Enfield's 11-member board.
+  </text>
+  <arg n="0">Holders at the meeting</arg>
+  <rel>elected</rel>
+  <arg n="1">a full slate of Canadian Express nominees</arg>
+  <arg f="to" n="2">Enfield's 11-member board</arg>
+</example>
+
+<note>
+I so want to make an &quot;electile dysfunction&quot; joke here.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

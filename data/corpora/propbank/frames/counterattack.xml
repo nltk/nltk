@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="counterattack">
+<note>
+  Frames file for 'counterattack' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="counterattack.01" name="to make a return attack" vncls="-">
+<roles>
+  <role descr="attacker, agent" n="0"/>
+  <role descr="entity attacked" n="1"/>
+  <role descr="instrument" n="2"/>
+</roles>
+
+
+<example name="with Arg2">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ As a result of this trend , longtime powerhouses H-P , IBM and Digital Equipment Corp. are scrambling [*-1] to counterattack with microprocessor-based systems of their own .
+</text>
+	<arg n="0">[*-1] -&gt;  longtime powerhouses H-P , IBM and Digital Equipment Corp.</arg>
+	<rel>counterattack</rel>
+	<arg f="with" n="2">microprocessor-based systems of their own</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

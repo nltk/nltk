@@ -1,0 +1,37 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="vault">
+<note>
+  Frames file for 'vault' based on sentences in wsj.  Verbnet entry 51.3.2.
+</note>
+
+<roleset id="vault.01" vncls="51.3.2" name="move upward dramatically">
+<roles>
+  <role n="0"  descr="causer of upward movement"/>
+  <role n="1"  descr="thing in motion"/>
+  <role n="2"  descr="EXT"/>
+  <role n="3"  descr="start point"/>
+  <role n="4"  descr="end point"/>
+</roles>
+
+<example name="just like increase, etc">
+<inflection person="ns" tense="ns" aspect="ns" voice="active" form="full"/>
+<text>
+    Industry analysts suggest that the conquest of Falconbridge could
+	vault Trelleborg from a regional Scandinavian success story to
+	a world-class mining concern.
+</text> 
+	<arg n="0">the conquest of Falconbridge</arg>
+	<arg n="M" f="MOD">could</arg>
+	<rel>vault</rel>
+	<arg n="1">Trelleborg</arg>
+	<arg n="3" f="from">a regional Scandinavian success story</arg>
+	<arg n="4" f="to">a world-class mining concern</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

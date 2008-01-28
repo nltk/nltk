@@ -1,0 +1,105 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="smoke">
+<note>
+Frames file for 'smoke' based on sentences in wsj and automatic
+expansion via verbnet.
+</note>
+
+<roleset id="smoke.01" name="emit smoke" vncls="47.2">
+<roles>
+	<role descr="causer of smoke emission" n="0"/>
+	<role descr="substance smoking" n="1">
+		
+  <vnrole vncls="47.2" vntheta="Theme"/></role>
+
+</roles>
+
+<example name="rather metaphorical">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    He smoked Toronto in the playoffs with six hits, seven walks and
+    eight stolen bases in 22 at bats, and continued that by going
+    3-for-3 at the plate Sunday, along with walking, stealing a base
+    and scoring a run. 
+</text>
+        <arg n="0">He</arg>
+        <rel>smoked</rel>
+        <arg n="1">Toronto</arg>
+        <arg f="TMP" n="M">in the playoffs</arg>
+        <arg f="MNR" n="M">with six hits, seven walks and eight stolen
+        bases in 22 at bats</arg> 
+</example>
+
+<example name="ergative, more concrete">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John's bonfire, instead of burning vigorously, just smoked.
+  </text>
+  <arg n="1">John's bonfire</arg>
+  <arg f="ADV" n="m">instead of burning vigorously</arg>
+  <arg f="DIS" n="m">just</arg>
+  <rel>smoked</rel>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="smoke.02" name="smoke cigarettes" vncls="-">
+<roles>
+  <role descr="smoker" n="0"/>
+  <role descr="cigarettes (etc)" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    Indeed, RJR Nabisco is currently under fire for having sent
+    80-second videotapes touting its Now brand to consumers who
+    *trace* smoke American Brands' Carltons. 
+</text>
+        <arg n="0">*trace* -&gt;  who -&gt;  consumers</arg>
+        <rel>smoke</rel>
+        <arg n="1">American Brands ' Carltons</arg>
+</example>
+
+<example name="intransitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    While nearly equal percentages of black and white women currently
+    smoke, in both sexes more whites have given up smoking than
+    blacks. 
+</text>
+        <arg n="0">nearly equal percentages of black and white women</arg>
+        <arg f="TMP" n="M">currently</arg>
+        <rel>smoke</rel>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="smoke.03" name="imbue smoky flavor" vncls="-">
+<roles>
+  <role descr="smoker" n="0"/>
+  <role descr="thing acquiring smoky flavor" n="1"/>
+</roles>
+
+<example name="smoked meat">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    A law went on the books in January that let him smoke bacon
+    without breeding pigs. 
+</text>
+        <arg n="0">him</arg>
+        <rel>smoke</rel>
+        <arg n="1">bacon</arg>
+        <arg f="ADV" n="M">without  breeding pigs</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

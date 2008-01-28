@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="chafe">
+<note>
+  Frames file for 'chafe'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="chafe.01" name="to feel irritated" vncls="-">
+<roles> 
+  <role descr="experiencer" n="0"/>
+  <role descr="target of emotion" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ Government officials who [*T*-1] are urging real-estate reforms balk at the arguments of business leaders and chafe at their pressure .
+</text>
+	<arg n="0">Government officials who [*T*-1] are urging real-estate reforms</arg>
+	<rel>chafe</rel>
+	<arg f="at" n="1">their pressure</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

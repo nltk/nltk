@@ -1,0 +1,199 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="fill">
+<note>
+  Frames file for 'fill' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="fill.01" name="to make or become full" vncls="9.8 45.4">
+<roles>
+  <role descr="agent, causer" n="0">
+	<vnrole vncls="9.8" vntheta="Agent"/>
+        <vnrole vncls="45.4" vntheta="Agent"/></role>
+  <role descr="container" n="1">
+	<vnrole vncls="9.8" vntheta="Destination"/>
+        <vnrole vncls="45.4" vntheta="Patient"/></role>
+  <role descr="substance" n="2">
+	<vnrole vncls="9.8" vntheta="Theme"/></role>
+</roles>
+
+<example name="all arguments">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+    Outside, a young pressman filling a news box with an extra edition
+    headlined ``Herald Examiner Closes'' refused to take a reader's
+    quarter. 
+</text>
+	<arg f="LOC" n="M">Outside</arg>
+	<arg n="0">a young pressman</arg>
+	<rel>filling</rel>
+	<arg n="1">a news box</arg>
+	<arg f="with" n="2">an extra edition headlined ``Herald
+	Examiner Closes''</arg> 
+</example>
+
+<example name="with Arg1 and Arg2">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    In this one, the screen fills with photographs of both
+    candidates. 
+</text>
+	<arg f="LOC" n="M">In this one</arg>
+	<arg n="1">the screen</arg>
+	<rel>fills</rel>
+	<arg f="with" n="2">photographs of both candidates</arg>
+</example>
+
+
+<example name="passive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+    The dispute has hampered the administration's efforts to recruit
+    prominent doctors [0] [*T*-1] to fill prestigious posts at the
+    helm of the NIH and the Centers for Disease Control. 
+</text>
+	<arg n="2">[*T*-1] -&gt;  [0] -&gt;  prominent doctors</arg>
+	<rel>fill</rel>
+	<arg n="1">prestigious posts at the helm of the NIH and the
+	Centers for Disease Control</arg> 
+<note>
+The 'doctors' are not agentively filling the post (ie, causing the
+container to be filled with some substance), but rather the doctors
+ARE the substance in the container.  Compare with the next example.
+</note>
+</example>
+
+
+<example name="with Arg0 and Arg1">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Hungary's Parliament voted [*-1] to hold a national referendum on
+    an election [*] to fill the new post of president. 
+</text>
+	<arg n="0">[*] -&gt;  [*-1] -&gt;  Hungary's Parliament</arg>
+	<rel>fill</rel>
+	<arg n="1">the new post of president</arg>
+<note>
+Here the Parliament is filling the post with someone else.  Compare to
+the example above.
+</note>
+</example>
+</roleset>
+
+<roleset id="fill.06" name="fulfill, satisfy" vncls="-">
+<roles>
+  <role descr="satisfier, (order) filler" n="0"/>
+  <role descr="order, thing satisfied" n="1"/>
+  <role descr="secondary predication" n="2"/>
+</roles>
+
+<example name="damn stock reportage anyway">
+  <inflection aspect="ns" form="participle" person="third" tense="past" voice="passive"/>
+  <text>
+    The order was filled *trace* at $75 when the stock opened at that
+    price on Monday.
+  </text>
+  <rel>filled</rel>
+  <arg n="1">*trace* -&gt; The order</arg>
+  <arg f="at" n="2">$75</arg>
+  <arg f="TMP" n="m">when the stock opened at that price on Monday</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="fill_up">
+
+<roleset id="fill.02" name="fill up: to make or become full" vncls="-">
+<roles>
+  <role descr="agent, causer of fullness" n="0"/>
+  <role descr="container" n="1"/>
+  <role descr="substance" n="2"/>
+</roles>
+
+<example name="with Arg0 and Arg1">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+    It also empowers the president to make recess appointments,
+    without Senate approval: ``The President shall have Power [*] to
+    fill up all Vacancies that may happen during the Recess of the
+    Senate, by granting Commissions which shall expire at the End of
+    their next Session.'' 
+</text>
+	<arg n="0">[*] -&gt;  The President</arg>
+	<rel>[ fill] [ up]</rel>
+	<arg n="1">all Vacancies that may happen during the Recess of
+	the Senate</arg> 
+	<arg f="MNR" n="M">by granting Commissions which shall expire
+	at the End of their next Session</arg> 
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="fill_out">
+<roleset id="fill.03" name="fill out: to complete, fill in" vncls="-">
+<roles>
+  <role descr="agent, poor schmuck with a pen" n="0"/>
+  <role descr="forms to be filled out" n="1"/>
+</roles>
+
+<example name="gerund">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+    [*] Filling out detailed forms about these individuals would tip
+    the IRS off and spark action against the clients, he said. 
+</text>
+	<arg n="0">[*]</arg>
+	<rel>[ Filling] [ out]</rel>
+	<arg n="1">detailed forms about these individuals</arg>
+</example>
+
+</roleset>
+
+<roleset id="fill.04" vncls="-" name="fill out: bring to completion">
+<roles>
+  <role n="0"  descr="causer of completion"/>
+  <role n="1"  descr="thing becoming complete"/>
+</roles>
+
+<example name="collect a full set">
+  <inflection person="ns" tense="ns" aspect="ns" voice="active" form="infinitive"/>
+  <text>
+    NCNB raised some $1.9 billion in new capital during the quarter
+    [*-1] to complete the NCNB Texas purchase , and to acquire several
+    small failed thrifts [*-2] to fill out its regional franchise. 
+  </text>
+  <arg n="0"        >[*-2] -> [*-1] -> NCNB</arg>
+  <rel              >fill out</rel>
+  <arg n="1"        >its regional franchise</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="fill_in">
+
+<roleset id="fill.05" name="fill in: to complete, fill in" vncls="-">
+<roles>
+  <role descr="agent, poor schmuck with a pen" n="0"/>
+  <role descr="forms to be filled in" n="1"/>
+</roles>
+
+<example name="gerund">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+    [*] Filling in detailed forms about these individuals would tip
+    the IRS off and spark action against the clients, he said. 
+</text>
+	<arg n="0">[*]</arg>
+	<rel>[ Filling] [ in]</rel>
+	<arg n="1">detailed forms about these individuals</arg>
+</example>
+
+</roleset>
+</predicate>
+
+
+</frameset>

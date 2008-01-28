@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="swathe">
+<note>
+  Frames file for 'swathe' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="swathe.01" name="to wrap or bind" vncls="9.8">
+<roles>
+  <role descr="agent" n="0"><vnrole vncls="9.8" vntheta="Agent"/></role>
+  <role descr="entity swathed" n="1"><vnrole vncls="9.8" vntheta="Destination"/></role>
+  <role descr="entity swathed in/with" n="2"><vnrole vncls="9.8" vntheta="Theme"/></role>
+</roles>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+ His brother , Parkhaji , whose head [*T*-2] is swathed [*-1] in a gorgeous crimson turban , nods vigorous assent .
+</text>
+	<rel>swathed</rel>
+	<arg n="1">[*-1] -&gt;  [*T*-2] -&gt;  whose head</arg>
+	<arg f="in" n="2">a gorgeous crimson turban</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

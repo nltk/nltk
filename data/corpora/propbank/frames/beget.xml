@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="beget">
+<note>
+  Frames file for 'beget' based on sentences in wsj.  Verbnet entry
+  27.
+</note>
+
+<roleset id="beget.01" name="bring into existence" vncls="27">
+<roles>
+  <role descr="begetter" n="0"><vnrole vncls="27" vntheta="Theme1"/></role>
+  <role descr="begotten?" n="1"><vnrole vncls="27" vntheta="Theme2"/></role>
+</roles>
+
+<example name="I love strong verbs">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    The concept begot a slew of copycats, but the banks stopped
+    promoting the packages. 
+</text>
+        <arg n="0">The concept</arg>
+        <rel>begot</rel>
+        <arg n="1">a slew of copycats</arg>
+</example>
+
+<note>
+Actually, I believe the past tense of 'beget' is 'begat.'  OED doesn't
+agree with me, though, calling 'begat' archaic.  Pfah, what do they know?
+</note>
+
+</roleset>
+</predicate>
+</frameset>

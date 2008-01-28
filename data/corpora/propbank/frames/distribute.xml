@@ -1,0 +1,56 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="distribute">
+<note>
+  Frames file for 'distribute' based on sentences in financial
+  subcorpus.  No access to verbnet.  Comparison to 'pass out'.
+</note>
+
+<roleset id="distribute.01" name="distribute" vncls="13.2">
+<roles>
+  <role descr="distributor" n="0">
+		
+  <vnrole vncls="13.2" vntheta="Agent"/></role>
+
+  <role descr="thing distributed" n="1">
+		
+  <vnrole vncls="13.2" vntheta="Theme"/></role>
+
+  <role descr="distributed to" n="2">
+		
+  <vnrole vncls="13.2" vntheta="Recipient"/></role>
+
+</roles>
+
+<example name="active, no benefactive">
+<text>
+    RMS distributes electronic devices and produces power supplies and
+    plastic literature displays. 
+</text>
+        <arg n="0">RMS</arg>
+        <rel>distributes</rel>
+        <arg n="1">electronic devices</arg>
+</example>
+
+<example name="passive, with benefactive">
+<text>
+    The candy businesses had sales of about $154 million last year,
+    which was roughly 12% of total revenue for RJR's Planters
+    LifeSavers unit, according to a memorandum distributed *trace* by
+    RJR's owner, Kohlberg Kravis Roberts &amp; Co., to bankers last
+    December. 
+</text>
+        <rel>distributed</rel>
+        <arg n="1">*trace* -&gt;  a memorandum</arg>
+        <arg f="by" n="0">RJR's owner, Kohlberg Kravis Roberts &amp;
+        Co.</arg> 
+        <arg f="to" n="2">bankers</arg>
+        <arg f="TMP" n="M">last December</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

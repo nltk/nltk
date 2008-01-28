@@ -1,0 +1,51 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="wage">
+<note>
+  Frames file for 'wage' based on sentences in financial subcorpus.
+  No Verbnet entry.
+</note>
+
+<roleset id="wage.01" name="wage war" vncls="-">
+<roles>
+  <role descr="combatant" n="0"/>
+  <role descr="war" n="1"/>
+  <role n="2" descr="foe, if separate from arg0"/>
+</roles>
+
+<example name="the tail that wages the dog?">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    In 1986, Baker, Nye waged a proxy fight for control of Leaseway
+    Transportation Inc. that  ultimately led to Leaseway's being
+    sold. 
+</text>
+        <arg f="TMP" n="M">In 1986</arg>
+        <arg n="0">Baker, Nye</arg>
+        <rel>waged</rel>
+        <arg n="1">a proxy fight for control of Leaseway
+        Transportation Inc. that ultimately led to Leaseway's being
+        sold </arg> 
+</example>
+
+<example name="with foe">
+<inflection person="ns" tense="ns" aspect="ns" voice="active" form="infinitive"/>
+<text>
+    His Republican counterpart, Sen. Warren Rudman (R., N.H.), has
+    used his position [*-1] to wage a legislative war with the
+    conservative board of the Legal Services Corp.  
+</text>
+	<arg n="0">[*-1] ->  His Republican counterpart, Sen. Warren
+	Rudman (R., N.H.),</arg> 
+	<rel>wage</rel>
+	<arg n="1">a legislative war</arg>
+	<arg n="2" f="with">the conservative board of the Legal
+	Services Corp</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

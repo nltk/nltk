@@ -1,0 +1,43 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="cohere">
+<note>
+  Frames file for 'cohere' based on sentences in wsj.  No Verbnet
+  entry, Framenet entry Compatibility.
+</note>
+
+<roleset id="cohere.01" name="(cause to) form a coherent whole" vncls="-">
+<roles>
+  <role descr="agent, causer of coherence" n="0"/>
+  <role descr="coherent bits" n="1"/>
+</roles>
+
+<example name="unaccusative">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+    Unfortunately, Mr. Bork failed to distinguish between such
+    pressures and the emergence of great issues critical to a society
+    that must be settled judicially if it is [*-4] to cohere. 
+</text>
+        <arg n="1">[*-4] -&gt;  it</arg>
+        <rel>cohere</rel>
+</example>
+
+<example name="predicted but downright weird">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John cohered the chapters of his dissertation.
+  </text>
+  <arg n="0">John</arg>
+  <rel>cohered</rel>
+  <arg n="1">the chapters of his dissertation</arg>
+
+<note>
+Sounds way weird to me
+</note>
+
+</example>
+
+</roleset>
+</predicate>
+</frameset>

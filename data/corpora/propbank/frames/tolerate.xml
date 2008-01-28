@@ -1,0 +1,39 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="tolerate">
+<note>
+  Frames file for 'tolerate' based on sentences in financial
+  subcorpus.  No access to verbnet.  No comparison.  'Put up' doesn't
+  include this roleset.
+</note>
+
+<roleset id="tolerate.01" name="tolerate, put up with" vncls="31.2">
+<roles>
+  <role descr="tolerater" n="0">
+		
+  <vnrole vncls="31.2" vntheta="Experiencer"/></role>
+
+  <role descr="thing tolerated" n="1">
+		
+  <vnrole vncls="31.2" vntheta="Cause"/></role>
+
+</roles>
+
+<example name="they pretty much all look like this">
+<text>
+    Even with mutual funds, the little investor continues *trace* to
+    tolerate high fees, high commissions and poor performance, while
+    index-fund managers slowly amass a better record with lower fees,
+    lower commissions and less risk. 
+</text>
+        <arg n="0">*trace* -&gt;  the little investor</arg>
+        <rel>tolerate</rel>
+        <arg n="1">high fees , high commissions and poor performance</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

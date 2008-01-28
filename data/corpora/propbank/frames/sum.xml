@@ -1,0 +1,45 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="sum_up">
+<note>
+  Frames file for 'sum up' based on sentences in financial subcorpus.
+  No Verbnet entry.
+</note>
+
+<roleset id="sum.01" name="summarize" vncls="-">
+<roles>
+  <role descr="summarizer" n="0"/>
+  <role descr="thing summarized" n="1"/>
+  <role descr="as, if syntactically neat" n="2"/>
+</roles>
+
+<example name="not syntactically nice">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    As he sums it up: ``We are listening to the market.''
+</text>
+        <arg n="0">he</arg>
+        <rel>[ sums] [ up]</rel>
+        <arg n="1">it</arg>
+</example>
+
+<example name="syntactically nice">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John summed up his relationship with Mary as ``a complete waste of
+    time.'' 
+  </text>
+  <arg n="0">John</arg>
+  <rel>summed up</rel>
+  <arg n="1">his relationship with Mary</arg>
+  <arg f="as" n="2">``a complete waste of time.''</arg>
+</example>
+
+<note>
+The first example has no constituent holding the utterance.  If you
+wish to do use 'A' (as with split utterances), go right ahead.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

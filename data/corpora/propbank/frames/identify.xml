@@ -1,0 +1,89 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="identify">
+<note>
+  Frames file for 'identify' based on sentences in financial
+  subcorpus.  No access to verbnet.  Comparison with 'label' et al.
+</note>
+
+<roleset id="identify.01" name="label, call" vncls="29.2">
+<roles>
+  <role descr="caller" n="0">
+		
+  <vnrole vncls="29.2" vntheta="Agent"/></role>
+
+  <role descr="item being labelled" n="1">
+		
+  <vnrole vncls="29.2" vntheta="Theme"/></role>
+
+  <role descr="attribute" n="2">
+		
+  <vnrole vncls="29.2" vntheta="Predicate"/></role>
+
+</roles>
+
+<example name="just transitive">
+<text>
+    It wouldn't identify the bankers.
+</text>
+        <arg n="0">It</arg>
+        <arg f="MOD" n="M">would</arg>
+        <arg f="NEG" n="M">n't</arg>
+        <rel>identify</rel>
+        <arg n="1">the bankers</arg>
+</example>
+
+<example name="passivized, with LONG trace chain">
+<text>
+    ``We're being paid today, but we're worried about tomorrow and
+    will want'' letters of credit, says the sales director at one
+    major dress maker who *trace-1* asked *trace-2* not to be
+    identified *trace-3*. 
+</text>
+        <arg f="NEG" n="M">not</arg>
+        <rel>identified</rel>
+        <arg n="1">*trace-3* -&gt; *trace-2* -&gt; *trace-1* -&gt;  who -&gt;  one
+        major dress maker</arg> 
+</example>
+
+<note>
+I wonder if that *trace-2* really should be in there, but that's the
+chain that treebank provides.
+</note>
+
+<example name="with attribute">
+<text>
+    ``A lot of people are identifying a vote for representation as a
+    vote against Fred Smith,'' says J.X. Gollich, a
+    Tiger-turned-Federal pilot and union activist. 
+</text>
+        <arg n="0">A lot of people</arg>
+        <rel>identifying</rel>
+        <arg n="1">a vote for representation</arg>
+        <arg f="as" n="2">a vote against Fred Smith</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="identify.02" name="feel empathy" vncls="-">
+<roles>
+  <role descr="feeler" n="0"/>
+  <role descr="thing being identified with" n="1"/>
+  <role descr="attribute" n="2"/>
+</roles>
+
+<example>
+<text>
+    John identified with the lonely monkey at the zoo.
+</text>
+        <arg n="0">John</arg>
+	<rel>identified</rel>
+	<arg f="with" n="1">the lonely monkey</arg>
+	<arg f="LOC" n="m">at the zoo</arg>
+</example>
+</roleset>
+</predicate>
+</frameset>

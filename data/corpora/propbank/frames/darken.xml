@@ -1,0 +1,53 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="darken">
+<note>
+  Frames file for 'darken' based on sentences in brown.  Verbnet entry
+  45.4, big surprise.
+</note>
+
+<roleset id="darken.01" vncls="45.4" name="(cause to) become dark">
+<roles>
+  <role n="0"  descr="causer of darkening"/>
+  <role n="1"  descr="thing becoming dark"/>
+</roles>
+
+<example name="unaccusative">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+    He darkened under his heavy burn.
+  </text>
+  <arg n="1"        >He</arg>
+  <rel              >darkened</rel>
+  <arg n="m" f="LOC">under his heavy burn</arg>
+</example>
+
+<example name="transitive">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+     For a moment, anger darkened the hallway about her, and when she
+     found her voice, anger thickened it. 
+  </text>
+  <arg n="m" f="TMP">For a moment</arg>
+  <arg n="0"        >anger</arg>
+  <rel              >darkened</rel>
+  <arg n="1"        >the hallway about her</arg>
+</example>
+
+<example name="pretentious literary usage">
+  <inflection person="ns" tense="ns" aspect="progressive" voice="active" form="participle"/>
+  <text>
+     The darkening world scene, at the time of the Munich Pact,
+     continued to trouble his mind even in his remote Virginia
+     studio. 
+  </text>
+  <rel              >darkening</rel>
+  <arg n="1"        >[world][scene]</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>
