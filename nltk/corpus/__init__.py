@@ -130,7 +130,8 @@ toolbox = LazyCorpusLoader(
 treebank = LazyCorpusLoader(
     'treebank/combined', BracketParseCorpusReader, r'wsj_.*\.mrg')
 propbank = LazyCorpusLoader(
-    'propbank', PropbankCorpusReader, 'prop.txt', 'frames/*\.xml',
+    'propbank', PropbankCorpusReader,
+    'prop.txt', 'frames/.*\.xml', 'verbs.txt',
     lambda filename: re.sub(r'^wsj/\d\d/', '', filename),
     treebank) # Must be defined *after* treebank corpus.
 treebank_chunk = LazyCorpusLoader(

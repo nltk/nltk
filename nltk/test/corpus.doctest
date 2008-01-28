@@ -92,7 +92,7 @@ Tagged Corpora
 In addition to the plaintext corpora, NLTK's data package also
 contains a wide variety of annotated corpora.  For example, the Brown
 Corpus is annotated with part-of-speech tags, and defines additional
-methods ``tagged_*()`` which words as C{(word,tag)} tuples, rather
+methods ``tagged_*()`` which words as `(word,tag)` tuples, rather
 than just bare word strings.
 
     >>> from nltk.corpus import brown
@@ -420,6 +420,7 @@ Each propbank instance defines the following member variables:
   - Location information: `filename`, `sentnum`, `wordnum`
   - Annotator information: `tagger`
   - Inflection information: `inflection`
+  - Roleset identifier: `roleset`
   - Verb (aka predicate) location: `predicate`
   - Argument locations and types: `arguments`
 
@@ -435,6 +436,8 @@ The following examples show the types of these arguments:
     >>> infl = inst.inflection
     >>> infl.form, infl.tense, infl.aspect, infl.person, infl.voice
     ('v', 'p', '-', '-', 'a')
+    >>> inst.roleset
+    'rise.01'
     >>> inst.predicate
     PropbankTreePointer(16, 0)
     >>> inst.arguments # doctest: +NORMALIZE_WHITESPACE
@@ -492,7 +495,7 @@ in the original tree).  Sentence #6 contains an example of an argument
 that is both discontinuous and contains a chain:
 
     >>> inst = pb_instances[6]
-    >>> inst.frameset
+    >>> inst.roleset
     'expose.01'
     >>> argloc, argid = inst.arguments[2]
     >>> argloc
@@ -507,6 +510,35 @@ that is both discontinuous and contains a chain:
     (*CHAIN*
       (*SPLIT* (NP (DT a) (NN group)) (IN of) (NP (NNS workers)))
       (-NONE- *))
+
+The propbank corpus also provides access to the frameset files, which
+define the argument labels used by the annotations, on a per-verb
+basis.  Each frameset file contains one or more predicates, such as
+'turn' or 'turn_on', each of which is divided into coarse-grained word
+senses called rolesets.  For each roleset, the frameset file provides
+descriptions of the argument roles, along with examples.
+
+    >>> expose_01 = propbank.roleset('expose.01')
+    >>> turn_01 = propbank.roleset('turn.01')
+    >>> print turn_01 # doctest: +ELLIPSIS
+    <Element roleset at ...>
+    >>> for role in turn_01.findall("roles/role"):
+    ...     print role.attrib['n'], role.attrib['descr']
+    0 turner
+    1 thing turning
+    m direction, location
+
+    >>> from nltk.etree import ElementTree
+    >>> print ElementTree.tostring(turn_01.find('example')).strip()
+    <example name="transitive agentive">
+      <text>
+      John turned the key in the lock.
+      </text>
+      <arg n="0">John</arg>
+      <rel>turned</rel>
+      <arg n="1">the key</arg>
+      <arg f="LOC" n="m">in the lock</arg>
+    </example>
 
 Note that the standard corpus distribution only contains 10% of the
 treebank, so the parse trees are not availalbe for instances starting
@@ -531,8 +563,14 @@ at 9353:
     ValueError: Parse tree not avaialable
 
 However, if you supply your own version of the treebank corpus (by
-putting it before the nltk-provided version on C{nltk.data.path}),
+putting it before the nltk-provided version on `nltk.data.path`),
 then you can access the trees for all instances.
+
+A list of the verb lemmas contained in propbank is returned by the
+`propbank.verbs()` method:
+
+    >>> propbank.verbs()
+    ['abandon', 'abate', 'abdicate', 'abet', 'abide', ...]
 
 Other Corpora
 ~~~~~~~~~~~~~

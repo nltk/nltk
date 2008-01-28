@@ -8,35 +8,102 @@
 from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
 from nltk.tree import Tree
+from nltk.etree import ElementTree
 import re
 
 class PropbankCorpusReader(CorpusReader):
-    def __init__(self, root, propfile, framefiles,
+    """
+    Corpus reader for the propbank corpus, which augments the Penn
+    Treebank with information about the predicate argument structure
+    of every verb instance.  The corpus consists of two parts: the
+    predicate-argument annotations themselves, and a set of X{frameset
+    files} which define the argument labels used by the annotations,
+    on a per-verb basis.  Each X{frameset file} contains one or more
+    predicates, such as C{'turn'} or C{'turn_on'}, each of which is
+    divided into coarse-grained word senses called X{rolesets}.  For
+    each X{roleset}, the frameset file provides descriptions of the
+    argument roles, along with examples.
+    """
+    def __init__(self, root, propfile, framefiles='',
+                 verbsfile=None,
                  parse_filename_xform=None,
                  parse_corpus=None):
-        
+        """
+        @param root: The root directory for this corpus.
+        @param propfile: The name of the file containing the predicate-
+            argument annotations (relative to C{root}).
+        @param framefiles: A list or regexp specifying the frameset
+            files for this corpus.
+        @param parse_filename_xform: A transform that should be applied
+            to the filenames in this corpus.  This should be a function
+            of one argument (a filename) that returns a string (the new
+            filename).
+        @param parse_corpus: The corpus containing the parse trees
+            corresponding to this corpus.  These parse trees are
+            necessary to resolve the tree pointers used by propbank.
+        """
         # If framefiles is specified as a regexp, expand it.
         if isinstance(framefiles, basestring):
             framefiles = nltk.corpus.reader.find_corpus_files(root, framefiles)
+        framefiles = list(framefiles)
         # Initialze the corpus reader.
-        CorpusReader.__init__(self, root, [propfile] + list(framefiles))
+        CorpusReader.__init__(self, root, [propfile, verbsfile] + framefiles)
 
         # Record our frame files & prop file.
         self._propfile = propfile
         self._framefiles = framefiles
+        self._verbsfile = verbsfile
         self._parse_filename_xform = parse_filename_xform
         self._parse_corpus = parse_corpus
 
     def raw(self, files=None):
+        """
+        @return: the text contents of the given files, as a single
+        string.
+        """
         return concat([open(filename).read()
                        for filename in self.abspaths(files)])
 
     def instances(self):
+        """
+        @return: a corpus view that acts as a list of
+        L{PropbankInstance} objects, one for each verb in the corpus.
+        """
         return StreamBackedCorpusView(self.abspath(self._propfile),
                                       self._read_instance_block)
 
     def lines(self):
+        """
+        @return: a corpus view that acts as a list of strings, one for
+        each line in the predicate-argument annotation file.  
+        """
         return StreamBackedCorpusView(self.abspath(self._propfile),
+                                      read_line_block)
+
+    def roleset(self, roleset_id):
+        """
+        @return: the xml description for the given roleset.
+        """
+        lemma = roleset_id.split('.')[0]
+        framefile = 'frames/%s.xml' % lemma
+        if framefile not in self._framefiles:
+            raise ValueError('Frameset file for %s not found' %
+                             roleset_id)
+
+        etree = ElementTree.parse(self.abspath(framefile)).getroot()
+        for roleset in etree.findall('predicate/roleset'):
+            if roleset.attrib['id'] == roleset_id:
+                return roleset
+        else:
+            raise ValueError('Roleset %s not found in %s' %
+                             (roleset_id, framefile))
+
+    def verbs(self):
+        """
+        @return: a corpus view that acts as a list of all verb lemmas
+        in this corpus (from the verbs.txt file).
+        """
+        return StreamBackedCorpusView(self.abspath(self._verbsfile),
                                       read_line_block)
 
     def _read_instance_block(self, stream):
@@ -58,7 +125,7 @@ class PropbankCorpusReader(CorpusReader):
 
 class PropbankInstance(object):
     
-    def __init__(self, filename, sentnum, wordnum, tagger, frameset,
+    def __init__(self, filename, sentnum, wordnum, tagger, roleset,
                  inflection, predicate, arguments, parse_corpus=None):
         
         self.filename = filename
@@ -78,10 +145,10 @@ class PropbankInstance(object):
         """An identifier for the tagger who tagged this instance; or
         C{'gold'} if this is an adjuticated instance."""
         
-        self.frameset = frameset
-        """The name of the frameset used by this instance's predicate.
-        Use L{propbank.frameset() <PropbankCorusReader.frameset>} to
-        look up information about the frameset."""
+        self.roleset = roleset
+        """The name of the roleset used by this instance's predicate.
+        Use L{propbank.roleset() <PropbankCorusReader.roleset>} to
+        look up information about the roleset."""
         
         self.inflection = inflection
         """A {PropbankInflection} object describing the inflection of
@@ -108,7 +175,7 @@ class PropbankInstance(object):
 
     def __str__(self):
         s = '%s %s %s %s %s %s' % (self.filename, self.sentnum, self.wordnum,
-                                   self.tagger, self.frameset, self.inflection)
+                                   self.tagger, self.roleset, self.inflection)
         items = self.arguments + ((self.predicate, 'rel'),)
         for (argloc, argid) in sorted(items):
             s += ' %s-%s' % (argloc, argid)
@@ -130,7 +197,7 @@ class PropbankInstance(object):
 
         # Divide the line into its basic pieces.
         (filename, sentnum, wordnum,
-         tagger, frameset, inflection) = pieces[:6]
+         tagger, roleset, inflection) = pieces[:6]
         rel = [p for p in pieces[6:] if p.endswith('-rel')]
         args = [p for p in pieces[6:] if not p.endswith('-rel')]
         if len(rel) != 1:
@@ -158,7 +225,7 @@ class PropbankInstance(object):
 
         # Put it all together.
         return PropbankInstance(filename, sentnum, wordnum, tagger,
-                                frameset, inflection, predicate,
+                                roleset, inflection, predicate,
                                 arguments, parse_corpus)
             
 class PropbankChainTreePointer(object):
