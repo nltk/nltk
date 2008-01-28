@@ -142,6 +142,8 @@ treebank_raw = LazyCorpusLoader(
     'treebank/raw', PlaintextCorpusReader, r'wsj_.*')
 udhr = LazyCorpusLoader(
     'udhr', PlaintextCorpusReader, r'(?!README|\.svn).*')
+verbnet = LazyCorpusLoader(
+    'verbnet', VerbnetCorpusReader, r'(?!\.svn).*\.xml')
 webtext = LazyCorpusLoader(
     'webtext', PlaintextCorpusReader, r'(?!README|\.svn).*')
 words = LazyCorpusLoader(

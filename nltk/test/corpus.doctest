@@ -575,6 +575,8 @@ A list of the verb lemmas contained in propbank is returned by the
 Other Corpora
 ~~~~~~~~~~~~~
 
+senseval
+--------
 The Senseval 2 corpus is a word sense disambiguation corpus.  Each
 item in the corpus corresponds to a single ambiguous word.  For each
 of these words, the corpus contains a list of instances, corresponding
@@ -617,6 +619,8 @@ displays their local context (2 words on each side) and word sense(s):
            principal and |  interest | is the          -> interest_6
             increase its |  interest | to 70           -> interest_5
 
+ppattach
+--------
 The Prepositional Phrase Attachment corpus is a corpus of
 prepositional phrase attachment decisions.  Each instance in the
 corpus is encoded as a ``PPAttachment`` object:
@@ -634,6 +638,8 @@ corpus is encoded as a ``PPAttachment`` object:
     >>> inst.attachment
     'V'
 
+shakespeare
+-----------
 The Shakespeare corpus contains a set of Shakespeare plays, formatted
 as XML files.  These corpora are returned as ElementTree objects:
 
@@ -643,7 +649,7 @@ as XML files.  These corpora are returned as ElementTree objects:
     ('a_and_c.xml', 'dream.xml', 'hamlet.xml', 'j_caesar.xml', ...)
     >>> play = shakespeare.xml('dream.xml')
     >>> print play # doctest: +ELLIPSIS
-    <Element PLAY at ...>
+    <Element 'PLAY' at ...>
     >>> print '%s: %s' % (play[0].tag, play[0].text)
     TITLE: A Midsummer Night's Dream
     >>> personae = [persona.text for persona in
@@ -659,6 +665,8 @@ as XML files.  These corpora are returned as ElementTree objects:
      'Lion', 'MOTH', 'MUSTARDSEED', 'Moonshine', 'PEASEBLOSSOM',
      'Prologue', 'Pyramus', 'Thisbe', 'Wall']
 
+toolbox
+-------
 The Toolbox corpus distributed with NLTK contains a sample lexicon and
 several sample texts from the Rotokas language.  The Toolbox corpus
 reader returns Toolbox files as XML ElementTree objects.  The
@@ -714,6 +722,8 @@ This example displays some records from a Rotokas text:
     f      Tupela i bin hariap i go long wara .
     fe     They raced to the river.
 
+timit
+-----
 The NLTK data package includes a fragment of the TIMIT
 Acoustic-Phonetic Continuous Speech Corpus.  This corpus is broken
 down into small speech samples, each of which is available as a wave
@@ -788,7 +798,8 @@ speaker and sentence identifier for a given speech sample:
     >>> timit.utterances(spkrid=timit.spkrid(item)) # doctest: +ELLIPSIS
     ('dr1-fvmh0/sa1', 'dr1-fvmh0/sa2', 'dr1-fvmh0/si1466', ...)
 
-
+rte
+---
 The RTE (Recognizing Textual Entailment) corpus was derived from the
 RTE1, RTE2 and RTE3 datasets (dev and test data), and consists of a
 list of XML-formatted 'text'/'hypothesis' pairs.
@@ -822,6 +833,81 @@ The RTE corpus also supports an ``xml()`` method which produces ElementTrees.
     >>> xmltree[7].findtext('t') # doctest: +NORMALIZE_WHITESPACE
     "Mrs. Bush's approval ratings have remained very high, above 80%,
     even as her husband's have recently dropped below 50%."
+
+verbnet
+-------
+The VerbNet corpus is a lexicon that divides verbs into classes, based
+on their syntax-semantics linking behavior.  The basic elements in the
+lexicon are verb lemmas, such as 'abandon' and 'accept', and verb
+classes, which have identifiers such as 'remove-10.1' and
+'admire-31.2-1'.  These class identifiers consist of a representitive
+verb selected from the class, followed by a numerical identifier.  The
+list of verb lemmas, and the list of class identifiers, can be
+retrieved with the following methods:
+
+    >>> from nltk.corpus import verbnet
+    >>> verbnet.lemmas()[20:25]
+    ['accelerate', 'accept', 'acclaim', 'accompany', 'accrue']
+    >>> verbnet.classids()[:5]
+    ['accompany-51.7', 'admire-31.2', 'admire-31.2-1', 'admit-65', 'adopt-93']
+
+The `classids()` method may also be used to retrieve the classes that
+a given lemma belongs to:
+
+    >>> verbnet.classids('accept')
+    ['approve-77', 'characterize-29.2-1-1', 'obtain-13.5.2']
+
+The primary object in the lexicon is a class record, which is stored
+as an ElementTree xml object.  The class record for a given class
+identifier is returned by the `vnclass()` method:
+
+    >>> verbnet.vnclass('remove-10.1') # doctest: +ELLIPSIS
+    <Element 'VNCLASS' at ...>
+
+The `vnclass()` method also accepts "short" identifiers, such as '10.1':
+
+    >>> verbnet.vnclass('10.1') # doctest: +ELLIPSIS
+    <Element 'VNCLASS' at ...>
+
+See the Verbnet documentation, or the Verbnet files, for information
+about the structure of this xml.  As an example, we can retrieve a
+list of thematic roles for a given Verbnet class:
+
+    >>> vn_31_2 = verbnet.vnclass('admire-31.2')
+    >>> for themrole in vn_31_2.findall('THEMROLES/THEMROLE'):
+    ...     print themrole.attrib['type'],
+    ...     for selrestr in themrole.findall('SELRESTRS/SELRESTR'):
+    ...         print '[%(Value)s%(type)s]' % selrestr.attrib,
+    ...     print
+    Theme
+    Experiencer [+animate]
+    Predicate
+
+The Verbnet corpus also provides a variety of pretty printing
+functions that can be used to display the xml contents in a more
+consise form.  The simplest such method is `pprint()`:
+
+    >>> print verbnet.pprint('57')
+    weather-57
+      Subclasses: (none)
+      Members: blow clear drizzle fog freeze gust hail howl lightning mist
+        mizzle pelt pour precipitate rain roar shower sleet snow spit spot
+        sprinkle storm swelter teem thaw thunder
+      Thematic roles:
+        * Theme[+concrete +force]
+      Frames:
+        Intransitive (Expletive Subject)
+          Syntax: LEX[it] LEX[[+be]] VERB
+          Semantics:
+            * weather(during(E), Weather_type, ?Theme)
+        NP (Expletive Subject, Theme Object)
+          Syntax: LEX[it] LEX[[+be]] VERB NP[Theme]
+          Semantics:
+            * weather(during(E), Weather_type, Theme)
+        PP (Expletive Subject, Theme-PP)
+          Syntax: LEX[it[+be]] VERB PREP[with] NP[Theme]
+          Semantics:
+            * weather(during(E), Weather_type, Theme)
 
 Regression Tests
 ~~~~~~~~~~~~~~~~
@@ -1008,6 +1094,69 @@ The Brown Corpus uses the tagged corpus reader:
     >>> brown.tagged_paras() # doctest: +ELLIPSIS
     [[[('The', 'AT'), ...]], [[('The', 'AT'), ...]], ...]
     
+Verbnet Corpus Reader
+---------------------
+
+Make sure we're picking up the right number of elements:
+
+    >>> from nltk.corpus import verbnet
+    >>> len(verbnet.lemmas())
+    3621
+    >>> len(verbnet.wordnetids())
+    4953
+    >>> len(verbnet.classids())
+    429
+
+Selecting classids based on various selectors:
+
+    >>> verbnet.classids(lemma='take') # doctest: +NORMALIZE_WHITESPACE
+    ['bring-11.3', 'characterize-29.2', 'convert-26.6.2', 'cost-54.2',
+     'fit-54.3', 'performance-26.7-2', 'steal-10.5']
+    >>> verbnet.classids(wordnetid='lead%2:38:01')
+    ['accompany-51.7']
+    >>> verbnet.classids(fileid='approve-77.xml')
+    ['approve-77']
+    >>> verbnet.classids(classid='admire-31.2') # subclasses
+    ['admire-31.2-1']
+
+vnclass() accepts filenames, long ids, and short ids:
+
+    >>> a = ElementTree.tostring(verbnet.vnclass('admire-31.2.xml'))
+    >>> b = ElementTree.tostring(verbnet.vnclass('admire-31.2'))
+    >>> c = ElementTree.tostring(verbnet.vnclass('31.2'))
+    >>> a == b == c
+    True
+
+files() can be used to get files based on verbnet class ids:
+
+    >>> verbnet.files('admire-31.2')
+    ['admire-31.2.xml']
+    >>> verbnet.files(['admire-31.2', 'obtain-13.5.2'])
+    ['admire-31.2.xml', 'obtain-13.5.2.xml']
+    >>> verbnet.files('badidentifier')
+    Traceback (most recent call last):
+      . . .
+    ValueError: vnclass identifier 'badidentifier' not found
+
+longid() and shortid() can be used to convert identifiers:
+
+    >>> verbnet.longid('31.2')
+    'admire-31.2'
+    >>> verbnet.longid('admire-31.2')
+    'admire-31.2'
+    >>> verbnet.shortid('31.2')
+    '31.2'
+    >>> verbnet.shortid('admire-31.2')
+    '31.2'
+    >>> verbnet.longid('badidentifier')
+    Traceback (most recent call last):
+      . . .
+    ValueError: vnclass identifier 'badidentifier' not found
+    >>> verbnet.shortid('badidentifier')
+    Traceback (most recent call last):
+      . . .
+    ValueError: vnclass identifier 'badidentifier' not found
+
 Corpus View Regression Tests
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
