@@ -1,0 +1,68 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="funnel">
+<note>
+  Frames file for 'funnel' based on sentences in wsj.  Verbnet entry 9.3.
+</note>
+
+<roleset id="funnel.01" name="directed motion" vncls="9.3">
+<roles>
+  <role descr="causer of motion, agent" n="0">
+        <vnrole vncls="9.3" vntheta="Agent"/></role>
+  <role descr="thing moved" n="1">
+        <vnrole vncls="9.3" vntheta="Theme"/></role>
+  <role descr="destination" n="2">
+        <vnrole vncls="9.3" vntheta="Destination"/></role>
+  <role descr="source" n="3"/>
+</roles>
+
+<example name="typically three args">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Theoretically, the brokers will then be able *trace* to funnel
+    ``leads'' on corporate finance opportunities to Kidder's
+    investment bankers, possibly easing the longstanding tension
+    between the two camps. 
+</text>
+        <arg n="0">*trace* -&gt;  the brokers</arg>
+        <rel>funnel</rel>
+        <arg n="1">``leads'' on corporate finance opportunities</arg>
+        <arg f="to" n="2">Kidder's investment bankers</arg>
+</example>
+
+<example name="different preposition">
+<inflection aspect="ns" form="gerund" person="ns" tense="ns" voice="active"/>
+<text>
+    The U.S. Attorney's office filed a criminal complaint against six
+    bank employees charging them with conspiracy in the scheme, which
+    *trace* apparently was capable of *trace* handling millions of
+    dollars a week by *trace* funneling cash through fictitious bank
+    accounts. 
+</text>
+        <arg n="0">*trace* -&gt; *trace* -&gt; *trace* -&gt;  which -&gt;  the scheme</arg>
+        <rel>funneling</rel>
+        <arg n="1">cash</arg>
+        <arg f="through" n="2">fictitious bank accounts</arg>
+</example>
+
+<example name="with source">
+<inflection aspect="ns" form="full" person="ns" tense="ns" voice="ns"/>
+<text>
+    Last month, the carrier said it wanted to lease crews and planes
+    from British Airways so it could funnel its passengers from London
+    to other European destinations. 
+</text>
+        <arg n="0">it</arg>
+        <arg f="MOD" n="M">could</arg>
+        <rel>funnel</rel>
+        <arg n="1">its passengers</arg>
+        <arg f="from" n="3">London</arg>
+        <arg f="to" n="2">other European destinations</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

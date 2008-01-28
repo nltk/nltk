@@ -1,0 +1,45 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="toot">
+<note>
+  Frames file for 'toot' based on sentences in wsj.  No access to
+  Verbnet at the moment.
+</note>
+
+<roleset id="toot.01" name="make whistle noises" vncls="43.2">
+<roles>
+  <role descr="cause, agent" n="0">
+        <vnrole vncls="43.2" vntheta="Agent"/></role>
+  <role descr="whistle" n="1">
+        <vnrole vncls="43.2" vntheta="Theme"/></role>
+</roles>
+
+<example name="agentive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+     At the small four-room home of Elias Motsoaledi, a leading ANC
+     unionist and a former commander in the group's armed wing,
+     Umkhonto we Sizwe, well-wishers stuck little ANC flags in their
+     hair and a man tooted on an antelope horn wrapped in ANC
+     ribbons. 
+</text>
+        <arg n="0">a man</arg>
+        <rel>tooted</rel>
+        <arg f="on" n="1">an antelope horn wrapped in ANC ribbons</arg>
+</example>
+
+<example name="ergative">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     The whistle tooted.
+  </text>
+  <arg n="1">The whistle</arg>
+  <rel>tooted</rel>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,59 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="license">
+<note>
+  Frames file for 'license' based on sentences in financial subcorpus.
+  No Verbnet entry.
+</note>
+
+<roleset id="license.01" name="give legal rights to property" vncls="-">
+<roles>
+  <role descr="granter of license" n="0"/>
+  <role descr="licensed thing" n="1"/>
+  <role descr="benefactive, licensed-to" n="2"/>
+</roles>
+
+<example name="commercialism rules">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+     Turns out that next year, Charlie Brown, Snoopy and the gang turn
+     40 -- and Scripps Howard's United Media unit, the syndicator and
+     licensing agent for Charles Schulz's comic strip, sees a bonanza
+     in *trace* licensing the cartoon characters to a bevy of
+     advertisers for ads, tie-ins and promotions. 
+</text>
+        <arg n="0">*trace* -&gt;  Scripps Howard's United Media unit, the
+        syndicator and licensing agent for Charles Schulz's comic
+        strip,</arg> 
+        <rel>licensing</rel>
+        <arg n="1">the cartoon characters</arg>
+        <arg f="to" n="2">a bevy of advertisers</arg>
+        <arg f="PNC" n="M">for ads, tie-ins and promotions</arg>
+</example>
+
+<example name="reversed order">
+  <inflection person="third" tense="present" aspect="perfect" voice="active" form="participle"/>
+  <text>
+    Sandoz Ltd. has licensed certain manufacturing and marketing
+    rights for Interleukin-3 from Genetics Institute and is conducting
+    preclinical studies with it. 
+  </text>
+  <arg n="2"        >Sandoz Ltd.</arg>
+  <rel              >licensed</rel>
+  <arg n="1"        >certain manufacturing and marketing rights for
+  Interleukin-3</arg> 
+  <arg n="0" f="from">Genetics Institute</arg>
+</example>
+
+<note>
+Rather like rent and lease, but I'm not going to make a new roleset.
+</note>
+
+</roleset>
+<note>
+I have the feeling there's also an 'allow' sense, which will take
+different framing, but we'll wait for an example from the corpus.
+</note>
+
+</predicate>
+</frameset>

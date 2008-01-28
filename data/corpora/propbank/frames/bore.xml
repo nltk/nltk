@@ -1,0 +1,110 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="bore">
+<note>
+  Frames file for 'bore' based on sentences in wsj.  Verbnet entry
+  21.2-2, Framenet entry Experiencer obj.  Note that those refer to
+  different rolesets.
+</note>
+
+<roleset id="bore.01" name="create a hole" vncls="21.2-2">
+<roles>
+  <role descr="creator of hole, agent" n="0"><vnrole vncls="21.2-2" vntheta="Agent"/></role>
+  <role descr="hole" n="1"><vnrole vncls="21.2-2" vntheta="Patient"/></role>
+  <role descr="location of hole" n="2"/>
+  <role descr="instrument" n="3"><vnrole vncls="21.2-2" vntheta="Instrument"/></role>
+</roles>
+
+<example name="two of four">
+<inflection aspect="ns" form="gerund" person="ns" tense="ns" voice="ns"/>
+<text>
+     A worm resides in the operating system of a computer and spreads
+     by *trace* boring into other computers contacted through
+     networks. 
+</text>
+        <arg n="0">*trace* -&gt;  A worm</arg>
+        <rel>boring</rel>
+        <arg f="into" n="2">other computers contacted through networks</arg>
+</example>
+
+<example name="all args">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John bored holes in Mary's coffee table with a power drill.
+  </text>
+  <arg n="0">John</arg>
+  <rel>bored</rel>
+  <arg n="1">holes</arg>
+  <arg f="in" n="2">Mary's coffee table</arg>
+  <arg f="with" n="3">a power drill</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="bore.02" name="be dull" vncls="-">
+<roles>
+  <role descr="boring entity" n="0"/>
+  <role descr="experiencer of boredom" n="1"/>
+  <role descr="instrument" n="2"/>
+</roles>
+
+<example name="adjectival: agentive">
+<inflection aspect="progressive" form="participle" person="third" tense="past" voice="active"/>
+<text>
+     A San Francisco lawyer, Mr. Panelli rowed religiously when he
+     first got the machine, but, he complains, it left grease marks on
+     his carpet, ``and it was boring. 
+</text>
+        <arg n="0">it</arg>
+        <rel>boring</rel>
+<note>
+Effectively, &quot;it was boring ME&quot;.
+</note>
+</example>
+
+<example name="adjectival: experiencer">
+<inflection aspect="ns" form="participle" person="third" tense="past" voice="passive"/>
+<text>
+    Mr. Azoff reportedly was bored and frequently clashed with top MCA
+    management over a number of issues such as compensation and
+    business plans. 
+</text>
+        <arg n="1">Mr. Azoff</arg>
+        <rel>bored</rel>
+<note>
+Mr. Azoff was bored by something, we don't know what.
+</note>
+</example>
+
+<example name="adjectival: agent and experiencer">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Eventually viewers may grow bored with the technology and resent
+    the cost. 
+</text>
+        <arg f="TMP" n="M">Eventually</arg>
+        <arg n="1">viewers</arg>
+        <rel>bored</rel>
+        <arg f="with" n="0">the technology</arg>
+</example>
+
+<example name="all args">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John bored his dinner guests with stories of his adventures in Peoria.
+  </text>
+  <arg n="0">John</arg>
+  <rel>bored</rel>
+  <arg n="1">his dinner guests</arg>
+  <arg f="with" n="2">stories of his adventures in Peoria</arg>
+<note>
+I guess that's better than &quot;John bored his dinner guests with a power drill.&quot;
+</note>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

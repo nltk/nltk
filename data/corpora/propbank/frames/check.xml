@@ -1,0 +1,151 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="check">
+<note>
+Frames file for 'check' based on sentences in financial subcorpus and
+automatic expansion via verbnet.
+</note>
+
+<roleset id="check.01" name="examine" vncls="35.2">
+<roles>
+  <role descr="checker" n="0">
+	<vnrole vncls="35.2" vntheta="Agent"/></role>
+  <role descr="thing checked" n="1">
+	<vnrole vncls="35.2" vntheta="Location"/></role>
+  <role descr="checked for" n="2">
+	<vnrole vncls="35.2" vntheta="Theme"/></role>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    Every day, Mr. Levy checks orders from Campeau department store
+    chains, [*-2] trying [*-3] to guess if he will be paid [*-1].
+</text>
+        <arg f="TMP" n="M">Every day</arg>
+        <arg n="0">Mr. Levy</arg>
+        <rel>checks</rel>
+        <arg n="1">orders from Campeau department store chains</arg>
+        <arg f="ADV" n="M">[*-2] trying [*-3] to guess if he will be
+        paid [*-1]</arg> 
+</example>
+
+<example name="just prepositional">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    The company, based [*] in San Francisco, said [0] it had [*-1] to
+    shut down a crude-oil pipeline in the Bay area [*-1] to check for
+    leaks but added that its refinery in nearby Richmond, Calif., was
+    undamaged. 
+</text>
+        <arg n="0">[*-1] -&gt;  it</arg>
+        <rel>check</rel>
+        <arg f="for" n="2">leaks</arg>
+</example>
+
+<example name="all args">
+  <inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+  <text>
+    Every morning Mary checks John's homework for mistakes.
+  </text>
+  <arg f="TMP" n="m">Every morning</arg>
+  <arg n="0">Mary</arg>
+  <rel>checks</rel>
+  <arg n="1">John's homework</arg>
+  <arg f="for" n="2">mistakes</arg>
+</example>
+
+<note>
+</note>
+</roleset>
+
+<roleset id="check.02" name="enter/exit, as a hotel" vncls="-">
+<roles>
+  <role descr="causal agent" n="A"/>
+  <role descr="entity checking" n="0"/>
+  <role descr="thing checked into/out of, or direction alone" n="1"/>
+</roles>
+
+<example name="classic roach motel ad, first half">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+    ``They check in, but they can't check out.''
+</text>
+        <arg n="0">They</arg>
+        <rel>check</rel>
+        <arg n="1">in</arg>
+</example>
+
+<example name="with causal agent">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    Mary checked John into a mental ward.
+  </text>
+  <arg n="A">Mary</arg>
+  <rel>checked</rel>
+  <arg n="0">John</arg>
+  <arg f="into" n="1">a mental ward</arg>
+</example>
+
+<note>
+Similarly &quot;check out (of X)&quot;
+</note>
+
+</roleset>
+
+<roleset id="check.03" vncls="-" name="make checkmarks">
+<roles>
+  <role n="0"  descr="agent, person with pen"/>
+  <role n="1"  descr="option, box, etc"/>
+</roles>
+
+<example name="just like the SATs">
+  <inflection person="ns" tense="ns" aspect="ns" voice="active" form="infinitive"/>
+  <text>
+    Offering the wine at roughly $65 a bottle wholesale ($100 retail),
+    he sent merchants around the country a form asking them [*-2] to
+    check one of three answers: 1) no, the wine is too high (2
+    responses); 2) yes, it's high but I 'll take it (2 responses); 3 )
+    I'll take all I can get (58 responses). 
+  </text>
+  <arg n="0"        >[*-2] -> them</arg>
+  <rel              >check</rel>
+  <arg n="1"        >one of three answers: 1) no, the wine is too high (2
+    responses); 2) yes, it's high but I 'll take it (2 responses); 3 )
+    I'll take all I can get (58 responses)</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="check_in">
+
+<roleset id="check.04" vncls="-" name="check in: confirm">
+<roles>
+  <role n="0"  descr="confirmer, agent"/>
+  <role n="1"  descr="check in with whom"/>
+</roles>
+
+<example name="not like a hotel!">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+    Hundreds of Californians made their way to their computers after
+    the quake, and checked in with each other on electronic bulletin
+    boards, which link computers CB-radio-style, via phone lines. 
+  </text>
+  <arg n="0"        >Hundreds of Californians</arg>
+  <rel              >checked in</rel>
+  <arg n="1" f="with">each other</arg>
+  <arg n="m" f="LOC">on electronic bulletin
+    boards, which link computers CB-radio-style, via phone lines</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

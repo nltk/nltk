@@ -1,0 +1,37 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="fleece">
+<note>
+  Frames file for 'fleece' based on sentences in wsj.  Verbnet entry 10.6.
+</note>
+
+<roleset id="fleece.01" name="steal, remove, like fleece from a sheep" vncls="10.6">
+<roles>
+  <role descr="entity removing" n="0">
+     
+  <vnrole vncls="10.6" vntheta="Agent"/></role>
+  <role descr="thing being removed" n="1">
+     
+  <vnrole vncls="10.6" vntheta="Theme"/></role>
+  <role descr="removed from" n="2">
+     
+  <vnrole vncls="10.6" vntheta="Source"/></role>
+</roles>
+
+<example name="the one example">
+<inflection aspect="progressive" form="participle" person="third" tense="present" voice="passive"/>
+<text>
+    Meanwhile, in the squat office buildings that ring Fashion Island,
+    the odds are good that someone is getting fleeced [*-2]. 
+</text>
+        <rel>fleeced</rel>
+        <arg n="2">[*-2] -&gt;  someone</arg>
+</example>
+
+<note>
+I actually have my doubts about the other args (esp arg1) appearing.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

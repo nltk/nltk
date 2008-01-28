@@ -1,0 +1,61 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<note>
+Frames file for 'want' based on survey of initial sentences from big corpus
+and comparison to 'plan'
+</note>
+<predicate lemma="want">
+<roleset id="want.01" name="want, desire" vncls="29.1 32.1">
+  <roles>
+    <role descr="Wanter" n="0">
+	<vnrole vncls="29.1" vntheta="Agent"/>
+        <vnrole vncls="32.1" vntheta="Experiencer"/></role>
+    <role descr="thing wanted" n="1">
+	<vnrole vncls="29.1" vntheta="Theme"/>
+        <vnrole vncls="32.1" vntheta="Theme"/></role>
+    <role n="2" descr="beneficiary"/>
+    <role n="3" descr="in-exchange-for"/>
+    <role n="4" descr="from"/>
+  </roles>
+
+<example name="transitive">
+  <text>
+    I want a flight from Ontario to Chicago
+  </text>
+  <arg n="0">I</arg>
+  <rel>want</rel>
+  <arg n="1">a flight from Ontario to Chicago</arg>
+</example>
+
+<example name="arg1 as infinitive">
+  <text>
+    I actually want *trace* to go from Ontario to Chicago
+  </text>
+  <arg n="0">I</arg>
+  <arg f="ADV" n="M">actually</arg>
+  <rel>want</rel>
+  <arg n="1">*trace* to go from Ontario to Chicago</arg>
+</example>
+
+<example name="arg1 as infinitival sentence">
+  <text>
+    Czechoslovakia still wants the dam to be built.
+  </text>
+  <arg n="0">Czechoslovakia</arg>
+  <arg f="TMP" n="M">still</arg>
+  <rel>wants</rel>
+  <arg n="1">the dam to be built</arg>
+</example>
+
+<note>
+Passivized and Passivized with extraction are predicted, but unlikely:
+
+For the dam to be built is wanted by Czechoslovakia.
+
+The dam is wanted to be built by Czechoslovakia.
+
+(note the the latter is ambiguous--is Cz the wanter or the builder?)
+</note>
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,66 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="present">
+<note>
+  Frames file for 'present' based on sentences in financial
+  subcorpus.  Verbnet class fulfilling-13.4.1, other framed members
+  include charge and invest.  Comparison to 'give'.
+</note>
+
+<roleset id="present.01" name="give" vncls="13.4.1">
+<roles>
+  <role descr="giver" n="0">
+		
+  <vnrole vncls="13.4.1" vntheta="Agent"/></role>
+
+  <role descr="thing given" n="1">
+		
+  <vnrole vncls="13.4.1" vntheta="Theme"/></role>
+
+  <role descr="given to" n="2">
+		
+  <vnrole vncls="13.4.1" vntheta="Recipient"/></role>
+
+  <role descr="secondary attribute of thing given" n="3"/>
+</roles>
+
+<example name="just transitive">
+<text>
+    But such a combination also presents great risks.
+</text>
+        <arg f="DIS" n="M">But</arg>
+        <arg n="0">such a combination</arg>
+        <arg f="DIS" n="M">also</arg>
+        <rel>presents</rel>
+        <arg n="1">great risks</arg>
+</example>
+
+<example name="with attribute">
+<text>
+    But I think we are losing credibility because when the market does
+    this, it doesn't present itself as a rational investment.
+</text>
+        <arg n="0">it</arg>
+        <arg f="NEG" n="M">n't</arg>
+        <rel>present</rel>
+        <arg f="REC" n="1">itself</arg>
+        <arg f="as" n="3">a rational investment</arg>
+</example>
+
+<example name="with recipient">
+  <text>
+    John presented Mary with a bouquet of wilted dandelions.
+  </text>
+  <arg n="0">John</arg>
+  <rel>presented</rel>
+  <arg n="2">Mary</arg>
+  <arg f="with" n="1">a bouquet of wilted dandelions</arg>
+</example>
+
+<note>
+I'm betting the 'attributive' only occurs when arg1 is a reflexive.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

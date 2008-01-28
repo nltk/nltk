@@ -1,0 +1,45 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="echo">
+<note>
+  Frames file for 'echo' based on sentences in financial subcorpus.
+  Verbnet entry sound_existence-47.4, no other framed members.  No
+  comparison. 
+</note>
+
+<roleset id="echo.01" name="repeat a sound" vncls="47.4">
+<roles>
+  <role descr="repeater, imitator" n="0">
+		
+  <vnrole vncls="47.4" vntheta="Theme"/></role>
+
+  <role descr="original" n="1"/>
+</roles>
+
+<example name="transitive">
+<text>
+    Polly Peck's chairman, Asil Nadir, echoed the official Japanese
+    view of the accord, which was announced Friday. 
+</text>
+        <arg n="0">Polly Peck's chairman, Asil Nadir,</arg>
+        <rel>echoed</rel>
+        <arg n="1">the official Japanese view of the accord, which was
+        announced Friday</arg> 
+</example>
+
+<example name="inchoative?">
+  <text>
+    John's voice echoed thinly through the Grand Canyon.
+  </text>
+  <arg n="1">John's voice</arg>
+  <rel>echoed</rel>
+  <arg f="MNR" n="m">thinly</arg>
+  <arg f="LOC" n="m">through the Grand Canyon</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

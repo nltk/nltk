@@ -1,0 +1,84 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="hop">
+<note>
+    While 'hop' is a perfectly good verb, it doesn't occur in WSJ,
+    except as a misparsing for 'hope'.  (hoping -&gt; hop)
+</note>
+
+<roleset id="hop.01" name="hope" vncls="32.2">
+<roles>
+  <role descr="hoper" n="0">
+		
+  <vnrole vncls="32.2" vntheta="Experiencer"/></role>
+
+  <role descr="thing hoped (for)" n="1">
+		
+  <vnrole vncls="32.2" vntheta="Theme"/></role>
+
+</roles>
+
+<example name="PP hoping">
+  <text>
+  Northeast still hopes for an expedited review by the FERG.
+  </text>
+  <arg n="0">Northeast</arg>
+  <arg f="TMP" n="m">still</arg>
+  <rel>hopes</rel>
+  <arg f="for" n="1">an expedited review by the FERG</arg>
+</example>
+
+<example name="SBAR hoping">
+  <text>
+  Consumer groups hope that Judge Curry's Byron 1 order may set a
+  precedent for a second nuclear rate case involving Commonweath Edison.
+  </text>
+  <arg n="0">Consumer groups</arg>
+  <rel>hope</rel>
+  <arg n="1">Judge Curry's Byron 1 order may set a
+  precedent for a second nuclear rate case involving Commonweath Edison.</arg>
+</example>
+
+<note>
+As usual, drop the complementizer
+</note>
+
+<example name="it support">
+  <text>
+  It is hoped that other Japanese would then follow the leader.
+  </text>
+  <rel>hoped</rel>
+  <arg n="1">other Japanese would then follow the leader</arg>
+</example>
+
+<example name="nasty passive-extraction">
+  <text>
+  John is hoped *trace* to win the Nobel Prize this year.
+  </text>
+  <rel>hoped</rel>
+  <arg n="1">[John] [*trace* to win the Nobel Prize this year]</arg>
+</example>
+
+<note>
+Most people seem to find this ungrammatical, or at least highly
+questionable.  That doesn't mean it won't appear in WSJ.
+</note>
+
+<example name="missing arg1">
+  <text>
+  Sales were well short of what they had hoped *trace*
+  </text>
+  <arg n="0">they</arg>
+  <rel>hoped</rel>
+  <arg n="1">*trace*</arg>
+</example>
+
+<note>
+Obviously they were hoping something about sales, like &quot;they hoped
+sales would be *trace*&quot;, but that's just not available.  In these
+circumstances leave an empty trace.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,66 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="retain">
+<note>
+  Frames file for 'retain' based on sentences in financial subcorpus.
+  No access to verbnet.  Comparison with 'keep'.
+</note>
+
+<roleset id="retain.01" name="keep">
+<roles>
+    <role descr="Keeper" n="0"/>
+    <role descr="thing kept" n="1"/>
+    <role descr="attributive" n="3"/>
+</roles>
+
+<example name="basic transitive">
+<text>
+    The British government retained the single golden share after
+    selling its stake in Jaguar in...
+</text>
+        <arg n="0">The British government</arg>
+        <rel>retained</rel>
+        <arg n="1">the single golden share</arg>
+        <arg f="TMP" n="M">after selling its stake in Jaguar in</arg>
+</example>
+
+<example name="with attributive">
+<text>
+    The company also retained attorney Martin P. Levin, a director of
+    the company and former head of the Times-Mirror Publishing Group,
+    as an adviser. 
+</text>
+        <arg n="0">The company</arg>
+        <arg f="DIS" n="M">also</arg>
+        <rel>retained</rel>
+        <arg n="1">attorney Martin P. Levin, a director of the company
+        and former head of the Times-Mirror Publishing Group,</arg> 
+        <arg f="as" n="3">an adviser</arg>
+</example>
+
+<example name="purpose clause">
+<text>
+    The action followed by one day an Intelogic announcement that it
+    will retain an investment banker to explore alternatives ``to
+    maximize shareholder value,'' including the possible sale of the
+    company. 
+</text>
+        <arg n="0">it</arg>
+        <arg f="MOD" n="M">will</arg>
+        <rel>retain</rel>
+        <arg n="1">an investment banker</arg>
+        <arg f="PNC" n="M">to explore alternatives ``to maximize
+        shareholder value,'' including the possible sale of the
+        company</arg> 
+</example>
+
+<note>
+Purpose clauses show up in every concievable syntax; sometimes the
+purpose is part of the Arg1 NP, sometimes not.  Sometimes they're
+connected in an S, sometimes as NP-PP, sometimes the NP is extracted
+from an S.  Follow treebank's syntax and do the best you can.  Sorry.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,48 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="reassure">
+<note>
+  Frames file for 'reassure' based on sentences in financial
+  subcorpus.  Verbnet entry 31.1 with members like: comfort, convince,
+  encourage, interest, scare, shock, spook, threaten and worry.
+  Comparison with 'assure'.
+</note>
+
+<roleset id="reassure.01" name="calm someone's nerves (again)" vncls="31.1">
+<roles>
+  <role descr="causer of assurance" n="0">
+	  <vnrole vncls="31.1" vntheta="Cause"/></role>
+  <role descr="assured one" n="1">
+	  <vnrole vncls="31.1" vntheta="Experiencer"/></role>
+  <role descr="assurance, utterance" n="2"/>
+</roles>
+
+<example name="transitive">
+<text>
+    Moreover, such a sale could help Armstrong reassure its investors
+    and deter the Belzbergs, who own a 9.85% stake in the Lancaster,
+    Pa., company. 
+</text>
+        <arg n="0">Armstrong</arg>
+        <rel>reassure</rel>
+        <arg n="1">its investors</arg>
+</example>
+
+
+<example name="passivized">
+<text>
+    ``We were reassured they would stand behind the company.''
+</text>
+        <arg n="1">We</arg>
+        <rel>reassured</rel>
+        <arg n="2">they would stand behind the company</arg>
+</example>
+
+<note>
+Properly there should be a trace between 'reassure' and the utterance,
+but treebank forgot to put that in.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

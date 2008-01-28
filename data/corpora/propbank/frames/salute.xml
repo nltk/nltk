@@ -1,0 +1,42 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="salute">
+<note>
+  Frames file for 'salute' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="salute.01" name="to greet or honor " vncls="29.2 33 40.3.3">
+<roles>
+  <role descr="saluter" n="0">
+        <vnrole vncls="29.2" vntheta="Agent"/>
+        <vnrole vncls="33" vntheta="Agent"/>
+        <vnrole vncls="40.3.3" vntheta="Agent"/></role>
+  <role descr="entity saluted" n="1">
+        <vnrole vncls="29.2" vntheta="Theme"/>
+        <vnrole vncls="33" vntheta="Theme"/>
+        <vnrole vncls="40.3.3" vntheta="Recipient"/></role>
+  <role descr="attribute of arg1" n="2">
+        <vnrole vncls="29.2" vntheta="Predicate"/>
+        <vnrole vncls="33" vntheta="Cause"/>
+        <vnrole vncls="40.3.3" vntheta="Theme"/></role>
+</roles>
+
+
+<example name="all arguments">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ Many of the nation 's highest-ranking executives saluted Friday 's market plunge as an overdue comeuppance for speculators and takeover players .
+</text>
+	<arg n="0">Many of the nation 's highest-ranking executives</arg>
+	<rel>saluted</rel>
+	<arg n="1">Friday 's market plunge</arg>
+	<arg f="as" n="2">an overdue comeuppance for speculators and takeover players</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

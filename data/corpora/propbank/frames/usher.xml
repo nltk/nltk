@@ -1,0 +1,61 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="usher">
+<note>
+  Frames file for 'usher' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="usher.02" name="lead, escort" vncls="-">
+<roles>
+  <role descr="usher" n="0"/>
+  <role descr="person led" n="1"/>
+  <role descr="destination" n="2"/>
+</roles>
+
+<example name="would not have expected this usage">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    Visitors are ushered *trace* into the premises by red-frocked
+    doormen known  as waiters, a reminder of the insurance market's
+    origins in a coffeehouse in 17th century London.  
+</text>
+        <rel>ushered</rel>
+        <arg n="1">*trace* -&gt;  Visitors</arg>
+        <arg f="into" n="2">the premises</arg>
+        <arg f="by" n="0">red-frocked doormen known  as waiters</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="usher_in">
+
+<roleset id="usher.01" name="signal the start of" vncls="-">
+<roles>
+  <role descr="signal" n="0"/>
+  <role descr="thing starting" n="1"/>
+</roles>
+
+<example name="so that's when it started">
+<inflection aspect="progressive" form="participle" person="third" tense="present" voice="active"/>
+<text>
+    But in the three leading political contests of 1989, the negative
+    ads have reached new levels of hostility, raising fears that this
+    kind of mudslinging, empty of significant issues, is ushering in a
+    new era of campaigns without content. 
+</text>
+        <arg n="0">this kind of mudslinging, empty of significant
+        issues,</arg> 
+        <rel>[ ushering] [ in]</rel>
+        <arg n="1">a new era of campaigns without content</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

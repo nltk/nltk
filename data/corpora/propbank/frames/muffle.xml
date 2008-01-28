@@ -1,0 +1,42 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="muffle">
+<note>
+  Frames file for 'muffle' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="muffle.01" name="diminish loudness (of a sound)" vncls="-">
+<roles>
+  <role descr="agentive muffler" n="0"/>
+  <role descr="sound" n="1"/>
+  <role descr="instrumental muffler" n="2"/>
+</roles>
+
+<example name="passive with instrument">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    No one speaks, and the snaking of the ropes seems to make as much
+    sound as the bells themselves, *trace* muffled *trace* by the
+    ceiling. 
+</text>
+        <rel>muffled</rel>
+        <arg n="1">*trace* -&gt; *trace* -&gt;  the bells themselves</arg>
+        <arg f="by" n="2">the ceiling</arg>
+</example>
+
+<example name="agentive">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John muffled his laughter at Mary's slipping on the ice.
+  </text>
+  <arg n="0">John</arg>
+  <rel>muffled</rel>
+  <arg n="1">his laughter at Mary's slipping on the ice</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

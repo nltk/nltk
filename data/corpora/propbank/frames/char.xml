@@ -1,0 +1,40 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="char">
+<note>
+  Frames file for 'char' based on sentences in wsj.  Verbnet entry 45.4.
+</note>
+
+<roleset id="char.01" vncls="45.4" name="burn incompletely">
+<roles>
+  <role n="0"  descr="bad cook, agent"/>
+  <role n="1"  descr="partially-burnt thing"/>
+</roles>
+
+<example name="adjectival">
+<inflection person="ns" tense="ns" aspect="ns" voice="passive" form="participle"/>
+<text>
+    Emergency crews searched through the charred rubble of a Phillips
+    Petroleum Co. plastics plant near Pasadena, Texas, where a series
+    of explosions Monday killed at least two people and injured 124. 
+</text>
+	<rel>charred</rel>
+	<arg n="1">rubble</arg>
+</example>
+
+<example name="with agent">
+  <inflection person="ns" tense="ns" aspect="ns" voice="active" form="infinitive"/>
+  <text>
+     Somehow or another, John even managed to char his orange juice.
+  </text>
+  <arg n="0"        >John</arg>
+  <rel              >char</rel>
+  <arg n="1"        >his orange juice</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

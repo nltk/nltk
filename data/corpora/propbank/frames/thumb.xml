@@ -1,0 +1,56 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="thumb">
+<note>
+  Frames file for 'thumb' based on sentences in wsj.  Verbnet entry 35.5.
+</note>
+
+<roleset id="thumb.01" name="look through idly" vncls="35.5">
+<roles>
+  <role descr="thumber" n="0"><vnrole vncls="35.5" vntheta="Agent"/></role>
+  <role descr="thing looked through" n="1"><vnrole vncls="35.5" vntheta="Location"/></role>
+</roles>
+
+<example name="ho hum">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John thumbed through the dictionary, hoping to find a word he
+    didn't already know.
+  </text>
+  <arg n="0">John</arg>
+  <rel>thumbed</rel>
+  <arg f="through" n="1">the dictionary</arg>
+  <arg n="m">hoping to find a word he didn't already know</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="thumb.02" name="make a rude gesture" vncls="-">
+<roles>
+  <role descr="maker of gesture" n="0"/>
+  <role descr="nose" n="1"/>
+  <role descr="at whom" n="2"/>
+</roles>
+
+<example name="ha! take that!">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    The North Texas Chevy Dealers recently had a record sales month
+    after the debut of ad campaign that *trace* thumbs its nose at
+    elite Easterners.  
+</text>
+        <arg n="0">*trace* -&gt;  that -&gt;  ad campaign</arg>
+        <rel>thumbs</rel>
+        <arg n="1">its nose</arg>
+        <arg f="at" n="2">elite Easterners</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,36 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="tail">
+<note>
+  Frames file for 'tail' based on sentences in wsj.  Verbnet entries
+  10.7 and 51.6, Framenet entry Cotheme.
+</note>
+
+<roleset id="tail.01" name="follow" vncls="51.6">
+<roles>
+  <role descr="follower, tailer" n="0">
+       
+  <vnrole vncls="51.6" vntheta="Agent"/></role>
+  <role descr="followed, tailed" n="1">
+       
+  <vnrole vncls="51.6" vntheta="Theme"/></role>
+</roles>
+
+<example name="awkward depictive">
+<inflection aspect="progressive" form="participle" person="third" tense="past" voice="active"/>
+<text>
+    He wasn't protecting the Freedom Marchers; he was tailing them as
+    subversives. 
+</text>
+        <arg n="0">he</arg>
+        <rel>tailing</rel>
+        <arg n="1">them</arg>
+        <arg n="M">as subversives</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

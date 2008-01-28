@@ -1,0 +1,48 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="form">
+<note>
+  Frames file for 'form' based on transformation of 'form'.  No actual
+  examination of corpus.
+</note>
+
+<roleset id="preform.01" name="create, make ahead of time" vncls="26.4">
+<roles>
+  <role descr="creator" n="0"><vnrole vncls="26.4" vntheta="Agent"/></role>
+  <role descr="thing created" n="1"><vnrole vncls="26.4" vntheta="Product"/></role>
+  <role descr="source" n="2"><vnrole vncls="26.4" vntheta="Material"/></role>
+  <role descr="benefactive" n="3"><vnrole vncls="26.4" vntheta="Beneficiary"/></role>
+  <role descr="attribute, secondary predication" n="4"/>
+</roles>
+
+<example name="just transitive">
+<text>
+    Peter Drake, biotechnology analyst for Vector Securities
+    International, Chicago, thinks market uncertainty may encourage
+    small companies to preform more strategic alliances with big
+    corporations. 
+</text>
+        <arg n="0">small companies</arg>
+        <rel>preform</rel>
+        <arg n="1">more strategic alliances with big corporations</arg>
+</example>
+
+<example name="passive, with source">
+<text>
+    NCNB Texas National, preformed *trace* from the remnants of of the
+    failed First RepublicBank Corp. of Dallas, contributed $76.9
+    million to NCNB's bottom line in the third quarter. 
+</text>
+        <rel>preformed</rel>
+        <arg n="1">*trace* -&gt;  NCNB Texas National</arg>
+        <arg f="from" n="2">the remnants of of the failed First
+        RepublicBank Corp. of Dallas</arg> 
+</example>
+
+<note>
+Other higher-#'d args may or may not occur.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

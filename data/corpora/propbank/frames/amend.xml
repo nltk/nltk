@@ -1,0 +1,61 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="amend">
+<note>
+  Frames file for 'amend' based on sentences in financial subcorpus.
+  No Verbnet entry, no Framenet entry.
+</note>
+
+<roleset id="amend.01" name="add to or correct">
+<roles>
+  <role descr="amender, corrector" n="0"/>
+  <role descr="thing amended" n="1"/>
+  <role descr="secondary predication on arg1" n="2"/>
+</roles>
+
+<example name="just transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    The company said it amended its shareholder rights plan by
+    reducing to 10% from 20% the level of ownership by an outsider
+    that would trigger the issuance to other holders of rights to buy
+    additional shares of Nashua common at half price. 
+</text>
+        <arg n="0">it</arg>
+        <rel>amended</rel>
+        <arg n="1">its shareholder rights plan</arg>
+        <arg f="MNR" n="M">by reducing to 10% from 20% the level of
+        ownership by an outsider that would trigger the issuance to
+        other holders of rights to buy additional shares of Nashua
+        common at half price</arg> 
+</example>
+
+<note>
+It's possible that the MNR above should be regarded as an instrument
+and therefore take a numbered argument (arg3, probably), but I don't
+think an instrument/&quot;amendment&quot; will actually occur all that often,
+and it actually sounds a little weird to me.  We'll see.
+</note>
+
+<example name="with secondary predication">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    PS of New Hampshire amended its plan to call for two years of 5.5%
+    rate increases followed by five years of 4.5% increases. 
+</text>
+        <arg n="0">PS of New Hampshire</arg>
+        <rel>amended</rel>
+        <arg n="1">its plan</arg>
+        <arg n="2">to call for two years of 5.5% rate
+        increases followed by five years of 4.5% increases</arg> 
+</example>
+
+<note>
+I read the latter sentence as the plan now calls for such-and-such
+increases, not that PS amended its plan in order to call for the
+increases.  It's subtle.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

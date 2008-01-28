@@ -1,0 +1,35 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="riff">
+<note>
+  Frames file for 'riff' based on sentences in wsj.  No access to
+  Verbnet at the moment.
+</note>
+
+<roleset id="riff.01" name="make fun of" vncls="-">
+<roles>
+  <role descr="so-called comedian" n="0"/>
+  <role descr="victim" n="1"/>
+</roles>
+
+<example name="the one example">
+<inflection aspect="progressive" form="participle" person="third" tense="present" voice="active"/>
+<text>
+    Line by line Mr. Friedman's weary cynicism can be amusing,
+    especially when he's riffing on the Hollywood social scheme -- the
+    way people size each other up, immediately canceling the desperate
+    ones who merely almost made it. 
+</text>
+        <arg n="0">he</arg>
+        <rel>riffing</rel>
+        <arg f="on" n="1">the Hollywood social scheme -- the way
+        people size each other up, immediately canceling the desperate
+        ones who merely almost made it</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

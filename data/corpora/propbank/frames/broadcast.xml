@@ -1,0 +1,62 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="broadcast">
+<note>
+  Frames file for 'broadcast' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+
+<roleset id="broadcast.01" name="to transmit or announce" vncls="-">
+<roles>
+  <role descr="transmitter, agent" n="0"/>
+  <role descr="message" n="1"/>
+  <role descr="audience" n="2"/>
+  <role descr="source" n="3"/>
+</roles>
+
+
+
+<example name="with Arg2">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ The Voice of America is a government agency that [*T*-1] broadcasts news and views -- some might say propaganda -- in 43 languages to 130 million listeners around the world .
+</text>
+	<arg n="0">[*T*-1] -&gt;  that -&gt;  a government agency</arg>
+	<rel>broadcasts</rel>
+	<arg n="1">news and views -- some might say propaganda --</arg>
+	<arg f="MNR" n="M">in 43 languages</arg>
+	<arg f="to" n="2">130 million listeners around the world</arg>
+</example>
+
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+ Last year 's series , broadcast [*] by General Electric Co. 's NBC , was the lowest-rated Series in four years ; instead of [*] featuring a major East Coast team against a West Coast team , it pitted the Los Angeles Dodgers against the losing Oakland A's .
+</text>
+	<rel>broadcast</rel>
+	<arg n="1">[*] -&gt;  Last year 's series</arg>
+	<arg f="by" n="0">General Electric Co. 's NBC</arg>
+</example>
+
+
+
+<example name="with Arg3">
+<inflection aspect="progressive" form="participle" person="ns" tense="past" voice="active"/>
+<text>
+ While rival ABC News outstripped the competition in live coverage of the event by sheer luck -- the network was broadcasting the World Series from Candlestick Park when the quake struck [*T*-1] -- NBC News was unable [*-2] to get its signal out of San Francisco for the first hour after the quake .
+</text>
+	<arg n="0">the network</arg>
+	<rel>broadcasting</rel>
+	<arg n="1">the World Series</arg>
+	<arg f="from" n="3">Candlestick Park</arg>
+	<arg f="TMP" n="M">when the quake struck [*T*-1]</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

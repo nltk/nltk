@@ -1,0 +1,63 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="freeze">
+<roleset id="freeze.01" name="cause to be frozen" vncls="26.5 45.4">
+<roles>
+  <role descr="causer of freezing" n="0">
+	<vnrole vncls="26.5" vntheta="Agent"/>
+        <vnrole vncls="45.4" vntheta="Agent"/></role>
+  <role descr="thing freezing" n="1">
+	<vnrole vncls="26.5" vntheta="Material"/>
+        <vnrole vncls="45.4" vntheta="Patient"/></role>
+  <role descr="totally unnecessary secondary predication on arg1" n="2"/>
+</roles>
+
+<example name="metaphorical freezing">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Under the Racketeer Influenced and Corrupt Organizations law, or
+    RICO, the government has the authority *trace* to seek *trace* to
+    freeze or seize a defendant's assets before trial.  
+</text>
+        <arg n="0">*trace* -&gt; *trace* -&gt; *trace* -&gt;  the authority</arg>
+        <rel>freeze</rel>
+        <arg n="1">a defendant 's assets</arg>
+</example>
+
+<example name="all args" src="wind.01">
+  <text>
+    John froze the water solid.
+  </text>
+  <arg n="0">John</arg>
+  <rel>froze</rel>
+  <arg n="1">the water</arg>
+  <arg n="2">solid</arg>
+</example>
+</roleset>
+
+<roleset id="freeze.02" name="block" vncls="-">
+<roles>
+  <role descr="blocker, Agent" n="0"/>
+  <role descr="Theme (action or object being stopped)" n="1"/>
+  <role descr="attribute of arg1" n="2"/>
+  <role descr="Instrument" n="3"/>
+</roles>
+
+<example name="passive">
+  <inflection aspect="ns" form="participle" person="third" tense="past" voice="passive"/>
+  <text>
+    John was frozen *trace* out of graduating by his advisor's
+    animosity.  And the fact that John didn't do any of his work.
+  </text>
+  <rel>frozen</rel>
+  <arg n="1">*trace* -&gt; John</arg>
+  <arg f="out" n="2">of graduating</arg>
+  <arg f="by" n="3">his advisor's animosity</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

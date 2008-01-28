@@ -1,0 +1,45 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="rewrite">
+<note>
+  Frames file for 'rewrite' based on survey of sentences in the WSJ
+  corpus.  Comparison with 'write'.
+</note>
+
+
+<roleset id="rewrite.01" name="to write again, revise" vncls="-">
+<roles>
+  <role descr="writer" n="0"/>
+  <role descr="thing written" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ As it went to the conference panel now deliberating , the appropriations bill for the executive office of the president for fiscal 1990 contained some breathtaking attempts [*ICH*-1] by Congress [*] to rewrite the Constitution under the pretext of [*] protecting the public 's money .
+</text>
+	<arg n="0">[*] -&gt;  Congress</arg>
+	<rel>rewrite</rel>
+	<arg n="1">the Constitution</arg>
+	<arg f="ADV" n="M">under the pretext of [*] protecting the public 's money</arg>
+</example>
+
+
+
+<example name="passive">
+<inflection aspect="progressive" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+ What 's more , both administration and congressional officials hint that the notification requirement is likely [*-3] to be dropped [*-1] from the guidelines on coup attempts that [*T*-4] are being rewritten [*-2] by the panel and the White House .
+</text>
+	<rel>rewritten</rel>
+	<arg n="1">[*-2] -&gt;  [*T*-4] -&gt;  that -&gt;  the guidelines</arg>
+	<arg f="by" n="0">the panel and the White House</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

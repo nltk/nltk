@@ -1,0 +1,44 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="volunteer">
+<note>
+  Frames file for 'volunteer' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="volunteer.01" name="to give or offer to give voluntarily" vncls="29.8">
+<roles>
+  <role descr="entity volunteering, voluntary agent" n="0">
+        <vnrole vncls="29.8" vntheta="Agent"/></role>
+  <role descr="service volunteered" n="1">
+        <vnrole vncls="29.8" vntheta="Theme"/></role>
+  <role descr="recipient" n="2"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ We will not know until a first generation of female guinea pigs -- all of whom [*T*-1] will be more than happy [*-2] to volunteer for the job -- has put the abortion pill through the clinical test of time .
+</text>
+	<arg n="0">[*-2] -&gt;  [*T*-1] -&gt;  all of whom</arg>
+	<rel>volunteer</rel>
+	<arg f="for" n="1">the job</arg>
+</example>
+
+
+<example name="all arguments">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ Sen. Alan Cranston trekked over to the House side of Capitol Hill a few days ago and volunteered his testimony to fellow Democrat Rep. Henry Gonzalez .
+</text>
+	<arg n="0">Sen. Alan Cranston</arg>
+	<rel>volunteered</rel>
+	<arg n="1">his testimony</arg>
+	<arg f="to" n="2">fellow Democrat Rep. Henry Gonzalez</arg>
+</example>
+
+</roleset>
+</predicate>
+
+
+</frameset>

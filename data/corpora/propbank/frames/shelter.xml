@@ -1,0 +1,57 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="shelter">
+<note>
+  Frames file for 'shelter' based on sentences in wsj.  Verbnet
+  entries 46, 9.10, 47.1, 16.
+</note>
+
+<roleset id="shelter.01" name="put/be in a shelter" vncls="46 9.10 47.1 16">
+<roles>
+  <role descr="agent, putter in shelter" n="0"><vnrole vncls="16" vntheta="Agent"/><vnrole vncls="9.10" vntheta="Agent"/></role>
+  <role descr="thing in shelter (if separate from arg0)" n="1"><vnrole vncls="47.1" vntheta="Theme"/><vnrole vncls="16" vntheta="Patient"/><vnrole vncls="9.10" vntheta="Theme"/><vnrole vncls="46" vntheta="Theme"/></role>
+  <role descr="shelter" n="2"><vnrole vncls="47.1" vntheta="Location"/><vnrole vncls="16" vntheta="Location"/><vnrole vncls="9.10" vntheta="Location"/><vnrole vncls="46" vntheta="Location"/></role>
+  <role descr="danger, sheltered from" n="3"/>
+</roles>
+
+<example name="single arg, passive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    The man, it seems, has a Lichtenstein corporation, licensed in
+    Libya and sheltered [*] in the Bahamas. 
+</text>
+        <rel>sheltered</rel>
+        <arg n="1">[*] -&gt;  a Lichtenstein corporation</arg>
+        <arg f="LOC" n="M">in the Bahamas</arg>
+</example>
+
+<example name="agent, shelter, and danger">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John sheltered the storm in a cardboard box.
+  </text>
+  <arg n="0">John</arg>
+  <rel>sheltered</rel>
+  <arg n="3">the storm</arg>
+  <arg f="in" n="2">a cardboard box</arg>
+</example>
+
+<example name="with patient">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John sheltered Mary from the storm.
+  </text>
+  <arg n="0">John</arg>
+  <rel>sheltered</rel>
+  <arg n="1">Mary</arg>
+  <arg f="from" n="3">the storm</arg>
+</example>
+
+<note>
+It might be hard to distinguish LOC adjuncts and the shelter itself.
+Be clever.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

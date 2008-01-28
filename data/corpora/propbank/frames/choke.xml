@@ -1,0 +1,122 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="choke">
+<note>
+  Frames file for 'choke'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="choke.01" name="to have or cause to have  difficulty in breathing" vncls="40.7">
+<roles> 
+  <role descr="causer of choking, agent" n="0">
+        <vnrole vncls="40.7" vntheta="Agent"/></role>  
+  <role descr="entity choked" n="1">
+        <vnrole vncls="40.7" vntheta="Theme"/></role>
+   <role descr="thing choked on" n="2"/>
+</roles>
+
+<example name="non-agentive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+     They also chart the evolution of a city that has grown tenfold in
+     the author's lifetime, from a colonial outpost of fez-wearing
+     pashas to a Third World slum choking on its own refuse. 
+</text>
+	<arg n="1">a Third World slum</arg>
+	<rel>choking</rel>
+	<arg f="on" n="2">its own refuse</arg>
+</example>
+
+
+<example name="agentive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+     Why, he used to lay in wait for Cap; suddenly he'd leap from
+     behind some statue of Marshall onto Cap's chest and grab him by
+     the throat and choke him till he coughed up an additional $2
+     billion or so. 
+</text>
+	<arg f="TMP" n="M">suddenly</arg>
+	<arg n="0">he</arg>
+	<arg f="MOD" n="M">'d</arg>
+	<rel>choke</rel>
+	<arg n="1">him</arg>
+	<arg f="TMP" n="M">till he coughed up an additional $2 billion or so</arg>
+</example>
+</roleset>
+
+<roleset id="choke.02" name="to fill up completely, jam" vncls="9.8">
+<roles> 
+  <role descr="causer of filling, agent" n="0">
+        <vnrole vncls="9.8" vntheta="Agent"/></role>  
+  <role descr="entity choked" n="1">
+        <vnrole vncls="9.8" vntheta="Destination"/></role> 
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+     This is no place for pedestrians, but at 7:30 on a recent
+     morning, when construction choked traffic at the famous Four
+     Corners intersection to one lane [*T*-1], a taxi passenger found it
+     faster to abandon the cab and walk to her destination. 
+</text>
+	<arg n="0">construction</arg>
+	<rel>choked</rel>
+	<arg n="1">traffic at the famous Four Corners intersection</arg>
+	<arg f="PRD" n="M">to one lane</arg>
+	<arg f="TMP" n="M">[*T*-1] -&gt;  when -&gt;  a recent morning</arg>
+</example>
+</roleset>
+</predicate>
+
+<predicate lemma="choke_off">
+
+<roleset id="choke.03" name="to bring to an end" vncls="-">
+<roles> 
+  <role descr="causer of end, agent" n="0"/>  
+  <role descr="entity choked off" n="1"/> 
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Fending off attacks on his economic policies in a House of Commons
+    debate yesterday, Mr. Lawson said inflation ``remains the greatest
+    threat to our economic well-being'' and promised  to take
+    ``whatever steps are needed'' [*] to choke it off. 
+</text>
+	<arg n="0">[*]</arg>
+	<rel>[ choke] [ off]</rel>
+	<arg n="1">it</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="choke_up">
+
+<roleset id="choke.04" vncls="-" name="overcome with emotion">
+<roles>
+  <role n="0"  descr="emotion"/>
+  <role n="1"  descr="experiencer"/>
+</roles>
+
+<example name="adjectival">
+  <inflection person="ns" tense="ns" aspect="ns" voice="passive" form="participle"/>
+  <text>
+     Asked to say a few words, he pulls out his crumpled piece of
+     paper and tries to talk, but he's too choked up [0] [*T*-4] to
+     get the words out. 
+  </text>
+  <arg n="1"        >he</arg>
+  <arg n="m" f="EXT">too</arg>
+  <rel              >choked up</rel>
+</example>
+
+</roleset>
+</predicate>
+
+
+</frameset>

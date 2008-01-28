@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="arbitrage">
+<note>
+  Frames file for 'arbitrage' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="arbitrage.01" name="to be involved in arbitrage" vncls="-">
+<roles>
+  <role descr="arbitrager, agent" n="0"/>
+  <role descr="arbitrage on" n="1"/>
+</roles>
+
+<example name="automatically generated">
+<inflection aspect="ns" form="gerund" person="ns" tense="ns" voice="active"/>
+<text>
+ [*] Arbitraging on differences between spot and futures prices is an important part of many financial markets , he says [0] [*T*-1] .
+</text>
+	<arg n="0">[*]</arg>
+	<rel>Arbitraging</rel>
+	<arg f="on" n="1">differences between spot and futures prices</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

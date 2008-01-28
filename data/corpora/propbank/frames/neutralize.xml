@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="neutralize">
+<note>
+  Frames file for 'neutralize' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="neutralize.01" name="to make neutral" vncls="45.4">
+<roles>
+  <role descr="causer" n="0"><vnrole vncls="45.4" vntheta="Agent"/></role>
+  <role descr="entity neutralized" n="1"><vnrole vncls="45.4" vntheta="Patient"/></role>  
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ Strategy is not a separate event in an idealized sequence of discrete events ; it is a way of thinking that [*T*-1] neutralizes threats to our interests in a manner consistent with our financial , cultural and physical limitations .
+</text>
+	<arg n="0">[*T*-1] -&gt;  that -&gt;  a way</arg>
+	<rel>neutralizes</rel>
+	<arg n="1">threats to our interests</arg>
+	<arg f="MNR" n="M">in a manner consistent with our financial , cultural and physical limitations</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

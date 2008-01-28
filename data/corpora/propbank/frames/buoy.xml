@@ -1,0 +1,43 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="buoy">
+<note>
+  Frames file for 'buoy' based on sentences in financial subcorpus.
+  No Verbnet entry.  Comparison with 'float'
+</note>
+
+<roleset id="buoy.01" name="cause to float">
+<roles>
+  <role descr="causer, agent" n="0"/>
+  <role descr="thing floating" n="1"/>
+</roles>
+
+<example name="active">
+<text>
+    A shiny new takeover deal sparked a big rally in stock prices,
+    which *trace* buoyed the dollar. 
+</text>
+        <arg n="0">*trace* -&gt;  which -&gt;  a big rally</arg>
+        <rel>buoyed</rel>
+        <arg n="1">the dollar</arg>
+</example>
+
+<example name="passive">
+<text>
+    Goodyear Tire &amp; Rubber Co., buoyed *trace* by improved
+    operating profit in its tire segment, reported that third-quarter
+    net income rose 11% to $70.5 million, or $1.22 a share. 
+</text>
+        <rel>buoyed</rel>
+        <arg n="1">*trace* -&gt;  Goodyear Tire &amp; Rubber Co.</arg>
+        <arg f="by" n="0">improved operating profit in its tire
+        segment</arg> 
+</example>
+
+<note>
+Bonus points for anyone who can tell me how to pronounce this verb.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

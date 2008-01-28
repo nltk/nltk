@@ -1,0 +1,94 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="cheat">
+<note>
+  Frames file for 'cheat' based on sentences in wsj.  Verbnet entry
+  10.6, Framenet entry Suasion4.
+</note>
+
+<roleset id="cheat.01" name="steal, remove illegally" vncls="10.6">
+<roles>
+  <role descr="entity removing" n="0"><vnrole vncls="10.6" vntheta="Agent"/></role>
+  <role descr="thing being removed" n="1"><vnrole vncls="10.6" vntheta="Theme"/></role>
+  <role descr="removed from" n="2"><vnrole vncls="10.6" vntheta="Source"/></role>
+</roles>
+
+<example name="all args">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+    Francis Dang, 41, is alleged to have been involved in *trace*
+    cheating Drexel Burnham Lambert of up to 2.1 million Singapore
+    dollars (US$ 1.1 million) by carrying out unauthorized
+    transactions on the London Commodities Exchange and the
+    International Petroleum Exchange. 
+</text>
+        <arg n="0"/>
+        <rel>cheating</rel>
+        <arg n="2">Drexel Burnham Lambert</arg>
+        <arg f="of" n="1">up to 2.1 million Singapore dollars (US$ 1.1
+        million)</arg> 
+        <arg f="MNR" n="M">by carrying out unauthorized transactions
+        on the London Commodities Exchange and the International
+        Petroleum Exchange</arg> 
+</example>
+
+<example name="agent and source">
+<inflection aspect="progressive" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+    But the ``real world'' also includes the unpleasant truth that
+    colleges are cheating the athletes they have wooed and won. 
+</text>
+        <arg n="0">colleges</arg>
+        <rel>cheating</rel>
+        <arg n="2">the athletes they have wooed and won </arg>
+</example>
+
+<note>
+Argument order suggested by comparison with remove (class 10.7).  Be
+very careful with distinguishing this sense from the following in
+transitive sentences.  To distinguish the senses, try adding an &quot;of&quot; or
+&quot;out of&quot; phrase to the sentence; only this sense can take that
+additional argument.  For example, the second example above can be
+modified to &quot;Colleges are cheating the athletes out of a decent
+education.&quot;
+</note>
+
+</roleset>
+
+<roleset id="cheat.02" name="engage in deceitful practices" vncls="-">
+<roles>
+  <role descr="cheater" n="0"/>
+  <role descr="victim (usually prepositional)" n="1"/>
+</roles>
+
+<example name="intransitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Mrs. Yeargin's case also casts some light on the dark side of
+    school reform, where pressures on teachers are growing and where
+    high-stakes testing has enhanced the temptation *trace* to cheat.
+</text>
+        <arg n="0">*trace* -&gt;  teachers</arg>
+        <rel>cheat</rel>
+</example>
+
+<example name="death and...">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+     Unknown to Mr. Tharp, he had fouled his net on a special IRS
+     project to catch catfish farmers and haulers inclined *trace* to
+     cheat on their taxes. 
+</text>
+        <arg n="0">*trace* -&gt;  catfish farmers and haulers</arg>
+        <rel>cheat</rel>
+        <arg f="on" n="1">their taxes</arg>
+</example>
+
+<note>
+See the note above for important information on distinguishing the
+senses.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

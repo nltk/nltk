@@ -1,0 +1,48 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="subordinate">
+<note>
+  Frames file for 'subordinate' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="subordinate.01" name="make lesser, dependent on" vncls="-">
+<roles>
+  <role descr="cause" n="0"/>
+  <role descr="subordinate thing" n="1"/>
+  <role descr="superordinate thing" n="2"/>
+</roles>
+
+<example name="verbal">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    Instead of realizing his mistake in letting the exchange rate
+    dominate both British economic policy and Mrs. Thatcher's
+    political fortune, Mr. Lawson pushed for tying the pound formally
+    to the mark by entering the European Monetary System, which
+    *trace* subordinates all member currencies to German monetary
+    policy. 
+</text>
+        <arg n="0">*trace* -&gt;  which -&gt;  the European Monetary System</arg>
+        <rel>subordinates</rel>
+        <arg n="1">all member currencies</arg>
+        <arg f="to" n="2">German monetary policy</arg>
+</example>
+
+<example name="adjectival">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    The ratings concern said it downgraded Beatrice notes, Euronotes
+    and certain industrial revenue bonds to single-B-1 from Ba-3 and
+    the company's subordinated debentures to single-B-3 from
+    single-B-2. 
+</text>
+        <rel>subordinated</rel>
+        <arg n="1">debentures</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

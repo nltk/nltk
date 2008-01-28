@@ -1,0 +1,36 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="bode">
+<note>
+  Frames file for 'bode' based on sentences in financial subcorpus.
+  No Verbnet entry.  This is almost a fixed phrase.
+</note>
+
+<roleset id="bode.01" name="portend" vncls="-">
+<roles>
+  <role descr="omen" n="0"/>
+  <role descr="good or bad" n="1"/>
+  <role descr="benefactive" n="2"/>
+</roles>
+
+<example name="they all look more or less like this">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/> 
+<text>
+    Still, AMR's stumble doesn't bode well for the rest of the
+    industry. 
+</text>
+        <arg f="DIS" n="M">Still</arg>
+        <arg n="0">AMR 's stumble</arg>
+        <arg f="NEG" n="M">n't</arg>
+        <rel>bode</rel>
+        <arg n="1">well</arg>
+        <arg f="for" n="2">the rest of the industry</arg>
+</example>
+
+<note>
+I think this might be the first real adverbial argument we've had.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="bike">
+<note>
+  Frames file for 'bike' based on sentences in wsj.  Verbnet entry 51.4.1.
+</note>
+
+<roleset id="bike.01" vncls="51.4.1" name="travel by bicycle">
+<roles>
+  <role n="0"  descr="bicycler"/>
+  <role n="1"  descr="path"/>
+</roles>
+
+<example name="nice legs">
+  <inflection person="third" tense="present" aspect="ns" voice="active" form="full"/>
+  <text>
+    John bikes fifteen miles every morning.
+  </text>
+  <arg n="0"        >John</arg>
+  <rel              >bikes</rel>
+  <arg n="1"        >fifteen miles</arg>
+  <arg n="m" f="TMP">every morning</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

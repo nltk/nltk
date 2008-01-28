@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="jeopardize">
+<note>
+  Frames file for 'jeopardize' based on sentences in financial
+  subcorpus.  No Verbnet entry, no Framenet entry.  Comparison with
+  threaten.
+</note>
+
+<roleset id="jeopardize.01" name="threaten, put into danger" vncls="-">
+<roles>
+  <role descr="agent, entity making a threat" n="0"/>
+  <role descr="'benefactive', entity threatened" n="1"/>
+</roles>
+
+<example name="normal usage">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    The Conservatives don't dare jeopardize marginal Tory seats in
+    Coventry, where Jaguar has headquarters... 
+</text>
+        <arg n="0">*trace* -&gt;  The Conservatives</arg>
+        <rel>jeopardize</rel>
+        <arg n="1">marginal Tory seats in Coventry , where Jaguar has
+        headquarters </arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

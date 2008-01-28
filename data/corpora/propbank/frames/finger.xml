@@ -1,0 +1,69 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="finger">
+<note>
+  Frames file for 'finger' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="finger.01" name="to touch" vncls="-">
+<roles>
+  <role descr="toucher, agent" n="0"/>
+  <role descr="entity fingered" n="1"/>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+ `` [*-5] Think [0] I 'll redo my image -- get this changed [*-4] to a glove , '' quipped [*T*-1] the big first baseman Saturday night , [*-2] fingering the gold bat [0] he wears [*T*-3] on a neck chain .
+</text>
+	<arg n="0">[*-2] -&gt;  the big first baseman</arg>
+	<rel>fingering</rel>
+	<arg n="1">the gold bat [0] he wears [*T*-3] on a neck chain</arg>
+</example>
+</roleset>
+
+<roleset id="finger.02" name="to locate, find" vncls="-">
+<roles>
+  <role descr="agent" n="0"/>
+  <role descr="entity fingered" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="perfect" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+ To date , scientists have fingered two of these cancer-suppressors .
+</text>
+	<arg f="TMP" n="M">To date</arg>
+	<arg n="0">scientists</arg>
+	<rel>fingered</rel>
+	<arg n="1">two of these cancer-suppressors</arg>
+</example>
+</roleset>
+
+<roleset id="finger.03" name="to blame" vncls="-">
+<roles>
+  <role descr="assigner of blame, agent" n="0"/>
+  <role descr="entity fingered" n="1"/>
+  <role descr="action fingered for" n="2"/>
+</roles>
+
+<example name="all arguments">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ Mr. Noriega was accused [*-1] of [*-1] ordering in 1985 the beheading of Hugo Spadafora , his most outspoken political opponent and the first man [0] [*T*-2] to publicly finger Mr. Noriega on drug trafficking charges .
+</text>
+	<arg n="0">[*T*-2] -&gt;  [0] -&gt;  the first man</arg>
+	<arg f="MNR" n="M">publicly</arg>
+	<rel>finger</rel>
+	<arg n="1">Mr. Noriega</arg>
+	<arg f="on" n="2">drug trafficking charges</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

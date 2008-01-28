@@ -1,0 +1,36 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="chasten">
+<note>
+  Frames file for 'chasten' based on sentences in wsj.  No access to
+  Verbnet at the moment.
+</note>
+
+<roleset id="chasten.01" name="admonish, scold" vncls="33">
+<roles>
+  <role descr="admonisher, agent" n="0"><vnrole vncls="33" vntheta="Agent"/></role>
+  <role descr="entity become chaste (really)" n="1"><vnrole vncls="33" vntheta="Theme"/></role>
+</roles>
+
+<example name="the one example">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Hong Kong manufacturers say large debt writeoffs and other
+    financial problems resulting from the 1987 difficulties chastened
+    the local industry, causing it to tighten credit policies and
+    financial management. 
+</text>
+        <arg n="0">large debt writeoffs and other financial problems
+        resulting from the 1987 difficulties</arg> 
+        <rel>chastened</rel>
+        <arg n="1">the local industry</arg>
+        <arg n="M">causing it to tighten credit policies and financial
+        management</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

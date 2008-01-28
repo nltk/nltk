@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="launder">
+<note>
+  Frames file for 'launder' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="launder.01" name="wash" vncls="-">
+<roles>
+  <role descr="person doing laundry" n="0"/>
+  <role descr="laundry" n="1"/>
+</roles>
+
+<example name="apparently no one launders clothes anymore">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    A witness set to testify on Thursday was quoted in a news report
+    over the weekend as saying Lincoln ``laundered'' campaign
+    contributions illegally. 
+</text>
+        <arg n="0">Lincoln</arg>
+        <rel>laundered</rel>
+        <arg n="1">campaign contributions</arg>
+        <arg f="MNR" n="M">illegally</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

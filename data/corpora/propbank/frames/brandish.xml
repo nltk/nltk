@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="brandish">
+<note>
+  Frames file for 'brandish' based on sentences in wsj.  No access to
+  Verbnet at the moment.
+</note>
+
+<roleset id="brandish.01" name="wave weapons" vncls="-">
+<roles>
+  <role descr="waver, agent" n="0"/>
+  <role descr="weapon" n="1"/>
+</roles>
+
+<example name="not necessarily a weapon">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    As the rally gained strength at 3:15 p.m., he smiled broadly,
+    brandished his unlit cigar and slapped Stanley Shopkorn, his top
+    stock trader, on the back. 
+</text>
+        <arg f="TMP" n="M">As the rally gained strength at 3:15 p.m.</arg>
+        <arg n="0">he</arg>
+        <rel>brandished</rel>
+        <arg n="1">his unlit cigar</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

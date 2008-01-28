@@ -1,0 +1,68 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="hire">
+<note>
+  Frames file for 'hire' based on sentences in financial subcorpus.
+  Verbnet class get-13.5.1, other framed members include buy, call,
+  earn, find, gain, get, pull, win.  Comparison with 'fire' and
+  'employ'.
+</note>
+
+<roleset id="hire.01" name="initiate employment" vncls="13.5.1 29.2">
+<roles>
+  <role descr="employer" n="0">
+	<vnrole vncls="29.2" vntheta="Agent"/>
+        <vnrole vncls="13.5.1" vntheta="Agent"/></role>
+  <role descr="new employee" n="1">
+	<vnrole vncls="29.2" vntheta="Theme"/>
+        <vnrole vncls="13.5.1" vntheta="Theme"/></role>
+  <role descr="job" n="2">
+        <vnrole vncls="29.2" vntheta="Predicate"/></role>
+</roles>
+
+<example name="unstated job">
+<text>
+    Corporations like Contel denounce program trading, yet Contel has
+    in the past hired pension fund managers like Bankers Trust
+    Co. that are also big program traders. 
+</text>
+        <arg n="0">Contel</arg>
+        <arg f="TMP" n="M">in the past</arg>
+        <rel>hired</rel>
+        <arg n="1">pension fund managers like Bankers Trust Co. that
+        are also big program traders</arg> 
+</example>
+
+<example name="job as infinitive">
+<text>
+    Price Stern Sloan Inc. said it hired an investment banking firm to
+    assist in evaluating restructuring or merger alternatives and
+    reported a net loss of $8.1 million, or $2.14 a share, for the
+    third quarter ended Sept. 
+</text>
+        <arg n="0">it</arg>
+        <rel>hired</rel>
+        <arg n="1">an investment banking firm</arg>
+        <arg n="2">to assist in evaluating restructuring or
+        merger alternatives</arg> 
+</example>
+
+<note>
+WSJ prefers this construction, and Treebank is inconsistent in parsing
+it.  In general, DO NOT include the *trace* subject of the embedded
+clause. 
+</note>
+
+<example name="job as PP">
+  <text>
+    Mary hired John as a predicate-argument tagger.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>hired</rel>
+  <arg n="1">John</arg>
+  <arg f="as" n="2">a predicate-argument tagger</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

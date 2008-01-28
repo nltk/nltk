@@ -1,0 +1,107 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="wear">
+
+<roleset id="wear.01" name="not be naked" vncls="41.3.1">
+<roles>
+  <role descr="wearer" n="0">
+	<vnrole vncls="41.3.1" vntheta="Agent"/></role>
+   <role descr="clothing" n="1">
+	<vnrole vncls="41.3.1" vntheta="Theme"/></role>
+ </roles>
+
+<example name="basic">
+<inflection aspect="progressive" form="participle" person="third" tense="present" voice="active"/>
+<text>
+     Sotheby's, she says, is ``wearing both hats.''
+</text>
+        <arg n="0">Sotheby's</arg>
+        <rel>wearing</rel>
+        <arg n="1">both hats</arg>
+</example>
+</roleset>
+</predicate>
+
+<predicate lemma="wear_off">
+
+<roleset id="wear.02" name="erode" vncls="-">
+<roles>
+  <role descr="causer of erosion" n="0"/>
+  <role descr="thing disappearing" n="1"/>
+</roles>
+
+<example name="ergative">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/> 
+<text>
+     This time he's ready to buy in ``when the panic wears off.''
+</text>
+        <arg n="1">the panic</arg>
+        <rel>[ wears] [ off]</rel>
+</example>
+
+<example name="agentive">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John wore the soles of his shoes off.
+  </text>
+  <arg n="0">John</arg>
+  <rel>wore off</rel>
+  <arg n="1">the soles of his shoes</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="wear_out">
+
+<roleset id="wear.03" name="degrade completely" vncls="-">
+<roles>
+  <role descr="causer of wear" n="0"/>
+  <role descr="thing worn out" n="1"/>
+</roles>
+
+<example name="quasi-idiomatic">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John wore out his welcome at Mary's house.
+  </text>
+  <arg n="0">John</arg>
+  <rel>wore out</rel>
+  <arg n="1">his welcome at Mary's house</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="wear_on">
+
+<roleset id="wear.04" vncls="-" name="last, painfully">
+<roles>
+  <role n="1"  descr="thing lasting too long"/>
+</roles>
+
+<example name="as the world turns">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+      But yesterday, as the morning wore on, some major West Coast
+      refinery operators -- including Chevron Corp., Exxon Corp.and
+      the Shell Oil Co. unit of Royal Dutch/Shell Group -- said their
+      refineries weren't damaged and were continuing to operate
+      normally.  
+  </text>
+  <arg n="1"        >the morning</arg>
+  <rel              >wore on</rel>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

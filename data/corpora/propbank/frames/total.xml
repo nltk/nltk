@@ -1,0 +1,84 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="total">
+<note>
+  Frames file for 'total' based on survey of initial sentences of big
+  corpus
+</note>
+
+<roleset id="total.01" name="sums to" vncls="54.1">
+<roles>
+  <role descr="thing being counted" n="1">
+		
+  <vnrole vncls="54.1" vntheta="Theme"/></role>
+
+  <role descr="count" n="2">
+		
+  <vnrole vncls="54.1" vntheta="Attribute"/></role>
+
+</roles>
+
+<example name="ergative">
+  <text>
+  Newsweek's ad pages totaled 1620, a drop of 3.2% from last year.
+  </text>
+  <arg n="1">Newsweek's ad pages</arg>
+  <rel>totaled</rel>
+  <arg f="EXT" n="2">1620, a drop of 3.2% from last year</arg>
+</example>
+
+<note>
+Many, many adjectives to be avoided (eg &quot;total panic&quot;).
+</note>
+
+</roleset>
+
+<roleset id="total.02" name="slang: wreck completely" vncls="-">
+<roles>
+  <role descr="wrecker" n="0"/>
+  <role descr="wreck" n="1"/>
+</roles>
+
+<example name="oh too true">
+  <text>
+  John totaled his car.
+  </text>
+  <arg n="0">John</arg>
+  <rel>totaled</rel>
+  <arg n="1">his car</arg>
+</example>
+
+<note>
+I doubt this will appear in WSJ.
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="total_up">
+<note>
+I can say this; not sure about WSJ
+</note>
+
+<roleset id="total.03" name="count" vncls="-">
+<roles>
+  <role descr="counter" n="0"/>
+  <role descr="thing counted" n="1"/>
+</roles>
+
+<example name="bills">
+  <text>
+  John totaled up the restaurant bill.
+  </text>
+  <arg n="0">John</arg>
+  <rel>totaled up</rel>
+  <arg n="1">the restaurant bill</arg>
+</example>
+
+<note>
+Possibly takes arg2 &quot;EXT&quot; as well.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

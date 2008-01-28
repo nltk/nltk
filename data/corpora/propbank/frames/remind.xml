@@ -1,0 +1,62 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="remind">
+<note>
+  Frames file for 'remind' based on survey of sentences in the WSJ
+  corpus. Comparison with 'give', 'tell'. 
+</note>
+
+
+<roleset id="remind.01" name="to cause to remember" vncls="-">
+<roles>
+  <role descr="cause, agent" n="0"/>
+  <role descr="thing reminded" n="1"/>
+  <role descr="recipient" n="2"/>
+</roles>
+
+
+
+<example name="all arguments">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ Instead , Mr. Nixon reminded his host , Chinese President Yang Shangkun , that Americans have n't forgiven China 's leaders for the military assault of June 3-4 that [*T*-241] killed hundreds , and perhaps thousands , of demonstrators .
+</text>
+	<arg f="DIS" n="M">Instead</arg>
+	<arg n="0">Mr. Nixon</arg>
+	<rel>reminded</rel>
+	<arg n="2">his host , Chinese President Yang Shangkun ,</arg>
+	<arg n="1">Americans have n't forgiven China 's leaders for the military assault of June 3-4 that [*T*-241] killed hundreds , and perhaps thousands , of demonstrators</arg>
+</example>
+
+
+
+<example name="with Arg1-of">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ Congress 's ham-handed treatment of the existing structure of junk-bond holdings reminds us of a story in the Journal earlier this year about the Baby Bell companies ' desire [*] to have the court-ordered bans [*ICH*-2] lifted [*-1] on [*] offering information services .
+</text>
+	<arg n="0">Congress 's ham-handed treatment of the existing structure of junk-bond holdings</arg>
+	<rel>reminds</rel>
+	<arg n="2">us</arg>
+	<arg f="of" n="1">a story in the Journal earlier this year about the Baby Bell companies ' desire [*] to have the court-ordered bans [*ICH*-2] lifted [*-1] on [*] offering information services</arg>
+</example>
+
+
+
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+ [*-1] Watching Congress sweat and grimace through its annual budget labors , [*-2] fighting the urge [*] to spend more , we 're reminded of those late-night movies in which the anguished serial killer turns himself in to police and says , `` [*] Stop me before I kill again [*T*-3] . ''
+</text>
+	<arg n="2">we</arg>
+	<rel>reminded</rel>
+	<arg f="of" n="1">those late-night movies in which the anguished serial killer turns himself in to police and says , `` [*] Stop me before I kill again [*T*-3]</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

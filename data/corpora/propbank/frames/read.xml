@@ -1,0 +1,91 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="read">
+<note>
+  Frames file for 'read' based on sentences in financial subcorpus.
+  No access to verbnet.
+</note>
+
+<roleset id="read.01" name="read" vncls="14 37.1-1 54.1">
+<roles>
+  <role descr="reader" n="0">
+		
+  <vnrole vncls="37.1-1" vntheta="Agent"/><vnrole vncls="14" vntheta="Agent"/><vnrole vncls="54.1" vntheta="Agent"/></role>
+
+  <role descr="book" n="1">
+		
+  <vnrole vncls="37.1-1" vntheta="Topic"/><vnrole vncls="14" vntheta="Source"/><vnrole vncls="54.1" vntheta="Theme"/></role>
+
+  <role descr="benefactive or direction" n="2">
+		
+  <vnrole vncls="37.1-1" vntheta="Recipient"/><vnrole vncls="54.1" vntheta="Attribute"/></role>
+
+  <role descr="text, content" n="3">
+		
+  <vnrole vncls="14" vntheta="Topic"/></role>
+
+</roles>
+
+<example name="prototypical reading">
+<text>
+    ``I've read Balzac,'' he answers critics.
+</text>
+        <arg n="0">I</arg>
+        <rel>read</rel>
+        <arg n="1">Balzac</arg>
+</example>
+
+<example name="not quite a book">
+<text>
+    A fund manager at a life-insurance company said three factors make
+    it difficult *trace* to read market direction. 
+</text>
+        <arg n="0">*trace*</arg>
+        <rel>read</rel>
+        <arg n="1">market direction</arg>
+</example>
+
+<example name="with direction">
+<text>
+    ``My belief is always, if you've got a settlement, you read it
+    into the record.'' says Judge Jenkins, now known in his courthouse
+    as ``Shake 'Em Down Jenkins.'' 
+</text>
+        <arg f="ADV" n="M">if you've got a settlement</arg>
+        <arg n="0">you</arg>
+        <rel>read</rel>
+        <arg n="1">it</arg>
+        <arg f="into" n="2">the record</arg>
+</example>
+
+<example name="with benefactive">
+  <text>
+    John reads to his children every night.
+  </text>
+  <arg n="0">John</arg>
+  <rel>reads</rel>
+  <arg f="to" n="2">his children</arg>
+  <arg f="TMP" n="m">every night</arg>
+</example>
+
+<example name="book and text">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+  ``Due to health reasons, Lt. Col. Noriega has elected to postpone
+  his visit to Washington,'' it read *trace*.
+  </text>
+  <arg n="1">it</arg>
+  <rel>read</rel>
+  <arg n="3">*trace* -&gt; Due to health reasons,
+  Lt. Col. Noriega has elected to postpone his visit to Washington</arg>
+</example>
+
+<note>
+&quot;It&quot; is obviously not doing the reading, nor is it being read to.
+Instead, someone is reading &quot;it&quot; (the message?) and the content is the
+bit in quotes.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

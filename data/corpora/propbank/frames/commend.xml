@@ -1,0 +1,64 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="commend">
+<note>
+Frames file for 'commend' based on sentences in wsj and automatic
+expansion via verbnet.
+</note>
+
+<roleset id="commend.01" name="give praise" vncls="33">
+<roles>
+	<role descr="entity giving praise" n="0">
+		
+  <vnrole vncls="33" vntheta="Agent"/></role>
+
+	<role descr="entity being praised" n="1">
+		
+  <vnrole vncls="33" vntheta="Theme"/></role>
+
+	<role descr="praised for what" n="2">
+		
+  <vnrole vncls="33" vntheta="Cause"/></role>
+
+</roles>
+
+<example name="just transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    National leaders stopped by his stand *trace* to commend his
+    achievements. 
+</text>
+        <arg n="0">*trace* -&gt;  National leaders</arg>
+        <rel>commend</rel>
+        <arg n="1">his achievements</arg>
+</example>
+
+<example name="with grounds as gerund" src="criticize.01">
+<text>
+    The internal investigation also commended MiniScribe's auditors,
+    Coopers &amp; Lybrand, for allegedly ignoring numerous red flags. 
+</text>
+        <arg n="0">The internal investigation</arg>
+        <arg f="DIS" n="M">also</arg>
+        <rel>commended</rel>
+        <arg n="1">MiniScribe's auditors, Coopers &amp; Lybrand,</arg>
+        <arg f="for" n="2">allegedly ignoring numerous red flags</arg>
+</example>
+
+<example name="with grounds as full clause" src="criticize.01">
+<text>
+    A Poquet spokesman, for example, commends the Atari Portfolio
+    because it requires three batteries while the Poquet needs only
+    two. 
+</text>
+        <arg n="0">A Poquet spokesman</arg>
+        <arg f="DIS" n="M">for example</arg>
+        <rel>commends</rel>
+        <arg n="1">the Atari Portfolio</arg>
+        <arg n="2">because it requires three batteries while
+        the Poquet needs only two</arg> 
+</example>
+
+</roleset>
+</predicate>
+</frameset>

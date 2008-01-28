@@ -1,0 +1,45 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="trek">
+<note>
+  Frames file for 'trek' based on sentences in wsj.  Verbnet entry
+  51.3.2, Framenet entry Self motion.
+</note>
+
+<roleset id="trek.01" name="mode of motion" vncls="51.3.2">
+<roles>
+  <role descr="entity in motion" n="0"><vnrole vncls="51.3.2" vntheta="Theme"/></role>
+  <role descr="path" n="1"><vnrole vncls="51.3.2" vntheta="Location"/></role>
+</roles>
+
+<example name="direction, not path">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Sen. Alan Cranston trekked over to the House side of Capitol Hill
+    a few days ago and volunteered his testimony to fellow Democrat
+    Rep. Henry Gonzalez. 
+</text>
+        <arg n="0">Sen. Alan Cranston</arg>
+        <rel>trekked</rel>
+        <arg f="ADV" n="M">over</arg>
+        <arg f="DIR" n="M">to the House side of Capitol Hill</arg>
+        <arg f="TMP" n="M">a few days ago</arg>
+</example>
+
+<example name="with path">
+  <inflection aspect="both" form="participle" person="third" tense="present" voice="active"/>
+  <text>
+    Since his death, John has been trekking the Himalayas.
+  </text>
+  <arg f="TMP" n="m">Since his death</arg>
+  <arg n="0">John</arg>
+  <rel>trekking</rel>
+  <arg n="1">the Himalayas</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

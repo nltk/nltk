@@ -1,0 +1,35 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="enable">
+<note>
+  Frames file for 'enable' based on sentences in financial subcorpus.
+  No Verbnet entry, comparison with 'allow'.
+</note>
+
+<roleset id="enable.01" name="allow, let" vncls="-">
+<roles>
+  <role descr="allower" n="0"/>
+  <role descr="action allowed" n="1"/>
+</roles>
+
+<example name="typical usage">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    Each of the Class C warrants will enable the holders to purchase
+    one share of common stock at $5.50. 
+</text>
+        <arg n="0">Each of the Class C warrants</arg>
+        <arg f="MOD" n="M">will</arg>
+        <rel>enable</rel>
+        <arg n="1">the holders to purchase one share of common stock
+        at $5.50</arg> 
+</example>
+
+<note>
+'Allow' has another argument for allowed agent, when that agent is
+passive-extracted from the arg1.  Enable doesn't seem to allow that
+construction.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

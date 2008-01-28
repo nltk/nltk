@@ -1,0 +1,113 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="brush">
+<note>
+  Frames file for 'brush' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="brush.01" name="to rub, clean, or remove with or as if with a brush" vncls="10.4.2">
+<roles>
+  <role descr="entity with brush, agent" n="0">
+        <vnrole vncls="10.4.2" vntheta="Agent"/></role>
+  <role descr="entity brushed" n="1">
+        <vnrole vncls="10.4.2" vntheta="Source"/></role>
+</roles>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="past" voice="passive"/>
+<text>
+ Mr. Broderick , the Massachusetts grower , says [0] the `` big boss '' at a supermarket chain even rejected his Red Delicious recently because they were n't waxed and brushed [*-1] for extra shine .
+</text>
+	<arg f="NEG" n="M">n't</arg>
+	<rel>brushed</rel>
+	<arg n="1">[*-1] -&gt;  they</arg>
+	<arg f="PNC" n="M">for extra shine</arg>
+</example>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+ South Korean President Roh Tae Woo , [*-2] brushing aside suggestions that the won be revalued [*-1] again , said [0] the currency 's current level against the dollar is `` appropriate . ''
+</text>
+	<arg n="0">[*-2] -&gt;  South Korean President Roh Tae Woo</arg>
+	<rel>brushing</rel>
+	<arg f="DIR" n="M">aside</arg>
+	<arg n="1">suggestions that the won be revalued [*-1] again</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+<predicate lemma="brush_off">
+
+<roleset id="brush.02" name="brush off: to dismiss or disregard" vncls="-">
+<roles>
+  <role descr="dismisser, agent" n="0"/>
+  <role descr="entity dismissed" n="1"/>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ A White House spokesman condemned the truce suspension as `` deplorable '' but brushed off talk of [*] renewing military funding for the insurgents .
+</text>
+	<arg n="0">A White House spokesman</arg>
+	<arg f="DIS" n="M">but</arg>
+	<rel>[ brushed] [ off]</rel>
+	<arg n="1">talk of [*] renewing military funding for the insurgents</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="brush_up">
+
+<roleset id="brush.03" name="brush up: to review, refresh" vncls="-">
+<roles>
+  <role descr="review, agent" n="0"/>
+  <role descr="entity brushed up" n="1"/>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ The Hildebrandt course enables students to brush up on negotiation skills by role playing in simulated deals .
+</text>
+	<arg n="0">students</arg>
+	<rel>[ brush] [ up]</rel>
+	<arg f="on" n="1">negotiation skills</arg>
+</example>
+
+
+
+</roleset>
+
+<roleset id="brush.05" vncls="-" name="brush up: touch lightly">
+<roles>
+  <role n="0"  descr="toucher"/>
+  <role n="1"  descr="thing brushed up against"/>
+</roles>
+
+<example name="always with 'against'">
+  <inflection person="third" tense="present" aspect="perfect" voice="active" form="participle"/>
+  <text>
+    This well may be the first time that the venerable Rockefeller
+    University has brushed up publicly against the intimidations now
+    common in American science. 
+  </text>
+  <arg n="0"        >the venerable Rockefeller University</arg>
+  <rel              >brushed up</rel>
+  <arg n="m" f="MNR">publically</arg>
+  <arg n="1" f="against">the intimidations now common in American science</arg>
+</example>
+
+</roleset>
+</predicate>
+
+
+</frameset>

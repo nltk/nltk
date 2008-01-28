@@ -1,0 +1,95 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="chop">
+<note>
+  Frames file for 'chop' based on sentences in financial subcorpus.
+  Verbnet entry carve-21.2.2, other framed members include chip and
+  quash.  Framenet entries Slice and Cause Harm.  No comparison.
+</note>
+
+<roleset id="chop.01" name="cut up" vncls="21.2-2">
+<roles>
+  <role descr="chopper" n="0">
+		
+  <vnrole vncls="21.2-2" vntheta="Agent"/></role>
+
+  <role descr="chopped" n="1">
+		
+  <vnrole vncls="21.2-2" vntheta="Patient"/></role>
+
+  <role descr="instrument" n="2">
+		
+  <vnrole vncls="21.2-2" vntheta="Instrument"/></role>
+
+</roles>
+
+<example name="all args">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John chopped the delicate vegetables with a chainsaw.
+  </text>
+  <arg n="0">John</arg>
+  <rel>chopped</rel>
+  <arg n="1">the delicate vegetables</arg>
+  <arg f="with" n="2">a chainsaw</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="chop_down">
+
+<roleset id="chop.02" name="fell, as a tree">
+<roles>
+  <role descr="chopper" n="0"/>
+  <role descr="chopped" n="1"/>
+  <role descr="instrument" n="2"/>
+</roles>
+
+<example name="the only example?">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+    He already has achieved vertical integration on a limited scale:
+    Quebecor can put a weekly newspaper on almost any Quebec doorstep
+    without using outside help, from *trace* chopping down the tree to
+    making the newsprint to flinging it up onto the porch. 
+</text>
+        <arg n="0">*trace* -&gt;  Quebecor</arg>
+        <rel>[ chopping] [ down]</rel>
+        <arg n="1">the tree</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="chop_up">
+
+<roleset id="chop.03" name="render into pieces">
+<roles>
+  <role descr="chopper" n="0"/>
+  <role descr="chopped" n="1"/>
+  <role descr="instrument" n="2"/>
+</roles>
+
+<example name="transitive">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John chopped up his dissertation.
+  </text>
+  <arg n="0">John</arg>
+  <rel>chopped up</rel>
+  <arg n="1">his dissertation</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

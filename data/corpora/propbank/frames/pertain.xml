@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="pertain">
+<note>
+  Frames file for 'pertain' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="pertain.01" name="to have reference, relate" vncls="-">
+<roles>
+  <role descr="entity pertaining" n="0"/>
+  <role descr="pertaining to" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ However , it gave the shareholders the right [*] to pursue a small portion of their claim that [*T*-1] pertains to Lisa 's disk drive , known [*] as Twiggy .
+</text>
+	<arg n="0">[*T*-1] -&gt;  that -&gt;  a small portion</arg>
+	<rel>pertains</rel>
+	<arg f="to" n="1">Lisa 's disk drive , known [*] as Twiggy</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

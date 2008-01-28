@@ -1,0 +1,51 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="characterize">
+<note>
+  Frames file for 'characterize' based on sentences in financial
+  subcorpus.  No verbnet entry.  Comparison with 'describe'.
+</note>
+
+<roleset id="characterize.01" name="assign a label or attribute" vncls="29.2">
+<roles>
+  <role descr="describer" n="0">
+		
+  <vnrole vncls="29.2" vntheta="Agent"/></role>
+
+  <role descr="thing described" n="1">
+		
+  <vnrole vncls="29.2" vntheta="Theme"/></role>
+
+  <role descr="secondary attribute, described-as" n="2">
+		
+  <vnrole vncls="29.2" vntheta="Predicate"/></role>
+
+</roles>
+
+<example name="typical transitive">
+<text>
+    William R. Laidig, Nekoosa's chairman, chief executive officer and president, characterized the $58-a-share bid as ``uninvited.''
+</text>
+        <arg n="0">William R. Laidig, Nekoosa's chairman, chief
+        executive officer and president,</arg> 
+        <rel>characterized</rel>
+        <arg n="1">the $58-a-share bid</arg>
+        <arg f="as" n="2">`` uninvited ''</arg>
+</example>
+
+<example name="lacking attribute">
+<text>
+    Anheuser noted that ``beer industry sales volume in 1989 is following the trend that has characterized the last half of the '80s.
+</text>
+        <arg n="0">*trace* -&gt;  that -&gt;  the trend</arg>
+        <rel>characterized</rel>
+        <arg n="1">the last half of the '80s</arg>
+</example>
+
+<note>
+Latter could be considered a different roleset/sense.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

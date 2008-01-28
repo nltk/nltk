@@ -1,0 +1,36 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="clamor">
+<note>
+  Frames file for 'clamor' based on sentences in wsj.  No access to
+  Verbnet at the moment.
+</note>
+
+<roleset id="clamor.01" name="call for noisily, demand" vncls="-">
+<roles>
+  <role descr="demander" n="0"/>
+  <role descr="demanded" n="1"/>
+</roles>
+
+<example name="oh, those Italians">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    One of Italy's favorite shows, ``Fantastico,'' a tepid variety
+    show, is so popular that viewers clamored [*-3] to buy a chocolate
+    product, ``Cacao Fantastico,'' whose praises were sung each week
+    by dancing showgirls -- even though the product didn't exist. 
+</text>
+        <arg n="0">viewers</arg>
+        <rel>clamored</rel>
+        <arg n="1">[*-3] to buy a chocolate product, ``Cacao
+        Fantastico,'' whose praises were sung each week by dancing
+        showgirls</arg> 
+        <arg f="ADV" n="M">even though the product didn't exist</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

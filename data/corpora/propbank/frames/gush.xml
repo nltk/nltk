@@ -1,0 +1,62 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="gush">
+<note>
+  Frames file for 'gush' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="gush.01" name="to express enthusiastically" vncls="-">
+<roles>
+  <role descr="agent" n="0"/>
+  <role descr="topic, utterance" n="1"/>
+</roles>
+
+<example name="gush about">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ Glossy brochures circulated [*] at racetracks gush about the limelight of the winner 's circle and high-society schmoozing .
+</text>
+	<arg n="0">Glossy brochures circulated [*] at racetracks</arg>
+	<rel>gush</rel>
+	<arg f="about" n="1">the limelight of the winner 's circle and high-society schmoozing</arg>
+</example>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ `` He 's a genuine Wheaties-box athlete , '' gushes [*T*-1] Mr. Jones .
+</text>
+	<rel>gushes</rel>
+	<arg n="1">[*T*-1] -&gt;  `` He 's a genuine Wheaties-box athlete , ''</arg>
+	<arg n="0">Mr. Jones</arg>
+</example>
+</roleset>
+
+<roleset id="gush.02" name="(cause to) flow" vncls="43.4 48.1.1">
+<roles>
+  <role descr="causer of flowing" n="0">
+	<vnrole vncls="43.4" vntheta="Agent"/></role>
+  <role descr="entity flowing" n="1">
+	<vnrole vncls="43.4" vntheta="Theme"/>
+        <vnrole vncls="48.1.1" vntheta="Theme"/></role>
+</roles>
+
+
+<example name="not in the corpus">
+<text>
+  Oil gushed out from the hole in the tanker .
+</text>
+	<rel>gushed</rel>
+	<arg n="1">Oil</arg>
+        <arg f="DIR" n="M">out from the hole in the tanker</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

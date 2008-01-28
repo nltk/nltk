@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="reestablish">
+<note>
+  Frames file for 'reestablish' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="reestablish.01" name="to bring back into existence or use" vncls="-">
+<roles>
+  <role descr="establisher, agent" n="0"/>
+  <role descr="entity reestablished" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ Stock-index arbitrage , because it sells the more `` expensive '' market and buys the `` cheaper '' one , attempts [*-1] to reestablish the link between the stock and futures markets , and the adjustments are often abrupt .
+</text>
+	<arg n="0">[*-1] -&gt;  Stock-index arbitrage</arg>
+	<rel>reestablish</rel>
+	<arg n="1">the link between the stock and futures markets</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

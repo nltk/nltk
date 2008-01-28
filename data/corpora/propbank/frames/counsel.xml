@@ -1,0 +1,57 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="counsel">
+<note>
+  Frames file for 'counsel' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="counsel.01" name="to advice" vncls="37.9-1">
+<roles>
+  <role descr="advisor" n="0"><vnrole vncls="37.9-1" vntheta="Agent"/></role>
+  <role descr="entity adviced" n="1"><vnrole vncls="37.9-1" vntheta="Recipient"/></role>
+  <role descr="advice" n="2"><vnrole vncls="37.9-1" vntheta="Topic"/></role>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+ The former $ 3 million-a-year [*U*] lobbyist now frequents shelters for the homeless and devotes a third of his time [*-1] counseling other recovering alcoholics .
+</text>
+	<arg n="0">[*-1] -&gt;  The former $ 3 million-a-year [*U*] lobbyist</arg>
+	<rel>counseling</rel>
+	<arg n="1">other recovering alcoholics</arg>
+</example>
+
+
+<example name="all arguments">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ Computer Sciences would n't disclose the proposed purchase price for Cleveland Consulting , which [*T*-1] counsels companies on logistics and supply .
+</text>
+	<arg n="0">[*T*-1] -&gt;  which -&gt;  Cleveland Consulting</arg>
+	<rel>counsels</rel>
+	<arg n="1">companies</arg>
+	<arg f="on" n="2">logistics and supply</arg>
+</example>
+
+
+
+<example name="with Arg2">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ Underneath the headline `` Diversification , '' it counsels , `` Based on the events of the past week , all investors need [*-1] to know [0] their portfolios are balanced [*-2] [*] to help [*-3] protect them against the market 's volatility . ''
+</text>
+	<arg f="ADV" n="M">Underneath the headline `` Diversification</arg>
+	<arg n="0">it</arg>
+	<rel>counsels</rel>
+	<arg n="2">Based on the events of the past week , all investors need [*-1] to know [0] their portfolios are balanced [*-2] [*] to help [*-3] protect them against the market 's volatility</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

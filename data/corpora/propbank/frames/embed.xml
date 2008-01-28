@@ -1,0 +1,40 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="embed">
+<note>
+  Frames file for 'embed'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="embed.01" name="to fix or enclose" vncls="-">
+<roles> 
+  <role descr="causer, agent" n="0"/>  
+  <role descr="entity embedded" n="1"/>
+  <role descr="embedded into" n="2"/>
+</roles>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+ Embedded [*-2] in the `` budget '' being concocted [*] by the House-Senate conference committee is [*T*-1] something that [*T*-3] looks , smells and waddles like a duck .
+</text>
+	<rel>Embedded</rel>
+	<arg n="1">something that [*T*-3] looks , smells and waddles like a duck -&gt;  [*-2]</arg>
+	<arg f="in" n="2">the `` budget '' being concocted [*] by the House-Senate conference committee</arg>
+</example>
+
+<example name="with substrate">
+<inflection person="ns" tense="present" aspect="ns" voice="passive" form="participle"/>
+<text>
+ Embedded [*-2] in the `` budget '' being concocted [*] by the House-Senate conference committee is [*T*-1] something that [*T*-3] looks , smells and waddles like a duck .
+</text>
+        <rel>Embedded</rel>
+        <arg n="2" f="in">the `` budget '' being concocted [*] by the House-Senate conference committee</arg>
+        <arg n="1">something that [*T*-3] looks , smells and waddles like a duck ->  [*-2]</arg>
+</example>
+
+</roleset>
+</predicate>
+
+
+</frameset>

@@ -1,0 +1,74 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="terminate">
+<note>
+  Frames file for 'terminate' based on sentences in financial
+  subcorpus.  No access to verbnet.  Comparison with 'end' and
+  'fire'. 
+</note>
+
+<roleset id="terminate.01" name="end, stop" vncls="55.1">
+<roles>
+  <role descr="Intentional agent" n="0">
+	  <vnrole vncls="55.1" vntheta="Agent"/></role>
+  <role descr="Thing ending" n="1">
+	  <vnrole vncls="55.1" vntheta="Theme"/></role>
+  <role descr="point at which something ends" n="M"/>
+</roles>
+
+<note>
+End point might be TMP or LOC
+</note>
+
+<example name="transitive">
+<text>
+    Comprehensive Care, which *trace* terminated its agreement to
+    merge with First Hospital, dropped 7/8 to 3 7/8. 
+</text>
+        <arg n="0">*trace* -&gt;  which -&gt;  Comprehensive Care</arg>
+        <rel>terminated</rel>
+        <arg n="1">its agreement  to merge with First Hospital</arg>
+</example>
+
+<example name="unaccusative">
+<text>
+    The insurance concern said all conversion rights on the stock will
+    terminate on Nov. 30. 
+</text>
+        <arg n="1">all conversion rights on the stock</arg>
+        <arg f="MOD" n="M">will</arg>
+        <rel>terminate</rel>
+        <arg f="TMP" n="M">on Nov. 30</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="terminate.02" name="cause to cease employment" vncls="-">
+<roles>
+  <role descr="employer" n="0"/>
+  <role descr="ex-employee" n="1"/>
+  <role descr="job" n="2"/>
+</roles>
+
+<example name="poor John">
+  <text>
+    BigHugeCo terminated John from his position as deputy garbage
+    collector yesterday.
+  </text>
+  <arg n="0">BigHugeCo</arg>
+  <rel>terminated</rel>
+  <arg n="1">John</arg>
+  <arg f="from" n="2">his position as deputy garbage collector</arg>
+  <arg f="TMP" n="m">yesterday</arg>
+</example>
+
+<note>
+Actually that sounds a little odd with the Arg2
+</note>
+
+</roleset>
+</predicate>
+</frameset>

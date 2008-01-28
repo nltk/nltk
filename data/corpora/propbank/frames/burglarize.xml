@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="burglarize">
+<note>
+  Frames file for 'burglarize' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="burglarize.01" name="steal from" vncls="-">
+<roles>
+  <role descr="thief, burglar" n="0"/>
+  <role descr="thing/place stolen from" n="1"/>
+</roles>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="third" tense="present" voice="passive"/>
+<text>
+    In Brooklyn and the Bronx, one out of four commercial firms is
+    burglarized [*-1] each year. 
+</text>
+        <arg f="LOC" n="M">In Brooklyn and the Bronx</arg>
+        <rel>burglarized</rel>
+        <arg n="1">[*-1] -&gt;  one out of four commercial firms</arg>
+        <arg f="TMP" n="M">each year</arg>
+</example>
+
+<note>
+I'll assume you can extrapolate an active example.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

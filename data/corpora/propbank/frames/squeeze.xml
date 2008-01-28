@@ -1,0 +1,133 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="squeeze">
+<note>
+  Frames file for 'squeeze' based on sentences in financial subcorpus.
+  Verbnet entries knead-26.5, wipe_manner-10.4.1, funnel-9.3; other
+  framed members include: beat, quash, shake, wind; trim; dump, push,
+  shake.  No explicit comparison.
+</note>
+
+<roleset id="squeeze.01" name="apply pressure to" vncls="9.3">
+<roles>
+  <role descr="squeezer" n="0">
+	  <vnrole vncls="9.3" vntheta="Agent"/></role>
+  <role descr="squozen" n="1">
+	  <vnrole vncls="9.3" vntheta="Theme"/></role>
+</roles>
+
+<example name="transitive">
+<text>
+    Airlines also say their frequent-flier programs are squeezing
+    profits because awards are being redeemed at a heavier-than-normal
+    rate. 
+</text>
+        <arg n="0">their frequent-flier programs</arg>
+        <rel>squeezing</rel>
+        <arg n="1">profits</arg>
+        <arg f="CAU" n="M">because awards are being redeemed at a
+        heavier-than-normal rate</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="squeeze.02" name="extract or insert by means of pressure" vncls="10.4.1">
+<roles>
+  <role descr="squeezer" n="0">
+	  <vnrole vncls="10.4.1" vntheta="Agent"/></role>
+  <role descr="extracted material" n="1">
+	  <vnrole vncls="10.4.1" vntheta="Theme"/></role>
+  <role descr="source or destination" n="2">
+	  <vnrole vncls="10.4.1" vntheta="Source"/></role>
+</roles>
+
+<example name="squeeze out of">
+<text>
+    But it's hard *trace* to squeeze much profit out of the
+    personal-computer business these days, and the workstation market,
+    while important, is too small to rely on for much growth. 
+</text>
+        <arg n="0">*trace*</arg>
+        <rel>squeeze</rel>
+        <arg n="1">much profit</arg>
+        <arg f="out" n="2">of the personal-computer business</arg>
+        <arg f="TMP" n="M">these days</arg>
+</example>
+
+<example name="misparsed squeeze out of">
+<text>
+    Norman Berry, the creative executive who *trace* was apparently
+    squeezed out of Ogilvy &amp; Mather in June, is returning to
+    Ogilvy's parent company, WPP Group PLC. 
+</text>
+        <arg n="1">*trace* -&gt;  who -&gt;  the creative executive</arg>
+        <arg f="ADV" n="M">apparently</arg>
+        <rel>squeezed</rel>
+        <arg f="DIR" n="M">out</arg>
+        <arg f="of" n="2">Ogilvy &amp; Mather</arg>
+        <arg f="TMP" n="M">in June</arg>
+</example>
+
+<example name="squeeze from">
+  <text>
+     John can squeeze blood from turnips.
+  </text>
+  <arg n="0">John</arg>
+  <arg f="MOD" n="m">can</arg>
+  <rel>squeeze</rel>
+  <arg n="1">blood</arg>
+  <arg f="from" n="2">turnips</arg>
+</example>
+
+<example name="squeeze into">
+  <inflection person="ns" tense="ns" aspect="ns" voice="active" form="infinitive"/>
+  <text>
+    ``Fast-food franchisers have managed [*-1] to squeeze in stores
+    into every corner available.'' 
+  </text>
+  <arg n="0"        >[*-1] -> Fast-food franchisers</arg>
+  <rel              >squeeze</rel>
+  <arg n="m" f="DIR">in</arg>
+  <arg n="1"        >stores</arg>
+  <arg n="2" f="into">every corner available</arg>
+<note>
+Dreadful tautological in/into there.
+</note>
+</example>
+
+</roleset>
+
+<roleset id="squeeze.03" name="reduce" vncls="-">
+<roles>
+    <role descr="Agent" n="0"/>
+    <role descr="Logical subject, patient, thing falling" n="1"/>
+    <role descr="EXT, amount fallen" n="2"/>
+    <role descr="Start point" n="3"/>
+    <role descr="End point, end state of arg1" n="4"/>
+</roles>
+
+<example name="stupid stock reports again">
+<text>
+    These and other problems squeezed Federal's profit margins last
+    year to 8%, down from more than 13% annually in the first half of
+    the decade. 
+</text>
+        <arg n="0">These and other problems</arg>
+        <rel>squeezed</rel>
+        <arg n="1">Federal's profit margins last year</arg>
+        <arg f="to" n="4">8%</arg>
+        <arg f="DIR" n="M">down</arg>
+        <arg f="from" n="3">more than 13% annually in the first half
+        of the decade</arg> 
+</example>
+
+<note>
+Sorta nasty compromise on the &quot;down from&quot; phrase.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

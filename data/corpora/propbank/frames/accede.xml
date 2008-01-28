@@ -1,0 +1,45 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="accede">
+<note>
+  Frames file for 'accede' based on survey of sentences in the WSJ
+  corpus. Comparison with 'agree'.
+</note>
+
+<roleset id="accede.01" name="agree, adhere" vncls="-">
+<roles>
+  <role descr="acceder, agent" n="0"/>
+  <role descr="entity acceded to" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ Labor unions and Democrats long fought the idea , but recently acceded to it in the face of Bush administration insistence .
+</text>
+	<arg n="0">Labor unions and Democrats</arg>
+	<arg f="DIS" n="M">but</arg>
+	<arg f="TMP" n="M">recently</arg>
+	<rel>acceded</rel>
+	<arg f="to" n="1">it</arg>
+	<arg f="PNC" n="M">in the face of Bush administration insistence</arg>
+</example>
+
+
+<example name="intransitive">
+<inflection aspect="ns" form="full" person="ns" tense="future" voice="active"/>
+<text>
+ Perhaps even the American apologists will now accede .
+</text>
+	<arg n="M">Perhaps</arg>
+	<arg n="0">even the American apologists</arg>
+	<arg f="MOD" n="M">will</arg>
+	<rel>accede</rel>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

@@ -1,0 +1,40 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="despise">
+<note>
+  Frames file for 'despise' based on sentences in financial
+  subcorpus.  Verbnet class despise 31.2, no mention of other
+  members.  Comparison to 'like'.
+</note>
+
+<roleset id="despise.01" name="anti-affection" vncls="31.2">
+<roles>
+  <role descr="despiser" n="0">
+		
+  <vnrole vncls="31.2" vntheta="Experiencer"/></role>
+
+  <role descr="thing despised" n="1">
+		
+  <vnrole vncls="31.2" vntheta="Cause"/></role>
+
+</roles>
+
+<example name="transitive, gnarly trace chains">
+<text>
+    The speed with which such program trades take place and the
+    volatile price movements they can cause are what program trading
+    critics profess to despise *trace*.
+</text>
+        <arg n="0">program trading critics -&gt; *trace*</arg>
+        <rel>despise</rel>
+        <arg n="1">*trace* -&gt; what -&gt; The speed with which such
+        program trades take place  and the volatile price movements
+        they can cause</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

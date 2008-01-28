@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="spike">
+<note>
+  Frames file for 'spike' based on sentences in financial subcorpus.
+  No Verbnet entry, no Framenet entry.  No comparison, since I'm
+  unsure of the meaning.
+</note>
+
+<roleset id="spike.01" name="destroy, kill">
+<roles>
+  <role descr="killer" n="0"/>
+  <role descr="corpse" n="1"/>
+</roles>
+
+<example name="meaning?">
+<inflection aspect="ns" form="participle" person="ns" tense="past" voice="passive"/>
+<text>
+    At the same time four of six design projects were spiked *trace*,
+    he said. 
+</text>
+        <arg f="TMP" n="M">At the same time</arg>
+        <rel>spiked</rel>
+        <arg n="1">*trace* -&gt;  four of six design projects</arg>
+</example>
+
+<note>
+And that's the only token in all of Treebank.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

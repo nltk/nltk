@@ -1,0 +1,139 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="move">
+<note>
+  Frames file for 'move' based on survey of initial sentences of big
+  corpus.
+</note>
+
+<roleset id="move.01" name="change location" vncls="11.2 51.3.1">
+<roles>
+  <role descr="mover" n="0">
+	<vnrole vncls="11.2" vntheta="Agent"/>
+        <vnrole vncls="51.3.1" vntheta="Agent"/></role>
+  <role descr="moved" n="1">
+	<vnrole vncls="11.2" vntheta="Theme"/>
+        <vnrole vncls="51.3.1" vntheta="Theme"/></role>
+  <role descr="destination" n="2">
+	<vnrole vncls="11.2" vntheta="Destination"/>
+        <vnrole vncls="51.3.1" vntheta="Location"/></role>
+</roles>
+
+<example name="agentive">
+  <text>
+  The leadership hopes *trace* to move the compromise measure promptly
+  to the White House.
+  </text>
+  <arg n="0">*trace*=The leadership</arg>
+  <rel>move</rel>
+  <arg n="1">the compromise measure</arg>
+  <arg f="TMP" n="m">promptly</arg>
+  <arg f="to" n="2">the White House</arg>
+</example>
+
+<example name="ergative">
+  <text>
+  ...including about two million customers who *trace* have moved
+  during that period.
+  </text>
+  <arg n="1">*trace*=who=about two million customers</arg>
+  <rel>moved</rel>
+  <arg f="TMP" n="m">during that period</arg>
+</example>
+
+<example name="with EXT">
+  <text>
+  The Dow Jones Industrial Average moved 50 points.
+  </text>
+  <arg n="1">The Dow Jones Industrial Average</arg>
+  <rel>moved</rel>
+  <arg f="EXT" n="m">50 points</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="move.02" name="take measures" vncls="-">
+<roles>
+  <role descr="mover" n="0"/>
+  <role descr="measures" n="1"/>
+</roles>
+
+<example name="measures as infinitive">
+  <text>
+  Southeast Asian nations will move *trace* to accomodate Japanese business.
+  </text>
+  <arg n="0">Southeast Asian nations</arg>
+  <arg f="MOD" n="m">will</arg>
+  <rel>move</rel>
+  <arg n="1">*trace* to accomodate Japanese business</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="move.03" vncls="-" name="impelled action">
+<roles>
+  <role n="0"  descr="causal agent"/>
+  <role n="1"  descr="impelled agent"/>
+  <role n="2"  descr="impelled action"/>
+</roles>
+
+<example name="typical">
+  <inflection person="third" tense="present" aspect="ns" voice="active" form="full"/>
+  <text>
+    This somewhat-ambiguous assessment moves one Alliance portfolio
+    manager to ask: ``So, what is this -- a Stealth recession?'' 
+  </text>
+  <arg n="0"        >This somewhat-ambiguous assessment</arg>
+  <rel              >moves</rel>
+  <arg n="1"        >one Alliance portfolio manager</arg>
+  <arg n="2"        >to ask: ``So, what is this -- a Stealth recession?''</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="move.04" vncls="-" name="attack">
+<roles>
+  <role n="0"  descr="attacker"/>
+  <role n="1"  descr="attacked"/>
+</roles>
+
+<example name="charge!">
+  <inflection person="ns" tense="ns" aspect="ns" voice="active" form="infinitive"/>
+  <text>
+     The President of the United States urged the Panamanian armed
+     forces [*-1] to move against Mr. Noriega. 
+  </text>
+  <arg n="0"        >*trace* -> the Panamanian armed forces</arg>
+  <rel              >move</rel>
+  <arg n="1" f="against">Mr. Noriega</arg>
+</example>
+
+<example name="similar, different prep">
+  <inflection person="ns" tense="ns" aspect="ns" voice="active" form="full"/>
+  <text>
+     At the same time, abortion foes have developed a national
+     legislative strategy, [*-3] deciding [*-4] to move on what Jacki
+     Ragan, the National Right to Life Committee's director of state
+     organizational development, calls `` reasonable measures that an
+     overwhelming mainstream majority of Americans support.'' 
+  </text>
+  <arg n="0"        >[*-4] -> [*-3] -> abortion foes</arg>
+  <rel              >move</rel>
+  <arg n="1" f="on">what Jacki
+     Ragan, the National Right to Life Committee's director of state
+     organizational development, calls `` reasonable measures that an
+     overwhelming mainstream majority of Americans support.''</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

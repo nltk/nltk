@@ -1,0 +1,44 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="export">
+<note>
+  Frames file for 'export' based on sentences in financial subcorpus.
+  No Verbnet entry.  Comparison with 'send'.
+</note>
+
+<roleset id="export.01" name="ship out commodities">
+<roles>
+  <role descr="exporter" n="0"/>
+  <role descr="product" n="1"/>
+  <role descr="importer" n="2"/>
+</roles>
+
+<example name="active, missing importer">
+<text>
+    Westmoreland exports about a fourth of its coal tonnage, including
+    a significant amount of metallurgical coal produced by others that
+    is used by steelmakers overseas. 
+</text>
+        <arg n="0">Westmoreland</arg>
+        <rel>exports</rel>
+        <arg n="1">about a fourth of its coal tonnage, including a
+        significant amount of metallurgical coal produced by others
+        that is used by steelmakers overseas</arg> 
+</example>
+
+<example name="passive, missing exporter">
+<text>
+    Some 70% of them are *trace* to be exported *trace* to the U.S. 
+</text>
+        <rel>exported</rel>
+        <arg n="1">*trace* -&gt; *trace* -&gt;  Some 70% of them</arg>
+        <arg f="to" n="2">the U.S.</arg>
+</example>
+
+<note>
+Note the passive infinitive.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

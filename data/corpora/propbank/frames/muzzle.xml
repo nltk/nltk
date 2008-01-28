@@ -1,0 +1,44 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="muzzle">
+<note>
+  Frames file for 'muzzle' based on sentences in wsj.  Verbnet entry
+  9.9, 22.4.
+</note>
+
+<roleset id="muzzle.01" name="make unable to speak" vncls="9.9 22.4">
+<roles>
+  <role descr="causer of speaking inability" n="0"><vnrole vncls="9.9" vntheta="Agent"/><vnrole vncls="22.4" vntheta="Agent"/></role>
+  <role descr="entity no longer able to speak" n="1"><vnrole vncls="9.9" vntheta="Destination"/><vnrole vncls="22.4" vntheta="Patient1"/></role>
+  <role descr="explicit mention of muzzle proper" n="2"><vnrole vncls="9.9" vntheta="Theme"/><vnrole vncls="22.4" vntheta="Patient2"/></role>
+</roles>
+
+<example name="just transitive">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    In any case, he's likely to find that the more he muzzles his
+    colleagues, the more leaks will pop up all around Washington, a
+    lesson once learned by Henry Kissinger. 
+</text>
+        <arg n="0">he</arg>
+        <rel>muzzles</rel>
+        <arg n="1">his colleagues</arg>
+</example>
+
+<example name="with instrument">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     Mary muzzled John with a tennis ball.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>muzzled</rel>
+  <arg n="1">John</arg>
+  <arg f="with" n="2">a tennis ball</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

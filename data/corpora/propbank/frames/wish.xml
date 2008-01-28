@@ -1,0 +1,54 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="wish">
+<note>
+  Frames file for 'wish' based on sentences in financial subcorpus.
+  Verbnet entry 32.2, no other framed members.  Comparison with
+  'want'.  Or not.
+</note>
+
+<roleset id="wish.01" name="wish" vncls="32.2">
+<roles>
+  <role descr="wisher" n="0">
+		
+  <vnrole vncls="32.2" vntheta="Experiencer"/></role>
+
+  <role descr="thing wished for" n="1">
+		
+  <vnrole vncls="32.2" vntheta="Theme"/></role>
+
+  <role descr="benefactive" n="2"/>
+</roles>
+
+<example name="rarely with benefactive">
+<text>
+    Industry executives are wishing Mr. Achenbaum well.
+</text>
+        <arg n="0">Industry executives</arg>
+        <rel>wishing</rel>
+        <arg n="2">Mr. Achenbaum</arg>
+        <arg n="1">well</arg>
+</example>
+
+<note>
+Compare to &quot;Industry executives are wishing Mr. Achenbaum the best.&quot;
+</note>
+
+<example name="sentential wish">
+<text>
+    A reinsurance company effectively insures insurance companies that
+    *trace* wish to spread the risk of a particular policy. 
+</text>
+        <arg n="0">*trace* -&gt;  that -&gt;  insurance companies</arg>
+        <rel>wish</rel>
+        <arg n="1">to spread the risk of a particular policy</arg>
+</example>
+
+<note>
+Sentential wishes can also take full SBARs, in which case be sure to
+leave out the COMP.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

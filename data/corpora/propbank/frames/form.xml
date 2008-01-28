@@ -1,0 +1,87 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="form">
+<note>
+  Frames file for 'form' based on sentences in financial subcorpus.
+  No access to verbnet.  Comparison with 'create'.
+</note>
+
+<roleset id="form.01" name="create, make" vncls="26.4">
+<roles>
+  <role descr="creator" n="0">
+	<vnrole vncls="26.4" vntheta="Agent"/></role>
+  <role descr="thing created" n="1">
+	  <vnrole vncls="26.4" vntheta="Product"/></role>
+  <role descr="source" n="2">
+	  <vnrole vncls="26.4" vntheta="Material"/></role>
+  <role descr="benefactive" n="3">
+	  <vnrole vncls="26.4" vntheta="Beneficiary"/></role>
+  <role descr="attribute of arg1" n="4"/>
+</roles>
+
+<example name="just transitive">
+<text>
+    Peter Drake, biotechnology analyst for Vector Securities
+    International, Chicago, thinks market uncertainty may encourage
+    small companies to form more strategic alliances with big
+    corporations. 
+</text>
+        <arg n="0">small companies</arg>
+        <rel>form</rel>
+        <arg n="1">more strategic alliances with big corporations</arg>
+</example>
+
+<example name="passive, with source">
+<text>
+    NCNB Texas National, formed *trace* from the remnants of of the
+    failed First RepublicBank Corp. of Dallas, contributed $76.9
+    million to NCNB's bottom line in the third quarter. 
+</text>
+        <rel>formed</rel>
+        <arg n="1">*trace* -&gt;  NCNB Texas National</arg>
+        <arg f="from" n="2">the remnants of of the failed First
+        RepublicBank Corp. of Dallas</arg> 
+</example>
+
+<note>
+Other higher-#'d args may or may not occur.
+</note>
+
+</roleset>
+
+<roleset id="form.02" name="comprise" vncls="48.1.1 48.1.2">
+<roles>
+  <role descr="components" n="0"><vnrole vncls="48.1.1" vntheta="Theme"/><vnrole vncls="48.1.2" vntheta="Theme"/></role>
+  <role descr="whole" n="1"><vnrole vncls="48.1.1" vntheta="Location"/></role>
+</roles>
+
+<example name="cf. 'make up'">
+<text>
+    Commission income from domestic stock and bond sales accounts form
+    a large portion of Japanese securities companies' earnings. 
+</text>
+        <arg n="0">Commission income from domestic stock and bond
+        sales accounts</arg> 
+        <rel>form</rel>
+        <arg n="1">a large portion of Japanese securities companies'
+        earnings</arg> 
+</example>
+
+<example name="comprise again">
+  <inflection person="ns" tense="ns" aspect="ns" voice="active" form="infinitive"/>
+  <text>
+     The labels were breathy: ``Within its sheltering walls is a
+     microcosm of a thousand years in garden design ... a rose garden,
+     herb garden, serpentine garden, flower fields, an apple orchard
+     ... organized in a patchwork of 50-by-50-foot squares [*] to form
+     `rooms'... 
+  </text>
+  <arg n="0"        >[*] -> a rose garden, herb garden, serpentine
+  garden, flower fields, an apple orchard</arg> 
+  <rel              >form</rel>
+  <arg n="1"        >rooms</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

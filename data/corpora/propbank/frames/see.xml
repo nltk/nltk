@@ -1,0 +1,129 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="see">
+<note>
+  Frames file for 'see' based on revamping Chris' old frames file.
+</note>
+
+<roleset id="see.01" name="view" vncls="29.2 30.1">
+<roles>
+  <role descr="viewer" n="0">
+	<vnrole vncls="29.2" vntheta="Agent"/>
+        <vnrole vncls="30.1" vntheta="Experiencer"/></role>
+  <role descr="thing viewed" n="1">
+	<vnrole vncls="29.2" vntheta="Theme"/>
+        <vnrole vncls="30.1" vntheta="Stimulus"/></role>
+</roles>
+
+<example name="see an NP">
+  <text>
+    John saw the President.
+  </text>
+  <arg n="0">John</arg>
+  <rel>saw</rel>
+  <arg n="1">the President</arg>
+</example>
+
+<example name="NP with secondary attribute">
+  <text>
+    John saw the President collapse.
+  </text>
+  <arg n="0">John</arg>
+  <rel>saw</rel>
+  <arg n="1">[the President][collapse]</arg>
+</example>
+
+<example name="see an S">
+  <text>
+    John saw (that) the President collapsed.
+  </text>
+  <arg n="0">John</arg>
+  <rel>saw</rel>
+  <arg n="1">(that) the President collapsed</arg>
+</example>
+
+<example name="NP and attribute as PP">
+  <text>
+    John saw the President as a fool.
+  </text>
+  <arg n="0">John</arg>
+  <rel>saw</rel>
+  <arg n="1">[the President][as a fool]</arg>
+</example>
+
+<note>
+The fundamental difference between the embedded S and the
+NP-with-attribute is that in the embedded S the embedded verb is
+marked for tense (it isn't in the NP-with-attribute), and the embedded
+subject will not show accusative case:
+&quot;John saw him collapse&quot; vs &quot;John saw the he collapsed&quot;.
+</note>
+
+</roleset>
+
+<roleset id="see.02" name="verb of motion: accompany" vncls="-">
+<roles>
+  <role descr="accompanier" n="0"/>
+  <role descr="entity in motion" n="1"/>
+  <role descr="destination" n="2"/>
+</roles>
+
+<example name="a polite young man">
+  <text>
+    John saw the President to his car.
+  </text>
+  <arg n="0">John</arg>
+  <rel>saw</rel>
+  <arg n="1">the President</arg>
+  <arg f="DIR" n="2">to his car</arg>
+</example>
+
+<note>
+Arg2 could also be &quot;out&quot; or some other non-PP.
+</note>
+
+</roleset>
+
+<roleset id="see.03" name="discourse function" vncls="-">
+<roles>
+  <role descr="you" n="0"/>
+</roles>
+
+<example name="you see">
+  <text>
+    After Mary killed John, you see, she had to win the Nobel Prize.
+  </text>
+  <arg n="0">you</arg>
+  <rel>see</rel>
+</example>
+
+<note>
+I don't know if this even occurs.
+</note>
+
+</roleset>
+
+<roleset id="see.04" vncls="-" name="ensure">
+<roles>
+  <role n="0"  descr="ensurer"/>
+  <role n="1"  descr="fixed: 'to it'"/>
+  <role n="2"  descr="proposition, event"/>
+</roles>
+
+<example name="see to it">
+  <inflection person="ns" tense="ns" aspect="ns" voice="active" form="full"/>
+  <text>
+    They should see to it that their kids don't play truant; they
+    should make certain that the children spend enough time doing
+    homework; they should scrutinize the report card. 
+  </text>
+  <arg n="0"        >They</arg>
+  <arg n="m" f="MOD">should</arg>
+  <rel              >see</rel>
+  <arg n="1" f="to">it</arg>
+  <arg n="2"        >that their kids don't play truant</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

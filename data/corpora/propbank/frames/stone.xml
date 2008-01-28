@@ -1,0 +1,73 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="stone">
+<note>
+  Frames file for 'stone' based on sentences in wsj.  Verbnet entries
+  10.7 and 17.2.  Former is dubious.
+</note>
+
+<roleset id="stone.01" vncls="10.7" name="remove seeds from">
+<roles>
+  <role descr="entity removing seeds" n="0">
+	  <vnrole vncls="10.7" vntheta="Agent"/></role>
+  <role descr="seeds" n="1">
+	  <vnrole vncls="10.7" vntheta="Source"/></role>
+</roles>
+
+<example name="no one actually says this">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+     John stoned the peaches.
+  </text>
+  <arg n="0"        >John</arg>
+  <rel              >stoned</rel>
+  <arg n="1"        >the peaches</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="stone.02" vncls="17.2" name="throw stones at">
+<roles>
+  <role n="0"  descr="thrower"/>
+  <role n="1"  descr="target"/>
+</roles>
+
+<example name="biblical punishment">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+     Mary stoned John for putting his feet on the dinner table.
+  </text>
+  <arg n="0"        >Mary</arg>
+  <rel              >stoned</rel>
+  <arg n="1"        >John</arg>
+  <arg n="m" f="CAU">for putting his feet on the dinner table</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="stone.03" vncls="-" name="use drugs">
+<roles>
+  <role n="1"  descr="user"/>
+</roles>
+
+<example name="nice pun">
+<inflection person="ns" tense="ns" aspect="ns" voice="passive" form="participle"/>
+<text>
+    People in Glass houses tend [*-1] to look stoned .
+</text>
+	<arg n="1">[*-1*] -> People in Glass houses</arg>
+	<rel>stoned</rel>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

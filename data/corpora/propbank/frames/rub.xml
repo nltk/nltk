@@ -1,0 +1,50 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="rub">
+<note>
+  Frames file for 'rub' based on sentences in the financial subcorpus.
+  Comparison with 'load'.
+</note>
+
+<roleset id="rub.01" name="apply pressure to a surface" vncls="9.7-1 10.4.1 40.3.2">
+<roles>
+  <role descr="rubber, agent" n="0">
+	<vnrole vncls="9.7-1" vntheta="Agent"/>
+        <vnrole vncls="10.4.1" vntheta="Agent"/>
+        <vnrole vncls="40.3.2" vntheta="Agent"/></role>
+  <role descr="thing rubbed" n="1">
+	<vnrole vncls="9.7-1" vntheta="Theme"/>
+        <vnrole vncls="10.4.1" vntheta="Theme"/>
+        <vnrole vncls="40.3.2" vntheta="Patient"/></role>
+  <role descr="surface" n="2">
+	<vnrole vncls="9.7-1" vntheta="Destination"/>
+        <vnrole vncls="10.4.1" vntheta="Source"/></role>
+  <role descr="rubbed with, if separate from agent" n="3"/>
+</roles>
+
+<example name="with locative PP">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ To reduce it at the fund 's building , workers rubbed beeswax instead of polyurethane on the floors in the executive director 's office .
+</text>
+	<arg n="0">workers</arg>
+	<rel>rubbed</rel>
+	<arg n="1">beeswax instead of polyurethane</arg>
+	<arg f="on" n="2">the floors in the executive director 's office</arg>
+</example>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ However , the thought of a living player selling his checks rubs some people the wrong way .
+</text>
+	<arg f="DIS" n="M">However</arg>
+	<arg n="0">the thought of a living player selling his checks</arg>
+	<rel>rubs</rel>
+	<arg n="1">some people</arg>
+	<arg f="MNR" n="M">the wrong way</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

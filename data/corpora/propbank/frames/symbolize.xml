@@ -1,0 +1,46 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="symbolize">
+<note>
+  Frames file for 'symbolize' based on sentences in wsj.  No Verbnet
+  entry, Framenet entry Categorization.
+</note>
+
+<roleset id="symbolize.01" name="act as a representative of   a class" vncls="-">
+<roles>
+  <role descr="symbol" n="1"/>
+  <role descr="class" n="2"/>
+</roles>
+
+<example name="active">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    White, 24 years old, a singer in her church choir, she symbolizes
+    a generation that gave its heart and its vote to Ronald Reagan. 
+</text>
+        <arg n="1">she</arg>
+        <rel>symbolizes</rel>
+        <arg n="2">a generation that gave its heart and its vote to
+        Ronald Reagan</arg> 
+</example>
+
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="third" tense="past" voice="passive"/>
+<text>
+    The deal was symbolized [*-1] by the restoration of the Shi'ite
+    Sultan Ali Keshtmand to the Afghan prime ministry. 
+</text>
+        <rel>symbolized</rel>
+        <arg n="1">[*-1] -&gt;  The deal</arg>
+        <arg f="by" n="0">the restoration of the Shi'ite Sultan Ali
+        Keshtmand to the Afghan prime ministry</arg> 
+</example>
+
+<note>
+There's a possibility for an agent, hence the lack of Arg0.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

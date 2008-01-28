@@ -1,0 +1,34 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="grasp">
+<note>
+  Frames file for 'grasp' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="grasp.01" name="to take hold of, comprehend" vncls="15.1">
+<roles>
+  <role descr="grasper" n="0">
+        <vnrole vncls="15.1" vntheta="Agent"/></role>
+  <role descr="thing grasped" n="1">
+        <vnrole vncls="15.1" vntheta="Theme"/></role>
+</roles>
+
+<example name="with manner">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ He could grasp an issue with the blink of an eye . ''
+</text>
+	<arg n="0">He</arg>
+	<arg f="MOD" n="M">could</arg>
+	<rel>grasp</rel>
+	<arg n="1">an issue</arg>
+	<arg f="MNR" n="M">with the blink of an eye</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

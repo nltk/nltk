@@ -1,0 +1,59 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="hinder">
+<note>
+  Frames file for 'hinder' based on sentences in financial subcorpus.
+  No Verbnet entry.  Comparison with restrain and hold (back).
+</note>
+
+<roleset id="hinder.01" name="(try to) stop, prevent">
+<roles>
+  <role descr="stopper, preventer" n="0"/>
+  <role descr="Theme (action or object being prevented)" n="1"/>
+  <role descr="secondary predication on arg1 or action" n="2"/>
+  <role descr="instrument, if separate from arg0" n="3"/>
+</roles>
+
+<example name="transitive">
+<text>
+    Prudential-Bache's Mr. Rodgers said he doesn't see the industry's
+    capacity-expansion program hindering takeover activity. 
+</text>
+        <arg n="0">the industry's capacity-expansion program</arg>
+        <rel>hindering</rel>
+        <arg n="1">takeover activity</arg>
+</example>
+
+<example name="with secondary predication">
+<text>
+    While ``the tone'' of domestic and international air-freight
+    markets remains sound, seasonal factors are likely *trace* to
+    hinder Burlington Air from matching third-quarter results in the
+    fourth quarter, Pittston said. 
+</text>
+        <arg n="0">*trace* -&gt;  seasonal factors</arg>
+        <rel>hinder</rel>
+        <arg n="1">Burlington Air</arg>
+        <arg f="from" n="2">matching third-quarter results in the
+        fourth quarter</arg> 
+</example>
+
+<example name="with instrument?">
+  <text>
+    John hindered Mary from studying with his incessant pleas for sex.
+  </text>
+  <arg n="0">        John</arg>
+  <rel>hindered</rel>
+  <arg n="1">Mary</arg>
+  <arg f="from" n="2">studying</arg>
+  <arg f="with" n="3">his incessant pleas for sex</arg>
+</example>
+
+<note>
+I'm going to get in trouble for this example, I just know it.  Only
+use &quot;instrument&quot; when it is clearly separate from the agent.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

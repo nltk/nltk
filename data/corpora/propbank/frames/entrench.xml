@@ -1,0 +1,34 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="entrench">
+<note>
+  Frames file for 'entrench' based on sentences in financial
+  subcorpus.  More frequent than you might expect.  No verbnet entry.
+</note>
+
+<roleset id="entrench.01" name="set somebody more firmly in a position">
+<roles>
+  <role descr="thing causing entrenchment" n="0"/>
+  <role descr="entity becoming more firm in its position" n="1"/>
+  <role descr="position" n="2"/>
+</roles>
+
+<example name="always with 'designed'?">
+<text>
+    Royal's suit contends that the Ammann acquisition was ``designed
+    *trace* to entrench management and thwart Royal's offer.'' 
+</text>
+        <arg n="0">*trace* -&gt; the Ammann acquisition</arg>
+        <rel>entrench</rel>
+        <arg n="1">management</arg>
+</example>
+
+<note>
+Ignore adjectival usages: &quot;management's entrenched position&quot;.  Also, I
+don't know for sure that the position will ever be mentioned, but the
+framing is there in case we do see it.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

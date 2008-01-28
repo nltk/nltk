@@ -1,0 +1,65 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="screech">
+<note>
+  Frames file for 'screech' based on sentences in wsj.  Verbnet entry
+  37.3, Framenet entry Motion noise, Communication noise, Perception
+  noise.  Very noisy verb.
+</note>
+
+<roleset id="screech.01" name="(cause to) emit noise" vncls="-">
+<roles>
+  <role descr="causer" n="0"/>
+  <role descr="thing screeching" n="1"/>
+</roles>
+
+<example name="awful noise">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    The chalk screeched on the blackboard.
+  </text>
+  <arg n="1">The chalk</arg>
+  <rel>screeched</rel>
+  <arg f="LOC" n="m">on the blackboard</arg>
+</example>
+
+<example name="with agent">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John screeched the chalk on the blackboard.
+  </text>
+  <arg n="0">John</arg>
+  <rel>screeched</rel>
+  <arg n="1">the chalk</arg>
+  <arg f="LOC" n="m">on the blackboard</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="screech.02" name="stop" vncls="-">
+<roles>
+  <role descr="thing stopping" n="1"/>
+  <role descr="explicit mention of stop" n="2"/>
+</roles>
+
+<example name="almost fixed phrase">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    The sales recovery screeched to a halt this month, some analysts
+    say. 
+</text>
+        <arg n="1">The sales recovery</arg>
+        <rel>screeched</rel>
+        <arg f="to" n="2">a halt</arg>
+        <arg f="TMP" n="M">this month</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

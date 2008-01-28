@@ -1,0 +1,34 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="abduct">
+<note>
+  Frames file for 'abduct' based on survey of sentences in the BNC
+  corpus. 
+</note>
+
+<roleset id="abduct.01" name="to carry someone off by force">
+<roles>
+  <role descr="agent" n="0"/>
+  <role descr="person kidnapped" n="1"/>
+</roles>
+
+
+<example name="transitive">
+<text>
+ His solicitor wrote him a letter at the airport, with a copy to the customs authorities, saying that Bella had evidence he was drinking and unfit to have the care of the child, whom he had anyway abducted without written consent.
+
+</text>
+	<arg n="0">he</arg>
+	<rel>abducted</rel>
+	<arg n="1">the child</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<note>
+frames created by Ruth
+</note>
+
+</frameset>
+

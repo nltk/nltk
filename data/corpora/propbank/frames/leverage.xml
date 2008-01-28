@@ -1,0 +1,29 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="leverage">
+<note>
+  Frames file for 'leverage' based on sentences in financial
+  subcorpus.  No verbnet entry (surprise, surprise).  No comparison.
+</note>
+
+<roleset id="leverage.01" name="some financial thing">
+<roles>
+  <role descr="agent" n="0"/>
+  <role descr="thing leveraged" n="1"/>
+</roles>
+
+<example name="transtive">
+<text>
+    Few, if any, index-fund managers will risk *trace* leveraging
+    performance by owning more than 100 % exposure to stocks, and
+    equally few will want to own less than a 100% position should
+    stocks rise. 
+</text>
+        <arg n="0">*trace* -&gt;  Few , if any , index-fund managers</arg>
+        <rel>leveraging</rel>
+        <arg n="1">performance</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

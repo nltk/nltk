@@ -1,0 +1,28 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="muck_up">
+<note>
+  Frames file for 'muck up' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="muck.01" vncls="-" name="messed up, *ucked up">
+<roles>
+  <role n="1"  descr="thing messed up, damaged"/>
+</roles>
+
+<example name="the one and only">
+<inflection person="ns" tense="ns" aspect="ns" voice="passive" form="participle"/>
+<text>
+     But Brooks declined, figuring that transporting the mucked up
+     money to Washington would cost the company thousands more.  
+</text>
+	<rel>[ mucked] [ up]</rel>
+	<arg n="1">money</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

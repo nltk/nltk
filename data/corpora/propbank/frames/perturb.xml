@@ -1,0 +1,36 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="perturb">
+<note>
+  Frames file for 'perturb' based on sentences in wsj.  Verbnet entry 31.1.
+</note>
+
+<roleset id="perturb.01" name="disturb, upset" vncls="31.1">
+<roles>
+  <role descr="causer of perturbation" n="0"><vnrole vncls="31.1" vntheta="Cause"/></role>
+  <role descr="perturbed entity" n="1"><vnrole vncls="31.1" vntheta="Experiencer"/></role>
+</roles>
+
+<example name="the one example">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    The bursts often occur, they said, after they ``perturbed'' the
+    experiments by raising or lowering the amount of electric current
+    being applied, or switching the current off and on. 
+</text>
+        <arg n="0">they</arg>
+        <rel>perturbed</rel>
+        <arg n="1">the experiments</arg>
+        <arg f="MNR" n="M">by raising or lowering the amount of
+        electric current being applied, or switching the current off
+        and on</arg> 
+</example>
+
+<note>
+This verb is only marginally a member of class 31.1, since it rarely
+expresses and emotional state.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

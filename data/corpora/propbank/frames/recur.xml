@@ -1,0 +1,43 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="recur">
+<note>
+  Frames file for 'recur' based on sentences in wsj.  Verbnet entry 48.3.
+</note>
+
+<roleset id="recur.01" vncls="48.3" name="occur over again">
+<roles>
+  <role n="0"  descr="event"/>
+  <role n="1"  descr="count of recurrences"/>
+</roles>
+
+<example name="adjectival">
+<inflection person="ns" tense="ns" aspect="progressive" voice="active" form="participle"/>
+<text>
+     Mr. Lawson's resignation shocked many analysts, despite the
+     recent recurring speculation of a rift between the chancellor and
+     Prime Minister Margaret Thatcher. 
+</text>
+	<arg n="M" f="TMP">recent</arg>
+	<rel>recurring</rel>
+	<arg n="0">speculation</arg>
+</example>
+
+<example name="verbal">
+  <inflection person="ns" tense="present" aspect="ns" voice="active" form="full"/>
+  <text>
+     John's nightmares now recur nightly.
+  </text>
+  <arg n="0"        >John's nightmares</arg>
+  <arg n="m" f="TMP">now</arg>
+  <rel              >recur</rel>
+  <arg n="1"        >nightmare</arg>
+</example>
+
+<note>
+Now being replaced by 'recurse', backformed from 'recursion'.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

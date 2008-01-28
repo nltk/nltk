@@ -1,0 +1,69 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="fork_over">
+<note>
+  Frames file for 'fork' based on survey of sentences in the WSJ
+  corpus. Comparison with 'pay'.
+</note>
+
+<roleset id="fork.01" name="to pay" vncls="-">
+<roles>
+  <role descr="payer, agent" n="0"/>
+  <role descr="thing paid for" n="1"/>
+  <role descr="person paid" n="2"/>
+  <role descr="price" n="3"/>
+</roles>
+
+<example name="passive">
+<inflection aspect="perfect" form="participle" person="ns" tense="past" voice="passive"/>
+<text>
+ The lawsuit alleges that an inventory of Pinkerton 's memorabilia disclosed that one of the watches had n't been forked [*-1] over by American Brands .
+</text>
+	<arg f="NEG" n="M">n't</arg>
+	<rel>[ forked] [ over]</rel>
+	<arg n="1">[*-1] -&gt;  one of the watches</arg>
+	<arg f="by" n="0">American Brands</arg>
+</example>
+
+
+<example name="with Arg3">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ Two Los Angeles radio stations initiated Red Cross donation campaigns , and one Los Angeles bank manager forked over $ 150,000 [*U*] of his own money for relief purposes , the Red Cross said [0] [*T*-1] .
+</text>
+	<arg n="0">one Los Angeles bank manager</arg>
+	<rel>[ forked] [ over]</rel>
+	<arg n="3">$ 150,000 [*U*] of his own money</arg>
+	<arg f="PNC" n="M">for relief purposes</arg>
+</example>
+</roleset>
+</predicate>
+
+
+<predicate lemma="fork_out">
+
+<roleset id="fork.02" name="to pay" vncls="-">
+<roles>
+  <role descr="payer, agent" n="0"/>
+  <role descr="thing paid for" n="1"/>
+  <role descr="person paid" n="2"/>
+  <role descr="price" n="3"/>
+</roles>
+
+<example name="with Arg1 and Arg3">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ He noted that unlike an employee stock ownership plan , where a company usually borrows money from third party lenders [*] to buy stock that it sets [*T*-1] aside [*] to award employees over time [*T*-2] , here employees had [*-3] to fork out their own cash for the stock .
+</text>
+	<arg n="0">[*-3] -&gt;  employees</arg>
+	<rel>[ fork] [ out]</rel>
+	<arg n="3">their own cash</arg>
+	<arg f="for" n="1">the stock</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

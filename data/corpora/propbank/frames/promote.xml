@@ -1,0 +1,74 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="promote">
+<note>
+  Frames file for 'promote' based on sentences in financial subcorpus.
+  No Verbnet entry.  
+</note>
+
+<roleset id="promote.01" name="raise in rank/position, move forward/up" vncls="-">
+<roles>
+  <role descr="causer of motion, employer" n="0"/>
+  <role descr="thing in motion, employee" n="1"/>
+  <role descr="destination, new job" n="2"/>
+  <role descr="source, old job" n="3"/>
+</roles>
+
+<example name="all args">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    Mary promoted John from drudge to scullion, second class.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>promoted</rel>
+  <arg n="1">John</arg>
+  <arg f="from" n="3">drudge</arg>
+  <arg f="to" n="2">scullion, second class</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="promote.02" name="advertise" vncls="-">
+<roles>
+  <role descr="advertiser" n="0"/>
+  <role descr="thing being pitched, advertised" n="1"/>
+  <role descr="audience" n="2"/>
+</roles>
+
+<example name="with manner, even">
+<inflection aspect="perfect" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+    U.S. Trust, a 136-year-old institution that is one of the earliest
+    high-net worth banks in the U.S., has faced intensifying
+    competition from other firms that *trace* have established, and
+    heavily promoted *trace*, private-banking businesses of their own. 
+</text>
+        <arg n="0">*trace* -&gt;  that -&gt;  other firms</arg>
+        <arg f="MNR" n="M">heavily</arg>
+        <rel>promoted</rel>
+        <arg n="1">*trace* -&gt; private-banking businesses of their
+        own</arg> 
+</example>
+
+<example name="with audience">
+  <inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+  <text>
+    After letting aluminum-makers take the recycling lead, a group of
+    the nation's largest steelmakers started a recycling institute
+    *trace* to promote steel cans to an environmentally conscious nation.
+  </text>
+  <arg n="0">*trace* -&gt; a recycling institute</arg>
+  <rel>promote</rel>
+  <arg n="1">steel cans</arg>
+  <arg f="to" n="2">an environmentally conscious nation</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

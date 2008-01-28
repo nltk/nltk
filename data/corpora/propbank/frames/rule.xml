@@ -1,0 +1,160 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="rule">
+<note>
+  Frames file for 'rule' based on survey of sentences in financial
+  subcorpus, and comparison with 'decide'.  Verbnet class dub-29.3,
+  other members 'call' 'make' and 'name' have been framed.
+</note>
+
+<roleset id="rule.01" name="decide" vncls="29.3">
+<roles>
+  <role descr="decider" n="0">
+	  <vnrole vncls="29.3" vntheta="Agent"/></role>
+  <role descr="decision" n="1">
+	  <vnrole vncls="29.3" vntheta="Theme"/></role>
+  <role descr="benefactive" n="2"/>
+  <role descr="attribute of arg1" n="3">
+	  <vnrole vncls="29.3" vntheta="Predicate"/></role>
+</roles>
+
+<example name="rule a sentence">
+  <text>
+  In August, the commission ruled that between $190 million and $195
+million of the plant's construction cost was unreasonable and should
+be refunded, plus interest.
+  </text>
+  <arg f="TMP" n="m">In August</arg>
+  <arg n="0">the commission</arg>
+  <rel>ruled</rel>
+  <arg n="1">between $190 million and $195
+million of the plant's construction cost was unreasonable and should
+be refunded, plus interest.</arg>
+</example>
+
+<example name="rule on">
+  <text>
+    The commission is expected *trace* to rule on the Braidwood 2 case
+    by year end.
+  </text>
+  <arg n="0">*trace*=The commission</arg>
+  <rel>rule</rel>
+  <arg f="on" n="1">the Braidwood 2 case</arg>
+  <arg f="TMP" n="m">by year end</arg>
+</example>
+
+<example name="with benefactive">
+  <text>
+    In a case involving Avondale Industries Inc. and its insurer,
+    Travelers Cos., the Second U.S. Circuit Court of Appeals in New
+    York ruled in favor of the company on two issues that lawyers say
+    are central to dozens of pollution cases around the country.
+  </text>
+  <arg f="LOC" n="m">In a case involving Avondale Industries Inc. and
+  its insurer, Travelers Cos.</arg>
+  <arg n="0">the Second U.S. Circuit Court of Appeals in New
+    York</arg>
+  <rel>ruled</rel>
+  <arg f="in" n="2">favor of the company</arg>
+  <arg f="on" n="1">two issues that lawyers say
+    are central to dozens of pollution cases around the country.</arg>
+</example>
+
+<note>
+In this last one the preposition is really (imho) &quot;in favor of&quot;, but
+multi-word prepositions aren't recognized by anyone but me.
+</note>
+
+<example name="with attributive">
+  <text>
+    The Supreme Court agreed to decide whether a federal court may
+    dismantle a merger that *trace-1* has won regulatory approval but
+    been ruled *trace-2* anticompetitive in a private suit.
+  </text>
+  <arg n="1">*trace-2*=*trace-1*=that=a merger</arg>
+  <rel>ruled</rel>
+  <arg n="3">anticompetitive</arg>
+  <arg f="LOC" n="m">in a private suit</arg>
+</example>
+
+</roleset>
+
+<roleset id="rule.03" vncls="-" name="show leadership">
+<roles>
+  <role n="0"  descr="ruler, leader"/>
+  <role n="1"  descr="unwashed masses, minions"/>
+</roles>
+
+<example name="rule over">
+  <inflection person="third" tense="present" aspect="ns" voice="active" form="full"/>
+  <text>
+     It's time business leaders and the general public learn that
+     mankind does not rule over this natural environment but is rather
+     the integral, symbiotic player within nature's workings. 
+  </text>
+  <arg n="0"        >mankind</arg>
+  <arg n="m" f="NEG">not</arg>
+  <rel              >rule</rel>
+  <arg n="1" f="over">this natural environment</arg>
+</example>
+
+<example name="just plain rule">
+  <inflection person="ns" tense="ns" aspect="ns" voice="passive" form="participle"/>
+  <text>
+    Both hope to encourage pressure for change in East bloc countries
+    still ruled [*] by Stalinist holdouts by arranging liberal
+    financial aid and trade benefits for Poland, Hungary and, to a
+    lesser extent, the Soviet Union. 
+  </text>
+  <arg n="m" f="TMP">still</arg>
+  <rel              >ruled</rel>
+  <arg n="1"        >[*] -> East bloc countries</arg>
+  <arg n="0" f="by">Stalinist holdouts</arg>
+</example>
+
+<example name="with explicit mention of rulership">
+  <inflection person="ns" tense="ns" aspect="ns" voice="active" form="infinitive"/>
+  <text>
+    Other analysts say the Indian leader could retain control with a
+    slim majority or be forced [*-1] to rule as the dominant partner
+    in a coalition with other parties. 
+  </text>
+  <arg n="0"        >[*-1] -> the Indian leader</arg>
+  <rel              >rule</rel>
+  <arg n="m" f="PRD">as the dominant partner in a coalition with other
+  parties.</arg> 
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="rule_out">
+
+<roleset id="rule.02" name="eliminate from consideration" vncls="-">
+<roles>
+  <role descr="eliminator" n="0"/>
+  <role descr="thing eliminated" n="1"/>
+  <role descr="eliminated from (?)" n="2"/>
+</roles>
+
+<example name="not anymore">
+  <text>
+    Paribas Chairman Michel Francois-Poncet wouldn't rule out *trace*
+    eventually selling all of Navigation Mixte's insurance operations
+    to Allianz.  
+  </text>
+  <arg n="0">Paribas Chairman Michel Francois-Poncet</arg>
+  <arg f="MOD" n="m">would</arg>
+  <arg f="NEG" n="m">n't</arg>
+  <rel>rule out</rel>
+  <arg n="1">*trace*
+    eventually selling all of Navigation Mixte's insurance operations
+    to Allianz.</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,38 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="traipse">
+<note>
+  Frames file for 'traipse' based on sentences in wsj.  No access to
+  Verbnet at the moment.
+</note>
+
+<roleset id="traipse.01" name="mode of motion" vncls="51.3.2">
+<roles>
+  <role descr="entity in motion" n="0"><vnrole vncls="51.3.2" vntheta="Theme"/></role>
+  <role descr="path" n="1"><vnrole vncls="51.3.2" vntheta="Location"/></role>
+</roles>
+
+<example name="the one example">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+    So it seems that Mr. Mitsotakis and his communist chums may have
+    unwittingly served Mr. Papandreou a moral victory on a platter:
+    PASOK, whether guilty or not, can now traipse the countryside
+    condemning the whole affair as a witch hunt at Mr. Papandreou's
+    expense. 
+</text>
+        <arg n="0">PASOK, whether guilty or not,</arg>
+        <arg f="MOD" n="M">can</arg>
+        <arg f="TMP" n="M">now</arg>
+        <rel>traipse</rel>
+        <arg n="1">the countryside</arg>
+        <arg f="ADV" n="M">condemning the whole affair as a witch hunt
+        at Mr. Papandreou's expense</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,82 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="rush">
+<note>
+Frames file for 'rush' based on sentences in financial subcorpus and
+automatic expansion via verbnet.
+</note>
+
+<roleset id="rush.01" name="move quickly" vncls="51.3.2">
+<roles>
+    <role descr="causer of motion" n="0">
+	  <vnrole vncls="51.3.2" vntheta="Agent"/></role>
+    <role descr="entity in motion" n="1">
+	  <vnrole vncls="51.3.2" vntheta="Theme"/></role>
+    <role descr="path or secondary action of arg1" n="2">
+          <vnrole vncls="51.3.2" vntheta="Location"/></role>
+</roles>
+
+<example name="secondary action">
+<inflection aspect="progressive" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+    Its capital spending is growing at double-digit rates for the
+    second year in a row, and its superefficient producers of
+    everything from cars to computer chips are rushing  to expand
+    capacity, modernize factories and develop new products. 
+</text>
+        <arg n="1">its superefficient producers of everything from
+        cars to computer chips</arg> 
+        <rel>rushing</rel>
+        <arg n="2">to expand capacity, modernize factories and
+        develop new products</arg> 
+</example>
+
+<example name="locative">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    One person familiar with UAL said the unsettled labor situation
+    and the uncertain world-wide financial markets contributed to the
+    board's decision *trace* to avoid ``*trace* rushing around selling
+    the company at a bargain price,'' particularly since it accepted a
+    $300-a-share offer just last month. 
+</text>
+        <arg n="1">*trace* -&gt; *trace* -&gt;  the board's</arg>
+        <rel>rushing</rel>
+        <arg f="LOC" n="2">around</arg>
+        <arg f="ADV" n="M">selling the company at a bargain price</arg>
+</example>
+
+<example name="direction">
+<inflection aspect="progressive" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+    We're not rushing into anything. 
+</text>
+        <arg n="1">We</arg>
+        <arg f="NEG" n="M">not</arg>
+        <rel>rushing</rel>
+        <arg f="DIR" n="2">into anything</arg>
+</example>
+<note>
+This could perhaps be regarded as two senses, motion and
+intended-action, but they seem so closely related to me.
+</note>
+
+<example name="with agent">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    The Swedish publishers of a new Estonian-language newspaper rushed
+    an extra edition across the Baltic on Oct. 10 after the first run
+    sold out in one day.
+  </text>
+  <arg n="0">The Swedish publishers of a new Estonian-language
+  newspaper</arg>
+  <rel>rushed</rel>
+  <arg n="1">an extra edition</arg>
+  <arg f="across" n="2">the Baltic</arg>
+  <arg f="TMP" n="m">on Oct. 10</arg>
+  <arg f="TMP" n="m">after the first run sold out in one day</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="ham_up">
+<note>
+  Frames file for 'ham' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="ham.01" name="be a ham, overact" vncls="-">
+<roles>
+  <role descr="overactor" n="0"/>
+  <role descr="fixed: it" n="1"/>
+</roles>
+
+<example name="fixed phrase: ham it up">
+<inflection aspect="progressive" form="participle" person="third" tense="present" voice="active"/>
+<text>
+    But it is the Trinity Rep newcomer, Jonathan Fried (Zamislov, the
+    paralegal) who is the actor to watch, whether he is hamming it up
+    while conducting the chamber musicians or seducing his neighbor's
+    wife (Becca Lish) by licking her bosom. 
+</text>
+        <arg n="0">he</arg>
+        <rel>[ hamming] [ up]</rel>
+        <arg n="1">it</arg>
+        <arg f="TMP" n="M">while conducting the chamber musicians</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

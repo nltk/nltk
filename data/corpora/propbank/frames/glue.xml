@@ -1,0 +1,49 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="glue">
+<note>
+  Frames file for 'glue' based on sentences in wsj.  Verbnet entry
+  22.4, Framenet entries Attaching and Building.
+</note>
+
+<roleset id="glue.01" name="attach with glue" vncls="22.4">
+<roles>
+  <role descr="causer of attachment, agent" n="0">
+        <vnrole vncls="22.4" vntheta="Agent"/></role>
+  <role descr="entity glued" n="1">
+        <vnrole vncls="22.4" vntheta="Patient1"/></role>
+  <role descr="entity glued to" n="2">
+        <vnrole vncls="22.4" vntheta="Patient2"/></role>
+</roles>
+
+<example name="just one arg">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    The carpets won't be glued down, and walls will be coated with
+    nontoxic finishes. 
+</text>
+        <arg n="1">The carpets</arg>
+        <arg f="MOD" n="M">wo</arg>
+        <arg f="NEG" n="M">n't</arg>
+        <rel>glued</rel>
+        <arg f="PRD" n="M">down</arg>
+</example>
+
+<example name="literal or figurative?">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    The scene opens with pinstripe-suited executives -- Easterners,
+    obviously -- glued [*] to cellular phones and hightailing it out
+    of town in chauffeur-driven limousines. 
+</text>
+        <rel>glued</rel>
+        <arg n="1">[*] -&gt;  pinstripe-suited executives</arg>
+        <arg f="to" n="2">cellular phones</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,40 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="intrude">
+<note>
+  Frames file for 'intrude' based on sentences in wsj.  Verbnet entry 48.1.2.
+</note>
+
+<roleset id="intrude.01" name="put into without invitation" vncls="48.1.2">
+<roles>
+  <role descr="putter" n="0"><vnrole vncls="48.1.2" vntheta="Agent"/></role>
+  <role descr="thing put" n="1"><vnrole vncls="48.1.2" vntheta="Theme"/></role>
+  <role descr="where put" n="2"><vnrole vncls="48.1.2" vntheta="Recipient"/></role>
+</roles>
+
+<example name="commonly ergative">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    Two ironies intrude. 
+</text>
+        <arg n="1">Two ironies</arg>
+        <rel>intrude</rel>
+</example>
+
+<example name="all args">
+  <inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+  <text>
+    Mary intrudes her low opinion of John's personal hygiene into
+    every conversation.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>intrudes</rel>
+  <arg n="1">her low opinion of John's personal hygiene</arg>
+  <arg f="into" n="2">every conversation</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

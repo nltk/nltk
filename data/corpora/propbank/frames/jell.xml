@@ -1,0 +1,28 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="jell">
+<note>
+  Frames file for 'jell' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="jell.01" name="set into jell" vncls="-">
+<roles>
+  <role descr="thing becoming jelly-like" n="1"/>
+</roles>
+
+<example name="always room for jell-o">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+     Mr. Pilson's ``Major Events'' strategy jelled after Mr. Tisch took over.
+</text>
+        <arg n="1">Mr. Pilson's ``Major Events'' strategy</arg>
+        <rel>jelled</rel>
+        <arg f="TMP" n="M">after Mr. Tisch took over</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

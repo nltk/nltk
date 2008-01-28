@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="depose">
+<note>
+  Frames file for 'depose'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="depose.01" name="to dethrone" vncls="-">
+<roles> 
+ <role descr="causer" n="0"/>
+ <role descr="entity deposed" n="1"/>    
+</roles>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+ But officials in Rome say [0] the issue was legally resolved [*-1] by a settlement between Italy and King Idris , deposed [*] by Col. Muammar Gadhafi in 1969 .
+</text>
+	<rel>deposed</rel>
+	<arg n="1">[*] -&gt;  King Idris</arg>
+	<arg f="by" n="0">Col. Muammar Gadhafi</arg>
+	<arg f="TMP" n="M">in 1969</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

@@ -1,0 +1,98 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="tire">
+<note>
+  Frames file for 'tire' based on sentences in wsj.  Verbnet entries
+  31.1, 31.3, 45.4.
+</note>
+
+<roleset id="tire.01" name="(make) become weary" vncls="31.1 45.4">
+<roles>
+  <role descr="causer of tiredness" n="0">
+        <vnrole vncls="31.1" vntheta="Cause"/>
+        <vnrole vncls="45.4" vntheta="Agent"/></role>
+  <role descr="tired entity" n="1">
+        <vnrole vncls="31.1" vntheta="Experiencer"/>
+        <vnrole vncls="45.4" vntheta="Patient"/></role>
+</roles>
+
+<example name="actually verbal">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     Mary tired John so he would go to sleep quicker.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>tired</rel>
+  <arg n="1">John</arg>
+  <arg f="PNC" n="m">so he would go to sleep quicker</arg>
+</example>
+
+<note>
+Would sound better phrasal.  See below.
+</note>
+
+</roleset>
+
+<roleset id="tire.03" vncls="-" name="prepositional usage">
+<roles>
+  <role n="0"  descr="tired entity">
+        <vnrole vncls="31.3" vntheta="Experiencer"/></role>
+  <role n="1"  descr="cause of weariness">
+        <vnrole vncls="31.3" vntheta="Cause"/></role>
+</roles>
+
+<example name="adjectival">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    Industry groups and reputable planners who are members of them
+    want comprehensive standards, too; they're tired of seeing
+    practitioners depicted collectively in the business press as
+    dumber than chimpanzees and greedier than a herd of swine.
+</text>
+        <arg n="0">they</arg>
+        <rel>tired</rel>
+        <arg f="of" n="1">seeing practitioners depicted collectively
+        in the business press as dumber than chimpanzees and greedier
+        than a herd of swine</arg> 
+</example>
+
+<example name="verbal prepositional">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+     Mary quickly tired of John's immature antics.
+  </text>
+  <arg n="0"        >Mary</arg>
+  <arg n="m" f="MNR">quickly</arg>
+  <rel              >tired</rel>
+  <arg n="1" f="of">John's immature antics</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="tire_out">
+
+<roleset id="tire.02" name="(make) become weary, phrasal" vncls="31.1 45.4">
+<roles>
+  <role descr="causer of tiredness" n="0">
+        <vnrole vncls="31.1" vntheta="Cause"/>
+        <vnrole vncls="45.4" vntheta="Agent"/></role>
+  <role descr="tired entity" n="1">
+        <vnrole vncls="31.1" vntheta="Experiencer"/>
+        <vnrole vncls="45.4" vntheta="Patient"/></role>
+</roles>
+
+<example name="actually verbal">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     Mary tired John out so he would go to sleep quicker.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>tired out</rel>
+  <arg n="1">John</arg>
+  <arg f="PNC" n="m">so he would go to sleep quicker</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

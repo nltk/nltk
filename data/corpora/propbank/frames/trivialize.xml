@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="trivialize">
+<note>
+  Frames file for 'trivialize' based on sentences in wsj.  No Verbnet
+  entry, but could probably fit into 45.4.
+</note>
+
+<roleset id="trivialize.01" name="make trivial" vncls="-">
+<roles>
+  <role descr="cause, agent" n="0"/>
+  <role descr="trivial thing" n="1"/>
+</roles>
+
+<example name="the one example">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    It never ceases to amaze me how the business world continues
+    *trace* to trivialize the world's environmental problems (``Is
+    Science, or Private Gain, Driving Ozone Policy?'' by George
+    Melloan, Business World, Oct. 24). 
+</text>
+        <arg n="0">*trace* -&gt;  the business world</arg>
+        <rel>trivialize</rel>
+        <arg n="1">the world 's environmental problems</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

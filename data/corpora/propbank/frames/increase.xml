@@ -1,0 +1,109 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+  <note>
+  Frames file for 'increase' based on survey of first 100 or so
+  sentences from big corpus, and comparison with 'rise' and 'fall'
+  </note>
+  <note>
+  BE SURE TO NOT TAG INCREASE WHEN IT'S A NOUN!!!
+  </note>
+<predicate lemma="increase">
+<roleset id="increase.01" name="go up incrementally" vncls="45.4 45.6">
+  <roles>
+    <role descr="causer of increase" n="0">
+	<vnrole vncls="45.4" vntheta="Agent"/></role>
+    <role descr="thing increasing" n="1">
+	<vnrole vncls="45.4" vntheta="Patient"/>
+        <vnrole vncls="45.6" vntheta="Patient"/></role>
+    <role descr="amount increased by, EXT or MNR" n="2">
+	<vnrole vncls="45.6" vntheta="Extent"/></role>
+    <role descr="start point" n="3"/>
+    <role descr="end point" n="4"/>
+  </roles>
+
+<example name="agentive, with end point">
+  <text>
+    Faulding increased its interest to 70% of Moleculon's stock.
+  </text>
+  <arg n="0">Faulding</arg>
+  <rel>increased</rel>
+  <arg n="1">its intereset</arg>
+  <arg f="to" n="4">to 70% of Moleculon's stock</arg>
+</example>
+
+<example name="agentive, with extent">
+  <text>
+    The Polish government increased home electricity charges by 150%.
+  </text>
+  <arg n="0">The Polish government</arg>
+  <rel>increased</rel>
+  <arg n="1">home electricity charges</arg>
+  <arg f="EXT" n="2">by 150%</arg>
+</example>
+
+
+<example name="ergative, with extent and end point">
+  <text>
+    The nation's exports increased 4% to $50.45 billion.
+  </text>
+  <arg n="1">The nation's exports</arg>
+  <rel>increased</rel>
+  <arg f="EXT" n="2">4%</arg>
+  <arg f="to" n="4">to $50.45 billion.</arg>
+</example>
+
+<note>
+Let's use EXT for numericals only, otherwise Arg2-MNR:
+</note>
+
+<example name="ergative, with manner">
+  <text>
+    Output will be gradually increased.
+  </text>
+  <arg n="1">Output</arg>
+  <arg f="MNR" n="2">gradually</arg>
+  <rel>increased</rel>
+</example>
+
+<example name="ergative, with start and end points">
+  <text>
+    Net income increased to $274 million from $130 million.
+  </text>
+  <arg n="1">Net income</arg>
+  <rel>increased</rel>
+  <arg f="to" n="4">to $274 million</arg>
+  <arg f="from" n="3">from $130 million</arg>
+</example>
+
+<example name="locative">
+  <text>
+    ...a hit wine dramatically increase in price
+  </text>
+  <arg n="1">...a hit wine</arg>
+  <arg f="MNR" n="2">dramatically</arg>
+  <rel>increase</rel>
+  <arg f="LOC" n="M">in price</arg>
+</example>
+
+<example name="temporal">
+  <text>
+    Georgia Gulf stock increased $1.75 a share yesterday
+  </text>
+  <arg n="1">Georgia Gulf stock</arg>
+  <rel>increased</rel>
+  <arg f="EXT" n="2">$1.75 a share</arg>
+  <arg f="TMP" n="M">yesterday</arg>
+</example>
+
+<example name="with purpose clause">
+  <text>
+    Mr. Martin increased prices on some wines just to slow down movement.
+  </text>
+  <arg n="0">Mr Martin</arg>
+  <rel>increased</rel>
+  <arg n="1">prices on some wines</arg>
+  <arg f="PNC" n="M">just to slow down movement</arg>
+</example>
+</roleset>
+</predicate>
+</frameset>

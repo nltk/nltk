@@ -1,0 +1,58 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="regain">
+<note>
+  Frames file for 'regain' based on sentences in financial subcorpus.
+  Verbnet entry obtain-13.5.2, other framed members include seize or
+  more generally buy, catch, fetch, hire, lease, pick, reserve, save,
+  vote.  No Framenet entry.  Comparison with get_back.
+</note>
+
+<roleset id="regain.01" name="get back" vncls="10.5 13.5.2">
+<roles>
+  <role descr="recoverer" n="0">
+		
+		
+  <vnrole vncls="10.5" vntheta="Agent"/><vnrole vncls="13.5.2" vntheta="Agent"/></role>
+
+  <role descr="thing regained" n="1">
+		
+		
+  <vnrole vncls="10.5" vntheta="Theme"/><vnrole vncls="13.5.2" vntheta="Theme"/></role>
+
+  <role descr="who had it before" n="2">
+		
+		
+  <vnrole vncls="10.5" vntheta="Source"/><vnrole vncls="13.5.2" vntheta="Source"/></role>
+
+</roles>
+
+<example name="usually without arg2">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    But Western Union has said it must lower the interest rate on its
+    debt *trace* to regain full financial health. 
+</text>
+        <arg n="0">*trace* -&gt;  it</arg>
+        <rel>regain</rel>
+        <arg n="1">full financial health</arg>
+</example>
+
+<example name="with arg2">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    Mary regained possession of the TV remote from John.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>regained</rel>
+  <arg n="1">possession of the TV remote</arg>
+  <arg f="from" n="2">John</arg>
+</example>
+
+<note>
+Actually, that sounds a little bizarre.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

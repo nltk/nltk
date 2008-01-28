@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="endanger">
+<note>
+  Frames file for 'endanger' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="endanger.01" name="to expose to harm or danger" vncls="-">
+<roles>
+  <role descr="exposer to danger, agent" n="0"/>
+  <role descr="entity endangered" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ Mr. Bush even disclosed privately that one Reagan-era deal with Congress required him to notify the odious Panamanian dictator , Manuel Noriega , if the U.S. learned of a coup plot that [*T*-1] might endanger his life .
+</text>
+	<arg n="0">[*T*-1] -&gt;  that -&gt;  a coup plot</arg>
+	<arg f="MOD" n="M">might</arg>
+	<rel>endanger</rel>
+	<arg n="1">his life</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

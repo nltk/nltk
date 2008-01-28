@@ -1,0 +1,48 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="stage">
+<note>
+  Frames file for 'stage' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+
+<roleset id="stage.01" name="to perform or carry out" vncls="-">
+<roles>
+  <role descr="performer" n="0"/>
+  <role descr="performance" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ In East Berlin , Communist Party officials considered [*] legalizing New Forum , the country 's largest opposition alliance , as about 20,000 demonstrators staged protests in three cities [*] to press demands for democratic freedoms .
+</text>
+	<arg n="0">about 20,000 demonstrators</arg>
+	<rel>staged</rel>
+	<arg n="1">protests</arg>
+	<arg f="LOC" n="M">in three cities</arg>
+	<arg f="PNC" n="M">[*] to press demands for democratic freedoms</arg>
+</example>
+
+
+
+<example name="transitive with adverbials">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ For Ms. Bogart , who [*T*-1] initially studied and directed in Germany ( and cites such European directors as Peter Stein , Giorgio Strehler and Ariane Mnouchkine as influences ) tends [*-2] to stage her productions with a Brechtian rigor -- whether the text demands it or not .
+</text>
+	<arg n="0">[*-2] -&gt;  Ms. Bogart , who [*T*-1] initially studied and directed in Germany ( and cites such European directors as Peter Stein , Giorgio Strehler and Ariane Mnouchkine as influences )</arg>
+	<rel>stage</rel>
+	<arg n="1">her productions</arg>
+	<arg f="MNR" n="M">with a Brechtian rigor</arg>
+	<arg f="ADV" n="M">whether the text demands it or not</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

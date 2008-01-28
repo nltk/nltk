@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="computerize">
+<note>
+  Frames file for 'computerize' based on sentences in financial
+  subcorpus.  No Verbnet entry, no comparison.
+</note>
+
+<roleset id="computerize.01" name="make work on/via computer" vncls="-">
+<roles>
+  <role descr="causer, agent" n="0"/>
+  <role descr="thing now working on computer" n="1"/>
+</roles>
+
+<example name="boring transitive">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    Digital also plans to compete fiercely with IBM when the giant's
+    customers are computerizing new aspects of their businesses. 
+</text>
+        <arg n="0">the giant's customers</arg>
+        <rel>computerizing</rel>
+        <arg n="1">new aspects of their businesses</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

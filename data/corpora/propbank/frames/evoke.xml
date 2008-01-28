@@ -1,0 +1,43 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="evoke">
+<note>
+  Frames file for 'evoke' based on sentences in financial subcorpus.
+  No verbnet entry.  No comparison.
+</note>
+
+<roleset id="evoke.01" name="summon, make allusions to">
+<roles>
+  <role descr="evoker" n="0"/>
+  <role descr="thing evoked" n="1"/>
+  <role descr="instrument" n="2"/>
+</roles>
+
+<example name="transitive">
+<text>
+    So if index arbitrage is simply taking advantage of thin
+    inefficiencies between two markets for the same widget, how did
+    ``program trading'' evolve into the evil creature that *trace* is
+    evoking the curses of so many observers? 
+</text>
+	<arg n="0">*trace* -&gt;  that -&gt;  the evil creature</arg>
+	<rel>evoking</rel>
+	<arg n="1">the curses of so many observers</arg>
+</example>
+
+<example name="with instrument">
+  <text>
+    John evoked the memory of dinners past with his relentless belching.
+  </text>
+  <arg n="0">John</arg>
+  <rel>evoked</rel>
+  <arg n="1">the memory of dinners past</arg>
+  <arg f="with" n="2">his relentless belching</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

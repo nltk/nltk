@@ -1,0 +1,57 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="denounce">
+<note>
+  Frames file for 'denounce' based on sentences of financial
+  subcorpus.  No verbnet entry.
+</note>
+
+<roleset id="denounce.01" name="speak negatively about" vncls="33">
+<roles>
+  <role descr="speaker" n="0">
+		
+  <vnrole vncls="33" vntheta="Agent"/></role>
+
+  <role descr="subject" n="1">
+		
+  <vnrole vncls="33" vntheta="Theme"/></role>
+
+  <role descr="grounds, reason" n="2">
+		
+  <vnrole vncls="33" vntheta="Cause"/></role>
+
+</roles>
+
+<example name="transitive">
+<text>
+    Corporations like Contel denounce program trading...
+</text>
+        <arg n="0">Corporations like Contel</arg>
+        <rel>denounce</rel>
+        <arg n="1">program trading</arg>
+</example>
+
+<example name="with grounds">
+<inflection aspect="ns" form="ns" person="ns" tense="ns" voice="ns"/>
+<text>
+    The opposition Labor Party leader, Neil Kinnock, in a display of
+    the male chauvinism typical of the British lower class, denounced
+    Mrs. Thatcher for having an independent mind and refusing to heed
+    the men in her Cabinet. 
+</text>
+        <arg n="0">The opposition Labor Party leader, Neil
+        Kinnock,</arg> 
+        <arg f="LOC" n="M">in a display of the male chauvinism typical
+        of the British lower class</arg> 
+        <rel>denounced</rel>
+        <arg n="1">Mrs. Thatcher</arg>
+        <arg f="for" n="2">having an independent mind and refusing to
+        heed the men in her Cabinet</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

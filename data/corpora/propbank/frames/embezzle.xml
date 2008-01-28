@@ -1,0 +1,39 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="embezzle">
+<note>
+  Frames file for 'embezzle' based on sentences in wsj.  Verbnet entry
+  10.5, Framenet entry Theft.
+</note>
+
+<roleset id="embezzle.01" name="white-collar theft" vncls="10.5">
+<roles>
+  <role descr="thief, embezzler" n="0"><vnrole vncls="10.5" vntheta="Agent"/></role>
+  <role descr="money" n="1"><vnrole vncls="10.5" vntheta="Theme"/></role>
+  <role descr="source" n="2"><vnrole vncls="10.5" vntheta="Source"/></role>
+</roles>
+
+<example name="pretty simple">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    In 1988, a year and a half after Mrs. Marcos and her late husband,
+    Ferdinand Marcos, the ousted president of the Philippines, fled
+    the Philippines for Hawaii, they were charged with racketeering,
+    conspiracy, obstruction of justice and mail fraud in a scheme in
+    which they allegedly embezzled more than $100 million from their
+    homeland. 
+</text>
+        <arg n="0">they</arg>
+        <arg f="ADV" n="M">allegedly</arg>
+        <rel>embezzled</rel>
+        <arg n="1">more than $100 million </arg>
+        <arg f="from" n="2">their homeland</arg>
+        <arg f="LOC" n="M">*trace* -&gt;  in which -&gt;  a scheme</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

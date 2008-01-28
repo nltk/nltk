@@ -1,0 +1,42 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="crumble">
+<roleset id="crumble.01" name="cause to be in little pieces" vncls="45.4">
+<roles>
+<role descr="causer of crumbling" n="0">
+		
+  <vnrole vncls="45.4" vntheta="Agent"/></role>
+
+<role descr="thing crumbling" n="1">
+		
+  <vnrole vncls="45.4" vntheta="Patient"/></role>
+
+</roles>
+
+<example name="ergative">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    The market crumbled.
+</text>
+        <arg n="1">The market</arg>
+        <rel>crumbled</rel>
+</example>
+
+<example name="agentive">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John crumbled the cookie.
+  </text>
+  <arg n="0">John</arg>
+  <rel>crumbled</rel>
+  <arg n="1">the cookie</arg>
+</example>
+
+<note>
+It's possible this verb will take higher args (EXT, start point, end
+point) but I rather doubt it.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

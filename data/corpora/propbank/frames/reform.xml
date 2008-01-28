@@ -1,0 +1,62 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="reform">
+<note>
+  Frames file for 'reform' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="reform.01" name="make changes, improve" vncls="-">
+<roles>
+  <role descr="reformer" n="0"/>
+  <role descr="thing changed" n="1"/>
+  <role descr="end state" n="2"/>
+  <role descr="start state" n="3"/>
+</roles>
+
+<example name="all args">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Now is the time *trace* to reform the government from a provider,
+    developing-country vanguard role to that of a modern,
+    industrialized nation in which consumers have the ultimate
+    choice. 
+</text>
+        <arg n="0">*trace*</arg>
+        <rel>reform</rel>
+        <arg n="1">the government</arg>
+        <arg f="from" n="3">a provider, developing-country vanguard
+        role</arg> 
+        <arg f="to" n="2">that of a modern, industrialized nation in
+        which consumers have the ultimate choice </arg> 
+</example>
+
+<example name="more commonly just transitive">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    The cycle has been repeated several times since China began
+    *trace* reforming its planned economy in 1979. 
+</text>
+        <arg n="0">*trace* -&gt;  China</arg>
+        <rel>reforming</rel>
+        <arg n="1">its planned economy</arg>
+</example>
+
+<example name="sometimes intransitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+    The less-self-confident Czechoslovaks and Bulgarians, in contrast,
+    declared their intentions *trace* to reform, while doing nothing
+    concrete about it. 
+</text>
+        <arg n="0">*trace* -&gt;  The less-self-confident Czechoslovaks
+        and Bulgarians</arg> 
+        <rel>reform</rel>
+</example>
+
+<note>
+Arg1 defaults to 'self'.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

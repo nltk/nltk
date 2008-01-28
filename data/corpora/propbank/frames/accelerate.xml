@@ -1,0 +1,89 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="accelerate">
+<note>
+Frames file for 'accelerate' based on sentences in financial subcorpus
+and automatic expansion via verbnet.
+</note>
+
+<roleset id="accelerate.01" name="make be faster" vncls="45.4">
+<roles>
+	<role descr="agent, causing acceleration" n="0">
+		
+  <vnrole vncls="45.4" vntheta="Agent"/></role>
+ 
+	<role descr="thing acceleration" n="1">
+		
+  <vnrole vncls="45.4" vntheta="Patient"/></role>
+ 
+	<role descr="EXT" n="2"/> 
+	<role descr="start point" n="3"/> 
+	<role descr="end point" n="4"/> 
+</roles>
+
+<example name="ergative, no other args">
+<inflection aspect="progressive" form="participle" person="third" tense="present" voice="active"/>
+<text>
+    That's up from about 687 a month in 1985, and it's accelerating:
+    So far this month, foreclosures are averaging about 85 a day. 
+</text>
+        <arg n="1">it</arg>
+        <rel>accelerating</rel>
+</example>
+
+<example name="with start point">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    The stock's decline accelerated in the past two weeks, from a
+    price of $8 a share on Oct. 9. 
+</text>
+        <arg n="1">The stock's decline</arg>
+        <rel>accelerated</rel>
+        <arg f="TMP" n="M">in the past two weeks</arg>
+        <arg f="from" n="3">a price of $8 a share on Oct. 9</arg>
+</example>
+
+<example name="with adverbial extent">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    The size and pace of disbursements will accelerate further under
+    the Brady Plan, which promises larger and earlier disbursements to
+    approved countries. 
+</text>
+        <arg n="1">The size and pace of disbursements</arg>
+        <arg f="MOD" n="M">will</arg>
+        <rel>accelerate</rel>
+        <arg f="MNR" n="2">further</arg>
+        <arg f="LOC" n="M">under the Brady Plan, which promises larger and earlier disbursements to approved countries</arg>
+<note>
+Save EXT for numerical arguments (eg, 'by 15%')
+</note>
+</example>
+
+<example name="with agent">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    Earlier this month, Staples Inc., a Newton, Mass., office-supplies
+    discounter, said  it would accelerate expansion plans nationwide
+    and offer more of its stock to the public. 
+</text>
+        <arg n="0">it</arg>
+        <arg f="MOD" n="M">would</arg>
+        <rel>accelerate</rel>
+        <arg n="1">expansion plans</arg>
+        <arg f="LOC" n="M">nationwide</arg>
+</example>
+
+<example name="with end point">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Final-hour trading accelerated to 108.1 million shares, a record
+    for the Big Board. 
+</text>
+        <arg n="1">Final-hour trading</arg>
+        <rel>accelerated</rel>
+        <arg f="to" n="4">108.1 million shares, a record for the Big
+        Board</arg> 
+</example>
+
+</roleset>
+</predicate>
+</frameset>

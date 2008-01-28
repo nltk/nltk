@@ -1,0 +1,73 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="market">
+<note>
+  Frames file for 'market' based on sentences in financial subcorpus.
+  No access to verbnet.  Comparison with verbs of commerce like 'sell'.
+</note>
+
+<roleset id="market.01" name="try to sell, offer for sale">
+<roles>
+    <role descr="Seller" n="0"/>
+    <role descr="Thing Sold" n="1"/>
+    <role descr="Buyer" n="2"/>
+    <role descr="attribute" n="3"/>
+    <role descr="Benefactive" n="4"/>
+</roles>
+
+<example name="basic transitive">
+<text>
+    The Food and Drug Administration allowed the company to begin
+    *trace* marketing a new lens for use in cataract patients. 
+</text>
+        <arg n="0">*trace* -&gt;  the company</arg>
+        <rel>marketing</rel>
+        <arg n="1">a new lens for use in cataract patients</arg>
+</example>
+
+<example name="with prospective buyer">
+<text>
+    The facility will be marketed *trace* toward families, and room
+    rates will be between $35 and $55 a night, MGM Grand said. 
+</text>
+        <arg f="MOD" n="M">will</arg>
+        <rel>marketed</rel>
+        <arg n="1">*trace* -&gt;  The facility</arg>
+        <arg f="toward" n="2">families</arg>
+</example>
+
+<example name="with attribute">
+<text>
+    Last week, Ford encountered a setback in its effort to broaden its
+    U.S. luxury offerings when it was forced to abandon a
+    four-year-old effort *trace* to market its German-built Scorpio
+    sedan in the U.S. as a luxury import under the Merkur brand name. 
+</text>
+        <arg n="0">*trace* -&gt;  it</arg>
+        <rel>market</rel>
+        <arg n="1">its German-built Scorpio sedan</arg>
+        <arg f="LOC" n="M">in the U.S.</arg>
+        <arg f="as" n="3">a luxury import under the Merkur brand
+        name</arg> 
+</example>
+
+<example name="with benefactive">
+<text>
+    The company develops and markets products for the food service
+    industry. 
+</text>
+        <arg n="0">The company</arg>
+        <rel>markets</rel>
+        <arg n="1">products</arg>
+        <arg f="for" n="4">the food service industry</arg>
+</example>
+
+<note>
+Note that the Arg3 is not the same as it is in the other commerce
+verbs, being attributive not price.  Be wary, also, of adjectival
+usages: &quot;marketing executives&quot; etc.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

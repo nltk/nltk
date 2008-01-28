@@ -1,0 +1,91 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="refer">
+<note>
+  Frames file for 'refer' based on sentences in financial subcorpus.
+  Verbnet entry contribute-13.2, other framed members
+  include relingquish, sacrifice, surrender, and transfer.  None of
+  those seem right.
+</note>
+
+<roleset id="refer.01" name="call, label" vncls="-">
+<roles>
+  <role descr="labeller" n="0"/>
+  <role descr="labelled" n="1"/>
+  <role descr="label" n="2"/>
+</roles>
+
+<example name="all args">
+<text>
+    He added that he had spoken with Mr. Laidig, whom he referred to
+    *trace* as a friend, by telephone Monday evening. 
+</text>
+        <arg n="0">he</arg>
+        <rel>referred</rel>
+        <arg f="to" n="1">*trace* -&gt;  whom -&gt;  Mr. Laidig</arg>
+        <arg f="as" n="2">a friend</arg>
+</example>
+
+<example name="more commonly as discourse function">
+<text>
+    ``Payments are good right now, but we aren't recommending any
+    long-term lines of credit,'' says Richard Hastings, a retail
+    credit analyst, *trace* referring to credit lines which make
+    inventory purchases automatic. 
+</text>
+        <arg n="0">*trace* -&gt;  Richard Hastings, a retail credit
+        analyst,</arg> 
+        <rel>referring</rel>
+        <arg f="to" n="1">credit lines which make inventory purchases
+        automatic</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="refer.02" name="recommend, send" vncls="13.2">
+<roles>
+  <role descr="recommender, sender" n="0">
+	  <vnrole vncls="13.2" vntheta="Agent"/></role>
+  <role descr="thing recommended, sent" n="1">
+	  <vnrole vncls="13.2" vntheta="Theme"/></role>
+  <role descr="recommended/sent to" n="2">
+	  <vnrole vncls="13.2" vntheta="Recipient"/></role>
+</roles>
+
+<example name="all args">
+<text>
+    The firms aren't required *trace* to refer work exclusively to
+    each other and remain separate organizations. 
+</text>
+        <arg n="0">*trace* -&gt;  The firms</arg>
+        <rel>refer</rel>
+        <arg n="1">work</arg>
+        <arg f="MNR" n="M">exclusively</arg>
+        <arg f="to" n="2">each other</arg>
+</example>
+
+<example name="more clearly send">
+  <inflection person="ns" tense="ns" aspect="ns" voice="active" form="infinitive"/>
+  <text>
+    Two former ministers were so heavily implicated in the Koskotas
+    affair that PASOK members of Parliament voted [*-1] to refer them
+    to the special court. 
+  </text>
+  <arg n="0"        >[*-1] -> PASOK members of Parliament</arg>
+  <rel              >refer</rel>
+  <arg n="1"        >them</arg>
+  <arg n="2" f="to">the special court</arg>
+</example>
+
+<note>
+The 'cite' sense of refer (I refer to the Oxford English dictionary
+for questions of word sense) fits under the first roleset, since it
+implicitly takes the arg2 &quot;as an authority&quot;.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

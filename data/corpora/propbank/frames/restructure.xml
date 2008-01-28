@@ -1,0 +1,57 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="restructure">
+<note>
+  Frames file for 'restructure' based on sentences in financial
+  subcorpus.  No access to verbnet.  No comparison.
+</note>
+
+<roleset id="restructure.01" name="reorganize">
+<roles>
+  <role descr="organizer, agent" n="0"/>
+  <role descr="thing reorganized" n="1"/>
+  <role descr="start state" n="2"/>
+  <role descr="end state" n="3"/>
+</roles>
+
+<example name="transitive">
+<text>
+    If it isn't completed, Comprehensive Care said it would be
+    ``required to promptly restructure its debt.'' 
+</text>
+        <arg n="0">*trace* -&gt;  it</arg>
+        <arg f="TMP" n="M">promptly</arg>
+        <rel>restructure</rel>
+        <arg n="1">its debt</arg>
+</example>
+
+<example name="ergative/middle">
+<text>
+    But if Columbia could keep its junk bonds separate from the thrift
+    till they mature -- at full value, unless the issuer goes bust or
+    restructures -- the junk portfolio might do all right. 
+</text>
+        <arg n="1">the issuer</arg>
+        <rel>restructures</rel>
+</example>
+
+<example name="with start and end states">
+<text>
+    NRM Energy Co. said it filed materials with the Securities and
+    Exchange Commission calling for it to restructure into a
+    corporation from a limited partnership. 
+</text>
+        <arg n="1">it</arg>
+        <rel>restructure</rel>
+        <arg f="into" n="3">a corporation</arg>
+        <arg f="from" n="2">a limited partnership</arg>
+</example>
+
+<note>
+Many participial/gerund forms are picked up; please ignore them (ie,
+&quot;a restructuring plan&quot;).
+</note>
+
+</roleset>
+</predicate>
+</frameset>

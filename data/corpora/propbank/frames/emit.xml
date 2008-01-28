@@ -1,0 +1,45 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="emit">
+<note>
+  Frames file for 'emit' based on sentences in wsj.  No Verbnet entry,
+  Framenet entry Emitting.
+</note>
+
+<roleset id="emit.01" name="emit, let forth" vncls="-">
+<roles>
+  <role descr="emitting entity" n="0"/>
+  <role descr="thing emitted" n="1"/>
+</roles>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    Fortunately, the Hubble Space Telescope -- set to be launched on
+    the shuttle next year in a search for distant solar systems and
+    light emitted [*] 14 billion years ago from the farthest reaches
+    of the universe -- was moved from Sunnyvale to the Kennedy Space
+    Center in Florida at the beginning of October.
+</text>
+        <rel>emitted</rel>
+        <arg n="1">[*] -&gt;  light</arg>
+        <arg f="TMP" n="M">14 billion years ago</arg>
+        <arg f="DIR" n="M">from the farthest reaches of the universe</arg>
+</example>
+
+<example name="active">
+  <inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+  <text>
+    John emits a foul odor.
+  </text>
+  <arg n="0">John</arg>
+  <rel>emits</rel>
+  <arg n="1">a foul odor</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

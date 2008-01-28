@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="intone">
+<note>
+  Frames file for 'intone' based on sentences in wsj.  No access to
+  Verbnet at the moment.
+</note>
+
+<roleset id="intone.01" name="say solemnly" vncls="-">
+<roles>
+  <role descr="speaker" n="0"/>
+  <role descr="utterance" n="1"/>
+</roles>
+
+<example name="the one example">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    At another point he intones: ``Publicity is a small price to pay
+    for secrecy.'' 
+</text>
+        <arg f="TMP" n="M">At another point</arg>
+        <arg n="0">he</arg>
+        <rel>intones</rel>
+        <arg n="1">Publicity is a small price to pay for secrecy</arg> 
+</example>
+
+<note>
+Argument for listener?  I bet no.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

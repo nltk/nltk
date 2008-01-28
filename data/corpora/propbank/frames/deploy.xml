@@ -1,0 +1,36 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="deploy">
+<note>
+  Frames file for 'deploy' based on sentences in wsj.  No Verbnet
+  entry at the moment.  Did this and 'redeploy' at the same time.
+</note>
+
+<roleset id="deploy.01" name="set into place" vncls="-">
+<roles>
+  <role descr="deployer" n="0"/>
+  <role descr="deployed" n="1"/>
+  <role descr="secondary predication" n="2"/>
+</roles>
+
+<example name="passivized">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    But more recently, the pound has been falling with high inflation,
+    which has also seemed almost impervious to the high interest rates
+    *trace* Mr. Lawson deployed *trace* to stop it.  
+</text>
+        <arg n="0">Mr. Lawson</arg>
+        <rel>deployed</rel>
+        <arg n="1">*trace* -&gt; *trace* -&gt;  the high interest rates</arg>
+        <arg f="PNC" n="M">to stop it</arg>
+</example>
+
+<note>
+Secondary predication doesn't seem to appear with deploy, only with
+redeploy.  Makes me wonder about its validity.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

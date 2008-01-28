@@ -1,0 +1,93 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="prompt">
+<note>
+  Frames file for 'prompt' based on sentences in financial subcorpus.
+  No access to verbnet.  No comparison.
+</note>
+
+<roleset id="prompt.01" name="cause an event">
+<roles>
+  <role descr="causer, prompter" n="0"/>
+  <role descr="event" n="1"/>
+</roles>
+
+<example name="caused event">
+<text>
+    Mr. Edelman declined to specify what *trace* prompted the recent
+    moves</text>
+        <arg n="0">*trace* -&gt;  what</arg>
+        <rel>prompted</rel>
+        <arg n="1">the recent moves</arg>
+</example>
+</roleset>
+
+<roleset id="prompt.02" name="bring about, cause">
+<roles>
+  <role descr="causer, prompter" n="0"/>
+  <role descr="impelled agent" n="1"/>
+  <role descr="impelled action" n="2"/>
+</roles>
+
+<example name="impelled action as PP">
+<text>
+    But the next important piece of news on the economy's health --
+    this morning's release of the national purchasing manager's survey
+    for October -- could prompt investors into action. 
+</text>
+        <arg f="DIS" n="M">But</arg>
+        <arg n="0">the next important piece of news on the economy's
+        health -- this morning's release of the national purchasing
+        manager's survey for October --</arg> 
+        <arg f="MOD" n="M">could</arg>
+        <rel>prompt</rel>
+        <arg n="1">investors</arg>
+        <arg f="into" n="2">action</arg>
+</example>
+
+<example name="more commonly as VP">
+<text>
+    According to the Value Line Investment Survey, demand for
+    Nekoosa's commodity paper has weakened, *trace* prompting earnings
+    to decline by 6.6% in the third quarter ended Sept. 30. 
+</text>
+        <arg n="0">*trace* -&gt;  demand for Nekoosa's commodity paper</arg>
+        <rel>prompting</rel>
+        <arg n="1">earnings</arg>
+        <arg n="2">to decline by 6.6% in the third quarter
+        ended Sept. 30</arg> 
+</example>
+
+<note>
+These two rolesets should probably be merged somehow.
+
+Tracing for the 'agent' argument is often sketchy, as the target is
+often an NP-VP combination and thus not nicely packaged into a
+constituent.  In these cases leave the trace with no target.
+</note>
+
+</roleset>
+
+<roleset id="prompt.03" name="give the next line">
+<roles>
+  <role descr="(tele)prompter" n="0"/>
+  <role descr="speaker" n="1"/>
+</roles>
+
+<example name="duh">
+  <text>
+    John could never remember his lines, so Mary had to prompt him
+    every time.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>prompt</rel>
+  <arg n="1">him</arg>
+  <arg f="TMP" n="m">every time</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

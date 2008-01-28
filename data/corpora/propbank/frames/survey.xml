@@ -1,0 +1,89 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="survey">
+<note>
+  Frames file for 'survey' based on survey of sentences in the WSJ
+  corpus.  
+</note>
+
+
+<roleset id="survey.01" name="to examine, inspect carefully" vncls="30.2 35.4">
+<roles>
+  <role descr="examiner" n="0">
+		
+		
+  <vnrole vncls="30.2" vntheta="Experiencer"/><vnrole vncls="35.4" vntheta="Agent"/></role>
+
+  <role descr="entity surveyed" n="1">
+		
+		
+  <vnrole vncls="30.2" vntheta="Stimulus"/><vnrole vncls="35.4" vntheta="Location"/></role>
+
+  <role descr="surveyed about" n="2">
+		
+  <vnrole vncls="35.4" vntheta="Theme"/></role>
+
+  <role descr="beneficiary" n="3"/>
+</roles>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+ Among the major banks surveyed [*] by Banxquote in six regions of the country , 8.33 % is the highest yield available .
+</text>
+	<rel>surveyed</rel>
+	<arg n="1">[*] -&gt;  the major banks</arg>
+	<arg f="by" n="0">Banxquote</arg>
+	<arg f="LOC" n="M">in six regions of the country</arg>
+</example>
+
+
+<example name="with Arg3">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+ Fully 62 % of the doctors surveyed [*] for Metropolitan Life Insurance Co. think [0] their fellow physicians are responsible for rising health-care costs , ahead of hospitals ( 55 % ) and patients ( 48 % ) .
+</text>
+	<rel>surveyed</rel>
+	<arg n="1">[*] -&gt;  the doctors</arg>
+	<arg f="for" n="3">Metropolitan Life Insurance Co.</arg>
+</example>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ The Association of Quality Clubs , which [*T*-41] puts 1988 industry revenue at $ 5 billion [*U*] , surveyed the health-conscious over-40 market and found that 43 % exercise regularly .
+</text>
+	<arg n="0">The Association of Quality Clubs , which [*T*-41] puts 1988 industry revenue at $ 5 billion [*U*] ,</arg>
+	<rel>surveyed</rel>
+	<arg n="1">the health-conscious over-40 market</arg>
+</example>
+
+
+<example name="passive participle">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+ Of 1,224 companies surveyed [*] , 31 % [*T*-1] expect [*-2] to cut spending on plant equipment and machinery , while only 28 % [*T*-1] plan [*-3] to spend more .
+</text>
+	<rel>surveyed</rel>
+	<arg n="1">[*] -&gt;  1,224 companies</arg>
+</example>
+
+
+
+<example name="with Arg2">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ The study surveyed a national group of medical directors , personnel managers and employee assistance program directors about their perceptions of these problems in their companies .
+</text>
+	<arg n="0">The study</arg>
+	<rel>surveyed</rel>
+	<arg n="1">a national group of medical directors , personnel managers and employee assistance program directors</arg>
+	<arg f="about" n="2">their perceptions of these problems in their companies</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

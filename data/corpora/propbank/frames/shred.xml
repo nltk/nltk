@@ -1,0 +1,49 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="shred">
+<note>
+  Frames file for 'shred' based on sentences in wsj.  Verbnet entry 21.2-1.
+</note>
+
+<roleset id="shred.01" name="turn wide flat object into small flat objects" vncls="21.2-1">
+<roles>
+  <role descr="shredder" n="0"><vnrole vncls="21.2-1" vntheta="Agent"/></role>
+  <role descr="thing shredded, whole" n="1"><vnrole vncls="21.2-1" vntheta="Patient"/></role>
+  <role descr="instrument" n="2"><vnrole vncls="21.2-1" vntheta="Instrument"/></role>
+  <role descr="pieces" n="3"/>
+</roles>
+
+<example name="simple transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    They shredded it simply because it contained financial information
+    about their creditors and depositors.'' 
+</text>
+        <arg n="0">They</arg>
+        <rel>shredded</rel>
+        <arg n="1">it</arg>
+        <arg f="CAU" n="M">simply because it contained financial
+        information about their creditors and depositors</arg> 
+</example>
+
+<example name="all args">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    Mary shredded John's dissertation into a gazillion pieces with a
+    chainsaw. 
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>shredded</rel>
+  <arg n="1">John's dissertation</arg>
+  <arg f="into" n="3">a gazillion pieces</arg>
+  <arg f="with" n="2">a chainsaw</arg>
+</example>
+
+<note>
+Reserve instrument for cases only when there is also an agent present
+in the sentence.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

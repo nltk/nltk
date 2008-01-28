@@ -1,0 +1,42 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="glare">
+<note>
+  Frames file for 'glare' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="glare.01" name="to look at" vncls="40.2">
+<roles>
+  <role descr="glarer, agent" n="0">
+        <vnrole vncls="40.2" vntheta="Agent"/></role>
+  <role descr="entity glared at" n="1">
+        <vnrole vncls="40.2" vntheta="Theme"/></role>
+</roles>
+
+<example name="both arguments">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+     Her Pa (Howard Duff) is the kind of guy who, while saying grace
+     at the supper table, [*-4] pauses at the word ``sin'' and glares
+     at the daughter he hasn't seen for two decades, because he knows
+     in his heart that she enjoyed what happened in the cold-storage
+     room, and has been indulging the same taste ever since in the
+     fleshpots of Chicago. 
+</text>
+	<arg f="TMP" n="M">while saying grace at the supper table</arg>
+	<arg n="0">[*T*-4] -&gt;  who -&gt;  the kind</arg>
+	<rel>glares</rel>
+	<arg f="at" n="1">the daughter he hasn't seen for two decades,</arg>
+	<arg f="CAU" n="M">because he knows in his heart that she
+	enjoyed what happened in the cold-storage room, and has been
+	indulging the same taste ever since in the fleshpots of
+	Chicago</arg> 
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

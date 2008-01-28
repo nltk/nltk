@@ -1,0 +1,137 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="frighten">
+<note>
+  Frames file for 'frighten' based on transformation of 'scare'.  No
+  actual sentences examined.
+</note>
+
+<roleset id="frighten.01" name="frighten" vncls="31.1">
+<roles>
+  <role descr="cause of fear" n="0">
+	<vnrole vncls="31.1" vntheta="Cause"/></role>
+  <role descr="frightened entity" n="1">
+	<vnrole vncls="31.1" vntheta="Experiencer"/></role>
+  <role descr="instrument, if separate from arg0" n="2"/>
+  <role descr="intensifier" n="3"/>
+</roles>
+
+<example name="transitive">
+<text>
+    Such disclosures of big holdings often are used by raiders *trace*
+    to try *trace* to frighten a company's managers. 
+</text>
+        <arg n="0">*trace* -&gt; *trace* -&gt;  raiders</arg>
+        <rel>frighten</rel>
+        <arg n="1">a company 's managers</arg>
+</example>
+
+<example name="with instrument">
+  <text>
+    Mary frightened John with her blood-red fingernails.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>frightened</rel>
+  <arg n="1">John</arg>
+  <arg f="with" n="2">her blood-red fingernails</arg>
+</example>
+
+<example name="instrumental subject">
+  <text>
+    Mary's blood-red nails frightened John.
+  </text>
+  <arg n="0">Mary's blood-red nails</arg>
+  <rel>frightened</rel>
+  <arg n="1">John</arg>
+</example>
+
+<example name="with intensifier">
+<text>
+    It won't take much more *trace* to ``frighten the hell out of retail
+    investors,'' he says. 
+</text>
+        <arg n="0">*trace* -&gt;  much more</arg>
+        <rel>frighten</rel>
+        <arg n="3">the hell</arg>
+        <arg n="1">out of retail investors</arg>
+</example>
+
+<example name="another intensifier example">
+<text>
+    ``Small investors are absolutely dismayed that Wall Street is
+    stacking the deck against them, and these wide swings are frightening
+    them to death. 
+</text>
+        <arg n="0">these wide swings</arg>
+        <rel>frightening</rel>
+        <arg n="1">them</arg>
+        <arg n="3">to death</arg>
+</example>
+
+<note>
+Unlike some of the other verbs which haven't tried to distinguish
+agent and subject, you really must try with psych verbs.  It's bad
+enough that we're ignoring the distinction between intentional agent
+and non-intentional (but still non-instrumental) agent.  For example,
+in the second example, did Mary really *mean* to frighten John, or was it
+an accident?  The former would make her an intentional agent, the
+latter an unintentional agent.  This can only be determined by a LOT
+of context, which we don't have, and even then it can be hard to tell.
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="frighten_off">
+
+<roleset id="frighten.02" name="frighten and make go away" vncls="31.1">
+<roles>
+  <role descr="cause of fear" n="0">
+	<vnrole vncls="31.1" vntheta="Cause"/></role>
+  <role descr="frightened entity" n="1">
+	<vnrole vncls="31.1" vntheta="Experiencer"/></role>
+  <role descr="instrument, if separate from arg0" n="2"/>
+</roles>
+
+<example name="automatically generated">
+<text>
+ Their opposition helped *trace* frighten off some Japanese banks .
+</text>
+        <arg n="0">*trace* -&gt;  Their opposition</arg>
+        <rel>[ frighten] [ off]</rel>
+        <arg n="1">some Japanese banks</arg>
+</example>
+
+<note>
+This is pretty clearly an intentional subject, but frighten off could
+also take an unintentional subject.
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="frighten_away">
+
+<roleset id="frighten.03" name="frighten and make go away" vncls="31.1">
+<roles>
+  <role descr="causer of fear" n="0">
+	<vnrole vncls="31.1" vntheta="Cause"/></role>
+  <role descr="frightened entity" n="1">
+	<vnrole vncls="31.1" vntheta="Experiencer"/></role>
+  <role descr="instrument, if separate from arg0" n="2"/>
+</roles>
+
+<example name="automatically generated">
+<text>
+    Mr. DaPuzzo also complained that the sharp swings in stock prices
+    lately is frightening away retail and foreign investors. 
+</text>
+        <arg n="0">the sharp swings in stock prices</arg>
+        <arg f="TMP" n="M">lately</arg>
+        <rel>[ frightening] [ away]</rel>
+        <arg n="1">retail and foreign investors</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

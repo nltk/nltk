@@ -1,0 +1,80 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="strap">
+<note>
+  Frames file for 'strap' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="strap.01" name="fasten, bind" vncls="22.4">
+<roles>
+  <role descr="fastener, agent" n="0">
+	<vnrole vncls="22.4" vntheta="Agent"/></role>
+  <role descr="thing strapped" n="1">
+	<vnrole vncls="22.4" vntheta="Patient1"/></role>
+  <role descr="location" n="2">
+	<vnrole vncls="22.4" vntheta="Patient2"/></role>
+  </roles>
+
+<example name="all arguments">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ British customs officers said [0] they 'd arrested eight men sneaking 111 rare snakes into Britain -- including one man who [*T*-1] strapped a pair of boa constrictors under his armpits .
+</text>
+	<arg n="0">[*T*-1] -&gt;  who -&gt;  one man</arg>
+	<rel>strapped</rel>
+	<arg n="1">a pair of boa constrictors</arg>
+	<arg f="under" n="2">his armpits</arg>
+</example>
+</roleset>
+
+<roleset id="strap.02" name="be in need of" vncls="-">
+<roles>
+  <role descr="agent, needer" n="0"/>
+  <role descr="needed thing" n="1"/>
+  <role descr="cause of need" n="2"/>
+  </roles>
+
+<example name="pseudo passive">
+<inflection aspect="ns" form="participle" person="third" tense="present" voice="passive"/>
+<text>
+ But not even Goldman would make a market in the securities of Southland , the owner of the nationwide chain of 7-11 convenience stores that [*T*-13] is strapped [*-12] for cash .
+</text>
+	<rel>strapped</rel>
+	<arg n="0">[*-12] -&gt;  [*T*-13] -&gt;  that -&gt;  the nationwide chain</arg>
+	<arg f="for" n="1">cash</arg>
+</example>
+
+<example name="with cause of need">
+<inflection person="third" tense="present" aspect="ns" voice="passive" form="participle"/>
+<text>
+     FEMA, which coordinates federal disaster relief, is already
+     strapped by the costs of cleaning up after Hurricane Hugo, which
+     hit the Carolinas last month. 
+</text>
+	<arg n="0">FEMA, which coordinates federal disaster relief,</arg>
+	<arg n="M" f="TMP">already</arg>
+	<rel>strapped</rel>
+	<arg n="2" f="by">the costs of cleaning up after Hurricane
+	Hugo, which hit the Carolinas last month</arg> 
+</example>
+
+</roleset>
+
+<roleset id="strap.03" name="to beat with a strap" vncls="18.3">
+<roles>
+  <role descr="beater, hitter, agent" n="0">
+	<vnrole vncls="18.3" vntheta="Agent"/></role>
+  <role descr="thing strapped" n="1">
+	<vnrole vncls="18.3" vntheta="Patient"/></role>
+</roles>
+
+<note>
+   No examples in the corpus
+</note>
+
+</roleset>
+</predicate>
+
+
+</frameset>

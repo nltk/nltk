@@ -1,0 +1,45 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="complete">
+<note>
+  Frames file for 'complete' based on survey of initial sentences of
+  big corpus
+</note>
+
+<roleset id="complete.01" name="bring to an end" vncls="55.2">
+<roles>
+  <role descr="finisher" n="0">
+		
+  <vnrole vncls="55.2" vntheta="Agent"/></role>
+
+  <role descr="task, action coming to an end" n="1">
+		
+  <vnrole vncls="55.2" vntheta="Theme"/></role>
+
+</roles>
+
+<example name="active">
+  <text>
+  The thrift holding company expects *trace* to complete the
+  transaction by year-end.
+  </text>
+  <arg n="0">*trace*=The thrift holding company</arg>
+  <rel>complete</rel>
+  <arg n="1">the transaction</arg>
+  <arg f="TMP" n="m">by year-end</arg>
+</example>
+
+<example name="passive">
+  <text>
+  The $2.5 billion Byron I plant near Rockford IL was completed
+  *trace* in 1985.
+  </text>
+  <arg n="1">*trace*=The $2.5 billion Byron I plant near
+  Rockford IL</arg> 
+  <rel>completed</rel>
+  <arg f="TMP" n="m">in 1985</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

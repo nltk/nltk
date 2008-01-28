@@ -1,0 +1,73 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="behave">
+<note>
+  Frames file for 'behave' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="behave.01" name="to conduct (oneself) in a specified way" vncls="-">
+<roles>
+  <role descr="agent, entity behaving" n="0"/>
+  <role descr="manner" n="1"/>
+</roles>
+
+
+
+<example name="manner as a PP">
+<inflection aspect="progressive" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+ So far as we can see only two persons [*ICH*-1] are behaving with a dignity recognizing the seriousness of the issues : Mr. Lawson and Sir Alan Walters , the counterpoint of the Chancellor 's difficulties , who [*T*-2] also resigned as personal adviser to Mrs. Thatcher .
+</text>
+	<arg f="ADV" n="M">So far as we can see</arg>
+	<arg n="0">only two persons [*ICH*-1]</arg>
+	<rel>behaving</rel>
+	<arg n="1">with a dignity recognizing the seriousness of the issues</arg>
+</example>
+
+
+<example name="manner as a wh-phrase">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ One wonders how other college athletic officials would behave under the same circumstances [*T*-1] .
+</text>
+	<arg n="0">other college athletic officials</arg>
+	<arg f="MOD" n="M">would</arg>
+	<rel>behave</rel>
+	<arg f="ADV" n="M">under the same circumstances</arg>
+	<arg n="1">[*T*-1] -&gt;  how</arg>
+</example>
+
+
+
+<example name="manner as a as-phrase">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ Japanese managers ca n't expect Americans to behave as if they were Japanese ; instead , they must manage Americans as Americans .
+</text>
+	<arg n="0">Americans</arg>
+	<rel>behave</rel>
+	<arg n="1">as if they were Japanese</arg>
+</example>
+
+<example name="like phrase, not manner">
+  <inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+  <text>
+     John behaves like a spoiled child.
+  </text>
+  <arg n="0">John</arg>
+  <rel>behaves</rel>
+  <arg f="like" n="1">a spoiled child</arg>
+</example>
+
+<note>
+In those (rare) cases where the arg1 is being set up not as a manner
+adverbial but rather as the second half of an equation (John = spoiled
+child), split the preposition (as or like) out of the argument.
+</note>
+
+</roleset>
+</predicate>
+
+
+</frameset>

@@ -1,0 +1,58 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="jail">
+<note>
+  Frames file for 'jail' based on sentences in wsj.  Verbnet entry 9.10.
+</note>
+
+<roleset id="jail.01" name="put in jail" vncls="9.10">
+<roles>
+  <role descr="court, judge, jury" n="0"><vnrole vncls="9.10" vntheta="Agent"/></role>
+  <role descr="criminal" n="1"><vnrole vncls="9.10" vntheta="Theme"/></role>
+  <role descr="term" n="2"/>
+  <role descr="cause, misdeed" n="3"/>
+</roles>
+
+<example name="with term">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Four years ago, he jailed all nine members of the Cambria County
+    School Board for several hours after they defied his order to
+    extend the school year by several weeks to make up for time lost
+    during a teachers' strike. 
+</text>
+        <arg f="TMP" n="M">Four years ago</arg>
+        <arg n="0">he</arg>
+        <rel>jailed</rel>
+        <arg n="1">all nine members of the Cambria County School Board</arg>
+        <arg f="for" n="2">several hours</arg>
+        <arg f="TMP" n="M">after they defied his order to extend the
+        school year by several weeks to make up for time lost during a
+        teachers' strike</arg> 
+</example>
+
+<example name="with crime">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    And so it seems to be  with the case of Elizabeth Morgan, the
+    Washington, D.C., plastic surgeon jailed *trace* in a child
+    custody case for refusing to reveal the whereabouts of her
+    daughter. 
+</text>
+        <rel>jailed</rel>
+        <arg n="1">*trace* -&gt;  the Washington, D.C., plastic surgeon</arg>
+        <arg f="LOC" n="M">in a child custody case</arg>
+        <arg f="for" n="3">refusing to reveal the whereabouts of her
+        daughter</arg> 
+</example>
+
+<note>
+Addition of crime and term args makes this verb a poor fit in this
+class; perhaps it would fit better in the fine/sentence/etc class, if
+such a thing exists.  It should probably be in Framenet's Crime and
+Punishment class, too.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

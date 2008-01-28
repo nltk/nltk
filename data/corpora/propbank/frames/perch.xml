@@ -1,0 +1,45 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="perch">
+<note>
+  Frames file for 'perch' based on sentences in wsj.  Verbnet entries
+  47.6, 9.2, 50; Framenet entry Placing.
+</note>
+
+<roleset id="perch.01" name="like a bird" vncls="47.6 9.2 50">
+<roles>
+  <role descr="placer, agent" n="0"><vnrole vncls="47.6" vntheta="Agent"/><vnrole vncls="9.2" vntheta="Agent"/><vnrole vncls="50" vntheta="Agent"/></role>
+  <role descr="thing perched" n="1"><vnrole vncls="47.6" vntheta="Theme"/><vnrole vncls="9.2" vntheta="Theme"/></role>
+  <role descr="perched on, location" n="2"><vnrole vncls="47.6" vntheta="Location"/><vnrole vncls="9.2" vntheta="Destination"/><vnrole vncls="50" vntheta="Location"/></role>
+</roles>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    But the greatest damage was visited on buildings and roadways
+    perched [*] upon landfill, as were the Marina District of San
+    Francisco and the Bay Bridge -- two areas of maximum devastation. 
+</text>
+        <rel>perched</rel>
+        <arg n="1">[*] -&gt;  buildings and roadways</arg>
+        <arg f="upon" n="2">landfill</arg>
+        <arg n="M">as were the Marina District of San Francisco and
+        the Bay Bridge -- two areas of maximum devastation</arg> 
+</example>
+
+<example name="args 0 and 1 merged">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John's parakeet perched on the end of his nose.
+  </text>
+  <arg n="0">John's parakeet</arg>
+  <rel>perched</rel>
+  <arg f="on" n="2">the end of his nose</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

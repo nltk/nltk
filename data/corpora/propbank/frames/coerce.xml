@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="coerce">
+<note>
+  Frames file for 'coerce' based on survey of sentences in the WSJ
+  corpus. Comparison with 'induce'.
+</note>
+
+
+<roleset id="coerce.01" name="to persuade" vncls="-">
+<roles>
+  <role descr="persuasive entity, agent" n="0"/>
+  <role descr="impelled person" n="1"/>
+  <role descr="action or proposition" n="2"/>
+</roles>
+
+<example name="all arguments">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ Beijing lawmakers have called for jails to be built [*-3] [*-1] to house prostitutes and for severe punishment , including the death sentence , for anyone who [*T*-2] induces or coerces women into prostitution .
+</text>
+	<arg n="0">[*T*-2] -&gt;  who -&gt;  anyone</arg>
+	<rel>coerces</rel>
+	<arg n="1">women</arg>
+	<arg f="into" n="2">prostitution</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

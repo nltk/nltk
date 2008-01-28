@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="flame">
+<note>
+  Frames file for 'flame' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="flame.01" name="to burn with a flame" vncls="43.1">
+<roles>
+  <role descr="entity flaming" n="1">
+		
+  <vnrole vncls="43.1" vntheta="Theme"/></role>
+
+</roles>
+
+
+<example name="with a particle">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ Ralph Brown was 31,000 feet over Minnesota when both jets on his Falcon 20 flamed out [*T*-1] .
+</text>
+	<arg n="1">both jets on his Falcon 20</arg>
+	<rel>[ flamed] [ out]</rel>
+	<arg f="TMP" n="M">[*T*-1] -&gt;  when -&gt;  Minnesota</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

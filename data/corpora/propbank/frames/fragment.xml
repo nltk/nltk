@@ -1,0 +1,44 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="fragment">
+<note>
+  Frames file for 'fragment' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="fragment.01" name="(cause to) be in many small pieces" vncls="-">
+<roles>
+  <role descr="causer, agent" n="0"/>
+  <role descr="fragmented thing" n="1"/>
+</roles>
+
+<example name="agentive">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    ``Niche-itis fragments our advertising dollars,'' said Mr. Lauder.
+</text>
+        <arg n="0">Niche-itis</arg>
+        <rel>fragments</rel>
+        <arg n="1">our advertising dollars</arg>
+</example>
+
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="third" tense="present" voice="passive"/>
+<text>
+    The market for system-management software for Digital's hardware
+    is fragmented [*-1] enough that a giant such as Computer
+    Associates should do well there. 
+</text>
+        <rel>fragmented</rel>
+        <arg n="1">[*-1] -&gt;  The market for system-management software
+        for Digital's hardware</arg> 
+        <arg f="EXT" n="M">enough that a giant such as Computer
+        Associates should do well there</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

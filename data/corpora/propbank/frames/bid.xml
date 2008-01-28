@@ -1,0 +1,85 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="bid">
+<note>
+Frames file for 'bid' based on first handful of sentences from big corpus
+</note>
+
+<roleset id="bid.01" name="auction">
+<roles>
+  <role descr="bidder" n="0"/>
+  <role descr="the target, goods" n="1"/>
+  <role descr="how much you're bidding, buying price" n="2"/>
+</roles>
+
+<example name="just bidder and goods">
+  <text>
+    Ford will bid for 100% of Jaguar's shares
+  </text>
+  <arg n="0">Ford</arg>
+  <rel>will bid</rel>
+  <arg f="for" n="1">for 100% of Jaguar's shares</arg>
+</example>
+
+<example name="with price">
+  <text>
+    Mr. Pilson bid $243 million for rights to the 1992 Winter Games.
+  </text>
+  <arg n="0">        Mr. Pilson</arg>
+  <rel>              bid        </rel>
+  <arg n="2">        $243 million</arg>
+  <arg f="for" n="1">for rights to the 1992 Winter Games.</arg>
+</example>
+
+<example name="With Purpose clause">
+  <text>
+    Paribas will bid to boost its stake in Navigation Mixte
+  </text>
+  <arg n="0">Paribas</arg>
+  <rel>will bid</rel>
+  <arg n="m" f="PNC">to boost its stake in Navigation Mixte</arg>
+</example>
+
+<example name="goods as infinitive">
+  <text>
+    Garth Drabinsky will bid $780.6 million to acquire the company.
+  </text>
+  <arg n="0">Garth Drabinsky</arg>
+  <arg f="MOD" n="M">will</arg>
+  <rel>bid</rel>
+  <arg n="2">$780.6 million</arg>
+  <arg n="1">to acquire the company</arg>
+</example>
+
+</roleset>
+<roleset id="bid.02" name="some weird causative usage, not unlike &quot;call&quot;">
+<roles>
+  <role descr="bidder" n="0"/>
+  <role descr="the target" n="1"/>
+  <role descr="benefactive" n="2"/>
+  <role descr="secondary predication on Arg1" n="3"/>
+</roles>
+
+<example name="secondary predication">
+  <text>
+    Market participants bid the US unit lower.
+  </text>
+  <arg n="0">Market participants</arg>
+  <rel>bid</rel>
+  <arg n="1">the US unit</arg>
+  <arg n="3">lower</arg>
+</example>
+
+<example name="same, reversed order">
+  <text>
+    Investors bid up the oil market.
+  </text>
+  <arg n="0">Investors</arg>
+  <rel>bid</rel>
+  <arg n="3">up</arg>
+  <arg n="1">the oil market</arg>
+</example>
+</roleset>
+</predicate>
+
+</frameset>

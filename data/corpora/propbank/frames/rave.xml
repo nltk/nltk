@@ -1,0 +1,37 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="rave">
+<note>
+  Frames file for 'rave' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="rave.01" name="to speak wildly or with enthusiasm" vncls="31.3">
+<roles>
+  <role descr="speaker" n="0">
+		
+  <vnrole vncls="31.3" vntheta="Experiencer"/></role>
+
+  <role descr="utterance" n="1">
+		
+  <vnrole vncls="31.3" vntheta="Cause"/></role>
+
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ Arvind Patel , a processor and exporter of the seed , raves : `` If psyllium takes the place of oat bran , it will be huge . ''
+</text>
+	<arg n="0">Arvind Patel , a processor and exporter of the seed ,</arg>
+	<rel>raves</rel>
+	<arg n="1">If psyllium takes the place of oat bran , it will be huge</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

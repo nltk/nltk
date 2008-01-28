@@ -1,0 +1,91 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="decrease">
+<note>
+  Frames file for 'decrease' based on sentences in financial
+  subcorpus.  Verbnet entries calibratable_cos-45.6 other_cos-45.4,
+  bunches of other framed members.  Comparison with (and reversal
+  from) increase.
+</note>
+
+<roleset id="decrease.01" name="go down incrementally" vncls="45.4 45.6">
+<roles>
+    <role descr="causer of decline, agent" n="0">
+	<vnrole vncls="45.4" vntheta="Agent"/></role>
+    <role descr="thing decreasing" n="1">
+	<vnrole vncls="45.4" vntheta="Patient"/>
+        <vnrole vncls="45.6" vntheta="Patient"/></role>
+    <role descr="amount decreased by, EXT or MNR" n="2">
+	<vnrole vncls="45.6" vntheta="Extent"/></role>
+    <role descr="start point" n="3"/>
+    <role descr="end point" n="4"/>
+</roles>
+
+<example name="transitive agentive">
+<text>
+    Mr. Terra said in the filing that he sold the stock *trace* to
+    decrease his position in the Evanston, Ill., banking concern. 
+</text>
+        <arg n="0">*trace* -&gt;  he</arg>
+        <rel>decrease</rel>
+        <arg n="1">his position in the Evanston, Ill., banking
+        concern</arg> 
+</example>
+
+
+<example name="passivized with start point">
+<text>
+    The size of the issue was decreased *trace* from an originally
+    planned $95.2 million. 
+</text>
+        <rel>decreased</rel>
+        <arg n="1">*trace* -&gt;  The size of the issue</arg>
+        <arg f="from" n="3">an originally planned $95.2 million </arg>
+</example>
+
+<example name="ergative, with extent">
+<text>
+    Advertising volume at the company's 35 regional newspapers
+    decreased 1.1%. 
+</text>
+        <arg n="1">Advertising volume at the company's 35 regional
+        newspapers</arg> 
+        <rel>decreased</rel>
+        <arg f="EXT" n="2">1.1%</arg>
+</example>
+
+<example name="ergative with start point">
+<text>
+    Perhaps most prominent, Dow Chemical Co., which as of midyear had
+    racked up eight consecutive record quarters, is expected to report
+    that profit decreased in the latest quarter from a year earlier,
+    if only by a shade. 
+</text>
+        <arg n="1">profit</arg>
+        <rel>decreased</rel>
+        <arg f="TMP" n="M">in the latest quarter</arg>
+        <arg f="from" n="3">a year earlier</arg>
+        <arg f="MNR" n="M">if only by a shade</arg>
+</example>
+
+<example name="with end point">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+    The number of people receiving regular state benefits in the week
+ ended Sept. 30 decreased to a seasonally adjusted 2,202,000, or 2.2 %
+ of those covered [*] by unemployment insurance, from 2,205,000 the
+ previous week, when the insured unemployment rate also was 2.2 %
+ [*T*-1].  
+  </text>
+  <arg n="1"        >The number of people receiving regular state
+  benefits in the week ended Sept. 30</arg>
+  <rel              >decreased</rel>
+  <arg n="4" f="to">a seasonally adjusted 2,202,000, or 2.2 % of those
+  covered [*] by unemployment insurance,</arg>
+  <arg n="3" f="from">2,205,000 the previous week, when the insured
+  unemployment rate also was 2.2%</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

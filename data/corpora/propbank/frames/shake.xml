@@ -1,0 +1,123 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="shake">
+<note>
+  Frames file for 'shake' based on sentences in financial subcorpus.
+  Verbnet classes funnel-9.3 knead-26.5
+  modes_of_being_with_motion-47.3 shake-22.3 shake-22.3-2; other
+  framed members include: wind; bow; append, attach, beat, collect;
+  roll.  No comparisons.
+</note>
+
+<roleset id="shake.01" name="tremble" vncls="31.1 40.3.2 40.6 47.3">
+<roles>
+  <role descr="causer of trembling motion" n="0">
+	<vnrole vncls="47.3" vntheta="Agent"/>
+        <vnrole vncls="31.1" vntheta="Cause"/>
+        <vnrole vncls="40.6" vntheta="Cause"/>
+        <vnrole vncls="40.3.2" vntheta="Agent"/></role>
+  <role descr="thing trembling" n="1">
+	<vnrole vncls="47.3" vntheta="Theme"/>
+        <vnrole vncls="31.1" vntheta="Experiencer"/>
+        <vnrole vncls="40.6" vntheta="Experiencer"/>
+        <vnrole vncls="40.3.2" vntheta="Patient"/></role>
+</roles>
+
+<example name="transitive agentive">
+<text>
+    But why should an iffy $6.79 billion leveraged buy-out deal shake
+    the foundations of the entire stock market? 
+</text>
+        <arg f="MOD" n="M">should</arg>
+        <arg n="0">an iffy $6.79 billion leveraged buy-out deal</arg>
+        <rel>shake</rel>
+        <arg n="1">the foundations of the entire stock market</arg>
+</example>
+
+<example name="ergative">
+<text>
+    The walls shook; the building rocked.
+</text>
+        <arg n="1">The walls</arg>
+        <rel>shook</rel>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="shake_off">
+
+<roleset id="shake.02" name="lose" vncls="-">
+<roles>
+  <role descr="entity losing something" n="0"/>
+  <role descr="thing lost" n="1"/>
+  <role descr="benefactive, entity gaining thing lost" n="2"/>
+</roles>
+
+<example name="transitive">
+<text>
+   Dealers said the market still hasn't shaken off its nervousness
+   after its bumpy ride of the past several sessions, caused by
+   interest-rate increases last week and Wall Street's 6.9% plunge
+   Friday. 
+</text>
+        <arg n="0">the market</arg>
+        <arg f="TMP" n="M">still</arg>
+        <arg f="NEG" n="M">n't</arg>
+        <rel>[ shaken] [ off]</rel>
+        <arg n="1">its nervousness</arg>
+        <arg f="TMP" n="M">after its bumpy ride of the past several
+        sessions, caused by interest-rate increases last week and Wall
+        Street's 6.9% plunge Friday</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="shake_up">
+<note>
+  Really quite similar to the &quot;tremble&quot; roleset (id=&quot;shake.01&quot;) above.
+</note>
+
+<roleset id="shake.03" name="tremble very badly" vncls="-">
+<roles>
+  <role descr="cause of shaking" n="0"></role>
+  <role descr="thing trembling" n="1"/>
+</roles>
+
+<example name="agentive">
+  <text>
+    John's actions at the zoo really shook Mary up.
+  </text>
+  <arg n="0">John's actions at the zoo</arg>
+  <arg f="DIS" n="m">really</arg>
+  <rel>[shook] [up]</rel>
+  <arg n="1">Mary</arg>
+</example>
+
+<note>
+This actually sounds better in the passive: &quot;Mary was really shaken up
+by John's actions.&quot;
+</note>
+
+<example name="ergative (and Elvis!)">
+  <text>
+    Ah-huh, ah-huh, I'm all shook up.
+  </text>
+  <arg n="1">I</arg>
+  <arg f="ADV" n="m">all</arg>
+  <rel>shook up</rel>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

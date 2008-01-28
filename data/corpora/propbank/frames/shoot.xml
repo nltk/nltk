@@ -1,0 +1,290 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="shoot">
+<note>
+  Frames file for 'shoot' based on sentences in wsj.  Verbnet entries
+  17.1 (throwing), 42.2 (methods of killing) and 13.5.1 (getting).
+  Not sure about the last.
+</note>
+
+<roleset id="shoot.01" name="propel projectile" vncls="17.1">
+<roles>
+  <role descr="shooter" n="0"><vnrole vncls="17.1" vntheta="Agent"/></role>
+  <role descr="projectile" n="1"><vnrole vncls="17.1" vntheta="Patient"/></role>
+  <role descr="target" n="2"><vnrole vncls="17.1" vntheta="Destination"/></role>
+</roles>
+
+<example name="all args">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    WHEN HURRICANE Hugo careened through the Caribbean and the
+    Atlantic coast states, it downed electric and telephone lines,
+    shot coconuts through cottage rooftops, shattered windows and
+    uprooted thousands of lives. 
+</text>
+        <arg f="TMP" n="M">WHEN HURRICANE Hugo careened through the
+        Caribbean and the Atlantic coast states </arg> 
+        <arg n="0">it</arg>
+        <rel>shot</rel>
+        <arg n="1">coconuts</arg>
+        <arg f="through" n="2">cottage rooftops</arg>
+</example>
+
+<example name="unmentioned projectiles">
+<inflection aspect="progressive" form="participle" person="ns" tense="past" voice="active"/>
+<text>
+    When the smoke cleared, six people were dead (three from heart
+    attacks), and everyone wondered what in the world they were
+    shooting at *trace*. 
+</text>
+        <arg n="0">they</arg>
+        <rel>shooting</rel>
+        <arg f="at" n="2">*trace* -&gt;  what in the world</arg>
+</example>
+
+<example name="weird kind of target">
+<inflection aspect="progressive" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+    People are shooting for a dream.
+</text>
+        <arg n="0">People</arg>
+        <rel>shooting</rel>
+        <arg f="for" n="2">a dream</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="shoot.02" name="kill with gun" vncls="42.2">
+<roles>
+  <role descr="shooter" n="0"><vnrole vncls="42.2" vntheta="Agent"/></role>
+  <role descr="corpse" n="1"><vnrole vncls="42.2" vntheta="Patient"/></role>
+  <role descr="gun" n="2"><vnrole vncls="42.2" vntheta="Instrument"/></role>
+  <role descr="specific location of wound" n="3"/>
+</roles>
+
+<example name="just corpse">
+<inflection aspect="ns" form="participle" person="third" tense="past" voice="passive"/>
+<text>
+    Most of the cases have been in California, where one agent was
+    stabbed and another was shot and killed *trace*. 
+</text>
+        <rel>shot</rel>
+        <arg n="1">*trace* -&gt;  another</arg>
+</example>
+
+<example name="friendly fire">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    ``Conservatives shoot their own,'' he says.
+</text>
+        <arg n="0">Conservatives</arg>
+        <rel>shoot</rel>
+        <arg n="1">their own</arg>
+</example>
+
+<example name="with explicit wound">
+<inflection aspect="ns" form="participle" person="third" tense="past" voice="passive"/>
+<text>
+    The first time he was shot *trace* in the hand as he chased the
+    robbers outside. 
+</text>
+        <arg f="TMP" n="M">The first time</arg>
+        <rel>shot</rel>
+        <arg n="1">*trace* -&gt;  he</arg>
+        <arg f="in" n="3">the hand</arg>
+        <arg f="TMP" n="M">as he chased the robbers outside</arg>
+</example>
+
+<example name="with weapon">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    Mary shot John with a rubber band.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>shot</rel>
+  <arg n="1">John</arg>
+  <arg f="with" n="2">a rubber band</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="shoot.03" name="record on film" vncls="-">
+<roles>
+  <role descr="videographer" n="0"/>
+  <role descr="video" n="1"/>
+</roles>
+
+<example name="shoot film">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    In 1976, as a film student at the Purchase campus of the State
+    University of New York, Mr. Lane shot ``A Place in Time,'' a
+    36-minute black-and-white film about a sketch artist, a man of the
+    streets. 
+</text>
+        <arg f="TMP" n="M">In 1976</arg>
+        <arg n="M">as a film student at the Purchase campus of the
+        State University of New York</arg> 
+        <arg n="0">Mr. Lane</arg>
+        <rel>shot</rel>
+        <arg n="1">``A Place in Time,'' a 36-minute black-and-white
+        film about a sketch artist, a man of the streets</arg> 
+</example>
+
+<note>
+Watch for manner adverbials: shoot in black-and-white, for example.
+</note>
+
+</roleset>
+
+<roleset id="shoot.06" name="move very rapidly" vncls="-">
+<roles>
+  <role descr="causer of motion" n="0"/>
+  <role descr="entity in motion" n="1"/>
+  <role descr="EXT" n="2"/>
+  <role descr="start point" n="3"/>
+  <role descr="end point" n="4"/>
+  <role descr="direction" n="5"/>
+</roles>
+
+<example name="usually shoot up">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    The Dow industrials shot up 23 points in the opening hour, at
+    least in part because of buy programs generated by stock-index
+    arbitrage, a form of program trading involving futures contracts. 
+</text>
+        <arg n="1">The Dow industrials</arg>
+        <rel>shot</rel>
+        <arg f="DIR" n="5">up</arg>
+        <arg f="EXT" n="2">23 points</arg>
+        <arg f="TMP" n="M">in the opening hour</arg>
+        <arg f="CAU" n="M">at least in part because of buy programs
+        generated by stock-index arbitrage, a form of program trading
+        involving futures contracts</arg> 
+</example>
+
+<example name="sometimes down">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+     In particular, the prices of gold and other precious-metals
+     stocks shoot up and down, but the stocks tend to have low betas
+     because their moves are not market-inspired. 
+</text>
+        <arg n="1">the prices of gold and other precious-metals stocks</arg>
+        <rel>shoot</rel>
+        <arg f="DIR" n="5">up and down</arg>
+</example>
+
+<note>
+If you haven't seen quantifiable-motion verbs before (and how have you
+managed that, exactly?) look at 'rise' or 'fall' for additional examples.
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="shoot_off">
+
+<roleset id="shoot.04" name="loose wildly" vncls="-">
+<roles>
+  <role descr="shooter" n="0"/>
+  <role descr="cannon, mouth, whatever" n="1"/>
+</roles>
+
+<example name="blah blah blah">
+  <inflection aspect="progressive" form="participle" person="third" tense="present" voice="active"/>
+  <text>
+     John is forever shooting off his mouth.
+  </text>
+  <arg n="0">John</arg>
+  <arg f="TMP" n="m">forever</arg>
+  <rel>shooting off</rel>
+  <arg n="1">his mouth</arg>
+</example>
+
+<note>
+I really thought this would occur in wsj.
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="shoot_down">
+
+<roleset id="shoot.05" name="cause to not fly" vncls="-">
+<roles>
+  <role descr="shooter" n="0"/>
+  <role descr="planes, birds, ideas" n="1"/>
+  <role descr="instrument" n="2"/>
+</roles>
+
+<example name="instrumental subject">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    ``Ideas are going over borders, and there's no SDI ideological
+    weapon that *trace* can shoot them down,'' he told a group of
+    Americans at the U.S. Embassy on Wednesday. 
+</text>
+        <arg n="2">*trace* -&gt;  that -&gt;  no SDI ideological weapon</arg>
+        <arg f="MOD" n="M">can</arg>
+        <rel>[ shoot] [ down]</rel>
+        <arg n="1">them</arg>
+</example>
+
+<example name="agentive subject">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    As a result, Ireland didn't spurn the Soviets after they shot down
+    a Korean Air Lines jetliner over the Sea of Japan in 1983, though
+    it suspended direct Moscow-Shannon flights for two months. 
+</text>
+        <arg n="0">they</arg>
+        <rel>[ shot] [ down]</rel>
+        <arg n="1">a Korean Air Lines jetliner</arg>
+        <arg f="LOC" n="M">over the Sea of Japan</arg>
+        <arg f="TMP" n="M">in 1983</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="shoot_back">
+
+<roleset id="shoot.07" name="answer" vncls="-">
+<roles>
+  <role descr="speaker" n="0"/>
+  <role descr="utterance" n="1"/>
+  <role descr="hearer" n="2"/>
+</roles>
+
+<example name="maybe hearer can't occur">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    And when he's told ``Try a little tenderness,'' he shoots back
+    ``I'm going home to try a little linguine.'' 
+</text>
+        <arg f="DIS" n="M">And</arg>
+        <arg f="TMP" n="M">when he's told ``Try a little tenderness
+        </arg> 
+        <arg n="0">he</arg>
+        <rel>[ shoots] [ back]</rel>
+        <arg n="1">I'm going home to try a little linguine</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<note>
+Who'd'a thunk shoot would be so complicated.  With all the straight
+transitive usages, I really feel sorry for any automatic
+disambiguator.  Yeesh.
+</note>
+
+</frameset>

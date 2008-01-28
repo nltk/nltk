@@ -1,0 +1,56 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="caress">
+<note>
+  Frames file for 'caress' based on sentences in brown.  Verbnet entry 20.
+</note>
+
+<roleset id="caress.01" vncls="20" name="stroke gently">
+<roles>
+  <role n="0"  descr="caresser"/>
+  <role n="1"  descr="caressed"/>
+</roles>
+
+<example name="context?  what context?">
+  <inflection person="ns" tense="ns" aspect="progressive" voice="active" form="participle"/>
+  <text>
+     The doctor sat down rather wearily, [*-1] caressing the hen and
+     remarking that the city was not the place for a poultry-loving
+     man...  
+  </text>
+  <arg n="0"        >[*-1] -> The doctor</arg>
+  <rel              >caressing</rel>
+  <arg n="1"        >the hen</arg>
+</example>
+
+<example name="oddly intransitive">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+     Her own body protested, aching painfully where the blood in her
+     veins had congealed, where cold demon wisps still clung and
+     caressed [*T*-3].
+  </text>
+  <arg n="0"        >cold demon wisps</arg>
+  <arg n="m" f="TMP">still</arg>
+  <rel              >caressed</rel>
+  <arg n="m" f="LOC">[*T*-3] -> where</arg>
+</example>
+
+<example name="adjectival">
+  <inflection person="ns" tense="ns" aspect="progressive" voice="active" form="participle"/>
+  <text>
+    Adam watched his own hands make the caressing, anxious movement
+    that, when rain falls and nobody comes, and ruin draws close like
+    a cat rubbing against the ankles, has been the ritual of stall
+    vendors, forever. 
+  </text>
+  <rel              >caressing</rel>
+  <arg n="0"        >movement</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

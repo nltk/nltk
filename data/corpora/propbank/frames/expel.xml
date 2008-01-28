@@ -1,0 +1,51 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="expel">
+<note>
+  Frames file for 'expel' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+
+<roleset id="expel.01" name="to force or drive out, to discharge from" vncls="10.1 10.2">
+<roles>
+  <role descr="expeller, agent" n="0">
+        <vnrole vncls="10.2" vntheta="Agent"/>
+        <vnrole vncls="10.1" vntheta="Agent"/></role>
+  <role descr="entity expelled" n="1">
+        <vnrole vncls="10.2" vntheta="Theme"/>
+        <vnrole vncls="10.1" vntheta="Theme"/></role>
+  <role descr="expelled from" n="2">
+        <vnrole vncls="10.2" vntheta="Source"/>
+        <vnrole vncls="10.1" vntheta="Source"/></role>
+</roles>
+
+<example name="passive with Arg2">
+<inflection aspect="ns" form="participle" person="ns" tense="past" voice="passive"/>
+<text>
+ Two firms were expelled [*-150] from the NASD , three were suspended or barred [*-1] and nine were fined [*-151] .
+</text>
+	<rel>expelled</rel>
+	<arg n="1">[*-150] -&gt;  Two firms</arg>
+	<arg f="from" n="2">the NASD</arg>
+</example>
+
+
+<example name="passive with ArgM-CAU">
+<inflection aspect="ns" form="participle" person="ns" tense="past" voice="passive"/>
+<text>
+ First Securities Group of California and a principal of the firm , Louis Fernando Vargas of Marina del Rey , Calif. , were jointly fined [*-1] $ 15,000 [*U*] and expelled [*-1] for alleged violations of reporting requirements on securities sales .
+</text>
+	<rel>expelled</rel>
+	<arg n="1">[*-1] -&gt;  First Securities Group of California and a principal of the firm , Louis Fernando Vargas of Marina del Rey , Calif. ,</arg>
+	<arg f="CAU" n="M">for alleged violations of reporting requirements on securities sales</arg>
+</example>
+
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

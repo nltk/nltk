@@ -1,0 +1,123 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="register">
+<note>
+Frames file for 'register' based on sentences in financial subcorpus
+and automatic expansion via verbnet.
+</note>
+
+<roleset id="register.01" name="measure" vncls="54.1">
+<roles>
+	<role descr="measurer" n="0">
+		
+  <vnrole vncls="54.1" vntheta="Agent"/></role>
+
+	<role descr="thing measured" n="1">
+		
+  <vnrole vncls="54.1" vntheta="Theme"/></role>
+
+	<role descr="yardstick, standard of measurement" n="2"/>
+	<role descr="measurement" n="3">
+		
+  <vnrole vncls="54.1" vntheta="Attribute"/></role>
+
+</roles>
+
+<example name="with measurement" src="measure.01">
+  <text>
+    John's reading ability was registered at the fifth-grade level.
+  </text>
+  <rel>registered</rel>
+  <arg n="1">*trace* -&gt; John's reading ability</arg>
+  <arg f="at" n="3">the fifth-grade level.</arg>
+<note>
+Could also be ergative instead of passive: &quot;John's reading ability
+registered at the fifth-grade level.&quot;
+</note>
+</example>
+<note>
+I rather doubt agents and yardsticks will appear in this sense.
+</note>
+</roleset>
+
+<roleset id="register.02" name="official record" vncls="-">
+<roles>
+  <role descr="entity registering" n="0"/>
+  <role descr="thing registered" n="1"/>
+  <role descr="registered with or for" n="2"/>
+  <role descr="secondary predication" n="3"/>
+</roles>
+
+<example name="all args, odd order">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    HEALTHDYNE Inc., Atlanta, said its subsidiary, Home Nutritional
+    Services Inc., registered with the Securities and Exchange
+    Commission an initial public offering of four million shares of
+    common. 
+</text>
+        <arg n="0">its subsidiary, Home Nutritional Services Inc. ,</arg>
+        <rel>registered</rel>
+        <arg f="with" n="2">the Securities and Exchange Commission</arg>
+        <arg n="1">an initial public offering of four million shares
+        of common</arg> 
+</example>
+
+<example name="unmentioned arg2">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Excluding the gain, the company registered a modest 4.6% increase
+    for the quarter ended Sept. 29 to $113 million, or 87 cents a
+    share, from the year-earlier $107.9 million, or 84 cents a share. 
+</text>
+        <arg n="M">Excluding the gain</arg>
+        <arg n="0">the company</arg>
+        <rel>registered</rel>
+        <arg n="1">a modest 4.6% increase for the quarter ended
+        Sept. 29 to $113 million, or 87 cents a share, from the
+        year-earlier $107.9 million, or 84 cents a share</arg> 
+<note>
+Could also be read as the 'measure' sense.
+</note>
+</example>
+
+<example name="university phenomenon">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John registered for classes.
+  </text>
+  <arg n="0">John</arg>
+  <rel>registered</rel>
+  <arg f="for" n="2">classes</arg>
+</example>
+
+<example name="another marginal example">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John registered with the Selective Service Administration.
+  </text>
+  <arg n="0">John</arg>
+  <rel>registered</rel>
+  <arg f="with" n="2">the Selective Service Administration</arg>
+</example>
+
+<note>
+In both the last two examples there's an unstated &quot;himself&quot; in the
+Arg1 position.
+</note>
+
+<example name="">
+  <inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+  <text>
+    The number of people registered [*] as jobless at the end of
+    October declined by 900 from September to 78,600.
+  </text>
+  <rel>registered</rel>
+  <arg n="1">[*] -&gt; The number of people</arg>
+  <arg f="as" n="3">jobless</arg>
+  <arg f="TMP" n="m">at the end of October</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

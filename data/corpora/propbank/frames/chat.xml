@@ -1,0 +1,55 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="chat">
+<note>
+  Frames file for 'chat' based on sentences in wsj.  Verbnet entry
+  37.6, Framenet entry Conversation.
+</note>
+
+<roleset id="chat.01" name="talk idly" vncls="37.6">
+<roles>
+  <role descr="talker" n="0"><vnrole vncls="37.6" vntheta="Actor1"/></role>
+  <role descr="subject" n="1"><vnrole vncls="37.6" vntheta="Topic"/></role>
+  <role descr="hearer" n="2"><vnrole vncls="37.6" vntheta="Actor2"/></role>
+</roles>
+
+<example name="often intransitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    The parishioners of St. Michael and All Angels stop *trace* to
+    chat at the church door, as members here always have. 
+</text>
+        <arg n="0">*trace* -&gt;  The parishioners of St. Michael and All
+        Angels</arg> 
+        <rel>chat</rel>
+</example>
+
+<example name="transitive with arg2">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John chatted with Mary.
+  </text>
+  <arg n="0">John</arg>
+  <rel>chatted</rel>
+  <arg f="with" n="2">Mary</arg>
+</example>
+
+<example name="all args">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John chatted with Mary about the ramifications of genetically
+    engineered livestock on the commodities futures, and the weather.
+  </text>
+  <arg n="0">John</arg>
+  <rel>chatted</rel>
+  <arg f="with" n="2">Mary</arg>
+  <arg f="about" n="1">the ramifications of genetically
+    engineered livestock on the commodities futures, and the weather</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,65 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="expect">
+<note>
+  Frames file for 'expect' based on first so-and-so of sentences from large corpus
+</note>
+
+<roleset id="expect.01" name="look forward to, anticipate">
+<roles>
+  <role descr="expecter" n="0"/>
+  <role descr="thing expected" n="1"/>
+</roles>
+
+<example name="nominal arg1">
+  <text>
+    Portfolio managers expect further declines in interest rates.
+  </text>
+  <arg n="0">Portfolio managers</arg>
+  <rel>expect</rel>
+  <arg n="1">further declines in interest rates</arg>
+</example>
+
+<example name="sentential arg1">
+  <text>
+    The company expects *trace* to obtain regulatory approval.
+  </text>
+  <arg n="0">The company</arg>
+  <rel>expects</rel>
+  <arg n="1">*trace*=company to obtain regulatory approval</arg>
+</example>
+
+<example name="passivised">
+  <text>
+    Regulatory approval is expected soon by everyone
+  </text>
+  <arg n="1">Regulatory approval</arg>
+  <rel>is expected</rel>
+  <arg f="TMP" n="M">soon</arg>
+  <arg f="by" n="0">everyone</arg>
+</example>
+
+<example name="passivised with extraction">
+  <text>
+    The Senate isn't expected *trace* to act until next week.
+  </text>
+  <arg f="NEG" n="M">n't</arg>
+  <rel>expected</rel>
+  <arg n="1">[The Senate] [*trace* to act until next week]</arg>
+<note>What is expected is the Senate's acting; thus, the syntactic movement is undone in the argument structure.</note>
+</example>
+
+<example name="discourse-connective">
+  <text>
+    As *trace* expected *trace*, John said something stupid again.
+  </text>
+  <arg n="0">*trace*</arg>
+  <rel>expected</rel>
+  <arg n="1">*trace*</arg>
+<note>traces don't connect to anything</note>
+</example>
+
+</roleset>
+</predicate>
+
+</frameset>

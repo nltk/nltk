@@ -1,0 +1,35 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="redeploy">
+<note>
+  Frames file for 'redeploy' based on sentences in wsj.  No Verbnet
+  entry at the moment.  Also no entry for 'deploy,' oddly enough.
+</note>
+
+<roleset id="redeploy.01" name="set into place, again" vncls="-">
+<roles>
+  <role descr="deployer" n="0"/>
+  <role descr="deployed" n="1"/>
+  <role descr="secondary predication" n="2"/>
+</roles>
+
+<example name="the one example">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+    First, they are designed to eliminate the risk of prepayment --
+    mortgage-backed securities can be retired early if interest rates
+    decline, and such prepayment forces investors to redeploy their
+    money at lower rates. 
+</text>
+        <arg n="0">investors</arg>
+        <rel>redeploy</rel>
+        <arg n="1">their money</arg>
+        <arg f="at" n="2">lower rates</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

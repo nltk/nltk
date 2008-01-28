@@ -1,0 +1,36 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="overtax">
+<note>
+  Frames file for 'overtax' based on sentences in wsj.  No Verbnet
+  entry, but tax is in 54.5.
+</note>
+
+<roleset id="overtax.01" vncls="-" name="charge too much tax">
+<roles>
+	<role descr="taxer" n="0">
+	  <vnrole vncls="54.5" vntheta="Agent"/></role>
+	<role descr="amount of tax" n="1">
+	  <vnrole vncls="54.5" vntheta="Asset"/></role>
+	<role descr="taxpayer" n="2">
+	  <vnrole vncls="54.5" vntheta="Recipient"/></role>
+	<role descr="commodity" n="3">
+	  <vnrole vncls="54.5" vntheta="Cause"/></role>
+</roles>
+
+<example name="the one example">
+<inflection person="ns" tense="present" aspect="ns" voice="passive" form="participle"/>
+<text>
+    In today's computer networks, some machines often sit idle while
+    others are overtaxed [*-1]. 
+</text>
+	<rel>overtaxed</rel>
+	<arg n="2">[*-1] ->  others</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,57 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="ail">
+<note>
+  Frames file for 'ail' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="ail.01" vncls="-" name="be ill">
+<roles>
+  <role n="0"  descr="illness"/>
+  <role n="1"  descr="sick entity"/>
+</roles>
+
+<example name="simple object">
+<inflection person="ns" tense="ns" aspect="progressive" voice="active" form="participle"/>
+<text>
+     The ailing company, which has reported net losses for 16
+     consecutive quarters, said it won't manufacture network computer
+     systems any more and will greatly reduce its costly direct sales
+     force.  
+</text>
+	<rel>ailing</rel>
+	<arg n="1">company</arg>
+</example>
+
+
+<example name="complex object">
+<inflection person="ns" tense="ns" aspect="progressive" voice="active" form="participle"/>
+<text>
+     A group of Michigan investors has offered to buy Knight-Ridder
+     Inc.'s ailing Detroit Free Press for $68 million but has left
+     unclear how the offer will be financed. 
+</text>
+	<rel>ailing</rel>
+	<arg n="1">[ Detroit] [ Free] [ Press]</arg>
+<note>
+This is a byproduct of treebank's flat NP structure
+</note>
+</example>
+
+<example name="with 'agent'">
+  <inflection person="third" tense="present" aspect="ns" voice="active" form="full"/>
+  <text>
+     ``It's good for what ails you,'' John said of his snake-oil medicine.
+  </text>
+  <arg n="0"        >what</arg>
+  <rel              >ails</rel>
+  <arg n="1"        >you</arg>
+</example>
+
+<note>
+possibly restricted to the phrase 'what ails you'.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

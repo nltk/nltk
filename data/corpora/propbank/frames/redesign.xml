@@ -1,0 +1,44 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="redesign">
+<note>
+  Frames file for 'redesign' based on survey of sentences in the WSJ
+  corpus. Comparison with 'design'.
+</note>
+
+<roleset id="redesign.01" name="to make a revision on the appearance or function of " vncls="-">
+<roles>
+  <role descr="designer" n="0"/>
+  <role descr="entity redesigned" n="1"/>
+  <role descr="beneficiary" n="2"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ Yearly changes in federal benefit laws force small businesses to repeatedly re-evaluate and redesign existing plans .
+</text>
+	<arg n="0">small businesses</arg>
+	<arg f="TMP" n="M">repeatedly</arg>
+	<rel>redesign</rel>
+	<arg n="1">existing plans</arg>
+</example>
+
+
+<example name="with Arg2">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ But even though by some estimates it might cost the world as much as $ 100 billion [*U*] between now and the year 2000 [*-1] to convert to other coolants , foaming agents and solvents and to redesign equipment for these less efficient substitutes , the Montreal Protocol 's legions of supporters say [0] it is worth it .
+</text>
+	<arg n="0">[*-1] -&gt;  the world</arg>
+	<rel>redesign</rel>
+	<arg n="1">equipment</arg>
+	<arg f="for" n="2">these less efficient substitutes</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

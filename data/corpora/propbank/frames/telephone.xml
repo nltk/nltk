@@ -1,0 +1,46 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="telephone">
+<note>
+  Frames file for 'telephone' based on sentence in financial
+  subcorpus.  Verbnet class  37.4, no mention of other members.
+  Comparison to 'call'.
+</note>
+
+<roleset id="telephone.01" name="call" vncls="37.4">
+<roles>
+  <role descr="caller" n="0">
+		
+  <vnrole vncls="37.4" vntheta="Agent"/></role>
+
+  <role descr="called" n="1">
+		
+  <vnrole vncls="37.4" vntheta="Recipient"/></role>
+
+  <role descr="message" n="2">
+		
+  <vnrole vncls="37.4" vntheta="Topic"/></role>
+
+</roles>
+
+<example name="transitive">
+<text>
+    Big Board stock specialists, in a bold palace revolt, began
+    shortly after Oct. 13 *trace* to telephone the corporate
+    executives of the companies whose stock is listed on the Big Board
+    to have them pressure the exchange to ban program trading. 
+</text>
+        <arg n="0">*trace* -&gt; Big Board stock specialists</arg>
+        <rel>telephone</rel>
+        <arg n="1">the corporate executives of the companies whose
+        stock is listed on the Big Board</arg> 
+        <arg f="PNC" n="M">to have them pressure the exchange to ban
+        program trading</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

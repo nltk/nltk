@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="vibrate">
+<note>
+  Frames file for 'vibrate' based on sentences in wsj.  Verbnet
+  entries 47.3, 45.4; Framenet entry Move in place.
+</note>
+
+<roleset id="vibrate.01" name="(cause to) vibrate" vncls="47.3 45.4">
+<roles>
+  <role descr="causer of vibration (rare)" n="0"><vnrole vncls="47.3" vntheta="Agent"/><vnrole vncls="45.4" vntheta="Agent"/></role>
+  <role descr="thing vibrating" n="1"><vnrole vncls="47.3" vntheta="Theme"/><vnrole vncls="45.4" vntheta="Patient"/></role>
+</roles>
+
+<example name="ergative">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+    The ghostly footsteps: ``Interstate 64 is a block away, and heavy
+    traffic can sure set a house to *trace* vibrating.'' 
+</text>
+        <arg n="1">*trace* -&gt;  a house</arg>
+        <rel>vibrating</rel>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

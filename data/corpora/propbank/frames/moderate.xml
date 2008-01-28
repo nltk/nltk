@@ -1,0 +1,40 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="moderate">
+<note>
+  Frames file for 'moderate' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="moderate.01" name="make moderate, mild" vncls="-">
+<roles>
+  <role descr="moderator" n="0"/>
+  <role descr="thing that would be extreme otherwise" n="1"/>
+</roles>
+
+<example name="agentive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    Some climate models project that interior regions of Asia would be
+    among the first to heat up in a global warming because they are
+    far from oceans, which *trace* moderate temperature changes. 
+</text>
+        <arg n="0">*trace* -&gt;  which -&gt;  oceans</arg>
+        <rel>moderate</rel>
+        <arg n="1">temperature changes</arg>
+</example>
+
+<example name="ergative">
+<inflection aspect="progressive" form="participle" person="third" tense="present" voice="active"/>
+<text>
+     At the same time, last week's consumer price index showed that
+     inflation is moderating. 
+</text>
+        <arg n="1">inflation</arg>
+        <rel>moderating</rel>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

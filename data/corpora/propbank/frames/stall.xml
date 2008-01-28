@@ -1,0 +1,78 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="stall">
+<note>
+  Frames file for 'stall' based on sentences in financial subcorpus.
+  No Verbnet entry.  Comparison with verbs of motion.
+</note>
+
+<roleset id="stall.01" name="(cause to) cease/slow forward motion">
+<roles>
+  <role descr="staller" n="0"/>
+  <role descr="thing stalled" n="1"/>
+</roles>
+
+<example name="passive">
+<text>
+    But, he added, interest-rate-sensitive stocks in general are
+    stalled. 
+</text>
+        <arg f="DIS" n="M">But</arg>
+        <arg f="DIS" n="M">in general</arg>
+        <rel>stalled</rel>
+        <arg n="1">*trace* -&gt;  interest-rate-sensitive stocks</arg>
+</example>
+
+<note>
+This is anomalous.  Expect the ergative:
+</note>
+
+<example name="ergative">
+<text>
+    The U.S. trade deficit swelled to $10.77 billion in August,
+    prompting worries that the nation's export drive had stalled. 
+</text>
+        <arg n="1">the nation 's export drive</arg>
+        <rel>stalled</rel>
+</example>
+
+<example name="occasionally transitive">
+  <text>
+    John stalled his restored 1957 Mustang right in front of Mary.
+  </text>
+  <arg n="0">John</arg>
+  <rel>stalled</rel>
+  <arg n="1">his restored 1957 Mustang</arg>
+  <arg f="LOC" n="m">right in front of Mary</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="stall_out">
+
+<roleset id="stall.02" name="(cause to) cease forward motion completely">
+<roles>
+  <role descr="staller" n="0"/>
+  <role descr="thing stalled" n="1"/>
+</roles>
+
+<example name="ergative again">
+<text>
+   In the past two years, the stock almost stalled out.
+</text>
+        <arg f="TMP" n="M">In the past two years</arg>
+        <arg n="1">the stock</arg>
+        <arg f="ADV" n="M">almost</arg>
+        <rel>[ stalled] [ out]</rel>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

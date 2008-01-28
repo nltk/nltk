@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="scotch">
+<note>
+  Frames file for 'scotch' based on sentences in wsj.  No access to
+  verbnet at the moment.
+</note>
+
+<roleset id="scotch.01" name="ruin, rule out" vncls="-">
+<roles>
+  <role descr="ruiner, ruler out" n="0"/>
+  <role descr="ruined, ruled out" n="1"/>
+</roles>
+
+<example name="the one example">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    The head of the DEA at the time, John Ingersoll, scotched the
+    assassination plan. 
+</text>
+        <arg n="0">The head of the DEA at the time, John Ingersoll,</arg>
+        <rel>scotched</rel>
+        <arg n="1">the assassination plan</arg>
+</example>
+
+<note>
+Sad to say, this is related to the ethnicity.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

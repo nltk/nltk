@@ -1,0 +1,98 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="scale">
+<note>
+  Frames file for 'scale' based on sentences in financial subcorpus.
+  Verbnet entry  pit-10.7, which is a non-standard sense but at least
+  it's possible.  Comparison to other verbs-of-quantifiable-motion.
+</note>
+
+<roleset id="scale.01" name="change size" vncls="-">
+<roles>
+  <role descr="agent, entity causing change in size" n="0"/>
+  <role descr="thing changing size" n="1"/>
+  <role descr="EXT, amount changed by" n="2"/>
+  <role descr="start point" n="3"/>
+  <role descr="end point" n="4"/>
+  <role descr="direction, up or back" n="5"/>
+</roles>
+
+<example name="passive with start point and direction">
+<text>
+    The size of the issue was scaled *trace* back from an originally
+    planned $350 million. 
+</text>
+        <rel>scaled</rel>
+        <arg n="1">*trace* -&gt;  The size of the issue</arg>
+        <arg f="DIR" n="5">back</arg>
+        <arg f="from" n="3">an originally planned $ 350 million </arg>
+</example>
+
+<example name="active, ext, dir">
+  <text>
+    John scaled his expectations up dramatically after Mary told
+    him she didn't completely hate him.
+  </text>
+  <arg n="0">John</arg>
+  <rel>scaled</rel>
+  <arg n="1">his expectations</arg>
+  <arg f="DIR" n="5">up</arg>
+  <arg f="MNR" n="2">dramatically</arg>
+  <arg f="TMP" n="m">after Mary told him she didn't completely hate
+  him</arg> 
+</example>
+
+<note>
+I'd prefer to not view &quot;scale back&quot; or &quot;scale up&quot; as phrasal verbs
+because except for the particles the meanings and PAS's are identical.
+</note>
+
+</roleset>
+
+<roleset id="scale.02" name="remove scales from a fish" vncls="10.7">
+<roles>
+  <role descr="remover" n="0">
+	  <vnrole vncls="10.7" vntheta="Agent"/></role>
+  <role descr="fish" n="1">
+	  <vnrole vncls="10.7" vntheta="Source"/></role>
+  <role descr="instrument" n="2"/>
+</roles>
+
+<example name="Eeeeewwww">
+  <text>
+    John scaled the fish with a chainsaw.
+  </text>
+  <arg n="0">John</arg>
+  <rel>scaled</rel>
+  <arg n="1">the fish</arg>
+  <arg f="with" n="2">a chainsaw</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="scale.03" vncls="-" name="climb, as a cliff">
+<roles>
+  <role n="0"  descr="climber"/>
+  <role n="1"  descr="cliff"/>
+</roles>
+
+<example name="metaphorical cliffs">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+    Where '60s dropouts professed to scorn middle-class life and
+    ambitious yuppies hoped to leave it far behind as they scaled the
+    upper reaches of success, it now seems that so many people feel
+    they're slipping between the cracks, that middle-class life is
+    viewed with nostalgia or outright longing. 
+  </text>
+  <arg n="0"        >they</arg>
+  <rel              >scaled</rel>
+  <arg n="1"        >the upper reaches of success</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

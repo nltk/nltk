@@ -1,0 +1,84 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="restate">
+<note>
+  Frames file for 'restate' based on sentences in financial subcorpus.
+  No Verbnet entry, since permutations (re-, un-, etc) aren't included
+  in VN.  'State' is in class say-37.7, other framed members include
+  announce, claim, declare, mention, observe, and probably say.
+</note>
+
+<roleset id="restate.01" name="state again">
+<roles>
+  <role descr="announcer" n="0"/>
+  <role descr="utterance" n="1"/>
+  <role descr="hearer" n="2"/>
+  <role descr="attributive" n="3"/>
+</roles>
+
+<example name="hypothetical">
+  <text>
+    John restated his opposition to the plan to Mary.
+  </text>
+  <arg n="0">John</arg>
+  <rel>restated</rel>
+  <arg n="1">his opposition to the plan</arg>
+  <arg f="to" n="2">Mary</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="restate.02" name="special stock report usage: revalue">
+<roles>
+  <role descr="revaluer" n="0"/>
+  <role descr="thing valued" n="1"/>
+  <role descr="EXT of change" n="2"/>
+  <role descr="start point" n="3"/>
+  <role descr="end point" n="4"/>
+</roles>
+
+<example name="with start point">
+<text>
+    He didn't say what the company expected to report for year-earlier
+    sales, which *trace* will be restated *trace* from the previously
+    reported $603 million. 
+</text>
+        <arg f="MOD" n="M">will</arg>
+        <rel>restated</rel>
+        <arg n="1">*trace* -&gt; *trace* -&gt;  which -&gt;  year-earlier sales</arg>
+        <arg f="from" n="3">the previously reported $603 million </arg>
+</example>
+
+<example name="with PRP">
+<text>
+    The year-earlier results have been restated *trace* to reflect an
+    accounting change. 
+</text>
+        <rel>restated</rel>
+        <arg n="1">*trace* -&gt;  The year-earlier results</arg>
+        <arg f="PNC" n="M">to reflect an accounting change</arg>
+</example>
+
+<example name="active">
+<text>
+    Bank Building, which builds and equips banks, had announced it
+    would restate the first-three quarters of this fiscal year, which
+    ends Oct. 31. 
+</text>
+        <arg n="0">it</arg>
+        <arg f="MOD" n="M">would</arg>
+        <rel>restate</rel>
+        <arg n="1">the first-three quarters of this fiscal year, which
+        ends Oct. 31</arg> 
+</example>
+
+<note>
+I don't really understand this usage, but the syntax seems pretty clear.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

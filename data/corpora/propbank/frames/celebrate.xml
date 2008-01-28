@@ -1,0 +1,68 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="celebrate">
+<note>
+  Frames file for 'celebrate' based on sentences in wsj.  Verbnet
+  entry 33, but that usage doesn't really occur much.
+</note>
+
+<roleset id="celebrate.01" name="honor, show respect to" vncls="33">
+<roles>
+  <role descr="honorer" n="0"><vnrole vncls="33" vntheta="Agent"/></role>
+  <role descr="honored" n="1"><vnrole vncls="33" vntheta="Theme"/></role>
+  <role descr="for what reason" n="2"><vnrole vncls="33" vntheta="Cause"/></role>
+</roles>
+
+<example name="well, ok, maybe once">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+     A security guard at a cargo terminal, he wears a Sons of Italy
+     jacket and cap celebrating ``The US 1 Band.'' 
+</text>
+        <arg n="0">a Sons of Italy jacket and cap</arg>
+        <rel>celebrating</rel>
+        <arg n="1">The US 1 Band</arg>
+</example>
+
+<example name="with reason">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     Mary celebrated John for finishing his dissertation.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>celebrated</rel>
+  <arg n="1">John</arg>
+  <arg f="for" n="2">finishing his dissertation</arg>
+</example>
+
+<note>
+A marginal usage, to be sure.
+</note>
+
+</roleset>
+
+<roleset id="celebrate.02" name="have a party" vncls="-">
+<roles>
+  <role descr="celebrator(s)" n="0"/>
+  <role descr="party, occasion" n="1"/>
+</roles>
+
+<example name="party hearty">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+    They don't even give a nod to human sensibilities by *trace*
+    celebrating Halloween. 
+</text>
+        <arg n="0">*trace* -&gt;  They</arg>
+        <rel>celebrating</rel>
+        <arg n="1">Halloween</arg>
+</example>
+
+<note>
+Two senses could be disambiguated by the kind of entity in arg1:
+persons would be in celebrate.01, dates or events in celebrate.02.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

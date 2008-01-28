@@ -1,0 +1,35 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="dupe">
+<note>
+  Frames file for 'dupe' based on sentences in wsj.  No access to
+  Verbnet at the moment.
+</note>
+
+<roleset id="dupe.01" name="trick" vncls="-">
+<roles>
+  <role descr="tricker" n="0"/>
+  <role descr="tricked" n="1"/>
+  <role descr="trick, induced action" n="2"/>
+</roles>
+
+<example name="sucker">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    He takes his wash to the laundromat, where he meets a punky French
+    girl who [*T*-1] dupes him into [*] providing a home for her pet
+    piranha and then promptly steals his car and dumps it in Dieppe. 
+</text>
+        <arg n="0">[*T*-1] -&gt;  who -&gt;  a punky French girl</arg>
+        <rel>dupes</rel>
+        <arg n="1">him</arg>
+        <arg f="into" n="2">[*] providing a home for her pet piranha</arg>
+</example>
+
+<note>
+pet piranha?
+</note>
+
+</roleset>
+</predicate>
+</frameset>

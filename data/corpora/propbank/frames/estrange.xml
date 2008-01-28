@@ -1,0 +1,40 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="estrange">
+<note>
+  Frames file for 'estrange' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="estrange.01" vncls="-" name="marital difficulties">
+<roles>
+  <role n="1"  descr="focussed party"/>
+  <role n="2"  descr="prepositional party"/>
+</roles>
+
+<example name="adjectival">
+<inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+<text>
+    The British satirical magazine Private Eye won an appeal against
+    the size of a $960,000 libel award to Sonia Sutcliffe, the
+    estranged wife of the ``Yorkshire Ripper'' mass murderer.  
+</text>
+	<rel>estranged</rel>
+	<arg n="1">wife</arg>
+</example>
+
+<example name="verbal, sorta">
+  <inflection person="third" tense="present" aspect="ns" voice="passive" form="participle"/>
+  <text>
+     John is estranged from his wife Mary.
+  </text>
+  <arg n="1"        >John</arg>
+  <rel              >estranged</rel>
+  <arg n="2" f="from">his wife Mary</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,44 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="palm_off">
+<note>
+  Frames file for 'palm_off' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="palm.01" name="dispose of by deception" vncls="-">
+<roles>
+  <role descr="disposer, agent" n="0"/>
+  <role descr="thing disposed of" n="1"/>
+</roles>
+
+<example name="split phrasal">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    The department is advising residents to plant Sagos, if they must,
+    in the back yard and telling nurseries to be on the lookout for
+    anyone trying [*] to palm one off. 
+</text>
+        <arg n="0">[*] -&gt;  anyone</arg>
+        <rel>[ palm] [ off]</rel>
+        <arg n="1">one</arg>
+</example>
+
+
+<example name="joined phrasal">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    That PASOK could win the elections outright is improbable; the
+    Greek press, previously eager [*] to palm off PASOK's line, has
+    turned on Mr. Papandreou with a wild-eyed vengeance. 
+</text>
+        <arg n="0">[*] -&gt;  the Greek press</arg>
+        <rel>[ palm] [ off]</rel>
+        <arg n="1">PASOK 's line</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

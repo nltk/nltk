@@ -1,0 +1,34 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="patent">
+<note>
+  Frames file for 'patent' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+
+<roleset id="patent.01" name="to obtain a patent for" vncls="-">
+<roles>
+  <role descr="inventor, agent" n="0"/>
+  <role descr="invention" n="1"/>
+</roles>
+
+
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ Dr. Kligman patented the medicine while [*-1] employed [*-2] by the University , but later licensed the Retin-A to a division of Johnson &amp; Johnson .
+</text>
+	<arg n="0">Dr. Kligman</arg>
+	<rel>patented</rel>
+	<arg n="1">the medicine</arg>
+	<arg f="TMP" n="M">while [*-1] employed [*-2] by the University</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

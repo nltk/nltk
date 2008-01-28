@@ -1,0 +1,156 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="burn">
+<note>
+  Frames file for 'burn' based on sentences in financial subcorpus.
+  Verbnet entries 40.8.2, 40.8.3, 47.2, 45.4, 45.5; other framed
+  members include: reel, erode, spread, and a whole bunch of
+  causatives.  Framenet classes Cause harm, Heat, and Body.  This is
+  probably going to be ugly.
+</note>
+
+<roleset id="burn.01" name="(cause to) be on fire">
+<roles>
+  <role descr="pyromaniac" n="0"/>
+  <role descr="thing burning" n="1"/>
+</roles>
+
+<example name="metaphorical, 'on' agent">
+<inflection aspect="both" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    Securities analysts were even more cautious, *trace* having been
+    burned *trace* repeatedly on Unisys this year. 
+</text>
+        <rel>burned</rel>
+        <arg n="1">*trace* -&gt; *trace* -&gt;  Securities analysts</arg>
+        <arg f="TMP" n="M">repeatedly</arg>
+        <arg f="on" n="0">Unisys</arg>
+        <arg f="TMP" n="M">this year</arg>
+</example>
+
+<example name="metaphorical, 'in' agent">
+<inflection aspect="perfect" form="participle" person="third" tense="present" voice="passive"/>
+<text>
+    International Business Machines Corp., analysts say, has been
+    burned *trace* twice in trying to enter the laptop market and
+    shows no signs of trying to get into notebooks anytime soon. 
+</text>
+        <rel>burned</rel>
+        <arg n="1">*trace* -&gt;  International Business Machines Corp.</arg>
+        <arg f="TMP" n="M">twice</arg>
+        <arg f="in" n="0">trying  to enter the laptop market</arg>
+</example>
+
+<note>
+The idea in both of these is along the lines of &quot;Trying to enter the
+laptop market has burned IBM&quot;, making this a relatively
+straightforward passivization.
+</note>
+
+<example name="literal">
+  <inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+  <text>
+    John likes *trace* to burn candles.
+  </text>
+  <arg n="0">*trace* -&gt; John</arg>
+  <rel>burn</rel>
+  <arg n="1">candles</arg>
+</example>
+
+<example name="ergative, literal">
+  <inflection aspect="progressive" form="participle" person="third" tense="past" voice="active"/>
+  <text>
+    The wood was burning in the fireplace.
+  </text>
+  <arg n="1">the wood</arg>
+  <rel>burning</rel>
+  <arg f="LOC" n="m">in the fireplace</arg>
+</example>
+
+<example name="ergative, metaphorical">
+  <inflection aspect="progressive" form="participle" person="third" tense="past" voice="active"/>
+  <text>
+    John's face was burning.
+  </text>
+  <arg n="1">John's face</arg>
+  <rel>burning</rel>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="burn_up">
+
+<roleset id="burn.02" name="burn completely">
+<roles>
+  <role descr="causer, agent" n="0"/>
+  <role descr="thing burning" n="1"/>
+</roles>
+
+<example name="naughty John">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John burned up his report card in the fireplace.
+  </text>
+  <arg n="0">John</arg>
+  <rel>burned up</rel>
+  <arg n="1">his report card</arg>
+  <arg f="LOC" n="m">in the fireplace</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="burn_out">
+
+<roleset id="burn.03" name="burn and then be extinguished">
+<roles>
+  <role descr="thing burning" n="1"/>
+</roles>
+
+<example name="literal">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    The fire finally burned out after an hour or two.
+  </text>
+  <arg n="1">The fire</arg>
+  <arg f="TMP" n="m">finally</arg>
+  <rel>burned out</rel>
+  <arg f="TMP" n="m">after an hour or two</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="burn.04" name="become tired of">
+<roles>
+  <role descr="experiencer" n="1"/>
+  <role descr="psych instrument" n="2"/>
+</roles>
+
+<example name="or adjectival?">
+  <inflection aspect="ns" form="participle" person="third" tense="present" voice="active"/>
+  <text>
+    John is totally burned out on predicate-argument tagging.
+  </text>
+  <arg n="1">John</arg>
+  <arg f="EXT" n="m">totally</arg>
+  <rel>burned out</rel>
+  <arg f="on" n="2">predicate-argument tagging</arg>
+</example>
+
+<note>
+I'm not sure about this syntax.  With any luck it won't appear in WSJ.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

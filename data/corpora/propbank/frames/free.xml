@@ -1,0 +1,65 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="free">
+<note>
+  Frames file for 'free' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+
+<roleset id="free.01" name="to make free" vncls="10.6">
+<roles>
+  <role descr="entity providing freedom, agent" n="0">
+	<vnrole vncls="10.6" vntheta="Agent"/></role>
+  <role descr="entity made free" n="1">
+	<vnrole vncls="10.6" vntheta="Source"/></role>
+  <role descr="freed from" n="2">
+	<vnrole vncls="10.6" vntheta="Theme"/></role>
+  <role descr="beneficiary/purpose" n="3"/>
+</roles>
+
+
+<example name="prepositional Arg3">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+ But the Oct. 17 temblor put a halt to much nonessential building , and heavy rains last week slowed the rest , [*] freeing construction workers for earthquake repairs .
+</text>
+	<arg n="0">[*] -&gt;  the Oct. 17 temblor</arg>
+	<rel>freeing</rel>
+	<arg n="1">construction workers</arg>
+	<arg f="for" n="3">earthquake repairs</arg>
+</example>
+
+
+<example name="Arg3 as a VP">
+<inflection aspect="ns" form="full" person="ns" tense="future" voice="active"/>
+<text>
+ The New York Times Co. said [0] it reached a settlement with independent home delivery dealers in the metropolitan New York area that [*T*-1] will free the newspaper to expand home delivery circulation .
+</text>
+	<arg n="0">[*T*-1] -&gt;  that -&gt;  a settlement</arg>
+	<arg f="MOD" n="M">will</arg>
+	<rel>free</rel>
+	<arg n="1">the newspaper</arg>
+	<arg n="3">to expand home delivery circulation</arg>
+</example>
+
+
+
+<example name="with Arg2">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+ Despite fears [0] the mine may be partially nationalized [*-2] by the new Namibian government following next month 's elections freeing the country from South African control , De Beers engineers are working [*-1] to extend the mine 's productive life for another 25 years , from the current estimate of 10 .
+</text>
+	<arg n="0">next month 's elections</arg>
+	<rel>freeing</rel>
+	<arg n="1">the country</arg>
+	<arg f="from" n="2">South African control</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

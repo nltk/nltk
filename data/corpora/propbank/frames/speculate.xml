@@ -1,0 +1,57 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="speculate">
+<note>
+  Frames file for 'speculate' based on sentences in financial
+  subcorpus.  No verbnet entry.
+</note>
+
+<roleset id="speculate.01" name="prognosticate">
+<roles>
+  <role descr="speculator" n="0"/>
+  <role descr="thing speculated (on)" n="1"/>
+</roles>
+
+<example name="speculate an NP">
+<text>
+    A spokesman declined *trace* to speculate about possible
+    reductions in force. 
+</text>
+        <arg n="0">*trace* -&gt;  A spokesman</arg>
+        <rel>speculate</rel>
+        <arg f="about" n="1">possible reductions in force</arg>
+</example>
+
+<example name="speculate an NP">
+<text>
+    Mr. Sherwood speculated that the leeway that Sea Containers has
+    means that Temple would have to ``substantially increase their bid
+    if they're going to top us.''    
+</text>
+        <arg n="0">Mr. Sherwood</arg>
+        <rel>speculated</rel>
+        <arg n="1">the leeway that Sea Containers has means that
+        Temple would have to ``substantially increase their bid if
+        they're going to top us</arg> 
+</example>
+
+<example name="S introduced by a prep">
+<text>
+    Analysts weren't willing *trace* to speculate on how much money
+    Carnival might lose through deposits.
+</text>
+        <arg n="0">*trace* -&gt;  Analysts</arg>
+        <rel>speculate</rel>
+        <arg f="on" n="1">how much money Carnival might lose through
+        deposits</arg> 
+</example>
+
+<note>
+As with so many other verbs, drop the complementizer &quot;that&quot; but not
+wh-complementizers.  Wh-complementizers will usually be introduced by
+a preposition, though.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

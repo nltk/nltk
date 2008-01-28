@@ -1,0 +1,75 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="deny">
+<note>
+  Frames file for 'deny' based on sentences in financial subcorpus.
+  Verbnet class 29.5; other framed members include admit feel know
+  show.  Comparison with 'approve'.
+</note>
+
+<roleset id="deny.01" name="turn down, reject" vncls="29.5">
+<roles>
+  <role descr="denier" n="0">
+		
+  <vnrole vncls="29.5" vntheta="Agent"/></role>
+
+  <role descr="thing denied" n="1">
+		
+  <vnrole vncls="29.5" vntheta="Predicate"/></role>
+
+  <role descr="benefactive" n="2">
+		
+  <vnrole vncls="29.5" vntheta="Theme"/></role>
+
+</roles>
+
+<example name="transitive, no benefactive">
+<text>
+    Earlier this year, the Fed denied an application by Continental
+    Bank Corp. to purchase Grand Canyon State Bank in Scottsdale,
+    Ariz., on grounds that Continental hadn't fully complied with the
+    Community Reinvestment Act.
+</text>
+        <arg f="TMP" n="M">Earlier this year</arg>
+        <arg n="0">the Fed</arg>
+        <rel>denied</rel>
+        <arg n="1">an application  by Continental Bank Corp. to
+        purchase Grand Canyon State Bank in Scottsdale, Ariz.</arg> 
+        <arg f="CAU" n="M">on grounds that Continental hadn't fully
+        complied with the Community Reinvestment Act</arg>
+</example> 
+
+<example name="deny an S">
+<text>
+    But in affidavits filed yesterday in the Los Angeles court,
+    Mr. Ross, Warner Bros. Chairman Robert Daly and President Semel
+    deny that such an oral agreement was ever made.
+</text>
+        <arg f="LOC" n="M">in affidavits filed  yesterday in the Los
+        Angeles court</arg> 
+        <arg n="0">Mr. Ross , Warner Bros. Chairman Robert Daly and
+        President Semel</arg> 
+        <rel>deny</rel>
+        <arg n="1">such an oral agreement was ever made </arg>
+</example>
+
+<note>
+Note again that the complementizer &quot;that&quot; is excluded from the Arg1.
+</note>
+
+<example name="with benefactive">
+  <text>
+    Mary denied John a kiss.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>denied</rel>
+  <arg n="2">John</arg>
+  <arg n="1">a kiss</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

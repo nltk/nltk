@@ -1,0 +1,42 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="activate">
+<note>
+  Frames file for 'activate' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="activate.01" name="make active" vncls="-">
+<roles>
+  <role descr="activator" n="0"/>
+  <role descr="thing now active" n="1"/>
+</roles>
+
+<example name="active">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    If positioned over the brain's motor-control area, the hand-held
+    electromagnets generate nerve impulses that zip down motor nerves
+    and activate muscles, making, say, a finger twitch. 
+</text>
+        <arg n="0">*trace* -&gt;  that -&gt;  nerve impulses</arg>
+        <rel>activate</rel>
+        <arg n="1">muscles</arg>
+</example>
+
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    Once *trace* activated *trace*, the card would sit in the car's
+    window, showing traffic wardens how much time the motorist could
+    remain. 
+</text>
+        <rel>activated</rel>
+        <arg n="1">*trace* -&gt; *trace* -&gt; the card</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,138 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="hack">
+<note>
+  Frames file for 'hack' based on sentences in wsj.  Verbnet entries
+  21.1, 26.1, and 23.2.
+</note>
+
+<roleset id="hack.01" name="chop sloppily" vncls="21.1 26.1">
+<roles>
+  <role descr="chopper" n="0"><vnrole vncls="26.1" vntheta="Agent"/><vnrole vncls="21.1" vntheta="Agent"/></role>
+  <role descr="chopped" n="1"><vnrole vncls="26.1" vntheta="Product"/><vnrole vncls="21.1" vntheta="Patient"/></role>
+  <role descr="instrument (ax, etc)" n="2"><vnrole vncls="21.1" vntheta="Instrument"/></role>
+</roles>
+
+<example name="table manners">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John hacked at the expensive cut of beef with a butter knife.
+  </text>
+  <arg n="0">John</arg>
+  <rel>hacked</rel>
+  <arg f="at" n="1">the expensive cut of beef</arg>
+  <arg f="with" n="2">a butter knife</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="hack.03" name="remove pieces" vncls="23.2">
+<roles>
+  <role descr="cutter" n="0"><vnrole vncls="23.2" vntheta="Agent"/></role>
+  <role descr="thing cut" n="1"><vnrole vncls="23.2" vntheta="Patient1"/></role>
+  <role descr="medium, source" n="2"><vnrole vncls="23.2" vntheta="Patient2"/></role>
+  <role descr="instrument" n="3"/>
+</roles>
+
+<example name="bad haircut">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John hacked great chunks of hair from his back with safety scissors.
+  </text>
+  <arg n="0">John</arg>
+  <rel>hacked</rel>
+  <arg n="1">great chunks of hair</arg>
+  <arg f="from" n="2">his back</arg>
+  <arg f="with" n="3">safety scissors</arg>
+</example>
+
+<note>
+EEEEEEWWWWW!
+</note>
+
+</roleset>
+
+<roleset id="hack.04" name="computer work" vncls="-">
+<roles>
+  <role descr="hacker" n="0"/>
+  <role descr="target or project" n="1"/>
+</roles>
+
+<example name="probably legal">
+  <inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+  <text>
+     John spent all night *trace* hacking his artificial intelligence program.
+  </text>
+  <arg n="0">*trace* -&gt; John</arg>
+  <rel>hacking</rel>
+  <arg n="1">his artificial intelligence program</arg>
+</example>
+
+<example name="probably not">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John hacked into the FBI's mainframe.  The Fairmount Bagel
+    Institute, that is.
+  </text>
+  <arg n="0">John</arg>
+  <rel>hacked</rel>
+  <arg f="into" n="1">the FBI's mainframe</arg>
+</example>
+
+<note>
+The Fairmount Bagel Institute is a real business, btw, or at least
+used to be.
+</note>
+
+</roleset>
+
+<roleset id="hack.05" name="cough" vncls="-">
+<roles>
+  <role descr="cougher" n="0"/>
+</roles>
+
+<example name="poor John">
+  <inflection aspect="progressive" form="participle" person="third" tense="past" voice="active"/>
+  <text>
+     John was hacking all night.
+  </text>
+  <arg n="0">John</arg>
+  <rel>hacking</rel>
+  <arg f="TMP" n="m">all night</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="hack_away">
+
+<roleset id="hack.02" name="chop sloppily,   phrasal" vncls="21.1 26.1 23.2">
+<roles>
+  <role descr="chopper" n="0"><vnrole vncls="23.2" vntheta="Agent"/><vnrole vncls="26.1" vntheta="Agent"/><vnrole vncls="21.1" vntheta="Agent"/></role>
+  <role descr="chopped" n="1"><vnrole vncls="23.2" vntheta="Patient"/><vnrole vncls="26.1" vntheta="Product"/><vnrole vncls="21.1" vntheta="Patient"/></role>
+  <role descr="instrument (ax, etc)" n="2"><vnrole vncls="21.1" vntheta="Instrument"/></role>
+</roles>
+
+<example name="the one corpus example">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    Mr. Wathen says his turnaround strategy has been simple: *trace*
+    just hack away at the fat. 
+</text>
+        <arg n="0">*trace*</arg>
+        <arg f="DIS" n="M">just</arg>
+        <rel>[ hack] [ away]</rel>
+        <arg f="at" n="1">the fat</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

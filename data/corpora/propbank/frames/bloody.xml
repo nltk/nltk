@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="bloody">
+<note>
+  Frames file for 'bloody' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="bloody.01" name="to stain with or as if with a blood" vncls="-">
+<roles>
+  <role descr="causer" n="0"/>
+  <role descr="entity bloodied" n="1"/>
+</roles>
+
+<example name="passive">
+<inflection aspect="perfect" form="participle" person="third" tense="present" voice="passive"/>
+<text>
+ `` The reinsurance market has been bloodied [*-2] by disasters '' in the U.S. as well as in Great Britain and Europe , says [0] [*T*-1] Thomas Rosencrants , director of research at Interstate\/Johnson Lane Inc. in Atlanta .
+</text>
+	<rel>bloodied</rel>
+	<arg n="1">[*-2] -&gt;  The reinsurance market</arg>
+	<arg f="by" n="0">disasters '' in the U.S. as well as in Great Britain and Europe</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

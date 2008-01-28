@@ -1,0 +1,122 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="eat">
+<note>
+  Frames file for 'eat' based on sentences in financial subcorpus.
+  Verbnet entry 39.1, no other framed members.  No comparison.
+</note>
+
+<roleset id="eat.01" name="consume" vncls="39.1">
+<roles>
+  <role descr="consumer, eater" n="0">
+		
+  <vnrole vncls="39.1" vntheta="Agent"/></role>
+
+  <role descr="meal" n="1">
+		
+  <vnrole vncls="39.1" vntheta="Patient"/></role>
+
+</roles>
+
+<example name="intransitive">
+<text>
+    TW's pitch was that sales and earnings at its restaurants have
+    risen steadily and that people won't stop *trace* eating during a
+    downturn. 
+</text>
+        <arg n="0">*trace* -&gt;  people</arg>
+        <rel>eating</rel>
+</example>
+
+<example name="transitive">
+<text>
+    Euro Disneyland shares made a debut like Snow White yesterday
+    while most of the London stock market looked like it had eaten the
+    Evil Queen's poisoned apple. 
+</text>
+        <arg n="0">it</arg>
+        <rel>eaten</rel>
+        <arg n="1">the Evil Queen 's poisoned apple</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="eat_up">
+
+<roleset id="eat.02" name="consume fully" vncls="39.1">
+<roles>
+  <role descr="consumer, eater" n="0">
+		
+  <vnrole vncls="39.1" vntheta="Agent"/></role>
+
+  <role descr="meal" n="1">
+		
+  <vnrole vncls="39.1" vntheta="Patient"/></role>
+
+</roles>
+
+<example name="only in transitive?">
+<text>
+    Some analysts argued that there won't be a flurry of takeovers
+    because the industry's continuing capacity-expansion program is
+    eating up available cash. 
+</text>
+        <arg n="0">the industry's continuing capacity-expansion
+        program</arg> 
+        <rel>[ eating] [ up]</rel>
+        <arg n="1">available cash</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="eat_away">
+
+<roleset id="eat.03" name="consume partially" vncls="39.1">
+<roles>
+  <role descr="consumer, eater" n="0">
+		
+  <vnrole vncls="39.1" vntheta="Agent"/></role>
+
+  <role descr="meal" n="1">
+		
+  <vnrole vncls="39.1" vntheta="Patient"/></role>
+
+</roles>
+
+<example name="nominal meal">
+<text>
+    ``Cheerios and Honey Nut Cheerios have eaten away sales normally
+    going to Kellogg's corn-based lines simply because they are made
+    of oats,'' says Merrill Lynch food analyst William Maguire. 
+</text>
+        <arg n="0">Cheerios and Honey Nut Cheerios</arg>
+        <rel>[ eaten] [ away]</rel>
+        <arg n="1">sales normally going to Kellogg's corn-based lines</arg>
+        <arg f="CAU" n="M">simply because they are made  of oats</arg>
+</example>
+
+<example name="prepositional meal">
+<text>
+    Personal-computer makers will continue *trace* to eat away at the
+    business of more traditional computer firms. 
+</text>
+        <arg n="0">*trace* -&gt;  Personal-computer makers</arg>
+        <rel>[ eat] [ away]</rel>
+        <arg f="at" n="1">the business of more traditional computer
+        firms</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

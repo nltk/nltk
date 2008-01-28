@@ -1,0 +1,28 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="spirit">
+<note>
+  Frames file for 'spirit' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="spirit.01" vncls="-" name="possess high spirits">
+<roles>
+  <role n="1"  descr="entity with high spirits"/>
+</roles>
+
+<example name="only adjectival">
+<inflection person="ns" tense="ns" aspect="ns" voice="passive" form="participle"/>
+<text>
+     ``There are enough enlightened and spirited individuals who know
+     their responsibilities,'' he says. 
+</text>
+	<rel>spirited</rel>
+	<arg n="1">individuals</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

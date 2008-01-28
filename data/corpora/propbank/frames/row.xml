@@ -1,0 +1,47 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="row">
+<note>
+  Frames file for 'row' based on sentences in wsj.  Verbnet entries
+  51.4.2 and 11.5-1, Framenet entries Transportation and
+  Conversation.  The latter is incorrect; it applies only to the
+  nominal 'row' (pron &quot;RAU&quot;).
+</note>
+
+<roleset id="row.01" name="make a boat go" vncls="51.4.2 11.5-1">
+<roles>
+  <role descr="rower" n="0"><vnrole vncls="11.5-1" vntheta="Agent"/><vnrole vncls="51.4.2" vntheta="Agent"/></role>
+  <role descr="boat" n="1"><vnrole vncls="11.5-1" vntheta="Theme"/><vnrole vncls="51.4.2" vntheta="Theme"/></role>
+</roles>
+
+<example name="intransitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+     A San Francisco lawyer, Mr. Panelli rowed religiously when he
+     first got the machine, but, he complains, it left grease marks on
+     his carpet, ``and it was boring.
+</text>
+        <arg n="M">A San Francisco lawyer</arg>
+        <arg n="0">Mr. Panelli</arg>
+        <rel>rowed</rel>
+        <arg f="MNR" n="M">religiously</arg>
+        <arg f="TMP" n="M">when he first got the machine </arg>
+</example>
+
+<example name="with boat">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John rowed his boat in the bathtub.
+  </text>
+  <arg n="0">John</arg>
+  <rel>rowed</rel>
+  <arg n="1">his boat</arg>
+  <arg f="LOC" n="m">in the bathtub</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

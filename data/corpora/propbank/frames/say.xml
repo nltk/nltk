@@ -1,0 +1,106 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<note>
+Frames file for &quot;say&quot;
+determined on examination of first, like, .03% of sentences
+But how hard is it, really?
+</note>
+<predicate lemma="say">
+<roleset id="say.01" name="say" vncls="37.7">
+  <roles>
+    <role descr="Sayer" n="0">
+	  <vnrole vncls="37.7" vntheta="Agent"/></role>
+    <role descr="Utterance" n="1">
+	  <vnrole vncls="37.7" vntheta="Topic"/></role>
+    <role descr="Hearer" n="2">
+	  <vnrole vncls="37.7" vntheta="Recipient"/></role>
+    <role descr="Attributive" n="3"/>
+  </roles>
+
+<example name="Transitive">
+  <text>
+    A Lorillard spokeswoman said &quot;This is an old story.&quot;
+  </text>
+  <arg n="0">A Lorillard spokeswoman</arg>
+  <rel>said</rel>
+  <arg n="1">&quot;This is an old story&quot;</arg>
+</example>
+
+<example name="Fronted">
+  <text>
+    Kent cigarettes were sold, the company said *trace*
+  </text>
+  <arg n="0">the company</arg>
+  <rel>said</rel>
+  <arg n="1">*trace* -> Kent cigarettes were sold*</arg>
+</example>
+
+<example name="Inverted">
+  <text>
+    What matters is what advertisers will pay, said *trace* Newsweek's chairman
+  </text>
+  <rel>said</rel>
+  <arg n="1">*trace* -> What matters is what advertisers will pay</arg>
+  <arg n="0">Newsweek's chairman</arg>
+</example>
+
+<example name="Split">
+  <text>
+    &quot;What you have to understand,&quot; said John, &quot;is that
+    Philly literally stinks.&quot; 
+  </text>
+  <arg n="1">[&quot;What you have to understand&quot;] [&quot;is that Philly
+  literally stinks&quot;]</arg>
+  <rel>said</rel>
+  <arg n="0">John</arg>
+</example>
+
+<example name="with listener">
+  <text>
+    John said to Mary: &quot;you're an idiot.&quot;
+  </text>
+  <arg n="0">John</arg>
+  <rel>said</rel>
+  <arg f="to" n="2">to Mary</arg>
+  <arg n="1">&quot;you're an idiot&quot;</arg>
+</example>
+
+<example name="Weird, attributive usage:">
+  <text>
+    &quot;Well that's odd,&quot; said John of the disappearance of his nose.
+  </text>
+  <arg n="1">&quot;Well that's odd&quot;</arg>
+  <rel>said</rel>
+  <arg n="0">John</arg>
+  <arg f="of" n="3">of the disappearance of his nose</arg>
+</example>
+
+<example name="As discourse-level event">
+  <text>
+    Let's assume someone, say John, has been killed.
+  </text>
+  <rel>say</rel>
+  <arg n="1">John</arg>
+</example>
+
+<example name="split utterance">
+  <text>
+    John is said to be an idiot.
+  </text>
+  <arg n="1">[John][to be an idiot]</arg>
+  <rel>said</rel>
+</example>
+
+<note>
+Note:
+In most cases Treebank suggests an S-BAR as the object of &quot;say&quot;; PReditor
+selects the S inside the S-BAR as the Arg1.  I feel it really should be the
+S-BAR, because of the cases like &quot;John said THAT he loved Mary&quot; where
+the S-BAR is selected as Arg1, but in actual usage the complementizer
+is usually dropped.  But since it would slow down throughput
+*enormously* to retag all of these cases, we'll accept what PReditor
+selects in both cases (with and without complementizer).
+</note>
+</roleset>
+</predicate>
+</frameset>

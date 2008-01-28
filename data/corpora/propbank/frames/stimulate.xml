@@ -1,0 +1,61 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="stimulate">
+<note>
+  Frames file for 'stimulate' based on sentences in financial
+  subcorpus.  No access to verbnet.  Comparison to 'spark'.
+</note>
+
+<roleset id="stimulate.01" name="cause an increase (in interest, etc)" vncls="31.1">
+<roles>
+  <role descr="cause of increase" n="0">
+	<vnrole vncls="31.1" vntheta="Cause"/></role>
+  <role descr="thing increasing" n="1">
+	<vnrole vncls="31.1" vntheta="Experiencer"/></role>
+  <role descr="instrument, if agent also present" n="2"/>
+</roles>
+
+<example name="passive">
+<text>
+    Teikoku Oil, also stimulated *trace* by rumors of speculative
+    buying, advanced 100 yen to 1,460. 
+</text>
+        <arg f="DIS" n="M">also</arg>
+        <rel>stimulated</rel>
+        <arg n="1">*trace* -&gt;  Teikoku Oil</arg>
+        <arg f="by" n="0">rumors of speculative buying</arg>
+</example>
+
+
+<example name="active">
+<text>
+    Unless the Federal Reserve eases interest rates soon *trace* to
+    stimulate the economy, profits could remain disappointing. 
+</text>
+        <arg n="0">*trace* -&gt;  interest rates</arg>
+        <rel>stimulate</rel>
+        <arg n="1">the economy</arg>
+</example>
+
+<note>
+As in difficult cases like the second one above, it can be very
+difficult to distinguish between agents and instruments.  So don't
+try.  Only use the 'instrument' arg when there is also an 'agent'
+present, as in the following:
+</note>
+
+<example name="with instrument">
+  <text>
+    John stimulated interest in his collection of bottle caps by
+    throwing them at passers-by.
+  </text>
+  <arg n="0">John</arg>
+  <rel>stimulated</rel>
+  <arg n="1">interest in his collection of bottle caps</arg>
+  <arg f="by" n="2">throwing them at passers-by</arg>
+</example>
+
+
+</roleset>
+</predicate>
+</frameset>

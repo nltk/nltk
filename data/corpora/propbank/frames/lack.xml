@@ -1,0 +1,47 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="lack">
+<note>
+  Frames file for 'lack' based on sentences in financial subcorpus.
+  No Verbnet entry, Framenet entry Possession.  Comparison with own.
+</note>
+
+<roleset id="lack.01" name="be short of, not possess">
+<roles>
+  <role descr="(non)possessor" n="0"/>
+  <role descr="thing lacked" n="1"/>
+</roles>
+
+<example name="transitive, agentive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    While competitors moved production offshore in response to the
+    sagging competitiveness of Japanese factories, Sansui lacked the
+    money to build new plants  in Southeast Asia. 
+</text>
+        <arg f="ADV" n="M">While competitors moved production offshore
+        in response to the sagging competitiveness of Japanese
+        factories</arg> 
+        <arg n="0">Sansui</arg>
+        <rel>lacked</rel>
+        <arg n="1">the money to build new plants in Southeast
+        Asia</arg> 
+</example>
+
+<example name="ergative, almost adjectival">
+  <inflection aspect="progressive" form="participle" person="third" tense="present" voice="active"/>
+  <text>
+    Evidence on John's criminal insanity is lacking.
+  </text>
+  <arg n="1">Evidence on John's criminal insanity</arg>
+  <rel>lacking</rel>
+</example>
+
+<note>
+This is properly regarded as an adjective, but I'm betting it appears
+at least once in treebank as a verb.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="chauffeur">
+<note>
+  Frames file for 'chauffeur' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="chauffeur.01" name="to serve as a driver, transport" vncls="29.8">
+<roles>
+  <role descr="driver" n="0"><vnrole vncls="29.8" vntheta="Agent"/></role>
+  <role descr="person chauffeured" n="1"><vnrole vncls="29.8" vntheta="Theme"/></role>
+</roles>
+
+<example name="with direction">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ Bailiffs claimed [0] they were required [*-1] to chauffeur him to and from work , mow his lawn , chop his wood , fix his car and even drop by his house [*-2] to feed his two grown mutts , Dixie and Husky .
+</text>
+	<arg n="0">[*-1] -&gt;  they</arg>
+	<rel>chauffeur</rel>
+	<arg n="1">him</arg>
+	<arg f="DIR" n="M">to and from work</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

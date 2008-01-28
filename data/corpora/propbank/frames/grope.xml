@@ -1,0 +1,45 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="grope">
+<note>
+  Frames file for 'grope' based on sentences in wsj.  No access to
+  Verbnet at the moment.
+</note>
+
+<roleset id="grope.01" name="grasp without looking" vncls="-">
+<roles>
+  <role descr="groper" n="0"/>
+  <role descr="groped (at)" n="1"/>
+</roles>
+
+<example name="intransitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    More stocks opened over the ensuing half hour, as the 49 Big Board
+    specialist firms in charge of keeping the market orderly groped to
+    find buy orders from major brokerage firms to match the selling
+    flood. 
+</text>
+        <arg n="0">the 49 Big Board specialist firms in charge of
+        keeping the market orderly</arg> 
+        <rel>groped</rel>
+        <arg f="PNC" n="M">to find buy orders from major brokerage
+        firms to match the selling flood</arg> 
+</example>
+
+<example name="finally!">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John groped Mary.  Then she broke his fingers.
+  </text>
+  <arg n="0">John</arg>
+  <rel>groped</rel>
+  <arg n="1">Mary</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

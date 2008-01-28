@@ -1,0 +1,45 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="indoctrinate">
+<note>
+  Frames file for 'indoctrinate' based on sentences in wsj.  No access
+  to verbnet at the moment.
+</note>
+
+<roleset id="indoctrinate.01" name="brainwash" vncls="-">
+<roles>
+  <role descr="brainwasher" n="0"/>
+  <role descr="victim" n="1"/>
+  <role descr="dogma" n="2"/>
+</roles>
+
+<example name="one arg">
+<inflection aspect="perfect" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    Complete units have been trained and indoctrinated [*-1] in the
+    U.S.S.R. and other East bloc nations; 30,000 to 40,000 of these
+    troops have returned. 
+</text>
+        <rel>indoctrinated</rel>
+        <arg n="1">[*-1] -&gt;  Complete units</arg>
+        <arg f="LOC" n="M">in the U.S.S.R. and other East bloc nations</arg>
+</example>
+
+<example name="all args">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     Mary indoctrinated John in the method of putting down the toilet seat.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>indoctrinated</rel>
+  <arg n="1">John</arg>
+  <arg f="in" n="2">the method of putting down the toilet seat</arg>
+</example>
+
+<note>
+Indoctrinate could also be taken as 'to make into a doctor.'
+</note>
+
+</roleset>
+</predicate>
+</frameset>

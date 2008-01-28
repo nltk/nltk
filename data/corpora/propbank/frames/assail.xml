@@ -1,0 +1,48 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="assail">
+<note>
+  Frames file for 'assail' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="assail.01" name="to attack viciously" vncls="-">
+<roles>
+  <role descr="assailant, agent" n="0"/>
+  <role descr="entity assailed" n="1"/>
+  <role descr="assailed for" n="2"/>
+</roles>
+
+
+<example name="all arguments">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ At a meeting in Malaysia , Australia and Canada also assailed the British prime minister for [*-1] criticizing the 49-nation group 's call for Pretoria to ease apartheid .
+</text>
+	<arg f="LOC" n="M">At a meeting in Malaysia</arg>
+	<arg n="0">Australia and Canada</arg>
+	<arg f="DIS" n="M">also</arg>
+	<rel>assailed</rel>
+	<arg n="1">the British prime minister</arg>
+	<arg f="for" n="2">[*-1] criticizing the 49-nation group 's call for Pretoria to ease apartheid</arg>
+</example>
+
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="past" voice="passive"/>
+<text>
+ The futures halt was even assailed [*-1] by Big Board floor traders .
+</text>
+	<arg f="ADV" n="M">even</arg>
+	<rel>assailed</rel>
+	<arg n="1">[*-1] -&gt;  The futures halt</arg>
+	<arg f="by" n="0">Big Board floor traders</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

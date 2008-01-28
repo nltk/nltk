@@ -1,0 +1,49 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="exchange">
+<note>
+  Frames file for 'exchange' based on sentences in financial
+  subcorpus.  No access to verbnet.  Comparison with 'trade' etc.
+</note>
+
+<roleset id="exchange.01" name="exchange, trade" vncls="13.6">
+<roles>
+    <role descr="agent, entity trading" n="0">
+	<vnrole vncls="13.6" vntheta="Agent"/></role>
+    <role descr="thing being traded (away)" n="1">
+	<vnrole vncls="13.6" vntheta="Theme1"/></role>
+    <role descr="other exchanger" n="2"/>
+    <role descr="other item in exchange, price, or premium, traded for or at" n="3"> 
+	<vnrole vncls="13.6" vntheta="Theme2"/></role>
+     <role descr="benefactive" n="4"/>
+</roles>
+
+<example name="typical usage">
+<text>
+    Heritage, which owns 51% of POP's 3.6 million shares outstanding,
+    said it will exchange one share of a new preferred stock for each
+    POP common share it doesn't already own. 
+</text>
+        <arg n="0">it</arg>
+        <arg f="MOD" n="M">will</arg>
+        <rel>exchange</rel>
+        <arg n="1">one share of a new preferred stock</arg>
+        <arg f="for" n="3">each POP common share it doesn't already
+        own </arg></example> 
+
+<example name="with other exchanger">
+  <text>
+    John exchanged nasty glances with Mary.
+  </text>
+  <arg n="0">John</arg>
+  <rel>exchanged</rel>
+  <arg n="1">nasty glances</arg>
+  <arg f="with" n="2">Mary</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

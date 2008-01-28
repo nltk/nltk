@@ -1,0 +1,94 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="skip">
+<note>
+  Frames file for 'skip' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+
+<roleset id="skip.01" name="to miss, omit or avoid" vncls="-">
+<roles>
+  <role descr="omiter, skipper" n="0"/>  
+  <role descr="thing skipped" n="1"/>
+</roles>
+
+
+<example name="transitive with a purpose">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ [*-1] The son of a physicist , Mr. Hahn skipped first grade because his reading ability was so far above his classmates .
+</text>
+	<arg n="0">Mr. Hahn</arg>
+	<rel>skipped</rel>
+	<arg n="1">first grade</arg>
+	<arg f="CAU" n="M">because his reading ability was so far above his classmates</arg>
+</example>
+
+
+<example name="transitive with ArgM-Adv">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ But [*-1] knowing that mechanics would probably ground him for repairs , Mr. Brown skipped his stop in nearby Chicago and set course [*-1] to get his load -- a few hundred parcels -- to the Memphis package-sorting hub on time .
+</text>
+	<arg f="ADV" n="M">[*-1] knowing that mechanics would probably ground him for repairs</arg>
+	<arg n="0">Mr. Brown</arg>
+	<rel>skipped</rel>
+	<arg n="1">his stop in nearby Chicago</arg>
+</example>
+
+
+<example name="simply transitive">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+ One of the best deals , though , may mean [*] skipping Christmas dinner with the relatives .
+</text>
+	<arg n="0">[*]</arg>
+	<rel>skipping</rel>
+	<arg n="1">Christmas dinner with the relatives</arg>
+</example>
+</roleset>
+
+
+<roleset id="skip.02" name="to move lighly, to jump" vncls="51.3.2">
+<roles>
+  <role descr="one in motion" n="0">
+	<vnrole vncls="51.3.2" vntheta="Theme"/></role>
+  </roles>
+
+<example name="not from the corpus">
+<text>
+ John was skipping in the playground.
+</text>
+	<arg n="0">John</arg>
+	<rel>skipping</rel>
+	<arg f="LOC" n="M">in the playground</arg>
+</example>
+</roleset>
+</predicate>
+
+<predicate lemma="skip_off">
+
+<roleset id="skip.03" name="to leave quickly" vncls="-">
+<roles>
+  <role descr="one in motion" n="0"/>  
+</roles>
+
+
+<example name="with direction">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ When their changes are completed [*-137] [*T*-1] , and after they have worked up a sweat , ringers often skip off to the local pub , [*-2] leaving worship for others below .
+</text>
+	<arg n="0">ringers</arg>
+	<arg f="TMP" n="M">often</arg>
+	<rel>[ skip] [ off]</rel>
+	<arg f="DIR" n="M">to the local pub</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

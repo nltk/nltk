@@ -1,0 +1,36 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="blemish">
+<note>
+example found in the BNC
+</note>
+
+<roleset id="blemish.01" name="to damage">
+<roles> 
+ <role descr="causer" n="0"/>
+ <role descr="entity disfigured" n="1"/>  
+</roles>
+
+<example name="transitive">
+
+<text>
+He touched the long, dark green curtains, looked out into the garden and over it at the house beyond, tall and dark, A dim sodium-yellow glow filled the sky;
+patchy snow blemished the garden.
+</text>
+	<arg n="0">patchy snow</arg>
+	<rel>blemished</rel>
+	<arg n="1">the garden</arg>
+</example>
+
+</roleset>
+
+</predicate>
+<note>
+  frames created by Ruth
+</note>
+</frameset>
+
+
+
+
+

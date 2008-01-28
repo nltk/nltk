@@ -1,0 +1,39 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="welcome">
+<note>
+  Frames file for 'welcome' based on sentences in financial subcorpus.
+  No access to verbnet.  No comparison.
+</note>
+
+<roleset id="welcome.01" name="greet, accept">
+<roles>
+  <role descr="welcomer" n="0"/>
+  <role descr="thing welcomed" n="1"/>
+</roles>
+
+<example name="transitive">
+<text>
+    Investors welcomed the move.
+</text>
+	<arg n="0">Investors</arg>
+	<rel>welcomed</rel>
+	<arg n="1">the move</arg>
+</example>
+
+<example name="adjectival">
+<text>
+    ``Buyers welcome, sellers please go away!''
+</text>
+	<arg n="1">Buyers</arg>
+	<rel>welcome</rel>
+</example>
+
+<note>
+Go ahead an do adjectival usages as they arise; the mapping is pretty
+straightforward.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

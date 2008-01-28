@@ -1,0 +1,62 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="insulate">
+<note>
+  Frames file for 'insulate' based on survey of sentences in the
+ WSJ  corpus. Comparison with 'protect'.
+</note>
+
+<roleset id="insulate.01" name="protect from heat, cold, etc">
+<roles>
+  <role descr="agentive protector" n="0"/>
+  <role descr="protected" n="1"/>
+  <role descr="protected from" n="2"/>
+  <role descr="instrument, insulation itself" n="3"/>
+</roles>
+
+
+
+<example name="with instrument">
+<inflection aspect="ns" form="participle" person="ns" tense="past" voice="passive"/>
+<text>
+ Polyurethane foam is a highly efficient insulator , which [*T*-2] accounts for why the walls of refrigerators and freezers can be thinner now than they were [*?*] back in the days when they were insulated [*-1] with glass fiber [*T*-3] [*T*-4] .
+</text>
+	<rel>insulated</rel>
+	<arg n="1">[*-1] -&gt;  they</arg>
+	<arg f="with" n="3">glass fiber</arg>
+	<arg f="TMP" n="M">[*T*-3] -&gt;  when -&gt;  the days</arg>
+</example>
+
+
+<example name="with Arg2">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+ Separately , the company 's board adopted a proposal [*] to amend its 1986 shareholder rights plan , [*-1] further insulating the company from takeover .
+</text>
+	<arg n="0">[*-1] -&gt;  the company 's board</arg>
+	<rel>insulating</rel>
+	<arg n="1">the company</arg>
+	<arg f="from" n="2">takeover</arg>
+</example>
+</roleset>
+
+<roleset id="insulate.02" name="isolate">
+<roles>
+  <role descr="causer of isolation" n="0"/>
+  <role descr="isolated" n="1"/>
+  <role descr="isolated from" n="2"/>
+</roles>
+
+<example name="passive">
+<inflection aspect="perfect" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+ `` People in this business have been insulated [*-1] , '' says [*T*-2] Josh Pons , a horse breeder from Bel Air , Md .
+</text>
+	<rel>insulated</rel>
+	<arg n="1">[*-1] -&gt;  People in this business</arg>
+</example>
+
+
+</roleset>
+</predicate>
+</frameset>

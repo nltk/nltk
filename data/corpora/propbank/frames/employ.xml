@@ -1,0 +1,83 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="employ">
+<note>
+  Frames file for 'employ' based on sentences in financial subcorpus.
+  Verbnet class 29.2, but that's one of two different senses.
+  Comparison with 'work'.
+</note>
+
+<roleset id="employ.01" name="pay for working" vncls="29.2">
+<roles>
+  <role descr="employer" n="0">
+	  <vnrole vncls="29.2" vntheta="Agent"/></role>
+  <role descr="employee" n="1">
+	  <vnrole vncls="29.2" vntheta="Theme"/></role>
+  <role descr="job" n="2">
+	  <vnrole vncls="29.2" vntheta="Predicate"/></role>
+</roles>
+
+<example name="no job">
+<text>
+    Cray Computer, which *trace* currently employs 241 people, said it
+    expects a work force of 450 by the end of 1990.
+</text>
+        <arg n="0">*trace*=which=Cray Computer </arg>
+        <arg f="TMP" n="M"> currently</arg>
+        <rel> employs</rel>
+        <arg n="1"> 241 people</arg>
+</example>
+
+<example name="with job">
+  <text>
+    Penn employs John as a street-sweeper.
+  </text>
+  <arg n="0">Penn</arg>
+  <rel>employs</rel>
+  <arg n="1">John</arg>
+  <arg f="as" n="2">a street-sweeper</arg>
+</example>
+
+<note>
+This and the following sense are very closely related--fortunately, --&gt;
+--the tagging is identical.
+</note>
+
+</roleset>
+
+<roleset id="employ.02" name="use" vncls="-">
+<roles>
+  <role descr="user" n="0"/>
+  <role descr="used" n="1"/>
+  <role descr="job, purpose" n="2"/>
+</roles>
+
+<example name="unstated purpose">
+<text>
+   ...Nekoosa employs higher-cost agents.
+</text>
+        <arg n="0"> Nekoosa</arg>
+        <rel> employs</rel>
+        <arg n="1"> higher-cost agents</arg>
+</example>
+
+<example name="purpose as infinitive">
+<text>
+    In response to the specific offer, Gary Risley, Mesa vice
+    president, said management will ask directors *trace* to employ a
+    financial consultant *trace* to advise them.
+</text>
+        <arg n="0">*trace*=directors </arg>
+        <rel> employ</rel>
+        <arg n="1"> a financial consultant</arg>
+        <arg n="2">  to advise them</arg>
+</example>
+
+<note>
+This is misparsed by the automatic tagger; you'll have to split apart
+one arg into two.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

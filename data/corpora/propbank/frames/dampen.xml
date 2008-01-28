@@ -1,0 +1,63 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="dampen">
+<note>
+Frames file for 'dampen' based on sentences in wsj and automatic
+expansion via verbnet.
+</note>
+
+<roleset id="dampen.01" name="make slightly wet" vncls="45.4">
+<roles>
+  <role descr="causer of wetness, agent" n="0">
+	<vnrole vncls="45.4" vntheta="Agent"/></role>
+  <role descr="thing becoming damp" n="1">
+	<vnrole vncls="45.4" vntheta="Patient"/></role>
+  <role descr="instrument, if separate from agent" n="2">
+	<vnrole vncls="45.4" vntheta="Instrument"/></role>
+</roles>
+
+<example name="all args">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John dampened Mary's silk blouse with red wine.
+  </text>
+  <arg n="0">John</arg>
+  <rel>dampened</rel>
+  <arg n="1">Mary's silk blouse</arg>
+  <arg f="with" n="2">red wine</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="dampen.02" name="(cause to) stop vibrating, restrain" vncls="-">
+<roles>
+  <role descr="causer of non-vibration, agent" n="0"/>
+  <role descr="thing vibrating" n="1"/>
+</roles>
+
+<example name="just transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    An accelerating move by personal computer manufacturers' to
+    include advanced graphics capabilities as standard equipment
+    further dampened reseller purchases of Western Digital's
+    equipment. 
+</text>
+        <arg n="0">An accelerating move by personal computer
+        manufacturers' to include advanced graphics capabilities as
+        standard equipment </arg> 
+	<arg f="EXT" n="M">further</arg>
+        <rel>dampened</rel>
+        <arg n="1">reseller purchases of Western Digital's
+        equipment</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

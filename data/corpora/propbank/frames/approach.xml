@@ -1,0 +1,90 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="approach">
+<note>
+  Frames file for 'approach' based on sentences in financial
+  subcorpus.  No Verbnet entry, Framenet class Arriving.  Comparison
+  with arrive and come.  Also treat etc.
+</note>
+
+<roleset id="approach.01" name="move towards">
+<roles>
+  <role descr="entity in motion" n="1"/>
+  <role descr="destination" n="2"/>
+</roles>
+
+<example name="more or less concrete">
+<inflection aspect="progressive" form="participle" person="third" tense="present" voice="active"/>
+<text>
+    Jim Unruh, Unisys's president, said he is approaching next year
+    with caution. 
+</text>
+        <arg n="1">he</arg>
+        <rel>approaching</rel>
+        <arg n="2">next year</arg>
+        <arg f="MNR" n="M">with caution</arg>
+</example>
+
+<example name="somewhat metaphorical, 'coming to'">
+<inflection aspect="progressive" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+    After coming close to a partial settlement a year ago,
+    shareholders who filed civil suits against Ivan F. Boesky and the
+    partnerships he once controlled again are approaching an accord,
+    people familiar with the case said. 
+</text>
+        <arg n="M">After coming close to a partial settlement a year
+        ago</arg> 
+        <arg n="1">shareholders who filed civil suits against Ivan
+        F. Boesky and the partnerships he once controlled </arg> 
+        <arg f="TMP" n="M">again</arg>
+        <rel>approaching</rel>
+        <arg n="2">an accord</arg>
+</example>
+
+<example name="passive, with a proposition">
+<inflection aspect="perfect" form="participle" person="ns" tense="past" voice="passive"/>
+<text>
+    Earlier, American Medical said it had been approached *trace*
+    again by two other possible suitors, whom it wouldn't identify but
+    who had previously submitted bids for the company. 
+</text>
+        <rel>approached</rel>
+        <arg n="2">*trace* -&gt;  it</arg>
+        <arg f="TMP" n="M">again</arg>
+        <arg f="by" n="1">two other possible suitors, whom it wouldn't
+        identify but who had previously submitted bids for the
+        company</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="approach.02" name="treat, deal with">
+<roles>
+  <role descr="treater, dealer, agent" n="0"/>
+  <role descr="thing" n="1"/>
+  <role descr="attribute" n="2"/>
+</roles>
+
+<example name="all args">
+<inflection aspect="perfect" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+    ``We've approached this as a fundamental change the industry is
+    going through,'' Mr. Unruh said. 
+</text>
+        <arg n="0">We</arg>
+        <rel>approached</rel>
+        <arg n="1">this</arg>
+        <arg f="as" n="2">a fundamental change the industry is going
+        through</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

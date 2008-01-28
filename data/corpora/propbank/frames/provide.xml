@@ -1,0 +1,69 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<note>
+Frames file for 'provide' based on survey of initial sentences of big corpus
+and comparison with 'give'
+</note>
+
+<predicate lemma="provide">
+<roleset id="provide.01" name="cf give" vncls="13.4.1">
+<roles>
+  <role descr="provider" n="0">
+		
+  <vnrole vncls="13.4.1" vntheta="Agent"/></role>
+
+  <role descr="thing provided" n="1">
+		
+  <vnrole vncls="13.4.1" vntheta="Theme"/></role>
+
+  <role descr="entity provided for (benefactive)" n="2">
+		
+  <vnrole vncls="13.4.1" vntheta="Recipient"/></role>
+
+</roles>
+
+<example name="transtive">
+  <text>
+    This airline provides connecting service between Philly and Newark.
+  </text>
+  <arg n="0">This airline</arg>
+  <rel>provides</rel>
+  <arg n="1">connecting service between Philly and Newark</arg>
+</example>
+
+<example name="provide with">
+  <text>
+    It is providing the new firm with almost $100 million in seed money.
+  </text>
+  <arg n="0">It</arg>
+  <rel>is providing</rel>
+  <arg n="2">the new firm</arg>
+  <arg f="with" n="1">with almost $100 million in seed money</arg>
+</example>
+
+<example name="provide to">
+  <text>
+ Hudson General provides maintenance and other services to airlines
+ and airports 
+  </text>
+  <arg n="0">Hudson General</arg>
+  <rel>provides</rel>
+  <arg n="1">maintenance and other services</arg>
+  <arg f="to" n="2">to airlines and airports</arg>
+</example>
+
+<example name="odd discourse-level usage">
+  <text>
+    I would be happy to do this, *trace* provided John pays his
+    parking tickets. 
+  </text>
+  <rel>provided</rel>
+  <arg n="1">John pays his parking tickets</arg>
+<note>
+(trace is not linked to anything and gets no Arg; sometimes it isn't present)
+</note>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

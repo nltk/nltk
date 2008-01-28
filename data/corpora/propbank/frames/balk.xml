@@ -1,0 +1,50 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="balk">
+<note>
+Frames file for 'balk' based on sentences in financial subcorpus and
+automatic expansion via verbnet.
+</note>
+
+<roleset id="balk.01" name="flinch, be hesitant" vncls="40.5">
+<roles>
+	<role descr="balker" n="0">
+		
+  <vnrole vncls="40.5" vntheta="Experiencer"/></role>
+
+	<role descr="balk at, cause of hesitation" n="1">
+		
+  <vnrole vncls="40.5" vntheta="Cause"/></role>
+
+</roles>
+
+<example name="all args">
+<inflection aspect="progressive" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+    Consumers, he said, are balking at higher prices on 1990 cars,
+    especially after seeing the incentive-reduced prices on 1989
+    models. 
+</text>
+        <arg n="0">Consumers</arg>
+        <rel>balking</rel>
+        <arg f="at" n="1">higher prices on 1990 cars</arg>
+        <arg f="TMP" n="M">especially after  seeing the
+        incentive-reduced prices on 1989 models</arg> 
+</example>
+
+<example name="intransitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    When First Interstate balked, arguing that the figure was too
+    high, regulators responded by raising their recommendation to $350
+    million. 
+</text>
+        <arg n="0">First Interstate</arg>
+        <rel>balked</rel>
+        <arg f="ADV" n="M">arguing that the figure was too high</arg>
+        <arg f="TMP" n="M">*trace* -&gt;  When</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

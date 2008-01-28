@@ -1,0 +1,44 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="trumpet">
+<note>
+  Frames file for 'trumpet' based on sentences in wsj.  Verbnet entry
+  37.3, Framenet entry Communication noise and Perception noise.
+</note>
+
+<roleset id="trumpet.01" name="mode of speaking" vncls="37.3">
+<roles>
+  <role descr="speaker" n="0"><vnrole vncls="37.3" vntheta="Agent"/></role>
+  <role descr="utterance" n="1"><vnrole vncls="37.3" vntheta="Topic"/></role>
+  <role descr="hearer" n="2"><vnrole vncls="37.3" vntheta="Recipient"/></role>
+</roles>
+
+<example name="usually transitive">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    Mr. Smith says the Bill of Rights commercial, which *trace*
+    trumpets the themes of liberty and freedom of expression, isn't
+    designed to have any special appeal for smokers. 
+</text>
+        <arg n="0">*trace* -&gt;  which -&gt;  the Bill of Rights commercial</arg>
+        <rel>trumpets</rel>
+        <arg n="1">the themes of liberty and freedom of expression</arg>
+</example>
+
+<example name="with hearer">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     &quot;I finished my dissertation!&quot; trumpeted *trace* John to Mary.
+  </text>
+  <rel>trumpeted</rel>
+  <arg n="1">*trace* -&gt; &quot;I finished my dissertation!&quot;</arg>
+  <arg n="0">John</arg>
+  <arg f="to" n="2">Mary</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

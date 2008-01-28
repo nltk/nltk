@@ -1,0 +1,82 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="wave">
+<note>
+  Frames file for 'wave' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="wave.01" name="to signal (a person) or move back and forth" vncls="40.3.1-1 47.3">
+<roles>
+  <role descr="agent, causer" n="0"><vnrole vncls="40.3.1-1" vntheta="Agent"/><vnrole vncls="47.3" vntheta="Agent"/></role>
+  <role descr="entity moving" n="1"><vnrole vncls="40.3.1-1" vntheta="Patient"/><vnrole vncls="47.3" vntheta="Theme"/></role>
+  <role descr="person waved at" n="2"><vnrole vncls="40.3.1-1" vntheta="Recipient"/></role>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ In the stands , people waved ANC flags , wore ANC T-shirts , sang ANC songs and chanted ANC slogans .
+</text>
+	<arg f="LOC" n="M">In the stands</arg>
+	<arg n="0">people</arg>
+	<rel>waved</rel>
+	<arg n="1">ANC flags</arg>
+</example>
+
+
+<example name="with Arg2">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ Mr. Houston-Montgomery says that at the party he waved to Malcolm Forbes , publisher of Forbes magazine ( `` We've been in the columns together '' ) , Mary Boone , a New York art dealer ( `` I think [0] she knows me , but I 'm not sure '' ) and Bridget Fonda , the actress ( `` She knows me , but we 're not really the best of friends '' ) .
+</text>
+	<arg f="LOC" n="M">at the party</arg>
+	<arg n="0">he</arg>
+	<rel>waved</rel>
+	<arg f="to" n="2">Malcolm Forbes , publisher of Forbes magazine ( `` We've been in the columns together '' ) , Mary Boone , a New York art dealer ( `` I think [0] she knows me , but I 'm not sure '' ) and Bridget Fonda , the actress ( `` She knows me , but we 're not really the best of friends '' )</arg>
+</example>
+
+
+<example name="intransitive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+ Worst part was watching power lines waving above my head and no way [0] [*] to drive away [*T*-1] .
+</text>
+	<arg n="1">power lines</arg>
+	<rel>waving</rel>
+	<arg f="LOC" n="M">above my head</arg>
+</example>
+
+
+</roleset>
+
+<roleset id="wave.02" vncls="-" name="give directions via waving">
+<roles>
+  <role n="0"  descr="waver, giver of directions"/>
+  <role n="1"  descr="receiver of directions"/>
+  <role n="2"  descr="directions"/>
+</roles>
+
+<example name="nearly phrasal">
+  <inflection person="third" tense="present" aspect="progressive" voice="passive" form="participle"/>
+  <text>
+     This attitude is being waved away by sophisticates around
+     Washington as little more than tough talk.
+  </text>
+  <arg n="1"        >This attitude</arg>
+  <rel              >waved</rel>
+  <arg n="2" f="DIR">away</arg>
+  <arg n="0" f="by">sophicates around town</arg>
+</example>
+
+<note>
+consider also 'John waved Mary into the garage', where the directions
+are more explicit than just a particle.
+</note>
+
+</roleset>
+</predicate>
+
+
+</frameset>

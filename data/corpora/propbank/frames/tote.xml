@@ -1,0 +1,61 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="tote">
+<note>
+  Frames file for 'tote' based on sentences in financial subcorpus.
+  Verbnet entry carry-11.4-1, other framed members include drag, kick
+  and push.  Comparison with carry.
+</note>
+
+<roleset id="tote.01" name="carry, lug">
+<roles>
+  <role descr="carrier" n="0"/>
+  <role descr="thing carried" n="1"/>
+  <role descr="instrument" n="2"/>
+  <role descr="'with' reflecting back on arg0" n="3"/>
+  <role descr="benefactive (predicted but not seen)" n="4"/>
+</roles>
+
+<example name="token example">
+  <text>
+    John toted 15 dozen eggs from home to school, only to drop them
+    once he got there.
+  </text>
+  <arg n="0">John</arg>
+  <rel>toted</rel>
+  <arg n="1">15 dozen eggs</arg>
+  <arg f="DIR" n="m">from home</arg>
+  <arg f="DIR" n="m">to school</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="tote_up">
+<roleset id="tote.02" name="total, count up">
+<roles>
+  <role descr="counter" n="0"/>
+  <role descr="thing counted" n="1"/>
+</roles>
+
+<example name="whatever">
+<text>
+    The company has toted up over $40 million in contracts in the past
+    two days. 
+</text>
+        <arg n="0">The company</arg>
+        <rel>[ toted] [ up]</rel>
+        <arg n="1">over $ 40 million  in contracts</arg>
+        <arg f="TMP" n="M">in the past two days</arg>
+</example>
+
+<note>
+I'm positive this is a misparse for 'total'.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

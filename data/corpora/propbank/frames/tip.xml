@@ -1,0 +1,141 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="tip">
+<note>
+  Frames file for 'tip' based on sentences in wsj.  Verbnet entry
+  17.1, which doesn't seem quite right to me.
+</note>
+
+<roleset id="tip.01" name="cause to not be level" vncls="-">
+<roles>
+  <role descr="cause, agent" n="0"/>
+  <role descr="thing not level" n="1"/>
+  <role descr="end state" n="2"/>
+</roles>
+
+<example name="semi-idiomatic">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    During that time, a buyer with the clout of a Renaissance could
+    end up driving up the price of stocks it was trying to buy if it
+    tipped its hand. 
+</text>
+        <arg n="0">it</arg>
+        <rel>tipped</rel>
+        <arg n="1">its hand</arg>
+</example>
+
+
+<example name="with end state">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Frank Lloyd Wright is reported to have said once that if you
+    tipped the world on its side, everything loose would end up in
+    California. 
+</text>
+        <arg n="0">you</arg>
+        <rel>tipped</rel>
+        <arg n="1">the world</arg>
+        <arg f="on" n="2">its side</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="tip.02" name="leave a gratuity" vncls="-">
+<roles>
+  <role descr="tipper" n="0"/>
+  <role descr="gratuity" n="1"/>
+  <role descr="waiter, etc" n="2"/>
+</roles>
+
+<example name="all args">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John tipped the waiter a measly 2%.
+  </text>
+  <arg n="0">John</arg>
+  <rel>tipped</rel>
+  <arg n="2">the waiter</arg>
+  <arg n="1">a measly 2%</arg>
+</example>
+
+<example name="missing tip">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John tipped the waiter.
+  </text>
+  <arg n="0">John</arg>
+  <rel>tipped</rel>
+  <arg n="2">the waiter</arg>
+</example>
+
+<example name="missing recipient">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John tipped a measly 2%.
+  </text>
+  <arg n="0">John</arg>
+  <rel>tipped</rel>
+  <arg n="1">a measly 2%</arg>
+</example>
+
+<note>
+Note that the second example is technically ambiguous; perhaps John
+turned the waiter on his side?
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="tip_over">
+<roleset id="tip.03" name="cause to be upside down" vncls="-">
+<roles>
+  <role descr="causer" n="0"/>
+  <role descr="thing upside down" n="1"/>
+</roles>
+
+<example name="messy boy">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John deliberately tipped over Mary's full coffee cup.
+  </text>
+  <arg n="0">John</arg>
+  <arg f="MNR" n="m">deliberately</arg>
+  <rel>tipped over</rel>
+  <arg n="1">Mary's full coffee cup</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="tip_off">
+
+<roleset id="tip.04" name="give a hint to" vncls="-">
+<roles>
+  <role descr="giver of hint" n="0"/>
+  <role descr="getter of hint" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+     Filling out detailed forms about these individuals would tip the
+     IRS off and spark action against the clients, he said. 
+</text>
+        <arg n="0">Filling out detailed forms about these individuals</arg>
+        <arg f="MOD" n="M">would</arg>
+        <rel>[ tip] [ off]</rel>
+        <arg n="1">the IRS</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

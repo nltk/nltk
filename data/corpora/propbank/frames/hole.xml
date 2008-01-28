@@ -1,0 +1,46 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="hole_up">
+<note>
+  Frames file for 'hole up' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="hole.01" name="take shelter" vncls="-">
+<roles>
+  <role descr="entity needing shelter" n="0"/>
+  <role descr="shelter" n="1"/>
+</roles>
+
+<example name="active">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    When the weather cools, Mr. Baker says, hobos often hole up in
+    abandoned houses.  
+</text>
+        <arg f="TMP" n="M">When the weather cools </arg>
+        <arg n="0">hobos</arg>
+        <arg f="TMP" n="M">often</arg>
+        <rel>[ hole] [ up]</rel>
+        <arg f="in" n="1">abandoned houses</arg>
+</example>
+
+
+<example name="pseudopassive">
+<inflection aspect="perfect" form="participle" person="third" tense="present" voice="passive"/>
+<text>
+    Some of our sources in Thailand say the notorious old Khmer Rouge
+    leader, Pol Pot, has been holed *trace* up this summer in Khmer
+    Rouge camps near the Thai-Cambodian border. 
+</text>
+        <rel>[ holed] [ up]</rel>
+        <arg n="0">*trace* -&gt;  the notorious old Khmer Rouge leader,
+        Pol Pot,</arg> 
+        <arg f="TMP" n="M">this summer</arg>
+        <arg f="in" n="1">Khmer Rouge camps near the Thai-Cambodian
+        border</arg></example> 
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,45 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="foil">
+<note>
+  Frames file for 'foil' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+
+<roleset id="foil.01" name="to prevent or defeat" vncls="-">
+<roles>
+  <role descr="preventer, agent" n="0"/>
+  <role descr="bad guy" n="1"/>
+  <role descr="foiled in, nefarious plot" n="2"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ Mr. Kryuchkov was quoted [*-1] as [*-2] saying that in place of the infamous 5th Directorate a new unit would work `` [*-3] to foil the conspiracies [*ICH*-4] of foreign intelligence services [*] to create and use organized anti-government groups in our country . ''
+</text>
+	<arg n="0">[*-3] -&gt;  a new unit</arg>
+	<rel>foil</rel>
+	<arg n="1">the conspiracies [*ICH*-4] of foreign intelligence services [*] to create and use organized anti-government groups in our country</arg>
+</example>
+
+
+
+<example name="curses!  foiled again!">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+ [*-1] Foiled [*-2] in their effort [*] to get a national ban , the egg producers turned their attention to the states .
+</text>
+	<rel>Foiled</rel>
+	<arg n="1">the egg producers -&gt;  [*-2] -&gt;  [*-1]</arg>
+	<arg f="in" n="2">their effort [*] to get a national ban</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

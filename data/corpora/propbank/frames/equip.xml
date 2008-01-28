@@ -1,0 +1,68 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="equip">
+<note>
+Frames file for 'equip' based on sentences in wsj and automati
+expansion via verbnet.
+</note>
+
+<roleset id="equip.01" name="provide with equipment" vncls="13.4.2">
+<roles>
+	<role descr="provider" n="0">
+		
+  <vnrole vncls="13.4.2" vntheta="Agent"/></role>
+
+	<role descr="entity getting equipment" n="1">
+		
+  <vnrole vncls="13.4.2" vntheta="Recipient"/></role>
+
+	<role descr="equipment" n="2">
+		
+  <vnrole vncls="13.4.2" vntheta="Theme"/></role>
+
+</roles>
+
+<example name="all args">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    It also issued a final rule requiring auto makers to equip light
+    trucks and minivans with lap-shoulder belts for rear seats
+    beginning in the 1992 model year.
+</text>
+        <arg n="0">auto makers</arg>
+        <rel>equip</rel>
+        <arg n="1">light trucks and minivans</arg>
+        <arg f="with" n="2">lap-shoulder belts for rear seats</arg>
+        <arg f="TMP" n="M">beginning in the 1992 model year</arg>
+</example>
+
+<example name="passive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="passive"/>
+<text>
+    In September, the department had said it will require trucks and
+    minivans to be equipped *trace* with the same front-seat headrests
+    that have long been required on passenger cars. 
+</text>
+        <rel>equipped</rel>
+        <arg n="1">*trace* -&gt;  trucks and minivans</arg>
+        <arg f="with" n="2">the same front-seat headrests that have
+        long been required  on passenger cars</arg> 
+</example>
+
+<example name="adjectival">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    But Humana says its own facilities could serve its insured for
+    less if they were properly equipped. 
+</text>
+        <arg n="M">properly</arg>
+        <rel>equipped</rel>
+<note>
+Do not tag!  Just leave the automatic tagging in place.
+</note>
+
+</example>
+
+</roleset>
+</predicate>
+</frameset>

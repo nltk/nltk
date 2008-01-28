@@ -1,0 +1,49 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="encrust">
+<note>
+  Frames file for 'encrust' based on sentences in wsj.  Verbnet entry 9.8.
+</note>
+
+<roleset id="encrust.01" name="cause to have a crust" vncls="9.8">
+<roles>
+  <role descr="entity adding crust, agent" n="0">
+        <vnrole vncls="9.8" vntheta="Agent"/></role>
+  <role descr="thing with crust" n="1">
+        <vnrole vncls="9.8" vntheta="Destination"/></role>
+  <role descr="crust" n="2">
+        <vnrole vncls="9.8" vntheta="Theme"/></role>
+</roles>
+
+<example name="sometimes 'encrust in'">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    Of his 10 novels, ``The Hive'' (1951), full of sharp vignettes of
+    Madrid life and centered on a cafe run by Dona Rosa, a
+    foul-mouthed, broad-based woman with blackened little teeth
+    encrusted [*] in filth, used to be available in English,
+    translated by J.M. Cohen and published by Ecco Press, which now no
+    doubt regrets relinquishing its copyright. 
+</text>
+        <rel>encrusted</rel>
+        <arg n="1">[*] -&gt;  blackened little teeth</arg>
+        <arg f="in" n="2">filth</arg>
+</example>
+
+<example name="not usually pie crusts">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John encrusted his apple pie with toothpaste.
+  </text>
+  <arg n="0">John</arg>
+  <rel>encrusted</rel>
+  <arg n="1">his apple pie</arg>
+  <arg f="with" n="2">toothpaste</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

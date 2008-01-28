@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="gloss_over">
+<note>
+  Frames file for 'gloss over' based on sentences in financial subcorpus.
+  No Verbnet entry, no Framenet entry.
+</note>
+
+<roleset id="gloss.01" name="discretely ignore" vncls="-">
+<roles>
+  <role descr="glosser over" n="0"/>
+  <role descr="thing glossed over" n="1"/>
+</roles>
+
+<example name="typical">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    ``It provided an excuse for people to get back to reality and to
+    look at the economic data, especially the third-quarter economic
+    numbers, and to realize that we can't continue *trace* to gloss
+    over what is going on in the junk bond market.'' 
+</text>
+        <arg n="0">*trace* -&gt;  we</arg>
+        <rel>[ gloss] [ over]</rel>
+        <arg n="1">what  is going on in the junk bond market</arg>  
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

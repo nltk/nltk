@@ -1,0 +1,66 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="boil">
+<note>
+  Frames file for 'boil' based on sentences in wsj.  Verbnet entries
+  45.3, 26.3-2, Framenet entries Cause harm, Heat, Apply heat.
+</note>
+
+<roleset id="boil.01" name="apply heat to water" vncls="45.3 26.3-2">
+<roles>
+  <role descr="applier of heat" n="0"><vnrole vncls="26.3-2" vntheta="Agent"/><vnrole vncls="45.3" vntheta="Agent"/></role>
+  <role descr="water" n="1"><vnrole vncls="26.3-2" vntheta="Product"/><vnrole vncls="45.3" vntheta="Patient"/></role>
+</roles>
+
+<example name="metaphorical water">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+     ...with huge economic inequalities and social discontent boiling
+     under the surface. 
+</text>
+        <arg n="1">huge economic inequalities and social discontent</arg>
+        <rel>boiling</rel>
+        <arg f="LOC" n="M">under the surface</arg>
+</example>
+
+<example name="with agent">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John boiled water for tea.
+  </text>
+  <arg n="0">John</arg>
+  <rel>boiled</rel>
+  <arg n="1">water</arg>
+  <arg f="PNC" n="m">for tea</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="boil_over">
+
+<roleset id="boil.02" name="too much heat" vncls="-">
+<roles>
+  <role descr="thing boiling over (pot, etc)" n="1"/>
+</roles>
+
+<example name="a watched pot">
+<inflection aspect="ns" form="full" person="ns" tense="future" voice="active"/>
+<text>
+    Clearly, the question with ``Chicken Soup'' is not whether the pot
+    will boil over, but whether it will simmer at all. 
+</text>
+        <arg n="1">the pot</arg>
+        <arg f="MOD" n="M">will</arg>
+        <rel>[ boil] [ over]</rel>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

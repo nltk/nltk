@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="beset">
+<note>
+  Frames file for 'beset' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="beset.01" name="to attack, harass, surround" vncls="-">
+<roles>
+  <role descr="attacker, agent" n="0"/>
+  <role descr="attacked, theme" n="1"/>
+</roles>
+
+
+<example name="passive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ Wang Laboratories Inc. , Lowell , Mass. , [*-1] beset [*] by declining demand for its computers , reported a $ 62.1 million [*U*] , 38-cents-a-share loss in its first quarter ended Sept. 30 .
+</text>
+	<rel>beset</rel>
+	<arg n="1">[*] -&gt;  [*-1] -&gt;  Wang Laboratories Inc. , Lowell , Mass.</arg>
+	<arg f="by" n="0">declining demand for its computers</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

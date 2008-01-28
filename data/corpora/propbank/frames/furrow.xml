@@ -1,0 +1,28 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="furrow">
+<note>
+  Frames file for 'furrow' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="furrow.01" name="become wrinkled" vncls="-">
+<roles>
+  <role descr="brow, usually" n="1"/>
+</roles>
+
+<example name="the one example">
+<inflection aspect="ns" form="ns" person="ns" tense="ns" voice="ns"/>
+<text>
+    Mr Pyszkiewicz smiles and his brow furrows.
+</text>
+        <arg n="1">his brow</arg>
+        <rel>furrows</rel>
+</example>
+
+<note>
+Could also be transitive, but not often (John furrowed his brow).
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,42 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="industrialize">
+<note>
+  Frames file for 'industrialize' based on sentences in wsj.  No
+  Verbnet entry. 
+</note>
+
+<roleset id="industrialize.01" name="acquire industrial capacity" vncls="-">
+<roles>
+  <role descr="thing becoming industrialized" n="1"/>
+</roles>
+
+<example name="first bad example">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+    The Chinese problem is much greater -- it's how *trace* to
+    industrialize to begin with.'' 
+</text>
+        <arg n="1">*trace*</arg>
+        <rel>industrialize</rel>
+        <arg f="ADV" n="M">to begin with</arg>
+</example>
+
+
+<example name="second bad example">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    Newly industrialized countries: Singapore, Hong Kong, Taiwan,
+    South Korea 
+</text>
+        <arg f="TMP" n="M">Newly</arg>
+        <rel>industrialized</rel>
+        <arg n="1">countries</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

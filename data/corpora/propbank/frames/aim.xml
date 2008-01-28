@@ -1,0 +1,69 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="aim">
+<note>
+  Frames file for 'aim' based on survey of initial sentences of big
+  corpus and comparison with 'plan'
+</note>
+
+<roleset id="aim.01" name="plan">
+<roles>
+  <role descr="aimer" n="0"/>
+  <role descr="action" n="1"/>
+</roles>
+
+<example name="more bellringing!">
+  <text>
+  The Central Council of Church Bell Ringers aims *trace* to improve
+  relations with vicars.
+  </text>
+  <arg n="0">The Central Council of Church Bell Ringers</arg>
+  <rel>aims</rel>
+  <arg n="1">*trace* to improve relations with vicars.</arg>
+</example>
+
+<example name="nothing in motion">
+  <text>
+  The Treasury aims for a $10 billion cash balance at the end of March.
+  </text>
+  <arg n="0">The Treasury</arg>
+  <rel>aims</rel>
+  <arg f="for" n="1">a $10 billion cash balance at the end of March</arg>
+</example>
+
+</roleset>
+
+<roleset id="aim.02" name="directed motion">
+<roles>
+  <role descr="aimer" n="0"/>
+  <role descr="thing in motion" n="1"/>
+  <role descr="target" n="2"/>
+</roles>
+
+<example name="passivized">
+  <text>
+  ...the possibility of a consent solicitation aimed *trace* at
+  replacing Georgia Gulf's board.
+  </text>
+  <arg n="1">*trace*=a consent solicitation</arg>
+  <rel>aimed</rel>
+  <arg f="at" n="2">replacing Georgia Gulf's board</arg>
+</example>
+
+<example name="all args">
+  <text>
+  Banks have been aiming packages at the elderly.
+  </text>
+  <arg n="0">Banks</arg>
+  <rel>aiming</rel>
+  <arg n="1">packages</arg>
+  <arg f="at" n="2">the elderly</arg>
+</example>
+
+<note>
+Often metaphorical
+</note>
+
+</roleset>
+</predicate>
+</frameset>

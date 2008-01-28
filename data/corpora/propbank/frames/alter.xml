@@ -1,0 +1,64 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="alter">
+<note>
+  Frames file for 'alter' based on sentences in financial subcorpus.
+  Verbnet entries  other_cos-45.4 turn-26.6, other framed members
+  include decrease, halt, narrow, shut, slow, sweeten, weaken;
+  convert.  Comparison to 'change'.
+</note>
+
+<roleset id="alter.01" name="transform" vncls="26.6 45.4">
+<roles>
+  <role descr="causer of transformation" n="0">
+		
+		
+  <vnrole vncls="26.6" vntheta="Agent"/><vnrole vncls="45.4" vntheta="Agent"/></role>
+
+  <role descr="thing changing" n="1">
+		
+		
+  <vnrole vncls="26.6" vntheta="Patient"/><vnrole vncls="45.4" vntheta="Patient"/></role>
+
+  <role descr="end state" n="2">
+		
+  <vnrole vncls="26.6" vntheta="Product"/></role>
+
+  <role descr="start state" n="3">
+		
+  <vnrole vncls="26.6" vntheta="Material"/></role>
+
+</roles>
+
+<example name="just transitive">
+<text>
+    But although the golden share has been waived, a hostile bidder
+    for Jaguar would still have *trace* to alter the British concern's
+    articles of association which ban shareholdings of more than 15%. 
+</text>
+        <arg n="0">*trace* -&gt;  a hostile bidder for Jaguar</arg>
+        <rel>alter</rel>
+        <arg n="1">the British concern's articles of association which
+        ban shareholdings of more than 15%</arg> 
+</example>
+
+<example name="with start and end points">
+  <text>
+     John's dismal performance on the spelling exam altered him from a
+     happy-go-lucky student to a bitter enraged punk.
+  </text>
+  <arg n="0">John's dismal performance on the spelling
+  exam</arg> 
+  <rel>altered</rel>
+  <arg n="1">him</arg>
+  <arg f="from" n="3">a happy-go-lucky student</arg>
+  <arg f="to" n="2">a bitter enraged punk</arg>
+</example>
+
+<note>
+I actually doubt start and end points will occur, but there they are anyway.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

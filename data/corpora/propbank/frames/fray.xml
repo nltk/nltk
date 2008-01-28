@@ -1,0 +1,44 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="fray">
+<note>
+  Frames file for 'fray' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="fray.01" name="to loosen, wear away" vncls="45.4">
+<roles>
+  <role descr="causer of wear, agent" n="0">
+        <vnrole vncls="45.4" vntheta="Agent"/></role>
+  <role descr="entity frayed" n="1">
+        <vnrole vncls="45.4" vntheta="Patient"/></role>
+</roles>
+
+
+<example name="passive">
+<inflection aspect="perfect" form="participle" person="ns" tense="past" voice="passive"/>
+<text>
+ Its relationship with parent General Electric Co. had been frayed [*-1] since a big Kidder insider-trading scandal two years ago .
+</text>
+	<rel>frayed</rel>
+	<arg n="1">[*-1] -&gt;  Its relationship with parent General Electric Co.</arg>
+	<arg f="TMP" n="M">since a big Kidder insider-trading scandal two years ago</arg>
+</example>
+
+
+<example name="intransitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ But the build-up of S&amp;P futures sell orders weighed on the market , and the link with stocks began [*-1] to fray again .
+</text>
+	<arg n="1">[*-1] -&gt;  the link with stocks</arg>
+	<rel>fray</rel>
+	<arg f="TMP" n="M">again</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

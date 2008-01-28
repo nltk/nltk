@@ -1,0 +1,34 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="will">
+<note>
+  Frames file for 'will' based on sentences in wsj.  Verbnet entry 13.3.
+</note>
+
+<roleset id="will.01" name="give in a will, bequeath" vncls="13.3">
+<roles>
+  <role descr="bequeather, giver" n="0"><vnrole vncls="13.3" vntheta="Agent"/></role>
+  <role descr="inheritance, gift" n="1"><vnrole vncls="13.3" vntheta="Theme"/></role>
+  <role descr="beneficiary" n="2"><vnrole vncls="13.3" vntheta="Recipient"/></role>
+</roles>
+
+<example name="all args">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+     Until recently, a farmer with no heir had [*-1] to will the state
+     his land [*-1] to collect his pension.  
+</text>
+        <arg n="0">[*-1] -&gt;  a farmer with no heir</arg>
+        <rel>will</rel>
+        <arg n="2">the state</arg>
+        <arg n="1">his land</arg>
+</example>
+
+<note>
+There's a bogus parse for 'be willing' in TB; this is not a verb but
+an adjective.  Ignore it.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,34 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="dissuade">
+<note>
+  Frames file for 'dissuade' based on sentences in wsj.  No Verbnet
+  entry, Framenet entry Suasion2.
+</note>
+
+<roleset id="dissuade.01" name="persuade not to" vncls="-">
+<roles>
+  <role descr="convincer" n="0"/>
+  <role descr="impelled (non)agent" n="1"/>
+  <role descr="impelled (non)action" n="2"/>
+</roles>
+
+<example name="the one example">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    Republicans would try to attach a capital-gains provision to that
+    legislation, hoping the political popularity of its other two
+    parts would dissuade Democrats from blocking it. 
+</text>
+        <arg n="0">the political popularity of its other two parts</arg>
+        <rel>dissuade</rel>
+        <arg n="1">Democrats</arg>
+        <arg f="from" n="2">blocking it</arg>
+</example>
+
+<note>
+This is actually one of my favorite verbs.  Go figger.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

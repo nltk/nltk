@@ -1,0 +1,42 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="lap">
+<note>
+  Frames file for 'lap' based on sentences in wsj.  No Verbnet entry,
+  Framenet entry Ingestion.
+</note>
+
+<roleset id="lap.01" name="apply the tongue to gently" vncls="-">
+<roles>
+  <role descr="agent, lapper" n="0"/>
+  <role descr="thing lapped (at)" n="1"/>
+</roles>
+
+<example name="intransitive (and metaphorical)">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    The breezes are soft, the waves lap gently and the palm trees sway
+    lazily. 
+</text>
+        <arg n="0">the waves</arg>
+        <rel>lap</rel>
+        <arg f="MNR" n="M">gently</arg>
+</example>
+
+<example name="transitive (and literal)">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John's kitten lapped at the saucer of milk.
+  </text>
+  <arg n="0">John's kitten</arg>
+  <rel>lapped</rel>
+  <arg f="at" n="1">the saucer up milk</arg>
+</example>
+
+<note>
+Also a phrasal variant 'lap up' implying completion of the process,
+but otherwise taking the same PAS.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

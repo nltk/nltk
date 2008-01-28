@@ -1,0 +1,43 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="irk">
+<note>
+Frames file for 'irk' based on sentences in financial subcorpus and
+automatic expansion via verbnet.
+</note>
+
+<roleset id="irk.01" name="annoy slightly" vncls="31.1">
+<roles>
+  <role descr="causer of annoyance" n="0">
+	<vnrole vncls="31.1" vntheta="Cause"/></role>
+  <role descr="entity getting annoyed" n="1">
+	<vnrole vncls="31.1" vntheta="Experiencer"/></role>
+  <role descr="instrument, if separate from arg0" n="2"/>
+</roles>
+
+<example name="just transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    The effects on the market of the mostly computer-driven sell-off
+    among exchange-listed stocks irked many market makers, who watched
+    the Nasdaq Composite Index tumble in sympathy with the Dow Jones
+    Industrial Average, and then saw it get left behind in the
+    subsequent rally. 
+</text>
+        <arg n="0">The effects on the market of the mostly
+        computer-driven sell-off among exchange-listed stocks</arg> 
+        <rel>irked</rel>
+        <arg n="1">many market makers, who watched the Nasdaq
+        Composite Index tumble in sympathy with the Dow Jones
+        Industrial Average, and then saw it get left behind in the
+        subsequent rally</arg> 
+</example>
+
+</roleset>
+<note>
+Recall that the instrument arg should only be used when the agent is
+also present.
+</note>
+
+</predicate>
+</frameset>

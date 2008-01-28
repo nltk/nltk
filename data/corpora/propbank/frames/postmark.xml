@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="postmark">
+<note>
+  Frames file for 'postmark' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="postmark.01" name="to stamp with a postmark" vncls="9.9">
+<roles>
+  <role descr="applier of stamp, agent" n="0">
+        <vnrole vncls="9.9" vntheta="Agent"/></role>
+  <role descr="letter" n="1">
+        <vnrole vncls="9.9" vntheta="Theme"/></role>
+  <role descr="temporal attribute" n="2"/>
+</roles>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+ Returns for 1988 from people with six-month filing extensions were due Monday , but the IRS says [0] people in the disaster areas wo n't be penalized [*-1] for late filing if their returns are marked [*-2] `` Hugo '' and postmarked by Jan. 16 .
+</text>
+	<arg n="1">their returns</arg>
+	<rel>postmarked</rel>
+	<arg f="TMP" n="2">by Jan. 16</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

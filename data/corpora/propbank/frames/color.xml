@@ -1,0 +1,55 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="color">
+<note>
+  Frames file for 'color' based on sentences in wsj.  Verbnet entry 24.
+</note>
+
+<roleset id="color.01" name="(cause to) have some color" vncls="24">
+<roles>
+  <role descr="causer of coloration" n="0"><vnrole vncls="24" vntheta="Agent"/></role>
+  <role descr="thing with color" n="1"><vnrole vncls="24" vntheta="Patient"/></role>
+  <role descr="the color itself" n="2"/>
+</roles>
+
+<example name="agentive, no color">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    Officials from both nations say the U.S. public's skittishness
+    about Japanese investment could color a second round of bilateral
+    economic talks scheduled for next week in Washington. 
+</text>
+        <arg n="0">the U.S. public's skittishness about Japanese
+        investment</arg> 
+        <arg f="MOD" n="M">could</arg>
+        <rel>color</rel>
+        <arg n="1">a second round of bilateral economic talks
+        scheduled for next week in Washington</arg> 
+</example>
+
+<example name="agentive, with color">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John colored all his Easter eggs jet black.
+  </text>
+  <arg n="0">John</arg>
+  <rel>colored</rel>
+  <arg n="1">all his Easter eggs</arg>
+  <arg n="2">jet black</arg>
+</example>
+
+<example name="passive, with color">
+  <inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+  <text>
+    All of John's Easter eggs are colored jet black.
+  </text>
+  <arg n="1">All of John's Easter eggs</arg>
+  <rel>colored</rel>
+  <arg n="2">jet black</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

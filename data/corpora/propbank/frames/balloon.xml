@@ -1,0 +1,50 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="balloon">
+<note>
+  Frames file for 'balloon' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="balloon.01" name="to ride in a balloon" vncls="-">
+<roles>
+  <role descr="balloonist, agent" n="0"/>
+</roles>
+
+<example name="intransitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ They will also tell you that even if you hate heights , you can still balloon .
+</text>
+	<arg f="ADV" n="M">even if you hate heights</arg>
+	<arg n="0">you</arg>
+	<arg f="MOD" n="M">can</arg>
+	<arg f="ADV" n="M">still</arg>
+	<rel>balloon</rel>
+</example>
+</roleset>
+
+<roleset id="balloon.02" name="to increase or cause to increase" vncls="-">
+<roles>
+  <role descr="agent, causer" n="0"/>
+  <role descr="entity increased" n="1"/>
+  <role descr="endstate" n="2"/>
+</roles>
+
+
+<example name="with Arg2">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ A bloated payroll and pervasive graft caused Pemex 's operating costs to balloon to 95 cents of each $ 1 [*U*] in sales , far above the industry norm .
+</text>
+	<arg n="1">Pemex 's operating costs</arg>
+	<rel>balloon</rel>
+	<arg f="to" n="2">95 cents of each $ 1 [*U*] in sales , far above the industry norm</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

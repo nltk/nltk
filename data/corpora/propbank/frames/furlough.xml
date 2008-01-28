@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="furlough">
+<note>
+  Frames file for 'furlough' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+
+<roleset id="furlough.01" name="to lay off" vncls="-">
+<roles>
+  <role descr="employer" n="0"/>
+  <role descr="worker" n="1"/>
+</roles>
+
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+ Pilots , as well , routinely fly overtime [*-2] to ensure that none are furloughed [*-1] during seasonal lows .
+</text>
+	<rel>furloughed</rel>
+	<arg n="1">[*-1] -&gt;  none</arg>
+	<arg f="TMP" n="M">during seasonal lows</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

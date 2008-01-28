@@ -1,0 +1,39 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="hoist">
+<note>
+  Frames file for 'hoist' based on sentences in wsj.  No access to
+  Verbnet at the moment.
+</note>
+
+<roleset id="hoist.01" name="lift, raise" vncls="9.4">
+<roles>
+  <role descr="lifter, raiser" n="0"><vnrole vncls="9.4" vntheta="Agent"/></role>
+  <role descr="thing going up" n="1"><vnrole vncls="9.4" vntheta="Theme"/></role>
+  <role descr="path" n="2"><vnrole vncls="9.4" vntheta="Location"/></role>
+</roles>
+
+<example name="hoist by your own petard">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+     A huge ANC flag, with black, green and gold stripes, was hoisted
+     [*-1] over the rickety gate at Mr. Sisulu's modest house, while
+     on the street out front, boys displayed the ANC colors on their
+     shirts, caps and scarves. 
+</text>
+        <rel>hoisted</rel>
+        <arg n="1">[*-1] -&gt;  A huge ANC flag, with black, green and
+        gold stripes,</arg> 
+        <arg f="over" n="2">the rickety gate at Mr. Sisulu's modest
+        house</arg> 
+        <arg f="TMP" n="M">while on the street out front, boys
+        displayed the ANC colors on their shirts, caps and
+        scarves</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

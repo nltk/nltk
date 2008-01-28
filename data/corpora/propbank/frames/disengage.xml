@@ -1,0 +1,39 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="disengage">
+<note>
+  Frames file for 'disengage' based on sentences in wsj.  Verbnet
+  entry 10.1.
+</note>
+
+<roleset id="disengage.01" name="remove, take out of or off" vncls="10.1">
+<roles>
+  <role descr="remover, agent" n="0">
+        <vnrole vncls="10.1" vntheta="Agent"/></role>
+  <role descr="thing removed, disengaged" n="1">
+        <vnrole vncls="10.1" vntheta="Theme"/></role>
+  <role descr="from what" n="2">
+        <vnrole vncls="10.1" vntheta="Source"/></role>
+</roles>
+
+<example name="all args">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+    New York is in the process of [*-1] trying [*-2] to disengage
+    itself from a 20-year-old commitment to this system of school
+    governance, even as Chicago and other cities are moving to
+    institute it. 
+</text>
+        <arg n="0">[*-2] -&gt;  [*-1] -&gt;  New York</arg>
+        <rel>disengage</rel>
+        <arg f="REC" n="1">itself</arg>
+        <arg f="from" n="2">a 20-year-old commitment to this system of
+        school governance</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

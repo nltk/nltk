@@ -1,0 +1,48 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="slap">
+<note>
+  Frames file for 'slap' based on sentences in financial subcorpus.
+  Verbnet entries 17.1, 18.1, other framed members include fire,
+  fling, kick, pass, throw; batter, beat, dash, kick, strike, hit.
+  Framenet entry Perception noise.  Comparison with hit.
+</note>
+
+<roleset id="slap.01" name="hit with a flat object">
+<roles>
+  <role descr="agent, hitter - animate only!" n="0"/>
+  <role descr="thing hit" n="1"/>
+  <role descr="instrument, thing hit by or with" n="2"/>
+</roles>
+
+<example name="instrumental subject">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    London share prices closed sharply lower Friday in active trading
+    after Chancellor of the Exchequer Nigel Lawson's resignation
+    slapped the market and Wall Street's rapid initial sell-off
+    knocked it down. 
+</text>
+        <arg n="2">Chancellor of the Exchequer Nigel Lawson's
+        resignation</arg>
+        <rel>slapped</rel> 
+        <arg n="1">the market</arg>
+</example>
+
+<example name="with agent">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    Mary slapped John with a frozen trout.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>slapped</rel>
+  <arg n="1">John</arg>
+  <arg f="with" n="2">a frozen trout</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

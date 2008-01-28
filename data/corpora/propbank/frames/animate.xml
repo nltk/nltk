@@ -1,0 +1,50 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="animate">
+<note>
+  Frames file for 'animate' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="animate.01" vncls="-" name="cartoons">
+<roles>
+  <role n="0"  descr="animator (prob. rare)"/>
+  <role n="1"  descr="cartoon"/>
+</roles>
+
+<example name="adjectival">
+<inflection person="ns" tense="ns" aspect="ns" voice="passive" form="participle"/>
+<text>
+    The days may be numbered for animated shows featuring Alf, the
+    Karate Kid and the Chipmunks. 
+</text>
+	<rel>animated</rel>
+	<arg n="1">shows</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="animate.02" vncls="-" name="be lively">
+<roles>
+  <role n="0"  descr="cause, emotion"/>
+  <role n="1"  descr="lively thing"/>
+</roles>
+
+<example name="verbal">
+  <inflection person="third" tense="present" aspect="ns" voice="active" form="full"/>
+  <text>
+     A lively intellect animates John's features.
+  </text>
+  <arg n="0"        >A lively intellect</arg>
+  <rel              >animates</rel>
+  <arg n="1"        >John's features</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,72 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="evidence">
+<note>
+  Frames file for 'evidence' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="evidence.01" name="provide proof for" vncls="-">
+<roles>
+  <role descr="proof" n="0"/>
+  <role descr="thing proved" n="1"/>
+</roles>
+
+<example name="as evidenced">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    The use of the abominable construction practices in the Soviet
+    Union -- as *trace* evidenced *trace* by the collapse of sand
+    apartment blocks during the Armenian earthquake -- as a metaphor
+    for the U.S. economic system was a sublime example of
+    Mr. Cockburn's satirical muse. 
+</text>
+        <rel>evidenced</rel>
+        <arg n="1">*trace* -&gt; *trace* -&gt;  the abominable construction
+        practices</arg> 
+        <arg f="by" n="0">the collapse of sand apartment blocks during
+        the Armenian earthquake</arg> 
+</example>
+
+<example name="untraceable">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    And it has remained there, as *trace* evidenced *trace* by its
+    reappearance in a 1972 CBS sitcom called  ``Bridget Loves
+    Bernie,'' whose sole distinction was that it led to the real-life
+    marriage of Meredith Baxter and David Birney. 
+</text>
+        <rel>evidenced</rel>
+        <arg n="1">*trace* -&gt; *trace*</arg>
+        <arg f="by" n="0">its reappearance in a 1972 CBS sitcom called
+        ``Bridget Loves Bernie,'' whose sole distinction was that it
+        led to the real-life marriage of Meredith Baxter and David
+        Birney</arg> 
+</example>
+
+<note>
+Target of the trace is the act of &quot;remaining there&quot;, which cannot be
+selected without including the trace itself.  Bummer.
+</note>
+
+<example name="more obviously verbal">
+<inflection aspect="ns" form="participle" person="third" tense="past" voice="passive"/>
+<text>
+    Sluggish demand was also evidenced *trace* by the weak 2.41-to-1
+    bid-to-cover ratio, which was lower than the average 2.79-to-1
+    ratio at the last 12 similar auctions. 
+</text>
+        <arg f="DIS" n="M">also</arg>
+        <rel>evidenced</rel>
+        <arg n="1">*trace* -&gt;  Sluggish demand</arg>
+        <arg f="by" n="0">the weak 2.41-to-1 bid-to-cover ratio, which
+        was lower than the average 2.79-to-1 ratio at the last 12
+        similar auctions</arg> 
+</example>
+
+<note>
+I don't think this can ever appear in the active.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

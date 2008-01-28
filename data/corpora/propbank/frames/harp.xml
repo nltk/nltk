@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="harp">
+<note>
+  Frames file for 'harp' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="harp.01" name="to dwell on" vncls="-">
+<roles>
+  <role descr="entity who just can't let it go" n="0"/>
+  <role descr="thing harped on" n="1"/>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="future" voice="active"/>
+<text>
+ And I think [0] a lot of people will harp on program trading .
+</text>
+	<arg n="0">a lot of people</arg>
+	<arg f="MOD" n="M">will</arg>
+	<rel>harp</rel>
+	<arg f="on" n="1">program trading</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

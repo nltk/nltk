@@ -1,0 +1,99 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="finish">
+<note>
+  Frames file for 'finish' based on sentences in financial subcorpus.
+  No access to verbnet.  Comparison with 'end' for one of the
+  rolesets and 'close' for the next.
+</note>
+
+<roleset id="finish.01" name="cause to stop" vncls="55.1">
+<roles>
+  <role descr="Intentional agent" n="0">
+	<vnrole vncls="55.1" vntheta="Agent"/></role>
+  <role descr="Thing finishing" n="1">
+	<vnrole vncls="55.1" vntheta="Theme"/></role>
+  <role descr="Explicit instrument, thing finished with" n="2"/>
+  <role descr="point at which something finishs" n="M"/>
+</roles>
+
+<note>
+  ArgM might be TMP if a time period is
+	finishing, might be EXT if some financial thing is the Arg1,
+	might be LOC if it's a spatial thing finishing, perhaps MNR also
+</note>
+
+<example name="arg1 as pro-controlled S">
+<text>
+    Moreover, Suez had just finished winning an even larger battle
+    last year for control of Societe Generale de Belgique. 
+</text>
+        <arg f="DIS" n="M">Moreover</arg>
+        <arg f="TMP" n="M">just</arg>
+        <rel>finished</rel>
+        <arg n="1">[Suez] [winning an even larger battle last year for control
+        of Societe Generale de Belgique]</arg> 
+</example>
+
+<example name="arg1 as NP">
+<text>
+    The Senate's public gallery was packed with Judge Hastings'
+    supporters , who erupted into applause after he finished his
+    argument. 
+</text>
+        <arg n="0">he</arg>
+        <rel>finished</rel>
+        <arg n="1">his argument</arg>
+</example>
+
+</roleset>
+
+<roleset id="finish.02" name="terminate" vncls="-">
+<note>
+  in this corpus, primarily of stocks
+</note>
+
+<roles>
+  <role descr="thing closing" n="1"/>
+  <role descr="up, down, or unchanged, or degree of change" f="MNR" n="M"/>
+  <role descr="end point" f="EXT" n="M"/>
+</roles>
+
+<example name="manner and extent">
+<text>
+    The Dow Jones Industrial Average, which had jumped 41.60 points on
+    Tuesday, drifted on either side of its previous close and finished
+    with a gain of just 0.82 at 2645.90. 
+</text>
+        <arg n="1">The Dow Jones Industrial Average, which had jumped
+        41.60 points on Tuesday,</arg> 
+        <rel>finished</rel>
+        <arg f="MNR" n="M">with a gain of just 0.82</arg>
+        <arg f="EXT" n="M">at 2645.90</arg>
+</example>
+</roleset>
+
+<roleset id="finish.03" name="apply a finish, as to wood">
+<roles>
+  <role descr="painter, agent" n="0"/>
+  <role descr="surface" n="1"/>
+  <role descr="finish itself, stain or varnish" n="2"/>
+</roles>
+
+<example name="all args">
+  <text>
+    John finished his new armoire in a lovely shade of chartreuse.
+  </text>
+  <arg n="0">John</arg>
+  <rel>finished</rel>
+  <arg n="1">his new armoire</arg>
+  <arg f="in" n="2">a lovely shade of chartreuse</arg>
+</example>
+
+<note>
+I wonder if this sense will ever appear.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

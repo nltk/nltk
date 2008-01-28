@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="cascade">
+<note>
+  Frames file for 'cascade' based on sentences in wsj.  Verbnet
+entries 47.7, 47.2.
+</note>
+
+<roleset id="cascade.01" name="fall like water" vncls="47.7 47.2">
+<roles>
+  <role descr="water-ish" n="1"><vnrole vncls="47.7" vntheta="Theme"/><vnrole vncls="47.2" vntheta="Theme"/></role>
+</roles>
+
+<example name="someday I'll do this">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    -- Of all scenes that evoke rural England, this is one of the
+loveliest: An ancient stone church stands amid the fields, the sound
+of bells cascading from its tower, calling the faithful to evensong. 
+</text>
+        <arg n="1">the sound of bells</arg>
+        <rel>cascading</rel>
+        <arg f="DIR" n="M">from its tower</arg>
+        <arg n="M">calling the faithful to evensong</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,55 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="exclaim">
+<note>
+  Frames file for 'exclaim' based on sentences in wsj.  No Verbnet
+  entry, Framenet entry Statement.
+</note>
+
+<roleset id="exclaim.01" name="mode of speaking" vncls="-">
+<roles>
+  <role descr="speaker" n="0"/>
+  <role descr="utterance" n="1"/>
+  <role descr="hearer" n="2"/>
+</roles>
+
+<example name="inverted syntax">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    ``Where does that first stimulus go?'' exclaims *trace* SUNY
+    neurologist Paul Maccabee. 
+</text>
+        <rel>exclaims</rel>
+        <arg n="1">*trace* -&gt;  Where does that first stimulus go?</arg>
+        <arg n="0">SUNY neurologist Paul Maccabee</arg>
+</example>
+
+
+<example name="fronted">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    Here's a Waltana,'' he exclaims, picking one off a tree. 
+</text>
+        <arg n="0">he</arg>
+        <rel>exclaims</rel>
+        <arg n="1">*trace* -&gt;  Here's a Waltana</arg>
+        <arg n="M">picking one off a tree</arg>
+</example>
+
+<example name="with hearer">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John exclaimed to Mary, &quot;!!!!!!!&quot;
+  </text>
+  <arg n="0">John</arg>
+  <rel>exclaimed</rel>
+  <arg f="to" n="2">Mary</arg>
+  <arg n="1">!!!!!!!</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

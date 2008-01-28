@@ -1,0 +1,51 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="shun">
+<note>
+  Frames file for 'shun' based on survey of sentences in the WSJ
+  corpus.  
+</note>
+
+
+<roleset id="shun.01" name="to avoid, keep away from" vncls="52">
+<roles>
+  <role descr="avoider, agent" n="0">
+	<vnrole vncls="52" vntheta="Agent"/></role>
+  <role descr="thing avoided" n="1">
+	<vnrole vncls="52" vntheta="Theme"/></role>
+</roles>
+
+
+
+<example name="transitive">
+<inflection aspect="progressive" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+ In many other institutions , scientists are shunning contacts with venture investors until the NIH policy is settled [*-1] .
+</text>
+	<arg f="LOC" n="M">In many other institutions</arg>
+	<arg n="0">scientists</arg>
+	<rel>shunning</rel>
+	<arg n="1">contacts with venture investors</arg>
+	<arg f="TMP" n="M">until the NIH policy is settled [*-1]</arg>
+</example>
+
+
+
+<example name="another transitive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+ Investors , he advises [0] [*T*-1] , `` should be cautious , '' [*-2] holding fewer stocks than usual and also shunning bonds .
+</text>
+	<arg n="0">[*-2] -&gt;  Investors</arg>
+	<arg f="DIS" n="M">also</arg>
+	<rel>shunning</rel>
+	<arg n="1">bonds</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

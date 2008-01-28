@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="resort">
+<note>
+  Frames file for 'resort' based on sentences in financial subcorpus.
+  No Verbnet entry.  No comparison.
+</note>
+
+<roleset id="resort.01" name="last chance" vncls="-">
+<roles>
+  <role descr="entity needing a last chance" n="0"/>
+  <role descr="last chance, resorted to" n="1"/>
+</roles>
+
+<example name="basic">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    The company said it would resort far less often to slashing prices
+    to woo shoppers. 
+</text>
+        <arg n="0">it</arg>
+        <arg f="MOD" n="M">would</arg>
+        <rel>resort</rel>
+        <arg f="TMP" n="M">far less often</arg>
+        <arg f="to" n="1">slashing prices  to woo shoppers</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

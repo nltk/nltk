@@ -1,0 +1,35 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="inundate">
+<note>
+  Frames file for 'inundate' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="inundate.01" name="to swamp or overwhelm as if with a flood" vncls="9.8">
+<roles>
+  <role descr="inundator" n="0">
+        <vnrole vncls="9.8" vntheta="Agent"/></role>
+  <role descr="entity inundated" n="1">
+        <vnrole vncls="9.8" vntheta="Destination"/></role>
+  <role descr="entity inundated with" n="2">
+        <vnrole vncls="9.8" vntheta="Theme"/></role>
+</roles>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="past" voice="passive"/>
+<text>
+ Suddenly , on television , in advertisements and on their cereal boxes , Americans were inundated [*-1] with news about the obscure seed .
+</text>
+	<arg f="TMP" n="M">Suddenly</arg>
+	<arg f="LOC" n="M">on television , in advertisements and on their cereal boxes</arg>
+	<rel>inundated</rel>
+	<arg n="1">[*-1] -&gt;  Americans</arg>
+	<arg f="with" n="2">news about the obscure seed</arg>
+</example>
+
+</roleset>
+</predicate>
+
+
+</frameset>

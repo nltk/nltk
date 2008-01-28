@@ -1,0 +1,146 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="touch">
+<note>
+  Frames file for 'touch' based on sentences in financial subcorpus.
+  Verbnet entries 20, 47.8; other framed members include cap, contain,
+  dominate, miss, surround, and top.  No Framenet entry.  Comparison
+  with hit and start.
+</note>
+
+<roleset id="touch.01" name="be or come in(to) contact with" vncls="20 31.1">
+<roles>
+  <role descr="causal agent" n="0">
+		
+  <vnrole vncls="31.1" vntheta="Cause"/><vnrole vncls="20" vntheta="Agent"/></role>
+
+  <role descr="thing touched" n="1">
+		
+  <vnrole vncls="31.1" vntheta="Experiencer"/><vnrole vncls="20" vntheta="Experiencer"/></role>
+
+  <role descr="touched with, if separate from agent" n="2">
+		
+  <vnrole vncls="20" vntheta="Instrument"/></role>
+
+</roles>
+
+<example name="whack">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    Mary touched John lightly with a sledgehammer.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>touched</rel>
+  <arg n="1">John</arg>
+  <arg f="MNR" n="m">lightly</arg>
+  <arg f="with" n="2">a sledgehammer</arg>
+</example>
+
+<example name="emotional touch">
+  <inflection aspect="ns" form="participle" person="third" tense="past" voice="passive"/>
+  <text>
+    John was deeply touched *trace* by Mary's kind gesture.
+  </text>
+  <arg f="MNR" n="m">deeply</arg>
+  <rel>touched</rel>
+  <arg n="1">*trace* -&gt; John</arg>
+  <arg f="by" n="0">Mary's kind gesture</arg>
+</example>
+
+<note>
+Note that the instrument should ONLY be used when there is also an
+agent stated in the sentence--otherwise it gets too difficult to
+distinguish agent and instrument.
+</note>
+
+<example name="be in contact">
+  <inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+  <text>
+    John's eyebrows touch in the center of his forehead.
+  </text>
+  <arg n="1">John's eyebrows</arg>
+  <rel>touch</rel>
+  <arg f="LOC" n="m">in the center of his forehead</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="touch_off">
+
+<roleset id="touch.02" name="start" vncls="-">
+<roles>
+  <role descr="Agent" n="0"/>
+  <role descr="thing starting" n="1"/>
+  <role descr="Instrument" n="2"/>
+  <role descr="secondary predication" n="3"/>
+</roles>
+
+<example name="the only example in subcorpus">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+   Nor do analysts expect the Sansui deal to touch off a fresh wave of
+   foreign purchases. 
+</text>
+        <arg n="0">the Sansui deal</arg>
+        <rel>[ touch] [ off]</rel>
+        <arg n="1">a fresh wave of foreign purchases</arg>
+</example>
+
+<note>
+Cf. 'start' or 'begin' for additional examples.
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="touch_up">
+
+<roleset id="touch.03" name="repair" vncls="-">
+<roles>
+  <role descr="repairer" n="0"/>
+  <role descr="thing repaired" n="1"/>
+  <role descr="instrument" n="2"/>
+</roles>
+
+<example name="just transitive">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John touched up his makeup.
+  </text>
+  <arg n="0">John</arg>
+  <rel>touched up</rel>
+  <arg n="1">his makeup</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="touch_on">
+
+<roleset id="touch.04" name="be/get involved with" vncls="-">
+<roles>
+  <role descr="focus" n="0"/>
+  <role descr="topic" n="1"/>
+</roles>
+
+<example name="don't touch me there!">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    The interview did not touch on Singapore's domestic affairs.
+  </text>
+  <arg n="0">The interview</arg>
+  <arg f="NEG" n="m">not</arg>
+  <rel>touch on</rel>
+  <arg n="1">Singapore's domestic affairs</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

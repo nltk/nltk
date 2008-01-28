@@ -1,0 +1,111 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="buckle">
+<note>
+Frames file for 'buckle' based on sentences in financial subcorpus and
+automatic expansion via verbnet.
+</note>
+
+<roleset id="buckle.01" name="use a buckle to fasten" vncls="22.4">
+<roles>
+  <role descr="agent, entity causing two objects to be attached" n="0">
+	<vnrole vncls="22.4" vntheta="Agent"/></role>
+  <role descr="patient, thing(s) being tied" n="1">
+	<vnrole vncls="22.4" vntheta="Patient1"/></role>
+  <role descr="instrument, buckle" n="2">
+	<vnrole vncls="22.4" vntheta="Patient2"/></role>
+</roles>
+
+<example name="no instrument">
+<inflection aspect="progressive" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+    Traders are already buckling their seat belts.
+</text>
+        <arg n="0">Traders</arg>
+        <arg f="TMP" n="M">already</arg>
+        <rel>buckling</rel>
+        <arg n="1">their seat belts</arg>
+</example>
+
+<note>
+Arg2 &quot;buckle&quot; is inherent in the verb and therefore will probably not
+occur.  It's here for completeness only.
+</note>
+</roleset>
+
+<roleset id="buckle.04" vncls="-" name="collapse">
+<roles>
+  <role n="1"  descr="thing collapsing"/>
+  <role n="2"  descr="pressure, weight, etc"/>
+</roles>
+
+<example name="give way">
+  <inflection person="ns" tense="ns" aspect="ns" voice="active" form="infinitive"/>
+  <text>
+    Wall Street continued [*-1] to buckle under the public outcry
+    against computer-driven program trading.  
+  </text>
+  <arg n="1"        >[*-1] -> Wall Street</arg>
+  <rel              >buckle</rel>
+  <arg n="2" f="under">the public outcry against computer-driven
+  program trading</arg>
+</example>
+
+<example name="no mention of pressure">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+     Many streets and sidewalks buckled, and subterranean water mains
+     and service connections ruptured. 
+  </text>
+  <arg n="1"        >Many streets and sidewalks buckled</arg>
+  <rel              ></rel>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="buckle_up">
+
+<roleset id="buckle.02" name="buckle up: prepare for the worst" vncls="-">
+<roles>
+  <role descr="preparer" n="0"/>
+</roles>
+
+<example name="imperative">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    When Mr. Jacobson walked into the office at 7:30 a.m. EDT, he
+    announced: ``OK, *trace* buckle up.'' 
+</text>
+        <arg n="0">*trace*</arg>
+        <rel>[ buckle] [ up]</rel>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="buckle_down">
+
+<roleset id="buckle.03" name="buckle down: get busy" vncls="-">
+<roles>
+  <role descr="entity getting busy" n="0"/>
+</roles>
+
+<example name="semi-autobiographical?">
+  <inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+  <text>
+    When he turned 30, John knew it was time *trace* to buckle down
+    and finish high school.
+  </text>
+  <arg n="0">*trace* -&gt; John</arg>
+  <rel>buckle down</rel>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,48 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="imitate">
+<note>
+  Frames file for 'imitate' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="imitate.01" name="to use or follow as a model" vncls="-">
+<roles>
+  <role descr="imitator" n="0"/>
+  <role descr="entity imitated" n="1"/>
+</roles>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+ The appeals court held : `` When a distinctive voice of a professional singer is widely known [*-3] and is deliberately imitated in order [*] to sell a product [*T*-2] , the sellers have appropriated what [*T*-1] is not theirs . ''
+</text>
+	<arg n="1">a distinctive voice of a professional singer</arg>
+	<arg f="MNR" n="M">deliberately</arg>
+	<rel>imitated</rel>
+	<arg f="PNC" n="M">in order [*] to sell a product</arg>
+	<arg f="TMP" n="M">[*T*-2] -&gt;  When</arg>
+</example>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ Peter Laird , a Los Angeles lawyer for Ms. Midler , said , `` We believe that the verdict reaffirms her position [*RNR*-1] and our position [*RNR*-1] that advertisers and advertising agencies can not with impunity imitate the voices of well-known performers .
+</text>
+	<arg n="0">advertisers and advertising agencies</arg>
+	<arg f="MOD" n="M">can</arg>
+	<arg f="NEG" n="M">not</arg>
+	<arg f="MNR" n="M">with impunity</arg>
+	<rel>imitate</rel>
+	<arg n="1">the voices of well-known performers</arg>
+</example>
+
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

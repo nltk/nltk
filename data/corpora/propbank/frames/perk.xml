@@ -1,0 +1,43 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="perk_up">
+<note>
+  Frames file for 'perk' based on survey of sentences in the WSJ
+  corpus.  
+</note>
+
+
+<roleset id="perk.01" name="to gain or regain energy or liveliness" vncls="-">
+<roles>
+  <role descr="causer" n="0"/>
+  <role descr="entity energised" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="perfect" form="participle" person="third" tense="present" voice="active"/>
+<text>
+ But Mr. Rey brought about a merger in the next few years between the country 's major producers ; the increased efficiency has perked up the industry .
+</text>
+	<arg n="0">the increased efficiency</arg>
+	<rel>[ perked] [ up]</rel>
+	<arg n="1">the industry</arg>
+</example>
+
+
+<example name="intransitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ Margins in the fiscal fourth quarter perked up , [*-1] rising to 51 % from 49.2 % a year earlier .
+</text>
+	<arg n="1">Margins</arg>
+	<arg f="TMP" n="M">in the fiscal fourth quarter</arg>
+	<rel>[ perked] [ up]</rel>
+	<arg f="ADV" n="M">[*-1] rising to 51 % from 49.2 % a year earlier</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

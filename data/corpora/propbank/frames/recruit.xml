@@ -1,0 +1,103 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="recruit">
+<note>
+  Frames file for 'recruit' based on sentences in wsj.  No Verbnet
+  entry. 
+</note>
+
+<roleset id="recruit.01" name="convince to join" vncls="-">
+<roles>
+  <role descr="recruiter" n="0"/>
+  <role descr="recruit" n="1"/>
+  <role descr="group, job (sometimes predicate on arg1)" n="2"/>
+  <role descr="source" n="3"/>
+</roles>
+
+<example name="intransitive">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="ns"/>
+<text>
+    Hours after the announcement, representatives of the Orange County
+    Register were in a bar across the street *trace* recruiting. 
+</text>
+        <arg n="0">*trace* -&gt;  representatives of the Orange County
+        Register</arg> 
+        <rel>recruiting</rel>
+</example>
+
+<example name="transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+     The dispute has hampered the administration's efforts *trace* to
+     recruit prominent doctors to fill prestigious posts at the helm
+     of the NIH and the Centers for Disease Control.
+</text>
+        <arg n="0">*trace* -&gt;  the administration's</arg>
+        <rel>recruit</rel>
+        <arg n="1">prominent doctors to fill prestigious posts at the
+        helm of the NIH and the Centers for Disease Control</arg> 
+</example>
+
+<example name="transitive: PP variant">
+<inflection aspect="both" form="participle" person="third" tense="present" voice="active"/>
+<text>
+    In recent months, California's Transportation Department has been
+    recruiting in Pennsylvania, Arizona and Texas for engineers
+    experienced in road and bridge design. 
+</text>
+        <arg f="TMP" n="M">In recent months</arg>
+        <arg n="0">California's Transportation Department</arg>
+        <rel>recruiting</rel>
+        <arg f="LOC" n="M">in Pennsylvania, Arizona and Texas</arg>
+        <arg f="for" n="1">engineers experienced in road and bridge
+        design</arg>
+</example>
+
+<example name="job as infinitive">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    Not included on the most-likely-successor list are Joni Evans,
+    recruited *trace* two years ago to be publisher of adult trade
+    books for Random House, and Sonny Mehta, president of the
+    prestigious Alfred A. Knopf unit. 
+</text>
+        <rel>recruited</rel>
+        <arg n="1">*trace* -&gt;  Joni Evans</arg>
+        <arg f="TMP" n="M">two years ago</arg>
+        <arg n="2">to be publisher of adult trade books for
+        Random House</arg> 
+</example>
+
+<example name="job as as-phrase">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    He had worked with Mr. McDonough on an earlier project and
+    recruited him as architect for the trade center. 
+</text>
+        <arg n="0">He</arg>
+        <rel>recruited</rel>
+        <arg n="1">him</arg>
+        <arg f="as" n="2">architect for the trade center</arg>
+</example>
+
+<example name="all args">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    ``The big word around Specialized is passion,'' says Erik Eidsmo,
+    a former ski-industry executive whom Mr. Sinyard recruited *trace*
+    from Citicorp to run marketing and sales. 
+</text>
+        <arg n="0">Mr. Sinyard</arg>
+        <rel>recruited</rel>
+        <arg n="1">*trace* -&gt;  whom -&gt;  a former ski-industry
+        executive</arg> 
+        <arg f="from" n="3">Citicorp</arg>
+        <arg n="2">to run marketing and sales</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

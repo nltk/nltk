@@ -1,0 +1,71 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="slide">
+<note>
+  Frames file for 'slide' based on sentences in financial subcorpus.
+  Verbnet entry run-51.3.2, roll-51.3.1, slide-11.2-2, other framed
+  members include charge, dash, float, leap, roll, scuttle, sneak,
+  spin, walk, wind.  Comparison therewith.
+</note>
+
+<roleset id="slide.01" name="slide">
+<roles>
+  <role descr="agent, causer of sliding" n="0"/>
+  <role descr="thing sliding" n="1"/>
+</roles>
+
+<example name="transitive">
+  <text>
+    John slid the glass of beer down the bar and onto the floor.
+  </text>
+  <arg n="0">John</arg>
+  <rel>slid</rel>
+  <arg n="1">the glass of beer</arg>
+  <arg f="DIR" n="m">down the bar and onto the floor</arg>
+</example>
+
+<example name="ergative">
+  <text>
+    John's car slid all over the icy road.
+  </text>
+  <arg n="1">John's car</arg>
+  <rel>slid</rel>
+  <arg f="LOC" n="m">all over the icy road</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="slide.02" name="quantifiable motion">
+<roles>
+  <role descr="Logical subject, patient, thing falling" n="1"/>
+  <role descr="EXT, amount fallen" n="2"/>
+  <role descr="start point" n="3"/>
+  <role descr="end point, end state of arg1" n="4"/>
+  <role descr="medium" f="LOC" n="M"/>
+</roles>
+
+<example name="all args">
+<text>
+    In the nine months, net income slid 21% to $28.4 million, or 33
+    cents a share, from $36 million, or 42 cents a share. 
+</text>
+        <arg f="TMP" n="M">In the nine months</arg>
+        <arg n="1">net income</arg>
+        <rel>slid</rel>
+        <arg f="EXT" n="2">21 %</arg>
+        <arg f="to" n="4">$28.4 million, or 33 cents a share,</arg>  
+        <arg f="from" n="3">from $36 million, or 42 cents a
+        share</arg> 
+</example>
+
+<note>
+Other permutations of args are possible, but 'slide' seems uncommonly
+fond of arg2-EXT.  Go figure.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

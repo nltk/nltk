@@ -1,0 +1,55 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="mellow">
+<note>
+  Frames file for 'mellow' based on sentences in financial subcorpus.
+  Verbnet entry other_cos-45.4, the usual suspects as other members.
+</note>
+
+<roleset id="mellow.01" name="become mellow, relaxed" vncls="45.4">
+<roles>
+  <role descr="entity become mellow" n="1">
+		
+  <vnrole vncls="45.4" vntheta="Patient"/></role>
+
+  <role descr="instrument" n="2">
+		
+  <vnrole vncls="45.4" vntheta="Instrument"/></role>
+
+</roles>
+
+<example name="from the corpus">
+<text>
+    They have since mellowed, although one senior Young &amp; Rubicam
+    executive, echoing others, said: ``I think ad agencies owe Carl
+    Spielvogel a vote of thanks for getting him out of the consulting
+    business.'' 
+</text>
+        <arg n="1">They</arg>
+        <arg f="TMP" n="M">since</arg>
+        <rel>mellowed</rel>
+        <arg f="ADV" n="M">although one senior Young &amp; Rubicam
+        executive, echoing others, said: ``I think ad agencies owe
+        Carl Spielvogel a vote of thanks for getting him out of the
+        consulting business</arg> 
+</example>
+
+<example name="with instrument">
+  <text>
+    John mellowed considerably through the application of advanced
+    pharmaceuticals. 
+  </text>
+  <arg n="1">John</arg>
+  <rel>mellowed</rel>
+  <arg f="EXT" n="m">considerably</arg>
+  <arg f="through" n="2">the application of advanced
+  pharmaceuticals</arg> 
+</example>
+
+<note>
+Make &quot;mellow out&quot;, if it should occur, a phrasal verb.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

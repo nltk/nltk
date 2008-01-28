@@ -1,0 +1,77 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="view">
+<note>
+  Frames file for 'view' based on sentences in financial subcorpus.
+  Verbnet entry 29.2 30.2, other framed members include classify,
+  count, declassify, define, describe, employ, establish, intend,
+  portray, rank, reclassify, recommend, redefine, regard, treat;
+  observe, recognize, scrutinize, study and watch.  Whew.  Comparison
+  to define and watch.
+</note>
+
+<roleset id="view.01" name="watch" vncls="30.2">
+<roles>
+  <role descr="viewer" n="0">
+	<vnrole vncls="30.2" vntheta="Experiencer"/></role>
+  <role descr="thing viewed" n="1">
+	<vnrole vncls="30.2" vntheta="Stimulus"/></role>
+</roles>
+
+<example name="somewhat odd">
+  <text>
+    John views 15 hours of TV every day.
+  </text>
+  <arg n="0">John</arg>
+  <rel>views</rel>
+  <arg n="1">15 hours of TV</arg>
+  <arg f="TMP" n="m">every day</arg>
+</example>
+
+<note>
+A little learned, but needed for the eventual tagging of deverbal nouns.
+</note>
+
+</roleset>
+
+<roleset id="view.02" name="assign an attribute to" vncls="29.2">
+<roles>
+  <role descr="assigner" n="0">
+	<vnrole vncls="29.2" vntheta="Agent"/></role>
+  <role descr="thing labelled" n="1">
+	<vnrole vncls="29.2" vntheta="Theme"/></role>
+  <role descr="attribute" n="2">
+	<vnrole vncls="29.2" vntheta="Predicate"/></role>
+</roles>
+
+<example name="very typical">
+<text>
+    Martin Fabi, Innopac's president and chief executive, said Innopac
+    viewed Mr. Pattison's decision to seek control as a ``very
+    positive'' move. 
+</text>
+        <arg n="0">Innopac</arg>
+        <rel>viewed</rel>
+        <arg n="1">Mr. Pattison's decision to seek control</arg>
+        <arg f="as" n="2">a ``very positive'' move</arg>
+</example>
+
+<example name="different kind of attribute">
+<inflection person="ns" tense="present" aspect="ns" voice="active" form="full"/><text>
+    So [*] view permanent insurance for what it is -- a compromise
+    between pure insurance and direct investment. 
+</text>
+	<arg n="M" f="DIS">So</arg>
+	<arg n="0">[*]</arg>
+	<rel>view</rel>
+	<arg n="1">permanent insurance</arg>
+	<arg n="2" f="for">what it is -- a compromise between pure
+	insurance and direct investment</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

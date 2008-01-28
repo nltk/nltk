@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="taunt">
+<note>
+  Frames file for 'taunt'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="taunt.01" name="to ridicule" vncls="-">
+<roles> 
+  <role descr="taunter, agent" n="0"/>  
+  <role descr="entity taunted" n="1"/>  
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ `` The only way [0] [*] to reduce the costs [*T*-2] is [*] to say [0] we do n't want [*-1] to pay the bill , '' said [*T*-4] Rep. Neal Smith ( D. , Iowa ) , who [*T*-3] taunted President Bush 's party to back up his campaign promise of [*] supporting the claims of $ 20,000 [*U*] per individual .
+</text>
+	<arg n="0">[*T*-3] -&gt;  who -&gt;  Rep. Neal Smith</arg>
+	<rel>taunted</rel>
+	<arg n="1">President Bush 's party to back up his campaign promise of [*] supporting the claims of $ 20,000 [*U*] per individual</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

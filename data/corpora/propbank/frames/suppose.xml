@@ -1,0 +1,82 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="suppose">
+<note>
+Frames file for 'suppose' based on sentences in financial subcorpus
+and automatic expansion via verbnet.
+</note>
+
+<roleset id="suppose.01" name="think, assume" vncls="29.4">
+<roles>
+	<role descr="Thinker" n="0">
+		
+  <vnrole vncls="29.4" vntheta="Agent"/></role>
+ 
+	<role descr="Thought" n="1">
+		
+  <vnrole vncls="29.4" vntheta="Theme"/></role>
+ 
+	<role descr="Attributive" n="2">
+		
+  <vnrole vncls="29.4" vntheta="Predicate"/></role>
+ 
+</roles>
+
+<example name="imperative">
+<inflection aspect="ns" form="full" person="ns" tense="ns" voice="ns"/>
+<text>
+   *trace* Suppose an investor wants to sell a stock, but not for less
+    than $55. 
+</text>
+        <arg n="0">*trace*</arg>
+        <rel>Suppose</rel>
+        <arg n="1">an investor wants to sell a stock, but not for less
+        than $55</arg> 
+</example>
+
+<example name="missing (or inconvenient) thought">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    He thinks the underlying inflation rate is around 5% to 6%, far
+    higher than most people suppose. 
+</text>
+        <arg n="0">most people</arg>
+        <rel>suppose</rel>
+</example>
+
+<example name="light S" src="believe.01">
+  <text>
+    John supposes Mary an idiot.
+  </text>
+  <arg n="0">John</arg>
+  <rel>supposes</rel>
+  <arg n="1">Mary</arg>
+  <arg n="2">an idiot</arg>
+</example>
+
+</roleset>
+
+<roleset id="suppose.02" name="s'pos'ta" vncls="-">
+<roles>
+  <role descr="thing seeming" n="1"/>
+  <role descr="attribute" n="2"/>
+</roles>
+
+<example name="almost modal">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    Market makers are supposed to keep supplies of stocks on hand to
+    maintain orderly trading when imbalances occur. 
+</text>
+        <arg n="1">Market makers</arg>
+        <rel>supposed</rel>
+        <arg n="2">to keep supplies of stocks on hand  to maintain
+        orderly trading when imbalances occur </arg> 
+</example>
+
+<note>
+This is by far the most common usage.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

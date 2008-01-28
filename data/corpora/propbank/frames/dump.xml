@@ -1,0 +1,41 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="dump">
+<note>
+  Frames file for 'dump' based on sentences in financial subcorpus.
+  Verbnet class funnel-9.3, other framed members include push, shake.
+  Comparison with 'unload'.
+</note>
+
+<roleset id="dump.01" name="get rid of" vncls="9.3">
+<roles>
+  <role descr="agent, entity getting rid of something" n="0">
+		
+  <vnrole vncls="9.3" vntheta="Agent"/></role>
+
+  <role descr="thing gotten rid of" n="1">
+		
+  <vnrole vncls="9.3" vntheta="Theme"/></role>
+
+  <role descr="instrument or manner, if separate from agent" n="2"/>
+</roles>
+
+<example name="transitive, no instrument">
+<text>
+    Unable to unload UAL and other airline shares, takeover-stock
+    speculators, or risk arbitragers, dumped every blue-chip stock
+    they had.  
+</text>
+        <arg n="0">takeover-stock speculators, or risk
+        arbitragers,</arg> 
+        <rel>dumped</rel>
+        <arg n="1">every blue-chip stock  they had </arg>
+</example>
+
+<note>
+Will this have an instrument?  Intuition says no.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,35 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="wrangle">
+<note>
+  Frames file for 'wrangle' based on survey of sentences in the WSJ
+  corpus. Comparison with 'argue.02'.
+</note>
+
+<roleset id="wrangle.01" name="to argue" vncls="-">
+<roles>
+  <role descr="speaker" n="0"/>
+  <role descr="entity wrangled with" n="1"/>
+  <role descr="topic" n="2"/>
+</roles>
+
+
+<example name="all arguments">
+<inflection aspect="both" form="participle" person="third" tense="present" voice="active"/>
+<text>
+ Pinnacle West Capital Corp. , which [*T*-1] has been wrangling with regulators for months over what [*] to do [*T*-2] about Pinnacle 's moribund Merabank thrift unit , suspended its dividend and reported a 91 % plunge in third-quarter net income .
+</text>
+	<arg n="0">[*T*-1] -&gt;  which -&gt;  Pinnacle West Capital Corp.</arg>
+	<rel>wrangling</rel>
+	<arg f="with" n="1">regulators</arg>
+	<arg f="TMP" n="M">for months</arg>
+	<arg f="over" n="2">what [*] to do [*T*-2] about Pinnacle 's moribund Merabank thrift unit</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

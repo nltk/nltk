@@ -1,0 +1,37 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="wholesale">
+<note>
+  Frames file for 'wholesale' based on sentences in wsj.  No Verbnet
+  entry.  Comparison with 'retail'.
+</note>
+
+<roleset id="wholesale.01" name="sell at wholesale" vncls="-">
+  <roles>
+    <role descr="Seller" n="0"></role>
+    <role descr="Thing Sold" n="1"></role>
+    <role descr="Buyer" n="2">  </role>
+    <role descr="Price Paid" n="3"/>
+    <role descr="Benefactive" n="4"/>
+</roles>
+
+<example name="the one example">
+<inflection aspect="progressive" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+     Washington Red Delicious, by the way, are wholesaling for less
+     than $10 a box these days.  
+</text>
+        <arg n="1">Washington Red Delicious</arg>
+        <arg f="DIS" n="M">, by the way ,</arg>
+        <rel>wholesaling</rel>
+        <arg f="for" n="3">less than $ 10 [*U*] a box</arg>
+        <arg f="TMP" n="M">these days</arg>
+</example>
+
+<note>
+I actually rather doubt the agent could appear.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

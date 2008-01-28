@@ -1,0 +1,36 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="dole_out">
+<note>
+  Frames file for 'dole out' based on sentences in financial
+  subcorpus.  No Verbnet entry, no Framenet entry.  Comparison with
+  distribute.
+</note>
+
+<roleset id="dole.01" name="distribute grudgingly">
+<roles>
+  <role descr="distributor" n="0"/>
+  <role descr="thing distributed" n="1"/>
+  <role descr="distributed to" n="2"/>
+</roles>
+
+<example name="just transitive">
+  <inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+  <text>
+   LIN now plans *trace* to dole out $42 a share in cash, up from the
+   earlier $20 amount.
+  </text>
+  <arg n="0">LIN</arg>
+  <rel>dole out</rel>
+  <arg n="1">$42 a share</arg>
+  <arg f="MNR" n="m">in cash</arg>
+  <arg n="m">up from the earlier $20 amount</arg>
+</example>
+
+<note>
+Not currently recognized by rats.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

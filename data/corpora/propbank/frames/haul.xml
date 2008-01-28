@@ -1,0 +1,118 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="haul">
+<note>
+  Frames file for 'haul' based on sentences in wsj.  Verbnet entry
+  carry-11.4.
+</note>
+
+<roleset id="haul.01" name="carry a load" vncls="11.4">
+<roles>
+  <role descr="carrier" n="0"><vnrole vncls="11.4" vntheta="Agent"/></role>
+  <role descr="thing carried" n="1"><vnrole vncls="11.4" vntheta="Theme"/></role>
+  <role descr="instrument" n="2"/>
+  <role descr="'with' reflecting back on arg0" n="3"/>
+  <role descr="benefactive (predicted but not seen)" n="4"><vnrole vncls="11.4" vntheta="Destination"/></role>
+</roles>
+
+<example name="agentive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    Now why, you have to ask yourself, would intelligent beings haul a
+    bunch of rocks around the universe? 
+</text>
+        <arg f="DIS" n="M">Now</arg>
+        <arg n="0">intelligent beings</arg>
+        <rel>haul</rel>
+        <arg n="1">a bunch of rocks</arg>
+        <arg f="LOC" n="M">around the universe</arg>
+        <arg f="PNC" n="M">*trace* -&gt;  why</arg>
+</example>
+
+<example name="instrumental subject">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    The commercial, created by Bateman, Bryan &amp; Galles Inc., of
+    Dallas, adds derisively: ``I bet it takes a real tough truck
+    *trace* to haul your Ivy League buddies to the yacht club.'' 
+</text>
+        <arg n="2">*trace* -&gt;  a real tough truck</arg>
+        <rel>haul</rel>
+        <arg n="1">your Ivy League buddies</arg>
+        <arg f="DIR" n="M">to the yacht club</arg>
+</example>
+
+<example name="with reflexive">
+  <inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+  <text>
+    John hauls a bag full of bricks with him everywhere he goes.
+  </text>
+  <arg n="0">John</arg>
+  <rel>hauls</rel>
+  <arg n="1">a bag full of bricks</arg>
+  <arg f="with" n="3">him</arg>
+  <arg f="DIR" n="m">everywhere he goes</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="haul_in">
+
+<roleset id="haul.02" name="acquire, make (money)" vncls="-">
+<roles>
+  <role descr="acquirer" n="0"/>
+  <role descr="thing acquired" n="1"/>
+  <role descr="from" n="2"/>
+</roles>
+
+<example name="ha!">
+  <inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+  <text>
+     John hauls in a thousand bucks a day from his job as a
+     predicate-argument tagger.
+  </text>
+  <arg n="0">John</arg>
+  <rel>hauls in</rel>
+  <arg n="1">a thousand bucks a day</arg>
+  <arg f="from" n="2">his job as a predicate-argument tagger</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="haul_out">
+
+<roleset id="haul.03" name="cause to appear" vncls="-">
+<roles>
+  <role descr="causer" n="0"/>
+  <role descr="thing appearing" n="1"/>
+</roles>
+
+<example name="no source">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Then, in the guests' honor, the speedway hauled out four drivers,
+    crews and even the official Indianapolis 500 announcer for a
+    10-lap exhibition race. 
+</text>
+        <arg f="TMP" n="M">Then</arg>
+        <arg n="M">in the guests' honor</arg>
+        <arg n="0">the speedway</arg>
+        <rel>[ hauled] [ out]</rel>
+        <arg n="1">four drivers, crews and even the official
+        Indianapolis 500 announcer</arg> 
+        <arg f="PNC" n="M">for a 10-lap exhibition race</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

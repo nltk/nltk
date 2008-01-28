@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="depart">
+<note>
+  Frames file for 'depart' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="depart.01" name="to go away, leave" vncls="51.1-1">
+<roles>
+  <role descr="entity leaving, agent" n="0">
+        <vnrole vncls="51.1-1" vntheta="Theme"/></role>
+  <role descr="departed from" n="1">
+        <vnrole vncls="51.1-1" vntheta="Location"/></role>
+</roles>
+
+
+<example name="both arguments">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+ [*-1] Departing from decades of Soviet dogma , the new system would lead to big differences in pay between workers and almost certainly to unemployment .
+</text>
+	<rel>Departing</rel>
+	<arg f="from" n="1">decades of Soviet dogma</arg>
+	<arg n="0">the new system -&gt;  [*-1]</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

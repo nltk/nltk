@@ -1,0 +1,64 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="castigate">
+<note>
+  Frames file for 'castigate' based on sentences in wsj.  Verbnet
+  entry 33, Framenet entry Judgement.
+</note>
+
+<roleset id="castigate.01" name="blame" vncls="33">
+<roles>
+  <role descr="assigner of blame" n="0"><vnrole vncls="33" vntheta="Agent"/></role>
+  <role descr="guilty party" n="1"><vnrole vncls="33" vntheta="Theme"/></role>
+  <role descr="crime" n="2"><vnrole vncls="33" vntheta="Cause"/></role>
+</roles>
+
+<example name="all args">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+    Yet much of the political culture seems intent on *trace*
+    castigating the Bush administration for not ``helping''
+    Mr. Gorbachev. 
+</text>
+        <arg n="0">*trace* -&gt;  much of the political culture</arg>
+        <rel>castigating</rel>
+        <arg n="1">the Bush administration</arg>
+        <arg f="for" n="2">not `` helping '' Mr. Gorbachev</arg>
+</example>
+
+<example name="unstated crime">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+    From Chevy trucks to Lipton iced tea to a host of battling banks,
+    the state has been inundated with broadcast commercials and print
+    advertising campaigns celebrating Texans and castigating
+    outsiders. 
+</text>
+        <arg n="0">broadcast commercials and print advertising campaigns</arg>
+        <rel>castigating</rel>
+        <arg n="1">outsiders</arg>
+<note>
+The crime, I guess, is not being Texan.
+</note>
+</example>
+
+<example name="just one arg">
+<inflection aspect="ns" form="participle" person="ns" tense="past" voice="passive"/>
+<text>
+    Program traders were publicly castigated *trace* following the
+    508-point crash Oct. 19, 1987, and a number of brokerage firms
+    pulled back from using this strategy for a while. 
+</text>
+        <arg f="MNR" n="M">publicly</arg>
+        <rel>castigated</rel>
+        <arg n="1">*trace* -&gt;  Program traders</arg>
+        <arg f="TMP" n="M">following the 508-point crash Oct. 19,
+        1987</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

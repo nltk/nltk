@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="spy">
+<note>
+  Frames file for 'spy'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="spy.01" name="to investigate intensively  or discover by close observation" vncls="30.2">
+<roles> 
+  <role descr="secret agent" n="0">
+        <vnrole vncls="30.2" vntheta="Experiencer"/></role>  
+  <role descr="entity spied/seen" n="1">
+        <vnrole vncls="30.2" vntheta="Stimulus"/></role>  
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ Mr. Boren even spies a silver lining .
+</text>
+	<arg n="0">Mr. Boren</arg>
+	<arg f="ADV" n="M">even</arg>
+	<rel>spies</rel>
+	<arg n="1">a silver lining</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

@@ -1,0 +1,47 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="evaporate">
+<note>
+Frames file for 'evaporate' based on sentences in wsj and automatic
+expansion via verbnet.
+</note>
+
+<roleset id="evaporate.01" name="change from liquid to vapor" vncls="45.4">
+<roles>
+	<role descr="heat source" n="0">
+		
+  <vnrole vncls="45.4" vntheta="Agent"/></role>
+
+	<role descr="liquid, now vapor" n="1">
+		
+  <vnrole vncls="45.4" vntheta="Patient"/></role>
+
+</roles>
+
+<example name="ergative">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Analysts were disappointed that the enthusiasm investors showed
+    for stocks in the wake of Georgia-Pacific's $3.18 billion bid for
+    Great Northern Nekoosa evaporated so quickly. 
+</text>
+        <arg n="1">the enthusiasm investors showed for stocks in the
+        wake of Georgia-Pacific's $3.18 billion bid for Great Northern
+        Nekoosa</arg> 
+        <rel>evaporated</rel>
+        <arg f="MNR" n="M">so quickly</arg>
+</example>
+
+<example name="agentive">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    The sun evaporated John's beer.  Bogus, dude.
+  </text>
+  <arg n="0">The sun</arg>
+  <rel>evaporated</rel>
+  <arg n="1">John's beer</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

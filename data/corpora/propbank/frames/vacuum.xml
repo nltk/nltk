@@ -1,0 +1,35 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="vacuum">
+<note>
+  Frames file for 'vacuum'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="vacuum.01" name="to collect dirt with a vacuum cleaner" vncls="10.4.2">
+<roles> 
+ <role descr="vacuumer, agent" n="0">
+       <vnrole vncls="10.4.2" vntheta="Agent"/></role>
+ <role descr="dirt" n="1">
+       <vnrole vncls="10.4.2" vntheta="Theme"/></role>
+ <role descr="location" n="2">
+       <vnrole vncls="10.4.2" vntheta="Source"/></role>
+</roles>
+
+<example name="all arguments">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ Circus Circus 's flagship casino has become the envy of competitors for its ability [*] to vacuum cash from the pockets of vacationing families .
+</text>
+	<arg n="0">[*] -&gt;  Circus Circus 's flagship casino</arg>
+	<rel>vacuum</rel>
+	<arg n="1">cash</arg>
+	<arg f="from" n="2">the pockets of vacationing families</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

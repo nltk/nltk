@@ -1,0 +1,41 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="retry">
+
+<note>
+Frames file for 'retry' based on transformation of 'try'.
+</note>
+
+<roleset id="retry.01" name="Lawsuit" vncls="-">
+  <roles>
+    <role descr="Litigant" n="0"/>
+    <role descr="Lawsuit" n="1"/>
+  </roles>
+
+<example name="passive">
+  <text>
+    The case wasn't   retried in court.
+  </text>
+  <arg n="1">The case</arg>
+  <arg f="NEG" n="M">n't</arg>
+  <rel>retried</rel>
+  <arg f="LOC" n="M">in court</arg>
+</example>
+
+<example name="active">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+    Ultimately, that carefully picked jury deadlocked with a 10-2 vote
+    to acquit, and the prosecution decided [*-2] not to retry the
+    case. 
+</text>
+        <arg f="DIS" n="M">Ultimately</arg>
+        <arg n="0">[*-2] -&gt; the prosecution</arg>
+        <arg f="NEG" n="M">not</arg>
+        <rel>retry</rel>
+        <arg n="1">the case</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

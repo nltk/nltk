@@ -1,0 +1,42 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="impel">
+<note>
+  Frames file for 'impel' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="impel.01" name="impelled action" vncls="-">
+<roles>
+  <role descr="causal agent" n="0"/>
+  <role descr="impelled action" n="1"/>
+  <role descr="impelled agent, if extracted from action" n="2"/>
+</roles>
+
+<example name="no causal agent">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    She concedes that such a position is ``unfair'' to the thousands
+    of conscientious and qualified people plying the trade, but as a
+    consumer advocate she feels impelled [*-1] to take it. 
+</text>
+        <arg n="2">she</arg>
+        <rel>impelled</rel>
+        <arg n="1">[*-1] to take it</arg>
+</example>
+
+<example name="all args">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    Mary's threats of bodily harm impelled John to clean his room.
+  </text>
+  <arg n="0">Mary's threats of bodily harm</arg>
+  <rel>impelled</rel>
+  <arg n="1">John to clean his room</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,45 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="incarcerate">
+<note>
+  Frames file for 'incarcerate' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="incarcerate.01" name="throw in jail" vncls="-">
+<roles>
+  <role descr="judge, court, etc." n="0"/>
+  <role descr="criminal" n="1"/>
+  <role descr="term" n="2"/>
+  <role descr="crime" n="3"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Without more space [0] [*] to incarcerate convicted criminals
+    [*T*-1], he added, ``we will not win the war on drugs.'' 
+</text>
+        <arg n="0">[*]</arg>
+        <rel>incarcerate</rel>
+        <arg n="1">convicted criminals</arg>
+        <arg f="LOC" n="M">[*T*-1] -&gt;  [0] -&gt;  more space</arg>
+</example>
+
+<example name="all args">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    The judge incarcerated Mary for 15 years for the murder of John.
+  </text>
+  <arg n="0">The judge</arg>
+  <rel>incarcerated</rel>
+  <arg n="1">Mary</arg>
+  <arg f="for" n="2">15 years</arg>
+  <arg f="for" n="3">the murder of John</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

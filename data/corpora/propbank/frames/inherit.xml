@@ -1,0 +1,61 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="inherit">
+<note>
+  Frames file for 'inherit' based on sentences in wsj.  Verbnet entry 13.5.2.
+</note>
+
+<roleset id="inherit.01" name="get from predecessor" vncls="13.5.2">
+<roles>
+  <role descr="inheritor" n="0"><vnrole vncls="13.5.2" vntheta="Agent"/></role>
+  <role descr="inheritance" n="1"><vnrole vncls="13.5.2" vntheta="Theme"/></role>
+  <role descr="predecessor" n="2"><vnrole vncls="13.5.2" vntheta="Source"/></role>
+</roles>
+
+<example name="no predecessor">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+     Taking over as chief executive officer in 1983, he inherited a
+     company that was mired  in debt and hurt by a recession-inspired
+     slide in its building-products business. 
+</text>
+        <arg f="ADV" n="M">Taking over as chief executive officer in
+        1983</arg> 
+        <arg n="0">he</arg>
+        <rel>inherited</rel>
+        <arg n="1">a company that was mired in debt and hurt by a
+        recession-inspired slide in its building-products
+        business</arg> 
+</example>
+
+<example name="all args">
+<inflection aspect="perfect" form="participle" person="ns" tense="past" voice="active"/>
+<text>
+    Dr. Knudson found that some children with the eye cancer had
+    inherited a damaged copy of chromosome No. 13 from a parent who
+    had had the disease. 
+</text>
+        <arg n="0">some children with the eye cancer</arg>
+        <rel>inherited</rel>
+        <arg n="1">a damaged copy of chromosome No. 13</arg>
+        <arg f="from" n="2">a parent who had had the disease</arg>
+</example>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    Like all genes, tumor-suppressor genes are inherited *trace* in
+    two copies, one from each parent. 
+</text>
+        <arg f="ADV" n="M">Like all genes</arg>
+        <rel>inherited</rel>
+        <arg n="1">*trace* -&gt;  tumor-suppressor genes</arg>
+        <arg f="MNR" n="M">in two copies, one from each parent</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

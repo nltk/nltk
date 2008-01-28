@@ -1,0 +1,79 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="designate">
+<note>
+Frames file for 'designate' based on sentences in wsj and automatic
+expansion via verbnet.
+</note>
+
+<roleset id="designate.01" name="assign to a role" vncls="29.1">
+<roles>
+  <role descr="designator" n="0">
+	  <vnrole vncls="29.1" vntheta="Agent"/></role>
+  <role descr="designated" n="1">
+	  <vnrole vncls="29.1" vntheta="Theme"/></role>
+  <role descr="role of arg1" n="2">
+	  <vnrole vncls="29.1" vntheta="Predicate"/></role>
+</roles>
+
+<example name="expected: arg2-as">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    On Tuesday it approved Senator Bob Dole's proposed commemorative
+    resolution designating April 24, 1990, as the ``National Day of
+    Remembrance of the 75th Anniversary of the Armenian Genocide of
+    1915-1923,'' suffered at the hands of the warring Ottoman Empire. 
+</text>
+        <arg n="0">Senator Bob Dole's proposed commemorative resolution</arg>
+        <rel>designating</rel>
+        <arg n="1">April 24, 1990,</arg>
+        <arg f="as" n="2">the ``National Day of Remembrance of the
+        75th Anniversary of the Armenian Genocide of 1915-1923,''
+        suffered at the hands of the warring Ottoman Empire</arg> 
+</example>
+
+<example name="missing the as">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    Four years ago, Pittsburgh was designated *trace* the most-livable
+    U.S. city by Rand McNally's Places Rated Almanac, and the honor
+    did wonders to improve Pittsburgh's soot-stained image. 
+</text>
+        <arg f="TMP" n="M">Four years ago</arg>
+        <arg n="1">Pittsburgh</arg>
+        <rel>designated</rel>
+        <arg n="2">the most-livable U.S. city</arg>
+        <arg f="by" n="0">Rand McNally's Places Rated Almanac</arg>
+</example>
+
+<example name="arg2 as infinitive clause">
+<inflection aspect="ns" form="participle" person="ns" tense="past" voice="passive"/>
+<text>
+    Two Air Force facilities near Sacramento, and Travis Air Force
+    Base, 50 miles northeast of San Francisco, were designated *trace*
+    to serve as medical-airlift centers. 
+</text>
+        <rel>designated</rel>
+        <arg n="1">*trace* -&gt;  Two Air Force facilities near
+        Sacramento, and Travis Air Force Base, 50 miles northeast of
+        San Francisco,</arg> 
+        <arg n="2">to serve as medical-airlift centers</arg>
+</example>
+
+<example name="arg2-for">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    More than $1.8 million is allocated for pensions and expenses for
+    former presidents, and the budget for the official residence of
+    Vice President Quayle is more than doubled, with $200,000
+    designated *trace* for improvements to the property. 
+</text>
+        <rel>designated</rel>
+        <arg n="1">*trace* -&gt;  $200,000 </arg>
+        <arg f="for" n="2">improvements to the property</arg>
+</example>
+
+</roleset>
+
+</predicate>
+</frameset>

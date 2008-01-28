@@ -1,0 +1,76 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="root">
+<note>
+Frames file for 'root' based on sentences in financial subcorpus and
+automatic expansion via verbnet.
+</note>
+
+<roleset id="root.02" name="base, justify" vncls="-">
+<roles>
+  <role descr="justifier, agent (rarely seen)" n="0"/>
+  <role descr="decision" n="1"/>
+  <role descr="justification" n="2"/>
+</roles>
+
+<example name="usually passive">
+  <inflection aspect="ns" form="participle" person="third" tense="present" voice="passive"/>
+  <text>
+    That's not to say that the nutty plot of ``A Wild Sheep Chase'' is
+    rooted *trace* in reality.
+  </text>
+  <rel>rooted</rel>
+  <arg n="1">*trace* -&gt; the nutty plot of ``A Wild Sheep Chase''</arg>
+  <arg f="in" n="2">reality</arg>
+</example>
+
+</roleset>
+
+<roleset id="root.03" name="be an active fan" vncls="-">
+<roles>
+  <role descr="fan" n="0"/>
+  <role descr="rooted for" n="1"/>
+</roles>
+
+<example name="how 'bout them Huskers?">
+  <inflection aspect="progressive" form="participle" person="ns" tense="present" voice="active"/>
+  <text>
+    The only thing I'm rooting for *trace* is for the Series to go seven
+    games,'' said David Williams, a Sacramento septuagenarian, at the
+    Coliseum before Sunday's go.
+  </text>
+  <arg n="0">I</arg>
+  <rel>rooting</rel>
+  <arg f="for" n="1">*trace* -&gt; the only thing</arg>
+</example>
+
+</roleset>
+<note>
+I have an intuition for a 'search but not remove' or 'dig' sense (root
+around), but no data.
+</note>
+
+</predicate>
+
+<predicate lemma="root_out">
+<roleset id="root.01" name="search for and remove" vncls="-">
+<roles>
+  <role descr="searcher" n="0"/>
+  <role descr="thing removed" n="1"/>
+</roles>
+
+<example name="the one example">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Hector Castaneda Jimenez, chief prosecutor at the Attorney
+    General's Office, said that an estimated $82.8 million in
+    government property and unpaid taxes have been recovered in the
+    campaign *trace* to root out official corruption.
+</text>
+        <arg n="0"/>
+        <rel>[ root] [ out]</rel>
+        <arg n="1">official corruption</arg>
+</example>
+</roleset>
+</predicate>
+</frameset>

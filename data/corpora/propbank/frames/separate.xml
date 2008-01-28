@@ -1,0 +1,44 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="separate">
+<note>
+Frames file for 'separate' based on sentences in financial subcorpus
+and automatic expansion via verbnet.
+</note>
+
+<roleset id="separate.01" name="separate" vncls="10.1 23.1">
+<roles>
+	<role descr="entity causing separation" n="0">
+		
+		
+  <vnrole vncls="23.1" vntheta="Agent"/><vnrole vncls="10.1" vntheta="Agent"/></role>
+ 
+	<role descr="thing being divided" n="1">
+		
+		
+  <vnrole vncls="23.1" vntheta="Patient1"/><vnrole vncls="10.1" vntheta="Theme"/></role>
+ 
+	<role descr="source, separated from" n="2">
+		
+		
+  <vnrole vncls="23.1" vntheta="Patient2"/><vnrole vncls="10.1" vntheta="Source"/></role>
+
+</roles>
+
+<example name="all args">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    The Washington, D.C., think tank recommends that the courts adopt
+    different ``tracks'' for different types of civil cases in order
+    *trace* to separate the handling of highly complex suits from
+    simpler ones. 
+</text>
+        <arg n="0">*trace* -&gt;  the courts</arg>
+        <rel>separate</rel>
+        <arg n="1">the handling of highly complex suits</arg>
+        <arg f="from" n="2">simpler ones</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

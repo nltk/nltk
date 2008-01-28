@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="bequeath">
+<note>
+  Frames file for 'bequeath'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="bequeath.01" name="to leave by will, hand down" vncls="13.3">
+<roles> 
+  <role descr="giver, agent" n="0"><vnrole vncls="13.3" vntheta="Agent"/></role> 
+  <role descr="entity bequeathed" n="1"><vnrole vncls="13.3" vntheta="Theme"/></role>
+  <role descr="recipient" n="2"><vnrole vncls="13.3" vntheta="Recipient"/></role>  
+</roles>
+
+<example name="all arguments">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ Mr. Hubbard , who [*T*-1] died in 1986 , bequeathed the copyrights on his writings to his church , which [*T*-2] licensed them to New Era Publications , a Danish corporation .
+</text>
+	<arg n="0">Mr. Hubbard , who [*T*-1] died in 1986 ,</arg>
+	<rel>bequeathed</rel>
+	<arg n="1">the copyrights on his writings</arg>
+	<arg f="to" n="2">his church , which [*T*-2] licensed them to New Era Publications , a Danish corporation</arg>
+</example>
+
+</roleset>
+</predicate>
+
+</frameset>

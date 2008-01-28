@@ -1,0 +1,71 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="establish">
+<note>
+  Frames file for 'establish' based on sentences in financial
+  subcorpus.  Verbnet entry 29.2, other framed members include count,
+  define, describe, employ, intend, portray, rank, redefine, regard,
+  treat.  Comparison with 'set'.
+</note>
+
+<roleset id="establish.01" name="establish" vncls="29.2">
+<roles>
+  <role descr="agent, setter" n="0">
+		
+  <vnrole vncls="29.2" vntheta="Agent"/></role>
+
+  <role descr="thing set" n="1">
+		
+  <vnrole vncls="29.2" vntheta="Theme"/></role>
+
+  <role descr="attribute" n="2">
+		
+  <vnrole vncls="29.2" vntheta="Predicate"/></role>
+
+  <role descr="benefactive" n="3"/>
+</roles>
+
+<example name="just transitive">
+<text>
+    ``He's in a vulnerable position because he hasn't established much
+    credibility on his own,'' says Bryan Jacoboski.
+</text>
+        <arg n="0">he</arg>
+        <arg f="NEG" n="M">n't</arg>
+        <rel>established</rel>
+        <arg n="1">much credibility</arg>
+        <arg f="MNR" n="M">on his own</arg>
+</example>
+
+<example name="with attribute">
+<text>
+    Jay Freedman said P&amp;G's Always sanitary napkin, sold under the
+    Whisper name in Japan, has firmly established itself as a leading
+    brand. 
+</text>
+        <arg n="0">P&amp;G's Always sanitary napkin, sold under the
+        Whisper name in Japan,</arg> 
+        <arg f="MNR" n="M">firmly</arg>
+        <rel>established</rel>
+        <arg f="REC" n="1">itself</arg>
+        <arg f="as" n="2">a leading brand</arg>
+</example>
+
+<example name="with benefactive">
+<text>
+    During the third quarter, the company established a $30 million
+    reserve for its high-yield bond portfolio. 
+</text>
+        <arg f="TMP" n="M">During the third quarter</arg>
+        <arg n="0">the company</arg>
+        <rel>established</rel>
+        <arg n="1">a $30 million reserve</arg>
+        <arg f="for" n="3">its high-yield bond portfolio</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

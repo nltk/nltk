@@ -1,0 +1,57 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="tape">
+<note>
+  Frames file for 'tape' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="tape.01" name="to secure of fasten with a tape" vncls="22.4">
+<roles>
+  <role descr="taper, agent" n="0">
+        <vnrole vncls="22.4" vntheta="Agent"/></role>
+  <role descr="entity taped" n="1">
+        <vnrole vncls="22.4" vntheta="Patient1"/></role>
+  <role descr="entity taped to" n="2">
+        <vnrole vncls="22.4" vntheta="Patient2"/></role>
+</roles>
+
+
+<example name="all arguments">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ So Mr. Barrett , then vice president of the Alabama Steamship Association , took a steel-toothed garden rake and taped it to the underside of a leaf rake about nine inches up .
+</text>
+	<arg f="DIS" n="M">So</arg>
+	<arg n="0">Mr. Barrett , then vice president of the Alabama Steamship Association ,</arg>
+	<rel>taped</rel>
+	<arg n="1">it</arg>
+	<arg f="to" n="2">the underside of a leaf rake about nine inches up</arg>
+</example>
+</roleset>
+
+<roleset id="tape.02" name="to record on magnetic tape" vncls="25.4">
+<roles>
+  <role descr="recorder, agent" n="0">
+        <vnrole vncls="25.4" vntheta="Agent"/></role>
+  <role descr="entity taped" n="1">
+        <vnrole vncls="25.4" vntheta="Theme"/></role>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ Ms. Moss said [0] Ms. Levine secretly taped many conversations with her bosses at the Odeon in which they told her [0] she was being fired as maitre 'd because she was pregnant [*T*-1] .
+</text>
+	<arg n="0">Ms. Levine</arg>
+	<arg f="MNR" n="M">secretly</arg>
+	<rel>taped</rel>
+	<arg n="1">many conversations with her bosses at the Odeon in which they told her [0] she was being fired as maitre 'd because she was pregnant [*T*-1]</arg>
+</example>
+
+</roleset>
+</predicate>
+
+
+</frameset>

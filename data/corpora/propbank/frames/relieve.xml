@@ -1,0 +1,103 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="relieve">
+<note>
+Frames file for 'relieve' based on sentences in wsj and automatic
+expansion via verbnet.
+</note>
+
+<roleset id="relieve.01" name="help, ease, get rid of" vncls="10.6">
+<roles>
+	<role descr="thing relieving" n="0">
+		
+  <vnrole vncls="10.6" vntheta="Agent"/></role>
+
+	<role descr="thing being helped, eased, gotten rid of" n="1">
+		
+  <vnrole vncls="10.6" vntheta="Source"/></role>
+
+	<role descr="benefactive" n="2"/>
+</roles>
+
+<example name="straight transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    Ports in the Great Lakes and Atlantic Coast can also relieve
+pressure on New Orleans. 
+</text>
+        <arg n="0">Ports in the Great Lakes and Atlantic Coast</arg>
+        <arg f="MOD" n="M">can</arg>
+        <arg f="DIS" n="M">also</arg>
+        <rel>relieve</rel>
+        <arg n="1">pressure on New Orleans</arg>
+</example>
+
+<example name="benefactive: relieve of">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Mr. Wall relieved them of responsibility for supervising Lincoln
+in 1988. 
+</text>
+        <arg n="0">Mr. Wall</arg>
+        <rel>relieved</rel>
+        <arg n="2">them</arg>
+        <arg f="of" n="1">responsibility for supervising Lincoln</arg>
+        <arg f="TMP" n="M">in 1988</arg>
+</example>
+
+</roleset>
+
+<roleset id="relieve.02" name="make feel better" vncls="31.1">
+<roles>
+	<role descr="reliever" n="0"><vnrole vncls="31.1" vntheta="Cause"/></role>
+	<role descr="patient, relieved " n="1"><vnrole vncls="31.1" vntheta="Experiencer"/></role>
+	<role descr="instrument or manner" n="2"/>
+</roles>
+
+<example name="prepositional arg0">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    With investors relieved at the overnight gain in New York stocks,
+small-lot buying orders streamed into the market from early morning,
+making traders believe  the market was back to normal. 
+</text>
+        <arg n="1">investors</arg>
+        <rel>relieved</rel>
+        <arg f="at" n="0">the overnight gain in New York stocks</arg> 
+</example>
+
+<example name="more normal arg0">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    And some commuters, relieved *trace* by the absence of gridlock,
+were planning to return to their old ways. 
+</text>
+        <rel>relieved</rel>
+        <arg n="1">*trace* -&gt;  some commuters</arg>
+        <arg f="by" n="0">the absence of gridlock</arg>
+</example>
+
+<example name="sentential arg0">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    Around Wall Street, trading desks were relieved *trace* that they
+could at least play the market yesterday, in contrast to Friday's
+gridlock. 
+</text>
+        <arg f="LOC" n="M">Around Wall Street</arg>
+        <rel>relieved</rel>
+        <arg n="1">*trace* -&gt;  trading desks</arg>
+        <arg n="0">that they could at least play the market yesterday,
+in contrast to Friday's gridlock</arg> 
+<note>
+Note that here the complementizer is mandatory!
+</note>
+</example>
+
+</roleset>
+<note>
+In the absence of arg2 the two rolesets might be easy to confuse
+although they are semantically quite distinct.
+</note>
+
+</predicate>
+</frameset>

@@ -1,0 +1,101 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="surprise">
+<note>
+Frames file for 'surprise' based on sentences in financial subcorpus.
+No access to verbnet at the moment.
+</note>
+
+<roleset id="surprise.01" name="surprise" vncls="31.1">
+<roles>
+  <role descr="surpriser" n="0">
+	<vnrole vncls="31.1" vntheta="Cause"/></role>
+  <role descr="person surprised" n="1">
+	<vnrole vncls="31.1" vntheta="Experiencer"/></role>
+  <role descr="instrument" n="2"/>
+</roles>
+
+<example name="active transitive verbal">
+<text>
+    BellSouth's revised proposal surprised many industry analysts,
+        especially because of the company's willingness to accept some
+        dilution of future earnings .</text> 
+        <arg n="0">BellSouth's revised proposal</arg>
+        <rel>surprised</rel>
+        <arg n="1">many industry analysts</arg>
+        <arg f="CAU" n="M">especially because of the company's
+        willingness to accept some dilution of future earnings</arg> 
+</example>
+
+<example name="passivized verbal">
+<text>
+    That is why everybody was a little surprised *trace* by the storm
+    of sell orders from small private investors,'' said Norbert
+    Braeuer, a senior trader for Hessische Landesbank. 
+</text>
+        <arg f="ADV" n="M">a little</arg>
+        <rel>surprised</rel>
+        <arg n="1">*trace* -&gt;  everybody</arg>
+        <arg f="by" n="0">the storm of sell orders from small private
+        investors</arg> 
+</example>
+
+<example name="adjectival, no causer">
+<text>
+    We're surprised.
+</text>
+        <arg n="1">We</arg>
+        <rel>surprised</rel>
+</example>
+
+<example name="adjectival, sentential causer">
+<text>
+    ``Over the next couple of years we would not be surprised to see
+    Europe and international sales represent 50% of the company's
+    revenues,'' he said. 
+</text>
+        <arg n="1">we</arg>
+        <arg f="MOD" n="M">would</arg>
+        <arg f="NEG" n="M">not</arg>
+        <rel>surprised</rel>
+        <arg n="0">to see Europe and international sales represent 50%
+        of the company's revenues</arg> 
+</example>
+
+<example name="adjectival, PP causer">
+<text>
+    Analysts, who were expecting Alcoa to post around $2.70 to $3 a
+    share, were surprised at the lackluster third-quarter results. 
+</text>
+        <arg n="1">Analysts, who were expecting Alcoa to post around
+        $2.70 to $3 a share,</arg> 
+        <rel>surprised</rel>
+        <arg f="at" n="0">the lackluster third-quarter results</arg>
+</example>
+
+<example name="with instrument">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John surprised Mary with breakfast in bed on her birthday--it made
+    quite a mess on her sheets, though.
+  </text>
+  <arg n="0">John</arg>
+  <rel>surprised</rel>
+  <arg n="1">Mary</arg>
+  <arg f="with" n="2">breakfast in bed</arg>
+  <arg f="TMP" n="m">on her birthday</arg>
+</example>
+
+<note>
+Only use arg2 when arg0 is also present in the sentence.
+</note>
+
+<note>
+The line between the adjectival and verbal usages of
+&quot;surprised&quot; is so fuzzy as to be nonexistent.  Therefore,
+tag all instances regardless of the head of the phrase (ie, VP or ADJP).
+</note>
+
+</roleset>
+</predicate>
+</frameset>

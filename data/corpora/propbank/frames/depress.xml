@@ -1,0 +1,85 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="depress">
+<note>
+  Frames file for 'depress' based on sentences in financial subcorpus.
+  Verbnet entry 31.1, other framed members include comfort, convince
+  encourage, interest, reassure, repel, scare, shock, spook, threaten
+  and worry.  Comparison with, gee, pick one.
+</note>
+
+<roleset id="depress.01" name="bring down (mood)" vncls="31.1">
+<roles>
+  <role descr="causer of depression" n="0">
+	<vnrole vncls="31.1" vntheta="Cause"/></role>
+  <role descr="entity getting depressed" n="1">
+	<vnrole vncls="31.1" vntheta="Experiencer"/></role>
+  <role descr="instrument, if causer also present" n="2"/>
+</roles>
+
+<example name="all args">
+  <text>
+    John depressed Mary with his endless moaning about grad school.
+  </text>
+  <arg n="0">John</arg>
+  <rel>depressed</rel>
+  <arg n="1">Mary</arg>
+  <arg f="with" n="2">his endless moaning about grad school</arg>
+</example>
+
+<note>
+Do try to distinguish between agents and instruments, as this makes a
+difference for the so-called 'psych' verbs (of which this is one).
+</note>
+
+</roleset>
+
+<roleset id="depress.02" name="bring down (stock prices)">
+<roles>
+  <role descr="causer of depression (agent or instrument)" n="0"/>
+  <role descr="stock" n="1"/>
+  <role descr="EXT" n="2"/>
+  <role descr="start point" n="3"/>
+  <role descr="end point" n="4"/>
+</roles>
+
+<example name="it was inevitable">
+<text>
+    However, the executive noted that slackening demand for new
+    mortgages depressed new loan originations to $1 billion, 30% below
+    the same period last year. 
+</text>
+        <arg n="0">slackening demand for new mortgages</arg>
+        <rel>depressed</rel>
+        <arg n="1">new loan originations</arg>
+        <arg f="to" n="4">to $1 billion, 30% below the same period
+        last year</arg> 
+</example>
+
+<example name="passive">
+<text>
+    London shares were depressed *trace* initially by overnight losses
+    in New York.
+</text>
+        <rel>depressed</rel>
+        <arg n="1">*trace* -&gt;  London shares</arg>
+        <arg f="TMP" n="M">initially</arg>
+        <arg f="by" n="0">overnight losses in New York</arg>
+</example>
+
+<example name="active">
+<text>
+    The industry's chemical profits also declined because excess
+    capacity has depressed prices. 
+</text>
+        <arg n="0">excess capacity</arg>
+        <rel>depressed</rel>
+        <arg n="1">prices</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

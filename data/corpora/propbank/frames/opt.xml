@@ -1,0 +1,44 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="opt">
+<note>
+  Frames file for 'opt' based on sentences in financial subcorpus.  No
+  Verbnet entry.  Comparison with 'choose' etc.
+</note>
+
+<roleset id="opt.01" name="choose, pick, decide on">
+<roles>
+  <role descr="chooser" n="0"/>
+  <role descr="choice" n="1"/>
+</roles>
+
+<example name="PP choice">
+<text>
+    With the new TV spots, Ogilvy &amp; Mather has opted for a family
+    style with lots of laughter, hugs and tears. 
+</text>
+        <arg f="MNR" n="M">With the new TV spots</arg>
+        <arg n="0">Ogilvy &amp; Mather</arg>
+        <rel>opted</rel>
+        <arg f="for" n="1">a family style with lots of laughter, hugs
+        and tears</arg> 
+</example>
+
+<example name="infinitive choice">
+<text>
+    But the company said the amount can't be determined until it knows
+    how many managers opt to retire.  
+</text>
+        <arg n="0">*trace* -&gt;  how many managers</arg>
+        <rel>opt</rel>
+        <arg n="1">to retire</arg>
+</example>
+
+<note>
+&quot;Choice&quot; verbs can also take a source (choose one out of a group) or
+benefactive (choose for), but I doubt those will appear with 'opt'.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

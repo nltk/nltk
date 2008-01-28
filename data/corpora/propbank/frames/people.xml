@@ -1,0 +1,39 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="people">
+<note>
+  Frames file for 'people' based on sentences in wsj.  No access to
+  Verbnet at the moment.
+</note>
+
+<roleset id="people.01" name="populate" vncls="-">
+<roles>
+  <role descr="area" n="1"/>
+  <role descr="population" n="2"/>
+</roles>
+
+<example name="the one example">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+      In a lovely, novelistic memoir, ``Sleeping Arrangements''
+      (Knopf, 195 pages, $18.95), she remembers an exotic playground,
+      peopled [*] mainly by Jewish eccentrics and the occasional
+      Catholic (real oddballs like her sexpot friend, the hell-kitten
+      Diana, age five). 
+</text>
+        <rel>peopled</rel>
+        <arg n="1">[*] -&gt;  an exotic playground</arg>
+        <arg f="EXT" n="M">mainly</arg>
+        <arg f="by" n="2">Jewish eccentrics and the occasional
+        Catholic (real oddballs like her sexpot friend, the
+        hell-kitten Diana, age five)</arg> 
+</example>
+
+<note>
+Populate can take an agent, but people cannot (to my mind); hence the
+arg numbering.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

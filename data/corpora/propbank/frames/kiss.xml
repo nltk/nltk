@@ -1,0 +1,46 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="kiss">
+<note>
+  Frames file for 'kiss' based on sentences in wsj.  Verbnet entries
+  36.2, 20.
+</note>
+
+<roleset id="kiss.01" name="smooch" vncls="36.2 20">
+<roles>
+  <role descr="kisser" n="0"><vnrole vncls="36.2" vntheta="Actor1"/><vnrole vncls="20" vntheta="Agent"/></role>
+  <role descr="kissed" n="1"><vnrole vncls="36.2" vntheta="Actor2"/><vnrole vncls="20" vntheta="Experiencer"/></role>
+  <role descr="goodbye" n="2"/>
+</roles>
+
+<example name="pogue mahones">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+     Unamused, residents burned Rand McNally books and wore T-shirts
+     that said: ``[*] Kiss my Atlas.'' 
+</text>
+        <arg n="0">[*]</arg>
+        <rel>Kiss</rel>
+        <arg n="1">my Atlas</arg>
+</example>
+
+
+<example name="somewhat idiomatic">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    Deeply ingrained in both the book review ``[*] Kissing Nature
+    Good-bye'' by Stephen MacDonald (Leisure &amp; Arts, Sept. 27) and
+    the books reviewed is the assumption that global warming is
+    entirely a result of human activity.
+</text>
+        <arg n="0">[*]</arg>
+        <rel>Kissing</rel>
+        <arg n="1">Nature</arg>
+        <arg n="2">Good-bye</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,50 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="perceive">
+<note>
+  Frames file for 'perceive' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="perceive.01" name="to become aware of, understand" vncls="30.2">
+<roles>
+  <role descr="perceiver" n="0">
+		
+  <vnrole vncls="30.2" vntheta="Experiencer"/></role>
+
+  <role descr="entity perceived" n="1">
+		
+  <vnrole vncls="30.2" vntheta="Stimulus"/></role>
+
+  <role descr="secondary predication, perceived as" n="2"/>
+</roles>
+
+
+<example name="all arguments">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ The U.S. wants the removal of what it perceives [*T*-183] as barriers to investment ; Japan denies [0] there are real barriers .
+</text>
+	<arg n="0">it</arg>
+	<rel>perceives</rel>
+	<arg n="1">[*T*-183] -&gt;  what</arg>
+	<arg f="as" n="2">barriers to investment</arg>
+</example>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ Small investors perceive that `` big operators '' dominate the market , said [0] [*T*-1] Thomas O'Hara , chairman of the National Association of Investors and head of the exchange 's Individual Investors Advisory Committee set up after the 1987 crash .
+</text>
+	<arg n="0">Small investors</arg>
+	<rel>perceive</rel>
+	<arg n="1">`` big operators '' dominate the market</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

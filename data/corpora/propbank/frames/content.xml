@@ -1,0 +1,39 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="content">
+<note>
+  Frames file for 'content' based on sentences in wsj.  Verbnet entry 31.4.
+</note>
+
+<roleset id="content.01" name="make content, please" vncls="31.4">
+<roles>
+  <role descr="causer of contentment" n="0">
+        <vnrole vncls="31.4" vntheta="Cause"/></role>
+  <role descr="contented entity, us REC" n="1">
+        <vnrole vncls="31.4" vntheta="Experiencer"/></role>
+  <role descr="with what, how" n="2">
+        <vnrole vncls="31.4" vntheta="Theme"/></role>
+</roles>
+
+<example name="typical usage">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    With talk today of a second economic miracle in West Germany, East
+    Germany no longer can content itself with being the economic star
+    in a loser league.
+</text>
+        <arg n="M">With talk today of a second economic miracle in
+        West Germany</arg> 
+        <arg n="0">East Germany</arg>
+        <arg f="TMP" n="M">no longer</arg>
+        <arg f="MOD" n="M">can</arg>
+        <rel>content</rel>
+        <arg f="REC" n="1">itself</arg>
+        <arg f="with" n="2">being the economic star in a loser league</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

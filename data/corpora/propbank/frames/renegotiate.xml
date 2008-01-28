@@ -1,0 +1,82 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="renegotiate">
+<note>
+  Frames file for 'renegotiate' based on sentences in financial
+  subcorpus.  Verbnet class negotiate-36.1, no indication of other
+  members.
+</note>
+
+<roleset id="renegotiate.01" name="work out terms of agreement, again" vncls="36.1">
+<roles>
+  <role descr="negotiator" n="0">
+		
+  <vnrole vncls="36.1" vntheta="Actor1"/></role>
+
+  <role descr="agreement" n="1">
+		
+  <vnrole vncls="36.1" vntheta="Topic"/></role>
+
+  <role descr="explicit other party" n="2">
+		
+  <vnrole vncls="36.1" vntheta="Actor2"/></role>
+
+</roles>
+
+<example name="NP/PP">
+<text>
+    Both companies are in the process of *trace* renegotiating contracts
+    with LTV and others. 
+</text>
+        <arg n="0">*trace* -&gt;  Both companies</arg>
+        <rel>renegotiating</rel>
+        <arg n="2">contracts</arg>
+        <arg f="with" n="1">LTV and others</arg>
+</example>
+
+<example name="double PP">
+<text>
+    It recently signed a preliminary agreement *trace* to renegotiate
+    exclusively with the Bank of Tokyo Ltd. for the sale of part of
+    its leasing business to the Japanese bank. 
+</text>
+        <arg n="0">*trace* -&gt;  It</arg>
+        <rel>renegotiate</rel>
+        <arg f="with" n="1">the Bank of Tokyo Ltd.</arg>
+        <arg f="for" n="2">the sale of part of its leasing business to
+        the Japanese bank</arg> 
+</example>
+
+<example name="unstated agreement">
+<text>
+    Although Georgia Gulf hasn't been eager *trace* to renegotiate with Mr. Simmons and NL, a specialty chemicals concern...
+</text>
+        <arg n="0">*trace* -&gt;  Georgia Gulf</arg>
+        <rel>renegotiate</rel>
+        <arg f="with" n="1">Mr. Simmons and NL, a specialty chemicals
+        concern,</arg> 
+</example>
+
+<example name="unstated co-negotiator">
+<text>
+    Santa Fe has disclosed that it is renegotiating to sell a 20%
+    interest in its real estate unit to the California Public
+    Employees Retirement System for roughly $400 million. 
+</text>
+        <arg n="0">it</arg>
+        <rel>renegotiating</rel>
+        <arg n="2">to sell a 20 % interest in its real estate unit to
+        the California Public Employees Retirement System for roughly
+        $400 million </arg> 
+</example>
+
+<note>
+Treebank sometimes puts the co-negotiator in with the agreement, which
+is certainly plausible (ie, &quot;negotiating a pact with GM&quot; is it a pact
+with GM or a negotiation with GM?  (Both, really.)  Follow Treebank's
+parsing.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

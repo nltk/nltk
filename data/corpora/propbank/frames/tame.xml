@@ -1,0 +1,52 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="tame">
+<note>
+Frames file for 'tame' based on sentences in financial subcorpus and
+automatic expansion via verbnet.
+</note>
+
+<roleset id="tame.01" name="cause to be tame" vncls="45.4">
+<roles>
+	<role descr="tamer" n="0">
+		
+  <vnrole vncls="45.4" vntheta="Agent"/></role>
+
+	<role descr="formerly wild beast" n="1">
+		
+  <vnrole vncls="45.4" vntheta="Patient"/></role>
+
+	<role descr="instrument" n="2">
+		
+  <vnrole vncls="45.4" vntheta="Instrument"/></role>
+
+</roles>
+
+<example name="no instrument">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    Maybe Mr. Z. was too busy *trace* taming his set to work with his
+    naturally ungainly Alfredo. 
+</text>
+        <arg n="0">*trace* -&gt;  Mr. Z.</arg>
+        <rel>taming</rel>
+        <arg n="1">his set</arg>
+</example>
+
+<example name="with instrument">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John tamed Mary with charm, patience, and a bottle of chloroform.
+  </text>
+  <arg n="0">John</arg>
+  <rel>tamed</rel>
+  <arg n="1">Mary</arg>
+  <arg f="with" n="2">charm, patience, and a bottle of chloroform</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

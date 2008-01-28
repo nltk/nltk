@@ -1,0 +1,43 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="camouflage">
+<note>
+  Frames file for 'camouflage' based on sentences in wsj.  Verbnet
+  entry 29.6.
+</note>
+
+<roleset id="camouflage.01" name="disguise, hide" vncls="29.6">
+<roles>
+  <role descr="disguiser, agent" n="0"><vnrole vncls="29.6" vntheta="Agent"/></role>
+  <role descr="thing disguised" n="1"><vnrole vncls="29.6" vntheta="Theme"/></role>
+  <role descr="secondary predication" n="2"><vnrole vncls="29.6" vntheta="Predicate"/></role>
+</roles>
+
+<example name="two of three">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    The security command post, camouflaged [*] as second-story retail
+    space, has its own ``crow's nest'' above the roofs of the other
+    buildings, with a panoramic view of the entire center. 
+</text>
+        <rel>camouflaged</rel>
+        <arg n="1">[*] -&gt;  The security command post</arg>
+        <arg f="as" n="2">second-story retail space</arg>
+</example>
+
+<example name="agentive">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John camouflaged his car.
+  </text>
+  <arg n="0">John</arg>
+  <rel>camouflaged</rel>
+  <arg n="1">his car</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

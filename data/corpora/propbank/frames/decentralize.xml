@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="decentralize">
+<note>
+  Frames file for 'decentralize' based on sentences in wsj.  No access
+  to verbnet at the moment.
+</note>
+
+<roleset id="decentralize.01" name="cause to not have a center" vncls="45.4">
+<roles>
+  <role descr="causer, agent" n="0"><vnrole vncls="45.4" vntheta="Agent"/></role>
+  <role descr="decentralized thing" n="1"><vnrole vncls="45.4" vntheta="Patient"/></role>
+</roles>
+
+<example name="the one example">
+<inflection aspect="ns" form="gerund" person="ns" tense="ns" voice="ns"/>
+<text>
+    A Soviet legislative panel rejected as not radical enough a
+    government proposal on [*] decentralizing economic control. 
+</text>
+        <arg n="0">[*]</arg>
+        <rel>decentralizing</rel>
+        <arg n="1">economic control</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,36 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="highlight">
+<note>
+  Frames file for 'highlight' based on sentences in financial
+  subcorpus.  No Verbnet entry, comparison with 'underscore' and
+  'emphasize'.
+</note>
+
+<roleset id="highlight.01" name="emphasize" vncls="-">
+<roles>
+  <role descr="emphasizer" n="0"/>
+  <role descr="utterance" n="1"/>
+  <role descr="hearer (rare)" n="2"/>
+</roles>
+
+<example name="basic transitive">
+<inflection aspect="progressive" form="participle" person="third" tense="present" voice="active"/>
+<text>
+    The company is highlighting more special deals in its advertising
+    and stores, and it's offering to defer finance charges on certain
+    big-ticket items. 
+</text>
+        <arg n="0">The company</arg>
+        <rel>highlighting</rel>
+        <arg n="1">more special deals</arg>
+        <arg f="LOC" n="M">in its advertising and stores</arg>
+</example>
+
+<note>
+An instrumental feels more natural here than a hearer.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

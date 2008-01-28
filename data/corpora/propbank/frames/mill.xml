@@ -1,0 +1,54 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="mill">
+<note>
+  Frames file for 'mill' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="mill.01" name="grind, like coffee" vncls="-">
+<roles>
+  <role descr="grinder" n="0"/>
+  <role descr="whole" n="1"/>
+  <role descr="powder, pieces" n="2"/>
+</roles>
+
+<example name="old-timey usage">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John milled the wheat into flour.
+  </text>
+  <arg n="0">John</arg>
+  <rel>milled</rel>
+  <arg n="1">the wheat</arg>
+  <arg f="into" n="2">flour</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="mill.02" name="move randomly" vncls="-">
+<roles>
+  <role descr="entity in motion" n="0"/>
+  <role descr="path or range" n="1"/>
+</roles>
+
+<example name="the one example">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    The doctor was among dozens of people milling through East
+    Berlin's Gethsemane Church Saturday morning. 
+</text>
+        <arg n="0">[ dozens] [ of people]</arg>
+        <rel>milling</rel>
+        <arg f="through" n="1">East Berlin's Gethsemane Church</arg>
+        <arg f="TMP" n="M">Saturday morning</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

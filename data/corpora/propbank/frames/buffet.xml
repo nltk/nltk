@@ -1,0 +1,34 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="buffet">
+<note>
+  Frames file for 'buffet' based on sentences in financial subcorpus.
+  Verbnet entry pelt-17.2, no other framed members.
+</note>
+
+<roleset id="buffet.01" name="pelt, throw lots of things at someone">
+<roles>
+  <role descr="thrower" n="0"/>
+  <role descr="victim" n="1"/>
+  <role descr="things thrown" n="2"/>
+</roles>
+
+<example name="always passive with instrument?">
+<text>
+    The government, already buffeted *trace* by high interest rates
+    and a slowing economy, has been badly hurt by last week's shake-up
+    in Mrs. Thatcher's cabinet. 
+</text>
+        <arg f="TMP" n="M">already</arg>
+        <rel>buffeted</rel>
+        <arg n="1">*trace* -&gt;  The government</arg>
+        <arg f="by" n="2">high interest rates and a slowing economy</arg>
+</example>
+
+<note>
+I actually doubt any agent will ever appear.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

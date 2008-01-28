@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="stave_off">
+<note>
+  Frames file for 'stave' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="stave.01" name="to prevent from happening" vncls="-">
+<roles>
+  <role descr="preventer, agent" n="0"/>
+  <role descr="action prevented" n="1"/>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ Such news is good for bonds because economic weakness sometimes causes the Federal Reserve to lower interest rates in an effort [*] to stimulate the economy and stave off a recession .
+</text>
+	<arg n="0">[*] -&gt;  the Federal Reserve</arg>
+	<rel>[ stave] [ off]</rel>
+	<arg n="1">a recession</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

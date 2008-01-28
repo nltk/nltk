@@ -1,0 +1,62 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="stash">
+<note>
+Frames file for 'stash' based on sentences in wsj and automatic
+expansion via verbnet.
+</note>
+
+<roleset id="stash.01" name="hide" vncls="9.1">
+<roles>
+	<role descr="agent, stasher" n="0">
+		
+  <vnrole vncls="9.1" vntheta="Agent"/></role>
+
+	<role descr="thing stashed" n="1">
+		
+  <vnrole vncls="9.1" vntheta="Theme"/></role>
+
+	<role descr="location or position, or attribute" n="2"><vnrole vncls="9.1" vntheta="Destination"/></role>
+</roles>
+
+<example name="all args">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    A food caterer stashed stones in the false bottom of a milk pail. 
+</text>
+        <arg n="0">A food caterer</arg>
+        <rel>stashed</rel>
+        <arg n="1">stones</arg>
+        <arg f="in" n="2">the false bottom of a milk pail</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="stash_away">
+
+<roleset id="stash.02" name="hide without location" vncls="-">
+<roles>
+  <role descr="hider" n="0"/>
+  <role descr="thing hidden" n="1"/>
+</roles>
+
+<example name="hoard">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    The 40-year old Mr. Pope hasn't changed jobs enough -- at least
+    the right ones -- *trace* to stash away that kind of money. 
+</text>
+        <arg n="0">*trace* -&gt;  The 40-year old Mr. Pope</arg>
+        <rel>[ stash] [ away]</rel>
+        <arg n="1">that kind of money</arg>
+</example>
+
+<note>
+The adverb/particle eliminates (to my ear) the possibility for a
+location argument.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

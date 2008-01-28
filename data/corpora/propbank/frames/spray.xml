@@ -1,0 +1,39 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="spray">
+<note>
+  Frames file for 'spray' based on sentences in wsj.  Verbnet entry
+  9.7, Framenet entries Filling and Placing.
+</note>
+
+<roleset id="spray.01" name="apply thin liquid to surface" vncls="9.7">
+<roles>
+  <role descr="applier" n="0">
+        <vnrole vncls="9.7" vntheta="Agent"/></role>
+  <role descr="liquid" n="1">
+        <vnrole vncls="9.7" vntheta="Theme"/></role>
+  <role descr="surface" n="2">
+        <vnrole vncls="9.7" vntheta="Destination"/></role>
+</roles>
+
+<example name="all args">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+    The oil company claims that Alaskan officials prevented Exxon from
+    [*-1] spraying dispersant onto the almost 11 million gallons of
+    oil dumped when one of its tankers ran into an underwater reef. 
+</text>
+        <arg n="0">[*-1] -&gt;  Exxon</arg>
+        <rel>spraying</rel>
+        <arg n="1">dispersant</arg>
+        <arg f="onto" n="2">the almost 11 million gallons of oil
+        dumped when one of its tankers ran into an underwater
+        reef</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

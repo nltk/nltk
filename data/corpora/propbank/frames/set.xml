@@ -1,0 +1,218 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="set">
+<note>
+based on survey of initial sentences of big corpus
+and comparison with 'put'
+</note>
+
+<roleset id="set.01" name="put, place" vncls="9.1">
+<roles>
+  <role descr="agent, setter" n="0">
+	<vnrole vncls="9.1" vntheta="Agent"/></role>
+  <role descr="thing set" n="1">
+	<vnrole vncls="9.1" vntheta="Theme"/></role>
+  <role descr="location or position" f="LOC" n="2">
+	<vnrole vncls="9.1" vntheta="Destination"/></role>
+</roles>
+
+<example name="set at">
+  <text>
+    Judge Curry set the interest rate on the refund at 9%.
+  </text>
+  <arg n="0">Judge Curry</arg>
+  <rel>set</rel>
+  <arg n="1">the interest rate on the refund</arg>
+  <arg f="loc" n="2">at 9%</arg>
+</example>
+</roleset>
+
+<roleset id="set.02" name="establish" vncls="25.1">
+<roles>
+  <role descr="agent, setter" n="0">
+	<vnrole vncls="25.1" vntheta="Agent"/></role>
+  <role descr="thing set" n="1">
+	<vnrole vncls="25.1" vntheta="Theme"/></role>
+  <role descr="attribute of arg1" n="2"/>
+</roles>
+
+<example name="just transitive">
+  <text>
+    Judge Curry's order set a precedent for a second nuclear rate case.
+  </text>
+  <arg n="0">Judge Curry's order</arg>
+  <rel>set</rel>
+  <arg n="1">a precedent for a second nuclear rate case</arg>
+</example>
+
+<example name="all args">
+  <text>
+    The flow of Japanese funds has set in motion a complex process.
+  </text>
+  <arg n="0">The flow of Japanese funds</arg>
+  <rel>set</rel>
+  <arg n="1">a complex process</arg>
+  <arg f="in" n="2">motion</arg>
+</example>
+
+</roleset>
+
+<roleset id="set.08" vncls="-" name="prepare, make ready">
+<roles>
+  <role n="1"  descr="ready entity"/>
+  <role n="2"  descr="ready for what"/>
+</roles>
+
+<example name="on your mark, get set, go">
+  <inflection person="ns" tense="present" aspect="ns" voice="active" form="full"/>
+  <text>
+    According to one analyst, workers at the Cananea copper mine in
+    Mexico, which hasn't been operating since it was declared bankrupt
+    by the Mexican government in late August, are set [*-3] to return
+    to work. 
+  </text>
+  <arg n="1"        >workers at the Cananea copper mine in
+    Mexico, which hasn't been operating since it was declared bankrupt
+    by the Mexican government in late August</arg>
+  <rel              >set</rel>
+  <arg n="2"        >[*-3] to return to work</arg>
+<note>
+This is properly an adjective but we might as well include it.
+</note>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="set_off">
+
+<roleset id="set.04" vncls="-" name="set off: begin travel">
+<roles>
+  <role n="0"  descr="traveller"/>
+  <role n="1"  descr="destination"/>
+</roles>
+
+<example name="on the road again...">
+  <inflection person="third" tense="present" aspect="ns" voice="active" form="full"/>
+  <text>
+    A disaffected, hard-drinking, nearly-30 hero sets off for snow
+    country in search of an elusive sheep with a start on its back at
+    the behest of a sinister, erudite mobster with a Stanford degree.
+  </text>
+  <arg n="0"        >A disaffected, hard-drinking, nearly-30 hero</arg>
+  <rel              >set off</rel>
+  <arg n="1" f="for">snow country</arg>
+  <arg n="m" f="PNC">in search of an elusive sheep with a start on its back at
+    the behest of a sinister, erudite mobster with a Stanford degree</arg>
+</example>
+
+</roleset>
+
+<roleset id="set.05" vncls="-" name="set off: make a bomb explode">
+<roles>
+  <role n="0"  descr="bomber"/>
+  <role n="1"  descr="bomb"/>
+</roles>
+
+<example name="genetic bomb">
+  <inflection person="ns" tense="ns" aspect="ns" voice="ns" form="gerund"/>
+  <text>
+    He assumed the missing piece contained a gene or genes whose loss
+    *trace-1* had a critical role in *trace-2* setting off the cancer.
+  </text>
+  <arg n="0"        >*trace-2* -> *trace-1* -> whose loss -> a gene or
+  genes</arg>
+  <rel              >setting off</rel>
+  <arg n="1"        >the cancer</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="set_out">
+
+<roleset id="set.06" vncls="9.1" name="set out: establish">
+<roles>
+  <role descr="agent, setter" n="0">
+	<vnrole vncls="9.1" vntheta="Agent"/></role>
+  <role descr="thing set" n="1">
+	<vnrole vncls="9.1" vntheta="Theme"/></role>
+</roles>
+
+<example name="an offer you can't refuse">
+  <inflection person="ns" tense="ns" aspect="ns" voice="passive" form="participle"/>
+  <text>
+     A key provision in the current version of the charter would give
+     the commission a mandate to produce an ``action program''
+     detailing on what points EC member states would be required to
+     comply with the goals set [*] out in the charter. 
+  </text>
+  <rel              >set out</rel>
+  <arg n="1"        >[*[ -> the goals</arg>
+  <arg n="m" f="LOC">in the charter</arg>
+</example>
+
+</roleset>
+
+<roleset id="set.07" vncls="-" name="set out: begin">
+<roles>
+  <role n="0"  descr="traveller"/>
+  <role n="1"  descr="destination, goal"/>
+</roles>
+
+<example name="begin travel">
+  <inflection person="ns" tense="present" aspect="ns" voice="active" form="full"/>
+  <text>
+     On her husband's 50th birthday (after an auspicious 23 years of
+     marriage, it should be noted), Betsy, Al and their college-bound
+     son set out for New York to visit Fordham University. 
+  </text>
+  <arg n="m" f="TMP">On her husband's 50th birthday (after an
+  auspicious 23 years of marriage, it should be noted</arg> 
+  <arg n="0"        >Betsy, Al, and their college-bound son</arg>
+  <rel              >set out</rel>
+  <arg n="1" f="for">New York</arg>
+  <arg n="m" f="PNC">to visit Fordham University</arg>
+</example>
+
+<example name="begin a task">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+    Bioengineers set out [*-1] to duplicate that feat --
+    scientifically and commercially -- with new life forms. 
+  </text>
+  <arg n="0"        >Bioengineers</arg>
+  <rel              >set out</rel>
+  <arg n="1">[*-1] to duplicate that feat --
+    scientifically and commercially -- with new life forms</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="set_up">
+<roleset id="set.03" name="set up: establish" vncls="25.1">
+<roles>
+  <role descr="agent, setter" n="0">
+	<vnrole vncls="25.1" vntheta="Agent"/></role>
+  <role descr="thing set" n="1">
+	<vnrole vncls="25.1" vntheta="Theme"/></role>
+  <role descr="attribute" n="2"/>
+</roles>
+
+<example name="set in place">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+     Kawasaki-Rikuso, a freight company, set up its own software
+     subsidiary this year and is spending nearly a year's profit to
+     more than double the computer terminals at its main office. 
+  </text>
+  <arg n="0"        >Kawasake-Rikuso, a freight company</arg>
+  <rel              >set up</rel>
+  <arg n="1"        >its own software subsidiary</arg>
+  <arg n="m" f="TMP">this year</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

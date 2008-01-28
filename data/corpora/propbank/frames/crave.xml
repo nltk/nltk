@@ -1,0 +1,34 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="crave">
+<note>
+  Frames file for 'crave' based on sentences in wsj.  Verbnet entries
+  32.1 32.2, Framenet entry Experiencer subj.
+</note>
+
+<roleset id="crave.01" name="want a lot" vncls="32.1 32.2">
+<roles>
+    <role descr="Wanter" n="0"><vnrole vncls="32.2" vntheta="Experiencer"/><vnrole vncls="32.1" vntheta="Experiencer"/></role>
+    <role descr="thing wanted" n="1"><vnrole vncls="32.2" vntheta="Theme"/><vnrole vncls="32.1" vntheta="Theme"/></role>
+</roles>
+
+<example name="the one example">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    Contrary to widespread belief, Mussolini failed to live up to his
+    promise to make the trains run on time; it is doubtful whether
+    Soviet-style corporatism will make Soviet trains run on time, or
+    fill the shops with goods that the consumers so desperately crave
+    *trace*. 
+</text>
+        <arg n="0">the consumers</arg>
+        <arg f="MNR" n="M">so desperately</arg>
+        <rel>crave</rel>
+        <arg n="1">*trace* -&gt;  that -&gt;  goods</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,100 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="spill">
+<note>
+  Frames file for 'spill' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="spill.01" name="to cause or allow to flow" vncls="9.5 43.4">
+<roles>
+  <role descr="entity splilling" n="0">
+		
+  <vnrole vncls="43.4" vntheta="Agent"/><vnrole vncls="9.5" vntheta="Agent"/></role>
+
+  <role descr="entity spilled" n="1">
+		
+  <vnrole vncls="43.4" vntheta="Theme"/><vnrole vncls="9.5" vntheta="Theme"/></role>
+
+  <role descr="location/direction" n="2">
+		
+  <vnrole vncls="43.4" vntheta="Location"/><vnrole vncls="9.5" vntheta="Location"/></role>
+
+</roles>
+
+
+<example name="all arguments">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ On July 2 , 1987 , the tanker S.S. Glacier Bay struck a rock and spilled almost 150,000 gallons of oil into the Cook Inlet .
+</text>
+	<arg f="TMP" n="M">On July 2 , 1987</arg>
+	<arg n="0">the tanker S.S. Glacier Bay</arg>
+	<rel>spilled</rel>
+	<arg n="1">almost 150,000 gallons of oil</arg>
+	<arg f="into" n="2">the Cook Inlet</arg>
+</example>
+
+
+
+<example name="transitive with adverbials">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ Arkansas Democrat David Pryor spilled his guts on the Senate floor the other day after he 'd joined the Finance Committee 's early-morning pork-barrel revels : `` I must tell you ...
+</text>
+	<arg n="0">Arkansas Democrat David Pryor</arg>
+	<rel>spilled</rel>
+	<arg n="1">his guts</arg>
+	<arg f="LOC" n="M">on the Senate floor</arg>
+	<arg f="TMP" n="M">the other day</arg>
+	<arg f="TMP" n="M">after he 'd joined the Finance Committee 's early-morning pork-barrel revels</arg>
+</example>
+</roleset>
+</predicate>
+
+<predicate lemma="spill_over">
+
+<roleset id="spill.02" name="to overflow, pour out" vncls="-">
+<roles>
+  <role descr="entity spilled over" n="1"/>
+  <role descr="location/direction" n="2"/>
+</roles>
+
+<example name="both arguments">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+ The same issue threatens [*-2] to spill over to the foreign aid debate , and Mr. Bush also is threatening [*-3] to veto any agreement that [*T*-1] preserves Senate-passed provisions renewing U.S. support for the United Nations Fund for Population Activities .
+</text>
+	<arg n="1">[*-2] -&gt;  The same issue</arg>
+	<rel>[ spill] [ over]</rel>
+	<arg f="to" n="2">the foreign aid debate</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="spill_out">
+
+<roleset id="spill.03" name="to pour out" vncls="-">
+<roles>
+  <role descr="entity spilled out" n="1"/>
+  <role descr="location/direction" n="2"/>
+</roles>
+
+<example name="with direction">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ Come daybreak , eight family members and two other workers unroll a sheet of raw rubber that [*T*-1] covers the floor of the house and spills out onto the street .
+</text>
+	<arg n="1">[*T*-1] -&gt;  that -&gt;  a sheet</arg>
+	<rel>[ spills] [ out]</rel>
+	<arg f="onto" n="2">the street</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

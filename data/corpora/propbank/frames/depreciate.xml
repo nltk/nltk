@@ -1,0 +1,29 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="depreciate">
+<note>
+  Frames file for 'depreciate' based on sentences in wsj.  No access
+  to verbnet at the moment.
+</note>
+
+<roleset id="depreciate.01" name="lose value" vncls="45.6">
+<roles>
+  <role descr="thing losing value" n="1"><vnrole vncls="45.6" vntheta="Patient"/></role>
+</roles>
+
+<example name="the one example">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+     Since 1984, more companies give sales-loss aid, as many
+     real-estate values depreciated, the council says. 
+</text>
+        <arg n="1">many real-estate values</arg>
+        <rel>depreciated</rel>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

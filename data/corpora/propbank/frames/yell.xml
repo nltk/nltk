@@ -1,0 +1,53 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+  <note>
+  Frames file for 'yell' based on sentences in the WSJ corpus,
+  comparison with 'say'.  
+  </note>
+<predicate lemma="yell">
+
+<roleset id="yell.01" name="to cry out loudly" vncls="37.7 38">
+  <roles>
+    <role descr="Yeller" n="0">
+		
+  <vnrole vncls="38" vntheta="Agent"/><vnrole vncls="37.7" vntheta="Agent"/></role>
+
+    <role descr="Utterance" n="1">
+		
+  <vnrole vncls="38" vntheta="Theme"/><vnrole vncls="37.7" vntheta="Topic"/></role>
+
+    <role descr="Hearer" n="2">
+		
+  <vnrole vncls="38" vntheta="Recipient"/><vnrole vncls="37.7" vntheta="Recipient"/></role>
+
+  </roles>
+
+<example name="with Arg1">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    ``Attention,'' yelled [*T*-1] our pilot as our basket plunged into
+    the canal. 
+</text>
+	<rel>yelled</rel>
+	<arg n="1">[*T*-1] -&gt;  Attention</arg>
+	<arg n="0">our pilot</arg>
+	<arg f="TMP" n="M">as our basket plunged into the canal</arg>
+</example>
+
+<example name="without Arg1">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+    [*-2] Munching pizza when they could [*?*] and [*-2] yelling until
+    their voices gave out, the two Benjamin Jacobson specialists at
+    the Big Board's UAL trading post yesterday presided over what
+    [*T*-3] can only be described [*-1] as a financial free-for-all. 
+</text>
+	<rel>yelling</rel>
+	<arg f="TMP" n="M">until their voices gave out</arg>
+	<arg n="0">[*-2] -&gt; the two Benjamin Jacobson specialists at
+	the Big Board's UAL trading post</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

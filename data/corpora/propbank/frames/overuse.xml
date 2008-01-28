@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="overuse">
+<note>
+  Frames file for 'overuse' based on sentences in wsj.  No Verbnet
+  entry. 
+</note>
+
+<roleset id="overuse.01" name="use too much" vncls="-">
+<roles>
+  <role descr="user" n="0"/>
+  <role descr="thing used" n="1"/>
+</roles>
+
+<example name="passive">
+<inflection aspect="progressive" form="participle" person="third" tense="past" voice="passive"/>
+<text>
+    Editorials in the Greenville newspaper allowed that Mrs. Yeargin
+    was wrong, but also said the case showed how testing was being
+    overused *trace*. 
+</text>
+        <rel>overused</rel>
+        <arg n="1">*trace* -&gt;  testing</arg>
+</example>
+
+<note>
+This example feels more adjectival to me, but hey, that's life.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

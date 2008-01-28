@@ -1,0 +1,34 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="twin">
+<note>
+  Frames file for 'twin' based on sentences in wsj.  No Verbnet entry. 
+</note>
+
+<roleset id="twin.01" name="match exactly, like an identical twin" vncls="-">
+<roles>
+  <role descr="person performing match" n="0"/>
+  <role descr="matching objects" n="1"/>
+</roles>
+
+<example name="passive, two arg1's">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="passive"/>
+<text>
+    The Nagymaros dam was designed *trace* *trace* to be twinned
+    *trace* with another dam, now nearly complete, 100 miles upstream
+    in Czechoslovakia. 
+</text>
+        <rel>twinned</rel>
+        <arg n="1">*trace* -&gt; *trace* -&gt; *trace* -&gt;  The Nagymaros dam</arg>
+        <arg f="with" n="1">another dam, now nearly complete, 100
+        miles upstream in Czechoslovakia</arg> 
+</example>
+
+<note>
+Following 'match' and similar verbs, 'twin' takes all matching objects
+as arg1.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

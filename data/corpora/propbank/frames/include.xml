@@ -1,0 +1,96 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<note>
+Frames file for 'include' based on survey of sentences in big corpus
+</note>
+
+<predicate lemma="include">
+<roleset id="include.01" name="include">
+<roles>
+  <role descr="agent, entity causing some grouping" n="0"/>
+  <role descr="theme, thing being included in some group" n="1"/>
+  <role descr="group" n="2"/>
+</roles>
+
+<example name="group as PP">
+  <text>
+    John includes Mary in the list of people he admires.
+  </text>
+  <arg n="0">John</arg>
+  <rel>includes</rel>
+  <arg n="1">Mary</arg>
+  <arg f="in" n="2">in the list of people he admires</arg>
+</example>
+
+<example name="group as subject">
+  <text>
+    The project did not      include Seymour Cray.
+  </text>
+  <arg n="2">The project</arg>
+  <arg f="NEG" n="M">not</arg>
+  <rel>include</rel>
+  <arg n="1">Seymour Cray</arg>
+</example>
+
+<example name="no group mentioned">
+  <text>
+    The government includes money spent on residential renovation.
+  </text>
+  <arg n="0">The government</arg>
+  <rel>includes</rel>
+  <arg n="1">money spent on residential renovation</arg>
+</example>
+
+<example name="passive, no group">
+  <text>
+    Several important divisions weren't included *trace*
+  </text>
+  <arg f="NEG" n="M">n't</arg>
+  <rel>were included</rel>
+  <arg n="1">*trace=divisions*</arg>
+</example>
+
+<example name="passive, with group as PP">
+  <text>
+    Losses from the earthquake in California would be included in 4th
+    QTR results. 
+  </text>
+  <arg n="1">Losses from the eathquake in California</arg>
+  <rel>would be included</rel>
+  <arg f="in" n="2">in 4th QTR results</arg>
+</example>
+
+<example name="PP-group in subject position">
+  <text>
+    ...included on the list are John and Mary
+  </text>
+  <rel>included</rel>
+  <arg f="on" n="2">on the list</arg>
+  <arg n="1">John and Mary</arg>
+</example>
+
+<note> every instance of the following structure is missed by the automatic
+tagger.  Sorry.
+</note>
+
+<example name="relative-clause-ish">
+  <text>
+    ...asset-backed securities, including as much as 15% in foreign
+    securities.
+  </text>
+  <arg n="2">asset-backed securities</arg>
+  <rel>including</rel>
+  <arg n="1">[as much as 15% in foreign securities]</arg>
+</example>
+
+<example name="semi-listish">
+  <text>
+    Including those in the suburbs, there are 143,800 Norwegians in
+    Minneapolis. 
+  </text>
+  <rel>Including</rel>
+  <arg n="1">those in the suburbs</arg>
+</example>
+</roleset>
+</predicate>
+</frameset>

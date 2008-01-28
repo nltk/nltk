@@ -1,0 +1,175 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="build">
+<note>
+  Frames file for 'build' based on survey of initial sentences of big corpus
+</note>
+
+<roleset id="build.01" name="construct" vncls="26.1-1">
+<roles>
+  <role descr="builder" n="0">
+	<vnrole vncls="26.1-1" vntheta="Agent"/></role>
+  <role descr="construction" n="1">
+	<vnrole vncls="26.1-1" vntheta="Product"/></role>
+  <role descr="material, start state" n="2">
+	<vnrole vncls="26.1-1" vntheta="Material"/></role>
+  <role descr="end state" n="4">
+        <vnrole vncls="26.1-1" vntheta="Product"/></role>
+</roles>
+
+<example name="basic">
+  <text>
+    Stephen Wozniak and Steven Jobs built the Apple I in a garage.
+  </text>
+  <arg n="0">Stephen Wozniak and Steven Jobs</arg>
+  <rel>built</rel>
+  <arg n="1">the Apple I</arg>
+  <arg f="loc" n="m">in a garage</arg>
+</example>
+
+<example name="theoretically possible start state">
+  <text>
+    John built his house of straw.
+  </text>
+  <arg n="0">John</arg>
+  <rel>built</rel>
+  <arg n="1">his house</arg>
+  <arg f="of" n="2">straw</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="build.02" name="grow" vncls="26.2">
+<roles>
+  <role descr="thing growing, building" n="0">
+	<vnrole vncls="26.2" vntheta="Product"/></role>
+  <role descr="place grown, substrate, material" n="1">
+	<vnrole vncls="26.2" vntheta="Material"/></role>
+  <role descr="amount increased by, EXT or MNR" n="2"/>
+  <role descr="start point" n="3"/>
+  <role descr="end point" n="4"/>
+</roles>
+
+<example name="ergative">
+  <text>
+    Pressures began *trace* to build.
+  </text>
+  <arg n="1">*trace=Pressures*</arg>
+  <rel>build</rel>
+</example>
+
+<example name="with substrate">
+  <text>
+    But it's building on a long tradition.
+  </text>
+  <arg f="dis" n="m">But</arg>
+  <arg n="1">it</arg>
+  <rel>building</rel>
+  <arg f="on" n="2">a long tradition</arg>
+</example>
+<example name="with end state - into">
+  <text>
+    They built Quebecor into an integrated paper, publishing, and printing concern.
+  </text>
+  <arg n="0">They</arg>
+  <rel>built</rel>
+  <arg n="1">Quebecor</arg>
+  <arg f="into" n="4">an integrated paper, publishing, and printing concern.</arg>
+</example>
+
+<example name="with end state - to">
+  <text>
+    GM built its cash reserves to $5.5 billion.
+  </text>
+  <arg n="0">GM</arg>
+  <rel>built</rel>
+  <arg n="1">its cash reserves</arg>
+  <arg f="to" n="4">$5.5 billion</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="build.03" name="include" vncls="-">
+<roles>
+  <role descr="agent, entity causing some grouping" n="0"/>
+  <role descr="theme, thing being included in some group" n="1"/>
+  <role descr="group" n="2"/>
+</roles>
+
+<example name="passivized">
+  <text>
+  Higher volatility gets built into the stock market.
+  </text>
+  <arg n="1">Higher volatility</arg>
+  <rel>built</rel>
+  <arg f="into" n="2">the stock market</arg>
+</example>
+
+<note>
+This will probably only occur with &quot;build into&quot;, but I don't want to
+make a phrasal verb out of it.
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="build_up">
+
+<note>
+Basically the same as 'construct' roleset id=&quot;build.04&quot; of 'build'
+</note>
+
+<roleset id="build.05" name="build up: cause to be bigger">
+<roles>
+  <role descr="builder" n="0"/>
+  <role descr="construction, bigger thing" n="1"/>
+  <role n="2" descr="amount of change, EXT"/>
+  <role n="3" descr="start point"/>
+  <role n="4" descr="end point, end state of arg1"/>
+</roles>
+
+<example name="mmmm, pulp">
+  <text>
+    He built up the pulp and paper segment of the company.
+  </text>
+  <arg n="0">He</arg>
+  <rel>built up</rel>
+  <arg n="1">the pulp and paper segment of the company</arg>
+</example>
+
+<example name="unaccusative">
+  <inflection person="ns" tense="ns" aspect="ns" voice="active" form="infinitive"/>
+  <text>
+    Plaintiffs' lawyers say that buildings become ``sick'' when
+    inadequate fresh air and poor ventilation systems lead pollutants
+    to build up inside.  
+  </text>
+  <arg n="1"        >pollutants</arg>
+  <rel              >build up</rel>
+  <arg n="m" f="LOC">inside</arg>
+</example>
+
+<example name="with end point">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+    Even Peter Lynch, manager of Fidelity's $12.7 billion Magellan
+    Fund, the nation's largest stock fund, built up cash to 7% or $850
+    million. 
+  </text>
+  <arg n="m" f="DIS">Even</arg>
+  <arg n="0"        >Peter Lynch, manager of Fidelity's $12.7 billion Magellan
+    Fund, the nation's largest stock fund</arg>
+  <rel              >built up</rel>
+  <arg n="1"        >cash</arg>
+  <arg n="4" f="to">7% or $850 million</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

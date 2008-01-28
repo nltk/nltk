@@ -1,0 +1,35 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="shore_up">
+<note>
+  Frames file for 'shore up' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="shore.01" name="support, prop" vncls="-">
+<roles>
+  <role descr="agent, supporter" n="0"/>
+  <role descr="thing supported" n="1"/>
+</roles>
+
+<example name="they all look basically like this">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Mr. Spoon said the plan is not an attempt *trace* to shore up a
+    decline in ad pages in the first nine months of 1989; Newsweek's
+    ad pages totaled 1,620, a drop of 3.2% from last year, according
+    to Publishers Information Bureau. 
+</text>
+        <arg n="0">*trace* -&gt;  the plan</arg>
+        <rel>[ shore] [ up]</rel>
+        <arg n="1">a decline in ad pages in the first nine months of
+        1989</arg> 
+</example>
+
+<note>
+This seems to occur most often in the infinitive; be careful with the
+target of the subject trace.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

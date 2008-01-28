@@ -1,0 +1,45 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="wall_off">
+<note>
+  Frames file for 'wall off' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="wall.01" name="separate with walls" vncls="-">
+<roles>
+  <role descr="builder of walls" n="0"/>
+  <role descr="thing separated" n="1"/>
+  <role descr="from what" n="2"/>
+</roles>
+
+<example name="usually without arg2?">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+    But even before Wang's latest financial troubles surfaced, some
+    customers ``were trying [*-2] to wall off their Wang
+    installations'' so other departments wouldn't add Wang, says Chris
+    Christiansen, a former Wang marketer who is now a market analyst
+    with Meta Group, a market research firm in Stamford, Conn. 
+</text>
+        <arg n="0">[*-2] -&gt;  some customers</arg>
+        <rel>[ wall] [ off]</rel>
+        <arg n="1">their Wang installations</arg>
+        <arg f="PNC" n="M">so other departments wouldn't add Wang</arg>
+</example>
+
+<example name="passive with arg2">
+  <inflection aspect="ns" form="participle" person="third" tense="present" voice="passive"/>
+  <text>
+     John's bedroom is walled off *trace* from the rest of the house.
+  </text>
+  <rel>*trace* -&gt; John's bedroom</rel>
+  <arg n="1">walled off</arg>
+  <arg f="from" n="2">the rest of the house</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

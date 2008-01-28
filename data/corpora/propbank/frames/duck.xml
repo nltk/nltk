@@ -1,0 +1,43 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="duck">
+<note>
+  Frames file for 'duck' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="duck.01" name="to evade a responsibility" vncls="-">
+<roles>
+  <role descr="evader" n="0"/>
+  <role descr="responsibility" n="1"/>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ Drug makers should n't be able [*-2] to duck liability because people could n't identify precisely which identical drug [*T*-3] was used [*-1] .
+</text>
+	<arg n="0">[*-2] -&gt;  Drug makers</arg>
+	<rel>duck</rel>
+	<arg n="1">liability</arg>
+	<arg f="CAU" n="M">because people could n't identify precisely which identical drug [*T*-3] was used [*-1]</arg>
+</example>
+
+
+
+<example name="intransitive">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ He evades and ducks .
+</text>
+	<arg n="0">He</arg>
+	<rel>ducks</rel>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

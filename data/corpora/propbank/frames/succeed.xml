@@ -1,0 +1,107 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="succeed">
+<note>
+  Frames file for 'succeed' based on sentences in financial
+  subcorpus.  No verbnet entry.  Comparison with 'win' and 'replace'
+  and 'take_over'
+</note>
+
+<roleset id="succeed.01" name="win, accomplish some task">
+<roles>
+  <role descr="entity succeeding" n="0"/>
+  <role descr="task" n="1"/>
+</roles>
+
+<example name="entity mentioned, task not">
+<text>
+    Ford might succeed because many shareholders are speculators keen
+    for a full bid.
+</text>
+        <arg n="0">Ford</arg>
+        <arg f="MOD" n="M">might</arg>
+        <rel>succeed</rel>
+        <arg f="CAU" n="M">because many shareholders are speculators
+        keen for a full bid</arg> 
+</example>
+
+<example name="entity and task mentioned">
+<text>
+    If the government succeeds in seizing Mr. Antar's assets, he could
+    be left without top-flight legal representation, because his
+    attorneys are likely to quit, according to individuals familiar
+    with the case.
+</text>
+        <arg n="0">the government</arg>
+        <rel>succeeds</rel>
+        <arg f="in" n="1">seizing Mr. Antar 's assets</arg>
+</example>
+
+<example name="task in subject position">
+<text>
+    If the Paribas bid succeeds...
+</text>
+        <arg n="1">the Paribas bid</arg>
+        <rel>succeeds</rel>
+</example>
+
+<note>
+The logic here is that the bid is not succeeding, but rather that
+Paribas is succeeding in its bid.  Thus 'the Paribas bid' is the task
+and the Arg1.
+</note>
+
+</roleset>
+
+<roleset id="succeed.02" name="take over for">
+<roles>
+  <role descr="successor" n="0"/>
+  <role descr="entity being replaced" n="1"/>
+  <role descr="attributive, role, function" n="2"/>
+</roles>
+
+<example name="no role or function">
+<text>
+    Stephen Akerfeldt, currently vice president finance, will succeed
+    Mr. McAlpine. 
+</text>
+        <arg n="0">Stephen Akerfeldt, currently vice president
+        finance</arg> 
+        <arg f="MOD" n="M">will</arg>
+        <rel>succeed</rel>
+        <arg n="1">Mr. McAlpine</arg>
+</example>
+
+<example name="with role/function">
+<text>
+    Edward L. Kane succeeded Mr. Taylor as chairman.
+</text>
+        <arg n="0">Edward L. Kane</arg>
+        <rel>succeeded</rel>
+        <arg n="1">Mr. Taylor</arg>
+        <arg f="as" n="2">chairman</arg>
+</example>
+
+</roleset>
+
+<roleset id="succeed.03" vncls="-" name="be subsequent to">
+<roles>
+  <role n="1"  descr="thing coming after"/>
+  <role n="2"  descr="thing going before"/>
+</roles>
+
+<example name="adjectival">
+  <inflection person="ns" tense="ns" aspect="progressive" voice="active" form="participle"/>
+  <text>
+    All this was recognized and documented in the succeeding years by
+    economists, some of whom worked in the Reagan administration to
+    lift this burden from the American people, states and local
+    governments. 
+  </text>
+  <rel              >succeeding</rel>
+  <arg n="1"        >years</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

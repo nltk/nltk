@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="trundle">
+<note>
+  Frames file for 'trundle' based on sentences in wsj.  Verbnet entry
+  51.3.2, Framenet entry Self motion.
+</note>
+
+<roleset id="trundle.01" name="move ungracefully" vncls="51.3.2">
+<roles>
+  <role descr="entity in motion" n="0"><vnrole vncls="51.3.2" vntheta="Theme"/></role>
+  <role descr="path" n="1"><vnrole vncls="51.3.2" vntheta="Location"/></role>
+</roles>
+
+<example name="the one example">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    ``Of course it's better to sell private,'' he says, as the butcher
+    trundles away. 
+</text>
+        <arg n="0">the butcher</arg>
+        <rel>trundles</rel>
+        <arg f="DIR" n="M">away</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

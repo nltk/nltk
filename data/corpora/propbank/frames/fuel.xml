@@ -1,0 +1,61 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="fuel">
+<note>
+  Frames file for 'fuel' based on sentences in financial subcorpus.
+  No access to verbnet.  No comparison.
+</note>
+
+<roleset id="fuel.01" name="cause an increase in rate (of growth, us.)" vncls="9.9">
+<roles>
+  <role descr="intentional agent" n="0">
+	<vnrole vncls="9.9" vntheta="Agent"/></role>
+  <role descr="fire" n="1">
+	<vnrole vncls="9.9" vntheta="Destination"/></role>
+  <role descr="fuel, gasoline" n="2">
+	<vnrole vncls="9.9" vntheta="Theme"/></role>
+
+</roles>
+
+<example name="instrumental subject">
+<text>
+    The sale is likely *trace* to fuel concern about growing Japanese
+    investment in U.S. biotechnology firms. 
+</text>
+        <arg n="2">*trace* -&gt;  The sale</arg>
+        <rel>fuel</rel>
+        <arg n="1">concern about growing Japanese investment in
+        U.S. biotechnology firms</arg> 
+</example>
+
+<example name="passivized instrumental subject">
+<text>
+    The earnings growth also was fueled *trace* by the company's
+    ability to cut net financing spending by half to around 15 million
+    guilders. 
+</text>
+        <arg f="DIS" n="M">also</arg>
+        <rel>fueled</rel>
+        <arg n="1">*trace* -&gt;  The earnings growth</arg>
+        <arg f="by" n="2">the company's ability to cut net financing
+        spending by half to around 15 million guilders</arg> 
+</example>
+
+<example name="agentive subject">
+  <text>
+    John fueled speculation on his love life by coming to work with a
+    hickey on his nose.
+  </text>
+  <arg n="0">John</arg>
+  <rel>fueled</rel>
+  <arg n="1">speculation on his love life</arg>
+  <arg f="by" n="2">coming to work with a
+    hickey on his nose.</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

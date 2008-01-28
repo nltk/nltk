@@ -1,0 +1,73 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="filter">
+<note>
+  Frames file for 'filter' based on sentences in wsj.  Verbnet entry
+  10.4.2, better in 10.4.1.
+</note>
+
+<roleset id="filter.02" name="separate solids from liquid" vncls="10.4.1">
+<roles>
+  <role descr="filterer, agent or instrument" n="0">
+        <vnrole vncls="10.4.1" vntheta="Agent"/></role>
+  <role descr="solids, thing removed" n="1">
+        <vnrole vncls="10.4.1" vntheta="Theme"/></role>
+  <role descr="liquid, source, removed-from" n="2">
+        <vnrole vncls="10.4.1" vntheta="Source"/></role>
+</roles>
+
+<example name="all args">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John filtered the bits of charcoal from Mary's attempt at chicken
+     noodle soup.
+  </text>
+  <arg n="0">John</arg>
+  <rel>filtered</rel>
+  <arg n="1">the bits of charcoal</arg>
+  <arg f="from" n="2">Mary's attempt at chicken noodle soup</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="filter.03" name="move slowly" vncls="-">
+<roles>
+  <role descr="moved" n="1"/>
+  <role descr="destination" n="2"/>
+</roles>
+
+<example name="with direction">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    Perhaps the ethics of an industry's leader filters down and is one
+    of the factors that ultimately shapes consumer trust in that
+    industry. 
+</text>
+        <arg f="DIS" n="M">Perhaps</arg>
+        <arg n="1">the ethics of an industry 's leader</arg>
+        <rel>filters</rel>
+        <arg f="DIR" n="M">down</arg>
+</example>
+
+
+<example name="with destination">
+<inflection aspect="progressive" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+    Some U.S. products are filtering into the Soviet market under an
+    emergency import program. 
+</text>
+        <arg n="1">Some U.S. products</arg>
+        <rel>filtering</rel>
+        <arg f="into" n="2">the Soviet market</arg>
+        <arg f="LOC" n="M">under an emergency import program</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

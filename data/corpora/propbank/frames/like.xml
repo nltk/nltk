@@ -1,0 +1,72 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="like">
+<note>
+  Frames file for 'like' based on survey of initial sentences of big
+  corpus.
+</note>
+
+<roleset id="like.01" name="affection" vncls="31.2">
+<roles>
+  <role descr="liker" n="0">
+	  <vnrole vncls="31.2" vntheta="Experiencer"/></role>
+  <role descr="object of affection" n="1">
+	  <vnrole vncls="31.2" vntheta="Cause"/></role>
+</roles>
+
+<example name="semi-modal">
+  <text>
+  I'd like a flight on American from Newark to Nashville.
+  </text>
+  <arg n="0">I</arg>
+  <arg f="MOD" n="m">'d</arg>
+  <rel>like</rel>
+  <arg n="1">a flight on American from Newark to Nashville</arg>
+</example>
+
+<example name="prefer">
+  <text>
+  John likes dill pickles on his grilled cheese sandwiches.
+  </text>
+  <arg n="0">John</arg>
+  <rel>likes</rel>
+  <arg n="1">dill pickles on his grilled cheese sandwiches</arg>
+</example>
+
+<note>
+PReditor picks up prepositional usages of &quot;like&quot; (meaning &quot;such as&quot;
+and tagged as adjective) which should be ignored.  Even worse,
+&quot;unlike&quot; is picked up and included in the .arch files, so you'll see
+some sentences which at first glance seem to have no &quot;like&quot; predicates
+at all.
+</note>
+
+</roleset>
+
+<roleset id="like.02" name="semi-modal" vncls="-">
+<roles>
+  <role descr="subject" n="0"/>
+  <role descr="phrasal complement" n="1"/>
+</roles>
+
+<example name="modal">
+  <text>
+  I would like *trace* to find a flight that goes from Boston to Orlando.
+  </text>
+  <arg n="0">I</arg>
+  <arg f="MOD" n="m">would</arg>
+  <rel>like</rel>
+  <arg n="1">*trace* to find a flight that goes from Boston to
+  Orlando</arg> 
+</example>
+
+<note>
+This proves that &quot;like&quot; cannot be treated as a modal, because English
+doesn't otherwise allow two modal verbs in a single sentences (with
+the exception of certain dialects, notably Southern, which might could
+say such things).
+</note>
+
+</roleset>
+</predicate>
+</frameset>

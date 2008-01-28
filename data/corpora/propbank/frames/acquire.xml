@@ -1,0 +1,49 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="acquire">
+  <note>
+    based on survey of initial sentences of big corpus
+    and comparison with 'gain' and 'buy'
+  </note>
+<roleset id="acquire.01" name="get, acquire" vncls="13.5.2-1 14">
+<roles>
+  <role descr="agent, entity acquiring something" n="0">
+		
+  <vnrole vncls="14" vntheta="Agent"/><vnrole vncls="13.5.2-1" vntheta="Agent"/></role>
+
+  <role descr="thing acquired" n="1">
+		
+  <vnrole vncls="14" vntheta="Topic"/><vnrole vncls="13.5.2-1" vntheta="Theme"/></role>
+
+  <role descr="seller" n="2">
+		
+  <vnrole vncls="14" vntheta="Source"/><vnrole vncls="13.5.2-1" vntheta="Source"/></role>
+
+  <role descr="price paid" n="3">
+		
+  <vnrole vncls="13.5.2-1" vntheta="Asset"/></role>
+
+  <role descr="benefactive" n="4"/>
+</roles>
+
+<example>
+  <text>
+    New England Electric will acquire PS of New Hampshire.
+  </text>
+  <arg n="0">New England Electric</arg>
+  <rel>acquire</rel>
+  <arg n="1">PS of New Hampshire.</arg>
+</example>
+
+<example>
+  <text>
+    Its Moleculon affiliate acquired Kalipharma Inc for $23 million.
+  </text>
+  <arg n="0">Its Moleculon affiliate</arg>
+  <rel>acquired</rel>
+  <arg n="1">Kalipharma Inc</arg>
+  <arg f="for" n="3">for $23 million.</arg>
+</example>
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,125 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<note>
+Frames file for 'note' based on survey of initial sentences from big corpus
+and comparison with 'say'
+</note>
+
+<predicate lemma="note">
+<roleset id="note.01" name="say" vncls="30.2 37.7">
+<roles>
+  <role descr="noter" n="0">
+	  <vnrole vncls="30.2" vntheta="Experiencer"/>
+          <vnrole vncls="37.7" vntheta="Agent"/></role>
+  <role descr="utterance" n="1">
+	  <vnrole vncls="30.2" vntheta="Stimulus"/>
+          <vnrole vncls="37.7" vntheta="Topic"/></role>
+  <role descr="hearer" n="2">
+	  <vnrole vncls="37.7" vntheta="Recipient"/></role>
+  <role descr="attribute of arg1" n="3">
+  </role>
+
+</roles>
+
+<example name="transitive">
+  <text>
+    Mr. Rowe noted that political concerns also worried New England Electric
+  </text>
+  <arg n="0">Mr. Rowe</arg>
+  <rel>noted</rel>
+  <arg n="1">that political concerns also worried New England Electric</arg>
+</example>
+
+<example name="fronted">
+  <text>
+    Shipments have been relatively level, the Commerce Dept noted *trace*
+  </text>
+  <arg n="0">the Commerce Dept</arg>
+  <rel>noted</rel>
+  <arg n="1">*trace* -&gt; Shipments have been relatively level</arg>
+</example>
+
+<example name="inverted">
+  <text>
+    Some companies have bought back stock, notes *trace* Steven G. Einhorn.
+  </text>
+  <rel>notes</rel>
+  <arg n="1">*trace* -&gt; Some companies have bought back stock</arg>
+  <arg n="0">Steven G. Einhorn</arg>
+</example>
+
+<example name="empty, sorta discourse-level">
+  <text>
+    Except where *trace-1* noted *trace-2=trace-1* *trace-3*, blah blah blah
+  </text>
+  <rel>noted</rel>
+  <arg n="1">*trace-2=trace-1</arg>
+  <note>*trace-3* = where</note>
+</example>
+
+<example name="split">
+  <text>
+  &quot;What you have to understand,&quot; noted John, &quot;is that Philly literally stinks.&quot;
+  </text>
+  <arg n="0">John</arg>
+  <arg n="1">&quot;What you have to understand,&quot; &quot;is that Philly literally stinks.&quot;</arg>
+</example>
+
+<example name="with listener">
+  <text>
+    John noted to Mary: &quot;you're an idiot.&quot;
+  </text>
+  <arg n="0">John</arg>
+  <rel>noted</rel>
+  <arg f="to" n="2">to Mary</arg>
+  <arg n="1">&quot;you're an idiot.&quot;</arg>
+</example>
+
+<example name="weird, attributive usage">
+  <text>
+    &quot;Well that's odd,&quot; noted John of the disappearance of his nose.
+  </text>
+  <arg n="1">&quot;Well that's odd&quot;</arg>
+  <rel>noted</rel>
+  <arg n="0">John</arg>
+  <arg f="of" n="3">of the disappearance of his nose</arg>
+</example>
+
+<example name="split utterance">
+  <text>
+    John is noted to be an idiot.
+  </text>
+  <arg n="1">[John]to be an idiot]</arg>
+  <rel>is noted</rel>
+</example>
+
+</roleset>
+
+<roleset id="note.02" vncls="-" name="noticed as remarkable">
+<roles>
+  <role n="1"  descr="entity under scrutiny"/>
+  <role n="2"  descr="why is it notable?"/>
+</roles>
+
+<example name="ah, the Lonesome Dove">
+  <inflection person="ns" tense="ns" aspect="ns" voice="passive" form="participle"/>
+  <text>
+     Qintex Entertainment, a producer and distributor of television
+     programs most noted [*] for its co-production of the hit
+     miniseries ``Lonesome Dove,'' said it filed for Chapter 11
+     protection after Qintex Australia failed to provide it with $5.9
+     million owed to MCA Inc. in connection with the distribution of
+     ``The New Leave It to Beaver Show.'' 
+
+  </text>
+  <arg n="m" f="EXT">most</arg>
+  <rel              >noted</rel>
+  <arg n="1"        >[*] -> a producer and distributor of television
+  programs</arg> 
+  <arg n="2" f="for">its co-production of the hit miniseries
+  ``Lonesome Dove,''</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

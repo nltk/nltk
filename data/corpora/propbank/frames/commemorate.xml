@@ -1,0 +1,60 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="commemorate">
+<note>
+  Frames file for 'commemorate' based on sentences in wsj.  No Verbnet entry. 
+</note>
+
+<roleset id="commemorate.01" name="honor with memorial, be a memorial" vncls="-">
+<roles>
+  <role descr="agent, honorer" n="0"/>
+  <role descr="thing remembered" n="1"/>
+  <role descr="memorial" n="2"/>
+</roles>
+
+<example name="agent, no memorial">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Hungary declared itself a democracy and for the first time openly
+    commemorated the anniversary of the 1956 anti-Stalinist uprising
+    that was crushed by the Soviet Union. 
+</text>
+        <arg n="0">Hungary</arg>
+        <arg f="TMP" n="M">for the first time</arg>
+        <arg f="MNR" n="M">openly</arg>
+        <rel>commemorated</rel>
+        <arg n="1">the anniversary of the 1956 anti-Stalinist uprising
+        that was crushed by the Soviet Union</arg> 
+</example>
+
+
+<example name="memorial, no agent">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    When President Bush arrives here next week for a hemispheric
+    summit organized [*] [*] to commemorate a century of Costa Rican
+    democracy, will he be able to deliver a credible message in the
+    wake of the Panamanian fiasco? 
+</text>
+        <arg n="2">[*] -&gt;  [*] -&gt;  a hemispheric summit</arg>
+        <rel>commemorate</rel>
+        <arg n="1">a century of Costa Rican democracy</arg>
+</example>
+
+<example name="all args">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    Mary commemorated John's life with a statue of a pile of dirty laundry.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>commemorated</rel>
+  <arg n="1">John's life</arg>
+  <arg f="with" n="2">a statue of a pile of dirty laundry</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

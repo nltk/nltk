@@ -1,0 +1,43 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="acquiesce">
+<note>
+  Frames file for 'acquiesce' based on sentences in wsj.  No Verbnet
+  entry. 
+</note>
+
+<roleset id="acquiesce.01" name="comply passively" vncls="-">
+<roles>
+  <role descr="acquiescer, complier" n="0"/>
+  <role descr="thing complied to, in, or with" n="1"/>
+</roles>
+
+<example name="intransitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    The bank acquiesced.
+</text>
+        <arg n="0">The bank</arg>
+        <rel>acquiesced</rel>
+</example>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    A key is whether House Republicans are willing *trace* to
+    acquiesce to their Senate colleagues' decision to drop many pet
+    provisions. 
+</text>
+        <arg n="0">*trace* -&gt;  House Republicans</arg>
+        <rel>acquiesce</rel>
+        <arg f="to" n="1">their Senate colleagues' decision  to drop
+        many pet provisions</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

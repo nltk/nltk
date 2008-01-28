@@ -1,0 +1,36 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="retool">
+<note>
+  Frames file for 'retool' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="retool.01" name="adapt" vncls="-">
+<roles>
+  <role descr="agent, adaptor" n="0"/>
+  <role descr="thing adapted" n="1"/>
+  <role descr="adapted to" n="2"/>
+  <role descr="adapted from" n="3"/>
+</roles>
+
+<example name="the one example">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    Hard-hitting consultants match ads with Mr. Courter's team, and
+    Mr. Florio retools himself as the lean, mean Democratic fighting
+    machine of the 1990s. 
+</text>
+        <arg n="0">Mr. Florio</arg>
+        <rel>retools</rel>
+        <arg f="REC" n="1">himself</arg>
+        <arg f="as" n="2">the lean, mean Democratic fighting machine
+        of the 1990s</arg> 
+</example>
+
+<note>
+Could be [mis|re]interpreted as 'characterize'.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,35 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="snake">
+<note>
+  Frames file for 'snake' based on sentences in wsj.  No Verbnet
+  entry, Framenet entry Path shape.
+</note>
+
+<roleset id="snake.01" name="move like a snake, be snake-shaped" vncls="-">
+<roles>
+  <role descr="entity in motion" n="0"/>
+  <role descr="path" n="1"/>
+</roles>
+
+<example name="the one example">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    A squiggly line snakes across a video screen, gyrating erratically
+    as subjects with hand-held computers register their
+    second-by-second reactions to a speaker's remarks. 
+</text>
+        <arg n="0">A squiggly line</arg>
+        <rel>snakes</rel>
+        <arg f="across" n="1">a video screen</arg>
+        <arg n="M">gyrating erratically as subjects with hand-held
+        computers register their second-by-second reactions to a
+        speaker's remarks</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

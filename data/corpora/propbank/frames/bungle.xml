@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="bungle">
+<note>
+  Frames file for 'bungle' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="bungle.01" vncls="-" name="mess up, botch">
+<roles>
+  <role n="0"  descr="bungler"/>
+  <role n="1"  descr="thing tried"/>
+</roles>
+
+<example name="bungle bungle bungle">
+<inflection person="ns" tense="ns" aspect="ns" voice="passive" form="participle"/>
+<text>
+    Intelligence Committee Chairman David Boren (D., Okla.) and Vice
+    Chairman William Cohen (R., Maine), for their part, angrily
+    accused the White House of selectively leaking classified
+    documents and trying unfairly to shift the blame to Congress for
+    the bungled attempt [*] to topple Gen. Noriega. 
+</text>
+	<rel>bungled</rel>
+	<arg n="1">[ attempt] [ [*] to topple Gen. Noriega]</arg>
+</example>
+
+<note>
+Wow, some things never change.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

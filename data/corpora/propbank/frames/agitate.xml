@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="agitate">
+<note>
+  Frames file for 'agitate' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="agitate.01" name="to upset, disturb" vncls="31.1">
+<roles>
+  <role descr="causer" n="0"><vnrole vncls="31.1" vntheta="Cause"/></role>
+  <role descr="experiencer" n="1"><vnrole vncls="31.1" vntheta="Experiencer"/></role>
+</roles>
+
+<example name="transitive">
+<inflection aspect="perfect" form="participle" person="third" tense="present" voice="active"/>
+<text>
+ It 's not so much the idea of acquisitions [*ICH*-2] that [*T*-1] has agitated the cosmetics industry as the companies doing the acquiring : P&amp;G and Unilever bring with them great experience with mundane products like soap and toilet paper , [*-3] sparking disdain in the glitzy cosmetics trade ; but they also bring mammoth marketing clout , [*] sparking fear .
+</text>
+	<arg n="0">[*T*-1] -&gt;  that -&gt;  acquisitions</arg>
+	<rel>agitated</rel>
+	<arg n="1">the cosmetics industry</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

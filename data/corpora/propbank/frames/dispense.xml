@@ -1,0 +1,57 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="dispense">
+<note>
+  Frames file for 'dispense' based on sentences in financial
+  subcorpus.  No Verbnet entry, no Framenet entry.  Comparison with
+  'distribute' and 'end'.
+</note>
+
+<roleset id="dispense.01" name="stop some action">
+<roles>
+  <role descr="agent, entity causing something to end" n="0"/>
+  <role descr="thing ending" n="1"/>
+</roles>
+
+<example name="from the corpus">
+<inflection aspect="ns" form="full" person="ns" tense="future" voice="active"/>
+<text>
+    RJR's executives have said they will dispense with certain brands,
+    in particular, that aren't leaders in their markets. 
+</text>
+        <arg n="0">they</arg>
+        <arg f="MOD" n="M">will</arg>
+        <rel>dispense</rel>
+        <arg f="with" n="1">certain brands , in particular , that
+        aren't leaders in their markets</arg>  
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="dispense.02" name="distribute">
+<roles>
+  <role descr="dispenser" n="0"/>
+  <role descr="thing dispensed" n="1"/>
+  <role descr="dispensed to" n="2"/>
+</roles>
+
+<example name="made up">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John dispensed bad advice to passers-by.
+  </text>
+  <arg n="0">John</arg>
+  <rel>dispensed</rel>
+  <arg n="1">bad advice</arg>
+  <arg f="to" n="2">passers-by</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

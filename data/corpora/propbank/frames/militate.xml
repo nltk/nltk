@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="militate">
+<note>
+  Frames file for 'militate' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="militate.01" name="argue against" vncls="-">
+<roles>
+  <role descr="arguer" n="0"/>
+  <role descr="against what" n="1"/>
+</roles>
+
+<example name="the one example">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+     If the figures show a hefty rise in inflation, they could
+     militate against easing by the Fed. 
+</text>
+        <arg f="ADV" n="M">If the figures show a hefty rise in inflation</arg>
+        <arg n="0">they</arg>
+        <arg f="MOD" n="M">could</arg>
+        <rel>militate</rel>
+        <arg f="against" n="1">easing by the Fed</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

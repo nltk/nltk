@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="wrong">
+<note>
+  Frames file for 'wrong'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="wrong.01" name="to treat dishonorably or  unjustly" vncls="-">
+<roles> 
+  <role descr="treater, agent" n="0"/>  
+  <role descr="wronged entity" n="1"/>  
+</roles>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+ When Isabella ( Ellen Lauren ) confronts her brother Claudio ( Matt Loney ) in his cell , [*-1] explaining the price [0] she has been asked [*] [*T*-2] [*] to secure his freedom [*T*-3] ; when Isabella and the disguised Duke ( Philip Kerr ) conspire [*-4] to trick Angelo [*T*-5] ; and when Mariana ( Annalee Jefferies ) , a woman wronged [*] by Angelo , confronts him with his past misdeeds [*T*-6] , the performers bring the dramatic high points to life with intense energy and intelligence .
+</text>
+	<rel>wronged</rel>
+	<arg n="1">[*] -&gt;  a woman</arg>
+	<arg f="by" n="0">Angelo</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="abdicate">
+<note>
+  Frames file for 'abdicate' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="abdicate.01" name="to relinquish (power or responsibility)" vncls="-">
+<roles>
+  <role descr="abdicator, agent" n="0"/> 
+  <role descr="responsibility" n="1"/> 
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ By [*-1] ignoring costs , U.S. strategists abdicate their responsibility for hard decisions .
+</text>
+	<arg f="MNR" n="M">By [*-1] ignoring costs</arg>
+	<arg n="0">U.S. strategists</arg>
+	<rel>abdicate</rel>
+	<arg n="1">their responsibility for hard decisions</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

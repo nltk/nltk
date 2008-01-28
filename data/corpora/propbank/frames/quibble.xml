@@ -1,0 +1,44 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="quibble">
+<note>
+  Frames file for 'quibble' based on sentences in wsj.  Verbnet entry 36.1.
+</note>
+
+<roleset id="quibble.01" vncls="36.1" name="argue over trifles">
+<roles>
+  <role n="0"  descr="first actor or all participants"/>
+  <role n="1"  descr="second actor (if separate)"/>
+  <role n="2"  descr="topic"/>
+</roles>
+
+<example name="nominal with arg">
+<inflection person="ns" tense="ns" aspect="ns" voice="ns" form="gerund"/>
+<text>
+    There can be no quibbling that the Armenians endured terrible
+    suffering, but one has to wonder what possible good such a
+    resolution will achieve. 
+</text>
+	<rel>quibbling</rel>
+	<arg n="2">that the Armenians endured terrible suffering</arg>
+</example>
+
+<example name="with actors">
+  <inflection person="third" tense="present" aspect="ns" voice="active" form="full"/>
+  <text>
+     John quibbles constantly with Mary over whose turn it is to clean
+     the bathroom.
+  </text>
+  <arg n="0"        >John</arg>
+  <rel              ></rel>
+  <arg n="m" f="TMP">constantly</arg>
+  <arg n="1" f="with">Mary</arg>
+  <arg n="2" f="over">whose turn it is to clean the bathroom</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="sensitize">
+<note>
+  Frames file for 'sensitize' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="sensitize.01" name="make sensitive" vncls="-">
+<roles>
+  <role descr="cause of sensitivity" n="0"/>
+  <role descr="entity becoming sensitive" n="1"/>
+  <role descr="sensitive to what" n="2"/>
+</roles>
+
+<example name="all args, weird usage">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+    ``We hope [*-1] to sensitize employers'' to recognize the problems
+    so they can do something about them, Dr. Warshaw said. 
+</text>
+        <arg n="0">[*-1]</arg>
+        <rel>sensitize</rel>
+        <arg n="1">employers</arg>
+        <arg n="2">to recognize the problems</arg>
+        <arg f="PNC" n="M">so they can do something about them</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

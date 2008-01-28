@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="displease">
+<note>
+  Frames file for 'displease' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="displease.01" name="to cause annoyance" vncls="31.1">
+<roles>
+  <role descr="causer" n="0"><vnrole vncls="31.1" vntheta="Cause"/></role>
+  <role descr="experiencer" n="1"><vnrole vncls="31.1" vntheta="Experiencer"/></role>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ That displeases many current holders , such as Allianz , which [*T*-1] could n't be sure of [*-2] selling all their shares if they tendered to Paribas .
+</text>
+	<arg n="0">That</arg>
+	<rel>displeases</rel>
+	<arg n="1">many current holders , such as Allianz , which [*T*-1] could n't be sure of [*-2] selling all their shares if they tendered to Paribas</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

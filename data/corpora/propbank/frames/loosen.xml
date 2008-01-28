@@ -1,0 +1,87 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="loosen">
+<note>
+  Frames file for 'loosen' based on sentences in wsj.  Verbnet entry
+  45.4, along with half the verbs of English.
+</note>
+
+<roleset id="loosen.01" name="make loose" vncls="45.4">
+<roles>
+  <role descr="causer of loosening" n="0"><vnrole vncls="45.4" vntheta="Agent"/></role>
+  <role descr="thing becoming loose" n="1"><vnrole vncls="45.4" vntheta="Patient"/></role>
+  <role descr="instrument, if separate from arg0" n="2"><vnrole vncls="45.4" vntheta="Instrument"/></role>
+</roles>
+
+<example name="roustabout?">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    One roustabout,  hanging by his hands from a ladder, bounces his
+    weight on a three-foot wrench *trace* to loosen a stuck fitting. 
+</text>
+        <arg n="0">*trace* -&gt;  One roustabout</arg>
+        <rel>loosen</rel>
+        <arg n="1">a stuck fitting</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="loosen_up">
+
+<roleset id="loosen.02" name="make loose" vncls="45.4">
+<roles>
+  <role descr="causer of loosening" n="0"><vnrole vncls="45.4" vntheta="Agent"/></role>
+  <role descr="thing becoming loose" n="1"><vnrole vncls="45.4" vntheta="Patient"/></role>
+  <role descr="instrument, if separate from arg0" n="2"><vnrole vncls="45.4" vntheta="Instrument"/></role>
+</roles>
+
+<example name="transitive">
+<inflection aspect="perfect" form="participle" person="third" tense="present" voice="active"/>
+<text>
+    This corporate glasnost is a big reason Nissan, after years of
+    making lackluster cars and lousy profits, has loosened up its
+    rigid ways and now is riding a string of hits, ranging from the
+    sleek Maxima sedan and Porsche-like 300ZX to the whimsically
+    nostalgic Pao, a minicar sold only in Japan. 
+</text>
+        <arg n="0">Nissan</arg>
+        <arg f="TMP" n="M">after years of  making lackluster cars and
+        lousy profits</arg> 
+        <rel>[ loosened] [ up]</rel>
+        <arg n="1">its rigid ways</arg>
+</example>
+
+<example name="intransitive defaults to arg1='self'">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    But if East Germany's arthritic Politburo does loosen up enough to
+    permit Mr. Krenz to make serious efforts at reform, he will face a
+    challenge just as fundamental. 
+</text>
+        <arg n="1">East Germany's arthritic Politburo</arg>
+        <rel>[ loosen] [ up]</rel>
+        <arg f="EXT" n="M">enough to permit Mr. Krenz to make serious
+        efforts at reform</arg> 
+</example>
+
+<example name="with instrument">
+  <inflection aspect="ns" form="full" person="ns" tense="ns" voice="active"/>
+  <text>
+     After a long day of arguing with Mary, John likes *trace* to loosen up
+     with a bottle or two of Mad Dog.
+  </text>
+  <arg f="TMP" n="m">After a long day of arguing with Mary</arg>
+  <arg n="0">*trace* -&gt; John</arg>
+  <rel>loosen up</rel>
+  <arg f="with" n="2">a bottle or two of Mad Dog</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

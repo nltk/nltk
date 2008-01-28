@@ -1,0 +1,80 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="ply">
+<note>
+  Frames file for 'ply' based on sentences in wsj.  Verbnet entry 13.4.2.
+</note>
+
+<roleset id="ply.01" name="supply with" vncls="13.4.2">
+<roles>
+  <role descr="provider" n="0">
+	  <vnrole vncls="13.4.2" vntheta="Agent"/></role>
+  <role descr="entity getting stuff" n="1">
+	  <vnrole vncls="13.4.2" vntheta="Recipient"/></role>
+  <role descr="stuff" n="2">
+	  <vnrole vncls="13.4.2" vntheta="Theme"/></role>
+</roles>
+
+<example name="like a sailor on shore leave">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    Mary plied John with chocolate and Kool-aid.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>plied</rel>
+  <arg n="1">John</arg>
+  <arg f="with" n="2">chocolate and Kool-aid</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="ply.02" name="work at some business/trade/skill" vncls="-">
+<roles>
+  <role descr="worker" n="0"/>
+  <role descr="business/trade/skill" n="1"/>
+</roles>
+
+<example name="typical usage">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    She concedes that such a position is ``unfair'' to the thousands
+    of conscientious and qualified people plying the trade, but as a
+    consumer advocate she feels impelled to take it. 
+</text>
+        <arg n="0">the thousands of conscientious and qualified people</arg>
+        <rel>plying</rel>
+        <arg n="1">the trade</arg>
+</example>
+</roleset>
+
+<roleset id="ply.03" vncls="-" name="typo for pry">
+<roles>
+  <role n="0"  descr="agent, pry-er"/>
+  <role n="1"  descr="thing pried"/>
+  <role n="2"  descr="end state/attribute of arg1"/>
+</roles>
+
+<example name="lexical error">
+<inflection aspect="ns" form="gerund" person="ns" tense="ns" voice="ns"/>
+<text>
+    And [*] try plying new dollars free in a market that is softening,
+    hurt by a strong dollar and concerned about overcapacity -- the
+    industry's Darth Vadar. 
+</text>
+        <arg n="0">[*]</arg>
+        <rel>plying</rel>
+        <arg n="1">new dollars</arg>
+        <arg n="2">free</arg>
+        <arg f="LOC" n="M">in a market that is softening, hurt by a
+        strong dollar and concerned about overcapacity -- the
+        industry's Darth Vadar</arg> 
+</example>
+
+</roleset>
+</predicate>
+</frameset>
+
+

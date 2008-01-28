@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="contravene">
+<note>
+  Frames file for 'contravene' based on sentences in wsj.  No Verbnet
+  entry, Framenet entry Compliance.
+</note>
+
+<roleset id="contravene.01" name="break the rules" vncls="-">
+<roles>
+  <role descr="breaker of rules" n="0"/>
+  <role descr="rules" n="1"/>
+</roles>
+
+<example name="fancy vocabulary">
+<inflection aspect="perfect" form="participle" person="ns" tense="past" voice="active"/>
+<text>
+    The London Times said she had ``contravened protocol.''
+</text>
+        <arg n="0">she</arg>
+        <rel>contravened</rel>
+        <arg n="1">protocol</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

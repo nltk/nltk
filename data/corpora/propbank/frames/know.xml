@@ -1,0 +1,98 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<note>
+Frames file for 'know' based on survey of initial sentences of big corpus
+and comparison with 'say' and 'think'
+</note>
+
+<predicate lemma="know">
+<roleset id="know.01" name="understand" vncls="29.5">
+<roles>
+  <role descr="knower" n="0">
+	  <vnrole vncls="29.5" vntheta="Agent"/></role>
+  <role descr="thing known or thought" n="1">
+	  <vnrole vncls="29.5" vntheta="Theme"/></role>
+  <role descr="attribute of arg1" n="2">
+	  <vnrole vncls="29.5" vntheta="Predicate"/></role>
+</roles>
+
+<example name="just transitive">
+  <text>
+    I need to know the aircraft and flight number.
+  </text>
+  <arg n="0">I</arg>
+  <rel>need to know</rel>
+  <arg n="1">the aircraft and flight number</arg>
+</example>
+
+<example name="sentential thing known">
+  <text>
+    The other side knows that Giuliani has always been prochoice.
+  </text>
+  <arg n="0">The other side</arg>
+  <rel>knows</rel>
+  <arg n="1">Guiliani has always been prochoice</arg>
+</example>
+
+<example name="with subject">
+  <text>
+    He didn't know (anything) about most of the cases until Wednesday.
+  </text>
+  <arg n="0">He</arg>
+  <rel>didn't know</rel>
+  <arg n="1">anything</arg>
+  <arg f="about" n="2">about most of the cases</arg>
+  <arg f="TMP" n="M">until Wednesday</arg>
+</example>
+
+<example name="attributive">
+  <text>
+    These nations are known as &quot;little tigers&quot;
+  </text>
+  <arg n="1">These nations</arg>
+  <rel>known</rel>
+  <arg f="as" n="2">as &quot;little tigers&quot;</arg>
+</example>
+  
+<example name="infinitival thing known">
+  <text>
+    I have never known a lady to faint in the belfry.
+  </text>
+  <arg n="0">I</arg>
+  <rel>have never known</rel>
+  <arg n="1">a lady to faint in the belfry.</arg>
+</example>
+
+<example name="same thing, bogus parse">
+  <text>
+    I have never known [a lady] [to faint in the belfry.]
+  </text>
+  <arg n="0">I</arg>
+  <rel>have never known</rel>
+  <arg n="1">[a lady][to faint in the belfry]</arg>
+<note>
+The difference between this example and the previous is that there's no
+intervening S node between 'know' and the thing known, forcing the messy
+annotation.
+</note>
+</example>
+
+<example name="marginal usage">
+  <text>
+    Mary knows John for an idiot.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>knows</rel>
+  <arg n="1">John</arg>
+  <arg f="for" n="2">an idiot</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<note>
+We'll assume the biblical sense of 'know' just won't come up in the WSJ
+but it'll take an Arg1, just in case.
+</note>
+
+</frameset>

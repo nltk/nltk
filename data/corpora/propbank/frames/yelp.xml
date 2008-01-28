@@ -1,0 +1,34 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="yelp">
+<note>
+  Frames file for 'yelp' based on sentences in wsj.  No access to
+  Verbnet at the moment.
+</note>
+
+<roleset id="yelp.01" name="mode of speaking" vncls="37.3">
+<roles>
+  <role descr="yelper, speaker" n="0"><vnrole vncls="37.3" vntheta="Agent"/></role>
+  <role descr="utterance" n="1"><vnrole vncls="37.3" vntheta="Topic"/></role>
+  <role descr="listener" n="2"><vnrole vncls="37.3" vntheta="Recipient"/></role>
+</roles>
+
+<example name="the one example">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    On the Big Board floor and on trading desks, traders yelped their
+    approval. 
+</text>
+        <arg f="LOC" n="M">On the Big Board floor and on trading desks</arg>
+        <arg n="0">traders</arg>
+        <rel>yelped</rel>
+        <arg n="1">their approval</arg>
+</example>
+
+<note>
+More commonly intransitive 'make yelping noises.'
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="fashion">
+<note>
+  Frames file for 'fashion' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="fashion.01" name="to make out of components" vncls="26.1">
+<roles>
+  <role descr="maker, agent" n="0">
+        <vnrole vncls="26.1" vntheta="Agent"/></role>
+  <role descr="entity fashioned" n="1">
+        <vnrole vncls="26.1" vntheta="Product"/></role>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="perfect" form="participle" person="third" tense="present" voice="active"/>
+<text>
+ Now [*-2] shifting his scene from the country [0] he left [*T*-1] at five to the England [0] he has lived in [*T*-3] for nearly 30 years , he has fashioned a novel in the mode of Henry James and E.M. Forster .
+</text>
+	<arg n="0">he</arg>
+	<rel>fashioned</rel>
+	<arg n="1">a novel in the mode of Henry James and E.M. Forster</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

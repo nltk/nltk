@@ -1,0 +1,116 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="roll">
+<note>
+  Frames file for 'roll' based on sentences in financial subcorpus.
+  Verbnet classes build-26.1 coil-9.6 preparing-26.3-1 roll-51.3.1
+  run-51.3.2 shake-22.3-2 slide-11.2-1 split-23.2.
+  Comparison with verbs of motion.
+</note>
+
+<roleset id="roll.01" name="move in circular fashion" vncls="9.6 11.2-1 22.3-2 23.2 26.1 40.3.2 43.2 51.3.1 51.3.2">
+<roles>
+  <role descr="roller" n="0">
+	<vnrole vncls="23.2" vntheta="Agent"/>
+        <vnrole vncls="51.3.2" vntheta="Agent"/>
+        <vnrole vncls="9.6" vntheta="Agent"/>
+        <vnrole vncls="43.2" vntheta="Agent"/>
+        <vnrole vncls="26.1" vntheta="Agent"/>
+        <vnrole vncls="40.3.2" vntheta="Agent"/>
+        <vnrole vncls="22.3-2" vntheta="Agent"/>
+        <vnrole vncls="11.2-1" vntheta="Agent"/>
+        <vnrole vncls="51.3.1" vntheta="Agent"/></role>
+  <role descr="thing rolled or rolling" n="1">
+	<vnrole vncls="23.2" vntheta="Patient"/>
+        <vnrole vncls="51.3.2" vntheta="Theme"/>
+        <vnrole vncls="9.6" vntheta="Patient"/>
+        <vnrole vncls="43.2" vntheta="Theme"/>
+        <vnrole vncls="26.1" vntheta="Product"/>
+        <vnrole vncls="40.3.2" vntheta="Patient"/>
+        <vnrole vncls="22.3-2" vntheta="Patient"/>
+        <vnrole vncls="11.2-1" vntheta="Theme"/>
+        <vnrole vncls="51.3.1" vntheta="Theme"/></role>
+  <role descr="secondary attribute of arg1" n="2">
+	<vnrole vncls="9.6" vntheta="Location"/></role>
+</roles>
+
+<example name="ergative">
+  <text>
+    The sets started *trace* to roll around once more.
+  </text>
+  <arg n="1">*trace*=The sets</arg>
+  <rel>roll</rel>
+  <arg f="DIR" n="m">around</arg>
+  <arg f="TMP" n="m">once more</arg>
+</example>
+
+<example name="all args">
+  <text>
+    John rolled the cookie dough flat.
+  </text>
+  <arg n="0">John</arg>
+  <rel>rolled</rel>
+  <arg n="1">the cookie dough</arg>
+  <arg n="2">flat</arg>
+</example>
+</roleset>
+</predicate>
+
+<predicate lemma="roll_out">
+
+<roleset id="roll.02" name="bring out, cause to appear, introduce" vncls="-">
+<roles>
+  <role descr="introducer" n="0"/>
+  <role descr="thing appearing" n="1"/>
+</roles>
+
+<example name="introduce">
+  <text>
+    Cray Computer also will face intense competition, not only from
+    Cray Research, which has about 60 % of the world-wide
+    supercomputer market and which *trace-1* is expected *trace-2* to
+    roll out the C-90 machine, a direct competitor with the Cray-3, in
+    1991.
+  </text>
+  <arg n="0">*trace-2*=*trace-1*=which=Cray Research</arg>
+  <rel>roll out</rel>
+  <arg n="1">the C-90 machine, a direct competitor with the
+  Cray-3,</arg> 
+  <arg f="TMP" n="m">in 1991.</arg>
+</example>
+
+<example name="ergative">
+  <text>
+     The last of the bombers rolled out in April 1988.
+  </text>
+  <arg n="1">The last of the bombers</arg>
+  <rel>rolled out</rel>
+  <arg f="TMP" n="m">in April 1988</arg>
+</example>
+</roleset>
+</predicate>
+
+<predicate lemma="roll_up">
+
+<roleset id="roll.03" name="cause to be in a coil" vncls="-">
+<roles>
+  <role descr="causer" n="0"/>
+  <role descr="thing rolling up or being rolled up" n="1"/>
+  <role descr="secondary attribute of arg1" n="2"/>
+</roles>
+
+<example name="all args">
+  <text>
+    Equitec Financial Group said it will ask as many as 100,000
+    investors in 12 of its public real-estate limited partnerships to
+    give approval to *trace* rolling them up into a new master limited
+    partnership.
+  </text>
+  <arg n="0">*trace*=Equitec Financial Group</arg>
+  <rel>rolling up</rel>
+  <arg n="1">them</arg>
+  <arg f="into" n="2">a new master limited partnership.</arg>
+</example>
+</roleset>
+</predicate>
+</frameset>

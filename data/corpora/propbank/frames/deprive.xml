@@ -1,0 +1,53 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="deprive">
+<note>
+Frames file for 'deprive' based on sentences in financial subcorpus
+and automatic expansion via verbnet.
+</note>
+
+<roleset id="deprive.01" name="cause to not have" vncls="10.6">
+<roles>
+	<role descr="entity removing" n="0">
+		
+  <vnrole vncls="10.6" vntheta="Agent"/></role>
+
+	<role descr="thing being removed" n="1">
+		
+  <vnrole vncls="10.6" vntheta="Theme"/></role>
+
+	<role descr="removed from" n="2">
+		
+  <vnrole vncls="10.6" vntheta="Source"/></role>
+
+</roles>
+
+<example name="no agent">
+<inflection aspect="progressive" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    Still, criminal defense lawyers worry that defendants are being
+    deprived *trace* of their Sixth Amendment right to counsel and a
+    fair trial if the government can seize lawyers' fees. 
+</text>
+        <rel>deprived</rel>
+        <arg n="2">*trace* -&gt;  defendants</arg>
+        <arg f="of" n="1">their Sixth Amendment right to counsel and a
+        fair trial</arg> 
+        <arg f="ADV" n="M">if the government can seize lawyers' fees</arg>
+</example>
+
+<example name="with agent, verbnetted" src="rid.01">
+<text>
+    The privatization program is designed *trace* to deprive the
+    government of hundreds of assets and to raise critically needed
+    funds.
+</text>
+        <arg n="0">*trace* -&gt;  The privatization program</arg>
+        <rel>deprive</rel>
+        <arg n="2">the government</arg>
+        <arg f="of" n="1">hundreds of assets</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

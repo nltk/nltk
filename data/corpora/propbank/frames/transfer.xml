@@ -1,0 +1,45 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="transfer">
+<note>
+  Frames file for 'transfer' based on sentences in financial
+  subcorpus.  Verbnet classes contribute-13.2 and send-11.1-1.  'Send'
+  has been framed.
+</note>
+
+<roleset id="transfer.01" name="send" vncls="11.1 13.2">
+<roles>
+  <role descr="sender" n="0">
+	<vnrole vncls="11.1" vntheta="Agent"/>
+        <vnrole vncls="13.2" vntheta="Agent"/></role>
+  <role descr="sent" n="1">
+	<vnrole vncls="11.1" vntheta="Theme"/>
+        <vnrole vncls="13.2" vntheta="Theme"/></role>
+  <role descr="sent-to" n="2">
+	<vnrole vncls="11.1" vntheta="Destination"/>
+        <vnrole vncls="13.2" vntheta="Recipient"/></role>
+  <role descr="sent-from" n="3">
+	<vnrole vncls="11.1" vntheta="Source"/></role>
+</roles>
+
+<example name="all args">
+  <text>
+    Arbitrage simply transfers his selling pressure from Chicago to
+    New York, while functioning as a buyer in Chicago. 
+  </text>
+  <arg n="0">Arbitrage</arg>
+  <arg f="DIS" n="m">simply</arg>
+  <rel>transfers</rel>
+  <arg n="1">his selling pressure</arg>
+  <arg f="from" n="3">Chicago</arg>
+  <arg f="to" n="2">New York</arg>
+  <arg f="TMP" n="m">while functioning as a buyer in Chicago</arg>
+</example>
+
+<note>
+Arg3 sent-from/&quot;source&quot; seems to be fairly uncommon.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,47 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="disguise">
+<note>
+  Frames file for 'disguise' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="disguise.01" name="to modify the manner or appearance, to conceal" vncls="29.2">
+<roles>
+  <role descr="causer of disguise, agent" n="0">
+        <vnrole vncls="29.2" vntheta="Agent"/></role>
+  <role descr="entity disguised" n="1">
+        <vnrole vncls="29.2" vntheta="Theme"/></role>
+  <role descr="attribute" n="2">
+        <vnrole vncls="29.2" vntheta="Predicate"/></role>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ Appropriations committees have used an assortment of devices [*-1] to disguise as much as $ 1 billion [*U*] in spending , and as critics have awakened to these devices , the bill can seem like a wounded caribou trying [*] to make it past ice and wolves [*-3] to reach safer winter grazing .
+</text>
+	<arg n="0">[*-1] -&gt;  Appropriations committees</arg>
+	<rel>disguise</rel>
+	<arg n="1">as much as $ 1 billion [*U*] in spending</arg>
+</example>
+
+
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="past" voice="passive"/>
+<text>
+ The jury found them guilty of conspiracy in [*] obtaining the payments , some of which [*T*-3] were disguised [*-1] as fees for consulting services from Mrs. Garcia .
+</text>
+	<rel>disguised</rel>
+	<arg n="1">[*-1] -&gt;  [*T*-3] -&gt;  some of which</arg>
+	<arg f="as" n="2">fees for consulting services from Mrs. Garcia</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

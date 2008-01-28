@@ -1,0 +1,51 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="divert">
+<note>
+  Frames file for 'divert' based on sentences in financial subcorpus.
+  No Verbnet entry, no Framenet entry.  No comparison.
+</note>
+
+<roleset id="divert.01" name="cause to turn away">
+<roles>
+  <role descr="causer of turning" n="0"/>
+  <role descr="thing turning" n="1"/>
+  <role descr="from" n="2"/>
+  <role descr="to" n="3"/>
+</roles>
+
+<example name="agent, but no source">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Company lawyers recently sent letters to growers saying that
+    Michael ``would take very seriously any effort ... *trace* to
+    divert its contracted-for potatoes to other outlets.'' 
+</text>
+        <arg n="0">*trace* -&gt;  Michael</arg>
+        <rel>divert</rel>
+        <arg n="1">its contracted-for potatoes</arg>
+        <arg f="to" n="4">other outlets</arg>
+</example>
+
+<example name="no agent, source and destination">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    With the increase, even more developing-country energy and talent
+    would be diverted *trace* from creating profitable economic
+    systems to setting up economic planning ministries that generate
+    IMF-approved economic plans. 
+</text>
+        <arg n="M">With the increase</arg>
+        <rel>diverted</rel>
+        <arg n="1">*trace* -&gt;  even more developing-country energy and
+        talent</arg> 
+        <arg f="from" n="3">creating profitable economic systems</arg>
+        <arg f="to" n="4">setting up economic planning ministries that  generate IMF-approved economic plans</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

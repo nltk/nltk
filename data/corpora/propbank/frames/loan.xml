@@ -1,0 +1,83 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="loan">
+<note>
+Frames file for 'loan' based on sentences in wsj and automatic
+expansion via verbnet.
+</note>
+
+<roleset id="loan.01" name="give temporarily" vncls="13.1-1">
+<roles>
+	<role descr="giver" n="0">
+		
+  <vnrole vncls="13.1-1" vntheta="Agent"/></role>
+
+	<role descr="thing given" n="1">
+		
+  <vnrole vncls="13.1-1" vntheta="Theme"/></role>
+
+	<role descr="entity given to" n="2">
+		
+  <vnrole vncls="13.1-1" vntheta="Recipient"/></role>
+
+</roles>
+
+<example name="double object">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Healthcare, which has been in a severe liquidity bind, said it is
+    able to make the payments because it completed a transaction with
+    Greenery Rehabilitation Group Inc. in which Greenery purchased
+    stock and warrants for $500,000 and loaned Healthcare $9 million. 
+</text>
+        <arg n="0">Greenery</arg>
+        <rel>loaned</rel>
+        <arg n="2">Healthcare</arg>
+        <arg n="1">$ 9 million </arg>
+</example>
+
+<example name="dative">
+<inflection aspect="ns" form="full" person="ns" tense="ns" voice="ns"/>
+<text>
+    South Korean government officials said they don't expect that
+    Seoul can loan money to Warsaw, but it can ``offer experience.'' 
+</text>
+        <arg n="0">Seoul</arg>
+        <arg f="MOD" n="M">can</arg>
+        <rel>loan</rel>
+        <arg n="1">money</arg>
+        <arg f="to" n="2">Warsaw</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="loan_out">
+
+<roleset id="loan.02" name="like loan.01 but without stated recipient" vncls="-">
+<roles>
+  <role descr="giver" n="0"/>
+  <role descr="thing given" n="1"/>
+</roles>
+
+<example name="toldja so">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    That includes the CDBG funds and the Federal Housing
+    Administration, which *trace* loans out money for private home
+    mortgages and has just been discovered to be $4 billion in the
+    hole. 
+</text>
+        <arg n="0">*trace* -&gt;  which -&gt;  the Federal Housing
+        Administration</arg> 
+        <rel>[ loans] [ out]</rel>
+        <arg n="1">money</arg>
+        <arg f="PNC" n="M">for private home mortgages</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

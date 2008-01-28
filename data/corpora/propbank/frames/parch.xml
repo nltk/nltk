@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="parch">
+<note>
+  Frames file for 'parch' based on sentences in wsj.  Verbnet entry 45.3.
+</note>
+
+<roleset id="parch.01" vncls="45.3" name="make very very dry">
+<roles>
+  <role n="0"  descr="cause of dryness, agent"/>
+  <role n="1"  descr="dry thing"/>
+</roles>
+
+<example name="adjectival">
+<inflection person="ns" tense="ns" aspect="ns" voice="passive" form="participle"/>
+<text>
+    In less parched areas, meanwhile, farmers who had little or no
+    loss of production profited greatly from the higher prices.  
+</text>
+	<arg n="M" f="MNR">less</arg>
+	<rel>parched</rel>
+	<arg n="1">areas</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,82 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="forgive">
+<note>
+  Frames file for 'forgive' based on sentences in wsj.  No Verbnet
+  entry at the moment.
+</note>
+
+<roleset id="forgive.01" name="release from blame/sin" vncls="-">
+<roles>
+  <role descr="forgiver" n="0"/>
+  <role descr="forgiven" n="1"/>
+  <role descr="blame/sin" n="2"/>
+</roles>
+
+<example name="all args">
+<inflection aspect="perfect" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+    Instead, Mr. Nixon reminded his host, Chinese President Yang
+    Shangkun, that Americans haven't forgiven China's leaders for the
+    military assault of June 3-4 that killed hundreds, and perhaps
+    thousands, of demonstrators. 
+</text>
+        <arg n="0">Americans</arg>
+        <arg f="NEG" n="M">n't</arg>
+        <rel>forgiven</rel>
+        <arg n="1">China's leaders</arg>
+        <arg f="for" n="2">the military assault of June 3-4 that
+        killed hundreds, and perhaps thousands, of demonstrators</arg> 
+</example>
+
+<example name="unstated or generalized sinner">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    If the political establishment is reluctant *trace* to forgive
+    sexual misadventures, the private sector sometimes will. 
+</text>
+        <arg n="0">*trace* -&gt;  the political establishment</arg>
+        <rel>forgive</rel>
+        <arg n="2">sexual misadventures</arg>
+</example>
+
+<example name="specialized usage: forgive debt">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Holders of SCI TV's $507 million of high-yield junk bonds are
+    being asked *trace* to forgive a lot of debt in exchange for
+    taking a 39% equity stake in SCI TV. 
+</text>
+        <arg n="0">*trace* -&gt;  Holders of SCI TV's $507 million of
+        high-yield junk bonds</arg> 
+        <rel>forgive</rel>
+        <arg n="2">a lot of debt</arg>
+        <arg f="ADV" n="M">in exchange for taking a 39% equity stake
+        in SCI TV</arg> 
+</example>
+
+<note>
+Perhaps the financial usage should be split into a separate roleset,
+but I'd rather not.
+</note>
+
+<example name="double object">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    Mary never forgave John his habit of farting during sex.
+  </text>
+  <arg n="0">Mary</arg>
+  <arg f="TMP" n="m">never</arg>
+  <rel>forgave</rel>
+  <arg n="1">John</arg>
+  <arg n="2">his habit of farting during sex</arg>
+</example>
+
+<note>
+And here you thought John and Mary never got it on.  Well, not
+anymore, and now you know why.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

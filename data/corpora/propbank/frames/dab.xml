@@ -1,0 +1,34 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="dab">
+<note>
+  Frames file for 'dab' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+
+<roleset id="dab.01" name="to touch lightly" vncls="-">
+<roles>
+  <role descr="toucher, agent" n="0"/>
+  <role descr="thing hit" n="1"/>
+  <role descr="instrument" n="2"/>
+</roles>
+
+
+<example name="all arguments">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ But at just that moment , he is interrupted [*-1] in his office by a servant in tuxedo who [*T*-2] pours coffee from silver into a cup of china and dabs the brim with linen .
+</text>
+	<arg n="0">[*T*-2] -&gt;  who -&gt;  a servant in tuxedo</arg>
+	<rel>dabs</rel>
+	<arg n="1">the brim</arg>
+	<arg f="with" n="2">linen</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

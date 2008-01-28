@@ -1,0 +1,36 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="crane">
+<note>
+  Frames file for 'crane' based on sentences in wsj.  Verbnet entry
+  40.3.2, Framenet entry Body movement.
+</note>
+
+<roleset id="crane.01" name="stretch the neck" vncls="40.3.2">
+<roles>
+  <role descr="stretcher, agent" n="0"><vnrole vncls="40.3.2" vntheta="Agent"/></role>
+  <role descr="neck" n="1"><vnrole vncls="40.3.2" vntheta="Patient"/></role>
+</roles>
+
+<example name="the one example">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    Mainstream economists and commentators, [*-3] craning their necks
+    up at the great pyramids of junk financing, swiveling their heads
+    to watch the avalanche of leveraged buy-outs, claimed the end
+    result would be a leaner, meaner corporate America, with soaring
+    productivity and profits and the weaker gone to the wall. 
+</text>
+        <arg n="0">[*-3] -&gt;  Mainstream economists and commentators</arg>
+        <rel>craning</rel>
+        <arg n="1">their necks</arg>
+        <arg f="DIR" n="M">up</arg>
+        <arg f="DIR" n="M">at the great pyramids of junk financing</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="sublet">
+<note>
+  Frames file for 'sublet' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="sublet.01" name="to rent property one holds by lease to another" vncls="-">
+<roles>
+  <role descr="original renter, agent" n="0"/>
+  <role descr="property" n="1"/>
+  <role descr="new renter" n="2"/>
+</roles>
+
+<example name="all arguments">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ WPP , which [*T*-1] assumes financial control of its businesses in a hands-on way , instituted a new financial system and plans [*-2] to sublet some floors in Ogilvy 's new headquarters building to outsiders .
+</text>
+	<arg n="0">[*-2] -&gt;  WPP , which [*T*-1] assumes financial control of its businesses in a hands-on way ,</arg>
+	<rel>sublet</rel>
+	<arg n="1">some floors in Ogilvy 's new headquarters building</arg>
+	<arg f="to" n="2">outsiders</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

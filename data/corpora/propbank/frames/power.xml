@@ -1,0 +1,53 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="power">
+<note>
+  Frames file for 'power' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="power.01" name="to supply with power" vncls="-">
+<roles>
+  <role descr="source of power" n="0"/>
+  <role descr="entity supplied with power" n="1"/>
+  <role descr="entity powered with" n="2"/>
+</roles>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+ The announcements are scheduled [*-3] to be made [*-1] in Temple , Texas , and include a so-called `` notebook '' PC that [*T*-2] weighs less than seven pounds , has a built-in hard disk drive and is powered [*-4] by Intel Corp. 's 286 microprocessor .
+</text>
+	<rel>powered</rel>
+	<arg n="1">[*-4] -&gt;  [*T*-2] -&gt;  that -&gt;  a so-called `` notebook '' PC</arg>
+	<arg f="by" n="0">Intel Corp. 's 286 microprocessor</arg>
+</example>
+
+
+<example name="with Arg2">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+ Stewart &amp; Stevenson makes equipment powered [*] with diesel and gas turbines .
+</text>
+	<rel>powered</rel>
+	<arg n="1">[*] -&gt;  equipment</arg>
+	<arg f="with" n="2">diesel and gas turbines</arg>
+</example>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ The company 's lean operation , analysts said [0] [*T*-1] , allowed sharp-rising sales from its cholesterol drug , Lopid , to power earnings growth .
+</text>
+	<arg n="0">sharp-rising sales from its cholesterol drug , Lopid ,</arg>
+	<rel>power</rel>
+	<arg n="1">earnings growth</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

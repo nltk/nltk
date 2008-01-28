@@ -1,0 +1,48 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="concoct">
+<note>
+  Frames file for 'concoct' based on sentences in wsj.  Verbnet entry
+  26.4, Framenet entries Invention and Cooking creation.
+</note>
+
+<roleset id="concoct.01" name="create something complicated" vncls="26.4">
+<roles>
+  <role descr="creator" n="0"><vnrole vncls="26.4" vntheta="Agent"/></role>
+  <role descr="thing created" n="1"><vnrole vncls="26.4" vntheta="Product"/></role>
+  <role descr="source" n="2"><vnrole vncls="26.4" vntheta="Material"/></role>
+  <role descr="benefactive" n="3"><vnrole vncls="26.4" vntheta="Beneficiary"/></role>
+  <role descr="attribute, secondary predication" n="4"/>
+</roles>
+
+<example name="active">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    Goya Concocts a Milk For Hispanic Tastes
+</text>
+        <arg n="0">Goya</arg>
+        <rel>Concocts</rel>
+        <arg n="1">a Milk For Hispanic Tastes</arg>
+</example>
+
+
+<example name="passive">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    Embedded in the ``budget'' being concocted *trace* by the
+    House-Senate conference committee is something that looks, smells
+    and waddles like a duck. 
+</text>
+        <rel>concocted</rel>
+        <arg n="1">*trace* -&gt;  the ``budget''</arg>
+        <arg f="by" n="0">the House-Senate conference committee</arg>
+</example>
+
+<note>
+Higher numbered args suggested by inclusion in 'create' class, but I
+doubt they'd ever occur.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

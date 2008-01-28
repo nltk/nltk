@@ -1,0 +1,45 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="brag">
+<note>
+  Frames file for 'brag' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="brag.01" name="to talk boastfully" vncls="37.8">
+<roles>
+  <role descr="boastful talker, agent" n="0"><vnrole vncls="37.8" vntheta="Agent"/></role>
+  <role descr="topic bragged about" n="1"><vnrole vncls="37.8" vntheta="Topic"/></role>
+</roles>
+
+
+<example name="prepositional Arg1">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ The staff brags about psyllium 's hefty contribution to American regularity , without [*-1] quite grasping the implications of the research on cholesterol .
+</text>
+	<arg n="0">The staff</arg>
+	<rel>brags</rel>
+	<arg f="about" n="1">psyllium 's hefty contribution to American regularity</arg>
+	<arg f="ADV" n="M">without [*-1] quite grasping the implications of the research on cholesterol</arg>
+</example>
+
+
+<example name="non-prepositional Arg1">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ That has taken some of the swagger out of natives who [*T*-1] like [*-3] to brag that Texas is the only state that [*T*-2] was once a nation , but it has increased their legendary resentment of outsiders .
+</text>
+	<arg n="0">[*-3] -&gt;  [*T*-1] -&gt;  who -&gt;  natives</arg>
+	<rel>brag</rel>
+	<arg n="1">Texas is the only state that [*T*-2] was once a nation</arg>
+</example>
+
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

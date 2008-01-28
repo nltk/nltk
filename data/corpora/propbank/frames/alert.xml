@@ -1,0 +1,100 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="alert">
+<note>
+Frames file for 'alert' based on sentences in wsj and automatic
+expansion via verbnet.
+</note>
+
+<roleset id="alert.01" name="alert, warn" vncls="37.9">
+<roles>
+	<role descr="entity giving warning" n="0">
+		
+  <vnrole vncls="37.9" vntheta="Agent"/></role>
+
+	<role descr="entity getting warning" n="1">
+		
+  <vnrole vncls="37.9" vntheta="Recipient"/></role>
+
+	<role descr="warning" n="2">
+		
+  <vnrole vncls="37.9" vntheta="Topic"/></role>
+
+</roles>
+
+<example name="just transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    When the hacker moved, Mr. Stoll moved too, *trace* calling up
+    other systems managers *trace* to alert them but keeping his own
+    system open to avoid arousing suspicion. 
+</text>
+        <arg n="0">*trace* -&gt; *trace* -&gt;  Mr. Stoll</arg>
+        <rel>alert</rel>
+        <arg n="1">them</arg>
+</example>
+
+<example name="alert to">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    She gives the Artist a sense of purpose, but also alerts him to
+    the serious inadequacy of his vagrant life. 
+</text>
+        <arg n="0">She</arg>
+        <arg f="DIS" n="M">also</arg>
+        <rel>alerts</rel>
+        <arg n="1">him</arg>
+        <arg f="to" n="2">the serious inadequacy of his vagrant life</arg>
+</example>
+
+<example name="alert about">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+     The solicitation material indicates that donations will go toward
+     a campaign alerting and informing the public about some health or
+     other issue. 
+</text>
+        <arg n="0">a campaign</arg>
+        <rel>alerting</rel>
+        <arg n="1">the public</arg>
+        <arg f="about" n="2">some health or other issue</arg>
+</example>
+
+<example name="alert a wh-clause">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    After discovering that the hacker had taken over the dormant
+    account of a legitimate user named Joe Sventek, he rigged up an
+    alarm system, including a portable beeper, *trace* *trace* to
+    alert him when Sventek came on the line.
+</text>
+        <arg n="0">*trace* -&gt; *trace* -&gt;  an alarm system</arg>
+        <rel>alert</rel>
+        <arg n="1">him</arg>
+        <arg n="2">when Sventek came on the line </arg>
+</example>
+
+<example name="alert an SBAR">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    That disclosure came, a Delmed spokeswoman said, after the
+    American Stock Exchange alerted the company that trading wouldn't
+    resume in its stock until additional information about
+    developments was provided. 
+</text>
+        <arg n="0">the American Stock Exchange</arg>
+        <rel>alerted</rel>
+        <arg n="1">the company</arg>
+        <arg n="2">trading wouldn't resume in its stock until
+        additional information about developments was provided </arg> 
+</example>
+
+<note>
+As usual, that-complementizers should be left out of arguments, but
+wh-complementizers included.
+</note>
+
+</roleset>
+
+</predicate>
+</frameset>

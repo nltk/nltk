@@ -1,0 +1,78 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="compare">
+<note>
+  Frames file for 'compare' based on survey of initial sentences of big
+  corpus and comparison to 'match'
+</note>
+
+<roleset id="compare.01" name="compare" vncls="22.2">
+<roles>
+  <role descr="entity making comparison" n="0">
+		
+  <vnrole vncls="22.2" vntheta="Agent"/></role>
+
+  <role descr="first item in comparison" n="1">
+		
+  <vnrole vncls="22.2" vntheta="Patient1"/></role>
+
+  <role descr="second item in comparison, usually prepositional" n="2">
+		
+  <vnrole vncls="22.2" vntheta="Patient2"/></role>
+
+</roles>
+
+<example name="common financial usage">
+  <text>
+    Transamerica said third-quarter gains were $10.2 million, compared
+     with $6.4 million in the year earlier.
+  </text>
+  <note>
+  DO NOT TAG--compare is being used as a preposition (or even a conjunction!)
+  here.  Only tag if there is a trace in the tree, as in the following
+  two examples.  You can tell it's not a verb because you can't add an adverb:
+  &quot;Apples compare well with oranges&quot; but &quot;*Apples are cheap, compared well
+  to oranges.&quot;
+  </note>
+</example>
+
+<example name="compare with">
+  <text>
+    October sales, compared *trace* with the previous month, ...
+  </text>
+  <rel>compared</rel>
+  <arg n="1">*trace*=October sales</arg>
+  <arg f="with" n="2">the previous month</arg>
+</example>
+
+<example name="compare to">
+  <text>
+    The strength of the US bond market compared *trace* to its foreign
+    counterparts
+  </text>
+  <rel>compared</rel>
+  <arg n="1">*trace*=The strength of the US bond market</arg>
+  <arg f="to" n="2">its foreign counterparts</arg>
+</example>
+
+<example name="ergative compare with">
+  <text>
+    This compares with estimates that the US market is 4x as large as my house.
+  </text>
+  <arg n="1">This</arg>
+  <rel>compares</rel>
+  <arg f="wit2" n="1">estimates that the US market is 4x as large as my house.</arg>
+</example>
+
+<example name="with locative">
+  <text>
+    Its price is compared between the futures market and the stock market
+  </text>
+  <arg n="1">Its price</arg>
+  <rel>is compared</rel>
+  <arg f="LOC" n="m">between the futures market and the stock market</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,95 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="boom">
+<note>
+Frames file for 'boom' based on sentences in financial subcorpus and
+automatic expansion via verbnet.
+</note>
+
+<roleset id="boom.01" name="make a booming noise" vncls="43.2">
+<roles>
+  <role descr="causer of boom, agent" n="0">
+	<vnrole vncls="43.2" vntheta="Agent"/></role>
+   <role descr="loud noise" n="1">
+	<vnrole vncls="43.2" vntheta="Theme"/></role>
+   <role descr="source of loud noise" n="2">
+	<vnrole vncls="43.2" vntheta="Location"/></role>
+ </roles>
+
+<example name="ergative" src="blare.01">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Lights flickered on and off; plaster dropped from the ceiling, the
+    walls still shook and an evacuation alarm boomed outside. 
+</text>
+        <arg n="1">an evacuation alarm</arg>
+        <rel>boomed</rel>
+        <arg f="LOC" n="M">outside</arg>
+</example>
+
+<example name="transitive" src="blare.01">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John boomed his stereo from the rooftops.
+  </text>
+  <arg n="0">John</arg>
+  <rel>boomed</rel>
+  <arg n="1">his stereo</arg>
+  <arg f="from" n="2">the rooftops</arg>
+</example>
+
+</roleset>
+
+<roleset id="boom.02" name="be successful" vncls="-">
+<roles>
+  <role descr="successful thing" n="0"/>
+</roles>
+
+<example name="boom times">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    MUTUAL FUNDS ARRIVED IN THE U.S. during the Roaring Twenties they
+    had been in Britain for a century, but they didn't boom until the
+    money market fund was created in the 1970s. 
+</text>
+        <arg n="0">they</arg>
+        <arg f="NEG" n="M">n't</arg>
+        <rel>boom</rel>
+        <arg f="TMP" n="M">until the money market fund was created  in
+        the 1970s</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="boom_out">
+
+<roleset id="boom.03" name="produce loudly" vncls="-">
+<roles>
+  <role descr="introducer" n="0"/>
+  <role descr="thing appearing" n="1"/>
+</roles>
+
+<example name="yes, this actually appeared in WSJ">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    If a strike ever hits the Met, the company can still sell tickets
+    to his ``Boheme'' and ``Turandot'' and boom out recordings (of
+    another era). 
+</text>
+        <arg f="ADV" n="M">If a strike ever hits the Met</arg>
+        <arg n="0">the company</arg>
+        <arg n="M">can</arg>
+        <arg f="TMP" n="M">still</arg>
+        <rel>[ boom] [ out]</rel>
+        <arg n="1">recordings (of another era)</arg>
+</example>
+
+<note>
+This is really weird usage.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

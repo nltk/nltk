@@ -1,0 +1,47 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="wow">
+<note>
+  Frames file for 'wow' based on sentences in wsj.  Verbnet entry
+  31.1, Framenet entry Experiencer obj.
+</note>
+
+<roleset id="wow.01" name="cause amazement" vncls="31.1">
+<roles>
+  <role descr="causer of amazement" n="0"><vnrole vncls="31.1" vntheta="Cause"/></role>
+  <role descr="amazed entity" n="1"><vnrole vncls="31.1" vntheta="Experiencer"/></role>
+  <role descr="instrument, if separate from arg0" n="2"/>
+</roles>
+
+<example name="like, wow, man">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    He 's put a fresh spin on material that could come off terribly
+    cliched; for example, the way Susie wows an audience the first
+    time she sings with the Baker Boys. 
+</text>
+        <arg n="0">Susie</arg>
+        <rel>wows</rel>
+        <arg n="1">an audience</arg>
+        <arg f="TMP" n="M">the first time she sings with the Baker
+        Boys</arg> 
+</example>
+
+<example name="with instrument">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John wowed jaded audiences worldwide with his rendition of ``I'm
+     a Little Teapot.''
+  </text>
+  <arg n="0">John</arg>
+  <rel>wowed</rel>
+  <arg n="1">jaded audiences worldwide</arg>
+  <arg f="with" n="2">his rendition of ``I'm a Little Teapot''</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

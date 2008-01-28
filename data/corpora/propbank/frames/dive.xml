@@ -1,0 +1,91 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="dive">
+<note>
+  Frames file for 'dive' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="dive.01" name="to plunge into water" vncls="35.2">
+<roles>
+  <role descr="diver" n="0">
+		
+  <vnrole vncls="35.2" vntheta="Agent"/></role>
+
+  <role descr="area" n="1">
+		
+  <vnrole vncls="35.2" vntheta="Location"/></role>
+
+  <role descr="dive for" n="2">
+		
+  <vnrole vncls="35.2" vntheta="Theme"/></role>
+
+</roles>
+
+<example name="not in the corpus">
+<text>
+ The men dive the area for animals .
+</text>
+	<arg n="0">the men</arg>
+	<rel>dive</rel>
+	<arg n="1">the area</arg>
+        <arg f="for" n="2">animals</arg>
+</example>
+</roleset>
+
+
+
+<roleset id="dive.02" name="to drop" vncls="-">
+<roles>
+  <role descr="thing falling" n="1"/>
+  <role descr="extent" n="2"/>
+  <role descr="start point" n="3"/>
+  <role descr="end point" n="4"/>
+</roles>
+
+
+
+<example name="with extent">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ Yesterday , even before the resignations were announced [*-1] , the index dove 32.5 points [*-2] to close at 2129.4 .
+</text>
+	<arg f="TMP" n="M">Yesterday</arg>
+	<arg f="TMP" n="M">even before the resignations were announced [*-1]</arg>
+	<arg n="1">the index</arg>
+	<rel>dove</rel>
+	<arg n="2">32.5 points</arg>
+	<arg f="ADV" n="M">[*-2] to close at 2129.4</arg>
+</example>
+
+
+<example name="all arguments">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ Earnings before interest and tax from brewing dived 50 % to A$ 123.8 million [*U*] from A$ 247.3 million [*U*] .
+</text>
+	<arg n="1">Earnings before interest and tax from brewing</arg>
+	<rel>dived</rel>
+	<arg n="2">50 %</arg>
+	<arg f="to" n="4">A$ 123.8 million [*U*]</arg>
+	<arg f="from" n="3">A$ 247.3 million [*U*]</arg>
+</example>
+
+
+
+<example name="intransitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ Individual investors , investment firms and arbitragers who [*T*-1] speculate in the stocks of takeover candidates can suffer liquidity and payment problems when stocks dive [*T*-2] ; those investors often borrow heavily [*-3] to buy their holdings and use the stocks as collateral for loans .
+</text>
+	<arg n="1">stocks</arg>
+	<rel>dive</rel>
+	<arg f="TMP" n="M">[*T*-2] -&gt;  when</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

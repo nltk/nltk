@@ -1,0 +1,94 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="consider">
+<note>
+  Frames file for 'consider' based on survey of initial sentences of
+  big corpus
+</note>
+
+<roleset id="consider.01" name="think to be" vncls="29.1">
+<roles>
+  <role descr="thinker" n="0">
+	  <vnrole vncls="29.1" vntheta="Agent"/></role>
+  <role descr="object, thing under consideration" n="1">
+	  <vnrole vncls="29.1" vntheta="Theme"/></role>
+  <role descr="attribute on arg1" n="2">
+	  <vnrole vncls="29.1" vntheta="Predicate"/></role>
+</roles>
+
+<example name="active">
+  <text>
+  Economists consider that a sign that inflationary pressures are abating.
+  </text>
+  <arg n="0">Economists</arg>
+  <rel>consider</rel>
+  <arg n="1">that</arg>
+  <arg n="2">a sign that inflationary pressures are abating</arg>
+</example>
+
+<example name="passivized">
+  <text>
+  Shorter maturities are considered a sign of rising rates because
+  portfolio managers can capture higher rates sooner.
+  </text>
+  <arg n="1">Shorter maturities</arg>
+  <rel>considered</rel>
+  <arg n="2">a sign of rising rates</arg>
+  <arg f="CAU" n="m">because portfolio managers can capture higher
+  rates sooner.</arg> 
+</example>
+
+<example name="passivized as parenthetical">
+  <text>
+  Paribas' officials, once considered France's toughest bankers, are
+ nothing but a bunch of wusses.
+  </text>
+  <arg n="1">Paribas' officials</arg>
+  <arg f="TMP" n="m">once</arg>
+  <rel>considered</rel>
+  <arg n="2">France's toughest bankers</arg>
+</example>
+
+<example name="PP">
+  <text>
+  David Dinkins was being considered *trace* for a city job.
+  </text>
+  <arg n="1">*trace* -> David Dinkins</arg>
+  <rel>considered</rel>
+  <arg f="for" n="2">a city job</arg>
+</example>
+
+<example name="as-phrase">
+  <text>
+  ...to encourage good students to consider teaching as a career.
+  </text>
+  <arg n="0">good students</arg>
+  <rel>consider</rel>
+  <arg n="1">teaching</arg>
+  <arg f="as" n="2">a career</arg>
+</example>
+
+</roleset>
+
+<roleset id="consider.02" name="contemplate an action" vncls="-">
+<roles>
+  <role descr="thinker" n="0"/>
+  <role descr="action" n="1"/>
+</roles>
+
+<example name="active">
+  <text>
+  Commonwealth Edison is considering *trace* appealing Judge Curry's order.
+  </text>
+  <arg n="0">Commonwealth Edison</arg>
+  <rel>considering</rel>
+  <arg n="1">*trace* appealing Judge Curry's order</arg>
+</example>
+
+<note>
+It could be that these two could be conflated, but I doubt it.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

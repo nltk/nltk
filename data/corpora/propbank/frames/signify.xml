@@ -1,0 +1,43 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="signify">
+<note>
+  Frames file for 'signify' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="signify.01" name="to denote, mean or make known" vncls="-">
+<roles>
+  <role descr="agent or entity signifying" n="0"/>
+  <role descr="entity meant or becoming known" n="1"/>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+ Uptick -- An expression signifying that a transaction in a listed security occurred at a higher price than the previous transaction in that security .
+</text>
+	<arg n="0">An expression</arg>
+	<rel>signifying</rel>
+	<arg n="1">a transaction in a listed security occurred at a higher price than the previous transaction in that security</arg>
+</example>
+
+
+<example name="transitive with agent">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ `` He does n't signify what people want [*T*-1] , so the unrest will go on , '' Mr. Oldenburg predicts [*T*-2] .
+</text>
+	<arg n="0">He</arg>
+	<arg f="NEG" n="M">n't</arg>
+	<rel>signify</rel>
+	<arg n="1">what people want [*T*-1]</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

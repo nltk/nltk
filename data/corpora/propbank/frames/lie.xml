@@ -1,0 +1,123 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="lie">
+<note>
+  Frames file for 'lie' based on sentences in financial subcorpus.
+  Verbnet classes assuming_position-50 spatial_configuration-47.6,
+  which ignores one major sense.  Comparison to 'lay' and 'sit'
+</note>
+
+<roleset id="lie.01" name="assume a horizontal position, more generally 'exist'" vncls="47.6 50">
+<roles>
+  <role descr="entity in the position" n="1">
+		
+		
+  <vnrole vncls="47.6" vntheta="Theme"/><vnrole vncls="50" vntheta="Agent"/></role>
+
+  <role descr="location" n="2">
+		
+		
+  <vnrole vncls="47.6" vntheta="Location"/><vnrole vncls="50" vntheta="Location"/></role>
+
+</roles>
+
+<example name="exist">
+<text>
+    But any chance for prices to surge above fair value lies in the
+    speculation that accompanies a vigorous merger and buy-out
+    business, and UAL has obviously put a damper on that. 
+</text>
+        <arg f="DIS" n="M">But</arg>
+        <arg n="1">any chance for prices to surge above fair value</arg>
+        <rel>lies</rel>
+        <arg f="in" n="2">the speculation that accompanies a vigorous
+        merger and buy-out business</arg> 
+</example>
+
+<example name="horizontal position">
+  <text>
+    John lies in bed until noon every day.
+  </text>
+  <arg n="1">John</arg>
+  <rel>lies</rel>
+  <arg f="in" n="2">bed</arg>
+  <arg f="TMP" n="m">until noon</arg>
+  <arg f="TMP" n="m">every day</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="lie.02" name="tell a falsehood" vncls="-">
+<roles>
+  <role descr="liar" n="0"/>
+  <role descr="lie" n="1"/>
+  <role descr="hearer" n="2"/>
+</roles>
+
+<example name="intransitivelly">
+<text>
+    He is also accused of *trace* lying under oath and of leaking
+    information obtained from a wiretap he supervised.
+</text>
+        <arg n="0">*trace* -&gt; He</arg>
+        <rel>lying</rel>
+        <arg f="LOC" n="M">under oath</arg>
+</example>
+
+<example name="all args">
+  <text>
+    John lied to Mary about his whereabouts during their planned date.
+  </text>
+  <arg n="0">John</arg>
+  <rel>lied</rel>
+  <arg f="to" n="2">Mary</arg>
+  <arg f="about" n="1">his whereabouts during their planned date</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="lie_down">
+
+<roleset id="lie.03" name="more explicit horizontal position" vncls="50">
+<roles>
+  <role descr="entity lying down" n="1">
+		
+  <vnrole vncls="50" vntheta="Agent"/></role>
+
+  <role descr="location" n="2">
+		
+  <vnrole vncls="50" vntheta="Location"/></role>
+
+</roles>
+
+<example name="no location">
+<text>
+    Wall Street's New Guard isn't likely *trace* to take all this
+    *trace* lying down for long, however.
+</text>
+        <arg n="1">*trace* -&gt; *trace* -&gt; Wall Street's New Guard</arg>
+        <rel>[ lying] [ down]</rel>
+</example>
+
+<example name="more clear">
+  <text>
+    John is going *trace* to lay down on the floor and cry.
+  </text>
+  <arg n="1">*trace* -&gt; John</arg>
+  <rel>lay down</rel>
+  <arg f="on" n="2">the floor</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

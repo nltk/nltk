@@ -1,0 +1,55 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="plow">
+<note>
+Frames file for 'plow' based on sentences in financial subcorpus and
+automatic expansion via verbnet.
+</note>
+
+<roleset id="plow.01" name="make a furrow in the ground" vncls="10.4.2">
+<roles>
+	<role descr="plower" n="0">
+		
+  <vnrole vncls="10.4.2" vntheta="Agent"/></role>
+
+	<role descr="plowed" n="1">
+		
+  <vnrole vncls="10.4.2" vntheta="Theme"/></role>
+
+	<role descr="plowed where" n="2"><vnrole vncls="10.4.2" vntheta="Source"/></role>
+</roles>
+
+<example name="metaphorical">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    And in a business system where shareholders have few rights and
+    expect only modest dividends, companies can plow their profits
+    back into plant and equipment. 
+</text>
+        <arg f="DIS" n="M">And</arg>
+        <arg f="LOC" n="M">in a business system where shareholders
+        have few rights and expect only modest dividends</arg> 
+        <arg n="0">companies</arg>
+        <arg f="MOD" n="M">can</arg>
+        <rel>plow</rel>
+        <arg n="1">their profits</arg>
+        <arg f="DIR" n="M">back</arg>
+        <arg f="into" n="2">plant and equipment</arg>
+</example>
+
+<example name="literal">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John plowed the fertile earth.
+  </text>
+  <arg n="0">John</arg>
+  <rel>plowed</rel>
+  <arg n="2">the fertile earth</arg>
+</example>
+
+<note>
+Arg1 defaults to &quot;furrow&quot;, Arg2 defaults to &quot;ground&quot; or &quot;soil&quot;.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

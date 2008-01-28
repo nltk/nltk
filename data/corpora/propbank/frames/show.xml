@@ -1,0 +1,77 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="show">
+<note>
+  Frames file for 'show' based on survey of initial sentences of big
+  corpus and comparison with 'see' (show is nothing more than the
+  causative of see, after all).
+</note>
+
+<roleset id="show.01" name="cause to see" vncls="29.5 37.1-1 40.3.2">
+<roles>
+  <role descr="shower" n="0">
+	<vnrole vncls="29.5" vntheta="Agent"/>
+        <vnrole vncls="37.1-1" vntheta="Agent"/>
+        <vnrole vncls="40.3.2" vntheta="Agent"/></role>
+  <role descr="thing seen/shown" n="1">
+	<vnrole vncls="29.5" vntheta="Predicate"/>
+        <vnrole vncls="37.1-1" vntheta="Topic"/>
+        <vnrole vncls="40.3.2" vntheta="Patient"/></role>
+  <role descr="seer" n="2">
+	<vnrole vncls="29.5" vntheta="Theme"/>
+        <vnrole vncls="37.1-1" vntheta="Recipient"/>
+        <vnrole vncls="40.3.2" vntheta="Recipient"/></role>
+</roles>
+
+<example name="seer as NP">
+  <text>
+    Can you show me evening flights from Nashville to Houston that
+    serve dinner?
+  </text>
+  <arg f="MOD" n="m">Can</arg>
+  <arg n="0">you</arg>
+  <rel>show</rel>
+  <arg n="2">me</arg>
+  <arg n="1">evening flights from Nashville to Houston that
+    serve dinner</arg>
+</example>
+
+<example name="with WH-clause">
+  <text>
+    The case showed how testing was being overused.
+  </text>
+  <arg n="0">The case</arg>
+  <rel>showed</rel>
+  <arg n="1">how testing was being overused</arg>
+</example>
+
+<note>
+Without &quot;seer&quot;, the synonym could be &quot;display&quot;
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="show_up">
+
+<roleset id="show.02" name="appear" vncls="48.1.2">
+<roles>
+  <role descr="thing appearing, showing up" n="1">
+     <vnrole vncls="48.1.2" vntheta="Theme"/></role>
+</roles>
+
+<example name="asbestos">
+  <text>
+    ...symptoms show up decades later.
+  </text>
+  <arg n="1">symptoms</arg>
+  <rel>show up</rel>
+  <arg f="TMP" n="m">decades later</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

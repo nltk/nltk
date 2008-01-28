@@ -1,0 +1,49 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="crest">
+<note>
+  Frames file for 'crest' based on sentences in wsj.  NO access to
+  verbnet at the moment. 
+</note>
+
+<roleset id="crest.01" name="come over the top of a hill, etc." vncls="-">
+<roles>
+  <role descr="entity in motion" n="0"/>
+  <role descr="hill" n="1"/>
+</roles>
+
+<example name="unexpected intransitive as 'reach a peak'">
+<inflection aspect="ns" form="full" person="ns" tense="future" voice="active"/>
+<text>
+    Some analysts predict that disappointment in Mr. Gandhi's spent
+    pledge to reduce corruption and heavy-handed local government will
+    crest at the polls. 
+</text>
+        <arg n="0">disappointment in Mr. Gandhi's spent pledge to
+        reduce corruption and heavy-handed local government</arg> 
+        <arg f="MOD" n="M">will</arg>
+        <rel>crest</rel>
+        <arg f="LOC" n="M">at the polls</arg>
+</example>
+
+<example name="the usage I expected">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John crested Mt. Everest after a record-setting fifteen years,
+     three months, two weeks, five days, 21 hours, 13 minutes and 48
+     seconds since leaving base camp.
+  </text>
+  <arg n="0">John</arg>
+  <rel>crested</rel>
+  <arg n="1">Mt. Everest</arg>
+  <arg f="TMP" n="m">after a record-setting fifteen years,
+     three months, two weeks, five days, 21 hours, 13 minutes and 48
+     seconds since leaving base camp</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

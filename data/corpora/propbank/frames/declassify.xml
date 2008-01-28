@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="declassify">
+<note>
+  Frames file for 'declassify' based on sentences in financial
+  subcorpus.  Verbnet entry 29.2, other framed members include count,
+  define, describe, employ, establish, intend, portray, rank,
+  recommend, redefine, regard, treat.  Comparison with define.
+</note>
+
+<roleset id="declassify.01" name="make/keep secret">
+<roles>
+  <role descr="secret-keeper" n="0"/>
+  <role descr="secret" n="1"/>
+</roles>
+
+<example name="in honor of the FBI goons">
+  <text>
+    The government declassified John's dissertation.
+  </text>
+  <arg n="0">The government</arg>
+  <rel>declassified</rel>
+  <arg n="1">John's dissertation</arg>
+</example>
+
+<note>
+Interesting: classify takes two rolesets, but only one can be negated.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

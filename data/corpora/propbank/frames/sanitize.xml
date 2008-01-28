@@ -1,0 +1,46 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="sanitize">
+<note>
+  Frames file for 'sanitize' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="sanitize.01" name="make very very clean" vncls="-">
+<roles>
+  <role descr="cleaner, agent" n="0"/>
+  <role descr="thing made clean" n="1"/>
+</roles>
+
+<example name="active">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    Many larger egg producers are also egg processors, who [*T*-1]
+    crack, inspect, and sanitize billions of eggs, turning them into
+    powdered, liquified or frozen egg products. 
+</text>
+        <arg n="0">[*T*-1] -&gt;  who -&gt;  egg processors</arg>
+        <rel>sanitize</rel>
+        <arg n="1">billions of eggs</arg>
+        <arg n="M">turning them into powdered, liquified or frozen egg
+        products</arg> 
+</example>
+
+
+<example name="passive">
+<inflection aspect="perfect" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    The Egg King carries written instructions to break only high-grade
+    eggs that [*T*-3] have been properly sanitized [*-1] and, as an
+    added precaution, to use the eggs only in products that will be
+    cooked enough to kill bacteria.
+</text>
+        <arg f="MNR" n="M">properly</arg>
+        <rel>sanitized</rel>
+        <arg n="1">[*-1] -&gt;  [*T*-3] -&gt;  that -&gt;  only high-grade eggs</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

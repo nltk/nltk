@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="outnumber">
+<note>
+  Frames file for 'outnumber' based on sentences in financial
+  subcorpus.  No access to verbnet.  No comparison.
+</note>
+
+<roleset id="outnumber.01" name="be countably more">
+<roles>
+  <role descr="thing that's more" n="1"/>
+  <role descr="thing that's less" n="2"/>
+  <role descr="margin, EXT" n="3"/>
+</roles>
+
+<example name="typical usage">
+<text>
+    Decliners on the Big Board outnumbered advancers, 931 to 658. 
+</text>
+        <arg n="1">Decliners on the Big Board</arg>
+        <rel>outnumbered</rel>
+        <arg n="2">advancers</arg>
+        <arg f="EXT" n="3">931 to 658</arg>
+</example>
+
+<note>
+All three args are obligatory, apparently.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="chill">
+<note>
+  Frames file for 'chill' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="chill.01" name="to cool or dispirit" vncls="45.4">
+<roles>
+  <role descr="causer of cooling, agent" n="0"><vnrole vncls="45.4" vntheta="Agent"/></role>
+  <role descr="entity chilled" n="1"><vnrole vncls="45.4" vntheta="Patient"/></role>
+</roles>
+
+<example name="transitive">
+<inflection aspect="perfect" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+ The California Supreme Court last year reversed direction [*-1] to make it [*EXP*-2] much harder [*] to win DES cases because the justices saw how all the pharmaceutical litigation has chilled the introduction of new drugs [*T*-3] .
+</text>
+	<arg n="0">all the pharmaceutical litigation</arg>
+	<rel>chilled</rel>
+	<arg n="1">the introduction of new drugs</arg>
+	<arg f="MNR" n="M">[*T*-3] -&gt;  how</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

@@ -1,0 +1,45 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="envisage">
+<note>
+  Frames file for 'envisage' based on sentences in wsj.  Verbnet entry 29.2.
+</note>
+
+<roleset id="envisage.01" name="imagine" vncls="29.2">
+<roles>
+	<role descr="thinker" n="0"><vnrole vncls="29.2" vntheta="Agent"/></role>
+	<role descr="object, thing under consideration" n="1"><vnrole vncls="29.2" vntheta="Theme"/></role>
+	<role descr="attribute" n="2"><vnrole vncls="29.2" vntheta="Predicate"/></role>
+</roles>
+
+<example name="just transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    The fascist concept of corporatism envisaged an ``organic''
+    society in which citizens were spiritually and morally unified,
+    and prepared to sacrifice themselves for the nation. 
+</text>
+        <arg n="0">The fascist concept of corporatism</arg>
+        <rel>envisaged</rel>
+        <arg n="1">an ``organic'' society in which citizens were
+        spiritually and morally unified, and prepared to sacrifice
+        themselves for the nation </arg>
+</example>
+
+<example name="with attribute?">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     Mary envisaged John as an idiot.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>envisaged</rel>
+  <arg n="1">John</arg>
+  <arg f="as" n="2">an idiot</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,65 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="telegraph">
+<note>
+  Frames file for 'telegraph' based on sentences in financial
+  subcorpus.  Verbnet entry 37.4, other framed members include
+  telephone.  Framenet entry Communication means, although oddly
+  enough that class does not include telephone.  Go figger.
+  Some comparison to telephone.
+</note>
+
+<roleset id="telegraph.01" name="send a message via telegraph">
+<roles>
+  <role descr="sender" n="0"/>
+  <role descr="receiver" n="1"/>
+  <role descr="message" n="2"/>
+</roles>
+
+<example name="just message">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    But they said Friday's focus on the top-tier stocks telegraphed
+    active overseas selling and showed the broad-based fears over the
+    status of the U.K. economy and Britain's currency in the wake of
+    the upheaval in Prime Minister Margaret Thatcher's cabinet. 
+</text>
+        <arg n="0">Friday's focus on the top-tier stocks</arg>
+        <rel>telegraphed</rel>
+        <arg n="2">active overseas selling</arg>
+</example>
+
+<example name="all args">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John telegraphed the results of his dissertation defense to Mary.
+  </text>
+  <arg n="0">John</arg>
+  <rel>telegraphed</rel>
+  <arg n="2">the results of his dissertation defense</arg>
+  <arg f="to" n="1">Mary</arg>
+</example>
+
+<example name="all args, different syntax">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John telegraphed Mary with the results of his dissertation defense.
+  </text>
+  <arg n="0">John</arg>
+  <rel>telegraphed</rel>
+  <arg n="1">Mary</arg>
+  <arg f="with" n="2">the results of his dissertation defense</arg>
+</example>
+
+<note>
+This actually conflates two very distinct senses.  One is the obvious
+&quot;send a message via telegraph&quot;.  The other is &quot;say very succinctly&quot;.
+Unfortunately, &quot;send&quot; and &quot;say&quot; take exactly opposite framing WRT
+where the &quot;receiver&quot;/&quot;hearer&quot; argument goes, numerically.  But rather
+than have two rolesets, identical except for this, for a low-frequency
+verb, we'll conflate them and see if anyone complains.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

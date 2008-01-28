@@ -1,0 +1,55 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="smile">
+<note>
+  Frames file for 'smile' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="smile.01" name="to have or form a smile" vncls="-">
+<roles>
+  <role descr="agent smiling" n="0"/>
+  <role descr="cognate object" n="1"/>
+  <role descr="smiled at" n="2"/>
+</roles>
+
+<example name="intransitive">
+<inflection aspect="progressive" form="participle" person="third" tense="present" voice="active"/>
+<text>
+ A half-hour later , the woman is smiling and chatting ; the demon seems [*-1] to have gone .
+</text>
+	<arg n="0">the woman</arg>
+	<rel>smiling</rel>
+</example>
+
+
+<example name="with Arg2">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ The lucky ones gaze out at life with serene eyes and smile with a face of innocence at their perfumed happiness .
+</text>
+	<arg n="0">The lucky ones</arg>
+	<rel>smile</rel>
+	<arg f="MNR" n="M">with a face of innocence</arg>
+	<arg f="at" n="2">their perfumed happiness</arg>
+</example>
+
+
+<example name="with cognate object">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ I felt the temblor begin and glanced at the table next to mine , smiled that guilty smile and we both mouthed the words , `` Earth-quake ! '' together .
+</text>
+	<arg n="0">I</arg>
+	<rel>smiled</rel>
+	<arg n="1">that guilty smile</arg>
+</example>
+
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

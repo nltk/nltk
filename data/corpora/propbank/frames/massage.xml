@@ -1,0 +1,42 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="massage">
+<note>
+  Frames file for 'massage' based on sentences in wsj.  No Verbnet
+  entry, Framenet entry Manipulation.
+</note>
+
+<roleset id="massage.01" name="lay on hands" vncls="-">
+<roles>
+  <role descr="masseur/masseuse" n="0"/>
+  <role descr="lucky patient" n="1"/>
+</roles>
+
+<example name="ah, that feels good">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    Scot MacInnis, a masseur in Boulder, Colo., had a scary experience
+    while [*-1] massaging a man in a natural-foods supermarket as part
+    of a store promotion.
+</text>
+        <arg n="0">[*-1] -&gt;  Scot MacInnis, a masseur in Boulder, Colo.,</arg>
+        <rel>massaging</rel>
+        <arg n="1">a man</arg>
+        <arg f="LOC" n="M">in a natural-foods supermarket</arg>
+        <arg n="M">as part of a store promotion</arg>
+</example>
+
+<example name="not literal">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    His board members alone have pledged $800,000 and he is just
+    beginning [*-1] to massage local foundations and corporations. 
+</text>
+        <arg n="0">[*-1] -&gt;  he</arg>
+        <rel>massage</rel>
+        <arg n="1">local foundations and corporations</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,64 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="disassociate">
+<note>
+  Frames file for 'disassociate' based on sentences in wsj.  No Verbnet
+  entry, but 'dissociate' (which means about the same thing) is in
+  23.1.  This frames file is imported almost directly from dissociate.
+</note>
+
+<roleset id="disassociate.01" name="un-associate" vncls="23.1">
+<roles>
+  <role descr="causer of non-association, agent" n="0">
+        <vnrole vncls="23.1" vntheta="Agent"/></role>
+  <role descr="thing not associated" n="1">
+        <vnrole vncls="23.1" vntheta="Patient1"/></role>
+  <role descr="separated from" n="2">
+        <vnrole vncls="23.1" vntheta="Patient2"/></role>
+</roles>
+
+<example name="oddly ergative">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+    When an electric current is applied to the palladium and platinum
+    electrodes, the heavy water did begin [*-3] to break up, or
+    disassociate.
+</text>
+        <arg n="1">[*-3] -&gt;  the heavy water</arg>
+        <rel>disassociate</rel>
+</example>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+    It would go along [*-2] doing nothing but [*-3] disassociating the
+    heavy water and then at totally unpredictable times, it would
+    begin producing excess heat for as long as 10 or 11 hours before
+    quieting down. 
+</text>
+        <arg n="0">[*-3] -&gt;  [*-2] -&gt;  It</arg>
+        <rel>disassociating</rel>
+        <arg n="1">the heavy water</arg>
+</example>
+
+<example name="actually from disassociate">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+    ``The market is beginning [*-1] to disassociate itself from Wall
+    Street,'' said one New York trader.  
+</text>
+        <arg n="0">[*-1] -&gt;  The market</arg>
+        <rel>disassociate</rel>
+        <arg f="REC" n="1">itself</arg>
+        <arg f="from" n="2">Wall Street</arg>
+</example>
+
+<note>
+The first two usages seem to be specialized and mean something like
+'fall apart'.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

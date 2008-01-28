@@ -1,0 +1,97 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="thrash">
+<note>
+Frames file for 'thrash' based on sentences in wsj and automatic
+expansion via verbnet.
+</note>
+
+<roleset id="thrash.01" name="beat up thoroughly" vncls="18.3">
+<roles>
+	<role descr="agent, hitter - animate only!" n="0">
+		
+  <vnrole vncls="18.3" vntheta="Agent"/></role>
+
+	<role descr="thing hit" n="1">
+		
+  <vnrole vncls="18.3" vntheta="Patient"/></role>
+
+	<role descr="instrument, thing hit by or with" n="2">
+		
+  <vnrole vncls="18.3" vntheta="Instrument"/></role>
+
+</roles>
+
+<example name="just transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Even more important, in our view, was the Treasury's threat
+    *trace* to thrash the dollar. 
+</text>
+        <arg n="0">*trace* -&gt;  the Treasury's</arg>
+        <rel>thrash</rel>
+        <arg n="1">the dollar</arg>
+</example>
+
+<example name="agentive subject" src="pummel.01">
+  <text>
+    Mary thrashed John with a series of stale marshmallows.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>thrashed</rel>
+  <arg n="1">John</arg>
+  <arg f="with" n="2">a series of stale marshmallows</arg>
+</example>
+</roleset>
+
+<roleset id="thrash.03" name="move violently and randomly" vncls="-">
+<roles>
+  <role descr="thing in motion" n="1"/>
+</roles>
+
+<example name="thrash around">
+<inflection aspect="progressive" form="full" person="ns" tense="present" voice="active"/>
+<text>
+    ``They're thrashing around for diversification,'' he says. 
+</text>
+        <arg n="1">They</arg>
+        <rel>thrashing</rel>
+        <arg n="M">around</arg>
+        <arg f="PNC" n="M">for diversification</arg>
+</example>
+
+<note>
+This seems semi-phrasal, but the particle changes (around, about, etc).
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="thrash_out">
+
+<roleset id="thrash.02" name="work out, arrange" vncls="-">
+<roles>
+  <role descr="arranger" n="0"/>
+  <role descr="scheme" n="1"/>
+  <role descr="collaborator" n="2"/>
+</roles>
+
+<example name="just transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    So far, neither the Bush administration nor arms-control experts
+    in Congress seem moved by arguments that these problems may take
+    more time *trace* *trace* to thrash *trace* out than President
+    Bush has allowed. 
+</text>
+        <arg n="0">*trace*</arg>
+        <rel>[ thrash] [ out]</rel>
+        <arg n="1">*trace* -&gt; *trace* -&gt;  these problems </arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

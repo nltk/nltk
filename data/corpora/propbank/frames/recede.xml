@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="recede">
+<note>
+  Frames file for 'recede' based on sentences in wsj.  Verbnet entry
+  51.1-2. 
+</note>
+
+<roleset id="recede.01" name="go backwards, retreat" vncls="51.1-2">
+<roles>
+  <role descr="thing moving backwards" n="0"><vnrole vncls="51.1-2" vntheta="Theme"/></role>
+</roles>
+
+<example name="no source">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    They point out that these institutions want to lock in returns on
+    high-yield U.S. Treasury debt and suggest demand for the U.S. unit
+    will continue unabated until rates in the U.S. recede. 
+</text>
+        <arg n="0">rates in the U.S.</arg>
+        <rel>recede</rel>
+</example>
+
+<note>
+Could take quantifiable args (EXT, start/end points)?  Examples are
+not forthcoming.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

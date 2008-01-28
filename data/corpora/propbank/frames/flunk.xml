@@ -1,0 +1,50 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="flunk">
+<note>
+  Frames file for 'flunk' based on sentences in wsj.  No Verbnet
+  entry.  Comparison with 'pass' and 'fail'.
+</note>
+
+<roleset id="flunk.01" name="fail miserably" vncls="-">
+<roles>
+  <role descr="assessor of not failing (professor)" n="0"/>
+  <role descr="thing failing" n="1"/>
+  <role descr="task" n="2"/>
+</roles>
+
+<example name="just ergative">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    It may also stipulate that the insured must pass another medical
+    exam before renewal; if you flunk -- which means you need
+    insurance more than ever -- you may not be able to buy it. 
+</text>
+        <arg n="1">you</arg>
+        <rel>flunk</rel>
+</example>
+
+
+<example name="with subject, task">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    Roughly a third of the charities reviewed flunk the test. 
+</text>
+        <arg n="1">Roughly a third of the charities reviewed </arg>
+        <rel>flunk</rel>
+        <arg n="2">the test</arg>
+</example>
+
+<example name="I wish I could do this">
+  <text>
+  The evil professor flunked all of his students.
+  </text>
+  <arg n="0">The evil professor</arg>
+  <rel>flunked</rel>
+  <arg n="1">all of his students</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

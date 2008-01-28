@@ -1,0 +1,67 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="embrace">
+<note>
+  Frames file for 'embrace' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="embrace.01" name="to accept enthusiastically or to include" vncls="-">
+<roles>
+  <role descr="includer, agent" n="0"/>
+  <role descr="entity embraced" n="1"/>
+  <role descr="embraced as" n="2"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ The AFL-CIO also embraces treatment guidelines .
+</text>
+	<arg n="0">The AFL-CIO</arg>
+	<arg f="DIS" n="M">also</arg>
+	<rel>embraces</rel>
+	<arg n="1">treatment guidelines</arg>
+</example>
+
+
+<example name="with Arg2">
+<inflection aspect="perfect" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+ In the last decade , many corporations have embraced the `` utilization management '' cost containment strategy as a way [0] [*] to control health-care costs for employees [*T*-1] .
+</text>
+	<arg f="TMP" n="M">In the last decade</arg>
+	<arg n="0">many corporations</arg>
+	<rel>embraced</rel>
+	<arg n="1">the `` utilization management '' cost containment strategy</arg>
+	<arg f="as" n="2">a way [0] [*] to control health-care costs for employees [*T*-1]</arg>
+</example>
+
+</roleset>
+
+<roleset id="embrace.02" name="to hug" vncls="36.2">
+<roles>
+  <role descr="hugger" n="0">
+	<vnrole vncls="36.2" vntheta="Actor1"/></role>
+  <role descr="person hugged" n="1">
+	<vnrole vncls="36.2" vntheta="Actor2"/></role>
+</roles>
+
+
+<example name="not in the corpus">
+<text>
+ John cannot embrace Sue .
+</text>
+	<arg n="0">John</arg>
+	<arg f="MOD" n="M">cannot</arg>
+	<rel>embrace</rel>
+	<arg n="1">Sue</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

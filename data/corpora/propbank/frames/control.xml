@@ -1,0 +1,44 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="control">
+<note>
+  Frames file for 'control' based on sentences in financial
+  subcorpus.  No verbnet entry.  (!!)
+</note>
+
+<roleset id="control.01" name="have power over">
+<roles>
+  <role descr="controller" n="0"/>
+  <role descr="controlled" n="1"/>
+  <role descr="instrumental, controlled with" n="2"/>
+</roles>
+
+<example name="transitive">
+<text>
+    The board is dominated by the heirs of the late John T. Dorrance
+    Jr., who *trace* controlled about 58% of Campbell's stock when he
+    died in April. 
+</text>
+        <arg n="0">*trace* -&gt;  who -&gt;  the late John T. Dorrance Jr.</arg>
+        <rel>controlled</rel>
+        <arg n="1">about 58 % of Campbell 's stock</arg>
+        <arg f="TMP" n="M">when he died in April </arg>
+</example>
+
+<example name="passive/relative clause">
+<text>
+    ...NL Industries, controlled *trace*  by Dallas investor Harold
+    Simmons... 
+</text>
+        <rel>controlled</rel>
+        <arg n="1">*trace* -&gt;  NL Industries</arg>
+        <arg f="by" n="0">Dallas investor Harold Simmons</arg>
+</example>
+
+<note>
+I still predict an instrument.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

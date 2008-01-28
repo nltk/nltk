@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="wail">
+<note>
+  Frames file for 'wail' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="wail.01" name="to grieve or protest loudly, to cry" vncls="37.3">
+<roles>
+  <role descr="speaker" n="0">
+        <vnrole vncls="37.3" vntheta="Agent"/></role>
+  <role descr="entity wailed about" n="1">
+        <vnrole vncls="37.3" vntheta="Topic"/></role>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+ At the hearing , Rep. Oakar started wailing about `` phoney baloney regulations '' that [*T*-1] would stand between her and `` housing for downtown Cleveland . ''
+</text>
+	<arg n="0">Rep. Oakar</arg>
+	<rel>wailing</rel>
+	<arg f="about" n="1">`` phoney baloney regulations '' that [*T*-1] would stand between her and `` housing for downtown Cleveland</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

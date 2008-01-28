@@ -1,0 +1,38 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="vex">
+<note>
+  Frames file for 'vex' based on survey of sentences in the WSJ
+  corpus.  
+</note>
+
+
+<roleset id="vex.01" name="to annoy, bother" vncls="31.1">
+<roles>
+  <role descr="causer of emotion" n="0">
+		
+  <vnrole vncls="31.1" vntheta="Cause"/></role>
+
+  <role descr="experiencer" n="1">
+		
+  <vnrole vncls="31.1" vntheta="Experiencer"/></role>
+
+</roles>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="past" voice="passive"/>
+<text>
+ The state agency was particularly vexed [*-1] to learn that the Rubens and a half-dozen other paintings listed [*] among the bank 's `` furniture and fixtures , '' were actually hanging in the chairman 's house .
+</text>
+	<arg n="1">The state agency</arg>
+	<arg f="ADV" n="M">particularly</arg>
+	<rel>vexed</rel>
+	<arg n="0">[*-1] to learn that the Rubens and a half-dozen other paintings listed [*] among the bank 's `` furniture and fixtures , '' were actually hanging in the chairman 's house</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

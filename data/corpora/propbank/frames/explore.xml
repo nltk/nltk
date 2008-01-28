@@ -1,0 +1,40 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="explore">
+<note>
+  Frames file for 'explore' based on sentences in financial
+  subcorpus.  No access to verbnet.  No comparison.
+</note>
+
+<roleset id="explore.01" name="explore, discover new places or things" vncls="35.4">
+<roles>
+  <role descr="explorer" n="0">
+		
+  <vnrole vncls="35.4" vntheta="Agent"/></role>
+
+  <role descr="thing (place, stuff) explored" n="1">
+		
+  <vnrole vncls="35.4" vntheta="Location"/></role>
+
+</roles>
+
+<example name="exploring options">
+<text>
+    The action followed by one day an Intelogic announcement that it
+    will retain an investment banker *trace* to explore alternatives
+    ``to maximize shareholder value,'' including the possible sale of
+    the company. 
+</text>
+        <arg n="0">*trace* -&gt;  an investment banker</arg>
+        <rel>explore</rel>
+        <arg n="1">alternatives ``to maximize shareholder value,''
+        including the possible sale of the company</arg> 
+</example>
+
+<note>
+They pretty much all look about like that.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

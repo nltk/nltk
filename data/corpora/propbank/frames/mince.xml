@@ -1,0 +1,67 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="mince">
+<note>
+  Frames file for 'mince' based on sentences in wsj.  Verbnet entries
+  51.3.2 and 21.2; Framenet entries Slice and Self-motion.
+</note>
+
+<roleset id="mince.01" name="walk like a girl (sorry)" vncls="51.3.2">
+<roles>
+  <role descr="entity in motion" n="0"><vnrole vncls="51.3.2" vntheta="Theme"/></role>
+  <role descr="path" n="1"><vnrole vncls="51.3.2" vntheta="Location"/></role>
+</roles>
+
+<example name="can I say this without getting in trouble?">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John minced across the stage.
+  </text>
+  <arg n="0">John</arg>
+  <rel>minced</rel>
+  <arg f="across" n="1">the stage</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="mince.02" name="chop finely" vncls="21.2-1">
+<roles>
+  <role descr="cook" n="0"><vnrole vncls="21.2-1" vntheta="Agent"/></role>
+  <role descr="ingredient" n="1"><vnrole vncls="21.2-1" vntheta="Patient"/></role>
+  <role descr="knife" n="2"><vnrole vncls="21.2-1" vntheta="Instrument"/></role>
+</roles>
+
+<example name="most common usage, outside cookbooks">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    A video sent to association members, featuring shots of the Alamo,
+    cowboys, fajitas and a statue of Sam Houston, doesn't mince
+    words. 
+</text>
+        <arg n="0">A video sent to association members, featuring
+        shots of the Alamo, cowboys, fajitas and a statue of Sam
+        Houston,</arg> 
+        <arg f="NEG" n="M">n't</arg>
+        <rel>mince</rel>
+        <arg n="1">words</arg>
+</example>
+
+<example name="cooking">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John minced the onions with a chainsaw.
+  </text>
+  <arg n="0">John</arg>
+  <rel>minced</rel>
+  <arg n="1">the onions</arg>
+  <arg f="with" n="2">a chainsaw</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

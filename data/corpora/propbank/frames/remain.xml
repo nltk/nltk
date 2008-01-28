@@ -1,0 +1,81 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<note>
+Frames file for 'remain' based on survey of initial sentences of big corpus
+and comparison with 'leave'
+</note>
+<predicate lemma="remain">
+<roleset id="remain.01" name="be left behind" vncls="47.1-1">
+  <roles>
+    <role descr="Thing remaining" n="1">
+	  <vnrole vncls="47.1-1" vntheta="Theme"/></role>
+    <role descr="benefactive, entity who gets the remainder" n="2"/>
+    <role descr="attribute of arg1" n="3"/>
+  </roles>
+
+<example name="All alone">
+  <text>
+    Only one local ringer remains.
+  </text>
+  <arg n="1">Only one local ringer</arg>
+  <rel>remains</rel>
+</example>
+
+<example name="With PP">
+  <text>
+    Exports will remain under a government target.
+  </text>
+  <arg n="1">Experts</arg>
+  <rel>remain</rel>
+  <arg f="under" n="3">under a government target</arg>
+</example>
+
+<example name="remain on">
+  <text>
+    Five countries will remain on the so-called priority watch list
+  </text>
+  <arg n="1">Five countries</arg>
+  <rel>remain</rel>
+  <arg f="on" n="3">on the so-called priority watch list</arg>
+</example>
+
+<example name="With AdjP">
+  <text>
+    Their influence will remain subordinate to Japan's.
+  </text>
+  <arg n="1">Their influence</arg>
+  <rel>remain</rel>
+  <arg n="3">subordinate to Japan's</arg>
+</example>
+
+<example name="With NP">
+  <text>
+    The US remains the leading trade partner for all of Asia.
+  </text>
+  <arg n="1">The US</arg>
+  <rel>remains</rel>
+  <arg n="3">the leading trade partner for all of Asia</arg>
+</example>
+
+<example name="With VP">
+  <text>
+    It remains to the President to administer the final infamy.
+  </text>
+  <arg n="1">It</arg>
+  <rel>remains</rel>
+  <arg f="to" n="2">the President</arg>
+  <arg n="3">to administer the final infamy</arg>
+</example>
+
+<example name="with secondary predication">
+  <text>
+    That remains to be seen.
+  </text>
+  <arg n="1">That</arg>
+  <rel>remains</rel>
+  <arg n="3">to be seen</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

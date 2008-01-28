@@ -1,0 +1,62 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="enact">
+<note>
+  Frames file for 'enact' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="enact.01" name="pass legislation" vncls="-">
+<roles>
+  <role descr="legislative body" n="0"/>
+  <role descr="law" n="1"/>
+  <role descr="redundant mention of law" n="2"/>
+</roles>
+
+<example name="active">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Saudi Arabia, for its part, has vowed *trace* to enact a copyright
+    law compatible with international standards and to apply the law
+    to computer software as well as to literary works, Mrs. Hills
+    said.  
+</text>
+        <arg n="0">*trace* -&gt;  Saudi Arabia</arg>
+        <rel>enact</rel>
+        <arg n="1">a copyright law compatible with international
+        standards</arg></example> 
+
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    So both sides accepted the compromise, which would lead to the
+    first lifting of the minimum wage since a four-year law was
+    enacted *trace* in 1977, raising the wage to $3.35 an hour from
+    $2.65. 
+</text>
+        <rel>enacted</rel>
+        <arg n="1">*trace* -&gt;  a four-year law</arg>
+        <arg f="TMP" n="M">in 1977</arg>
+        <arg f="ADV" n="M">raising the wage to $3.35 an hour from
+        $2.65</arg> 
+</example>
+
+<example name="with redundant mention">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    The underlying stopgap bill is the second required by Congress
+    this fall and, since the current fiscal year began Oct. 1, only
+    the Energy and Interior departments are operating on permanent
+    appropriations enacted *trace* into law. 
+</text>
+        <rel>enacted</rel>
+        <arg n="1">*trace* -&gt;  permanent appropriations</arg>
+        <arg f="into" n="2">law</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

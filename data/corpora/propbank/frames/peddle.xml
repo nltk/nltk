@@ -1,0 +1,67 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="peddle">
+<note>
+  Frames file for 'peddle' based on survey of sentences in the WSJ
+  corpus. Comparison with 'sell'.
+</note>
+
+<roleset id="peddle.01" name="to sell or offer for sale" vncls="13.1-1">
+<roles>
+  <role descr="seller" n="0">
+		
+  <vnrole vncls="13.1-1" vntheta="Agent"/></role>
+
+  <role descr="thing peddled" n="1">
+		
+  <vnrole vncls="13.1-1" vntheta="Theme"/></role>
+
+  <role descr="peddled to" n="2">
+		
+  <vnrole vncls="13.1-1" vntheta="Recipient"/></role>
+
+  <role descr="price" n="3"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ Boys on busy street corners peddle newspapers of every political stripe .
+</text>
+	<arg n="0">Boys on busy street corners</arg>
+	<rel>peddle</rel>
+	<arg n="1">newspapers of every political stripe</arg>
+</example>
+
+
+
+<example name="with Arg3">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+ His daughter turns to dressmaking , then to [*] peddling herself for a few piasters .
+</text>
+	<arg n="0">[*] -&gt;  His daughter</arg>
+	<rel>peddling</rel>
+	<arg n="1">herself</arg>
+	<arg f="for" n="3">a few piasters</arg>
+</example>
+
+
+<example name="with Arg2">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+ Like many young recruits in Japanese securities firms , he began his career [*-1] peddling stock to individual investors .
+</text>
+	<arg n="0">[*-1] -&gt;  he</arg>
+	<rel>peddling</rel>
+	<arg n="1">stock</arg>
+	<arg f="to" n="2">individual investors</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

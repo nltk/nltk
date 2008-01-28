@@ -1,0 +1,95 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="abandon">
+<note>
+  Frames file for 'abandon' based on sentences in financial
+  subcorpus.  Verbnet class leave-51.2, other framed members include
+  leave.  Comparison with 'leave'.
+</note>
+
+<roleset id="abandon.01" name="leave behind" vncls="51.2">
+<roles>
+  <role descr="abandoner" n="0">
+	<vnrole vncls="51.2" vntheta="Theme"/></role>
+  <role descr="thing abandoned, left behind" n="1">
+	<vnrole vncls="51.2" vntheta="Source"/></role>
+  <role descr="attribute of arg1" n="2"/>
+</roles>
+
+<example name="typical transitive">
+<text>
+    And they believe the Big Board, under Mr. Phelan, has abandoned
+    their interest. 
+</text>
+        <arg n="0">the Big Board</arg>
+        <arg n="M">under Mr. Phelan</arg>
+        <rel>abandoned</rel>
+        <arg n="1">their interest</arg>
+</example>
+
+<example name="with attribute">
+  <text>
+    John abandoned his pursuit of an Olympic gold medal as a waste of
+    time.
+  </text>
+  <arg n="0">John</arg>
+  <rel>abandoned</rel>
+  <arg n="1">his pursuit of an Olympic gold medal</arg>
+  <arg f="as" n="2">a waste of time.</arg>
+</example>
+</roleset>
+
+<roleset id="abandon.02" name="exchange" vncls="51.2">
+<roles>
+  <role descr="abandoner" n="0">
+	<vnrole vncls="51.2" vntheta="Theme"/></role>
+  <role descr="thing abandoned, left behind" n="1">
+	<vnrole vncls="51.2" vntheta="Source"/></role>
+  <role descr="preferred item" n="2"/>
+</roles>
+
+<example name="with preferred item">
+  <inflection person="ns" tense="ns" aspect="ns" voice="active" form="infinitive"/>
+  <text>
+     One Colombian drug boss, upon hearing in 1987 that Gen. Noriega
+     was negotiating with the U.S. [*] to abandon his command for a
+     comfortable exile, sent him a hand-sized mahogany coffin engraved
+     with his name. 
+  </text>
+  <arg n="0"        >[*] -> Gen. Noriega</arg>
+  <rel              >abandon</rel>
+  <arg n="1"        >his command</arg>
+  <arg n="2" f="for">a comfortable exile</arg>
+</example>
+
+<note>
+Note that without an arg2 the two senses cannot be distinguished.
+</note>
+
+</roleset>
+
+<roleset id="abandon.03" name="surrender, give_over" vncls="-">
+<roles>
+  <role descr="entity abandoning something" n="0"></role>
+  <role descr="thing abandoned" n="1"/>
+  <role descr="benefactive, abandoned-to" n="2"/>
+</roles>
+
+<example name="give up to">
+<text>
+    Once he had abandoned himself to the very worst, once he had
+    quieted all the dragons of worry and suspense, there would n't be
+    very much for Mae to do. 
+</text>
+        <arg n="0">he</arg>
+        <rel>abandoned</rel>
+        <arg n="1">himself</arg>
+        <arg f="to" n="2">the very worst</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

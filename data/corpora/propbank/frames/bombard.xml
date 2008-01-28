@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="bombard">
+<note>
+  Frames file for 'bombard' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="bombard.01" name="to attack or assail persistently" vncls="9.8">
+<roles>
+  <role descr="attacker, agent" n="0"><vnrole vncls="9.8" vntheta="Agent"/></role>
+  <role descr="entity (e.g. region) bombarded" n="1"><vnrole vncls="9.8" vntheta="Destination"/></role>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ Afghan guerrillas bombarded Kabul in a weekend assault that Western diplomats called [*T*-1] one of the biggest offensives since the Soviet Union completed a troop withdrawal in February .
+</text>
+	<arg n="0">Afghan guerrillas</arg>
+	<rel>bombarded</rel>
+	<arg n="1">Kabul</arg>
+	<arg f="LOC" n="M">in a weekend assault that Western diplomats called [*T*-1] one of the biggest offensives since the Soviet Union completed a troop withdrawal in February</arg>
+</example>
+
+</roleset>
+</predicate>
+
+
+</frameset>

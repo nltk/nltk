@@ -1,0 +1,53 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="loot">
+<note>
+  Frames file for 'loot' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="loot.01" name="pillage, etc." vncls="-">
+<roles>
+  <role descr="looter" n="0"/>
+  <role descr="ill-gotten goods" n="1"/>
+  <role descr="source" n="2"/>
+</roles>
+
+<example name="intransitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+     I'm surprised he did n't advocate [*-2] letting people loot,
+     since that behavior can also be foreseen in a disaster and
+     ``every individual has an incentive to alter the distribution of
+     income in his favor.'' 
+</text>
+        <arg n="0">people</arg>
+        <rel>loot</rel>
+</example>
+
+<example name="all args">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John looted fifteen pieces of chocolate cake from the fridge.
+  </text>
+  <arg n="0">John</arg>
+  <rel>looted</rel>
+  <arg n="1">fifteen pieces of chocolate cake</arg>
+  <arg f="from" n="2">the fridge</arg>
+</example>
+
+<example name="all args, different order">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John looted the fridge of fifteen pieces of chocolate cake.
+  </text>
+  <arg n="0">John</arg>
+  <rel>looted</rel>
+  <arg n="2">the fridge</arg>
+  <arg f="of" n="1">fifteen pieces of chocolate cake</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

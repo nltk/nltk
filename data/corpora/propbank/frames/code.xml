@@ -1,0 +1,67 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="code">
+<note>
+  Frames file for 'code' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="code.01" name="make into a code, encrypt" vncls="-">
+<roles>
+  <role descr="codemaker, agent" n="0"/>
+  <role descr="message etc." n="1"/>
+</roles>
+
+<example name="topic detection">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+     Pinpoint Information Corp., Chantilly, Va., a producer of
+     $1,800-a-year personalized newsletters about the computer
+     industry that started full operation last month, relies on 12
+     human readers [*-2] to code news releases by topic in order to
+     select items for each subscriber. 
+</text>
+        <arg n="0">[*-2] -&gt;  12 human readers</arg>
+        <rel>code</rel>
+        <arg n="1">news releases</arg>
+        <arg f="MNR" n="M">by topic</arg>
+</example>
+
+<example name="more canonical usage">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John codes all his love letters to Mary.
+  </text>
+  <arg n="0">John</arg>
+  <rel>codes</rel>
+  <arg n="1">all his love letters to Mary</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="code.02" name="write software" vncls="-">
+<roles>
+  <role descr="programmer" n="0"/>
+  <role descr="software" n="1"/>
+</roles>
+
+<example name="hack, hack, hack">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John coded an artificial intelligence over lunch, but forgot to
+     save the program.
+  </text>
+  <arg n="0">John</arg>
+  <rel>coded</rel>
+  <arg n="1">an artificial intelligence</arg>
+  <arg f="TMP" n="m">over lunch</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,52 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="forfeit">
+<note>
+Frames file for 'forfeit' based on sentences in financial subcorpus
+and automatic expansion via verbnet.
+</note>
+
+<roleset id="forfeit.01" name="give up (to)" vncls="13.2">
+<roles>
+	<role descr="giver" n="0">
+		
+  <vnrole vncls="13.2" vntheta="Agent"/></role>
+ 
+	<role descr="thing given" n="1">
+		
+  <vnrole vncls="13.2" vntheta="Theme"/></role>
+ 
+	<role descr="entity given to" n="2">
+		
+  <vnrole vncls="13.2" vntheta="Recipient"/></role>
+ 
+</roles>
+
+<example name="usually without benefactive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    In addition, Mrs. Lidgerwood said, Norfolk is likely *trace* to
+    draw down its cash initially to finance the purchases and thus
+    forfeit some interest income. 
+</text>
+        <arg n="0">*trace* -&gt;  Norfolk</arg>
+        <arg f="DIS" n="M">thus</arg>
+        <rel>forfeit</rel>
+        <arg n="1">some interest income</arg>
+</example>
+
+<example name="all args" src="surrender.01">
+  <text>
+    John forfeited his prize collection of bottle caps to Mary.
+  </text>
+  <arg n="0">John</arg>
+  <rel>forfeited</rel>
+  <arg n="1">his prize collection of bottle caps</arg>
+  <arg f="to" n="2">Mary</arg>
+</example>
+
+
+</roleset>
+
+</predicate>
+</frameset>

@@ -1,0 +1,56 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="fancy">
+<note>
+  Frames file for 'fancy' based on sentences in wsj.  Verbnet entries
+  29.4, 32.1, 31.2; Framenet entry Experiencer subj.
+</note>
+
+<roleset id="fancy.01" name="suppose to be, take as" vncls="29.4">
+<roles>
+  <role descr="supposer" n="0"><vnrole vncls="29.4" vntheta="Agent"/></role>
+  <role descr="sentential arg" n="1"><vnrole vncls="29.4" vntheta="Predicate"/></role>
+</roles>
+
+<example name="the one example">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    Jeff Bridges is the younger brother, Jack, who [*T*-1] fancies
+    himself the rebellious artist; he lives in a loft with his sick
+    dog and the occasional visit from the little girl upstairs, who
+    climbs down the fire escape. 
+</text>
+        <arg n="0">[*T*-1] -&gt;  who -&gt;  Jack</arg>
+        <rel>fancies</rel>
+        <arg n="1">himself the rebellious artist</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="fancy.02" name="want" vncls="32.1 31.2">
+<roles>
+  <role descr="wanter" n="0"><vnrole vncls="31.2" vntheta="Experiencer"/><vnrole vncls="32.1" vntheta="Experiencer"/></role>
+  <role descr="wanted" n="1"><vnrole vncls="31.2" vntheta="Cause"/><vnrole vncls="32.1" vntheta="Theme"/></role>
+</roles>
+
+<example name="hungry boy">
+  <inflection aspect="ns" form="full" person="ns" tense="ns" voice="active"/>
+  <text>
+      ``Right now,'' John said, ``I'd fancy a hot fudge sundae.''
+  </text>
+  <arg f="TMP" n="m">Right now</arg>
+  <arg n="0">I</arg>
+  <arg f="MOD" n="m">'d</arg>
+  <rel>fancy</rel>
+  <arg n="1">a hot fudge sundae</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,71 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="wrest">
+<note>
+Frames file for 'wrest' based on sentences in wsj and automatic
+expansion via verbnet.
+</note>
+
+<roleset id="wrest.01" name="get violently" vncls="10.5">
+<roles>
+	<role descr="agent, entity acquiring something" n="0">
+		
+  <vnrole vncls="10.5" vntheta="Agent"/></role>
+
+	<role descr="thing acquired" n="1">
+		
+  <vnrole vncls="10.5" vntheta="Theme"/></role>
+
+	<role descr="acquired-from" n="2">
+		
+  <vnrole vncls="10.5" vntheta="Source"/></role>
+
+</roles>
+
+<example name="passivized">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    Former Democratic fund-raiser Thomas M. Gaubert, whose savings and
+    loan *trace* was wrested *trace* from his control by federal
+    thrift regulators, has been granted court permission to sue the
+    regulators. 
+</text>
+        <rel>wrested</rel>
+        <arg n="1">*trace* -&gt; *trace* -&gt;  whose savings and loan</arg>
+        <arg f="from" n="2">his control</arg>
+        <arg f="by" n="0">federal thrift regulators</arg>
+</example>
+
+
+<example name="fairly normal">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    After Mr. Ackerman announced he was soliciting consents from
+    shareholders in order *trace* to wrest control of Datapoint from
+    Mr. Edelman, the corporate raider purchased 30% of Datapoint's
+    shares. 
+</text>
+        <arg n="0">*trace* -&gt;  he</arg>
+        <rel>wrest</rel>
+        <arg n="1">control of Datapoint</arg>
+        <arg f="from" n="2">Mr. Edelman</arg>
+</example>
+
+
+<example name="awkward syntax">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+    Analysts expect the new computer to wrest a hefty slice of
+    business away from IBM, the longtime leader in mainframes. 
+</text>
+        <arg n="0">the new computer</arg>
+        <rel>wrest</rel>
+        <arg n="1">a hefty slice of business</arg>
+        <arg f="DIR" n="2">away from IBM, the longtime leader in
+        mainframes</arg> 
+</example>
+
+</roleset>
+
+</predicate>
+</frameset>

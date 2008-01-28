@@ -1,0 +1,79 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="surrender">
+<note>
+  Frames file for 'surrender' based on survey of sentences in
+  financial subcorpus.  Verbnet class contribute-13.2, other framed
+  members include contribute, return, transfer.  Comparison with those
+  and with 'give_up'.
+</note>
+
+<roleset id="surrender.01" name="give up (eg, a fight)" vncls="13.2">
+<roles>
+  <role descr="one surrendering" n="0">
+		
+  <vnrole vncls="13.2" vntheta="Agent"/></role>
+
+  <role descr="fight" n="1">
+		
+  <vnrole vncls="13.2" vntheta="Theme"/></role>
+
+  <role descr="victor" n="2">
+		
+  <vnrole vncls="13.2" vntheta="Recipient"/></role>
+
+</roles>
+
+<example name="unstated fight">
+<text>
+    Last week, Robert M. Bradley, one of the Big Board's most
+    respected floor traders and head of a major traders' organization,
+    surrendered. 
+</text>
+        <arg f="TMP" n="M">Last week</arg>
+        <arg n="0">Robert M. Bradley, one of the Big Board's most
+        respected floor traders and head of a major traders'
+        organization,</arg> 
+        <rel>surrendered</rel>
+</example>
+
+
+<example name="with stated fight">
+<text>
+    Some European analysts speculated that officials of Saab's highly
+    profitable Scania truck operation balked at *trace* surrendering
+    any of their autonomy. 
+</text>
+        <arg n="0">*trace* -&gt; officials of Saab's highly profitable
+        Scania truck operation</arg> 
+        <rel>surrendering</rel>
+        <arg n="1">any of their autonomy</arg>
+</example>
+
+<example name="with victor">
+  <text>
+    John surrendered to Mary.
+  </text>
+  <arg n="0">John</arg>
+  <rel>surrendered</rel>
+  <arg f="to" n="2">Mary</arg>
+</example>
+
+<example name="all args">
+  <text>
+    John surrendered his prize collection of bottle caps to Mary.
+  </text>
+  <arg n="0">John</arg>
+  <rel>surrendered</rel>
+  <arg n="1">his prize collection of bottle caps</arg>
+  <arg f="to" n="2">Mary</arg>
+</example>
+
+<note>
+There are actually two very different senses, but the syntax is
+compatible so we'll leave it as one roleset.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

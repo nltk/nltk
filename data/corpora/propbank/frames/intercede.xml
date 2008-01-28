@@ -1,0 +1,35 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="intercede">
+<note>
+  Frames file for 'intercede' based on sentences in wsj.  No access to
+  Verbnet at the moment.
+</note>
+
+<roleset id="intercede.01" name="intervene, come between to   create a resolution" vncls="-">
+<roles>
+  <role descr="intercessor" n="0"/>
+  <role descr="resolution between/among/with whom" n="1"/>
+  <role descr="on behalf of" n="2"/>
+</roles>
+
+<example name="these verbs are getting progressively weirder">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Common Cause asked both the Senate Ethics Committee and the
+    Justice Department to investigate $1 million in political gifts by
+    Arizona businessman Charles Keating to five U.S. senators who
+    [*T*-1] interceded with thrift-industry regulators for him. 
+</text>
+        <arg n="0">[*T*-1] -&gt;  who -&gt;  five U.S. senators</arg>
+        <rel>interceded</rel>
+        <arg f="with" n="1">thrift-industry regulators</arg>
+        <arg f="for" n="2">him</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,67 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="rival">
+<note>
+Frames file for 'rival' based on survey of sentences in the WSJ
+corpus. Nombank added examples of 'rival' with a goal 
+argument were found in the BNC  
+</note>
+
+
+<roleset id="rival.01" name="to attempt to equal or surpass">
+<roles>
+  <role descr="competitor" n="0"/>
+  <role descr="competing with" n="1"/>
+  <role descr="competion goal" n="2"/>
+</roles>
+
+ 
+<example name="transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ If further research proves the seed 's benefits , this dusty farm district could become the epicenter of a health-food fad [0] [*T*-1] to rival all fads since cod-liver oil .
+</text>
+	<arg n="0">[*T*-1] -&gt;  [0] -&gt;  a health-food fad</arg>
+	<rel>rival</rel>
+	<arg n="1">all fads since cod-liver oil</arg>
+</example>
+
+<example name="pp-in goal">
+<text>
+The vast majority of living fish belong here (18,000 species or so), 
+which rival the insects in their multitude of adaptations and variety 
+of external form.
+</text>
+	<arg n="0">The vast majority of living fish belong here (18,000 species or so)</arg>
+	<rel>rival</rel>
+	<arg n="1">the insects</arg>
+	<arg n="2">in their multitude of adaptations and variety of external form.</arg>
+</example>
+
+<example name="as-np goal">
+<text>
+These three large Bills probably rival the Bill that introduces the council 
+tax and the asylum Bill as the heaviest pieces of legislation in this year's 
+Queen's Speech.
+</text>
+	<arg n="0">These three large Bills</arg>
+	<arg f="ADV" n="M">probably</arg>
+	<rel>rival</rel>
+	<arg n="1">the Bill that introduces the council tax and the asylum Bill</arg>
+	<arg n="2">as the heaviest pieces of legislation in this year's Queen's Speech.</arg>
+</example>
+
+<example name="pp-for goal">
+<text>
+There is certainly the prospect of Stewart, a slow starter but a class player 
+when set, rivalling Robert Bailey for the No. 3 batting spot in the Caribbean.
+</text>
+	<arg n="0">Stewart, a slow starter but a class player when set</arg>
+	<rel>rival</rel>
+	<arg n="1">Robert Bailey></arg>
+	<arg n="2">for the No. 3 batting spot in the Caribbean</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

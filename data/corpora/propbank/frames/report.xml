@@ -1,0 +1,115 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<note>
+Frames file for 'report' based on first handful of sentences from large
+	 corpus, plus reference to 'expect' and 'say'
+</note>
+<predicate lemma="report">
+<roleset id="report.01" name="report, tell" vncls="29.1 37.7">
+  <roles>
+    <role descr="Reporter" n="0">
+	<vnrole vncls="29.1" vntheta="Agent"/>
+        <vnrole vncls="37.7" vntheta="Agent"/></role>
+    <role descr="thing reported" n="1">
+	<vnrole vncls="29.1" vntheta="Predicate"/>
+        <vnrole vncls="37.7" vntheta="Topic"/></role>
+    <role descr="entity reported to" n="2">
+	<vnrole vncls="29.1" vntheta="Theme"/>
+        <vnrole vncls="37.7" vntheta="Recipient"/></role>
+  </roles>
+
+<example name="just the news">
+  <text>
+    Commonwealth Edison reported earnings of $737 million.
+  </text>
+  <arg n="0">Commonwealth Edison</arg>
+  <rel>reported</rel>
+  <arg n="1">earnings of $737 million</arg>
+</example>
+
+<example name="just hearer">
+  <text>
+    He will report to Donald Pardus.
+  </text>
+  <arg n="0">He</arg>
+  <rel>report</rel>
+  <arg f="to" n="2">to Donald Pardus</arg>
+</example>
+
+<example name="passivized">
+  <text>
+    Preliminary findings were reported more than a year ago by the AMA
+  </text>
+  <arg n="1">Preliminary findings</arg>
+  <rel>reported</rel>
+  <arg f="TMP" n="M">more than a year ago</arg>
+  <arg f="by" n="0">(by the AMA)</arg>
+</example>
+
+<example name="passive extraction">
+  <text>
+    Retail sales were reported *trace* slow in most districts.
+  </text>
+  <arg n="1">[Retail sales] [*trace* slow]</arg>
+  <rel>reported</rel>
+  <arg f="LOC" n="M">in most districts</arg>
+</example>
+
+<example name="another passive extraction">
+  <text>
+    Hammersmith is reported *trace* to have been sold.
+  </text>
+  <arg n="1">[Hammersmith] [*trace* to have been sold]</arg>
+  <rel>reported</rel>
+</example>
+
+<example name="untargeted passive">
+  <text>
+    This goes past what had been reported *trace=what* before.
+  </text>
+  <rel>reported</rel>
+  <arg n="0">*trace=what*</arg>
+  <arg f="TMP" n="M">before</arg>
+</example>
+
+<example name="fronted">
+  <text>
+    The FBI found evidence for an alien invasion, Agt Mulder reported 
+      *trace*
+  </text>
+  <arg n="0">Agt Mulder</arg>
+  <rel>reported</rel>
+  <arg n="1">*trace* -&gt; The FBI found evidence for an alien invasion</arg>
+</example>
+
+<example name="inverted">
+  <text>
+    Japanese corporations bought South Dakota, reported *trace* Newsweek.
+  </text>
+  <rel>reported</rel>
+  <arg n="1">*trace* -&gt; Japanese coporations bought South Dakota </arg>
+  <arg n="0">Newsweek</arg>
+</example>
+
+<example name="discourse-connective">
+  <text>
+    As *trace-1* reported *trace-2*, John said something stupid again.
+  </text>
+  <arg n="0">*trace-1*</arg>
+  <rel>expected</rel>
+  <arg n="1">*trace-2*</arg>
+</example>
+
+<note>
+(Note: traces don't connect to anything)
+</note>
+
+<note>
+Note: as with &quot;say&quot;, the automatic tagger chooses an embedded S as the
+argument of &quot;report&quot; rather than the S-BAR, even in cases with a
+complementizer (&quot;reported that blah&quot;).  To avoid having to change too
+many sentences, we should follow this pattern.
+</note>
+</roleset>
+</predicate>
+</frameset>

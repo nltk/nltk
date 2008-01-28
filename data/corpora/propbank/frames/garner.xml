@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="garner">
+<note>
+  Frames file for 'garner' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="garner.01" name="to gather or acquire" vncls="-">
+<roles>
+  <role descr="getter, garnerer, agent" n="0"/>
+  <role descr="entity garnered" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ The extra margin for bases in the U.S. enhances the power of the appropriations committees ; meanwhile , lawmakers used their positions [*-2] to garner as much as six times what the Pentagon had requested [*T*-1] for their individual states .
+</text>
+	<arg n="0">[*-2] -&gt;  lawmakers</arg>
+	<rel>garner</rel>
+	<arg n="1">as much as six times what the Pentagon had requested [*T*-1] for their individual states</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

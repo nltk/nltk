@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="transcribe">
+<note>
+  Frames file for 'transcribe' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="transcribe.01" name="to make a copy or record on tape" vncls="-">
+<roles>
+  <role descr="copier, agent" n="0"/>
+  <role descr="thing copied" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ What if I tune in my short-wave radio , transcribe an editorial or program , and print it in my newspaper ?
+</text>
+	<arg n="0">I</arg>
+	<rel>transcribe</rel>
+	<arg n="1">an editorial or program</arg>
+</example>
+
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

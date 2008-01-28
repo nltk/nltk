@@ -1,0 +1,59 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="emigrate">
+<note>
+  Frames file for 'emigrate' based on sentences in wsj.  No Verbnet
+  entry, Framenet entry Departing.
+</note>
+
+<roleset id="emigrate.01" name="move population" vncls="-">
+<roles>
+  <role descr="population" n="0"/>
+  <role descr="source" n="1"/>
+  <role descr="destination" n="2"/>
+</roles>
+
+<example name="with destination">
+<inflection aspect="ns" form="full" person="ns" tense="future" voice="active"/>
+<text>
+    Program traders are fond of predicting that if they are blocked in
+    the U.S., they will simply emigrate to foreign stock markets. 
+</text>
+        <arg f="ADV" n="M">if they are blocked in the U.S.</arg>
+        <arg n="0">they</arg>
+        <arg f="MOD" n="M">will</arg>
+        <arg f="DIS" n="M">simply</arg>
+        <rel>emigrate</rel>
+        <arg f="to" n="2">foreign stock markets</arg>
+</example>
+
+
+<example name="better hats?">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    ``I emigrated to wear better hats, do better parties,'' she said
+    with a giggle. 
+</text>
+        <arg n="0">I</arg>
+        <rel>emigrated</rel>
+        <arg f="PNC" n="M">to wear better hats, do better
+        parties</arg> 
+</example>
+
+<example name="with source">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John's family emigrated from Lower Slobovia in 1914.
+  </text>
+  <arg n="0">John's family</arg>
+  <rel>emigrated</rel>
+  <arg f="from" n="1">Lower Slobovia</arg>
+  <arg f="TMP" n="m">in 1914</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

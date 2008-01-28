@@ -1,0 +1,35 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="jam">
+<note>
+  Frames file for 'jam'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="jam.01" name="to pack to excess, cram" vncls="9.7-2">
+<roles> 
+  <role descr="packer, agent" n="0">
+        <vnrole vncls="9.7-2" vntheta="Agent"/></role>
+  <role descr="entity jammed" n="1">
+        <vnrole vncls="9.7-2" vntheta="Theme"/></role>
+  <role descr="location" n="2">
+        <vnrole vncls="9.7-2" vntheta="Destination"/></role>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ Some 34,320 fans jammed the stands , and shouted at the top of their lungs .
+</text>
+	<arg n="1">Some 34,320 fans</arg>
+	<rel>jammed</rel>
+	<arg n="2">the stands</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

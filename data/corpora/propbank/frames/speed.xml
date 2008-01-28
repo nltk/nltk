@@ -1,0 +1,83 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="speed">
+<note>
+  Frames file for 'speed' based on annotation-on-the-fly on the
+  financial subcorpus.  No verbnet entry.
+</note>
+
+<roleset id="speed.01" name="(cause to) go fast" vncls="51.3.2">
+<roles>
+  <role n="0" descr="causer of fast motion"/>
+  <role descr="entity in motion" n="1">
+        <vnrole vncls="51.3.2" vntheta="Theme"/></role>
+</roles>
+
+<example name="lawbreaker">
+  <text>
+  John always speeds in his Chevette.
+  </text>
+  <arg n="1">John</arg>
+  <arg f="TMP" n="m">always</arg>
+  <rel>speeds</rel>
+  <arg f="LOC" n="m">in his Chevette</arg>
+</example>
+
+<example name="with agent">
+  <inflection person="ns" tense="ns" aspect="ns" voice="active" form="full"/>
+  <text>
+    The Los Alamos laboratory is one of three U.S. Department of
+    Energy national laboratories designed as pilot centers to foster
+    joint industry-government programs [0] [*T*-1] to speed the
+    transfer of new superconductors to the marketplace. 
+  </text>
+  <arg n="0"        >[*T*-1] -> [0] -> joint industry-government programs</arg>
+  <rel              >speed</rel>
+  <arg n="1"        >the transfer of new superconductors to the
+  marketplace</arg> 
+</example>
+
+<example name="with redundant directional">
+  <inflection person="ns" tense="ns" aspect="ns" voice="active" form="full"/>
+  <text>
+     The market's wild week may speed along the market-reform
+     legislation that has been pending for months in the aftermath of
+     the 1987 crash. 
+  </text>
+  <arg n="0"        >The market's wild week</arg>
+  <arg n="m" f="MOD">may</arg>
+  <rel              >speed</rel>
+  <arg n="m" f="DIR">along</arg>
+  <arg n="1"        >the market-reform
+     legislation that has been pending for months in the aftermath of
+     the 1987 crash</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="speed_up">
+<roleset id="speed.02" name="speed up: accelerate, cause to move fast" vncls="-">
+<roles>
+  <role descr="causer of fast motion" n="0"/>
+  <role descr="entity in motion" n="1"/>
+</roles>
+
+<example name="faster, pussycat!  kill, kill!">
+  <text>
+  The withdrawal of New England Electric might speed up the
+  reorganization process.
+  </text>
+  <arg n="0">The withdrawal of New England Electric</arg>
+  <arg f="MOD" n="m">might</arg>
+  <rel>speed up</rel>
+  <arg n="1">the reorganization process.</arg>
+</example>
+
+<note>
+Who gets the reference?
+</note>
+
+</roleset>
+</predicate>
+</frameset>

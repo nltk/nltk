@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="monopolize">
+<note>
+  Frames file for 'monopolize' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="monopolize.01" name="to acquire or maintain a monopoly of" vncls="-">
+<roles>
+  <role descr="monopolist, agent" n="0"/>
+  <role descr="entity monopolized" n="1"/>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ `` They do n't want Japan to monopolize the region and sew it up , '' says [*T*-1] Chong-sik Lee , professor of East Asian politics at the University of Pennsylvania .
+</text>
+	<arg n="0">Japan</arg>
+	<rel>monopolize</rel>
+	<arg n="1">the region</arg>
+</example>
+
+</roleset>
+</predicate>
+
+
+</frameset>

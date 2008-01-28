@@ -1,0 +1,46 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="ignite">
+<note>
+  Frames file for 'ignite' based on sentences in wsj.  Verbnet entry 45.4.
+</note>
+
+<roleset id="ignite.01" name="set on fire" vncls="45.4">
+<roles>
+  <role descr="agent, firestarter" n="0"><vnrole vncls="45.4" vntheta="Agent"/></role>
+  <role descr="thing now burning" n="1"><vnrole vncls="45.4" vntheta="Patient"/></role>
+</roles>
+
+<example name="active">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    This trend appears to be especially true at General Motors Corp.,
+    which [*T*-1] used both dealer and consumer incentives [*-3] to
+    ignite sales in August and September. 
+</text>
+        <arg n="0">[*-3] -&gt;  [*T*-1] -&gt;  which -&gt;  General Motors Corp.</arg>
+        <rel>ignite</rel>
+        <arg n="1">sales</arg>
+        <arg f="TMP" n="M">in August and September</arg>
+</example>
+
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="third" tense="past" voice="passive"/>
+<text>
+    Chancellor of the Exchequer Nigel Lawson views the high rates as
+    his chief weapon against inflation, which [*T*-2] was ignited
+    [*-1] by tax cuts and loose credit policies in 1986 and 1987. 
+</text>
+        <rel>ignited</rel>
+        <arg n="1">[*-1] -&gt;  [*T*-2] -&gt;  which -&gt;  inflation</arg>
+        <arg f="by" n="0">tax cuts and loose credit policies</arg>
+        <arg f="TMP" n="M">in 1986 and 1987</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

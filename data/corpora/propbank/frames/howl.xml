@@ -1,0 +1,91 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="howl">
+<note>
+  Frames file for 'howl' based on sentences in wsj.  Verbnet entries
+  47, 37.3, 43.2, 38, 40.2; Framenet entries Motion noise,
+  Communication noise, Perception noise.
+</note>
+
+<roleset id="howl.01" name="emit howl, speak   howlingly" vncls="37.3 43.2 38 40.2">
+<roles>
+  <role descr="howler" n="0"><vnrole vncls="43.2" vntheta="Theme"/><vnrole vncls="38" vntheta="Agent"/><vnrole vncls="40.2" vntheta="Agent"/><vnrole vncls="37.3" vntheta="Agent"/></role>
+  <role descr="utterance, cognate object" n="1"><vnrole vncls="38" vntheta="Theme"/><vnrole vncls="40.2" vntheta="Theme"/><vnrole vncls="37.3" vntheta="Topic"/></role>
+  <role descr="listener" n="2"><vnrole vncls="38" vntheta="Recipient"/><vnrole vncls="40.2" vntheta="Recipient"/><vnrole vncls="37.3" vntheta="Recipient"/></role>
+</roles>
+
+<example name="like a wolf">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John howled at the moon.
+  </text>
+  <arg n="0">John</arg>
+  <rel>howled</rel>
+  <arg f="at" n="2">the moon</arg>
+</example>
+
+<example name="like a crybaby">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+      ``Ow, that hurt!'' howled John when Mary pulled off the band-aid.
+  </text>
+  <arg n="1">``Ow, that hurt!''</arg>
+  <rel>howled</rel>
+  <arg n="0">John</arg>
+  <arg f="TMP" n="m">when Mary pulled off the band-aid</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="howl.02" name="make howling noises while moving" vncls="-">
+<roles>
+  <role descr="entity in motion" n="0"/>
+  <role descr="path" n="1"/>
+</roles>
+
+<example name="the one example from the corpus">
+<inflection aspect="progressive" form="participle" person="ns" tense="future" voice="active"/>
+<text>
+    Then the whole thing will start to collapse, just as it did in the
+    1970s, and the ghosts and banshees will be howling through the
+    place turning people's hair white. 
+</text>
+        <arg f="TMP" n="M">Then</arg>
+        <arg n="0">the ghosts and banshees</arg>
+        <arg f="MOD" n="M">will</arg>
+        <rel>howling</rel>
+        <arg f="through" n="1">the place</arg>
+        <arg f="ADV" n="M">turning people's hair white</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="howl.03" name="bad weather" vncls="57">
+<roles>
+  <role descr="wind, etc." n="0"><vnrole vncls="57" vntheta="Theme"/></role>
+</roles>
+
+<example name="stormy weather">
+  <inflection aspect="progressive" form="participle" person="third" tense="present" voice="active"/>
+  <text>
+     ``The wind is really howling outside,'' John said.
+  </text>
+  <arg n="0">The wind</arg>
+  <arg f="DIS" n="m">really</arg>
+  <rel>howling</rel>
+  <arg f="LOC" n="m">outside</arg>
+</example>
+
+<note>
+Possibly mergable with howl.01
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,37 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="blab">
+<note>
+  Frames file for 'blab' based on sentences in wsj.  No access to
+  Verbnet at the moment.
+</note>
+
+<roleset id="blab.01" name="talk about incautiously" vncls="37.7">
+<roles>
+  <role descr="talker" n="0"><vnrole vncls="37.7" vntheta="Agent"/></role>
+  <role descr="subject" n="1"><vnrole vncls="37.7" vntheta="Topic"/></role>
+  <role descr="listener" n="2"><vnrole vncls="37.7" vntheta="Recipient"/></role>
+</roles>
+
+<example name="blah blah blah">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    Rather than keep the loss a secret from the outside world,
+    Michelle blabs about it to a sandwich man while ordering lunch
+    over the phone. 
+</text>
+        <arg f="DIS" n="M">Rather than keep the loss a secret from the
+        outside world</arg> 
+        <arg n="0">Michelle</arg>
+        <rel>blabs</rel>
+        <arg f="about" n="1">it</arg>
+        <arg f="to" n="2">a sandwich man</arg>
+        <arg f="TMP" n="M">while ordering lunch over the phone</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

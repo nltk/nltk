@@ -1,0 +1,87 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="scramble">
+<note>
+Frames file for 'scramble' based on sentences in financial subcorpus
+and automatic expansion via verbnet classes.  Framenet class Self motion.
+</note>
+
+<roleset id="scramble.01" name="try, attempt desperately" vncls="-">
+<roles>
+  <role descr="attempter" n="0"/>
+  <role descr="thing attempted" n="1"/>
+</roles>
+
+<example name="most common usage">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    For the long-term investor who picks stocks carefully, the price
+    volatility can provide welcome buying opportunities as short-term
+    players scramble frantically to sell stocks in a matter of
+    minutes. 
+</text>
+        <arg n="0">short-term players</arg>
+        <rel>scramble</rel>
+        <arg f="MNR" n="M">frantically</arg>
+        <arg n="1">to sell stocks in a matter of minutes</arg>
+</example>
+
+<note>
+Definitely related to the 'run' roleset, but the to-clause is so
+intimately linked that to call it just a PRP really misses the
+generalization.
+</note>
+
+</roleset>
+
+<roleset id="scramble.02" name="put into   random order" vncls="26.3-2 22.3-1">
+<roles>
+  <role descr="scrambler" n="0">
+	<vnrole vncls="26.3-2" vntheta="Agent"/>
+        <vnrole vncls="22.3-1" vntheta="Agent"/></role>
+  <role descr="thing being randomized" n="1">
+	<vnrole vncls="26.3-2" vntheta="Product"/>
+        <vnrole vncls="22.3-1" vntheta="Patient"/></role>
+  <role descr="benefactive" n="3">
+	<vnrole vncls="26.3-2" vntheta="Beneficiary"/></role>
+</roles>
+
+<example name="all args">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John scrambled some eggs for Mary--unfortunately, he included the
+    shells.
+  </text>
+  <arg n="0">John</arg>
+  <rel>scrambled</rel>
+  <arg n="1">some eggs</arg>
+  <arg f="for" n="3">Mary</arg>
+</example>
+
+</roleset>
+
+<roleset id="scramble.03" name="run" vncls="51.3.2">
+<roles>
+<role descr="runner" n="0">
+	  <vnrole vncls="51.3.2" vntheta="Theme"/></role>
+<role descr="path" n="m"/>
+</roles>
+
+<example name="not eggs, but frying pans and fires">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    Eventually we came to rest in a soggy patch of field where we had
+    the exquisite pleasure of *trace* scrambling out of the basket
+    into the mud while the French half of our ballooning tag team
+    scrambled in. 
+</text>
+        <arg n="0">*trace* -&gt;  we</arg>
+        <rel>scrambling</rel>
+        <arg f="DIR" n="M">out of the basket</arg>
+        <arg f="DIR" n="M">into the mud</arg>
+        <arg f="TMP" n="M">while the French half of our ballooning tag
+        team scrambled in</arg> 
+</example>
+
+</roleset>
+</predicate>
+</frameset>

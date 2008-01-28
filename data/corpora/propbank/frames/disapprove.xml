@@ -1,0 +1,38 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="disapprove">
+<note>
+Frames file for 'disapprove' based on transformation of 'approve'
+frames.  No actual usage examined.  Verbnet entry 31.3, Framenet entry
+Judgement. 
+</note>
+
+<roleset id="disapprove.01" name="dissent to" vncls="31.3">
+<roles>
+  <role descr="disapprover" n="0"><vnrole vncls="31.3" vntheta="Experiencer"/></role>
+  <role descr="thing disapproved" n="1"><vnrole vncls="31.3" vntheta="Cause"/></role>
+</roles>
+
+<example name="NP disapproval">
+  <text>
+  Shareholders disapproved Pacific First Financial's acquisition by Royal
+  Trustco Ltd of Toronto for $27 a share, or $212 million.
+  </text>
+  <arg n="0">Shareholders</arg>
+  <rel>disapproved</rel>
+  <arg n="1">Pacific First Financial's acquisition by Royal
+  Trustco Ltd of Toronto for $27 a share, or $212 million.</arg>
+</example>
+
+<example name="PP disapproval">
+  <text>
+  50% of voters disapprove of the President's job performance.
+  </text>
+  <arg n="0">50% of voters</arg>
+  <rel>disapprove</rel>
+  <arg f="of" n="1">the President's job performance</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

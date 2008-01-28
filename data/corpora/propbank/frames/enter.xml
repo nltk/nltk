@@ -1,0 +1,99 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="enter">
+<note>
+  Frames file for 'enter' based on sentences in financial subcorpus.
+  Verbnet class 51.1, other framed members are 'leave'.  Also
+  comparison with 'go in'.
+</note>
+
+<roleset id="enter.01" name="enter, go in" vncls="51.1-1">
+<roles>
+  <role descr="entity entering" n="0">
+		
+  <vnrole vncls="51.1-1" vntheta="Theme"/></role>
+
+  <role descr="place or thing entered" n="1">
+		
+  <vnrole vncls="51.1-1" vntheta="Location"/></role>
+
+</roles>
+
+<example name="place entered as NP">
+<text>
+    An ambitious expansion has left Magna with excess capacity and a
+    heavy debt load as the automotive industry enters a downturn.
+</text>
+        <arg n="0">the automotive industry</arg>
+        <rel>enters</rel>
+        <arg n="1">a downturn</arg>
+</example>
+
+<example name="place entered as a PP">
+<text>
+    The two concerns said they entered into a definitive merger
+    agreement under which Ratners will begin a tender offer for all of
+    Weisfield's common shares for $57.50 each.
+</text>
+        <arg n="0">they</arg>
+        <rel>entered</rel>
+        <arg f="into" n="1">a definitive merger agreement under which
+        Ratners will begin a tender offer for all of Weisfield's
+        common shares for $57.50 each</arg>
+</example>
+
+</roleset>
+
+<roleset id="enter.02" name="submit, cause to enter" vncls="29.2">
+<roles>
+  <role descr="submitter" n="0"><vnrole vncls="29.2" vntheta="Agent"/></role>
+  <role descr="thing submitted" n="1"><vnrole vncls="29.2" vntheta="Theme"/></role>
+  <role descr="submitted to" n="2"><vnrole vncls="29.2" vntheta="Predicate"/></role>
+  <role descr="benefactive" n="3"/>
+</roles>
+
+<example name="submit, transitive">
+<text>
+    On Oct. 19, 1987, some investors learned the consequences of
+    *trace* entering ``good-til-canceled limit orders'' and then
+    forgetting about them. 
+</text>
+        <arg n="0">*trace* -&gt;  some investors</arg>
+        <rel>entering</rel>
+        <arg n="1">good-til-canceled limit orders</arg>
+</example>
+
+<example name="including manner">
+<text>
+    A limit order to sell could be entered *trace* at that price .
+</text>
+        <arg f="MOD" n="M">could</arg>
+        <rel>entered</rel>
+        <arg n="1">*trace* -&gt;  A limit order  to sell</arg>
+        <arg f="MNR" n="M">at that price</arg>
+</example>
+
+<example name="with benefactive">
+<text>
+    And even when a specific order is acceptable to an exchange, a
+    brokerage firm can refuse *trace* to enter it for a customer.
+</text>
+        <arg n="0">*trace* -&gt;  a brokerage firm</arg>
+        <rel>enter</rel>
+        <arg n="1">it</arg>
+        <arg f="for" n="3">a customer</arg>
+</example>
+
+<example name="dunno why Arg2 didn't show up">
+  <text>
+    John entered his crayon drawings into an art competition.
+  </text>
+  <arg n="0">John</arg>
+  <rel>entered</rel>
+  <arg n="1">his crayon drawings</arg>
+  <arg f="into" n="2">an art competition</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

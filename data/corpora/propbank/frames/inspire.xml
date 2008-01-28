@@ -1,0 +1,56 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="inspire">
+<note>
+  Frames file for 'inspire' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="inspire.01" name="to affect, guide" vncls="31.1">
+<roles>
+  <role descr="causer of inspiration" n="0"><vnrole vncls="31.1" vntheta="Cause"/></role>
+  <role descr="experiencer" n="1"><vnrole vncls="31.1" vntheta="Experiencer"/></role>
+  <role descr="inspired action" n="2"/>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ She was an unstinting teacher who [*T*-80] won laurels and inspired students , but she will probably never teach again .
+</text>
+	<arg n="0">[*T*-80] -&gt;  who -&gt;  an unstinting teacher</arg>
+	<rel>inspired</rel>
+	<arg n="1">students</arg>
+</example>
+
+
+<example name="all arguments">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ Mary Beth Marchand , a Greenville 11th grader , also says [0] Mrs. Yeargin inspired her to go into education .
+</text>
+	<arg n="0">Mrs. Yeargin</arg>
+	<rel>inspired</rel>
+	<arg n="1">her</arg>
+	<arg n="2">to go into education</arg>
+</example>
+
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+ `` I 'm inspired [*-1] by the mood of the people . ''
+</text>
+	<rel>inspired</rel>
+	<arg n="1">[*-1] -&gt;  I</arg>
+	<arg f="by" n="0">the mood of the people</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

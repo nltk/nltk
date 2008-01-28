@@ -1,0 +1,64 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="shrink">
+<note>
+  Frames file for 'shrink' based on sentences in financial subcorpus.
+  No access to verbnet.  Comparison to 'lessen'.
+</note>
+
+<roleset id="shrink.01" name="become or make smaller" vncls="40.5 45.4">
+<roles>
+    <role descr="Agent" n="0">
+	<vnrole vncls="40.5" vntheta="Experiencer"/>
+        <vnrole vncls="45.4" vntheta="Agent"/></role>
+    <role descr="Logical subject, patient, thing falling" n="1">
+	<vnrole vncls="45.4" vntheta="Patient"/></role>
+    <role descr="EXT, amount fallen" n="2"/>
+    <role descr="Start point" n="3"/>
+    <role descr="End point, end state of arg1" n="4"/>
+</roles>
+
+<example name="arg2 as MNR">
+<text>
+    Factory orders and construction outlays were largely flat in
+    September, while purchasing agents said manufacturing shrank
+    further in October. 
+</text>
+        <arg n="1">manufacturing</arg>
+        <rel>shrank</rel>
+        <arg f="MNR" n="2">further</arg>
+        <arg f="TMP" n="M">in October</arg>
+</example>
+
+<example name="args 2 as EXT">
+<text>
+    Although the company could see fourth-quarter revenue shrink by
+    nearly $5 billion... 
+</text>
+        <arg n="1">fourth-quarter revenue</arg>
+        <rel>shrink</rel>
+        <arg f="EXT" n="2">by nearly $ 5 billion </arg>
+</example>
+
+<example name="agentive">
+<text>
+    Mercury also is shrinking itself, part of its plan to change its
+    emphasis from buying mortgage loans from mortgage brokers to
+    making loans directly. 
+</text>
+        <arg n="0">Mercury</arg>
+        <arg f="DIS" n="M">also</arg>
+        <rel>shrinking</rel>
+        <arg n="1">itself</arg>
+        <arg n="M">part of its plan to change its emphasis from buying
+        mortgage loans from mortgage brokers to making loans
+        directly</arg> 
+</example>
+
+<note>
+I fully expect to see start and end points eventually.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

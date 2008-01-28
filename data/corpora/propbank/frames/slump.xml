@@ -1,0 +1,52 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="slump">
+<note>
+  Frames file for 'slump' based on sentences in financial subcorpus.
+  Verbnet entries 47.6 and 50, other framed members include sit and
+  stand, lie.  Comparison to fall etc.
+</note>
+
+<roleset id="slump.01" name="decline" vncls="47.6 50">
+<roles>
+  <role descr="is an agent possible?" n="0">
+	<vnrole vncls="47.6" vntheta="Agent"/></role>
+  <role descr="thing slumping" n="1">
+	<vnrole vncls="47.6" vntheta="Theme"/>
+        <vnrole vncls="50" vntheta="Agent"/></role>
+  <role descr="EXT" n="2"/>
+  <role descr="start point" n="3"/>
+  <role descr="end point" n="4"/>
+</roles>
+
+<example name="didn't believe me, did you?">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    In the auto sector, Bayerische Motoren Werke plunged 14.5 marks to
+    529 marks ($288), Daimler-Benz dropped 10.5 to 700, and Volkswagen
+    slumped 9 to 435.5. 
+</text>
+        <arg f="LOC" n="M">In the auto sector</arg>
+        <arg n="1">Volkswagen</arg>
+        <rel>slumped</rel>
+        <arg f="EXT" n="2">9</arg>
+        <arg f="to" n="4">435.5</arg>
+</example>
+
+<example name="agentive?">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John slumped his shoulders.
+  </text>
+  <arg n="0">John</arg>
+  <rel>slumped</rel>
+  <arg n="1">his shoulders</arg>
+</example>
+
+<note>
+I think you can say that.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

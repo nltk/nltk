@@ -1,0 +1,41 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="distill">
+<note>
+  Frames file for 'distill' based on sentences in wsj.  Verbnet entry 10.4.1.
+</note>
+
+<roleset id="distill.01" name="remove impurities" vncls="10.4.1">
+<roles>
+  <role descr="remover of impurities, agent" n="0">
+	<vnrole vncls="10.4.1" vntheta="Agent"/></role>
+  <role descr="impurities" n="1">
+	<vnrole vncls="10.4.1" vntheta="Theme"/></role>
+  <role descr="source, pure substance" n="2">
+	<vnrole vncls="10.4.1" vntheta="Source"/></role>
+</roles>
+
+<example name="no impurities mentioned">
+<inflection aspect="ns" form="gerund" person="ns" tense="ns" voice="ns"/>
+<text>
+    So, following both the style he pursued as President Ford's
+    national security adviser and the recommendations of the Tower
+    Commission, Gen. Scowcroft has pruned the NSC staff and tried to
+    ensure that it sticks to its assigned tasks -- namely, gathering
+    the views of the State Department, Pentagon and intelligence
+    community; serving as an honest broker in [*] distilling that
+    information for the president and then making sure presidential
+    decisions are carried out. 
+</text>
+        <arg n="0">[*] -&gt;  it</arg>
+        <rel>distilling</rel>
+        <arg n="2">that information</arg>
+        <arg f="PNC" n="M">for the president</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

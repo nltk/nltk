@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="uphold">
+<note>
+  Frames file for 'uphold' based on sentences in financial subcorpus
+  and comparison with 'support'.  No verbnet entry.
+</note>
+
+<roleset id="uphold.01" name="lend aid, credence to">
+<roles>
+  <role descr="helper" n="0"/>
+  <role descr="person or project being supported" n="1"/>
+</roles>
+
+<example name="transitive">
+  <text>
+    But state courts upheld a challenge by consumer groups to the
+    commission's rate increase and found the rates illegal.
+  </text>
+  <arg f="DIS" n="m">But</arg>
+  <arg n="0">state courts</arg>
+  <rel>upheld</rel>
+  <arg n="1">a challenge by consumer groups to the
+    commission's rate increase</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

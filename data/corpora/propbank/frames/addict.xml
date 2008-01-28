@@ -1,0 +1,53 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="addict">
+<note>
+  Frames file for 'addict' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="addict.01" vncls="-" name="cause a dependency, as to a drug">
+<roles>
+  <role n="0"  descr="causer of addiction"/>
+  <role n="1"  descr="addicted entity"/>
+  <role n="2"  descr="drug etc."/>
+</roles>
+
+<example name="basic passive">
+<inflection person="ns" tense="present" aspect="ns" voice="passive" form="participle"/>
+<text>
+     The efforts to get to the people who [*T*-3] are addicted, try to
+	rehabilitate them;... </text>
+	<arg n="1">[*T*-3] ->  who ->  the people</arg>
+	<rel>addicted</rel>
+</example>
+
+
+<example name="nice small clause">
+<inflection person="ns" tense="ns" aspect="ns" voice="passive" form="participle"/>
+<text>
+     When you do that you wipe out the criminal incentives, including,
+     I might say, the incentive that the drug pushers have to go
+     around and get kids addicted, so that they create a market for
+     themselves. 
+</text>
+	<arg n="1">kids</arg>
+	<rel>addicted</rel>
+</example>
+
+<example name="all args">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+    John addicted Mary to the joys of chocolate cake.
+  </text>
+  <arg n="0"        >John</arg>
+  <rel              >addicted</rel>
+  <arg n="1"        >Mary</arg>
+  <arg n="2" f="to">the joys of chocolate cake</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

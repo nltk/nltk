@@ -1,0 +1,86 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="qualify">
+<note>
+  Frames file for 'qualify' based on sentences in financial subcorpus.
+  Verbnet entries 29.2, 29.6, other framed members include bill,
+  classify, count, define, describe, emply, establish, intend,
+  portray, rank, recommend, regard, treat, view; act.  That's one
+  sense.  No framenet entry.
+</note>
+
+<roleset id="qualify.01" name="define (further)" vncls="29.2">
+<roles>
+  <role descr="speaker" n="0">
+		
+  <vnrole vncls="29.2" vntheta="Agent"/></role>
+
+  <role descr="thing being described" n="1">
+		
+  <vnrole vncls="29.2" vntheta="Theme"/></role>
+
+  <role descr="secondary predication" n="2">
+		
+  <vnrole vncls="29.2" vntheta="Predicate"/></role>
+
+</roles>
+
+<example name="all args">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John qualified his statements as &quot;just kidding, sheesh!&quot;
+  </text>
+  <arg n="0">John</arg>
+  <rel>qualified</rel>
+  <arg n="1">his statements</arg>
+  <arg f="as" n="2">&quot;just kidding, sheesh!&quot;</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="qualify.02" name="measure up to" vncls="29.6">
+<roles>
+  <role descr="entity being tested" n="1">
+		
+  <vnrole vncls="29.6" vntheta="Theme"/></role>
+
+  <role descr="for what?" n="2">
+		
+  <vnrole vncls="29.6" vntheta="Predicate"/></role>
+
+</roles>
+
+<example name="arg2-for">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    Paribas said it will bid 1,850 francs a share for Navigation Mixte
+    shares that *trace* qualify for a full yearly dividend...
+</text>
+        <arg n="1">*trace* -&gt;  that -&gt;  Navigation Mixte shares</arg>
+        <rel>qualify</rel>
+        <arg f="for" n="2">a full yearly dividend</arg>
+</example>
+
+<example name="arg2-as">
+<inflection aspect="ns" form="full" person="ns" tense="ns" voice="ns"/>
+<text>
+    He said the decision was the first in which a federal appeals
+    court has ruled whether administrative government proceedings
+    qualify as litigation. 
+</text>
+        <arg n="1">administrative government proceedings</arg>
+        <rel>qualify</rel>
+        <arg f="as" n="2">litigation</arg>
+</example>
+
+<note>
+The latter case could be paraphrased as &quot;...proceedings qualify for
+use as litigation&quot; or something like that.  Or maybe it's the other
+roleset.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,88 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="crash">
+<note>
+  Frames file for 'crash' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="crash.01" name="to break, undergo damage" vncls="18.4-1 45.1">
+<roles>
+  <role descr="causer of damage, agent" n="0">
+        <vnrole vncls="45.1" vntheta="Agent"/></role>
+  <role descr="entity crashed" n="1">
+        <vnrole vncls="18.4-1" vntheta="Theme"/>
+        <vnrole vncls="45.1" vntheta="Patient"/></role>
+</roles>
+
+
+<example name="intransitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ `` They still bear the memory of October 1987 , when they bought gold after the stock market crashed and ended up [*-2] losing money because gold prices subsequently fell [*T*-3] , '' Mr. Nichols said [*T*-1] .
+</text>
+	<arg n="1">the stock market</arg>
+	<rel>crashed</rel>
+</example>
+
+
+<example name="with direction">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ The USS Lexington returned to dock in Pensacola , Fla. , following an accident Sunday in which the pilot of a training jet crashed into the ship , [*-2] killing five sailors [*T*-1] .
+</text>
+	<arg n="1">the pilot of a training jet</arg>
+	<rel>crashed</rel>
+	<arg f="DIR" n="M">into the ship</arg>
+	<arg f="ADV" n="M">[*-2] killing five sailors</arg>
+</example>
+
+
+</roleset>
+
+<roleset id="crash.02" name="to enter uninvited" vncls="-">
+<roles>
+  <role descr="entity entering" n="0"/>
+  <role descr="party" n="1"/>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ Name-dropping recently helped Mr. Houston-Montgomery crash a party [0] Fame magazine threw [*T*-1] for 100 of the 2,809 people mentioned [*] in the diaries of the late Andy Warhol .
+</text>
+	<arg n="0">Mr. Houston-Montgomery</arg>
+	<rel>crash</rel>
+	<arg n="1">a party [0] Fame magazine threw [*T*-1] for 100 of the 2,809 people mentioned [*] in the diaries of the late Andy Warhol</arg>
+</example>
+</roleset>
+</predicate>
+
+
+<predicate lemma="crash_out">
+
+<roleset id="crash.03" name="to create quickly and sloppily" vncls="-">
+<roles>
+  <role descr="creator" n="0"/>
+  <role descr="entity created" n="1"/>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ While TV commercials typically take weeks [*] to produce [*?*] , advertisers in the past couple of years have learned [*-1] to turn on a dime , [*-2] to crash out ads in days or even hours .
+</text>
+	<arg n="0">[*-2] -&gt;  [*-1] -&gt;  advertisers</arg>
+	<rel>[ crash] [ out]</rel>
+	<arg n="1">ads</arg>
+	<arg f="TMP" n="M">in days or even hours</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

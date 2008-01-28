@@ -1,0 +1,47 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="coax">
+<note>
+  Frames file for 'coax' based on sentences in wsj.  No Verbnet entry,
+  Framenet entry Suasion1.
+</note>
+
+<roleset id="coax.01" name="try to induce action" vncls="-">
+<roles>
+  <role descr="coaxer" n="0"/>
+  <role descr="induced agent" n="1"/>
+  <role descr="induced action" n="2"/>
+</roles>
+
+<example name="clear action">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    The brokers' hope has been that they could soon coax investors
+    into [*-1] shifting some of their hoard into the stock market. 
+</text>
+        <arg n="0">they</arg>
+        <arg f="MOD" n="M">could</arg>
+        <arg f="TMP" n="M">soon</arg>
+        <rel>coax</rel>
+        <arg n="1">investors</arg>
+        <arg f="into" n="2">[*-1] shifting some of their hoard into
+        the stock market</arg> 
+</example>
+
+<example name="not really an action">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     Mary coaxed John out of the closet with promises of chocolate cake.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>coaxed</rel>
+  <arg n="1">John</arg>
+  <arg f="out of" n="2">the closet</arg>
+  <arg f="MNR" n="m">with promises of chocolate cake</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

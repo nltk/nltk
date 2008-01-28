@@ -1,0 +1,73 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="stitch">
+<note>
+Frames file for 'stitch' based on sentences in financial subcorpus and
+automatic expansion via verbnet.
+</note>
+
+<roleset id="stitch.01" name="connect with thread, tie" vncls="22.4">
+<roles>
+  <role descr="agent, entity doing the tying" n="0">
+	  <vnrole vncls="22.4" vntheta="Agent"/></role>
+   <role descr="patient, thing(s) being tied" n="1">
+	  <vnrole vncls="22.4" vntheta="Patient1"/></role>
+   <role descr="instrument, string" n="2">
+	  <vnrole vncls="22.4" vntheta="Patient2"/></role>
+   <role descr="attribute of arg1" n="3"/>
+</roles>
+
+<example name="stitch together">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    It isn't every day that we hear a Violetta who can sing the first
+    act's high-flying music with all the little notes perfectly
+    pitched and neatly stitched *trace* together. 
+</text>
+        <arg f="MNR" n="M">neatly</arg>
+        <rel>stitched</rel>
+        <arg n="1">*trace* -&gt;  all the little notes</arg>
+        <arg n="3">together</arg>
+</example>
+
+<note>
+The 'together' is redundant but still argument-y.
+</note>
+
+<example name="ouch" src="pin.01">
+  <text>
+    John stitched his heart to his sleeve.
+  </text>
+  <arg n="0">John</arg>
+  <rel>stitched</rel>
+  <arg n="1">his heart</arg>
+  <arg f="to" n="1">his sleeve</arg>
+</example>
+
+</roleset>
+
+<roleset id="stitch.02" name="build by sewing" vncls="26.1">
+<roles>
+  <role descr="builder" n="0">
+	  <vnrole vncls="26.1" vntheta="Agent"/></role>
+  <role descr="construction" n="1">
+          <vnrole vncls="26.1" vntheta="Product"/></role>
+   <role descr="material, start state" n="2">
+	  <vnrole vncls="26.1" vntheta="Material"/></role>
+   <role descr="end state" n="4">
+          <vnrole vncls="26.1" vntheta="Product"/></role> 
+</roles>
+
+<example name="somewhat contrived">
+  <text>
+    John stitched the pieces or burlap into a gorgeous formal gown.
+  </text>
+  <arg n="0">John</arg>
+  <rel>stitched</rel>
+  <arg n="2">the pieces of burlap</arg>
+  <arg f="into" n="1">a gorgeous formal gown</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

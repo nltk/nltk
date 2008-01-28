@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="teeter">
+<note>
+  Frames file for 'teeter' based on sentences in wsj.  Verbnet entry
+  47.3.  And yes, there is also 'totter'.
+</note>
+
+<roleset id="teeter.01" name="stand unsteadily" vncls="47.3">
+<roles>
+  <role descr="thing teetering" n="1"><vnrole vncls="47.3" vntheta="Theme"/></role>
+</roles>
+
+<example name="usually with LOC">
+<inflection aspect="progressive" form="ns" person="ns" tense="ns" voice="active"/>
+<text>
+    But for an ailing savings-and-loan association -- teetering on
+    insolvency -- it can lead to safety from imminent demise and to a
+    future full of promise. 
+</text>
+        <arg n="1">an ailing savings-and-loan association</arg>
+        <rel>teetering</rel>
+        <arg f="LOC" n="M">on insolvency</arg>
+</example>
+
+<note>
+LOC should maybe be promoted to a real argument.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

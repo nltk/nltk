@@ -1,0 +1,77 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="swim">
+<note>
+  Frames file for 'swim' based on sentences in wsj.  Verbnet entries
+  51.3.2, 40.8.2, and 5.1-1, Framenet entry Self Motion.
+</note>
+
+<roleset id="swim.01" name="move through water" vncls="51.3.2">
+<roles>
+  <role descr="swimmer" n="0"><vnrole vncls="51.3.2" vntheta="Theme"/></role>
+  <role descr="course" n="1"><vnrole vncls="51.3.2" vntheta="Location"/></role>
+</roles>
+
+<example name="metaphorical transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    Pictures of rusted oil drums swim into focus, and the female voice
+    purrs, ``That hazardous waste on his (Mr. Courter's) property --
+    the neighbors are suing for consumer fraud.'' 
+</text>
+        <arg n="0">Pictures of rusted oil drums</arg>
+        <rel>swim</rel>
+        <arg f="into" n="1">focus</arg>
+</example>
+
+<example name="commonly intransitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    ``People say they swim, and that may mean they've been to the
+    beach this year,'' says Krys Spain, research specialist for the
+    President's Council on Physical Fitness and Sports. 
+</text>
+        <arg n="0">they</arg>
+        <rel>swim</rel>
+</example>
+
+<example name="literal with course">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    Not content to merely cross the English Channel, John swam across the
+    Atlantic Ocean this summer.
+  </text>
+  <arg n="0">John</arg>
+  <rel>swam</rel>
+  <arg f="across" n="1">the Atlantic Ocean</arg>
+  <arg f="TMP" n="m">this summer</arg>
+</example>
+
+<note>
+Similarly &quot;John swims 10 miles every day over his lunch break.&quot;
+</note>
+
+</roleset>
+
+<roleset id="swim.02" name="feel dizzy" vncls="40.8.2">
+<roles>
+  <role descr="head" n="1"><vnrole vncls="40.8.2" vntheta="Patient"/></role>
+  <role descr="cause" n="2"><vnrole vncls="40.8.2" vntheta="Cause"/></role>
+</roles>
+
+<example name="oh, oh, the pain">
+  <inflection aspect="progressive" form="participle" person="third" tense="past" voice="active"/>
+  <text>
+    John's head was swimming from the amount of coffee he'd drunk that
+    morning. 
+  </text>
+  <arg n="1">John's head</arg>
+  <rel>swimming</rel>
+  <arg f="from" n="2">the amount of coffee he'd drunk that morning</arg>
+</example>
+
+<note>
+Neglecting class 47.5.1-1; I don't see the usage.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

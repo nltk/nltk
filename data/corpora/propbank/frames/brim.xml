@@ -1,0 +1,43 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="brim">
+<note>
+  Frames file for 'brim' based on sentences in financial subcorpus.
+  No Verbnet entry, no Framenet entry.  Comparison with contain.
+</note>
+
+<roleset id="brim.01" name="be full up to the brim">
+<roles>
+  <role descr="container" n="0"/>
+  <role descr="contents" n="1"/>
+</roles>
+
+<example name="the only example?">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Whether Polly Peck's acquisition makes sense remains to be seen,
+    but at the news conference, Mr. Nadir brimmed with self-confidence
+    that he can turn Sansui around. 
+</text>
+        <arg f="LOC" n="M">at the news conference</arg>
+        <arg n="0">Mr. Nadir</arg>
+        <rel>brimmed</rel>
+        <arg f="with" n="1">self-confidence that he can turn Sansui around</arg></example>
+
+<example name="overflow">
+  <inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+  <text>
+    John brims over with pent-up sexual frustration.
+  </text>
+  <arg n="0">John</arg>
+  <rel>brims</rel>
+  <arg f="MNR" n="m">over</arg>
+  <arg f="with" n="1">pent-up sexual frustration</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

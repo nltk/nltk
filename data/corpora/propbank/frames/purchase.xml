@@ -1,0 +1,108 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="purchase">
+
+<note>
+  Frames file for 'purchase' based on initial sentences in large
+  corpus and comparison with 'buy'; most of these examples are bogus,
+  made by taking 'buy' examples and substituting 'purchase' for 'buy'.
+</note>
+
+<roleset id="purchase.01" name="buy" vncls="13.5.2-1">
+<roles>
+  <role descr="purchaser" n="0">
+		
+  <vnrole vncls="13.5.2-1" vntheta="Agent"/></role>
+
+  <role descr="thing purchased" n="1">
+		
+  <vnrole vncls="13.5.2-1" vntheta="Theme"/></role>
+
+  <role descr="seller" n="2">
+		
+  <vnrole vncls="13.5.2-1" vntheta="Source"/></role>
+
+  <role descr="price paid" n="3">
+		
+  <vnrole vncls="13.5.2-1" vntheta="Asset"/></role>
+
+  <role descr="benefactive" n="4"/>
+</roles>
+
+<example name="Basic transitive">
+  <text>
+    They purchased $2.4 billion in Fannie Mae bonds
+  </text>
+  <arg n="0">They</arg>
+  <rel>purchased</rel>
+  <arg n="1">$2.4 billion in Fannie Mae bonds</arg>
+</example>
+
+<example name="With price (often subtle):">
+  <text>
+  ...most purchased *trace* at nominal prices...
+  </text>
+  <arg n="1">*trace*=most</arg>
+  <rel>purchased</rel>
+  <arg f="at" n="3">nominal prices</arg>
+</example>
+
+<example name="With seller:">
+  <text>
+    The company purchased a wheel-loader from Dresser.
+  </text>
+  <arg n="0">The company</arg>
+  <rel>purchased</rel>
+  <arg n="1">a wheel-loader</arg>
+  <arg f="from" n="2">Dresser</arg>
+</example>
+
+<example name="With benefactive:">
+  <text>
+    John purchased his mother a dozen roses
+  </text>
+  <arg n="0">John</arg>
+  <rel>purchased</rel>
+  <arg n="4">his mother</arg>
+  <arg n="1">a dozen roses</arg>
+</example>
+
+<example name="With benefactive:">
+  <text>
+    John purchased a dozen roses for his mother
+  </text>
+  <arg n="0">John</arg>
+  <rel>purchased</rel>
+  <arg n="1">a dozen roses</arg>
+  <arg f="for" n="4">his mother</arg>
+</example>
+
+<example name="With purpose clause:">
+  <text>
+    The company purchased sugar on the world market to meet export commitments
+  </text>
+  <arg n="0">The company</arg>
+  <rel>purchased</rel>
+  <arg n="1">sugar</arg>
+  <arg f="LOC" n="M">on the world market</arg>
+  <arg f="PNC" n="M">to meet export commitments</arg>
+
+</example>
+
+<example name="In a compound:">
+  <text>
+    Lower interest rates has spurred dollar purchasing by Japanese
+    institutions.
+  </text>
+  <arg n="1">dollar</arg>
+  <rel>purchasing</rel>
+  <arg f="by" n="0">Japanese institutions</arg>
+</example>
+
+<note>
+Ignore adjectival usages like &quot;Most purchasing managers&quot;.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

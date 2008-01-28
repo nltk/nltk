@@ -1,0 +1,39 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="pioneer">
+<note>
+  Frames file for 'pioneer' based on sentences in financial subcorpus.
+  Verbnet entry 29.8, no other framed members.  Comparison with
+  'innovate'.
+</note>
+
+<roleset id="pioneer.01" name="come up with a new idea" vncls="29.8">
+<roles>
+  <role descr="thinker" n="0">
+		
+  <vnrole vncls="29.8" vntheta="Agent"/></role>
+
+  <role descr="new idea" n="1">
+		
+  <vnrole vncls="29.8" vntheta="Theme"/></role>
+
+</roles>
+
+<example name="transitive">
+<text>
+    But Mr. Achenbaum pioneered negotiated fees, which often worked
+    out to less than 15%. 
+</text>
+        <arg f="DIS" n="M">But</arg>
+        <arg n="0">Mr. Achenbaum</arg>
+        <rel>pioneered</rel>
+        <arg n="1">negotiated fees, which often worked out to less
+        than 15%</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,44 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="rob">
+<note>
+  Frames file for 'rob' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="rob.01" name="to engage in or commit robbery" vncls="10.6">
+<roles>
+  <role descr="robber, thief" n="0">
+        <vnrole vncls="10.6" vntheta="Agent"/></role>
+  <role descr="person robbed" n="1">
+        <vnrole vncls="10.6" vntheta="Source"/></role>
+</roles>
+
+<example name="passive">
+<inflection aspect="ns" form="gerund" person="ns" tense="ns" voice="passive"/>
+<text>
+ Seventeen percent reported their customers being robbed [*-1] .
+</text>
+	<rel>robbed</rel>
+	<arg n="1">[*-1] -&gt;  their customers</arg>
+</example>
+
+
+<example name="passive with adverbials">
+<inflection aspect="ns" form="participle" person="ns" tense="past" voice="passive"/>
+<text>
+ In his first year of [*] operating the store [0] he bought [*T*-2] for $ 220,000 [*U*] , Mr. Ortiz was robbed [*-1] at least twice at gunpoint .
+</text>
+	<arg f="TMP" n="M">In his first year of [*] operating the store [0] he bought [*T*-2] for $ 220,000 [*U*]</arg>
+	<rel>robbed</rel>
+	<arg n="1">[*-1] -&gt;  Mr. Ortiz</arg>
+	<arg f="ADV" n="M">at least twice</arg>
+	<arg f="MNR" n="M">at gunpoint</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

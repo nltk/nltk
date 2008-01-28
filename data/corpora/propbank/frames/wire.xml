@@ -1,0 +1,78 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="wire">
+<note>
+  Frames file for 'wire' based on sentences in wsj.  Verbnet entries
+  11.5, 22.4, 37.4, Framenet entry Communication means.
+</note>
+
+<roleset id="wire.01" name="send electronically" vncls="11.5 37.4">
+<roles>
+  <role descr="sender" n="0">
+       <vnrole vncls="11.5" vntheta="Agent"/>
+       <vnrole vncls="37.4" vntheta="Agent"/></role>
+  <role descr="sent, message" n="1">
+       <vnrole vncls="11.5" vntheta="Theme"/>
+       <vnrole vncls="37.4" vntheta="Topic"/></role>
+  <role descr="recipient" n="2">
+       <vnrole vncls="11.5" vntheta="Destination"/>
+       <vnrole vncls="37.4" vntheta="Recipient"/></role>
+</roles>
+
+<example name="all args">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    Mary wired a note of condolences to John's parents.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>wired</rel>
+  <arg n="1">a note of condolences</arg>
+  <arg f="to" n="2">John's parents</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="wire.02" name="attach with wires" vncls="22.4">
+<roles>
+  <role descr="cause of attachment" n="0">
+        <vnrole vncls="22.4" vntheta="Agent"/></role>
+  <role descr="entity wired" n="1">
+        <vnrole vncls="22.4" vntheta="Patient1"/></role>
+  <role descr="other entity or end state" n="2">
+        <vnrole vncls="22.4" vntheta="Patient2"/></role>
+</roles>
+
+<example name="specific meaning">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+    Video Telecom Corp., which markets videoconferencing systems, is
+    working with court reporters [*-2] to wire a nationwide network to
+    allow depositions by live television. 
+</text>
+        <arg n="0">[*-2] -&gt;  Video Telecom Corp., which markets
+        videoconferencing systems,</arg> 
+        <rel>wire</rel>
+        <arg n="1">a nationwide network to allow depositions by live
+        television</arg> 
+</example>
+
+<example name="arg2">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    Called Task Broker, the program acts something like an auctioneer
+    among a group of computers wired [*] together. 
+</text>
+        <rel>wired</rel>
+        <arg n="1">[*] -&gt;  computers</arg>
+        <arg n="2">together</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

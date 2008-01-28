@@ -1,0 +1,34 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="caption">
+<note>
+  Frames file for 'caption' based on sentences in wsj.  No access to
+  Verbnet at the moment.
+</note>
+
+<roleset id="caption.01" name="add text to pictures, subtitle" vncls="-">
+<roles>
+  <role descr="captioner" n="0"/>
+  <role descr="pictures" n="1"/>
+  <role descr="text" n="2"/>
+</roles>
+
+<example name="all args">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    To top it off, you captioned the graph showing the average number
+    of months in a job search as ``Time Off.'' 
+</text>
+        <arg n="0">you</arg>
+        <rel>captioned</rel>
+        <arg n="1">the graph showing the average number of months in a
+        job search</arg> 
+        <arg f="as" n="2">Time Off</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

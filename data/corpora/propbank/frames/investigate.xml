@@ -1,0 +1,60 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="investigate">
+<note>
+Frames file for 'investigate' based on sentences in financial
+subcorpus and automatic expansion via verbnet.
+</note>
+
+<roleset id="investigate.01" name="examine closely" vncls="30.2 35.4">
+<roles>
+  <role descr="examiner" n="0">
+	<vnrole vncls="30.2" vntheta="Experiencer"/>
+        <vnrole vncls="35.4" vntheta="Agent"/></role>
+  <role descr="examined" n="1">
+	<vnrole vncls="30.2" vntheta="Stimulus"/>
+        <vnrole vncls="35.4" vntheta="Location"/></role>
+  <role descr="examined for" n="2">
+	<vnrole vncls="35.4" vntheta="Theme"/></role>
+</roles>
+
+<example name="investigate a person">
+<inflection aspect="progressive" form="participle" person="third" tense="present" voice="passive"/>
+<text>
+    Mr. Antar is being investigated *trace* by a federal grand jury in
+    Newark, where prosecutors have told him that they may soon seek an
+    indictment on racketeering and securities fraud charges. 
+</text>
+        <rel>investigated</rel>
+        <arg n="1">*trace* -&gt;  Mr. Antar</arg>
+        <arg f="by" n="0">a federal grand jury in Newark, where
+        prosecutors have told him that they may soon seek an
+        indictment on racketeering and securities fraud charges </arg> 
+</example>
+
+<example name="investigate an SBAR">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    In another setback yesterday, United's machinist union asked the
+    Treasury Department *trace* to investigate whether certain aspects
+    of the original buy-out proposal violated tax laws. 
+</text>
+        <arg n="0">*trace* -&gt;  the Treasury Department</arg>
+        <rel>investigate</rel>
+        <arg n="1">whether certain aspects of the original buy-out
+        proposal violated tax laws</arg> 
+</example>
+
+<example name="with arg2" src="scrutinize.01">
+  <text>
+    Mary investigated John's research for signs of obvious plagiarism.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>investigated</rel>
+  <arg n="1">John's research</arg>
+  <arg f="for" n="2">signs of obvious plagiarism</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

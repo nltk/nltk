@@ -1,0 +1,56 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="latch">
+<note>
+  Frames file for 'latch' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="latch.01" name="to get hold of, obtain" vncls="-">
+<roles>
+  <role descr="obtainer, agent" n="0"/>
+  <role descr="entity latched onto" n="1"/>
+</roles>
+
+
+<example name="transitive with Arg-MNR">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ But as advertisers latch onto disasters with increasing frequency , they risk [*-1] hurting themselves as much as [*-1] helping the cause .
+</text>
+	<arg n="0">advertisers</arg>
+	<rel>latch</rel>
+	<arg f="onto" n="1">disasters</arg>
+	<arg f="MNR" n="M">with increasing frequency</arg>
+</example>
+</roleset>
+</predicate>
+
+
+<predicate lemma="latch_on">
+
+<roleset id="latch.02" name="to get hold of, obtain" vncls="-">
+<roles>
+  <role descr="obtainer, agent" n="0"/>
+  <role descr="entity latched on" n="1"/>
+</roles>
+
+
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ For , just as Mr. Giuliani latches on to an issue that [*T*-1] has Mr. Dinkins reeling , his campaign desperately needs cash [*] to keep Mr. Ailes 's commercials on the air beyond Wednesday or Thursday .
+</text>
+	<arg n="0">Mr. Giuliani</arg>
+	<rel>[ latches] [ on]</rel>
+	<arg f="to" n="1">an issue that [*T*-1] has Mr. Dinkins reeling</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

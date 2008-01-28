@@ -1,0 +1,58 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="suffer">
+<note>
+  Frames file for 'suffer' based on annotation-on-the fly in the
+  financial subcorpus, comparison with 'put up'.  No entry in
+  verbnet.
+</note>
+
+<roleset id="suffer.01" name="suffer" vncls="31.3">
+<roles>
+  <role descr="entity suffering" n="0">
+		
+  <vnrole vncls="31.3" vntheta="Experiencer"/></role>
+
+  <role descr="malady" n="1">
+		
+  <vnrole vncls="31.3" vntheta="Cause"/></role>
+
+</roles>
+
+<example name="intransitive">
+  <text>
+  The company's return on equity could suffer if it made a higher bid.
+  </text>
+  <arg n="0">The company's return on equity</arg>
+  <arg f="MOD" n="m">could</arg>
+  <rel>suffer</rel>
+  <arg f="ADV" n="m">if it made a higher bid</arg>
+</example>
+
+<example name="with PP-malady">
+  <text>
+  John suffers from delusions of grandeur.
+  </text>
+  <arg n="0">John</arg>
+  <rel>suffers</rel>
+  <arg f="from" n="1">delusions of grandeur</arg>
+</example>
+
+<example name="with S-malady">
+  <text>
+  Thou shalt not suffer a fool to live.
+  </text>
+  <arg n="0">Thou</arg>
+  <arg f="MOD" n="m">shalt</arg>
+  <arg f="NEG" n="m">not</arg>
+  <rel>suffer</rel>
+  <arg n="1">a fool to live</arg>
+</example>
+
+<note>
+I doubt this latter syntax will come up in WSJ, but you never know.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

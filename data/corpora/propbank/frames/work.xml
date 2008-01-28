@@ -1,0 +1,309 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="work">
+<note>
+  Frames file for 'work' based on Chris' existing file and survey of
+  initial sentences of big corpus.  Substantial changes from Chris'
+  system, which made no sense anyway.
+</note>
+
+<roleset id="work.01" name="work" vncls="-">
+<roles>
+  <role descr="worker" n="0"/>
+  <role descr="job, project" n="1"/>
+  <role descr="employer" n="2"/>
+  <role descr="coworker" n="3"/>
+  <role descr="instrumental" n="4"/>
+</roles>
+
+<note>
+Beware of usages like &quot;put the taggers to work&quot;.  Treebank calls work
+a verb in this context, but that is clearly wrong.  It will take no
+argument structure.
+</note>
+
+<example name="unaccusative">
+  <text>
+    US trade law is working.
+  </text>
+  <arg n="0">US trade law</arg>
+  <rel>working</rel>
+</example>
+
+<example name="unaccusative with more details">
+  <text>
+    Ms. Kirkpatrick worked in Tokyo for three years.
+  </text>
+  <arg n="0">Ms. Kirkpatrick</arg>
+  <rel>worked</rel>
+  <arg f="LOC" n="m">in Tokyo</arg>
+  <arg f="TMP" n="m">for three years</arg>
+</example>
+
+<example name="job">
+  <text>
+    Mr. Cray has been working on the project for more than six years.
+  </text>
+  <arg n="0">Mr. Cray</arg>
+  <rel>working</rel>
+  <arg f="on" n="1">the project</arg>
+  <arg f="TMP" n="m">for more than six years</arg>
+</example>
+
+<example name="odd job variant">
+  <text>
+    33 men worked closely with the substance.
+  </text>
+  <arg n="0">33 men</arg>
+  <rel>worked</rel>
+  <arg f="MNR" n="m">closely</arg>
+  <arg f="with" n="1">with the substance</arg>
+</example>
+
+<example name="employer and job">
+  <text>
+    Mr. Cray will work for the Colorado Springs CO company as an
+    independent contractor.
+  </text>
+  <arg n="0">Mr. Cray</arg>
+  <arg f="MOD" n="m">will</arg>
+  <rel>work</rel>
+  <arg f="for" n="2">the Colorado Springs CO company</arg>
+  <arg f="as" n="1">an independent contractor.</arg>
+</example>
+
+<example name="with coworker, predicative job">
+  <text>
+    He will work with his successor to ensure a smooth transition.
+  </text>
+  <arg n="0">He</arg>
+  <arg f="MOD" n="M">will</arg>
+  <rel>work</rel>
+  <arg f="with" n="3">his successor</arg>
+  <arg n="1">to ensure a smooth transition</arg>
+</example>
+
+<example name="work = cause, create">
+  <inflection person="ns" tense="future" aspect="ns" voice="active" form="full"/>
+  <text>
+    In addition to his interest in ozone depletion he has extensively
+    studied the related topic of global warming, a theory that
+    mankind's generation of carbon dioxide through increased
+    combustion of fossil fuels is creating a ``greenhouse effect''
+    that [*T*-1] will work important climatic changes in the earth's
+    atmosphere over time. 
+  </text>
+  <arg n="0"        >[*T*-1] -> that -> a ``greenhouse effect''</arg>
+  <arg n="m" f="MOD">will</arg>
+  <rel              >work</rel>
+  <arg n="1"        >important climatic changes</arg>
+  <arg n="m" f="LOC">in the earth's atmosphere</arg>
+  <arg n="m" f="TMP">over time</arg>
+</example>
+</roleset>
+
+<roleset id="work.06" vncls="-" name="move with purpose">
+<roles>
+  <role n="0"  descr="entity in motion"/>
+  <role n="1"  descr="description of path"/>
+  <role n="3"  descr="start point"/>
+  <role n="4"  descr="end point"/>
+</roles>
+
+<example name="missing desctination">
+<inflection person="ns" tense="past" aspect="perfect" voice="active" form="participle"/>
+<text>
+    The curator, 27-year-old Sherman Krisher of Greenwich, Conn., had
+    worked his way up from janitor in seven years at the museum. 
+</text>
+        <arg n="0">The curator, 27-year-old Sherman Krisher of
+        Greenwich, Conn.,</arg> 
+        <rel>worked</rel>
+        <arg n="1">his way</arg>
+        <arg n="3" f="up">from janitor</arg>
+        <arg n="M" f="TMP">in seven years at the museum</arg>
+</example>
+
+</roleset>
+
+<roleset id="work.07" vncls="-" name="put">
+<roles>
+  <role n="0"  descr="putter"/>
+  <role n="1"  descr="thing put"/>
+  <role n="2"  descr="destination"/>
+</roles>
+
+<example name="filthy capitalism">
+<inflection person="third" tense="present" aspect="ns" voice="active" form="full"/>
+<text>
+    And by basing donations on BK Doubles, a new double-hamburger line
+    the fast-food chain is trying to push, Burger King works a sales
+    pitch into its public-service message. 
+</text>
+        <arg n="M" f="MNR">by basing donations on BK Doubles, a new
+        double-hamburger line the fast-food chain is trying to
+        push</arg> 
+        <arg n="0">Burger King</arg>
+        <rel>works</rel>
+        <arg n="1">a sales pitch</arg>
+        <arg n="2" f="into">its public-service message</arg>
+</example>
+
+</roleset>
+
+<roleset id="work.08" vncls="-" name="confused with wreak">
+<roles>
+  <role n="0"  descr="worker"/>
+  <role n="1"  descr="damage, havoc"/>
+  <role n="2"  descr="upon what"/>
+</roles>
+
+<example name="mistaken etymologizing">
+  <inflection person="ns" tense="ns" aspect="ns" voice="passive" form="participle"/>
+  <text>
+    It may seem trivial to worry about the World Series amid the
+    destruction to the Bay Area wrought [*] by Tuesday's quake, but
+    the name of this column is ``On Sports,'' so I feel obliged to do
+    so. 
+  </text>
+  <rel              >[*] -> the destruction to the Bay Area</rel>
+  <arg n="1"        >wrought</arg>
+  <arg n="0" f="by">Tuesday's quake</arg>
+<note>
+This is fascinating: wrought is the proper passive participle to work,
+but this usage is clearly using it as the passive of wreak; the
+'proper' passive of wreak is wreaked.  Now I wonder where else wrought
+is showing up.
+</note>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="work_out">
+
+<roleset id="work.02" name="work out: arrange" vncls="-">
+<roles>
+  <role descr="arranger" n="0"/>
+  <role descr="scheme" n="1"/>
+  <role descr="collaborator" n="2"/>
+</roles>
+
+<example name="scheme">
+  <text>
+    The company will work out a plan to pay its debts.
+  </text>
+  <arg n="0">The company</arg>
+  <arg f="MOD" n="m">will</arg>
+  <rel>work out</rel>
+  <arg n="1">a plan to pay its debts</arg>
+</example>
+
+<example name="collaborators">
+  <text>
+    The details haven't been worked out between the Seattle aerospace
+    company and Kawasaki Heavy Industries, Ltd.
+  </text>
+  <arg n="1">The details</arg>
+  <rel>worked out</rel>
+  <arg f="between" n="0">the Seattle aerospace company and Kawasaki
+  Heavy Industries, Ltd.</arg>
+</example>
+
+<example name="nicely unaccusative">
+  <inflection person="ns" tense="present" aspect="ns" voice="active" form="full"/>
+  <text>
+    ``Things work out unexpectedly in life,'' said Ms. Volokh. 
+  </text>
+  <arg n="1"        >Things</arg>
+  <rel              >work out</rel>
+  <arg n="m" f="MNR">unexpectedly</arg>
+  <arg n="m" f="LOC">in life</arg>
+</example>
+
+</roleset>
+
+<roleset id="work.03" name="work out: exercise" vncls="-">
+<roles>
+  <role descr="athlete" n="0"/>
+</roles>
+
+<example name="little girly man">
+  <text>
+    John works out daily with weights.
+  </text>
+  <arg n="0">John</arg>
+  <rel>works out</rel>
+  <arg f="tmp" n="m">daily</arg>
+  <arg f="mnr" n="m">with weights</arg>
+</example>
+</roleset>
+
+<roleset id="work.05" vncls="-" name="work out: amount, count up">
+<roles>
+  <role n="0"  descr="counter"/>
+  <role n="1"  descr="thing being counted"/>
+  <role n="2"  descr="count, number"/>
+</roles>
+
+<example name="work it out">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+    But Mr. Achenbaum pioneered negotiated fees, which *trace* often
+    worked out to less than 15%.
+  </text>
+  <arg n="1"        >*trace* -> which -> negotiated fees</arg>
+  <rel              >worked out</rel>
+  <arg n="2" f="to">less than 15%</arg>
+</example>
+
+<example name="with agent">
+<inflection person="ns" tense="ns" aspect="ns" voice="ns" form="ns"/>
+<text>
+     (No one has worked out the players' average age, but most appear
+     to be in their late 30s.) 
+</text>
+        <arg n="0">No one</arg>
+        <rel>[ worked] [ out]</rel>
+        <arg n="1">the players' average age</arg>
+</example>
+</roleset>
+</predicate>
+
+<predicate lemma="work_up">
+
+<roleset id="work.04" name="work up: create, cause to come about" vncls="-">
+<roles>
+  <role descr="creator" n="0"/>
+  <role descr="thing arising" n="1"/>
+  <role descr="benefactive" n="2"/>
+</roles>
+
+<example name="back to exercise">
+  <text>
+    They have worked up a sweat.
+  </text>
+  <arg n="0">They</arg>
+  <rel>worked up</rel>
+  <arg n="1">a sweat</arg>
+</example>
+
+<example name="with benefactive">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    The decision in Los Angeles federal court stems from a 1985
+    Mercury Sable TV ad that Young &amp; Rubicam worked *trace* up for
+    Ford Motor Co.
+  </text>
+  <arg n="0">Young &amp; Rubicam</arg>
+  <rel>worked up</rel>
+  <arg n="1">a 1985 Mercury Sable TV ad</arg>
+  <arg f="for" n="2">Ford Motor Co.</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

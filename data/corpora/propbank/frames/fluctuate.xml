@@ -1,0 +1,84 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="fluctuate">
+<note>
+  Frames file for 'fluctuate' based on sentences in financial
+  subcorpus.  Butter my butt, it is in Verbnet!  Entry 45.6
+  'calibratable causative'.  Other framed members include appreciate
+  decrease diminish plummet skyrocket tumble and probably others.
+  Framenet entry Scalar Position 2.  Comparison with tumble.
+</note>
+
+<roleset id="fluctuate.01" name="move randomly across some scale" vncls="45.6">
+<roles>
+  <role descr="thing moving" n="1">
+		
+  <vnrole vncls="45.6" vntheta="Patient"/></role>
+
+  <role descr="EXT or MNR" n="2">
+		
+  <vnrole vncls="45.6" vntheta="Extent"/></role>
+
+  <role descr="low point" n="3"/>
+  <role descr="high point" n="4"/>
+  <role descr="medium" n="5"/>
+</roles>
+
+<example name="arg2 as manner">
+<inflection aspect="perfect" form="participle" person="third" tense="present" voice="active"/>
+<text>
+    Nashua's stock has fluctuated sharply on takeover speculation.
+</text>
+        <arg n="1">Nashua 's stock</arg>
+        <rel>fluctuated</rel>
+        <arg f="MNR" n="2">sharply</arg>
+        <arg f="CAU" n="M">on takeover speculation</arg>
+</example>
+
+<example name="arg2 as extent">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    When the price of polyethylene moves a mere penny a pound,
+    Quantum's annual profit fluctuates by about 85 cents a share,
+    provided no other variables are changing. 
+</text>
+        <arg n="1">Quantum 's annual profit</arg>
+        <rel>fluctuates</rel>
+        <arg f="EXT" n="2">about 85 cents a share</arg>
+        <arg f="ADV" n="M">provided  no other variables are changing</arg>
+</example>
+
+<note>
+The difference is that EXT is numerical, while MNR can be just an
+adverb.
+</note>
+
+<example name="with range">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Between then and his bid on Oct. 5, the price fluctuated between
+    $75.625 and $87.375. 
+</text>
+        <arg n="0">the price</arg>
+        <rel>fluctuated</rel>
+        <arg f="between" n="5">$75.625 and $87.375</arg>
+</example>
+
+<example name="high and low">
+  <inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+  <text>
+    John's weight fluctuates from a low of 98 pounds to a high of 500.
+  </text>
+  <arg n="1">John's weight</arg>
+  <rel>fluctuates</rel>
+  <arg f="from" n="3">a low of 98 pounds</arg>
+  <arg f="to" n="4">a high of 500</arg>
+</example>
+
+<note>
+This was way too much work for such a low-freq verb.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

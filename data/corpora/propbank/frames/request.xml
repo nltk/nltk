@@ -1,0 +1,50 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="request">
+<note>
+  Frames file for 'request' based on sentences in financial
+  subcorpus.  No verbnet entry (!!!)  Comparison with 'ask'.
+</note>
+
+<roleset id="request.01" name="ask a favor, ask a request, ask for">
+<roles>
+  <role descr="asker" n="0"/>
+  <role descr="favor" n="1"/>
+  <role descr="hearer" n="2"/>
+</roles>
+
+<example name="no hearer">
+<text>
+    Timex had requested duty-free treatment for many types of watches,
+    covered by 58 different U.S. tariff classifications.
+</text>
+        <arg n="0">Timex</arg>
+        <rel>requested</rel>
+        <arg n="1">duty-free treatment for many types of watches,
+        covered by 58 different U.S. tariff classifications</arg>
+</example>
+
+<example name="with hearer/granter, and stupid broken arg">
+<text>
+    Emerson Electric Co. and Robert Bosch G.m.b.H. said the Federal
+    Trade Commission has requested additional information from the two
+    companies about their announced intention to acquire Vermont
+    American Corp. for $40 a share, or about $440 million. 
+</text>
+        <arg n="0">the Federal Trade Commission</arg>
+        <rel>requested</rel>
+        <arg n="1">additional information </arg>
+        <arg f="from" n="2">the two companies</arg>
+        <arg n="M">about their announced intention  to acquire Vermont
+        American Corp. for $40 a share, or about $440 million
+        </arg> 
+</example>
+
+<note>
+Actually two slightly different senses of 'request', but taking the
+same PAS.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

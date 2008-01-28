@@ -1,0 +1,98 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="stack">
+<note>
+  Frames file for 'stack' based on sentences in financial subcorpus.
+  Verbnet class spray-9.7-1, other framed members include hang, seed.
+  Comparison with 'set'.
+</note>
+
+<roleset id="stack.01" name="set one thing atop another" vncls="9.7-1">
+<roles>
+  <role descr="stacker" n="0">
+		
+  <vnrole vncls="9.7-1" vntheta="Agent"/></role>
+
+  <role descr="one thing" n="1">
+		
+  <vnrole vncls="9.7-1" vntheta="Theme"/></role>
+
+  <role descr="the other" n="2">
+		
+  <vnrole vncls="9.7-1" vntheta="Destination"/></role>
+
+</roles>
+
+<example name="stack on">
+<text>
+    But in recent years, the market has moved toward less expensive
+    ``mini-component'' sets, miniaturized amplifiers and receivers and
+    software players that could be stacked  on top of each other. 
+</text>
+        <arg n="1">*trace* -&gt; *trace* -&gt;  that -&gt; miniaturized
+        amplifiers and receivers and software players</arg> 
+        <arg f="MOD" n="M">could</arg>
+        <rel>stacked</rel>
+        <arg f="on" n="2">top of each other</arg>
+</example>
+
+<example name="stack against">
+<text>
+    ``Small investors are absolutely dismayed that Wall Street is
+    stacking the deck against them, and these wide swings are scaring
+    them to death,'' says Raymond A. Mason, chairman of regional
+    broker Legg Mason Inc. in Baltimore. 
+</text>
+        <arg n="0">Wall Street</arg>
+        <rel>stacking</rel>
+        <arg n="1">the deck</arg>
+        <arg f="against" n="2">them</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="stack_up">
+
+<roleset id="stack.02" name="be arranged, exist" vncls="-">
+<roles>
+  <role descr="thing existing" n="1"/>
+</roles>
+
+<example name="unaccusative">
+<text>
+    It wasn't clear how the ownership would stack up under the new
+    plan, but employees would keep more than 50%. 
+</text>
+        <arg n="1">the ownership</arg>
+        <arg f="MOD" n="M">would</arg>
+        <rel>[ stack] [ up]</rel>
+        <arg f="LOC" n="M">under the new plan</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="stack.03" name="make into a stack">
+<roles>
+  <role descr="stacker" n="0"/>
+  <role descr="thing(s) being stacked" n="1"/>
+</roles>
+
+<example name="big pile">
+  <text>
+    John stacked up all his dirty dishes.
+  </text>
+  <arg n="0">John</arg>
+  <rel>stacked up</rel>
+  <arg n="1">all his dirty dishes</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="preview">
+<note>
+  Frames file for 'preview' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="preview.01" name="to view or  exhibit in advance" vncls="-">
+<roles>
+  <role descr="pre-viewer, agent" n="0"/>
+  <role descr="entity previewed" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="progressive" form="participle" person="ns" tense="past" voice="active"/>
+<text>
+ Robert Guy , an associate curator at the Princeton Art Museum , was previewing a June antiquities sale at the auction house when he recognized the kylix , which he , as a specialist in Attic pottery and a careful reader of the Stolen Art Alert in `` IFAR Reports , '' knew [0] [*T*-3] was stolen [*-1] [*T*-2] .
+</text>
+	<arg n="0">Robert Guy , an associate curator at the Princeton Art Museum ,</arg>
+	<rel>previewing</rel>
+	<arg n="1">a June antiquities sale at the auction house</arg>
+	<arg f="TMP" n="M">when he recognized the kylix , which he , as a specialist in Attic pottery and a careful reader of the Stolen Art Alert in `` IFAR Reports , '' knew [0] [*T*-3] was stolen [*-1] [*T*-2]</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

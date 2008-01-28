@@ -1,0 +1,42 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="chair">
+<note>
+  Frames file for 'chair' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="chair.01" name="to preside over as a chairperson" vncls="-">
+<roles>
+  <role descr="chair" n="0"/>
+  <role descr="institution" n="1"/>
+</roles>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+ The defense lawyers ' group formed a task force [*ICH*-1] [*ICH*-3] this week , chaired [*] by New York attorney Gerald Lefcourt , [0] [*T*-2] to deal with the matter .
+</text>
+	<rel>chaired</rel>
+	<arg n="1">[*] -&gt;  The defense lawyers ' group</arg>
+	<arg f="by" n="0">New York attorney Gerald Lefcourt</arg>
+</example>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ No individual illustrated this mix of power more [*ICH*-2] yesterday than Sen. Daniel Inouye ( D. , Hawaii ) , who [*T*-1] chairs the Senate defense subcommittee .
+</text>
+	<arg n="0">[*T*-1] -&gt;  who -&gt;  Sen. Daniel Inouye</arg>
+	<rel>chairs</rel>
+	<arg n="1">the Senate defense subcommittee</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

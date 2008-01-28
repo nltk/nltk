@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="usurp">
+<note>
+  Frames file for 'usurp' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="usurp.01" name="to seize, take over" vncls="-">
+<roles>
+  <role descr="usurper, new holder" n="0"/>
+  <role descr="role usurped" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ Perhaps none of the unconstitutional conditions contained [*] in the appropriations bills for fiscal 1990 better [*ICH*-1] illustrates Congress 's attempt [*] to usurp executive power than Section 609 of the executive-office bill : `` None of the funds made [*] available pursuant to the provisions of this Act shall be used [*-2] [*] to implement , administer , or enforce any regulation which [*T*-3] has been disapproved [*-58] pursuant to a resolution of disapproval duly adopted [*] in accordance with the applicable law of the United States . ''
+</text>
+	<arg n="0">[*] -&gt;  Congress 's</arg>
+	<rel>usurp</rel>
+	<arg n="1">executive power</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

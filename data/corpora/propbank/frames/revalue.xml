@@ -1,0 +1,44 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="revalue">
+<note>
+  Frames file for 'revalue' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="revalue.01" name="establish a value, again" vncls="-">
+<roles>
+  <role descr="entity establishing value" n="0"/>
+  <role descr="entity with value" n="1"/>
+  <role descr="value" n="2"/>
+</roles>
+
+<example name="one arg">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    South Korean President Roh Tae Woo, brushing aside suggestions
+    that the won be revalued [*-1] again, said the currency's current
+    level against the dollar is ``appropriate.'' 
+</text>
+        <rel>revalued</rel>
+        <arg n="1">[*-1] -&gt;  the won</arg>
+        <arg f="TMP" n="M">again</arg>
+</example>
+
+<example name="all args">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John revalued his relationship with Mary as only slightly better
+     than contracting the Black Death.
+  </text>
+  <arg n="0">John</arg>
+  <rel>revalued</rel>
+  <arg n="1">his relationship with Mary</arg>
+  <arg f="as" n="2">only slightly better than contracting the Black Death</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

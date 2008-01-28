@@ -1,0 +1,64 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="resolve">
+<note>
+  Frames file for 'resolve' based on sentences in financial
+  subcorpus.  No verbnet entry.  Comparison with 'settle.'
+</note>
+
+<roleset id="resolve.01" name="resolve, come to a solution">
+<roles>
+  <role descr="entity making resolution" n="0"/>
+  <role descr="thing being resolved" n="1"/>
+  <role descr="comitative, resolved with" n="2"/>
+  <role descr="attribute, resolved to or at" n="3"/>
+</roles>
+
+<example name="boring transitive">
+<text>
+    The fast-food company said its decision was based on discussions
+    with a shareholder group, Giant Group Ltd., ``in an effort *trace*
+    to resolve certain disputes with the company.'' 
+</text>
+        <arg n="0">*trace* -&gt;  The fast-food company</arg>
+        <rel>resolve</rel>
+        <arg n="1">certain disputes with the company</arg>
+</example>
+
+<note>
+A wonderful example for the reference-resolution people.
+</note>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="resolve.02" name="decide">
+<roles>
+  <role descr="decider" n="0"/>
+  <role descr="decision" n="1"/>
+  <role descr="benefactive" n="2"/>
+  <role descr="instrument" n="3"/>
+</roles>
+
+<example name="make a decision">
+<text>
+    The company also said that it had ``resolved to minimize the
+    degree of further loans to Qintex Entertainment in excess of that
+    previously made.'' 
+</text>
+        <arg n="0">it</arg>
+        <rel>resolved</rel>
+        <arg n="1">to minimize the degree of further loans to Qintex
+        Entertainment in excess of that previously made</arg> 
+</example>
+
+<note>
+For additional examples, refer to 'settle'.
+</note>
+
+</roleset>
+
+</predicate>
+</frameset>

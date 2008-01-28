@@ -1,0 +1,44 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="inflict">
+<note>
+  Frames file for 'inflict' based on sentences in financial subcorpus.
+  No Verbnet entry, no comparison.
+</note>
+
+<roleset id="inflict.01" name="cause injury" vncls="-">
+<roles>
+  <role descr="inflicter" n="0"/>
+  <role descr="injury" n="1"/>
+  <role descr="injured" n="2"/>
+</roles>
+
+<example name="unmentioned injured">
+<inflection aspect="perfect" form="participle" person="third" tense="present" voice="passive"/>
+<text>
+    That should help IBM address the damage that a resurgent Storage
+    Technology Corp. has inflicted  in that market. 
+</text>
+        <arg n="0">a resurgent Storage Technology Corp.</arg>
+        <rel>inflicted</rel>
+        <arg n="1">*trace* -&gt;  that -&gt;  the damage</arg>
+        <arg f="LOC" n="M">in that market</arg>
+</example>
+
+<example name="with injured party">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    Mary inflicted great suffering upon John.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>inflicted</rel>
+  <arg n="1">great suffering</arg>
+  <arg f="upon" n="2">John</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

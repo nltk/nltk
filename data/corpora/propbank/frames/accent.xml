@@ -1,0 +1,40 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="accent">
+
+<roleset id="accent.01" name="to bring out certain features">
+<roles>
+  <role descr="decorator" n="0"/>
+  <role descr="thing decorated" n="1"/>
+  <role descr="decorations" n="2"/>
+</roles>
+
+
+<example name="BNC example">
+  <text>
+It's natural that Yuri should so enjoy dressing down , when for some much of his life he has been zipped into elaborate Bolshoi costumes, his cheekbones and
+eyes accented by thick, expertly applied theatrical make-up.
+  </text>
+
+  <rel>accented</rel>
+  <arg n="1">his cheekbones and eyes</arg>
+  <arg f="by" n="2">thick, expertly applied theatrical make-up</arg>
+</example>
+
+<example name="made up"> 
+  <text>
+They accented the new dining area with throw pillows of a ghastly turquoise hue.
+  </text>
+  <arg n="0">They</arg>
+  <rel>accented</rel>
+  <arg n="1">the new dining area</arg>
+  <arg f="with" n="2">throw pillos of a ghastly turquoise hue</arg>
+</example>
+
+</roleset>
+</predicate>
+<note>
+  frames created by Ruth
+</note>
+
+</frameset>

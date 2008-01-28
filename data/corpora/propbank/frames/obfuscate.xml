@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="obfuscate">
+<note>
+  Frames file for 'obfuscate' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="obfuscate.01" name="make confusing" vncls="-">
+<roles>
+  <role descr="causer of confusion" n="0"/>
+  <role descr="thing confusing" n="1"/>
+</roles>
+
+<example name="not great, but it works">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Government lending was not intended to be a way [*] to obfuscate
+    spending figures, hide fraudulent activity, or provide large
+    subsidies. 
+</text>
+        <arg n="0">[*]</arg>
+        <rel>obfuscate</rel>
+        <arg n="1">spending figures</arg>
+</example>
+
+<note>
+One of the beautiful words of English.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

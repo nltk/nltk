@@ -1,0 +1,63 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="order">
+<note>
+  Frames file for 'order' based on annotation-on-the-fly on the
+  financial subcorpus and comparison with 'force' and 'tell.'  No
+  verbnet entry.
+</note>
+
+<roleset id="order.01" name="impelled action" vncls="-">
+<roles>
+  <role descr="forcer" n="0"/>
+  <role descr="impelled agent" n="1"/>
+  <role descr="impelled action" n="2"/>
+</roles>
+
+<example name="passivized">
+  <text>
+  Commonwealth Edison was ordered *trace-1* *trace-2* to refund about
+  $250 million to its current and former ratepayers.
+  </text>
+  <arg n="1">*trace-1*=Commonwealth Edison</arg>
+  <rel>ordered</rel>
+  <arg n="2">*trace-2* to refund about
+  $250 million to its current and former ratepayers</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="order.02" name="request to be delivered" vncls="13.5.1">
+<roles>
+  <role descr="orderer" n="0">
+	  <vnrole vncls="13.5.1" vntheta="Agent"/></role>
+  <role descr="thing ordered" n="1">
+	  <vnrole vncls="13.5.1" vntheta="Theme"/></role>
+  <role descr="benefactive, ordered-for" n="2">
+	  <vnrole vncls="13.5.1" vntheta="Beneficiary"/></role>
+  <role descr="source" n="3">
+	  <vnrole vncls="13.5.1" vntheta="Source"/></role>
+</roles>
+
+<example name="valentines day">
+  <text>
+  Ever the romantic, John ordered a dozen dandelions for Mary from
+  Bubba's Flower shop.
+  </text>
+  <arg n="m">Ever the romantic</arg>
+  <arg n="0">John</arg>
+  <rel>ordered</rel>
+  <arg n="1">a dozen dandelions</arg>
+  <arg f="for" n="2">Mary</arg>
+  <arg f="from" n="3">Bubba's Flower shop</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

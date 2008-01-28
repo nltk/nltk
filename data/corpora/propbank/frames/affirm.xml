@@ -1,0 +1,45 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="affirm">
+<note>
+  Frames file for 'affirm' based on sentences in financial subcorpus.
+  No Verbnet entry, Framenet class Statement.  Comparison with
+  'confirm'.
+</note>
+
+<roleset id="affirm.01" name="attest the truth or   validity of some proposition" vncls="29.2">
+<roles>
+  <role descr="confirmer" n="0">
+		
+  <vnrole vncls="29.2" vntheta="Agent"/></role>
+
+  <role descr="thing confirmed, statement or proposition" n="1">
+		
+  <vnrole vncls="29.2" vntheta="Predicate"/></role>
+
+  <role descr="benefactive, hearer" n="2">
+		
+  <vnrole vncls="29.2" vntheta="Theme"/></role>
+
+</roles>
+
+<example name="basic">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    The Delaware Supreme Court affirmed a ruling that barred
+    Chris-Craft Industries from voting its Warner preferred stock as a
+    separate class in deciding on the companies' proposed merger. 
+</text>
+        <arg n="0">The Delaware Supreme Court</arg>
+        <rel>affirmed</rel>
+        <arg n="1">a ruling that barred Chris-Craft Industries from
+        voting its Warner preferred stock as a separate class in
+        deciding on the companies' proposed merger</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

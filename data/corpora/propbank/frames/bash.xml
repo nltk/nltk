@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="bash">
+<note>
+  Frames file for 'bash'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="bash.01" name="to criticize" vncls="-">
+<roles> 
+  <role descr="critizer, agent" n="0"/> 
+  <role descr="entity criticized" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="gerund" person="ns" tense="ns" voice="active"/>
+<text>
+ Finally , the case of Dr. Morgan gave Congress an opportunity [*] to act with unaccustomed decisiveness and to engage in one of its favorite pastimes -- [*] bashing the District of Columbia government .
+</text>
+	<arg n="0">[*]</arg>
+	<rel>bashing</rel>
+	<arg n="1">the District of Columbia government</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

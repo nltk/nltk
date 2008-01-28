@@ -1,0 +1,43 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="redden">
+<note>
+  Frames file for 'redden' based on sentences in wsj.  No access to
+  Verbnet at the moment.
+</note>
+
+<roleset id="redden.01" name="(cause to) become red" vncls="45.4">
+<roles>
+  <role descr="causer of red coloration" n="0"><vnrole vncls="45.4" vntheta="Agent"/></role>
+  <role descr="thing becoming red" n="1"><vnrole vncls="45.4" vntheta="Patient"/></role>
+</roles>
+
+<example name="unaccusative">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    Often the genteel, conservative, long-term-oriented investment
+    bankers were displaced by crude traders: ``When angered, he cursed
+    so forcefully that his face reddened and his pale-blue eyes
+    narrowed into tiny slits,'' the authors say of Lehman's Lewis
+    Glucksman. 
+</text>
+        <arg n="1">his face</arg>
+        <rel>reddened</rel>
+</example>
+
+<example name="agentive">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John reddened his cheeks to look younger.
+  </text>
+  <arg n="0">John</arg>
+  <rel>reddened</rel>
+  <arg n="1">his cheeks</arg>
+  <arg f="PNC" n="m">to look younger</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

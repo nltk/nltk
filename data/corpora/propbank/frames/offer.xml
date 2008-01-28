@@ -1,0 +1,138 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<note>
+Frames file for &quot;offer&quot; based on first hundred or so instances in big corpus
+</note>
+
+<predicate lemma="offer">
+<roleset id="offer.01" name="transaction" vncls="13.3 29.2">
+<roles>
+<note>
+	This actually conflates two senses, the &quot;buy&quot; sense and the
+	&quot;sell&quot; sense.  In the &quot;buy&quot; sense you offer cash for some
+	commodity; in the &quot;sell&quot; sense you offer some commodity and
+	hope to get some cash for it.  Thus the &quot;direct object&quot; will
+	vary between Arg1 and Arg2.
+</note>
+  <role descr="entity offering" n="0">
+	  <vnrole vncls="29.2" vntheta="Agent"/>
+          <vnrole vncls="13.3" vntheta="Agent"/></role>
+  <role descr="commodity" n="1">
+	  <vnrole vncls="29.2" vntheta="Predicate"/>
+          <vnrole vncls="13.3" vntheta="Theme"/></role>
+  <role descr="price" n="2"/>
+  <role descr="benefactive or entity offered to" n="3">
+	  <vnrole vncls="29.2" vntheta="Theme"/>
+          <vnrole vncls="13.3" vntheta="Recipient"/></role>
+</roles>
+
+<example name="ditransitive">
+  <text>
+    A solicitous Christian chauffeur offers the hero God's phone number.
+  </text>
+  <arg n="0">A solicitous Christian chauffeur</arg>
+  <rel>offers</rel>
+  <arg n="3">the hero</arg>
+  <arg n="1">God's phone number</arg>
+</example>
+
+<note>equally:</note>
+<example name="PP benefactive">
+  <text>
+    A solicitous Christian chauffeur offers God's phone number to the hero.
+  </text>
+  <arg n="0">A solicitous Christian chauffeur</arg>
+  <rel>offers</rel>
+  <arg n="1">God's phone number</arg>
+  <arg f="to" n="3">the hero</arg>
+</example>
+
+<example name="cash as direct object">
+  <text>
+    Temple offered $50 million for Sea Containers
+  </text>
+  <arg n="0">Temple</arg>
+  <rel>offered</rel>
+  <arg n="2">$50 million</arg>
+  <arg f="for" n="1">Sea Containers</arg>
+</example>
+
+<example name="commodity as direct object">
+  <text>
+    Coche-Dury offered its 1987 Corton-Charlemagne for $155.
+  </text>
+  <arg n="0">Coche-Dury</arg>
+  <rel>offered</rel>
+  <arg n="1">its 1987 Corton-Charlemagne</arg>
+  <arg f="for" n="2">$155</arg>
+</example>
+
+<note>
+Careful with &quot;for&quot; phrases:
+</note>
+
+<example name="for-phrase as price">
+  <text>
+    The company offers a word-processing package for $100.
+  </text>
+  <arg n="0">The company</arg>
+  <rel>offers</rel>
+  <arg n="1">a word-processing package</arg>
+  <arg f="for" n="2">$100</arg>
+</example>
+
+<example name="for-phrase included in commodity">
+  <text>
+    The company offers a word-processing package for personal computers.
+  </text>
+  <arg n="0">The company</arg>
+  <rel>offers</rel>
+  <arg n="1">a word-processing package for personal computers</arg>
+</example>
+
+<example name="arg1 as infinitive">
+  <text>
+    New England Electric offered $2 billion to acquire PS of New Hampshire.
+  </text>
+  <arg n="0">New England Electric</arg>
+  <rel>offered</rel>
+  <arg n="2">$2 billion</arg>
+  <arg n="1">to acquire PS of New Hampshire</arg>
+</example>
+
+<example name="contrasting with above">
+  <text>
+    New England Electric offered $2 billion for PS of New Hampshire.
+  </text>
+  <arg n="0">New England Electric</arg>
+  <rel>offered</rel>
+  <arg n="2">$2 billion</arg>
+  <arg f="for" n="1">PS of New Hampshire</arg>
+</example>
+  
+<example name="another arg1 as infinitive">
+  <text>
+    Fujitsu essentially offered *trace* to do it for free. 
+  </text>
+  <arg n="0">Fujitsu</arg>
+  <arg f="ADV" n="M">essentially</arg>
+  <rel>offered</rel>
+  <arg n="1">*trace* to do it for free.</arg>
+</example>
+
+<note>
+Theoretically also with benefactive (but I doubt we'll see any):
+</note>
+<example name="benefactive direct object">
+  <text>
+    John offered Mary to rub her shoulders
+  </text>
+  <arg n="0">John</arg>
+  <rel>offered</rel>
+  <arg n="3">Mary</arg>
+  <arg n="1">to rub her shoulders</arg>
+</example>
+  
+</roleset>
+</predicate>
+</frameset>

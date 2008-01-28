@@ -1,0 +1,47 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="puzzle">
+<note>
+  Frames file for 'puzzle' based on sentences in financial subcorpus.
+  No access to verbnet.  Comparison with 'surprise' and 'confuse'.
+</note>
+
+<roleset id="puzzle.01" name="confuse" vncls="31.4">
+<roles>
+  <role descr="cause, agent" n="0">
+	<vnrole vncls="31.4" vntheta="Cause"/></role>
+  <role descr="entity experiencing confusion" n="1">
+	<vnrole vncls="31.4" vntheta="Experiencer"/></role>
+  <role descr="confused about or over what?" n="2">
+        <vnrole vncls="31.4" vntheta="Theme"/></role>
+</roles>
+
+<example name="passive">
+<text>
+    Takeover stock traders were puzzled *trace* by the Reliance
+    filing. 
+</text>
+	<rel>puzzled</rel>
+	<arg n="1">*trace* -&gt;  Takeover stock traders</arg>
+	<arg f="by" n="0">the Reliance filing</arg>
+</example>
+
+<example name="passive">
+<inflection person="ns" tense="ns" aspect="ns" voice="ns" form="ns"/>
+<text>
+    ``Communism will reach its final stage of development in a
+    feckless Russo-corporation -- socialist in form, nationalistic in
+    content and Oriental in style -- that [*T*-1] will puzzle the
+    world with alternating feats of realism and recklessness...'' 
+</text>
+        <arg n="0">[*T*-1] ->  that ->  final stage of development</arg>
+        <arg n="M" f="MOD">will</arg>
+        <rel>puzzle</rel>
+        <arg n="1">the world</arg>
+        <arg n="2" f="with">[*] alternating feats of realism and
+        recklessness</arg> 
+</example>
+
+</roleset>
+</predicate>
+</frameset>

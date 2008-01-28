@@ -1,0 +1,56 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="bribe">
+<note>
+  Frames file for 'bribe' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="bribe.01" name="to make illegal payments in exchange for favors" vncls="-">
+<roles>
+  <role descr="briber, agent" n="0"/>
+  <role descr="person  bribed" n="1"/>
+  <role descr="favor" n="2"/>
+<role descr="ammount exchanged" n="3"></role>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+ [*-1] Starting with Congressman Mario Biaggi ( now serving a jail sentence ) , the company began a career of [*] bribing federal , state and local public officials and those close to public officials , right up to [*RNR*-2] and including [*RNR*-2] E. Robert Wallach , close friend and adviser to former Attorney General Ed Meese .
+</text>
+	<arg n="0">[*] -&gt;  the company</arg>
+	<rel>bribing</rel>
+	<arg n="1">federal , state and local public officials</arg>
+</example>
+
+
+<example name="all arguments">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ Arthur Klein , president of Young &amp; Rubicam 's New York office , stepped down `` temporarily '' in the wake of charges [*ICH*-2] by a federal grand jury in New Haven , Conn. , that he , the agency and another top executive bribed Jamaican tourist officials [*-1] to win its account in 1981 .
+</text>
+	<arg n="0">he , the agency and another top executive</arg>
+	<rel>bribed</rel>
+	<arg n="1">Jamaican tourist officials</arg>
+	<arg n="2">[*-1] to win its account</arg>
+	<arg f="TMP" n="M">in 1981</arg>
+</example>
+
+<example name="with ammount">
+<text>
+I bribed the super $500 for keeping quiet about the dogs
+</text>
+	<arg n="0">I</arg>
+	<rel>bribed</rel>
+	<arg n="1">the super</arg>
+	<arg n="2">for keeping quiet about the dogs</arg>
+	<arg n="3">$500</arg>
+</example>
+
+</roleset>
+</predicate>
+
+
+</frameset>

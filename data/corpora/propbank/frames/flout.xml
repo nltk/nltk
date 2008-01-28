@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="flout">
+<note>
+  Frames file for 'flout'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="flout.01" name="to show contempt for" vncls="-">
+<roles> 
+ <role descr="contemptuous entity, agent" n="0"/>
+ <role descr="entity flouted" n="1"/> 
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+ Finally , [*-1] flouting the BPCA 's wishes [*] to continue the popular two-mile riverside Esplanade , prized [*] for its expansive views of New York Harbor , the Statue of Liberty and Ellis Island , Ms. Bartlett threw up yet another wall , this time concrete , this time 10 1\/2 feet tall .
+</text>
+	<rel>flouting</rel>
+	<arg n="1">the BPCA 's wishes [*] to continue the popular two-mile riverside Esplanade , prized [*] for its expansive views of New York Harbor , the Statue of Liberty and Ellis Island</arg>
+	<arg n="0">Ms. Bartlett -&gt;  [*-1]</arg>
+</example>
+
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

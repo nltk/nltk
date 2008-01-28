@@ -1,0 +1,118 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="fix">
+<note>
+  Frames file for 'fix' based on sentences in financial subcorpus.
+  Verbnet class preparing-26.3-1; other framed members include
+  'prepare'.  But that's only one of several senses for 'fix'.
+</note>
+
+<roleset id="fix.01" name="prepare" vncls="26.3-1">
+<roles>
+  <role descr="agent, fixer" n="0">
+		
+  <vnrole vncls="26.3-1" vntheta="Agent"/></role>
+
+  <role descr="thing made" n="1">
+		
+  <vnrole vncls="26.3-1" vntheta="Product"/></role>
+
+  <role descr="benefactive" n="3">
+		
+  <vnrole vncls="26.3-1" vntheta="Beneficiary"/></role>
+
+</roles>
+
+<example name="all args">
+  <text>
+    John fixed a healthy breakfast of whiskey and M&amp;M's for Mary.
+  </text>
+  <arg n="0">John</arg>
+  <rel>fixed</rel>
+  <arg n="1">a healthy breakfast of whiskey and M&amp;M's</arg>
+  <arg f="for" n="2">Mary</arg>
+</example>
+
+<note>
+Benefactive is Arg3 to maintain mapping from prepare.
+</note>
+
+</roleset>
+
+<roleset id="fix.02" name="repair" vncls="26.3-1">
+<roles>
+  <role descr="fixer" n="0">
+		
+  <vnrole vncls="26.3-1" vntheta="Agent"/></role>
+
+  <role descr="thing fixed" n="1">
+		
+  <vnrole vncls="26.3-1" vntheta="Product"/></role>
+
+  <role descr="benefactive" n="2">
+		
+  <vnrole vncls="26.3-1" vntheta="Beneficiary"/></role>
+
+</roles>
+
+<example name="automatically generated">
+<text>
+    Banks also want to be able to call someone *trace* on the
+    telephone *trace* to fix a problem with a deal that goes bad --
+    preferably someone other than a union leader.
+</text>
+        <arg n="0">*trace* -&gt; *trace* -&gt;  someone   </arg>
+        <rel>fix</rel>
+        <arg n="1">a problem with a deal that  goes bad</arg>
+</example>
+
+<example name="with benefactive">
+  <text>
+    John fixed Mary's car for her.
+  </text>
+  <arg n="0">John</arg>
+  <rel>fixed</rel>
+  <arg n="1">Mary's car</arg>
+  <arg f="for" n="2">her</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="fix.03" name="establish, set" vncls="54.4">
+<roles>
+  <role descr="agent, setter" n="0"><vnrole vncls="54.4" vntheta="Agent"/></role>
+  <role descr="thing set" n="1"><vnrole vncls="54.4" vntheta="Theme"/></role>
+  <role descr="location, position, attribute" n="2"><vnrole vncls="54.4" vntheta="Attribute"/></role>
+</roles>
+
+<example name="the bulk of the financial examples">
+<text>
+   ...at an expected premium of 2 1/2% to the closing price when terms
+   are fixed *trace* Tuesday. 
+</text>
+        <rel>fixed</rel>
+        <arg n="1">*trace* -&gt;  terms</arg>
+        <arg f="TMP" n="M">Tuesday</arg>
+</example>
+
+<example name="with attribute">
+  <text>
+    John fixed the price of his self-respect at $.50.
+  </text>
+  <arg n="0">John</arg>
+  <rel>fixed</rel>
+  <arg n="1">the price of his self-respect</arg>
+  <arg f="at" n="2">$.50</arg>
+</example>
+</roleset>
+
+<note>
+There are many examples of adjectival usages: &quot;A low fixed 34.9% APR!&quot;
+Ignore these.
+</note>
+
+</predicate>
+</frameset>

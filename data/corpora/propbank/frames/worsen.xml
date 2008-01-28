@@ -1,0 +1,77 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="worsen">
+<note>
+  Frames file for 'worsen' based on sentences in financial subcorpus.
+  Verbnet entry  other_cos-45.4, many many other framed members, such
+  as: alter, decrease, halt, narrow, shut, slow, sweeten, weaken,
+  among others.  Comparison with 'improve'.
+</note>
+
+<roleset id="worsen.01" name="make or become worse" vncls="45.4">
+<roles>
+  <role descr="agent (rarely occuring)" n="0">
+		
+  <vnrole vncls="45.4" vntheta="Agent"/></role>
+
+  <role descr="thing getting worse" n="1">
+		
+  <vnrole vncls="45.4" vntheta="Patient"/></role>
+
+  <role descr="instrument (preferable to agent)" n="2">
+		
+  <vnrole vncls="45.4" vntheta="Instrument"/></role>
+
+</roles>
+
+<example name="agentive but perhaps not grammatical">
+  <text>
+    John worsened his breath by chewing garlic-flavored gum.
+  </text>
+  <arg n="0">John</arg>
+  <rel>worsened</rel>
+  <arg n="1">his breath</arg>
+  <arg f="by" n="2">chewing garlic-flavored gum</arg>
+</example>
+
+<example name="agentive?  Instrumental?">
+<text>
+    The buy-out effort also worsened already-strained relations
+    between United's pilot and machinist unions. 
+</text>
+        <arg n="0">The buy-out effort</arg>
+        <arg f="DIS" n="M">also</arg>
+        <rel>worsened</rel>
+        <arg n="1">already-strained relations between United's pilot
+        and machinist unions</arg> 
+</example>
+
+<example name="definitely instrumental">
+<text>
+     Yesterday, Armstrong reported flat earnings for the third quarter
+     and nine months, worsened *trace* by the stock dilution of an
+     employee stock ownership plan adopted earlier this year. 
+</text>
+        <rel>worsened</rel>
+        <arg n="1">*trace* -&gt;  flat earnings for the third quarter and
+        nine months</arg> 
+        <arg f="by" n="2">the stock dilution of an employee stock
+        ownership plan adopted earlier this year</arg> 
+</example>
+
+<example name="ergative">
+<text>
+    Gasoline margins may rebound this quarter, some industry officials
+    say, but they believe chemical margins could worsen. 
+</text>
+        <arg n="1">chemical margins</arg>
+        <arg f="MOD" n="M">could</arg>
+        <rel>worsen</rel>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

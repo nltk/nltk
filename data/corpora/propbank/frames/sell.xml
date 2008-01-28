@@ -1,0 +1,160 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<note>
+Frames file for &quot;sell&quot; based on frames for 'buy' and first handful
+	of sentences in large corpus
+</note>
+<predicate lemma="sell">
+<roleset id="sell.01" name="commerce: seller" vncls="13.1-1">
+  <roles>
+    <role descr="Seller" n="0">
+	<vnrole vncls="13.1-1" vntheta="Agent"/></role>
+    <role descr="Thing Sold" n="1">
+	<vnrole vncls="13.1-1" vntheta="Theme"/></role>
+    <role descr="Buyer" n="2">
+	<vnrole vncls="13.1-1" vntheta="Recipient"/></role>
+    <role descr="Price Paid" n="3"/>
+    <role descr="Benefactive" n="4"/>
+  </roles>
+
+<example name="intransitive">
+  <text>
+    They have (*trace*=they) to sell when things look like they're falling.
+  </text>
+  <arg n="0">*trace=they*</arg>
+  <rel>sell</rel>
+  <arg f="TMP" n="M">when things look like they're falling</arg>
+</example>
+
+<example name="Ergative">
+  <text>
+    A painting by August Strindberg sold at auction in Stockholm.
+  </text>
+  <arg n="1">A painting by August Strindberg</arg>
+  <rel>sold</rel>
+  <arg f="LOC" n="M">at auction</arg>
+  <arg f="LOC" n="M">in Stockholm</arg>
+</example>
+
+<example name="basic transitive">
+  <text>
+    Dead-eyed men selling four-year-old copies of Cosmopolitan
+  </text>
+  <arg n="0">Dead-eyed men</arg>
+  <rel>selling</rel>
+  <arg n="1">four-year-old copies of Cosmopolitan</arg>
+</example>
+
+<example name="strange sellers">
+  <text>
+    A more recent novel has sold more than 4 million copies.
+  </text>
+  <arg n="0">A more recent novel</arg>
+  <rel>sold</rel>
+  <arg n="1">more than 4 million copies</arg>
+</example>
+
+<example name="ergative with price">
+  <text>
+    Individual copies sell for $3.95
+  </text>
+  <arg n="1">Individual copies</arg>
+  <rel>sell</rel>
+  <arg f="for" n="3">for $3.95</arg>
+</example>
+
+<example name="agentive with price">
+  <text>
+    Al Brownstein sold it   for $60 a bottle.
+  </text>
+  <arg n="0">Al Brownstein</arg>
+  <rel>sold</rel>
+  <arg n="1">it</arg>
+  <arg f="for" n="3">for $60 a bottle</arg>
+</example>
+
+<example name="semi-idiomatic">
+  <text>
+    Day traders sell the company' stock short.
+  </text>
+  <arg n="0">Day traders</arg>
+  <rel>sell</rel>
+  <arg n="1">the company's stock</arg>
+  <arg n="3">short</arg>
+</example>
+
+<note>
+(Selling short means selling stock you don't actually own, hoping that
+when it comes time to deliver the stock price has gone down so that
+you can buy the stock for less than you sold it for.)
+</note>
+
+<example name="with buyer">
+  <text>
+    It will sell the ad time to its clients at a discount
+  </text>
+  <arg n="0">It</arg>
+  <rel>sell</rel>
+  <arg n="1">the ad time</arg>
+  <arg f="to" n="2">to its clients</arg>
+  <arg f="at" n="3">at a discount</arg>
+</example>
+
+<example name="with benefactive">
+  <text>
+    John sold his mother's house for her.
+  </text>
+  <arg n="0">John</arg>
+  <rel>sold</rel>
+  <arg n="1">his mother's house</arg>
+  <arg f="for" n="4">for her</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="sell_out">
+<roleset id="sell.02" name="give up" vncls="-">
+<roles>
+  <role descr="entity selling out" n="0"/>
+</roles>
+
+<example name="intransitive">
+  <text>
+    John sold out.
+  </text>
+  <arg n="0">John</arg>
+  <rel>sold out</rel>
+</example>
+</roleset>
+
+<roleset id="sell.03" name="sell until none is/are left" vncls="-">
+  <roles>
+    <role descr="Seller" n="0"/>
+    <role descr="Thing Sold" n="1"/>
+    <role descr="Buyer" n="2"/>
+    <role descr="Price Paid" n="3"/>
+    <role descr="Benefactive" n="4"/>
+  </roles>
+
+<example name="ergative">
+  <text>
+    The new Harry Potter book sold out within 20 minutes.
+  </text>
+  <arg n="1">The new Harry Potter book</arg>
+  <rel>sold out</rel>
+  <arg f="TMP" n="M">within 20 minutes</arg>
+</example>
+
+<example name="arg1 as PP">
+  <text>
+    Amazon.com sold out of the new Harry Potter book within 20 minutes.
+  </text>
+  <arg n="0">Amazon.com</arg>
+  <rel>sold out</rel>
+  <arg f="of" n="1">of the new Harry Potter book</arg>
+  <arg f="TMP" n="M">within 20 minutes</arg>
+</example>
+</roleset>
+</predicate>
+</frameset>

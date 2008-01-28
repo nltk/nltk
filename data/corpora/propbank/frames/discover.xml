@@ -1,0 +1,78 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="discover">
+<note>
+  Frames file for 'discover' based on sentences in financial
+  subcorpus.  Verbnet entries 29.5, 30.2, other framed members include
+  assert, deny, figure, observe, recognize; regard, scrutinize, study,
+  view, watch.  Framenet entry Becoming Aware.  Comparison with
+  find (out).
+</note>
+
+<roleset id="discover.01" name="find (out)">
+<roles>
+  <role descr="finder" n="0"/>
+  <role descr="thing found, discovery" n="1"/>
+  <role descr="benefactive, found for" n="2"/>
+  <role descr="attribute on arg1" n="3"/>
+</roles>
+
+<example name="discover an NP">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Intel said that last week a customer discovered two flaws in its
+    80486 microprocessor chip's ``floating-point unit'', a set of
+    circuits that do certain calculations. 
+</text>
+        <arg f="TMP" n="M">last week</arg>
+        <arg n="0">a customer</arg>
+        <rel>discovered</rel>
+        <arg n="1">two flaws in its 80486 microprocessor chip 's ``
+        floating-point unit '' , a set of circuits that  do certain
+        calculations</arg> 
+</example>
+
+<example name="discover an SBAR">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    But when they discover that markets aren't always as liquid as
+    they supposed  -- markets jump. 
+</text>
+        <arg n="0">they</arg>
+        <rel>discover</rel>
+        <arg n="1">markets aren't always as liquid as they supposed
+        </arg> 
+</example>
+
+<note>
+As usual, complementizers should be left out of the arg1.
+</note>
+
+<example name="with benefactive">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John discovered for Mary the set of books that he'd borrowed from
+    her years earlier.
+  </text>
+  <arg n="0">John</arg>
+  <rel>discovered</rel>
+  <arg f="for" n="2">Mary</arg>
+  <arg n="1">the set of books that he'd borrowed from
+    her years earlier</arg>
+</example>
+
+<example name="with attribute">
+  <inflection aspect="ns" form="participle" person="third" tense="past" voice="passive"/>
+  <text>
+    John was discovered *trace* to be criminally insane.
+  </text>
+  <rel>discovered</rel>
+  <arg n="1">*trace* -&gt; John</arg>
+  <arg n="3">to be criminally insane</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,48 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="eclipse">
+<note>
+  Frames file for 'eclipse' based on sentences in financial subcorpus.
+  No Verbnet entry, no Framenet entry.  Comparison with 'block'.  Hmm,
+  maybe not.
+</note>
+
+<roleset id="eclipse.01" name="be greater than">
+<roles>
+  <role descr="eclipser" n="0"/>
+  <role descr="eclipsed" n="1"/>
+</roles>
+
+<example name="metaphorical">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+    The purchase of Nekoosa would easily eclipse Georgia-Pacific's
+    $530 million acquisition of Brunswick Pulp &amp; Paper Co. last
+    year. 
+</text>
+        <arg n="0">The purchase of Nekoosa</arg>
+        <arg f="MOD" n="M">would</arg>
+        <arg f="MNR" n="M">easily</arg>
+        <rel>eclipse</rel>
+        <arg n="1">Georgia-Pacific's $530 million acquisition of
+        Brunswick Pulp &amp; Paper Co. last year</arg> 
+</example>
+
+<example name="literal">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John saw the moon eclipse the sun.
+  </text>
+  <arg n="0">the moon</arg>
+  <rel>eclipse</rel>
+  <arg n="1">the sun</arg>
+</example>
+
+<note>
+The idea is that the darkness of the moon is greater than the light of
+the sun.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,34 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="initial">
+<note>
+  Frames file for 'initial' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="initial.01" name="sign using just a couple letters" vncls="-">
+<roles>
+  <role descr="signer, initialler" n="0"/>
+  <role descr="document" n="1"/>
+</roles>
+
+<example name="PK says OK">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Taiwan's USI Far East Corp., a petrochemical company, initialed
+    the agreement  with an unidentified Japanese contractor to build a
+    naphtha cracker, according to Alson Lee, who heads the Philippine
+    company set up to build and operate the complex. 
+</text>
+        <arg n="0">Taiwan's USI Far East Corp., a petrochemical
+        company,</arg> 
+        <rel>initialed</rel>
+        <arg n="1">the agreement with an unidentified Japanese
+        contractor to build a naphtha cracker</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

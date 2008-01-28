@@ -1,0 +1,61 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="stalk">
+<note>
+  Frames file for 'stalk' based on sentences in financial subcorpus.
+  Verbnet entry pit-10.7, in the sense of &quot;take the stalks off
+  something&quot; but I don't think anyone, anywhere, would ever say that.
+  Comparison to 'walk' and 'follow'.
+</note>
+
+<roleset id="stalk.01" name="walk stiffly" vncls="-">
+<roles>
+  <role descr="walker" n="0"/>
+</roles>
+
+<example name="poor John">
+  <text>
+    After Mary laughed at him, John stalked away muttering under his
+    breath. 
+  </text>
+  <arg f="TMP" n="m">After Mary laughed at him</arg>
+  <arg n="0">John</arg>
+  <rel>stalked</rel>
+  <arg f="DIR" n="m">away</arg>
+  <arg f="MNR" n="m">muttering under his breath. </arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="stalk.02" name="follow stealthily" vncls="35.3">
+<roles>
+  <role descr="thing following" n="0">
+		
+  <vnrole vncls="35.3" vntheta="Agent"/></role>
+
+  <role descr="thing followed" n="1">
+		
+  <vnrole vncls="35.3" vntheta="Theme"/></role>
+
+</roles>
+
+<example name="passivized">
+<text>
+    The announcement effectively removes the British government as an
+    impediment to a takeover of the company, which *trace* is being
+    stalked *trace*  by General Motors and Ford.
+</text>
+        <rel>stalked</rel>
+        <arg n="1">*trace* -&gt; *trace* -&gt;  which -&gt;  the company</arg>
+        <arg f="by" n="0">General Motors and Ford</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

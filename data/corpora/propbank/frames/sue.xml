@@ -1,0 +1,49 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="sue">
+<note>
+  Frames file for 'sue' based on sentences in financial subcorpus.  No
+  Verbnet entry.
+</note>
+
+<roleset id="sue.01" name="call to court" vncls="-">
+<roles>
+  <role descr="litigant" n="0"/>
+  <role descr="defender" n="1"/>
+  <role descr="crime" n="2"/>
+  <role descr="intended prize" n="3"/>
+</roles>
+
+<example name="with crime">
+<inflection aspect="perfect" form="participle" person="third" tense="present" voice="active"/>
+<text>
+    MGM/UA has sued Qintex Australia for breach of contract and fraud
+    over the collapsed acquisition agreement, and Qintex Australia has
+    threatened a countersuit.
+</text>
+        <arg n="0">MGM\/UA</arg>
+        <rel>sued</rel>
+        <arg n="1">Qintex Australia</arg>
+        <arg f="for" n="2">breach of contract and fraud</arg>
+        <arg f="CAU" n="M">over the collapsed acquisition agreement</arg>
+</example>
+
+<example name="with prize">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John sued Mary for a zillion dollars.
+  </text>
+  <arg n="0">John</arg>
+  <rel>sued</rel>
+  <arg n="1">Mary</arg>
+  <arg f="for" n="3">a zillion dollars</arg>
+</example>
+
+<note>
+Crime and prize cannot cooccur, to my ear, but I don't want to
+separate these into two rolesets--they're too closely related.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

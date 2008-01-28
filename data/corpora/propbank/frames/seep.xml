@@ -1,0 +1,43 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="seep">
+<note>
+Frames file for 'seep' based on sentences in financial subcorpus and
+automatic expansion via verbnet.
+</note>
+
+<roleset id="seep.01" name="leak fluid" vncls="43.4">
+<roles>
+	<role descr="substance leaked" n="1">
+		
+  <vnrole vncls="43.4" vntheta="Theme"/></role>
+
+</roles>
+
+<example name="automatically generated">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ Vanguard 's $ 1 billion  High Yield Bond Portfolio has seen $ 161 million  flow out since early September ; $ 14 million  of that seeped out Friday Oct. 13 alone .
+</text>
+        <arg n="1">$ 14 million  of that</arg>
+        <rel>seeped</rel>
+        <arg f="DIR" n="M">out</arg>
+        <arg f="TMP" n="M">Friday Oct. 13 alone</arg>
+</example>
+
+<example name="note the arg order!">
+  <inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+  <text>
+    Water seeped into John's basement apartment.
+  </text>
+  <arg n="1">Water</arg>
+  <rel>seeped</rel>
+  <arg f="DIR" n="m">into John's basement apartment</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="infiltrate">
+<note>
+  Frames file for 'infiltrate' based on sentences in wsj.  Verbnet entry.
+</note>
+
+<roleset id="infiltrate.01" name="get in, sneakily" vncls="-">
+<roles>
+  <role descr="infiltrator, agent" n="0"/>
+  <role descr="into what" n="1"/>
+</roles>
+
+<example name="spy stuff">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+    They said they dropped plans [*] to infiltrate the Kennedy Space
+    Center after NASA beefed up its security. 
+</text>
+        <arg n="0">[*] -&gt;  they</arg>
+        <rel>infiltrate</rel>
+        <arg n="1">the Kennedy Space Center</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

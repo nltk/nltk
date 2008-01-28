@@ -1,0 +1,80 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="scrape">
+<note>
+  Frames file for 'scrape' based on sentences in wsj.  Verbnet entries
+  21.1, 10.4.1, 9.3; Framenet entry Perception_noise.
+</note>
+
+<roleset id="scrape.01" name="remove by scraping" vncls="21.1 10.4.1 9.3">
+<roles>
+  <role descr="agent, scraper" n="0">
+        <vnrole vncls="9.3" vntheta="Agent"/>
+        <vnrole vncls="21.1" vntheta="Agent"/>
+        <vnrole vncls="10.4.1" vntheta="Agent"/></role>
+  <role descr="thing removed" n="1">
+        <vnrole vncls="9.3" vntheta="Theme"/>
+        <vnrole vncls="21.1" vntheta="Patient"/>
+        <vnrole vncls="10.4.1" vntheta="Theme"/></role>
+  <role descr="source" n="2">
+        <vnrole vncls="9.3" vntheta="Destination"/>
+        <vnrole vncls="10.4.1" vntheta="Source"/></role>
+  <role descr="instrument" n="3">
+        <vnrole vncls="21.1" vntheta="Instrument"/></role>
+</roles>
+
+<example name="all args">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John scraped Mary's burnt birthday cake from the pan with a spatula.
+  </text>
+  <arg n="0">John</arg>
+  <rel>scraped</rel>
+  <arg n="1">Mary's burnt birthday cake</arg>
+  <arg f="from" n="2">the pan</arg>
+  <arg f="with" n="3">a spatula</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="scrape.02" name="collect with difficulty" vncls="-">
+<roles>
+  <role descr="collector" n="0"/>
+  <role descr="thing collected" n="1"/>
+  <role descr="quasi-phrasal attribute of arg1" n="2"/>
+  <role descr="source" n="3"/>
+</roles>
+
+<example name="oddly intransitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+    ``To ring for even one service at this tower, we have *trace* to
+    scrape,'' says Mr. Hammond, a retired water-authority worker. 
+</text>
+        <arg n="0">*trace* -&gt;  we</arg>
+        <rel>scrape</rel>
+</example>
+
+<example name="clearer example">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John scraped together $1.16 from coins in the sofa.
+  </text>
+  <arg n="0">John</arg>
+  <rel>scraped</rel>
+  <arg n="2">together</arg>
+  <arg n="1">$1.16</arg>
+  <arg f="from" n="3">coins in the sofa</arg>
+</example>
+
+<note>
+'Together' could be replaced by 'up'.  Doing this allows us to avoid a
+proliferation of nearly-identical phrasal variants.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

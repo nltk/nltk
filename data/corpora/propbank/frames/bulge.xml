@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="bulge">
+<note>
+  Frames file for 'bulge' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="bulge.01" name="(cause to) be filled" vncls="47.5.3 47.2">
+<roles>
+  <role descr="causer, agent" n="0"/>
+  <role descr="entity bulged" n="1"><vnrole vncls="47.2" vntheta="Location"/><vnrole vncls="47.5.3" vntheta="Location"/></role>
+  <role descr="entity bulged with" n="2"><vnrole vncls="47.2" vntheta="Theme"/><vnrole vncls="47.5.3" vntheta="Theme"/></role>
+</roles>
+
+<example name="with Arg2">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+ The tattered black binder , bulging with 18 years ' worth of recipes held [*] together by rubber bands , was in chef Lindsey Shere 's purse when it was stolen [*-113] from her house recently [*T*-2] .
+</text>
+	<arg n="1">The tattered black binder</arg>
+	<rel>bulging</rel>
+	<arg f="with" n="2">18 years ' worth of recipes held [*] together by rubber bands</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

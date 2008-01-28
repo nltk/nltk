@@ -1,0 +1,95 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="spend">
+<note>
+  Frames file for 'spend' based on survey of initial sentences of big
+  corpus and comparison with 'buy' and 'sell' and other
+  verbs-of-commerce.
+</note>
+
+<roleset id="spend.01" name="use money">
+<roles>
+  <role descr="spender, buyer" n="0"/>
+  <role descr="thing bought, commodity" n="1"/>
+  <role descr="seller" n="2"/>
+  <role descr="price paid, money" n="3"/>
+  <role descr="benefactive" n="4"/>
+</roles>
+
+<note>
+Args 2 and 4 might not occur
+</note>
+
+<example name="demonstrating commodity and price">
+  <text>
+  The NIH currently spends about $8 million annually on fetal-tissue
+  research.
+  </text>
+  <arg n="0">The NIH</arg>
+  <arg f="TMP" n="m">currently</arg>
+  <rel>spends</rel>
+  <arg n="3">about $8 million</arg>
+  <arg f="TMP" n="m">annually</arg>
+  <arg f="on" n="1">fetal-tissue research.</arg>
+</example>
+
+<example name="complex spending">
+  <text>
+  They spent $325,000 in 1989 and $340,000 in 1990.
+  </text>
+  <arg n="0">They</arg>
+  <rel>spent</rel>
+  <arg n="3">$325,000</arg>
+  <arg f="TMP" n="m">in 1989</arg>
+
+  <arg n="0">They</arg>
+  <rel>spent</rel>
+  <arg n="3">$340,000</arg>
+  <arg f="TMP" n="m">in 1990</arg>
+</example>
+
+<note>
+Please be VERY careful about the placement of Arg3--your intuitions 
+--will tell you it should be Arg1, but in order to make mappings 
+--between spend and buy/sell, the money needs to be in Arg3.
+</note>
+
+</roleset>
+
+<roleset id="spend.02" name="bide time">
+<roles>
+  <role descr="bider, waiter" n="0"/>
+  <role descr="unit of time" n="1"/>
+  <role descr="activity" n="2"/>
+</roles>
+
+<example name="spend time">
+  <text>
+  He spends his days *trace-1* sketching passers-by or *trace-2*
+  trying to.
+  </text>
+  <arg n="0">He</arg>
+  <rel>spends</rel>
+  <arg n="1">his days</arg>
+  <arg n="2">*trace-1* sketching passers-by or *trace-2*
+  trying to.</arg>
+</example>
+
+<example name="simpler example">
+  <text>
+  Mr. Bernstein has spent much of his time in recent years on human
+  rights issues.
+  </text>
+  <arg n="0">Mr. Bernstein</arg>
+  <rel>spent</rel>
+  <arg n="1">much of his time</arg>
+  <arg f="TMP" n="m">in recent years</arg>
+  <arg f="on" n="2">human rights issues.</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

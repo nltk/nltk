@@ -1,0 +1,43 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="boycott">
+<note>
+  Frames file for 'boycott' based on sentences in wsj.  Verbnet entry 52.
+</note>
+
+<roleset id="boycott.01" name="avoid for political reasons" vncls="52">
+<roles>
+  <role descr="boycotter" n="0"><vnrole vncls="52" vntheta="Agent"/></role>
+  <role descr="unpleasant thing" n="1"><vnrole vncls="52" vntheta="Theme"/></role>
+</roles>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="third" tense="past" voice="passive"/>
+<text>
+    The vote in Ankara was boycotted *trace* by opposition
+    politicians, who vowed to oust Ozal. 
+</text>
+        <rel>boycotted</rel>
+        <arg n="1">*trace* -&gt;  The vote in Ankara</arg>
+        <arg f="by" n="0">opposition politicians, who vowed to oust Ozal</arg>
+</example>
+
+<example name="active">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John boycotted Mary's bed for over six months out of spite.  Mary
+    didn't actually notice.
+  </text>
+  <arg n="0">John</arg>
+  <rel>boycotted</rel>
+  <arg n="1">Mary's bed</arg>
+  <arg f="TMP" n="m">for over six months</arg>
+  <arg f="CAU" n="m">out of spite</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

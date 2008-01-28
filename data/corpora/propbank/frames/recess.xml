@@ -1,0 +1,52 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="recess">
+<note>
+  Frames file for 'recess' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="recess.01" vncls="-" name="put into a lower position">
+<roles>
+  <role n="0"  descr="placer, putter, agent"/>
+  <role n="1"  descr="thing in lower position"/>
+</roles>
+
+<example name="I don't like this example">
+<inflection person="ns" tense="ns" aspect="ns" voice="passive" form="participle"/>
+<text>
+    Four tubular steel ``Bedfellows,'' each roughly in the shape of a
+    ``W,'' are attached to the bottom of the box spring in a recessed
+    position.
+</text>
+	<rel>recessed</rel>
+	<arg n="1">position</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="recess.02" vncls="-" name="take a break">
+<roles>
+  <role n="0"  descr="recessing entity"/>
+</roles>
+
+<example name="bummer">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+     The court hearing John's case recessed for half an hour while
+     they waited for the stench to dissipate.
+  </text>
+  <arg n="0"        >The court hearing John's case</arg>
+  <rel              >recessed</rel>
+  <arg n="m" f="TMP">for half an hour</arg>
+  <arg n="m" f="TMP">while they waited for the stench to dissipate</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

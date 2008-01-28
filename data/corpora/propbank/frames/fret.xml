@@ -1,0 +1,68 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="fret">
+<note>
+Frames file for 'fret' based on sentences in wsj and automatic
+expansion via verbnet.
+</note>
+
+<roleset id="fret.01" name="worry" vncls="31.3">
+<roles>
+     <role descr="fretter, worrier" n="0">
+		
+  <vnrole vncls="31.3" vntheta="Experiencer"/></role>
+
+     <role descr="cause" n="1">
+		
+  <vnrole vncls="31.3" vntheta="Cause"/></role>
+
+</roles>
+
+<example name="fret about an NP">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Meanwhile, business and government leaders rebuked the computer
+    makers, and fretted about the broader statement the companies'
+    actions make about Japanese cutthroat pricing. 
+</text>
+        <arg f="TMP" n="M">Meanwhile</arg>
+        <arg n="0">business and government leaders</arg>
+        <rel>fretted</rel>
+        <arg f="about" n="1">the broader statement the companies'
+        actions make about Japanese cutthroat pricing</arg> 
+</example>
+
+<example name="fret an SBar">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    But Mr. Ruffo frets that an even bigger problem could be
+    protectionism from the U.S., where some politicians oppose what
+    they consider Japanese efforts to use maquiladoras to crack the
+    U.S. market through the back door. 
+</text>
+        <arg f="DIS" n="M">But</arg>
+        <arg n="0">Mr. Ruffo</arg>
+        <rel>frets</rel>
+        <arg n="1">an even bigger problem could be protectionism from
+        the U.S., where some politicians oppose what they consider
+        Japanese efforts to use maquiladoras to crack the U.S. market
+        through the back door </arg> 
+</example>
+
+<example name="fret over an SBar">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    They are obviously also more susceptible when they need money  -
+    retirees, for instance, trying to bolster their fixed income or
+    parents fretting over how to pay for a child's college expenses. 
+</text>
+        <arg n="0">parents</arg>
+        <rel>fretting</rel>
+        <arg f="over" n="1">how to pay for a child's college expenses
+        </arg> 
+</example>
+
+</roleset>
+
+</predicate>
+</frameset>

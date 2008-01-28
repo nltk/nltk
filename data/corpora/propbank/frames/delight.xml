@@ -1,0 +1,77 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="delight">
+<note>
+Frames file for 'delight' based on sentences in financial subcorpus
+and automatic expansion via verbnet.
+</note>
+
+<roleset id="delight.01" name="make happy, direct" vncls="31.1">
+<roles>
+   <role descr="agent, pleaser" n="0">
+	<vnrole vncls="31.1" vntheta="Cause"/></role>
+   <role descr="patient, entity pleased" n="1">
+	<vnrole vncls="31.1" vntheta="Experiencer"/></role>
+   <role descr="instrumental" n="2"/>
+</roles>
+
+<example name="all args">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Mr. Corry expected the Texas Oil &amp; Gas sale to delight
+    Mr. Icahn by addressing his concern about boosting shareholder
+    value. 
+</text>
+        <arg n="0">the Texas Oil &amp; Gas sale</arg>
+        <rel>delight</rel>
+        <arg n="1">Mr. Icahn</arg>
+        <arg f="by" n="2">addressing his concern about boosting
+        shareholder value</arg> 
+</example>
+</roleset>
+
+<roleset id="delight.03" vncls="31.3" name="make happy, prepositional">
+<roles>
+  <role n="0"  descr="happy entity">
+        <vnrole vncls="31.3" vntheta="Experiencer"/></role>
+  <role n="1"  descr="prepositional object">
+        <vnrole vncls="31.3" vntheta="Cause"/></role>
+</roles>
+
+<example name="prepositional">
+  <inflection person="third" tense="present" aspect="ns" voice="active" form="full"/>
+  <text>
+     John delights in teasing Mary about her hair loss.
+  </text>
+  <arg n="0"        >John</arg>
+  <rel              >delights</rel>
+  <arg n="1" f="in">teasing Mary about her hair loss</arg>
+</example>
+
+</roleset>
+
+<roleset id="delight.02" name="mode of speaking" vncls="-">
+<roles>
+  <role descr="speaker" n="0"/>
+  <role descr="utterance" n="1"/>
+  <role descr="listener" n="2"/>
+</roles>
+
+<example name="rubbing it in">
+  <inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+  <text>
+    ''You can't go anywhere in this company and find an organizational
+    chart,'' one delights *trace*.  
+  </text>
+  <arg n="0">one</arg>
+  <rel>delights</rel>
+  <arg n="1">*trace* -&gt; You can't go anywhere in this company
+  and find an organizational chart</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

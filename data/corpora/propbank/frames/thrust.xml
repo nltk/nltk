@@ -1,0 +1,49 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="thrust">
+<note>
+  Frames file for 'thrust' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+
+<roleset id="thrust.01" name="to push quickly and forcibly" vncls="12">
+<roles>
+  <role descr="agent, causer" n="0">
+	  <vnrole vncls="12" vntheta="Agent"/></role>
+  <role descr="entity pushed" n="1">
+	  <vnrole vncls="12" vntheta="Theme"/></role>
+  <role descr="direction" n="2"/>
+</roles>
+
+
+<example name="resultative">
+<inflection aspect="progressive" form="participle" person="third" tense="present" voice="active"/>
+<text>
+ [*] Perhaps most exciting , the device is thrusting open a window to the workings of the brain .
+</text>
+	<arg n="0">the device</arg>
+	<rel>thrusting</rel>
+	<arg f="PRD" n="M">open</arg>
+	<arg n="1">a window to the workings of the brain</arg>
+</example>
+
+
+
+<example name="all arguments">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ It more than doubled Federal 's long-term debt to $ 1.9 billion [*U*] , thrust the company into unknown territory -- heavy cargo -- and suddenly expanded its landing rights to 21 countries from four .
+</text>
+	<arg n="0">It</arg>
+	<rel>thrust</rel>
+	<arg n="1">the company</arg>
+	<arg f="into" n="2">unknown territory -- heavy cargo --</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

@@ -1,0 +1,71 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="ramble">
+<note>
+  Frames file for 'ramble' based on sentences in wsj.  Verbnet entry
+  51.3.2.
+</note>
+
+<roleset id="ramble.01" name="move aimlessly" vncls="51.3.2">
+<roles>
+  <role descr="entity in motion" n="0"><vnrole vncls="51.3.2" vntheta="Theme"/></role>
+  <role descr="path" n="1"><vnrole vncls="51.3.2" vntheta="Location"/></role>
+</roles>
+
+<example name="intransitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Bond prices rambled yesterday as investors kept close watch on the
+    stock market and worried about a wave of new supply. 
+</text>
+        <arg n="0">Bond prices</arg>
+        <rel>rambled</rel>
+        <arg f="TMP" n="M">yesterday</arg>
+        <arg f="TMP" n="M">as investors kept close watch on the stock
+        market and worried about a wave of new supply</arg> 
+</example>
+
+<example name="with path">
+  <inflection aspect="ns" form="full" person="ns" tense="ns" voice="active"/>
+  <text>
+     John can ramble for hours over hill and dale.
+  </text>
+  <arg n="0">John</arg>
+  <arg f="MOD" n="m">can</arg>
+  <rel>ramble</rel>
+  <arg f="TMP" n="m">for hours</arg>
+  <arg f="over" n="1">hill and dale</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="ramble.02" name="talk aimlessly" vncls="-">
+<roles>
+  <role descr="speaker" n="0"/>
+  <role descr="utterance, topic" n="1"/>
+</roles>
+
+<example name="blah blah blah">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John rambled about his dissertation for hours before anyone
+     realized that he hadn't actually done any original research.
+  </text>
+  <arg n="0">John</arg>
+  <rel>rambled</rel>
+  <arg f="about" n="1">his dissertation</arg>
+  <arg f="TMP" n="m">for hours</arg>
+  <arg f="TMP" n="m">before anyone realized that he hadn't actually
+  done any original research</arg>
+</example>
+
+<note>
+Also a phrasal variant 'ramble on' which takes the same PAS in both rolesets.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

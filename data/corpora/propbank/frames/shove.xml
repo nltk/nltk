@@ -1,0 +1,84 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="shove">
+<note>
+  Frames file for 'shove' based on sentences in wsj.  Verbnet entries
+  17.1, 12-1, 11.4-1, 23.2.  Framenet entry Cause to move.
+</note>
+
+<roleset id="shove.01" name="push harshly" vncls="17.1 12-1 11.4-1 23.2">
+<roles>
+  <role descr="pusher" n="0"><vnrole vncls="23.2" vntheta="Agent"/><vnrole vncls="17.1" vntheta="Agent"/><vnrole vncls="11.4-1" vntheta="Agent"/><vnrole vncls="12-1" vntheta="Agent"/></role>
+  <role descr="thing pushed" n="1"><vnrole vncls="23.2" vntheta="Patient"/><vnrole vncls="17.1" vntheta="Patient"/><vnrole vncls="11.4-1" vntheta="Theme"/><vnrole vncls="12-1" vntheta="Theme"/></role>
+  <role descr="direction" n="2"><vnrole vncls="17.1" vntheta="Destination"/><vnrole vncls="11.4-1" vntheta="Destination"/></role>
+</roles>
+
+<example name="arg2 as direction">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    And the majority of Members cynically view the current
+    discrediting of HUD as mainly a chance *trace* to shove through
+    their own slate of projects. 
+</text>
+        <arg n="0">*trace* -&gt;  the majority of Members</arg>
+        <rel>shove</rel>
+        <arg f="DIR" n="2">through</arg>
+        <arg n="1">their own slate of projects</arg>
+</example>
+
+
+<example name="prepositional direction">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    Alfred Harrison, the manager, shoves Mr. Straszheim's handout back
+    at him: ``Do we want to go through this? 
+</text>
+        <arg n="0">Alfred Harrison, the manager,</arg>
+        <rel>shoves</rel>
+        <arg n="1">Mr. Straszheim's handout</arg>
+        <arg f="DIR" n="M">back</arg>
+        <arg f="at" n="2">him</arg>
+</example>
+
+
+<example name="another prep direction">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+     That could shove a weak economy into recession. 
+</text>
+        <arg n="0">That</arg>
+        <arg f="MOD" n="M">could</arg>
+        <rel>shove</rel>
+        <arg n="1">a weak economy</arg>
+        <arg f="into" n="2">recession</arg>
+</example>
+
+<example name="and another">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    The state quit *trace* shoving peasants onto its subsidized farms
+    over 30 years ago. 
+</text>
+        <arg n="0">*trace* -&gt;  The state</arg>
+        <rel>shoving</rel>
+        <arg n="1">peasants</arg>
+        <arg f="onto" n="2">its subsidized farms</arg>
+</example>
+
+<example name="no direction">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    Mary shoved John.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>shoved</rel>
+  <arg n="1">John</arg>
+</example>
+
+<note>
+Preposition and/or directional particle/adverb gives details of motion
+and/or final placement.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,115 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="ring">
+<note>
+  Frames file for 'ring' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+
+<roleset id="ring.01" name="to (cause) to make a sound of a bell " vncls="43.2">
+<roles>
+  <role descr="causer of ringing" n="0">
+        <vnrole vncls="43.2" vntheta="Agent"/></role>
+  <role descr="bell" n="1">
+        <vnrole vncls="43.2" vntheta="Theme"/></role>
+  <role descr="ring for" n="2"/>
+</roles>
+
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+ According to a nationwide survey taken [*] a year ago , nearly a third of England 's church bells are no longer rung [*-1] on Sundays because there is no one [0] [*T*-2] to ring them .
+</text>
+	<arg f="TMP" n="M">no longer</arg>
+	<rel>rung</rel>
+	<arg n="1">[*-1] -&gt;  nearly a third of England 's church bells</arg>
+	<arg f="TMP" n="M">on Sundays</arg>
+	<arg f="CAU" n="M">because there is no one [0] [*T*-2] to ring them</arg>
+</example>
+
+
+<example name="with Arg2">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ `` [*-1] To ring for even one service at this tower , we have [*-1] to scrape , '' says [*T*-2] Mr. Hammond , a retired water-authority worker .
+</text>
+	<arg n="0">we -&gt;  [*-1]</arg>
+	<rel>ring</rel>
+	<arg f="for" n="2">even one service</arg>
+	<arg f="LOC" n="M">at this tower</arg>
+</example>
+
+
+
+<example name="intransitive with Arg0">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ One survey says that of the 100,000 trained bellringers in England today , only 40,000 of them still ring .
+</text>
+	<arg n="0">only 40,000 of them</arg>
+	<arg f="TMP" n="M">still</arg>
+	<rel>ring</rel>
+</example>
+
+
+<example name="intransitive with Arg1">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+ There were too many phones ringing and too many things happening [*] to expect market makers to be as efficient as robots .
+</text>
+	<arg n="1">too many phones</arg>
+	<rel>ringing</rel>
+</example>
+
+
+</roleset>
+
+<roleset id="ring.02" name="to surround" vncls="47.8">
+<roles>
+  <role descr="entity surrounding" n="1">
+	<vnrole vncls="47.8" vntheta="Theme1"/></role>
+  <role descr="entity surrounded" n="2">
+	<vnrole vncls="47.8" vntheta="Theme2"/></role>
+</roles>
+
+
+
+<example name="both arguments">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ Meanwhile , in the squat office buildings that [*T*-1] ring Fashion Island , the odds [*ICH*-3] are good that someone is getting fleeced [*-2] .
+</text>
+	<arg n="1">[*T*-1] -&gt;  that -&gt;  the squat office buildings</arg>
+	<rel>ring</rel>
+	<arg n="2">Fashion Island</arg>
+</example>
+</roleset>
+</predicate>
+
+<predicate lemma="ring_up">
+
+<roleset id="ring.03" name="to record" vncls="-">
+<roles>
+  <role descr="recorder" n="0"/>
+  <role descr="entity rung up" n="1"/>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ Younkers rang up sales [*ICH*-1] in 1988 of $ 313 million [*U*] .
+</text>
+	<arg n="0">Younkers</arg>
+	<rel>[ rang] [ up]</rel>
+	<arg n="1">[ sales [*ICH*-1]] [ of $ 313 million [*U*]]</arg>
+	<arg f="TMP" n="M">in 1988</arg>
+</example>
+
+</roleset>
+</predicate>
+
+
+</frameset>

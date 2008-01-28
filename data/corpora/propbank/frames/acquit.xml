@@ -1,0 +1,65 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="acquit">
+<note>
+Frames file for 'acquit' based on sentences in wsj and automatic
+expansion via verbnet.
+</note>
+
+<roleset id="acquit.01" name="relieve of guilt" vncls="10.6">
+<roles>
+	<role descr="remover of guilt" n="0">
+		
+  <vnrole vncls="10.6" vntheta="Agent"/></role>
+
+	<role descr="(un)guilty party" n="1">
+		
+  <vnrole vncls="10.6" vntheta="Source"/></role>
+
+	<role descr="explicit mention of guilt" n="2">
+		
+  <vnrole vncls="10.6" vntheta="Theme"/></role>
+
+</roles>
+
+<example name="intransitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+    Ultimately, that carefully picked jury deadlocked with a 10-2 vote
+    *trace* *trace* to acquit, and the prosecution decided not to
+    retry the case. 
+</text>
+        <arg n="0">*trace* -&gt; *trace* -&gt;  that carefully picked jury</arg>
+        <rel>acquit</rel>
+</example>
+
+
+<example name="passive transitive">
+<inflection aspect="perfect" form="participle" person="ns" tense="past" voice="passive"/>
+<text>
+    Although Mr. Hastings had been acquitted *trace* by a jury,
+    lawmakers handling the prosecution in Congress had argued that the
+    purpose of impeachment isn't to punish an individual. 
+</text>
+        <rel>acquitted</rel>
+        <arg n="1">*trace* -&gt;  Mr. Hastings</arg>
+        <arg f="by" n="0">a jury</arg>
+</example>
+
+<example name="all args">
+<inflection aspect="perfect" form="participle" person="ns" tense="past" voice="active"/>
+<text>
+    Mr. Hastings's case was particularly nettlesome because it marked
+    the first time a federal official was impeached and removed from
+    office on charges of which a jury had acquitted him *trace*. 
+</text>
+        <arg n="0">a jury</arg>
+        <rel>acquitted</rel>
+        <arg n="1">him</arg>
+        <arg n="2">*trace* -&gt;  of which -&gt;  charges</arg>
+</example>
+
+</roleset>
+
+</predicate>
+</frameset>

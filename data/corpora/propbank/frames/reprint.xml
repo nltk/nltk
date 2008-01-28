@@ -1,0 +1,42 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="reprint">
+<note>
+  Frames file for 'reprint' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="reprint.01" name="to make a new copy" vncls="-">
+<roles>
+  <role descr="printer, copier, agent" n="0"/>
+  <role descr="thing copied" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ `` Nor are you free [*-2] to reprint such material , '' I was advised [*-31] [*T*-1] .
+</text>
+	<arg n="0">[*-2] -&gt;  you</arg>
+	<rel>reprint</rel>
+	<arg n="1">such material</arg>
+</example>
+
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+ [*] Reprinted [*-1] by permission .
+</text>
+	<rel>Reprinted</rel>
+	<arg n="1">[*-1] -&gt;  [*]</arg>
+	<arg f="MNR" n="M">by permission</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

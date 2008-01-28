@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="interconnect">
+<note>
+  Frames file for 'interconnect' based on sentences in wsj.  Verbnet
+  entry 22.2.
+</note>
+
+<roleset id="interconnect.01" name="connect back and forth" vncls="22.2">
+<roles>
+  <role descr="agent" n="0"><vnrole vncls="22.2" vntheta="Agent"/></role>
+  <role descr="things connected" n="1"><vnrole vncls="22.2" vntheta="Patient"/></role>
+</roles>
+
+<example name="the one example">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    The products already available are cross-connect systems, used
+    instead of mazes of wiring [*] to interconnect other
+    telecommunications equipment. 
+</text>
+        <arg n="0">[*]</arg>
+        <rel>interconnect</rel>
+        <arg n="1">other telecommunications equipment</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

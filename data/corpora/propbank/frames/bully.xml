@@ -1,0 +1,54 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="bully">
+<note>
+  Frames file for 'bully' based on sentences in wsj.  Verbnet entry
+  29.8, Framenet entry Suasion4.  How many Suasions are there?  29.8
+  refers to &quot;lifestyle&quot; verbs rather than PAS.
+</note>
+
+<roleset id="bully.01" name="force into an action with   threat of violence" vncls="29.8">
+<roles>
+  <role descr="bully" n="0"><vnrole vncls="29.8" vntheta="Agent"/></role>
+  <role descr="victim, impelled agent" n="1"><vnrole vncls="29.8" vntheta="Theme"/></role>
+  <role descr="impelled action (often unstated)" n="2"/>
+</roles>
+
+<example name="unstated action">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    According to testimony in a public, 80-page grand-jury report
+    handed up to the state attorney general, Judge O'Kicki extorted
+    cash from lawyers, muscled favorable loans from banks and bullied
+    local businesses for more than a decade. 
+</text>
+        <arg n="0">Judge O'Kicki</arg>
+        <rel>bullied</rel>
+        <arg n="1">local businesses</arg>
+        <arg f="TMP" n="M">for more than a decade</arg>
+</example>
+
+
+<example name="with action">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    Her sister-in-law (Amy Wright) is a sniveling prude afraid that
+    Kate will seduce all the married men in town, including a
+    particularly loathsome fellow named Tucker, whose idea of fun is
+    to leave his wife at home tending to her bruises and cigarette
+    burns, while he bullies Kate into a dance that consists of
+    drooling on her while trying to break her ribs. 
+</text>
+        <arg n="0">he</arg>
+        <rel>bullies</rel>
+        <arg n="1">Kate</arg>
+        <arg f="into" n="2">a dance that consists of drooling on her
+        while trying to break her ribs</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

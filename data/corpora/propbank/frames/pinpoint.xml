@@ -1,0 +1,35 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="pinpoint">
+<note>
+  Frames file for 'pinpoint' based on sentences in financial
+  subcorpus.  No Verbnet or Framenet entry.  No comparison.
+</note>
+
+<roleset id="pinpoint.01" name="determine quite detailedly">
+<roles>
+  <role descr="decider" n="0"/>
+  <role descr="thing decided" n="1"/>
+</roles>
+
+<example name="transitive, boring">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Osamu Nagayama, deputy president of Chugai, which spends about 15%
+    of its sales on research and development, was unable *trace* to
+    pinpoint how much money Chugai would pump into Gen-Probe. 
+</text>
+        <arg n="0">*trace* -&gt;  Osamu Nagayama, deputy president of
+        Chugai, which spends about 15% of its sales on research and
+        development,</arg> 
+        <rel>pinpoint</rel>
+        <arg n="1">how much money Chugai would pump into
+        Gen-Probe</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

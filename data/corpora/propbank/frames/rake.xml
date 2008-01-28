@@ -1,0 +1,79 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="rake">
+<note>
+Frames file for 'rake' based on sentences in wsj and automatic
+expansion via verbnet.
+</note>
+
+<roleset id="rake.01" name="move with a rake" vncls="9.3 10.4.2">
+<roles>
+  <role descr="causer of movement, agent" n="0">
+	<vnrole vncls="9.3" vntheta="Agent"/>
+        <vnrole vncls="10.4.2" vntheta="Agent"/></role>
+  <role descr="thing moved (leaves)" n="1">
+	<vnrole vncls="9.3" vntheta="Theme"/>
+        <vnrole vncls="10.4.2" vntheta="Theme"/></role>
+  <role descr="source (yard)" n="2">
+	<vnrole vncls="9.3" vntheta="Destination"/>
+        <vnrole vncls="10.4.2" vntheta="Source"/></role>
+  <role descr="instrument: rake" n="3">
+        <vnrole vncls="10.4.2" vntheta="Instrument"/></role>
+</roles>
+
+<example name="transitive">
+<inflection aspect="progressive" form="participle" person="third" tense="past" voice="active"/>
+<text>
+    ONE DAY Carl Barrett of Mobile, Ala., was raking some sycamore
+    leaves, but the rake kept riding up over the piles. 
+</text>
+        <arg f="TMP" n="M">ONE DAY</arg>
+        <arg n="0">Carl Barrett of Mobile, Ala.,</arg>
+        <rel>raking</rel>
+        <arg n="1">some sycamore leaves</arg>
+</example>
+
+<example name="all args, metaphorical">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John raked the hair from his eyes with a weed-whacker.
+  </text>
+  <arg n="0">John</arg>
+  <rel>raked</rel>
+  <arg n="1">the hair</arg>
+  <arg f="from" n="2">his eyes</arg>
+  <arg f="with" n="3">a weed-whacker</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="rake_in">
+
+<roleset id="rake.02" name="get abundantly" vncls="-">
+<roles>
+  <role descr="getter" n="0"/>
+  <role descr="thing gotten" n="1"/>
+</roles>
+
+<example name="gimme gimme gimme">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    Which, it should be added, doesn't prevent the charities from
+    *trace* raking in a lot of money anyway. 
+</text>
+        <arg n="0">*trace* -&gt;  the charities</arg>
+        <rel>[ raking] [ in]</rel>
+        <arg n="1">a lot of money</arg>
+        <arg f="DIS" n="M">anyway</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

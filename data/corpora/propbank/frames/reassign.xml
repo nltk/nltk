@@ -1,0 +1,46 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="reassign">
+<note>
+  Frames file for 'reassign' based on sentences in financial subcorpus.
+  Verbnet entry 13.3, other framed members include allocate, award,
+  concede, grant, promise and vote.  Comparison to those.  No Framenet
+  entry.
+</note>
+
+<roleset id="reassign.01" name="give, associate with again" vncls="13.3">
+<roles>
+  <role descr="agent, assigner" n="0">
+		
+  <vnrole vncls="13.3" vntheta="Agent"/></role>
+
+  <role descr="thing assigned" n="1">
+		
+  <vnrole vncls="13.3" vntheta="Theme"/></role>
+
+  <role descr="assigned to" n="2">
+		
+  <vnrole vncls="13.3" vntheta="Recipient"/></role>
+
+</roles>
+
+<example name="just transitive">
+<inflection aspect="perfect" form="participle" person="third" tense="present" voice="active"/>
+<text>
+    Fluor Daniel already has reassigned most of its work crew, the
+    sources said. 
+</text>
+        <arg n="0">Fluor Daniel</arg>
+        <arg f="TMP" n="M">already</arg>
+        <rel>reassigned</rel>
+        <arg n="1">most of its work crew</arg>
+</example>
+
+<note>
+Reassign seems to not take Arg2 most of the time, while assign does.
+How odd.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

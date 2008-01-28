@@ -1,0 +1,67 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="entice">
+<note>
+  Frames file for 'entice' based on sentences in financial subcorpus.
+  Verbnet entry 31.1, other framed members include comfort, convince,
+  depress, encourage, exhaust, interest, reassure, repel, scare,
+  shock, spook, threaten, and worry.  Framenet entry Suasion1.
+  Comparison with attract.
+</note>
+
+<roleset id="entice.01" name="attract" vncls="31.1">
+<roles>
+  <role descr="attractor" n="0">
+		
+  <vnrole vncls="31.1" vntheta="Cause"/></role>
+
+  <role descr="thing attracted" n="1">
+		
+  <vnrole vncls="31.1" vntheta="Experiencer"/></role>
+
+  <role descr="thing attracted to, if separate from attractor" n="2"/>
+  <role descr="instrument, if separate from attractor" n="3"/>
+</roles>
+
+<example name="entice into">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    The major question, said one holder who asked not to be named, is
+    whether New York investor Bennett S. LeBow, whose Brooke Partners
+    controls Western Union, is willing to offer a large enough equity
+    stake *trace* to entice bondholders into agreeing to a new swap. 
+</text>
+        <arg n="0">*trace*</arg>
+        <rel>entice</rel>
+        <arg n="1">bondholders</arg>
+        <arg f="into" n="2">agreeing to a new swap</arg>
+</example>
+
+<example name="just transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    But there was a dearth of sellers, traders said, so buyers had to
+    bid prices up *trace* to entice them. 
+</text>
+        <arg n="0">*trace* -&gt;  buyers</arg>
+        <rel>entice</rel>
+        <arg n="1">them</arg>
+</example>
+
+<example name="with instrument">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    Mary enticed John with a six-pack of spiked Kool-Aid.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>enticed</rel>
+  <arg n="1">John</arg>
+  <arg f="with" n="3">a six-pack of spiked Kool-Aid</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,62 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="uncover">
+<note>
+  Frames file for 'uncover' based on sentences in wsj.  No Verbnet
+  entry, not actually very similar to 'cover' but basically the same
+  as 'discover'.
+</note>
+
+<roleset id="uncover.01" name="discover" vncls="-">
+<roles>
+  <role descr="discoverer" n="0"/>
+  <role descr="thing discovered" n="1"/>
+  <role descr="secondary attribute" n="3"/>
+</roles>
+
+<example name="basic transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+    Medical scientists are starting *trace* to uncover a handful of
+    genes which, if damaged, unleash the chaotic growth of cells that
+    characterizes cancer. 
+</text>
+        <arg n="0">*trace* -&gt;  Medical scientists</arg>
+        <rel>uncover</rel>
+        <arg n="1">a handful of genes which, if damaged, unleash the
+        chaotic growth of cells that  characterizes cancer</arg> 
+</example>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="past" voice="passive"/>
+<text>
+    The problems were uncovered *trace* during a series of internal
+    investigations of the company's Space Systems division, which has
+    been the focus of two separate overcharge prosecutions by the
+    government since 1985. 
+</text>
+        <rel>uncovered</rel>
+        <arg n="1">*trace* -&gt;  The problems</arg>
+        <arg f="TMP" n="M">during a series of internal investigations
+        of the company's Space Systems division, which has been the
+        focus of two separate overcharge prosecutions by the
+        government since 1985</arg> 
+</example>
+
+<example name="with 2ry attribute">
+<inflection aspect="ns" form="participle" person="ns" tense="past" voice="passive"/>
+<text>
+    The personal antics of agency Director Amadou-Mahtar M'Bow drew
+    much attention, such as when several of his top aides were
+    uncovered *trace* as KGB plants and ejected from France and when a
+    mysterious office fire was set just before Congress sent
+    accountants to trace U.S. funds. 
+</text>
+        <rel>uncovered</rel>
+        <arg n="1">*trace* -&gt;  several of his top aides</arg>
+        <arg f="as" n="3">KGB plants</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

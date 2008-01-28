@@ -1,0 +1,45 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="persuade">
+<note>
+  Frames file for 'persuade' based on sentences in financial
+  subcorpus.  No Verbnet entry, Framenet entry Suasion2.  Comparison
+  with 'convince'.
+</note>
+
+<roleset id="persuade.01" name="impelled action" vncls="-">
+<roles>
+  <role descr="convincer" n="0"/>
+  <role descr="impelled agent" n="1"/>
+  <role descr="impelled action, proposition" n="2"/>
+</roles>
+
+<example name="impelled action">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Mr. de Cholet said Mr. Fournier's biggest hope was *trace* to
+    somehow persuade regulatory authorities to block the bid. 
+</text>
+        <arg n="0">*trace* -&gt;  Mr. Fournier's</arg>
+	<arg f="ADV" n="m">somehow</arg>
+        <rel>persuade</rel>
+        <arg n="1">regulatory authorities</arg>
+        <arg n="2">to block the bid</arg>
+</example>
+
+<example name="proposition">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    In an attempt *trace* to persuade investors that his bid wasn't
+    just ``a stock play,'' Mr. Trump promised last week to notify the
+    market before selling any shares. 
+</text>
+        <arg n="0">*trace* -&gt; Mr. Trump</arg>
+        <rel>persuade</rel>
+        <arg n="1">investors</arg>
+        <arg n="2">his bid was n't just `` a stock play</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

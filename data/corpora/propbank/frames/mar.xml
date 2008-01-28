@@ -1,0 +1,48 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="mar">
+<note>
+  Frames file for 'mar' based on sentences in wsj.  No Verbnet entry,
+  Framenet entry Damaging.
+</note>
+
+<roleset id="mar.01" name="damage slightly" vncls="-">
+<roles>
+  <role descr="causer of damage, agent" n="0"/>
+  <role descr="patient" n="1"/>
+  <role descr="instrument" n="2"/>
+</roles>
+
+<example name="just transitive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    The federal response to California's earthquake crisis was marred
+    [*-1] by coast-to-coast name-calling between the White House and
+    San Francisco's Mayor Art Agnos. 
+</text>
+        <rel>marred</rel>
+        <arg n="1">[*-1] -&gt;  The federal response to California's
+        earthquake crisis</arg> 
+        <arg f="by" n="0">coast-to-coast name-calling between the
+        White House and San Francisco's Mayor Art Agnos</arg> 
+</example>
+
+<example name="with instrument">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John marred the finish on Mary's dining-room table with his
+     muddy hobnailed boots.
+  </text>
+  <arg n="0">John</arg>
+  <rel>marred</rel>
+  <arg n="1">the finish on Mary's dining-room table</arg>
+  <arg f="with" n="2">his muddy hobnailed boots</arg>
+</example>
+
+<note>
+Only use arg2 when arg0 is also present.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,35 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="saddle">
+<note>
+  Frames file for 'saddle' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="saddle.01" name="to load or burden" vncls="-">
+<roles>
+  <role descr="saddler" n="0"/>
+  <role descr="entity saddled" n="1"/>
+  <role descr="burden" n="2"/>
+</roles>
+
+
+<example name="all arguments">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ Consequently , Mr. Lawson saddled Mrs. Thatcher with a record trade deficit , renewed inflation and high interest rates -- three political failures in a row .
+</text>
+	<arg f="DIS" n="M">Consequently</arg>
+	<arg n="0">Mr. Lawson</arg>
+	<rel>saddled</rel>
+	<arg n="1">Mrs. Thatcher</arg>
+	<arg f="with" n="2">a record trade deficit , renewed inflation and high interest rates -- three political failures in a row</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

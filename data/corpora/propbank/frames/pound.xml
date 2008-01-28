@@ -1,0 +1,113 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="pound">
+<note>
+Frames file for 'pound' based on sentences in financial subcorpus and
+automatic expansion via verbnet.
+</note>
+
+<roleset id="pound.02" name="hit hard and repeatedly" vncls="18.1">
+<roles>
+  <role descr="agent, hitter" n="0">
+	<vnrole vncls="18.1" vntheta="Agent"/></role>
+  <role descr="thing hit" n="1">
+	<vnrole vncls="18.1" vntheta="Patient"/></role>
+  <role descr="instrument, thing hit by or with" n="2">
+	<vnrole vncls="18.1" vntheta="Instrument"/></role>
+</roles>
+
+<example name="very literal">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    ``I don't think most of the people that have been around me would
+    ever say they've seen me pound the table or get angry.'' 
+</text>
+        <arg n="0">me</arg>
+        <rel>pound</rel>
+        <arg n="1">the table</arg>
+</example>
+
+<example name="passivized">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="passive"/>
+<text>
+    The stock of UAL Corp. continued *trace* to be pounded *trace*
+    amid signs that British Airways may balk at any hasty
+    reformulation of the aborted $6.79 billion buy-out of United
+    Airlines' parent. 
+</text>
+        <rel>pounded</rel>
+        <arg n="1">*trace* -&gt; *trace* -&gt;  The stock of UAL Corp.</arg>
+        <arg f="LOC" n="M">amid signs that British Airways may balk at
+        any hasty reformulation of the aborted $6.79 billion buy-out
+        of United Airlines' parent</arg> 
+</example>
+
+<example name="violence" src="beat.01">
+  <text>
+    Mary pounded John with a wet noodle.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>pounded</rel>
+  <arg n="1">John</arg>
+  <arg f="with" n="2">a wet noodle</arg>
+</example>
+
+</roleset>
+
+<roleset id="pound.03" name="create a substance by pounding" vncls="26.1">
+<roles>
+  <role descr="creator" n="0">
+	<vnrole vncls="26.1" vntheta="Agent"/></role>
+  <role descr="thing pounded, raw material" n="1">
+	<vnrole vncls="26.1" vntheta="Material"/></role>
+  <role descr="end product" n="2">
+	<vnrole vncls="26.1" vntheta="Product"/></role>
+ </roles>
+
+<example name="all args">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    Mary pounded John to a bloody pulp.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>pounded</rel>
+  <arg n="1">John</arg>
+  <arg f="to" n="2">a bloody pulp</arg>
+</example>
+
+<note>
+This sense is very close to pound.02, and if the end product is
+unstated the two cannot be distinguished.   Perhaps they should be merged?
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="pound_out">
+<roleset id="pound.01" name="extract, produce" vncls="9.3">
+<roles>
+  <role descr="pounder, extractor" n="0">
+	<vnrole vncls="9.3" vntheta="Agent"/></role>
+  <role descr="thing extracted" n="1">
+	<vnrole vncls="9.3" vntheta="Theme"/></role>
+</roles>
+
+<example name="production">
+  <inflection aspect="ns" form="full" person="ns" tense="ns" voice="ns"/>
+  <text>
+    John can pound out 50 verb frames a week.
+  </text>
+  <arg n="0">John</arg>
+  <arg f="MOD" n="m">can</arg>
+  <rel>pound out</rel>
+  <arg n="1">50 verb frames</arg>
+  <arg f="TMP" n="m">a week</arg>
+</example>
+
+<note>
+Unlike other 'extract' verbs (classes 10.1, 10.2), 'pound out' does not
+seem to take a source argument.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

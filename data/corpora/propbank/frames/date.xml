@@ -1,0 +1,119 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="date">
+<note>
+Frames file for 'date' based on sentences in wsj and automatic
+expansion via verbnet.
+</note>
+
+<roleset id="date.01" name="assign a calendar date" vncls="25.3">
+<roles>
+	<role descr="assigner of date" n="0">
+		
+  <vnrole vncls="25.3" vntheta="Agent"/></role>
+
+	<role descr="item being labelled" n="1">
+		
+  <vnrole vncls="25.3" vntheta="Destination"/></role>
+
+	<role descr="date" n="2">
+		
+  <vnrole vncls="25.3" vntheta="Theme"/></role>
+
+</roles>
+
+<example name="passive, point date">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    Both issues are dated *trace* Oct. 31.
+</text>
+        <rel>dated</rel>
+        <arg n="1">*trace* -&gt;  Both issues</arg>
+        <arg n="2">Oct. 31</arg>
+</example>
+
+<example name="same thing, missing trace">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    The bills are dated Oct. 31 and mature Dec. 21, 1989. 
+</text>
+        <arg n="1">The bills</arg>
+        <rel>dated</rel>
+        <arg n="2">Oct. 31</arg>
+</example>
+
+<example name="date back to: separated">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    Federal credit programs date back to the New Deal, and were meant
+    to break even financially. 
+</text>
+        <arg n="1">Federal credit programs</arg>
+        <rel>date</rel>
+        <arg f="DIR" n="M">back</arg>
+        <arg f="to" n="2">the New Deal</arg>
+</example>
+
+<example name="date back to: joined">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    Mr. Seidman told the committee that the Resolution Trust Corp.,
+    the agency created to sell sick thrifts, has studied Lincoln's
+    examination reports by former regulators dating back to 1986. 
+</text>
+        <arg n="1">Lincoln's examination reports by former
+        regulators</arg> 
+        <rel>dating</rel>
+        <arg n="2">back to 1986</arg>
+</example>
+
+<example name="passive: terminus post quem">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    Next month, NASA plans to launch a satellite to study cosmic rays
+    dating from the birth of the universe. 
+</text>
+        <arg n="1">cosmic rays</arg>
+        <rel>dating</rel>
+        <arg f="from" n="2">the birth of the universe</arg>
+</example>
+
+<example name="with agent">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John dated the contents of his fridge to the early 1960's.
+  </text>
+  <arg n="0">John</arg>
+  <rel>dated</rel>
+  <arg n="1">the contents of his fridge</arg>
+  <arg f="to" n="2">the early 1960's</arg>
+</example>
+
+<note>
+Treebank gives an unbelievable range of syntaces for sentences
+containing 'date'.  This should be a high priority for fixing, once we
+get the go-ahead to fix Tb.
+</note>
+
+</roleset>
+
+<roleset id="date.02" name="date romantically" vncls="36.2">
+<roles>
+	<role descr="dater" n="0"><vnrole vncls="36.2" vntheta="Actor1"/></role>
+	<role descr="dated" n="1"><vnrole vncls="36.2" vntheta="Actor2"/></role>
+</roles>
+
+<example name="as opposed to?">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    The book loses some momentum toward the end, when Lily becomes
+    more preoccupied with *trace* dating boys and less with her
+    delightfully weird family. 
+</text>
+        <arg n="0">*trace* -&gt;  Lily</arg>
+        <rel>dating</rel>
+        <arg n="1">boys</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

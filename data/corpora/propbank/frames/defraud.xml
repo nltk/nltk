@@ -1,0 +1,59 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="defraud">
+<note>
+  Frames file for 'defraud' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="defraud.01" name="to take something from by fraud" vncls="-">
+<roles>
+  <role descr="thief, fraud, agent" n="0"/>
+  <role descr="entity defrauded" n="1"/>
+  <role descr="contract" n="2"/>
+  <role descr="amount" n="3"/>
+</roles>
+
+
+<example name="all arguments">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ Last November , a federal grand jury indicted GE on charges of fraud and false claims in connection with an alleged scheme [*] to defraud the Army of $ 21 million [*U*] on a logistics computer contract .
+</text>
+	<arg n="0">[*] -&gt;  a federal grand jury</arg>
+	<rel>defraud</rel>
+	<arg n="1">the Army</arg>
+	<arg f="of" n="3">$ 21 million [*U*]</arg>
+	<arg f="on" n="2">a logistics computer contract</arg>
+</example>
+
+
+<example name="with Arg2">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ The Justice Department said [0] it filed a lawsuit seeking more than $ 7.7 million [*U*] from a Meredith Corp. unit on charges that the company defrauded the government on a contract [*] to provide relocation services for federal employees .
+</text>
+	<arg n="0">the company</arg>
+	<rel>defrauded</rel>
+	<arg n="1">the government</arg>
+	<arg f="on" n="2">a contract [*] to provide relocation services for federal employees</arg>
+</example>
+
+<example name="with Arg3">
+<inflection aspect="ns" form="participle" person="ns" tense="past" voice="passive"/>
+<text>
+ Shearson was sued [*-1] by money manager George Soros , who [*T*-3] claimed [0] one of his funds was defrauded [*-2] out of $ 60 million [*U*] during stock-index futures trading just after the 1987 crash .
+</text>
+	<rel>defrauded</rel>
+	<arg n="1">[*-2] -&gt;  one of his funds</arg>
+	<arg f="out" n="3">of $ 60 million [*U*]</arg>
+	<arg f="TMP" n="M">during stock-index futures trading</arg>
+	<arg f="TMP" n="M">just after the 1987 crash</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

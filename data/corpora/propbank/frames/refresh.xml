@@ -1,0 +1,36 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="refresh">
+<note>
+  Frames file for 'refresh' based on sentences in wsj.  Verbnet entry 31.3.
+</note>
+
+<roleset id="refresh.01" vncls="31.3" name="refresh">
+<roles>
+  <role n="0"  descr="cause of refreshment, agent"/>
+  <role n="1"  descr="refreshed entity"/>
+  <role n="2"  descr="instrument, when separate from agent"/>
+</roles>
+
+<example name="adjectival">
+<inflection person="ns" tense="ns" aspect="progressive" voice="active" form="participle"/>
+<text>
+    It's also refreshing [*] to read a Japanese author who clearly
+    doesn't belong to the self-aggrandizing ``we-Japanese'' school of
+    writers who perpetuate the notion of the unique Japanese,
+    unfathomable by outsiders. 
+</text>
+	<arg n="M" f="DIS">also</arg>
+	<rel>refreshing</rel>
+	<arg n="0">[*] to read a Japanese author who clearly doesn't
+	belong to the self-aggrandizing ``we-Japanese'' school of
+	writers who perpetuate the notion of the unique Japanese,
+	unfathomable by outsiders</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,99 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="shape">
+<note>
+  Frames file for 'shape' based on sentences in financial
+  subcorpus.  Verbnet class build-26.1; other framed members include
+  build, develop, grow, make. 
+</note>
+
+<roleset id="shape.01" name="shape" vncls="26.1-1 27">
+<roles>
+  <role descr="shaper" n="0">
+		
+  <vnrole vncls="26.1-1" vntheta="Agent"/></role>
+
+  <role descr="thing worked on" n="1">
+		
+		
+  <vnrole vncls="26.1-1" vntheta="Material"/><vnrole vncls="27" vntheta="Theme1"/></role>
+
+  <role descr="end state, if different from arg1" n="2">
+		
+		
+  <vnrole vncls="26.1-1" vntheta="Product"/><vnrole vncls="27" vntheta="Theme2"/></role>
+
+</roles>
+
+<example name="transitive">
+<text>
+    While the earnings picture confuses, observers say the major
+    forces expected *trace* to shape the industry in the coming year
+    are clearer. 
+</text>
+        <arg n="0">*trace* -&gt;  the major forces</arg>
+        <rel>shape</rel>
+        <arg n="1">the industry</arg>
+        <arg f="TMP" n="M">in the coming year</arg>
+</example>
+
+<example name="with end state">
+  <text>
+    John's experiences in grad school shaped him into a bitter old man.
+  </text>
+  <arg n="0">John's experiences in grad school</arg>
+  <rel>shaped</rel>
+  <arg n="1">him</arg>
+  <arg f="into" n="2">a bitter old man</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="shape_up">
+
+<roleset id="shape.02" name="seem to be" vncls="-">
+<roles>
+  <role descr="thing seeming" n="1"/>
+  <role descr="attribute" n="2"/>
+</roles>
+
+<example name="automatically generated">
+<text>
+    The year was already shaping up as a difficult one for the
+    recreational vehicle industry, which makes products such as motor
+    homes, travel trailers, folding campers and van conversions. 
+</text>
+        <arg n="1">The year</arg>
+        <arg f="TMP" n="M">already</arg>
+        <rel>[ shaping] [ up]</rel>
+        <arg f="as" n="2">a difficult one for the recreational vehicle
+        industry, which makes products such as motor homes, travel
+        trailers, folding campers and van conversions</arg> 
+</example>
+</roleset>
+
+<roleset id="shape.03" name="reform behavior" vncls="-">
+<roles>
+  <role descr="entity acting out" n="1"/>
+</roles>
+
+<example name="oh grow up!">
+  <text>
+    John needs *trace* to shape up if he's not to be kicked out of
+    school.
+  </text>
+  <arg n="1">*trace*=John</arg>
+  <rel>[shape] [up]</rel>
+  <arg f="ADV" n="m">if he's not to be kicked out of school.</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

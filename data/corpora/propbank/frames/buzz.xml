@@ -1,0 +1,111 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="buzz">
+<note>
+  Frames file for 'buzz' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="buzz.01" name="to make a buzzing  sound " vncls="38 43.2">
+<roles>
+  <role descr="entity buzzing" n="0">
+        <vnrole vncls="43.2" vntheta="Agent"/>
+        <vnrole vncls="38" vntheta="Agent"/></role>
+  <role descr="thing buzzing about" n="1">
+        <vnrole vncls="43.2" vntheta="Theme"/>
+        <vnrole vncls="38" vntheta="Theme"/></role>
+</roles>
+
+<example name="intransitive">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+ For those hoping [*] to see a modicum of political normalcy restored -- in view of Greece 's eight-year misadventure under autocratic pseudosocialism and subsequent three-month hitch with a conservative-communist coalition government -- there is but one bright sign : The scandals still encircling former Prime Minister Andreas Papandreou and his fallen socialist government are like flies buzzing around a rotting carcass .
+</text>
+	<arg n="0">flies</arg>
+	<rel>buzzing</rel>
+	<arg f="LOC" n="M">around a rotting carcass</arg>
+</example>
+
+
+<example name="buzz about">
+<inflection aspect="progressive" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ Conference attendees are expected [*-1] to be buzzing about the workings of the recently formed Resolution Trust Corp. , a federal agency charged [*] with [*] disposing of an estimated $ 200 billion [*U*] of real estate dumped [*] in government hands by insolvent savings and loans .
+</text>
+	<arg n="0">[*-1] -&gt;  Conference attendees</arg>
+	<rel>buzzing</rel>
+	<arg f="about" n="1">the workings of the recently formed Resolution Trust Corp. , a federal agency charged [*] with [*] disposing of an estimated $ 200 billion [*U*] of real estate dumped [*] in government hands by insolvent savings and loans</arg>
+</example>
+
+
+</roleset>
+
+<roleset id="buzz.02" name="to be filled with" vncls="-">
+<roles>
+  <role descr="entity buzzing" n="0"/>
+  <role descr="entity buzzing with" n="1"/>
+</roles>
+
+
+<example name="buzz with">
+<inflection aspect="progressive" form="participle" person="third" tense="present" voice="active"/>
+<text>
+ The advertising industry is buzzing with rumors that Kentucky Fried Chicken will
+drop Young &amp; Rubicam and seek a new ad agency .
+</text>
+        <arg n="0">The advertising industry</arg>
+        <rel>buzzing</rel>
+        <arg f="with" n="1">rumors that Kentucky Fried Chicken will drop Young &amp; Rubicam and seek a new ad agency</arg>
+</example>
+</roleset>
+
+<roleset id="buzz.04" vncls="-" name="visit briefly but noisily">
+<roles>
+  <role n="0"  descr="visitor"/>
+  <role n="1"  descr="destination"/>
+</roles>
+
+<example name="whirlwind tour">
+  <inflection person="third" tense="present" aspect="ns" voice="active" form="full"/>
+  <text>
+    The chief economist of Merrill Lynch &amp; Co. finds himself in
+    such a position as he buzzes the Midwest on his first road trip
+    since backpedaling on a major prediction. 
+  </text>
+  <arg n="0"        >he</arg>
+  <rel              >buzzes</rel>
+  <arg n="1"        >the Midwest</arg>
+  <arg n="m" f="LOC">on his first road trip since backpedaling on a
+  major prediction</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="buzz_off">
+<roleset id="buzz.03" name="buzz off: to go away" vncls="38 43.2">
+<roles>
+  <role descr="entity leaving" n="0">
+        <vnrole vncls="43.2" vntheta="Agent"/>
+        <vnrole vncls="38" vntheta="Agent"/></role>
+</roles>
+
+
+<example name="intransitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ Even if a grower beats them back , his $ 2,000 [*U*] rented bees might buzz off to the neighbors ' orchards instead of pollinating his , Mr. Broderick says [0] [*T*-1] .
+</text>
+	<arg n="0">his $ 2,000 [*U*] rented bees</arg>
+	<arg f="MOD" n="M">might</arg>
+	<rel>[ buzz] [ off]</rel>
+	<arg f="DIR" n="M">to the neighbors ' orchards</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

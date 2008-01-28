@@ -1,0 +1,44 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="waver">
+<note>
+  Frames file for 'waver' based on sentences in wsj.  Verbnet entry 47.3.
+</note>
+
+<roleset id="waver.01" name="go back and forth, not make up one's mind" vncls="47.3">
+<roles>
+  <role descr="undecided entity" n="0"><vnrole vncls="47.3" vntheta="Agent"/></role>
+  <role descr="topic, question" n="1"><vnrole vncls="47.3" vntheta="Theme"/></role>
+</roles>
+
+<example name="one PP instantiation">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+    He hurt himself further this summer by bringing homosexual issues
+    into the debate; and by [*-2] wavering on this issue and abortion,
+    he has weakened his credibility in what is already a mean-spirited
+    campaign on both sides. 
+</text>
+        <rel>wavering</rel>
+        <arg f="on" n="1">this issue and abortion</arg>
+        <arg n="0">[*-2] -&gt; [*-2]</arg>
+</example>
+
+
+<example name="another PP instantiation">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Pro-life advocates say the White House never wavered over the veto.
+</text>
+        <arg n="0">the White House</arg>
+        <arg f="TMP" n="M">never</arg>
+        <rel>wavered</rel>
+        <arg f="over" n="1">the veto</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

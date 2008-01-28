@@ -1,0 +1,42 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="filch">
+<note>
+  Frames file for 'filch' based on sentences in wsj.  Verbnet entry 10.5.
+</note>
+
+<roleset id="filch.01" vncls="10.5" name="steal">
+<roles>
+  <role n="0"  descr="agent, stealer"/>
+  <role n="1"  descr="thing stolen"/>
+  <role n="2"  descr="stolen from, source"/>
+</roles>
+
+<example name="adjectival">
+<inflection person="ns" tense="ns" aspect="ns" voice="passive" form="participle"/>
+<text>
+    The Sago has become a popular accent in tony new housing tracts,
+    apparently giving the rustlers a ready market for their filched
+    fronds. 
+</text>
+	<rel>filched</rel>
+	<arg n="1">fronds</arg>
+</example>
+
+<example name="all args">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+     John filched Mary's diary from under her bed.
+  </text>
+  <arg n="0"        >John</arg>
+  <rel              >filched</rel>
+  <arg n="1"        >Mary's diary</arg>
+  <arg n="2" f="from">under her bed</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="spruce_up">
+<note>
+  Frames file for 'spruce up' based on sentences in financial
+  subcorpus.  No Verbnet entry.
+</note>
+
+<roleset id="spruce.01" name="tidy, clean" vncls="-">
+<roles>
+  <role descr="cleaner" n="0"/>
+  <role descr="thing made tidy" n="1"/>
+</roles>
+
+<example name="just transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Others have tried *trace* to spruce up frequent-flier programs. 
+</text>
+        <arg n="0">*trace* -&gt;  Others</arg>
+        <rel>[ spruce] [ up]</rel>
+        <arg n="1">frequent-flier programs</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

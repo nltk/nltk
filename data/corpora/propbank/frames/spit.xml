@@ -1,0 +1,50 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="spit">
+<note>
+  Frames file for 'spit' based on sentences in brown.  Verbnet entry
+</note>
+
+<roleset id="spit.01" vncls="-" name="eject saliva">
+<roles>
+  <role n="0"  descr="spitter"/>
+  <role n="1"  descr="explicit mention of saliva"/>
+  <role n="2"  descr="spat-on"/>
+</roles>
+
+<example name="he was despised">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+     Men spit on Him.
+  </text>
+  <arg n="0"        >Men</arg>
+  <rel              >spit</rel>
+  <arg n="2" f="on">Him</arg>
+</example>
+
+<example name="intransitive">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+    Means spit and edged on.
+  </text>
+  <arg n="0"        >Means</arg>
+  <rel              >spit</rel>
+<note>Means is apparently the name of a person</note>
+</example>
+
+<example name="with arg1">
+  <inflection person="ns" tense="ns" aspect="progressive" voice="active" form="participle"/>
+  <text>
+    He spent long hours before the TV *trace* spitting out promises of revenge.
+  </text>
+  <arg n="0"        >*trace* -> He</arg>
+  <rel              >spitting</rel>
+  <arg n="1" f="out">promises of revenge</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

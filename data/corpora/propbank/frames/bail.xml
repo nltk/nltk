@@ -1,0 +1,55 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="bail_out">
+<note>
+  Frames file for 'bail' based on automatic expansion through verbnet and
+sentences in the WSJ corpus.
+</note>
+
+<roleset id="bail.01" name="abandon a project" vncls="-">
+<roles>
+  <role descr="abadoner, agent" n="0"/>
+  <role descr="project or enterprise" n="1"/>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ But the board 's decision prompted many to bail out of the stock yesterday .
+</text>
+	<arg n="0">many</arg>
+	<rel>[ bail] [ out]</rel>
+	<arg f="of" n="1">the stock</arg>
+	<arg f="TMP" n="M">yesterday</arg>
+</example>
+</roleset>
+
+<roleset id="bail.02" name="free on bail, extricate from a difficult situation" vncls="10.4.1">
+<roles>
+  <role descr="agent, causer" n="0">
+	  <vnrole vncls="10.4.1" vntheta="Agent"/></role>
+  <role descr="entity released" n="1">
+	  <vnrole vncls="10.4.1" vntheta="Theme"/></role>
+  <role descr="situation" n="2">
+	  <vnrole vncls="10.4.1" vntheta="Source"/></role>
+</roles>
+
+
+
+<example name="automatically generated">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+ They say [0] that 's especially important this late in the growth phase of the economic cycle , when there 's no robust bull market [*-1] to bail investors out of their mistakes [*T*-2] .
+</text>
+	<arg n="0">[*-1] -&gt;  no robust bull market</arg>
+	<rel>[ bail] [ out]</rel>
+	<arg n="1">investors</arg>
+	<arg f="of" n="2">their mistakes</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+</frameset>

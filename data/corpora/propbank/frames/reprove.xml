@@ -1,0 +1,34 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="reprove">
+<note>
+  Frames file for 'reprove' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="reprove.01" name="chastise, blame" vncls="-">
+<roles>
+  <role descr="blamer" n="0"/>
+  <role descr="blamed" n="1"/>
+  <role descr="cause" n="2"/>
+</roles>
+
+<example name="all args, only example">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+    China was the real victim and it is unjust *trace* to reprove
+    China for it.''
+</text>
+        <arg n="0"/>
+        <rel>reprove</rel>
+        <arg n="1">China</arg>
+        <arg f="for" n="2">it</arg>
+</example>
+
+<note>
+There's also a possible sense meaning &quot;prove again&quot; but that doesn't
+appear, fortunately.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

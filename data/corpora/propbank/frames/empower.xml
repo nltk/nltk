@@ -1,0 +1,63 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="empower">
+<note>
+  Frames file for 'empower' based on sentences in wsj.  No Verbnet
+  entry, might could fit into &quot;other causative&quot;.
+</note>
+
+<roleset id="empower.01" name="give power to" vncls="-">
+<roles>
+  <role descr="giver of power" n="0"/>
+  <role descr="empowered entity" n="1"/>
+  <role descr="use of power" n="2"/>
+</roles>
+
+<example name="useless power :)">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    A group of 27 Senators has written Mr. Kemp urging him to reject
+    Cranston-Mitchell and focus on programs that *trace* empower the
+    poor rather than create vast new government obligations. 
+</text>
+        <arg n="0">*trace* -&gt;  that -&gt;  programs</arg>
+        <rel>empower</rel>
+        <arg n="1">the poor</arg>
+</example>
+
+<example name="with use">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    It also empowers the president to make recess appointments,
+    without Senate approval: ``The President shall have Power to fill
+    up all Vacancies that may happen during the Recess of the Senate,
+    by granting Commissions which shall expire at the End of their
+    next Session.'' 
+</text>
+        <arg n="0">It</arg>
+        <arg f="DIS" n="M">also</arg>
+        <rel>empowers</rel>
+        <arg n="1">the president</arg>
+        <arg n="2">to make recess appointments, without Senate
+        approval</arg> 
+</example>
+
+<example name="passive warrants separation of powered and power">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    The report is subject to review by the State Commission on
+    Judicial Conduct , which *trace* is empowered *trace* to impose
+    sanctions. 
+</text>
+        <rel>empowered</rel>
+        <arg n="1">*trace* -&gt; *trace* -&gt;  which -&gt;  the State
+        Commission on Judicial Conduct</arg> 
+        <arg n="2">to impose sanctions</arg>
+</example>
+
+<note>
+Actually rather close to 'allow' etc.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

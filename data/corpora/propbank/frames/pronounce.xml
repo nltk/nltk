@@ -1,0 +1,45 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="pronounce">
+<note>
+  Frames file for 'pronounce' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="pronounce.01" name="to speak or utter in a certain way" vncls="29.3">
+<roles>
+  <role descr="speaker" n="0">
+        <vnrole vncls="29.3" vntheta="Agent"/></role>
+  <role descr="utterance" n="1">
+        <vnrole vncls="29.3" vntheta="Theme"/></role>
+  <role descr="pronunciation, attribute" n="2">
+        <vnrole vncls="29.3" vntheta="Predicate"/></role>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ Mr. Warren pronounces the Litchfield case `` your typical demonic infestation . ''
+</text>
+	<arg n="0">Mr. Warren</arg>
+	<rel>pronounces</rel>
+	<arg n="1">the Litchfield case `` your typical demonic infestation</arg>
+</example>
+
+
+<example name="with Arg2">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+ The demise of Merkur ( pronounced [*] mare-COOR ) comes after a September in which 670 Merkur dealers managed [*-1] to sell only 93 Scorpios [*T*-2] .
+</text>
+	<rel>pronounced</rel>
+	<arg n="1">[*] -&gt;  Merkur</arg>
+	<arg n="2">mare-COOR</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

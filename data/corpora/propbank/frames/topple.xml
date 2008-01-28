@@ -1,0 +1,46 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="topple">
+<note>
+  Frames file for topple'' based on sentences in financial subcorpus.
+  Verbnet entry 45.4 (other causative), many many other framed
+  members.  Comparison with 'fall'.
+</note>
+
+<roleset id="topple.01" name="(cause to) fall down">
+<roles>
+  <role descr="causal agent" n="0"/>
+  <role descr="thing toppling" n="1"/>
+  <role descr="EXT" n="2"/>
+  <role descr="start point" n="3"/>
+  <role descr="end point" n="4"/>
+</roles>
+
+<example name="ergative">
+<inflection aspect="perfect" form="participle" person="ns" tense="past" voice="active"/>
+<text>
+    A 10-gallon water cooler had toppled onto the floor, soaking the
+    red carpeting. 
+</text>
+        <arg n="1">A 10-gallon water cooler</arg>
+        <rel>toppled</rel>
+        <arg f="onto" n="4">the floor</arg>
+        <arg n="M">soaking the red carpeting</arg>
+</example>
+
+<example name="agentive">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John toppled the stack of Mary's library books.
+  </text>
+  <arg n="0">John</arg>
+  <rel>toppled</rel>
+  <arg n="1">the stack of Mary's library books</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,93 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="sink">
+<note>
+  Frames file for 'sink' based on sentences in financial subcorpus.
+  Verbnet entry other_cos-45.4, scads of other members.  Also
+  comparison with verbs-of-stocks-going-down like 'drop'.
+</note>
+
+<roleset id="sink.01" name="(cause to) go down, esp into water" vncls="45.4">
+<roles>
+  <role descr="causer of sinking" n="0">
+		
+  <vnrole vncls="45.4" vntheta="Agent"/></role>
+
+  <role descr="thing sinking" n="1">
+		
+  <vnrole vncls="45.4" vntheta="Patient"/></role>
+
+  <role descr="EXT" n="2"/>
+  <role descr="start point" n="3"/>
+  <role descr="end point" n="4"/>
+  <role descr="instrument" n="5">
+		
+  <vnrole vncls="45.4" vntheta="Instrument"/></role>
+
+</roles>
+
+<example name="agentive">
+<text>
+    Analysts say rallies in the group historically have lifted the
+    market, while weakness in the sector often sank unlisted share
+    prices broadly. 
+</text>
+        <arg n="0">weakness in the sector</arg>
+        <arg f="TMP" n="M">often</arg>
+        <rel>sank</rel>
+        <arg n="1">unlisted share prices</arg>
+        <arg f="MNR" n="M">broadly</arg>
+</example>
+
+<example name="ergative with MNR as arg">
+<text>
+    He expects the market to sink further and to reach a low sometime
+    next month or in December. 
+</text>
+        <arg n="1">the market</arg>
+        <rel>sink</rel>
+        <arg f="MNR" n="2">further</arg>
+</example>
+
+<example name="ergative with EXT and end point">
+<text>
+    Abraham Lincoln Federal Savings Bank sank 4 to 13 1/2 after
+    announcing a shakeup that will change senior management and
+    reorganize the bank's mortgage business as a separate unit. 
+</text>
+        <arg n="1">Abraham Lincoln Federal Savings Bank</arg>
+        <rel>sank</rel>
+        <arg f="EXT" n="2">4</arg>
+        <arg f="to" n="4">to 13 1/2</arg>
+        <arg f="TMP" n="M">after announcing a shakeup that will change
+        senior management and reorganize the bank's mortgage business
+        as a separate unit</arg> 
+</example>
+
+<example name="start and end points">
+<text>
+    Qintex Ltd. shares sank to A$1.50 yesterday from A$3.05 Friday. 
+</text>
+        <arg n="1">Qintex Ltd. shares</arg>
+        <rel>sank</rel>
+        <arg f="to" n="4">to A$ 1.50 </arg>
+        <arg f="TMP" n="M">yesterday</arg>
+        <arg f="from" n="3">[ A$ 3.05 ] [ Friday]</arg>
+</example>
+
+<example name="agentive with instrument">
+  <text>
+    Mary sank John's battleship with a single well-aimed torpedo.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>sank</rel>
+  <arg n="1">John's battleship</arg>
+  <arg f="with" n="5">a single well-aimed torpedo</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

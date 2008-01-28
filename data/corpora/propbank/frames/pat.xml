@@ -1,0 +1,43 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="pat">
+<note>
+  Frames file for 'pat' based on sentences in brown.  Verbnet entry
+</note>
+
+<roleset id="pat.01" vncls="-" name="touch lightly, friendlily with the hand">
+<roles>
+  <role n="0"  descr="patter"/>
+  <role n="1"  descr="patted"/>
+</roles>
+
+<example name="nice doggy">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+     No one patted the dog.
+  </text>
+  <arg n="0"        >No one</arg>
+  <rel              >patted</rel>
+  <arg n="1"        >the dog</arg>
+</example>
+
+<example name="with location">
+  <inflection person="ns" tense="ns" aspect="progressive" voice="active" form="participle"/>
+  <text>
+    One day, Ching had told him (*trace* smiling, patting him on the
+    back) as they walked to the weekly conference of squad leaders,
+    ``Keep it up, your squad is one of the best, keep it up, keep up
+    the good work''.
+  </text>
+  <arg n="0"        >*trace* -> Ching</arg>
+  <rel              >patting</rel>
+  <arg n="1"        >him</arg>
+  <arg n="m" f="LOC">on the back</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,37 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="cower">
+<note>
+  Frames file for 'cower' based on sentences in wsj.  Verbnet entries
+  40.5 and 40.6.
+</note>
+
+<roleset id="cower.01" name="shrink away in fear, cringe" vncls="40.5 40.6">
+<roles>
+  <role descr="afraid entity" n="0"><vnrole vncls="40.5" vntheta="Experiencer"/><vnrole vncls="40.6" vntheta="Experiencer"/></role>
+</roles>
+
+<example name="the one example">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+     Thus, you do the public a great disservice when Mr. Greve
+     suggests, even facetiously, that the Clean Water Act prohibits
+     the preparation of a scotch and water; your tippling readers may
+     be led to believe that nothing but chance or oversight protects
+     them, as they cower in the night with their scotch and waters,
+     from the hairyknuckled knock of the Sierra Club at their doors. 
+</text>
+        <arg n="0">they</arg>
+        <rel>cower</rel>
+        <arg f="TMP" n="M">in the night</arg>
+        <arg f="MNR" n="M">with their scotch and waters</arg>
+</example>
+
+<note>
+'Cower in fear' is such a fixed phrase the the 'in fear' could almost
+be considered argument-y.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

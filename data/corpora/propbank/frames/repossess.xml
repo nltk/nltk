@@ -1,0 +1,36 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="repossess">
+<note>
+  Frames file for 'repossess' based on sentences in wsj.  Verbnet
+  entry 10.5.  Technically &quot;possess again&quot;, but actual meaning has
+  drifted from that rather dramatically.
+</note>
+
+<roleset id="repossess.01" name="take back material goods" vncls="10.5">
+<roles>
+  <role descr="new/previous owner, holder of lien" n="0"><vnrole vncls="10.5" vntheta="Agent"/></role>
+  <role descr="goods" n="1"><vnrole vncls="10.5" vntheta="Theme"/></role>
+</roles>
+
+<example name="repo man">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    After Laurel Bank tried *trace* to repossess the car, a vice
+    president asked him to intervene in an unrelated legal dispute
+    involving a trust account. 
+</text>
+        <arg n="0">*trace* -&gt;  Laurel Bank</arg>
+        <rel>repossess</rel>
+        <arg n="1">the car</arg>
+</example>
+
+<note>
+Could be a 'source' argument (&quot;The bank repossessed the car from
+John&quot;) but it sounds a little awkward and the corpus doesn't have
+enough examples.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

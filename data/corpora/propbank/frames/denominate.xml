@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="denominate">
+<note>
+  Frames file for 'denominate' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="denominate.01" name="give a name, assign a designation to" vncls="-">
+<roles>
+  <role descr="assigner of name/value, agent" n="0"/>
+  <role descr="entity named" n="1"/>
+  <role descr="attribute" n="2"/>
+</roles>
+
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+ Because the funds ' investments are denominated [*-1] in foreign currencies , their value expressed [*] in dollars goes up when those currencies rise against the dollar [*T*-2] .
+</text>
+	<rel>denominated</rel>
+	<arg n="1">[*-1] -&gt;  the funds ' investments</arg>
+	<arg f="in" n="2">foreign currencies</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

@@ -1,0 +1,90 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="dance">
+<note>
+  Frames file for 'dance' based on sentences in wsj.  Verbnet entries
+  51.5, 47.3, 26.7-1; Framenet entry Self-motion.
+</note>
+
+<roleset id="dance.01" name="dance!" vncls="51.5 26.7-1">
+<roles>
+  <role descr="dancer" n="0"><vnrole vncls="51.5" vntheta="Agent"/><vnrole vncls="26.7-1" vntheta="Agent"/></role>
+  <role descr="dance" n="1"><vnrole vncls="26.7-1" vntheta="Theme"/></role>
+  <role descr="partner" n="2"><vnrole vncls="51.5" vntheta="Theme"/></role>
+</roles>
+
+<example name="intransitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    One had best *trace* not dance on top of a coffin until the lid is
+    sealed tightly shut.'' 
+</text>
+        <arg n="0">*trace* -&gt;  One</arg>
+        <arg f="NEG" n="M">not</arg>
+        <rel>dance</rel>
+        <arg f="LOC" n="M">on top of a coffin</arg>
+        <arg f="TMP" n="M">until the lid is sealed  tightly shut</arg>
+</example>
+
+<note>
+One also hopes that this is metaphorical.
+</note>
+
+<example name="with partner">
+<inflection aspect="progressive" form="participle" person="ns" tense="past" voice="active"/>
+<text>
+    The Camden County congressman still carries himself with a
+    trademark ``I'm-coming-down-your-throat'' intensity, but at a
+    pause in Newark's Columbus Day parade recently, he was dancing
+    with his wife in the middle of the avenue in the city's old
+    Italian-American ward. 
+</text>
+        <arg f="LOC" n="M">at a pause in Newark's Columbus Day parade</arg>
+        <arg f="TMP" n="M">recently</arg>
+        <arg n="0">he</arg>
+        <rel>dancing</rel>
+        <arg f="with" n="2">his wife</arg>
+        <arg f="LOC" n="M">in the middle of the avenue</arg>
+        <arg f="LOC" n="M">in the city's old Italian-American ward</arg>
+</example>
+
+<example name="oh you New York Girls">
+  <inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+  <text>
+    John dances the polka whenever he gets the chance.
+  </text>
+  <arg n="0">John</arg>
+  <rel>dances</rel>
+  <arg n="1">the polka</arg>
+  <arg f="TMP" n="m">whenever he gets the chance</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="dance.02" name="move dancingly" vncls="47.3">
+<roles>
+  <role descr="mover" n="0"><vnrole vncls="47.3" vntheta="Theme"/></role>
+  <role descr="path" n="1"><vnrole vncls="47.3" vntheta="Location"/></role>
+</roles>
+
+<example name="now that's a storm">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    Cupboard doors were flying, the trash can in the kitchen walked a
+    few feet, the dogs came running, and I scooted them into the dog
+    run and stood in the doorway myself, watching the outside trash
+    cans dance across the concrete. 
+</text>
+        <arg n="0">the outside trash cans</arg>
+        <rel>dance</rel>
+        <arg f="across" n="1">the concrete</arg>
+</example>
+
+<note>
+Or maybe an earthquake.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

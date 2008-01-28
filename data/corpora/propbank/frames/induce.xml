@@ -1,0 +1,64 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="induce">
+<note>
+  Frames file for 'induce' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="induce.01" name="to cause" vncls="-">
+<roles>
+  <role descr="causer" n="0"/>
+  <role descr="event induced" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ The second patent describes bone morphogenetic protein-1 , a substance that [*T*-2] can induce formation of new cartilage .
+</text>
+	<arg n="0">[*T*-2] -&gt;  that -&gt;  a substance</arg>
+	<arg f="MOD" n="M">can</arg>
+	<rel>induce</rel>
+	<arg n="1">formation of new cartilage</arg>
+</example>
+</roleset>
+
+<roleset id="induce.02" name="to persuade" vncls="-">
+<roles>
+  <role descr="causal agent" n="0"/>
+  <role descr="impelled person" n="1"/>
+  <role descr="action or proposition" n="2"/>
+</roles>
+
+
+<example name="Arg2 as a PP">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ Beijing lawmakers have called for jails to be built [*-3] [*-1] to house prostitutes and for severe punishment , including the death sentence , for anyone who [*T*-2] induces or coerces women into prostitution .
+</text>
+	<arg n="0">[*T*-2] -&gt;  who -&gt;  anyone</arg>
+	<rel>induces</rel>
+	<arg n="1">women</arg>
+	<arg f="into" n="2">prostitution</arg>
+</example>
+
+
+<example name="Arg2 as a VP">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ Mr. Neff says [0] the stock market has lost some powerful driving forces , namely earnings growth and the `` LBO sweepstakes '' -- buy-out fever that [*T*-1] induced investors to bid up whole groups of stocks , such as media and airlines .
+</text>
+	<arg n="0">[*T*-1] -&gt;  that -&gt;  buy-out fever</arg>
+	<rel>induced</rel>
+	<arg n="1">investors</arg>
+	<arg n="2">to bid up whole groups of stocks , such as media and airlines</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

@@ -1,0 +1,41 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="dislike">
+<note>
+  Frames file for 'dislike' based on sentences in financial
+  subcorpus.  Verbnet entry dislike 31.2, no mention of other
+  members.  Comparison to 'like'.  
+</note>
+
+<roleset id="dislike.01" name="anti-affection" vncls="31.2">
+<roles>
+  <role descr="disliker" n="0">
+		
+  <vnrole vncls="31.2" vntheta="Experiencer"/></role>
+
+  <role descr="object of disaffection" n="1">
+		
+  <vnrole vncls="31.2" vntheta="Cause"/></role>
+
+</roles>
+
+<example name="duh.">
+<text>
+    The son of a specialist and once one himself, Mr. Phelan has
+    nonetheless been striving -- with products like the new stock
+    basket that his former colleagues dislike *trace* so much -- to
+    keep index funds and other program traders from taking their
+    business to overseas markets. 
+</text>
+        <arg n="0">his former colleagues</arg>
+        <rel>dislike</rel>
+        <arg n="1">*trace* -&gt;  that -&gt; the new stock basket</arg>
+        <arg f="MNR" n="M">so much</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

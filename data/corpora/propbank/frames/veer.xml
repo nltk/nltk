@@ -1,0 +1,52 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="veer">
+<note>
+  Frames file for 'veer' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="veer.01" name="change course" vncls="-">
+<roles>
+  <role descr="agent, thing in motion" n="0"/>
+  <role descr="description of path or change in path" n="1"/>
+</roles>
+
+<example name="untidy conjunction">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    ``This late in an expansion,'' the economy tends [*-1] to veer off
+    either into damaging inflation or into a recession, Mr. Confair
+    says. 
+</text>
+        <arg n="0">[*-1] -&gt;  the economy</arg>
+        <rel>veer</rel>
+        <arg f="ADV" n="M">off</arg>
+        <arg f="DIR" n="1">either into damaging inflation or into a
+        recession</arg> 
+</example>
+
+
+<example name="cleaner PP">
+<inflection aspect="progressive" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+    Also, Mr. Savaiko noted, stock market investors seeking greater
+    safety are veering toward buying bonds rather than precious metals
+    because ``we are tending more toward a disinflationary economy
+    that doesn't make gold and precious metals attractive.'' 
+</text>
+        <arg f="DIS" n="M">Also</arg>
+        <arg n="0">stock market investors seeking greater safety</arg>
+        <rel>veering</rel>
+        <arg f="toward" n="M">buying bonds rather than precious
+        metals</arg>
+        <arg f="CAU" n="M">because ``we are tending more toward a
+        disinflationary economy that doesn't make gold and precious
+        metals attractive</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,35 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="repudiate">
+<note>
+  Frames file for 'repudiate' based on sentences in wsj.  No access to
+  Verbnet at the moment.
+</note>
+
+<roleset id="repudiate.01" name="prove to be right" vncls="-">
+<roles>
+  <role descr="prover" n="0"/>
+  <role descr="thing that's right" n="1"/>
+</roles>
+
+<example name="I think that's right">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+    After that, the buyers may repudiate the rates paid by the former
+    thrifts. 
+</text>
+        <arg f="TMP" n="M">After that</arg>
+        <arg n="0">the buyers</arg>
+        <arg f="MOD" n="M">may</arg>
+        <rel>repudiate</rel>
+        <arg n="1">the rates paid by the former thrifts</arg>
+</example>
+
+<note>
+This isn't really a word in my vocabulary, so I'm more or less punting
+on the definition.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

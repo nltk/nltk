@@ -1,0 +1,42 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="neighbor">
+<note>
+  Frames file for 'neighbor' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="neighbor.01" vncls="-" name="be next to">
+<roles>
+  <role n="1"  descr="neighboring entity or entities"/>
+</roles>
+
+<example name="only one neighbor mentioned">
+<inflection person="ns" tense="ns" aspect="progressive" voice="active" form="participle"/>
+<text>
+     As long as the rival Soviet-backed regime of Mengistu Haile
+     Mariam held a total gridlock over neighboring Ethiopia, the
+     U.S. was forced to accept that lonely Berbera runway as a distant
+     No. 2 to the Soviets' array of airfields next door. 
+</text>
+	<rel>neighboring</rel>
+	<arg n="1">Ethiopia</arg>
+</example>
+
+<example name="two neighbors">
+  <inflection person="third" tense="present" aspect="ns" voice="active" form="full"/>
+  <text>
+     John's house neighbors the city dump.
+  </text>
+  <arg n="1"        >John's house</arg>
+  <rel              >neighbors</rel>
+  <arg n="1"        >the city dump</arg>
+</example>
+
+<note>
+The truly verbal form is very rare, but this is the second symmetric
+argument verb, after 'match'.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

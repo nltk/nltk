@@ -1,0 +1,62 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="factor">
+<note>
+  Frames file for 'factor' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="factor.01" name="include in calculation" vncls="-">
+<roles>
+  <role descr="factorer" n="0"/>
+  <role descr="thing included" n="1"/>
+  <role descr="calculation, or particle of direction" n="2"/>
+</roles>
+
+<example name="all args fully realized">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    He factors that into the market yield to get an adjusted yield of
+    about 3.6d%. 
+</text>
+        <arg n="0">He</arg>
+        <rel>factors</rel>
+        <arg n="1">that</arg>
+        <arg f="into" n="2">the market yield</arg>
+        <arg f="PNC" n="M">to get an adjusted yield of about 3.6%</arg>
+</example>
+
+<example name="quasi-phrasal: out">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    While all the numbers in the durable goods report were adjusted
+    for seasonal fluctuations, a Commerce Department analyst said that
+    the adjustment probably didn't factor out all of the wide-ranging
+    surge in defense orders. 
+</text>
+        <arg n="0">the adjustment</arg>
+        <arg f="DIS" n="M">probably</arg>
+        <arg f="NEG" n="M">n't</arg>
+        <rel>factor</rel>
+        <arg f="DIR" n="2">out</arg>
+        <arg n="1">all of the wide-ranging surge in defense orders</arg>
+</example>
+
+
+<example name="quasi-phrasal: in">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Lower feed prices may help animals eat more cheaply, but humans
+    have *trace* to factor in an expensive middleman: the processor.
+</text>
+        <arg n="0">*trace* -&gt;  humans</arg>
+        <rel>factor</rel>
+        <arg f="DIR" n="2">in</arg>
+        <arg n="1">an expensive middleman: the processor</arg>
+</example>
+
+<note>
+Keeping the particle in arg2 position allows for nicer generalizations.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

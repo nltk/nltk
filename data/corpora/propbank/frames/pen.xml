@@ -1,0 +1,68 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="pen">
+<note>
+  Frames file for 'pen' based on sentences in wsj.  Verbnet entry
+  9.10, Framenet entry Writing.
+</note>
+
+<roleset id="pen.01" name="write (with a pen)" vncls="-">
+<roles>
+  <role descr="writer" n="0"/>
+  <role descr="thing written" n="1"/>
+  <role descr="written-to" n="2"/>
+</roles>
+
+<example name="single-arg passive">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    And ``Summerfolk,'' [*-1] penned [*] in 1904 as a kind of sequel
+    to Chekhov's ``Cherry Orchard,'' is a lawn party of Russian
+    yuppies engaged in an exhausting ideological fight to the finish
+    between the allrightniks and the reformers. 
+</text>
+        <rel>penned</rel>
+        <arg n="1">[*] -&gt;  [*-1] -&gt;  Summerfolk</arg>
+        <arg f="TMP" n="M">in 1904</arg>
+        <arg n="M">as a kind of sequel to Chekhov's ``Cherry Orchard</arg>
+</example>
+
+<example name="all args">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John penned a quick note to Mary.
+  </text>
+  <arg n="0">John</arg>
+  <rel>penned</rel>
+  <arg n="1">a quick note</arg>
+  <arg f="to" n="2">Mary</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="pen.02" name="put into a pen, enclose" vncls="9.10">
+<roles>
+  <role descr="penner" n="0"><vnrole vncls="9.10" vntheta="Agent"/></role>
+  <role descr="penned" n="1"><vnrole vncls="9.10" vntheta="Theme"/></role>
+</roles>
+
+<example name="that's gonna leave a stain">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John penned 50 head of cattle in Mary's living room.
+  </text>
+  <arg n="0">John</arg>
+  <rel>penned</rel>
+  <arg n="1">50 head of cattle</arg>
+  <arg f="LOC" n="m">in Mary's living room</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

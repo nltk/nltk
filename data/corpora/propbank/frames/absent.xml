@@ -1,0 +1,42 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="absent">
+<note>
+  Frames file for 'absent' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="absent.01" vncls="-" name="cause to be absent">
+<roles>
+  <role n="0"  descr="causer, agent"/>
+  <role n="1"  descr="absent entity"/>
+  <role n="2"  descr="absent from what"/>
+</roles>
+
+<example name="actually a preposition here">
+<inflection person="ns" tense="ns" aspect="ns" voice="ns" form="ns"/>
+<text>
+    Absent other working capital, he said, the RTC would be forced to
+    delay other thrift resolutions until cash could be raised by
+    selling the bad assets. 
+</text>
+	<rel>Absent</rel>
+	<arg n="1">other working capital</arg>
+</example>
+
+<example name="all args">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+     John absented himself from yet another Propbank meeting.
+  </text>
+  <arg n="0"        >John</arg>
+  <rel              >absented</rel>
+  <arg n="1" f="REC">himself</arg>
+  <arg n="2" f="from">yet another Propbank meeting</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

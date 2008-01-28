@@ -1,0 +1,46 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="commercialize">
+<note>
+  Frames file for 'commercialize' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+
+<roleset id="commercialize.01" name="to make commercial" vncls="-">
+<roles>
+  <role descr="causer, agent" n="0"/>
+  <role descr="thing commercialized" n="1"/>
+  <role descr="instrument" n="2"/>
+</roles>
+
+
+
+<example name="transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ Many of the deals involved transactions in which scientific institutions or researchers agreed [*-2] to commercialize their work in return for an equity stake or royalties [*T*-1] .
+</text>
+	<arg n="0">[*-2] -&gt;  scientific institutions or researchers</arg>
+	<rel>commercialize</rel>
+	<arg n="1">their work</arg>
+</example>
+
+
+
+<example name="with instrument">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ Proceeds will be used [*-1] [*-2] to commercialize recently patented technology and support the company 's international expansion .
+</text>
+	<arg n="2">[*-2] -&gt;  [*-1] -&gt;  Proceeds</arg>
+	<rel>commercialize</rel>
+	<arg n="1">recently patented technology</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

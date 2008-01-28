@@ -1,0 +1,50 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="appoint">
+<note>
+Frames file for 'appoint' based on sentences in financial subcorpus
+and automatic expansion via verbnet.
+</note>
+
+<roleset id="appoint.01" name="name to a position, hire" vncls="29.1">
+<roles>
+  <role descr="appointer, employer" n="0">
+	<vnrole vncls="29.1" vntheta="Agent"/></role>
+  <role descr="appointee, employee" n="1">
+	<vnrole vncls="29.1" vntheta="Theme"/></role>
+  <role descr="job, position" n="2">
+	<vnrole vncls="29.1" vntheta="Predicate"/></role>
+</roles>
+
+<example name="passive, NP job">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    Bertin Nadeau, newly appointed chairman and interim chief
+    executive of Provigo, wouldn't say if Mr. Lortie was asked to
+    leave. 
+</text>
+        <arg n="1">Bertin Nadeau</arg>
+        <arg f="TMP" n="M">newly</arg>
+        <rel>appointed</rel>
+        <arg n="2">chairman and interim chief executive of Provigo</arg>
+<note>
+There should have been a trace; treebank forgot to put it in.
+</note>
+</example>
+
+<example name="all args, sentential job">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Soo Line said its board appointed a special committee of
+    independent directors to study the proposal. 
+</text>
+        <arg n="0">its board</arg>
+        <rel>appointed</rel>
+        <arg n="1">a special committee</arg>
+        <arg n="M">of independent directors</arg>
+        <arg n="2">to study the proposal</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

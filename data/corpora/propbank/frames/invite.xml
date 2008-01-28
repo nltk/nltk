@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="invite">
+<note>
+  Frames file for 'invite' based on sentences in financial subcorpus.
+  No access to verbnet.  No comparison.
+</note>
+
+<roleset id="invite.01" name="invite, summon">
+<roles>
+  <role descr="inviter" n="0"/>
+  <role descr="invited" n="1"/>
+  <role descr="invited-to" n="2"/>
+</roles>
+
+<example name="typical usage">
+<text>
+    He pampers them; he invites them to fabulous parties; he strokes
+    them. 
+</text>
+        <arg n="0">he</arg>
+        <rel>invites</rel>
+        <arg n="1">them</arg>
+        <arg f="to" n="2">fabulous parties</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

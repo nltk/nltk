@@ -1,0 +1,37 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="constrict">
+<note>
+  Frames file for 'constrict' based on sentences in wsj.  No Verbnet
+  entry. 
+</note>
+
+<roleset id="constrict.01" name="make narrow" vncls="-">
+<roles>
+  <role descr="causal agent" n="0"/>
+  <role descr="thing becoming narrower" n="1"/>
+  <role descr="EXT, amount narrowed by" n="2"/>
+  <role descr="start point" n="3"/>
+  <role descr="end point" n="4"/>
+</roles>
+
+<example name="the one example">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    One reason: efforts to protect the spotted owl led to restrictions
+    on logging in the Pacific Northwest, *trace* constricting supply
+    and forcing prices up. 
+</text>
+        <arg n="0">*trace* -&gt;  efforts  to protect the spotted owl</arg>
+        <rel>constricting</rel>
+        <arg n="1">supply</arg>
+</example>
+
+<note>
+I only have a hunch that the other args can appear, but wsj doesn't
+oblige and give examples.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

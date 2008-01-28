@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="parcel_out">
+<note>
+  Frames file for 'parcel'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="parcel.01" name="to divide into parts and distribute" vncls="-">
+<roles> 
+  <role descr="divider, agent" n="0"/>  
+  <role descr="entity parceled out" n="1"/>  
+  <role descr="recipient" n="2"/>  
+</roles>
+
+<example name="all arguments">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ The newspaper Leninskoye Zamya said [0] the committee decided [0] the plan [*] to parcel out economic powers previously exercised [*] by Moscow to the country 's 15 republics `` does n't reflect the radical changes in the Soviet federation . ''
+</text>
+	<arg n="0">[*]</arg>
+	<rel>[ parcel] [ out]</rel>
+	<arg n="1">economic powers previously exercised [*] by Moscow</arg>
+	<arg f="to" n="2">the country 's 15 republics</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

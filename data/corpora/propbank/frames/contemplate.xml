@@ -1,0 +1,42 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="contemplate">
+<note>
+  Frames file for 'contemplate' based on sentences in financial
+  subcorpus.  No Verbnet entry.  Comparison to think (about).
+</note>
+
+<roleset id="contemplate.01" name="think about">
+<roles>
+  <role descr="thinker" n="0"/>
+  <role descr="thought" n="1"/>
+  <role descr="attribute" n="2"/>
+</roles>
+
+<example name="transitive">
+<text>
+    And with the company's recent announcement that it is
+    contemplating a partial sale of its real estate, the values
+    suddenly look poorer. 
+</text>
+        <arg n="0">it</arg>
+        <rel>contemplating</rel>
+        <arg n="1">a partial sale of its real estate</arg>
+</example>
+
+<example name="with attribute">
+  <text>
+    John contemplated stalking Mary as a sign of his devotion.
+  </text>
+  <arg n="0">John</arg>
+  <rel>contemplated</rel>
+  <arg n="1">stalking Mary</arg>
+  <arg f="as" n="2">a sign of his devotion</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

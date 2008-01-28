@@ -1,0 +1,43 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="dethrone">
+<note>
+  Frames file for 'dethrone' based on sentences in wsj.  No Verbnet
+  entry, Framenet entry Change of leadership.
+</note>
+
+<roleset id="dethrone.01" name="get rid of a king" vncls="-">
+<roles>
+  <role descr="usurper, revolutionary force, agent" n="0"/>
+  <role descr="king" n="1"/>
+  <role descr="kingdom, role" n="2"/>
+</roles>
+
+<example name="Pittsburgh? king?">
+<inflection aspect="ns" form="participle" person="ns" tense="future" voice="passive"/>
+<text>
+    Pittsburgh figures it will be dethroned [*-1] but plans to accept
+    its ouster graciously. 
+</text>
+        <arg f="MOD" n="M">will</arg>
+        <rel>dethroned</rel>
+        <arg n="1">[*-1] -&gt;  it</arg>
+</example>
+
+<example name="all args">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     A peasants revolt dethroned John as king of Lower Slobovia.
+  </text>
+  <arg n="0">a peasant revolt</arg>
+  <rel>dethroned</rel>
+  <arg n="1">John</arg>
+  <arg f="as" n="2">king of Lower Slobovia</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

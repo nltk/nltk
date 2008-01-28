@@ -1,0 +1,198 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="knock">
+<note>
+  Frames file for 'knock' based on sentences in financial subcorpus.
+  Verbnet entries 17.1, 18.1, 18.4, 23.2, 10.5; other framed members
+  include hire, fling, kick, pass, slap, throw; batter, beat, dash,
+  kick, slap, strike; break, kick, push, roll, slip; lift, redeem,
+  seize, sneak.  Framenet entry Cause harm.  Comparison with hit and
+  others.
+</note>
+
+<note>
+I'm sure there are a zillion other senses and phrasal variants I'm
+missing.
+</note>
+
+<roleset id="knock.01" name="hit">
+<roles>
+  <role descr="agent, hitter - animate only!" n="0"/>
+  <role descr="thing hit" n="1"/>
+  <role descr="instrument, thing hit by or with" n="2"/>
+</roles>
+
+<example name="prepositional thing knocked">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John knocked on Mary's door with his head.
+  </text>
+  <arg n="0">John</arg>
+  <rel>knocked</rel>
+  <arg f="on" n="1">Mary's door</arg>
+  <arg f="with" n="2">his head</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="knock.04" name="cut off by striking">
+<roles>
+  <role descr="cutter" n="0"/>
+  <role descr="thing cut" n="1"/>
+  <role descr="medium, source" n="2"/>
+  <role descr="instrument" n="3"/>
+</roles>
+
+<example name="unstated instrument">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    The strong dollar, which reduces the value of overseas earnings
+    and revenue when they are translated into dollars, is expected
+    *trace* to knock 80 to 85 cents off IBM's per-share earnings for
+    the full year.
+</text>
+        <arg n="0">*trace* -&gt;  The strong dollar , which  reduces the
+        value of overseas earnings and revenue when they are
+        translated  into dollars  ,</arg> 
+        <rel>knock</rel>
+        <arg n="1">80 to 85 cents</arg>
+        <arg f="off" n="2">IBM's per-share earnings for the full year</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="knock_down">
+
+<roleset id="knock.02" name="knock down: hit and cause to go down">
+<roles>
+  <role descr="knocker" n="0"/>
+  <role descr="thing knocked and going down" n="1"/>
+  <role descr="EXT" n="2"/>
+  <role descr="start point" n="3"/>
+  <role descr="end point" n="4"/>
+  <role descr="instrument" n="5"/>
+</roles>
+
+<example name="just transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    London share prices closed sharply lower Friday in active trading
+    after Chancellor of the Exchequer Nigel Lawson's resignation
+    slapped the market and Wall Street's rapid initial sell-off
+    knocked it down. 
+</text>
+        <arg n="0">Wall Street's rapid initial sell-off</arg>
+        <rel>[ knocked] [ down]</rel>
+        <arg n="1">it</arg>
+</example>
+
+<example name="with numeric arguments">
+<inflection aspect="progressive" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+    Last Friday, takeover traders spilled out of Hilton, *trace*
+    knocking the stock down 21 1/2 to 85. 
+</text>
+        <arg n="0">*trace* -&gt;  takeover traders</arg>
+        <rel>[ knocking] [ down]</rel>
+        <arg n="1">the stock</arg>
+        <arg f="EXT" n="2">21 1/2</arg>
+        <arg f="to" n="4">85</arg>
+</example>
+
+<example name="with instrument">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John knocked down Mary's door with his incessant pounding.
+  </text>
+  <arg n="0">John</arg>
+  <rel>knocked down</rel>
+  <arg n="1">Mary's door</arg>
+  <arg f="with" n="5">his incessant pounding</arg>
+</example>
+
+<note>
+Maybe this last example should be a separate roleset?  Hard to say.
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="knock_out">
+
+<roleset id="knock.03" name="knock out: eliminate, destroy">
+<roles>
+  <role descr="destroyer" n="0"/>
+  <role descr="thing destroyed" n="1"/>
+  <role descr="instrument of destruction" n="2"/>
+</roles>
+
+<example name="passivized">
+<inflection aspect="perfect" form="participle" person="ns" tense="past" voice="passive"/>
+<text>
+    An increase in production at some major oil fields in the North
+    Sea, which *trace* had been knocked *trace* out by an explosion in
+    July 1988, also aided results. 
+</text>
+        <rel>[ knocked] [ out]</rel>
+        <arg n="1">*trace* -&gt; *trace* -&gt;  which -&gt;  some major oil
+        fields in the North Sea</arg> 
+        <arg f="by" n="0">an explosion</arg>
+        <arg f="TMP" n="M">in July 1988</arg>
+</example>
+</roleset>
+</predicate>
+
+<predicate lemma="knock_off">
+
+<roleset id="knock.05" vncls="-" name="knock off: eliminate, destroy">
+<roles>
+  <role n="0"  descr="The Eliminator, agent"/>
+  <role n="1"  descr="thing eliminated"/>
+</roles>
+
+<example name="knock your block off">
+  <inflection person="ns" tense="ns" aspect="ns" voice="active" form="full"/>
+  <text>
+   Can Sihanouk and Hun Sen knock off the Khmer Rouge still supported
+   by China? 
+  </text>
+  <arg n="m" f="MOD">Can</arg>
+  <arg n="0"        >Sihanouk and Hun Sen</arg>
+  <rel              >knock off</rel>
+  <arg n="1"        >the Khmer Rouge still supported by China?</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="knock.06" vncls="-" name="knock off: copy">
+<roles>
+  <role n="0"  descr="copier"/>
+  <role n="1"  descr="thing copied"/>
+</roles>
+
+<example name="cheap knock-off">
+  <inflection person="ns" tense="ns" aspect="ns" voice="ns" form="gerund"/>
+  <text>
+    Judge John E. Sprizzo issued the order in Manhattan federal court,
+    where Sony has accused the tiny company of [*] illegally knocking
+    off the ``My First Sony'' line. 
+  </text>
+  <arg n="0"        >[*] -> the tiny company</arg>
+  <arg n="m" f="MNR">illegally</arg>
+  <rel              >knocking off</rel>
+  <arg n="1"        >the ``My First Sony'' line</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

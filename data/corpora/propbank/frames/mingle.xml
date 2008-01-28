@@ -1,0 +1,59 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="mingle">
+<note>
+  Frames file for 'mingle' based on sentences in wsj.  Verbnet entries
+  36.1 and 22.1.
+</note>
+
+<roleset id="mingle.01" name="socialize, be in close proximity" vncls="36.1">
+<roles>
+  <role descr="first or all thing(s) mingling" n="0">
+        <vnrole vncls="36.1" vntheta="Actor1"/></role>
+  <role descr="additional things, if syntactically separate" n="1">
+        <vnrole vncls="36.1" vntheta="Actor2"/></role>
+</roles>
+
+<example name="automatically generated">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+ Law-enforcement authorities say that at any given time , a host of fraudulent telemarketing operations mingle with the many legitimate businesses here .
+</text>
+        <arg f="TMP" n="M">at any given time</arg>
+        <arg n="0">a host of fraudulent telemarketing operations</arg>
+        <rel>mingle</rel>
+        <arg f="with" n="1">the many legitimate businesses here</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="mingle.02" name="mix, put in close proximity" vncls="22.1">
+<roles>
+  <role descr="intentional agent" n="0">
+        <vnrole vncls="22.1" vntheta="Agent"/></role>
+  <role descr="first (or all) ingredient(s)" n="1">
+        <vnrole vncls="22.1" vntheta="Patient1"/></role>
+  <role descr="additional ingredients, when syntactically separate" n="2">
+        <vnrole vncls="22.1" vntheta="Patient2"/></role>
+</roles>
+
+<example name="mix-em-up">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John mingled his cd's with Mary's.
+  </text>
+  <arg n="0">John</arg>
+  <rel>mingled</rel>
+  <arg n="1">his cd's</arg>
+  <arg f="with" n="2">Mary's</arg>
+</example>
+
+<note>
+This is clearly just the causative of mingle.01.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

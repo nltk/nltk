@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="burgeon">
+<note>
+  Frames file for 'burgeon' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="burgeon.01" vncls="-" name="increasing">
+<roles>
+  <role n="1"  descr="thing increasing"/>
+</roles>
+
+<example name="adjectival">
+<inflection person="ns" tense="ns" aspect="progressive" voice="active" form="participle"/>
+<text>
+    Conner's performance is closely tied to the burgeoning demand for
+    battery-operated computers, the computer industry's
+    fastest-growing segment. 
+</text>
+	<rel>burgeoning</rel>
+	<arg n="1">demand</arg>
+</example>
+
+<note>
+Additional args for EXT, start/end points are possible but not likely.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

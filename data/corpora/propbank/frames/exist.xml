@@ -1,0 +1,54 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="exist">
+<note>
+  Frames file for 'exist' based on survey of initial sentences of big corpus
+</note>
+
+<roleset id="exist.01" name="be" vncls="39.6 47.1-1">
+<roles>
+  <role descr="thing existing" n="1">
+		
+  <vnrole vncls="39.6" vntheta="Agent"/><vnrole vncls="47.1-1" vntheta="Theme"/></role>
+
+  <role descr="secondary attribute" n="2"/>
+</roles>
+
+<example name="existential angst">
+  <text>
+  ...a case of political corruption that *trace* simply doesn't exist.
+  </text>
+  <arg n="1">*trace*=that=political corruption</arg>
+  <arg f="DIS" n="m">simply</arg>
+  <arg f="NEG" n="m">n't</arg>
+  <rel>exist</rel>
+</example>
+
+<example name="with secondary attribute">
+  <inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+  <text>
+    John exists as a figment of my imagination.
+  </text>
+  <arg n="1">John</arg>
+  <rel>exists</rel>
+  <arg f="as" n="2">a figment of my imagination</arg>
+</example>
+
+<example name="stupid WSJ style guide">
+  <text>
+  No mechanism *trace* exists for finding a middle ground.
+  </text>
+  <arg n="1">[No mechanism] [*trace* for finding a middle ground]</arg>
+  <rel>exists</rel>
+
+<note>
+The underlying syntax is &quot;No mechanism for finding a middle ground 
+exists&quot;; the PP has been postposed leaving the trace behind.  By 
+making a complex argument we reconstruct this process.
+</note>
+
+</example>
+
+</roleset>
+</predicate>
+</frameset>

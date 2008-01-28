@@ -1,0 +1,101 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="skim">
+<note>
+  Frames file for 'skim' based on sentences in wsj.  Verbnet entry
+  10.4.1, Framenet entries Scrutiny, Reading, Self-motion, and Removing.
+</note>
+
+<roleset id="skim.01" name="move lightly over the surface of" vncls="-">
+<roles>
+  <role descr="thing in motion" n="0"/>
+  <role descr="surface of what" n="1"/>
+</roles>
+
+<example name="intransitive">
+<inflection aspect="ns" form="full" person="ns" tense="ns" voice="active"/>
+<text>
+    Galileo will skim past Earth in 1990 and 1992, collecting energy
+    from the planet's gravitational field to gain momentum for its
+    trip to Jupiter.
+</text>
+        <arg n="0">Galileo</arg>
+        <arg f="MOD" n="M">will</arg>
+        <rel>skim</rel>
+        <arg f="DIR" n="M">past Earth</arg>
+        <arg f="TMP" n="M">in 1990 and 1992</arg>
+        <arg n="M">collecting energy from the planet's gravitational
+        field to gain momentum for its trip to Jupiter</arg> 
+</example>
+
+<example name="metaphorically as 'read'">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John skimmed 'War and Peace'.
+  </text>
+  <arg n="0">John</arg>
+  <rel>skimmed</rel>
+  <arg n="1">'War and Peace'</arg>
+</example>
+
+<note>
+I'm unsure what to do about 'John skimmed rocks on the millpond.'
+</note>
+
+</roleset>
+
+<roleset id="skim.02" name="remove from the very top" vncls="10.4.1">
+<roles>
+  <role descr="agent, remover" n="0"><vnrole vncls="10.4.1" vntheta="Agent"/></role>
+  <role descr="thing removed, skimmed" n="1"><vnrole vncls="10.4.1" vntheta="Theme"/></role>
+  <role descr="top of what, source" n="2"><vnrole vncls="10.4.1" vntheta="Source"/></role>
+</roles>
+
+<example name="more good cookin'">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John skimmed the grease from the bowl of soup Mary made for him.
+  </text>
+  <arg n="0">John</arg>
+  <rel>skimmed</rel>
+  <arg n="1">the grease</arg>
+  <arg f="from" n="2">the bowl of soup Mary made for him</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="skim_off">
+
+<roleset id="skim.03" name="remove from the very top, phrasal" vncls="10.4.1">
+<roles>
+  <role descr="agent, remover" n="0"><vnrole vncls="10.4.1" vntheta="Agent"/></role>
+  <role descr="thing removed, skimmed" n="1"><vnrole vncls="10.4.1" vntheta="Theme"/></role>
+  <role descr="top of what, source" n="2"><vnrole vncls="10.4.1" vntheta="Source"/></role>
+</roles>
+
+<example name="might not take source">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+    Among unanswered questions are whether Mr. Papandreou received $23
+    million of stolen Bank of Crete funds and an additional $734,000
+    in bribes, as contended; whether the prime minister ordered state
+    agencies [*-5] to deposit some $57 million in Mr. Koskotas's bank
+    and then skim off the interest; and, what PASOK's cut was from the
+    $210 million Mr. Koskotas pinched. 
+</text>
+        <arg n="0">[*-5] -&gt;  state agencies</arg>
+        <arg f="TMP" n="M">then</arg>
+        <rel>[ skim] [ off]</rel>
+        <arg n="1">the interest</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,42 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="abound">
+<note>
+  Frames file for 'abound' based on sentences in financial subcorpus.
+  No access to verbnet.  No comparison.
+</note>
+
+<roleset id="abound.01" name="be plentiful" vncls="47.5.1-2">
+<roles>
+  <role descr="thing which is plentiful" n="1">
+		
+  <vnrole vncls="47.5.1-2" vntheta="Theme"/></role>
+
+  <role descr="thing which has arg1 in great supply" n="2"><vnrole vncls="47.5.1-2" vntheta="Location"/></role>
+</roles>
+
+<example name="just arg1">
+<text>
+    That means that on days when prices are tumbling and sellers
+    abound they must be willing to buy shares from sellers when no one
+    else will. 
+</text>
+	<arg n="1">sellers</arg>
+	<rel>abound</rel>
+</example>
+
+<example name="with arg2">
+  <text>
+    John's room abounds with moldy pizza crusts.
+  </text>
+  <arg n="2">John's room</arg>
+  <rel>abounds</rel>
+  <arg f="with" n="1">moldy pizza crusts</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

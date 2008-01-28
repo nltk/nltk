@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="incite">
+<note>
+  Frames file for 'incite' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="incite.01" name="to provoke" vncls="-">
+<roles>
+  <role descr="causer of action, agent" n="0"/>
+  <role descr="action incited " n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+ Azem Vlasi and 14 others are accused [*-1] of [*-2] inciting riots and strikes and opposing constitutional limits to Kosovo 's autonomy .
+</text>
+	<arg n="0">[*-2] -&gt;  [*-1] -&gt;  Azem Vlasi and 14 others</arg>
+	<rel>inciting</rel>
+	<arg n="1">riots and strikes</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="contemporize">
+<note>
+  Frames file for 'contemporize' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="contemporize.01" name="make contemporary, modernize" vncls="-">
+<roles>
+  <role descr="agent" n="0"/>
+  <role descr="thing stuck in the past" n="1"/>
+</roles>
+
+<example name="the one example">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+     ``The ad campaign is meant [*-1] to contemporize the thought of
+     National Geographic,'' she says. 
+</text>
+        <arg n="0">[*-1] -&gt;  The ad campaign</arg>
+        <rel>contemporize</rel>
+        <arg n="1">the thought of National Geographic</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

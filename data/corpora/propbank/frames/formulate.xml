@@ -1,0 +1,35 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="formulate">
+<note>
+  Frames file for 'formulate' based on sentences in financial
+  subcorpus.  No Verbnet entry.  Comparison with 'create'.
+</note>
+
+<roleset id="formulate.01" name="create">
+<roles>
+  <role descr="creator" n="0"/>
+  <role descr="thing created" n="1"/>
+  <role descr="source" n="2"/>
+  <role descr="benefactive" n="3"/>
+  <role descr="attribute, secondary predication" n="4"/>
+</roles>
+
+<example name="just transitive">
+<text>
+    He spent most of his career *trace* formulating marketing
+    strategies, but became best-known for chipping away at ad agency
+    compensation. 
+</text>
+        <arg n="0">*trace* -&gt;  He</arg>
+        <rel>formulating</rel>
+        <arg n="1">marketing strategies</arg>
+</example>
+
+<note>
+Higher-numbered args might or might not occur.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

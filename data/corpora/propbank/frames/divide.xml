@@ -1,0 +1,115 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="divide">
+<note>
+  Frames file for 'divide' based on sentences in financial subcorpus.
+  Verbnet class separate-23.1, no other framed members.  Comparison
+  with 'math' sense of 'add'.
+</note>
+
+<roleset id="divide.01" name="mathematics" vncls="-">
+<roles>
+  <role descr="entity performing calculation" n="0"/>
+  <role descr="first operand" n="1"/>
+  <role descr="second operand, divided-by" n="2"/>
+</roles>
+
+<example name="made up">
+  <text>
+    John divided 16 by 4 and arrived at an answer of 3.
+  </text>
+  <arg n="0">John</arg>
+  <rel>divided</rel>
+  <arg n="1">16</arg>
+  <arg f="by" n="2">4</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="divide.02" name="separate" vncls="23.1 45.4">
+<roles>
+  <role descr="entity causing separation" n="0">
+		
+		
+  <vnrole vncls="23.1" vntheta="Agent"/><vnrole vncls="45.4" vntheta="Agent"/></role>
+
+  <role descr="thing being divided" n="1">
+		
+		
+  <vnrole vncls="23.1" vntheta="Patient1"/><vnrole vncls="45.4" vntheta="Patient"/></role>
+
+  <role descr="divided among/between, if separate from arg1" n="2">
+		
+  <vnrole vncls="23.1" vntheta="Patient2"/></role>
+
+</roles>
+
+<example name="all args">
+<text>
+    As part of its reorganization this week, Western Digital has
+    divided its business into two segments -- storage products,
+    including controllers and disk drives; and microcomputer products,
+    which include graphics, communications and peripheral control
+    chips. 
+</text>
+        <arg n="M">As part of its reorganization this week</arg>
+        <arg n="0">Western Digital</arg>
+        <rel>divided</rel>
+        <arg n="1">its business</arg>
+        <arg f="into" n="2">two segments -- storage products,
+        including controllers and disk drives; and microcomputer
+        products, which include graphics, communications and
+        peripheral control chips</arg> 
+</example>
+
+<example name="passivized">
+<text>
+    The group is divided primarily between software, semiconductors
+    and computers. 
+</text>
+        <rel>divided</rel>
+        <arg n="1">*trace* -&gt;  The group</arg>
+        <arg n="M">primarily</arg>
+        <arg f="between" n="2">software, semiconductors and computers</arg>
+</example>
+
+<example name="active, no arg2">
+<text>
+    Herbert M. Baum, the 53-year-old president of the company's
+    Campbell U.S.A. unit, and Edwin L. Harper, 47, the chief financial
+    officer, will run Campbell as a team, dividing responsibilities
+    rather evenly until a successor is named. 
+</text>
+        <arg n="0">*trace* -&gt; Herbert M. Baum, the 53-year-old
+        president of the company's Campbell U.S.A. unit, and Edwin
+        L. Harper, 47, the chief financial officer,</arg> 
+        <rel>dividing</rel>
+        <arg n="1">responsibilities</arg>
+        <arg f="MNR" n="M">rather evenly</arg>
+        <arg f="TMP" n="M">until a successor is named </arg>
+</example>
+
+<example name="semi-adjectival, with purpose">
+<text>
+    Analysts are divided *trace* over whether Du Pont will report much
+    of a gain in the latest quarter from its Conoco Inc. oil company. 
+</text>
+        <rel>divided</rel>
+        <arg n="1">*trace* -&gt;  Analysts</arg>
+        <arg f="CAU" n="M">over whether Du Pont will report much of a
+        gain in the latest quarter from its Conoco Inc. oil
+        company</arg> 
+</example>
+
+<note>
+The passivized verbal and adjectival usages can be very very hard to
+distinguish, and Treebank is inconsistent in its treatment.  Tag all
+examples for that reason.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

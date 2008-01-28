@@ -1,0 +1,34 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="labor">
+<note>
+  Frames file for 'labor' based on sentences in financial subcorpus.
+  No Verbnet entry.  No comparison.
+</note>
+
+<roleset id="labor.01" name="suffer and work">
+<roles>
+  <role descr="theme, 'laborer' sorta but not really" n="0"/>
+  <role descr="onus" n="1"/>
+</roles>
+
+<example name="they're all like this??">
+<text>
+    Meanwhile, bond investors are laboring under the onus of a
+    national debt ceiling debate. 
+</text>
+        <arg f="TMP" n="M">Meanwhile</arg>
+        <arg n="0">bond investors</arg>
+        <rel>laboring</rel>
+        <arg f="under" n="1">the onus of a national debt ceiling
+        debate</arg> 
+</example>
+
+<note>
+I will be curious to see if this verb occurs in any other contexts
+(ie, other than &quot;labor under&quot;).
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,45 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="confront">
+<note>
+  Frames file for 'confront' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="confront.01" name="to engage in confrontation" vncls="-">
+<roles>
+  <role descr="confrontational entity, agent" n="0"/>
+  <role descr="entity confronted" n="1"/>
+  <role descr="confronted with" n="2"/>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ They confront stubborn inflation and a sagging economy , that is [*] to say , stagflation .
+</text>
+	<arg n="0">They</arg>
+	<rel>confront</rel>
+	<arg n="1">stubborn inflation and a sagging economy , that is [*] to say , stagflation</arg>
+</example>
+
+
+
+<example name="with Arg2">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+ [*-2] Confronted [*-1] with the evidence , Mr. Tharp pleaded guilty to one charge of [*-2] filing a false return and was fined [*-2] $ 5,000 [*U*] and sentenced [*-2] to 18 months in prison .
+</text>
+	<rel>Confronted</rel>
+	<arg n="1">Mr. Tharp -&gt;  [*-1] -&gt;  [*-2]</arg>
+	<arg f="with" n="2">the evidence</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

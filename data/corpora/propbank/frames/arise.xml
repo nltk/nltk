@@ -1,0 +1,80 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="arise">
+<note>
+  Frames file for 'arise' based on sentences in financial subcorpus.
+  Verbnet class 48.1.1, other framed members include emerge, exude,
+  materialize.  Comparison to 'come about'.
+</note>
+
+<roleset id="arise.01" name="come into existence (from)" vncls="48.1.1">
+<roles>
+  <role descr="thing (state) arising" n="1">
+		
+  <vnrole vncls="48.1.1" vntheta="Theme"/></role>
+
+  <role descr="source (from or in or of)" n="2">
+		
+  <vnrole vncls="48.1.1" vntheta="Location"/></role>
+
+</roles>
+
+<example name="unaccusative">
+<text>
+    Mr. Guber and Mr. Peters claim they have an oral agreement with
+    Warner executives that allows them to terminate their contract
+    should the opportunity to run a major studio arise. 
+</text>
+        <arg f="MOD" n="M">should</arg>
+        <arg n="1">the opportunity  to run a major studio</arg>
+        <rel>arise</rel>
+</example>
+
+<example name="odd kind of source">
+<text>
+    The current opportunities arise because the process for executing
+    a buy or sell order in the actual stocks that make up the S&amp;P
+    500 is more cumbersome than transacting in the futures market. 
+</text>
+        <arg n="1">The current opportunities</arg>
+        <rel>arise</rel>
+        <arg n="2">because the process for executing a buy or
+        sell order in the actual stocks that make up the S&amp;P 500
+        is more cumbersome than transacting in the futures
+        market</arg> 
+</example>
+
+<example name="split construction">
+<text>
+    Speculation has also arisen that the UAL executive most closely
+    identified  with the failure to gain bank financing, chief
+    financial officer John Pope, may come under pressure to resign. 
+</text>
+        <arg n="1">[ Speculation ] [ that the UAL executive most
+        closely identified with the failure to gain bank financing,
+        chief financial officer John Pope, may come under pressure  to
+        resign]</arg> 
+        <arg f="DIS" n="M">also</arg>
+        <rel>arisen</rel>
+</example>
+
+<note>
+Note that in this case you MUST include the complementizer; the
+sentence is ungrammatical without it.
+</note>
+
+<example name="more normal source">
+  <text>
+    John's loneliness arises from his poor personal hygiene.
+  </text>
+  <arg n="1">John's loneliness</arg>
+  <rel>arises</rel>
+  <arg f="from" n="2">his poor personal hygiene</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

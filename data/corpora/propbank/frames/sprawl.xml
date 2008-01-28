@@ -1,0 +1,45 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="sprawl">
+<note>
+  Frames file for 'sprawl' based on sentences in wsj.  Verbnet entry
+  47.6 and 50, Framenet entry Posture.
+</note>
+
+<roleset id="sprawl.01" name="extend horizontally and ungracefully" vncls="47.6 50">
+<roles>
+  <role descr="causer" n="0"><vnrole vncls="47.6" vntheta="Agent"/></role>
+  <role descr="thing in sprawling mode" n="1"><vnrole vncls="47.6" vntheta="Theme"/><vnrole vncls="50" vntheta="Agent"/></role>
+  <role descr="location" n="2"><vnrole vncls="47.6" vntheta="Location"/><vnrole vncls="50" vntheta="Location"/></role>
+</roles>
+
+<example name="odd agentive example">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    Like Peter Sellars, Ms. Bogart manipulates her actors as if they
+    were rag dolls, [*-1] sprawling them on staircases, dangling them
+    off tables, even hanging them from precipices while having them
+    perform some gymnastic feats of derring-do. 
+</text>
+        <arg n="0">[*-1] -&gt;  Ms. Bogart</arg>
+        <rel>sprawling</rel>
+        <arg n="1">them</arg>
+        <arg f="on" n="2">staircases</arg>
+</example>
+
+<example name="more typically ergative">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John sprawled on the couch.
+  </text>
+  <arg n="1">John</arg>
+  <rel>sprawled</rel>
+  <arg f="on" n="2">the couch</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

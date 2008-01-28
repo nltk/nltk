@@ -1,0 +1,62 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="appreciate">
+<note>
+  Frames file for 'appreciate' based on sentences in financial
+  subcorpus.  Verbnet entry calibratable_cos-45.6, decrease, skyrocket
+  and tumble.  One of two senses.
+</note>
+
+<roleset id="appreciate.01" name="increase in value" vncls="45.6">
+<roles>
+  <role descr="thing increasing" n="1">
+		
+  <vnrole vncls="45.6" vntheta="Patient"/></role>
+
+  <role descr="EXT" n="2">
+		
+  <vnrole vncls="45.6" vntheta="Extent"/></role>
+
+  <role descr="start point" n="3"/>
+  <role descr="end point" n="4"/>
+</roles>
+
+<example name="with EXT">
+<text>
+    The brokerage firm tracks technology stocks with its Technology
+    Index, which *trace* appreciated only 10.59% in the first nine
+    months of this year. 
+</text>
+        <arg n="1">*trace* -&gt;  which -&gt;  its Technology Index</arg>
+        <rel>appreciated</rel>
+        <arg f="EXT" n="2">only 10.59%</arg>
+        <arg f="TMP" n="M">in the first nine months of this year</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="appreciate.02" name="esteem, value, have a fondness for" vncls="31.2">
+<roles>
+  <role descr="emoter" n="0"><vnrole vncls="31.2" vntheta="Experiencer"/></role>
+  <role descr="thing appreciated" n="1"><vnrole vncls="31.2" vntheta="Cause"/></role>
+</roles>
+
+<example name="negated">
+  <text>
+    Mary does not appreciate John's infantile behavior.
+  </text>
+  <arg n="0">Mary</arg>
+  <arg f="NEG" n="m">not</arg>
+  <rel>appreciate</rel>
+  <arg n="1">John's infantile behavior</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

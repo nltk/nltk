@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="salve">
+<note>
+  Frames file for 'salve' based on sentences in wsj.  No access to
+  verbnet at the moment.
+</note>
+
+<roleset id="salve.01" name="sooth" vncls="-">
+<roles>
+  <role descr="salve, thing that makes the pain go away" n="0"/>
+  <role descr="hurt, injury" n="1"/>
+</roles>
+
+<example name="the one example">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+     On Saturday night, quite a few of the boys in green and gold
+     salted away successes [*-1] to salve the pain of past and, no
+     doubt, future droughts. 
+</text>
+        <arg n="0">[*-1] -&gt;  quite a few of the boys in green and gold</arg>
+        <rel>salve</rel>
+        <arg n="1">the pain of past and, no doubt, future droughts</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

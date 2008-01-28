@@ -1,0 +1,49 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="demonstrate">
+<note>
+  Frames file for 'demonstrate' based on sentences in financial
+  subcorpus.  Verbnet entry 37.1, no other framed members.  Framenet
+  class Evidence.  Comparison with 'show'.
+</note>
+
+<roleset id="demonstrate.01" name="show (off)">
+<roles>
+  <role descr="demonstrator" n="0"/>
+  <role descr="thing demonstrated" n="1"/>
+  <role descr="watcher" n="2"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="future" voice="active"/>
+<text>
+    The bank added that it believes  the review will ``demonstrate
+    that First Union is in compliance with the requirements of the
+    Community Reinvestment Act.'' 
+</text>
+        <arg n="0">the review</arg>
+        <arg f="MOD" n="M">will</arg>
+        <rel>demonstrate</rel>
+        <arg n="1">First Union is in compliance with the requirements
+        of the Community Reinvestment Act</arg> 
+</example>
+
+<example name="nonviolent political action">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John demonstrated in front of City Hall.
+  </text>
+  <arg n="0">John</arg>
+  <rel>demonstrated</rel>
+  <arg f="LOC" n="m">in front of City Hall</arg>
+</example>
+
+<note>
+This is almost a separate roleset, except that Arg1 defaults to &quot;one's
+displeasure with the political/social status quo&quot; and could be
+stated.  Arg2 also defaults to &quot;passers by&quot; or &quot;the media&quot; or something.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

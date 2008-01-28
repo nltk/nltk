@@ -1,0 +1,56 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="mess">
+<note>
+  Frames file for 'mess' based on sentences in wsj.  No Verbnet entry,
+  Framenet entry Bungling (mess up).
+</note>
+
+<roleset id="mess.01" name="mess with" vncls="-">
+<roles>
+  <role descr="messer" n="0"/>
+  <role descr="messed with" n="1"/>
+</roles>
+
+<example name="don't mess with Texas">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+    Should they, too, stop [*-1] ``messing with'' his free market?
+</text>
+        <arg n="0">[*-1] -&gt;  they</arg>
+        <rel>messing</rel>
+        <arg f="with" n="1">his free market</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="mess_up">
+
+<roleset id="mess.02" name="make a mess of" vncls="-">
+<roles>
+  <role descr="causer/agent" n="0"/>
+  <role descr="thing messed up" n="1"/>
+</roles>
+
+<example name="now that's clever">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    He said the Chaos Computer Club, of West Germany, once managed to
+    invade SPAN and do such things as change the value of
+    pi, [*] messing up some calculations. 
+</text>
+        <arg n="0">[*]</arg> 
+        <rel>[ messing] [ up]</rel>
+        <arg n="1">some calculations</arg>
+<note>
+causer is properly the act of changing the value of pi.
+</note>
+
+</example>
+
+</roleset>
+</predicate>
+</frameset>

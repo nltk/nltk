@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="stomach">
+<note>
+  Frames file for 'stomach' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="stomach.01" name="eat with difficulty" vncls="-">
+<roles>
+  <role descr="eater" n="0"/>
+  <role descr="eaten" n="1"/>
+</roles>
+
+<example name="pass (on) the ketchup, please">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    He simply can't stomach the taste of Heinz, she says.
+</text>
+        <arg n="0">He</arg>
+        <arg f="DIS" n="M">simply</arg>
+        <arg f="MOD" n="M">ca</arg>
+        <arg f="NEG" n="M">n't</arg>
+        <rel>stomach</rel>
+        <arg n="1">the taste of Heinz</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

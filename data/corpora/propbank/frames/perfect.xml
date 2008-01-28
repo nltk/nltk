@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="perfect">
+<note>
+  Frames file for 'perfect'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="perfect.01" name="to bring to perfection" vncls="-">
+<roles> 
+  <role descr="cause of perfection, agent" n="0"/>
+  <role descr="entity perfected" n="1"/>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="perfect" form="participle" person="third" tense="present" voice="active"/>
+<text>
+ The glib emotional style [0] Mr. Goldberg has perfected [*T*-1] on television 's `` Family Ties '' does n't benefit from magnification .
+</text>
+	<arg n="0">Mr. Goldberg</arg>
+	<rel>perfected</rel>
+	<arg n="1">[*T*-1] -&gt;  [0] -&gt;  The glib emotional style</arg>
+	<arg f="LOC" n="M">on television 's `` Family Ties ''</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

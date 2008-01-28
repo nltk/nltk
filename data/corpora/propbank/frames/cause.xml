@@ -1,0 +1,44 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="cause">
+<note>
+  Frames file for 'cause' based on survey of initial sentences of big
+  corpus and comparison with 'make' and 'force'
+</note>
+
+<roleset id="cause.01" name="impelled action" vncls="27">
+<roles>
+  <role descr="forcer, causer" n="0">
+	  <vnrole vncls="27" vntheta="Theme1"/></role>
+  <role descr="impelled action" n="1">
+	  <vnrole vncls="27" vntheta="Theme2"/></role>
+</roles>
+
+<example name="NP impelled action">
+  <text>
+  Even brief exposures to crocidolite causes symptoms that show up
+  decades later.
+  </text>
+  <arg n="0">Even brief exposures to crocidolite</arg>
+  <rel>causes</rel>
+  <arg n="1">symptoms that show up decades later.</arg>
+</example>
+
+<example name="SBAR impelled action">
+  <text>
+  The filing on the details of the spinoff caused Cray Research stock
+  to jump $2.875 yesterday.
+  </text>
+  <arg n="0">The filing on the details of the spinoff</arg>
+  <rel>caused</rel>
+  <arg n="1">Cray Research stock to jump $2.875 yesterday.</arg>
+</example>
+
+<note>
+This differs from the impelled-action of &quot;force&quot; because the impelled
+agent cannot be &quot;peeled out&quot; and fronted through passivization.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

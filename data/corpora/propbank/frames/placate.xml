@@ -1,0 +1,47 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="placate">
+<note>
+  Frames file for 'placate' based on sentences in financial subcorpus.
+  Verbnet entry 31.1, other framed members include comfort, convince,
+  depress, encourage, entice, exhaust, interest, reassure, repel,
+  scare, shock, spook, threaten, and worry, probably among others.
+  Framenet entry Experiencer_obj.  Comparison with comfort.
+</note>
+
+<roleset id="placate.01" name="cause to be happy">
+<roles>
+  <role descr="causer" n="0"/>
+  <role descr="patient, made happy" n="1"/>
+  <role descr="instrument or manner" n="2"/>
+</roles>
+
+<example name="just transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    The debt, estimated at $4.7 billion, could mortgage the cellular
+        company's future earning power in order *trace* to placate
+        some LIN holders in the short term.</text> 
+        <arg n="0">*trace* -&gt;  The debt , estimated  at $ 4.7 billion  ,</arg>
+        <rel>placate</rel>
+        <arg n="1">some LIN holders</arg>
+        <arg f="TMP" n="M">in the short term</arg>
+</example>
+
+<example name="with instrument">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    Mary placated John's hurt feelings with a plate of freshly-baked brownies.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>placated</rel>
+  <arg n="1">John's hurt feelings</arg>
+  <arg f="with" n="2">a plate of freshly-baked brownies</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

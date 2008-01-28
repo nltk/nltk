@@ -1,0 +1,47 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="tutor">
+<note>
+  Frames file for 'tutor' based on sentences in wsj.  No access to
+  Verbnet at the moment.
+</note>
+
+<roleset id="tutor.01" name="teach closely" vncls="29.8">
+<roles>
+  <role descr="tutor" n="0"><vnrole vncls="29.8" vntheta="Agent"/></role>
+  <role descr="student" n="1"><vnrole vncls="29.8" vntheta="Theme"/></role>
+  <role descr="subject" n="2"/>
+</roles>
+
+<example name="just transitive">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    The DLC plan envisaged ``volunteers'' planting trees, emptying
+    bedpans, tutoring children, and assisting librarians for $100 a
+    week, tax free, plus medical care. 
+</text>
+        <arg n="0">`` volunteers ''</arg>
+        <rel>tutoring</rel>
+        <arg n="1">children</arg>
+        <arg n="M">[*RNR*-1] -&gt; for $100 a week, tax free, plus
+        medical care</arg> 
+</example>
+
+<example name="with subject">
+  <inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+  <text>
+     John tried *trace* to tutor Mary in the fine art of anger
+     management, but she kept hitting him.
+  </text>
+  <arg n="0">*trace* -&gt; John</arg>
+  <rel>tutor</rel>
+  <arg n="1">Mary</arg>
+  <arg f="in" n="2">the fine art of anger management</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

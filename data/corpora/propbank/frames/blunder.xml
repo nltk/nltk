@@ -1,0 +1,50 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="blunder">
+<note>
+  Frames file for 'blunder' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="blunder.01" name="to move clumsily" vncls="-">
+<roles>
+  <role descr="clumsy mover, agent" n="0"/>
+  <role descr="direction" n="1"/>
+</roles>
+
+<example name="with PP">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ Just when American liberalism had pulled the arms plug on the Contras and their friend Ronald Reagan [*T*-3] , along comes [*T*-2] Mr. Ortega in Costa Rica this weekend [*-5] to `` blunder '' into the hands of what [*T*-1] are often called [*-4] conservatives .
+</text>
+	<arg n="0">[*-5] -&gt;  Mr. Ortega</arg>
+	<rel>blunder</rel>
+	<arg f="into" n="1">the hands of what [*T*-1] are often called [*-4] conservatives</arg>
+</example>
+</roleset>
+
+
+<roleset id="blunder.02" name="to make a mistake" vncls="-">
+<roles>
+  <role descr="maker of mistake" n="0"/>
+  <role descr="mistake" n="1"/>
+</roles>
+
+
+<example name="both arguments">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ Some financial sources said privately that Paribas blundered in [*] failing [*-1] to move sooner for the insurance and industrial group , [*] bidding only after speculation had pushed up the price .
+</text>
+	<arg n="0">Paribas</arg>
+	<rel>blundered</rel>
+	<arg f="in" n="1">[*] failing [*-1] to move sooner for the insurance and industrial group</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

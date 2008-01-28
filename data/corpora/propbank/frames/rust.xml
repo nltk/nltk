@@ -1,0 +1,39 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="rust">
+<note>
+  Frames file for 'rust' based on sentences in wsj.  Verbnet entry 45.5, 47.2.
+</note>
+
+<roleset id="rust.01" vncls="45.5 47.2" name="become rusty">
+<roles>
+  <role n="1"  descr="rusty thing"/>
+</roles>
+
+<example name="adjectival">
+<inflection person="ns" tense="ns" aspect="ns" voice="passive" form="participle"/>
+<text>
+     Pictures of rusted oil drums swim into focus, and the female
+     voice purrs, ``That hazardous waste on his [Mr. Courter's]
+     property -- the neighbors are suing for consumer fraud.'' 
+</text>
+	<rel>rusted</rel>
+	<arg n="1">[ oil] [ drums]</arg>
+</example>
+
+<example name="verbal">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+     John's mind, once like a steel trap, rusted from lack of use.
+  </text>
+  <arg n="1"        >John's mind, once like a steel trap</arg>
+  <rel              >rusted</rel>
+  <arg n="m" f="CAU">from lack of use</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

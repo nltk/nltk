@@ -1,0 +1,60 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="bewilder">
+<note>
+  Frames file for 'bewilder' based on sentences in wsj.  No access to
+  verbnet at the moment.
+</note>
+
+<roleset id="bewilder.01" name="confuse" vncls="31.4 22.2">
+<roles>
+  <role descr="causer, agent" n="0">
+        <vnrole vncls="31.4" vntheta="Cause"/>
+        <vnrole vncls="22.2" vntheta="Agent"/></role>
+  <role descr="entity experiencing confusion" n="1">
+        <vnrole vncls="31.4" vntheta="Experiencer"/>
+        <vnrole vncls="22.2" vntheta="Patient1"/></role>
+  <role descr="confused about or over what?" n="2">
+        <vnrole vncls="22.2" vntheta="Patient2"/>
+        <vnrole vncls="31.4" vntheta="Theme"/></role>
+</roles>
+
+<example name="adjectival and patient">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Those who bought that illusion are now bewildered.
+</text>
+        <arg n="1">Those who [*T*-1] bought that illusion</arg>
+        <arg f="TMP" n="M">now</arg>
+        <rel>bewildered</rel>
+</example>
+
+
+<example name="agentive adjectival">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="ns"/>
+<text>
+    The dollar's near-term path remains foggy, according to currencny
+    analysts, who characterize the market as ``bewildering.'' 
+</text>
+        <arg n="0">the market</arg>
+        <rel>bewildering</rel>
+</example>
+
+<example name="verbal!">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John bewildered Mary with his bizarre antics -- exactly what he
+     intended. 
+  </text>
+  <arg n="0">John</arg>
+  <rel>bewildered</rel>
+  <arg n="1">Mary</arg>
+  <arg f="with" n="2">his bizarre antics</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

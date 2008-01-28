@@ -1,0 +1,46 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<note>
+Frames file for 'post' based on survey of initial sentences of big corpus
+and comparison with 'report'
+</note>
+
+<predicate lemma="post">
+<roleset id="post.01" name="cf report" vncls="11.1">
+<roles>
+  <role descr="poster" n="0">
+		
+  <vnrole vncls="11.1" vntheta="Agent"/></role>
+
+  <role descr="posted" n="1">
+		
+  <vnrole vncls="11.1" vntheta="Theme"/></role>
+
+  <role descr="posted-to" n="2">
+		
+  <vnrole vncls="11.1" vntheta="Destination"/></role>
+
+</roles>
+
+<example name="Arg0 rel Arg1">
+  <text>
+    Cray posted a profit of $5.9 million.
+  </text>
+  <arg n="0">Cray</arg>
+  <rel>posted</rel>
+  <arg n="1">a profit of $5.9 million</arg>
+</example>
+
+<example name="Arg0 rel ArgM-TMP Arg2-to">
+  <text>
+    John posts frequently to the newsgroups.
+  </text>
+  <arg n="0">John</arg>
+  <rel>posts</rel>
+  <arg f="TMP" n="M">frequently</arg>
+  <arg f="to" n="2">to the newsgroups</arg>
+</example>
+
+</roleset>
+</predicate> 
+</frameset>

@@ -1,0 +1,85 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="tick">
+<note>
+  Frames file for 'tick' based on sentences in wsj.  Verbnet entry 43.2.
+</note>
+
+<roleset id="tick.01" name="make sounds like a clock" vncls="43.2">
+<roles>
+  <role descr="ticker" n="0"><vnrole vncls="43.2" vntheta="Agent"/></role>
+</roles>
+
+<example name="metaphorical">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    Some litigators scoff at the notion that a sociologist knows more
+    than they do about what makes a jury tick. 
+</text>
+        <arg n="0">a jury</arg>
+        <rel>tick</rel>
+</example>
+</roleset>
+</predicate>
+
+<predicate lemma="tick_off">
+
+<roleset id="tick.02" name="make angry" vncls="-">
+<roles>
+  <role descr="cause of anger" n="0"/>
+  <role descr="angry entity" n="1"/>
+</roles>
+
+<example name="sentential arg0">
+<inflection aspect="ns" form="participle" person="third" tense="past" voice="passive"/>
+<text>
+    Mr. Agnos complained that he was ``ticked [*-1] off'' that Vice
+    President Dan Quayle, who toured the earthquake site Wednesday,
+    didn't schedule a private meeting with him. 
+</text>
+        <rel>[ ticked] [ off]</rel>
+        <arg n="1">[*-1] -&gt;  he</arg>
+        <arg n="0">that Vice President Dan Quayle, who toured the
+        earthquake site Wednesday, didn't schedule a private meeting
+        with him</arg> 
+</example>
+
+<example name="more clear">
+  <inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+  <text>
+    John ticks Mary off every time he puts his feet on the dining room table.
+  </text>
+  <arg n="0">John</arg>
+  <rel>ticks off</rel>
+  <arg n="1">Mary</arg>
+  <arg f="TMP" n="m">every time he puts his feet on the dining room table</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="tick.03" name="enumerate" vncls="-">
+<roles>
+  <role descr="counter, agent" n="0"/>
+  <role descr="thing(s) counted" n="1"/>
+</roles>
+
+<example name="one two three...">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+     He ticks off several major differences between now and two years
+     ago. 
+</text>
+        <arg n="0">He</arg>
+        <rel>[ ticks] [ off]</rel>
+        <arg n="1">several major differences between now and two years
+        ago</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

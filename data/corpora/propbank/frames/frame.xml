@@ -1,0 +1,141 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="frame">
+<note>
+Frames file for 'frame' based on sentences in financial subcorpus and
+automatic expansion via verbnet.
+</note>
+
+<roleset id="frame.01" name="put a frame (on a picture)" vncls="9.8 9.9">
+<roles>
+  <role descr="decorator" n="0">
+	<vnrole vncls="9.9" vntheta="Agent"/>
+        <vnrole vncls="9.8" vntheta="Agent"/></role>
+   <role descr="thing decorated" n="1">
+	<vnrole vncls="9.9" vntheta="Destination"/>
+        <vnrole vncls="9.8" vntheta="Destination"/></role>
+   <role descr="decorations" n="2">
+	<vnrole vncls="9.9" vntheta="Theme"/>
+        <vnrole vncls="9.8" vntheta="Theme"/></role>
+ </roles>
+
+<example name="all args" src="trim.03">
+  <text>
+     John framed the priceless van Gogh painting with raw 2x4s.
+  </text>
+  <arg n="0">John</arg>
+  <rel>framed</rel>
+  <arg n="1">the priceless van Gogh</arg>
+  <arg f="with" n="2">raw 2x4s</arg>
+</example>
+</roleset>
+
+<roleset id="frame.03" name="encircle" vncls="47.8">
+<roles>
+  <role descr="thing being around" n="0">
+	<vnrole vncls="47.8" vntheta="Theme1"/></role>
+   <role descr="thing surrounded" n="1">
+	<vnrole vncls="47.8" vntheta="Theme2"/></role>
+ </roles>
+
+<example name="transitive" src="surround.01">
+<text>
+    The fact that a vast majority of fundamentalist money managers
+    fail to beat the S&amp;P 500 may contribute to the hysteria
+    framing the issue. 
+</text>
+        <arg n="0">the hysteria</arg>
+        <rel>framing</rel>
+        <arg n="1">the issue</arg>
+</example>
+</roleset>
+
+<roleset id="frame.02" name="falsely accuse of a crime" vncls="-">
+<roles>
+  <role descr="accuser" n="0"/>
+  <role descr="criminal" n="1"/>
+  <role descr="crime" n="2"/>
+</roles>
+
+<example name="no crime mentioned">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    His attorneys claim he was framed *trace* by the FBI and New York
+    police as part of a campaign to destroy the black liberation
+    movement of the 1960s. 
+</text>
+        <rel>framed</rel>
+        <arg n="1">*trace* -&gt;  he</arg>
+        <arg f="by" n="0">the FBI and New York police</arg>
+        <arg n="M">as part of a campaign to destroy the black
+        liberation movement of the 1960s</arg> 
+</example>
+
+<example name="with crime">
+  <inflection aspect="ns" form="participle" person="third" tense="past" voice="passive"/>
+  <text>
+    John was framed *trace* for plagiarism.
+  </text>
+  <rel>framed</rel>
+  <arg n="1">*trace* -&gt; John</arg>
+  <arg f="for" n="2">plagiarism</arg>
+</example>
+</roleset>
+
+<roleset id="frame.04" name="make frames files" vncls="-">
+<roles>
+  <role descr="framer" n="0"/>
+  <role descr="verb" n="1"/>
+</roles>
+
+<example name="blatantly self-referential">
+  <inflection aspect="ns" form="full" person="ns" tense="ns" voice="ns"/>
+  <text>
+    John can frame over 50 verbs per week.
+  </text>
+  <arg n="0">John</arg>
+  <arg f="MOD" n="m">can</arg>
+  <rel>frame</rel>
+  <arg n="1">over 50 verbs per week</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="frame.05" vncls="-" name="write legislative bills">
+<roles>
+  <role n="0"  descr="legislator"/>
+  <role n="1"  descr="potential law"/>
+</roles>
+
+<example name="passive">
+  <inflection person="ns" tense="ns" aspect="ns" voice="passive" form="participle"/>
+  <text>
+    Highlights of the bills, as [*] currently framed [*-2], are: -- A
+    restriction on the amount of real estate one family can own, to
+    660 square meters in the nation's six largest cities, but more in
+    smaller cities and rural areas. 
+  </text>
+  <arg n="m" f="TMP">currently</arg>
+  <rel              >framed</rel>
+  <arg n="1"        >[*-2] -> [*] -> the bills</arg>
+</example>
+
+<example name="active">
+  <inflection person="ns" tense="ns" aspect="ns" voice="active" form="full"/>
+  <text>
+    ...the legislature can frame ``bright line'' standards that create
+    less uncertainty than the fact-bound decisions of courts. 
+  </text>
+  <arg n="0"        >the legislature</arg>
+  <arg n="m" f="MOD">can</arg>
+  <rel              >frame</rel>
+  <arg n="1"        >``bright line'' standards that create
+    less uncertainty than the fact-bound decisions of courts</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

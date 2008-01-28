@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="appease">
+<note>
+  Frames file for 'appease' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="appease.01" name="to bring peace, quiet, or relieve" vncls="31.1">
+<roles>
+  <role descr="causer, agent" n="0"><vnrole vncls="31.1" vntheta="Cause"/></role>
+  <role descr="entity appeased" n="1"><vnrole vncls="31.1" vntheta="Experiencer"/></role>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ After Mr. Sullivan waffled on abortion last year , the White House appeased right-to-lifers by [*-1] surrounding him with pro-life deputies .
+</text>
+	<arg f="TMP" n="M">After Mr. Sullivan waffled on abortion last year</arg>
+	<arg n="0">the White House</arg>
+	<rel>appeased</rel>
+	<arg n="1">right-to-lifers</arg>
+	<arg f="MNR" n="M">by [*-1] surrounding him with pro-life deputies</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

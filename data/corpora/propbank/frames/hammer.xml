@@ -1,0 +1,145 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="hammer">
+<note>
+Frames file for 'hammer' based on sentences in financial subcorpus and
+automatic expansion via verbnet.
+</note>
+
+<roleset id="hammer.01" name="put a nail into wood (eg)" vncls="9.3">
+<roles>
+	<role descr="hammerer" n="0">
+		
+  <vnrole vncls="9.3" vntheta="Agent"/></role>
+
+	<role descr="nail" n="1">
+		
+  <vnrole vncls="9.3" vntheta="Theme"/></role>
+
+	<role descr="wood" n="2">
+		
+  <vnrole vncls="9.3" vntheta="Destination"/></role>
+
+</roles>
+
+<example name="semi-literal movement" src="push.01">
+<text>
+    Moreover, the amended pact shows how McCaw's persistence has
+    hammered LIN and BellSouth into a corner, forcing huge debt on the
+    proposed new company. 
+</text>
+        <arg n="0">McCaw 's persistence</arg>
+        <rel>hammered</rel>
+        <arg n="1">LIN and BellSouth</arg>
+        <arg f="into" n="2">a corner</arg>
+        <arg f="ADV" n="M">forcing huge debt on the proposed new
+        company</arg> 
+</example>
+
+</roleset>
+
+<roleset id="hammer.02" name="hit with a hammer" vncls="18.1">
+<roles>
+	<role descr="agent, hitter - animate only!" n="0">
+		
+  <vnrole vncls="18.1" vntheta="Agent"/></role>
+
+	<role descr="thing hit" n="1">
+		
+  <vnrole vncls="18.1" vntheta="Patient"/></role>
+
+	<role descr="instrument, hammer" n="2">
+		
+  <vnrole vncls="18.1" vntheta="Instrument"/></role>
+
+</roles>
+
+<example name="passivized instrumental subject">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/> 
+<text>
+    Bethlehem Steel Corp., hammered [*] by higher costs and lower
+    shipments to key automotive and service-center customers, posted a
+    54% drop in third-quarter profit. 
+</text>
+        <rel>hammered</rel>
+        <arg n="1">[*] -&gt;  Bethlehem Steel Corp.</arg>
+        <arg f="by" n="2">higher costs and lower shipments to key
+        automotive and service-center customers</arg> 
+</example>
+
+<example name="instrumental subject" src="strike.01">
+<text>
+    Sentiment was helped by the small gain made by New York stocks
+    Wednesday despite anxiety over possible effects of the major
+    earthquake that *trace* hammered northern California Tuesday.
+</text>
+        <arg n="2">*trace* -&gt;  that -&gt;  the major earthquake</arg>
+        <rel>hammered</rel>
+        <arg n="1">northern California</arg>
+        <arg f="TMP" n="M">Tuesday</arg>
+</example>
+
+<example name="duck duck goose" src="tap.01">
+  <text>
+    Mary hammered John on the head with a 2x4.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>hammered</rel>
+  <arg n="1">John</arg>
+  <arg f="LOC" n="m">on the head</arg>
+  <arg f="with" n="2">a 2x4</arg>
+</example>
+
+</roleset>
+
+<roleset id="hammer.03" name="use a hammer to put   something into a particular shape" vncls="26.1">
+<roles>
+	<role descr="builder" n="0"><vnrole vncls="26.1" vntheta="Agent"/></role>
+	<role descr="construction" n="1"><vnrole vncls="26.1" vntheta="Product"/></role>
+	<role descr="material, start state" n="2"><vnrole vncls="26.1" vntheta="Material"/></role>
+	<role descr="benefactive" n="3"><vnrole vncls="26.1" vntheta="Beneficiary"/></role>
+	<role descr="end state" n="4"><vnrole vncls="26.1" vntheta="Product"/></role>
+</roles>
+
+<example name="with end-result" src="develop.02">
+  <text>
+    John hammered the footnotes into a strong argument.
+  </text>
+  <arg n="0">John</arg>
+  <rel>hammered</rel>
+  <arg n="2">the footnotes</arg>
+  <arg f="into" n="1">into a strong argument</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="hammer_out">
+
+<roleset id="hammer.04" name="arrange" vncls="-">
+<roles>
+  <role descr="arranger" n="0"/>
+  <role descr="scheme" n="1"/>
+  <role descr="collaborator" n="2"/>
+</roles>
+
+<example name="merged cocollaborator">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Investment bankers representing the buy-out group and UAL's board
+    spent a frantic weekend [*] trying [*-2] to hammer out new terms
+    that [*T*-1] would be more acceptable to the banks. 
+</text>
+        <arg n="0">[*-2] -&gt;  [*] -&gt;  Investment bankers representing
+        the buy-out group and UAL 's board</arg> 
+        <rel>[ hammer] [ out]</rel>
+        <arg n="1">new terms that [*T*-1] would be more acceptable to
+        the banks</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

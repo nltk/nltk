@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="superimpose">
+<note>
+  Frames file for 'superimpose' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="superimpose.01" name="put one thing atop another" vncls="-">
+<roles>
+  <role descr="placer, putter, agent" n="0"/>
+  <role descr="thing on top" n="1"/>
+  <role descr="thing below" n="2"/>
+</roles>
+
+<example name="always passive?">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+     Breaking into the raucous Chicago Bears-Cleveland Browns match
+     during last week's Monday night football game, it was nothing but
+     simple block letters superimposed *trace* on the TV screen. 
+</text>
+        <rel>superimposed</rel>
+        <arg n="1">*trace* -&gt;  simple block letters</arg>
+        <arg f="on" n="2">the TV screen</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

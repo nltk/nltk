@@ -1,0 +1,147 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="bust">
+<note>
+  Frames file for 'bust' based on sentences in wsj.  No Verbnet entry,
+  Framenet entry Escaping (as phrasal bust out).
+</note>
+
+<roleset id="bust.01" name="break" vncls="-">
+<roles>
+  <role descr="breaker" n="0"/>
+  <role descr="thing broken" n="1"/>
+  <role descr="instrument" n="2"/>
+  <role descr="pieces" n="3"/>
+</roles>
+
+<example name="with predicate">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Toshiba Corp. busted open that sector this summer with a
+    notebook-sized machine that retails for less than 200,000 yen
+    (under $1,500) -- one of the smallest, cheapest PCs available in
+    the country. 
+</text>
+        <arg n="0">Toshiba Corp.</arg>
+        <rel>busted</rel>
+        <arg f="PRD" n="M">open</arg>
+        <arg n="1">that sector</arg>
+        <arg f="TMP" n="M">this summer</arg>
+        <arg f="with" n="2">a notebook-sized machine that retails for
+        less than 200,000 yen (under $1,500) -- one of the smallest,
+        cheapest PCs available in the country</arg> 
+</example>
+
+<example name="inchoative">
+  <text>
+    The window busted into a million pieces.
+  </text>
+  <arg n="1">The window</arg>
+  <rel>busted</rel>
+  <arg f="into" n="3">a million pieces</arg>
+</example>
+
+<note>
+Inchoative need not include the pieces argument.
+</note>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="bust.02" name="catch a criminal" vncls="-">
+<roles>
+  <role descr="cop(s)" n="0"/>
+  <role descr="criminal(s)" n="1"/>
+</roles>
+
+<example name="good cop/bad cop">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John busted a notorious ring of jelly-bean smugglers.
+  </text>
+  <arg n="0">John</arg>
+  <rel>busted</rel>
+  <arg n="1">a notorious ring of jelly-bean smugglers</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="bust.05" name="catch ghosts" vncls="-">
+<roles>
+  <role descr="ghostbuster" n="0"/>
+  <role descr="ghost" n="1"/>
+</roles>
+
+<example name="who ya gonna call?">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    They claim *trace* to have busted spirits, poltergeists and other
+    spooks in hundreds of houses around the country. 
+</text>
+        <arg n="0">*trace* -&gt;  They</arg>
+        <rel>busted</rel>
+        <arg n="1">spirits, poltergeists and other spooks</arg>
+        <arg f="LOC" n="M">in hundreds of houses around the country</arg>
+</example>
+
+<note>
+This sense is an unfortunate relic of one particular article in the
+Treebank, and will probably never occur again.
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="bust_out">
+
+<roleset id="bust.03" name="escape" vncls="-">
+<roles>
+  <role descr="escapee" n="0"/>
+  <role descr="escaped from" n="1"/>
+</roles>
+
+<example name="not quite Alcatraz">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John busted out of Mary's basement.
+  </text>
+  <arg n="0">John</arg>
+  <rel>busted out</rel>
+  <arg f="of" n="1">Mary's basement</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="bust_up">
+
+<roleset id="bust.04" name="break up" vncls="-">
+<roles>
+  <role descr="causative agent" n="0"/>
+  <role descr="thing in pieces" n="1"/>
+</roles>
+
+<example name="smithereens">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John busted up Mary's dining room table.
+  </text>
+  <arg n="0">John</arg>
+  <rel>busted up</rel>
+  <arg n="1">Mary's dining room table</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

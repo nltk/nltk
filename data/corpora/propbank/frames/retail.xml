@@ -1,0 +1,57 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="retail">
+<note>
+  Frames file for 'retail' based on sentences in wsj.  No Verbnet
+  entry, Framenet entries Commerce and Commerce sell.
+</note>
+
+<roleset id="retail.01" name="sell at retail" vncls="13.1-1">
+  <roles>
+    <role descr="Seller" n="0">
+		
+  <vnrole vncls="13.1-1" vntheta="Agent"/></role>
+
+    <role descr="Thing Sold" n="1">
+		
+  <vnrole vncls="13.1-1" vntheta="Theme"/></role>
+
+    <role descr="Buyer" n="2">
+		
+  <vnrole vncls="13.1-1" vntheta="Recipient"/></role>
+
+    <role descr="Price Paid" n="3"/>
+    <role descr="Benefactive" n="4"/>
+</roles>
+
+<example name="typically ergative">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    Toshiba Corp. busted open that sector this summer with a
+    notebook-sized machine that *trace* retails for less than 200,000
+    yen (under $1,500) -- one of the smallest, cheapest PCs available
+    in the country. 
+</text>
+        <arg n="1">*trace* -&gt;  that -&gt;  a notebook-sized machine</arg>
+        <rel>retails</rel>
+        <arg f="for" n="3">less than 200,000 yen (under $1,500)</arg>
+</example>
+
+<example name="agentive!">
+<inflection aspect="ns" form="gerund" person="ns" tense="ns" voice="active"/>
+<text>
+    Golden Feldman Furs Inc. began *trace* retailing aggressively
+    eight years ago, and now retail sales account for about 20% of
+    gross income. 
+</text>
+        <arg n="0">*trace* -&gt;  Golden Feldman Furs Inc.</arg>
+        <rel>retailing</rel>
+        <arg f="MNR" n="M">aggressively</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

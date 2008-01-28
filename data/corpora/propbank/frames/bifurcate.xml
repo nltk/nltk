@@ -1,0 +1,34 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="bifurcate">
+<note>
+  Frames file for 'bifurcate' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="bifurcate.01" name="split in two" vncls="-">
+<roles>
+  <role descr="splitter" n="0"/>
+  <role descr="thing split" n="1"/>
+</roles>
+
+<example name="I don't know what this means, but it's a beautiful sentence">
+<inflection aspect="ns" form="full" person="ns" tense="ns" voice="active"/>
+<text>
+    Suffice it to say that if this were a New York Yankees-Mets
+    series, or one between the Chicago Cubs and White Sox (hey, it's
+    possible), you'd need uniformed police in every other seat to
+    separate opposing fans, and only the suicidal would bifurcate
+    their bonnets. 
+</text>
+        <arg n="0">only the suicidal</arg>
+        <arg f="MOD" n="M">would</arg>
+        <rel>bifurcate</rel>
+        <arg n="1">their bonnets</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,35 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="attribute">
+<note>
+  Frames file for 'attribute' based on survey of initial sentences of
+  big corpus and comparison with 'give' (really!)
+</note>
+
+<roleset id="attribute.01" name="assign attribute to">
+<roles>
+  <role descr="attributor" n="0"/>
+  <role descr="thing attributed, attribute" n="1"/>
+  <role descr="attributed to (benefactive?)" n="2"/>
+</roles>
+
+<example name="typical usage">
+  <text>
+  Mr. Hahn attributes the gains to the philosophy of concentrating on
+  what a company knows best.
+  </text>
+  <arg n="0">Mr. Hahn</arg>
+  <rel>attributes</rel>
+  <arg n="1">the gains</arg>
+  <arg f="to" n="2">the philosophy of concentrating on
+  what a company knows best.</arg>
+</example>
+
+<note>
+This might be the only verb (so far) where the attribute comes before
+the entity with the attribute.  Curious.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

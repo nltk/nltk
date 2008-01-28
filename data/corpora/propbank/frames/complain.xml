@@ -1,0 +1,67 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="complain">
+<note>
+  Frames file for 'complain' based on sentences in financial
+  subcorpus.  Verbnet class complain 37.8, no mention of other
+  members.  No comparison.
+</note>
+
+<roleset id="complain.01" name="bitch and moan" vncls="37.8">
+<roles>
+  <role descr="complainer" n="0">
+		
+  <vnrole vncls="37.8" vntheta="Agent"/></role>
+
+  <role descr="cause, complain of or about" n="1">
+		
+  <vnrole vncls="37.8" vntheta="Topic"/></role>
+
+  <role descr="hearer, complain to" n="2">
+		
+  <vnrole vncls="37.8" vntheta="Recipient"/></role>
+
+</roles>
+
+<example name="complaint as nominal">
+<text>
+    Several Big Board firms are organizing *trace* to complain about
+    program trading and the exchange's role in it. 
+</text>
+        <arg n="0">*trace* -&gt;  Several Big Board firms</arg>
+        <rel>complain</rel>
+        <arg f="about" n="1">program trading and the exchange 's role
+        in it</arg> 
+</example>
+
+<example name="complaint as sentence">
+<text>
+    Analysts have complained that third-quarter corporate earnings
+    haven't been very good, but the effect hit home particularly hard
+    yesterday. 
+</text>
+        <arg n="0">Analysts</arg>
+        <rel>complained</rel>
+        <arg n="1">third-quarter corporate earnings have n't been very
+        good</arg> 
+</example>
+
+<example name="complain of">
+  <text>
+    After being kicked in the head, John complained of headaches.
+  </text>
+  <arg f="TMP" n="m">After being kicked in the head</arg>
+  <arg n="0">John</arg>
+  <rel>complained</rel>
+  <arg f="of" n="1">headaches</arg>
+</example>
+
+<note>
+This patterns after verbs-of-speaking, so expect split, inverted and
+fronted constructions.  Refer to 'say' for instructions on how to tag
+those.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

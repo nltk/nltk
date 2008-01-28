@@ -1,0 +1,41 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="disintegrate">
+<note>
+Frames file for 'disintegrate' based on sentences in financial
+subcorpus and automatic expansion via verbnet.
+</note>
+
+<roleset id="disintegrate.01" name="fall apart completely" vncls="45.4">
+<roles>
+	<role descr="causer of disintegration" n="0">
+		
+  <vnrole vncls="45.4" vntheta="Agent"/></role>
+
+	<role descr="thing disintegating" n="1">
+		
+  <vnrole vncls="45.4" vntheta="Patient"/></role>
+
+</roles>
+
+<example name="usually ergative?">
+<inflection aspect="progressive" form="participle" person="third" tense="present" voice="active"/>
+<text>
+    ...and reports that the junk-bond market is disintegrating. 
+</text>
+        <arg n="1">the junk-bond market</arg>
+        <rel>disintegrating</rel>
+</example>
+
+<example name="Marvin the Martian">
+  <text>
+     John disintegrated the Earth.
+  </text>
+  <arg n="0">John</arg>
+  <rel>disintegrated</rel>
+  <arg n="1">the Earth</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

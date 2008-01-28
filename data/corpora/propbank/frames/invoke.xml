@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="invoke">
+<note>
+  Frames file for 'invoke' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="invoke.01" name="call upon" vncls="-">
+<roles>
+  <role descr="invoker" n="0"/>
+  <role descr="invoked" n="1"/>
+</roles>
+
+<example name="pretty simple, really">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    Mr. Melloan quotes Peter Teagan and invokes the name of Arthur
+    D. Little Inc. to support his statement. 
+</text>
+        <arg n="0">Mr. Melloan</arg>
+        <rel>invokes</rel>
+        <arg n="1">the name of Arthur D. Little Inc.</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

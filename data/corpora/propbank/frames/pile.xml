@@ -1,0 +1,154 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="pile">
+<note>
+Frames file for 'pile' based on sentences in wsj and automatic
+expansion via verbnet.
+</note>
+
+<roleset id="pile.01" name="make a pile" vncls="9.7-1">
+<roles>
+     <role descr="piler" n="0">
+		
+  <vnrole vncls="9.7-1" vntheta="Agent"/></role>
+
+     <role descr="substance being piled" n="1">
+		
+  <vnrole vncls="9.7-1" vntheta="Theme"/></role>
+
+     <role descr="explicit mention of pile" n="2">
+		
+  <vnrole vncls="9.7-1" vntheta="Destination"/></role>
+
+</roles>
+
+<example name="all args">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    In 1987, KKR for the second time piled debt onto Storer's TV
+    stations, selling them for $1.3 billion to a new entity that was
+    45%-owned by KKR and 55%-owned by Gillett Corp., which now
+    operates the SCI TV stations. 
+</text>
+        <arg f="TMP" n="M">In 1987</arg>
+        <arg n="0">KKR</arg>
+        <arg f="TMP" n="M">for the second time</arg>
+        <rel>piled</rel>
+        <arg n="1">debt</arg>
+        <arg f="onto" n="2">Storer's TV stations</arg>
+        <arg f="ADV" n="M">selling them for $1.3 billion to a new
+        entity that was 45%-owned by KKR and 55%-owned by Gillett
+        Corp, which now operates the SCI TV stations</arg> 
+</example>
+
+<example name="ergative">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    Now, though, enormous costs for earthquake relief will pile on top
+    of outstanding costs for hurricane relief. 
+</text>
+        <arg f="TMP" n="M">Now</arg>
+        <arg f="DIS" n="M">though</arg>
+        <arg n="1">enormous costs for earthquake relief</arg>
+        <arg f="MOD" n="M">will</arg>
+        <rel>pile</rel>
+        <arg f="on" n="2">top of outstanding costs for hurricane
+        relief</arg> 
+</example>
+
+</roleset>
+
+<roleset id="pile.03" name="move in an untidy fashion" vncls="-">
+<roles>
+  <role descr="entity in motion" n="1"/>
+  <role descr="destination" n="2"/>
+</roles>
+
+<example name="Keystone Kops">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    They pile out of their truck and furiously begin twisting together
+    steel pipes linking a giant storage tank to the Sharpshooter, a
+    freshly drilled oil well two miles deep. 
+</text>
+        <arg n="1">They</arg>
+        <rel>pile</rel>
+        <arg f="DIR" n="2">out of their truck</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="pile_up">
+
+<roleset id="pile.02" name="make a pile" vncls="-">
+<roles>
+  <role descr="agent of piling" n="0"/>
+  <role descr="substance being piled" n="1"/>
+</roles>
+
+<example name="usually ergative?">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    In the additional time they provide even more order imbalances
+    might pile up, as would-be sellers finally get their broker on the
+    phone. 
+</text>
+        <arg f="TMP" n="M">In the additional time  they provide </arg>
+        <arg n="1">even more order imbalances</arg>
+        <arg f="MOD" n="M">might</arg>
+        <rel>[ pile] [ up]</rel> 
+        <arg f="TMP" n="M">as would-be sellers finally get their
+        broker on the phone</arg> 
+</example>
+
+<example name="sometimes agentive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    A celebrity guest, U.S. Ambassador to West Germany Richard Burt,
+    also won a bet that someone could pile up $150 worth of quarters
+    on a slanted coin. 
+</text>
+        <arg n="0">someone</arg>
+        <arg f="MOD" n="M">could</arg>
+        <rel>[ pile] [ up]</rel>
+        <arg n="1">$150 worth of quarters</arg>
+        <arg f="on" n="2">a slanted coin</arg>
+</example>
+
+<note>
+I personally would have left the &quot;up&quot; particle out, but whatever.
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="pile_on">
+
+<roleset id="pile.04" name="add to a pile" vncls="-">
+<roles>
+  <role descr="agent of piling" n="0"/>
+  <role descr="substance being piled" n="1"/>
+  <role descr="explicit mention of pile" n="2"/>
+</roles>
+
+<example name="agentive">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    SCI TV, which expects to release a plan to restructure $1.3
+    billion of debt in the next day or so, isn't just another LBO that
+    *trace* went bad after *trace* piling on debt -- though it did do
+    that. 
+</text>
+        <arg n="0">*trace* -&gt; *trace* -&gt;  that -&gt;  just another LBO</arg>
+        <rel>[ piling] [ on]</rel>
+        <arg n="1">debt</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+<note>
+Note that 'pile on' can take several different interpretations,
+depending on how the treebankers have assigned the syntax.
+</note>
+
+</predicate>
+</frameset>

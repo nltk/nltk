@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="compact">
+<note>
+  Frames file for 'compact' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="compact.01" name="make compact" vncls="-">
+<roles>
+  <role descr="causer of compaction" n="0"/>
+  <role descr="thing getting compacted" n="1"/>
+</roles>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="third" tense="present" voice="passive"/>
+<text>
+    Mr. Johnson, of the Berkeley seismographic station, said:
+    ``Landfill can be done if it's properly compacted [*-1]. 
+</text>
+        <arg f="MNR" n="M">properly</arg>
+        <rel>compacted</rel>
+        <arg n="1">[*-1] -&gt;  it</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

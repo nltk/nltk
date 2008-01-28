@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="validate">
+<note>
+  Frames file for 'validate' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="validate.01" name="to declare or make legally valid" vncls="-">
+<roles>
+  <role descr="causer" n="0"/>
+  <role descr="entity validated" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+ He reaped inflation along with rapid growth , no doubt [*-1] validating Sir Alan 's predictions in the Prime Minister 's mind .
+</text>
+	<arg n="0">[*-1] -&gt;  He</arg>
+	<rel>validating</rel>
+	<arg n="1">Sir Alan 's predictions</arg>
+	<arg f="LOC" n="M">in the Prime Minister 's mind</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

@@ -1,0 +1,44 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="squelch">
+<note>
+  Frames file for 'squelch' based on sentences in wsj.  Verbnet entry
+  43.2, Framenet entry Motion noise.
+</note>
+
+<roleset id="squelch.01" name="stifle, suppress" vncls="-">
+<roles>
+  <role descr="squelcher, agent" n="0"/>
+  <role descr="thing squelched" n="1"/>
+</roles>
+
+<example name="active">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    The ``Fairness'' Doctrine's enthusiasts are incumbents in the
+    House who know the rules squelch lively discussions on broadcasts,
+    deterring feisty challengers. 
+</text>
+        <arg n="0">the rules</arg>
+        <rel>squelch</rel>
+        <arg n="1">lively discussions on broadcasts</arg>
+        <arg f="ADV" n="M">deterring feisty challengers</arg>
+</example>
+
+
+<example name="passive">
+<inflection aspect="perfect" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    Mail-order ministers have been squelched. 
+</text>
+        <rel>squelched</rel>
+        <arg n="1">*trace* -&gt;  Mail-order ministers</arg>
+</example>
+
+<note>
+This usage has nothing to do with the verbnet or framenet class, of
+which this verb is a pretty marginal member anyway.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

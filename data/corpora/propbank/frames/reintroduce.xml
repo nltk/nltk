@@ -1,0 +1,82 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="reintroduce">
+<note>
+  Frames file for 'reintroduce' based on transformation of 'introduce'
+  frames.  No actual sentences examined.
+</note>
+
+<roleset id="reintroduce.01" name="cause to meet" vncls="-">
+<roles>
+  <role descr="entity making reintroduction" n="0"/>
+  <role descr="entity being reintroduced" n="1"/>
+  <role descr="entity being reintroduced TO" n="2"/>
+</roles>
+
+<example name="without arg2">
+  <text>
+  Mr. Stoltzman reintroduced his colleagues.
+  </text>
+  <arg n="0">Mr. Stoltzman</arg>
+  <rel>reintroduced</rel>
+  <arg n="1">his colleagues</arg>
+</example>
+
+<example name="with arg2">
+  <text>
+  John reintroduced Mary to the pleasures of chocolate ice cream.
+  </text>
+  <arg n="0">John</arg>
+  <rel>reintroduced</rel>
+  <arg n="1">Mary</arg>
+  <arg f="to" n="2">the pleasures of chocolate ice cream</arg>
+</example>
+
+<note>
+To my mind, &quot;reintroduce&quot; takes two almost-symmetrical arguments; that
+is, if arg1 is reintroduced to arg2, logically arg2 is reintroduced to
+arg1 as well.  Further, there are complicated figure-ground and
+intentionality relations to worry about also.  To AVOID all of that,
+take a purely *syntactic* approach to the arg1/arg2 distinction: arg2
+is reintroduced by &quot;to&quot;.
+</note>
+
+</roleset>
+
+<roleset id="reintroduce.02" name="implement, begin, bring up">
+<roles>
+  <role descr="implementer, agent" n="0"/>
+  <role descr="thing being brought up" n="1"/>
+  <role descr="medium, where arg1 is brought up into" n="2"/>
+</roles>
+
+<example name="advertising">
+  <text>
+  Newsweek will reintroduce a new incentive plan for advertisers.
+  </text>
+  <arg n="0">Newsweek</arg>
+  <arg f="MOD" n="m">will</arg>
+  <rel>reintroduce</rel>
+  <arg n="1">a new incentive plan for advertisers</arg>
+</example>
+
+<example name="with medium">
+  <text>
+  The man with the clipboard reintroduced a bit of les sportif into our
+  itinerary.
+  </text>
+  <arg n="0">The man with the clipboard</arg>
+  <rel>reintroduced</rel>
+  <arg n="1">a bit of les sportif</arg>
+  <arg f="into" n="2">our itinerary.</arg>
+</example>
+
+<note>
+In WSJ this sense seems to be more common.  Especially when the
+&quot;medium&quot; argument is present, the two senses are very close in
+meaning, at least to my mind.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

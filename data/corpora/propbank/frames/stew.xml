@@ -1,0 +1,54 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="stew">
+<note>
+  Frames file for 'stew' based on sentences in wsj.  Verbnet entry
+  45.3, Framenet entries Heat and Apply heat.
+</note>
+
+<roleset id="stew.01" name="cook for a long time in thick   liquid" vncls="45.3">
+<roles>
+  <role descr="cook" n="0"><vnrole vncls="45.3" vntheta="Agent"/></role>
+  <role descr="thing stewing" n="1"><vnrole vncls="45.3" vntheta="Patient"/></role>
+</roles>
+
+<example name="both args">
+  <inflection aspect="progressive" form="participle" person="third" tense="present" voice="active"/>
+  <text>
+     John is stewing some rutabagas for dinner.
+  </text>
+  <arg n="0">John</arg>
+  <rel>stewing</rel>
+  <arg n="1">some rutabagas</arg>
+  <arg f="PNC" n="m">for dinner</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="stew.02" name="worry about, fret over" vncls="-">
+<roles>
+  <role descr="worrier, stewer" n="0"/>
+  <role descr="cause" n="1"/>
+</roles>
+
+<example name="worry wart">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Bob Stone stewed over a letter from his manager putting him on
+    probation for insubordination. 
+</text>
+        <arg n="0">Bob Stone</arg>
+        <rel>stewed</rel>
+        <arg f="over" n="1">a letter from his manager putting him on
+        probation for insubordination</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

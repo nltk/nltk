@@ -1,0 +1,63 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="measure">
+<note>
+  Frames file for 'measure' based on sentences in financial
+  subcorpus.  No access to verbnet.  No comparison.
+</note>
+
+<roleset id="measure.01" name="quantify" vncls="54.1">
+<roles>
+  <role descr="measurer" n="0">
+	  <vnrole vncls="54.1" vntheta="Agent"/></role>
+  <role descr="thing measured" n="1">
+	  <vnrole vncls="54.1" vntheta="Theme"/></role>
+  <role descr="yardstick, standard of measurement" n="2"/>
+  <role descr="measurement" n="3">
+	  <vnrole vncls="54.1" vntheta="Attribute"/></role>
+</roles>
+
+<example name="with real agent">
+<text>
+    The Philanthropic Advisory Service of the BBB reviews hundreds of
+    new charities every year, *trace* measuring them against minimum
+    standards for accountability.  
+</text>
+        <arg n="0">*trace* -&gt; The Philanthropic Advisory Service of
+        the BBB</arg> 
+        <rel>measuring</rel>
+        <arg n="1">them</arg>
+        <arg f="against" n="2">against minimum standards</arg>
+        <arg n="M">for accountability</arg>
+</example>
+
+<example name="sorta like a relative clause">
+<text>
+    In point of fact, volatility as *trace* measured *trace* by the
+    annualized standard deviation of daily stock price movements has
+    frequently been much higher than it is today. 
+</text>
+        <rel>measured</rel>
+        <arg n="1">*trace* -&gt; *trace* -&gt;  volatility</arg>
+        <arg f="by" n="2">the annualized standard deviation of daily
+        stock price movements</arg> 
+</example>
+
+<example name="with measurement">
+  <text>
+    John's reading ability was measured *trace* to be at the
+    fifth-grade level.
+  </text>
+  <rel>measured</rel>
+  <arg n="1">*trace* -&gt; John's reading ability</arg>
+  <arg n="3">to be at the fifth-grade level.</arg>
+</example>
+
+<note>
+Be careful with the agent/yardstick distinction--the automatic
+annotation merges them.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

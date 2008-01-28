@@ -1,0 +1,57 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="compensate">
+<note>
+Frames file for 'compensate' based on sentences in financial subcorpus
+and automatic expansion via verbnet.
+</note>
+
+<roleset id="compensate.01" name="pay back" vncls="33">
+<roles>
+	<role descr="payer or buyer" n="0">
+		
+  <vnrole vncls="33" vntheta="Agent"/></role>
+ 
+	<role descr="thing bought or paid for" n="1">
+		
+  <vnrole vncls="33" vntheta="Cause"/></role>
+ 
+	<role descr="seller or person being paid" n="2">
+		
+  <vnrole vncls="33" vntheta="Theme"/></role>
+ 
+	<role descr="price paid (unlikely)" n="3"/> 
+</roles>
+
+<example name="just transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    The trust, created *trace* as part of Manville's bankruptcy-law
+    reorganization *trace* to compensate victims of asbestos-related
+    diseases, owns 7.2 million of the Series A convertible preferred
+    shares, which are each convertible into 10 Manville common
+    shares. 
+</text>
+        <arg n="0">*trace* -&gt; *trace* -&gt;  The trust</arg>
+        <rel>compensate</rel>
+        <arg n="2">victims of asbestos-related diseases</arg>
+</example>
+
+<example name="args 1 2 3" src="repay.01">
+<text>
+    The merger agreement says the buy-out group is entitled *trace-1*
+    to be repaid *trace-2* $26.7 million in fees for its investment
+    bankers, Lazard Freres &amp; Co. and Salomon Brothers Inc., and
+    its law firm, Paul Weiss Rifkind Wharton &amp; Garrison. 
+</text>
+        <rel>repaid</rel>
+        <arg n="2">*trace-2* -&gt; *trace-1* -&gt;  the buy-out group</arg>
+        <arg n="3">$ 26.7 million  in fees</arg>
+        <arg f="for" n="1">its investment bankers, Lazard Freres &amp;
+        Co. and Salomon Brothers Inc., and its law firm, Paul Weiss
+        Rifkind Wharton &amp; Garrison</arg> 
+</example>
+
+</roleset>
+</predicate>
+</frameset>

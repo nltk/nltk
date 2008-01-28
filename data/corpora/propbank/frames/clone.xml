@@ -1,0 +1,42 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="clone">
+<note>
+  Frames file for 'clone' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="clone.01" name="copy" vncls="-">
+<roles>
+  <role descr="cloner, agent" n="0"/>
+  <role descr="original" n="1"/>
+</roles>
+
+<example name="passive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="passive"/>
+<text>
+    The next *trace* *trace* to be cloned *trace*, human insulin, had
+    market potential and Genentech licensed it to Eli Lilly, which
+    produced 80% of the insulin used by 1.5 million U.S. diabetics. 
+</text>
+        <rel>cloned</rel>
+        <arg n="1">*trace* -&gt; *trace* -&gt; *trace* -&gt;  The next</arg>
+</example>
+
+<example name="active">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John cloned himself a hundred times over, just to annoy Mary.
+  </text>
+  <arg n="0">John</arg>
+  <rel>cloned</rel>
+  <arg f="REC" n="1">himself</arg>
+  <arg f="EXT" n="m">a hundred times over</arg>
+  <arg f="PNC" n="m">just to annoy Mary</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

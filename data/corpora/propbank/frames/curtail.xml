@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="curtail">
+<note>
+  Frames file for 'curtail' based on sentences in financial
+  subcorpus.  No access to verbnet.  Comparison to 'lessen'.
+</note>
+
+<roleset id="curtail.01" name="make be less, limit">
+<roles>
+  <role descr="logical subject, thing causing limitation" n="0"/>
+  <role descr="thing limited" n="1"/>
+</roles>
+
+<example name="transitive">
+<text>
+    Most of the department's statements since the Northwest
+    transaction indicated it planned *trace* to curtail foreign
+    ownership stakes in U.S. carriers. 
+</text>
+        <arg n="0">*trace* -&gt; it</arg>
+        <rel>curtail</rel>
+        <arg n="1">foreign ownership stakes in U.S. carriers</arg>
+</example>
+
+<note>
+Trace chains get hard to follow.  Be careful.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,52 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="relay">
+<note>
+  Frames file for 'relay' based on sentences in wsj.  No access to
+  Verbnet at the moment.
+</note>
+
+<roleset id="relay.01" name="send along, transmit" vncls="-">
+<roles>
+  <role descr="sender, agent" n="0"/>
+  <role descr="thing sent" n="1"/>
+  <role descr="sent to" n="2"/>
+</roles>
+
+<example name="all args">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Col. North conveyed the request to his superiors and to Assistant
+    Secretary of State Elliot Abrams, who [*T*-1] relayed it to
+    Secretary of State George Shultz. 
+</text>
+        <arg n="0">[*T*-1] -&gt;  who -&gt;  State</arg>
+        <rel>relayed</rel>
+        <arg n="1">it</arg>
+        <arg f="to" n="2">Secretary of State George Shultz</arg>
+</example>
+
+
+<example name="no destination">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Luis Carlos, knowing that helping the Americans could advance the
+    career of any Panamanian officer, relayed Tony's reports on the
+    leftist tendencies he observed among his fellow students and, more
+    important, among his officers and instructors. 
+</text>
+        <arg n="0">Luis Carlos</arg>
+        <arg n="M">knowing that helping the Americans could advance
+        the career of any Panamanian officer</arg> 
+        <rel>relayed</rel>
+        <arg n="1">Tony's reports on the leftist tendencies he
+        observed among his fellow students and, more important, among
+        his officers and instructors</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,73 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="enlarge">
+<note>
+  Frames file for 'enlarge' based on sentences in wsj.  Verbnet entry
+  45.4, Framenet entry Expansion.
+</note>
+
+<roleset id="enlarge.01" name="make bigger" vncls="45.4">
+<roles>
+  <role descr="causer of biggenment" n="0"><vnrole vncls="45.4" vntheta="Agent"/></role>
+  <role descr="thing getting bigger" n="1"><vnrole vncls="45.4" vntheta="Patient"/></role>
+  <role descr="EXT" n="2"/>
+  <role descr="start point" n="3"/>
+  <role descr="end point" n="4"/>
+</roles>
+
+<example name="just transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    It appears that the only thing Congress is learning from the HUD
+    story is how *trace* to enlarge its control of the honey pot going
+    to special interests. 
+</text>
+        <arg n="0">*trace* -&gt;  Congress</arg>
+        <rel>enlarge</rel>
+        <arg n="1">its control of the honey pot going to special
+        interests</arg></example> 
+
+
+<example name="with EXT">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Avondale Industries Inc., New Orleans, received a $23 million
+    contract from the Navy *trace* to enlarge by 50% the capacity of
+    an auxiliary oiler. 
+</text>
+        <arg n="0">*trace* -&gt;  Avondale Industries Inc., New Orleans,</arg>
+        <rel>enlarge</rel>
+        <arg f="by" n="2">50%</arg>
+        <arg n="1">the capacity of an auxiliary oiler</arg>
+</example>
+
+<note>
+Preposition 'by' takes precedence over EXT tag.
+</note>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    Elements of the left are also reflexively opposed; they see
+    service as a cover for the draft, or fear the regimentation of
+    youth, or want to see rights enlarged *trace*, not obligations. 
+</text>
+        <rel>enlarged</rel>
+        <arg n="1">*trace* -&gt;  rights</arg>
+</example>
+
+<example name="with start and end points">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John enlarged the photo of Mary from wallet-sized to billboard-sized.
+  </text>
+  <arg n="0">John</arg>
+  <rel>enlarged</rel>
+  <arg n="1">the photo of Mary</arg>
+  <arg f="from" n="3">wallet-sized</arg>
+  <arg f="to" n="4">billboard-sized</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

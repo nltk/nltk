@@ -1,0 +1,51 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="necessitate">
+<note>
+  Frames file for 'necessitate' based on sentences in wsj.  No Verbnet
+  entry. 
+</note>
+
+<roleset id="necessitate.01" name="require" vncls="-">
+<roles>
+  <role descr="requirer" n="0"/>
+  <role descr="thing required" n="1"/>
+</roles>
+
+<example name="active">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    In a statement, Mr. Merksamer described the filing as a ``legal
+    technicality,'' but also said that ``our inability to obtain trade
+    credit, combined with a need to ensure that our stores were
+    properly stocked for the Christmas season, necessitated our filing
+    Chapter 11.'' 
+</text>
+        <arg n="0">our inability to obtain trade credit</arg>
+        <arg f="ADV" n="M">combined with a need to ensure that our
+        stores were properly stocked for the Christmas season</arg> 
+        <rel>necessitated</rel>
+        <arg n="1">our filing Chapter 11</arg>
+</example>
+
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    Bank Building earlier said the restatement is necessitated *trace*
+    by ``certain errors in recording receivables and payables'' at its
+    Loughman Cabinet division. 
+</text>
+        <rel>necessitated</rel>
+        <arg n="1">*trace* -&gt;  the restatement</arg>
+        <arg f="by" n="0">``certain errors in recording receivables
+        and payables'' at its Loughman Cabinet division</arg> 
+</example>
+
+<note>
+This is an ugly verb.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

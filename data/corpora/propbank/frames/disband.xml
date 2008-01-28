@@ -1,0 +1,46 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="disband">
+<note>
+  Frames file for 'disband' based on sentences in financial subcorpus.
+  No Verbnet entry.
+</note>
+
+<roleset id="disband.01" name="take/come apart" vncls="-">
+<roles>
+  <role descr="causer of not-together-ness, agent" n="0"/>
+  <role descr="thing coming apart" n="1"/>
+</roles>
+
+<example name="agentive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    The naming of FCB/Leber Katz Partners as agency of record for
+    Nabisco Brands Inc. and Planters LifeSavers Co. follows RJR
+    Nabisco's announcement last week that it will disband its RJR
+    Nabisco Broadcast division and dismiss its 14 employees Dec. 1. to
+    cut costs. 
+</text>
+        <arg n="0">it</arg>
+        <arg f="MOD" n="M">will</arg>
+        <rel>disband</rel>
+        <arg n="1">its RJR Nabisco Broadcast division</arg>
+        <arg f="PNC" n="M">to cut costs&quot;</arg>
+</example>
+
+<example name="ergative equivalent of above">
+  <inflection aspect="ns" form="full" person="ns" tense="future" voice="active"/>
+  <text>
+     The RJR Nabisco Broadcast division will disband on Dec. 1.
+  </text>
+  <arg n="1">The RJR Nabisco Broadcast division</arg>
+  <arg f="MOD" n="m">will</arg>
+  <rel>disband</rel>
+  <arg f="TMP" n="m">on Dec. 1</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

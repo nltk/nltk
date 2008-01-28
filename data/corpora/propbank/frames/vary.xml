@@ -1,0 +1,78 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="vary">
+<note>
+  Frames file for 'vary' based on sentences in financial subcorpus.
+  Verbnet entries 45.6, 45.4, both causatives and therefore very large
+  classes.  No Framenet entry.  Comparison with fluctuate.
+</note>
+
+<roleset id="vary.01" name="experience changes in scale">
+<roles>
+  <role descr="causer of motion" n="0"/>
+  <role descr="thing moving" n="1"/>
+  <role descr="EXT or MNR" n="2"/>
+  <role descr="low point" n="3"/>
+  <role descr="high point" n="4"/>
+  <role descr="medium" n="5"/>
+</roles>
+
+<example name="unaccusative">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+    Statistics on acquisitions by foreigners vary in detail, because
+    unlike Sansui, which  is listed on the Tokyo and Osaka stock
+    exchanges, most of the Japanese companies acquired  by foreigners
+    are privately held  . 
+</text>
+        <arg n="1">Statistics on acquisitions by foreigners</arg>
+        <rel>vary</rel>
+        <arg f="MNR" n="M">in detail</arg>
+        <arg f="CAU" n="M">because unlike Sansui , which  is listed
+        on the Tokyo and Osaka stock exchanges , most of the Japanese
+        companies acquired  by foreigners are privately held </arg> 
+</example>
+
+<example name="pseudopassive">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    But they said the C$30-a-share bid, which was due to expire
+    Monday, may still be extended or varied. 
+</text>
+        <arg f="MOD" n="M">may</arg>
+        <arg f="TMP" n="M">still</arg>
+        <rel>varied</rel>
+        <arg n="1">*trace* -&gt;  the C$ 30-a-share  bid , which  was due
+        to expire Monday ,</arg> 
+</example>
+
+<example name="agentive">
+  <inflection aspect="ns" form="ns" person="ns" tense="present" voice="active"/>
+  <text>
+   Typically, momey-fund yields beat comparable short-term investments
+   because portfolio managers can vary maturities and go after the
+   highest rates.
+  </text>
+  <arg n="0">portfolio managers</arg>
+  <arg f="MOD" n="m">can</arg>
+  <rel>vary</rel>
+  <arg n="1">maturities</arg>
+</example>
+
+<example name="high and low points">
+  <inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+  <text>
+    John's weight varies from 98 to 500 pounds.
+  </text>
+  <arg n="1">John's weight</arg>
+  <rel>varies</rel>
+  <arg f="from" n="3">98</arg>
+  <arg f="to" n="4">500 pounds</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

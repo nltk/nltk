@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="retrench">
+<note>
+  Frames file for 'retrench' based on sentences in wsj.  No access to
+  Verbnet at the moment.
+</note>
+
+<roleset id="retrench.01" name="(re)take a strong defensive position" vncls="-">
+<roles>
+  <role descr="entity in defensive position" n="0"/>
+</roles>
+
+<example name="bad stylistics">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+    ''Today, he frets, exports and business investment spending may be
+    insufficient to pick up the slack if stock prices sink this week
+    and if consumers retrench in reaction. 
+</text>
+        <arg n="0">consumers</arg>
+        <rel>retrench</rel>
+        <arg f="CAU" n="M">in reaction</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

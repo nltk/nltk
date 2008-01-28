@@ -1,0 +1,58 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="replace">
+<note>
+  Frames file for 'replace' based on revision of Chris' old frames.
+  'Bout time we got to this predicate.  No verbnet entry.
+</note>
+
+<roleset id="replace.01" name="substitute">
+<roles>
+  <role descr="replacer" n="0"/>
+  <role descr="old thing" n="1"/>
+  <role descr="new thing" n="2"/>
+</roles>
+
+<example name="all args">
+<text>
+    To profit from an index-arbitrage opportunity, someone who owns
+    the S&amp;P 500 widget in New York must sell it and replace it
+    with a cheaper S&amp;P 500 widget in Chicago.
+</text>
+        <arg n="0">someone who  owns the S&amp;P 500 widget in New
+        York</arg> 
+        <arg f="MOD" n="M">must</arg>
+        <rel>replace</rel>
+        <arg n="1">it</arg>
+        <arg f="with" n="2">a cheaper S&amp;P 500 widget in Chicago</arg>
+</example>
+
+<example name="new thing in subject position">
+<text>
+    Mr. Steinberg, he suggested, could replace British Airways PLC,
+    which has withdrawn from the buy-out group. 
+</text>
+        <arg n="2">Mr. Steinberg</arg>
+        <arg f="MOD" n="M">could</arg>
+        <rel>replace</rel>
+        <arg n="1">British Airways PLC, which has withdrawn from the
+        buy-out group</arg> 
+</example>
+
+<example name="no new thing">
+<text>
+    Continental Air replaced its top executive for the sixth time in
+    as many years. 
+</text>
+        <arg n="0">Continental Air</arg>
+        <rel>replaced</rel>
+        <arg n="1">its top executive</arg>
+        <arg f="TMP" n="M">for the sixth time in as many years</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

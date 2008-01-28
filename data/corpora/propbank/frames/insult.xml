@@ -1,0 +1,35 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="insult">
+<note>
+  Frames file for 'insult' based on sentences in wsj.  No access to
+Verbnet at the moment.
+</note>
+
+<roleset id="insult.01" name="call names" vncls="31.1 33">
+<roles>
+  <role descr="insulter" n="0"><vnrole vncls="31.1" vntheta="Cause"/><vnrole vncls="33" vntheta="Agent"/></role>
+  <role descr="insulted" n="1"><vnrole vncls="31.1" vntheta="Experiencer"/><vnrole vncls="33" vntheta="Theme"/></role>
+</roles>
+
+<example name="your mother wears army boots">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+    Mr. Stanley is on trial over charges that he violated a
+proclamation, issued by the South African administrator general
+earlier this year, which made it a crime punishable by two years in
+prison for any person to ``insult, disparate or belittle'' the
+election commission. 
+</text>
+        <arg n="0">any person</arg>
+        <rel>insult</rel>
+        <arg n="1">the election commission</arg>
+</example>
+
+<note>
+'disparate' above is certainly a typo for 'disparage.'
+</note>
+
+</roleset>
+</predicate>
+</frameset>

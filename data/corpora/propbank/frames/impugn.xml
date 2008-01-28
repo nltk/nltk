@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="impugn">
+<note>
+  Frames file for 'impugn' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="impugn.01" name="to attack or challenge in argument" vncls="-">
+<roles>
+  <role descr="attacker, slanderer, agent" n="0"/>
+  <role descr="entity impugned" n="1"/>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="ns" person="ns" tense="ns" voice="active"/>
+<text>
+ As a result , says [0] [*T*-2] Mr. Geiger , lawyers think twice before [*-3] appealing a judge 's ruling , are reluctant [*-3] to mount [*RNR*-1] , or even support [*RNR*-1] , challenges against him for re-election and are usually loath [*-3] to file complaints that [*T*-163] might impugn a judge 's integrity .
+</text>
+	<arg n="0">[*T*-163] -&gt;  that -&gt;  complaints</arg>
+	<arg f="MOD" n="M">might</arg>
+	<rel>impugn</rel>
+	<arg n="1">a judge 's integrity</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

@@ -1,0 +1,60 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="plant">
+<note>
+  Frames file for 'plant' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="plant.01" name="to put or place " vncls="9.7">
+<roles>
+  <role descr="putter, agent" n="0">
+        <vnrole vncls="9.7" vntheta="Agent"/></role>
+  <role descr="entity planted" n="1">
+        <vnrole vncls="9.7" vntheta="Theme"/></role>
+  <role descr="location" n="2">
+        <vnrole vncls="9.7" vntheta="Destination"/></role>
+</roles>
+
+<example name="transitive">
+<inflection aspect="progressive" form="participle" person="third" tense="present" voice="active"/>
+<text>
+ It has a long shelf life and `` does n't fool the public , '' says [0] [*T*-2] Grady Auvil , an Orondo , Wash. , grower who [*T*-1] is planting Fujis and spreading the good word about them .
+</text>
+	<arg n="0">[*T*-1] -&gt;  who -&gt;  an Orondo , Wash. , grower</arg>
+	<rel>planting</rel>
+	<arg n="1">Fujis</arg>
+</example>
+
+
+<example name="passive">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+ But the full effect on prices of the winter wheat now being planted [*] wo n't be felt [*-1] until the second half of next year .
+</text>
+	<arg f="TMP" n="M">now</arg>
+	<rel>planted</rel>
+	<arg n="1">[*] -&gt;  the winter wheat</arg>
+</example>
+
+
+
+<example name="all arguments">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ In response to dwindling domestic supplies , Agriculture Secretary Clayton Yeutter last month said [0] the U.S. government would slightly increase the number of acres [0] farmers can plant [*T*-1] in wheat for next year and still qualify for federal support payments .
+</text>
+	<arg n="0">farmers</arg>
+	<arg f="MOD" n="M">can</arg>
+	<rel>plant</rel>
+	<arg n="2">[*T*-1] -&gt;  [0] -&gt;  the number</arg>
+	<arg f="in" n="1">wheat</arg>
+	<arg f="TMP" n="M">for next year</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

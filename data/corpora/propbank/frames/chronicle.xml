@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="chronicle">
+<note>
+  Frames file for 'chronicle'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="chronicle.01" name="to record in a chronological order" vncls="-">
+<roles> 
+  <role descr="recorder, agent" n="0"/>
+  <role descr="thing recorded" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ It chronicles how , over a period of a dozen years , Southern Methodist University bought its way to football respectability in the Southwest Conference , [*-3] only to find itself trapped and strangled [*] by the athlete-payoff system [0] it created [*T*-1] [*T*-2] .
+</text>
+	<arg n="0">It</arg>
+	<rel>chronicles</rel>
+	<arg n="1">how , over a period of a dozen years , Southern Methodist University bought its way to football respectability in the Southwest Conference , [*-3] only to find itself trapped and strangled [*] by the athlete-payoff system [0] it created [*T*-1] [*T*-2]</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

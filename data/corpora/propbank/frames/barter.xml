@@ -1,0 +1,55 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="barter">
+<note>
+  Frames file for 'barter' based on sentences in wsj.  Verbnet entry
+  13.6.  No Framenet entry, which surprises me.
+</note>
+
+<roleset id="barter.01" name="trade" vncls="13.6">
+<roles>
+    <role descr="agent, entity trading" n="0">
+		<vnrole vncls="13.6" vntheta="Agent"/></role>
+    <role descr="thing being traded (away)" n="1">
+		<vnrole vncls="13.6" vntheta="Theme1"/></role>
+    <role descr="other exchanger" n="2"/>
+    <role descr="other item in exchange, price, or premium, traded for or at" n="3">
+		<vnrole vncls="13.6" vntheta="Theme2"/></role>
+</roles>
+
+<example name="two args">
+<inflection aspect="ns" form="participle" person="third" tense="present" voice="passive"/>
+<text>
+    What Aeroflot doesn't pour into its own gas-guzzling Ilyushins is
+    bartered [*-1] to the airport authority, which resells it to 11
+    Western carriers including Air France, Trans World Airlines and
+    Pakistan International Airlines. 
+</text>
+        <rel>bartered</rel>
+        <arg n="1">[*-1] -&gt;  What Aeroflot doesn't pour into its own
+        gas-guzzling Ilyushins</arg> 
+        <arg f="to" n="2">the airport authority, which resells it to
+        11 Western carriers including Air France, Trans World Airlines
+        and Pakistan International Airlines</arg> 
+</example>
+
+<example name="all args">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John bartered his eternal soul to the devil for one good night's sleep.
+  </text>
+  <arg n="0">John</arg>
+  <rel>bartered</rel>
+  <arg n="1">his eternal soul</arg>
+  <arg f="to" n="2">the devil</arg>
+  <arg f="for" n="3">one good night's sleep</arg>
+
+<note>
+Can't say that I blame him.
+</note>
+</example>
+
+
+</roleset>
+</predicate>
+</frameset>

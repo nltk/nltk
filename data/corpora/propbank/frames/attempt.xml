@@ -1,0 +1,46 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="attempt">
+<note>
+  Frames file for 'attempt' based on sentences in financial
+  subcorpus.  No access to verbnet.  Comparison with 'try'.
+</note>
+
+<roleset id="attempt.01" name="try">
+  <roles>
+    <role descr="Agent/Entity Trying" n="0"/>
+    <role descr="thing tried" n="1"/>
+  </roles>
+
+<example name="sentential attempt">
+<text>
+    Mr. Nichol said he was ``extremely disappointed in the continuing
+    deterioration of the company's operations while it attempted to
+    conclude the reorganization during the past four months.'' 
+</text>
+        <arg n="0">it</arg>
+        <rel>attempted</rel>
+        <arg n="1">to conclude the reorganization during the
+        past four months</arg> 
+</example>
+
+<example name="nominal attempt">
+<text>
+    Investment bankers following UAL agree that the strongest impetus
+    for an eventual deal is that the pilots have been attempting a
+    buy-out for more than two years, and aren't likely to stop, having
+    come so close to success. 
+</text>
+        <arg n="0">the pilots</arg>
+        <rel>attempting</rel>
+        <arg n="1">a buy-out</arg>
+        <arg f="TMP" n="M">for more than two years</arg>
+</example>
+
+<note>
+Arg2 'benefactive' might appear.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

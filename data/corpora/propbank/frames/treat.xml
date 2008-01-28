@@ -1,0 +1,168 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="treat">
+<note>
+  Frames file for 'treat' based on sentences in financial subcorpus.
+  Verbnet entry 29.2, other framed members include count, describe,
+  employ, intend, portray, regard.  Comparison to describe and give.
+  Also an update of Chris' old frames file.  Framing is all the same,
+  fortunately.
+</note>
+
+<roleset id="treat.01" name="assume that something has a particular attribute" vncls="29.2">
+<roles>
+  <role descr="assumer of attribute" n="0">
+	  <vnrole vncls="29.2" vntheta="Agent"/></role>
+  <role descr="thing" n="1">
+	  <vnrole vncls="29.2" vntheta="Theme"/></role>
+  <role descr="attribute" n="2">
+	  <vnrole vncls="29.2" vntheta="Predicate"/></role>
+</roles>
+
+<example name="passive">
+<text>
+    Interest on the bonds will be treated *trace* as a preference item
+    in calculating the federal alternative minimum tax that may be
+    imposed  on certain investors. 
+</text>
+        <arg f="MOD" n="M">will</arg>
+        <rel>treated</rel>
+        <arg n="1">*trace* -&gt;  Interest on the bonds</arg>
+        <arg f="as" n="2">a preference item</arg>
+        <arg f="LOC" n="M">in calculating the federal alternative
+        minimum tax that may be imposed  on certain investors</arg> 
+</example>
+
+<example name="active">
+  <text>
+    Mary treats John like an idiot, which he is.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>treats</rel>
+  <arg n="1">John</arg>
+  <arg f="like" n="2">an idiot, which he is</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="treat.02" name="buy for someone">
+<roles>
+  <role descr="buyer, treater" n="0"/>
+  <role descr="treat" n="1"/>
+  <role descr="benefactive" n="2"/>
+</roles>
+
+<example name="there is such a thing as a free lunch">
+  <text>
+    Mary treated John to lunch.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>treated</rel>
+  <arg n="2">John</arg>
+  <arg f="to" n="1">lunch</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="treat.03" name="medical treatment">
+<roles>
+  <role descr="doctor (etc)" n="0"/>
+  <role descr="patient" n="1"/>
+  <role descr="illness or injury" n="2"/>
+  <role descr="instrument" n="3"/>
+</roles>
+
+<example name="passive with injury">
+<text>
+    The injured, including three in critical condition, were treated
+    *trace* for burns, breathing problems and cuts from flying glass,
+    hospital officials said. 
+</text>
+        <rel>treated</rel>
+        <arg n="1">*trace* -&gt;  The injured, including three in
+        critical condition,</arg> 
+        <arg f="for" n="2">burns, breathing problems and cuts from
+        flying glass</arg> 
+</example>
+
+<example name="instrumental subject">
+<text>
+    Sales of Pfizer's important drugs, Feldene for *trace* treating
+    arthritis, and Procardia, a heart medicine, have shrunk because of
+    increased competition. 
+</text>
+        <arg n="3">*trace* -&gt;  Feldene</arg>
+        <rel>treating</rel>
+        <arg n="2">arthritis</arg>
+</example>
+
+<example name="active transitive">
+<text>
+    By the time it paid its expenses it only had $120,000 left -- not
+    enough *trace* to treat even one child. 
+</text>
+        <arg n="0">*trace* -&gt;  it</arg>
+        <rel>treat</rel>
+        <arg n="1">even one child</arg>
+</example>
+
+<note>
+And so forth.
+</note>
+
+</roleset>
+
+<roleset id="treat.04" vncls="-" name="affect a change in s.t. by applying a substance">
+<roles>
+  <role n="0"  descr="cause of change, agent"/>
+  <role n="1"  descr="thing changing"/>
+  <role n="2"  descr="substance"/>
+</roles>
+
+<example name="missing substance">
+  <inflection person="third" tense="present" aspect="ns" voice="active" form="full"/>
+  <text>
+     Seymour Schreibman, the 65-year-old owner of Schreibman Raphael
+     Furs Inc., treats the reverse side of a Persian lambskin to
+     produce a reversible fur-and-leather garment. 
+  </text>
+  <arg n="0"        >Seymour Schreibman, the 65-year-old owner of
+  Schreibman Raphael Furs Inc.</arg>
+  <rel              >treats</rel>
+  <arg n="1"        >the reverse side of a Persian lambskin</arg>
+  <arg n="m" f="PNC">to produce a reversible fur-and-leather garment</arg>
+<note>
+Actually very similar to the medical treatment set.
+</note>
+</example>
+</roleset>
+
+<roleset id="treat.05" vncls="-" name="handle (esp scholarly)">
+<roles>
+  <role n="0"  descr="author"/>
+  <role n="1"  descr="topic, subject"/>
+</roles>
+
+<example name="postmodern angst">
+  <inflection person="ns" tense="present" aspect="perfect" voice="active" form="participle"/>
+  <text>
+    It is evident that their conversation runs more or less on the
+    following lines: ``I've submitted the manuscript of my novel under
+    the title `Teresa de Cepeda,' and in it I've treated a few
+    neglected aspects of that eternal problem which...'' 
+  </text>
+  <arg n="0"        >I</arg>
+  <rel              >treated</rel>
+  <arg n="1"        >a few neglected aspects of that eternal problem
+  which...'' </arg> 
+</example>
+
+</roleset>
+</predicate>
+</frameset>

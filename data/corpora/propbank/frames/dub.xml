@@ -1,0 +1,34 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="dub">
+<note>
+  Frames file for 'dub' based on survey of sentences in the WSJ
+  corpus. Comparison with 'name'.
+</note>
+
+<roleset id="dub.01" name="to name" vncls="-">
+<roles>
+  <role descr="assigner of name, agent" n="0"/>
+  <role descr="thing named" n="1"/>
+  <role descr="name" n="2"/>
+</roles>
+
+
+<example name="all arguments">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ But Rep. Hammerschmidt said that the provision , which he dubbed [*T*-2] a `` special interest '' amendment , was likely [*-1] to make the bill even more controversial .
+</text>
+	<arg n="0">he</arg>
+	<rel>dubbed</rel>
+	<arg n="1">[*T*-2] -&gt;  which -&gt;  the provision</arg>
+	<arg n="2">a `` special interest '' amendment</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

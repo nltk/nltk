@@ -1,0 +1,75 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="cease">
+<note>
+  Frames file for 'cease' based on sentences in financial subcorpus.
+  Verbnet entry 55.1, other framed members include begin, commence,
+  proceed, and resume.  Logically, also 'stop' and 'end'.  Created by
+  importing 'stop' and replacing lemmas.
+</note>
+
+<roleset id="cease.01" name="stop" vncls="55.1">
+<roles>
+  <role descr="causer of ceasing, Agent" n="0">
+	<vnrole vncls="55.1" vntheta="Agent"/></role>
+  <role descr="Theme (action or object being stopped)" n="1">
+	  <vnrole vncls="55.1" vntheta="Theme"/></role>
+  <role descr="Instrument" n="2"/>
+</roles>
+
+<example name="transitive, NP theme">
+  <text>
+  The ban won't cease privately-funded tissue-transplant research.
+  </text>
+  <arg n="0">The ban</arg>
+  <arg f="MOD" n="m">wo</arg>
+  <arg f="NEG" n="m">n't</arg>
+  <rel>cease</rel>
+  <arg n="1">privately-funded tissue-transplant research</arg>
+</example>
+
+<example name="transitive, S theme">
+  <text>
+  Lorillard Inc ceased using crocidolite in its Micronite cigarette
+  filters in 1956.
+  </text>
+  <rel>ceased</rel>
+  <arg n="1">[Lorillard Inc][using crocidolite in its Micronite cigarette
+  filters]</arg>
+  <arg f="TMP" n="m">in 1956</arg>
+</example>
+
+<example name="made up examples with instrument">
+  <text>
+  Mary ceased John's incessant chattering with a deep passionate kick
+  to the groin.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>ceased</rel>
+  <arg n="1">John's incessant chattering</arg>
+  <arg f="with" n="3">a deep passionate kick to the groin.</arg>
+</example>
+
+<note>
+I really didn't think this sentence was going to end this way.  Came
+as rather a surprise to me, to be honest.
+</note>
+
+<example name="and proving its an arg">
+  <text>
+  Mary's kick to the groin ceased John's incessant chattering.
+  </text>
+  <arg n="3">Mary's kick to the groin</arg>
+  <rel>ceased</rel>
+  <arg n="1">John's incessant chattering</arg>
+</example>
+
+</roleset>
+
+<note>
+I actually think the instrumental examples sound pretty bad; I doubt
+any real instruments will occur.
+</note>
+
+</predicate>
+</frameset>

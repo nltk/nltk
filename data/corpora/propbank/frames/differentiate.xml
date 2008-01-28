@@ -1,0 +1,52 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="differentiate">
+<note>
+  Frames file for 'differentiate' based on sentences in wsj.  No
+  access to verbnet at the moment.
+</note>
+
+<roleset id="differentiate.01" name="cause or point out a difference" vncls="23.1">
+<roles>
+  <role descr="causer of difference" n="0"><vnrole vncls="23.1" vntheta="Agent"/></role>
+  <role descr="different thing(s)" n="1"><vnrole vncls="23.1" vntheta="Patient"/></role>
+  <role descr="instrument, when separate from arg0" n="2"/>
+</roles>
+
+<example name="differentiate between">
+<inflection aspect="ns" form="gerund" person="ns" tense="ns" voice="ns"/>
+<text>
+    Certainly conservative environmentalists can defend their limited
+    government position by [*-1] differentiating between Old
+    Environmentalism and New Environmentalism (``Journalists and
+    Others for Saving the Planet,'' by David Brooks, editorial page,
+    Oct. 5). 
+</text>
+        <arg n="0">[*-1] -&gt;  conservative environmentalists</arg>
+        <rel>differentiating</rel>
+        <arg f="between" n="1">Old Environmentalism and New
+        Environmentalism</arg> 
+</example>
+
+
+<example name="arg1 unstated">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+    Producers also are trying [*-2] to differentiate by concentrating
+    on higher-profit output, such as coated and electrogalvanized
+    products, which remain beyond the reach of minimills. 
+</text>
+        <arg n="0">[*-2] -&gt;  Producers</arg>
+        <rel>differentiate</rel>
+        <arg f="by" n="2">concentrating on higher-profit output, such
+        as coated and electrogalvanized products, which remain beyond
+        the reach of minimills</arg> 
+<note>
+Arg1 here defaults to 'among themselves' or something like that.
+</note>
+
+</example>
+
+</roleset>
+</predicate>
+</frameset>

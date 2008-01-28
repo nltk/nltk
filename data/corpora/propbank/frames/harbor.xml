@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="harbor">
+<note>
+  Frames file for 'harbor' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="harbor.01" name="to entertain a thought or feeling" vncls="-">
+<roles>
+  <role descr="thinker or feeler" n="0"/>
+  <role descr="feeling or thought" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ As Conservatives rally around Mrs. Thatcher during the crisis , many harbor hopes [0] last week 's debacle will prompt change .
+</text>
+	<arg f="TMP" n="M">As Conservatives rally around Mrs. Thatcher during the crisis</arg>
+	<arg n="0">many</arg>
+	<rel>harbor</rel>
+	<arg n="1">hopes [0] last week 's debacle will prompt change</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

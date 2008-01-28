@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="facilitate">
+<note>
+  Frames file for 'facilitate' based on sentences in financial
+  subcorpus.  No verbnet entry.  Comparison with 'ease'.
+</note>
+
+<roleset id="facilitate.01" name="make easier">
+<roles>
+  <role descr="thing helping" n="0"/>
+  <role descr="thing being helped" n="1"/>
+</roles>
+
+<example name="nice -n- simple">
+<text>
+    Among other things, Mr. Bologna said that the sale will facilitate
+    Gen-Probe's marketing of a diagnostic test for acquired immune
+    deficiency syndrome, or AIDS. 
+</text>
+        <arg n="0">the sale</arg>
+        <arg f="MOD" n="M">will</arg>
+        <rel>facilitate</rel>
+        <arg n="1">Gen-Probe's marketing of a diagnostic test for
+        acquired immune deficiency syndrome, or AIDS</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

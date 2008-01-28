@@ -1,0 +1,51 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="shorten">
+<note>
+Frames file for 'shorten' based on sentences in financial subcorpus
+and automatic expansion via verbnet.
+</note>
+
+<roleset id="shorten.01" name="make shorter" vncls="45.4">
+<roles>
+	<role descr="causal agent" n="0">
+		
+  <vnrole vncls="45.4" vntheta="Agent"/></role>
+
+	<role descr="thing becoming shorter" n="1">
+		
+  <vnrole vncls="45.4" vntheta="Patient"/></role>
+
+	<role descr="EXT" n="2"/>
+	<role descr="start point" n="3"/>
+	<role descr="end point" n="4"/>
+</roles>
+
+<example name="start and end points">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    Mr. Krampe also said that Mercedes plans to bring out new models
+    every year through the mid-1990s and it will shorten its product
+    development cycle to eight years from 10 or 12 years to compete
+    more effectively with Toyota Motor Corp.'s Lexus, Nissan Motor
+    Co.'s Infiniti and Honda Motor Co.'s Acura luxury-car divisions. 
+</text>
+        <arg n="0">it</arg>
+        <arg f="MOD" n="M">will</arg>
+        <rel>shorten</rel>
+        <arg n="1">its product development cycle</arg>
+        <arg f="to" n="4">eight years</arg>
+        <arg f="from" n="3">10 or 12 years</arg>
+        <arg f="PNC" n="M">to compete more effectively with Toyota
+        Motor Corp.'s Lexus, Nissan Motor Co.'s Infiniti and Honda
+        Motor Co.'s Acura luxury-car divisions</arg> 
+</example>
+
+<note>
+Refer to other quantifiable-change (rise, fall, broaden, etc) for
+additional examples.
+</note>
+
+</roleset>
+
+</predicate>
+</frameset>

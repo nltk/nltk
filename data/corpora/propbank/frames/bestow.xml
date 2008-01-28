@@ -1,0 +1,34 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="bestow">
+<note>
+  Frames file for 'bestow' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+
+<roleset id="bestow.01" name="to present, give as a gift" vncls="-">
+<roles>
+  <role descr="giver, agent" n="0"/>
+  <role descr="gift, theme" n="1"/>
+  <role descr="recipient, bestowed on" n="2"/>
+</roles>
+
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+ The Bravo Zulu award , the Navy accolade for a `` job well done [*] , '' is bestowed [*-1] on Federal 's workers who [*T*-2] surpass the call of duty .
+</text>
+	<rel>bestowed</rel>
+	<arg n="1">[*-1] -&gt;  The Bravo Zulu award , the Navy accolade for a `` job well done [*] , ''</arg>
+	<arg f="on" n="2">Federal 's workers who [*T*-2] surpass the call of duty</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

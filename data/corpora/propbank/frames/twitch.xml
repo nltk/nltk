@@ -1,0 +1,40 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="twitch">
+<note>
+  Frames file for 'twitch' based on sentences in wsj.  Verbnet entry
+  40.3.2, Framenet entry Body movement.
+</note>
+
+<roleset id="twitch.01" name="(cause to) move spastically" vncls="40.3.2">
+<roles>
+  <role descr="causer of motion" n="0"><vnrole vncls="40.3.2" vntheta="Agent"/></role>
+  <role descr="thing twitching" n="1"><vnrole vncls="40.3.2" vntheta="Patient"/></role>
+</roles>
+
+<example name="ergative">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    If positioned over the brain's motor-control area, the hand-held
+    electromagnets generate nerve impulses that zip down motor nerves
+    and activate muscles, making, say, a finger twitch. 
+</text>
+        <arg n="1">a finger</arg>
+        <rel>twitch</rel>
+</example>
+
+<example name="I'm not a twitch, I'm your wife!">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John twitched his nose and made Mary disappear.
+  </text>
+  <arg n="0">John</arg>
+  <rel>twitched</rel>
+  <arg n="1">his nose</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

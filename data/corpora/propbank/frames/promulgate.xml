@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="promulgate">
+<note>
+  Frames file for 'promulgate' based on sentences in wsj.  No access
+  to verbnet at the moment.
+</note>
+
+<roleset id="promulgate.01" name="preach the powers of" vncls="-">
+<roles>
+  <role descr="preacher" n="0"/>
+  <role descr="wonderful thing" n="1"/>
+</roles>
+
+<example name="fancy vocabulary">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Then the 20th century saw the evolution of private-sector wonder
+    drugs, which [*T*-1] promulgated medical therapy. 
+</text>
+        <arg n="0">[*T*-1] -&gt;  which -&gt;  private-sector wonder drugs</arg>
+        <rel>promulgated</rel>
+        <arg n="1">medical therapy</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

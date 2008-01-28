@@ -1,0 +1,60 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="suffice">
+<note>
+  Frames file for 'suffice' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="suffice.01" name="be sufficient" vncls="-">
+<roles>
+  <role descr="sufficient thing" n="0"/>
+</roles>
+
+<example name="clearest syntax">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+     But that won't suffice. 
+</text>
+        <arg f="DIS" n="M">But</arg>
+        <arg n="0">that</arg>
+        <arg f="MOD" n="M">wo</arg>
+        <arg f="NEG" n="M">n't</arg>
+        <rel>suffice</rel>
+</example>
+
+<example name="raised subordinate subject">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    But there was little selling pressure, and even small orders at
+    the lower levels sufficed [*-1] to bring the market back to
+    Friday's opening levels. 
+</text>
+        <arg n="0">[ even small orders at the lower levels] [ [*-1] to
+        bring the market back to Friday's opening levels]</arg> 
+        <rel>sufficed</rel>
+</example>
+
+<example name="it-cleft and something else">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    [*] Suffice it [*] to say that if this were a New York
+    Yankees-Mets series, or one between the Chicago Cubs and White Sox
+    (hey, it's possible), you'd need uniformed police in every other
+    seat to separate opposing fans, and only the suicidal would
+    bifurcate their bonnets. 
+</text>
+        <rel>Suffice</rel>
+        <arg n="0">[*] to say that if this were a New York
+        Yankees-Mets series, or one between the Chicago Cubs and White
+        Sox (hey, it's possible), you'd need uniformed police in every
+        other seat to separate opposing fans, and only the suicidal
+        would bifurcate their bonnets</arg> 
+</example>
+
+<note>
+The last sentence is actually &quot;To say....bonnets suffices.&quot;  There's
+an it-cleft to move the heavy phrase rightwards, then a stylistic
+right dislocation of the it itself!  Coolness.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

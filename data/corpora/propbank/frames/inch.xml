@@ -1,0 +1,57 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="inch">
+<note>
+  Frames file for 'inch' based on sentences in financial subcorpus.
+  Verbnet entry 51.3.2, other framed members include bolt, charge,
+  dash, float, leap, roll, scuttle, slide, sneak, and walk.  No
+  Framenet entry.  Comparison with verbs of quantifiable/incremental
+  motion.
+</note>
+
+<roleset id="inch.01" name="move very slowly" vncls="51.3.2">
+<roles>
+  <role descr="causer of motion" n="0">
+		
+  <vnrole vncls="51.3.2" vntheta="Agent"/></role>
+
+  <role descr="entity in motion" n="1">
+		
+  <vnrole vncls="51.3.2" vntheta="Theme"/></role>
+
+  <role descr="EXT" n="2"/>
+  <role descr="start point" n="3"/>
+  <role descr="end point" n="4"><vnrole vncls="51.3.2" vntheta="Location"/></role>
+  <role descr="direction" n="5"><vnrole vncls="51.3.2" vntheta="Location"/></role>
+</roles>
+
+<example name="almost all args">
+<inflection aspect="ns" form="participle" person="ns" tense="past" voice="active"/>
+<text>
+   ...revenue inched up 1.4% to $7.13 billion from $7.03 billion.
+</text>
+        <arg n="1">revenue</arg>
+        <rel>inched</rel>
+        <arg f="DIR" n="5">up</arg>
+        <arg f="EXT" n="2">1.4%</arg>
+        <arg f="to" n="4">$7.13 billion </arg>
+        <arg f="from" n="3">$7.03 billion </arg>
+</example>
+
+<example name="with agent">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John inched the car forward.
+  </text>
+  <arg n="0">John</arg>
+  <rel>inched</rel>
+  <arg n="1">the car</arg>
+  <arg f="DIR" n="5">forward</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

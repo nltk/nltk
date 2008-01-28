@@ -1,0 +1,47 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="drift">
+<note>
+  Frames file for 'drift' based on sentences in financial subcorpus
+  and comparison with Chris' old drift file.  Well, not so much, since
+  that's not how we're doing things these days.  Comparison with
+  'move' instead.
+</note>
+
+<roleset id="drift.01" name="move aimlessly" vncls="47.3 51.3.1 51.3.2">
+<roles>
+  <role descr="object in motion" n="1">
+		
+		
+		
+  <vnrole vncls="47.3" vntheta="Theme"/><vnrole vncls="51.3.2" vntheta="Theme"/><vnrole vncls="51.3.1" vntheta="Theme"/></role>
+
+</roles>
+
+<example name="with LOC">
+<text>
+    The Dow Jones Industrial Average...drifted on either side of its
+    previous close and finished with a gain of just 0.82 at 2645.90. 
+</text>
+        <arg n="1">The Dow Jones Industrial Average...</arg>
+        <rel>drifted</rel>
+        <arg f="LOC" n="M">on either side of its previous close</arg>
+</example>
+
+<example name="with DIR">
+<text>
+    Growth stocks may underperform cyclical stocks next year if the
+    Federal Reserve begins to let interest rates drift sufficiently
+    lower to boost the economy. 
+</text>
+        <arg n="1">interest rates</arg>
+        <rel>drift</rel>
+        <arg f="DIR" n="M">sufficiently lower</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

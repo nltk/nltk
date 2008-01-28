@@ -1,0 +1,555 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="turn">
+<note>
+  Frames file for 'turn' based on Chris' old frames file and
+  comparison to initial sentences of big corpus.  Many, many made-up
+  examples.
+</note>
+
+<roleset id="turn.01" name="rotation" vncls="26.6 40.3.2 40.8.3-1 51.3.1">
+<roles>
+  <role descr="turner" n="0">
+	<vnrole vncls="40.3.2" vntheta="Agent"/>
+        <vnrole vncls="40.8.3-1" vntheta="Experiencer"/>
+        <vnrole vncls="26.6" vntheta="Agent"/>
+        <vnrole vncls="51.3.1" vntheta="Agent"/></role>
+  <role descr="thing turning" n="1">
+        <vnrole vncls="40.3.2" vntheta="Patient"/>
+        <vnrole vncls="40.8.3-1" vntheta="Patient"/>
+        <vnrole vncls="26.6" vntheta="Material"/>
+        <vnrole vncls="51.3.1" vntheta="Theme"/></role>
+  <role descr="direction, location" n="m"/>
+</roles>
+
+<example name="transitive agentive">
+  <text>
+  John turned the key in the lock.
+  </text>
+  <arg n="0">John</arg>
+  <rel>turned</rel>
+  <arg n="1">the key</arg>
+  <arg f="LOC" n="m">in the lock</arg>
+</example>
+
+<example name="ergative">
+  <text>
+  The focus turned to other fixed-income markets.
+  </text>
+  <arg n="1">The focus</arg>
+  <rel>turned</rel>
+  <arg f="DIR" n="m">to other fixed-income markets</arg>
+</example>
+
+<example name="non-obvious direction">
+  <text>
+  The reforms turned the economy around.
+  </text>
+  <arg n="0">The reforms</arg>
+  <rel>turned</rel>
+  <arg n="1">the economy</arg>
+  <arg f="DIR" n="m">around</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="turn.02" name="transformation" vncls="26.6">
+<roles>
+  <role descr="causer of transformation" n="0">
+		
+  <vnrole vncls="26.6" vntheta="Agent"/></role>
+
+  <role descr="thing changing" n="1">
+		
+  <vnrole vncls="26.6" vntheta="Patient"/></role>
+
+  <role descr="end state" n="2">
+		
+  <vnrole vncls="26.6" vntheta="Product"/></role>
+
+  <role descr="start state" n="3">
+		
+  <vnrole vncls="26.6" vntheta="Material"/></role>
+
+</roles>
+
+<example name="transitive">
+  <text>
+  The plan turned state companies private.
+  </text>
+  <arg n="0">The plan</arg>
+  <rel>turned</rel>
+  <arg n="1">state companies</arg>
+  <arg n="2">private</arg>
+</example>
+
+<example name="with source/start state">
+  <text>
+  John turned Mary from a reactionary to an activist.
+  </text>
+  <arg n="0">John</arg>
+  <rel>turned</rel>
+  <arg n="1">Mary</arg>
+  <arg f="from" n="3">a reactionary</arg>
+  <arg f="to" n="2">an activist</arg>
+</example>
+
+<example name="ergative">
+  <text>
+  John turned into an activist.
+  </text>
+  <arg n="1">John</arg>
+  <rel>turned</rel>
+  <arg f="into" n="2">an activist</arg>
+</example>
+
+<example name="turn down, as direction">
+  <text>
+  John turned down the heat.
+  </text>
+  <arg n="0">John</arg>
+  <rel>turned</rel>
+  <arg f="DIR" n="m">down</arg>
+  <arg n="1">the heat</arg>
+</example>
+
+</roleset>
+
+<roleset id="turn.03" name="idiomatic: turn thumbs down on = reject" vncls="-">
+<roles>
+  <role descr="rejecter" n="0"/>
+  <role descr="thumbs" n="1"/>
+  <role descr="thing rejected" n="2"/>
+</roles>
+
+<example name="this really does occur">
+  <text>
+  The voters turned thumbs down on the proposed bill.
+  </text>
+  <arg n="0">The voters</arg>
+  <rel>turned</rel>
+  <arg n="1">thumbs</arg>
+  <arg f="DIR" n="m">down</arg>
+  <arg f="on" n="2">the proposed bill</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="turn.14" vncls="-" name="depend, hang">
+<roles>
+  <role n="0"  descr="depender"/>
+  <role n="1"  descr="depended on"/>
+</roles>
+
+<example name="as the world turns?">
+  <inflection person="third" tense="present" aspect="ns" voice="active" form="full"/>
+  <text>
+     Instead, it turns on the disputed and elusive facts of ``who did
+     what to whom.''
+  </text>
+  <arg n="m" f="DIS">Instead</arg>
+  <arg n="0"        >it</arg>
+  <rel              >turns</rel>
+  <arg n="1" f="on">the disputed and elusive facts of ``who did what
+  to whom</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="turn.16" vncls="-" name="produce, nonphrasal">
+<roles>
+  <role n="0"  descr="producer"/>
+  <role n="1"  descr="us. 'profit'"/>
+</roles>
+
+<example name="turn a prophet?">
+  <inflection person="ns" tense="ns" aspect="ns" voice="active" form="full"/>
+  <text>
+     Why should they have to co-exist with opportunists rushing in
+     *trace* to turn a quick profit?
+  </text>
+  <arg n="0"        >*trace* -> opportunists</arg>
+  <rel              >turn</rel>
+  <arg n="1"        >a quick profit</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="turn_away">
+<note>
+Similar to the &quot;rotation&quot; roleset  for &quot;turn&quot; above
+</note>
+
+<roleset id="turn.04" name="reject" vncls="-">
+<roles>
+  <role descr="turner" n="0"></role>
+  <role descr="thing turned away" n="1"/>
+  <role descr="turned-away-from" n="2"/>
+</roles>
+
+<example name="transitive">
+  <text>
+  John turned all applicants away.
+  </text>
+  <arg n="0">John</arg>
+  <rel>turned_away</rel>
+  <arg n="1">all applicants</arg>
+</example>
+
+<example name="ergative">
+  <text>
+  John turned away from the stock market in disgust.
+  </text>
+  <arg n="1">John</arg>
+  <rel>turned away</rel>
+  <arg f="from" n="2">the stock market</arg>
+  <arg f="MNR" n="m">in disgust</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="turn_down">
+<note>
+Similar to &quot;rotation&quot; roleset and also &quot;turn away&quot;
+</note>
+
+<roleset id="turn.05" name="reject" vncls="-">
+<roles>
+  <role descr="rejecter" n="0"></role>
+  <role descr="thing rejected" n="1"/>
+</roles>
+
+<example name="transitive">
+  <text>
+  Separately, the Federal Energy Regulation Commission turned down for
+  now a request by Northeast seeking approval of its possible purchase
+  of PS of New Hampshire.
+  </text>
+  <arg f="DIS" n="m">Separately</arg>
+  <arg n="0">the Federal Energy Regulation Commission</arg>
+  <rel>turned down</rel>
+  <arg f="TMP" n="m">for now</arg>
+  <arg n="1">a request by Northeast seeking approval of its
+  possible purchase of PS of New Hampshire</arg>
+</example>
+
+<note>
+Compare this to the literal (non-phrasal) &quot;turn down&quot; (turn.01):
+John turned down the covers on the bed.
+In this case, &quot;down&quot; is the ArgM-DIR.
+
+&quot;Turn down&quot; also occurs in the &quot;transformation&quot; roleset
+ (turn.02) of the non-phrasal &quot;turn&quot;:
+John turned the heat down.
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="turn_in">
+<note>
+Essentially the same as &quot;give&quot;
+</note>
+
+<roleset id="turn.06" name="give" vncls="-">
+<roles>
+  <role descr="giver" n="0"/>
+  <role descr="thing given" n="1"/>
+  <role descr="entity given to" n="2"/>
+</roles>
+
+<example name="transitive">
+  <text>
+  John turned the test in to his teacher.
+  </text>
+  <arg n="0">John</arg>
+  <rel>turned_in</rel>
+  <arg n="1">the test</arg>
+  <arg f="to" n="2">his teacher</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="turn_on">
+
+<roleset id="turn.13" vncls="-" name="cause to be on">
+<roles>
+  <role n="0"  descr="cause of on-ness"/>
+  <role n="1"  descr="lamp, etc"/>
+</roles>
+
+<example name="tune in, turn on, drop out">
+  <inflection person="third" tense="present" aspect="ns" voice="active" form="full"/>
+  <text>
+     But the genes were accompanied by a piece of DNA, called a
+     promoter, that [*T*-2] turns the genes on.  
+  </text>
+  <arg n="0"        >[*T*-2] -> that -> a piece of DNA</arg>
+  <rel              >turns on</rel>
+  <arg n="1"        >the genes</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="turn_off">
+
+<roleset id="turn.07" name="cause to be off" vncls="-">
+<roles>
+  <role descr="turner off" n="0"/>
+  <role descr="thing which becomes off" n="1"/>
+</roles>
+
+<example name="transitive">
+  <text>
+  John turned the lights off.
+  </text>
+  <arg n="0">John</arg>
+  <rel>turned_off</rel>
+  <arg n="1">the lights</arg>
+</example>
+
+</roleset>
+
+<roleset id="turn.08" name="cause to reject" vncls="-">
+<roles>
+  <role descr="causer" n="0"/>
+  <role descr="rejecter" n="1"/>
+  <role descr="thing rejected" n="2"/>
+</roles>
+
+<example name="transitive">
+  <text>
+  John turned Mary off on hot dogs.
+  </text>
+  <arg n="0">John</arg>
+  <rel>turned_off</rel>
+  <arg n="1">Mary</arg>
+  <arg f="on" n="2">hot dogs</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="turn_out">
+
+<roleset id="turn.09" name="cause to be off" vncls="-">
+<roles>
+  <role descr="turner out" n="0"/>
+  <role descr="thing turned out" n="1"/>
+</roles>
+
+<example name="transitive">
+  <text>
+  John turned out the lights.
+  </text>
+  <arg n="0">John</arg>
+  <rel>turned_out</rel>
+  <arg n="1">the lights</arg>
+</example>
+
+</roleset>
+
+<roleset id="turn.10" name="produce, create" vncls="-">
+<roles>
+  <role descr="creator" n="0"/>
+  <role descr="creation" n="1"/>
+  <role descr="created-from, thing changed" n="2"/>
+  <role descr="benefactive" n="3"/>
+</roles>
+
+<example name="transitive">
+  <text>
+  This factory turns out hundreds of mountain bikes every day.
+  </text>
+  <arg n="0">This factory</arg>
+  <rel>turns out</rel>
+  <arg n="1">hundreds of mountain bikes</arg>
+  <arg f="TMP" n="m">every day</arg>
+</example>
+
+<note>
+The higher-numbered args (2 &amp; 3) may or may not occur; here they are
+just in case.
+</note>
+
+</roleset>
+
+<roleset id="turn.11" name="seem" vncls="-">
+<roles>
+  <role descr="thing seeming" n="1"/>
+  <role descr="attribute" n="2"/>
+</roles>
+
+<example name="sentential arg">
+  <text>
+  It turns out that John never reads the frames files.
+  </text>
+  <rel>turns out</rel>
+  <arg n="1">John never reads the frames files</arg>
+<note>
+As with &quot;seem&quot;, ignore the meaningless &quot;it&quot;, and as with all
+verbs-of-saying, ignore the complementizer &quot;that&quot;.
+</note>
+</example>
+
+<example name="split sentential arg">
+  <inflection person="third" tense="present" aspect="ns" voice="active" form="full"/>
+  <text>
+     (In last week's rape case, for example, the girl turns out
+     *trace* to have been a victim of incest.)
+  </text>
+  <arg n="m" f="LOC">In last weeks' rape case</arg>
+  <arg n="m" f="DIS">for example</arg>
+  <arg n="1"        >[the girl] [*trace* to have been a victim of incest]</arg>
+  <rel              >[turns] [out]</rel>
+<note>
+Sorry about the example.
+</note>
+</example>
+
+<example name="with attribute">
+  <inflection person="third" tense="present" aspect="ns" voice="active" form="full"/>
+  <text>
+    But in the end, everything turns out for the best, in the film
+    makers' warped view.
+  </text>
+  <arg n="m" f="DIS">But</arg>
+  <arg n="m" f="TMP">in the end</arg>
+  <arg n="1"        >everything</arg>
+  <rel              >turns out</rel>
+  <arg n="2" f="for">the best</arg>
+  <arg n="m" f="LOC">in the film makers' warped view</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="turn.17" vncls="-" name="turn out: appear, show up">
+<roles>
+  <role n="1"  descr="those appearing"/>
+</roles>
+
+<example name="glitterati">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+    Among the glitterati who [*T*-1] turned out in bipartisan
+    black-tie force [*-3] to benefit the Coelho Epilepsy Fund last
+    month were [*T*-2] Sen. Robert Dole, Rep. Newt Gingrich, and other
+    kingpins of Congress. 
+  </text>
+  <arg n="1"        >[*T*-1] -> who -> the glitterati</arg>
+  <rel              >turned out</rel>
+  <arg n="m" f="MNR">in bipartisan black-tie force</arg>
+  <arg n="m" f="PNC">[*-3] to benefit the Coelho Epilepsy Fund</arg>
+  <arg n="m" f="TMP">last month</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="turn_over">
+<note>
+Different from the directional &quot;turn over&quot; as in &quot;John
+turned the rock over to see all the bugs underneath.&quot; (turn.01)
+</note>
+
+<roleset id="turn.12" name="submit, give, exchange" vncls="-">
+<roles>
+  <role descr="giver" n="0"/>
+  <role descr="thing given" n="1"/>
+  <role descr="entity given to" n="2"/>
+  <role n="3" descr="in-exhange-for"/>
+</roles>
+
+<example name="transitive">
+  <text>
+  John turned all the evidence over to the FBI.
+  </text>
+  <arg n="0">John</arg>
+  <rel>turned_over</rel>
+  <arg n="1">all the evidence</arg>
+  <arg f="to" n="2">the FBI</arg>
+</example>
+
+<example name="as exchange">
+  <inflection person="ns" tense="ns" aspect="ns" voice="active" form="full"/>
+  <text>
+    Such is his reputation among the East Bay Bashers that when he hit
+    his first career home run last season, the fan who caught it
+    agreed *trace* to turn the ball over to him in return for an autograph.
+  </text>
+  <arg n="0"        >*trace* -> the fan who caught it</arg>
+  <rel              >turn over</rel>
+  <arg n="1"        >the ball</arg>
+  <arg n="2" f="to">him</arg>
+  <arg n="3" f="in">exchange for an autograph</arg>
+</example>
+
+<note>
+Adding the arg3 to this makes sentences really awkward--only sports
+writers would use it.
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="turn_up">
+
+<roleset id="turn.15" vncls="-" name="(cause to) appear">
+<roles>
+  <role n="0"  descr="agent, causer of appearance"/>
+  <role n="1"  descr="thing appearing"/>
+</roles>
+
+<example name="poof!">
+  <inflection person="ns" tense="future" aspect="ns" voice="active" form="full"/>
+  <text>
+     You never know where she'll turn up.
+  </text>
+  <arg n="1"        >she</arg>
+  <arg n="m" f="MOD">'ll</arg>
+  <rel              >turn up</rel>
+</example>
+
+<example name="I said, 'poof'!">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+     Though details were sketchy in the aftermath of the violent
+     earthquake that shook the high-tech corridor along with the rest
+     of the San Franciso Bay area, a spot check of computer makers
+     turned up little, if any, potentially lingering damage to
+     facilities or fabrication equipment.
+  </text>
+  <arg n="m" f="AV">Though details were sketchy in the aftermath of
+  the violent earthquake that shook the high-tech corridor along with
+  the rest of the San Francisco area</arg>
+  <arg n="0"        >a spot check of computer makers</arg>
+  <rel              >turned up</rel>
+  <arg n="1"        >little, if any, potentially lingering damage to
+  facilities or fabrication equipment</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

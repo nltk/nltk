@@ -1,0 +1,35 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="snipe">
+<note>
+  Frames file for 'snipe' based on sentences in wsj.  Verbnet entry 13.7.
+</note>
+
+<roleset id="snipe.01" name="shoot at sporadically" vncls="13.7">
+<roles>
+  <role descr="sniper" n="0"><vnrole vncls="13.7" vntheta="Agent"/></role>
+  <role descr="sniped at, target" n="1"/>
+</roles>
+
+<example name="the one example">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    In the mid-1980s, after ABC had just bid a record $309 million for
+    the 1988 Winter Games, he sniped at rivals for paying reckless
+    prices. 
+</text>
+        <arg f="TMP" n="M">In the mid-1980s</arg>
+        <arg f="TMP" n="M">after ABC had just bid a record $309
+        million for the 1988 Winter Games</arg> 
+        <arg n="0">he</arg>
+        <rel>sniped</rel>
+        <arg f="at" n="1">rivals</arg>
+        <arg f="CAU" n="M">for paying reckless prices</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

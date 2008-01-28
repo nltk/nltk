@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="resemble">
+<note>
+  Frames file for 'resemble' based on sentences in financial
+  subcorpus.  No Verbnet entry.
+</note>
+
+<roleset id="resemble.01" name="seem like" vncls="-">
+<roles>
+  <role descr="copy" n="1"/>
+  <role descr="original" n="2"/>
+</roles>
+
+<example name="very typical">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    Although some of the study's recommendations resemble those of
+    similar projects, the makeup of the task force was unusually
+    diverse, adding significance to the effort. 
+</text>
+        <arg n="1">some of the study's recommendations</arg>
+        <rel>resemble</rel>
+        <arg n="2">those of similar projects</arg>
+</example>
+
+<note>
+Args 1 and 2 because this can't take a passive alternation: John
+resembles an idiot / *An idiot is resembled by John.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

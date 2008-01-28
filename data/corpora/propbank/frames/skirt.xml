@@ -1,0 +1,52 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="skirt">
+<note>
+  Frames file for 'skirt'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="skirt.01" name="to surround, border" vncls="47.8">
+<roles> 
+  <role descr="entity surrounding" n="1">
+        <vnrole vncls="47.8" vntheta="Theme1"/></role> 
+  <role descr="entity surrounded" n="2">
+        <vnrole vncls="47.8" vntheta="Theme2"/></role>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ The ground along the Embarcadero the street that [*T*-1] skirts the city 's eastern boundary and piers -- dropped six inches after the quake , [*] wreaking major damage to at least one of the piers .
+</text>
+	<arg n="1">[*T*-1] -&gt;  that -&gt;  the street</arg>
+	<rel>skirts</rel>
+	<arg n="2">the city 's eastern boundary and piers</arg>
+</example>
+</roleset>
+
+<roleset id="skirt.02" name="to evade, put off" vncls="-">
+<roles> 
+  <role descr="evader" n="0"/> 
+  <role descr="entity skirted" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="perfect" form="participle" person="third" tense="present" voice="active"/>
+<text>
+ But Mr. Breeden , a 39-year-old securities lawyer , has skirted some of the heftier issues facing the financial markets .
+</text>
+	<arg f="DIS" n="M">But</arg>
+	<arg n="0">Mr. Breeden , a 39-year-old securities lawyer ,</arg>
+	<rel>skirted</rel>
+	<arg n="1">some of the heftier issues facing the financial markets</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

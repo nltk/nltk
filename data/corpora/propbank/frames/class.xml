@@ -1,0 +1,28 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="class">
+<note>
+    Frames file for 'class' based on transformation of 'classify',
+    which is the same word, after all.
+</note>
+
+<roleset id="class.01" name="assign a label or attribute" vncls="29.2">
+<roles>
+  <role descr="describer" n="0"><vnrole vncls="29.2" vntheta="Agent"/></role>
+  <role descr="thing defined" n="1"><vnrole vncls="29.2" vntheta="Theme"/></role>
+  <role descr="secondary attribute, described-as, definition" n="2"><vnrole vncls="29.2" vntheta="Predicate"/></role>
+</roles>
+
+<example name="typical usage">
+<text>
+    Her recent report classes the stock as a ``hold.''
+</text>
+        <arg n="0">Her recent report</arg>
+        <rel>classes</rel>
+        <arg n="1">the stock</arg>
+        <arg f="as" n="2">a ``hold</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="corroborate">
+<note>
+  Frames file for 'corroborate' based on sentences in wsj.  Verbnet
+  entry Evidence.
+</note>
+
+<roleset id="corroborate.01" name="confirm truth of a statement" vncls="-">
+<roles>
+  <role descr="confirmation of truth, supporting evidence" n="0"/>
+  <role descr="statement" n="1"/>
+</roles>
+
+<example name="typical">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    Three pieces of evidence corroborate the key assumption that
+    Democratic legislators are more willing to engage in local
+    benefit-seeking than their Republican colleagues. 
+</text>
+        <arg n="0">Three pieces of evidence</arg>
+        <rel>corroborate</rel>
+        <arg n="1">the key assumption that Democratic legislators are
+        more willing to engage in local benefit-seeking than their
+        Republican colleagues</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

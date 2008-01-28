@@ -1,0 +1,79 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="construct">
+<note>
+Frames file for 'construct' based on sentences in wsj and automatic
+expansion via verbnet.
+</note>
+
+<roleset id="construct.01" name="build" vncls="26.4">
+<roles>
+  <role descr="builder" n="0">
+        <vnrole vncls="26.4" vntheta="Agent"/></role>
+  <role descr="construction" n="1">
+        <vnrole vncls="26.4" vntheta="Product"/></role>
+  <role descr="material, start state" n="2">
+        <vnrole vncls="26.4" vntheta="Material"/></role>
+  <role descr="end state of arg1" n="4">
+        <vnrole vncls="26.4" vntheta="Product"/></role>
+</roles>
+
+<example name="straight transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    If he were able *trace* to construct a popular and efficient
+    corporatist system, he or his heir would be wellplaced to rein in
+    political opposition, and to re-establish control in Eastern
+    Europe. 
+</text>
+        <arg n="0">*trace* -&gt;  he</arg>
+        <rel>construct</rel>
+        <arg n="1">a popular and efficient corporatist system</arg>
+</example>
+
+<example name="locative?">
+<inflection aspect="perfect" form="participle" person="third" tense="present" voice="active"/>
+<text>
+    But the music has its charm, and Mr. Glass has constructed his
+    solo program around a move from the simple to the relatively
+    complex. 
+</text>
+        <arg n="0">Mr. Glass</arg>
+        <rel>constructed</rel>
+        <arg n="1">his solo program</arg>
+        <arg f="LOC" n="M">around a move from the simple to the
+        relatively complex</arg> 
+</example>
+
+<example name="end state as predicate">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    Indexes can be constructed *trace* to serve social goals, such as
+    eliminating the stocks of companies doing business in South
+    Africa. 
+</text>
+        <arg f="MOD" n="M">can</arg>
+        <rel>constructed</rel>
+        <arg n="1">*trace* -&gt;  Indexes</arg>
+        <arg n="4">to serve social goals, such as eliminating
+        the stocks of companies doing business in South Africa</arg> 
+</example>
+
+<example name="with start state">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John constructed an entire dissertation out of the bits and pieces
+    of knowledge granted him by his advisor.
+  </text>
+  <arg n="0">John</arg>
+  <rel>constructed</rel>
+  <arg n="1">an entire dissertation</arg>
+  <arg f="out" n="2">of the bits and pieces
+    of knowledge granted him by his advisor.</arg>
+</example>
+
+
+</roleset>
+
+</predicate>
+</frameset>

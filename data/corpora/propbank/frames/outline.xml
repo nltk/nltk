@@ -1,0 +1,37 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="outline">
+<note>
+  Frames file for 'outline' based on sentences in financial subcorpus.
+  No Verbnet entry.  Comparison with 'detail'.
+</note>
+
+<roleset id="outline.01" name="describe roughly">
+<roles>
+  <role descr="describer" n="0"/>
+  <role descr="thing being described" n="1"/>
+</roles>
+
+<example name="transitive">
+<text>
+    The MiniScribe report outlines a host of allegedly fraudulent
+    practices, including the shipment of bricks and defective disk
+    drives that were booked as sales, and inventory forgeries in
+    accounting records. 
+</text>
+        <arg n="0">The MiniScribe report</arg>
+        <rel>outlines</rel>
+        <arg n="1">a host of allegedly fraudulent practices ,
+        including the shipment of bricks and defective disk drives
+        that were booked as sales, and inventory forgeries in
+        accounting records</arg> 
+</example>
+
+<note>
+Might also take 'listener' arg, but probably not.  Location of outline
+is ArgM.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

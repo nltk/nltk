@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="careen">
+<note>
+  Frames file for 'careen' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="careen.01" name="to lurch or tilt" vncls="-">
+<roles>
+  <role descr="entity moving" n="0"/>
+  <role descr="path" n="1"/>
+</roles>
+
+<example name="intransitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ WHEN HURRICANE Hugo careened through the Caribbean and the Atlantic coast states [*T*-1] , it downed electric and telephone lines , shot coconuts through cottage rooftops , shattered windows and uprooted thousands of lives .
+</text>
+	<arg n="0">HURRICANE Hugo</arg>
+	<rel>careened</rel>
+	<arg f="DIR" n="M">through the Caribbean and the Atlantic coast states</arg>
+	<arg f="TMP" n="M">[*T*-1] -&gt;  WHEN</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

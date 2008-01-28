@@ -1,0 +1,34 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="predate">
+<note>
+  Frames file for 'predate' based on sentences in wsj.  No Verbnet
+  entry, Framenet entry Relative time.
+</note>
+
+<roleset id="predate.01" name="come before, temporally" vncls="-">
+<roles>
+  <role descr="thing coming before" n="1"/>
+  <role descr="thing coming after" n="2"/>
+</roles>
+
+<example name="nice">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    John C. Burton, an accounting professor at Columbia University's
+    Graduate School of Business, said ``there's a lot of emotion
+    involved in the name of an accounting firm with a long history and
+    with roots in England, where accounting predates the U.S.'' 
+</text>
+        <arg n="1">accounting</arg>
+        <rel>predates</rel>
+        <arg n="2">the U.S.</arg>
+        <arg f="LOC" n="M">*trace* -&gt;  where -&gt;  England</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

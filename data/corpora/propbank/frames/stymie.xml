@@ -1,0 +1,45 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="stymie">
+<note>
+  Frames file for 'stymie' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="stymie.01" name="block someone's actions" vncls="-">
+<roles>
+  <role descr="blocker, agent" n="0"/>
+  <role descr="action" n="1"/>
+</roles>
+
+<example name="active">
+<inflection aspect="perfect" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+    But while U.S. interest may be big and growing, the difficulties
+    that [*T*-1] have stymied deals in the past show no sign of
+    abating. 
+</text>
+        <arg n="0">[*T*-1] -&gt;  that -&gt;  the difficulties</arg>
+        <rel>stymied</rel>
+        <arg n="1">deals</arg>
+        <arg f="TMP" n="M">in the past</arg>
+</example>
+
+
+<example name="passive">
+<inflection aspect="perfect" form="participle" person="ns" tense="past" voice="passive"/>
+<text>
+    Knowledgeable employees said the project had been stymied [*-1]
+    somewhat by ``the difficulty of designing'' the jackets. 
+</text>
+        <rel>stymied</rel>
+        <arg n="1">[*-1] -&gt;  the project</arg>
+        <arg f="EXT" n="M">somewhat</arg>
+        <arg f="by" n="0">the difficulty of designing the jackets</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

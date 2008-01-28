@@ -1,0 +1,115 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="ease">
+<note>
+  Frames file for 'ease' based on survey of initial sentences of big
+  corpus and comparison with 'fall' and 'help'
+</note>
+
+<roleset id="ease.01" name="decline" vncls="45.4">
+<roles>
+  <role descr="Logical subject, patient, thing declining" n="1">
+	<vnrole vncls="45.4" vntheta="Patient"/></role>
+  <role descr="EXT, amount declined by" n="2"/>
+  <role descr="start point" n="3"/>
+  <role descr="end point, end state" n="4"/>
+  <role descr="medium" f="LOC" n="M"/>
+</roles>
+
+<example name="this really does occur">
+  <text>
+  The average seven-day compound yield of the 400 taxable funds
+  tracked by IBC's Money Fund Report eased a fraction of a percentage
+  point to 8.45% from 8.47% for the week ended Tuesday.
+  </text>
+  <arg n="1">The average seven-day compound yield of the 400
+  taxable funds tracked by IBC's Money Fund Report</arg> 
+  <rel>eased</rel>
+  <arg f="EXT" n="2">a fraction of a percentage point</arg>
+  <arg f="to" n="4">8.45%</arg>
+  <arg f="from" n="3">8.47%</arg>
+  <arg f="TMP" n="m">for the week ended Tuesday</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="ease.02" name="help, aid, ameliorate" vncls="-">
+<roles>
+  <role descr="thing helping" n="0"/>
+  <role descr="thing being helped" n="1"/>
+</roles>
+
+<example name="transitive">
+  <text>
+  A soft landing is an economic slowdown that *trace* eases inflation
+  without leading to a recession.
+  </text>
+  <arg n="0">*trace*=that=an economic slowdown</arg>
+  <rel>eases</rel>
+  <arg n="1">inflation</arg>
+  <arg f="ADV" n="m">without leading to a recession</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="ease.03" name="slide, move easily" vncls="-">
+<roles>
+  <role descr="causer of motion, agent" n="0"/>
+  <role descr="entity in motion" n="1"/>
+  <role descr="start point" n="3"/>
+  <role descr="end point" n="4"/>
+</roles>
+
+<example name="slip sliding away">
+  <text>
+  Often judges ease into more lucrative private practice with little
+  fanfare.
+  </text>
+  <arg f="TMP" n="m">Often</arg>
+  <arg n="1">judges</arg>
+  <rel>ease</rel>
+  <arg f="into" n="4">more lucrative private practice</arg>
+  <arg f="MNR" n="m">with little fanfare.</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+<predicate lemma="ease_up">
+<note>
+I haven't seen this yet in WSJ, but it might occur.  Similar to &quot;help,
+aid, ameliorate&quot; roleset above.
+</note>
+
+<roleset id="ease.04" name="become easier" vncls="-">
+<roles>
+  <role descr="thing helping" n="0"/>
+  <role descr="thing being helped" n="1"/>
+</roles>
+
+<example name="become nicer">
+  <text>
+  Even after the tough exam, John wouldn't ease up on his students.
+  </text>
+  <arg f="TMP" n="m">Even after the tough exam</arg>
+  <arg n="0">John</arg>
+  <arg f="MOD" n="m">would</arg>
+  <arg f="NEG" n="m">n't</arg>
+  <rel>ease up</rel>
+  <arg f="on" n="1">his students</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

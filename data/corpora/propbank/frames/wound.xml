@@ -1,0 +1,47 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="wound">
+<note>
+  Frames file for 'wound' based on sentences in wsj.  Verbnet entry 31.1.
+</note>
+
+<roleset id="wound.01" name="cause injury" vncls="31.1">
+<roles>
+  <role descr="causer of injury" n="0"><vnrole vncls="31.1" vntheta="Cause"/></role>
+  <role descr="injured party" n="1"><vnrole vncls="31.1" vntheta="Experiencer"/></role>
+  <role descr="instrument, if separate from arg0" n="2"/>
+</roles>
+
+<example name="just transitive">
+<inflection aspect="perfect" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+    Recently, in Wollo province in the center of Ethiopia, Tigrean
+    forces have killed, wounded and captured an additional 20,000
+    government troops. 
+</text>
+        <arg f="TMP" n="M">Recently</arg>
+        <arg f="LOC" n="M">in Wollo province in the center of Ethiopia</arg>
+        <arg n="0">Tigrean forces</arg>
+        <rel>wounded</rel>
+        <arg n="1">an additional 20,000 government troops</arg>
+</example>
+
+<example name="with instrument">
+  <inflection aspect="ns" form="full" person="ns" tense="ns" voice="active"/>
+  <text>
+     Mary can wound John with a single icy glare.
+  </text>
+  <arg n="0">Mary</arg>
+  <arg f="MOD" n="m">can</arg>
+  <rel>wound</rel>
+  <arg n="1">John</arg>
+  <arg f="with" n="2">a single icy glare</arg>
+</example>
+
+<note>
+As usual, use arg2 only when arg0 is also present.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

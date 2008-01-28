@@ -1,0 +1,40 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="wither">
+<note>
+  Frames file for 'wither' based on sentences in wsj.  Verbnet entries
+  47.2 and 45.5.
+</note>
+
+<roleset id="wither.01" name="like an unwatered plant" vncls="47.2 45.5">
+<roles>
+  <role descr="cause of withering" n="0"/>
+  <role descr="plant" n="1"><vnrole vncls="47.2" vntheta="Theme"/><vnrole vncls="45.5" vntheta="Patient"/></role>
+</roles>
+
+<example name="not a plant">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+     Despite seeing his plan for Israeli-Palestinian elections wither,
+     the cautious secretary of state is so far unwilling to cut
+     U.S. economic or military aid to force Israeli cooperation. 
+</text>
+        <arg n="1">his plan for Israeli-Palestinian elections</arg>
+        <rel>wither</rel>
+</example>
+
+<example name="with cause">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    The hot sun withered John's houseplants.
+  </text>
+  <arg n="0">The hot sun</arg>
+  <rel>withered</rel>
+  <arg n="1">John's houseplants</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

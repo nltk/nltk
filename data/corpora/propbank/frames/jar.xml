@@ -1,0 +1,40 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="jar">
+<note>
+  Frames file for 'jar' based on sentences in wsj.  Verbnet entry 31.1
+  and 31.4. 
+</note>
+
+<roleset id="jar.01" vncls="31.1 31.4" name="move roughly">
+<roles>
+  <role n="0"  descr="causer"/>
+  <role n="1"  descr="experiencer"/>
+</roles>
+
+<example name="adjectival">
+<inflection person="ns" tense="ns" aspect="progressive" voice="active" form="participle"/>
+<text>
+    It was a jarring day for investors in Genetics Institute.
+</text>
+	<rel>jarring</rel>
+	<arg n="0">day</arg>
+</example>
+
+<example name="verbal">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+     Mary's announcement deeply jarred John.
+  </text>
+  <arg n="0"        >Mary's announcement</arg>
+  <arg n="m" f="MNR">deeply</arg>
+  <rel              >jarred</rel>
+  <arg n="1"        >John</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

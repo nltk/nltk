@@ -1,0 +1,57 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="exhaust">
+<note>
+  Frames file for 'exhaust' based on sentences in financial subcorpus.
+  Verbnet entry 31.1, other framed members include comfort, convince
+  depress, encourage, interest, reassure, repel, scare, shock, spook,
+  threaten, worry and probably some others.  Comparison with those.
+</note>
+
+<roleset id="exhaust.01" name="cause to become used up, tired" vncls="31.1">
+<roles>
+  <role descr="causer of tiredness" n="0">
+      <vnrole vncls="31.1" vntheta="Cause"/></role>
+  <role descr="thing becoming exhausted" n="1">
+     <vnrole vncls="31.1" vntheta="Experiencer"/></role>
+</roles>
+
+<example name="use up, no instrument">
+<text>
+    But increasing volatility in the sector has exhausted investors
+    who try to follow its dips and swings. 
+</text>
+        <arg f="DIS" n="M">But</arg>
+        <arg n="0">increasing volatility in the sector</arg>
+        <rel>exhausted</rel>
+        <arg n="1">investors who try to follow its dips and swings</arg>
+</example>
+
+<example name="use up, instrumental subject">
+  <text>
+    John's ceaseless pleas for more ice cream exhausted Mary's
+    patience.
+  </text>
+  <arg n="0">John's ceaseless pleas for more ice cream</arg>
+  <rel>exhausted</rel>
+  <arg n="1">Mary's patience</arg>
+</example>
+
+<example name="tire, instrumental subject">
+  <text>
+    Playing on the swingset all afternoon exhausted John.
+  </text>
+  <arg n="0">Playing on the swingset all afternoon</arg>
+  <rel>exhausted</rel>
+  <arg n="1">John</arg>
+</example>
+
+<note>
+Probably there are two senses being conflated here, &quot;use up&quot; and
+&quot;become tired,&quot; but they're close enough and take the same PAS.  It's
+easy to see how the two senses evolved.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

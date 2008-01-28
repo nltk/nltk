@@ -1,0 +1,80 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="imprison">
+<note>
+  Frames file for 'imprision' based on sentences in wsj.  No Verbnet
+  entry, probably should be in 9.10.
+</note>
+
+<roleset id="imprison.01" name="throw in jail" vncls="9.10">
+<roles>
+  <role descr="court, judge, jury" n="0">
+     <vnrole vncls="9.10" vntheta="Agent"/></role>
+  <role descr="criminal" n="1">
+     <vnrole vncls="9.10" vntheta="Theme"/></role>
+  <role descr="term" n="2"/>
+  <role descr="cause, misdeed" n="3"/>
+</roles>
+
+<example name="active transitive">
+<inflection aspect="progressive" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+    And in a case filed in federal court in August, a lawyer is
+    arguing that Missouri authorities are wrongfully imprisoning the
+    fetus of a pregnant woman who is in jail for theft and forgery. 
+</text>
+        <arg n="0">Missouri authorities</arg>
+        <arg f="MNR" n="M">wrongfully</arg>
+        <rel>imprisoning</rel>
+        <arg n="1">the fetus of a pregnant woman who is in jail for
+        theft and forgery</arg> 
+</example>
+
+<example name="passive transitive">
+<inflection aspect="ns" form="participle" person="ns" tense="past" voice="passive"/>
+<text>
+    In the port of Berbera, for example, hundreds of men of the rival
+    Issak clan were rounded up in May 1988, imprisoned [*-2], and then
+    taken out at night in groups of five to 50 men to be executed
+    without any judicial process whatsoever. 
+</text>
+        <arg f="LOC" n="M">In the port of Berbera</arg>
+        <arg f="DIS" n="M">for example</arg>
+        <rel>imprisoned</rel>
+        <arg n="1">[*-2] -&gt;  hundreds of men of the rival Issak clan</arg>
+</example>
+
+<example name="with term">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    If convicted, he could be imprisoned [*-1] for up to 10 years and
+    fined $250,000. 
+</text>
+        <arg f="ADV" n="M">If convicted</arg>
+        <arg f="MOD" n="M">could</arg>
+        <rel>imprisoned</rel>
+        <arg n="1">[*-1] -&gt;  he</arg>
+        <arg f="for" n="2">up to 10 years</arg>
+</example>
+
+<example name="with crime">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    [*-2] Imprisoned [*-3] by the Nazis during World War II for his
+    political beliefs, Mr. Honecker typified the postwar generation of
+    committed Communist leaders in Eastern Europe who took their cues
+    from Moscow. 
+</text>
+        <rel>Imprisoned</rel>
+        <arg f="by" n="0">the Nazis</arg>
+        <arg f="TMP" n="M">during World War II</arg>
+        <arg f="for" n="3">his political beliefs</arg>
+        <arg n="1">Mr. Honecker -&gt;  [*-3] -&gt;  [*-2]</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,45 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="portend">
+<note>
+  Frames file for 'portend' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="portend.01" name="to indicate by signs" vncls="-">
+<roles>
+  <role descr="thing portending" n="0"/>
+  <role descr="sign" n="1"/>
+  <role descr="portend for" n="2"/>
+</roles>
+
+
+<example name="all arguments">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ He said [0] last week 's activity in gold could portend a move to $ 390 [*U*] an ounce for the December contract .
+</text>
+	<arg n="0">last week 's activity in gold</arg>
+	<arg f="MOD" n="M">could</arg>
+	<rel>portend</rel>
+	<arg n="1">a move to $ 390 [*U*] an ounce</arg>
+	<arg f="for" n="2">the December contract</arg>
+</example>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ This portends consequences from what we have already done [*T*-2] that [*T*-1] will be very destabilizing to social and economic systems .
+</text>
+	<arg n="0">This</arg>
+	<rel>portends</rel>
+	<arg n="1">consequences from what we have already done [*T*-2] that [*T*-1] will be very destabilizing to social and economic systems</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

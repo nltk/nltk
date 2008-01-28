@@ -1,0 +1,51 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="oblige">
+<note>
+  Frames file for 'oblige' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="oblige.01" name="to please or help" vncls="-">
+<roles>
+  <role descr="pleaser, helper" n="0"/>
+</roles>
+
+
+<example name="intransitive">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ The Rev. Alphonsus Trabold , a theology professor and exorcism expert at St. Bonaventure University in Olean , N.Y. , frequently is asked [*-1] [*-2] to exorcise unruly spirits , and he often obliges .
+</text>
+	<arg n="0">he</arg>
+	<arg f="TMP" n="M">often</arg>
+	<rel>obliges</rel>
+</example>
+</roleset>
+
+
+<roleset id="oblige.02" name="to force to do something" vncls="-">
+<roles>
+  <role descr="causal agent" n="0"/>
+  <role descr="obligated" n="1"/>
+  <role descr="obligation" n="2"/>
+</roles>
+
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+ The Orwellian `` New World Information Order '' would give government officials rights against the press ; journalists would be obliged [*-1] to kowtow to their government , which [*T*-28] would have licensing and censorship powers and , indeed , duties [*] to block printing of `` wrong '' ideas .
+</text>
+	<arg f="MOD" n="M">would</arg>
+	<rel>obliged</rel>
+	<arg n="1">[*-1] -&gt;  journalists</arg>
+	<arg n="2">to kowtow to their government , which [*T*-28] would have licensing and censorship powers and , indeed , duties [*] to block printing of `` wrong '' ideas</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

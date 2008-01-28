@@ -1,0 +1,107 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="tuck">
+<note>
+  Frames file for 'tuck' based on sentences in wsj.  Verbnet entry
+  9.3, verbs of manner of putting into place.
+</note>
+
+<roleset id="tuck.01" name="put securely" vncls="9.3">
+<roles>
+  <role descr="tucker" n="0"><vnrole vncls="9.3" vntheta="Agent"/></role>
+  <role descr="tucked" n="1"><vnrole vncls="9.3" vntheta="Theme"/></role>
+  <role descr="place" n="2"><vnrole vncls="9.3" vntheta="Destination"/></role>
+</roles>
+
+<example name="all args">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    The beds at the Bowery Mission seem far drearier when he has
+    *trace* to tuck a little girl into one of them at night. 
+</text>
+        <arg n="0">*trace* -&gt;  he</arg>
+        <rel>tuck</rel>
+        <arg n="1">a little girl</arg>
+        <arg f="into" n="2">one of them</arg>
+        <arg f="TMP" n="M">at night</arg>
+</example>
+
+<example name="passivized">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    Mr. Trotter's painting showed a wall of wood boards with painted
+    ribbons tacked down in a rectangle; tucked *trace* behind the
+    ribbons were envelopes, folded, faded and crumpled papers and
+    currency. 
+</text>
+        <rel>tucked</rel>
+        <arg n="1">*trace* -&gt; envelopes, folded, faded and crumpled
+        papers and currency</arg> 
+        <arg f="behind" n="2">the ribbons</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="tuck_away">
+
+<roleset id="tuck.02" name="give criminal sentence" vncls="-">
+<roles>
+  <role descr="tucker" n="0"/>
+  <role descr="tucked" n="1"/>
+  <role descr="sentence" n="2"/>
+</roles>
+
+<example name="weird example">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Judge Robert (``Maximum Bob'') Potter sentenced Jim Bakker to 45
+    years in the big house yesterday, while a Beverly Hills judge
+    tucked away Zsa Zsa Gabor for three days, plus 120 hours of work
+    with homeless women. 
+</text>
+        <arg n="0">a Beverly Hills judge</arg>
+        <rel>[ tucked] [ away]</rel>
+        <arg n="1">Zsa Zsa Gabor</arg>
+        <arg f="for" n="2">three days, plus 120 hours of work with
+        homeless women</arg> 
+</example>
+
+<note>
+This is not what I feel to be the normal usage of tuck away, but it's
+the only example in treebank.
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="tuck_in">
+
+<roleset id="tuck.03" name="put your shirt in your pants" vncls="-">
+<roles>
+  <role descr="tucker" n="0"/>
+  <role descr="shirt" n="1"/>
+</roles>
+
+<example name="Haole?">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    Richard Chamberlain dresses as a ``Mainland haole,'' tucking in a
+    Hawaiian shirt and rolling up its long sleeves. 
+</text>
+        <arg n="0">*trace* -&gt;  Richard Chamberlain</arg>
+        <rel>[ tucking] [ in]</rel>
+        <arg n="1">a Hawaiian shirt</arg>
+</example>
+
+<note>
+Oddly enough, if the pants are mentioned, the verb defaults back to
+tuck.01. 
+</note>
+
+</roleset>
+</predicate>
+</frameset>

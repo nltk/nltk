@@ -1,0 +1,44 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="ridicule">
+<note>
+  Frames file for 'ridicule' based on sentences in wsj.  Verbnet entry
+  33, Framenet entry Judgement communication.
+</note>
+
+<roleset id="ridicule.01" name="make fun of" vncls="33">
+<roles>
+  <role descr="ridiculer" n="0"><vnrole vncls="33" vntheta="Agent"/></role>
+  <role descr="ridiculous thing" n="1"><vnrole vncls="33" vntheta="Theme"/></role>
+  <role descr="cause of ridiculosity" n="2"><vnrole vncls="33" vntheta="Cause"/></role>
+</roles>
+
+<example name="just transitive">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    Senate GOP leader Dole ridicules the budget chief on the Senate floor.
+</text>
+        <arg n="0">Senate GOP leader Dole</arg>
+        <rel>ridicules</rel>
+        <arg n="1">the budget chief</arg>
+        <arg f="LOC" n="M">on the Senate floor</arg>
+</example>
+
+<example name="with cause">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    Mary ridiculed John for wearing his galoshes indoors.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>ridiculed</rel>
+  <arg n="1">John</arg>
+  <arg f="for" n="2">wearing his galoshes indoors</arg>
+</example>
+
+<note>
+Quick, what's a galosh?
+</note>
+
+</roleset>
+</predicate>
+</frameset>

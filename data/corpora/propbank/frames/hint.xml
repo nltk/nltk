@@ -1,0 +1,54 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="hint">
+<note>
+  Frames file for 'hint' based on sentences in financial subcorpus.
+  No Verbnet entry.  Comparison with 'suggest'.
+</note>
+
+<roleset id="hint.01" name="say">
+<roles>
+    <role descr="Sayer" n="0"/>
+    <role descr="Utterance (hint)" n="1"/>
+    <role descr="Hearer" n="2"/>
+</roles>
+
+<example name="sentential hint">
+<text>
+   Miniscribe reported a negative net worth and hinted it may file for
+   Chapter 11. 
+</text>
+        <arg n="0">Miniscribe</arg>
+        <rel>hinted</rel>
+        <arg n="1">it may file for Chapter 11</arg>
+</example>
+
+<example name="hint at NP">
+<text>
+    Mr. Ridley hinted at this motive in answering questions from
+    members of Parliament after his announcement. 
+</text>
+        <arg n="0">Mr. Ridley</arg>
+        <rel>hinted</rel>
+        <arg f="at" n="1">this motive</arg>
+        <arg f="ADV" n="M">in answering questions from members of
+        Parliament after his announcement</arg> 
+</example>
+
+<example name="with hearer">
+  <text>
+    Mary hinted to John that there might be some good eatin' at dinner.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>hinted</rel>
+  <arg f="to" n="2">John</arg>
+  <arg n="1">there might be some good eatin' at dinner</arg>
+</example>
+
+<note>
+As usual, do not include COMPs in the utterance.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

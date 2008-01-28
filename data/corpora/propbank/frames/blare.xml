@@ -1,0 +1,41 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="blare">
+<note>
+  Frames file for 'blare' based on sentences in financial subcorpus.
+  Verbnet entry 43.2, other framed members include sputter.  Framenet
+  class Perception_noise.  No comparison.
+</note>
+
+<roleset id="blare.01" name="make a loud noise" vncls="43.2">
+<roles>
+  <role descr="causer, agent" n="0">
+		
+  <vnrole vncls="43.2" vntheta="Agent"/></role>
+
+  <role descr="source of loud noise" n="1">
+		
+  <vnrole vncls="43.2" vntheta="Location"/></role>
+
+</roles>
+
+<example name="ergative">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Lights flickered on and off; plaster dropped from the ceiling, the
+    walls still shook and an evacuation alarm blared outside. 
+</text>
+        <arg n="1">an evacuation alarm</arg>
+        <rel>blared</rel>
+        <arg f="LOC" n="M">outside</arg>
+</example>
+
+<note>
+the radio blared
+the headlines blared the news
+the music blared
+</note>
+
+</roleset>
+</predicate>
+</frameset>

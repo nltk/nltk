@@ -1,0 +1,38 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="dodge">
+<note>
+Frames file for 'dodge' based on sentences in financial subcorpus and
+automatic expansion via verbnet.
+</note>
+
+<roleset id="dodge.01" name="avoid" vncls="52">
+<roles>
+	<role descr="avoider" n="0">
+		
+  <vnrole vncls="52" vntheta="Agent"/></role>
+
+	<role descr="thing avoided" n="1">
+		
+  <vnrole vncls="52" vntheta="Theme"/></role>
+
+</roles>
+
+<example name="dodge ball">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    In 1986, Mr. Roderick adroitly dodged Mr. Icahn's first bullet
+    after the takeover specialist had built up an 11.4% stake. 
+</text>
+        <arg f="TMP" n="M">In 1986</arg>
+        <arg n="0">Mr. Roderick</arg>
+        <arg f="MNR" n="M">adroitly</arg>
+        <rel>dodged</rel>
+        <arg n="1">Mr. Icahn's first bullet</arg>
+        <arg f="TMP" n="M">after the takeover specialist had built up
+        an 11.4% stake</arg> 
+</example>
+
+</roleset>
+</predicate>
+</frameset>

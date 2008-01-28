@@ -1,0 +1,46 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="founder">
+<note>
+  Frames file for 'founder' based on sentences in wsj.  No Verbnet
+  entry, Framenet entry Bungling.
+</note>
+
+<roleset id="founder.01" name="sinking awkwardly" vncls="-">
+<roles>
+  <role descr="thing sinking" n="1"/>
+  <role descr="prepositional cause" n="2"/>
+</roles>
+
+<example name="cause as argument">
+<inflection aspect="progressive" form="participle" person="third" tense="past" voice="active"/>
+<text>
+    Free State Glass Industries of Warrenton, Va., a small fabricator
+    of architectural glass, was foundering under its original
+    management. 
+</text>
+        <arg n="1">Free State Glass Industries of Warrenton, Va., a
+        small fabricator of architectural glass,</arg> 
+        <rel>foundering</rel>
+        <arg f="under" n="2">its original management</arg>
+</example>
+
+
+<example name="cause as adjunct">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    The sporty coupe foundered in part because American buyers didn't
+    go for the car's unusual double-wing rear spoiler. 
+</text>
+        <arg n="1">The sporty coupe</arg>
+        <rel>foundered</rel>
+        <arg f="PNC" n="M">in part because American buyers didn't go
+        for the car's unusual double-wing rear spoiler</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

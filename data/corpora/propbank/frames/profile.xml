@@ -1,0 +1,45 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="profile">
+<note>
+  Frames file for 'profile' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="profile.01" name="create a profile" vncls="-">
+<roles>
+  <role descr="creator, agent" n="0"/>
+  <role descr="entity profiled" n="1"/>
+</roles>
+
+<example name="oddly intransitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+    Energy Transportation retained Litigation Sciences, at a cost of
+    several hundred thousand dollars, [0] [*T*-1] to poll, pre-try,
+    profile and shadow. 
+</text>
+        <arg n="0">[*T*-1] -&gt;  [0] -&gt;  Litigation Sciences</arg>
+        <rel>profile</rel>
+</example>
+
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    Her husband and older son -- a computer prodigy profiled [*] in
+    The Wall Street Journal in 1981, when he was 13 -- run a software
+    company with expected sales this year of $10 million.
+</text>
+        <rel>profiled</rel>
+        <arg n="1">[*] -&gt;  a computer prodigy</arg>
+        <arg f="LOC" n="M">in The Wall Street Journal</arg>
+        <arg f="TMP" n="M">in 1981</arg>
+        <arg f="TMP" n="M">when he was 13 [*T*-1]</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

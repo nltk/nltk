@@ -1,0 +1,35 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="pepper">
+<note>
+  Frames file for 'pepper' based on sentences in wsj.  No access to
+  Verbnet at the moment.
+</note>
+
+<roleset id="pepper.01" name="apply sparsely, like pepper" vncls="9.9">
+<roles>
+  <role descr="applier" n="0"><vnrole vncls="9.9" vntheta="Agent"/></role>
+  <role descr="applied to" n="1"><vnrole vncls="9.9" vntheta="Destination"/></role>
+  <role descr="metaphorical pepper" n="2"><vnrole vncls="9.9" vntheta="Theme"/></role>
+</roles>
+
+<example name="classic usage">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    As small investors peppered their mutual funds with phone calls
+    over the weekend, big fund managers said they have a strong
+    defense against any wave of withdrawals: cash. 
+</text>
+        <arg n="0">small investors</arg>
+        <rel>peppered</rel>
+        <arg n="1">their mutual funds</arg>
+        <arg f="with" n="2">phone calls</arg>
+        <arg f="TMP" n="M">over the weekend</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

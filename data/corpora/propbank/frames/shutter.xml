@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="shutter">
+<note>
+  Frames file for 'shutter' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="shutter.01" name="to close down" vncls="9.9">
+<roles>
+  <role descr="closer, agent" n="0">
+        <vnrole vncls="9.9" vntheta="Agent"/></role>
+  <role descr="entity shuttered" n="1">
+        <vnrole vncls="9.9" vntheta="Destination"/></role>
+</roles>
+
+<example name="gerund">
+<inflection aspect="ns" form="gerund" person="ns" tense="ns" voice="active"/>
+<text>
+ However , individuals close to the company insist [0] [*] shuttering the insurance division , a sideline from the company 's core property management business , is n't the beginning of a sale of assets .
+</text>
+	<arg n="0">[*]</arg>
+	<rel>shuttering</rel>
+	<arg n="1">the insurance division , a sideline from the company 's core property management business ,</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

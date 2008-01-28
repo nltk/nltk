@@ -1,0 +1,59 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="repair">
+<note>
+  Frames file for 'repair' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="repair.01" name="to restore after damage or injury" vncls="-">
+<roles>
+  <role descr="repairer, agent" n="0"/>
+  <role descr="entity repaired" n="1"/>
+</roles>
+
+
+
+<example name="transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ It refinanced the judge 's loan , lowered its interest rate and accepted a trade-in that [*T*-172] had n't originally been part of the deal -- a beat up 1981 Chevy Citation [0] the dealer had [*-2] to repair [*T*-1] before it could be resold [*-140] .
+</text>
+	<arg n="0">[*-2] -&gt;  the dealer</arg>
+	<rel>repair</rel>
+	<arg n="1">[*T*-1] -&gt;  [0] -&gt;  a beat up 1981 Chevy Citation</arg>
+	<arg f="TMP" n="M">before it could be resold [*-140]</arg>
+</example>
+
+
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="past" voice="passive"/>
+<text>
+ The Belgian computer system finally was repaired and restarted [*-2] on Tuesday of this week , with the aid of Toronto Stock Exchange officials who [*T*-1] developed the system .
+</text>
+	<arg f="TMP" n="M">finally</arg>
+	<rel>repaired</rel>
+	<arg n="1">[*-2] -&gt;  The Belgian computer system</arg>
+	<arg f="TMP" n="M">on Tuesday of this week</arg>
+	<arg f="MNR" n="M">with the aid of Toronto Stock Exchange officials who [*T*-1] developed the system</arg>
+</example>
+
+
+
+<example name="unspecified subject">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ Engineers say [0] it will take at least eight months [*] to repair the Embarcadero structure .
+</text>
+	<arg n="0">[*]</arg>
+	<rel>repair</rel>
+	<arg n="1">the Embarcadero structure</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

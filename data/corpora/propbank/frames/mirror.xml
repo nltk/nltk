@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="mirror">
+<note>
+  Frames file for 'mirror' based on sentences in financial subcorpus.
+  No verbnet entry.  Comparison to 'reflect'.
+</note>
+
+<roleset id="mirror.01" name="cast an image back, reflect">
+<roles>
+  <role descr="thing casting a reflection" n="1"/>
+  <role descr="surface casting the reflection, image being reflected" n="2"/>
+</roles>
+
+<example name="arg2 subject">
+<text>
+    Analysts said the company's troubles mirror those of the
+    industry. 
+</text>
+        <arg n="2">the company's troubles</arg>
+        <rel>mirror</rel>
+        <arg n="1">those of the industry</arg>
+</example>
+
+<note>
+This roleset id=&quot;mirror.02&quot; makes sense for reflect, but less so for mirror.  Hmmm.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

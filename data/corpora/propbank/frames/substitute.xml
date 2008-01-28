@@ -1,0 +1,55 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="substitute">
+<note>
+Frames file for 'substitute' based on sentences in financial subcorpus
+and automatic expansion via verbnet.
+</note>
+
+<roleset id="substitute.01" name="exchange one thing for another" vncls="13.6">
+<roles>
+	<role descr="agent, entity trading" n="0">
+		
+  <vnrole vncls="13.6" vntheta="Agent"/></role>
+ 
+	<role descr="thing being preferred, new thing" n="1">
+		
+  <vnrole vncls="13.6" vntheta="Theme2"/></role>
+ 
+	<role descr="other item in exchange, old thing" n="3">
+		
+  <vnrole vncls="13.6" vntheta="Theme1"/></role>
+
+	<role descr="benefactive" n="4"/> 
+</roles>
+
+<example name="only one thing mentioned">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    Perhaps Mr. Kleiber could let him substitute one of the songs
+    about dead children and dark nights from Mahler's
+    ``Kindertotenlieder.'' 
+</text>
+        <arg n="0">him</arg>
+        <rel>substitute</rel>
+        <arg n="1">one of the songs about dead children and dark
+        nights from Mahler's ``Kindertotenlieder</arg> 
+</example>
+
+
+<example name="both new and old">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    They worry that new IMF funding of developing countries will
+    simply end up *trace* substituting IMF debt for reschedulable
+    commercial bank debt, a bad trade all around. 
+</text>
+        <arg n="0">*trace* -&gt;  new IMF funding of developing countries</arg>
+        <rel>substituting</rel>
+        <arg n="1">IMF debt</arg>
+        <arg f="for" n="2">reschedulable commercial bank debt</arg>
+</example>
+
+</roleset>
+
+</predicate>
+</frameset>

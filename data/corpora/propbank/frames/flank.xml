@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="flank">
+<note>
+  Frames file for 'flank' based on sentences in wsj.  No access to
+  verbnet at the moment.
+</note>
+
+<roleset id="flank.01" name="be on the side of" vncls="47.8">
+<roles>
+  <role descr="things on the side" n="0"><vnrole vncls="47.8" vntheta="Theme1"/></role>
+  <role descr="thing in the middle" n="1"><vnrole vncls="47.8" vntheta="Theme2"/></role>
+</roles>
+
+<example name="the one example">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    [*-1] Flanked by flight attendants, pilots and gate agents dressed
+    in spiffy new blue uniforms, they said Eastern has exceeded its
+    operational goals and is filling its seats. 
+</text>
+        <arg n="1">[*-1] -&gt; they</arg>
+        <rel>Flanked</rel>
+        <arg f="by" n="0">flight attendants, pilots and gate agents
+        dressed in spiffy new blue uniforms</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

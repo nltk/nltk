@@ -1,0 +1,67 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="quadruple">
+<note>
+  Frames file for 'quadruple' based on sentences in financial subcorpus.
+  No access to verbnet.  Comparison to 'rise'.
+</note>
+
+<roleset id="quadruple.01" name="rise fourfold" vncls="45.4">
+<roles>
+  <role descr="causer of increase" n="0">
+		
+  <vnrole vncls="45.4" vntheta="Agent"/></role>
+
+  <role descr="thing increasing, rising" n="1">
+		
+  <vnrole vncls="45.4" vntheta="Patient"/></role>
+
+  <role descr="EXT, always unmentioned because it's 4x" n="2"/>
+  <role descr="start point" n="3"/>
+  <role descr="end point" n="4"/>
+</roles>
+
+<example name="just transitive" src="double.01">
+<text>
+    One person familiar with Georgia-Pacific said the acquisition
+    would more than quadruple the company's debt of almost $3 billion. 
+</text>
+        <arg n="0">the acquisition</arg>
+        <arg f="MOD" n="M">would</arg>
+        <arg f="ADV" n="M">more than</arg>
+        <rel>quadruple</rel>
+        <arg n="1">the company's debt of almost $3 billion</arg>
+</example>
+
+<example name="with end point" src="double.01">
+<text>
+    That purchase quadrupled Quebecor's annual printing revenue to $750
+    million. 
+</text>
+        <arg n="0">That purchase</arg>
+        <rel>quadrupled</rel>
+        <arg n="1">Quebecor's annual printing revenue</arg>
+        <arg f="to" n="4">$750 million</arg>
+</example>
+
+<example name="start and end points, ergative" src="double.01">
+<text>
+    Genentech Inc. said third-quarter profit more than quadrupled to
+    $11.4 million, or 13 cents a share, from a depressed 1988
+    third-quarter performance of $5.3 million, or six cents a share. 
+</text>
+        <arg n="1">third-quarter profit</arg>
+        <arg f="ADV" n="M">more than</arg>
+        <rel>quadrupled</rel>
+        <arg f="to" n="4">$11.4 million, or 13 cents a share,</arg>
+        <arg f="from" n="3">a depressed 1988 third-quarter performance
+        of $5.3 million, or six cents a share</arg> 
+</example>
+
+<note>
+Note the ADV tagging of modifiers such as &quot;almost&quot; or &quot;more than&quot;.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

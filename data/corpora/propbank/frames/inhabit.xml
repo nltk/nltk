@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="inhabit">
+<note>
+  Frames file for 'inhabit'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="inhabit.01" name="to reside or be present in" vncls="-">
+<roles> 
+  <role descr="resident" n="0"/>  
+  <role descr="place of residence" n="1"/>   
+</roles>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+ When all else fails [*T*-1] , Gucci Gulch -- the fabled halls of the Capitol inhabited [*] by lobbyists and their imported shoes -- offers a welcome environment for fallen officials .
+</text>
+	<rel>inhabited</rel>
+	<arg n="1">[*] -&gt;  the fabled halls</arg>
+	<arg f="by" n="0">lobbyists and their imported shoes</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

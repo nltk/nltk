@@ -1,0 +1,35 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="revel">
+<note>
+  Frames file for 'revel' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="revel.01" name="to take great pleasure or delight" vncls="31.3">
+<roles>
+  <role descr="experiencer of delight" n="0">
+        <vnrole vncls="31.3" vntheta="Experiencer"/></role>
+  <role descr="entity reveling in" n="1">
+        <vnrole vncls="31.3" vntheta="Cause"/></role>
+</roles>
+
+<example name="transitive">
+<inflection aspect="progressive" form="participle" person="ns" tense="future" voice="active"/>
+<text>
+ But for the next few months , these boys of summers long past are going [*-1] to be reveling in an Indian summer of the soul .
+</text>
+	<arg f="DIS" n="M">But</arg>
+	<arg f="TMP" n="M">for the next few months</arg>
+	<arg n="0">these boys of summers long past</arg>
+	<rel>reveling</rel>
+	<arg f="in" n="1">an Indian summer of the soul</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

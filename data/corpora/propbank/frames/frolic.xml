@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="frolic">
+<note>
+  Frames file for 'frolic'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="frolic.01" name="to behave playfully" vncls="51.3.2">
+<roles> 
+ <role descr="frolicker, playful entity" n="0">
+       <vnrole vncls="51.3.2" vntheta="Theme"/></role>
+</roles>
+
+<example name="intransitive">
+<inflection aspect="ns" form="full" person="ns" tense="future" voice="active"/>
+<text>
+ Nearby , six dolphins will frolic in a 1.5 million-gallon saltwater aquarium .
+</text>
+	<arg f="LOC" n="M">Nearby</arg>
+	<arg n="0">six dolphins</arg>
+	<arg f="MOD" n="M">will</arg>
+	<rel>frolic</rel>
+	<arg f="LOC" n="M">in a 1.5 million-gallon saltwater aquarium</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

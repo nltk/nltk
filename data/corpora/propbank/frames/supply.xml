@@ -1,0 +1,72 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="supply">
+<note>
+Frames file for 'supply' based on sentences in financial subcorpus and
+automatic expansion via verbnet.
+</note>
+
+<roleset id="supply.01" name="provide" vncls="13.4.1">
+<roles>
+	<role descr="provider" n="0">
+		
+  <vnrole vncls="13.4.1" vntheta="Agent"/></role>
+
+	<role descr="thing provided" n="1">
+		
+  <vnrole vncls="13.4.1" vntheta="Theme"/></role>
+
+	<role descr="entity provided for (benefactive)" n="2">
+		
+  <vnrole vncls="13.4.1" vntheta="Recipient"/></role>
+
+</roles>
+
+<example name="transitive, thing as NP">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    For all that, the piece landed unperformed in a dusty archive
+    after Bologna refused *trace* to supply a chorus and orchestra. 
+</text>
+        <arg n="0">*trace* -&gt;  Bologna</arg>
+        <rel>supply</rel>
+        <arg n="1">a chorus and orchestra</arg>
+</example>
+
+<example name="transitive, benefactive as NP">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    It is widely known within industry circles that Hess had *trace*
+    to buy oil products in the high-priced spot markets *trace* to
+    continue *trace* supplying its customers. 
+</text>
+        <arg n="0">*trace* -&gt; *trace* -&gt; *trace* -&gt;  Hess</arg>
+        <rel>supplying</rel>
+        <arg n="2">its customers</arg>
+</example>
+
+<example name="all args, benefactive as PP">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    The company, which *trace* supplies transmissions and other
+    drive-train parts to auto makers, ... 
+</text>
+        <arg n="0">*trace* -&gt;  which -&gt;  The company</arg>
+        <rel>supplies</rel>
+        <arg n="1">transmissions and other drive-train parts</arg>
+        <arg f="to" n="2">auto makers</arg>
+</example>
+
+<example name="all args, benefactive as NP" src="present.01">
+  <text>
+    John supplied Mary with a bouquet of wilted dandelions.
+  </text>
+  <arg n="0">John</arg>
+  <rel>supplied</rel>
+  <arg n="2">Mary</arg>
+  <arg f="with" n="1">a bouquet of wilted dandelions</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

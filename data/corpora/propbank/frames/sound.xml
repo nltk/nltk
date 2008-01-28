@@ -1,0 +1,77 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="sound">
+<note>
+  Frames file for 'sound' based on sentences in financial subcorpus.
+  No access to verbnet.  Comparison to 'appear' and 'seem'.
+</note>
+
+<roleset id="sound.01" name="seem, appear" vncls="30.4">
+<roles>
+  <role descr="thing seeming" n="1">
+     <vnrole vncls="30.4" vntheta="Stimulus"/></role>
+  <role descr="attribute of arg1" n="2"/>
+  <role descr="viewer" n="3">
+     <vnrole vncls="30.4" vntheta="Experiencer"/></role>
+</roles>
+
+<example name="just arg1">
+<text>
+    How does a nice new tax, say 5%, on any financial transaction
+    sound? 
+</text>
+        <arg n="1">a nice new tax, say 5%, on any financial
+        transaction</arg> 
+        <rel>sound</rel>
+</example>
+
+
+<example name="with arg2">
+<text>
+    ``Credibility sounds intangible.
+</text>
+        <arg n="1">Credibility</arg>
+        <rel>sounds</rel>
+        <arg n="2">intangible</arg>
+</example>
+
+<example name="all args">
+  <text>
+     John sounds to me like a real idiot.
+  </text>
+  <arg n="1">John</arg>
+  <rel>sounds</rel>
+  <arg f="to" n="3">me</arg>
+  <arg n="2">like a real idiot</arg>
+</example>
+
+<note>
+If the syntax allows it, make 'like' a preposition, so Arg2-like.
+</note>
+
+</roleset>
+
+<roleset id="sound.02" name="make a sound" vncls="47.4">
+<roles>
+  <role descr="entity making the sound" n="0"/>
+  <role descr="the sound" n="1">
+	  <vnrole vncls="47.4" vntheta="Theme"/></role>
+</roles>
+
+<example name="alarm">
+  <text>
+    John sounded the alarm: &quot;The British are coming, the British are
+    coming!&quot; 
+  </text>
+  <arg n="0">John</arg>
+  <rel>sounded</rel>
+  <arg n="1">the alarm: &quot;The British are coming, the British
+  are coming!&quot;</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

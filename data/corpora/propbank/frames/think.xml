@@ -1,0 +1,116 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<note>
+Frames file for 'think' based on survey of initial sentences from big corpus
+and comparison with 'say'
+</note>
+<predicate lemma="think">
+<roleset id="think.01" name="think" vncls="29.4">
+  <roles>
+    <role descr="Thinker" n="0">
+	<vnrole vncls="29.4" vntheta="Agent"/></role>
+    <role descr="Thought" n="1">
+	<vnrole vncls="29.4" vntheta="Theme"/></role>
+    <role descr="Attributive" n="2">
+	<vnrole vncls="29.4" vntheta="Predicate"/></role>
+  </roles>
+
+<example name="transitive">
+  <text>
+    A Lorillard spokeswoman thought &quot;This is an old story.&quot;
+  </text>
+  <arg n="0">A Lorillard spokeswoman</arg>
+  <rel>thought</rel>
+  <arg n="1">&quot;This is an old story&quot;</arg>
+</example>
+
+<example name="intransitive, with subject of thinking">
+  <text>
+    People weren't thinking about targeting 10 years ago.
+  </text>
+  <arg n="0">People</arg>
+  <arg f="NEG" n="M">n't</arg>
+  <rel>thinking</rel>
+  <arg f="about" n="2">targeting</arg>
+  <arg f="TMP" n="M">10 years ago</arg>
+</example>
+
+<example name="transitive, with subject of thinking">
+  <text>
+    People weren't thinking anything about targeting 10 years ago.
+  </text>
+  <arg n="0">People</arg>
+  <arg f="NEG" n="M">n't</arg>
+  <rel>thinking</rel>
+  <arg n="1">anything</arg>
+  <arg f="about" n="2">targeting</arg>
+  <arg f="TMP" n="M">10 years ago</arg>
+</example>
+
+<example name="fronted">
+  <text>
+    Kent cigarettes were sold, the company thought *Trace*
+  </text>
+  <arg n="0">the company</arg>
+  <rel>thought</rel>
+  <arg n="1">*trace=Kent cigarettes were sold*</arg>
+</example>
+
+<example name="inverted">
+  <text>
+    What matters is what advertisers will pay, thought *Trace* Newsweek's 
+         chairman
+  </text>
+  <rel>thought</rel>
+  <arg n="1">*trace=What matters is what advertisers will pay*</arg>
+  <arg n="0">Newsweek's chairman</arg>
+</example>
+
+<example name="split">
+  <text>
+    &quot;What you have to understand,&quot; thought John, &quot;is that Philly literally 
+          stinks.&quot;
+  </text>
+  <arg n="1">[&quot;What you have to understand,&quot;] [&quot;is that Philly
+  literally stinks&quot;]</arg> 
+  <rel>thought</rel>
+  <arg n="0">John</arg>
+</example>
+
+<example name="attributive">
+  <text>
+    They think of us   as a good partner.
+  </text>
+  <arg n="0">They</arg>
+  <rel>think</rel>
+  <arg f="of" n="1">of us</arg>
+  <arg f="as" n="2">as a good partner</arg>
+</example>
+
+<example name="split utterance">
+  <text>
+    John is thought to be an idiot.
+  </text>
+  <arg n="1">[John][to be an idiot]</arg>
+  <rel>is thought</rel>
+</example>
+
+<example name="have a new idea">
+<inflection person="ns" tense="present" aspect="ns" voice="active" form="full"/><text>
+     ``I can't think of any reason to join Lloyd's now,'' says Keith
+     Whitten, a British businessman and a Lloyd's member since
+     1979.</text> 
+	<arg n="0">I</arg>
+	<arg n="M" f="MOD">ca</arg>
+	<arg n="M" f="NEG">n't</arg>
+	<rel>think</rel>
+	<arg n="1" f="of">any reason [0] [*] to join Lloyd 's now [*T*-2]</arg>
+<note>
+Be very careful in distinguishing this usage from other "of" usages.
+</note>
+
+</example>
+
+</roleset>
+</predicate>
+</frameset>

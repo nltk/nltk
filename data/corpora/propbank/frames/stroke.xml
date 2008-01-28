@@ -1,0 +1,50 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="stroke">
+<note>
+  Frames file for 'stroke' based on sentences in financial subcorpus.
+  Verbnet entry touch-20, other framed members include sting.
+</note>
+
+<roleset id="stroke.01" name="stroke" vncls="20">
+<roles>
+  <role descr="stroker" n="0">
+		
+  <vnrole vncls="20" vntheta="Agent"/></role>
+
+  <role descr="thing stroked" n="1">
+		
+  <vnrole vncls="20" vntheta="Experiencer"/></role>
+
+  <role descr="instrument, if separate from arg0" n="2">
+		
+  <vnrole vncls="20" vntheta="Instrument"/></role>
+
+</roles>
+
+<example name="transitive">
+<text>
+    He pampers them; he invites them to fabulous parties; he strokes
+    them. 
+</text>
+        <arg n="0">he</arg>
+        <rel>strokes</rel>
+        <arg n="1">them</arg>
+</example>
+
+<example name="with instrument">
+  <text>
+    John stroked Mary's back with his foot.
+  </text>
+  <arg n="0">John</arg>
+  <rel>stroked</rel>
+  <arg n="1">Mary's back</arg>
+  <arg f="with" n="2">his foot</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

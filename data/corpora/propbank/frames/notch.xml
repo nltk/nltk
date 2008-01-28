@@ -1,0 +1,83 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="notch">
+<note>
+  Frames file for 'notch' based on sentences in financial subcorpus.
+  No access to verbnet.  No comparison.
+</note>
+
+<roleset id="notch.01" name="make a notch, mark" vncls="21.2-1">
+<roles>
+  <role descr="agent, entity marking" n="0">
+		
+  <vnrole vncls="21.2-1" vntheta="Agent"/></role>
+
+  <role descr="thing being commemorated" n="1">
+		
+  <vnrole vncls="21.2-1" vntheta="Patient"/></role>
+
+  <role descr="thing gaining the notch (ie, belt)" n="2"/>
+</roles>
+
+<example name="the one example">
+<text>
+    Drug companies in the key index also notched gains as
+    market-makers searched for stock in anticipation of demand due to
+    the sector's defensive qualities. 
+</text>
+	<arg n="0">Drug companies in the key index</arg>
+	<arg f="DIS" n="M">also</arg>
+	<rel>notched</rel>
+	<arg n="1">gains</arg>
+	<arg f="CAU" n="M">as market-makers searched for stock in
+	anticipation of demand due to the sector's defensive
+	qualities</arg> 
+</example>
+
+<example name="showing arg2">
+  <text>
+    After another successful conquest, John notched his bedpost.
+  </text>
+  <arg f="TMP" n="m">After another successful conquest</arg>
+  <arg n="0">John</arg>
+  <rel>notched</rel>
+  <arg n="2">his bedpost</arg>
+</example>
+
+<note>
+I doubt you could see both Arg1 and Arg2 in a single sentence, but I
+don't want to split the roleset.
+</note>
+
+</roleset>
+
+<roleset id="notch.02" name="move incrementally" vncls="-">
+<roles>
+    <role descr="entity moving something" n="0"/>
+    <role descr="Logical subject, patient, thing moving" n="1"/>
+    <role descr="EXT, amount moved" n="2"/>
+    <role descr="start point" n="3"/>
+    <role descr="end point" n="4"/>
+    <role descr="medium" f="LOC" n="M"/>
+    <role descr="direction--REQUIRED" f="DIR" n="M"/>
+</roles>
+
+<example name="the other example">
+<text>
+    After the trading halt in the S&amp;P 500 pit in Chicago, waves of
+    selling continued to hit stocks themselves on the Big Board, and
+    specialists continued *trace* to notch prices down. 
+</text>
+	<arg n="0">*trace* -&gt;  specialists</arg>
+	<rel>notch</rel>
+	<arg n="1">prices</arg>
+	<arg f="DIR" n="M">down</arg>
+</example>
+
+<note>
+Refer to 'edge' for additional examples, or 'move'.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

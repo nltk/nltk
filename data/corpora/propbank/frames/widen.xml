@@ -1,0 +1,68 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="widen">
+<note>
+  Frames file for 'widen' based on sentences in financial subcorpus.
+  Verbnet entry 45.4 (other causative), many other framed members.
+  Framenet entry Expansion.  Comparison with other verbs of
+  quantifiable change.
+</note>
+
+<roleset id="widen.01" name="make wider" vncls="45.4">
+<roles>
+  <role descr="causal agent" n="0">
+		
+  <vnrole vncls="45.4" vntheta="Agent"/></role>
+
+  <role descr="thing becoming wider" n="1">
+		
+  <vnrole vncls="45.4" vntheta="Patient"/></role>
+
+  <role descr="EXT" n="2"/>
+  <role descr="start point" n="3"/>
+  <role descr="end point" n="4"/>
+</roles>
+
+<example name="ergative, start and end points">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    As a result, the group's third-quarter loss widened to $9.8
+    million from the second quarter's $3.6 million. 
+</text>
+        <arg f="CAU" n="M">As a result</arg>
+        <arg n="1">the group's third-quarter loss</arg>
+        <rel>widened</rel>
+        <arg f="to" n="4">$9.8 million </arg>
+        <arg f="from" n="3">the second quarter's $3.6 million </arg>
+</example>
+
+<example name="ergative, with EXT">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    The uncertainty was multiplied by the persistent strength of the
+    dollar, traders said, and by the U.S. trade deficit, which *trace*
+    widened by 31% in August from the previous month. 
+</text>
+        <arg n="1">*trace* -&gt;  which -&gt;  the U.S. trade deficit</arg>
+        <rel>widened</rel>
+        <arg f="by" n="2">31%</arg>
+        <arg f="TMP" n="M">in August</arg>
+        <arg f="from" n="3">the previous month</arg>
+</example>
+
+<example name="with agent">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John widened his girth.
+  </text>
+  <arg n="0">John</arg>
+  <rel>widened</rel>
+  <arg n="1">his girth</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

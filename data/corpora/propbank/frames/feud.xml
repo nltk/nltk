@@ -1,0 +1,61 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="feud">
+<note>
+  Frames file for 'feud' based on sentences in wsj.  Verbnet entry 36.1.
+</note>
+
+<roleset id="feud.01" name="fight constantly" vncls="36.1">
+<roles>
+  <role descr="first fighter" n="0"><vnrole vncls="36.1" vntheta="Actor1"/></role>
+  <role descr="second fighter, if separate" n="1"><vnrole vncls="36.1" vntheta="Actor2"/></role>
+  <role descr="spoils or point of contention" n="2"><vnrole vncls="36.1" vntheta="Topic"/></role>
+</roles>
+
+<example name="merged combatants">
+<inflection aspect="both" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+    Mr. Blair and Hees have been feuding for months. 
+</text>
+        <arg n="0">Mr. Blair and Hees</arg>
+        <rel>feuding</rel>
+        <arg f="TMP" n="M">for months</arg>
+</example>
+
+<example name="separated combatants">
+<inflection aspect="both" form="participle" person="third" tense="present" voice="active"/>
+<text>
+    Mr. Tonkin, who *trace* has been feuding with the Big Three since
+    he took office earlier this year, said that with half of the
+    nation's dealers losing money or breaking even, it was time for
+    ``emergency action.'' 
+</text>
+        <arg n="0">*trace* -&gt;  who -&gt;  Mr. Tonkin</arg>
+        <rel>feuding</rel>
+        <arg f="with" n="1">the Big Three</arg>
+        <arg f="TMP" n="M">since he took office earlier this year</arg>
+</example>
+
+
+<example name="with point of contention">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    But more recently, the Pentagon and the Commerce Department openly
+    feuded over the extent to which Cocom should liberalize exports of
+    personal computers to the bloc. 
+</text>
+        <arg f="DIS" n="M">But</arg>
+        <arg f="TMP" n="M">more recently</arg>
+        <arg n="0">the Pentagon and the Commerce Department</arg>
+        <arg f="MNR" n="M">openly</arg>
+        <rel>feuded</rel>
+        <arg f="over" n="2">the extent to which Cocom should
+        liberalize exports of personal computers to the bloc </arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

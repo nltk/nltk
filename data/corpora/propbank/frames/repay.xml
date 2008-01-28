@@ -1,0 +1,68 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<note>
+Frames file for 'repay' based on sentences in financial subcorpus.
+'Pay' is verbnet class give-13.1-1.  Comparison with 'pay'.
+</note>
+
+<predicate lemma="repay">
+<roleset id="repay.01" name="pay back" vncls="13.1-1">
+<roles>
+  <role descr="payer or buyer" n="0">
+		
+  <vnrole vncls="13.1-1" vntheta="Agent"/></role>
+
+  <role descr="thing bought or paid for" n="1">
+		
+  <vnrole vncls="13.1-1" vntheta="Theme"/></role>
+
+  <role descr="seller or person being paid" n="2">
+		
+  <vnrole vncls="13.1-1" vntheta="Recipient"/></role>
+
+  <role descr="price paid" n="3"/>
+</roles>
+
+<example name="transitive--note the arg3!">
+<text>
+    In all, the company hopes *trace* to repay $45 million in debt
+    through the sales, which will completely discharge its secured
+    debt, the company said. 
+</text>
+        <arg n="0">*trace* -&gt;  the company</arg>
+        <rel>repay</rel>
+        <arg n="3">$ 45 million  in debt</arg>
+        <arg f="MNR" n="M">through the sales, which will completely
+        discharge its secured debt</arg>
+</example>
+
+<example name="args 1 2 3">
+<text>
+    The merger agreement says the buy-out group is entitled *trace-1*
+    to be repaid *trace-2* $26.7 million in fees for its investment
+    bankers, Lazard Freres &amp; Co. and Salomon Brothers Inc., and
+    its law firm, Paul Weiss Rifkind Wharton &amp; Garrison. 
+</text>
+        <rel>repaid</rel>
+        <arg n="2">*trace-2* -&gt; *trace-1* -&gt;  the buy-out group</arg>
+        <arg n="3">$ 26.7 million  in fees</arg>
+        <arg f="for" n="1">its investment bankers, Lazard Freres &amp;
+        Co. and Salomon Brothers Inc., and its law firm, Paul Weiss
+        Rifkind Wharton &amp; Garrison</arg> 
+</example>
+
+<example name="price as subject">
+<text>
+    The buy-out group is also entitled to $16 million *trace* *trace*
+    to repay a fund created by the pilots union for an employee stock
+    ownership plan. 
+</text>
+        <arg n="3">*trace* -&gt; *trace* -&gt;  $ 16 million </arg>
+        <rel>repay</rel>
+        <arg n="2">a fund created by the pilots union for an employee
+        stock ownership plan</arg> 
+</example>
+
+</roleset>
+</predicate>
+</frameset>

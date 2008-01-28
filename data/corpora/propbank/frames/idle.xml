@@ -1,0 +1,46 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="idle">
+<note>
+  Frames file for 'idle' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="idle.01" name="to cause to be inactive or idle" vncls="-">
+<roles>
+  <role descr="causer of inactivity" n="0"/>
+  <role descr="entity becoming idle" n="1"/>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="future" voice="active"/>
+<text>
+ Chrysler will idle a Toledo assembly plant temporarily due to slowing sales of its profitable Jeep Cherokee and Wagoneer sport utility vehicles .
+</text>
+	<arg n="0">Chrysler</arg>
+	<arg f="MOD" n="M">will</arg>
+	<rel>idle</rel>
+	<arg n="1">a Toledo assembly plant</arg>
+	<arg f="TMP" n="M">temporarily</arg>
+	<arg f="PNC" n="M">due to slowing sales of its profitable Jeep Cherokee and Wagoneer sport utility vehicles</arg>
+</example>
+
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="future" voice="passive"/>
+<text>
+ General Motors Corp. , meanwhile , said [0] it will idle for yet another week its Linden , N.J. , assembly plant , [*] bringing to three weeks the total time [0] that plant will be idled [*-1] during October [*T*-2] .
+</text>
+	<arg f="MOD" n="M">will</arg>
+	<rel>idled</rel>
+	<arg n="1">[*-1] -&gt;  that plant</arg>
+	<arg f="TMP" n="M">during October</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

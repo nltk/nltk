@@ -1,0 +1,38 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="crisscross">
+<note>
+  Frames file for 'crisscross' based on sentences in wsj.  No Verbnet
+  entry, Framenet entry Path shape.
+</note>
+
+<roleset id="crisscross.01" name="move with crooked path" vncls="-">
+<roles>
+  <role descr="entity in motion" n="0"/>
+  <role descr="path" n="1"/>
+</roles>
+
+<example name="campaign trail">
+<inflection aspect="both" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+    The candidates have been crisscrossing this huge country of 145
+    million people,  holding rallies and televised debates in hope of
+    being elected to what must be one of the world's most thankless
+    political jobs: trying to drag Brazil out of its economic and
+    social mess. 
+</text>
+        <arg n="0">The candidates</arg>
+        <rel>crisscrossing</rel>
+        <arg n="1">this huge country of 145 million people</arg>
+        <arg n="M">holding rallies and televised debates in hope of
+        being elected to what must be one of the world's most
+        thankless political jobs: trying to drag Brazil out of its
+        economic and social mess</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

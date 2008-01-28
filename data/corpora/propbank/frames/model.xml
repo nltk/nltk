@@ -1,0 +1,70 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="model">
+<note>
+  Frames file for 'mode' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+
+<roleset id="model.01" name="to copy" vncls="26.4">
+<roles>
+  <role descr="agent, causer" n="0">
+	<vnrole vncls="26.4" vntheta="Agent"/></role>
+  <role descr="entity modelled" n="1">
+	<vnrole vncls="26.4" vntheta="Product"/></role>
+  <role descr="source" n="2">
+	<vnrole vncls="26.4" vntheta="Material"/></role>
+</roles>
+
+
+<example name="all arguments">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ In the early 1970s , Mr. Smith modeled his fledgling company on Tiger 's innovation of hub-and-spoke and containerized-cargo operations .
+</text>
+	<arg f="TMP" n="M">In the early 1970s</arg>
+	<arg n="0">Mr. Smith</arg>
+	<rel>modeled</rel>
+	<arg n="1">his fledgling company</arg>
+	<arg f="on" n="2">Tiger 's innovation of hub-and-spoke and containerized-cargo operations</arg>
+</example>
+
+
+<example name="without Arg2">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ `` It [*EXP*-1] 's very difficult [*] to model the long-term impact of this , '' says [*T*-3] Andrew Goldberg , who [*T*-2] studies the public-policy and crisis-management aspects of earthquakes at the Center for Strategic International Studies in Washington , D.C .
+</text>
+	<arg n="0">[*] -&gt;  It [*EXP*-1]</arg>
+	<rel>model</rel>
+	<arg n="1">the long-term impact of this</arg>
+</example>
+
+</roleset>
+
+<roleset id="model.02" name="to work as a model" vncls="29.8">
+<roles>
+  <role descr="agent modelling" n="0">
+        <vnrole vncls="29.8" vntheta="Agent"/></role>
+  <role descr="design" n="1">
+        <vnrole vncls="29.8" vntheta="Theme"/></role>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+ [*] Consider Gap Inc. , whose latest ad campaign [*T*-1] features black-and-white shots of Hollywood stars , artists and other well-known personalities modeling the retailer 's jeans and T-shirts .
+</text>
+	<arg n="0">Hollywood stars , artists and other well-known personalities</arg>
+	<rel>modeling</rel>
+	<arg n="1">the retailer 's jeans and T-shirts</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

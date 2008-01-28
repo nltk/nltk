@@ -1,0 +1,47 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="encircle">
+<note>
+  Frames file for 'encircle' based on sentences in wsj.  Verbnet
+  entries 9.8 and 47.8, Framenet entry Adorning.
+</note>
+
+<roleset id="encircle.01" name="(cause to) be around" vncls="9.8 47.8">
+<roles>
+  <role descr="causer of encirclement" n="0"><vnrole vncls="9.8" vntheta="Agent"/></role>
+  <role descr="thing encircling, being around" n="1"><vnrole vncls="47.8" vntheta="Theme1"/><vnrole vncls="9.8" vntheta="Theme"/></role>
+  <role descr="thing surrounded" n="2"><vnrole vncls="47.8" vntheta="Theme2"/><vnrole vncls="9.8" vntheta="Destination"/></role>
+</roles>
+
+<example name="ergative">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    A few blocks away, at the U.S. ambassador's residence, the guards
+    encircling the compound also had discarded their Uzi-model arms
+    for the first time since early June. 
+</text>
+        <arg n="1">the guards</arg>
+        <rel>encircling</rel>
+        <arg n="2">the compound</arg>
+</example>
+
+<example name="agentive">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    The experiments involve *trace* encircling a thin rod of palladium
+    metal with a wire of platinum and plunging the two electrodes into
+    ``heavy'' water in which the hydrogen atoms are a doubly heavy
+    form known as deuterium. 
+</text>
+        <arg n="0">*trace*</arg>
+        <rel>encircling</rel>
+        <arg n="2">a thin rod of palladium metal</arg>
+        <arg f="with" n="1">a wire of platinum</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

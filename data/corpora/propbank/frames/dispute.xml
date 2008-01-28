@@ -1,0 +1,60 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="dispute">
+<note>
+Frames file for 'dispute' based on sentences in financial subcorpus
+and automatic expansion via verbnet.
+</note>
+
+<roleset id="dispute.01" name="argue" vncls="36.1">
+<roles>
+	<role descr="first arguer" n="0">
+		
+  <vnrole vncls="36.1" vntheta="Actor1"/></role>
+
+	<role descr="second arguer" n="1">
+		
+  <vnrole vncls="36.1" vntheta="Actor2"/></role>
+
+	<role descr="topic" n="2">
+		
+  <vnrole vncls="36.1" vntheta="Topic"/></role>
+
+</roles>
+
+<example name="missing second arguer">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/> 
+<text>
+    Campeau's Ms. Sanger disputes Mr. Konheim's comments. 
+</text>
+        <arg n="0">Campeau's Ms. Sanger</arg>
+        <rel>disputes</rel>
+        <arg n="2">Mr. Konheim's comments</arg>
+</example>
+
+<example name="merged arguers" src="argue.02">
+  <text>
+    John and Mary disputed about the cause of his noxious foot odor.
+  </text>
+  <arg n="0">John and Mary</arg>
+  <rel>disputed</rel>
+  <arg f="about" n="2">the cause of his noxious foot odor</arg>
+</example>
+
+<example name="I can't believe this hasn't occurred yet" src="argue.02">
+  <text>
+    John disputed with Mary about the cause of his noxious foot odor.
+  </text>
+  <arg n="0">John</arg>
+  <rel>disputed</rel>
+  <arg f="with" n="1">Mary</arg>
+  <arg f="about" n="2">the cause of his noxious foot odor</arg>
+</example>
+
+</roleset>
+<note>
+Watch out for adjectival usages: &quot;the disputed company&quot; etc
+</note>
+
+</predicate>
+</frameset>

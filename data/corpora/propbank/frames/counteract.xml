@@ -1,0 +1,39 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="counteract">
+<note>
+  Frames file for 'counteract' based on sentences in financial
+  subcorpus.  No Verbnet entry.  Comparison with 'prevent'.
+</note>
+
+<roleset id="counteract.01" name="work against, prevent" vncls="-">
+<roles>
+  <role descr="worker, Agent" n="0"/>
+  <role descr="action or object being prevented" n="1"/>
+  <role descr="instrument" n="3"/>
+</roles>
+
+<example name="with instrument/manner">
+<inflection aspect="perfect" form="participle" person="ns" tense="past" voice="active"/>
+<text>
+     HomeFed had been one of the handful of large West Coast thrifts
+     that in recent quarters *trace* had counteracted interest-rate
+     problems dogging the industry by keeping a lid on problem assets
+     and lending heavily into the furious California housing market. 
+</text>
+        <arg f="TMP" n="M">in recent quarters</arg>
+        <arg n="0">*trace* -&gt;  that -&gt;  large West Coast thrifts</arg>
+        <rel>counteracted</rel>
+        <arg n="1">interest-rate problems dogging the industry</arg>
+        <arg f="by" n="3">keeping a lid on problem assets and lending
+        heavily into the furious California housing market</arg> 
+</example>
+
+<note>
+'prevent' predicts an arg2 &quot;secondary predication or action&quot;, but I
+don't think this will occur with 'counteract.'
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,59 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="rev">
+<note>
+  Frames file for 'rev' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="rev.01" name="increase engine's speed" vncls="-">
+<roles>
+  <role descr="driver" n="0"/>
+  <role descr="engine" n="1"/>
+</roles>
+
+<example name="vroom!">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John revved the motor of his 1972 Pinto.
+  </text>
+  <arg n="0">John</arg>
+  <rel>revved</rel>
+  <arg n="1">the motor of his 1972 Pinto</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="rev_up">
+
+<roleset id="rev.02" name="same as previous, with particle" vncls="-">
+<roles>
+  <role descr="driver" n="0"/>
+  <role descr="engine" n="1"/>
+  <role descr="further description" n="2"/>
+</roles>
+
+<example name="not sure about the parse">
+<inflection aspect="perfect" form="full" person="ns" tense="present" voice="active"/>
+<text>
+    Executive Producers Steve Sohmer and Jeff Bleckner (and
+    writer/producers Ken Solarz and Steve Bello) have revved this show
+    up to the breaking point. 
+</text>
+        <arg n="0">Executive Producers Steve Sohmer and Jeff Bleckner
+        (and writer/producers Ken Solarz and Steve Bello)</arg> 
+        <rel>[ revved] [ up]</rel>
+        <arg n="1">this show</arg>
+        <arg f="to" n="2">the breaking point</arg>
+</example>
+
+<note>
+I might have put both up and to as preps.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

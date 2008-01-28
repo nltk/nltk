@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="couple">
+<note>
+  Frames file for 'couple' based on sentences in financial subcorpus.
+  No verbnet entry, no comparison.
+</note>
+
+<roleset id="couple.01" name="link one thing with another">
+<roles>
+  <role descr="joiner" n="0"/>
+  <role descr="first thing" n="1"/>
+  <role descr="second thing" n="2"/>
+</roles>
+
+<example name="typical example">
+<text>
+    Peter Marcus, an analyst with PaineWebber Inc., said that a
+    downturn in the appliance industry, coupled *trace* with sluggish
+    automotive sales, hurt USX results. 
+</text>
+        <rel>coupled</rel>
+        <arg n="1">*trace* -&gt;  a downturn</arg>
+        <arg f="with" n="2">sluggish automotive sales</arg>
+</example>
+
+<note>
+Always in passive?
+</note>
+
+</roleset>
+</predicate>
+</frameset>

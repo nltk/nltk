@@ -1,0 +1,46 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="amortize">
+<note>
+  Frames file for 'amortize' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="amortize.01" name="spread out burden temporally" vncls="-">
+<roles>
+  <role descr="spreader of burden, agent" n="0"/>
+  <role descr="burden (us. cost, debt)" n="1"/>
+  <role descr="spread over what" n="2"/>
+</roles>
+
+<example name="no arg2">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+     The Turner move is in line with a cable-TV trend toward more
+     original programming -- and toward finding more ways [*] to
+     amortize the high cost of producing films. 
+</text>
+        <arg n="0">[*]</arg>
+        <rel>amortize</rel>
+        <arg n="1">the high cost of producing films</arg>
+</example>
+
+
+<example name="all args">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    As a U.S.-based company, Blue Arrow would have [*-1] to amortize
+    the good will over as many as 40 years, creating a continuing drag
+    on reported earnings. 
+</text>
+        <arg n="0">[*-1] -&gt;  Blue Arrow</arg>
+        <rel>amortize</rel>
+        <arg n="1">the good will</arg>
+        <arg f="over" n="2">as many as 40 years</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

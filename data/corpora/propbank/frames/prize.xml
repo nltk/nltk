@@ -1,0 +1,46 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="prize">
+<note>
+  Frames file for 'prize'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="prize.01" name="to value highly, appreciate" vncls="31.4">
+<roles> 
+ <role descr="assigner of value" n="0">
+       <vnrole vncls="31.4" vntheta="Experiencer"/></role>
+ <role descr="entity prized" n="1">
+       <vnrole vncls="31.4" vntheta="Cause"/></role>
+ <role descr="prized for what" n="2">
+       <vnrole vncls="31.4" vntheta="Theme"/></role> 
+</roles>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+ Finally , [*-1] flouting the BPCA 's wishes [*] to continue the
+ popular two-mile riverside Esplanade , prized [*] for its expansive
+ views of New York Harbor , the Statue of Liberty and Ellis Island ,
+ Ms. Bartlett threw up yet another wall , this time concrete , this
+ time 10 1\/2 feet tall .  
+</text>
+	<rel>prized</rel>
+	<arg n="1">[*] -&gt;  the popular two-mile riverside Esplanade</arg>
+	<arg f="for" n="2">its expansive views of New York Harbor , the Statue of Liberty and Ellis Island</arg>
+</example>
+
+<example name="all args">
+  <inflection person="third" tense="present" aspect="ns" voice="active" form="full"/>
+  <text>
+     Mary prizes John for his sunny mood and ability to heal quickly.
+  </text>
+  <arg n="0"        >Mary</arg>
+  <rel              >prizes</rel>
+  <arg n="1"        >John</arg>
+  <arg n="2" f="for">his sunny mood and ability to heal quickly</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

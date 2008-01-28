@@ -1,0 +1,46 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="slacken">
+<note>
+  Frames file for 'slacken' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="slacken.01" name="to slow down" vncls="45.4">
+<roles>
+  <role descr="cause of slowing" n="0">
+        <vnrole vncls="45.4" vntheta="Agent"/></role>
+  <role descr="thing slackened" n="1">
+        <vnrole vncls="45.4" vntheta="Patient"/></role>
+</roles>
+
+<example name="intransitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ Car sales slackened in September after the 1990 models were introduced [*-1] .
+</text>
+	<arg n="1">Car sales</arg>
+	<rel>slackened</rel>
+	<arg f="TMP" n="M">in September</arg>
+	<arg f="TMP" n="M">after the 1990 models were introduced [*-1]</arg>
+</example>
+
+
+<example name="transitive">
+<inflection aspect="perfect" form="participle" person="third" tense="ns" voice="active"/>
+<text>
+ Now , he said [0] [*T*-1] , a slowdown in economic activity has slackened demand .
+</text>
+	<arg f="TMP" n="M">Now</arg>
+	<arg n="0">a slowdown in economic activity</arg>
+	<rel>slackened</rel>
+	<arg n="1">demand</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

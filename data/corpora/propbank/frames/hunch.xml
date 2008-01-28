@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="hunch">
+<note>
+  Frames file for 'hunch' based on sentences in wsj.  Verbnet entry
+  40.3.2, Framenet entry Posture.
+</note>
+
+<roleset id="hunch.01" name="curve the back" vncls="40.3.2">
+<roles>
+  <role descr="huncher" n="0"><vnrole vncls="40.3.2" vntheta="Agent"/></role>
+</roles>
+
+<example name="the one example">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Their factories may look like sets for a Spielberg movie, but
+    their offices, with rows of clerks hunched over ledgers and
+    abacuses, are more like scenes from a Dickens novel. 
+</text>
+        <arg n="0">clerks</arg>
+        <rel>hunched</rel>
+        <arg f="LOC" n="M">over ledgers and abacuses</arg>
+</example>
+
+<note>
+Treebank puts a specious trace in object position.  Dunno why.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

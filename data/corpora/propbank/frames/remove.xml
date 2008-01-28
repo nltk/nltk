@@ -1,0 +1,74 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="remove">
+<note>
+  Frames file for 'remove' based on sentences in financial subcorpus.
+  Verbnet classes banish-10.2 remove-10.1, other framed members
+  include discharge, eliminate, reap.  Comparison with 'eliminate'.
+</note>
+
+<roleset id="remove.01" name="remove" vncls="10.1 10.2">
+<roles>
+  <role descr="entity removing" n="0">
+		
+		
+  <vnrole vncls="10.2" vntheta="Agent"/><vnrole vncls="10.1" vntheta="Agent"/></role>
+
+  <role descr="thing being removed" n="1">
+		
+		
+  <vnrole vncls="10.2" vntheta="Theme"/><vnrole vncls="10.1" vntheta="Theme"/></role>
+
+  <role descr="removed from" n="2">
+		
+		
+  <vnrole vncls="10.2" vntheta="Source"/><vnrole vncls="10.1" vntheta="Source"/></role>
+
+</roles>
+
+<example name="just transitive">
+<text>
+    In a surprise move, the British government cleared the way for a
+    bidding war for Jaguar PLC by *trace* agreeing *trace* to remove
+    an obstacle to a takeover of the auto maker. 
+</text>
+        <arg n="0">*trace* -&gt; *trace* -&gt;  the British government</arg>
+        <rel>remove</rel>
+        <arg n="1">an obstacle to a takeover of the auto maker</arg>
+</example>
+
+<example name="arg2 as source">
+<text>
+    It includes *trace* removing $242 million in good will from the
+    books... 
+</text>
+        <arg n="0"/>
+        <rel>removing</rel>
+        <arg n="1">$242 million in good will</arg>
+        <arg f="from" n="2">the books</arg>
+</example>
+
+<example name="arg2 as role">
+<text>
+    The announcement effectively removes the British government as an
+    impediment to a takeover of the company, which is being stalked by
+    General Motors and Ford. 
+</text>
+        <arg n="0">The announcement</arg>
+        <arg f="DIS" n="M">effectively</arg>
+        <rel>removes</rel>
+        <arg n="1">the British government</arg>
+        <arg f="as" n="2">an impediment to a takeover of the company,
+        which is being stalked by General Motors and Ford</arg> 
+</example>
+
+<note>
+Note that the last example could be rephrased as &quot;...removes the
+British government from being an impediment...&quot; or &quot;...removes the
+British government from its role as an impediment...&quot; or whatever.
+That shows that the as-phrase is the same as a from-phrase.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

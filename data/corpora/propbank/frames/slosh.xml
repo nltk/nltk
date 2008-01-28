@@ -1,0 +1,38 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="slosh">
+<note>
+  Frames file for 'slosh' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="slosh.01" name="to spill or splash" vncls="9.5">
+<roles>
+  <role descr="spiller" n="0">
+        <vnrole vncls="9.5" vntheta="Agent"/></role>
+  <role descr="substance" n="1">
+        <vnrole vncls="9.5" vntheta="Theme"/></role>
+  <role descr="destination" n="2">
+        <vnrole vncls="9.5" vntheta="Location"/></role>
+</roles>
+
+
+
+<example name="non-agentive">
+<inflection aspect="progressive" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ [*-1] Calculating that excess polyethylene would soon be sloshing around the world , other buyers then bet that prices had peaked and so began [*-1] to draw down inventories rather than order new product .
+</text>
+	<arg n="1">excess polyethylene</arg>
+	<arg f="MOD" n="M">would</arg>
+	<arg f="TMP" n="M">soon</arg>
+	<rel>sloshing</rel>
+	<arg f="around" n="2">the world</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

@@ -1,0 +1,62 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="drool">
+<note>
+  Frames file for 'drool' based on sentences in wsj.  Verbnet entry
+  breathe-40.1.2. 
+</note>
+
+<roleset id="drool.01" name="emit saliva" vncls="40.1.2">
+<roles>
+  <role descr="drooler" n="0"><vnrole vncls="40.1.2" vntheta="Agent"/></role>
+  <role descr="drool (cognate object)" n="1"><vnrole vncls="40.1.2" vntheta="Theme"/></role>
+  <role descr="destination of drool" n="2"/>
+</roles>
+
+<example name="now that's what I call dancing">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    Her sister-in-law (Amy Wright) is a sniveling prude afraid that
+    Kate will seduce all the married men in town, including a
+    particularly loathsome fellow named  Tucker, whose idea of fun is
+    to leave his wife at home tending to her bruises and cigarette
+    burns, while he bullies Kate into a dance that consists of *trace*
+    drooling on her while trying to break her ribs. 
+</text>
+        <arg n="0">*trace* -&gt;  he</arg>
+        <rel>drooling</rel>
+        <arg f="on" n="2">her</arg>
+        <arg f="TMP" n="M">while  trying  to break her ribs</arg>
+</example>
+
+<note>
+Oh, for context.
+</note>
+
+</roleset>
+
+<roleset id="drool.02" name="lust after heartily" vncls="-">
+<roles>
+  <role descr="drooler" n="0"/>
+  <role descr="thing lusted after" n="1"/>
+</roles>
+
+<example name="the drivers too?">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    After the race, Fortune 500 executives drooled like schoolboys
+    over the cars and drivers. 
+</text>
+        <arg f="TMP" n="M">After the race</arg>
+        <arg n="0">Fortune 500 executives</arg>
+        <rel>drooled</rel>
+        <arg f="MNR" n="M">like schoolboys</arg>
+        <arg f="over" n="1">the cars and drivers</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,49 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="represent">
+<note>
+  Frames file for 'represent' based on survey of initial sentences of
+  big corpus.
+</note>
+
+<roleset id="represent.01" name="stand for, correspond" vncls="29.2">
+<roles>
+  <role descr="item / entity taking place of other" n="0">
+		
+  <vnrole vncls="29.2" vntheta="Agent"/></role>
+
+  <role descr="item / entity being substituted by the other" n="1">
+		
+  <vnrole vncls="29.2" vntheta="Theme"/></role>
+
+</roles>
+
+<example name="transitive active">
+  <text>
+  These so-called ADRs represent shares of foreign companies traded in
+  the US.
+  </text>
+  <arg n="0">These so-called ADRs</arg>
+  <rel>represent</rel>
+  <arg n="1">shares of foreign companies traded in the US.</arg>
+</example>
+
+<note>
+Senses &quot;defend in court of law&quot; and &quot;express meaning&quot; take same syntax
+</note>
+
+<example name="with ArgA">
+  <text>
+  In his depiction of the Battle of Gettysburg, John represented the
+  Confederate soldiers with salt shakers.
+  </text>
+  <arg f="LOC" n="m">In his depiction of the Battle of Gettysburg</arg>
+  <arg n="A">John</arg>
+  <rel>represented</rel>
+  <arg n="0">the Confederate soldiers</arg>
+  <arg f="with" n="1">salt shakers</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

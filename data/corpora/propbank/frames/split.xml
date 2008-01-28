@@ -1,0 +1,85 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="split">
+<note>
+  Frames file for 'split' based on sentences in financial subcorpus.
+  No access to verbnet.  Comparison with 'divide'.
+</note>
+
+<roleset id="split.01" name="divide, separate" vncls="23.2 40.8.2 40.8.3-1 45.1">
+<roles>
+  <role descr="entity causing separation" n="0">
+		
+		
+		
+  <vnrole vncls="23.2" vntheta="Agent"/><vnrole vncls="40.8.2" vntheta="Cause"/><vnrole vncls="40.8.3-1" vntheta="Experiencer"/><vnrole vncls="45.1" vntheta="Agent"/></role>
+
+  <role descr="thing being divided" n="1">
+		
+		
+		
+		
+  <vnrole vncls="23.2" vntheta="Patient1"/><vnrole vncls="40.8.2" vntheta="Patient"/><vnrole vncls="40.8.3-1" vntheta="Patient"/><vnrole vncls="45.1" vntheta="Patient"/></role>
+
+  <role descr="divided among/between, if separate from arg0" n="2"><vnrole vncls="23.2" vntheta="Patient2"/></role>
+</roles>
+
+<example name="passive, clear decendants">
+<text>
+    No successor was named, and Mr. Reupke's duties will be split
+    *trace* among three other senior Reuters executives, the company
+    said. 
+</text>
+        <arg f="MOD" n="M">will</arg>
+        <rel>split</rel>
+        <arg n="1">*trace* -&gt;  Mr. Reupke's duties</arg>
+        <arg f="among" n="2">three other senior Reuters executives</arg>
+</example>
+
+<example name="ergative">
+<text>
+    The company's restructuring includes plans *trace* to split into
+    three sectors, to phase out domestic printer manufacturing
+    operations and to sell its New England subsidiary. 
+</text>
+        <arg n="1">*trace* -&gt; The company 's restructuring</arg>
+        <rel>split</rel>
+        <arg f="into" n="2">three sectors</arg>
+</example>
+
+<example name="manner of splitting">
+<text>
+    The stock split four-for-one on Oct. 10.
+</text>
+        <arg n="1">The stock</arg>
+        <rel>split</rel>
+        <arg f="MNR" n="M">four-for-one</arg>
+        <arg f="TMP" n="M">on Oct. 10</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="split.02" name="leave, depart" vncls="-">
+<roles>
+  <role descr="entity leaving" n="0"/>
+  <role descr="place left" n="1"/>
+</roles>
+
+<example name="let's make like a banana...">
+  <text>
+    &quot;I'm bored,&quot; said John.  &quot;Let's split this joint.&quot;
+  </text>
+  <arg n="0">'s</arg>
+  <rel>split</rel>
+  <arg n="1">this joint</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

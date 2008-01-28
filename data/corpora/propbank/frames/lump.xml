@@ -1,0 +1,48 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="lump">
+<note>
+  Frames file for 'lump' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="lump.01" name="to put together" vncls="22.3-1">
+<roles>
+  <role descr="creator of collection, agent" n="0">
+        <vnrole vncls="22.3-1" vntheta="Agent"/></role>
+  <role descr="entity lumped" n="1">
+        <vnrole vncls="22.3-1" vntheta="Patient1"/></role>
+  <role descr="entity lumped with" n="2">
+        <vnrole vncls="22.3-1" vntheta="Patient2"/></role>
+</roles>
+
+<example name="with Arg2">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+ The council 's annual report has psyllium on its last page , [*-2] lumped [*-3] with such unglamorous export items as sarsaparilla and `` Nux vomica , '' a plant that [*T*-1] induces vomiting .
+</text>
+	<rel>lumped</rel>
+	<arg n="1">[*-3] -&gt;  [*-2] -&gt;  psyllium</arg>
+	<arg f="with" n="2">such unglamorous export items as sarsaparilla and `` Nux vomica , '' a plant that [*T*-1] induces vomiting</arg>
+</example>
+
+
+<example name="with Arg2-into">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ Pressure from these members prompted the club recently [*-1] to soften its anti-bike rhetoric ; it no longer , for example , lumps the bikes into the same category as motorcycles and other terrain-marring off-road vehicles .
+</text>
+	<arg n="0">it</arg>
+	<arg f="TMP" n="M">no longer</arg>
+	<arg f="DIS" n="M">for example</arg>
+	<rel>lumps</rel>
+	<arg n="1">the bikes</arg>
+	<arg f="into" n="2">the same category as motorcycles and other terrain-marring off-road vehicles</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

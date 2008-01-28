@@ -1,0 +1,38 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="pirate">
+<note>
+  Frames file for 'pirate' based on sentences in wsj.  Verbnet entry
+  10.5, Framenet entry Piracy.  Go figger.
+</note>
+
+<roleset id="pirate.01" name="be a pirate, steal" vncls="10.5">
+<roles>
+  <role descr="pirate, thief, agent" n="0">
+	<vnrole vncls="10.5" vntheta="Agent"/></role>
+  <role descr="thing stolen" n="1">
+	<vnrole vncls="10.5" vntheta="Theme"/></role>
+  <role descr="stolen from" n="2">
+	<vnrole vncls="10.5" vntheta="Source"/></role>
+</roles>
+
+<example name="the one example">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    Any secret can be pirated [*-1], the experts said, if it is
+    transmitted over the air. 
+</text>
+        <arg f="MOD" n="M">can</arg>
+        <rel>pirated</rel>
+        <arg n="1">[*-1] -&gt;  Any secret</arg>
+        <arg f="ADV" n="M">if it is transmitted over the air</arg>
+</example>
+
+<note>
+The arg structure is predicted by class membership, but because of the
+limited meaning of the verb, I doubt arg0 or arg2 would ever appear.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

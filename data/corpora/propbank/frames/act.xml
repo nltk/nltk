@@ -1,0 +1,67 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="act">
+<note>
+  Frames file for 'act' based on sentences in financial subcorpus.
+  Verbnet entry 29.6, other framed members include count and rank.
+  No comparison.
+</note>
+
+<roleset id="act.01" name="play a role" vncls="29.6">
+<roles>
+  <role descr="player" n="0">
+	<vnrole vncls="29.6" vntheta="Agent"/></role>
+  <role descr="role" n="1">
+	<vnrole vncls="29.6" vntheta="Predicate"/></role>
+</roles>
+
+<example name="typical usage">
+<text>
+    First National Bank of Chicago will act as trustee...
+</text>
+        <arg n="0">First National Bank of Chicago</arg>
+        <arg f="MOD" n="M">will</arg>
+        <rel>act</rel>
+        <arg f="as" n="1">trustee</arg>
+</example>
+
+<note>
+Also see &quot;act like&quot;.
+</note>
+
+</roleset>
+
+<roleset id="act.02" name="do something">
+<roles>
+  <role descr="actor " n="0"/>
+  <role descr="grounds for action" n="1"/>
+</roles>
+
+<example name="with grounds">
+<text>
+    Mr. Rifenburgh said the board still hasn't acted on most of the
+    internal report's recommendations... 
+</text>
+        <arg n="0">the board</arg>
+        <arg f="TMP" n="M">still</arg>
+        <arg f="NEG" n="M">n't</arg>
+        <rel>acted</rel>
+        <arg f="on" n="1">most of the internal report's
+        recommendations</arg> 
+</example>
+
+<example name="no grounds">
+<text>
+    ``They always listened, but they never acted,'' Mr. Guber says. 
+</text>
+        <arg n="0">they</arg>
+        <arg f="TMP" n="M">never</arg>
+        <rel>acted</rel>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

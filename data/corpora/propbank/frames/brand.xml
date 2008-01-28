@@ -1,0 +1,39 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="brand">
+<note>
+Frames file for 'brand' based on sentences in financial subcorpus and
+automatic expansion via verbnet.
+</note>
+
+<roleset id="brand.01" name="assign label" vncls="25.3 29.3">
+<roles>
+	<role descr="caller" n="0">
+		
+  <vnrole vncls="29.3" vntheta="Agent"/><vnrole vncls="25.3" vntheta="Agent"/></role>
+ 
+	<role descr="item being labelled" n="1">
+		
+  <vnrole vncls="29.3" vntheta="Theme"/><vnrole vncls="25.3" vntheta="Destination"/></role>
+ 
+	<role descr="attribute" n="2"><vnrole vncls="29.3" vntheta="Predicate"/></role> 
+</roles>
+
+<example name="funky word order">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    In a new TV ad, for instance, a woman going through the Sunday
+    newspaper brands as hype claims by other stores that they are
+    offering goods for ``50%, 60% and 70% off. 
+</text>
+        <arg n="0">a woman going through the Sunday newspaper</arg>
+        <rel>brands</rel>
+        <arg f="as" n="2">hype</arg>
+        <arg n="1">claims by other stores that they are offering goods
+        for ``50%, 60% and 70% off</arg> 
+</example>
+
+</roleset>
+
+</predicate>
+</frameset>

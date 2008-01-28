@@ -1,0 +1,48 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+
+<note>
+Frames file for 'disappear' based on sentences in financial subcorpus
+and automatic expansion via verbnet classes.
+</note>
+
+<predicate lemma="disappear">
+<roleset id="disappear.01" name="no longer be there" vncls="48.2">
+<roles>
+	<role descr="causal agent" n="0"/>
+	<role descr="the disappeared" n="1">
+		
+  <vnrole vncls="48.2" vntheta="Theme"/></role>
+
+</roles>
+
+<example name="normal usaged">
+<inflection aspect="ns" form="ns" person="third" tense="present" voice="active"/> 
+<text>
+    ``If there's a problem, Peter disappears, and all of a sudden Jon
+    shows up.'' 
+</text>
+        <arg n="1">Peter</arg>
+        <rel>disappears</rel>
+</example>
+
+<example name="specialized usage">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John learned in history class about how the government of
+    Argentina &quot;disappeared&quot; many of its own citizens, often subjecting
+    them to torture.
+  </text>
+  <arg n="0">the government of Argentina</arg>
+  <arg f="TMP" n="m">often</arg>
+  <rel>disappeared</rel>
+  <arg n="1">its own citizens</arg>
+</example>
+
+<note>
+It's very sad, but that is a real usage.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

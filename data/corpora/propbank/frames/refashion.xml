@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="refashion">
+<note>
+  Frames file for 'refashion' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="refashion.01" name="fashion again" vncls="26.1">
+<roles>
+  <role descr="builder, agent" n="0">
+        <vnrole vncls="26.1" vntheta="Agent"/></role>
+  <role descr="entity refashioned" n="1">
+        <vnrole vncls="26.1" vntheta="Product"/></role>
+</roles>
+
+<example name="the one example">
+<inflection aspect="ns" form="gerund" person="ns" tense="ns" voice="ns"/>
+<text>
+    Mrs. Thatcher, who was practicing the read-my-lips school of
+    politics years before Mr. Bush encountered it, has made clear her
+    opposition to *trace* refashioning Britain's free-market policies
+    to suit the bureaucrats in Brussels.  
+</text>
+        <arg n="0">*trace*</arg>
+        <rel>refashioning</rel>
+        <arg n="1">Britain's free-market policies</arg>
+        <arg f="PNC" n="M">to suit the bureaucrats in Brussels</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

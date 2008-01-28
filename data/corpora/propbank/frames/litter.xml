@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="litter">
+<note>
+  Frames file for 'litter' based on sentences in wsj.  Verbnet entry
+  9.8.  Also in 28, but I can't get that reading, so I'm going to
+  ignore it.
+</note>
+
+<roleset id="litter.01" name="fail to put garbage in the   right place" vncls="9.8">
+<roles>
+  <role descr="litterbug" n="0"><vnrole vncls="9.8" vntheta="Agent"/></role>
+  <role descr="where garbage ended up" n="1"><vnrole vncls="9.8" vntheta="Destination"/></role>
+  <role descr="garbage" n="2"><vnrole vncls="9.8" vntheta="Theme"/></role>
+</roles>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    Result: a landscape littered [*] with lemons, huge debt burdens
+    crushing down upon the arch and spans of corporate America. 
+</text>
+        <rel>littered</rel>
+        <arg n="1">[*] -&gt;  a landscape</arg>
+        <arg f="with" n="2">lemons</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

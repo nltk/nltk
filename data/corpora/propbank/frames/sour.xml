@@ -1,0 +1,61 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="sour">
+<note>
+Frames file for 'sour' based on sentences in wsj and automatic
+expansion via verbnet.
+</note>
+
+<roleset id="sour.01" name="make sour" vncls="45.4">
+<roles>
+	<role descr="agent, entity causing sourness" n="0">
+		
+  <vnrole vncls="45.4" vntheta="Agent"/></role>
+
+	<role descr="thing becoming sour" n="1">
+		
+  <vnrole vncls="45.4" vntheta="Patient"/></role>
+
+	<role descr="'benefactive'" n="2"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+    The new argument over the notification guideline, however, could
+    sour any atmosphere of cooperation that existed.  
+</text>
+        <arg n="0">The new argument over the notification guideline</arg>
+        <arg f="DIS" n="M">however</arg>
+        <arg f="MOD" n="M">could</arg>
+        <rel>sour</rel>
+        <arg n="1">any atmosphere of cooperation that  existed</arg>
+</example>
+
+<example name="ergative">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Their relationship with Mr. Sugarman soured shortly thereafter.
+</text>
+        <arg n="1">Their relationship with Mr. Sugarman</arg>
+        <rel>soured</rel>
+        <arg f="TMP" n="M">shortly thereafter</arg>
+</example>
+
+<example name="I'm surprised this didn't occur">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John soured on Mary after she hit him with the 2-by-4.
+  </text>
+  <arg n="1">John</arg>
+  <rel>soured</rel>
+  <arg f="on" n="2">Mary</arg>
+  <arg f="TMP" n="m">after she hit him with the 2-by-4</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

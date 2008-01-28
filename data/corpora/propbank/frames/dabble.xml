@@ -1,0 +1,36 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="dabble">
+<note>
+  Frames file for 'dabble' based on sentences in financial subcorpus.
+  No Verbnet entry.
+</note>
+
+<roleset id="dabble.01" name="do lightheartedly" vncls="-">
+<roles>
+  <role descr="dabbler" n="0"/>
+  <role descr="pasttime" n="1"/>
+</roles>
+
+<example name="yabba dabble do">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+     An undistinguished college student who *trace* dabbled in zoology
+     until he concluded that he couldn't stand cutting up frogs,
+     Mr. Corry wanted to work for a big company ``that could do big
+     things.'' 
+</text>
+        <arg n="0">*trace* -&gt;  who -&gt;  An undistinguished college
+        student</arg> 
+        <rel>dabbled</rel>
+        <arg f="in" n="1">zoology</arg>
+        <arg f="TMP" n="M">until he concluded that he couldn't stand
+        cutting up frogs</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

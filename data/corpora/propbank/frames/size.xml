@@ -1,0 +1,57 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="size">
+<note>
+  Frames file for 'size' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="size.01" name="(cause to) have some size" vncls="-">
+<roles>
+  <role descr="agent, sizer" n="0"/>
+  <role descr="thing whose size is important" n="1"/>
+  <role descr="size itself, attribute of arg1" n="2"/>
+</roles>
+
+<example name="all args">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    Mary sized John's coffin fifteen inches too short, wanting to get
+    in one last insult. 
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>sized</rel>
+  <arg n="1">John's coffin</arg>
+  <arg n="2">fifteen inches too short</arg>
+  <arg n="m">wanting to get in one last insult</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="size_up">
+
+<roleset id="size.02" name="evaluate" vncls="-">
+<roles>
+  <role descr="evaluator" n="0"/>
+  <role descr="evaluated" n="1"/>
+</roles>
+
+<example name="automatically generated">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+ Line by line Mr. Friedman 's weary cynicism can be amusing , especially when he 's riffing on the Hollywood social scheme -- the way [0] people size each other up , [*-3] immediately canceling the desperate ones who [*T*-2] merely almost made it [*T*-4] [*T*-1] .
+</text>
+        <arg n="0">people</arg>
+        <rel>[ size] [ up]</rel>
+        <arg f="REC" n="1">each other</arg>
+        <arg f="ADV" n="M">[*-3] immediately canceling the desperate ones who [*T*-2] merely almost made it</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

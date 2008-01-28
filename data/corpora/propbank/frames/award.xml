@@ -1,0 +1,57 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="award">
+<note>
+  Frames file for 'award' based on sentences in financial subcorpus.
+  No access to verbnet.  Comparison with 'give'.
+</note>
+
+<roleset id="award.01" name="give an award" vncls="13.3">
+<roles>
+  <role descr="giver" n="0">
+		
+  <vnrole vncls="13.3" vntheta="Agent"/></role>
+
+  <role descr="award" n="1">
+		
+  <vnrole vncls="13.3" vntheta="Theme"/></role>
+
+  <role descr="benefactive" n="2">
+		
+  <vnrole vncls="13.3" vntheta="Recipient"/></role>
+
+</roles>
+
+<example name="all args">
+<text>
+    RJR Nabisco Inc. awarded its national broadcast media-buying
+    assignment to FCB/Leber Katz Partners, the New York outpost of
+    Chicago-based Foote, Cone &amp; Belding. 
+</text>
+        <arg n="0">RJR Nabisco Inc.</arg>
+        <rel>awarded</rel>
+        <arg n="1">its national broadcast media-buying assignment</arg>
+        <arg f="to" n="2">FCB/Leber Katz Partners, the New York
+        outpost of Chicago-based Foote, Cone &amp; Belding</arg> 
+</example>
+
+<example name="passivized double object">
+<text>
+    Eastern Airlines pilots were awarded *trace* between $60 million
+    and $100 million in back pay by an arbitrator, a decision that
+    could complicate the carrier's bankruptcy reorganization. 
+</text>
+        <rel>awarded</rel>
+        <arg n="2">*trace* -&gt;  Eastern Airlines pilots</arg>
+        <arg n="1">between $60 million and $100 million in back pay</arg>
+        <arg f="by" n="0">an arbitrator</arg>
+        <arg n="M">a decision that could complicate the carrier's
+        bankruptcy reorganization</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

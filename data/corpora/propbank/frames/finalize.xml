@@ -1,0 +1,48 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="finalize">
+<note>
+  Frames file for 'finalize' based on sentences in financial
+  subcorpus.  No verbnet entry.  Comparison to 'complete'.
+</note>
+
+<roleset id="finalize.01" name="bring to an end">
+<roles>
+  <role descr="agent, entity finalizing something" n="0"/>
+  <role descr="thing finalizedjjj " n="1"/>
+</roles>
+
+<example name="passive">
+<text>
+    Once its ownership is finalized *trace*, the new company will open
+    talks with state-appointed receivers to buy or lease Waertsilae
+    Marine's shipyard facilities. 
+</text>
+        <rel>finalized</rel>
+        <arg n="1">*trace* -&gt;  its ownership</arg>
+</example>
+
+
+<example name="active">
+<text>
+    Separately, Colgate Wednesday finalized an agreement with
+    MacroChem Corp., a tiny dental products and pharmaceutical concern
+    based in Billerica, Mass., to market in the U.S. four of
+    MacroChem's FDA-approved dental products. 
+</text>
+        <arg f="DIS" n="M">Separately</arg>
+        <arg n="0">Colgate</arg>
+        <arg f="TMP" n="M">Wednesday</arg>
+        <rel>finalized</rel>
+        <arg n="1">an agreement with MacroChem Corp., a tiny dental
+        products and pharmaceutical concern based in Billerica, Mass.,
+        to market in the U.S. four of MacroChem's FDA-approved dental
+        products</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

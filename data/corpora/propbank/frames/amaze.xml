@@ -1,0 +1,71 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="amaze">
+<note>
+  Frames file for 'amaze' based on sentences in wsj.  Verbnet entry
+  31.1, Framenet entry Experiencer obj.
+</note>
+
+<roleset id="amaze.01" name="cause astonishment" vncls="31.1">
+<roles>
+  <role descr="causer of amazement" n="0"><vnrole vncls="31.1" vntheta="Cause"/></role>
+  <role descr="amazed entity" n="1"><vnrole vncls="31.1" vntheta="Experiencer"/></role>
+  <role descr="target of amazement" n="2"/>
+</roles>
+
+<example name="nice easy transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Then the Gutfreunds determined *trace* to put up a 22-foot
+    Christmas tree, weighing a quarter of a ton, *trace* to amaze
+    their holiday guests. 
+</text>
+        <arg n="0">*trace* -&gt; *trace* -&gt;  the Gutfreunds</arg>
+        <rel>amaze</rel>
+        <arg n="1">their holiday guests</arg>
+</example>
+
+<example name="it-cleft">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    It never ceases *trace* to amaze me how the business world
+    continues to trivialize the world's environmental problems (``Is
+    Science, or Private Gain, Driving Ozone Policy?'' by George
+    Melloan, Business World, Oct. 24). 
+</text>
+        <arg n="0">*trace* -&gt; how the business world continues
+        to trivialize the world's environmental problems</arg> 
+        <rel>amaze</rel>
+        <arg n="1">me</arg>
+</example>
+
+<example name="predicative agent?">
+<inflection aspect="ns" form="participle" person="third" tense="past" voice="passive"/>
+<text>
+    As a Channel Islander, I was amazed to see my birthplace listed as
+    one of ``86 countries with an income tax.'' 
+</text>
+        <arg n="M">As a Channel Islander</arg>
+        <arg n="1">I</arg>
+        <rel>amazed</rel>
+        <arg n="0">to see my birthplace listed as one of ``86
+        countries with an income tax</arg> 
+</example>
+
+<example name="with target">
+  <inflection aspect="ns" form="participle" person="third" tense="past" voice="passive"/>
+  <text>
+     Mary was amazed *trace* at how long John could hold his breath.
+  </text>
+  <rel>amazed</rel>
+  <arg n="1">*trace* -&gt; Mary</arg>
+  <arg f="at" n="2">how long John could hold his breath</arg>
+</example>
+
+<note>
+cf frustrate
+</note>
+
+</roleset>
+</predicate>
+</frameset>

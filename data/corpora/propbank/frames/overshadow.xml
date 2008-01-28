@@ -1,0 +1,43 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="overshadow">
+<note>
+  Frames file for 'overshadow' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="overshadow.01" name="to dominate, make insignificant by comparison " vncls="-">
+<roles>
+  <role descr="entity dominating" n="0"/>
+  <role descr="entity overshadowed" n="1"/>
+</roles>
+
+<example name="passive">
+<inflection aspect="perfect" form="participle" person="third" tense="present" voice="passive"/>
+<text>
+ One was that , despite his 62 regular-season wins over the past three seasons in the Land Beyond the Late News , he has been overshadowed [*-2] by his more-muscular mates and missed out on prizes that [*T*-1] might have been his due .
+</text>
+	<rel>overshadowed</rel>
+	<arg n="1">[*-2] -&gt;  he</arg>
+	<arg f="by" n="0">his more-muscular mates</arg>
+</example>
+
+
+
+<example name="transitive">
+<inflection aspect="progressive" form="participle" person="third" tense="present" voice="active"/>
+<text>
+ The Japanese assault on the luxury market is rapidly overshadowing such European makes as Audi and Saab , which [*T*-1] at least have clear brand images .
+</text>
+	<arg n="0">The Japanese assault on the luxury market</arg>
+	<arg f="MNR" n="M">rapidly</arg>
+	<rel>overshadowing</rel>
+	<arg n="1">such European makes as Audi and Saab , which [*T*-1] at least have clear brand images</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

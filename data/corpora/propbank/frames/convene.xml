@@ -1,0 +1,49 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="convene">
+<note>
+Frames file for 'convene' based on sentences in financial subcorpus
+and automatic expansion via verbnet.
+</note>
+
+<roleset id="convene.01" name="call a meeting" vncls="47.5.2">
+<roles>
+	<role descr="agent, entity calling the meeting" n="0">
+		
+  <vnrole vncls="47.5.2" vntheta="Agent"/></role>
+
+	<role descr="theme, the meeting itself" n="1">
+		
+  <vnrole vncls="47.5.2" vntheta="Theme"/></role>
+
+</roles>
+
+<example name="agentive">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+     As Jaguar's biggest holder and Britain's biggest car maker, Ford
+     could turn up the heat by *trace* convening a special
+     shareholders' meeting and urging holders to drop the limits
+     early. 
+</text>
+        <arg n="0">*trace* -&gt;  Ford</arg>
+        <rel>convening</rel>
+        <arg n="1">a special shareholders' meeting</arg>
+</example>
+
+<example name="meeting as subject">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    The group's resilience gets its first test today when 30 top pilot
+    union leaders convene outside Chicago in a previously scheduled
+    meeting. 
+</text>
+        <arg n="1">30 top pilot union leaders</arg>
+        <rel>convene</rel>
+        <arg f="LOC" n="M">outside Chicago</arg>
+        <arg f="LOC" n="M">in a previously scheduled meeting</arg>
+        <arg f="TMP" n="M">*trace* -&gt;  when -&gt;  today</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,57 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="refund">
+<note>
+  Frames file for 'refund' based on sentences in financial subcorpus
+  and comparison to 'pay'.  Verbnet class give-13.1.
+</note>
+
+<roleset id="refund.01" name="pay back" vncls="13.1-1">
+<roles>
+  <role descr="refunder" n="0">
+		
+  <vnrole vncls="13.1-1" vntheta="Agent"/></role>
+
+  <role descr="amount refunded" n="1">
+		
+  <vnrole vncls="13.1-1" vntheta="Theme"/></role>
+
+  <role descr="refunded to" n="2">
+		
+  <vnrole vncls="13.1-1" vntheta="Recipient"/></role>
+
+  <role descr="in exchange for (might not be present)" n="3"/>
+</roles>
+
+<example name="no benefactive">
+  <text>
+    The Illinois Supreme Court ordered the commission *trace* to audit
+    Commonwealth Edison's construction expenses and refund any
+    unreasonable expenses.
+  </text>
+  <arg n="0">*trace*=the commission</arg>
+  <rel>refund</rel>
+  <arg n="1">any unreasonable expenses.</arg>
+</example>
+
+<example name="with benefactive">
+  <text>
+    Commonwealth Edison Co. was ordered *trace* to refund about $250
+    million to its current and former ratepayers for illegal rates
+    collected for cost overruns on a nuclear power plant.
+  </text>
+  <arg n="0">*trace*=Commonwealth Edison Co.</arg>
+  <rel>refund</rel>
+  <arg n="1">about $250 million</arg>
+  <arg f="to" n="2">its current and former ratepayers</arg>
+  <arg f="CAU" n="m">for illegal rates
+    collected for cost overruns on a nuclear power plant.</arg>
+</example>
+
+<note>
+Args 1 and 3 are actually reversed from the 'pay' roleset.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

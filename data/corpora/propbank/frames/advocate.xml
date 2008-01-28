@@ -1,0 +1,44 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="advocate">
+<note>
+  Frames file for 'advocate' based on sentences in financial
+  subcorpus.  Both of them.  No verbnet entry.  Comparison with
+  'suggest'.
+</note>
+
+<roleset id="advocate.01" name="suggest">
+<roles>
+  <role descr="advocate, suggest" n="0"/>
+  <role descr="suggestion" n="1"/>
+  <role descr="recipient of advice" n="2"/>
+</roles>
+
+<example name="unstated recipient">
+<text>
+    Mr. Icahn advocates the sale of the company's steel operations,
+    and Mr. Corry doesn't necessarily disagree. 
+</text>
+        <arg n="0">Mr. Icahn</arg>
+        <rel>advocates</rel>
+        <arg n="1">the sale of the company 's steel operations</arg>
+</example>
+
+<example name="with recipient">
+  <text>
+    John advocated to Mary that she burn her underwear.
+  </text>
+  <arg n="0">John</arg>
+  <rel>advocated</rel>
+  <arg f="to" n="2">Mary</arg>
+  <arg n="1">she burn her underwear</arg>
+</example>
+
+<note>
+That doesn't sound quite right; maybe this doesn't actually take an
+arg2.  We'll see what the rest of the corpus provides.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

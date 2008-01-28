@@ -1,0 +1,43 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="augment">
+
+<note>
+  Frames file for 'augment' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="augment.01" name="to increase">
+<roles>
+  <role descr="augmentor, agent" n="0"/>
+  <role descr="entity augmented" n="1"/>
+  <role descr="ammount augmented by" n="2"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="future" voice="active"/>
+<text>
+ `` We will support it , we will thank him , and we will augment it where appropriate , '' said [*T*-1] Rep. Vic Fazio ( D. , Calif . ) .
+</text>
+	<arg n="0">we</arg>
+	<arg f="MOD" n="M">will</arg>
+	<rel>augment</rel>
+	<arg n="1">it</arg>
+	<arg f="LOC" n="M">where appropriate</arg>
+</example>
+
+<example name="transitive with ARG2">
+
+<text>
+ We will augment your salary by $10,000 per annum
+</text>
+	<arg n="0">we</arg>
+	<rel>augment</rel>
+	<arg n="1">your salary</arg>
+	<arg n="2">by $10,000 per annum</arg>
+</example>
+
+
+</roleset>
+</predicate>
+</frameset>

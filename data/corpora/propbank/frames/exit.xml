@@ -1,0 +1,45 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="exit">
+<note>
+Frames file for 'exit' based on sentences in wsj and automatic
+expansion via verbnet.
+</note>
+
+<roleset id="exit.01" name="leave" vncls="51.1-1">
+<roles>
+     <role descr="departed entity" n="0">
+		
+  <vnrole vncls="51.1-1" vntheta="Theme"/></role>
+
+     <role descr="place exited" n="1">
+		
+  <vnrole vncls="51.1-1" vntheta="Location"/></role>
+
+</roles>
+
+<example name="pretty easy">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+     Once known as National Distillers &amp; Chemical Corp., the
+     company exited the wine and spirits business and plowed more of
+     its resources into plastics after Mr. Stookey took the chief
+     executive's job in 1986. 
+</text>
+        <arg f="ADV" n="M">Once known as National Distillers &amp;
+        Chemical Corp.</arg> 
+        <arg n="0">the company</arg>
+        <rel>exited</rel>
+        <arg n="1">the wine and spirits business</arg>
+        <arg f="TMP" n="M">after Mr. Stookey took the chief
+        executive's job in 1986</arg> 
+</example>
+
+<note>
+Not sure that the class membership is accurate.
+</note>
+
+</roleset>
+
+</predicate>
+</frameset>

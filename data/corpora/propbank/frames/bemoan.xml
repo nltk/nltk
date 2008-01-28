@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="bemoan">
+<note>
+  Frames file for 'bemoan'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="bemoan.01" name="to express grief over" vncls="-">
+<roles> 
+  <role descr="moaner, agent" n="0"/>  
+  <role descr="entity bemoaned" n="1"/>   
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="progressive" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+ The trend toward lower rents may seem surprising given that some communities in New York are bemoaning the loss of favorite local businesses to high rents .
+</text>
+	<arg n="0">some communities in New York</arg>
+	<rel>bemoaning</rel>
+	<arg n="1">the loss of favorite local businesses to high rents</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

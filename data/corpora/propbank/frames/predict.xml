@@ -1,0 +1,45 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="predict">
+<note>
+  Frames file for 'predict' based on sentences in financial
+  subcorpus.  No verbnet entry.  Loose comparison with verbs of
+  saying. 
+</note>
+
+<roleset id="predict.01" name="tell the future">
+<roles>
+  <role descr="fortune teller" n="0"/>
+  <role descr="prediction" n="1"/>
+</roles>
+
+<example name="prediction as utterance">
+<text>
+    He predicted that the board would give the current duo until early
+    next year before naming a new chief executive. 
+</text>
+        <arg n="0">He</arg>
+        <rel>predicted</rel>
+        <arg n="1">the board would give the current duo until early
+        next year before naming a new chief executive</arg> 
+</example>
+
+<example name="prediction as noun phrase">
+<text>
+    Analysts were predicting 1990 BellSouth earnings in the range of
+    $3.90 a share, or $1.9 billion, but now those estimates are being
+    scaled back. 
+</text>
+        <arg n="0">Analysts</arg>
+        <rel>predicting</rel>
+        <arg n="1">1990 BellSouth earnings in the range of $3.90 a
+        share, or $1.9 billion</arg>
+</example>
+
+<note>
+prediction-as-utterance can show the fronted construction, so be warned.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

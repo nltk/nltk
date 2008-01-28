@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="sack">
+<note>
+  Frames file for 'sack' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="sack.01" name="terminate employment" vncls="-">
+<roles>
+  <role descr="employer" n="0"/>
+  <role descr="former employee" n="1"/>
+</roles>
+
+
+<example name="transitive with adverbials">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ First , he unceremoniously sacked Tom Landry , the legendary coach who [*T*-1] took the Cowboys to five Super Bowls and 20 consecutive winning seasons .
+</text>
+	<arg f="TMP" n="M">First</arg>
+	<arg n="0">he</arg>
+	<arg f="MNR" n="M">unceremoniously</arg>
+	<rel>sacked</rel>
+	<arg n="1">Tom Landry , the legendary coach who [*T*-1] took the Cowboys to five Super Bowls and 20 consecutive winning seasons</arg>
+</example>
+
+
+</roleset>
+</predicate>
+</frameset>

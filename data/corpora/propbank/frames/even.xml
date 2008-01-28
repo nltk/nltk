@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="even_out">
+<note>
+  Frames file for 'even' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="even.01" name="to make or become even" vncls="45.4">
+<roles>
+  <role descr="causer of evenness, agent" n="0">
+        <vnrole vncls="45.4" vntheta="Agent"/></role>
+  <role descr="entity evened" n="1">
+        <vnrole vncls="45.4" vntheta="Patient"/></role>
+</roles>
+
+
+<example name="intransitive">
+<inflection aspect="perfect" form="participle" person="ns" tense="past" voice="active"/>
+<text>
+ GOP pollster Neil Newhouse , of the Wirthlin Group , says [0] polls this summer showed that the single-issue voters had about evened out .
+</text>
+	<arg n="1">the single-issue voters</arg>
+	<arg f="ADV" n="M">about</arg>
+	<rel>[ evened] [ out]</rel>
+</example>
+
+</roleset>
+</predicate>
+
+
+</frameset>

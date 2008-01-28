@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="romance">
+<note>
+  Frames file for 'romance' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="romance.01" name="have an affair with" vncls="-">
+<roles>
+  <role descr="romancer" n="0"/>
+  <role descr="romanced" n="1"/>
+</roles>
+
+<example name="I hope this is metaphorical">
+<inflection aspect="progressive" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+    At the Laurel race track, the breeders are romancing people like
+    Tim Hulings, a beer packaging plant worker. 
+</text>
+        <arg f="LOC" n="M">At the Laurel race track</arg>
+        <arg n="0">the breeders</arg>
+        <rel>romancing</rel>
+        <arg n="1">people like Tim Hulings, a beer packaging plant
+        worker</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

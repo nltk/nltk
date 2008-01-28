@@ -1,0 +1,58 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="coat">
+<note>
+  Frames file for 'coat' based on sentences in wsj.  Verbnet entry
+  9.8, Framenet entries Adorning and Filling.
+</note>
+
+<roleset id="coat.01" name="cover, apply something to a surface" vncls="9.8">
+<roles>
+  <role descr="entity causing covering, agent" n="0">
+        <vnrole vncls="9.8" vntheta="Agent"/></role>
+  <role descr="covered" n="1">
+        <vnrole vncls="9.8" vntheta="Destination"/></role>
+  <role descr="covering, coat" n="2">
+        <vnrole vncls="9.8" vntheta="Theme"/></role>
+</roles>
+
+<example name="passive with covering">
+<inflection aspect="ns" form="participle" person="ns" tense="future" voice="passive"/>
+<text>
+    The carpets won't be glued down, and walls will be coated [*-1]
+    with nontoxic finishes. 
+</text>
+        <arg f="MOD" n="M">will</arg>
+        <rel>coated</rel>
+        <arg n="1">[*-1] -&gt;  walls</arg>
+        <arg f="with" n="2">nontoxic finishes</arg>
+</example>
+
+<example name="adjectival usage">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    He said USX also appeared to sell a richer mix of steel products,
+    such as the more profitable pipe and galvanized coated sheet, than
+    lower-priced structural goods. 
+</text>
+        <rel>coated</rel>
+        <arg n="1">sheet</arg>
+</example>
+
+<example name="all args">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John coated the driveway with a thick layer of molasses.
+  </text>
+  <arg n="0">John</arg>
+  <rel>coated</rel>
+  <arg n="1">the driveway</arg>
+  <arg f="with" n="2">a thick layer of molasses</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

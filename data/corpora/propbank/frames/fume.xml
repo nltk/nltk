@@ -1,0 +1,73 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="fume">
+<note>
+  Frames file for 'fume' based on sentences in wsj.  Verbnet entry
+  31.3, Framenet entry Heat.</note>
+
+<roleset id="fume.01" name="be angry" vncls="31.3">
+<roles>
+  <role descr="angry entity" n="0">
+        <vnrole vncls="31.3" vntheta="Experiencer"/></role>
+  <role descr="source of anger" n="1">
+        <vnrole vncls="31.3" vntheta="Cause"/></role>
+</roles>
+
+<example name="unaccusative">
+<inflection aspect="progressive" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+    Meanwhile, stations are fuming because, many of them say, the
+    show's distributor, Viacom Inc., is giving an ultimatum:  Either
+    sign new long-term commitments to buy future episodes or risk
+    losing ``Cosby'' to a competitor. 
+</text>
+        <arg f="TMP" n="M">Meanwhile</arg>
+        <arg n="0">stations</arg>
+        <rel>fuming</rel>
+        <arg f="PNC" n="M">because, many of them say, the show's
+        distributor, Viacom Inc., is giving an ultimatum:  Either sign
+        new long-term commitments to buy future episodes or risk
+        losing ``Cosby'' to a competitor</arg> 
+</example>
+
+<example name="with source of anger">
+<inflection aspect="progressive" form="participle" person="third" tense="present" voice="active"/>
+<text>
+    The direct-mail industry, not surprisingly, is fuming at the
+    injustice of it all. 
+</text>
+        <arg n="0">The direct-mail industry</arg>
+        <arg f="DIS" n="M">not surprisingly</arg>
+        <rel>fuming</rel>
+        <arg f="at" n="1">the injustice of it all</arg>
+</example>
+
+</roleset>
+
+<roleset id="fume.02" name="mode of speaking" vncls="-">
+<roles>
+  <role descr="speaker" n="0"/>
+  <role descr="utterance" n="1"/>
+  <role descr="hearer" n="2"/>
+</roles>
+
+<example name="the usual">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    ``I think that this magazine is not only called Garbage, but it is
+    practicing journalistic garbage,'' fumes *trace* a spokesman for
+    Campbell Soup. 
+</text>
+        <rel>fumes</rel>
+        <arg n="1">*trace* -&gt;  I think that this magazine is not only
+        called Garbage, but it is practicing journalistic
+        garbage</arg> 
+        <arg n="0">a spokesman for Campbell Soup</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

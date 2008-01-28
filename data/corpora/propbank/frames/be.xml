@@ -1,0 +1,76 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="be">
+<note>
+  Frames file for 'be' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="be.01" vncls="-" name="copula">
+<roles>
+  <role n="1"  descr="topic"/>
+  <role n="2"  descr="comment"/>
+</roles>
+
+<example name="poor John">
+  <inflection person="third" tense="present" aspect="ns" voice="active" form="full"/>
+  <text>
+    John is an idiot.
+  </text>
+  <arg n="1"        >John</arg>
+  <rel              >is</rel>
+  <arg n="2"        >an idiot</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="be.02" vncls="-" name="existential">
+<roles>
+  <role n="1"  descr="thing that is"/>
+</roles>
+
+<example name="what it is, what it was, what it shall be">
+  <inflection person="third" tense="present" aspect="ns" voice="active" form="full"/>
+  <text>
+     John doesn't think, therefore he isn't.
+  </text>
+  <arg n="1"        >he</arg>
+  <rel              >is</rel>
+  <arg n="m" f="NEG">n't</arg>
+</example>
+
+<example name="with support">
+  <inflection person="third" tense="present" aspect="ns" voice="active" form="full"/>
+  <text>
+     There's a foul odor in the air whenever John's around.
+  </text>
+  <arg n="1"        >a foul odor in the air</arg>
+  <rel              >'s</rel>
+  <arg n="m" f="TMP">whenever John's around</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="be.03" vncls="-" name="auxiliary">
+<roles>
+<note>do not tag--no arguments!</note>
+</roles>
+
+<example name="one of many">
+  <inflection person="ns" tense="ns" aspect="ns" voice="ns" form="ns"/>
+  <text>
+     John is eating.
+  </text>
+<note>
+Do not tag!
+</note>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

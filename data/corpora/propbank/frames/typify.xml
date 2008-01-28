@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="typify">
+<note>
+  Frames file for 'typify' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="typify.01" name="serve as an example of a class" vncls="-">
+<roles>
+  <role descr="example" n="0"/>
+  <role descr="class" n="1"/>
+</roles>
+
+<example name="representative example">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    Givaudan Far East Ltd., a Swiss concern that sells chemicals to
+    shampoo and soap factories in China, typifies the problems. 
+</text>
+        <arg n="0">Givaudan Far East Ltd., a Swiss concern that sells
+        chemicals to shampoo and soap factories in China,</arg> 
+        <rel>typifies</rel>
+        <arg n="1">the problems</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

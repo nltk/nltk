@@ -1,0 +1,40 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="brake">
+<note>
+  Frames file for 'brake' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="brake.01" vncls="-" name="slow a car via brakes">
+<roles>
+  <role n="0"  descr="causer of slowing"/>
+  <role n="1"  descr="vehicle"/>
+</roles>
+
+<example name="not verbal">
+  <inflection person="ns" tense="ns" aspect="ns" voice="ns" form="gerund"/>
+  <text>
+    Mr. Redford, like it or not, is like a braking system on a runaway
+    truck, kind of slowing it down into control.   
+  </text>
+  <rel              >braking</rel>
+  <arg n="0"        >system</arg>
+</example>
+
+<example name="verbal">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+     John braked his car just after driving off the cliff.
+  </text>
+  <arg n="0"        >John</arg>
+  <rel              >braked</rel>
+  <arg n="1"        >his car</arg>
+  <arg n="m" f="TMP">just after driving off the cliff</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

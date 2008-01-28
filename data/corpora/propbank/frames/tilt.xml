@@ -1,0 +1,61 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="tilt">
+<note>
+  Frames file for 'tilt' based on sentences in wsj.  Verbnet entries
+  47.6, 45.4.
+</note>
+
+<roleset id="tilt.01" name="(cause to) be not level, motion according" vncls="47.6 45.4">
+<roles>
+  <role descr="cause, agent" n="0">
+        <vnrole vncls="47.6" vntheta="Agent"/>
+        <vnrole vncls="45.4" vntheta="Agent"/></role>
+  <role descr="thing not level" n="1">
+        <vnrole vncls="47.6" vntheta="Theme"/>
+        <vnrole vncls="45.4" vntheta="Patient"/></role>
+  <role descr="description of non-level-ness, path or destination" n="2"/>
+</roles>
+
+<example name="most intuitive usage">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    As surely as a seesaw tilts, falling interest rates force up the
+    price of previously issued bonds. 
+</text>
+        <arg n="1">a seesaw</arg>
+        <rel>tilts</rel>
+</example>
+
+<example name="all args">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    Mr. Black said he is ``pleased'' with the economy's recent
+    performance, and doesn't see ``a lot of excesses out there that
+    *trace* would tilt us into recession.'' 
+</text>
+        <arg n="0">*trace* -&gt;  that -&gt;  excesses</arg>
+        <rel>tilt</rel>
+        <arg n="1">us</arg>
+        <arg f="into" n="2">recession</arg>
+</example>
+
+<example name="ergative with description">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    Will he, if he wins, be in the thrall of the most liberal of his
+    allies, who advocate such policies as rent control for commercial
+    buildings, or will he tilt toward the real-estate interests that
+    have funneled money into his campaign? 
+</text>
+        <arg f="MOD" n="M">will</arg>
+        <arg n="1">he</arg>
+        <rel>tilt</rel>
+        <arg f="toward" n="2">the real-estate interests that  have
+        funneled money into his campaign</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

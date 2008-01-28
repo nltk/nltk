@@ -1,0 +1,64 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="slash">
+<note>
+  Frames file for 'slash' based on survey of sentences in financial
+  subcorpus and comparison with 'cut'.  No verbnet entry.
+</note>
+
+<roleset id="slash.01" name="slice" vncls="21.1">
+<roles>
+  <role descr="cutter" n="0">
+		
+  <vnrole vncls="21.1" vntheta="Agent"/></role>
+
+  <role descr="thing cut" n="1">
+		
+  <vnrole vncls="21.1" vntheta="Patient"/></role>
+
+  <role descr="medium, source" n="2"/>
+  <role descr="instrument" n="3">
+		
+  <vnrole vncls="21.1" vntheta="Instrument"/></role>
+
+</roles>
+
+<example name="kitchen disaster">
+  <text>
+  John slashed his hand with a butter knife.
+  </text>
+  <arg n="0">John</arg>
+  <rel>slashed</rel>
+  <arg n="1">his hand</arg>
+  <arg f="with" n="3">a butter knife</arg>
+</example>
+
+</roleset>
+
+<roleset id="slash.02" name="reduce" vncls="-">
+<roles>
+  <role descr="cutter" n="0"/>
+  <role descr="thing reduced" n="1"/>
+  <role descr="amount reduced by" n="2"/>
+  <role descr="start point" n="3"/>
+  <role descr="end point" n="4"/>
+</roles>
+
+<example name="reduce dramatically">
+  <text>
+  Commonwealthon Edison said the ruling could force it to slash its
+  1989 earnings by $1.55 a share.
+  </text>
+  <arg n="0">it</arg>
+  <rel>slash</rel>
+  <arg n="1">its 1989 earnings</arg>
+  <arg f="by" n="2">$1.55 a share</arg>
+</example>
+
+<note>
+If &quot;by&quot; is not present, use &quot;EXT&quot;.  Cf 'cut' for additional examples.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

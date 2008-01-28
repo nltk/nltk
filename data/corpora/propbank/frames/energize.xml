@@ -1,0 +1,44 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="energize">
+<note>
+  Frames file for 'energize' based on sentences in wsj.  Verbnet entry 45.4.
+</note>
+
+<roleset id="energize.01" name="give energy to" vncls="45.4">
+<roles>
+  <role descr="giver of energy" n="0"><vnrole vncls="45.4" vntheta="Agent"/></role>
+  <role descr="recipient" n="1"><vnrole vncls="45.4" vntheta="Patient"/></role>
+  <role descr="source of energy" n="2"><vnrole vncls="45.4" vntheta="Instrument"/></role>
+</roles>
+
+<example name="only one arg">
+<inflection aspect="ns" form="participle" person="third" tense="past" voice="passive"/>
+<text>
+     But market activity was energized *trace* as investors started to
+     view the lower price levels as attractive. 
+</text>
+        <arg f="DIS" n="M">But</arg>
+        <rel>energized</rel>
+        <arg n="1">*trace* -&gt;  market activity</arg>
+        <arg f="TMP" n="M">as investors started  to view the lower
+        price levels as attractive</arg> 
+</example>
+
+<example name="all args">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John energized himself with fifteen shots of espresso.
+  </text>
+  <arg n="0">John</arg>
+  <rel>energized</rel>
+  <arg f="REC" n="1">himself</arg>
+  <arg f="with" n="2">fifteen shots of espresso</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

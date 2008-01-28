@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="override">
+<note>
+  Frames file for 'override' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="override.01" name="to prevail over or declare void" vncls="-">
+<roles>
+  <role descr="prevailer, agent" n="0"/>
+  <role descr="entity overriden" n="1"/>
+</roles>
+
+
+
+<example name="transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ Unfortunately , the organization 's desire for pork tends [*-1] to override its commitment to overall fiscal responsibility .
+</text>
+	<arg n="0">[*-1] -&gt;  the organization 's desire for pork</arg>
+	<rel>override</rel>
+	<arg n="1">its commitment to overall fiscal responsibility</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

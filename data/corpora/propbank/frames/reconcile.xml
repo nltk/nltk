@@ -1,0 +1,46 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="reconcile">
+<note>
+  Frames file for 'reconcile' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+
+<roleset id="reconcile.01" name="to accommodate, settle, accept" vncls="-">
+<roles>
+  <role descr="accommodator, settler, agent" n="0"/>
+  <role descr="theme" n="1"/>
+  <role descr="reconciled to/with" n="2"/>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+ Under federal transportation law , a government mediator is attempting [*-1] to reconcile the melding of Tiger 's job classifications into Federal 's .
+</text>
+	<arg n="0">[*-1] -&gt;  a government mediator</arg>
+	<rel>reconcile</rel>
+	<arg n="1">the melding of Tiger 's job classifications into Federal 's</arg>
+</example>
+
+
+<example name="all arguments">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ As a result , Mr. Steinhardt must reconcile himself to [*-1] selling USAir at a loss , or to [*-1] holding the shares as an old-fashioned investment .
+</text>
+	<arg f="CAU" n="M">As a result</arg>
+	<arg n="0">Mr. Steinhardt</arg>
+	<arg f="MOD" n="M">must</arg>
+	<rel>reconcile</rel>
+	<arg n="1" f="REC">himself</arg>
+	<arg f="to" n="2">[*-1] selling USAir at a loss</arg>
+</example>
+
+</roleset>
+</predicate>
+
+
+</frameset>

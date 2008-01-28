@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="endeavor">
+<note>
+  Frames file for 'endeavor' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="endeavor.01" name="to try to do something" vncls="-">
+<roles>
+  <role descr="tryer, agent" n="0"/>
+  <role descr="proposition" n="1"/>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ At that point , he said [0] [*T*-1] , Qintex Australia stated [0] it would `` endeavor [*-2] to arrange '' the financing .
+</text>
+	<arg n="0">it</arg>
+	<arg f="MOD" n="M">would</arg>
+	<rel>endeavor</rel>
+	<arg n="1">[*-2] to arrange '' the financing</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

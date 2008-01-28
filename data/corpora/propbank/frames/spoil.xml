@@ -1,0 +1,41 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="spoil">
+<note>
+  Frames file for 'spoil'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="spoil.01" name="to damage or decay" vncls="-">
+<roles> 
+ <role descr="causer" n="0"/>
+ <role descr="entity decaying" n="1"/>  
+</roles>
+
+<example name="intransitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ The state Supply Regulator Institute is [*-3] to burn rice , corn and beans that [*T*-1] spoiled because of neglect and corruption in the previous Christian Democrat government , a statement from the information service SISAL said [0] [*T*-2] .
+</text>
+	<arg n="1">[*T*-1] -&gt;  that -&gt;  rice , corn and beans</arg>
+	<rel>spoiled</rel>
+	<arg f="PNC" n="M">because of neglect and corruption in the previous Christian Democrat government</arg>
+</example>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ It is widely known [*-1] that `` too many cooks spoil the broth , '' but that wisdom does not necessarily reflect the view of the cooks , especially if they are senators .
+</text>
+	<arg n="0">too many cooks</arg>
+	<rel>spoil</rel>
+	<arg n="1">the broth</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

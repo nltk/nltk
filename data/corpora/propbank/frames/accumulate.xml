@@ -1,0 +1,53 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="accumulate">
+<note>
+  Frames file for 'accumulate' based on sentences in financial
+  subcorpus.  No access to verbnet.  Comparison with 'amass'.
+</note>
+
+<roleset id="accumulate.01" name="amass" vncls="13.5.2 47.5.2">
+<roles>
+  <role descr="entity accumulating something" n="0">
+		
+		
+  <vnrole vncls="13.5.2" vntheta="Agent"/><vnrole vncls="47.5.2" vntheta="Agent"/></role>
+
+  <role descr="thing/stuff accumulated" n="1">
+		
+		
+  <vnrole vncls="13.5.2" vntheta="Theme"/><vnrole vncls="47.5.2" vntheta="Theme"/></role>
+
+  <role descr="price" n="3"/>
+</roles>
+
+<example name="just transitive">
+<text>
+    Pennzoil is rumored *trace* to be accumulating a stake in Chevron
+    in order  to push for a revamping of the company. 
+</text>
+        <arg n="0">*trace* -&gt;  Pennzoil</arg>
+        <rel>accumulating</rel>
+        <arg n="1">a stake in Chevron</arg>
+        <arg f="PNC" n="M">in order to push for a revamping of the
+        company</arg> 
+</example>
+
+<example name="perhaps with price">
+  <text>
+    John accumulated a gigantic pile of old tires for a dollar each.
+  </text>
+  <arg n="0">John</arg>
+  <rel>accumulated</rel>
+  <arg n="1">a gigantic pile of old tires</arg>
+  <arg f="for" n="3">a dollar each</arg>
+</example>
+
+<note>
+I kinda doubt price would actually be used, but just in case, there it
+is.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,41 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="groan">
+<note>
+  Frames file for 'groan' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="groan.01" name="to utter with a groan" vncls="-">
+<roles>
+  <role descr="groaner" n="0"/>
+  <role descr="groan at" n="1"/>
+</roles>
+
+<example name="all arguments">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ He often groans , he says [0] [*T*-3] , at the `` clutter '' of sports stories about drugs , alcohol , gambling and some player 's lament `` about the miserly millions [0] he is offered [*-1] [*T*-2] [*-1] to play the game . ''
+</text>
+	<arg n="0">He</arg>
+	<arg f="TMP" n="M">often</arg>
+	<rel>groans</rel>
+	<arg f="at" n="1">the `` clutter '' of sports stories about drugs , alcohol , gambling and some player 's lament `` about the miserly millions [0] he is offered [*-1] [*T*-2] [*-1] to play the game</arg>
+</example>
+
+
+<example name="intransitive">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ The crowd groans , Mr. Jones shakes his head , the Cowboys lose the game .
+</text>
+	<arg n="0">The crowd</arg>
+	<rel>groans</rel>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

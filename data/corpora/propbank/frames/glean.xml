@@ -1,0 +1,35 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="glean">
+<note>
+  Frames file for 'glean' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="glean.01" name="to collect bit by bit" vncls="14">
+<roles>
+  <role descr="collector, agent" n="0">
+        <vnrole vncls="14" vntheta="Agent"/></role>
+  <role descr="entity gleaned" n="1">
+        <vnrole vncls="14" vntheta="Theme"/></role>
+  <role descr="entity gleaned from" n="2">
+        <vnrole vncls="14" vntheta="Source"/></role>
+</roles>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="past" voice="passive"/>
+<text>
+ This information was gleaned [*-1] from your own news stories on the region .
+</text>
+	<rel>gleaned</rel>
+	<arg n="1">[*-1] -&gt;  This information</arg>
+	<arg f="from" n="2">your own news stories on the region</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

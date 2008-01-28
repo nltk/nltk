@@ -1,0 +1,52 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="obtain">
+<note>
+  Frames file for 'obtain' based on annotation-on-the fly in financial
+  subcorpus, and comparison with 'get' and 'receive'
+</note>
+
+<roleset id="obtain.01" name="get" vncls="13.5.2-1">
+<roles>
+  <role descr="receiver" n="0">
+		
+  <vnrole vncls="13.5.2-1" vntheta="Agent"/></role>
+
+  <role descr="thing gotten" n="1">
+		
+  <vnrole vncls="13.5.2-1" vntheta="Theme"/></role>
+
+  <role descr="received from" n="2">
+		
+  <vnrole vncls="13.5.2-1" vntheta="Source"/></role>
+
+</roles>
+
+<example name="get">
+  <text>
+  The thrift holding company said it expects *trace* to obtain
+  regulatory approval by year-end.
+  </text>
+  <arg n="0">*trace*=it</arg>
+  <rel>obtain</rel>
+  <arg n="1">regulatory approval</arg>
+  <arg f="TMP" n="m">by year-end</arg>
+</example>
+
+<example name="weird scientific ergative">
+  <inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+  <text>
+    &quot;This result obtains from the input conditions,&quot; John said.
+  </text>
+  <arg n="1">This result</arg>
+  <rel>obtains</rel>
+  <arg f="from" n="2">the input conditions</arg>
+</example>
+
+<note>
+This really does occur.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

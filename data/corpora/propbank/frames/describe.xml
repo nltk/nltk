@@ -1,0 +1,67 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="describe">
+<note>
+  Frames file for 'describe' based on survey of sentences in financial
+  subcorpus.  Verbnet class describe-29.2.  Comparison to 'call'
+  attributive sense.
+</note>
+
+<roleset id="describe.01" name="assign a label or attribute" vncls="29.2">
+<roles>
+  <role descr="describer" n="0">
+		
+  <vnrole vncls="29.2" vntheta="Agent"/></role>
+
+  <role descr="thing described" n="1">
+		
+  <vnrole vncls="29.2" vntheta="Theme"/></role>
+
+  <role descr="secondary attribute, described-as" n="2">
+		
+  <vnrole vncls="29.2" vntheta="Predicate"/></role>
+
+</roles>
+
+<example name="all args">
+  <text>
+    The SEC documents describe those chips, which are made of gallium
+    arsenide, as *trace* being so fragile and minute they will require
+    special robotic handling equipment.
+  </text>
+  <arg n="0">The SEC documents</arg>
+  <rel>describe</rel>
+  <arg n="1">those chips, which are made of gallium arsenide</arg>
+  <arg f="as" n="2">*trace* being so fragile and minute they will
+  require special robotic handling equipment</arg>
+</example>
+
+<example name="inverted attribute">
+  <text>
+     a ``seething mass,'' as one trader described it.
+  </text>
+  <arg n="2">a ``seething mass,''</arg>
+  <arg n="0">one trader</arg>
+  <rel>described</rel>
+  <arg n="1">it</arg>
+</example>
+
+<example name="no attribute">
+  <text>
+    It didn't describe the source of funds or the specific terms of
+    StatesWest securities which were part of the offer.
+  </text>
+  <arg n="0">It</arg>
+  <arg f="NEG" n="m">n't</arg>
+  <rel>describe</rel>
+  <arg n="1">the source of funds or the specific terms of
+    StatesWest securities which were part of the offer</arg>
+</example>
+
+<note>
+Could be considered a different sense.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,67 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="shed">
+<note>
+  Frames file for 'shed' based on sentences in financial subcorpus.
+  No access to verbnet.  Comparison to 'eliminate' and 'fall'.
+</note>
+
+<roleset id="shed.01" name="get rid of, remove" vncls="43.4">
+<roles>
+  <role descr="entity removing" n="0">
+	  <vnrole vncls="43.4" vntheta="Agent"/></role>
+  <role descr="thing being removed (defaults to 'hair')" n="1">
+	  <vnrole vncls="43.4" vntheta="Theme"/></role>
+</roles>
+
+<example name="transitive">
+<text>
+    The Conservative government's decision may reflect its desire
+    *trace* to shed a politically sensitive issue well before the next
+    election, expected in late 1991. 
+</text>
+        <arg n="0">*trace* -&gt;  The Conservative government 's</arg>
+        <rel>shed</rel>
+        <arg n="1">a politically sensitive issue</arg>
+        <arg f="TMP" n="M">well before the next election, expected in
+        late 1991</arg> 
+</example>
+
+<example name="default thing-shed">
+  <text>
+    John's cat sheds constantly.
+  </text>
+  <arg n="0">John's cat</arg>
+  <rel>sheds</rel>
+  <arg f="TMP" n="m">constantly</arg>
+</example>
+
+<note>
+&quot;constantly&quot; could also be MNR, I s'pose.
+</note>
+
+</roleset>
+
+<roleset id="shed.02" name="move downward" vncls="-">
+<roles>
+  <role descr="Logical subject, patient, thing falling" n="1"/>
+  <role descr="EXT, amount fallen" n="2"/>
+  <role descr="start point" n="3"/>
+  <role descr="end point, end state of arg1" n="4"/>
+  <role descr="medium" f="LOC" n="M"/>
+</roles>
+
+<example name="those darn stock reports">
+<text>
+    Other banks were slightly more resilient, with Dresdner Bank
+    shedding 4.8 to 320, and Commerzbank slipping 2.5 to... 
+</text>
+        <arg n="1">Dresdner Bank</arg>
+        <rel>shedding</rel>
+        <arg f="EXT" n="2">4.8</arg>
+        <arg f="to" n="4">320</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,96 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="tap">
+<note>
+  Frames file for 'tap' based on sentences in financial subcorpus.  No
+  access to verbnet.  Comparison with 'hit' and 'call'.
+</note>
+
+<roleset id="tap.01" name="hit" vncls="18.1">
+<roles>
+  <role descr="agent, hitter - animate only!" n="0">
+	  <vnrole vncls="18.1" vntheta="Agent"/></role>
+  <role descr="thing hit" n="1">
+	  <vnrole vncls="18.1" vntheta="Patient"/></role>
+  <role descr="instrument, thing hit by or with" n="2">
+	  <vnrole vncls="18.1" vntheta="Instrument"/></role>
+</roles>
+
+<example name="duck duck goose">
+  <text>
+    Mary tapped John on the head with a 2x4.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>tapped</rel>
+  <arg n="1">John</arg>
+  <arg f="LOC" n="m">on the head</arg>
+  <arg f="with" n="2">a 2x4</arg>
+</example>
+
+<note>
+Poor John.
+</note>
+
+</roleset>
+
+<roleset id="tap.02" name="call upon" vncls="-">
+<roles>
+  <role descr="caller" n="0"/>
+  <role descr="thing being summoned" n="1"/>
+  <role descr="benefactive" n="2"/>
+  <role descr="attribute of arg1 or task" n="3"/>
+</roles>
+
+<example name="just transitive">
+<text>
+   RJR Taps FCB/Leber
+</text>
+        <arg n="0">RJR</arg>
+        <rel>Taps</rel>
+        <arg n="1">FCB/Leber</arg>
+</example>
+
+<example name="with task">
+<text>
+    The investor was instrumental in *trace* tapping Mr. Wolf to run
+    the air cargo unit of Tiger International Inc. 
+</text>
+        <arg n="0">*trace* -&gt;  The investor</arg>
+        <rel>tapping</rel>
+        <arg n="1">Mr. Wolf</arg>
+        <arg n="3">to run the air cargo unit of Tiger
+        International Inc</arg> 
+</example>
+
+<note>
+The automatic tagger fails to separate Args 1,3.
+</note>
+</roleset>
+
+<roleset id="tap.03" name="access, as a phone or water tap" vncls="-">
+<roles>
+  <role descr="accessor, agent" n="0"/>
+  <role descr="thing tapped" n="1"/>
+</roles>
+
+<example name="transitive, active">
+<text>
+    The charity admits spending a lot on fund raising, but says that
+    was necessary to establish a donor base *trace* it can tap *trace*
+    at much lower cost in years to come. 
+</text>
+        <arg n="0">it</arg>
+        <arg f="MOD" n="M">can</arg>
+        <rel>tap</rel>
+        <arg n="1">*trace* -&gt; *trace* -&gt;  a donor base</arg>
+        <arg f="MNR" n="M">at much lower cost</arg>
+        <arg f="TMP" n="M">in years   to come</arg>
+</example>
+
+<note>
+The call upon sense might be a metaphorical extension of this sense.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

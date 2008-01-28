@@ -1,0 +1,54 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="beam">
+<note>
+  Frames file for 'beam' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+
+<roleset id="beam.01" name="to emit or transmit" vncls="-">
+<roles>
+  <role descr="transmitter, agent" n="0"/>
+  <role descr="thing transmitted" n="1"/>
+</roles>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+ He gives pep talks in periodic `` family briefings '' beamed [*] internationally on `` FXTV , '' the company 's own television network .
+</text>
+	<rel>beamed</rel>
+	<arg n="1">[*] -&gt;  periodic `` family briefings ''</arg>
+	<arg f="MNR" n="M">internationally</arg>
+	<arg f="LOC" n="M">on `` FXTV , '' the company 's own television network</arg>
+</example>
+</roleset>
+
+
+<roleset id="beam.02" name="to express with a smile" vncls="40.2">
+<roles>
+  <role descr="smiler, agent" n="0">
+	  <vnrole vncls="40.2" vntheta="Agent"/></role>
+  <role descr="thing expressed" n="1">
+	  <vnrole vncls="40.2" vntheta="Theme"/></role>
+</roles>
+
+
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ `` We 've had the Russians and Chinese , and people from India visiting us , '' Mr. Iverson beams [*T*-1] .
+</text>
+	<arg n="0">Mr. Iverson</arg>
+	<rel>beams</rel>
+	<arg n="1">[*T*-1] -&gt;  We 've had the Russians and Chinese , and people from India visiting us</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

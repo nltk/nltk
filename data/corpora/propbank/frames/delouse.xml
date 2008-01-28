@@ -1,0 +1,40 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="delouse">
+<note>
+  Frames file for 'delouse' based on sentences in wsj.  Verbnet entry 10.8.
+</note>
+
+<roleset id="delouse.01" vncls="10.8" name="remove lice from">
+<roles>
+  <role n="0"  descr="remover of lice, agent"/>
+  <role n="1"  descr="lousy thing"/>
+</roles>
+
+<example name="sorta adjectival, sorta nominal">
+<inflection person="ns" tense="ns" aspect="progressive" voice="active" form="participle"/>
+<text>
+     Cardinal Scientific Inc. of Waldorf, Md., seeks a Small Business
+     Innovation Research grant to produce a ``nozzle assembly for an
+     Army mass delousing outfit.  
+</text>
+	<rel>delousing</rel>
+	<arg n="0">outfit</arg>
+</example>
+
+<example name="verbal">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+     Mary deloused John's sock drawer.
+  </text>
+  <arg n="0"        >Mary</arg>
+  <rel              >deloused</rel>
+  <arg n="1"        >John's sock drawer</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

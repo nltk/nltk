@@ -1,0 +1,38 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="negate">
+<note>
+  Frames file for 'negate' based on sentences in whole corpus.  No
+  Verbnet entry. 
+</note>
+
+<roleset id="negate.01" name="make invalid" vncls="-">
+<roles>
+  <role descr="causer of invalidity" n="0"/>
+  <role descr="thing negated, proposition" n="1"/>
+</roles>
+
+<example name="NOT!">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    The company said that improved results in its financial-services
+    sector were negated *trace* by increased costs in its government
+    contract business, lower operating earnings in its
+    commercial-products sector and soft automotive markets. 
+</text>
+        <rel>negated</rel>
+        <arg n="1">*trace* -&gt;  improved results in its
+        financial-services sector</arg> 
+        <arg f="by" n="0">increased costs in its government contract
+        business, lower operating earnings in its commercial-products
+        sector and soft automotive markets</arg> 
+</example>
+
+<note>
+It's possible that an instrument arg could appear, but we'll wait on
+that. 
+</note>
+
+</roleset>
+</predicate>
+</frameset>

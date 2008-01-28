@@ -1,0 +1,120 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="trust">
+<note>
+Frames file for 'trust' based on sentences in wsj and automatic
+expansion via verbnet.
+</note>
+
+<roleset id="trust.01" name="trust someone with something" vncls="13.4.1">
+<roles>
+	<role descr="truster" n="0">
+		
+  <vnrole vncls="13.4.1" vntheta="Agent"/></role>
+
+	<role descr="something" n="1">
+		
+  <vnrole vncls="13.4.1" vntheta="Theme"/></role>
+
+	<role descr="someone" n="2">
+		
+  <vnrole vncls="13.4.1" vntheta="Recipient"/></role>
+
+</roles>
+
+<example name="trust X to Y">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Congress never fully trusted former CIA chief William Casey and
+    National Security Adviser John Poindexter to honor the ban. 
+</text>
+        <arg n="0">Congress</arg>
+        <arg f="TMP" n="M">never</arg>
+        <arg f="ADV" n="M">fully</arg>
+        <rel>trusted</rel>
+        <arg n="2">former CIA chief William Casey and National
+        Security Adviser John Poindexter</arg> 
+        <arg n="1">to honor the ban</arg>
+</example>
+
+<example name="same with passive extraction">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    ``She can no longer be trusted *trace* to behave in a civilised --
+    that is unflaky -- fashion when abroad.'' 
+</text>
+        <arg f="MOD" n="M">can</arg>
+        <arg f="TMP" n="M">no longer</arg>
+        <rel>trusted</rel>
+        <arg n="2">*trace* -&gt; She</arg>
+        <arg n="1">to behave in a civilised -- that is unflaky
+        -- fashion when abroad</arg> 
+</example>
+
+<example name="trust with">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John trusted Mary with his prized collection of bottlecaps.
+  </text>
+  <arg n="0">John</arg>
+  <rel>trusted</rel>
+  <arg n="2">Mary</arg>
+  <arg f="with" n="1">his prized collection of bottlecaps</arg>
+</example>
+
+<example name="different trust to">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John trusted his prized collection of bottle caps to Mary.
+  </text>
+  <arg n="0">John</arg>
+  <rel>trusted</rel>
+  <arg n="1">his prized collection of bottle caps</arg>
+  <arg f="to" n="2">Mary</arg>
+</example>
+
+</roleset>
+
+<roleset id="trust.02" name="put faith in" vncls="31.2">
+<roles>
+	<role descr="truster" n="0"><vnrole vncls="31.2" vntheta="Experiencer"/></role>
+	<role descr="thing trusted" n="1"><vnrole vncls="31.2" vntheta="Cause"/></role>
+</roles>
+
+<example name="pretty simple">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    ``I don't trust people who don't eat,'' said Ms. Volokh, though
+    she herself stopped eating lunch a few years ago to drop 25
+    pounds. 
+</text>
+        <arg n="0">I</arg>
+        <arg f="NEG" n="M">n't</arg>
+        <rel>trust</rel>
+        <arg n="1">people who don't eat</arg>
+</example>
+
+<example name="oddly intransitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    In the end, after meeting with the former housekeeper, Stevens
+    sits by the seashore at dusk, thinking of her and of his employer,
+    and declares ``I trusted. 
+</text>
+        <arg n="0">I</arg>
+        <rel>trusted</rel>
+</example>
+
+<example name="PP variant">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    I trusted in his lordship's wisdom...
+</text>
+        <arg n="0">I</arg>
+        <rel>trusted</rel>
+        <arg f="in" n="1">his lordship's wisdom</arg>
+</example>
+
+</roleset>
+
+</predicate>
+</frameset>

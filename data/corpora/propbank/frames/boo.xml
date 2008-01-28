@@ -1,0 +1,44 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="boo">
+<note>
+  Frames file for 'boo' based on sentences in wsj.  No Verbnet entry,
+  Framenet entry Judgement.
+</note>
+
+<roleset id="boo.01" name="express disapproval" vncls="-">
+<roles>
+  <role descr="boo-er" n="0"/>
+  <role descr="boo-ed" n="1"/>
+  <role descr="cause, misdeed" n="2"/>
+</roles>
+
+<example name="just transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Partisans of the two combatants sat side by side in the
+    49,000-plus seats of Oakland Coliseum, and while they cheered
+    their favorites and booed the opposition, hostilities advanced no
+    further, at least as far as I could see. 
+</text>
+        <arg n="0">they</arg>
+        <rel>booed</rel>
+        <arg n="1">the opposition</arg>
+</example>
+
+<example name="with cause">
+  <inflection aspect="ns" form="participle" person="third" tense="past" voice="passive"/>
+  <text>
+     John was booed *trace* for playing to the peanut gallery.
+  </text>
+  <rel>booed</rel>
+  <arg n="1">*trace* -&gt; John</arg>
+  <arg f="for" n="2">playing to the peanut gallery</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

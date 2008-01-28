@@ -1,0 +1,94 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="decline">
+
+<note>
+  Frames file for 'decline' based on survey of initial sentences in big corpus
+  and comparison with 'fall'
+</note>
+
+<note>beware of adjectival usages like: &quot;declining interest rates&quot;</note>
+
+<roleset id="decline.01" name="fall" vncls="45.6">
+<roles>
+  <role descr="Logical subject, patient, thing declining" n="1">
+	  <vnrole vncls="45.6" vntheta="Patient"/></role>
+  <role descr="EXT, amount declined by" n="2">
+	  <vnrole vncls="45.6" vntheta="Extent"/></role>
+  <role descr="start point" n="3"/>
+  <role descr="end point, end state of arg1" n="4"/>
+  <role descr="medium" f="LOC" n="M"/>
+</roles>
+
+<example name="unaccusative">
+  <text>
+    ..if interest rates decline
+  </text>
+  <arg n="1">interest rates</arg>
+  <rel>decline</rel>
+</example>
+
+<example name="with EXT">
+  <text>
+    Backlogs declined 0.3%
+  </text>
+  <arg n="1">Backlogs</arg>
+  <rel>declined</rel>
+  <arg n="2">0.2%</arg>
+</example>
+
+<example name="with EXT and end point">
+  <text>
+    Its net income declining 42%  to $121 million in the first 9 months of 1989
+  </text>
+  <arg n="1">Its net income</arg>
+  <rel>declining</rel>
+  <arg n="2">42%</arg>
+  <arg f="to" n="4">to $121 million</arg>
+  <arg f="TMP" n="M">in the first 9 months of 1989</arg>
+</example>
+
+<example name="with start point">
+  <inflection person="ns" tense="ns" aspect="ns" voice="active" form="full"/>
+  <text>
+    But she expects prices to rebound soon and is telling investors
+she expects the stock market won't decline more than 10 % to 15 %
+[*U*] from recent highs.
+  </text>
+  <arg n="1"        >the stock market</arg>
+  <arg n="m" f="MOD">wo</arg>
+  <arg n="m" f="NEG">n't</arg>
+  <rel              >decline</rel>
+  <arg n="2" f="EXT">more than 10 % to 15 % [*U*]</arg>
+  <arg n="3" f="from">recent highs</arg>
+</example>
+
+</roleset>
+
+<roleset id="decline.02" name="demure, turn down" vncls="-">
+<roles>
+  <role descr="entity turning down" n="0"/>
+  <role descr="thing turned down" n="1"/>
+</roles>
+
+<example name="arg1 as verbal">
+  <text>
+    A spokesman declined *trace=spokesman* to elaborate
+  </text>
+  <arg n="0">A spokesman</arg>
+  <rel>declined</rel>
+  <arg n="1">*trace=spokesman* to elaborate</arg>
+</example>
+
+<example name="Arg1 as NP">
+  <text>
+    A Johnson &amp; Johnson spokesman declined comment.
+  </text>
+  <arg n="0">A Johnson &amp; Johnson spokesman</arg>
+  <rel>decliented</rel>
+  <arg n="1">comment</arg>
+</example>
+</roleset>
+</predicate>
+
+</frameset>

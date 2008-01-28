@@ -1,0 +1,50 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="scandalize">
+<note>
+  Frames file for 'scandalize' based on sentences in wsj.  Verbnet
+  entry 31.1.
+</note>
+
+<roleset id="scandalize.01" name="shock, cause a scandal" vncls="31.1">
+<roles>
+  <role descr="scandalizer" n="0">
+		
+  <vnrole vncls="31.1" vntheta="Cause"/></role>
+
+  <role descr="person scandalized" n="1">
+		
+  <vnrole vncls="31.1" vntheta="Experiencer"/></role>
+  <role descr="instrument" n="2"/>
+</roles>
+
+<example name="just transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+     His guest appearance on the NBC soap opera ``Another World,''
+     scandalized musical elitists. 
+</text>
+        <arg n="0">His guest appearance on the NBC soap opera
+        ``Another World</arg> 
+        <rel>scandalized</rel>
+        <arg n="1">musical elitists</arg>
+</example>
+
+<example name="all args">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    Mary scandalized everyone by wearing a low-cut, bright red dress
+    to John's funeral.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>scandalized</rel>
+  <arg n="1">everyone</arg>
+  <arg f="by" n="2">wearing a low-cut, bright red dress to John's funeral</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

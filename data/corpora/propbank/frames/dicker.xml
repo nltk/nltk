@@ -1,0 +1,44 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="dicker">
+<note>
+  Frames file for 'dicker' based on sentences in wsj.  Verbnet entry 36.1.
+</note>
+
+<roleset id="dicker.01" name="argue in a petty manner" vncls="36.1">
+<roles>
+  <role descr="first arguer" n="0"><vnrole vncls="36.1" vntheta="Actor1"/></role>
+  <role descr="second arguer" n="1"><vnrole vncls="36.1" vntheta="Actor2"/></role>
+  <role descr="topic" n="2"><vnrole vncls="36.1" vntheta="Topic"/></role>
+</roles>
+
+<example name="merged arguers">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    We have as much nostalgia as anyone for those leafy, breezy days
+    in Washington when honorable men and women dickered over budgets
+    and even log-rolled a bit to see that the bridges got build, roads
+    paved, soldiers paid or that the desperately poor were cared for. 
+</text>
+        <arg n="0">honorable men and women</arg>
+        <rel>dickered</rel>
+        <arg f="over" n="2">budgets</arg>
+</example>
+
+<example name="split arguers">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John dickered with Mary about the source of his noxious foot odor.
+  </text>
+  <arg n="0">John</arg>
+  <rel>dickered</rel>
+  <arg f="with" n="1">Mary</arg>
+  <arg f="about" n="2">the source of his noxious foot odor</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

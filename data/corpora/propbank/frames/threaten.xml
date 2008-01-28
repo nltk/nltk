@@ -1,0 +1,58 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="threaten">
+<note>
+Frames file for 'threaten' based on sentences in financial subcorpus.
+Verbnet entry threaten 31.1, no mention of other members.  No
+comparison.
+</note>
+
+<roleset id="threaten.01" name="threaten" vncls="31.1">
+<roles>
+  <role descr="agent, entity making a threat" n="0">
+		
+  <vnrole vncls="31.1" vntheta="Cause"/></role>
+
+  <role descr="threat" n="1">
+		
+  <vnrole vncls="31.1" vntheta="Experiencer"/></role>
+
+  <role descr="'benefactive', entity threatened" n="2"/>
+</roles>
+
+<example name="sentential threat">
+<text>
+    The new Wall Street of computers and automated trading threatens
+    to make dinosaurs of the 49 Big Board stock-specialist firms.  
+</text>
+	<arg n="0">The new Wall Street of computers and automated
+	trading</arg> 
+	<rel>threatens</rel>
+	<arg n="1">to make dinosaurs of the 49 Big Board
+	stock-specialist firms</arg> 
+</example>
+
+<example name="nominal threat">
+<text>
+    The announced sale of the reserves was followed by news that
+    investor Carl Icahn had increased his stake in USX to 13.1% and
+    threatened a takeover or other business combination. 
+</text>
+	<arg n="0">investor Carl Icahn</arg>
+	<rel>threatened</rel>
+	<arg n="1">a takeover or other business combination</arg>
+</example>
+
+<example name="with benefactive">
+  <text>
+    Mary threatened John with a large knife.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>threatened</rel>
+  <arg n="2">John</arg>
+  <arg f="with" n="1">a large knife</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

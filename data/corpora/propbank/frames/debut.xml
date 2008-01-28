@@ -1,0 +1,43 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="debut">
+<note>
+  Frames file for 'debut' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="debut.01" vncls="-" name="make an appearance for the first time">
+<roles>
+  <role n="0"  descr="causer of appearance"/>
+  <role n="1"  descr="thing appearing"/>
+</roles>
+
+<example name="unaccusative">
+<inflection person="ns" tense="present" aspect="ns" voice="active" form="full"/><text>
+     ``La Familia de Hoy,'' or ``Today's Family,'' will debut this
+     spring and will combine a national bimonthly magazine and TV
+     programming.  
+</text>
+	<arg n="1">``La Familia de Hoy,'' or ``Today's Family</arg>
+	<arg n="M" f="MOD">will</arg>
+	<rel>debut</rel>
+	<arg n="M" f="TMP">this spring</arg>
+</example>
+
+<example name="agentive">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+     John debuted his line of burlap formal gowns at a swanky party in
+     downtown Fargo.
+  </text>
+  <arg n="0"        >John</arg>
+  <rel              >debuted</rel>
+  <arg n="1"        >his line of burlap formal gowns</arg>
+  <arg n="m" f="LOC">at a swanky party in downtown Fargo</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

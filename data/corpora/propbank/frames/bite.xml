@@ -1,0 +1,66 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="bite">
+<note>
+  Frames file for 'bite' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="bite.01" name="to cut or tear with or as if with the teeth " vncls="18.2 40.8.3-2">
+<roles>
+  <role descr="biter, agent" n="0"><vnrole vncls="18.2" vntheta="Agent"/><vnrole vncls="40.8.3-2" vntheta="Experiencer"/></role>
+  <role descr="entity bitten" n="1"><vnrole vncls="18.2" vntheta="Patient"/><vnrole vncls="40.8.3-2" vntheta="Patient"/></role>
+</roles>
+
+<example name="arbitrary subject">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+ Says [*ICH*-1] another lawyer : `` The practice of law is a matter of [*] biting one 's lip when you live in a small community [*T*-2] .
+</text>
+	<arg n="0">[*]</arg>
+	<rel>biting</rel>
+	<arg n="1">one 's lip</arg>
+	<arg f="TMP" n="M">when you live in a small community [*T*-2]</arg>
+</example>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ He bites it , scowls and throws it down . ``
+</text>
+	<arg n="0">He</arg>
+	<rel>bites</rel>
+	<arg n="1">it</arg>
+</example>
+
+
+
+<example name="intransitive">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ Not surprisingly , he sometimes bites .
+</text>
+	<arg f="ADV" n="M">Not surprisingly</arg>
+	<arg n="0">he</arg>
+	<arg f="TMP" n="M">sometimes</arg>
+	<rel>bites</rel>
+</example>
+
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+ When it comes to money [*T*-1] : Once [*-3] bitten [*-2] , [*] 2,000 times shy .
+</text>
+	<arg f="TMP" n="M">Once</arg>
+	<rel>bitten</rel>
+	<arg n="1">[*-2] -&gt;  [*-3]</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

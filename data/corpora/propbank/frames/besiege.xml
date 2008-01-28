@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="besiege">
+<note>
+  Frames file for 'besiege' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="besiege.01" name="to surround or harass (as with questions or requests)" vncls="-">
+<roles>
+  <role descr="causer" n="0"/>
+  <role descr="entity besieged" n="1"/>
+  <role descr="entity besieged with" n="2"/>
+</roles>
+
+<example name="passive">
+<inflection aspect="perfect" form="participle" person="third" tense="present" voice="passive"/>
+<text>
+ GE Chairman John Welch has been `` besieged with phone calls '' complaining about his unit 's program trading , according to a person close to him .
+</text>
+	<arg n="1">GE Chairman John Welch</arg>
+	<rel>besieged</rel>
+	<arg f="with" n="2">phone calls '' complaining about his unit 's program trading</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

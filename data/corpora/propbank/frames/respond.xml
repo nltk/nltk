@@ -1,0 +1,73 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="respond">
+<note>
+Frames file for 'respond' based on sentences in financial subcorpus.
+Verbnet not available at this time.  Comparison with 'answer'
+</note>
+
+<roleset id="respond.01" name="give an answer, reply">
+<roles>
+  <role descr="replier" n="0"/>
+  <role descr="in response to" n="1"/>
+  <role descr="answer" n="2"/>
+</roles>
+
+<example name="intransitive">
+<text>
+    The board has 10 business days *trace* to respond.
+</text>
+        <arg n="0">*trace* -&gt;  The board</arg>
+        <rel>respond</rel>
+</example>
+
+<example name="respond to">
+<text>
+    People familiar with Nekoosa said its board isn't likely to meet
+    before the week after next *trace* to respond to the bid. 
+</text>
+        <arg n="0">*trace* -&gt;  its board</arg>
+        <rel>respond</rel>
+        <arg f="to" n="1">the bid</arg>
+</example>
+
+<example name="quotative response">
+<text>
+    A Boeing spokesman responded: ``All along the company has said
+    there was no grounds for criminal prosecution.'' 
+</text>
+        <arg n="0">A Boeing spokesman</arg>
+        <rel>responded</rel>
+        <arg n="2">All along the company has said there was no grounds
+        for criminal prosecution</arg> 
+</example>
+
+<example name="by an action response">
+<text>
+ Nashua immediately responded by strengthening a poison-pill plan and
+ saying it will buy back up to one million of its shares, or 10.4% of
+ the 9.6 million outstanding. 
+</text>
+        <arg n="0">Nashua</arg>
+        <arg f="TMP" n="M">immediately</arg>
+        <rel>responded</rel>
+        <arg f="by" n="2">strengthening a poison-pill plan and saying
+        it will buy back up to one million of its shares, or 10.4% of
+        the 9.6 million outstanding</arg> 
+</example>
+
+<example name="with an action response">
+<text>
+    Poquet, trying to avoid the ``gadget'' label, responded with the
+    tag line, ``The Poquet PC -- a Very Big Computer.''  
+</text>
+        <arg n="0">Poquet</arg>
+        <arg f="ADV" n="M">trying  to avoid the `` gadget '' label</arg>
+        <rel>responded</rel>
+        <arg f="with" n="2">the tag line , `` The Poquet PC -- a Very
+        Big Computer</arg> 
+</example>
+
+</roleset>
+</predicate>
+</frameset>

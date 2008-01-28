@@ -1,0 +1,46 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="nominate">
+<note>
+Frames file for 'nominate' based on sentences in wsj and automatic
+expansion via verbnet.
+</note>
+
+<roleset id="nominate.01" name="suggest someone take a role" vncls="29.1">
+<roles>
+  <role descr="nominator" n="0">
+	  <vnrole vncls="29.1" vntheta="Agent"/></role>
+  <role descr="candidate" n="1">
+	  <vnrole vncls="29.1" vntheta="Theme"/></role>
+  <role descr="role of arg1" n="2">
+	  <vnrole vncls="29.1" vntheta="Predicate"/></role>
+</roles>
+
+<example name="unmentioned role">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    The remaining four trustees on the Claimants Trust have 60 days
+    *trace* to nominate a successor to Mr. Saltzburg. 
+</text>
+        <arg n="0">*trace* -&gt;  The remaining four trustees on the
+        Claimants Trust</arg> 
+        <rel>nominate</rel>
+        <arg n="1">a successor to Mr. Saltzburg</arg>
+</example>
+
+<example name="role as infinitive">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    Antonio Novello, whom Mr. Bush nominated *trace* to serve as
+    surgeon general, reportedly has assured the administration that
+    she opposes abortion. 
+</text>
+        <arg n="0">Mr. Bush</arg>
+        <rel>nominated</rel>
+        <arg n="1">*trace* -&gt;  whom -&gt;  Antonio Novello</arg>
+        <arg n="2">to serve as surgeon general</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,67 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="dissolve">
+<note>
+  Frames file for 'dissolve' based on sentences in financial
+  subcorpus.  Verbnet entry other_cos-45.4, other framed members
+  include alter, decrease, halt, narrow, shut, slow, sweeten, weaken
+  and worsen.  No comparison.
+</note>
+
+<roleset id="dissolve.01" name="cause to come apart" vncls="45.4">
+<roles>
+  <role descr="causer, agent" n="0">
+	<vnrole vncls="45.4" vntheta="Agent"/></role>
+  <role descr="thing dissolving" n="1">
+	<vnrole vncls="45.4" vntheta="Patient"/></role>
+  <role descr="medium, such as water" n="2"/>
+  <role descr="into components" n="3"/>
+</roles>
+
+<example name="from the corpus">
+<text>
+    He joins Nov. 13, *trace* dissolving his consulting firm, Canter,
+    Achenbaum Associates. 
+</text>
+        <arg n="0">*trace* -&gt;  He</arg>
+        <rel>dissolving</rel>
+        <arg n="1">his consulting firm, Canter, Achenbaum
+        Associates</arg> 
+</example>
+
+<example name="with medium">
+  <text>
+     John dissolved the poison in Mary's wine.
+  </text>
+  <arg n="0">John</arg>
+  <rel>dissolved</rel>
+  <arg n="1">the poison</arg>
+  <arg f="in" n="2">Mary's wine</arg>
+</example>
+
+<example name="medium as subject">
+  <text>
+    The strong acid dissolved the grease stains on John's bathtub.
+    Unfortunately it also dissolved the bathtub.
+  </text>
+  <arg n="2">The strong acid</arg>
+  <rel>dissolved</rel>
+  <arg n="1">the grease stains on John's bathtub</arg>
+</example>
+
+<example name="with components">
+  <text>
+    John dissolved his corporation into three spinoff companies.
+  </text>
+  <arg n="0">John</arg>
+  <rel>dissolved</rel>
+  <arg n="1">his corporation</arg>
+  <arg f="into" n="3">three spinoff companies</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

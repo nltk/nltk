@@ -1,0 +1,89 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="load">
+<note>
+  Frames file for 'load' based on sentences in financial subcorpus.
+  Verbnet class spray-9.7-2; no other framed members.  Comparison to
+  'unload'.
+</note>
+
+<roleset id="load.01" name="cause to be burdened" vncls="9.7-2">
+<roles>
+  <role descr="loader, agent" n="0">
+	<vnrole vncls="9.7-2" vntheta="Agent"/></role>
+  <role descr="beast of burden" n="1">
+	<vnrole vncls="9.7-2" vntheta="Destination"/></role>
+  <role descr="cargo" n="2">
+	<vnrole vncls="9.7-2" vntheta="Theme"/></role>
+  <role descr="instrument" n="3"/>
+</roles>
+
+<example name="plain ol' transitive">
+<text>
+    Because UPS drivers aren't permitted *trace* to load their own
+    vehicles at the depot... 
+</text>
+        <arg n="0">*trace* -&gt; UPS drivers</arg>
+        <rel>load</rel>
+        <arg n="1">their own vehicles</arg>
+        <arg f="LOC" n="M">at the depot</arg>
+</example>
+
+<example name="with cargo">
+<text>
+    The blue-collar machinists, longtime rivals of the white-collar
+    pilots, say the buyout would load the company with debt and weaken
+    its finances.  
+</text>
+        <arg n="0">the buyout</arg>
+        <arg f="MOD" n="M">would</arg>
+        <rel>load</rel>
+        <arg n="1">the company</arg>
+        <arg f="with" n="2">debt</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="load_up">
+
+<roleset id="load.02" name="phrasal cause to be burdened" vncls="9.7-2">
+<roles>
+  <role descr="loader, agent" n="0">
+	<vnrole vncls="9.7-2" vntheta="Agent"/></role>
+  <role descr="beast of burden" n="1">
+	<vnrole vncls="9.7-2" vntheta="Destination"/></role>
+  <role descr="cargo" n="2">
+	<vnrole vncls="9.7-2" vntheta="Theme"/></role>
+</roles>
+
+<example name="no beast of burden">
+<text>
+    ...that investors buy stocks of companies that *trace* have
+    avoided *trace* loading up on debt. 
+</text>
+        <arg n="0">*trace* -&gt; *trace* -&gt;  that -&gt; companies</arg>
+        <rel>[ loading] [ up]</rel>
+        <arg f="on" n="2">debt</arg>
+</example>
+
+<example name="with beast of burden">
+  <text>
+    John loaded up the truck with his collection of teddy bears.
+  </text>
+  <arg n="0">John</arg>
+  <rel>loaded up</rel>
+  <arg n="1">the truck</arg>
+  <arg f="with" n="2">his collection of teddy bears</arg>
+</example>
+
+<note>
+Instrument?  Maybe.  If so, arg3.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

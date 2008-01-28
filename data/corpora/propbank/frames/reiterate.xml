@@ -1,0 +1,57 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="reiterate">
+<note>
+  Frames file for 'reiterate' based on sentences in financial
+  subcorpus.  Verbnet entry 37.7, other framed members include
+  announce, claim, declare, mention, observe, repeat, restate, and
+  state.  Probably &quot;say&quot;, also.  Framenet class Statement.  Comparison
+  with restate.
+</note>
+
+<roleset id="reiterate.01" name="state again" vncls="37.7">
+<roles>
+  <role descr="announcer" n="0">
+		
+  <vnrole vncls="37.7" vntheta="Agent"/></role>
+
+  <role descr="utterance" n="1">
+		
+  <vnrole vncls="37.7" vntheta="Topic"/></role>
+
+  <role descr="hearer" n="2">
+		
+  <vnrole vncls="37.7" vntheta="Recipient"/></role>
+
+</roles>
+
+<example name="most common usage">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    The company reiterated yesterday that it's willing to reconfigure
+    the package, but not add to the substance of it. 
+</text>
+        <arg n="0">The company</arg>
+        <rel>reiterated</rel>
+        <arg f="TMP" n="M">yesterday</arg>
+        <arg n="1">it's willing to reconfigure the package, but not
+        add to the substance of it</arg> 
+</example>
+
+<example name="with hearer">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    Mary reiterated to John her unwillingness to kiss him.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>reiterated</rel>
+  <arg f="to" n="2">John</arg>
+  <arg n="1">her unwillingness to kiss him</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

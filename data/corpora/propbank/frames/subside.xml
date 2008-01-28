@@ -1,0 +1,40 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="subside">
+<note>
+  Frames file for 'subside' based on survey of sentences in the WSJ
+  corpus.  
+</note>
+
+
+<roleset id="subside.01" name="to decrease" vncls="-">
+<roles>
+  <role descr="entity decreasing" n="1"/>
+  <role descr="decreasing to" n="2"/>
+</roles>
+
+<example name="intransitive">
+<inflection aspect="perfect" form="participle" person="third" tense="present" voice="active"/>
+<text>
+ `` Adverse pressure on gross margins ... has subsided , '' Mr. Sculley said [*T*-1] .
+</text>
+	<arg n="1">Adverse pressure on gross margins</arg>
+	<rel>subsided</rel>
+</example>
+
+
+<example name="all arguments">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ Share turnover subsided to 161.5 million .
+</text>
+	<arg n="1">Share turnover</arg>
+	<rel>subsided</rel>
+	<arg f="to" n="2">161.5 million</arg>
+</example>
+
+</roleset>
+</predicate>
+
+
+</frameset>

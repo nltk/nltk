@@ -1,0 +1,73 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="finance">
+<note>
+  Frames file for 'finance' based on survey of initial sentences of
+  big corpus
+</note>
+
+<roleset id="finance.01" name="provide money for, get money for">
+<roles>
+  <role descr="financ(i)er" n="0"/>
+  <role descr="thing financed" n="1"/>
+  <role descr="money" n="2"/>
+</roles>
+
+<example name="transitive">
+  <text>
+  Japanese companies have financed small and medium-sized US firms for
+  years.
+  </text>
+  <arg n="0">Japanese companies</arg>
+  <rel>financed</rel>
+  <arg n="1">small and medium-sized US firms</arg>
+  <arg f="TMP" n="m">for years.</arg>
+</example>
+
+<example name="with money">
+  <text>
+  A host of electronics firms in California's Silicon Valley were
+  financed *trace* with trading-company capital.
+  </text>
+  <arg n="1">*trace*=A host of electronics firms in
+  California's Silicon Valley</arg> 
+  <rel>financed</rel>
+  <arg f="with" n="2">trading-company capital</arg>
+</example>
+
+<example name="Arg2 as subject">
+  <text>
+  Junk bonds are often used *trace* to finance restructurings and
+  takeovers.
+  </text>
+  <arg n="2">*trace*=Junk bonds</arg>
+  <rel>finance</rel>
+  <arg n="1">restructurings and takeovers.</arg>
+</example>
+</roleset>
+
+<roleset id="finance.02" name="buy using someone else's money">
+<roles>
+  <role descr="buyer" n="0"/>
+  <role descr="thing bought" n="1"/>
+  <role descr="money or provider of money" n="2"/>
+</roles>
+
+<example name="car payments">
+  <text>
+  Buyers financed part of a car purchase through the General Motors
+  Acceptance Corp.
+  </text>
+  <arg n="0">Buyers</arg>
+  <rel>financed</rel>
+  <arg n="1">part of a car purchase</arg>
+  <arg f="through" n="2">the General Motors Acceptance Corp.</arg>
+</example>
+
+<note>
+These rolesets can be hard to distinguish.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

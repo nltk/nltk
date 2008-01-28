@@ -1,0 +1,55 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="consult">
+<note>
+  Frames file for 'consult' based on sentences in financial subcorpus.
+  Verbnet entry 36.3, other framed members include fight.  Comparison
+  with fight and meet.
+</note>
+
+<roleset id="consult.01" name="get together with" vncls="36.3">
+<roles>
+  <role descr="consulter" n="0">
+		
+  <vnrole vncls="36.3" vntheta="Actor1"/></role>
+
+  <role descr="consulted with" n="1">
+		
+  <vnrole vncls="36.3" vntheta="Actor2"/></role>
+
+  <role descr="in regards to..." n="2"/>
+</roles>
+
+<example name="passive, with topic">
+<text>
+    In a statement, Jaguar's board said they ``were not consulted
+    *trace* about the (Ridley decision) in advance and were surprised
+    at the action taken.''
+</text>
+        <arg f="NEG" n="M">not</arg>
+        <rel>consulted</rel>
+        <arg n="1">*trace* -&gt;  they</arg>
+        <arg f="about" n="2">the (Ridley decision)</arg>
+        <arg f="TMP" n="M">in advance</arg>
+</example>
+
+
+<example name="active, just transitive">
+<text>
+    Jaguar was shocked by Mr. Ridley's decision, because management
+ had believed the government wouldn't lift the golden share without
+ *trace* consulting the company first.
+</text>
+        <arg n="0">*trace* -&gt;  the government</arg>
+        <rel>consulting</rel>
+        <arg n="1">the company</arg>
+        <arg f="TMP" n="M">first</arg>
+</example>
+
+<note>
+Ignore adjectival usages like &quot;a prominent consulting firm&quot;.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

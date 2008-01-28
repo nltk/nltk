@@ -1,0 +1,71 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="fit">
+<note>
+  Frames file for 'fit' based on sentences in financial subcorpus.
+  Verbnet entry 54.3, no other framed members.  Comparison with
+  'match'.
+</note>
+
+<roleset id="fit.01" name="fit, match, be the right size" vncls="54.3">
+<roles>
+  <role descr="agent, causer of fitting" n="0">
+		
+  <vnrole vncls="54.3" vntheta="Agent"/></role>
+
+  <role descr="thing(s) fitting" n="1">
+		
+  <vnrole vncls="54.3" vntheta="Attribute"/></role>
+
+</roles>
+
+<example name="merged objects">
+<text>
+    And with Al's record of being a delver and a detail guy, you can
+    see how the two fit,'' said Alan Gottesman, an analyst with
+    PaineWebber. 
+</text>
+        <arg n="1">the two</arg>
+        <rel>fit</rel>
+</example>
+
+<example name="with LOC">
+<text>
+    Conner is supplying hard-disk drives for the machine, which
+    *trace* weighs only six pounds and fits in a briefcase.
+</text>
+        <arg n="1">*trace* -&gt;  which -&gt;  the machine</arg>
+        <rel>fits</rel>
+        <arg f="LOC" n="M">in a briefcase</arg>
+</example>
+
+<example name="split object">
+<text>
+    They also have argued that government proceedings notifying a
+    company of potential responsibility don't fit the legal definition
+    of a lawsuit; thus, such governmental proceedings aren't covered
+    by the policies, the insurers say. 
+</text>
+        <arg n="1">government proceedings notifying a company of
+        potential responsibility</arg> 
+        <arg f="NEG" n="M">n't</arg>
+        <rel>fit</rel>
+        <arg n="1">the legal definition of a lawsuit</arg>
+</example>
+
+<example name="with agent">
+  <text>
+    Mary fit John for a new tuxedo.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>fit</rel>
+  <arg n="1">John</arg>
+  <arg f="for" n="1">a new tuxedo</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

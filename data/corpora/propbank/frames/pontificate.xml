@@ -1,0 +1,36 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="pontificate">
+<note>
+  Frames file for 'pontificate' based on sentences in wsj.  No Verbnet
+  entry. 
+</note>
+
+<roleset id="pontificate.01" name="talk like the Pope" vncls="-">
+<roles>
+  <role descr="speaker (Pope)" n="0"/>
+  <role descr="utterance" n="1"/>
+  <role descr="listener" n="2"/>
+</roles>
+
+<example name="just transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    Witnesses shout, scream, pontificate: ``...a dream that the planet
+    could be saved from itself and from the sadistic dumb creatures
+    who try to tear down every decent man who raises his voice.'' 
+</text>
+        <arg n="0">Witnesses</arg>
+        <rel>pontificate</rel>
+        <arg n="1">a dream that the planet could be saved from itself
+        and from the sadistic dumb creatures who try to tear down
+        every decent man who raises his voice</arg> 
+</example>
+
+<note>
+Pontificate, unlike other verbs of saying, is usually intransitive,
+showing a mode of behavior more than any specific act of speaking.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

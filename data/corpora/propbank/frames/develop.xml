@@ -1,0 +1,159 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="develop">
+<roleset id="develop.01" name="come about" vncls="48.1.1">
+<roles>
+  <role descr="non-intentional theme" n="1">
+        <vnrole vncls="48.1.1" vntheta="Theme"/></role>
+  <role descr="thing developed" n="2"/>
+</roles>
+
+<example name="Intransitive / Inchoative">
+  <text>
+    A problem developed.
+  </text>
+  <arg n="1">A problem</arg>
+  <rel>developed</rel>
+</example>
+
+<example name="transitive">
+  <text>
+    John's neck developed a big spot.
+  </text>
+  <arg n="1">John's neck</arg>
+  <rel>developed</rel>
+  <arg n="2">a big spot</arg>
+</example>
+
+<example name="transitive">
+  <text>
+    A big spot developed on John's neck.
+  </text>
+  <arg n="2">A big spot</arg>
+  <rel>developed</rel>
+  <arg f="on" n="1">on John's neck</arg>
+</example>
+
+</roleset>
+<roleset id="develop.02" name="create" vncls="26.1 26.2">
+<roles>
+  <role descr="creator" n="0">
+	<vnrole vncls="26.1" vntheta="Agent"/>
+        <vnrole vncls="26.2" vntheta="Agent"/></role>
+  <role descr="thing created" n="1">
+	<vnrole vncls="26.1" vntheta="Product"/>
+        <vnrole vncls="26.2" vntheta="Product"/></role>
+  <role descr="source" n="2">
+	<vnrole vncls="26.1" vntheta="Material"/>
+        <vnrole vncls="26.2" vntheta="Material"/></role>
+  <role descr="benefactive" n="3">
+	<vnrole vncls="26.1" vntheta="Beneficiary"/></role>
+  <role descr="attribute, secondary predication" n="4"/>
+</roles>
+<example name="transitive">
+  <text>
+    John developed a strong argument
+  </text>
+  <arg n="0">John</arg>
+  <rel>developed</rel>
+  <arg n="1">a strong argument</arg>
+</example>
+
+<example name="transitive-1">
+  <text>
+    UCLA developed a new promoter gene
+  </text>
+  <arg n="0">UCLA</arg>
+  <rel>developed</rel>
+  <arg n="1">a new promoter gene</arg>
+</example>
+
+<example name="but">
+  <text>
+    John developed a new promoter gene at UCLA
+  </text>
+  <arg n="0">John</arg>
+  <rel>developed</rel>
+  <arg n="1">a new promoter gene</arg>
+  <arg f="LOC" n="M">at UCLA</arg>
+</example>
+
+<example name="with source">
+  <text>
+    John developed a strong argument from the footnotes of the paper.
+  </text>
+  <arg n="0">John</arg>
+  <rel>developed</rel>
+  <arg n="1">a strong argument</arg>
+  <arg f="from" n="2">from the footnotes of the paper</arg>
+</example>
+
+<example name="with end-result">
+  <text>
+    John developed the footnotes into a strong argument.
+  </text>
+  <arg n="0">John</arg>
+  <rel>developed</rel>
+  <arg n="2">the footnotes</arg>
+  <arg f="into" n="1">into a strong argument</arg>
+</example>
+
+
+<example name="with benefactive">
+  <text>
+    Bill Gates developed DOS for Microsoft
+  </text>
+  <arg n="0">Bill Gates</arg>
+  <rel>developed</rel>
+  <arg n="1">DOS</arg>
+  <arg f="for" n="3">for Microsoft</arg>
+</example>
+
+<example name="with secondary predication">
+  <text>
+    Albert M. Kligman developed Retin-A [to combat acne]
+  </text>
+  <arg n="0">Alber M. Kligman</arg>
+  <rel>developed</rel>
+  <arg n="1">Retin-A</arg>
+  <arg n="4">to combat acne</arg>
+</example>
+
+<example name="with secondary predication">
+  <text>
+    Albert M. Kligman developed Retin-A for combating acne.
+  </text>
+  <arg n="0">Alber M. Kligman</arg>
+  <rel>developed</rel>
+  <arg n="1">Retin-A</arg>
+  <arg n="4">for combating acne</arg>
+</example>
+
+
+<note>
+The above structure should be used in all cases, even when it feels
+like the Arg1 and the purpose clause (secondary predicate) are very
+closely linked and feel like they should be a single argument.
+Treebank is inconsistent in it treatment of these; sometimes it's
+split into two nodes, sometimes there's a single node holding both.
+If we are consistent in dividing these arguments, it's relatively easy
+for someone else to merge them.  The reverse is not true.
+</note>
+
+<example name="Manner">
+  <text>
+    John developed the beach through a trust
+  </text>
+  <arg n="0">John</arg>
+  <rel>developed</rel>
+  <arg n="1">the beach</arg>
+  <arg f="MNR" n="M">through a trust</arg>
+</example>
+
+<note>
+  Plus the usual assortment of TMPs, LOCs (easily confusable with MNRs,
+  nota bene), ADVs, etc.
+</note>
+</roleset>
+</predicate>
+</frameset>

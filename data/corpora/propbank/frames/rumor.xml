@@ -1,0 +1,87 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="rumor">
+<note>
+  Frames file for 'rumor' based on sentences in financial subcorpus.
+  No Verbnet entry.  Comparison with verbs of assigning attributes.
+</note>
+
+<roleset id="rumor.01" name="label">
+<roles>
+  <role descr="assigner of attribute" n="0"/>
+  <role descr="assigned to whom" n="1"/>
+  <role descr="attribute of arg1" n="2"/>
+</roles>
+
+<example name="attribute as VP">
+<text>
+    Pennzoil is rumored *trace* to be accumulating a stake in Chevron
+    in order to push for a revamping of the company... 
+</text>
+        <rel>rumored</rel>
+        <arg n="1">*trace* -&gt;  Pennzoil</arg>
+        <arg n="2">to be accumulating a stake in Chevron in
+        order to push for a revamping of the company</arg> 
+</example>
+
+
+<example name="attribute as NP">
+<text>
+    Nashua Corp., rumored *trace* a potential takeover target for six
+    months, said that a Dutch company has sought U.S. approval to buy
+    up to 25% of Nashua's shares. 
+</text>
+        <rel>rumored</rel>
+        <arg n="1">*trace* -&gt;  Nashua Corp.</arg>
+        <arg n="2">a potential takeover target</arg>
+        <arg f="TMP" n="M">for six months</arg>
+</example>
+
+<example name="with assigner?">
+  <text>
+     Mary rumored John to be an idiot.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>rumored</rel>
+  <arg n="1">John</arg>
+  <arg n="2">to be an idiot</arg>
+</example>
+
+<note>
+Ignore adjectival usages like &quot;a rumored target&quot;.
+</note>
+
+</roleset>
+
+<roleset id="rumor.02" name="say">
+<roles>
+  <role descr="speaker" n="0"/>
+  <role descr="utterance" n="1"/>
+</roles>
+
+<example name="just utterance">
+<text>
+    It has long been rumored that Ocean Drilling would sell the unit
+    to concentrate on its core oil and gas business. 
+</text>
+        <arg f="TMP" n="M">long</arg>
+        <rel>rumored</rel>
+        <arg n="1">Ocean Drilling would sell the unit to concentrate
+        on its core oil and gas business</arg> 
+</example>
+
+<example name="with speaker">
+  <text>
+    Mary rumored that John was an idiot.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>rumored</rel>
+  <arg n="1">John was an idiot</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

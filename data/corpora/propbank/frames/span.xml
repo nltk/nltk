@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="span">
+<note>
+  Frames file for 'span' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="span.01" name="to extend across in space or time" vncls="47.8">
+<roles>
+  <role descr="thing extending" n="0"/>
+  <role descr="entity spanned" n="1">
+        <vnrole vncls="47.8" vntheta="Theme1"/></role>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+ This is that the Reagan Revolution spanning Eastern Europe and Tiananmen Square shows the power of ideas unencumbered by international civil servants or government functionaries .
+</text>
+	<arg n="0">the Reagan Revolution</arg>
+	<rel>spanning</rel>
+	<arg n="1">Eastern Europe and Tiananmen Square</arg>
+</example>
+
+</roleset>
+</predicate>
+
+
+</frameset>

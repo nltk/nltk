@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="impoverish">
+<note>
+  Frames file for 'impoverish'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="impoverish.01" name="to make poor, deplete" vncls="-">
+<roles> 
+  <role descr="causer of poverty, agent" n="0"/>  
+  <role descr="entity impoverished" n="1"/>   
+</roles>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="past" voice="passive"/>
+<text>
+ `` My husband was instantly impoverished [*-2] by the very act of [*] marrying me , '' she says [*T*-1] .
+</text>
+	<arg f="TMP" n="M">instantly</arg>
+	<rel>impoverished</rel>
+	<arg n="1">[*-2] -&gt;  My husband</arg>
+	<arg f="by" n="0">the very act of [*] marrying me</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

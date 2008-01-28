@@ -1,0 +1,94 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="announce">
+<note>
+Frames file for 'announce' based on survey of initial sentences from big
+corpus, and comparison to 'say'
+</note>
+
+<roleset id="announce.01" name="say for all to hear" vncls="37.7">
+<roles>
+  <role descr="announcer" n="0">
+	<vnrole vncls="37.7" vntheta="Agent"/></role>
+  <role descr="utterance" n="1">
+	<vnrole vncls="37.7" vntheta="Topic"/></role>
+  <role descr="hearer" n="2">
+	<vnrole vncls="37.7" vntheta="Recipient"/></role>
+  <role descr="attribute of arg1" n="3"/>
+</roles>
+
+
+<example name="transitive">
+  <text>
+    A Lorillard spokeswoman announced &quot;This is an old story.&quot;
+  </text>
+
+  <arg n="0">A Lorillard spokeswoman</arg>
+  <rel>announced</rel>
+  <arg n="1">&quot;This is an old story.&quot;</arg>
+</example>
+
+<example name="fronted">
+  <text>
+    Kent cigarettes were sold, the company announced *Trace*
+  </text>
+
+  <arg n="0">the company</arg>
+  <rel>announced</rel>
+  <arg n="1">*Trace*</arg>
+  <note>(*Trace* --&gt; &quot;Kent cigarettes were sold&quot;)</note>
+</example>
+
+
+<example name="Inverted (theoretically possible, but odd)">
+  <text>
+    What matters is what advertisers will pay, announced *T* Newsweek's chairman
+  </text>
+
+  <arg n="1">*T*</arg>
+  <rel>announced</rel>
+  <arg n="0">Newsweek's chairman</arg>
+
+  <note>(*T* --&gt; &quot;What matters is what advertisers will pay&quot;)</note>
+</example>
+
+<example name="split (theoretically possible, but odd)">
+  <text>
+    &quot;What you have to understand,&quot; announced John, 
+    &quot;is that Philly stinks.&quot;
+  </text>
+  <arg n="0">John</arg>
+  <arg n="1">&quot;What you have to understand, is that Philly literally stinks.&quot;</arg>
+</example>
+
+<example name="with listener">
+  <text>
+    John announced to Mary: &quot;you're an idiot.&quot;
+  </text>
+  <arg n="0">John</arg>
+  <rel>announced</rel>
+  <arg f="2" n="2">to Mary</arg>
+  <arg n="1">&quot;you're an idiot.&quot;</arg>
+</example>
+
+<example name="weird, attributive usage: (theoretically possible, but odd)">
+  <text>
+    &quot;Well that's odd,&quot; announced John of the disappearance of his nose.
+  </text>
+  <arg n="1">&quot;Well that's odd,&quot;</arg>
+  <rel>announced</rel>
+  <arg n="0">John</arg>
+  <arg f="of" n="3">of the disappearance of his nose.</arg>
+</example>
+
+<example name="split utterance">
+  <text>
+    John was announced to be an idiot.
+  </text>
+  <arg n="1">[John][to be an idiot]</arg>
+  <rel>announced</rel>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

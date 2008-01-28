@@ -1,0 +1,75 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="slam">
+
+<note>
+Frames file for 'slam' based on sentences in financial subcorpus and
+automatic generation from Verbnet classes.
+</note>
+
+<roleset id="slam.01" name="throw violently" vncls="17.1">
+<roles>
+<role descr="thrower" n="0">
+		
+  <vnrole vncls="17.1" vntheta="Agent"/></role>
+
+<role descr="thing thrown" n="1">
+		
+  <vnrole vncls="17.1" vntheta="Patient"/></role>
+
+<role descr="thrown at, to, over, etc" n="2">
+		
+  <vnrole vncls="17.1" vntheta="Destination"/></role>
+
+</roles>
+
+<example name="all args">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John slammed the book onto the table.
+  </text>
+  <arg n="0">John</arg>
+  <arg n="1">slammed</arg>
+  <rel>the book</rel>
+  <arg f="onto" n="2">the table</arg>
+</example>
+
+</roleset>
+
+<roleset id="slam.02" name="hit hard" vncls="18.4-1">
+<roles>
+<role descr="agent, hitter - animate only!" n="0"/>
+<role descr="thing hit" n="1">
+		
+  <vnrole vncls="18.4-1" vntheta="Theme"/></role>
+
+<role descr="instrument, thing hit by or with" n="2"><vnrole vncls="18.4-1" vntheta="Location"/></role>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Twice in two weeks the unraveling of the on-again, off-again UAL
+    buy-out slammed the stock market. 
+</text>
+        <arg f="TMP" n="M">Twice</arg>
+        <arg f="TMP" n="M">in two weeks</arg>
+        <arg n="0">the unraveling of the on-again , off-again UAL buy-out</arg>
+        <rel>slammed</rel>
+        <arg n="1">the stock market</arg>
+</example>
+
+<example name="with instrument" src="hit.01">
+  <text>
+    The firm has also been slammed *trace* with big financial settlements.
+  </text>
+  <arg n="1">The firm</arg>
+  <arg f="dis" n="m">also</arg>
+  <rel>slammed</rel>
+  <arg f="with" n="2">big financial settlements</arg>
+</example>
+
+</roleset>
+
+</predicate>
+</frameset>

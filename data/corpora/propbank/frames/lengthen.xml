@@ -1,0 +1,52 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="lengthen">
+<note>
+  Frames file for 'lengthen' based on sentences in wsj.  No Verbnet
+  entry, although it's clearly part of the 'other causative' class
+  like 'worsen' 'increase' etc.
+</note>
+
+<roleset id="lengthen.01" name="make longer" vncls="45.4">
+<roles>
+  <role descr="cause, agent" n="0">
+        <vnrole vncls="45.4" vntheta="Agent"/></role>
+  <role descr="thing getting longer" n="1">
+        <vnrole vncls="45.4" vntheta="Patient"/></role>
+  <role descr="EXT" n="2"/>
+  <role descr="start point" n="3"/>
+  <role descr="end point" n="4"/>
+</roles>
+
+<example name="ergative, with EXT and end point">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Average maturity of the funds' investments lengthened by a day to
+    41 days, the longest since early August, according to Donoghue's. 
+</text>
+        <arg n="1">Average maturity of the funds' investments</arg>
+        <rel>lengthened</rel>
+        <arg f="by" n="2">a day</arg>
+        <arg f="to" n="4">41 days, the longest since early
+        August,</arg>  
+</example>
+
+<example name="agentive">
+<inflection aspect="perfect" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+    Mr. Ireland said current demand for used aircraft is strong,
+    partly because surging orders for new aircraft have lengthened
+    waiting lists. 
+</text>
+        <arg n="0">surging orders for new aircraft</arg>
+        <rel>lengthened</rel>
+        <arg n="1">waiting lists</arg>
+</example>
+
+<note>
+Look at other examples of the class for additional examples of usage.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

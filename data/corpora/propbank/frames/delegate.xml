@@ -1,0 +1,61 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="delegate">
+<note>
+  Frames file for 'delegate' based on sentences in wsj.  No Verbnet
+  entry. 
+</note>
+
+<roleset id="delegate.01" name="delegate" vncls="-">
+<roles>
+  <role descr="delegator" n="0"/>
+  <role descr="thing given out (ie authority)" n="1"/>
+  <role descr="to whom" n="2"/>
+</roles>
+
+<example name="intransitive">
+<inflection aspect="ns" form="full" person="ns" tense="ns" voice="active"/>
+<text>
+    While Mr. Roman is a workaholic detailsman, Mr. Phillips would
+    rather delegate,  leaving him time for his interests outside the
+    office. 
+</text>
+        <arg n="M">While Mr. Roman is a workaholic detailsman</arg>
+        <arg n="0">Mr. Phillips</arg>
+        <arg f="MOD" n="M">would</arg>
+        <arg f="ADV" n="M">rather</arg>
+        <rel>delegate</rel>
+        <arg n="M">leaving him time for his interests outside the office</arg>
+</example>
+
+<example name="transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Mark Johnson, the producer of ``Rainman,'' chimes in: ``He has a
+    great ability *trace* to hire terrific people and delegate
+    authority... 
+</text>
+        <arg n="0">*trace* -&gt;  He</arg>
+        <rel>delegate</rel>
+        <arg n="1">authority</arg>
+</example>
+
+<example name="all args">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    But Mr. Phillips recently freed himself up to spend more time with
+    clients by *trace* delegating much of his administrative work to a
+    deputy. 
+</text>
+        <arg n="0">*trace* -&gt;  Mr. Phillips</arg>
+        <rel>delegating</rel>
+        <arg n="1">much of his administrative work</arg>
+        <arg f="to" n="2">a deputy</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

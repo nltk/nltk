@@ -1,0 +1,43 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="snore">
+<note>
+  Frames file for 'snore' based on sentences in wsj.  Verbnet entries
+  40.1.1 and 40.2, Framenet entry Perception noise.
+</note>
+
+<roleset id="snore.01" name="breathe loudly while sleeping" vncls="40.1.1 40.2">
+<roles>
+  <role descr="snorer" n="0"><vnrole vncls="40.1.1" vntheta="Agent"/><vnrole vncls="40.2" vntheta="Agent"/></role>
+</roles>
+
+<example name="pretty boring">
+<inflection aspect="progressive" form="participle" person="third" tense="past" voice="active"/>
+<text>
+     I expected him to say, ``I told you so,'' but he already was snoring.
+</text>
+        <arg n="0">he</arg>
+        <arg f="TMP" n="M">already</arg>
+        <rel>snoring</rel>
+</example>
+
+<example name="with attribute">
+  <inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+  <text>
+     Although she denies it, Mary snores like a Mack truck going down
+     a steep grade.
+  </text>
+  <arg f="AV" n="m">Although she denies it</arg>
+  <arg n="0">Mary</arg>
+  <rel>snores</rel>
+  <arg f="MNR" n="m">like a Mack truck going down a steep grade</arg>
+</example>
+
+<note>
+You probably could have figured out the MNR usage on your own, but I
+wanted to get in a dig at Mary.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

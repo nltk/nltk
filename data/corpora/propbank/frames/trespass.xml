@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="trespass">
+<note>
+  Frames file for 'trespass' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="trespass.01" name="to intrude,  take advantage, overstep" vncls="-">
+<roles>
+  <role descr="trespasser, agent" n="0"/>
+  <role descr="entity trespassed on" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ Excision of appropriations riders that [*T*-1] trespass on the president 's duties and prerogative under Article II would be different from the line-item veto .
+</text>
+	<arg n="0">[*T*-1] -&gt;  that -&gt;  appropriations riders</arg>
+	<rel>trespass</rel>
+	<arg f="on" n="1">the president 's duties and prerogative under Article II</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

@@ -1,0 +1,64 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="manage">
+<note>
+  Frames file for 'manage' based on survey of initial sentences of big
+  corpus.
+</note>
+
+<roleset id="manage.01" name="supervise">
+<roles>
+  <role descr="manager" n="0"/>
+  <role descr="thing managed" n="1"/>
+</roles>
+
+<example name="real">
+  <text>
+  Standard Life Assurance Co. manages about #15 billion in UK
+  institutional funds.
+  </text>
+  <arg n="0">Standard Life Assurance Co.</arg>
+  <rel>manages</rel>
+  <arg n="1">about #15 billion in UK institutional funds.</arg>
+</example>
+
+<note>
+Ignore adjectival usages: &quot;a managing partner&quot; etc.
+</note>
+
+</roleset>
+
+<roleset id="manage.02" name="scrape by, accomplish by extraordinary means">
+<roles>
+  <role descr="manager" n="0"/>
+  <role descr="deed accomplished" n="1"/>
+</roles>
+
+<example name="NP deed">
+  <text>
+  The French filmmaker Claude Chabrol has managed another kind of
+  weird achievement with his &quot;Story of Women&quot;.
+  </text>
+  <arg n="0">The French filmmaker Claude Chabrol</arg>
+  <rel>managed</rel>
+  <arg n="1">another kind of weird achievement with his &quot;Story
+  of Women&quot;.</arg>
+</example>
+
+<example name="VP deed">
+  <text>
+  Wilder has managed *trace* to get across the idea that Coleman will
+  say anything to get elected.
+  </text>
+  <arg n="0">Wilder</arg>
+  <rel>managed</rel>
+  <arg n="1">*trace* to get across the idea that Coleman will
+  say anything to get elected.</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

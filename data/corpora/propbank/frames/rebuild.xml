@@ -1,0 +1,43 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="rebuild">
+<note>
+  Frames file for 'rebuild' based on survey of sentences in the WSJ
+  corpus. Comparison with 'build'.
+</note>
+
+<roleset id="rebuild.01" name="to build again" vncls="-">
+<roles>
+  <role descr="builder" n="0"/>
+  <role descr="construction" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ Corn prices have been sluggish this fall despite the huge Soviet orders because the harvest has allowed farmers to rebuild the stockpiles depleted [*] by the 1988 drought .
+</text>
+	<arg n="0">farmers</arg>
+	<rel>rebuild</rel>
+	<arg n="1">the stockpiles depleted [*] by the 1988 drought</arg>
+</example>
+
+
+
+<example name="unspecified  subject">
+<inflection aspect="ns" form="gerund" person="ns" tense="ns" voice="active"/>
+<text>
+ It [*EXP*-1] suddenly dawns on Mr. Hammack that [*] rebuilding the house in Los Gatos , an affluent community in Santa Clara County , may cost more than Aetna 's policy will pay [*?*] .
+</text>
+	<arg n="0">[*]</arg>
+	<rel>rebuilding</rel>
+	<arg n="1">the house</arg>
+	<arg f="LOC" n="M">in Los Gatos , an affluent community in Santa Clara County ,</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

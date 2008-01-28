@@ -1,0 +1,56 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="dominate">
+<note>
+  Frames file for 'dominate' based on sentences in financial
+  subcorpus.  Verbnet class contiguous_location-47.8, other framed
+  members include 'contain' 'cover' 'fill' 'support' and 'top'.  I
+  don't think those are the sense 'dominate' is usually used in,
+  though.  Using 'surpass' sense of 'top'.
+</note>
+
+<roleset id="dominate.01" name="surpass" vncls="47.8">
+<roles>
+  <role descr="surpasser" n="0">
+		
+  <vnrole vncls="47.8" vntheta="Theme1"/></role>
+
+  <role descr="thing surpassed" n="1">
+		
+  <vnrole vncls="47.8" vntheta="Theme2"/></role>
+
+</roles>
+
+<example name="active">
+<text>
+    Pioneer Electronic and Sony, both of which *trace* dominated
+    buying earlier this month, continued to fall Wednesday. 
+</text>
+        <arg n="0">*trace* -&gt;  both of which -&gt;  Pioneer Electronic
+        and Sony</arg> 
+        <rel>dominated</rel>
+        <arg n="1">buying</arg>
+        <arg f="TMP" n="M">earlier this month</arg>
+</example>
+
+<example name="passive">
+<text>
+    The board is dominated *trace* by the heirs of the late John
+    T. Dorrance Jr., who controlled about 58% of Campbell's stock when
+    he died in April. 
+</text>
+        <rel>dominated</rel>
+        <arg n="1">*trace* -&gt;  The board</arg>
+        <arg f="by" n="0">the heirs of the late John T. Dorrance Jr.,
+        who controlled about 58% of Campbell's stock when he died in
+        April</arg> 
+</example>
+
+<note>
+Could take an arg2 'instrument' (&quot;John dominates any room with his
+overwhelming B.O.&quot;) but we'll wait to see what the corpus says.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

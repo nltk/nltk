@@ -1,0 +1,48 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="sense">
+<note>
+  Frames file for 'sense' based on sentences in financial subcorpus.
+  No access to verbnet.  Comparison to 'see' and 'hear' and 'feel'.
+</note>
+
+<roleset id="sense.01" name="sense" vncls="30.1">
+<roles>
+  <role descr="sensor" n="0">
+		
+  <vnrole vncls="30.1" vntheta="Experiencer"/></role>
+
+  <role descr="thing sensed" n="1">
+		
+  <vnrole vncls="30.1" vntheta="Stimulus"/></role>
+
+  <role descr="secondary attribute" n="2"/>
+</roles>
+
+<example name="well that's a boring example">
+<text>
+    ``I sense that some people are reluctant to stick their necks out
+    in any aggressive way until after the figures come out,'' said
+    Richard Eakle, president of Eakle Associates, Fair Haven, Conn.
+</text>
+	<arg n="0">I</arg>
+	<rel>sense</rel>
+	<arg n="1">some people are reluctant to stick their necks out
+	in any aggressive way until after the figures come out</arg> 
+</example>
+
+<example name="another pop-culture example">
+  <text>
+    Captain, I sense anger!
+  </text>
+  <arg n="0">I</arg>
+  <rel>sense</rel>
+  <arg n="1">anger</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="entail">
+<note>
+  Frames file for 'entail' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="entail.01" name="to have as a logical consequence" vncls="-">
+<roles>
+  <role descr="antecedent" n="0"/>
+  <role descr="consequence" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ The paper gave no details of what the restrictions would entail [*T*-1] but said [0] the measures were necessary [*] to protect the domestic market .
+</text>
+	<arg n="0">the restrictions</arg>
+	<arg f="MOD" n="M">would</arg>
+	<rel>entail</rel>
+	<arg n="1">[*T*-1] -&gt;  what</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

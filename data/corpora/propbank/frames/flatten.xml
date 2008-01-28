@@ -1,0 +1,66 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="flatten">
+<note>
+  Frames file for 'flatten' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="flatten.01" name="to make flat or flatter" vncls="45.4">
+<roles>
+  <role descr="causer of flatness, agent" n="0">
+        <vnrole vncls="45.4" vntheta="Agent"/></role>
+  <role descr="thing flattened" n="1">
+        <vnrole vncls="45.4" vntheta="Patient"/></role>
+</roles>
+
+<example name="intransitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ The changes come as Reebok , which [*T*-1] grew rapidly in the mid-1980s but has seen its sales flatten of late , is seeking [*-2] to regain momentum in the athletic-shoe business against rivals Nike Inc. and L.A. Gear Inc .
+</text>
+	<arg n="1">its sales</arg>
+	<rel>flatten</rel>
+</example>
+
+<example name="with PRED">
+<inflection aspect="perfect" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+ In areas where the freeway made giant concrete sandwiches of itself [*T*-3] lie [*T*-4] cars that police say [0] [*T*-2] have been flattened [*-1] into foot-thick slabs .
+</text>
+	<rel>flattened</rel>
+	<arg n="1">[*-1] -&gt;  [*T*-2] -&gt;  that -&gt;  cars</arg>
+	<arg f="PRED" n="M">into foot-thick slabs</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+<predicate lemma="flatten_out">
+
+<roleset id="flatten.02" vncls="-" name="flatten completely">
+<roles>
+  <role n="0"  descr="causer of flatness, agent"/>
+  <role n="1"  descr="flat thing"/>
+</roles>
+
+<example name="nominal">
+  <inflection person="ns" tense="ns" aspect="ns" voice="ns" form="gerund"/>
+  <text>
+     Under these conditions, even a flattening out of economic growth
+     -- ``catching cold'' -- in the healthy metropolitan areas will
+     create significant opportunities for corporations and
+     professional service firms looking for bargains as the realestate
+     industry catches pneumonia. 
+  </text>
+  <rel              >flattening out</rel>
+  <arg n="1" f="of">economic growth</arg>
+</example>
+
+</roleset>
+</predicate>
+
+
+</frameset>

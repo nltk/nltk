@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="pacify">
+<note>
+  Frames file for 'pacify' based on sentences in wsj.  Verbnet entry
+  31.1, Framenet entry Experiencer obj.
+</note>
+
+<roleset id="pacify.01" name="make peaceful" vncls="31.1">
+<roles>
+  <role descr="peacemaker" n="0"><vnrole vncls="31.1" vntheta="Cause"/></role>
+  <role descr="pacified entity" n="1"><vnrole vncls="31.1" vntheta="Experiencer"/></role>
+</roles>
+
+<example name="passified?">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+     The manuevering illustrates an emerging Republican donnybrook,
+     pacified [*] since the early 1980s. 
+</text>
+        <rel>pacified</rel>
+        <arg n="1">[*] -&gt;  an emerging Republican donnybrook</arg>
+        <arg f="TMP" n="M">since the early 1980s</arg>
+</example>
+
+<note>
+A 'donnybrook' is a brawl or brawler, named after the Irish town of 
+Donnybrook which is apparently populated entirely by hotheads.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

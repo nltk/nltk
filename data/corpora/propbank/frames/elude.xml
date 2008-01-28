@@ -1,0 +1,34 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="elude">
+<note>
+Frames file for 'elude' based on sentences in wsj and automatic
+expansion via verbnet.
+</note>
+
+<roleset id="elude.01" name="avoid" vncls="52">
+<roles>
+	<role descr="avoider" n="0">
+		
+  <vnrole vncls="52" vntheta="Agent"/></role>
+
+	<role descr="thing avoided" n="1">
+		
+  <vnrole vncls="52" vntheta="Theme"/></role>
+
+</roles>
+
+<example name="really easy">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Time eluded Paramount by acquiring Warner Communications Inc. 
+</text>
+        <arg n="0">Time</arg>
+        <rel>eluded</rel>
+        <arg n="1">Paramount</arg>
+        <arg f="MNR" n="M">by acquiring Warner Communications Inc</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

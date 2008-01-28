@@ -1,0 +1,67 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="compete">
+<note>
+  Frames file for 'compete' based on sentences in financial
+  subcorpus.  Verbnet class correspond-36.1, no other members have
+  been framed.
+</note>
+
+<roleset id="compete.01" name="compete, vie" vncls="36.1">
+<roles>
+  <role descr="competitor" n="0">
+		
+  <vnrole vncls="36.1" vntheta="Actor1"/></role>
+
+  <role descr="opponent" n="1">
+		
+  <vnrole vncls="36.1" vntheta="Actor2"/></role>
+
+  <role descr="prize" n="2">
+		
+  <vnrole vncls="36.1" vntheta="Topic"/></role>
+
+</roles>
+
+<example name="with opponent">
+  <text>
+    The spinoff also will compete with International Business Machines
+    Corp. and Japan's Big Three -- Hitachi Ltd., NEC Corp. and Fujitsu
+    Ltd. 
+  </text>
+  <arg n="0">The spinoff</arg>
+  <arg f="DIS" n="m">also</arg>
+  <arg f="MOD" n="m">will</arg>
+  <rel>compete</rel>
+  <arg f="with" n="1">International Business Machines
+    Corp. and Japan's Big Three -- Hitachi Ltd., NEC Corp. and Fujitsu
+    Ltd. </arg>
+</example>
+
+<example name="Competitors merged">
+  <text>
+    John and Mary compete fiercely.
+  </text>
+  <arg n="0">John and Mary</arg>
+  <rel>compete</rel>
+  <arg f="MNR" n="m">fiercely</arg>
+</example>
+
+<example name="with prize">
+  <text>
+    John competed with Mary for the last piece of cake.
+  </text>
+  <arg n="0">John</arg>
+  <rel>competed</rel>
+  <arg f="with" n="1">Mary</arg>
+  <arg f="for" n="2">the last piece of cake</arg>
+</example>
+
+<note>
+Do not tag (but do not change existing tagging on) adjectival usages
+like &quot;a competing offer&quot;.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

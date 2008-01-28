@@ -1,0 +1,42 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="decelerate">
+<note>
+  Frames file for 'decelerate' based on sentences in wsj.  Verbnet
+  entry 45.4.
+</note>
+
+<roleset id="decelerate.01" name="(cause to) slow down" vncls="45.4">
+<roles>
+  <role descr="agent, causer of slowing" n="0"><vnrole vncls="45.4" vntheta="Agent"/></role>
+  <role descr="entity slowing down" n="1"><vnrole vncls="45.4" vntheta="Patient"/></role>
+</roles>
+
+<example name="unaccusative">
+<inflection aspect="perfect" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+    He argued that both CPI and PPI have in fact decelerated since spring.
+</text>
+        <arg n="1">both CPI and PPI</arg>
+        <arg f="DIS" n="M">in fact</arg>
+        <rel>decelerated</rel>
+        <arg f="TMP" n="M">since spring</arg>
+</example>
+
+<example name="agentive">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John decelerated the car.
+  </text>
+  <arg n="0">John</arg>
+  <rel>decelerated</rel>
+  <arg n="1">the car</arg>
+</example>
+
+<note>
+Unaccusative will be more common, methinks.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

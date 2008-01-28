@@ -1,0 +1,55 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="consume">
+<note>
+  Frames file for 'consume' based on sentences in financial subcorpus.
+  Verbnet entry 39.4, no other framed members mentioned.  Framenet
+  entry Ingestion, framed members include eat.  Comparison with eat.
+</note>
+
+<roleset id="consume.01" name="eat, use up" vncls="39.4">
+<roles>
+  <role descr="consumer" n="0">
+		
+  <vnrole vncls="39.4" vntheta="Agent"/></role>
+
+  <role descr="consumed" n="1">
+		
+  <vnrole vncls="39.4" vntheta="Patient"/></role>
+
+</roles>
+
+<example name="active">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    The Miami fast-food chain, owned by Grand Metropolitan of Britain,
+    expects *trace* to consume roughly 34 million pounds of liquefied
+    eggs annually. 
+</text>
+        <arg n="0">*trace* -&gt;  The Miami fast-food chain, owned by
+        Grand Metropolitan of Britain,</arg> 
+        <rel>consume</rel>
+        <arg n="1">roughly 34 million pounds of liquefied eggs</arg>
+        <arg f="TMP" n="M">annually</arg>
+</example>
+
+<example name="passive, odd agent">
+<inflection aspect="ns" form="participle" person="ns" tense="past" voice="passive"/>
+<text>
+    While the vast bulk of it was indeed spent by reputable
+    organizations on the good works it was raised for, it's equally
+    true that a sizable hunk was consumed *trace* in ``expenses''
+    claimed by other operators, including fraudulent expenses.
+</text>
+        <rel>consumed</rel>
+        <arg n="1">*trace* -&gt;  a sizable hunk</arg>
+        <arg f="in" n="0">`` expenses '' claimed  by other operators ,
+        including fraudulent expenses</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

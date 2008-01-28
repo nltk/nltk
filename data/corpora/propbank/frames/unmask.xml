@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="unmask">
+<note>
+  Frames file for 'unmask' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="unmask.01" name="to disclose the true character of" vncls="-">
+<roles>
+  <role descr="discloser, agent" n="0"/>
+  <role descr="entity unmasked" n="1"/>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ Right now about a dozen laboratories , in the U.S. , Canada and Britain , are racing [*-1] to unmask other suspected tumor-suppressing genes .
+</text>
+	<arg n="0">[*-1] -&gt;  about a dozen laboratories , in the U.S. , Canada and Britain ,</arg>
+	<rel>unmask</rel>
+	<arg n="1">other suspected tumor-suppressing genes</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

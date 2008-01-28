@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="disgruntle">
+<note>
+  Frames file for 'disgruntle' based on sentences in wsj.  Verbnet
+  entry 31.1.
+</note>
+
+<roleset id="disgruntle.01" vncls="31.1" name="upset, annoy">
+<roles>
+  <role n="0"  descr="causer of disgruntlement"/>
+  <role n="1"  descr="disgruntled entity"/>
+</roles>
+
+<example name="usually adjectival">
+<inflection person="ns" tense="ns" aspect="ns" voice="passive" form="participle"/>
+<text>
+     It reduces lawsuits from disgruntled employees and ex-employees,
+     with all that means for reduced legal costs and better public
+     relations. 
+</text>
+	<rel>disgruntled</rel>
+	<arg n="1">employees</arg>
+<note>
+The treebanking presumes that only the current employees are
+disgruntled; presumably the ex-employees have been regruntled.
+</note>
+
+</example>
+
+</roleset>
+</predicate>
+</frameset>

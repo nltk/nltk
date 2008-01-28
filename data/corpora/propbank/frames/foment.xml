@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="foment">
+<note>
+  Frames file for 'foment' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="foment.01" name="encourage revolution" vncls="-">
+<roles>
+  <role descr="encourager" n="0"/>
+  <role descr="revolution" n="1"/>
+</roles>
+
+<example name="Viva la revolucion!">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+    Mr. Jobs, co-founder of Apple Computer Inc., founded Next four
+    years ago in the hopes of [*-1] fomenting a revolution in the way
+    desktop computers are designed and used. 
+</text>
+        <arg n="0">[*-1] -&gt;  Mr. Jobs, co-founder of Apple Computer
+        Inc.,</arg> 
+        <rel>fomenting</rel>
+        <arg n="1">a revolution in the way desktop computers are
+        designed and used</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

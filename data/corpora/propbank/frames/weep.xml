@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="weep">
+<note>
+  Frames file for 'weep' based on survey of sentences in the WSJ
+  corpus. Comparison with 'cry'.
+</note>
+
+<roleset id="weep.01" name="to cry" vncls="40.2">
+<roles>
+  <role descr="weeper" n="0">
+        <vnrole vncls="40.2" vntheta="Agent"/></role>
+  <role descr="tears" n="1">
+        <vnrole vncls="40.2" vntheta="Theme"/></role>
+</roles>
+
+
+<example name="intransitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ The Free French wore black arm bands , and when she sang `` J'ai deux amours '' [*T*-1] they wept .
+</text>
+	<arg n="0">they</arg>
+	<rel>wept</rel>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

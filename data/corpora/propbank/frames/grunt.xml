@@ -1,0 +1,72 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="grunt">
+<note>
+  Frames file for 'grunt' based on sentences in brown.  Verbnet entry
+</note>
+
+<roleset id="grunt.02" vncls="-" name="speak gruntingly">
+<roles>
+  <role n="0"  descr="speaker"/>
+  <role n="1"  descr="utterance"/>
+  <role n="2"  descr="listener"/>
+</roles>
+
+<example name="intransitive, as an animal">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+     ...and the men grunted and followed, pushing Lester to the side
+     where he back against the wall with the sleeve of his jacket
+     raised before his eyesto shut out the light.
+  </text>
+  <arg n="0"        >the men</arg>
+  <rel              >grunted</rel>
+  <arg n="m" f="ADV">pushing Lester to the side
+     where he back against the wall with the sleeve of his jacket
+     raised before his eyesto shut out the light</arg>
+</example>
+
+<example name="utterance, sorta">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+    He grunted a sort of ``yes'' answer.
+  </text>
+  <arg n="0"        >He</arg>
+  <rel              >grunted</rel>
+  <arg n="1"        >a sort of ``yes'' answer</arg>
+</example>
+
+<example name="with listener">
+  <inflection person="ns" tense="ns" aspect="ns" voice="active" form="full"/>
+  <text>
+     Sometimes he would grunt softly to some invisible onlooker beside him.
+  </text>
+  <arg n="m" f="TMP">Sometimes</arg>
+  <arg n="0"        >he</arg>
+  <arg n="m" f="MOD">would</arg>
+  <rel              >grunt</rel>
+  <arg n="m" f="MNR">softly</arg>
+  <arg n="2" f="to">some invisible onlooker beside him</arg>
+</example>
+
+<example name="a proper utterance">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+     ``It does'', Shayne grunted *trace* sourly, still able to taste
+     her mouth on his in the Green Jungle parking lot.
+  </text>
+  <arg n="0"        >Shayne</arg>
+  <rel              >grunted</rel>
+  <arg n="1"        >*trace* -> It does</arg>
+  <arg n="m" f="MNR">sourly</arg>
+  <arg n="m" f="ADV">still able to taste her mouth on his in the Green
+  Jungle parking lot</arg>
+</example>
+
+<note>
+Ah, romance!
+</note>
+
+</roleset>
+</predicate>
+</frameset>

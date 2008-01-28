@@ -1,0 +1,80 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="harm">
+<note>
+  Frames file for 'harm' based on sentences in wsj.  There must be
+  some Verbnet entry, but I don't know what it is.  Comparison with 'damage'.
+</note>
+
+<roleset id="harm.01" name="cause damage" vncls="-">
+<roles>
+  <role descr="agent, causer" n="0"/>
+  <role descr="entity damaged" n="1"/>
+  <role descr="instrument" n="2"/>
+</roles>
+
+<example name="nice and simple">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    She said there is ``growing realization'' around the world that
+    denial of intellectual-property rights harms all trading nations,
+    and particularly the ``creativity and inventiveness of an
+    offending country's own citizens.'' 
+</text>
+        <arg n="0">denial of intellectual-property rights</arg>
+        <rel>harms</rel>
+        <arg n="1">all trading nations, and particularly the
+        ``creativity and inventiveness of an offending country's own
+        citizens</arg> 
+</example>
+
+<example name="with instrument">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    Critics of poison pills argue that they harm shareholders by
+    letting corporate management defeat takeover bids at premium
+    prices... 
+</text>
+        <arg n="0">they</arg>
+        <rel>harm</rel>
+        <arg n="1">shareholders</arg>
+        <arg f="by" n="2">letting corporate management defeat takeover
+        bids at premium prices</arg> 
+</example>
+
+<example name="passivized non-agentive subject">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    The class-action suit highlights shortcomings of the Trans-Alaska
+    Pipeline Liability Fund, which gets its money from oil companies
+    using the pipeline and compensates those harmed by oil spills. 
+</text>
+        <arg n="1">those</arg>
+        <rel>harmed</rel>
+        <arg f="by" n="0">oil spills</arg>
+</example>
+
+<example name="unusual preposition introducing passivized subject">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    Although the average citizen is probably not harmed *trace* too
+    much from Washington's rhetorical war against Wall Street
+    regarding excessive financial leveraging, actual legislation would
+    probably impose considerable harm. 
+</text>
+        <arg f="DIS" n="M">probably</arg>
+        <arg f="NEG" n="M">not</arg>
+        <rel>harmed</rel>
+        <arg n="1">*trace* -&gt;  the average citizen</arg>
+        <arg f="EXT" n="M">too much</arg>
+        <arg f="from" n="0">Washington's rhetorical war against Wall
+        Street regarding excessive financial leveraging</arg> 
+</example>
+
+<note>
+To avoid excessive agonizing over the agent/instrument distinction,
+only use arg2 when arg0 is also present.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="flabbergast">
+<note>
+  Frames file for 'flabbergast' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="flabbergast.01" name="to surpise" vncls="-">
+<roles>
+  <role descr="causer" n="0"/>
+  <role descr="experiencer" n="1"/>
+</roles>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="past" voice="passive"/>
+<text>
+ `` I was flabbergasted [*-3] , '' Tatsuhara Yamane , head of the bureau , was quoted [*-1] by Kyodo news service as [*-4] saying [*T*-2] .
+</text>
+	<rel>flabbergasted</rel>
+	<arg n="1">[*-3] -&gt;  I</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

@@ -1,0 +1,52 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="disgorge">
+<note>
+  Frames file for 'disgorge' based on sentences in wsj.  Verbnet entry
+  10.1, verbs of removing.
+</note>
+
+<roleset id="disgorge.01" name="remove" vncls="10.1">
+<roles>
+  <role descr="disgorger" n="0"><vnrole vncls="10.1" vntheta="Agent"/></role>
+  <role descr="thing removed" n="1"><vnrole vncls="10.1" vntheta="Theme"/></role>
+  <role descr="source" n="2"><vnrole vncls="10.1" vntheta="Source"/></role>
+</roles>
+
+<example name="meaning 'fined'">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+    The following were neither barred nor suspended: Stephanie
+    Veselich Enright, Rolling Hills, Calif., fined $2,500 and ordered
+    *trace *trace* to disgorge $11,762;... 
+</text>
+        <arg n="0">*trace* -&gt; *trace* -&gt;  Stephanie Veselich Enright,
+        Rolling Hills, Calif.,</arg> 
+        <rel>disgorge</rel>
+        <arg n="1">$11,762 </arg>
+</example>
+
+<note>
+There's apparently some subtle difference between being fined and
+disgorging cash, but I don't know what it is.
+</note>
+
+<example name="literal sense">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John disgorged his lunch from his stomach.
+  </text>
+  <arg n="0">John</arg>
+  <rel>disgorged</rel>
+  <arg n="1">his lunch</arg>
+  <arg f="from" n="2">his stomach</arg>
+</example>
+
+<note>
+'Gorge' literally means 'throat', so to disgorge is to remove from the
+throat, or vomit.  Sorry about that.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

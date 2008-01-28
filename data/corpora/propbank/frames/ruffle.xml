@@ -1,0 +1,54 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="ruffle">
+<note>
+  Frames file for 'ruffle' based on sentences in wsj.  Verbnet entry 31.1.
+</note>
+
+<roleset id="ruffle.01" name="cause consternation" vncls="31.1">
+<roles>
+  <role descr="causer of consternation" n="0"><vnrole vncls="31.1" vntheta="Cause"/></role>
+  <role descr="victim" n="1"><vnrole vncls="31.1" vntheta="Experiencer"/></role>
+</roles>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    Chicken Chains Ruffled [*-1] By Loss of Customers
+</text>
+        <rel>Ruffled</rel>
+        <arg n="1">[*-1] -&gt;  Chicken Chains</arg>
+        <arg f="By" n="0">Loss of Customers</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="ruffle.02" name="cause to be not smooth" vncls="-">
+<roles>
+  <role descr="unsmoother" n="0"/>
+  <role descr="unsmooth thing" n="1"/>
+</roles>
+
+<example name="arg1 usually feathers">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    This is a fact -- though, in view of all the feathers that [*T*-9]
+    are ruffled [*-8] by this fact, it is not surprising that one
+    hears so little about it. 
+</text>
+        <rel>ruffled</rel>
+        <arg n="1">[*-8] -&gt;  [*T*-9] -&gt;  that -&gt;  all the feathers</arg>
+        <arg f="by" n="0">this fact</arg>
+</example>
+
+<note>
+Except for the feathers thing, these two senses are going to be very
+difficult to disambiguate.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

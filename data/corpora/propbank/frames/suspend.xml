@@ -1,0 +1,82 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="suspend">
+<note>
+  Frames file for 'suspend' based on sentences in financial
+  subcorpus.  Verbnet class put_spatial-9.2-1, but that's only one of
+  two senses (and not the primary sense of suspend, either).
+  Comparison to 'stop'.
+</note>
+
+<roleset id="suspend.01" name="put a stop to, temporarily" vncls="-">
+<roles>
+  <role descr="Agent" n="0"/>
+  <role descr="Theme (action or object being stopped)" n="1"/>
+  <role descr="attribute of arg1" n="2"/>
+  <role descr="Instrument" n="3"/>
+</roles>
+
+<example name="boring transitive">
+<text>
+    Big Board Chairman John Phelan said yesterday that he could
+    support letting federal regulators suspend program trading during
+    wild stock-price swings. 
+</text>
+        <arg n="0">federal regulators</arg>
+        <rel>suspend</rel>
+        <arg n="1">program trading</arg>
+        <arg f="TMP" n="M">during wild stock-price swings</arg>
+</example>
+
+
+<example name="one kind of secondary predication">
+<text>
+   The market also moved at early afternoon on news that Jaguar shares
+   were being temporarily suspended *trace* at 746 pence ($ 11.80)
+   each. 
+</text>
+        <arg f="TMP" n="M">temporarily</arg>
+        <rel>suspended</rel>
+        <arg n="1">*trace* -&gt;  Jaguar shares</arg>
+        <arg f="at" n="2">746 pence ($11.80) each</arg>
+</example>
+
+<example name="different kind of secondary predication">
+<text>
+    Before its shares were suspended *trace* from trading, Qintex
+    Australia plunged to 16 Australian cents (12 U.S. cents) a share
+    yesterday from 33 Australian cents Friday. 
+</text>
+        <rel>suspended</rel>
+        <arg n="1">*trace* -&gt;  its shares</arg>
+        <arg n="2">from trading</arg>
+</example>
+
+</roleset>
+
+<roleset id="suspend.02" name="hang" vncls="9.2-1">
+<roles>
+  <role descr="agent, entity causing something to be suspended" n="0">
+	  <vnrole vncls="9.2-1" vntheta="Agent"/></role>
+  <role descr="thing suspended" n="1">
+	  <vnrole vncls="9.2-1" vntheta="Theme"/></role>
+  <role descr="suspended from" n="2">
+	  <vnrole vncls="9.2-1" vntheta="Destination"/></role>
+</roles>
+
+<example name="didn't actually occur">
+  <text>
+    John suspended the Christmas decorations from the ceiling.
+  </text>
+  <arg n="0">John</arg>
+  <rel>suspended</rel>
+  <arg n="1">the Christmas decorations</arg>
+  <arg f="from" n="2">the ceiling</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

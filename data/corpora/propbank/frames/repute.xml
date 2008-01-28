@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="repute">
+<note>
+  Frames file for 'repute' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="repute.01" name="to consider, look on" vncls="-">
+<roles>
+  <role descr="considerer, agent" n="0"/>
+  <role descr="entity considered" n="1"/>
+  <role descr="secondary predicate on arg1" n="2"/>
+</roles>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+ `` Saturday Night '' has cast actors [*-2] to appear in future stories ranging from the abortion rights of teen-agers to a Nov. 4 segment on a man named [*] Willie Bosket , who [*T*-1] calls himself a `` monster '' and is reputed [*-3] to be the toughest prisoner in New York .
+</text>
+	<arg n="1">[*T*-1] -&gt;  who -&gt;  Willie Bosket</arg>
+	<rel>reputed</rel>
+	<arg n="2">[*-3] to be the toughest prisoner in New York</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

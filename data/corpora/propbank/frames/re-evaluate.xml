@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="re-evaluate">
+<note>
+  Frames file for 're-evaluate' based on survey of sentences in the WSJ
+  corpus. Comparison with 'evaluate'.
+</note>
+
+<roleset id="re-evaluate.01" name="to evaluate again" vncls="-">
+<roles>
+  <role descr="evaluator" n="0"/>
+  <role descr="entity evaluated" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="perfect" form="participle" person="ns" tense="past" voice="active"/>
+<text>
+ In a prepared statement from Australia , the company also said that , following the breakdown of the MGM talks , it `` had been re-evaluating its position as a significant shareholder and a substantial creditor of Qintex Entertainment '' and had `` resolved [*-1] to minimize the degree of further loans to Qintex Entertainment in excess of that previously made . ''
+</text>
+	<arg f="TMP" n="M">following the breakdown of the MGM talks</arg>
+	<arg n="0">it</arg>
+	<rel>re-evaluating</rel>
+	<arg n="1">its position as a significant shareholder and a substantial creditor of Qintex Entertainment</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

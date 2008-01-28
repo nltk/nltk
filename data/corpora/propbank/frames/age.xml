@@ -1,0 +1,44 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="age">
+<note>
+  Frames file for 'age' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="age.01" name="to make or become old or older" vncls="45.4">
+<roles>
+  <role descr="causer of aging, agent" n="0"><vnrole vncls="45.4" vntheta="Agent"/></role>
+  <role descr="entity getting old" n="1"><vnrole vncls="45.4" vntheta="Patient"/></role>
+  <role descr="attribute (how old)" n="2"/>
+</roles>
+
+
+
+<example name="intransitive">
+<inflection aspect="perfect" form="participle" person="third" tense="present" voice="active"/>
+<text>
+ `` Oil of Olay brought with it the baggage of [*] being used [*-1] basically by older women who [*T*-2] had already aged , '' says [*T*-3] David Williams , a consultant with New England Consulting Group .
+</text>
+	<arg n="1">[*T*-2] -&gt;  who -&gt;  older women</arg>
+	<arg f="TMP" n="M">already</arg>
+	<rel>aged</rel>
+</example>
+
+
+<example name="with Arg2">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="ns"/>
+<text>
+ In 1980 , the study says [0] [*T*-1] , prosecutors surveyed [*] filed charges against 25 defendants for each 100,000 people aged 18 years and older .
+</text>
+	<arg n="1">each 100,000 people</arg>
+	<rel>aged</rel>
+	<arg n="2">18 years and older</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

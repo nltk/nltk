@@ -1,0 +1,334 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="call">
+<note>
+  Frames file for 'call' based on Chris' old frames file; this is
+  still a mess and inconsistent with most of the other verbs.  It will
+  have to be revised and the tagging redone before the next iteration.
+</note>
+
+<roleset id="call.01" name="label" vncls="29.3">
+<roles>
+  <role descr="caller" n="0">
+        <vnrole vncls="29.3" vntheta="Agent"/></role>
+  <role descr="item being labelled" n="1">
+        <vnrole vncls="29.3" vntheta="Theme"/></role>
+  <role descr="attribute of arg1" n="2">
+        <vnrole vncls="29.3" vntheta="Predicate"/></role>
+</roles>
+
+<example name="with attribute">
+  <text>
+    Mary called John an idiot
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>called</rel>
+  <arg n="1">John</arg>
+  <arg n="2">an idiot</arg>
+</example>
+
+<example name="passivized">
+  <text>
+    The worksheets were called 'Learning Materials'
+  </text>
+  <arg n="1">The worksheets</arg>
+  <rel>called</rel>
+  <arg n="2">'Learning Materials'</arg>
+</example>
+</roleset>
+
+<roleset id="call.02" name="summon" vncls="13.5.1">
+<roles>
+  <role descr="caller" n="0">
+	  <vnrole vncls="13.5.1" vntheta="Agent"/></role>
+  <role descr="thing being summoned" n="1">
+	  <vnrole vncls="13.5.1" vntheta="Theme"/></role>
+  <role descr="benefactive" n="2">
+          <vnrole vncls="13.5.1" vntheta="Beneficiary"/></role>
+</roles>
+
+<example name="without benefactive">
+  <text>
+    The bells called the faithful to evensong
+  </text>
+  <arg n="0">The bells</arg>
+  <rel>called</rel>
+  <arg n="1">the faithful</arg>
+  <arg f="dir" n="m">to evensong</arg>
+</example>
+
+<example name="with benefactive">
+  <text>
+    John called a doctor for Mary
+  </text>
+  <arg n="0">John</arg>
+  <rel>called</rel>
+  <arg n="1">a doctor</arg>
+  <arg f="for" n="2">Mary</arg>
+</example>
+
+<example name="benefactive with double NP">
+  <text>
+    John called Mary a doctor.
+  </text>
+  <arg n="0">John</arg>
+  <rel>called</rel>
+  <arg n="2">Mary</arg>
+  <arg n="1">a doctor</arg>
+</example>
+
+<note>
+</note>
+</roleset>
+
+<roleset id="call.03" name="demand" vncls="-">
+<roles>
+  <role descr="demander" n="0"/>
+  <role descr="thing being demanded" n="1"/>
+</roles>
+
+<example name="reelection woes">
+  <text>
+    Gore called for a recount.
+  </text>
+  <arg n="0">Gore</arg>
+  <rel>called</rel>
+  <arg f="for" n="1">a recount</arg>
+</example>
+
+<example name="without 'for'">
+  <text>
+    Ford called a Jaguar stockholders' meeting.
+  </text>
+  <arg n="0">Ford</arg>
+  <rel>called</rel>
+  <arg n="1">a Jaguar stockholders' meeting</arg>
+</example>
+
+</roleset>
+
+<roleset id="call.07" name="say across a distance" vncls="-">
+<roles>
+  <role descr="speaker" n="0"/>
+  <role descr="utterance" n="1"/>
+  <role descr="distant listener" n="2"/>
+</roles>
+
+<example name="it gets worse">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     ``You people here think this is Russian music,'' she said with
+     disdain, and called over to the waitress: ``Could you turn it
+     off?'' 
+  </text>
+  <arg n="0">she</arg>
+  <rel>called</rel>
+  <arg f="DIR" n="m">over</arg>
+  <arg f="to" n="2">the waitress</arg>
+  <arg n="1">``Could you turn it off?''</arg>
+</example>
+
+<note>
+</note>
+</roleset>
+
+<roleset id="call.10" name="predict" vncls="-">
+<roles>
+  <role descr="predictor" n="0"/>
+  <role descr="prediction" n="1"/>
+</roles>
+
+<example name="prognostication">
+  <inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+  <text>
+    His new forecast calls for a soft landing.
+  </text>
+  <arg n="0">His new forecast</arg>
+  <rel>calls</rel>
+  <arg f="for" n="1">a soft landing</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="call.11" name="idiomatic: call the shots" vncls="-">
+<roles>
+  <role descr="entity in charge" n="0"/>
+  <role descr="'the shots'" n="1"/>
+</roles>
+
+<example name="I'm in charge!">
+  <inflection aspect="progressive" form="participle" person="ns" tense="present" voice="active"/>
+  <text>
+     The changes were proposed in an effort to streamline federal
+     bureaucracy and boost compliance by the executives ``who [*T*-1]
+     are really calling the shots,'' said Brian Lane, special counsel
+     at the SEC's office of disclosure policy, which proposed the
+     changes. 
+  </text>
+  <arg n="0">[*T*-1] -&gt; who -&gt; the executives</arg>
+  <arg f="ADV" n="m">really</arg>
+  <rel>calling</rel>
+  <arg n="1">the shots</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="call_up">
+<note>
+  This really is phrasal.  Otherwise identical to the 'summon' roleset
+</note>
+<roleset id="call.08" name="summon, phrasal 1" vncls="13.5.1">
+<roles>
+  <role descr="caller" n="0">
+	  <vnrole vncls="13.5.1" vntheta="Agent"/></role>
+  <role descr="thing being summoned" n="1">
+	  <vnrole vncls="13.5.1" vntheta="Theme"/></role>
+  <role descr="benefactive" n="2">
+	  <vnrole vncls="13.5.1" vntheta="Beneficiary"/></role>
+</roles>
+
+<example name="without benefactive">
+  <text>
+    The bells called up the faithful to evensong
+  </text>
+  <arg n="0">The bells</arg>
+  <rel>[called][up]</rel>
+  <arg n="1">the faithful</arg>
+  <arg f="dir" n="m">to evensong</arg>
+</example>
+
+<example name="with benefactive">
+  <text>
+    John called up a doctor for Mary
+  </text>
+  <arg n="0">John</arg>
+  <rel>[called][up]</rel>
+  <arg n="1">a doctor</arg>
+  <arg f="for" n="2">Mary</arg>
+</example>
+</roleset>
+
+<roleset id="call.09" name="call into question, doubt" vncls="-">
+<roles>
+  <role descr="doubter" n="0"/>
+  <role descr="thing doubted" n="1"/>
+  <role descr="fixed: 'into question'" n="2"/>
+</roles>
+
+<example name="is that so?">
+  <inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+  <text>
+     EC Agriculture Commissioner Ray MacSharry said the U.S. plan
+     ``calls into question'' the agreement reached by world
+     negotiators last April in Geneva seeking ``substantial
+     progressive reductions in agricultural support and protection.'' 
+  </text>
+  <arg n="0">the U.S. plan</arg>
+  <rel>calls</rel>
+  <arg n="2">into question</arg>
+  <arg n="1">the agreement reached by world
+     negotiators last April in Geneva seeking ``substantial
+     progressive reductions in agricultural support and protection.''</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="call_in">
+<note>
+  This is phrasal, otherwise identical to 'summon' roleset.
+</note>
+<roleset id="call.04" name="summon, phrasal 2" vncls="13.5.1">
+<roles>
+  <role descr="caller" n="0">
+	  <vnrole vncls="13.5.1" vntheta="Agent"/></role>
+  <role descr="thing being summoned" n="1">
+	  <vnrole vncls="13.5.1" vntheta="Theme"/></role>
+  <role descr="benefactive" n="2">
+	  <vnrole vncls="13.5.1" vntheta="Beneficiary"/></role>
+</roles>
+
+<example name="with benefactive">
+  <text>
+    John called in a doctor for Mary
+  </text>
+  <arg n="0">John</arg>
+  <rel>called in</rel>
+  <arg n="1">a doctor</arg>
+  <arg f="for" n="2">Mary</arg>
+</example>
+</roleset>
+</predicate>
+
+<predicate lemma="call_on">
+<roleset id="call.05" name="visit, make use of" vncls="-">
+<roles>
+  <role descr="caller" n="0">
+  </role>
+  <role descr="thing being visited, used" n="1">
+  </role>
+  <role descr="purpose, attribute of arg1" n="2"/>
+</roles>
+
+<example name="with benefactive">
+  <text>
+    John called on a doctor.
+  </text>
+  <arg n="0">John</arg>
+  <rel>called on</rel>
+  <arg n="1">a doctor</arg>
+</example>
+
+<example name="with secondary predication">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    Rep. Neal's bill originally called on the Fed [*-1] to reduce the
+    inflation rate by one percentage point a year for five years and
+    to maintain a zero inflation rate thereafter. 
+  </text>
+  <arg n="0">Rep. Neal's bill</arg>
+  <arg f="TMP" n="m">originally</arg>
+  <rel>called on</rel>
+  <arg n="1">the Fed</arg>
+  <arg n="2">[*-1] to reduce the
+    inflation rate by one percentage point a year for five years and
+    to maintain a zero inflation rate thereafter. </arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="call_off">
+
+<roleset id="call.06" name="terminate before hand" vncls="-">
+<roles>
+  <role descr="the Terminator" n="0"/>
+  <role descr="the Terminated" n="1"/>
+</roles>
+
+<example name="call off talks">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+      Boeing Co., already struck by its Machinists union, briefly
+      called off contract talks with its engineers and labeled their
+      demands ``grossly excessive.'' 
+  </text>
+  <arg n="0">Boeing Co., already struck by its Machinists union</arg>
+  <arg f="TMP" n="m">briefly</arg>
+  <rel>called off</rel>
+  <arg n="1">contract talks with its engineers</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

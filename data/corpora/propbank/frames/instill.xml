@@ -1,0 +1,50 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="instill">
+<note>
+  Frames file for 'instill' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="instill.01" name="put in, add" vncls="-">
+<roles>
+  <role descr="putter" n="0"/>
+  <role descr="put into what" n="1"/>
+  <role descr="what put in, substance" n="2"/>
+</roles>
+
+<example name="unhelpful example">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+    A small but growing number of companies are also [*-1] trying
+    [*-2] to instill more fervent brand loyalty through such
+    personalized direct-marketing ploys as catalogs, magazines and
+    membership clubs for brand users. 
+</text>
+        <arg n="0">[*-2] -&gt;  [*-1] -&gt;  A small but growing number of
+        companies</arg> 
+        <rel>instill</rel>
+        <arg n="2">more fervent brand loyalty</arg>
+        <arg f="MNR" n="M">through such personalized direct-marketing
+        ploys as catalogs, magazines and membership clubs for brand
+        users</arg> 
+</example>
+
+<example name="all args">
+  <inflection aspect="ns" form="full" person="ns" tense="ns" voice="active"/>
+  <text>
+     John failed in his attempts *trace* to instill in Mary a sense of
+     fair play.
+  </text>
+  <arg n="0">*trace* -&gt; John</arg>
+  <rel>instill</rel>
+  <arg f="in" n="1">Mary</arg>
+  <arg n="2">a sense of fair play</arg>
+</example>
+
+<note>
+Arg numbering suggested by comparison with verbs of filling.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

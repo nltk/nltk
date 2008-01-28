@@ -1,0 +1,148 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="swear">
+<note>
+  Frames file for 'swear' based on sentences in wsj.  No Verbnet
+  entry, Framenet entry Commitment.
+</note>
+
+<roleset id="swear.01" name="make a promise" vncls="-">
+<roles>
+  <role descr="swearer" n="0"/>
+  <role descr="promise" n="1"/>
+</roles>
+
+<example name="deja vu all over again">
+<inflection aspect="perfect" form="participle" person="third" tense="present" voice="active"/>
+<text>
+    President Bush has sworn to bring him to justice.
+</text>
+        <arg n="0">President Bush</arg>
+        <rel>sworn</rel>
+        <arg n="1">to bring him to justice</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="swear.02" name="use bad language" vncls="-">
+<roles>
+  <role descr="swearer" n="0"/>
+</roles>
+
+<example name="weird example">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    Out here on the Querecho Plains of New Mexico, however, the mood
+    is more upbeat; trucks rumble along the dusty roads and burly men
+    in hard hats sweat and swear through the afternoon sun. 
+</text>
+        <arg n="0">burly men in hard hats</arg>
+        <rel>swear</rel>
+        <arg f="DIR" n="M">through the afternoon sun</arg>
+</example>
+
+<example name="with manner">
+  <inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+  <text>
+    John swears like a pirate.
+  </text>
+  <arg n="0">John</arg>
+  <rel>swears</rel>
+  <arg f="MNR" n="m">like a pirate</arg>
+</example>
+
+<example name="with listener">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John swore at Mary.
+  </text>
+  <arg n="0">John</arg>
+  <rel>swore</rel>
+  <arg f="DIR" n="m">at Mary</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="swear.04" name="tell the truth" vncls="-">
+<roles>
+  <role descr="speaker" n="0"/>
+  <role descr="true utterance" n="1"/>
+  <role descr="listener" n="2"/>
+</roles>
+
+<example name="the truth, the whole truth...">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Like the Long Island matron in the theater district the other day
+    who *trace* swore to a stranger that she once met Liza Minnelli. 
+</text>
+        <arg n="0">*trace* -&gt;  who -&gt;  the other day</arg>
+        <rel>swore</rel>
+        <arg f="to" n="2">a stranger</arg>
+        <arg n="1">she once met Liza Minnelli</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="swear.05" name="attest to something" vncls="-">
+<roles>
+  <role descr="swearer" n="0"/>
+  <role descr="thing sworn by" n="1"/>
+</roles>
+
+<example name="swear by">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    Anthony J.F. O'Reilly, the company's chairman, swears by her firm
+    touch, saying regular massages are a balm for his old football
+    injuries. 
+</text>
+        <arg n="0">Anthony J.F. O'Reilly, the company's chairman,</arg>
+        <rel>swears</rel>
+        <arg f="by" n="1">her firm touch</arg>
+        <arg f="ADV" n="M">saying regular massages are a balm for his
+        old football injuries</arg> 
+</example>
+
+<note>
+This sense might be mergable with swear.01.
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="swear_off">
+
+<roleset id="swear.03" name="promise to not (do)" vncls="-">
+<roles>
+  <role descr="swearer" n="0"/>
+  <role descr="thing you're not going to do" n="1"/>
+</roles>
+
+<example name="nope, never again">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Kidder Peabody became the most recent firm *trace* *trace* to
+    swear off stock-index arbitrage trading for its own account, and
+    Merrill Lynch late yesterday took the major step of renouncing the
+    trading strategy even for its clients. 
+</text>
+        <arg n="0">*trace* -&gt; *trace* -&gt;  the most recent firm</arg>
+        <rel>[ swear] [ off]</rel>
+        <arg n="1">stock-index arbitrage trading for its own account</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

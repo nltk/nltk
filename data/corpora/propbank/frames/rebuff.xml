@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="rebuff">
+<note>
+  Frames file for 'rebuff' based on sentences in financial subcorpus.
+  No verbnet entry.
+</note>
+
+<roleset id="rebuff.01" name="reject, spurn">
+<roles>
+  <role descr="rejecter" n="0"/>
+  <role descr="thing rejected" n="1"/>
+</roles>
+
+<example name="nice easy transitive">
+<text>
+    McGill, a Valparaiso, Ind., ball-bearing manufacturer, had
+    rebuffed BroadBeach's proposal. 
+</text>
+        <arg n="0">McGill, a Valparaiso, Ind., ball-bearing
+        manufacturer,</arg> 
+        <rel>rebuffed</rel>
+        <arg n="1">BroadBeach 's proposal</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

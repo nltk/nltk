@@ -1,0 +1,78 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="sober">
+
+<note>
+Frames file for 'sober' based on sentences in financial subcorpus and
+automatic expansion via verbnet.
+</note>
+
+<roleset id="sober.01" name="become sober, undrunk" vncls="45.4">
+<roles>
+	<role descr="causer of sobering" n="0">
+		
+  <vnrole vncls="45.4" vntheta="Agent"/></role>
+
+	<role descr="thing getting sober" n="1">
+		
+  <vnrole vncls="45.4" vntheta="Patient"/></role>
+
+	<role descr="instrument" n="2">
+		
+  <vnrole vncls="45.4" vntheta="Instrument"/></role>
+
+</roles>
+
+<example name="agentive">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    Mary sobered John by throwing ice-cold water in his face.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>sobered</rel>
+  <arg n="1">John</arg>
+  <arg f="by" n="2">throwing ice-cold water in his face</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="sober_up">
+<roleset id="sober.02" name="become sober, undrunk" vncls="45.4">
+<roles>
+	<role descr="causer of sobering" n="0">
+		
+  <vnrole vncls="45.4" vntheta="Agent"/></role>
+
+	<role descr="thing getting sober" n="1">
+		
+  <vnrole vncls="45.4" vntheta="Patient"/></role>
+
+</roles>
+
+<example name="agentive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    The pop sobered up investors who had been getting a little too
+    ebullient, says Mr. Jarrett. 
+</text>
+        <arg n="0">The pop</arg>
+        <rel>[ sobered] [ up]</rel>
+        <arg n="1">investors who  had been getting a little too
+        ebullient</arg> 
+</example>
+
+<example name="ergative">
+  <inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+  <text>
+    John took a long time *trace* to sober up after the party.
+  </text>
+  <arg n="1">*trace* -&gt; John</arg>
+  <rel>sober up</rel>
+  <arg f="TMP" n="m">after the party</arg>
+</example>
+
+</roleset>
+
+</predicate>
+</frameset>

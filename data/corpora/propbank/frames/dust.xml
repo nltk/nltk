@@ -1,0 +1,97 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="dust">
+<note>
+  Frames file for 'dust' based on sentences in wsj.  Verbnet entries
+  9.7-1 and 10.4.1, Framenet entries Filling and Placing.
+</note>
+
+<roleset id="dust.01" name="sprinkle lightly" vncls="9.7-1">
+<roles>
+  <role descr="agent, sprinkler" n="0">
+	<vnrole vncls="9.7-1" vntheta="Agent"/></role>
+  <role descr="dustlike substance" n="1">
+	<vnrole vncls="9.7-1" vntheta="Theme"/></role>
+  <role descr="sprinkled-upon" n="2">
+	<vnrole vncls="9.7-1" vntheta="Destination"/></role>
+</roles>
+
+<example name="surface as DO">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John dusted Mary's birthday cake with rat poison.
+  </text>
+  <arg n="0">John</arg>
+  <rel>dusted</rel>
+  <arg n="2">Mary's birthday cake</arg>
+  <arg f="with" n="1">rat poison</arg>
+</example>
+
+<example name="dust as DO">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John dusted rat poison on Mary's birthday cake.
+  </text>
+  <arg n="0">John</arg>
+  <rel>dusted</rel>
+  <arg n="1">rat poison</arg>
+  <arg f="on" n="2">Mary's birthday cake</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="dust.02" name="remove dust from surfaces" vncls="10.4.1">
+<roles>
+  <role descr="remover of dust, agent" n="0">
+        <vnrole vncls="10.4.1" vntheta="Agent"/></role>
+  <role descr="surface" n="1">
+        <vnrole vncls="10.4.1" vntheta="Source"/></role>
+</roles>
+
+<example name="spring cleaning">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John dusted his furniture.
+  </text>
+  <arg n="0">John</arg>
+  <rel>dusted</rel>
+  <arg n="1">his furniture</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="dust_off">
+
+<roleset id="dust.03" name="remove dust, metaphorical/phrasal variant" vncls="-">
+<roles>
+  <role descr="agent" n="0"/>
+  <role descr="surface" n="1"/>
+</roles>
+
+<example name="pick yourself up, ... start all over again">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    After being trampled in Tuesday's selling stampede, the Nasdaq
+    over-the-counter market dusted itself off and moved on in moderate
+    trading. 
+</text>
+        <arg f="TMP" n="M">After being trampled in Tuesday's selling
+        stampede</arg> 
+        <arg n="0">the Nasdaq over-the-counter market</arg>
+        <rel>[ dusted] [ off]</rel>
+        <arg f="REC" n="1">itself</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

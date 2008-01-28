@@ -1,0 +1,82 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="please">
+<note>
+  Frames file for 'please' based on sentences in financial subcorpus.
+  No access to verbnet.  No comparison.
+</note>
+
+<roleset id="please.01" name="make happy" vncls="31.1">
+<roles>
+  <role descr="agent, pleaser" n="0">
+		
+  <vnrole vncls="31.1" vntheta="Cause"/></role>
+
+  <role descr="patient, entity pleased" n="1">
+		
+  <vnrole vncls="31.1" vntheta="Experiencer"/></role>
+
+  <role descr="instrumental" n="2"/>
+</roles>
+
+<example name="discourse usage">
+<text>
+    Policies designed to encourage one type of investor over another
+    are akin to placing a sign  over the Big Board's door saying:
+    ``Buyers welcome, sellers please go away!'' 
+</text>
+	<rel>please</rel>
+</example>
+
+<note>
+Discourse usage might also show traces in subject/object position,
+depending on which of the treebankers looked at that particular
+sentence.  You may include them as targetless traces if they are
+present.
+</note>
+
+<example name="odd passive">
+<text>
+    Mr. Beall said that he was generally pleased with the latest
+    numbers and cited a particularly strong showing by the company's
+    electronics segment. 
+</text>
+	<arg n="1">he</arg>
+	<arg f="MNR" n="M">generally</arg>
+	<rel>pleased</rel>
+	<arg f="with" n="0">the latest numbers</arg>
+</example>
+
+<note>
+This is pretty much adjectival.
+</note>
+
+<example name="instrument or manner?">
+<text>
+    The company also pleased analysts by announcing four new store
+    openings planned for fiscal 1990, ending next August. 
+</text>
+	<arg n="0">The company</arg>
+	<arg f="DIS" n="M">also</arg>
+	<rel>pleased</rel>
+	<arg n="1">analysts</arg>
+	<arg f="by" n="2">announcing four new store openings planned
+	for fiscal 1990, ending next August</arg> 
+</example>
+
+<example name="instrumental">
+  <text>
+    John pleased Mary enormously with his new habit of bathing more than 
+    once a month.
+  </text>
+  <arg n="0">John</arg>
+  <rel>pleased</rel>
+  <arg n="1">Mary</arg>
+  <arg f="MNR" n="m">enormously</arg>
+  <arg n="2" f="with">his new habit of bathing more than once a
+  month</arg> 
+</example>
+
+</roleset>
+</predicate>
+</frameset>

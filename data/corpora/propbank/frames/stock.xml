@@ -1,0 +1,92 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="stock">
+<note>
+  Frames file for 'stock' based on sentences in financial subcorpus.
+  Verbnet entry 9.7-1, other framed members include inject, spread,
+  stack.  No comparison with those, but following trend of verbnet.
+</note>
+
+<roleset id="stock.01" name="store" vncls="9.7-1">
+<roles>
+  <role descr="agent, storer" n="0">
+	<vnrole vncls="9.7-1" vntheta="Agent"/></role>
+  <role descr="commodity" n="1">
+	<vnrole vncls="9.7-1" vntheta="Theme"/></role>
+  <role descr="location or destination" n="2">
+	<vnrole vncls="9.7-1" vntheta="Destination"/></role>
+</roles>
+
+<example name="all args">
+  <text>
+    John stocked his fallout shelter with a year's supply of Twinkies
+    and YooHoo.
+  </text>
+  <arg n="0">John</arg>
+  <rel>stocked</rel>
+  <arg n="2">his fallout shelter</arg>
+  <arg f="with" n="1">a year's supply of Twinkies and YooHoo</arg>
+</example>
+
+<example name="no location">
+  <text>
+    John's hardware store doesn't stock any actual hardware.
+  </text>
+  <arg n="0">John's hardware store</arg>
+  <arg f="NEG" n="m">n't</arg>
+  <rel>stock</rel>
+  <arg n="1">any actual hardware</arg>
+</example>
+
+<example name="fish stock">
+  <inflection person="ns" tense="ns" aspect="ns" voice="active" form="infinitive"/>
+  <text>
+     He sold quarter-inch fingerlings [0] [*T*-2] to stock other
+     farmers' ponds, and he bought back one-pound-or-so food-fish that
+     he ``live-hauled'' to market along with his own whiskery crop. 
+  </text>
+  <arg n="1"        >[*T*-2] ->[0] quarter-inch fingerlings</arg>
+  <rel              >stock</rel>
+  <arg n="0"        >other farmers' ponds</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="stock_up">
+<roleset id="stock.02" name="store" vncls="-">
+<roles>
+  <role descr="agent, storer" n="0"/>
+  <role descr="commodity" n="1"/>
+</roles>
+
+<example name="intransitive">
+<text>
+    And while customers such as steel service centers are continuing
+    to reduce inventories through the fourth quarter, they eventually
+    will begin stocking up again, he notes. 
+</text>
+        <arg n="0">they</arg>
+        <arg f="TMP" n="M">eventually</arg>
+        <rel>[ stocking] [ up]</rel>
+        <arg f="TMP" n="M">again</arg>
+</example>
+
+<example name="transitive">
+<text>
+    Last year's drought in the Midwest prompted retailers to stock up
+    on oils ahead of anticipated price increases, boosting sales for
+    Crisco and Puritan oils, analysts said. 
+</text>
+        <arg n="0">retailers</arg>
+        <rel>[ stock] [ up]</rel>
+        <arg f="on" n="1">oils</arg>
+        <arg f="TMP" n="M">ahead of anticipated price increases</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

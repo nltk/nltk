@@ -1,0 +1,661 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="come">
+
+<note>
+Frames file for 'come' based on survey of initial sentences from big corpus
+and comparison with 'go'
+</note>
+
+<roleset id="come.01" name="motion" vncls="51.1-2">
+<roles>
+  <role descr="entity in motion / 'comer'" n="1">
+	  <vnrole vncls="51.1-2" vntheta="Theme"/></role>
+  <role descr="extent -- rare)" n="2"/>
+  <role descr="start point -- also rare)" n="3"/>
+  <role descr="end point" n="4"/>
+  <role descr="medium" f="LOC" n="M"/>
+  <role descr="direction (usually 'up' or 'down')" f="DIR" n="M"/>
+</roles>
+
+<example name="destination">
+  <text>
+    Mrs. Yeargin came to work on weekends.
+  </text>
+  <arg n="1">Mrs Yeargin</arg>
+  <rel>came</rel>
+  <arg f="to" n="4">to work</arg>
+  <arg f="TMP" n="M">on weekends</arg>
+</example>
+
+<example name="with purpose">
+  <text>
+    Students, teachers, and parents came to testify on her behalf.
+  </text>
+  <arg n="1">Students, teachers, and parents</arg>
+  <rel>came</rel>
+  <arg f="PNC" n="M">to testify on her behalf</arg>
+</example>
+
+<example name="destination as by-phrase">
+  <text>
+    You may come by the agency to read but not copy the books.
+  </text>
+  <arg n="1">You</arg>
+  <arg f="MOD" n="M">may</arg>
+  <rel>come</rel>
+  <arg f="by" n="4">the agency</arg>
+  <arg f="PNC" n="m">to read but not copy the books</arg>
+</example>
+
+<example name="come back (not phrasal)">
+  <text>
+    They aren't going to come back to the US.
+  </text>
+  <arg n="1">They</arg>
+  <rel>to come</rel>
+  <arg f="DIR" n="M">back</arg>
+  <arg f="to" n="4">to the US</arg>
+</example>
+
+<example name="nice syntactic reversal">
+<inflection person="third" tense="present" aspect="ns" voice="active" form="full"/>
+<text>
+    ``So crunch, crunch, crunch, bang, bang, bang -- here come [*T*-4]
+    the ringers from above, making a very obvious exit while the
+    congregation is at prayer,'' he says. 
+</text>
+        <rel>come</rel>
+        <arg n="4">[*T*-4] ->  here</arg>
+        <arg n="1">the ringers</arg>
+        <arg n="3" f="from">above</arg>
+        <arg n="m" f="ADV">making a very obvious exit while the
+    congregation is at prayer</arg>
+</example>
+
+<example name="temporal coming">
+<inflection person="ns" tense="ns" aspect="ns" voice="active" form="ns"/>
+<text>
+     It is also the sovereign power that, come 1997, will take over
+     this British colony. 
+</text>
+        <rel>come</rel>
+        <arg n="1">1997</arg>
+</example>
+
+<example name="coming on">
+<inflection person="third" tense="present" aspect="progressive" voice="active" form="participle"/>
+<text>
+     Although Bausch remains the leader among the six majors, Johnson
+     &amp; Johnson, with its new disposables, is coming on fast. 
+</text>
+        <arg n="M" f="ADV">Although Bausch remains the leader among
+        the six majors</arg> 
+        <arg n="1">Johnson &amp; Johnson, with its new disposables,</arg>
+        <rel>coming</rel>
+        <arg n="M" f="DIR">on</arg>
+        <arg n="M" f="MNR">fast</arg>
+</example>
+
+</roleset>
+
+<roleset id="come.12" vncls="-" name="come to: speaking of">
+<roles>
+  <role n="1"  descr="topic"/>
+</roles>
+
+<example name="Zen-like blase">
+  <inflection person="third" tense="present" aspect="ns" voice="active" form="full"/>
+  <text>
+    But as the French embody a Zen-like state of blase when it comes
+to athletics [*T*-1] (try finding a Nautilus machine in Paris), my
+fellow conventioners were having none of it. 
+  </text>
+  <rel              >comes</rel>
+  <arg n="1" f="to">athletics</arg>
+  <arg n="m" f="TMP">[*T-1*] -> when</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="come.02" name="pursue (often with after)" vncls="-">
+<roles>
+  <role descr="pursuer" n="0"/>
+  <role descr="goal" n="1"/>
+</roles>
+
+<example name="come after">
+  <text>
+    Portfolio managers come after the highest rates.
+  </text>
+  <arg n="0">Portfolio managers</arg>
+  <rel>come</rel>
+  <arg f="after" n="1">after the highest rates</arg>
+</example>
+</roleset>
+
+<roleset id="come.03" name="arise (from)" vncls="48.1.1">
+<roles>
+  <role descr="thing (state) arising" n="1">
+        <vnrole vncls="48.1.1" vntheta="Theme"/></role>
+  <role descr="source (from or in or of)" n="2">
+        <vnrole vncls="48.1.1" vntheta="Location"/></role>
+</roles>
+
+<example name="arise in">
+  <text>
+    Part of the charm comes in recognizing one's self in the novel.
+  </text>
+  <arg n="1">Part of the charm</arg>
+  <rel>comes</rel>
+  <arg f="in" n="2">in recognizing one's self in the novel</arg>
+
+</example>
+
+<example name="arise from">
+  <text>
+    It comes from a single acre of grapes.
+  </text>
+  <arg n="1">It</arg>
+  <rel>comes</rel>
+  <arg f="from" n="2">from a single acre of grapes</arg>
+</example>
+
+<example name="arise of">
+  <text>
+    Ringers are filled with the solemn intoxication that *trace* comes of 
+    intricate ritual faultlessly performed.			    
+  </text>
+  <arg n="1">*trace*</arg>
+  <rel>comes</rel>
+  <arg f="of" n="2">of intricate ritual faultlessly performed</arg>
+</example>
+
+<example name="come_back (arise again)">
+  <text>
+    They aren't going to come back on the US market.
+  </text>
+  <arg n="1">They</arg>
+  <arg f="NEG" n="M">n't</arg>
+  <arg f="MOD" n="M">going to</arg>
+  <rel>come back</rel>
+  <arg f="LOC" n="M">on the US market.</arg>
+</example>
+</roleset>
+
+<roleset id="come.04" name="become, various near-idioms" vncls="48.1.1">
+<roles>
+  <role descr="object" n="1"><vnrole vncls="48.1.1" vntheta="Theme"/></role>
+  <role descr="attribute on arg1" n="2"/>
+</roles>
+
+<example name="come true">
+  <text>
+    Its forecasts didn't come true.
+  </text>
+  <arg n="1">Its forecasts</arg>
+  <arg f="NEG" n="M">didn't</arg>
+  <rel>come</rel>
+  <arg n="2">true</arg>
+</example>
+
+<example name="come as">
+<inflection person="ns" tense="ns" aspect="ns" voice="active" form="full"/>
+<text>
+    That may not come as a surprise to Americans who have watched the
+    Japanese snap up properties in the U.S. from golf courses to a
+    stake in Rockefeller Center. 
+</text>
+        <arg n="1">That</arg>
+        <arg n="M" f="MOD">may</arg>
+        <arg n="M" f="NEG">not</arg>
+        <rel>come</rel>
+        <arg n="2" f="as">a surprise to Americans who have watched the
+        Japanese snap up properties in the U.S. from golf courses to a
+        stake in Rockefeller Center</arg> 
+</example>
+
+<example name="result in">
+<inflection person="ns" tense="present" aspect="ns" voice="active" form="full"/><text>
+     They do at least come around to [*] saying that the courts might
+     want to end ``rigid affirmative action programs.'' 
+</text>
+        <arg n="1">They</arg>
+        <arg n="M" f="DIS">at least</arg>
+        <rel>come</rel>
+        <arg n="M" f="DIR">around</arg>
+        <arg n="2" f="to">[*] saying that the courts might want to end
+        ``rigid affirmative action programs</arg> 
+</example>
+
+<example name="come of age">
+  <text>
+    The attack commercial has come of age in an off-election year.
+  </text>
+  <arg n="1">The attack commercial</arg>
+  <rel>come</rel>
+  <arg n="2">of age</arg>
+  <arg f="TMP" n="M">in an off-election year</arg>
+</example>
+
+<example name="come under scrutiny">
+<inflection person="ns" tense="present" aspect="progressive" voice="active" form="participle"/>
+<text>
+    But the growing controversy comes as many practices historically
+    accepted as normal here -- such as politicians accepting
+    substantial gifts from businessmen or having extramarital affairs
+    -- are coming under close ethical scrutiny. 
+</text>
+        <arg n="1">many practices historically accepted as normal here
+        -- such as politicians accepting substantial gifts from
+        businessmen or having extramarital affairs --</arg> 
+        <rel>coming</rel>
+        <arg n="2" f="under">close ethical scrutiny</arg>
+</example>
+
+<example name="come to a head">
+<inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+<text>
+     The ``one-yen'' controversy first came to a head last week when
+     the city of Hiroshima announced that Fujitsu won a contract to
+     design a computer system to map its waterworks. 
+</text>
+        <arg n="1">The ``one-yen'' controversy</arg>
+        <arg n="M" f="TMP">first</arg>
+        <rel>came</rel>
+        <arg n="2" f="to">a head</arg>
+        <arg n="M" f="TMP">last week</arg>
+        <arg n="M" f="TMP">when the city of Hiroshima announced that
+        Fujitsu won a contract to design a computer system to map its
+        waterworks</arg> 
+</example>
+
+<example name="come to a halt">
+<inflection person="third" tense="present" aspect="progressive" voice="active" form="participle"/>
+<text>
+    Despite the economic slowdown, there are few clear signs that
+    growth is coming to a halt. 
+</text>
+        <arg n="1">growth</arg>
+        <rel>coming</rel>
+        <arg n="2" f="to">a halt</arg>
+</example>
+
+<example name="come to an end">
+<inflection person="ns" tense="ns" aspect="ns" voice="ns" form="gerund"/>
+<text>
+     ``Actually, the long deterioration in daily newspapers shows
+     signs of coming to an end, and the industry looks pretty
+     healthy.'' 
+</text>
+        <arg n="1">[*] ->  the long deterioration in daily newspapers</arg>
+        <rel>coming</rel>
+        <arg n="2" f="to">an end</arg>
+</example>
+
+</roleset>
+
+<roleset id="come.05" name="buy" vncls="-">
+<roles>
+  <role descr="commodity" n="1"/>
+  <role descr="buyer" n="2"/> <note>often dropped</note>
+  <role descr="price" n="3"/>
+</roles>
+
+<example name="non-specific price">
+  <text>
+    Chateau Yquem now comes dear.
+  </text>
+    <arg n="1">Chateau Yquem</arg>
+    <arg f="TMP" n="M">now</arg>
+    <rel>comes</rel>
+    <arg n="3">dear</arg>
+</example>
+
+</roleset>
+
+<roleset id="come.14" vncls="-" name="idiom: come to terms with">
+<roles>
+  <role n="0"  descr="entity coming to terms"/>
+  <role n="1"  descr="terms"/>
+  <role n="2"  descr="with who/what"/>
+</roles>
+
+<example name="come to terms">
+<inflection person="third" tense="present" aspect="ns" voice="active" form="full"/>
+<text>
+     In the coming decade, analysts say, U.S.-Japanese relations will
+     be tested as Tokyo comes to terms with its new status as the
+     region's economic behemoth. 
+</text>
+        <arg n="0">Tokyo</arg>
+        <rel>comes</rel>
+        <arg n="1" f="to">terms</arg>
+        <arg n="2" f="with">its new status as the region's economic
+        behemoth</arg> 
+</example>
+</roleset>
+
+<roleset id="come.16" vncls="-" name="amount to">
+<roles>
+  <role n="1"  descr="thing(s) being counted"/>
+  <role n="2"  descr="sum, total, amount"/>
+</roles>
+
+<example name="so, it comes to this">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+    Last year, the Cowboys' share of that pie came to $17.6 million.
+  </text>
+  <arg n="m" f="TMP">Last year</arg>
+  <arg n="1"        >the Cowboys' share of that pie</arg>
+  <rel              >came</rel>
+  <arg n="2" f="to">$17.6 million</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="come_about">
+<note>'become', same as Sense Six above
+</note>
+<roleset id="come.06" name="come about: become" vncls="48.1.1">
+<roles>
+  <role descr="object" n="1"><vnrole vncls="48.1.1" vntheta="Theme"/></role>
+  <role descr="attribute on arg1" n="2"/>
+</roles>
+
+<example name="just object">
+  <text>
+    Steeper prices have come about because supplies are low.
+  </text>
+  <arg n="1">Steeper prices</arg>
+  <rel>come about</rel>
+  <arg f="CAU" n="m">because supplies are low</arg>
+</example>
+</roleset>
+</predicate>
+
+<predicate lemma="come_in">
+<roleset id="come.07" name="come in: become, arrive at state" vncls="-">
+<roles>
+  <role descr="thing being described" n="1"/>
+  <role descr="state, attribute" n="2"/>
+</roles>
+
+<example name="I cannot imagine why">
+  <text>
+    Buick came in fourth among US cars.
+  </text>
+  <arg n="1">Buick</arg>
+  <rel>came in</rel>
+  <arg n="2">fourth among US cars</arg>
+</example>
+
+<example name="come in handy">
+<inflection person="ns" tense="ns" aspect="ns" voice="active" form="full"/>
+<text>
+    If E.E. ``Buzzy'' Geduld is right, a seatbelt may come in handy
+    during the next few sessions. 
+</text>
+        <arg n="M" f="ADV">If E.E. ``Buzzy'' Geduld is right</arg>
+        <arg n="1">a seatbelt</arg>
+        <arg n="M" f="MOD">may</arg>
+        <rel>[ come] [ in]</rel>
+        <arg n="2">handy</arg>
+        <arg n="M" f="TMP">during the next few sessions</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="come_on">
+<roleset id="come.08" name="come on: turn on" vncls="-">
+<roles>
+  <role descr="causer of thing being on" n="0"/>
+  <role descr="thing being turned on" n="1"/>
+</roles>
+
+<example name="unaccusative">
+  <text>
+    The lights came on this morning.
+  </text>
+  <arg n="1">The lights</arg>
+  <rel>came on</rel>
+  <arg f="TMP" n="m">this morning</arg>
+</example>
+<note>
+Let's just hope the other sense of &quot;come on&quot; doesn't appear in WSJ
+</note>
+</roleset>
+</predicate>
+
+<predicate lemma="come_out">
+<roleset id="come.09" name="come out: appear" vncls="48.1.1">
+<roles>
+  <role descr="thing appearing" n="1">
+        <vnrole vncls="48.1.1" vntheta="Theme"/></role>
+  <role descr="attribute of arg1" n="2"/>
+</roles>
+
+<example name="unaccusative">
+  <text>
+    Scoring High first came out in 1979.
+  </text>
+  <arg n="1">Scoring High</arg>
+  <arg f="TMP" n="m">first</arg>
+  <rel>came out</rel>
+  <arg f="TMP" n="m">in 1979</arg>
+</example>
+
+<example name="with attribute">
+<inflection person="third" tense="present" aspect="perfect" voice="active" form="participle"/>
+<text>
+    Not that Washington and Tokyo disagree on the Japanese
+    acquisitions; indeed, each has come out in favor of unfettered
+    investment in the U.S. 
+</text>
+        <arg n="M" f="DIS">indeed</arg>
+        <arg n="1">each</arg>
+        <rel>[ come] [ out]</rel>
+        <arg n="2" f="in">favor of unfettered investment in the U.S.</arg>
+</example>
+
+</roleset>
+
+<roleset id="come.10" name="come out: become publically gay" vncls="-">
+<roles>
+  <role descr="person coming out" n="0"/>
+  <role descr="coming out to, out of" n="1"/>
+</roles>
+
+<example name="generic idiomatic">
+  <text>
+    John came out of the closet last week.
+  </text>
+  <arg n="0">John</arg>
+  <rel>came out</rel>
+  <arg f="of" n="1">the closet</arg>
+  <arg f="TMP" n="m">last week</arg>
+</example>
+
+<example name="with audience">
+  <text>
+    John came out to his family last week.
+  </text>
+  <arg n="0">John</arg>
+  <rel>came out</rel>
+  <arg f="to" n="1">his family</arg>
+  <arg f="TMP" n="m">last week</arg>
+</example>
+<note>To my ear, at least, these two usages cannot overlap: *John came
+out of the closet to his family (last week).
+</note>
+</roleset>
+</predicate>
+
+<predicate lemma="come_up">
+<roleset id="come.11" name="come up: devise, bring forth" vncls="-">
+<roles>
+  <role descr="deviser" n="0"/>
+  <role descr="thing devised, brought forth, come up with" n="1"/>
+</roles>
+
+<example name="Transitive">
+  <text>
+    Sellers are in a race *trace* to come up with the priciest bottle.
+  </text>
+  <arg n="0">*trace*=Sellers</arg>
+  <rel>come up</rel>
+  <arg f="with" n="1">the priciest bottle</arg>
+</example>
+</roleset>
+
+<roleset id="come.13" vncls="-" name="come up: arise unexpectedly">
+<roles>
+  <role n="1"  descr="thing arising"/>
+  <role n="2"  descr="attribute of arg1"/>
+</roles>
+
+<example name="partially made-up">
+  <inflection person="third" tense="present" aspect="perfect" voice="active" form="participle"/>
+  <text>
+     Something has come up that makes it impossible for us to meet today.
+  </text>
+  <arg n="1"        >[Something] [that makes it impossible for us to
+  meet today]</arg>
+  <rel              >[come] [up]</rel>
+</example>
+
+<example name="with attribute">
+<inflection person="ns" tense="ns" aspect="ns" voice="ns" form="gerund"/>
+<text>
+     Although sports officials predict jumps of 50% to 100% in the
+     major contracts coming up for renewal, ad rates may rise only
+     20%. 
+</text>
+        <arg n="1">the major contracts</arg>
+        <rel>[ coming] [ up]</rel>
+        <arg n="2" f="for">renewal</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="come_across">
+
+<roleset id="come.15" vncls="-" name="come across: seem">
+<roles>
+  <role n="1"  descr="thing seeming"/>
+  <role n="2"  descr="viewer"/>
+</roles>
+
+<example name="maybe never a viewer">
+<inflection person="ns" tense="ns" aspect="ns" voice="active" form="full"/>
+<text>
+    Such sudden cultural shifts may come across as a bit forced, but
+    they seem to be genuine -- so much so, in fact, that some older
+    employees have resisted. 
+</text>
+        <arg n="1">[ Such sudden cultural shifts] [ as a bit forced]</arg>
+        <arg n="M" f="MOD">may</arg>
+        <rel>[ come] [ across]</rel>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="come_through">
+
+<roleset id="come.17" vncls="-" name="come through: fulfill, live up to">
+<roles>
+  <role n="0"  descr="fulfuller, agent"/>
+  <role n="1"  descr="plans,promises, etc"/>
+</roles>
+
+<example name="when push comes to shove">
+<inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+<text>
+     Various ministries decided the products businessmen could produce
+     and how much; and government-owned banks controlled the financing
+     of projects and monitored whether companies came through on
+     promised plans. 
+</text>
+        <arg n="0">companies</arg>
+        <rel>[ came] [ through]</rel>
+        <arg n="1" f="on">promised plans</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="come_through">
+
+<roleset id="come.18" vncls="-" name="come through: become apparent">
+<roles>
+  <role n="1"  descr="thing becoming apparent"/>
+</roles>
+
+<example name="Bork Bork Bork">
+  <inflection person="ns" tense="present" aspect="ns" voice="active" form="full"/>
+  <text>
+   Perhaps because they won, Mr. Bork's attackers come through more
+   vividly than his defenders. 
+  </text>
+  <arg n="m" f="CAU">Perhaps because they won</arg>
+  <arg n="1"        >Mr. Bork's attackers</arg>
+  <rel              >come through</rel>
+  <arg n="" f="">more vividly than his defenders</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="come_along">
+
+<roleset id="come.19" vncls="-" name="come along: progress">
+<roles>
+  <role n="1"  descr="thing progressing"/>
+</roles>
+
+<example name="just swimmingly">
+<inflection person="ns" tense="present" aspect="ns" voice="active" form="full"/><text>
+      As to negotiations with creditors, Mr. Lorenzo said in remarks
+      after the conference ``we'll have to see how they [talks] come
+      along.''
+</text>
+        <arg n="1">they } talks {</arg>
+        <rel>[ come] [ along]</rel>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="come_by">
+
+<roleset id="come.20" vncls="-" name="come by: acquire">
+<roles>
+  <role n="0"  descr="acquirer"/>
+  <role n="1"  descr="acquired"/>
+</roles>
+
+<example name="with agent">
+<inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+<text>
+      They came by their strangeness honestly.
+</text>
+        <arg n="0">They</arg>
+        <rel>[ came] [ by]</rel>
+        <arg n="1">their strangeness</arg>
+        <arg n="M" f="MNR">honestly</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

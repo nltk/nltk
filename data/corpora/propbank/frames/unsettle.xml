@@ -1,0 +1,57 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="unsettle">
+<note>
+Frames file for 'unsettle' based on sentences in financial subcorpus
+and automatic expansion via verbnet.
+</note>
+
+<roleset id="unsettle.01" name="cause anxiety" vncls="31.1">
+<roles>
+	<role descr="causer of anxiety" n="0">
+		
+  <vnrole vncls="31.1" vntheta="Cause"/></role>
+ 
+	<role descr="anxious entity" n="1">
+		
+  <vnrole vncls="31.1" vntheta="Experiencer"/></role>
+ 
+	<role descr="instrument" n="2"/> 
+</roles>
+
+<example name="nasty syntax">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    What is it, to borrow a term from Coniston, that *trace* so
+    unsettled the market? 
+</text>
+        <arg n="0">*trace* -&gt;  that -&gt;  it </arg>
+        <arg f="ADV" n="M">so</arg>
+        <rel>unsettled</rel>
+        <arg n="1">the market</arg>
+</example>
+
+<example name="adjectival usage, but tag">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    William Rothe, head of OTC trading at Alex . Brown &amp; Sons, in
+    Baltimore, said program trading is keeping the markets unsettled. 
+</text>
+        <arg n="1">the markets</arg>
+        <rel>unsettled</rel>
+</example>
+
+<example name="passivized with instrument" src="tempt.01">
+  <text>
+    John was sorely unsettled *trace* by Mary's offer of freshly-baked
+    apple pie. 
+  </text>
+  <arg n="1">*trace* -&gt; John</arg>
+  <arg f="MNR" n="m">sorely</arg>
+  <rel>unsettled</rel>
+  <arg f="by" n="0">Mary's offer of freshly-baked apple pie</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

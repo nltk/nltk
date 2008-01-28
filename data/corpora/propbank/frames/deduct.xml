@@ -1,0 +1,35 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="deduct">
+<note>
+  Frames file for 'deduct' based on sentences in financial subcorpus.
+  No Verbnet entry, no Framenet entry.  Comparison with 'subtract'.
+</note>
+
+<roleset id="deduct.01" name="subtract, take away">
+<roles>
+  <role descr="subtracter" n="0"/>
+  <role descr="thing being subtracted" n="1"/>
+  <role descr="thing being subtracted from" f="from" n="2"/>
+</roles>
+
+<example name="canonical">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+    Tax-loss sellers, those investors who sell loss-making stocks so
+    they can deduct their losses from this year's income, are also
+    getting out, Mr. Mills said. 
+</text>
+        <arg n="0">they</arg>
+        <arg f="MOD" n="M">can</arg>
+        <rel>deduct</rel>
+        <arg n="1">their losses</arg>
+        <arg f="from" n="2">this year's income</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

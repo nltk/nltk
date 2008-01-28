@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="reshape">
+<note>
+  Frames file for 'reshape' based on sentences in financial
+  subcorpus.  Verbnet doesn't have 'reshape' but does have 'shape' as
+  class build-26.1; other framed members include build, develop, grow,
+  make.
+</note>
+
+<roleset id="reshape.01" name="shape again">
+<roles>
+  <role descr="shaper" n="0"/>
+  <role descr="thing worked on" n="1"/>
+</roles>
+
+<example name="transitive">
+<text>
+   ...the power that Dorrance family members intend *trace* to wield
+   in *trace* reshaping the troubled food company. 
+</text>
+        <arg n="0">*trace* -&gt; *trace* -&gt;  Dorrance family members</arg>
+        <rel>reshaping</rel>
+        <arg n="1">the troubled food company</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

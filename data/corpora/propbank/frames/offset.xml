@@ -1,0 +1,57 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="offset">
+<note>
+  Frames file for 'offset' based on sentences in financial subcorpus.
+  No access to verbnet, not that I think it'd be in there anyway.  No
+  comparison (not even to 'set').
+</note>
+
+<roleset id="offset.01" name="balance out, lessen the impact of">
+<roles>
+  <role descr="intentional agent" n="0"/>
+  <role descr="thing whose impact we want to lessen" n="1"/>
+  <role descr="balanced by" n="2"/>
+</roles>
+
+<example name="with agentive subject">
+<text>
+    *trace* To offset sluggish sales growth, companies have been
+        cutting staff, mostly through attrition, and slowing the
+        growth in research and development spending.</text> 
+        <arg n="0">*trace* -&gt;  companies</arg>
+        <rel>offset</rel>
+        <arg n="1">sluggish sales growth</arg>
+</example>
+
+<example name="instrumental subject">
+<text>
+    Earnings at Xerox's financial-services operations actually rose
+    slightly, but that was largely because capital gains at Crum &amp;
+    Forster offset Hurricane Hugo payments and the reserves set up to
+    cover future payments. 
+</text>
+        <arg n="2">capital gains at Crum &amp; Forster</arg>
+        <rel>offset</rel>
+        <arg n="1">Hurricane Hugo payments and the reserves set up to
+        cover future payments</arg> 
+</example>
+
+<example name="passivized instrumental subject">
+<text>
+    The charges were offset *trace* in part by a gain from the sale of
+    the company's construction division. 
+</text>
+        <rel>offset</rel>
+        <arg n="1">*trace* -&gt;  The charges</arg>
+        <arg f="MNR" n="M">in part</arg>
+        <arg f="by" n="2">a gain from the sale of the company's
+        construction division</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

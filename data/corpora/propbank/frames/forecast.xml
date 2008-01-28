@@ -1,0 +1,47 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="forecast">
+<note>
+  Frames file for 'forecast' based on sentences in financial
+  subcorpus.  No access to verbnet.  Comparison to 'predict'.
+</note>
+
+<roleset id="forecast.01" name="tell the future">
+<roles>
+  <role descr="fortune teller" n="0"/>
+  <role descr="prediction" n="1"/>
+</roles>
+
+<example name="transitive">
+<text>
+    The company forecast that fourth-quarter income from continuing
+    operations would be ``significantly'' lower than a year earlier. 
+</text>
+        <arg n="0">The company</arg>
+        <rel>forecast</rel>
+        <arg n="1">fourth-quarter income from continuing operations
+        would be ``significantly'' lower than a year earlier</arg> 
+</example>
+
+<example name="missing object">
+<text>
+    Saab's problems were underscored Friday when the company announced
+    that its car division had a 1.2 billion kronor ($186.1 million)
+    loss during the first eight months of this year, slightly worse
+    than Saab-Scania had forecast in its first-half report last
+    month. 
+</text>
+        <arg n="0">Saab-Scania</arg>
+        <rel>forecast</rel>
+        <arg f="LOC" n="M">in its first-half report</arg>
+        <arg f="TMP" n="M">last month</arg>
+</example>
+
+<note>
+In the latter example there really should be a trace in object
+position, but treebank didn't put it there.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

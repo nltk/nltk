@@ -1,0 +1,77 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="spare">
+<note>
+  Frames file for 'spare' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="spare.01" name="to save or relieve from" vncls="-">
+<roles>
+  <role descr="savior" n="0"/>
+  <role descr="entity spared" n="1"/>
+  <role descr="entity spared from" n="2"/>
+</roles>
+
+<example name="all arguments">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ Many women may even see the dead embryo [0] they have expelled [*T*-1] , a sight [0] the surgical-abortion industry typically spares them [*T*-2] .
+</text>
+	<arg n="0">the surgical-abortion industry</arg>
+	<arg n="M">typically</arg>
+	<rel>spares</rel>
+	<arg n="1">them</arg>
+	<arg n="2">[*T*-2] -&gt;  [0] -&gt;  a sight</arg>
+</example>
+
+<example name="prepositional Arg2">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ Several factors apparently spared the Valley -- a sprawling suburban stretch from San Jose to Palo Alto -- from the kind of impact felt [*] in San Francisco , an hour 's drive north .
+</text>
+	<arg n="0">Several factors</arg>
+	<arg f="MOD" n="M">apparently</arg>
+	<rel>spared</rel>
+	<arg n="1">the Valley -- a sprawling suburban stretch from San Jose to Palo Alto --</arg>
+	<arg f="from" n="2">the kind of impact felt [*] in San Francisco , an hour 's drive north</arg>
+</example>
+
+<example name="peril as syntactic subject">
+  <inflection person="ns" tense="ns" aspect="ns" voice="passive" form="participle"/>
+  <text>
+    Others are trying to find specialty defense work spared [*] by the
+    slowdown or new niches created by budget-cutting. 
+  </text>
+  <rel              >spared</rel>
+  <arg n="1"        >[*] -> specialty defense work</arg>
+  <arg n="2" f="by">the slowdown</arg>
+</example>
+
+</roleset>
+
+
+<roleset id="spare.02" name="to give up, part with" vncls="-">
+<roles>
+  <role descr="agent able to do without" n="0"/>
+  <role descr="entity spared" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ A private challenge to the monolithic tractor industry will take more time and money than Poland can spare [*?*] , although a smokehouse or a local dairy can spring up fast .
+</text>
+	<arg n="0">Poland</arg>
+	<arg f="MOD" n="M">can</arg>
+	<rel>spare</rel>
+	<arg n="1">[*?*] -&gt;  more time and money</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

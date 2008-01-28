@@ -1,0 +1,97 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="assert">
+<note>
+  Frames file for 'assert' based on survey of examples from entire
+  corpus and comparison with know.  Included in verbnet classes
+  conjecture-29.5 and reflexive-appearance-48.1.2.
+</note>
+
+<roleset id="assert.01" name="speak up" vncls="48.1.2">
+<roles>
+  <role descr="asserter" n="0">
+	  <vnrole vncls="48.1.2" vntheta="Agent"/></role>
+  <role descr="thing asserted" n="1">
+	  <vnrole vncls="48.1.2" vntheta="Theme"/></role>
+</roles>
+
+<example name="reflexive">
+  <text>
+  Wives are asserting themselves more strongly.
+  </text>
+  <arg n="0">Wives</arg>
+  <rel>asserting</rel>
+  <arg f="REC" n="1">themselves</arg>
+  <arg f="MNR" n="m">more strongly</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="assert.02" name="say forcefully" vncls="29.5">
+<roles>
+    <role descr="Sayer" n="0">
+	  <vnrole vncls="29.5" vntheta="Agent"/></role>
+    <role descr="Utterance" n="1">
+	  <vnrole vncls="29.5" vntheta="Predicate"/></role>
+    <role descr="Hearer" n="2">
+	  <vnrole vncls="29.5" vntheta="Theme"/></role>
+    <role descr="Attribute of arg1" n="3"/>
+</roles>
+
+<example name="transitive, normal order">
+  <text>
+  Still another boy asserted: to be a good Jew is to do no wrong; it's
+  to be a good person.
+  </text>
+  <arg n="0">Still another boy</arg>
+  <rel>asserted</rel>
+  <arg n="1">to be a good Jew is to do no wrong; it's
+  to be a good person.</arg>
+</example>
+
+<note>
+Refer to 'say' for examples of other usages.
+</note>
+
+</roleset>
+
+<roleset id="assert.03" name="claim" vncls="29.5">
+<roles>
+  <role descr="claimer, asserter" n="0">
+	  <vnrole vncls="29.5" vntheta="Agent"/></role>
+  <role descr="thing claimed, asserted" n="1">
+	  <vnrole vncls="29.5" vntheta="Predicate"/></role>
+  <role descr="benefactive, claimed/asserted for" n="2">
+	  <vnrole vncls="29.5" vntheta="Theme"/></role>
+  <role descr="secondary predication on arg1" n="3"/>
+</roles>
+
+<example name="simple transitive">
+  <text>
+  The President asserted a power of excision.
+  </text>
+  <arg n="0">The President</arg>
+  <rel>asserted</rel>
+  <arg n="1">a power of excision</arg>
+</example>
+
+<example name="with secondary predication">
+  <text>
+  The author had asserted several points about Mr. Hubbard.
+  </text>
+  <arg n="0">The author</arg>
+  <rel>asserted</rel>
+  <arg n="1">several points</arg>
+  <arg n="3">about Mr. Hubbard</arg>
+</example>
+
+<note>
+This could possibly be merged with the 'say' roleset
+</note>
+
+</roleset>
+</predicate>
+</frameset>

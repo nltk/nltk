@@ -1,0 +1,48 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="title">
+<note>
+  Frames file for 'title' based on survey of sentences in the WSJ
+  corpus. Comparison with 'name' and 'entitle'.
+</note>
+
+<roleset id="title.01" name="to give a title to" vncls="-">
+<roles>
+  <role descr="giver of title" n="0"/>
+  <role descr="thing getting a title" n="1"/>
+  <role descr="name, title" n="2"/>
+</roles>
+
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+ In a July analysis titled [*] `` From Euphoria to Despair , '' W.I. Carr ( Far East ) Ltd. , another securities firm , said that eroding confidence might undermine future economic development .
+</text>
+	<arg n="1">a July analysis</arg>
+	<rel>titled</rel>
+	<arg n="2">From Euphoria to Despair</arg>
+</example>
+
+
+
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ After four year of tinkering and $ 2.4 million [*U*] in seed money , the board set up the new marketplace , titled it the Chicago Board Options Exchange , and named Sullivan its first president .
+</text>
+	<arg f="TMP" n="M">After four year of tinkering and $ 2.4 million [*U*] in seed money</arg>
+	<arg n="0">the board</arg>
+	<rel>titled</rel>
+	<arg n="1">it</arg>
+	<arg n="2">the Chicago Board Options Exchange</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

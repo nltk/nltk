@@ -1,0 +1,141 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="send">
+<note>
+  Frames file for 'send' based on survey of initial sentences of big
+  corpus and comparison with 'give'
+</note>
+
+<roleset id="send.01" name="give" vncls="11.1-1">
+<roles>
+  <role descr="sender" n="0">
+	  <vnrole vncls="11.1-1" vntheta="Agent"/></role>
+  <role descr="sent" n="1">
+	  <vnrole vncls="11.1-1" vntheta="Theme"/></role>
+  <role descr="sent-to" n="2">
+	  <vnrole vncls="11.1-1" vntheta="Destination"/></role>
+</roles>
+
+<example name="ditransitive">
+  <text>
+  They have begun *trace* sending letters explain the program to about
+  five million card holders.
+  </text>
+  <arg n="0">*trace*=They</arg>
+  <rel>sending</rel>
+  <arg n="1">letters explain the program</arg>
+  <arg f="to" n="2">about five million card holders.</arg>
+</example>
+
+<example name="double object">
+  <text>
+  He sent merchants around the country a form asking them to check one
+  of three answers.
+  </text>
+  <arg n="0">He</arg>
+  <rel>sent</rel>
+  <arg n="2">merchants around the country</arg>
+  <arg n="1">a form asking them to check one
+  of three answers.</arg>
+</example>
+
+</roleset>
+
+<roleset id="send.02" name="cause to action" vncls="-">
+<roles>
+  <role descr="sender" n="0"/>
+  <role descr="sent, impelled agent" n="1"/>
+  <role descr="project, impelled action, attribute of arg1" n="2"/>
+</roles>
+
+<example name="attribute">
+  <text>
+  Lightning-fast trades of huge baskets of stocks and futures  can
+  send stock prices reeling in minutes.
+  </text>
+  <arg n="0">Lightning-fast trades of huge baskets of stocks
+  and futures</arg> 
+  <arg f="MOD" n="m">can</arg>
+  <rel>send</rel>
+  <arg n="1">stock prices</arg>
+  <arg n="2">reeling</arg>
+  <arg f="TMP" n="m">in minutes</arg>
+</example>
+
+<example name="NP project">
+  <text>
+  Mary sent John on a wild goose chase.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>sent</rel>
+  <arg n="1">John</arg>
+  <arg f="on" n="2">a wild goose chase</arg>
+</example>
+
+<note>
+&quot;Send off on a wild goose chase&quot;, etc,  can probably be regarded as a
+complex preposition (&quot;off on&quot;) rather than a phrasal verb, since the
+&quot;off&quot; cannot occur elsewhere in the sentence (&quot;*Mary sent John on a
+wild good chase off.&quot;).
+</note>
+
+</roleset>
+
+<roleset id="send.03" name="cause motion" vncls="-">
+<roles>
+  <role descr="causer of motion" n="0">  </role>
+  <role descr="entity in motion" n="1">  </role>
+  <role descr="EXT" n="2"/>
+  <role descr="start point" n="3"/>
+  <role descr="end point, attribute of arg1" n="4"/>
+  <role descr="direction" n="5"/>
+</roles>
+
+<example name="stupid stock reports">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    News of the restructuring plan sent Sea Containers' shares up $1
+    to $62 in New York Stock Exchange composite trading.
+  </text>
+  <arg n="0">News of restructuring plan</arg>
+  <rel>sent</rel>
+  <arg n="1">Sea Containers' shares</arg>
+  <arg f="DIR" n="5">up</arg>
+  <arg f="EXT" n="2">$1</arg>
+  <arg f="to" n="4">$62</arg>
+  <arg f="LOC" n="m">in New York Stock Exchange composite trading</arg>
+</example>
+
+<note>
+cf. inch
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="send_out">
+
+<roleset id="send.04" name="summon, order for delivery" vncls="-">
+<roles>
+  <role descr="orderer, agent" n="0"/>
+  <role descr="theme, thing ordered" n="1"/>
+</roles>
+
+<example name="not pizza">
+  <inflection aspect="ns" form="gerund" person="ns" tense="ns" voice="ns"/>
+  <text>
+     Mr. Jacobson, his gray hair flying, didn't wear out his
+     red-white-and-blue sneakers, but he sweat so much he considered
+     *trace* sending out for a new shirt.
+  </text>
+  <arg n="0">*trace* -&gt; he</arg>
+  <rel>sending out</rel>
+  <arg f="for" n="1">a new shirt</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

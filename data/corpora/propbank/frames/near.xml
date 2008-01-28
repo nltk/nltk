@@ -1,0 +1,41 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="near">
+<note>
+  Frames file for 'near' based on survey of sentences in the WSJ
+  corpus. Comparison with 'approach'.
+</note>
+
+<roleset id="near.01" name="to approach" vncls="-">
+<roles>
+  <role descr="entity in motion" n="1"/>
+  <role descr="destination" n="2"/>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ Investors usually do n't want [*-1] to take physical delivery of a contract , [*-1] preferring instead [*-2] to profit from its price swings and then end any obligation [*] to take delivery or make delivery as it nears expiration .
+</text>
+	<arg n="1">it</arg>
+	<rel>nears</rel>
+	<arg n="2">expiration</arg>
+</example>
+
+
+<example name="intransitive">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ CAPITAL TRAVELS to Europe as 1992 unification nears .
+</text>
+	<arg n="1">1992 unification</arg>
+	<rel>nears</rel>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

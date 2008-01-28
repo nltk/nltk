@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="decease">
+<note>
+  Frames file for 'decease' based on sentences in wsj.  No Verbnet
+  entry, because this isn't a verb.
+</note>
+
+<roleset id="decease.01" name="be dead" vncls="-">
+<roles>
+  <role descr="corpse" n="1"/>
+</roles>
+
+<example name="adjectival">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    And now that returns must show dependents' Social Security
+    numbers, the IRS wants to see which dependents show up on more
+    than one return -- and which dependents [*T*-3] turn out [*-5] to
+    be deceased. 
+</text>
+        <arg n="1">[*-5] -&gt;  [*T*-3] -&gt;  which dependents</arg>
+        <rel>deceased</rel>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

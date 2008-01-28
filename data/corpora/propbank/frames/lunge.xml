@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="lunge">
+<note>
+  Frames file for 'lunge' based on sentences in wsj.  No Verbnet
+  entry, Framenet entry Self-motion.
+</note>
+
+<roleset id="lunge.01" name="move suddenly" vncls="-">
+<roles>
+  <role descr="lunger" n="0"/>
+  <role descr="lunged at" n="1"/>
+</roles>
+
+<example name="parry! dodge! lunge!">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    The three of us stopped breathing for a moment, and then when it
+    kept on coming we lunged for the doorway. 
+</text>
+        <arg f="TMP" n="M">when it kept on coming</arg>
+        <arg n="0">we</arg>
+        <rel>lunged</rel>
+        <arg f="for" n="1">the doorway</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

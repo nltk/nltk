@@ -1,0 +1,57 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="spew">
+<note>
+  Frames file for 'spew' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="spew.01" name="to flow or come out" vncls="-">
+<roles>
+  <role descr="causer of flow" n="0"/>
+  <role descr="entity coming out" n="1"/>
+  <role descr="direction" n="2"/>
+</roles>
+
+<example name="with Arg2">
+<inflection aspect="ns" form="ns" person="ns" tense="ns" voice="ns"/>
+<text>
+ We see , smell and hear slums filled [*] with `` the echoes of hawkers advertising their wares interspersed [*] with abusive language , rattling coughs and the sound of people gathering spittle in their throats and spewing into the street . ''
+</text>
+	<arg n="0">people</arg>
+	<rel>spewing</rel>
+	<arg f="into" n="2">the street</arg>
+<note>There's an unstated 'it' as the arg1 in this example.</note>
+</example>
+
+
+<example name="with Arg1">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+ A volcano [*ICH*-1] will erupt next month on the fabled Strip : a 60-foot mountain spewing smoke and flame every five minutes .
+</text>
+	<arg n="0">a 60-foot mountain</arg>
+	<rel>spewing</rel>
+	<arg n="1">smoke and flame</arg>
+	<arg f="TMP" n="M">every five minutes</arg>
+</example>
+
+
+
+<example name="all arguments">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+ The photos showed active geysers on Io spewing sulfurous material 190 miles into its atmosphere and indicated that Europa may have an ocean hidden [*] under a thick sheet of ice .
+</text>
+	<arg n="0">active geysers on Io</arg>
+	<rel>spewing</rel>
+	<arg n="1">sulfurous material</arg>
+	<arg f="DIR" n="2">190 miles into its atmosphere</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

@@ -1,0 +1,52 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="recreate">
+<note>
+  Frames file for 'recreate' based on transformation of 'create' frames.
+  No actual examples examined.  For additional examples of the
+  higher-numbered arguments consult the frames files for those verbs.
+</note>
+
+<roleset id="recreate.01" name="recreate" vncls="26.4 27">
+<roles>
+  <role descr="recreator" n="0">
+		
+  <vnrole vncls="26.4" vntheta="Agent"/></role>
+
+  <role descr="thing recreated" n="1">
+		
+		
+  <vnrole vncls="26.4" vntheta="Product"/><vnrole vncls="27" vntheta="Theme2"/></role>
+
+  <role descr="source" n="2">
+		
+		
+  <vnrole vncls="26.4" vntheta="Material"/><vnrole vncls="27" vntheta="Theme1"/></role>
+
+  <role descr="benefactive" n="3">
+		
+  <vnrole vncls="26.4" vntheta="Beneficiary"/></role>
+
+  <role descr="attribute, secondary predication" n="4"/>
+</roles>
+
+<example name="cause to come about">
+  <text>
+  It's precisely the kind of product that *trace*'s recreated the
+  municipal landfill monster.
+  </text>
+  <arg n="0">*trace*=that=the kind</arg>
+  <rel>recreated</rel>
+  <arg n="1">the municipal landfill monster.</arg>
+</example>
+
+<note>
+Yes, I know, semantically the trace should point to &quot;product&quot; not
+&quot;kind&quot;, but syntactically it has to point to &quot;kind&quot;, and since
+Treebank totally mucked up the syntax for all these kinds of
+constructions, we have to follow what they did.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

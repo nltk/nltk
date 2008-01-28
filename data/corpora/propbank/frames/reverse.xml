@@ -1,0 +1,44 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="reverse">
+<note>
+  Frames file for 'reverse' based on sentences in financial subcorpus.
+  No Verbnet entry.  Loose comparison to turn.
+</note>
+
+<roleset id="reverse.01" name="turn around, change direction">
+<roles>
+  <role descr="causer of reverse" n="0"/>
+  <role descr="thing turning around" n="1"/>
+</roles>
+
+<example name="typical usage">
+<text>
+    The spinoff argument, after all, reverses the current notion that
+    assets are worth more to private buyers than to public shareholders.
+</text>
+        <arg n="0">The spinoff argument</arg>
+        <arg f="DIS" n="M">after all</arg>
+        <rel>reverses</rel>
+        <arg n="1">the current notion that assets are worth more to
+        private buyers than to public shareholders</arg> 
+</example>
+
+<example name="nice reciprocal example">
+<text>
+    Mr. Marcus believes spot steel prices will continue to fall
+    through early 1990 and then reverse themselves. 
+</text>
+        <arg n="0">spot steel prices</arg>
+        <arg f="MOD" n="M">will</arg>
+        <arg f="TMP" n="M">then</arg>
+        <rel>reverse</rel>
+        <arg f="REC" n="1">themselves</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

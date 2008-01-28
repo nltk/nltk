@@ -1,0 +1,44 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="summarize">
+<note>
+  Frames file for 'summarize'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="summarize.01" name="to make a summary" vncls="-">
+<roles> 
+  <role descr="editor, summarizer, agent" n="0"/>
+  <role descr="thing summarized" n="1"/>
+  <role descr="summary" n="2"/>
+</roles>
+
+
+<example name="non-agentive subject">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+ In a strongly worded response summarizing a filing made [*] in the same court yesterday , GE asserted that `` prosecutors have misstated the testimony of witnesses , distorted documents and ignored important facts . ''
+</text>
+	<arg n="2">a strongly worded response</arg>
+	<rel>summarizing</rel>
+	<arg n="1">a filing made [*] in the same court yesterday</arg>
+</example>
+
+
+<example name="agentive subject">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ The statement added , `` Someone has regrettably chosen [*-1] to selectively summarize portions of highly classified correspondence between the two branches of government .
+</text>
+	<arg n="0">[*-1] -&gt;  Someone</arg>
+	<arg f="MNR" n="M">selectively</arg>
+	<rel>summarize</rel>
+	<arg n="1">portions of highly classified correspondence between the two branches of government</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

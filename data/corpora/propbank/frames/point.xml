@@ -1,0 +1,104 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="point">
+<note>
+  Frames file for 'point' based on sentences in financial subcorpus.
+  No access to verbnet.  No comparison.
+</note>
+
+<roleset id="point.01" name="point" vncls="40.3.1-1">
+<roles>
+  <role descr="pointer" n="0">
+		
+  <vnrole vncls="40.3.1-1" vntheta="Agent"/></role>
+
+  <role descr="thing pointed (defaults to finger)" n="1">
+		
+  <vnrole vncls="40.3.1-1" vntheta="Patient"/></role>
+
+  <role descr="pointed at (a variety of prepositions)" n="2">
+		
+  <vnrole vncls="40.3.1-1" vntheta="Cause"/></role>
+
+</roles>
+
+<example name="toward">
+<text>
+    Trading is expected to remain subdued as the market awaits
+    tomorrow's release of the jobs data with the hope that it will
+    point toward a decline in interest rates. 
+</text>
+        <arg n="0">it</arg>
+        <arg f="MOD" n="M">will</arg>
+        <rel>point</rel>
+        <arg f="toward" n="2">a decline in interest rates</arg>
+</example>
+
+<example name="to">
+<text>
+    ``I believe everyday pricing in the current environment doesn't
+    work,'' says Walter Loeb of Morgan Stanley &amp; Co., *trace*
+    pointing to soft durable-goods sales. 
+</text>
+        <arg n="0">*trace* -&gt; Walter Loeb of Morgan Stanley &amp;
+        Co. -&gt;</arg> 
+        <rel>pointing</rel>
+        <arg f="to" n="2">soft durable-goods sales</arg>
+</example>
+
+<example name="at">
+<text>
+    They point at the numerous developing-country governments that
+    have inflated, taxed and regulated themselves into despair under
+    successive IMF programs. 
+</text>
+        <arg n="0">They</arg>
+        <rel>point</rel>
+        <arg f="at" n="2">the numerous developing-country governments
+        that have inflated, taxed and regulated themselves into
+        despair under successive IMF programs</arg> 
+</example>
+
+<example name="with arg1">
+  <text>
+    John pointed the toy gun at the giant menacing alien and said,
+    &quot;Hasta la vista, bay-bee.&quot;
+  </text>
+  <arg n="0">John</arg>
+  <rel>pointed</rel>
+  <arg n="1">the toy gun</arg>
+  <arg f="at" n="2">the alien</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="point_out">
+<roleset id="point.02" name="point at, define, make an example of" vncls="-">
+<roles>
+  <role descr="pointer" n="0"/>
+  <role descr="pointed at" n="1"/>
+</roles>
+
+<example name="typical usage">
+<text>
+    Drexel Burnham's Mr. Reidy pointed out that ``profits held up in a
+    tough revenue environment.'' 
+</text>
+        <arg n="0">Drexel Burnham's Mr. Reidy</arg>
+        <rel>[ pointed] [ out]</rel>
+        <arg n="1">profits held up in a tough revenue
+        environment</arg> 
+</example>
+
+<note>
+Complementizer is always present in syntax, but should be left out of
+annotations. 
+</note>
+
+</roleset>
+</predicate>
+</frameset>

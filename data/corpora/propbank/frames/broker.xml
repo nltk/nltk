@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="broker">
+<note>
+  Frames file for 'broker' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="broker.01" name="to arrange or manage as a broker" vncls="-">
+<roles>
+  <role descr="arranger, agent" n="0"/>
+  <role descr="entity brokered" n="1"/>
+  <role descr="beneficiary" n="2"/>
+</roles>
+
+
+<example name="all arguments">
+<inflection aspect="ns" form="gerund" person="ns" tense="ns" voice="active"/>
+<text>
+ However , even this admirable plan could become objectionable if the White House gives in to congressional Democratic pressure [*] to add to the scope of the president 's initiative or [*] to involve the independent foundation in [*] `` brokering '' federal funds for volunteer projects .
+</text>
+	<arg n="0">[*] -&gt;  the independent foundation</arg>
+	<rel>brokering</rel>
+	<arg n="1">federal funds</arg>
+	<arg f="for" n="2">volunteer projects</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

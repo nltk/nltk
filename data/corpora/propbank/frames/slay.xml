@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="slay">
+<note>
+  Frames file for 'slay'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="slay.01" name="to kill violently" vncls="42.1">
+<roles> 
+  <role descr="killer" n="0">
+        <vnrole vncls="42.1" vntheta="Agent"/></role>  
+  <role descr="corpse" n="1">
+        <vnrole vncls="42.1" vntheta="Patient"/></role>   
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ Robert H. Knight 's Oct. 5 editorial-page article bemoaning violence in comedy movies ( `` Hollywood , You Slay Me '' ) is interesting , but somewhat off-base .
+</text>
+	<arg n="0">You</arg>
+	<rel>Slay</rel>
+	<arg n="1">Me</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

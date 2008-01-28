@@ -1,0 +1,40 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="overdo">
+<note>
+  Frames file for 'overdo' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="overdo.01" vncls="-" name="prepare to excess">
+<roles>
+  <role n="0"  descr="maker, preparer"/>
+  <role n="1"  descr="thing prepared, done"/>
+</roles>
+
+<example name="adjectival">
+<inflection person="ns" tense="ns" aspect="ns" voice="passive" form="participle"/>
+<text>
+     There were concerns early in the day that Wall Street's sharp
+     gains on Tuesday were overdone and due for a reversal.  
+</text>
+	<arg n="1">Wall Street's sharp gains on Tuesday</arg>
+	<rel>overdone</rel>
+</example>
+
+<example name="active?">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+     John overdid his two-minute egg by cooking it for half an hour.
+  </text>
+  <arg n="0"        >John</arg>
+  <rel              >overdid</rel>
+  <arg n="1"        >his two-minute egg</arg>
+  <arg n="m" f="MNR">by cooking it for half an hour</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,55 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="lash">
+<note>
+  Frames file for 'lash' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="lash.01" name="to tie" vncls="-">
+<roles>
+  <role descr="tier, agent" n="0"/>
+  <role descr="entity lashed" n="1"/>
+  <role descr="entity lashed to" n="2"/>
+</roles>
+
+
+<example name="all arguments">
+<inflection aspect="ns" form="gerund" person="ns" tense="ns" voice="active"/>
+<text>
+ The State Department denied asylum to a Vietnamese man who [*T*-129] escaped from his homeland by [*-1] lashing himself to the rudder housing of a tanker for two days in monsoon seas .
+</text>
+	<arg n="0">[*-1] -&gt;  [*T*-129] -&gt;  who -&gt;  a Vietnamese man</arg>
+	<rel>lashing</rel>
+	<arg n="1">himself</arg>
+	<arg f="to" n="2">the rudder housing of a tanker</arg>
+	<arg f="TMP" n="M">for two days in monsoon seas</arg>
+</example>
+</roleset>
+</predicate>
+
+<predicate lemma="lash_out">
+
+<roleset id="lash.02" name="to attack verbally" vncls="-">
+<roles>
+  <role descr="attacker, agent" n="0"/>
+  <role descr="lash at" n="1"/>
+</roles>
+
+<example name="with Arg1">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ Rep. Gonzalez seems primed [*-1] to lash out at Mr. Wall when hearings resume Thursday with testimony by two federal regulators from San Francisco , William Black and Mike Patriarca [*T*-2] .
+</text>
+	<arg n="0">[*-1] -&gt;  Rep. Gonzalez</arg>
+	<rel>[ lash] [ out]</rel>
+	<arg f="at" n="1">Mr. Wall</arg>
+	<arg f="TMP" n="M">when hearings resume Thursday with testimony by two federal regulators from San Francisco , William Black and Mike Patriarca [*T*-2]</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

@@ -1,0 +1,36 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="rethink">
+<note>
+  Frames file for 'rethink' based on sentences in financial subcorpus.
+  No Verbnet entry.  Not actually very close to 'think.'
+</note>
+
+<roleset id="rethink.01" name="revise an opinion" vncls="-">
+<roles>
+  <role descr="rethinker" n="0"/>
+  <role descr="opinion" n="1"/>
+</roles>
+
+<example name="opinion or plan">
+<inflection aspect="progressive" form="participle" person="third" tense="present" voice="active"/>
+<text>
+    The United Nations, which is distributing farm tools to returning
+    refugees in Namibia, is rethinking a plan to hand out machetes
+    because of the tense political climate during preparations for
+    independence from South Africa. 
+</text>
+        <arg n="0">The United Nations, which is distributing farm
+        tools to returning refugees in Namibia,</arg> 
+        <rel>rethinking</rel>
+        <arg n="1">a plan to hand out machetes</arg>
+        <arg f="PNC" n="M">because of the tense political climate
+        during preparations for independence from South Africa</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

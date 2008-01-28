@@ -1,0 +1,45 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="retrofit">
+<note>
+  Frames file for 'retrofit' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="retrofit.01" name="adapt for older technology" vncls="-">
+<roles>
+  <role descr="adapter" n="0"/>
+  <role descr="thing adapted" n="1"/>
+  <role descr="for what, technology" n="2"/>
+</roles>
+
+<example name="all args">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    The test project -- which reportedly survived Tuesday's earthquake
+    -- was a prelude to a state plan [*] to retrofit that critical
+    section of the freeway with the steel casings. 
+</text>
+        <arg n="0">[*] -&gt;  The test project -- which reportedly
+        survived Tuesday's earthquake --</arg> 
+        <rel>retrofit</rel>
+        <arg n="1">that critical section of the freeway</arg>
+        <arg f="with" n="2">the steel casings</arg>
+</example>
+
+<example name="usually just transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    ``The reason is that the technology is such that we're not able
+    [*-2] to retrofit multi-column structures,'' he said. 
+</text>
+        <arg n="0">[*-2] -&gt;  we</arg>
+        <rel>retrofit</rel>
+        <arg n="1">multi-column structures</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

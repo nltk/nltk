@@ -1,0 +1,50 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="channel">
+<note>
+  Frames file for 'channel' based on sentences in wsj.  No Verbnet
+  entry at the moment.
+</note>
+
+<roleset id="channel.01" name="direct" vncls="-">
+<roles>
+  <role descr="director" n="0"/>
+  <role descr="thing directed" n="1"/>
+  <role descr="direction, towards what" n="2"/>
+  <role descr="source" n="3"/>
+</roles>
+
+<example name="usually just with destination">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    Second, they channel monthly mortgage payments into semiannual
+    payments, reducing the administrative burden on investors. 
+</text>
+        <arg f="DIS" n="M">Second</arg>
+        <arg n="0">they</arg>
+        <rel>channel</rel>
+        <arg n="1">monthly mortgage payments</arg>
+        <arg f="into" n="2">semiannual payments</arg>
+        <arg f="ADV" n="M">reducing the administrative burden on
+        investors</arg>
+</example> 
+
+<example name="occasionally with source also">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+    The bank also says it'll use its international network *trace* to
+    channel investment from London, Frankfurt, Zurich and Paris into
+    the Spanish stock exchanges. 
+</text>
+        <arg n="0">*trace* -&gt;  its international network</arg>
+        <rel>channel</rel>
+        <arg n="1">investment</arg>
+        <arg f="from" n="3">London, Frankfurt, Zurich and Paris</arg>
+        <arg f="into" n="2">the Spanish stock exchanges</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

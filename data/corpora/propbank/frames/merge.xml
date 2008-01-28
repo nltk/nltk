@@ -1,0 +1,73 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="merge">
+<note>
+  Frames file for 'merge' based on sentences in financial subcorpus.
+  Verbnet entry mix-22.1-2, no other members have been framed.
+</note>
+
+<roleset id="merge.01" name="combine, mix" vncls="22.1-1">
+<roles>
+  <role descr="agent, mixer" n="0">
+		
+  <vnrole vncls="22.1-1" vntheta="Agent"/></role>
+
+  <role descr="ingredient one" n="1">
+		
+  <vnrole vncls="22.1-1" vntheta="Patient1"/></role>
+
+  <role descr="ingredient two" n="2">
+		
+  <vnrole vncls="22.1-1" vntheta="Patient2"/></role>
+
+  <role descr="end product" n="3"/>
+</roles>
+
+<example name="ergative, two ingredients">
+<text>
+    The bank stocks got a boost when Connecticut Bank &amp; Trust and Bank
+    of New England said they no longer oppose pending legislation that
+    would permit banks from other regions to merge with Connecticut
+    and Massachusetts banks. 
+</text>
+        <arg n="1">banks from other regions</arg>
+        <rel>merge</rel>
+        <arg f="with" n="2">Connecticut and Massachusetts banks</arg>
+</example>
+
+<example name="ergative, merged args">
+<text>
+    The two banks merged in 1985.
+</text>
+        <arg n="1">The two banks</arg>
+        <rel>merged</rel>
+        <arg f="TMP" n="M">in 1985</arg>
+</example>
+
+<example name="agentive, separate ingredients">
+<text>
+    The offer is in limbo, however, because LIN has agreed *trace* to
+    merge its cellular-phone businesses with BellSouth Corp. 
+</text>
+        <arg n="0">*trace* -&gt;  LIN</arg>
+        <rel>merge</rel>
+        <arg n="1">its cellular-phone businesses</arg>
+        <arg f="with" n="2">BellSouth Corp</arg>
+</example>
+
+<example name="agentive, merged args">
+<text>
+    In addition to the usual array of defenses, including a so-called
+ poison pill and a staggered board, Nekoosa has another takeover
+ defense: a Maine state law barring hostile bidders from *trace*
+ merging acquired businesses for five years. 
+</text>
+        <arg n="0">*trace* -&gt;  hostile bidders</arg>
+        <rel>merging</rel>
+        <arg n="1">acquired businesses</arg>
+        <arg f="TMP" n="M">for five years</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

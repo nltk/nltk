@@ -1,0 +1,88 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="cap">
+<note>
+  Frames file for 'cap' based on sentences in financial subcorpus.
+  Verbnet entries 9.9 and 47.8, other framed members include label,
+  contain, dominate, miss, surround, and top.  Framenet class
+  Closure.  Comparison with top and end.
+</note>
+
+<roleset id="cap.01" name="put the top on" vncls="9.9">
+<roles>
+  <role descr="putter of top, agent" n="0">
+	<vnrole vncls="9.9" vntheta="Agent"/></role>
+  <role descr="thing topped" n="1">
+	<vnrole vncls="9.9" vntheta="Destination"/></role>
+  <role descr="top" n="2">
+	<vnrole vncls="9.9" vntheta="Theme"/></role>
+</roles>
+
+<example name="all args">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John capped the bottle of ketchup with a wad of tinfoil.
+  </text>
+  <arg n="0">John</arg>
+  <rel>capped</rel>
+  <arg n="1">the bottle of ketchup</arg>
+  <arg f="with" n="2">a wad of tinfoil</arg>
+</example>
+
+<example name="instrumental subject, passive too">
+  <inflection aspect="ns" form="participle" person="third" tense="present" voice="passive"/>
+  <text>
+    The bottle of ketchup is capped *trace* by a wad of tinfoil.
+  </text>
+  <rel>The bottle of ketchup</rel>
+  <arg n="1">capped</arg>
+  <arg f="by" n="2">a wad of tinfoil</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="cap.02" name="bring to an end" vncls="-">
+<roles>
+  <role descr="causer of ending, agent" n="0"/>
+  <role descr="Thing ending" n="1"/>
+  <role descr="Explicit instrument, thing ended with" n="2"/>
+</roles>
+
+<example name="instrumental subject">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    The offer capped a week of rumors that Georgia-Pacific , an
+    Atlanta-based forest-products company , was considering  making a
+    bid for Nekoosa, a paper-products concern based  in Norwalk,
+    Conn. 
+</text>
+        <arg n="0">The offer</arg>
+        <rel>capped</rel>
+        <arg n="1">a week of rumors that Georgia-Pacific, an
+        Atlanta-based forest-products company, was considering making
+        a bid for Nekoosa, a paper-products concern based  in Norwalk,
+        Conn</arg> 
+</example>
+
+<example name="with agent">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John capped his week of debauchery with tea and scones at the palace.
+  </text>
+  <arg n="0">John</arg>
+  <rel>capped</rel>
+  <arg n="1">his week of debauchery</arg>
+  <arg f="with" n="2">tea and scones at the palace</arg>
+</example>
+
+<note>
+These two rolesets could perhaps be merged, since the latter is
+largely a metaphorical extension of the former.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

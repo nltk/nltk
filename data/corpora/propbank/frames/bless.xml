@@ -1,0 +1,82 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="bless">
+<note>
+Frames file for 'bless' based on sentences in wsj and automatic
+expansion via verbnet.
+</note>
+
+<roleset id="bless.01" name="bless" vncls="33">
+<roles>
+	<role descr="entity giving blessing" n="0">
+		
+  <vnrole vncls="33" vntheta="Agent"/></role>
+
+	<role descr="entity being blessed" n="1">
+		
+  <vnrole vncls="33" vntheta="Theme"/></role>
+
+	<role descr="blessed with (gift)" n="2">
+		
+  <vnrole vncls="33" vntheta="Cause"/></role>
+
+</roles>
+
+<example name="straight transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Jaguar shareholders would have *trace* to bless such a
+    far-reaching accord. 
+</text>
+        <arg n="0">*trace* -&gt;  Jaguar shareholders</arg>
+        <rel>bless</rel>
+        <arg n="1">such a far-reaching accord</arg>
+</example>
+
+<example name="unstated blesser">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    I have seen one or two men die, *trace* bless them.
+</text>
+        <arg n="0"/>
+        <rel>bless</rel>
+        <arg n="1">them</arg>
+</example>
+
+<example name="with gift">
+<inflection aspect="perfect" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    Though I've been blessed *trace* with academic degrees and some
+    success in the materialistic world, I've never forgotten or lost
+    contact with those memories of the 1930s. 
+</text>
+        <rel>blessed</rel>
+        <arg n="1">*trace* -&gt;  I</arg>
+        <arg f="with" n="2">academic degrees and some success in the
+        materialistic world</arg> 
+</example>
+
+<example name="predicative gift">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    To Mr. Engelken, it is also a story ``about love, because I'm
+    blessed to have a wife who still thinks her slightly eccentric
+    husband's 50th birthday deserves the ultimate present.'' 
+</text>
+        <arg n="1">I</arg>
+        <rel>blessed</rel>
+        <arg n="2">to have a wife who still thinks her
+        slightly eccentric husband's 50th birthday deserves the
+        ultimate present</arg> 
+</example>
+
+<note>
+This verb doesn't fit easily into this class; arg2 is usually a role
+(applaud as or for) and the fact that the gift can only occur with a
+passivized verb is suspicious also.  Perhaps the class needs to be
+split, or the membership reevaluated.
+</note>
+
+</roleset>
+
+</predicate>
+</frameset>

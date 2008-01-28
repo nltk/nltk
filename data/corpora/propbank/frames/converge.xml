@@ -1,0 +1,41 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="converge">
+<note>
+  Frames file for 'converge' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="converge.01" name="come together" vncls="-">
+<roles>
+  <role descr="(first or all) thing(s) converging" n="0"/>
+  <role descr="target, if separate from arg0" n="1"/>
+</roles>
+
+<example name="split args">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Demographics converged with ``mainstream'' and demonizing to seal
+    Robert Bork's fate. 
+</text>
+        <arg n="0">Demographics</arg>
+        <rel>converged</rel>
+        <arg f="with" n="1">``mainstream'' and demonizing</arg>
+        <arg f="PNC" n="M">to seal Robert Bork's fate</arg>
+</example>
+
+<example name="merged args">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     All the different trends in John's research converged.
+  </text>
+  <arg n="0">     All the different trends in John's research</arg>
+  <rel>converged</rel>
+</example>
+
+<note>
+also 'converged on'.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

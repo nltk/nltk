@@ -1,0 +1,49 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="resell">
+<note>
+  Frames file for 'resell' based on sentences in financial subcorpus.
+  No Verbnet entry, minimal comparison with 'sell.'
+</note>
+
+<roleset id="resell.01" name="sell again" vncls="-">
+<roles>
+    <role descr="Seller" n="0"/>
+    <role descr="Thing Sold" n="1"/>
+    <role descr="Buyer" n="2"/>
+    <role descr="Price Paid" n="3"/>
+    <role descr="Benefactive" n="4"/>
+</roles>
+
+<example name="just transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    Remarketers make modifications to IBM's computer hardware and
+    resell the products. 
+</text>
+        <arg n="0">Remarketers</arg>
+        <rel>resell</rel>
+        <arg n="1">the products</arg>
+</example>
+
+<example name="with buyer">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    ``On occasion, he paid a high price,'' Mr. Wachter concedes, but
+    he says those who bid less and dropped out were dealers who
+    *trace* would then have marked up the paintings *trace* to resell
+    them at a profit to collectors. 
+</text>
+        <arg n="0">*trace* -&gt; *trace* -&gt;  who -&gt;  dealers</arg>
+        <rel>resell</rel>
+        <arg n="1">them</arg>
+        <arg f="MNR" n="M">at a profit</arg>
+        <arg f="to" n="2">collectors</arg>
+</example>
+
+<note>
+I doubt the higher numbered args will appear.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

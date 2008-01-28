@@ -1,0 +1,91 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<note>
+Frames file for 'plan' based on survey of first 50 sentences in big
+corpus and comparison with 'expect'
+</note>
+
+<predicate lemma="plan">
+<roleset id="plan.01" name="expect">
+<roles>
+  <role descr="planner" n="0"/>
+  <role descr="thing planned" n="1"/>
+  <role descr="grounds for planning" f="on" n="2"/>
+  <role descr="beneficiary" n="3"/>
+</roles>
+
+<example name="just transitive">
+  <text>
+    They initially planned a transaction that included about $250m in equity
+  </text>
+  <arg n="0">They</arg>
+  <arg f="TMP" n="M">initially</arg>
+  <rel>planned</rel>
+  <arg n="1">a transaction that included about $250m in equity</arg>
+</example>
+  
+<example name="thing planned as infinitive">
+  <text>
+    The group plans *trace=group* to put in even more money in equity
+  </text>
+  <arg n="0">The group</arg>
+  <rel>plans</rel>
+  <arg n="1">to put in even more money in equity</arg>
+</example>
+
+<example name="grounds as ON phrase">
+  <text>
+    John plans his travels on the advice of gypsy fortune tellers.
+  </text>
+  <arg n="0">John</arg>
+  <rel>plans</rel>
+  <arg n="1">his travels</arg>
+  <arg f="on" n="2">on the advice of gypsy fortune tellers</arg>
+</example>
+
+<example name="plan on">
+  <text>
+    John is planning on *trace* going to the beach this summer.
+  </text>
+  <arg n="0">John</arg>
+  <rel>is planning</rel>
+  <arg f="on" n="1">on *trace* going to the beach this summer</arg>
+</example>
+
+<example name="plan for">
+  <text>
+    John plans for every contingency.
+  </text>
+  <arg n="0">John</arg>
+  <rel>plans</rel>
+  <arg f="for" n="1">for every contingency</arg>
+</example>
+
+<example name="discourse usage">
+  <inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+  <text>
+     John graduated only fifteen years after entering graduate school,
+     as * planned *. 
+  </text>
+  <rel>planned</rel>
+  <arg n="1">* -&gt; *</arg>
+</example>
+
+<example name="with beneficiary">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     Isn't it true that you were so worked up that framing Mr. Laff
+     for this crime was the least that you planned [*T*-4] for him?'' 
+  </text>
+  <arg n="0">you</arg>
+  <rel>planned</rel>
+  <arg n="1">[*T*-4] -&gt; the least</arg>
+  <arg f="for" n="3">him</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

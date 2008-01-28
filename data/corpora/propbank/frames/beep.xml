@@ -1,0 +1,62 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="beep">
+<note>
+  Frames file for 'beep' based on sentences in wsj.  Verbnet entry 43.2.
+</note>
+
+<roleset id="beep.01" vncls="43.2" name="(cause to) emit a beeping sound">
+<roles>
+  <role n="0"  descr="causer, agent"/>
+  <role n="1"  descr="thing beeping"/>
+</roles>
+
+<example name="agentless, usually">
+<inflection person="ns" tense="ns" aspect="progressive" voice="active" form="participle"/>
+<text>
+    He says he hasn't yet studied the Dellums bill, but that requiring
+    a beeping tone on recorders ``would be ludicrous.''  
+</text>
+	<rel>beeping</rel>
+	<arg n="1">tone</arg>
+</example>
+
+<example name="agentive">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+     John politely beeped the horn of his car.
+  </text>
+  <arg n="0"        >John</arg>
+  <arg n="m" f="MNR">politely</arg>
+  <rel              >beeped</rel>
+  <arg n="1"        >the horn of his car</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="beep.02" vncls="-" name="notify someone via beeper">
+<roles>
+  <role n="0"  descr="notifier, agent"/>
+  <role n="1"  descr="notified person"/>
+</roles>
+
+<example name="dinnertime">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+    John beeped Mary when dinner was ready.
+  </text>
+  <arg n="0"        >John</arg>
+  <rel              >beeped</rel>
+  <arg n="1"        >Mary</arg>
+  <arg n="m" f="TMP">when dinner was ready</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

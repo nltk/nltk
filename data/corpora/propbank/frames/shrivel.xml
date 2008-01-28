@@ -1,0 +1,44 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="shrivel">
+<note>
+  Frames file for 'shrivel' based on sentences in wsj.  Verbnet entry 45.4.
+</note>
+
+<roleset id="shrivel.01" name="wither, shrink" vncls="45.4">
+<roles>
+  <role descr="causer of shrivelment" n="0"><vnrole vncls="45.4" vntheta="Agent"/></role>
+  <role descr="thing shriveling" n="1"><vnrole vncls="45.4" vntheta="Patient"/></role>
+  <role descr="EXT" n="2"/>
+  <role descr="start point" n="3"/>
+  <role descr="end point" n="4"/>
+</roles>
+
+<example name="damn stock reports">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    The retail participation dropped to an average 18.2% in 1988, and
+    shriveled to barely 14% some months during the year. 
+</text>
+        <arg n="1">The retail participation</arg>
+        <rel>shriveled</rel>
+        <arg f="to" n="4">barely 14%</arg>
+        <arg f="TMP" n="M">some months during the year</arg>
+</example>
+
+<example name="quasi-agentive">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    The hot sun shrivelled John's houseplants.
+  </text>
+  <arg n="0">The hot sun</arg>
+  <rel>shrivelled</rel>
+  <arg n="1">John's houseplants</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

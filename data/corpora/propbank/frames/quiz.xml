@@ -1,0 +1,45 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="quiz">
+<note>
+  Frames file for 'quiz' based on sentences in wsj.  Verbnet entry
+  35.4, Framenet entry Questioning.
+</note>
+
+<roleset id="quiz.01" name="ask questions repeatedly" vncls="35.4">
+<roles>
+  <role descr="asker" n="0"><vnrole vncls="35.4" vntheta="Agent"/></role>
+  <role descr="quizzed" n="1"><vnrole vncls="35.4" vntheta="Location"/></role>
+  <role descr="topic" n="2"><vnrole vncls="35.4" vntheta="Theme"/></role>
+</roles>
+
+<example name="just transitive">
+<inflection aspect="ns" form="full" person="ns" tense="future" voice="active"/>
+<text>
+    But a House Energy and Commerce subcommittee will quiz SEC
+    Chairman Breeden Wednesday, and Treasury Secretary Brady will go
+    before the Senate Banking panel Thursday. 
+</text>
+        <arg n="0">a House Energy and Commerce subcommittee</arg>
+        <arg f="MOD" n="M">will</arg>
+        <rel>quiz</rel>
+        <arg n="1">SEC Chairman Breeden Wednesday</arg>
+</example>
+
+<example name="with topic">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     Mary quizzed John about the lipstick on his collar.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>quizzed</rel>
+  <arg n="1">John</arg>
+  <arg f="about" n="2">the lipstick on his collar</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

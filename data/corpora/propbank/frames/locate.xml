@@ -1,0 +1,73 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="locate">
+<note>
+  Frames file for 'locate' based on sentences in financial subcorpus.
+  No verbnet entry.  Comparison with 'base' and 'find'.
+</note>
+
+<roleset id="locate.01" name="(cause to) be located in">
+<roles>
+  <role n="0" descr="causer of location"/>
+  <role descr="institution, thing located" n="1"/>
+  <role descr="location" f="LOC" n="M"/>
+</roles>
+
+<example name="typical usage">
+<text>
+    The plastics plant is located *trace* on an 800-acre tract in the
+    heart of the petrochemical corridor that reaches along the
+    U.S. Gulf Coast. 
+</text>
+        <rel>located</rel>
+        <arg n="1">*trace*=The plastics plant</arg>
+        <arg f="LOC" n="M">on an 800-acre tract in the heart of the petrochemical corridor that  reaches along the U.S. Gulf Coast</arg>
+</example>
+
+<example name="with agent">
+<inflection person="ns" tense="ns" aspect="ns" voice="ns" form="ns"/>
+<text>
+     Mitsubishi built the government's dream development, the story
+     goes, in exchange for the official decision [*] to locate Tokyo's
+     central railway station there. 
+</text>
+        <arg n="0">[*] ->  Mitsubishi</arg>
+        <rel>locate</rel>
+        <arg n="1">Tokyo 's central railway station</arg>
+        <arg n="M" f="LOC">there</arg>
+</example>
+</roleset>
+
+<roleset id="locate.02" name="find">
+<roles>
+  <role descr="finder" n="0"/>
+  <role descr="thing found" n="1"/>
+</roles>
+
+<example name="passivized">
+<text>
+    The telephone number for the charity in Shelton, Conn., has been disconnected, and the former officials couldn't be located *trace*.
+</text>
+        <arg f="MOD" n="M">could</arg>
+        <arg f="NEG" n="M">n't</arg>
+        <rel>located</rel>
+        <arg n="1">*trace*=the former officials</arg>
+</example>
+
+<example name="with finder">
+  <text>
+    After much searching, John finally located his teddy bear.
+  </text>
+  <arg f="TMP" n="m">After much searching</arg>
+  <arg n="0">John</arg>
+  <arg f="TMP" n="m">finally</arg>
+  <rel>located</rel>
+  <arg n="1">his teddy bear</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

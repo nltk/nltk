@@ -1,0 +1,43 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="demand">
+<note>
+  Frames file for 'demand' based on sentences in financial subcorpus.
+  No verbnet entry.  Comparison with 'ask'.
+</note>
+
+<roleset id="demand.01" name="ask a favor, ask a request, ask for">
+<roles>
+  <role descr="asker" n="0"/>
+  <role descr="favor" n="1"/>
+  <role descr="hearer" n="2"/>
+</roles>
+
+<example name="nominal thing demanded">
+<text>
+    Belgium decided that investors who *trace* demand the delivery of
+    their securities when they buy shares or domestic bonds will have
+    to pay an additional 100 Belgian francs (about $2.60) for each
+    transaction,  bringing the total fee to 200 francs. 
+</text>
+        <arg n="0">*trace* -&gt; who -&gt; investors</arg>
+        <rel>demand</rel>
+        <arg n="1">the delivery of their securities</arg>
+        <arg f="TMP" n="M">when they buy shares or domestic bonds</arg>
+</example>
+
+<example name="sentential thing demanded">
+<text>
+    When Disney offered to pay Mr. Steinberg a premium for his shares,
+    the New York investor didn't demand the company also pay a premium
+    to other shareholders. 
+</text>
+        <arg n="0">the New York investor</arg>
+        <arg f="NEG" n="M">n't</arg>
+        <rel>demand</rel>
+        <arg n="1">the company also pay a premium to other shareholders</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

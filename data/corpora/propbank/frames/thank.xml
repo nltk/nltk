@@ -1,0 +1,71 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="thank">
+<note>
+Frames file for 'thank' based on sentences in wsj and automatic
+expansion via verbnet.
+</note>
+
+<roleset id="thank.01" name="thank" vncls="33">
+<roles>
+	<role descr="thanker" n="0">
+		
+  <vnrole vncls="33" vntheta="Agent"/></role>
+
+	<role descr="thanked" n="1">
+		
+  <vnrole vncls="33" vntheta="Theme"/></role>
+
+	<role descr="for what?" n="2">
+		
+  <vnrole vncls="33" vntheta="Cause"/></role>
+
+</roles>
+
+<example name="nice easy transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    ``We will support it, we will thank him, and we will augment it
+    where appropriate,'' said Rep. Vic Fazio D., Calif.
+</text>
+        <arg n="0">we</arg>
+        <arg f="MOD" n="M">will</arg>
+        <rel>thank</rel>
+        <arg n="1">him</arg>
+</example>
+
+<example name="with arg2">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    In 1986, Stamford officials thanked Mr. Hoelzer for taking care of
+    the mural -- and demanded he return it as soon as possible. 
+</text>
+        <arg f="TMP" n="M">In 1986</arg>
+        <arg n="0">Stamford officials</arg>
+        <rel>thanked</rel>
+        <arg n="1">Mr. Hoelzer</arg>
+        <arg f="for" n="2">taking care of the mural</arg>
+</example>
+
+<example name="sentential arg2">
+<inflection aspect="ns" form="full" person="ns" tense="ns" voice="ns"/>
+<text>
+    ``*trace* Thank God we have some deal on the table,'' said Stewart
+    Gilchrist, a director at Scottish Amicable Investment Managers,
+    which intends to vote its roughly 1% stake in favor of the
+    restructuring. 
+</text>
+        <arg n="0">*trace*</arg>
+        <rel>Thank</rel>
+        <arg n="1">God</arg>
+        <arg n="2">we have some deal on the table</arg>
+<note>
+This could be paraphrased as &quot;Thank god for the fact that we have...&quot;,
+indicating that the sentence is equivalent to a PP.  Because of this,
+though, be sure to include the complementizer, even if it's empty.
+</note>
+
+</example>
+
+</roleset>
+</predicate>
+</frameset>

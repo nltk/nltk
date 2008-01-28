@@ -1,0 +1,34 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="engrave">
+<note>
+  Frames file for 'engrave' based on sentences in wsj.  No access to
+  verbnet at the moment.
+</note>
+
+<roleset id="engrave.01" name="carve, inscribe" vncls="25.1">
+<roles>
+  <role descr="engraver" n="0"><vnrole vncls="25.1" vntheta="Agent"/></role>
+  <role descr="thing engraved" n="1"><vnrole vncls="25.1" vntheta="Destination"/></role>
+  <role descr="inscription" n="2"><vnrole vncls="25.1" vntheta="Theme"/></role>
+</roles>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    One Colombian drug boss, upon hearing in 1987 that Gen. Noriega
+    was negotiating with the U.S. to abandon his command for a
+    comfortable exile, sent him a hand-sized mahogany coffin engraved
+    [*] with his name. 
+</text>
+        <rel>engraved</rel>
+        <arg n="1">[*] -&gt;  a hand-sized mahogany coffin</arg>
+        <arg f="with" n="2">his name</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,54 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="fetch">
+<note>
+  Frames file for 'fetch' based on sentences in financial subcorpus.
+  Verbnet entry get-13.5.1, other framed members include buy, catch,
+  entitle, hire, lease, pick, reserve, save, seize, vote.  Comparison
+  with 'bring' and 'get'.
+</note>
+
+<roleset id="fetch.01" name="bring (back)" vncls="13.5.1">
+<roles>
+  <role descr="bringer" n="0">
+		
+  <vnrole vncls="13.5.1" vntheta="Agent"/></role>
+
+  <role descr="thing brought" n="1">
+		
+  <vnrole vncls="13.5.1" vntheta="Theme"/></role>
+
+  <role descr="benefactive, brought-for, brought-to" n="2">
+		
+  <vnrole vncls="13.5.1" vntheta="Beneficiary"/></role>
+
+  <role descr="attribute" n="3">
+		
+  <vnrole vncls="13.5.1" vntheta="Asset"/></role>
+
+  <role descr="ablative, brought-from" n="4">
+		
+  <vnrole vncls="13.5.1" vntheta="Source"/></role>
+
+</roles>
+
+<example name="just transitive">
+<text>
+    It is possible then that Santa Fe's real estate -- even in a state
+    imperiled by earthquakes -- could, one day, fetch a king's
+    ransom. 
+</text>
+        <arg n="0">Santa Fe's real estate</arg>
+        <arg f="MOD" n="M">could</arg>
+        <arg f="TMP" n="M">one day</arg>
+        <rel>fetch</rel>
+        <arg n="1">a king's ransom</arg>
+</example>
+
+<note>
+Higher args are predicted but not expected.  
+</note>
+
+</roleset>
+</predicate>
+</frameset>

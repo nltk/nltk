@@ -1,0 +1,34 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="espouse">
+<note>
+  Frames file for 'espouse' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="espouse.01" name="adopt/have a belief" vncls="-">
+<roles>
+  <role descr="haver of belief" n="0"/>
+  <role descr="belief" n="1"/>
+</roles>
+
+<example name="I'm a Material Girl">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    The survey found that nearly half of Hong Kong consumers espouse
+    what it identified as materialistic values, compared with about
+    one-third in Japan and the U.S. 
+</text>
+        <arg n="0">nearly half of Hong Kong consumers</arg>
+        <rel>espouse</rel>
+        <arg n="1">what it identified  as materialistic values</arg>
+</example>
+
+<note>
+Dictionary also suggests 'espouse' to mean 'take in marriage'
+(e-spouse), which I've never heard.  It also suggests 'give in
+marriage', making this another one of the rare words in English which
+is its own antonym.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

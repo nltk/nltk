@@ -1,0 +1,71 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="devote">
+<note>
+  Frames file for 'devote' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="devote.01" name="make a strong connection with" vncls="-">
+<roles>
+  <role descr="causer of devotion" n="0"/>
+  <role descr="thing devoted" n="1"/>
+  <role descr="devoted to" n="2"/>
+</roles>
+
+<example name="all args">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    Mr. Coleman said this week that he would devote the remainder of
+    the political season to positive campaigning, but the truce lasted
+    only hours. 
+</text>
+        <arg n="0">he</arg>
+        <arg f="MOD" n="M">would</arg>
+        <rel>devote</rel>
+        <arg n="1">the remainder of the political season</arg>
+        <arg f="to" n="2">positive campaigning</arg>
+</example>
+
+<example name="omitted arg2">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+    Under the circumstances, Dataproducts said, Mr. Tomash said he was
+    unable *trace* to devote the time required because of other
+    commitments. 
+</text>
+        <arg n="0">*trace* -&gt;  he</arg>
+        <rel>devote</rel>
+        <arg n="1">the time required </arg>
+</example>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    As publisher of a magazine devoted *trace* to movies as guideposts
+    for fashion and other fantasies, Ms. Volokh sees her party-giving
+    as an important part of business. 
+</text>
+        <rel>devoted</rel>
+        <arg n="1">*trace* -&gt;  a magazine</arg>
+        <arg f="to" n="2">movies as guideposts for fashion and other
+        fantasies</arg> 
+</example>
+
+<example name="adjectival">
+  <inflection aspect="ns" form="participle" person="third" tense="present" voice="passive"/>
+  <text>
+    John is incredibly devoted to his life as a graduate student.
+  </text>
+  <arg n="1">John</arg>
+  <rel>devoted</rel>
+  <arg f="ADV" n="m">incredibly</arg>
+  <arg f="to" n="2">his life as a graduate student</arg>
+</example>
+
+<note>
+Last example included for completeness, and in expectation that we'll
+have to deal with adjectives eventually.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

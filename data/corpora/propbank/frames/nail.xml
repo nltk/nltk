@@ -1,0 +1,56 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="nail">
+<note>
+  Frames file for 'nail' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+
+<roleset id="nail.01" name="to establish firmly" vncls="-">
+<roles>
+  <role descr="establisher" n="0"/>
+  <role descr="entity nailed" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ But Dr. Vogelstein had yet [*-2] to nail the identity of the gene that [*T*-1] , if [*-3] damaged [*-4] , flipped a colon cell into full-blown malignancy .
+</text>
+	<arg n="0">[*-2] -&gt;  Dr. Vogelstein</arg>
+	<rel>nail</rel>
+	<arg n="1">the identity of the gene that [*T*-1] , if [*-3] damaged [*-4] , flipped a colon cell into full-blown malignancy</arg>
+</example>
+</roleset>
+</predicate>
+
+
+<predicate lemma="nail_down">
+
+<roleset id="nail.02" name="to narrow down, finalize" vncls="-">
+<roles>
+  <role descr="finalizer" n="0"/>
+  <role descr="entity nailed down" n="1"/>
+</roles>
+
+
+<example name="transitive with adverbials">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ Discrepancies go unexplained in `` Confidential '' ( one ex-player claims [0] he received $ 4,000 to $ 5,000 [*U*] for his season football tickets while others said [0] theirs brought only a few hundred dollars ) , and when Mr. Keteyian ca n't nail down something , like who [*T*-2] really owned a car driven [*] by Husker tailback Doug Dubose [*T*-1] , he simply reprints his notes .
+</text>
+	<arg n="0">Mr. Keteyian</arg>
+	<arg f="MOD" n="M">ca</arg>
+	<arg f="NEG" n="M">n't</arg>
+	<rel>[ nail] [ down]</rel>
+	<arg n="1">something , like who [*T*-2] really owned a car driven [*] by Husker tailback Doug Dubose</arg>
+	<arg f="TMP" n="M">[*T*-1] -&gt;  when</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

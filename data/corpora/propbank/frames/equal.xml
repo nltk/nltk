@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="equal">
+<note>
+  Frames file for 'equal' based on sentences in financial subcorpus.
+  No verbnet entry (except 'equalize', which is just 'make equal').
+  Comparison with 'match'.
+</note>
+
+<roleset id="equal.01" name="equal, be the same as">
+<roles>
+  <role descr="focus of equation" n="1"/>
+  <role descr="other side of equation" n="2"/>
+</roles>
+
+<example name="topic/comment">
+<text>
+    The latest quarter's loss equals $9.92 a share.
+</text>
+        <arg n="1">The latest quarter's loss</arg>
+        <rel>equals</rel>
+        <arg n="2">$9.92 a share</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

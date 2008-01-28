@@ -1,0 +1,44 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="torture">
+<note>
+  Frames file for 'torture' based on sentences in wsj.  No Verbnet
+  entry, could possibly fit in 31.1.
+</note>
+
+<roleset id="torture.01" name="torture" vncls="-">
+<roles>
+  <role descr="torturer" n="0"/>
+  <role descr="tortured" n="1"/>
+  <role descr="instrument" n="2"/>
+</roles>
+
+<example name="just transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    The Barre dictatorship simply is limited in the amount of people
+    *trace* it can torture and kill *trace*. 
+</text>
+        <arg n="0">it</arg>
+        <arg f="MOD" n="M">can</arg>
+        <rel>torture</rel>
+        <arg n="1">*trace* -&gt; *trace* -&gt;  people</arg>
+</example>
+
+<example name="with instrument">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    Mary tortured John with chocolate cake.  And don't forget the
+    comfy chair. 
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>tortured</rel>
+  <arg n="1">John</arg>
+  <arg f="with" n="2">chocolate cake</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

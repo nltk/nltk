@@ -1,0 +1,29 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="backslap">
+<note>
+  Frames file for 'backslap' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="backslap.01" vncls="-" name="slap on the back">
+<roles>
+  <role n="0"  descr="backslapper"/>
+</roles>
+
+<example name="this is a noun!">
+  <inflection person="ns" tense="ns" aspect="ns" voice="ns" form="gerund"/>
+  <text>
+    Still, amid all the backslapping and signs of relief over
+    yesterday's events, some market professionals cautioned that there
+    is nothing present in the current market system to prevent another
+    dizzying drop such as Friday's. 
+  </text>
+  <rel              >backslapping</rel>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

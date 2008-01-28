@@ -1,0 +1,57 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="reappraise">
+<note>
+  Frames file for 'reappraise' based on sentences in wsj.  No Verbnet
+  entry. 
+</note>
+
+<roleset id="reappraise.01" name="find value of, again" vncls="-">
+<roles>
+  <role descr="appraiser" n="0"/>
+  <role descr="thing appraised" n="1"/>
+  <role descr="value" n="2"/>
+</roles>
+
+<example name="transitive, active">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    The mood changed after dealers reappraised the direct impact of
+    the disaster on shares and Wall Street rebounded from early
+    losses. 
+</text>
+        <arg n="0">dealers</arg>
+        <rel>reappraised</rel>
+        <arg n="1">the direct impact of the disaster on shares</arg>
+</example>
+
+<example name="transitive, passive">
+<inflection aspect="progressive" form="participle" person="third" tense="present" voice="passive"/>
+<text>
+    However, he added that that estimate, made before extensive
+    development drilling, currently is being reappraised *trace*. 
+</text>
+        <arg f="TMP" n="M">currently</arg>
+        <rel>reappraised</rel>
+        <arg n="1">*trace* -&gt;  that estimate, made before extensive
+        development drilling,</arg> 
+</example>
+
+<example name="with value">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John reappraised his relationship with Mary as totally lacking in
+    any redeeming merits.
+  </text>
+  <arg n="0">John</arg>
+  <rel>reappraised</rel>
+  <arg n="1">his relationship with Mary</arg>
+  <arg f="as" n="2">totally lacking in any redeeming merits</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

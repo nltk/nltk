@@ -1,0 +1,58 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="forget">
+<note>
+  Frames file for 'forget' based on sentences in financial subcorpus.
+  No Verbnet entry.
+</note>
+
+<roleset id="forget.01" name="not remember" vncls="-">
+<roles>
+  <role descr="forgetter" n="0"/>
+  <role descr="thing forgotten" n="1"/>
+</roles>
+
+<example name="forget an NP">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    The results topped analysts' expectations and the earnings growth
+    of competitors, prompting traders to all but forget the
+    product-launch delays that bogged down the company for much of the
+    past two years. 
+</text>
+        <arg n="0">traders</arg>
+	<arg f="MNR" n="m">all but</arg>
+        <rel>forget</rel>
+        <arg n="1">the product-launch delays that bogged down the
+	company for much of the past two years</arg> 
+</example>
+
+<example name="forget a clause">
+<inflection aspect="perfect" form="participle" person="ns" tense="past" voice="active"/>
+<text>
+    They found they had bought stock from limit orders that they might
+    have entered weeks or months earlier and had forgotten to cancel. 
+</text>
+        <arg n="0">they</arg>
+        <rel>forgotten</rel>
+        <arg n="1">to cancel </arg>
+</example>
+
+<example name="prepositional variant">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    On Oct. 19, 1987, some investors learned the consequences of
+    entering ``good-til-canceled limit orders'' and then forgetting
+    about them. 
+</text>
+        <arg n="0">*trace* -&gt;  some investors</arg>
+        <rel>forgetting</rel>
+        <arg f="about" n="1">them</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

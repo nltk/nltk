@@ -1,0 +1,38 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="commence">
+<note>
+  Frames file for 'commence' based on sentences in financial
+  subcorpus.  Verbnet entry 55.1, other framed members include begin,
+  proceed and resume.  Probably start, too.  Comparison with start.
+</note>
+
+<roleset id="commence.01" name="begin" vncls="55.1">
+<roles>
+  <role descr="beginner, Agent" n="0">
+	  <vnrole vncls="55.1" vntheta="Agent"/></role>
+  <role descr="Theme(-Creation)" n="1">
+	  <vnrole vncls="55.1" vntheta="Theme"/></role>
+  <role descr="Instrument" n="2"/>
+</roles>
+
+<example name="from the corpus">
+<text>
+    It includes *trace* removing $242 million in good will from the
+    books, issuing $150 million in preferred stock and commencing an
+    exchange offer for $52 million in convertible bonds. 
+</text>
+        <arg n="0">*trace*</arg>
+        <rel>commencing</rel>
+        <arg n="1">an exchange offer for $52 million in convertible
+        bonds</arg> 
+</example>
+
+<note>
+Refer to 'start' or 'begin' for examples with (ie) instrumental
+subjects or secondary predication.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

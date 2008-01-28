@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="insinuate">
+<note>
+  Frames file for 'insinuate' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="insinuate.01" name="to suggest" vncls="-">
+<roles>
+  <role descr="suggester" n="0"/>
+  <role descr="thing insinuated" n="1"/>
+</roles>
+
+
+
+<example name="transitive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+ Of the approximately 200 sponsors of the recent march in Washington for the homeless , you chose [*-1] to cite such groups as the National Association of Home Builders and the International Union of Bricklayers and Allied Craftsmen , [*-1] insinuating that the march got its major support from self-serving groups that `` [*T*-2] know a good thing when they see it [*T*-3] , '' and that the crusade was based [*-23] on greed or the profit motive .
+</text>
+	<arg n="0">[*-1] -&gt;  you</arg>
+	<rel>insinuating</rel>
+	<arg n="1">the march got its major support from self-serving groups that `` [*T*-2] know a good thing when they see it [*T*-3] , ''</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

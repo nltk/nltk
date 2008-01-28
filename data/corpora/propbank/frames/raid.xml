@@ -1,0 +1,54 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="raid">
+<note>
+Frames file for 'raid' based on sentences in wsj and automatic
+expansion via verbnet.
+</note>
+
+<roleset id="raid.01" name="enter suddenly" vncls="35.4">
+<roles>
+	<role descr="raider" n="0">
+		
+  <vnrole vncls="35.4" vntheta="Agent"/></role>
+
+	<role descr="raided" n="1">
+		
+  <vnrole vncls="35.4" vntheta="Location"/></role>
+
+</roles>
+
+<example name="active">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Police in Prague raided an international meeting on human rights,
+        detaining Czechoslovakia's former foreign minister, Jiri
+        Hajak, and 14 other activists. 
+</text>
+        <arg n="0">Police in Prague</arg>
+        <rel>raided</rel>
+        <arg n="1">an international meeting on human rights</arg>
+        <arg n="M">detaining Czechoslovakia's former foreign minister,
+        Jiri Hajak, and 14 other activists</arg> 
+</example>
+
+<example name="passive">
+<inflection aspect="perfect" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    Luxurious homes and ranches have been raided *trace* by the
+    military authorities, and sophisticated and powerful
+    communications equipment have been seized. 
+</text>
+        <rel>raided</rel>
+        <arg n="1">*trace* -&gt;  Luxurious homes and ranches</arg>
+        <arg f="by" n="0">the military authorities</arg>
+</example>
+
+<note>
+Not sure about the class membership here, but at least the PAS isn't
+affected.
+</note>
+</roleset>
+
+</predicate>
+</frameset>

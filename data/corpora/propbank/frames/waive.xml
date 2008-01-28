@@ -1,0 +1,58 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="waive">
+<note>
+  Frames file for 'waive' based on sentences in financial subcorpus.
+  No access to verbnet.  No comparison.
+</note>
+
+<roleset id="waive.01" name="waive, relinquish, give up">
+<roles>
+  <role descr="waiver" n="0"/>
+  <role descr="thing waived, usually rights" n="1"/>
+  <role descr="benefactive" n="2"/>
+</roles>
+
+<example name="active">
+<text>
+    In London, prices finished at intraday peaks, comforted by a
+    reassuring early performance on Wall Street and news that the
+    British government will waive its ``golden share'' in auto maker
+    Jaguar.  
+</text>
+        <arg n="0">the British government</arg>
+        <arg f="MOD" n="M">will</arg>
+        <rel>waive</rel>
+        <arg n="1">its ``golden share'' in auto maker Jaguar</arg>
+</example>
+
+
+<example name="passive">
+<text>
+    But although the golden share has been waived *trace*...
+</text>
+        <rel>waived</rel>
+        <arg n="1">*trace* -&gt;  the golden share</arg>
+</example>
+
+<example name="with benefactive">
+<text>
+    The filing also said certain provisions which apply to persons
+    acquiring 20% or more of Intelogic common stock, were waived
+    *trace* by Intelogic for Mr. Edelman, who is chairman of the
+    company. 
+</text>
+        <rel>waived</rel>
+        <arg n="1">*trace* -&gt;  certain provisions which apply to
+        persons acquiring 20% or more of Intelogic common stock</arg> 
+        <arg f="by" n="0">Intelogic</arg>
+        <arg f="for" n="2">Mr. Edelman, who is chairman of the
+        company</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

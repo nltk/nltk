@@ -1,0 +1,65 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="reinstate">
+<note>
+Frames file for 'reinstate' based on sentences in financial subcorpus
+and automatic expansion via verbnet.
+</note>
+
+<roleset id="reinstate.01" name="put (back) into some role" vncls="29.2">
+<roles>
+	<role descr="namer, assigner of a role" n="0">
+		
+  <vnrole vncls="29.2" vntheta="Agent"/></role>
+
+	<role descr="entity playing the role" n="1">
+		
+  <vnrole vncls="29.2" vntheta="Theme"/></role>
+
+	<role descr="attribute, role" n="2">
+		
+  <vnrole vncls="29.2" vntheta="Predicate"/></role>
+
+</roles>
+
+<example name="just transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    ``All our efforts are now focused on improving earnings to the
+    point where we can fund additional new-country development,
+    continue to invest in the business and reinstate the dividend,''
+    he added. 
+</text>
+        <arg n="0">we</arg>
+        <arg f="MOD" n="M">can</arg>
+        <rel>reinstate</rel>
+        <arg n="1">the dividend</arg>
+        <arg f="LOC" n="M">*trace* -&gt;  where -&gt;  the point</arg>
+</example>
+
+<example name="odd kind of attribute">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    CMS ENERGY Corp. said management would recommend to its board
+    today that its common stock dividend be reinstated *trace* at a
+    ``modest level'' later this year. 
+</text>
+        <rel>reinstated</rel>
+        <arg n="1">*trace* -&gt;  its common stock dividend</arg>
+        <arg f="at" n="2">a ``modest level''</arg>
+        <arg f="TMP" n="M">later this year</arg>
+</example>
+
+<example name="more typical attribute"> 
+  <text>
+     John was reinstated *trace* as Mary's best friend after he gave her
+     flowers.
+  </text>
+  <rel>reinstated</rel>
+  <arg n="1">*trace* -&gt; John</arg>
+  <arg f="as" n="2">Mary's best friend</arg>
+  <arg f="TMP" n="m">after he gave her flowers</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

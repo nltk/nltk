@@ -1,0 +1,59 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="lick">
+<note>
+  Frames file for 'lick.01' based on sentences in wsj.  Verbnet entry
+  39.2, 20, 10.4.1.
+</note>
+
+<roleset id="lick.01" name="touch with the tongue" vncls="39.2 20">
+<roles>
+  <role descr="licker" n="0"><vnrole vncls="39.2" vntheta="Agent"/><vnrole vncls="20" vntheta="Agent"/></role>
+  <role descr="licked" n="1"><vnrole vncls="39.2" vntheta="Patient"/><vnrole vncls="20" vntheta="Experiencer"/></role>
+</roles>
+
+<example name="hubba hubba">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+    But it is the Trinity Rep newcomer, Jonathan Fried (Zamislov, the
+    paralegal) who is the actor to watch, whether he is hamming it up
+    while conducting the chamber musicians or seducing his neighbor's
+    wife (Becca Lish) by [*-3] licking her bosom. 
+</text>
+        <arg n="0">[*-3] -&gt;  he</arg>
+        <rel>licking</rel>
+        <arg n="1">her bosom</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="lick_up">
+
+<roleset id="lick.02" name="remove by licking" vncls="10.4.1">
+<roles>
+  <role descr="licker, remover" n="0"><vnrole vncls="10.4.1" vntheta="Agent"/></role>
+  <role descr="thing removed" n="1"><vnrole vncls="10.4.1" vntheta="Theme"/></role>
+  <role descr="removed from" n="2"><vnrole vncls="10.4.1" vntheta="Source"/></role>
+</roles>
+
+<example name="eewwww">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John licked up the spilled milk from the garage floor.
+  </text>
+  <arg n="0">John</arg>
+  <rel>licked up</rel>
+  <arg n="1">the spilled milk</arg>
+  <arg f="from" n="2">the garage floor</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

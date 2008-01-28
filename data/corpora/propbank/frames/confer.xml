@@ -1,0 +1,55 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="confer">
+<note>
+Frames file for 'confer' based on sentences in financial subcorpus and
+automatic expansion via verbnet. 
+</note>
+
+<roleset id="confer.01" name="meet with" vncls="33">
+<roles>
+  <role descr="one party" n="0">
+		
+  <vnrole vncls="33" vntheta="Agent"/></role>
+
+  <role descr="other party" n="1">
+		
+  <vnrole vncls="33" vntheta="Theme"/></role>
+
+</roles>
+
+<example name="high-level summit">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+     Three top advisers to Mr. Davis visited New York late last week,
+     at least in part *trace* to confer with executives at Citicorp. 
+</text>
+        <arg f="ADV" n="M">at least in part</arg>
+        <arg n="0">*trace* -&gt;  Three top advisers to Mr. Davis</arg>
+        <rel>confer</rel>
+        <arg f="with" n="1">executives at Citicorp</arg>
+</example>
+
+</roleset>
+
+<roleset id="confer.02" name="grant, give" vncls="-">
+<roles>
+  <role descr="giver" n="0"/>
+  <role descr="gift" n="1"/>
+  <role descr="given to" n="2"/>
+</roles>
+
+<example name="bestow">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    He confers big trading commissions on Wall Street firms.
+</text>
+        <arg n="0">He</arg>
+        <rel>confers</rel>
+        <arg n="1">big trading commissions</arg>
+        <arg f="on" n="2">Wall Street firms</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

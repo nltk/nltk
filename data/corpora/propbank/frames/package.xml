@@ -1,0 +1,50 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="package">
+<note>
+  Frames file for 'package' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="package.01" name="to place into a package" vncls="22.3-2">
+<roles>
+  <role descr="packager, agent" n="0">
+        <vnrole vncls="22.3-2" vntheta="Agent"/></role>
+  <role descr="entity packaged" n="1">
+        <vnrole vncls="22.3-2" vntheta="Patient1"/></role>
+  <role descr="entity packaged into" n="2">
+        <vnrole vncls="22.3-2" vntheta="Patient2"/></role>
+  <role descr="instrument" n="3"/>
+</roles>
+
+
+<example name="with Arg3">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ Under the agreement , Westinghouse will be able [*-1] to purchase smaller combustion turbines from its Japanese partner , and package and sell them with its own generators and other equipment .
+</text>
+	<arg n="0">[*-1] -&gt;  Westinghouse</arg>
+	<rel>package</rel>
+	<arg n="1">them</arg>
+	<arg f="with" n="3">its own generators and other equipment</arg>
+</example>
+
+
+<example name="with Arg2">
+<inflection aspect="ns" form="full" person="ns" tense="future" voice="active"/>
+<text>
+ The company said [0] it will sell the water [*-1] plain and with lemon-lime and cherry flavors and will package it in 28-ounce bottles and 6.5 ounce bottles as part of six-packs .
+</text>
+	<arg n="0">it</arg>
+	<arg f="MOD" n="M">will</arg>
+	<rel>package</rel>
+	<arg n="1">it</arg>
+	<arg f="in" n="2">28-ounce bottles and 6.5 ounce bottles as part of six-packs</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

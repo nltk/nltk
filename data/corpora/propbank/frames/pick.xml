@@ -1,0 +1,320 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="pick">
+<note>
+  Frames file for 'pick' based on sentences in financial subcorpus.
+  Verbnet class get-13.5.1, other framed members include buy, call,
+  catch, earn, find, gain, get, hire, order, pull, reach, win.
+  Comparison with 'get'.
+</note>
+
+<roleset id="pick.01" name="select from a group" vncls="13.5.1">
+<roles>
+  <role descr="picker" n="0">
+	  <vnrole vncls="13.5.1" vntheta="Agent"/></role>
+  <role descr="thing picked" n="1">
+	  <vnrole vncls="13.5.1" vntheta="Theme"/></role>
+  <role descr="group or source" n="2">
+	  <vnrole vncls="13.5.1" vntheta="Source"/></role>
+  <role descr="benefactive" n="3">
+	  <vnrole vncls="13.5.1" vntheta="Beneficiary"/></role>
+</roles>
+
+<example name="boring transitive">
+<text>
+    Since the value of its assets wasn't known, analysts were free
+    *trace* to pick a number. 
+</text>
+        <arg n="0">*trace* -&gt;  analysts</arg>
+        <rel>pick</rel>
+        <arg n="1">a number</arg>
+</example>
+
+<example name="benefactive, sorta">
+<text>
+    The 486 is the descendant of a long series of Intel chips that
+    began dominating the market ever since IBM picked the 16-bit 8088
+    chip for its first personal computer. 
+</text>
+        <arg n="0">IBM</arg>
+        <rel>picked</rel>
+        <arg n="1">the 16-bit 8088 chip</arg>
+        <arg f="for" n="3">its first personal computer</arg>
+</example>
+
+<example name="with group">
+  <text>
+    John picked a mismatched pair of socks from the pile on his floor.
+  </text>
+  <arg n="0">John</arg>
+  <rel>picked</rel>
+  <arg n="1">a mismatched pair of socks</arg>
+  <arg f="from" n="2">the pile on his floor</arg>
+</example>
+
+<example name="special case: pick apples (or crops in general)">
+  <inflection person="ns" tense="present" aspect="perfect" voice="active" form="full"/>
+  <text>
+    Mr. Auvil, razor sharp at 83, has picked and packed a zillion
+    pecks of apples over the past 65 years. 
+  </text>
+  <arg n="0"        >Mr. Auvil, razor sharp at 83</arg>
+  <rel              >picked</rel>
+  <arg n="1"        >a zillion pecks of apples</arg>
+  <arg n="m" f="TMP">over the past 65 years</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="pick_on">
+
+<roleset id="pick.02" name="pick on: bully" vncls="-">
+<roles>
+  <role descr="bully" n="0"/>
+  <role descr="bullied" n="1"/>
+</roles>
+
+<example name="straightforward">
+  <text>
+    Mary picks on John relentlessly.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>picks on</rel>
+  <arg n="1">John</arg>
+  <arg f="MNR" n="m">relentlessly</arg>
+</example>
+
+<note>
+WSJ doesn't seem to show this construction.
+</note>
+
+</roleset>
+
+<roleset id="pick.07" vncls="-" name="remove small pieces from">
+<roles>
+  <role n="0"  descr="remover, picker, agent"/>
+  <role n="1"  descr="thing picked at"/>
+</roles>
+
+<example name="with redundant particle">
+  <inflection person="ns" tense="ns" aspect="progressive" voice="active" form="participle"/>
+  <text>
+     Desperate, he has called in the Libyans to help fight the rebels
+     of the Somali National Movement in the north, which is only one
+     of several groups picking away at the regime in the capital of
+     Mogadishu. 
+  </text>
+  <arg n="0"        >several small groups</arg>
+  <rel              >picking</rel>
+  <arg n="m" f="DIR">away</arg>
+  <arg n="1" f="at">the regime in the capital of Mogadishu</arg>
+</example>
+
+</roleset>
+
+<roleset id="pick.09" vncls="-" name="work at with long slender instrument">
+<roles>
+  <role n="0"  descr="picker"/>
+  <role n="1"  descr="thing picked (at)"/>
+</roles>
+
+<example name="you can pick your friends...">
+  <inflection person="ns" tense="present" aspect="progressive" voice="active" form="participle"/>
+  <text>
+    When we go there, it's quite different from these Hollywood places
+    where the sandwiches are spread out on the table and the people
+    are picking their noses.'' 
+  </text>
+  <arg n="0"        >the people</arg>
+  <rel              >picking</rel>
+  <arg n="1"        >their noses</arg>
+</example>
+
+<example name="pick at">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+    Red tractors gingerly picked at the rubble while jackhammers tried
+    to break up some of the massive slabs of concrete.
+  </text>
+  <arg n="0"        >Red tractors</arg>
+  <arg n="m" f="MNR">gingerly</arg>
+  <rel              >picked</rel>
+  <arg n="1" f="at">the rubble</arg>
+  <arg n="m" f="TMP">while jackhammers tried to break up some of the
+  massive slabs of concrete</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="pick_out">
+<note>
+  otherwise identical to &quot;pick&quot; above
+</note>
+
+<roleset id="pick.03" name="select from a group" vncls="13.5.1">
+<roles>
+  <role descr="picker" n="0">
+	  <vnrole vncls="13.5.1" vntheta="Agent"/></role>
+  <role descr="thing picked" n="1">
+	  <vnrole vncls="13.5.1" vntheta="Theme"/></role>
+  <role descr="group or source" n="2">
+	  <vnrole vncls="13.5.1" vntheta="Source"/></role>
+</roles>
+
+<example name="made up">
+  <text>
+    John picked out a bunch of flowers from the pile in the dumpster.
+  </text>
+  <arg n="0">John</arg>
+  <rel>picked out</rel>
+  <arg n="1">a bunch of flowers</arg>
+  <arg f="from" n="2">the pile in the dumpster</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="pick_up">
+
+<roleset id="pick.04" name="pick up: acquire" vncls="-">
+<roles>
+  <role descr="agent, entity acquiring something" n="0"/>
+  <role descr="thing acquired" n="1"/>
+  <role descr="seller" n="2"/>
+  <role descr="price paid" n="3"/>
+  <role descr="benefactive" n="4"/>
+</roles>
+
+<example name="basic transitive">
+<text>
+    Thus the band-wagon psychology of recent days picks up new
+    impetus. 
+</text>
+        <arg f="DIS" n="M">Thus</arg>
+        <arg n="0">the band-wagon psychology of recent days</arg>
+        <rel>[ picks] [ up]</rel>
+        <arg n="1">new impetus</arg>
+</example>
+
+<example name="with price">
+<text>
+    There, on one of his first shopping trips, Mr. Paul picked up
+    several paintings at stunning prices. 
+</text>
+        <arg f="LOC" n="M">There</arg>
+        <arg f="TMP" n="M">on one of his first shopping trips</arg>
+        <arg n="0">Mr. Paul</arg>
+        <rel>[ picked] [ up]</rel>
+        <arg n="1">several paintings</arg>
+        <arg f="at" n="3">stunning prices</arg>
+</example>
+
+<example name="pushing the metaphor">
+<text>
+    When the announcement came out, ``I picked up the phone and said,
+    `Why don't you come to us?''' Mr. Spielvogel said. 
+</text>
+        <arg n="0">I</arg>
+        <rel>[ picked] [ up]</rel>
+        <arg n="1">the phone</arg>
+</example>
+
+<example name="other args">
+  <text>
+    John picked up a box of chocolates from the grocer for Mary.
+  </text>
+  <arg n="0">John</arg>
+  <rel>picked up</rel>
+  <arg n="1">a box of chocolates</arg>
+  <arg f="from" n="2">the grocer</arg>
+  <arg f="for" n="4">Mary</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="pick.05" name="pick up: increase" vncls="-">
+<roles>
+    <role descr="thing increasing" n="1"/>
+    <role descr="amount increased by, EXT or MNR" n="2"/>
+    <role descr="start point" n="3"/>
+    <role descr="end point" n="4"/>
+</roles>
+
+<example name="basic">
+<text>
+    If sales don't pick up, the cuts will go deeper and incentives
+    will sprout again. 
+</text>
+        <arg n="1">sales</arg>
+        <arg f="NEG" n="M">n't</arg>
+        <rel>[ pick] [ up]</rel>
+</example>
+
+<note>
+Actually, I doubt this will show start/end points.
+</note>
+
+</roleset>
+
+<roleset id="pick.06" vncls="-" name="pick up: resume">
+<roles>
+  <role n="0"  descr="agent of resuming"/>
+  <role n="1"  descr="thing resuming or continuing"/>
+</roles>
+
+<example name="person as event">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+    Skipping personal pleasantries, Mr. Lee picked up exactly where he
+    left off several months earlier -- before the government crackdown
+    in China -- when he had warned that the orthodox leadership in
+    Beijing feared a plurality of views. 
+  </text>
+  <arg n="m" f="ADV">Skipping personal pleasantries</arg>
+  <arg n="0"        >Mr. Lee</arg>
+  <rel              ></rel>
+  <arg n="" f="">exactly where he
+    left off several months earlier -- before the government crackdown
+    in China -- when he had warned that the orthodox leadership in
+    Beijing feared a plurality of views</arg>
+<note>The arg1 is an unstated 'the conversation' or something</note>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="pick_off">
+
+<roleset id="pick.08" vncls="-" name="pick off: remove pieces">
+<roles>
+  <role n="0"  descr="remover, agent"/>
+  <role n="1"  descr="pieces"/>
+  <role n="2"  descr="source"/>
+</roles>
+
+<example name="no source">
+  <inflection person="ns" tense="ns" aspect="ns" voice="ns" form="gerund"/>
+  <text>
+    But Saatchi's troubles have only whipped up interest among
+    outsiders interested [*] in [*] picking off pieces of its ad
+    businesses. 
+  </text>
+  <arg n="0"        >[*] -> [*] -> outsiders</arg>
+  <rel              >picking off</rel>
+  <arg n="1"        >pieces of its ad businesses</arg>
+<note>
+I'm not actually sure the source argument can appear.
+</note>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

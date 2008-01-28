@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="discomfit">
+<note>
+  Frames file for 'discomfit' based on sentences in wsj.  Verbnet
+  entry 31.1, Framenet entry Experiencer obj.
+</note>
+
+<roleset id="discomfit.01" name="cause discomfort" vncls="31.1">
+<roles>
+  <role descr="causer" n="0"><vnrole vncls="31.1" vntheta="Cause"/></role>
+  <role descr="discomforted entity" n="1"><vnrole vncls="31.1" vntheta="Experiencer"/></role>
+</roles>
+
+<example name="boring transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+    Well, it now turns out that Mrs. Thatcher had to travel across the
+    globe to the 49-member Commonwealth summit in Kuala Lumpur *trace*
+    to discomfit the Holy Order of Consensus Builders. 
+</text>
+        <arg n="0">*trace* -&gt;  Mrs. Thatcher</arg>
+        <rel>discomfit</rel>
+        <arg n="1">the Holy Order of Consensus Builders</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

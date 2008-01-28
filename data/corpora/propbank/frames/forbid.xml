@@ -1,0 +1,59 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="forbid">
+<note>
+  Frames file for 'forbid' based on survey of sentences in the WSJ
+  corpus. Comparison with 'allow'.
+</note>
+
+<roleset id="forbid.01" name="disallow, prohibit" vncls="-">
+<roles>
+  <role descr="disallower, agent" n="0"/>
+  <role descr="forbidden action" n="1"/>
+  <role descr="recipient" n="2"/>  
+</roles>
+
+
+<example name="all arguments">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+ Some supporters were stunned this summer when Mr. Dinkins suggested [*] weakening the law forbidding public employees [*-1] to go on strike [*T*-2] .
+</text>
+	<arg n="0">the law</arg>
+	<rel>forbidding</rel>
+	<arg n="2">public employees</arg>
+	<arg n="1">[*-1] to go on strike</arg>
+</example>
+
+
+<example name="with Arg1">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ If there is no moral prohibition that [*T*-1] expressly forbids it , full speed ahead .
+</text>
+	<arg n="0">[*T*-1] -&gt;  that -&gt;  no moral prohibition</arg>
+	<arg f="MNR" n="M">expressly</arg>
+	<rel>forbids</rel>
+	<arg n="1">it</arg>
+</example>
+
+<example name="with a prepositional Arg1">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ The British government currently forbids any outside investor from [*-1] holding more than 15 % of the company 's shares without permission until Dec. 31 ,
+</text>
+	<arg n="0">The British government</arg>
+	<arg f="TMP" n="M">currently</arg>
+	<rel>forbids</rel>
+	<arg n="2">any outside investor</arg>
+	<arg f="from" n="1">[*-1] holding more than 15 % of the company 's shares without permission</arg>
+	<arg f="TMP" n="M">until Dec. 31</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

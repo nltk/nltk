@@ -1,0 +1,40 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="devour">
+<note>
+  Frames file for 'devour' based on sentences in financial subcorpus.
+  No access to verbnet.  I'd like to compare to 'eat', but that hasn't
+  been framed yet.  Oh well.
+</note>
+
+<roleset id="devour.01" name="eat ravenously" vncls="39.4">
+<roles>
+  <role descr="eater" n="0">
+		
+  <vnrole vncls="39.4" vntheta="Agent"/></role>
+
+  <role descr="thing eaten" n="1">
+		
+  <vnrole vncls="39.4" vntheta="Patient"/></role>
+
+</roles>
+
+<example name="transitive">
+<text>
+    Yet our efforts are somehow less noble than those of an investment
+    expert studiously devouring press clippings on each company he
+    follows. 
+</text>
+        <arg n="0">an investment expert</arg>
+        <arg f="MNR" n="M">studiously</arg>
+        <rel>devouring</rel>
+        <arg n="1">press clippings on each company he follows</arg>
+</example>
+
+<note>
+This is the prototypical transitive verb.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

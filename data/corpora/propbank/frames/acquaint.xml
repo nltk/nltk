@@ -1,0 +1,44 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="acquaint">
+<note>
+  Frames file for 'acquaint' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="acquaint.01" name="know informally" vncls="-">
+<roles>
+  <role descr="rare agent" n="0"/>
+  <role descr="knower" n="1"/>
+  <role descr="acquaintance" n="2"/>
+</roles>
+
+<example name="pseudopassive, merged args">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    Instead, he said that the purpose is simply for the two to get
+    ``better acquainted'' and discuss a wide range of issues without a
+    formal agenda. 
+</text>
+        <arg n="1">the two</arg>
+        <arg f="MNR" n="M">better</arg>
+        <rel>acquainted</rel>
+</example>
+
+<example name="active, all args">
+  <inflection aspect="ns" form="full" person="ns" tense="ns" voice="active"/>
+  <text>
+    John took the opportunity *trace* to acquaint himself with the mysteries
+    of the girl's bathroom.
+  </text>
+  <arg n="0">*trace* -&gt; John</arg>
+  <rel>acquaint</rel>
+  <arg f="REC" n="1">himself</arg>
+  <arg f="with" n="2">the mysteries of the girl's bathroom</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

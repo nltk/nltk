@@ -1,0 +1,62 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="grumble">
+<note>
+Frames file for 'grumble' based on sentences in financial subcorpus
+and automatic expansion via verbnet.
+</note>
+
+<roleset id="grumble.01" name="grumble" vncls="37.3 37.8">
+<roles>
+	<role descr="grumbler" n="0">
+		
+		
+  <vnrole vncls="37.3" vntheta="Agent"/><vnrole vncls="37.8" vntheta="Agent"/></role>
+ 
+	<role descr="utterance" n="1">
+		
+		
+  <vnrole vncls="37.3" vntheta="Topic"/><vnrole vncls="37.8" vntheta="Topic"/></role>
+ 
+	<role descr="hearer" n="2">
+		
+		
+  <vnrole vncls="37.3" vntheta="Recipient"/><vnrole vncls="37.8" vntheta="Recipient"/></role>
+ 
+</roles>
+
+<example name="no hearer">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+     Similarly, Honda Motor Co.'s sales are so brisk that workers
+     grumble they haven't had a Saturday off in years, despite the
+     government's encouragement of more leisure activity. 
+</text>
+        <arg n="0">workers</arg>
+        <rel>grumble</rel>
+        <arg n="1">they haven't had a Saturday off in years, despite
+        the government's encouragement of more leisure activity</arg> 
+</example>
+
+<example name="with hearer" src="scream.01">
+  <text>
+    John grumbled in Mary's ear.
+  </text>
+  <arg n="0">John</arg>
+  <rel>grumbled</rel>
+  <arg f="in" n="2">Mary's ear</arg>
+</example>
+
+<example name="complaint as nominal" src="complain.01">
+<text>
+    Several Big Board firms are organizing *trace* to grumble about
+    program trading and the exchange's role in it. 
+</text>
+        <arg n="0">*trace* -&gt;  Several Big Board firms</arg>
+        <rel>grumble</rel>
+        <arg f="about" n="1">program trading and the exchange 's role
+        in it</arg> 
+</example>
+
+</roleset>
+</predicate>
+</frameset>

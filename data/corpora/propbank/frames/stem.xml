@@ -1,0 +1,65 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="stem">
+<note>
+  Frames file for 'stem' based on sentences in financial subcorpus.
+  Verbnet class pit-10.7.  Comparison with 'come'
+</note>
+
+<roleset id="stem.01" name="arise (from)" vncls="48.1.1">
+<roles>
+  <role descr="thing (state) arising" n="1"><vnrole vncls="48.1.1" vntheta="Theme"/></role>
+  <role descr="source (from or in or of)" n="2"><vnrole vncls="48.1.1" vntheta="Location"/></role>
+</roles>
+
+<example name="headless relative">
+<text>
+    Travelers Corp.'s third-quarter net income rose 11%, even though
+    claims stemming from Hurricane Hugo reduced results $40 million. 
+</text>
+        <arg n="1">claims</arg>
+        <rel>stemming</rel>
+        <arg f="from" n="2">Hurricane Hugo</arg>
+</example>
+
+<example name="active transitive">
+<text>
+    He also rejected reports that his departure stemmed from
+    disappointment the general manager's post hadn't also led to a
+    board directorship at the London-based news organization. 
+</text>
+        <arg n="1">his departure</arg>
+        <rel>stemmed</rel>
+        <arg f="from" n="2">disappointment the general manager's post
+        hadn't also led to a board directorship at the London-based
+        news organization</arg> 
+</example>
+
+</roleset>
+
+<roleset id="stem.02" name="cause to stop (often flowing, as a liquid)" vncls="10.7">
+<roles>
+  <role descr="stopper" n="0">
+		
+  <vnrole vncls="10.7" vntheta="Agent"/></role>
+
+  <role descr="thing being stopped, (liquid)" n="1"><vnrole vncls="10.7" vntheta="Theme"/></role>
+</roles>
+
+<example name="like holding back the tide">
+<text>
+    If the company can start to ship during this quarter, it could
+    stem some, if not all of the red ink, he said. 
+</text>
+        <arg n="0">it</arg>
+        <arg f="MOD" n="M">could</arg>
+        <rel>stem</rel>
+        <arg n="1">some, if not all of the red ink</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,35 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="stow">
+<note>
+  Frames file for 'stow' based on sentences in wsj.  Verbnet entry 9.1.
+</note>
+
+<roleset id="stow.01" vncls="9.1" name="store, especially on a boat">
+<roles>
+	<role descr="agent, storer" n="0">
+	  <vnrole vncls="9.1" vntheta="Agent"/></role>
+	<role descr="thing stored" n="1">
+	  <vnrole vncls="9.1" vntheta="Theme"/></role>
+	<role descr="location or position, or attribute" n="2">
+          <vnrole vncls="9.1" vntheta="Destination"/></role>
+</roles>
+
+<example name="no location">
+<inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+<text>
+      The five astronauts, who [*T*-1] stowed gear and tested the
+      spacecraft's steering, said they were unconcerned about the
+      touchy weather expected in the Mojave Desert.  
+</text>
+	<arg n="0">[*T*-1] ->  who ->  The five astronauts</arg>
+	<rel>stowed</rel>
+	<arg n="1">gear</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,53 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="bathe">
+<note>
+  Frames file for 'bathe' based on sentences in brown.  Verbnet entry
+</note>
+
+<roleset id="bathe.01" vncls="-" name="have a bath">
+<roles>
+  <role n="0"  descr="bather"/>
+  <role n="1"  descr="liquid"/>
+</roles>
+
+<example name="with liquid">
+  <inflection person="ns" tense="ns" aspect="ns" voice="ns" form="gerund"/>
+  <text>
+     As warmer temperatures were encountered Ann and Harriet were
+     introduced to the pleasures of *trace* bathing daily in salt water.
+  </text>
+  <arg n="0"        >*trace* -> Ann and Harriet</arg>
+  <rel              >bathing</rel>
+  <arg n="m" f="TMP">daily</arg>
+  <arg n="1" f="in">salt water</arg>
+</example>
+
+<example name="intransitive">
+  <inflection person="ns" tense="ns" aspect="ns" voice="active" form="infinitive"/>
+  <text>
+     Heat during the Atlanta campaign, coupled with unsuitable
+     clothing, caused individual irritation that was compounded by a
+     lack of opportunity *trace* to bath and shift into clean clothing.
+  </text>
+  <arg n="0"        >*trace*</arg>
+  <rel              >bathe</rel>
+</example>
+
+<example name="pseudopassive">
+  <inflection person="third" tense="past" aspect="ns" voice="passive" form="participle"/>
+  <text>
+    ...so that the whole place was bathed in the maximum of light
+    without any point admitting even so much as a crack of glare.
+  </text>
+  <arg n="0"        >the whole place</arg>
+  <rel              >bathed</rel>
+  <arg n="1" f="in">the maximum of light</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

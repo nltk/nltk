@@ -1,0 +1,39 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="support">
+<note>
+  Frames file for 'support' based on survey of initial sentences of
+  big corpus and comparison with 'help'
+</note>
+
+<roleset id="support.01" name="lend aid, credence to" vncls="31.2">
+<roles>
+  <role descr="helper" n="0">
+		
+  <vnrole vncls="31.2" vntheta="Experiencer"/></role>
+
+  <role descr="person or project being supported" n="1">
+		
+  <vnrole vncls="31.2" vntheta="Cause"/></role>
+
+</roles>
+
+<example name="benefactive">
+  <text>
+  The finding probably will support those who argue that the US should
+  regulate the class of asbestos including crocidolite more closely.
+  </text>
+  <arg n="0">The finding</arg>
+  <arg f="DIS" n="m">probably</arg>
+  <arg f="MOD" n="m">will</arg>
+  <rel>support</rel>
+  <arg n="1">those who argue that the US should
+  regulate the class of asbestos including crocidolite more closely.</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

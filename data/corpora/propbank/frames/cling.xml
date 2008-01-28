@@ -1,0 +1,53 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="cling">
+<note>
+  Frames file for 'cling' based on sentences in wsj.  Verbnet entry
+  22.5 and 43.2.
+</note>
+
+<roleset id="cling.01" name="stick to" vncls="22.5">
+<roles>
+  <role descr="clingy thing" n="0"><vnrole vncls="22.5" vntheta="Theme1"/></role>
+  <role descr="clung to" n="1"><vnrole vncls="22.5" vntheta="Theme2"/></role>
+</roles>
+
+<example name="this should suffice">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    His point: It will be increasingly difficult for the U.S. to cling
+    to command-and-control measures if even the East Bloc steps to a
+    different drummer. 
+</text>
+        <arg n="1">the U.S.</arg>
+        <rel>cling</rel>
+        <arg f="to" n="1">command-and-control measures</arg>
+        <arg f="ADV" n="M">if even the East Bloc steps to a different
+        drummer</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="cling.02" name="make a sound like a small bell" vncls="43.2">
+<roles>
+  <role descr="small bell" n="1"><vnrole vncls="43.2" vntheta="Theme"/></role>
+</roles>
+
+<example name="time to wake up">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John's alarm clock clinged.  Clang?
+  </text>
+  <arg n="1">John's alarm clock</arg>
+  <rel>clinged</rel>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

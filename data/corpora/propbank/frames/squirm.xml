@@ -1,0 +1,41 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="squirm">
+<note>
+  Frames file for 'squirm' based on sentences in wsj.  Verbnet entry 49.
+</note>
+
+<roleset id="squirm.01" vncls="49" name="mode of motion">
+<roles>
+  <role n="0"  descr="squirmer"/>
+  <role n="1"  descr="path"/>
+</roles>
+
+<example name="adjectival">
+<inflection person="ns" tense="ns" aspect="progressive" voice="active" form="participle"/>
+<text>
+     ``She's being attacked by the demon,'' Mrs. Warren stagewhispers
+     as the priest sprinkles holy water over the squirming woman, and
+     the television camera grinds. 
+</text>
+	<rel>squirming</rel>
+	<arg n="0">woman</arg>
+</example>
+
+<example name="with path">
+  <inflection person="third" tense="present" aspect="ns" voice="active" form="full"/>
+  <text>
+     John always squirms his way out of cleaning his room.
+  </text>
+  <arg n="0"        >John</arg>
+  <arg n="m" f="TMP">always</arg>
+  <rel              >squirms</rel>
+  <arg n="1"        >his way out of cleaning his room</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

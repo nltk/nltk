@@ -1,0 +1,66 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="study">
+<note>
+  Frames file for 'study' based on sentences in financial subcorpus.
+  Verbnet classes 14, 30.2, 34; no indication of other members.
+</note>
+
+<roleset id="study.01" name="examine closely" vncls="14 30.2 34">
+<roles>
+  <role descr="student" n="0">
+		
+		
+		
+  <vnrole vncls="30.2" vntheta="Experiencer"/><vnrole vncls="14" vntheta="Agent"/><vnrole vncls="34" vntheta="Agent"/></role>
+
+  <role descr="subject" n="1">
+		
+		
+		
+  <vnrole vncls="30.2" vntheta="Stimulus"/><vnrole vncls="14" vntheta="Topic"/><vnrole vncls="34" vntheta="Theme"/></role>
+
+</roles>
+
+<example name="transitive, NP subject">
+<text>
+    Other credit houses, such as Credit Exchange and Solo Credit
+    Service Corp., are suggesting that their clients study each order
+    before shipping. 
+</text>
+        <arg n="0">their clients</arg>
+        <rel>study</rel>
+        <arg n="1">each order</arg>
+        <arg f="TMP" n="M">before shipping</arg>
+</example>
+
+<example name="transitive, SBAR subject">
+<text>
+    Mr. Garcia acknowledges the problem and says the Asset Trust will
+    study why the bidding failed and what changes the agency may be
+    able to offer. 
+</text>
+        <arg n="0">the Asset Trust</arg>
+        <arg f="MOD" n="M">will</arg>
+        <rel>study</rel>
+        <arg n="1">why the bidding failed and what changes the agency
+        may be able to offer </arg> 
+</example>
+
+<example name="intransitive">
+  <text>
+    John studies at Penn.
+  </text>
+  <arg n="0">John</arg>
+  <rel>studies</rel>
+  <arg f="LOC" n="m">at Penn</arg>
+</example>
+
+<note>
+Those of you who have studied (heheh) Latin or any Romance languages
+know, of course, that &quot;student&quot; is merely &quot;one studying&quot;.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

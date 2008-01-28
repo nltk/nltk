@@ -1,0 +1,123 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="cheer">
+<note>
+Frames file for 'cheer' based on sentences in financial subcorpus and
+automatic expansion via verbnet.
+</note>
+
+<roleset id="cheer.01" name="make happy, cheerful" vncls="31.1">
+<roles>
+  <role descr="causer of cheer, agent" n="0">
+	<vnrole vncls="31.1" vntheta="Cause"/></role>
+  <role descr="patient, made cheerful" n="1">
+	<vnrole vncls="31.1" vntheta="Experiencer"/></role>
+  <role descr="instrument or manner, only when separate  from agent" n="2"/>
+</roles>
+
+<example name="passivized">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    While bond investors would have preferred growth to be a little
+    slower, they were cheered *trace* by inflation measures in the
+    data that showed prices rising at a modest annual rate of 2.9%. 
+</text>
+        <arg f="ADV" n="M">While bond investors would have preferred
+        growth to be a little slower</arg> 
+        <rel>cheered</rel>
+        <arg n="1">*trace* -&gt;  they</arg>
+        <arg f="by" n="0">inflation measures in the data that  showed
+        prices rising at a modest annual rate of 2.9 %</arg> 
+</example>
+
+<example name="with instrument">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    Mary cheered John with a hot-fudge sundae.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>cheered</rel>
+  <arg n="1">John</arg>
+  <arg f="with" n="2">a hot-fudge sundae</arg>
+</example>
+
+</roleset>
+
+<roleset id="cheer.02" name="applaud, cheer for" vncls="33">
+<roles>
+  <role descr="clapper" n="0">
+	<vnrole vncls="33" vntheta="Agent"/></role>
+  <role descr="thing approved of" n="1">
+	<vnrole vncls="33" vntheta="Theme"/></role>
+  <role descr="grounds, reason for approval" n="2">
+	<vnrole vncls="33" vntheta="Cause"/></role>
+</roles>
+
+<example name="PP approval" src="approve.01">
+  <text>
+  50% of voters cheered for the President's job performance.
+  </text>
+  <arg n="0">50% of voters</arg>
+  <rel>cheered</rel>
+  <arg f="for" n="1">the President's job performance</arg>
+</example>
+
+<example name="NP approval" src="approve.01">
+  <text>
+  Shareholders cheered Pacific First Financial's acquisition by Royal
+  Trustco Ltd of Toronto for $27 a share, or $212 million.
+  </text>
+  <arg n="0">Shareholders</arg>
+  <rel>cheered</rel>
+  <arg n="1">Pacific First Financial's acquisition by Royal
+  Trustco Ltd of Toronto for $27 a share, or $212 million.</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="cheer_up">
+
+<roleset id="cheer.03" name="make happy, cheerful" vncls="31.1">
+<roles>
+  <role descr="comforter" n="0">
+	<vnrole vncls="31.1" vntheta="Cause"/></role>
+  <role descr="patient, comforted" n="1">
+	<vnrole vncls="31.1" vntheta="Experiencer"/></role>
+  <role descr="instrument or manner" n="2"/>
+</roles>
+
+<example name="all args">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    Mary cheered John up with a hot-fudge sundae.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>cheered up</rel>
+  <arg n="1">John</arg>
+  <arg f="with" n="2">a hot-fudge sundae</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="cheer_on">
+<roleset id="cheer.04" name="encourage" vncls="33">
+<roles>
+  <role descr="encourager" n="0"><vnrole vncls="33" vntheta="Agent"/></role>
+  <role descr="thing encouraged" n="1"><vnrole vncls="33" vntheta="Theme"/></role>
+</roles>
+
+<example name="NP approval" src="approve.01">
+  <text>
+  50% of voters cheered on the President's job performance.
+  </text>
+  <arg n="0">50% of voters</arg>
+  <rel>cheered on</rel>
+  <arg n="1">the President's job performance</arg>
+</example>
+
+
+</roleset>
+</predicate>
+</frameset>

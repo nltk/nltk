@@ -1,0 +1,84 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="assume">
+<note>
+  Frames file for 'assume' based on sentences in financial subcorpus.
+  Verbnet class 29.4.  Comparison to 'take_on' and 'think'.
+</note>
+
+<roleset id="assume.01" name="acquire" vncls="-">
+<roles>
+  <role descr="entity acquiring something" n="0"/>
+  <role descr="thing being acquired" n="1"/>
+  <role descr="acquired-from" n="2"/>
+  <role descr="price paid" n="3"/>
+  <role descr="benefactive" n="4"/>
+</roles>
+
+<example name="acquire, take on">
+<text>
+    Primerica, as expected, also acquired certain assets of the agency
+    and assumed certain of its liabilities. 
+</text>
+        <arg n="0">Primerica</arg>
+        <arg f="DIS" n="M">as  expected</arg>
+        <arg f="DIS" n="M">also</arg>
+        <rel>assumed</rel>
+        <arg n="1">certain of its liabilities</arg>
+</example>
+
+<note>
+I doubt the other/higher numbered args will appear, but anything is
+possible. 
+</note>
+
+</roleset>
+
+<roleset id="assume.02" name="believe" vncls="29.4">
+  <roles>
+    <role descr="Thinker" n="0">
+		
+  <vnrole vncls="29.4" vntheta="Agent"/></role>
+
+    <role descr="Thought" n="1">
+		
+  <vnrole vncls="29.4" vntheta="Theme"/></role>
+
+    <role descr="Attributive" n="2">
+		
+  <vnrole vncls="29.4" vntheta="Predicate"/></role>
+
+  </roles>
+
+<example name="with a clear assumer">
+<text>
+    He suggests, for example, that investors may have assumed that
+    just because UAL couldn't get financing, no leveraged buy-outs can
+    get financing. 
+</text>
+        <arg n="0">investors</arg>
+        <arg f="MOD" n="M">may</arg>
+        <rel>assumed</rel>
+        <arg n="1">just because UAL couldn't get financing, no
+        leveraged buy-outs can get financing</arg> 
+</example>
+
+<example name="discourse function">
+<text>
+    He also said that after the charges, and `` *trace* assuming no
+ dramatic fluctuation in interest rates, the company expects to
+ achieve near-record earnings in 1990.'' 
+</text>
+        <arg n="0">*trace*</arg>
+        <rel>assuming</rel>
+        <arg n="1">no dramatic fluctuation in interest rates</arg>
+</example>
+
+<note>
+Important: There is *no* target for the trace!  The automatic tagging
+tries to find one and inevitably picks something wrong.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,47 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="franchise">
+<note>
+  Frames file for 'franchise' based on sentences in financial
+  subcorpus.  No Verbnet entry, no Framenet entry.
+</note>
+
+<roleset id="franchise.01" name="sell a representative   example of a chain" vncls="-">
+<roles>
+  <role descr="franchiser" n="0"/>
+  <role descr="example of chain" n="1"/>
+  <role descr="franchisee" n="2"/>
+</roles>
+
+<example name="no franchisee">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    Rally's operates and franchises about 160 fast-food restaurants
+    throughout the U.S. 
+</text>
+        <arg n="0">Rally 's</arg>
+        <rel>franchises</rel>
+        <arg n="1">about 160 fast-food restaurants throughout the U.S.</arg>
+</example>
+
+<example name="with franchisee">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John franchised his highly lucrative dissertation-shredding
+    business to hordes of hungry undergraduates.
+  </text>
+  <arg n="0">John</arg>
+  <rel>franchised</rel>
+  <arg n="1">his highly lucrative dissertation-shredding
+    business</arg>
+  <arg f="to" n="2">hordes of hungry undergraduates</arg>
+</example>
+
+<note>
+I have a vague intuition that there's also a 'buy a franchise' sense,
+but I'll wait until an example shows up.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

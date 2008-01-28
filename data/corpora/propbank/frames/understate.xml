@@ -1,0 +1,66 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="understate">
+<note>
+  Frames file for 'understate' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="understate.01" name="to state (a quantity, for example) that is too low" vncls="-">
+<roles>
+  <role descr="stater" n="0"/>
+  <role descr="entity understated" n="1"/>
+  <role descr="quantity" n="2"/>
+</roles>
+
+<example name="with Arg2 as PP">
+<inflection aspect="ns" form="participle" person="ns" tense="past" voice="passive"/>
+<text>
+     The Commerce Department found that U.S. exports in 1988, net of
+     imports, were understated [*-1] by $20.9 billion a year and
+     understated [*-1] at the annualized rate of $25.4 billion in the
+     first quarter of 1989. 
+</text>
+	<rel>understated</rel>
+	<arg n="1">[*-1] -&gt;  U.S. exports in 1988, net of imports,</arg>
+	<arg f="by" n="2">$20.9 billion a year</arg>
+</example>
+
+
+<example name="with Arg2 as different PP">
+<inflection aspect="ns" form="participle" person="ns" tense="past" voice="passive"/>
+<text>
+     The Commerce Department found that U.S. exports in 1988, net of
+     imports, were understated by $20.9 billion a year and understated
+     [*-1] at the annualized rate of $25.4 billion in the first
+     quarter of 1989. 
+</text>
+	<rel>understated</rel>
+	<arg n="1">[*-1] -&gt;  U.S. exports in 1988, net of imports,</arg>
+	<arg f="at" n="2">the annualized rate of $25.4 billion</arg>
+	<arg f="TMP" n="M">in the first quarter of 1989</arg>
+</example>
+
+
+<example name="misparsed arg1">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+     Our five-year plan contains three accounting devices--negative
+     money, an above guidance management reserve and optimistic
+     inflation estimates--which [*T*-1] understate the spending the
+     Pentagon has committed itself to by almost $100 billion. 
+</text>
+	<arg n="0">[*T*-1] -&gt;  which -&gt;  optimistic inflation estimates</arg>
+	<rel>understate</rel>
+	<arg n="1">the spending [0] the Pentagon has committed itself to [*T*-2] by almost $ 100 billion [*U*]</arg>
+<note>
+The "by" phrase should not be part of the arg1, but there's no good
+way to separate it out.
+</note>
+</example>
+
+</roleset>
+</predicate>
+
+
+</frameset>

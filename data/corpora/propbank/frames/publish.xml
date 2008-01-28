@@ -1,0 +1,46 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="publish">
+<note>
+  Frames file for 'publish' based on sentences in financial
+  subcorpus.  No access to verbnet.  No comparison.
+</note>
+
+<roleset id="publish.01" name="publish">
+<roles>
+  <role descr="publisher" n="0"/>
+  <role descr="book, report" n="1"/>
+</roles>
+
+<example name="transitive">
+<text>
+    Dow Jones publishes The Wall Street Journal, Barron's magazine,
+    and community newspapers and operates financial news services and
+    computer data bases. 
+</text>
+        <arg n="0">Dow Jones</arg>
+        <rel>publishes</rel>
+        <arg n="1">The Wall Street Journal, Barron's magazine, and
+        community newspapers</arg> 
+</example>
+
+<example name="published in">
+<text>
+    Mr. Bond indicated the consolidated debt figures, which include
+    debt of units such as Bell Group Ltd., will be published *trace*
+    soon in Bond Corp.'s 1989 annual accounts. 
+</text>
+        <arg f="MOD" n="M">will</arg>
+        <rel>published</rel>
+        <arg n="1">*trace* -&gt;  the consolidated debt figures, which
+        include debt of units such as Bell Group Ltd.</arg> 
+        <arg f="TMP" n="M">soon</arg>
+        <arg f="LOC" n="M">in Bond Corp.'s 1989 annual accounts</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,46 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="prejudice">
+<note>
+  Frames file for 'prejudice' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="prejudice.01" vncls="-" name="cause to have a preformed opinion">
+<roles>
+  <role n="0"  descr="causer"/>
+  <role n="1"  descr="prejudiced entity"/>
+  <role n="2"  descr="prejudiced against"/>
+</roles>
+
+<example name="adjectival">
+<inflection person="ns" tense="present" aspect="ns" voice="passive" form="participle"/>
+<text>
+    But while better-off Filipinos are quick to cite the logic in
+    using a language as widespread as English, they are often slow to
+    reveal that they are prejudiced against Filipino, say advocates of
+    the native language.  
+</text>
+	<arg n="1">they</arg>
+	<rel>prejudiced</rel>
+	<arg n="2" f="against">Filipino</arg>
+</example>
+
+<example name="agentive">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+     John's first experience with okra prejudiced him against Southern
+     cooking forever.
+  </text>
+  <arg n="0"        >John's first experience with okra</arg>
+  <rel              >prejudiced</rel>
+  <arg n="1"        >him</arg>
+  <arg n="2" f="against">Southern cooking</arg>
+  <arg n="m" f="TMP">forever</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

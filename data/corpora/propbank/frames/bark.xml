@@ -1,0 +1,73 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="bark">
+<note>
+  Frames file for 'bark' based on sentences in wsj.  Verbnet entries
+  10.7 (totally bogus), 37.3, 40.8.3-2; Framenet entry Communication
+  noise and Perception noise.
+</note>
+
+<roleset id="bark.01" name="like a dog" vncls="37.3">
+<roles>
+  <role descr="barker" n="0"><vnrole vncls="37.3" vntheta="Agent"/></role>
+  <role descr="utterance" n="1"><vnrole vncls="37.3" vntheta="Topic"/></role>
+  <role descr="hearer" n="2"><vnrole vncls="37.3" vntheta="Recipient"/></role>
+</roles>
+
+<example name="woof!">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John's dog barked all night.
+  </text>
+  <arg n="0">John's dog</arg>
+  <rel>barked</rel>
+  <arg f="TMP" n="m">all night</arg>
+</example>
+
+<note>
+Since when did John have a dog?
+</note>
+
+<example name="all args">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    Mary barked orders to John, which he dutifully ignored.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>barked</rel>
+  <arg n="1">orders</arg>
+  <arg f="to" n="2">John</arg>
+  <arg n="m">which he dutifully ignored</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="bark_up_the_wrong_tree">
+
+<roleset id="bark.02" name="follow the wrong lead" vncls="-">
+<roles>
+  <role descr="barker" n="0"/>
+</roles>
+
+<example name="stupid idioms">
+<inflection aspect="progressive" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+    They are barking up the wrong tree, because it is basically their
+    fault they can't attract new employees. 
+</text>
+        <arg n="0">They</arg>
+        <rel>[ barking] [ up the wrong tree]</rel>
+        <arg f="CAU" n="M">because it is basically their fault they
+        can't attract new employees</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

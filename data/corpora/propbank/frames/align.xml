@@ -1,0 +1,47 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="align">
+<note>
+Frames file for 'align' based on sentences in financial subcorpus and
+automatic expansion via verbnet.
+</note>
+
+<roleset id="align.01" name="arrange so as to be parallel" vncls="31.1">
+<roles>
+	<role descr="arranger, agent" n="0">
+		
+  <vnrole vncls="31.1" vntheta="Cause"/></role>
+
+	<role descr="thing being aligned" n="1">
+		
+  <vnrole vncls="31.1" vntheta="Experiencer"/></role>
+
+	<role descr="standard of comparison, aligned-to" n="2"/>
+</roles>
+
+<example name="passive, align with">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    ``We expect near-term sluggishness in the electronics market,'' he
+    said, ``and we will take ongoing cost-reduction actions as
+    necessary to keep operations aligned *trace* with demand.'' 
+</text>
+        <rel>aligned</rel>
+        <arg n="1">*trace* -&gt;  operations</arg>
+        <arg f="with" n="2">demand</arg>
+</example>
+
+<example name="active, align to">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John aligned his bed to the earth's magnetic field.
+  </text>
+  <arg n="0">John</arg>
+  <rel>aligned</rel>
+  <arg n="1">his bed</arg>
+  <arg f="to" n="2">the earth's magnetic field</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

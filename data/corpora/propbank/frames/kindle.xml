@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="kindle">
+<note>
+  Frames file for 'kindle' based on sentences in wsj.  Verbnet entry 45.4.  
+</note>
+
+<roleset id="kindle.01" name="start a fire" vncls="45.4">
+<roles>
+  <role descr="firestarter" n="0"><vnrole vncls="45.4" vntheta="Agent"/></role>
+  <role descr="fire" n="1"><vnrole vncls="45.4" vntheta="Patient"/></role>
+</roles>
+
+<example name="not a literal fire">
+<inflection aspect="perfect" form="participle" person="third" tense="present" voice="active"/>
+<text>
+    Canadian officials said the trade pact has kindled an export
+    interest among many small Canadian companies that previously had
+    little or no foreign sales. 
+</text>
+        <arg n="0">the trade pact</arg>
+        <rel>kindled</rel>
+        <arg n="1">an export interest among many small Canadian
+        companies that previously had little or no foreign sales</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

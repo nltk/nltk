@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="quack">
+<note>
+  Frames file for 'quack' based on sentences in wsj.  Verbnet entry
+  38, Framenet entry Perception noise.
+</note>
+
+<roleset id="quack.01" name="make duck noises" vncls="38">
+<roles>
+  <role descr="duck" n="0"><vnrole vncls="38" vntheta="Agent"/></role>
+</roles>
+
+<example name="this sentence had to occur eventually">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    (Another much-beloved saying, however, this one in plain English,
+    holds that if something walks like a duck and quacks like a duck,
+    it is a duck. 
+</text>
+        <arg n="0">something</arg>
+        <rel>quacks</rel>
+        <arg f="MNR" n="M">like a duck</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

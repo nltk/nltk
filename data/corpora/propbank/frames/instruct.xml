@@ -1,0 +1,44 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="instruct">
+<note>
+Frames file for 'instruct' based on sentences in financial subcorpus
+and automatic expansion via verbnet.
+</note>
+
+<roleset id="instruct.01" name="impel action" vncls="37.9-1">
+<roles>
+  <role descr="instructor" n="0">
+	<vnrole vncls="37.9-1" vntheta="Agent"/></role>
+  <role descr="impelled agent" n="1">
+	<vnrole vncls="37.9-1" vntheta="Recipient"/></role>
+  <role descr="impelled action" n="2">
+	<vnrole vncls="37.9-1" vntheta="Topic"/></role>
+</roles>
+
+<example name="all args">
+<inflection aspect="perfect" form="participle" person="third" tense="present" voice="active"/>
+<text>
+    Jamaica, wary of upsetting its Caribbean Basin allies, has
+    apparently instructed its lobbyist to abandon the provision
+    initially drafted by Mr. Gray, but the greater question is whether
+    Mr. Inouye, who has strong ties to the sugar industry, is able to
+    insert a claim by the Philippines. 
+</text>
+        <arg n="0">Jamaica, wary of upsetting its Caribbean Basin
+        allies</arg>
+        <arg f="DIS" n="M">apparently</arg>
+        <rel>instructed</rel>
+        <arg n="1">its lobbyist</arg>
+        <arg n="2">to abandon the provision initially drafted
+        by Mr. Gray</arg> 
+</example>
+
+<note>
+Odd that 'instruct' doesn't share framing with 'teach', even though
+'teacher' and 'instructor' are often held to be synonymous.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,70 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="pedal">
+<note>
+  Frames file for 'pedal' based on sentences in wsj.  Verbnet entry
+  51.4.2, Framenet entry Transportation.
+</note>
+
+<roleset id="pedal.01" name="make a bicycle go" vncls="51.4.2">
+<roles>
+  <role descr="pedaller" n="0"><vnrole vncls="51.4.2" vntheta="Agent"/></role>
+  <role descr="bicycle" n="1"><vnrole vncls="51.4.2" vntheta="Theme"/></role>
+  <role descr="path" n="2"><vnrole vncls="51.4.2" vntheta="Location"/></role>
+</roles>
+
+<example name="with bicycle">
+<inflection aspect="ns" form="gerund" person="ns" tense="ns" voice="ns"/>
+<text>
+    This place is 12 miles into the back country -- a day-long trudge
+    for a hiker, but reached by Ms. Peterson and six others in a mere
+    two hours of *trace* pedaling fat-tired mountain bikes. 
+</text>
+        <arg n="0">*trace* -&gt;  Ms. Peterson and six others</arg>
+        <rel>pedaling</rel>
+        <arg n="1">fat-tired mountain bikes</arg>
+</example>
+
+<example name="one kind of path">
+<inflection aspect="perfect" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+     When they return to their desks at 1 p.m., they have pedaled 20
+     miles. 
+</text>
+        <arg f="TMP" n="M">When they return to their desks at 1 p.m. </arg>
+        <arg n="0">they</arg>
+        <rel>pedaled</rel>
+        <arg n="2">20 miles</arg>
+</example>
+
+<example name="another kind of path">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+    They wanted a machine that would allow them to pedal into rugged
+    terrain then inaccessible to cycles. 
+</text>
+        <arg n="0">them</arg>
+        <rel>pedal</rel>
+        <arg f="into" n="2">rugged terrain then inaccessible to cycles</arg>
+</example>
+
+<example name="not a path!">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+    Bikers -- many of them ardent environmentalists -- proclaim their
+    sport an efficient, safe, fitness-promoting way to get back to
+    nature, while asserting a right, as taxpayers, *trace* to pedal on
+    public lands. 
+</text>
+        <arg n="0">*trace* -&gt;  Bikers -- many of them ardent
+        environmentalists --</arg> 
+        <rel>pedal</rel>
+        <arg f="LOC" n="M">on public lands</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

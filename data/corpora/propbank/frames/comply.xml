@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="comply">
+<note>
+  Frames file for 'comply' based on sentences in financial subcorpus.
+  No Verbnet entry.  No comparison.
+</note>
+
+<roleset id="comply.01" name="cooperate">
+<roles>
+  <role descr="complier" n="0"/>
+  <role descr="complied-with (ie, rule)" n="1"/>
+</roles>
+
+<example name="transitive">
+<text>
+    MiniScribe filed a status report detailing its efforts *trace* to
+    comply with listing requirements... 
+</text>
+        <arg n="0">*trace* -&gt;  MiniScribe</arg>
+        <rel>comply</rel>
+        <arg f="with" n="1">listing requirements</arg>
+</example>
+
+<note>
+Seems to occur mostly in the infinitive, so be careful of
+trace-chains.  They can get tricky.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

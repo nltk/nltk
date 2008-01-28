@@ -1,0 +1,68 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="storm">
+<note>
+  Frames file for 'storm' based on sentences in wsj.  Verbnet entry
+  57, Framenet entries Weather and Self motion.
+</note>
+
+<roleset id="storm.01" name="bad weather" vncls="57">
+<roles>
+   <note>No args!</note>
+</roles>
+
+<example name="stormy weather....">
+  <inflection aspect="progressive" form="participle" person="third" tense="present" voice="active"/>
+  <text>
+     ``Wow,'' said John, ``it's really storming outside.''
+  </text>
+  <arg f="MNR" n="m">really</arg>
+  <rel>storming</rel>
+  <arg f="LOC" n="m">outside</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="storm.02" name="move violently" vncls="-">
+<roles>
+  <role descr="entity in motion" n="0"/>
+  <role descr="path" n="1"/>
+</roles>
+
+<example name="sorta path-ish">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Another described how tax-collection officials in Thanh Hoa
+    province one night stormed through homes and confiscated rice from
+    starving villagers. 
+</text>
+        <arg n="0">tax-collection officials in Thanh Hoa province</arg>
+        <arg f="TMP" n="M">one night</arg>
+        <rel>stormed</rel>
+        <arg f="DIR" n="1">through homes</arg>
+</example>
+
+
+<example name="definitely path, maybe different sense">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+    The pillars of apartheid may be trembling in the rest of South
+    Africa, with Johannesburg opening its public facilities to all
+    races, blacks storming the all-white beaches of the Cape and the
+    government releasing seven leaders of the banned African National
+    Congress. 
+</text>
+        <arg n="0">blacks</arg>
+        <rel>storming</rel>
+        <arg n="1">the all-white beaches of the Cape</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

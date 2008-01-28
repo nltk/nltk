@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="mow">
+<note>
+  Frames file for 'mow' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="mow.01" name="to cut grass or grain" vncls="21.2-2">
+<roles>
+  <role descr="mower, agent" n="0">
+        <vnrole vncls="21.2-2" vntheta="Agent"/></role>
+  <role descr="grass" n="1">
+        <vnrole vncls="21.2-2" vntheta="Patient"/></role>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ Bailiffs claimed [0] they were required [*-1] to chauffeur him to and from work , mow his lawn , chop his wood , fix his car and even drop by his house [*-2] to feed his two grown mutts , Dixie and Husky .
+</text>
+	<arg n="0">[*-1] -&gt;  they</arg>
+	<rel>mow</rel>
+	<arg n="1">his lawn</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

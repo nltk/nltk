@@ -1,0 +1,44 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="merit">
+<note>
+  Frames file for 'merit' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="merit.01" name="be worthy of" vncls="-">
+<roles>
+  <role descr="thing worthy" n="0"/>
+  <role descr="thing worthy of" n="1"/>
+</roles>
+
+<example name="simple">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    So-called living-benefits provisions also merit a close
+    inspection. 
+</text>
+        <arg n="0">So-called living-benefits provisions</arg>
+        <arg f="DIS" n="M">also</arg>
+        <rel>merit</rel>
+        <arg n="1">a close inspection</arg>
+</example>
+
+<example name="complicated by qualifier">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    So far, Mrs. Hills hasn't deemed any cases bad enough *trace* to
+    merit an accelerated investigation under the so-called special 301
+    provision of the act. 
+</text>
+        <arg n="0">*trace* -&gt;  any cases</arg>
+        <rel>merit</rel>
+        <arg n="1">an accelerated investigation</arg>
+</example>
+
+<note>
+The 'bad enough' is another predicate in the sentence--fortunately one
+which we can leave aside for the time being.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

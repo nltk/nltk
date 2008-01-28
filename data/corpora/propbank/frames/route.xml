@@ -1,0 +1,45 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="route">
+<note>
+  Frames file for 'route' based on survey of sentences in the WSJ
+  corpus. Comparison with 'send'.
+</note>
+
+<roleset id="route.01" name="send via a specific route" vncls="-">
+<roles>
+  <role descr="sender" n="0"/>
+  <role descr="thing sent" n="1"/>
+  <role descr="destination" n="2"/>
+</roles>
+
+<example name="with destination">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ The side car routes program trades into a special computer file that [*T*-1] scans for imbalances of buy and sell orders .
+</text>
+	<arg n="0">The side car</arg>
+	<rel>routes</rel>
+	<arg n="1">program trades</arg>
+	<arg f="into" n="2">a special computer file that [*T*-1] scans for imbalances of buy and sell orders</arg>
+</example>
+
+
+
+<example name="without destination">
+<inflection aspect="progressive" form="participle" person="ns" tense="past" voice="passive"/>
+<text>
+ While the exchange 's equities floor in San Francisco remained open on a limited basis , orders were being routed and executed [*-1] in Los Angeles .
+</text>
+	<arg f="TMP" n="M">While the exchange 's equities floor in San Francisco remained open on a limited basis</arg>
+	<rel>routed</rel>
+	<arg n="1">[*-1] -&gt;  orders</arg>
+	<arg f="LOC" n="M">in Los Angeles</arg>
+</example>
+
+
+
+
+</roleset>
+</predicate>
+</frameset>

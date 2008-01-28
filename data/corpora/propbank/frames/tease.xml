@@ -1,0 +1,116 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="tease">
+<note>
+  Frames file for 'tease' based on sentences in wsj.  Verbnet entries
+  35.6, 31.1 and 41.2.2.
+</note>
+
+<roleset id="tease.01" name="discover bit by bit, get out" vncls="35.6">
+<roles>
+  <role descr="agent, discoverer" n="0">
+        <vnrole vncls="35.6" vntheta="Agent"/></role>
+  <role descr="thing discovered" n="1">
+        <vnrole vncls="35.6" vntheta="Theme"/></role>
+  <role descr="from where, source" n="2">
+        <vnrole vncls="35.6" vntheta="Location"/></role>
+</roles>
+
+<example name="all args, discover">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     Mary teased the truth from the mass of John's lies and half-truths.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>teased</rel>
+  <arg n="1">the truth</arg>
+  <arg f="from" n="2">the mass of John's lies and half-truths</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="tease.02" name="tease" vncls="31.4">
+<roles>
+  <role descr="agent, teaser" n="0">
+        <vnrole vncls="31.4" vntheta="Cause"/></role>
+  <role descr="patient, teased" n="1">
+        <vnrole vncls="31.4" vntheta="Experiencer"/></role>
+  <role descr="about what" n="2">
+        <vnrole vncls="31.4" vntheta="Theme"/></role>
+</roles>
+
+<example name="bully Mary">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    Mary teased John endlessly about the zit on his nose.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>teased</rel>
+  <arg n="1">John</arg>
+  <arg f="MNR" n="m">endlessly</arg>
+  <arg f="about" n="2">the zit on his nose</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="tease.03" name="do bad things to hair" vncls="41.2.2">
+<roles>
+  <role descr="evildoer, agent" n="0">
+        <vnrole vncls="41.2.2" vntheta="Agent"/></role>
+  <role descr="hair" n="1">
+        <vnrole vncls="41.2.2" vntheta="Patient"/></role>
+  <role descr="end result" n="2"/>
+</roles>
+
+<example name="bad hair day">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John teased his hair into an enormous beehive.
+  </text>
+  <arg n="0">John</arg>
+  <rel>teased</rel>
+  <arg n="1">his hair</arg>
+  <arg f="into" n="2">an enormous beehive</arg>
+</example>
+
+<note>
+Usually without end result.
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="tease_out">
+
+<roleset id="tease.04" name="discover bit by bit, phrasal" vncls="35.6">
+<roles>
+  <role descr="agent, discoverer" n="0">
+        <vnrole vncls="35.6" vntheta="Agent"/></role>
+  <role descr="thing discovered" n="1">
+        <vnrole vncls="35.6" vntheta="Theme"/></role>
+  <role descr="from where, source" n="2">
+        <vnrole vncls="35.6" vntheta="Location"/></role>
+</roles>
+
+<example name="the one example">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    One cell was teased [*-1] out, and its DNA extracted. 
+</text>
+        <rel>[ teased] [ out]</rel>
+        <arg n="1">[*-1] -&gt;  One cell</arg>
+</example>
+
+<note>
+Except for the particle, identical to tease.01.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

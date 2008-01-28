@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="heap">
+<note>
+  Frames file for 'heap'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="heap.01" name="to bestow in large quantities" vncls="-">
+<roles> 
+  <role descr="giver" n="0"/>  
+  <role descr="entity heaped" n="1"/> 
+  <role descr="entity heaped on/upon" n="2"/>  
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ The surprise resignations of two top economic government officials heaped more uncertainty on London 's financial markets , which [*T*-1] already have been laboring under worries about Britain 's ailing economy .
+</text>
+	<arg n="0">The surprise resignations of two top economic government officials</arg>
+	<rel>heaped</rel>
+	<arg n="1">more uncertainty</arg>
+	<arg f="on" n="2">London 's financial markets , which [*T*-1] already have been laboring under worries about Britain 's ailing economy</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

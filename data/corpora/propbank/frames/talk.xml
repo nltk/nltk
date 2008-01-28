@@ -1,0 +1,88 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="talk">
+<note>
+  Frames file for 'talk' based on survey of initial sentences of big
+  corpus and comparison with 'say'
+</note>
+
+<roleset id="talk.01" name="speak">
+<roles>
+  <role descr="talker" n="0"/>
+  <role descr="subject" n="1"/>
+  <role descr="hearer" n="2"/>
+</roles>
+
+<example name="no hearer">
+  <text>
+  We're talking about years ago before anyone heard of asbestos having
+  any questionable properties.
+  </text>
+  <arg n="0">We</arg>
+  <rel>talking</rel>
+  <arg f="about" n="1">years ago before anyone heard of asbestos having
+  any questionable properties</arg>
+</example>
+
+<example name="no subject">
+  <text>
+  Cray says it is talking with several prospects.
+  </text>
+  <arg n="0">it</arg>
+  <rel>talking</rel>
+  <arg f="with" n="2">several prospects</arg>
+</example>
+
+<example name="both">
+  <text>
+  Mr. Simonds-Gooding isn't talking to any studios about investing.
+  </text>
+  <arg n="0">Mr. Simonds-Gooding</arg>
+  <arg f="NEG" n="m">n't</arg>
+  <rel>talking</rel>
+  <arg f="to" n="2">any studios</arg>
+  <arg f="about" n="1">investing</arg>
+</example>
+
+</roleset>
+
+<roleset id="talk.02" name="persuade / dissuade">
+<roles>
+  <role descr="talker" n="0"/>
+  <role descr="talked to" n="1"/>
+  <role descr="secondary action" n="2"/>
+</roles>
+
+<example name="dissuade">
+  <text>
+  Mr. Ross tried *trace* to talk him out of letting Sony buy CBS Records.
+  </text>
+  <arg n="0">*trace*=Mr. Ross</arg>
+  <rel>talk</rel>
+  <arg n="1">him</arg>
+  <arg f="out" n="2">of letting Sony buy CBS Records</arg>
+<note>
+Parallel structure for &quot;talk into&quot;
+</note>
+</example>
+
+<example name="less an action than a state">
+  <inflection person="ns" tense="ns" aspect="ns" voice="ns" form="gerund"/>
+  <text>
+     Although the board believed that Mr. Icahn is more interested in
+     [*-2] talking the stock price higher than acquiring USX, it
+     adopted a poison-pill defense, to be swallowed if anyone amasses
+     a 15% stake.
+  </text>
+  <arg n="0"        >[*-2] -> Mr. Icahn</arg>
+  <rel              >talking</rel>
+  <arg n="1"        >the stock price</arg>
+  <arg n="2"        >higher</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

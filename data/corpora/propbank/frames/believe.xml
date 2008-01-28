@@ -1,0 +1,77 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="believe">
+<note>
+  Frames file for 'believe' based on survey of initial sentences of
+  big corpus and comparison with 'know'
+</note>
+
+<roleset id="believe.01" name="believe" vncls="29.4">
+<roles>
+  <role descr="believer" n="0">
+	  <vnrole vncls="29.4" vntheta="Agent"/></role>
+  <role descr="belief" n="1">
+	  <vnrole vncls="29.4" vntheta="Theme"/></role>
+</roles>
+
+<example name="nominal complement">
+  <text>
+    Cathryn Rice could hardly believe her eyes.
+  </text>
+  <arg n="0">Cathryn Rice</arg>
+  <arg f="MOD" n="m">could</arg>
+  <arg f="ADV" n="m">hardly</arg>
+  <rel>believe</rel>
+  <arg n="1">her eyes</arg>
+</example>
+
+<example name="prepositional complement">
+  <text>
+    I believe in the system.
+  </text>
+  <arg n="0">I</arg>
+  <rel>believe</rel>
+  <arg f="in" n="1">the system</arg>
+</example>
+
+<example name="sentential complement">
+  <text>
+    You believe that Seymour Cray can do it again.
+  </text>
+  <arg n="0">You</arg>
+  <rel>believe</rel>
+  <arg n="1">Seymour Cray can do it again</arg>
+</example>
+
+
+<note>
+Once again, 'that' complementizers are not included.
+Wh-complementizers (who, what, where, etc, and 'if') WILL be included
+in the arg1.
+</note>
+
+<example name="sentential complement with passive extraction">
+  <text>
+    The declaration by Economy Minister Nestor Rapanelli is believed
+    *trace* to be the first time such an action has been called for.
+  </text>
+  <rel>believed</rel>
+  <arg n="1">[The declaration by Economy Minister Nestor Rapanelli ][*trace* to be the first time such an action has been called for]</arg>
+</example>
+
+<example name="light S">
+  <text>
+    Mary believes John an idiot.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>believes</rel>
+  <arg n="1">[John] [an idiot]</arg>
+</example>
+
+<note>
+This is theoretically possible, but unlikely.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,111 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="crack">
+<note>
+Frames file for 'crack' based on sentences in financial subcorpus and
+automatic expansion via verbnet.
+</note>
+
+<roleset id="crack.01" name="make a cracking noise" vncls="43.2">
+<roles>
+	<role descr="shaker" n="0"><vnrole vncls="43.2" vntheta="Agent"/></role>
+	<role descr="thing shaking" n="1"><vnrole vncls="43.2" vntheta="Theme"/></role>
+</roles>
+
+<example name="ouch">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John cracked his knuckles.
+  </text>
+  <arg n="0">John</arg>
+  <rel>cracked</rel>
+  <arg n="1">his knuckles</arg>
+</example>
+
+<note>
+There should be an ergative reading, but I can't get it.  &quot;Thunder cracked&quot;?
+</note>
+</roleset>
+
+<roleset id="crack.02" name="break, but not into pieces" vncls="45.1">
+<roles>
+	<role descr="breaker" n="0">
+		
+  <vnrole vncls="45.1" vntheta="Agent"/></role>
+
+	<role descr="thing broken" n="1">
+		
+  <vnrole vncls="45.1" vntheta="Patient"/></role>
+
+	<role descr="instrument" n="2">
+		
+  <vnrole vncls="45.1" vntheta="Instrument"/></role>
+
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    But new-product development will make Japanese companies stronger,
+    and big investments in ``domestic'' industries such as beer will
+    make it even tougher for foreign competitors to crack the Japanese
+    market. 
+</text>
+        <arg n="0">foreign competitors</arg>
+        <rel>crack</rel>
+        <arg n="1">the Japanese market</arg>
+</example>
+
+<example name="now that's ugly">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John cracked the mirror with his ugliest face.
+  </text>
+  <arg n="0">John</arg>
+  <rel>cracked</rel>
+  <arg n="1">the mirror</arg>
+  <arg f="with" n="2">his ugliest face</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="crack_up">
+
+<roleset id="crack.03" name="cause hilarity" vncls="-">
+<roles>
+  <role descr="joker" n="0"/>
+  <role descr="laugher" n="1"/>
+  <role descr="joke" n="2"/>
+</roles>
+
+<example name="all args">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John cracked Mary up with his Elvis impersonation.
+  </text>
+  <arg n="0">John</arg>
+  <rel>cracked up</rel>
+  <arg n="1">Mary</arg>
+  <arg f="with" n="2">his Elvis impersonation</arg>
+</example>
+
+<example name="just laugher">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    Mary cracked up when she saw John's Elvis impersonation.
+  </text>
+  <arg n="1">Mary</arg>
+  <rel>cracked up</rel>
+  <arg f="TMP" n="m">when she saw John's Elvis impersonation</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

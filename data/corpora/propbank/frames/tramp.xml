@@ -1,0 +1,35 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="tramp">
+<note>
+  Frames file for 'tramp' based on sentences in wsj.  Verbnet entry
+  51.3.2, Framenet entry Self motion.
+</note>
+
+<roleset id="tramp.01" name="mode of motion" vncls="51.3.2">
+<roles>
+  <role descr="entity in motion" n="0"><vnrole vncls="51.3.2" vntheta="Theme"/></role>
+  <role descr="path" n="1"><vnrole vncls="51.3.2" vntheta="Location"/></role>
+</roles>
+
+<example name="the one example">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    ``I 've ripped out a lot of Delicious'' and grafted the trees with
+    many different shoots, says Steve Wood, a West Lebanon, N.H.,
+    grower, [*-2] tramping through his 100-acre Poverty Lane Orchard
+    on a crisp autumn day recently. 
+</text>
+        <arg n="0">[*-2] -&gt;  Steve Wood , a West Lebanon , N.H. , grower</arg>
+        <rel>tramping</rel>
+        <arg f="through" n="1">his 100-acre Poverty Lane Orchard</arg>
+        <arg f="TMP" n="M">on a crisp autumn day</arg>
+        <arg f="TMP" n="M">recently</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

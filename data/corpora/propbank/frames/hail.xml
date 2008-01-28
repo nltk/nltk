@@ -1,0 +1,119 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="hail">
+<note>
+  Frames file for 'hail' based on sentences in financial subcorpus.
+  No access to verbnet.  No comparisons.
+</note>
+
+<roleset id="hail.01" name="weather phenomenon" vncls="57">
+<roles>
+<note>
+takes no args
+</note>
+</roles>
+
+<example name="it support">
+  <text>
+    It's hailing in Boise, ID.
+  </text>
+  <rel>hailing</rel>
+  <arg f="LOC" n="m">in Boise, ID</arg>
+</example>
+
+<note>
+See also related 'hail down'
+</note>
+
+</roleset>
+
+<roleset id="hail.02" name="recognize and honor" vncls="29.2 33">
+<roles>
+  <role descr="entity giving recognition" n="0">
+	
+        <vnrole vncls="29.2" vntheta="Agent"/><vnrole vncls="33" vntheta="Agent"/></role>
+  <role descr="entity being recognized" n="1">
+	
+        <vnrole vncls="29.2" vntheta="Theme"/><vnrole vncls="33" vntheta="Theme"/></role>
+  <role descr="hailed as" n="2">
+	
+        <vnrole vncls="29.2" vntheta="Predicate"/><vnrole vncls="33" vntheta="Cause"/></role>
+</roles>
+
+<example name="just transitive">
+<text>
+    It is interesting to see the fundamental stock pickers scream
+    ``foul'' on program trading when the markets decline, while
+    *trace* hailing the great values still abounding as the markets
+    rise.  
+</text>
+        <arg n="0">*trace* -&gt;  the fundamental stock pickers</arg>
+        <rel>hailing</rel>
+        <arg n="1">the great values still abounding as the markets
+        rise</arg> 
+</example>
+
+<example name="with arg2">
+<text>
+    Analysts hailed the planned transaction as being beneficial to
+    Armstrong and Shaw. 
+</text>
+        <arg n="0">Analysts</arg>
+        <rel>hailed</rel>
+        <arg n="1">the planned transaction</arg>
+        <arg f="as" n="2">being beneficial to Armstrong and Shaw</arg>
+</example>
+
+<note>
+Arg2 should always be introduced by 'as'.
+</note>
+
+</roleset>
+
+<roleset id="hail.04" name="come from" vncls="-">
+<roles>
+  <role descr="person in question" n="0"/>
+  <role descr="source, home" n="1"/>
+</roles>
+
+<example name="automatically generated">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ Lone Star 's Bond Corp. parent , for instance , hails from Perth , Australia .
+</text>
+        <arg n="0">Lone Star 's Bond Corp. parent</arg>
+        <arg f="DIS" n="M">for instance</arg>
+        <rel>hails</rel>
+        <arg f="from" n="1">Perth , Australia</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="hail_down">
+
+<roleset id="hail.03" name="hard things coming down" vncls="-">
+<roles>
+  <role descr="hard things" n="1"/>
+</roles>
+
+<example name="poor John">
+  <text>
+    A series of cruel comments, and pointy rocks, hailed down on John.
+  </text>
+  <arg n="1">A series of cruel comments, and pointy rocks</arg>
+  <rel>hailed down</rel>
+  <arg f="LOC" n="m">on John</arg>
+</example>
+
+<note>
+I doubt it will appear in WSJ, but here it is just for completeness.
+</note>
+
+</roleset>
+
+</predicate>
+</frameset>

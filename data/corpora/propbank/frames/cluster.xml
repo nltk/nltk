@@ -1,0 +1,62 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="cluster">
+<note>
+  Frames file for 'cluster' based on sentences in wsj.  Verbnet
+  entries 22.3-2, 47.5.2.
+</note>
+
+<roleset id="cluster.01" name="(cause to) be in a close group" vncls="22.3-2 47.5.2">
+<roles>
+  <role descr="clusterer, agent" n="0">
+        <vnrole vncls="47.5.2" vntheta="Agent"/>
+        <vnrole vncls="22.3-2" vntheta="Agent"/></role>
+  <role descr="things clustered" n="1">
+        <vnrole vncls="47.5.2" vntheta="Theme"/>
+        <vnrole vncls="22.3-2" vntheta="Patient"/></role>
+  <role descr="explicit mention of cluster" n="2"/>
+</roles>
+
+<example name="'passive'">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    Instead of Japan's typical small homes clustered *trace* on narrow
+    streets with no sidewalks, the new ``One Hundred Hills''
+    development will offer 65 houses on half-acre lots. 
+</text>
+        <rel>clustered</rel>
+        <arg n="1">*trace* -&gt;  Japan's typical small homes</arg>
+        <arg f="LOC" n="M">on narrow streets with no sidewalks</arg>
+</example>
+
+
+<example name="with cluster, sorta">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    Prior to the introduction of financial futures in the late 1970s,
+    most trading firms clustered *trace* around the LaSalle Street
+    financial district here were family operations handed down from
+    one generation to the next. 
+</text>
+        <rel>clustered</rel>
+        <arg n="1">*trace* -&gt;  most trading firms</arg>
+        <arg f="around" n="2">the LaSalle Street financial district here</arg>
+</example>
+
+<example name="all args">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John clustered his toys into a gigantic pile.
+  </text>
+  <arg n="0">John</arg>
+  <rel>clustered</rel>
+  <arg n="1">his toys</arg>
+  <arg f="into" n="2">a gigantic pile</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,39 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="rack_up">
+<note>
+  Frames file for 'rack up' based on sentences in financial subcorpus.
+  No Verbnet entry.  Comparison with acquire verbs.
+</note>
+
+<roleset id="rack.01" name="get, acquire" vncls="-">
+<roles>
+  <role descr="agent, entity acquiring something" n="0"/>
+  <role descr="thing acquired" n="1"/>
+  <role descr="seller" n="2"/>
+  <role descr="price paid" n="3"/>
+  <role descr="benefactive" n="4"/>
+</roles>
+
+<example name="just transitive">
+<inflection aspect="progressive" form="participle" person="third" tense="present" voice="active"/>
+<text>
+    Toyota's $35,000 Lexus automobile, a luxury model that it started
+    shipping to the U.S. only last month, is racking up orders at a
+    time when U.S.-made luxury-car sales are slow. 
+</text>
+        <arg n="0">Toyota's $35,000 Lexus automobile, a luxury model
+        that it started shipping to the U.S. only last month,</arg> 
+        <rel>[ racking] [ up]</rel>
+        <arg n="1">orders</arg>
+        <arg f="TMP" n="M">at a time when U.S.-made luxury-car sales
+        are slow </arg> 
+</example>
+
+<note>
+Higher args are theoretically possible but unlikely, to my ear.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

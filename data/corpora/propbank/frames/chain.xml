@@ -1,0 +1,59 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="chain">
+<note>
+  Frames file for 'chain' based on sentences in wsj.  Verbnet entry
+  22.4, Framenet entry Attaching.
+</note>
+
+<roleset id="chain.01" name="connect with chain" vncls="22.4">
+<roles>
+  <role descr="causer of connection, agent" n="0"><vnrole vncls="22.4" vntheta="Agent"/></role>
+  <role descr="(first) thing being chained" n="1"><vnrole vncls="22.4" vntheta="Patient1"/></role>
+  <role descr="subsequent things, if separate" n="2"><vnrole vncls="22.4" vntheta="Patient2"/></role>
+  <role descr="attribute on arg1" n="3"/>
+</roles>
+
+<example name="just transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    In a planned protest against his appearance, several members of
+    the studio audience chain themselves in front of the TV cameras in
+    such a way that the program can not continue. 
+</text>
+        <arg f="LOC" n="M">In a planned protest against his appearance</arg>
+        <arg n="0">several members of the studio audience</arg>
+        <rel>chain</rel>
+        <arg f="REC" n="1">themselves</arg>
+        <arg f="LOC" n="M">in front of the TV cameras</arg>
+        <arg f="MNR" n="M">in such a way that the program can not
+        continue</arg>
+</example>
+
+<example name="with second thing attached">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John chained himself to Mary's bed.
+  </text>
+  <arg n="0">John</arg>
+  <rel>chained</rel>
+  <arg f="REC" n="1">himself</arg>
+  <arg f="to" n="2">Mary's bed</arg>
+</example>
+
+<example name="with attribute">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John chained the patio furniture together.
+  </text>
+  <arg n="0">John</arg>
+  <rel>chained</rel>
+  <arg n="1">the patio furniture</arg>
+  <arg n="3">together</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

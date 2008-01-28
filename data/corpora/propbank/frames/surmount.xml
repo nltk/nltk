@@ -1,0 +1,70 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="surmount">
+<note>
+  Frames file for 'surmount' based on sentences in wsj.  Verbnet entry 47.8.
+</note>
+
+<roleset id="surmount.01" name="(cause to) be atop" vncls="47.8">
+<roles>
+  <role descr="cause, agent" n="0"/>
+  <role descr="thing on top" n="1">
+        <vnrole vncls="47.8" vntheta="Theme1"/></role>
+  <role descr="on top of what" n="2">
+        <vnrole vncls="47.8" vntheta="Theme2"/></role>
+ </roles>
+
+ <example name="all args">
+   <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+   <text>
+    John surmounted his enormous ice cream sundae with fifteen
+    maraschino cherries.
+   </text>
+   <arg n="0">John</arg>
+   <rel>surmounted</rel>
+   <arg n="2">his enormous ice cream sundae</arg>
+   <arg f="with" n="1">fifteen maraschino cherries</arg>
+ </example>
+
+ <example name="more typically ergative">
+   <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+   <text>
+     Fifteen maraschino cherries surmounted John's enormous ice cream sundae.
+   </text>
+   <arg n="1">Fifteen maraschino cherries</arg>
+   <rel>surmounted</rel>
+   <arg n="2">John's enormous ice cream sundae</arg>
+ </example>
+
+ <note>
+This is a marginal usage; much more common is the 'overcome' sense
+below (surmount.02).
+ </note>
+
+ </roleset>
+
+<roleset id="surmount.02" name="overcome" vncls="-">
+<roles>
+  <role descr="victorious one, agent" n="0"/>
+  <role descr="challenge" n="1"/>
+</roles>
+
+<example name="the one example">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+    Indeed, during a recent post-production audience discussion, the
+    director explained that her fondest artistic wish was to find a
+    way to play ``Somewhere Over the Rainbow'' so that the song's
+    ``original beauty comes through,'' [*-1] surmounting the cliche. 
+</text>
+        <arg n="0">[*-1] -&gt;  the song's ``original beauty</arg>
+        <rel>surmounting</rel>
+        <arg n="1">the cliche</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

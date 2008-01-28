@@ -1,0 +1,114 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="top">
+<note>
+  Frames file for 'top' based on sentences in financial subcorpus.
+  Verbnet classes contiguous_location-47.8 and pit-10.7; other framed
+  members include contain, cover.  Comparison with 'cover'.
+</note>
+
+<roleset id="top.01" name="provide a top for" vncls="10.7">
+<roles>
+  <role descr="provider of top, agent" n="0">
+	  <vnrole vncls="10.7" vntheta="Agent"/></role>
+  <role descr="thing topped" n="1">
+	  <vnrole vncls="10.7" vntheta="Source"/></role>
+  <role descr="top" n="2"/>
+</roles>
+
+<example name="top the list: Arg2 subj">
+<text>
+   Jaguar topped the most-active list, as its American depository
+   receipts climbed 1 3/4 to 13 5/8 with more than 6.6 million ADRs
+   traded. 
+</text>
+        <arg n="2">Jaguar</arg>
+        <rel>topped</rel>
+        <arg n="1">the most-active list</arg>
+        <arg f="TMP" n="M">as its American depository receipts climbed
+        1 3/4 to 13 5/8 with more than 6.6 million ADRs traded</arg> 
+</example>
+
+<example name="agentive">
+  <text>
+    John tops his list of favorite ice-cream flavors with green mouse.
+  </text>
+  <arg n="0">John</arg>
+  <rel>tops</rel>
+  <arg n="1">his list of favorite ice-cream flavors</arg>
+  <arg f="with" n="2">green mouse</arg>
+<note>
+Obligatory obscure literature reference.
+</note>
+</example>
+</roleset>
+
+<roleset id="top.02" name="surpass" vncls="-">
+<roles>
+  <role descr="surpasser" n="0"/>
+  <role descr="thing surpassed" n="1"/>
+</roles>
+
+<example name="relatively simple">
+<text>
+    In savings activity, Mr. Sandler said consumer deposits have
+    enjoyed a steady increase throughout 1989, and topped $11 billion
+    at quarter's end for the first time in the company's history. 
+</text>
+        <arg n="0">consumer deposits</arg>
+        <rel>topped</rel>
+        <arg n="1">$ 11 billion </arg>
+        <arg f="TMP" n="M">at quarter's end</arg>
+        <arg f="TMP" n="M">for the first time in the company's history</arg>
+</example>
+
+<example name="bunch of adjuncts">
+<text>
+    But advancing issues topped decliners by 784 to 700 on the Big
+    Board despite the late sell programs, resulting from stock-index
+    arbitrage. 
+</text>
+        <arg f="DIS" n="M">But</arg>
+        <arg n="0">advancing issues</arg>
+        <rel>topped</rel>
+        <arg n="1">decliners</arg>
+        <arg f="EXT" n="M">by 784 to 700</arg>
+        <arg f="LOC" n="M">on the Big Board</arg>
+        <arg n="M">despite the late sell programs, resulting from
+        stock-index arbitrage</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="top_off">
+
+<roleset id="top.03" vncls="10.7" name="top off: provide with a top">
+<roles>
+  <role descr="provider of top, agent" n="0">
+	  <vnrole vncls="10.7" vntheta="Agent"/></role>
+  <role descr="thing topped" n="1">
+	  <vnrole vncls="10.7" vntheta="Source"/></role>
+  <role descr="top" n="2"/>
+</roles>
+
+<example name="'off' is redundant, really">
+  <inflection person="ns" tense="present" aspect="ns" voice="passive" form="participle"/>
+  <text>
+     He has leather jackets from Turkey that [*T*-1] are lined with
+     eel skin and topped [*-2] off with raccoon-skin collars.
+  </text>
+  <rel              >topped off</rel>
+  <arg n="1"        >[*-2] -> [*T*-1] -> leather jackets from Turkey</arg>
+  <arg n="2" f="with">raccoon-skin collars</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

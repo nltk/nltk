@@ -1,0 +1,29 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="picture">
+<note>
+  Frames file for 'picture' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="picture.01" name="display in a picture" vncls="-">
+<roles>
+  <role descr="displayer, agent" n="0"/>
+  <role descr="thing pictured" n="1"/>
+</roles>
+
+<example name="hubba hubba">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    Although their ads picture curvy young people in skimpy outfits,
+    club owners know the future lies with the lumpier over-40 set. 
+</text>
+        <arg n="0">their ads</arg>
+        <rel>picture</rel>
+        <arg n="1">curvy young people in skimpy outfits</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

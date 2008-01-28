@@ -1,0 +1,46 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="guard">
+<note>
+Frames file for 'guard' based on sentences in financial subcorpus and
+automatic expansion via verbnet.
+</note>
+
+<roleset id="guard.01" name="stand watch over" vncls="29.8">
+<roles>
+	<role descr="guard" n="0">
+		
+  <vnrole vncls="29.8" vntheta="Agent"/></role>
+
+	<role descr="guarded" n="1">
+		
+  <vnrole vncls="29.8" vntheta="Theme"/></role>
+
+	<role descr="instrument" n="2"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Intel's microprocessors are the chips of choice in many of today's
+    personal computers and the 80486 microprocessor is the spearhead
+    of the company's bid *trace* to guard that spot in the next
+    generation of machines.
+</text>
+        <arg n="0">*trace* -&gt;  the company 's</arg>
+        <rel>guard</rel>
+        <arg n="1">that spot</arg>
+        <arg f="LOC" n="M">in the next generation of machines</arg>
+</example>
+
+<note>
+There might be an instrument argument, but I'll be most &quot;with&quot; phrases
+will actually be manners: John guards his dissertation with his life.
+&quot;with his life&quot; is effectively &quot;very very much.&quot;  But be on the
+lookout for a real instrument (&quot;with a sword&quot;).
+</note>
+
+</roleset>
+
+</predicate>
+</frameset>

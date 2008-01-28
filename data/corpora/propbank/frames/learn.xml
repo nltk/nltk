@@ -1,0 +1,105 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="learn">
+<note>
+  Frames file for 'learn' based on sentences in financial subcorpus.
+  Verbnet entry 14, other framed members include study.  Loose
+  comparison with 'study'.
+</note>
+
+<roleset id="learn.01" name="learn" vncls="14">
+<roles>
+  <role descr="student" n="0">
+		
+  <vnrole vncls="14" vntheta="Agent"/></role>
+
+  <role descr="subject" n="1">
+		
+  <vnrole vncls="14" vntheta="Topic"/></role>
+
+  <role descr="teacher" n="2">
+		
+  <vnrole vncls="14" vntheta="Source"/></role>
+
+</roles>
+
+<example name="learn an NP">
+<text>
+    He was shocked, associates say, *trace* to learn of Mr. Icahn's
+    new takeover threat. 
+</text>
+        <arg n="0">*trace* -&gt;  He</arg>
+        <rel>learn</rel>
+        <arg f="of" n="1">Mr. Icahn's new takeover threat</arg>
+</example>
+
+<example name="learn an infinitival S">
+<text>
+    Apparently they are learning to say no to excess risk. 
+</text>
+        <arg f="DIS" n="M">Apparently</arg>
+        <arg n="0">they</arg>
+        <rel>learning</rel>
+        <arg n="1">to say no to excess risk</arg>
+</example>
+
+<example name="learn a finite S">
+<text>
+    Mr. Birnbaum recalls that Mr. Guber and Mr. Peters shifted into
+    high gear a few years back upon *trace* learning that they had
+    competition for the story of the murdered naturalist Dian Fossey,
+    which became ``Gorillas in the Mist.'' 
+</text>
+        <arg n="0">*trace* -&gt;  Mr. Guber and Mr. Peters</arg>
+        <rel>learning</rel>
+        <arg n="1">they had competition for the story of the murdered
+        naturalist Dian Fossey, which became ``Gorillas in the
+        Mist</arg> 
+</example>
+
+<note>
+Leave out the complementizers, except:
+</note>
+
+<example name="include WH-complementizers!">
+<text>
+    Kenneth Mitchell, director of Dow's polyethylene business, says
+    producers were surprised *trace* to learn how much inventories had
+    swelled throughout the distribution chain as prices spiraled up. 
+</text>
+        <arg n="0">*trace* -&gt;  producers</arg>
+        <rel>learn</rel>
+        <arg n="1">how much inventories had swelled throughout the
+        distribution chain as prices spiraled up</arg>
+</example>
+
+<example name="it-supportl">
+<text>
+    Meanwhile, in another sign that a new bid isn't imminent, it was
+    learned that the UAL board held a telephone meeting Monday to hear
+    an update on the situation. 
+</text>
+        <arg f="TMP" n="M">Meanwhile</arg>
+        <arg f="DIS" n="M">in another sign that a new bid isn't
+        imminent</arg> 
+        <rel>learned</rel>
+        <arg n="1">the UAL board held a telephone meeting Monday to
+        hear an update on the situation</arg> 
+</example>
+
+<example name="with teacher">
+  <text>
+    John learned his lesson from Mary.
+  </text>
+  <arg n="0">John</arg>
+  <rel>learned</rel>
+  <arg n="1">his lesson</arg>
+  <arg f="from" n="2">Mary</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

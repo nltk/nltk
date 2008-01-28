@@ -1,0 +1,35 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="crumple">
+<note>
+  Frames file for 'crumple' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="crumple.01" name="break down, fold, wrinkle" vncls="45.2">
+<roles>
+  <role descr="causer of damage" n="0">
+	<vnrole vncls="45.2" vntheta="Agent"/></role>
+  <role descr="thing crumpled" n="1">
+	<vnrole vncls="45.2" vntheta="Patient"/></role>
+</roles>
+
+
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ The blasts blew out windows , spewed debris for miles and crumpled the ceiling in an area elementary school .
+</text>
+	<arg n="0">The blasts</arg>
+	<rel>crumpled</rel>
+	<arg n="1">the ceiling</arg>
+	<arg f="LOC" n="M">in an area elementary school</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

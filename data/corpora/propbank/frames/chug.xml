@@ -1,0 +1,72 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="chug">
+<note>Frames file for 'chug' based on sentences in financial subcorpus
+and automatic expansion via verbnet.
+</note>
+
+<roleset id="chug.01" name="make chugging noises" vncls="43.2">
+<roles>
+	<role descr="maker of sounds" n="0">
+		
+  <vnrole vncls="43.2" vntheta="Agent"/></role>
+
+</roles>
+
+<example name="falter, etc.">
+<text>
+    The engine of John's car chugged loudly.
+</text>
+        <arg n="0">the engine of John's car</arg>
+        <rel>sputtered</rel>
+        <arg f="MNR" n="M">loudly</arg>
+</example>
+</roleset>
+
+<roleset id="chug.02" name="drink rapidly" vncls="-">
+<roles>
+  <role descr="drinker" n="0"/>
+  <role descr="beverage" n="1"/>
+</roles>
+
+<example name="heavy drinker">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John chugged his Kool-Aid.
+  </text>
+  <arg n="0">John</arg>
+  <rel>chugged</rel>
+  <arg n="1">his Kool-Aid</arg>
+</example>
+
+<note>
+</note>
+</roleset>
+
+<roleset id="chug.03" name="move laboriously" vncls="-">
+<roles>
+  <role descr="thing in motion" n="1"/>
+  <role descr="destination or path" n="2"/>
+</roles>
+
+<example name="chugga chugga">
+<inflection aspect="ns" form="ns" person="ns" tense="ns" voice="ns"/>
+<text>
+    Batch processing is the high-volume, single-job data processing
+    that most mainframes typically chug through *trace* at night, such
+    as updating accounts at banks. 
+</text>
+        <arg n="1">most mainframes</arg>
+        <arg f="TMP" n="M">typically</arg>
+        <rel>chug</rel>
+        <arg f="through" n="2">*trace* -&gt;  that -&gt;  the high-volume,
+        single-job data processing</arg> 
+        <arg f="TMP" n="M">at night</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

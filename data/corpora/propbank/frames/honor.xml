@@ -1,0 +1,56 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="honor">
+<note>
+Frames file for 'honor' based on sentences in financial subcorpus and
+automatic expansion via verbnet.
+</note>
+
+<roleset id="honor.01" name="give honor to" vncls="29.2 33">
+<roles>
+	<role descr="honorer" n="0">
+		
+		
+  <vnrole vncls="29.2" vntheta="Agent"/><vnrole vncls="33" vntheta="Agent"/></role>
+
+	<role descr="person honored" n="1">
+		
+		
+  <vnrole vncls="29.2" vntheta="Theme"/><vnrole vncls="33" vntheta="Theme"/></role>
+
+	<role descr="for what, purpose, role" n="2">
+		
+		
+  <vnrole vncls="29.2" vntheta="Predicate"/><vnrole vncls="33" vntheta="Cause"/></role>
+
+</roles>
+
+
+<example name="just transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Our plan is *trace* to honor Charles Schulz and the strip all year
+    long.'' 
+</text>
+        <arg n="0">*trace*</arg>
+        <rel>honor</rel>
+        <arg n="1">Charles Schulz and the strip</arg>
+        <arg f="TMP" n="M">all year long</arg>
+</example>
+
+<example name="with cause">
+  <inflection aspect="ns" form="participle" person="third" tense="past" voice="passive"/>
+  <text>
+    John was honored *trace* for his work with sick children.
+  </text>
+  <rel>honored</rel>
+  <arg n="1">*trace* -&gt; John</arg>
+  <arg f="for" n="2">his work with sick children</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

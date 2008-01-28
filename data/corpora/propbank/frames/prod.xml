@@ -1,0 +1,50 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="prod">
+<note>
+  Frames file for 'prod' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+
+<roleset id="prod.01" name="to urge on" vncls="-">
+<roles>
+  <role descr="causer" n="0"/>
+  <role descr="entity urged" n="1"/>
+  <role descr="action" n="2"/>
+</roles>
+
+<example name="all arguments">
+<inflection aspect="perfect" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+ The Sept. 30 end of the federal fiscal year may have prodded contractors to get any behind-schedule road and bridge construction under way `` before the clock ran out , '' Mr. Christie said [0] [*T*-1] , [*-2] referring to threatened 5 % across-the-board budget cuts .
+</text>
+	<arg n="0">The Sept. 30 end of the federal fiscal year</arg>
+	<arg f="MOD" n="M">may</arg>
+	<rel>prodded</rel>
+	<arg n="1">contractors</arg>
+	<arg n="2">to get any behind-schedule road and bridge construction under way `` before the clock ran out</arg>
+</example>
+
+
+
+
+<example name="prepositional Arg2">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ Still , he says [0] [*T*-1] , `` it 's no bad thing '' if all the marketing prods people into [*-2] putting aside a little more .
+</text>
+	<arg n="0">all the marketing</arg>
+	<rel>prods</rel>
+	<arg n="1">people</arg>
+	<arg f="into" n="2">[*-2] putting aside a little more</arg>
+</example>
+
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

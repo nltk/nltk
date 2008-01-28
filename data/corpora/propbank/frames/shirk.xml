@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="shirk">
+<note>
+  Frames file for 'shirk'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="shirk.01" name="to avoid or neglect" vncls="-">
+<roles> 
+  <role descr="avoider, agent" n="0"/>    
+  <role descr="entity avoided" n="1"/>  
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ We must not shirk our responsibility and we can not just blame the demonstrators . ''
+</text>
+	<arg n="0">We</arg>
+	<arg f="MOD" n="M">must</arg>
+	<arg f="NEG" n="M">not</arg>
+	<rel>shirk</rel>
+	<arg n="1">our responsibility</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

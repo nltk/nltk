@@ -1,0 +1,77 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="depend">
+<note>
+  Frames file for 'depend' based on survey of sentences from financial
+  subcorpus.  Verbnet class exist-47.1, other members 'exist' 'live'
+  'remain' and 'wait' have been framed, but that's not the main sense
+  of depend, to my mind.
+</note>
+
+<roleset id="depend.01" name="rely" vncls="47.1-1">
+<roles>
+  <role descr="depender" n="0">
+		
+  <vnrole vncls="47.1-1" vntheta="Theme"/></role>
+
+  <role descr="depended on" n="1"/>
+</roles>
+
+<example name="transitive">
+  <text>
+    The survival of spinoff Cray Computer Corp. as a fledgling in the
+    supercomputer business appears *trace* to depend heavily on the
+    creativity -- and longevity -- of its chairman and chief designer,
+    Seymour Cray.
+  </text>
+  <arg n="0">*trace*=The survival of spinoff Cray Computer
+  Corp. as a fledgling in the supercomputer business</arg> 
+  <rel>depend</rel>
+  <arg f="MNR" n="m">heavily</arg>
+  <arg f="on" n="1">the
+    creativity -- and longevity -- of its chairman and chief designer,
+    Seymour Cray.</arg>
+</example>
+
+<example name="discourse-level event">
+  <text>
+    *trace* Depending upon how many warrants and options are exercised prior
+    to completion of the transaction, Heritage would issue between 1.8
+    million and 2.35 million preferred shares, a Heritage spokesman
+    estimated.
+  </text>
+  <arg n="0">*trace*</arg>
+  <rel>Depending</rel>
+  <arg f="upon" n="1">how many warrants and options are exercised prior
+    to completion of the transaction</arg>
+</example>
+
+<note>
+The thing depending (arg0) technically refers to the rest of the
+sentence (the event of Heritage issuing shares), but the syntax
+doesn't allow for that to be the target of the trace, so let it go.
+</note>
+
+<example name="without trace, even">
+  <text>
+    The agreement also provides for potential payments of additional
+    proceeds to National Aluminum over the next two years, depending
+    on the plant's shipping levels.
+  </text>
+  <rel>depending</rel>
+  <arg f="on" n="1">the plant's shipping levels</arg>
+</example>
+
+<example name="with purpose clause">
+  <text>
+    John depends on Mary for clean laundry.
+  </text>
+  <arg n="0">John</arg>
+  <rel>depends</rel>
+  <arg f="on" n="1">Mary</arg>
+  <arg f="PNC" n="m">for clean laundry</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="rejuvenate">
+<note>
+  Frames file for 'rejuvenate'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="rejuvenate.01" name="to restore" vncls="-">
+<roles> 
+  <role descr="cause, agent" n="0"/>  
+  <role descr="entity rejuvenated" n="1"/>   
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ He adds that with communism collapsing and Mr. Gorbachev scrambling [*-2] to rejuvenate the Soviet economy , `` Our interest lies in a controlled transformation , a contained nuclear reaction , so we need [*-1] to help him , and not just with words . ''
+</text>
+	<arg n="0">[*-2] -&gt;  Mr. Gorbachev</arg>
+	<rel>rejuvenate</rel>
+	<arg n="1">the Soviet economy</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

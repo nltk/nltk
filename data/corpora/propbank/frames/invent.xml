@@ -1,0 +1,37 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="invent">
+<note>
+  Frames file for 'invent' based on sentences in wsj.  Verbnet entry
+  26.4. 
+</note>
+
+<roleset id="invent.01" name="create" vncls="26.4">
+<roles>
+  <role descr="creator" n="0"><vnrole vncls="26.4" vntheta="Agent"/></role>
+  <role descr="thing created" n="1"><vnrole vncls="26.4" vntheta="Product"/></role>
+</roles>
+
+<example name="obligatory bell-ringing example">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+     Change-ringing, a mind-boggling exercise *trace* the English
+     invented *trace* 380 years ago, requires physical dexterity --
+     some bells weigh more than a ton -- combined with intense mental
+     concentration. 
+</text>
+        <arg n="0">the English</arg>
+        <rel>invented</rel>
+        <arg n="1">*trace* -&gt; *trace* -&gt;  a mind-boggling exercise</arg>
+        <arg f="TMP" n="M">380 years ago</arg>
+</example>
+
+<note>
+'Create' suggests additional arguments, such as source, benefactive,
+and attributive, but these don't seem to occur with 'invent'.  At
+least not in wsj.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

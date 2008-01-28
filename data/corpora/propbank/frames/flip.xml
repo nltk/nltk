@@ -1,0 +1,36 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="flip">
+<note>
+  Frames file for 'flip' based on survey of sentences in the WSJ
+  corpus. Comparison with 'throw'.
+</note>
+
+<roleset id="flip.01" name="throw, turn over" vncls="17.1">
+<roles>
+  <role descr="flipper, agent" n="0">
+	<vnrole vncls="17.1" vntheta="Agent"/></role>
+  <role descr="thing flipped" n="1">
+	<vnrole vncls="17.1" vntheta="Patient"/></role>
+  <role descr="flipped to/into" n="2">
+	<vnrole vncls="17.1" vntheta="Destination"/></role>
+  </roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ [*-2] Crouched [*-3] at shortstop , Bert Campaneris , once Oakland 's master thief , effortlessly scoops up a groundball and flips it to second .
+</text>
+	<arg f="ADV" n="M">[*-2] Crouched [*-3] at shortstop</arg>
+	<arg n="0">Bert Campaneris , once Oakland 's master thief ,</arg>
+	<rel>flips</rel>
+	<arg n="1">it</arg>
+	<arg f="to" n="2">second</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

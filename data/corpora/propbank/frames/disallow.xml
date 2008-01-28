@@ -1,0 +1,38 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="disallow">
+<note>
+  Frames file for 'disallow' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="disallow.01" name="forbid, prohibit" vncls="-">
+<roles>
+  <role descr="entity to set boundaries, agent" n="0"/>
+  <role descr="forbidden action or thing" n="1"/>
+</roles>
+
+<example name="the one example">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Yesterday's election was a sequel to Enfield's annual meeting in
+    June when Mr. Blair disallowed proxies in favor of two Hees
+    nominees *trace*. 
+</text>
+        <arg n="0">Mr. Blair</arg>
+        <rel>disallowed</rel>
+        <arg n="1">proxies</arg>
+        <arg f="PRD" n="M">in favor of two Hees nominees</arg>
+        <arg f="TMP" n="M">*trace* -&gt;  when -&gt;  June</arg>
+</example>
+
+<note>
+The 'in favor of...' clause is problematic.  It's marked as -CLR in
+treebank, but I think that misses the generalization that 'in favor
+of' can be attached to any verb of dispreferring.  I feel 'in favor
+of' to be a predicate in its own right, similar to comparatives, and
+therefore safely postponed until we deal with that question.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,79 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="bat">
+<note>
+  Frames file for 'bat' based on sentences in wsj.  Verbnet entries
+  17.1 and 40.3.2, Framenet entry Body movement.
+</note>
+
+<roleset id="bat.01" name="close and open eye(s) quickly" vncls="40.3.2">
+<roles>
+  <role descr="batter, agent" n="0"><vnrole vncls="40.3.2" vntheta="Agent"/></role>
+  <role descr="eye(s)" n="1"><vnrole vncls="40.3.2" vntheta="Patient"/></role>
+</roles>
+
+<example name="not nervous">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John didn't bat an eyelash.
+  </text>
+  <arg n="0">John</arg>
+  <arg f="NEG" n="m">n't</arg>
+  <rel>bat</rel>
+  <arg n="1">an eyelash</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="bat.02" name="play baseball" vncls="17.2">
+<roles>
+  <role descr="batter" n="0"><vnrole vncls="17.2" vntheta="Agent"/></role>
+  <role descr="position or stats" n="1"><vnrole vncls="17.2" vntheta="Theme"/></role>
+</roles>
+
+<example name="ey, batta batta">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    The A-men batting Nos. 6 through 9, a.k.a. the ``bottom of the
+    order,'' got seven of their team's 11 hits and scored four of its
+    runs in a 5-0 decision. 
+</text>
+        <arg n="0">The A-men</arg>
+        <rel>batting</rel>
+        <arg n="1">Nos. 6 through 9, a.k.a. the ``bottom of the order,''</arg>
+</example>
+
+<note>
+Likewise `bat .400'
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="bat_in">
+
+<roleset id="bat.03" name="bring in runs by hitting a baseball" vncls="-">
+<roles>
+  <role descr="batter" n="0"/>
+  <role descr="runs" n="1"/>
+</roles>
+
+<example name="more baseball">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    They combined for 25 hits, six home runs and 24 runs batted in [*]
+    in the five games against the Cubs. 
+</text>
+        <rel>[ batted] [ in]</rel>
+        <arg n="1">[*] -&gt;  24 runs</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

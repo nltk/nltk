@@ -1,0 +1,82 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="erase">
+<note>
+Frames file for 'erase' based on sentences in wsj and automatic
+expansion via verbnet.
+</note>
+
+<roleset id="erase.01" name="remove marks" vncls="10.4.1">
+<roles>
+	<role descr="eraser" n="0">
+		
+  <vnrole vncls="10.4.1" vntheta="Agent"/></role>
+
+	<role descr="thing erased, mark" n="1">
+		
+  <vnrole vncls="10.4.1" vntheta="Theme"/></role>
+
+	<role descr="medium, surface" n="2">
+		
+  <vnrole vncls="10.4.1" vntheta="Source"/></role>
+
+	<role descr="instrument, if separate from arg0" n="3"/>
+</roles>
+
+<example name="straight transitive">
+<inflection aspect="perfect" form="participle" person="ns" tense="past" voice="active"/>
+<text>
+    He said that Oliver North of Iran-Contra notoriety thought he had
+    erased his computer but that the information was later retrieved
+    for congressional committees to read. 
+</text>
+        <arg n="0">he</arg>
+        <rel>erased</rel>
+        <arg n="1">his computer</arg>
+</example>
+
+<example name="passive, with source">
+<inflection aspect="perfect" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    Moreover, he said, technology now exists for stealing corporate
+    secrets after they've been ``erased *trace*'' from a computer's
+    memory. 
+</text>
+        <rel>erased</rel>
+        <arg n="1">*trace* -&gt;  they</arg>
+        <arg f="from" n="2">a computer's memory</arg>
+</example>
+
+<example name="VP subject">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    Mr. Andersson says he is confident that taking parts of the
+    company public will help  erase the ``conglomerate stigma'' that
+    has held down Trelleborg's share price. 
+</text>
+        <arg n="0">*trace* -&gt;   taking parts of the company public</arg>
+        <rel>erase</rel>
+        <arg n="1">the ``conglomerate stigma'' that has held down
+        Trelleborg's share price</arg> 
+</example>
+
+<note>
+Many times the &quot;agent&quot; is properly felt to be a VP, but the VP itself
+is not accessible as a constituent argument.  In these cases you'll
+usually have to take the agent of the VP as the arg0 of 'erase.'
+</note>
+
+<example name="all args" src="trim.01">
+  <text>
+    John erased the fat from the the expensive cut of beef with a
+    chainsaw.
+  </text>
+  <arg n="0">John</arg>
+  <rel>erased</rel>
+  <arg n="1">the fat</arg>
+  <arg f="from" n="2">the the expensive cut of beef</arg>
+  <arg f="with" n="3">a chainsaw</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

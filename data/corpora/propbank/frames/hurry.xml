@@ -1,0 +1,47 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="hurry">
+<note>
+  Frames file for 'hurry'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="hurry.01" name="to move or act at a high speed" vncls="53.2">
+<roles> 
+	
+  <role descr="causer" n="0"><vnrole vncls="53.2" vntheta="Agent"/></role> 
+  <role descr="entity in motion" n="1"><vnrole vncls="53.2" vntheta="Theme"/></role>
+  <role descr="secondary predicate, purpose" n="2"/> 
+
+</roles>
+
+<example name="transitive">
+<inflection aspect="perfect" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+ Or that the president would have hurried [*-1] to sign the bill `` out of compassion for her plight '' ?
+</text>
+	<arg n="1">the president</arg>
+	<arg f="MOD" n="M">would</arg>
+	<rel>hurried</rel>
+	<arg n="2">[*-1] to sign the bill `` out of compassion for her plight ''</arg>
+</example>
+
+
+<example name="intransitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ On Main Street , Alida Verwoerd and her daughters look after the clothes and fabric shop , then hurry home [*-1] to fix lunch for the rest of the family .
+</text>
+	<arg f="LOC" n="M">On Main Street</arg>
+	<arg n="1">Alida Verwoerd and her daughters</arg>
+	<rel>hurry</rel>
+	<arg f="DIR" n="M">home</arg>
+	<arg n="2">[*-1] to fix lunch for the rest of the family</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

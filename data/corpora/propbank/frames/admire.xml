@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="admire">
+<note>
+  Frames file for 'admire' based on sentences in wsj.  Verbnet entry
+  31.2, Framenet entry Judgement.
+</note>
+
+<roleset id="admire.01" name="admire" vncls="31.2">
+<roles>
+  <role descr="admirer" n="0"><vnrole vncls="31.2" vntheta="Experiencer"/></role>
+  <role descr="admired" n="1"><vnrole vncls="31.2" vntheta="Cause"/></role>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Mr. Lieber, the actor who plays Mr. Hoffman, says he was concerned
+    at first that the script would ``misrepresent an astute political
+    mind, one that I admired *trace*,'' but that his concerns were
+    allayed. 
+</text>
+        <arg n="0">I</arg>
+        <rel>admired</rel>
+        <arg n="1">*trace* -&gt;  that -&gt;  one</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,42 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="prearrange">
+<note>
+  Frames file for 'prearrange' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="prearrange.01" vncls="-" name="arrange in advance">
+<roles>
+  <role n="0"  descr="arranger"/>
+  <role n="1"  descr="thing arranged"/>
+</roles>
+
+<example name="usually adjectival">
+<inflection person="ns" tense="ns" aspect="ns" voice="passive" form="participle"/>
+<text>
+    The Chicago Mercantile Exchange fined and suspended two
+    commodities traders accused of making prearranged trades with each
+    other that allegedly cheated a customer.  
+</text>
+	<rel>prearranged</rel>
+	<arg n="1">trades</arg>
+</example>
+
+<example name="same example, verbal">
+<inflection person="ns" tense="ns" aspect="ns" voice="passive" form="participle"/>
+<text>
+    The Chicago Mercantile Exchange fined and suspended two
+    commodities traders accused of * prearranging trades with each
+    other that allegedly cheated a customer.  
+</text>
+        <arg n="0">* -> two commodities traders</arg>
+	<rel>prearranging</rel>
+	<arg n="1">trades</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

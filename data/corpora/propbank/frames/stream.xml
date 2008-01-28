@@ -1,0 +1,68 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="stream">
+<note>
+Frames file for 'stream' based on sentences in financial subcorpus and
+automatic expansion via verbnet.  Comparison with 'flow' and 'pour'.
+</note>
+
+<roleset id="stream.01" name="release liquids" vncls="43.4">
+<roles>
+	<role descr="thing leaking" n="0"><vnrole vncls="43.4" vntheta="Agent"/></role>
+	<role descr="substance leaked" n="1"><vnrole vncls="43.4" vntheta="Theme"/></role>
+</roles>
+
+<example name="senseless violence">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    After Mary hit him, John's nose streamed blood for a week.
+  </text>
+  <arg f="TMP" n="m">After Mary hit him</arg>
+  <arg n="0">John's nose</arg>
+  <rel>streamed</rel>
+  <arg n="1">blood</arg>
+  <arg f="TMP" n="m">for a week</arg>
+</example>
+
+<example name="more senseless violence">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    After Mary hit him, John's nose streamed with blood for a week.
+  </text>
+  <arg f="TMP" n="m">After Mary hit him</arg>
+  <arg n="0">John's nose</arg>
+  <rel>streamed</rel>
+  <arg f="with" n="1">blood</arg>
+  <arg f="TMP" n="m">for a week</arg>
+</example>
+
+</roleset>
+
+<roleset id="stream.02" name="move like water" vncls="47.2">
+<roles>
+	<role descr="substance (ie, water)" n="1">
+		
+  <vnrole vncls="47.2" vntheta="Theme"/></role>
+
+  <role descr="diretion or location or extent" n="m">
+      
+  </role>
+</roles>
+
+<example name="unaccusative">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    About $60 million streamed out last week alone, double the level
+    of the week following last month's Campeau Corp. credit squeeze. 
+</text>
+        <arg n="1">About $60 million</arg>
+        <rel>streamed</rel>
+        <arg f="DIR" n="M">out</arg>
+        <arg f="TMP" n="M">last week alone</arg>
+        <arg n="M">double the level of the week following last month's
+        Campeau Corp. credit squeeze</arg> 
+</example>
+
+</roleset>
+</predicate>
+</frameset>

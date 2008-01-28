@@ -1,0 +1,36 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="plunk">
+<note>
+  Frames file for 'plunk' based on sentences in wsj.  No access to
+  Verbnet at the moment.
+</note>
+
+<roleset id="plunk.01" name="put, coarsely" vncls="-">
+<roles>
+  <role descr="agent, putter" n="0"/>
+  <role descr="thing put" n="1"/>
+  <role descr="where put" n="2"/>
+</roles>
+
+<example name="plunka plunka plunka">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+    Still, most consumers aren't plunking black-and-white film into
+    their cameras to take family snapshots. 
+</text>
+        <arg f="DIS" n="M">Still</arg>
+        <arg n="0">most consumers</arg>
+        <arg f="NEG" n="M">n't</arg>
+        <rel>plunking</rel>
+        <arg n="1">black-and-white film</arg>
+        <arg f="into" n="2">their cameras</arg>
+        <arg f="PNC" n="M">[*-1] to take family snapshots</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

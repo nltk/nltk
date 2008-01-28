@@ -1,0 +1,49 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="shear">
+<note>
+  Frames file for 'shear_off' based on sentences in wsj.  Verbnet entry 10.4.2.
+</note>
+
+<roleset id="shear.01" name="slice off, as with scissors" vncls="10.4.2">
+<roles>
+  <role descr="agent of cutting" n="0"><vnrole vncls="10.4.2" vntheta="Agent"/></role>
+  <role descr="thing cut, smaller piece" n="1"><vnrole vncls="10.4.2" vntheta="Theme"/></role>
+  <role descr="whole, source" n="2"><vnrole vncls="10.4.2" vntheta="Source"/></role>
+  <role descr="instrument" n="3"><vnrole vncls="10.4.2" vntheta="Instrument"/></role>
+</roles>
+
+<example name="the one example">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    One old building, the Golden State Bank Building on Front Street,
+    had its yellow brick facade sheared [*-1] off by the shock of the
+    quake, leaving a wedge of its third floor open to the air, while
+    piles of dusty bricks tumbled to the street below narrowly missing
+    rush-hour pedestrians and cars. 
+</text>
+        <rel>[ sheared] [ off]</rel>
+        <arg n="1">[*-1] -&gt;  its yellow brick facade</arg>
+        <arg f="by" n="3">the shock of the quake</arg>
+        <arg n="M">leaving a wedge of its third floor open to the air,
+        while piles of dusty bricks tumbled to the street below
+        narrowly missing rush-hour pedestrians and cars</arg> 
+</example>
+
+<example name="with agent and whole">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John sheared the top off the chocolate cake.
+  </text>
+  <arg n="0">John</arg>
+  <rel>sheared</rel>
+  <arg n="1">the top</arg>
+  <arg f="off" n="2">the chocolate cake</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

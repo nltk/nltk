@@ -1,0 +1,98 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="promise">
+<note>
+  Frames file for 'promise' based on sentences in financial subcorpus.
+  Verbnet entry 13.3, other framed members include allocate, concede,
+  grant, vote.  Framenet entry Statement and Commitment.  No
+  comparison.
+</note>
+
+<roleset id="promise.01" name="promise" vncls="13.3">
+<roles>
+  <role descr="promiser" n="0">
+		
+  <vnrole vncls="13.3" vntheta="Agent"/></role>
+
+  <role descr="person promised to" n="1">
+		
+  <vnrole vncls="13.3" vntheta="Recipient"/></role>
+
+  <role descr="promised action" n="2">
+		
+  <vnrole vncls="13.3" vntheta="Theme"/></role>
+
+</roles>
+
+<example name="one arg, subject control">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    The revised LIN-BellSouth agreement boosts the dollar amount of
+    the special dividend LIN promises to pay shareholders.
+</text>
+        <arg n="0">LIN</arg>
+        <rel>promises</rel>
+        <arg n="2">to pay shareholders</arg>
+</example>
+
+<example name="one arg, full S">
+<inflection aspect="perfect" form="participle" person="third" tense="present" voice="active"/>
+<text>
+    The company has expressed a preference for GM over Ford because GM
+    has promised it would keep Jaguar independent. 
+</text>
+        <arg n="0">GM</arg>
+        <rel>promised</rel>
+        <arg n="2">it would keep Jaguar independent</arg>
+</example>
+
+<note>
+If there's an SBAR/comp, leave the complementizer outside the Arg2.
+</note>
+
+<example name="one arg, NP">
+<inflection aspect="both" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+    ``They've been promising 13% to 15% growth based on the strategic
+    moves they've made,'' he said. 
+</text>
+        <arg n="0">They</arg>
+        <rel>promising</rel>
+        <arg n="2">13% to 15% growth based on the strategic moves
+        they've made</arg> 
+</example>
+
+<example name="double NP construction">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    Mr. Jones has been taking prospective suite owners onto the field
+    during practice to let them rub elbows with players, and promises
+    those who actually buy one of the rooms an insider's look at the
+    team's strategy before game time. 
+</text>
+        <arg n="0">Mr. Jones</arg>
+        <rel>promises</rel>
+        <arg n="1">those who actually buy one of the rooms</arg>
+        <arg n="2">an insider's look at the team's strategy before
+        game time</arg> 
+</example>
+
+<example name="one NP, one S">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John promised to Mary that he wouldn't flush her jewelry down the
+    toilet ever again.
+  </text>
+  <arg n="0">John</arg>
+  <rel>promised</rel>
+  <arg f="to" n="1">Mary</arg>
+  <arg n="2">he wouldn't flush her jewelry down the
+    toilet ever again</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,65 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="confess">
+<note>
+  Frames file for 'confess' based on sentences in wsj.  Verbnet entry
+  37.7, verbs of saying.
+</note>
+
+<roleset id="confess.01" name="mode of speaking" vncls="37.3">
+<roles>
+  <role descr="speaker" n="0"><vnrole vncls="37.3" vntheta="Agent"/></role>
+  <role descr="utterance" n="1"><vnrole vncls="37.3" vntheta="Topic"/></role>
+  <role descr="hearer" n="2"><vnrole vncls="37.3" vntheta="Recipient"/></role>
+</roles>
+
+<example name="standard">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    ''Mr. Sohmer confesses that it was partly in response to such
+    attitudes that he is now ``a dweller on one of the two islands off
+    the coast of America.'' 
+</text>
+        <arg n="0">Mr. Sohmer</arg>
+        <rel>confesses</rel>
+        <arg n="1">it was partly in response to such attitudes that he
+        is now ``a dweller on one of the two islands off the coast of
+        America </arg> 
+</example>
+
+<example name="inverted">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    ``When I saw the Lexus sales projections, I got worried,''
+    confesses *trace* Takashi Oka, who led the Infiniti development
+    team. 
+</text>
+        <rel>confesses</rel>
+        <arg n="1">*trace* -&gt;  When I saw the Lexus sales projections,
+        I got worried</arg> 
+        <arg n="0">Takashi Oka, who led the Infiniti development
+        team</arg> 
+</example>
+
+<example name="prepositional utterance">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    During time off, Mr. Roman tends to his garden; Mr. Phillips
+    confesses to a fondness for, among other things, fast cars and
+    planes. 
+</text>
+        <arg n="0">Mr. Phillips</arg>
+        <rel>confesses</rel>
+        <arg f="to" n="1">a fondness for, among other things, fast
+        cars and planes</arg> 
+</example>
+
+<note>
+Last example is effectively 'admit' rather than 'speak', but since
+that vn class (29.5) takes the same PAS as 'say' I've merged the two
+sets.  It does make disambiguation a little more interesting, though.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

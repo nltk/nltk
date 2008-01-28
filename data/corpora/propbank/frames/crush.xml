@@ -1,0 +1,93 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="crush">
+<note>
+  Frames file for 'crush' based on sentences in the WSJ corpus.
+  Comparison with 'chip'.
+</note>
+
+<roleset id="crush.01" name="press, break" vncls="21.2-1 45.1">
+<roles>
+  <role descr="agent, causer" n="0">
+		
+		
+  <vnrole vncls="45.1" vntheta="Agent"/><vnrole vncls="21.2-1" vntheta="Agent"/></role>
+
+  <role descr="thing crushed" n="1">
+		
+		
+  <vnrole vncls="45.1" vntheta="Patient"/><vnrole vncls="21.2-1" vntheta="Patient"/></role>
+
+  <role descr="instrument" n="2">
+		
+		
+  <vnrole vncls="45.1" vntheta="Instrument"/><vnrole vncls="21.2-1" vntheta="Instrument"/></role>
+
+  <role descr="crushed from or upon" n="3"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+ That promise sounds shaky now that those same leaders have fallen back on Marxist dogma and brute force [*-1] to crush their nation 's democracy movement .
+</text>
+	<arg n="0">[*-1] -&gt;  those same leaders</arg>
+	<rel>crush</rel>
+	<arg n="1">their nation 's democracy movement</arg>
+</example>
+
+
+<example name="with adverbials">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+ Dissidents in Czechoslovakia said [0] the nation 's pro-democracy movement was growing despite the government 's move [*] to crush a protest [*ICH*-1] Saturday in Prague 's Wenceslas Square .
+</text>
+	<arg n="0">[*] -&gt;  the government 's</arg>
+	<rel>crush</rel>
+	<arg n="1">a protest [*ICH*-1]</arg>
+	<arg f="TMP" n="M">Saturday</arg>
+	<arg f="LOC" n="M">in Prague 's Wenceslas Square</arg>
+</example>
+
+
+
+<example name="inanimate subject">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+ A UAL statement after the market closed Monday indicated that the airline 's board wanted [*-1] to keep the company independent , [*-2] effectively crushing hopes of an immediate buy-out .
+</text>
+	<arg n="0">[*-2] -&gt;  A UAL statement</arg>
+	<arg f="MNR" n="M">effectively</arg>
+	<rel>crushing</rel>
+	<arg n="1">hopes of an immediate buy-out</arg>
+</example>
+
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="past" voice="passive"/>
+<text>
+ Hungary declared itself a democracy and for the first time openly commemorated the anniversary of the 1956 anti-Stalinist uprising that [*T*-2] was crushed [*-1] by the Soviet Union .
+</text>
+	<rel>crushed</rel>
+	<arg n="1">[*-1] -&gt;  [*T*-2] -&gt;  that -&gt;  the 1956 anti-Stalinist uprising</arg>
+	<arg f="by" n="0">the Soviet Union</arg>
+</example>
+
+
+<example name="with Arg3">
+<inflection aspect="ns" form="ns" person="ns" tense="ns" voice="ns"/>
+<text>
+ Result : a landscape littered [*] with lemons , huge debt burdens crushing down upon the arch and spans of corporate America .
+</text>
+	<arg n="1">huge debt burdens</arg>
+	<rel>crushing</rel>
+	<arg f="DIR" n="M">down</arg>
+	<arg f="upon" n="3">the arch and spans of corporate America</arg>
+</example>
+
+
+
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,37 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="comprehend">
+
+<roleset id="comprehend.01" name="understand">
+<roles>
+  <role descr="UNDERSTANDER" n="0"/>
+  <role descr="UNDERSTOOD" n="1"/>
+</roles>
+
+<example name="nominal complement">
+  <text>
+Surely Indira comprehends the added by-law,  
+  </text>
+  <arg n="0">Indira</arg>
+  <rel>comprehend</rel>
+  <arg n="1">the added by-law</arg>
+</example>
+
+<example name="sentential complement">
+  <text>
+When Robin burst on stage in a Hawaiian shirt and baggy trousers, the crowd cheered and 
+applauded --; barely able to comprehend that Robin had landed in Oz, let alone 
+materialized before their eyes without oopla or hype.
+  </text>
+  <arg n="0">the crowd</arg>
+  <rel>comprehend</rel>
+  <arg n="1">that Robin had landed in Oz</arg>
+</example>
+
+</roleset>
+
+</predicate>
+<note>
+  frames created by Ruth
+</note>
+</frameset>

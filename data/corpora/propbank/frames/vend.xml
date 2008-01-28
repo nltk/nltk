@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="vend">
+<note>
+  Frames file for 'vend' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="vend.01" vncls="-" name="sell">
+<roles>
+  <role n="0"  descr="seller, vendor"/>
+  <role n="1"  descr="commodity"/>
+</roles>
+
+<example name="adjectival">
+<inflection person="ns" tense="ns" aspect="progressive" voice="active" form="participle"/>
+<text>
+     GTE shut down its cafeteria Tuesday afternoon after testing
+     determined that at least one cafeteria worker employed by GTE's
+     private food vending contractor, ARA Services Inc., was suffering
+     from a strain of the virus, officials said. 
+</text>
+	<rel>vending</rel>
+	<arg n="0">contractor</arg>
+</example>
+
+<note>
+This file is here only for the two derived nominals, vending and
+vendor.  There is no verb 'vend' any more.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

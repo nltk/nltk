@@ -1,0 +1,52 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="reunite.01">
+<note>
+  Frames file for 'reunite' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="reunite.01" name="unite again, bring back together" vncls="-">
+<roles>
+  <role descr="unifier" n="0"/>
+  <role descr="(first) thing(s) being unified" n="1"/>
+  <role descr="other things, if separate from arg1" n="2"/>
+  <role descr="unified whole" n="3"/>
+</roles>
+
+<example name="all args, sorta">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+    The Marina also has become the focal point of city efforts [*] to
+    reunite residents with any pets that may have fled or become lost
+    during the earthquake.  
+</text>
+        <arg n="0">[*]</arg>
+        <rel>reunite</rel>
+        <arg n="1">residents</arg>
+        <arg f="with" n="2">any pets that may have fled or become lost
+        during the earthquake</arg> 
+</example>
+
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="past" voice="passive"/>
+<text>
+    At the same time, six ANC colleagues, five of whom were arrested
+    with him in 1963 and sentenced to life imprisonment, were reunited
+    [*-1] with their families at various places around the country. 
+</text>
+        <arg f="TMP" n="M">At the same time</arg>
+        <rel>reunited</rel>
+        <arg n="1">[*-1] -&gt;  six ANC colleagues, five of whom were
+        arrested with him in 1963 and sentenced to life
+        imprisonment,</arg> 
+        <arg f="with" n="2">their families</arg>
+        <arg f="LOC" n="M">at various places around the country</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

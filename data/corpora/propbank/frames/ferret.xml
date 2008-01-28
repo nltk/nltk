@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="ferret_out">
+<note>
+  Frames file for 'ferret' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="ferret.01" name="to search and discover through persistent investigation" vncls="-">
+<roles>
+  <role descr="entity exploring, searching, agent" n="0"/>
+  <role descr="thing discovered" n="1"/>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="gerund" person="ns" tense="ns" voice="active"/>
+<text>
+ Back then , scientists had no way of [*] ferreting out specific genes , but under a microscope they could see the 23 pairs of chromosomes in the cells that [*T*-1] contain the genes .
+</text>
+	<arg n="0">[*] -&gt;  scientists</arg>
+	<rel>[ ferreting] [ out]</rel>
+	<arg n="1">specific genes</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

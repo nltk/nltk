@@ -1,0 +1,93 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="whip">
+<note>
+  Frames file for 'whip' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="whip.01" name="change of state by repeated striking or rapid movement" vncls="-">
+<roles>
+  <role descr="causer" n="0"/>
+  <role descr="entity whipped" n="1"/>
+  <role descr="end state" n="2"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+ Ralph Neas was the organizing genius , [*-1] whipping a conglomerate of pressure groups into an irresistible attacking force .
+</text>
+	<arg n="0">[*-1] -&gt;  Ralph Neas</arg>
+	<rel>whipping</rel>
+	<arg n="1">a conglomerate of pressure groups</arg>
+	<arg f="into" n="2">an irresistible attacking force</arg>
+</example>
+
+<example name="flasher">
+  <inflection person="ns" tense="ns" aspect="progressive" voice="active" form="participle"/>
+  <text>
+    ``I thought [the drawing] a cross between someone you'd spot [*-3]
+    whipping open his trench coat ... or a guy who boasted he'd been
+    Charles Manson's roommate for the last 19 years,'' he said. 
+  </text>
+  <arg n="0"        >[*-3] -> someone</arg>
+  <rel              >whipping</rel>
+  <arg n="1"        >his trenchcoat</arg>
+  <arg n="2"        >open</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="whip_out">
+<roleset id="whip.02" name="to take quickly" vncls="-">
+<roles>
+  <role descr="causer" n="0"/>
+  <role descr="entity whipped" n="1"/>
+</roles>
+
+
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ After 11:30 a.m. or so `` we have them standing and waiting , '' she says [*T*-1] , as she whips out orders for hamburgers and the daily special ( grilled roast beef , cheese and jalapeno pepper sandwich on whole wheat , potato salad , baked beans and pudding , plus coffee or iced tea .
+</text>
+	<arg n="0">she</arg>
+	<rel>[ whips] [ out]</rel>
+	<arg n="1">orders for hamburgers and the daily special ( grilled roast beef , cheese and jalapeno pepper sandwich on whole wheat , potato salad , baked beans and pudding , plus coffee or iced tea</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="whip_up">
+<roleset id="whip.03" name="to excite" vncls="-">
+<roles>
+  <role descr="causer" n="0"/>
+  <role descr="entity whipped" n="1"/>
+</roles>
+
+
+
+<example name="transitive">
+<inflection aspect="perfect" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ But Saatchi 's troubles have only whipped up interest among outsiders interested [*] in [*] picking off pieces of its ad businesses .
+</text>
+	<arg f="DIS" n="M">But</arg>
+	<arg n="0">Saatchi 's troubles</arg>
+	<arg f="ADV" n="M">only</arg>
+	<rel>[ whipped] [ up]</rel>
+	<arg n="1">interest</arg>
+	<arg f="LOC" n="M">among outsiders interested [*] in [*] picking off pieces of its ad businesses</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

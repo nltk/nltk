@@ -1,0 +1,54 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="swell">
+<note>
+  Frames file for 'swell' based on sentences in financial subcorpus.
+  Verbnet entry 45.5, other framed members include erode.  Framenet
+  class Expansion.  No comparison.
+</note>
+
+<roleset id="swell.01" name="(cause to) grow larger" vncls="45.5">
+<roles>
+  <role descr="causal agent" n="0"/>
+  <role descr="thing swelling" n="1">
+		
+  <vnrole vncls="45.5" vntheta="Patient"/></role>
+
+  <role descr="EXT" n="2"/>
+  <role descr="start point" n="3"/>
+  <role descr="end point" n="4"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+    The drugstore chain reacted cautiously, saying the plan would
+    further swell its huge debt, which forced the company into Chapter
+    11 protection last year.
+</text>
+        <arg n="0">the plan</arg>
+        <arg f="MOD" n="M">would</arg>
+        <arg f="ADV" n="M">further</arg>
+        <rel>swell</rel>
+        <arg n="1">its huge debt, which forced the company into
+        Chapter 11 protection last year</arg> 
+</example>
+
+<example name="ergative, with end point">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    New York Stock Exchange volume swelled to 198,120,000 shares.
+</text>
+        <arg n="1">New York Stock Exchange volume</arg>
+        <rel>swelled</rel>
+        <arg f="to" n="4">198,120,000 shares</arg>
+</example>
+
+<note>
+Refer to other verbs of incremental motion (rise, drop, etc) for usage
+of args 2 and 3.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

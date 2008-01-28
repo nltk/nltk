@@ -1,0 +1,49 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="smother">
+
+<note>
+Frames file for 'smother' based on sentences in financial subcorpus
+and automatic generation via verbnet.
+</note>
+
+<roleset id="smother.01" name="make it hard to breathe" vncls="9.8">
+<roles>
+  <role descr="cause of difficult breathing" n="0">
+	<vnrole vncls="9.8" vntheta="Agent"/></role>
+  <role descr="thing becoming smothered" n="1">
+	<vnrole vncls="9.8" vntheta="Destination"/></role>
+  <role descr="instrument, if agent is also present" n="2">
+	<vnrole vncls="9.8" vntheta="Theme"/></role>
+
+</roles>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    He said Jaguar ``shouldn't be smothered *trace* by anyone else,''
+    recalled  one participant. 
+</text>
+        <arg f="MOD" n="M">should</arg>
+        <arg f="NEG" n="M">n't</arg>
+        <rel>smothered</rel>
+        <arg n="1">*trace* -&gt;  Jaguar</arg>
+        <arg f="by" n="0">anyone else</arg>
+</example>
+
+<example name="odd instrument">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+     Seeing all those millions in action, I was just so relieved that
+     Ms. Gruberova, gawky thing that she is, didn't accidentally
+     smother herself in a drape.
+</text>
+        <arg n="0">Ms. Gruberova, gawky thing that she is,</arg>
+        <arg f="NEG" n="M">n't</arg>
+        <arg f="MNR" n="M">accidentally</arg>
+        <rel>smother</rel>
+        <arg f="REC" n="1">herself</arg>
+        <arg f="in" n="2">a drape</arg>
+</example>
+</roleset>
+</predicate>
+</frameset>

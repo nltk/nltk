@@ -1,0 +1,46 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="propel">
+<note>
+  Frames file for 'propel' based on sentences in financial subcorpus.
+  No Verbnet entry.  Comparison to 'move'.
+</note>
+
+<roleset id="propel.01" name="cause to move very quickly">
+<roles>
+  <role descr="causer of motion" n="0"/>
+  <role descr="thing in motion" n="1"/>
+  <role descr="destination" n="2"/>
+</roles>
+
+<example name="no stated destination">
+<text>
+    On the Frankfurt Stock Exchange, share prices closed higher in
+    fairly thin trading, as selective buying by foreigners helped
+    *trace* propel prices.
+</text>
+        <arg n="0">*trace* -&gt;  selective buying by foreigners</arg>
+        <rel>propel</rel>
+        <arg n="1">prices</arg>
+</example>
+
+
+<example name="with stated destination">
+<text>
+    Computer parts are getting ever smaller, Mr. Johnson said, a
+    shrinking that *trace* has propelled laptops into position as the
+    fastest-growing segment of the computer business. 
+</text>
+        <arg n="0">*trace* -&gt;  that -&gt;  a shrinking</arg>
+        <rel>propelled</rel>
+        <arg n="1">laptops</arg>
+        <arg f="into" n="2">position as the fastest-growing segment of
+        the computer business</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

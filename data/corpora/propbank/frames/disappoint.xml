@@ -1,0 +1,102 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="disappoint">
+<note>
+  Frames file for 'disappoint' based on sentences in financial
+  subcorpus.  No access to verbnet.  Comparison to 'surprise'.
+</note>
+
+<roleset id="disappoint.01" name="disappoint" vncls="31.1">
+<roles>
+  <role descr="disappointer" n="0">
+		
+  <vnrole vncls="31.1" vntheta="Cause"/></role>
+
+  <role descr="disappointed" n="1">
+		
+  <vnrole vncls="31.1" vntheta="Experiencer"/></role>
+
+  <role descr="instrument" n="2"/>
+</roles>
+
+<example name="verbal, active">
+<text>
+    Known as Easy Eggs, the product has disappointed investors.
+</text>
+        <arg n="M">Known  as Easy Eggs</arg>
+        <arg n="0">the product</arg>
+        <rel>disappointed</rel>
+        <arg n="1">investors</arg>
+</example>
+
+<example name="verbal, passive">
+<text>
+    First Union, with assets of about $32 billion, said it was
+    disappointed *trace* by the delay but said it would cooperate with
+    regulatory authorities. 
+</text>
+        <rel>disappointed</rel>
+        <arg n="1">*trace* -&gt;  it</arg>
+        <arg f="by" n="0">the delay</arg>
+</example>
+
+<example name="adjectival, NP arg0">
+<text>
+    Mr. Nichol said he was ``extremely disappointed in the continuing
+    deterioration of the company's operations while it attempted to
+    conclude the reorganization during the past four months.'' 
+</text>
+        <arg n="1">he</arg>
+        <arg f="MNR" n="M">extremely</arg>
+        <rel>disappointed</rel>
+        <arg f="in" n="0">the continuing deterioration of the
+        company's operations while it attempted to conclude the
+        reorganization during the past four months</arg> 
+</example>
+
+<example name="adjectival, SBAR arg0">
+<text>
+    It shed about 7 pence, however, after dealers said  the market was
+    disappointed that Ford didn't move to tender a bid for control of
+    the company. 
+</text>
+        <arg n="1">the market</arg>
+        <rel>disappointed</rel>
+        <arg n="0">that Ford didn't move to tender a bid for control
+        of the company</arg> 
+</example>
+
+<example name="adjectival, really pushing the arg0">
+<text>
+    Sir John Egan told reporters at London's Motorfair yesterday he
+    ``would be disappointed if we couldn't do the deal within a
+    month.'' 
+</text>
+        <arg n="1">he</arg>
+        <arg f="MOD" n="M">would</arg>
+        <rel>disappointed</rel>
+        <arg n="0">if we couldn't do the deal within a month</arg>
+</example>
+
+<example name="both arg0 and arg2">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John disppointed Mary with his juvenile behavior at the fancy party.
+  </text>
+  <arg n="0">John</arg>
+  <rel>disappointed</rel>
+  <arg n="1">Mary</arg>
+  <arg f="with" n="2">his juvenile behavior at the fancy party</arg>
+</example>
+
+<note>
+As with 'surprise', the line between verbal passives and adjectivals
+is almost nonexistent.  Note, for example, that the Ford example above
+can be easily paraphrased as &quot;That Ford didn't move to tender a bid
+for control of the company disappointed the market.&quot;  (For this
+reason, the complementizer MUST be included in the arg.)
+</note>
+
+</roleset>
+</predicate>
+</frameset>

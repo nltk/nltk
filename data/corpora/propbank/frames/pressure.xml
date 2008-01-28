@@ -1,0 +1,67 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="pressure">
+<note>
+  Frames file for 'pressure' based on sentences in financial
+  subcorpus.  No verbnet entry.  Comparison to 'press'.  
+</note>
+
+<roleset id="pressure.01" name="apply pressure">
+<roles>
+  <role descr="presser" n="0"/>
+  <role descr="pressed (on)" n="1"/>
+  <role descr="goal, pressed-for" n="2"/>
+</roles>
+
+<example name="with goal">
+<text>
+    Big Board stock specialists, began to have them pressure the
+    exchange to ban program trading. 
+</text>
+        <arg n="0">them</arg>
+        <rel>pressure</rel>
+        <arg n="1">the exchange</arg>
+        <arg n="2">to ban program trading</arg>
+</example>
+
+<example name="without goal">
+<text>
+    Generally in the quarter, overproduction of gasoline and higher
+    crude oil prices pressured profitability. 
+</text>
+        <arg f="DIS" n="M">Generally</arg>
+        <arg f="TMP" n="M">in the quarter</arg>
+        <arg n="0">overproduction of gasoline and higher crude oil
+        prices</arg> 
+        <rel>pressured</rel>
+        <arg n="1">profitability</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="pressure.02" name="move">
+<roles>
+  <role descr="mover" n="0"/>
+  <role descr="moved" n="1"/>
+  <role descr="ahead, usually" f="DIR" n="m"/>
+</roles>
+
+<example name="somewhat odd usage">
+<text>
+    The Nikkei index was pressured *trace* down by profit-taking
+    triggered by sharp advances made  through this week and fell
+    151.20 points to 35527.29. 
+</text>
+        <rel>pressured</rel>
+        <arg n="1">The Nikkei index -&gt; *trace*</arg>
+        <arg f="DIR" n="M">down</arg>
+        <arg f="by" n="0">profit-taking triggered  by sharp advances
+        made  through this week</arg> 
+</example>
+
+</roleset>
+</predicate>
+</frameset>

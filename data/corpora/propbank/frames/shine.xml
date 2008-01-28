@@ -1,0 +1,73 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="shine">
+<note>
+  Frames file for 'shine' based on sentences in wsj.  Verbnet entry
+  43.1, Framenet entry Light emission.
+</note>
+
+<roleset id="shine.01" name="produce light" vncls="43.1">
+<roles>
+  <role descr="cause of illumination, agent" n="0">
+        <vnrole vncls="43.1" vntheta="Agent"/></role>
+  <role descr="light itself" n="1">
+        <vnrole vncls="43.1" vntheta="Theme"/></role>
+  <role descr="thing illuminated" n="2">
+        <vnrole vncls="43.1" vntheta="Location"/></role>
+</roles>
+
+<example name="agentive">
+<inflection aspect="ns" form="gerund" person="ns" tense="ns" voice="ns"/>
+<text>
+    Currently, chips are produced by *trace* shining light through a
+    mask to produce an image on the chip, much as a camera produces an
+    image on film. 
+</text>
+        <arg n="0">*trace*</arg>
+        <rel>shining</rel>
+        <arg n="1">light</arg>
+        <arg f="DIR" n="M">through a mask</arg>
+        <arg f="PNC" n="M">to produce an image on the chip, much as a
+        camera produces an image on film</arg> 
+</example>
+
+<example name="ergative">
+<inflection aspect="ns" form="full" person="ns" tense="ns" voice="active"/>
+<text>
+     Rising in the firm, he became powerful and bland, though his new
+     wife, Susan, made him shine in the gossip columns with her
+     profligate spending habits and flamboyant frocks. 
+</text>
+        <arg n="1">him</arg>
+        <rel>shine</rel>
+        <arg f="LOC" n="M">in the gossip columns</arg>
+        <arg f="MNR" n="M">with her profligate spending habits and flamboyant frocks</arg>
+</example>
+
+<note>
+The canonical ergative example would be &quot;the sun shines&quot;.
+</note>
+</roleset>
+</predicate>
+
+<predicate lemma="shine_through">
+<roleset id="shine.02" name="be very apparent" vncls="-">
+<roles>
+  <role descr="apparent thing" n="1"/>
+</roles>
+
+<example name="a particular kind of direction">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    But while the merits of diversification shine through when times
+    are tough, there's also a price to pay: A diversified portfolio
+    always underperforms an undiversified portfolio during those times
+    when the investment in the undiversified portfolio is truly hot. 
+</text>
+        <arg n="1">the merits of diversification</arg>
+        <rel>shine through</rel>
+        <arg f="TMP" n="M">when times are tough </arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

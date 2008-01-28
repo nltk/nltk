@@ -1,0 +1,75 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="infect">
+<note>
+Frames file for 'infect' based on sentences in wsj and automatic
+expansion via verbnet.
+</note>
+
+<roleset id="infect.01" name="cause something to have an infection" vncls="9.8">
+<roles>
+  <role descr="causer of infection, but not germ" n="0">
+	<vnrole vncls="9.8" vntheta="Agent"/></role>
+  <role descr="thing becoming infected" n="1">
+	<vnrole vncls="9.8" vntheta="Destination"/></role>
+  <role descr="infectant, germ" n="2">
+	<vnrole vncls="9.8" vntheta="Theme"/></role>
+<note>
+Reserve arg0 for only those cases where it's clearly a causal agent of
+infection; viruses don't count as intentional agents.
+</note>
+</roles>
+
+<example name="passive with germ">
+<inflection aspect="ns" form="participle" person="third" tense="past" voice="passive"/>
+<text>
+    The Soviets' explanation is that the anthrax came from one lot of
+    animal feed made from the bones of cattle that grazed on soil that
+    *trace* was naturally infected with anthrax spores. 
+</text>
+        <arg n="1">*trace* -&gt;  that -&gt;  soil</arg>
+        <arg f="MNR" n="M">naturally</arg>
+        <rel>infected</rel>
+        <arg f="with" n="2">anthrax spores</arg>
+</example>
+
+<example name="germ as subject">
+<inflection aspect="perfect" form="participle" person="third" tense="present" voice="active"/>
+<text>
+    The National Aeronautics and Space Administration said a computer
+    virus has infected one of its networks and is spreading
+    anti-nuclear messages related to its Galileo space probe, which is
+    to be launched today. 
+</text>
+        <arg n="2">a computer virus</arg>
+        <rel>infected</rel>
+        <arg n="1">one of its networks</arg>
+</example>
+
+<example name="ancient history">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Charles Redmond, a NASA spokesman, said the agency discovered the
+    virus on Monday on the collection of computer networks
+    collectively called Internet and expected 100 university centers
+    to be infected *trace* by today. 
+</text>
+        <rel>infected</rel>
+        <arg n="1">*trace* -&gt;  100 university centers</arg>
+        <arg f="TMP" n="M">by today</arg>
+</example>
+
+<example name="with agent" src="contaminate.01">
+  <inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+  <text>
+    John infects any room he enters with his foul stench.
+  </text>
+  <arg n="0">John</arg>
+  <rel>infects</rel>
+  <arg n="1">any room he enters</arg>
+  <arg f="with" n="2">his foul stench</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

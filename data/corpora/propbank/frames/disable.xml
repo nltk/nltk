@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="disable">
+<note>
+  Frames file for 'disable' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="disable.01" name="make not work" vncls="-">
+<roles>
+  <role descr="disabler" n="0"/>
+  <role descr="thing not working" n="1"/>
+</roles>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="past" voice="passive"/>
+<text>
+    City crews tallied the wreckage to buildings, but lacked a clear
+    sense of how gravely transportation arteries were disabled [*-1]
+    [*T*-2]. 
+</text>
+        <rel>disabled</rel>
+        <arg n="1">[*-1] -&gt;  transportation arteries</arg>
+        <arg f="EXT" n="M">[*T*-2] -&gt;  how gravely</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

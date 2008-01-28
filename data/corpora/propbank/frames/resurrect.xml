@@ -1,0 +1,34 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="resurrect">
+<note>
+  Frames file for 'resurrect' based on sentences in wsj.  No Verbnet
+  entry. 
+</note>
+
+<roleset id="resurrect.01" name="bring back to life" vncls="-">
+<roles>
+  <role descr="Dr. Frankenstein" n="0"/>
+  <role descr="former corpse" n="1"/>
+</roles>
+
+<example name="only transitive">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    Some may be tempted to argue that the idea of a strategic review
+    merely resurrects the infamous Zero-Based Budgeting concept of the
+    Carter administration. 
+</text>
+        <arg n="0">the idea of a strategic review</arg>
+        <arg f="DIS" n="M">merely</arg>
+        <rel>resurrects</rel>
+        <arg n="1">the infamous Zero-Based Budgeting concept of the
+        Carter administration</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

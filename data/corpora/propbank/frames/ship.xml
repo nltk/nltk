@@ -1,0 +1,120 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="ship">
+<note>
+  Frames file for 'ship' based on sentences in wsj.  Verbnet entry
+  11.1-1, Framenet entry Shipping.
+</note>
+
+<roleset id="ship.01" name="send a package" vncls="11.1-1">
+<roles>
+  <role descr="sender" n="0"><vnrole vncls="11.1-1" vntheta="Agent"/></role>
+  <role descr="package" n="1"><vnrole vncls="11.1-1" vntheta="Theme"/></role>
+  <role descr="recipient" n="2"><vnrole vncls="11.1-1" vntheta="Destination"/></role>
+  <role descr="source" n="3"><vnrole vncls="11.1-1" vntheta="Source"/></role>
+</roles>
+
+<example name="nice easy transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    World sugar futures prices soared on rumors that Brazil, a major
+    grower and exporter, might not ship sugar this crop year and
+    next. 
+</text>
+        <arg n="0">Brazil, a major grower and exporter,</arg>
+        <arg f="MOD" n="M">might</arg>
+        <arg f="NEG" n="M">not</arg>
+        <rel>ship</rel>
+        <arg n="1">sugar</arg>
+        <arg f="TMP" n="M">this crop year and next</arg>
+</example>
+
+<example name="with destination">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+    Although much of this country's export corn goes to New Orleans by
+    barge, it is possible for exporters to sidestep the Mississippi
+    River by *trace* shipping a larger-than-normal amount of corn by
+    train to the port. 
+</text>
+        <arg n="0">*trace* -&gt;  exporters</arg>
+        <rel>shipping</rel>
+        <arg n="1">a larger-than-normal amount of corn</arg>
+        <arg f="MNR" n="M">by train</arg>
+        <arg f="to" n="2">the port</arg>
+</example>
+
+<example name="with source">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Their museum had purchased an Attic black-figured column krater
+    and shipped it from London. 
+</text>
+        <arg n="0">Their museum</arg>
+        <rel>shipped</rel>
+        <arg n="1">it</arg>
+        <arg f="from" n="3">London</arg>
+</example>
+
+<example name="oddly intransitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+    I'm going *trace* to ship and hope I get paid.
+</text>
+        <arg n="0">*trace* -&gt;  I</arg>
+        <rel>ship</rel>
+</example>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    Profit per ton of steel shipped *trace* dropped to about $33 a ton
+    from $42 a ton last year and $53 a ton in the second quarter,
+    analysts said. 
+</text>
+        <rel>shipped</rel>
+        <arg n="1">*trace* -&gt;  ton</arg>
+</example>
+
+<example name="ergative!">
+<inflection aspect="ns" form="full" person="ns" tense="future" voice="active"/>
+<text>
+    The first models will ship in the spring, with the largest
+    following in the fall. 
+</text>
+        <arg n="1">The first models</arg>
+        <arg f="MOD" n="M">will</arg>
+        <rel>ship</rel>
+        <arg f="TMP" n="M">in the spring</arg>
+        <arg f="ADV" n="M">with the largest following in the fall</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="ship_out">
+<roleset id="ship.02" name="depart, as a soldier" vncls="-">
+<roles>
+  <role descr="soldier" n="1"/>
+  <role descr="destination" n="2"/>
+</roles>
+
+<example name="bummer">
+  <inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+  <text>
+    John ships out to Afghanistan next week.
+  </text>
+  <arg n="1">John</arg>
+  <rel>ships out</rel>
+  <arg f="to" n="2">Afghanistan</arg>
+  <arg f="TMP" n="m">next week</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

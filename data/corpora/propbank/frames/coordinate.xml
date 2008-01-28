@@ -1,0 +1,45 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="coordinate">
+<note>
+  Frames file for 'coordinate' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="coordinate.01" name="to organize" vncls="-">
+<roles>
+  <role descr="organizer, agent" n="0"/>
+  <role descr="entity coordinated" n="1"/>
+  <role descr="entity coordinated with" n="2"/>
+</roles>
+
+<example name="arbitrary subject">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ Several moves were taken [*-1] following the October 1987 crash [*] to coordinate -- and sometimes deliberately disconnect [*PPA*-2] -- the stock and futures markets in times of heightened volatility .
+</text>
+	<arg n="0">[*]</arg>
+	<rel>coordinate</rel>
+	<arg n="1">the stock and futures markets</arg>
+	<arg f="TMP" n="M">in times of heightened volatility</arg>
+</example>
+
+
+<example name="all arguments">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ Under the accord , Finnair agreed [*-1] to coordinate flights , marketing and other functions with SAS , the 50%-state-owned airline of Denmark , Norway and Sweden .
+</text>
+	<arg n="0">[*-1] -&gt;  Finnair</arg>
+	<rel>coordinate</rel>
+	<arg n="1">flights , marketing and other functions</arg>
+	<arg f="with" n="2">SAS , the 50%-state-owned airline of Denmark , Norway and Sweden</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

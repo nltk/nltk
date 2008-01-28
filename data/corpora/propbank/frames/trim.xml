@@ -1,0 +1,132 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="trim">
+<note>
+  Frames file for 'trim' based on sentences in financial subcorpus.
+  Verbnet entries fill-9.8 wipe_manner-10.4.1, other framed members
+  include bind, cover, face, ring; wash.  These aren't the senses I
+  expect in WSJ, though.  Comparison to 'cut'.
+</note>
+
+<roleset id="trim.01" name="slice" vncls="10.4.1">
+<roles>
+  <role descr="cutter" n="0">
+		
+  <vnrole vncls="10.4.1" vntheta="Agent"/></role>
+
+  <role descr="thing cut" n="1">
+		
+  <vnrole vncls="10.4.1" vntheta="Theme"/></role>
+
+  <role descr="medium, source" n="2">
+		
+  <vnrole vncls="10.4.1" vntheta="Source"/></role>
+
+  <role descr="instrument" n="3"/>
+</roles>
+
+<example name="all args">
+  <text>
+    John trimmed the fat from the the expensive cut of beef with a
+    chainsaw.
+  </text>
+  <arg n="0">John</arg>
+  <rel>trimmed</rel>
+  <arg n="1">the fat</arg>
+  <arg f="from" n="2">the the expensive cut of beef</arg>
+  <arg f="with" n="3">a chainsaw</arg>
+</example>
+
+<example name="without instrument, inverted order">
+  <text>
+    John trimmed the expensive cut of beef of fat.
+  </text>
+  <arg n="0">John</arg>
+  <rel>trimmed</rel>
+  <arg n="2">the expensive cut of beef</arg>
+  <arg f="of" n="1">fat</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="trim.02" name="reduce" vncls="-">
+<roles>
+  <role descr="cutter" n="0"/>
+  <role descr="thing reduced" n="1"/>
+  <role descr="amount reduced by" n="2"/>
+  <role descr="start point" n="3"/>
+  <role descr="end point" n="4"/>
+</roles>
+
+<example name="transitive">
+<text>
+    Earlier staff-reduction moves have trimmed about 300 jobs, the
+    spokesman said. 
+</text>
+        <arg n="0">Earlier staff-reduction moves</arg>
+        <rel>trimmed</rel>
+        <arg n="1">about 300 jobs</arg>
+</example>
+
+<example name="with extent">
+<text>
+    This cushion could come in handy if GM has *trace* to trim
+    fourth-quarter North American production schedules more than the
+    already scheduled 9.5%. 
+</text>
+        <arg n="0">*trace* -&gt;  GM</arg>
+        <rel>trim</rel>
+        <arg n="1">fourth-quarter North American production schedules</arg>
+        <arg f="EXT" n="2">more than the already scheduled 9.5 %</arg>
+</example>
+
+<example name="start and end points">
+<text>
+    But Smith Barney's Mr. Doyle, who *trace* yesterday trimmed his
+    1990 Anheuser earnings projection to $2.95 a share from $3.10,
+    called the market's reaction ``justified.'' 
+</text>
+        <arg n="0">*trace* -&gt;  who -&gt;  Smith Barney's Mr. Doyle</arg>
+        <rel>trimmed</rel>
+        <arg n="1">his 1990 Anheuser earnings projection</arg>
+        <arg f="to" n="4">$2.95 a share</arg>
+        <arg f="from" n="3">$3.10</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="trim.03" name="adorn, decorate" vncls="9.8 41.2.2">
+<roles>
+  <role descr="decorator" n="0">
+		
+  <vnrole vncls="41.2.2" vntheta="Agent"/><vnrole vncls="9.8" vntheta="Agent"/></role>
+
+  <role descr="thing decorated" n="1">
+		
+  <vnrole vncls="41.2.2" vntheta="Patient"/><vnrole vncls="9.8" vntheta="Destination"/></role>
+
+  <role descr="decorations" n="2"><vnrole vncls="9.8" vntheta="Theme"/></role>
+</roles>
+
+<example name="'tis the season">
+  <text>
+    John trimmed his Christmas tree with dirty socks.
+  </text>
+  <arg n="0">John</arg>
+  <rel>trimmed</rel>
+  <arg n="1">his Christmas tree</arg>
+  <arg f="with" n="2">dirty socks</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

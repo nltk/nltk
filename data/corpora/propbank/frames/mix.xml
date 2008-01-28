@@ -1,0 +1,100 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="mix">
+<note>
+Frames file for 'mix' based on sentences in wsj and automatic
+expansion via verbnet.
+</note>
+
+<roleset id="mix.01" name="mix, combine" vncls="22.1-1">
+<roles>
+	<role descr="agent, mixer" n="0">
+            <vnrole vncls="22.1-1" vntheta="Agent"/></role>
+	<role descr="ingredient one" n="1">
+            <vnrole vncls="22.1-1" vntheta="Patient1"/></role>
+	<role descr="ingredient two" n="2">
+            <vnrole vncls="22.1-1" vntheta="Patient2"/></role>
+	<role descr="end product" n="3"/>
+</roles>
+
+<example name="merged ingredients">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Workers dumped large burlap sacks of the imported material into a
+    huge bin, poured in cotton and acetate fibers and mechanically
+    mixed the dry fibers in a process used to make filters. 
+</text>
+        <arg n="0">Workers</arg>
+        <arg f="MNR" n="M">mechanically</arg>
+        <rel>mixed</rel>
+        <arg n="1">the dry fibers</arg>
+        <arg f="LOC" n="M">in a process used to make filters</arg>
+</example>
+
+<example name="split ingredients, end product">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    Ammonium perchlorate is an oxidizer that *trace* is mixed *trace*
+    with a propellant to make rocket fuel used in the space shuttle
+    and military rockets. 
+</text>
+        <rel>mixed</rel>
+        <arg n="1">*trace* -&gt; *trace* -&gt;  that -&gt;  an oxidizer</arg>
+        <arg f="with" n="2">a propellant</arg>
+        <arg n="3">to make rocket fuel used  in the space
+        shuttle and military rockets</arg> 
+</example>
+
+<example name="ergative!">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    Because despite all the media prattle about comedy and politics
+    not mixing, they are similar in one respect: Both can serve as
+    mechanisms for easing tensions and facilitating the co-existence
+    of groups in conflict. 
+</text>
+        <arg n="1">comedy and politics</arg>
+        <arg f="NEG" n="M">not</arg>
+        <rel>mixing</rel>
+</example>
+
+<example name="distinguishing figure and ground">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+     John mixed sand into the Jello.
+  </text>
+  <arg n="0"        >John</arg>
+  <rel              >mixed</rel>
+  <arg n="2"        >sand</arg>
+  <arg n="1" f="into">the Jello</arg>
+</example>
+
+<note>
+Watch out for many many adjectival usages: &quot;Stock prices were mixed&quot;
+which don't follow this argument structure at all.  Leave these alone
+for the time being.
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="mix_up">
+
+<roleset id="mix.02" name="phrasal mix, combine" vncls="22.1-1">
+<roles>
+  <role descr="agent, mixer" n="0">
+        <vnrole vncls="22.1-1" vntheta="Agent"/></role>
+  <role descr="ingredient one" n="1">
+        <vnrole vncls="22.1-1" vntheta="Patient1"/></role>
+  <role descr="ingredient two" n="2">
+        <vnrole vncls="22.1-1" vntheta="Patient2"/></role>
+  <role descr="end product" n="3"/>
+</roles>
+
+<note>
+The same as mix.01, except args 2 and 3 probably will not appear.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

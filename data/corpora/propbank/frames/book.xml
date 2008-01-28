@@ -1,0 +1,60 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="book">
+<note>
+  Frames file for 'book' based on sentences in financial subcorpus.
+  Verbnet entry get 13.5.1, but I don't see the connection.  No
+  comparison.
+</note>
+
+<roleset id="book.01" name="enter into a permanent record" vncls="-">
+<roles>
+  <role descr="booker" n="0"/>
+  <role descr="booked" n="1"/>
+  <role descr="secondary attribute on arg1" n="2"/>
+</roles>
+
+<example name="passive, booked-as">
+<text>
+    The MiniScribe report outlines a host of allegedly fraudulent
+    practices, including the shipment of bricks and defective disk
+    drives that *trace* were booked *trace* as sales, and inventory
+    forgeries in accounting records. 
+</text>
+        <rel>booked</rel>
+        <arg n="1">*trace* -&gt; *trace* -&gt;  that -&gt;  bricks and
+        defective disk drives</arg> 
+        <arg f="as" n="2">sales</arg>
+</example>
+
+<example name="passive">
+<text>
+    Peter Otradovec, vice president for planning at the Phoenix,
+    Ariz., carrier, said in an interview that the work stoppage at
+    Boeing, now entering its 13th day, ``has caused some turmoil in
+    our scheduling '' and that more than 500 passengers who *trace*
+    were booked  to fly out of Houston on America West would now be
+    put on other airlines. 
+</text>
+        <arg n="1">*trace* -&gt;  who -&gt;  more than 500 passengers</arg>
+        <rel>booked</rel>
+        <arg n="2">to fly out of Houston on America West</arg>
+</example>
+
+<example name="book'em, Danno">
+<text>
+    Some analysts hedge their estimates for Quantum, because it isn't
+    known when the company will book certain one-time charges. 
+</text>
+        <arg n="0">the company</arg>
+        <arg f="MOD" n="M">will</arg>
+        <rel>book</rel>
+        <arg n="1">certain one-time charges</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

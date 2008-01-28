@@ -1,0 +1,70 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="smuggle">
+<note>
+  Frames file for 'smuggle' based on sentences in wsj.  Verbnet
+  entries 10.5 and 11.1, Framenet entry Smuggling.
+</note>
+
+<roleset id="smuggle.01" name="move clandestinely" vncls="10.5 11.1">
+<roles>
+  <role descr="thief" n="0">
+		
+  <vnrole vncls="10.5" vntheta="Agent"/><vnrole vncls="11.1" vntheta="Agent"/></role>
+
+  <role descr="stolen object" n="1">
+		
+  <vnrole vncls="10.5" vntheta="Theme"/><vnrole vncls="11.1" vntheta="Theme"/></role>
+
+  <role descr="stolen-from" n="2">
+		
+  <vnrole vncls="10.5" vntheta="Source"/><vnrole vncls="11.1" vntheta="Source"/></role>
+  <role descr="destination" n="3"><vnrole vncls="10.5" vntheta="Beneficiary"/><vnrole vncls="11.1" vntheta="Destination"/></role>
+</roles>
+
+<example name="args as DIR">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Still, employees do occasionally try [*-1] to smuggle out a gem or
+    two. 
+</text>
+        <arg n="0">[*-1] -&gt;  employees</arg>
+        <rel>smuggle</rel>
+        <arg f="DIR" n="2">out</arg>
+        <arg n="1">a gem or two</arg>
+</example>
+
+<example name="clearer source">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John smuggled a dozen hard-boiled eggs out of the dining
+    hall in his underwear.
+  </text>
+  <arg n="0">John</arg>
+  <rel>smuggled</rel>
+  <arg n="1">a dozen hard-boiled eggs</arg>
+  <arg f="out" n="2">of the dining hall</arg>
+  <arg f="MNR" n="m">in his underwear</arg>
+</example>
+
+<note>
+That's still one of my favorite John sentences ever.
+</note>
+
+<example name="with destination">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John smuggled a live goat into Mary's bedroom.
+  </text>
+  <arg n="0">John</arg>
+  <rel>smuggled</rel>
+  <arg n="1">a live goat</arg>
+  <arg f="into" n="3">Mary's bedroom</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

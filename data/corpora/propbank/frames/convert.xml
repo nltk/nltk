@@ -1,0 +1,58 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="convert">
+<note>
+  Frames file for 'convert' based on sentences in financial
+  subcorpus.  Verbnet class turn-26.6.  Comparison with 'change'.
+</note>
+
+<roleset id="convert.01" name="transform" vncls="26.6">
+<roles>
+  <role descr="causer of transformation" n="0">
+	<vnrole vncls="26.6" vntheta="Agent"/></role>
+  <role descr="thing changing" n="1">
+	<vnrole vncls="26.6" vntheta="Patient"/></role>
+  <role descr="end state" n="2">
+	<vnrole vncls="26.6" vntheta="Product"/></role>
+  <role descr="start state" n="3">
+	<vnrole vncls="26.6" vntheta="Material"/></role>
+</roles>
+
+<example name="typically transitive">
+<text>
+    Related to that decision, the company said it was converting its
+    Santa Clara, Calif., factory to a research and development
+    facility. 
+</text>
+        <arg n="0">it</arg>
+        <rel>converting</rel>
+        <arg n="1">its Santa Clara , Calif. , factory</arg>
+        <arg f="to" n="2">a research and development facility</arg>
+</example>
+
+<example name="explicit start state">
+<text>
+    In late September, IBM began shipping a plug-in card that converts
+    its PS/2 model 70-A21 from a 80386 machine to an 80486 machine.  
+</text>
+        <arg n="0">*trace* -&gt;  that -&gt;  a plug-in card</arg>
+        <rel>converts</rel>
+        <arg n="1">its PS/2 model 70-A21</arg>
+        <arg f="from" n="3">a 80386 machine</arg>
+        <arg f="to" n="2">an 80486 machine</arg>
+</example>
+
+<example name="odd ergative usage">
+<text>
+    Convertible capital appreciation bonds with a final stated
+    maturity of Nov. 15, 2014, convert Nov. 15, 1999. 
+</text>
+        <arg n="1">Convertible capital appreciation bonds with a final
+        stated maturity of Nov. 15, 2014,</arg> 
+        <rel>convert</rel>
+        <arg f="TMP" n="M">Nov. 15 , 1999</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,69 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="place">
+<note>
+  Frames file for 'place' based on sentences in financial subcorpus.
+  Verbnet entry put-9.1, other framed members include 'put' and
+  'set'.  Comparison with 'put'.
+</note>
+
+<roleset id="place.01" name="location" vncls="9.1">
+<roles>
+  <role descr="putter" n="0">
+		
+  <vnrole vncls="9.1" vntheta="Agent"/></role>
+
+  <role descr="thing put" n="1">
+		
+  <vnrole vncls="9.1" vntheta="Theme"/></role>
+
+  <role descr="where put" f="LOC" n="2">
+		
+  <vnrole vncls="9.1" vntheta="Destination"/></role>
+
+</roles>
+
+<example name="basic 'put' sense">
+<text>
+    ...the possibility that Sea Containers' subsidiaries might be
+    required *trace* to place their shares in the open market. 
+</text>
+        <arg n="0">*trace* -&gt;  Sea Containers ' subsidiaries</arg>
+        <rel>place</rel>
+        <arg n="1">their shares</arg>
+        <arg f="LOC" n="2">in the open market</arg>
+</example>
+
+<example name="with misplaced modifier (more common than you'd expect)">
+<text>
+    Policies designed to encourage one type of investor over another
+    are akin to placing a sign over the Big Board's door saying:
+    ``Buyers welcome, sellers please go away!'' 
+</text>
+        <arg n="0"/>
+        <rel>placing</rel>
+        <arg n="1">a sign </arg>
+        <arg f="LOC" n="2">over the Big Board 's door</arg>
+        <arg n="M">saying : `` Buyers welcome , sellers please  go away</arg>
+</example>
+
+<example name="place an order (with adjuncts)">
+<text>
+    Dealers placed heavy buy orders in the morning to start the first
+    trading day for November transactions .
+</text>
+        <arg n="0">Dealers</arg>
+        <rel>placed</rel>
+        <arg n="1">heavy buy orders</arg>
+        <arg f="TMP" n="M">in the morning</arg>
+        <arg f="PNC" n="M">to start the first trading day for November
+        transactions</arg> 
+</example>
+
+<note>
+Ignore the frequent adjectival usages like &quot;privately placed orders&quot;.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

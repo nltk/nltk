@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="mass">
+<note>
+  Frames file for 'mass' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="mass.01" name="to gather into a mass" vncls="47.5.2">
+<roles>
+  <role descr="people gathered" n="0"><vnrole vncls="47.5.2" vntheta="Theme"/></role>
+</roles>
+
+<example name="intransitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ As the country 's new leader , Egon Krenz , prepared [*-1] to travel to Moscow today for talks with Soviet leader Gorbachev , hundreds of thousands of East Germans massed in the streets of Leipzig , Halle and Schwerin [*-2] to call for internal freedoms and the legalization of the New Forum opposition group .
+</text>
+	<arg f="ADV" n="M">As the country 's new leader , Egon Krenz , prepared [*-1] to travel to Moscow today for talks with Soviet leader Gorbachev</arg>
+	<arg n="0">hundreds of thousands of East Germans</arg>
+	<rel>massed</rel>
+	<arg f="LOC" n="M">in the streets of Leipzig , Halle and Schwerin</arg>
+	<arg f="PNC" n="M">[*-2] to call for internal freedoms and the legalization of the New Forum opposition group</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

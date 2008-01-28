@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="stipulate">
+<note>
+  Frames file for 'stipulate' based on sentences in financial
+  subcorpus.  No Verbnet entry.
+</note>
+
+<roleset id="stipulate.01" name="define arbitrarily" vncls="-">
+<roles>
+  <role descr="stipulator" n="0"/>
+  <role descr="thing defined" n="1"/>
+</roles>
+
+<example name="arg1 always sentential?">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    Maxicare said the plan stipulates that enrollees in the company's
+    health plans will have valid claims covered in full. 
+</text>
+        <arg n="0">the plan</arg>
+        <rel>stipulates</rel>
+        <arg n="1">enrollees in the company's health plans will have
+        valid claims covered in full</arg> 
+</example>
+
+<note>
+Leave non-wh complementizers ('that') out of the arg1.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

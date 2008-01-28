@@ -1,0 +1,34 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="long">
+<note>
+  Frames file for 'long' based on sentences in wsj.  No access to
+  Verbnet at the moment.
+</note>
+
+<roleset id="long.01" name="want, desire" vncls="32.2">
+<roles>
+  <role descr="wanter" n="0"><vnrole vncls="32.2" vntheta="Experiencer"/></role>
+  <role descr="wanted" n="1"><vnrole vncls="32.2" vntheta="Theme"/></role>
+</roles>
+
+<example name="wrong syntactic parse">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+    Still, they long for a ``mega-hit'' toy to excite retail sales in
+    the U.S., Hong Kong's biggest market for toys and games. 
+</text>
+        <arg f="DIS" n="M">Still</arg>
+        <arg n="0">they</arg>
+        <rel>long</rel>
+        <arg n="1">for a ``mega-hit'' toy to excite retail sales in
+        the U.S., Hong Kong's biggest market for toys and games</arg> 
+<note>
+'for a mega-hit toy' should be a PP.
+</note>
+
+</example>
+
+</roleset>
+</predicate>
+</frameset>

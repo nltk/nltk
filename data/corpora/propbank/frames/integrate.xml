@@ -1,0 +1,56 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="integrate">
+<note>
+  Frames file for 'integrate' based on sentences in financial
+  subcorpus.  Verbnet entries  amalgamate-22.2,
+  other framed members include confuse, introduce.  Comparison with
+  those.
+</note>
+
+<roleset id="integrate.01" name="blend, mix" vncls="22.2">
+<roles>
+  <role descr="mixer, integrater" n="0">
+		
+		
+  <vnrole vncls="22.2" vntheta="Agent"/></role>
+
+  <role descr="figure" n="1">
+		
+		
+  <vnrole vncls="22.2" vntheta="Patient1"/></role>
+
+  <role descr="ground" n="2">
+		
+		
+  <vnrole vncls="22.2" vntheta="Patient2"/></role>
+
+</roles>
+
+<example name="separate figure and ground">
+  <text>
+    John integrated his ideas into the professor's argument.
+  </text>
+  <arg n="0">John</arg>
+  <rel>integrated</rel>
+  <arg n="1">his ideas</arg>
+  <arg f="into" n="2">the professor's argument</arg>
+</example>
+
+<example name="figure and ground merged">
+<text>
+    Mr. Spielvogel said Mr. Achenbaum will work with clients to
+    determine the mix of promotion, merchandising, publicity and other
+    marketing outlets, and to integrate those services. 
+</text>
+        <arg n="0">*trace* -&gt;  Mr. Achenbaum</arg>
+        <rel>integrate</rel>
+        <arg n="1">those services</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

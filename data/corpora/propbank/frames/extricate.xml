@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="extricate">
+<note>
+  Frames file for 'extricate' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="extricate.01" name="remove thyself" vncls="-">
+<roles>
+  <role descr="agent of removing" n="0"/>
+  <role descr="thing removed" n="1"/>
+  <role descr="from where" n="2"/>
+</roles>
+
+<example name="cosmic justice">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    A spot honoring Bill White, the inventor of chewing gum, shows a
+    woman trying [*-1] to extricate her high-heeled shoe from a wad of
+    gum. 
+</text>
+        <arg n="0">[*-1] -&gt;  a woman</arg>
+        <rel>extricate</rel>
+        <arg n="1">her high-heeled shoe</arg>
+        <arg f="from" n="2">a wad of gum</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

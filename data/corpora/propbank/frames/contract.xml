@@ -1,0 +1,135 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="contract">
+<note>
+  Frames file for 'contract' based on sentences in financial
+  subcorpus.  Verbnet entry 45.4 (other causative), zillions of other
+  framed members.  No Framenet entry.  Comparison with verbs of
+  quantifiable rising and falling.
+</note>
+
+<roleset id="contract.01" name="get smaller" vncls="45.4">
+<roles>
+  <role descr="thing getting smaller" n="1">
+		
+  <vnrole vncls="45.4" vntheta="Patient"/></role>
+
+  <role descr="EXT" n="2"/>
+  <role descr="start point" n="3"/>
+  <role descr="end point" n="4"/>
+</roles>
+
+<example name="all args">
+  <text>
+    John's portion of the birthday cake contracted dramatically, from
+    more than half to mere crumbs.
+  </text>
+  <arg n="1">John's portion of the birthday cake</arg>
+  <rel>contracted</rel>
+  <arg f="MNR" n="2">dramatically</arg>
+  <arg f="from" n="3">more than half</arg>
+  <arg f="to" n="4">mere crumbs</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="contract.02" name="enter into a contract" vncls="-">
+<roles>
+  <role descr="causer of contract" n="0"/>
+  <role descr="reason, purpose" n="1"/>
+  <role descr="contracted with" n="2"/>
+</roles>
+
+<example name="sentential reason">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    But dry growing conditions in the Red River Valley of Minnesota
+    and North Dakota are pushing spot prices of potatoes beyond what
+    Michael contracted to pay last spring. 
+</text>
+        <arg n="0">Michael</arg>
+        <rel>contracted</rel>
+        <arg n="1">to pay  last spring</arg>
+</example>
+
+<example name="with arg2">
+  <text>
+    John contracted with Mary for conjugal visitation rights.
+  </text>
+  <arg n="0">John</arg>
+  <rel>contracted</rel>
+  <arg f="with" n="2">Mary</arg>
+  <arg f="for" n="1">conjugal visitation rights</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="contract.04" name="get, acquire (as of disease)">
+<roles>
+  <role descr="sick person, patient" n="1"/>
+  <role descr="disease" n="2"/>
+  <role descr="source of disease" n="3"/>
+</roles>
+
+<example name="no source">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    ``There's no question that some of those workers and managers
+    contracted asbestos-related diseases,'' said Darrell Phillips.  
+</text>
+        <arg n="1">some of those workers and managers</arg>
+        <rel>contracted</rel>
+        <arg n="2">asbestos-related diseases</arg>
+</example>
+
+<example name="poor John">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John contracted a nasty case of fleas from the neighborhood dogs.
+  </text>
+  <arg n="1">John</arg>
+  <rel>contracted</rel>
+  <arg n="2">a nasty case of fleas</arg>
+  <arg f="from" n="3">the neighborhood dogs</arg>
+</example>
+
+<note>
+Cf. 'recover'
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="contract_out">
+
+<roleset id="contract.03" name="variation on sense two above" vncls="-">
+<roles>
+  <role descr="causer of contract" n="0"/>
+  <role descr="reason, purpose" n="1"/>
+</roles>
+
+<example name="NP reason">
+<inflection aspect="ns" form="gerund" person="ns" tense="ns" voice="ns"/>
+<text>
+    By moving the design of new products in-house -- instead of
+    *trace* contracting out the work -- the company also has been able
+    to come up with designs that can be manufactured more efficiently,
+    he said. 
+</text>
+        <rel>[ contracting] [ out]</rel>
+        <arg n="1">the work</arg>
+        <arg n="0">the company -&gt; *trace*</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

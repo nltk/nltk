@@ -1,0 +1,78 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="plunge">
+<note>
+  Frames file for 'plunge' based on survey of initial sentences of big
+  corpus and comparison with 'fall'
+</note>
+
+<roleset id="plunge.01" name="fall precipitously" vncls="45.6">
+<roles>
+  <role descr="Logical subject, patient, thing falling" n="1">
+	  <vnrole vncls="45.6" vntheta="Patient"/></role>
+  <role descr="EXT, amount fallen" n="2">
+	  <vnrole vncls="45.6" vntheta="Extent"/></role>
+  <role descr="start point" n="3"/>
+  <role descr="end point, end state of arg1" n="4"/>
+  <role descr="medium" f="LOC" n="M"/>
+</roles>
+
+<example name="EXT">
+  <text>
+  The Mexico Fund plunged about 18%
+  </text>
+  <arg n="1">The Mexico Fund</arg>
+  <rel>plunged</rel>
+  <arg f="EXT" n="2">about 18%</arg>
+</example>
+
+<example name="variant">
+  <text>
+  Japanese intervention has kept the US currency from *trace* plunging
+  below key levels against the mark.
+  </text>
+  <arg n="1">*trace*=the US currency</arg>
+  <rel>plunging</rel>
+  <arg f="DIR" n="4">below key levels</arg>
+  <arg f="LOC" n="m">against the mark</arg>
+</example>
+
+<note>
+For examples of usage of the higher-numbered Args refer to 'fall'
+</note>
+
+</roleset>
+
+<roleset id="plunge.02" name="put under water" vncls="51.1-2">
+<roles>
+  <role descr="placer, causer of underwater-ness" n="0"/>
+  <role descr="thing being put under water" n="1">
+	<vnrole vncls="51.1-2" vntheta="Theme"/></role>
+  <role descr="water" n="2">
+        <vnrole vncls="51.1-2" vntheta="Location"/></role>
+</roles>
+
+<example name="ergative">
+  <text>
+  &quot;Attention&quot; yelled our pilot as our basket plunged into the canal.
+  </text>
+  <arg n="1">our basket</arg>
+  <rel>plunged</rel>
+  <arg f="into" n="2">the canal</arg>
+</example>
+
+<example name="agentive">
+  <text>
+  We scuttled along for a few feet before he plunged us into the drink
+  again.
+  </text>
+  <arg n="0">he</arg>
+  <rel>plunged</rel>
+  <arg n="1">us</arg>
+  <arg f="into" n="2">the drink</arg>
+  <arg f="TMP" n="m">again</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

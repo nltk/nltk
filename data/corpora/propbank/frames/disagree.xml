@@ -1,0 +1,93 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="disagree">
+<note>
+Frames file for 'disagree' based on sentences in financial subcorpus
+and automatic expansion via verbnet.
+</note>
+
+<roleset id="disagree.01" name="disagree" vncls="36.1">
+<roles>
+	<role descr="first arguer" n="0">
+		
+  <vnrole vncls="36.1" vntheta="Actor1"/></role>
+ 
+	<role descr="second arguer" n="1">
+		
+  <vnrole vncls="36.1" vntheta="Actor2"/></role>
+ 
+	<role descr="topic" n="2">
+		
+  <vnrole vncls="36.1" vntheta="Topic"/></role>
+ 
+</roles>
+
+<example name="intransitive">
+<inflection aspect="perfect" form="full" person="third" tense="ns" voice="active"/>
+<text>
+    Mr. Icahn advocates the sale of the company's steel operations,
+    and Mr. Corry doesn't necessarily disagree. 
+</text>
+        <arg n="0">Mr. Corry</arg>
+        <arg f="NEG" n="M">n't</arg>
+        <arg f="ADV" n="M">necessarily</arg>
+        <rel>disagree</rel>
+</example>
+
+<example name="topic as sentence">
+<inflection aspect="ns" form="full" person="ns" tense="ns" voice="ns"/>
+<text>
+    Thomas M. Bloch, president and chief operating officer, says ``I
+    would disagree'' that the tax business is mature. 
+</text>
+        <arg n="0">I</arg>
+        <arg f="MOD" n="M">would</arg>
+        <rel>disagree</rel>
+        <arg n="2">the tax business is mature</arg>
+</example>
+
+<example name="topic as nominal">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    The appeals court disagreed on both counts.
+</text>
+        <arg n="0">The appeals court</arg>
+        <rel>disagreed</rel>
+        <arg f="on" n="2">both counts</arg>
+</example>
+
+<example name="introduced by different preposition">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    A spokesman for Dow Jones said he hadn't seen the group's filing,
+    but added, ``obviously Dow Jones disagrees with their
+    conclusions. 
+</text>
+        <arg f="DIS" n="M">obviously</arg>
+        <arg n="0">Dow Jones</arg>
+        <rel>disagrees</rel>
+        <arg f="with" n="2">their conclusions</arg>
+</example>
+
+<example name="merged arguers" src="argue.02">
+  <text>
+    John and Mary disagreed about the cause of his noxious foot odor.
+  </text>
+  <arg n="0">John and Mary</arg>
+  <rel>disagreed</rel>
+  <arg f="about" n="2">the cause of his noxious foot odor</arg>
+</example>
+
+<example name="I can't believe this hasn't occurred yet" src="argue.02">
+  <text>
+    John disagreed with Mary about the cause of his noxious foot odor.
+  </text>
+  <arg n="0">John</arg>
+  <rel>disagreed</rel>
+  <arg f="with" n="1">Mary</arg>
+  <arg f="about" n="2">the cause of his noxious foot odor</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

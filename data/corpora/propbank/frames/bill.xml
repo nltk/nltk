@@ -1,0 +1,101 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="bill">
+<note>
+  Frames file for 'bill' based on sentences in financial subcorpus.
+  Verbnet entries 29.2 and 54.5, other framed members include
+  classify, count, define, describe, emply, establish, intend,
+  portray, rank, recommend, regard, treat, view (but those don't seem
+  right to me); and concern (and that doesn't seem right at all.)  No
+  Framenet entry.  Comparison with 'charge'.
+</note>
+
+<roleset id="bill.01" name="charge a fee" vncls="54.5">
+<roles>
+  <role descr="seller, biller" n="0">
+		
+  <vnrole vncls="54.5" vntheta="Agent"/></role>
+
+  <role descr="asking price, amount of bill" n="1">
+		
+  <vnrole vncls="54.5" vntheta="Asset"/></role>
+
+  <role descr="buyer, billed" n="2">
+		
+  <vnrole vncls="54.5" vntheta="Recipient"/></role>
+
+  <role descr="commodity" n="3">
+		
+  <vnrole vncls="54.5" vntheta="Cause"/></role>
+
+</roles>
+
+<example name="no asking price">
+<inflection aspect="ns" form="gerund" person="ns" tense="ns" voice="ns"/>
+<text>
+    According to one person familiar with the airline, the buy-out
+    group -- led by United's pilots union and UAL Chairman Stephen
+    Wolf -- has begun *trace* billing UAL for fees and expenses it
+    owes to investment bankers, law firms and banks. 
+</text>
+        <arg n="0">*trace* -&gt;  the buy-out group -- led by United's
+        pilots union and UAL Chairman Stephen Wolf --</arg> 
+        <rel>billing</rel>
+        <arg n="2">UAL</arg>
+        <arg f="for" n="3">fees and expenses it owes to investment
+        bankers, law firms and banks</arg> 
+</example>
+
+<example name="with amount of bill">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    Mary billed John a hundred dollars for a single kiss.  And he paid
+    it. 
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>billed</rel>
+  <arg n="2">John</arg>
+  <arg n="1">a hundred dollars</arg>
+  <arg f="for" n="3">a single kiss</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="bill.02" name="describe" vncls="29.2">
+<roles>
+  <role descr="describer" n="0">
+		
+  <vnrole vncls="29.2" vntheta="Agent"/></role>
+
+  <role descr="thing described" n="1">
+		
+  <vnrole vncls="29.2" vntheta="Theme"/></role>
+
+  <role descr="secondary attribute, described-as" n="2">
+		
+  <vnrole vncls="29.2" vntheta="Predicate"/></role>
+
+</roles>
+
+<example name="passivized">
+<inflection aspect="ns" form="participle" person="ns" tense="past" voice="passive"/>
+<text>
+    That complex bid was billed *trace* as France's largest takeover
+    ever (this one is slightly smaller). 
+</text>
+        <rel>billed</rel>
+        <arg n="1">*trace* -&gt;  That complex bid</arg>
+        <arg f="as" n="2">France 's largest takeover ever</arg>
+</example>
+
+<note>
+I'm betting this sense always occurs in the passive.
+</note>
+
+</roleset>
+
+</predicate>
+</frameset>

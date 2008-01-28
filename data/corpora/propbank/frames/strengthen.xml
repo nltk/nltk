@@ -1,0 +1,57 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="strengthen">
+<note>
+  Frames file for 'strengthen' based on sentences in financial
+  subcorpus.  Verbnet entry 45.4, 'other causative'.  Seems like about
+  half the verbs in English are in this class.  No Framenet entry.
+  Comparison with 'weaken'.
+</note>
+
+<roleset id="strengthen.01" name="make stronger" vncls="45.4">
+<roles>
+  <role descr="causal agent" n="0">
+		
+  <vnrole vncls="45.4" vntheta="Agent"/></role>
+
+  <role descr="thing strengthening" n="1">
+		
+  <vnrole vncls="45.4" vntheta="Patient"/></role>
+
+  <role descr="EXT" n="2"/>
+  <role descr="start point" n="3"/>
+  <role descr="end point" n="4"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="gerund" person="ns" tense="ns" voice="ns"/>
+<text>
+    Nashua immediately responded by *trace* strengthening a
+    poison-pill plan and saying it will buy back up to one million of
+    its shares, or 10.4 % of the 9.6 million outstanding. 
+</text>
+        <arg n="0">*trace* -&gt;  Nashua</arg>
+        <rel>strengthening</rel>
+        <arg n="1">a poison-pill plan</arg>
+</example>
+
+<example name="ergative">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Although Mr. Pierce expects that line of business to strengthen in
+    the next year, he said Elcotel will also benefit from moving into
+    other areas. 
+</text>
+        <arg n="1">that line of business</arg>
+        <rel>strengthen</rel>
+        <arg f="TMP" n="M">in the next year</arg>
+</example>
+
+<note>
+I still expect to see something along the lines of &quot;The market
+strengthened 15% from 123 to 456&quot; or whatever.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

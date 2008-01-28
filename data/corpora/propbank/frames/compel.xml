@@ -1,0 +1,57 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="compel">
+<note>
+  Frames file for 'compel' based on survey of sentences in the WSJ
+  corpus.  Comparison with 'force'.
+</note>
+
+
+<roleset id="compel.01" name="to force, drive" vncls="-">
+<roles>
+  <role descr="causer" n="0"/>
+  <role descr="impelled agent" n="1"/>
+  <role descr="impelled action" n="2"/>
+</roles>
+
+<example name="all arguments">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ He recently voted `` present '' when the committee authorized a subpoena [0] [*T*-2] to compel Mr. Keating to testify [*T*-1] , then changed his vote to yes .
+</text>
+	<arg n="0">[*T*-2] -&gt;  [0] -&gt;  a subpoena</arg>
+	<rel>compel</rel>
+	<arg n="1">Mr. Keating</arg>
+	<arg n="2">to testify</arg>
+</example>
+
+
+<example name="passive">
+<inflection aspect="progressive" form="participle" person="third" tense="present" voice="passive"/>
+<text>
+ That is , he is being compelled [*-2] to put them on the market too soon , and has already gotten offers that [*T*-1] are less than he paid [*?*] for some of the art works .
+</text>
+	<arg n="1">he</arg>
+	<rel>compelled</rel>
+	<arg n="2">[*-2] to put them on the market too soon</arg>
+</example>
+
+
+<example name="passive with adverbials">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+ Thus , in a criminal case , a prosecutor can not comment on a defendant 's failure [*] to testify nor can the defendant be compelled [*-1] to take the stand as a witness , thus [*] forcing him to `` take the Fifth . ''
+</text>
+	<arg f="MOD" n="M">can</arg>
+	<arg n="1">the defendant</arg>
+	<rel>compelled</rel>
+	<arg n="2">[*-1] to take the stand as a witness</arg>
+	<arg f="ADV" n="M">thus [*] forcing him to `` take the Fifth</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

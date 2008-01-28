@@ -1,0 +1,58 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="rehearse">
+<note>
+  Frames file for 'rehearse' based on sentences in brown.  No Verbnet entry.
+</note>
+
+<roleset id="rehearse.01" vncls="-" name="practice, play without audience">
+<roles>
+  <role descr="practicer" n="0"/>
+  <role descr="skill" n="1"/>
+</roles>
+
+<example name="music">
+  <inflection person="ns" tense="ns" aspect="ns" voice="active" form="full"/>
+  <text>
+    The musicians of the Royal Opera would not rehearse a work merely
+    to see how it would sound. 
+  </text>
+  <arg n="0"        >The musicians of the Royal Opera</arg>
+  <arg n="m" f="MOD">would</arg>
+  <arg n="m" f="NEG">not</arg>
+  <rel              >rehearse</rel>
+  <arg n="1"        >a work</arg>
+  <arg n="m" f="PNC">merely to see how it would sound</arg>
+</example>
+
+<example name="intransitive">
+  <inflection person="ns" tense="ns" aspect="progressive" voice="active" form="participle"/>
+  <text>
+     It was like being in the concert hall in the afternoon and
+     hearing the piano virtuoso rehearsing. 
+  </text>
+  <arg n="0"        >the piano virtuoso</arg>
+  <rel              >rehearsing</rel>
+</example>
+
+<example name="adjectival">
+  <inflection person="ns" tense="ns" aspect="ns" voice="passive" form="participle"/>
+  <text>
+    Immediately thereafter, the patient fractures her rehearsed story,
+    veering into an oversoft, breathy, sloppily articulated, ``I don't
+    feel like talking right now''. 
+  </text>
+  <rel              >rehearsed</rel>
+  <arg n="1"        >story</arg>
+</example>
+
+<note>
+'practice' suggests a distinction between the skill and the
+instrument: John practice piano, John practiced the Mozart concerto,
+John practiced the Mozart concerto on piano.  I don't get this
+contrast for this verb.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

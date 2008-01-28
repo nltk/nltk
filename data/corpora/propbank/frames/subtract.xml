@@ -1,0 +1,55 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="subtract">
+<note>
+  Frames file for 'subtract' based on sentences in financial
+  subcorpus.  No Verbnet entry, comparison with 'add'.
+</note>
+
+<roleset id="subtract.01" name="mathematics" vncls="10.1">
+<roles>
+  <role descr="subtracter" n="0">
+		
+  <vnrole vncls="10.1" vntheta="Agent"/></role>
+
+  <role descr="thing being subtracted" n="1">
+		
+  <vnrole vncls="10.1" vntheta="Theme"/></role>
+
+  <role descr="thing being subtracted from" f="from" n="2">
+		
+  <vnrole vncls="10.1" vntheta="Source"/></role>
+
+</roles>
+
+<example name="passive">
+<text>
+    It also could be a drag on Georgia-Pacific earnings because the
+    roughly $1.5 billion in goodwill -- the amount by which the bid
+    exceeds Nekoosa's book value of $1.5 billion  -- will have *trace*
+    to be subtracted *trace* from earnings over a period of decades. 
+</text>
+        <rel>subtracted</rel>
+        <arg n="1">*trace* -&gt; *trace* -&gt;  the roughly $1.5 billion in
+        goodwill -- the amount by which the bid exceeds Nekoosa's book
+        value of $1.5 billion --</arg> 
+        <arg f="from" n="2">earnings</arg>
+        <arg f="TMP" n="M">over a period of decades</arg>
+</example>
+
+<example name="with mathematician">
+  <text>
+    John subtracted 10 from 20 and got 11.
+  </text>
+  <arg n="0">John</arg>
+  <rel>subtracted</rel>
+  <arg n="1">10</arg>
+  <arg f="from" n="2">20</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="elapse">
+<note>
+  Frames file for 'elapse' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="elapse.01" name="go by, as time" vncls="-">
+<roles>
+  <role descr="time gone by" n="1"/>
+</roles>
+
+<example name="one example">
+<inflection aspect="perfect" form="ns" person="ns" tense="past" voice="active"/><text>
+    But the Beebes didn't come to that conclusion until time limits
+    had elapsed for adding the adhesives maker as a defendant in the
+    case, Ms. Adams said. 
+</text>
+        <arg n="1">time limits </arg>
+        <rel>elapsed</rel>
+        <arg n="M">for  adding the adhesives maker as a defendant in
+        the case</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

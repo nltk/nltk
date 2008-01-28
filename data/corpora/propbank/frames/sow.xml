@@ -1,0 +1,48 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="sow">
+<note>
+  Frames file for 'sow' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="sow.01" name="to scatter seed for growing" vncls="9.7-1">
+<roles>
+  <role descr="farmer, sower" n="0">
+	<vnrole vncls="9.7-1" vntheta="Agent"/></role>
+  <role descr="seed, entity sowed" n="1">
+	<vnrole vncls="9.7-1" vntheta="Theme"/></role>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ They sow a row of male-fertile plants [*ICH*-1] nearby , which then [*T*-2] pollinate the male-sterile plants .
+</text>
+	<arg n="0">They</arg>
+	<rel>sow</rel>
+	<arg n="1">[ a row of male-fertile plants [*ICH*-1]] [ which then [*T*-2] pollinate the male-sterile plants]</arg>
+	<arg f="LOC" n="M">nearby</arg>
+</example>
+
+
+
+<example name="with manner adverbial">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ But he and his chief financial officer , John Pope , sowed some of the seeds for the deal 's failure by [*-1] insisting [0] banks accept low financing fees and interest rates , while they invested in the transaction only a small fraction of the $ 114.3 million [*U*] [0] they stood [*-3] to gain [*T*-2] from sale of their UAL stock and options .
+</text>
+	<arg n="0">he and his chief financial officer , John Pope ,</arg>
+	<rel>sowed</rel>
+	<arg n="1">some of the seeds for the deal 's failure</arg>
+	<arg f="MNR" n="M">by [*-1] insisting [0] banks accept low financing fees and interest rates , while they invested in the transaction only a small fraction of the $ 114.3 million [*U*] [0] they stood [*-3] to gain [*T*-2] from sale of their UAL stock and options</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

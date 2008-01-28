@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="huckster">
+<note>
+  Frames file for 'huckster'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="huckster.01" name="to sell, peddle" vncls="-">
+<roles> 
+  <role descr="seller" n="0"/>
+  <role descr="entity huckstering for" n="1"/>     
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+ We did n't stampede into it , we slithered and slipped down the long slope , and now we have as its quintessential symbol a former president huckstering for a foreign poohbah .
+</text>
+	<arg n="0">a former president</arg>
+	<rel>huckstering</rel>
+	<arg f="for" n="1">a foreign poohbah</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

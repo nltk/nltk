@@ -1,0 +1,35 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="absorb">
+<note>
+  Frames file for 'absorb' based on sentences in financial subcorpus.
+  No Verbnet entry.  No comparison.
+</note>
+
+<roleset id="absorb.01" name="suck up" vncls="-">
+<roles>
+  <role descr="absorber" n="0"/>
+  <role descr="absorbed, us. liquid" n="1"/>
+</roles>
+
+<example name="absorb losses">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Allstate is expected *trace* to absorb another big hit in the
+    fourth quarter as claims pour in from the San Francisco
+    earthquake. 
+</text>
+        <arg n="0">*trace* -&gt;  Allstate</arg>
+        <rel>absorb</rel>
+        <arg n="1">another big hit</arg>
+        <arg f="TMP" n="M">in the fourth quarter</arg>
+        <arg f="TMP" n="M">as claims pour in from the San Francisco
+        earthquake</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

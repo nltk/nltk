@@ -1,0 +1,101 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="stamp">
+<note>
+  Frames file for 'stamp' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="stamp.01" name="to imprint with a mark, design, or seal" vncls="25.1">
+<roles>
+  <role descr="imprinter, agent" n="0">
+        <vnrole vncls="25.1" vntheta="Agent"/></role>
+  <role descr="thing stamped" n="1">
+        <vnrole vncls="25.1" vntheta="Destination"/></role>
+  <role descr="design, seal" n="2">
+        <vnrole vncls="25.1" vntheta="Theme"/></role>
+</roles>
+
+
+<example name="with Arg2">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+ It also redesigned Oil of Olay 's packaging , [*-2] stamping the traditional pink boxes with gold lines [*-1] to create a more opulent look .
+</text>
+	<arg n="0">[*-2] -&gt;  It</arg>
+	<rel>stamping</rel>
+	<arg n="1">the traditional pink boxes</arg>
+	<arg f="with" n="2">gold lines</arg>
+	<arg f="PNC" n="M">[*-1] to create a more opulent look</arg>
+</example>
+</roleset>
+
+<roleset id="stamp.02" name="to identify, characterize, reveal, etc" vncls="-">
+<roles>
+  <role descr="assigner of attribute" n="0"/>
+  <role descr="entity stamped" n="1"/>
+  <role descr="attribute on arg1" n="2"/>
+</roles>
+
+
+
+<example name="all arguments">
+<inflection aspect="ns" form="gerund" person="ns" tense="ns" voice="active"/>
+<text>
+ Mr. Krenz has followed much the same career path as Mr. Honecker : Both spent years [*-2] overseeing the Freie Deutsche Jugend , the youth group that [*T*-1] is the communist regime 's principal tool for [*] stamping young Germans into socialist citizens .
+</text>
+	<arg n="0">[*]</arg>
+	<rel>stamping</rel>
+	<arg n="1">young Germans</arg>
+	<arg f="into" n="2">socialist citizens</arg>
+</example>
+</roleset>
+
+<roleset id="stamp.04" vncls="-" name="rough foot motion">
+<roles>
+  <role n="0"  descr="agent, footstomper"/>
+  <role n="1"  descr="feet"/>
+</roles>
+
+<example name="stamp or stomp">
+<inflection person="ns" tense="ns" aspect="ns" voice="ns" form="gerund"/>
+<text>
+    It must be a local custom, I thought, [*] stamping feet to welcome
+    the team. 
+</text>
+	<arg n="0">[*]</arg>
+	<rel>stamping</rel>
+	<arg n="1">feet</arg>
+	<arg n="M" f="PNC">to welcome the team</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="rubber_stamp">
+
+<roleset id="stamp.03" name="to approve without giving it  much thought" vncls="-">
+<roles>
+  <role descr="approver, agent" n="0"/>
+  <role descr="thing rubber-stamped" n="1"/>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="ns" person="ns" tense="ns" voice="active"/>
+<text>
+ The appeals court said [0] the defense is valid only if federal officials did more than [*] rubber stamp a company 's design or plans and engaged in a `` substantive review and evaluation '' on a par with a policy decision .
+</text>
+	<arg n="0">[*] -&gt;  federal officials</arg>
+	<rel>[rubber] [stamp]</rel>
+	<arg n="1">a company 's design or plans</arg>
+</example>
+
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

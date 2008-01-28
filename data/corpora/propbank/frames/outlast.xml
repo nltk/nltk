@@ -1,0 +1,34 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="outlast">
+<note>
+  Frames file for 'outlast' based on sentences in financial subcorpus.
+  No Verbnet entry.
+</note>
+
+<roleset id="outlast.01" name="last longer than" vncls="-">
+<roles>
+  <role descr="longer lasting" n="0"/>
+  <role descr="shorter lasting" n="1"/>
+</roles>
+
+<example name="pretty simple">
+<inflection aspect="ns" form="full" person="ns" tense="future" voice="active"/>
+<text>
+      Japan's marathon economy, growing at 4.3% this year, is now in
+      its 35th month of expansion, and some economists are betting
+      that the boom will outlast the record 57-month expansion in the
+      late 1960s. 
+</text>
+        <arg n="0">the boom</arg>
+        <arg f="MOD" n="M">will</arg>
+        <rel>outlast</rel>
+        <arg n="1">the record 57-month expansion in the late 1960s</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

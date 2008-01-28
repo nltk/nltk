@@ -1,0 +1,61 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="hide">
+<note>
+  Frames file for 'hide' based on sentence in financial subcorpus.
+  Verbnet entry 16, no other framed members.  Levin probably puts it
+  in the 'pit' class also, as in &quot;I hided the deer&quot; = &quot;I took the hide
+  off the deer&quot; but I can't accept that.
+</note>
+
+<roleset id="hide.01" name="conceal" vncls="16">
+<roles>
+  <role descr="hider" n="0">
+		
+  <vnrole vncls="16" vntheta="Agent"/></role>
+
+  <role descr="thing hidden" n="1">
+		
+  <vnrole vncls="16" vntheta="Patient"/></role>
+
+  <role descr="hidden from" n="2">
+		
+  <vnrole vncls="16" vntheta="Recipient"/></role>
+
+</roles>
+
+<example name="typical example">
+<text>
+    The contributions were funded by monthly payments of $1,000 to
+    $2,000 to Appleyard in the guise of a ``special production fee''
+    -- in effect, *trace* hiding the nature of the payments from the
+    Internal Revenue Service, federal prosecutors said. 
+</text>
+        <arg n="0">*trace* -&gt;  The contributions</arg>
+        <rel>hiding</rel>
+        <arg n="1">the nature of the payments</arg>
+        <arg f="from" n="2">the Internal Revenue Service</arg>
+</example>
+
+<note>
+Actually that's a bad target for the trace, but there's nothing better
+available b/c of the syntax.  Oh well.
+</note>
+
+<example name="intransitive">
+<text>
+     John hid from Mary.
+</text>
+        <arg n="0">John</arg>
+	<rel>hid</rel>
+	<arg f="from" n="2">Mary</arg>
+</example>
+
+<note>
+The assumption here is that there's an unstated &quot;himself&quot; in the arg1
+slot.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

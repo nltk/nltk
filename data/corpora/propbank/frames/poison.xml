@@ -1,0 +1,56 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="poison">
+<note>
+  Frames file for 'poison' based on sentences in wsj.  Verbnet entries
+  9.9 and 42.2. 
+</note>
+
+<roleset id="poison.01" vncls="42.2" name="kill via poison">
+<roles>
+  <role n="0"  descr="killer"/>
+  <role n="1"  descr="corpse"/>
+  <role n="2"  descr="poison"/>
+</roles>
+
+<example name="metaphorical poison">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+     Mary poisoned John's sunny optimism with her constant petty sniping.
+  </text>
+  <arg n="0"        >Mary</arg>
+  <rel              >poisoned</rel>
+  <arg n="1"        >John's sunny optimism</arg>
+  <arg n="2" f="with">her constant petty sniping</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="poison.02" vncls="9.9" name="put poison on/in something">
+<roles>
+  <role n="0"  descr="applier"/>
+  <role n="1"  descr="poisoned substance"/>
+  <role n="2"  descr="poison"/>
+</roles>
+
+<example name="inferred agent">
+<inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+<text>
+     Euro Disneyland shares made a debut like Snow White yesterday
+     while most of the London stock market looked like it had eaten
+     the Evil Queen's poisoned apple.
+</text>
+	<arg n="0">the Evil Queen's</arg>
+	<rel>poisoned</rel>
+	<arg n="1">apple</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

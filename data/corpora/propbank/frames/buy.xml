@@ -1,0 +1,176 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="buy">
+
+<note>
+  Frames file for 'buy' based on first sentences in large corpus
+</note>
+
+<roleset id="buy.01" name="purchase" vncls="13.5.1">
+<roles>
+  <role descr="buyer" n="0">
+	<vnrole vncls="13.5.1" vntheta="Agent"/></role>
+  <role descr="thing bought" n="1">
+	<vnrole vncls="13.5.1" vntheta="Theme"/></role>
+  <role descr="seller" n="2">
+	<vnrole vncls="13.5.1" vntheta="Source"/></role>
+  <role descr="price paid" n="3">
+	<vnrole vncls="13.5.1" vntheta="Asset"/></role>
+  <role descr="benefactive" n="4">
+	<vnrole vncls="13.5.1" vntheta="Beneficiary"/></role>
+</roles>
+
+<example name="Intransitive!">
+  <text>
+    Consumers who buy at this level are more educated than they were.
+  </text>
+	<arg n="0">Consumers</arg>
+  <rel>buy</rel>
+  <arg f="MNR" n="M">at this level</arg>
+</example>
+
+<example name="Basic transitive:">
+  <text>
+    They bought $2.4 billion in Fannie Mae bonds
+  </text>
+  <arg n="0">They</arg>
+  <rel>bought</rel>
+  <arg n="1">$2.4 billion in Fannie Mae bonds</arg>
+</example>
+
+<example name="With price (often subtle):">
+  <text>
+    The holder buys $1000 principal amount of debentures at par.
+  </text>
+  <arg n="0">The holder</arg>
+  <rel>buys</rel>
+  <arg n="1">$1000 principal amount</arg> 
+  <arg n="3">of debentures at par</arg> <note>pp</note>
+</example>
+
+<example name="With price (often subtle):">
+  <text>
+    TV stations bought &quot;Cosby&quot; reruns for record prices.
+  </text>
+  <arg n="0">TV stations</arg>
+  <rel>bought</rel>
+  <arg n="1">&quot;Cosby&quot; reruns</arg>
+	<arg n="3">for record prices</arg>  <note>pp</note>
+</example>
+
+<example name="With seller:">
+  <text>
+    The company bought a wheel-loader from Dresser.
+  </text>
+  <arg n="0">The company</arg>
+  <rel>bought</rel>
+  <arg n="1">a wheel-loader</arg>
+  <arg f="from" n="2">from Dresser</arg>
+</example>
+
+<example name="With benefactive:">
+  <text>
+    John bought his mother a dozen roses
+  </text>
+  <arg n="0">John</arg>
+  <rel>bought</rel>
+  <arg n="4">his mother</arg>
+  <arg n="1">a dozen roses</arg>
+</example>
+
+<example name="With benefactive:">
+  <text>
+    John bought a dozen roses for his mother
+  </text>
+  <arg n="0">John</arg>
+  <rel>bought</rel>
+  <arg n="1">a dozen roses</arg>
+  <arg f="for" n="4">for his mother</arg>
+</example>
+
+<example name="With purpose clause:">
+  <text>
+    The company bought sugar on the world market to meet export commitments
+  </text>
+  <arg n="0">The company</arg>
+  <rel>bought</rel>
+  <arg n="1">sugar</arg>
+  <arg f="LOC" n="M">on the world market</arg>
+  <arg f="PNC" n="M">to meet export commitments</arg>
+</example>
+
+<example name="In a compound:">
+  <text>
+    lower interest rates has spurred dollar buying by Japanese institutions.
+  </text>
+  <arg n="1">dollar</arg>
+  <rel>buying</rel>
+  <arg f="by" n="0">by Japanese institutions</arg>
+</example>
+
+<example name="with direction">
+  <text>
+    Some companies have used cash to buy back some of their shares
+  </text>
+  <arg n="0">Some companies</arg>
+  <rel>to buy</rel>
+  <arg f="DIR" n="M">back</arg>
+  <arg n="1">some of their shares</arg>
+</example>
+</roleset>
+</predicate>
+
+<predicate lemma="buy_up">
+  <roleset id="buy.02" name="purchase extensively" vncls="13.5.1">
+<roles>
+  <role descr="buyer" n="0">
+	<vnrole vncls="13.5.1" vntheta="Agent"/></role>
+  <role descr="thing bought" n="1">
+	<vnrole vncls="13.5.1" vntheta="Theme"/></role>
+  <role descr="seller" n="2">
+	<vnrole vncls="13.5.1" vntheta="Source"/></role>
+  <role descr="price paid" n="3">
+	<vnrole vncls="13.5.1" vntheta="Asset"/></role>
+  <role descr="benefactive" n="4">
+	<vnrole vncls="13.5.1" vntheta="Beneficiary"/></role>
+</roles>
+
+<example name="phrasal, With purpose clause:">
+  <text>
+    The company bought up sugar on the world market to meet export commitments
+  </text>
+  <arg n="0">The company</arg>
+  <rel>bought up</rel>
+  <arg n="1">sugar</arg>
+  <arg f="LOC" n="M">on the world market</arg>
+  <arg f="PNC" n="M">to meet export commitments</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="buy_out">
+  <roleset id="buy.03" name="purchase completely" vncls="13.5.1">
+<roles>
+  <role descr="buyer" n="0">
+	<vnrole vncls="13.5.1" vntheta="Agent"/></role>
+  <role descr="thing bought" n="1">
+	<vnrole vncls="13.5.1" vntheta="Theme"/></role>
+  <role descr="seller" n="2">
+	<vnrole vncls="13.5.1" vntheta="Source"/></role>
+  <role descr="price paid" n="3">
+	<vnrole vncls="13.5.1" vntheta="Asset"/></role>
+  <role descr="benefactive" n="4">
+	<vnrole vncls="13.5.1" vntheta="Beneficiary"/></role>
+</roles>
+<example name="Basic transitive: phrasal">
+  <text>
+    They bought $2.4 billion in Fannie Mae bonds
+  </text>
+  <arg n="0">They</arg>
+  <rel>bought</rel>
+  <arg n="1">$2.4 billion in Fannie Mae bonds</arg>
+</example>
+</roleset>
+</predicate>
+</frameset>

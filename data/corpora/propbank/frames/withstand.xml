@@ -1,0 +1,44 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="withstand">
+<note>
+  Frames file for 'withstand' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="withstand.01" name="to oppose or resist" vncls="-">
+<roles>
+  <role descr="entity withstanding" n="0"/>
+  <role descr="entity opposed" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ Underwriters insist [0] these issues are constructed [*-1] [*-2] to withstand extremely tough economic conditions .
+</text>
+	<arg n="0">[*-2] -&gt;  [*-1] -&gt;  these issues</arg>
+	<rel>withstand</rel>
+	<arg n="1">extremely tough economic conditions</arg>
+</example>
+
+
+<example name="transitive with adverbials">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ `` Basically , we had a severe earthquake of significant duration and it was just something [0] the structure could n't withstand [*T*-1] . ''
+</text>
+	<arg n="0">the structure</arg>
+	<arg f="MOD" n="M">could</arg>
+	<arg f="NEG" n="M">n't</arg>
+	<rel>withstand</rel>
+	<arg n="1">[*T*-1] -&gt;  [0] -&gt;  something</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

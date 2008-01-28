@@ -1,0 +1,77 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="imply">
+<note>
+  Frames file for 'imply' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="imply.01" name="suggest" vncls="-">
+<roles>
+  <role descr="implier" n="0"/>
+  <role descr="implication" n="1"/>
+  <role descr="listener" n="2"/>
+</roles>
+
+<example name="implied clause">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    The statistics imply that three-quarters of blacks approve of
+    Mr. Bush's job performance and 85% of blacks approve of Mrs. Bush.  
+</text>
+        <arg n="0">The statistics</arg>
+        <rel>imply</rel>
+        <arg n="1">three-quarters of blacks approve of Mr. Bush's job
+        performance and 85% of blacks approve of Mrs. Bush</arg> 
+</example>
+
+<example name="implied NP">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    A reintegrated Europe implies big changes in 40-year-old military
+    and economic policies. 
+</text>
+        <arg n="0">A reintegrated Europe</arg>
+        <rel>implies</rel>
+        <arg n="1">big changes in 40-year-old military and economic
+        policies</arg> 
+</example>
+
+<example name="discourse usage">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    As their name implies, these operations are linked to far-reaching
+    policy reforms that aim at helping borrowing countries get back on
+    the growth path and at enhancing their credit-worthiness. 
+</text>
+        <arg n="0">their name</arg>
+        <rel>implies</rel>
+        <arg n="1">[ these operations] [ are linked  to far-reaching
+        policy reforms that  aim at  helping borrowing countries get
+        back on the growth path and at  enhancing their
+        credit-worthiness]</arg> 
+</example>
+
+<note>
+Effectively this should be read as &quot;their name implies that these
+operations...&quot;, but Treebank uniformly does not parse it this way,
+probably because of the &quot;as&quot;.  Hence the need for the non-constituent
+argument.
+</note>
+
+<example name="with listener">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    Mary's behavior implied to John that he was getting lucky that
+    evening.  
+  </text>
+  <arg n="0">Mary's behavior</arg>
+  <rel>implied</rel>
+  <arg f="to" n="2">John</arg>
+  <arg n="1">he was getting lucky that evening</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

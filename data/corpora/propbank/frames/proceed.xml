@@ -1,0 +1,44 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="proceed">
+<note>
+  Frames file for 'proceed' based on sentences in financial subcorpus.
+  Verbnet entry 55.1, other framed members include begin and resume.
+  Comparison with 'continue'.
+</note>
+
+<roleset id="proceed.01" name="keep on" vncls="55.1">
+<roles>
+  <role descr="causer of continuing event" n="0">
+	<vnrole vncls="55.1" vntheta="Agent"/></role>
+  <role descr="thing continuing" n="1">
+	<vnrole vncls="55.1" vntheta="Theme"/></role>
+</roles>
+
+<example name="transitive agentive">
+<text>
+    He called today's announcement ``opportunistic and disruptive''
+    and said the company intends *trace* to proceed with its
+    restructuring. 
+</text>
+        <arg n="0">*trace* -&gt;  the company</arg>
+        <rel>proceed</rel>
+        <arg f="with" n="1">its restructuring</arg>
+</example>
+
+<example name="ergative">
+<text>
+    He said it has reached the same conclusions about some attempts to
+    buy closely held concerns, but eventually allowed those
+    acquisitions to proceed. 
+</text>
+        <arg n="1">those acquisitions</arg>
+        <rel>proceed</rel>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

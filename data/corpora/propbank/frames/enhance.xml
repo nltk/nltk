@@ -1,0 +1,81 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="enhance">
+<note>
+  Frames file for 'enhance' based on sentences in financial subcorpus.
+  No Verbnet entry.  No comparison.
+</note>
+
+<roleset id="enhance.01" name="make seem greater">
+<roles>
+  <role descr="causer of greatness, agent" n="0"/>
+  <role descr="thing enhanced" n="1"/>
+  <role descr="instrument" n="2"/>
+  <role descr="enhanced by how much, EXT or MNR" n="3"/>
+</roles>
+
+<example name="agentive transitive">
+<text>
+    Courtaulds has been under pressure *trace* to enhance shareholder
+    value since takeover speculators -- including Australian financier
+    Kerry Packer -- surfaced holding small stakes last year. 
+</text>
+        <arg n="0">*trace* -&gt;  Courtaulds</arg>
+        <rel>enhance</rel>
+        <arg n="1">shareholder value</arg>
+</example>
+
+<example name="instrumental subject">
+<text>
+    In a statement, Arnold B. McKinnon, chairman and chief executive
+    officer, noted that the new repurchase program ``should serve
+    *trace* to enhance shareholder value.'' 
+</text>
+        <arg n="2">*trace* -&gt;  the new repurchase program</arg>
+        <rel>enhance</rel>
+        <arg n="1">shareholder value</arg>
+</example>
+
+<example name="passivized instrumental subject">
+<text>
+    The quarter-to-quarter comparison was also enhanced *trace* by
+    charges taken in the year-earlier period, including $11 million
+    related to the modernization of a pulp and newsprint mill in
+    Alabama. 
+</text>
+        <arg f="DIS" n="M">also</arg>
+        <rel>enhanced</rel>
+        <arg n="1">*trace* -&gt;  The quarter-to-quarter comparison</arg>
+        <arg f="by" n="2">charges taken in the year-earlier period,
+        including $11 million related to the modernization of a pulp
+        and newsprint mill in Alabama</arg> 
+</example>
+
+<example name="with extent PP">
+<text>
+    The company estimated that the transaction would enhance its book
+ value by more than $100 million.
+</text>
+        <arg n="2">the transaction</arg>
+        <rel>enhance</rel>
+        <arg n="1">its book value</arg>
+        <arg f="by" n="3">more than $ 100 million</arg>
+</example>
+
+<example name="with agent and instrument">
+  <text>
+    John enhanced his reputation as a smooth operator by throwing
+    rocks at Mary's mailbox. 
+  </text>
+  <arg n="0">John</arg>
+  <rel>enhanced</rel>
+  <arg n="1">his reputation as a smooth operator</arg>
+  <arg f="by" n="2">throwing rocks at Mary's mailbox. </arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

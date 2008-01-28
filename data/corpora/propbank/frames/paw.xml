@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="paw">
+<note>
+  Frames file for 'paw' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="paw.01" name="to handle clumsily" vncls="18.2">
+<roles>
+  <role descr="handler, agent" n="0">
+        <vnrole vncls="18.2" vntheta="Agent"/></role>
+  <role descr="thing handled, patient" n="1">
+        <vnrole vncls="18.2" vntheta="Patient"/></role>
+</roles>
+
+<example name="prepositional Arg1">
+<inflection aspect="progressive" form="participle" person="ns" tense="past" voice="active"/>
+<text>
+ The hacker was pawing over the Berkeley files but also using Berkeley and other easily accessible computers as stepping stones to the network of computers used [*] by the military and national security agencies .
+</text>
+	<arg n="0">The hacker</arg>
+	<rel>pawing</rel>
+	<arg f="over" n="1">the Berkeley files</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

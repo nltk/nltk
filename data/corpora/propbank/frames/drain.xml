@@ -1,0 +1,85 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="drain">
+<note>
+Frames file for 'drain' based on sentences in wsj and automatic
+expansion via verbnet except the predicted frames were totally bogus.
+Comparison with 'fill' instead.
+</note>
+
+<roleset id="drain.01" name="unfill, empty" vncls="-">
+<roles>
+	<role descr="causative agent" n="0"/>
+	<role descr="container" n="1"/>
+	<role descr="substance" n="2"/>
+</roles>
+
+<example name="all args, arg1 as PP">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    Fed funds is the rate banks charge each other on overnight loans;
+    the Fed influences the rate by *trace* adding or draining reserves
+    from the banking system. 
+</text>
+        <arg n="0">*trace* -&gt;  the Fed</arg>
+        <rel>draining</rel>
+        <arg n="2">reserves</arg>
+        <arg f="from" n="1">the banking system</arg>
+</example>
+
+<example name="all args, arg2 as PP">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John drained the basement of floodwater.
+  </text>
+  <arg n="0">John</arg>
+  <rel>drained</rel>
+  <arg n="1">the basement</arg>
+  <arg f="of" n="2">floodwater</arg>
+</example>
+
+<example name="oddly ergative">
+<inflection aspect="perfect" form="participle" person="third" tense="present" voice="active"/>
+<text>
+    The clutter of the 1940s remains, but its color has drained away,
+    and the will to overcome has been defeated. 
+</text>
+        <arg n="1">its color</arg>
+        <rel>drained</rel>
+        <arg f="ADV" n="M">away</arg>
+</example>
+
+<example name="just container">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    A lengthy recession, if it materializes, would drain state coffers
+    and create severe hardships for urban workers. 
+</text>
+        <arg n="0">A lengthy recession</arg>
+        <arg f="ADV" n="M">if it materializes</arg>
+        <arg f="MOD" n="M">would</arg>
+        <rel>drain</rel>
+        <arg n="1">state coffers</arg>
+</example>
+
+<example name="careful!">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    While the government drains Pemex from above, the union has
+    drained it from below. 
+</text>
+        <arg n="0">the government</arg>
+        <rel>drains</rel>
+        <arg n="1">Pemex</arg>
+        <arg f="MNR" n="M">from above</arg>
+</example>
+
+<note>
+The default is for arg1 to be prepositional; the &quot;drain X of Y&quot;
+construction is a little stilted.  However, if only one argument is
+present, it's the container, not the liquid.  You can't say &quot;John
+drained the beer&quot; but you can say &quot;John drained the bottle of beer&quot;.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

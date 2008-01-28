@@ -1,0 +1,36 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="escape">
+<note>
+Frames file for 'escape' based on sentences in financial subcorpus and
+automatic expansion via verbnet.
+</note>
+
+<roleset id="escape.01" name="default" vncls="51.1-1">
+<roles>
+	<role descr="entity escaping" n="0">
+		
+  <vnrole vncls="51.1-1" vntheta="Theme"/></role>
+
+	<role descr="place or thing escaped" n="1">
+		
+  <vnrole vncls="51.1-1" vntheta="Location"/></role>
+
+</roles>
+
+<example name="typical">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Oil stocks escaped the brunt of Friday's selling and several were
+    able to post gains, including Chevron, which rose 5/8 to 66 3/8 in
+    Big Board composite trading of 2.4 million shares. 
+</text>
+        <arg n="0">Oil stocks</arg>
+        <rel>escaped</rel>
+        <arg n="1">the brunt of Friday 's selling</arg>
+</example>
+
+</roleset>
+
+</predicate>
+</frameset>

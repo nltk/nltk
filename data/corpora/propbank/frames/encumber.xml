@@ -1,0 +1,46 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="encumber">
+<note>
+  Frames file for 'encumber' based on sentences in wsj.  No Verbnet
+  entry. 
+</note>
+
+<roleset id="encumber.01" name="load down" vncls="-">
+<roles>
+  <role descr="loader, agent of encumberment" n="0"/>
+  <role descr="thing loaded" n="1"/>
+  <role descr="cargo" n="2"/>
+</roles>
+
+<example name="no agent">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    So, some see a special irony in the fact that Mr. Steinhardt, the
+    trader, now is encumbered *trace* with a massive, illiquid airline
+    holding. 
+</text>
+        <arg f="TMP" n="M">now</arg>
+        <rel>encumbered</rel>
+        <arg n="1">*trace* -&gt;  Mr. Steinhardt, the trader,</arg>
+        <arg f="with" n="2">a massive, illiquid airline holding</arg>
+</example>
+
+<example name="with agent">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    Mary encumbered John with a bushel of cucumbers.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>encumbered</rel>
+  <arg n="1">John</arg>
+  <arg f="with" n="2">a bushel of cucumbers</arg>
+</example>
+
+<note>
+I'll bet agent is never used in real language.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

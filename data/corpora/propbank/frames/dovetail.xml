@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="dovetail">
+<note>
+  Frames file for 'dovetail' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="dovetail.01" name="fit neatly/tightly" vncls="-">
+<roles>
+  <role descr="thing dovetailing" n="1"/>
+  <role descr="with what" n="2"/>
+</roles>
+
+<example name="the one example">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    Mr. Pertschuk adds that the new commercial dovetails perfectly
+    with major aspects of Philip Morris's political strategy. 
+</text>
+        <arg n="1">the new commercial</arg>
+        <rel>dovetails</rel>
+        <arg f="MNR" n="M">perfectly</arg>
+        <arg f="with" n="2">major aspects of Philip Morris's political
+        strategy</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

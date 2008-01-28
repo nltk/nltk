@@ -1,0 +1,43 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="recalculate">
+<note>
+  Frames file for 'recalculate' based on sentences in financial
+  subcorpus.  No verbnet entry.  Comparison with 'think'
+</note>
+
+<roleset id="recalculate.01" name="recalculate, reckon, think">
+<roles>
+    <role descr="Thinker" n="0"/>
+    <role descr="Thought" n="1"/>
+    <role descr="Attributive" n="2"/>
+</roles>
+
+<example name="all args">
+  <text>
+    Analysts recalculate Cray Computer's initial book value at about
+    $4.75 a share.
+  </text>
+  <arg n="0">Analysts</arg>
+  <rel>recalculate</rel>
+  <arg n="1">Cray Computer's initial book value</arg>
+  <arg f="at" n="2">about $4.75 a share.</arg>
+</example>
+
+<example name="no attribute">
+  <text>
+    He recalculates that the recent market slide translated into a 5% to
+    7% reduction in IPO proceeds to companies.
+  </text>
+  <arg n="0">He</arg>
+  <rel>recalculates</rel>
+  <arg n="1">the recent market slide translated into a 5% to
+    7% reduction in IPO proceeds to companies</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

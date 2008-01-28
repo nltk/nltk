@@ -1,0 +1,62 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="ride">
+<note>
+  Frames file for 'ride' based on sentences in financial subcorpus.
+  Verbnet class nonvehicle-51.4.2, no other framed members.  No
+  comparison.
+</note>
+
+<roleset id="ride.01" name="as a horse" vncls="51.4.2">
+<roles>
+  <role descr="rider" n="0">
+		
+  <vnrole vncls="51.4.2" vntheta="Agent"/></role>
+
+  <role descr="steed" n="1">
+		
+  <vnrole vncls="51.4.2" vntheta="Theme"/></role>
+
+</roles>
+
+<example name="whee!">
+<text>
+    One big technology issue, Novell, rode the roller coaster.
+</text>
+        <arg n="0">One big technology issue, Novell,</arg>
+        <rel>rode</rel>
+        <arg n="1">the roller coaster</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="ride_out">
+
+<roleset id="ride.02" name="endure, persevere through" vncls="-">
+<roles>
+  <role descr="rider" n="0"/>
+  <role descr="the storm" n="1"/>
+</roles>
+
+<example name="endure">
+<text>
+    Small investors matched their big institutional brethren in
+    anxiety over the weekend, but most seemed to be taking a
+    philosophical approach and said they were resigned *trace* to
+    *trace* riding out the latest storm in the stock market. 
+</text>
+        <arg n="0">*trace* -&gt; *trace* -&gt;  they</arg>
+        <rel>[ riding] [ out]</rel>
+        <arg n="1">the latest storm in the stock market</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

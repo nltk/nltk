@@ -1,0 +1,34 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="rearm">
+<note>
+  Frames file for 'rearm' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="rearm.01" name="supply with weapons again" vncls="-">
+<roles>
+  <role descr="supplier of weapons" n="0"/>
+  <role descr="receiver of weapons" n="1"/>
+</roles>
+
+<example name="the one example">
+<inflection aspect="ns" form="full" person="ns" tense="ns" voice="active"/>
+<text>
+     But now the possibility of ``diplomatic movement'' (Vietnam's
+     withdrawal, the Baker initiative) has put that plan on hold, with
+     the proviso that if the going got rough, the U.S. would then
+     rearm the opposition. 
+</text>
+        <arg n="0">the U.S.</arg>
+        <arg f="MOD" n="M">would</arg>
+        <arg f="TMP" n="M">then</arg>
+        <rel>rearm</rel>
+        <arg n="1">the opposition</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

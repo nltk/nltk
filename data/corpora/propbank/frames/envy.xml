@@ -1,0 +1,43 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="envy">
+<note>
+  Frames file for 'envy' based on sentences in wsj.  Verbnet entry
+  31.2, Framenet entry Experiencer subj.
+</note>
+
+<roleset id="envy.01" name="be jealous of" vncls="-">
+<roles>
+  <role descr="envier" n="0"/>
+  <role descr="envied" n="1"/>
+  <role descr="cause" n="2"/>
+</roles>
+
+<example name="usually transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    San Franciscans have a much higher incidence of audits than
+    average because more of them score high under that formula, not
+    because IRS agents envy their life styles. 
+</text>
+        <arg n="0">IRS agents</arg>
+        <rel>envy</rel>
+        <arg n="1">their life styles</arg>
+</example>
+
+<example name="occasionally with cause">
+  <inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+  <text>
+     ``I envy you your live-in slave,'' said one of Mary's friends.
+  </text>
+  <arg n="0">I</arg>
+  <rel>envy</rel>
+  <arg n="1">you</arg>
+  <arg n="2">your live-in slave</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

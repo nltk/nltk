@@ -1,0 +1,34 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="demobilize">
+<note>
+  Frames file for 'demobilize' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="demobilize.01" name="to discharge from military service" vncls="-">
+<roles>
+  <role descr="supreme commander, agent" n="0"/>
+  <role descr="person demobilized" n="1"/>
+</roles>
+
+
+
+<example name="transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ Mr. Abrams said that Mr. Ortega is seeking [*-1] to demobilize the Contras prior to the elections [*-2] to remove any pressure [*] to hold fair elections .
+</text>
+	<arg n="0">[*-1] -&gt;  Mr. Ortega</arg>
+	<rel>demobilize</rel>
+	<arg n="1">the Contras</arg>
+	<arg f="TMP" n="M">prior to the elections</arg>
+	<arg f="PNC" n="M">[*-2] to remove any pressure [*] to hold fair elections</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

@@ -1,0 +1,70 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="arrange">
+<note>
+  Frames file for 'arrange' based on sentences in financial subcorpus.
+  Verbnet entry build-26.1, put-9.1, other framed members include
+  assemble, build, churn, (re)shape, roll, spin; put and place.
+  Comparison with 'assemble' and 'put'.
+</note>
+
+<roleset id="arrange.01" name="build" vncls="26.1">
+<roles>
+  <role descr="builder" n="0">
+		
+  <vnrole vncls="26.1" vntheta="Agent"/></role>
+
+  <role descr="construction, item/material being arranged" n="1">
+		
+  <vnrole vncls="26.1" vntheta="Product"/></role>
+
+  <role descr="start state" n="2">
+		
+  <vnrole vncls="26.1" vntheta="Material"/></role>
+
+  <role descr="benefactive" n="3">
+		
+  <vnrole vncls="26.1" vntheta="Beneficiary"/></role>
+
+  <role descr="end state" n="4"><vnrole vncls="26.1" vntheta="Product"/></role>
+</roles>
+
+<example name="straight transitive">
+<text>
+    Mr. Panet-Raymond said he doesn't think Messrs. Drabinsky and
+ Gottlieb are ``anywhere close'' to *trace* arranging financing.
+ offer before the stock begins  to rise again .
+</text>
+        <arg n="0">*trace* -&gt;  Messrs. Drabinsky and Gottlieb</arg>
+        <rel>arranging</rel>
+        <arg n="1">financing</arg>
+</example>
+
+<example name="with benefactive">
+<text>
+    Security Pacific, meanwhile, said it expects *trace* to arrange
+    $430 million in bank loans for Vitro. 
+</text>
+        <arg n="0">*trace* -&gt;  it</arg>
+        <rel>arrange</rel>
+        <arg n="1">$430 million in bank loans</arg>
+        <arg f="for" n="3">Vitro</arg>
+</example>
+
+<example name="with other args">
+  <text>
+    John arranged his clean laundry from a neat stack into an untidy pile.
+  </text>
+  <arg n="0">John</arg>
+  <rel>arranged</rel>
+  <arg n="1">his clean laundry</arg>
+  <arg f="from" n="2">a neat stack</arg>
+  <arg f="into" n="4">an untidy pile</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

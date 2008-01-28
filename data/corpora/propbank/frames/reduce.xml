@@ -1,0 +1,68 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<note>
+Frames file for 'reduce' based on survey of initial sentences of big corpus
+and comparison with 'fall'
+</note>
+<predicate lemma="reduce">
+<roleset id="reduce.01" name="make less">
+  <roles>
+    <role descr="Agent" n="0"/>
+    <role descr="Logical subject, patient, thing falling" n="1"/>
+    <role descr="EXT, amount fallen" n="2"/>
+    <role descr="Start point" n="3"/>
+    <role descr="End point, end state of arg1" n="4"/>
+    <role descr="Medium" f="LOC" n="M"/>
+  </roles>
+
+<example name="transitive">
+  <text>
+    Mr. Stronach will reduce overhead.
+  </text>
+  <arg n="0">Mr Stronach</arg>
+  <rel>reduce</rel>
+  <arg n="1">overhead</arg>
+</example>
+
+<example name="with start and end points">
+  <text>
+    The company will reduce employment to less than 16,000 from about 18,000.
+  </text>
+  <arg n="0">The company</arg>
+  <rel>reduce     </rel>
+  <arg n="1">employment</arg>
+  <arg f="to" n="4">to less than 16,000</arg>
+  <arg f="from" n="3">from about 18,000</arg>
+</example>
+
+<example name="with extent">
+  <text>
+    Claims from Hurricane Hugo reduced results $40 million.
+  </text>
+  <arg n="0">Claims from Hurricane Hugo</arg>
+  <rel>reduced</rel>
+  <arg n="1">results</arg>
+  <arg f="EXT" n="2">$40 million</arg>
+</example>
+
+<example name="end point as infinitive">
+  <text>
+    Senior members are reduced to raising doomed parliamentary obstacles.
+  </text>
+  <arg n="1">Senior members are reduced</arg>
+  <rel>reduced</rel>
+  <arg n="4">to raising doomed parliamentary obstacles</arg>
+</example>
+
+<example name="arg2 as manner">
+  <text>
+    John reduced his spending sharply.
+  </text>
+  <arg n="0">John</arg>
+  <rel>reduced</rel>
+  <arg n="1">his spending</arg>
+  <arg f="MNR" n="2">sharply</arg>
+</example>
+</roleset>
+</predicate>
+</frameset>

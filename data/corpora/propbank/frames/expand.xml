@@ -1,0 +1,59 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="expand">
+<note>
+  Frames file for 'expand' based on survey of initial sentences of big
+  corpus and comparison with 'grow'
+</note>
+
+<roleset id="expand.01" name="(cause to) grow" vncls="45.4">
+<roles>
+  <role descr="causer of growth, agent" n="0">
+	<vnrole vncls="45.4" vntheta="Agent"/></role>
+  <role descr="thing grown" n="1">
+	<vnrole vncls="45.4" vntheta="Patient"/></role>
+  <role descr="amount increased by, EXT or MNR" n="2"/>
+  <role descr="start point" n="3"/>
+  <role descr="end point" n="4"/>
+</roles>
+
+<example name="agentive">
+  <text>
+  Japan has to *trace* expand its functions in Asia.
+  </text>
+  <arg n="0">*trace*=Japan</arg>
+  <rel>expand</rel>
+  <arg n="1">its functions in Asia</arg>
+</example>
+
+<example name="besuboru">
+  <text>
+  The strike zone expands depending on the size of the batter.
+  </text>
+  <arg n="1">The strike zone</arg>
+  <rel>expands</rel>
+  <arg f="ADV" n="m">depending on the size of the batter</arg>
+</example>
+
+<example name="abstract event">
+  <text>
+  James L. Pate was named a director of this oil concern, *trace*
+  expanding the board to 14 members.
+  </text>
+  <arg n="0">*trace*</arg>
+  <rel>expanding</rel>
+  <arg n="1">the board</arg>
+  <arg f="to" n="4">14 members</arg>
+</example>
+
+<note>
+The trace looks back to the entire event of naming James Pate to the
+board, but there is no syntactic node which holds this in exclusion to
+the expand predicate.  Nor would it be correct to link the trace to
+James Pate, because he is not expanding the board--whoever named him --&gt;
+--to the board is the one causing the expansion.  Thus a naked trace.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

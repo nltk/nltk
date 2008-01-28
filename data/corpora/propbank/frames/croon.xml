@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="croon">
+<note>
+  Frames file for 'croon' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="croon.01" name="to hum or sing softly" vncls="37.3">
+<roles>
+  <role descr="singer" n="0"><vnrole vncls="37.3" vntheta="Agent"/></role>
+  <role descr="song" n="1"><vnrole vncls="37.3" vntheta="Topic"/></role>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ `` The beautiful look of wool , '' croons the show 's narrator , `` slightly Victorian in its influence ... . ''
+</text>
+	<arg n="1">[ The beautiful look] [ of wool] [ slightly Victorian in its influence]</arg>
+	<rel>croons</rel>
+	<arg n="0">the show 's narrator</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

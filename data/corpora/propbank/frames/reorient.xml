@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="reorient">
+<note>
+  Frames file for 'reorient' based on sentences in wsj.  No access to
+  Verbnet at the moment.
+</note>
+
+<roleset id="reorient.01" name="orient again" vncls="-">
+<roles>
+  <role descr="adjuster, focusser, agent" n="0"/>
+  <role descr="thing oriented" n="1"/>
+</roles>
+
+<example name="the one example">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    But many of them can be quite profoundly reoriented [*-1] by
+    productive and disciplined service. 
+</text>
+        <arg f="MOD" n="M">can</arg>
+        <rel>reoriented</rel>
+        <arg n="1">[*-1] -&gt;  many of them</arg>
+        <arg f="by" n="0">productive and disciplined service</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

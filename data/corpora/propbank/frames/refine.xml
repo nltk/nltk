@@ -1,0 +1,42 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="refine">
+<note>
+  Frames file for 'refine'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="refine.01" name="to purify" vncls="-">
+<roles> 
+  <role descr="purifier, agent" n="0"/>
+  <role descr="entity refined" n="1"/>
+  <role descr="impurities" n="2"/> 
+</roles>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+ At the same time , moves toward tighter air-quality standards are spurring interest in lighter or alternative fuels that [*T*-1] do n't pollute as much as fuel refined [*] from `` heavy '' crudes , generally high in sulfur .
+</text>
+	<rel>refined</rel>
+	<arg n="1">[*] -&gt;  fuel</arg>
+	<arg f="from" n="2">`` heavy '' crudes , generally high in sulfur</arg>
+</example>
+
+
+<example name="transitive">
+<inflection aspect="progressive" form="participle" person="third" tense="present" voice="active"/>
+<text>
+ ERC International Inc. , which [*T*-1] provides professional and technical services to the military , is refining its defense niche , not retreating from it .
+</text>
+	<arg n="0">ERC International Inc. , which [*T*-1] provides professional and technical services to the military ,</arg>
+	<rel>refining</rel>
+	<arg n="1">its defense niche</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

@@ -1,0 +1,58 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="admonish">
+<note>
+  Frames file for 'admonish' based on sentences in wsj.  Verbnet entry
+  37.9, Framenet entries Suasion1 and Judgement.
+</note>
+
+<roleset id="admonish.01" name="persuade" vncls="37.9">
+<roles>
+  <role descr="persuader" n="0"><vnrole vncls="37.9" vntheta="Agent"/></role>
+  <role descr="persuaded agent" n="1"><vnrole vncls="37.9" vntheta="Recipient"/></role>
+  <role descr="persuaded action" n="2"><vnrole vncls="37.9" vntheta="Topic"/></role>
+</roles>
+
+<example name="please?">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+     At his first school in the U.S. he was thought a little strange
+     for [*-1] shutting off open water taps and admonishing his
+     schoolmates to take only brief showers. 
+</text>
+        <arg n="0">[*-1] -&gt;  he</arg>
+        <rel>admonishing</rel>
+        <arg n="1">his schoolmates</arg>
+        <arg n="2">*trace* to take only brief showers</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="admonish.02" name="chastise" vncls="-">
+<roles>
+  <role descr="chastiser" n="0"/>
+  <role descr="chastised" n="1"/>
+  <role descr="wrongdoing" n="2"/>
+</roles>
+
+<example name="stop that!">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    Mary admonished John for putting his dirty feet on the dining room table.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>admonished</rel>
+  <arg n="1">John</arg>
+  <arg f="for" n="2">putting his dirty feet on the dining room table</arg>
+</example>
+
+<note>
+Odd that the two senses are almost contradictory.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

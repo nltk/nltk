@@ -1,0 +1,88 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="guarantee">
+<note>
+  Frames file for 'guarantee' based on sentences in financial
+  subcorpus.  No access to verbnet.  No comparison.
+</note>
+
+<roleset id="guarantee.01" name="promise" vncls="13.3 29.5">
+<roles>
+  <role descr="entity making guarantee" n="0">
+		
+  <vnrole vncls="29.5" vntheta="Agent"/><vnrole vncls="13.3" vntheta="Agent"/></role>
+
+  <role descr="guarantee" n="1">
+		
+  <vnrole vncls="29.5" vntheta="Predicate"/><vnrole vncls="13.3" vntheta="Theme"/></role>
+
+  <role descr="benefactive, guaranteed-to" n="2">
+		
+  <vnrole vncls="29.5" vntheta="Theme"/><vnrole vncls="13.3" vntheta="Recipient"/></role>
+
+</roles>
+
+<example name="sentence fragment">
+<text>
+   *trace* Guaranteed *trace* by Svenska Handelsbanken.
+</text>
+        <rel>Guaranteed</rel>
+        <arg n="1">*trace* -&gt; *trace*</arg>
+        <arg f="by" n="0">Svenska Handelsbanken</arg>
+</example>
+
+<note>
+This happens a lot; dunno why.
+</note>
+
+<example name="guaranteed SBAR">
+<text>
+    Maxicare also will guarantee that the banks will realize at least
+    $7 million on certain notes pledged to them. 
+</text>
+        <arg n="0">Maxicare</arg>
+        <arg f="DIS" n="M">also</arg>
+        <arg f="MOD" n="M">will</arg>
+        <rel>guarantee</rel>
+        <arg n="1">the banks will realize at least $7 million on
+        certain notes pledged to them</arg> 
+</example>
+
+<example name="guaranteed NP">
+<text>
+    Apogee said the charge stems from a building supply contract in
+    which the company guaranteed a contractor's performance. 
+</text>
+        <arg n="0">the company</arg>
+        <rel>guaranteed</rel>
+        <arg n="1">a contractor's performance</arg>
+</example>
+
+<example name="passivized benefactive">
+<text>
+    According to the Illinois attorney general's suit, Watson &amp;
+        Hughey sent mailings indicating that recipients were
+        guaranteed cash prizes. 
+</text>
+        <arg n="2">recipients</arg>
+        <rel>guaranteed</rel>
+        <arg n="1">cash prizes</arg>
+</example>
+
+<example name="guaranteed VP">
+<text>
+    However a Qintex Australia spokesman said his firm had never
+    ``promised or guaranteed'' to make the payment. 
+</text>
+        <arg n="0">his firm</arg>
+        <arg f="TMP" n="M">never</arg>
+        <rel>guaranteed</rel>
+        <arg n="1">to make the payment</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="teem">
+<note>
+  Frames file for 'teem' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="teem.01" name="to be full" vncls="47.5.1-1">
+<roles>
+  <role descr="entity teeming" n="0"><vnrole vncls="47.5.1-1" vntheta="Location"/></role>
+  <role descr="teeming with" n="1"><vnrole vncls="47.5.1-1" vntheta="Theme"/></role>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ The quake knocked The Well out for six hours , but when it came back up [*T*-1] , it teemed with emotional first-hand reports .
+</text>
+	<arg n="0">it</arg>
+	<rel>teemed</rel>
+	<arg f="with" n="1">emotional first-hand reports</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

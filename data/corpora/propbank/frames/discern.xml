@@ -1,0 +1,39 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="discern">
+<note>
+  Frames file for 'discern' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+
+<roleset id="discern.01" name="to perceive" vncls="30.1">
+<roles>
+  <role descr="perceiver" n="0">
+		
+  <vnrole vncls="30.1" vntheta="Experiencer"/></role>
+
+  <role descr="entity perceived" n="1">
+		
+  <vnrole vncls="30.1" vntheta="Stimulus"/></role>
+
+</roles>
+
+
+
+<example name="transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ Growth stocks also are attractive in periods of market volatility , which many investors and analysts expect [*T*-1] in the weeks ahead as everybody tries [*-2] to discern where the economy is heading [*T*-3] .
+</text>
+	<arg n="0">[*-2] -&gt;  everybody</arg>
+	<rel>discern</rel>
+	<arg n="1">where the economy is heading [*T*-3]</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

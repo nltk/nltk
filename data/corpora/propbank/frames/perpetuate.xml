@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="perpetuate">
+<note>
+  Frames file for 'perpetuate' based on sentences in wsj.  No Verbnet
+  entry. 
+</note>
+
+<roleset id="perpetuate.01" name="make last longer/forever" vncls="-">
+<roles>
+  <role descr="causer of lasting long" n="0"/>
+  <role descr="thing lasting long" n="1"/>
+</roles>
+
+<example name="basic">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    Such an editorial point of view perpetuates an insidious,
+    stereotyped perspective. 
+</text>
+        <arg n="0">Such an editorial point of view</arg>
+        <rel>perpetuates</rel>
+        <arg n="1">an insidious, stereotyped perspective</arg>
+</example>
+
+<note>
+Seems only to be used with negatively valued objects.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

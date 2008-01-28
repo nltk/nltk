@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="panic">
+<note>
+  Frames file for 'panic' based on sentences in financial subcorpus.
+  No verbnet entry.  Loose comparison with 'scare'.
+</note>
+
+<roleset id="panic.01" name="be all afluster">
+<roles>
+  <role descr="panicker" n="1"/>
+</roles>
+
+<example name="why are all the examples negative?">
+<text>
+    You will not panic.
+</text>
+        <arg n="1">You</arg>
+        <arg f="MOD" n="M">will</arg>
+        <arg f="NEG" n="M">not</arg>
+        <rel>panic</rel>
+</example>
+
+<note>
+Well, actually they aren't.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

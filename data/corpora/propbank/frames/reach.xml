@@ -1,0 +1,117 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="reach">
+<note>
+  Frames file for 'reach' based on survey of initial sentences of big
+  corpus and comparison with 'gain' and 'get'
+</note>
+
+<roleset id="reach.01" name="attain, get to" vncls="13.5.1">
+<roles>
+  <role descr="thing striving" n="0">
+		
+  <vnrole vncls="13.5.1" vntheta="Agent"/></role>
+
+  <role descr="goal, end state" n="1">
+		
+  <vnrole vncls="13.5.1" vntheta="Theme"/></role>
+
+</roles>
+
+<example name="basic">
+  <text>
+    Unemployment has reached 27.6% in Azerbaijan.
+  </text>
+  <arg n="0">Unemployment</arg>
+  <rel>reached</rel>
+  <arg n="1">27.6%</arg>
+  <arg f="LOC" n="m">in Azerbaijan</arg>
+</example>
+
+<example name="Proper parse">
+  <text>
+    Deere &amp; Co reached a tentative agreement with the machinists'
+    union at its Horicon Wis plant.
+  </text>
+  <arg n="0">Deere &amp; Co</arg>
+  <rel>reached</rel>
+  <arg n="1">a tentative agreement with the machinists' union
+  at its Horicon Wis plant.</arg>
+</example>
+
+<example name="Bogus parse">
+  <text>
+    Any potential acquirer will have to reach some kind of accord with
+    the company's employees.
+  </text>
+  <arg n="0">Any potential acquirer</arg>
+  <arg f="MOD" n="m">will</arg>
+  <rel>reach</rel>
+  <arg n="1">some kind of accord</arg>
+  <arg n="m">with the company's employees</arg>
+</example>
+
+<note>
+Treebank often gives a bogus parse for (eg) &quot;reach an agreement
+with John&quot;.  Clearly it should be [reach] [an agreement with John],
+but Treebank has chosen [reach] [an agreement] [with John], probably
+because you can extract the agreement (ie, in passive sentences) but
+leave the PP &quot;with John&quot; behind.  You'll have to follow the two
+examples above based on which syntactic parse is given.
+</note>
+
+</roleset>
+
+<roleset id="reach.02" name="contact" vncls="-">
+<roles>
+  <role descr="reacher" n="0"/>
+  <role descr="reached" n="1"/>
+</roles>
+
+<example name="passive">
+  <text>
+    Canadian Pacific couldn't be reached *trace* for comment.
+  </text>
+  <arg n="1">*trace=Canadian Pacific*</arg>
+  <arg f="MOD" n="m">could</arg>
+  <arg f="NEG" n="m">n't</arg>
+  <rel>reached</rel>
+  <arg f="PNC" n="m">for comment</arg>
+</example>
+
+<note>
+Almost all examples of this roleset are passive.
+</note>
+</roleset>
+
+<roleset id="reach.03" name="stretch, grasp" vncls="-">
+<roles>
+  <role descr="reacher" n="0"/>
+  <role descr="body part" n="1"/>
+  <role descr="goal" n="2"/>
+</roles>
+
+<example name="with particle of direction">
+  <text>
+    I had to reach back to French 101.
+  </text>
+  <arg n="0">I</arg>
+  <rel>reach</rel>
+  <arg f="DIR" n="m">back</arg>
+  <arg f="to" n="2">French 101</arg>
+</example>
+
+<example name="with body part">
+  <text>
+    John reached out his hand to his sister.
+  </text>
+  <arg n="0">John</arg>
+  <rel>reached</rel>
+  <arg f="DIR" n="m">out</arg>
+  <arg n="1">his hand</arg>
+  <arg f="to" n="2">his sister</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

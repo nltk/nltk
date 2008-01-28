@@ -1,0 +1,66 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="clutch">
+<note>
+  Frames file for 'clutch'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="clutch.01" name="to grasp and hold tightly" vncls="15.1">
+<roles> 
+  <role descr="grasper, agent" n="0">
+        <vnrole vncls="15.1" vntheta="Agent"/></role>  
+  <role descr="entity clutched" n="1">
+        <vnrole vncls="15.1" vntheta="Theme"/></role>
+</roles>
+
+<example name="participle">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+ Brokers clutching thick folders stand in lines , [*-1] waiting their turn [0] [*] to speak to the underwriters [*T*-2] .
+</text>
+	<arg n="0">Brokers</arg>
+	<rel>clutching</rel>
+	<arg n="1">thick folders</arg>
+</example>
+
+
+<example name="prepositional Arg1">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+ Mr. Noriega believes [0] he has n't any alternative but [*] to continue clutching to power .
+</text>
+	<arg n="0">[*] -&gt;  he</arg>
+	<rel>clutching</rel>
+	<arg f="to" n="1">power</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+<predicate lemma="clutch_on">
+
+<roleset id="clutch.02" name="to grasp and hold tightly" vncls="-">
+<roles> 
+  <role descr="grasper, agent" n="0"/>  
+  <role descr="entity clutched" n="1"/>
+</roles>
+
+
+<example name="intransitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ In [*-2] describing that business in general , he says that when the client ca n't repay the loan [*T*-1] , some machikin `` clutch on like hyenas '' and even take over the client 's company .
+</text>
+	<arg n="0">some machikin</arg>
+	<rel>[ clutch] [ on]</rel>
+	<arg f="MNR" n="M">like hyenas</arg>
+</example>
+
+</roleset>
+</predicate>
+
+
+</frameset>

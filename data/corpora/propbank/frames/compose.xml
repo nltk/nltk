@@ -1,0 +1,59 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="compose">
+<note>
+  Frames file for 'compose' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="compose.01" name="to form,  constitute" vncls="-">
+<roles>
+  <role descr="causer of group, agent" n="0"/>
+  <role descr="entity composed" n="1"/>
+  <role descr="composed of" n="2"/>
+</roles>
+
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="past" voice="passive"/>
+<text>
+ The team was composed [*-1] of representatives from engineering , manufacturing , corporate estimating , flight test , material , quality control , and other departments .
+</text>
+	<rel>composed</rel>
+	<arg n="1">[*-1] -&gt;  The team</arg>
+	<arg f="of" n="2">representatives from engineering , manufacturing , corporate estimating , flight test , material , quality control , and other departments</arg>
+</example>
+</roleset>
+
+<roleset id="compose.02" name="to create, produce art" vncls="26.4 26.7-2">
+<roles>
+  <role descr="artist, agent" n="0">
+        <vnrole vncls="26.7-2" vntheta="Agent"/>
+        <vnrole vncls="26.4" vntheta="Agent"/></role>
+  <role descr="entity composed" n="1">
+        <vnrole vncls="26.7-2" vntheta="Theme"/>
+        <vnrole vncls="26.4" vntheta="Product"/></role>
+  <role descr="beneficiary" n="2">
+        <vnrole vncls="26.7-2" vntheta="Beneficiary"/>
+        <vnrole vncls="26.4" vntheta="Beneficiary"/></role>
+</roles>
+
+
+
+<example name="not in the corpus">
+<text>
+ John composed this poem for his wife.
+</text>
+	<rel>composed</rel>
+        <arg n="0">John</arg>
+	<arg n="1">this poem</arg>
+	<arg f="for" n="2">his wife</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="gaze">
+<note>
+  Frames file for 'gaze' based on sentences in wsj.  Verbnet entry
+  30.3, Framenet entry Perception active.
+</note>
+
+<roleset id="gaze.01" name="look at steadily" vncls="30.3">
+<roles>
+  <role descr="looker" n="0"><vnrole vncls="30.3" vntheta="Experiencer"/></role>
+  <role descr="looked at" n="1"><vnrole vncls="30.3" vntheta="Stimulus"/></role>
+</roles>
+
+<example name="with directional">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+     The lucky ones gaze out at life with serene eyes and smile with a
+     face of innocence at their perfumed happiness. 
+</text>
+        <arg n="0">The lucky ones</arg>
+        <rel>gaze</rel>
+        <arg f="DIR" n="M">out</arg>
+        <arg f="at" n="1">life</arg>
+        <arg f="MNR" n="M">with serene eyes</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

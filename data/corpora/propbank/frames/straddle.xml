@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="straddle">
+<note>
+  Frames file for 'straddle' based on sentences in wsj.  Verbnet
+  entries 47.6, 50, 47.8.
+</note>
+
+<roleset id="straddle.01" name="(come to) be astride" vncls="47.6 50 47.8">
+<roles>
+  <role descr="thing astride" n="0"><vnrole vncls="47.6" vntheta="Theme"/><vnrole vncls="47.8" vntheta="Theme1"/><vnrole vncls="50" vntheta="Agent"/></role>
+  <role descr="astride what, location" n="1"><vnrole vncls="47.6" vntheta="Location"/><vnrole vncls="47.8" vntheta="Theme2"/><vnrole vncls="50" vntheta="Location"/></role>
+</roles>
+
+<example name="one example will do">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    Sitting in one of Mr. Palmer's chairs, which cost $425 and have
+    since been copied by others, is a bit like [*] straddling a recliner.
+</text>
+        <arg n="0">[*]</arg>
+        <rel>straddling</rel>
+        <arg n="1">a recliner</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

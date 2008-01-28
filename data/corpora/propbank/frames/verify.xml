@@ -1,0 +1,44 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="verify">
+<note>
+  Frames file for 'verify' based on sentences in wsj.  No Verbnet
+  entry, Framenet entry Evidence.
+</note>
+
+<roleset id="verify.01" name="determine truth of a proposition" vncls="-">
+<roles>
+  <role descr="verifier" n="0"/>
+  <role descr="verified" n="1"/>
+</roles>
+
+<example name="nice transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Businesses ``want *trace* to verify information and ensure
+    accuracy,'' says  John Hiltunen, Dictaphone's manager of media
+    relations. 
+</text>
+        <arg n="0">*trace* -&gt;  Businesses</arg>
+        <rel>verify</rel>
+        <arg n="1">information</arg>
+</example>
+
+<example name="bogus parse">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+    Merrill Lynch &amp; Co. and Shearson Lehman Hutton Inc. say they
+    use voice-activated systems *trace* to record and verify orders
+    between salesmen and traders. 
+</text>
+        <arg n="0">*trace* -&gt;  they</arg>
+        <rel>verify</rel>
+        <arg n="1">[ orders] [ between salesmen and traders]</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,104 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="stay">
+<note>
+  Frames file for 'stay' based on survey of initial sentences of big
+  corpus and comparison with 'remain'
+</note>
+
+<roleset id="stay.01" name="remain, be left over" vncls="47.1-1">
+<roles>
+  <role descr="thing remaining" n="1">
+	  <vnrole vncls="47.1-1" vntheta="Theme"/></role>
+  <role descr="benefactive, probably will not occur" n="2"/>
+  <role descr="attribute of arg1" n="3"/>
+</roles>
+
+<example name="ergative">
+  <text>
+  It is a passion that *trace* usually stays in the tower, however.
+  </text>
+  <arg n="1">*trace*=that=a passion</arg>
+  <arg f="ADV" n="m">usually</arg>
+  <rel>stays</rel>
+  <arg f="LOC" n="m">in the tower</arg>
+  <arg f="DIS" n="m">however</arg>
+</example>
+
+<example name="with attribute">
+  <text>
+  Consumer confidence stayed strong in October, despite the unsettling
+  gyrations of the stock market.
+  </text>
+  <arg n="1">Consumer confidence</arg>
+  <rel>stayed</rel>
+  <arg n="3">strong</arg>
+  <arg f="TMP" n="m">in October</arg>
+  <arg f="ADV" n="m">despite the unsettling
+  gyrations of the stock market.</arg>
+</example>
+
+<example name="PP attribute">
+  <text>
+  The Soviet Union will stay on its record buying pace.
+  </text>
+  <arg n="1">The Soviet Union</arg>
+  <arg f="MOD" n="m">will</arg>
+  <rel>stay</rel>
+  <arg f="on" n="3">its record buying pace</arg>
+</example>
+
+</roleset>
+
+<roleset id="stay.03" vncls="-" name="legal term: postpone">
+<roles>
+  <role n="0"  descr="postponer"/>
+  <role n="1"  descr="thing postponed"/>
+</roles>
+
+<example name="pend-o-matic">
+<inflection person="ns" tense="ns" aspect="ns" voice="ns" form="infinitive"/>
+<text>
+     The parties in the Connecticut case have agreed [*-1] to stay
+     proceedings pending the appeal of another EEOC age-bias case
+     against Vermont. 
+</text>
+        <arg n="0">[*-1] ->  The parties in the Connecticut case</arg>
+        <rel>stay</rel>
+        <arg n="1">proceedings</arg>
+        <arg n="M" f="TMP">pending the appeal of another EEOC age-bias
+        case against Vermont</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="stay_on">
+
+<roleset id="stay.02" name="linger" vncls="47.1-1">
+<roles>
+  <role descr="thing remaining, staying, lingering" n="1">
+	  <vnrole vncls="47.1-1" vntheta="Theme"/></role>
+</roles>
+
+<example name="ergative">
+  <text>
+  He intends *trace* to stay on until he reached the conventional
+  retirement age of 65 in October 1991.
+  </text>
+  <arg n="1">*trace*=He</arg>
+  <rel>stay on</rel>
+  <arg f="TMP" n="m">until he reached the conventional
+  retirement age of 65 in October 1991</arg>
+</example>
+
+<note>
+Might take Arg3 &quot;attributive&quot; as &quot;stay&quot; above, also.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

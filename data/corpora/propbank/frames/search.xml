@@ -1,0 +1,41 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="search">
+<note>
+  Frames file for 'search' based on sentences in financial subcorpus.
+  Verbnet class search 35.2, no mention of other members.  Comparison
+  with 'seek'.
+</note>
+
+<roleset id="search.01" name="search, seek" vncls="35.2">
+<roles>
+  <role descr="searcher" n="0">
+		
+  <vnrole vncls="35.2" vntheta="Agent"/></role>
+
+  <role descr="searched for" n="1">
+		
+  <vnrole vncls="35.2" vntheta="Theme"/></role>
+
+</roles>
+
+<example name="typical transitive">
+<text>
+    The board already has been searching for strong outside
+    candidates, including food-industry executives with considerable
+    international experience. 
+</text>
+        <arg n="0">The board</arg>
+        <arg f="TMP" n="M">already</arg>
+        <rel>searching</rel>
+        <arg f="for" n="1">strong outside candidates, including
+        food-industry executives with considerable international
+        experience</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

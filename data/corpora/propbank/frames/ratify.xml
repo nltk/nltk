@@ -1,0 +1,46 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="ratify">
+<note>
+  Frames file for 'ratify' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="ratify.01" name="to approve" vncls="-">
+<roles>
+  <role descr="approver, agent" n="0"/>
+  <role descr="entity ratified" n="1"/>
+  <role descr="beneficiary" n="2"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="perfect" form="participle" person="ns" tense="past" voice="active"/>
+<text>
+ By 1987 , then-Speaker Jim Wright was discussing arms control in Moscow with Mikhail Gorbachev and then attempting [*-1] to direct the president , through an appropriations rider , [*-2] to treat the Soviets as though the Senate had ratified SALT II .
+</text>
+	<arg n="0">the Senate</arg>
+	<rel>ratified</rel>
+	<arg n="1">SALT II</arg>
+</example>
+
+
+
+<example name="all arguments">
+<inflection aspect="progressive" form="participle" person="ns" tense="past" voice="active"/>
+<text>
+ The broadcasters were , after all , documenting the game , ratifying its occurrence for millions outside the Stick .
+</text>
+	<arg n="0">The broadcasters</arg>
+	<arg f="DIS" n="M">after all</arg>
+	<rel>ratifying</rel>
+	<arg n="1">its occurrence</arg>
+	<arg f="for" n="2">millions outside the Stick</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

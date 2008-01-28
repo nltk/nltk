@@ -1,0 +1,233 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="follow">
+<note>
+Frames file for 'follow' based on survey of initial sentences of big corpus
+</note>
+
+<roleset id="follow.01" name="be subsequent, temporally or spatially" vncls="47.8">
+<roles>
+  <role descr="causal agent" n="0"/>
+  <role descr="thing following, coming after" n="1">
+	<vnrole vncls="47.8" vntheta="Theme1"/></role>
+  <role descr="thing followed, coming before" n="2">
+	<vnrole vncls="47.8" vntheta="Theme2"/></role>
+</roles>
+
+<example name="intransitive">
+  <text>
+    Champagne and dessert followed.
+  </text>
+  <arg n="1">Champagne and desert</arg>
+  <rel>followed</rel>
+</example>
+
+<example name="transitive">
+  <text>
+    The strong growth followed year-to-year increases of 21% in August.
+  </text>
+  <arg n="1">The strong growth</arg>
+  <rel>followed</rel>
+  <arg n="2">year-to-year increases of 21% in August</arg>
+</example>
+
+<example name="passivized">
+  <text>
+    California led the nation, followed by Texas, Iowa, and Florida
+  </text>
+ <arg n="2">California</arg>
+  <rel>followed</rel>
+  <arg f="by" n="1">Texas, Iowa, and Florida</arg>
+</example>
+
+<example name="as temporal">
+  <text>
+    Following the acquisition of RP Scherer, the maker of gelcaps
+    decided to ... 
+  </text>
+  <rel>Following</rel>
+  <arg n="2">the acquisition of RP Scherer</arg>
+<note>the Arg1 would be the rest of the sentence, but we'll skip it.
+This construction happens a lot--occasionally there's a clear
+Arg1,--but usually not.  Err on the side of caution when looking for
+an Arg1. 
+</note>
+</example>
+
+<example name="with causal agent">
+  <text>
+    Mr. Simmons has followed friendly offers with a hostile tender offer.
+  </text>
+  <arg n="0">Mr. Simmons</arg>
+  <rel>has followed</rel>
+  <arg n="2">friendly offers</arg>
+  <arg n="1">a hostile tender offer</arg>
+</example>
+
+<example name="obnoxious intervening idiom chunk">
+  <inflection person="ns" tense="ns" aspect="ns" voice="active" form="full"/>
+  <text>
+    Now Republican leaders are concentrating on attaching a
+    capital-gains amendment to some other bill, perhaps a measure
+    raising the federal borrowing limit or a second tax bill that
+    [*T*-1] would follow on the heels of the deficit-reduction
+    legislation. 
+  </text>
+  <arg n="m" f="MOD">would</arg>
+  <rel              >follow</rel>
+  <arg n="1"        >[*T*-1] -> that -> a second tax bill</arg>
+  <arg n="m" f="MNR">on the heels</arg>
+  <arg n="2" f="of">the deficit-reduction legislation</arg>
+</example>
+
+</roleset>
+
+<roleset id="follow.02" name="adhere to, accept, pursue" vncls="51.6">
+<roles>
+  <role descr="acceptor, pursuer" n="0">
+	<vnrole vncls="51.6" vntheta="Agent"/></role>
+  <role descr="thing followed" n="1">
+	<vnrole vncls="51.6" vntheta="Theme"/></role>
+  <role descr="benefactive" n="2"/>
+</roles>
+
+<example name="another transitive">
+  <text>
+    Many investors follow a strategy of buying and holding a mix of stocks.
+  </text>
+  <arg n="0">Many investors</arg>
+  <rel>follow</rel>
+  <arg n="1">a strategy of buying and holding a mix of stocks</arg>
+</example>
+
+<example name="with manner">
+  <text>
+    John avidly follows Major League baseball for his father, who can
+    only receive Italian soccer on his TV.
+  </text>
+  <arg n="0">John</arg>
+  <arg f="MNR" n="M">avidly</arg>
+  <rel>follows</rel>
+  <arg n="1">Major League baseball</arg>
+  <arg f="for" n="2">his father, who can
+    only receive Italian soccer on his TV.</arg>
+</example>
+</roleset>
+<note>
+</note>
+
+<roleset id="follow.04" vncls="-" name="list function">
+<roles>
+  <role n="1"  descr="described"/>
+</roles>
+
+<example name="with arg">
+  <inflection person="ns" tense="ns" aspect="progressive" voice="active" form="participle"/>
+  <text>
+     The following individuals were fined as indicated and barred from
+     association with NASD members, or, where noted, suspended. 
+  </text>
+  <rel              >following</rel>
+  <arg n="1"        >individuals</arg>
+</example>
+
+<example name="empty arg">
+  <inflection person="ns" tense="ns" aspect="progressive" voice="active" form="participle"/>
+  <text>
+     The following [*ICH*-2] were neither barred nor suspended:
+     Stephanie Veselich Enright, Rolling Hills, Calif., fined $2,500
+     and ordered to disgorge $11,762; Stuart Lane Russel, Glendale,
+     Calif., fined $2,500 and ordered to disgorge $14,821; Devon
+     Nilson Dahl, Fountain Valley, Calif., fined $82,389. 
+  </text>
+  <rel              >following</rel>
+  <arg n="1"        >[*ICH*-2]</arg>
+</example>
+
+</roleset>
+
+<roleset id="follow.05" vncls="-" name="logical conclusion">
+<roles>
+  <role n="1"  descr="conclusion"/>
+  <role n="2"  descr="thesis"/>
+</roles>
+
+<example name="with manner">
+  <inflection person="ns" tense="ns" aspect="ns" voice="active" form="full"/>
+  <text>
+    ...``Robert Bork's America'' -- the parade of imaginary horribles
+    that [*T*-2] would follow logically, he claimed, from the
+    positions Mr. Bork had taken over the space of two decades. 
+  </text>
+  <arg n="1"        >[*T*-2] -> that -> the parade of imaginary horribles</arg>
+  <arg n="m" f="MOD">would</arg>
+  <rel              >follow</rel>
+  <arg n="m" f="MNR">logically</arg>
+  <arg n="2" f="from">the positions Mr. Bork had taken over the space
+  of two decades</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="follow_suit">
+
+<roleset id="follow.06" vncls="-" name="do the same thing, imitate">
+<roles>
+  <role n="0"  descr="imitator"/>
+</roles>
+
+<example name="monkey see, monkey do">
+  <inflection person="ns" tense="ns" aspect="ns" voice="active" form="infinitive"/>
+  <text>
+    Budget Rent a Car Corp., of Chicago, and National Car Rental
+    Systems Inc., of Minneapolis, both said [0] they had no plans [*]
+    to follow suit. 
+  </text>
+  <arg n="0"        >[*] -> they</arg>
+  <rel              >follow suit</rel>
+</example>
+</roleset>
+</predicate>
+
+<predicate lemma="follow_through">
+
+<roleset id="follow.07" vncls="-" name="fulfill, complete">
+<roles>
+  <role n="0"  descr="fulfiller"/>
+  <role n="1"  descr="promise, plans, etc"/>
+</roles>
+
+<example name="not like tennis">
+  <inflection person="third" tense="present" aspect="ns" voice="active" form="full"/>
+  <text>
+    They argue that as the Kremlin follows through on announced plans
+    to cut land forces.... 
+  </text>
+  <arg n="0"        >the Kremlin</arg>
+  <rel              >follows through</rel>
+  <arg n="1" f="on">announced plans to cut land forces</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="follow_up">
+<roleset id="follow.03" name="be subsequent, etc" vncls="51.6">
+<roles>
+  <role descr="causal agent" n="0"><vnrole vncls="51.6" vntheta="Agent"/></role>
+  <role descr="thing following, coming after" n="1"><vnrole vncls="51.6" vntheta="Theme"/></role>
+  <role descr="thing followed, coming before" n="2"/>
+</roles>
+
+<example name="optional preposition">
+  <text>
+    Scty of State James Baker followed up [on] a proposal made by Bob Hawke.
+  </text>
+  <arg n="0">Scy of State James Baker</arg>
+  <rel>followed up</rel>
+  <arg f="on" n="1">a proposal made by Bob Hawke</arg>
+</example>
+</roleset>
+</predicate>
+</frameset>

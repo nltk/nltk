@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="belie">
+<note>
+  Frames file for 'belie' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="belie.01" name="to show to be false" vncls="-">
+<roles>
+  <role descr="demonstrator of falseness, agent" n="0"/>
+  <role descr="entity shown to be false" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+ CBS pursues top sports `` [*-3] to belie the fact that they are n't supporting affiliates , viewers and advertisers , '' charges [0] [*T*-4] Thomas H. Wyman , who [*T*-2] was ousted [*-1] as chairman of CBS Inc. after Laurence A. Tisch bought a 24.9 % stake in the company and took over three years ago .
+</text>
+	<arg n="0">[*-3] -&gt;  CBS</arg>
+	<rel>belie</rel>
+	<arg n="1">the fact that they are n't supporting affiliates , viewers and advertisers</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

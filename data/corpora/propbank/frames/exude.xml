@@ -1,0 +1,41 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="exude">
+<note>
+  Frames file for 'exude' based on sentence in financial subcorpus.
+  Verbnet classes 43.4 48.1.1, no mention of other members.
+  Comparison to 'express'.
+</note>
+
+<roleset id="exude.01" name="ooze" vncls="43.4 48.1.1">
+<roles>
+  <role descr="oozer" n="0">
+		
+  <vnrole vncls="43.4" vntheta="Agent"/></role>
+
+  <role descr="ooze" n="1">
+		
+		
+  <vnrole vncls="43.4" vntheta="Theme"/><vnrole vncls="48.1.1" vntheta="Theme"/></role>
+
+</roles>
+
+<example name="at least this is a nice ooze">
+<text>
+    In the interview at headquarters yesterday afternoon, both men
+    exuded confidence and seemed to work well together. 
+</text>
+        <arg f="LOC" n="M">In the interview at headquarters yesterday
+        afternoon</arg> 
+        <arg n="0">both men</arg>
+        <rel>exuded</rel>
+        <arg n="1">confidence</arg>
+</example>
+
+<note>
+Interesting that 'ooze' is both a noun and a verb.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

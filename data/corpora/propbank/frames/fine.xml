@@ -1,0 +1,66 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="fine">
+<note>
+  Frames file for 'fine' based on sentences in wsj.  Verbnet entries
+  33 and 54.5, Framenet entry Fining.  Doesn't match framing of class 33.
+</note>
+
+<roleset id="fine.01" name="extract money because of misdeed" vncls="54.5">
+<roles>
+  <role descr="finer, receiver of money" n="0"><vnrole vncls="54.5" vntheta="Agent"/></role>
+  <role descr="fine, money" n="1"><vnrole vncls="54.5" vntheta="Asset"/></role>
+  <role descr="fined, giver of money" n="2"><vnrole vncls="54.5" vntheta="Recipient"/></role>
+  <role descr="cause, misdeed" n="3"><vnrole vncls="54.5" vntheta="Cause"/></role>
+</roles>
+
+<example name="passive, fine and cause">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    Biscayne Securities Corp., of Lauderhill, Fla., and a principal of
+    the firm, Alvin Rosenblum of Plantation, Fla., were jointly fined
+    *trace* $20,000 and given 10-day suspensions for allegedly selling
+    securities at unfair prices. 
+</text>
+        <arg f="MNR" n="M">jointly</arg>
+        <rel>fined</rel>
+        <arg n="2">*trace* -&gt;  Biscayne Securities Corp., of
+        Lauderhill, Fla., and a principal of the firm, Alvin Rosenblum
+        of Plantation, Fla.,</arg> 
+        <arg n="1">$20,000 </arg>
+        <arg f="for" n="3">allegedly selling securities at unfair
+        prices</arg> 
+</example>
+
+<example name="with agent">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    Meanwhile, inside the courtroom, the judge said he would fine
+    attorneys for the two creditors $50 every time they referred to
+    each other with terms such as ``liar'' or ``slime.'' 
+</text>
+        <arg n="0">he</arg>
+        <arg f="MOD" n="M">would</arg>
+        <rel>fine</rel>
+        <arg n="2">attorneys for the two creditors</arg>
+        <arg n="1">$50 </arg>
+        <arg f="TMP" n="M">every time they referred to each other with
+        terms such as ``liar'' or ``slime</arg> 
+</example>
+
+<example name="passive with one arg">
+<inflection aspect="ns" form="participle" person="ns" tense="past" voice="passive"/>
+<text>
+    Two firms were expelled from the NASD, three were suspended or
+    barred and nine were fined *trace*. 
+</text>
+        <rel>fined</rel>
+        <arg n="2">*trace* -&gt;  nine</arg>
+</example>
+
+<note>
+Argument ordering suggested by 'charge' and 'bill', class 54.5.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

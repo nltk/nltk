@@ -1,0 +1,48 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="circle">
+<note>
+  Frames file for 'circle' based on survey of sentences in the WSJ
+  corpus. Comparison with 'surround'.
+</note>
+
+<roleset id="circle.01" name="to move in a circle" vncls="-">
+<roles>
+  <role descr="entity moving" n="0"/>
+</roles>
+
+<example name="intransitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ As a police helicopter circled overhead , Mr. Sisulu repeated the ANC 's demands [*ICH*-1] on the government [*] to create a climate for negotiations : [*] Release all political prisoners unconditionally ; [*] lift all bans and restrictions on individuals and organizations ; [*] remove all troops from the black townships ; [*] end the state of emergency , and [*] cease all political trials and political executions .
+</text>
+	<arg n="0">a police helicopter</arg>
+	<rel>circled</rel>
+	<arg f="LOC" n="M">overhead</arg>
+</example>
+</roleset>
+
+<roleset id="circle.02" name="to form a circle, enclose" vncls="-">
+<roles>
+  <role descr="causer" n="0"/>
+  <role descr="entity forming a circle" n="1"/>
+  <role descr="entity within a circle " n="2"/>
+</roles>
+
+
+<example name="non-agentive">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ The auto-dealer strip in this booming suburb runs nearly five miles along Cobb Parkway , [*-2] stretching from the Perimeter highway that [*T*-1] circles Atlanta to the `` Big Chicken , '' a pullet-roofed fast-food restaurant and local landmark .
+</text>
+	<arg n="1">[*T*-1] -&gt;  that -&gt;  the Perimeter highway</arg>
+	<rel>circles</rel>
+	<arg n="2">Atlanta</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

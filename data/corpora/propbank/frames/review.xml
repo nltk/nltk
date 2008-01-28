@@ -1,0 +1,83 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="review">
+<note>
+  Frames file for 'review' based on sentences in financial subcorpus.
+  Verbnet class 34, no indication of other members.
+</note>
+
+<roleset id="review.01" name="look at again" vncls="34">
+<roles>
+  <role descr="reviewer" n="0">
+		
+  <vnrole vncls="34" vntheta="Agent"/></role>
+
+  <role descr="thing reviewed" n="1">
+		
+  <vnrole vncls="34" vntheta="Theme"/></role>
+
+  <role descr="benefactive" n="2">
+		
+  <vnrole vncls="34" vntheta="Cause"/></role>
+
+</roles>
+
+<example name="simple transitive">
+<text>
+    Late yesterday, Georgia Gulf said it reviewed the NL proposal as
+    well as interests from ``third parties'' regarding business
+    combinations. 
+</text>
+        <arg n="0">it</arg>
+        <rel>reviewed</rel>
+        <arg n="1">the NL proposal as well as interests from ``third
+        parties'' regarding business combinations</arg> 
+</example>
+
+<example name="with benefactive">
+<text>
+    ``We consider that his bid is an acceptable bid,'' said Sandra
+    Kolber, spokeswoman for the independent directors' committee
+    appointed *trace* last May to solicit and review bids for the
+    company in the wake of a dispute between Mr. Drabinsky and
+    Cineplex's major shareholder, MCA Inc. 
+</text>
+        <arg n="0">*trace* -&gt;  the independent directors' committee</arg>
+        <rel>review</rel>
+        <arg n="1">bids</arg>
+        <arg f="for" n="2">the company</arg>
+        <arg f="TMP" n="M">in the wake of a dispute between
+        Mr. Drabinsky and Cineplex's major shareholder, MCA Inc</arg>
+</example>
+
+<example name="with purpose adjunct">
+<text>
+    Meanwhile, U.S. Attorney Jerry Rafferty in Denver is reviewing the
+    report prepared by MiniScribe's outside directors, to determine if
+    criminal charges should be brought before a grand jury. 
+</text>
+        <arg f="TMP" n="M">Meanwhile</arg>
+        <arg n="0">U.S. Attorney Jerry Rafferty in Denver</arg>
+        <rel>reviewing</rel>
+        <arg n="1">the report prepared by MiniScribe's outside directors</arg>
+        <arg f="PNC" n="M">to determine if criminal charges should be
+        brought before a grand jury</arg> 
+</example>
+
+<example name="another kind of purpose adjunct">
+  <text>
+    John reviewed his notes for errors.
+  </text>
+  <arg n="0">John</arg>
+  <rel>reviewed</rel>
+  <arg n="1">his notes</arg>
+  <arg f="PNC" n="m">for errors</arg>
+</example>
+
+<note>
+The logic here is: &quot;John reviewed his notes to find errors.&quot;
+</note>
+
+</roleset>
+</predicate>
+</frameset>

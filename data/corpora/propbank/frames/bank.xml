@@ -1,0 +1,63 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="bank">
+<note>
+  Frames file for 'bank' based on sentences in wsj.  Verbnet entry
+  9.10, Framenet entry Placing.
+</note>
+
+<roleset id="bank.01" name="put (money) in the bank" vncls="9.10">
+<roles>
+  <role descr="putter, agent" n="0"><vnrole vncls="9.10" vntheta="Agent"/></role>
+  <role descr="money" n="1"><vnrole vncls="9.10" vntheta="Theme"/></role>
+  <role descr="bank" n="2"><vnrole vncls="9.10" vntheta="Location"/></role>
+</roles>
+
+<example name="no mention of bank">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    What do you say we all close down the poker game, go home and bank
+    the $16 billion? 
+</text>
+        <arg n="0">we all</arg>
+        <rel>bank</rel>
+        <arg n="1">the $16 billion</arg> 
+</example>
+
+<example name="no mention of money">
+  <inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+  <text>
+    John banks at the Lower Slobovia Federated Savings &amp; Loan.
+  </text>
+  <arg n="0">John</arg>
+  <rel>banks</rel>
+  <arg f="at" n="2">the Lower Slobovia Federated Savings &amp; Loan</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="bank.02" name="turn, like an airplane" vncls="-">
+<roles>
+  <role descr="pilot" n="0"/>
+  <role descr="aeroplane" n="1"/>
+</roles>
+
+<example name="I can fly!">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John banked the plane into the wind.
+  </text>
+  <arg n="0">John</arg>
+  <rel>banked</rel>
+  <arg n="1">the plane</arg>
+  <arg f="DIR" n="m">into the wind</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

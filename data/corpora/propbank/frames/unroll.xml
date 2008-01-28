@@ -1,0 +1,49 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="unroll">
+<note>
+  Frames file for 'unroll' based on sentences in wsj.  No Verbnet
+  entry, but following 'roll' could be in: build-26.1 coil-9.6
+  preparing-26.3-1 roll-51.3.1 run-51.3.2 shake-22.3 shake-22.3-2
+  slide-11.2-2 split-23.2. 
+</note>
+
+<roleset id="unroll.01" name="unroll" vncls="-">
+<roles>
+  <role descr="unroller, agent" n="0"/>
+  <role descr="thing no longer rolled (up)" n="1"/>
+</roles>
+
+<example name="agentive/transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    Come daybreak, eight family members and two other workers unroll a
+    sheet of raw rubber that covers the floor of the house and spills
+    out onto the street. 
+</text>
+        <arg f="TMP" n="M">Come daybreak</arg>
+        <arg n="0">eight family members and two other workers</arg>
+        <rel>unroll</rel>
+        <arg n="1">a sheet of raw rubber that covers the floor of the
+        house and spills out onto the street</arg> 
+</example>
+
+<example name="inchoative">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    Guests bring movies on tape, and show their favorite three-to-five
+    minute segments on the screen that [*T*-1] unrolls from the
+    ceiling of the Volokhs' art-nouveau library (``the pleasure
+    dome''). 
+</text>
+        <arg n="1">[*T*-1] -&gt;  that -&gt;  the screen</arg>
+        <rel>unrolls</rel>
+        <arg f="DIR" n="M">from the ceiling of the Volokhs'
+        art-nouveau library (``the pleasure dome'')</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

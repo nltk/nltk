@@ -1,0 +1,62 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="fabricate">
+<note>
+  Frames file for 'fabricate' lifted verbatim from 'make'.
+</note>
+
+<roleset id="fabricate.01" name="create" vncls="26.4">
+<roles>
+  <role descr="creator" n="0">
+		
+  <vnrole vncls="26.4" vntheta="Agent"/></role>
+
+  <role descr="creation" n="1">
+		
+  <vnrole vncls="26.4" vntheta="Product"/></role>
+
+  <role descr="created-from, thing changed" n="2">
+		
+  <vnrole vncls="26.4" vntheta="Material"/></role>
+
+  <role descr="benefactive" n="3">
+		
+  <vnrole vncls="26.4" vntheta="Beneficiary"/></role>
+
+</roles>
+
+<example name="transitive">
+  <text>
+    Loews Corp fabricates Kent cigarettes.
+  </text>
+  <arg n="0">Loews Corp</arg>
+  <rel>fabricates</rel>     
+  <arg n="1">Kent cigarettes</arg>
+</example>
+
+<example name="with material">
+  <text>
+    A form of asbestos once used *trace=asbestos* *trace=empty* to fabricate 
+    cigarettes.
+  </text>
+  <arg n="2">*trace=asbestos*</arg>
+  <arg n="0">*trace=empty*</arg>
+  <rel>to fabricate</rel>
+  <arg n="1">cigarettes</arg>
+</example>
+
+<example name="passive material">
+  <text>
+    Those chips are fabricated *trace=chips* of gallium arsenide.
+  </text>
+  <rel>are fabricated</rel>
+  <arg n="1">*trace=chips*</arg>
+  <arg f="of" n="2">of gallium arsenide</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

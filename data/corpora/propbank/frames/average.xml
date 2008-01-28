@@ -1,0 +1,68 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="average">
+<note>
+  Frames file for 'average' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="average.01" name="to amount to or come to an average, compute an average" vncls="-">
+<roles>
+ <role descr="agent, person computing the average" n="0"/>
+ <role descr="entity averaged out" n="1"/>
+ <role descr="amount" n="2"/>
+ <role descr="scale" n="3"/>
+</roles>
+
+<example name="non-agentive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ In October , the busiest month of the year so far , daily volume averaged roughly 145 million shares .
+</text>
+	<arg f="TMP" n="M">In October , the busiest month of the year so far ,</arg>
+	<arg n="1">daily volume</arg>
+	<rel>averaged</rel>
+	<arg n="2">roughly 145 million shares</arg>
+</example>
+
+
+<example name="with Arg3">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+ The Manhattan U.S. attorney 's office stressed criminal cases from 1980 to 1987 , [*-1] averaging 43 for every 100,000 adults .
+</text>
+	<arg n="1">[*-1] -&gt;  criminal cases</arg>
+	<rel>averaging</rel>
+	<arg n="2">43</arg>
+	<arg f="for" n="3">every 100,000 adults</arg>
+</example>
+
+
+<example name="agentive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ On the civil side , the Manhattan prosecutor filed an average of only 11 cases for every 100,000 adults during the same period ; the San Francisco U.S. attorney averaged 79 .
+</text>
+	<arg n="1">the San Francisco U.S. attorney</arg>
+	<rel>averaged</rel>
+	<arg n="2">79</arg>
+</example>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ That is in part because of the effect of [*] having [*-2] to average the number of shares outstanding , she said [0] [*T*-1] .
+</text>
+	<arg n="0">[*-2] -&gt;  [*]</arg>
+	<rel>average</rel>
+	<arg n="1">the number of shares outstanding</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

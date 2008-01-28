@@ -1,0 +1,54 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="clank">
+<note>
+  Frames file for 'clank' based on sentences in wsj.  Verbnet entry
+  43.2, Framenet entry Sound emission.
+</note>
+
+<roleset id="clank.01" name="emit clanking noises" vncls="43.2">
+<roles>
+  <role descr="emitter of noise" n="1"><vnrole vncls="43.2" vntheta="Theme"/></role>
+</roles>
+
+<example name="poor John">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     The chains wrapped around John clanked dully in the dark.
+  </text>
+  <arg n="1">The chains wrapped around John</arg>
+  <rel>clanked</rel>
+  <arg f="MNR" n="m">dully</arg>
+  <arg f="LOC" n="m">in the dark</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="clank.02" name="move while making clanking noises" vncls="-">
+<roles>
+  <role descr="entity in motion" n="0"/>
+  <role descr="path" n="1"/>
+</roles>
+
+<example name="the one example">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    Marshall came [*-1] clanking in like Marley's ghost dragging those
+    chains of brigades and air wings and links with Arab despots. 
+</text>
+        <arg n="0">[*-1] -&gt;  Marshall</arg>
+        <rel>clanking</rel>
+        <arg f="DIR" n="1">in</arg>
+        <arg f="MNR" n="M">like Marley's ghost dragging those chains
+        of brigades and air wings and links with Arab despots</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

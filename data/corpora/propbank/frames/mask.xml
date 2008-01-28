@@ -1,0 +1,60 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="mask">
+<note>
+Frames file for 'mask' based on sentences in wsj and automatic
+expansion via verbnet.
+</note>
+
+<roleset id="mask.01" name="cover with a mask" vncls="9.8">
+<roles>
+	<role descr="coverer" n="0">
+		
+  <vnrole vncls="9.8" vntheta="Agent"/></role>
+
+	<role descr="thing covered" n="1">
+		
+  <vnrole vncls="9.8" vntheta="Destination"/></role>
+
+	<role descr="instrument, mask" n="2">
+		
+  <vnrole vncls="9.8" vntheta="Theme"/></role>
+
+</roles>
+
+<example name="instrumental subject">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Analysts said the results were as expected, but several added that
+    the earnings masked underlying weaknesses in several businesses.
+</text>
+        <arg n="2">the earnings</arg>
+        <rel>masked</rel>
+        <arg n="1">underlying weaknesses in several businesses</arg>
+</example>
+
+<example name="passive with instrument">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    Real estate analyst Lloyd Lynford says the Northeast's distress is
+    masked *trace* by relatively low vacancy rates. 
+</text>
+        <rel>masked</rel>
+        <arg n="1">*trace* -&gt;  the Northeast's distress</arg>
+        <arg f="by" n="2">relatively low vacancy rates</arg>
+</example>
+
+<example name="lunchtime" src="cover.02">
+  <text>
+  John masked the bread with peanut butter.
+  </text>
+  <arg n="0">John</arg>
+  <rel>masked</rel>
+  <arg n="1">the bread</arg>
+  <arg f="with" n="2">peanut butter</arg>
+</example>
+
+</roleset>
+
+</predicate>
+</frameset>

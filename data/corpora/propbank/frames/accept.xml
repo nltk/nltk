@@ -1,0 +1,68 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="accept">
+<note>
+  Frames file for 'accept' based on survey of initial sentences of big
+  corpus.
+</note>
+
+<roleset id="accept.01" name="take willingly" vncls="13.5.2 29.2">
+<roles>
+  <role descr="acceptor" n="0">
+		
+  <vnrole vncls="29.2" vntheta="Agent"/><vnrole vncls="13.5.2" vntheta="Agent"/></role>
+
+  <role descr="thing accepted" n="1">
+		
+  <vnrole vncls="29.2" vntheta="Theme"/><vnrole vncls="13.5.2" vntheta="Theme"/></role>
+
+  <role descr="accepted-from" n="2">
+		
+  <vnrole vncls="13.5.2" vntheta="Source"/></role>
+
+  <role descr="attribute" n="3"><vnrole vncls="29.2" vntheta="Predicate"/></role>
+</roles>
+
+<example name="transitive agentive">
+  <text>
+  ...prevent them from *trace* accepting our superior cash offer.
+  </text>
+  <arg n="0">*trace*=them</arg>
+  <rel>accepting</rel>
+  <arg n="1">our superior cash offer</arg>
+</example>
+
+<example name="with donor">
+  <text>
+  He wouldn't accept anything of value from those he was writing about.
+  </text>
+  <arg n="0">He</arg>
+  <arg f="MOD" n="m">would</arg>
+  <arg f="NEG" n="m">n't</arg>
+  <rel>accept</rel>
+  <arg n="1">anything of value</arg>
+  <arg f="from" n="2">those he was writing about</arg>
+</example>
+
+<note>
+Treebank got the syntax here wrong.  &quot;Anything&quot; and &quot;of value&quot; are
+split across two nodes--a complex argument will be necessary.
+</note>
+
+<example name="with attribute">
+  <text>
+  ...many practices historically accepted *trace* as normal here...
+  </text>
+  <arg n="1">*trace*=many practices</arg>
+  <arg f="TMP" n="m">historically</arg>
+  <rel>accepted</rel>
+  <arg f="as" n="3">normal</arg>
+  <arg f="LOC" n="m">here</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

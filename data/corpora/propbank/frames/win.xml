@@ -1,0 +1,128 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="win">
+<note>
+  Frames file for 'win' based on survey of initial sentences of big
+  corpus and comparison with 'gain'
+</note>
+
+<roleset id="win.01" name="win" vncls="13.5.1">
+<roles>
+  <role descr="winner" n="0">
+	<vnrole vncls="13.5.1" vntheta="Agent"/></role>
+  <role descr="thing won (contest or prize)" n="1">
+	<vnrole vncls="13.5.1" vntheta="Theme"/></role>
+  <role descr="beneficiary" n="2"/>
+  <role n="3" descr="loser, giver of prize"/>
+  <role n="4" descr="in-exchange-for"/>
+</roles>
+
+<example name="win a prize">
+  <text>
+  The PLO failed earlier this year *trace* to win membership in the
+  World Health Organization and the World Tourism Organization.
+  </text>
+  <arg n="0"> *trace*=The PLO</arg>
+  <rel>win</rel>
+  <arg n="1">membership in the
+  World Health Organization and the World Tourism Organization</arg>
+</example>
+
+<example name="win a contest">
+  <text>
+  Wall Street's old guard seems *trace* to be winning the
+  program-trading battle.
+  </text>
+  <arg n="0">*trace*=Wall Street's old guard</arg>
+  <rel>winning</rel>
+  <arg n="1">the program-trading battle.</arg>
+</example>
+
+<example name="with beneficiary">
+<inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+<text>
+    She won grant money for the school, advised cheerleaders, ran the
+    pep club, proposed and taught a new ``Cultural Literacy'' class in
+    Western Civilization and was chosen by the school PTA as ``Teacher
+    of the Year.'' 
+</text>
+        <arg n="0">She</arg>
+        <rel>won</rel>
+        <arg n="1">grant money</arg>
+        <arg n="2" f="for">the school</arg>
+</example>
+
+<example name="with prizegiver">
+<inflection person="third" tense="present" aspect="ns" voice="active" form="full"/>
+<text>
+    Even if there is consumer resistance at first, a wine that
+    [*T*-167] wins high ratings from the critics will eventually
+    move. 
+</text>
+	<arg n="0">[*T*-167] ->  that ->  a wine</arg>
+	<rel>wins</rel>
+	<arg n="1">high ratings</arg>
+	<arg n="3" f="from">the critics</arg>
+<note>
+Prizegiver is sometimes included in the prize itself by the treebank;
+go ahead and follow this parsing.
+</note>
+</example>
+
+<example name="with arg4">
+<inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+<text>
+    He won D.T.'s queen for two minor pieces and two pawns -- not
+    enough compensation, in this position, to give the computer much
+    hope. 
+</text>
+	<arg n="0">He</arg>
+	<rel>won</rel>
+	<arg n="1">D.T.'s queen</arg>
+	<arg n="4" f="for">two minor pieces and two pawns -- not
+	enough compensation, in this position, to give the computer
+	much hope</arg> 
+<note>
+This is a weird usage.
+</note>
+</example>
+
+<note>
+Yes, I know &quot;win a race&quot; and &quot;win a prize&quot; are very different
+senses--but they take the same syntax!
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="win_over">
+
+<roleset id="win.02" vncls="-" name="cause change of opinion">
+<roles>
+  <role n="0"  descr="causer of changing opinion"/>
+  <role n="1"  descr="entity with opinion"/>
+  <role n="2"  descr="new opinion"/>
+</roles>
+
+<example name="misparsed phrasal">
+<inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+<text>
+    Years ago, he collaborated with the new music gurus Peter Serkin
+    and Fred Sherry in the very countercultural chamber group Tashi,
+    which [*T*-13] won audiences over to dreaded contemporary scores
+    like Messiaen's ``Quartet for the End of Time.'' 
+</text>
+	<arg n="0">[*T*-13] ->  which ->  the very countercultural
+	chamber group Tashi</arg> 
+	<rel>[ won] [ over]</rel>
+	<arg n="1">audiences</arg>
+	<arg n="2" f="to">dreaded contemporary scores like Messiaen's
+	``Quartet for the End of Time</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,48 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="indulge">
+<note>
+  Frames file for 'indulge' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="indulge.01" name="allow a luxury" vncls="-">
+<roles>
+  <role descr="allower" n="0"/>
+  <role descr="luxury" n="1"/>
+  <role descr="recipient (us. reflexive)" n="2"/>
+</roles>
+
+<example name="love this example">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    Meanwhile, the pimp Pompey (Glen Allen Pruett), dressed in black
+    leather and a prominent codpiece, indulges in enough obscene
+    gestures and pelvic thrusts to launch a space probe. 
+</text>
+        <arg f="TMP" n="M">Meanwhile</arg>
+        <arg n="0">the pimp Pompey (Glen Allen Pruett)</arg>
+        <arg n="M">dressed in black leather and a prominent codpiece</arg>
+        <rel>indulges</rel>
+        <arg f="in" n="1">enough obscene gestures and pelvic thrusts
+        to launch a space probe</arg> 
+</example>
+
+<example name="unstated luxury">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    The Newport Beach operators also tend *trace* to indulge
+    themselves privately. 
+</text>
+        <arg n="0">*trace* -&gt;  The Newport Beach operators</arg>
+        <rel>indulge</rel>
+        <arg n="2">themselves</arg>
+        <arg f="MNR" n="M">privately</arg>
+</example>
+
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

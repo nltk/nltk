@@ -1,0 +1,58 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="cave">
+<note>
+  Frames file for 'cave' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="cave.01" name="collapse" vncls="-">
+<roles>
+  <role descr="thing caving" n="1"/>
+</roles>
+
+<example name="shortened from cave in?">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    When it threatened to use this provision as the test for a
+    line-item veto, Congress caved. 
+</text>
+        <arg f="TMP" n="M">When it threatened to use this provision as
+        the test for a line-item veto </arg> 
+        <arg n="1">Congress</arg>
+        <rel>caved</rel>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="cave_in">
+
+<roleset id="cave.02" name="collapse, phrasal" vncls="-">
+<roles>
+  <role descr="thing caving in" n="1"/>
+</roles>
+
+<example name="typical usage">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    That was the question structural engineers and California
+    transportation officials were asking themselves yesterday as
+    rescue workers began the gruesome task of trying to extract as
+    many as 250 victims from beneath the concrete slabs of the
+    double-deck Nimitz Freeway in Oakland that *trace* caved in during
+    Tuesday's temblor. 
+</text>
+        <arg n="0">*trace* -&gt;  that -&gt;  the double-deck Nimitz Freeway</arg>
+        <rel>[ caved] [ in]</rel>
+        <arg f="TMP" n="M">during Tuesday's temblor</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,60 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="branch">
+<note>
+  Frames file for 'branch' based on sentences in financial subcorpus.
+  No Verbnet entry, no Framenet entry.  Comparison with 'diversify'.
+</note>
+
+<roleset id="branch.01" name="branch, fork, split">
+<roles>
+  <role descr="thing branching" n="0"/>
+  <role descr="destination (into)" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Sansui was late into the mini-component business and failed
+    *trace* to branch into other new businesses. 
+</text>
+        <arg n="0">*trace* -&gt;  Sansui</arg>
+        <rel>branch</rel>
+        <arg f="into" n="1">other new businesses</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="branch_out">
+
+<roleset id="branch.02" name="branch, fork, split">
+<roles>
+  <role descr="thing branching" n="0"/>
+  <role descr="destination (into)" n="1"/>
+</roles>
+
+<example name="phrasal variant">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+   For its future strategy, Columbia officials said the thrift may
+   branch out into commercial lending or  managing outside investments
+   , as well as  beefing up more traditional thrift activities. 
+</text>
+        <arg n="0">the thrift</arg>
+        <arg f="MOD" n="M">may</arg>
+        <rel>[ branch] [ out]</rel>
+        <arg f="into" n="1">commercial lending or  managing outside
+        investments, as well as  beefing up more traditional thrift
+        activities</arg> 
+</example>
+
+<note>
+Branch out is probably more common.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

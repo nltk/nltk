@@ -1,0 +1,62 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="recoup">
+<note>
+  Frames file for 'recoup' based on sentences in financial subcorpus.
+  No Verbnet entry, comparison with 'regain'.
+</note>
+
+<roleset id="recoup.01" name="get back" vncls="10.5 13.5.2">
+<roles>
+  <role descr="recoverer" n="0">
+		
+		
+  <vnrole vncls="10.5" vntheta="Agent"/><vnrole vncls="13.5.2" vntheta="Agent"/></role>
+
+  <role descr="thing regained" n="1">
+		
+		
+  <vnrole vncls="10.5" vntheta="Theme"/><vnrole vncls="13.5.2" vntheta="Theme"/></role>
+
+  <role descr="who had it before" n="2">
+		
+		
+  <vnrole vncls="10.5" vntheta="Source"/><vnrole vncls="13.5.2" vntheta="Source"/></role>
+
+</roles>
+
+<example name="all args">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    An individual familiar with the negotiations said that whatever
+    investments the limited partners do not recoup *trace* from the $
+    330 million in partnership assets, they will receive from the $350
+    million restitution fund available as a result of Drexel's
+    settlement with the government in December 1988. 
+</text>
+        <arg n="0">the limited partners</arg>
+        <arg f="NEG" n="M">not</arg>
+        <rel>recoup</rel>
+        <arg n="1">*trace* -&gt;  whatever investments</arg>
+        <arg f="from" n="2">the $330 million in partnership assets</arg>
+</example>
+
+<example name="usually without source">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+     Headed toward a record drop at midday, the London stock market
+     recouped two-thirds of its losses in the wake of New York's early
+     rally. 
+</text>
+        <arg n="M">Headed toward a record drop at midday</arg>
+        <arg n="0">the London stock market</arg>
+        <rel>recouped</rel>
+        <arg n="1">two-thirds of its losses</arg>
+        <arg f="TMP" n="M">in the wake of New York's early rally</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

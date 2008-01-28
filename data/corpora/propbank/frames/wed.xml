@@ -1,0 +1,57 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="wed">
+<note>
+  Frames file for 'wed' based on sentences in financial subcorpus.
+  Verbnet class amalgamate-22.2-9, no other framed members.
+</note>
+
+<roleset id="wed.01" name="cause to be closely affiliated" vncls="22.2">
+<roles>
+  <role descr="causer" n="0">
+		
+  <vnrole vncls="22.2" vntheta="Agent"/></role>
+
+  <role descr="one half" n="1">
+		
+  <vnrole vncls="22.2" vntheta="Patient1"/></role>
+
+  <role descr="other half, usually prepositional" n="2">
+		
+  <vnrole vncls="22.2" vntheta="Patient2"/></role>
+
+</roles>
+
+<example name="not matrimony">
+<text>
+    Program trading money managers have gained control over a big
+    chunk of the invested funds in this country, and the pressures on
+    such money managers to produce consistent profits has wedded them
+    to the ability to move rapidly in and out the market that program
+    trading gives them. 
+</text>
+        <arg n="0">the pressures on such money managers to produce
+        consistent profits</arg> 
+        <rel>wedded</rel>
+        <arg n="1">them</arg>
+        <arg f="to" n="2">the ability to move rapidly in and out the
+        market that program trading gives them</arg> 
+</example>
+
+<example name="ergative and objective">
+  <text>
+    Despite her misgivings, Mary wedded John last week.
+  </text>
+  <arg f="ADV" n="m">Despite her misgivings</arg>
+  <arg n="1">Mary</arg>
+  <rel>wedded</rel>
+  <arg n="2">John</arg>
+  <arg f="TMP" n="m">last week</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

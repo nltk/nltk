@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="descend">
+<note>
+  Frames file for 'descend' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="descend.01" name="to come down, lower oneself, or arrive" vncls="51.1-1">
+<roles>
+  <role descr="entity rising" n="0"><vnrole vncls="51.1-1" vntheta="Theme"/></role>
+  <role descr="location, descend on or to" n="1"><vnrole vncls="51.1-1" vntheta="Location"/></role>
+</roles>
+
+<example name="with Arg1">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ District police in 1983 descended on his suburban home , which he and his large family used [*T*-1] as both residence and factory , and demanded proof [0] the house and equipment were his .
+</text>
+	<arg n="0">District police</arg>
+	<arg f="TMP" n="M">in 1983</arg>
+	<rel>descended</rel>
+	<arg f="on" n="1">his suburban home , which he and his large family used [*T*-1] as both residence and factory ,</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

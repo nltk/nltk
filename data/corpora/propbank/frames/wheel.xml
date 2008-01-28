@@ -1,0 +1,38 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="wheel">
+<note>
+  Frames file for 'wheel' based on sentences in wsj.  Verbnet entry
+  11.5, Framenet entry Carrying.
+</note>
+
+<roleset id="wheel.01" name="move something on wheels" vncls="11.5">
+<roles>
+  <role descr="causer of motion, agent" n="0">
+        <vnrole vncls="11.5" vntheta="Agent"/></role>
+  <role descr="thing on wheels, vehicle" n="1">
+        <vnrole vncls="11.5" vntheta="Theme"/></role>
+</roles>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="past" voice="passive"/>
+<text>
+    Giant yellow cranes were wheeled up alongside the collapsed
+    segment, preparing to lift off chunks of the debris. 
+</text>
+        <arg n="1">Giant yellow cranes</arg>
+        <rel>wheeled</rel>
+        <arg f="DIR" n="M">up</arg>
+        <arg f="DIR" n="M">alongside the collapsed segment</arg>
+        <arg n="M">preparing to lift off chunks of the debris</arg>
+</example>
+
+<note>
+Note that the particle should be regarded as a directional, not part
+of phrasal verb, since you can have 'wheel up' 'wheel out' etc which
+don't really have different semantics except for the direction of movement.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

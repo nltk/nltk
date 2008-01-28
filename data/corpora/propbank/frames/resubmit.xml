@@ -1,0 +1,55 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="resubmit">
+<note>
+  Frames file for 'resubmit' based on transformation of 'submit' frames
+  file.  No examination of actual instances.
+</note>
+
+<roleset id="resubmit.01" name="give again" vncls="13.2">
+<roles>
+  <role descr="giver" n="0"><vnrole vncls="13.2" vntheta="Agent"/></role>
+  <role descr="given" n="1"><vnrole vncls="13.2" vntheta="Theme"/></role>
+  <role descr="given-to" n="2"><vnrole vncls="13.2" vntheta="Recipient"/></role>
+  <role descr="purpose" n="3"/>
+</roles>
+
+<example name="args 0, 1, 2">
+<text>
+    However, Tony Lama said it would promptly resubmit the offer to a
+    special committee of the company's board. 
+</text>
+        <arg n="0">it</arg>
+        <arg f="MOD" n="M">would</arg>
+        <arg f="MNR" n="M">promptly</arg>
+        <rel>resubmit</rel>
+        <arg n="1">the offer</arg>
+        <arg f="to" n="2">a special committee of the company's board</arg>
+</example>
+
+<example name="with purpose">
+  <text>
+    John resubmitted his dissertation for comments.
+  </text>
+  <arg n="0">John</arg>
+  <rel>resubmitted</rel>
+  <arg n="1">his dissertation</arg>
+  <arg f="for" n="3">comments</arg>
+</example>
+
+<example name="different sense, same syntax">
+  <text>
+    After his defeat in the marshmallow fight, John resubmitted to Mary.
+  </text>
+  <arg f="TMP" n="m">After his defeat in the marshmallow fight</arg>
+  <arg n="0">John</arg>
+  <rel>resubmitted</rel>
+  <arg f="to" n="2">Mary</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

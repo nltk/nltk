@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="epitomize">
+<note>
+  Frames file for 'epitomize' based on survey of sentences in the WSJ
+  corpus.  
+</note>
+
+
+<roleset id="epitomize.01" name="to be typical of or sum up" vncls="-">
+<roles>
+  <role descr="entity epitomizing" n="0"/>
+  <role descr="entity epitomized" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ Embittered shareholders ( some of whom [*T*-2] are suing ) say [0] the chairman and his collection epitomize the excesses of speculation that [*T*-1] set off the national S&amp;L crisis .
+</text>
+	<arg n="0">the chairman and his collection</arg>
+	<rel>epitomize</rel>
+	<arg n="1">the excesses of speculation that [*T*-1] set off the national S&amp;L crisis</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

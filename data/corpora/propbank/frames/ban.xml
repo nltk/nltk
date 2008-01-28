@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="ban">
+<note>
+  Frames file for 'ban' based on sentences in financial subcorpus.  No
+  verbnet entry.  Loose comparison with 'allow'
+</note>
+
+<roleset id="ban.01" name="prohibit">
+<roles>
+  <role descr="lawgiver, usually" n="0"/>
+  <role descr="action prohibited" n="1"/>
+  <role descr="secondary agent" n="2"/>
+</roles>
+
+<example name="typical usage">
+<text>
+    ...to have them pressure the exchange to ban program trading. 
+</text>
+        <arg n="0">the exchange</arg>
+        <rel>ban</rel>
+        <arg n="1">program trading</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

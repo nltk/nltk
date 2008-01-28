@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="convolute">
+<note>
+  Frames file for 'convolute' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="convolute.01" vncls="-" name="complicate extraordinarily">
+<roles>
+  <role n="1"  descr="complicated thing"/>
+</roles>
+
+<example name="always and only adjectival">
+<inflection person="ns" tense="ns" aspect="ns" voice="passive" form="participle"/>
+<text>
+ It may be straightforward -- he wants money for food -- or incredibly
+ convoluted; his sister is at this very moment near death in Hoboken,
+ he has lost his wallet and has only $1.22 in change to put toward a
+ bus ticket costing $3.83, and won't you give him the difference? 
+</text>
+	<arg n="1">It</arg>
+	<arg n="M" f="MNR">incredibly</arg>
+	<rel>convoluted</rel>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

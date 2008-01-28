@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="frequent">
+<note>
+  Frames file for 'frequent'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="frequent.01" name="to pay frequent visits to" vncls="-">
+<roles> 
+  <role descr="visitor, agent" n="0"/>  
+  <role descr="place visited" n="1"/>   
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ The former $ 3 million-a-year [*U*] lobbyist now frequents shelters for the homeless and devotes a third of his time [*-1] counseling other recovering alcoholics .
+</text>
+	<arg n="0">The former $ 3 million-a-year [*U*] lobbyist</arg>
+	<arg f="TMP" n="M">now</arg>
+	<rel>frequents</rel>
+	<arg n="1">shelters for the homeless</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

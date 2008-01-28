@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="deactivate">
+<note>
+  Frames file for 'deactivate' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="deactivate.01" name="to render inactive" vncls="-">
+<roles>
+  <role descr="deactivator, agent" n="0"/>
+  <role descr="entity deactivated" n="1"/>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ The sterilizing gene is expressed [*-21] just before the pollen is about [*-1] to develop and it deactivates the anthers of every flower in the plant .
+</text>
+	<arg n="0">it</arg>
+	<rel>deactivates</rel>
+	<arg n="1">the anthers of every flower in the plant</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

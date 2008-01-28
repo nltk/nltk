@@ -1,0 +1,39 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="gray">
+<note>
+  Frames file for 'gray' based on sentences in wsj.  Verbnet entry 45.4.
+</note>
+
+<roleset id="gray.01" vncls="45.4" name="(cause to) become gray">
+<roles>
+  <role n="0"  descr="causer"/>
+  <role n="1"  descr="thing becoming gray"/>
+</roles>
+
+<example name="adjectival unaccusative">
+<inflection person="ns" tense="ns" aspect="progressive" voice="active" form="participle"/>
+<text>
+     HEALTH CLUBS gear up for a graying clientele .
+</text>
+	<rel>graying</rel>
+	<arg n="1">clientele</arg>
+</example>
+
+<example name="with agent">
+  <inflection person="third" tense="present" aspect="ns" voice="active" form="full"/>
+  <text>
+      John's behaviour grays Mary prematurely.
+  </text>
+  <arg n="0"        >John's behaviour</arg>
+  <rel              >grays</rel>
+  <arg n="1"        >Mary</arg>
+  <arg n="m" f="TMP">prematurely</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

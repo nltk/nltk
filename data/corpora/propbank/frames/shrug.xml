@@ -1,0 +1,92 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="shrug">
+<note>
+Frames file for 'shrug' based on sentences in financial subcorpus and
+automatic expansion via verbnet.
+</note>
+
+<roleset id="shrug.01" name="move the shoulders" vncls="40.3.1-1">
+<roles>
+  <role descr="shrugger" n="0">
+	<vnrole vncls="40.3.1-1" vntheta="Agent"/></role>
+  <role descr="thing shrugged (defaults to shoulders)" n="1">
+	<vnrole vncls="40.3.1-1" vntheta="Patient"/></role>
+  <role descr="shrugged at, because of" n="2">
+	<vnrole vncls="40.3.1-1" vntheta="Cause"/></role>
+</roles>
+
+<example name="whatEVER">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     When asked why he had destroyed Mary's priceless tapestry, John
+     simply shrugged.
+  </text>
+  <arg n="0">John</arg>
+  <arg f="ADV" n="m">simply</arg>
+  <rel>shrugged</rel>
+</example>
+
+<note>
+Verbnet class (relationship to point) suggests an &quot;at&quot; argument
+(arg2).  This sounds a little odd to me, but possible (John shrugged
+his shoulders at the thought of eternal damnation).  It is very
+different from the &quot;point finger at&quot; reading, though, suggesting a
+split in the class.
+</note>
+
+</roleset>
+
+<roleset id="shrug.03" name="manner of speaking" vncls="-">
+<roles>
+  <role descr="speaker" n="0"/>
+  <role descr="utterance" n="1"/>
+  <role descr="listener" n="2"/>
+</roles>
+
+<example name="but maybe that's just me.  ::shrug::">
+  <inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+  <text>
+     ``The Caterpillar people aren't too happy when they see their
+     equipment used like that,'' shrugs [*T*-1] Mr. George.  
+  </text>
+  <rel>shrugs</rel>
+  <arg n="1">[*T*-1] -&gt; ``The Caterpillar people aren't too
+  happy when they see their equipment used like that,''</arg> 
+  <arg n="0">Mr. George</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="shrug_off">
+
+<roleset id="shrug.02" name="ignore, let go of" vncls="-">
+<roles>
+  <role descr="ignorer, agent" n="0"/>
+  <role descr="thing shrugged off" n="1"/>
+</roles>
+
+<example name="basic transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    The market also shrugged off positive factors, such as higher bond
+    prices and a slowdown in monetary growth in September, traders
+    said. 
+</text>
+        <arg n="0">The market</arg>
+        <arg f="DIS" n="M">also</arg>
+        <rel>[ shrugged] [ off]</rel>
+        <arg n="1">positive factors, such as higher bond prices and a
+        slowdown in monetary growth in September</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

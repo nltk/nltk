@@ -1,0 +1,34 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="hightail">
+<note>
+  Frames file for 'hightail' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="hightail.01" name="leave in a hurry" vncls="-">
+<roles>
+  <role descr="entity leaving" n="0"/>
+  <role descr="place left" n="1"/>
+  <role descr="fixed: 'it'" n="2"/>
+</roles>
+
+<example name="gettin' outta Dodge">
+<inflection aspect="ns" form="gerund" person="ns" tense="ns" voice="ns"/>
+<text>
+    The scene opens with pinstripe-suited executives -- Easterners,
+    obviously -- glued [*] to cellular phones and hightailing it out
+    of town in chauffeur-driven limousines. 
+</text>
+        <arg n="0">pinstripe-suited executives</arg>
+        <rel>hightailing</rel>
+        <arg n="2">it</arg>
+        <arg f="out" n="1">of town</arg>
+        <arg f="LOC" n="M">in chauffeur-driven limousines</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

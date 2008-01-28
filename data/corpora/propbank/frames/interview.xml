@@ -1,0 +1,53 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="interview">
+<note>
+  Frames file for 'interview' based on sentences in financial
+  subcorpus.  No Verbnet entry. 
+</note>
+
+<roleset id="interview.01" name="speak with" vncls="-">
+<roles>
+  <role descr="interviewer" n="0"/>
+  <role descr="interviewee" n="1"/>
+  <role descr="purpose" n="2"/>
+</roles>
+
+<example name="passive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    (Both men declined *trace* to be interviewed *trace* for this article.)
+</text>
+        <rel>interviewed</rel>
+        <arg n="1">*trace* -&gt; *trace* -&gt;  Both men</arg>
+        <arg f="for" n="2">this article</arg>
+</example>
+
+<example name="job interview">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    Mary interviewed John for a job with BigHugeCo.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>interviewed</rel>
+  <arg n="1">John</arg>
+  <arg f="for" n="2">a job with BigHugeCo</arg>
+</example>
+
+<example name="inverted args">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John interviewed with BigHugeCo for a job.
+  </text>
+  <arg n="1">John</arg>
+  <rel>interviewed</rel>
+  <arg f="with" n="0">BigHugeCo</arg>
+  <arg f="for" n="2">a job</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

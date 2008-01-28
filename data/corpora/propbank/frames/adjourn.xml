@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="adjourn">
+<note>
+  Frames file for 'adjourn' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="adjourn.01" name="(bring to a) close" vncls="-">
+<roles>
+  <role descr="closer, adjourner" n="0"/>
+  <role descr="thing closed" n="1"/>
+</roles>
+
+<example name="almost always passive">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    With most legislatures adjourned [*-1] for the year, small
+    business is tallying its scorecard. 
+</text>
+        <rel>adjourned</rel>
+        <arg n="1">[*-1] -&gt;  most legislatures</arg>
+        <arg f="TMP" n="M">for the year</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

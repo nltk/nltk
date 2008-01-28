@@ -1,0 +1,75 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="stab">
+<note>
+  Frames file for 'stab' based on sentences in wsj.  Verbnet entries
+  42.2 and 18.2, Framenet entry Cause_harm.
+</note>
+
+<roleset id="stab.01" name="poke with sharp object,   perhaps fatally" vncls="42.2 18.2">
+<roles>
+  <role descr="stabber" n="0"><vnrole vncls="18.2" vntheta="Agent"/><vnrole vncls="42.2" vntheta="Agent"/></role>
+  <role descr="thing stabbed" n="1"><vnrole vncls="18.2" vntheta="Patient"/><vnrole vncls="42.2" vntheta="Patient"/></role>
+  <role descr="sharp object" n="2"><vnrole vncls="18.2" vntheta="Instrument"/></role>
+  <role descr="specific location of wound or end result of stabbing" n="3"/>
+</roles>
+
+<example name="passive transitived">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Prior to his term, a teacher bled to death in the halls, *trace*
+    stabbed *trace* by a student. 
+</text>
+        <rel>stabbed</rel>
+        <arg n="1">*trace* -&gt; *trace* -&gt;  a teacher</arg>
+        <arg f="by" n="0">a student</arg>
+</example>
+
+<example name="arg3 as location">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    When he initially refused, he says, they stabbed him in the back
+    and made off with $2,000 and 280 blank tickets. 
+</text>
+        <arg n="0">they</arg>
+        <rel>stabbed</rel>
+        <arg n="1">him</arg>
+        <arg f="in" n="3">the back</arg>
+</example>
+
+<example name="arg3 as result">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    *trace* Beheading small children, stabbing elderly people to
+     death, raping and shooting women, and burying people alive are
+     just a few of the grisly activities that the Somali armed forces
+     have been engaged in over the past two years. 
+</text>
+        <arg n="0"/>
+        <rel>stabbing</rel>
+        <arg n="1">elderly people</arg>
+        <arg f="to" n="3">death</arg>
+</example>
+
+<example name="args 1 2 3">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    Guns were never used: Each man was stabbed *trace* to death with a
+    large knife. 
+</text>
+        <rel>stabbed</rel>
+        <arg n="1">*trace* -&gt;  Each man</arg>
+        <arg f="to" n="3">death</arg>
+        <arg f="with" n="2">a large knife</arg>
+</example>
+
+<note>
+Note that the result and the location cannot cooccur: &quot;John was
+stabbed to death in the back&quot;.  This is clearly not a syntactic
+valency problem, since this has no more phrases than the last
+example.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,94 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="gather">
+<note>
+  Frames file for 'gather' based on survey of sentences in the WSJ
+  corpus.  
+</note>
+
+
+<roleset id="gather.01" name="to collect, come together" vncls="13.5.1 22.3-2 47.5.2">
+<roles>
+  <role descr="agent or causer" n="0">
+	<vnrole vncls="13.5.1" vntheta="Agent"/>
+        <vnrole vncls="47.5.2" vntheta="Agent"/>
+        <vnrole vncls="22.3-2" vntheta="Agent"/></role>
+  <role descr="entity gathered" n="1">
+        <vnrole vncls="13.5.1" vntheta="Theme"/>
+        <vnrole vncls="47.5.2" vntheta="Theme"/>
+        <vnrole vncls="22.3-2" vntheta="Patient1"/></role>
+  <role descr="gathered into" n="2">
+        <vnrole vncls="22.3-2" vntheta="Patient2"/></role>
+  <role descr="beneficiary" n="3">
+        <vnrole vncls="13.5.1" vntheta="Beneficiary"/></role>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ With the harvest winding down , however , some analysts are speculating that prices might jump in some regions as U.S. exporters try [*-1] to gather the corn [0] they are obligated [*-3] to deliver [*T*-2] .
+</text>
+	<arg n="0">[*-1] -&gt;  U.S. exporters</arg>
+	<rel>gather</rel>
+	<arg n="1">the corn [0] they are obligated [*-3] to deliver [*T*-2]</arg>
+</example>
+
+
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+ He surveys the prospective investors gathered [*] in the board room of the Philippine government 's Asset Privatization Trust for the sale of a 36 % interest in the country 's largest paper mill .
+</text>
+	<rel>gathered</rel>
+	<arg n="1">[*] -&gt;  the prospective investors</arg>
+	<arg f="LOC" n="M">in the board room of the Philippine government 's Asset Privatization Trust</arg>
+	<arg f="PNC" n="M">for the sale of a 36 % interest in the country 's largest paper mill</arg>
+</example>
+
+
+<example name="intransitive">
+<inflection aspect="perfect" form="participle" person="ns" tense="past" voice="active"/>
+<text>
+ You might be interested [*-1] to know that baseball , not survival , appeared [*-2] to be the first thought of most of the crowd of 60,000-odd that [*T*-3] had gathered at Candlestick at 5:04 p.m. Tuesday , a half-hour before game time , when the quake struck .
+</text>
+	<arg n="1">[*T*-3] -&gt;  that -&gt;  60,000-odd</arg>
+	<rel>gathered</rel>
+	<arg f="LOC" n="M">at Candlestick</arg>
+	<arg f="TMP" n="M">at 5:04 p.m. Tuesday , a half-hour before game time</arg>
+</example>
+
+
+
+<example name="with Arg2">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ His crude device worked : The lower teeth gathered the leaves into a pile , while the higher , harder teeth moved the top of the pile .
+</text>
+	<arg n="0">The lower teeth</arg>
+	<rel>gathered</rel>
+	<arg n="1">the leaves</arg>
+	<arg f="into" n="2">a pile</arg>
+	<arg f="ADV" n="M">while the higher , harder teeth moved the top of the pile</arg>
+</example>
+
+
+
+<example name="with Arg3">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ Mr. Iken , it turned out [*T*-1] , was a private detective using a hidden tape recorder [*-2] to gather information for Sony .
+</text>
+	<arg n="0">[*-2] -&gt;  a hidden tape recorder</arg>
+	<rel>gather</rel>
+	<arg n="1">information</arg>
+	<arg f="for" n="3">Sony</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

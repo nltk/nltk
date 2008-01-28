@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="hamstring">
+<note>
+  Frames file for 'hamstring' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="hamstring.01" name="to make ineffective or powerless" vncls="-">
+<roles>
+  <role descr="causer of ineffectiveness, agent" n="0"/>
+  <role descr="entity made powerless" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ If Mr. Papandreou becomes the major opposition leader , he could hamstring a conservative-led coalition .
+</text>
+	<arg f="ADV" n="M">If Mr. Papandreou becomes the major opposition leader</arg>
+	<arg n="0">he</arg>
+	<arg f="MOD" n="M">could</arg>
+	<rel>hamstring</rel>
+	<arg n="1">a conservative-led coalition</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

@@ -1,0 +1,29 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="reevaluate">
+<note>
+  Frames file for 'reevaluate' based on transformation of 'evaluate'.
+  No actual examination of the corpus.
+</note>
+
+<roleset id="reevaluate.01" name="contemplate an action again" vncls="34">
+<roles>
+  <role descr="thinker" n="0"><vnrole vncls="34" vntheta="Agent"/></role>
+  <role descr="action" n="1"><vnrole vncls="34" vntheta="Theme"/></role>
+</roles>
+
+<example name="transitive">
+  <text>
+  We reevaluated *trace* raising our bid.
+  </text>
+  <arg n="0">We</arg>
+  <rel>reevaluated</rel>
+  <arg n="1">*trace* raising our bid</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

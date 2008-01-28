@@ -1,0 +1,38 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="tremble">
+<note>
+  Frames file for 'tremble' based on sentences in wsj.  Verbnet
+  entries 47.3 and 40.6.
+</note>
+
+<roleset id="tremble.01" name="shake" vncls="47.3 40.6">
+<roles>
+  <role descr="thing trembling" n="1"><vnrole vncls="47.3" vntheta="Theme"/><vnrole vncls="40.6" vntheta="Experiencer"/></role>
+</roles>
+
+<example name="shake your money maker">
+<inflection aspect="progressive" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+    The pillars of apartheid may be trembling in the rest of South
+    Africa, with Johannesburg opening its public facilities to all
+    races, blacks storming the all-white beaches of the Cape and the
+    government releasing seven leaders of the banned African National
+    Congress. 
+</text>
+        <arg n="1">The pillars of apartheid</arg>
+        <arg f="MOD" n="M">may</arg>
+        <rel>trembling</rel>
+        <arg f="LOC" n="M">in the rest of South Africa</arg>
+        <arg n="M">with Johannesburg opening its public facilities to
+        all races, blacks storming the all-white beaches of the Cape
+        and the government releasing seven leaders of the banned
+        African National Congress</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

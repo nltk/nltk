@@ -1,0 +1,60 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="repel">
+<note>
+  Frames file for 'repel' based on sentences in financial subcorpus.
+  Verbnet entry 31.1, other framed members include comfort, convince,
+  encourage, interest, reassure, scare, shock, spook, threaten,
+  worry.  I'm not sure about that.
+</note>
+
+<roleset id="repel.01" name="fight or scare off" vncls="31.1">
+<roles>
+  <role descr="intentional agent" n="0">
+		
+  <vnrole vncls="31.1" vntheta="Cause"/></role>
+
+  <role descr="repelled entity" n="1">
+		
+  <vnrole vncls="31.1" vntheta="Experiencer"/></role>
+
+  <role descr="instrument" n="2"/>
+</roles>
+
+<example name="agentive">
+<text>
+    Sea Containers Ltd., in a long-awaited move *trace* to repel a
+    hostile takeover bid, said it will sell $1.1 billion of assets and
+    use some of the proceeds to buy about 50% of its common shares for
+    $70 apiece. 
+</text>
+        <arg n="0">*trace* -&gt;  Sea Containers Ltd.</arg>
+        <rel>repel</rel>
+        <arg n="1">a hostile takeover bid</arg>
+</example>
+
+<example name="agentive with instrument">
+  <text>
+    John repelled Mary with his atrocious breath.
+  </text>
+  <arg n="0">John</arg>
+  <rel>repelled</rel>
+  <arg n="1">Mary</arg>
+  <arg f="with" n="2">his atrocious breath</arg>
+</example>
+
+<example name="instrumental subject">
+  <text>
+    John's atrocious breath repelled Mary.
+  </text>
+  <arg n="0">John's atrocious breath</arg>
+  <rel>repelled</rel>
+  <arg n="1">Mary</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

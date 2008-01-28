@@ -1,0 +1,59 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="arrest">
+<note>
+  Frames file for 'arrest' based on sentences in financial subcorpus.
+  No Verbnet entry.
+</note>
+
+<roleset id="arrest.01" name="like a criminal" vncls="-">
+<roles>
+  <role descr="police" n="0"/>
+  <role descr="criminal" n="1"/>
+  <role descr="crime" n="2"/>
+</roles>
+
+<example name="difficult syntax for crime">
+<inflection aspect="perfect" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+    Since Mexican President Carlos Salinas de Gortari took office last
+    December, special agents have arrested more than 6,000 federal
+    employees on charges ranging from extortion to tax evasion. 
+</text>
+        <arg f="TMP" n="M">Since Mexican President Carlos Salinas de
+        Gortari took office last December</arg> 
+        <arg n="0">special agents</arg>
+        <rel>arrested</rel>
+        <arg n="1">more than 6,000 federal employees</arg>
+        <arg n="2">on charges ranging from extortion to tax evasion</arg>
+</example>
+
+<note>
+I'd expect to see arg2-for more commonly, but I could be mistaken.
+</note>
+
+</roleset>
+
+<roleset id="arrest.02" vncls="-" name="stop">
+<roles>
+  <role n="0"  descr="causer of stopping"/>
+  <role n="1"  descr="thing stopping"/>
+</roles>
+
+<example name="arrested development">
+  <inflection person="ns" tense="ns" aspect="ns" voice="active" form="full"/>
+  <text>
+    China might stave off a crisis if it acts as forcefully as it did
+    [*-1] to arrest the 1985 decline, when Beijing slammed the brakes
+    on foreign-exchange spending and devalued the currency.  
+  </text>
+  <arg n="0"        >[*-1] -> it</arg>
+  <rel              >arrest</rel>
+  <arg n="1"        >the 1985 decline</arg>
+  <arg n="m" f="TMP">when Beijink slammed the brakes on
+  foreign-exchange spending and devalued the currency</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

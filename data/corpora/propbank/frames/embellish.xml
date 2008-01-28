@@ -1,0 +1,54 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="embellish">
+<note>
+  Frames file for 'embellish' based on sentences in wsj.  Verbnet
+  entries 9.8 and 25.3.
+</note>
+
+<roleset id="embellish.01" name="decorate" vncls="9.8 25.3">
+<roles>
+  <role descr="decorator, agent" n="0">
+        <vnrole vncls="9.8" vntheta="Agent"/>
+        <vnrole vncls="25.3" vntheta="Agent"/></role>
+  <role descr="thing decorated, embellished" n="1">
+        <vnrole vncls="9.8" vntheta="Destination"/>
+        <vnrole vncls="25.3" vntheta="Destination"/></role>
+  <role descr="with what" n="2">
+        <vnrole vncls="9.8" vntheta="Theme"/>
+        <vnrole vncls="25.3" vntheta="Theme"/></role>
+</roles>
+
+<example name="all args">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    At times, salesmen may embellish the inside information with ``the
+    notion that this is some slightly shady, slightly illegal
+    investment the person is being included in,'' says
+    Mr. Cunningham. 
+</text>
+        <arg f="TMP" n="M">At times</arg>
+        <arg n="0">salesmen</arg>
+        <arg f="MOD" n="M">may</arg>
+        <rel>embellish</rel>
+        <arg n="1">the inside information</arg>
+        <arg f="with" n="2">the notion that this is some slightly
+        shady, slightly illegal investment the person is being
+        included in</arg> 
+</example>
+
+<example name="more often just transitive">
+  <inflection aspect="ns" form="full" person="ns" tense="ns" voice="active"/>
+  <text>
+     John has a tendency *trace* to embellish the truth.
+  </text>
+  <arg n="0">*trace* -&gt; John</arg>
+  <rel>embellish</rel>
+  <arg n="1">the truth</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

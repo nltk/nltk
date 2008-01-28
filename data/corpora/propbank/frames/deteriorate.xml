@@ -1,0 +1,81 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="deteriorate">
+<note>
+  Frames file for 'deteriorate' based on survey of sentences in the WSJ
+  corpus.  
+</note>
+
+
+<roleset id="deteriorate.01" name="to grow worse" vncls="45.4 45.5">
+<roles>
+  <role descr="causer" n="0">
+		
+  <vnrole vncls="45.4" vntheta="Agent"/></role>
+
+  <role descr="entity deteriorating" n="1">
+		
+		
+  <vnrole vncls="45.4" vntheta="Patient"/><vnrole vncls="45.5" vntheta="Patient"/></role>
+
+  <role descr="endstate" n="2"/>
+</roles>
+
+
+<example name="with Arg2">
+<inflection aspect="perfect" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+ Despite the harsh exchanges , the U.S. and China still seem [*-1] to be looking for a way [0] [*] to mend relations , which [*T*-244] have deteriorated into what Mr. Nixon referred to [*T*-2] as `` the greatest crisis in Chinese-American relations '' since his initial visit to China 17 years ago [*T*-3] .
+</text>
+	<arg n="1">[*T*-244] -&gt;  which -&gt;  relations</arg>
+	<rel>deteriorated</rel>
+	<arg f="into" n="2">what Mr. Nixon referred to [*T*-2] as `` the greatest crisis in Chinese-American relations '' since his initial visit to China 17 years ago</arg>
+</example>
+
+
+<example name="intransitive">
+<inflection aspect="perfect" form="participle" person="ns" tense="past" voice="active"/>
+<text>
+ By October , however , market conditions had deteriorated and the reset notes were targeted [*-1] to be offered [*-2] at a yield of between 13 1\/4 % and 13 1\/2 % .
+</text>
+	<arg f="TMP" n="M">By October</arg>
+	<arg f="DIS" n="M">however</arg>
+	<arg n="1">market conditions</arg>
+	<rel>deteriorated</rel>
+</example>
+
+
+
+<example name="intransitive with purpose">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ Continued strength in the dollar was cited [*-1] as one reason [0] the trade position may deteriorate [*T*-2] .
+</text>
+	<arg n="1">the trade position</arg>
+	<arg f="MOD" n="M">may</arg>
+	<rel>deteriorate</rel>
+	<arg f="CAU" n="M">[*T*-2] -&gt;  [0] -&gt;  one reason</arg>
+</example>
+
+
+
+<example name="intransitive with adverbials">
+<inflection aspect="perfect" form="participle" person="third" tense="present" voice="active"/>
+<text>
+ But traders said [0] the junk bond market increasingly is separating into a top-tier group , in which trades can be executed [*-1] easily [*T*-2] , and a larger group of lower-quality bonds in which liquidity -- or the ability [*] to trade without too much difficulty -- has steadily deteriorated this year [*T*-3] .
+</text>
+	<arg n="1">liquidity -- or the ability [*] to trade without too much difficulty --</arg>
+	<arg f="MNR" n="M">steadily</arg>
+	<rel>deteriorated</rel>
+	<arg f="TMP" n="M">this year</arg>
+</example>
+
+<note>
+ Example with ArgO: &quot;Time and neglect had deteriorated the property&quot;
+</note>
+
+</roleset>
+</predicate>
+
+
+</frameset>

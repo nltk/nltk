@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="encroach">
+<note>
+  Frames file for 'encroach' based on sentences in wsj.  No Verbnet
+  entry. 
+</note>
+
+<roleset id="encroach.01" name="get closer to, menacingly" vncls="-">
+<roles>
+  <role descr="encroacher" n="0"/>
+  <role descr="encroached-(up)on" n="1"/>
+</roles>
+
+<example name="the one example">
+<inflection aspect="progressive" form="participle" person="third" tense="present" voice="active"/>
+<text>
+    Roederer Cristal at $90 a bottle sells out around the country and
+    Taittinger's Comtes de Champagne Blanc de Blancs is encroaching
+    upon that level. 
+</text>
+        <arg n="0">Taittinger's Comtes de Champagne Blanc de Blancs</arg>
+        <rel>encroaching</rel>
+        <arg f="upon" n="1">that level</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

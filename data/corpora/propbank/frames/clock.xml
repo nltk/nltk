@@ -1,0 +1,72 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="clock">
+<note>
+  Frames file for 'clock' based on sentences in financial subcorpus.
+  No Verbnet entry, no Framenet entry.  Comparison with measure.
+</note>
+
+<roleset id="clock.01" name="measure the speed of something" vncls="54.1">
+<roles>
+  <role descr="measurer" n="0">
+		
+  <vnrole vncls="54.1" vntheta="Agent"/></role>
+
+  <role descr="thing measured" n="1">
+		
+  <vnrole vncls="54.1" vntheta="Theme"/></role>
+
+  <role descr="yardstick, standard of measurement (clock)" n="2"/>
+  <role descr="measurement" n="3">
+		
+  <vnrole vncls="54.1" vntheta="Attribute"/></role>
+
+</roles>
+
+<example name="with measurement">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    Intel clocks the chip's speed at 15 million instructions per
+    second, or MIPs. 
+</text>
+        <arg n="0">Intel</arg>
+        <rel>clocks</rel>
+        <arg n="1">the chip 's speed</arg>
+        <arg f="at" n="3">15 million instructions per second , or MIPs</arg>
+</example>
+
+<note>
+I doubt the &quot;yardstick&quot; argument will ever appear; it's largely
+subsumed within the verb.
+</note>
+
+<note>
+For comparison, my laptop (PIII/750Mhz) runs at almost 1500 MIPs.
+</note>
+
+</roleset>
+
+<roleset id="clock.02" name="hit (on the head?)" vncls="-">
+<roles>
+  <role descr="agent, hitter - animate only!" n="0"/>
+  <role descr="thing hit" n="1"/>
+  <role descr="instrument, thing hit by or with" n="2"/>
+</roles>
+
+<example name="whack!">
+  <inflection aspect="ns" form="participle" person="ns" tense="past" voice="passive"/>
+  <text>
+  We're going [*-2] to look for some of the better-known companies that
+[*T*-1] got clocked [*-3]'' Friday.
+  </text>
+  <rel>clocked</rel>
+  <arg n="1">*-3 -&gt; *T*-1 -&gt; the better-known companies</arg>
+  <arg f="TMP" n="m">Friday</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

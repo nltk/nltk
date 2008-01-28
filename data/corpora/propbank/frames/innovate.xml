@@ -1,0 +1,35 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="innovate">
+<note>
+  Frames file for 'innovate' based on sentences in financial
+  subcorpus.  No Verbnet entry.  No comparison.
+</note>
+
+<roleset id="innovate.01" name="come up with a new idea">
+<roles>
+  <role descr="thinker" n="0"/>
+  <role descr="new idea" n="1"/>
+</roles>
+
+<example name="the one example">
+<text>
+    We innovated telephone redemptions, daily dividends, total
+    elimination of share certificates and the constant $1 pershare
+    pricing, all of which were painfully thought out and not the
+    result of some inadvertence on the part of the SEC. 
+</text>
+        <arg n="0">We</arg>
+        <rel>innovated</rel>
+        <arg n="1">telephone redemptions, daily dividends, total
+        elimination of share certificates and the constant $1 pershare
+        pricing, all of which were painfully thought out and not the
+        result of some inadvertence on the part of the SEC</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

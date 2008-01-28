@@ -1,0 +1,63 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="prosecute">
+<note>
+  Frames file for 'prosecute' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="prosecute.01" name="try a case, offensively" vncls="-">
+<roles>
+  <role descr="prosecutor" n="0"/>
+  <role descr="case, or defendant of that case" n="1"/>
+  <role descr="law justifying case" n="2"/>
+</roles>
+
+<example name="prosecute a case">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+    The units are autonomous from U.S. attorneys' offices and focus
+    exclusively on *trace* prosecuting organized-crime cases.  
+</text>
+        <arg n="0">*trace* -&gt;  The units</arg>
+        <rel>prosecuting</rel>
+        <arg n="1">organized-crime cases</arg>
+</example>
+
+
+<example name="prosecute a person">
+<inflection aspect="perfect" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+    Opponents say Mr. Thornburgh's plan will needlessly break up
+    longtime, tightly knit crime-fighting units that *traec* have
+    successfully prosecuted major organized-crime figures. 
+</text>
+        <arg n="0">*trace* -&gt;  that -&gt;  longtime, tightly knit
+        crime-fighting units</arg> 
+        <arg f="MNR" n="M">successfully</arg>
+        <rel>prosecuted</rel>
+        <arg n="1">major organized-crime figures</arg>
+</example>
+
+<note>
+These two examples demonstrate the interchangeability of the case and
+the person in that case.
+</note>
+
+<example name="with law">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    Mrs. Yeargin was fired and prosecuted *trace* under an unusual
+    South Carolina law that makes it a crime to breach test security. 
+</text>
+        <rel>prosecuted</rel>
+        <arg n="1">*trace* -&gt;  Mrs. Yeargin</arg>
+        <arg f="under" n="2">an unusual South Carolina law that makes
+        it a crime to breach test security</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

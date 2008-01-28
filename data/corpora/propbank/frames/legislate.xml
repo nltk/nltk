@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="legislate">
+<note>
+  Frames file for 'legislate' based on sentences in financial
+  subcorpus.  No access to verbnet.  No comparison.
+</note>
+
+<roleset id="legislate.01" name="control via law">
+<roles>
+  <role descr="law-giving body" n="0"/>
+  <role descr="thing controlled" n="1"/>
+</roles>
+
+<example name="usage">
+<text>
+   *trace* Legislating new trading inefficiencies will only make
+    things harder on the least sophisticated investors. 
+</text>
+	<arg n="0">*trace*</arg>
+	<rel>Legislating</rel>
+	<arg n="1">new trading inefficiencies</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

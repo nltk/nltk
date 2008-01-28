@@ -1,0 +1,50 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="ratchet_up">
+<note>
+  Frames file for 'ratchet up' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="ratchet.01" vncls="-" name="incremental growth">
+<roles>
+  <role n="0"  descr="cause of growth, agent"/>
+  <role n="1"  descr="thing growing"/>
+  <role n="2"  descr="EXT"/>
+  <role n="3"  descr="start point"/>
+  <role n="4"  descr="end point"/>
+</roles>
+
+<example name="quasi-nominal">
+<inflection person="ns" tense="ns" aspect="ns" voice="ns" form="gerund"/>
+<text>
+     But the 1989 fall total of 80, while well below 1988 activity,
+     shows ``a steady ratcheting up in citizen referenda and
+     initiatives,'' says Patrick McGuigan, editor of Family, Law and
+     Democracy Report. 
+</text>
+	<arg n="M" f="MNR">steady</arg>
+	<rel>[ ratcheting] [ up]</rel>
+	<arg n="1" f="in">citizen referenda and initiatives</arg>
+</example>
+
+<example name="most args">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+     Mary ratcheted up her beatings of John to once per week prior to
+     the holidays.
+  </text>
+  <arg n="0"        >Mary</arg>
+  <rel              >ratcheted up</rel>
+  <arg n="1"        >her beatings of John</arg>
+  <arg n="4" f="to">once per week</arg>
+  <arg n="m" f="TMP">prior to the holidays</arg>
+</example>
+
+<note>
+If ever is seen 'ratchet down' then this verb should not be phrasal,
+but rather the directional particle should be Arg5.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

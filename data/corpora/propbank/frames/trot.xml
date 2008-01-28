@@ -1,0 +1,84 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="trot">
+<note>
+  Frames file for 'trot' based on sentences in wsj.  Verbnet entry
+  51.3.2, Framenet entry Self motion.
+</note>
+
+<roleset id="trot.01" name="mode of motion" vncls="51.3.2">
+<roles>
+  <role descr="causative agent" n="A"/>
+  <role descr="trotter" n="0"><vnrole vncls="51.3.2" vntheta="Theme"/></role>
+  <role descr="path" n="1"><vnrole vncls="51.3.2" vntheta="Location"/></role>
+</roles>
+
+<example name="nice transitive">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John's horse trotted down the path.
+  </text>
+  <arg n="0">John's horse</arg>
+  <rel>trotted</rel>
+  <arg f="DIR" n="1">down the path</arg>
+</example>
+
+<example name="unpleasant causal agent">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John trotted his horse to the barn.
+  </text>
+  <arg n="A">John</arg>
+  <rel>trotted</rel>
+  <arg n="0">his horse</arg>
+  <arg f="to" n="1">the barn</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="trot_out">
+
+<roleset id="trot.02" name="introduce, bring out/up" vncls="-">
+<roles>
+  <role descr="introducer" n="0"/>
+  <role descr="thing being brought up" n="1"/>
+</roles>
+
+<example name="basic transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+     They trotted out another crop of instant commercials after the
+     sudden market dip a few weeks ago. 
+</text>
+        <arg n="0">They</arg>
+        <rel>[ trotted] [ out]</rel>
+        <arg n="1">another crop of instant commercials</arg>
+        <arg f="TMP" n="M">after the sudden market dip</arg>
+        <arg f="TMP" n="M">a few weeks ago</arg>
+</example>
+
+<example name="passivized">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="passive"/>
+<text>
+    So every time a Bush official raises a doubt about Mr. Gorbachev,
+    the Washington community shouts ``Cold War'' and ``timidity,'' and
+    an administration spokesman is quickly trotted out *trace* to
+    reply, ``Mr. Bush wants perestroika to succeed.'' 
+</text>
+        <arg f="MNR" n="M">quickly</arg>
+        <rel>[ trotted] [ out]</rel>
+        <arg n="1">*trace* -&gt;  an administration spokesman</arg>
+        <arg f="PNC" n="M">to reply, ``Mr. Bush wants perestroika to
+        succeed</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

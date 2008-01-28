@@ -1,0 +1,49 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="melt">
+<note>
+  Frames file for 'melt' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="melt.01" name="to change from a solid to a liquid state " vncls="26.5 45.4">
+<roles>
+  <role descr="agent" n="0"><vnrole vncls="26.5" vntheta="Agent"/><vnrole vncls="45.4" vntheta="Agent"/></role>
+  <role descr="thing melted" n="1"><vnrole vncls="26.5" vntheta="Material"/><vnrole vncls="45.4" vntheta="Patient"/></role>
+</roles>
+
+
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ A substantial warming would melt some of the Earth 's polar ice caps , [*-1] raising the level of the oceans and causing widespread flooding of heavily populated coastal areas .
+</text>
+	<arg n="0">A substantial warming</arg>
+	<arg f="MOD" n="M">would</arg>
+	<rel>melt</rel>
+	<arg n="1">some of the Earth 's polar ice caps</arg>
+	<arg f="ADV" n="M">[*-1] raising the level of the oceans and causing widespread flooding of heavily populated coastal areas</arg>
+</example>
+
+
+
+<example name="intransitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ A partnership with a Williamsburg , Va. , unit of Shell Oil Co. recently patented a process for [*] producing plastic food containers that [*T*-1] wo n't melt in microwave ovens .
+</text>
+	<arg n="1">[*T*-1] -&gt;  that -&gt;  plastic food containers</arg>
+	<arg f="MOD" n="M">wo</arg>
+	<arg f="NEG" n="M">n't</arg>
+	<rel>melt</rel>
+	<arg f="LOC" n="M">in microwave ovens</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

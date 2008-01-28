@@ -1,0 +1,34 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="belittle">
+<note>
+  Frames file for 'belittle' based on sentences in wsj.  No access to
+  Verbnet at the moment.
+</note>
+
+<roleset id="belittle.01" name="make seem insignificant" vncls="-">
+<roles>
+  <role descr="causer of apparent insignificance, agent" n="0"/>
+  <role descr="apparently insignificant thing" n="1"/>
+</roles>
+
+<example name="ha ha">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+     Mr. Stanley is on trial over charges that he violated a
+     proclamation, issued by the South African administrator general
+     earlier this year, which made it a crime punishable by two years
+     in prison for any person to ``insult, disparate or belittle'' the
+     election commission. 
+</text>
+        <arg n="0">any person</arg>
+        <rel>belittle</rel>
+        <arg n="1">the election commission</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,40 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="deform">
+<note>
+  Frames file for 'deform' based on sentences in wsj.  No Verbnet
+  entry, Framenet entry Reshaping.
+</note>
+
+<roleset id="deform.01" name="take on a new (usually bad) form" vncls="-">
+<roles>
+  <role descr="causer of bad form, agent" n="0"/>
+  <role descr="thing being deformed, patient" n="1"/>
+</roles>
+
+<example name="adjectival">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    The wall behind me was slightly deformed, but the center had held.
+</text>
+        <arg n="1">The wall behind me</arg>
+        <arg f="EXT" n="M">slightly</arg>
+        <rel>deformed</rel>
+</example>
+
+<example name="verbal">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    Mary's frequent beatings deformed John's spine and shoulders.
+  </text>
+  <arg n="0">Mary's freqeunt beatings</arg>
+  <rel>deformed</rel>
+  <arg n="1">John's spine and shoulders</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

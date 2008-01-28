@@ -1,0 +1,59 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="regret">
+<note>
+Frames file for 'regret' based on sentences in financial subcorpus and
+automatic expansion via verbnet.
+</note>
+
+<roleset id="regret.01" name="regret, feel bad about" vncls="31.2">
+<roles>
+	<role descr="regreter" n="0">
+		
+  <vnrole vncls="31.2" vntheta="Experiencer"/></role>
+
+	<role descr="thing regretted" n="1">
+		
+  <vnrole vncls="31.2" vntheta="Cause"/></role>
+
+</roles>
+
+<example name="regret an SBAR">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    Allianz also suggested, without saying so directly, that it
+    regrets that Paribas isn't bidding for all of Navigation Mixte's
+    shares.
+</text>
+        <arg n="0">it</arg>
+        <rel>regrets</rel>
+        <arg n="1">Paribas isn't bidding for all of Navigation Mixte's
+        shares</arg> 
+</example>
+
+<example name="regret a VP">
+<inflection aspect="perfect" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+    Mr. Price ``wanted to run the MTM business'' and may have
+    regretted selling the company to TVS... 
+</text>
+        <arg n="0">Mr. Price</arg>
+        <arg f="MOD" n="M">may</arg>
+        <rel>regretted</rel>
+        <arg n="1">selling the company to TVS</arg>
+</example>
+
+<example name="regret an NP">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    The federation said Friday that it regrets the resignation.
+</text>
+        <arg n="0">it</arg>
+        <rel>regrets</rel>
+        <arg n="1">the resignation</arg>
+</example>
+
+</roleset>
+
+</predicate>
+</frameset>

@@ -1,0 +1,52 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="surround">
+<note>
+  Frames file for 'surround' based on sentences in financial
+  subcorpus.  Verbnet classes contiguous_location-47.8 fill-9.8, other
+  framed members include contain, dominate, top.  Comparison to contain.
+</note>
+
+<roleset id="surround.01" name="be on all sides of" vncls="9.8">
+<roles>
+  <role descr="causative agent" n="0">
+		
+  <vnrole vncls="9.8" vntheta="Agent"/></role>
+
+  <role descr="thing surrounding" n="1">
+		
+  <vnrole vncls="9.8" vntheta="Theme"/></role>
+
+  <role descr="thing surrounded" n="2">
+		
+  <vnrole vncls="9.8" vntheta="Destination"/></role>
+
+</roles>
+
+<example name="transitive">
+<text>
+    The fact that a vast majority of fundamentalist money managers
+    fail to beat the S&amp;P 500 may contribute to the hysteria
+    surrounding the issue. 
+</text>
+        <arg n="1">the hysteria</arg>
+        <rel>surrounding</rel>
+        <arg n="2">the issue</arg>
+</example>
+
+<example name="with causative agent">
+  <text>
+    John surrounded the castle with his toy soldiers.
+  </text>
+  <arg n="0">John</arg>
+  <rel>surrounded</rel>
+  <arg n="2">the castle</arg>
+  <arg f="with" n="1">his toy soldiers</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

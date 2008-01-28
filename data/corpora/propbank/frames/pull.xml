@@ -1,0 +1,268 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="pull">
+<note>
+  Frames file for 'pull' based on sentences in financial subcorpus and
+  comparison with Chris' old frames file.  Verbnet entries 11.4, 40.8,
+  13.5, 23.2, 12; other framed members include drag, kick, push, tote;
+  burn reel; catch, fetch, hire, lease, pick, regain, reserve, save,
+  seize, vote; break, kick, knock, roll, slip; push.  Framenet entry
+  Manipulation.  Comparison with push,
+</note>
+
+<roleset id="pull.01" name="(try to) cause motion">
+<roles>
+  <role descr="puller" n="0"/>
+  <role descr="thing pulled" n="1"/>
+  <role descr="DIR or attribute of arg1" n="2"/>
+  <role descr="EXT, distance moved" n="3"/>
+</roles>
+
+<example name="DIR  = in">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    A Kellogg officer said the Memphis project was ``pulled in for a
+    reconsideration of costs,'' an indication that the ambitious plans
+    might be scaled back in any future construction. 
+</text>
+        <rel>pulled</rel>
+        <arg n="1">*trace* -&gt;  the Memphis project</arg>
+        <arg f="DIR" n="2">in</arg>
+        <arg f="PNC" n="M">for a reconsideration of costs</arg>
+        <arg f="ADV" n="M">an indication that the ambitious plans
+        might be scaled  back in any future construction</arg> 
+</example>
+
+<example name="attribute = lower">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Compaq Computer nose-dived $8.625 a share, to $100, and pulled
+    other technology issues lower after reporting lower-than-expected
+    earnings after the stock market closed Wednesday .
+</text>
+        <arg n="0">Compaq Computer</arg>
+        <rel>pulled</rel>
+        <arg n="1">other technology issues</arg>
+        <arg n="2">lower</arg>
+        <arg f="TMP" n="M">after reporting lower-than-expected
+        earnings after the stock market closed Wednesday</arg> 
+</example>
+
+<example name="attribute = together">
+<inflection aspect="progressive" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+    But Mr. Wolf faces a monumental task in *trace* pulling the
+    company back together again. 
+</text>
+        <arg n="0">*trace* -&gt;  Mr. Wolf</arg>
+        <rel>pulling</rel>
+        <arg n="1">the company</arg>
+        <arg n="2">back together</arg>
+        <arg f="TMP" n="M">again</arg>
+</example>
+
+<example name="DIR = back, unstated thing moving">
+<inflection aspect="progressive" form="participle" person="third" tense="present" voice="active"/>
+<text>
+    Even Drexel is pulling back.
+</text>
+        <arg n="0">Even Drexel</arg>
+        <rel>pulling</rel>
+        <arg f="DIR" n="2">back</arg>
+</example>
+
+<example name="with distance">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    At the investment firm of Smith Barney, Harris Upham &amp; Co.,
+    the commodity-chemical segment is seen *trace* pulling down
+    overall profit for 20 companies representative of the whole
+    industry by 8% to 10%. 
+</text>
+        <arg n="0">*trace* -&gt;  the commodity-chemical segment</arg>
+        <rel>pulling</rel>
+        <arg f="DIR" n="2">down</arg>
+        <arg n="1">overall profit for 20 companies representative of
+        the whole industry</arg> 
+        <arg f="by" n="3">8% to 10%</arg>
+</example>
+</roleset>
+
+<roleset id="pull.06" name="various quasi-idiomatic usages">
+<roles>
+  <role descr="puller" n="0"/>
+  <role descr="the plug, the wool, etc" n="1"/>
+  <role descr="the rest of the idiom" n="2"/>
+</roles>
+
+<example name="pull the plug">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John pulled the plug on his pet fish's life-support, then flushed the
+    little bugger.
+  </text>
+  <arg n="0">John</arg>
+  <rel>pulled</rel>
+  <arg n="1">the plug</arg>
+  <arg f="on" n="2">his pet fish's life-support</arg>
+</example>
+
+<example name="pull the wool over">
+  <inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+  <text>
+    John tried *trace* to pull the wool over Mary's eyes, but she saw
+    through him nonetheless.
+  </text>
+  <arg n="0">*trace* -&gt; John</arg>
+  <rel>pull</rel>
+  <arg n="1">the wool</arg>
+  <arg f="over" n="2">Mary's eyes</arg>
+</example>
+
+<note>
+Similarly &quot;pull a prank&quot;, etc.
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="pull_out">
+<roleset id="pull.02" name="exit, leave">
+<roles>
+  <role descr="causal agent" n="0"/>
+  <role descr="entity leaving" n="1"/>
+  <role descr="place left" n="2"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="participle" person="ns" tense="past" voice="active"/>
+<text>
+    As a result, UAL's chairman, Stephen M. Wolf, pulled out of the
+    buy-out effort to focus on running the company. 
+</text>
+        <arg f="CAU" n="M">As a result</arg>
+        <arg n="1">UAL's chairman, Stephen M. Wolf,</arg>
+        <rel>[ pulled] [ out]</rel>
+        <arg f="of" n="2">the buy-out effort</arg>
+        <arg f="PNC" n="M">to focus on  running the company</arg>
+</example>
+<note>
+Incidentally, that sentences is also a nice illustration of the
+difference between cause and purpose.
+</note>
+
+<example name="with causal agent">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    She and her husband pulled most of their investments out of the
+    market after the 1987 crash, although she still owns some Texaco
+    stock. 
+</text>
+        <arg n="0">She and her husband</arg>
+        <rel>[ pulled] [ out]</rel>
+        <arg n="1">most of their investments</arg>
+        <arg f="of" n="2">the market</arg>
+        <arg f="TMP" n="M">after the 1987 crash</arg>
+        <arg f="ADV" n="M">although she still owns some Texaco stock</arg>
+</example>
+<note>
+The investments are actually doing the leaving, not &quot;she and her
+husband&quot;.
+</note>
+
+<note>
+I feel that Treebank misparsed all of these &quot;pull out of&quot; cases, by
+making &quot;out of&quot; a complex preposition.  The fact is, you don't need to
+have the &quot;of X&quot; part: &quot;She and her husband pulled out most of their
+investments.&quot; or &quot;...pulled most of their investments out&quot;.
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="pull_through">
+
+<roleset id="pull.04" name="make it, survive">
+<roles>
+  <role descr="survivor" n="0"/>
+  <role descr="adverse circumstances" n="1"/>
+</roles>
+
+<example name="intransitive">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    Despite his life-threatening illness, John pulled through.
+  </text>
+  <arg n="m">Despite his life-threatening illness</arg>
+  <arg n="0">John</arg>
+  <rel>pulled through</rel>
+</example>
+
+<example name="transitive">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John pulled through his life-threatening illness.
+  </text>
+  <arg n="0">John</arg>
+  <rel>pulled through</rel>
+  <arg n="1">his life-threatening illness</arg>
+</example>
+
+<note>
+The intransitive sounds much better than the transitive.
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="pull_off">
+<roleset id="pull.03" name="manage to do despite">
+<roles>
+  <role descr="manager" n="0"/>
+  <role descr="deed accomplished" n="1"/>
+</roles>
+
+<example name="transitive">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John pulled off a blindingly brilliant dissertation defense,
+    despite his having not slept in three weeks.
+  </text>
+  <arg n="0">John</arg>
+  <rel>pulled off</rel>
+  <arg n="1">a blindingly brilliant dissertation defense</arg>
+  <arg f="ADV" n="m">despite his having not slept in three weeks</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="pull_over">
+
+<roleset id="pull.05" name="(cause to) move to the side">
+<roles>
+  <role descr="causal agent" n="0"/>
+  <role descr="thing moving, pulling over" n="1"/>
+  <role descr="destination" n="2"/>
+</roles>
+
+<example name="all args">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    The policeman pulled John over to the side of the road.
+  </text>
+  <arg n="0">The policeman</arg>
+  <rel>pulled over</rel>
+  <arg n="1">John</arg>
+  <arg f="to" n="2">the side of the road</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

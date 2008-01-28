@@ -1,0 +1,70 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="seize">
+<note>
+  Frames file for 'seize' based on sentences in financial subcorpus.
+  Verbnet classes obtain-13.5.2, steal-10.5, other framed members
+  include: accept, acquire, obtain, purchase, receive.  Comparison
+  with 'acquire'.
+</note>
+
+<roleset id="seize.01" name="acquire (forcefully or stealthily)" vncls="10.5 13.5.2">
+<roles>
+  <role descr="agent, entity acquiring something" n="0">
+		
+		
+  <vnrole vncls="10.5" vntheta="Agent"/><vnrole vncls="13.5.2" vntheta="Agent"/></role>
+
+  <role descr="thing acquired" n="1">
+		
+		
+  <vnrole vncls="10.5" vntheta="Theme"/><vnrole vncls="13.5.2" vntheta="Theme"/></role>
+
+  <role descr="acquired-from" n="2">
+		
+		
+  <vnrole vncls="10.5" vntheta="Source"/><vnrole vncls="13.5.2" vntheta="Source"/></role>
+
+</roles>
+
+<example name="basic transitive">
+<text>
+    To keep program-trading units profitable in the eyes of senior
+    brokerage executives, traders must seize every opportunity their
+    computers find. 
+</text>
+        <arg n="0">traders</arg>
+        <arg f="MOD" n="M">must</arg>
+        <rel>seize</rel>
+        <arg n="1">every opportunity  their computers find </arg>
+</example>
+
+<example name="PP variant">
+<text>
+    There has been no announcement of the Burger King arrangement by
+    either party, possibly for fear that McDonald's and other
+    fast-food rivals would seize on it in scornful advertising. 
+</text>
+        <arg n="0">McDonald 's and other fast-food rivals</arg>
+        <rel>seize</rel>
+        <arg f="on" n="1">it</arg>
+        <arg f="LOC" n="M">in scornful advertising</arg>
+</example>
+
+<example name="with">
+  <text>
+    John seized a dozen cookies out of Mary's hands.
+  </text>
+  <arg n="0">John</arg>
+  <rel>seized</rel>
+  <arg n="1">a dozen cookies</arg>
+  <arg f="out" n="2">of Mary's hands</arg>
+</example>
+
+<note>
+&quot;I before E except after C, and except 'seize'&quot;
+</note>
+
+</roleset>
+</predicate>
+</frameset>

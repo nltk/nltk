@@ -1,0 +1,50 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="refuse">
+<note>
+  Frames file for 'refuse' based on sentences in financial subcorpus.
+  No verbnet entry.  Comparison to 'decline' ('demur' roleset).
+</note>
+
+<roleset id="refuse.01" name="refuse">
+<roles>
+  <role descr="entity refusing" n="0"/>
+  <role descr="refused action or object" n="1"/>
+  <role descr="anti-benefactive" n="2"/>
+</roles>
+
+<example name="verbal action">
+<text>
+   ...institutional customers refuse to pay.
+</text>
+        <arg n="0">institutional customers</arg>
+        <rel>refuse</rel>
+        <arg n="1">to pay </arg>
+</example>
+
+<example name="with anti-benefactive">
+<text>
+    A U.S. decision *trace* to refuse the IMF its capital increase...
+taken  lightly .
+</text>
+        <arg n="0">*trace*</arg>
+        <rel>refuse</rel>
+        <arg n="2">the IMF</arg>
+        <arg n="1">its capital increase</arg>
+</example>
+
+<example name="nominal action">
+  <text>
+    John refused the shipment from FedEx.
+  </text>
+  <arg n="0">John</arg>
+  <rel>refused</rel>
+  <arg n="1">the shipment from FedEx</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

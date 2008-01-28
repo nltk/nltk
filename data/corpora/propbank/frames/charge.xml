@@ -1,0 +1,230 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="charge">
+<note>
+  Frames file for 'charge' based on sentences in financial subcorpus.
+  Verbnet entries equip-13.4.2 run-51.3.2; other framed members
+  include: invest; climb, drift, file, jump, leap, roll, run, sneak,
+  speed, travel, walk.  Comparison to verbs of buying and verbs of
+  motion.
+</note>
+
+<roleset id="charge.01" name="asking price" vncls="54.5">
+<roles>
+  <role descr="seller" n="0"><vnrole vncls="54.5" vntheta="Agent"/></role>
+  <role descr="asking price" n="1"><vnrole vncls="54.5" vntheta="Asset"/></role>
+  <role descr="buyer" n="2"><vnrole vncls="54.5" vntheta="Recipient"/></role>
+  <role descr="commodity" n="3"><vnrole vncls="54.5" vntheta="Cause"/></role>
+</roles>
+
+<example name="price and buyer">
+<text>
+    Traditional stock managers like *trace* to charge higher fees for
+    smaller investors.  
+</text>
+        <arg n="0">*trace* -&gt; Traditional stock managers</arg>
+        <rel>charge</rel>
+        <arg n="1">higher fees</arg>
+        <arg f="for" n="2">smaller investors</arg>
+</example>
+
+<example name="all args">
+  <text>
+    The Penn Bookstore charged John $100 for a mechanical pencil.
+  </text>
+  <arg n="0">The Penn Bookstore</arg>
+  <rel>charged</rel>
+  <arg n="2">John</arg>
+  <arg n="1">$100</arg>
+  <arg f="for" n="3">a mechanical pencil</arg>
+</example>
+
+<note>
+Commodity and buyer can be hard to distinguish, especially if the
+preposition is &quot;for&quot;.  Try substituting in &quot;to&quot;; it will work for
+buyer but not for commodity.
+</note>
+
+</roleset>
+
+<roleset id="charge.02" name="walk quickly" vncls="51.3.2">
+<roles>
+  <role descr="runner" n="0">
+		
+  <vnrole vncls="51.3.2" vntheta="Theme"/></role>
+
+  <role descr="course, race, distance" n="1"><vnrole vncls="51.3.2" vntheta="Location"/></role>
+</roles>
+
+<example name="transitive">
+  <text>
+    John recklessly charged down the crowded street.
+  </text>
+  <arg n="0">John</arg>
+  <arg f="MNR" n="m">recklessly</arg>
+  <rel>charged</rel>
+  <arg n="1">down the crowded street</arg>
+</example>
+
+<note>
+Maybe arg1-DIR on that example?
+</note>
+
+</roleset>
+
+<roleset id="charge.03" name="supply, as with electricity" vncls="-">
+<roles>
+  <role descr="supplier" n="0"/>
+  <role descr="battery, usually" n="1"/>
+  <role descr="instrument (defaults to electricity)" n="2"/>
+</roles>
+
+<example name="literal batteries">
+  <text>
+    John charged his Walkman batteries.
+  </text>
+  <arg n="0">John</arg>
+  <rel>charged</rel>
+  <arg n="1">his Walkman batteries</arg>
+</example>
+
+<example name="metaphorical batteries">
+  <text>
+    John (re)charged his batteries with a quadruple shot of espresso.
+  </text>
+  <arg n="0">John</arg>
+  <rel>(re)charged</rel>
+  <arg n="1">his batteries</arg>
+  <arg f="with" n="2">a quadruple shot of espresso</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="charge.04" name="buy on credit" vncls="54.5">
+<roles>
+  <role descr="buyer" n="0"><vnrole vncls="54.5" vntheta="Agent"/></role>
+  <role descr="thing bought" n="1"><vnrole vncls="54.5" vntheta="Cause"/></role>
+  <role descr="credit" n="2"><vnrole vncls="54.5" vntheta="Asset"/></role>
+</roles>
+
+<example name="all args">
+<text>
+    During the third quarter, the company charged about $46 million
+    against earnings in reducing goodwill.
+</text>
+        <arg f="TMP" n="M">During the third quarter</arg>
+        <arg n="0">the company</arg>
+        <rel>charged</rel>
+        <arg n="1">about $ 46 million </arg>
+        <arg f="against" n="2">earnings</arg>
+        <arg f="ADV" n="M">in  reducing goodwill</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="charge.05" name="assign a role" vncls="-">
+<roles>
+  <role descr="assigner" n="0"/>
+  <role descr="assigned" n="1"/>
+  <role descr="role or crime" n="2"/>
+</roles>
+
+<example name="usually as crime">
+<text>
+    Royal Business Group Inc. said it filed suit in federal court here
+    *trace* charging Realist Inc. and its directors with violating
+    federal securities laws ``by engaging in a scheme to prevent''
+    Royal from acquiring Realist. 
+</text>
+        <arg n="0">*trace* -&gt; it</arg>
+        <rel>charging</rel>
+        <arg n="1">Realist Inc. and its directors</arg>
+        <arg f="with" n="2">violating federal securities laws ``by
+        engaging in a scheme to prevent'' Royal from acquiring
+        Realist</arg> 
+</example>
+
+<example name="passivized crime">
+<text>
+    Mr. Antar was charged *trace* last month in a civil suit filed in
+    federal court in Newark by the Securities and Exchange
+    Commission. 
+</text>
+        <rel>charged</rel>
+        <arg n="1">Mr. Antar -&gt; *trace*</arg>
+        <arg f="TMP" n="M">last month</arg>
+        <arg f="in" n="2">a civil suit filed in federal court in
+        Newark by the Securities and Exchange Commission</arg>
+</example>
+
+<example name="not a crime">
+  <inflection person="ns" tense="ns" aspect="ns" voice="active" form="full"/>
+  <text>
+    Instead, an appropriate institution should be charged [*-4] with
+    the job of preventing chaos in the market: the Federal Reserve. 
+  </text>
+  <arg n="m" f="MOD">should</arg>
+  <rel              >charged</rel>
+  <arg n="1"        >[*-4] -> an appropriate institution</arg>
+  <arg n="2" f="with">the job of preventing chaos in the market</arg>
+</example>
+</roleset>
+
+<roleset id="charge.06" name="allege" vncls="-">
+<roles>
+  <role descr="speaker" n="0"/>
+  <role descr="utterance" n="1"/>
+</roles>
+
+<example name="transitive">
+<text>
+    Pharmacia, based in Upsala, Sweden, had charged in a lawsuit
+    against MedChem that MedChem's AMVISC product line infringes on
+    the Pharmacia patent. 
+</text>
+        <arg n="0">Pharmacia, based in Upsala, Sweden,</arg>
+        <rel>charged</rel>
+        <arg f="LOC" n="M">in a lawsuit against MedChem</arg>
+        <arg n="1">MedChem's AMVISC product line infringes on the
+        Pharmacia patent</arg> 
+<note>
+This is clearly closely related to the &quot;charge with a crime&quot; sense,
+but the syntax is completely different.
+</note>
+
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="charge_off">
+
+<roleset id="charge.07" name="charge off: emit hastily(?)" vncls="54.5">
+<roles>
+  <role descr="sender" n="0"><vnrole vncls="54.5" vntheta="Agent"/></role>
+  <role descr="thing sent" n="1"><vnrole vncls="54.5" vntheta="Recipient"/></role>
+</roles>
+
+<example name="transitive">
+<text>
+    The bank charged off $53 million in loans during the quarter.
+</text>
+        <arg n="0">The bank</arg>
+        <rel>[ charged] [ off]</rel>
+        <arg n="1">$ 53 million  in loans</arg>
+        <arg f="TMP" n="M">during the quarter</arg>
+</example>
+
+<note>
+Seems to be equivalent to 'discharge'.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

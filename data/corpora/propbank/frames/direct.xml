@@ -1,0 +1,64 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="direct">
+<note>
+  Frames file for 'direct' based on sentences in financial subcorpus.
+  Verbnet class performance-26.7-1.  Other framed members include
+  'play'.  Comparison with 'lead'.
+</note>
+
+<roleset id="direct.01" name="provide direction" vncls="26.7-1">
+<roles>
+  <role descr="director" n="0">
+		
+  <vnrole vncls="26.7-1" vntheta="Agent"/></role>
+
+  <role descr="thing directed" n="1">
+		
+  <vnrole vncls="26.7-1" vntheta="Theme"/></role>
+
+  <role descr="direction, towards what" n="2"/>
+</roles>
+
+<example name="no explicit direction">
+<text>
+    Mr. Stronach will direct an effort to reduce overhead and curb
+    capital spending ``until a more satisfactory level of profit is
+    achieved and maintained,'' Magna said.
+</text>
+        <arg n="0">Mr. Stronach</arg>
+        <arg f="MOD" n="M">will</arg>
+        <rel>direct</rel>
+        <arg n="1">an effort  to reduce overhead and curb capital
+        spending</arg> 
+        <arg f="TMP" n="M">until a more satisfactory level of profit
+        is achieved and maintained </arg> 
+</example>
+
+<example name="with explicit direction">
+<text>
+   ...investor interest was directed *trace* toward oil and mining
+   shares...
+</text>
+        <rel>directed</rel>
+        <arg n="1">*trace* -&gt;  investor interest</arg>
+        <arg f="toward" n="2">oil and mining shares</arg>
+</example>
+
+<example name="another type of direction">
+<text>
+    ``But, at least, back then they didn't generally direct their
+    anger at each other.'' 
+</text>
+        <arg f="TMP" n="M">back then</arg>
+        <arg n="0">they</arg>
+        <arg f="NEG" n="M">n't</arg>
+        <arg f="ADV" n="M">generally</arg>
+        <rel>direct</rel>
+        <arg n="1">their anger</arg>
+        <arg f="at" n="2">each other</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

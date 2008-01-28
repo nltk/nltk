@@ -1,0 +1,45 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="exorcise">
+<note>
+  Frames file for 'exorcise' based on sentences in wsj.  Verbnet entry 10.5.
+</note>
+
+<roleset id="exorcise.01" name="get rid of evil spirits" vncls="10.5">
+<roles>
+  <role descr="exorcist" n="0"><vnrole vncls="10.5" vntheta="Agent"/></role>
+  <role descr="evil spirits" n="1"><vnrole vncls="10.5" vntheta="Theme"/></role>
+  <role descr="place haunted" n="2"><vnrole vncls="10.5" vntheta="Source"/></role>
+</roles>
+
+<example name="just transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    The Rev. Alphonsus Trabold, a theology professor and exorcism
+    expert at St. Bonaventure University in Olean, N.Y., frequently is
+    asked *trace* *trace* to exorcise unruly spirits, and he often
+    obliges. 
+</text>
+        <arg n="0">*trace* -&gt; *trace* -&gt;  The Rev. Alphonsus Trabold,
+        a theology professor and exorcism expert at St. Bonaventure
+        University in Olean, N.Y.,</arg> 
+        <rel>exorcise</rel>
+        <arg n="1">unruly spirits</arg>
+</example>
+
+<example name="passive with source">
+  <inflection aspect="ns" form="participle" person="third" tense="past" voice="passive"/>
+  <text>
+    John's room was exorcised of smelly socks.
+  </text>
+  <arg n="2">John's room</arg>
+  <rel>exorcised</rel>
+  <arg f="of" n="1">smelly socks</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,46 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="record">
+<note>
+  Frames file for 'record' based on sentences in financial subcorpus.
+  No access to verbnet.  No comparison.
+</note>
+
+<roleset id="record.01" name="make a permanent record" vncls="25.4">
+<roles>
+  <role descr="recorder" n="0"><vnrole vncls="25.4" vntheta="Agent"/></role>
+  <role descr="record" n="1"><vnrole vncls="25.4" vntheta="Theme"/></role>
+</roles>
+
+<example name="active">
+<text>
+    Because of cost overruns on fixed-price military work, Mr. Shrontz
+    said, the company's defense business will record ``a significant
+    loss'' in 1989. 
+</text>
+        <arg n="0">the company's defense business</arg>
+        <arg f="MOD" n="M">will</arg>
+        <rel>record</rel>
+        <arg n="1">a significant loss</arg>
+        <arg f="TMP" n="M">in 1989</arg>
+</example>
+
+<example name="passive">
+<text>
+    That contrast was reflected in the smaller weekly percentage gains
+    recorded *trace* by the broader averages. 
+</text>
+        <rel>recorded</rel>
+        <arg n="1">*trace* -&gt;  the smaller weekly percentage gains</arg>
+        <arg f="by" n="0">the broader averages</arg>
+</example>
+
+<note>
+I thought at first we might want to include a &quot;medium&quot; argument
+(&quot;recorded a song on CD&quot;) but that doesn't seem to occur, so if it
+does ever occur we can leave it as an ArgM-LOC.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

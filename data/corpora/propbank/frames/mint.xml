@@ -1,0 +1,55 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="mint">
+<note>
+  Frames file for 'mint' based on sentences in financial subcorpus.
+  Verbnet class create-26.4, bunches of other framed members.
+  Comparison with create.
+</note>
+
+<roleset id="mint.01" name="create" vncls="26.4-1">
+<roles>
+  <role descr="creator" n="0">
+		
+  <vnrole vncls="26.4-1" vntheta="Agent"/></role>
+
+  <role descr="thing created" n="1">
+		
+  <vnrole vncls="26.4-1" vntheta="Product"/></role>
+
+  <role descr="source" n="2">
+		
+  <vnrole vncls="26.4-1" vntheta="Material"/></role>
+
+  <role descr="benefactive" n="3">
+		
+  <vnrole vncls="26.4-1" vntheta="Beneficiary"/></role>
+
+  <role descr="attribute, secondary predication" n="4"/>
+</roles>
+
+<example name="automatically generated">
+<text>
+ Stock futures trading has minted dozens of millionaires in their 20s and 30s .
+</text>
+	<arg n="0">Stock futures trading</arg>
+	<rel>minted</rel>
+	<arg n="1">dozens of millionaires in their 20s and 30s</arg>
+</example>
+
+<example name="more args">
+  <text>
+    John minted $20 bills from his dirty underwear.
+  </text>
+  <arg n="0">John</arg>
+  <rel>minted</rel>
+  <arg n="1">$20 bills</arg>
+  <arg f="from" n="2">his dirty underwear</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

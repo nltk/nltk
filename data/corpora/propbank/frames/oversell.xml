@@ -1,0 +1,42 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="oversell">
+<note>
+  Frames file for 'oversell' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="oversell.01" name="to sell more than can be delivered" vncls="-">
+<roles>
+  <role descr="seller, agent" n="0"/>
+  <role descr="entity oversold" n="1"/>
+</roles>
+
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="past" voice="passive"/>
+<text>
+ `` We were oversold [*-1] and today we bounced back .
+</text>
+	<rel>oversold</rel>
+	<arg n="1">[*-1] -&gt;  We</arg>
+</example>
+
+
+<example name="transitive">
+<inflection aspect="perfect" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+ But investment bankers say [0] the market may have oversold some takeover-related stocks .
+</text>
+	<arg n="0">the market</arg>
+	<arg f="MOD" n="M">may</arg>
+	<rel>oversold</rel>
+	<arg n="1">some takeover-related stocks</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

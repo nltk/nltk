@@ -1,0 +1,69 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="discount">
+<note>
+  Frames file for 'discount' based on sentences in financial
+  subcorpus.  No Verbnet entry.  No comparison.
+</note>
+
+<roleset id="discount.01" name="reduce in price">
+<roles>
+  <role descr="discounter" n="0"/>
+  <role descr="commodity" n="1"/>
+  <role descr="EXT, amount of reduction" n="2"/>
+  <role descr="start point" n="3"/>
+  <role descr="end point" n="4"/>
+</roles>
+
+<example name="just transitive">
+<text>
+    Anheuser-Busch Cos. said  it plans *trace* to aggressively
+    discount its major beer brands... 
+</text>
+        <arg n="0">*trace* -&gt;  it</arg>
+        <arg f="MNR" n="M">aggressively</arg>
+        <rel>discount</rel>
+        <arg n="1">its major beer brands</arg>
+</example>
+
+<example name="almost all args">
+  <text>
+    John discounted the price of his eternal soul from eternal life
+    and unimaginable wealth to one decent night's sleep.
+  </text>
+  <arg n="0">John</arg>
+  <rel>discounted</rel>
+  <arg n="1">the price of his eternal soul</arg>
+  <arg f="from" n="3">eternal life and unimaginable wealth</arg>
+  <arg f="to" n="4">one decent night's sleep</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="discount.02" name="identify as unimportant">
+<roles>
+  <role descr="identifier" n="0"/>
+  <role descr="unimportant thing" n="1"/>
+  <role descr="secondary attribute" n="2"/>
+</roles>
+
+<example name="all args">
+  <text>
+    John's dissertation was discounted *trace* by everyone who read it
+    as worthless drivel.
+  </text>
+  <rel>discounted</rel>
+  <arg n="1">*trace* -&gt; John's dissertation</arg>
+  <arg f="by" n="0">everyone who read it</arg>
+  <arg f="as" n="2">worthless drivel</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

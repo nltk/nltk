@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="edit">
+<note>
+  Frames file for 'edit' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="edit.01" name="edit, work on text (etc)" vncls="-">
+<roles>
+  <role descr="editor" n="0"/>
+  <role descr="text" n="1"/>
+</roles>
+
+<example name="getting tired of hapax">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+    Optical-storage devices can handle very large amounts of data and
+    make it far easier [*] to edit film clips or audio recordings with
+    a computer. 
+</text>
+        <arg n="0">[*]</arg>
+        <rel>edit</rel>
+        <arg n="1">film clips or audio recordings</arg>
+        <arg f="MNR" n="M">with a computer</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

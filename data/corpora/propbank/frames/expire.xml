@@ -1,0 +1,35 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="expire">
+<note>
+  Frames file for 'expire' based on sentences in financial subcorpus.
+  Verbnet class 48.2.  Comparison with 'run_out'.
+</note>
+
+<roleset id="expire.01" name="get to end of valid time period" vncls="48.2">
+<roles>
+  <role descr="commodity, thing expiring" n="1">
+		
+  <vnrole vncls="48.2" vntheta="Theme"/></role>
+
+  <role descr="expiration date" f="TMP" n="M"/>
+</roles>
+
+<example name="relatively simple example">
+<text>
+    The accord expired yesterday.
+</text>
+        <arg n="1">The accord</arg>
+        <rel>expired</rel>
+        <arg f="TMP" n="M">yesterday</arg>
+</example>
+
+<note>
+Trace chains can get long, but the automatic tagger seems to be right
+most of the time.  Ignore adjectival usages: &quot;don't drink expired
+milk&quot;.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,143 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="extend">
+<note>
+  Frames file for 'extend' based on sentences in financial subcorpus.
+  No access to verbnet.  Comparison to 'give'.
+</note>
+
+<roleset id="extend.01" name="make longer" vncls="-">
+<roles>
+  <role descr="agent, entity making something be longer" n="0"/>
+  <role descr="patient, thing getting longer" n="1"/>
+  <role descr="EXT or TMP, by how much or until when" n="2"/>
+  <role descr="start point" n="3"/>
+  <role descr="end point" n="4"/>
+</roles>
+
+<example name="TMP as 'until'">
+<text>
+    Dow Jones &amp; Co. said it extended its $18-a-share offer for
+    Telerate Inc. common stock until 5 p.m. EST Nov. 9. 
+</text>
+        <arg n="0">it</arg>
+        <rel>extended</rel>
+        <arg n="1">its $ 18-a-share  offer for Telerate Inc. common stock</arg>
+        <arg f="TMP" n="2">until 5 p.m. EST Nov. 9</arg>
+</example>
+
+<example name="TMP as 'to'">
+<text>
+    Institut Merieux S.A., which offered 942 million Canadian dollars
+    (US$ 801.2 million), or C$37 a share for Connaught, said it would
+    extend its bid, due to expire last Thursday, to Nov. 6. 
+</text>
+        <arg n="0">it</arg>
+        <arg f="MOD" n="M">would</arg>
+        <rel>extend</rel>
+        <arg n="1">its bid, due to expire last Thursday,</arg>
+        <arg f="TMP" n="2">to Nov. 6</arg>
+</example>
+
+<example name="with start and end points">
+<text>
+    Alpine Group Inc. revised its exchange offer for $43.7 million
+    face amount of 13.5% senior subordinated debt due 1996 and
+    extended the offer to Oct. 27 from Oct. 12. 
+</text>
+        <arg n="0">Alpine Group Inc.</arg>
+        <rel>extended</rel>
+        <arg n="1">the offer</arg>
+        <arg f="to" n="4">Oct. 27</arg>
+        <arg f="from" n="3">Oct. 12</arg>
+</example>
+
+<example name="temporal EXT">
+<text>
+    After the opening was delayed 30 minutes because of the crush of
+    sell orders, Frankfurt's normal two-hour trading session was
+    extended *trace* 75 minutes to handle the heavy volume. 
+</text>
+        <arg f="TMP" n="M">After the opening was delayed 30 minutes
+        because of the crush of sell orders</arg> 
+        <rel>extended</rel>
+        <arg n="1">*trace* -&gt;  Frankfurt's normal two-hour trading
+        session</arg> 
+        <arg f="EXT" n="2">75 minutes</arg>
+        <arg f="PNC" n="M">to handle the heavy volume</arg>
+</example>
+
+<example name="temporal adjunct">
+<text>
+    Two rival bidders for Connaught BioSciences extended their offers
+    *trace* to acquire the Toronto-based vaccine manufacturer Friday. 
+</text>
+        <arg n="0">Two rival bidders for Connaught BioSciences</arg>
+        <rel>extended</rel>
+        <arg n="1">their offers to acquire the Toronto-based vaccine
+        manufacturer</arg> 
+        <arg f="TMP" n="M">Friday</arg>
+</example>
+
+<note>
+The different kinds of Arg2s and TMPs can be confusing.  Use this rule
+of thumb:
+* If it can be paraphrased as an &quot;until&quot;, use Arg2-TMP.
+* If it can be paraphrased as a &quot;by&quot;, use Arg2-EXT.
+* If it can be paraphrased as an &quot;on&quot;, use ArgM-TMP.
+</note>
+
+</roleset>
+
+<roleset id="extend.02" name="offer" vncls="13.2 13.3">
+<roles>
+  <role descr="giver, offerer" n="0">
+		
+		
+  <vnrole vncls="13.3" vntheta="Agent"/><vnrole vncls="13.2" vntheta="Agent"/></role>
+
+  <role descr="thing offered" n="1">
+		
+		
+  <vnrole vncls="13.3" vntheta="Theme"/><vnrole vncls="13.2" vntheta="Theme"/></role>
+
+  <role descr="offered-to" n="2">
+		
+		
+  <vnrole vncls="13.3" vntheta="Recipient"/><vnrole vncls="13.2" vntheta="Recipient"/></role>
+
+</roles>
+
+<example name="Arg2 as PP">
+<text>
+    ``This is the first time, if we decide to do so, for Japan to
+    extend aid of this kind to Eastern European countries,'' the
+    spokesman said. 
+</text>
+        <arg n="0">Japan</arg>
+        <rel>extend</rel>
+        <arg n="1">aid of this kind</arg>
+        <arg f="to" n="2">Eastern European countries</arg>
+</example>
+
+<example name="ditransitive">
+<text>
+    In recent months a group of lenders, led  by Bank of America, has
+    extended Control Data up to $90 million in revolving loans through
+    January, as well as $115 million in standby letters of credit. 
+</text>
+        <arg f="TMP" n="M">In recent months</arg>
+        <arg n="0">a group of lenders, led by Bank of America,</arg>
+        <rel>extended</rel>
+        <arg n="2">Control Data</arg>
+        <arg n="1">up to $90 million in revolving loans through
+        January, as well as $115 million in standby letters of
+        credit</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

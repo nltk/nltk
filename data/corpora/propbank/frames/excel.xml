@@ -1,0 +1,42 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="excel">
+<note>
+  Frames file for 'excel' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="excel.01" name="be very good (at)" vncls="-">
+<roles>
+  <role descr="very good entity" n="0"/>
+  <role descr="domain" n="1"/>
+</roles>
+
+<example name="pied-piping">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    From my own point of view, given the qualities of humanity,
+    creativity and warm spirit in which the Cuban people excel
+    [*T*-2], we deny ourselves access to things we hold dear, and
+    which seem to run in such short supply these days. 
+</text>
+        <arg n="0">the Cuban people</arg>
+        <rel>excel</rel>
+        <arg n="1">[*T*-2] -&gt;  in which -&gt;  the qualities of humanity,
+        creativity and warm spirit</arg> 
+</example>
+
+<example name="somewhat clearer">
+  <inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+  <text>
+    John excels at annoying Mary.
+  </text>
+  <arg n="0">John</arg>
+  <rel>excels</rel>
+  <arg f="at" n="1">annoying Mary</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

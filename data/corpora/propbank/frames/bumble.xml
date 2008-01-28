@@ -1,0 +1,44 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="bumble">
+<note>
+  Frames file for 'bumble' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="bumble.01" name="to speak or move in a confused way" vncls="-">
+<roles>
+  <role descr="confused mover" n="0"/>
+  <role descr="path" n="1"/>
+</roles>
+
+
+<example name="intransitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ Mr. Dinkins concedes nothing in his ability [*] to stumble and bumble .
+</text>
+	<arg n="0">[*] -&gt;  Mr. Dinkins</arg>
+	<rel>bumble</rel>
+</example>
+
+
+<example name="all arguments">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ Surprisingly , Shane Longman survives the week , only [*] to have a senior executive innocently bumble his way into [*] becoming the target of a criminal insider trading investigation .
+</text>
+	<arg n="0">a senior executive</arg>
+	<arg f="MNR" n="M">innocently</arg>
+	<rel>bumble</rel>
+	<arg n="1">his way</arg>
+	<arg f="DIR" n="M">into [*] becoming the target of a criminal insider trading investigation</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

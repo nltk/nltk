@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="grace">
+<note>
+  Frames file for 'grace' based on survey of sentences in the WSJ
+  corpus.  
+</note>
+
+
+<roleset id="grace.01" name="to decorate, beautify" vncls="-">
+<roles>
+  <role descr="entity beautifying" n="0"/>
+  <role descr="entity beautified" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ Besides that , some of the paintings that [*T*-1] were [*-2] to grace the walls of CenTrust actually ended up [*-3] hanging in the chairman 's estate on La Gorce Isle off Miami Beach .
+</text>
+	<arg n="0">[*-2] -&gt;  [*T*-1] -&gt;  that -&gt;  the paintings</arg>
+	<rel>grace</rel>
+	<arg n="1">the walls of CenTrust</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

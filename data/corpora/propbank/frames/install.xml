@@ -1,0 +1,68 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="install">
+<note>
+Frames file for 'install' and 'instal' (since the Wordnet lemmatizer
+blew it) based on sentences in financial subcorpus and automatic
+expansion via verbnet.
+</note>
+
+<roleset id="install.01" name="put in place" vncls="9.1">
+<roles>
+	<role descr="putter" n="0">
+                
+        <vnrole vncls="9.1" vntheta="Agent"/></role>
+	<role descr="thing put" n="1">
+                
+        <vnrole vncls="9.1" vntheta="Theme"/></role>
+	<role descr="where put" f="LOC" n="2">
+                
+        <vnrole vncls="9.1" vntheta="Destination"/></role>
+</roles>
+
+<example name="literal place">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    Digital, however, doesn't expect to displace IBM mainframes that
+    *trace* are already installed at big companies. 
+</text>
+        <arg n="1">*trace* -&gt;  that -&gt;  IBM mainframes</arg>
+        <arg f="TMP" n="M">already</arg>
+        <rel>installed</rel>
+        <arg f="at" n="2">big companies</arg>
+</example>
+
+<example name="no place at all">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    The disagreement centers on testing deadlines and other issues
+    involving a FileNet system installed *trace* earlier this year. 
+</text>
+        <rel>installed</rel>
+        <arg n="1">*trace* -&gt;  a FileNet system</arg>
+        <arg f="TMP" n="M">earlier this year</arg>
+</example>
+
+<example name="with agent, different kind of 'place'">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    In July, 11 NFL owners, almost all of them new, blocked an effort
+    *trace* to install Jim Finks as a replacement for retiring league
+    commissioner Pete Rozelle. 
+</text>
+        <arg n="0">*trace* -&gt;  11 NFL owners</arg>
+        <rel>install</rel>
+        <arg n="1">Jim Finks</arg>
+        <arg f="as" n="2">a replacement for retiring league
+        commissioner Pete Rozelle</arg> 
+</example>
+
+<note>
+Treebank waffles on the verbal/adjectival nature of 'installed';
+treat all of them as verbal even if the trace from object position is
+missing.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

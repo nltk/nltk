@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="dog">
+<note>
+  Frames file for 'dog' based on sentences in financial subcorpus.  No
+  Verbnet entry.
+</note>
+
+<roleset id="dog.01" name="follow and harass" vncls="-">
+<roles>
+  <role descr="thing following and harassing" n="0"/>
+  <role descr="thing followed and harassed" n="1"/>
+</roles>
+
+<example name="nice and simple">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Mr. Sculley also indicated that sagging margins, which *trace*
+    dogged the company through most of 1989, began to turn up in the
+    fourth quarter as chip prices eased. 
+</text>
+        <arg n="0">*trace* -&gt;  which -&gt;  sagging margins</arg>
+        <rel>dogged</rel>
+        <arg n="1">the company</arg>
+        <arg f="TMP" n="M">through most of 1989</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

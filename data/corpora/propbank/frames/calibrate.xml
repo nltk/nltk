@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="calibrate">
+<note>
+  Frames file for 'calibrate' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="calibrate.01" name="fine-tune" vncls="-">
+<roles>
+  <role descr="calibrator, agent" n="0"/>
+  <role descr="thing calibrated" n="1"/>
+</roles>
+
+<example name="adjectival">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    Even the carefully calibrated machinery in its giant Fremont
+    plant, to the north of the Valley, was believed to be undamaged. 
+</text>
+        <arg f="MNR" n="M">carefully</arg>
+        <rel>calibrated</rel>
+        <arg n="1">machinery</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

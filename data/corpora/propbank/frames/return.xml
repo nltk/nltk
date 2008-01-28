@@ -1,0 +1,152 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="return">
+<note>
+  Frames file for 'return' based on survey of initial sentences of big
+  corpus and comparison with 'come' 'give'
+</note>
+
+<roleset id="return.01" name="come back" vncls="51.1-2">
+<roles>
+  <role descr="entity in motion" n="1">
+		
+  <vnrole vncls="51.1-2" vntheta="Theme"/></role>
+
+  <role descr="(extent -- rare)" n="2"/>
+  <role descr="start point" n="3"/>
+  <role descr="end point" n="4"><vnrole vncls="51.1-2" vntheta="Location"/></role>
+  <role descr="medium" f="LOC" n="M"/>
+</roles>
+
+<example name="typical">
+  <text> 
+  I need *trace* to return on Tuesday.
+  </text>
+  <arg n="1">*trace*=I</arg>
+  <rel>return</rel>
+  <arg f="TMP" n="m">on Tuesday</arg>
+</example>
+
+<example name="metaphorical">
+  <text>
+  Parents are returning to the cloth diaper.
+  </text>
+  <arg n="1">Parents</arg>
+  <rel>returning</rel>
+  <arg f="to" n="4">the cloth diaper</arg>
+</example>
+
+<note>
+This is probably a different sense (Wordnet has 16 verbal senses for
+return) but the syntax seems to work.
+</note>
+
+</roleset>
+
+<roleset id="return.02" name="give back" vncls="11.1 13.2">
+<roles>
+  <role descr="giver" n="0">
+		
+		
+  <vnrole vncls="11.1" vntheta="Agent"/><vnrole vncls="13.2" vntheta="Agent"/></role>
+
+  <role descr="thing given" n="1">
+		
+		
+  <vnrole vncls="11.1" vntheta="Theme"/><vnrole vncls="13.2" vntheta="Theme"/></role>
+
+  <role descr="entity given to" n="2">
+		
+		
+  <vnrole vncls="11.1" vntheta="Destination"/><vnrole vncls="13.2" vntheta="Recipient"/></role>
+
+</roles>
+
+<example name="Japanese baseball">
+  <text>
+  Fans politely return foul balls to stadium ushers.
+  </text>
+  <arg n="0">Fans</arg>
+  <arg f="MNR" n="m">politely</arg>
+  <rel>return</rel>
+  <arg n="1">foul balls</arg>
+  <arg f="to" n="2">stadium ushers</arg>
+</example>
+
+<example name="seeking comment">
+  <text>
+  Charles LaBella didn't return phone calls seeking comment.
+  </text>
+  <arg n="0">Charles LaBella</arg>
+  <arg f="NEG" n="m">n't</arg>
+  <rel>return</rel>
+  <arg n="1">phone calls seeking comment</arg>
+</example>
+
+<note>
+Nothing is actually changing hands here, so it's a different sense,
+but the syntax is the same.
+</note>
+
+</roleset>
+
+<roleset id="return.03" name="bring back" vncls="11.1">
+<roles>
+  <role descr="entity bring something back" n="0">
+		
+  <vnrole vncls="11.1" vntheta="Agent"/></role>
+
+  <role descr="thing brought back" n="1">
+		
+  <vnrole vncls="11.1" vntheta="Theme"/></role>
+
+  <role descr="attribute of arg1" n="2"/>
+</roles>
+
+<example name="transitive active">
+  <text>
+  The company had returned the plant to routine inspection in August.
+  </text>
+  <arg n="0">The company</arg>
+  <rel>returned</rel>
+  <arg n="1">the plant</arg>
+  <arg f="to" n="2">routine inspection</arg>
+  <arg f="TMP" n="m">in August</arg>
+</example>
+
+<note>
+Syntax is similar to &quot;give back&quot;.
+</note>
+
+</roleset>
+
+<roleset id="return.04" name="send back" vncls="-">
+<roles>
+  <role descr="sender" n="0"/>
+  <role descr="thing sent" n="1"/>
+  <role descr="sent-to" n="2"/>
+</roles>
+
+<example name="all args">
+  <inflection aspect="ns" form="full" person="ns" tense="ns" voice="active"/>
+  <text>
+      Mr. Koskotas is fighting extradition proceedings that [*T*-2]
+      would return him to Greece, where he is charged with embezzling
+      more than $250 million from the Bank of Crete. 
+  </text>
+  <arg n="0">[*T*-2] -&gt; that -&gt; extradition proceedings</arg>
+  <arg f="MOD" n="m">would</arg>
+  <rel>return</rel>
+  <arg n="1">him</arg>
+  <arg f="to" n="2">Greece, where he is charged with embezzling more
+  than $250 million from the Bank of Crete</arg>
+</example>
+
+<note>
+Almost 'cause to come back' and thus closely related to return.01, but
+note that you can't have a source argument (at least not to my ears).
+</note>
+
+</roleset>
+</predicate>
+</frameset>

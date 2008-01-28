@@ -1,0 +1,52 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="consent">
+<note>
+  Frames file for 'consent' based on sentences in wsj.  No Verbnet
+  entry, Framenet class Commitment.
+</note>
+
+<roleset id="consent.01" name="agree (to)" vncls="-">
+<roles>
+  <role descr="agreer, consenter" n="0"/>
+  <role descr="thing consented to" n="1"/>
+</roles>
+
+<example name="typical usage">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    While neither admitting nor denying wrongdoing, Triton and
+    Mr. Chase consented to findings of violations in connection with
+    limited-partnership sales. 
+</text>
+        <arg f="ADV" n="M">While neither admitting nor denying
+        wrongdoing</arg>
+        <arg n="0">Triton and Mr. Chase</arg>
+        <rel>consented</rel>
+        <arg f="to" n="1">findings of violations in connection with
+        limited-partnership sales</arg> 
+</example>
+
+<example name="infinitive arg1">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Two of Mr. Holmes's business associates who worked for Venture
+    Capitalists, Kimberly Ann Smith and Frederick Byrum, also
+    consented to being enjoined from violations of registration
+    provisions of the securities laws. 
+</text>
+        <arg n="0">Two of Mr. Holmes's business associates who worked
+        for Venture Capitalists, Kimberly Ann Smith and Frederick
+        Byrum,</arg> 
+        <arg f="DIS" n="M">also</arg>
+        <rel>consented</rel>
+        <arg n="1">to being enjoined from violations of
+        registration provisions of the securities laws</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

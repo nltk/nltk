@@ -1,0 +1,45 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="rectify">
+<note>
+  Frames file for 'rectify' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="rectify.01" name="make right" vncls="-">
+<roles>
+  <role descr="maker right" n="0"/>
+  <role descr="wrong thing becoming right" n="1"/>
+</roles>
+
+<example name="active">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+    The proposed legislation is aimed at *trace* rectifying some of
+    the inequities in the current land-ownership system. 
+</text>
+        <arg n="0">*trace* -&gt;  The proposed legislation</arg>
+        <rel>rectifying</rel>
+        <arg n="1">some of the inequities in the current
+        land-ownership system</arg> 
+</example>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="third" tense="past" voice="passive"/>
+<text>
+    He described the situation as ``an escrow problem, a timing
+    issue,'' which he said was rapidly rectified *trace*, with no
+    losses to customers. 
+</text>
+        <arg f="TMP" n="M">rapidly</arg>
+        <rel>rectified</rel>
+        <arg n="1">*trace* -&gt; *trace* -&gt;  which -&gt;  an escrow problem,
+        a timing issue</arg> 
+        <arg f="MNR" n="M">with no losses to customers</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

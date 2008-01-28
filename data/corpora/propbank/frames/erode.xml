@@ -1,0 +1,50 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="erode">
+<note>
+  Frames file for 'erode' based on sentences in financial subcorpus.
+  Verbnet entries 47.2, 45.5.  Many many members of the latter class
+  (general causatives).  No Framenet entry.  No comparison.
+</note>
+
+<roleset id="erode.01" name="wear away by water or wind" vncls="45.5 47.2">
+<roles>
+  <role descr="water or wind" n="0"/>
+  <role descr="substance worn away" n="1">
+		
+		
+  <vnrole vncls="47.2" vntheta="Theme"/><vnrole vncls="45.5" vntheta="Patient"/></role>
+
+</roles>
+
+<example name="ergative, with manner">
+<inflection aspect="ns" form="full" person="ns" tense="ns" voice="ns"/>
+<text>
+    He said many portfolio managers, whose year-end bonuses are tied
+    to annual performance, are selling now rather than risk seeing
+    their gains erode further. 
+</text>
+        <arg n="1">their gains</arg>
+        <rel>erode</rel>
+        <arg f="MNR" n="M">further</arg>
+</example>
+
+<example name="agentive">
+<inflection aspect="ns" form="full" person="ns" tense="ns" voice="ns"/>
+<text>
+    Such selling could erode prices of high-yield junk bonds, already
+    weakened by a rash of corporate credit problems. 
+</text>
+        <arg n="0">Such selling</arg>
+        <arg f="MOD" n="M">could</arg>
+        <rel>erode</rel>
+        <arg n="1">prices of high-yield junk bonds, already weakened
+        by a rash of corporate credit problems</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

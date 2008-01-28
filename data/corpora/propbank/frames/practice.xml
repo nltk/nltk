@@ -1,0 +1,55 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="practice">
+<note>
+  Frames file for 'practice' based on sentences in financial
+  subcorpus.  No verbnet entry.  Comparison with 'play'.
+</note>
+
+<roleset id="practice.01" name="practice">
+<roles>
+  <role descr="practicer" n="0"/>
+  <role descr="skill" n="1"/>
+  <role descr="instrument" n="2"/>
+</roles>
+
+<example name="odd kind of instrument">
+<text>
+    Yet even today, institutions are quietly practicing forms of
+    portfolio insurance by nervously rushing to and fro in the
+    markets. 
+</text>
+        <arg f="TMP" n="M">Yet</arg>
+        <arg f="TMP" n="M">even today</arg>
+        <arg n="0">institutions</arg>
+        <arg f="MNR" n="M">quietly</arg>
+        <rel>practicing</rel>
+        <arg n="1">forms of portfolio insurance</arg>
+        <arg f="by" n="2">nervously rushing to and fro in the markets</arg>
+</example>
+
+<example name="just skill">
+  <text>
+    John practices medicine.
+  </text>
+  <arg n="0">John</arg>
+  <rel>practices</rel>
+  <arg n="1">medicine</arg>
+</example>
+
+<example name="more obvious instrument">
+  <text>
+    John practices his scales on the harmonica.
+  </text>
+  <arg n="0">John</arg>
+  <rel>practices</rel>
+  <arg n="1">his scales</arg>
+  <arg f="on" n="2">the harmonica</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

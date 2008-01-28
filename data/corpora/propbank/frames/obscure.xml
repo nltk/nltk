@@ -1,0 +1,44 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="obscure">
+<note>
+  Frames file for 'obscure' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="obscure.01" name="to make dim or indistinct, to conceal" vncls="-">
+<roles>
+  <role descr="agent, causer" n="0"/>
+  <role descr="entity obscured" n="1"/>
+  <role descr="obscured from" n="2"/>
+</roles>
+
+
+<example name="all arguments">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ But the government now claims that a group of company managers and lawyers engaged in an elaborate strategy [*ICH*-1] over five years [*] to obscure from federal authorities the extent and details of `` widespread '' fraudulent billing practices .
+</text>
+	<arg n="0">[*] -&gt;  a group of company managers and lawyers</arg>
+	<rel>obscure</rel>
+	<arg f="from" n="2">federal authorities</arg>
+	<arg n="1">the extent and details of `` widespread '' fraudulent billing practices</arg>
+</example>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ The U.S. Coast Guard closed six miles of the Houston Ship Channel , where about 150 companies have operations [*T*-1] , because the thick , black smoke obscured the area .
+</text>
+	<arg n="0">the thick , black smoke</arg>
+	<rel>obscured</rel>
+	<arg n="1">the area</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

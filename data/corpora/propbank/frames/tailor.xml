@@ -1,0 +1,48 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="tailor">
+<note>
+  Frames file for 'tailor' based on sentences in wsj.  Verbnet entry
+  29.8, but this class refers more to the function than the PAS.
+</note>
+
+<roleset id="tailor.01" name="make fit nicely" vncls="29.8">
+<roles>
+  <role descr="tailor" n="0"><vnrole vncls="29.8" vntheta="Agent"/></role>
+  <role descr="clothes" n="1"><vnrole vncls="29.8" vntheta="Theme"/></role>
+  <role descr="target audience" n="2"/>
+</roles>
+
+<example name="all args">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+    Judie MacDonald, vice president of retail sales at Barnett Banks
+    Inc. of Jacksonville, Fla., says the company now targets
+    sub-segments within the market by *trace* tailoring its popular
+    Seniors Partners Program to various life styles. 
+</text>
+        <arg n="0">*trace* -&gt;  the company</arg>
+        <rel>tailoring</rel>
+        <arg n="1">its popular Seniors Partners Program</arg>
+        <arg f="to" n="2">various life styles</arg>
+</example>
+
+<example name="more commonly passive">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    Still, bankers expect packaging to flourish, primarily because
+    more customers are demanding that financial services be tailored
+    *trace* to their needs. 
+</text>
+        <rel>tailored</rel>
+        <arg n="1">*trace* -&gt;  financial services</arg>
+        <arg f="to" n="2">their needs</arg>
+</example>
+
+<note>
+And not one mention of a well-tailored suit.  What is the world coming to?
+</note>
+
+</roleset>
+</predicate>
+</frameset>

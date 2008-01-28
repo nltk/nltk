@@ -1,0 +1,135 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<note>
+  PRELIMINARY PAS LEXICAL FILE FOR &quot;use&quot;
+  EDITED THROUGH COMPARISON WITH INITIAL 26% OF &quot;use.sents&quot;
+</note>
+
+<predicate lemma="use">
+<roleset id="use.01" name="Take advantage of, utilise" vncls="29.2 54.3">
+  <roles>
+    <role descr="User" n="0">
+	<vnrole vncls="29.2" vntheta="Agent"/>
+        <vnrole vncls="54.3" vntheta="Location"/></role>
+    <role descr="thing used" n="1">
+	<vnrole vncls="29.2" vntheta="Theme"/>
+        <vnrole vncls="54.3" vntheta="Attribute"/></role>
+    <role descr="purpose" n="2">
+	<vnrole vncls="29.2" vntheta="Predicate"/></role>
+  </roles>
+
+<example name="straight transitive">
+  <text>
+    John used pliers.
+  </text>
+  <arg n="0">John</arg>
+  <rel>used</rel>
+  <arg n="1">pliers</arg>
+</example>
+
+<example name="argumentative purpose">
+  <text>
+    Loews used a mechanical process to make filters.
+  </text>
+  <arg n="0">Loews</arg>
+  <rel>used</rel>
+  <arg n="1">a mechanical process</arg>
+  <arg f="PNC" n="2">to make filters</arg>
+</example>
+
+<example name="gerund as arg2">
+  <text>
+    Lorillard used asbestos in making cigarettes
+  </text>
+  <arg n="0">Lorillard</arg>
+  <rel>used</rel>
+  <arg n="1">asbestos</arg>
+  <arg n="2">in making cigarettes</arg>
+</example>
+
+<example name="arg2 as attribute"> 
+  <text>
+    Apple II owners used their television sets as screens.
+  </text>
+  <arg n="0">Apple II owners</arg>
+  <rel>used</rel>
+  <arg n="1">their television sets</arg>
+  <arg f="as" n="2">as screens</arg>
+</example>
+
+<example name="arg2 as PP">
+  <text>
+    The government uses safety requirements for automobiles.
+  </text>
+  <arg n="0">The government</arg>
+  <rel>uses</rel>
+  <arg n="1">safety requirements</arg>
+  <arg f="for" n="2">automobiles</arg>
+</example>
+
+<example name="locative">
+  <text>
+    Loews Corp. used crocidolite in Micronite cigarette filters.
+  </text>
+  <arg n="0">Loews Corp.</arg>
+  <rel>used</rel>
+  <arg n="1">crocidolite</arg>
+  <arg f="LOC" n="M">in Micronite cigarette filters</arg>
+</example>
+
+<note>
+  The above is necessary because the Locative can cooccur with the Arg2:
+  Mr. Pickens was used in talks with Japan to highlight the problem
+  The other Arg2's cannot cooccur in this way.
+</note>
+</roleset>
+</predicate>
+
+<predicate lemma="use_to">
+<roleset id="use.03" vncls="-" name="modal">
+<roles/>
+<note>
+TAG ONLY REL and ArgMs
+</note>
+
+<example name="positive">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+     John used to like Mary.
+  </text>
+  <rel              >used to</rel>
+</example>
+
+<example name="negative">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+     John didn't used to like Mary.
+  </text>
+  <arg n="m" f="NEG">n't</arg>
+  <rel              >used to</rel>
+</example>
+
+</roleset>
+
+<roleset id="use.02" name="Accustomed" vncls="-">
+  <roles>
+    <role descr="Accustomed" n="0"/>
+    <role descr="custom" n="1"/>
+  </roles>
+
+<note>
+  exclusively past &quot;used_to&quot;?  Dangerously close to the
+  aspectual usage. 
+</note>
+
+<example name="Arg0 rel (=used_to) ARG1">
+  <text>
+    Investors are used to quarterly payments
+  </text>
+  <arg n="0">Investors</arg>
+  <rel>used to</rel>
+  <arg n="1">quarterly payments</arg>
+</example>
+</roleset>
+</predicate>
+</frameset>

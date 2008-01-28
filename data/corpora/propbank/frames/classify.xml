@@ -1,0 +1,63 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="classify">
+<note>
+  Frames file for 'classify' based on sentences in financial
+  subcorpus.  Verbnet entry 29.2, other framed members include count,
+  define, describe, employ, establish, intend, portray, rank,
+  recommend, redefine, regard, treat.  Comparison with define.
+</note>
+
+<roleset id="classify.01" name="assign a label or attribute" vncls="29.2">
+<roles>
+  <role descr="describer" n="0">
+		
+  <vnrole vncls="29.2" vntheta="Agent"/></role>
+
+  <role descr="thing defined" n="1">
+		
+  <vnrole vncls="29.2" vntheta="Theme"/></role>
+
+  <role descr="secondary attribute, described-as, definition" n="2">
+		
+  <vnrole vncls="29.2" vntheta="Predicate"/></role>
+
+</roles>
+
+<example name="typical usage">
+<text>
+    Her recent report classifies the stock as a ``hold.''
+</text>
+        <arg n="0">Her recent report</arg>
+        <rel>classifies</rel>
+        <arg n="1">the stock</arg>
+        <arg f="as" n="2">a ``hold</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="classify.02" name="make/keep secret" vncls="-">
+<roles>
+  <role descr="secret-keeper" n="0"/>
+  <role descr="secret" n="1"/>
+</roles>
+
+<example name="in honor of the FBI goons">
+  <text>
+    The government classified John's dissertation.
+  </text>
+  <arg n="0">The government</arg>
+  <rel>classified</rel>
+  <arg n="1">John's dissertation</arg>
+</example>
+
+<note>
+This will actually make more sense for 'declassify'.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

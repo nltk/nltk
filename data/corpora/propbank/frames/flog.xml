@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="flog">
+<note>
+  Frames file for 'flog' based on sentences in wsj.  No access to
+  Verbnet at the moment.
+</note>
+
+<roleset id="flog.01" name="hit repeatedly" vncls="18.3">
+<roles>
+  <role descr="hitter" n="0"><vnrole vncls="18.3" vntheta="Agent"/></role>
+  <role descr="victim" n="1"><vnrole vncls="18.3" vntheta="Patient"/></role>
+</roles>
+
+<example name="whack whack whack">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+    These expenses create a special incentive for ``Capital City's''
+    producers to flog it, or a Yank-oriented version of it, in
+    America. 
+</text>
+        <arg n="0">``Capital City's '' producers</arg>
+        <rel>flog</rel>
+        <arg n="1">it, or a Yank-oriented version of it,</arg>
+        <arg f="LOC" n="M">in America</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

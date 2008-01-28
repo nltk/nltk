@@ -1,0 +1,84 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="tumble">
+<note>
+  Frames file for 'tumble' based on sentences in financial subcorpus.
+  Verbnet classes calibratable_cos-45.6 escape-51.1-2 meander-47.7;
+  other framed members include climb, decline, decrease, drop, fall,
+  gain, grow, increase, jump, rise.  Comparison with fall.
+</note>
+
+<roleset id="tumble.01" name="fall" vncls="45.6 47.7 51.1-2">
+<roles>
+  <role n="0" descr="causer of falling"/>
+  <role descr="Logical subject, patient, thing falling" n="1">
+	<vnrole vncls="47.7" vntheta="Theme"/>
+        <vnrole vncls="51.1-2" vntheta="Theme"/>
+        <vnrole vncls="45.6" vntheta="Patient"/></role>
+  <role descr="EXT, amount fallen" n="2">
+	<vnrole vncls="45.6" vntheta="Extent"/></role>
+  <role descr="start point" n="3"/>
+  <role descr="end point, end state" n="4">
+        <vnrole vncls="51.1-2" vntheta="Location"/></role>
+  <role descr="medium" f="LOC" n="M"/>
+</roles>
+
+<example name="boring ergative">
+<text>
+    On days when prices are tumbling, they must be willing to buy
+    shares from sellers when no one else will. 
+</text>
+        <arg n="1">prices</arg>
+        <rel>tumbling</rel>
+</example>
+
+<example name="with EXT and destination">
+<text>
+    After troubled Heritage Media proposed acquiring POP Radio in a
+    stock swap , POP Radio's shares tumbled 4 to 14 3/4. 
+</text>
+        <arg f="TMP" n="M">After troubled Heritage Media proposed
+        acquiring POP Radio in a stock swap</arg> 
+        <arg n="1">POP Radio's shares</arg>
+        <rel>tumbled</rel>
+        <arg f="EXT" n="2">4</arg>
+        <arg f="to" n="4">14 3\/4</arg>
+</example>
+
+<example name="'on volume' of XYZ">
+<text>
+    MCI Communications tumbled 2 5/8 to 42 3/8 on 4.7 million shares
+    even though the telecommunications giant reported a 63% increase
+    in third-quarter profit. 
+</text>
+        <arg n="1">MCI Communications</arg>
+        <rel>tumbled</rel>
+        <arg f="EXT" n="2">2 5/8</arg>
+        <arg f="to" n="4">42 3/8</arg>
+        <arg f="LOC" n="M">on 4.7 million shares</arg>
+        <arg f="ADV" n="M">even though the telecommunications giant
+        reported a 63 % increase in third-quarter profit</arg> 
+</example>
+
+<example name="with agent">
+  <inflection person="ns" tense="present" aspect="ns" voice="active" form="full"/>
+  <text>
+     Some fruit visionaries say the Fuji could someday tumble the Red
+     Delicious from the top of America's apple heap.
+  </text>
+  <arg n="0"        >the Fuji</arg>
+  <arg n="m" f="MOD">could</arg>
+  <arg n="m" f="TMP">someday</arg>
+  <rel              >tumble</rel>
+  <arg n="1"        >the Red Delicious</arg>
+  <arg n="3" f="from">the top of America's apple heap</arg>
+</example>
+
+<note>
+Refer to other verbs-of-stock-reportage (rise, fall, climb, drop, etc)
+for additional examples.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

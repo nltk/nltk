@@ -1,0 +1,64 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="maintain">
+<note>
+  Frames file for 'maintain' based on survey of initial sentences of
+  big corpus and comparison with 'keep'
+</note>
+
+<roleset id="maintain.01" name="keep (up)" vncls="29.5">
+<roles>
+  <role descr="maintainer" n="0">
+		
+  <vnrole vncls="29.5" vntheta="Agent"/></role>
+
+  <role descr="thing maintained" n="1">
+		
+  <vnrole vncls="29.5" vntheta="Theme"/></role>
+
+  <role descr="benefactive" n="2">
+		
+  <vnrole vncls="29.5" vntheta="Predicate"/></role>
+
+</roles>
+
+<example name="transitive agentive">
+  <text>
+  We have a long history of *trace* maintaining an open
+  direct-investment policy.
+  </text>
+  <arg n="0">*trace*=We</arg>
+  <rel>maintaining</rel>
+  <arg n="1">an open direct-investment policy.</arg>
+</example>
+
+<example name="maintained belief">
+  <text>
+  Several traders maintained that the Merc's 12-point circuit-breaker
+  aggravated the market slide Oct 13.
+  </text>
+  <arg n="0">Several traders</arg>
+  <rel>maintained</rel>
+  <arg n="1">the Merc's 12-point circuit-breaker
+  aggravated the market slide Oct 13</arg>
+</example>
+
+<note>
+As always, drop the complementizer.
+</note>
+
+<example name="with benefactive">
+  <text>
+  ...*trace* to maintain commercial air service for an estimated 92
+  communities, often in rural areas.
+  </text>
+  <arg n="0">*trace*</arg>
+  <rel>maintain</rel>
+  <arg n="1">commercial air service</arg>
+  <arg f="for" n="2">an estimated 92
+  communities, often in rural areas.</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,56 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="mutter">
+<note>
+  Frames file for 'mutter' based on sentences in brown.  Verbnet entry
+</note>
+
+<roleset id="mutter.01" vncls="-" name="speak unclearly">
+<roles>
+  <role n="0"  descr="speaker"/>
+  <role n="1"  descr="utterance"/>
+  <role n="2"  descr="listener"/>
+</roles>
+
+<example name="no listener">
+  <inflection person="ns" tense="ns" aspect="ns" voice="active" form="infinitive"/>
+  <text>
+     Ramsey has a thing or two *trace-1* to mutter about *trace-2* himself.
+  </text>
+  <arg n="0"        >*trace-1* -> Ramsey</arg>
+  <rel              >mutter</rel>
+  <arg n="1" f="about">*trace-2* -> a thing or two</arg>
+  <arg n="m" f="rec">himself</arg>
+</example>
+
+<example name="all args">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+     She muttered in a low but intense voice, to herself, ``I hate
+     that woman inside me''!
+  </text>
+  <arg n="0"        >She</arg>
+  <rel              >muttered</rel>
+  <arg n="m" f="MNR">in a low but intense voice</arg>
+  <arg n="2" f="to">herself</arg>
+  <arg n="1"        >``I hate that woman inside me''!</arg>
+</example>
+
+<example name="only subject">
+  <inflection person="ns" tense="ns" aspect="progressive" voice="active" form="participle"/>
+  <text>
+    He put the basket down distastefully, *trace* muttering softly and
+    thoroughly disgusted with himself and his plan that had seemed so
+    foolproof.
+  </text>
+  <arg n="0"        >*trace* -> He</arg>
+  <rel              >muttering</rel>
+  <arg n="m" f="MNR">softly</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

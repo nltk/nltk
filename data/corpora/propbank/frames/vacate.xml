@@ -1,0 +1,43 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="vacate">
+<note>
+  Frames file for 'vacate' based on sentences in financial subcorpus.
+  No Verbnet entry.
+</note>
+
+<roleset id="vacate.01" name="cause to be empty" vncls="-">
+<roles>
+  <role descr="cause of emptiness, agent" n="0"/>
+  <role descr="thing becoming empty" n="1"/>
+</roles>
+
+<example name="weird usage">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    SciMed Life Systems Inc., Minneapolis, said a federal appeals
+    court vacated an earlier summary judgment in its favor. 
+</text>
+        <arg n="0">a federal appeals court</arg>
+        <rel>vacated</rel>
+        <arg n="1">an earlier summary judgment in its favor</arg>
+</example>
+
+<example name="more normal">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    After John ate a big bowl of chili beans, everyone else vacated
+    the room.
+  </text>
+  <arg f="TMP" n="m">After John ate a big bowl of chili beans</arg>
+  <arg n="0">everyone else</arg>
+  <rel>vacated</rel>
+  <arg n="1">the room</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

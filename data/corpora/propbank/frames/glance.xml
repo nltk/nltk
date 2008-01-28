@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="glance">
+<note>
+  Frames file for 'glance' based on sentences in wsj.  Verbnet entry
+  30.3, Framenet entry Perception active.
+</note>
+
+<roleset id="glance.01" name="look at briefly" vncls="30.3">
+<roles>
+  <role descr="looker" n="0"><vnrole vncls="30.3" vntheta="Experiencer"/></role>
+  <role descr="looked-at" n="1"><vnrole vncls="30.3" vntheta="Stimulus"/></role>
+</roles>
+
+<example name="the one example">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    I felt the temblor begin and glanced at the table next to mine,
+    smiled that guilty smile and we both mouthed the words,
+    ``Earth-quake!'' together. 
+</text>
+        <arg n="0">I</arg>
+        <rel>glanced</rel>
+        <arg f="at" n="1">the table next to mine</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

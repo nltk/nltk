@@ -1,0 +1,43 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="derail">
+<note>
+  Frames file for 'derail' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="derail.01" name="to bring to a sudden halt" vncls="-">
+<roles>
+  <role descr="agent, causer" n="0"/>
+  <role descr="entity derailed" n="1"/>
+</roles>
+
+
+
+<example name="inanimate subject">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ Jaguar has been discussing an alliance with GM , but Ford 's move may derail the talks .
+</text>
+	<arg n="0">Ford 's move</arg>
+	<arg f="MOD" n="M">may</arg>
+	<rel>derail</rel>
+	<arg n="1">the talks</arg>
+</example>
+
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="past" voice="passive"/>
+<text>
+ Ramada 's previous plan was derailed [*-1] by upheaval in the junk-bond market that [*T*-2] hindered the offering of $ 400 million [*U*] in high-yield securities of Aztar Corp. , the new company that [*T*-3] will operate Ramada 's casinos in Nevada and Atlantic City ,
+</text>
+	<rel>derailed</rel>
+	<arg n="1">[*-1] -&gt;  Ramada 's previous plan</arg>
+	<arg f="by" n="0">upheaval in the junk-bond market that [*T*-2] hindered the offering of $ 400 million [*U*] in high-yield securities of Aztar Corp. , the new company that [*T*-3] will operate Ramada 's casinos in Nevada and Atlantic City</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,37 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="radio">
+<note>
+  Frames file for 'radio' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="radio.01" name="to transmit by radio" vncls="37.4">
+<roles>
+  <role descr="transmitter, agent" n="0">
+        <vnrole vncls="37.4" vntheta="Agent"/></role>
+  <role descr="entity transmitted" n="1">
+        <vnrole vncls="37.4" vntheta="Topic"/></role>
+  <role descr="destination" n="2">
+        <vnrole vncls="37.4" vntheta="Recipient"/></role>
+</roles>
+
+
+<example name="all arguments">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+ In a 1961 incident , a Soviet mail plane disappeared off the radar screen just after [*-1] radioing its position to ground control in Sverdlovsk .
+</text>
+	<arg n="0">[*-1] -&gt;  a Soviet mail plane</arg>
+	<rel>radioing</rel>
+	<arg n="1">its position</arg>
+	<arg f="to" n="2">ground control in Sverdlovsk</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

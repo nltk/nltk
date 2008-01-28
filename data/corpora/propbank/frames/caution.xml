@@ -1,0 +1,55 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="caution">
+<note>
+  Frames file for 'caution' based on sentences in financial
+  subcorpus.  No access to verbnet.  Comparison to 'say'.
+</note>
+
+<roleset id="caution.01" name="say" vncls="37.9-1">
+<roles>
+    <role descr="Sayer" n="0">
+		
+  <vnrole vncls="37.9-1" vntheta="Agent"/></role>
+
+    <role descr="Utterance" n="1">
+		
+  <vnrole vncls="37.9-1" vntheta="Topic"/></role>
+
+    <role descr="Hearer" n="2">
+		
+  <vnrole vncls="37.9-1" vntheta="Recipient"/></role>
+
+</roles>
+
+<example name="just utterance">
+<text>
+    Takeover stock traders were puzzled by the Reliance filing and
+    cautioned that it doesn't mean Mr. Steinberg will definitely seek
+    control. 
+</text>
+        <arg n="0">Takeover stock traders</arg>
+        <rel>cautioned</rel>
+        <arg n="1">it doesn't mean Mr. Steinberg will definitely seek
+        control</arg> 
+</example>
+
+<example name="with hearer">
+<text>
+   Hold on to those funny braids! you wanted *trace* to caution her as
+   the sets started to roll around once more. 
+</text>
+        <arg n="1">Hold on to those funny braids</arg>
+        <arg n="0">*trace* -&gt;  you</arg>
+        <rel>caution</rel>
+        <arg n="2">her</arg>
+</example>
+
+<note>
+Expect all the usual constructions from the other verbs-of-saying:
+fronted, split, inverted.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

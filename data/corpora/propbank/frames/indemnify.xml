@@ -1,0 +1,34 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="indemnify">
+<note>
+  Frames file for 'indemnify' based on sentences in wsj.  No Verbnet
+  entry.
+</note>
+
+<roleset id="indemnify.01" name="protect from damage" vncls="-">
+<roles>
+  <role descr="protector" n="0"/>
+  <role descr="protected" n="1"/>
+  <role descr="damage" n="2"/>
+</roles>
+
+<example name="the one example">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Sony also agreed *trace* to indemnify the producers against any
+    liability to Warner. 
+</text>
+        <arg n="0">*trace* -&gt;  Sony</arg>
+        <rel>indemnify</rel>
+        <arg n="1">the producers</arg>
+        <arg f="against" n="2">any liability to Warner</arg>
+</example>
+
+<note>
+OK, I had to look this one up too.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

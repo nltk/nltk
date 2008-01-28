@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="ingest">
+<note>
+  Frames file for 'ingest' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="ingest.01" name="to eat" vncls="39.4">
+<roles>
+  <role descr="eater" n="0"><vnrole vncls="39.4" vntheta="Agent"/></role>
+  <role descr="entity ingested" n="1"><vnrole vncls="39.4" vntheta="Patient"/></role>
+</roles>
+
+<example name="automatically generated">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ This month , the Food and Drug Administration expressed concern that Americans might someday , in various forms , ingest too much psyllium .
+</text>
+	<arg n="0">Americans</arg>
+	<arg f="MOD" n="M">might</arg>
+	<arg f="TMP" n="M">someday</arg>
+	<arg f="MNR" n="M">, in various forms ,</arg>
+	<rel>ingest</rel>
+	<arg n="1">too much psyllium</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

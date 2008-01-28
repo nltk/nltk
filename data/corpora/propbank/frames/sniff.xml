@@ -1,0 +1,89 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="sniff">
+<note>
+Frames file for 'sniff' based on sentences in wsj and automatic
+expansion via verbnet.
+</note>
+
+<roleset id="sniff.01" name="use the nose, smell" vncls="30.3">
+<roles>
+	<role descr="sniffer" n="0">
+		
+  <vnrole vncls="30.3" vntheta="Experiencer"/></role>
+
+	<role descr="thing sniffed" n="1">
+		
+  <vnrole vncls="30.3" vntheta="Stimulus"/></role>
+
+</roles>
+
+<example name="didn't think this would actually occur">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    ``Texans can sniff a phony a mile away,'' the narrator warns
+    outsiders. 
+</text>
+        <arg n="0">Texans</arg>
+        <arg f="MOD" n="M">can</arg>
+        <rel>sniff</rel>
+        <arg n="1">a phony</arg>
+        <arg f="LOC" n="M">a mile away</arg>
+</example>
+
+</roleset>
+
+<roleset id="sniff.02" name="mode of speaking" vncls="-">
+<roles>
+  <role descr="speaker" n="0"/>
+  <role descr="utterance" n="1"/>
+  <role descr="listener" n="2"/>
+</roles>
+
+<example name="love this example">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    ``She just wiggled her fanny and all the French fell in love with
+    her,'' sniffed *trace* the literary world's Maria Jolas, not
+    entirely inaccurately. 
+</text>
+        <rel>sniffed</rel>
+        <arg n="1">*trace* -&gt;  She just wiggled her fanny and all the
+        French fell in love with her</arg> 
+        <arg n="0">the literary world's Maria Jolas</arg>
+        <arg f="MNR" n="M">not entirely inaccurately</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="sniff_out">
+
+<roleset id="sniff.03" name="find" vncls="-">
+<roles>
+  <role descr="finder" n="0"/>
+  <role descr="found" n="1"/>
+</roles>
+
+<example name="seek and destroy">
+<inflection aspect="progressive" form="full" person="third" tense="present" voice="active"/>
+<text>
+    Their stock in trade as ``executive producers'' is sniffing out
+    hot properties, locking them up and then getting big studios to
+    bankroll and distribute them. 
+</text>
+        <arg n="0">Their</arg>
+        <arg n="M">as `` executive producers ''</arg>
+        <rel>[ sniffing] [ out]</rel>
+        <arg n="1">hot properties</arg>
+</example>
+
+<note>
+Actually arg0 should be 'they' but that's not available.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

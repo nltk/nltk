@@ -1,0 +1,34 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="readmit">
+<note>
+  Frames file for 'readmit' based on sentences in wsj.  No access to
+  verbnet at the moment.
+</note>
+
+<roleset id="readmit.01" name="let back in, allow to enter again" vncls="-">
+<roles>
+  <role descr="allower" n="0"/>
+  <role descr="enterer" n="1"/>
+  <role descr="place entered" n="2"/>
+</roles>
+
+<example name="just transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+    The World Psychiatric Association voted at an Athens parley [*-1]
+    to conditionally readmit the Soviet Union. 
+</text>
+        <arg f="MNR" n="M">The</arg>
+        <arg n="0">[*-1] -&gt;  The World Psychiatric Association</arg>
+        <rel>readmit</rel>
+        <arg n="1">the Soviet Union</arg>
+</example>
+
+<note>
+Not sure if arg2 will occur.  No good examples come to mind.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

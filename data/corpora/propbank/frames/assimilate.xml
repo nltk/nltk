@@ -1,0 +1,49 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="assimilate">
+<note>
+  Frames file for 'assimilate' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="assimilate.01" name="become similar" vncls="-">
+<roles>
+  <role descr="causer of change" n="0"/>
+  <role descr="thing changing" n="1"/>
+  <role descr="target" n="2"/>
+</roles>
+
+<example name="the one example">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    We really do know all we need to know, if only we could assimilate
+    this knowledge into our thinking. 
+</text>
+        <arg n="0">we</arg>
+        <arg f="MOD" n="M">could</arg>
+        <rel>assimilate</rel>
+        <arg n="1">this knowledge</arg>
+        <arg f="into" n="2">our thinking</arg>
+</example>
+
+
+<example name="the other example">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    ''Mr. Allen objected to this analogy because it seems [*-1] to
+    ``assimilate the status of blacks to that of animals -- as a mere
+    project of charity, of humaneness.'' 
+</text>
+        <arg n="0">[*-1] -&gt;  it</arg>
+        <rel>assimilate</rel>
+        <arg n="1">the status of blacks</arg>
+        <arg f="to" n="2">that of animals</arg>
+        <arg n="M">as a mere project of charity, of humaneness</arg>
+</example>
+
+<note>
+Assimilate to and assimilate into are actually fairly different
+senses, but easily distinguished by the prepositions.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

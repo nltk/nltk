@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="fake">
+<note>
+  Frames file for 'fake' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="fake.01" name="to counterfeit" vncls="-">
+<roles>
+  <role descr="faker, agent" n="0"/>
+  <role descr="entity faked" n="1"/>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+ After his arrest , the forger admitted to [*-1] faking and selling other paintings up and down the Eastern seaboard .
+</text>
+	<arg n="0">[*-1] -&gt;  the forger</arg>
+	<rel>faking</rel>
+	<arg n="1">other paintings</arg>
+	<arg f="LOC" n="M">up and down the Eastern seaboard</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

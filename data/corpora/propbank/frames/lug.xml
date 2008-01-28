@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="lug">
+<note>
+  Frames file for 'lug' based on sentences in wsj.  Verbnet entry
+  11.4-1. Framenet entry Carrying.
+</note>
+
+<roleset id="lug.01" name="carry some awkward object" vncls="11.4-1">
+<roles>
+  <role descr="lugger" n="0"><vnrole vncls="11.4-1" vntheta="Agent"/></role>
+  <role descr="lugged, luggage" n="1"><vnrole vncls="11.4-1" vntheta="Theme"/></role>
+</roles>
+
+<example name="ya big lug">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+    Outside, I spotted two young men lugging blocks of concrete.
+</text>
+        <arg n="0">two young men</arg>
+        <rel>lugging</rel>
+        <arg n="1">blocks of concrete</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

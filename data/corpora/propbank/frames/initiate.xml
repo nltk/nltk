@@ -1,0 +1,118 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="initiate">
+<note>
+  Frames file for 'initiate' based on survey of initial sentences of big
+  corpus and comparison with 'start'.  Actually, this whole frameset
+  was created by copying 'start' and replacing all the 'start's with
+  'initiate's.  The examples are a little funky.
+</note>
+
+<roleset id="initiate.01" name="begin" vncls="55.2">
+<roles>
+  <role descr="causer" n="0">
+	<vnrole vncls="55.2" vntheta="Agent"/></role>
+  <role descr="Theme(-Creation)" n="1">
+	<vnrole vncls="55.2" vntheta="Theme"/></role>
+  <role descr="Instrument" n="2"/>
+</roles>
+
+<example name="basic transitive">
+  <text>John initiated a book</text>
+  <arg n="0">John</arg>
+  <rel>initiated</rel>
+  <arg n="1">a book</arg>
+</example>
+
+<note>transitive variations follow</note>
+
+<example name="transitive-with">
+  <text>John initiated the book with a murder</text>
+  <arg n="0">John</arg>
+  <rel>initiated</rel>
+  <arg n="1">the book</arg>
+  <arg n="2">with a murder</arg>
+</example>
+
+<example name="transitive-by">
+  <text> John initiated the book by describing a murder </text>
+  <arg n="0">John</arg>
+  <rel>initiated</rel>
+  <arg n="1">the book</arg>
+  <arg n="2">describing a murder</arg>
+  <note>Arg0 begin Arg1 by Arg2</note>
+</example>
+
+<example name="instrumental object">
+	<text>The book initiated with a murder</text>
+  <arg n="1">The book</arg>
+  <rel>initiated</rel>
+  <arg n="2">with a murder</arg>
+</example>
+
+<example name="instrumental subject">
+	<text>A murder initiated the book</text>
+  <arg n="2">A murder</arg>
+  <rel>initiated</rel>
+  <arg n="1">the book</arg>
+</example>
+
+<example name="with manner">
+	<text>John initiated the book with glee</text>
+  <arg n="0">John</arg>
+  <rel>initiated</rel>
+  <arg n="1">the book</arg>
+  <arg f="MNR" n="M">with glee</arg>
+</example>
+
+<example name="with manner again">
+	<text>John initiated the book gladly</text>
+  <arg n="0">John</arg>
+  <rel>initiated</rel>
+  <arg n="1">the book</arg>
+  <arg f="MNR" n="M">gladly</arg>
+</example>
+
+<example name="with temporal">
+	<text>John initiated the book last night</text>
+  <arg n="0">John</arg>
+  <rel>initiated</rel>
+  <arg n="1">the book</arg>
+  <arg f="TMP" n="M">last night</arg>
+</example>
+
+<example name="intransitive/inchoative">
+  <note>Arg1 initiated</note>
+  <text>A storm initiated</text>
+  <arg n="1">A storm</arg>
+  <rel>initiated</rel>
+  <note>similarly: The movie will initiate soon</note>
+</example>
+
+</roleset>
+
+<roleset id="initiate.02" name="perform welcoming ritual" vncls="-">
+<roles>
+  <role descr="initiator, welcomer" n="0"/>
+  <role descr="initiated, welcomed" n="1"/>
+  <role descr="initiated-into" n="2"/>
+  <role descr="instrument" n="3"/>
+</roles>
+
+<example name="passivized">
+  <text>
+    John was initiated *trace* into the Geek-of-the-Month club.
+  </text>
+  <arg n="1">*trace* -&gt; John</arg>
+  <rel>initiated</rel>
+  <arg f="into" n="2">the Geek-of-the-Month club</arg>
+</example>
+
+<note>
+I haven't actually seen any of these yet; if you find a real example
+send it to me so I can include it in the frames.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,46 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="craft">
+<note>
+  Frames file for 'craft' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+
+<roleset id="craft.01" name="to make by hand and with much skill" vncls="-">
+<roles>
+  <role descr="crafts(wo)man, agent" n="0"/>
+  <role descr="theme" n="1"/>
+</roles>
+
+
+<example name="transitive with adverbials">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ Westinghouse carefully crafted the agreement because the Justice Department earlier this year successfully challenged a proposed steam turbine joint venture with Asea Brown Boveri .
+</text>
+	<arg n="0">Westinghouse</arg>
+	<arg f="MNR" n="M">carefully</arg>
+	<rel>crafted</rel>
+	<arg n="1">the agreement</arg>
+	<arg f="PNC" n="M">because the Justice Department earlier this year successfully challenged a proposed steam turbine joint venture with Asea Brown Boveri</arg>
+</example>
+
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="past" voice="passive"/>
+<text>
+ We are deeply disturbed that a recent editorial stated that the `` Americans With Disabilities Act of 1989 '' was `` crafted [*-1] primarily by Democratic Senators Kennedy and Harkin '' with a premise `` based on the presumption that most Americans are hostile to the disabled ... . ''
+</text>
+	<rel>crafted</rel>
+	<arg n="1">[*-1] -&gt;  the `` Americans With Disabilities Act of 1989</arg>
+	<arg n="0">primarily by Democratic Senators Kennedy and Harkin</arg>
+	<arg f="MNR" n="M">with a premise `` based on the presumption that most Americans are hostile to the disabled</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

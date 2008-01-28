@@ -1,0 +1,80 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="cinch">
+<note>
+  Frames file for 'cinch' based on sentences in wsj.  No Verbnet
+  entry, Framenet entry Attaching.
+</note>
+
+<roleset id="cinch.01" name="manipulate a belt" vncls="-">
+<roles>
+  <role descr="manipulator of belt, agent" n="0"/>
+  <role descr="belt" n="1"/>
+</roles>
+
+<example name="hunger strike">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John cinched his belt tighter.
+  </text>
+  <arg n="0">John</arg>
+  <rel>cinched</rel>
+  <arg n="1">his belt</arg>
+  <arg f="PRD" n="m">tighter</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="cinch.02" name="attach with a belt" vncls="-">
+<roles>
+  <role descr="attacher" n="0"/>
+  <role descr="thing(s) attached" n="1"/>
+  <role descr="'together' or other attribute of arg1" n="2"/>
+</roles>
+
+<example name="heavy load">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John cinched down the packages in the back of his truck.
+  </text>
+  <arg n="0">John</arg>
+  <rel>cinched</rel>
+  <arg n="2">down</arg>
+  <arg n="1">the packages in the back of his truck</arg>
+</example>
+
+<note>
+Not a beautiful example, but it will have to do.
+</note>
+
+</roleset>
+
+<roleset id="cinch.03" name="make into a sure thing" vncls="-">
+<roles>
+  <role descr="cause of sureness" n="0"/>
+  <role descr="sure thing" n="1"/>
+</roles>
+
+<example name="it's a cinch">
+<inflection aspect="ns" form="full" person="ns" tense="future" voice="active"/>
+<text>
+    If so, that will cinch the case for another shot of credit-easing
+    within a month or so. 
+</text>
+        <arg f="DIS" n="M">If so</arg>
+        <arg n="0">that</arg>
+        <arg f="MOD" n="M">will</arg>
+        <rel>cinch</rel>
+        <arg n="1">the case for another shot of credit-easing within a
+        month or so</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,71 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="restore">
+<note>
+  Frames file for 'restore' based on sentences in financial subcorpus.
+  Verbnet entry contribute-13.2, other framed members include refer,
+  relinquish, sacrifice, surrender, transfer.  Comparison with those
+  for one roleset.
+</note>
+
+<roleset id="restore.01" name="give back">
+<roles>
+  <role descr="giver, restorer" n="0"/>
+  <role descr="gift, thing restored" n="1"/>
+  <role descr="benefactive, restored-to" n="2"/>
+</roles>
+
+<example name="no benefactive">
+<text>
+    Stock prices surged as a multibillion-dollar takeover proposal
+    helped *trace* restore market players' confidence about the
+    prospects for further deal-making. 
+</text>
+        <arg n="0">*trace* -&gt;  a multibillion-dollar takeover
+        proposal</arg> 
+        <rel>restore</rel>
+        <arg n="1">market players' confidence about the prospects for
+        further deal-making</arg> 
+</example>
+
+<example name="with benefactive">
+<text>
+    Pacific Gas &amp; Electric fell 3/8 to 19 5/8 in Big Board
+    composite trading of 1.7 million shares and Pacific Telesis Group
+    slipped 5/8 to 44 5/8 as the companies worked *trace* to restore
+    service to areas affected by the quake. 
+</text>
+        <arg n="0">*trace* -&gt;  the companies</arg>
+        <rel>restore</rel>
+        <arg n="1">service</arg>
+        <arg f="to" n="2">areas affected  by the quake</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="restore.02" name="name like new">
+<roles>
+  <role descr="restorer" n="0"/>
+  <role descr="thing restored, renewed" n="1"/>
+  <role descr="end state" n="2"/>
+</roles>
+
+<example name="art">
+  <text>
+    John restored the priceless Gaugin painting to its original splendor.
+  </text>
+  <arg n="0">John</arg>
+  <rel>restored</rel>
+  <arg n="1">the priceless Gaugin painting</arg>
+  <arg f="to" n="2">its original splendor</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

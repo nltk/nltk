@@ -1,0 +1,34 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="quantify">
+<note>
+  Frames file for 'quantify' based on sentences in financial
+  subcorpus.  No Verbnet entry, no Framenet entry.  Comparison with
+  count, loosely.
+</note>
+
+<roleset id="quantify.01" name="assign a number to">
+<roles>
+  <role descr="counter" n="0"/>
+  <role descr="thing counted" n="1"/>
+</roles>
+
+<example name="just transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+    ``We can not quantify the total adverse effects of Hugo,'' said
+    Edwin Colodny, chairman and president of USAir Group. 
+</text>
+        <arg n="0">We</arg>
+        <arg f="MOD" n="M">can</arg>
+        <arg f="NEG" n="M">not</arg>
+        <rel>quantify</rel>
+        <arg n="1">the total adverse effects of Hugo</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,92 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="line">
+<note>
+Frames file for 'line' based on sentences in wsj and automatic
+expansion via verbnet.
+</note>
+
+<roleset id="line.01" name="provide a lining" vncls="9.8">
+<roles>
+	<role descr="agent only!" n="0"><vnrole vncls="9.8" vntheta="Agent"/></role>
+	<role descr="thing lined" n="1"><vnrole vncls="9.8" vntheta="Destination"/></role>
+	<role descr="instrument, lining proper" n="2"><vnrole vncls="9.8" vntheta="Theme"/></role>
+</roles>
+
+<example name="unstated lining">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    How many government programs and policies exist because they line
+    the pockets of political insiders? 
+</text>
+        <arg n="0">they</arg>
+        <rel>line</rel>
+        <arg n="1">the pockets of political insiders</arg>
+</example>
+
+<example name="Enron stocks?">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+     Wall Street is just about ready *trace* to line the bird cage
+     with paper stocks. 
+</text>
+        <arg n="0">*trace* -&gt;  Wall Street</arg>
+        <rel>line</rel>
+        <arg n="1">the bird cage</arg>
+        <arg f="with" n="2">paper stocks</arg>
+</example>
+
+</roleset>
+</predicate>
+<predicate lemma="line_up">
+
+<roleset id="line.02" name="stand in line" vncls="-">
+<roles>
+  <role descr="causative agent" n="0"/>
+  <role descr="things in a line" n="1"/>
+</roles>
+
+<example name="ergative">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+     At a recent trade show, convention-goers lined up to view a new
+     Specialized bike frame that weighs just 2.7 pounds -- a pound
+     less than the lightest mountain-bike frame on the market. 
+</text>
+        <arg f="LOC" n="M">At a recent trade show</arg>
+        <arg n="1">convention-goers</arg>
+        <rel>[ lined] [ up]</rel>
+        <arg f="PNC" n="M">to view a new Specialized bike frame that
+        weighs just 2.7 pounds -- a pound less than the lightest
+        mountain-bike frame on the market </arg> 
+</example>
+
+<example name="agentive">
+<inflection aspect="perfect" form="participle" person="third" tense="present" voice="active"/>
+<text>
+    And, in addition to a crack team of sailors, Mr. Isler has lined
+    up some real brass to help him finance the syndicate. 
+</text>
+        <arg f="DIS" n="M">And</arg>
+        <arg n="M">in addition to a crack team of sailors</arg>
+        <arg n="0">Mr. Isler</arg>
+        <rel>[ lined] [ up]</rel>
+        <arg n="1">some real brass</arg>
+        <arg f="PNC" n="M">to help him finance the syndicate</arg>
+</example>
+
+<example name="passivized">
+<inflection aspect="perfect" form="full" person="ns" tense="present" voice="passive"/>
+<text>
+    U.S. buyers have already been lined *trace* up.
+</text>
+        <arg f="TMP" n="M">already</arg>
+        <rel>[ lined] [ up]</rel>
+        <arg n="1">*trace* -&gt;  U.S. buyers</arg>
+</example>
+
+<note>
+In the agentive and passive 'line up' acquires the sense of 'arrange'.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

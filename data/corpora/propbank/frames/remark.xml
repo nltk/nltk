@@ -1,0 +1,47 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="remark">
+<note>
+  Frames file for 'remark' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="remark.01" name="to express briefly" vncls="37.7">
+<roles>
+  <role descr="speaker" n="0">
+        <vnrole vncls="37.7" vntheta="Agent"/></role>
+  <role descr="utterance" n="1">
+        <vnrole vncls="37.7" vntheta="Topic"/></role>
+  <role descr="hearer" n="2">
+        <vnrole vncls="37.7" vntheta="Recipient"/></role>
+</roles>
+
+
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ Mr. Pratt remarked that he thinks [0] steeper prices have come about because producers do n't like [*-1] to see a hit wine dramatically increase in price later on .
+</text>
+	<arg n="0">Mr. Pratt</arg>
+	<rel>remarked</rel>
+	<arg n="1">he thinks [0] steeper prices have come about because producers do n't like [*-1] to see a hit wine dramatically increase in price later on</arg>
+</example>
+
+
+<example name="prepositional Arg1">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ One writer , signing his letter as `` Red-blooded , balanced male , '' remarked on the `` frequency of women fainting in peals , '' and suggested that they `` settle back into their traditional role of [*] making tea at meetings . ''
+</text>
+	<arg n="0">One writer , signing his letter as `` Red-blooded , balanced male , ''</arg>
+	<rel>remarked</rel>
+	<arg f="on" n="1">the `` frequency of women fainting in peals</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

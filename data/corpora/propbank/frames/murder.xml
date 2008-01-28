@@ -1,0 +1,63 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="murder">
+<note>
+  Frames file for 'murder' based on sentences in wsj.  Verbnet entry
+  42.1, along with other assorted verbs of killing.
+</note>
+
+<roleset id="murder.01" name="cause to die" vncls="42.1">
+<roles>
+  <role descr="killer" n="0"><vnrole vncls="42.1" vntheta="Agent"/></role>
+  <role descr="corpse" n="1"><vnrole vncls="42.1" vntheta="Patient"/></role>
+  <role descr="instrument" n="2"><vnrole vncls="42.1" vntheta="Instrument"/></role>
+</roles>
+
+<example name="passive, no agent">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+     To quote the highly regarded director of a privately funded
+     drop-in center for the homeless in New York: ``If you're
+     homeless, you don't sleep for fear of *trace* being robbed or
+     murdered. 
+</text>
+        <rel>murdered</rel>
+        <arg n="1">*trace* -&gt; *trace* -&gt;  you</arg>
+</example>
+
+<example name="agentive; true gerund!">
+<inflection aspect="ns" form="gerund" person="ns" tense="ns" voice="ns"/>
+<text>
+   For example, one of my favorite movies is the 1949 British comedy
+   ``Kind Hearts and Coronets,'' in which the entire comedy is based
+   on actor Dennis Price's murdering eight titled relatives (all
+   played  by Alec Guinness) because they snubbed his mother and stand
+   in the way of his acquiring the family title. 
+</text>
+        <arg n="0">actor Dennis Price's</arg>
+        <rel>murdering</rel>
+        <arg n="1">eight titled relatives (all played by Alec
+        Guinness)</arg> 
+        <arg f="CAU" n="M">because they snubbed his mother and stand
+        in the way of his acquiring the family title</arg> 
+</example>
+
+<example name="with instrument">
+  <inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+  <text>
+    John dreamed of *trace* murdering Mary with nothing more than a
+    plastic teaspoon, three pairs of pantyhose, and a live sea urchin.
+  </text>
+  <arg n="0">*trace* -&gt; dreamed</arg>
+  <rel>murdering</rel>
+  <arg n="1">Mary</arg>
+  <arg f="with" n="2">nothing more than a
+    plastic teaspoon, three pairs of pantyhose, and a live sea urchin</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

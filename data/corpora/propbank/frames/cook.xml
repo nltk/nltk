@@ -1,0 +1,75 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="cook">
+<note>
+  Frames file for 'cook' based on survey of sentences in the WSJ
+  corpus.  
+</note>
+
+
+<roleset id="cook.01" name="to prepare a meal or treat by heating" vncls="26.1 26.3-1 45.3">
+<roles>
+  <role descr="cook, agent" n="0">
+	<vnrole vncls="26.3-1" vntheta="Agent"/>
+        <vnrole vncls="26.1" vntheta="Agent"/>
+        <vnrole vncls="45.3" vntheta="Agent"/></role>
+  <role descr="food" n="1">
+	<vnrole vncls="26.3-1" vntheta="Product"/>
+        <vnrole vncls="26.1" vntheta="Product"/>
+        <vnrole vncls="45.3" vntheta="Patient"/></role>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+ Twenty-five trucks capable of [*] cooking food were dispatched [*-1] from other states .
+</text>
+	<arg n="0">[*] -&gt;  Twenty-five trucks</arg>
+	<rel>cooking</rel>
+	<arg n="1">food</arg>
+</example>
+</roleset>
+
+<roleset id="cook.02" name="to happen, take place" vncls="-">
+<roles>
+  <role descr="event" n="1"/>
+  <role descr="cooking with" n="2"/>
+</roles>
+
+
+<example name="with Arg2">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+ Aer Rianta is talking about similar joint ventures in Tashkent and in Sochi , a Black Sea resort , and even has a computer-assembly project cooking with the Georgian city of Tbilisi .
+</text>
+	<arg n="1">a computer-assembly project</arg>
+	<rel>cooking</rel>
+	<arg f="with" n="2">the Georgian city of Tbilisi</arg>
+</example>
+</roleset>
+</predicate>
+
+<predicate lemma="cook_up">
+
+
+<roleset id="cook.03" name="to fabricate" vncls="-">
+<roles>
+  <role descr="fabricator, agent" n="0"/>
+  <role descr="thing cooked up" n="1"/>
+</roles>
+
+<example name="passive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="passive"/>
+<text>
+ Clearly , a new rationale for national service had [*-1] to be cooked up .
+</text>
+	<arg n="1">[*-1] -&gt;  a new rationale for national service</arg>
+	<rel>[ cooked] [ up]</rel>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

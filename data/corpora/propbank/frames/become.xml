@@ -1,0 +1,51 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="become">
+<note>
+  Frames file for 'become' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="become.01" vncls="-" name="change of state">
+<roles>
+  <role n="1"  descr="entity changing"/>
+  <role n="2"  descr="new state"/>
+</roles>
+
+<example name="all examples look like this">
+<inflection person="ns" tense="present" aspect="perfect" voice="active" form="participle"/>
+<text>
+     Plans that give advertisers discounts for maintaining or
+increasing ad spending have become permanent fixtures at the news
+weeklies and underscore the fierce competition between Newsweek, Time
+Warner Inc.'s Time magazine, and Mortimer B. Zuckerman's U.S. News
+&amp; World Report. 
+</text>
+	<arg n="1">Plans that give advertisers discounts for
+maintaining or increasing ad spending</arg> 
+	<rel>become</rel>
+	<arg n="2">permanent fixtures at the news weeklies</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="become.02" vncls="-" name="bogus interpretation">
+<roles>
+</roles>
+
+<example name="bogus example">
+  <inflection person="ns" tense="ns" aspect="ns" voice="ns" form="ns"/>
+  <text>
+    That dress is very becoming on John.
+  </text>
+<note>
+This is properly not a verb at all, but it will almost certainly by misparsed as one.  It has no argument structure.
+</note>
+
+</example>
+
+</roleset>
+</predicate>
+</frameset>

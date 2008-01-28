@@ -1,0 +1,42 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="nag">
+<note>
+  Frames file for 'nag' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="nag.01" vncls="-" name="nag, pester">
+<roles>
+  <role n="0"  descr="nagger"/>
+  <role n="1"  descr="nagged, impelled agent"/>
+  <role n="2"  descr="impelled action"/>
+</roles>
+
+<example name="adjectival">
+<inflection person="ns" tense="ns" aspect="progressive" voice="active" form="participle"/>
+<text>
+     At the moment, however, the painting is a nagging reminder of the
+     problems that have engulfed CenTrust and its flamboyant chairman
+     and chief executive, David L. Paul. 
+</text>
+	<rel>nagging</rel>
+	<arg n="0">reminder</arg>
+</example>
+
+<example name="all args">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+     Mary nagged John to clean his room.
+  </text>
+  <arg n="0"        >Mary</arg>
+  <rel              >nagged</rel>
+  <arg n="1"        >John</arg>
+  <arg n="2"        >to clean his room</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

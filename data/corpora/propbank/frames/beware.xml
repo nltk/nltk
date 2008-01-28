@@ -1,0 +1,49 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="beware">
+<note>
+  Frames file for 'beware' based on sentences in wsj.  Verbnet entry 31.3.
+</note>
+
+<roleset id="beware.01" name="look out (for)!" vncls="31.3">
+<roles>
+  <role descr="wary entity" n="0"><vnrole vncls="31.3" vntheta="Experiencer"/></role>
+  <role descr="thing wary of" n="1"><vnrole vncls="31.3" vntheta="Cause"/></role>
+</roles>
+
+<example name="prepositional arg1">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    [*] BEWARE OF HEAVY DEBT.
+</text>
+        <arg n="0">[*]</arg>
+        <rel>BEWARE</rel>
+        <arg f="OF" n="1">HEAVY DEBT</arg>
+</example>
+
+
+<example name="NP arg1">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    Merger Fallout: [*] Beware Employee Dishonesty
+</text>
+        <arg n="0">[*]</arg>
+        <rel>Beware</rel>
+        <arg n="1">Employee Dishonesty</arg>
+</example>
+
+
+<example name="intransitive: be wary">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+     Mr. Laband should beware, since he lives in South Carolina.
+</text>
+        <arg n="0">Mr. Laband</arg>
+        <arg f="MOD" n="M">should</arg>
+        <rel>beware</rel>
+        <arg f="CAU" n="M">since he lives in South Carolina</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

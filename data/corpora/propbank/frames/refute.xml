@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="refute">
+<note>
+  Frames file for 'refute'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="refute.01" name="to deny or prove to be false" vncls="-">
+<roles> 
+  <role descr="denier, prover, agent" n="0"/>  
+  <role descr="entity refuted" n="1"/>  
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ AT&amp;T assembled three of its top executives in Washington , all visibly angry , [*-1] to try [*-2] to refute MCI 's charges .
+</text>
+	<arg n="0">[*-2] -&gt;  [*-1] -&gt;  AT&amp;T</arg>
+	<rel>refute</rel>
+	<arg n="1">MCI 's charges</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

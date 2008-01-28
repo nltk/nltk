@@ -1,0 +1,114 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="concern">
+<note>
+  Frames file for 'concern' based on sentences in financial
+  subcorpus.  No access to verbnet.  Comparison to worry.
+</note>
+
+<roleset id="concern.01" name="worry about" vncls="31.1">
+<roles>
+  <role descr="causer of concern" n="0">
+		
+  <vnrole vncls="31.1" vntheta="Cause"/></role>
+
+  <role descr="worried entity" n="1">
+		
+  <vnrole vncls="31.1" vntheta="Experiencer"/></role>
+
+  <role descr="instrument" n="2"/>
+</roles>
+
+<example name="transitive">
+<text>
+    The company said it was ``concerned about the announced intent to
+    acquire control of the company'' by a Sugarman-led group. 
+</text>
+        <arg n="1">it</arg>
+        <rel>concerned</rel>
+        <arg f="about" n="0">the announced intent  to acquire control of the company '' by a Sugarman-led group</arg>
+</example>
+
+<example name="unaccusative">
+<text>
+    ``We weren't as concerned until they became sell programs,'' says
+    Mr. DaPuzzo, who now thinks it adds unnecessary volatility. 
+</text>
+        <arg n="1">We</arg>
+        <arg f="NEG" n="M">n't</arg>
+        <rel>concerned</rel>
+        <arg f="TMP" n="M">until they became sell programs</arg>
+</example>
+
+<example name="with REC">
+<text>
+    The ultimate goal of any investor is a profit motive, and
+    regulators should not concern themselves with whether investors
+    are sufficiently focused on the long term. 
+</text>
+        <arg n="0">regulators</arg>
+        <arg f="MOD" n="M">should</arg>
+        <arg f="NEG" n="M">not</arg>
+        <rel>concern</rel>
+        <arg f="REC" n="1">themselves</arg>
+        <arg f="with" n="2">whether investors are sufficiently focused
+        on the long term</arg> 
+</example>
+
+<example name="sentential arg0">
+<text>
+     ``We were concerned that they weren't going to generate enough
+     cash for capital spending and also to pay down debt,'' says a big
+     investor in high-yield debt. 
+</text>
+        <arg n="1">We</arg>
+        <rel>concerned</rel>
+        <arg n="0">that they weren't going to generate enough cash for
+        capital spending and also to pay down debt</arg> 
+</example>
+
+<example name="justification for prepositional arg0s">
+  <text>
+    John was concerned by the bugs crawling on his picnic lunch, but
+    that didn't stop him from eating it.
+  </text>
+  <arg n="1">John</arg>
+  <rel>concerned</rel>
+  <arg f="by" n="0">the bugs crawling on his picnic lunch</arg>
+</example>
+
+<note>
+The sentential arg0 could be rephrased as:
+&quot;The fact that they weren't going to generate enough cash concerned
+us.&quot;
+You MUST include the complementizer--otherwise it's not grammatical.
+</note>
+
+</roleset>
+
+<roleset id="concern.02" name="deal with, have to do with" vncls="-">
+<roles>
+  <role descr="entity dealing with something" n="0"/>
+  <role descr="thing dealt with" n="1"/>
+</roles>
+
+<example name="transitive">
+<text>
+    The company also said  it continues to explore all options
+    concerning the possible sale of National Aluminum's 54.5% stake in
+    an aluminum smelter in Hawesville, Ky. 
+</text>
+        <arg n="0">all options</arg>
+        <rel>concerning</rel>
+        <arg n="1">the possible sale of National Aluminum's 54.5%
+        stake in an aluminum smelter in Hawesville, Ky</arg> 
+</example>
+
+<note>
+I feel like these two rolesets should be mergable, and historically
+are probably the same, but I can't figure it out.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

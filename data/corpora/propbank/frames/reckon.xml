@@ -1,0 +1,98 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="reckon">
+<note>
+Frames file for 'reckon' based on sentences in wsj corpus and
+automatic expansion via verbnet.
+</note>
+
+<roleset id="reckon.01" name="figure, think, count" vncls="29.1">
+<roles>
+  <role descr="thinker" n="0">
+	<vnrole vncls="29.1" vntheta="Agent"/></role>
+  <role descr="object, thing under consideration, thought" n="1">
+	<vnrole vncls="29.1" vntheta="Theme"/></role>
+  <role descr="attribute" n="2">
+	<vnrole vncls="29.1" vntheta="Predicate"/></role>
+</roles>
+
+<example name="three 'R'">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Why can't we teach our children *trace* to read, write and reckon? 
+</text>
+        <arg n="0">*trace* -&gt;  our children</arg>
+        <rel>reckon</rel>
+</example>
+<note>
+Reckon was the original third R, later replaced by 'rithmatic.
+</note>
+
+<example name="think a thought">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    Some analysts reckon that the next quarter's figures will present
+    a more accurate picture of the U.S. economy, showing a marked
+    slowdown in a number of sectors, including housing starts and
+    equities. 
+</text>
+        <arg n="0">Some analysts</arg>
+        <rel>reckon</rel>
+        <arg n="1">the next quarter's figures will present a more
+        accurate picture of the U.S. economy, showing a marked
+        slowdown in a number of sectors, including housing starts and
+        equities</arg> 
+</example>
+
+<example name="with secondary attribute">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    In contrast to previous estimates reckoning the default rate on
+    junk bonds at 2% or 3%,... 
+</text>
+        <arg n="0">previous estimates</arg>
+        <rel>reckoning</rel>
+        <arg n="1">the default rate on junk bonds</arg>
+        <arg f="at" n="2">2 % or 3 %</arg>
+</example>
+
+</roleset>
+
+<roleset id="reckon.02" name="respect, take into consideration" vncls="-">
+<roles>
+  <role n="0" descr="reckoner"/>
+  <role descr="thing to be reckoned with" n="1"/>
+</roles>
+
+<example name="never ever in active!">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    ``The intimate apparel industry is perceived to be a growth
+    industry and clearly Maidenform is a force *trace* to be reckoned
+    with *trace*,'' says David S. Leibowitz, a special situations
+    analyst at American Securities Corp. in New York. 
+</text>
+        <arg f="with" n="1">*trace* -&gt; *trace* -&gt; a force</arg>
+        <rel>reckoned</rel>
+</example>
+
+<example name="ok, maybe once in the active">
+<inflection person="ns" tense="ns" aspect="ns" voice="ns" form="infinitive"/>
+<text>
+     The stat [0] [*] to reckon with [*T*-2] here says that about
+     three of four clubs (29 of 39) that took 2-0 Series leads went on
+     to win it all. 
+</text>
+        <arg n="0">[*]</arg>
+        <rel>reckon</rel>
+        <arg n="1" f="with">[*T*-2] ->  [0] ->  The stat</arg>
+        <arg n="M" f="LOC">here</arg>
+</example>
+
+<note>
+Treebank seems to want to put extra empty nodes in this construction;
+I don't know why.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

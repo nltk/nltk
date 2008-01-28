@@ -1,0 +1,40 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="cherish">
+<note>
+  Frames file for 'cherish' based on sentences in wsj.  Verbnet entry 31.2.
+</note>
+
+<roleset id="cherish.01" vncls="31.2" name="like a lot, place much value in">
+<roles>
+  <role n="0"  descr="cherisher"/>
+  <role n="1"  descr="cherished"/>
+</roles>
+
+<example name="adjectival">
+<inflection person="ns" tense="ns" aspect="ns" voice="passive" form="participle"/>
+<text>
+    Yet under Mr. Reagan's preferred successor, President Bush, those
+    two cherished national-security causes are withering on the vine. 
+</text>
+	<rel>cherished</rel>
+	<arg n="1">causes</arg>
+</example>
+
+<example name="verbal">
+  <inflection person="third" tense="present" aspect="ns" voice="active" form="full"/>
+  <text>
+     Despite it all, John cherishes his relationship with Mary.
+  </text>
+  <arg n="m" f="ADV">Despite it all</arg>
+  <arg n="0"        >John</arg>
+  <rel              >cherishes</rel>
+  <arg n="1"        >his relationship with Mary</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

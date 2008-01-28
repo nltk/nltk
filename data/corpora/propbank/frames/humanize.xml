@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="humanize">
+<note>
+  Frames file for 'humanize' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="humanize.01" name="make seem human or fit for humans" vncls="-">
+<roles>
+  <role descr="causer of kinder gentler thing" n="0"/>
+  <role descr="thing now seeming (fit for) human(s)" n="1"/>
+</roles>
+
+<example name="make fit">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+    Council member Joy Picus, the measure's chief advocate, considers
+    it part of a ``pro-family policy'' that [*T*-1] makes Los Angeles
+    a leader in ``[*] humanizing the workplace.'' 
+</text>
+        <arg n="0">[*] -&gt;  [*T*-1] -&gt;  that -&gt;  a ``pro-family policy''</arg>
+        <rel>humanizing</rel>
+        <arg n="1">the workplace</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

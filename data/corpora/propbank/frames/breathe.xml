@@ -1,0 +1,73 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="breathe">
+<note>
+Frames file for 'breathe' based on sentences in financial subcorpus
+and automatic expansion via verbnet, even though the predicted frames
+are irrelevant.
+</note>
+
+<roleset id="breathe.01" name="suck air" vncls="47.2">
+<roles>
+	<role descr="breather" n="0"/>
+	<role descr="air, we hope" n="1">
+		
+  <vnrole vncls="47.2" vntheta="Theme"/></role>
+
+	<role descr="direction" n="2"><vnrole vncls="47.2" vntheta="Location"/></role>
+</roles>
+
+<example name="intransitive with direction">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    With Mr. Icahn breathing down his neck, however, Mr. Corry may
+    have little choice but to sell at a weak price, even if it means
+    losing some steel-related tax-loss carryforwards. 
+</text>
+        <arg n="0">Mr. Icahn</arg>
+        <rel>breathing</rel>
+        <arg f="down" n="2">his neck</arg>
+</example>
+
+<example name="with object NP">
+  <inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+  <text>
+    John tried *trace* to breathe water.
+  </text>
+  <arg n="0">*trace* -&gt; John</arg>
+  <rel>breathe</rel>
+  <arg n="1">water</arg>
+</example>
+
+<example name="with object PP">
+  <inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+  <text>
+    John tried *trace* to breathe in water.
+  </text>
+  <arg n="0">*trace* -&gt; John</arg>
+  <rel>breathe</rel>
+  <arg f="in" n="1">water</arg>
+</example>
+
+<note>
+Be careful to distinguish prepositional phrases describing the air
+argument from PP-LOCs: John tried to breathe under water.
+</note>
+
+<example name="different direction">
+  <inflection aspect="ns" form="full" person="ns" tense="ns" voice="active"/>
+  <text>
+     *trace* Breathe in, *trace* breathe out.
+  </text>
+  <arg n="0">*trace*</arg>
+  <rel>breathe</rel>
+  <arg f="DIR" n="2">in</arg>
+</example>
+
+<note>
+similarly breathe out.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

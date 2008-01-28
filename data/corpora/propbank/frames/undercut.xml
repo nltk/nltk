@@ -1,0 +1,35 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="undercut">
+<note>
+  Frames file for 'undercut' based on sentences in financial
+  subcorpus.  No Verbnet entry, no Framenet entry.  No comparison.
+</note>
+
+<roleset id="undercut.01" name="counteract, prevent">
+<roles>
+  <role descr="preventer, agent" n="0"/>
+  <role descr="thing counteracted" n="1"/>
+</roles>
+
+<example name="transitive, active, agentive, all those things">
+<inflection aspect="progressive" form="participle" person="third" tense="present" voice="active"/>
+<text>
+    Moreover, the price volatility that is amplified by program
+    trading is undercutting efforts to woo individual investors back
+    to an OTC market that sorely misses them. 
+</text>
+        <arg f="DIS" n="M">Moreover</arg>
+        <arg n="0">the price volatility that  is amplified  by program
+        trading</arg> 
+        <rel>undercutting</rel>
+        <arg n="1">efforts  to woo individual investors back to an OTC
+        market that  sorely misses them</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

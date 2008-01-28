@@ -1,0 +1,65 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="authorize">
+<note>
+  Frames file for 'authorize' based on sentences in financial
+  subcorpus.  No Verbnet entry.  Comparison with 'allow'.
+</note>
+
+<roleset id="authorize.01" name="allow">
+<roles>
+  <role descr="allower" n="0"/>
+  <role descr="action allowed" n="1"/>
+  <role descr="explicit allowed-agent" n="2"/>
+  <role descr="purpose" n="3"/>
+</roles>
+
+<example name="just transitive">
+<text>
+    Rymer Foods Inc. said its board authorized the purchase of as many
+    as 500,000 of its common stock purchase warrants at a price of $4
+    a warrant. 
+</text>
+        <arg n="0">its board</arg>
+        <rel>authorized</rel>
+        <arg n="1">the purchase of as many as 500,000 of its common
+        stock purchase warrants at a price of $4 a warrant</arg> 
+</example>
+
+<example name="agent and action">
+<text>
+    Norfolk Southern Corp. directors authorized the railroad company
+    to buy back as many as 45 million of its shares, which would have
+    a current value of more than $1.7 billion. 
+</text>
+        <arg n="0">Norfolk Southern Corp. directors</arg>
+        <rel>authorized</rel>
+        <arg n="2">the railroad company</arg>
+        <arg n="1">to buy back as many as 45 million of its shares,
+        which would have a current value of more than $1.7
+        billion</arg> 
+</example>
+
+<note>
+Note that the subordinate agent can be passivized: &quot;The railroad
+company was authorized to buy back...&quot;  This justifies splitting the
+subordinate S.
+</note>
+
+<example name="with purpose">
+<text>
+    An additional 299,000 shares are authorized *trace* for repurchase
+    under an earlier stock buy-back program. 
+</text>
+        <rel>authorized</rel>
+        <arg n="1">*trace* -&gt;  An additional 299,000 shares</arg>
+        <arg f="for" n="3">repurchase</arg>
+        <arg f="LOC" n="M">under an earlier stock buy-back program</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

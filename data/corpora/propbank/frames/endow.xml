@@ -1,0 +1,61 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="endow">
+<note>
+  Frames file for 'endow' based on sentences in wsj.  Verbnet entry 9.8.
+</note>
+
+<roleset id="endow.01" name="give (often generously)" vncls="9.8">
+<roles>
+  <role descr="giver" n="0"><vnrole vncls="9.8" vntheta="Agent"/></role>
+  <role descr="gift" n="1"><vnrole vncls="9.8" vntheta="Theme"/></role>
+  <role descr="given-to" n="2"><vnrole vncls="9.8" vntheta="Destination"/></role>
+</roles>
+
+<example name="all args">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    So far, the president seems ill-disposed [*] to substitute any of
+    the omnibus for his own free-standing proposal [*] to endow a
+    ``Points of Light'' foundation with $25 million to inform citizens
+    of all ages and exhort them to genuine volunteerism. 
+</text>
+        <arg n="0">[*] -&gt;  [*] -&gt;  the president</arg>
+        <rel>endow</rel>
+        <arg n="2">a ``Points of Light'' foundation</arg>
+        <arg f="with" n="1">$ 25 million [*U*]</arg>
+        <arg f="PNC" n="M">to inform citizens of all ages and exhort
+        them to genuine volunteerism</arg> 
+</example>
+
+<example name="giver and recipient">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Some pretty seamy stuff built the turn-of-the-century families'
+    Fifth Avenue and Newport palazzi and endowed their daughters'
+    weddings to foreign noblemen. 
+</text>
+        <arg n="0">Some pretty seamy stuff</arg>
+        <rel>endowed</rel>
+        <arg n="2">their daughters' weddings to foreign noblemen</arg>
+</example>
+
+<example name="passive, no giver">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    If mutation and natural selection slowly but surely give rise to
+    more and more advanced forms of life, then it was only a matter of
+    eons before splendid beings endowed [*] with reason,
+    self-awareness and taste shimmered onto the scene. 
+</text>
+        <arg n="2">splendid beings</arg>
+        <rel>endowed</rel>
+        <arg f="with" n="1">reason, self-awareness and taste</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

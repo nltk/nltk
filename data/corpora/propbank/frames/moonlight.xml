@@ -1,0 +1,39 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="moonlight">
+<note>
+  Frames file for 'moonlight' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="moonlight.01" vncls="-" name="hold a second job">
+<roles>
+  <role n="0"  descr="moonlighter"/>
+  <role n="1"  descr="(second) job"/>
+</roles>
+
+<example name="adjectival">
+<inflection person="ns" tense="ns" aspect="progressive" voice="active" form="participle"/>
+<text>
+    Private security guards and moonlighting police can invoke the law
+    of trespass to regulate access to these quasi-public places.
+</text>
+	<rel>moonlighting</rel>
+	<arg n="0">police</arg>
+</example>
+
+<example name="verbal">
+  <inflection person="third" tense="present" aspect="ns" voice="active" form="full"/>
+  <text>
+      John moonlights as an exotic dancer.
+  </text>
+  <arg n="0"        >John</arg>
+  <rel              >moonlights</rel>
+  <arg n="1" f="as">an exotic dancer</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

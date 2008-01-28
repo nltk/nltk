@@ -1,0 +1,62 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="seed">
+<note>
+  Frames file for 'seed' based on sentences in wsj.  Verbnet entries
+  10.7, 9.7, 9.9; Framenet entry Filling.
+</note>
+
+<roleset id="seed.01" name="remove seeds" vncls="10.7">
+<roles>
+  <role descr="entity removing seeds" n="0">
+	<vnrole vncls="10.7" vntheta="Agent"/></role>
+  <role descr="seeds" n="1">
+	<vnrole vncls="10.7" vntheta="Theme"/></role>
+</roles>
+
+<example name="futile effort">
+  <inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+  <text>
+     John spent a week * seeding a pomegranate.
+  </text>
+  <arg n="0">* -&gt; John</arg>
+  <rel>seeding</rel>
+  <arg n="1">a pomegranate</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="seed.02" name="put in seeds" vncls="9.7 9.9">
+<roles>
+  <role descr="entity putting in seeds" n="0">
+        <vnrole vncls="9.7" vntheta="Agent"/>
+        <vnrole vncls="9.9" vntheta="Agent"/></role>
+  <role descr="destination of seeds, container" n="1">
+        <vnrole vncls="9.7" vntheta="Destination"/>
+        <vnrole vncls="9.9" vntheta="Destination"/></role>
+  <role descr="seeds" n="2">
+        <vnrole vncls="9.7" vntheta="Theme"/>
+        <vnrole vncls="9.9" vntheta="Theme"/></role>
+</roles>
+
+<example name="seed money">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    The Polish fund would be seeded [*-1] with $160 million, the
+    Hungarian fund with $40 million. 
+</text>
+        <arg f="MOD" n="M">would</arg>
+        <rel>seeded</rel>
+        <arg n="1">[*-1] -&gt;  The Polish fund</arg>
+        <arg f="with" n="2">$160 million</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

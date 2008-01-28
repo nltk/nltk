@@ -1,0 +1,71 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="survive">
+<note>
+  Frames file for 'survive' based on sentences in financial subcorpus.
+  Verbnet entry 47.5.3, other framed members include languish and
+  live.  Comparison with live, except that live hasn't been updated
+  from Chris' file yet.
+</note>
+
+<roleset id="survive.01" name="live despite">
+<roles>
+  <role descr="survivor" n="0"/>
+  <role descr="adverse circumstances" n="1"/>
+</roles>
+
+<example name="intransitive">
+<text>
+     Analysts and consultants had mixed reactions to yesterday's
+     announcements, praising Mr. Rifenburgh's efforts but questioning
+     whether the company can survive in a highly competitive
+     marketplace. 
+</text>
+        <arg n="0">the company</arg>
+        <arg f="MOD" n="M">can</arg>
+        <rel>survive</rel>
+        <arg f="LOC" n="M">in a highly competitive marketplace</arg>
+</example>
+
+<example name="transitive">
+<text>
+   *trace* Having survived both last Friday's 6.9% Wall Street plunge
+    and the immediate aftermath of the San Francisco Bay area
+    earthquake, Tokyo market participants expressed relief that
+    trading had returned to normal. 
+</text>
+        <arg n="0">*trace* -&gt; Tokyo market participants</arg>
+        <rel>survived</rel>
+        <arg n="1">both last Friday's 6.9% Wall Street plunge and the
+        immediate aftermath of the San Francisco Bay area
+        earthquake</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="survive.02" name="outlive">
+<roles>
+  <role descr="survivor" n="0"/>
+  <role descr="deceased" n="1"/>
+  <role descr="margin" n="2"/>
+</roles>
+
+<example name="all args">
+  <text>
+    Mary survived John by over 20 years.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>survived</rel>
+  <arg n="1">John</arg>
+  <arg f="by" n="2">over 20 years</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

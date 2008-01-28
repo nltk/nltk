@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="maul">
+<note>
+  Frames file for 'maul' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="maul.01" name="to injure by or as if by eating" vncls="-">
+<roles>
+  <role descr="violent entity" n="0"/>
+  <role descr="entity mauled" n="1"/>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ This meant [*] returning to the golf course , where we watched a few French duffers maul the first tee while we sat under Cinzano umbrellas , me nursing an espresso and my ego [*T*-1] .
+</text>
+	<arg n="0">a few French duffers</arg>
+	<rel>maul</rel>
+	<arg n="1">the first tee</arg>
+	<arg f="TMP" n="M">while we sat under Cinzano umbrellas , me nursing an espresso and my ego</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

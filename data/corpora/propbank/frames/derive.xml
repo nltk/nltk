@@ -1,0 +1,71 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="derive">
+<note>
+  Frames file for 'derive' based on sentences in financial subcorpus.
+  No access to verbnet.  Comparison to 'develop'.
+</note>
+
+<roleset id="derive.01" name="create" vncls="26.4 48.1.1">
+<roles>
+  <role descr="creator" n="0">
+		
+  <vnrole vncls="26.4" vntheta="Agent"/></role>
+
+  <role descr="thing created" n="1">
+		
+  <vnrole vncls="48.1.1" vntheta="Theme"/><vnrole vncls="26.4" vntheta="Product"/></role>
+
+  <role descr="source" n="2">
+		
+  <vnrole vncls="48.1.1" vntheta="Location"/><vnrole vncls="26.4" vntheta="Material"/></role>
+
+  <role descr="benefactive" n="3">
+		
+  <vnrole vncls="26.4" vntheta="Beneficiary"/></role>
+
+  <role descr="attribute, secondary predication" n="4"/>
+</roles>
+
+<example name="passive, with source">
+<text>
+    About 30% of Ratners's profit already is derived *trace* from the
+    U.S. 
+</text>
+        <arg f="TMP" n="M">already</arg>
+        <rel>derived</rel>
+        <arg n="1">*trace* -&gt;  About 30% of Ratners's profit</arg>
+        <arg f="from" n="2">the U.S.</arg>
+</example>
+
+<example name="ergative, with source">
+<text>
+    Prosecutors have told Mr. Antar's attorneys that they believe
+    Mr. Antar's allegedly ill-gotten gains are so great that any money
+    he has used to pay attorneys derives from illegal activities. 
+</text>
+        <arg n="1">any money he has used to pay attorneys</arg>
+        <rel>derives</rel>
+        <arg f="from" n="2">illegal activities</arg>
+</example>
+
+<example name="with creator and attribute">
+  <text>
+    John derived an ointment from beeswax, spring water and cigarette
+    butts as a cure for the common cold.
+  </text>
+  <arg n="0">John</arg>
+  <rel>derived</rel>
+  <arg n="1">an ointment</arg>
+  <arg f="from" n="2">beeswax, spring water and cigarette butts</arg>
+  <arg f="as" n="4">a cure for the common cold</arg>
+</example>
+
+<note>
+Not actually sure that arg4 will occur.  Arg2 seems absolutely
+necessary, though.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

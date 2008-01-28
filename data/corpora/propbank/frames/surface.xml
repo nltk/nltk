@@ -1,0 +1,56 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="surface">
+<note>
+  Frames file for 'surface' based on sentences in financial subcorpus.
+  No Verbnet entry.  Comparison with 'appear'.
+</note>
+
+<roleset id="surface.01" name="appear, as from underwater">
+<roles>
+  <role descr="thing appearing" n="1"/>
+</roles>
+
+<example name="typical usage">
+<text>
+    Great Northern surged 20 1/8 to 62 7/8, well above
+    Georgia-Pacific's offering price of $58 a share, amid speculation
+    that other suitors for the company would surface or that the bid
+    would be raised. 
+</text>
+        <arg n="1">other suitors for the company</arg>
+        <arg f="MOD" n="M">would</arg>
+        <rel>surface</rel>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="surface.02" vncls="-" name="put atop, apply a surface to">
+<roles>
+  <role n="0"  descr="applier, agent"/>
+  <role n="1"  descr="substrate, medium"/>
+  <role n="2"  descr="stuff on top"/>
+</roles>
+
+<example name="passive">
+  <inflection person="ns" tense="ns" aspect="ns" voice="passive" form="participle"/>
+  <text>
+    The panels are like oversized semiconductors surfaced *trace* with
+    a million or more picture elements, each contributing to the color
+    and tone of a TV image.
+  </text>
+  <rel              >surfaced</rel>
+  <arg n="1"        >*trace* -> oversized semiconductors</arg>
+  <arg n="2" f="with">a million or more picture elements, each
+  contributing to the color and tone of a TV image</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,53 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="insist">
+<note>
+  Frames file for 'insist' based on sentences in financial subcorpus.
+  No access to verbnet.  No comparison.
+</note>
+
+<roleset id="insist.01" name="require, insist">
+<roles>
+  <role descr="insister" n="0"/>
+  <role descr="thing insisted, required" n="1"/>
+</roles>
+
+<example name="insist a PP">
+<text>
+    If government or private watchdogs insist, however, on introducing
+    greater friction between the markets (limits on price moves,
+    two-tiered execution, higher margin requirements, taxation, etc.),
+    the end loser will be the markets themselves. 
+</text>
+        <arg n="0">government or private watchdogs</arg>
+        <rel>insist</rel>
+        <arg f="DIS" n="M">however</arg>
+        <arg f="on" n="1">introducing greater friction between the
+        markets (limits on price moves, two-tiered execution, higher
+        margin requirements, taxation, etc.)</arg> 
+</example>
+
+<example name="insist an S">
+<text>
+    But David N. McCammon, vice president, finance, insisted that
+    cost-cutting and tight production capacity will make results
+    ``better in this downturn than in prior downturns,'' when Ford had
+    net losses. 
+</text>
+        <arg f="DIS" n="M">But</arg>
+        <arg n="0">David N. McCammon , vice president , finance ,</arg>
+        <rel>insisted</rel>
+        <arg n="1">cost-cutting and tight production capacity will
+        make results ``better in this downturn than in prior
+        downturns,'' when Ford had net losses</arg> 
+</example>
+
+<note>
+Insist-an-S is essentially a verb of saying, so it can take all the
+constructions seen in (eg) say, such as fronted, split, etc.  Have
+fun!
+</note>
+
+</roleset>
+</predicate>
+</frameset>

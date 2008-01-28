@@ -1,0 +1,42 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="deafen">
+<note>
+  Frames file for 'deafen' based on sentences in wsj.  No Verbnet
+  entry, but should go in with the causatives.
+</note>
+
+<roleset id="deafen.01" vncls="-" name="cause to go deaf">
+<roles>
+  <role n="0"  descr="causer of deafness"/>
+  <role n="1"  descr="now-deaf entity"/>
+</roles>
+
+<example name="agentive adjective">
+<inflection person="ns" tense="ns" aspect="progressive" voice="active" form="participle"/>
+<text>
+     Deafening chants of ``ANC'' and ``Umkhonto we Sizwe'' shook the
+     church as the seven aging men vowed that the ANC would continue
+     its fight against the government and the policies of racial
+     segregation on all fronts, including the armed struggle. 
+</text>
+	<rel>Deafening</rel>
+	<arg n="0">chants</arg>
+</example>
+
+<example name="verbal">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+     John's bagpipe lessons deafened the entire neighborhood.
+  </text>
+  <arg n="0"        >John's bagpipe lessons</arg>
+  <rel              >deafened</rel>
+  <arg n="1"        >the entire neighborhood</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,68 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="cooperate">
+<note>
+  Frames file for 'cooperate' based on sentences in financial
+  subcorpus.  Verbnet entry 36.1, other framed members include argue
+  compete and negotiate.
+</note>
+
+<roleset id="cooperate.01" name="work with" vncls="36.1">
+<roles>
+  <role descr="one cooperator" n="0">
+		
+  <vnrole vncls="36.1" vntheta="Actor1"/></role>
+
+  <role descr="other cooperator(s)" n="1">
+		
+  <vnrole vncls="36.1" vntheta="Actor2"/></role>
+
+  <role descr="shared task" n="2">
+		
+  <vnrole vncls="36.1" vntheta="Topic"/></role>
+
+</roles>
+
+<example name="no task">
+<inflection aspect="ns" form="full" person="ns" tense="ns" voice="ns"/>
+<text>
+    First Union, with assets of about $32 billion, said it was
+    disappointed by the delay but said it would cooperate with
+    regulatory authorities. 
+</text>
+        <arg n="0">it</arg>
+        <arg f="MOD" n="M">would</arg>
+        <rel>cooperate</rel>
+        <arg f="with" n="1">regulatory authorities</arg>
+</example>
+
+<example name="with task">
+<inflection aspect="ns" form="gerund" person="ns" tense="ns" voice="ns"/>
+<text>
+    Separately, UAL stock rose $4 a share to $175 in composite trading
+    on the New York Stock Exchange on reports that Los Angeles
+    investor Marvin Davis has asked United Airlines unions if they're
+    interested in cooperating with Mr. Davis in a new bid for UAL. 
+</text>
+        <arg n="0">*trace* -&gt;  they</arg>
+        <rel>cooperating</rel>
+        <arg f="with" n="1">Mr. Davis</arg>
+        <arg f="in" n="2">a new bid for UAL</arg>
+</example>
+
+<example name="merged cooperators">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John and Mary cooperated in cleaning the garage.
+  </text>
+  <arg n="0">John and Mary</arg>
+  <rel>cooperated</rel>
+  <arg f="in" n="2">cleaning the garage</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

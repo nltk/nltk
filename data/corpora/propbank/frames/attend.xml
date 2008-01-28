@@ -1,0 +1,56 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="attend">
+<note>
+  Frames file for 'attend' based on sentences in financial subcorpus.
+  No access to verbnet.  No comparisons.
+</note>
+
+<roleset id="attend.01" name="belong with or at">
+<roles>
+  <role descr="thing attending" n="0"/>
+  <role descr="thing attended" n="1"/>
+</roles>
+
+<example name="attend school">
+  <text>
+    Even though he is nearly 25, John still attends kindergarten.
+  </text>
+  <arg f="ADV" n="m">Even though he is nearly 25</arg>
+  <arg n="0">John</arg>
+  <arg f="TMP" n="m">still</arg>
+  <rel>attends</rel>
+  <arg n="1">kindergarten</arg>
+</example>
+
+<example name="intransitive">
+<text>
+    Some 500 investors representing investor clubs from around the
+    U.S. were attending when the market started to slide Friday. 
+</text>
+        <arg n="0">Some 500 investors representing investor clubs from
+        around the U.S.</arg> 
+        <rel>attending</rel>
+        <arg f="TMP" n="M">when the market started to slide
+        Friday</arg> 
+</example>
+
+<example name="come along with">
+<text>
+    While many problems would attend a restructuring of Columbia,
+    investors say Mr. Spiegel is mulling such a plan to mitigate
+    Columbia's junk problems. 
+</text>
+        <arg n="0">many problems</arg>
+        <arg f="MOD" n="M">would</arg>
+        <rel>attend</rel>
+        <arg n="1">a restructuring of Columbia</arg>
+</example>
+
+<note>
+Latter could be a separate roleset.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

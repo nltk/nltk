@@ -1,0 +1,53 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="preoccupy">
+<note>
+  Frames file for 'preoccupy' based on sentences in wsj.  Verbnet
+  entry 31.4.
+</note>
+
+<roleset id="preoccupy.01" name="demand full attention" vncls="31.4">
+<roles>
+  <role descr="causer of preoccupation" n="0">
+        <vnrole vncls="31.1" vntheta="Cause"/></role>
+  <role descr="preoccupied entity" n="1">
+        <vnrole vncls="31.1" vntheta="Experiencer"/></role>
+  <role descr="focus of attention" n="2">
+        <vnrole vncls="31.4" vntheta="Theme"/></role>
+<note>
+To my ear, args 0 and 2 cannot cooccur, but the prepositional usage of
+arg2 does imply that the two are separate arguments.
+</note>
+</roles>
+
+<example name="usually passive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    Worst of all, Nissan was preoccupied *trace* with management
+    infighting, cronyism and corporate rigidity. 
+</text>
+        <arg f="DIS" n="M">Worst of all</arg>
+        <rel>preoccupied</rel>
+        <arg n="1">*trace* -&gt;  Nissan</arg>
+        <arg f="with" n="2">management infighting, cronyism and
+        corporate rigidity</arg> 
+</example>
+
+<example name="occasionally active">
+<inflection aspect="perfect" form="participle" person="third" tense="present" voice="ns"/>
+<text>
+    Foreign exchange dealers said that the currency market has begun
+    to distance itself from the volatile stock exchange, which *trace*
+    has preoccupied the market since Oct. 13, when the Dow Jones
+    Industrial Average plunged more than 190 points.
+</text>
+        <arg n="0">*trace* -&gt;  which -&gt;  the volatile stock exchange</arg>
+        <rel>preoccupied</rel>
+        <arg n="1">the market</arg>
+        <arg f="TMP" n="M">since Oct. 13, when the Dow Jones
+        Industrial Average plunged more than 190 points</arg> 
+</example>
+
+</roleset>
+</predicate>
+</frameset>

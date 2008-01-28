@@ -1,0 +1,34 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="renew">
+<note>
+  Frames file for 'renew' based on sentences in financial subcorpus.
+  No Verbnet entry.  No comparison.
+</note>
+
+<roleset id="renew.01" name="make like new">
+<roles>
+  <role descr="agent, causer of renewal" n="0"/>
+  <role descr="thing becoming newish" n="1"/>
+</roles>
+
+<example name="very typical">
+<text>
+    The $3.18 billion bid, which had been rumored since last week,
+    ``creates a better feeling that there's value in the market at
+    current levels and renews prospects for a hot tape,'' says
+    A.C. Moore, director of research at Argus Research Corp. 
+</text>
+        <arg n="0">The $3.18 billion bid, which had been rumored since
+        last week,</arg> 
+        <rel>renews</rel>
+        <arg n="1">prospects for a hot tape</arg>
+</example>
+
+<note>
+Ignore adjectival usages like &quot;amid renewed optimism....&quot;.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="dispel">
+<note>
+  Frames file for 'dispel' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="dispel.01" name="force to go away" vncls="-">
+<roles>
+  <role descr="agent, causer" n="0"/>
+  <role descr="entity dispelled" n="1"/>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ At a meeting with analysts , British Petroleum officials dispelled speculation that the company may take over a U.S. oil company , according to Dow Jones Professional Investor Report .
+</text>
+	<arg f="LOC" n="M">At a meeting with analysts</arg>
+	<arg n="0">British Petroleum officials</arg>
+	<rel>dispelled</rel>
+	<arg n="1">speculation that the company may take over a U.S. oil company</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

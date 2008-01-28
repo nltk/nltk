@@ -1,0 +1,63 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="justify">
+<note>
+  Frames file for 'justify' based on examples from full corpus.
+</note>
+
+<roleset id="justify.01" name="show to be right">
+<roles>
+  <role descr="justifier" n="0"/>
+  <role descr="decision or attitude being shown to be right" n="1"/>
+  <role descr="explicit instrument" n="2"/>
+  <role descr="secondary predication" n="3"/>
+  <role descr="benefactive, justified to" n="4"/>
+</roles>
+
+<example name="simple transitive">
+  <text>
+  As a country superimposes its cultural and political attitudes on
+  others, it searches its heritage in hopes of *trace* justifying its
+  aggressiveness.
+  </text>
+  <arg n="0">*trace* -&gt;  it</arg>
+  <rel>justifying</rel>
+  <arg n="1">its aggressiveness</arg>
+</example>
+
+<example name="instrument and attribute">
+  <text>
+Since the hazards of poor communication are so great , p can be
+justified *trace* as a habitable site only on the basis of unusual
+productivity such as  is made  available by a waterfall for milling
+purposes, a mine, or a sugar maple camp.
+  </text>
+  <arg f="CAU" n="m">Since the hazards of poor communication are so
+  great</arg>
+  <arg n="1">*trace* = p</arg>
+  <arg f="MOD" n="m">can</arg>
+  <rel>justified</rel>
+  <arg f="as" n="3">a habitable site</arg>
+  <arg n="2">only on the basis of unusual productivity such as
+  is made  available by a waterfall for milling purposes , a mine , or
+  a sugar maple camp</arg>
+</example>
+
+<example name="with benefactive">
+  <text>
+  I'd have a hard time *trace* justifying to my students that it
+  wasn't cheating.
+  </text>
+  <arg n="0">*trace*=I</arg>
+  <rel>justifying</rel>
+  <arg f="to" n="4">my students</arg>
+  <arg n="1">it wasn't cheating.</arg>
+</example>
+
+<note>
+Watch out for adjectival &quot;justified&quot;--test by substituting &quot;unjustified&quot;.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

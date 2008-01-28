@@ -1,0 +1,41 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="toy">
+<note>
+  Frames file for 'toy' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="toy.01" name="play (with), consider" vncls="-">
+<roles>
+  <role descr="player, considerer" n="0"/>
+  <role descr="toy, thing under consideration" n="1"/>
+</roles>
+
+<example name="as consider">
+<inflection aspect="progressive" form="participle" person="third" tense="present" voice="active"/>
+<text>
+    We hear that HUD Secretary Jack Kemp is toying with going along
+    with some of the Cranston-Mitchell proposals. 
+</text>
+        <arg n="0">HUD Secretary Jack Kemp</arg>
+        <rel>toying</rel>
+        <arg f="with" n="1">going along with some of the
+        Cranston-Mitchell proposals</arg> 
+</example>
+
+<example name="as play">
+  <inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+  <text>
+    It's cruel the way Mary toys with John's emotions.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>toys</rel>
+  <arg f="with" n="1">John's emotions</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

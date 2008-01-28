@@ -1,0 +1,149 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="mark">
+<note>
+  Frames file for 'mark' based on sentences in financial subcorpus.
+  Verbnet entry image_impression-25.1, other framed members include
+  sign.  Comparison with 'notch' and 'draw'.
+</note>
+
+<roleset id="mark.01" name="signify" vncls="29.1">
+<roles>
+  <role descr="signifier" n="0"><vnrole vncls="29.1" vntheta="Agent"/></role>
+  <role descr="signified" n="1"><vnrole vncls="29.1" vntheta="Theme"/></role>
+</roles>
+
+<example name="transitive">
+<text>
+    Gulf Power's guilty plea before U.S. District Judge Robert
+    L. Vining yesterday marks the end of only one part of a
+    wide-ranging inquiry of Southern Co. 
+</text>
+        <arg n="0">Gulf Power's guilty plea before U.S. District Judge
+        Robert L. Vining</arg> 
+        <arg f="TMP" n="M">yesterday</arg>
+        <rel>marks</rel>
+        <arg n="1">the end of only one part of a wide-ranging inquiry
+        of Southern Co</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="mark.02" name="make a mark" vncls="25.1">
+<roles>
+  <role descr="agent, marker" n="0">
+		
+  <vnrole vncls="25.1" vntheta="Agent"/></role>
+
+  <role descr="mark" n="1">
+		
+  <vnrole vncls="25.1" vntheta="Theme"/></role>
+
+  <role descr="surface, marked-on" n="2">
+		
+  <vnrole vncls="25.1" vntheta="Destination"/></role>
+
+  <role descr="instrument, marker" n="3"/>
+</roles>
+
+<example name="all args">
+  <text>
+    John marked his name on the contract with a purple crayon.
+  </text>
+  <arg n="0">John</arg>
+  <rel>marked</rel>
+  <arg n="1">his name</arg>
+  <arg f="on" n="2">the contract</arg>
+  <arg f="with" n="3">a purple crayon</arg>
+</example>
+
+<example name="maybe a better example">
+  <text>
+    Like many male cats, John marked his territory.
+  </text>
+  <arg f="ADV" n="m">Like many male cats</arg>
+  <arg n="0">John</arg>
+  <rel>marked</rel>
+  <arg n="1">his territory</arg>
+</example>
+
+<note>
+I'll leave the arg3 to your imagination.
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="mark_up">
+
+
+<roleset id="mark.03" name="annotate" vncls="-">
+<roles>
+  <role descr="annotator" n="0"/>
+  <role descr="document" n="1"/>
+  <role descr="annotation" n="2"/>
+</roles>
+
+<example name="PAS!">
+  <text>
+     Our hard-working team of annotators is marking up the Wall Street
+     Journal with semantic roles.
+  </text>
+  <arg n="0">Our hard-working team of annotators</arg>
+  <rel>marking up</rel>
+  <arg n="1">the Wall Street Journal&gt;</arg>
+  <arg f="with" n="2">semantic roles</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+<roleset id="mark.04" name="raise the price" vncls="-">
+<roles>
+  <role descr="entity setting price" n="0"/>
+  <role descr="commodity" n="1"/>
+</roles>
+
+<example name="transitive">
+<text>
+    ``On occasion, he paid a high price,'' Mr. Wachter concedes, but
+    he says those who bid less and dropped out were dealers who would
+    then have marked up the paintings to resell them at a profit to
+    collectors. 
+</text>
+        <arg n="0">*trace* -&gt;  who -&gt;  dealers</arg>
+        <arg f="MOD" n="M">would</arg>
+        <arg f="TMP" n="M">then</arg>
+        <rel>[ marked] [ up]</rel>
+        <arg n="1">the paintings</arg>
+        <arg f="PNC" n="M">to resell them at a profit to collectors</arg>
+</example>
+
+<note>
+Might need other args for &quot;amount price changed by&quot; or &quot;final price&quot;
+or &quot;original price&quot; depending on what examples appear.  If you find
+such an example, send it to me.
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="mark_down">
+
+<roleset id="mark.05" name="lower the price" vncls="-">
+<roles>
+  <role descr="entity setting price" n="0"/>
+  <role descr="commodity" n="1"/>
+</roles>
+
+<note>
+See &quot;mark up&quot; above.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,101 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="have">
+<note>
+  Frames file for 'have' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="have.01" vncls="-" name="auxiliary">
+<roles/>
+<note>
+DO NOT TAG
+</note>
+
+<example name="auxiliary">
+  <inflection person="third" tense="present" aspect="perfect" voice="active" form="participle"/>
+  <text>
+     John has annoyed Mary for the last time.
+  </text>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="have.02" vncls="-" name="modal">
+<roles/>
+<note>
+tag ONLY rel and ArgMs
+</note>
+
+<example name="modal">
+  <inflection person="third" tense="present" aspect="ns" voice="active" form="full"/>
+  <text>
+     John has to apologize to Mary.
+  </text>
+  <rel f="MOD">has</rel>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="have.03" vncls="-" name="own, possess">
+<roles>
+  <role n="0"  descr="owner"/>
+  <role n="1"  descr="possession"/>
+</roles>
+
+<example name="bummer">
+<inflection person="ns" tense="present" aspect="ns" voice="active" form="full"/><text>
+     Four of the five surviving workers have asbestos-related
+     diseases, including three with recently diagnosed cancer.  
+</text>
+        <arg n="0">Four of the five surviving workers</arg>
+        <rel>have</rel>
+        <arg n="1">asbestos-related diseases</arg>
+        <arg n="M">including three with recently diagnosed cancer</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="have.04" vncls="-" name="caused action">
+<roles>
+  <role n="0"  descr="causer"/>
+  <role n="1"  descr="action"/>
+</roles>
+
+<example name="another gruesome one">
+  <inflection person="ns" tense="ns" aspect="ns" voice="active" form="full"/>
+  <text>
+     But she didn't deserve *trace* to have her head chopped off.
+  </text>
+  <arg n="0"        >*trace* -> she</arg>
+  <rel              >have</rel>
+  <arg n="1"        >her head chopped off</arg>
+</example>
+
+<example name="clearer, but still gruesome">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+     Mary had John killed.
+  </text>
+  <arg n="0"        >Mary</arg>
+  <rel              >had</rel>
+  <arg n="1"        >John killed</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<note>
+With any luck the annotators will see a minimum of the auxiliary and
+modal usages.
+</note>
+
+</frameset>

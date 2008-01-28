@@ -1,0 +1,44 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="dedicate">
+<note>
+  Frames file for 'dedicate' based on sentences in financial
+  subcorpus.  No Verbnet entry.  No comparison.
+</note>
+
+<roleset id="dedicate.01" name="intend to use for some purpose">
+<roles>
+  <role descr="agent, dedicator" n="0"/>
+  <role descr="thing dedicated" n="1"/>
+  <role descr="to what" n="2"/>
+</roles>
+
+<example name="passivized">
+<text>
+    Ted Eubank, Coda's president, said the loan carries an interest
+    rate of prime plus one percentage point, with 85% of the company's
+    net oil and gas revenue each month dedicated  to repayment. 
+</text>
+        <rel>dedicated</rel>
+        <arg n="1">*trace* -&gt;  85% of the company's net oil and gas
+        revenue each month</arg> 
+        <arg f="to" n="2">repayment</arg>
+</example>
+
+<example name="active">
+  <text>
+    John dedicated all his energy to tormenting Mary.
+  </text>
+  <arg n="0">John</arg>
+  <rel>dedicated</rel>
+  <arg n="1">all his energy</arg>
+  <arg f="to" n="2">tormenting Mary</arg>
+</example>
+
+<note>
+Avoid adjectival usages like &quot;a dedicated lover&quot;.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

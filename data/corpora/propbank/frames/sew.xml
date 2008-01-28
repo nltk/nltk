@@ -1,0 +1,93 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="sew">
+<note>
+  Frames file for 'sew' based on sentences in wsj.  Verbnet entries
+  9.7-1, 26.1, 22.3-2; Framenet entry Attaching.
+</note>
+
+<roleset id="sew.01" name="attach with thread" vncls="22.3-2">
+<roles>
+  <role descr="agent, entity causing two objects to be attached" n="0">
+      <vnrole vncls="22.3-2" vntheta="Agent"/></role>
+  <role descr="patient, thing(s) being sewn" n="1">
+      <vnrole vncls="22.3-2" vntheta="Patient"/></role>
+  <role descr="instrument, thread" n="2"/>
+  <role descr="attribute of arg1" n="3"/>
+</roles>
+
+<example name="all args">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John sewed Mary's mouth shut with baling wire.
+  </text>
+  <arg n="0">John</arg>
+  <rel>sewed</rel>
+  <arg n="1">Mary's mouth</arg>
+  <arg n="3">shut</arg>
+  <arg f="with" n="2">baling wire</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="sew.02" name="create clothes by sewing" vncls="26.1">
+<roles>
+  <role descr="builder" n="0">
+      <vnrole vncls="26.1" vntheta="Agent"/></role>
+  <role descr="construction" n="1">
+      <vnrole vncls="26.1" vntheta="Product"/></role>
+  <role descr="material, start state" n="2">
+      <vnrole vncls="26.1" vntheta="Material"/></role>
+  <role descr="end state" n="4">
+      <vnrole vncls="26.1" vntheta="Product"/></role>
+</roles>
+
+<example name="lacking end state">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John sewed a lovely formal gown out of burlap sacks.
+  </text>
+  <arg n="0">John</arg>
+  <rel>sewed</rel>
+  <arg n="1">a lovely formal gown</arg>
+  <arg f="out" n="2">of burlap sacks</arg>
+</example>
+
+<note>
+Unlike 'build' (the prototype of the class), 'sew' doesn't seem to
+take an explicit end state, subsuming it instead into the construction
+itself.  Interesting.
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="sew_up">
+
+<roleset id="sew.03" name="make secure" vncls="-">
+<roles>
+  <role descr="entity making something secure" n="0"/>
+  <role descr="thing made secure" n="1"/>
+</roles>
+
+<example name="automatically generated">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ `` They do n't want Japan to monopolize the region and sew it up , '' says  Chong-sik Lee , professor of East Asian politics at the University of Pennsylvania .
+</text>
+        <arg n="0">Japan</arg>
+        <rel>[ sew] [ up]</rel>
+        <arg n="1">it</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<note>
+All that work framing for one lousy example.
+</note>
+
+</frameset>

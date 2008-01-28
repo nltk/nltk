@@ -1,0 +1,46 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="terrify">
+<note>
+  Frames file for 'terrify' based on sentences in wsj.  Verbnet entry
+  31.1, a notoriously bad class.
+</note>
+
+<roleset id="terrify.01" vncls="31.1" name="scare very badly">
+<roles>
+  <role n="0"  descr="cause of terrification"/>
+  <role n="1"  descr="terrified entity"/>
+  <role n="2"  descr="prepositional argument"/>
+</roles>
+
+<example name="agentive, sorta">
+<inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+<text>
+     He thinks government officials are terrified [*] to let a
+     recession start when government, corporate and personal debt
+     levels are so high. 
+</text>
+	<arg n="1">government officials</arg>
+	<rel>terrified</rel>
+	<arg n="2">[*] to let a recession start when government,
+	corporate and personal debt levels are so high</arg> 
+</example>
+
+<example name="prepositional">
+  <inflection person="third" tense="present" aspect="ns" voice="passive" form="participle"/>
+  <text>
+     John is terrified over the thought of graduating and entering the
+     'real world'.
+  </text>
+  <arg n="1"        >John</arg>
+  <rel              >terrified</rel>
+  <arg n="2" f="over">the thought of graduating and entering the 'real
+  world'</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

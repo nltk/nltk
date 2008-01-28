@@ -1,0 +1,37 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="deplore">
+<note>
+  Frames file for 'deplore' based on sentences in wsj.  Verbnet entry
+  31.2, Framenet entry Judgement.
+</note>
+
+<roleset id="deplore.01" name="anti-admire" vncls="31.2">
+<roles>
+  <role descr="despiser" n="0">
+		
+  <vnrole vncls="31.2" vntheta="Experiencer"/></role>
+
+  <role descr="thing despised" n="1">
+		
+  <vnrole vncls="31.2" vntheta="Cause"/></role>
+</roles>
+
+<example name="pretty easy">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    Mr. Gelbart deplores the obfuscation, the circumlocution and the
+    debasement of language he sees on all sides. 
+</text>
+        <arg n="0">Mr. Gelbart</arg>
+        <rel>deplores</rel>
+        <arg n="1">the obfuscation, the circumlocution and the
+        debasement of language he sees on all sides</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

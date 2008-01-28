@@ -1,0 +1,160 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="strain">
+<note>
+  Frames file for 'strain' based on sentences in wsj.  Verbnet entries
+  40.8.3-2 and 10.4.1, other senses exist also.
+</note>
+
+<roleset id="strain.01" name="injure" vncls="40.8.3-2">
+<roles>
+  <role descr="agent, entity causing damage" n="0">
+     <vnrole vncls="40.8.3-2" vntheta="Experiencer"/></role> 
+  <role descr="patient, entity experiencing hurt/damage" n="1">
+     <vnrole vncls="40.8.3-2" vntheta="Patient"/></role> 
+</roles>
+
+<example name="physical hurt">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+    The harder he tried to push them into large piles, the closer he
+    came to *trace* breaking the rake and straining his back. 
+</text>
+        <arg n="0">*trace* -&gt;  he</arg>
+        <rel>straining</rel>
+        <arg n="1">his back</arg>
+</example>
+
+<example name="metaphysical hurt">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    The fight is putting a tight squeeze on profits of many,
+    threatening to drive the smallest ones out of business and
+    straining relations between the national fast-food chains and
+    their franchisees. 
+</text>
+        <arg n="0">*trace* -&gt;  The fight</arg>
+        <rel>straining</rel>
+        <arg n="1">relations between the national fast-food chains and
+        their franchisees</arg> 
+</example>
+
+<note>
+Could take an instrument?
+</note>
+
+</roleset>
+
+<roleset id="strain.02" name="separate solids from liquid" vncls="10.4.1">
+<roles>
+  <role descr="separator, filter, agent" n="0">
+     <vnrole vncls="10.4.1" vntheta="Agent"/></role>
+  <role descr="solids, thing removed" n="1">
+     <vnrole vncls="10.4.1" vntheta="Theme"/></role>
+  <role descr="liquid, source, removed-from" n="2">
+     <vnrole vncls="10.4.1" vntheta="Source"/></role>
+</roles>
+
+<example name="solids and liquids still mixed">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    The idea behind the Egg King is pretty simple: *trace* put the
+    eggs into a cylinder that contains perforated baskets, spin them
+    at a high speed to break the shells and strain the edible part
+    through the baskets. 
+</text>
+        <arg n="0">*trace*</arg>
+        <rel>strain</rel>
+        <arg n="1">the edible part</arg>
+        <arg f="DIR" n="M">through the baskets</arg>
+</example>
+
+<example name="separated args">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John strained the chunks out of his glass of expired milk before
+    drinking it.
+  </text>
+  <arg n="0">John</arg>
+  <rel>strained</rel>
+  <arg n="1">the chunks</arg>
+  <arg f="out" n="2">of his glass of expired milk</arg>
+  <arg f="TMP" n="m">before drinking it</arg>
+</example>
+
+<note>
+EEEEEEWWWWWW!
+</note>
+
+</roleset>
+
+<roleset id="strain.03" name="try hard" vncls="-">
+<roles>
+    <role descr="Agent/Entity Trying" n="0"/>
+    <role descr="thing tried" n="1"/>
+</roles>
+
+<example name="work it, baby!">
+<inflection aspect="ns" form="full" person="ns" tense="future" voice="active"/>
+<text>
+    And, since the public has always been fascinated by gossip and
+    voyeurism, reporters and editors will strain for creative angles
+    to justify the inclusion of collateral facts about private lives
+    including sexual activities and domestic relationships, activities
+    of family members, and all matters about mental and physical
+    health. 
+</text>
+        <arg f="DIS" n="M">And</arg>
+        <arg f="CAU" n="M">since the public has always been fascinated
+        by gossip and voyeurism</arg> 
+        <arg n="0">reporters and editors</arg>
+        <arg f="MOD" n="M">will</arg>
+        <rel>strain</rel>
+        <arg f="for" n="1">creative angles</arg>
+        <arg f="PNC" n="M">to justify the inclusion of collateral
+        facts about private lives including sexual activities and
+        domestic relationships, activities of family members, and all
+        matters about mental and physical health</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="strain.04" name="adjectival: hurting" vncls="-">
+<roles>
+  <role descr="thing hurting" n="1"/>
+  <role descr="for what" n="2"/>
+</roles>
+
+<example name="one arg">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    Judge Kozinski found the derivation entirely strained *trace* and
+    writes that ``for an academic to refer to himself as an
+    intellectual gigolo is ... a devastating admission of professional
+    dishonesty.'' 
+</text>
+        <arg f="ADV" n="M">entirely</arg>
+        <rel>strained</rel>
+        <arg n="1">*trace* -&gt;  the derivation</arg>
+</example>
+
+<example name="both args">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="passive"/>
+<text>
+    Intel makes semiconductors and Campeau operates department-store
+    chains and is strained for cash. 
+</text>
+        <arg n="1">Campeau</arg>
+        <rel>strained</rel>
+        <arg f="for" n="2">cash</arg>
+</example>
+
+<note>
+This usage hurts me.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

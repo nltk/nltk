@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="patrol">
+<note>
+  Frames file for 'patrol' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="patrol.01" name="to monitor while in motion" vncls="35.2">
+<roles>
+  <role descr="patroller, agent" n="0">
+        <vnrole vncls="35.2" vntheta="Agent"/></role> 
+  <role descr="area, place " n="1">
+        <vnrole vncls="35.2" vntheta="Location"/></role> 
+</roles>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+ The only difference is , [0] in those cities the poor are housed [*-1] in high-rise-project apartments each consisting of one room , with rusty pipes called [*] plumbing , rodents and cockroaches everywhere and nonworking elevators -- and with the building patrolled [*] by gangs and drug dealers .
+</text>
+	<rel>patrolled</rel>
+	<arg n="1">[*] -&gt;  the building</arg>
+	<arg f="by" n="0">gangs and drug dealers</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

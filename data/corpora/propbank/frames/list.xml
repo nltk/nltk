@@ -1,0 +1,99 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="list">
+<note>
+  Frames file for 'list' based on sentences in financial subcorpus.
+  No verbnet entry.  
+</note>
+
+<roleset id="list.01" name="enumerate">
+<roles>
+  <role descr="lister" n="0"/>
+  <role descr="item" n="1"/>
+  <role descr="list" n="2"/>
+</roles>
+
+<example name="listed-in">
+<text>
+    The Tokyo Stock Price Index (Topix) of all issues listed *trace*
+    in the First Section, which gained 16.05 points Tuesday, was down
+    1.46 points, or 0.05%, at 2691.19. 
+</text>
+        <rel>listed</rel>
+        <arg n="1">*trace* -&gt; all issues</arg>
+        <arg f="in" n="2">the First Section</arg>
+</example>
+
+<example name="listed-on">
+<text>
+    Armstrong's shares, also listed *trace* on the Big Board, closed
+    at $39.125, up 12.5 cents.
+</text>
+        <arg f="DIS" n="M">also</arg>
+        <rel>listed</rel>
+        <arg n="1">*trace* -&gt; Armstrong's shares</arg>
+        <arg f="on" n="2">the Big Board</arg>
+</example>
+
+<example name="listed-as">
+<text>
+    Actually, about two years ago, the Journal listed the creation of
+    the money fund as one of the 10 most significant events in the
+    world of finance in the 20th century. 
+</text>
+        <arg f="DIS" n="M">Actually</arg>
+        <arg f="TMP" n="M">about two years ago</arg>
+        <arg n="0">the Journal</arg>
+        <rel>listed</rel>
+        <arg n="1">the creation of the money fund</arg>
+        <arg f="as" n="2">one of the 10 most significant events in the
+        world of finance in the 20th century</arg> 
+</example>
+
+</roleset>
+
+<roleset id="list.02" name="give a price">
+<roles>
+  <role descr="pricer" n="0"/>
+  <role descr="item" n="1"/>
+  <role descr="price" n="2"/>
+</roles>
+
+<example name="listed-at">
+<text>
+    To confuse matters further, when UAL Corp. stock finally opened on
+    the New York Stock Exchange at 11:08 a.m., the price was listed
+    *trace* at $324.75 a share, up about $45 from Friday; in fact, its
+    true price was $224.75, down $55. 
+</text>
+        <rel>listed</rel>
+        <arg n="1">*trace* -&gt; the price</arg>
+        <arg f="at" n="2">$ 324.75  a share</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="list.03" vncls="-" name="lean, be at an angle">
+<roles>
+  <role n="1"  descr="thing at an angle"/>
+</roles>
+
+<example name="earthquake damage">
+  <inflection person="ns" tense="ns" aspect="progressive" voice="active" form="participle"/>
+  <text>
+    At a nearby corner, they swerve perilously close to a listing
+    apartment house, oblivious to any danger.  
+  </text>
+  <rel              >listing</rel>
+  <arg n="1"        >apartment house</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

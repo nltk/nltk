@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="bridge">
+<note>
+  Frames file for 'bridge'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="bridge.01" name="to connect" vncls="-">
+<roles> 
+  <role descr="connector, agent" n="0"/>   
+  <role descr="entity connected" n="1"/>
+  <role descr="entity connected with" n="2"/> 
+</roles>
+
+<example name="all arguments">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+ This , he warned [0] [*T*-1] , would prevent these countries from [*-2] bridging the difference with their richer EC brethren .
+</text>
+	<arg n="0">[*-2] -&gt;  these countries</arg>
+	<rel>bridging</rel>
+	<arg n="1">the difference</arg>
+	<arg f="with" n="2">their richer EC brethren</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

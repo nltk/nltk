@@ -1,0 +1,34 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="modernize">
+<note>
+  Frames file for 'modernize' based on sentences in financial
+  subcorpus.  No Verbnet entry.  No comparison.
+</note>
+
+<roleset id="modernize.01" name="make more up-to-date">
+<roles>
+  <role descr="modernizer" n="0"/>
+  <role descr="thing being modernized" n="1"/>
+</roles>
+
+<example name="transitive">
+<text>
+    At the same time, steelmakers are trying *trace* to invest more
+    *trace* to modernize technology and make themselves more
+    competitive. 
+</text>
+        <arg n="0">*trace* -&gt; *trace* -&gt;  steelmakers</arg>
+        <rel>modernize</rel>
+        <arg n="1">technology</arg>
+</example>
+
+<note>
+Seems to always occur in the infinitive, so be careful of where traces
+point to.  An instrument arg is possible but I doubt it would actually
+appear.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,67 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="compile">
+<note>
+  Frames file for 'compile' based on sentence in financial subcorpus.
+  No access to verbnet.  Comparison to 'collect'.
+</note>
+
+<roleset id="compile.01" name="collect" vncls="26.1">
+<roles>
+  <role descr="agent, entity acquiring something" n="0">
+		
+  <vnrole vncls="26.1" vntheta="Agent"/></role>
+
+  <role descr="thing acquired" n="1">
+		
+  <vnrole vncls="26.1" vntheta="Product"/></role>
+
+  <role descr="benefactive" n="4">
+		
+  <vnrole vncls="26.1" vntheta="Beneficiary"/></role>
+
+</roles>
+
+<example name="active transitive">
+<text>
+    One of Dun &amp; Bradstreet's chief businesses is *trace*
+    compiling reports that rate the credit-worthiness of millions of
+    American companies. 
+</text>
+        <arg n="0">*trace* -&gt;  One of Dun &amp; Bradstreet's chief
+        businesses</arg>
+        <rel>compiling</rel>
+        <arg n="1">reports that rate the credit-worthiness of millions
+        of American companies</arg> 
+</example>
+
+<example name="passive, stock offerings">
+<text>
+    The following were among yesterday's offerings and pricings in the
+    U.S. and non-U.S. capital markets, with terms and syndicate
+    manager, as *trace* compiled *trace* by Dow Jones Capital Markets
+    Report: 
+</text>
+        <rel>compiled</rel>
+        <arg n="1">*trace* -&gt; *trace* -&gt;  yesterday's offerings and
+        pricings in the U.S. and non-U.S. capital markets, with terms
+        and syndicate manager,</arg> 
+        <arg f="by" n="0">Dow Jones Capital Markets Report</arg>
+</example>
+
+<example name="with benefactive">
+  <text>
+    John compiled a list of suspected communists for Senator McCarthy.
+  </text>
+  <arg n="0">John</arg>
+  <rel>compiled</rel>
+  <arg n="1">a list of suspected communists</arg>
+  <arg f="for" n="4">Senator McCarthy</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

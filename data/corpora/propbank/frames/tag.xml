@@ -1,0 +1,37 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="tag">
+<note>
+  Frames file for 'tag'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="tag.01" name="to attach a label" vncls="9.9 25.3">
+<roles> 
+ <role descr="attacher of label, agent" n="0">
+       <vnrole vncls="9.9" vntheta="Agent"/>
+       <vnrole vncls="25.3" vntheta="Agent"/></role>
+ <role descr="entity tagged" n="1">
+       <vnrole vncls="9.9" vntheta="Destination"/>
+       <vnrole vncls="25.3" vntheta="Destination"/></role> 
+ <role descr="label" n="2">
+       <vnrole vncls="9.9" vntheta="Theme"/>
+       <vnrole vncls="25.3" vntheta="Theme"/></role> 
+</roles>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+ Hyundai Motor America , [*-1] fighting quality complaints , declining sales and management turmoil , yesterday unveiled its 1990 ad strategy , tagged [*] `` We 're Making More Sense Than Ever . ''
+</text>
+	<rel>tagged</rel>
+	<arg n="1">[*] -&gt;  its 1990 ad strategy</arg>
+	<arg n="2">We 're Making More Sense Than Ever</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

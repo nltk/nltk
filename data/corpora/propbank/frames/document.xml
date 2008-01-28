@@ -1,0 +1,43 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="document">
+<note>
+  Frames file for 'document' based on survey of sentences in the WSJ
+  corpus.  
+</note>
+
+
+<roleset id="document.01" name="to support with evidence" vncls="-">
+<roles>
+  <role descr="provider of evidence, agent" n="0"/>
+  <role descr="thing documented" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ Mr. Good , who [*T*-1] documents these things as best he can [*?*] , provides an official explanation in the form of a memorandum from Chief of Staff George C. Marshall to President Roosevelt : `` 1,430 pounds of ammunition , '' he wrote his commander in chief [0] [*T*-2] , were expended [*-3] on `` unidentified aircraft , '' flying at speeds as slow as 200 mph and elevations between 9,000 and 18,000 feet .
+</text>
+	<arg n="0">[*T*-1] -&gt;  who -&gt;  Mr. Good</arg>
+	<rel>documents</rel>
+	<arg n="1">these things</arg>
+	<arg f="MNR" n="M">as best he can [*?*]</arg>
+</example>
+
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="past" voice="passive"/>
+<text>
+ All this was recognized and documented [*-1] in the succeeding years by economists , some of whom [*T*-2] worked in the Reagan administration [*-3] to lift this burden from the American people , states and local governments .
+</text>
+	<rel>documented</rel>
+	<arg n="1">[*-1] -&gt;  All this</arg>
+	<arg f="TMP" n="M">in the succeeding years</arg>
+	<arg f="by" n="0">economists , some of whom [*T*-2] worked in the Reagan administration [*-3] to lift this burden from the American people , states and local governments</arg>
+</example>
+
+</roleset>
+</predicate>
+
+
+</frameset>

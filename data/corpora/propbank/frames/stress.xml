@@ -1,0 +1,44 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="stress">
+<note>
+  Frames file for 'stress' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="stress.01" name="to single out as important" vncls="-">
+<roles>
+  <role descr="stresser, agent" n="0"></role>
+  <role descr="thing stressed" n="1"></role>
+  <role descr="attribute" n="2"></role>
+</roles>
+
+<example name="all arguments">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ The State Department stressed the pre-1933 debts as the key to [*] satisfying the Johnson Act .
+</text>
+	<arg n="0">The State Department</arg>
+	<rel>stressed</rel>
+	<arg n="1">the pre-1933 debts</arg>
+	<arg f="as" n="2">the key to [*] satisfying the Johnson Act</arg>
+</example>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ In Syracuse , N.Y. , DyDee Service 's new marketing push stresses environmental awareness .
+</text>
+	<arg f="LOC" n="M">In Syracuse , N.Y. ,</arg>
+	<arg n="0">DyDee Service 's new marketing push</arg>
+	<rel>stresses</rel>
+	<arg n="1">environmental awareness</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

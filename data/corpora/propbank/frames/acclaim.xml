@@ -1,0 +1,45 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="acclaim">
+<note>
+  Frames file for 'acclaim' based on sentences in wsj.  Verbnet entry
+  33, Framenet entry Judgement communication.
+</note>
+
+<roleset id="acclaim.01" name="approve of loudly" vncls="33">
+<roles>
+  <role descr="acclaimer" n="0"><vnrole vncls="33" vntheta="Agent"/></role>
+  <role descr="acclaimed" n="1"><vnrole vncls="33" vntheta="Theme"/></role>
+  <role descr="cause" n="2"><vnrole vncls="33" vntheta="Cause"/></role>
+</roles>
+
+<example name="usually just transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+    On Oct. 3, following conversations with Secretary of State James
+    Baker, Soviet Foreign Minister Eduard Shevardnadze arrived in
+    Managua to acclaim ``Nicaragua's great peace efforts.'' 
+</text>
+        <arg n="0">[*-1] -&gt;  Soviet Foreign Minister Eduard Shevardnadze</arg>
+        <rel>acclaim</rel>
+        <arg n="1">Nicaragua's great peace efforts</arg>
+</example>
+
+<example name="oddly with cause">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    Mary acclaimed John for cleaning the garage.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>acclaimed</rel>
+  <arg n="1">John</arg>
+  <arg f="for" n="2">cleaning the garage</arg>
+</example>
+
+<note>
+Usually the cause and the acclaimed party are merged, as in the first example.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

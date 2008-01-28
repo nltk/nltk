@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="metabolize">
+<note>
+  Frames file for 'metabolize' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="metabolize.01" name="cause a change in something" vncls="-">
+<roles>
+  <role descr="causer of change" n="0"/>
+  <role descr="thing changing" n="1"/>
+  <role descr="source, original substance" n="2"/>
+</roles>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="third" tense="present" voice="passive"/>
+<text>
+    The drug, discovered in 1984, is metabolized [*-1] from soil
+    fungus found in Japan. 
+</text>
+        <rel>metabolized</rel>
+        <arg n="1">[*-1] -&gt;  The drug, discovered in 1984,</arg>
+        <arg f="from" n="2">soil fungus found in Japan</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,226 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="snap">
+<note>
+Frames file for 'snap' based on sentences in financial subcorpus and
+automatic expansion via verbnet.
+</note>
+
+<roleset id="snap.01" name="say angrily" vncls="37.3 38">
+<roles>
+  <role descr="speaker" n="0">
+	<vnrole vncls="38" vntheta="Agent"/>
+        <vnrole vncls="37.3" vntheta="Agent"/></role>
+  <role descr="utterance" n="1">
+	<vnrole vncls="38" vntheta="Theme"/>
+        <vnrole vncls="37.3" vntheta="Topic"/></role>
+  <role descr="hearer" n="2">
+	<vnrole vncls="38" vntheta="Recipient"/>
+        <vnrole vncls="37.3" vntheta="Recipient"/></role>
+</roles>
+
+<example name="buncha irrelevant args" src="snap.01">
+<text>
+    It is interesting to see the fundamental stock pickers snap
+    ``foul'' on program trading when the markets decline, while
+    hailing the great values still abounding as the markets rise. 
+</text>
+	<arg n="0">the fundamental stock pickers</arg>
+	<rel>snap</rel>
+	<arg n="1">foul</arg>
+	<arg n="M">on program trading</arg>
+	<arg f="TMP" n="M">when the markets decline </arg>
+	<arg f="ADV" n="M">while hailing the great values still
+	abounding as the markets rise</arg> 
+</example>
+
+<example name="with hearer" src="snap.01">
+  <text>
+    John angrily snapped at Mary's.
+  </text>
+  <arg n="0">John</arg>
+  <arg f="MNR" n="m">angrily</arg>
+  <rel>snapped</rel>
+  <arg f="at" n="2">Mary</arg>
+</example>
+</roleset>
+
+<roleset id="snap.03" name="snap the fingers" vncls="40.3.2">
+<roles>
+  <role descr="snapper" n="0">
+	<vnrole vncls="40.3.2" vntheta="Agent"/></role>
+  <role descr="fingers" n="1">
+	<vnrole vncls="40.3.2" vntheta="Patient"/></role>
+  <role descr="at whom/what" n="2">
+	<vnrole vncls="40.3.2" vntheta="Recipient"/></role>
+</roles>
+
+<example name="all args">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    Mary snapped her fingers at John's rude behavior.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>snapped</rel>
+  <arg n="1">her fingers</arg>
+  <arg f="at" n="2">John's rude behavior</arg>
+</example>
+
+<note>
+Note that the &quot;fingers&quot; argument is often deleted as redundant; few
+people can snap their toes, for example.
+</note>
+
+</roleset>
+
+<roleset id="snap.04" name="make snapping noises" vncls="43.2">
+<roles>
+  <role descr="maker of sounds" n="0">
+        <vnrole vncls="43.2" vntheta="Agent"/></role>
+</roles>
+
+<example name="ergative">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+     John heard the logs snapping in the fireplace.
+</text>
+        <arg n="0">the logs</arg>
+        <rel>snapping</rel>
+        <arg f="LOC" n="M">in the fireplace</arg>
+</example>
+</roleset>
+
+<roleset id="snap.05" name="break into pieces" vncls="45.1">
+<roles>
+  <role descr="breaker" n="0">
+	<vnrole vncls="45.1" vntheta="Agent"/></role>
+  <role descr="thing broken" n="1">
+	<vnrole vncls="45.1" vntheta="Patient"/></role>
+  <role descr="instrument" n="2">
+	<vnrole vncls="45.1" vntheta="Instrument"/></role>
+  <role descr="pieces" n="3"/>
+</roles>
+
+<example name="typical usage">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ The Amex Market Value Index snapped a five-session losing streak by
+ rising 2.91 to 378.07. 
+</text>
+        <arg n="0">The Amex Market Value Index</arg>
+        <rel>snapped</rel>
+        <arg n="1">a five-session losing streak</arg>
+        <arg f="MNR" n="M">by  rising 2.91 to 378.07</arg>
+</example>
+
+<example name="more args" src="chip.01">
+  <text>
+   John snapped pieces off the honkin' huge block-o-chocolate with 
+   his fingers.
+  </text>
+  <arg n="0">John</arg>
+  <rel>snapped</rel>
+  <arg n="3">pieces</arg>
+  <arg f="off" n="1">the honkin' huge block-o-chocolate</arg>
+  <arg f="with" n="2">his fingers</arg>
+</example>
+
+</roleset>
+
+<roleset id="snap.07" name="move quickly" vncls="-">
+<roles>
+	<role descr="mover" n="0"/>
+	<role descr="thing in motion" n="1"/>
+	<role descr="destination" n="2"/>
+</roles>
+
+<example name="with direction and destination">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    Sun Microsystems Inc., *trace* snapping back to profitability
+    after its first quarterly loss as a public firm, said it earned
+    $5.2 million, or seven cents a share, in the fiscal first
+    quarter. 
+</text>
+        <arg n="1">*trace* -&gt;  Sun Microsystems Inc.</arg>
+        <rel>snapping</rel>
+        <arg f="DIR" n="M">back</arg>
+        <arg f="to" n="2">profitability</arg>
+        <arg f="TMP" n="M">after its first quarterly loss as a public
+        firm</arg></example> 
+
+<example name="with agent">
+  <inflection aspect="ns" form="full" person="ns" tense="ns" voice="active"/>
+  <text>
+     A loud noise made John snap his head around.
+  </text>
+  <arg n="0">John</arg>
+  <rel>snap</rel>
+  <arg n="1">his head</arg>
+  <arg f="dir" n="m">around</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="snap_off">
+
+<roleset id="snap.06" name="break into pieces" vncls="45.1">
+<roles>
+  <role descr="breaker" n="0">
+	<vnrole vncls="45.1" vntheta="Agent"/></role>
+  <role descr="piece(s)" n="1"/>
+  <role descr="whole" n="2">
+	<vnrole vncls="45.1" vntheta="Patient"/></role>
+</roles>
+
+<example name="all args" src="break.04">
+  <text>
+    John snapped off a twig from the tree.
+  </text>
+  <arg n="0">John</arg>
+  <rel>snapped off</rel>
+  <arg n="1">a twig</arg>
+  <arg f="from" n="2">the tree</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="snap_up">
+
+<roleset id="snap.08" name="acquire quickly" vncls="-">
+<roles>
+      <role descr="agent, entity acquiring something" n="0"/>
+      <role descr="thing acquired" n="1"/>
+      <role descr="seller" n="2"/>
+      <role descr="price paid" n="3"/>
+      <role descr="benefactive" n="4"/>
+</roles>
+
+<example name="just transitive">
+<inflection aspect="perfect" form="participle" person="third" tense="present" voice="active"/>
+<text>
+    If the Paribas bid succeeds, it will be the second time in two
+    months a big French investment banking group has snapped up an
+    insurance group. 
+</text>
+        <arg n="0">a big French investment banking group</arg>
+        <rel>[ snapped] [ up]</rel>
+        <arg n="1">an insurance group</arg>
+        <arg f="TMP" n="M">*trace* -&gt; *trace* -&gt;  the second time</arg>
+</example>
+
+<note>
+I sorta doubt the higher args will appear, but it's theoretically possible.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

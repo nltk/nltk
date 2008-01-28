@@ -1,0 +1,44 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="respect">
+<note>
+  Frames file for 'respect' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="respect.01" name="to regard highly" vncls="-">
+<roles>
+  <role descr="regarder, respecter, agent" n="0"/>
+  <role descr="entity respected" n="1"/>
+  <role descr="secondary predicate" n="2"/>
+</roles>
+
+<example name="with Arg2">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+ Mr. Bernstein , a tall , energetic man who [*T*-39] is widely respected as a publishing executive , has spent much of his time in recent years on human rights issues .
+</text>
+	<arg n="1">[*T*-39] -&gt;  who -&gt;  a tall , energetic man</arg>
+	<arg f="MNR" n="M">widely</arg>
+	<rel>respected</rel>
+	<arg f="as" n="2">a publishing executive</arg>
+</example>
+
+
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ Instead , Mr. Bush and his aides made it clear [0] they respected Congress 's role and felt [0] they could work with the conservative Mr. Boren and the moderate Mr. Cohen [*-1] to iron out their differences .
+</text>
+	<arg n="0">they</arg>
+	<rel>respected</rel>
+	<arg n="1">Congress 's role</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

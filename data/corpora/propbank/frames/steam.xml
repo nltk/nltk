@@ -1,0 +1,75 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="steam">
+<note>
+  Frames file for 'steam' based on sentences in wsj.  Verbnet entries
+  45.3 and 43.4, Framenet entry Apply heat.
+</note>
+
+<roleset id="steam.01" name="cook by applying steam" vncls="45.3">
+<roles>
+  <role descr="cook" n="0"><vnrole vncls="45.3" vntheta="Agent"/></role>
+  <role descr="food" n="1"><vnrole vncls="45.3" vntheta="Patient"/></role>
+</roles>
+
+<example name="down home cooking">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John steamed 20 pounds of Brussels sprouts for dinner.
+  </text>
+  <arg n="0">John</arg>
+  <rel>steamed</rel>
+  <arg n="1">20 pounds of Brussels sprouts</arg>
+  <arg f="ADV" n="m">for dinner</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="steam.02" name="emit steam" vncls="43.4">
+<roles>
+  <role descr="steamer" n="1"><vnrole vncls="43.4" vntheta="Theme"/></role>
+</roles>
+
+<example name="like a volcano">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John's coffee steamed, then exploded in his face.
+  </text>
+  <arg n="1">John's coffee</arg>
+  <rel>steamed</rel>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="steam.03" name="manner of motion" vncls="-">
+<roles>
+  <role descr="entity in motion" n="0"/>
+  <role descr="path" n="1"/>
+</roles>
+
+<example name="full steam ahead!">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Instead, the rally only paused for about 25 minutes and then
+    steamed forward as institutions resumed buying. 
+</text>
+        <arg f="DIS" n="M">Instead</arg>
+        <arg n="0">the rally</arg>
+        <arg f="TMP" n="M">then</arg>
+        <rel>steamed</rel>
+        <arg f="DIR" n="1">forward</arg>
+        <arg f="TMP" n="M">as institutions resumed buying</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

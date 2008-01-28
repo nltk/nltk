@@ -1,0 +1,43 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="navigate">
+<note>
+  Frames file for 'navigate' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="navigate.01" name="steer" vncls="-">
+<roles>
+  <role descr="steerer" n="0"/>
+  <role descr="thing steered" n="1"/>
+  <role descr="path" n="2"/>
+</roles>
+
+<example name="agent and path">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    The Federal Reserve Board's plan for a ``soft landing,'' he says,
+    requires the Fed to navigate ``an ever-narrowing corridor.'' 
+</text>
+        <arg n="0">the Fed</arg>
+        <rel>navigate</rel>
+        <arg n="2">an ever-narrowing corridor</arg>
+</example>
+
+<example name="with vessel">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John navigated his car through the maze of shopping carts in the
+     parking lot.
+  </text>
+  <arg n="0">John</arg>
+  <rel>navigated</rel>
+  <arg n="1">his car</arg>
+  <arg f="through" n="2">the maze of shopping carts in the parking lot</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,35 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="enlighten">
+<note>
+  Frames file for 'enlighten' based on sentences in wsj.  Verbnet
+  entry 31.1, which seems just wrong to me.
+</note>
+
+<roleset id="enlighten.01" name="cause to have knowledge" vncls="31.1">
+<roles>
+  <role descr="causer of knowledge" n="0"><vnrole vncls="31.1" vntheta="Cause"/></role>
+  <role descr="enlightened entity" n="1"><vnrole vncls="31.1" vntheta="Experiencer"/></role>
+  <role descr="knowledge itself, topic" n="2"/>
+  <role descr="instrument" n="3"/>
+</roles>
+
+<example name="all args">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    To some extent, this tendency emerges whenever the show tries
+    [*-2] to enlighten us about ethnic stereotypes by reversing them. 
+</text>
+        <arg n="0">[*-2] -&gt;  the show</arg>
+        <rel>enlighten</rel>
+        <arg n="1">us</arg>
+        <arg f="about" n="2">ethnic stereotypes</arg>
+        <arg f="by" n="3">reversing them</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

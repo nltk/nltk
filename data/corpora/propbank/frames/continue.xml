@@ -1,0 +1,134 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="continue">
+<note>
+  Frames file for 'continue' based on survey of initial sentences from big
+  corpus, with comparison to 'keep'
+</note>
+
+<roleset id="continue.01" name="aspectual" vncls="55.1">
+<roles>
+  <role descr="causer of continuation" n="0"/>
+  <role descr="thing continuing" n="1"/>
+</roles>
+
+<example name="agent and event">
+  <text>
+    Investors continue *trace* to pour cash into money funds.
+  </text>
+  <arg n="0">Investors</arg>
+  <rel>continue</rel>
+  <arg n="1">*trace* to pour cash into money funds</arg>
+</example>
+
+<example name="event, no agent">
+<inflection person="ns" tense="ns" aspect="ns" voice="ns" form="ns"/>
+<text>
+     New loans continue [*-1] to slow; they were $6.6 million in the
+     quarter compared with $361.8 million a year ago. 
+</text>
+        <arg n="1">[New loans][to slow]</arg>
+        <rel>continue</rel>
+<note>
+The loans have no control over whether they continue slowing or not;
+this is different from the investors above who can control their
+pouring of cash.
+</note>
+
+</example>
+
+<example name="arg as noun">
+  <text>
+    ...if the current yield continues for a year.
+  </text>
+  <arg n="1">the current yield</arg>
+  <rel>continues</rel>
+  <arg f="TMP" n="M">for a year</arg>
+</example>
+
+<example name="just an agent-thingy">
+  <text>
+    She became an abortionist accidentally, and *trace* continued
+    because ...  
+  </text>
+  <arg n="0">*trace* -> she</arg>
+  <rel>continued</rel>
+  <arg f="CAU" n="M">because ... </arg>
+<note>The idea is the verbal part of the continued event is unstated: "she continued to be an abortionist."</note>
+</example>
+</roleset>
+
+<roleset id="continue.02" name="speaking" vncls="-">
+
+<roles>
+  <role descr="sayer" n="0"/>
+  <role descr="utterance" n="1"/>
+  <role descr="hearer" n="2"/>
+  <role descr="attributive" n="3"/>
+</roles>
+
+<example name="transitive">
+  <text>  
+    A Lorillard spokeswoman continued &quot;This is an old story.&quot;
+  </text>
+  <arg n="0">A Lorillard spokeswoman</arg>
+  <rel>continued</rel>
+  <arg n="1">&quot;This is an old story.&quot;</arg>
+</example>
+
+<example name="fronted">
+  <text>  
+    Kent cigarettes were sold, the company continued *Trace*
+  </text>
+  <arg n="0">the company</arg>
+  <rel>commented</rel>
+  <arg n="1">*Trace*</arg>
+<note> *Trace* --&gt; &quot;Kent cigarettes were sold&quot; </note>
+</example>
+
+<example name="inverted">
+  <text>  
+    What matters is what advertisers will pay, continued *Trace* Newsweek's chairman
+  </text>
+  <arg n="1">*T*</arg>
+  <rel>continued</rel>
+  <arg n="0">Newsweek's chairman</arg>
+
+<note>(*T* --&gt; &quot;What matters is what advertisers will pay&quot;)</note>
+</example>
+
+<example name="split">
+  <text>  
+    &quot;What you have to understand,&quot; continued John, 
+    &quot;is that Philly literally stinks.&quot;
+  </text>
+  <arg n="0">John</arg>
+  <arg n="1">&quot;What you have to understand,&quot; &quot;
+             is that Philly literally stinks.&quot;</arg>
+</example>
+
+<example name="with listener">
+<note>(unlikely, probably impossible)</note>
+  <text>  
+    John continued to Mary: &quot;you're an idiot.&quot;
+  </text>
+  <arg n="0">John</arg>
+  <rel>continued</rel>
+  <arg f="2" n="2">to Mary</arg>
+  <arg n="1">&quot;you're an idiot.&quot;</arg>
+</example>
+
+<example name="weird, attributive usage: (again probably impossible)">
+  <text>  
+    &quot;Well that's odd,&quot; continued John of the disappearance of his nose.
+  </text>
+  <arg n="1">&quot;Well that's odd,&quot;</arg>
+  <rel>continued</rel>
+  <arg n="0">John</arg>
+  <arg f="of" n="3">of the disappearance of his nose.</arg>
+</example>
+</roleset>
+</predicate>
+
+
+</frameset>

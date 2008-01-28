@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="spurn">
+<note>
+  Frames file for 'spurn' based on sentences in financial subcorpus.
+  No verbnet entry.  Comparison with 'rebuff'.  Why don't I have
+  'reject' yet?
+</note>
+
+<roleset id="spurn.01" name="rebuff, reject">
+<roles>
+  <role descr="rejecter" n="0"/>
+  <role descr="thing rejected" n="1"/>
+</roles>
+
+<example name="transitive">
+<text>
+    ESB spurned Inco and within five days ESB had a ``white knight''...
+</text>
+        <arg n="0">ESB</arg>
+        <rel>spurned</rel>
+        <arg n="1">Inco</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

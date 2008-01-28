@@ -1,0 +1,175 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="bear">
+<note>
+  Frames file for 'bear' based on sentences in financial subcorpus.
+  No access to verbnet.  Two senses, comparison to 'hold' and 'move'.
+</note>
+
+<roleset id="bear.01" name="hold, support, endure">
+<roles>
+  <role descr="holder" n="0"/>
+  <role descr="thing held" n="1"/>
+  <role descr="benefactive" n="2"/>
+  <role descr="secondary attribute of thing held" n="3"/>
+</roles>
+
+<example name="endure">
+<text>
+    ...profit-taking weighed on the market, with blue-chips bearing
+    the brunt of the selling. 
+</text>
+        <arg n="0">blue-chips</arg>
+        <rel>bearing</rel>
+        <arg n="1">the brunt of the selling</arg>
+</example>
+
+<example name="hold">
+<text>
+    ``...'' said Finis Conner, chief executive officer and founder of
+    the firm that *trace* bears his name. 
+</text>
+        <arg n="0">*trace* -&gt;  that -&gt; the firm</arg>
+        <rel>bears</rel>
+        <arg n="1">his name</arg>
+</example>
+
+<example name="with attribute">
+<text>
+    The new notes will bear interest at 5.5% through July 31, 1991,
+    and thereafter at 10%. 
+</text>
+        <arg n="0">The new notes</arg>
+        <arg f="MOD" n="M">will</arg>
+        <rel>bear</rel>
+        <arg n="1">interest</arg>
+        <arg n="3">at 5.5% through July 31, 1991, and
+        thereafter at 10%</arg> 
+</example>
+
+<note>
+Yes, this is really several different senses, but they all take the
+same syntax.
+</note>
+
+</roleset>
+
+<roleset id="bear.02" name="bear children">
+<roles>
+  <role descr="mother" n="0"/>
+  <role descr="child" n="1"/>
+</roles>
+
+<example name="durn young'uns">
+<text>
+    ``Most of them weren't even born the last time the painting was
+    displayed publicly,'' he says. 
+</text>
+        <arg n="1">Most of them</arg>
+        <arg f="NEG" n="M">n't</arg>
+        <arg f="DIS" n="M">even</arg>
+        <rel>born</rel>
+        <arg f="TMP" n="M">the last time the painting was displayed
+        publicly</arg> 
+<note>
+I doubt the active form will ever occur; really this is a deponent
+verb and only has the arg1.
+</note>
+</example>
+
+</roleset>
+
+<roleset id="bear.03" name="move">
+<roles>
+  <role descr="entity in motion" n="1"/>
+</roles>
+
+<example name="name the movie">
+  <text>
+    &quot;*trace* Bear left!  Move the thing!  And, that other thing!&quot;
+  </text>
+  <arg n="1">*trace*</arg>
+  <rel>Bear</rel>
+  <arg f="DIR" n="m">left</arg>
+</example>
+
+<note>
+OK, not a great example, but you get the idea and I doubt this usage
+will come up anyway.
+</note>
+
+</roleset>
+
+<roleset id="bear.06" vncls="-" name="has relation to">
+<roles>
+  <role n="1"  descr="topic"/>
+  <role n="2"  descr="related topic"/>
+</roles>
+
+<example name="bearly there?">
+  <inflection person="third" tense="present" aspect="ns" voice="active" form="full"/>
+  <text>
+    Now, scholars in fulfilling their responsibility do not claim the
+    right to invade every collection of papers that [*T*-1] bears upon
+    their topics of investigation. 
+  </text>
+  <arg n="1"        >[*T*-1] -> that -> every collection of papers</arg>
+  <rel              >bears</rel>
+  <arg n="2" f="upon">their topics of investigation</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="bear_up">
+
+<roleset id="bear.04" name="survive, exist">
+<roles>
+  <role descr="entity existing" n="1"/>
+</roles>
+
+<example name="poor John">
+  <text>
+    Considering everything I've put him through, John is bearing up
+    surprisingly well.
+  </text>
+  <arg f="DIS" n="m">Considering everything I've put him through</arg>
+  <arg n="1">John</arg>
+  <rel>bearing up</rel>
+  <arg f="MNR" n="m">surprisingly well</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="bear_out">
+
+<roleset id="bear.05" name="bear out: confirm?  support again?">
+<roles>
+  <role descr="confirmer, agent" n="0"/>
+  <role descr="thing confirmed, patient" n="1"/>
+</roles>
+
+<example name="only example so far">
+<text>
+    That was borne *trace* out by the Justice Department's decision
+    to settle the case. 
+</text>
+        <rel>[ borne] [ out]</rel>
+        <arg n="1">*trace* -&gt;  That</arg>
+        <arg f="by" n="0">the Justice Department's decision to settle
+        the case</arg> 
+</example>
+
+<note>
+I'm not sure what the sense is here; hopefully another example will
+come along and clear things up.  If you find the example, please send
+it along to me.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,45 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="sponsor">
+<note>
+  Frames file for 'sponsor' based on sentences in wsj.  Verbnet entry 29.8.
+</note>
+
+<roleset id="sponsor.01" name="support openly" vncls="29.8">
+<roles>
+  <role descr="sponsor" n="0"><vnrole vncls="29.8" vntheta="Agent"/></role>
+  <role descr="thing sponsored" n="1"><vnrole vncls="29.8" vntheta="Theme"/></role>
+</roles>
+
+<example name="active">
+<inflection aspect="progressive" form="participle" person="third" tense="present" voice="active"/>
+<text>
+    So says the Commonwealth Fund, a New York philanthropist that's
+    sponsoring a $1 million project to develop joint masters in
+    business and nursing programs at 10 universities  ... . 
+</text>
+        <arg n="0">*trace* -&gt;  that -&gt;  a New York philanthropist</arg>
+        <rel>sponsoring</rel>
+        <arg n="1">a $1 million project to develop joint masters in
+        business and nursing programs at 10 universities </arg> 
+</example>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    In the 1920s, a young schoolteacher, John T. Scopes, volunteered
+    to be a guinea pig in a test case sponsored *trace* by the
+    American Civil Liberties Union to challenge a ban on the teaching
+    of evolution imposed by the Tennessee Legislature. 
+</text>
+        <rel>sponsored</rel>
+        <arg n="1">*trace* -&gt;  a test case</arg>
+        <arg f="by" n="0">the American Civil Liberties Union</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

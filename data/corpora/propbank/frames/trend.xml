@@ -1,0 +1,34 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="trend">
+<note>
+  Frames file for 'trend' based on sentences in wsj.  No Verbnet
+  entry.  Verbing weirds language.
+</note>
+
+<roleset id="trend.01" name="be part of a trend" vncls="-">
+<roles>
+  <role descr="theme" n="1"/>
+  <role descr="attribute of arg1" n="2"/>
+</roles>
+
+<example name="typical usage">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    Half of those polled see the currency trending lower over the next
+    three months, while the others forecast a modest rebound after the
+    New Year. 
+</text>
+        <arg n="1">the currency</arg>
+        <rel>trending</rel>
+        <arg n="2">lower</arg>
+        <arg f="TMP" n="M">over the next three months</arg>
+</example>
+
+<note>
+cf. tend.02
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="second-guess">
+<note>
+  Frames file for 'second-guess' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="second-guess.01" name="criticize, usually" vncls="-">
+<roles>
+  <role descr="critic" n="0"/>
+  <role descr="criticized" n="1"/>
+</roles>
+
+<example name="the one example">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    And of course, doing anything that [*T*-2] might be second-guessed
+    [*-1] by Congress carries heavy penalties. 
+</text>
+        <arg f="MOD" n="M">might</arg>
+        <rel>second-guessed</rel>
+        <arg n="1">[*-1] -&gt;  [*T*-2] -&gt;  that -&gt;  anything</arg>
+        <arg f="by" n="0">Congress</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="overprice">
+<note>
+  Frames file for 'overprice' based on sentences in wsj.  No Verbnet
+  entry, surprise surprise.
+</note>
+
+<roleset id="overprice.01" name="charge too much" vncls="-">
+<roles>
+  <role descr="seller" n="0"/>
+  <role descr="commodity" n="1"/>
+</roles>
+
+<example name="passive, no agent">
+<inflection aspect="ns" form="participle" person="third" tense="present" voice="passive"/>
+<text>
+    ``Or if they feel the wine is overpriced *trace* and they can get
+    something equally good for less.'' 
+</text>
+        <rel>overpriced</rel>
+        <arg n="1">*trace* -&gt;  the wine</arg>
+</example>
+
+<note>
+Probably should be viewed as an adjective, since I can't get any good
+readings with an agent present.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

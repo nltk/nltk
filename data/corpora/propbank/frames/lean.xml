@@ -1,0 +1,115 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="lean">
+<note>
+  Frames file for 'lean' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="lean.01" name="to incline or cause to incline" vncls="9.2-1 47.6 50">
+<roles>
+  <role descr="causer of leaning" n="0">
+	<vnrole vncls="47.6" vntheta="Agent"/>
+        <vnrole vncls="9.2-1" vntheta="Agent"/></role>
+  <role descr="entity leaning, if non-volitional" n="1">
+	<vnrole vncls="47.6" vntheta="Theme"/>
+        <vnrole vncls="9.2-1" vntheta="Theme"/>
+        <vnrole vncls="50" vntheta="Agent"/></role>
+  <role descr="direction" n="2">
+	<vnrole vncls="47.6" vntheta="Location"/>
+        <vnrole vncls="9.2-1" vntheta="Destination"/>
+        <vnrole vncls="50" vntheta="Location"/></role>
+</roles>
+
+
+<example name="agentive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ I had [*-3] to reach back to French 101 when the monsieur avec clipboard leaned over my shoulder during the coffee phase of dinner and asked whether I wanted [*-2] to ride in a montgolfiere [*T*-1] .
+</text>
+	<arg n="0">the monsieur avec clipboard</arg>
+	<rel>leaned</rel>
+	<arg f="over" n="2">my shoulder</arg>
+	<arg f="TMP" n="M">during the coffee phase of dinner</arg>
+</example>
+
+
+<example name="intransitive with Arg1">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ The remainder of the house leans precariously against a sturdy oak tree .
+</text>
+	<arg n="1">The remainder of the house</arg>
+	<rel>leans</rel>
+	<arg f="MNR" n="M">precariously</arg>
+	<arg f="against" n="2">a sturdy oak tree</arg>
+</example>
+
+
+<example name="lean against">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+ `` Country people breed pigs , '' says [*T*-1] Mr. Chojnowski , [*-2] leaning against the back of his truck .
+</text>
+	<arg n="0">[*-2] -&gt;  Mr. Chojnowski</arg>
+	<rel>leaning</rel>
+	<arg f="against" n="2">the back of his truck</arg>
+</example>
+
+
+
+<example name="lean to">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+ The 45-year-old Mr. Giuliani has run a negative campaign [*-1] to pick up votes leaning to Mr. Dinkins .
+</text>
+	<arg n="1">votes</arg>
+	<rel>leaning</rel>
+	<arg f="to" n="2">Mr. Dinkins</arg>
+</example>
+
+
+<example name="lean toward">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+ Many economists see even slower GNP growth for the remainder of the year , with some leaning more strongly toward a possible recession .
+</text>
+	<arg n="0">some</arg>
+	<rel>leaning</rel>
+	<arg f="MNR" n="M">more strongly</arg>
+	<arg f="toward" n="2">a possible recession</arg>
+</example>
+
+
+<example name="non-prepositional Arg2">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ If these assumptions hold , voters in races for Congress face what [*T*-2] in economic theory is called [*-1] a prisoner 's dilemma and have an incentive [*ICH*-3] , at the margin , [*] to lean Democratic .
+</text>
+	<arg n="0">[*] -&gt;  voters in races for Congress</arg>
+	<rel>lean</rel>
+	<arg n="2">Democratic</arg>
+</example>
+
+
+
+<example name="lean forward">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ Customers lean forward , rest their knees on side supports and bury their face in padding on the back of the chair .
+</text>
+	<arg n="0">Customers</arg>
+	<rel>lean</rel>
+	<arg f="DIR" n="2">forward</arg>
+</example>
+
+<note>
+  Example with all arguments from Wordnet: &quot;He leaned his rifle against the
+wall&quot;
+</note>
+
+</roleset>
+</predicate>
+
+
+</frameset>

@@ -1,0 +1,44 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="materialize">
+<note>
+  Frames file for 'materialize' based on sentences in financial
+  subcorpus.  Verbnet class 48.1.1, no indication of other members.
+  Comparison with 'appear'.
+</note>
+
+<roleset id="materialize.01" name="come about" vncls="48.1.1">
+<roles>
+  <role descr="thing appearing, materializing" n="1">
+		
+  <vnrole vncls="48.1.1" vntheta="Theme"/></role>
+
+</roles>
+
+<example name="typical usage">
+<text>
+    A spokesman for Temple estimated that Sea Containers' plan -- if
+    all the asset sales materialize -- would result in shareholders
+    receiving only $36 to $45 a share in cash. 
+</text>
+        <arg n="1">all the asset sales</arg>
+        <rel>materialize</rel>
+</example>
+
+<example name="with argM">
+<text>
+    ``If a bid materializes at that price, shareholders will have
+    every reason  to be glad, but the question of financing still
+    remains.'' 
+</text>
+        <arg n="1">a bid</arg>
+        <rel>materializes</rel>
+        <arg n="M">at that price</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

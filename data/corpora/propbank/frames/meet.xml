@@ -1,0 +1,114 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="meet">
+<note>
+  Frames file for 'meet' based on survey of initial sentences of big corpus
+</note>
+
+<roleset id="meet.01" name="arrive at, achieve" vncls="-">
+<roles>
+  <role descr="achiever, agent" n="0"/>
+  <role descr="goal" n="1"/>
+</roles>
+
+<example name="basic">
+  <text>
+    ...advertisers who in 1990 *trace* meet their 1989 spending.
+  </text>
+  <arg f="tmp" n="m">in 1990</arg>
+  <arg n="0">*trace=who=advertisers*</arg>
+  <rel>meet</rel>
+  <arg n="1">their 1989 spending</arg>
+</example>
+
+<example name="and again">
+  <text>
+    Ford should meet the deadline easily.
+  </text>
+  <arg n="0">Ford</arg>
+  <arg f="mod" n="m">should</arg>
+  <rel>meet</rel>
+  <arg n="1">the deadline</arg>
+  <arg f="mnr" n="m">easily</arg>
+</example>
+
+</roleset>
+
+<roleset id="meet.02" name="kennenlernen" vncls="36.3">
+<roles>
+  <role descr="meeter" n="0">
+		
+  <vnrole vncls="36.3" vntheta="Actor1"/></role>
+
+  <role descr="person / entity / object being met" n="1">
+		
+  <vnrole vncls="36.3" vntheta="Actor2"/></role>
+
+</roles>
+
+<example name="one-way">
+  <text>
+    Along the way he meets a solicitous Christian chauffeur who offers
+    the hero God's phone number.
+  </text>
+  <arg f="adv" n="m">Along the way</arg>
+  <arg n="0">he</arg>
+  <rel>meets</rel>
+  <arg n="1">a solicitous Christian chauffeur who offers the
+  hero God's phone number</arg> 
+</example>
+
+<example name="reflexive">
+  <text>
+    John and Mary met each other at a cocktail party.
+  </text>
+  <arg n="0">John and Mary</arg>
+  <rel>met</rel>
+  <arg f="REC" n="1">each other</arg>
+  <arg f="loc" n="m">at a cocktail party</arg>
+</example>
+</roleset>
+
+<roleset id="meet.03" name="get together (with)" vncls="36.3">
+<roles>
+  <role descr="one party" n="0">
+		
+  <vnrole vncls="36.3" vntheta="Actor1"/></role>
+
+  <role descr="other party" n="1">
+		
+  <vnrole vncls="36.3" vntheta="Actor2"/></role>
+
+</roles>
+
+<example name="non-personal party">
+  <text>
+    Argentine negotiator Carlos Carballo will meet with banks this week.
+  </text>
+  <arg n="0">Argentine negotiator Carlos Carballo</arg>
+  <arg f="mod" n="m">will</arg>
+  <rel>meet</rel>
+  <arg f="with" n="1">banks</arg>
+  <arg f="tmp" n="m">this week</arg>
+</example>
+
+<example name="all parties in arg0">
+  <text>
+    The economic and foreign ministers of 12 Asian and Pacific nations
+    will meet in Australia next week to discuss global trade as well
+    as regional matters such as transportation and
+    telecommunications.
+  </text>
+  <arg n="0">The economic and foreign ministers of 12 Asian
+  and Pacific nations</arg> 
+  <arg f="mod" n="m">will</arg>
+  <rel>meet</rel>
+  <arg f="loc" n="m">in Australia</arg>
+  <arg f="tmp" n="m">next week</arg>
+  <arg f="PNC" n="m">to discuss global trade as well
+    as regional matters such as transportation and telecommunications</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

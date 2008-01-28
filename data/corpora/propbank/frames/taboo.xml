@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="taboo">
+<note>
+  Frames file for 'taboo' based on sentences in wsj.  No access to
+  Verbnet at the moment.
+</note>
+
+<roleset id="taboo.01" name="make something be a taboo" vncls="-">
+<roles>
+  <role descr="causer of tabooment" n="0"/>
+  <role descr="taboo" n="1"/>
+</roles>
+
+<example name="the one example">
+<inflection aspect="ns" form="full" person="ns" tense="ns" voice="active"/>
+<text>
+    That's why it's dangerous to have well-intentioned thought police,
+    on college campuses and elsewhere, taboo all critical mention of
+    group differences. 
+</text>
+        <arg n="0">well-intentioned thought police</arg>
+        <arg f="LOC" n="M">on college campuses and elsewhere</arg>
+        <rel>taboo</rel>
+        <arg n="1">all critical mention of group differences</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

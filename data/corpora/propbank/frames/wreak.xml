@@ -1,0 +1,48 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="wreak">
+<note>
+  Frames file for 'wreak' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+
+<roleset id="wreak.01" name="to bring about, cause" vncls="-">
+<roles>
+  <role descr="causer" n="0"/>
+  <role descr="damage" n="1"/>
+  <role descr="wreaked on/with/to" n="2"/>
+</roles>
+
+<example name="all arguments">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ The March 24 oil spill soiled hundreds of miles of shoreline along Alaska 's southern coast and wreaked havoc with wildlife and the fishing industry .
+</text>
+	<arg n="0">The March 24 oil spill</arg>
+	<rel>wreaked</rel>
+	<arg n="1">havoc</arg>
+	<arg f="with" n="2">wildlife and the fishing industry</arg>
+</example>
+
+
+
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ Such a situation can wreak havoc , as [*] was shown [*-1] by the emergency that [*T*-2] developed in soybean futures trading this summer on the Chicago Board of Trade .
+</text>
+	<arg n="0">Such a situation</arg>
+	<arg f="MOD" n="M">can</arg>
+	<rel>wreak</rel>
+	<arg n="1">havoc</arg>
+	<arg f="ADV" n="M">as [*] was shown [*-1] by the emergency that [*T*-2] developed in soybean futures trading this summer on the Chicago Board of Trade</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

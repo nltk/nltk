@@ -1,0 +1,95 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<note>
+Frames file for 'operate' based on survey of first 100 or so sentences
+from big corpus, and comparison to 'work'
+</note>
+
+<note>
+Avoid adjectival usages like &quot;chief operating officer&quot;
+</note>
+
+<predicate lemma="operate">
+<roleset id="operate.01" name="cf work" vncls="45.4">
+<roles>
+  <role descr="agent, operator" n="0">
+		
+  <vnrole vncls="45.4" vntheta="Agent"/></role>
+
+  <role descr="thing operated" n="1">
+		
+  <vnrole vncls="45.4" vntheta="Patient"/></role>
+
+  <role descr="explicit patient (thing operated on)" n="2"/>
+  <role descr="explicit role" n="3"/>
+  <role descr="explicit instrument (with or on, ususally)" n="4"/>
+</roles>
+
+<example name="agentive">
+  <text>
+    Esso Australia operates the field.
+  </text>
+  <arg n="0">Esso Australia</arg>
+  <rel>operates</rel>
+  <arg n="1">the field</arg>
+</example>
+
+<example name="with manner">
+  <text>
+    The Czech dam can't be operated solely at peak periods.
+  </text>
+  <arg n="1">The Czech dam</arg>
+  <rel>can't be operated</rel>
+  <arg f="MNR" n="M">solely</arg>
+  <arg f="TMP" n="M">at peak periods</arg>
+</example>
+
+<example name="with patient">
+  <text>
+    Japanese salvage firms operated on the hulks of warships.
+  </text>
+  <arg n="0">Japanese salvage firms</arg>
+  <rel>operated</rel>
+  <arg f="ON" n="2">on the hulks of warships</arg>
+</example>
+
+<example name="with substrate">
+  <text>
+    The IRS operates on a computer system designed in 1961.
+  </text>
+  <arg n="0">The IRS</arg>
+  <rel>operates</rel>
+  <arg f="ON" n="4">on a computer system designed in 1961</arg>
+</example>
+  
+<example name="with locative">
+  <text>
+    The classroom itself operated on the periphery of this awful system.
+  </text>
+  <arg n="1">The classroom itself</arg>
+  <rel>operated</rel>
+  <arg f="LOC" n="M">on the periphery of this awful system</arg>
+</example>
+
+<example name="ergative">
+  <text>
+    The Texas Oil &amp; Gas division operates in the red.
+  </text>
+  <arg n="1">The Texas Oil &amp; Gas division</arg>
+  <rel>operates</rel>
+  <arg f="MNR" n="M">in the red</arg>
+</example>
+
+<example name="ergative and role">
+  <text>
+    The Tower family operates as a central hub in a network of computers
+  </text>
+  <arg n="1">The Tower family</arg>
+  <rel>operates</rel>
+  <arg f="AS" n="3">as a central hub</arg>
+  <arg f="LOC" n="M">in a network of computers</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

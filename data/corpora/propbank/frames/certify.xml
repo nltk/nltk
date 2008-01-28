@@ -1,0 +1,43 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="certify">
+<note>
+  Frames file for 'certify' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="certify.01" name="to confirm or declare" vncls="29.2">
+<roles>
+  <role descr="confirmer, declarer, agent" n="0"><vnrole vncls="29.2" vntheta="Agent"/></role>
+  <role descr="entity certified" n="1"><vnrole vncls="29.2" vntheta="Theme"/></role>
+  <role descr="secondary predicate" n="2"><vnrole vncls="29.2" vntheta="Predicate"/></role>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ [*-1] Alarmed , state and federal authorities are trying [*-1] to devise ways [0] [*] to certify and regulate planners [*T*-2] .
+</text>
+	<arg n="0">[*] -&gt;  [*-1] -&gt;  state and federal authorities</arg>
+	<rel>certify</rel>
+	<arg n="1">planners</arg>
+	<arg f="MNR" n="M">[*T*-2] -&gt;  [0] -&gt;  ways</arg>
+</example>
+
+
+<example name="passive">
+<inflection aspect="progressive" form="participle" person="ns" tense="past" voice="passive"/>
+<text>
+ Moscow , which [*T*-4] left the group in 1983 [*-5] to avoid explusion over allegations that political dissidents were being certified [*-2] as insane , could be suspended [*-1] if the misuse of psychiatry against dissenters is discovered [*-3] during a review within a year .
+</text>
+	<rel>certified</rel>
+	<arg n="1">[*-2] -&gt;  political dissidents</arg>
+	<arg f="as" n="2">insane</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

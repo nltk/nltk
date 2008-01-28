@@ -1,0 +1,53 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="yank">
+<note>
+Frames file for 'yank' based on sentences in financial subcorpus and
+automatic expansion via verbnet.
+</note>
+
+<roleset id="yank.01" name="pull roughly" vncls="12-1 23.2">
+<roles>
+	<role descr="puller" n="0">
+		
+		
+  <vnrole vncls="23.2" vntheta="Agent"/><vnrole vncls="12-1" vntheta="Agent"/></role>
+
+	<role descr="thing pulled" n="1">
+		
+		
+  <vnrole vncls="23.2" vntheta="Patient1"/><vnrole vncls="12-1" vntheta="Theme"/></role>
+
+	<role descr="source" n="2">
+		
+  <vnrole vncls="23.2" vntheta="Patient2"/></role>
+
+</roles>
+
+<example name="yank out">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    At the $932 million  T. Rowe Price High Yield Fund, investors
+    yanked out about $182 million in the past two months. 
+</text>
+        <arg f="LOC" n="M">At the $932 million T. Rowe Price High
+        Yield Fund</arg> 
+        <arg n="0">investors</arg>
+        <rel>yanked</rel>
+        <arg f="DIR" n="M">out</arg>
+        <arg n="1">about $182 million </arg>
+        <arg f="TMP" n="M">in the past two months</arg>
+</example>
+
+<example name="passive" src="draw.02">
+<text>
+    An index of economic activity yanked *trace* from the survey...
+</text>
+        <rel>yanked</rel>
+        <arg n="1">*trace* -&gt;  An index</arg>
+        <arg f="from" n="2">the survey</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

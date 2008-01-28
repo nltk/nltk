@@ -1,0 +1,70 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="confirm">
+<note>
+  Frames file for 'confirm' based on sentences in financial
+  subcorpus.  No access to verbnet.  Comparison to 'deny'.
+</note>
+
+<roleset id="confirm.01" name="confirm, attest the truth of a proposition" vncls="29.2">
+<roles>
+  <role descr="confirmer" n="0">
+		
+  <vnrole vncls="29.2" vntheta="Agent"/></role>
+
+  <role descr="thing confirmed, statement or proposition" n="1">
+		
+  <vnrole vncls="29.2" vntheta="Predicate"/></role>
+
+  <role descr="benefactive, hearer" n="2">
+		
+  <vnrole vncls="29.2" vntheta="Theme"/></role>
+
+</roles>
+
+<example name="justifying the comparison">
+<text>
+    He declined *trace* to confirm or deny reports that Provigo
+    executive Henri Roy is trying to put together a management buy-out
+    of the catalogue showroom unit. 
+</text>
+        <arg n="0">*trace* -&gt;  He</arg>
+        <rel>confirm</rel>
+        <arg n="1">reports that Provigo executive Henri Roy is trying
+        to put together a management buy-out of the catalogue showroom
+        unit</arg> 
+</example>
+
+<example name="watch the complementizers">
+<text>
+    GM confirmed Friday that it received permission late Thursday from
+    U.S. antitrust regulators to increase its Jaguar holdings past the
+    $15 million level. 
+</text>
+        <arg n="0">GM</arg>
+        <rel>confirmed</rel>
+        <arg f="TMP" n="M">Friday</arg>
+        <arg n="1">it received permission late Thursday from
+        U.S. antitrust regulators to increase its Jaguar holdings past
+        the $15 million level</arg> 
+</example>
+
+<example name="with hearer">
+  <text>
+    John confirmed to Mary that he'd been sleeping in a box under a
+    bridge.
+  </text>
+  <arg n="0">John</arg>
+  <rel>confirmed</rel>
+  <arg f="to" n="2">Mary</arg>
+  <arg n="1">he'd been sleeping in a box under a
+    bridge.</arg>
+</example>
+
+<note>
+I wonder if we'll get the religious sense of confirm?
+</note>
+
+</roleset>
+</predicate>
+</frameset>

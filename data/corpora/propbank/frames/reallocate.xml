@@ -1,0 +1,47 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="allocate">
+<note>
+    Frames file for 'reallocate' based on transformation of
+    'allocate'.  No actual sentences examined.
+</note>
+
+<roleset id="reallocate.01" name="give to, donate (again)" vncls="13.3">
+<roles>
+  <role descr="granter" n="0"><vnrole vncls="13.3" vntheta="Agent"/></role>
+  <role descr="thing granted" n="1"><vnrole vncls="13.3" vntheta="Theme"/></role>
+  <role descr="benefactive, granted-to" n="2"><vnrole vncls="13.3" vntheta="Recipient"/></role>
+  <role descr="source" n="3"/>
+</roles>
+
+<example name="passivized">
+<text>
+    About $490 million of that would be reallocated to the buy-back,
+    leaving about $130 million, he said. 
+</text>
+        <arg f="MOD" n="M">would</arg>
+        <rel>reallocated</rel>
+        <arg n="1">*trace* -&gt;  About $490 million of that</arg>
+        <arg f="to" n="2">the buy-back</arg>
+        <arg f="ADV" n="M">leaving about $ 130 million </arg>
+</example>
+
+<example name="with source">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+     To accommodate the additional cash assistance, the House
+     Appropriations Committee last week was required *trace* to
+     reallocate an estimated $140 million from the Pentagon.  
+</text>
+        <arg n="0">*trace* -&gt;  the House Appropriations Committee</arg>
+        <rel>reallocate</rel>
+        <arg n="1">an estimated $140 million </arg>
+        <arg f="from" n="3">the Pentagon</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

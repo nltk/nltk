@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="retard">
+<note>
+  Frames file for 'retard' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="retard.01" name="make slow" vncls="-">
+<roles>
+  <role descr="cause of slowing" n="0"/>
+  <role descr="thing getting slower" n="1"/>
+</roles>
+
+<example name="the one example">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+    Skilled ringers use their wrists *trace* to advance or retard the
+    next swing, so that one bell can swap places with another in the
+    following change. 
+</text>
+        <arg n="0">*trace* -&gt;  Skilled ringers</arg>
+        <rel>retard</rel>
+        <arg n="1">the next swing</arg>
+</example>
+
+<note>
+Not a bad trick, considering these bells can weigh up to a ton.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

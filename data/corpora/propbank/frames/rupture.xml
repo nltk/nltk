@@ -1,0 +1,48 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="rupture">
+<note>
+  Frames file for 'rupture' based on sentences in wsj.  Verbnet entries
+  40.8.3 and 45.4.
+</note>
+
+<roleset id="rupture.01" name="break a long skinny   fluid container" vncls="40.8.3 45.4">
+<roles>
+  <role descr="causer of breakage" n="0"><vnrole vncls="40.8.3" vntheta="Experiencer"/><vnrole vncls="45.4" vntheta="Agent"/></role>
+  <role descr="container" n="1"><vnrole vncls="40.8.3" vntheta="Patient"/><vnrole vncls="45.4" vntheta="Patient"/></role>
+</roles>
+
+<example name="both args">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    Many of the buildings, mostly condominiums and apartments, were
+    flattened almost instantly as the underlying soil -- much of it
+    landfill -- was literally turned to ooze by the quake's intensive
+    shaking, [*] rupturing gas lines. 
+</text>
+        <arg n="0">[*]</arg>
+        <rel>rupturing</rel>
+        <arg n="1">gas lines</arg>
+<note>
+The target of the trace is properly everything from &quot;the underlying
+soil&quot; to &quot;the quake's intensive shaking&quot;, but there's no constituent
+in there to pick up.  Bummer.
+</note>
+</example>
+
+<example name="ergative">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Many streets and sidewalks buckled, and subterranean water mains
+    and service connections ruptured. 
+</text>
+        <arg n="1">subterranean water mains and service connections</arg>
+        <rel>ruptured</rel>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

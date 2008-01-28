@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="amalgamate">
+<note>
+  Frames file for 'amalgamate' based on sentences in wsj.  Verbnet
+  entry 22.2, Framenet entry Amalgamate.
+</note>
+
+<roleset id="amalgamate.01" name="mix, combine" vncls="22.2">
+<roles>
+  <role descr="mixer, agent" n="0"><vnrole vncls="22.2" vntheta="Agent"/></role>
+  <role descr="ingredient(s)" n="1"><vnrole vncls="22.2" vntheta="Patient"/></role>
+</roles>
+
+<example name="big verb, little example">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Northgate Exploration Ltd. said it is proposing [*-1] to
+    amalgamate four of its associated companies. 
+</text>
+        <arg n="0">[*-1] -&gt;  it</arg>
+        <rel>amalgamate</rel>
+        <arg n="1">four of its associated companies</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

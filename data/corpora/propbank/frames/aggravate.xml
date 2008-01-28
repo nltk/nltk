@@ -1,0 +1,63 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="aggravate">
+<note>
+  Frames file for 'aggravate' based on sentences in wsj.  Verbnet
+  entry 31.1, Framenet entry Experiencer_obj.
+</note>
+
+<roleset id="aggravate.01" name="make angry or worse" vncls="31.1">
+<roles>
+  <role descr="causer" n="0"><vnrole vncls="31.1" vntheta="Cause"/></role>
+  <role descr="thing getting angry or getting worse" n="1"><vnrole vncls="31.1" vntheta="Experiencer"/></role>
+  <role descr="instrument, if separate from arg0" n="2"/>
+</roles>
+
+<example name="all args">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Several traders maintained that the Merc's 12-point
+    circuit-breaker aggravated the market slide Oct. 13 by directing
+    additional selling pressure to the floor of the New York Stock
+    Exchange. 
+</text>
+        <arg n="0">the Merc's 12-point circuit-breaker</arg>
+        <rel>aggravated</rel>
+        <arg n="1">the market slide Oct. 13</arg>
+        <arg f="by" n="2">directing additional selling pressure to the
+        floor of the New York Stock Exchange</arg> 
+</example>
+
+<example name="no instrument">
+<inflection aspect="perfect" form="participle" person="third" tense="present" voice="active"/>
+<text>
+    The Health Insurance Association of America, an insurers' trade
+    group, acknowledges that stiff competition among its members to
+    insure businesses likely to be good risks during the first year of
+    coverage has aggravated the problem in the small-business market. 
+</text>
+        <arg n="0">stiff competition  among its members  to insure
+        businesses likely  to be good risks during the first year of
+        coverage</arg> 
+        <rel>aggravated</rel>
+        <arg n="1">the problem in the small-business market</arg>
+</example>
+
+<example name="as 'make angry'">
+  <inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+  <text>
+    John aggravates Mary with his mere presence.
+  </text>
+  <arg n="0">John</arg>
+  <rel>aggravates</rel>
+  <arg n="1">Mary</arg>
+  <arg f="with" n="2">his mere presence</arg>
+</example>
+
+<note>
+Methinks Mary is a wee bit touchy.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

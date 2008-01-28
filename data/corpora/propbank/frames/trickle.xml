@@ -1,0 +1,35 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="trickle">
+<note>
+  Frames file for 'trickle' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="trickle.01" name="to move or proceed slowly" vncls="47.2">
+<roles>
+  <role descr="agent, causer" n="0"/>
+  <role descr="entity trickling" n="1"><vnrole vncls="47.2" vntheta="Theme"/></role>
+  <role descr="destination" n="2"><vnrole vncls="47.2" vntheta="Location"/></role>
+</roles>
+
+
+
+<example name="with direction">
+<inflection aspect="progressive" form="participle" person="third" tense="present" voice="active"/>
+<text>
+ But so far , he declares [0] [*T*-2] , there 's little evidence [0] the `` new urgency '' is trickling down to the managers who [*T*-1] actually do hiring .
+</text>
+	<arg n="1">the `` new urgency ''</arg>
+	<rel>trickling</rel>
+	<arg f="DIR" n="M">down</arg>
+	<arg f="to" n="2">the managers who [*T*-1] actually do hiring</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

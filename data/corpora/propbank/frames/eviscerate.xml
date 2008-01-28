@@ -1,0 +1,34 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="eviscerate.01">
+<note>
+  Frames file for 'eviscerate' based on sentences in wsj.  No Verbnet
+  entry (the wimps), Framenet entry Removing.
+</note>
+
+<roleset id="eviscerate.01" name="remove the viscera (innards)" vncls="-">
+<roles>
+  <role descr="remover" n="0"/>
+  <role descr="victim" n="1"/>
+</roles>
+
+<example name="metaphorical">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    The 1974 budget ``reform,'' passed over President Nixon's veto,
+    took away the presidential impoundment power, *trace* thereby
+    introducing monstrous CRs and eviscerating the presidential veto. 
+</text>
+        <arg n="0">*trace* -&gt;  The 1974 budget `` reform</arg>
+        <rel>eviscerating</rel>
+        <arg n="1">the presidential veto</arg>
+</example>
+
+<note>
+Unlike the canonical removing/emptying verbs, the thing removed cannot
+be mentioned.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,38 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="sizzle">
+<note>
+  Frames file for 'sizzle' based on sentences in wsj.  Verbnet entry 43.2.
+</note>
+
+<roleset id="sizzle.01" vncls="43.2" name="emit sizzling sound">
+<roles>
+  <role n="0"  descr="sizzling thing"/>
+</roles>
+
+<example name="adjectival">
+<inflection person="ns" tense="ns" aspect="progressive" voice="active" form="participle"/>
+<text>
+    Yesterday's volume of 117.2 million shares was far below last
+    week's sizzling average of nearly 177 million.  
+</text>
+	<rel>sizzling</rel>
+	<arg n="0">average</arg>
+</example>
+
+<example name="verbal">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+     John's dinner sizzled on the sidewalk.
+  </text>
+  <arg n="0"        >John's dinner</arg>
+  <rel              >sizzled</rel>
+  <arg n="m" f="LOC">on the sidewalk</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

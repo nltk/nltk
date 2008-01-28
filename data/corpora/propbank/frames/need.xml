@@ -1,0 +1,69 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="need">
+<note>
+  Frames file for 'need' based on survey of initial sentences of big corpus
+</note>
+
+<roleset id="need.01" name="need" vncls="32.1">
+<roles>
+  <role descr="needer" n="0">
+	  <vnrole vncls="32.1" vntheta="Experiencer"/></role>
+  <role descr="thing needed" n="1">
+	  <vnrole vncls="32.1" vntheta="Theme"/></role>
+</roles>
+
+<example name="need an NP">
+  <text>
+I need a flight to Seattle leaving from Baltimore making a stop in
+Minneapolis. 
+  </text>
+  <arg n="0">I</arg>
+  <rel>need</rel>
+  <arg n="1">a flight to Seattle leaving from Baltimore making
+  a stop in Minneapolis</arg>
+</example>
+
+<example name="need an infinitive">
+  <text>
+  I need *trace* to have dinner served *trace*
+  </text>
+  <arg n="0">I</arg>
+  <rel>need</rel>
+  <arg n="1">*trace* to have dinner served *trace* </arg>
+</example>
+
+<note>
+The latter is properly a modal verb, but we'll tag it anyway.
+</note>
+
+<example name="need both an NP and an S">
+  <text>
+  Prosecutors need court permission *trace* to obtain the tax returns
+  of an individual or a business.
+  </text>
+  <arg n="0">Prosecutors</arg>
+  <rel>need</rel>
+  <arg n="1">court permission</arg>
+  <arg f="PNC" n="m">*trace* to obtain the tax returns
+  of an individual or a business.</arg>
+</example>
+
+<example name="need an S">
+  <text>
+  I need you to pay attention to the frames files!
+  </text>
+  <arg n="0">I</arg>
+  <rel>need</rel>
+  <arg n="1">you to pay attention to the frames files</arg>
+</example>
+
+<note>
+Note the difference in structure between the two preceding examples.
+The key is the presence/absence of the trace in subject position of
+the lower clause.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

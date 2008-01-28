@@ -1,0 +1,38 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="roil">
+<note>
+  Frames file for 'roil' based on sentences in financial subcorpus.
+  Butter my butt, there it is.  Verbnet entry 47.2, other framed
+  members include spread.  No Framenet entry.  No comparison.
+</note>
+
+<roleset id="roil.01" name="cause a disturbance" vncls="47.2">
+<roles>
+  <role descr="agent, disturber" n="0"/>
+  <role descr="thing disturbed" n="1">
+		
+  <vnrole vncls="47.2" vntheta="Theme"/></role>
+
+</roles>
+
+<example name="like stormy waters">
+<inflection aspect="ns" form="ns" person="ns" tense="ns" voice="ns"/>
+<text>
+    PROGRAM TRADING is being curbed by more securities firms, but big
+    institutional investors are expected *trace* to continue the
+    practice, *trace* further roiling the stock market. 
+</text>
+        <arg n="0">*trace* -&gt; *trace* -&gt;  big institutional investors</arg>
+        <arg f="MNR" n="M">further</arg>
+        <rel>roiling</rel>
+        <arg n="1">the stock market</arg>
+</example>
+
+<note>
+This is just a beautiful word.  Pity is doesn't get used more.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

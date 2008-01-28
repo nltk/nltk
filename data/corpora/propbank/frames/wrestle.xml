@@ -1,0 +1,120 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="wrestle">
+<note>
+Frames file for 'wrestle' based on sentences in financial subcorpus
+and automatic expansion via verbnet.
+</note>
+
+<roleset id="wrestle.01" name="struggle with" vncls="36.1">
+<roles>
+	<role descr="first wrestler" n="0">
+		
+  <vnrole vncls="36.1" vntheta="Actor1"/></role>
+ 
+	<role descr="second wrestler" n="1">
+		
+  <vnrole vncls="36.1" vntheta="Actor2"/></role>
+ 
+	<role descr="topic, competition" n="2">
+		
+  <vnrole vncls="36.1" vntheta="Topic"/></role>
+ 
+</roles>
+
+<example name="unknown competition">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    Even companies in smokestack industries wrestling with world-wide
+    overcapacity are joining the boom. 
+</text>
+        <arg n="0">smokestack industries</arg>
+        <rel>wrestling</rel>
+        <arg f="with" n="1">world-wide overcapacity</arg>
+</example>
+
+<example name="merged wrestlers" src="argue.02">
+  <text>
+    John and Mary wrestled over the cause of his noxious foot odor.
+  </text>
+  <arg n="0">John and Mary</arg>
+  <rel>wrestled</rel>
+  <arg f="over" n="2">the cause of his noxious foot odor</arg>
+</example>
+
+<example name="I can't believe this hasn't occurred yet" src="argue.02">
+  <text>
+    John wrestled with Mary over the cause of his noxious foot odor.
+  </text>
+  <arg n="0">John</arg>
+  <rel>wrestled</rel>
+  <arg f="with" n="1">Mary</arg>
+  <arg f="over" n="2">the cause of his noxious foot odor</arg>
+</example>
+
+<example name="with prize" src="compete.01">
+  <text>
+    John wrestled with Mary for the last piece of cake.
+  </text>
+  <arg n="0">John</arg>
+  <rel>wrestled</rel>
+  <arg f="with" n="1">Mary</arg>
+  <arg f="for" n="2">the last piece of cake</arg>
+</example>
+
+</roleset>
+
+<roleset id="wrestle.02" name="put with difficulty" vncls="-">
+<roles>
+  <role descr="putter, agent" n="0"/>
+  <role descr="patient, thing put" n="1"/>
+  <role descr="destination, put where" n="2"/>
+</roles>
+
+<example name="beautiful sentence">
+  <inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+  <text>
+     In a crush of trucks and horse carts on the trodden field,
+     Andrzej Latowski wrestles a screeching, overweight hog into the
+     trunk of a private butcher's Polish Fiat. 
+  </text>
+  <arg f="LOC" n="m">In a crush of trucks and horse carts on the
+  trodden field</arg>
+  <arg n="0">Andrzej Latowski</arg>
+  <rel>wrestles</rel>
+  <arg n="1">a screeching, overweight hog</arg>
+  <arg f="into" n="2">the trunk of a private butcher's Polish Fiat</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="wrestle.03" name="take with difficulty" vncls="-">
+<roles>
+  <role descr="taker" n="0"/>
+  <role descr="taken" n="1"/>
+  <role descr="taken from" n="2"/>
+</roles>
+
+<example name="">
+  <inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+  <text>
+     Since then, a second group of franchisees has banded together
+     [*-1] to try [*-2] to wrestle control of the unit from
+     Mr. Posner. 
+  </text>
+  <arg n="0">[*-2] -&gt; [*-1] -&gt; a second group of franchisees</arg>
+  <rel>wrestle</rel>
+  <arg n="1">control of the unit</arg>
+  <arg f="from" n="2">Mr. Posner</arg>
+</example>
+
+<note>
+cf. wrest
+</note>
+
+</roleset>
+</predicate>
+</frameset>

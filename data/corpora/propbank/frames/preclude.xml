@@ -1,0 +1,46 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="preclude">
+<note>
+  Frames file for 'preclude' based on sentences in financial
+  subcorpus.  No Verbnet entry.  Comparison with 'prevent'.
+</note>
+
+<roleset id="preclude.01" name="stop, prevent">
+<roles>
+  <role descr="preventer" n="0"/>
+  <role descr="Theme (action or object being prevented)" n="1"/>
+  <role descr="secondary predication or action" n="2"/>
+  <role descr="instrument" n="3"/>
+</roles>
+
+<example name="just transitive">
+<text>
+    At the same time, the government didn't want to appear to favor GM
+    by allowing a minority stake that *trace* might preclude a full
+    bid by Ford. 
+</text>
+        <arg n="0">*trace* -&gt;  that -&gt;  a minority stake</arg>
+        <rel>preclude</rel>
+        <arg n="1">a full bid by Ford</arg>
+</example>
+
+<example name="preclude to a kiss?">
+  <text>
+    Mary's raging flu precluded John from kissing her.
+  </text>
+  <arg n="0">Mary's raging flu</arg>
+  <rel>precluded</rel>
+  <arg n="1">John</arg>
+  <arg f="from" n="2">kissing her</arg>
+</example>
+
+<note>
+I'm not sure the latter is actually grammatical, but 'prevent'
+predicts it.  We'll leave it in pending further examples.  I also
+doubt there will/can be a separate instrument argument.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

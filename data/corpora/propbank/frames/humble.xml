@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="humble">
+<note>
+  Frames file for 'humble' based on sentences in wsj.  Verbnet entry 31.1.
+</note>
+
+<roleset id="humble.01" name="cause to be humble" vncls="31.1">
+<roles>
+  <role descr="causer of humility" n="0"><vnrole vncls="31.1" vntheta="Cause"/></role>
+  <role descr="humbled entity" n="1"><vnrole vncls="31.1" vntheta="Experiencer"/></role>
+</roles>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    ``Even when I hear it played badly, I'm still humbled [*-2] by the
+    piece. 
+</text>
+        <arg f="TMP" n="M">still</arg>
+        <rel>humbled</rel>
+        <arg n="1">[*-2] -&gt;  I</arg>
+        <arg f="by" n="0">the piece</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

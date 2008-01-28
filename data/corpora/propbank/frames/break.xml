@@ -1,0 +1,332 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="break">
+<note>
+  Frames file for 'break' based on sentences in financial subcorpus.
+  Verbnet classes break-45.1 cheat-10.6 split-23.2; other framed
+  members include: tear; none; kick, push, roll, slip.  No comparisons.
+</note>
+
+<roleset id="break.01" name="break, cause to not be whole" vncls="23.2 45.1 40.8.3-1">
+<roles>
+  <role descr="breaker" n="0">
+	<vnrole vncls="23.2" vntheta="Agent"/>
+        <vnrole vncls="40.8.3-1" vntheta="Experiencer"/>
+        <vnrole vncls="45.1" vntheta="Agent"/></role>
+  <role descr="thing broken" n="1">
+	<vnrole vncls="23.2" vntheta="Patient1"/>
+        <vnrole vncls="40.8.3-1" vntheta="Patient"/>
+        <vnrole vncls="45.1" vntheta="Patient"/></role>
+  <role descr="instrument" n="2">
+	<vnrole vncls="45.1" vntheta="Instrument"/></role>
+  <role descr="pieces" n="3">
+        <vnrole vncls="23.2" vntheta="Patient2"/></role>
+</roles>
+
+<example name="just transitive">
+<text>
+    Stock prices rallied as the Georgia-Pacific bid broke the market's
+    recent gloom. 
+</text>
+        <arg n="0">the Georgia-Pacific bid</arg>
+        <rel>broke</rel>
+        <arg n="1">the market's recent gloom</arg>
+</example>
+
+<example name="with instrument">
+  <text>
+    John broke the window with a rock.
+  </text>
+  <arg n="0">John</arg>
+  <rel>broke</rel>
+  <arg n="1">the window</arg>
+  <arg f="with" n="2">a rock</arg>
+</example>
+
+<example name="with pieces">
+  <text>
+    John broke the window into a million pieces.
+  </text>
+  <arg n="0">John</arg>
+  <rel>broke</rel>
+  <arg n="1">the window</arg>
+  <arg f="into" n="3">a million pieces</arg>
+</example>
+
+<example name="inchoative">
+  <text>
+    The window broke into a million pieces.
+  </text>
+  <arg n="1">The window</arg>
+  <rel>broke</rel>
+  <arg f="into" n="3">a million pieces</arg>
+</example>
+
+<note>
+Inchoative need not include the pieces argument.
+</note>
+
+</roleset>
+<roleset id="break.02" name="as a robbery" vncls="-">
+<roles>
+  <role descr="robber" n="0"/>
+  <role descr="thing broken into" n="1"/>
+</roles>
+
+<example name="not exactly a robbery">
+<text>
+    All of Japan's so-called Big Four securities firms have suffered
+    setbacks in their attempts *trace* to break into foreign markets. 
+</text>
+        <arg n="0">*trace* -&gt; All of Japan's so-called Big Four
+        securities firms</arg> 
+        <rel>break</rel>
+        <arg f="into" n="1">foreign markets</arg>
+</example>
+</roleset>
+</predicate>
+
+<predicate lemma="break_off">
+
+<roleset id="break.03" name="break off: cause to cease" vncls="45.1">
+<roles>
+  <role descr="causer, agent" n="0">
+	<vnrole vncls="45.1" vntheta="Agent"/></role>
+  <role descr="thing stopping" n="1">
+	<vnrole vncls="45.1" vntheta="Patient"/></role>
+</roles>
+
+<example name="agentive">
+<text>
+    Ford Motor Co. and Saab-Scania AB of Sweden broke off talks about
+    a possible alliance after Ford officials concluded that the cost
+    to modernize Saab's car operations would outweigh the likely
+    return. 
+</text>
+        <arg n="0">Ford Motor Co. and Saab-Scania AB of Sweden</arg>
+        <rel>[ broke] [ off]</rel>
+        <arg n="1">talks about a possible alliance</arg>
+        <arg f="TMP" n="M">after Ford officials concluded that the
+        cost to modernize Saab's car operations would outweigh the
+        likely return</arg> 
+</example>
+
+<example name="ergative">
+<text>
+    Doug Hammond, the federal mediator in Seattle, where Boeing is
+    based, said the parties will continue to sit down daily until a
+    new settlement proposal emerges or the talks break off again. 
+</text>
+        <arg n="1">the talks</arg>
+        <rel>[ break] [ off]</rel>
+        <arg f="TMP" n="M">again</arg>
+</example>
+
+</roleset>
+
+<roleset id="break.04" name="break off: snap off pieces" vncls="45.1">
+<roles>
+  <role descr="breaker" n="0">
+	<vnrole vncls="45.1" vntheta="Agent"/></role>
+  <role descr="piece(s)" n="1"/>
+  <role descr="whole" n="2">
+	<vnrole vncls="45.1" vntheta="Patient"/></role>
+</roles>
+
+<example name="all args">
+  <text>
+    John broke off a twig from the tree.
+  </text>
+  <arg n="0">John</arg>
+  <rel>broke off</rel>
+  <arg n="1">a twig</arg>
+  <arg f="from" n="2">the tree</arg>
+</example>
+
+<note>
+Note that the &quot;off&quot; can migrate: John broke a twig off the tree.
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="break_in">
+
+<roleset id="break.05" name="break in: cause to be not-new" vncls="45.1">
+<roles>
+  <role descr="causative agent" n="0">
+	  <vnrole vncls="45.1" vntheta="Agent"/></role>
+  <role descr="thing getting broken in" n="1">
+	  <vnrole vncls="45.1" vntheta="Patient"/></role>
+</roles>
+
+<example name="new shoes">
+  <text>
+    John worked for a week *trace* to break in his new ballet slippers.
+  </text>
+  <arg n="0">*trace* -&gt; John</arg>
+  <rel>break in</rel>
+  <arg n="1">his new ballet slippers</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="break_out">
+
+<roleset id="break.06" name="break out: introduce" vncls="48.1.1">
+<roles>
+  <role descr="introducer" n="0"/>
+  <role descr="thing introduced" n="1">
+        <vnrole vncls="48.1.1" vntheta="Theme"/></role>
+</roles>
+
+<example name="this is a weird usage">
+<text>
+    The company didn't break out its fourth-quarter results.
+</text>
+        <arg n="0">The company</arg>
+        <arg f="NEG" n="M">n't</arg>
+        <rel>[ break] [ out]</rel>
+        <arg n="1">its fourth-quarter results</arg>
+</example>
+
+<example name="party time">
+  <text>
+    John broke out the bubbly.
+  </text>
+  <arg n="0">John</arg>
+  <rel>broke out</rel>
+  <arg n="1">the bubbly</arg>
+</example>
+
+<note>
+</note>
+</roleset>
+
+<roleset id="break.07" name="break out: acne" vncls="45.1">
+<roles>
+  <role descr="teenager" n="1">
+	  <vnrole vncls="45.1" vntheta="Patient"/></role>
+</roles>
+
+<example name="poor John">
+  <text>
+    The very day of class pictures, John broke out.
+  </text>
+  <arg f="TMP" n="m">The very day of class pictures</arg>
+  <arg n="0">John</arg>
+  <rel>broke out</rel>
+</example>
+
+<note>
+Somehow I doubt this will appear in WSJ.
+</note>
+
+</roleset>
+
+<roleset id="break.10" vncls="-" name="break out: escape">
+<roles>
+  <role n="0"  descr="escapee"/>
+  <role n="1"  descr="prison, etc"/>
+</roles>
+
+<example name="figurative">
+  <inflection person="ns" tense="ns" aspect="progressive" voice="active" form="participle"/>
+  <text>
+    ``December delivery gold is trading in a range of $365 to $375 (an
+    ounce) and is having difficulty [*] breaking out above that,''
+    Mr. Savaiko said.  
+  </text>
+  <arg n="0"        >[*] -> December delivery gold</arg>
+  <rel              >breaking out</rel>
+  <arg n="1" f="above">that</arg>
+<note>
+I think that's the right way to analyze that.
+</note>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="break_up">
+
+<roleset id="break.08" name="break up: (cause to) not be in one piece" vncls="23.2">
+<roles>
+  <role descr="causative agent" n="0">
+	<vnrole vncls="23.2" vntheta="Agent"/></role>
+  <role descr="thing in pieces" n="1">
+	<vnrole vncls="23.2" vntheta="Patient1"/></role>
+  <role descr="pieces" n="2">
+        <vnrole vncls="23.2" vntheta="Patient2"/></role>
+</roles>
+
+<example name="passive">
+<text>
+    One trial balloon Mr. Spiegel is said to have floated to investors
+    : Columbia might be broken up *trace*, as Mellon Bank was split
+    into a good bank and a bad bank. 
+</text>
+        <arg f="MOD" n="M">might</arg>
+        <rel>[ broken] [ up]</rel>
+        <arg n="1">*trace* -&gt;  Columbia</arg>
+        <arg f="MNR" n="M">as Mellon Bank was split into a good bank
+        and a bad bank</arg> 
+</example>
+
+<example name="passive with pieces">
+<text>
+    Mr. Icahn has said he believes USX would be worth more if *trace*
+    broken up *trace* into steel and energy segments. 
+</text>
+        <arg n="1">*trace* -&gt; *trace* -&gt; USX</arg>
+        <rel>[ broken] [ up]</rel>
+        <arg f="into" n="2">steel and energy segments</arg>
+</example>
+
+<example name="active">
+  <text>
+    John broke the window up into a zillion pieces.
+  </text>
+  <arg n="0">John</arg>
+  <rel>broke up</rel>
+  <arg n="1">the window</arg>
+  <arg f="into" n="2">a zillion pieces</arg>
+</example>
+
+<note>
+End-of-romantic-relationship can also fit into this roleset  as an
+ergative. 
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="break_even">
+
+<roleset id="break.09" name="break even: not win, not lose" vncls="-">
+<roles>
+  <role descr="patient" n="1"/>
+</roles>
+
+<example name="break even">
+<text>
+    Old Stone repeated projections that it will be profitable for the
+    fourth quarter and will about break even for the year. 
+</text>
+        <arg n="1">it</arg>
+        <arg f="MOD" n="M">will</arg>
+        <arg f="DIS" n="M">about</arg>
+        <rel>[ break] [ even]</rel>
+        <arg f="TMP" n="M">for the year</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

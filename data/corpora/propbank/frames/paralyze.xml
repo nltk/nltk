@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="paralyze">
+<note>
+  Frames file for 'paralyze'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="paralyze.01" name="to make powerless" vncls="-">
+<roles> 
+  <role descr="cause of paralysis, agent" n="0"/> 
+  <role descr="entity paralyzed" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="gerund" person="ns" tense="ns" voice="active"/>
+<text>
+ Those who [*T*-1] fear a plethora of suits paralyzing our legal system need [*-2] only look at the record on the Rehabilitation Act .
+</text>
+	<arg n="0">a plethora of suits</arg>
+	<rel>paralyzing</rel>
+	<arg n="1">our legal system</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

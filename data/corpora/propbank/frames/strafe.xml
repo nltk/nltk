@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="strafe">
+<note>
+  Frames file for 'strafe' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="strafe.01" name="shoot at from an airplane" vncls="-">
+<roles>
+  <role descr="shooter" n="0"/>
+  <role descr="target" n="1"/>
+</roles>
+
+<example name="bang!  bang!">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    It can send a fighter squadron [*-1] to strafe terrorist hideouts
+    in the Bekaa Valley, but can't shoot Abu Nidal.  
+</text>
+        <arg n="0">[*-1] -&gt;  a fighter squadron</arg>
+        <rel>strafe</rel>
+        <arg n="1">terrorist hideouts in the Bekaa Valley</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

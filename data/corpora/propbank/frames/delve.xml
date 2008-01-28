@@ -1,0 +1,47 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="delve">
+<note>
+  Frames file for 'delve' based on sentences in financial subcorpus.
+  Verbnet entry 35.5, other framed members include listen (?).  No
+  comparison.
+</note>
+
+<roleset id="delve.01" name="dig (deeply)" vncls="35.5">
+<roles>
+  <role descr="digger, delver" n="0">
+		
+  <vnrole vncls="35.5" vntheta="Agent"/></role>
+
+  <role descr="dug/delved into" n="1">
+		
+  <vnrole vncls="35.5" vntheta="Location"/></role>
+
+</roles>
+
+<example name="transitive">
+<text>
+    Mr. Achenbaum, too, delves into his clients' business.
+</text>
+        <arg n="0">Mr. Achenbaum</arg>
+        <arg f="DIS" n="M">too</arg>
+        <rel>delves</rel>
+        <arg f="into" n="1">his clients' business</arg>
+</example>
+
+<example name="with adverb">
+  <text>
+    John delved deeply into Mary's diary.
+  </text>
+  <arg n="0">John</arg>
+  <rel>delved</rel>
+  <arg f="MNR" n="m">deeply</arg>
+  <arg f="into" n="1">Mary's diary</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

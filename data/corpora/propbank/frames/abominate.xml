@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="abominate">
+<note>
+Example from BNC
+</note>
+
+<roleset id="abominate.01" name="revile">
+<roles>
+  <role descr="despiser" n="0"/>
+		
+  <role descr="thing despised" n="1"/>
+		
+</roles>
+
+<example name="transitive">
+<text>
+Little could be done to counteract the John Osborne criticisms, for they abominated the very idea of monarchy.
+</text>
+        <arg n="0">they</arg>
+        <rel>abominated</rel>
+        <arg n="1">the very idea of monarchy</arg> 
+</example>
+
+<note>
+frame created by ruth
+</note>
+
+</roleset>
+</predicate>
+</frameset>

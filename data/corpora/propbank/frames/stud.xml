@@ -1,0 +1,60 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="stud">
+<note>
+Frames file for 'stud' based on sentences in financial subcorpus and
+automatic generation via verbnet.
+</note>
+
+<roleset id="stud.01" name="attach studs to some object" vncls="9.8">
+<roles>
+	<role descr="attacher of studs" n="0">
+		
+  <vnrole vncls="9.8" vntheta="Agent"/></role>
+
+	<role descr="attached to" n="1">
+		
+  <vnrole vncls="9.8" vntheta="Destination"/></role>
+
+	<role descr="studs" n="2">
+		
+  <vnrole vncls="9.8" vntheta="Theme"/></role>
+
+</roles>
+
+<example name="typically metaphorical">
+<inflection aspect="ns" form="participle" person="third" tense="present" voice="passive"/>
+<text>
+    At a time when Jon Levy should be planning the biggest spring
+    season in his dress company's 17 years, his work day is studded
+    *trace* with intense moments of concern about one of his biggest
+    customers, Campeau Corp. 
+</text>
+        <rel>studded</rel>
+        <arg n="1"/>
+        <arg f="with" n="2">intense moments of concern about one of
+        his biggest customers , Campeau Corp</arg> 
+</example>
+
+<example name="instrumental subject" src="block.01">
+  <text>
+  Low test scores stud the school's performance record.
+  </text>
+  <arg n="2">Low test scores</arg>
+  <rel>stud </rel>
+  <arg n="1">the school's performance record</arg>
+</example>
+
+<example name="simple transitive">
+  <text>
+    John studded his tuxedo.
+  </text>
+  <arg n="0">John</arg>
+  <rel>studded</rel>
+  <arg n="1">his tuxedo</arg>
+</example>
+
+</roleset>
+
+</predicate>
+</frameset>

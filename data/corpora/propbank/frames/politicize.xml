@@ -1,0 +1,41 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="politicize">
+<note>
+  Frames file for 'politicize' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="politicize.01" name="make into a political issue" vncls="-">
+<roles>
+  <role descr="cause, agent" n="0"/>
+  <role descr="issue" n="1"/>
+</roles>
+
+<example name="adjectival">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    That heavily politicized event learned nothing from the horrifying
+    experience, and seems doomed to repeat it. 
+</text>
+        <arg f="MNR" n="M">heavily</arg>
+        <rel>politicized</rel>
+        <arg n="1">event</arg>
+</example>
+
+<example name="verbal">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John politicized his relationship with Mary, even though nobody
+    really cared.
+  </text>
+  <arg n="0">John</arg>
+  <rel>politicized</rel>
+  <arg n="1">his relationship with Mary</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

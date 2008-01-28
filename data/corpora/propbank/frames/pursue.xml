@@ -1,0 +1,50 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="pursue">
+<note>
+  Frames file for 'pursue' based on sentences in financial subcorpus.
+  Verbnet class chase-51.6, other framed members are 'follow'.
+</note>
+
+<roleset id="pursue.01" name="follow, chase" vncls="51.6">
+<roles>
+  <role descr="thing following" n="0">
+		
+  <vnrole vncls="51.6" vntheta="Agent"/></role>
+
+  <role descr="thing followed" n="1">
+		
+  <vnrole vncls="51.6" vntheta="Theme"/></role>
+
+</roles>
+
+<example name="typical transitive active">
+<text>
+    As more managers pursue the index-arbitrage strategy, these small
+    opportunities between markets will be reduced and, eventually,
+    eliminated. 
+</text>
+        <arg n="0">more managers</arg>
+        <rel>pursue</rel>
+        <arg n="1">the index-arbitrage strategy</arg>
+</example>
+
+<example name="passivized">
+<text>
+    Jaguar, a U.K. luxury auto maker being pursued *trace* by Ford
+    Motor and General Motors, gained 10 pence [16 cents] a share to
+    close at 879 pence [$13.90]. 
+</text>
+        <rel>pursued</rel>
+        <arg n="1">*trace* -&gt;  a U.K. luxury auto maker</arg>
+        <arg f="by" n="0">Ford Motor and General Motors</arg>
+</example>
+
+<note>
+These sentences often include difficult trace chains, which the
+automatic tagger cannot follow correctly.  Read the sentences carefully.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

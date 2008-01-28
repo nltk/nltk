@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="gut">
+<note>
+  Frames file for 'gut' based on sentences in wsj.  No access to
+  verbnet at the moment.
+</note>
+
+<roleset id="gut.01" name="remove the guts from" vncls="10.7">
+<roles>
+  <role descr="gutter (hmmmm)" n="0"><vnrole vncls="10.7" vntheta="Agent"/></role>
+  <role descr="victim" n="1"><vnrole vncls="10.7" vntheta="Source"/></role>
+</roles>
+
+<example name="agent as pro">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+    Oil and auto companies supported a move on Capitol Hill last week
+    [*] to gut Mr. Bush's plans to require auto makers to begin
+    selling alternative-fueled cars by 1995. 
+</text>
+        <arg n="0">[*]</arg>
+        <rel>gut</rel>
+        <arg n="1">Mr. Bush's plans to require auto makers to begin
+        selling alternative-fueled cars by 1995</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

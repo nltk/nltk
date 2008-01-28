@@ -1,0 +1,35 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="embargo">
+<note>
+  Frames file for 'embargo' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="embargo.01" name="block trade to" vncls="-">
+<roles>
+  <role descr="blocker" n="0"/>
+  <role descr="foiled (destination of) trade" n="1"/>
+</roles>
+
+<example name="the one example">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    On Oct. 22, led by Saudi Arabia, the world's largest exporter,
+    they embargoed oil shipments to the U.S. and to the Netherlands,
+    Israel's staunchest European ally. 
+</text>
+        <arg f="TMP" n="M">On Oct. 22</arg>
+        <arg n="M">led by Saudi Arabia, the world's largest
+        exporter</arg> 
+        <arg n="0">they</arg>
+        <rel>embargoed</rel>
+        <arg n="1">oil shipments to the U.S. and to the Netherlands,
+        Israel's staunchest European ally</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

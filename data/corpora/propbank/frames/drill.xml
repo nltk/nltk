@@ -1,0 +1,86 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="drill">
+<note>
+Frames file for 'drill' based on sentences in financial subcorpus and
+automatic expansion via verbnet.
+</note>
+
+<roleset id="drill.01" name="put holes into" vncls="21.2-2">
+<roles>
+  <role descr="driller, agent" n="0">
+	<vnrole vncls="21.2-2" vntheta="Agent"/></role>
+  <role descr="thing drilled, gaining holes" n="1">
+	<vnrole vncls="21.2-2" vntheta="Patient"/></role>
+  <role descr="drill" n="2">
+	<vnrole vncls="21.2-2" vntheta="Instrument"/></role>
+  <role descr="seeking (oil)" n="3"/>
+  <role descr="holes" n="4"/> 
+</roles>
+
+<example name="drilling for oil">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    The import quotas got only a 2 1/2-year extension, and USX is
+    laboring under a staggering $5.8 billion debt at a time when it
+    must spend money *trace* to upgrade steel mills and drill for
+    oil. 
+</text>
+        <arg n="0">*trace* -&gt;  it</arg>
+        <rel>drill</rel>
+        <arg f="for" n="3">oil</arg>
+</example>
+
+<example name="not a locative">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John drilled holes in Mary's coffee table.
+  </text>
+  <arg n="0">John</arg>
+  <rel>drilled</rel>
+  <arg n="4">holes</arg>
+  <arg f="in" n="1">Mary's coffee table</arg>
+</example>
+
+<example name="demonstrating non-adjunctivality">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John drilled Mary's coffee table.
+  </text>
+  <arg n="0">John</arg>
+  <rel>drilled</rel>
+  <arg n="1">Mary's coffee table</arg>
+</example>
+
+<note>
+Note that 'drill for oil' is merely a specific type of general
+drilling; arg1 'the earth' is acquiring arg4 'holes' out of which arg3
+'oil' will be drawn.  The drill itself (arg2) will only rarely appear.
+</note>
+
+</roleset>
+
+<roleset id="drill.02" name="train, make practice" vncls="-">
+<roles>
+  <role descr="drill sargeant" n="0"/>
+  <role descr="recruits" n="1"/>
+  <role descr="action" n="2"/>
+</roles>
+
+<example name="drill sargeant">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John drilled his (toy) soldiers in complex marching formations.
+  </text>
+  <arg n="0">John</arg>
+  <rel>drilled</rel>
+  <arg n="1">his (toy) soldiers</arg>
+  <arg f="in" n="2">complex marching formations</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

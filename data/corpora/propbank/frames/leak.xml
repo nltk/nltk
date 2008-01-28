@@ -1,0 +1,50 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="leak">
+<note>
+  Frames file for 'leak' based on sentences in financial subcorpus.
+  Verbnet entry 43.4, other framed members include exude.  Comparison
+  with exude.
+</note>
+
+<roleset id="leak.01" name="leak, let forth water sparingly" vncls="43.4">
+<roles>
+  <role descr="thing leaking" n="0">
+		
+  <vnrole vncls="43.4" vntheta="Agent"/></role>
+
+  <role descr="substance leaked" n="1">
+		
+  <vnrole vncls="43.4" vntheta="Theme"/></role>
+
+</roles>
+
+<example name="intransitived">
+<inflection aspect="perfect" form="participle" person="ns" tense="past" voice="active"/>
+<text>
+    At stake was an $80,000 settlement involving who should pay what
+    share of cleanup costs at the site of a former gas station, where
+    underground fuel tanks had leaked and contaminated the soil. 
+</text>
+        <arg n="0">underground fuel tanks</arg>
+        <rel>leaked</rel>
+</example>
+
+<example name="transitive">
+<inflection aspect="ns" form="gerund" person="ns" tense="ns" voice="ns"/>
+<text>
+    He is also accused of lying under oath and of *trace* leaking
+    information obtained from a wiretap he supervised. 
+</text>
+        <arg n="0">*trace* -&gt;  He</arg>
+        <rel>leaking</rel>
+        <arg n="1">information obtained from a wiretap he
+        supervised</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

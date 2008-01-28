@@ -1,0 +1,155 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="start">
+<note>
+  Frames file for 'start' based on survey of initial sentences of big
+  corpus and comparison with 'begin'
+</note>
+
+<roleset id="start.01" name="begin" vncls="55.1">
+<roles>
+  <role descr="Agent" n="0">
+	<vnrole vncls="55.1" vntheta="Agent"/></role>
+  <role descr="Theme(-Creation)" n="1">
+	<vnrole vncls="55.1" vntheta="Theme"/></role>
+  <role descr="Instrument" n="2"/>
+</roles>
+
+<example name="basic transitive">
+  <text>John started a book</text>
+  <arg n="0">John</arg>
+  <rel>started</rel>
+  <arg n="1">a book</arg>
+</example>
+
+<note>transitive variations follow</note>
+
+<example name="transitive-with">
+  <text>John started the book with a murder</text>
+  <arg n="0">John</arg>
+  <rel>started</rel>
+  <arg n="1">the book</arg>
+  <arg n="2">with a murder</arg>
+</example>
+
+<example name="transitive-by">
+  <text> John started the book by describing a murder </text>
+  <arg n="0">John</arg>
+  <rel>started</rel>
+  <arg n="1">the book</arg>
+  <arg n="2">describing a murder</arg>
+  <note>Arg0 begin Arg1 by Arg2</note>
+</example>
+
+<example name="instrumental object">
+	<text>The book started with a murder</text>
+  <arg n="1">The book</arg>
+  <rel>started</rel>
+  <arg n="2">with a murder</arg>
+</example>
+
+<example name="instrumental subject">
+	<text>A murder started the book</text>
+  <arg n="2">A murder</arg>
+  <rel>started</rel>
+  <arg n="1">the book</arg>
+</example>
+
+<example name="with manner">
+	<text>John started the book with glee</text>
+  <arg n="0">John</arg>
+  <rel>started</rel>
+  <arg n="1">the book</arg>
+  <arg f="MNR" n="M">with glee</arg>
+</example>
+
+<example name="with manner again">
+	<text>John started the book gladly</text>
+  <arg n="0">John</arg>
+  <rel>started</rel>
+  <arg n="1">the book</arg>
+  <arg f="MNR" n="M">gladly</arg>
+</example>
+
+<example name="with temporal">
+	<text>John started the book last night</text>
+  <arg n="0">John</arg>
+  <rel>started</rel>
+  <arg n="1">the book</arg>
+  <arg f="TMP" n="M">last night</arg>
+</example>
+
+<example name="intransitive/inchoative">
+  <note>Arg1 started</note>
+  <text>A storm started</text>
+  <arg n="1">A storm</arg>
+  <rel>started</rel>
+  <note>similarly: The movie will start soon</note>
+</example>
+
+<example name="aspectual, no agent">
+  <text>John started to sweat</text>
+  <arg n="1">[John][to sweat]</arg>
+  <rel>started</rel>
+</example>
+
+<example name="a little clearer">
+  <text>The storm started to cause great destruction</text>
+  <arg n="1">[The storm][to cause great destruction]</arg>
+  <rel>started</rel>
+</example>
+
+<example name="aspectual, with agent">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+     John started to eat the entire cake, then thought better of it.
+  </text>
+  <arg n="0"        >John</arg>
+  <rel              >started</rel>
+  <arg n="1"        >to eat the entire cake</arg>
+<note>
+Unlike "John started to sweat", in this case John has control over the action of the lower clause.  Hence, his status as an agent here.
+</note>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="start_off">
+<roleset id="start.02" name="phrasal aspectual" vncls="-">
+<roles>
+  <role descr="event" n="1"/>
+</roles>
+
+<example name="bellringing!">
+  <text>
+  Proper English bells are started off in &quot;rounds,&quot; from the
+  highest-pitched bell to the lowest.
+  </text>
+  <arg n="1">[Proper English bells][in &quot;rounds,&quot; from the highest-pitched bell to the lowest.]</arg>
+  <rel>started off</rel>
+<note>
+ Rounds is not strictly only a descending scale, but more properly any
+ sequence of bells in sorted order by pitch; it needn't be a scale,
+ since the sequence can skip a note in the scale depending on the
+ population of the tower, and it needn't be descending.  Ascending
+ sequences (from lowest bell to highest) are only used to signal the
+ death of a monarch, however.  Gawd, I am such a geek.
+</note>
+</example>
+</roleset>
+</predicate>
+
+<predicate lemma="start_up">
+<roleset id="start.04" name="begin, phrasal" vncls="55.1">
+<roles>
+  <role descr="Agent" n="0">
+	<vnrole vncls="55.1" vntheta="Agent"/></role>
+  <role descr="Theme(-Creation)" n="1">
+	<vnrole vncls="55.1" vntheta="Theme"/></role>
+  <role descr="Instrument" n="2"/>
+  <role descr="secondary predication on arg1" n="3"/>
+</roles>
+</roleset>
+</predicate>
+</frameset>

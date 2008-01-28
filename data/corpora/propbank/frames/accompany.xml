@@ -1,0 +1,62 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="accompany">
+<note>
+Frames file for 'accompany' based on sentences in financial subcorpus
+and automatic expansion via verbnet.
+</note>
+
+<roleset id="accompany.01" name="go along with" vncls="51.7">
+<roles>
+	<role descr="subject accompanier" n="0">
+		
+  <vnrole vncls="51.7" vntheta="Agent"/></role>
+
+	<role descr="object accompanied" n="1">
+		
+  <vnrole vncls="51.7" vntheta="Theme"/></role>
+
+	<role descr="start point" n="3"/>
+	<role descr="end point" n="4"/>
+</roles>
+
+<example name="active">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    The figure was incorrectly shown as a net loss in a chart
+    accompanying Friday's Heard on the Street column. 
+</text>
+        <arg n="0">a chart</arg>
+        <rel>accompanying</rel>
+        <arg n="1">Friday 's  Heard  on the Street column</arg>
+</example>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    Mr. Dempsey estimated that the issue's London debut was
+    accompanied *trace* by ``very, very heavy turnover -- between five
+    million and six million shares.'' 
+</text>
+        <rel>accompanied</rel>
+        <arg n="1">*trace* -&gt;  the issue's London debut</arg>
+        <arg f="by" n="0">``very, very heavy turnover -- between five
+        million and six million shares</arg> 
+</example>
+
+<example name="with start and end point, verbnetted" src="lead.01">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+  John led the unhappy group of travellers from the frying pan to the fire.
+  </text>
+  <arg n="0">John</arg>
+  <rel>accompanied </rel>
+  <arg n="1">the unhappy group of travellers</arg>
+  <arg f="from" n="3">the frying pan</arg>
+  <arg f="to" n="4">the fire</arg>
+</example>
+
+</roleset>
+
+</predicate>
+</frameset>

@@ -1,0 +1,59 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="originate">
+<note>
+  Frames file for 'originate' based on sentences in financial
+  subcorpus.  No Verbnet entry, no Framenet entry.
+</note>
+
+<roleset id="originate.01" name="create, come about" vncls="-">
+<roles>
+  <role descr="creator" n="0"/>
+  <role descr="thing originated" n="1"/>
+  <role descr="source" n="2"/>
+  <role descr="attribute of arg1" n="4"/>
+</roles>
+
+<example name="just transitive">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    Initially, the company said it will close its commercial
+    real-estate lending division, and stop *trace* originating new
+    leases at its commercial lease subsidiary. 
+</text>
+        <arg n="0">*trace* -&gt;  it</arg>
+        <rel>originating</rel>
+        <arg n="1">new leases</arg>
+        <arg f="LOC" n="M">at its commercial lease subsidiary</arg>
+</example>
+
+<example name="ergative with attribute">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John's insecurity originated as a defense mechanism.
+  </text>
+  <arg n="1">John's insecurity</arg>
+  <rel>originated</rel>
+  <arg f="as" n="4">a defense mechanism</arg>
+</example>
+
+<example name="ergative with source">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John's violent tendencies, on the other hand, originated from his
+    insecurity. 
+  </text>
+  <arg n="1">John's violent tendencies</arg>
+  <arg f="DIS" n="m">on the other hand</arg>
+  <rel>originated</rel>
+  <arg f="from" n="2">his insecurity</arg>
+</example>
+
+<note>
+Arg3 would be a benefactive (based on 'create'), but I doubt that will
+appear.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

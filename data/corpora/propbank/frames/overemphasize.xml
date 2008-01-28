@@ -1,0 +1,46 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="overemphasize">
+<note>
+  Frames file for 'overemphasize' based on transformation of
+  'emphasize' frames.
+</note>
+
+<roleset id="overemphasize.01" name="emphasize too much">
+<roles>
+  <role descr="emphasizer" n="0"/>
+  <role descr="utterance" n="1"/>
+  <role descr="hearer" n="2"/>
+</roles>
+
+<example name="context?  what context?">
+<inflection aspect="ns" form="full" person="ns" tense="ns" voice="active"/>
+<text>
+    ``One can hardly overemphasize the importance of her rear end,''
+    Ms. Rose writes. 
+</text>
+        <arg n="0">One</arg>
+        <arg f="MOD" n="M">can</arg>
+        <arg f="DIS" n="M">hardly</arg>
+        <rel>overemphasize</rel>
+        <arg n="1">the importance of her rear end</arg>
+</example>
+
+<example name="with hearer">
+  <text>
+    Mary overemphasized to John that he must never ever call her
+    'Snoogie-wookums' in public.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>overemphasized</rel>
+  <arg f="to" n="2">John</arg>
+  <arg n="1">he must never ever call her
+    'Snoogie-wookums' in public.</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,45 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="cede">
+<note>
+Frames file for 'cede' based on sentences in financial subcorpus and
+automatic expansion via verbnet.
+</note>
+
+<roleset id="cede.01" name="give graciously" vncls="13.3">
+<roles>
+	<role descr="giver" n="0">
+		
+  <vnrole vncls="13.3" vntheta="Agent"/></role>
+ 
+	<role descr="gift" n="1">
+		
+  <vnrole vncls="13.3" vntheta="Theme"/></role>
+ 
+	<role descr="recipient" n="2">
+		
+  <vnrole vncls="13.3" vntheta="Recipient"/></role>
+ 
+</roles>
+
+<example name="pretty simple, really">
+<inflection aspect="both" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+    Both Coors and Stroh have recently been ceding market share to
+    Miller and Anheuser. 
+</text>
+        <arg n="0">Both Coors and Stroh</arg>
+        <arg f="TMP" n="M">recently</arg>
+        <rel>ceding</rel>
+        <arg n="1">market share</arg>
+        <arg f="to" n="2">Miller and Anheuser</arg>
+</example>
+
+<note>
+To my ear, this cannot take the double object construction (*&quot;John
+ceded Mary his dessert.&quot;)
+</note>
+</roleset>
+
+</predicate>
+</frameset>

@@ -1,0 +1,41 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="widow">
+<note>
+  Frames file for 'widow' based on sentences in wsj.  Verbnet entry
+  29.7, Framenet entry Personal relationship.
+</note>
+
+<roleset id="widow.01" name="(cause to) become unmarried   because of death" vncls="29.7">
+<roles>
+  <role descr="causer of widowment" n="0"><vnrole vncls="29.7" vntheta="Agent"/></role>
+  <role descr="widow" n="1"><vnrole vncls="29.7" vntheta="Theme"/></role>
+</roles>
+
+<example name="adjectival">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    So would someone recently divorced or widowed.
+</text>
+        <arg n="1">someone</arg>
+        <arg n="M">recently</arg>
+        <rel>widowed</rel>
+</example>
+
+<example name="rarely agentive">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John's untimely death widowed Mary, much to her delight.
+  </text>
+  <arg n="0">John's untimely death</arg>
+  <rel>widowed</rel>
+  <arg n="1">Mary</arg>
+  <arg n="m">much to her delight</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

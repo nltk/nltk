@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="juxtapose">
+<note>
+  Frames file for 'juxtapose' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="juxtapose.01" name="to place side by side" vncls="-">
+<roles>
+  <role descr="entity causing juxtaposition, agent" n="0"/>
+  <role descr="entity juxtaposed" n="1"/>
+  <role descr="entity juxtaposed with" n="2"/>
+</roles>
+
+
+<example name="all arguments">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ Either way it was a pity , because Mr. Stolzman offered the most substantial music of the evening [*ICH*-1] just after intermission : Steve Reich 's `` New York Counterpoint , '' one of a series of Reich works that [*T*-21] juxtapose a live performer with recorded tracks of his or her own playing .
+</text>
+	<arg n="0">[*T*-21] -&gt;  that -&gt;  Reich works</arg>
+	<rel>juxtapose</rel>
+	<arg n="1">a live performer</arg>
+	<arg f="with" n="2">recorded tracks of his or her own playing</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

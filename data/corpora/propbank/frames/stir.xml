@@ -1,0 +1,122 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="stir">
+<note>
+Frames file for 'stir' based on sentences in financial subcorpus and
+automatic expansion via verbnet.
+</note>
+
+<roleset id="stir.01" name="stir" vncls="22.3-1">
+<roles>
+  <role descr="stirer" n="0">
+	  <vnrole vncls="22.3-1" vntheta="Agent"/></role>
+   <role descr="thing stirred or stirring" n="1">
+	  <vnrole vncls="22.3-1" vntheta="Patient1"/></role>
+   <role descr="instrument" n="2">
+	  <vnrole vncls="22.3-1" vntheta="Patient2"/></role>
+ </roles>
+
+<example name="all args">
+  <text>
+    John stirred the cake batter with his foot.
+  </text>
+  <arg n="0">John</arg>
+  <rel>stirred</rel>
+  <arg n="1">the cake batter</arg>
+  <arg f="with" n="2">his foot</arg>
+</example>
+
+</roleset>
+
+<roleset id="stir.02" name="cause (emotional) reaction" vncls="31.1">
+<roles>
+  <role descr="agent, stirrer" n="0">
+     <vnrole vncls="31.1" vntheta="Cause"/></role> 
+  <role descr="patient, stirred" n="1">
+     <vnrole vncls="31.1" vntheta="Experiencer"/></role> 
+  <role descr="instrument" n="2"/> 
+  <role descr="induced action" n="3"/> 
+</roles>
+
+<example name="passivized with instrument" src="tempt.01">
+  <text>
+    John was sorely stirred *trace* by Mary's offer of freshly-baked
+    apple pie. 
+  </text>
+  <arg n="1">*trace* -&gt; John</arg>
+  <arg f="MNR" n="m">sorely</arg>
+  <rel>stirred</rel>
+  <arg f="by" n="0">Mary's offer of freshly-baked apple pie</arg>
+</example>
+
+<example name="induced action" src="tempt.01">
+<text>
+    Sterling's firm tone, combined with a steady opening on Wall
+    Street, also stirred some investors to come back to the market,
+    dealers said. 
+</text>
+	<arg n="0">Sterling's firm tone, combined with a steady
+	opening on Wall Street,</arg> 
+	<arg f="DIS" n="M">also</arg>
+	<rel>stirred</rel>
+	<arg n="1">some investors</arg>
+	<arg n="3">to come back to the market</arg>
+</example>
+
+</roleset>
+
+<roleset id="stir.03" name="move" vncls="11.2 51.3.1">
+<roles>
+  <role descr="mover" n="0">
+	<vnrole vncls="11.2" vntheta="Agent"/>
+        <vnrole vncls="51.3.1" vntheta="Agent"/></role>
+  <role descr="moved" n="1">
+	<vnrole vncls="11.2" vntheta="Theme"/>
+        <vnrole vncls="51.3.1" vntheta="Theme"/></role>
+  <role descr="destination" n="2">
+	<vnrole vncls="11.2" vntheta="Destination"/>
+        <vnrole vncls="51.3.1" vntheta="Location"/></role>
+</roles>
+
+<example name="more or less">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    ...while we all waited for the bed lump to stir into song. 
+</text>
+        <arg n="1">the bed lump</arg>
+        <rel>stir</rel>
+        <arg f="into" n="2">song</arg>
+</example>
+</roleset>
+</predicate>
+
+<predicate lemma="stir_up">
+
+<roleset id="stir.04" name="create" vncls="-">
+<roles>
+  <role descr="creator" n="0"/>
+  <role descr="thing created" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Sotheby's, the auction house founded in London 1744 and now under
+    the umbrella of Sotheby's Holdings Inc., was hoping *trace* to
+    stir up interest in old masters as it strove to build its
+    U.S. business. 
+</text>
+        <arg n="0">*trace* -&gt;  Sotheby's, the auction house founded in
+        London 1744 and now under the umbrella of Sotheby's Holdings
+        Inc.,</arg> 
+        <rel>[ stir] [ up]</rel>
+        <arg n="1">interest in old masters</arg>
+        <arg f="TMP" n="M">as it strove  to build its U.S. business</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

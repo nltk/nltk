@@ -1,0 +1,34 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="underwrite">
+<note>
+  Frames file for 'underwrite' based on sentences in financial
+  subcorpus.  No Verbnet entry, comparison with 'finance' (sense 1).
+</note>
+
+<roleset id="underwrite.01" name="provide money" vncls="-">
+<roles>
+  <role descr="financ(i)er" n="0"/>
+  <role descr="thing financed" n="1"/>
+</roles>
+
+<example name="typical usage">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    Lawrence Insurance underwrites mostly primary insurance, a company spokesman said.
+</text>
+        <arg n="0">Lawrence Insurance</arg>
+        <rel>underwrites</rel>
+        <arg n="M">mostly</arg>
+        <arg n="1">primary insurance</arg>
+</example>
+
+<note>
+Finance suggests an arg2 'money' argument, which seems unnatural to
+me.  I have an intuition for a benefactive arg, though, but I'll wait
+to see if something really appears.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

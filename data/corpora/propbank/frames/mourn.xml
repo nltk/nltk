@@ -1,0 +1,34 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="mourn">
+<note>
+  Frames file for 'mourn'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="mourn.01" name="to grieve" vncls="31.2 31.3">
+<roles> 
+  <role descr="griever, agent" n="0">
+        <vnrole vncls="31.3" vntheta="Experiencer"/>
+        <vnrole vncls="31.2" vntheta="Experiencer"/></role>  
+  <role descr="entity mourning for" n="1">
+        <vnrole vncls="31.3" vntheta="Cause"/>
+        <vnrole vncls="31.2" vntheta="Cause"/></role>  
+</roles>
+
+<example name="gerund">
+<inflection aspect="ns" form="gerund" person="ns" tense="ns" voice="active"/>
+<text>
+ [*] Mourning for the father is overshadowed [*-2] by the shame of [*] burying him in a pauper 's grave .
+</text>
+	<arg n="0">[*]</arg>
+	<rel>Mourning</rel>
+	<arg f="for" n="1">the father</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

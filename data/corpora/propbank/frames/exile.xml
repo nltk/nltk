@@ -1,0 +1,44 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="exile">
+<note>
+  Frames file for 'exile' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="exile.01" name="banish, send away" vncls="-">
+<roles>
+  <role descr="sender away, agent" n="0"/>
+  <role descr="exile" n="1"/>
+  <role descr="exiled from, homeland etc" n="2"/>
+</roles>
+
+<example name="almost adjectival">
+<inflection aspect="ns" form="participle" person="ns" tense="past" voice="passive"/>
+<text>
+    Within two years, the moderates were exiled [*-1] or in prison,
+    Nicaragua had gone communist, and the Sandinistas were building
+    one of the biggest armies in Latin America and threatening their
+    neighbors. 
+</text>
+        <arg f="TMP" n="M">Within two years</arg>
+        <rel>exiled</rel>
+        <arg n="1">[*-1] -&gt;  the moderates</arg>
+</example>
+
+<example name="all args">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     Mary exiled John from her bedroom.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>exiled</rel>
+  <arg n="1">John</arg>
+  <arg f="from" n="2">her bedroom</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,66 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="scoop">
+<note>
+  Frames file for 'scoop' based on survey of  sentences in the corpus. Comparison with 'dip'.
+</note>
+
+<roleset id="scoop.01" name="dip">
+<roles>
+  <role descr="scooper" n="0"/>
+  <role descr="thing scooped" n="1"/>
+  <role descr="scooped into" n="2"/>
+</roles>
+
+<example name="with Arg2">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ The guide scoops into a pail and puts a frantically wiggling croaker on the hook .
+</text>
+	<arg n="0">The guide</arg>
+	<rel>scoops</rel>
+	<arg f="into" n="2">a pail</arg>
+</example>
+</roleset>
+</predicate>
+
+
+<predicate lemma="scoop_up">
+
+<roleset id="scoop.02" name="acquire">
+<roles>
+  <role descr="acquirer" n="0"/>
+  <role descr="thing scooped" n="1"/>
+</roles>
+
+
+<example name="with locative PP">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ [*-1] Attracted [*-2] by low prices and encouraged [*-2] by New York 's performance , they scooped up equities across the board .
+</text>
+	<arg f="ADV" n="M">[*-1] Attracted [*-2] by low prices and encouraged [*-2] by New York 's performance</arg>
+	<arg n="0">they</arg>
+	<rel>[ scooped] [ up]</rel>
+	<arg n="1">equities</arg>
+	<arg f="LOC" n="M">across the board</arg>
+</example>
+
+
+<example name="with temporal adverbial">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+ Pension funds , insurers and other behemoths of the investing world said [0] they began [*-1] scooping up stocks during Friday 's market rout .
+</text>
+	<arg n="0">[*-1] -&gt;  they</arg>
+	<rel>[ scooping] [ up]</rel>
+	<arg n="1">stocks</arg>
+	<arg f="TMP" n="M">during Friday 's market rout</arg>
+</example>
+
+
+
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,100 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="track">
+<note>
+  Frames file for 'track' based on survey of sentences in financial
+  subcorpus and comparison with 'follow'.  Verbnet classes stalk-35.3
+  and chase-51.6.
+</note>
+
+<roleset id="track.01" name="follow" vncls="35.3 51.6">
+<roles>
+  <role descr="thing following" n="0">
+	<vnrole vncls="51.6" vntheta="Agent"/>
+        <vnrole vncls="35.3" vntheta="Agent"/></role>
+  <role descr="thing followed" n="1">
+	<vnrole vncls="51.6" vntheta="Theme"/>
+        <vnrole vncls="35.3" vntheta="Theme"/></role>
+  <role descr="benefactive" n="2"/>
+  <role descr="instrument" n="3"/>
+</roles>
+
+<example name="transitive">
+  <text>
+  The Nasdaq bank index tracks thrift issues.
+  </text>
+  <arg n="0">The Nasdaq bank index</arg>
+  <rel>tracks</rel>
+  <arg n="1">thrift issues</arg>
+</example>
+
+<example name="with instrument">
+  <text>
+  The brokerage firm tracks technology stocks with its Technology Index.
+  </text>
+  <arg n="0">The brokerage firm</arg>
+  <rel>tracks</rel>
+  <arg n="1">technology stocks</arg>
+  <arg f="with" n="3">its Technology Index</arg>
+</example>
+
+<note>
+This actually diverges rather dramatically from 'follow'.
+</note>
+
+</roleset>
+
+<roleset id="track.03" name="be on track" vncls="-">
+<roles>
+  <role descr="thing on track" n="1"/>
+  <role descr="track itself (loosely speaking)" n="2"/>
+</roles>
+
+<example name="prepositional track">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     Indeed, the stock market's steady advance this year tracked with
+     President Bush's success in advancing his capital-gain proposal.
+  </text>
+  <arg f="DIS" n="m">Indeed</arg>
+  <arg n="1">the stock market's steady advance this year</arg>
+  <rel>tracked</rel>
+  <arg f="with" n="2">President Bush's success in advancing his
+  capital-gains proposal</arg>
+</example>
+
+<note>
+Note that the 'with' is actually optional.
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="track_down">
+
+<roleset id="track.02" name="find" vncls="-">
+<roles>
+  <role descr="finder" n="0"/>
+  <role descr="thing found" n="1"/>
+  <role descr="benefactive, found for" n="2"/>
+</roles>
+
+<example name="transitive, no benefactive">
+  <text>
+    A Commonwealth Edison spokesman said that *trace* tracking down the two
+    million customers whose addresses have changed during the past 3
+    1/2 years would be ``an administrative nightmare.''
+  </text>
+  <arg n="0">*trace*</arg>
+  <rel>tracking down</rel>
+  <arg n="1">the two
+    million customers whose addresses have changed during the past 3
+    1/2 years would be ``an administrative nightmare.''</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,34 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="ordain">
+<note>
+  Frames file for 'ordain'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="ordain.01" name="to dictate" vncls="29.1">
+<roles> 
+  <role descr="dictator, agent" n="0">
+        <vnrole vncls="29.1" vntheta="Agent"/></role>  
+  <role descr="thing dictated" n="1">
+        <vnrole vncls="29.1" vntheta="Theme"/></role> 
+</roles>
+
+<example name="transitive">
+<inflection aspect="perfect" form="participle" person="third" tense="present" voice="active"/>
+<text>
+ `` ` God has not yet ordained that I should have earnings , ' he tells his worried mother [*T*-1] . ''
+</text>
+	<arg n="0">God</arg>
+	<arg f="NEG" n="M">not</arg>
+	<arg f="TMP" n="M">yet</arg>
+	<rel>ordained</rel>
+	<arg n="1">that I should have earnings</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

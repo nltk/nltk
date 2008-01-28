@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="obviate">
+<note>
+  Frames file for 'obviate' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="obviate.01" name="to render unnecessary " vncls="-">
+<roles>
+  <role descr="causer of unnecessariness, agent" n="0"/>
+  <role descr="entity obviated" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="future" voice="active"/>
+<text>
+ He said that even though virtually all corn seeds currently planted [*] are hybrids , the genetic approach will obviate the need for mechanical emasculation of anthers , which [*T*-38] costs U.S. seed producers about $ 70 million [*U*] annually .
+</text>
+	<arg f="ADV" n="M">even though virtually all corn seeds currently planted [*] are hybrids</arg>
+	<arg n="0">the genetic approach</arg>
+	<arg f="MOD" n="M">will</arg>
+	<rel>obviate</rel>
+	<arg n="1">the need for mechanical emasculation of anthers , which [*T*-38] costs U.S. seed producers about $ 70 million [*U*] annually</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

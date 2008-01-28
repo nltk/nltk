@@ -1,0 +1,35 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="sputter">
+<note>
+  Frames file for 'sputter' based on sentences in financial
+  subcorpus.  Verbnet class 43.2, no other framed members.  No
+  comparison. 
+</note>
+
+<roleset id="sputter.01" name="make sounds like a motorboat" vncls="43.2">
+<roles>
+  <role descr="maker of sounds" n="0">
+		
+  <vnrole vncls="43.2" vntheta="Agent"/></role>
+
+</roles>
+
+<example name="falter, etc.">
+<text>
+    Comprehensive Care had agreed to be acquired by closely held First
+    Hospital Corp. of Norfolk, Va., but the sale sputtered almost from
+    the beginning and finally collapsed last week. 
+</text>
+        <arg n="0">the sale</arg>
+        <rel>sputtered</rel>
+        <arg f="TMP" n="M">almost from the beginning</arg>
+</example>
+
+<note>
+Might also see 'sputter' as verb-of-saying, in which case refer to 'say'.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

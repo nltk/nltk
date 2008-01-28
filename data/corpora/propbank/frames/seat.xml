@@ -1,0 +1,69 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="seat">
+<note>
+  Frames file for 'seat' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="seat.01" name="to place in a seat, provide seats" vncls="54.3">
+<roles>
+  <role descr="placer, provider of seat" n="0">
+       <vnrole vncls="54.3" vntheta="Agent"/></role>
+  <role descr="entity seated" n="1">
+       <vnrole vncls="54.3" vntheta="Attribute"/></role>
+  <role descr="location" n="2">
+       <vnrole vncls="54.3" vntheta="Location"/></role>
+</roles>
+
+<example name="Arg2 as a subject">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ One of its futuristic concepts is the bubblelike Sneaker , which [*T*-1] seats just one person in front and could hold a small child and bag of groceries in the rear .
+</text>
+	<arg n="2">[*T*-1] -&gt;  which -&gt;  the bubblelike Sneaker</arg>
+	<rel>seats</rel>
+	<arg n="1">just one person</arg>
+	<arg f="LOC" n="M">in front</arg>
+</example>
+
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="past" voice="passive"/>
+<text>
+ `` Barber was seated [*-2] by the fireplace [*-2] looking very pale , '' recalls [*T*-3] the violinist , who [*T*-1] performed the work with a piano accompanist at the composer 's apartment .
+</text>
+	<rel>seated</rel>
+	<arg n="1">[*-2] -&gt;  Barber</arg>
+	<arg f="LOC" n="M">by the fireplace</arg>
+	<arg f="PRD" n="M">[*-2] looking very pale</arg>
+</example>
+</roleset>
+
+
+<roleset id="seat.02" name="to place in a position of authority" vncls="54.3">
+<roles>
+  <role descr="agent" n="0">
+        <vnrole vncls="54.3" vntheta="Agent"/></role>
+  <role descr="entity seated" n="1">
+        <vnrole vncls="54.3" vntheta="Attribute"/></role>
+</roles>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="past" voice="passive"/>
+<text>
+ Israel was seated [*-38] by a vote of 95-37 , with 15 abstentions .
+</text>
+	<rel>seated</rel>
+	<arg n="1">[*-38] -&gt;  Israel</arg>
+	<arg f="MNR" n="M">by a vote of 95-37</arg>
+	<arg f="MNR" n="M">with 15 abstentions</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

@@ -1,0 +1,53 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="position">
+<note>
+  Frames file for 'position' based on sentences in financial
+  subcorpus.  No access to verbnet.  Comparison to 'set' and 'call'.
+</note>
+
+<roleset id="position.01" name="put in a particular location, or describe" vncls="9.1">
+<roles>
+  <role descr="agent, putter" n="0">
+	  <vnrole vncls="9.1" vntheta="Agent"/></role>
+  <role descr="thing positioned, often REC" n="1">
+	  <vnrole vncls="9.1" vntheta="Theme"/></role>
+  <role descr="location or position, or attribute of arg1" n="2">
+	  <vnrole vncls="9.1" vntheta="Destination"/></role>
+</roles>
+
+<example name="verbal">
+<text>
+    One investment banker said Mr. Steinberg may be trying *trace* to
+    position himself as a friendly investor who could help UAL
+    Chairman Stephen Wolf revive a failed labor-management bid. 
+</text>
+        <arg n="0">*trace* -&gt;  Mr. Steinberg</arg>
+        <rel>position</rel>
+        <arg f="TMP" n="1">himself</arg>
+        <arg f="as" n="2">a friendly investor who could help UAL
+        Chairman Stephen Wolf revive a failed labor-management
+        bid</arg> 
+</example>
+
+<example name="adjectival, sorta">
+<text>
+    He attributed the unusually high volume to broad-based selling on
+    fears that the Thatcher government may be in turmoil and Britain's
+    Labor Party positioned *trace* to regain control of the government
+    and renew efforts at nationalization. 
+</text>
+        <rel>positioned</rel>
+        <arg n="1">*trace* -&gt;  Britain's Labor Party</arg>
+        <arg n="2">to regain control of the government and
+        renew efforts at nationalization</arg> 
+</example>
+
+<note>
+The latter example actually effectively has S[ NP[ Britain's Labor
+Party] VP[ regain control...]].  Damn those ECM verbs already!
+</note>
+
+</roleset>
+</predicate>
+</frameset>

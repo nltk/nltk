@@ -1,0 +1,121 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="bow">
+<note>
+  Frames file for 'bow' based on annotation-on-the fly in the
+  financial subcorpus and comparison with 'leave' (for 'bow_out')
+</note>
+
+<roleset id="bow.01" name="bend at waist" vncls="40.3.3">
+<roles>
+  <role descr="bower" n="0"><vnrole vncls="40.3.3" vntheta="Agent"/></role>
+  <role descr="bowed to" n="1"><vnrole vncls="40.3.3" vntheta="Recipient"/></role>
+</roles>
+
+<example name="made up">
+  <text>
+  John bowed to the King of Spain.
+  </text>
+  <arg n="0">John</arg>
+  <rel>bowed</rel>
+  <arg f="to" n="1">the King of Spain</arg>
+</example>
+
+<example name="metaphorical">
+  <text>
+  John bowed to the superior experience of his mother.
+  </text>
+  <arg n="0">John</arg>
+  <rel>bowed</rel>
+  <arg f="to" n="1">the superior experience of his mother</arg>
+</example>
+
+<note>
+The metaphorical usage could be referred to as &quot;defer to&quot;.
+</note>
+
+</roleset>
+
+<roleset id="bow.02" name="bend" vncls="47.3 47.6 50">
+<roles>
+  <role descr="thing bending" n="1">
+	  
+          
+          <vnrole vncls="47.6" vntheta="Theme"/><vnrole vncls="47.3" vntheta="Theme"/><vnrole vncls="50" vntheta="Agent"/></role>
+</roles>
+
+<example name="bend">
+  <text>
+     I saw a steel beam bow six feet from where I was sitting.
+  </text>
+  <arg n="1">a steel beam</arg>
+  <rel>bow</rel>
+  <arg f="LOC" n="m">six feet from where I was sitting</arg>
+</example>
+
+<note>
+This seems to the same roleset, and is closely related, but the word is pronounced differently--[boh] rather than [bau].
+</note>
+</roleset>
+
+<roleset id="bow.03" name="fail" vncls="-">
+<roles>
+  <role descr="thing failing" n="1"/>
+</roles>
+
+<example>
+  <text>
+    Eighteen months ago a disposable seven-day model bowed.
+  </text>
+  <arg f="TMP" n="m">Eighteen months ago</arg>
+  <arg n="1">a disposable seven-day model</arg>
+  <rel>bowed</rel>
+</example>
+<note>
+This sentence makes no sense to me.
+</note>
+</roleset>
+</predicate>
+
+<predicate lemma="bow_down">
+
+<roleset id="bow.04" name="bend at waist, more emphatically" vncls="40.3.3">
+<roles>
+  <role descr="bower" n="0"><vnrole vncls="40.3.3" vntheta="Agent"/></role>
+  <role descr="bowed to" n="1"><vnrole vncls="40.3.3" vntheta="Recipient"/></role>
+</roles>
+
+<example name="worship">
+  <text>
+  The Bible forbids us *trace* to bow down to graven images.
+  </text>
+  <arg n="0">*trace*=us</arg>
+  <rel>bow down</rel>
+  <arg f="to" n="1">graven images</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="bow_out">
+
+<roleset id="bow.06" name="exit, leave" vncls="-">
+<roles>
+  <role descr="entity leaving" n="0"/>
+  <role descr="place left" n="1"/>
+</roles>
+
+<example name="not a physical place left">
+  <text>
+  New England Electric bowed out of the bidding for Public Service of
+  New Hampshire.
+  </text>
+  <arg n="0">New England Electric</arg>
+  <rel>bowed out</rel>
+  <arg f="of" n="1">the bidding for Public Service of
+  New Hampshire.</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

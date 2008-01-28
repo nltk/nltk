@@ -1,0 +1,68 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="fly">
+<note>
+  Frames file for 'fly' based on sentences in financial subcorpus.  No
+  access to verbnet.  Comparison with other verbs of (impelled) motion.
+</note>
+
+<roleset id="fly.01" name="fly through the air, travel via air" vncls="11.5-1 47.6 51.3.2 51.4.2">
+<roles>
+  <role descr="causal agent" n="0">
+	<vnrole vncls="47.6" vntheta="Agent"/>
+        <vnrole vncls="51.3.2" vntheta="Agent"/>
+        <vnrole vncls="11.5-1" vntheta="Agent"/>
+        <vnrole vncls="51.4.2" vntheta="Agent"/></role>
+  <role descr="thing actually doing the flying" n="1">
+	<vnrole vncls="47.6" vntheta="Theme"/>
+        <vnrole vncls="51.3.2" vntheta="Theme"/>
+        <vnrole vncls="11.5-1" vntheta="Theme"/>
+        <vnrole vncls="51.4.2" vntheta="Theme"/></role>
+  <role descr="benefactive" n="2">
+        <vnrole vncls="11.5-1" vntheta="Destination"/></role>
+</roles>
+
+<example name="unaccusative, traveller as subject">
+<text>
+    And some investors fault Mr. Spiegel's life style; he earns
+    millions of dollars a year and flies around in Columbia's jet
+    planes. 
+</text>
+        <arg n="1">he</arg>
+        <rel>flies</rel>
+        <arg f="DIR" n="M">around</arg>
+        <arg f="LOC" n="M">in Columbia's jet planes</arg>
+</example>
+
+<example name="transitive, pilot as subject">
+<text>
+    As a ``good-will measure,'' the pilots had been working four extra
+    hours a month and had agreed *trace* to fly UAL's two new Boeing
+    747-400 aircraft. 
+</text>
+        <arg n="0">*trace* -&gt; the pilots</arg>
+        <rel>fly</rel>
+        <arg n="1">UAL's two new Boeing 747-400 aircraft</arg>
+</example>
+
+<example name="intransitive, pilot as subject">
+<text>
+    Pilots, as well, routinely fly overtime to ensure that none are
+    furloughed during seasonal lows. 
+</text>
+        <arg n="0">Pilots</arg>
+        <arg f="DIS" n="M">as well</arg>
+        <rel>fly</rel>
+        <arg f="MNR" n="M">overtime</arg>
+        <arg f="PNC" n="M">to ensure that none are furloughed during
+        seasonal lows</arg> 
+</example>
+
+<note>
+This is a hard one; it can be very difficult to determine if a subject
+is a pilot or a traveller.  When in doubt, go with traveller.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

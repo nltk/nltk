@@ -1,0 +1,246 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<note>
+Frames file for 'fall' based on first 50 or so sentences from large corpus
+and comparison with 'rise'
+</note>
+
+<predicate lemma="fall">
+<roleset id="fall.01" name="move downward" vncls="45.6 51.1-2">
+<roles>
+  <role descr="Logical subject, patient, thing falling" n="1">
+	<vnrole vncls="51.1-2" vntheta="Theme"/>
+        <vnrole vncls="45.6" vntheta="Patient"/></role>
+  <role descr="EXT, amount fallen" n="2">
+	<vnrole vncls="45.6" vntheta="Extent"/></role>
+  <role descr="start point" n="3"/>
+  <role descr="end point, end state of arg1" n="4">
+        <vnrole vncls="51.1-2" vntheta="Location"/></role>
+  <role descr="medium" f="LOC" n="M"/>
+</roles>
+
+<example name="start and endpoints">
+  <text>
+    Sales fell to $251.2 million from $278.7 million.
+  </text>
+  <arg n="1">Sales</arg>
+  <rel>fell</rel>
+  <arg f="to" n="4">to $251.2 million</arg>
+  <arg f="from" n="3">from $278.7 million</arg>
+</example>
+
+<example name="all args">
+  <text>
+    Profits fell 10% to $118 million from $130.6 million
+  </text>
+  <arg n="1">Profits</arg>
+  <rel>fell</rel>
+  <arg f="EXT" n="2">10%</arg>
+  <arg f="to" n="4">to $118 million</arg>
+  <arg f="from" n="3">from $130.6 million</arg>
+</example>
+
+<example name="arg2 as manner">
+  <text>
+    British government bonds fell sharply  initially.
+  </text>
+  <arg n="1">British government bonds</arg>
+  <rel>fell</rel>
+  <arg f="MNR" n="2">sharply</arg>
+  <arg f="TMP" n="M">initialy</arg>
+</example>
+
+
+<example name="temporal, with EXT">
+  <text>
+    The average junk bond fell by 4.2%  in October
+  </text>
+  <arg n="1">The average junk bond</arg>
+  <rel>fell</rel>
+  <arg f="EXT" n="2">by 4.2%</arg>
+  <arg f="TMP" n="M">in October</arg>
+</example>
+
+
+<example name="non financial, fall into">
+  <text>
+    They fell into oblivion after the 1929 crash.
+  </text>
+  <arg n="1">They</arg>
+  <rel>fell</rel>
+  <arg f="into" n="4">into oblivion</arg>
+  <arg f="TMP" n="M">after the 1929 crash</arg>
+</example>
+
+<example name="non financial, fall under">
+  <text>
+    Asian countries are falling under Japanese economic hegemony now.
+  </text>
+  <arg n="1">Asian countries</arg>
+  <rel>are falling</rel>
+  <arg f="under" n="4">under Japanese economoc hegemony</arg>
+  <arg f="TMP" n="M">now</arg>
+</example>
+
+<example name="non financial, with attribute">
+  <text>
+    The bells have fallen silent following a dust-up over church attendance.
+  </text>
+  <arg n="1">The bells</arg>
+  <rel>have fallen</rel>
+  <arg n="4">silent</arg>
+  <arg f="TMP" n="M">following a dust-up over church attendance</arg>
+</example>
+
+</roleset>
+
+<roleset id="fall.04" vncls="-" name="occur">
+<roles>
+  <role n="1"  descr="thing occurring"/>
+  <role n="2"  descr="when/where"/>
+</roles>
+
+<example name="where they fall">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+     The increase reflects spending on the S&amp;L rescue as well as
+     payroll and Social Security checks normally issued in October
+     that were issued in September this year because Oct. 1 fell on a
+     Sunday.  
+  </text>
+  <arg n="1"        >Oct. 1</arg>
+  <rel              >fell</rel>
+  <arg n="2" f="on">a Sunday</arg>
+</example>
+
+</roleset>
+
+<roleset id="fall.05" vncls="-" name="be defeated">
+<roles>
+  <role n="1"  descr="loser"/>
+  <role n="2"  descr="winner or instrument of destruction"/>
+</roles>
+
+<example name="pithy">
+<inflection person="ns" tense="past" aspect="perfect" voice="active" form="participle"/>
+<text>
+     The pithiest testimony to their domination of the just-concluded
+     tournament came from Giants' manager Roger Craig after his team
+     had fallen in Game Three to a five-home-run barrage that tied a
+     61-year-old Series record. 
+</text>
+        <arg n="1">his team</arg>
+        <rel>fallen</rel>
+        <arg n="M" f="LOC">in Game Three</arg>
+        <arg n="2">to a five-home-run barrage that tied a 61-year-old
+        Series record</arg> 
+</example>
+
+</roleset>
+
+<roleset id="fall.07" vncls="-" name="fall in love">
+<roles>
+  <role n="0"  descr="new-found lover"/>
+  <role n="1"  descr="fixed: love"/>
+  <role n="2"  descr="with whom/what"/>
+</roles>
+
+<example name="ah, romance!">
+<inflection person="third" tense="present" aspect="ns" voice="active" form="full"/>
+<text>
+     When, however, Claudio's sister, Isabella, a novitiate in a
+     convent, goes to Angelo to plead her brother's case, the obdurate
+     ruler immediately falls in love with her and, in a supreme act of
+     hypocrisy, demands that Isabella yield up her virtue to him in
+     exchange for her brother's life. 
+</text>
+        <arg n="M" f="TMP">When, however, Claudio's sister, Isabella,
+        a novitiate in a convent, goes to Angelo to plead her
+        brother's case</arg> 
+        <arg n="1">the obdurate ruler</arg>
+        <arg n="M" f="TMP">immediately</arg>
+        <rel>falls</rel>
+        <arg n="1" f="in">love</arg>
+        <arg n="2" f="with">her</arg>
+<note>
+Treebank seems to put 'in love with X' as all one constituent, but
+this is wrong with respect to the argument structure.
+</note>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="fall_off">
+<roleset id="fall.02" name="fall off: stop, almost" vncls="45.6 51.1-2">
+<roles>
+  <role descr="Logical subject, patient, thing falling" n="1">
+	<vnrole vncls="51.1-2" vntheta="Theme"/>
+        <vnrole vncls="45.6" vntheta="Patient"/></role>
+  <role descr="EXT, amount fallen" n="2">
+	<vnrole vncls="45.6" vntheta="Extent"/></role>
+</roles>
+
+<example name="ouch">
+  <inflection aspect="perfect" form="participle" person="third" tense="present" voice="active"/>
+  <text>
+     John's productivity has fallen off ever since the beatings stopped.
+  </text>
+  <arg n="1">John's productivity</arg>
+  <rel>fallen off</rel>
+  <arg f="TMP" n="m">ever since the beatings stopped</arg>
+</example>
+</roleset>
+</predicate>
+
+<predicate lemma="fall_out">
+
+<roleset id="fall.03" vncls="-" name="fall out: no longer be on good terms">
+<roles>
+  <role n="1"  descr="parties on bad terms"/>
+</roles>
+
+<example name="John's fault, usually">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+     John and Mary fell out over who left their socks in the refrigerator.
+  </text>
+  <arg n="1"        >John and Mary</arg>
+  <rel              >fell out</rel>
+  <arg n="m" f="CAU">over who left their socks in the refrigerator</arg>
+</example>
+
+<example name="usually nominal">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+     John and Mary had a falling out over who left their socks in the
+     refrigerator. 
+  </text>
+  <arg n="1"        >John and Mary</arg>
+  <rel              >falling out</rel>
+  <arg n="m" f="CAU">over who left their socks in the refrigerator</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="fall_through">
+
+<roleset id="fall.06" vncls="-" name="fall through: not come to pass">
+<roles>
+  <role n="1"  descr="non-event"/>
+</roles>
+
+<example name="bummer, dude">
+<inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+<text>
+     The price plummeted after a proposed leveraged buy-out of the
+     airline fell through. 
+</text>
+        <arg n="1">a proposed leveraged buy-out of the airline</arg>
+        <rel>[ fell] [ through]</rel>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

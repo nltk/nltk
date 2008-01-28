@@ -1,0 +1,75 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="render">
+<note>
+  Frames file for 'render' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+
+<roleset id="render.01" name="to cause to become" vncls="-">
+<roles>
+  <role descr="cause, agent" n="0"/>
+  <role descr="entity rendered" n="1"/>
+  <role descr="secondary predicate on arg1" n="2"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+ The water destroyed about $ 75 million [*U*] in currency and caked $ 4 million [*U*] of coins with mud , [*] rendering them dangerous to counting machines .
+</text>
+	<arg n="0">[*] -&gt;  The water</arg>
+	<rel>rendering</rel>
+	<arg n="1">them</arg>
+	<arg n="2">dangerous to counting machines</arg>
+</example>
+</roleset>
+
+
+<roleset id="render.02" name="to give, provide" vncls="13.1-1">
+<roles>
+  <role descr="giver" n="0">
+	<vnrole vncls="13.1-1" vntheta="Agent"/></role>
+  <role descr="entity rendered" n="1">
+	<vnrole vncls="13.1-1" vntheta="Theme"/></role>
+  <role descr="entity receiving" n="2">
+	<vnrole vncls="13.1-1" vntheta="Recipient"/></role>
+</roles>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+ Naturally , neither General Dynamics nor Dassault could be expected [*-1] to hamper its prospective future dealings by [*-2] making disclosures of sums paid [*] ( or not ) to various Greek officials for services rendered [*] .
+</text>
+	<rel>rendered</rel>
+	<arg n="1">[*] -&gt;  services</arg>
+</example>
+</roleset>
+
+
+<roleset id="render.03" name="to translate" vncls="-">
+<roles>
+  <role descr="translator" n="0"/>
+  <role descr="entity rendered" n="1"/>
+  <role descr="rendered into" n="2"/>
+</roles>
+
+<example name="all arguments">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+ [*-1] Assuming [0] modern audiences readily understand that Moliere 's social indictment covers their world as well as 17th-century Paris , Mr. Wilbur concentrated his formidable artistry on [*-1] rendering the Alexandrine French verse into sprightly and theatrical English iambic pentameter .
+</text>
+	<arg n="0">[*-1] -&gt;  Mr. Wilbur</arg>
+	<rel>rendering</rel>
+	<arg n="1">the Alexandrine French verse</arg>
+	<arg f="into" n="2">sprightly and theatrical English iambic pentameter</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

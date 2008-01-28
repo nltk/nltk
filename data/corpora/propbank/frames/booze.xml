@@ -1,0 +1,25 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="booze">
+<note>
+  Frames file for 'booze' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="booze.01" vncls="-" name="drink heavily">
+<roles>
+  <role n="0"  descr="drunk"/>
+</roles>
+
+<example name="and womanizing too!">
+  <inflection person="ns" tense="ns" aspect="ns" voice="ns" form="gerund"/>
+  <text>
+    John Tower was accused of womanizing and boozing during his
+    unsuccessful bid to win confirmation as secretary of defense
+    earlier this year. 
+  </text>
+  <rel              >boozing</rel>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

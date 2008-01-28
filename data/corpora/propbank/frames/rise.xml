@@ -1,0 +1,92 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<note>
+Frames file for &quot;rise&quot; based on first 100 or so sentences from large corpus
+</note>
+<predicate lemma="rise">
+<roleset id="rise.01" name="go up" vncls="45.6 47.6 48.1.1 50 51.1-2">
+  <roles>
+    <role descr="Logical subject, patient, thing rising" n="1">
+		
+		
+		
+		
+  <vnrole vncls="47.6" vntheta="Theme"/><vnrole vncls="51.1-2" vntheta="Theme"/><vnrole vncls="48.1.1" vntheta="Theme"/><vnrole vncls="50" vntheta="Agent"/><vnrole vncls="45.6" vntheta="Patient"/></role>
+
+    <role descr="EXT, amount risen" n="2">
+		
+  <vnrole vncls="45.6" vntheta="Extent"/></role>
+
+    <role descr="start point" n="3"/>
+    <role descr="end point" n="4"><vnrole vncls="51.1-2" vntheta="Location"/></role>
+    <role descr="medium" f="LOC" n="M">
+        
+     </role>
+  </roles>
+
+<example name="all args">
+  <text>
+    Sales rose 4% to $3.28 billion from $3.16 billion.
+  </text>
+  <arg n="1">Sales</arg>
+  <rel>rose</rel>
+  <arg f="EXT" n="2">4%</arg>
+  <arg f="to" n="3">to $3.28 billion</arg>
+  <arg f="from" n="4">from $3.16 billion</arg>
+</example>
+
+<note>
+Let's use EXT for numericals only, otherwise Arg2-MNR:
+</note>
+
+<example name="arg2 as manner">
+  <text>
+    The index rose modestly as well.
+  </text>
+  <arg n="1">The index</arg>
+  <rel>rose</rel>
+  <arg f="MNR" n="2">modestly</arg>
+  <arg f="DIS" n="M">as well</arg>
+</example>
+
+<example name="with locative">
+  <text>
+    Stock prices rose fractionally in moderate trading.
+  </text>
+  <arg n="1">Stock prices</arg>
+  <rel>rose</rel>
+  <arg f="MNR" n="2">fractionally</arg>
+  <arg f="LOC" n="M">in moderate trading</arg>
+</example>
+
+<example name="with temporal">
+  <text>
+    Georgia Gulf stock rose $1.75 a share yesterday
+  </text>
+  <arg n="1">Georgia Gult stock</arg>
+  <rel>rose</rel>
+  <arg f="EXT" n="2">$1.75 a share</arg>
+  <arg f="TMP" n="M">yesterday</arg>
+</example>
+
+<example name="non-financial usage">
+  <text>
+    Mr. Hahn rose swiftly through the ranks
+  </text>
+  <arg n="1">Mr Hahn</arg>
+  <rel>rose</rel>
+  <arg f="MNR" n="M">swiftly</arg>
+  <arg f="LOC" n="M">through the ranks</arg>
+</example>
+
+<example name="and again">
+  <text>
+    The sun rises in the west.
+  </text>
+  <arg n="1">The sun</arg>
+  <rel>rises</rel>
+  <arg f="LOC" n="M">in the west</arg>
+</example>
+</roleset>
+</predicate>
+</frameset>

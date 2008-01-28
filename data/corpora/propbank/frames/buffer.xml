@@ -1,0 +1,44 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="buffer">
+<note>
+  Frames file for 'buffer' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="buffer.01" name="protect" vncls="-">
+<roles>
+  <role descr="protector" n="0"/>
+  <role descr="protected" n="1"/>
+  <role descr="danger" n="2"/>
+</roles>
+
+<example name="all args">
+<inflection aspect="ns" form="full" person="ns" tense="ns" voice="ns"/>
+<text>
+     Large cash positions help buffer funds from market declines but
+     can cut down on gains in rising markets. 
+</text>
+        <arg n="0">Large cash positions</arg>
+        <rel>buffer</rel>
+        <arg n="1">funds</arg>
+        <arg f="from" n="2">market declines</arg>
+</example>
+
+
+<example name="unstated danger">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+     High cash positions help *trace* buffer a fund when the market
+     falls. 
+</text>
+        <arg n="0">*trace* -&gt;  High cash positions</arg>
+        <rel>buffer</rel>
+        <arg n="1">a fund</arg>
+        <arg f="TMP" n="M">when the market falls </arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

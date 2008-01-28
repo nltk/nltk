@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="snub">
+<note>
+  Frames file for 'snub'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="snub.01" name="to ignore, turn down" vncls="33">
+<roles> 
+  <role descr="rude entity" n="0">
+        <vnrole vncls="33" vntheta="Agent"/></role>  
+  <role descr="entity snubbed" n="1">
+        <vnrole vncls="33" vntheta="Theme"/></role>   
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ For example , one of my favorite movies is the 1949 British comedy `` Kind Hearts and Coronets , '' in which the entire comedy is based [*-1] on actor Dennis Price 's murdering eight titled relatives ( all played [*] by Alec Guinness ) because they snubbed his mother and stand in the way of his acquiring the family title [*T*-2] .
+</text>
+	<arg n="0">they</arg>
+	<rel>snubbed</rel>
+	<arg n="1">his mother</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

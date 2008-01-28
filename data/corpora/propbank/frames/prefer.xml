@@ -1,0 +1,56 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="prefer">
+<note>
+  Frames file for 'prefer' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="prefer.01" name="to choose as more desirable" vncls="-">
+<roles>
+  <role descr="chooser, agent" n="0"/>
+  <role descr="entity chosen" n="1"/>
+  <role descr="entity compared to" n="2"/>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ Although manufacturers often are quick [*-1] to call for lower interest rates , 60 % of the executives said [0] they would prefer that the Fed keep inflation-fighting as its top priority even if that means higher rates .
+</text>
+	<arg n="0">they</arg>
+	<arg f="MOD" n="M">would</arg>
+	<rel>prefer</rel>
+	<arg n="1">the Fed keep inflation-fighting as its top priority even if that means higher rates</arg>
+</example>
+
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="past" voice="passive"/>
+<text>
+ The sales-tax plan was preferred [*-239] over an alternative that [*T*-277] would have boosted the state gasoline tax .
+</text>
+	<rel>preferred</rel>
+	<arg n="1">[*-239] -&gt;  The sales-tax plan</arg>
+	<arg f="over" n="2">an alternative that [*T*-277] would have boosted the state gasoline tax</arg>
+</example>
+
+
+<example name="all arguments">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ Sulzer preferred him to financier Tito Tettamanti , whose secretive raid on the company 's stock [*T*-1] had led to a bitter battle .
+</text>
+	<arg n="0">Sulzer</arg>
+	<rel>preferred</rel>
+	<arg n="1">him</arg>
+	<arg f="to" n="2">financier Tito Tettamanti , whose secretive raid on the company 's stock [*T*-1] had led to a bitter battle</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

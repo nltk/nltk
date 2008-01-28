@@ -1,0 +1,63 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="sacrifice">
+<note>
+  Frames file for 'sacrifice' based on sentences in financial
+  subcorpus.  Verbnet class contribute-13.2, other framed members
+  include contribute, return, surrender.  Comparison with 'give'.
+</note>
+
+<roleset id="sacrifice.01" name="give, as to a god/dess" vncls="13.2">
+<roles>
+  <role descr="sacrificer" n="0">
+		
+  <vnrole vncls="13.2" vntheta="Agent"/></role>
+
+  <role descr="thing sacrificed" n="1">
+		
+  <vnrole vncls="13.2" vntheta="Theme"/></role>
+
+  <role descr="thing sacrificed to" n="2">
+		
+  <vnrole vncls="13.2" vntheta="Recipient"/></role>
+
+</roles>
+
+<example name="all args">
+<text>
+    Perhaps he is willing *trace* to sacrifice to the arbitrage trader
+    some small profit in order to get quick and certain execution of
+    his large trade. 
+</text>
+	<arg n="0">*trace* -&gt;  he</arg>
+	<rel>sacrifice</rel>
+	<arg f="to" n="2">the arbitrage trader</arg>
+	<arg n="1">some small profit</arg>
+</example>
+
+<example name="unmentioned god/dess">
+<text>
+    Making computers smaller often means *trace* sacrificing memory .
+</text>
+	<arg n="0">*trace*</arg>
+	<rel>sacrificing</rel>
+	<arg n="1">memory</arg>
+</example>
+
+<example name="with locative">
+  <text>
+    John sacrifices at the altar of Bill Gates.
+  </text>
+  <arg n="0">John</arg>
+  <rel>sacrifices</rel>
+  <arg f="LOC" n="M">at the altar of Bill Gates</arg>
+</example>
+
+<note>
+You could also argue that the LOC is the Arg2, since they can't
+cooccur in my mind.  We'll see if it comes up.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

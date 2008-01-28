@@ -1,0 +1,72 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="pair">
+<note>
+  Frames file for 'pair' based on sentences in wsj.  Verbnet entries
+  22.2, 22.3-2.
+</note>
+
+<roleset id="pair.01" name="join two   things" vncls="22.2 22.3-2 ">
+<roles>
+  <role descr="joiner" n="0"><vnrole vncls="22.3-2" vntheta="Agent"/><vnrole vncls="22.2" vntheta="Agent"/></role>
+  <role descr="first thing, or both things" n="1"><vnrole vncls="22.3-2" vntheta="Patient1"/><vnrole vncls="22.2" vntheta="Patient1"/></role>
+  <role descr="second thing, if separate" n="2"><vnrole vncls="22.3-2" vntheta="Patient2"/><vnrole vncls="22.2" vntheta="Patient2"/></role>
+</roles>
+
+<example name="separated objects">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    One ad shows a bright red jacket paired *trace* with a black
+    leather skirt. 
+</text>
+        <rel>paired</rel>
+        <arg n="1">*trace* -&gt;  a bright red jacket</arg>
+        <arg f="with" n="2">a black leather skirt</arg>
+</example>
+
+<example name="merged objects">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    On Capitol Hill, though, there doesn't seem to be sufficient
+    sentiment *trace* to pair capital gains and the deficit-reduction
+    bill. 
+</text>
+        <arg n="0">*trace*</arg>
+        <rel>pair</rel>
+        <arg n="1">capital gains and the deficit-reduction bill</arg>
+</example>
+
+<note>
+I'm not getting any good examples with agent.  Interesting.
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="pair_up">
+
+<roleset id="pair.02" name="same as pair.01" vncls="-">
+<roles>
+  <role descr="joiner" n="0"/>
+  <role descr="first thing, or both things" n="1"/>
+  <role descr="second thing, if separate" n="2"/>
+</roles>
+
+<example name="ergative!">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+    In the classroom, students say, Mrs. Yeargin distinguished herself
+    by varying teaching approaches -- forcing kids to pair up to
+    complete classroom work or using college-bowl type competitions. 
+</text>
+        <arg n="1">kids</arg>
+        <rel>[ pair] [ up]</rel>
+        <arg f="PNC" n="M">to complete classroom work</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

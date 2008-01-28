@@ -1,0 +1,44 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="hustle">
+<note>
+  Frames file for 'hustle' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="hustle.01" name="to act or cause to proceed quickly" vncls="-">
+<roles>
+  <role descr="causer of motion" n="A"/>
+  <role descr="entity hustling, entity in motion" n="0"/>
+  <role descr="hustled to/into" n="1"/>
+</roles>
+
+<example name="without argA">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+     These days he hustles to house-painting jobs in his Chevy pickup
+     before and after training with the Tropics. 
+</text>
+	<arg f="TMP" n="M">These days</arg>
+	<arg n="0">he</arg>
+	<rel>hustles</rel>
+	<arg f="to" n="2">house-painting jobs</arg>
+	<arg f="LOC" n="M">in his Chevy pickup</arg>
+	<arg f="TMP" n="M">before and after training with the Tropics</arg>
+</example>
+
+<example name="justifying argA">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+     Mary hustled John off to school promptly at 7:30 pm.
+  </text>
+  <arg n="A"        >Mary</arg>
+  <rel              >hustled</rel>
+  <arg n="0"        >John</arg>
+  <arg n="1" f="off">to school</arg>
+  <arg n="m" f="TMP">promptly at 7:15 pm</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

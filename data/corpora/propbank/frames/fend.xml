@@ -1,0 +1,73 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="fend">
+<note>
+  Frames file for 'fend' based on sentences in financial subcorpus.
+  No Verbnet entry.  Comparison with 'ward'.
+</note>
+
+<roleset id="fend.01" name="manage, survive">
+<roles>
+  <role descr="entity getting by, surviving" n="0"/>
+  <role descr="REC" n="1"/>
+</roles>
+
+<example name="poor John">
+  <text>
+    John just can't fend for himself.
+  </text>
+  <arg n="0">John</arg>
+  <arg f="DIS" n="m">just</arg>
+  <arg f="MOD" n="m">ca</arg>
+  <arg f="NEG" n="m">n't</arg>
+  <rel>fend</rel>
+  <arg f="for" n="1">himself</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+<predicate lemma="fend_off">
+
+<roleset id="fend.02" name="avoid, keep away">
+<roles>
+  <role descr="avoider, warder" n="0"/>
+  <role descr="thing avoided, warded off" n="1"/>
+  <role descr="explicit instrument" n="2"/>
+</roles>
+
+<example name="transitive">
+<text>
+    The portfolio unit of the French bank group Credit Lyonnais told
+    stock market regulators that it bought 43,000 shares of Cie. de
+    Navigation Mixte, apparently *trace* to help *trace* fend off an
+    unwelcome takeover bid for the company. 
+</text>
+        <arg n="0">*trace* -&gt; *trace* -&gt;  it</arg>
+        <rel>[ fend] [ off]</rel>
+        <arg n="1">an unwelcome takeover bid for the company</arg>
+</example>
+
+<example name="with instrument">
+<text>
+    Although imports account for less than 1% of beer sales in Japan,
+    Asahi Breweries Ltd., which has been gaining share with its
+    popular dry beer, plans *trace* to fend off Japanese competitors
+    by pouring $1.06 billion into facilities to brew 50% more beer. 
+</text>
+        <arg n="0">*trace* -&gt;  Asahi Breweries Ltd., which has been
+        gaining share with its popular dry beer,</arg> 
+        <rel>[ fend] [ off]</rel>
+        <arg n="1">Japanese competitors</arg>
+        <arg f="by" n="2">pouring $1.06 billion into facilities to
+        brew 50% more beer</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

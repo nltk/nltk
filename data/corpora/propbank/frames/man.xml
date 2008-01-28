@@ -1,0 +1,38 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="man">
+<note>
+  Frames file for 'man' based on sentences in financial subcorpus.  No
+  Verbnet entry.
+</note>
+
+<roleset id="man.01" name="act as staff for, work at (place)" vncls="-">
+<roles>
+  <role descr="worker" n="0"/>
+  <role descr="job or place" n="1"/>
+</roles>
+
+<example name="no longer PC">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    He manned the UAL post yesterday with Christopher Bates, 33, an
+    energetic Long Islander who's a dead ringer for actor Nicolas
+    Cage. 
+</text>
+        <arg n="0">He</arg>
+        <rel>manned</rel>
+        <arg n="1">the UAL post</arg>
+        <arg f="TMP" n="M">yesterday</arg>
+        <arg f="MNR" n="M">with Christopher Bates, 33, an energetic
+        Long Islander who's a dead ringer for actor Nicolas Cage</arg> 
+</example>
+
+<note>
+'Work' suggests an arg3 'coworker', but I don't think that's
+appropriate here.  To 'work with' someone is quite different from to
+'man with'--the latter is much more adjuncty.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

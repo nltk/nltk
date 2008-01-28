@@ -1,0 +1,46 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="consist">
+<note>
+  Frames file for 'consist' based on sentences in financial
+  subcorpus.  No verbnet entry.  Comparison with 'exist'.  This is
+  really a preposition back-formed into a verb, in my opinion.
+</note>
+
+<roleset id="consist.01" name="be composed of pieces">
+<roles>
+  <role descr="whole" n="1"/>
+  <role descr="parts" n="2"/>
+</roles>
+
+<example name="prepositional">
+<text>
+    The second part, consisting of $100 million of senior subordinated
+    floating-rate notes, was priced at 99 3/4 to float 4.25% above the
+    three-month London interbank offered rate. 
+</text>
+        <arg n="1">The second part</arg>
+        <rel>consisting</rel>
+        <arg f="of" n="2">$100 million of senior subordinated
+        floating-rate notes</arg> 
+</example>
+
+<example name="verbal">
+<text>
+    The collateral consists of collateralized whole loans with a
+    weighted average coupon rate of 11.08% and weighted average
+    remaining term to maturity of 28 years. 
+</text>
+        <arg n="1">The collateral</arg>
+        <rel>consists</rel>
+        <arg f="of" n="2">collateralized whole loans with a weighted
+        average coupon rate of 11.08% and weighted average remaining
+        term to maturity of 28 years</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

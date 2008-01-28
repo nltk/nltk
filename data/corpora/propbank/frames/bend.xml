@@ -1,0 +1,90 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="bend">
+<note>
+  Frames file for 'bend' based on sentences in wsj.  Verbnet entries
+  47.6, 26.5, 50, and 45.2; Framenet entries Body movement, Posture,
+  and Path shape.  Fortunately all of these fit into a single rolest.
+  I think.
+</note>
+
+<roleset id="bend.01" name="(cause to) form a curve" vncls="47.6 26.5 50 45.2">
+<roles>
+  <role descr="bender" n="0">
+        <vnrole vncls="47.6" vntheta="Agent"/>
+        <vnrole vncls="50" vntheta="Agent"/>
+        <vnrole vncls="26.5" vntheta="Agent"/>
+        <vnrole vncls="45.2" vntheta="Agent"/></role>
+  <role descr="thing forming a curve" n="1">
+        <vnrole vncls="47.6" vntheta="Theme"/>
+        <vnrole vncls="26.5" vntheta="Product"/>
+        <vnrole vncls="45.2" vntheta="Patient"/></role>
+</roles>
+
+<example name="both args, and directional">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    Even that met with Mr. Greenspan's disapproval because it might
+    subject the Fed ``to a more intensely political perspective'' and
+    ``could risk *trace* bending monetary policy away from long-term
+    strategic goals.'' 
+</text>
+        <arg n="0">*trace* -&gt;  it</arg>
+        <rel>bending</rel>
+        <arg n="1">monetary policy</arg>
+        <arg f="DIR" n="M">away from long-term strategic goals</arg>
+</example>
+
+<example name="intransitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    But the legislation reflected a compromise agreed to on Tuesday by
+    President Bush and Democratic leaders in Congress, after
+    congressional Republicans urged the White House *trace* to bend a
+    bit from its previous resistance to compromise. 
+</text>
+        <arg n="0">*trace* -&gt;  the White House</arg>
+        <rel>bend</rel>
+        <arg f="MNR" n="M">a bit</arg>
+        <arg f="DIR" n="M">from its previous resistance to compromise</arg>
+</example>
+
+<example name="ergative">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John continued to drive straight, even as the road bent.
+  </text>
+  <arg n="1">the road</arg>
+  <rel>bent</rel>
+</example>
+
+<note>
+Sounds better with 'curved'.  Oh well, you get the point.
+</note>
+
+</roleset>
+
+<roleset id="bend.02" name="yield, give way" vncls="-">
+<roles>
+  <role descr="thing giving way" n="0"/>
+  <role descr="thing that succeeded" n="1"/>
+</roles>
+
+<example name="uncle!  uncle!">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    Furthermore, it is also likely to encourage those on Capitol Hill
+    asking for cuts in the assistance to El Salvador if President
+    Cristiani does not bend to demands of the Marxist guerrillas. 
+</text>
+        <arg n="0">President Cristiani</arg>
+        <arg f="NEG" n="M">not</arg>
+        <rel>bend</rel>
+        <arg f="to" n="1">demands of the Marxist guerrillas</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

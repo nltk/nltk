@@ -1,0 +1,54 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="pummel">
+<note>
+  Frames file for 'pummel' based on sentences in financial subcorpus.
+  Verbnet entry spank-18.3, no other framed members.  Comparison with
+  'beat'.
+</note>
+
+<roleset id="pummel.01" name="strike repeatedly" vncls="18.3">
+<roles>
+  <role descr="agent, hitter - animate only!" n="0">
+		
+  <vnrole vncls="18.3" vntheta="Agent"/></role>
+
+  <role descr="thing hit" n="1">
+		
+  <vnrole vncls="18.3" vntheta="Patient"/></role>
+
+  <role descr="instrument, thing hit by or with" n="2">
+		
+  <vnrole vncls="18.3" vntheta="Instrument"/></role>
+
+</roles>
+
+<example name="instrumental subject">
+<text>
+    Moreover, some investors think a recession or renewed airfare wars
+    will pummel airline stocks in coming months. 
+</text>
+        <arg n="2">a recession or renewed airfare wars</arg>
+        <arg f="MOD" n="M">will</arg>
+        <rel>pummel</rel>
+        <arg n="1">airline stocks</arg>
+        <arg f="TMP" n="M">in coming months</arg>
+</example>
+
+<example name="agentive subject">
+  <text>
+    Mary pummelled John with a series of stale marshmallows.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>pummelled</rel>
+  <arg n="1">John</arg>
+  <arg f="with" n="2">a series of stale marshmallows</arg>
+</example>
+
+<note>
+Please try very hard to make the agent/instrument distinction.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

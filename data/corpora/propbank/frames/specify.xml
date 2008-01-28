@@ -1,0 +1,42 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="specify">
+<note>
+  Frames file for 'specify' based on sentences in financial
+  subcorpus.  No access to verbnet.  Comparison to 'determine'
+</note>
+
+<roleset id="specify.01" name="set, establish, decide">
+<roles>
+  <role descr="decider, specifier" n="0"/>
+  <role descr="thing specified" n="1"/>
+</roles>
+
+<example name="specify a WH-phrase">
+<text>
+    Mr. Edelman declined *trace* to specify what prompted the recent
+    moves
+</text>
+        <arg n="0">*trace* -&gt;  Mr. Edelman</arg>
+        <rel>specify</rel>
+        <arg n="1">what prompted the recent moves</arg>
+</example>
+
+<example name="specify an NP">
+<text>
+    First Interstate said its operations outside of Arizona ``achieved
+    results as expected for the quarter,'' but didn't specify the
+    results. 
+</text>
+        <arg n="0">First Interstate</arg>
+        <arg f="NEG" n="M">n't</arg>
+        <rel>specify</rel>
+        <arg n="1">the results</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

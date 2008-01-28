@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="relent">
+<note>
+  Frames file for 'relent' based on sentences in financial subcorpus.
+  No Verbnet entry.  
+</note>
+
+<roleset id="relent.01" name="not be so harsh anymore" vncls="-">
+<roles>
+  <role descr="relenter" n="0"/>
+  <role descr="with respect to what?" n="1"/>
+</roles>
+
+<example name="relax already!">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    Ms. Browning says she believes a recapitalization involving
+    employee ownership would succeed only if the pilots relent on
+    their demand for control. 
+</text>
+        <arg n="0">the pilots</arg>
+        <rel>relent</rel>
+        <arg f="on" n="1">their demand for control</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

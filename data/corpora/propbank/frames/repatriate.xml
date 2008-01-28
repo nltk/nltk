@@ -1,0 +1,56 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="repatriate">
+<note>
+  Frames file for 'repatriate' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="repatriate.01" name="send one back to one's homeland" vncls="-">
+<roles>
+  <role descr="sender" n="0"/>
+  <role descr="expatriate" n="1"/>
+  <role descr="homeland" n="2"/>
+</roles>
+
+<example name="not really repatriate">
+<inflection aspect="ns" form="full" person="ns" tense="ns" voice="active"/>
+<text>
+    Sheraton and Pan Am said they are assured under the Soviet
+    joint-venture law that they can repatriate profits from their
+    hotel venture. 
+</text>
+        <arg n="0">they</arg>
+        <arg f="MOD" n="M">can</arg>
+        <rel>repatriate</rel>
+        <arg n="1">profits from their hotel venture</arg>
+</example>
+
+
+<example name="clearer example">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+    China had refused [*-2] to repatriate citizens who sneaked into
+    Hong Kong illegally since early this month, when the colony
+    allowed a dissident Chinese swimmer to flee to the U.S. 
+</text>
+        <arg n="0">[*-2] -&gt;  China</arg>
+        <rel>repatriate</rel>
+        <arg n="1">citizens who sneaked into Hong Kong illegally</arg>
+</example>
+
+<example name="with homeland">
+  <inflection aspect="ns" form="participle" person="third" tense="past" voice="passive"/>
+  <text>
+    John was repatriated *trace* to Lower Slobovia.
+  </text>
+  <rel>repatriated</rel>
+  <arg n="1">*trace* -&gt; John</arg>
+  <arg f="to" n="2">Lower Slobovia</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

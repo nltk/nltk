@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="consort">
+<note>
+  Frames file for 'consort' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="consort.01" name="to associate, be in agreement" vncls="36.1">
+<roles>
+  <role descr="person whose behavior we care about" n="0">
+        <vnrole vncls="36.1" vntheta="Actor1"/></role>
+  <role descr="entity consorted with" n="1">
+        <vnrole vncls="36.1" vntheta="Actor2"/></role>
+</roles>
+
+<example name="both arguments">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+ [*-1] Back in Berkeley , he was violently scolded [*-1] by a left-wing lady friend for [*-2] consorting with such people .
+</text>
+	<arg n="0">[*-2] -&gt;  [*-1] -&gt;  he</arg>
+	<rel>consorting</rel>
+	<arg f="with" n="1">such people</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

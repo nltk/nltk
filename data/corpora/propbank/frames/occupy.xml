@@ -1,0 +1,58 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="occupy">
+<note>
+  Frames file for 'occupy' based on sentences in financial subcorpus.
+  No Verbnet entry, no comparison.
+</note>
+
+<roleset id="occupy.01" name="be in a certain place" vncls="-">
+<roles>
+  <role descr="occupier" n="0"/>
+  <role descr="occupied" n="1"/>
+  <role descr="secondary predication on arg1" n="2"/>
+</roles>
+
+<example name="straightforward">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    In addition to the new mainframe hardware and software, IBM
+    announced a magnetic-tape system for data storage that it said
+    *trace* occupies half as much floor space as older systems but can
+    store five times as much data on a single cartridge. 
+</text>
+        <arg n="0">*trace* -&gt;  that -&gt;  a magnetic-tape system</arg>
+        <rel>occupies</rel>
+        <arg n="1">half as much floor space as older systems</arg>
+</example>
+
+
+<example name="botched syntax">
+<inflection aspect="ns" form="full" person="ns" tense="future" voice="ns"/>
+<text>
+    Mattel has purchased a new headquarters building in El Segundo,
+    Calif., which it will occupy by the end of next year. 
+</text>
+        <arg n="1">which -&gt;  a new headquarters building</arg>
+        <arg n="0">it</arg>
+        <arg f="MOD" n="M">will</arg>
+        <rel>occupy</rel>
+        <arg f="TMP" n="M">by the end of next year</arg>
+</example>
+
+<example name="with secondary predication">
+  <inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+  <text>
+    John occupies himself every day by creating sentient life forms
+    from Play-Doh. 
+  </text>
+  <arg n="0">John</arg>
+  <rel>occupies</rel>
+  <arg f="REC" n="1">himself</arg>
+  <arg f="TMP" n="m">every day</arg>
+  <arg f="by" n="2">creating sentient life forms from Play-Doh</arg> 
+</example>
+
+</roleset>
+</predicate>
+</frameset>

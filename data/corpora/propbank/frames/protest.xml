@@ -1,0 +1,72 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="protest">
+<note>
+  Frames file for 'protest' based on sentences in wsj.  No Verbnet
+  entry, which really surprises me.
+</note>
+
+<roleset id="protest.01" name="object to something" vncls="-">
+<roles>
+  <role descr="protester" n="0"/>
+  <role descr="objectionable thing" n="1"/>
+</roles>
+
+<example name="hey hey ho ho, we won't go">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+     Assume a neighborhood demonstration *trace* to protest speeding
+     on a certain road or a careless accident involving a police car. 
+</text>
+        <arg n="0">*trace* -&gt; *trace* -&gt;  a neighborhood demonstration</arg>
+        <rel>protest</rel>
+        <arg n="1">speeding on a certain road or a careless accident
+        involving a police car</arg> 
+</example>
+
+<note>
+Arg1 will (almost?) always be an NP.
+</note>
+
+</roleset>
+
+<roleset id="protest.02" name="manner of speaking" vncls="-">
+<roles>
+  <role descr="speaker" n="0"/>
+  <role descr="utterance" n="1"/>
+  <role descr="hearer" n="2"/>
+</roles>
+
+<example name="utterance missing">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Meanwhile, Secretary of State Baker said the U.S. protested to
+    Moscow over shipments of East bloc arms to Salvadoran rebels from
+    Managua. 
+</text>
+        <arg n="0">the U.S.</arg>
+        <rel>protested</rel>
+        <arg f="to" n="2">Moscow</arg>
+        <arg f="CAU" n="M">over shipments of East bloc arms to
+        Salvadoran rebels from Managua</arg> 
+</example>
+
+<example name="missing hearer">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    Fed officials may protest that this doesn't necessarily mean a
+    fundamental change in their interest-rate policies. 
+</text>
+        <arg n="0">Fed officials</arg>
+        <arg f="MOD" n="M">may</arg>
+        <rel>protest</rel>
+        <arg n="1">this doesn't necessarily mean a fundamental change
+        in their interest-rate policies</arg> 
+</example>
+
+<note>
+Arg1 will (almost?) always be a S.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

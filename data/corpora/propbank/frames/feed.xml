@@ -1,0 +1,187 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="feed">
+<note>
+  Frames file for 'feed' based on sentences in wsj.  Verbnet entry
+  give-13.1-2.  
+</note>
+
+<roleset id="feed.01" name="cause to eat" vncls="13.1-2">
+<roles>
+  <role descr="causal agent" n="0">
+        <vnrole vncls="13.1-2" vntheta="Agent"/></role>
+  <role descr="food" n="1">
+        <vnrole vncls="13.1-2" vntheta="Theme"/></role>
+  <role descr="eater" n="2">
+        <vnrole vncls="13.1-2" vntheta="Recipient"/></role>
+</roles>
+
+<example name="double object">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Under the stars and moons of the renovated Indiana Roof ballroom,
+    nine of the hottest chefs in town fed them Indiana duckling
+    mousseline, lobster consomme, veal mignon and chocolate terrine
+    with a raspberry sauce. 
+</text>
+        <arg f="LOC" n="M">Under the stars and moons of the renovated
+        Indiana Roof ballroom</arg> 
+        <arg n="0">nine of the hottest chefs in town</arg>
+        <rel>fed</rel>
+        <arg n="2">them</arg>
+        <arg n="1">Indiana duckling mousseline, lobster consomme, veal
+        mignon and chocolate terrine with a raspberry sauce</arg> 
+</example>
+
+<example name="agentive transitive takes arg2">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Bailiffs claimed they were required *trace* to chauffeur him to
+    and from work, mow his lawn, chop his wood, fix his car and even
+    drop by his house *trace* to feed his two grown mutts, Dixie and
+    Husky. 
+</text>
+        <arg n="0">*trace* -&gt; *trace* -&gt;  they</arg>
+        <rel>feed</rel>
+        <arg n="2">his two grown mutts , Dixie and Husky</arg>
+</example>
+
+<example name="passivization of food">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    The transluscent husk of the seed is removed, sifted and crushed;
+    the seed itself is fed *trace* to animals. 
+</text>
+        <rel>fed</rel>
+        <arg n="1">*trace* -&gt;  the seed itself</arg>
+        <arg f="to" n="2">animals</arg>
+</example>
+
+<example name="passivization of eater">
+<inflection aspect="ns" form="participle" person="ns" tense="past" voice="passive"/>
+<text>
+    Today's most widely used data-storing chips have ``volatile''
+    memories -- their data disappear if they aren't fed a steady diet
+    of electricity, so they need external power supplies. 
+</text>
+        <arg n="2">they</arg>
+        <arg f="NEG" n="M">n't</arg>
+        <rel>fed</rel>
+        <arg n="1">a steady diet of electricity</arg>
+<note>
+This is missing the trace.
+</note>
+</example>
+
+<example name="arg2 subject, prepositional">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    In the early 1970s, when the ``world food crisis'' was a major
+    worry, Phillips Petroleum Co., like several other big companies,
+    began developing ``single-cell protein,'' edible protein made by
+    microbes feeding on non-edible materials. 
+</text>
+        <arg n="2">microbes</arg>
+        <rel>feeding</rel>
+        <arg f="on" n="1">non-edible materials</arg>
+</example>
+
+<example name="arg1 subject, transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Walt Disney Co.'s Disneyland in Anaheim, Calif., stocks rescue
+    equipment, medical supplies, and enough food and water *trace*
+    *trace* to feed at least 10,000 visitors for as long as five days
+    in the event that a calamity isolates the theme park. 
+</text>
+        <arg n="1">*trace* -&gt; *trace* -&gt;  enough food and water</arg>
+        <rel>feed</rel>
+        <arg n="2">at least 10,000 visitors</arg>
+        <arg f="TMP" n="M">for as long as five days</arg>
+        <arg f="LOC" n="M">in the event that a calamity isolates the
+        theme park</arg> 
+</example>
+
+<example name="metaphorical feeding?">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    Lotus Development Corp. feeds its evaluations into a computer, but
+    only for storage; the decisions are made by supervisors. 
+</text>
+        <arg n="0">Lotus Development Corp.</arg>
+        <rel>feeds</rel>
+        <arg n="1">its evaluations</arg>
+        <arg f="into" n="2">a computer</arg>
+</example>
+
+<note>
+Who'd'a thunk one verb could take every possible arrangement of three args?
+</note>
+
+</roleset>
+
+<roleset id="feed.02" name="increase" vncls="-">
+<roles>
+  <role descr="cause of increase" n="0"/>
+  <role descr="thing increasing" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    As the deals also improve Japanese access to American technology
+    and market knowledge, they feed American anxieties in this area,
+    too. 
+</text>
+        <arg f="CAU" n="M">As the deals also improve Japanese access
+        to American technology and market knowledge</arg> 
+        <arg n="0">they</arg>
+        <rel>feed</rel>
+        <arg n="1">American anxieties in this area</arg>
+        <arg n="M">too</arg>
+</example>
+
+<example name="prepositional">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    In a few weeks, many barges probably won't be able to operate
+    fully loaded south of St. Louis because the U.S. Army Corps of
+    Engineers is beginning to reduce the flow of the Missouri River,
+    which *trace* feeds into the Mississippi River. 
+</text>
+        <arg n="0">*trace* -&gt;  which -&gt;  the Missouri River</arg>
+        <rel>feeds</rel>
+        <arg f="into" n="1">the Mississippi River</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="feed_up">
+
+<roleset id="feed.03" vncls="-" name="feed up: be(come) exasperated">
+<roles>
+  <role n="1"  descr="fed up entity, experiencer"/>
+  <role n="2"  descr="causer of fed-up-ed-ness"/>
+</roles>
+
+<example name="always adjectival">
+  <inflection person="ns" tense="past" aspect="ns" voice="passive" form="participle"/>
+  <text>
+    Two years ago, the Rev. Jeremy Hummerstone, vicar of Great
+    Torrington, Devon, got so fed up with ringers who didn't
+    attend service he sacked the entire band; the ringers promptly set
+    up a picket line in protest. 
+  </text>
+  <arg n="1"        >the Rev. Jeremy Hummerstone, vicar of Great
+  Torrington, Devon,</arg>
+  <arg n="m" f="ADV">so</arg>
+  <rel              >fed up</rel>
+  <arg n="2" f="with">ringers who didn't atend service</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

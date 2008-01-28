@@ -1,0 +1,43 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="trample">
+<note>
+  Frames file for 'trample' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="trample.01" name="damage by walking on" vncls="-">
+<roles>
+  <role descr="damager" n="0"/>
+  <role descr="damaged" n="1"/>
+</roles>
+
+<example name="passive">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    After *trace* being trampled *trace* in Tuesday's selling
+    stampede, the Nasdaq over-the-counter market dusted itself off and
+    moved on in moderate trading.  
+</text>
+        <rel>trampled</rel>
+        <arg n="1">*trace* -&gt; *trace* -&gt; the Nasdaq over-the-counter
+        market</arg> 
+        <arg f="LOC" n="M">in Tuesday's selling stampede</arg>
+</example>
+
+<example name="active and prepositional">
+  <inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+  <text>
+    Mary routinely tramples on John's feelings.
+  </text>
+  <arg n="0">Mary</arg>
+  <arg f="MNR" n="m">routinely</arg>
+  <rel>tramples</rel>
+  <arg f="on" n="1">John's feelings</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

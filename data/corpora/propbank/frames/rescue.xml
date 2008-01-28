@@ -1,0 +1,64 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="rescue">
+<note>
+  Frames file for 'rescue' based on survey of sentences in the WSJ
+  corpus.  
+</note>
+
+
+<roleset id="rescue.01" name="save" vncls="10.5">
+<roles>
+  <role descr="rescuer, agent" n="0">
+	<vnrole vncls="10.5" vntheta="Agent"/></role>
+  <role descr="entity rescued" n="1">
+	<vnrole vncls="10.5" vntheta="Theme"/></role>
+  <role descr="rescued from" n="2">
+	<vnrole vncls="10.5" vntheta="Source"/></role>
+</roles>
+
+<example name="all arguments">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ If there are any signs that Mr. Major will be less inclined [*-1] to use interest-rate boosts [*-2] to rescue the pound from another plunge , that currency is expected [*-3] to fall sharply .
+</text>
+	<arg n="0">[*-2] -&gt;  [*-1] -&gt;  Mr. Major</arg>
+	<rel>rescue</rel>
+	<arg n="1">the pound</arg>
+	<arg f="from" n="2">another plunge</arg>
+</example>
+
+
+<example name="all arguments with adverbials">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ Black &amp; Decker rescued Emhart from the takeover bid of Topper Limited Partnership last March by [*-1] agreeing [*-2] to acquire the maker of door locks and gardening tools for about $ 2.8 billion [*U*] .
+</text>
+	<arg n="0">Black &amp; Decker</arg>
+	<rel>rescued</rel>
+	<arg n="1">Emhart</arg>
+	<arg f="from" n="2">the takeover bid of Topper Limited Partnership</arg>
+	<arg f="TMP" n="M">last March</arg>
+	<arg f="MNR" n="M">by [*-1] agreeing [*-2] to acquire the maker of door locks and gardening tools for about $ 2.8 billion [*U*]</arg>
+</example>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ The arbs may recoup some of their paper losses if the UAL deal gets patched up again , as they did in 1982 when Occidental Petroleum Co. rescued them with a $ 4 billion [*U*] takeover of Cities Service [*T*-1] .
+</text>
+	<arg n="0">Occidental Petroleum Co.</arg>
+	<rel>rescued</rel>
+	<arg n="1">them</arg>
+	<arg f="MNR" n="M">with a $ 4 billion [*U*] takeover of Cities Service</arg>
+</example>
+
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

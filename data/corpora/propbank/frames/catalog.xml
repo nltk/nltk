@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="catalog">
+<note>
+  Frames file for 'catalog'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="catalog.01" name="to make an itemized list of, classify" vncls="-">
+<roles> 
+  <role descr="maker of list, agent" n="0"/>
+  <role descr="items classified" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+ They pause only [*-1] to register little whimpers of distress and sighs of satisfaction , like tourists cataloging the sights [0] they 've seen [*T*-2] from the window of a bus .
+</text>
+	<arg n="0">tourists</arg>
+	<rel>cataloging</rel>
+	<arg n="1">the sights [0] they 've seen [*T*-2] from the window of a bus</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

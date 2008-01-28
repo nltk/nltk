@@ -1,0 +1,52 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="intend">
+<note>
+  Frames file for 'intend' based on sentences in financial subcorpus.
+  Verbnet class intend 29.2, no mention of other members.  Comparison
+  with 'plan'.
+</note>
+
+<roleset id="intend.01" name="intend, plan" vncls="29.2">
+<roles>
+  <role descr="planner" n="0">
+		
+  <vnrole vncls="29.2" vntheta="Agent"/></role>
+
+  <role descr="intent, thing planned" n="1">
+		
+  <vnrole vncls="29.2" vntheta="Theme"/></role>
+
+  <role descr="extracted subject" n="2"/>
+</roles>
+
+<example name="typical usage">
+<text>
+    ...and a company spokesman said it fully intends to meet the
+    payments. 
+</text>
+        <arg n="0">it</arg>
+        <arg f="MNR" n="M">fully</arg>
+        <rel>intends</rel>
+        <arg n="1">to meet the payments</arg>
+</example>
+
+<example name="passive extraction">
+<text>
+    Manville said the shares issued to the trust were intended to be
+    sold, as needed. 
+</text>
+        <arg n="2">the shares issued  to the trust</arg>
+        <rel>intended</rel>
+        <arg n="1">to be sold  , as  needed  ,</arg>
+</example>
+
+<note>
+That's not a very nice way to handle passive extraction, but it'll
+have to do.
+</note>
+
+
+</roleset>
+</predicate>
+</frameset>

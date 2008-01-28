@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="dial">
+<note>
+  Frames file for 'dial' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="dial.01" name="to call on a telephone" vncls="-">
+<roles>
+  <role descr="entity dialing, agent" n="0"/>
+  <role descr="dialed number" n="1"/>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+ When a caller reaches Telelawyer by [*-2] dialing 900-TELELAW [*T*-1] , a receptionist refers the call to one of six attorneys .
+</text>
+	<arg n="0">[*-2] -&gt;  a caller</arg>
+	<rel>dialing</rel>
+	<arg n="1">900-TELELAW</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

@@ -1,0 +1,49 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="tempt">
+<note>
+  Frames file for 'tempt' based on sentences in financial subcorpus.
+  No access to verbnet.  No comparison.
+</note>
+
+<roleset id="tempt.01" name="tempt, entice" vncls="-">
+<roles>
+  <role descr="agent, tempter" n="0"/>
+  <role descr="patient, tempted" n="1"/>
+  <role descr="instrument, tempted with or by" n="2"/>
+  <role descr="induced action of arg1" n="3"/>
+</roles>
+
+<example name="induced action">
+<text>
+    Sterling's firm tone, combined with a steady opening on Wall
+    Street, also tempted some investors to come back to the market,
+    dealers said. 
+</text>
+	<arg n="0">Sterling's firm tone, combined with a steady
+	opening on Wall Street,</arg> 
+	<arg f="DIS" n="M">also</arg>
+	<rel>tempted</rel>
+	<arg n="1">some investors</arg>
+	<arg n="3">to come back to the market</arg>
+</example>
+
+<example name="passivized with instrument">
+  <text>
+    John was sorely tempted *trace* by Mary's offer of freshly-baked
+    apple pie. 
+  </text>
+  <arg n="1">*trace* -&gt; John</arg>
+  <arg f="MNR" n="m">sorely</arg>
+  <rel>tempted</rel>
+  <arg f="by" n="0">Mary's offer of freshly-baked apple pie</arg>
+</example>
+
+<note>
+This effectively conflates the emotion and induced-action senses.
+Perhaps someday we'll split those apart.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

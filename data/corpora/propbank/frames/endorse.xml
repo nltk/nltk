@@ -1,0 +1,74 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="endorse">
+<roleset id="endorse.01" name="support for a position" vncls="-">
+<roles>
+	<role descr="supporter" n="0">
+		
+  </role>
+
+	<role descr="thing/person supported" n="1"/>
+	<role descr="for what" n="2"/>
+</roles>
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    That offer was endorsed *trace* by the shareholders committee .
+</text>
+        <rel>endorsed</rel>
+        <arg n="1">*trace* -&gt;  That offer</arg>
+        <arg f="by" n="0">the shareholders committee</arg>
+</example>
+
+
+<example name="active">
+<inflection aspect="perfect" form="participle" person="third" tense="present" voice="active"/>
+<text>
+    The state has endorsed the New England Electric plan, which
+    promises to limit rate increases to 4.8% annually for seven years.  
+</text>
+        <arg n="0">The state</arg>
+        <rel>endorsed</rel>
+        <arg n="1">the New England Electric plan , which  promises  to
+        limit rate increases to 4.8 % annually for seven years</arg> 
+</example>
+
+<example name="all args">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John endorsed Richard Nixon for president.
+  </text>
+  <arg n="0">John</arg>
+  <rel>endorsed</rel>
+  <arg n="1">Richard Nixon</arg>
+  <arg f="for" n="2">president</arg>
+</example>
+
+<note>
+</note>
+</roleset>
+
+<roleset id="endorse.02" name="sign on the backside" vncls="-">
+<roles>
+  <role descr="signer" n="0"/>
+  <role descr="thing signed" n="1"/>
+</roles>
+
+<example name="typical">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John endorsed his paycheck before depositing it.
+  </text>
+  <arg n="0">John</arg>
+  <rel>endorsed</rel>
+  <arg n="1">his paycheck</arg>
+  <arg f="TMP" n="m">before depositing it</arg>
+</example>
+
+<note>
+Both these senses reduce to 'be on/at the back;' 'dorse' = 'back.'
+</note>
+
+</roleset>
+</predicate>
+</frameset>

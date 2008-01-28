@@ -1,0 +1,54 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="bottle">
+<note>
+  Frames file for 'bottle'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="bottle.01" name="to place in a bottle" vncls="9.10">
+<roles> 
+  <role descr="bottler, agent" n="0"><vnrole vncls="9.10" vntheta="Agent"/></role>  
+  <role descr="entity bottled" n="1"><vnrole vncls="9.10" vntheta="Theme"/></role>  
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ Lion Nathan Ltd. agreed [*-1] to buy the franchise [*] to bottle , distribute and market Pepsi-Cola soft-drink products in Australia , the company said [0] [*T*-2] .
+</text>
+	<arg n="0">[*] -&gt;  [*-1] -&gt;  Lion Nathan Ltd.</arg>
+	<rel>bottle</rel>
+	<arg n="1">Pepsi-Cola soft-drink products</arg>
+	<arg f="LOC" n="M">in Australia</arg>
+</example>
+</roleset>
+</predicate>
+
+<predicate lemma="bottle_up">
+
+<roleset id="bottle.02" name="to supress" vncls="-">
+<roles> 
+  <role descr="suppressor, agent" n="0"/>  
+  <role descr="entity bottled up" n="1"/>  
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="perfect" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+ Democratic leaders have bottled up President Bush 's capital-gains tax cut in the Senate and may be able [*-1] to prevent a vote on the issue indefinitely .
+</text>
+	<arg n="0">Democratic leaders</arg>
+	<rel>[ bottled] [ up]</rel>
+	<arg n="1">President Bush 's capital-gains tax cut</arg>
+	<arg f="LOC" n="M">in the Senate</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

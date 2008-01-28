@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="further">
+<note>
+  Frames file for 'further'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="further.01" name="to advance" vncls="-">
+<roles> 
+  <role descr="causer of advancement, agent" n="0"/> 
+  <role descr="entity furthered" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ But unlike Mr. Ruder , who during the 1987 crash [*T*-2] damaged himself by [*-4] saying rather offhandedly that the markets might be closed [*-1] , Mr. Breeden is turning the market drop to his own advantage , [*-3] using it [*-5] to further his agenda for the SEC .
+</text>
+	<arg n="0">[*-5] -&gt;  [*-3] -&gt;  Mr. Breeden</arg>
+	<rel>further</rel>
+	<arg n="1">his agenda for the SEC</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

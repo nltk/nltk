@@ -1,0 +1,74 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="criticize">
+<note>
+  Frames file for 'criticize' based on sentences in financial
+  subcorpus.  Verbnet class 33.  No mention of what other members are
+  in that class.
+</note>
+
+<roleset id="criticize.01" name="criticize, blame" vncls="33">
+<roles>
+  <role descr="critic" n="0">
+		
+  <vnrole vncls="33" vntheta="Agent"/></role>
+
+  <role descr="entity being criticized" n="1">
+		
+  <vnrole vncls="33" vntheta="Theme"/></role>
+
+  <role descr="on what grounds?" n="2">
+		
+  <vnrole vncls="33" vntheta="Cause"/></role>
+
+</roles>
+
+<example name="transtitive">
+<text>
+    Temple, however, harshly criticized Sea Containers' plan
+    yesterday, characterizing it as a ``highly conditional device
+    designed to entrench management, confuse shareholders and prevent
+    them from accepting our superior cash offer.'' 
+</text>
+        <arg n="0">Temple</arg>
+	<arg f="DIS" n="M">however</arg>
+        <arg f="MNR" n="M">harshly</arg>
+        <rel>criticized</rel>
+        <arg n="1">Sea Containers' plan</arg>
+        <arg n="M">characterizing it as a ``highly conditional device
+	designed to entrench management, confuse shareholders and
+	prevent them from accepting our superior cash offer</arg> 
+</example>
+
+<example name="with grounds as gerund">
+<text>
+    The internal investigation also criticized MiniScribe's auditors,
+    Coopers &amp; Lybrand, for allegedly ignoring numerous red flags. 
+</text>
+        <arg n="0">The internal investigation</arg>
+        <arg f="DIS" n="M">also</arg>
+        <rel>criticized</rel>
+        <arg n="1">MiniScribe's auditors, Coopers &amp; Lybrand,</arg>
+        <arg f="for" n="2">allegedly ignoring numerous red flags</arg>
+</example>
+
+<example name="with grounds as full clause">
+<text>
+    A Poquet spokesman, for example, criticizes the Atari Portfolio
+    because it requires three batteries while the Poquet needs only
+    two. 
+</text>
+        <arg n="0">A Poquet spokesman</arg>
+        <arg f="DIS" n="M">for example</arg>
+        <rel>criticizes</rel>
+        <arg n="1">the Atari Portfolio</arg>
+        <arg n="2">because it requires three batteries while
+        the Poquet needs only two</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

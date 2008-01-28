@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="emasculate">
+<note>
+  Frames file for 'emasculate' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="emasculate.01" name="to weaken" vncls="-">
+<roles>
+  <role descr="causer, agent" n="0"/>
+  <role descr="entity emasculated" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ As partisans of congressional power understand , a `` power of the purse '' so broadly construed [*] would emasculate the presidency and swallow the principle of separation of powers .
+</text>
+	<arg f="ADV" n="M">As partisans of congressional power understand</arg>
+	<arg n="0">a `` power of the purse '' so broadly construed [*]</arg>
+	<arg f="MOD" n="M">would</arg>
+	<rel>emasculate</rel>
+	<arg n="1">the presidency</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

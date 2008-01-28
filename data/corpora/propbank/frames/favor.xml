@@ -1,0 +1,53 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="favor">
+<note>
+  Frames file for 'favor' based on sentences in financial subcorpus.
+  Verbnet class admire-31.2, other framed members include like.
+</note>
+
+<roleset id="favor.01" name="like, prefer" vncls="31.2">
+<roles>
+  <role descr="liker" n="0">
+		
+  <vnrole vncls="31.2" vntheta="Experiencer"/></role>
+
+  <role descr="thing preferred, favored" n="1">
+		
+  <vnrole vncls="31.2" vntheta="Cause"/></role>
+
+  <role descr="instrument" n="2"/>
+</roles>
+
+<example name="NP object">
+<text>
+ Pro-forma balance sheets clearly show why Cray Research favored the spinoff  .
+</text>
+        <arg n="0"> Cray Research</arg>
+        <rel> favored</rel>
+        <arg n="1"> the spinoff</arg>
+</example>
+
+<note>
+There are sentences with mistagged 'favor' (tagged as VB when it
+should be N), especially in context &quot;return to favor&quot;.  Ignore these.
+</note>
+
+<example name="with instrument">
+  <text>
+    Mary favored her paramour John with a single chaste kiss.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>favored</rel>
+  <arg n="1">her paramour John</arg>
+  <arg f="with" n="2">a single chaste kiss</arg>
+</example>
+
+<note>
+This is a somewhat different sense, being more &quot;express preference&quot;
+than &quot;prefer&quot;.  But it's close enough for government work.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

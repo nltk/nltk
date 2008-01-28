@@ -1,0 +1,67 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="steer">
+<note>
+  Frames file for 'steer' based on sentences in financial subcorpus.
+  No Verbnet entry, no Framenet entry.  Comparison with direct.
+</note>
+
+<roleset id="steer.01" name="provide direction" vncls="26.7-1">
+<roles>
+  <role descr="steerer" n="0">
+		
+  <vnrole vncls="26.7-1" vntheta="Agent"/></role>
+
+  <role descr="thing steered" n="1">
+		
+  <vnrole vncls="26.7-1" vntheta="Theme"/></role>
+
+  <role descr="direction, steered towards" n="2"/>
+</roles>
+
+<example name="all args">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Southern's Gulf Power unit may plead guilty this week to charges
+    it illegally steered company money to politicians through third
+    parties. 
+</text>
+        <arg n="0">it</arg>
+        <arg f="MNR" n="M">illegally</arg>
+        <rel>steered</rel>
+        <arg n="1">company money</arg>
+        <arg f="to" n="2">politicians</arg>
+        <arg f="MNR" n="M">through third parties</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="steer_clear">
+
+<roleset id="steer.02" name="avoid" vncls="-">
+<roles>
+  <role descr="avoider" n="0"/>
+  <role descr="avoided" n="1"/>
+</roles>
+
+<example name="beware of dog">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    As a result, Japanese investors steered clear of the mortgage securities. 
+  </text>
+  <arg f="CAU" n="m">As a result</arg>
+  <arg n="0">Japanese investors</arg>
+  <rel>steered clear</rel>
+  <arg f="of" n="1">the mortgage securities</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

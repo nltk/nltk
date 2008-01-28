@@ -1,0 +1,99 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="lodge">
+<note>
+  Frames file for 'lodge' based on sentences in wsj.  Verbnet entries
+  46, 9.10 and 9.1, Framenet entries Residence and Placing.
+</note>
+
+<roleset id="lodge.01" name="reside (temporarily?)" vncls="46">
+<roles>
+  <role descr="entity residing" n="0"><vnrole vncls="46" vntheta="Theme"/></role>
+  <role descr="location" n="1"/>
+</roles>
+
+<example name="near-death experience">
+  <inflection aspect="both" form="participle" person="third" tense="present" voice="active"/>
+  <text>
+    Since his death, John has been lodging with a pleasant immigrant
+    family in Peoria.
+  </text>
+  <arg f="TMP" n="m">Since his death</arg>
+  <arg n="0">John</arg>
+  <rel>lodging</rel>
+  <arg f="with" n="1">a pleasant immigrant family in Peoria</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="lodge.02" name="put firmly" vncls="9.10 9.1">
+<roles>
+  <role descr="agent, putter" n="0"><vnrole vncls="9.1" vntheta="Agent"/><vnrole vncls="9.10" vntheta="Agent"/></role>
+  <role descr="thing lodged" n="1"><vnrole vncls="9.1" vntheta="Theme"/><vnrole vncls="9.10" vntheta="Theme"/></role>
+  <role descr="where" n="2"><vnrole vncls="9.1" vntheta="Destination"/><vnrole vncls="9.10" vntheta="Location"/></role>
+</roles>
+
+<example name="troubling ergative">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    Once asbestos is released into the environment, it can lodge
+    anywhere,'' says Richard A. Dennis, the assistant U.S. attorney
+    who prosecuted the case. 
+</text>
+        <arg n="1">it</arg>
+        <arg f="MOD" n="M">can</arg>
+        <rel>lodge</rel>
+        <arg n="2">anywhere</arg>
+</example>
+
+<example name="all args">
+<inflection aspect="perfect" form="full" person="third" tense="present" voice="active"/>
+<text>
+    ``The explosion of junk bonds and takeovers has lodged a lot of
+    insecure securities in the hands of investors and loaded the
+    corporations that are the objects of takeovers or feared takeovers
+    with huge amounts of debt rather than equity. 
+</text>
+        <arg n="0">The explosion of junk bonds and takeovers</arg>
+        <rel>lodged</rel>
+        <arg n="1">a lot of insecure securities</arg>
+        <arg f="in" n="2">the hands of investors</arg>
+</example>
+
+<note>
+ergatives in lodge.02 and transitives in lodge.01 will be very
+difficult to distinguish.
+</note>
+
+</roleset>
+
+<roleset id="lodge.03" name="file a complaint" vncls="-">
+<roles>
+  <role descr="complainer" n="0"/>
+  <role descr="formal complaint, lawsuit etc" n="1"/>
+  <role descr="against whom" n="2"/>
+</roles>
+
+<example name="passive gets the point across">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    ``With the FBI around here, bragging rights are a thing of the
+    past,'' said one trader , referring to the federal investigation
+    of futures trading that so far has resulted in 46 indictments
+    lodged [*] against individuals on the Merc and the Chicago Board
+    of Trade. 
+</text>
+        <rel>lodged</rel>
+        <arg n="1">[*] -&gt;  46 indictments</arg>
+        <arg f="against" n="2">individuals on the Merc and the Chicago
+        Board of Trade</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

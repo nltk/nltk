@@ -1,0 +1,73 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="copy">
+<note>
+  Frames file for 'copy' based on sentences in wsj.  Verbnet entries
+  25.2 and 25.4, Framenet entry Duplication.
+</note>
+
+<roleset id="copy.01" name="make a copy" vncls="25.2 25.4">
+<roles>
+  <role descr="copyist, agent" n="0">
+        <vnrole vncls="25.2" vntheta="Agent"/>
+        <vnrole vncls="25.4" vntheta="Agent"/></role>
+  <role descr="original" n="1">
+        <vnrole vncls="25.2" vntheta="Theme"/>
+        <vnrole vncls="25.4" vntheta="Theme"/></role>
+  <role descr="copy" n="2">
+        <vnrole vncls="25.2" vntheta="Destination"/>
+        <vnrole vncls="25.4" vntheta="Destination"/></role>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    When test booklets were passed out 48 hours ahead of time, she
+    says she copied questions in the social studies section and gave
+    the answers to students. 
+</text>
+        <arg n="0">she</arg>
+        <rel>copied</rel>
+        <arg n="1">questions in the social studies section</arg>
+</example>
+
+<example name="with copy">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John accidentally copied to Mary his steamy suggestive love letters.
+  </text>
+  <arg n="0">John</arg>
+  <arg f="MNR" n="m">accidentally</arg>
+  <rel>copied</rel>
+  <arg f="to" n="2">Mary</arg>
+  <arg n="1">his steamy suggestive love letters</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+<predicate lemma="copy_out">
+
+<roleset id="copy.02" name="make a copy, don't mention copy" vncls="-">
+<roles>
+  <role descr="copyist, agent" n="0"/>
+  <role descr="original" n="1"/>
+</roles>
+
+<example name="automatically generated">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+ I have a right  to print those scripts if I go there and laboriously -- but no longer surreptitiously -- copy them out in long hand .
+</text>
+        <arg n="0">I</arg>
+        <rel>[ copy] [ out]</rel>
+        <arg n="1">them</arg>
+        <arg f="MNR" n="M">in long hand</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,59 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="scan">
+<note>
+  Frames file for 'scan' based on automatic expansion via verbnet and  survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="scan.01" name="look at, examine" vncls="30.2 35.4">
+<roles>
+  <role descr="looker, examiner" n="0">
+        <vnrole vncls="30.2" vntheta="Experiencer"/>
+        <vnrole vncls="35.4" vntheta="Agent"/></role>
+  <role descr="thing examined" n="1">
+        <vnrole vncls="30.2" vntheta="Stimulus"/>
+	<vnrole vncls="35.4" vntheta="Location"/></role>
+  <role descr="examined for" n="2">
+	<vnrole vncls="35.4" vntheta="Theme"/></role>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ Mr. Perry , who [*T*-1] runs Unilever Group 's world-wide personal-care business , paused [*-2] to scan the crowd .
+</text>
+	<arg n="0">[*-2] -&gt;  Mr. Perry , who [*T*-1] runs Unilever Group 's world-wide personal-care business ,</arg>
+	<rel>scan</rel>
+	<arg n="1">the crowd</arg>
+</example>
+
+
+<example name="with Arg2">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ At 10:33 , when the S&amp;P 500 December futures contract crunched to a 12-point loss under the force of sell programs [*T*-4] , S&amp;P futures trading was halted [*-1] and program trades on the Big Board were routed [*-2] into a special computer that [*T*-3] scans for order imbalances .
+</text>
+	<arg n="0">[*T*-3] -&gt;  that -&gt;  a special computer</arg>
+	<rel>scans</rel>
+	<arg f="for" n="2">order imbalances</arg>
+</example>
+
+
+<example name="with manner advebial">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ The product , developed [*] by Desktop Data Corp. , a new company based [*] in Waltham , Mass. , scans the wires [*-2] looking for articles that [*T*-1] contain key words specified [*] by the user .
+</text>
+	<arg n="0">The product , developed [*] by Desktop Data Corp. , a new company based [*] in Waltham , Mass. ,</arg>
+	<rel>scans</rel>
+	<arg n="1">the wires</arg>
+	<arg f="MNR" n="M">[*-2] looking for articles that [*T*-1] contain key words specified [*] by the user</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+</frameset>

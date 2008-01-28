@@ -1,0 +1,42 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="slaughter">
+<note>
+  Frames file for 'slaughter' based on sentences in wsj.  Verbnet
+  entries 42.1 and 13.5.1 (?), Framenet entry Death.
+</note>
+
+<roleset id="slaughter.01" name="kill indiscriminately" vncls="42.1">
+<roles>
+  <role descr="killer" n="0"><vnrole vncls="42.1" vntheta="Agent"/></role>
+  <role descr="corpse(s)" n="1"><vnrole vncls="42.1" vntheta="Patient"/></role>
+</roles>
+
+<example name="mmmm, fresh beef">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    The Agriculture Department also said that the number of fattened
+    cattle slaughtered [*] in the quarter dropped by 5% from the 1988
+    quarter, which was in line with projections by analysts. 
+</text>
+        <rel>slaughtered</rel>
+        <arg n="1">[*] -&gt;  fattened cattle</arg>
+        <arg f="TMP" n="M">in the quarter</arg>
+</example>
+
+<example name="with agent">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     Mary slaughtered the entire flock of marshmallow hens.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>slaughtered</rel>
+  <arg n="1">the entire flock of marshmallow hens</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

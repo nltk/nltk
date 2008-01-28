@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="censor">
+<note>
+  Frames file for 'censor'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="censor.01" name="to edit so as to block the truth" vncls="-">
+<roles> 
+  <role descr="censor" n="0"/>
+  <role descr="entity censored" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ The most ruthless dictatorships have not censored their press more brutally than the drug mafias censor Colombia 's .
+</text>
+	<arg n="0">the drug mafias</arg>
+	<rel>censor</rel>
+	<arg n="1">Colombia 's</arg>
+</example>
+
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

@@ -1,0 +1,47 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="flay">
+<note>
+  Frames file for 'flay' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="flay.01" name="remove skin by whipping" vncls="-">
+<roles>
+  <role descr="remover of skin, agent" n="0"/>
+  <role descr="thing beaten" n="1"/>
+  <role descr="instrument" n="2"/>
+</roles>
+
+<example name="just transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Mr. Wall's deputies complained that they hadn't been given an
+    opportunity to respond to the criticism brought out during the
+    Banking Committee's hearings, which Committee Chairman Henry
+    Gonzalez (D., Texas) has used as a forum *trace* to flay
+    Mr. Wall's handling of the affair and to demand that he step aside
+    from his job. 
+</text>
+        <arg n="0">*trace* -&gt;  Committee Chairman Henry Gonzalez (D.,
+        Texas)</arg> 
+        <rel>flay</rel>
+        <arg n="1">Mr. Wall's handling of the affair</arg>
+</example>
+
+<example name="with instrument">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    Mary flayed John with wet noodles.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>flayed</rel>
+  <arg n="1">John</arg>
+  <arg f="with" n="2">wet noodles</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

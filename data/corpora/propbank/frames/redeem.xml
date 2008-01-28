@@ -1,0 +1,66 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="redeem">
+<note>
+  Frames file for 'redeem' based on sentences in financial subcorpus.
+  Verbnet class 10.5.
+</note>
+
+<roleset id="redeem.01" name="save and exchange" vncls="10.5">
+<roles>
+  <role descr="redeemer" n="0">
+		
+  <vnrole vncls="10.5" vntheta="Agent"/></role>
+
+  <role descr="thing saved and redeemed" n="1">
+		
+  <vnrole vncls="10.5" vntheta="Theme"/></role>
+
+  <role descr="in-exchange-for" n="2"/>
+</roles>
+
+<example name="boring transitive">
+<text>
+    The restaurant operator said it has redeemed its rights issued
+    Monday under its shareholder rights plan. 
+</text>
+        <arg n="0">it</arg>
+        <rel>redeemed</rel>
+        <arg n="1">its rights issued Monday under its shareholder
+        rights plan</arg> 
+</example>
+
+<example name="clearly in exchange">
+<text>
+    The company said it can redeem the warrants at its option for $1
+    each. 
+</text>
+        <arg n="0">it</arg>
+        <arg f="MOD" n="M">can</arg>
+        <rel>redeem</rel>
+        <arg n="1">the warrants</arg>
+        <arg f="ADV" n="M">at its option</arg>
+        <arg f="for" n="2">$ 1  each</arg>
+</example>
+
+<example name="less obviously in exchange">
+<text>
+    Hudson's Bay said it will redeem 9.5 million Series H preferred
+    shares on Oct. 31 at a price of C$ 27.75 each. 
+</text>
+        <arg n="0">it</arg>
+        <arg f="MOD" n="M">will</arg>
+        <rel>redeem</rel>
+        <arg n="1">9.5 million Series H preferred shares</arg>
+        <arg f="TMP" n="M">on Oct. 31</arg>
+        <arg f="at" n="2">a price of C$ 27.75  each</arg>
+</example>
+
+<note>
+There's a joke here about Jesus redeeming sinners, but let's not go
+there.  :)
+</note>
+
+</roleset>
+</predicate>
+</frameset>

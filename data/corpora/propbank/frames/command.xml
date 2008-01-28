@@ -1,0 +1,69 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="command">
+<note>
+  Frames file for 'command' based on sentences in wsj.  No Verbnet
+  entry, Framenet entries Leadership and Request.
+</note>
+
+<roleset id="command.01" name="get, as commodity" vncls="-">
+<roles>
+  <role descr="getter" n="0"/>
+  <role descr="gotten" n="1"/>
+</roles>
+
+<example name="all exx in wsj are like this">
+<inflection aspect="perfect" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+    The six wines of the Domaine de la Romanee-Conti, 72 of the most
+    precious acres of vineyard anywhere in the world, have commanded
+    three-digit price tags for several years now. 
+</text>
+        <arg n="0">The six wines of the Domaine de la Romanee-Conti,
+        72 of the most precious acres of vineyard anywhere in the
+        world,</arg> 
+        <rel>commanded</rel>
+        <arg n="1">three-digit price tags</arg>
+        <arg f="TMP" n="M">for several years now</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="command.02" name="impelled action" vncls="-">
+<roles>
+  <role descr="commander" n="0"/>
+  <role descr="impelled agent" n="1"/>
+  <role descr="impelled action" n="2"/>
+</roles>
+
+<example name="do as I say">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    Mary commanded John to clean up his room.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>commanded</rel>
+  <arg n="1">John</arg>
+  <arg n="2">to clean up his room</arg>
+</example>
+
+<example name="missing action">
+  <inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+  <text>
+    John commands an entire regiment of little plastic men.
+  </text>
+  <arg n="0">John</arg>
+  <rel>commands</rel>
+  <arg n="1">an entire regiment of little plastic men</arg>
+</example>
+
+<note>
+What he commands them to do, is left unstated.  Perhaps for the best.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

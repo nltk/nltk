@@ -1,0 +1,104 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="slow">
+<note>
+  Frames file for 'slow' based on sentences in financial subcorpus.
+  Verbnet class other_cos-45.4, a whole pile of other framed members.
+</note>
+
+<roleset id="slow.01" name="(cause to) move more slowly" vncls="45.4">
+<roles>
+  <role descr="causer of deceleration" n="0">
+		
+  <vnrole vncls="45.4" vntheta="Agent"/></role>
+
+  <role descr="entity in motion" n="1">
+		
+  <vnrole vncls="45.4" vntheta="Patient"/></role>
+
+</roles>
+
+<example name="transitive">
+<text>
+    A reinstatement of the uptick rule for program traders would slow
+    their activity considerably. 
+</text>
+        <arg n="0">A reinstatement of the uptick rule for program
+        traders</arg> 
+	<arg f="MOD" n="M">would</arg>
+        <rel>slow</rel>
+        <arg n="1">their activity</arg>
+        <arg f="MNR" n="M">considerably</arg>
+</example>
+
+<example name="ergative">
+<text>
+    New loans continue *trace* to slow.
+</text>
+        <arg n="1">*trace* -&gt; New loans</arg>
+        <rel>slow</rel>
+</example>
+</roleset>
+
+<roleset id="slow.02" name="fall, decline" vncls="-">
+<roles>
+  <role descr="Logical subject, patient, thing declining" n="1"/>
+  <role descr="start point" n="3"/>
+  <role descr="end point" n="4"/>
+  <role descr="medium" f="LOC" n="M"/>
+</roles>
+
+<example name="ergative with start point">
+<text>
+    Activity continued *trace* to slow from the hectic pace set during
+    the market's plunge late Friday and its rebound Monday, as players
+    began to set their sights on events coming later this week. 
+</text>
+        <arg n="1">Activity -&gt; *trace*</arg>
+        <rel>slow</rel>
+        <arg f="from" n="3">the hectic pace set during the market's
+        plunge late Friday and its rebound Monday</arg>
+        <arg f="TMP" n="M">as players began to set their sights on
+        events coming later this week</arg> 
+</example>
+
+<example name="ergative with end state">
+<text>
+    While it has predicted that overall growth in unit sales of
+    personal computers is slowing to about a 10% yearly rate...
+</text>
+        <arg n="1">overall growth in unit sales of personal computers</arg>
+        <rel>slowing</rel>
+        <arg f="to" n="4">about a 10 % yearly rate</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="slow_down">
+
+<roleset id="slow.03" name="(cause to) move more slowly" vncls="-">
+<roles>
+  <role descr="causer of deceleration" n="0"/>
+  <role descr="entity in motion" n="1"/>
+</roles>
+
+<example name="transitive">
+<text>
+    And the generally frail condition of Arizona's lenders means there
+    is little capital available in the state *trace* to shore up the
+    economy and slow down the slide. 
+</text>
+        <arg n="0">*trace* little capital</arg>
+        <rel>[ slow] [ down]</rel>
+        <arg n="1">the slide</arg>
+</example>
+
+<note>
+I doubt the ergative construction can appear with 'slow down', but I
+could be wrong.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,93 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="lighten">
+<note>
+  Frames file for 'lighten' based on sentences in wsj.  Verbnet entry 45.4.
+</note>
+
+<roleset id="lighten.01" name="(make) get lighter" vncls="45.4">
+<roles>
+  <role descr="causer" n="0"><vnrole vncls="45.4" vntheta="Agent"/></role>
+  <role descr="thing getting lighter" n="1"><vnrole vncls="45.4" vntheta="Patient"/></role>
+  <role descr="EXT" n="2"/>
+  <role descr="start point" n="3"/>
+  <role descr="end point" n="4"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    But the researchers found that while children's household tasks
+    eased the mother's burden appreciably, the husband's helping hand
+    ``appears *trace* to lighten the children's load almost on a
+    one-for-one basis and to reduce the wife's responsibility only
+    modestly.'' 
+</text>
+        <arg n="0">*trace* -&gt;  the husband 's helping hand</arg>
+        <rel>lighten</rel>
+        <arg n="1">the children's load</arg>
+        <arg f="MNR" n="M">almost on a one-for-one basis</arg>
+</example>
+
+<example name="with start and end point">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John lightened his hair from raven-black to bright orange.
+  </text>
+  <arg n="0">John</arg>
+  <rel>lightened</rel>
+  <arg n="1">his hair</arg>
+  <arg f="from" n="3">raven-black</arg>
+  <arg f="to" n="4">bright orange</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="lighten_up">
+
+<roleset id="lighten.02" name="(make) get lighter, phrasal" vncls="45.4">
+<roles>
+  <role descr="causer" n="0"><vnrole vncls="45.4" vntheta="Agent"/></role>
+  <role descr="thing getting lighter" n="1"><vnrole vncls="45.4" vntheta="Patient"/></role>
+  <role descr="EXT" n="2"/>
+</roles>
+
+<example name="ergative">
+<inflection aspect="progressive" form="full" person="third" tense="present" voice="active"/>
+<text>
+    ``There were no (sell) lists and the calendar is lightening up a bit.
+</text>
+        <arg n="1">the calendar</arg>
+        <rel>[ lightening] [ up]</rel>
+        <arg f="MNR" n="M">a bit</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="lighten.03" name="become easier" vncls="-">
+<roles>
+  <role descr="thing helping" n="0"/>
+  <role descr="thing being helped" n="1"/>
+</roles>
+
+<example name="cf. ease">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+     Investors who *trace* listened, and lightened up on stocks,
+     ``have just hurt themselves,'' he says. 
+</text>
+        <arg n="0">*trace* -&gt;  who -&gt;  Investors</arg>
+        <rel>[ lightened] [ up]</rel>
+        <arg f="on" n="1">stocks</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

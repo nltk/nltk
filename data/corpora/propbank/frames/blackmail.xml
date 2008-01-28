@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="blackmail">
+<note>
+  Frames file for 'blackmail' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="blackmail.01" name="to exert pressure on someone through threats" vncls="-">
+<roles>
+  <role descr="blackmailer, agent" n="0"/>
+  <role descr="entity blackmailed" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ In addition to [*-3] giving a president powers [*] to rewrite spending bills meant [*] to be written [*-1] in Congress , Rep. Edwards argues [0] [*T*-2] , a line-item veto would allow the chief executive to blackmail lawmakers .
+</text>
+	<arg n="0">the chief executive</arg>
+	<rel>blackmail</rel>
+	<arg n="1">lawmakers</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

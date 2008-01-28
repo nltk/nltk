@@ -1,0 +1,269 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="blow">
+<roleset id="blow.01" name="cause motion by air current" vncls="23.2">
+<roles>
+  <role descr="wind" n="0">
+	<vnrole vncls="23.2" vntheta="Agent"/></role>
+  <role descr="thing being moved" n="1">
+	<vnrole vncls="23.2" vntheta="Patient1"/></role>
+  <role descr="path or medium" n="m"/>
+</roles>
+
+<example name="ergative intransitive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    Battle-tested Japanese industrial managers here always buck up
+    nervous newcomers with the tale of the first of their countrymen
+    to visit Mexico , a boatload of samurai warriors blown *trace*
+    ashore 375 years ago. 
+</text>
+        <rel>blown</rel>
+        <arg n="1">*trace* -&gt;  a boatload</arg>
+        <arg f="DIR" n="M">ashore</arg>
+        <arg f="TMP" n="M">375 years ago</arg>
+</example>
+
+</roleset>
+
+<roleset id="blow.02" name="create, shape by blowing air" vncls="26.1">
+<roles>
+  <role descr="shaper" n="0">
+	<vnrole vncls="26.1" vntheta="Agent"/></role>
+  <role descr="thing worked on" n="1">
+	<vnrole vncls="26.1" vntheta="Material"/></role>
+  <role descr="end state, if different from arg1" n="2">
+	<vnrole vncls="26.1" vntheta="Product"/></role>
+</roles>
+
+<example name="all args">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John blew the molten glass into a delicate bottle.
+  </text>
+  <arg n="0">John</arg>
+  <rel>blew</rel>
+  <arg n="1">the molten glass</arg>
+  <arg f="into" n="2">a delicate bottle</arg>
+</example>
+
+<note>
+Perhaps also &quot;John blew his soup cooler.&quot;  If you can say that at all.
+</note>
+</roleset>
+
+<roleset id="blow.03" name="oral sex" vncls="40.3.2">
+<roles>
+  <role descr="giver" n="0">
+	<vnrole vncls="40.3.2" vntheta="Agent"/></role>
+  <role descr="getter" n="1">
+	<vnrole vncls="40.3.2" vntheta="Recipient"/></role>
+</roles>
+
+<example name="you were waiting for it">
+<inflection aspect="ns" form="ns" person="ns" tense="ns" voice="ns"/>
+<text>
+    John....oh, never mind.
+</text>
+</example>
+</roleset>
+
+<roleset id="blow.04" name="like the wind" vncls="47.2">
+<roles>
+  <role descr="wind" n="1">
+	<vnrole vncls="47.2" vntheta="Theme"/></role>
+	<role descr="direction or location or extent" n="m"/>
+</roles>
+
+<example name="agentive intransitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    ``For there to be wind in the sails of any program, the chief
+    executive has *trace* to be blowing in the sails,'' says
+    Rep. Burton. 
+</text>
+        <arg n="0">*trace* -&gt;  the chief executive</arg>
+        <rel>blowing</rel>
+        <arg f="LOC" n="M">in the sails</arg>
+</example>
+</roleset>
+
+<roleset id="blow.08" name="explode" vncls="-">
+<roles>
+  <role descr="thing exploding" n="1"/>
+</roles>
+
+<example name="unaccusative">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    One local Phillips manager said a seal blew in one of the plant's
+        reactors.</text>  
+        <arg n="1">a seal </arg>
+        <rel>blew</rel>
+        <arg f="LOC" n="M">in one of the plant's reactors</arg>
+</example>
+
+<note>
+I don't think this can take any other args, unlike the corresponding
+'explode' sense of 'blow up'.
+</note>
+
+</roleset>
+
+<roleset id="blow.09" name="sound, like a trumpet" vncls="-">
+<roles>
+  <role descr="player" n="0"/>
+  <role descr="trumpet" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    But unlike London, out here I've never heard anybody blow a car
+    horn in anger. 
+</text>
+        <arg n="0">anybody</arg>
+        <rel>blow</rel>
+        <arg n="1">a car horn</arg>
+        <arg f="MNR" n="M">in anger</arg>
+</example>
+
+<example name="also ergative">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/> 
+  <text>
+    John heard the trumpets blow and the drums beat.
+  </text>
+  <arg n="1">the trumpets</arg>
+  <rel>blow</rel>
+</example>
+</roleset>
+
+<roleset id="blow.10" name="make an error" vncls="-">
+<roles>
+  <role descr="errer" n="0"/>
+  <role descr="error" n="1"/>
+</roles>
+
+<example name="oops, I did it again">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    ``I blew it,'' Mr. Motley says apologetically.
+</text>
+        <arg n="0">I</arg>
+        <rel>blew</rel>
+        <arg n="1">it</arg>
+</example>
+</roleset>
+</predicate>
+
+<predicate lemma="blow_up">
+
+<roleset id="blow.05" name="inflate" vncls="-">
+<roles>
+  <role descr="inflater, agent" n="0"/>
+  <role descr="thing grown" n="1"/>
+  <role descr="amount increased by, EXT or MNR" n="2"/>
+  <role descr="start point" n="3"/>
+  <role descr="end point, end state of arg1" n="4"/>
+</roles>
+
+<example name="balloons">
+<inflection aspect="perfect" form="participle" person="ns" tense="past" voice="passive"/> 
+<text>
+    ``The balloon had been blown *trace* up so big that when somebody
+    came along with a pin  -- in this case the UAL deal -- we got a
+    little pop.'' 
+</text>
+        <rel>[ blown] [ up]</rel>
+        <arg n="1">*trace* -&gt;  The balloon</arg>
+        <arg n="4">so big that when somebody came along with a
+        pin  -- in this case the UAL deal -- we got a little pop</arg>
+</example>
+
+<note>
+I doubt the higher numbered args will appear.  Or I could be wrong.
+</note>
+</roleset>
+
+<roleset id="blow.06" name="explode" vncls="-">
+<roles>
+  <role descr="causal agent" n="0"/>
+  <role descr="thing exploding" n="1"/>
+  <role descr="instrument (bomb)" n="2"/>
+</roles>
+
+<example name="ergative boom">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Last week, the strategy of playing the two experts off each other
+    blew up. 
+</text>
+        <arg f="TMP" n="M">Last week</arg>
+        <arg n="1">the strategy of playing the two experts off each
+        other</arg>
+        <rel>[ blew] [ up]</rel>
+</example>
+
+<example name="agentive">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    The representative responded that Noriega had numerous assets in
+    place in Nicaragua and could accomplish many essential things,
+    just as Noriega had helped the U.S. the previous year in *trace*
+    blowing up a Sandinista arsenal.'' 
+</text>
+        <arg n="0">*trace* -&gt;  Noriega</arg>
+        <rel>[ blowing] [ up]</rel>
+        <arg n="1">a Sandinista arsenal</arg>
+</example>
+
+<example name="with instrument">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John blew up the anthill with a firecracker.
+  </text>
+  <arg n="0">John</arg>
+  <rel>blew up</rel>
+  <arg n="1">the anthill</arg>
+  <arg f="with" n="2">a firecracker</arg>
+</example>
+</roleset>
+</predicate>
+
+<predicate lemma="blow_out">
+
+<roleset id="blow.07" name="explosive air motion" vncls="23.2">
+<roles>
+  <role descr="air" n="0">
+	  <vnrole vncls="23.2" vntheta="Agent"/></role>
+  <role descr="thing being moved" n="1">
+	  <vnrole vncls="23.2" vntheta="Patient"/></role>
+</roles>
+
+<example name="boom">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    The blasts blew out windows, spewed debris for miles and crumpled
+    the ceiling in an area elementary school. 
+</text>
+        <arg n="0">The blasts</arg>
+        <rel>[ blew] [ out]</rel>
+        <arg n="1">windows</arg>
+</example>
+
+<example name="also ergative">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    A company official said the explosions began when a seal blew
+    out. 
+</text>
+        <arg n="1">a seal</arg>
+        <rel>[ blew] [ out]</rel>
+        <arg f="TMP" n="M">*trace* -&gt;  when</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

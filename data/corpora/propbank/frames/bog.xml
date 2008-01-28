@@ -1,0 +1,41 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="bog_down">
+<note>
+  Frames file for 'bog' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="bog.01" name="to get stuck" vncls="-">
+<roles>
+  <role descr="agent, causer" n="0"/>
+  <role descr="entity bogged down" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ Douglas Stoneman , vice president of Shell Canada , noted that producers would prefer [*-2] to avoid hearings into competing proposals that [*T*-1] would lengthen the regulatory review process and bog down development .
+</text>
+	<arg n="0">[*T*-1] -&gt;  that -&gt;  hearings</arg>
+	<arg f="MOD" n="M">would</arg>
+	<rel>[ bog] [ down]</rel>
+	<arg n="1">development</arg>
+</example>
+
+
+<example name="intransitive">
+<inflection aspect="progressive" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+ [*-2] Taken [*-1] together , the auto-sales and durable-goods reports confirmed perceptions that the economy is bogging down .
+</text>
+	<arg n="1">the economy</arg>
+	<rel>[ bogging] [ down]</rel>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

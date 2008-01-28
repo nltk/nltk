@@ -1,0 +1,56 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="puke">
+<note>
+  Frames file for 'puke' based on sentences in wsj.  Verbnet entry
+  40.1.2, Framenet entry Excreting.  Latter is more appropriate.
+</note>
+
+<roleset id="puke.01" name="vomit" vncls="40.1.2">
+<roles>
+  <role descr="puker" n="0"><vnrole vncls="40.1.2" vntheta="Agent"/></role>
+</roles>
+
+<example name="poor John">
+  <inflection aspect="progressive" form="participle" person="third" tense="past" voice="active"/>
+  <text>
+    After a long day of drinking antifreeze, John was puking all night long.
+  </text>
+  <arg f="TMP" n="m">After a long day of drinking antifreeze</arg>
+  <arg n="0">John</arg>
+  <rel>puking</rel>
+  <arg f="TMP" n="m">all night long</arg>
+</example>
+
+<note>
+www.realbeer.com/fun/burps/vomit_dictionary.html
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="puke_up">
+
+<roleset id="puke.02" name="vomit, with object" vncls="-">
+<roles>
+  <role descr="puker" n="0"/>
+  <role descr="puke itself" n="1"/>
+</roles>
+
+<example name="yucko">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John puked up the stinky cheese.
+  </text>
+  <arg n="0">John</arg>
+  <rel>puked up</rel>
+  <arg n="1">the stinky cheese</arg>
+</example>
+
+<note>
+not currently recognized by rats.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

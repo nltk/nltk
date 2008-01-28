@@ -1,0 +1,52 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="thrive">
+<note>
+  Frames file for 'thrive' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+
+<roleset id="thrive.01" name="to grow, make steady progress" vncls="39.6 47.1-1">
+<roles>
+  <role descr="entity thriving" n="1">
+		
+  <vnrole vncls="39.6" vntheta="Agent"/><vnrole vncls="47.1-1" vntheta="Theme"/></role>
+
+  <role descr="source, thrive on" n="2">
+		
+  <vnrole vncls="39.6" vntheta="Patient"/><vnrole vncls="47.1-1" vntheta="Location"/></role>
+
+</roles>
+
+
+<example name="intransitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ As the Chinese have shown and the Soviets are learning , family farms thrive where collectives fail [*T*-1] .
+</text>
+	<arg f="ADV" n="M">As the Chinese have shown and the Soviets are learning</arg>
+	<arg n="1">family farms</arg>
+	<rel>thrive</rel>
+	<arg f="LOC" n="M">where collectives fail [*T*-1]</arg>
+</example>
+
+
+<example name="both arguments">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ The bond market , which [*T*-1] sometimes thrives on bad news , cheered yesterday 's stock market sell-off and perceptions that the economy is growing weaker .
+</text>
+	<arg n="1">[*T*-1] -&gt;  which -&gt;  The bond market</arg>
+	<arg f="TMP" n="M">sometimes</arg>
+	<rel>thrives</rel>
+	<arg f="on" n="2">bad news</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

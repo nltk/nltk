@@ -1,0 +1,37 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<note>
+Frames file for 'result' based on first handful of sentences in large corpus
+</note>
+<predicate lemma="result">
+<roleset id="result.01" name="come about, become" vncls="48.1.1">
+  <roles>
+    <role descr="Theme, prior condition" n="1">
+		
+  <vnrole vncls="48.1.1" vntheta="Theme"/></role>
+
+    <role descr="Goal, end condition" n="2"><vnrole vncls="48.1.1" vntheta="Location"/></role>
+  </roles>
+
+<example name="Ergative">
+  <text>
+    The compromise plan will result in the elimination of American jobs.
+  </text>
+  <arg n="1">The compromise plan</arg>
+  <rel>result</rel>
+  <arg f="in" n="2">in the elimination of American jobs</arg>
+</example>
+
+<example name="goal subject">
+  <text>
+    The hazards to workers resulted from corporate indifference to worker 
+    safety.
+    Arg2			rel	Arg1-from
+  </text>
+  <arg n="2">The hazards to workers</arg>
+  <rel>resulted</rel>
+  <arg f="from" n="1">from corporate indifference to worker safety</arg>
+</example>
+</roleset>
+</predicate>
+</frameset>

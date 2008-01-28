@@ -1,0 +1,34 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="temper">
+<note>
+  Frames file for 'temper' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="temper.01" name="moderate" vncls="-">
+<roles>
+  <role descr="moderator" n="0"/>
+  <role descr="thing that would be extreme otherwise" n="1"/>
+</roles>
+
+<example name="passive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="passive"/>
+<text>
+    We note that in Rome yesterday Defense Secretary Cheney said that
+    European euphoria over Mr. Gorbachev is starting *trace* to be
+    tempered *trace* by a recognition of ``the magnitude of the
+    problems he was trying to deal with.'' 
+</text>
+        <rel>tempered</rel>
+        <arg n="1">*trace* -&gt; *trace* -&gt;  European euphoria over
+        Mr. Gorbachev</arg> 
+        <arg f="by" n="0">a recognition of ``the magnitude of the
+        problems he was trying  to deal with </arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

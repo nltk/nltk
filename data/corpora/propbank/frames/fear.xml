@@ -1,0 +1,38 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="fear">
+<note>
+  Frames file for 'fear' based on sentences in financial subcorpus.
+  Verbnet classes 31.2 31.3, other framed members include despise,
+  dislike, enjoy, favor, resent, react, wallow.  Comparison with despise.
+</note>
+
+<roleset id="fear.01" name="fear" vncls="31.2 31.3">
+<roles>
+  <role descr="entity afraid" n="0">
+	<vnrole vncls="31.3" vntheta="Experiencer"/>
+        <vnrole vncls="31.2" vntheta="Experiencer"/></role>
+  <role descr="afraid of what?" n="1">
+	<vnrole vncls="31.3" vntheta="Cause"/>
+        <vnrole vncls="31.2" vntheta="Cause"/></role>
+</roles>
+
+<example name="transitive">
+<text>
+    They are also indirectly subject to approval by the state of New
+    Hampshire, where residents fear soaring rates to pay for the cost
+    of reorganization. 
+</text>
+        <arg n="0">residents</arg>
+        <rel>fear</rel>
+        <arg n="1">soaring rates to pay for the cost of
+        reorganization</arg> 
+</example>
+
+<note>
+etc etc etc.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

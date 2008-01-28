@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="namedrop">
+<note>
+  Frames file for 'name-drop' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="namedrop.01" name="insert names of famous people into conversation in order to seem more important" vncls="-">
+<roles>
+  <role descr="insecure individual" n="0"/>
+</roles>
+
+<example name="must be Los Angeles">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    But the truth is that almost everyone, from real-estate agents to
+    city fathers, name-drops; and a surprising number of people have
+    an ancient uncle who claims he lived next door to the cartoonist
+    who did the Katzenjammer Kids. 
+</text>
+        <arg n="0">almost everyone, from real-estate agents to city
+        fathers,</arg> 
+        <rel>name-drops</rel>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

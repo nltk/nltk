@@ -1,0 +1,109 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="press">
+<note>
+  Frames file for 'press' based on sentences in financial subcorpus.
+  Verbnet class push-12-1.
+</note>
+
+<roleset id="press.01" name="apply pressure" vncls="12-1">
+<roles>
+  <role descr="presser" n="0">
+		
+  <vnrole vncls="12-1" vntheta="Agent"/></role>
+
+  <role descr="pressed (on)" n="1">
+		
+  <vnrole vncls="12-1" vntheta="Theme"/></role>
+
+  <role descr="goal, pressed-for" n="2"/>
+</roles>
+
+<example name="all args present">
+<text>
+    For more than a decade, banks have been pressing Congress and
+    banking regulators for expanded powers to act like securities
+    firms in playing Wall Street's lucrative takeover game, from giving
+    mergers advice all the way to selling and trading high-yield junk
+    bonds. 
+</text>
+        <arg f="TMP" n="M">For more than a decade</arg>
+        <arg n="0">banks</arg>
+        <rel>pressing</rel>
+        <arg n="1">Congress and banking regulators</arg>
+        <arg f="for" n="2">expanded powers to act like securities
+        firms in playing Wall Street's lucrative takeover game, from
+        giving mergers advice all the way to selling and trading
+        high-yield junk bonds</arg> 
+</example>
+
+<example name="unstated goal">
+  <text>
+    John presses flowers in his textbooks.
+  </text>
+  <arg n="0">John</arg>
+  <rel>presses</rel>
+  <arg n="1">flowers</arg>
+  <arg f="LOC" n="M">in his textbooks</arg>
+</example>
+
+<example name="unstated thing pressed">
+<text>
+    But Ford, Jaguar's biggest shareholder since lifting its stake to
+    10.4% this week, is pressing harder for talks with Sir John. 
+</text>
+        <arg f="DIS" n="M">But</arg>
+        <arg n="0">Ford, Jaguar's biggest shareholder since lifting
+        its stake to 10.4% this week</arg> 
+        <rel>pressing</rel>
+        <arg f="MNR" n="M">harder</arg>
+        <arg f="for" n="2">talks with Sir John</arg>
+</example>
+
+<example name="idiomatic: hard pressed">
+  <inflection person="ns" tense="future" aspect="ns" voice="passive" form="participle"/>
+  <text>
+    The House has already voted for a deep cut in funding, and in the
+    end the program's backers will be hard pressed [*] to head off
+    some reduction in spending next year. 
+  </text>
+  <arg n="m" f="TMP">in the end</arg>
+  <arg n="1"        >the program's backers</arg>
+  <arg n="m" f="MOD">will</arg>
+  <arg n="m" f="ADV">hard</arg>
+  <rel              >pressed</rel>
+  <arg n="2"        >[*] to head off some reduction in spending next year</arg>
+</example>
+
+</roleset>
+
+<roleset id="press.02" name="move">
+<roles>
+  <role descr="mover" n="0"/>
+  <role descr="moved" n="1"/>
+  <role descr="ahead, usually" f="DIR" n="m"/>
+</roles>
+
+<example name="all args present">
+<text>
+    But the pilots union, which has been pushing for a takeover since
+    1987, appears *trace* to be pressing ahead with the revised bid to
+    avoid further loss of momentum even though it hasn't found a
+    partner to replace British Air. 
+</text>
+        <arg n="0">*trace* -&gt;  the pilots union, which has been
+        pushing for a takeover since 1987</arg>
+        <rel>pressing</rel>
+        <arg f="DIR" n="M">ahead</arg>
+        <arg f="with" n="1">the revised bid</arg>
+        <arg f="PNC" n="M">to avoid further loss of momentum</arg>
+        <arg n="M">even though it hasn't found a partner to replace
+        British Air</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

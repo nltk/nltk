@@ -1,0 +1,68 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="anger">
+<note>
+  Frames file for 'anger' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="anger.01" name="to make angry" vncls="31.1">
+<roles>
+  <role descr="cause of anger" n="0">
+	<vnrole vncls="31.1" vntheta="Cause"/></role>
+  <role descr="experiencer" n="1">
+	<vnrole vncls="31.1" vntheta="Experiencer"/></role>
+</roles>
+
+<example name="inanimate causer">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ The statement angered Chairman Greenspan , but it was greeted [*-1] with applause by the Bush administration and the financial markets .
+</text>
+	<arg n="0">The statement</arg>
+	<rel>angered</rel>
+	<arg n="1">Chairman Greenspan</arg>
+</example>
+
+
+<example name="animate causer">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ Mr. Smith angered Federal 's pilots , too .
+</text>
+	<arg n="0">Mr. Smith</arg>
+	<rel>angered</rel>
+	<arg n="1">Federal 's pilots</arg>
+	<arg f="DIS" n="M">too</arg>
+</example>
+
+
+<example name="intransitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ Often the genteel , conservative , long-term-oriented investment bankers were displaced [*-1] by crude traders : `` When [*] angered [*-2] [*T*-3] , he cursed so forcefully that his face reddened and his pale-blue eyes narrowed into tiny slits , '' the authors say [*T*-4] of Lehman 's Lewis Glucksman .
+</text>
+	<rel>angered</rel>
+	<arg n="1">he -&gt;  [*-2] -&gt;  [*]</arg>
+	<arg f="TMP" n="M">[*T*-3] -&gt;  When</arg>
+</example>
+
+
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="past" voice="passive"/>
+<text>
+ Observers said [0] it appeared that British Air was angered [*-1] at the way [0] the bid has degenerated into confusion [*T*-3] , as well as by the banks ' effort [0] [*T*-4] to round up financing for what one called [*T*-5] `` a deal that [*T*-2] is n't a deal . ''
+</text>
+	<rel>angered</rel>
+	<arg n="1">[*-1] -&gt;  British Air</arg>
+	<arg n="0">at the way [0] the bid has degenerated into confusion [*T*-3] , as well as by the banks ' effort [0] [*T*-4] to round up financing for what one called [*T*-5] `` a deal that [*T*-2] is n't a deal</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

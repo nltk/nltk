@@ -1,0 +1,64 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="conceal">
+<note>
+  Frames file for 'conceal' based on sentences in wsj.  Verbnet entry 16.
+</note>
+
+<roleset id="conceal.01" name="hide" vncls="16">
+<roles>
+  <role descr="agent, concealer" n="0"><vnrole vncls="16" vntheta="Agent"/></role>
+  <role descr="thing hidden" n="1"><vnrole vncls="16" vntheta="Patient"/></role>
+  <role descr="seeker" n="2"><vnrole vncls="16" vntheta="Recipient"/></role>
+</roles>
+
+<example name="all args">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    The family moves to another house at night *trace* to conceal
+    shabby belongings from neighbors. 
+</text>
+        <arg n="0">*trace* -&gt;  The family</arg>
+        <rel>conceal</rel>
+        <arg n="1">shabby belongings</arg>
+        <arg f="from" n="2">neighbors</arg>
+</example>
+
+<example name="transitive">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+    Mrs. Marcos and her late husband, former Philippines President
+    Ferdinand Marcos, were charged *trace* with *trace* embezzling
+    more than $100 million from that country and then fraudulently
+    concealing much of the money through purchases of prime real
+    estate in Manhattan. 
+</text>
+        <arg n="0">*trace* -&gt; *trace* -&gt;  Mrs. Marcos and her late
+        husband, former Philippines President Ferdinand Marcos,</arg> 
+        <arg f="TMP" n="M">then</arg>
+        <arg f="MNR" n="M">fraudulently</arg>
+        <rel>concealing</rel>
+        <arg n="1">much of the money</arg>
+        <arg f="MNR" n="M">through purchases of prime real estate in
+        Manhattan</arg> 
+</example>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="third" tense="past" voice="passive"/>
+<text>
+    Much of the money was fraudulently concealed through purchases of
+    prime Manhattan real estate, federal prosecutors have charged. 
+</text>
+        <arg n="1">Much of the money</arg>
+        <arg f="MNR" n="M">fraudulently</arg>
+        <rel>concealed</rel>
+        <arg f="MNR" n="M">through purchases of prime Manhattan real
+        estate</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

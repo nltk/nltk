@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="torch">
+<note>
+  Frames file for 'torch' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="torch.01" name="to cause to burn" vncls="-">
+<roles>
+  <role descr="agent, causer" n="0"/>
+  <role descr="entity torched" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ Four people torched three U.S. flags on the central steps of the U.S. Capitol in a bid [*] to test a new federal law protecting the American flag from desecration .
+</text>
+	<arg n="0">Four people</arg>
+	<rel>torched</rel>
+	<arg n="1">three U.S. flags</arg>
+	<arg f="LOC" n="M">on the central steps of the U.S. Capitol</arg>
+	<arg f="PNC" n="M">in a bid [*] to test a new federal law protecting the American flag from desecration</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

@@ -1,0 +1,51 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="venture">
+<note>
+  Frames file for 'venture'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="venture.01" name="to proceed despite possible damage or risk" vncls="-">
+<roles> 
+  <role descr="foolhardy entity in motion" n="0"/>  
+</roles>
+
+<example name="gerund">
+<inflection aspect="ns" form="gerund" person="ns" tense="ns" voice="active"/>
+<text>
+ On further reflection , she admits that [*-1] venturing inside the Hammacks ' house the previous day was n't `` such a great idea . ''
+</text>
+	<arg n="0">[*-1] -&gt;  she</arg>
+	<rel>venturing</rel>
+	<arg f="DIR" n="M">inside the Hammacks ' house</arg>
+	<arg f="TMP" n="M">the previous day</arg>
+</example>
+</roleset>
+
+<roleset id="venture.02" name="to express at a risk of denial" vncls="-">
+<roles> 
+  <role descr="speaker" n="0"/>  
+  <role descr="utterance" n="1"/>  
+</roles>
+
+
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ Yet I would venture that the landscape of our country alone would justify the use of this lofty adjective ... .
+</text>
+	<arg f="DIS" n="M">Yet</arg>
+	<arg n="0">I</arg>
+	<arg f="MOD" n="M">would</arg>
+	<rel>venture</rel>
+	<arg n="1">the landscape of our country alone would justify the use of this lofty adjective</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

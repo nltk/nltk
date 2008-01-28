@@ -1,0 +1,40 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="don">
+<note>
+  Frames file for 'don' based on sentences in financial subcorpus.
+  Verbnet entry 41.3.1, no other framed members.  No Framenet entry.
+  Comparison with 'put on'.
+</note>
+
+<roleset id="don.01" name="start to wear, put on" vncls="41.3.1">
+<roles>
+  <role descr="wearer" n="0">
+		
+  <vnrole vncls="41.3.1" vntheta="Agent"/></role>
+
+  <role descr="clothing" n="1">
+		
+  <vnrole vncls="41.3.1" vntheta="Theme"/></role>
+
+</roles>
+
+<example name="one of a few">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    But as Judge Thomas M. Jenkins donned his robes so he could give
+    final approval, the major earthquake struck, its epicenter not far
+    from his courtroom in Redwood City, Calif. 
+</text>
+        <arg n="0">Judge Thomas M. Jenkins</arg>
+        <rel>donned</rel>
+        <arg n="1">his robes</arg>
+        <arg f="PNC" n="M">so he could give final approval</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

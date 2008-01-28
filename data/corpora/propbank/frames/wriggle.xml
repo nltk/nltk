@@ -1,0 +1,57 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="wriggle">
+<note>
+  Frames file for 'wriggle' based on sentences in wsj.  Verbnet entry
+  49, Framenet entries Body movement and Self motion.
+</note>
+
+<roleset id="wriggle.01" name="move part of the body slightly" vncls="49">
+<roles>
+  <role descr="cause of motion, agent" n="0">
+        <vnrole vncls="49" vntheta="Agent"/></role>
+  <role descr="body part" n="1">
+        <vnrole vncls="49" vntheta="Patient"/></role>
+</roles>
+
+<example name="good trick for a corpse">
+  <inflection aspect="ns" form="full" person="ns" tense="ns" voice="active"/>
+  <text>
+    John can wriggle his ears.
+  </text>
+  <arg n="0">John</arg>
+  <arg f="MOD" n="m">can</arg>
+  <rel>wriggle</rel>
+  <arg n="1">his ears</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="wriggle.02" name="move with wriggling motion" vncls="-">
+<roles>
+  <role descr="mover" n="0"/>
+  <role descr="path" n="1"/>
+</roles>
+
+<example name="usually wriggle out of">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+     Its chief builder, Taiwan-born Feng-hsiung Hsu, nicknamed his
+     brainchild ``the Weasel'' for its tactical flair at [*] wriggling
+     out of horrible positions.
+</text>
+        <arg n="0">[*] -&gt;  Its chief builder, Taiwan-born Feng-hsiung
+        Hsu,</arg> 
+        <rel>wriggling</rel>
+        <arg f="out" n="1">of horrible positions</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

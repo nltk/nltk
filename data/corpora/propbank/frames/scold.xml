@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="scold">
+<note>
+  Frames file for 'scold' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="scold.01" name="to criticize" vncls="-">
+<roles>
+  <role descr="criticizer" n="0"/>
+  <role descr="entity scolded" n="1"/>
+  <role descr="entity scolded on/for" n="2"/>
+</roles>
+
+<example name="all arguments">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ But he did fly to Panama [*-1] to scold dictator Torrijos on the drug ties of Panamanian officials , including Mr. Noriega .
+</text>
+	<arg n="0">[*-1] -&gt;  he</arg>
+	<rel>scold</rel>
+	<arg n="1">dictator Torrijos</arg>
+	<arg f="on" n="2">the drug ties of Panamanian officials , including Mr. Noriega</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

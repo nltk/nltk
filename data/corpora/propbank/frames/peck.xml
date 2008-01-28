@@ -1,0 +1,58 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="peck">
+<note>
+  Frames file for 'peck' based on sentences in wsj.  Verbnet entries
+  39.2, 20, 18.2.
+</note>
+
+<roleset id="peck.01" name="eat lightly" vncls="39.2">
+<roles>
+  <role descr="eater" n="0"><vnrole vncls="39.2" vntheta="Agent"/></role>
+  <role descr="food" n="1"><vnrole vncls="39.2" vntheta="Patient"/></role>
+</roles>
+
+<example name="not really eating">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    They peck away at the 1 1/2-mile section of rubble, searching for
+    more of the 250 people thought to have died here. 
+</text>
+        <arg n="0">They</arg>
+        <rel>peck</rel>
+        <arg f="ADV" n="M">away</arg>
+        <arg f="at" n="1">the 1 1/2-mile section of rubble</arg>
+        <arg n="M">searching for more of the 250 people thought to
+        have died here</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="peck.02" name="hit with beak" vncls="20 18.2">
+<roles>
+  <role descr="hitter, bird" n="0"><vnrole vncls="18.2" vntheta="Agent"/><vnrole vncls="20" vntheta="Agent"/></role>
+  <role descr="thing hit" n="1"><vnrole vncls="18.2" vntheta="Patient"/><vnrole vncls="20" vntheta="Experiencer"/></role>
+  <role descr="beak" n="2"><vnrole vncls="18.2" vntheta="Instrument"/><vnrole vncls="20" vntheta="Instrument"/></role>
+  <role descr="end state of arg1" n="3"/>
+</roles>
+
+<example name="everything except beak">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John's parakeet nearly pecked him to death.
+  </text>
+  <arg n="0">John's parakeet</arg>
+  <arg f="ADV" n="m">nearly</arg>
+  <rel>pecked</rel>
+  <arg n="1">him</arg>
+  <arg n="3">to death</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

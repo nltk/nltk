@@ -1,0 +1,55 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="snatch">
+<note>
+  Frames file for 'snatch' based on sentences in wsj.  Verbnet entries
+  13.5.2 and 10.5, Framenet entries Theft, Kidnapping, and Removing.
+</note>
+
+<roleset id="snatch.01" name="grab quickly" vncls="13.5.2 10.5">
+<roles>
+  <role descr="snatched" n="0"><vnrole vncls="10.5" vntheta="Agent"/><vnrole vncls="13.5.2" vntheta="Agent"/></role>
+  <role descr="snatched" n="1"><vnrole vncls="10.5" vntheta="Theme"/><vnrole vncls="13.5.2" vntheta="Theme"/></role>
+  <role descr="source" n="2"><vnrole vncls="10.5" vntheta="Source"/><vnrole vncls="13.5.2" vntheta="Source"/></role>
+</roles>
+
+<example name="just transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    But Peter Brody, Magnascreen's president, says Japanese companies
+    are poised [*-1] to snatch the technology and put it to commercial
+    use, just as they did with earlier U.S. innovations in color
+    television and video recording.
+</text>
+        <arg n="0">[*-1] -&gt;  Japanese companies</arg>
+        <rel>snatch</rel>
+        <arg n="1">the technology</arg>
+        <arg f="ADV" n="M">just as they did with earlier
+        U.S. innovations in color television and video recording</arg> 
+</example>
+
+
+<example name="with source">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    In January, two small New York galleries, the Coe Kerr Gallery and
+    Beadleston Fine Arts, snatched a major art collection owned by the
+    Askin family away from rival auction-house bidders with an
+    up-front payment of about $25 million. 
+</text>
+        <arg f="TMP" n="M">In January</arg>
+        <arg n="0">two small New York galleries, the Coe Kerr Gallery
+        and Beadleston Fine Arts,</arg> 
+        <rel>snatched</rel>
+        <arg n="1">a major art collection owned by the Askin family</arg>
+        <arg n="2">away from rival auction-house bidders</arg>
+        <arg f="MNR" n="M">with an up-front payment of about $25
+        million</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

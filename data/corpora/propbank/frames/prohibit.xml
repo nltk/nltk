@@ -1,0 +1,61 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="prohibit">
+<note>
+  Frames file for 'prohibit' based on sentences in financial
+  subcorpus.  No Verbnet entry.  Comparison with 'ban' and 'stop'.
+  'Ban' needs to be retagged, probably.
+</note>
+
+<roleset id="prohibit.01" name="prevent an action">
+<roles>
+  <role descr="Agent" n="0"/>
+  <role descr="Theme (action or object being prevented)" n="1"/>
+  <role descr="secondary predication or action" n="2"/>
+  <role descr="instrument" n="3"/>
+</roles>
+
+<example name="typical usage">
+<text>
+    Gulf Power had been under investigation for violating the Utility
+    Holding Company Act, which *trace* prohibits public utilities from
+    making political contributions. 
+</text>
+        <arg n="0">*trace* -&gt;  which -&gt;  the Utility Holding Company
+        Act</arg> 
+        <rel>prohibits</rel>
+        <arg n="1">public utilities</arg>
+        <arg f="from" n="2">making political contributions</arg>
+</example>
+
+<example name="just transitive">
+  <text>
+    John's criminal record prohibits his getting a productive job, so
+    he works on the PAS project.
+  </text>
+  <arg n="0">John's criminal record</arg>
+  <rel>prevents</rel>
+  <arg n="1">his getting a productive job</arg>
+</example>
+
+<example name="with instrument">
+  <text>
+    Mary prohibits John from getting a decent night's sleep with her
+    relentless nagging.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>prohibits</rel>
+  <arg n="1">John</arg>
+  <arg f="from" n="2">getting a decent night's sleep</arg>
+  <arg f="with" n="3">her relentless nagging.</arg>
+</example>
+
+<note>
+OK, that last usage is a little odd.  In general, though, avoid using
+the 'instrumental' unless there's some prohibitor separate from the
+agent.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

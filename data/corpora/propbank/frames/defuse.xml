@@ -1,0 +1,49 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="defuse">
+<note>
+  Frames file for 'defuse' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="defuse.01" name="render a bomb safe" vncls="-">
+<roles>
+  <role descr="defuser" n="0"/>
+  <role descr="bomb" n="1"/>
+</roles>
+
+<example name="straight transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Lawyers for dozens of insolvent savings and loan associations are
+    trying a new tack in their efforts *trace* to defuse suits filed
+    by borrowers, developers and creditors. 
+ </text>
+        <arg n="0">*trace* -&gt;  Lawyers for dozens of insolvent savings
+        and loan associations</arg> 
+        <rel>defuse</rel>
+        <arg n="1">suits filed by borrowers, developers and
+        creditors</arg> 
+</example>
+
+<example name="with manner adverbial">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Earlier this week, Dr. Sullivan tried *trace* to defuse these
+    charges by stressing that candidates  to head the NIH and the CDC
+    will be judged by ``standards of scientific and administrative
+    excellence,'' not politics. 
+</text>
+        <arg n="0">*trace* -&gt;  Dr. Sullivan</arg>
+        <rel>defuse</rel>
+        <arg n="1">these charges</arg>
+        <arg f="MNR" n="M">by stressing that candidates to head the
+        NIH and the CDC will be judged by ``standards of scientific
+        and administrative excellence,'' not politics</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

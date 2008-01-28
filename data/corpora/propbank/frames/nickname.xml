@@ -1,0 +1,56 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="nickname">
+<note>
+Frames file for 'nickname' based on sentences in financial subcorpus
+and automatic expansion via verbnet.
+</note>
+
+<roleset id="nickname.01" name="assign a nickname" vncls="29.3">
+<roles>
+	<role descr="namer" n="0">
+		
+  <vnrole vncls="29.3" vntheta="Agent"/></role>
+ 
+	<role descr="named" n="1">
+		
+  <vnrole vncls="29.3" vntheta="Theme"/></role>
+ 
+	<role descr="name" n="2">
+		
+  <vnrole vncls="29.3" vntheta="Predicate"/></role>
+ 
+</roles>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    While Mr. Roderick was reared in the shadows of Pittsburgh's
+    smoking mills, Mr. Corry grew up in Cincinnati, a city nicknamed
+    *trace* ``Porkapolis'' and more accustomed to pork chops than pig
+    iron. 
+</text>
+        <rel>nicknamed</rel>
+        <arg n="1">*trace* -&gt;  a city</arg>
+        <arg n="2">Porkapolis</arg>
+</example>
+
+<example name="active seems a little odd">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     Mary nicknamed John Squishy-squishy Nowaka Eblis O'Shaunessy.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>nicknamed</rel>
+  <arg n="1">John</arg>
+  <arg n="2">Squishy-squishy Nowaka Eblis O'Shaunessy</arg>
+</example>
+
+<note>
+The fact that the active seems awkward (at best) might indicate that
+&quot;nicknamed&quot; is a predicative adjective, not a passivized verb.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

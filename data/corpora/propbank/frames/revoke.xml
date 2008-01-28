@@ -1,0 +1,43 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="revoke">
+<note>
+  Frames file for 'revoke' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="revoke.01" name="to void or annul" vncls="-">
+<roles>
+  <role descr="revoker, agent" n="0"/>
+  <role descr="entity revoked" n="1"/>
+</roles>
+
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="future" voice="passive"/>
+<text>
+ Drexel says [0] it does n't expect [0] any of its state brokerage licenses will be revoked [*-1] , and even if some are [*?*] , its securities business would n't be directly hurt [*-2] .
+</text>
+	<arg f="MOD" n="M">will</arg>
+	<rel>revoked</rel>
+	<arg n="1">[*-1] -&gt;  any of its state brokerage licenses</arg>
+</example>
+
+
+
+<example name="transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ Connecticut already has issued a `` notice of intent '' [*] to revoke Drexel 's brokerage license .
+</text>
+	<arg n="0">[*] -&gt;  Connecticut</arg>
+	<rel>revoke</rel>
+	<arg n="1">Drexel 's brokerage license</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

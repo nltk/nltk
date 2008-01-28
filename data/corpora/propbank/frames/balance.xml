@@ -1,0 +1,80 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="balance">
+<note>
+  Frames file for 'balance' based on sentences in wsj.  Verbnet
+  entries 47.6, 45.4.
+</note>
+
+<roleset id="balance.01" name="establish a balance" vncls="-">
+<roles>
+  <role descr="balancer, agent" n="0"/>
+  <role descr="thing balanced" n="1"/>
+  <role descr="in comparison to" n="2"/>
+</roles>
+
+<example name="simple transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    And even those who say some selective selling may be in order
+    stress that individuals need to be in the stock market *trace* to
+    achieve their long-term investment objectives and to help *trace*
+    balance their other assets. 
+</text>
+        <arg n="0">*trace* -&gt; *trace* -&gt;  individuals</arg>
+        <rel>balance</rel>
+        <arg n="1">their other assets</arg>
+</example>
+
+<example name="ergative">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+     To make the books balance, as is required by law, somebody
+     invented a new budget line item that simply subtracted $45
+     billion. 
+</text>
+        <arg n="1">the books</arg>
+        <rel>balance</rel>
+        <arg f="ADV" n="M">as  is required  by law</arg>
+</example>
+
+<example name="ergative with comparator">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    Stock-market investments also help *trace* balance the other
+    assets an individual owns, says John Blankenship Jr., president of
+    the Institute of Certified Financial Planners. 
+</text>
+        <arg n="1">*trace* -&gt;  Stock-market investments</arg>
+        <rel>balance</rel>
+        <arg n="2">the other assets  an individual owns </arg>
+</example>
+
+<example name="passive with comparator">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    2 . In seeking approval of a TRO, the prosecutor must articulate
+    any anticipated impact that forfeiture and the TRO would have on
+    innocent third parties, balanced *trace* against the government's
+    need to preserve the assets. 
+</text>
+        <rel>balanced</rel>
+        <arg n="1">*trace* -&gt;  any anticipated impact that forfeiture
+        and the TRO would have on innocent third parties</arg> 
+        <arg f="against" n="2">the government's need to preserve the
+        assets</arg> 
+</example>
+
+<example name="agent and thing balanced merged">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John balanced on the peak of the roof.
+  </text>
+  <arg n="0">John</arg>
+  <rel>balanced</rel>
+  <arg f="LOC" n="m">on the peak of the roof</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

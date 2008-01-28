@@ -1,0 +1,45 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="modulate">
+<note>
+  Frames file for 'modulate' based on sentences in wsj.  No verbnet entry.
+</note>
+
+<roleset id="modulate.01" name="change, modify, esp. of music" vncls="-">
+<roles>
+  <role descr="composer" n="0"/>
+  <role descr="music" n="1"/>
+  <role descr="from" n="2"/>
+  <role descr="to" n="3"/>
+</roles>
+
+<example name="unaccusative">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+    The chords modulate, but there is little filigree even though his
+    fingers begin to wander over more of the keys. 
+</text>
+        <arg n="1">The chords</arg>
+        <rel>modulate</rel>
+</example>
+
+<example name="all args">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John modulated the chord progression from C major to C-sharp
+     major, the long way around.
+  </text>
+  <arg n="0">John</arg>
+  <rel>modulated</rel>
+  <arg n="1">the chord progression</arg>
+  <arg f="from" n="2">C major</arg>
+  <arg f="to" n="3">C-sharp major</arg>
+  <arg f="MNR" n="m">the long way around</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

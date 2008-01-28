@@ -1,0 +1,56 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="inaugurate">
+<note>
+  Frames file for 'inaugurate' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="inaugurate.01" name="swear into office" vncls="-">
+<roles>
+  <role descr="agent (rare)" n="0"/>
+  <role descr="new officer" n="1"/>
+  <role descr="office, role" n="2"/>
+</roles>
+
+<example name="in his dreams">
+  <inflection aspect="ns" form="participle" person="third" tense="past" voice="passive"/>
+  <text>
+     John was inaugurated *trace* as President of the United States of
+     America. 
+  </text>
+  <rel>inaugurated</rel>
+  <arg n="1">*trace* -&gt; John</arg>
+  <arg f="as" n="2">President of the United States of America</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="inaugurate.02" name="mark the beginning of" vncls="-">
+<roles>
+  <role descr="marker" n="0"/>
+  <role descr="thing beginning" n="1"/>
+</roles>
+
+<example name="more agentive than marker">
+<inflection aspect="perfect" form="participle" person="third" tense="present" voice="active"/>
+<text>
+    Since then, Moon's organization has inaugurated a pair of
+    high-quality glossy opinion magazines, The World and I and
+    Insight, which are a further drain. 
+</text>
+        <arg f="TMP" n="M">Since then</arg>
+        <arg n="0">Moon 's organization</arg>
+        <rel>inaugurated</rel>
+        <arg n="1">a pair of high-quality glossy opinion magazines,
+        The World and I and Insight, which are a further drain</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

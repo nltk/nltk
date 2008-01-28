@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="flaw">
+<note>
+  Frames file for 'flaw'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="flaw.01" name="(cause to) be defective" vncls="-">
+<roles> 
+  <role descr="causer of flaw, agent (rare)" n="0"/>  
+  <role descr="entity flawed" n="1"/>
+</roles>
+
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+ But Kenneth Leon , a telecommunications analyst with Bear , Stearns &amp; Co. , finds the BellSouth proposal still flawed [*-4] because the company does n't have [*-1] to wait five years [*-2] to begin [*-3] buying more LIN shares .
+</text>
+	<arg f="TMP" n="M">still</arg>
+	<rel>flawed</rel>
+	<arg n="1">[*-4] -&gt;  the BellSouth proposal</arg>
+	<arg f="CAU" n="M">because the company does n't have [*-1] to wait five years [*-2] to begin [*-3] buying more LIN shares</arg>
+</example>
+
+</roleset>
+</predicate>
+
+
+</frameset>

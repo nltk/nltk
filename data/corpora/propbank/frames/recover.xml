@@ -1,0 +1,124 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="recover">
+<note>
+  Frames file for 'recover' based on sentences in financial
+  subcorpus.  No access to verbnet.  No comparison.
+</note>
+
+<roleset id="recover.01" name="get better" vncls="-">
+<roles>
+  <role descr="that which was sick, now getting better" n="1"/>
+  <role descr="sickness" n="2"/>
+</roles>
+
+<example name="basic unaccusative">
+<text>
+    Still, he added, if the industrial sector remains relatively
+    stable, Rockwell should be able *trace* to recover in the second
+    half and about equal fiscal 1989's operating profit of $630.9
+    million. 
+</text>
+        <arg n="1">*trace* -&gt;  Rockwell</arg>
+        <rel>recover</rel>
+        <arg f="TMP" n="M">in the second half</arg>
+</example>
+
+<example name="with sickness">
+<text>
+    The Nasdaq over-the-counter market didn't fully recover from a
+    selling stampede, and closed down 1.2%. 
+</text>
+        <arg n="1">The Nasdaq over-the-counter market</arg>
+        <arg f="NEG" n="M">n't</arg>
+        <arg f="MNR" n="M">fully</arg>
+        <rel>recover</rel>
+        <arg f="from" n="2">a selling stampede</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="recover.02" name="get back" vncls="10.5 13.5.2">
+<roles>
+  <role descr="entity getting something" n="0">
+		
+		
+  <vnrole vncls="10.5" vntheta="Agent"/><vnrole vncls="13.5.2" vntheta="Agent"/></role>
+
+  <role descr="thing gotten" n="1">
+		
+		
+  <vnrole vncls="10.5" vntheta="Theme"/><vnrole vncls="13.5.2" vntheta="Theme"/></role>
+
+  <role descr="gotten from" n="2">
+		
+		
+  <vnrole vncls="10.5" vntheta="Source"/><vnrole vncls="13.5.2" vntheta="Source"/></role>
+
+</roles>
+
+<example name="just transitive">
+<text>
+    New York stocks recovered some of their losses after the London
+    market closed.
+</text>
+        <arg n="0">New York stocks</arg>
+        <rel>recovered</rel>
+        <arg n="1">some of their losses</arg>
+        <arg f="TMP" n="M">after the London market closed</arg>
+</example>
+
+<example name="odd usage of arg2">
+<text>
+    Other lenders have been recovering only 50 cents to 60 cents on
+    the dollar on foreclosed Arizona property, if they can sell it at
+    all. 
+</text>
+        <arg n="0">Other lenders</arg>
+        <rel>recovering</rel>
+        <arg n="1">only 50 cents to 60 cents on the dollar</arg>
+        <arg f="on" n="2">foreclosed Arizona property</arg>
+        <arg n="M">if they can sell it at all</arg>
+</example>
+
+<example name="better (?) example of arg2">
+  <text>
+    Mary recovered her books from John.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>recovered</rel>
+  <arg n="1">her books</arg>
+  <arg f="from" n="2">John</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="recover.03" name="put the lid back on" vncls="-">
+<roles>
+  <role descr="coverer" n="0"/>
+  <role descr="thing covered" n="1"/>
+  <role descr="lid" n="2"/>
+</roles>
+
+<example name="I don't know if people actually say this">
+  <text>
+    After one too many spills, John was forced *trace* to recover his
+    sofa.
+  </text>
+  <arg n="0">*trace* -&gt; John</arg>
+  <rel>recover</rel>
+  <arg n="1">his sofa</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

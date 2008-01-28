@@ -1,0 +1,80 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="upset">
+<note>
+Frames file for 'upset' based on sentences in financial subcorpus and
+automatic expansion via verbnet.
+</note>
+
+<roleset id="upset.01" name="cause emotional anguish" vncls="31.1">
+<roles>
+	<role descr="agent of upsetting" n="0">
+		  <vnrole vncls="31.1" vntheta="Cause"/></role>
+	<role descr="upset entity" n="1">
+	          <vnrole vncls="31.1" vntheta="Experiencer"/></role>
+	<role descr="instrument" n="2"/>
+</roles>
+
+<example name="straight transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    That meant no trading would occur in the final seconds, as a way
+    of making sure that last-second orders aren't subjected to a
+    sudden price swing that *trace* would upset customers. 
+</text>
+        <arg n="0">*trace* -&gt;  that -&gt;  a sudden price swing</arg>
+        <arg f="MOD" n="M">would</arg>
+        <rel>upset</rel>
+        <arg n="1">customers</arg>
+</example>
+
+<example name="object as subject">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    ``I was upset with Roger, I fumpered and schmumpered,'' says
+    Mr. Peters. 
+</text>
+        <arg n="1">I</arg>
+        <rel>upset</rel>
+        <arg f="with" n="0">Roger</arg>
+<note>
+And what the hell does &quot;fumpered and schumpered&quot; mean?
+</note>
+</example>
+
+<example name="passivized" src="tempt.01">
+  <text>
+    John was sorely upset *trace* by Mary's offer of freshly-baked
+    apple pie. 
+  </text>
+  <arg n="1">*trace* -&gt; John</arg>
+  <arg f="MNR" n="m">sorely</arg>
+  <rel>upset</rel>
+  <arg f="by" n="0">Mary's offer of freshly-baked apple pie</arg>
+</example>
+
+</roleset>
+
+<roleset id="upset.02" name="turn over" vncls="-">
+<roles>
+  <role descr="turner" n="0"/>
+  <role descr="turned (container, usually)" n="1"/>
+</roles>
+
+<example name="toys all over">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John upset Mary's bowl of ornamental fruit.
+  </text>
+  <arg n="0">John</arg>
+  <rel>upset</rel>
+  <arg n="1">Mary's bowl of ornamental fruit</arg>
+</example>
+
+<note>
+This is very marginal usage by now, but there is a game called &quot;Upset
+the Apple Cart&quot;.  
+</note>
+
+</roleset>
+</predicate>
+</frameset>

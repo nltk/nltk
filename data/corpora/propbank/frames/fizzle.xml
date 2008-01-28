@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="fizzle">
+<note>
+  Frames file for 'fizzle' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="fizzle.01" name="to fail or end weakly" vncls="-">
+<roles>
+  <role descr="entity failed" n="1"/>  
+</roles>
+
+
+<example name="intransitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ Crude prices spurted upward in brisk trading on the assumption that heavy earthquake damage occurred to San Francisco area refinery complexes , but the rise quickly fizzled when it [*EXP*-1] became apparent that oil operations were n't severely curtailed [*-2] [*T*-3] .
+</text>
+	<arg n="1">the rise</arg>
+	<arg f="MNR" n="M">quickly</arg>
+	<rel>fizzled</rel>
+	<arg f="TMP" n="M">when it [*EXP*-1] became apparent that oil operations were n't severely curtailed [*-2] [*T*-3]</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

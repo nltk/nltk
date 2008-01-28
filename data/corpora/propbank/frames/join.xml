@@ -1,0 +1,85 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="join">
+<note>
+  Frames file for 'join' based on sentences in financial subcorpus.
+  Verbnet class mix-22.1-2, other framed members include link.
+</note>
+
+<roleset id="join.01" name="attach" vncls="22.1-2">
+<roles>
+  <role descr="agent, entity doing the tying" n="0">
+	  <vnrole vncls="22.1-2" vntheta="Agent"/></role>
+  <role descr="patient, thing(s) being tied" n="1">
+	  <vnrole vncls="22.1-2" vntheta="Patient1"/></role>
+  <role descr="instrument, string" n="2">
+	  <vnrole vncls="22.1-2" vntheta="Patient2"/></role>
+</roles>
+
+<example name="straight transitive">
+<text>
+    Mr. Harper, a veteran of several manufacturing companies who
+    *trace* joined Campbell in 1986, will take charge of all overseas
+    operations as well as Pepperidge. 
+</text>
+        <arg n="0">*trace* -&gt;  who -&gt;  a veteran</arg>
+        <rel>joined</rel>
+        <arg n="1">Campbell</arg>
+        <arg f="TMP" n="M">in 1986</arg>
+</example>
+
+<example name="join in, as arg1">
+<text>
+    ``Anheuser is the biggest guy in the bar, and he just decided
+    *trace* to join in the barroom brawl,'' said Joseph J. Doyle, an
+    analyst with Smith Barney, Harris Upham &amp; Co. 
+</text>
+        <arg n="0">*trace* -&gt;  he</arg>
+        <rel>join</rel>
+        <arg f="in" n="1">the barroom brawl</arg>
+</example>
+
+<example name="join in, as argM-PRD">
+<text>
+    Bowing to criticism, Bear Stearns, Morgan Stanley and Oppenheimer
+    joined PaineWebber in suspending stock-index arbitrage trading for
+    their own accounts. 
+</text>
+        <arg n="0">Bear Stearns, Morgan Stanley and Oppenheimer</arg>
+        <rel>joined</rel>
+        <arg n="1">PaineWebber</arg>
+        <arg f="PRD" n="M">in suspending stock-index arbitrage trading
+        for their own accounts</arg> 
+</example>
+
+<example name="join as">
+<text>
+    In Barry Wright, Mr. Sim sees a situation ``very similar'' to the
+    one he faced when he joined Applied as president and chief
+    operating officer in 1985. 
+</text>
+        <arg n="0">he</arg>
+        <rel>joined</rel>
+        <arg n="1">Applied</arg>
+        <arg f="PRD" n="M">as president and chief operating officer</arg>
+        <arg f="TMP" n="M">in 1985</arg>
+</example>
+
+<example name="with instrument">
+  <text>
+    John joined the fragments of his coffee cup with duct tape.
+  </text>
+  <arg n="0">John</arg>
+  <rel>joined</rel>
+  <arg n="1">the fragments of his coffee cup</arg>
+  <arg f="with" n="2">duct tape</arg>
+</example>
+
+<note>
+Oddly, this is the sense predicted by verbnet, but it doesn't seem to
+occur in the corpus.  Yet?
+</note>
+
+</roleset>
+</predicate>
+</frameset>

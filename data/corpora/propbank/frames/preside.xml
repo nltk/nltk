@@ -1,0 +1,44 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="preside">
+<note>
+  Frames file for 'preside' based on sentences in financial subcorpus.
+  No Verbnet entry.
+</note>
+
+<roleset id="preside.01" name="lead, conduct" vncls="-">
+<roles>
+  <role descr="leader" n="0"/>
+  <role descr="led" n="1"/>
+</roles>
+
+<example name="object always takes 'over'">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    Today, Mr. Corry presides over a company whose fortunes have
+    changed abruptly. 
+</text>
+        <arg f="TMP" n="M">Today</arg>
+        <arg n="0">Mr. Corry</arg>
+        <rel>presides</rel>
+        <arg f="over" n="1">a company whose fortunes have changed
+        abruptly</arg> 
+</example>
+
+<example name="nominal">
+  <inflection person="ns" tense="ns" aspect="ns" voice="ns" form="ns"/>
+  <text>
+     John Rose, president *t* and chief executive officer *t* of New
+     England Electric, said ...
+  </text>
+  <arg n="0"        >president</arg>
+  <rel              >president</rel>
+  <arg n="1" f="of">New England Electric</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

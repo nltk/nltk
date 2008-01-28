@@ -1,0 +1,139 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="settle">
+<note>
+  Frames file for 'settle' based on survey of initial sentences of big
+  corpus and comparison with 'decide' and 
+</note>
+
+<roleset id="settle.01" name="decide" vncls="-">
+<roles>
+  <role descr="decider" n="0"/>
+  <role descr="decision" n="1"/>
+  <role descr="benefactive" n="2"/>
+  <role descr="instrument" n="3"/>
+</roles>
+
+<example name="go hoosiers!">
+  <text>
+  The National Association of Manufacturers settled on the Hoosier
+  capital of Indianapolis for its fall board meeting.
+  </text>
+  <arg n="0">The National Association of Manufacturers</arg>
+  <rel>settled</rel>
+  <arg f="on" n="1">the Hoosier capital of Indianapolis</arg>
+  <arg f="for" n="2">its fall board meeting</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="settle.02" name="resolve" vncls="-">
+<roles>
+  <role descr="entity making resolution" n="0"/>
+  <role descr="thing being resolved" n="1"/>
+  <role descr="comitative, resolved with" n="2"/>
+  <role descr="attribute, resolved to or at" n="3"/>
+</roles>
+
+<example name="financial settlement">
+  <text>
+  Moscow found a way *trace* to settle the country's $188 million debt.
+  </text>
+  <arg n="0">*trace*=Moscow</arg>
+  <rel>settle</rel>
+  <arg n="1">the country's $188 million debt</arg>
+</example>
+
+<example name="death and taxes">
+  <text>
+  ...if he had settled with the IRS.
+  </text>
+  <arg n="0">he</arg>
+  <rel>settled</rel>
+  <arg f="with" n="2">the IRS</arg>
+</example>
+
+<example name="lawsuits again">
+  <text>
+  ...a $750 million antitrust suit which *trace-1* could be settled
+  *trace-2* for one-third that amount.
+  </text>
+  <arg n="1">*trace-2*=*trace-1*=which=a $750 million
+  antitrust suit</arg> 
+  <arg f="MOD" n="m">could</arg>
+  <rel>settled</rel>
+  <arg f="for" n="3">one-third that amount</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="settle.03" name="come to rest, generally, or decline, of commodity prices" vncls="-">
+<roles>
+  <role descr="entity causing something to settle" n="0"/>
+  <role descr="commodity or stock, thing settling" n="1"/>
+  <role descr="EXT, amount declined by" n="2"/>
+  <role descr="start point" n="3"/>
+  <role descr="end point" n="4"/>
+</roles>
+
+<example name="I am getting so tired of stock reports">
+  <text>
+  On the Commodity Exchange in New York, gold for current delivery
+  settled at $374.20 an ounce, down 50 cents.
+  </text>
+  <arg f="LOC" n="m">On the Commodity Exchange</arg>
+  <arg f="LOC" n="m">in New York</arg>
+  <arg n="1">gold for current delivery</arg>
+  <rel>settled</rel>
+  <arg f="at" n="4">$374.20 an ounce</arg>
+  <arg f="EXT" n="2">down 50 cents</arg>
+</example>
+
+<example name="causative">
+  <text>
+  Certainly, the Oct 13 sell-off didn't settle any stomachs.
+  </text>
+  <arg f="DIS" n="m">Certainly</arg>
+  <arg n="0">the Oct 13 sell-off</arg>
+  <arg f="NEG" n="m">n't</arg>
+  <rel>settle</rel>
+  <arg n="1">any stomachs</arg>
+</example>
+
+<note>
+&quot;Come to rest&quot; sense will probably not take anything beyond Arg1.
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="settle_down">
+
+<roleset id="settle.04" name="and be quiet!" vncls="-">
+<roles>
+  <role descr="one who should be quiet" n="1"/>
+</roles>
+
+<example name="frustrated mom">
+  <text>
+  No matter what I do, I can't get little Johnny to settle down.
+  </text>
+  <arg n="1">little Johnny</arg>
+  <rel>settle down</rel>
+</example>
+
+<note>
+The lexicon also includes &quot;settle_up&quot;, but I have trouble figuring out
+what that would mean, unless it were a variant of the &quot;resolve&quot;
+roleset id=&quot;settle.05&quot; above, as in &quot;settle up your debts&quot;.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

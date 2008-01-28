@@ -1,0 +1,35 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="reinstall">
+<note>
+  Frames file for 'reinstall' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="reinstall.01" name="to install again" vncls="9.1">
+<roles>
+  <role descr="installer, agent" n="0">
+        <vnrole vncls="9.1" vntheta="Agent"/></role>
+  <role descr="entity reinstalled" n="1">
+        <vnrole vncls="9.1" vntheta="Theme"/></role>
+</roles>
+
+
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+ Ford said [0] owners should return the cars to dealers so the windshields can be removed [*-1] and securely reinstalled [*-1] .
+</text>
+	<arg f="MOD" n="M">can</arg>
+	<arg f="MNR" n="M">securely</arg>
+	<rel>reinstalled</rel>
+	<arg n="1">[*-1] -&gt;  the windshields</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

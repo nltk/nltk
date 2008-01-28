@@ -1,0 +1,56 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="discontinue">
+<note>
+  Frames file for 'discontinue' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="discontinue.01" name="to stop doing or manufacturing" vncls="55.2">
+<roles>
+  <role descr="entity ending something, agent" n="0">
+	<vnrole vncls="55.2" vntheta="Agent"/></role>
+  <role descr="thing discontinued" n="1">
+	<vnrole vncls="55.2" vntheta="Theme"/></role>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="progressive" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+ Troubled NBI Inc. said [0] it fired more than half its work force and is discontinuing its hardware business [*-1] to focus on its software and service operations .
+</text>
+	<arg n="0">it</arg>
+	<rel>discontinuing</rel>
+	<arg n="1">its hardware business</arg>
+	<arg f="PNC" n="M">[*-1] to focus on its software and service operations</arg>
+</example>
+
+
+<example name="passive">
+<inflection aspect="perfect" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+ While the discussions between Delmed and National Medical Care have been discontinued [*-1] , Delmed will continue [*-2] to supply dialysis products through National Medical after their exclusive agreement ends in March 1990 , Delmed said [0] [*T*-3] .
+</text>
+	<rel>discontinued</rel>
+	<arg n="1">[*-1] -&gt;  the discussions between Delmed and National Medical Care</arg>
+</example>
+
+
+
+<example name="transitive with ArgM-LOC">
+<inflection aspect="perfect" form="participle" person="third" tense="present" voice="passive"/>
+<text>
+ A Kentucky Fried Chicken spokesman , however , disputed the notion that the delivery service experienced problems in some markets where testing has been discontinued [*-1] [*T*-2] .
+</text>
+	<rel>discontinued</rel>
+	<arg n="1">[*-1] -&gt;  testing</arg>
+	<arg f="LOC" n="M">[*T*-2] -&gt;  where -&gt;  some markets</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

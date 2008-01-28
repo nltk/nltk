@@ -1,0 +1,44 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="desire">
+<note>
+  Frames file for 'desire' based on sentences in wsj.  Verbnet entry
+  32.1, Framenet entry Experiencer_subj.
+</note>
+
+<roleset id="desire.01" name="want, crave" vncls="32.1">
+<roles>
+  <role descr="wanter" n="0"><vnrole vncls="32.1" vntheta="Experiencer"/></role>
+  <role descr="wanted" n="1"><vnrole vncls="32.1" vntheta="Theme"/></role>
+</roles>
+
+<example name="not like any ringers I know">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="passive"/>
+<text>
+    In the torrent of replies that followed, one woman ringer from
+    Solihull observed that ``the average male ringer leaves quite a
+    lot *trace* *trace* to be desired *trace*: badly dressed,
+    decorated with acne and a large beer-belly, frequently unwashed
+    and unbearably flatulent in peals.'' 
+</text>
+        <rel>desired</rel>
+        <arg n="1">*trace* -&gt; *trace* -&gt; *trace* -&gt;  quite a lot</arg>
+</example>
+
+
+<example name="active">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+     Seeking to allay European concerns, U.S. Agriculture Secretary
+     Clayton Yeutter said in Washington that the new U.S. plan
+     wouldn't ``put farmers out of business'' but would encourage them
+     to ``grow what the markets desire *trace* instead of what the
+     government wants.'' 
+</text>
+        <arg n="0">the markets</arg>
+        <rel>desire</rel>
+        <arg n="1">*trace* -&gt;  what</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

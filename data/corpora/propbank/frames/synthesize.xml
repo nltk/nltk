@@ -1,0 +1,49 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="synthesize">
+<note>
+  Frames file for 'synthesize' based on sentences in wsj.  Verbnet
+  entry 26.4. 
+</note>
+
+<roleset id="synthesize.01" name="create" vncls="26.4">
+<roles>
+  <role descr="creator" n="0">
+		
+  <vnrole vncls="26.4" vntheta="Agent"/></role>
+
+  <role descr="thing created" n="1">
+		
+  <vnrole vncls="26.4" vntheta="Product"/></role>
+
+  <role descr="source" n="2">
+		
+  <vnrole vncls="26.4" vntheta="Material"/></role>
+
+  <role descr="benefactive" n="3">
+		
+  <vnrole vncls="26.4" vntheta="Beneficiary"/></role>
+
+  <role descr="attribute, secondary predication" n="4"/>
+</roles>
+
+<example name="the one example">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    The Japanese are neglecting the opportunity [*] to synthesize a
+    new corporate culture based on a fusion of the best aspects of
+    both national cultures. 
+</text>
+        <arg n="0">[*] -&gt;  The Japanese</arg>
+        <rel>synthesize</rel>
+        <arg n="1">a new corporate culture based on a fusion of the
+        best aspects of both national cultures</arg> 
+</example>
+
+<note>
+See 'create' for additional examples.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

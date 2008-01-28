@@ -1,0 +1,42 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="sample">
+<note>
+  Frames file for 'sample' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="sample.01" name="select a portion of a larger whole" vncls="-">
+<roles>
+  <role descr="sampler" n="0"/>
+  <role descr="thing sampled" n="1"/>
+</roles>
+
+<example name="active">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    He said 30% of the loans *trace* he sampled *trace* were ``dead
+    meat on the day they were made.'' 
+</text>
+        <arg n="0">he</arg>
+        <rel>sampled</rel>
+        <arg n="1">*trace* -&gt; *trace* -&gt;  the loans</arg>
+</example>
+
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    Both reports are based on several thousand patients sampled
+    *trace* in a 1985 nationwide government survey.
+</text>
+        <rel>sampled</rel>
+        <arg n="1">*trace* -&gt;  several thousand patients</arg>
+        <arg f="LOC" n="M">in a 1985 nationwide government survey</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

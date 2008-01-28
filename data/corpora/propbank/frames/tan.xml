@@ -1,0 +1,46 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="tan">
+<note>
+  Frames file for 'tan' based on sentences in wsj.  Verbnet entry 45.4.
+</note>
+
+<roleset id="tan.01" name="(cause to) become darker in skin tone" vncls="45.4">
+<roles>
+  <role descr="causer of tanning (eg sun)" n="0">
+        <vnrole vncls="45.4" vntheta="Agent"/></role>
+  <role descr="tanned entity, entity courting skin cancer" n="1">
+        <vnrole vncls="45.4" vntheta="Patient"/></role>
+  <role descr="description of tan, attribute of arg1" n="2"/>
+</roles>
+
+<example name="adjectival">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    At the ritzy Fashion Island Shopping Center, the tanned and
+    elegant ladies of this wealthy Southern California beach community
+    disembark from their Mercedes-Benzes and BMWs for another day of
+    exercising their credit cards. 
+</text>
+        <rel>tanned</rel>
+        <arg n="1">ladies</arg>
+</example>
+
+<example name="verbal">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    Three weeks of slaving away in the hot sun tanned John a deep purple.
+  </text>
+  <arg n="0">Three weeks of slaving away in the hot sun</arg>
+  <rel>tanned</rel>
+  <arg n="1">John</arg>
+  <arg n="2">a deep purple</arg>
+</example>
+
+<note>
+Funny skin that boy has.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

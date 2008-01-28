@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="mediate">
+<note>
+  Frames file for 'mediate'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="mediate.01" name="to resolve or settle differences" vncls="-">
+<roles> 
+  <role descr="resolver, agent" n="0"/>
+  <role descr="thing mediated" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ W.J. Usery Jr. , labor secretary during the Ford administration , was named [*-1] to mediate talks [*] to settle the six-month strike by the UMW .
+</text>
+	<arg n="0">[*-1] -&gt;  W.J. Usery Jr. , labor secretary during the Ford administration ,</arg>
+	<rel>mediate</rel>
+	<arg n="1">talks [*] to settle the six-month strike by the UMW</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

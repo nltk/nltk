@@ -1,0 +1,36 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="scoot">
+<note>
+  Frames file for 'scoot' based on sentences in wsj.  Verbnet entry 51.3.2.
+</note>
+
+<roleset id="scoot.01" name="move moderately quickly" vncls="51.3.2">
+<roles>
+  <role descr="causal agent" n="A"/>
+  <role descr="entity in motion" n="0">
+        <vnrole vncls="51.3.2" vntheta="Theme"/></role>
+  <role descr="path" n="1">
+        <vnrole vncls="51.3.2" vntheta="Location"/></role>
+</roles>
+
+<example name="the one example">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Cupboard doors were flying, the trash can in the kitchen walked a
+    few feet, the dogs came running, and I scooted them into the dog
+    run and stood in the doorway myself, watching the outside trash
+    cans dance across the concrete. 
+</text>
+        <arg n="A">I</arg>
+        <rel>scooted</rel>
+        <arg n="0">them</arg>
+        <arg f="into" n="1">the dog run</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,52 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="pan">
+<note>
+  Frames file for 'pan' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="pan.01" name="to wash dirt in a pan to separate out the  precious metals" vncls="-">
+<roles>
+  <role descr="(gold)panner, agent" n="0"/>
+  <role descr="precious metals" n="1"/>
+</roles>
+
+
+<example name="gerund">
+<inflection aspect="ns" form="gerund" person="ns" tense="ns" voice="active"/>
+<text>
+ `` It 's like [*] panning for gold outside of Grand Central Station .
+</text>
+	<arg n="0">[*]</arg>
+	<rel>panning</rel>
+	<arg f="for" n="1">gold</arg>
+	<arg f="LOC" n="M">outside of Grand Central Station</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="pan_out">
+<roleset id="pan.02" name="to turn out well" vncls="-">
+<roles>
+  <role descr="entity panning out" n="0"/>
+</roles>
+
+
+
+<example name="intransitive">
+<inflection aspect="perfect" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ The units have worked on 37 investment banking deals this year , he says [0] [*T*-1] , though not all of them have panned out .
+</text>
+	<arg n="0">not all of them</arg>
+	<rel>[ panned] [ out]</rel>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

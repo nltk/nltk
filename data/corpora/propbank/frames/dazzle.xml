@@ -1,0 +1,50 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="dazzle">
+<note>
+  Frames file for 'dazzle' based on sentences in wsj.  Verbnet entry
+  31.1, Framenet entry Experiencer obj.
+</note>
+
+<roleset id="dazzle.01" name="cause amazement" vncls="31.1">
+<roles>
+  <role descr="causer of amazement" n="0"><vnrole vncls="31.1" vntheta="Cause"/></role>
+  <role descr="bedazzled entity" n="1"><vnrole vncls="31.1" vntheta="Experiencer"/></role>
+  <role descr="instrument, if separate from arg0" n="2"/>
+</roles>
+
+<example name="two args">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    We here in the affected areas were dazzled [*-1] by Mr. Laband's
+    analysis of time values and his comparisons of effectiveness
+    concerning research and development. 
+</text>
+        <arg f="LOC" n="M">here in the affected areas</arg>
+        <rel>dazzled</rel>
+        <arg n="1">[*-1] -&gt;  We</arg>
+        <arg f="by" n="0">Mr. Laband's analysis of time values and his
+        comparisons of effectiveness concerning research and
+        development</arg> 
+</example>
+
+<example name="all args">
+  <inflection aspect="ns" form="full" person="ns" tense="ns" voice="active"/>
+  <text>
+     John lives by the credo, ``if you can't dazzle 'em with
+     brilliance, baffle 'em with bullshit.''
+  </text>
+  <arg n="0">you</arg>
+  <arg f="MOD" n="m">ca</arg>
+  <arg f="NEG" n="m">n't</arg>
+  <rel>dazzle</rel>
+  <arg n="1">'em</arg>
+  <arg f="with" n="2">brilliance</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

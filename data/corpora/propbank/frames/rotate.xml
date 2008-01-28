@@ -1,0 +1,71 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="rotate">
+<note>
+Frames file for 'rotate' based on sentences in wsj and automatic
+expansion via verbnet.
+</note>
+
+<roleset id="rotate.01" name="(make) go around" vncls="47.3">
+<roles>
+	<role descr="causer of rotation" n="0">
+		
+  <vnrole vncls="47.3" vntheta="Agent"/></role>
+
+	<role descr="thing rotating" n="1">
+		
+  <vnrole vncls="47.3" vntheta="Theme"/></role>
+
+</roles>
+
+<example name="ergative" src="rock.01">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    The walls shook; the building rotated.
+</text>
+        <arg n="1">the building</arg>
+        <rel>rotated</rel>
+</example>
+
+<example name="agentive">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John rotated his tires.
+  </text>
+  <arg n="0">John</arg>
+  <rel>rotated</rel>
+  <arg n="1">his tires</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="rotate.02" name="shift from one thing to another" vncls="-">
+<roles>
+  <role descr="causer of shift" n="0"/>
+  <role descr="thing being changed" n="1"/>
+  <role descr="old thing" n="2"/>
+  <role descr="new thing" n="3"/>
+</roles>
+
+<example name="with new thing">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Many of Wednesday's winners were losers yesterday as investors
+    quickly took profits and rotated their buying to other issues,
+    traders said. 
+</text>
+        <arg n="0">investors</arg>
+        <rel>rotated</rel>
+        <arg n="1">their buying</arg>
+        <arg f="to" n="3">other issues</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

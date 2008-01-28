@@ -1,0 +1,59 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="probe">
+<note>
+  Frames file for 'probe' based on sentences in wsj.  Verbnet entry
+  35.2, Framenet entries Scrutiny and Seeking.
+</note>
+
+<roleset id="probe.01" name="examine internally, closely" vncls="35.2">
+<roles>
+  <role descr="prober" n="0"><vnrole vncls="35.2" vntheta="Agent"/></role>
+  <role descr="thing probed" n="1"><vnrole vncls="35.2" vntheta="Location"/></role>
+  <role descr="in search of" n="2"><vnrole vncls="35.2" vntheta="Theme"/></role>
+</roles>
+
+<example name="intransitive">
+<inflection aspect="ns" form="gerund" person="ns" tense="ns" voice="ns"/>
+<text>
+    *trace* Probing with the stimulators, National Institutes of
+     Health scientists recently showed how the brain reorganizes
+     motor-control resources after an amputation. 
+</text>
+        <rel>Probing</rel>
+        <arg f="MNR" n="M">with the stimulators</arg>
+        <arg n="0">*trace* -&gt; National Institutes of Health scientists</arg>
+</example>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    Mechanized vacuum cleaners probe the sand like giant anteaters; a
+    whirring ferris wheellike excavator, with buckets instead of
+    seats, chews through layers of compacted sand; tracks and conveyor
+    belts, shuttling sand to the screening plants, criss-cross the
+    beach. 
+</text>
+        <arg n="0">Mechanized vacuum cleaners</arg>
+        <rel>probe</rel>
+        <arg n="1">the sand</arg>
+        <arg f="MNR" n="M">like giant anteaters</arg>
+</example>
+
+<example name="that's not very nice">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    Mary probed John's brain for some scrap of good sense.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>probed</rel>
+  <arg n="1">John's brain</arg>
+  <arg f="for" n="2">some scrap of good sense</arg>
+</example>
+
+<note>
+There was a joke here about alien abductions, but I decided not to go there.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

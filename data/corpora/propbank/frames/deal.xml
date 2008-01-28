@@ -1,0 +1,74 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="deal">
+<note>
+  Frames file for 'deal' based on sentences in financial subcorpus.
+  No Verbnet entry, no Framenet entry.  Comparison with 'handle.'
+</note>
+
+<roleset id="deal.01" name="handle, deal with">
+<roles>
+  <role descr="dealer" n="0"/>
+  <role descr="thing dealt with or in" n="1"/>
+</roles>
+
+<example name="deal with">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    By contrast, Value Line said Georgia-Pacific ``is in a
+    comparatively good position *trace* to deal with weakening paper
+    markets,'' ... 
+</text>
+        <arg n="0">*trace* -&gt;  Georgia-Pacific</arg>
+        <rel>deal</rel>
+        <arg f="with" n="1">weakening paper markets</arg>
+</example>
+
+<example name="deal in">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+    The idea was to let small investors, the backbone of the fund
+    business, deal in the money market's high short-term interest
+    rates. 
+</text>
+        <arg n="0">small investors, the backbone of the fund
+        business,</arg> 
+        <rel>deal</rel>
+        <arg f="in" n="1">the money market's high short-term interest
+        rates</arg> 
+</example>
+
+<note>
+Probably two distinct senses, but syntactically similar enough to be merged.
+</note>
+
+</roleset>
+
+<roleset id="deal.02" name="play cards">
+<roles>
+  <role descr="dealer" n="0"/>
+  <role descr="cards" n="1"/>
+  <role descr="other player(s)" n="2"/>
+</roles>
+
+<example name="metaphorical">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    But the computer-guided selling in response to those developments
+    dealt a serious blow to the over-the-counter market, Mr. DaPuzzo
+    said. 
+</text>
+        <arg f="DIS" n="M">But</arg>
+        <arg n="0">the computer-guided selling in response to those
+        developments</arg> 
+        <rel>dealt</rel>
+        <arg n="1">a serious blow</arg>
+        <arg f="to" n="2">the over-the-counter market</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

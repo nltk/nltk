@@ -1,0 +1,34 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="eyeball">
+<note>
+  Frames file for 'eyeball' based on sentences in wsj.  No Verbnet
+  entry, Framenet entry Scrutiny.
+</note>
+
+<roleset id="eyeball.01" name="look at" vncls="-">
+<roles>
+  <role descr="looker" n="0"/>
+  <role descr="looked at" n="1"/>
+</roles>
+
+<example name="check it out">
+<inflection aspect="ns" form="gerund" person="ns" tense="ns" voice="ns"/>
+<text>
+    Apple Computer added that it was being ``cautiously optimistic,''
+    despite [*-1] not yet closely eyeballing all of its 50 buildings
+    in the region. 
+</text>
+        <arg n="0">[*-1] -&gt;  it</arg>
+        <arg f="TMP" n="M">not yet</arg>
+        <arg f="MNR" n="M">closely</arg>
+        <rel>eyeballing</rel>
+        <arg n="1">all of its 50 buildings in the region</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

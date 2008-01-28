@@ -1,0 +1,65 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="battle">
+<note>
+  Frames file for 'battle' based on survey of sentences in financial
+  subcorpus.  No verbnet entry.  
+</note>
+
+<roleset id="battle.01" name="fight (with)" vncls="36.3">
+<roles>
+  <role descr="combatant" n="0">
+		
+  <vnrole vncls="36.3" vntheta="Actor1"/></role>
+
+  <role descr="fight or other combatant, if separate" n="1">
+		
+  <vnrole vncls="36.3" vntheta="Actor2"/></role>
+
+  <role descr="spoils" n="2"/>
+</roles>
+
+<example name="basic transitive">
+<text>
+    At Kidder, a unit of General Electric Co., and other big brokerage
+    firms, stockbrokers battle their own firm's program traders a few
+    floors away. 
+</text>
+        <arg f="LOC" n="M">At Kidder, a unit of General Electric Co.,
+        and other big brokerage firms</arg> 
+        <arg n="0">stockbrokers</arg>
+        <rel>battle</rel>
+        <arg n="1">their own firm 's program traders a few floors away</arg>
+</example>
+
+<example name="all args">
+<text>
+    Its 6,500 workers, who *trace* had battled Tiger's management for
+    years over givebacks, were union members until the day of the
+    merger, when most of their unions were automatically decertified.
+</text>
+        <arg n="0">*trace* -&gt; who -&gt; Its 6,500 workers</arg>
+        <rel>battled</rel>
+        <arg n="1">Tiger 's management</arg>
+        <arg f="TMP" n="M">for years</arg>
+        <arg f="over" n="2">givebacks</arg>
+</example>
+
+
+<example name="merged combatants">
+<text>
+    That's the view of some analysts here who argue that Britain's
+    leading maker of luxury cars still may have two U.S. auto giants
+    battling for it. 
+</text>
+        <arg n="0">two U.S. auto giants</arg>
+        <rel>battling</rel>
+        <arg f="for" n="2">it</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

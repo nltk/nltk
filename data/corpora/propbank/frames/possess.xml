@@ -1,0 +1,52 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="possess">
+<note>
+  Frames file for 'possess' based on sentences in wsj.  No Verbnet
+  entry (!!!!), Framenet entry Possession.
+</note>
+
+<roleset id="possess.01" name="have, own" vncls="-">
+<roles>
+  <role descr="possessor" n="0"/>
+  <role descr="possession" n="1"/>
+</roles>
+
+<example name="straight transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    But Mr. Hahn rose swiftly through the ranks, demonstrating a raw
+    intelligence that he says he knew he possessed *trace* early on. 
+</text>
+        <arg n="0">he</arg>
+        <rel>possessed</rel>
+        <arg n="1">*trace* -&gt;  that -&gt;  a raw intelligence</arg>
+</example>
+
+<example name="prepositional variant">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    His answer is one ``possessed *trace* of a dignity in keeping with
+    his position.''
+</text>
+        <arg n="0">*trace* -&gt; one</arg>
+        <rel>possessed</rel>
+        <arg f="of" n="1">a dignity in keeping with his position</arg>
+</example>
+
+<example name="not sure if this is the same roleset">
+  <inflection aspect="ns" form="participle" person="third" tense="present" voice="passive"/>
+  <text>
+     John is possessed *trace* by evil spirits.  Mostly tequila.
+  </text>
+  <arg n="1">*trace* -&gt; John</arg>
+  <rel>possessed</rel>
+  <arg f="by" n="0">evil spirits</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

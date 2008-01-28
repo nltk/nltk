@@ -1,0 +1,62 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="scrap">
+<note>
+  Frames file for 'scrap' based on survey of sentences of financial
+  subcorpus.  No verbnet entry.
+</note>
+
+<roleset id="scrap.01" name="discard, throw away">
+<roles>
+  <role descr="scrapper" n="0"/>
+  <role descr="garbage" n="1"/>
+</roles>
+
+<example name="passivized">
+  <text>
+    ...if Mr. Cray leaves or if the product-design project he heads is
+    scrapped *trace*.
+  </text>
+  <arg n="1">*trace*=the product-design project he heads</arg>
+  <rel>scrapped</rel>
+</example>
+
+<example name="active">
+  <text>
+    The company yesterday also said it was scrapping one of its major new products, a 760-megabyte drive.
+  </text>
+  <arg n="0">it</arg>
+  <rel>scrapping</rel>
+  <arg n="1">one of its major new products, a 760-megabyte drive.</arg>
+</example>
+
+<note>
+Ah, technological progess....You might also expect to see a for-clause
+(eg &quot;scrapped the 760-Mb drive for a larger 1-Gb drive&quot;); that would
+be a purpose (-PNC) clause.
+</note>
+
+</roleset>
+
+<roleset id="scrap.02" name="fight">
+<roles>
+  <role descr="one fighter" n="0"/>
+  <role descr="the other" n="1"/>
+</roles>
+
+<example name="ethnic unrest">
+  <text>
+    And hardly surprising, many residents trying to cope with the city's other problems are constantly on edge, one ethnic group scrapping with another.
+  </text>
+  <arg n="0">one ethnic group</arg>
+  <rel>scrapping</rel>
+  <arg f="with" n="1">another</arg>
+</example>
+
+<note>
+Cool.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,57 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="release">
+<note>
+  Frames file for 'release' based on survey of initial sentences of
+  big corpus and comparison with 'let go'.  Except there is no 'let
+  go'.
+</note>
+
+<roleset id="release.01" name="let go">
+<roles>
+  <role descr="releaser" n="0"/>
+  <role descr="thing released" n="1"/>
+  <role descr="released from" n="2"/>
+</roles>
+
+<example name="active">
+  <text>
+  NEC released a statement saying &quot;We feel sorry for having caused
+  trouble to society.&quot;
+  </text>
+  <arg n="0">NEC</arg>
+  <rel>released</rel>
+  <arg n="1">a statement saying &quot;We feel sorry for having caused
+  trouble to society.&quot;</arg>
+</example>
+
+<example name="passive">
+  <text>
+  A 50-state study released *trace* in September by Friends for
+  Education, an Albuquerque NM school-research group....
+  </text>
+  <arg n="1">*trace*=A 50-state study</arg>
+  <rel>released</rel>
+  <arg f="TMP" n="m">in September</arg>
+  <arg f="by" n="0">Friends for
+  Education, an Albuquerque NM school-research group</arg>
+</example>
+
+<example name="with source">
+  <text>
+  Others just released *trace* from the majors...
+  </text>
+  <arg n="1">*trace*=Others</arg>
+  <arg f="TMP" n="m">just</arg>
+  <rel>released</rel>
+  <arg f="from" n="2">the majors</arg>
+</example>
+
+<note>
+Note that a record release is a distinctly different sense, but it
+takes pretty much the same syntax.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

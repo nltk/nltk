@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="self-destruct">
+<note>
+  Frames file for 'self-destruct' based on sentences in wsj.  No
+  Verbnet entry. 
+</note>
+
+<roleset id="self-destruct.01" name="destroy self" vncls="-">
+<roles>
+  <role descr="destroyer and destroyed" n="0"/>
+</roles>
+
+<example name="one example is enough">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Morton Downey Jr., who [*T*-1] self-destructed as a talk-show host
+    and frequently verbally abused his guests, has been signed to
+    co-host a half-hour nightly program on the Consumer News and
+    Business Channel, the cable channel partly owned by the General
+    Electric Co.'s National Broadcasting Co. 
+</text>
+        <arg n="0">[*T*-1] -&gt;  who -&gt;  Morton Downey Jr.</arg>
+        <rel>self-destructed</rel>
+        <arg f="MNR" n="M">as a talk-show host</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

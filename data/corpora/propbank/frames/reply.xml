@@ -1,0 +1,44 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="reply">
+<note>
+  Frames file for 'reply' based on sentences in financial subcorpus.
+  No Verbnet entry, Framenet entry Communication response.  Comparison
+  with say and respond.
+</note>
+
+<roleset id="reply.01" name="say in response">
+<roles>
+  <role descr="replier" n="0"/>
+  <role descr="in response to" n="1"/>
+  <role descr="answer" n="2"/>
+</roles>
+
+<example name="just answer">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    The CEO, Richard G. Olson, replied ``yes,'' but wouldn't
+    elaborate. 
+</text>
+        <arg n="0">The CEO, Richard G. Olson,</arg>
+        <rel>replied</rel>
+        <arg n="2">yes</arg>
+</example>
+
+<example name="with interlocutor">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John replied to Mary's very reasonable request with sulking and whining.
+  </text>
+  <arg n="0">John</arg>
+  <rel>replied</rel>
+  <arg f="to" n="1">Mary's very reasonable request</arg>
+  <arg f="with" n="2">sulking and whining</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="trump">
+<note>
+  Frames file for 'trump' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="trump.01" name="to outdo, get the better of" vncls="-">
+<roles>
+  <role descr="better one" n="0"/>
+  <role descr="entity trumped, lesser one" n="1"/>
+</roles>
+
+<example name="passive">
+<inflection aspect="ns" form="gerund" person="ns" tense="ns" voice="passive"/>
+<text>
+ [*-2] Asked [*-1] whether Friday 's action could help him avoid [*-3] being Trumped [*-4] by the New York real estate magnate , Mr. Crandall smiled broadly and said : `` No comment . ''
+</text>
+	<rel>Trumped</rel>
+	<arg n="1">[*-4] -&gt;  [*-3]</arg>
+	<arg f="by" n="0">the New York real estate magnate</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

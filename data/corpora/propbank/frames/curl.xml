@@ -1,0 +1,81 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="curl">
+<note>
+  Frames file for 'curl' based on sentences in wsj.  Verbnet entry 9.6.
+</note>
+
+<roleset id="curl.01" name="(cause to) be coiled" vncls="9.6">
+<roles>
+  <role descr="causer of coiling" n="0"><vnrole vncls="9.6" vntheta="Agent"/></role>
+  <role descr="coiled thing" n="1"><vnrole vncls="9.6" vntheta="Patient"/></role>
+  <role descr="secondary attribute" n="2"><vnrole vncls="9.6" vntheta="Location"/></role>
+</roles>
+
+<example name="secondary attribute?">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    ``Wage increases and overall compensation increases are beginning
+    *trace* to curl upward a little bit,'' said  Audrey Freedman, a
+    labor economist at the Conference Board, a business research
+    organization. 
+</text>
+        <arg n="1">*trace* -&gt;  Wage increases and overall compensation
+        increases</arg> 
+        <rel>curl</rel>
+        <arg f="DIR" n="M">upward</arg>
+        <arg f="EXT" n="2">a little bit</arg>
+</example>
+<note>
+That's just a weird example.
+</note>
+
+<example name="agentive">
+  <inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+  <text>
+     Mary curls her hair every morning, but John's hair curls naturally.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>curls</rel>
+  <arg n="1">her hair</arg>
+  <arg f="TMP" n="m">every morning</arg>
+</example>
+
+<example name="ergative">
+  <inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+  <text>
+     Mary curls her hair every morning, but John's hair curls naturally.
+  </text>
+  <arg n="1">John's hair</arg>
+  <rel>curls</rel>
+  <arg f="MNR" n="m">naturally</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="curl_up">
+
+<roleset id="curl.02" name="exist in curved state" vncls="-">
+<roles>
+  <role descr="curved entity" n="1"/>
+</roles>
+
+<example name="automatically generated">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ Three minutes into the massage , the man curled up , began  shaking and turned red .
+</text>
+        <arg n="1">the man</arg>
+        <rel>[ curled] [ up]</rel>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,39 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="flop">
+<note>
+  Frames file for 'flop' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="flop.01" name="to fall, drop" vncls="47.6 50">
+<roles>
+  <role descr="agent, causer" n="0">
+		
+		
+  <vnrole vncls="47.6" vntheta="Agent"/><vnrole vncls="50" vntheta="Agent"/></role>
+
+  <role descr="entity dropped" n="1">
+		
+  <vnrole vncls="47.6" vntheta="Theme"/></role>
+
+</roles>
+
+
+<example name="intransitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ A U.S.-made imitation under the title `` Almost Anything Goes '' flopped fast .
+</text>
+	<arg n="1">A U.S.-made imitation under the title `` Almost Anything Goes ''</arg>
+	<rel>flopped</rel>
+	<arg f="MNR" n="M">fast</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

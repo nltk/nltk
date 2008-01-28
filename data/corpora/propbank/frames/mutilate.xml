@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="mutilate">
+<note>
+  Frames file for 'mutilate'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="mutilate.01" name="to damage, disfigure" vncls="-">
+<roles> 
+  <role descr="agent" n="0"/>
+  <role descr="entity mutilated" n="1"/>
+</roles>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="past" voice="passive"/>
+<text>
+ The U.S. Mint would n't take the coin because it was n't mutilated , and the Federal Reserve Bank accepts only clean coins , he says [0] [*T*-1] .
+</text>
+	<arg n="1">it</arg>
+	<arg f="NEG" n="M">n't</arg>
+	<rel>mutilated</rel>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

@@ -1,0 +1,193 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="save">
+<note>
+  Frames file for 'save' based on sentences in financial subcorpus.
+  Verbnet entry get-13.5.1.  No comparison.
+</note>
+
+<roleset id="save.01" name="financial sense" vncls="13.5.1 54.5">
+<roles>
+  <role descr="entity saving money" n="0">
+		
+  <vnrole vncls="13.5.1" vntheta="Agent"/><vnrole vncls="54.5" vntheta="Agent"/></role>
+
+  <role descr="money" n="1">
+		
+  <vnrole vncls="13.5.1" vntheta="Theme"/><vnrole vncls="54.5" vntheta="Asset"/></role>
+
+  <role descr="beneficiary" n="2">
+		
+  <vnrole vncls="13.5.1" vntheta="Beneficiary"/><vnrole vncls="54.5" vntheta="Recipient"/></role>
+
+  <role descr="cause, reason" n="3"><vnrole vncls="54.5" vntheta="Cause"/></role>
+</roles>
+
+<example name="transitive">
+<text>
+    Unisys said that should help it save $500 million a year in costs,
+    again at the high end of the previously reported range of $400
+    million to $500 million. 
+</text>
+        <arg n="0">it</arg>
+        <rel>save</rel>
+        <arg n="1">$500 million a year in costs, again at the high end
+        of the previously reported range of $400 million to $500
+        million</arg> 
+</example>
+
+<example name="with reason">
+<text>
+    In following several other oil and gas partnerships that have made
+    the conversion to a corporation in the last year, NRM also noted
+    that tax advantages for partnerships have diminished under new tax
+    laws and said it would save $2 million a year in administrative
+    costs from the change. 
+</text>
+        <arg n="0">it</arg>
+        <arg f="MOD" n="M">would</arg>
+        <rel>save</rel>
+        <arg n="1">$2 million a year in administrative costs</arg>
+        <arg n="3">the change</arg>
+</example>
+
+<example name="cause as subject">
+  <inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+  <text>
+     Not drinking coffee saves John three trips to the bathroom every morning.
+  </text>
+  <arg n="3">Not drinking coffee</arg>
+  <rel>saves</rel>
+  <arg n="2">John</arg>
+  <arg n="1">three trips to the bathroom every morning</arg>
+</example>
+
+<example name="with causal agent">
+<text>
+    The combined effect of these changes is expected *trace* to save
+    the company about $4 million in interest expenses next year, or
+    six cents a share. 
+</text>
+        <arg n="3">*trace* -&gt;  The combined effect of these changes</arg>
+        <rel>save</rel>
+        <arg n="0">the company</arg>
+        <arg n="1">about $ 4 million  in interest expenses</arg>
+        <arg f="TMP" n="M">next year</arg>
+        <arg n="M">or six cents a share</arg>
+</example>
+
+</roleset>
+
+<roleset id="save.02" name="desperate peril sense" vncls="-">
+<roles>
+  <role descr="hero" n="0"/>
+  <role descr="victim" n="1"/>
+  <role descr="peril" n="2"/>
+</roles>
+
+<example name="just transitive">
+<text>
+    Some of the money will go to the Chico Mendes Foundation, but it
+    isn't earmarked for groups trying *trace* to save the rain
+    forest. 
+</text>
+        <arg n="0">*trace* -&gt;  groups</arg>
+        <rel>save</rel>
+        <arg n="1">the rain forest</arg>
+</example>
+
+<example name="with peril">
+<text>
+    The purpose of the note is to provide added capital for the
+    spun-off company in a form that *trace* will save it spending cash
+    on immediate interest payments, Mr. Roulac said. 
+</text>
+        <arg n="0">*trace* -&gt;  that -&gt;  a form</arg>
+        <arg f="MOD" n="M">will</arg>
+        <rel>save</rel>
+        <arg n="1">it</arg>
+        <arg n="2">spending cash on immediate interest payments</arg>
+</example>
+
+<note>
+Following Treebank, I read this as &quot;save it FROM spending cash...&quot;.
+</note>
+
+</roleset>
+
+<roleset id="save.03" name="collect, accrue" vncls="-">
+<roles>
+  <role descr="collector" n="0"/>
+  <role descr="thing saved, collected" n="1"/>
+  <role descr="purpose" n="2"/>
+</roles>
+
+<example name="intransitive">
+  <inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+  <text>
+    And they can further reduce the monthly amount if they start
+    saving earlier -- when mother and child come home from the
+    hospital. 
+  </text>
+  <arg n="0">they</arg>
+  <rel>saving</rel>
+  <arg f="TMP" n="m">earlier --  when mother and child come home from
+  the hospital</arg>
+</example>
+
+<example name="all args, many anaphora">
+  <inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+  <text>
+     When the motorist returned to his car he could turn the card off
+     and, if it showed time remaining, save it for later. 
+  </text>
+  <arg n="0">he</arg>
+  <arg f="MOD" n="m">could</arg>
+  <rel>save</rel>
+  <arg n="1">it</arg>
+  <arg f="for" n="2">for later</arg>
+</example>
+
+<note>
+This sense and save.02 (desperate peril) lead to the wonderful pun:
+&quot;Save the whales--collect a complete set!&quot;
+</note>
+
+</roleset>
+</predicate>
+
+<predicate lemma="save_up">
+
+<roleset id="save.04" name="collect, accrue (phrasal variant)" vncls="-">
+<roles>
+  <role descr="collector" n="0"/>
+  <role descr="thing saved, collected" n="1"/>
+  <role descr="purpose" n="2"/>
+</roles>
+
+<example name="transitive">
+  <inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+  <text>
+      ``We're not asking them [*-1] to save up 50 proof-of-purchases. 
+  </text>
+  <arg n="0">[*-1] -&gt; them</arg>
+  <rel>save up</rel>
+  <arg n="1">50 proof-of-purchases</arg>
+</example>
+
+<example name="agent and purpose">
+  <inflection aspect="progressive" form="participle" person="third" tense="present" voice="active"/>
+  <text>
+    John is saving up for a new bicycle.
+  </text>
+  <arg n="0">John</arg>
+  <rel>saving up</rel>
+  <arg f="for" n="2">a new bicycle</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,36 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="police">
+<note>
+Frames file for 'police' based on sentences in wsj and automatic
+expansion via verbnet.
+</note>
+
+<roleset id="police.01" name="monitor, watch, serve as   police for" vncls="29.8">
+<roles>
+	<role descr="police" n="0">
+		
+  <vnrole vncls="29.8" vntheta="Agent"/></role>
+
+	<role descr="thing or place being monitored" n="1">
+		
+  <vnrole vncls="29.8" vntheta="Theme"/></role>
+
+</roles>
+
+<example name="pretty simple, really">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    ``We can't police the many organizations that have sprung up in
+    the last few years using part of our name. 
+</text>
+        <arg n="0">We</arg>
+        <arg f="NEG" n="M">n't</arg>
+        <rel>police</rel>
+        <arg n="1">the many organizations that  have sprung up in the
+        last few years using part of our name</arg> 
+</example>
+
+</roleset>
+
+</predicate>
+</frameset>

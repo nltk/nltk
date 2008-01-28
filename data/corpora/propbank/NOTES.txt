@@ -1,0 +1,94 @@
+
+This file contains important release notes relating to Propbank I
+
+
+1) Coverage
+------------
+
+Dec. 2002    - 72,109  total propositions
+Feb. 2004    - 104,952 total propositions
+Propbank I   - 112,917 total propositions
+
+The annotations now span the entire WSJ section of the Penn Treebank II corpus,
+excluding only auxiliaries and the verb 'be.'
+
+
+2) Adjudication
+----------------
+
+Dec. 2002    - 11,092  adjudicated propositions
+Feb. 2004    - 104,952 adjudicated propositions
+Propbank I   - 112,917 adjudicated propositions
+
+All the annotations in this release are the result of double blind annotation
+followed by adjudication of differences.
+
+
+3) Framesets
+---------------
+
+Total verbs framed              -  3,323
+Total framesets                 -  4,659
+Verbs with multiple framesets   -  726
+Average framesets per verb      -  1.40
+Average framesets per instance* -  3.22
+
+*i.e. the average number of possible framesets per verb instance in the corpus.
+
+
+4) Frameset Tagging
+-------------------
+
+Dec. 2002    - 12,468(/57,629)  polysemous instances tagged with unique roleset.
+Feb. 2004    - 44,021(/57,629)  polysemous instances tagged with unique roleset.
+Propbank I   - 56,144(/57,629)  polysemous instances tagged with unique roleset.
+
+All the frameset tags are the result of double blind, adjudicated annotation.
+The 2.5% of instances left untagged are a result of triple disagreement between
+annotators and adjudicator.
+
+   
+
+5) Inflection Tagging
+----------------------
+
+All verbs in the corpus have now been completely inflection tagged with double-
+blind adjudicated annotations.
+
+
+6) Changes in Frames Files
+-------------------------
+
+Since the Dec. 2002 release, the frames files have undergone many
+changes.  For example, the aspectual usages (begin, start, end etc)
+have been reanalyzed, reframed, and reannotated.  In addition, the 
+numbering of the arguments has become more standardized (compare call.xml
+in the old and new releases), and framesets have been added.  For these
+reasons the new data completely supercedes the data from the previous 
+release.
+
+
+7) Changes in Annotation Guidelines
+------------------------------------
+
+a) PRD tags are no longer present on numbered arguments (their application
+   had been inconsistent)
+b) PRP tags are no longer used (instead, we used PNC for Purpose and CAU 
+   for Cause)
+c) ARGM's must always have secondary labels (e.g. TMP, LOC, MNR, etc).
+d) Sentential arguments are now tagged at the SBAR level (to include the 
+   complementizer).
+e) PP arguments are now tagged on the PP node - not the dominated NP node
+   as in previous releases.
+
+
+8) Change in Data format
+-----------------------------------
+
+There is one change in the data format:
+
+Argument addresses may now include both trace-chain operators ("*") and
+split-arg operators (",").  See the README.txt file for details.
+
+===========================================================================
+                  

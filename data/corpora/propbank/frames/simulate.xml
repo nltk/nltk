@@ -1,0 +1,45 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="simulate">
+<note>
+  Frames file for 'simulate' based on sentences in financial
+  subcorpus.  No access to verbnet.  No comparison.
+</note>
+
+<roleset id="simulate.01" name="make believe">
+<roles>
+  <role descr="agent, simulator" n="0"/>
+  <role descr="thing simulated, mimicked" n="1"/>
+  <role descr="instrumental" n="2"/>
+</roles>
+
+<example name="transitive">
+<text>
+    New York-based POP Radio provides, through a national, in-store
+    network, a customized music, information and advertising service
+    which *traec* simulates live radio. 
+</text>
+	<arg n="0"> -&gt; *trace* -&gt;  which -&gt; a customized music,
+	information and advertising service</arg> 
+	<rel>simulates</rel>
+	<arg n="1">live radio</arg>
+</example>
+
+<example name="with instrument">
+  <text>
+    John simulated a VAX ministation with a cardboard box, three or
+    four egg cartons, and a live beaver.
+  </text>
+  <arg n="0">John</arg>
+  <rel>simulated</rel>
+  <arg n="1">a VAX ministation</arg>
+  <arg f="with" n="2">a cardboard box, three or
+    four egg cartons, and a live beaver.</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="bicker">
+<note>
+  Frames file for 'bicker' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="bicker.01" name="to argue" vncls="36.1">
+<roles>
+  <role descr="agent(s) bickering" n="0"><vnrole vncls="36.1" vntheta="Actor1"/></role>
+  <role descr="topic" n="1"><vnrole vncls="36.1" vntheta="Topic"/></role>
+</roles>
+
+<example name="intransitive">
+<inflection aspect="perfect" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+ So far , instead of [*-1] teaming up , GE Capital staffers and Kidder investment bankers have bickered .
+</text>
+	<arg f="TMP" n="M">So far</arg>
+	<arg f="ADV" n="M">instead of [*-1] teaming up</arg>
+	<arg n="0">GE Capital staffers and Kidder investment bankers</arg>
+	<rel>bickered</rel>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

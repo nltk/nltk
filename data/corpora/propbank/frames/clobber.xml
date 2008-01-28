@@ -1,0 +1,55 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="clobber">
+<note>
+  Frames file for 'clobber' based on sentences in financial subcorpus.
+  Verbnet entry 18.3, other framed members include pummel.  No Framenet
+  entry.  Comparison with 'batter'.
+</note>
+
+<roleset id="clobber.01" name="hit repeatedly" vncls="18.3">
+<roles>
+  <role descr="agent, hitter - animate only!" n="0">
+		
+  <vnrole vncls="18.3" vntheta="Agent"/></role>
+
+  <role descr="thing hit" n="1">
+		
+  <vnrole vncls="18.3" vntheta="Patient"/></role>
+
+  <role descr="instrument, thing hit by or with" n="2">
+		
+  <vnrole vncls="18.3" vntheta="Instrument"/></role>
+
+</roles>
+
+<example name="passive">
+<inflection aspect="progressive" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    ``The stocks that have been the best are having big pullbacks, and
+    the ones that have been the worst are getting clobbered *trace*,''
+    Mr. Mills said. 
+</text>
+        <rel>clobbered</rel>
+        <arg n="1">*trace* -&gt;  the ones that  have been the worst</arg>
+</example>
+
+<example name="active?">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    Mary clobbered John with a frozen trout.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>clobbered</rel>
+  <arg n="1">John</arg>
+  <arg f="with" n="2">a frozen trout</arg>
+</example>
+
+<note>
+The low frequency in the active (if indeed it occurs at all) suggests
+that this is on the way to becoming an adjective.  Oh well.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

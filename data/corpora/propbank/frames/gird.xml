@@ -1,0 +1,68 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="gird">
+<note>
+  Frames file for 'gird' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="gird.01" name="encircle" vncls="-">
+<roles>
+  <role descr="entity putting something around something else" n="0"/>
+  <role descr="thing encircled" n="1"/>
+  <role descr="thing going around" n="2"/>
+</roles>
+
+<example name="canonical usage">
+  <inflection aspect="ns" form="full" person="ns" tense="ns" voice="active"/>
+  <text>
+     ``How can I face the world if I can't gird my loins with
+     comic book characters?'' asked John.
+  </text>
+  <arg n="0">I</arg>
+  <arg f="MOD" n="m">ca</arg>
+  <arg f="NEG" n="m">n't</arg>
+  <rel>gird</rel>
+  <arg n="1">my loins</arg>
+  <arg f="with" n="2">comic book characters</arg>
+</example>
+
+<note>
+Also a Calvin &amp; Hobbes reference.
+</note>
+
+</roleset>
+
+<roleset id="gird.02" name="prepare, get ready for" vncls="-">
+<roles>
+  <role descr="preparer" n="0"/>
+  <role descr="thing made ready" n="1"/>
+  <role descr="ready for" n="2"/>
+</roles>
+
+<example name="unstated arg1">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    As rescuers pressed their efforts after finding a survivor in a
+    collapsed freeway, the San Francisco Bay area girded for hundreds
+    of thousands of commuters seeking to avoid routes ravaged by last
+    Tuesday's tremor. 
+</text>
+        <arg f="TMP" n="M">As rescuers pressed their efforts after
+        finding a survivor in a collapsed freeway</arg> 
+        <arg n="0">the San Francisco Bay area</arg>
+        <rel>girded</rel>
+        <arg f="for" n="2">hundreds of thousands of commuters seeking
+        to avoid routes ravaged by last Tuesday's tremor</arg> 
+</example>
+
+<note>
+The arg1 above would properly be &quot;itself&quot;.  This sense is actually an
+extension of the other; literally 'gird' means 'to put on a belt.'
+Originally the belt carried one's weapons; thus to 'gird for battle'
+used a purpose phrase, which gradually became more prominent until the
+new sense took over.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

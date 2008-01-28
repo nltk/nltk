@@ -1,0 +1,47 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="determine">
+<note>
+Frames file for 'determine' based on annotation-on-the-fly on the financial
+subcorpus.  No verbnet entry.
+</note>
+
+<roleset id="determine.01" name="set, establish, decide">
+<roles>
+  <role descr="decider" n="0"/>
+  <role descr="thing determined" n="1"/>
+  <role descr="grounds" n="2"/>
+  <role descr="attribute of arg1" n="3"/>
+</roles>
+
+<example name="passive, no attribute">
+  <text>
+    The exact amount of the refund will be determined *trace* next year,
+    based on actual collections made until Dec 31 of this year.
+  </text>
+  <arg n="1">*trace*=The exact amount of the refund</arg>
+  <arg f="MOD" n="m">will</arg>
+  <rel>determined</rel>
+  <arg f="TMP" n="m">next year</arg>
+  <arg n="2">based on actual collections made until Dec 31 of
+ this year</arg>
+</example>
+
+<example name="with agent and attribute">
+  <text>
+  John determined the cheap diamonds to actually be plastic.
+  </text>
+  <arg n="0">John</arg>
+  <rel>determined</rel>
+  <arg n="1">the cheap diamonds</arg>
+  <arg n="3">to actually be plastic</arg>
+</example>
+
+<note>
+Skip adjectival usages like &quot;We are (very) determined&quot;.  Adding &quot;very&quot;
+is a good test for adjectivality.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

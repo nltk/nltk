@@ -1,0 +1,163 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="apply">
+<note>
+  Frames file for 'apply' based on sentences in financial subcorpus.
+  No verbnet entry.  Comparison with 'ask'
+</note>
+
+<roleset id="apply.01" name="ask for">
+<roles>
+  <role descr="applier" n="0"/>
+  <role descr="thing applied for" n="1"/>
+  <role descr="entity applied to" n="2"/>
+</roles>
+
+<example name="sentential arg1">
+  <text>
+    Cray Computer has applied *trace* to trade on Nasdaq.
+  </text>
+  <arg n="0">Cray Computer</arg>
+  <rel>applied</rel>
+  <arg n="1">*trace* to trade on Nasdaq</arg>
+</example>
+
+<example name="PP arg1">
+  <text>
+    Fireman 's Fund said  it has applied for an exemption from these
+    rate rollbacks.
+  </text>
+  <arg n="0">it</arg>
+  <rel>applied</rel>
+  <arg f="for" n="1">an exemption from these rate rollbacks.</arg>
+</example>
+
+<example name="with applied-to">
+  <text>
+    John applied to the dean's office for an extension on his
+    dissertation deadline.
+  </text>
+  <arg n="0">John</arg>
+  <rel>applied</rel>
+  <arg f="to" n="2">the dean's office</arg>
+  <arg f="for" n="1">an extension on his
+    dissertation deadline.</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="apply.02" name="associate with, work at or on">
+<roles>
+  <role descr="applier" n="0"/>
+  <role descr="thing applied, associated, worked" n="1"/>
+  <role descr="applied to" n="2"/>
+</roles>
+
+<example name="active, all args">
+  <text>
+    Mr. Bologna said the sale would allow Gen-Probe to speed up the
+    development of new technology, and to more quickly apply existing
+    technology to an array of diagnostic products.
+  </text>
+  <arg n="0">Gen-Probe</arg>
+  <arg f="TMP" n="m">more quickly</arg>
+  <rel>apply</rel>
+  <arg n="1">existing technology</arg>
+  <arg f="to" n="2">an array of diagnostic products</arg>
+</example>
+
+<example name="passivized">
+  <text>
+    The gains are to be applied *trace* to fourth quarter or
+    first-quarter results.
+  </text>
+  <arg n="1">*trace*=The gains</arg>
+  <rel>applied</rel>
+  <arg f="to" n="2">fourth quarter or first-quarter results.</arg>
+</example>
+
+<example name="ergative">
+  <text>
+    The cash dividend paid on the common stock also will apply to the
+    new shares.
+  </text>
+  <arg n="1">The cash dividend paid on the common stock</arg>
+  <arg f="DIS" n="m">also</arg>
+  <arg f="MOD" n="m">will</arg>
+  <rel>apply</rel>
+  <arg f="to" n="2">the new shares.</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="apply.03" name="painting">
+<roles>
+  <role descr="painter, agent" n="0"/>
+  <role descr="paint" n="1"/>
+  <role descr="surface" n="2"/>
+  <role descr="instrument, brush" n="3"/>
+</roles>
+
+<example name="from Kate">
+  <text>
+    The paint was applied *trace* with a hard-bristle brush.
+  </text>
+  <rel>applied</rel>
+  <arg n="1">*trace*=The paint</arg>
+  <arg f="with" n="3">a hard-bristle brush</arg>
+</example>
+
+<example name="all args">
+  <text>
+    John applied the peanut butter to the wall with a putty knife.
+  </text>
+  <arg n="0">John</arg>
+  <rel>applied</rel>
+  <arg n="1">the peanut butter</arg>
+  <arg f="to" n="2">the wall</arg>
+  <arg f="with" n="3">a putty knife</arg>
+</example>
+
+<example name="instrumental subject">
+  <text>
+    Putty knives apply peanut butter well.
+  </text>
+  <arg n="3">Putty knives</arg>
+  <rel>apply</rel>
+  <arg n="1">peanut butter</arg>
+  <arg f="MNR" n="m">well</arg>
+</example>
+</roleset>
+
+<roleset id="apply.04" vncls="-" name="specialized: apply brakes">
+<roles>
+  <role n="0"  descr="driver"/>
+  <role n="1"  descr="brakes"/>
+</roles>
+
+<example name="vroom vroom">
+  <inflection person="ns" tense="ns" aspect="ns" voice="active" form="infinitive"/>
+  <text>
+    Its government still wants [*-1] to sit in the driver's seat, set
+    the speed, step on the gas, apply the brakes and steer, with 120
+    million people in the back seat. 
+  </text>
+  <arg n="0"        >[*-1] -> Its government</arg>
+  <rel              >apply</rel>
+  <arg n="1"        >the brakes</arg>
+<note>
+This could be seen as a special case of apply.02, but the arg2
+'applied to' will probably never appear.  If it does, this sense could
+be merged back in to apply.02
+</note>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,34 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="term">
+<note>
+  Frames file for 'term' based on sentences in financial subcorpus.
+  No access to verbnet.  Comparison to 'call' and 'label'.
+</note>
+
+<roleset id="term.01" name="assign a label">
+<roles>
+  <role descr="caller" n="0"/>
+  <role descr="item being labelled" n="1"/>
+  <role descr="attribute" n="3"/>
+</roles>
+
+<example name="passivized">
+<text>
+    Reuters Holdings PLC said Michael Reupke resigned as general
+    manager to pursue unspecified interests, a move *trace* the news
+    organization termed *trace* an ``amicable separation.'' 
+</text>
+        <arg n="0">the news organization</arg>
+        <rel>termed</rel>
+        <arg n="1">*trace* -&gt; *trace* -&gt;  a move</arg>
+        <arg n="3">an `` amicable separation</arg>
+</example>
+
+<note>
+I'll bet these always occur in the passive.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

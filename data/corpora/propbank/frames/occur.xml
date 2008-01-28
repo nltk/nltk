@@ -1,0 +1,38 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="occur">
+<note>
+  Frames file for 'occur' based on sentences in financial subcorpus.
+  Verbnet class occurence-48.3.  Other framed members are happen.
+</note>
+
+<roleset id="occur.01" name="occur, take place" vncls="48.3">
+<roles>
+  <role descr="event" n="1">
+		
+  <vnrole vncls="48.3" vntheta="Theme"/></role>
+
+</roles>
+
+<example name="ergative">
+  <text>
+    Volatility surrounding his trades occurs not because of index
+    arbitrage, but because his is a large addition or subtraction to a
+    widget market with finite liquidity. 
+  </text>
+  <arg n="1">Volatility surrounding his trades</arg>
+  <rel>occurs</rel>
+  <arg f="CAU" n="m">not because of index
+    arbitrage, but because his is a large addition or subtraction to a
+    widget market with finite liquidity.</arg>
+</example>
+
+<note>
+The corresponding sense of 'happen' shows an Arg2 'benefactive', with
+prepositions 'with' and 'for'.  I didn't see any in the financial
+subcorpus, but they might occur.  Maybe.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

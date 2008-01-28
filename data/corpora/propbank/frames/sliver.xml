@@ -1,0 +1,40 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="sliver">
+<note>
+  Frames file for 'sliver' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="sliver.01" vncls="-" name="produce slivers">
+<roles>
+  <role n="0"  descr="producer"/>
+  <role n="2"  descr="source material"/>
+</roles>
+
+<example name="awkward adjectival">
+<inflection person="ns" tense="ns" aspect="ns" voice="passive" form="participle"/>
+<text>
+     A major difference is that a snapped wooden pencil will have a
+     slivered break while a plastic model will break cleanly. 
+</text>
+	<rel>slivered</rel>
+	<arg n="0">break</arg>
+</example>
+
+<example name="verbal">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+     John slivered the carrots.
+  </text>
+  <arg n="0"        >John</arg>
+  <rel              >slivered</rel>
+  <arg n="1"        >the carrots</arg>
+</example>
+
+<note>
+cf. produce, etc.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

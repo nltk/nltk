@@ -1,0 +1,29 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="butt_in">
+<note>
+  Frames file for 'butt' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="butt.01" name="to interfere in other people's affairs" vncls="-">
+<roles>
+  <role descr="nosy individual, agent" n="0"/> 
+</roles>
+
+<example name="intransitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ The next time [0] expansion plans are mentioned [*-1] at the old company [*T*-2] and somebody says , `` Aw heck , guys , nobody can do it like Japan or South Korea [*T*-2] , '' I wish [0] you would butt in and say , `` [*] Hold it , fellas , why do n't we compare prices and use our own little Third World country [*T*-3] .
+</text>
+	<arg n="0">you</arg>
+	<arg f="MOD" n="M">would</arg>
+	<rel>[ butt] [ in]</rel>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

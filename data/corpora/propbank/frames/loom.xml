@@ -1,0 +1,35 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="loom">
+<note>
+  Frames file for 'loom' based on sentences in financial subcorpus.
+  No access to verbnet.  Comparison to 'appear'.
+</note>
+
+<roleset id="loom.01" name="appear in a threatening manner" vncls="47.1-1 47.6">
+<roles>
+  <role descr="thing looming, esp 'disaster'" n="1">
+		
+		
+  <vnrole vncls="47.6" vntheta="Theme"/><vnrole vncls="47.1-1" vntheta="Theme"/></role>
+
+</roles>
+
+<example name="the one example">
+<text>
+   Leading indicators rose a slight 0.2% in September, a further
+   indication the economy is slowing but without any clear sign of
+   whether a recession looms. 
+</text>
+        <arg n="1">a recession</arg>
+        <rel>looms</rel>
+</example>
+
+<note>
+There might be a second roleset with the meaning &quot;weave wool&quot; but I
+doubt it.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,83 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="pant">
+<note>
+  Frames file for 'pant' based on sentences in brown.  Verbnet entry 40.1.1.
+</note>
+
+<roleset id="pant.01" vncls="40.1.1" name="breathe heavily">
+<roles>
+  <role n="0"  descr="panter"/>
+</roles>
+
+<example name="straight">
+  <inflection person="ns" tense="ns" aspect="progressive" voice="active" form="participle"/>
+  <text>
+    It sometimes ended in death-like trances with many lying [*-1]
+    exhausted and panting on chair and floor. 
+  </text>
+  <arg n="0"        >[*-1*] -> many</arg>
+  <rel              >panting</rel>
+</example>
+
+<example name="with cause">
+  <inflection person="ns" tense="ns" aspect="progressive" voice="active" form="participle"/>
+  <text>
+     We ran east for about half a mile before we turned back to the
+     road, [*-1] panting from the effort and soaked with sweat. 
+  </text>
+  <arg n="0"        >[*-1] -> We</arg>
+  <rel              >panting</rel>
+  <arg n="m" f="CAU">from the effort</arg>
+</example>
+
+<example name="with purpose">
+  <inflection person="ns" tense="ns" aspect="progressive" voice="active" form="participle"/>
+  <text>
+    Mickey found himself leaning against the desk, with stiff hands,
+    panting for breath. 
+  </text>
+  <arg n="0"        >Mickey</arg>
+  <rel              >panting</rel>
+  <arg n="m" f="PNC">for breath</arg>
+</example>
+
+<example name="with manner">
+  <inflection person="ns" tense="ns" aspect="progressive" voice="active" form="participle"/>
+  <text>
+    Watson pounded to the crawling man and stopped, [*-1] panting
+    heavily. 
+  </text>
+  <arg n="0"        >[*-1*] -> Watson</arg>
+  <rel              >panting</rel>
+  <arg n="m" f="MNR">heavily</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="pant.02" vncls="-" name="speak pantingly">
+<roles>
+  <role n="0"  descr="speaker"/>
+  <role n="1"  descr="utterance"/>
+  <role n="2"  descr="listener"/>
+</roles>
+
+<example name="I'll huff and I'll puff...">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+    ``No telling how good this horse is'', Mike panted [*T*-2]. 
+  </text>
+  <arg n="0"        >Mike</arg>
+  <rel              >panted</rel>
+  <arg n="1"        >[*T*-2] -> No telling how good this horse is</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

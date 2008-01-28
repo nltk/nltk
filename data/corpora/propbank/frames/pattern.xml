@@ -1,0 +1,42 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="pattern">
+<note>
+  Frames file for 'pattern' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="pattern.01" name="copy, as if following a pattern" vncls="-">
+<roles>
+  <role descr="copier, agent" n="0"/>
+  <role descr="copy" n="1"/>
+  <role descr="original" n="2"/>
+</roles>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    This week, New York City announced a 10-point policy patterned
+    *trace* on the federal bill of rights for taxpayers. 
+</text>
+        <rel>patterned</rel>
+        <arg n="1">*trace* -&gt;  a 10-point policy</arg>
+        <arg f="on" n="2">the federal bill of rights for taxpayers</arg>
+</example>
+
+<example name="active, different preposition">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John patterned his behavior after Mary's less-violent tendencies.
+  </text>
+  <arg n="0">John</arg>
+  <rel>patterned</rel>
+  <arg n="1">his behavior</arg>
+  <arg f="after" n="2">Mary's less-violent tendencies</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="misunderstand">
+<note>
+  Frames file for 'misunderstand'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="misunderstand.01" name="to understand incorrectly" vncls="-">
+<roles> 
+  <role descr="misunderstander, agent" n="0"/>
+  <role descr="misunderstanding" n="1"/> 
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+ [*-1] Misunderstanding conversations with us , Mr. Tomsho argued that Mr. Redford 's environmental views are at odds with Utah residents .
+</text>
+	<arg n="0">Mr. Tomsho -&gt;  [*-1]</arg>
+	<rel>Misunderstanding</rel>
+	<arg n="1">conversations with us</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

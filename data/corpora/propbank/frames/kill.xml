@@ -1,0 +1,67 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="kill">
+<note>
+  Frames file for 'kill' based on sentences in financial subcorpus.
+  Verbnet class murder-42.1-1, no other framed members in that class
+  although parent class includes eliminate.
+</note>
+
+<roleset id="kill.01" name="cause to die" vncls="42.1-1">
+<roles>
+  <role descr="killer" n="0">
+		
+  <vnrole vncls="42.1-1" vntheta="Agent"/></role>
+
+  <role descr="corpse" n="1">
+		
+  <vnrole vncls="42.1-1" vntheta="Patient"/></role>
+
+  <role descr="instrument" n="2">
+		
+  <vnrole vncls="42.1-1" vntheta="Instrument"/></role>
+
+</roles>
+
+<example name="transitive, no instrument">
+<text>
+    ''Kill it,'' he says.
+</text>
+        <arg n="0"/>
+        <rel>Kill</rel>
+        <arg n="1">it</arg>
+</example>
+
+
+<example name="variant instrument">
+<text>
+    ''Ford probably would try *trace* to kill the proposal by
+    enlisting support from U.S. takeover-stock speculators and holding
+    out the carrot of a larger bid later, said Stephen Reitman,
+    European auto analyst at London brokers UBS Phillips &amp; Drew. 
+</text>
+        <arg n="0">*trace* -&gt; Ford</arg>
+        <rel>kill</rel>
+        <arg n="1">the proposal</arg>
+        <arg f="by" n="2">enlisting support from U.S. takeover-stock
+        speculators and holding out the carrot of a larger bid
+        later</arg> 
+</example>
+
+<example name="normal instrument">
+  <text>
+    John killed Mary with a lead pipe, in the conservatory.
+  </text>
+  <arg n="0">John</arg>
+  <rel>killed</rel>
+  <arg n="1">Mary</arg>
+  <arg f="with" n="2">a lead pipe</arg>
+  <arg f="LOC" n="m">in the conservatory</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

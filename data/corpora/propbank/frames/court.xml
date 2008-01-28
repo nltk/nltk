@@ -1,0 +1,52 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="court">
+<note>
+Frames file for 'court' based on sentences in wsj and automatic
+expansion via verbnet.
+</note>
+
+<roleset id="court.01" name="pursue (romantically)" vncls="36.2">
+<roles>
+	<role descr="suitor" n="0">
+		
+  <vnrole vncls="36.2" vntheta="Actor1"/></role>
+
+	<role descr="courted" n="1">
+		
+  <vnrole vncls="36.2" vntheta="Actor2"/></role>
+
+</roles>
+
+<example name="romantically?">
+<inflection aspect="progressive" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+    All foreign markets are aggressively courting U.S. business.
+</text>
+        <arg n="0">All foreign markets</arg>
+        <arg f="MNR" n="M">aggressively</arg>
+        <rel>courting</rel>
+        <arg n="1">U.S. business</arg>
+</example>
+
+<example name="semi-idiomatic: courting disaster">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="passive"/>
+<text>
+    The danger that Ms. Bogart seems *trace* to be courting *trace*
+    here is one of obfuscation rather than rejuvenation, a vision so
+    at odds with the playwright's that the two points of view nullify,
+    rather than illuminate, each other. 
+</text>
+        <arg n="0">*trace* -&gt;  Ms. Bogart</arg>
+        <rel>courting</rel>
+        <arg n="1">*trace* -&gt;  that -&gt;  The danger</arg>
+        <arg f="LOC" n="M">here</arg>
+</example>
+
+<note>
+Many adjuncts of manner here.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

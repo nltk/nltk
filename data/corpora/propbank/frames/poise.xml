@@ -1,0 +1,35 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="poise">
+<note>
+  Frames file for 'poise' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+
+<roleset id="poise.01" name="to balance" vncls="-">
+<roles>
+  <role descr="causer of balancing, agent" n="0"/>
+  <role descr="entity poised" n="1"/>
+  <role descr="poised for" n="2"/>
+</roles>
+
+
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+ And with its new venture with Japan 's Mitsubishi Heavy Industries Ltd. , announced [*] last week , it is poised [*-1] to penetrate growing markets overseas .
+</text>
+	<arg n="1">it</arg>
+	<rel>poised</rel>
+	<arg n="2">[*-1] to penetrate growing markets overseas</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

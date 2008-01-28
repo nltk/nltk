@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="course">
+<note>
+  Frames file for 'course' based on sentences in wsj.  No Verbnet
+  entry, Framenet entry Fluidic motion.  That has to be a first.
+</note>
+
+<roleset id="course.01" name="move swiftly like water" vncls="-">
+<roles>
+  <role descr="liquid" n="0"/>
+  <role descr="channel" n="1"/>
+</roles>
+
+<example name="a horse is a horse...">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    When that happened, ``seismic'' tremors of fear -- much like the
+    shock waves created by an earthquake -- coursed through the market
+    and increased the market's volatility. 
+</text>
+        <arg f="TMP" n="M">When that happened</arg>
+        <arg n="0">``seismic'' tremors of fear</arg>
+        <rel>coursed</rel>
+        <arg f="through" n="1">the market</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,55 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="adopt">
+<note>
+  Frames file for 'adopt' based on sentences in financial subcorpus.
+  Verbnet class adopt-29.1, no indication of other members.
+</note>
+
+<roleset id="adopt.01" name="take on, follow" vncls="29.1">
+<roles>
+  <role descr="adopter" n="0">
+		
+  <vnrole vncls="29.1" vntheta="Agent"/></role>
+
+  <role descr="thing adopted" n="1">
+		
+  <vnrole vncls="29.1" vntheta="Theme"/></role>
+
+  <role descr="secondary attibute" n="2">
+		
+  <vnrole vncls="29.1" vntheta="Predicate"/></role>
+
+</roles>
+
+<example name="nice simple transitive">
+<text>
+    The company also adopted an anti-takeover plan .
+</text>
+        <arg n="0">The company</arg>
+        <arg f="DIS" n="M">also</arg>
+        <rel>adopted</rel>
+        <arg n="1">an anti-takeover plan</arg>
+</example>
+
+<example name="secondary attribute">
+<text>
+    The results underscore Sears's difficulties in implementing the
+    ``everyday low pricing'' strategy that it adopted *trace* in March
+    as part of a broad attempt to revive its retailing business.
+</text>
+        <arg n="0">it</arg>
+        <rel>adopted</rel>
+        <arg n="1">*trace* -&gt;  that -&gt;  the ``everyday low pricing''
+        strategy</arg> 
+        <arg f="TMP" n="M">in March</arg>
+        <arg f="as" n="2">part of a broad attempt to revive its
+        retailing business</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,47 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="wink">
+<note>
+  Frames file for 'wink' based on sentences in wsj.  Verbnet entry
+  40.3.1, Framenet entry Body movement.
+</note>
+
+<roleset id="wink.01" name="close one eye" vncls="40.3.1">
+<roles>
+  <role descr="winker" n="0"><vnrole vncls="40.3.1" vntheta="Agent"/></role>
+  <role descr="eye" n="1"><vnrole vncls="40.3.1" vntheta="Patient"/></role>
+  <role descr="winked at" n="2"><vnrole vncls="40.3.1" vntheta="Recipient"/></role>
+</roles>
+
+<example name="no eye">
+<inflection aspect="ns" form="gerund" person="ns" tense="ns" voice="active"/>
+<text>
+    ``Frankly, as I was walking back to get in my car, I heard many,
+    many people ... opening champagne bottles and celebrating
+    individual victories that some of us had accomplished in [*-3]
+    getting our little deal in the tax bill and winking at this person
+    for slipping this in,'' he said. 
+</text>
+        <arg n="0">[*-3] -&gt;  some of us</arg>
+        <rel>winking</rel>
+        <arg f="at" n="2">this person</arg>
+        <arg f="CAU" n="M">for [*-4] slipping this in</arg>
+</example>
+
+<example name="with eye">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John slowly winked his left eye.
+  </text>
+  <arg n="0">John</arg>
+  <arg f="MNR" n="m">slowly</arg>
+  <rel>winked</rel>
+  <arg n="1">his left eye</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

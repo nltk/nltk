@@ -1,0 +1,36 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="accomplish">
+<note>
+  Frames file for 'accomplish' based on sentences in financial
+  subcorpus.  No Verbnet entry.  Comparison with 'manage'.
+</note>
+
+<roleset id="accomplish.01" name="do, pull off">
+<roles>
+  <role descr="doer" n="0"/>
+  <role descr="deed" n="1"/>
+</roles>
+
+<example name="bad example">
+<text>
+    Our mission is to help our clients grow, and to use every tool of
+    marketing communications *trace* to accomplish that.'' 
+</text>
+        <arg n="0">*trace*</arg>
+        <rel>accomplish</rel>
+        <arg n="1">that</arg>
+</example>
+
+<note>
+This is a bad example because it's unclear what the trace points to.
+I take the trace as pointing to &quot;we&quot; as in &quot;We accomplish our mission
+using every tool of marketing communications.&quot;
+</note>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

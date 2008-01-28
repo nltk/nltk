@@ -1,0 +1,53 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="replenish">
+<note>
+Frames file for 'replenish' based on sentences in wsj and automatic
+expansion via verbnet.
+</note>
+
+<roleset id="replenish.01" name="refill" vncls="9.8">
+<roles>
+  <role descr="agent of filling" n="0">
+	<vnrole vncls="9.8" vntheta="Agent"/></role>
+  <role descr="container" n="1">
+	<vnrole vncls="9.8" vntheta="Destination"/></role>
+  <role descr="substance" n="2">
+	<vnrole vncls="9.8" vntheta="Theme"/></role>
+</roles>
+
+<example name="only container">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    The government moved aggressively to open the spigots of federal
+    aid for victims of the California earthquake, but its reservoir of
+    emergency funds must be replenished *trace* soon if the aid is to
+    continue. 
+</text>
+        <arg f="MOD" n="M">must</arg>
+        <rel>replenished</rel>
+        <arg n="1">*trace* -&gt;  its reservoir of emergency funds</arg>
+        <arg f="TMP" n="M">soon</arg>
+        <arg f="ADV" n="M">if the aid is  to continue</arg>
+</example>
+
+<example name="container and substance">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    The disaster fund is replenished *trace* by loan repayments. 
+</text>
+        <rel>replenished</rel>
+        <arg n="1">*trace* -&gt;  The disaster fund</arg>
+        <arg f="by" n="2">loan repayments</arg>
+</example>
+
+<note>
+Be careful with the agent/substance distinction--reserve Arg0 only for
+actual (human) agents causing some (metaphorical) container to be
+filled with some (metaphorical) substance.
+</note>
+
+</roleset>
+
+</predicate>
+</frameset>

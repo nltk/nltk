@@ -1,0 +1,65 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="plead">
+<note>
+  Frames file for 'plead' based on sentences in financial subcorpus.
+  No Verbnet entry.  Comparison to 'beg'.
+</note>
+
+<roleset id="plead.01" name="beg">
+<roles>
+  <role descr="begger, appealer" n="0"/>
+  <role descr="appealed to, begged from" n="1"/>
+  <role descr="begged/appealed for" n="2"/>
+</roles>
+
+<example name="poor John">
+  <text>
+    John pleaded to Mary for another serving of ice cream.
+  </text>
+  <arg n="0">John</arg>
+  <rel>pleaded</rel>
+  <arg f="to" n="1">Mary</arg>
+  <arg f="from" n="2">another serving of ice cream</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="plead.02" name="state guilt or innocence">
+<roles>
+  <role descr="the accused" n="0"/>
+  <role descr="guilty or innocent" n="1"/>
+  <role descr="alleged crime" n="2"/>
+</roles>
+
+<example name="typical example">
+<text>
+    Southern Co.'s Gulf Power Co. subsidiary pleaded guilty to two
+    felony charges of conspiracy to make illegal political
+    contributions and tax evasion, and paid $500,000 in fines. 
+</text>
+        <arg n="0">Southern Co. 's Gulf Power Co. subsidiary</arg>
+        <rel>pleaded</rel>
+        <arg n="1">guilty</arg>
+        <arg f="to" n="2">two felony charges of conspiracy to make
+        illegal political contributions and tax evasion</arg> 
+</example>
+
+<note>
+Treebank offers two different syntaxes (syntactes) for this
+construction.  Under one, the plea and the crime are two separate
+nodes:
+(ADJP (ADJ guilty))
+(PP (P to)(NP whatever))
+Under the other, they are merged:
+(ADJP (ADJ guilty)
+      (PP (P to) (NP whatever)))
+You'll have to pick apart the latter syntax to get to the arguments.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

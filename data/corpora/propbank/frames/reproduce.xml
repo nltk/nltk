@@ -1,0 +1,45 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="reproduce">
+<note>
+  Frames file for 'reproduce' based on sentences in wsj.  Verbnet
+  entry 45.4, Framenet entry Duplication.
+</note>
+
+<roleset id="reproduce.01" name="copy" vncls="45.4">
+<roles>
+  <role descr="copier, agent" n="0">
+        <vnrole vncls="45.4" vntheta="Agent"/></role>
+  <role descr="original" n="1">
+        <vnrole vncls="45.4" vntheta="Patient"/></role>
+</roles>
+
+<example name="active">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Twenty years later, two California academics, Stanley Cohen and
+    Herbert Boyer, made ``recombinant'' DNA, transplanting a toad's
+    gene into bacteria, which then *trace* reproduced toad genes. 
+</text>
+        <arg f="TMP" n="M">then</arg>
+        <arg n="0">*trace* -&gt;  which -&gt;  bacteria</arg>
+        <rel>reproduced</rel>
+        <arg n="1">toad genes</arg>
+</example>
+
+<example name="passive, poetry">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    The effete Tyrannosaurus Rex / Had strict Cretaceous views on sex,
+    / And that is why you only see him / Reproduced  in the museum.
+</text>
+        <rel>Reproduced</rel>
+        <arg n="1">*trace* -&gt;  him</arg>
+        <arg f="LOC" n="M">in the museum</arg>
+<note>
+That just doesn't scan at all.
+</note>
+</example>
+</roleset>
+</predicate>
+</frameset>

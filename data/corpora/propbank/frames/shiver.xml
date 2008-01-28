@@ -1,0 +1,34 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="shiver">
+<note>
+  Frames file for 'shiver' based on sentences in wsj.  Verbnet entry
+  40.6, Framenet entries Cause to fragment and Body movmenent.
+</note>
+
+<roleset id="shiver.01" name="shake from cold or fear" vncls="40.6">
+<roles>
+  <role descr="shiverer" n="1"><vnrole vncls="40.6" vntheta="Experiencer"/></role>
+</roles>
+
+<example name="the one example">
+<inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    When I realized it was over, I went and stood out in front of the
+    house, waiting and praying for Merrill to come home, shivering as
+    if it were 20 below zero until he got there. 
+</text>
+        <arg n="0">[*-2] -&gt;  I</arg>
+        <rel>shivering</rel>
+        <arg f="MNR" n="M">as if it were 20 below zero</arg>
+        <arg f="TMP" n="M">until he got there</arg>
+</example>
+
+<note>
+I'm going to leave aside the 'cause to fragment' sense, since it's
+quite marginal in modern English.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

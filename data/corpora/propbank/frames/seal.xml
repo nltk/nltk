@@ -1,0 +1,56 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="seal">
+<note>
+  Frames file for 'seal' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="seal.01" name="to close with or as if with a seal" vncls="22.4">
+<roles>
+  <role descr="agent, causer" n="0">
+	  <vnrole vncls="22.4" vntheta="Agent"/></role>
+  <role descr="entity sealed" n="1">
+	  <vnrole vncls="22.4" vntheta="Patient"/></role>
+</roles>
+
+<example name="with a resultative phrase">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+ One had best [*-1] not dance on top of a coffin until the lid is sealed [*-2] tightly shut . ''
+</text>
+	<rel>sealed</rel>
+	<arg n="1">[*-2] -&gt;  the lid</arg>
+	<arg f="PRD" n="M">tightly shut</arg>
+</example>
+
+
+
+<example name="transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ In his haste [*] to seal the deal with Tiger Chairman Saul Steinberg last August , Mr. Smith ignored a promise [*ICH*-4] that he had made [*T*-2] to his own pilots three years ago : that any fliers acquired [*] in future mergers would be `` end-tailed [*-3] '' -- put [*-3] at the bottom of the pilot seniority list that [*T*-1] determines work schedules , pay and career options .
+</text>
+	<rel>seal</rel>
+	<arg n="1">[ the deal] [ with Tiger Chairman Saul Steinberg]</arg>
+	<arg f="TMP" n="M">last August</arg>
+	<arg n="0">Mr. Smith -&gt;  [*]</arg>
+</example>
+
+
+<example name="inanimate causer">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ Demographics converged with `` mainstream '' and demonizing [*-1] to seal Robert Bork 's fate .
+</text>
+	<arg n="0">[*-1] -&gt;  Demographics</arg>
+	<rel>seal</rel>
+	<arg n="1">Robert Bork 's fate</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

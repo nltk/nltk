@@ -1,0 +1,47 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="staple">
+<note>
+  Frames file for 'staple' based on sentences in wsj.  Verbnet entry
+  22.4, Framenet entry Attaching.
+</note>
+
+<roleset id="staple.01" name="attach with staples" vncls="22.4">
+<roles>
+  <role descr="cause of attachment, agent" n="0">
+     <vnrole vncls="22.4" vntheta="Agent"/></role>
+  <role descr="entity stapled" n="1">
+     <vnrole vncls="22.4" vntheta="Patient1"/></role>
+  <role descr="entity stapled to" n="2">
+     <vnrole vncls="22.4" vntheta="Patient2"/></role>
+</roles>
+
+<example name="all args">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+    She keeps track of the rest of her hats by [*-1] stapling Polaroid
+    snapshots to the outside of each hatbox. 
+</text>
+        <arg n="0">[*-1] -&gt;  She</arg>
+        <rel>stapling</rel>
+        <arg n="1">Polaroid snapshots</arg>
+        <arg f="to" n="2">the outside of each hatbox</arg>
+</example>
+
+<example name="merged args">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John stapled his ears together.
+  </text>
+  <arg n="0">John</arg>
+  <rel>stapled</rel>
+  <arg n="1">his ears</arg>
+  <arg f="PRD" n="m">together</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

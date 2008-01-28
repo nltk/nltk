@@ -1,0 +1,67 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="quiet">
+<note>
+  Frames file for 'quiet' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="quiet.01" name="to cause to become quiet" vncls="45.4">
+<roles>
+  <role descr="cause,agent" n="0">
+	<vnrole vncls="45.4" vntheta="Agent"/></role>
+  <role descr="entity becoming quiet" n="1">
+	<vnrole vncls="45.4" vntheta="Patient"/></role>
+</roles>
+
+
+<example name="all arguments">
+<inflection aspect="perfect" form="participle" person="third" tense="present" voice="active"/>
+<text>
+ In a sign [0] the stock slump has n't quieted Europe 's takeover fever , Cie . Financiere de Paribas said [0] it intends [*-1] to bid for one of France 's other large financial and industrial holding companies , Cie. de Navigation Mixte .
+</text>
+	<arg n="0">the stock slump</arg>
+	<arg f="NEG" n="M">n't</arg>
+	<rel>quieted</rel>
+	<arg n="1">Europe 's takeover fever</arg>
+</example>
+
+
+<example name="intransitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ Activity quieted in the New York City bond market , where heavy investor selling last week drove yields on the issuer 's full faith and credit backed bonds up as much as 0.50 percentage point [*T*-1] .
+</text>
+	<arg n="1">Activity</arg>
+	<rel>quieted</rel>
+	<arg f="LOC" n="M">in the New York City bond market , where heavy investor selling last week drove yields on the issuer 's full faith and credit backed bonds up as much as 0.50 percentage point [*T*-1]</arg>
+</example>
+</roleset>
+</predicate>
+
+<predicate lemma="quiet_down">
+
+<roleset id="quiet.02" name="to cause to become quiet" vncls="-">
+<roles>
+  <role descr="cause, agent" n="0"/>
+  <role descr="entity becoming quiet" n="1"/>
+</roles>
+
+
+<example name="intransitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ Power is back on , and UCSF } medical center { seems [*-1] to have quieted down for the night ( they were doing triage out in the parking lot from the sound and lights of it ) .
+</text>
+	<arg n="1">[*-1] -&gt;  UCSF } medical center {</arg>
+	<rel>[ quieted] [ down]</rel>
+	<arg f="TMP" n="M">for the night</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

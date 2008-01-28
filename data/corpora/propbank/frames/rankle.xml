@@ -1,0 +1,36 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="rankle">
+<note>
+  Frames file for 'rankle' based on sentences in wsj.  Verbnet entry
+  31.1, Framenet entry Experiencer obj.
+</note>
+
+<roleset id="rankle.01" name="annoy" vncls="31.1">
+<roles>
+  <role descr="rankler" n="0"><vnrole vncls="31.1" vntheta="Cause"/></role>
+  <role descr="rankled" n="1"><vnrole vncls="31.1" vntheta="Experiencer"/></role>
+</roles>
+
+<example name="passive, nasty trace chain">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    He was a ``socialist warrior'' who [*T*-1] felt [*-2] rankled
+    [*-3] by West Germany's enormous postwar prosperity and the Bonn
+    government's steadfast refusal to recognize the legitimacy of his
+    state. 
+</text>
+        <rel>rankled</rel>
+        <arg n="1">[*-3] -&gt;  [*-2] -&gt;  [*T*-1] -&gt;  who -&gt;  a
+        ``socialist warrior''</arg> 
+        <arg f="by" n="M">West Germany's enormous postwar prosperity
+        and the Bonn government's steadfast refusal to recognize the
+        legitimacy of his state</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

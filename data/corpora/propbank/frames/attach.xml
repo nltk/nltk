@@ -1,0 +1,64 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="attach">
+<note>
+  Frames file for 'attach' based on survey of sentences in financial
+  subcorpus.  Verbnet class shake-22.3-2, seven senses.  Comparison to
+  'match' and 'tie' to avoid the nasty figure/ground distinction.
+</note>
+
+<roleset id="attach.01" name="stick, cause to stick" vncls="22.3-2">
+<roles>
+  <role descr="agent, entity causing two objects to be attached" n="0">
+		
+		
+  <vnrole vncls="22.3-2" vntheta="Agent"/></role>
+
+  <role descr="patient, thing(s) being tied" n="1">
+		
+		
+  <vnrole vncls="22.3-2" vntheta="Patient1"/></role>
+
+  <role descr="instrument" n="2">
+		
+		
+  <vnrole vncls="22.3-2" vntheta="Patient2"/></role>
+
+</roles>
+
+<example name="double Arg1">
+  <text>
+    The equity kicker is not attached to the offering, ...
+  </text>
+  <arg n="1">The equity kicker</arg>
+  <arg f="NEG" n="m">not</arg>
+  <rel>attached</rel>
+  <arg f="to" n="1">the offering</arg>
+</example>
+
+<example name="with agent">
+  <text>
+  John attached the apology note to his dissertation.
+  </text>
+  <arg n="0">John</arg>
+  <rel>attached</rel>
+  <arg n="1">the apology note</arg>
+  <arg f="to" n="1">his dissertation</arg>
+</example>
+
+<example name="with instrument, single arg1">
+  <text>
+  John and Mary are attached by bonds of love.
+  </text>
+  <arg n="1">John and Mary</arg>
+  <rel>attached</rel>
+  <arg f="by" n="2">bonds of love</arg>
+</example>
+
+<note>
+Gag.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

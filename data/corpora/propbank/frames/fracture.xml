@@ -1,0 +1,42 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="fracture">
+<note>
+  Frames file for 'fracture' based on sentences in wsj.  Verbnet
+  entries 45.1 40.8.3; Framenet entries Cause harm and Cause to fragment.
+</note>
+
+<roleset id="fracture.01" name="break" vncls="45.1 40.8.3">
+<roles>
+  <role descr="breaker" n="0"><vnrole vncls="40.8.3" vntheta="Experiencer"/><vnrole vncls="45.1" vntheta="Agent"/></role>
+  <role descr="broken" n="1"><vnrole vncls="40.8.3" vntheta="Patient"/><vnrole vncls="45.1" vntheta="Patient"/></role>
+</roles>
+
+<example name="active">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Mr. Maynard recently fell from a horse and fractured his arm.
+</text>
+        <arg n="0">Mr. Maynard</arg>
+        <arg f="TMP" n="M">recently</arg>
+        <rel>fractured</rel>
+        <arg n="1">his arm</arg>
+</example>
+
+
+<example name="adjectival">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    But if the opposition remains fractured, the Congress (I) could
+    win a small majority, or lead a coalition government.v 
+</text>
+        <arg n="1">the opposition</arg>
+        <rel>fractured</rel>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

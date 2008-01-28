@@ -1,0 +1,63 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="manipulate">
+<note>
+  Frames file for &quot;manipulate&quot; based on sentences in financial
+  subcorpus.  No access to verbnet.  No comparison.
+</note>
+
+<roleset id="manipulate.01" name="handle">
+<roles>
+  <role descr="handler" n="0"/>
+  <role descr="thing handled" n="1"/>
+</roles>
+
+<example name="a little artificial?">
+  <text>
+    John manipulated the deck of cards behind his back.
+  </text>
+  <arg n="0">John</arg>
+  <rel>manipulated</rel>
+  <arg n="1">the deck of cards</arg>
+  <arg f="LOC" n="m">behind his back</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="manipulate.02" name="force">
+<roles>
+  <role descr="causal agent" n="0"/>
+  <role descr="impelled agent" n="1"/>
+  <role descr="impelled action" n="2"/>
+</roles>
+
+<example name="passivized">
+<text>
+    ``People are looking for an ability *trace* to try and read the
+    market, rather than be manipulated *trace*,'' said Dudley
+    A. Eppel, manager of equity trading at Donaldson, Lufkin &amp;
+    Jenrette. 
+</text>
+	<rel>manipulated</rel>
+	<arg n="1">*trace* -&gt; *trace* -&gt;  People</arg>
+</example>
+
+<example name="all args">
+  <text>
+    John manipulated Mary into eating a live goldfish.
+  </text>
+  <arg n="0">John</arg>
+  <rel>manipulated</rel>
+  <arg n="1">Mary</arg>
+  <arg f="into" n="2">eating a live goldfish</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

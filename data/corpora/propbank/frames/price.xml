@@ -1,0 +1,74 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<note>
+Frames file for 'price' based on survey of sentences from big corpus
+and comparison with 'cost'
+</note>
+
+<predicate lemma="price">
+<roleset id="price.01" name="cf cost" vncls="54.4">
+<roles>
+  <role descr="seller" n="0">
+		
+  <vnrole vncls="54.4" vntheta="Agent"/></role>
+
+  <role descr="commodity" n="1">
+		
+  <vnrole vncls="54.4" vntheta="Theme"/></role>
+
+  <role descr="price" n="2">
+		
+  <vnrole vncls="54.4" vntheta="Attribute"/></role>
+
+</roles>
+
+<example name="straight">
+  <text>
+    Continental Cablevision priced $350 million of junk bonds at par.
+  </text>
+  <arg n="0">Continental Cablevision</arg>
+  <rel>priced</rel>
+  <arg n="1">$350 million of junk bonds</arg>
+  <arg f="at" n="2">at par</arg>
+</example> 
+
+<example name="price as range">
+  <text>
+    ...supercomputers priced between $15 million and $30 million
+  </text>
+  <arg n="1">supercomputers</arg>
+  <rel>priced</rel>
+  <arg f="between" n="2">between $15 million and $30 million</arg>
+</example>
+
+<example name="passive">
+  <text>
+    The 30-year issue was priced at a spread of 57 basis points
+  </text>
+  <arg n="1">The 30-year issue</arg>
+  <rel>was priced</rel>
+  <arg f="at" n="2">at a spread of 57 basis points</arg>
+</example>
+
+<example name="with purpose clause">
+  <text>
+    Serial bonds are priced   at par to yield 6.40% in 1991
+  </text>
+  <arg n="1">Serial bonds</arg>
+  <rel>are priced</rel>
+  <arg f="at" n="2">at par</arg>
+  <arg n="M" f="PNC">to yield 6.40% in 1991</arg>
+</example>
+
+<example name="passive with purpose">
+  <text>
+    These cars are priced to sell!
+  </text>
+  <arg n="1">These cars</arg>
+  <rel>are priced</rel>
+  <arg f="PNC" n="M">to sell</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

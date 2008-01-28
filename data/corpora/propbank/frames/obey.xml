@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="obey">
+<note>
+  Frames file for 'obey' based on sentences in wsj.  No Verbnet
+  entry, Framenet class Compliance.
+</note>
+
+<roleset id="obey.01" name="obey, follow the rules" vncls="-">
+<roles>
+  <role descr="obeyer" n="0"/>
+  <role descr="rule or rule-giver" n="1"/>
+</roles>
+
+<example name="ma'am, yes ma'am!">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    If you're a technician, you obey the signals.
+</text>
+        <arg f="ADV" n="M">If you 're a technician</arg>
+        <arg n="0">you</arg>
+        <rel>obey</rel>
+        <arg n="1">the signals</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

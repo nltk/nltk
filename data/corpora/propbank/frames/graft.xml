@@ -1,0 +1,47 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="graft">
+<note>
+  Frames file for 'graft' based on sentences in wsj.  Verbnet entry 22.3
+</note>
+
+<roleset id="graft.01" name="attach" vncls="22.3-2">
+<roles>
+  <role descr="attacher, agent" n="0">
+        <vnrole vncls="22.3-2" vntheta="Agent"/></role>
+  <role descr="thing attached" n="1">
+        <vnrole vncls="22.3-2" vntheta="Patient1"/></role>
+  <role descr="attached to" n="2"/>
+</roles>
+
+<example name="inverted args">
+<inflection aspect="perfect" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+    ``I've ripped out a lot of Delicious'' and grafted the trees with
+    many different shoots, says Steve Wood, a West Lebanon, N.H.,
+    grower, tramping through his 100-acre Poverty Lane Orchard on a
+    crisp autumn day recently. 
+</text>
+        <arg n="0">I</arg>
+        <rel>grafted</rel>
+        <arg n="2">the trees</arg>
+        <arg f="with" n="1">many different shoots</arg>
+</example>
+
+<example name="more obvious order">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John grafted skin from his back onto Mary's nose.
+  </text>
+  <arg n="0">John</arg>
+  <rel>grafted</rel>
+  <arg n="1">skin from his back</arg>
+  <arg f="onto" n="2">Mary's nose</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,42 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="mollify">
+<note>
+  Frames file for 'mollify' based on sentences in financial subcorpus.
+  Verbnet entry 31.1, other framed members include comfort, convince,
+  depress, encourage, entice, exhaust, interest, reassure, repel,
+  scare, shock, spook, threaten, and worry, probably among others.
+  Framenet entry Experiencer_obj.  Comparison with comfort.
+</note>
+
+<roleset id="mollify.01" name="cause to be happy">
+<roles>
+  <role descr="causer" n="0"/>
+  <role descr="patient, made happy" n="1"/>
+  <role descr="instrument or manner" n="2"/>
+</roles>
+
+<example name="just transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    *trace* To mollify shareholders concerned about the long-term
+     value of the company under the BellSouth-LIN agreement, BellSouth
+     also agreed to pay as much as $10 a share, or $540 million, if,
+     after five years, the trading value of the new cellular company
+     is n't as high as the value that shareholders would have realized
+     from the McCaw offer. 
+</text>
+        <arg n="0">BellSouth -&gt; *trace*</arg>
+        <rel>mollify</rel>
+        <arg n="1">shareholders concerned  about the long-term value
+        of the company under the BellSouth-LIN agreement</arg> 
+</example>
+
+<note>
+I've always thought 'mollify' should also mean &quot;make someone be
+Molly&quot;, but that never seems to occur.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

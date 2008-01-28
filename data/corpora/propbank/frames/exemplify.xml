@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="exemplify">
+<note>
+  Frames file for 'exemplify' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="exemplify.01" name="serve as an example of" vncls="-">
+<roles>
+  <role descr="example" n="0"/>
+  <role descr="of what" n="1"/>
+</roles>
+
+<example name="making an example of">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    The decision to cancel the loan exemplifies the tough attitude
+    bankers have taken toward China since June 4. 
+</text>
+        <arg n="0">The decision to cancel the loan</arg>
+        <rel>exemplifies</rel>
+        <arg n="1">the tough attitude bankers have taken toward China
+        since June 4</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

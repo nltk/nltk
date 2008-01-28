@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="soil">
+<note>
+  Frames file for 'soil' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="soil.01" name="to make dirty" vncls="9.8">
+<roles>
+  <role descr="causer" n="0"><vnrole vncls="9.8" vntheta="Agent"/></role>
+  <role descr="entity soiled" n="1"><vnrole vncls="9.8" vntheta="Destination"/></role>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ The March 24 oil spill soiled hundreds of miles of shoreline along Alaska 's southern coast and wreaked havoc with wildlife and the fishing industry .
+</text>
+	<arg n="0">The March 24 oil spill</arg>
+	<rel>soiled</rel>
+	<arg n="1">hundreds of miles of shoreline along Alaska 's southern coast</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

@@ -1,0 +1,46 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="moan">
+<note>
+  Frames file for 'moan' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="moan.01" name="to utter a moan or complain" vncls="37.3 40.2">
+<roles>
+  <role descr="moaner, agent" n="0">
+        <vnrole vncls="40.2" vntheta="Agent"/>
+        <vnrole vncls="37.3" vntheta="Agent"/></role>
+  <role descr="a complaint" n="1">
+        <vnrole vncls="40.2" vntheta="Theme"/>
+        <vnrole vncls="37.3" vntheta="Topic"/></role>
+</roles>
+
+<example name="prepositional Arg1">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ The next time [0] you hear a Member of Congress moan about the deficit [*T*-2] , [*] consider what Congress did [*T*-1] Friday .
+</text>
+	<arg n="0">a Member of Congress</arg>
+	<rel>moan</rel>
+	<arg f="about" n="1">the deficit</arg>
+</example>
+
+
+<example name="non-prepositional Arg1">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ `` I 'm too old [0] [*T*-1] to waste a weekend , but that 's what I did [*T*-2] , '' the 48-year-old Mr. Juliano moans [*T*-3] .
+</text>
+	<arg n="0">the 48-year-old Mr. Juliano</arg>
+	<rel>moans</rel>
+	<arg n="1">[*T*-3] -&gt;  I 'm too old [0] [*T*-1] to waste a weekend , but that 's what I did [*T*-2]</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

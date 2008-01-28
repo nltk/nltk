@@ -1,0 +1,51 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="evade">
+<note>
+  Frames file for 'evade' based on sentences in financial subcorpus.
+  Verbnet entry 52, no other framed members apparently.  Comparison
+  with 'avoid'.
+</note>
+
+<roleset id="evade.01" name="stay away from" vncls="52">
+<roles>
+  <role descr="avoider" n="0">
+		
+  <vnrole vncls="52" vntheta="Agent"/></role>
+
+  <role descr="thing avoided" n="1">
+		
+  <vnrole vncls="52" vntheta="Theme"/></role>
+
+</roles>
+
+<example name="transitive">
+<text>
+    The company is the subject of a federal grand jury investigation
+    into whether its officials and its utility subsidiaries conspired
+    *trace* to cover up their accounting for spare parts *trace* to
+    evade federal income taxes. 
+</text>
+        <arg n="0">*trace* -&gt; *trace* -&gt;  its officials and its
+        utility subsidiaries</arg> 
+        <rel>evade</rel>
+        <arg n="1">federal income taxes</arg>
+</example>
+
+<example name="oddly intransitive">
+<text>
+    He evades and ducks .
+</text>
+        <arg n="0">He</arg>
+        <rel>evades</rel>
+</example>
+
+<note>
+Etymologically, 'evade' and 'avoid' are not related at all.  'Avoid'
+comes from &quot;to make empty&quot; while 'evade' is 'to go out'.  Interesting
+convergence, though.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

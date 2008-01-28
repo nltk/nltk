@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="scrimp">
+<note>
+  Frames file for 'scrimp' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="scrimp.01" name="to economize severly, cut" vncls="-">
+<roles>
+  <role descr="scrimper, agent" n="0"/>
+  <role descr="thing being cut" n="1"/>
+</roles>
+
+<example name="both arguments">
+<inflection aspect="ns" form="gerund" person="ns" tense="ns" voice="active"/>
+<text>
+ Without P&amp;G 's backing , Noxell might not have been able [*-1] to spend the estimated $ 5 million to $ 7 million [*U*] needed [*] [*] to accomplish that without [*-2] scrimping on its existing brands .
+</text>
+	<arg n="0">[*-2] -&gt;  [*]</arg>
+	<rel>scrimping</rel>
+	<arg f="on" n="1">its existing brands</arg>
+</example>
+
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

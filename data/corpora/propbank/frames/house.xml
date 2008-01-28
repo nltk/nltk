@@ -1,0 +1,51 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="house">
+<note>
+  Frames file for 'house' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+
+<roleset id="house.01" name="to contain or provide housing for" vncls="9.10 54.3">
+<roles>
+  <role descr="provider of housing" n="0">
+	<vnrole vncls="9.10" vntheta="Agent"/>
+        <vnrole vncls="54.3" vntheta="Agent"/></role>
+  <role descr="entity housed" n="1">
+	<vnrole vncls="9.10" vntheta="Theme"/>
+        <vnrole vncls="54.3" vntheta="Attribute"/></role>
+  <role descr="location" n="2">
+	<vnrole vncls="9.10" vntheta="Location"/>
+        <vnrole vncls="54.3" vntheta="Location"/></role>
+</roles>
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+ The only difference is , [0] in those cities the poor are housed [*-1] in high-rise-project apartments each consisting of one room , with rusty pipes called [*] plumbing , rodents and cockroaches everywhere and nonworking elevators -- and with the building patrolled [*] by gangs and drug dealers .
+</text>
+	<arg f="LOC" n="M">in those cities</arg>
+	<rel>housed</rel>
+	<arg n="1">[*-1] -&gt;  the poor</arg>
+	<arg f="in" n="2">high-rise-project apartments each consisting of one room , with rusty pipes called [*] plumbing , rodents and cockroaches everywhere and nonworking elevators -- and with the building patrolled [*] by gangs and drug dealers</arg>
+</example>
+
+
+<example name="Arg2 as a subject">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ Lloyd 's vast trading hall houses a warren of well-polished desks .
+</text>
+	<arg n="2">Lloyd 's vast trading hall</arg>
+	<rel>houses</rel>
+	<arg n="1">a warren of well-polished desks</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

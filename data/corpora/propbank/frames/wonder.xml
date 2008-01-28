@@ -1,0 +1,78 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="wonder">
+<note>
+  Frames file for 'wonder' based on sentences in financial subcorpus.
+  Verbnet entry 31.3, other framed members include fear react and
+  wallow.  OK, that makes sense.  Comparison with those and with
+  'think'. 
+</note>
+
+<roleset id="wonder.01" name="think about, ponder" vncls="31.3">
+<roles>
+  <role descr="thinker" n="0"><vnrole vncls="31.3" vntheta="Experiencer"/></role>
+  <role descr="thought" n="1"><vnrole vncls="31.3" vntheta="Cause"/></role>
+</roles>
+
+<example name="very typical">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+    At the same time, the sheer size of the loss, coupled with a
+    slowing of orders, made some securities analysts wonder just how
+    strong that turnaround will be at the computer maker and
+    defense-electronics concern. 
+</text>
+        <arg n="0">some securities analysts</arg>
+        <rel>wonder</rel>
+        <arg n="1">just how strong that turnaround will be  at the
+        computer maker and defense-electronics concern</arg> 
+</example>
+
+<note>
+Unlike verbs of saying, and other verbs of thinking, &quot;wonder&quot; MUST
+take an SBAR introduced by a WH-word or -phrase.  Therefore, arg1 will
+take the entire SBAR, not just the S.
+</note>
+
+<example name="with a PP instead">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+    Not everyone is reacting so calmly, however, and many wonder about
+    the long-term implications of what is widely viewed as the cause
+    of Friday's slide, reluctance by banks to provide financing for a
+    buy-out of UAL Corp., parent of United Airlines. 
+</text>
+        <arg n="0">many</arg>
+        <rel>wonder</rel>
+        <arg f="about" n="1">the long-term implications of what  is
+        widely viewed  as the cause of Friday's slide , reluctance  by
+        banks  to provide financing for a buy-out of UAL Corp.,
+        parent of United Airlines</arg> 
+</example>
+
+</roleset>
+
+<roleset id="wonder.02" name="experience a sense of wonder">
+<roles>
+  <role descr="experiencer" n="0"/>
+  <role descr="wonder at what?" n="1"/>
+</roles>
+
+<example name="poor John">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John wondered at the display of unreasoning hatred directed at
+    him from all the other kids.
+  </text>
+  <arg n="0">John</arg>
+  <rel>wondered</rel>
+  <arg f="at" n="1">the display of unreasoning hatred directed at
+    him from all the other kids</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

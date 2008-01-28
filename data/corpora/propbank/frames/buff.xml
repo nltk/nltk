@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="buff">
+<note>
+  Frames file for 'buff' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="buff.01" name="to polish or soften" vncls="-">
+<roles>
+  <role descr="polisher, agent" n="0"/>
+  <role descr="entity buffed" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="active"/>
+<text>
+ Nevertheless , the company said [0] shipments were up slightly to 679,000 metric tons from 671,000 , [*] buffing the impact of the unexpected earning decline .
+</text>
+	<arg n="0">[*] -&gt;  shipments</arg>
+	<rel>buffing</rel>
+	<arg n="1">the impact of the unexpected earning decline</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="outperform">
+<note>
+  Frames file for 'outperform' based on sentences in financial
+  subcorpus.  No Verbnet entry.  Comparison with other 'out...' verbs
+  (outrun, outpace, etc).
+</note>
+
+<roleset id="outperform.01" name="perform better">
+<roles>
+  <role descr="better performer" n="0"/>
+  <role descr="other performer" n="1"/>
+  <role descr="margin" n="2"/>
+</roles>
+
+<example name="isolated example?">
+  <text>
+    ...many software and semiconductor stocks have continued *trace*
+    to outperform the market.
+  </text>
+  <arg n="0">*trace* -&gt; many software and semiconductor stocks</arg>
+  <rel>outperform</rel>
+  <arg n="1">the market</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

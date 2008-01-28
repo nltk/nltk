@@ -1,0 +1,31 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="rendezvous">
+<note>
+  Frames file for 'rendezvous' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="rendezvous.01" name="to bring or come together" vncls="-">
+<roles>
+  <role descr="entities meeting" n="0"/>
+  <role descr="rendezvous with" n="1"/>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="ns" person="ns" tense="past" voice="active"/>
+<text>
+ We finally rendezvoused with our balloon , which [*T*-94] had come [*-1] to rest on a dirt road amid a clutch of Epinalers who [*T*-95] watched us disassemble our craft -- another half-an-hour of non-flight activity -- that [*T*-96] included the precision routine of [*] yanking the balloon to the ground , punching all the air out of it , rolling it up and cramming it and the basket into the trailer .
+</text>
+	<arg n="0">We</arg>
+	<arg f="TMP" n="M">finally</arg>
+	<rel>rendezvoused</rel>
+	<arg f="with" n="1">our balloon , which [*T*-94] had come [*-1] to rest on a dirt road amid a clutch of Epinalers who [*T*-95] watched us disassemble our craft -- another half-an-hour of non-flight activity -- that [*T*-96] included the precision routine of [*] yanking the balloon to the ground , punching all the air out of it , rolling it up and cramming it and the basket into the trailer</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

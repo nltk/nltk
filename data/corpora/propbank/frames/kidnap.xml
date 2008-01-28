@@ -1,0 +1,37 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="kidnap">
+<note>
+  Frames file for 'kidnap' based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="kidnap.01" name="to seize and detain unlawfully" vncls="10.5">
+<roles>
+  <role descr="kidnapper, agent" n="0">
+        <vnrole vncls="10.5" vntheta="Agent"/></role>
+  <role descr="person kidnapped" n="1">
+        <vnrole vncls="10.5" vntheta="Theme"/></role>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ Again , you have [*-1] to ask the obvious question : Why would intelligent beings kidnap seven Soviet mailmen [*T*-2] ?
+</text>
+	<arg f="MOD" n="M">would</arg>
+	<arg n="0">intelligent beings</arg>
+	<rel>kidnap</rel>
+	<arg n="1">seven Soviet mailmen</arg>
+	<arg f="PNC" n="M">[*T*-2] -&gt;  Why</arg>
+</example>
+
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

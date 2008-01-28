@@ -1,0 +1,39 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="bloom">
+<note>
+  Frames file for 'bloom' based on sentences in wsj.  Verbnet entry 45.5, 47.2.
+</note>
+
+<roleset id="bloom.01" vncls="45.5 47.2" name="put forth flowers">
+<roles>
+  <role n="0"  descr="bloomer (no, not like that!)"/>
+</roles>
+
+<example name="adjectival">
+<inflection person="ns" tense="ns" aspect="progressive" voice="active" form="participle"/>
+<text>
+    My initial stake in this blooming enterprise has grown tenfold,
+    according to my conservative calculations. 
+</text>
+	<rel>blooming</rel>
+	<arg n="0">enterprise</arg>
+</example>
+
+<example name="verbal">
+  <inflection person="ns" tense="present" aspect="progressive" voice="active" form="participle"/>
+  <text>
+     John's dandelions are blooming in his yard.
+  </text>
+  <arg n="0"        >John's dandelions</arg>
+  <rel              >blooming</rel>
+  <arg n="m" f="LOC">in his yard</arg>
+</example>
+
+<note>
+Not sure how to handle (or IF to handle) "blooming idiot"
+</note>
+
+</roleset>
+</predicate>
+</frameset>

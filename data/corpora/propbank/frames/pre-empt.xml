@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="pre-empt">
+<note>
+  Frames file for 'pre-empt' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="pre-empt.01" name="displace, take by prior claim" vncls="-">
+<roles>
+  <role descr="preeminent thing" n="0"/>
+  <role descr="lesser thing(s)" n="1"/>
+</roles>
+
+<example name="one example">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Roe v. Wade pre-empted political debate, so the extremes
+    blossomed. 
+</text>
+        <arg n="0">Roe v. Wade</arg>
+        <rel>pre-empted</rel>
+        <arg n="1">political debate</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

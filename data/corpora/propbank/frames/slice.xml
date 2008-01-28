@@ -1,0 +1,54 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="slice">
+<note>
+  Frames file for 'slice' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="slice.01" name="to cut into slices or from a larger piece" vncls="21.2-1">
+<roles>
+  <role descr="cutter, agent" n="0">
+        <vnrole vncls="21.2-1" vntheta="Agent"/></role>
+  <role descr="entity sliced" n="1">
+        <vnrole vncls="21.2-1" vntheta="Patient"/></role>
+  <role descr="larger piece" n="2"/>
+</roles>
+
+<example name="all arguments">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+ President Bush insists [0] it would be a great tool for [*] curbing the budget deficit and slicing the lard out of government programs .
+</text>
+	<arg n="0">[*]</arg>
+	<rel>slicing</rel>
+	<arg n="1">the lard</arg>
+	<arg n="2">out of government programs</arg>
+</example>
+</roleset>
+</predicate>
+<predicate lemma="slice_up">
+
+<roleset id="slice.02" name="to cut into slices" vncls="-">
+<roles>
+  <role descr="cutter, agent" n="0"/>
+  <role descr="entity sliced" n="1"/>
+</roles>
+
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ Unocal Corp. 's top management sets guidelines , but line supervisors slice up the merit pie .
+</text>
+	<arg n="0">line supervisors</arg>
+	<rel>[ slice] [ up]</rel>
+	<arg n="1">the merit pie</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

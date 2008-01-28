@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="covet">
+<note>
+  Frames file for 'covet'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="covet.01" name="to wish, long, or crave for" vncls="32.1">
+<roles> 
+  <role descr="agent" n="0"><vnrole vncls="32.1" vntheta="Experiencer"/></role>
+  <role descr="entity wished for" n="1"><vnrole vncls="32.1" vntheta="Theme"/></role>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ For some at the SEC , an agency that [*T*-1] covets its independence , Mr. Breeden may be too much of a Washington insider .
+</text>
+	<arg n="0">[*T*-1] -&gt;  that -&gt;  an agency</arg>
+	<rel>covets</rel>
+	<arg n="1">its independence</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

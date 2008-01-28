@@ -1,0 +1,81 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="log">
+<note>
+  Frames file for 'log' based on survey of sentences in the WSJ
+  corpus.  
+</note>
+
+
+<roleset id="log.01" name="to record" vncls="-">
+<roles>
+  <role descr="recorder, agent" n="0"/>
+  <role descr="thing recorded" n="1"/>
+</roles>
+
+
+
+<example name="arbitrary subject">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ They worried about an Interior Department directive [*] to log all communications with Members or their staffs .
+</text>
+	<arg n="0">[*]</arg>
+	<rel>log</rel>
+	<arg n="1">all communications with Members or their staffs</arg>
+</example>
+
+
+<example name="passive">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+ This means [0] Interior contacts can not be logged [*-1] only on one day -- a Sunday that [*T*-2] had already passed .
+</text>
+	<arg f="MOD" n="M">can</arg>
+	<arg f="NEG" n="M">not</arg>
+	<rel>logged</rel>
+	<arg n="1">[*-1] -&gt;  Interior contacts</arg>
+	<arg f="TMP" n="M">only on one day -- a Sunday that [*T*-2] had already passed</arg>
+</example>
+
+
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ Bristol-Myers Squibb Co. , the entity formed [*] from the recent acquisition of Squibb Corp. by Bristol-Myers Co. , logged the largest volume decline , 7,592,988 shares , to 12,017,724 .
+</text>
+	<arg n="0">Bristol-Myers Squibb Co. , the entity formed [*] from the recent acquisition of Squibb Corp. by Bristol-Myers Co. ,</arg>
+	<rel>logged</rel>
+	<arg n="1">the largest volume decline , 7,592,988 shares , to 12,017,724</arg>
+</example>
+</roleset>
+</predicate>
+
+
+<predicate lemma="log_on">
+
+<roleset id="log.02" name="to enter into a computer the information required to begin a session" vncls="-">
+<roles>
+  <role descr="user, agent" n="0"/>
+  <role descr="computer" n="1"/>
+</roles>
+
+
+
+<example name="intransitive">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ If it finds one and gets into the system , it will display a screen [*ICH*-1] when a user logs on [*T*-3] that [*T*-2] says , `` Worms Against Nuclear Killers ... .
+</text>
+	<arg n="0">a user</arg>
+	<rel>[ logs] [ on]</rel>
+	<arg f="TMP" n="M">[*T*-3] -&gt;  when</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

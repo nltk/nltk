@@ -1,0 +1,72 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="lecture">
+<note>
+  Frames file for 'lecture'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="lecture.01" name="to deliver a lecture" vncls="-">
+<roles> 
+  <role descr="lecturer, agent" n="0"/>  
+  <role descr="audience" n="1"/>
+  <role descr="topic or utterance" n="2"/>
+</roles>
+
+
+
+<example name="lecture about">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+ [*] Stretching his arms in his silky white shirt and squeaking his black shoes , he lectures a visitor about the way [0] [*] to sell American real estate [*T*-1] and boasts about his friendship with Margaret Thatcher 's son .
+</text>
+	<arg f="ADV" n="M">[*] Stretching his arms in his silky white shirt and squeaking his black shoes</arg>
+	<arg n="0">he</arg>
+	<rel>lectures</rel>
+	<arg n="1">a visitor</arg>
+	<arg f="about" n="2">the way [0] [*] to sell American real estate [*T*-1]</arg>
+</example>
+
+
+<example name="lecture for">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ In an extraordinary mix of cultures and church-state powers , Rep. Robert Dornan ( R. , Calif . ) lectured his fellow Roman Catholics -- including Mr. Florio -- for [*-1] having the `` chutzpah '' [0] [*] to disagree with the hierarchy of their church on abortion [*T*-2] .
+</text>
+	<arg f="ADV" n="M">In an extraordinary mix of cultures and church-state powers</arg>
+	<arg n="0">Rep. Robert Dornan ( R. , Calif . )</arg>
+	<rel>lectured</rel>
+	<arg n="1">his fellow Roman Catholics -- including Mr. Florio --</arg>
+	<arg f="for" n="2">[*-1] having the `` chutzpah '' [0] [*] to disagree with the hierarchy of their church on abortion [*T*-2]</arg>
+</example>
+
+
+<example name="lecture on">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ Partners lecture on how [*] to form corporations , draft agreements and defend clients against unwanted tender offers [*T*-1] .
+</text>
+	<arg n="0">Partners</arg>
+	<rel>lecture</rel>
+	<arg f="on" n="2">how [*] to form corporations , draft agreements and defend clients against unwanted tender offers [*T*-1]</arg>
+</example>
+
+
+
+<example name="non-prepositional Arg2">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ `` When you 're in the groove [*T*-1] , you see every ball tremendously , '' he lectured [*T*-2] .
+</text>
+	<arg n="0">he</arg>
+	<rel>lectured</rel>
+	<arg n="2">[*T*-2] -&gt;  When you 're in the groove [*T*-1] , you see every ball tremendously</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

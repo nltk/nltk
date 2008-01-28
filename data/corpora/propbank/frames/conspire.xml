@@ -1,0 +1,52 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="conspire">
+<note>
+  Frames file for 'conspire' based on sentences in financial
+  subcorpus.  No Verbnet entry.  Comparison with 'work'.
+</note>
+
+<roleset id="conspire.01" name="work together for nefarious purposes">
+<roles>
+  <role descr="conspirator" n="0"/>
+  <role descr="job, project" n="1"/>
+  <role descr="co-conspirator" n="2"/>
+</roles>
+
+<example name="conspirators merged">
+<text>
+    The company is the subject of a federal grand jury investigation
+    into whether its officials and its utility subsidiaries conspired
+    to cover up their accounting for spare parts to evade federal
+    income taxes. 
+</text>
+        <arg n="0">its officials and its utility subsidiaries</arg>
+        <rel>conspired</rel>
+        <arg n="1">to cover up their accounting for spare parts to
+        evade federal income taxes</arg> 
+</example>
+
+<example name="conspirators separated">
+<text>
+    The central charge against Judge Hastings is that he conspired
+    with a Washington lawyer to obtain a $150,000 bribe from
+    defendants in a criminal case before the judge, in return for
+    leniency. 
+</text>
+        <arg n="0">he</arg>
+        <rel>conspired</rel>
+        <arg f="with" n="2">a Washington lawyer</arg>
+        <arg n="1">to obtain a $150,000 bribe from defendants in a
+        criminal case before the judge, in return for leniency</arg> 
+</example>
+
+<note>
+True etymological tidbit: &quot;conspire&quot; comes from the Latin for &quot;to
+breathe together&quot;, since conspirators inevitably huddle together when
+hatching their nefarious plans.  Actually, I just really like the word
+&quot;nefarious.&quot;
+</note>
+
+</roleset>
+</predicate>
+</frameset>

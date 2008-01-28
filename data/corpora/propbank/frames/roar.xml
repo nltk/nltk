@@ -1,0 +1,68 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="roar">
+<note>
+  Frames file for 'roar' based on sentences in wsj.  Verbnet entries
+  57, 37.3, 43.2, and 38; Framenet entries Motion noise, Communication
+  noise, and Perception noise.
+</note>
+
+<roleset id="roar.01" name="like a lion" vncls="37.3 43.2 38">
+<roles>
+  <role descr="roarer" n="0"><vnrole vncls="43.2" vntheta="Agent"/><vnrole vncls="38" vntheta="Agent"/><vnrole vncls="37.3" vntheta="Agent"/></role>
+  <role descr="utterance, roar itself" n="1"><vnrole vncls="43.2" vntheta="Theme"/><vnrole vncls="38" vntheta="Topic"/><vnrole vncls="37.3" vntheta="Topic"/></role>
+  <role descr="listener" n="2"><vnrole vncls="38" vntheta="Recipient"/><vnrole vncls="37.3" vntheta="Recipient"/></role>
+</roles>
+
+<example name="ladylike">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    ``Get your feet off the table!'' Mary roared at John.
+  </text>
+  <arg n="1">``Get your feet off the table!''</arg>
+  <arg n="0">Mary</arg>
+  <rel>roared</rel>
+  <arg f="at" n="2">John</arg>
+</example>
+
+<example name="lions have only one arg">
+  <inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+  <text>
+     John heard the lion roar, but chose to ignore it.
+  </text>
+  <arg n="0">the lion</arg>
+  <rel>roar</rel>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="roar.02" name="move fast and noisily" vncls="-">
+<roles>
+  <role descr="entity in motion" n="0"/>
+  <role descr="path" n="1"/>
+</roles>
+
+<example name="roaring twenties?">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    As the book begins, a newly wed Marlowe roars into the desert
+    resort of Poodle (a.k.a. Palm) Springs at the wheel of a Cadillac
+    Fleetwood. 
+</text>
+        <arg f="TMP" n="M">As the book begins</arg>
+        <arg n="0">a newly wed Marlowe</arg>
+        <rel>roars</rel>
+        <arg f="into" n="1">the desert resort of Poodle (a.k.a. Palm)
+        Springs</arg> 
+        <arg f="LOC" n="M">at the wheel of a Cadillac Fleetwood</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,43 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="service">
+<note>
+  Frames file for 'service' based on sentences in financial subcorpus.
+  No Verbnet entry, no Framenet entry.
+</note>
+
+<roleset id="service.01" name="do things to" vncls="-">
+<roles>
+  <role descr="doer" n="0"/>
+  <role descr="thing worked on" n="1"/>
+</roles>
+
+<example name="financial usage, natch ">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Maryland National Bank's retail finance division will continue
+    *trace* to service the loans. 
+</text>
+        <arg n="0">*trace* -&gt;  Maryland National Bank's retail finance
+        division</arg> 
+        <rel>service</rel>
+        <arg n="1">the loans</arg>
+</example>
+
+<example name="nonfinancial usage">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     John serviced Mary's car.
+  </text>
+  <arg n="0">John</arg>
+  <rel>serviced</rel>
+  <arg n="1">Mary's car</arg> 
+</example>
+
+<note>
+Could take benefactive.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,47 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="dissipate">
+<note>
+  Frames file for 'dissipate' based on sentences in wsj.  Verbnet
+  entry 45.4.
+</note>
+
+<roleset id="dissipate.01" name="become undense" vncls="45.4">
+<roles>
+  <role descr="cause of dissipation" n="0"><vnrole vncls="45.4" vntheta="Agent"/></role>
+  <role descr="thing becoming undense" n="1"><vnrole vncls="45.4" vntheta="Patient"/></role>
+</roles>
+
+<example name="usually ergative">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+     But Darman suggests such tensions will dissipate quickly.
+</text>
+        <arg n="1">such tensions</arg>
+        <arg f="MOD" n="M">will</arg>
+        <rel>dissipate</rel>
+        <arg f="MNR" n="M">quickly</arg>
+</example>
+
+
+<example name="non-agentive arg0">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    The tremendous energy of the quake was dissipated [*-1] by the
+    distance, so that most parts of the valley and the major cities
+    suffered largely cosmetic damage -- broken windows, falling brick
+    and cornices, buckled asphalt or sidewalks. 
+</text>
+        <rel>dissipated</rel>
+        <arg n="1">[*-1] -&gt;  The tremendous energy of the quake</arg>
+        <arg f="by" n="0">the distance</arg>
+        <arg n="M">so that most parts of the valley and the major
+        cities suffered largely cosmetic damage -- broken windows,
+        falling brick and cornices, buckled asphalt or sidewalks</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,106 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="walk">
+<note>
+  Frames file for 'walk' based on sentences in financial subcorpus.
+  Verbnet entry run-51.3.2, other framed members include charge,
+  climb, file, jump, leap, roll, run, etc.  Comparison with 'run'.  
+</note>
+
+<roleset id="walk.01" name="walk" vncls="51.3.2">
+<roles>
+  <role descr="causative agent" n="A"/>
+  <role descr="walker" n="0">
+	  <vnrole vncls="51.3.2" vntheta="Theme"/></role>
+  <role descr="path" n="1">
+          <vnrole vncls="51.3.2" vntheta="Location"/></role>
+</roles>
+
+<example name="DIR as PP">
+<text>
+    When Mr. Jacobson walked into the office at 7:30 a.m. EDT, he
+    announced: ``OK, buckle up.'' 
+</text>
+        <arg n="0">Mr. Jacobson</arg>
+        <rel>walked</rel>
+        <arg f="DIR" n="M">into the office</arg>
+        <arg f="TMP" n="M">at 7:30 a.m. EDT</arg>
+</example>
+
+<example name="DIR as P">
+<text>
+    ``The buyers walk away, and the specialist is left alone'' as the
+    buyer of last resort for his stable of stocks, he contends. 
+</text>
+        <arg n="0">The buyers</arg>
+        <rel>walk</rel>
+        <arg f="DIR" n="M">away</arg>
+</example>
+
+<example name="with argA">
+  <text>
+    John walked his dog.
+  </text>
+  <arg n="A">John</arg>
+  <rel>walked</rel>
+  <arg n="0">his dog</arg>
+</example>
+
+<example name="with Arg1">
+  <text>
+    John walked a mile.
+  </text>
+  <arg n="0">John</arg>
+  <rel>walked</rel>
+  <arg n="1">a mile</arg>
+</example>
+
+<note>
+Arg1 seems to occur only rarely; DIR occurs most of the time.
+</note>
+
+</roleset>
+
+<roleset id="walk.02" name="baseball" vncls="-">
+<roles>
+  <role descr="pitcher" n="0"/>
+  <role descr="batter" n="1"/>
+</roles>
+
+<example name="ERA">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+   He gave up seven hits, walked five and didn't get a decision.
+  </text>
+  <arg n="0">He</arg>
+  <rel>walked</rel>
+  <arg n="1">five</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="walk.03" vncls="-" name="achieve a result through walking">
+<roles>
+  <role n="0"  descr="walker"/>
+  <role n="1"  descr="thing affected"/>
+  <role n="2"  descr="desired result"/>
+</roles>
+
+<example name="I have a headache THIS BIG">
+  <inflection person="ns" tense="ns" aspect="ns" voice="active" form="full"/>
+  <text>
+    Sometimes, if you have a headache, you can go out and walk it right off.''
+  </text>
+  <arg n="0"        >you</arg>
+  <arg n="m" f="MOD">can</arg>
+  <rel              >walk</rel>
+  <arg n="1"        >it</arg>
+  <arg n="2"        >right off</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

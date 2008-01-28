@@ -1,0 +1,61 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="situate">
+<note>
+  Frames file for 'situate' based on sentences in wsj.  Verbnet entry
+  9.1, Framenet entry Placing.
+</note>
+
+<roleset id="situate.01" name="(cause to) be located" vncls="9.1">
+<roles>
+  <role descr="cause of situation, agent" n="0">
+        <vnrole vncls="9.1" vntheta="Agent"/></role>
+  <role descr="thing situated" n="1">
+        <vnrole vncls="9.1" vntheta="Theme"/></role>
+  <role descr="place" n="2">
+        <vnrole vncls="9.1" vntheta="Destination"/></role>
+</roles>
+
+<example name="adjectival">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    For a while in the 1970s it seemed  Mr. Moon was on a spending
+    spree, with such purchases as the former New Yorker Hotel and its
+    adjacent Manhattan Center; a fishing/processing conglomerate with
+    branches in Alaska, Massachusetts, Virginia and Louisiana; a
+    former Christian Brothers monastery and the Seagram family mansion
+    (both picturesquely situated on the Hudson River); shares in banks
+    from Washington to Uruguay; a motion picture production company,
+    and newspapers, such as the Washington Times, the New York City
+    Tribune (originally the News World), and the successful
+    Spanish-language Noticias del Mundo. 
+</text>
+        <arg n="1">a former Christian Brothers monastery and the
+        Seagram family mansion</arg> 
+        <arg f="MNR" n="M">picturesquely</arg>
+        <rel>situated</rel>
+        <arg f="on" n="2">the Hudson River</arg>
+</example>
+
+
+<example name="sorta verbal">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    Presidio said the properties are generally situated *trace* in
+    Wyoming, North Dakota, Texas, Oklahoma and Louisiana. 
+</text>
+        <arg f="ADV" n="M">generally</arg>
+        <rel>situated</rel>
+        <arg n="1">*trace* -&gt;  the properties</arg>
+        <arg f="in" n="2">Wyoming, North Dakota, Texas, Oklahoma and
+        Louisiana</arg> 
+</example>
+
+<note>
+Active/agentive cases will probably not occur, leading me to believe
+this is properly treated as an adjective.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

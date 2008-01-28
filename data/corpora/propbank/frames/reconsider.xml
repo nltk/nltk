@@ -1,0 +1,50 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="reconsider">
+<note>
+  Frames file for 'reconsider' based on sentences in wsj.  No Verbnet
+  entry.  Not comparable to 'consider'.
+</note>
+
+<roleset id="reconsider.01" name="think about again" vncls="-">
+<roles>
+  <role descr="considerer" n="0"/>
+  <role descr="thing thought about" n="1"/>
+</roles>
+
+<example name="almost always infinitival">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    ``Perhaps if my personal matters can be resolved with Laurel bank
+    in the near future, I may be inclined *trace* to reconsider your
+    request...'' 
+</text>
+        <arg n="0">*trace* -&gt;  I</arg>
+        <rel>reconsider</rel>
+        <arg n="1">your request</arg>
+</example>
+
+
+<example name="with grounds">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Britain and all of Europe need *trace* to reconsider the prospects
+    for European integration in light of the possible reunification
+    and neutralization of Germany. 
+</text>
+        <arg n="0">*trace* -&gt;  Britain and all of Europe</arg>
+        <rel>reconsider</rel>
+        <arg n="1">the prospects for European integration</arg>
+        <arg f="CAU" n="M">in light of the possible reunification and
+        neutralization of Germany</arg> 
+</example>
+
+<note>
+This is not a remapping from 'consider', because 'reconsider' cannot
+take a secondary predicate: John is considered an idiot, but not John
+is reconsidered an idiot.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

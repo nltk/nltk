@@ -1,0 +1,34 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="bias">
+<note>
+  Frames file for 'bias' based on sentences in wsj.  No Verbnet entry,
+  since this isn't really a verb.
+</note>
+
+<roleset id="bias.01" name="display a bias" vncls="-">
+<roles>
+  <role descr="biased entity" n="1"/>
+</roles>
+
+<example name="treebank misparse">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    The department's Office of Thrift Supervision said that doesn't
+    necessarily mean thrifts are biased [*-1], but conceded that it
+    doesn't have data about applicants to determine why blacks are
+    rejected more often. 
+</text>
+        <rel>biased</rel>
+        
+        <arg n="1">[*-1] -&gt;  thrifts</arg>
+</example>
+
+<note>
+There is a rare, truly verbal equivalent, meaning &quot;cause someone to
+display a bias.&quot;
+</note>
+
+</roleset>
+</predicate>
+</frameset>

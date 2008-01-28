@@ -1,0 +1,59 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="fling">
+<note>
+  Frames file for 'fling' based on sentences in financial subcorpus.
+  Verbnet entry throw-17.1, other framed members include fire, kick,
+  pass, and throw.  Framenet entries Body Movement and Cause to Move.
+  Comparison with throw.
+</note>
+
+<roleset id="fling.01" name="throw" vncls="17.1">
+<roles>
+  <role descr="thrower" n="0">
+		
+  <vnrole vncls="17.1" vntheta="Agent"/></role>
+
+  <role descr="thing thrown" n="1">
+		
+  <vnrole vncls="17.1" vntheta="Patient"/></role>
+
+  <role descr="thrown at, to, over, etc" n="2">
+		
+  <vnrole vncls="17.1" vntheta="Destination"/></role>
+
+</roles>
+
+<example name="boring example">
+<inflection aspect="ns" form="gerund" person="ns" tense="ns" voice="ns"/>
+<text>
+    He already has achieved vertical integration on a limited scale:
+    Quebecor can put a weekly newspaper on almost any Quebec doorstep
+    without using outside help, from chopping down the tree to making
+    the newsprint to *trace* flinging it up onto the porch. 
+</text>
+        <arg n="0">*trace* -&gt;  Quebecor</arg>
+        <rel>flinging</rel>
+        <arg n="1">it</arg>
+        <arg f="up" n="2">onto the porch</arg>
+</example>
+
+<example name="strong verbs rule">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John flung himself into bed.
+  </text>
+  <arg n="0">John</arg>
+  <rel>flung</rel>
+  <arg f="REC" n="1">himself</arg>
+  <arg f="into" n="2">bed</arg>
+</example>
+
+<note>
+Actually, I prefer the simple past form of &quot;flang&quot;, but I seem to be
+alone in that.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

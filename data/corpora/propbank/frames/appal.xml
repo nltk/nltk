@@ -1,0 +1,63 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="appall">
+<note>
+  Frames file for 'appall' based on sentences in wsj.  Verbnet entry 31.1.
+</note>
+
+<roleset id="appall.01" name="strike with disgust" vncls="31.1">
+<roles>
+  <role descr="causer of appallment" n="0"><vnrole vncls="31.1" vntheta="Cause"/></role>
+  <role descr="appalled entity" n="1"><vnrole vncls="31.1" vntheta="Experiencer"/></role>
+</roles>
+
+<example name="infinitival cause">
+<inflection aspect="ns" form="participle" person="third" tense="past" voice="passive"/>
+<text>
+    I was appalled [*-1] [*-2] to read the misstatements of facts in
+    your Oct. 13 editorial ``Colombia's Brave Publisher.'' 
+</text>
+        <rel>appalled</rel>
+        <arg n="1">[*-1] -&gt;  I</arg>
+        <arg n="0">[*-2] to read the misstatements of facts in your
+        Oct. 13 editorial ``Colombia's Brave Publisher</arg> 
+</example>
+
+
+<example name="nominal cause">
+<inflection aspect="ns" form="participle" person="ns" tense="past" voice="passive"/>
+<text>
+    Readers were electrified by the paper's audacity and appalled
+    [*-1] by the dark side of life it uncovered. 
+</text>
+        <rel>appalled</rel>
+        <arg n="1">[*-1] -&gt;  Readers</arg>
+        <arg f="by" n="0">the dark side of life it uncovered</arg> 
+</example>
+
+
+<example name="sbar cause">
+<inflection aspect="ns" form="participle" person="ns" tense="past" voice="passive"/>
+<text>
+    They were appalled, for instance, that he wanted to target more of
+    the $3 billion Community Development Block Grant (CDBG) program to
+    low-income projects and zero out the notorious ``discretionary''
+    funds that have allowed HUD officials to steer contracts to
+    political cronies. 
+</text>
+        <arg n="1">They</arg>
+        <rel>appalled</rel>
+        <arg n="0">that he wanted to target more of the $3 billion
+        Community Development Block Grant (CDBG) program to low-income
+        projects and zero out the notorious ``discretionary'' funds
+        that have allowed HUD officials to steer contracts to
+        political cronies</arg> 
+</example>
+
+<note>
+Please include the complementizer in the arg0, when appropriate.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

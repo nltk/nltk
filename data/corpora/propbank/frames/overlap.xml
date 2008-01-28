@@ -1,0 +1,59 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="overlap">
+<note>
+  Frames file for 'overlap' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="overlap.01" name="overlap" vncls="-">
+<roles>
+  <role descr="thing on top" n="0"/>
+  <role descr="thing on bottom" n="1"/>
+  <role descr="EXT, margin" n="2"/>
+</roles>
+
+<example name="merged arguments">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    And because of the time difference, the Japanese and the
+    U.S. markets' trading hours don't overlap. 
+</text>
+        <arg f="DIS" n="M">And</arg>
+        <arg f="CAU" n="M">because of the time difference</arg>
+        <arg n="0">the Japanese and the U.S. markets' trading hours</arg>
+        <arg f="NEG" n="M">n't</arg>
+        <rel>overlap</rel>
+</example>
+
+
+<example name="arguments separated">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    Last season, Hartford Stage director Mark Lamos mounted a
+    production at Lincoln Center, and currently two other productions
+    -- one just closed at the Old Globe in San Diego and another now
+    at the Seattle Rep -- overlap with Mr. Boyd's. 
+</text>
+        <arg f="TMP" n="M">currently</arg>
+        <arg n="0">two other productions -- one just closed at the Old
+        Globe in San Diego and another now at the Seattle Rep --</arg> 
+        <rel>overlap</rel>
+        <arg f="with" n="1">Mr. Boyd's</arg>
+</example>
+
+<example name="with margin">
+  <inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+  <text>
+    John and Mary's sleep schedules overlap by only 15 minutes.
+  </text>
+  <arg n="0">John and Mary's sleep schedules</arg>
+  <rel>overlap</rel>
+  <arg f="by" n="2">only 15 minutes.</arg>
+</example>
+
+<note>
+As usual in cases with merged arguments, the lower number wins--in
+this case Arg0.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

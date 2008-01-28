@@ -1,0 +1,40 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="gesture">
+<note>
+  Frames file for 'gesture' based on sentences in wsj.  No Verbnet
+  entry, Framenet entry Gesture.  Who'd'a thunk?
+</note>
+
+<roleset id="gesture.01" name="body language" vncls="-">
+<roles>
+  <role descr="gesturer" n="0"/>
+  <role descr="gestured at" n="1"/>
+</roles>
+
+<example name="intransitive">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    Silences were lengthy -- nobody moved or gestured.
+</text>
+        <arg n="0">nobody</arg>
+        <rel>gestured</rel>
+</example>
+
+<example name="both args">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     Mary gestured angrily at John, but he ignored her.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>gestured</rel>
+  <arg f="MNR" n="m">angrily</arg>
+  <arg f="at" n="1">John</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

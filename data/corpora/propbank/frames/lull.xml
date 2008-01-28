@@ -1,0 +1,47 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="lull">
+<note>
+  Frames file for 'lull' based on sentences in wsj.  Verbnet entry 31.1.
+</note>
+
+<roleset id="lull.01" name="cause to feel calm or sleepy" vncls="31.1">
+<roles>
+  <role descr="causer of lulling" n="0">
+        <vnrole vncls="31.1" vntheta="Cause"/></role>
+  <role descr="lulled entity" n="1">
+        <vnrole vncls="31.1" vntheta="Experiencer"/></role>
+  <role descr="end state of arg1" n="2"/>
+</roles>
+
+<example name="no end state">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="passive"/>
+<text>
+    This is clearly not good news to all you people who [*T*-1] sleep
+    like babies every night, [*-2] lulled [*-3] by visions of your
+    money sitting risk-free in six-month CDs. 
+</text>
+        <rel>lulled</rel>
+        <arg n="1">[*-3] -&gt;  [*-2] -&gt;  [*T*-1] -&gt;  who -&gt;  all you people</arg>
+        <arg f="by" n="0">visions of your money sitting risk-free in
+        six-month CDs</arg> 
+</example>
+
+<example name="all args">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John lulled Mary to sleep by talking about predicate-argument structure.
+  </text>
+  <arg n="0">John</arg>
+  <rel>lulled</rel>
+  <arg n="1">Mary</arg>
+  <arg n="2">to sleep</arg>
+  <arg f="MNR" n="m">by talking about predicate-argument structure</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

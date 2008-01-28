@@ -1,0 +1,72 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="engage">
+<note>
+  Frames file for 'engage' based on sentences in financial subcorpus.
+  Verbnet entry amalgamate-22.2, other framed members include
+  confuse, incorporate, integrate, introduce, oppose and wed.  How
+  appropriate for the last.  Comparison with those.
+</note>
+
+<roleset id="engage.01" name="cause to get involved" vncls="22.2 29.2 31.1">
+<roles>
+  <role descr="causer of engagement" n="0">
+		
+  <vnrole vncls="29.2" vntheta="Agent"/><vnrole vncls="31.1" vntheta="Cause"/><vnrole vncls="22.2" vntheta="Agent"/></role>
+
+  <role descr="entity sucked in" n="1">
+		
+  <vnrole vncls="29.2" vntheta="Theme"/><vnrole vncls="31.1" vntheta="Experiencer"/><vnrole vncls="22.2" vntheta="Patient1"/></role>
+
+  <role descr="thing involved in" n="2">
+		
+  <vnrole vncls="29.2" vntheta="Predicate"/><vnrole vncls="22.2" vntheta="Patient2"/></role>
+
+</roles>
+
+<example name="typical usage in financial corpus">
+<text>
+    Some traders point out that as the big brokerage firms back out of
+    program trading for their own accounts or for clients,
+    opportunities increase for others to engage in the controversial
+    practice. 
+</text>
+        <arg n="0">others</arg>
+        <rel>engage</rel>
+        <arg f="in" n="2">the controversial practice</arg>
+</example>
+
+<example name="passivized or adjectival">
+<text>
+    Jefferies, a Los Angeles holding company primarily engaged *trace*
+    in securities trading, also said stock market declines since the
+    quarter ended Sept. 30 created an unrealized pretax loss of about
+    $6 million in its risk arbitrage account. 
+</text>
+        <arg f="ADV" n="M">primarily</arg>
+        <rel>engaged</rel>
+        <arg n="1">*trace* -&gt;  a Los Angeles holding company</arg>
+        <arg f="in" n="2">securities trading</arg>
+</example>
+
+<example name="clear example of all args">
+  <text>
+    John engaged Mary in an endless discussion of coprology.
+  </text>
+  <arg n="0">John</arg>
+  <rel>engaged</rel>
+  <arg n="1">Mary</arg>
+  <arg f="in" n="2"> an endless discussion of coprology</arg>
+</example>
+
+<note>
+The &quot;typical example&quot; usage is effectively &quot;X engaged itself in Y&quot;.
+</note>
+
+<note>
+Bonus points for anyone who knows was coprology is.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

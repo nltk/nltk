@@ -1,0 +1,49 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="kayo">
+<note>
+  Frames file for 'kayo' based on sentences in wsj.  No Verbnet entry,
+  what are you, kidding me?
+</note>
+
+<roleset id="kayo.01" vncls="-" name="knock out">
+<roles>
+  <role n="0"  descr="hitter, agent"/>
+  <role n="1"  descr="sucker"/>
+  <role n="2"  descr="instrument"/>
+</roles>
+
+<example name="passive, one arg">
+<inflection person="third" tense="past" aspect="ns" voice="passive" form="participle"/>
+<text>
+    Anne Burford, the former EPA chief who resigned under fire in 1983
+    during a flap with Congress, was kayoed [*-1] in the
+    confrontation, even though she was never charged with official
+    wrondgoing. 
+</text>
+	<rel>kayoed</rel>
+	<arg n="1">[*-1] ->  Anne Burford, the former EPA chief who
+	resigned under fire in 1983 during a flap with Congress,</arg> 
+	<arg n="M" f="LOC">in the confrontation</arg>
+	<arg n="M">even though she was never charged with official
+	wrondgoing</arg> 
+</example>
+
+<example name="all args">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+    Mary kayoed John with a particularly vicious bitchslap.
+  </text>
+  <arg n="0"        >Mary</arg>
+  <rel              >kayoed</rel>
+  <arg n="1"        >John</arg>
+  <arg n="2" f="with">a particularly vicious bitchslap</arg>
+</example>
+
+<note>
+could also appear as KO or K.O.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

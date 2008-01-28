@@ -1,0 +1,32 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="rat">
+<note>
+  Frames file for 'rat' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="rat.01" name="tell on" vncls="-">
+<roles>
+  <role descr="informant" n="0"/>
+  <role descr="victim, informed on" n="1"/>
+</roles>
+
+<example name="lovely slang">
+<inflection aspect="ns" form="full" person="ns" tense="ns" voice="active"/>
+<text>
+     Maybe we need a CIA version of the Miranda warning: You have the
+     right to conceal your coup intentions, because we may rat on
+     you. 
+</text>
+        <arg n="0">we</arg>
+        <arg f="MOD" n="M">may</arg>
+        <rel>rat</rel>
+        <arg f="on" n="1">you</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

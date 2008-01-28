@@ -1,0 +1,55 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="patch">
+<note>
+  Frames file for 'patch' based on survey of sentences in the WSJ
+  corpus.  
+</note>
+
+
+<roleset id="patch.01" name="to mend or supply with a patch" vncls="9.9">
+<roles>
+  <role descr="mender, agent" n="0">
+	<vnrole vncls="9.9" vntheta="Agent"/></role>
+  <role descr="thing patched" n="1">
+	<vnrole vncls="9.9" vntheta="Destination"/></role>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+ Although the union-bidder expects [*-1] to patch together a substitute offer , consisting of less cash , the failure [*] to get cash from Japanese and American banks confirmed a growing fear [*ICH*-2] among arbitragers that the pageant of high-leverage takeover deals is ending .
+</text>
+	<arg n="0">[*-1] -&gt;  the union-bidder</arg>
+	<rel>patch</rel>
+	<arg f="MNR" n="M">together</arg>
+	<arg n="1">a substitute offer , consisting of less cash ,</arg>
+</example>
+</roleset>
+</predicate>
+
+<predicate lemma="patch_up">
+
+<roleset id="patch.02" name="to mend or supply with a patch" vncls="-">
+<roles>
+  <role descr="mender, agent" n="0"/>
+  <role descr="thing patched" n="1"/>
+</roles>
+
+
+<example name="intransitive">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+ The arbs may recoup some of their paper losses if the UAL deal gets patched up again , as they did in 1982 when Occidental Petroleum Co. rescued them with a $ 4 billion [*U*] takeover of Cities Service [*T*-1] .
+</text>
+	<arg n="1">the UAL deal</arg>
+	<rel>[ patched] [ up]</rel>
+	<arg f="TMP" n="M">again</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

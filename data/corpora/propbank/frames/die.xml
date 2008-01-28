@@ -1,0 +1,80 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="die">
+<note>
+  Frames file for 'die' based on sentences in financial subcorpus.
+  Verbnet class 48.2, no mention of other members.  Pretty simple,
+  though.
+</note>
+
+<roleset id="die.01" name="sterben" vncls="48.2">
+<roles>
+  <role descr="the deceased" n="1">
+	<vnrole vncls="48.2" vntheta="Theme"/></role>
+  <role descr="cognate object" n="2"/>
+</roles>
+
+<example name="die, croak, kick the bucket">
+<text>
+    ...when he died in April.
+</text>
+        <arg n="1">he</arg>
+        <rel>died</rel>
+        <arg f="TMP" n="M">in April</arg>
+</example>
+
+<example name="with cognate object">
+<inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+<text>
+     The letter, along with a detailed prosecution memo, sat on the
+     desks of Justice officials for months before the case died a
+     quiet death. 
+</text>
+        <arg n="1">the case</arg>
+        <rel>died</rel>
+        <arg n="2">a quiet death</arg>
+</example>
+
+<note>
+'sterben' is German for 'to die'
+</note>
+
+</roleset>
+<roleset id="die.02" name="subside" vncls="48.2">
+<roles>
+  <role descr="thing subsiding" n="1">
+		
+  <vnrole vncls="48.2" vntheta="Theme"/></role>
+
+</roles>
+
+<example name="die down">
+<text>
+    And as the applause dies down in showrooms along Seventh Avenue
+    and Broadway, stylishly clad Campeau buyers will begin writing
+    orders. 
+</text>
+        <arg n="1">the applause</arg>
+        <rel>[ dies] [ down]</rel>
+        <arg f="LOC" n="M">in showrooms along Seventh Avenue and
+        Broadway</arg> 
+</example>
+
+<example name="with cognate object">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+     The letter, along with a detailed prosecution memo, sat on the
+     desks of Justice officials for months before the case died a
+     quiet death.
+  </text>
+  <arg n="1">the case</arg>
+  <rel>died</rel>
+  <arg n="2">a quiet death</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

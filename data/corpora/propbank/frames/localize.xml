@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="localize">
+<note>
+  Frames file for 'localize' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="localize.01" vncls="-" name="make local">
+<roles>
+  <role n="0"  descr="cause, agent"/>
+  <role n="1"  descr="local thing"/>
+</roles>
+
+<example name="adjectival">
+<inflection person="ns" tense="past" aspect="ns" voice="passive" form="participle"/>
+<text>
+     Advertising rates for the Eastern, Midwest, Western and Southwest
+     editions will increase an average 5.5%, and rates for localized
+     advertising editions will increase 7.5%. 
+</text>
+	<rel>localized</rel>
+	<arg n="1">editions</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

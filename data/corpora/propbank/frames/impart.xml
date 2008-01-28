@@ -1,0 +1,33 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="impart">
+<note>
+  Frames file for 'impart' based on sentences in wsj.  No Verbnet entry.
+</note>
+
+<roleset id="impart.01" name="give" vncls="-">
+<roles>
+  <role descr="giver" n="0"/>
+  <role descr="gift" n="1"/>
+  <role descr="given-to" n="2"/>
+</roles>
+
+<example name="all args">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    Policy makers regard the youth wage as helping to limit the loss
+    of jobs from an increase in the minimum wage, but they have lately
+    touted it as necessary *trace* to help *trace* impart job skills
+    to entrants into the work force. 
+</text>
+        <arg n="0">*trace* -&gt; *trace* -&gt;  it</arg>
+        <rel>impart</rel>
+        <arg n="1">job skills</arg>
+        <arg f="to" n="2">entrants into the work force</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

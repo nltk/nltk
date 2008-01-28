@@ -1,0 +1,70 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="spur">
+<note>
+  Frames file for 'spur' based on sentences in financial subcorpus.
+  No verbnet entry.  Comparison to 'stimulate'
+</note>
+
+<roleset id="spur.01" name="cause an increase (in interest, etc)">
+<roles>
+  <role descr="cause of increase, agent" n="0"/>
+  <role descr="thing increasing" n="1"/>
+  <role descr="instrument, if agent is also present" n="2"/>
+</roles>
+
+<example name="instrumental subject">
+<text>
+    For the paper industry specifically, most analysts said the deal
+    will spur a wave of paper-company takeovers, possibly involving
+    such companies as Union Camp Corp., Federal Paperboard Co. and
+    Mead Corp. 
+</text>
+        <arg n="2">the deal</arg>
+        <arg f="MOD" n="M">will</arg>
+        <rel>spur</rel>
+        <arg n="1">a wave of paper-company takeovers, possibly
+        involving such companies as Union Camp Corp., Federal
+        Paperboard Co. and Mead Corp</arg> 
+</example>
+
+<example name="passivized instrumental subject">
+<text>
+    This month's Friday-the-13th market plunge spurred *trace* by UAL
+    news wasn't as bad for the Jacobson specialists as yesterday's
+    action. 
+</text>
+        <rel>spurred</rel>
+        <arg n="1">*trace* -&gt;  This month's Friday-the-13th market
+        plunge</arg> 
+        <arg f="by" n="2">UAL news</arg>
+</example>
+
+<example name="agentive subject">
+<text>
+     Indeed, Winnebago said it started ``several promotional
+ programs'' *trace* to spur retail sales in the fall and winter. 
+</text>
+        <arg n="0">*trace* -&gt;  it</arg>
+        <rel>spur</rel>
+        <arg n="1">retail sales</arg>
+</example>
+
+<example name="agent and instrument">
+  <text>
+    Mary spurred John's interest in the ballet by telling him that at
+    the end, one of the swans would be roasted and eaten onstage.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>spurred</rel>
+  <arg n="1">John's interest in the ballet</arg>
+  <arg f="by" n="2">telling him that at
+    the end, one of the swans would be roasted and eaten onstage.</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

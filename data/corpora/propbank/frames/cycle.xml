@@ -1,0 +1,29 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="cycle">
+<note>
+  Frames file for 'cycle'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="cycle.01" name="to ride a bicycle" vncls="51.4.1">
+<roles> 
+  <role descr="cyclist, agent" n="0"><vnrole vncls="51.4.1" vntheta="Agent"/></role>    
+</roles>
+
+<example name="with direction">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+ A man gunned [*] down by a stray bullet while [*] cycling to work carries , after his death , the official stigma of `` counterrevolutionary , '' his wife says [0] [*T*-1] .
+</text>
+	<arg n="0">[*] -&gt;  A man</arg>
+	<rel>cycling</rel>
+	<arg f="DIR" n="M">to work</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

@@ -1,0 +1,79 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="net">
+<note>
+  Frames file for 'net' based on sentences in financial subcorpus.  No
+  Verbnet entry.  Comparison to 'total'.
+</note>
+
+<roleset id="net.02" name="give, cause to have">
+<roles>
+  <role descr="source, giver" n="0"/>
+  <role descr="gift" n="1"/>
+  <role descr="destination, benefactive" n="2"/>
+</roles>
+
+<example name="ditransitive">
+<text>
+    He took the company public in an offering that *trace* netted
+    Applied about $12.6 million, which helped launch the company's
+    acquisition program. 
+</text>
+        <arg n="0">*trace* -&gt;  that -&gt;  an offering</arg>
+        <rel>netted</rel>
+        <arg n="2">Applied</arg>
+        <arg n="1">about $12.6 million</arg>
+</example>
+</roleset>
+
+<roleset id="net.03" vncls="-" name="get">
+<roles>
+  <role n="0"  descr="getter"/>
+  <role n="1"  descr="gotten"/>
+</roles>
+
+<example name="the one that got away">
+  <inflection person="third" tense="present" aspect="progressive" voice="active" form="participle"/>
+  <text>
+    Yet although California Plant Protection was netting bigger and
+    bigger clients -- the firm provided security for the 1984 Summer
+    Olympics in Los Angeles -- it still didn't have the name
+    recognition of Pinkerton's. 
+  </text>
+  <arg n="0"        >California Plant Protection</arg>
+  <rel              >netting</rel>
+  <arg n="1"        >bigger and bigger clients</arg>
+  <arg n="m" f="ADV">the firm provided security for the 1984 Summer
+    Olympics in Los Angeles</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="net_out">
+
+<roleset id="net.01" name="net out: total">
+<roles>
+  <role descr="thing being counted" n="1"/>
+  <role descr="count" n="2"/>
+  <role descr="benefactive" n="3"/>
+</roles>
+
+<example name="add it up">
+<text>
+    That nets out to about $17 a share for the company on a private
+    market basis. 
+</text>
+        <arg n="1">That</arg>
+        <rel>[ nets] [ out]</rel>
+        <arg f="to" n="2">about $17 a share</arg>
+        <arg f="for" n="3">the company</arg>
+        <arg f="MNR" n="M">on a private market basis</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

@@ -1,0 +1,97 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="notice">
+<note>
+  Frames file for 'notice' based on sentences in wsj.  Verbnet entry 30.1.
+</note>
+
+<roleset id="notice.01" name="become aware of" vncls="30.1">
+<roles>
+  <role descr="noticer" n="0"><vnrole vncls="30.1" vntheta="Experiencer"/></role>
+  <role descr="noticed" n="1"><vnrole vncls="30.1" vntheta="Stimulus"/></role>
+</roles>
+
+<example name="more bad poetry">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    Air-traffic problems, though often quite grim / This time of year
+    leave us in stitches / When we notice around our airport /  A
+    holding pattern for witches. 
+</text>
+        <arg n="0">we</arg>
+        <rel>notice</rel>
+        <arg f="LOC" n="M">around our airport</arg>
+        <arg n="1">A holding pattern for witches</arg>
+        <arg f="TMP" n="M">*trace* -&gt;  When -&gt;  This time of year</arg>
+</example>
+
+<example name="sentential thing noticed">
+<inflection aspect="perfect" form="participle" person="ns" tense="past" voice="active"/>
+<text>
+    Richard Breeden hadn't noticed that his new desk had just four
+    telephone lines and one phone. 
+</text>
+        <arg n="0">Richard Breeden</arg>
+        <arg f="NEG" n="M">n't</arg>
+        <rel>noticed</rel>
+        <arg n="1">his new desk had just four telephone lines and one
+        phone</arg> 
+</example>
+
+<example name="nominal thing noticed">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    The guest paid his bill at the resort hotel, and as he departed he
+    noticed a sign saying, ``Have You Left Anything?'' 
+</text>
+        <arg f="TMP" n="M">as he departed</arg>
+        <arg n="0">he</arg>
+        <rel>noticed</rel>
+        <arg n="1">a sign saying, ``Have You Left Anything?''</arg>
+</example>
+
+<example name="passivized">
+<inflection aspect="ns" form="participle" person="ns" tense="present" voice="passive"/>
+<text>
+    That can be expensive, because the problem may not be noticed
+    *trace* for a while, and the sheets are typically thrown away. 
+</text>
+        <arg f="MOD" n="M">may</arg>
+        <arg f="NEG" n="M">not</arg>
+        <rel>noticed</rel>
+        <arg n="1">*trace* -&gt;  the problem</arg>
+        <arg f="TMP" n="M">for a while</arg>
+</example>
+
+<example name="rare English pro-drop">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+    *trace* Didn't feel a thing, but noticed some strange bird
+     behavior. 
+</text>
+        <arg n="0">*trace*</arg>
+        <rel>noticed</rel>
+        <arg n="1">some strange bird behavior</arg>
+</example>
+
+<example name="wh-clause as arg1">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="active"/>
+<text>
+    Harry has avoided all that by living in a Long Island suburb with
+    his wife, who's so addicted to soap operas and mystery novels she
+    barely seems *trace* to notice when her husband disappears for
+    drug-seeking forays into Manhattan. 
+</text>
+        <arg n="0">*trace* -&gt;  she</arg>
+        <rel>notice</rel>
+        <arg n="1">when her husband disappears for drug-seeking forays
+        into Manhattan </arg> 
+</example>
+
+<note>
+AS with many other verbs, wh-complementizers are included in the arg
+but other complementizers are not.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

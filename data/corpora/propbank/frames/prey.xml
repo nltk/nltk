@@ -1,0 +1,30 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="prey">
+<note>
+  Frames file for 'prey'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="prey.01" name="to hunt or victimize" vncls="-">
+<roles> 
+  <role descr="hunter, agent" n="0"/>  
+  <role descr="entity  preyed on" n="1"/> 
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ His giddy dream of [*] redeeming a life of `` badly aimed bullets '' by [*-2] punishing the `` real robbers '' -- the rich `` dogs '' who [*T*-1] prey on the poor -- leads only to the death of innocents , and eventually to his own .
+</text>
+	<arg n="0">[*T*-1] -&gt;  who -&gt;  the rich `` dogs ''</arg>
+	<rel>prey</rel>
+	<arg f="on" n="1">the poor</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

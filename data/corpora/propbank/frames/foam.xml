@@ -1,0 +1,42 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="foam">
+<note>
+  Frames file for 'foam' based on sentences in wsj.  Verbnet entry 43.4, 47.2.
+</note>
+
+<roleset id="foam.01" vncls="43.4 47.2" name="(cause to) become foamy">
+<roles>
+  <role n="0"  descr="causer of foaminess"/>
+  <role n="1"  descr="foamy thing"/>
+</roles>
+
+<example name="agentive, no object">
+<inflection person="ns" tense="ns" aspect="ns" voice="ns" form="gerund"/>
+<text>
+     But even though by some estimates it might cost the world as much
+     as $100 billion between now and the year 2000 to convert to other
+     coolants, foaming agents and solvents and to redesign equipment
+     for these less efficient substitutes, the Montreal Protocol's
+     legions of supporters say it is worth it. 
+</text>
+	<rel>foaming</rel>
+	<arg n="0">agents</arg>
+</example>
+
+<example name="both args">
+  <inflection person="ns" tense="past" aspect="ns" voice="active" form="full"/>
+  <text>
+     John foamed some milk for Mary's cappuccino.
+  </text>
+  <arg n="0"        >John</arg>
+  <rel              >foamed</rel>
+  <arg n="1"        >some milk for Mary's cappuccino</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

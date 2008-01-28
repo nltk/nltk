@@ -1,0 +1,88 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="cash">
+<note>
+Frames file for 'cash' based on sentences in financial subcorpus and
+automatic expansion via verbnet.
+</note>
+
+<roleset id="cash.01" name="turn a check into real money" vncls="13.5.1">
+<roles>
+	<role descr="casher" n="0">
+		
+  <vnrole vncls="13.5.1" vntheta="Agent"/></role>
+
+	<role descr="check" n="1">
+		
+  <vnrole vncls="13.5.1" vntheta="Theme"/></role>
+
+</roles>
+
+<example name="greedy little bugger">
+  <inflection aspect="progressive" form="participle" person="ns" tense="ns" voice="active"/>
+  <text>
+     John waited 15 whole seconds before *trace* cashing the check he got from
+     his grandmother for his birthday.
+  </text>
+  <arg n="0">*trace* -&gt; John</arg>
+  <rel>cashing</rel>
+  <arg n="1">the check he got from
+     his grandmother for his birthday.</arg>
+</example>
+
+</roleset>
+</predicate>
+
+<predicate lemma="cash_in">
+
+<roleset id="cash.02" name="quit" vncls="-">
+<roles>
+  <role descr="quitter" n="0"/>
+  <role descr="chips" n="1"/>
+</roles>
+
+<example name="intransitive">
+<inflection aspect="progressive" form="full" person="third" tense="present" voice="active"/>
+<text>
+    Why is he cashing in now?
+</text>
+        <arg n="0">he</arg>
+        <rel>[ cashing] [ in]</rel>
+        <arg f="TMP" n="M">now</arg>
+</example>
+
+<example name="transitive">
+<inflection aspect="ns" form="infinitive" person="ns" tense="ns" voice="ns"/>
+<text>
+    Many skittish mutual fund investors picked up the phone yesterday,
+    but decided not *trace* to cash in their chips after all. 
+</text>
+        <arg f="NEG" n="M">not</arg>
+        <arg n="0">*trace* -&gt;  Many skittish mutual fund investors</arg>
+        <rel>[ cash] [ in]</rel>
+        <arg n="1">their chips</arg>
+        <arg f="DIS" n="M">after all</arg>
+</example>
+</roleset>
+
+<roleset id="cash.03" name="take advantage of" vncls="-">
+<roles>
+  <role descr="taker of advantage" n="0"/>
+  <role descr="thing exploited" n="1"/>
+</roles>
+
+<example name="punk over prep">
+  <inflection aspect="perfect" form="participle" person="ns" tense="present" voice="active"/>
+  <text>
+    Many clothiers, especially Ralph Lauren, have cashed in on the
+    recent popularity of updated Ivy League and English styles.
+  </text>
+  <arg n="0">Many clothiers, especially Ralph Lauren</arg>
+  <rel>cashed in</rel>
+  <arg f="on" n="1">the recent popularity of updated Ivy League and
+  English styles</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

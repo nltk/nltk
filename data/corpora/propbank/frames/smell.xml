@@ -1,0 +1,75 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="smell">
+<note>
+  Frames file for 'smell' based on sentences in wsj.  Verbnet entries
+  30.1 30.4 35.3 43.3, Framenet entries Perception experience,
+  Appearance, and Perception active.
+</note>
+
+<roleset id="smell.01" name="notice an odor" vncls="30.1 30.4">
+<roles>
+  <role descr="entity with a nose" n="0">
+     <vnrole vncls="30.4" vntheta="Experiencer"/>
+     <vnrole vncls="30.1" vntheta="Experiencer"/></role>
+  <role descr="stinky thing" n="1">
+     <vnrole vncls="30.4" vntheta="Stimulus"/>
+     <vnrole vncls="30.1" vntheta="Stimulus"/></role>
+</roles>
+
+<example name="simple transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    We see, smell and hear slums filled with ``the echoes of hawkers
+    advertising their wares interspersed with abusive language,
+    rattling coughs and the sound of people gathering spittle in their
+    throats and spewing into the street.'' 
+</text>
+        <arg n="0">We</arg>
+        <rel>smell</rel>
+        <arg n="1">slums filled with ``the echoes of hawkers
+        advertising their wares interspersed with abusive language,
+        rattling coughs and the sound of people gathering spittle in
+        their throats and spewing into the street</arg> 
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="smell.02" name="emit an odor" vncls="43.3">
+<roles>
+  <role descr="stinky thing" n="1">
+     <vnrole vncls="43.3" vntheta="Location"/></role>
+  <role descr="attribute of arg1" n="2"/>
+</roles>
+
+<example name="smells like Teen Spirit">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    Embedded in the ``budget'' being concocted by the House-Senate
+    conference committee is something that *trace* looks, smells and
+    waddles like a duck. 
+</text>
+        <arg n="1">*trace* -&gt;  that -&gt;  something</arg>
+        <rel>smells</rel>
+        <arg f="like" n="2">a duck</arg>
+</example>
+
+<example name="predicative smell">
+<inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+<text>
+    ``It's a Swiss-cheese factory and the cheese smells pretty good,''
+    commented one veteran lobbyist who was watching the proceedings. 
+</text>
+        <arg n="1">the cheese</arg>
+        <rel>smells</rel>
+        <arg n="2">pretty good</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

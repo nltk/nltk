@@ -1,0 +1,59 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="answer">
+<note>
+Frames file for 'answer' based on sentences in financial subcorpus.
+Verbnet not available at this time.
+</note>
+
+<roleset id="answer.01" name="give an answer, reply">
+<roles>
+  <role descr="replier" n="0"/>
+  <role descr="in response to" n="1"/>
+  <role descr="answer" n="2"/>
+</roles>
+
+<example name="straight transitive">
+<text>
+    In a letter to Georgia Gulf President Jerry R. Satrum, Mr. Martin
+    asked Georgia Gulf *trace* to answer its offer by Tuesday. 
+</text>
+        <arg n="0">*trace* -&gt;  Georgia Gulf</arg>
+        <rel>answer</rel>
+        <arg n="1">its offer</arg>
+        <arg f="TMP" n="M">by Tuesday</arg>
+</example>
+
+<example name="answer to">
+<text>
+    Another proposed reform is to have program traders answer to an
+    ``uptick rule'' a reform instituted after the Great Crash of 1929
+    that protects against stocks being relentlessly beaten downward by
+    those seeking to profit from lower prices, namely short sellers. 
+</text>
+        <arg n="0">program traders</arg>
+        <rel>answer</rel>
+        <arg f="to" n="1">an ``uptick rule'' a reform instituted after
+        the Great Crash of 1929 that protects against stocks being
+        relentlessly beaten downward by those seeking to profit from
+        lower prices, namely short sellers</arg> 
+</example>
+
+<example name="with explicit answer">
+<text>
+    ``I've read Balzac,'' he answers critics.
+</text>
+        <arg n="0">he</arg>
+        <rel>answers</rel>
+        <arg n="1">critics</arg>
+        <arg n="2">*trace* -&gt;  I 've read Balzac</arg>
+</example>
+
+<note>
+Arg1 actually conflates the roles &quot;questioner&quot; and &quot;question&quot;; these
+might have to be split at some point.
+</note>
+
+</roleset>
+</predicate>
+</frameset>

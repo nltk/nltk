@@ -1,0 +1,102 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="tug">
+<note>
+Frames file for 'tug' based on sentences in financial subcorpus and
+automatic expansion via verbnet.
+</note>
+
+<roleset id="tug.01" name="carry by tugging" vncls="11.4">
+<roles>
+	<role descr="dragger" n="0">
+		
+  <vnrole vncls="11.4" vntheta="Agent"/></role>
+
+	<role descr="thing dragged" n="1">
+		
+  <vnrole vncls="11.4" vntheta="Theme"/></role>
+
+	<role descr="direction" n="2">
+		
+  <vnrole vncls="11.4" vntheta="Destination"/></role>
+
+</roles>
+
+<example name="compare with tug.03">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John tugged his heavy cedar chest to the center of the hallway.
+  </text>
+  <arg n="0">John</arg>
+  <rel>tugged</rel>
+  <arg n="1">his heavy cedar chest</arg>
+  <arg f="to" n="2">the center of the hallway</arg>
+</example>
+
+<note>
+This and tug.03 are very similar--tug.03 is a resultative, tug.01 is
+more directional.
+</note>
+
+</roleset>
+
+<roleset id="tug.02" name="pull (on)" vncls="12-1">
+<roles>
+	<role descr="puller" n="0">
+		
+  <vnrole vncls="12-1" vntheta="Agent"/></role>
+
+	<role descr="thing pulled" n="1">
+		
+  <vnrole vncls="12-1" vntheta="Theme"/></role>
+
+</roles>
+
+<example name="Picard maneuver">
+  <inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+  <text>
+    John tugs on the hem of his shirt whenever he stands up.
+  </text>
+  <arg n="0">John</arg>
+  <rel>tugs</rel>
+  <arg f="on" n="1">the hem of his shirt</arg>
+  <arg f="TMP" n="m">whenever he stands up</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+
+<roleset id="tug.03" name="pull with end result" vncls="23.2">
+<roles>
+	<role descr="puller, tugger" n="0">
+		
+  <vnrole vncls="23.2" vntheta="Agent"/></role>
+
+	<role descr="thing tugged" n="1">
+		
+  <vnrole vncls="23.2" vntheta="Patient1"/></role>
+
+	<role descr="other thing tugged or secondary attribute, result of arg1" n="2">
+  <vnrole vncls="23.2" vntheta="Patient2"/></role>
+</roles>
+
+<example name="not tug apart">
+<inflection aspect="ns" form="participle" person="ns" tense="ns" voice="active"/>
+<text>
+    But yesterday, the heavy trading action eventually consumed not
+    only Messrs. Jacobson and Bates but four other Jacobson partners,
+    all doing their specialist-firm job of *trace* tugging buyers and
+    sellers together and adjusting prices to accommodate the market. 
+</text>
+        <arg n="0">*trace* -&gt;  four other Jacobson partners</arg>
+        <rel>tugging</rel>
+        <arg n="1">buyers and sellers</arg>
+        <arg n="2">together</arg>
+</example>
+
+</roleset>
+
+</predicate>
+</frameset>

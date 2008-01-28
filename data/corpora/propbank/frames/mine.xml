@@ -1,0 +1,45 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="mine">
+<note>
+  Frames file for 'mine' based on survey of sentences in the WSJ
+  corpus.
+</note>
+
+<roleset id="mine.01" name="extract (ore or minerals) from the earth" vncls="10.9">
+<roles>
+  <role descr="miner, agent" n="0">
+	<vnrole vncls="10.9" vntheta="Agent"/></role>
+  <role descr="thing extracted" n="1">
+	<vnrole vncls="10.9" vntheta="Theme"/></role>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+<text>
+ Gold-oriented funds , for instance , which [*T*-1] invest in companies that [*T*-2] mine and process the precious metal , posted an average decline of 1.15 % .
+</text>
+	<arg n="0">[*T*-2] -&gt;  that -&gt;  companies</arg>
+	<rel>mine</rel>
+	<arg n="1">the precious metal</arg>
+</example>
+
+
+<example name="no subject antecedent">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+ Westmoreland 's strategy is [*] to retain and expand its core business of [*] mining and selling low-sulphur coal in the Appalachia region .
+</text>
+	<arg n="0">[*]</arg>
+	<rel>mining</rel>
+	<arg n="1">low-sulphur coal</arg>
+	<arg f="LOC" n="M">in the Appalachia region</arg>
+</example>
+
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

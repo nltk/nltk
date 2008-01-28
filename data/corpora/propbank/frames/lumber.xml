@@ -1,0 +1,46 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="lumber">
+<note>
+  Frames file for 'lumber' based on sentences in wsj.  Verbnet entry
+  51.3.2, Framenet entry Self motion.
+</note>
+
+<roleset id="lumber.01" name="move gracelessly" vncls="51.3.2">
+<roles>
+  <role descr="thing in motion" n="0"><vnrole vncls="51.3.2" vntheta="Theme"/></role>
+  <role descr="path" n="1"><vnrole vncls="51.3.2" vntheta="Location"/></role>
+</roles>
+
+<example name="not path">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+    Huge machines that [*T*-1] look as though they came from the Star
+    Wars desert-battle scene lumber among the dunes. 
+</text>
+        <arg n="0">Huge machines that [*T*-1] look as though they came
+        from the Star Wars desert-battle scene</arg> 
+        <rel>lumber</rel>
+        <arg f="LOC" n="M">among the dunes</arg>
+</example>
+
+<note>
+Incidentally, I don't recall any desert battle scenes in Star Wars.
+</note>
+
+<example name="yes path">
+  <inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/>
+  <text>
+    John watched the procession of giant gas-guzzling SUVs lumber down
+    the road.
+  </text>
+  <arg n="0">the procession of giant gas-guzzling SUVs</arg>
+  <rel>lumber</rel>
+  <arg f="down" n="1">the road</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

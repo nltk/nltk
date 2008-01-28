@@ -1,0 +1,63 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="sprout">
+<note>
+Frames file for 'sprout' based on sentences in financial subcorpus and
+automatic expansion via verbnet.
+</note>
+
+<roleset id="sprout.01" name="young plants appearing" vncls="43.4 45.4 45.5 47.2">
+<roles>
+	<role descr="farmer" n="0">
+		
+  <vnrole vncls="43.4" vntheta="Agent"/><vnrole vncls="45.4" vntheta="Agent"/></role>
+
+	<role descr="plant" n="1">
+		
+		
+		
+  <vnrole vncls="47.2" vntheta="Theme"/><vnrole vncls="43.4" vntheta="Theme"/><vnrole vncls="45.4" vntheta="Patient"/><vnrole vncls="45.5" vntheta="Patient"/></role>
+
+	<role descr="field" n="2">
+		
+  <vnrole vncls="47.2" vntheta="Location"/><vnrole vncls="43.4" vntheta="Location"/></role>
+
+</roles>
+
+<example name="intransitive">
+<inflection aspect="ns" form="full" person="ns" tense="future" voice="active"/>
+<text>
+    If sales don't pick up, the cuts will go deeper and incentives
+    will sprout again. 
+</text>
+        <arg f="ADV" n="M">If sales don't pick up</arg>
+        <arg n="1">incentives</arg>
+        <arg f="MOD" n="M">will</arg>
+        <rel>sprout</rel>
+        <arg f="TMP" n="M">again</arg>
+</example>
+
+<example name="with farmer">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John sprouted soybeans in his basement.
+  </text>
+  <arg n="0">John</arg>
+  <rel>sprouted</rel>
+  <arg n="1">soybeans</arg>
+  <arg f="in" n="2">his basement</arg>
+</example>
+
+<example name="locative subject">
+  <inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+  <text>
+    John's face sprouted a field of enormous red zits.
+  </text>
+  <arg n="2">John's face</arg>
+  <rel>sprouted</rel>
+  <arg n="1">a field of enormous red zits</arg>
+</example>
+
+</roleset>
+</predicate>
+</frameset>

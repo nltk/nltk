@@ -1,0 +1,44 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="sail">
+<note>
+  Frames file for 'sail'  based on survey of sentences in the WSJ
+  corpus. 
+</note>
+
+<roleset id="sail.01" name="to move along, navigate" vncls="51.4.2">
+<roles> 
+  <role descr="entity sailing" n="0"><vnrole vncls="51.4.2" vntheta="Agent"/></role>
+  <role descr="vessel" n="1"><vnrole vncls="51.4.2" vntheta="Theme"/></role>
+</roles>
+
+<example name="with direction">
+<inflection aspect="ns" form="full" person="ns" tense="past" voice="active"/>
+<text>
+ The pitch sailed toward Bobby Thomson high and inside and then , with a crack of the bat , was sent [*-1] rocketing back into the lower leftfield stands .
+</text>
+	<arg n="0">The pitch</arg>
+	<rel>sailed</rel>
+	<arg f="DIR" n="M">toward Bobby Thomson</arg>
+	<arg f="MNR" n="M">high and inside</arg>
+</example>
+
+
+
+<example name="transitive">
+<inflection aspect="ns" form="gerund" person="ns" tense="present" voice="active"/>
+<text>
+ The split comes in the midst of a court battle over whether the San Diego Yacht Club should be allowed [*-1] to keep the international trophy for [*] sailing a catamaran against the New Zealand challengers ' 90-foot monohull .
+</text>
+	<arg n="0">[*] -&gt;  [*-1] -&gt;  the San Diego Yacht Club</arg>
+	<rel>sailing</rel>
+	<arg n="1">a catamaran</arg>
+	<arg f="MNR" n="M">against the New Zealand challengers ' 90-foot monohull</arg>
+</example>
+
+
+</roleset>
+</predicate>
+
+
+</frameset>

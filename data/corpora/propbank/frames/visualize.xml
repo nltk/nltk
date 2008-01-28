@@ -1,0 +1,43 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="visualize">
+<note>
+  Frames file for 'visualize' based on sentences in wsj.  Verbnet entry 29.2.
+</note>
+
+<roleset id="visualize.01" name="see, imagine" vncls="29.2">
+<roles>
+  <role descr="visionary" n="0"><vnrole vncls="29.2" vntheta="Agent"/></role>
+  <role descr="thing seen" n="1"><vnrole vncls="29.2" vntheta="Theme"/></role>
+  <role descr="attribute" n="2"><vnrole vncls="29.2" vntheta="Predicate"/></role>
+</roles>
+
+<example name="transitive">
+<inflection aspect="ns" form="full" person="ns" tense="present" voice="active"/><text>
+     Because of standardized designs, Mr. Hovnanian says, ``a buyer
+     can visualize Society Hill regardless of where it is.''  
+</text>
+        <arg n="0">a buyer</arg>
+        <arg f="MOD" n="M">can</arg>
+        <rel>visualize</rel>
+        <arg n="1">Society Hill</arg>
+        <arg f="ADV" n="M">regardless of where it is </arg>
+</example>
+
+<example name="with attribute">
+  <inflection aspect="ns" form="full" person="third" tense="present" voice="active"/>
+  <text>
+     Mary visualizes John as a willing victim of her violence.
+  </text>
+  <arg n="0">Mary</arg>
+  <rel>visualizes</rel>
+  <arg n="1">John</arg>
+  <arg f="as" n="2">a willing victim of her violence</arg>
+</example>
+
+<note>
+</note>
+
+</roleset>
+</predicate>
+</frameset>

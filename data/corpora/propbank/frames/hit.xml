@@ -1,0 +1,101 @@
+<!DOCTYPE frameset SYSTEM "frameset.dtd">
+<frameset>
+<predicate lemma="hit">
+<note>
+based on survey of initial sentences of big corpus
+and comparison with 'strike'
+</note>
+
+<roleset id="hit.01" name="strike" vncls="18.1 18.4">
+<roles>
+  <role descr="agent, hitter - animate only!" n="0">
+	<vnrole vncls="18.1" vntheta="Agent"/></role>
+  <role descr="thing hit" n="1">
+	<vnrole vncls="18.4" vntheta="Theme"/>
+        <vnrole vncls="18.1" vntheta="Patient"/></role>
+  <role descr="instrument, thing hit by or with" n="2">
+	<vnrole vncls="18.4" vntheta="Location"/>
+        <vnrole vncls="18.1" vntheta="Instrument"/></role>
+</roles>
+
+<example>
+  <text>
+    Bank of New England has been hit hard by the region's real-estate slump.
+  </text>
+  <arg n="1">Bank of New England</arg>
+  <rel>hit</rel>
+  <arg f="MNR" n="m">hard</arg>
+  <arg f="by" n="2">the region's real-estate slump</arg>
+</example>
+
+<example>
+  <text>
+    The firm has also been hit *trace* with big financial settlements.
+  </text>
+  <arg n="1">The firm</arg>
+  <arg f="dis" n="m">also</arg>
+  <rel>hit</rel>
+  <arg f="with" n="2">big financial settlements</arg>
+</example>
+
+<example>
+  <text>
+    A slowdown is hitting the industry
+  </text>
+  <arg n="2">A slowdown</arg>
+  <rel>hitting</rel>
+  <arg n="1">the industry</arg>
+</example>
+
+</roleset>
+
+<roleset id="hit.02" name="reach, encounter" vncls="-">
+<roles>
+  <role descr="thing hitting / reaching" n="0"/>
+  <role descr="thing hit" n="1"/>
+</roles>
+
+<example>
+  <text>
+    The plane could hit the market in the mid-1990s.
+  </text>
+  <arg n="0">The plane</arg>
+  <arg f="mod" n="m">could</arg>
+  <rel>hit</rel>
+  <arg n="1">the market</arg>
+  <arg f="tmp" n="m">in the mid-1990s</arg>
+</example>
+
+<example>
+  <text>
+    When the sell programs hit, ...
+  </text>
+  <arg n="0">the sell programs</arg>
+  <rel>hit</rel>
+  <note>
+   The sell programs are presumable hitting something, like &quot;the computers&quot;
+  </note>
+</example>
+</roleset>
+
+<roleset id="hit.03" name="go to, turn to" vncls="-">
+<roles>
+  <role descr="entity turning to a new hobby" n="0"/>
+  <role descr="thing hit" n="1"/>
+</roles>
+
+<example>
+  <text>
+    He hit the lanes three years ago on the advice of his doctor.
+  </text>
+  <arg n="0">He</arg>
+  <rel>hit</rel>
+  <arg n="1">the lanes</arg>
+  <arg f="tmp" n="m">three years ago</arg>
+  <arg f="adv" n="m">on the advice of his doctor</arg>
+</example>
+
+</roleset>
+
+</predicate>
+</frameset>
