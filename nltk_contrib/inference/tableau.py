@@ -11,7 +11,7 @@ from api import ProverI
 class ProverParseError(Exception): pass
 
 class Tableau(ProverI):
-    def __init__(self, goal, assumptions=[], **options):
+    def __init__(self, goal=None, assumptions=[], **options):
         """
         @param goal: Input expression to prove
         @type goal: L{logic.Expression}
@@ -28,7 +28,9 @@ class Tableau(ProverI):
         tp_result = None
         try:
             agenda = Agenda()
-            agenda.put_all([negate(self._goal)] + self._assumptions)
+            if self._goal:
+                agenda.put(negate(self._goal))
+            agenda.put_all(self._assumptions)
             tp_result = _attempt_proof(agenda, set([]), set([]), (debug, 0))
         except RuntimeError, e:
             if self._assume_false and str(e).startswith('maximum recursion depth exceeded'):
@@ -107,7 +109,15 @@ class Agenda(object):
         return self.sets[index]
         
     def put(self, expression):
-        self.sets[Agenda._categorize_expression(expression)].add(expression)
+        if isinstance(expression, AllExpression):
+            ex_to_add = AllExpression(expression.variable, expression.term)
+            try:
+                ex_to_add._used_vars = set(used for used in expression._used_vars)
+            except AttributeError:
+                ex_to_add._used_vars = set([])
+        else:
+            ex_to_add = expression
+        self.sets[Agenda._categorize_expression(ex_to_add)].add(ex_to_add)
         
     def put_all(self, expressions):
         for expression in expressions:
@@ -316,8 +326,8 @@ def _attempt_proof_and(current, agenda, accessible_vars, atoms, debug=(False, 0)
     return _attempt_proof(agenda, accessible_vars, atoms, (debug[0], debug[1]+1))
     
 def _attempt_proof_n_or(current, agenda, accessible_vars, atoms, debug=(False, 0)):
-    agenda.put(current.second.first.second)
-    agenda.put(current.second.second)
+    agenda.put(negate(current.second.first.second))
+    agenda.put(negate(current.second.second))
     return _attempt_proof(agenda, accessible_vars, atoms, (debug[0], debug[1]+1))
 
 def _attempt_proof_n_imp(current, agenda, accessible_vars, atoms, debug=(False, 0)):
@@ -500,9 +510,9 @@ def testTableau():
     c = LogicParser().parse(r'some e0.(walk e0 mary)')
     print '%s |- %s: %s' % (p.infixify(), c.infixify(), Tableau(c, [p]).prove())
     
-    p = LogicParser().parse(r'some e1.some e2.((believe e1 john e2) and (walk e2 mary))')
-    c = LogicParser().parse(r'some x.some e3.some e4.((believe e3 x e4) and (walk e4 mary))')
-    print '%s |- %s: %s' % (p.infixify(), c.infixify(), Tableau(c,[p]).prove())
+#    p = LogicParser().parse(r'some e1.some e2.((believe e1 john e2) and (walk e2 mary))')
+#    c = LogicParser().parse(r'some x.some e3.some e4.((believe e3 x e4) and (walk e4 mary))')
+#    print '%s |- %s: %s' % (p.infixify(), c.infixify(), Tableau(c,[p]).prove())
 
 if __name__ == '__main__':
     testTableau()

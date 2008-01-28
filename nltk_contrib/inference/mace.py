@@ -14,28 +14,7 @@ from api import ModelBuilderI
 import prover9
 from prover9 import Prover9Parent
 
-class Mace(ModelBuilderI, Prover9Parent):
-    def __init__(self, goal, assumptions=[], timeout=60):
-        """
-        @param goal: Input expression to prove
-        @type goal: L{logic.Expression}
-        @param assumptions: Input expressions to use as assumptions in the proof
-        @type assumptions: L{list} of logic.Expression objects
-        @param timeout: number of seconds before timeout; set to 0 for no timeout.
-        @type timeout: C{int}
-        """
-        self.config_prover9()
-        self._goal = goal
-        self._assumptions = assumptions
-        self._p9_dir = ''
-        self._infile = ''
-        self._outfile = '' 
-        self._p9_assumptions = []
-        self._p9_goal = prover9.convert_to_prover9(self._goal)
-        if self._assumptions:
-            self._p9_assumptions = prover9.convert_to_prover9(self._assumptions)
-        self._timeout = timeout
-    
+class Mace(Prover9Parent, ModelBuilderI):
     def get_executable(self):
         return 'mace4'
 

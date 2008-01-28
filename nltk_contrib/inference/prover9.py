@@ -27,6 +27,32 @@ from api import ProverI
  #}
 
 class Prover9Parent:
+    def __init__(self, goal=None, assumptions=[], timeout=60):
+        """
+        @param goal: Input expression to prove
+        @type goal: L{logic.Expression}
+        @param assumptions: Input expressions to use as assumptions in the proof
+        @type assumptions: L{list} of logic.Expression objects
+        @param timeout: number of seconds before timeout; set to 0 for no timeout.
+        @type timeout: C{int}
+        """
+        self.config_prover9()
+        self._goal = goal       
+        self._assumptions = assumptions
+        self._p9_dir = ''
+        self._infile = ''
+        self._outfile = '' 
+        self._p9_assumptions = []
+        if goal:
+            self._p9_goal = convert_to_prover9(self._goal)
+        else:
+            self._p9_goal = None
+        if self._assumptions:
+            self._p9_assumptions = convert_to_prover9(self._assumptions)
+        else:
+            self._p9_assumptions = []
+        self._timeout = timeout
+
     def config_prover9(self, path=None, verbose=False):
         """
         Configure the location of Prover9 Executable
@@ -88,7 +114,10 @@ class Prover9Parent:
             f.write('end_of_list.\n\n')
     
         f.write('formulas(goals).\n')
-        f.write('    %s.\n' % self._p9_goal)
+        if self._p9_goal:
+            f.write('    %s.\n' % self._p9_goal)
+        f.write('end_of_list.\n\n')
+
         f.close()
             
         return None
@@ -241,27 +270,6 @@ def _toProver9String_Constant(current):
 
 
 class Prover9(Prover9Parent, ProverI):
-    def __init__(self, goal, assumptions=[], timeout=60):
-        """
-        @param goal: Input expression to prove
-        @type goal: L{logic.Expression}
-        @param assumptions: Input expressions to use as assumptions in the proof
-        @type assumptions: L{list} of logic.Expression objects
-        @param timeout: number of seconds before timeout; set to 0 for no timeout.
-        @type timeout: C{int}
-        """
-        self.config_prover9()
-        self._goal = goal       
-        self._assumptions = assumptions
-        self._p9_dir = ''
-        self._infile = ''
-        self._outfile = '' 
-        self._p9_assumptions = []
-        self._p9_goal = convert_to_prover9(self._goal)
-        if self._assumptions:
-            self._p9_assumptions = convert_to_prover9(self._assumptions)
-        self._timeout = timeout
-    
     def get_executable(self):
         return 'prover9'
 
@@ -346,7 +354,7 @@ expressions = [r'some x y.(sees x y)',
     
 if __name__ == '__main__':
     from nltk_contrib.inference import Prover9Parent
-    p = Prover9Parent()
+    p = Prover9()
     p.config_prover9()
     test_convert_to_prover9(expressions)
     print '\n'
