@@ -1,27 +1,27 @@
 1	John	_	pn	_	_	2	subj	_	_
-2	runs	_	iv	_	_	0	ROOT	_	_
+2	runs	_	verb	_	_	0	ROOT	_	_
 
 1	a	_	ex_quant	_	_	2	spec	_	_
 2	man	_	n	_	_	3	subj	_	_
-3	runs	_	iv	_	_	0	ROOT	_	_
+3	runs	_	verb	_	_	0	ROOT	_	_
 
 1	John	_	pn	_	_	2	subj	_	_
-2	sees	_	tv	_	_	0	ROOT	_	_
+2	sees	_	verb	_	_	0	ROOT	_	_
 3	Mary	_	pn	_	_	2	obj	_	_
 
 1	every	_	univ_quant	_	_	2	spec	_	_
 2	girl	_	n	_	_	3	subj	_	_
-3	chases	_	tv	_	_	0	ROOT	_	_
+3	chases	_	verb	_	_	0	ROOT	_	_
 4	an	_	ex_quant	_	_	5	spec	_	_
 5	animal	_	n	_	_	3	obj	_	_
 
-1	Bill	_	pn	pn	_	2	subj	_	_
-2	sees	_	tv	tv	_	0	ROOT	_	_
-3	a	_	dt	dt	_	4	spec	_	_
-4	dog	_	n	n	_	2	obj	_	_
+1	Bill	_	pn	_	_	2	subj	_	_
+2	sees	_	verb	_	_	0	ROOT	_	_
+3	a	_	ex_quant	_	_	4	spec	_	_
+4	dog	_	n	_	_	2	obj	_	_
 
-1	every	_	dt	dt	_	2	spec	_	_
-2	girl	_	n	n	_	3	subj	_	_
-3	chases	_	tv	tv	_	0	ROOT	_	_
-4	John	_	pn	pn	_	3	obj	_	_
+1	every	_	univ_quant	_	_	2	spec	_	_
+2	girl	_	n	_	_	3	subj	_	_
+3	chases	_	verb	_	_	0	ROOT	_	_
+4	John	_	pn	_	_	3	obj	_	_
 
