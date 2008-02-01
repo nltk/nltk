@@ -213,11 +213,12 @@ class CategorizedCorpusReader(object):
         Return a list of file identifiers for the files that make up
         this corpus, or that make up the given category(s) if specified.
         """
-        if self._f2c is None: self._init()
         if categories is None:
             return super(CategorizedCorpusReader, self).files()
         elif isinstance(categories, basestring):
+            if self._f2c is None: self._init()
             return sorted(self._c2f[categories])
         else:
+            if self._f2c is None: self._init()
             return sorted(sum((self._c2f[c] for c in categories), []))
 
