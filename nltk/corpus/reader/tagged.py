@@ -183,10 +183,8 @@ class CategorizedTaggedCorpusReader(CategorizedCorpusReader,
             raise ValueError('Specify files or categories, not both')
         if categories is not None:
             return self.files(categories)
-        elif files is None:
-            return files
         else:
-            return self._files
+            return files
     def raw(self, files=None, categories=None):
         return TaggedCorpusReader.raw(
             self, self._resolve(files, categories))
