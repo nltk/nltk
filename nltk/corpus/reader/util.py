@@ -487,9 +487,9 @@ class ConcatenatedCorpusView(AbstractCorpusView):
             piece = self._pieces[piecenum]
 
             # If we've got another piece open, close it first.
-            if (self._open_piece is not piece and 
-                self._open_piece is not None):
-                self._open_piece.close()
+            if self._open_piece is not piece:
+                if self._open_piece is not None:
+                    self._open_piece.close()
                 self._open_piece = piece
 
             # Get everything we can from this piece.
