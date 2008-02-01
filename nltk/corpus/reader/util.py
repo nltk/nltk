@@ -296,7 +296,8 @@ class StreamBackedCorpusView(AbstractCorpusView):
         view is accessed after it is closed, it will be automatically
         re-opened.
         """
-        self._stream.close()
+        if self._stream is not None:
+            self._stream.close()
         self._stream = None
 
     def __len__(self):
