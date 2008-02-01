@@ -1370,3 +1370,12 @@ the first file.
     >>> print sents[6000]
     ['Cholesterol', 'and', 'thyroid']
 
+svn 5728 fixed a bug in Categorized*CorpusReader, which caused them
+to return words from *all* files when just one file was specified.
+
+    >>> from nltk.corpus import reuters
+    >>> reuters.words('training/13080')
+    ['U', '.', 'S', '.', 'SCIENTISTS', 'SAY', 'TROPICAL', ...]
+    >>> reuters.words('training/5082')
+    ['SHEPPARD', 'RESOURCES', 'TO', 'MERGE', 'WITH', ...]
+
