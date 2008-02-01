@@ -13,15 +13,6 @@ from nltk import tokenize
 from nltk.etree import ElementTree
 from nltk.internals import deprecated
 
-# Maximize the number of open files allowed (for CESS and Reuters Corpora)
-if os.name == 'posix':
-    import resource
-    soft, hard = resource.getrlimit(resource.RLIMIT_NOFILE)
-    try:
-        resource.setrlimit(resource.RLIMIT_NOFILE, (hard, hard))
-    except ValueError:
-        pass
-
 ######################################################################
 #{ Corpus View
 ######################################################################
