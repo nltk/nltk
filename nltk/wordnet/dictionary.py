@@ -131,7 +131,7 @@ class Dictionary(object):
         results = []
 
         if type(a) == type('') and type(b) == type(''):
-            raise "unimplemented"
+            raise NotImplementedError()
 
         elif type(a) == type(1) and type(b) == type(1):
             for i in range(a, b):
