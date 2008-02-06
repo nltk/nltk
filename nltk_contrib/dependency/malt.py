@@ -138,25 +138,24 @@ def parse(sentence, verbose=False):
     return depgraph
 
 def pos_tag(sentence, verbose=False):
+    from nltk.corpus import treebank
+    treebankDict = {}
+    for (word,tag) in treebank.tagged_words():
+        treebankDict[word] = tag
+    
     words = tokenize.WhitespaceTokenizer().tokenize(sentence)
     tagged_words = []
     for word in words:
         try:
-            tag = {'john'  : 'pn',
-                   'mary'  : 'pn',
-                   'sees'  : 'verb',
-                   'own'   : 'verb',
-                   'have'  : 'verb',
-                   'walks' : 'verb',
-                   'a'     : 'ex_quant',
+            tag = {'a'     : 'ex_quant',
                    'an'    : 'ex_quant',
-                   'every' : 'univ_quant',
-                   'dog'   : 'n',
-                   'car'   : 'n',
-                   'auto'  : 'n'
+                   'every' : 'univ_quant'
                    }[word.lower()]
         except:
-            raise KeyError('\'%s\' is not in the Part-of-Speech lookup' % word )
+            try:
+                tag = treebankDict[word]
+            except:
+                raise KeyError('\'%s\' is not in the Part-of-Speech lookup' % word )
         tagged_words.append((word, tag))
     return tagged_words
 
@@ -212,5 +211,5 @@ if __name__ == '__main__':
     train(True)
 
     parse('John sees Mary', verbose=True)
-    parse('a dog walks', verbose=True)
+    parse('a man runs', verbose=True)
     

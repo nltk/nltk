@@ -156,7 +156,11 @@ class GlueDict(dict):
     def lookup(self, sem, word, current_subj, fstruct):
         relationships = frozenset([r for r in fstruct])
         try:
-            lookup = self[sem][relationships]
+            semtype = self[sem]
+        except KeyError:
+            raise KeyError, 'There is no GlueDict entry for sem type \'' + str(sem)
+        try:
+            lookup = semtype[relationships]
         except KeyError:
             # An exact match is not found, so find the best match where
             # 'best' is defined as the glue entry whose relationship set has the
@@ -278,7 +282,7 @@ def parse_to_compiled(sentence='a man sees Mary', dependency=False, verbose=Fals
         fstructs = [lfg.FStructure.read_depgraph(dep_graph) for dep_graph in dep_parse(sentence, verbose)]
     else:
         fstructs = [lfg.FStructure.read_parsetree(pt, [0]) for pt in earley_parse(sentence)]
-    gfls = [fstruct_to_glue(f, verbose, dependency) for f in fstructs]
+    gfls = [fstruct_to_glue(f, dependency, verbose) for f in fstructs]
     return [gfl_to_compiled(gfl, verbose) for gfl in gfls]
 
 def dep_parse(sentence='every cat leaves', verbose=False):
@@ -293,7 +297,7 @@ def earley_parse(sentence='every cat leaves'):
     trees = cp.nbest_parse(tokens)
     return trees
 
-def fstruct_to_glue(fstruct, verbose=False, dependency=False):
+def fstruct_to_glue(fstruct, dependency=False, verbose=False):
     if dependency:
         filename = 'drt_glue_event.semtype'
     else:
@@ -548,18 +552,25 @@ def testPnApp():
     seems_john_vanish = seems.applyto(john_vanish)
     print '      \'it seems that john vanishes\': %s' % seems_john_vanish.simplify().infixify()
 
+def test_malt_parse():
+    print 'DRT-Glue using MaltParser:'
+    for s in ['John sees Mary',
+              'a man runs',
+              #'a man ran'
+              ]:
+        print s
+        for reading in parse_to_meaning(s, dependency=True, verbose=True):
+            #print '    ', reading
+            print '    ', reading.simplify().infixify()
+            print '        ', reading.simplify().toFol().infixify()
+
 if __name__ == '__main__':
     proof_demo()
     print "\n\n\n"
     compiled_proof_demo()
     print "\n\n\n"
-    demo()
+    #demo()
     #print "\n\n\n"
     #testPnApp()
     print ''  
-      
-    print 'DRT-Glue using MaltParser:'
-    for reading in parse_to_meaning('John sees Mary', dependency=True, verbose=False):
-        print reading.simplify().infixify()
-    for reading in parse_to_meaning('a dog walks', dependency=True, verbose=False):
-        print reading.simplify().infixify()
+    test_malt_parse()

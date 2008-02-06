@@ -12,18 +12,26 @@ class FStructure(dict):
     read_depgraph = staticmethod(read_depgraph)
     
     def _read_depgraph(node, depgraph, current_label=[0], parent=None):
-        if node['rel'].lower() == 'spec':
+        if node['rel'].lower() in ['spec']:
+            # the value of a 'spec' entry is a word, not an FStructure
             return (node['word'], node['tag'])
             
         else:
             self = FStructure()
-            
+            self.pred = None
             self.label = ['f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','a','b','c','d','e'][current_label[0]]
             current_label[0] += 1
     
             self.parent = parent
             
-            self.pred = (node['word'], node['tag'])
+            (word, tag) = (node['word'], node['tag'])
+            if tag[:2] == 'VB':
+                if tag[2:3] == 'D':
+                    self['tense'] = ('PAST', 'tense')
+                self.pred = (word, tag[:2])
+
+            if not self.pred:
+                self.pred = (word, tag)
     
             children = [depgraph.nodelist[idx] for idx in node['deps']]
             for child in children:
