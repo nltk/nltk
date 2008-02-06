@@ -1,9 +1,20 @@
+# Natural Language Toolkit: Recognizing Textual Entailment (RTE)
+#                           using deep semantic entailment 
+#
+# Author: Dan Garrette <dhgarrette@gmail.com>
+#
+# URL: <http://nltk.sf.net>
+# For license information, see LICENSE.TXT
+
 from nltk.corpus import rte
 from nltk import evaluate
 from nltk import wordnet
 from nltk.sem import logic
+from nltk_contrib.gluesemantics import drt_glue
 from nltk_contrib.inference import inference
-
+import ctypes
+import threading
+import bow
 
 class RTEInferenceTagger(object):
     """
@@ -20,17 +31,24 @@ class RTEInferenceTagger(object):
         """
         Tag a RTEPair as to whether the hypothesis can be inferred from the text.
         """
-        text_drs_list = drt_glue.parse_to_meaning(text, dependency=True, verbose=verbose)
+        return self.tag_sentences(rtepair.text, rtepair.hyp )
+
+    def tag_sentences(self, text, hyp, verbose=False):
+        """
+        Tag a RTEPair as to whether the hypothesis can be inferred from the text.
+        """
+        
+        text_drs_list = drt_glue.parse_to_meaning(text, dependency=True)
         if text_drs_list:
             text_ex = text_drs_list[0].simplify().toFol()
         else:
-            print 'ERROR: No readings were be generated for the Text'
+            if verbose: print 'ERROR: No readings were be generated for the Text'
         
-        hyp_drs_list  = drt_glue.parse_to_meaning(hyp, dependency=True, verbose=verbose)
+        hyp_drs_list  = drt_glue.parse_to_meaning(hyp, dependency=True)
         if hyp_drs_list:
             hyp_ex = hyp_drs_list[0].simplify().toFol()
         else:
-            print 'ERROR: No readings were be generated for the Hypothesis'
+            if verbose: print 'ERROR: No readings were be generated for the Hypothesis'
 
         #1. proof T -> H
         #2. proof (BK & T) -> H
@@ -40,32 +58,53 @@ class RTEInferenceTagger(object):
         #6. satisfy BK & T & H
             
         result = inference.get_prover(hyp_ex, [text_ex]).prove()
-        print 'prove: T -> H: %s' % result
+        if verbose: print 'prove: T -> H: %s' % result
         
         if not result:
             bk = tagger._generate_BK(text, hyp, verbose)
             bk_exs = [bk_pair[0] for bk_pair in bk]
             
-            print 'Generated Background Knowledge:'
-            for bk_ex in bk_exs:
-                print bk_ex.infixify()
-            print ''
+            if verbose: 
+                print 'Generated Background Knowledge:'
+                for bk_ex in bk_exs:
+                    print bk_ex.infixify()
                 
             result = inference.get_prover(hyp_ex, [text_ex]+bk_exs).prove()
-            print 'prove: (T & BK) -> H: %s' % result
+            if verbose: print 'prove: (T & BK) -> H: %s' % result
             
             if not result:
-                # Check if the background knowledge axioms are inconsistant
-                inconsistent = inference.get_prover(assumptions=bk_exs+[text_ex]).prove()
-                consistent = inference.get_model_builder(assumptions=bk_exs+[text_ex]).model_found()
-                print 'prove: (BK & T): %s' % inconsistent
-                print 'satisfy: (BK & T): %s' % consistent
+                consistent = self.check_consistency(bk_exs+[text_ex])                
+                if verbose: print 'consistency check: (BK & T): %s' % consistent
 
                 if consistent:
-                    inconsistent = inference.get_prover(assumptions=bk_exs+[text_ex, hyp_ex]).prove()
-                    consistent = inference.get_model_builder(assumptions=bk_exs+[text_ex, hyp_ex]).model_found()
-                    print 'prove: (BK & T & H): %s' % inconsistent
-                    print 'satisfy: (BK & T & H): %s' % consistent
+                    consistent = self.check_consistency(bk_exs+[text_ex, hyp_ex])                
+                    if verbose: print 'consistency check: (BK & T & H): %s' % consistent
+                    
+        return result
+    
+    def check_consistency(self, assumptions, verbose=False):
+        # Set up two thread, Prover and ModelBuilder to run in parallel
+        prover = inference.get_prover(assumptions=assumptions)
+        model_builder = inference.get_model_builder(assumptions=assumptions)
+        
+        prover_result = [None]
+        prover_thread = ProverThread(prover, prover_result, verbose)
+        model_builder_result = [None]
+        model_builder_thread = ModelBuilderThread(model_builder, model_builder_result, verbose)
+        
+        prover_thread.start()
+        model_builder_thread.start()
+        
+        while not prover_result[0] and not model_builder_result[0]:
+            # wait until either the prover or the model builder is done
+            pass
+    
+        if prover_result[0]:
+            consistency = prover_result[0]
+        else:
+            consistency = model_builder_result[0]
+
+        return (consistency == 'consistent')
         
     def _tag(self, text, hyp, verbose=False):
         self._generate_BK(text, hyp, verbose)
@@ -107,10 +146,6 @@ class RTEInferenceTagger(object):
             if word_text in wordnet.ADV:
                 bk.extend(self._generate_BK_word(word_text, wordnet.ADV, fullbow))
                 
-        if verbose:
-            for bk_pair in bk:
-                print (str(bk_pair[0].infixify()), bk_pair[1])
-            
         return bk
         
     def _generate_BK_word(self, word_text, pos, fullbow):
@@ -206,15 +241,49 @@ class RTEInferenceTagger(object):
         exp_text = 'all x.((%s x) implies (not (%s x)))' % (text1, text2)
         return (logic.LogicParser().parse(exp_text), dist)
     
+    def _parallel_prove_satisfy(self, goal=None, assumptions=[]):
+        prover = inference.get_prover(assumptions=bk_exs+[text_ex])
+        model_builder = inference.get_model_builder(assumptions=bk_exs+[text_ex])
+        
+        inconsistent = ProverThread(prover).start()
+        consistent = ModelBuilderThread(model_builder).start()
     
-def demo(verbose=False):
-    from nltk_contrib.gluesemantics import drt_glue
-    
+class ProverThread( threading.Thread ):
+    def __init__(self, prover, result, verbose=False):
+        self.prover = prover
+        self.result = result
+        self.verbose = verbose
+        threading.Thread.__init__(self)
+        
+    def run( self ):
+        tp_result = self.prover.prove()
+        if tp_result:
+            self.result[0] = 'inconsistent'
+        else:
+            self.result[0] = 'consistent'
+        if self.verbose: print 'Prover finished with \'%s\'' % self.result[0]
+
+class ModelBuilderThread( threading.Thread ):
+    def __init__(self, model_builder, result, verbose=False):
+        self.model_builder = model_builder
+        self.result = result
+        self.verbose = verbose
+        threading.Thread.__init__(self)
+        
+    def run( self ):
+        mb_result = self.model_builder.model_found()
+        if mb_result:
+            self.result[0] = 'consistent'
+        else:
+            self.result[0] = 'inconsistent'
+        if self.verbose: print 'Model Builder finished with \'%s\'' % self.result[0]
+
+def demo_inference_tagger(verbose=False):
     tagger = RTEInferenceTagger()
     
-    text = 'John own a car'
+    text = 'John see a car'
     print 'Text: ', text
-    hyp = 'John have an auto'
+    hyp = 'John watch an auto'
     print 'Hyp:  ', hyp
 
 #    text_ex = logic.LogicParser().parse('some e x y.((david x) and ((own e) and ((subj e x) and ((obj e y) and (car y)))))))')
@@ -294,5 +363,23 @@ def demo(verbose=False):
     else:
         print 'Inconsistency -> Entailment unknown\n'
     
+def test_check_consistency():
+    a = logic.LogicParser().parse('(man j)')
+    b = logic.LogicParser().parse('(not (man j))')
+    print '%s, %s: %s' % (a.infixify(), b.infixify(), 
+                          RTEInferenceTagger().check_consistency([a,b], True))
+    print '%s, %s: %s' % (a.infixify(), a.infixify(), 
+                          RTEInferenceTagger().check_consistency([a,a], True))
+
 if __name__ == '__main__':
-    demo(False)
+    demo_inference_tagger(False)
+    
+    text = 'John see a car'
+    print 'Text: ', text
+    hyp = 'John watch an auto'
+    print 'Hyp:  ', hyp
+    tagger = RTEInferenceTagger()
+    print 'Entailment =', tagger.tag_sentences(text, hyp, True)
+    print ''
+    
+    test_check_consistency()
