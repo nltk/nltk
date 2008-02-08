@@ -1,35 +1,41 @@
-==============
-Theorem Prover
-==============
+====================================
+Logical Inference and Model Building
+====================================
+
+The module ``nltk_contrib.inference`` can be used to access both
+theorem provers and model builders.
 
 ---------------------------------
 NLTK Interface to Theorem Provers
 ---------------------------------
 
-The module ``nltk_contrib.theorem_prover`` can be used to access the 
-theorem provers.  The module contains a method ``attempt_proof()`` that takes 
-an ``Expression`` and, optionally, a name of a theorem prover.  The default is 
-``'Prover9'`` , but the tableau prover may be used by specifying ``'tableau'``.
+The ``nltk_contrib.inference`` module contains a method ``get_prover()`` that takes 
+an ``Expression`` and, optionally, the name of a theorem prover.  The default is 
+``'Prover9'``, but the tableau prover may be used by specifying ``'tableau'``.
 
-
-    >>> from nltk_contrib import inference
-    >>> from nltk_contrib.drt import DRT
-    >>> f = DRT.Parser().parse('drs([],[(drs([],[(man x)]) implies drs([],[(man x)]))])').toFol()
-    >>> print f
-    (implies (man x) (man x))
-    >>> inference.Prover9(f).prove()
-    True
+    >>> from nltk_contrib.inference import *
+    >>> from nltk.sem import LogicParser, ApplicationExpression, Operator
+    >>> lp = LogicParser()
+    >>> a = lp.parse('some x.((man x) and (walks x))')
+    >>> b = lp.parse('some x.((walks x) and (man x))')
+    >>> bicond = ApplicationExpression(ApplicationExpression(Operator('iff'), a), b)
+    >>> print "Trying to prove:\n '%s <-> %s'" % (a.infixify(), b.infixify())
+    Trying to prove:
+     'some x.((man x) and (walks x)) <-> some x.((walks x) and (man x))'
+    >>> print 'tableau: %s' % get_prover(bicond, prover_name='tableau').prove()
+    tableau: True
+    >>> print 'Prover9: %s' % get_prover(bicond, prover_name='Prover9').prove()
+    Prover9: True
 
 
 -------
 Prover9
 -------
+
 Prover9 Installation
 ~~~~~~~~~~~~~~~~~~~~
 
 You can download Prover9 from http://www.cs.unm.edu/~mccune/prover9/.
-
-
 
 Extract the source code into a suitable directory and follow the
 instructions in the Prover9 ``README.make`` file to compile the executables.
@@ -53,14 +59,14 @@ A ``Prover9`` instance is initialized with a goal and, possibly, some
 assumptions. The ``prove()`` method attempts to find a proof of the goal,
 given the list of assumptions (in this case, none).
 
-    >>> prover = inference.Prover9(g)
+    >>> prover = Prover9(g)
     >>> prover.prove()
     True
 
 We can also call the ``prove()`` method directly:
 
     >>> g = LogicParser().parse('all x. ((man x) implies (man x))')
-    >>> print inference.Prover9(g).prove()
+    >>> print Prover9(g).prove()
     True
     
 Given a ``Prover9`` instance ``prover``, the method
@@ -97,9 +103,9 @@ provided by Prover9, shown in abbreviated form here::
 As mentioned earlier, we can explicitly specify the assumptions for
 the proof, as shown here.
 
-    >>> g = LogicParser().parse('(mortal Socrates)')
+    >>> g = LogicParser().parse('(mortal socrates)')
     >>> a1 = LogicParser().parse('all x.((man x) implies (mortal x))')
-    >>> prover = inference.Prover9(g, assumptions=[a1])
+    >>> prover = Prover9(g, assumptions=[a1])
     >>> prover.assumptions()
     all x.((man x) implies (mortal x))
 
@@ -111,11 +117,11 @@ However, the assumptions are not sufficient to derive the goal:
 
 So let's add another assumption:
 
-    >>> a2 = LogicParser().parse('(man Socrates)')    
+    >>> a2 = LogicParser().parse('(man socrates)')    
     >>> prover.add_assumptions([a2])
     >>> prover.assumptions()
     all x.((man x) implies (mortal x))
-    (man Socrates)
+    (man socrates)
     >>> print prover.prove()
     True
 
@@ -123,7 +129,7 @@ We can also show the assumptions in ``Prover9`` format.
 
     >>> prover.assumptions(output_format='Prover9')
     all x (man(x) -> mortal(x))
-    man(Socrates)
+    man(socrates)
 
     >>> prover.assumptions(output_format='Spass')
     Traceback (most recent call last):
@@ -134,14 +140,16 @@ Assumptions can be retracted from the list of assumptions.
 
     >>> prover.retract_assumptions([a1])
     >>> prover.assumptions()
-    (man Socrates)
+    (man socrates)
     >>> prover.retract_assumptions([a1])
 
 Statements can be load from a file and parsed. We can then add these
 a statements as new assumptions.
 
     >>> g = LogicParser().parse('all x. ((boxer1 x) implies (not (boxer2 x)))')
-    >>> prover = inference.Prover9(g)
+    >>> prover = Prover9(g)
+    >>> prover.prove()
+    False
     >>> new = prover.load('onto1.fol')
     >>> for a in new:
     ...     print a.infixify()
@@ -189,4 +197,56 @@ to determine this equivalence, and then delete one of them.
 
     >>> readings[0].tp_equals(readings[1])
     True
+
+--------------------------------
+NLTK Interface to Model Builders
+--------------------------------
+
+The top-level to model builders is parallel to that for
+theorem-provers. The method ``get_model_builder()`` takes 
+an ``Expression`` and, optionally, the name of a model builder prover.  The default is 
+``'Mace'``, (or more precisely, ``'Mace4'``) which is currently the only model builder supported.
+
+Typically we use a model builder to show that some set of formulas has
+a model, and is therefore consistent. One way of doing this is by
+treating our candidate set of sentences as assumptions, and leaving
+the goal unspecified. 
+Thus, the following interaction shows how both ``{a, c1}`` and ``{a, c2}``
+are consistent sets, since Mace succeeds in a building a
+model for each of them, while ``{c1, c2}`` is inconsistent.
+
+    >>> a3 = lp.parse('some x.((man x) and (walks x))')
+    >>> c1 = lp.parse('(mortal socrates)')
+    >>> c2 = lp.parse('(not (mortal socrates))')
+    >>> print get_model_builder('', [a3, c1]).model_found()
+    True
+    >>> print get_model_builder('', [a3, c2]).model_found()
+    True
+    >>> print get_model_builder('', [c1, c2]).model_found()
+    False
+
+We can also use the model builder as a theorem prover. Suppose we wish
+to test whether a goal ``g`` follows from assumptions ``S``. Then we ask the
+model builder to build a model for ``S`` together with the negation of
+``g``. If this succeeds, then  
+
+    >>> print get_model_builder(c2, [a1, a2]).model_found()
+    True
+    >>> print get_model_builder(c1, [a1, a2]).model_found()
+    False
+    
+
+-----
+Mace4
+-----
+
+Mace4 Installation
+~~~~~~~~~~~~~~~~~~
+
+Mace4 is packaged with Prover9, and can be downloaded from the same
+source, namely http://www.cs.unm.edu/~mccune/prover9/. It is installed
+in the same manner as Prover9.
+
+Using Mace4
+~~~~~~~~~~~
 
