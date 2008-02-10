@@ -1,6 +1,5 @@
 # Natural Language Toolkit: Semantic Interpretation
 #
-# Copyright (C) 2001-2008 University of Pennsylvania
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
@@ -24,6 +23,12 @@ import nltk
 def text_parse(inputs, grammar, trace=0):
     """
     Convert input sentences into syntactic trees.
+    
+    @parameter inputs: sentences to be parsed
+    @type inputs: C{list} of C{str}
+    @parameter grammar: feature-based grammar to use in parsing
+    @rtype: C{dict}
+    @return: a mapping from input sentences to a list of L{Tree}s
     """
     parses = {}
     cp = nltk.parse.FeatureEarleyChartParser(grammar, trace=trace)
@@ -33,9 +38,12 @@ def text_parse(inputs, grammar, trace=0):
         parses[sent] = syntrees
     return parses
 
-def semrep(node, beta_reduce=True):
+def _semrep(node, beta_reduce=True):
     """
     Find the semantic representation at a given tree node.
+    
+    @parameter node: node of a parse L{Tree}
+    @rtype: L{logic.Expression}
     """
     assert isinstance(node, nltk.cfg.FeatStructNonterminal)
     try:
@@ -50,13 +58,23 @@ def semrep(node, beta_reduce=True):
 def root_semrep(syntree, beta_reduce=True, start='S'):
     """
     Find the semantic representation at the root of a tree.
+    
+    @parameter syntree: a parse L{Tree}
+    @parameter beta_reduce: if C{True}, carry out beta reduction on the logical forms that are returned
+    @return: the semantic representation at the root of a L{Tree}
+    @rtype: L{logic.Expression}
     """
-    return semrep(syntree.node, beta_reduce=beta_reduce)
+    return _semrep(syntree.node, beta_reduce=beta_reduce)
 
 def text_interpret(inputs, grammar, beta_reduce=True, start='S', syntrace=0):
     """
     Add the semantic representation to each syntactic parse tree
     of each input sentence.
+    
+    @parameter inputs: a list of sentences
+    @parameter grammar: a feature-based grammar
+    @return: a mapping from sentences to lists of pairs (parse-tree, semantic-representations)
+    @rtype: C{dict}
     """
     parses = text_parse(inputs, grammar, trace=syntrace)
     semreps = {}
@@ -72,6 +90,9 @@ def text_evaluate(inputs, grammar, model, assignment, semtrace=0):
     """
     Add the truth-in-a-model value to each semantic representation
     for each syntactic parse of each input sentences.
+    
+    @return: a mapping from sentences to lists of triples (parse-tree, semantic-representations, evaluation-in-model)
+    @rtype: C{dict}
     """
     g = assignment
     m = model
@@ -82,25 +103,30 @@ def text_evaluate(inputs, grammar, model, assignment, semtrace=0):
           [(syn, sem, m.evaluate(str(sem), g, trace=semtrace)) for (syn, sem) in semreps[sent]]
         evaluations[sent] = syn_sem_val
     return evaluations
-    
-"""
-Demo of how to combine the output of parsing with evaluation in a model.
-Use 'python syn2sem.py -h' to find out the various options.
 
-Note that this demo currently processes the whole input file
-before delivering any results, consequently there may be a significant initial delay.
-"""
-
-
+##########################################
+# REs used by the parse_valuation function
+##########################################
 _VAL_SPLIT_RE = re.compile(r'\s*=+>\s*')
 _ELEMENT_SPLIT_RE = re.compile(r'\s*,\s*')
 _TUPLES_RE = re.compile(r"""\s*         
-                                              (\([^)]+\))  # tuple-expression
-                                              \s*""", re.VERBOSE)
+                                (\([^)]+\))  # tuple-expression
+                                \s*""", re.VERBOSE)
 
 def parse_valuation_line(s):
     """
     Parse a line in a valuation file.
+    
+    Lines are expected to be of the form::
+    
+      noosa => n
+      girl => {g1, g2}
+      chase => {(b1, g1), (b2, g1), (g1, d1), (g2, d2)}
+    
+    @parameter s: input line
+    @type s: C{str}
+    @return: a pair (symbol, value)
+    @rtype: C{tuple}
     """
     pieces = _VAL_SPLIT_RE.split(s)
     symbol = pieces[0]
@@ -124,6 +150,11 @@ def parse_valuation_line(s):
 def parse_valuation(s):
     """
     Convert a valuation file into a valuation.
+    
+    @parameter s: the contents of a valuation file
+    @type s: C{str}
+    @return: a L{nltk.sem} valuation
+    @rtype: L{Valuation}
     """
     statements = []
     for linenum, line in enumerate(s.splitlines()):
@@ -179,7 +210,7 @@ def demo():
     from optparse import OptionParser
     description = \
     """
-Parse and evaluate some sentences.
+    Parse and evaluate some sentences.
     """
 
     opts = OptionParser(description=description)
