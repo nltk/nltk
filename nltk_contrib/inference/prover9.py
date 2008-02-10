@@ -32,7 +32,7 @@ class Prover9Parent:
         @param goal: Input expression to prove
         @type goal: L{logic.Expression}
         @param assumptions: Input expressions to use as assumptions in the proof
-        @type assumptions: L{list} of logic.Expression objects
+        @type assumptions: C{list} of L{logic.Expression} objects
         @param timeout: number of seconds before timeout; set to 0 for no timeout.
         @type timeout: C{int}
         """
@@ -95,6 +95,12 @@ class Prover9Parent:
     def prover9_files(self, filename='prover9', p9_dir=None):
         """
         Generate names for the input and output files and write to the input file.
+        
+        @parameter filename: label to use for the input files; appropriate values are 'prover9' and 'mace4'.
+        @type filename: C{str}
+        @parameter p9_dir: location of directory for writing input and output files; if not specified, the C{tempfile} module is used.
+        @type p9_dir: C{str}
+        
         """     
         # If no directory specified, use system temp directory
         if p9_dir is None:
