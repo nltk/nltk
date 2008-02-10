@@ -150,8 +150,8 @@ class Mace(Prover9Parent, ModelBuilderI):
         return output_file
         
 
-def spacer():
-    print '-' * 30
+def spacer(num=30):
+    print '-' * num
 
 def test_model_found(arguments):
     """
