@@ -2,30 +2,36 @@
 Logical Inference and Model Building
 ====================================
 
-The module ``nltk_contrib.inference`` can be used to access both
-theorem provers and model builders.
+------------
+Introduction
+------------
+
+Within the area of automated reasoning, first order theorem proving
+and model building (or model generation) have both received much
+attention, and have given rise to highly sophisticated techniques. We
+focus therefore on providing an NLTK interface to third party tools
+for these tasks.  In particular, the module ``nltk_contrib.inference`` can be
+used to access both theorem provers and model builders.
 
 ---------------------------------
 NLTK Interface to Theorem Provers
 ---------------------------------
 
-The ``nltk_contrib.inference`` module contains a method ``get_prover()`` that takes 
-an ``Expression`` and, optionally, the name of a theorem prover.  The default is 
-``'Prover9'``, but the tableau prover may be used by specifying ``'tableau'``.
+The ``nltk_contrib.inference`` module contains a method
+``get_prover()`` that takes a proof goal and optionally, the name of a
+theorem prover.  The default is ``'Prover9'``, but the tableau prover
+may be used by specifying ``'tableau'``. The proof goal needs to be an
+instance of the ``Expression`` class specified by ``nltk.sem.logic``.
+In the following example, the proof goal is a biconditional.
 
     >>> from nltk_contrib.inference import *
     >>> from nltk.sem import LogicParser, ApplicationExpression, Operator
     >>> lp = LogicParser()
-    >>> a = lp.parse('some x.((man x) and (walks x))')
-    >>> b = lp.parse('some x.((walks x) and (man x))')
-    >>> bicond = ApplicationExpression(ApplicationExpression(Operator('iff'), a), b)
-    >>> print "Trying to prove:\n '%s <-> %s'" % (a.infixify(), b.infixify())
-    Trying to prove:
-     'some x.((man x) and (walks x)) <-> some x.((walks x) and (man x))'
-    >>> print 'tableau: %s' % get_prover(bicond, prover_name='tableau').prove()
-    tableau: True
-    >>> print 'Prover9: %s' % get_prover(bicond, prover_name='Prover9').prove()
-    Prover9: True
+    >>> bicond = lp.parse('(some x.((man x) and (walks x)) iff some x.((walks x) and (man x)))')
+    >>> get_prover(bicond, prover_name='tableau').prove()
+    True
+    >>> get_prover(bicond, prover_name='Prover9').prove()
+    True
 
 
 -------
@@ -51,22 +57,25 @@ following locations::
 Using Prover9
 ~~~~~~~~~~~~~
 
-The input to ``Prover9`` must be ``Expression``\ s of nltk.sem.logic.
-    >>> from nltk.sem import LogicParser
-    >>> g = LogicParser().parse('((man x) iff (not (not (man x))))')
+The general case in theorem proving is to determine whether ``S |- g``
+holds, where ``S`` is a possibly empty set of assumptions, and ``g``
+is a proof goal.
 
-A ``Prover9`` instance is initialized with a goal and, possibly, some
-assumptions. The ``prove()`` method attempts to find a proof of the goal,
-given the list of assumptions (in this case, none).
+As mentioned earlier, NLTK input to ``Prover9`` must be
+``Expression``\ s of ``nltk.sem.logic``. A ``Prover9`` instance is
+initialized with a proof goal and, possibly, some assumptions. The
+``prove()`` method attempts to find a proof of the goal, given the
+list of assumptions (in this case, none).
 
-    >>> prover = Prover9(g)
+    >>> goal = LogicParser().parse('((man x) iff (not (not (man x))))')
+    >>> prover = Prover9(goal)
     >>> prover.prove()
     True
 
-We can also call the ``prove()`` method directly:
+We can also call the ``prove()`` method directly on the goal:
 
-    >>> g = LogicParser().parse('all x. ((man x) implies (man x))')
-    >>> print Prover9(g).prove()
+    >>> goal = LogicParser().parse('all x. ((man x) implies (man x))')
+    >>> print Prover9(goal).prove()
     True
     
 Given a ``Prover9`` instance ``prover``, the method
@@ -100,7 +109,7 @@ provided by Prover9, shown in abbreviated form here::
     Process 6317 exit (max_proofs) Mon Jan 21 15:23:28 2008
 
 
-As mentioned earlier, we can explicitly specify the assumptions for
+As mentioned earlier, we may want to list some assumptions for
 the proof, as shown here.
 
     >>> g = LogicParser().parse('(mortal socrates)')
@@ -111,7 +120,6 @@ the proof, as shown here.
 
 However, the assumptions are not sufficient to derive the goal:
 
-    ['all x.((man x) implies (mortal x))']
     >>> print prover.prove()
     False
 
@@ -143,8 +151,8 @@ Assumptions can be retracted from the list of assumptions.
     (man socrates)
     >>> prover.retract_assumptions([a1])
 
-Statements can be load from a file and parsed. We can then add these
-a statements as new assumptions.
+Statements can be loaded from a file and parsed. We can then add these
+statements as new assumptions.
 
     >>> g = LogicParser().parse('all x. ((boxer1 x) implies (not (boxer2 x)))')
     >>> prover = Prover9(g)
@@ -203,9 +211,10 @@ NLTK Interface to Model Builders
 --------------------------------
 
 The top-level to model builders is parallel to that for
-theorem-provers. The method ``get_model_builder()`` takes 
-an ``Expression`` and, optionally, the name of a model builder prover.  The default is 
-``'Mace'``, (or more precisely, ``'Mace4'``) which is currently the only model builder supported.
+theorem-provers. The method ``get_model_builder()`` takes an
+``Expression`` and, optionally, the name of a model builder prover.
+The default is ``'Mace'``, (or more precisely, ``'Mace4'``) which is
+currently the only model builder supported.
 
 Typically we use a model builder to show that some set of formulas has
 a model, and is therefore consistent. One way of doing this is by
@@ -222,19 +231,32 @@ model for each of them, while ``{c1, c2}`` is inconsistent.
     True
     >>> print get_model_builder('', [a3, c2]).model_found()
     True
-    >>> print get_model_builder('', [c1, c2]).model_found()
-    False
 
-We can also use the model builder as a theorem prover. Suppose we wish
-to test whether a goal ``g`` follows from assumptions ``S``. Then we ask the
-model builder to build a model for ``S`` together with the negation of
-``g``. If this succeeds, then  
+We can also use the model builder as an adjunct to theorem prover.
+Let's suppose we are trying to prove ``S |- g``, i.e. that ``g``
+is logically entailed by assumptions ``S = {s1, s2, ..., sn}``.
+We can this same input to Mace4, and the model builder will try to
+find a counterexample, that is, to show that ``g`` does *not* follow
+from ``S``. So, given this input, Mace4 will try to find a model for
+the set ``S' = {s1, s2, ..., sn, (not g)}``. If ``g`` fails to follow
+from ``S``, then Mace4 may well return with a counterexample faster
+than Prover9 concludes that it cannot find the required proof.
+Conversely, if ``g`` *is* provable from ``S``, Mace4 may take a long
+time unsuccessfully trying to find a counter model, and will eventually give up.
 
-    >>> print get_model_builder(c2, [a1, a2]).model_found()
+In the following example, we see that the model builder does succeeed
+in building a model of the assumptions together with the negation of
+the goal. That is, it succeeds in finding a model
+where there is a woman that every man loves; Adam is a man; Eve is a
+woman; but Adam does not love Eve.
+
+    >>> a4 = lp.parse('some y. ((woman y) and all x. ((man x) implies (love y x)))')
+    >>> a5 = lp.parse('(man adam)')
+    >>> a6 = lp.parse('(woman eve)')
+    >>> g = lp.parse('(love eve adam)')
+    >>> print get_model_builder(g, [a4, a5, a6]).model_found()
     True
-    >>> print get_model_builder(c1, [a1, a2]).model_found()
-    False
-    
+
 
 -----
 Mace4
@@ -249,4 +271,89 @@ in the same manner as Prover9.
 
 Using Mace4
 ~~~~~~~~~~~
+
+Check whether Mace4 can find a model.
+
+    >>> a = LogicParser().parse('((see john mary) and (not (mary = john)))')
+    >>> mb = Mace('', assumptions=[a])
+    >>> mb.model_found()
+    True
+
+Show the model in 'tabular' format.
+
+    >>> mb.show_output(format='tabular')
+    % number = 1
+    % seconds = 0
+    <BLANKLINE>
+    % Interpretation of size 2
+    <BLANKLINE>
+     john : 0
+    <BLANKLINE>
+     mary : 1
+    <BLANKLINE>
+     see : 
+           | 0 1
+        ---+----
+         0 | 0 1
+         1 | 0 0
+    <BLANKLINE>
+
+Show the model in 'tabular' format.
+
+    >>> mb.show_output(format='cooked')
+    % number = 1
+    % seconds = 0
+    <BLANKLINE>
+    % Interpretation of size 2
+    <BLANKLINE>
+    john = 0.
+    <BLANKLINE>
+    mary = 1.
+    <BLANKLINE>
+    - see(0,0).
+      see(0,1).
+    - see(1,0).
+    - see(1,1).
+    <BLANKLINE>
+
+The method ``build_model()`` returns a ``Valuation``.
+
+    >>> print mb.build_model()
+    {'john': 'a',
+     'mary': 'b',
+     'see': {'a': {'a': False, 'b': True}, 'b': {'a': False, 'b': False}}}
+
+We can return to our earlier example and inspect the model:
+
+    >>> mb = Mace(g, assumptions=[a4, a5, a6])
+    >>> m = mb.build_model()
+    >>> mb.show_output(format='cooked')
+    % number = 1
+    % seconds = 0
+    <BLANKLINE>
+    % Interpretation of size 2
+    <BLANKLINE>
+    adam = 0.
+    <BLANKLINE>
+    eve = 0.
+    <BLANKLINE>
+    c1 = 1.
+    <BLANKLINE>
+      man(0).
+    - man(1).
+    <BLANKLINE>
+      woman(0).
+      woman(1).
+    <BLANKLINE>
+    - love(0,0).
+    - love(0,1).
+      love(1,0).
+    - love(1,1).
+    <BLANKLINE>
+
+Here, we can see that ``adam`` and ``eve`` have been assigned the same
+individual, namely ``0`` as value; ``0`` is both a man and a woman; a second
+individual ``1`` is also a woman; and ``0`` loves ``1``. Thus, this is
+an interpretation in which there is a woman that every man loves but
+Adam doesn't love Eve.
 
