@@ -357,3 +357,102 @@ individual ``1`` is also a woman; and ``0`` loves ``1``. Thus, this is
 an interpretation in which there is a woman that every man loves but
 Adam doesn't love Eve.
 
+------------------
+Discourse Checking
+------------------
+
+
+    >>> dt = DiscourseTester(['a boxer walks', 'every boxer chases a girl'])
+
+    >>> dt.sentences()
+    s0: a boxer walks
+    s1: every boxer chases a girl
+
+    >>> dt.readings()
+    <BLANKLINE>
+    s0 readings:
+    ------------------------------
+    s0-r1: some x.((boxer2 x) and (walk x))
+    s0-r0: some x.((boxer1 x) and (walk x))
+    <BLANKLINE>
+    s1 readings:
+    ------------------------------
+    s1-r0: all x.((boxer1 x) implies some z220.((girl z220) and (chase z220 x)))
+    s1-r1: all x.((boxer2 x) implies some z239.((girl z239) and (chase z239 x)))
+
+    >>> dt.readings(summarize=True)
+    d0: ['s0-r0', 's1-r0']
+    d1: ['s0-r0', 's1-r1']
+    d2: ['s0-r1', 's1-r0']
+    d3: ['s0-r1', 's1-r1']
+
+    >>> dt.models('d1')
+    --------------------------------------------------------------------------------
+    Discourse Thread d1
+    --------------------------------------------------------------------------------
+    some x.((boxer1 x) and (walk x))
+    all x.((boxer2 x) implies some z362.((girl z362) and (chase z362 x)))
+    --------------------------------------------------------------------------------
+    % number = 1
+    % seconds = 0
+    <BLANKLINE>
+    % Interpretation of size 2
+    <BLANKLINE>
+    c1 = 0.
+    <BLANKLINE>
+    f1(0) = 0.
+    f1(1) = 0.
+    <BLANKLINE>
+      boxer1(0).
+    - boxer1(1).
+    <BLANKLINE>
+    - boxer2(0).
+    - boxer2(1).
+    <BLANKLINE>
+    - girl(0).
+    - girl(1).
+    <BLANKLINE>
+      walk(0).
+    - walk(1).
+    <BLANKLINE>
+    - chase(0,0).
+    - chase(0,1).
+    - chase(1,0).
+    - chase(1,1).
+    <BLANKLINE>
+    >>> dt.add_sentence('John is a boxer')
+
+    >>> dt.sentences()
+    s0: a boxer walks
+    s1: every boxer chases a girl
+    s2: John is a boxer
+
+    >>> dt.readings()
+    <BLANKLINE>
+    s0 readings:
+    ------------------------------
+    s0-r1: some x.((boxer2 x) and (walk x))
+    s0-r0: some x.((boxer1 x) and (walk x))
+    <BLANKLINE>
+    s1 readings:
+    ------------------------------
+    s1-r0: all x.((boxer1 x) implies some z613.((girl z613) and (chase z613 x)))
+    s1-r1: all x.((boxer2 x) implies some z632.((girl z632) and (chase z632 x)))
+    <BLANKLINE>
+    s2 readings:
+    ------------------------------
+    s2-r1: (boxer2 john)
+    s2-r0: (boxer1 john)
+
+
+    >>> dt.readings(summarize=True)
+    d0: ['s0-r0', 's1-r0', 's2-r0']
+    d1: ['s0-r0', 's1-r0', 's2-r1']
+    d2: ['s0-r0', 's1-r1', 's2-r0']
+    d3: ['s0-r0', 's1-r1', 's2-r1']
+    d4: ['s0-r1', 's1-r0', 's2-r0']
+    d5: ['s0-r1', 's1-r0', 's2-r1']
+    d6: ['s0-r1', 's1-r1', 's2-r0']
+    d7: ['s0-r1', 's1-r1', 's2-r1']
+
+
