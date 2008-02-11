@@ -21,20 +21,28 @@ S[sem = <app(?subj,?vp)>] -> NP[num=?n,sem=?subj] VP[num=?n,sem=?vp]
 NP[num=?n,sem=<app(?det,?nom)> ] -> Det[num=?n,sem=?det]  Nom[num=?n,sem=?nom]
 NP[loc=?l,num=?n,sem=?np] -> PropN[loc=?l,num=?n,sem=?np]
 
+#Copular predicates
+Pred[sem=<app(?neg,?prd)>] -> Neg[sem=?neg] Pred[sem=?prd]
+Pred[sem=?prd] -> PredN[sem=?prd] | PP[+loc,+pred,sem=?prd]
+
+##Predicative NPs
+##Doesn't block 'is every dog', but determine semantics is ignored
 PredN[num=?n, sem=?nom] -> Det[num=?n] Nom[num=?n, sem=?nom]
 
 Nom[num=?n,sem=?nom] -> N[num=?n,sem=?nom]
 Nom[num=?n,sem=<app(?pp,?nom)>] -> N[num=?n,sem=?nom] PP[sem=?pp]
 
+##transitive verbs
 VP[num=?n,sem=<app(?v,?obj)>] -> TV[num=?n,sem=?v] NP[sem=?obj]
 
-##VP[num=?n,sem=<app(?v,?prd)>] -> Cop[num=?n,sem=?v] PredN[sem=?prd] | PP[+loc]
+##copular VPs
+VP[+aux, num=?n,sem=<app(?v,?prd)>] -> Cop[num=?n,sem=?v] Pred[sem=?prd]
 
-VP[num=?n,sem=<app(?v,?prd)>] -> Cop[num=?n,sem=?v] PP[+loc,+pred,sem=?prd]
-
+##intransitive verbs
 VP[num=?n,sem=?v] -> IV[num=?n,sem=?v]
 
-VP[num=?n,sem=<app(?pp,?vp)>] -> VP[num=?n,sem=?vp] PP[sem=?pp]
+##VP-level PPs
+VP[num=?n,sem=<app(?pp,?vp)>] -> VP[num=?n,sem=?vp] PP[-pred,sem=?pp]
 
 PP[loc=?l,pred=?prd,sem=<app(?p,?np)>] -> P[loc=?l,pred=?prd,sem=?p] NP[loc=?l,sem=?np]
 
@@ -85,3 +93,5 @@ Cop[num=pl,sem=<\P x. (P x)>,tns=pres] -> 'are'
 P[+loc,-pred,sem=<\X P x. (X \y. ((P x) and (in y x)))>] -> 'in'
 P[+loc,+pred,sem=<\X x. (X \y. (in y x))>] -> 'in'
 P[-loc,sem=<\X P x. (X \y. ((P x) and (with y x)))>] -> 'with'
+
+Neg[sem=<\P. \x. (not (P x))>] -> 'not'
