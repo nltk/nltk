@@ -1,4 +1,4 @@
-# Natural Language Toolkit: Interface to Theorem Provers 
+# Natural Language Toolkit: Discourse Processing
 #
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>
 #
@@ -94,24 +94,26 @@ class DiscourseTester(object):
                 result.append(new)
         return result
  
-    
-dt = DiscourseTester(['a boxer walks', 'every boxer chases a girl'])
-print
-dt.grammar()
-print 
-dt.sentences()
-print 
-dt.readings()
-print
-dt.readings(summarize=True)
-print
-dt.models('d1')
-dt.add_sentence('John is a boxer')
-print 
-dt.sentences()
-print
-dt.readings(summarize=True)
-dt = DiscourseTester(['John is in the garden'])
-print
-dt.readings()
+def demo():   
+    dt = DiscourseTester(['a boxer walks', 'every boxer chases a girl'])
+    print
+    #dt.grammar()
+    print 
+    dt.sentences()
+    print 
+    dt.readings()
+    print
+    dt.readings(summarize=True)
+    print
+    dt.models('d1')
+    dt.add_sentence('John is a boxer')
+    print 
+    dt.sentences()
+    print
+    dt.readings(summarize=True)
+    dt = DiscourseTester(['John is in the kitchen','John is not in the kitchen'])
+    print
+    dt.readings()
 
+if __name__ == '__main__':
+    demo()
