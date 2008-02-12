@@ -22,11 +22,8 @@ class Mace(Prover9Parent, ModelBuilderI):
         """
         Use Mace4 to build a first order model.
         
-        @return: A model if one is generated; None otherwise.
-        @rtype: L{nltk.sem.Valuation} 
+        @return: C{True} if a model was found (i.e. Mace returns value of 0), else C{False}        
         """
-        from nltk.sem import Valuation
-        
         self.prover9_files('mace')
         exe = os.path.join(self._executable_path, self.get_executable())
         execute_string = '%s -c -f %s > %s 2>> %s' % \
@@ -34,8 +31,19 @@ class Mace(Prover9Parent, ModelBuilderI):
                 
         valuation = None
                 
-        result = os.system(execute_string)
-        if result == 0:
+        self._result = (os.system(execute_string) == 0)
+        return self._result
+
+    def convert2nltk(self):
+        """
+        Transform the output file into an NLTK-style Valuation. 
+        
+        @return: A model if one is generated; None otherwise.
+        @rtype: L{nltk.sem.Valuation} 
+        """
+        from nltk.sem import Valuation
+        valuation = None
+        if self.model_found():
             self._transform_output('standard')
             
             d = {}
@@ -47,18 +55,17 @@ class Mace(Prover9Parent, ModelBuilderI):
                 # replace the integer identifier with a corresponding alphabetic character
                 elif l.startswith('function') and l.find('_') == -1:
                     name = l[l.index('(')+1:l.index(',')].strip()
-                    d[name] = Mace.make_model_var(int(l[l.index('[')+1:l.index(']')].strip()))
+                    d[name] = Mace._make_model_var(int(l[l.index('[')+1:l.index(']')].strip()))
                 
                 elif l.startswith('relation'):
                     name = l[l.index('(')+1:l.index('(', l.index('(')+1)].strip()
                     values = [int(v.strip()) for v in l[l.index('[')+1:l.index(']')].split(',')]
-                    d[name] = Mace.make_model_dict(num_entities, values)
+                    d[name] = Mace._make_model_dict(num_entities, values)
                     
             valuation = Valuation(d)
-                    
         return valuation
         
-    def make_model_dict(num_entities, values):
+    def _make_model_dict(num_entities, values):
         """
         Convert a Mace4-style relation table into a dictionary similar to L{nltk.sem.CharFun}.
         
@@ -68,41 +75,43 @@ class Mace(Prover9Parent, ModelBuilderI):
         @type values: C{list} of C{int}
         """
         if len(values) == 1:
-            return values[0] == 1
+            return (values[0] == 1)
         else:
             d = {}
             for i in range(num_entities):
                 size = len(values) / num_entities
-                d[Mace.make_model_var(i)] = \
-                    Mace.make_model_dict(num_entities, values[i*size:(i+1)*size])
+                d[Mace._make_model_var(i)] = \
+                    Mace._make_model_dict(num_entities, values[i*size:(i+1)*size])
             return d
         
-    make_model_dict = staticmethod(make_model_dict)
+    _make_model_dict = staticmethod(_make_model_dict)
                 
-    def make_model_var(value):
+    def _make_model_var(value):
         """
         Pick an alphabetic character as identifier for an entity in the model.
         
         @parameter value: where to index into the list of characters
         @type value: C{int}
         """
-        return ['a','b','c','d','e','f','g','h','i','j','k','l','m','n',
-                'o','p','q','r','s','t','u','v','w','x','y','z'][value]
+        letter = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n',
+                  'o','p','q','r','s','t','u','v','w','x','y','z'][value]
+        num = int(value) / 26
+        if num > 0:
+            return letter + str(num)
+        else:
+            return letter
         
-    make_model_var = staticmethod(make_model_var)
+    _make_model_var = staticmethod(_make_model_var)
                 
     def model_found(self):
         """
         Test whether Mace4 can build a model.
         
-        @return: C{True} if a model was found (i.e. returns value of 0), else C{False}        
+        @return: C{True} if a model was found (i.e. Mace returns value of 0), else C{False}        
         """
-        self.prover9_files('mace')
-        exe = os.path.join(self._executable_path, self.get_executable())
-        execute_string = '%s -c -f %s > %s 2>> %s' % \
-            (exe, self._infile, self._outfile, self._outfile)
-        result = os.system(execute_string)
-        return result == 0
+        if not self._outfile:
+            print "You have to call build_model() first to get a model!"
+        return self._result
     
     def show_output(self, format=None):
         """
@@ -152,6 +161,15 @@ class Mace(Prover9Parent, ModelBuilderI):
 
 def spacer(num=30):
     print '-' * num
+    
+def decode_result(found):
+    """
+    Decode the result of model_found() 
+    
+    @parameter found: The output of model_found() 
+    @type format: C{boolean}
+    """
+    return {True: 'Countermodel found', False: 'No countermodel found', None: 'None'}[found]
 
 def test_model_found(arguments):
     """
@@ -160,10 +178,12 @@ def test_model_found(arguments):
     for (goal, assumptions) in arguments:
         g = LogicParser().parse(goal)
         alist = [LogicParser().parse(a) for a in assumptions]
-        found = Mace(g, assumptions=alist, timeout=5).model_found()
+        m = Mace(g, assumptions=alist, timeout=5)
+        m.build_model()
+        found = m.model_found()
         for a in alist:
             print '   %s' % a.infixify()
-        print '|- %s: %s\n' % (g.infixify(), found)
+        print '|- %s: %s\n' % (g.infixify(), decode_result(found))
         
         
 def test_build_model(arguments):
@@ -179,19 +199,19 @@ def test_build_model(arguments):
                                               'all x.some y.((man x) implies (gives Socrates x y))']]
     
     m = Mace(g, assumptions=alist)
+    m.build_model()
     spacer()
     print "Assumptions and Goal"
     spacer()
     for a in alist:
-
         print '   %s' % a.infixify()
-    print '|- %s: %s\n' % (g.infixify(), m.model_found())
+    print '|- %s: %s\n' % (g.infixify(), decode_result(m.model_found()))
     spacer()
     #m.show_output('standard')
     #m.show_output('cooked')
     print "Valuation"
     spacer()
-    print m.build_model(), '\n'
+    print m.convert2nltk(), '\n'
 
 def test_transform_output(argument_pair):
     """
@@ -200,19 +220,19 @@ def test_transform_output(argument_pair):
     g = LogicParser().parse(argument_pair[0])
     alist = [LogicParser().parse(a) for a in argument_pair[1]]
     m = Mace(g, assumptions=alist)
-    found = m.model_found()
+    m.build_model()
     for a in alist:
         print '   %s' % a.infixify()
-    print '|- %s: %s\n' % (g.infixify(), found)
+    print '|- %s: %s\n' % (g.infixify(), m.model_found())
     for format in ['standard', 'portable', 'xml', 'cooked']:
+        spacer()
         print "Using '%s' format" % format 
         spacer()
         m.show_output(format=format)
-        spacer()
         
 def test_make_model_dict():
-    print Mace.make_model_dict(num_entities=3, values=[1,0,1])
-    print Mace.make_model_dict(num_entities=3, values=[0,0,0,0,0,0,1,0,0])
+    print Mace._make_model_dict(num_entities=3, values=[1,0,1])
+    print Mace._make_model_dict(num_entities=3, values=[0,0,0,0,0,0,1,0,0])
     
 arguments = [
     ('(mortal Socrates)', ['all x.((man x) implies (mortal x))', '(man Socrates)']),

@@ -51,6 +51,7 @@ class Prover9Parent:
             self._p9_assumptions = convert_to_prover9(self._assumptions)
         else:
             self._p9_assumptions = []
+        self._result = None
         self._timeout = timeout
 
     def config_prover9(self, path=None, verbose=False):
@@ -291,7 +292,11 @@ class Prover9(Prover9Parent, ProverI):
             (exe, self._infile, self._outfile, self._outfile)
         
         tp_result = os.system(execute_string)
-        return tp_result == 0
+        self._result = (tp_result == 0)
+        return self._result
+    
+    def proof_successful(self):
+        return self._result
     
     def show_proof(self):
         """

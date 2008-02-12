@@ -90,8 +90,8 @@ def demo():
 
     print get_prover(c1, [a,b], 'prover9').prove()
     print get_prover(c2, [a,b], 'prover9').prove()
-    print get_model_builder(c1, [a,b], 'mace').model_found()
-    print get_model_builder(c2, [a,b], 'mace').model_found()
+    print get_model_builder(c1, [a,b], 'mace').build_model()
+    print get_model_builder(c2, [a,b], 'mace').build_model()
 
 if __name__ == '__main__': 
     demo()
