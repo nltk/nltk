@@ -271,7 +271,7 @@ class ModelBuilderThread( threading.Thread ):
         threading.Thread.__init__(self)
         
     def run( self ):
-        mb_result = self.model_builder.model_found()
+        mb_result = self.model_builder.build_model()
         if mb_result:
             self.result[0] = 'consistent'
         else:
@@ -349,14 +349,14 @@ def demo_inference_tagger(verbose=False):
     else:
         print 'No inconsistency\n'
 
-    result = inference.get_model_builder(assumptions=bk_exs+[text_ex]).model_found()
+    result = inference.get_model_builder(assumptions=bk_exs+[text_ex]).build_model()
     print 'satisfy: (BK & T): %s' % result
     if result:
         print 'No inconsistency\n'
     else:
         print 'Inconsistency -> Entailment unknown\n'
 
-    result = inference.get_model_builder(assumptions=bk_exs+[text_ex, hyp_ex]).model_found()
+    result = inference.get_model_builder(assumptions=bk_exs+[text_ex, hyp_ex]).build_model()
     print 'satisfy: (BK & T & H): %s' % result
     if result:
         print 'No inconsistency\n'
