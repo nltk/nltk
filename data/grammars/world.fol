@@ -1,0 +1,9 @@
+all x. ((boxerdog x) implies (dog x))
+all x. ((boxer x) implies (person x))
+all x. (not ((dog x) and (person x)))
+all x. all y. ((marry y x) implies ((person x) and (person y)))
+all x. ((married x) iff some y. (marry y x)) 
+
+(not (Vincent = Mia))
+(not (Vincent = Fido))
+(not (Mia = Fido))
