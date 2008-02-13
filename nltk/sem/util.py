@@ -14,6 +14,7 @@ a first-order model.
 import evaluate
 import re
 import nltk
+from logic import LogicParser, Error
 
 
 ##############################################################
@@ -167,7 +168,26 @@ def parse_valuation(s):
     val.read(statements)
     return val
 
-
+def parse_fol(s):
+    """
+    Convert a  file of First Order Formulas into a list of {Expression}s.
+    
+    @parameter s: the contents of the file
+    @type s: C{str}
+    @return: a list of parsed formulas.
+    @rtype: C{list} of L{Expression}
+    """
+    statements = []
+    lp = LogicParser()
+    for linenum, line in enumerate(s.splitlines()):
+        line = line.strip()
+        if line.startswith('#') or line=='': continue
+        try:
+            statements.append(lp.parse(line))
+        except Error:
+            raise ValueError, 'Unable to parse line %s: %s' % (linenum, line)
+    return statements
+        
 def demo_model0():
     global m0, g0
     val = evaluate.Valuation()
