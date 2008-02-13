@@ -1,0 +1,114 @@
+## Natural Language Toolkit: sem2.fcfg
+##
+## Longer feature-based grammar with more quantifers, and illustrating
+## transitive verbs and prepositional phrases (PPs). The
+## interpretation of PPs is a bit weird and could do with further
+## work.
+## 
+## Author: Ewan Klein <ewan@inf.ed.ac.uk> 
+## URL: <http://nltk.sourceforge.net>
+## For license information, see LICENSE.TXT
+##
+## $Id: sem2.cfg 4674 2007-06-14 08:55:32Z ehk $
+
+% start S
+############################
+# Grammar Rules
+#############################
+
+S[sem = <app(?subj,?vp)>] -> NP[num=?n,sem=?subj] VP[num=?n,sem=?vp]
+
+NP[num=?n,sem=<app(?det,?nom)> ] -> Det[num=?n,sem=?det]  Nom[num=?n,sem=?nom]
+NP[loc=?l,num=?n,sem=?np] -> PropN[loc=?l,num=?n,sem=?np]
+
+NP[-loc,num=sg,sem=<\Q. (not some x. ((person x) and (Q x)))>] -> 'nobody' | 'Nobody'
+NP[-loc,num=sg,sem=<\Q. some x. ((person x) and (Q x))>] -> 'somebody' | 'Somebody'
+
+## Copular predicates
+Pred[sem=?prd] -> PredN[sem=?prd] | PP[+loc,+pred,sem=?prd] | Adj[sem=?prd]
+
+## Predicative NPs
+## Doesn't block 'is every dog', but determiner semantics is ignored
+PredN[num=?n, sem=?nom] -> Det[num=?n] Nom[num=?n, sem=?nom]
+
+Nom[num=?n,sem=?nom] -> N[num=?n,sem=?nom]
+Nom[num=?n,sem=<app(?pp,?nom)>] -> N[num=?n,sem=?nom] PP[sem=?pp]
+
+## Transitive verbs
+VP[num=?n,sem=<app(?v,?obj)>] -> TV[num=?n,sem=?v] NP[sem=?obj]
+
+## Copular VPs
+VP[+aux, num=?n,sem=<app(?v,?prd)>] -> Cop[num=?n,sem=?v] Pred[sem=?prd]
+
+## Intransitive verbs
+VP[num=?n,sem=?v] -> IV[num=?n,sem=?v]
+
+## VP-level PPs
+VP[num=?n,sem=<app(?pp,?vp)>] -> VP[num=?n,sem=?vp] PP[-pred,sem=?pp]
+
+PP[loc=?l,pred=?prd,sem=<app(?p,?np)>] -> P[loc=?l,pred=?prd,sem=?p] NP[loc=?l,sem=?np]
+
+#############################
+# Lexical Rules
+#############################
+
+PropN[-loc,num=sg,sem=<\P.(P john)>] -> 'John'
+PropN[-loc,num=sg,sem=<\P.(P mary)>] -> 'Mary'
+PropN[-loc,num=sg,sem=<\P.(P suzie)>] -> 'Suzie'
+PropN[-loc,num=sg,sem=<\P.(P vincent)>] -> 'Vincent'
+PropN[-loc,num=sg,sem=<\P.(P mia)>] -> 'Mia'
+PropN[-loc,num=sg,sem=<\P.(P mia)>] -> 'Marsellus'
+PropN[-loc,num=sg,sem=<\P.(P fido)>] -> 'Fido'
+PropN[+loc, num=sg,sem=<\P.(P noosa)>] -> 'Noosa'
+
+NP[-loc, num=sg, sem=<\P.\x.(P x)>] -> 'who'  
+
+Det[num=sg,sem=<\P Q. all x. ((P x) implies (Q x))>] -> 'every' | 'Every' 
+Det[num=pl,sem=<\P Q. all x. ((P x) implies (Q x))>] -> 'all' | 'All'
+Det[sem=<\P Q. some x. ((P x) and (Q x))>] -> 'some' | 'Some'
+Det[num=sg,sem=<\P Q. some x. ((P x) and (Q x))>] -> 'a' | 'A'
+Det[num=sg,sem=<\P Q. (not some x. ((P x) and (Q x)))>] -> 'no' | 'No'
+Det[num=sg,sem=<\P Q. some x. (((P x) and (Q x)) and all y. ((P y) implies (x = y)))>] -> 'the' | 'The' 
+
+N[num=sg,sem=<boy>] -> 'boy'
+N[num=pl,sem=<boy>] -> 'boys' 
+N[num=sg,sem=<girl>] -> 'girl'
+N[num=pl,sem=<girl>] -> 'girls'
+N[num=sg,sem=<dog>] -> 'dog'
+N[num=pl,sem=<dog>] -> 'dogs'
+N[num=sg,sem=<student>] -> 'student'
+N[num=pl,sem=<student>] -> 'students'
+N[num=sg,sem=<person>] -> 'person'
+N[num=pl,sem=<person>] -> 'persons'
+N[num=sg,sem=<boxer1>] -> 'boxer'
+N[num=pl,sem=<boxer1>] -> 'boxers'
+N[num=sg,sem=<boxer2>] -> 'boxer'
+N[num=pl,sem=<boxer2>] -> 'boxers'
+N[num=sg,sem=<garden>] -> 'garden'
+N[num=sg,sem=<kitchen>] -> 'kitchen'
+
+Adj[sem=<happy>] -> 'happy'
+Adj[sem=<drunk>] -> 'drunk'
+
+TV[num=sg,sem=<\X y. (X \x. (chase x y))>,tns=pres] -> 'chases'
+TV[num=pl,sem=<\X y. (X \x. (chase x y))>,tns=pres] -> 'chase'
+TV[num=sg,sem=<\X y. (X \x. (know x y))>,tns=pres] -> 'knows'
+TV[num=pl,sem=<\X y. (X \x. (know x y))>,tns=pres] -> 'know'
+TV[num=sg,sem=<\X y. (X \x. (see x y))>,tns=pres] -> 'sees'
+TV[num=pl,sem=<\X y. (X \x. (see x y))>,tns=pres] -> 'see'
+TV[num=sg,sem=<\X y. (X \x. (chase x y))>,tns=pres] -> 'chases'
+TV[num=pl,sem=<\X y. (X \x. (chase x y))>,tns=pres] -> 'chase'
+IV[num=sg,sem=<\x. (bark x)>,tns=pres] -> 'barks'
+IV[num=pl,sem=<\x. (bark x)>,tns=pres] -> 'bark'
+IV[num=sg,sem=<\x. (walk x)>,tns=pres] -> 'walks'
+IV[num=pl,sem=<\x. (walk x)>,tns=pres] -> 'dance'
+IV[num=sg,sem=<\x. (walk x)>,tns=pres] -> 'dances'
+IV[num=pl,sem=<\x. (walk x)>,tns=pres] -> 'walk'
+Cop[num=sg,sem=<\P x. (P x)>,tns=pres] -> 'is'
+Cop[num=pl,sem=<\P x. (P x)>,tns=pres] -> 'are'
+
+P[+loc,-pred,sem=<\X P x. (X \y. ((P x) and (in y x)))>] -> 'in'
+P[+loc,+pred,sem=<\X x. (X \y. (in y x))>] -> 'in'
+P[-loc,sem=<\X P x. (X \y. ((P x) and (with y x)))>] -> 'with'
+
+Neg[sem=<\P. \x. (not (P x))>] -> 'not'
