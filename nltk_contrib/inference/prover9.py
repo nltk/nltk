@@ -1,7 +1,7 @@
 # Natural Language Toolkit: Interface to the Prover9 Theorem Prover 
 #
 # Author: Dan Garrette <dhgarrette@gmail.com>
-#         Ewan Klein <ewan@inf.ed.ac.uk>
+#              Ewan Klein <ewan@inf.ed.ac.uk>
 
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
@@ -11,20 +11,21 @@ import tempfile
 from string import join
 from nltk.sem.logic import *
 from api import ProverI
-
-
+from nltk.internals import deprecated, Deprecated
+#
 # Following is not yet used. Return code for 2 actually realized as 512. 
-
-#p9_return_codes = {0: True,
-                   #1: "(FATAL)",       #A fatal error occurred (user's syntax error or Prover9's bug).
-                   #2: False,           # (SOS_EMPTY) Prover9 ran out of things to do (sos list exhausted).
-                   #3: "(MAX_MEGS)",    # The max_megs (memory limit) parameter was exceeded.
-                   #4: "(MAX_SECONDS)", # The max_seconds parameter was exceeded.
-                   #5: "(MAX_GIVEN)",   # The max_given parameter was exceeded.
-                   #6: "(MAX_KEPT)",    # The max_kept parameter was exceeded.
-                   #7: "(ACTION)",      # A Prover9 action terminated the search.
-                   #101: "(SIGSEGV)",   # Prover9 crashed, most probably due to a bug.   
- #}
+#
+p9_return_codes = {0: True,
+                   1:  "(FATAL)",       #A fatal error occurred (user's syntax error or Prover9's bug).
+                   2: False,           # (SOS_EMPTY) Prover9 ran out of things to do (sos list exhausted).
+                   3: "(MAX_MEGS)",    # The max_megs (memory limit) parameter was exceeded.
+                   4: "(MAX_SECONDS)", # The max_seconds parameter was exceeded.
+                   5: "(MAX_GIVEN)",   # The max_given parameter was exceeded.
+                   6: "(MAX_KEPT)",    # The max_kept parameter was exceeded.
+                   7: "(ACTION)",      # A Prover9 action terminated the search.
+                   101: "(SIGSEGV)",   # Prover9 crashed, most probably due to a bug.   
+ }
+ 
 
 class Prover9Parent:
     def __init__(self, goal=None, assumptions=[], timeout=60):
@@ -172,6 +173,8 @@ class Prover9Parent:
         else:
             raise NameError("Unrecognized value for 'output_format': %s" % output_format)
         
+#{ Deprecated     
+    @deprecated("Use nltk.data.load(<file.fol>) instead.")    
     def load(self, filename):
         """
         Load and parse a file of logical statements.
@@ -183,7 +186,7 @@ class Prover9Parent:
         for s in statements:
             result.append(lp.parse(s))
         return result                 
-       
+#}       
 
 def convert_to_prover9(input):
     """

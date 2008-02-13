@@ -34,7 +34,7 @@ class Mace(Prover9Parent, ModelBuilderI):
         self._result = (os.system(execute_string) == 0)
         return self._result
 
-    def convert2nltk(self):
+    def convert2val(self):
         """
         Transform the output file into an NLTK-style Valuation. 
         
@@ -113,7 +113,7 @@ class Mace(Prover9Parent, ModelBuilderI):
             print "You have to call build_model() first to get a model!"
         return self._result
     
-    def show_output(self, format=None):
+    def show_model(self, format=None):
         """
         Print out a Mace4 model using any Mace4 C{interpformat} format. 
         See L{ttp://www.cs.unm.edu/~mccune/mace4/manual/} for details.
@@ -207,11 +207,11 @@ def test_build_model(arguments):
         print '   %s' % a.infixify()
     print '|- %s: %s\n' % (g.infixify(), decode_result(m.model_found()))
     spacer()
-    #m.show_output('standard')
-    #m.show_output('cooked')
+    #m.show_model('standard')
+    #m.show_model('cooked')
     print "Valuation"
     spacer()
-    print m.convert2nltk(), '\n'
+    print m.convert2val(), '\n'
 
 def test_transform_output(argument_pair):
     """
@@ -228,7 +228,7 @@ def test_transform_output(argument_pair):
         spacer()
         print "Using '%s' format" % format 
         spacer()
-        m.show_output(format=format)
+        m.show_model(format=format)
         
 def test_make_model_dict():
     print Mace._make_model_dict(num_entities=3, values=[1,0,1])

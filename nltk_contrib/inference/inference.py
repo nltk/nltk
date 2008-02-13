@@ -27,7 +27,7 @@ def get_prover(goal=None, assumptions=[], prover_name='Prover9'):
     
     return prover_module(goal, assumptions)
 
-def get_model_builder(goal=None, assumptions=[], model_builder_name='mace'):
+def get_model_builder(goal=None, assumptions=[], model_builder_name='Mace'):
     """
     @param goal: Input expression to prove
     @type goal: L{logic.Expression}
