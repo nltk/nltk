@@ -69,7 +69,7 @@ class SubstituteBindingsI(object):
         """
         raise NotImplementedError()
 
-    def varaibles(self):
+    def variables(self):
         """
         @return: A list of all variables in this object.
         """
