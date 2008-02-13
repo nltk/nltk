@@ -102,3 +102,14 @@ Resource Caching
 Describe how caching works, and how to use `clear_cache()`.
 
 
+Retrieving other Data Sources
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    >>> formulas = nltk.data.load('grammars/onto1.fol')
+    >>> for f in formulas: print str(f.infixify())
+    all x.((boxer2 x) implies (dog x))
+    all x.((boxer1 x) implies (person x))
+    all x.(not ((dog x) and (person x)))
+    all x.(not ((kitchen x) and (garden x)))
+    all x.((kitchen x) implies (location x))
+    all x.((garden x) implies (location x))
