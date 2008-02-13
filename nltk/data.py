@@ -156,10 +156,11 @@ def load(resource_url, format='auto', cache=True, verbose=False):
     resource formats are currently supported:
       - C{'pickle'}
       - C{'yaml'}
-      - C{'cfg'}
-      - C{'pcfg'}
-      - C{'fcfg'}
-      - C{'val'}
+      - C{'cfg'} (context free grammars)
+      - C{'pcfg'} (probabilistic CFGs)
+      - C{'fcfg'} (feature-based CFGs)
+      - C{'fol'} (formulas of First Order Logic)
+      - C{'val'} (valuation of First Order Logic model)
       - C{'raw'}
 
     If no format is specified, C{load()} will attempt to determine a
@@ -201,6 +202,7 @@ def load(resource_url, format='auto', cache=True, verbose=False):
         if resource_url.endswith('.cfg'): format = 'cfg'
         if resource_url.endswith('.pcfg'): format = 'pcfg'
         if resource_url.endswith('.fcfg'): format = 'fcfg'
+        if resource_url.endswith('.fol'): format = 'fol'
         if resource_url.endswith('.val'): format = 'val'
         
     # Load the resource.
@@ -214,6 +216,8 @@ def load(resource_url, format='auto', cache=True, verbose=False):
         resource_val = cfg.parse_pcfg(_open(resource_url).read())
     elif format == 'fcfg':
         resource_val = cfg.parse_fcfg(_open(resource_url).read())
+    elif format == 'fol':
+        resource_val = sem.parse_fol(_open(resource_url).read())
     elif format == 'val':
         resource_val = sem.parse_valuation(_open(resource_url).read())
     elif format == 'raw':
