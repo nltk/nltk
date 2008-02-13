@@ -227,9 +227,9 @@ model for each of them, while ``{c1, c2}`` is inconsistent.
     >>> a3 = lp.parse('some x.((man x) and (walks x))')
     >>> c1 = lp.parse('(mortal socrates)')
     >>> c2 = lp.parse('(not (mortal socrates))')
-    >>> print get_model_builder('', [a3, c1]).model_found()
+    >>> print get_model_builder('', [a3, c1]).build_model()
     True
-    >>> print get_model_builder('', [a3, c2]).model_found()
+    >>> print get_model_builder('', [a3, c2]).build_model()
     True
 
 We can also use the model builder as an adjunct to theorem prover.
@@ -254,7 +254,7 @@ woman; but Adam does not love Eve.
     >>> a5 = lp.parse('(man adam)')
     >>> a6 = lp.parse('(woman eve)')
     >>> g = lp.parse('(love eve adam)')
-    >>> print get_model_builder(g, [a4, a5, a6]).model_found()
+    >>> print get_model_builder(g, [a4, a5, a6]).build_model()
     True
 
 
@@ -276,12 +276,12 @@ Check whether Mace4 can find a model.
 
     >>> a = LogicParser().parse('((see john mary) and (not (mary = john)))')
     >>> mb = Mace('', assumptions=[a])
-    >>> mb.model_found()
+    >>> mb.build_model()
     True
 
 Show the model in 'tabular' format.
 
-    >>> mb.show_output(format='tabular')
+    >>> mb.show_model(format='tabular')
     % number = 1
     % seconds = 0
     <BLANKLINE>
@@ -300,7 +300,7 @@ Show the model in 'tabular' format.
 
 Show the model in 'tabular' format.
 
-    >>> mb.show_output(format='cooked')
+    >>> mb.show_model(format='cooked')
     % number = 1
     % seconds = 0
     <BLANKLINE>
@@ -316,9 +316,9 @@ Show the model in 'tabular' format.
     - see(1,1).
     <BLANKLINE>
 
-The method ``build_model()`` returns a ``Valuation``.
+The method ``convert2val()`` returns a ``Valuation``.
 
-    >>> print mb.build_model()
+    >>> print mb.convert2val()
     {'john': 'a',
      'mary': 'b',
      'see': {'a': {'a': False, 'b': True}, 'b': {'a': False, 'b': False}}}
@@ -327,7 +327,7 @@ We can return to our earlier example and inspect the model:
 
     >>> mb = Mace(g, assumptions=[a4, a5, a6])
     >>> m = mb.build_model()
-    >>> mb.show_output(format='cooked')
+    >>> mb.show_model(format='cooked')
     % number = 1
     % seconds = 0
     <BLANKLINE>
@@ -380,7 +380,7 @@ Discourse Checking
     s1-r0: all x.((boxer1 x) implies some z220.((girl z220) and (chase z220 x)))
     s1-r1: all x.((boxer2 x) implies some z239.((girl z239) and (chase z239 x)))
 
-    >>> dt.readings(summarize=True)
+    >>> dt.readings(threaded=True)
     d0: ['s0-r0', 's1-r0']
     d1: ['s0-r0', 's1-r1']
     d2: ['s0-r1', 's1-r0']
@@ -445,7 +445,7 @@ Discourse Checking
     s2-r0: (boxer1 john)
 
 
-    >>> dt.readings(summarize=True)
+    >>> dt.readings(threaded=True)
     d0: ['s0-r0', 's1-r0', 's2-r0']
     d1: ['s0-r0', 's1-r0', 's2-r1']
     d2: ['s0-r0', 's1-r1', 's2-r0']
