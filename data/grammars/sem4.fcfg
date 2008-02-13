@@ -1,9 +1,10 @@
-## Natural Language Toolkit: sem2.fcfg
+## Natural Language Toolkit: sem4.fcfg
 ##
-## Longer feature-based grammar with more quantifers, and illustrating
-## transitive verbs and prepositional phrases (PPs). The
-## interpretation of PPs is a bit weird and could do with further
-## work.
+## Extension of sem3.fcfg
+## Main additions:
+## - a few more lexical entries (including 'no' and 'the')
+## - 'is', 'does' and auxiliary negation
+## - Predicate categories, including predicate nominals and adjectives
 ## 
 ## Author: Ewan Klein <ewan@inf.ed.ac.uk> 
 ## URL: <http://nltk.sourceforge.net>
