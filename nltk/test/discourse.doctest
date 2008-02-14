@@ -1,0 +1,443 @@
+==================
+Discourse Checking
+==================
+
+    >>> from nltk_contrib.inference.discourse import *
+    >>> dt = DiscourseTester(['a boxer walks', 'every boxer chases a girl'])
+
+
+In order to check a discourse, you start off like this:
+
+    >>> from discourse import *
+    >>> dt = DiscourseTester(['a boxer walks', 'every boxer chases a girl'])
+
+That is, you initialize a new ``DiscourseTester`` as shown above, and
+bind the instance to a variable such as ``dt``. The
+``DiscourseTester`` constructor takes a list of sentences as a
+parameter.
+
+Now that we have created ``dt``, we can test various properties of the
+discourse. First off, we might want to double check what sentences are
+currently stored as the discourse.
+
+    >>> dt.sentences()
+    s0: a boxer walks
+    s1: every boxer chases a girl
+
+As you will see, each sentence receives an identifier. Depending on
+the grammar used, we may find some sentences have more than one
+logical form. To check this, use the ``readings()`` method. As you
+will see, each reading gets its own identifier. (NB. The
+``<BLANKLINE>`` indicators have been inserted to aid machine-checking
+of the Python output --- they won't appear in the output you
+produce when you run these commands.)
+
+    >>> dt.readings()
+    <BLANKLINE>
+    s0 readings:
+    ------------------------------
+    s0-r1: some x.((boxer2 x) and (walk x))
+    s0-r0: some x.((boxer1 x) and (walk x))
+    <BLANKLINE>
+    s1 readings:
+    ------------------------------
+    s1-r0: all x.((boxer1 x) implies some z220.((girl z220) and (chase z220 x)))
+    s1-r1: all x.((boxer2 x) implies some z239.((girl z239) and (chase z239 x)))
+
+
+In this case, the only source of ambiguity lies in the word *boxer*,
+which receives two translations: ``boxer1`` and ``boxer2``. The
+intention is that one of these corresponds to the ``person`` sense and
+one to the ``dog`` sense. In principle, we would also expect to see a
+quantifier scope ambiguity in ``s1``. However, the simple grammar we
+are using, namely `sem4.fcfg <sem4.fcfg>`_, doesn't support quantifier
+scope ambiguity. 
+
+Given that each sentence is two ways ambiguous, we potentially have
+four different discourse 'threads', taking all combinations of
+readings. To see these, specify the ``threaded=True`` parameter on
+the ``readings()`` method. Again, each thread is assigned an identifier.
+
+    >>> dt.readings(threaded=True)
+    d0: ['s0-r0', 's1-r0']
+    d1: ['s0-r0', 's1-r1']
+    d2: ['s0-r1', 's1-r0']
+    d3: ['s0-r1', 's1-r1']
+
+Now, we can check whether some or all of the discourse threads are
+consistent, using the ``models()`` method. With no parameter, this
+method will try to find a model for every discourse thread in the
+current discourse. However, we can also specify just one thread, say ``d1``.
+
+    >>> dt.models('d1')
+    --------------------------------------------------------------------------------
+    Discourse Thread d1
+    --------------------------------------------------------------------------------
+    some x.((boxer1 x) and (walk x))
+    all x.((boxer2 x) implies some z362.((girl z362) and (chase z362 x)))
+    --------------------------------------------------------------------------------
+    % number = 1
+    % seconds = 0
+    <BLANKLINE>
+    % Interpretation of size 2
+    <BLANKLINE>
+    c1 = 0.
+    <BLANKLINE>
+    f1(0) = 0.
+    f1(1) = 0.
+    <BLANKLINE>
+      boxer1(0).
+    - boxer1(1).
+    <BLANKLINE>
+    - boxer2(0).
+    - boxer2(1).
+    <BLANKLINE>
+    - girl(0).
+    - girl(1).
+    <BLANKLINE>
+      walk(0).
+    - walk(1).
+    <BLANKLINE>
+    - chase(0,0).
+    - chase(0,1).
+    - chase(1,0).
+    - chase(1,1).
+
+There are various formats for rendering **Mace4** models --- here,
+we have used the 'cooked' format (which is intended to be
+human-readable). There are a number of points to note.
+
+#. The entities in the domain are all treated as non-negative
+   integers. In this case, there are only two entities, ``0`` and
+   ``1``.
+
+#. The ``-`` symbol indicates negation. So ``0`` is the only
+   ``boxer1`` and the only thing that ``walk``\ s. Nothing is a
+   ``boxer2``, or a ``girl`` or in the ``chase`` relation. Thus the
+   universal sentence is vacuously true.
+
+#. ``c1`` is an introduced constant that denotes ``0``.
+
+#. ``f1`` is a Skolem function, but it plays no significant role in
+   this model.
+
+
+We might want to now add another sentence to the discourse, and there
+is method ``add_sentence()`` for doing just this.
+
+    >>> dt.add_sentence('John is a boxer')
+    >>> dt.sentences()
+    s0: a boxer walks
+    s1: every boxer chases a girl
+    s2: John is a boxer
+
+We can now test all the properties as before; here, we just show a
+couple of them.
+
+    >>> dt.readings()
+    <BLANKLINE>
+    s0 readings:
+    ------------------------------
+    s0-r1: some x.((boxer2 x) and (walk x))
+    s0-r0: some x.((boxer1 x) and (walk x))
+    <BLANKLINE>
+    s1 readings:
+    ------------------------------
+    s1-r0: all x.((boxer1 x) implies some z613.((girl z613) and (chase z613 x)))
+    s1-r1: all x.((boxer2 x) implies some z632.((girl z632) and (chase z632 x)))
+    <BLANKLINE>
+    s2 readings:
+    ------------------------------
+    s2-r1: (boxer2 john)
+    s2-r0: (boxer1 john)
+    >>> dt.readings(threaded=True)
+    d0: ['s0-r0', 's1-r0', 's2-r0']
+    d1: ['s0-r0', 's1-r0', 's2-r1']
+    d2: ['s0-r0', 's1-r1', 's2-r0']
+    d3: ['s0-r0', 's1-r1', 's2-r1']
+    d4: ['s0-r1', 's1-r0', 's2-r0']
+    d5: ['s0-r1', 's1-r0', 's2-r1']
+    d6: ['s0-r1', 's1-r1', 's2-r0']
+    d7: ['s0-r1', 's1-r1', 's2-r1']
+
+
+
+    >>> dt.sentences()
+    s0: a boxer walks
+    s1: every boxer chases a girl
+
+    >>> dt.readings()
+    <BLANKLINE>
+    s0 readings:
+    ------------------------------
+    s0-r1: some x.((boxer x) and (walk x))
+    s0-r0: some x.((boxerdog x) and (walk x))
+    <BLANKLINE>
+    s1 readings:
+    ------------------------------
+    s1-r0: all x.((boxerdog x) implies some z61.((girl z61) and (chase z61 x)))
+    s1-r1: all x.((boxer x) implies some z80.((girl z80) and (chase z80 x)))
+
+    >>> dt.readings(threaded=True)
+    d0: ['s0-r0', 's1-r0']
+    d1: ['s0-r0', 's1-r1']
+    d2: ['s0-r1', 's1-r0']
+    d3: ['s0-r1', 's1-r1']
+
+    >>> dt.models('d1')
+    --------------------------------------------------------------------------------
+    Model for Discourse Thread d1
+    --------------------------------------------------------------------------------
+    % number = 1
+    % seconds = 0
+    <BLANKLINE>
+    % Interpretation of size 2
+    <BLANKLINE>
+    c1 = 0.
+    <BLANKLINE>
+    f1(0) = 0.
+    f1(1) = 0.
+    <BLANKLINE>
+    - boxer(0).
+    - boxer(1).
+    <BLANKLINE>
+      boxerdog(0).
+    - boxerdog(1).
+    <BLANKLINE>
+    - girl(0).
+    - girl(1).
+    <BLANKLINE>
+      walk(0).
+    - walk(1).
+    <BLANKLINE>
+    - chase(0,0).
+    - chase(0,1).
+    - chase(1,0).
+    - chase(1,1).
+    <BLANKLINE>
+    Consistent discourse: d1 ['s0-r0', 's1-r1']:
+        s0-r0: some x.((boxerdog x) and (walk x))
+        s1-r1: all x.((boxer x) implies some z3.((girl z3) and (chase z3 x)))
+    <BLANKLINE>
+    >>> dt.add_sentence('John is a boxer')
+
+    >>> dt.sentences()
+    s0: a boxer walks
+    s1: every boxer chases a girl
+    s2: John is a boxer
+
+    >>> dt.readings()
+    <BLANKLINE>
+    s0 readings:
+    ------------------------------
+    s0-r1: some x.((boxer x) and (walk x))
+    s0-r0: some x.((boxerdog x) and (walk x))
+    <BLANKLINE>
+    s1 readings:
+    ------------------------------
+    s1-r0: all x.((boxerdog x) implies some z23.((girl z23) and (chase z23 x)))
+    s1-r1: all x.((boxer x) implies some z42.((girl z42) and (chase z42 x)))
+    <BLANKLINE>
+    s2 readings:
+    ------------------------------
+    s2-r1: (boxer John)
+    s2-r0: (boxerdog John)
+
+
+    >>> dt.readings(threaded=True)
+    d0: ['s0-r0', 's1-r0', 's2-r0']
+    d1: ['s0-r0', 's1-r0', 's2-r1']
+    d2: ['s0-r0', 's1-r1', 's2-r0']
+    d3: ['s0-r0', 's1-r1', 's2-r1']
+    d4: ['s0-r1', 's1-r0', 's2-r0']
+    d5: ['s0-r1', 's1-r0', 's2-r1']
+    d6: ['s0-r1', 's1-r1', 's2-r0']
+    d7: ['s0-r1', 's1-r1', 's2-r1']
+
+    >>> thread = dt.expand_threads('d6')
+    >>> for rid, reading in thread:
+    ...     print rid, str(reading.infixify())
+    s0-r1 some x.((boxer x) and (walk x))
+    s1-r1 all x.((boxer x) implies some z81.((girl z81) and (chase z81 x)))
+    s2-r0 (boxerdog John)
+
+    >>> dt = DiscourseTester(['A student dances', 'Every student is a person'])
+    >>> dt.add_sentence('No person dances', consistchk=True)
+    Inconsistent discourse d0 ['s0-r0', 's1-r0', 's2-r0']:
+        s0-r0: some x.((student x) and (dance x))
+        s1-r0: all x.((student x) implies (person x))
+        s2-r0: (not some x.((person x) and (dance x)))
+    <BLANKLINE>
+
+    >>> dt.readings()
+    <BLANKLINE>
+    s0 readings:
+    ------------------------------
+    s0-r0: some x.((student x) and (dance x))
+    <BLANKLINE>
+    s1 readings:
+    ------------------------------
+    s1-r0: all x.((student x) implies (person x))
+    <BLANKLINE>
+    s2 readings:
+    ------------------------------
+    s2-r0: (not some x.((person x) and (dance x)))
+
+    >>> dt.retract_sentence('No person dances', quiet=False)
+    Current sentences are 
+    s1
+    s0
+    >>> dt.models()
+    --------------------------------------------------------------------------------
+    Model for Discourse Thread d0
+    --------------------------------------------------------------------------------
+    No model found!
+    <BLANKLINE>
+    Inconsistent discourse d0 ['s0-r0', 's1-r0', 's2-r0']:
+        s0-r0: some x.((student x) and (dance x))
+        s1-r0: all x.((student x) implies (person x))
+        s2-r0: (not some x.((person x) and (dance x)))
+    <BLANKLINE>
+
+    >>> dt.readings('A person dances')
+    The sentence 'A person dances' has these readings:
+        some x.((person x) and (dance x))
+
+    >>> dt.add_sentence('A person dances', informchk=True)
+    Sentence 'A person dances' under reading 'some x.((person x) and (dance x))':
+    Not informative relative to thread 'd0'
+
+
+
+    >>> dt = DiscourseTester(['Vincent is a boxer', 'Fido is a boxer', 'Vincent is married', 'Fido barks'])
+    >>> dt.readings(filter=True)
+    d0: ['s0-r0', 's1-r0', 's2-r0', 's3-r0']
+    d1: ['s0-r0', 's1-r1', 's2-r0', 's3-r0']
+    d2: ['s0-r1', 's1-r0', 's2-r0', 's3-r0']
+    d3: ['s0-r1', 's1-r1', 's2-r0', 's3-r0']
+
+
+
+..  This will not be visible in the html output: create a tempdir to
+    play in.
+    >>> import tempfile, os
+    >>> tempdir = tempfile.mkdtemp()
+    >>> old_dir = os.path.abspath('.')
+    >>> os.chdir(tempdir)
+
+
+    >>> import nltk.data
+    >>> nltk.data.retrieve('grammars/world.fol')
+    Retrieving 'grammars/world.fol', saving to 'world.fol'
+
+
+    >>> world = parse_fol(open('world.fol').read())
+    >>> for e in world[:3]: print str(e.infixify())
+    all x.((boxerdog x) implies (dog x))
+    all x.((boxer x) implies (person x))
+    all x.(not ((dog x) and (person x)))
+
+..  >>> world = nltk.data.load('/grammars/world.fol')
+
+    >>> dt.add_background(world, quiet=True)
+    >>> dt.readings(filter=True)
+    d2: ['s0-r1', 's1-r0', 's2-r0', 's3-r0']
+    >>> dt.models()
+    --------------------------------------------------------------------------------
+    Model for Discourse Thread d0
+    --------------------------------------------------------------------------------
+    No model found!
+    <BLANKLINE>
+    --------------------------------------------------------------------------------
+    Model for Discourse Thread d1
+    --------------------------------------------------------------------------------
+    No model found!
+    <BLANKLINE>
+    --------------------------------------------------------------------------------
+    Model for Discourse Thread d2
+    --------------------------------------------------------------------------------
+    % number = 1
+    % seconds = 0
+    <BLANKLINE>
+    % Interpretation of size 3
+    <BLANKLINE>
+    Fido = 0.
+    <BLANKLINE>
+    Mia = 1.
+    <BLANKLINE>
+    Vincent = 2.
+    <BLANKLINE>
+    f1(0) = 0.
+    f1(1) = 0.
+    f1(2) = 2.
+    <BLANKLINE>
+      bark(0).
+    - bark(1).
+    - bark(2).
+    <BLANKLINE>
+    - boxer(0).
+    - boxer(1).
+      boxer(2).
+    <BLANKLINE>
+      boxerdog(0).
+    - boxerdog(1).
+    - boxerdog(2).
+    <BLANKLINE>
+      dog(0).
+    - dog(1).
+    - dog(2).
+    <BLANKLINE>
+    - married(0).
+    - married(1).
+      married(2).
+    <BLANKLINE>
+    - person(0).
+    - person(1).
+      person(2).
+    <BLANKLINE>
+    - marry(0,0).
+    - marry(0,1).
+    - marry(0,2).
+    - marry(1,0).
+    - marry(1,1).
+    - marry(1,2).
+    - marry(2,0).
+    - marry(2,1).
+      marry(2,2).
+    <BLANKLINE>
+    --------------------------------------------------------------------------------
+    Model for Discourse Thread d3
+    --------------------------------------------------------------------------------
+    No model found!
+    <BLANKLINE>
+    Inconsistent discourse d0 ['s0-r0', 's1-r0', 's2-r0', 's3-r0']:
+        s0-r0: (boxerdog Vincent)
+        s1-r0: (boxerdog Fido)
+        s2-r0: (married Vincent)
+        s3-r0: (bark Fido)
+    <BLANKLINE>
+    Inconsistent discourse d1 ['s0-r0', 's1-r1', 's2-r0', 's3-r0']:
+        s0-r0: (boxerdog Vincent)
+        s1-r1: (boxer Fido)
+        s2-r0: (married Vincent)
+        s3-r0: (bark Fido)
+    <BLANKLINE>
+    Consistent discourse: d2 ['s0-r1', 's1-r0', 's2-r0', 's3-r0']:
+        s0-r1: (boxer Vincent)
+        s1-r0: (boxerdog Fido)
+        s2-r0: (married Vincent)
+        s3-r0: (bark Fido)
+    <BLANKLINE>
+    Inconsistent discourse d3 ['s0-r1', 's1-r1', 's2-r0', 's3-r0']:
+        s0-r1: (boxer Vincent)
+        s1-r1: (boxer Fido)
+        s2-r0: (married Vincent)
+        s3-r0: (bark Fido)
+    <BLANKLINE>
+
+..  This will not be visible in the html output: clean up the tempdir.
+    >>> os.chdir(old_dir)
+    >>> for f in os.listdir(tempdir):
+    ...     os.remove(os.path.join(tempdir, f))
+    >>> os.rmdir(tempdir)
+    >>> nltk.data.clear_cache()
