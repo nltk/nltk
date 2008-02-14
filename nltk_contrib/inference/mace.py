@@ -116,7 +116,7 @@ class Mace(Prover9Parent, ModelBuilderI):
     def show_model(self, format=None):
         """
         Print out a Mace4 model using any Mace4 C{interpformat} format. 
-        See L{ttp://www.cs.unm.edu/~mccune/mace4/manual/} for details.
+        See U{http://www.cs.unm.edu/~mccune/mace4/manual/} for details.
         
         @parameter format: Output format for displaying models. Defaults to 'standard' format.
         @type format: C{str}
@@ -167,7 +167,7 @@ def decode_result(found):
     Decode the result of model_found() 
     
     @parameter found: The output of model_found() 
-    @type format: C{boolean}
+    @type found: C{boolean}
     """
     return {True: 'Countermodel found', False: 'No countermodel found', None: 'None'}[found]
 
