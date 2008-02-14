@@ -55,7 +55,8 @@ class DiscourseTester(object):
             self._gramfile = 'grammars/sem4.fcfg'
         else:
             self._gramfile = gramfile
-        self._threads = {} 
+        self._threads = {}
+        self._filtered_threads = {}
         self._parser = parse.load_earley(self._gramfile) 
         if background is not None:
             for e in background:
@@ -63,27 +64,15 @@ class DiscourseTester(object):
             self._background = background
         else:
             self._background = []
-              
+
+    ###############################
+    # Sentences
+    ###############################
+    
     def sentences(self):
         for id in sorted(self._sentences.keys()):
-            print "%s: %s" % (id, self._sentences[id])            
-            
-    def expand_threads(self, thread_id, threads=None):
-        """
-        Given a thread ID, find the list of L{logic.Expression}s corresponding to the reading IDs in that thread.
-        
-        @parameter thread_id: thread ID
-        @type thread_id: C{str}
-        @parameter threads: a mapping from thread IDs to lists of reading IDs
-        @type threads: C{dict}
-        @return: A list of pairs (C{rid}, I{reading}) where I{reading} is the L{logic.Expression} associated with a reading ID 
-        @rtype: C{list} of C{tuple}
-        """
-        if threads is None:
-            threads = self._threads
-        return [(rid, self._readings[sid][rid]) for rid in threads[thread_id] for sid in rid.split('-')[:1]]
-
-            
+            print "%s: %s" % (id, self._sentences[id]) 
+              
     def add_sentence(self, sentence, informchk=False, consistchk=False,):
         """
         Add a sentence to the discourse.
@@ -104,7 +93,8 @@ class DiscourseTester(object):
                 for sent_reading in self._get_readings(sentence):
                     tp = get_prover(goal=sent_reading, assumptions=assumptions)
                     if tp.prove():
-                        print "Sentence '%s' under reading '%s' is not informative relative to thread '%s'" % (sentence, str(sent_reading.infixify()), tid)
+                        print "Sentence '%s' under reading '%s':" % (sentence, str(sent_reading.infixify()))
+                        print "Not informative relative to thread '%s'" % tid
            
         self._input.append(sentence)
         self._sentences = dict([('s%s' % i, sent) for i, sent in enumerate(self._input)])
@@ -112,8 +102,8 @@ class DiscourseTester(object):
         # of assumptions
         if consistchk:
             self.readings(quiet=True)
-            self.models(show=False)
-            
+            self.models(show=False) 
+                       
     def retract_sentence(self, sentence, quiet=False):
         """
         Remove a sentence from the input.
@@ -130,14 +120,144 @@ class DiscourseTester(object):
             print "Current sentences are "
             for sent in self._sentences:
                 print sent
-                  
+            
     def grammar(self):
         """
         Print out the grammar currently in use for parsing.
         """
         show_cfg(self._gramfile)
+        
+    ###############################
+    # Readings and Threads
+    ###############################        
+
+    def _get_readings(self, sentence):
+        """
+        Build a list of semantic readings for a sentence.
+        
+        @rtype: C{list} of  L{logic.Expression}.
+        """
+        tokens = sentence.split()
+        trees = self._parser.nbest_parse(tokens)
+        return [root_semrep(tree) for tree in trees]    
+                         
+    def _construct_readings(self):
+        """
+        Use C{self._sentences} to construct a value for C{self._readings}.
+        """
+        for sid in self._sentences:
+            readings = self._get_readings(self._sentences[sid])
+            self._readings[sid] = dict([("%s-r%s" % (sid, rid), reading)
+                                                        for rid, reading in enumerate(readings)])
+                
+    def _construct_threads(self):
+        """
+        Use C{self._readings} to construct a value for C{self._threads}.
+        and use the model builder to construct a value for C{self._filtered_threads}
+        """
+        thread_list = [[]]
+        for sid in sorted(self._readings.keys()):
+            thread_list = self.multiply(thread_list, sorted(self._readings[sid].keys()))      
+        self._threads = dict([("d%s" % tid, thread) for tid, thread in enumerate(thread_list)])
+        # keep the same ids, but only include threads which get models
+        for (tid, thread) in self._threads.items():
+            if (tid, True) in self._check_consistency(self._threads):
+                self._filtered_threads[tid] = thread
+   
+ 
+    def _show_readings(self, sentence=None):
+        """
+        Print out the readings for  the discourse (or a single sentence).
+        """
+        if sentence is not None:
+            print "The sentence '%s' has these readings:" % sentence
+            for r in [str(reading.infixify()) for reading in (self._get_readings(sentence))]:
+                print "    %s" % r
+        else:
+            for sid in sorted(self._readings.keys()):
+                print
+                print '%s readings:' % sid
+                print '-' * 30
+                for rid in self._readings[sid]:
+                    lf = str(self._readings[sid][rid].infixify())
+                    print "%s: %s" % (rid, lf)
     
-    def models(self, thread_id=None, show=True):
+    def _show_threads(self, filter=False):
+        """
+        Print out the value of C{self._threads} or C{self._filtered_hreads} 
+        """
+        threads = self._threads
+        if filter:
+            threads = self._filtered_threads
+        for tid in sorted(threads.keys()):
+            print "%s:" % tid, self._threads[tid] 
+        
+        
+    def readings(self, sentence=None, threaded=False, quiet=False, filter=False):
+        """
+        Construct and show the readings of the discourse (or of a single sentence).
+        
+        @parameter sentence: test just this sentence
+        @type sentence: C{str}
+        @parameter threaded: if C{True}, print out each thread ID and the corresponding thread.
+        @parameter filter: if C{True}, only print out consistent thread IDs and threads.
+        """
+        self._construct_readings()
+        self._construct_threads()
+        if not quiet:
+            if not threaded:
+                self._show_readings(sentence=sentence)
+            else:
+                self._show_threads(filter=filter)                            
+    
+    def expand_threads(self, thread_id, threads=None, quiet=True):
+        """
+        Given a thread ID, find the list of L{logic.Expression}s corresponding to the reading IDs in that thread.
+        
+        @parameter thread_id: thread ID
+        @type thread_id: C{str}
+        @parameter threads: a mapping from thread IDs to lists of reading IDs
+        @type threads: C{dict}
+        @return: A list of pairs (C{rid}, I{reading}) where I{reading} is the L{logic.Expression} associated with a reading ID 
+        @rtype: C{list} of C{tuple}
+        """
+        if threads is None:
+            threads = self._threads
+        results = [(rid, self._readings[sid][rid]) for rid in threads[thread_id] for sid in rid.split('-')[:1]]
+        if not quiet:
+            for (rid, reading) in results:
+                    lf = str(reading.infixify())
+                    print "%s: %s" % (rid, lf)
+        return results    
+    
+           
+    ###############################
+    # Models and Background
+    ###############################       
+     
+    def _check_consistency(self, threads, show=False, quiet=True):
+        results = []
+        for tid in sorted(threads.keys()):
+            assumptions = [reading for (rid, reading) in self.expand_threads(tid, threads=threads)]
+            assumptions += self._background
+            mb = Mace('', assumptions, timeout=2)
+            modelfound = mb.build_model()
+            results.append((tid, modelfound))
+            if show:
+                spacer(80)
+                print "Discourse Thread %s" % tid
+                spacer(80)
+                if not quiet:
+                    for a in assumptions:
+                        print a.infixify()
+                    spacer(80)
+                if modelfound:
+                    mb.show_model(format='cooked')
+                else:
+                    print "No model found!\n"
+        return results
+    
+    def models(self, thread_id=None, show=True, quiet=True):
         """
         Call Mace4 to build a model for each current discourse thread.
         
@@ -150,82 +270,41 @@ class DiscourseTester(object):
         else:
             threads = {thread_id: self._threads[thread_id]}
         
-        for tid in sorted(threads.keys()):
-            assumptions = [reading for (rid, reading) in self.expand_threads(tid, threads=threads)]
-            assumptions += self._background
-            mb = Mace('', assumptions, timeout=2)
+        for (tid, modelfound) in self._check_consistency(threads, show=show, quiet=quiet):            
             idlist = [rid for rid in threads[tid]]
-            if not mb.build_model():
-                print "Inconsistent discourse: %s" % idlist
+            
+            if not modelfound:
+                print "Inconsistent discourse %s %s:" % (tid, idlist)
                 for  rid, reading in [(rid, str(reading.infixify()))  for (rid, reading) in self.expand_threads(tid)]:
                     print "    %s: %s" % (rid, reading)
-            elif show:
-                m = mb.build_model()
-                spacer(80)
-                print "Discourse Thread %s" % tid
-                spacer(80)
-                for a in assumptions:
-                    print a.infixify()
-                spacer(80)
-                mb.show_model(format='cooked')
+                print 
             else:
-                print "Consistent discourse: %s" % idlist
+                print "Consistent discourse: %s %s:" % (tid, idlist)
+                for  rid, reading in [(rid, str(reading.infixify()))  for (rid, reading) in self.expand_threads(tid)]:
+                    print "    %s: %s" % (rid, reading)
+                print 
         
-
-    def _get_readings(self, sentence):
-        """
-        @rtype: C{list} of  L{logic.Expression}.
-        """
-        tokens = sentence.split()
-        trees = self._parser.nbest_parse(tokens)
-        return [root_semrep(tree) for tree in trees]
-
-    def add_background(self, background):
+    def add_background(self, background, quiet=False):
         """
         Update C{self._background}
         
         @parameter background: Formulas which contain background information
         @type background: C{list} of L{logic.Expression}.
         """
-        for e in background:
+        for (count, e) in enumerate(background):
             assert isinstance(e, Expression)
-        self._background += background
-        
+            if not quiet:
+                print "Adding assumption %s to background" % count
+            self._background.append(e) 
+            
+        #update the state
+        self._construct_readings()
+        self._construct_threads()
     
-    def readings(self, sentence=None, threaded=False,quiet=False):
-        """
-        Update and show the readings of the discourse (or of a single sentence).
-        
-        @parameter sentence: test just this sentence
-        @type sentence: C{str}
-        @parameter threaded: if C{True}, print out each thread ID and the corresponding thread.
-        """
-        if sentence is not None:
-            print "The sentence '%s' has these readings:" % sentence
-            for r in [str(reading.infixify()) for reading in (self._get_readings(sentence))]:
-                print "    %s" % r
-                return None
-        else:
-            for sid in self._sentences:
-                readings = self._get_readings(self._sentences[sid])
-                self._readings[sid] = dict([("%s-r%s" % (sid, rid), reading)
-                                                            for rid, reading in enumerate(readings)])
-  
-        discourse = [[]]
-        for sid in sorted(self._readings.keys()):
-            discourse = self.multiply(discourse, sorted(self._readings[sid].keys()))
-            if not threaded and not quiet:
-                print
-                print '%s readings:' % sid
-                print '-' * 30
-                for rid in self._readings[sid]:
-                    lf = str(self._readings[sid][rid].infixify())
-                    print "%s: %s" % (rid, lf)
-        self._threads = dict([("d%s" % tid, thread) for tid, thread in enumerate(discourse)])
-        if threaded and not quiet:
-            for tid in sorted(self._threads.keys()):
-                print "%s:" % tid, self._threads[tid]
-       
+   ###############################
+    # Misc
+    ###############################                              
+                
     @staticmethod
     def multiply(discourse, readings):
         """
@@ -254,11 +333,37 @@ class DiscourseTester(object):
 #L2 = ['a', 'b', 'c'] 
 #print multiply(L1,L2)
 
+def parse_fol(s):
+    """
+    Temporarily duplicated from nltk.sem.util
+    Convert a  file of First Order Formulas into a list of {Expression}s.
+    
+    @parameter s: the contents of the file
+    @type s: C{str}
+    @return: a list of parsed formulas.
+    @rtype: C{list} of L{Expression}
+    """
+    from nltk.sem import LogicParser
+    statements = []
+    lp = LogicParser()
+    for linenum, line in enumerate(s.splitlines()):
+        line = line.strip()
+        if line.startswith('#') or line=='': continue
+        try:
+            statements.append(lp.parse(line))
+        except Error:
+            raise ValueError, 'Unable to parse line %s: %s' % (linenum, line)
+    return statements
+            
+###############################
+# Demo
+###############################    
+
 def discourse_demo():  
     """
     Illustrate the various methods of C{DiscourseTester}
     """
-    dt = DiscourseTester(['a boxer walks', 'every boxer chases a girl'])
+    dt = DiscourseTester(['A boxer walks', 'Every boxer chases a girl'])
     print
     #dt.grammar()
     print 
@@ -288,6 +393,18 @@ def discourse_demo():
     dt.readings('A person dances')
     print
     dt.add_sentence('A person dances', informchk=True)
+    dt = DiscourseTester(['Vincent is a boxer', 'Fido is a boxer', 'Vincent is married', 'Fido barks'])
+    dt.readings(filter=True)
+    import nltk.data
+    world = nltk.data.load('/grammars/world.fol')
+    print
+    dt.add_background(world, quiet=True)
+    print
+    dt.readings(threaded=True, filter=True)
+    dt.expand_threads('d2', quiet=False)
+    #print
+    dt.models()
+    
     
 
 if __name__ == '__main__':
