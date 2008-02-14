@@ -4,6 +4,8 @@
 #
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
+# $Id$
+
 """
 Module for incrementally developing simple discourses, and checking for semantic ambiguity, 
 consistency and informativeness.
@@ -11,19 +13,34 @@ consistency and informativeness.
 Many of the ideas are based on the CURT family of programs of Blackburn and Bos 
 (see U{http://homepages.inf.ed.ac.uk/jbos/comsem/book1.html}).
 
-Consistency checking is carried out with the use of Mace4 from L{mace}. 
+Consistency checking is carried out  by using the L{mace} module to call the Mace4 model builder.
 Informativeness checking is carried out with a call to C{get_prover()} from
 the L{inference}  module.
 
 C{DiscourseTester} is a constructor for discourses. 
 The basic data structure is a list of sentences, stored as C{self._sentences}. Each sentence in the list
-is assigned a I{sentence ID} (C{sid}) of the form C{s}I{i}.
+is assigned a I{sentence ID} (C{sid}) of the form C{s}I{i}. For example::
+
+    s0: A boxer walks
+    s1: Every boxer chases a girl
 
 Each sentence can be ambiguous between a number of readings, each of which receives a 
-I{reading ID} (C{rid}) of the form C{s}I{i} -C{r}I{j}. A I{thread} is a list of readings, represented
-as a list of C{rid}s. Each thread receives a I{thread ID} (C{tid}) of the form C{d}I{i}. The set of
-all threads for a discourse is the Cartesian product of all the readings of the sequences of sentences.
-(This is not intended to scale beyond very short discourses!)
+I{reading ID} (C{rid}) of the form C{s}I{i} -C{r}I{j}. For example::
+
+    s0 readings:
+    ------------------------------
+    s0-r1: some x.((boxer x) and (walk x))
+    s0-r0: some x.((boxerdog x) and (walk x))
+
+A I{thread} is a list of readings, represented
+as a list of C{rid}s. Each thread receives a I{thread ID} (C{tid}) of the form C{d}I{i}. 
+For example::
+
+    d0: ['s0-r0', 's1-r0']
+
+The set of all threads for a discourse is the Cartesian product of all the readings of the sequences of sentences.
+(This is not intended to scale beyond very short discourses!) The method L{readings(filter=True)} will only show
+those threads which are consistent (taking into account any background assumptions).
 """
 
 from nltk.sem import root_semrep, Expression
@@ -70,12 +87,15 @@ class DiscourseTester(object):
     ###############################
     
     def sentences(self):
+        """
+        Display the list of sentences in the current discourse.
+        """
         for id in sorted(self._sentences.keys()):
             print "%s: %s" % (id, self._sentences[id]) 
               
     def add_sentence(self, sentence, informchk=False, consistchk=False,):
         """
-        Add a sentence to the discourse.
+        Add a sentence to the current discourse.
         
         Updates C{self._input} and C{self._sentences}.
         @parameter sentence: An input sentence
@@ -106,7 +126,7 @@ class DiscourseTester(object):
                        
     def retract_sentence(self, sentence, quiet=False):
         """
-        Remove a sentence from the input.
+        Remove a sentence from the current discourse.
         
         Updates C{self._input}, C{self._sentences} and C{self._readings}.
         @parameter sentence: An input sentence
@@ -123,7 +143,7 @@ class DiscourseTester(object):
             
     def grammar(self):
         """
-        Print out the grammar currently in use for parsing.
+        Print out the grammar in use for parsing input sentences
         """
         show_cfg(self._gramfile)
         
@@ -152,13 +172,15 @@ class DiscourseTester(object):
                 
     def _construct_threads(self):
         """
-        Use C{self._readings} to construct a value for C{self._threads}.
+        Use C{self._readings} to construct a value for C{self._threads}
         and use the model builder to construct a value for C{self._filtered_threads}
         """
         thread_list = [[]]
         for sid in sorted(self._readings.keys()):
             thread_list = self.multiply(thread_list, sorted(self._readings[sid].keys()))      
         self._threads = dict([("d%s" % tid, thread) for tid, thread in enumerate(thread_list)])
+        # re-initialize the filtered threads
+        self._filtered_threads = {}
         # keep the same ids, but only include threads which get models
         for (tid, thread) in self._threads.items():
             if (tid, True) in self._check_consistency(self._threads):
@@ -186,9 +208,10 @@ class DiscourseTester(object):
         """
         Print out the value of C{self._threads} or C{self._filtered_hreads} 
         """
-        threads = self._threads
         if filter:
             threads = self._filtered_threads
+        else:
+            threads = self._threads
         for tid in sorted(threads.keys()):
             print "%s:" % tid, self._threads[tid] 
         
@@ -204,13 +227,16 @@ class DiscourseTester(object):
         """
         self._construct_readings()
         self._construct_threads()
+        
+        # if we are filtering, just show threads
+        if filter: threaded=True
         if not quiet:
             if not threaded:
                 self._show_readings(sentence=sentence)
             else:
                 self._show_threads(filter=filter)                            
     
-    def expand_threads(self, thread_id, threads=None, quiet=True):
+    def expand_threads(self, thread_id, threads=None):
         """
         Given a thread ID, find the list of L{logic.Expression}s corresponding to the reading IDs in that thread.
         
@@ -223,12 +249,7 @@ class DiscourseTester(object):
         """
         if threads is None:
             threads = self._threads
-        results = [(rid, self._readings[sid][rid]) for rid in threads[thread_id] for sid in rid.split('-')[:1]]
-        if not quiet:
-            for (rid, reading) in results:
-                    lf = str(reading.infixify())
-                    print "%s: %s" % (rid, lf)
-        return results    
+        return [(rid, self._readings[sid][rid]) for rid in threads[thread_id] for sid in rid.split('-')[:1]]
     
            
     ###############################
@@ -240,12 +261,13 @@ class DiscourseTester(object):
         for tid in sorted(threads.keys()):
             assumptions = [reading for (rid, reading) in self.expand_threads(tid, threads=threads)]
             assumptions += self._background
+            # if Mace4 finds a model, it always seems to find it quickly
             mb = Mace('', assumptions, timeout=2)
             modelfound = mb.build_model()
             results.append((tid, modelfound))
             if show:
                 spacer(80)
-                print "Discourse Thread %s" % tid
+                print "Model for Discourse Thread %s" % tid
                 spacer(80)
                 if not quiet:
                     for a in assumptions:
@@ -265,6 +287,8 @@ class DiscourseTester(object):
         @type thread_id: C{str}
         @parameter show: If C{True}, display the model that has been found.
         """
+        self._construct_readings()
+        self._construct_threads()
         if thread_id is None:
             threads = self._threads
         else:
@@ -286,8 +310,9 @@ class DiscourseTester(object):
         
     def add_background(self, background, quiet=False):
         """
-        Update C{self._background}
+        Add a list of background assumptions for reasoning about the discourse.
         
+        When called,  this method also updates the discourse model's set of readings and threads.
         @parameter background: Formulas which contain background information
         @type background: C{list} of L{logic.Expression}.
         """
@@ -300,6 +325,13 @@ class DiscourseTester(object):
         #update the state
         self._construct_readings()
         self._construct_threads()
+        
+    def background(self):
+        """
+        Show the current background assumptions.
+        """
+        for e in self._background:
+            print str(e.infixify())
     
    ###############################
     # Misc
@@ -335,8 +367,8 @@ class DiscourseTester(object):
 
 def parse_fol(s):
     """
-    Temporarily duplicated from nltk.sem.util
-    Convert a  file of First Order Formulas into a list of {Expression}s.
+    Temporarily duplicated from L{nltk.sem.util}.
+    Convert a  file of First Order Formulas into a list of C{Expression}s.
     
     @parameter s: the contents of the file
     @type s: C{str}
@@ -364,6 +396,7 @@ def discourse_demo():
     Illustrate the various methods of C{DiscourseTester}
     """
     dt = DiscourseTester(['A boxer walks', 'Every boxer chases a girl'])
+    dt.models()
     print
     #dt.grammar()
     print 
@@ -399,10 +432,10 @@ def discourse_demo():
     world = nltk.data.load('/grammars/world.fol')
     print
     dt.add_background(world, quiet=True)
+    dt.background()
     print
-    dt.readings(threaded=True, filter=True)
-    dt.expand_threads('d2', quiet=False)
-    #print
+    dt.readings(filter=True)
+    print
     dt.models()
     
     
