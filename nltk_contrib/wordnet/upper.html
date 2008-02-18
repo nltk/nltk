@@ -1,12 +1,17 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
+    <!-- Natural Language Toolkit: Wordnet Interface: Graphical Wordnet Browser
+        Copyright (C) 2007 - 2008 University of Pennsylvania
+        Author: Jussi Salmela <jtsalmela@users.sourceforge.net>
+        URL: <http://nltk.sf.net>
+        For license information, see LICENSE.TXT -->
 	<head>
 		<META http-equiv="Content-Script-Type" content="text/javascript">
                     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 		<title>Untitled Document</title>
 	</head>
 	<body>
-	<form name="formName" onSubmit="return functionName()">
+	<form name="formName" onSubmit="return false;">
 	        Current Word:&nbsp;<input type="text" id="currentWord" size="10" disabled>
 			Next Word:&nbsp;<input type="text" id="nextWord" name="nextWord" size="10">
 			<input name="searchButton" onClick="search();" type="submit" value="Search">
@@ -15,28 +20,35 @@
 			<input name="shutdownButton" onclick="shutdown();" type="button" value="Shutdown the Server">
 	</form>
 <script language="JavaScript">
-
+// onSubmit="return functionName()">
 function showWordAndTitle() {
     var hlp = parent.frameName2.document.title;
 	parent.document.title = hlp;
 	window.document.formName.currentWord.value = hlp.substr(hlp.indexOf(":")+2, hlp.length);
 }
+
 function search() {
-	parent.frameName2.location.href = "N" + window.document.formName.nextWord.value;
+	//alert("In search()");
+    if(window.document.formName.nextWord.value == "") return;
+	parent.frameName2.location.href = "N" + window.document.formName.nextWord.value + "%230";
 	window.document.formName.currentWord.value = window.document.formName.nextWord.value;
     window.document.formName.nextWord.value = "";
 	//parent.frameName2.document.body.innerHTML = window.document.formName.nextWord.value;
 	//alert(parent.document.getElementById("nextWord").value);
 }	
+
 function help() {
-        parent.frameName2.location.href = "help.html";
+        parent.frameName2.location.href = "web_help.html";
 	}	
+
 function databaseInfo() {
 	parent.frameName2.location.href = "NLTK Wordnet Browser Database Info.html";
 }	
+
 function shutdown() {
         parent.frameName2.location.href = "SHUTDOWN THE SERVER";
 	}	
+
 function functionName(){
 	//alert("functionName");
 	//parent.frameName2.location.href = window.document.formName.nextWord.value;
