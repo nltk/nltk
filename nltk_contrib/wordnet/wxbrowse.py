@@ -21,10 +21,12 @@ import  wx
 import  wx.html as  html
 import  wx.lib.wxpTag
 
-from browseutil import *
+#from browseutil import page_word, new_word_and_body, explanation
+import browseutil as bu
 
 __all__ = ['demo']
 
+#explanation_text = None
 frame_title = 'NLTK Wordnet Browser'
 help_about = frame_title + \
 '''
@@ -57,10 +59,6 @@ class MyHtmlWindow(html.HtmlWindow):
 
     def OnLinkClicked(self, linkinfo):
         href = linkinfo.GetHref()
-        link_type = href[0]
-        q_link = href[1:]
-        u_link = unquote_plus(q_link)
-        #print link_type, q_link, u_link
         tab_to_return_to = None
         word = self.parent.parent.search_word.GetValue()
         if linkinfo.Event.ControlDown():
@@ -71,105 +69,17 @@ class MyHtmlWindow(html.HtmlWindow):
                 self.parent.add_html_page(activate=True)
         self.parent.SetPageText(self.parent.current_page, word)
         self.parent.parent.search_word.SetValue(word)
-        if link_type == 'M': # Member of the words in a synset
-            word,body = new_word_and_body(u_link)
+        page,word = bu.page_word(self.GetParser().GetSource(), word, href)
+        if page:
             if word:
                 self.parent.SetPageText(self.parent.current_page, word)
-                self.parent.parent.show_page_and_word(pg(word, body), word)
+                self.parent.parent.show_page_and_word(page, word)
             else:
                 self.show_msg('The word was not found!')
-        elif link_type == 'R': # Relation links
-            # A relation link looks like this:
-            # word#synset_keys#relation_name#uniq_cntr  (OLD FORM !!!)
-            # word#synset_keys#relation_name#uniq_cntr
-            #print 'u_link:', u_link
-            word,synset_keys,rel_name,u_c = u_link.split('#')
-            word = word.strip()
-            synset_keys = synset_keys.strip()
-            rel_name = rel_name.strip()
-            u_c = u_c.strip()
-            #print 'word,synset_keys,rel_name,u_c:',word,synset_keys,rel_name,u_c
-            page = self.GetParser().GetSource()
-            ind = page.find(q_link) + len(q_link) + 2
-            #print page[ind:]
-            # If the link text is in bold, the user wants to
-            # close the section beneath the link
-            if page[ind:ind+3] == '<b>':
-                page = ul_section_removed(page, ind)
-                page = page[:ind] + '<i>' + rel_name + \
-                        '</i>' + page[ind + len(rel_name) + 14:]
                 self.parent.parent.show_page_and_word(page)
-            else:
-                # First check if another link is bold on the same line
-                # and if it is, then remove boldness & close the section below
-                end = page.find('\n', ind)
-                start = page.rfind('\n', 0, ind)
-                #print 'page[start:end]:', page[start:end]
-                start = page.find('<b>', start, end)
-                #print 'start:', start
-                if start != -1:
-                    page = ul_section_removed(page, ind)
-                    end = page.find('</b>', start, end)
-                    page = page[:start] + page[start+3:end] + page[end+4:]
-
-                # Make this selection bold on page
-                #
-                if rel_name in implemented_rel_names:
-                    ind = page.find(q_link) + len(q_link) + 2
-                    ind_2 = ind + len(rel_name) + 7
-                    #print 'page[:ind]:', page[:ind]
-                    page = page[:ind] + bold(page[ind:ind_2]) + \
-                           page[ind_2:]
-                    # find the start of the next line
-                    ind = page.find('\n', ind) + 1
-                    section = \
-                        relation_section(rel_name, word, synset_keys)
-                    #print 'page[:ind]:', page[:ind]
-                    page = page[:ind] + section + page[ind:]
-                    self.parent.parent.show_page_and_word(page)
-                else:
-                    self.show_msg('Relation "%s" is not implemented yet!' % rel_name)
-                    #print 'Relation "%s" is not implemented yet!' % rel_name
         else:
-            # A word link looks like this:
-            # Wword#synset_key,prev_synset_key#link_counter  (OLD FORM !!!)
-            # Wword#synset_key,prev_synset_key#link_counter
-            # A synset link looks like this:
-            # Sword#synset_key,prev_synset_key#link_counter  (OLD FORM !!!)
-            # Sword#synset_key,prev_synset_key#link_counter
-            l_t = link_type + ':'
-            #print 'l_t, u_link:', l_t, u_link
-            word,syns_keys,link_counter = u_link.split('#')
-            #print 'word,syns_keys,link_counter:',word,syns_keys,link_counter
-            #syns_key,prev_syns_key = syns_keys.split(',')
-            page = self.GetParser().GetSource()
-            ind = page.find(q_link) + len(q_link) + 2
-            #print page[ind:]
-            # If the link text is in bold, the user wants to
-            # close the section beneath the link
-            if page[ind:ind+3] == '<b>':
-                page = ul_section_removed(page, ind)
-                #page = page[:ind] + 'S:' + page[ind + 9:]
-                page = page[:ind] + l_t + page[ind + 9:]
-                self.parent.parent.show_page_and_word(page)
-            else: # The user wants to see the relation names
-                # Make this link text bold on page
-                #page = page[:ind] + bold('S:') + page[ind + 2:]
-                page = page[:ind] + bold(l_t) + page[ind + 2:]
-                # Insert the relation names
-                ind = page.find('\n', ind) + 1
-                # First remove the full_hyponym_cont_text if found here
-                #print page[:ind+5] + '>>>>><<<<<' + page[ind+5:]
-                if page[ind+5:].startswith(full_hyponym_cont_text):
-                    page = page[0:ind+5] + \
-                            page[ind+5+len(full_hyponym_cont_text):]
-                #print page[:ind+5] + '>>>>><<<<<' + page[ind+5:]
-                s_r = synset_relations(word, link_type, syns_keys)
-                s_r = s_r.split('\n')[:-1]
-                s_r = [li(sr) for sr in s_r]
-                s_r = ul('\n' + '\n'.join(s_r) + '\n') + '\n'
-                page = page[:ind] + s_r + page[ind:]
-                self.parent.parent.show_page_and_word(page)
+            self.show_msg('Relation "%s" is not implemented yet!' % rel_name)
+            #print 'Relation "%s" is not implemented yet!' % rel_name
         '''
         else:
             print 'We should be in a Help Window now! Are we?'
@@ -226,8 +136,8 @@ class MyHtmlWindow(html.HtmlWindow):
     #def show_body(self, word, body):
         #self.SetPage((html_header % word) + body + html_trailer)
 
-    def show_help(self):
-        self.parent.parent.show_page_and_word(explanation, 'green')
+    #def show_help(self):
+    #    self.parent.parent.show_page_and_word(bu.explanation, 'green')
 
     def show_msg(self, msg):
         msg1 = '*'*8 + '   ' + msg + '   ' + '*'*8
@@ -431,9 +341,9 @@ class HtmlPanel(wx.Panel):
         word = self.search_word.GetValue()
         word = word.strip()
         if word == '': return
-        word,body = new_word_and_body(word)
+        word,body = bu.new_word_and_body(word)
         if word:
-            self.show_page_and_word(pg(word, body), word)
+            self.show_page_and_word(bu.pg(word, body), word)
             self.nb.h_w.current_word = word
             self.nb.SetPageText(self.nb.current_page, word)
         else:
@@ -611,9 +521,9 @@ class MyHtmlFrame(wx.Frame):
         word = self.panel.search_word.GetValue()
         if word == '': return
         current_page = self.panel.nb.add_html_page()
-        word,body = new_word_and_body(word)
+        word,body = bu.new_word_and_body(word)
         if word:
-            self.panel.show_page_and_word(pg(word, body), word)
+            self.panel.show_page_and_word(bu.pg(word, body), word)
             self.panel.nb.h_w.current_word = word
             self.panel.nb.SetPageText(current_page, word)
         else:
@@ -641,7 +551,7 @@ class MyHtmlFrame(wx.Frame):
         self.show_source()
 
     def on_help_help(self, event):
-        self.read_file('help.html')
+        self.read_file('wx_help.html')
 
     def on_help_about(self, event):
         wx.MessageBox(help_about)
@@ -650,195 +560,15 @@ class MyHtmlFrame(wx.Frame):
         word = '* Database Info *'
         current_page = self.panel.nb.add_html_page()
         self.panel.nb.SetPageText(current_page,word)
-        html = (html_header % '* Database Info *') + \
-        '''
-        <h2>Database information is being gathered!</h2>
-        <p>Producing this summary information may,
-        depending on your computer, take a minute or two.</p>
-        <p>Please be patient! If this operation seems to last too long,
-        it might be a good idea to save the resulting page on disk for possible
-        later viewings.</p>
-        '''
-        self.panel.show_page_and_word(html + html_trailer, word)
-        wx.Yield()
-        all_pos = ['noun', 'verb', 'adj', 'adv']
-        data_path = os.environ['NLTK_DATA'] + '\\corpora\\wordnet\\'
-        display_names = [('forms','Word forms'), ('simple','--- simple words'),
-            ('collo','--- collocations'), ('syns','Synsets'),
-            ('w_s_pairs','Word-Sense Pairs'),
-            ('monos','Monosemous Words and Senses'),
-            ('poly_words','Polysemous Words'),
-            ('poly_senses','Polysemous Senses'),
-            ('apimw','Average Polysemy Including Monosemous Words'),
-            ('apemw','Average Polysemy Excluding Monosemous Words'),
-            ('rels','Relations')]
-
-        col_heads = ['Noun', 'Verb', 'Adjective', 'Adverb', 'Total']
-        #counts = [[0] * len(col_heads)] * len(display_names)
-        counts = [[0 for i in range(len(col_heads))] for j in range(len(display_names))]
-        rel_counts = defaultdict(int)
-        rel_words = {}
-        unique_beginners = defaultdict(list)
-
-        for n_pos,pos in enumerate(all_pos): #all_pos): ['adj', 'adv']):
-            html += '<br><br>Starting the summary for POS: %s' % col_heads[n_pos]
-            self.panel.show_page_and_word(html + html_trailer, word)
-            wx.Yield()
-            d = defaultdict(int)
-            # Word counts
-            for ind in open(data_path + 'index.' + pos):
-                if ind.startswith('  '):
-                    continue
-                ind_parts = ind.split()
-                syn_count = int(ind_parts[2])
-                d['w_s_pairs'] += syn_count
-                if syn_count == 1:
-                    d['monos'] += 1
-                else:
-                    d['poly_words'] += 1
-                    d['poly_senses'] += syn_count
-                w = ind_parts[0]
-                d['forms'] += 1
-                if w.find('_') != -1:
-                    d['simple'] += 1
-                else:
-                    d['collo'] += 1
-            d['apimw'] = 1.0 * (d['monos'] + d['poly_senses']) / \
-                               (d['monos'] + d['poly_words'])
-            d['apemw'] = 1.0 * d['poly_senses'] / d['poly_words']
-
-            # Synsets and relations
-            for syns in open(data_path + 'data.' + pos):
-                if syns.startswith('  '):
-                    continue
-                d['syns'] += 1
-                synset = getSynset(pos,int(syns[:8]))
-                syn_rel = synset.relations_2()
-                if HYPERNYM not in syn_rel and 'hypernym (instance)' not in syn_rel:
-                    unique_beginners[n_pos].append(synset)
-                d['rels'] += len(syn_rel)
-                for sr in syn_rel:
-                    rel_counts[(sr,n_pos)] += 1
-                    rel_words[(sr,n_pos)] = synset.words[0]
-
-            # Prepare counts for displaying
-            nd = {}
-            for n,(x,y) in enumerate(display_names):
-                nd[x] = n
-                if x in d:
-                    counts[n][n_pos] = d[x]
-                    counts[n][4] += d[x]
-                if x == 'apimw' or x == 'apemw':
-                    m_c = counts[nd['monos']][4]
-                    m_ps = counts[nd['poly_senses']][4]
-                    m_pw = counts[nd['poly_words']][4]
-                    if x == 'apimw':
-                        counts[n][4] = 1.0 * (m_c + m_ps) / (m_c + m_pw)
-                    else:
-                        counts[n][4] = 1.0 * m_ps /  m_pw
-
-        # Format the counts
-        html += '<br><br>Starting the construction of result tables'
-        self.panel.show_page_and_word(html + html_trailer, word)
-        wx.Yield()
-        html = (html_header % '* Database Info *') + hlev(2, 'Word, synset and relation counts by POS')
-        html += '''
-        <table border="1" cellpadding="1" cellspacing="1"
-        summary="">
-        <col align="left"><col align="right"><col align="right">
-        <col align="right"><col align="right"><col align="right">
-        <tr><th></th><th align="center">Noun</th><th align="center">Verb</th>
-        <th align="center">Adjective</th><th align="center">Adverb</th>
-        <th align="center">Total</th></tr>
-        '''
-        for n,(x,y) in enumerate(display_names):
-            if x == 'rels':
-                html += '<tr><th align="left"> </th>'
-                html += ''.join('<td align="right"> </td>' for c in counts[n]) \
-                        + '</tr>'
-            html += '<tr><th align="left">' + '%s' % y + '</th>'
-            if  x == 'apimw' or x == 'apemw':
-                html += ''.join('<td align="right">' + '%6.2f ' % c + '</td>' \
-                                                for c in counts[n]) + '</tr>'
-            else:
-                html += ''.join('<td align="right">' + '%6d ' % c + '</td>' \
-                                                for c in counts[n]) + '</tr>'
-
-        # Format the relation counts
-        r_counts = [0 for i in range(len(col_heads))]
-        for rk in groupby(sorted(rel_counts.keys()),key=lambda x:x[0]):
-            for i in range(len(col_heads)):
-                r_counts[i] = 0
-            dn = dbname_to_dispname(rk[0]).split('/')
-            if dn[0] == '???':
-                dn = rk[0] + '(???)'
-            else:
-                dn = dn[0]
-            html += '<tr><th align="left">' + '%s' % ('--- ' + dn) + '</th>'
-            for y in rk[1]:
-                r_counts[y[1]] = rel_counts[y]
-            r_counts[len(col_heads) - 1] = sum(r_counts)
-            html += ''.join('<td align="right">' + '%6d ' % rc + '</td>'
-                             for rc in r_counts) + '</tr>'
-        html += '</table>'
-
-        html += '<br><br>' + hlev(2, 'Example words for relations, 1 per POS')
-
-        # Format the example words for relations
-        html += '''
-        <table border="1" cellpadding="1" cellspacing="1"
-        summary="">
-        <caption></caption>
-        <col align="center"><col align="center"><col align="center">
-        <col align="center"><col align="center">
-        <tr><th>Relation</th><th>Noun</th><th>Verb</th><th>Adjective</th><th>Adverb</th></tr>
-        '''
-
-        for rk in groupby(sorted(rel_counts.keys()),key=lambda x:x[0]):
-            dn = dbname_to_dispname(rk[0]).split('/')
-            if dn[0] == '???':
-                dn = rk[0] + '(???)'
-            else:
-                dn = dn[0]
-            #html += '<tr><th align="center">' + '%s' % (dn) + '</th>'
-            html += '<tr><th align="center">' + dn + '</th>'
-            rel_word_examples = [''] * 4
-            for y in rk[1]:
-                rel_word_examples[y[1]] = rel_words[y]
-            hlp = ''.join('<td align="center"><a href="M' + x + '">' + x.replace('_', ' ') +
-                            '</a></td>' for x in rel_word_examples)
-            hlp = hlp.replace('<a href="M"></a>','-')
-            html += hlp + '</tr>'
-        html += '</table>' + html_trailer
-
-        '''
-        display
-        for ch in col_heads:
-            display '%20.20s' % ch,
-        display
-        #display ' ' * 16,
-        for i in range(4):
-            display '%20d' % len(unique_beginners[i]),
-        display 'Unique beginners',
-        for ch in col_heads:
-            display '%20.20s' % ch,
-        ub = []
-        for i in range(4):
-            ub.append(unique_beginners[i])
-        for i in range(4):
-            ub[i].sort()
-        max_count = min(max(len(x) for x in ub), 100)
-        for count in range(max_count):
-            display ('%5.5d' + ' '* 11) % count,
-            for i in range(4):
-                if count < len(ub[i]):
-                    display ub[i][count],
-                else:
-                    display ' ' * 19,
-            display
-        '''
+        if os.path.isfile('NLTK Wordnet Browser Database Info.html'):
+            html = open('NLTK Wordnet Browser Database Info.html').read()
+        else:
+            html = (html_header % word) + '<p>The database info file:'\
+                   '<p><b>NLTK Wordnet Browser Database Info.html</b>' + \
+                   '<p>was not found. Run this:<p><b>python dbinfo_html.py</b>' + \
+                   '<p>to produce it.' + html_trailer
         self.panel.show_page_and_word(html, word)
-        return current_page
+        return
 
     def read_file(self, path):
         try:
@@ -928,7 +658,7 @@ class MyHtmlFrame(wx.Frame):
         html = self.panel.nb.h_w.GetParser().GetSource()
         self.panel.printer.PreviewText(html)
 
-def initalize_options():
+def _initalize_options():
     global options_dict
     if os.path.exists(pickle_file_name):
         pkl = open(pickle_file_name, 'rb')
@@ -943,7 +673,7 @@ def initalize_options():
     if 'frame_size' not in options_dict:
         options_dict['frame_size'] = (-1,-1)
 
-def adjust_pos_and_size(frame):
+def _adjust_pos_and_size(frame):
     # Try to catch the screen dimensions like this because no better
     # method is known i.e. start maximized, get the dims, adjust if
     # pickled info requires
@@ -993,11 +723,11 @@ def adjust_pos_and_size(frame):
     frame.Iconize(False)
 
 def demo():
-    global explanation
+    #global explanation_text
     global options_dict
 
     app = wx.PySimpleApp()
-    initalize_options()
+    _initalize_options()
     frm = MyHtmlFrame(None, frame_title) #, -1, -1)
     # Icon handling may not be portable - don't know
     # This succeeds in Windows, so let's make it conditional
@@ -1006,18 +736,18 @@ def demo():
         # ??? tbi = wx.TaskBarIcon()
         # ??? tbi.SetIcon(ico, 'this is the tip, you know')
         frm.SetIcon(ico)
-    word,body = new_word_and_body('green')
+    word,body = bu.new_word_and_body('green')
     frm.panel.nb.SetPageText(0,word)
     frm.panel.nb.h_w.current_word  = word
     frm.panel.search_word.SetValue(word)
-    body = explanation + body
-    frm.panel.nb.h_w.show_page(pg('green', body))
+    body = bu.explanation + body
+    frm.panel.nb.h_w.show_page(bu.pg('green', body))
     page = frm.panel.nb.h_w.GetParser().GetSource()
     page = frm.panel.nb.GetPage(0).GetParser().GetSource()
-    explanation = body
+    #explanation_text = body
     frm.Show()
     frm.Maximize(True)
-    adjust_pos_and_size(frm)
+    _adjust_pos_and_size(frm)
     app.MainLoop()
 
 

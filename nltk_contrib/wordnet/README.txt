@@ -1,6 +1,66 @@
 Jussi Salmela
 
 
+
+============================================================================
+2008-02-18
+
+
+Changes:
+
+1. The 'Database Info' HTML statistics page is now produced with a 
+separate module that can be used independently.
+
+2. The browserver.py module now works a lot better than the first
+version did. The first version could be described as having a faint idea
+of the functionality that the current has.
+
+3. Much more of the common browsing functionality moved from
+wxbrowse.py and browserver.py to browseutil.py.
+
+4. Some general maintenance and restructuring
+
+
+===============================
+Details of using the 3 programs
+===============================
+
+1. Production of the 'Database Info' HTML statistics page:
+    
+    python dbinfo_html.py
+    
+    Note that this takes a couple of minutes to run.
+
+
+2. The first alternative to browse the database:
+
+    python wxbrowse.py
+    
+    This has a GUI programmed using wxPython and thus needs wxPython
+    to be installed.
+
+
+3. The second alternative to browse the database:
+
+    python browserver.py port-num
+    
+    Here's what happens:
+    
+        3.1 Launches the default browser (if not running) and creates
+             a new tab trying to make connection to:
+             http://localhost:port-num/
+        3.2 Starts the HTTP server for port-num and begins serving the
+            browsing requests for the database.
+             
+    The default port-num is 8000
+
+    This is definitely NOT an industrial-strength server. I just coded it
+    to provide people a way to get acquainted with NLTK Wordnet browsing
+    without having to install wxPython (and to learn new Python features
+    and get an introduction to Javascript that I had not used before).
+
+
+
 ==========================================================
 2008-01-24
 
@@ -38,6 +98,7 @@ The second way is still at an early stage, though functional. And,
 as always when making a LOT of changes, even the old functionality,
 meaning wxbrowse.py may have suffered. The second way makes it
 possible to browse the database without installing wxPython.
+
 
 
 ==========================================================
@@ -114,7 +175,7 @@ Features:
 
 
 
-==========================================================
+========================================================================
 2007-08-19
 
 
