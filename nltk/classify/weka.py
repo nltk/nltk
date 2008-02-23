@@ -43,7 +43,9 @@ def config_weka(classpath=None):
 
     if _weka_classpath is None:
         raise LookupError('Unable to find weka.jar!  Use config_weka() '
-                          'or set the WEKAHOME environment variable.')
+                          'or set the WEKAHOME environment variable. '
+                          'For more information about Weka, please see '
+                          'http://www.cs.waikato.ac.nz/ml/weka/')
 
 class WekaClassifier(ClassifierI):
     def __init__(self, formatter, model_filename):
