@@ -94,39 +94,42 @@ class Prover9Parent:
                 "Use 'config_prover9(path=<path>) '," 
                 " or set the PROVER9HOME environment variable to a valid path." % join(searchpath))
 
-    def prover9_files(self, filename='prover9', p9_dir=None):
+    def prover9_files(self, prefix='prover9', p9_dir=None):
         """
         Generate names for the input and output files and write to the input file.
         
-        @parameter filename: label to use for the input files; appropriate values are 'prover9' and 'mace4'.
+        @parameter prefix: prefix to use for the input files; 
+        appropriate values are 'prover9' and 'mace4'. 
+        The full filename is created by the C{tempfile} module.
         @type filename: C{str}
-        @parameter p9_dir: location of directory for writing input and output files; if not specified, the C{tempfile} module is used.
+        @parameter p9_dir: location of directory for writing input and output files; 
+        if not specified, the C{tempfile} module specifies the directory.
         @type p9_dir: C{str}
         
         """     
-        # If no directory specified, use system temp directory
+        (fd, filename) = tempfile.mkstemp(suffix=".in", prefix=prefix, dir=p9_dir)
+        self._infile = filename
+        self._outfile = os.path.splitext(filename)[0] + '.out'
+        #NB self._p9_dir is used by _transform_output() in the mace module
         if p9_dir is None:
-            p9_dir = tempfile.gettempdir()
-        self._p9_dir = p9_dir
-        self._infile = os.path.join(p9_dir, filename + '.in')
-        self._outfile = os.path.join(p9_dir, filename + '.out')
-        f = open(self._infile, 'w')
+            self._p9_dir = os.path.split(filename)[0]
+        fp = os.fdopen(fd, 'w')
         
         if self._timeout > 0:
-            f.write('assign(max_seconds, %d).\n' % self._timeout)
+            fp.write('assign(max_seconds, %d).\n' % self._timeout)
             
         if self._p9_assumptions:
-            f.write('formulas(assumptions).\n')
+            fp.write('formulas(assumptions).\n')
             for p9_assumption in self._p9_assumptions:
-                f.write('    %s.\n' % p9_assumption)
-            f.write('end_of_list.\n\n')
+                fp.write('    %s.\n' % p9_assumption)
+            fp.write('end_of_list.\n\n')
     
-        f.write('formulas(goals).\n')
+        fp.write('formulas(goals).\n')
         if self._p9_goal:
-            f.write('    %s.\n' % self._p9_goal)
-        f.write('end_of_list.\n\n')
+            fp.write('    %s.\n' % self._p9_goal)
+        fp.write('end_of_list.\n\n')
 
-        f.close()
+        fp.close()
             
         return None
     
@@ -283,7 +286,7 @@ class Prover9(Prover9Parent, ProverI):
     def get_executable(self):
         return 'prover9'
 
-    def prove(self):
+    def prove(self, debug=False):
         """
         Use Prover9 to prove a theorem.
         @return: C{True} if the proof was successful 
@@ -295,6 +298,9 @@ class Prover9(Prover9Parent, ProverI):
             (exe, self._infile, self._outfile, self._outfile)
         
         tp_result = os.system(execute_string)
+        if not debug:
+            os.remove(self._infile)
+            os.remove(self._outfile)
         self._result = (tp_result == 0)
         return self._result
     
@@ -367,7 +373,7 @@ expressions = [r'some x y.(sees x y)',
                r'all x.((man x) implies (walks x))']
     
 if __name__ == '__main__':
-    from nltk_contrib.inference import Prover9Parent
+    from nltk_contrib.inference import Prover9
     p = Prover9()
     p.config_prover9()
     test_convert_to_prover9(expressions)
