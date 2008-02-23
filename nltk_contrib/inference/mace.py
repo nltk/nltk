@@ -128,7 +128,7 @@ class Mace(Prover9Parent, ModelBuilderI):
             else:
                 for l in open(self._transform_output(format)):
                     print l,
-            print ''
+            print
         else:
             print "You have to call build_model() first to get a model!"
         return None
