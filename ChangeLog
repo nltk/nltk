@@ -1,4 +1,25 @@
+Version 0.9.2 2008-02-24
 
+NLTK:
+- new theorem-prover and model-checker module nltk.inference,
+  including interface to Prover9/Mace4 (Dan Garrette, Ewan Klein)
+- bugfix in Reuters corpus reader that causes Python
+  to complain about too many open files
+- VerbNet and PropBank corpus readers
+
+Data:
+- VerbNet Corpus version 2.1: hierarchical, verb lexicon linked to WordNet
+- PropBank Corpus: predicate-argument structures, as stand-off annotation of Penn Treebank
+
+Contrib:
+- New work on WordNet browser, incorporating a client-server model (Jussi Salmela)
+
+Book:
+- Initial work on new chapter on data-intensive language processing
+
+Distributions:
+- Mac OS 10.5 distribution
+	
 Version 0.9.1 2008-01-24
 
 NLTK:
