@@ -1,3 +1,9 @@
+Proposition Bank Corpus 1.0
+
+Martha Palmer   http://verbs.colorado.edu/~mpalmer/projects/ace.html
+
+Distributed with Permission
+
 This directory contains the data of the UPenn Propbank.  This data is collected
 as an additional layer of annotation on the Penn Treebank, representing the predicate
 argument structure of verbs.  Below is a list of each file and a description of
