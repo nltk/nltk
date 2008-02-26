@@ -9,7 +9,7 @@
 #
 # $Id$
 
-from api import *
+from nltk.parse.api import *
 from nltk import Tree, cfg, defaultdict
 
 """
@@ -37,11 +37,6 @@ defines three chart parsers:
 
   - C{SteppingChartParser} is a subclass of C{ChartParser} that can
     be used to step through the parsing process.
-
-  - C{EarleyChartParser} is an implementation of the Earley chart parsing
-    algorithm.  It makes a single left-to-right pass through the
-    chart, and applies one of three rules (predictor, scanner, and
-    completer) to each edge it encounters.
 """
 
 import re
@@ -1231,143 +1226,37 @@ class ScannerRule(AbstractChartRule):
             if chart.insert(new_pos_edge, (new_leaf_edge,)):
                 yield new_pos_edge
 
-# This is just another name for TopDownExpandRule:
-class PredictorRule(TopDownExpandRule): pass
+# Very similar to TopDownExpandRule, but be sure not to predict lexical edges.
+# (The ScannerRule takes care of those.)
+class PredictorRule(CachedTopDownExpandRule):
+    def apply_iter(self, chart, grammar, edge):
+        # If we've already applied this rule to an edge with the same
+        # next & end, and the chart & grammar have not changed, then
+        # just return (no new edges to add).
+        done = self._done.get((edge.next(), edge.end()), (None,None))
+        if done[0] is chart and done[1] is grammar: return
 
-########################################################################
-##  Simple Earley Chart Parser
-########################################################################
-
-class EarleyChartParser(ParserI):
-    """
-    A chart parser implementing the Earley parsing algorithm:
-
-        - For each index I{end} in [0, 1, ..., N]:
-          - For each I{edge} s.t. I{edge}.end = I{end}:
-            - If I{edge} is incomplete, and I{edge}.next is not a part
-              of speech:
-                - Apply PredictorRule to I{edge}
-            - If I{edge} is incomplete, and I{edge}.next is a part of
-              speech:
-                - Apply ScannerRule to I{edge}
-            - If I{edge} is complete:
-                - Apply CompleterRule to I{edge}
-        - Return any complete parses in the chart
-
-    C{EarleyChartParser} uses a X{lexicon} to decide whether a leaf
-    has a given part of speech.  This lexicon is encoded as a
-    dictionary that maps each word to a list of parts of speech that
-    word can have.
-
-    @ivar _predictor_class, _completer_class, _scanner_class: The
-    classes that are used to implement the three rules used by the
-    Earley algorithm,  Replacement rules can be specified by
-    subclasses (such as L{FeatureEarleyChartParser
-    <nltk.parse.featurechar.FeatureEarleyChartParser>}).
-    """
-    _predictor_class = PredictorRule
-    _completer_class = CompleterRule
-    _scanner_class = ScannerRule
-
-    def __init__(self, grammar, trace=0, chart_class=Chart):
-        """
-        Create a new Earley chart parser, that uses C{grammar} to
-        parse texts.
-        
-        @type grammar: C{cfg.Grammar}
-        @param grammar: The grammar used to parse texts.
-        #@type lexicon: C{dict} from C{string} to (C{list} of C{string})
-        #@param lexicon: A lexicon of words that records the parts of
-            #speech that each word can have.  Each key is a word, and
-            #the corresponding value is a list of parts of speech.
-        @type trace: C{int}
-        @param trace: The level of tracing that should be used when
-            parsing a text.  C{0} will generate no tracing output;
-            and higher numbers will produce more verbose tracing
-            output.
-        @param chart_class: The class that should be used to create
-            the charts used by this parser.
-        """
-        if isinstance(trace, dict):
-            raise ValueError("Earley parser no longer takes a lexicon "
-                             "as a separate parameter; assign the "
-                             "lexicon when creating the grammar instead.")
-        self._grammar = grammar
-        self._lexicon = grammar.lexicon()
-        self._trace = trace
-        self._chart_class = chart_class
-
-    def grammar(self):
-        return self._grammar
-
-    def lexicon(self):
-        """@return: The lexicon used by this parser."""
-        return self._lexicon
-
-    #: The default total width reserved for the chart in trace output.
-    #: The remainder of each line will be used to display edges.
-    _trace_chart_width = 40
-
-    def nbest_parse(self, tokens, n=None, tree_class=Tree):
-        tokens = list(tokens)
-        self._check_lexicon_coverage(tokens)
-        
-        chart = self._chart_class(tokens)
-        grammar = self._grammar
-
-        # Width, for printing trace edges.
-        w = max(2, self._trace_chart_width/(chart.num_leaves()+1))
-        if self._trace > 0: print ' '*9, chart.pp_leaves(w)
-
-        # Initialize the chart with a special "starter" edge.
-        chart.insert(self._starter_edge(grammar.start()), ())
-
-        # Create the 3 rules:
-        predictor = self._predictor_class()
-        completer = self._completer_class()
-        scanner = self._scanner_class(self._lexicon)
-
-        for end in range(chart.num_leaves()+1):
-            if self._trace > 1: print 'Processing queue %d' % end
-            for edge in chart.select(end=end):
-                if edge.is_complete():
-                    for e in completer.apply_iter(chart, grammar, edge):
-                        if self._trace > 0:
-                            print 'Completer', chart.pp_edge(e,w)
-                if edge.is_incomplete():
-                    for e in predictor.apply_iter(chart, grammar, edge):
-                        if self._trace > 1:
-                            print 'Predictor', chart.pp_edge(e,w)
-                if edge.is_incomplete():
-                    for e in scanner.apply_iter(chart, grammar, edge):
-                        if self._trace > 0:
-                            print 'Scanner  ', chart.pp_edge(e,w)
-
-        # Output a list of complete parses.
-        return self._parses(chart, grammar.start(), tree_class)[:n]
-
-    # This is a separate method because FeatureEarleyChartParser needs
-    # to replace it:
-    def _starter_edge(self, start_sym):
-        """Return a 'starter edge' that expands to the start symbol."""
-        root = cfg.Nonterminal('[INIT]')
-        return TreeEdge((0,0), root, (start_sym,))
-
-    # This is a separate method because FeatureEarleyChartParser needs
-    # to replace it:
-    def _parses(self, chart, start_sym, tree_class):
-        """Return a list of parses in the given chart."""
-        return chart.parses(start_sym, tree_class=tree_class)
-    
-    def _check_lexicon_coverage(self, tokens):
-        try: 'x' in self._lexicon
-        except: raise ValueError('ow %r' % self._lexicon)
-        missing = [tok for tok in tokens if tok not in self._lexicon]
-        if missing:
-            missing = ', '.join('%r' % (w,) for w in missing)
-            raise ValueError("Grammar does not cover some of the "
-                             "input words: " + missing)
+        # Add all the edges indicated by the top down expand rule.
+        if edge.is_complete(): return
+        for prod in grammar.productions(lhs=edge.next()):
+            if len(prod.rhs()) == 1 and isinstance(prod.rhs()[0], str): continue
+            new_edge = TreeEdge.from_production(prod, edge.end())
+            if chart.insert(new_edge, ()):
+                yield new_edge
             
+        # Record the fact that we've applied this rule.
+        self._done[edge.next(), edge.end()] = (chart, grammar)
+    
+    def __str__(self): return 'Predictor Rule'
+
+def makeEarleyStrategy(grammar):
+    """Given a grammar with both grammatical and lexical productions,
+    produce an Earley strategy that uses that lexicon."""
+    lexicon = cfg.earley_lexicon(grammar.productions())
+    strategy = [TopDownInitRule(), PredictorRule(), ScannerRule(lexicon), CompleterRule()]
+    return strategy
+    
+
 ########################################################################
 ##  Generic Chart Parser
 ########################################################################
@@ -1626,16 +1515,8 @@ def demo():
         cfg.Production(P, ['with']), cfg.Production(P, ['under']),
         ]
 
-    # Convert the grammar productions to an earley-style lexicon.
-    earley_lexicon = defaultdict(list)
-    for prod in lexical_productions:
-        earley_lexicon[prod.rhs()[0]].append(prod.lhs())
-
     # The grammar for ChartParser and SteppingChartParser:
     grammar = cfg.Grammar(S, grammatical_productions+lexical_productions)
-
-    # The grammar for EarleyChartParser:
-    earley_grammar = cfg.Grammar(S, grammatical_productions)
 
     # Tokenize a sample sentence.
     sent = 'I saw John with a dog with my cookie'
@@ -1680,10 +1561,10 @@ def demo():
 
     # Run the earley, if requested.
     if choice in ('3', '5'):
-        cp = EarleyChartParser(earley_grammar, earley_lexicon, trace=1)
+        cp = ChartParser(grammar, makeEarleyStrategy(grammar), trace=2)
         t = time.time()
         parses = cp.nbest_parse(tokens)
-        times['Earley parser'] = time.time()-t
+        times['Earley'] = time.time()-t
         assert len(parses)==5, 'Not all parses found'
         for tree in parses: print tree
 
