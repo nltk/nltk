@@ -231,6 +231,140 @@ class FeaturePredictorRule(FeatureTopDownExpandRule): pass
 # Earley Parser
 #////////////////////////////////////////////////////////////
 
+## Simple Earley Chart Parser, without features
+## (defined here because the feature version needs to build on it, but
+## chart.py has a simpler way to use the Earley algorithm)
+
+class EarleyChartParser(ParserI):
+    """
+    A chart parser implementing the Earley parsing algorithm:
+
+        - For each index I{end} in [0, 1, ..., N]:
+          - For each I{edge} s.t. I{edge}.end = I{end}:
+            - If I{edge} is incomplete, and I{edge}.next is not a part
+              of speech:
+                - Apply PredictorRule to I{edge}
+            - If I{edge} is incomplete, and I{edge}.next is a part of
+              speech:
+                - Apply ScannerRule to I{edge}
+            - If I{edge} is complete:
+                - Apply CompleterRule to I{edge}
+        - Return any complete parses in the chart
+
+    C{EarleyChartParser} uses a X{lexicon} to decide whether a leaf
+    has a given part of speech.  This lexicon is encoded as a
+    dictionary that maps each word to a list of parts of speech that
+    word can have.
+
+    @ivar _predictor_class, _completer_class, _scanner_class: The
+    classes that are used to implement the three rules used by the
+    Earley algorithm,  Replacement rules can be specified by
+    subclasses (such as L{FeatureEarleyChartParser
+    <nltk.parse.featurechar.FeatureEarleyChartParser>}).
+    """
+    _predictor_class = PredictorRule
+    _completer_class = CompleterRule
+    _scanner_class = ScannerRule
+
+    def __init__(self, grammar, trace=0, chart_class=Chart):
+        """
+        Create a new Earley chart parser, that uses C{grammar} to
+        parse texts.
+        
+        @type grammar: C{cfg.Grammar}
+        @param grammar: The grammar used to parse texts.
+        #@type lexicon: C{dict} from C{string} to (C{list} of C{string})
+        #@param lexicon: A lexicon of words that records the parts of
+            #speech that each word can have.  Each key is a word, and
+            #the corresponding value is a list of parts of speech.
+        @type trace: C{int}
+        @param trace: The level of tracing that should be used when
+            parsing a text.  C{0} will generate no tracing output;
+            and higher numbers will produce more verbose tracing
+            output.
+        @param chart_class: The class that should be used to create
+            the charts used by this parser.
+        """
+        if isinstance(trace, dict):
+            raise ValueError("Earley parser no longer takes a lexicon "
+                             "as a separate parameter; assign the "
+                             "lexicon when creating the grammar instead.")
+        self._grammar = grammar
+        self._lexicon = grammar.lexicon()
+        self._trace = trace
+        self._chart_class = chart_class
+
+    def grammar(self):
+        return self._grammar
+
+    def lexicon(self):
+        """@return: The lexicon used by this parser."""
+        return self._lexicon
+
+    #: The default total width reserved for the chart in trace output.
+    #: The remainder of each line will be used to display edges.
+    _trace_chart_width = 40
+
+    def nbest_parse(self, tokens, n=None, tree_class=Tree):
+        tokens = list(tokens)
+        self._check_lexicon_coverage(tokens)
+        
+        chart = self._chart_class(tokens)
+        grammar = self._grammar
+
+        # Width, for printing trace edges.
+        w = max(2, self._trace_chart_width/(chart.num_leaves()+1))
+        if self._trace > 0: print ' '*9, chart.pp_leaves(w)
+
+        # Initialize the chart with a special "starter" edge.
+        chart.insert(self._starter_edge(grammar.start()), ())
+
+        # Create the 3 rules:
+        predictor = self._predictor_class()
+        completer = self._completer_class()
+        scanner = self._scanner_class(self._lexicon)
+
+        for end in range(chart.num_leaves()+1):
+            if self._trace > 1: print 'Processing queue %d' % end
+            for edge in chart.select(end=end):
+                if edge.is_complete():
+                    for e in completer.apply_iter(chart, grammar, edge):
+                        if self._trace > 0:
+                            print 'Completer', chart.pp_edge(e,w)
+                if edge.is_incomplete():
+                    for e in predictor.apply_iter(chart, grammar, edge):
+                        if self._trace > 1:
+                            print 'Predictor', chart.pp_edge(e,w)
+                if edge.is_incomplete():
+                    for e in scanner.apply_iter(chart, grammar, edge):
+                        if self._trace > 0:
+                            print 'Scanner  ', chart.pp_edge(e,w)
+
+        # Output a list of complete parses.
+        return self._parses(chart, grammar.start(), tree_class)[:n]
+
+    # This is a separate method because FeatureEarleyChartParser needs
+    # to replace it:
+    def _starter_edge(self, start_sym):
+        """Return a 'starter edge' that expands to the start symbol."""
+        root = cfg.Nonterminal('[INIT]')
+        return TreeEdge((0,0), root, (start_sym,))
+
+    # This is a separate method because FeatureEarleyChartParser needs
+    # to replace it:
+    def _parses(self, chart, start_sym, tree_class):
+        """Return a list of parses in the given chart."""
+        return chart.parses(start_sym, tree_class=tree_class)
+    
+    def _check_lexicon_coverage(self, tokens):
+        try: 'x' in self._lexicon
+        except: raise ValueError('ow %r' % self._lexicon)
+        missing = [tok for tok in tokens if tok not in self._lexicon]
+        if missing:
+            missing = ', '.join('%r' % (w,) for w in missing)
+            raise ValueError("Grammar does not cover some of the "
+                             "input words: " + missing)
+            
 class FeatureEarleyChartParser(EarleyChartParser):
     """
     A chart parser implementing the Earley parsing algorithm, allowing
@@ -373,5 +507,6 @@ if __name__ == '__main__':
     sent = 'Kim likes children'
     tokens = sent.split()
     trees = cp.nbest_parse(tokens)
-    print trees
+    for tree in trees:
+        print tree
 
