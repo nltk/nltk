@@ -6,6 +6,12 @@
 # For license information, see LICENSE.TXT
 # $Id$
 
+from nltk.sem import root_semrep, Expression
+from nltk import parse
+from nltk.inference import Mace, spacer, get_prover
+from nltk.data import show_cfg
+import os
+
 """
 Module for incrementally developing simple discourses, and checking for semantic ambiguity, 
 consistency and informativeness.
@@ -43,11 +49,7 @@ The set of all threads for a discourse is the Cartesian product of all the readi
 those threads which are consistent (taking into account any background assumptions).
 """
 
-from nltk.sem import root_semrep, Expression
-from nltk import parse
-from nltk_contrib.inference import Mace, spacer, get_prover
-from nltk.data import show_cfg
-import os
+
 
 class DiscourseTester(object):
     """
