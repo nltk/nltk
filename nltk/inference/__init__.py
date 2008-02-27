@@ -2,13 +2,13 @@
 #
 # Copyright (C) 2001-2008 University of Pennsylvania
 # Author: Dan Garrette <dhgarrette@gmail.com>
-#         Ewan Klein <ewan@inf.ed.ac.uk>
+#              Ewan Klein <ewan@inf.ed.ac.uk>
 #         
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
 """
-Classes and interfaces for theorem proving and model checking.
+Classes and interfaces for theorem proving and model building.
 """
 
 from api import *

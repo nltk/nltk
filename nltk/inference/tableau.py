@@ -8,6 +8,10 @@
 from nltk.sem.logic import *
 from api import ProverI
 
+"""
+Module for a tableau-based First Order theorem prover.
+"""
+
 class ProverParseError(Exception): pass
 
 class Tableau(ProverI):
