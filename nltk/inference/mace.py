@@ -14,6 +14,10 @@ from api import ModelBuilderI
 import prover9
 from prover9 import Prover9Parent
 
+"""
+A model builder that makes use of the external 'Mace4' package.
+"""
+
 class Mace(Prover9Parent, ModelBuilderI):
     def get_executable(self):
         return 'mace4'

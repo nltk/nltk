@@ -12,6 +12,10 @@ from string import join
 from nltk.sem.logic import *
 from api import ProverI
 from nltk.internals import deprecated, Deprecated
+
+"""
+A theorem prover that makes use of the external 'Prover9' package.
+"""
 #
 # Following is not yet used. Return code for 2 actually realized as 512. 
 #
@@ -90,9 +94,11 @@ class Prover9Parent:
                 break
       
         if self._executable_path is None:
-            raise LookupError("Unable to find Prover9 executable in '%s'\n" 
+            raise LookupError("Unable to find Prover9 executable in these locations:\n %s\n" 
                 "Use 'config_prover9(path=<path>) '," 
-                " or set the PROVER9HOME environment variable to a valid path." % join(searchpath))
+                " or set the PROVER9HOME environment variable to a valid path.\n" 
+                " For more information about Prover9, please see "
+                "http://www.cs.unm.edu/~mccune/prover9/" % join(searchpath, sep=', '))
 
     def prover9_files(self, prefix='prover9', p9_dir=None):
         """
@@ -373,9 +379,6 @@ expressions = [r'some x y.(sees x y)',
                r'all x.((man x) implies (walks x))']
     
 if __name__ == '__main__':
-    from nltk_contrib.inference import Prover9
-    p = Prover9()
-    p.config_prover9()
     test_convert_to_prover9(expressions)
     print '\n'
     test_prove(arguments)

@@ -7,11 +7,13 @@
 # For license information, see LICENSE.TXT
 
 from nltk.sem.logic import ApplicationExpression, Operator, LogicParser
-
-#from nltk_contrib.inference import *
 import tableau
 import prover9
 import mace
+
+"""
+A wrapper module that calls theorem provers and model builders.
+"""
 
 def get_prover(goal=None, assumptions=[], prover_name='Prover9'):
     """
