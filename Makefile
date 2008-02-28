@@ -41,7 +41,7 @@ demotest:
 	find nltk -name "*.py"\
           -and -not -path *misc* \
           -and -not -name brown_ic.py \
-          -exec echo ==== '{}' ==== \; -exec python -S '{}' \;
+          -exec echo ==== '{}' ==== \; -exec python '{}' \;
 
 ########################################################################
 # DISTRIBUTIONS
