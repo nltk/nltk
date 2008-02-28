@@ -4,7 +4,7 @@
 
 overridden()
 ~~~~~~~~~~~~
-    >>> from nltk.utilities import overridden
+    >>> from nltk.internals import overridden
 
 The typical use case is in defining methods for an interface or
 abstract base class, in such a way that subclasses don't have to
