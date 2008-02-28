@@ -1,4 +1,4 @@
-Version 0.9.2 2008-02-24
+Version 0.9.2 2008-02-29
 
 NLTK:
 - new theorem-prover and model-checker module nltk.inference,
@@ -13,9 +13,6 @@ Data:
 
 Contrib:
 - New work on WordNet browser, incorporating a client-server model (Jussi Salmela)
-
-Book:
-- Initial work on new chapter on data-intensive language processing
 
 Distributions:
 - Mac OS 10.5 distribution
