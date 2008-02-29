@@ -1,3 +1,11 @@
+# Natural Language Toolkit: Brown Corpus Information Content Module
+#
+# Copyright (C) 2001-2008 University of Pennsylvania
+# Author: Oliver Steele <steele@osteele.com>
+#         David Ormiston Smith <daosmith@csse.unimelb.edu.au>>
+#         Steven Bird <sb@csse.unimelb.edu.au>
+# URL: <http://nltk.sf.net>
+# For license information, see LICENSE.TXT
 
 import pickle
 import sys
@@ -7,6 +15,7 @@ from itertools import islice
 from nltk.corpus import brown
 from nltk.probability import FreqDist
 from util import *
+from dictionary import N, V
 
 def substr_binary_search(item, list):
 
@@ -61,18 +70,16 @@ def read_word_list(filename):
 def get_roots(dictionary):
     roots = []
     for word in dictionary:
-        for sense in word:
-            synset = sense.synset
+        for synset in dictionary[word].synsets():
             hypernyms = set(synset[HYPERNYM]) | set(synset[INSTANCE_HYPERNYM])
             if len(hypernyms) == 0: roots.append(synset)
     return roots
 
 def propogate_frequencies(freq_dist, synset):
-
     hyponyms = set(synset[HYPONYM]) | set(synset[INSTANCE_HYPONYM])
     for hyponym in hyponyms:
-        freq_dist.inc(node, propogate_frequencies(freq_dist, hyponym))
-    return freq_dist[node]
+        freq_dist.inc(hyponym, propogate_frequencies(freq_dist, hyponym))
+    return freq_dist[synset]
 
 def brown_information_content(output_filename, compounds_filename, \
         stopwords_filename=None, smoothing=True):
