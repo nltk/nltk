@@ -30,7 +30,17 @@ p9_return_codes = {0: True,
                    101: "(SIGSEGV)",   # Prover9 crashed, most probably due to a bug.   
  }
  
+HELPMSG = """
+Unable to find Prover9 executable! Use 
+Prover9().config_prover9(path='/path/to/prover9directory'),
+or set the PROVER9HOME environment variable to a valid path.
+For more information about Prover9, please see 
+http://www.cs.unm.edu/~mccune/prover9/
+"""
 
+
+    
+    
 class Prover9Parent:
     def __init__(self, goal=None, assumptions=[], timeout=60):
         """
@@ -41,7 +51,7 @@ class Prover9Parent:
         @param timeout: number of seconds before timeout; set to 0 for no timeout.
         @type timeout: C{int}
         """
-        self.config_prover9()
+        self.config_prover9(verbose=False)
         self._goal = goal       
         self._assumptions = assumptions
         self._p9_dir = ''
@@ -58,30 +68,30 @@ class Prover9Parent:
             self._p9_assumptions = []
         self._result = None
         self._timeout = timeout
+        
+    prover9_search = ['.',
+                    '/usr/local/bin/prover9',
+                    '/usr/local/bin/prover9/bin',
+                    '/usr/local/bin',
+                    '/usr/bin',
+                    '/usr/local/prover9',
+                    '/usr/local/share/prover9']
 
-    def config_prover9(self, path=None, verbose=False):
+    def config_prover9(self, path=None, verbose=True):
         """
         Configure the location of Prover9 Executable
         
         @param path: Path to the Prover9 executable
         @type path: C{str}
         """
-        
+
         self._executable_path = None
-    
-        prover9_search = ['.',
-                          '/usr/local/bin/prover9',
-                          '/usr/local/bin/prover9/bin',
-                          '/usr/local/bin',
-                          '/usr/bin',
-                          '/usr/local/prover9',
-                          '/usr/local/share/prover9']
-    
+        
         if path is not None:
             searchpath = (path,)
     
         if  path is  None:
-            searchpath = prover9_search
+            searchpath = Prover9Parent.prover9_search
             if 'PROVER9HOME' in os.environ:
                 searchpath.insert(0, os.environ['PROVER9HOME'])
     
@@ -94,12 +104,11 @@ class Prover9Parent:
                 break
       
         if self._executable_path is None:
-            raise LookupError("Unable to find Prover9 executable in these locations:\n %s\n" 
-                "Use 'config_prover9(path=<path>) '," 
-                " or set the PROVER9HOME environment variable to a valid path.\n" 
-                " For more information about Prover9, please see "
-                "http://www.cs.unm.edu/~mccune/prover9/" % join(searchpath, sep=', '))
-
+            if verbose:
+                print "Searching in these locations:\n %s" % join(searchpath, sep=', ')
+            print HELPMSG
+            
+           
     def prover9_files(self, prefix='prover9', p9_dir=None):
         """
         Generate names for the input and output files and write to the input file.
@@ -298,6 +307,9 @@ class Prover9(Prover9Parent, ProverI):
         @return: C{True} if the proof was successful 
         (i.e. returns value of 0), else C{False}        
         """
+        if self._executable_path is None:
+            print HELPMSG
+            return None
         self.prover9_files()
         exe = os.path.join(self._executable_path, self.get_executable())
         execute_string = '%s -f %s > %s 2>> %s' % \
@@ -324,6 +336,16 @@ class Prover9(Prover9Parent, ProverI):
             print "You have to call prove() first to get a proof!"
         return None
 
+def test_config():
+    
+    a = LogicParser().parse('((walk j) and (sing j))')
+    g = LogicParser().parse('(walk j)')
+    p = Prover9(g, assumptions=[a])
+    p._executable_path = None
+    p.prover9_search=[]
+    p.prove()
+    p.config_prover9(path='/usr/local/bin')
+    print p.prove()
     
 def test_convert_to_prover9(expr):
     """
@@ -379,6 +401,7 @@ expressions = [r'some x y.(sees x y)',
                r'all x.((man x) implies (walks x))']
     
 if __name__ == '__main__':
+    test_config()
     test_convert_to_prover9(expressions)
-    print '\n'
+    print
     test_prove(arguments)
