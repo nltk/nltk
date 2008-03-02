@@ -163,7 +163,8 @@ class Prover9Parent:
         """
         Retract assumptions from the assumption list.
         
-        @param debug: If True, give warning when C{retracted} is not present on assumptions list.
+        @param debug: If True, give warning when C{retracted} is not present on 
+        assumptions list.
         @type debug: C{bool}
         @param retracted: assumptions to be retracted
         @type retracted: C{list} of L{sem.logic.Expression}s
@@ -223,7 +224,6 @@ def convert_to_prover9(input):
             return toProver9String(input.simplify().infixify())
         except AssertionError:
             print 'input %s cannot be converted to Prover9 input syntax' % input
-
     
 def toProver9String(current):
     toProver9String_method = None
@@ -245,7 +245,6 @@ def toProver9String(current):
         raise AssertionError, 'Not a valid expression'
 
     return toProver9String_method(current)
-
 
 def _toProver9String_SomeExpression(current):
     return '%s %s %s' % ('exists', toProver9String(current.variable), toProver9String(current.term))
@@ -271,8 +270,6 @@ def _toProver9String_ApplicationExpression(current):
             accum += '%s, ' % toProver9String(arg)
         return '%s)' % accum[0:-2]
     
-
-
 def _toProver9String_Operator(current):
     if(current.operator == 'and'):
         return '&';
@@ -316,25 +313,44 @@ class Prover9(Prover9Parent, ProverI):
             (exe, self._infile, self._outfile, self._outfile)
         
         tp_result = os.system(execute_string)
-        if not debug:
-            os.remove(self._infile)
-            os.remove(self._outfile)
         self._result = (tp_result == 0)
         return self._result
     
     def proof_successful(self):
         return self._result
     
-    def show_proof(self):
+    def _simplify_proof(self):
         """
-        Print out a Prover9 proof.
+        Simplify a Prover9 output file.    
+        """
+        output_file = None
+        
+        (dir, base) = os.path.split(self._outfile)
+        output_file = os.path.join(dir, 'prooftrans.' + base)
+        exe = os.path.join(self._executable_path, 'prooftrans')
+        execute_string = '%s -f %s striplabels > %s 2>> %s' % \
+            (exe, self._outfile, output_file, output_file)
+        os.system(execute_string)
+            
+        return output_file
+    
+    def show_proof(self, simplify=True):
+        """
+        Print out a Prover9 proof.    
+        
+        @parameter simplify: if C{True}, simplify the output file 
+        using Prover9's C{prooftrans}.
+        @type simplify: C{bool}
         """
         if self._outfile:
-            for l in open(self._outfile):
+            proof_file = self._outfile
+            if simplify:
+                proof_file = self._simplify_proof()
+            for l in open(proof_file):
                 print l,
         else:
-            print "You have to call prove() first to get a proof!"
-        return None
+            raise LookupError("You have to call prove() first to get a proof!")
+
 
 def test_config():
     
@@ -346,6 +362,7 @@ def test_config():
     p.prove()
     p.config_prover9(path='/usr/local/bin')
     print p.prove()
+    p.show_proof()
     
 def test_convert_to_prover9(expr):
     """
@@ -399,9 +416,19 @@ expressions = [r'some x y.(sees x y)',
                r'some x.((PRO x) and (sees John x))',
                r'some x.((man x) and (not (walks x)))',
                r'all x.((man x) implies (walks x))']
-    
+
+def spacer(num=45):
+    print '-' * num
+
 if __name__ == '__main__':
+    print "Testing configuration"
+    spacer()
     test_config()
+    print
+    print "Testing conversion to Prover9 format"
+    spacer()
     test_convert_to_prover9(expressions)
     print
+    print "Testing proofs"
+    spacer()
     test_prove(arguments)
