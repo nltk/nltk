@@ -10,21 +10,21 @@ Within the area of automated reasoning, first order theorem proving
 and model building (or model generation) have both received much
 attention, and have given rise to highly sophisticated techniques. We
 focus therefore on providing an NLTK interface to third party tools
-for these tasks.  In particular, the module ``nltk_contrib.inference`` can be
+for these tasks.  In particular, the module ``nltk.inference`` can be
 used to access both theorem provers and model builders.
 
 ---------------------------------
 NLTK Interface to Theorem Provers
 ---------------------------------
 
-The ``nltk_contrib.inference`` module contains a method
+The ``nltk.inference`` module contains a method
 ``get_prover()`` that takes a proof goal and optionally, the name of a
 theorem prover.  The default is ``'Prover9'``, but the tableau prover
 may be used by specifying ``'tableau'``. The proof goal needs to be an
 instance of the ``Expression`` class specified by ``nltk.sem.logic``.
 In the following example, the proof goal is a biconditional.
 
-    >>> from nltk_contrib.inference import *
+    >>> from nltk.inference import *
     >>> from nltk.sem import LogicParser, ApplicationExpression, Operator
     >>> lp = LogicParser()
     >>> bicond = lp.parse('(some x.((man x) and (walks x)) iff some x.((walks x) and (man x)))')
@@ -49,10 +49,28 @@ Install these into an appropriate location; the
 ``prover9_search`` variable is currently configured to look in the
 following locations::
 
+    >>> Prover9.prover9_search # doctest: +NORMALIZE_WHITESPACE
     ['.', '/usr/local/bin/prover9', '/usr/local/bin/prover9/bin',
     '/usr/local/bin', '/usr/bin', '/usr/local/prover9',
     '/usr/local/share/prover9']
 
+If the executables cannot be found, ``Prover9`` will issue a warning message:
+
+.. doctest-ignore::
+    >>> p = Prover9() 
+    <BLANKLINE>
+    Unable to find Prover9 executable! Use 
+    Prover9().config_prover9(path='/path/to/prover9directory'),
+    or set the PROVER9HOME environment variable to a valid path.
+    For more information about Prover9, please see 
+    http://www.cs.unm.edu/~mccune/prover9/
+    <BLANKLINE>
+
+The path to the correct directory can be set in the following manner:
+
+    >>> p.config_prover9(path='/usr/local/bin')
+    [Found prover9: /usr/local/bin/prover9]
+    
     
 Using Prover9
 ~~~~~~~~~~~~~
@@ -70,12 +88,6 @@ list of assumptions (in this case, none).
     >>> goal = LogicParser().parse('((man x) iff (not (not (man x))))')
     >>> prover = Prover9(goal)
     >>> prover.prove()
-    True
-
-We can also call the ``prove()`` method directly on the goal:
-
-    >>> goal = LogicParser().parse('all x. ((man x) implies (man x))')
-    >>> print Prover9(goal).prove()
     True
     
 Given a ``Prover9`` instance ``prover``, the method
@@ -154,22 +166,60 @@ Assumptions can be retracted from the list of assumptions.
 Statements can be loaded from a file and parsed. We can then add these
 statements as new assumptions.
 
-    >>> g = LogicParser().parse('all x. ((boxer1 x) implies (not (boxer2 x)))')
+    >>> g = LogicParser().parse('all x. ((boxer x) implies (not (boxerdog x)))')
     >>> prover = Prover9(g)
     >>> prover.prove()
     False
-    >>> new = prover.load('onto1.fol')
+    >>> import nltk.data
+    >>> new = nltk.data.load('grammars/background.fol')
     >>> for a in new:
     ...     print a.infixify()
-    all x.((boxer2 x) implies (dog x))
-    all x.((boxer1 x) implies (person x))
+    all x.((boxerdog x) implies (dog x))
+    all x.((boxer x) implies (person x))
     all x.(not ((dog x) and (person x)))
-    all x.(not ((kitchen x) and (garden x)))
-    all x.((kitchen x) implies (location x))
-    all x.((garden x) implies (location x))
+    all x.((married x) iff some y.(marry y x))
+    all x.((bark x) implies (dog x))
+    all x y.((marry y x) implies ((person x) and (person y)))
+    (not (Vincent = Mia))
+    (not (Vincent = Fido))
+    (not (Mia = Fido))
     >>> prover.add_assumptions(new)
     >>> print prover.prove()
     True
+    >>> prover.show_proof()
+    ============================== prooftrans ============================
+    Prover9 (32) version Dec-2007, Dec 2007.
+    Process 84053 was started by ewan on isalpha.local,
+    Sun Mar  2 15:10:39 2008
+    The command was "/usr/local/bin/prover9 -f /var/folders/h0/h0IRyYOT2RWJf++8ZMVOkU+++TI/-Tmp-/prover9vCfy20.in".
+    ============================== end of head ===========================
+    <BLANKLINE>
+    ============================== end of input ==========================
+    <BLANKLINE>
+    ============================== PROOF =================================
+    <BLANKLINE>
+    % -------- Comments from original proof --------
+    % Proof 1 at 0.00 (+ 0.00) seconds.
+    % Length of proof is 13.
+    % Level of proof is 4.
+    % Maximum clause weight is 2.
+    % Given clauses 0.
+    <BLANKLINE>
+    1 (all x (boxerdog(x) -> dog(x))).  [assumption].
+    2 (all x (boxer(x) -> person(x))).  [assumption].
+    3 (all x -(dog(x) & person(x))).  [assumption].
+    7 (all x (boxer(x) -> -boxerdog(x))).  [goal].
+    8 boxerdog(c1).  [deny(7)].
+    9 -boxerdog(x) | dog(x).  [clausify(1)].
+    10 boxer(c1).  [deny(7)].
+    11 -boxer(x) | person(x).  [clausify(2)].
+    13 -dog(x) | -person(x).  [clausify(3)].
+    14 dog(c1).  [resolve(8,a,9,a)].
+    22 person(c1).  [resolve(10,a,11,a)].
+    23 -person(c1).  [resolve(14,a,13,a)].
+    24 $F.  [resolve(23,a,22,a)].
+    <BLANKLINE>
+    ============================== end of proof ==========================
 
 
 ------------
@@ -275,7 +325,7 @@ Using Mace4
 Check whether Mace4 can find a model.
 
     >>> a = LogicParser().parse('((see john mary) and (not (mary = john)))')
-    >>> mb = Mace('', assumptions=[a])
+    >>> mb = Mace(assumptions=[a])
     >>> mb.build_model()
     True
 
