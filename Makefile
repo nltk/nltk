@@ -63,7 +63,7 @@ rpmdist: clean_code
 wininstdist: clean_code
 	$(PYTHON) setup.py -q bdist --format=wininst
 dmgdist:
-	$(MAKE) -C tools/mac dmg
+	$(MAKE) -C tools/mac
 
 docdist:
 	find doc -print | egrep -v '.svn' | zip dist/nltk-doc-$(NLTK_VERSION).zip -@
