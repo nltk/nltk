@@ -88,16 +88,16 @@ nightlydist: codedist
 .PHONY: .python.done .rsync.done .numpy.done .pylab.done
 
 SFNET = http://superb-west.dl.sourceforge.net/sourceforge
-PYFTP = http://www.python.org/ftp/python/2.5.1
+PYFTP = http://www.python.org/ftp/python/2.5.2
 PYMAC = http://pythonmac.org/packages/py25-fat/dmg
 NUMPY = $(SFNET)/numpy
 PYLAB = $(SFNET)/matplotlib
 
 python:
 	mkdir -p python/{mac,win,unix}
-	wget -N -P python/mac  $(PYFTP)/python-2.5.1-macosx.dmg
-	wget -N -P python/win  $(PYFTP)/python-2.5.1.msi
-	wget -N -P python/unix $(PYFTP)/Python-2.5.1.tgz
+	wget -N -P python/mac  $(PYFTP)/python-2.5.2-macosx.dmg
+	wget -N -P python/win  $(PYFTP)/python-2.5.2.msi
+	wget -N -P python/unix $(PYFTP)/Python-2.5.2.tgz
 	touch .python.done
 
 numpy:
@@ -117,6 +117,12 @@ pylab:
 	mv python/win/matplotlib-0.91.2.win32-py2.5.exe?download python/win/matplotlib-0.91.2.win32-py2.5.exe
 	mv python/unix/matplotlib-0.91.2.tar.gz?download python/unix/matplotlib-0.91.2.tar.gz
 	touch .pylab.done
+
+prover:	
+	wget -N -P python/mac http://www.cs.unm.edu/%7Emccune/prover9/gui/Prover9-Mace4-v05.zip
+	wget -N -P python/win http://www.cs.unm.edu/%7Emccune/prover9/gui/Prover9-Mace4-v05-setup.exe
+	wget -N -P python/unix http://www.cs.unm.edu/%7Emccune/prover9/gui/p9m4-v05.tar.gz
+        mv python/unix/p9m4-v05.tar.gz python/unix/Prover9-Mace4-v05-i386.tar.gz
 
 iso:	.dist.done .python.done .numpy.done .pylab.done
 	rm -rf iso nltk-$(NLTK_VERSION)
