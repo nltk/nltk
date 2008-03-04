@@ -24,7 +24,7 @@ doc:
 	$(MAKE) -C doc all
 
 contribdoc:
-	$(MAKE) -C contribdoc all
+	$(MAKE) -C doc_contrib all
 
 ########################################################################
 # TESTING
