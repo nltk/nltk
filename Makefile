@@ -122,7 +122,7 @@ prover:
 	wget -N -P python/mac http://www.cs.unm.edu/%7Emccune/prover9/gui/Prover9-Mace4-v05.zip
 	wget -N -P python/win http://www.cs.unm.edu/%7Emccune/prover9/gui/Prover9-Mace4-v05-setup.exe
 	wget -N -P python/unix http://www.cs.unm.edu/%7Emccune/prover9/gui/p9m4-v05.tar.gz
-        mv python/unix/p9m4-v05.tar.gz python/unix/Prover9-Mace4-v05-i386.tar.gz
+	mv python/unix/p9m4-v05.tar.gz python/unix/Prover9-Mace4-v05-i386.tar.gz
 
 iso:	.dist.done .python.done .numpy.done .pylab.done
 	rm -rf iso nltk-$(NLTK_VERSION)
