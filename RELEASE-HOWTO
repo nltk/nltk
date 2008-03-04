@@ -51,7 +51,7 @@ The build requires docutils, pdflatex, python imaging library, epydoc, cdrtools
   3. make contribdoc
   4. make dist (fast; see dist/ for the results; may need "sudo make dist")
      - remove source rpm
-  5. make python numpy wordnet (potentially slow; to download all python distros if necessary)
+  5. make python numpy pylab (potentially slow; to download all python distros if necessary)
   6. make iso (fast; see dist/ for the iso image)
   7. list distributions and compare size with previous distribution
 
