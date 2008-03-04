@@ -1,4 +1,4 @@
-Version 0.9.2 2008-02-29
+Version 0.9.2 2008-03-04
 
 NLTK:
 - new theorem-prover and model-checker module nltk.inference,
