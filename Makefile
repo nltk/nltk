@@ -121,7 +121,7 @@ pylab:
 iso:	.dist.done .python.done .numpy.done .pylab.done
 	rm -rf iso nltk-$(NLTK_VERSION)
 	mkdir -p iso/{mac,win,unix}
-	cp dist/nltk-$(NLTK_VERSION)-macosx10.4.dmg iso/mac/
+	cp dist/nltk-$(NLTK_VERSION).dmg            iso/mac/
 	cp dist/nltk-$(NLTK_VERSION).win32.exe      iso/win/
 	cp dist/nltk-$(NLTK_VERSION).tar.gz         iso/unix/
 	cp dist/nltk-$(NLTK_VERSION)-1.noarch.rpm   iso/unix/
