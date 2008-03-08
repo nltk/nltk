@@ -406,7 +406,7 @@ def proof_demo():
     print '  \'every\':                       %s' % every.infixify()
     girl = GlueFormula('\\x.drs([],[(girl x)])', '(gv -o gr)')
     print '  \'girl\':                        %s' % girl.infixify()
-    chases = GlueFormula('\\x y.drs([],[(chases x y)])', '(g -o (h -o f))')
+    chases = GlueFormula('\\x y.drs([],[(chases y x)])', '(g -o (h -o f))')
     print '  \'chases\':                      %s' % chases.infixify()
     a = GlueFormula('\\P Q.((drs([x],[])+(P x))+(Q x))', '((hv -o hr) -o ((h -o H) -o H))')
     print '  \'a\':                           %s' % a.infixify()
@@ -564,13 +564,102 @@ def test_malt_parse():
             print '    ', reading.simplify().infixify()
             print '        ', reading.simplify().toFol().infixify()
 
+def test_event_representations():
+#    This doesn't allow 'e' to be modified
+    a = GlueFormula(r'\P Q.((drs([x],[]) + (P x)) + (Q x))', '((gv -o gr) -o ((g -o G) -o G))')
+    dog = GlueFormula(r'\x.drs([],[(dog x)])', '(gv -o gr)')
+    walks = GlueFormula(r'\x.drs([e],[(walk e), (subj x e)])', '(g -o f)')
+    print '1) a dog walks'
+    for r in get_readings(gfl_to_compiled([a,dog,walks])): print r.simplify().infixify()
+    print ''
+
+#    This approach finishes with a '\e' in front
+    a = GlueFormula(r'\P Q e.((drs([x],[]) + (P x)) + (Q x e))', '((gv -o gr) -o ((g -o G) -o G))')
+    dog = GlueFormula(r'\x.drs([],[(dog x)])', '(gv -o gr)')
+    walks = GlueFormula(r'\x e.drs([],[(walk e), (subj x e)])', '(g -o f)')
+    print '2) a dog walks'
+    for r in get_readings(gfl_to_compiled([a,dog,walks])): print r.simplify().infixify()
+    print ''
+
+#    This approach finishes with a '\e' in front
+    a = GlueFormula(r'\P Q e.((drs([x],[]) + (P x)) + (Q x e))', '((gv -o gr) -o ((g -o G) -o G))')
+    dog = GlueFormula(r'\x.drs([],[(dog x)])', '(gv -o gr)')
+    walks = GlueFormula(r'\x e.drs([],[(walk e), (subj x e)])', '(g -o f)')
+    print '3) a dog walks'
+    for r in get_readings(gfl_to_compiled([a,dog,walks])): print r.simplify().infixify()
+    print ''
+
+#    This approach is a problem because the proof is ambiguous and 'finalize' isn't always 
+#    applied to the entire formula 
+    finalize = GlueFormula(r'\P.drs([e],[(P e)])', '(f -o f)')
+    print '4) a dog walks.'
+    x = DRT.Parser().parse(r'(\P.drs([e],[(P e)]) \e.DRS([x],[(dog x),(walk e),(subj x e)]))')
+    print x.simplify()
+    for r in get_readings(gfl_to_compiled([a,dog,walks,finalize])):
+        print r 
+        #r.simplify().infixify()
+    print ''
+
+#    This approach always adds 'finalize' manually  
+    finalize = DRT.Parser().parse(r'\P.(drs([e],[]) + (P e))')
+    print '5) a dog walks.'
+    for r in get_readings(gfl_to_compiled([a,dog,walks])):
+        print finalize.applyto(r).simplify().infixify()
+    print ''
+
+#    This approach add 'finalize' as a GF, but not always at the end
+    finalize = GlueFormula(r"\P.(drs([e],[]) + (P e))", "(f -o f')")
+    print '6) a dog walks.'
+    for r in get_readings(gfl_to_compiled([a,dog,walks,finalize])):
+        print r.infixify()
+        #print r.simplify().infixify()
+    print ''
+
+#    This approach finishes with a '\e' in front
+    quickly1 = GlueFormula(r'\P x e.((P x e) + drs([],[(quick e)]))', 'q')
+    quickly2 = GlueFormula(r'\P Q.(P Q)', '(q -o ((g -o f) -o (g -o f)))')
+    print '7) a dog walks quickly'
+    for r in get_readings(gfl_to_compiled([a,dog,walks, quickly1, quickly2])): 
+        print r.simplify().infixify()
+    print ''
+
+#    TV approach
+    every = GlueFormula(r'\P Q e.((drs([x],[]) + (P x)) + (Q x e))', '((hv -o hr) -o ((h -o H) -o H))')
+    cat = GlueFormula(r'\x.drs([],[(cat x)])', '(hv -o hr)')
+    chases = GlueFormula(r'\x y e.drs([],[(chase e), (subj x e), (obj y e)])', '(g -o (h -o f))')
+    print '8) a dog chases every cat'
+    for r in get_readings(gfl_to_compiled([a,dog,chases,every,cat])): print r.simplify().infixify()
+    print ''
+
+#    S conjunction
+    f1 = GlueFormula(r'DRS([e,x],[(dog x),(walk e),(subj x e)])', 'a')
+    f2 = GlueFormula(r'DRS([e,x],[(cat x),(run e), (subj x e)])', 'b')
+    and1 = GlueFormula(r'\P Q.(P + Q)', '(a -o (b -o f))')
+    print '9) a dog walks and a cat runs'
+    for r in get_readings(gfl_to_compiled([f1,and1,f2])): 
+        print r
+        #print r.simplify().infixify()
+    print ''
+    
+    a_man = GlueFormula(r'\Q e.(drs([x],[(man x)]) + (Q x e))', '((g -o G) -o G)')
+    believes = GlueFormula(r'\x R e1.(drs([e2],[(believe e1),(subj x e1),(comp e2 e1)]) + (R e2))', '(g -o (i -o f))')
+    a_dog = GlueFormula(r'\Q e.(drs([x],[(dog x)]) + (Q x e))', '((h -o H) -o H)')
+    walks = GlueFormula(r'\x e.drs([],[(walk e), (subj x e)])', '(h -o i)')
+    finalize = GlueFormula(r'\P.drs([e],[(P e)])', "(f -o f')")
+    print '10) a man believes a dog walks.'
+    for r in get_readings(gfl_to_compiled([a_man, believes, a_dog, walks])): print r.simplify().infixify()
+    print ''
+
 if __name__ == '__main__':
     proof_demo()
     print "\n\n\n"
     compiled_proof_demo()
     print "\n\n\n"
-    #demo()
-    #print "\n\n\n"
+    demo()
+    print "\n\n\n"
     #testPnApp()
     print ''  
     test_malt_parse()
+    print ''
+    test_event_representations()
+    
