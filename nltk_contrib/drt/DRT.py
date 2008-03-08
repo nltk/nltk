@@ -587,7 +587,9 @@ class ApplicationDRS(AbstractDRS):
         AbstractDRS.__init__(self)
         first_simp = first.simplify()
         assert isinstance(first, AbstractDRS)
-        if not (isinstance(first_simp, LambdaDRS) or isinstance(first_simp, DRSVariable)) :
+        if not (isinstance(first_simp, LambdaDRS) or \
+                isinstance(first_simp, DRSVariable) or \
+                isinstance(first_simp, ApplicationDRS)):
             assert isinstance(second, AbstractDRS)
         self.first = first
         self.second = second
