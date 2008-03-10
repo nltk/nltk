@@ -8,6 +8,7 @@
 import os
 from nltk import tokenize
 from nltk_contrib.dependency import DepGraph
+from nltk_contrib.tag import tnt
 
 def config_malt(path=None, verbose=False):
     """
@@ -47,12 +48,15 @@ def config_malt(path=None, verbose=False):
             "Use 'config_malt(path=<path>) '," 
             " or set the MALTHOME environment variable to a valid path." % join(searchpath)) 
 
-def parse(sentence, verbose=False):
+def parse(sentence, tagger='nltk', verbose=False):
     """
     Use MaltParser to parse a sentence
     
     @param sentence: Input sentence to parse
     @type sentence: L{str}
+    @param tagger: The tagger to use.  Use 'tnt' for the TnT tagger, or 'nltk' to
+    simply use the treebank that comes with NLTK 
+    @type tagger: L{str}
     @return: C{DepGraph} the dependency graph representation of the sentence
     """
     
@@ -89,7 +93,14 @@ def parse(sentence, verbose=False):
             print 'input_file=%s' % input_file
 
         f = open(input_file, 'w')
-        tagged_words = pos_tag(sentence)
+        
+        if tagger == 'tnt':
+            tagged_words = tnt.pos_tag(sentence)
+        elif tagger == 'nltk':
+            tagged_words = pos_tag(sentence)
+        else:
+            raise AssertionError, 'tagger \'%s\' is not recognized' % tagger
+         
         for i in range(len(tagged_words)):
             #f.write('%s\t%s\t%s\t%s%s\n' % (i+1, words[i], '\t_'*4, '0', '\t_'*3))
             f.write('%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' % 
