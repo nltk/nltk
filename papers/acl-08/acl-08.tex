@@ -1,0 +1,335 @@
+%
+% File acl08.tex
+%
+% Contact: nasmith@cs.cmu.edu
+
+\documentclass[11pt]{article}
+\usepackage{acl08}
+\usepackage{times}
+\usepackage{latexsym}
+\setlength\titlebox{6.5cm}    % Expanding the titlebox
+
+\title{Instructions for ACL-08 Proceedings\Thanks{This document has been adapted from the instructions for 
+earlier ACL proceedings, including those for
+ACL-05 
+by Hwee Tou Ng and Kemal Oflazer, those for ACL-02 by 
+Eugene Charniak and Dekang Lin, and earlier ACL and EACL formats.
+Those versions were written by several people, including
+John Chen, Henry S. Thompson and Donald Walker. Additional elements
+were taken from the formatting instructions of the {\em
+  International Joint Conference on Artificial Intelligence}.}}
+
+\author{Joakim Nivre \\
+  School of Mathematics and Systems Engineering \\
+  V\"{a}xj\"{o} University \\
+  SE-35195, V\"{a}xj\"{o}, Sweden \\
+  {\tt nivre@msi.vxu.se} \And
+  Noah A. Smith \\
+  Language Technologies Institute \\
+  Carnegie Mellon University \\
+  Pittsburgh, PA 15213, USA\\
+  {\tt nasmith@cs.cmu.edu}}
+
+\date{}
+
+\begin{document}
+\maketitle
+\begin{abstract}
+  This document contains the instructions for preparing a camera-ready
+  manuscript for the proceedings of ACL-08. The document itself conforms
+  to its own specifications, and is therefore an example of what
+  your manuscript should look like.  Authors are asked to conform to
+  all the directions reported in this document.
+\end{abstract}
+
+\section{Introduction}
+
+The following instructions are directed to authors of papers accepted
+for publication in the ACL-08 proceedings.  All authors are required
+to adhere to these specifications. Authors are required to provide 
+a Portable Document Format (PDF) version of
+their papers.  The proceedings will be printed on US-Letter paper.
+Authors from countries in which access to word-processing systems is
+limited should contact the publication chairs Noah Smith ({\tt nasmith@cs.cmu.edu})
+and Joakim Nivre ({\tt nivre@msi.vxu.edu}) as soon as possible.
+
+
+\section{General Instructions}
+
+Manuscripts must be in two-column format.  Exceptions to the
+two-column format include the title, authors' names and complete
+addresses, which must be centered at the top of the first page, and
+any full-width figures or tables (see the guidelines in
+Subsection~\ref{ssec:first}).
+Type single-spaced.  Do not number the pages.  Start
+all pages directly under the top margin.  See the guidelines later
+regarding formatting the first page. 
+
+%% If the paper is produced by a printer, make sure that the quality
+%% of the output is dark enough to photocopy well.  It may be necessary
+%% to have your laser printer adjusted for this purpose.  Papers that are too
+%% faint to reproduce well may not be included.
+
+%% {\bf Do not print page numbers on the manuscript.}  Write them lightly
+%% on the back of each page in the upper left corner along with the
+%% (first) author's name.
+
+The maximum length of a manuscript is eight (8) pages for the main
+conference, printed single-sided, plus one (1) page for references (see Section~\ref{sec:length} for additional
+information on the maximum number of pages).  Do not number the pages.
+
+\subsection{Electronically-available resources}
+
+ACL provides this description in \LaTeX2e{} ({\tt acl08.tex}) and PDF
+format ({\tt acl08.pdf}), along with the \LaTeX2e{} style file used to
+format it ({\tt acl08.sty}) and an ACL bibliography style ({\tt acl.bst}).
+These files are all available at
+{\tt http://www.acl2008.org}.  A Microsoft Word
+template file ({\tt acl08.dot}) is also available at the same URL. We
+strongly recommend the use of these style files, which have been
+appropriately tailored for the ACL-08 proceedings.
+
+
+\subsection{Format of Electronic Manuscript}
+\label{sect:pdf}
+
+For the production of the electronic manuscript you must use Adobe's
+Portable Document Format (PDF). This format can be generated from
+postscript files: on Unix systems, you can use {\tt ps2pdf} for this
+purpose; under Microsoft Windows, you can use Adobe's Distiller, or
+if you have cygwin installed, you can use {\tt dvipdf} or
+{\tt ps2pdf}.  Note 
+that some word processing programs generate PDF which may not include
+all the necessary fonts (esp. tree diagrams, symbols). When you print
+or create the PDF file, there is usually an option in your printer
+setup to include none, all or just non-standard fonts.  Please make
+sure that you select the option of including ALL the fonts.  {\em
+  Before sending it, test your {\/\em PDF} by printing it from a
+  computer different from the one where it was created}. Moreover,
+some word processor may generate very large postscript/PDF files,
+where each page is rendered as an image. Such images may reproduce
+poorly.  In this case, try alternative ways to obtain the postscript
+and/or PDF.  One way on some systems is to install a driver for a
+postscript printer, send your document to the printer specifying
+``Output to a file'', then convert the file to PDF.
+
+For reasons of uniformity, Adobe's {\bf Times Roman} font should be
+used. In \LaTeX2e{} this is accomplished by putting
+
+\begin{quote}
+\begin{verbatim}
+\usepackage{times}
+\usepackage{latexsym}
+\end{verbatim}
+\end{quote}
+in the preamble.
+
+Additionally, it is of utmost importance to specify the {\bf
+  US-Letter format} (8.5in $\times$ 11in) when formatting the paper.
+When working with {\tt dvips}, for instance, one should specify {\tt
+  -t letter}.
+
+Print-outs of the PDF file on US-Letter paper should be identical to the
+hardcopy version.  If you cannot meet the above requirements about the
+production of your electronic submission, please contact the
+publication chairs above  as soon as possible.
+
+
+\subsection{Layout}
+\label{ssec:layout}
+
+Format manuscripts two columns to a page, in the manner these
+instructions are formatted. The exact dimensions for a page on US-letter
+paper are:
+
+\begin{itemize}
+\item Left and right margins: 1in
+\item Top margin:1in
+\item Bottom margin: 1in
+\item Column width: 3.15in
+\item Column height: 9in
+\item Gap between columns: 0.2in
+\end{itemize}
+
+\noindent Papers should not be submitted on any other paper size. Exceptionally,
+authors for whom it is \emph{impossible} to format on US-Letter paper,
+may format for \emph{A4} paper. In this case, they should keep the \emph{top}
+and \emph{left} margins as given above, use the same column width,
+height and gap, and modify the bottom and right margins as necessary.
+Note that the text will no longer be centered.
+
+\subsection{The First Page}
+\label{ssec:first}
+
+Center the title, author's name(s) and affiliation(s) across both
+columns. Do not use footnotes for affiliations.  Do not include the
+paper ID number assigned during the submission process. 
+Use the two-column format only when you begin the abstract.
+
+{\bf Title}: Place the title centered at the top of the first page, in
+a 15 point bold font.  (For a complete guide to font sizes and styles, see Table~\ref{font-table}.)
+Long title should be typed on two lines without
+a blank line intervening. Approximately, put the title at 1in from the
+top of the page, followed by a blank line, then the author's names(s),
+and the affiliation on the following line.  Do not use only initials
+for given names (middle initials are allowed). Do not format surnames
+in all capitals (e.g., ``Nivre,'' not ``NIVRE'').  The affiliation should
+contain the author's complete address, and if possible an electronic
+mail address. Leave about 0.75in between the affiliation and the body
+of the first page.
+
+{\bf Abstract}: Type the abstract at the beginning of the first
+column.  The width of the abstract text should be smaller than the
+width of the columns for the text in the body of the paper by about
+0.25in on each side.  Center the word {\bf Abstract} in a 12 point
+bold font above the body of the abstract. The abstract should be a
+concise summary of the general thesis and conclusions of the paper.
+It should be no longer than 200 words.  The abstract text should be in 10 point font.
+
+{\bf Text}: Begin typing the main body of the text immediately after
+the abstract, observing the two-column format as shown in 
+the present document.  Do not include page numbers.
+
+{\bf Indent} when starting a new paragraph. For reasons of uniformity,
+use Adobe's {\bf Times Roman} fonts, with 11 points for text and 
+subsection headings, 12 points for section headings and 15 points for
+the title.  If Times Roman is unavailable, use {\bf Computer Modern
+  Roman} (\LaTeX2e{}'s default; see section \ref{sect:pdf} above).
+Note that the latter is about 10\% less dense than Adobe's Times Roman
+font.
+
+\subsection{Sections}
+
+{\bf Headings}: Type and label section and subsection headings in the
+style shown on the present document.  Use numbered sections (Arabic
+numerals) in order to facilitate cross references. Number subsections
+with the section number and the subsection number separated by a dot,
+in Arabic numerals. 
+
+{\bf Citations}: Citations within the text appear
+in parentheses as~\cite{Gusfield:97} or, if the author's name appears in
+the text itself, as Gusfield~\shortcite{Gusfield:97}. 
+Append lowercase letters to the year in cases of ambiguities.  
+Treat double authors as in~\cite{Aho:72}, but write as 
+in~\cite{Chandra:81} when more than two authors are involved. 
+Collapse multiple citations as in~\cite{Gusfield:97,Aho:72}.
+
+\textbf{References}: Gather the full set of references together under
+the heading {\bf References}; place the section before any Appendices,
+unless they contain references. Arrange the references alphabetically
+by first author, rather than by order of occurrence in the text.
+Provide as complete a citation as possible, using a consistent format,
+such as the one for {\em Computational Linguistics\/} or the one in the 
+{\em Publication Manual of the American 
+Psychological Association\/}~\cite{APA:83}.  Use of full names for
+authors rather than initials is preferred.  A list of abbreviations
+for common computer science journals can be found in the ACM 
+{\em Computing Reviews\/}~\cite{ACM:83}.
+
+The \LaTeX{} and Bib\TeX{} style files provided roughly fit the
+American Psychological Association format, allowing regular citations, 
+short citations and multiple citations as described above.
+
+{\bf Appendices}: Appendices, if any, directly follow the text and the
+references (but see above).  Letter them in sequence and provide an
+informative title: {\bf Appendix A. Title of Appendix}.
+
+\textbf{Acknowledgment} sections should go as a last (unnumbered) section immediately
+before the references.  
+
+\subsection{Footnotes}
+
+{\bf Footnotes}: Put footnotes at the bottom of the page. They may
+be numbered or referred to by asterisks or other
+symbols.\footnote{This is how a footnote should appear.} Footnotes
+should be separated from the text by a line.\footnote{Note the
+line separating the footnotes from the text.}  Footnotes should be in 9 point font.
+
+\subsection{Graphics}
+
+{\bf Illustrations}: Place figures, tables, and photographs in the
+paper near where they are first discussed, rather than at the end, if
+possible.  Wide illustrations may run across both columns and should be placed at
+the top of a page. Color illustrations are discouraged, unless you have verified that 
+they will be understandable when printed in black ink.
+
+\begin{table}
+\begin{center}
+\begin{tabular}{|l|rl|}
+\hline \bf Type of Text & \bf Font Size & \bf Style \\ \hline
+paper title & 15 pt & bold \\
+author names & 12 pt & bold \\
+author affiliation & 12 pt & \\
+the word ``Abstract'' & 12 pt & bold \\
+section titles & 12 pt & bold \\
+document text & 11 pt  &\\
+abstract text & 10 pt & \\
+captions & 10 pt & \\
+bibliography & 10 pt & \\
+footnotes & 9 pt & \\
+\hline
+\end{tabular}
+\end{center}
+\caption{\label{font-table} Font guide. }
+\end{table}
+
+{\bf Captions}: Provide a caption for every illustration; number each one
+sequentially in the form:  ``Figure 1. Caption of the Figure.'' ``Table 1.
+Caption of the Table.''  Type the captions of the figures and 
+tables below the body, using 10 point text.  
+
+\section{Length of Submission}
+\label{sec:length}
+
+Eight pages (8) is the maximum length of the main text of papers for the ACL-08
+main conference. Up to one (1) additional page may be used for references \emph{only} (appendices count
+against the eight pages, not the additional one page).
+All illustrations, references, and appendices must be
+accommodated within these page limits, observing the formatting
+instructions given in the present document.  Papers that do not
+conform to the specified length and formatting requirements are
+subject to be rejected without review.
+
+% Up to two (2) additional pages may be purchased from ACL at the
+% price of \$250 per page; please contact the publication chairs above
+% for more information about this option.
+
+\section*{Acknowledgments}
+
+Do not number the acknowledgment section.
+
+\begin{thebibliography}{}
+
+\bibitem[\protect\citename{Aho and Ullman}1972]{Aho:72}
+Alfred~V. Aho and Jeffrey~D. Ullman.
+\newblock 1972.
+\newblock {\em The Theory of Parsing, Translation and Compiling}, volume~1.
+\newblock Prentice-{Hall}, Englewood Cliffs, NJ.
+
+\bibitem[\protect\citename{{American Psychological Association}}1983]{APA:83}
+{American Psychological Association}.
+\newblock 1983.
+\newblock {\em Publications Manual}.
+\newblock American Psychological Association, Washington, DC.
+
+\bibitem[\protect\citename{{Association for Computing Machinery}}1983]{ACM:83}
+{Association for Computing Machinery}.
+\newblock 1983.
+\newblock {\em Computing Reviews}, 24(11):503--512.
+
+\bibitem[\protect\citename{Chandra \bgroup et al.\egroup }1981]{Chandra:81}
+Ashok~K. Chandra, Dexter~C. Kozen, and Larry~J. Stockmeyer.
+\newblock 1981.
+\newblock Alternation.
+\newblock {\em Journal of the Association for Computing Machinery},
+  28(1):114--133.
+
+\bibitem[\protect\citename{Gusfield}1997]{Gusfield:97}
+Dan Gusfield.
+\newblock 1997.
+\newblock {\em Algorithms on Strings, Trees and Sequences}.
+\newblock Cambridge University Press, Cambridge, UK.
+
+\end{thebibliography}
+
+\end{document}
