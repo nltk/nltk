@@ -41,21 +41,34 @@
 
 \section{Introduction}
 
-Natural Language Processing (\NLP) is often taught within the confines
-of a single-semester course at advanced undergraduate level or
-postgraduate level. Many instructors have found that it is difficult
-to cover both the theoretical and practical sides of the subject in
-such a short span of time, especially when some of the students have
-limited programming experience. Some courses focus on theory to the
-exclusion of practical exercises, and deprive students of the
-challenge and excitement of writing programs to automatically process
-language. Other courses are simply designed to teach programming for
-linguists, and do not manage to cover any significant \NLP\ content. The
-Natural Language Toolkit (\NLTK) was originally developed to address
-this problem, making it feasible to cover a substantial amount of
+It is relatively easy to teach natural language processing (\NLP) in a
+single-disciplinary mode to a uniform cohort of students.  Linguists
+can be taught to program, leading to projects where students
+manipulate their own linguistic data.  Computer scientists can be
+taught methods for automatic text processing, leading to projects on
+text mining and chatbots.  Yet these approaches have almost nothing in
+common.  In fact, it is a stretch to call either of these NLP: more apt
+titles for such courses might be `linguistic data processing' and
+`text technologies'.
+
+In spite of an instructor's efforts to add a cross-disciplinary angle, students
+easily `revert to type'.  The pressure of assessment encourages them to emphasize
+what they do well.  Students' desire to understand what is expected of them encourages
+instructors to stick to familiar assessment instruments.  As a consequence,
+the path of least resistance is for students to remain firmly monolingual, while
+acquiring a smattering of words from a foreign language, at a level we might
+call `survival linguistics' or `survival computer science'.
+
+To the extent that \NLP\ is a coherent discipline, it has core knowledge and skills that
+must be learned by all students.  Students confront the challenge of becoming bilingual,
+of working hard to learn the basics of another discipline.  Instructors confront the
+challenge of synthesizing material from linguistics and computer science into a coherent
+whole, and devising effective methods for teaching, learning, and assessment.
+
+The Natural Language Toolkit (\NLTK) was developed to address
+these issues, making it feasible to cover a substantial amount of
 theory and practice within a single-semester course, for an audience
 consisting of both linguists and computer scientists.
-
 \NLTK\ is a suite of Python modules
 distributed under the GPL open source license from \url{nltk.org}.
 \NLTK\ comes with a large collection of corpora, extensive
@@ -87,28 +100,6 @@ and organizing assignments and student projects (\S\ref{sec:projects}).
 \section{Design Decisions Affecting Teaching}
 \label{sec:design}
 
-Computer science students come to \NLP\ with significantly different
-expectations than linguistics students.  The former expect to learn
-about \NLP\ algorithms and data structures, and we have found that
-they benefit from being able to read and manipulate the
-implementations provided with \NLTK.  The latter are interested in
-understanding the algorithms and data structures only insofar as it helps them
-to use computational tools to perform analytic tasks from `core linguistics',
-e.g., writing a set of CFG productions to parse some sentences, or
-plugging together \NLP\ components in order to derive the subcategorization
-requirements of verbs in a corpus.
-They are usually not interested in reading significant chunks of code;
-it isn't what they care about and they
-probably lack the self-confidence to poke around in source files.
-
-In a nutshell, the computer science students typically want to analyze the
-tools and synthesize new tools, while the linguists typically want to \emph{use}
-the tools to analyze language and synthesize new theories.
-
-Notes: gets back to definition of NLP and CL.  Linguists need to understand
-that NLP is not just computer-based housekeeping, the next step up from using
-office productivity software...
-
 \subsection{Python}
 
 We chose Python because it has a shallow learning curve, its syntax
@@ -118,6 +109,8 @@ interactive exploration.  As an object-oriented language, Python
 permits data and methods to be encapsulated and re-used easily.  Python comes with an extensive
 standard library, including tools for graphical programming and
 numerical processing.
+Python is ideal in a context
+serving newcomers and experienced programmers \cite{Shannon03}.
 
 We have taken the step of incorporating a detailed introduction to
 Python programming in the \NLTK\ book, taking care to motivate
@@ -237,7 +230,7 @@ up a new avenue for encouraging linguists to learn about the promise
 of computational methods. 
 
 As an example, in the linguistics department at the University of
-Texas at Austin, a course has been offered on Python programming and
+XXX, a course has been offered on Python programming and
 working with corpora, but there has not yet been much uptake from the
 target audience of core linguistics students. They usually have very
 practical needs and concerns when it comes to computational
@@ -253,11 +246,66 @@ This convergence of functionality for the toolkit that was not
 originally designed with instruction in mind is thus fortuitous and
 may be relevant at other similar linguistics departments.
 
-
 \section{Getting Started}
 \label{sec:getting-started}
 
+NLP is usually only available as an elective course, and students will
+opt to enrol or to transfer to another course based on impressions
+gained during the first week.  This initial period is important for
+attracting and retaining students.  In particular, students need to
+get a sense of the richness of language in general, and NLP in particular,
+while gaining a realistic impression of what will be accomplished during the course
+and what skills they will have by the end.  During this time when an instant rapport
+is needed, it is easy for instructors to alienate students through the use of
+linguistic or computational concepts and terminology that are foreign to students,
+or to bore students by getting bogged down in defining terms like ``noun phrase'' or ``function''
+which are basic to one audience and new for the other.
+
+\subsection{Student Expectations}
+
+Computer science students come to \NLP\ expecting to learn about \NLP\
+algorithms and data structures.  They typically have enough
+mathematical preparation to be confident in `playing' with abstract
+formal systems (including systems of linguistic rules).  Moreover,
+they are already proficient in multiple programming languages, and
+have little difficulty in learning NLP algorithms by reading and
+manipulating the implementations provided with \NLTK.
+
+Linguistics students, on the other hand, are interested in
+understanding \NLP\ algorithms and data structures only insofar as it helps them
+to use computational tools to perform analytic tasks from `core linguistics',
+e.g., writing a set of CFG productions to parse some sentences, or
+plugging together \NLP\ components in order to derive the subcategorization
+requirements of verbs in a corpus.
+They are usually not interested in reading significant chunks of code;
+it isn't what they care about and they
+probably lack the self-confidence to poke around in source files.
+
+In a nutshell, the computer science students typically want to analyze
+the tools and synthesize new implementations, while the linguists
+typically want to \emph{use} the tools to analyze language and
+synthesize new theories.  There is a risk that the former category
+never really gets to grips with natural language, while the latter
+category never really gets to trips with processing.  Instead,
+computer science students need to learn that \NLP\ is not just an
+application of techniques from formal language theory and compiler
+construction, and linguistics students need to understand that \NLP\ is not
+just computer-based housekeeping and a solution to the shortcomings of
+office productivity software for managing their linguistic data.
+
+In many courses, linguistics students or computer science students
+will dominate the class numerically, simply because the course is only
+listed in one department.  In such cases it is usually enough to
+provide additional support in the form of some extra readings,
+tutorials, and exercises in the opening stages of the course.  In
+other cases, e.g. at the University of YYY or in summer intensive
+programs, there is more of an even split, and the challenge of serving
+both cohorts of students becomes acute.
+
 \subsection{The First Lecture}
+
+Should be easy given that language and language technologies are interesting
+to a wide audience.
 
 Motivating and exemplifying NLP to a mixed audience.
 Some possible starting points:
@@ -281,15 +329,25 @@ b) richness of language
   (no end to corpus formats, incompatible tools (linguists)
   exploratory data analysis (find patterns not supported by existing software))
 
-\subsection{CDROM}
-
-ISO image -- give out CDs
-
 \subsection{First Assignment}
 
 Breaking the ice; force people to learn Python.
 
+Including both programming and linguistics content, e.g.
 
+NP Chunking using template code from book: students supplied with a
+complete program and just have to modify the chunking rules.
+
+Linguistics students learn: care in editing code, computer only does what it is told,
+skills with developing a grammar fragment extend to debugging code that mainly consists
+of a grammar fragment,
+corpus data is somewhat arbitrary and their own linguistic intuitions aren't always
+borne out.
+
+CS students learn: definition of parts of speech, definition of noun phrase, notion that
+language is highly structured
+
+Both learn: formal evaluation using precision and recall
 
 
 \section{Classroom Interaction}
@@ -432,7 +490,7 @@ Peer review (including code review) to improve quality of programming, and
 emphasize the communicative dimension of programming.
 (Even grade a student on the quality of his/her peer review of another student.)
 
-
+\section{Conclusion}
 
 
 \bibliographystyle{acl}
