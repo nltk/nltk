@@ -9,6 +9,20 @@
 \newcommand{\NLTK}{\textsc{nltk}}
 \newcommand{\code}[1]{\texttt{\small #1}}
 
+\pretolerance 250
+\tolerance 500
+\hyphenpenalty 200
+\exhyphenpenalty 100
+\doublehyphendemerits 7500
+\finalhyphendemerits 7500
+\brokenpenalty 10000
+\lefthyphenmin 3
+\righthyphenmin 3
+\widowpenalty 10000
+\clubpenalty 10000
+\displaywidowpenalty 10000
+\looseness 1
+
 \setlength\titlebox{6.5cm}    % Expanding the titlebox
 
 \title{Multidisciplinary Instruction with the Natural Language Toolkit}
@@ -34,9 +48,11 @@
   natural language processing to students majoring in linguists or
   computer science.  This paper describes the design of \NLTK, and
   reports on how it has been used effectively in classes that involve
-  a mixture of linguistics and computer science students.  We focus
+  linguistics and computer science students.  We focus
   on three key issues: getting started with a course, fostering
   classroom interaction, and organizing project work.
+  In each case, we report on practical experience and make
+  recommendations on how to use \NLTK\ to maximum effect.
 \end{abstract}
 
 \section{Introduction}
@@ -47,44 +63,37 @@ can be taught to program, leading to projects where students
 manipulate their own linguistic data.  Computer scientists can be
 taught methods for automatic text processing, leading to projects on
 text mining and chatbots.  Yet these approaches have almost nothing in
-common.  In fact, it is a stretch to call either of these NLP: more apt
-titles for such courses might be `linguistic data processing' and
+common, and it is a stretch to call either of these \NLP: more apt
+titles for such courses might be `linguistic data management' and
 `text technologies'.
 
-In spite of an instructor's efforts to add a cross-disciplinary angle, students
-easily `revert to type'.  The pressure of assessment encourages them to emphasize
-what they do well.  Students' desire to understand what is expected of them encourages
-instructors to stick to familiar assessment instruments.  As a consequence,
-the path of least resistance is for students to remain firmly monolingual, while
-acquiring a smattering of words from a foreign language, at a level we might
-call `survival linguistics' or `survival computer science'.
-
-To the extent that \NLP\ is a coherent discipline, it has core knowledge and skills that
-must be learned by all students.  Students confront the challenge of becoming bilingual,
-of working hard to learn the basics of another discipline.  Instructors confront the
-challenge of synthesizing material from linguistics and computer science into a coherent
-whole, and devising effective methods for teaching, learning, and assessment.
-
+To the extent that \NLP\ is a coherent discipline, it has core knowledge
+and skills that must be learned by all students.
 The Natural Language Toolkit (\NLTK) was developed to address
 these issues, making it feasible to cover a substantial amount of
-theory and practice within a single-semester course, for an audience
-consisting of both linguists and computer scientists.
+theory and practice with an audience consisting
+of both linguists and computer scientists.
 \NLTK\ is a suite of Python modules
-distributed under the GPL open source license from \url{nltk.org}.
+distributed under the GPL open source license.\footnote{\url{http://nltk.org}}
 \NLTK\ comes with a large collection of corpora, extensive
 documentation, and hundreds of exercises, making
 \NLTK\ unique in providing a comprehensive framework for
 students to develop a computational understanding of language.
+\NLTK's code base of 100,000 lines of Python code includes
+support for corpus access, tokenizing, stemming, tagging, chunking,
+parsing, clustering, classification, language modelling, semantic
+interpretation, unification, and much else besides.\footnote{\url{http://nltk.org/code.html}}
+As a measure of its impact,
 \NLTK\ has been used in over 50 university courses in more than 15
 countries.\footnote{\url{http://nltk.org/courses.html}}
 
 Since its inception in 2001, \NLTK\ has undergone considerable
-evolution, based on the experienced gained by teaching courses at
+evolution, based on the experience gained by teaching courses at
 several universities, and based on feedback from many teachers and
 students.  Over this period, a series of practical online tutorials
 about \NLTK\ has grown up into a comprehensive online book.\footnote{\url{http://nltk.org/book.html}}
 The book has been designed to stay in lock-step
-with the \NLTK\ code, and is intended to provide a major support in
+with the \NLTK\ library, and is intended to provide a major support in
 getting students to learn \NLP\ by doing it.
 
 This paper describes the design of \NLTK, and reports on how it has
@@ -108,7 +117,8 @@ functionality.  As an interpreted language, Python facilitates
 interactive exploration.  As an object-oriented language, Python
 permits data and methods to be encapsulated and re-used easily.  Python comes with an extensive
 standard library, including tools for graphical programming and
-numerical processing.
+numerical processing, which means it can be used for a wide range
+of non-trivial applications.
 Python is ideal in a context
 serving newcomers and experienced programmers \cite{Shannon03}.
 
@@ -117,7 +127,7 @@ Python programming in the \NLTK\ book, taking care to motivate
 programming constructs with linguistic examples. Extensive feedback
 from students has been humbling, and revealed that for students with
 no prior programming experience, it is almost impossible to
-over-explain. Despite the difficulty of providing a completely
+over-explain. Despite the difficulty of providing a
 self-contained introduction to Python for linguists, we nevertheless
 have also had very positive feedback, and in combination with the
 teaching techniques described below, have managed to bring a
@@ -125,6 +135,8 @@ large group of non-programmer students rapidly to a point where they
 could carry out interesting and useful exercises in text processing.
 
 help function, access to \NLTK\ documentation on any module.
+
+key libraries: numpy, pylab
 
 Python itself fosters an
 interactive style of teaching.  For instance, we've found it quite
@@ -138,25 +150,9 @@ quite different questions.  However, this is addressed by dividing
 them into smaller clusters and having TAs visit them separately to
 discuss issues arising from the content.
 
-\subsection{Diversity of Programming Experience}
-
+Diversity of Programming Experience:
 Self-paced learning: tutorials, hundreds of graded exercises (self-evaluation)
 
-
-
-\NLTK\ supports assignments of varying difficulty and scope. In the
-simplest assignments, students experiment with existing components to
-perform a wide variety of \NLP\ tasks. This may involve no programming
-at all, in the case of the existing demonstrations, or simply changing
-a line or two of program code. As students become more familiar with
-the toolkit they can be asked to modify existing components or to
-create complete systems out of existing components. \NLTK\ also provides
-students with a flexible framework for advanced projects, such as
-developing a multi-component system, by integrating and extending \NLTK\
-components, and adding on entirely new components. Here \NLTK\ helps by
-providing standard implementations of all the basic data structures
-and algorithms, interfaces to standard corpora, substantial corpus
-samples, and a flexible and extensible architecture.
 
 
 \subsection{Coding Requirements}
@@ -182,16 +178,18 @@ complication is that adopting an object-oriented style of programming
 may be well-motivated for a number of reasons but nevertheless
 baffling to the linguist student. For example, although it is
 perfectly respectable to invoke an instance method
-\code{WhitespaceTokenizer().tokenize(text)} (for some input
+\code{WordPunctTokenizer().tokenize(text)} (for some input
 string \code{text}), from a presentational point of view, 
-\code{WhitespaceTokenizer(text)} works a lot better.
+\code{wordpunct\_tokenize(text)} works a lot better
+(both are available).
 
 \subsection{Corpus Access}
 
 Uniform corpus access.  After importing \NLTK, one can access all the corpora
 using the \code{nltk.corpus} module:
 
-{\small\begin{verbatim}
+{\small
+\begin{verbatim}
 >>> nltk.corpus.NAME.METHOD(PARAMETERS)
 \end{verbatim}}
 
@@ -206,11 +204,12 @@ The \code{METHOD} can be:
 \code{parsed\_sents}, for a list of parse trees.
 The following example shows how to access the Brown Corpus:
 
-{\small\begin{verbatim}
+{\small
+\begin{verbatim}
 >>> nltk.corpus.brown.tagged_words()
-[('The', 'at'), ('Fulton', 'np-tl'),
-('County', 'nn-tl'), ('Grand', 'jj-tl'),
-('Jury', 'nn-tl'), ('said', 'vbd'), ...]
+[('The', 'AT'), ('Fulton', 'NP-TL'),
+('County', 'NN-TL'), ('Grand', 'JJ-TL'),
+('Jury', 'NN-TL'), ('said', 'VBD'), ...]
 \end{verbatim}}
 
 Note that not all methods are available for all corpora (e.g., we can
@@ -224,7 +223,7 @@ e.g. to a section of a corpus, or an individual corpus file.
 
 NLTK provides functionality for working with Shoebox data
 \cite{robinson:etal:2007}. Shoebox is a system used by many
-documentary linguists to produce interlinearized glossed text.  The
+documentary linguists to produce lexicons and interlinear glossed text.  The
 ability to work straightforwardly with Shoebox data promises to open
 up a new avenue for encouraging linguists to learn about the promise
 of computational methods. 
@@ -250,16 +249,19 @@ may be relevant at other similar linguistics departments.
 \label{sec:getting-started}
 
 NLP is usually only available as an elective course, and students will
-opt to enrol or to transfer to another course based on impressions
-gained during the first week.  This initial period is important for
-attracting and retaining students.  In particular, students need to
-get a sense of the richness of language in general, and NLP in particular,
-while gaining a realistic impression of what will be accomplished during the course
-and what skills they will have by the end.  During this time when an instant rapport
-is needed, it is easy for instructors to alienate students through the use of
-linguistic or computational concepts and terminology that are foreign to students,
-or to bore students by getting bogged down in defining terms like ``noun phrase'' or ``function''
-which are basic to one audience and new for the other.
+vote with their feet after attending one or two classes.  This initial
+period is important for attracting and retaining students.  In
+particular, students need to get a sense of the richness of language
+in general, and \NLP\ in particular, while gaining a realistic
+impression of what will be accomplished during the course and what
+skills they will have by the end.  During this time when an instant
+rapport is needed, it is easy for instructors to alienate students
+through the use of linguistic or computational concepts and
+terminology that are foreign to students, or to bore students by
+getting bogged down in defining terms like `noun phrase' or
+`function' which are basic to one audience and new for the other.
+Thus, we believe it is crucial for instructors to understand
+and shape the student's expectations, and to get off to a good start.
 
 \subsection{Student Expectations}
 
@@ -268,7 +270,7 @@ algorithms and data structures.  They typically have enough
 mathematical preparation to be confident in `playing' with abstract
 formal systems (including systems of linguistic rules).  Moreover,
 they are already proficient in multiple programming languages, and
-have little difficulty in learning NLP algorithms by reading and
+have little difficulty in learning \NLP\ algorithms by reading and
 manipulating the implementations provided with \NLTK.
 
 Linguistics students, on the other hand, are interested in
@@ -283,10 +285,10 @@ probably lack the self-confidence to poke around in source files.
 
 In a nutshell, the computer science students typically want to analyze
 the tools and synthesize new implementations, while the linguists
-typically want to \emph{use} the tools to analyze language and
-synthesize new theories.  There is a risk that the former category
+typically want to use the tools to analyze language and
+synthesize new theories.  There is a risk that the former group
 never really gets to grips with natural language, while the latter
-category never really gets to trips with processing.  Instead,
+group never really gets to trips with processing.  Instead,
 computer science students need to learn that \NLP\ is not just an
 application of techniques from formal language theory and compiler
 construction, and linguistics students need to understand that \NLP\ is not
@@ -298,16 +300,38 @@ will dominate the class numerically, simply because the course is only
 listed in one department.  In such cases it is usually enough to
 provide additional support in the form of some extra readings,
 tutorials, and exercises in the opening stages of the course.  In
-other cases, e.g. at the University of YYY or in summer intensive
-programs, there is more of an even split, and the challenge of serving
+other cases, e.g. courses we have taught at the universities of YYY and ZZZ,
+or in summer intensive programs in several countries,
+there is more of an even split, and the challenge of serving
 both cohorts of students becomes acute.
+
+\subsection{Articulating the Goals}
+
+Despite an instructor's efforts to add a cross-disciplinary angle, students
+easily `revert to type'.  The pressure of assessment encourages students to emphasize
+what they do well.  Students' desire to understand what is expected of them encourages
+instructors to stick to familiar assessment instruments.  As a consequence,
+the path of least resistance is for students to remain firmly monolingual, while
+acquiring a smattering of words from a foreign language, at a level we might
+call `survival linguistics' or `survival computer science'.
+
+Asking CS students to write their first essay in years, or asking
+linguistics students to write their first ever program, leads to
+stressed students who complain that they don't know what is expected
+of them.
+
+Students confront the challenge of becoming bilingual,
+of working hard to learn the basics of another discipline.  Instructors confront the
+challenge of synthesizing material from linguistics and computer science into a coherent
+whole, and devising effective methods for teaching, learning, and assessment.
+
 
 \subsection{The First Lecture}
 
 Should be easy given that language and language technologies are interesting
 to a wide audience.
 
-Motivating and exemplifying NLP to a mixed audience.
+Motivating and exemplifying \NLP\ to a mixed audience.
 Some possible starting points:
 
 a) the holy grail: machines that understand language:
@@ -329,9 +353,14 @@ b) richness of language
   (no end to corpus formats, incompatible tools (linguists)
   exploratory data analysis (find patterns not supported by existing software))
 
+c) shared history of CS and linguistics: philosophical logic, formal language theory;
+overlaps with a different purpose:
+manipulating text (studying corpora vs text processing),
+formal semantics (natural vs artificial languages)
+
 \subsection{First Assignment}
 
-Breaking the ice; force people to learn Python.
+Breaking the ice; force people to learn Python.  Give out early (first week?)
 
 Including both programming and linguistics content, e.g.
 
@@ -379,7 +408,7 @@ program execution step-by-step. Most NLTK components have a
 demonstration mode, and will perform an interesting task without
 requiring any special input from the user. It is even possible to make
 minor modifications to programs in response to ``what if'' questions. In
-this way, students learn the mechanics of NLP quickly, gain deeper
+this way, students learn the mechanics of \NLP\ quickly, gain deeper
 insights into the data structures and algorithms, and acquire new
 problem-solving skills.
 
@@ -400,7 +429,7 @@ for the need for techniques like dynamic programming and motivates
 them to learn how they work and can be used to solve such problems
 much more efficiently.
 
-Another highly useful aspect of NLTK is the ability to define a
+Another highly useful aspect of \NLTK\ is the ability to define a
 context-free grammar using a very simply format and display tree
 structures graphically. This can be used to teach context-free
 grammars interactively, where the instructor and the students develop
@@ -413,7 +442,7 @@ tree structure can be displayed graphically and inspected to see what
 went wrong. Conversely, textual representations of the CKY parse chart
 can be used to see where the grammar failed on grammatical sentences.
 
-NLTK's easy access to many corpora also greatly facilitates classroom
+\NLTK's easy access to many corpora also greatly facilitates classroom
 instruction. It is straightforward to pull in different sections of
 corpora and build programs in class for many different tasks, from
 simple things like doing word counts to building rule-based
@@ -433,43 +462,88 @@ been used in search terms over several years.
 
 animate this with a quiz, presented as a slide or a handout, giving code samples and asking what they do.
 
+class exercise, e.g. counting uses of ``must'' in a spoken vs written language corpus
+(deontic vs epistemic uses).
+
 \subsection{Chatroom}
 
 useful during intensive summer program; otherwise couldn't be staffed adequately
 
-\section{Assignments and Projects}
+\section{Exercises, Assignments and Projects}
 \label{sec:projects}
 
-Many exercises are provided with the NLTK documentation. These
-exercises have the tremendous advantage of building on the NLTK
+Many exercises are provided with the \NLTK\ documentation. These
+exercises have the tremendous advantage of building on the \NLTK\
 infrastructure--both code and documentation. For students who are
 learning to program as part of a computational linguistics course, the
 parallels between the examples in the documentation and the
 requirements of the assignments is very helpful. As a result, they
-were able use NLTK to do far more complex tasks than they could
+were able use \NLTK\ to do far more complex tasks than they could
 otherwise have hoped to do. The availability of online examples that
-they could try out in interactive Python were a huge help for
-them. 
+they could try out in interactive Python were a huge help for them.
+
+
+\begin{figure*}
+{\small
+\begin{verbatim}
+>>> nltk.FreqDist(nltk.corpus.brown.words())
+\end{verbatim}}
+
+{\small
+\begin{verbatim}
+>>> import sys
+>>> fd = nltk.FreqDist()
+>>> for file in ???:
+...     for word in nltk.tokenize(...):
+...         fd.inc(word)
+\end{verbatim}}
+
+{\small
+\begin{verbatim}
+>>> counts = {}
+>>> for word in nltk.corpus.brown.words():
+...     if word not in counts:
+...         counts[word] = 0
+...     counts += 1
+\end{verbatim}}
+\caption{Different ways to build up a frequency distribution of words in the Brown Corpus}
+\label{fig:freqdist}
+\end{figure*}
+
 
 The exercises are also highly adaptable. It is common for instructors
 to build homework assignments off of these as a base and add their own
 twists to them. 
-
-Some instructors prefer to include problems that do not allow students
-to take advantage of some built in NLTK functionality, e.g., counting
+Some instructors prefer to include exercises that do not allow students
+to take advantage of some built in \NLTK\ functionality, e.g., counting
 word frequencies in the Brown corpus using the corpus source rather
-than NLTK access methods.  This is an important part of building
+than \NLTK\ access methods (see Figure~\ref{fig:freqdist}).  This is an important part of building
 facility with working with general text processing with Python, since
-eventually students will have to play outside of the NLTK sandbox when
-they want to work with corpora outside of NLTK's
-offerings. Nonetheless, students often use NLTK functionality as part
+eventually students will have to play outside of the \NLTK\ sandbox when
+they want to work with corpora outside of \NLTK's
+offerings. Nonetheless, students often use \NLTK\ functionality as part
 of their solutions, such as managing frequencies and
 distributions. Again, this flexibility is a good thing: students learn
 to work with resources they know how to use, and can branch out to new
-problems with that basis. When course content includes discussion of
+exercises with that basis. When course content includes discussion of
 Unix command line utilities for text processing, students can
 furthermore have a better appreciation of the pros and cons of writing
 their own scripts versus using an appropriate Unix pipe.
+
+
+\NLTK\ supports assignments of varying difficulty and scope. In the
+simplest assignments, students experiment with existing components to
+perform a wide variety of \NLP\ tasks. This may involve no programming
+at all, in the case of the existing demonstrations, or simply changing
+a line or two of program code. As students become more familiar with
+the toolkit they can be asked to modify existing components or to
+create complete systems out of existing components. \NLTK\ also provides
+students with a flexible framework for advanced projects, such as
+developing a multi-component system, by integrating and extending \NLTK\
+components, and adding on entirely new components. Here \NLTK\ helps by
+providing standard implementations of all the basic data structures
+and algorithms, interfaces to standard corpora, substantial corpus
+samples, and a flexible and extensible architecture.
 
 
 Group projects involving a mixture of linguists and CS students:
