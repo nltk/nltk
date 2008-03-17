@@ -4,6 +4,7 @@
 \usepackage{times}
 \usepackage{latexsym}
 \usepackage{epsfig,url}
+\usepackage{alltt}
 
 \newcommand{\NLP}{\textsc{nlp}}
 \newcommand{\NLTK}{\textsc{nltk}}
@@ -208,41 +209,46 @@ string \code{text}), from a presentational point of view,
 \code{wordpunct\_tokenize(text)} works a lot better
 (both are available).
 
+
 \subsection{Corpus Access}
 
-Uniform corpus access.  After importing \NLTK, one can access all the corpora
-using the \code{nltk.corpus} module:
+The scope of exercises and projects that students can perform is
+greatly increased by the inclusion of a large collection of corpora,
+along with easy-to-use corpus readers.  This collection, which
+currently stands at 45 corpora, includes parsed, POS-tagged, plain
+text, categorized text, and
+lexicons.\footnote{\url{http://nltk.org/corpora.html}}
 
-{\small
-\begin{verbatim}
->>> nltk.corpus.NAME.METHOD(PARAMETERS)
-\end{verbatim}}
-
-Here, \code{NAME} is any of the 45 corpora distributed with NLTK, including
-parsed, POS-tagged, plain text, categorized text, and lexicons.\footnote{\url{http://nltk.org/corpora.html}}
-The \code{METHOD} can be:
-\code{raw}, for the raw contents of the corpus;
-\code{words}, for a list of tokenized words;
-\code{sents}, for the same list grouped into sentences;
-\code{tagged\_words}, for a list of (word,tag) pairs;
-\code{tagged\_sents}, for the same list grouped into sentences;
-\code{parsed\_sents}, for a list of parse trees.
+In designing the corpus readers, we emphasised simplicitly,
+consistency, and efficiency.  \emph{Corpus objects}, such as
+\code{nltk.corpus.brown} and \code{nltk.corpus.treebank}, define
+methods that can be used to read the corpus contents in various
+formats.  Common methods include:
+%
+\code{raw()}, for the raw contents of the corpus;
+\code{words()}, for a list of tokenized words;
+\code{sents()}, for the same list grouped into sentences;
+\code{tagged\_words()}, for a list of (word,tag) pairs;
+\code{tagged\_sents()}, for the same list grouped into sentences;
+and
+\code{parsed\_sents()}, for a list of parse trees.
+%
+Optional parameters can be used to restrict what portion of the corpus
+is returned, e.g., to a section of the corpus, or an individual corpus
+file.
 The following example shows how to access the Brown Corpus:
 
-{\small
-\begin{verbatim}
->>> nltk.corpus.brown.tagged_words()
+{\footnotesize
+\begin{alltt}
+\textbf{>>> nltk.corpus.brown.tagged_words()}
 [('The', 'AT'), ('Fulton', 'NP-TL'),
-('County', 'NN-TL'), ('Grand', 'JJ-TL'),
-('Jury', 'NN-TL'), ('said', 'VBD'), ...]
-\end{verbatim}}
+ ('County', 'NN-TL'), ('Grand', 'JJ-TL'),
+ ('Jury', 'NN-TL'), ('said', 'VBD'), ...]
+\end{alltt}}
 
-Note that not all methods are available for all corpora (e.g., we can
-ask for the words from just about any corpus, but only for
-\code{parsed\_sents} from the parsed corpora).
-
-The \code{PARAMETERS} are typically used to restrict the amount of material returned,
-e.g. to a section of a corpus, or an individual corpus file.
+Most corpus reader methods return a \emph{corpus view}, which acts as
+a list of text objects, but maintains responsiveness and memory
+efficiency by only loading items from the file on an as-needed basis.
 
 \subsection{Accessing Shoebox Files}
 
