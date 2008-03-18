@@ -69,25 +69,24 @@ common, and it is a stretch to call either of these \NLP: more apt
 titles for such courses might be `linguistic data management' and
 `text technologies'.
 
-To the extent that \NLP\ is a coherent discipline, it has core knowledge
-and skills that must be learned by all students.
-The Natural Language Toolkit (\NLTK) was developed to give a broad
-range of students access to the core knowledge and skills of \NLP.
-In particular, \NLTK\ makes it feasible to run a course that covers
-a substantial amount of theory and practice with an audience consisting
-of both linguists and computer scientists.
-\NLTK\ is a suite of Python modules
-distributed under the GPL open source license.\footnote{\url{http://nltk.org}}
-\NLTK\ comes with a large collection of corpora, extensive
-documentation, and hundreds of exercises, making
-\NLTK\ unique in providing a comprehensive framework for
-students to develop a computational understanding of language.
-\NLTK's code base of 100,000 lines of Python code includes
-support for corpus access, tokenizing, stemming, tagging, chunking,
-parsing, clustering, classification, language modelling, semantic
-interpretation, unification, and much else besides.\footnote{\url{http://nltk.org/code.html}}
-As a measure of its impact,
-\NLTK\ has been used in over 60 university courses in 20
+To the extent that \NLP\ is a coherent discipline, it has core
+knowledge and skills that must be learned by all students.  The
+Natural Language Toolkit (\NLTK)\footnote{\url{http://nltk.org}} was
+developed to give a broad range of students access to the core
+knowledge and skills of \NLP.  In particular, \NLTK\ makes it feasible
+to run a course that covers a substantial amount of theory and
+practice with an audience consisting of both linguists and computer
+scientists.  \NLTK\ is a suite of Python modules distributed under the
+GPL open source license.  \NLTK\ comes with a large collection of
+corpora, extensive documentation, and hundreds of exercises, making
+\NLTK\ unique in providing a comprehensive framework for students to
+develop a computational understanding of language.  \NLTK's code base
+of 100,000 lines of Python code includes support for corpus access,
+tokenizing, stemming, tagging, chunking, parsing, clustering,
+classification, language modelling, semantic interpretation,
+unification, and much else
+besides.\footnote{\url{http://nltk.org/code.html}} As a measure of its
+impact, \NLTK\ has been used in over 60 university courses in 20
 countries.\footnote{\url{http://nltk.org/courses.html}}
 
 Since its inception in 2001, \NLTK\ has undergone considerable
@@ -99,7 +98,7 @@ The book has been designed to stay in lock-step
 with the \NLTK\ library, and is intended to provide a major support in
 getting students to learn \NLP\ by doing it.
 
-This paper describes the design of \NLTK, and reports on how it has
+This paper describes the main features of \NLTK, and reports on how it has
 been used effectively in classes that involve a combination of
 linguists and computer scientists.  First we discuss aspects of the
 design of the toolkit that arose from our need to teach computational
@@ -114,16 +113,16 @@ and organizing assignments and student projects (\S\ref{sec:projects}).
 
 \subsection{Python}
 
-We chose Python because it has a shallow learning curve, its syntax
-and semantics are transparent, and it has good string-handling
-functionality.  As an interpreted language, Python facilitates
-interactive exploration.  As an object-oriented language, Python
-permits data and methods to be encapsulated and re-used easily.  Python comes with an extensive
+We chose Python as the implementation language for \NLTK\ because it
+has a shallow learning curve, its syntax and semantics are
+transparent, and it has good string-handling functionality.  As an
+interpreted language, Python facilitates interactive exploration.  As
+an object-oriented language, Python permits data and methods to be
+encapsulated and re-used easily.  Python comes with an extensive
 standard library, including tools for graphical programming and
-numerical processing, which means it can be used for a wide range
-of non-trivial applications.
-Python is ideal in a context
-serving newcomers and experienced programmers \cite{Shannon03}.
+numerical processing, which means it can be used for a wide range of
+non-trivial applications.  Python is ideal in a context serving
+newcomers and experienced programmers \cite{Shannon03}.
 
 We have taken the step of incorporating a detailed introduction to
 Python programming in the \NLTK\ book, taking care to motivate
@@ -145,9 +144,11 @@ to the code documentation is available using the Python \code{help()}
 command at the interactive prompt, and this can be especially useful
 for checking the input parameters and return type of functions.
 
-Other Python libraries are very useful in the \NLP\ context:
-Numpy provides optimized support for linear algebra and sparse arrays,\footnote{\url{http://numpy.scipy.org/}}
-and Pylab provides sophisticated facilities for scientific visualisation.\footnote{\url{http://matplotlib.sourceforge.net/}}
+Other Python libraries are very useful in the \NLP\ context: NumPy
+provides optimized support for linear algebra and sparse
+arrays,\footnote{\url{http://numpy.scipy.org/}} and PyLab provides
+sophisticated facilities for scientific
+visualisation.\footnote{\url{http://matplotlib.sourceforge.net/}}
 
 \subsection{Self-Paced Learning}
 
@@ -190,14 +191,13 @@ similar importance is place on extensibility, since this helps to
 ensure that the code grows as a coherent whole, rather than by
 unpredictable and haphazard additions.  
 
-By contrast,
-comprehensiveness of coverage has never been an overriding concern of
-\NLTK---indeed, some students seem to positively prefer the restricted
-scope of \NLTK, since they find it less overwhelming.
-Similarly, although efficiency cannot be completely ignored, it has
+By contrast, although efficiency cannot be completely ignored, it has
 always taken second place to simplicity and clarity of coding. In a
 similar vein, we have tried to eschew `clever' programming tricks,
-since these typically hinder intelligiblity of the code.
+since these typically hinder intelligiblity of the code.  Finally,
+comprehensiveness of coverage has never been an overriding concern of
+\NLTK---indeed, some students seem to positively prefer the restricted
+scope of \NLTK, since they find it less overwhelming. 
 
 
 \subsection{Naming}
@@ -261,7 +261,7 @@ in various formats.  Common methods include:
 \code{raw()}, for the raw contents of the corpus;
 \code{words()}, for a list of tokenized words;
 \code{sents()}, for the same list grouped into sentences;
-\code{tagged\_words()}, for a list of (word,tag) pairs;
+\code{tagged\_words()}, for a list of (\textit{word}, \textit{tag}) pairs;
 \code{tagged\_sents()}, for the same list grouped into sentences;
 and
 \code{parsed\_sents()}, for a list of parse trees.
@@ -343,7 +343,7 @@ formal systems (including systems of linguistic rules).  Moreover,
 they are already proficient in multiple programming languages, and
 have little difficulty in learning \NLP\ algorithms by reading and
 manipulating the implementations provided with \NLTK. At the same
-time, they typically have little grasp of the terminology or concepts
+time, they tend to be unfamiliar with the terminology and concepts
 that linguists take for granted, and may struggle to come up with
 `reasonable' linguistic analyses of data.
 
@@ -422,7 +422,7 @@ test, easily understood by all students, and which helps the computer science
 students to see \NLP\ in relation to the field of Artificial Intelligence.
 The evolution of programming languages has brought them closer to natural language,
 helping students see the essentially linguistic purpose of this central development
-in computer science.  The corresponding the holy grail in linguistics is full
+in computer science.  The corresponding holy grail in linguistics is full
 understanding of the human language faculty; writing programs and building machines
 surely informs this quest too.
 
@@ -452,17 +452,18 @@ artificial languages.
 
 The first coursework assignment can be a significant step forwards in
 helping students get to grips with the material, and is best given out
-early, perhaps even in week 1.
-We have found it advisable for this assignment to
-include both programming and linguistics content. One example is to
-ask students to carry out NP chunking of some data (e.g.\ a section of
-the Brown Corpus). The \code{nltk.RegexpParser} class is initialized
-with set of chunking rules using a simple, regular expression-oriented
-syntax, and the resulting chunk parser can be run over tagged input
-text. Given a Gold Standard test set like the CoNLL-2000 data,
+early, perhaps even in week 1.  We have found it advisable for this
+assignment to include both programming and linguistics content. One
+example is to ask students to carry out NP chunking of some data
+(e.g.\ a section of the Brown Corpus). The \code{nltk.RegexpParser}
+class is initialized with a set of chunking rules expressed in a
+simple, regular expression-oriented syntax, and the resulting chunk
+parser can be run over POS-tagged input text. Given a Gold Standard
+test set like the CoNLL-2000
+data,\footnote{\url{http://www.cnts.ua.ac.be/conll2000/chunking/}}
 precision and recall of the chunk grammar can be easily determined.
 Thus, if students are given an existing, incomplete set of rules as
-their starting point, they just have to modify and test their rules. 
+their starting point, they just have to modify and test their rules.
 
 There are distinctive outcomes for each set of students: linguistics students
 learn to write grammar fragments that respect the literal-minded
@@ -499,13 +500,10 @@ empirical or theoretical question.
 As a practical matter, it is important to consider some low-level issues
 that may get in the way of students' ability to capture the material
 covered in interactive Python sessions.  These include choice of
-appropriate font size, avoiding the problem of output scrolling the
-command out of view, and distributing a log of the instructors session
-for students to go over in their own time.
+appropriate font size for screen display, avoiding the problem of output scrolling the
+command out of view, and distributing a log of the instructor's interactive session
+for students to study in their own time.
 
-% But NB it may be necessary to keep and distribute logs of the sessions, since some students have
-% difficulty keeping up, particularly at the outset.
-% (Also mention the challenges of keeping the font size big enough?)
 
 \subsection{NLTK Demonstrations}
 
@@ -543,7 +541,7 @@ them to learn how they work and can be used to solve such problems
 much more efficiently.
 
 Another highly useful aspect of \NLTK\ is the ability to define a
-context-free grammar using a very simply format and display tree
+context-free grammar using a very simple format and to display tree
 structures graphically. This can be used to teach context-free
 grammars interactively, where the instructor and the students develop
 a grammar from scratch and check its coverage against a testbed of
@@ -592,9 +590,9 @@ infrastructure--both code and documentation. For students who are
 learning to program as part of a computational linguistics course, the
 parallels between the examples in the documentation and the
 requirements of the assignments is very helpful. As a result, they
-were able use \NLTK\ to do far more complex tasks than they could
-otherwise have hoped to do. The availability of online examples that
-they could try out in interactive Python were a huge help for them.
+are able use \NLTK\ to carry out far more complex tasks than they could
+otherwise have hoped to do. % The availability of online examples that
+% they could try out in interactive Python were a huge help for them.
 
 
 \begin{figure*}
@@ -632,7 +630,7 @@ The exercises are also highly adaptable. It is common for instructors
 to take them as a starting point in building homework assignments that
 are tailored to their own students.  Some instructors prefer to
 include exercises that do not allow students to take advantage of
-built-in \NLTK\ functionality, e.g., using a Python dictionary to
+built-in \NLTK\ functionality, e.g.\  using a Python dictionary to
 count word frequencies in the Brown corpus rather than \NLTK 's
 \code{FreqDist} (see Figure~\ref{fig:freqdist}).  This is an important
 part of building facility with general text processing in Python,
