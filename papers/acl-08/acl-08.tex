@@ -113,16 +113,17 @@ and organizing assignments and student projects (\S\ref{sec:projects}).
 
 \subsection{Python}
 
-We chose Python as the implementation language for \NLTK\ because it
-has a shallow learning curve, its syntax and semantics are
-transparent, and it has good string-handling functionality.  As an
-interpreted language, Python facilitates interactive exploration.  As
-an object-oriented language, Python permits data and methods to be
-encapsulated and re-used easily.  Python comes with an extensive
-standard library, including tools for graphical programming and
-numerical processing, which means it can be used for a wide range of
-non-trivial applications.  Python is ideal in a context serving
-newcomers and experienced programmers \cite{Shannon03}.
+We chose Python\footnote{\url{http://www.python.org/}} as the
+implementation language for \NLTK\ because it has a shallow learning
+curve, its syntax and semantics are transparent, and it has good
+string-handling functionality.  As an interpreted language, Python
+facilitates interactive exploration.  As an object-oriented language,
+Python permits data and methods to be encapsulated and re-used easily.
+Python comes with an extensive standard library, including tools for
+graphical programming and numerical processing, which means it can be
+used for a wide range of non-trivial applications.  Python is ideal in
+a context serving newcomers and experienced programmers
+\cite{Shannon03}.
 
 We have taken the step of incorporating a detailed introduction to
 Python programming in the \NLTK\ book, taking care to motivate
@@ -150,35 +151,7 @@ arrays,\footnote{\url{http://numpy.scipy.org/}} and PyLab provides
 sophisticated facilities for scientific
 visualisation.\footnote{\url{http://matplotlib.sourceforge.net/}}
 
-\subsection{Self-Paced Learning}
 
-A mixed class of linguistics and computer science students will have a
-diverse range of programming experience, and students with no
-programming experience will typically have different aptitudes for
-programming \cite{Caspersen07}.  A course which forces all students to
-progress at the same rate will be too difficult for some, and too dull
-for others, and will risk alienating many students.  Thus, course
-materials need to accommodate self-paced learning.  An effective way
-to do this is to provide students with contexts in which they can test
-and extend their knowledge at their own rate.
-
-Lecture or laboratory session in which students have a machine in front of them (or one between two),
-and where there is time to work through a series of exercises to consolidate what has just
-been taught from the front, or read from a tutorial.
-
-When this can be done at regular intervals, it is easier for students to know which
-part of the materials to re-read.  It also encourages them to get into the habit of
-checking their own understanding of a concept by writing some program code.
-
-When questions are graded, it is easier for students to understand how much effort is expected,
-and whether they even have time to attempt an exercise.  Graded exercises are also good for
-supporting self-evaluation.  If a student takes 20 minutes to write a solution, they also need
-to have some idea of whether this was an appropriate amount of time.
-
-well-motivated questions: needs to be transparently obvious why this is a linguistically meaningful thing to do
-(esp for inexperienced programmers)
-
-include open-ended questions for the experienced programmers
 
 \subsection{Coding Requirements}
 
@@ -584,47 +557,85 @@ been used in search terms over several years.
 \section{Exercises, Assignments and Projects}
 \label{sec:projects}
 
-Many exercises are provided with the \NLTK\ documentation. These
+\subsection{Exercises}
+
+Copious exercises, graded for difficulty, are provided with the \NLTK\ documentation. These
 exercises have the tremendous advantage of building on the \NLTK\
-infrastructure--both code and documentation. For students who are
-learning to program as part of a computational linguistics course, the
-parallels between the examples in the documentation and the
-requirements of the assignments is very helpful. As a result, they
-are able use \NLTK\ to carry out far more complex tasks than they could
-otherwise have hoped to do. % The availability of online examples that
+infrastructure---both code and documentation. The exercises are
+intended to be suitable both for self-based learning and also
+required coursework.
+
+A mixed class of linguistics and computer science students will have a
+diverse range of programming experience, and students with no
+programming experience will typically have different aptitudes for
+programming \cite{Caspersen07}.  A course which forces all students to
+progress at the same rate will be too difficult for some, and too dull
+for others, and will risk alienating many students.  Thus, course
+materials need to accommodate self-paced learning.  An effective way
+to do this is to provide students with contexts in which they can test
+and extend their knowledge at their own rate.
+
+One such context is provided by lecture or laboratory sessions in
+which students have a machine in front of them (or one between two),
+and where there is time to work through a series of exercises to
+consolidate what has just been taught from the front, or read from a
+tutorial. When this can be done at regular intervals, it is easier for
+students to know which part of the materials to re-read.  It also
+encourages them to get into the habit of checking their own
+understanding of a concept by writing some program code.
+
+When exercises are graded for difficulty, it is easier for students to
+understand how much effort is expected, and whether they even have
+time to attempt an exercise.  Graded exercises are also good for
+supporting self-evaluation.  If a student takes 20 minutes to write a
+solution, they also need to have some idea of whether this was an
+appropriate amount of time.
+
+% well-motivated questions: needs to be transparently obvious why this
+% is a linguistically meaningful thing to do (esp for inexperienced
+% programmers)
+
+% include open-ended questions for the experienced programmers
+
+% For students who are
+% learning to program as part of a computational linguistics course, the
+% parallels between the examples in the documentation and the
+% requirements of the assignments is very helpful. As a result, they
+% are able use \NLTK\ to carry out far more complex tasks than they could
+% otherwise have hoped to do.
+% The availability of online examples that
 % they could try out in interactive Python were a huge help for them.
 
 
-\begin{figure*}
-{\small
+\begin{figure}
+{\footnotesize
 \begin{verbatim}
 >>> nltk.FreqDist(nltk.corpus.brown.words())
-\end{verbatim}}
+\end{verbatim}
 \medskip
 
-{\small
 \begin{verbatim}
 >>> fd = nltk.FreqDist()
 >>> for filename in corpus_files:
 ...     raw_text = open(filename).read()
 ...     for word in nltk.tokenize(raw_text):
 ...         fd.inc(word)
-\end{verbatim}}
+\end{verbatim}
 \medskip
 
-{\small
 \begin{verbatim}
 >>> counts = {}
 >>> for word in nltk.corpus.brown.words():
 ...     if word not in counts:
 ...         counts[word] = 0
 ...     counts += 1
-\end{verbatim}}
+\end{verbatim}
+}
 \caption{Three Ways to Build up a Frequency Distribution of Words in the Brown Corpus}
 \label{fig:freqdist}
 \vspace*{1ex}
 \hrule
-\end{figure*}
+\end{figure}
 
 The exercises are also highly adaptable. It is common for instructors
 to take them as a starting point in building homework assignments that
@@ -645,6 +656,7 @@ Unix command line utilities for text processing, students can
 furthermore gain a better appreciation of the pros and cons of writing
 their own scripts versus using an appropriate Unix pipe.
 
+\subsection{Assignments}
 \NLTK\ supports assignments of varying difficulty and scope. In the
 simplest assignments, students experiment with existing components to
 perform a wide variety of \NLP\ tasks. This may involve no programming
@@ -659,28 +671,53 @@ providing standard implementations of all the basic data structures
 and algorithms, interfaces to standard corpora, substantial corpus
 samples, and a flexible and extensible architecture.
 
-Group projects involving a mixture of linguists and CS students:
-initial appeal is that a CS student will help the linguist student with programming,
-and vice versa.  However, there's a
-complex dynamic, unpredictable success, linguist probably won't get to program
-in the interests of a good project mark.
-Multi-stage project mandating stages that require linguistic and CS content: difficult
-to foster continuous collaboration, more likely to get e.g. parser being developed by
-a CS team member, then thrown over the wall to a linguist member to develop a grammar.
+\subsection{Projects}
 
-Instead, believe it is more productive in the context of a single-semester introductory
-course to have students work on their own projects.  Devise distinct projects for
-students depending on background.  Provide a list and give them the option of proposing
-other projects.\footnote{\url{http://nltk.org/projects.html}}
+Group projects involving a mixture of linguists and computer science
+students have an initial appeal, assuming that each kind of student
+can learn from the other.  However, there's a complex social dynamic
+in such groups, one effect of which is that the linguistics students
+may opt out of the programming aspects of the task, perhaps with view
+that their contribution would only hurt the chances of achieveing a
+good overall project mark. It is difficult to mandate significant
+collaboration across disciplinary boundaries, with the more likely
+outcome being, for example, that a parser is developed by a computer
+science team member, then thrown over the wall so that a linguist
+member can develop an appropriate grammar.
 
-Peer review (including code review) to improve quality of programming, and
-emphasize the communicative dimension of programming.
-(Even grade a student on the quality of his/her peer review of another student.)
+Instead, we believe that it is generally more productive in the
+context of a single-semester introductory course to have students work individually
+on their own projects.  Distinct projects can be devised for students
+depending on their background, or students can be given a list of
+project topics,\footnote{\url{http://nltk.org/projects.html}} and offered option of
+self-proposing other projects.
+
+% Peer review (including code review) to improve quality of programming, and
+% emphasize the communicative dimension of programming.
+% (Even grade a student on the quality of his/her peer review of another student.)
 
 \section{Conclusion}
 
+We have argued that the distinctive features of \NLTK\ make it an apt
+vehicle for teaching \NLP\ to mixed audiences of linguistic and
+computer science students. On the one hand, complete novices can
+quickly gain confidence in their ability to do fun and useful things
+with language processing, while the transparency and consistency of
+the implementation also makes it easy for experienced programmers to
+learn about natural language and to explore more challenging
+programming tasks. The success of this recipe is borne out by the wide
+uptake of the toolkit, not only within tertiary education but more
+broadly by users who just want try their hand at \NLP. We also have
+encouraging results in presenting \NLTK\ in classrooms at the
+secondary level, thereby trying to inspire the computational linguists of the
+future!
 
-
+Finally, we believe that \NLTK\ has gained much by participating 
+in the Open Source software movement, specifically from
+the infrastructure provided by
+Sourceforge\footnote{\url{http://sourceforge.net/}} and from the
+invaluable contributions of a wide range of people, including many
+students.
 
 \bibliographystyle{acl}
 \bibliography{acl-08}
