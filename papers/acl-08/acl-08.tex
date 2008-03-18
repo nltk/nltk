@@ -51,8 +51,9 @@
   reports on how it has been used effectively in classes that involve
   different mixes of
   linguistics and computer science students.  We focus
-  on three key issues: getting started with a course, fostering
-  classroom interaction, and organizing project work.
+  on three key issues: getting started with a course, delivering
+  interactive demonstrations in the classroom,
+  and organizing assignments and projects.
   In each case, we report on practical experience and make
   recommendations on how to use \NLTK\ to maximum effect.
 \end{abstract}
@@ -83,7 +84,7 @@ corpora, extensive documentation, and hundreds of exercises, making
 develop a computational understanding of language.  \NLTK's code base
 of 100,000 lines of Python code includes support for corpus access,
 tokenizing, stemming, tagging, chunking, parsing, clustering,
-classification, language modelling, semantic interpretation,
+classification, language modeling, semantic interpretation,
 unification, and much else
 besides.\footnote{\url{http://nltk.org/code.html}} As a measure of its
 impact, \NLTK\ has been used in over 60 university courses in 20
@@ -143,13 +144,13 @@ documented, using Python docstrings and
 for API documentation.\footnote{\url{http://nltk.org/doc/api/}} Access
 to the code documentation is available using the Python \code{help()}
 command at the interactive prompt, and this can be especially useful
-for checking the input parameters and return type of functions.
+for checking the parameters and return type of functions.
 
 Other Python libraries are very useful in the \NLP\ context: NumPy
 provides optimized support for linear algebra and sparse
 arrays,\footnote{\url{http://numpy.scipy.org/}} and PyLab provides
 sophisticated facilities for scientific
-visualisation.\footnote{\url{http://matplotlib.sourceforge.net/}}
+visualization.\footnote{\url{http://matplotlib.sourceforge.net/}}
 
 
 
@@ -164,10 +165,10 @@ similar importance is place on extensibility, since this helps to
 ensure that the code grows as a coherent whole, rather than by
 unpredictable and haphazard additions.  
 
-By contrast, although efficiency cannot be completely ignored, it has
+By contrast, although efficiency cannot be ignored, it has
 always taken second place to simplicity and clarity of coding. In a
 similar vein, we have tried to eschew `clever' programming tricks,
-since these typically hinder intelligiblity of the code.  Finally,
+since these typically hinder intelligibility of the code.  Finally,
 comprehensiveness of coverage has never been an overriding concern of
 \NLTK---indeed, some students seem to positively prefer the restricted
 scope of \NLTK, since they find it less overwhelming. 
@@ -220,7 +221,7 @@ text, categorized text, and lexicons.\footnote{\url{http://nltk.org/corpora.html
 \vspace*{1ex}\hrule
 \end{figure*}
 
-In designing the corpus readers, we emphasised simplicitly,
+In designing the corpus readers, we emphasized simplicity,
 consistency, and efficiency.  \emph{Corpus objects}, such as
 \code{nltk.corpus.brown} and \code{nltk.corpus.treebank}, define
 common methods for reading the corpus contents, abstracting
@@ -350,7 +351,8 @@ tutorials, and exercises in the opening stages of the course.  In
 other cases, e.g.\ courses we have taught at the universities of YYY
 and ZZZ, or in summer intensive programs in several countries, there
 is more of an even split, and the challenge of serving both cohorts of
-students becomes acute.
+students becomes acute.  It helps to address this issue head-on, with
+an early discussion of the goals of the course.
 
 \subsection{Articulating the Goals}
 
@@ -405,7 +407,7 @@ its myriad uses.  However, linguists will understand that language
 contains hidden riches that can only be uncovered by careful analysis
 of large quantities of linguistically annotated data, work that
 benefits from suitable computational tools.  Moreover, the
-computational needs for exploratory linguistic research often goes
+computational needs for exploratory linguistic research often go
 beyond the capabilities of the current tools.  Computer scientists
 will appreciate the cognate problem of extracting information from the
 web, and the economic riches associated with state-of-the-art text
@@ -416,7 +418,7 @@ Computer science and linguistics have a shared history in the area of
 philosophical logic and formal language theory.  Whether the language
 is natural or artificial, computer scientists and linguists use
 similar logical formalisms for investigating the formal semantics of
-languages, similar grammar formalisms for modelling the syntax of
+languages, similar grammar formalisms for modeling the syntax of
 languages, and similar finite-state methods for manipulating text.
 Both rely on the recursive, compositional nature of natural and
 artificial languages.
@@ -450,7 +452,7 @@ the importance of formal evaluation using precision and recall.
 \section{Interactive Demonstrations}
 \label{sec:interactive-demonstrations}
 
-\subsection{Demonstrations with the Python Interpreter}
+\subsection{Python Demonstrations}
 
 Python fosters a highly interactive style of teaching.  It is quite
 natural to build up moderately complex programs in front of a class,
@@ -463,14 +465,14 @@ quite different questions.  However, this is addressed by dividing
 them into smaller clusters and having teaching assistants visit them
 separately to discuss issues arising from the content.
 
-The \NLTK\ book contains a large number of examples, and the instructor
+The \NLTK\ book contains many examples, and the instructor
 can present an interactive lecture that includes running these examples,
 and experimenting with them in response to student questions.  In early
-classes, the focus will probably be on learning the language.  In later classes,
-the driver for such interactive lessons can be an externally motivated
+classes, the focus will probably be on learning Python.  In later classes,
+the driver for such interactive lessons can be an externally-motivated
 empirical or theoretical question.
 
-As a practical matter, it is important to consider some low-level issues
+As a practical matter, it is important to consider low-level issues
 that may get in the way of students' ability to capture the material
 covered in interactive Python sessions.  These include choice of
 appropriate font size for screen display, avoiding the problem of output scrolling the
@@ -488,7 +490,7 @@ laboriously prepared for presentation slides. It is more effective to
 use live demonstrations in which those diagrams are generated and
 updated automatically. \NLTK\ provides interactive graphical user
 interfaces, making it possible to view program state and to study
-program execution step-by-step. Most NLTK components have a
+program execution step-by-step. Most \NLTK\ components have a
 demonstration mode, and will perform an interesting task without
 requiring any special input from the user. It is even possible to make
 minor modifications to programs in response to ``what if'' questions. In
@@ -715,7 +717,7 @@ future!
 Finally, we believe that \NLTK\ has gained much by participating 
 in the Open Source software movement, specifically from
 the infrastructure provided by
-Sourceforge\footnote{\url{http://sourceforge.net/}} and from the
+SourceForge\footnote{\url{http://sourceforge.net/}} and from the
 invaluable contributions of a wide range of people, including many
 students.
 
