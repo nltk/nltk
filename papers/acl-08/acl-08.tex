@@ -71,9 +71,10 @@ titles for such courses might be `linguistic data management' and
 
 To the extent that \NLP\ is a coherent discipline, it has core knowledge
 and skills that must be learned by all students.
-The Natural Language Toolkit (\NLTK) was developed to address
-these issues, making it feasible to cover a substantial amount of
-theory and practice with an audience consisting
+The Natural Language Toolkit (\NLTK) was developed to give a broad
+range of students access to the core knowledge and skills of \NLP.
+In particular, \NLTK\ makes it feasible to run a course that covers
+a substantial amount of theory and practice with an audience consisting
 of both linguists and computer scientists.
 \NLTK\ is a suite of Python modules
 distributed under the GPL open source license.\footnote{\url{http://nltk.org}}
@@ -86,7 +87,7 @@ support for corpus access, tokenizing, stemming, tagging, chunking,
 parsing, clustering, classification, language modelling, semantic
 interpretation, unification, and much else besides.\footnote{\url{http://nltk.org/code.html}}
 As a measure of its impact,
-\NLTK\ has been used in over 50 university courses in more than 15
+\NLTK\ has been used in over 60 university courses in 20
 countries.\footnote{\url{http://nltk.org/courses.html}}
 
 Since its inception in 2001, \NLTK\ has undergone considerable
@@ -102,10 +103,10 @@ This paper describes the design of \NLTK, and reports on how it has
 been used effectively in classes that involve a combination of
 linguists and computer scientists.  First we discuss aspects of the
 design of the toolkit that arose from our need to teach computational
-linguistics to a multidisciplinary audience.  The next sections
-cover three distinct challenges:
+linguistics to a multidisciplinary audience (\S\ref{sec:design}).
+The following sections cover three distinct challenges:
 getting started with a course (\S\ref{sec:getting-started});
-fostering classroom interaction (\S\ref{sec:classroom-interaction});
+interactive demonstrations (\S\ref{sec:interactive-demonstrations});
 and organizing assignments and student projects (\S\ref{sec:projects}).
 
 \section{Design Decisions Affecting Teaching}
@@ -144,26 +145,39 @@ to the code documentation is available using the Python \code{help()}
 command at the interactive prompt, and this can be especially useful
 for checking the input parameters and return type of functions.
 
-%help function, access to \NLTK\ documentation on any module.
+Other Python libraries are very useful in the \NLP\ context:
+Numpy provides optimized support for linear algebra and sparse arrays,\footnote{\url{http://numpy.scipy.org/}}
+and Pylab provides sophisticated facilities for scientific visualisation.\footnote{\url{http://matplotlib.sourceforge.net/}}
 
-key libraries: numpy, pylab
+\subsection{Self-Paced Learning}
 
-Python itself fosters an
-interactive style of teaching.  For instance, we've found it quite
-natural to build up moderately complex programs in front of a class,
-with the weaker students transcribing it into a Python session on
-their laptop to satisfy themselves it works (but not necessarily
-understanding everything they enter first time), while the stronger
-students quickly grasp the theoretical concepts and algorithms.  While
-both groups can be served by the same presentation, they tend to ask
-quite different questions.  However, this is addressed by dividing
-them into smaller clusters and having TAs visit them separately to
-discuss issues arising from the content.
+A mixed class of linguistics and computer science students will have a
+diverse range of programming experience, and students with no
+programming experience will typically have different aptitudes for
+programming \cite{Caspersen07}.  A course which forces all students to
+progress at the same rate will be too difficult for some, and too dull
+for others, and will risk alienating many students.  Thus, course
+materials need to accommodate self-paced learning.  An effective way
+to do this is to provide students with contexts in which they can test
+and extend their knowledge at their own rate.
 
-Diversity of Programming Experience:
-Self-paced learning: tutorials, hundreds of graded exercises (self-evaluation)
+Lecture or laboratory session in which students have a machine in front of them (or one between two),
+and where there is time to work through a series of exercises to consolidate what has just
+been taught from the front, or read from a tutorial.
 
+When this can be done at regular intervals, it is easier for students to know which
+part of the materials to re-read.  It also encourages them to get into the habit of
+checking their own understanding of a concept by writing some program code.
 
+When questions are graded, it is easier for students to understand how much effort is expected,
+and whether they even have time to attempt an exercise.  Graded exercises are also good for
+supporting self-evaluation.  If a student takes 20 minutes to write a solution, they also need
+to have some idea of whether this was an appropriate amount of time.
+
+well-motivated questions: needs to be transparently obvious why this is a linguistically meaningful thing to do
+(esp for inexperienced programmers)
+
+include open-ended questions for the experienced programmers
 
 \subsection{Coding Requirements}
 
@@ -184,10 +198,6 @@ Similarly, although efficiency cannot be completely ignored, it has
 always taken second place to simplicity and clarity of coding. In a
 similar vein, we have tried to eschew `clever' programming tricks,
 since these typically hinder intelligiblity of the code.
-
-
-
-
 
 
 \subsection{Naming}
@@ -216,14 +226,37 @@ The scope of exercises and projects that students can perform is
 greatly increased by the inclusion of a large collection of corpora,
 along with easy-to-use corpus readers.  This collection, which
 currently stands at 45 corpora, includes parsed, POS-tagged, plain
-text, categorized text, and
-lexicons.\footnote{\url{http://nltk.org/corpora.html}}
+text, categorized text, and lexicons.\footnote{\url{http://nltk.org/corpora.html}}
+
+\begin{figure*}[t]
+{\small
+\begin{alltt}
+\textbf{>>> nltk.corpus.treebank.tagged_words()}
+[('Pierre', 'NNP'), ('Vinken', 'NNP'), (',', ','), ...]
+\textbf{>>> nltk.corpus.brown.tagged_words()}
+[('The', 'AT'), ('Fulton', 'NP-TL'), ...]
+\textbf{>>> nltk.corpus.floresta.tagged_words()}
+[('Um', '>N+art'), ('revivalismo', 'H+n'), ...]
+\textbf{>>> nltk.corpus.cess_esp.tagged_words()}
+[('El', 'da0ms0'), ('grupo', 'ncms000'), ...]
+\textbf{>>> nltk.corpus.alpino.tagged_words()}
+[('De', 'det'), ('verzekeringsmaatschappijen', 'noun'), ...]
+\end{alltt}}
+\caption{Accessing Different Corpora via a Uniform Interface}
+\label{fig:tagged}
+\vspace*{1ex}\hrule
+\end{figure*}
 
 In designing the corpus readers, we emphasised simplicitly,
 consistency, and efficiency.  \emph{Corpus objects}, such as
 \code{nltk.corpus.brown} and \code{nltk.corpus.treebank}, define
-methods that can be used to read the corpus contents in various
-formats.  Common methods include:
+common methods for reading the corpus contents, abstracting
+away from idiosyncratic file formats to provide a uniform interface.
+See Figure~\ref{fig:tagged} for an example of accessing POS-tagged
+data from different tagged and parsed corpora.
+
+The corpus objects provide methods for reading corpus contents
+in various formats.  Common methods include:
 %
 \code{raw()}, for the raw contents of the corpus;
 \code{words()}, for a list of tokenized words;
@@ -236,19 +269,21 @@ and
 Optional parameters can be used to restrict what portion of the corpus
 is returned, e.g., to a section of the corpus, or an individual corpus
 file.
-The following example shows how to access the Brown Corpus:
-
-{\footnotesize
-\begin{alltt}
-\textbf{>>> nltk.corpus.brown.tagged_words()}
-[('The', 'AT'), ('Fulton', 'NP-TL'),
- ('County', 'NN-TL'), ('Grand', 'JJ-TL'),
- ('Jury', 'NN-TL'), ('said', 'VBD'), ...]
-\end{alltt}}
 
 Most corpus reader methods return a \emph{corpus view}, which acts as
 a list of text objects, but maintains responsiveness and memory
 efficiency by only loading items from the file on an as-needed basis.
+Thus, when we print a corpus view we only see the first line, but when
+we process this object we get the complete data set:
+
+{\footnotesize
+\begin{alltt}
+\textbf{>>> nltk.corpus.alpino.words()}
+['De', 'verzekeringsmaatschappijen',
+'verhelen', ...]
+\textbf{>>> len(nltk.corpus.alpino.words())}
+139820
+\end{alltt}}
 
 \subsection{Accessing Shoebox Files}
 
@@ -366,45 +401,58 @@ instructors need to confront the challenge of synthesizing material
 from linguistics and computer science into a coherent whole, and
 devising effective methods for teaching, learning, and assessment.
 
-
 \subsection{The First Lecture}
 
-Should be easy given that language and language technologies are interesting
-to a wide audience.
+It is important that the first lecture is effective at motivating and
+exemplifying \NLP\ to an audience of computer science and linguistics
+students.  They need to get an accurate sense of the interesting
+conceptual and technical challenges awaiting them.  Fortunately, the
+task is made easier by the simple fact that language technologies, and
+language itself, are intrinsically interesting and appealing to a wide audience.
+Several opening topics appear to work particularly well.
 
-Motivating and exemplifying \NLP\ to a mixed audience.
-Some possible starting points:
+\textbf{The holy grail.}
+A long term challenge, mythologized in science fiction movies, is to
+build machines that understand human language.  Current technologies
+that exhibit some basic level of natural language understanding include
+spoken dialogue systems, question answering systems, summarization
+systems, and machine translation systems.  These can be demonstrated
+in class without too much difficulty.  The Turing test is a linguistic
+test, easily understood by all students, and which helps the computer science
+students to see \NLP\ in relation to the field of Artificial Intelligence.
+The evolution of programming languages has brought them closer to natural language,
+helping students see the essentially linguistic purpose of this central development
+in computer science.  The corresponding the holy grail in linguistics is full
+understanding of the human language faculty; writing programs and building machines
+surely informs this quest too.
 
-a) the holy grail: machines that understand language:
+\textbf{The riches of language.}
+It is easy to find examples of the creative richness of language in
+its myriad uses.  However, linguists will understand that language
+contains hidden riches that can only be uncovered by careful analysis
+of large quantities of linguistically annotated data, work that
+benefits from suitable computational tools.  Moreover, the
+computational needs for exploratory linguistic research often goes
+beyond the capabilities of the current tools.  Computer scientists
+will appreciate the cognate problem of extracting information from the
+web, and the economic riches associated with state-of-the-art text
+mining capabilities.
 
-- how this relates to linguists (writing programs to help us
-  understand the human language faculty)
-
-- how this relates to CS students: technologies that demonstrate some level of NLU:
-  SLDS, QA, Summarization, MT
-
-b) richness of language
-
-- extracting information from the web (economic incentive)
-
-- the recursive structure of natural language (prospects for applying
-  parsing techniques normally used for compilers to natural language)
-
-- studying large corpora
-  (no end to corpus formats, incompatible tools (linguists)
-  exploratory data analysis (find patterns not supported by existing software))
-
-c) shared history of CS and linguistics: philosophical logic, formal language theory;
-overlaps with a different purpose:
-manipulating text (studying corpora vs text processing),
-formal semantics (natural vs artificial languages)
+\textbf{Formal approaches to language.}
+Computer science and linguistics have a shared history in the area of
+philosophical logic and formal language theory.  Whether the language
+is natural or artificial, computer scientists and linguists use
+similar logical formalisms for investigating the formal semantics of
+languages, similar grammar formalisms for modelling the syntax of
+languages, and similar finite-state methods for manipulating text.
+Both rely on the recursive, compositional nature of natural and
+artificial languages.
 
 \subsection{First Assignment}
 
 The first coursework assignment can be a significant step forwards in
 helping students get to grips with the material, and is best given out
 early, perhaps even in week 1.
-% Breaking the ice; force people to learn Python.  Give out early (first week?)
 We have found it advisable for this assignment to
 include both programming and linguistics content. One example is to
 ask students to carry out NP chunking of some data (e.g.\ a section of
@@ -425,40 +473,41 @@ Computer science students become more familiar with parts of speech
 and with typical syntactic structures in English. Both groups learn
 the importance of formal evaluation using precision and recall.
 
-% NP Chunking using template code from book: students supplied with a
-% complete program and just have to modify the chunking rules.
-
-% Linguistics students learn: care in editing code, computer only does what it is told,
-% skills with developing a grammar fragment extend to debugging code that mainly consists
-% of a grammar fragment,
-% corpus data is somewhat arbitrary and their own linguistic intuitions aren't always
-% borne out.
-
-% CS students learn: definition of parts of speech, definition of noun phrase, notion that
-% language is highly structured
-
-% Both learn: formal evaluation using precision and recall
-
-
-\section{Classroom Interaction}
-\label{sec:classroom-interaction}
+\section{Interactive Demonstrations}
+\label{sec:interactive-demonstrations}
 
 \subsection{Demonstrations with the Python Interpreter}
 
-try it and see
+Python fosters a highly interactive style of teaching.  It is quite
+natural to build up moderately complex programs in front of a class,
+with the weaker students transcribing it into a Python session on
+their laptop to satisfy themselves it works (but not necessarily
+understanding everything they enter first time), while the stronger
+students quickly grasp the theoretical concepts and algorithms.  While
+both groups can be served by the same presentation, they tend to ask
+quite different questions.  However, this is addressed by dividing
+them into smaller clusters and having teaching assistants visit them
+separately to discuss issues arising from the content.
 
-NLTK book has many examples...
+The \NLTK\ book contains a large number of examples, and the instructor
+can present an interactive lecture that includes running these examples,
+and experimenting with them in response to student questions.  In early
+classes, the focus will probably be on learning the language.  In later classes,
+the driver for such interactive lessons can be an externally motivated
+empirical or theoretical question.
 
-An effective way to deliver the materials is through interactive
-presentation of the examples, entering them at the Python prompt,
-observing what they do, and modifying them to explore some empirical
-or theoretical question.
+As a practical matter, it is important to consider some low-level issues
+that may get in the way of students' ability to capture the material
+covered in interactive Python sessions.  These include choice of
+appropriate font size, avoiding the problem of output scrolling the
+command out of view, and distributing a log of the instructors session
+for students to go over in their own time.
 
-But NB it may be necessary to keep  and distribute logs of the sessions, since some students have
-difficulty keeping up, particularly at the outset.
-(Also mention the challenges of keeping the font size big enough?)
+% But NB it may be necessary to keep and distribute logs of the sessions, since some students have
+% difficulty keeping up, particularly at the outset.
+% (Also mention the challenges of keeping the font size big enough?)
 
-\subsection{Interactive Demonstrations}
+\subsection{NLTK Demonstrations}
 
 A significant fraction of any \NLP\ syllabus covers fundamental data
 structures and algorithms. These are usually taught with the help of
@@ -521,17 +570,18 @@ turn be related to other resources like Google Trends, which shows the
 frequency with which a term has been referenced in news reports or
 been used in search terms over several years.
 
+% \subsection{Small Group Interaction}
+% 
+% Even the most engaging interactive Python demonstration may only
+% amount to a demonstration of the instructor's Python prowess ('charming python').
+% Student learning is enhanced when they are encouraged to engage actively
+% with the material, responding to a quiz, discussing ...
 
-\subsection{Small Group Discussion}
-
-animate this with a quiz, presented as a slide or a handout, giving code samples and asking what they do.
-
-class exercise, e.g. counting uses of ``must'' in a spoken vs written language corpus
-(deontic vs epistemic uses).
-
-\subsection{Chatroom}
-
-useful during intensive summer program; otherwise couldn't be staffed adequately
+% animate this with a quiz, presented as a slide or a handout, giving code samples and asking what they do.
+% could be a competition
+% class exercise, e.g. counting uses of ``must'' in a spoken vs written language corpus
+% (deontic vs epistemic uses).
+% chatroom for online discussion: useful during intensive summer program; otherwise couldn't be staffed adequately
 
 \section{Exercises, Assignments and Projects}
 \label{sec:projects}
@@ -552,12 +602,14 @@ they could try out in interactive Python were a huge help for them.
 \begin{verbatim}
 >>> nltk.FreqDist(nltk.corpus.brown.words())
 \end{verbatim}}
+\medskip
 
 {\small
 \begin{verbatim}
 >>> fd = nltk.FreqDist()
->>> for file in ???:
-...     for word in nltk.tokenize(...):
+>>> for filename in corpus_files:
+...     raw_text = open(filename).read()
+...     for word in nltk.tokenize(raw_text):
 ...         fd.inc(word)
 \end{verbatim}}
 \medskip
@@ -570,10 +622,11 @@ they could try out in interactive Python were a huge help for them.
 ...         counts[word] = 0
 ...     counts += 1
 \end{verbatim}}
-\caption{Different ways to build up a frequency distribution of words in the Brown Corpus}
+\caption{Three Ways to Build up a Frequency Distribution of Words in the Brown Corpus}
 \label{fig:freqdist}
+\vspace*{1ex}
+\hrule
 \end{figure*}
-
 
 The exercises are also highly adaptable. It is common for instructors
 to take them as a starting point in building homework assignments that
@@ -594,7 +647,6 @@ Unix command line utilities for text processing, students can
 furthermore gain a better appreciation of the pros and cons of writing
 their own scripts versus using an appropriate Unix pipe.
 
-
 \NLTK\ supports assignments of varying difficulty and scope. In the
 simplest assignments, students experiment with existing components to
 perform a wide variety of \NLP\ tasks. This may involve no programming
@@ -608,7 +660,6 @@ components, and adding on entirely new components. Here \NLTK\ helps by
 providing standard implementations of all the basic data structures
 and algorithms, interfaces to standard corpora, substantial corpus
 samples, and a flexible and extensible architecture.
-
 
 Group projects involving a mixture of linguists and CS students:
 initial appeal is that a CS student will help the linguist student with programming,
@@ -629,6 +680,8 @@ emphasize the communicative dimension of programming.
 (Even grade a student on the quality of his/her peer review of another student.)
 
 \section{Conclusion}
+
+
 
 
 \bibliographystyle{acl}
