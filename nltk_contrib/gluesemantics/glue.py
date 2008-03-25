@@ -259,7 +259,7 @@ def parse_to_compiled(sentence='every cat leaves', dependency=False, verbose=Fal
 
 def dep_parse(sentence='every cat leaves', verbose=False):
     from nltk_contrib.dependency import malt
-    dep_graphs = [malt.parse(sentence, verbose)]
+    dep_graphs = [malt.parse(sentence, verbose=verbose)]
     return dep_graphs
 
 def earley_parse(sentence='every cat leaves'):

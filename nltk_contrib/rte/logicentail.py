@@ -9,9 +9,10 @@
 from nltk.corpus import rte
 from nltk import evaluate
 from nltk import wordnet
+from nltk.stem.wordnet import WordnetStemmer
 from nltk.sem import logic
 from nltk_contrib.gluesemantics import drt_glue
-from nltk_contrib.inference import inference
+from nltk import inference
 import ctypes
 import threading
 import bow
@@ -21,11 +22,11 @@ class RTEInferenceTagger(object):
     Predict whether a hypothesis can be inferred from a text, 
     based on the degree of word overlap.
     """
-    def __init__(self, threshold=33, stop=True, stemming=False):
+    def __init__(self, threshold=33, stop=True):
         self.threshold = threshold
-        self.stemming = stemming
         self.stop = stop
         self.stopwords = set(['a', 'the', 'it', 'they', 'of', 'in', 'is', 'are', 'were', 'and'])
+        self.stemmer = WordnetStemmer()
     
     def tag(self, rtepair, verbose=False):
         """
@@ -42,13 +43,13 @@ class RTEInferenceTagger(object):
         if text_drs_list:
             text_ex = text_drs_list[0].simplify().toFol()
         else:
-            if verbose: print 'ERROR: No readings were be generated for the Text'
+            if verbose: print 'ERROR: No readings were generated for the Text'
         
         hyp_drs_list  = drt_glue.parse_to_meaning(hyp, dependency=True)
         if hyp_drs_list:
             hyp_ex = hyp_drs_list[0].simplify().toFol()
         else:
-            if verbose: print 'ERROR: No readings were be generated for the Hypothesis'
+            if verbose: print 'ERROR: No readings were generated for the Hypothesis'
 
         #1. proof T -> H
         #2. proof (BK & T) -> H
@@ -61,7 +62,7 @@ class RTEInferenceTagger(object):
         if verbose: print 'prove: T -> H: %s' % result
         
         if not result:
-            bk = tagger._generate_BK(text, hyp, verbose)
+            bk = self._generate_BK(text, hyp, verbose)
             bk_exs = [bk_pair[0] for bk_pair in bk]
             
             if verbose: 
@@ -111,16 +112,14 @@ class RTEInferenceTagger(object):
     
     def _generate_BK(self, text, hyp, verbose=False):
         from nltk.tokenize import WordTokenizer
-        from nltk.stem.porter import PorterStemmer
         tokenizer = WordTokenizer()
-        stemmer = PorterStemmer()
         
         text = tokenizer.tokenize(text)
         hyp = tokenizer.tokenize(hyp)
         
-        if self.stemming:
-            textbow = set(stemmer.stem(word) for word in text)
-            hypbow = set(stemmer.stem(word) for word in hyp)
+        if self.stemmer:
+            textbow = set(self._stem(word) for word in text)
+            hypbow = set(self._stem(word) for word in hyp)
         else:
             textbow = set(word.lower() for word in text)
             hypbow = set(word.lower() for word in hyp)
@@ -247,6 +246,13 @@ class RTEInferenceTagger(object):
         
         inconsistent = ProverThread(prover).start()
         consistent = ModelBuilderThread(model_builder).start()
+
+    def _stem(self, word):
+        stem = self.stemmer.stem(word)
+        if stem:
+            return stem
+        else:
+            return word
     
 class ProverThread( threading.Thread ):
     def __init__(self, prover, result, verbose=False):
@@ -371,15 +377,16 @@ def test_check_consistency():
     print '%s, %s: %s' % (a.infixify(), a.infixify(), 
                           RTEInferenceTagger().check_consistency([a,a], True))
 
-if __name__ == '__main__':
-    demo_inference_tagger(False)
-    
-    text = 'John see a car'
+def tag(text, hyp):
     print 'Text: ', text
-    hyp = 'John watch an auto'
     print 'Hyp:  ', hyp
-    tagger = RTEInferenceTagger()
-    print 'Entailment =', tagger.tag_sentences(text, hyp, True)
+    print 'Entailment =', RTEInferenceTagger().tag_sentences(text, hyp, True)
     print ''
+
+if __name__ == '__main__':
+#    test_check_consistency()
+#    print '\n'
+#    
+#    demo_inference_tagger(False)
     
-    test_check_consistency()
+    tag('John sees a car', 'John watches an auto')

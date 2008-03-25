@@ -10,7 +10,7 @@ from nltk_contrib.drt import DRT
 import linearlogic
 import lfg
 from nltk import data
-from nltk_contrib.inference.tableau import ProverParseError
+from nltk.inference.tableau import ProverParseError
 
 class GlueFormula:
     def __init__(self, meaning, glue, indices=set([])):
@@ -156,9 +156,17 @@ class GlueDict(dict):
     def lookup(self, sem, word, current_subj, fstruct):
         relationships = frozenset([r for r in fstruct])
         try:
-            semtype = self[sem]
-        except KeyError:
-            raise KeyError, 'There is no GlueDict entry for sem type \'' + str(sem)
+            semtype = self[{'a'     : 'ex_quant',
+                            'an'    : 'ex_quant',
+                            'every' : 'univ_quant'
+                            }[word.lower()]]
+        except:
+            try:
+                semtype = self[sem]
+            except KeyError:
+                raise KeyError, 'There is no GlueDict entry for sem type \'' + \
+                                str(sem) + '\' (for \'' + word + '\')'
+                                
         try:
             lookup = semtype[relationships]
         except KeyError:
@@ -167,17 +175,17 @@ class GlueDict(dict):
             # most relations of any possible relationship set that is a subset
             # of the actual fstruct 
             best_match = frozenset()
-            for relset_option in set(self[sem])-set([None]) :
+            for relset_option in set(semtype)-set([None]) :
                 if len(relset_option) > len(best_match) and relset_option < relationships:
                     best_match = relset_option
             if not best_match:
-                if None in self[sem]:
+                if None in semtype:
                     best_match = None
                 else:
                     raise KeyError, 'There is no GlueDict entry for sem type \'' + \
                                     str(sem) + '\' with the relationship set \'' + \
                                     str(relationships) + '\''
-            lookup = self[sem][best_match]
+            lookup = semtype[best_match]
                 
         glueformulas = []
 
@@ -287,7 +295,7 @@ def parse_to_compiled(sentence='a man sees Mary', dependency=False, verbose=Fals
 
 def dep_parse(sentence='every cat leaves', verbose=False):
     from nltk_contrib.dependency import malt
-    dep_graphs = [malt.parse(sentence, verbose)]
+    dep_graphs = [malt.parse(sentence, verbose=verbose)]
     return dep_graphs
 
 def earley_parse(sentence='every cat leaves'):
