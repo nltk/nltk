@@ -112,7 +112,7 @@ class AbstractDRS(Expression):
         assert isinstance(self, AbstractDRS)
         assert isinstance(other, AbstractDRS)
         
-        from nltk_contrib.inference import inference
+        from nltk.inference import inference
         f1 = self.simplify().toFol();
         f2 = other.simplify().toFol();
         bicond = ApplicationExpression(ApplicationExpression(FolOperator('iff'), f1), f2)

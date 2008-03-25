@@ -7,6 +7,7 @@
 
 import os
 from nltk import tokenize
+from nltk.stem.wordnet import WordnetStemmer
 from nltk_contrib.dependency import DepGraph
 from nltk_contrib.tag import tnt
 
@@ -21,11 +22,11 @@ def config_malt(path=None, verbose=False):
     malt_path = None
     
     malt_search = ['.',
-                       '/usr/local/bin',
-                       '/usr/local/bin/malt-1.0.2',
-                       '/usr/local/malt-1.0.2',
-                       '/usr/local/share/malt-1.0.2',
-                       'c:\\cygwin\\usr\\local\\bin\\malt-1.0.2']
+                   '/usr/local/bin',
+                   '/usr/local/bin/malt-1.0.2',
+                   '/usr/local/malt-1.0.2',
+                   '/usr/local/share/malt-1.0.2',
+                   'c:\\cygwin\\usr\\local\\bin\\malt-1.0.2']
 
     if path is not None:
         searchpath = (path,)
@@ -48,7 +49,7 @@ def config_malt(path=None, verbose=False):
             "Use 'config_malt(path=<path>) '," 
             " or set the MALTHOME environment variable to a valid path." % join(searchpath)) 
 
-def parse(sentence, tagger='nltk', verbose=False):
+def parse(sentence, tagger='tnt', stem=True, verbose=False):
     """
     Use MaltParser to parse a sentence
     
@@ -129,12 +130,20 @@ def parse(sentence, tagger='nltk', verbose=False):
         lines = f.readlines()
         f.close()
 
+        if stem: 
+            stemmer = WordnetStemmer()
+
         tokenizer = tokenize.TabTokenizer()
         depgraph_input = ''
         for line in lines:
             tokens = tokenizer.tokenize(line.strip())
             if len(tokens) > 1:
-                depgraph_input += '%s\t%s\t%s\t%s\n' % (tokens[1], tokens[3], tokens[6], tokens[7])
+                word = tokens[1]
+                if stem:
+                    word_stem = stemmer.stem(word)
+                    if word_stem:
+                        word = word_stem
+                depgraph_input += '%s\t%s\t%s\t%s\n' % (word, tokens[3], tokens[6], tokens[7])
 
         if verbose:
             print 'Begin DepGraph creation'
