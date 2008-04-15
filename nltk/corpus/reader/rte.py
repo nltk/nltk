@@ -30,25 +30,38 @@ from xmldocs import XMLCorpusReader
 def norm(value_string):
     """
     Normalize the string value in an RTE pair's C{value} or C{entailment} 
-    attribute.
+    attribute as an integer (1, 0).
+    
+    @param value_string: the label used to classify a text/hypothesis pair
+    @type value_string: C{str}
+    @rtype: C{int}
     """
 
     valdict = {"TRUE": 1,
-           "FALSE": 0,
-           "YES": 1,
-           "NO": 0}
+                     "FALSE": 0,
+                     "YES": 1,
+                     "NO": 0}
     return valdict[value_string.upper()]
 
 class RTEPair:
     """
     Container for RTE text-hypothesis pairs.
 
-    The entailment relation is signalled by the C{value| attribute in RTE1, and by 
+    The entailment relation is signalled by the C{value} attribute in RTE1, and by 
     C{entailment} in RTE2 and RTE3. These both get mapped on to the C{entailment}
     attribute of this class.
     """
     def __init__(self, pair, challenge=None, id=None, text=None, hyp=None,
              value=None, task=None, length=None):
+        """
+        @param challenge: version of the RTE challenge (i.e., RTE1, RTE2 or RTE3)
+        @param id: identifier for the pair
+        @param text: the text component of the pair
+        @param hyp: the hypothesis component of the pair
+        @param value: classification label for the pair
+        @param task: attribute for the particular NLP task that the data was drawn from
+        @param length: attribute for the length of the text of the pair
+        """
         self.challenge =  challenge    
         self.id = pair.attrib["id"]
         self.gid = "%s-%s" % (self.challenge, self.id)
@@ -87,6 +100,12 @@ class RTECorpusReader(XMLCorpusReader):
                    for filename in self.abspaths(files)])   
 
     def _read_etree(self, doc):
+        """
+        Build a list of RTE text/hypothesis pairs from the XML input.
+        
+        @param doc: a parsed XML document
+        @return: a list of C{RTEPair}s
+        """
         try:
             challenge = doc.attrib['challenge']
         except KeyError:
@@ -96,6 +115,9 @@ class RTECorpusReader(XMLCorpusReader):
 
 
     def pairs(self, files=None):
+        """
+        Build a list of RTE pairs from a RTE corpus.
+        """
         doc = self.xml(files)
         if doc.tag == 'documents':
             return concat([self._read_etree(corpus)
