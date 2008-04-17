@@ -7,14 +7,14 @@
 #
 # $Id: naivebayes.py 2063 2004-07-17 21:02:24Z edloper $
 
+"""
+Classifiers that make use of the external 'Weka' package.
+"""
+
 import time, tempfile, os, os.path, subprocess, re
 from api import *
 from nltk.probability import *
 from nltk.internals import java, config_java
-
-"""
-Classifiers that make use of the external 'Weka' package.
-"""
 
 _weka_classpath = None
 _weka_search = ['.',
