@@ -6,9 +6,9 @@
 
 Overview
 ~~~~~~~~
-A feature structure is a mapping from feature names to feature values,
-where feature values can be simple values (like strings or ints),
-nested feature structures, or variables:
+A feature structure is a mapping from feature identifiers to feature
+values, where feature values can be simple values (like strings or
+ints), nested feature structures, or variables:
 
     >>> fs1 = FeatStruct(number='singular', person=3)
     >>> print fs1
@@ -62,6 +62,260 @@ fails and returns ``None``.
 
 ..
     >>> del fs1, fs2, fs3, fs4 # clean-up
+
+Feature Structure Types
+-----------------------
+There are actually two types of feature structure:
+
+- *feature dictionaries*, implemented by `FeatDict`, act like
+  Python dictionaries.  Feature identifiers may be strings or
+  instances of the `Feature` class.
+- *feature lists*, implemented by `FeatList`, act like Python
+  lists.  Feature identifiers are integers.
+
+When you construct a feature structure using the `FeatStruct`
+constructor, it will automatically decide which type is appropriate:
+
+    >>> type(FeatStruct(number='singular'))
+    <class 'nltk.featstruct.FeatDict'>
+    >>> type(FeatStruct([1,2,3]))
+    <class 'nltk.featstruct.FeatList'>
+
+Usually, we will just use feature dictionaries; but sometimes feature
+lists can be useful too.  Two feature lists will unify with each other
+only if they have equal lengths, and all of their feature values
+match.  If you wish to write a feature list that contains 'unknown'
+values, you must use variables:
+
+    >>> fs1 = FeatStruct([1,2,Variable('?y')])
+    >>> fs2 = FeatStruct([1,Variable('?x'),3])
+    >>> fs1.unify(fs2)
+    [1, 2, 3]
+
+..
+    >>> del fs1, fs2 # clean-up
+
+Parsing Feature Structure Strings
+---------------------------------
+Feature structures can be constructed directly from strings.  Often,
+this is more convenient than constructing them directly.  NLTK can
+parse most feature strings to produce the corresponding feature
+structures.  (But you must restrict your base feature values to
+strings, ints, logic expressions (`nltk.sem.logic.Expression`), and a
+few other types discussed below).
+
+Feature dictionaries are written like Python dictionaries, except that
+keys are not put in quotes; and square brackets (``[]``) are used
+instead of braces (``{}``):
+
+    >>> FeatStruct('[tense="past", agr=[number="sing", person=3]]')
+    [agr=[number='sing', person=3], tense='past']
+
+If a feature value is a single alphanumeric word, then it does not
+need to be quoted -- it will be automatically treated as a string:
+
+    >>> FeatStruct('[tense=past, agr=[number=sing, person=3]]')
+    [agr=[number='sing', person=3], tense='past']
+
+Feature lists are written like python lists:
+
+    >>> FeatStruct('[1, 2, 3]')
+    [1, 2, 3]
+
+The expression ``[]`` is treated as an empty feature dictionary, not
+an empty feature list:
+
+    >>> type(FeatStruct('[]'))
+    <class 'nltk.featstruct.FeatDict'>
+
+Feature Paths
+-------------
+Features can be specified using *feature paths*, or tuples of feature
+identifiers that specify path through the nested feature structures to
+a value.
+
+    >>> fs1 = FeatStruct('[x=1, y=[1,2,[z=3]]]')
+    >>> fs1['y']
+    [1, 2, [z=3]]
+    >>> fs1['y', 2]
+    [z=3]
+    >>> fs1['y', 2, 'z']
+    3
+
+..
+    >>> del fs1 # clean-up
+
+Reentrance
+----------
+Feature structures may contain reentrant feature values.  A *reentrant
+feature value* is a single feature structure that can be accessed via
+multiple feature paths.
+
+    >>> fs1 = FeatStruct(x='val')
+    >>> fs2 = FeatStruct(a=fs1, b=fs1)
+    >>> print fs2
+    [ a = (1) [ x = 'val' ] ]
+    [                       ]
+    [ b -> (1)              ]
+    >>> fs2
+    [a=(1)[x='val'], b->(1)]
+
+As you can see, reentrane is displayed by marking a feature structure
+with a unique identifier, in this case ``(1)``, the first time it is
+encountered; and then using the special form ``var -> id`` whenever it
+is encountered again.  You can use the same notation to directly
+create reentrant feature structures from strings.
+
+    >>> FeatStruct('[a=(1)[], b->(1), c=[d->(1)]]')
+    [a=(1)[], b->(1), c=[d->(1)]]
+
+Reentrant feature structures may contain cycles:
+
+    >>> fs3 = FeatStruct('(1)[a->(1)]')
+    >>> fs3['a', 'a', 'a', 'a']
+    (1)[a->(1)]
+    >>> fs3['a', 'a', 'a', 'a'] is fs3
+    True
+
+Unification preserves the reentrance relations imposed by both of the
+unified feature structures.  In the feature structure resulting from
+unification, any modifications to a reentrant feature value will be
+visible using any of its feature paths.
+
+    >>> fs3.unify(FeatStruct('[a=[b=12], c=33]'))
+    (1)[a->(1), b=12, c=33]
+
+..
+    >>> del fs1, fs2, fs3 # clean-up
+
+Feature Structure Equality
+--------------------------
+Two feature structures are considered equal if they assign the same
+values to all features, *and* they contain the same reentrances.
+
+    >>> fs1 = FeatStruct('[a=(1)[x=1], b->(1)]')
+    >>> fs2 = FeatStruct('[a=(1)[x=1], b->(1)]')
+    >>> fs3 = FeatStruct('[a=[x=1], b=[x=1]]')
+    >>> print fs1 == fs1, fs1 is fs1
+    True True
+    >>> print fs1 == fs2, fs1 is fs2
+    True False
+    >>> print fs1 == fs3, fs1 is fs3
+    False False
+
+Note that this differs from how Python dictionaries and lists define
+equality -- in particular, Python dictionaries and lists ignore
+reentrance relations.  To test two feature structures for equality
+while ignoring reentrance relations, use the `equal_values()` method:
+
+    >>> print fs1.equal_values(fs1)
+    True
+    >>> print fs1.equal_values(fs2)
+    True
+    >>> print fs1.equal_values(fs3)
+    True
+
+..
+    >>> del fs1, fs2, fs3 # clean-up
+
+Feature Value Sets & Feature Value Tuples
+-----------------------------------------
+`nltk.featstruct` defines two new data types that are intended to be
+used as feature values: `FeatureValueTuple` and `FeatureValueSet`.
+Both of these types are considered base values -- i.e., unification
+does *not* apply to them.  However, variable binding *does* apply to
+any values that they contain.
+
+Feature value tuples are written with parenthases:
+
+    >>> fs1 = FeatStruct('[x=(?x, ?y)]')
+    >>> fs1
+    [x=(?x, ?y)]
+    >>> fs1.substitute_bindings({Variable('?x'): 1, Variable('?y'): 2})
+    [x=(1, 2)]
+
+Feature sets are written with braces:
+
+    >>> fs1 = FeatStruct('[x={?x, ?y}]')
+    >>> fs1
+    [x={?x, ?y}]
+    >>> fs1.substitute_bindings({Variable('?x'): 1, Variable('?y'): 2})
+    [x={1, 2}]
+
+In addition to the basic feature value tuple & set classes, nltk
+defines feature value unions (for sets) and feature value
+concatenations (for tuples).  These are written using '+', and can be
+used to combine sets & tuples:
+
+    >>> fs1 = FeatStruct('[x=((1, 2)+?z), z=?z]')
+    >>> fs1
+    [x=((1, 2)+?z), z=?z]
+    >>> fs1.unify(FeatStruct('[z=(3, 4, 5)]'))
+    [x=(1, 2, 3, 4, 5), z=(3, 4, 5)]
+
+Thus, feature value tuples and sets can be used to build up tuples
+and sets of values over the corse of unification.  For example, when
+parsing sentences using a semantic feature grammar, feature sets or
+feature tuples can be used to build a list of semantic predicates as
+the sentence is parsed.
+
+As was mentioned above, unification does not apply to feature value
+tuples and sets.  One reason for this that it's impossible to define a
+single correct answer for unification when concatenation is used.
+Consider the following example:
+
+    >>> fs1 = FeatStruct('[x=(1, 2, 3, 4)]')
+    >>> fs2 = FeatStruct('[x=(?a+?b), a=?a, b=?b]')
+
+If unification applied to feature tuples, then the unification
+algorithm would have to arbitrarily choose how to divide the tuple
+(1,2,3,4) into two parts.  Instead, the unification algorithm refuses
+to make this decision, and simply unifies based on value.  Because
+(1,2,3,4) is not equal to (?a+?b), fs1 and fs2 will not unify:
+
+    >>> print fs1.unify(fs2)
+    None
+
+If you need a list-like structure that unification does apply to, use
+`FeatList`.
+
+..
+    >>> del fs1, fs2 # clean-up
+
+Light-weight Feature Structures
+-------------------------------
+Many of the functions defined by `nltk.featstruct` can be applied
+directly to simple Python dictionaries and lists, rather than to
+full-fledged `FeatDict` and `FeatList` objects.  In other words,
+Python ``dicts`` and ``lists`` can be used as "light-weight" feature
+structures.
+
+    >>> from nltk.featstruct import unify
+    >>> unify(dict(x=1, y=dict()), dict(a='a', y=dict(b='b')))
+    {'y': {'b': 'b'}, 'x': 1, 'a': 'a'}
+
+However, you should keep in mind the following caveats:
+
+- Python dictionaries & lists ignore reentrance when checking for
+  equality between values.  But two FeatStructs with different
+  reentrances are considered nonequal, even if all their base
+  values are equal.
+
+- FeatStructs can be easily frozen, allowing them to be used as
+  keys in hash tables.  Python dictionaries and lists can not.
+
+- FeatStructs display reentrance in their string representations;
+  Python dictionaries and lists do not.
+
+- FeatStructs may *not* be mixed with Python dictionaries and lists
+  (e.g., when performing unification).
+
+- FeatStructs provide a number of useful methods, such as `walk()`
+  and `cyclic()`, which are not available for Python dicts & lists.
+
+In general, if your feature structures will contain any reentrances,
+or if you plan to use them as dictionary keys, it is strongly
+recommended that you use full-fledged `FeatStruct` objects.
 
 Regression Tests
 ~~~~~~~~~~~~~~~~
@@ -168,6 +422,9 @@ Deleting features (`__delitem__()`)
     >>> fs2
     [b='B', c='C', x=[b=2, c=5, x=99], y='x']
     >>> fs2.pop('a')
+    Traceback (most recent call last):
+      . . .
+    KeyError: 'a'
     >>> fs2.pop('a', 'foo')
     'foo'
     >>> fs2
@@ -275,16 +532,17 @@ Feature paths can go through reentrant structures:
     >>> fs2[tuple('abcabcabcabcabcabcabcabcabcabca')]
     (1)[b=[c=[a->(1)], d=5], e=11]
 
-Indexing requires strings or tuples; other types raise a TypeError:
+Indexing requires strings, `Feature`\s, or tuples; other types raise a
+TypeError:
 
     >>> fs2[12]
     Traceback (most recent call last):
       . . .
-    TypeError: Expected str or tuple of str.  Got 12.
+    TypeError: Expected feature name or path.  Got 12.
     >>> fs2[list('abc')]
     Traceback (most recent call last):
       . . .
-    TypeError: Expected str or tuple of str.  Got ['a', 'b', 'c'].
+    TypeError: Expected feature name or path.  Got ['a', 'b', 'c'].
 
 Feature paths can also be used with `get()`, `has_key()`, and
 `__contains__()`.
@@ -848,7 +1106,7 @@ Mixing dicts and FeatStructs is discouraged:
     >>> unify(dict(x=1), FeatStruct(x=1))
     Traceback (most recent call last):
       . . .
-    ValueError: fstruct1 and fstruct2 should belong to the same class.
+    ValueError: Mixing FeatStruct objects with Python dicts and lists is not supported.
 
 But you can do it if you really want, by explicitly stating that both
 dictionaries and FeatStructs should be treated as feature structures:
