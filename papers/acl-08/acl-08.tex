@@ -19,31 +19,35 @@
 \brokenpenalty 10000
 \lefthyphenmin 3
 \righthyphenmin 3
-\widowpenalty 10000
-\clubpenalty 10000
-\displaywidowpenalty 10000
 \looseness 1
 
 \setlength\titlebox{6.5cm}    % Expanding the titlebox
 
 \title{Multidisciplinary Instruction with the Natural Language Toolkit}
-\author{}
 
-% \author{Joakim Nivre \\
-%   School of Mathematics and Systems Engineering \\
-%   V\"{a}xj\"{o} University \\
-%   SE-35195, V\"{a}xj\"{o}, Sweden \\
-%   {\tt nivre@msi.vxu.se} \And
-%   Noah A. Smith \\
-%   Language Technologies Institute \\
-%   Carnegie Mellon University \\
-%   Pittsburgh, PA 15213, USA\\
-%   {\tt nasmith@cs.cmu.edu}}
+\author{Steven Bird \\
+  Department of Computer Science\\
+  University of Melbourne\\
+  {\small\tt sb@csse.unimelb.edu.au} \And
+  Ewan Klein\\
+  School of Informatics\\
+  University of Edinburgh\\
+  {\small\tt ewan@inf.ed.ac.uk} \AND
+  Edward Loper\\
+  Computer and Information Science\\
+  University of Pennsylvania\\
+  {\small\tt edloper@gradient.cis.upenn.edu} \And
+  Jason Baldridge\\
+  Department of Linguistics\\
+  University of Texas at Austin\\
+  {\small\tt jbaldrid@mail.utexas.edu}
+}
 
 \date{}
 
 \begin{document}
 \maketitle
+
 \begin{abstract}
   The Natural Language Toolkit (\NLTK) is widely used for teaching
   natural language processing to students majoring in linguists or
@@ -70,34 +74,32 @@ common, and it is a stretch to call either of these \NLP: more apt
 titles for such courses might be `linguistic data management' and
 `text technologies'.
 
-To the extent that \NLP\ is a coherent discipline, it has core
-knowledge and skills that must be learned by all students.  The
-Natural Language Toolkit (\NLTK)\footnote{\url{http://nltk.org}} was
+The Natural Language Toolkit, or \NLTK, was
 developed to give a broad range of students access to the core
-knowledge and skills of \NLP.  In particular, \NLTK\ makes it feasible
+knowledge and skills of \NLP\ \cite{LoperBird02}.  In particular, \NLTK\ makes it feasible
 to run a course that covers a substantial amount of theory and
 practice with an audience consisting of both linguists and computer
 scientists.  \NLTK\ is a suite of Python modules distributed under the
-GPL open source license.  \NLTK\ comes with a large collection of
+GPL open source license via \url{nltk.org}.  \NLTK\ comes with a large collection of
 corpora, extensive documentation, and hundreds of exercises, making
 \NLTK\ unique in providing a comprehensive framework for students to
 develop a computational understanding of language.  \NLTK's code base
 of 100,000 lines of Python code includes support for corpus access,
 tokenizing, stemming, tagging, chunking, parsing, clustering,
 classification, language modeling, semantic interpretation,
-unification, and much else
-besides.\footnote{\url{http://nltk.org/code.html}} As a measure of its
+unification, and much else besides.  As a measure of its
 impact, \NLTK\ has been used in over 60 university courses in 20
-countries.\footnote{\url{http://nltk.org/courses.html}}
+countries, listed on the \NLTK\ website.
 
 Since its inception in 2001, \NLTK\ has undergone considerable
 evolution, based on the experience gained by teaching courses at
 several universities, and based on feedback from many teachers and
-students.  Over this period, a series of practical online tutorials
-about \NLTK\ has grown up into a comprehensive online book.\footnote{\url{http://nltk.org/book.html}}
+students.\footnote{\cite{BirdLoper04,Loper04,Bird05icon,Hearst05,Bird06nltk,Klein06altw,Liddy05,Madnani07,Madnani08}}
+Over this period, a series of practical online tutorials
+about \NLTK\ has grown up into a comprehensive online book \cite{BirdKleinLoper08}.
 The book has been designed to stay in lock-step
-with the \NLTK\ library, and is intended to be a major support in
-helping students follow the mantra: \textit{learn by doing}.
+with the \NLTK\ library, and is intended to facilitate
+active learning \cite{BonwellEison91}.
 
 This paper describes the main features of \NLTK, and reports on how it has
 been used effectively in classes that involve a combination of
@@ -107,7 +109,7 @@ linguistics to a multidisciplinary audience (\S\ref{sec:design}).
 The following sections cover three distinct challenges:
 getting started with a course (\S\ref{sec:getting-started});
 interactive demonstrations (\S\ref{sec:interactive-demonstrations});
-and organizing assignments and student projects (\S\ref{sec:projects}).
+and organizing assignments and projects (\S\ref{sec:projects}).
 
 \section{Design Decisions Affecting Teaching}
 \label{sec:design}
@@ -140,7 +142,7 @@ could carry out interesting and useful exercises in text processing.
 
 In addition to the \NLTK\ book, the code in the \NLTK\ core is richly
 documented, using Python docstrings and
-\textsc{epydoc}\footnote{\url{http://epydoc.sourceforge.net/}} support
+Epydoc\footnote{\url{http://epydoc.sourceforge.net/}} support
 for API documentation.\footnote{\url{http://nltk.org/doc/api/}} Access
 to the code documentation is available using the Python \code{help()}
 command at the interactive prompt, and this can be especially useful
@@ -148,20 +150,18 @@ for checking the parameters and return type of functions.
 
 Other Python libraries are very useful in the \NLP\ context: NumPy
 provides optimized support for linear algebra and sparse
-arrays,\footnote{\url{http://numpy.scipy.org/}} and PyLab provides
+arrays \cite{numpy} and PyLab provides
 sophisticated facilities for scientific
-visualization.\footnote{\url{http://matplotlib.sourceforge.net/}}
-
-
+visualization \cite{matplotlib}.
 
 \subsection{Coding Requirements}
 
 As discussed in Loper \& Bird~\shortcite{LoperBird02}, the priorities for \NLTK\ code
 focus on its teaching role. When code is readable, a student who
-doesn't understand the maths of HMMs, smoothing, and so on may benefit
+doesn't understand the maths of {\sc hmm}s, smoothing, and so on may benefit
 from looking at how an algorithm is implemented. Thus consistency,
 simplicity, modularity are all vital features of \NLTK\ code. A
-similar importance is place on extensibility, since this helps to
+similar importance is placed on extensibility, since this helps to
 ensure that the code grows as a coherent whole, rather than by
 unpredictable and haphazard additions.  
 
@@ -262,14 +262,14 @@ we process this object we get the complete data set:
 \subsection{Accessing Shoebox Files}
 
 \NLTK\ provides functionality for working with Shoebox data
-\cite{robinson:etal:2007}. Shoebox is a system used by many
+\cite{Robinson07}. Shoebox is a system used by many
 documentary linguists to produce lexicons and interlinear glossed text.  The
 ability to work straightforwardly with Shoebox data promises to open
 up a new avenue for encouraging linguists to learn about the promise
 of computational methods. 
 
 As an example, in the Linguistics Department at the University of
-XXX, a course has been offered on Python programming and
+Texas at Austin, a course has been offered on Python programming and
 working with corpora, but so far uptake from the
 target audience of core linguistics students has been low. They usually have very
 practical needs and concerns when it comes to computational
@@ -348,8 +348,8 @@ will dominate the class numerically, simply because the course is only
 listed in one department.  In such cases it is usually enough to
 provide additional support in the form of some extra readings,
 tutorials, and exercises in the opening stages of the course.  In
-other cases, e.g.\ courses we have taught at the universities of YYY
-and ZZZ, or in summer intensive programs in several countries, there
+other cases, e.g.\ courses we have taught at the universities of Edinburgh,
+Melbourne, and Pennsylvania, or in summer intensive programs in several countries, there
 is more of an even split, and the challenge of serving both cohorts of
 students becomes acute.  It helps to address this issue head-on, with
 an early discussion of the goals of the course.
@@ -364,17 +364,42 @@ the path of least resistance is for students to remain firmly
 `monolingual' in their own discipline, while
 acquiring a smattering of words from a foreign language, at a level we might
 call `survival linguistics' or `survival computer science'.
+If they ever get to work in a multidisciplinary team they are likely
+only to play a type-cast role.
 
-Asking computer science students to write their first essay in years, or asking
-linguistics students to write their first ever program, leads to
-stressed students who complain that they don't know what is expected
-of them.
+Asking computer science students to write their first essay in years,
+or asking linguistics students to write their first ever program,
+leads to stressed students who complain that they don't know what is
+expected of them.
 
 Students need to confront the challenge of becoming bilingual, of
 working hard to learn the basics of another discipline.  In parallel,
 instructors need to confront the challenge of synthesizing material
 from linguistics and computer science into a coherent whole, and
 devising effective methods for teaching, learning, and assessment.
+
+\subsection{Entry Points}
+
+It is possible to identify several distinct pathways into the field of
+Computational Linguistics.  \newcite{Bird08curriculum} identifies four;
+each of these are supported by NLTK, as detailed below:
+
+\textbf{Text Processing First:} A variety of approaches to tokenization,
+tagging, evaluation, and language engineering more generally are
+supported.
+
+\textbf{Programming First:} The toolkit is based on Python and
+the documentation teaches the language and provides many examples and
+exercises to test and reinforce student learning.
+
+\textbf{Linguistics First:} Students are assumed to have a grounding in
+one or more areas of linguistics, and can focus on computational
+approaches to that area by working with the material in the relevant
+chapter in conjunction with learning how to program.
+
+\textbf{Algorithms First:} Students are assumed to have a grounding in
+one or more areas of computer science, and can use, test and extend
+the reference implementations of standard NLP algorithms.
 
 \subsection{The First Lecture}
 
@@ -561,11 +586,12 @@ been used in search terms over several years.
 
 \subsection{Exercises}
 
-Copious exercises, graded for difficulty, are provided with the \NLTK\ documentation. These
-exercises have the tremendous advantage of building on the \NLTK\
-infrastructure---both code and documentation. The exercises are
-intended to be suitable both for self-based learning and also
-required coursework.
+Copious exercises are provided with the \NLTK\ book; these
+have been graded for difficulty relative to the concepts covered in the
+preceding sections of the book.  exercises have the tremendous advantage of
+building on the \NLTK\ infrastructure, both code and
+documentation. The exercises are intended to be suitable both for
+self-based learning and also required coursework.
 
 A mixed class of linguistics and computer science students will have a
 diverse range of programming experience, and students with no
@@ -581,10 +607,10 @@ One such context is provided by lecture or laboratory sessions in
 which students have a machine in front of them (or one between two),
 and where there is time to work through a series of exercises to
 consolidate what has just been taught from the front, or read from a
-tutorial. When this can be done at regular intervals, it is easier for
+chapter of the book. When this can be done at regular intervals, it is easier for
 students to know which part of the materials to re-read.  It also
-encourages them to get into the habit of checking their own
-understanding of a concept by writing some program code.
+encourages them to get into the habit of checking their understanding of a concept by writing
+code.
 
 When exercises are graded for difficulty, it is easier for students to
 understand how much effort is expected, and whether they even have
@@ -612,25 +638,25 @@ appropriate amount of time.
 \begin{figure}
 {\footnotesize
 \begin{verbatim}
->>> nltk.FreqDist(nltk.corpus.brown.words())
+nltk.FreqDist(nltk.corpus.brown.words())
 \end{verbatim}
 \medskip
 
 \begin{verbatim}
->>> fd = nltk.FreqDist()
->>> for filename in corpus_files:
-...     raw_text = open(filename).read()
-...     for word in nltk.tokenize(raw_text):
-...         fd.inc(word)
+fd = nltk.FreqDist()
+for filename in corpus_files:
+    text = open(filename).read()
+    for w in nltk.wordpunct_tokenize(text):
+        fd.inc(w)
 \end{verbatim}
 \medskip
 
 \begin{verbatim}
->>> counts = {}
->>> for word in nltk.corpus.brown.words():
-...     if word not in counts:
-...         counts[word] = 0
-...     counts += 1
+counts = {}
+for w in nltk.corpus.brown.words():
+    if w not in counts:
+        counts[w] = 0
+    counts[w] += 1
 \end{verbatim}
 }
 \caption{Three Ways to Build up a Frequency Distribution of Words in the Brown Corpus}
@@ -659,19 +685,14 @@ furthermore gain a better appreciation of the pros and cons of writing
 their own scripts versus using an appropriate Unix pipe.
 
 \subsection{Assignments}
-\NLTK\ supports assignments of varying difficulty and scope. In the
-simplest assignments, students experiment with existing components to
-perform a wide variety of \NLP\ tasks. This may involve no programming
-at all, in the case of the existing demonstrations, or simply changing
-a line or two of program code. As students become more familiar with
-the toolkit they can be asked to modify existing components or to
-create complete systems out of existing components. \NLTK\ also provides
-students with a flexible framework for advanced projects, such as
-developing a multi-component system by integrating and extending \NLTK\
-components, and adding on entirely new components. Here \NLTK\ helps by
-providing standard implementations of all the basic data structures
-and algorithms, interfaces to standard corpora, substantial corpus
-samples, and a flexible and extensible architecture.
+
+\NLTK\ supports assignments of varying difficulty and scope:
+experimenting with existing components to see what happens for
+different inputs or parameter settings;
+modifying existing components and creating systems using existing components;
+leveraging \NLTK's extensible architecture by developing entirely new components;
+or employing \NLTK's interfaces to other toolkits such as Weka \cite{WittenFrank05}
+and Prover9 \cite{McCune08}.
 
 \subsection{Projects}
 
@@ -717,10 +738,18 @@ future!
 Finally, we believe that \NLTK\ has gained much by participating 
 in the Open Source software movement, specifically from
 the infrastructure provided by
-SourceForge\footnote{\url{http://sourceforge.net/}} and from the
+\url{SourceForge.net} and from the
 invaluable contributions of a wide range of people, including many
 students.
 
+% \section{Acknowledgments}
+% 
+% We are grateful to the members of the \NLTK\ community for their
+% helpful feedback on the toolkit and their many contributions.
+% We thank the anonymous reviewers for their feedback on an earlier
+% version of this paper.
+
+\clearpage
 \bibliographystyle{acl}
 \bibliography{acl-08}
 
