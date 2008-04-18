@@ -99,79 +99,38 @@ Test the decision tree classifier:
       . . .
     NotImplementedError
 
-Test the maxent classifier:
+Test the maxent classifier training algorithms; they should all
+generate the same results. 
 
-    >>> classifier = nltk.train_maxent_classifier(train, algorithm='iis')
-      ==> Training (20 iterations)
-    <BLANKLINE>
-          Iteration    Log Likelihood    Accuracy
-          ---------------------------------------
-                 1           0.50000        0.556
-                 2           0.52270        0.778
-                 3           0.53450        0.778
-                 4           0.54299        0.667
-                 5           0.54919        0.667
-                 6           0.55380        0.667
-                 7           0.55729        0.667
-                 8           0.55997        0.667
-                 9           0.56206        0.667
-                10           0.56371        0.667
-                11           0.56503        0.667
-                12           0.56610        0.667
-                13           0.56697        0.667
-                14           0.56768        0.667
-                15           0.56828        0.667
-                16           0.56878        0.667
-                17           0.56920        0.667
-                18           0.56956        0.667
-                19           0.56986        0.667
-                20           0.57013        0.667
-             Final           0.57035        0.667
-    >>> sorted(classifier.labels())
-    ['x', 'y']
-    >>> classifier.batch_classify(test)
-    ['y', 'y', 'y', 'x']
-    >>> for pdist in classifier.batch_prob_classify(test):
-    ...     print '%.4f %.4f' % (pdist.prob('x'), pdist.prob('y'))
-    0.1733 0.8267
-    0.4765 0.5235
-    0.4083 0.5917
-    0.7498 0.2502
-
-    >>> classifier = nltk.train_maxent_classifier(train, algorithm='gis')
-      ==> Training (20 iterations)
-    <BLANKLINE>
-          Iteration    Log Likelihood    Accuracy
-          ---------------------------------------
-                 1           0.50000        0.556
-                 2           0.52270        0.778
-                 3           0.53450        0.778
-                 4           0.54299        0.667
-                 5           0.54919        0.667
-                 6           0.55380        0.667
-                 7           0.55729        0.667
-                 8           0.55997        0.667
-                 9           0.56206        0.667
-                10           0.56371        0.667
-                11           0.56503        0.667
-                12           0.56610        0.667
-                13           0.56697        0.667
-                14           0.56768        0.667
-                15           0.56828        0.667
-                16           0.56878        0.667
-                17           0.56920        0.667
-                18           0.56956        0.667
-                19           0.56986        0.667
-                20           0.57013        0.667
-             Final           0.57035        0.667
-    >>> sorted(classifier.labels())
-    ['x', 'y']
-    >>> classifier.batch_classify(test)
-    ['y', 'y', 'y', 'x']
-    >>> for pdist in classifier.batch_prob_classify(test):
-    ...     print '%.4f %.4f' % (pdist.prob('x'), pdist.prob('y'))
-    0.1733 0.8267
-    0.4765 0.5235
-    0.4083 0.5917
-    0.7498 0.2502
-
+    >>> def test_maxent(algorithms):
+    ...     classifiers = {}
+    ...     for algorithm in nltk.classify.MaxentClassifier.ALGORITHMS:
+    ...         if algorithm.lower() == 'megam':
+    ...             try: nltk.classify.megam.config_megam()
+    ...             except: raise #continue
+    ...         classifiers[algorithm] = nltk.MaxentClassifier.train(
+    ...             train, algorithm, trace=0, max_iter=100)
+    ...     print ' '*11+''.join(['      test[%s]  ' % i
+    ...                           for i in range(len(test))])
+    ...     print ' '*11+'     p(x)  p(y)'*len(test)
+    ...     print '-'*(11+15*len(test))
+    ...     for algorithm, classifier in classifiers.items():
+    ...         print '%11s' % algorithm,
+    ...         for featureset in test:
+    ...             pdist = classifier.prob_classify(featureset)
+    ...             print '%8.2f%6.2f' % (pdist.prob('x'), pdist.prob('y')),
+    ...         print
+    >>> test_maxent(nltk.classify.MaxentClassifier.ALGORITHMS)
+    ... # doctest: +ELLIPSIS
+    [Found megam: ...]
+                     test[0]        test[1]        test[2]        test[3]  
+                    p(x)  p(y)     p(x)  p(y)     p(x)  p(y)     p(x)  p(y)
+    -----------------------------------------------------------------------
+         LBFGSB     0.16  0.84     0.46  0.54     0.41  0.59     0.76  0.24
+            GIS     0.16  0.84     0.46  0.54     0.41  0.59     0.76  0.24
+            IIS     0.16  0.84     0.46  0.54     0.41  0.59     0.76  0.24
+    Nelder-Mead     0.16  0.84     0.46  0.54     0.41  0.59     0.76  0.24
+             CG     0.16  0.84     0.46  0.54     0.41  0.59     0.76  0.24
+           BFGS     0.16  0.84     0.46  0.54     0.41  0.59     0.76  0.24
+          MEGAM     0.16  0.84     0.46  0.54     0.41  0.59     0.76  0.24
+         Powell     0.16  0.84     0.46  0.54     0.41  0.59     0.76  0.24

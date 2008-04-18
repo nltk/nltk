@@ -11,7 +11,7 @@
 Classifiers that make use of the external 'Weka' package.
 """
 
-import time, tempfile, os, os.path, subprocess, re
+import time, tempfile, os, os.path, subprocess, re, zipfile
 from api import *
 from nltk.probability import *
 from nltk.internals import java, config_java
@@ -39,13 +39,34 @@ def config_weka(classpath=None):
         for path in searchpath:
             if os.path.exists(os.path.join(path, 'weka.jar')):
                 _weka_classpath = os.path.join(path, 'weka.jar')
-                print '[Found Weka: %s]' % _weka_classpath
+                version = _check_weka_version(_weka_classpath)
+                if version:
+                    print ('[Found Weka: %s (version %s)]' %
+                           (_weka_classpath, version))
+                else:
+                    print '[Found Weka: %s]' % _weka_classpath
+                _check_weka_version(_weka_classpath)
 
     if _weka_classpath is None:
         raise LookupError('Unable to find weka.jar!  Use config_weka() '
                           'or set the WEKAHOME environment variable. '
                           'For more information about Weka, please see '
                           'http://www.cs.waikato.ac.nz/ml/weka/')
+
+def _check_weka_version(jar):
+    try:
+        zf = zipfile.ZipFile(jar)
+    except SystemExit, KeyboardInterrupt:
+        raise
+    except:
+        return None
+    try:
+        try:
+            return zf.read('weka/core/version.txt')
+        except KeyError:
+            return None
+    finally:
+        zf.close()
 
 class WekaClassifier(ClassifierI):
     def __init__(self, formatter, model_filename):
@@ -72,7 +93,18 @@ class WekaClassifier(ClassifierI):
             cmd = ['weka.classifiers.bayes.NaiveBayes', 
                    '-l', self._model, '-T', test_filename] + options
             (stdout, stderr) = java(cmd, classpath=_weka_classpath,
-                                    stdout=subprocess.PIPE)
+                                    stdout=subprocess.PIPE,
+                                    stderr=subprocess.PIPE)
+
+            # Check if something went wrong:
+            if stderr and not stdout:
+                if 'Illegal options: -distribution' in stderr:
+                    raise ValueError('The installed verison of weka does '
+                                     'not support probability distribution '
+                                     'output.')
+                else:
+                    raise ValueError('Weka failed to generate output:\n%s'
+                                     % stderr)
 
             # Parse weka's output.
             return self.parse_weka_output(stdout.split('\n'))
@@ -96,15 +128,42 @@ class WekaClassifier(ClassifierI):
                                 'error', 'distribution']:
             return [self.parse_weka_distribution(line.split()[-1])
                     for line in lines[1:] if line.strip()]
+
+        # is this safe:?
+        elif re.match(r'^0 \w+ [01]\.[0-9]* \?\s*$', lines[0]):
+            return [line.split()[1] for line in lines if line.strip()]
             
         else:
             for line in lines[:10]: print line
             raise ValueError('Unhandled output format -- your version '
                              'of weka may not be supported.\n'
                              '  Header: %s' % lines[0])
-                                
-    @staticmethod
-    def train(model_filename, featuresets, quiet=True):
+
+
+    # [xx] full list of classifiers (some may be abstract?):
+    # ADTree, AODE, BayesNet, ComplementNaiveBayes, ConjunctiveRule,
+    # DecisionStump, DecisionTable, HyperPipes, IB1, IBk, Id3, J48,
+    # JRip, KStar, LBR, LeastMedSq, LinearRegression, LMT, Logistic,
+    # LogisticBase, M5Base, MultilayerPerceptron,
+    # MultipleClassifiersCombiner, NaiveBayes, NaiveBayesMultinomial,
+    # NaiveBayesSimple, NBTree, NNge, OneR, PaceRegression, PART,
+    # PreConstructedLinearModel, Prism, RandomForest,
+    # RandomizableClassifier, RandomTree, RBFNetwork, REPTree, Ridor,
+    # RuleNode, SimpleLinearRegression, SimpleLogistic,
+    # SingleClassifierEnhancer, SMO, SMOreg, UserClassifier, VFI,
+    # VotedPerceptron, Winnow, ZeroR
+
+    _CLASSIFIER_CLASS = {
+        'naivebayes': 'weka.classifiers.bayes.NaiveBayes',
+        'C4.5': 'weka.classifiers.trees.J48',
+        'log_regression': 'weka.classifiers.functions.Logistic',
+        'svm': 'weka.classifiers.functions.SMO',
+        'kstar': 'weka.classifiers.lazy.kstar',
+        'ripper': 'weka.classifiers.rules.JRip',
+        }
+    @classmethod
+    def train(cls, model_filename, featuresets,
+              classifier='naivebayes', options=[], quiet=True):
         # Make sure we can find java & weka.
         config_weka()
         
@@ -116,10 +175,17 @@ class WekaClassifier(ClassifierI):
             # Write the training data file.
             train_filename = os.path.join(temp_dir, 'train.arff')
             formatter.write(train_filename, featuresets)
+
+            if classifier in cls._CLASSIFIER_CLASS:
+                javaclass = cls._CLASSIFIER_CLASS[classifier]
+            elif classifier in cls._CLASSIFIER_CLASS.values():
+                javaclass = classifier
+            else:
+                raise ValueError('Unknown classifier %s' % classifier)
     
             # Train the weka model.
-            cmd = ['weka.classifiers.bayes.NaiveBayes',
-                   '-d', model_filename, '-t', train_filename]
+            cmd = [javaclass, '-d', model_filename, '-t', train_filename]
+            cmd += list(options)
             if quiet: stdout = subprocess.PIPE
             else: stdout = None
             java(cmd, classpath=_weka_classpath, stdout=stdout)
@@ -240,5 +306,6 @@ class ARFF_Formatter:
 if __name__ == '__main__':
     from nltk.classify.util import names_demo,binary_names_demo_features
     def make_classifier(featuresets):
-        return WekaClassifier.train('/tmp/name.model', featuresets)
+        return WekaClassifier.train('/tmp/name.model', featuresets,
+                                    'C4.5')
     classifier = names_demo(make_classifier,binary_names_demo_features)
