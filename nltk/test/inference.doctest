@@ -56,19 +56,19 @@ following locations::
 
 If the executables cannot be found, ``Prover9`` will issue a warning message:
 
-.. doctest-ignore::
-    >>> p = Prover9() 
-    <BLANKLINE>
+    >>> p = Prover9() # doctest: +SKIP
+    Traceback (most recent call last):
+      ...
+    ValueError: 
     Unable to find Prover9 executable! Use 
     Prover9().config_prover9(path='/path/to/prover9directory'),
     or set the PROVER9HOME environment variable to a valid path.
     For more information about Prover9, please see 
     http://www.cs.unm.edu/~mccune/prover9/
-    <BLANKLINE>
 
 The path to the correct directory can be set in the following manner:
 
-    >>> p.config_prover9(path='/usr/local/bin')
+    >>> p.config_prover9(path='/usr/local/bin') # doctest: +SKIP
     [Found prover9: /usr/local/bin/prover9]
     
     
@@ -95,29 +95,28 @@ Given a ``Prover9`` instance ``prover``, the method
 provided by Prover9, shown in abbreviated form here::
 
     ============================== Prover9 ===============================
-    Prover9 (32) version Dec-2007, Dec 2007.
-    Process 6317 was started by ewan on isalpha.local,
-    Mon Jan 21 15:23:28 2008
-    The command was "/usr/local/bin/prover9 -f /var/...
-
+    Prover9 (32) version ...
+    Process ... was started by ... on ...
+    ...
+    The command was ".../prover9 -f ...".
     ============================== end of head ===========================
-    <BLANKLINE>
+
     ============================== INPUT =================================
-    <BLANKLINE>
+
     % Reading from file /var/...
-    <BLANKLINE>
-    <BLANKLINE>
+
+
     formulas(goals).
     (all x (man(x) -> man(x))).
     end_of_list.
 
     ...
     ============================== end of search =========================
-    <BLANKLINE>
+
     THEOREM PROVED
-    <BLANKLINE>
+
     Exiting with 1 proof.
-    <BLANKLINE>
+
     Process 6317 exit (max_proofs) Mon Jan 21 15:23:28 2008
 
 
@@ -186,12 +185,12 @@ statements as new assumptions.
     >>> prover.add_assumptions(new)
     >>> print prover.prove()
     True
-    >>> prover.show_proof()
+    >>> prover.show_proof() # doctest: +ELLIPSIS
     ============================== prooftrans ============================
-    Prover9 (32) version Dec-2007, Dec 2007.
-    Process 84053 was started by ewan on isalpha.local,
-    Sun Mar  2 15:10:39 2008
-    The command was "/usr/local/bin/prover9 -f /var/folders/h0/h0IRyYOT2RWJf++8ZMVOkU+++TI/-Tmp-/prover9vCfy20.in".
+    Prover9 (...) version ...
+    Process ... was started by ... on ...
+    ...
+    The command was ".../prover9 -f ...".
     ============================== end of head ===========================
     <BLANKLINE>
     ============================== end of input ==========================
@@ -199,7 +198,7 @@ statements as new assumptions.
     ============================== PROOF =================================
     <BLANKLINE>
     % -------- Comments from original proof --------
-    % Proof 1 at 0.00 (+ 0.00) seconds.
+    % Proof 1 at ... seconds.
     % Length of proof is 13.
     % Level of proof is 4.
     % Maximum clause weight is 2.
