@@ -168,7 +168,8 @@ class MyDocTestParser(DocTestParser):
                 if not ignore:
                     examples.append(x)
                 else:
-                    print '.. doctest-ignore:: %s' % x.source.strip()[:50]
+                    #print '.. doctest-ignore:: %s' % x.source.strip()[:50]
+                    pass
             else:
                 if re.search(r'\.\.\s*doctest-ignore::?\s*$', x):
                     ignore = True
