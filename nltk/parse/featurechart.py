@@ -384,7 +384,8 @@ class FeatureEarleyChartParser(EarleyChartParser):
         # Output a list of complete parses.
         trees = []
         for edge in chart.select(span=(0, chart.num_leaves())):
-            if unify(edge.lhs(), start, rename_vars=True):
+            if ( (not isinstance(edge, LeafEdge)) and
+                 (unify(edge.lhs(), start, rename_vars=True)) ):
                 trees += chart.trees(edge, complete=True,
                                      tree_class=tree_class)
         return trees
