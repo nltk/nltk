@@ -68,7 +68,7 @@ X{expanding} M{lhs} to M{rhs} in M{tree}.
 
 import re
 import nltk.featstruct
-from nltk.featstruct import FeatStruct, FeatStructParser
+from nltk.featstruct import FeatStruct, FeatDict, FeatStructParser
 
 #################################################################
 # Nonterminal
@@ -680,7 +680,7 @@ def earley_lexicon(productions):
         lexicon[prod.rhs()[0]].append(prod.lhs())
     return lexicon
 
-class FeatStructNonterminal(FeatStruct, Nonterminal):
+class FeatStructNonterminal(FeatDict, Nonterminal):
     """A feature structure that's also a nonterminal.  It acts as its
     own symbol, and automatically freezes itself when hashed."""
     def __hash__(self):
