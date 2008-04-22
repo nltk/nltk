@@ -66,7 +66,7 @@ part-of-speech taggers based on the Brown Corpus.  Here are the
 training & test sets we'll use:
 
     >>> brown_train = brown.tagged_sents(categories='a')[100:]
-    >>> brown_test = brown.tagged_sents(categories='a')[:100]
+    >>> brown_test = brown.tagged_sents(categories='b')[:100]
     >>> test_sent = nltk.tag.untag(brown_test[0])
 
 (Note that these are on the small side, to make the tests run faster
