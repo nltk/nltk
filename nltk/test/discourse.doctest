@@ -2,13 +2,9 @@
 Discourse Checking
 ==================
 
-    >>> from nltk_contrib.inference.discourse import *
-    >>> dt = DiscourseTester(['a boxer walks', 'every boxer chases a girl'])
-
-
 In order to check a discourse, you start off like this:
 
-    >>> from discourse import *
+    >>> from nltk.inference.discourse import *
     >>> dt = DiscourseTester(['a boxer walks', 'every boxer chases a girl'])
 
 That is, you initialize a new ``DiscourseTester`` as shown above, and
