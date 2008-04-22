@@ -465,7 +465,7 @@ Define some lexical productions.
     >>> tokens = 'I saw John with a dog with my cookie'.split()
     >>> cp = FeatureEarleyChartParser(earley_grammar)
     >>> trees = cp.nbest_parse(tokens)
-    >>> for t in trees:
+    >>> for t in sorted(trees, key=repr):
     ...     print t
     (S[]
       (NP[] I)
@@ -473,15 +473,6 @@ Define some lexical productions.
         (VP[]
           (VP[] (V[] saw) (NP[] John))
           (PP[] (P[] with) (NP[] (Det[] a) (N[-pl] dog))))
-        (PP[] (P[] with) (NP[] (Det[] my) (N[-pl] cookie)))))
-    (S[]
-      (NP[] I)
-      (VP[]
-        (VP[]
-          (V[] saw)
-          (NP[]
-            (NP[] John)
-            (PP[] (P[] with) (NP[] (Det[] a) (N[-pl] dog)))))
         (PP[] (P[] with) (NP[] (Det[] my) (N[-pl] cookie)))))
     (S[]
       (NP[] I)
@@ -495,12 +486,12 @@ Define some lexical productions.
     (S[]
       (NP[] I)
       (VP[]
-        (V[] saw)
-        (NP[]
+        (VP[]
+          (V[] saw)
           (NP[]
             (NP[] John)
-            (PP[] (P[] with) (NP[] (Det[] a) (N[-pl] dog))))
-          (PP[] (P[] with) (NP[] (Det[] my) (N[-pl] cookie))))))
+            (PP[] (P[] with) (NP[] (Det[] a) (N[-pl] dog)))))
+        (PP[] (P[] with) (NP[] (Det[] my) (N[-pl] cookie)))))
     (S[]
       (NP[] I)
       (VP[]
@@ -512,6 +503,15 @@ Define some lexical productions.
             (NP[]
               (NP[] (Det[] a) (N[-pl] dog))
               (PP[] (P[] with) (NP[] (Det[] my) (N[-pl] cookie))))))))
+    (S[]
+      (NP[] I)
+      (VP[]
+        (V[] saw)
+        (NP[]
+          (NP[]
+            (NP[] John)
+            (PP[] (P[] with) (NP[] (Det[] a) (N[-pl] dog))))
+          (PP[] (P[] with) (NP[] (Det[] my) (N[-pl] cookie))))))
 
 Tests for loading grammar files
 -------------------------------
