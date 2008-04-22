@@ -8,6 +8,7 @@
 
 import os
 import tempfile
+import subprocess
 from string import join
 from nltk.sem.logic import *
 from api import ProverI
@@ -106,7 +107,7 @@ class Prover9Parent:
         if self._executable_path is None:
             if verbose:
                 print "Searching in these locations:\n %s" % join(searchpath, sep=', ')
-            print HELPMSG
+            raise ValueError(HELPMSG)
             
            
     def prover9_files(self, prefix='prover9', p9_dir=None):
@@ -309,11 +310,14 @@ class Prover9(Prover9Parent, ProverI):
             return None
         self.prover9_files()
         exe = os.path.join(self._executable_path, self.get_executable())
-        execute_string = '%s -f %s > %s 2>> %s' % \
-            (exe, self._infile, self._outfile, self._outfile)
         
-        tp_result = os.system(execute_string)
-        self._result = (tp_result == 0)
+        cmd = [exe, '-f', self._infile]
+        outfile = open(self._outfile, 'wb')
+        p = subprocess.Popen(cmd, stdout=outfile, stderr=outfile)
+        p.communicate()
+        outfile.close()
+
+        self._result = (p.returncode == 0)
         return self._result
     
     def proof_successful(self):
