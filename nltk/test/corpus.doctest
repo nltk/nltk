@@ -828,7 +828,7 @@ entailment value is mapped to an integer 1 (True) or 0 (False).
 The RTE corpus also supports an ``xml()`` method which produces ElementTrees.
 
     >>> xmltree = rte.xml('rte3_dev.xml')
-    >>> xmltree # doctest: +ELLIPSIS
+    >>> xmltree # doctest: +SKIP
     <Element entailment-corpus at ...>
     >>> xmltree[7].findtext('t') # doctest: +NORMALIZE_WHITESPACE
     "Mrs. Bush's approval ratings have remained very high, above 80%,
