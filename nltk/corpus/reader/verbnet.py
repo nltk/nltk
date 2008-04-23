@@ -13,6 +13,7 @@ import re, textwrap
 
 class VerbnetCorpusReader(XMLCorpusReader):
 
+    # No unicode encoding param, since the data files are all XML.
     def __init__(self, root, files):
         CorpusReader.__init__(self, root, files)
         

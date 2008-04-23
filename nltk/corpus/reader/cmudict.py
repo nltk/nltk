@@ -45,9 +45,9 @@ Y       yield   Y IY L D       Z       zee     Z IY
 ZH      seizure S IY ZH ER
 """
 
-from util import *
-from api import *
-import os
+from nltk.corpus.reader.util import *
+from nltk.corpus.reader.api import *
+import codecs
 from nltk.internals import deprecated
 
 class CMUDictCorpusReader(CorpusReader):
@@ -56,15 +56,16 @@ class CMUDictCorpusReader(CorpusReader):
         @return: the cmudict lexicon as a list of entries
         containing (word, identifier, transcription) tuples.
         """
-        return concat([StreamBackedCorpusView(filename, read_cmudict_block)
-                       for filename in self.abspaths()])
+        return concat([StreamBackedCorpusView(filename, read_cmudict_block,
+                                              encoding=enc)
+                       for filename, enc in self.abspaths(None, True)])
 
     def raw(self):
         """
         @return: the cmudict lexicon as a raw string.
         """
-        return concat([open(filename).read()
-                       for filename in self.abspaths()])
+        return concat([codecs.open(path, 'rb', enc).read()
+                       for (path,enc) in self.abspaths(files, True)])
 
     def words(self):
         """

@@ -26,7 +26,7 @@ class BracketParseCorpusReader(SyntaxCorpusReader):
     trees.
     """
     def __init__(self, root, files, comment_char=None,
-                 detect_blocks='unindented_paren'):
+                 detect_blocks='unindented_paren', encoding=None):
         """
         @param root: The root directory for this corpus.
         @param files: A list or regexp specifying the files in this corpus.
@@ -37,7 +37,7 @@ class BracketParseCorpusReader(SyntaxCorpusReader):
           parenthesis starts a new parse) or 'sexpr' (brackets are
           matched).
         """
-        CorpusReader.__init__(self, root, files)
+        CorpusReader.__init__(self, root, files, encoding)
         self._comment_char = comment_char
         self._detect_blocks = detect_blocks
 
@@ -98,9 +98,10 @@ class AlpinoCorpusReader(BracketParseCorpusReader):
     """
     Reader for the Alpino Dutch Treebank.
     """
-    def __init__(self, root):
+    def __init__(self, root, encoding=None):
         BracketParseCorpusReader.__init__(self, root, 'alpino\.xml',
-                                          detect_blocks='blankline')
+                                          detect_blocks='blankline',
+                                          encoding=encoding)
 
     def _normalize(self, t):
         if t[:10] != "<alpino_ds":

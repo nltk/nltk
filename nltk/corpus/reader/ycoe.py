@@ -34,11 +34,11 @@ class YCOECorpusReader(CorpusReader):
     English Prose (YCOE), a 1.5 million word syntactically-annotated
     corpus of Old English prose texts.
     """
-    def __init__(self, root):
+    def __init__(self, root, encoding=None):
         self._psd_reader = YCOEParseCorpusReader(
-            os.path.join(root, 'psd'), '.*', '.psd')
+            os.path.join(root, 'psd'), '.*', '.psd', encoding=encoding)
         self._pos_reader = YCOETaggedCorpusReader(
-            os.path.join(root, 'pos'), '.*', '.pos')
+            os.path.join(root, 'pos'), '.*', '.pos', encoding=encoding)
 
         # Make sure we have a consistent set of items:
         documents = set(f[:-4] for f in self._psd_reader.files())
@@ -48,7 +48,7 @@ class YCOECorpusReader(CorpusReader):
 
         files = sorted(['%s.psd' % doc for doc in documents] +
                        ['%s.pos' % doc for doc in documents])
-        CorpusReader.__init__(self, root, files)
+        CorpusReader.__init__(self, root, files, encoding)
         self._documents = tuple(sorted(documents))
 
     def documents(self, files=None):
@@ -150,11 +150,12 @@ class YCOEParseCorpusReader(BracketParseCorpusReader):
         return BracketParseCorpusReader._parse(self, t)
 
 class YCOETaggedCorpusReader(TaggedCorpusReader):
-    def __init__(self, root, items):
+    def __init__(self, root, items, encoding=None):
         gaps_re = r'(?u)\(?<=/\.)\s+|\s*\S*_CODE\s*|\s*\S*_ID\s*'
         sent_tokenizer = RegexpTokenizer(gaps_re, gaps=True)
         TaggedCorpusReader.__init__(self, root, items, sep='_',
-                                    sent_tokenizer=sent_tokenizer)
+                                    sent_tokenizer=sent_tokenizer,
+                                    encoding=encoding)
         
 #: A list of all documents and their titles in ycoe.
 documents = {

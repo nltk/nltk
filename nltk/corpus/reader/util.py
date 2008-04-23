@@ -6,7 +6,7 @@
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
-import os, sys, bisect, re
+import os, sys, bisect, re, codecs
 from itertools import islice
 from api import CorpusReader
 from nltk import tokenize
@@ -215,6 +215,13 @@ class StreamBackedCorpusView(AbstractCorpusView):
         lifetime of the C{CorpusView}, then the C{CorpusView}'s behavior
         is undefined.
 
+    @warning: If a unicode encoding is specified when constructing a
+        C{CorpusView}, then the block reader may only call
+        C{stream.seek()} with offsets that have been returned by
+        C{stream.tell()}; in particular, calling C{stream.seek()} with
+        relative offsets, or with offsets based on string lengths, may
+        lead to incorrect behavior.
+
     @ivar _block_reader: The function used to read 
         a single block from the underlying file stream.
     @ivar _toknum: A list containing the token index of each block
@@ -239,7 +246,8 @@ class StreamBackedCorpusView(AbstractCorpusView):
        end_toknum is the token index of the first token not in the
        block; and tokens is a list of the tokens in the block.
     """
-    def __init__(self, filename, block_reader=None, startpos=0):
+    def __init__(self, filename, block_reader=None, startpos=0,
+                 encoding=None):
         """
         Create a new corpus view, based on the file C{filename}, and
         read with C{block_reader}.  See the class documentation
@@ -248,12 +256,18 @@ class StreamBackedCorpusView(AbstractCorpusView):
         @param startpos: The file position at which the view will
             start reading.  This can be used to skip over preface
             sections.
+
+        @param encoding: The unicode encoding that should be used to
+            read the file's contents.  If no encoding is specified,
+            then the file's contents will be read as a non-unicode
+            string (i.e., a C{str}).            
         """
         if block_reader:
             self.read_block = block_reader
         # Initialize our toknum/filepos mapping.
         self._toknum = [0]
         self._filepos = [startpos]
+        self._encoding = encoding
         # We don't know our length (number of tokens) yet.
         self._len = None
 
@@ -263,7 +277,10 @@ class StreamBackedCorpusView(AbstractCorpusView):
         # Find the length of the file.  This also checks that the file
         # exists and is readable & seekable.
         try:
-            stream = open(filename, 'rb')
+            if self._encoding:
+                stream = codecs.open(filename, 'rb', encoding)
+            else:
+                stream = open(filename, 'rb')
             stream.seek(0, 2)
             self._eofpos = stream.tell()
             stream.close()
@@ -337,7 +354,11 @@ class StreamBackedCorpusView(AbstractCorpusView):
 
         # Open the stream, if it's not open already.
         if self._stream is None:
-            self._stream = open(self._filename, 'rb')
+            if self._encoding:
+                self._stream = codecs.open(self._filename, 'rb',
+                                           self._encoding)
+            else:
+                self._stream = open(self._filename, 'rb')
             
         # Find the character position of the end of the file.
         if self._eofpos is None:
@@ -630,6 +651,15 @@ def read_sexpr_block(stream, block_size=16384, comment_char=None):
     """
     start = stream.tell()
     block = stream.read(block_size)
+    encoding = getattr(stream, 'encoding', None)
+    assert encoding is not None or isinstance(block, str)
+    if encoding not in (None, 'utf-8'):
+        import warnings
+        warnings.warn('Parsing may fail, depending on the properties '
+                      'of the %s encoding!' % encoding)
+        # (e.g., the utf-16 encoding does not work because it insists
+        # on adding BOMs to the beginning of encoded strings.)
+
     if comment_char:
         COMMENT = re.compile('(?m)^%s.*$' % re.escape(comment_char))
     while True:
@@ -645,8 +675,13 @@ def read_sexpr_block(stream, block_size=16384, comment_char=None):
             tokens, offset = _parse_sexpr_block(block)
             # Skip whitespace
             offset = re.compile(r'\s*').search(block, offset).end()
+                
             # Move to the end position.
-            stream.seek(start+offset)
+            if encoding is None:
+                stream.seek(start+offset)
+            else:
+                stream.seek(start+len(block[:offset].encode(encoding)))
+                
             # Return the list of tokens we processed
             return tokens
         except ValueError, e:
@@ -723,33 +758,38 @@ class SyntaxCorpusReader(CorpusReader):
     """
 
     def raw(self, files=None):
-        return concat([open(filename).read()
-                       for filename in self.abspaths(files)])
+        return concat([codecs.open(path, 'rb', enc).read()
+                       for (path,enc) in self.abspaths(files, True)])
 
     def parsed_sents(self, files=None):
         return concat([StreamBackedCorpusView(filename,
-                                              self._read_parsed_sent_block)
-                       for filename in self.abspaths(files)])
+                                              self._read_parsed_sent_block,
+                                              encoding=enc)
+                       for filename, enc in self.abspaths(files, True)])
 
     def tagged_sents(self, files=None):
         return concat([StreamBackedCorpusView(filename,
-                                              self._read_tagged_sent_block)
-                       for filename in self.abspaths(files)])
+                                              self._read_tagged_sent_block,
+                                              encoding=enc)
+                       for filename, enc in self.abspaths(files, True)])
 
     def sents(self, files=None):
         return concat([StreamBackedCorpusView(filename,
-                                              self._read_sent_block)
-                       for filename in self.abspaths(files)])
+                                              self._read_sent_block,
+                                              encoding=enc)
+                       for filename, enc in self.abspaths(files, True)])
 
     def tagged_words(self, files=None):
         return concat([StreamBackedCorpusView(filename,
-                                              self._read_tagged_word_block)
-                       for filename in self.abspaths(files)])
+                                              self._read_tagged_word_block,
+                                              encoding=enc)
+                       for filename, enc in self.abspaths(files, True)])
 
     def words(self, files=None):
         return concat([StreamBackedCorpusView(filename,
-                                              self._read_word_block)
-                       for filename in self.abspaths(files)])
+                                              self._read_word_block,
+                                              encoding=enc)
+                       for filename, enc in self.abspaths(files, True)])
 
     #------------------------------------------------------------
     #{ Block Readers

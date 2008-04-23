@@ -21,10 +21,10 @@ The corpus contains the following files: APW_19980314, APW_19980424,
 APW_19980429, NYT_19980315, NYT_19980403, and NYT_19980407.
 """
 
-from util import *
-from api import *
+from nltk.corpus.reader.api import *
+from nltk.corpus.reader.util import *
 from nltk import chunk
-import os
+import codecs
 from nltk.internals import deprecated
 
 #: A dictionary whose keys are the names of documents in this corpus;
@@ -64,17 +64,19 @@ class IEERCorpusReader(CorpusReader):
     """
     """
     def raw(self, files=None):
-        return concat([open(filename).read()
-                       for filename in self.abspaths(files)])
-    
+        return concat([codecs.open(path, 'rb', enc).read()
+                       for (path,enc) in self.abspaths(files, True)])
+
     def docs(self, files=None):
-        return concat([StreamBackedCorpusView(filename, self._read_block)
-                       for filename in self.abspaths(files)])
+        return concat([StreamBackedCorpusView(filename, self._read_block,
+                                              encoding=enc)
+                       for (filename, enc) in self.abspaths(files, True)])
     
     def parsed_docs(self, files=None):
         return concat([StreamBackedCorpusView(filename,
-                                              self._read_parsed_block)
-                       for filename in self.abspaths(files)])
+                                              self._read_parsed_block,
+                                              encoding=enc)
+                       for (filename, enc) in self.abspaths(files, True)])
 
     def _read_parsed_block(self,stream):
         # TODO: figure out while empty documents are being returned

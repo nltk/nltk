@@ -13,48 +13,54 @@ Read conll-style chunk files.
 from util import *
 from api import *
 from nltk import chunk, tree
-import os
+import os, codecs
 from nltk.internals import deprecated
 
 class ConllChunkCorpusReader(CorpusReader):
-    def __init__(self, root, files, chunk_types):
-        CorpusReader.__init__(self, root, files)
+    def __init__(self, root, files, chunk_types, encoding=None):
+        CorpusReader.__init__(self, root, files, encoding)
         self.chunk_types = tuple(chunk_types)
 
     # Add method for list of tuples
     # add method for list of list of tuples
 
     def raw(self, files=None):
-        return concat([open(filename).read()
-                       for filename in self.abspaths(files)])
+        return concat([codecs.open(path, 'rb', enc).read()
+                       for (path,enc) in self.abspaths(files, True)])
 
     def words(self, files=None):
-        return concat([ConllChunkCorpusView(filename, False, False, False)
-                       for filename in self.abspaths(files)])
+        return concat([ConllChunkCorpusView(filename, enc,
+                                            False, False, False)
+                       for (filename, enc) in self.abspaths(files, True)])
 
     def sents(self, files=None):
-        return concat([ConllChunkCorpusView(filename, False, True, False)
-                       for filename in self.abspaths(files)])
+        return concat([ConllChunkCorpusView(filename, enc,
+                                            False, True, False)
+                       for (filename, enc) in self.abspaths(files, True)])
 
     def tagged_words(self, files=None):
-        return concat([ConllChunkCorpusView(filename, True, False, False)
-                       for filename in self.abspaths(files)])
+        return concat([ConllChunkCorpusView(filename, enc,
+                                            True, False, False)
+                       for (filename, enc) in self.abspaths(files, True)])
 
     def tagged_sents(self, files=None):
-        return concat([ConllChunkCorpusView(filename, True, True, False)
-                       for filename in self.abspaths(files)])
+        return concat([ConllChunkCorpusView(filename, enc,
+                                            True, True, False)
+                       for (filename, enc) in self.abspaths(files, True)])
 
     def chunked_words(self, files=None, chunk_types=None):
         if chunk_types is None: chunk_types = self.chunk_types
-        return concat([ConllChunkCorpusView(filename, True, False, True,
+        return concat([ConllChunkCorpusView(filename, enc,
+                                            True, False, True,
                                             chunk_types)
-                       for filename in self.abspaths(files)])
+                       for (filename, enc) in self.abspaths(files, True)])
 
     def chunked_sents(self, files=None, chunk_types=None):
         if chunk_types is None: chunk_types = self.chunk_types
-        return concat([ConllChunkCorpusView(filename, True, True, True,
+        return concat([ConllChunkCorpusView(filename, enc,
+                                            True, True, True,
                                             chunk_types)
-                       for filename in self.abspaths(files)])
+                       for (filename, enc) in self.abspaths(files, True)])
 
     #{ Deprecated since 0.8
     @deprecated("Use .raw() or .words() or .tagged_words() or "
@@ -79,13 +85,13 @@ class ConllChunkCorpusReader(CorpusReader):
 class ConllChunkCorpusView(StreamBackedCorpusView):
     """
     """
-    def __init__(self, corpus_file, tagged, group_by_sent, chunked, 
-                 chunk_types=None):
+    def __init__(self, corpus_file, encoding, tagged, group_by_sent,
+                 chunked, chunk_types=None):
         self._tagged = tagged
         self._chunked = chunked
         self._group_by_sent = group_by_sent
         self._chunk_types = chunk_types
-        StreamBackedCorpusView.__init__(self, corpus_file)
+        StreamBackedCorpusView.__init__(self, corpus_file, encoding=encoding)
 
     _DOCSTART = '-DOCSTART- -DOCSTART- O\n'
     def read_block(self, stream):
