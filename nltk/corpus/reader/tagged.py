@@ -35,7 +35,8 @@ class TaggedCorpusReader(CorpusReader):
     def __init__(self, root, files, 
                  sep='/', word_tokenizer=WhitespaceTokenizer(),
                  sent_tokenizer=RegexpTokenizer('\n', gaps=True),
-                 para_block_reader=read_blankline_block):
+                 para_block_reader=read_blankline_block,
+                 encoding=None):
         """
         Construct a new Tagged Corpus reader for a set of documents
         located at the given root directory.  Example usage:
@@ -46,7 +47,7 @@ class TaggedCorpusReader(CorpusReader):
         @param root: The root directory for this corpus.
         @param files: A list or regexp specifying the files in this corpus.
         """
-        CorpusReader.__init__(self, root, files)
+        CorpusReader.__init__(self, root, files, encoding)
         self._sep = sep
         self._word_tokenizer = word_tokenizer
         self._sent_tokenizer = sent_tokenizer
@@ -57,8 +58,8 @@ class TaggedCorpusReader(CorpusReader):
         @return: the given file or files as a single string.
         @rtype: C{str}
         """
-        return concat([open(filename).read()
-                       for filename in self.abspaths(files)])
+        return concat([codecs.open(path, 'rb', enc).read()
+                       for (path,enc) in self.abspaths(files, True)])
 
     def words(self, files=None):
         """
@@ -66,11 +67,12 @@ class TaggedCorpusReader(CorpusReader):
             and punctuation symbols.
         @rtype: C{list} of C{str}
         """
-        return concat([TaggedCorpusView(filename, False, False, False,
+        return concat([TaggedCorpusView(filename, enc,
+                                        False, False, False,
                                         self._sep, self._word_tokenizer,
                                         self._sent_tokenizer,
                                         self._para_block_reader)
-                       for filename in self.abspaths(files)])
+                       for (filename, enc) in self.abspaths(files, True)])
 
     def sents(self, files=None):
         """
@@ -79,11 +81,12 @@ class TaggedCorpusReader(CorpusReader):
             strings.
         @rtype: C{list} of (C{list} of C{str})
         """
-        return concat([TaggedCorpusView(filename, False, True, False,
+        return concat([TaggedCorpusView(filename, enc,
+                                        False, True, False,
                                         self._sep, self._word_tokenizer,
                                         self._sent_tokenizer,
                                         self._para_block_reader)
-                       for filename in self.abspaths(files)])
+                       for (filename, enc) in self.abspaths(files, True)])
 
     def paras(self, files=None):
         """
@@ -92,11 +95,12 @@ class TaggedCorpusReader(CorpusReader):
             in turn encoded as lists of word strings.
         @rtype: C{list} of (C{list} of (C{list} of C{str}))
         """
-        return concat([TaggedCorpusView(filename, False, True, True,
+        return concat([TaggedCorpusView(filename, enc,
+                                        False, True, True,
                                         self._sep, self._word_tokenizer,
                                         self._sent_tokenizer,
                                         self._para_block_reader)
-                       for filename in self.abspaths(files)])
+                       for (filename, enc) in self.abspaths(files, True)])
 
     def tagged_words(self, files=None):
         """
@@ -105,11 +109,12 @@ class TaggedCorpusReader(CorpusReader):
             C{(word,tag)}.
         @rtype: C{list} of C{(str,str)}
         """
-        return concat([TaggedCorpusView(filename, True, False, False,
+        return concat([TaggedCorpusView(filename, enc,
+                                        True, False, False,
                                         self._sep, self._word_tokenizer,
                                         self._sent_tokenizer,
                                         self._para_block_reader)
-                       for filename in self.abspaths(files)])
+                       for (filename, enc) in self.abspaths(files, True)])
 
     def tagged_sents(self, files=None):
         """
@@ -118,11 +123,12 @@ class TaggedCorpusReader(CorpusReader):
             
         @rtype: C{list} of (C{list} of C{(str,str)})
         """
-        return concat([TaggedCorpusView(filename, True, True, False,
+        return concat([TaggedCorpusView(filename, enc,
+                                        True, True, False,
                                         self._sep, self._word_tokenizer,
                                         self._sent_tokenizer,
                                         self._para_block_reader)
-                       for filename in self.abspaths(files)])
+                       for (filename, enc) in self.abspaths(files, True)])
 
     def tagged_paras(self, files=None):
         """
@@ -131,11 +137,12 @@ class TaggedCorpusReader(CorpusReader):
             in turn encoded as lists of C{(word,tag)} tuples.
         @rtype: C{list} of (C{list} of (C{list} of C{(str,str)}))
         """
-        return concat([TaggedCorpusView(filename, True, True, True,
+        return concat([TaggedCorpusView(filename, enc,
+                                        True, True, True,
                                         self._sep, self._word_tokenizer,
                                         self._sent_tokenizer,
                                         self._para_block_reader)
-                       for filename in self.abspaths(files)])
+                       for (filename, enc) in self.abspaths(files, True)])
 
     #{ Deprecated since 0.8
     @deprecated("Use .raw() or .words() or .sents() or .paras() or "
@@ -215,8 +222,9 @@ class TaggedCorpusView(StreamBackedCorpusView):
     C{TaggedCorpusView} objects are typically created by
     L{TaggedCorpusReader} (not directly by nltk users).
     """
-    def __init__(self, corpus_file, tagged, group_by_sent, group_by_para,
-                 sep, word_tokenizer, sent_tokenizer, para_block_reader):
+    def __init__(self, corpus_file, encoding, tagged, group_by_sent,
+                 group_by_para, sep, word_tokenizer, sent_tokenizer,
+                 para_block_reader):
         self._tagged = tagged
         self._group_by_sent = group_by_sent
         self._group_by_para = group_by_para
@@ -224,7 +232,7 @@ class TaggedCorpusView(StreamBackedCorpusView):
         self._word_tokenizer = word_tokenizer
         self._sent_tokenizer = sent_tokenizer
         self._para_block_reader = para_block_reader
-        StreamBackedCorpusView.__init__(self, corpus_file)
+        StreamBackedCorpusView.__init__(self, corpus_file, encoding=encoding)
         
     def read_block(self, stream):
         """Reads one paragraph at a time."""
@@ -255,12 +263,13 @@ class MacMorphoCorpusReader(TaggedCorpusReader):
     L{self.paras()} and L{self.tagged_paras()} contains a single
     sentence.
     """
-    def __init__(self, root, files):
+    def __init__(self, root, files, encoding=None):
         TaggedCorpusReader.__init__(
             self, root, files, sep='_',
             word_tokenizer=LineTokenizer(),
             sent_tokenizer=RegexpTokenizer('.*\n'),
-            para_block_reader=self._read_block)
+            para_block_reader=self._read_block,
+            encoding=encoding)
 
     def _read_block(self, stream):
         return read_regexp_block(stream, r'.*', r'.*_\.')

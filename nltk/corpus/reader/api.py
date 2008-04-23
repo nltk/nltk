@@ -33,7 +33,7 @@ class CorpusReader(object):
     selection arguments, such as C{files} or C{categories}, which can
     be used to select which portion of the corpus should be returned.
     """
-    def __init__(self, root, files):
+    def __init__(self, root, files, encoding=None):
         """
         @param root: The root directory for this corpus.
         @param files: A list of the files that make up this corpus.
@@ -41,6 +41,26 @@ class CorpusReader(object):
             strings; or implicitly, as a regular expression over file
             paths.  The absolute path for each file will be constructed
             by joining the reader's root to each file name.
+        @param encoding: The default unicode encoding for the files
+            that make up the corpus.  C{encoding}'s value can be any
+            of the following:
+            
+              - B{A string}: C{encoding} is the encoding name for all
+                files.
+              - B{A dictionary}: C{encoding[file_id]} is the encoding
+                name for the file whose identifier is C{file_id}.  If
+                C{file_id} is not in C{encoding}, then the file
+                contents will be processed using non-unicode byte
+                strings.
+              - B{A list}: C{encoding} should be a list of C{(regexp,
+                encoding)} tuples.  The encoding for a file whose
+                identifier is C{file_id} will be the C{encoding} value
+                for the first tuple whose C{regexp} matches the
+                C{file_id}.  If no tuple's C{regexp} matches the
+                C{file_id}, the file contents will be processed using
+                non-unicode byte strings.
+              - C{None}: the file contents of all files will be
+                processed using non-unicode byte strings.
         """
         if not os.path.isdir(root):
             raise ValueError('Root directory %r not found!' % root)
@@ -53,6 +73,23 @@ class CorpusReader(object):
         
         self._root = root
         """The root directory for this corpus."""
+
+        # If encoding was specified as a list of regexps, then convert
+        # it to a dictionary.
+        if isinstance(encoding, list):
+            encoding_dict = {}
+            for fileid in self._files:
+                for x in encoding:
+                    (regexp, enc) = x
+                    if re.match(regexp, fileid):
+                        encoding_dict[fileid] = enc
+                        break
+            encoding = encoding_dict
+
+        self._encoding = encoding
+        """The default unicode encoding for the files that make up
+           this corpus.  If C{encoding} is C{None}, then the file
+           contents are processed using byte strings (C{str})."""
         
     def __repr__(self):
         return '<%s in %r>' % (self.__class__.__name__, self._root)
@@ -67,20 +104,64 @@ class CorpusReader(object):
     def abspath(self, file):
         """
         Return the absolute path for the given file.
+
+        @type file: C{str}
+        @param file: The file identifier for the file whose path
+            should be returned.
         """
         return os.path.join(self._root, file)
 
-    def abspaths(self, files=None):
+    def abspaths(self, files=None, include_encoding=False):
         """
         Return a list of the absolute paths for all files in this corpus;
         or for the given list of files, if specified.
+
+        @type files: C{None} or C{str} or C{list}
+        @param files: Specifies the set of files for which paths should
+            be returned.  Can be C{None}, for all files; a list of
+            file identifiers, for a specified set of files; or a single
+            file identifier, for a single file.  Note that the return
+            value is always a list of paths, even if C{files} is a
+            single file identifier.
+            
+        @param include_encoding: If true, then return a list of
+            C{(abspath, encoding)} tuples.
         """
         if files is None:
-            return [os.path.join(self._root, f) for f in self._files]
+            files = self._files
         elif isinstance(files, basestring):
-            return [os.path.join(self._root, files)]
-        else:
+            files = [files]
+
+        if not include_encoding:
             return [os.path.join(self._root, f) for f in files]
+        else:
+            return [(os.path.join(self._root, f), self.encoding(f))
+                    for f in files]
+
+    def open(self, file):
+        """
+        Return an open stream that can be used to read the given file.
+        If the file's encoding is known, then the stream will
+        automatically decode the file's contents into unicode.
+
+        @param file: The file identifier of the file to read.
+        """
+        enc = self.encoding(file)
+        if enc is None:
+            return open(file, 'rb')
+        else:
+            return codecs.open(file, 'rb', enc)
+
+    def encoding(self, file):
+        """
+        Return the unicode encoding for the given corpus file, if known.
+        If the encoding is unknown, or if the given file should be
+        processed using byte strings (C{str}), then return C{None}.
+        """
+        if isinstance(self._encoding, dict):
+            return self._encoding.get(file)
+        else:
+            return self._encoding
         
     def _get_root(self): return self._root
     root = property(_get_root, doc="""

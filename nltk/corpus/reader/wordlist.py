@@ -6,21 +6,21 @@
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
-from util import *
-from api import *
+from nltk.corpus.reader.util import *
+from nltk.corpus.reader.api import *
 from nltk.internals import deprecated
+from nltk.tokenize import line_tokenize
 
 class WordListCorpusReader(CorpusReader):
     """
     List of words, one per line.  Blank lines are ignored.
     """
     def words(self, files=None):
-        return concat([[w for w in open(filename).read().split('\n') if w]
-                       for filename in self.abspaths(files)])
+        return line_tokenize(self.raw(files))
 
     def raw(self, files=None):
-        return concat([open(filename).read()
-                       for filename in self.abspaths(files)])
+        return concat([codecs.open(path, 'rb', enc).read()
+                       for (path,enc) in self.abspaths(files, True)])
 
     #{ Deprecated since 0.8
     @deprecated("Use .raw() or .words() instead.")

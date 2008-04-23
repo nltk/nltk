@@ -9,7 +9,7 @@ from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
 from nltk.tree import Tree
 from nltk.etree import ElementTree
-import re
+import re, codecs
 
 class PropbankCorpusReader(CorpusReader):
     """
@@ -25,9 +25,8 @@ class PropbankCorpusReader(CorpusReader):
     argument roles, along with examples.
     """
     def __init__(self, root, propfile, framefiles='',
-                 verbsfile=None,
-                 parse_filename_xform=None,
-                 parse_corpus=None):
+                 verbsfile=None, parse_filename_xform=None,
+                 parse_corpus=None, encoding=None):
         """
         @param root: The root directory for this corpus.
         @param propfile: The name of the file containing the predicate-
@@ -47,7 +46,8 @@ class PropbankCorpusReader(CorpusReader):
             framefiles = nltk.corpus.reader.find_corpus_files(root, framefiles)
         framefiles = list(framefiles)
         # Initialze the corpus reader.
-        CorpusReader.__init__(self, root, [propfile, verbsfile] + framefiles)
+        CorpusReader.__init__(self, root, [propfile, verbsfile] + framefiles,
+                              encoding)
 
         # Record our frame files & prop file.
         self._propfile = propfile
@@ -58,11 +58,10 @@ class PropbankCorpusReader(CorpusReader):
 
     def raw(self, files=None):
         """
-        @return: the text contents of the given files, as a single
-        string.
+        @return: the text contents of the given files, as a single string.
         """
-        return concat([open(filename).read()
-                       for filename in self.abspaths(files)])
+        return concat([codecs.open(path, 'rb', enc).read()
+                       for (path,enc) in self.abspaths(files, True)])
 
     def instances(self):
         """
@@ -70,7 +69,8 @@ class PropbankCorpusReader(CorpusReader):
         L{PropbankInstance} objects, one for each verb in the corpus.
         """
         return StreamBackedCorpusView(self.abspath(self._propfile),
-                                      self._read_instance_block)
+                                      self._read_instance_block,
+                                      encoding=self.encoding(self._propfile))
 
     def lines(self):
         """
@@ -78,7 +78,8 @@ class PropbankCorpusReader(CorpusReader):
         each line in the predicate-argument annotation file.  
         """
         return StreamBackedCorpusView(self.abspath(self._propfile),
-                                      read_line_block)
+                                      read_line_block,
+                                      encoding=self.encoding(self._propfile))
 
     def roleset(self, roleset_id):
         """
@@ -90,6 +91,8 @@ class PropbankCorpusReader(CorpusReader):
             raise ValueError('Frameset file for %s not found' %
                              roleset_id)
 
+        # n.b.: The encoding for XML files is specified by the file
+        # itself; so we ignore self._encoding here.
         etree = ElementTree.parse(self.abspath(framefile)).getroot()
         for roleset in etree.findall('predicate/roleset'):
             if roleset.attrib['id'] == roleset_id:
@@ -104,7 +107,8 @@ class PropbankCorpusReader(CorpusReader):
         in this corpus (from the verbs.txt file).
         """
         return StreamBackedCorpusView(self.abspath(self._verbsfile),
-                                      read_line_block)
+                                      read_line_block,
+                                      encoding=self.encoding(self._verbsfile))
 
     def _read_instance_block(self, stream):
         block = []

@@ -95,10 +95,6 @@ class RTECorpusReader(XMLCorpusReader):
     """
     Corpus reader for corpora in RTE challenges.
     """
-    def xml(self, files=None):
-        return concat([ElementTree.parse(filename).getroot()
-                   for filename in self.abspaths(files)])   
-
     def _read_etree(self, doc):
         """
         Build a list of RTE text/hypothesis pairs from the XML input.
