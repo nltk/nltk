@@ -8,7 +8,7 @@
 Words
 ---------------------------------------------------------------------------
 
-A L{Word} is an index into the database. More specifically, a list of
+A `Word` is an index into the database. More specifically, a list of
 the Senses of the supplied word string. These senses can be accessed
 via index notation ``word[n]`` or via the ``word.getSenses()`` method.
 
@@ -38,7 +38,7 @@ via index notation ``word[n]`` or via the ``word.getSenses()`` method.
 Synsets
 ---------------------------------------------------------------------------
 
-L{Synset}: a set of synonyms that share a common meaning.
+`Synset`: a set of synonyms that share a common meaning.
 
 Each synset contains one or more lemmas, which represent a specific
 sense of a specific word.  Senses can be retrieved via
@@ -91,7 +91,7 @@ ancestor nodes are common, -1 is returned. If a node is compared with
 itself 0 is returned.
 
 getIC(self, freq_data):
-Get the Information Content (IC) value of this L{Synset}, using
+Get the Information Content (IC) value of this `Synset`, using
 the supplied dict 'freq_data'.
 
 ---------------------------------------------------------------------------
