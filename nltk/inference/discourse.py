@@ -202,8 +202,9 @@ class DiscourseTester(object):
                 print
                 print '%s readings:' % sid
                 print '-' * 30
-                for rid in self._readings[sid]:
-                    lf = str(self._readings[sid][rid].infixify())
+                for rid in sorted(self._readings[sid]):
+                    lf = self._readings[sid][rid].infixify()
+                    lf = lf.normalize('[xyz]\d*', 'z%d')
                     print "%s: %s" % (rid, lf)
     
     def _show_threads(self, filter=False):
