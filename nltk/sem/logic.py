@@ -25,6 +25,7 @@ The class of C{Expression} has various subclasses:
 """
 
 from nltk.internals import Counter
+import re
 
 ######################################################################
 # Variables & Bindings
@@ -177,16 +178,28 @@ class Expression(SubstituteBindingsI):
     def __hash__(self):
         raise NotImplementedError, self.__class__
     
-    def normalize(self):
-        if hasattr(self, '_normalized'): return self._normalized
+    def normalize(self, replace='.*', replacement='z%d'):
+        """
+        @param replace: A regular expression indicating which variables
+            should be replaced with normalized names.
+        @param replacement: A string template used to construct the
+            replacement variable name.  It will be combined via the
+            C{%} operator with an integer.
+        """
+        if (hasattr(self, '_normalized') and
+            replace=='.*' and replacement=='z%d'):
+            return self._normalized
         result = self
         vars = self.variables()
         counter = 0
         for var in vars:
-            counter += 1
-            result = result.replace(var, Variable(str(counter)),
-                                    replace_bound=True)
-        self._normalized = result
+            if re.match(replace+'\Z', var.name):
+                counter += 1
+                new_name = replacement % counter
+                result = result.replace(var, Variable(new_name),
+                                        replace_bound=True)
+        if replace=='.*' and replacement=='z%d':
+            self._normalized = result
         return result
     
     def substitute_bindings(self, bindings):
