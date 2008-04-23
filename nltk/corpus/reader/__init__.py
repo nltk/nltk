@@ -12,6 +12,7 @@ Corpus readers.
 
 from nltk.corpus.reader.plaintext import *
 from nltk.corpus.reader.util import *
+from nltk.corpus.reader.api import *
 from nltk.corpus.reader.tagged import *
 from nltk.corpus.reader.cmudict import *
 from nltk.corpus.reader.conll import *
@@ -34,6 +35,7 @@ from nltk.corpus.reader.propbank import *
 from nltk.corpus.reader.verbnet import *
 
 __all__ = [
+    'CorpusReader', 'CategorizedCorpusReader',
     'PlaintextCorpusReader', 'find_corpus_files',
     'TaggedCorpusReader', 'CMUDictCorpusReader',
     'ConllChunkCorpusReader', 'WordListCorpusReader',
