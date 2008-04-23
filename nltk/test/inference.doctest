@@ -47,7 +47,7 @@ Extract the source code into a suitable directory and follow the
 instructions in the Prover9 ``README.make`` file to compile the executables.
 Install these into an appropriate location; the
 ``prover9_search`` variable is currently configured to look in the
-following locations::
+following locations:
 
     >>> Prover9.prover9_search # doctest: +NORMALIZE_WHITESPACE
     ['.', '/usr/local/bin/prover9', '/usr/local/bin/prover9/bin',
