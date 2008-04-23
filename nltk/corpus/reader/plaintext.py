@@ -10,6 +10,7 @@
 A reader for corpora that consist of plaintext documents.
 """
 
+import codecs
 import nltk.data
 from nltk.tokenize import *
 from nltk.corpus.reader.util import *
@@ -37,7 +38,8 @@ class PlaintextCorpusReader(CorpusReader):
                  word_tokenizer=WordPunctTokenizer(),
                  sent_tokenizer=nltk.data.LazyLoader(
                      'tokenizers/punkt/english.pickle'),
-                 para_block_reader=read_blankline_block):
+                 para_block_reader=read_blankline_block,
+                 encoding=None):
         """
         Construct a new plaintext corpus reader for a set of documents
         located at the given root directory.  Example usage:
@@ -54,7 +56,7 @@ class PlaintextCorpusReader(CorpusReader):
         @param para_block_reader: The block reader used to divide the
             corpus into paragraph blocks.
         """
-        CorpusReader.__init__(self, root, files)
+        CorpusReader.__init__(self, root, files, encoding)
         self._word_tokenizer = word_tokenizer
         self._sent_tokenizer = sent_tokenizer
         self._para_block_reader = para_block_reader
@@ -64,8 +66,8 @@ class PlaintextCorpusReader(CorpusReader):
         @return: the given file or files as a single string.
         @rtype: C{str}
         """
-        return concat([open(filename).read()
-                       for filename in self.abspaths(files)])
+        return concat([codecs.open(path, 'rb', enc).read()
+                       for (path,enc) in self.abspaths(files, True)])
     
     def words(self, files=None):
         """
@@ -73,8 +75,9 @@ class PlaintextCorpusReader(CorpusReader):
             and punctuation symbols.
         @rtype: C{list} of C{str}
         """
-        return concat([self.CorpusView(filename, self._read_word_block)
-                       for filename in self.abspaths(files)])
+        return concat([self.CorpusView(filename, self._read_word_block,
+                                       encoding=enc)
+                       for (filename, enc) in self.abspaths(files, True)])
     
     def sents(self, files=None):
         """
@@ -85,8 +88,9 @@ class PlaintextCorpusReader(CorpusReader):
         """
         if self._sent_tokenizer is None:
             raise ValueError('No sentence tokenizer for this corpus')
-        return concat([self.CorpusView(filename, self._read_sent_block)
-                       for filename in self.abspaths(files)])
+        return concat([self.CorpusView(filename, self._read_sent_block,
+                                       encoding=enc)
+                       for (filename, enc) in self.abspaths(files, True)])
 
     def paras(self, files=None):
         """
@@ -97,8 +101,9 @@ class PlaintextCorpusReader(CorpusReader):
         """
         if self._sent_tokenizer is None:
             raise ValueError('No sentence tokenizer for this corpus')
-        return concat([self.CorpusView(filename, self._read_para_block)
-                       for filename in self.abspaths(files)])
+        return concat([self.CorpusView(filename, self._read_para_block,
+                                       encoding=enc)
+                       for (filename, enc) in self.abspaths(files, True)])
 
     def _read_word_block(self, stream):
         words = []

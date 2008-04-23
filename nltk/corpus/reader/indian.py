@@ -21,7 +21,7 @@ Contents:
 from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
 from nltk import tokenize
-import os
+import codecs
 from nltk.internals import deprecated
 import nltk.tag.util # for str2tuple
 
@@ -30,24 +30,28 @@ class IndianCorpusReader(CorpusReader):
     List of words, one per line.  Blank lines are ignored.
     """
     def words(self, files=None):
-        return concat([IndianCorpusView(filename, False, False)
-                       for filename in self.abspaths(files)])
+        return concat([IndianCorpusView(filename, enc,
+                                        False, False)
+                       for (filename, enc) in self.abspaths(files, True)])
 
     def tagged_words(self, files=None):
-        return concat([IndianCorpusView(filename, True, False)
-                       for filename in self.abspaths(files)])
+        return concat([IndianCorpusView(filename, enc,
+                                        True, False)
+                       for (filename, enc) in self.abspaths(files, True)])
 
     def sents(self, files=None):
-        return concat([IndianCorpusView(filename, False, True)
-                       for filename in self.abspaths(files)])
+        return concat([IndianCorpusView(filename, enc,
+                                        False, True)
+                       for (filename, enc) in self.abspaths(files, True)])
 
     def tagged_sents(self, files=None):
-        return concat([IndianCorpusView(filename, True, True)
-                       for filename in self.abspaths(files)])
+        return concat([IndianCorpusView(filename, enc,
+                                        True, True)
+                       for (filename, enc) in self.abspaths(files, True)])
 
     def raw(self, files=None):
-        return concat([open(filename).read()
-                       for filename in self.abspaths(files)])
+        return concat([codecs.open(path, 'rb', enc).read()
+                       for (path,enc) in self.abspaths(files, True)])
 
     #{ Deprecated since 0.8
     @deprecated("Use .raw() or .words() or .tagged_words() instead.")
@@ -65,10 +69,10 @@ class IndianCorpusReader(CorpusReader):
     #}
     
 class IndianCorpusView(StreamBackedCorpusView):
-    def __init__(self, corpus_file, tagged, group_by_sent):
+    def __init__(self, corpus_file, encoding, tagged, group_by_sent):
         self._tagged = tagged
         self._group_by_sent = group_by_sent
-        StreamBackedCorpusView.__init__(self, corpus_file)
+        StreamBackedCorpusView.__init__(self, corpus_file, encoding=encoding)
 
     def read_block(self, stream):
         line = stream.readline()

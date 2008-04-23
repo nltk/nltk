@@ -22,19 +22,18 @@ from nltk.internals import deprecated
 
 class ToolboxCorpusReader(CorpusReader):
     def xml(self, files, key=None):
-        return concat([ToolboxData(filename).parse(key)
-                       for filename in self.abspaths(files)])
+        return concat([ToolboxData(path, enc).parse(key)
+                       for (path, enc) in self.abspaths(files, True)])
 
     def fields(self, files, strip=True, unwrap=True, encoding=None,
                errors='strict', unicode_fields=None):
-        return concat([list(ToolboxData(filename).fields(strip, unwrap,
-                                                         encoding, errors,
-                                                         unicode_fields))
-                       for filename in self.abspaths(files)])
+        return concat([list(ToolboxData(filename,enc).fields(
+                             strip, unwrap, encoding, errors, unicode_fields))
+                       for (filename, enc) in self.abspaths(files)])
 
     def raw(self, files):
-        return concat([open(filename).read()
-                       for filename in self.abspaths(files)])
+        return concat([codecs.open(path, 'rb', enc).read()
+                       for (path,enc) in self.abspaths(files, True)])
 
     #{ Deprecated since 0.8
     @deprecated("Use .xml() instead.")
@@ -49,7 +48,8 @@ class StandardFormat(object):
     """
     Class for reading and processing standard format marker files and strings.
     """
-    def __init__(self, filename=None):
+    def __init__(self, filename=None, encoding=None):
+        self._encoding = encoding
         if filename is not None:
             self.open(filename)
 
@@ -59,7 +59,7 @@ class StandardFormat(object):
         @param sfm_file: name of the standard format marker input file
         @type sfm_file: string
         """
-        self._file = file(sfm_file, 'rU')
+        self._file = codecs.open(sfm_file, 'rU', self._encoding)
 
     def open_string(self, s):
         """Open a standard format marker string for sequential reading. 

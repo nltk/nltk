@@ -41,7 +41,7 @@ of the author.
 from util import *
 from api import *
 from nltk import tokenize
-import os
+import codecs
 from nltk.internals import deprecated
 
 class PPAttachment:
@@ -64,16 +64,18 @@ class PPAttachmentCorpusReader(CorpusReader):
     sentence_id verb noun1 preposition noun2 attachment
     """
     def attachments(self, files):
-        return concat([StreamBackedCorpusView(filename, self._read_obj_block)
-                       for filename in self.abspaths(files)])
+        return concat([StreamBackedCorpusView(filename, self._read_obj_block,
+                                              encoding=enc)
+                       for (filename, enc) in self.abspaths(files, True)])
 
     def tuples(self, files):
-        return concat([StreamBackedCorpusView(filename, self._read_tuple_block)
-                       for filename in self.abspaths(files)])
+        return concat([StreamBackedCorpusView(filename, self._read_tuple_block,
+                                              encoding=enc)
+                       for (filename, enc) in self.abspaths(files, True)])
 
-    def raw(self, files):
-        return concat([open(filename).read()
-                       for filename in self.abspaths(files)])
+    def raw(self, files=None):
+        return concat([codecs.open(path, 'rb', enc).read()
+                       for (path,enc) in self.abspaths(files, True)])
 
     def _read_tuple_block(self, stream):
         line = stream.readline()

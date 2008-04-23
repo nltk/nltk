@@ -6,18 +6,18 @@
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
-import re
+import re, codecs
 from plaintext import PlaintextCorpusReader
-from api import *
-from util import *
+from nltk.corpus.reader.api import *
+from nltk.corpus.reader.util import *
 
 class GutenbergCorpusReader(PlaintextCorpusReader):
     class CorpusView(StreamBackedCorpusView):
-        def __init__(self, filename, block_reader):
+        def __init__(self, filename, block_reader, encoding=None):
             startpos = 0
             
             # Search for a preamble.
-            stream = open(filename, 'rb')
+            stream = codecs.open(filename, 'rb', encoding)
             for i in range(300):
                 line = stream.readline()
                 if line == '':
@@ -28,5 +28,6 @@ class GutenbergCorpusReader(PlaintextCorpusReader):
             stream.close()
     
             StreamBackedCorpusView.__init__(self, filename,
-                                            block_reader, startpos)
+                                            block_reader, startpos,
+                                            encoding=encoding)
     

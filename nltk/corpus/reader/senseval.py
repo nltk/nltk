@@ -43,9 +43,16 @@ class SensevalInstance(object):
 
 class SensevalCorpusReader(CorpusReader):
     def instances(self, files=None):
-        return concat([SensevalCorpusView(filename)
-                       for filename in self.abspaths(files)])
+        return concat([SensevalCorpusView(filename, enc)
+                       for (filename, enc) in self.abspaths(files, True)])
 
+    def raw(self, files=None):
+        """
+        @return: the text contents of the given files, as a single string.
+        """
+        return concat([codecs.open(path, 'rb', enc).read()
+                       for (path,enc) in self.abspaths(files, True)])
+    
     def _entry(self, tree):
         elts = []
         for lexelt in tree.findall('lexelt'):
@@ -68,8 +75,8 @@ class SensevalCorpusReader(CorpusReader):
     #}
     
 class SensevalCorpusView(StreamBackedCorpusView):
-    def __init__(self, filename):
-        StreamBackedCorpusView.__init__(self, filename)
+    def __init__(self, filename, encoding):
+        StreamBackedCorpusView.__init__(self, filename, encoding=encoding)
 
         self._word_tokenizer = WhitespaceTokenizer()
         self._lexelt_starts = [0] # list of streampos

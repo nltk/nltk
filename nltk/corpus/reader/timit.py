@@ -137,6 +137,7 @@ class TimitCorpusReader(CorpusReader):
     for each speaker, containing three files for each utterance:
 
       - <utterance-id>.txt: text content of utterances
+      - <utterance-id>.wrd: tokenized text content of utterances
       - <utterance-id>.phn: phonetic transcription of utterances
       - <utterance-id>.wav: utterance sound file
     """
@@ -146,13 +147,14 @@ class TimitCorpusReader(CorpusReader):
     """A regexp matchin files that are used by this corpus reader."""
     _UTTERANCE_RE = r'\w+-\w+/\w+\.txt'
     
-    def __init__(self, root):
+    def __init__(self, root, encoding=None):
         """
         Construct a new TIMIT corpus reader in the given directory.
         @param root: The root directory for this corpus.
         """
         CorpusReader.__init__(self, root,
-                              find_corpus_files(root, self._FILE_RE))
+                              find_corpus_files(root, self._FILE_RE),
+                              encoding=encoding)
 
         self._utterances = [name[:-4] for name in
                             find_corpus_files(root, self._UTTERANCE_RE)]
@@ -163,6 +165,25 @@ class TimitCorpusReader(CorpusReader):
         self._root = root
         self.speakers = tuple(sorted(set(u.split('/')[0]
                                          for u in self._utterances)))
+
+    def files(self, filetype=None):
+        """
+        Return a list of file identifiers for the files that make up
+        this corpus.
+
+        @param filetype: If specified, then C{filetype} indicates that
+            only the files that have the given type should be
+            returned.  Accepted values are: C{txt}, C{wrd}, C{phn},
+            C{wav}, or C{metadata},
+        """
+        if filetype is None:
+            return CorpusReader.files(self)
+        elif filetype in ('txt', 'wrd', 'phn', 'wav'):
+            return ['%s.%s' % (u, filetype) for u in self._utterances]
+        elif filetype == 'metadata':
+            return ['timitdic.txt', 'spkrinfo.txt']
+        else:
+            raise ValueError('Bad value for filetype: %r' % filetype)
 
     def utterances(self, dialect=None, sex=None, spkrid=None,
                    sent_type=None, sentid=None):
@@ -197,7 +218,8 @@ class TimitCorpusReader(CorpusReader):
         each word.
         """
         _transcriptions = {}
-        for line in open(os.path.join(self._root, 'timitdic.txt')):
+        path = os.path.join(self._root, 'timitdic.txt')
+        for line in codecs.open(path, 'rb', self.encoding('timitdic.txt')):
             if not line.strip() or line[0] == ';': continue
             m = re.match(r'\s*(\S+)\s+/(.*)/\s*$', line)
             if not m: raise ValueError('Bad line: %r' % line)
@@ -230,7 +252,8 @@ class TimitCorpusReader(CorpusReader):
         
         if self._speakerinfo is None:
             self._speakerinfo = {}
-            for line in open(os.path.join(self._root, 'spkrinfo.txt')):
+            path = os.path.join(self._root, 'spkrinfo.txt')
+            for line in codecs.open(path, 'rb', self.encoding('spkrinfo.txt')):
                 if not line.strip() or line[0] == ';': continue
                 rec = line.strip().split(None, 9)
                 key = "dr%s-%s%s" % (rec[2],rec[1].lower(),rec[0].lower())
@@ -240,37 +263,43 @@ class TimitCorpusReader(CorpusReader):
 
     def phones(self, utterances=None):
         return [line.split()[-1]
-                for filename in self._utterance_filenames(utterances, '.phn')
-                for line in open(filename) if line.strip()]
+                for path in self._utterance_filenames(utterances, '.phn')
+                for line in codecs.open(path, 'rb', self._encoding)
+                if line.strip()]
 
     def phone_times(self, utterances=None):
         """
         offset is represented as a number of 16kHz samples!
         """
         return [(line.split()[2], int(line.split()[0]), int(line.split()[1]))
-                for filename in self._utterance_filenames(utterances, '.phn')
-                for line in open(filename) if line.strip()]
+                for path in self._utterance_filenames(utterances, '.phn')
+                for line in codecs.open(path, 'rb', self._encoding)
+                if line.strip()]
 
     def words(self, utterances=None):
         return [line.split()[-1]
-                for filename in self._utterance_filenames(utterances, '.wrd')
-                for line in open(filename) if line.strip()]
+                for path in self._utterance_filenames(utterances, '.wrd')
+                for line in codecs.open(path, 'rb', self._encoding)
+                if line.strip()]
 
     def word_times(self, utterances=None):
         return [(line.split()[2], int(line.split()[0]), int(line.split()[1]))
-                for filename in self._utterance_filenames(utterances, '.wrd')
-                for line in open(filename) if line.strip()]
+                for path in self._utterance_filenames(utterances, '.wrd')
+                for line in codecs.open(path, 'rb', self._encoding)
+                if line.strip()]
 
     def sents(self, utterances=None):
         return [[line.split()[-1]
-                 for line in open(filename) if line.strip()]
-                for filename in self._utterance_filenames(utterances, '.wrd')]
+                 for line in codecs.open(path, 'rb', self._encoding)
+                 if line.strip()]
+                for path in self._utterance_filenames(utterances, '.wrd')]
 
     def sent_times(self, utterances=None):
         return [(line.split(None,2)[-1].strip(),
                  int(line.split()[0]), int(line.split()[1]))
-                for filename in self._utterance_filenames(utterances, '.txt')
-                for line in open(filename) if line.strip()]
+                for path in self._utterance_filenames(utterances, '.txt')
+                for line in codecs.open(path, 'rb', self._encoding)
+                if line.strip()]
 
     def phone_trees(self, utterances=None):
         if utterances is None: utterances = self._utterances
@@ -302,16 +331,15 @@ class TimitCorpusReader(CorpusReader):
         # to import the stdlib chunk module, and will get confused
         # if it sees *our* chunk module instead.
         import wave
-        
-        wav_data = open(os.path.join(self._root, utterance+'.wav')).read()
+
+        w = wave.open(os.path.join(self._root, utterance+'.wav'), 'rb')
         
         # If they want the whole thing, return it as-is.
         if start==0 and end is None:
-            return wav_data
+            return w.read()
 
         # Select the piece we want using the 'wave' module.
         else:
-            w = wave.open(os.path.join(self._root, utterance+'.wav'))
             # Skip past frames before start.
             w.readframes(start)
             # Read the frames we want.
@@ -334,13 +362,13 @@ class TimitCorpusReader(CorpusReader):
         headersize = 44
         fnam = os.path.join(self._root, utterance+'.wav')
         if end is None:
-            data = open(fnam).read()
+            data = open(fnam, 'rb').read()
         else:
-            data = open(fnam).read(headersize+end*2)
+            data = open(fnam, 'rb').read(headersize+end*2)
         return data[headersize+start*2:]
 
     def _utterance_filenames(self, utterances, extension):
-        if utterances is None: utterances = self.utterances
+        if utterances is None: utterances = self._utterances
         if isinstance(utterances, basestring): utterances = [utterances]
         return [os.path.join(self._root, '%s%s' % (utterance, extension))
                 for utterance in utterances]
