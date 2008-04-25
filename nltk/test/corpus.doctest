@@ -2,8 +2,31 @@
  Corpus Readers
 ================
 
+The `nltk.corpus` package defines a collection of *corpus reader*
+classes, which can be used to access the contents of a diverse set of
+corpora.  Each corpus reader class is specialized to handle a specific
+corpus format.  In addition, the `nltk.corpus` package automatically
+creates a set of corpus reader instances that can be used to access
+the corpora in the NLTK data package.
+Section `Corpus Reader Objects`_ ("Corpus Reader Objects") describes
+the corpus reader instances that can be used to read the corpora in
+the NLTK data package.  Section `Corpus Reader Classes`_ ("Corpus
+Reader Classes") describes the corpus reader classes themselves, and
+discusses the issues involved in creating new corpus reader objects
+and new corpus reader classes.  Section `Regression Tests`_
+("Regression Tests") contains regression tests for the corpus readers
+and associated functions and classes.
+
+.. contents:: **Table of Contents**
+  :depth: 2
+  :backlinks: none
+
+---------------------
+Corpus Reader Objects
+---------------------
+
 Overview
-~~~~~~~~
+========
 
 The NLTK data package includes a diverse set of corpora, which can be
 read using the `nltk.corpus` package.  Each corpus is accessed by
@@ -66,7 +89,7 @@ typically load all documents in the corpus.
     143066
 
 Plaintext Corpora
-~~~~~~~~~~~~~~~~~
+=================
 
 Here are the first few words from each of NLTK's plaintext corpora:
 
@@ -81,13 +104,13 @@ Here are the first few words from each of NLTK's plaintext corpora:
     >>> nltk.corpus.state_union.words()
     ['PRESIDENT', 'HARRY', 'S', '.', 'TRUMAN', "'", 'S', ...]
     >>> nltk.corpus.udhr.words() # doctest: +NORMALIZE_WHITESPACE
-    ['\xc0\xf3\xe0\xfe\xfb\xf2\xfa\xfb\xfe\xf1\xe0',
-     '\xe8\xe7\xe8\xed6\xfa\xe0', ...]
+    [u'\u0420\u0453\u0440\u045e\u045b\u0452\u045a\u045b\u045e\u0451\u0440',
+     u'\u0448\u0447\u0448\u044d6\u045a\u0440', ...]
     >>> nltk.corpus.webtext.words()
     ['White', 'guy', ':', 'So', ',', 'do', 'you', 'have', ...]
 
 Tagged Corpora
-~~~~~~~~~~~~~~
+==============
 
 In addition to the plaintext corpora, NLTK's data package also
 contains a wide variety of annotated corpora.  For example, the Brown
@@ -128,7 +151,7 @@ Indian text annotated with part-of-speech tags:
      ('\xe0\xa6\xb8\xe0\xa6\xa8\xe0\xa7\x8d\xe0...', 'NN'), ...]
 
 Chunked Corpora
-~~~~~~~~~~~~~~~
+===============
 
 The CoNLL corpora also provide chunk structures, which are encoded as
 flat trees.  The CoNLL 2000 Corpus includes phrasal chunks; and the
@@ -211,7 +234,7 @@ in a given item as `IEERDocument` objects:
       ...)
 
 Parsed Corpora
-~~~~~~~~~~~~~~
+==============
 
 The Treebank corpora provide a syntactic parse for each sentence.  The
 NLTK data package includes a 10% sample of the Penn Treebank (in
@@ -295,7 +318,7 @@ when you try to access it:
     **********************************************************************
       
 Word Lists and Lexicons
-~~~~~~~~~~~~~~~~~~~~~~~
+=======================
 
 The NLTK data package also includes a number of lexicons and word
 lists.  These are accessed just like text corpora.  The following
@@ -342,7 +365,7 @@ strings.
      ('K', 'IH1', 'T')]
 
 Categorized Corpora
-~~~~~~~~~~~~~~~~~~~
+===================
 
 Several corpora included with NLTK contain documents that have been categorized for
 topic, genre, polarity, etc.  In addition to the standard corpus interface, these
@@ -403,7 +426,7 @@ category assigned to a document is correct as follows:
     True
 
 Propbank Corpus
-~~~~~~~~~~~~~~~
+===============
 The Propbank corpus provides predicate-argument annotation for the
 entire treebank.  Each verb in the treebank is annotated by a single
 instance in the propbank corpus, containing information about the
@@ -573,7 +596,7 @@ A list of the verb lemmas contained in propbank is returned by the
     ['abandon', 'abate', 'abdicate', 'abet', 'abide', ...]
 
 Other Corpora
-~~~~~~~~~~~~~
+=============
 
 senseval
 --------
@@ -909,8 +932,485 @@ consise form.  The simplest such method is `pprint()`:
           Semantics:
             * weather(during(E), Weather_type, Theme)
 
+
+---------------------
+Corpus Reader Classes
+---------------------
+
+NLTK's *corpus reader* classes are used to access the contents of a
+diverse set of corpora.  Each corpus reader class is specialized to
+handle a specific corpus format.  Examples include the
+`PlaintextCorpusReader`, which handles corpora that consist of a set
+of unannotated text files, and the `BracketParseCorpusReader`, which
+handles corpora that consist of files containing
+parenthesis-delineated parse trees.
+
+Automatically Created Corpus Reader Instances
+=============================================
+
+When then `nltk.corpus` module is imported, it automatically creates a
+set of corpus reader instances that can be used to access the corpora
+in the NLTK data distribution.  Here is a small sample of those
+corpus reader instances:
+
+    >>> import nltk
+    >>> nltk.corpus.brown # doctest: +ELLIPSIS
+    <CategorizedTaggedCorpusReader in '.../corpora/brown'>
+    >>> nltk.corpus.treebank # doctest: +ELLIPSIS
+    <BracketParseCorpusReader in '.../corpora/treebank/combined'>
+    >>> nltk.corpus.names # doctest: +ELLIPSIS
+    <WordListCorpusReader in '.../corpora/names'>
+    >>> nltk.corpus.genesis # doctest: +ELLIPSIS
+    <PlaintextCorpusReader in '.../corpora/genesis'>
+    >>> nltk.corpus.inaugural # doctest: +ELLIPSIS
+    <PlaintextCorpusReader in '.../corpora/inaugural'>
+
+This sample illustrates that different corpus reader classes are used
+to read different corpora; but that the same corpus reader class may
+be used for more than one corpus (e.g., ``genesis`` and ``inaugural``).
+
+Creating New Corpus Reader Instances
+====================================
+
+Although the `nltk.corpus` module automatically creates corpus reader
+instances for the corpora in the NLTK data distribution, you may
+sometimes need to create your own corpus reader.  In particular, you
+would need to create your own corpus reader if you want...
+
+- To access a corpus that is not included in the NLTK data
+  distribution.
+
+- To access a full copy of a corpus for which the NLTK data
+  distribution only provides a sample.
+
+- To access a corpus using a customized corpus reader (e.g., with
+  a customized tokenizer).
+
+To create a new corpus reader, you will first need to look up the
+signature for that corpus reader's constructor.  Different corpus
+readers have different constructor signatures, but most of the
+constructor signatures have the basic form::
+
+    SomeCorpusReader(root, files, ...options...)
+
+Where ``root`` is an absolute path to the directory containing the
+corpus data files; ``files`` is either a list of file names (relative
+to ``root``) or a regexp specifying which files should be included;
+and ``options`` are additional reader-specific options.  For example,
+we can create a customized corpus reader for the genesis corpus that
+uses a different sentence tokenizer as follows:
+
+    >>> # Find the directory where the corpus lives.
+    >>> genesis_dir = nltk.data.find('corpora/genesis')
+    >>> # Create our custom sentence tokenizer.
+    >>> my_sent_tokenizer = nltk.RegexpTokenizer('[^.!?]+')
+    >>> # Create the new corpus reader object.
+    >>> my_genesis = nltk.corpus.PlaintextCorpusReader(
+    ...     genesis_dir, '.*\.txt', sent_tokenizer=my_sent_tokenizer)
+    >>> # Use the new corpus reader object.
+    >>> print my_genesis.sents('english-kjv.txt')[0] # doctest: +NORMALIZE_WHITESPACE
+    ['In', 'the', 'beginning', 'God', 'created', 'the', 'heaven',
+     'and', 'the', 'earth']
+
+For a complete list of corpus reader subclasses, see the API
+documentation for `nltk.corpus.CorpusReader`.
+
+Corpus Types
+============
+
+Corpora vary widely in the types of content they include.  This is
+reflected in the fact that the base class `CorpusReader` only defines
+a few general-purpose methods for listing and accessing the files that
+make up a corpus.  It is up to the subclasses to define *data access
+methods* that provide access to the information in the corpus.
+However, corpus reader subclasses should be consistent in their
+definitions of these data access methods wherever possible.
+
+At a high level, corpora can be divided into three basic types:
+
+- A *token corpus* contains information about specific occurences of
+  language use (or linguistic tokens), such as dialogues or written
+  texts.  Examples of token corpora are collections of written text
+  and collections of speech.
+
+- A *type corpus*, or *lexicon*, contains information about a coherent
+  set of lexical items (or linguistic types).  Examples of lexicons
+  are dictionaries and word lists.
+
+- A *language description corpus* contains information about a set of
+  non-lexical linguistic constructs, such as grammar rules.
+
+However, many individual corpora blur the distinctions between these
+types.  For example, corpora that are primarily lexicons may include
+token data in the form of example sentences; and corpora that are
+primarily token corpora may be accompanied by one or more word lists
+or other lexical data sets.
+
+Because corpora vary so widely in their information content, we have
+decided that it would not be wise to use separate corpus reader base
+classes for different corpus types.  Instead, we simply try to make
+the corpus readers consistent wherever possible, but let them differ
+where the underlying data itself differs.
+
+Common Corpus Reader Methods
+============================
+
+As mentioned above, there are only a handful of methods that all
+corpus readers are guaranteed to implement.  These methods provide
+access to the files that contain the corpus data.  Every corpus is
+assumed to consist of one or more files, all located in a common root
+directory (or in subdirectories of that root directory).  The absolute
+path to the root directory is stored in the ``root`` property:
+
+    >>> print nltk.corpus.genesis.root # doctest: +ELLIPSIS
+    /.../corpora/genesis
+
+Each file within the corpus is identified by a platform-independent
+identifier, which is basically a path string that uses ``/`` as the
+path seperator.  I.e., this identifier can be converted to a relative
+path as follows:
+
+    >>> some_corpus_file_id = nltk.corpus.reuters.files()[0]
+    >>> import os.path
+    >>> os.path.join(*some_corpus_file_id.split('/'))
+    'test/14826'
+
+To get a list of all data files that make up a corpus, use the
+``files()`` method.  In some corpora, these files will not all contain
+the same type of data; for example, for the ``nltk.corpus.timit``
+corpus, ``files()`` will return a list including text files, word
+segmentation files, phonetic transcription files, sound files, and
+metadata files.  For corpora with diverse file types, the ``files()``
+method will often take one or more optional arguments, which can be
+used to get a list of the files with a specific file type:
+
+    >>> nltk.corpus.timit.files() # doctest: +ELLIPSIS
+    ('dr1-fvmh0/sa1.phn', 'dr1-fvmh0/sa1.txt', 'dr1-fvmh0/sa1.wav', ...)
+    >>> nltk.corpus.timit.files('phn') # doctest: +ELLIPSIS
+    ['dr1-fvmh0/sa1.phn', 'dr1-fvmh0/sa2.phn', 'dr1-fvmh0/si1466.phn', ...]
+
+In some corpora, the files are divided into distinct categories.  For
+these corpora, the ``files()`` method takes an optional argument,
+which can be used to get a list of the files within a specific category:
+
+    >>> nltk.corpus.brown.files('e') # doctest: +ELLIPSIS
+    ['ce01', 'ce02', 'ce03', 'ce04', 'ce05', 'ce06', 'ce07', ...]
+
+The ``abspath()`` method can be used to find the absolute path to a
+corpus file, given its file identifier:
+
+    >>> nltk.corpus.brown.abspath('ce06') # doctest: +ELLIPSIS
+    '.../corpora/brown/ce06'
+
+The ``abspaths()`` method can be used to find the absolute paths for
+one corpus file, a list of corpus files, or all corpus files,
+depending on its argument type:
+
+    >>> nltk.corpus.brown.abspaths() # doctest: +ELLIPSIS
+    ['.../corpora/brown/ca01', '.../corpora/brown/ca02', ...]
+    >>> nltk.corpus.brown.abspaths('ce06') # doctest: +ELLIPSIS
+    ['.../corpora/brown/ce06']
+    >>> nltk.corpus.brown.abspaths(['ce06', 'ce07']) # doctest: +ELLIPSIS
+    ['.../corpora/brown/ce06', '.../corpora/brown/ce07']
+
+This method is mainly useful as a helper method when defining corpus
+data access methods, since data access methods can usually be called
+with a string argument (to get a view for a specific file), with a
+list argument (to get a view for a specific list of files), or with no
+argument (to get a view for the whole corpus).
+
+Data Access Methods
+===================
+
+Individual corpus reader subclasses typically extend this basic set of
+file-access methods with one or more *data access methods*, which provide
+easy access to the data contained in the corpus.  The signatures for
+data access methods often have the basic form::
+
+    corpus_reader.some_data access(files=None, ...options...)
+
+Where ``files`` can be a single file identifier string (to get a view
+for a specific file); a list of file identifier strings (to get a view
+for a specific list of files); or None (to get a view for the entire
+corpus).  Some of the common data access methods, and their return
+types, are:
+
+  - I{corpus}.words(): list of str
+  - I{corpus}.sents(): list of (list of str)
+  - I{corpus}.paras(): list of (list of (list of str))
+  - I{corpus}.tagged_words(): list of (str,str) tuple
+  - I{corpus}.tagged_sents(): list of (list of (str,str))
+  - I{corpus}.tagged_paras(): list of (list of (list of (str,str)))
+  - I{corpus}.chunked_sents(): list of (Tree w/ (str,str) leaves)
+  - I{corpus}.parsed_sents(): list of (Tree with str leaves)
+  - I{corpus}.parsed_paras(): list of (list of (Tree with str leaves))
+  - I{corpus}.xml(): A single xml ElementTree
+  - I{corpus}.raw(): str (unprocessed corpus contents)
+
+For example, the `words()` method is supported by many different
+corpora, and returns a flat list of word strings:
+
+    >>> nltk.corpus.brown.words()
+    ['The', 'Fulton', 'County', 'Grand', 'Jury', 'said', ...]
+    >>> nltk.corpus.treebank.words()
+    ['Pierre', 'Vinken', ',', '61', 'years', 'old', ',', ...]
+    >>> nltk.corpus.conll2002.words()
+    ['Sao', 'Paulo', '(', 'Brasil', ')', ',', '23', 'may', ...]
+    >>> nltk.corpus.genesis.words()
+    ['In', 'the', 'beginning', 'God', 'created', 'the', ...]
+
+On the other hand, the `tagged_words()` method is only supported by
+corpora that include part-of-speech annotations:
+
+    >>> nltk.corpus.brown.tagged_words()
+    [('The', 'AT'), ('Fulton', 'NP-TL'), ...]
+    >>> nltk.corpus.treebank.tagged_words()
+    [('Pierre', 'NNP'), ('Vinken', 'NNP'), (',', ','), ...]
+    >>> nltk.corpus.conll2002.tagged_words()
+    [('Sao', 'NC'), ('Paulo', 'VMI'), ('(', 'Fpa'), ...]
+    >>> nltk.corpus.genesis.tagged_words()
+    Traceback (most recent call last):
+      ...
+    AttributeError: 'PlaintextCorpusReader' object has no attribute 'tagged_words'
+
+Although most corpus readers use file identifiers to index their
+content, some corpora use different identifiers instead.  For example,
+the data access methods for the ``timit`` corpus uses *utterance
+identifiers* to select which corpus items should be returned:
+
+    >>> nltk.corpus.timit.utterances() # doctest: +ELLIPSIS
+    ('dr1-fvmh0/sa1', 'dr1-fvmh0/sa2', 'dr1-fvmh0/si1466', ...)
+    >>> nltk.corpus.timit.words('dr1-fvmh0/sa2')
+    ["don't", 'ask', 'me', 'to', 'carry', 'an', 'oily', 'rag', 'like', 'that']
+
+Attempting to call ``timit``\ 's data access methods with a file
+identifier will result in an exception:
+
+    >>> nltk.corpus.timit.files() # doctest: +ELLIPSIS
+    ('dr1-fvmh0/sa1.phn', 'dr1-fvmh0/sa1.txt', 'dr1-fvmh0/sa1.wav', ...)
+    >>> nltk.corpus.timit.words('dr1-fvmh0/sa1.txt') # doctest: +ELLIPSIS
+    Traceback (most recent call last):
+      ...
+    IOError:... No such file or directory: '.../dr1-fvmh0/sa1.txt.wrd'
+
+As another example, the ``propbank`` corpus defines the ``roleset()``
+method, which expects a roleset identifier, not a file identifier:
+
+    >>> roleset = nltk.corpus.propbank.roleset('eat.01')
+    >>> from nltk.etree import ElementTree as ET
+    >>> print ET.tostring(roleset) # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+    <roleset id="eat.01" name="consume" vncls="39.1">
+      <roles>
+        <role descr="consumer, eater" n="0">...</role>...
+      </roles>...
+    </roleset>...
+
+Stream Backed Corpus Views
+==========================
+An important feature of NLTK's corpus readers is that many of them
+access the underlying data files using "corpus views."  A *corpus
+view* is an object that acts like a simple data structure (such as a
+list), but does not store the data elements in memory; instead, data
+elements are read from the underlying data files on an as-needed
+basis.
+
+By only loading items from the file on an as-needesd basis, corpus
+views maintain both memory efficiency and responsiveness.  The memory
+efficiency of corpus readers is important because some corpora contain
+very large amounts of data, and storing the entire data set in memory
+could overwhelm many machines.  The responsiveness is important when
+experimenting with corpora in interactive sessions and in in-class
+demonstrations.
+
+The most common corpus view is the `StreamBackedCorpusView`, which
+acts as a read-only list of tokens.  Two additional corpus view
+classes, `ConcatenatedCorpusView` and `CorpusViewSlice`, make it
+possible to create concatenations and take slices of
+`StreamBackedCorpusView` objects without actually storing the
+resulting list-like object's elements in memory.
+
+In the future, we may add additional corpus views that act like other
+basic data structures, such as dictionaries.
+
+Writing New Corpus Readers
+==========================
+
+In order to add support for new corpus formats, it is necessary to
+define new corpus reader classes.  For many corpus formats, writing
+new corpus readers is relatively streight-forward.  In this section,
+we'll describe what's involved in creating a new corpus reader.  If
+you do create a new corpus reader, we encourage you to contribute it
+back to the NLTK project.
+
+Don't Reinvent the Wheel
+------------------------
+Before you start writing a new corpus reader, you should check to be
+sure that the desired format can't be read using an existing corpus
+reader with appropriate constructor arguments.  For example, although
+the `TaggedCorpusReader` assumes that words and tags are separated by
+``/`` characters by default, an alternative tag-separation character
+can be specified via the ``sep`` constructor argument.  You should
+also check whether the new corpus format can be handled by subclassing
+an existing corpus reader, and tweaking a few methods or variables.
+
+Design
+------
+If you decide to write a new corpus reader from scratch, then you
+should first decide which data access methods you want the reader to
+provide, and what their signatures should be.  You should look at
+existing corpus readers that process corpora with similar data
+contents, and try to be consistent with those corpus readers whenever
+possible.
+
+You should also consider what sets of identifiers are appropriate for
+the corpus format.  Where it's practical, file identifiers should be
+used.  However, for some corpora, it may make sense to use additional
+sets of identifiers.  Each set of identifiers should have a distinct
+name (e.g., files, utterances, rolesets); and you should be consistent
+in using that name to refer to that identifier.  Do not use parameter
+names like ``id``, which leave it unclear what type of identifier is
+required.
+
+Once you've decided what data access methods and identifiers are
+appropriate for your corpus, you should decide if there are any
+customizable parameters that you'd like the corpus reader to handle.
+These parameters make it possible to use a single corpus reader to
+handle a wider variety of corpora.  The ``sep`` argument for
+`TaggedCorpusReader`, mentioned above, is an example of a customizable
+corpus reader parameter.
+
+Implementation
+--------------
+
+Constructor
+~~~~~~~~~~~
+If your corpus reader implements any customizable parameters, then
+you'll need to override the constructor.  Typically, the new
+constructor will first call its base class's constructor, and then
+store the customizable parameters.  For example, the
+`ConllChunkCorpusReader`\ 's constructor is defined as follows:
+
+    >>> def __init__(self, root, files, chunk_types):
+    ...     CorpusReader.__init__(self, root, files)
+    ...     self.chunk_types = tuple(chunk_types)
+
+If your corpus reader does not implement any customization parameters,
+then you can often just inherit the base class's constructor.
+
+Data Access Methods
+~~~~~~~~~~~~~~~~~~~
+The most common type of data access method takes an argument
+identifying which files to access, and returns a view covering those
+files.  This argument may be a a single file identifier string (to get
+a view for a specific file); a list of file identifier strings (to get
+a view for a specific list of files); or None (to get a view for the
+entire corpus).  The method's implementation converts this argument to
+a list of path names using the `abspaths()` method, which handles all
+three value types (string, list, and None):
+
+    >>> nltk.corpus.brown.abspaths() # doctest: +ELLIPSIS
+    ['.../corpora/brown/ca01', '.../corpora/brown/ca02', ...]
+    >>> nltk.corpus.brown.abspaths('ce06') # doctest: +ELLIPSIS
+    ['.../corpora/brown/ce06']
+    >>> nltk.corpus.brown.abspaths(['ce06', 'ce07']) # doctest: +ELLIPSIS
+    ['.../corpora/brown/ce06', '.../corpora/brown/ce07']
+
+An example of this type of method is the `words()` method, defined by
+the `PlaintextCorpusReader` as follows:
+
+    >>> def words(self, files=None):
+    ...     return concat([self.CorpusView(filename, self._read_word_block)
+    ...                    for filename in self.abspaths(files)])
+
+This method first uses `abspaths()` to convert ``files`` to a list of
+absolute paths.  It then creates a corpus view for each file, using
+the `PlaintextCorpusReader._read_word_block()` method to read elements
+from the data file (see the discussion of corpus views below).
+Finally, it combines these corpus views using the
+`nltk.corpus.reader.util.concat()` function.
+
+When writing a corpus reader for a corpus that is never expected to be
+very large, it can sometimes be appropriate to read the files
+directly, rather than using a corpus view.  For example, the
+`WordListCorpusView` class defines its `words()` method as follows:
+
+    >>> def words(self, files=None):
+    ...     return concat([[w for w in open(filename).read().split('\n') if w]
+    ...                    for filename in self.abspaths(files)])
+
+(This is usually more appropriate for lexicons than for token corpora.)
+
+If the type of data returned by a data access method is one for which
+NLTK has a conventional representation (e.g., words, tagged words, and
+parse trees), then you should use that representation.  Otherwise, you
+may find it necessary to define your own representation.  For data
+structures that are relatively corpus-specific, it's usually best to
+define new classes for these elements.  For example, the ``propbank``
+corpus defines the `PropbankInstance` class to store the semantic role
+labeling instances described by the corpus; and the ``ppattach``
+corpus defines the `PPAttachment` class to store the prepositional
+attachment instances described by the corpus.
+
+Corpus Views
+~~~~~~~~~~~~
+.. (Much of the content for this section is taken from the
+   StreamBackedCorpusView docstring.)
+
+The heart of a `StreamBackedCorpusView` is its *block reader*
+function, which reads zero or more tokens from a stream, and returns
+them as a list.  A very simple example of a block reader is:
+
+    >>> def simple_block_reader(stream):
+    ...     return stream.readline().split()
+
+This simple block reader reads a single line at a time, and returns a
+single token (consisting of a string) for each whitespace-separated
+substring on the line.  A `StreamBackedCorpusView` built from this
+block reader will act like a read-only list of all the
+whitespace-seperated tokens in an underlying file.
+
+When deciding how to define the block reader for a given corpus,
+careful consideration should be given to the size of blocks handled by
+the block reader.  Smaller block sizes will increase the memory
+requirements of the corpus view's internal data structures (by 2
+integers per block).  On the other hand, larger block sizes may
+decrease performance for random access to the corpus.  (But note that
+larger block sizes will *not* decrease performance for iteration.)
+    
+Internally, the `StreamBackedCorpusView` class maintains a partial
+mapping from token index to file position, with one entry per block.
+When a token with a given index *i* is requested, the corpus view
+constructs it as follows:
+
+1. First, it searches the toknum/filepos mapping for the token index
+   closest to (but less than or equal to) *i*.
+         
+2. Then, starting at the file position corresponding to that index, it
+   reads one block at a time using the block reader until it reaches
+   the requested token.
+
+The toknum/filepos mapping is created lazily: it is initially empty,
+but every time a new block is read, the block's initial token is added
+to the mapping.  (Thus, the toknum/filepos map has one entry per
+block.)
+
+You can create your own corpus view in one of two ways:
+
+1. Call the `StreamBackedCorpusView` constructor, and provide your
+   block reader function via the ``block_reader`` argument.
+
+2. Subclass `StreamBackedCorpusView`, and override the
+   `read_block()` method.
+
+The first option is usually easier, but the second option can allow
+you to write a single `read_block` method whose behavior can be
+customized by different parameters to the subclass's constructor.  For
+an example of this design pattern, see the `TaggedCorpusView` class,
+which is used by `TaggedCorpusView`.
+
+----------------
 Regression Tests
-~~~~~~~~~~~~~~~~
+----------------
 
 The following helper functions are used to create and then delete
 testing corpora that are stored in temporary directories.  These
@@ -931,7 +1431,7 @@ testing corpora are used to make sure the readers work correctly.
     ...     os.rmdir(root)
 
 Plaintext Corpus Reader
------------------------
+=======================
 The plaintext corpus reader is used to access corpora that consist of
 unprocessed plaintext data.  It assumes that paragraph breaks are
 indicated by blank lines.  Sentences and words can be tokenized using
@@ -1016,10 +1516,10 @@ Test the plaintext corpora that come with nltk:
        ['White', 'guy', ':', 'So', ',', 'do', 'you', 'have', 'any',
     <PlaintextCorpusReader in '...udhr'>
        ('Abkhaz-Cyrillic+Abkh', 'Abkhaz-UTF8', 'Achehnese-Latin1', 
-       ['\xc0\xf3\xe0\xfe\xfb\xf2\xfa\xfb\xfe\xf1\xe0', '\xe8\xe7\x
+       [u'\u0420\u0455\u045a0\u04403', u'3', u'\u0424\u0440', u'\u2
 
 Tagged Corpus Reader
---------------------
+====================
 The Tagged Corpus reader can give us words, sentences, and paragraphs,
 each tagged or untagged.  All of the read methods can take one item
 (in which case they return the contents of that file) or a list of
@@ -1095,7 +1595,7 @@ The Brown Corpus uses the tagged corpus reader:
     [[[('The', 'AT'), ...]], [[('The', 'AT'), ...]], ...]
     
 Verbnet Corpus Reader
----------------------
+=====================
 
 Make sure we're picking up the right number of elements:
 
@@ -1158,7 +1658,7 @@ longid() and shortid() can be used to convert identifiers:
     ValueError: vnclass identifier 'badidentifier' not found
 
 Corpus View Regression Tests
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+============================
 
 Select some corpus files to play with:
 
@@ -1315,7 +1815,7 @@ iteration can be interleaved:
     feel            and             lacking         an             
 
 Squashed Bugs
-~~~~~~~~~~~~~
+=============
 
 svn 5276 fixed a bug in the comment-stripping behavior of
 parse_sexpr_block.
