@@ -104,8 +104,8 @@ Here are the first few words from each of NLTK's plaintext corpora:
     >>> nltk.corpus.state_union.words()
     ['PRESIDENT', 'HARRY', 'S', '.', 'TRUMAN', "'", 'S', ...]
     >>> nltk.corpus.udhr.words() # doctest: +NORMALIZE_WHITESPACE
-    [u'\u0420\u0453\u0440\u045e\u045b\u0452\u045a\u045b\u045e\u0451\u0440',
-     u'\u0448\u0447\u0448\u044d6\u045a\u0440', ...]
+    ['\xc0\xf3\xe0\xfe\xfb\xf2\xfa\xfb\xfe\xf1\xe0',
+     '\xe8\xe7\xe8\xed6\xfa\xe0', ...]
     >>> nltk.corpus.webtext.words()
     ['White', 'guy', ':', 'So', ',', 'do', 'you', 'have', ...]
 
@@ -1514,9 +1514,9 @@ Test the plaintext corpora that come with nltk:
     <PlaintextCorpusReader in '...webtext'>
        ('overheard', 'pirates', 'singles', 'wine')
        ['White', 'guy', ':', 'So', ',', 'do', 'you', 'have', 'any',
-    <PlaintextCorpusReader in '...udhr'>
+    <PlaintextCorpusReader in '/home/edloper/nltk/data/corpora/udhr'>
        ('Abkhaz-Cyrillic+Abkh', 'Abkhaz-UTF8', 'Achehnese-Latin1', 
-       [u'\u0420\u0455\u045a0\u04403', u'3', u'\u0424\u0440', u'\u2
+       ['\xc0\xf3\xe0\xfe\xfb\xf2\xfa\xfb\xfe\xf1\xe0', '\xe8\xe7\x
 
 Tagged Corpus Reader
 ====================
