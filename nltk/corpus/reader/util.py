@@ -8,7 +8,7 @@
 
 import os, sys, bisect, re, codecs
 from itertools import islice
-from api import CorpusReader
+from nltk.corpus.reader.api import CorpusReader
 from nltk import tokenize
 from nltk.etree import ElementTree
 from nltk.internals import deprecated
@@ -345,9 +345,9 @@ class StreamBackedCorpusView(AbstractCorpusView):
         # our mapping, then we can jump straight to the correct block;
         # otherwise, start at the last block we've processed.
         if start_tok < self._toknum[-1]:
-            i = bisect.bisect_right(self._toknum, start_tok)-1
-            toknum = self._toknum[i]
-            filepos = self._filepos[i]
+            block_index = bisect.bisect_right(self._toknum, start_tok)-1
+            toknum = self._toknum[block_index]
+            filepos = self._filepos[block_index]
         else:
             toknum = self._toknum[-1]
             filepos = self._filepos[-1]
@@ -355,16 +355,11 @@ class StreamBackedCorpusView(AbstractCorpusView):
         # Open the stream, if it's not open already.
         if self._stream is None:
             if self._encoding:
-                self._stream = codecs.open(self._filename, 'rb',
-                                           self._encoding)
+                self._stream = SeekableUnicodeStreamReader(
+                    open(self._filename, 'rb'), self._encoding)
             else:
                 self._stream = open(self._filename, 'rb')
             
-        # Find the character position of the end of the file.
-        if self._eofpos is None:
-            self._stream.seek(0, 2)
-            self._eofpos = self._stream.tell()
-        
         # Each iteration through this loop, we read a single block
         # from the stream.
         while True:
@@ -381,10 +376,18 @@ class StreamBackedCorpusView(AbstractCorpusView):
             
             # Update our mapping.
             assert toknum <= self._toknum[-1]
-            if toknum == self._toknum[-1] and num_toks > 0:
-                assert new_filepos > self._filepos[-1] # monotonic!
-                self._filepos.append(new_filepos)
-                self._toknum.append(toknum+num_toks)
+            if num_toks > 0:
+                if toknum == self._toknum[-1]:
+                    assert new_filepos > self._filepos[-1] # monotonic!
+                    self._filepos.append(new_filepos)
+                    self._toknum.append(toknum+num_toks)
+                else:
+                    # Check for consistency:
+                    block_index += 1
+                    assert new_filepos == self._filepos[block_index], (
+                        'inconsistent block reader (num chars read)')
+                    assert toknum+num_toks == self._toknum[block_index], (
+                        'inconsistent block reader (num tokens returned)')
                     
             # Generate the tokens in this block (but skip any tokens
             # before start_tok).  Note that between yields, our state
@@ -883,3 +886,364 @@ def tagged_treebank_para_block_reader(stream):
         else:
             para += line
             
+######################################################################
+#{ Seekable Unicode Stream Reader
+######################################################################
+
+class SeekableUnicodeStreamReader(object):
+    """
+    A stream reader that automatically encodes the source byte stream
+    into unicode (like C{codecs.StreamReader}); but still supports the
+    C{seek()} and C{tell()} operations correctly.  This is in contrast
+    to C{codecs.StreamReadedr}, which provide *broken* C{seek()} and
+    C{tell()} methods.
+
+    This class was motivated by L{StreamBackedCorpusReader}, which
+    makes extensive use of C{seek()} and C{tell()}, and needs to be
+    able to handle unicode-encoded files.
+    
+    Note: this class requires stateless decoders.  To my knowledge,
+    this shouldn't cause a problem with any of python's builtin
+    unicode encodings.
+    """
+    DEBUG = True #: If true, then perform extra sanity checks.
+
+    def __init__(self, stream, encoding, errors='strict'):
+        self.stream = stream
+        """The underlying stream."""
+        
+        self.encoding = encoding
+        """The name of the encoding that should be used to encode the
+           underlying stream."""
+        
+        self.errors = errors
+        """The error mode that should be used when decoding data from
+           the underlying stream.  Can be 'strict', 'ignore', or
+           'replace'."""
+        
+        self.decode = codecs.getdecoder(encoding)
+        """The function that is used to decode byte strings into
+           unicode strings."""
+
+        self.bytebuffer = ''
+        """A buffer to use bytes that have been read but have not yet
+           been decoded.  This is only used when the final bytes from
+           a read do not form a complete encoding for a character."""
+        
+        self.linebuffer = None
+        """A buffer used by L{readline()} to hold characters that have
+           been read, but have not yet been returned by L{read()} or
+           L{readline()}.  This buffer consists of a list of unicode
+           strings, where each string corresponds to a single line.
+           The final element of the list may or may not be a complete
+           line.  Note that the existence of a linebuffer makes the
+           L{tell()} operation more complex, because it must backtrack
+           to the beginning of the buffer to determine the correct
+           file position in the underlying byte stream."""
+
+        self.prev_filepos = 0
+        """The file position at which the most recent read on the
+           underlying stream began.  This is used, together with
+           L{chars_consumed}, to backtrack to the beginning of
+           L{linebuffer} (which is required by L{tell()})."""
+        
+        self.chars_consumed = None
+        """The number of characters that have been returned since the
+           read that started at L{prev_filepos}.  This is used,
+           together with L{prev_filepos}, to backtrack to the
+           beginning of L{linebuffer} (which is required by
+           L{tell()})."""
+
+    #/////////////////////////////////////////////////////////////////
+    # Read methods
+    #/////////////////////////////////////////////////////////////////
+    
+    def read(self, size=None):
+        """
+        Read up to C{size} bytes, decode them using this reader's
+        encoding, and return the resulting unicode string.
+
+        @param size: The maximum number of bytes to read.  If not
+            specified, then read as many bytes as possible.
+
+        @rtype: C{unicode}
+        """
+        chars = self._read(size)
+
+        # If linebuffer is not empty, then include it in the result
+        if self.linebuffer:
+            chars = ''.join(self.linebuffer) + chars
+            self.linebuffer = None
+            self.chars_consumed = None
+
+        return chars
+
+    def readline(self, size=None):
+        """
+        Read a line of text, decode it using this reader's encoding,
+        and return the resulting unicode string.
+
+        @param size: The maximum number of bytes to read.  If no
+            newline is encountered before C{size} bytes have been
+            read, then the returned value may not be a complete line
+            of text.
+        """
+        # If we have a non-empty linebuffer, then return the first
+        # line from it.  (Note that the last element of linebuffer may
+        # not be a complete line; so let _read() deal with it.)
+        if self.linebuffer and len(self.linebuffer) > 1:
+            line = self.linebuffer.pop(0)
+            self.chars_consumed += len(line)
+            return line
+        
+        readsize = size or 72
+        chars = ''
+
+        # If there's a remaining incomplete line in the buffer, add it.
+        if self.linebuffer:
+            chars += self.linebuffer.pop()
+            self.linebuffer = None
+        
+        while True:
+            startpos = self.stream.tell() - len(self.bytebuffer)
+            new_chars = self._read(readsize)
+
+            # If we're at a '\r', then read one extra character, since
+            # it might be a '\n', to get the proper line ending.  
+            if new_chars and new_chars.endswith('\r'):
+                new_chars += self._read(1)
+
+            chars += new_chars
+            lines = chars.splitlines(True)
+            if len(lines) > 1:
+                line = lines[0]
+                self.linebuffer = lines[1:]
+                self.chars_consumed = len(new_chars)-(len(chars)-len(line))
+                #self.chars_consumed = len(new_chars[:-(len(chars)-len(line))])
+                self.prev_filepos = startpos
+                break
+            elif len(lines) == 1:
+                line0withend = lines[0]
+                line0withoutend = lines[0].splitlines(False)[0]
+                if line0withend != line0withoutend: # complete line
+                    line = line0withend
+                    break
+                
+            if not new_chars or size is not None:
+                line = chars
+                break
+
+            # Read successively larger blocks of text.
+            if readsize < 8000:
+                readsize *= 2
+
+        return line
+
+    def readlines(self, sizehint=None, keepends=True):
+        """
+        Read this file's contents, decode them using this reader's
+        encoding, and return it as a list of unicode lines.
+
+        @rtype: C{list} of C{unicode}
+        @param sizehint: Ignored.
+        @param keepends: If false, then strip newlines.
+        """
+        return self.read().splitlines(keepends)
+
+    def next(self):
+        """Return the next decoded line from the underlying stream."""
+        line = self.readline()
+        if line: return line
+        else: raise StopIteration
+
+    def __iter__(self):
+        """Return self"""
+        return self
+
+    def xreadlines(self):
+        """Return self"""
+        return self
+
+    #/////////////////////////////////////////////////////////////////
+    # Pass-through methods & properties
+    #/////////////////////////////////////////////////////////////////
+    
+    closed = property(lambda self: self.stream.closed, doc="""
+        True if the underlying stream is closed.""")
+
+    name = property(lambda self: self.stream.name, doc="""
+        The name of the underlying stream.""")
+
+    mode = property(lambda self: self.stream.mode, doc="""
+        The mode of the underlying stream.""")
+
+    def close(self):
+        """
+        Close the underlying stream.
+        """
+        self.stream.close()
+
+    #/////////////////////////////////////////////////////////////////
+    # Seek and tell
+    #/////////////////////////////////////////////////////////////////
+    
+    def seek(self, offset, whence=0):
+        """
+        Move the stream to a new file position.  If the reader is
+        maintaining any buffers, tehn they will be cleared.
+
+        @param offset: A byte count offset.
+        @param whence: If C{whence} is 0, then the offset is from the
+            start of the file (offset should be positive).  If
+            C{whence} is 1, then the offset is from the current
+            position (offset may be positive or negative); and if 2,
+            then the offset is from the end of the file (offset should
+            typically be negative).
+        """
+        self.stream.seek(offset, whence)
+        self.linebuffer = None
+        self.bytebuffer = ''
+        self.chars_consumed = None
+        self.prev_filepos = self.stream.tell()
+
+    def tell(self):
+        """
+        Return the current file position on the underlying byte
+        stream.  If this reader is maintaining any buffers, then the
+        returned file position will be the position of the beginning
+        of those buffers.
+        """
+        # If nothing's buffered, then just return our current filepos:
+        if self.linebuffer is None:
+            return self.stream.tell() - len(self.bytebuffer)
+
+        # Otherwise, we'll need to backtrack the filepos until we
+        # reach the beginning of the buffer.
+        
+        # Store our original file position, so we can return here.
+        orig_filepos = self.stream.tell()
+
+        # Calculate an estimate of where we think the newline is.
+        bytes_read = ( (orig_filepos-len(self.bytebuffer)) -
+                       self.prev_filepos )
+        buf_size = sum([len(line) for line in self.linebuffer])
+        est_pos = (bytes_read * self.chars_consumed /
+                   (self.chars_consumed + buf_size))
+
+        bytes = ''
+        chars = ''
+        #while True:
+        
+        # Backup to the last read filepos.
+        self.stream.seek(self.prev_filepos)
+
+        while True:
+            
+            # Read up to where we guess the newline is.
+            bytes += self.stream.read(est_pos-len(bytes))
+
+            # Decode it.
+            chars, bytes_decoded = self._incr_decode(bytes)
+
+            # Did we get the correct filepos?
+            if len(chars) == self.chars_consumed:
+                filepos = self.stream.tell()
+                break
+            
+            # If we went too far, then we can back-up until we get it
+            # right, using the bytes we've already read.
+            if len(chars) > self.chars_consumed:
+                while len(chars) > self.chars_consumed:
+                    # Assume at least one byte/char.
+                    est_pos += self.chars_consumed-len(chars)
+                    chars, bytes_decoded = self._incr_decode(bytes[:est_pos])
+                filepos = self.stream.tell() - len(bytes) + est_pos
+                break
+
+            # Otherwise, we haven't gone far enough; loop again.
+            est_pos += self.chars_consumed-len(chars)
+            
+        # Sanity check
+        if self.DEBUG:
+            self.stream.seek(filepos)
+            check1 = self._incr_decode(self.stream.read(50))[0]
+            check2 = ''.join(self.linebuffer)
+            if not (check1.startswith(check2) or check2.startswith(check1)):
+                raise ValueError('ouch\n  %r\nvs\n  %r\nopos=%s\ncc=%r'
+                                 '\nlfp=%r\nbb=%r'
+                                 % (check1, self.linebuffer, orig_filepos,
+                                    self.chars_consumed, self.prev_filepos,
+                                    self.bytebuffer))
+            assert check1.startswith(check2) or check2.startswith(check1)
+
+        # Return to our original filepos (so we don't have to throw
+        # out our buffer.)
+        self.stream.seek(orig_filepos)
+
+        # Return the calculated filepos
+        return filepos
+
+    #/////////////////////////////////////////////////////////////////
+    # Helper methods
+    #/////////////////////////////////////////////////////////////////
+    
+    def _read(self, size=None):
+        """
+        Read up to C{size} bytes from the underlying stream, decode
+        them using this reader's encoding, and return the resulting
+        unicode string.  C{linebuffer} is *not* included in the
+        result.
+        """
+        # Read the requested number of bytes.
+        if size is None:
+            new_bytes = self.stream.read()
+        else:
+            new_bytes = self.stream.read(size)
+        bytes = self.bytebuffer + new_bytes
+
+        # Decode the bytes
+        chars, bytes_decoded = self._incr_decode(bytes)
+        
+        # If we got bytes but couldn't decode any, then read further.
+        if (size is not None) and (not chars) and (len(new_bytes) > 0):
+            while not chars:
+                new_bytes = self.stream.read(1)
+                if not new_bytes: break # end of file.
+                bytes += new_bytes
+                chars, bytes_decoded = self._incr_decode(bytes)
+        
+        # Record any bytes we didn't consume.
+        self.bytebuffer = bytes[bytes_decoded:]
+
+        # Return the result
+        return chars
+        
+    def _incr_decode(self, bytes):
+        """
+        Decode the given byte string into a unicode string, using this
+        reader's encoding.  If an exception is encountered that
+        appears to be caused by a truncation error, then just decode
+        the byte string without the bytes that cause the trunctaion
+        error.
+
+        @return: A tuple C{(chars, num_consumed)}, where C{chars} is
+            the decoded unicode string, and C{num_consumed} is the
+            number of bytes that were consumed.
+        """
+        while True:
+            try:
+                return self.decode(bytes, 'strict')
+            except UnicodeDecodeError, exc:
+                # If the exception occurs at the end of the string,
+                # then assume that it's a truncation error.
+                if exc.end == len(bytes):
+                    return self.decode(bytes[:exc.start], self.errors)
+                
+                # Otherwise, if we're being strict, then raise it.
+                elif self.errors == 'strict':
+                    raise
+                
+                # If we're not strcit, then re-process it with our
+                # errors setting.  This *may* raise an exception.
+                else:
+                    return self.decode(bytes, self.errors)
