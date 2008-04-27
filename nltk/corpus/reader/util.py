@@ -909,6 +909,9 @@ class SeekableUnicodeStreamReader(object):
     DEBUG = True #: If true, then perform extra sanity checks.
 
     def __init__(self, stream, encoding, errors='strict'):
+        # Rewind the stream to its beginning.
+        stream.seek(0)
+        
         self.stream = stream
         """The underlying stream."""
         
@@ -953,6 +956,10 @@ class SeekableUnicodeStreamReader(object):
            together with L{_rewind_checkpoint}, to backtrack to the
            beginning of L{linebuffer} (which is required by
            L{tell()})."""
+
+        self._bom = self._check_bom()
+        """The length of the byte order marker at the beginning of
+           the stream (or C{None} for no byte order marker)."""
 
     #/////////////////////////////////////////////////////////////////
     # Read methods
@@ -1212,6 +1219,10 @@ class SeekableUnicodeStreamReader(object):
         unicode string.  C{linebuffer} is *not* included in the
         result.
         """
+        # Skip past the byte order marker, if present.
+        if self._bom and self.stream.tell() == 0:
+            self.stream.read(self._bom)
+        
         # Read the requested number of bytes.
         if size is None:
             new_bytes = self.stream.read()
@@ -1219,7 +1230,7 @@ class SeekableUnicodeStreamReader(object):
             new_bytes = self.stream.read(size)
         bytes = self.bytebuffer + new_bytes
 
-        # Decode the bytes
+        # Decode the bytes into unicode characters
         chars, bytes_decoded = self._incr_decode(bytes)
         
         # If we got bytes but couldn't decode any, then read further.
@@ -1265,3 +1276,36 @@ class SeekableUnicodeStreamReader(object):
                 # errors setting.  This *may* raise an exception.
                 else:
                     return self.decode(bytes, self.errors)
+
+    _BOM_TABLE = {
+        'utf8': [(codecs.BOM_UTF8, None)],
+        'utf16': [(codecs.BOM_UTF16_LE, 'utf16-le'),
+                  (codecs.BOM_UTF16_BE, 'utf16-be')],
+        'utf16le': [(codecs.BOM_UTF16_LE, None)],
+        'utf16be': [(codecs.BOM_UTF16_BE, None)],
+        'utf32': [(codecs.BOM_UTF32_LE, 'utf32-le'),
+                  (codecs.BOM_UTF32_BE, 'utf32-be')],
+        'utf32le': [(codecs.BOM_UTF32_LE, None)],
+        'utf32be': [(codecs.BOM_UTF32_BE, None)],
+        }
+
+    def _check_bom(self):
+        # Normalize our encoding name
+        enc = re.sub('[ -]', '', self.encoding.lower())
+        
+        # Look up our encoding in the BOM table.
+        bom_info = self._BOM_TABLE.get(enc)
+        
+        if bom_info:
+            # Read a prefix, to check against the BOM(s)
+            bytes = self.stream.read(16)
+            self.stream.seek(0)
+            
+            # Check for each possible BOM.
+            for (bom, new_encoding) in bom_info:
+                if bytes.startswith(bom):
+                    if new_encoding: self.encoding = new_encoding
+                    return len(bom)
+
+        return None
+
