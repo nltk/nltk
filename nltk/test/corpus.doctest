@@ -1814,6 +1814,277 @@ iteration can be interleaved:
     must            powers          is              of             
     feel            and             lacking         an             
 
+SeekableUnicodeStreamReader
+===========================
+
+The file-like objects provided by the ``codecs`` module unfortunately
+suffer from a bug that prevents them from working correctly with
+corpus view objects.  In particular, although the expose ``seek()``
+and ``tell()`` methods, those methods do not exhibit the expected
+behavior, because they are not synchronized with the internal buffers
+that are kept by the file-like objects.  For example, the ``tell()``
+method will return the file position at the end of the buffers (whose
+contents have not yet been returned by the stream); and therefore this
+file position can not be used to return to the 'current' location in
+the stream (since ``seek()`` has no way to reconstruct the buffers).
+
+To get around these problems, we define a new class,
+`SeekableUnicodeStreamReader`, to act as a file-like interface to
+files containing encoded unicode data.  This class is loosely based on
+the ``codecs.StreamReader`` class.  To construct a new reader, we call
+the constructor with an underlying stream and an encoding name:
+
+    >>> from cStringIO import StringIO
+    >>> from nltk.corpus.reader.util import SeekableUnicodeStreamReader
+    >>> stream = StringIO(u"""\
+    ... This is a test file.
+    ... It is encoded in ascii.
+    ... """.encode('ascii'))
+    >>> reader = SeekableUnicodeStreamReader(stream, 'ascii')
+
+`SeekableUnicodeStreamReader`\ s support all of the normal operations
+supplied by a read-only stream.  Note that all of the read operations
+return ``unicode`` objects (not ``str`` objects).
+
+    >>> reader.read()         # read the entire file.
+    u'This is a test file.\nIt is encoded in ascii.\n'
+    >>> reader.seek(0)        # rewind to the start.
+    >>> reader.read(5)        # read at most 5 bytes.
+    u'This '
+    >>> reader.readline()     # read to the end of the line.
+    u'is a test file.\n'
+    >>> reader.seek(0)        # rewind to the start.
+    >>> for line in reader:
+    ...     print `line`      # iterate over lines
+    u'This is a test file.\n'
+    u'It is encoded in ascii.\n'
+    >>> reader.seek(0)        # rewind to the start.
+    >>> reader.readlines()    # read a list of line strings
+    [u'This is a test file.\n', u'It is encoded in ascii.\n']
+    >>> reader.close()
+
+Size argument to ``read()``
+---------------------------
+The ``size`` argument to ``read()`` specifies the maximum number of
+*bytes* to read, not the maximum number of *characters*.  Thus, for
+encodings that use multiple bytes per character, it may return fewer
+characters than the ``size`` argument:
+
+    >>> stream = StringIO(u"""\
+    ... This is a test file.
+    ... It is encoded in utf-16.
+    ... """.encode('utf-16'))
+    >>> reader = SeekableUnicodeStreamReader(stream, 'utf-16')
+    >>> reader.read(10) # note: BOM takes up 2 bytes.
+    u'This'
+
+If a read block ends in the middle of the byte string encoding a
+single character, then that byte string is stored in an internal
+buffer, and re-used on the next call to ``read()``.  However, if the
+size argument is too small to read even a single character, even
+though at least one character is available, then the ``read()`` method
+will read additional bytes until it can return a single character.
+This ensures that the ``read()`` method does not return an empty
+string, which could be mistaken for indicating the end of the file.
+
+    >>> reader.seek(0)            # rewind to the start.
+    >>> reader.read(1)            # we actually need to read 4 bytes
+    u'T'
+    >>> reader.tell()
+    4
+
+The ``readline()`` method may read more than a single line of text, in
+which case it stores the text that it does not return in a buffer.  If
+this buffer is not empty, then its contents will be included in the
+value returned by the next call to ``read()``, regardless of the
+``size`` argument, since they are available without reading any new
+bytes from the stream:
+
+    >>> reader.seek(0)            # rewind to the start.
+    >>> reader.readline()         # stores extra text in a buffer
+    u'This is a test file.\n'
+    >>> print reader.linebuffer   # examine the buffer contents
+    [u'It is encoded ']
+    >>> reader.read(0)            # returns the contents of the buffer
+    u'It is encoded '
+    >>> print reader.linebuffer   # examine the buffer contents
+    None
+
+Seek and Tell
+-------------
+In addition to these basic read operations,
+`SeekableUnicodeStreamReader` also supports the ``seek()`` and
+``tell()`` operations.  However, some care must still be taken when
+using these operations.  In particular, the only file offsets that
+should be passed to ``seek()`` are ``0`` and any offset that has been
+returned by ``tell``.
+
+    >>> stream = StringIO(u"""\
+    ... This is a test file.
+    ... It is encoded in utf-16.
+    ... """.encode('utf-16'))
+    >>> reader = SeekableUnicodeStreamReader(stream, 'utf-16')
+    >>> reader.read(20)
+    u'This is a'
+    >>> pos = reader.tell(); print pos
+    20
+    >>> reader.read(20)
+    u' test file'
+    >>> reader.seek(pos)     # rewind to the position from tell.
+    >>> reader.read(20)
+    u' test file'
+
+The ``seek()`` and ``tell()`` methods work property even when
+``readline()`` is used.
+
+    >>> stream = StringIO(u"""\
+    ... This is a test file.
+    ... It is encoded in utf-16.
+    ... """.encode('utf-16'))
+    >>> reader = SeekableUnicodeStreamReader(stream, 'utf-16')
+    >>> reader.readline()
+    u'This is a test file.\n'
+    >>> pos = reader.tell(); print pos
+    44
+    >>> reader.readline()
+    u'It is encoded in utf-16.\n'
+    >>> reader.seek(pos)     # rewind to the position from tell.
+    >>> reader.readline()
+    u'It is encoded in utf-16.\n'
+
+The following test performs a random series of reads, seeks, and
+tells, and checks that the results are consistent:
+
+    >>> import random
+    >>> def reader_test(unicode_string, encoding, n=1000):
+    ...     try: bytestr = unicode_string.encode(encoding)
+    ...     except UnicodeEncodeError:
+    ...         return 'codec can not encode string'
+    ...     strlen = len(unicode_string)
+    ...     stream = StringIO(bytestr)
+    ...     reader = SeekableUnicodeStreamReader(stream, encoding)
+    ...     # Find all character positions
+    ...     chars = []
+    ...     while True:
+    ...         pos = reader.tell()
+    ...         chars.append( (pos, reader.read(1)) )
+    ...         if chars[-1][1] == '': break
+    ...     # Find all strings
+    ...     strings = dict( (pos,'') for (pos,c) in chars )
+    ...     for pos1, char in chars:
+    ...         for pos2, _ in chars:
+    ...             if pos2 <= pos1:
+    ...                 strings[pos2] += char
+    ...     while True:
+    ...         op = random.choice('tsrr')
+    ...         # Check our position?
+    ...         if op == 't': # tell
+    ...             #print 'tell'
+    ...             reader.tell()
+    ...         # Perform a seek?
+    ...         if op == 's': # seek
+    ...             new_pos = random.choice([p for (p,c) in chars])
+    ...             reader.seek(new_pos)
+    ...             #print 'seek', new_pos, `strings[new_pos][:10]`
+    ...         # Perform a read?
+    ...         if op == 'r': # read
+    ...             if random.random() < .3: pos = reader.tell()
+    ...             else: pos = None
+    ...             if random.random() < .2: size = None
+    ...             elif random.random() < .8:
+    ...                 size = random.randint(0, strlen/6)
+    ...             else: size = random.randint(0, strlen+20)
+    ...             if random.random() < .8:
+    ...                 s = reader.read(size)
+    ...                 #print 'read', size, pos, `s`
+    ...             else:
+    ...                 s = reader.readline(size)
+    ...                 #print 'readline', size, pos, `s`
+    ...                 #print '    ', reader.linebuffer, `reader.bytebuffer`
+    ...             # check that everything's consistent
+    ...             if pos is not None:
+    ...                 if not strings[pos].startswith(s):
+    ...                     print (strings[pos], s)
+    ...                 n -= 1
+    ...                 if n == 0:
+    ...                     return 'passed'
+
+Call the randomized test function `reader_test()` with a variety of
+input strings and encodings.
+
+    >>> encodings = ['ascii', 'latin1', 'greek', 'hebrew',
+    ...              'utf-16', 'utf-7', 'utf-8']
+
+    >>> strings = [
+    ...     u"""\
+    ... This is a test file.
+    ... It is fairly short.""",
+    ...     u"""\
+    ... This file can be encoded with latin1. \x83""",
+    ...     u"""\
+    ... This is a test file.
+    ... Here's a blank line:
+    ... 
+    ... And here's some unicode: \xee \u0123 \uffe3
+    ... """,
+    ...     u"""\
+    ... This is a test file.
+    ... Unicode characters: \xf3 \u2222 \u3333\u4444 \u5555
+    ... """,
+    ...     u"""\
+    ... This is a larger file.  It has some lines that are longer \
+    ... than 72 characters.  It's got lots of repetition.  Here's \
+    ... some unicode chars: \xee \u0123 \uffe3 \ueeee \u2345
+    ... 
+    ... How fun!  Let's repeat it twenty times.
+    ... """*20]
+
+    >>> for i, string in enumerate(strings):
+    ...     print 'String %d: %s' % (i, `string[:45]`[:-1]+'...')
+    ...     for encoding in encodings:
+    ...         print ('  - test for %-10s [%s]' %
+    ...                (encoding, reader_test(string, encoding)))
+    String 0: u'This is a test file.\nIt is fairly short....
+      - test for ascii      [passed]
+      - test for latin1     [passed]
+      - test for greek      [passed]
+      - test for hebrew     [passed]
+      - test for utf-16     [passed]
+      - test for utf-7      [passed]
+      - test for utf-8      [passed]
+    String 1: u'This file can be encoded with latin1. \x83...
+      - test for ascii      [codec can not encode string]
+      - test for latin1     [passed]
+      - test for greek      [passed]
+      - test for hebrew     [passed]
+      - test for utf-16     [passed]
+      - test for utf-7      [passed]
+      - test for utf-8      [passed]
+    String 2: u"This is a test file.\nHere's a blank line:\n\nAn...
+      - test for ascii      [codec can not encode string]
+      - test for latin1     [codec can not encode string]
+      - test for greek      [codec can not encode string]
+      - test for hebrew     [codec can not encode string]
+      - test for utf-16     [passed]
+      - test for utf-7      [passed]
+      - test for utf-8      [passed]
+    String 3: u'This is a test file.\nUnicode characters: \xf3 \u2222 ...
+      - test for ascii      [codec can not encode string]
+      - test for latin1     [codec can not encode string]
+      - test for greek      [codec can not encode string]
+      - test for hebrew     [codec can not encode string]
+      - test for utf-16     [passed]
+      - test for utf-7      [passed]
+      - test for utf-8      [passed]
+    String 4: u'This is a larger file.  It has some lines tha...
+      - test for ascii      [codec can not encode string]
+      - test for latin1     [codec can not encode string]
+      - test for greek      [codec can not encode string]
+      - test for hebrew     [codec can not encode string]
+      - test for utf-16     [passed]
+      - test for utf-7      [passed]
+      - test for utf-8      [passed]
+
 Squashed Bugs
 =============
 
