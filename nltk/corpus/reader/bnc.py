@@ -10,7 +10,7 @@ Corpus reader for the XML version of the British National Corpus.
 """
 __docformat__ = 'epytext en'
 
-from nltk.corpus import XMLCorpusReader
+from nltk.corpus.reader.xmldocs import XMLCorpusReader
 import nltk.etree.ElementTree as ET
 from nltk.corpus.reader.api import *
 from nltk.corpus.reader.util import *
@@ -24,7 +24,7 @@ class BNCCorpusReader(XMLCorpusReader):
     method.  For access to simple word lists and tagged word lists, use
     L{words()}, L{sents()}, L{tagged_words()}, and L{tagged_sents()}.
     """
-    def __init__(self, root, files, lazy=False):
+    def __init__(self, root, files, lazy=True):
         XMLCorpusReader.__init__(self, root, files)
         self._lazy = lazy
     
@@ -238,29 +238,3 @@ class BNCWordView(XMLCorpusView):
                 raise ValueError('Unexpected element %s' % child.tag)
         return BNCSentence(elt.attrib['n'], sent)
 
-import time
-t0=time.time()
-c1 = BNCCorpusReader('/tmp', 'A8K.xml', lazy=True)
-print time.time()-t0
-t0=time.time()
-c2 = BNCCorpusReader('/tmp', 'A8K.xml', lazy=False)
-print time.time()-t0
-print c1.words()
-
-ss2 = c2.sents()
-
-assert list(c1.words()) == list(c2.words())
-assert list(c1.tagged_words()) == list(c2.tagged_words())
-assert list(c1.sents()) == list(c2.sents())
-assert list(c1.tagged_sents()) == list(c2.tagged_sents())
-#print c.tagged_words()[:10]
-#print c.sents()[:10]
-#print c.tagged_sents()[:10]
-#print c.sents().title
-#print time.time()-t0
-#for e in c.word(): print e.tag, `e.text`
-#x = c.foo()
-
-#t0=time.time()
-#e=ElementTree.parse('/tmp/A8K.xml')
-#print time.time()-t0
