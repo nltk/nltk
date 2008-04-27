@@ -1100,11 +1100,65 @@ class SeekableUnicodeStreamReader(object):
             then the offset is from the end of the file (offset should
             typically be negative).
         """
+        if whence == 1:
+            raise ValueError('Relative seek is not supported for '
+                             'SeekableUnicodeStreamReader -- consider '
+                             'using char_seek_forward() instead.')
         self.stream.seek(offset, whence)
         self.linebuffer = None
         self.bytebuffer = ''
         self.chars_consumed = None
         self.prev_filepos = self.stream.tell()
+
+    def char_seek_forward(self, offset):
+        """
+        Move the read pointer forward by C{offset} characters.
+        """
+        if offset < 0:
+            raise ValueError('Negative offsets are not supported')
+        # Clear all buffers.
+        self.seek(self.tell())
+        # Perform the seek operation.
+        self._char_seek_forward(offset)
+
+    def _char_seek_forward(self, offset, est_bytes=None):
+        """
+        Move the file position forward by C{offset} characters,
+        ignoring all buffers.
+
+        @param est_bytes: A hint, giving an estimate of the number of
+            bytes that will be neded to move foward by C{offset} chars.
+            Defaults to C{offset}.
+        """
+        if est_bytes is None: est_bytes = offset
+        bytes = ''
+
+        while True:
+            # Read in a block of bytes.
+            newbytes = self.stream.read(est_bytes-len(bytes))
+            bytes += newbytes
+                
+            # Decode the bytes to characters.
+            chars, bytes_decoded = self._incr_decode(bytes)
+
+            # If we got the right number of characters, then seek
+            # backwards over any truncated characters, and return.
+            if len(chars) == offset:
+                self.stream.seek(-len(bytes)+bytes_decoded, 1)
+                return
+
+            # If we went too far, then we can back-up until we get it
+            # right, using the bytes we've already read.
+            if len(chars) > offset:
+                while len(chars) > offset:
+                    # Assume at least one byte/char.
+                    est_bytes += offset-len(chars)
+                    chars, bytes_decoded = self._incr_decode(bytes[:est_bytes])
+                self.stream.seek(-len(bytes)+bytes_decoded, 1)
+                return
+
+            # Otherwise, we haven't read enough bytes yet; loop again.
+            est_bytes += offset - len(chars)
 
     def tell(self):
         """
@@ -1127,42 +1181,13 @@ class SeekableUnicodeStreamReader(object):
         bytes_read = ( (orig_filepos-len(self.bytebuffer)) -
                        self.prev_filepos )
         buf_size = sum([len(line) for line in self.linebuffer])
-        est_pos = (bytes_read * self.chars_consumed /
-                   (self.chars_consumed + buf_size))
+        est_bytes = (bytes_read * self.chars_consumed /
+                     (self.chars_consumed + buf_size))
 
-        bytes = ''
-        chars = ''
-        #while True:
-        
-        # Backup to the last read filepos.
         self.stream.seek(self.prev_filepos)
+        self._char_seek_forward(self.chars_consumed, est_bytes)
+        filepos = self.stream.tell()
 
-        while True:
-            
-            # Read up to where we guess the newline is.
-            bytes += self.stream.read(est_pos-len(bytes))
-
-            # Decode it.
-            chars, bytes_decoded = self._incr_decode(bytes)
-
-            # Did we get the correct filepos?
-            if len(chars) == self.chars_consumed:
-                filepos = self.stream.tell()
-                break
-            
-            # If we went too far, then we can back-up until we get it
-            # right, using the bytes we've already read.
-            if len(chars) > self.chars_consumed:
-                while len(chars) > self.chars_consumed:
-                    # Assume at least one byte/char.
-                    est_pos += self.chars_consumed-len(chars)
-                    chars, bytes_decoded = self._incr_decode(bytes[:est_pos])
-                filepos = self.stream.tell() - len(bytes) + est_pos
-                break
-
-            # Otherwise, we haven't gone far enough; loop again.
-            est_pos += self.chars_consumed-len(chars)
-            
         # Sanity check
         if self.DEBUG:
             self.stream.seek(filepos)
