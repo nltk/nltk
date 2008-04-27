@@ -33,6 +33,7 @@ from nltk.corpus.reader.rte import *
 from nltk.corpus.reader.string_category import *
 from nltk.corpus.reader.propbank import *
 from nltk.corpus.reader.verbnet import *
+from nltk.corpus.reader.bnc import *
 
 __all__ = [
     'CorpusReader', 'CategorizedCorpusReader',
@@ -52,4 +53,5 @@ __all__ = [
     'CategorizedPlaintextCorpusReader',
     'tagged_treebank_para_block_reader',
     'PropbankCorpusReader', 'VerbnetCorpusReader',
+    'BNCCorpusReader',
 ]
