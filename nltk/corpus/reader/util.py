@@ -941,16 +941,16 @@ class SeekableUnicodeStreamReader(object):
            to the beginning of the buffer to determine the correct
            file position in the underlying byte stream."""
 
-        self.prev_filepos = 0
+        self._rewind_checkpoint = 0
         """The file position at which the most recent read on the
            underlying stream began.  This is used, together with
-           L{chars_consumed}, to backtrack to the beginning of
+           L{_rewind_numchars}, to backtrack to the beginning of
            L{linebuffer} (which is required by L{tell()})."""
         
-        self.chars_consumed = None
+        self._rewind_numchars = None
         """The number of characters that have been returned since the
-           read that started at L{prev_filepos}.  This is used,
-           together with L{prev_filepos}, to backtrack to the
+           read that started at L{_rewind_checkpoint}.  This is used,
+           together with L{_rewind_checkpoint}, to backtrack to the
            beginning of L{linebuffer} (which is required by
            L{tell()})."""
 
@@ -974,7 +974,7 @@ class SeekableUnicodeStreamReader(object):
         if self.linebuffer:
             chars = ''.join(self.linebuffer) + chars
             self.linebuffer = None
-            self.chars_consumed = None
+            self._rewind_numchars = None
 
         return chars
 
@@ -993,7 +993,7 @@ class SeekableUnicodeStreamReader(object):
         # not be a complete line; so let _read() deal with it.)
         if self.linebuffer and len(self.linebuffer) > 1:
             line = self.linebuffer.pop(0)
-            self.chars_consumed += len(line)
+            self._rewind_numchars += len(line)
             return line
         
         readsize = size or 72
@@ -1018,9 +1018,8 @@ class SeekableUnicodeStreamReader(object):
             if len(lines) > 1:
                 line = lines[0]
                 self.linebuffer = lines[1:]
-                self.chars_consumed = len(new_chars)-(len(chars)-len(line))
-                #self.chars_consumed = len(new_chars[:-(len(chars)-len(line))])
-                self.prev_filepos = startpos
+                self._rewind_numchars = len(new_chars)-(len(chars)-len(line))
+                self._rewind_checkpoint = startpos
                 break
             elif len(lines) == 1:
                 line0withend = lines[0]
@@ -1107,8 +1106,8 @@ class SeekableUnicodeStreamReader(object):
         self.stream.seek(offset, whence)
         self.linebuffer = None
         self.bytebuffer = ''
-        self.chars_consumed = None
-        self.prev_filepos = self.stream.tell()
+        self._rewind_numchars = None
+        self._rewind_checkpoint = self.stream.tell()
 
     def char_seek_forward(self, offset):
         """
@@ -1179,13 +1178,13 @@ class SeekableUnicodeStreamReader(object):
 
         # Calculate an estimate of where we think the newline is.
         bytes_read = ( (orig_filepos-len(self.bytebuffer)) -
-                       self.prev_filepos )
+                       self._rewind_checkpoint )
         buf_size = sum([len(line) for line in self.linebuffer])
-        est_bytes = (bytes_read * self.chars_consumed /
-                     (self.chars_consumed + buf_size))
+        est_bytes = (bytes_read * self._rewind_numchars /
+                     (self._rewind_numchars + buf_size))
 
-        self.stream.seek(self.prev_filepos)
-        self._char_seek_forward(self.chars_consumed, est_bytes)
+        self.stream.seek(self._rewind_checkpoint)
+        self._char_seek_forward(self._rewind_numchars, est_bytes)
         filepos = self.stream.tell()
 
         # Sanity check
@@ -1193,12 +1192,6 @@ class SeekableUnicodeStreamReader(object):
             self.stream.seek(filepos)
             check1 = self._incr_decode(self.stream.read(50))[0]
             check2 = ''.join(self.linebuffer)
-            if not (check1.startswith(check2) or check2.startswith(check1)):
-                raise ValueError('ouch\n  %r\nvs\n  %r\nopos=%s\ncc=%r'
-                                 '\nlfp=%r\nbb=%r'
-                                 % (check1, self.linebuffer, orig_filepos,
-                                    self.chars_consumed, self.prev_filepos,
-                                    self.bytebuffer))
             assert check1.startswith(check2) or check2.startswith(check1)
 
         # Return to our original filepos (so we don't have to throw
