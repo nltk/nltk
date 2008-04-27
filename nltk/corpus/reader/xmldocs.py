@@ -106,7 +106,7 @@ class XMLCorpusView(StreamBackedCorpusView):
         """
         if elt_handler: self.handle_elt = elt_handler
         
-        self._tagspec = re.compile(tagspec+'$')
+        self._tagspec = re.compile(tagspec+r'\Z')
         """The tag specification for this corpus view."""
 
         self._tag_context = {0: ()}
@@ -204,6 +204,8 @@ class XMLCorpusView(StreamBackedCorpusView):
         fragment = ''
 
         while True:
+            if isinstance(stream, SeekableUnicodeStreamReader):
+                startpos = stream.tell()
             # Read a block and add it to the fragment.
             xml_block = stream.read(self._BLOCK_SIZE)
             fragment += xml_block
@@ -216,7 +218,7 @@ class XMLCorpusView(StreamBackedCorpusView):
             if re.search('[<>]', fragment).group(0) == '>':
                 pos = stream.tell() - (
                     len(fragment)-re.search('[<>]', fragment).end())
-                raise ValueError('Unexpected ">" at %s' % pos)
+                raise ValueError('Unexpected ">" near char %s' % pos)
 
             # End of file?
             if not xml_block:
@@ -228,12 +230,11 @@ class XMLCorpusView(StreamBackedCorpusView):
             last_open_bracket = fragment.rfind('<')
             if last_open_bracket > 0:
                 if self._VALID_XML_RE.match(fragment[:last_open_bracket]):
-                    if getattr(stream, 'encoding', None) is None:
-                        offset = len(fragment)-last_open_bracket
+                    if isinstance(stream, SeekableUnicodeStreamReader):
+                        stream.seek(startpos)
+                        stream.char_seek_forward(last_open_bracket)
                     else:
-                        offset = len(fragment[last_open_bracket:].encode(
-                                          stream.encoding))
-                    stream.seek(-offset, 1)
+                        stream.seek(-(len(fragment)-last_open_bracket), 1)
                     return fragment[:last_open_bracket]
 
             # Otherwise, read another block. (i.e., return to the
@@ -259,6 +260,8 @@ class XMLCorpusView(StreamBackedCorpusView):
         elt_text = ''
 
         while elts==[] or elt_start is not None:
+            if isinstance(stream, SeekableUnicodeStreamReader):
+                startpos = stream.tell()
             xml_fragment = self._read_xml_fragment(stream)
 
             # End of file.
@@ -320,12 +323,11 @@ class XMLCorpusView(StreamBackedCorpusView):
                     # we've gotten so far (elts is non-empty).
                     if self._DEBUG:
                         print ' '*36+'(backtrack)'
-                    if getattr(stream, 'encoding', None) is None:
-                        offset = len(xml_fragment)-elt_start
+                    if isinstance(stream, SeekableUnicodeStreamReader):
+                        stream.seek(startpos)
+                        stream.char_seek_forward(elt_start)
                     else:
-                        offset = len(xml_fragment[elt_start:].encode(
-                                          stream.encoding))
-                    stream.seek(-offset, 1)
+                        stream.seek(-(len(xml_fragment)-elt_start), 1)
                     context = context[:elt_depth-1]
                     elt_start = elt_depth = None
                     elt_text = ''
