@@ -14,11 +14,8 @@ all x. ((boxer x) implies (person x))
 
 all x. (not ((dog x) and (person x)))
 
-all x. ((married x) iff some y. (marry y x)) 
-all x. ((bark x) implies (dog x))
+some x. (boxer x)
+some x. (boxerdog x)
 
-all x. all y. ((marry y x) implies ((person x) and (person y)))
 
-(not (Vincent = Mia))
-(not (Vincent = Fido))
-(not (Mia = Fido))
+
