@@ -1219,6 +1219,8 @@ class SeekableUnicodeStreamReader(object):
         unicode string.  C{linebuffer} is *not* included in the
         result.
         """
+        if size == 0: return u''
+        
         # Skip past the byte order marker, if present.
         if self._bom and self.stream.tell() == 0:
             self.stream.read(self._bom)
