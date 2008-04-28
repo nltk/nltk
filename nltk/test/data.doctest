@@ -105,11 +105,15 @@ Describe how caching works, and how to use `clear_cache()`.
 Retrieving other Data Sources
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    >>> formulas = nltk.data.load('grammars/onto1.fol')
+    >>> formulas = nltk.data.load('grammars/background.fol')
     >>> for f in formulas: print str(f.infixify())
-    all x.((boxer2 x) implies (dog x))
-    all x.((boxer1 x) implies (person x))
+    all x.((boxerdog x) implies (dog x))
+    all x.((boxer x) implies (person x))
     all x.(not ((dog x) and (person x)))
-    all x.(not ((kitchen x) and (garden x)))
-    all x.((kitchen x) implies (location x))
-    all x.((garden x) implies (location x))
+    all x.((married x) iff some y.(marry y x))
+    all x.((bark x) implies (dog x))
+    all x y.((marry y x) implies ((person x) and (person y)))
+    (not (Vincent = Mia))
+    (not (Vincent = Fido))
+    (not (Mia = Fido))
+
