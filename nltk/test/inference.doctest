@@ -176,12 +176,8 @@ statements as new assumptions.
     all x.((boxerdog x) implies (dog x))
     all x.((boxer x) implies (person x))
     all x.(not ((dog x) and (person x)))
-    all x.((married x) iff some y.(marry y x))
-    all x.((bark x) implies (dog x))
-    all x y.((marry y x) implies ((person x) and (person y)))
-    (not (Vincent = Mia))
-    (not (Vincent = Fido))
-    (not (Mia = Fido))
+    some x.(boxer x)
+    some x.(boxerdog x)
     >>> prover.add_assumptions(new)
     >>> print prover.prove()
     True
@@ -201,25 +197,24 @@ statements as new assumptions.
     % Proof 1 at ... seconds.
     % Length of proof is 13.
     % Level of proof is 4.
-    % Maximum clause weight is 2.
+    % Maximum clause weight is 0.
     % Given clauses 0.
     <BLANKLINE>
     1 (all x (boxerdog(x) -> dog(x))).  [assumption].
     2 (all x (boxer(x) -> person(x))).  [assumption].
     3 (all x -(dog(x) & person(x))).  [assumption].
-    7 (all x (boxer(x) -> -boxerdog(x))).  [goal].
-    8 boxerdog(c1).  [deny(7)].
-    9 -boxerdog(x) | dog(x).  [clausify(1)].
-    10 boxer(c1).  [deny(7)].
+    6 (all x (boxer(x) -> -boxerdog(x))).  [goal].
+    8 -boxerdog(x) | dog(x).  [clausify(1)].
+    9 boxerdog(c3).  [deny(6)].
     11 -boxer(x) | person(x).  [clausify(2)].
-    13 -dog(x) | -person(x).  [clausify(3)].
-    14 dog(c1).  [resolve(8,a,9,a)].
-    22 person(c1).  [resolve(10,a,11,a)].
-    23 -person(c1).  [resolve(14,a,13,a)].
-    24 $F.  [resolve(23,a,22,a)].
+    12 boxer(c3).  [deny(6)].
+    14 -dog(x) | -person(x).  [clausify(3)].
+    15 dog(c3).  [resolve(9,a,8,a)].
+    18 person(c3).  [resolve(12,a,11,a)].
+    19 -person(c3).  [resolve(15,a,14,a)].
+    20 $F.  [resolve(19,a,18,a)].
     <BLANKLINE>
     ============================== end of proof ==========================
-
 
 ------------
 DRS Equality
@@ -245,8 +240,8 @@ For example, the ``drt_glue`` module generates two readings for the sentence
     >>> 
     >>> for drs in readings: print drs.simplify()
     ...
-    DRS([z1,x],[(= z1 John),(= x Mary),(sees z1 x)])
-    DRS([z2,x],[(= z2 Mary),(= x John),(sees x z2)])
+    DRS([z1,x],[(= z1 John),(= x Mary),(sees x z1)])
+    DRS([z2,x],[(= z2 Mary),(= x John),(sees z2 x)])
 
 However, it is easy to tell that these two readings are logically the
 same, and therefore one of them is superfluous.  We can use the theorem prover
