@@ -1875,8 +1875,8 @@ characters than the ``size`` argument:
     ... It is encoded in utf-16.
     ... """.encode('utf-16'))
     >>> reader = SeekableUnicodeStreamReader(stream, 'utf-16')
-    >>> reader.read(10) # note: BOM takes up 2 bytes.
-    u'This'
+    >>> reader.read(10)
+    u'This '
 
 If a read block ends in the middle of the byte string encoding a
 single character, then that byte string is stored in an internal
@@ -1904,9 +1904,9 @@ bytes from the stream:
     >>> reader.readline()         # stores extra text in a buffer
     u'This is a test file.\n'
     >>> print reader.linebuffer   # examine the buffer contents
-    [u'It is encoded ']
+    [u'It is encoded i']
     >>> reader.read(0)            # returns the contents of the buffer
-    u'It is encoded '
+    u'It is encoded i'
     >>> print reader.linebuffer   # examine the buffer contents
     None
 
@@ -1925,14 +1925,14 @@ returned by ``tell``.
     ... """.encode('utf-16'))
     >>> reader = SeekableUnicodeStreamReader(stream, 'utf-16')
     >>> reader.read(20)
-    u'This is a'
+    u'This is a '
     >>> pos = reader.tell(); print pos
-    20
+    22
     >>> reader.read(20)
-    u' test file'
+    u'test file.'
     >>> reader.seek(pos)     # rewind to the position from tell.
     >>> reader.read(20)
-    u' test file'
+    u'test file.'
 
 The ``seek()`` and ``tell()`` methods work property even when
 ``readline()`` is used.
@@ -1979,13 +1979,11 @@ tells, and checks that the results are consistent:
     ...         op = random.choice('tsrr')
     ...         # Check our position?
     ...         if op == 't': # tell
-    ...             #print 'tell'
     ...             reader.tell()
     ...         # Perform a seek?
     ...         if op == 's': # seek
     ...             new_pos = random.choice([p for (p,c) in chars])
     ...             reader.seek(new_pos)
-    ...             #print 'seek', new_pos, `strings[new_pos][:10]`
     ...         # Perform a read?
     ...         if op == 'r': # read
     ...             if random.random() < .3: pos = reader.tell()
@@ -1996,15 +1994,12 @@ tells, and checks that the results are consistent:
     ...             else: size = random.randint(0, strlen+20)
     ...             if random.random() < .8:
     ...                 s = reader.read(size)
-    ...                 #print 'read', size, pos, `s`
     ...             else:
     ...                 s = reader.readline(size)
-    ...                 #print 'readline', size, pos, `s`
-    ...                 #print '    ', reader.linebuffer, `reader.bytebuffer`
     ...             # check that everything's consistent
     ...             if pos is not None:
-    ...                 if not strings[pos].startswith(s):
-    ...                     print (strings[pos], s)
+    ...                 assert pos in strings
+    ...                 assert strings[pos].startswith(s)
     ...                 n -= 1
     ...                 if n == 0:
     ...                     return 'passed'
