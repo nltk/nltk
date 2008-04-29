@@ -164,7 +164,7 @@ def re_show(regexp, string, left="{", right="}"):
     regular expressions.
 
     @param regexp: The regular expression.
-    @type param: C{string}
+    @type regexp: C{string}
     @param string: The string being matched.
     @type string: C{string}
     @param left: The left delimiter (printed before the matched substring)

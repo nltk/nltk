@@ -44,7 +44,7 @@ class _LRUCache:
     @ivar history: A dict from timestamp -> key
 
     @type nextTimestamp: C{int}
-    @pivar nextTimestamp: Timestamp to use with the next value that's added.
+    @ivar nextTimestamp: Timestamp to use with the next value that's added.
 
     @type oldestTimestamp: C{int}
     @ivar oldestTimestamp: Timestamp of the oldest element (the next one to
