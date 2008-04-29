@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Relation Extraction
 #
-# Copyright (C) 2005-2008 University of Edinburgh
+# Copyright (C) 2001-2008 University of Pennsylvania
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
@@ -83,7 +83,15 @@ def descape_entity(m, defs=htmlentitydefs.entitydefs):
     """
     Translate one entity to its ISO Latin value.
     Inspired by example from effbot.org
+    
+
     """
+    #s = 'mcglashan_&amp;_sarrail'
+    #l = ['mcglashan', '&amp;', 'sarrail']
+    #pattern = re.compile("&(\w+?);")
+    #new = list2sym(l)
+    #s = pattern.sub(descape_entity, s)
+    print s, new
     try:
         return defs[m.group(1)]
     
@@ -164,7 +172,7 @@ def mk_reldicts(pairs, window=5, trace=0):
         pairs = pairs[1:]
     return result
 
-def relextract(subjclass, objclass, doc, corpus='ieer', pattern=None, window=10):
+def extract_rels(subjclass, objclass, doc, corpus='ieer', pattern=None, window=10):
     """
     Filter the output of L{mk_reldicts} according to specified NE classes and a filler pattern.
     
@@ -261,7 +269,7 @@ def in_demo(trace=0):
     IN = re.compile(r'.*\bin\b(?!\b.+ing\b)')
     
     print
-    print "in(ORG, LOC) -- just the clauses:"
+    print "IEER: in(ORG, LOC) -- just the clauses:"
     print "=" * 45
 
     for file in ieer.files():
@@ -269,7 +277,7 @@ def in_demo(trace=0):
             if trace:
                 print doc.docno
                 print "=" * 15
-            for rel in relextract('ORG', 'LOC', doc, pattern=IN):
+            for rel in extract_rels('ORG', 'LOC', doc, pattern=IN):
                 print show_clause(rel, relsym='IN')
 
 
@@ -309,7 +317,7 @@ def roles_demo(trace=0):
     ROLES = re.compile(roles, re.VERBOSE)
     
     print
-    print "has_role(PER, ORG) -- raw rtuples:"
+    print "IEER: has_role(PER, ORG) -- raw rtuples:"
     print "=" * 45
     
     for file in ieer.files():
@@ -319,31 +327,33 @@ def roles_demo(trace=0):
                 print doc.docno
                 print "=" * 15
                 lcon = rcon = True
-            for rel in relextract('PER', 'ORG', doc, pattern=ROLES):
+            for rel in extract_rels('PER', 'ORG', doc, pattern=ROLES):
                 print show_raw_rtuple(rel, lcon=lcon, rcon=rcon)
 
     
-    ##############################################
-    ### Show what's in the IEER Headlines
-    ##############################################
+##############################################
+### Show what's in the IEER Headlines
+##############################################
     
-    #print "NER in Headlines"
-    #print "=" * 45
+   
+def ieer_headlines():
+    
+    from nltk.corpus import ieer
+    from nltk import Tree
+    
+    print "IEER: Frist 20 Headlines"
+    print "=" * 45
+    
+    trees = [doc.headline for file in ieer.files() for doc in ieer.parsed_docs(file)]
+    for tree in trees[:20]:
+        print
+        print "%s:\n%s" % (doc.docno, tree)
  
-    #for file in ieer.files():
-           #for doc in ieer.parsed_docs(file):
-               #tree = doc.headline
-               #if isinstance(tree, Tree):
-                   #print doc.docno, tree.pprint()
-               #
-                   #print join(tree.leaves())
-               #else: 
-                    #print tree
 
         
-    #############################################
-    ## Dutch CONLL2002: take_on_role(PER, ORG
-    #############################################
+#############################################
+## Dutch CONLL2002: take_on_role(PER, ORG
+#############################################
     
 def conllned(trace=1):
     """
@@ -366,18 +376,18 @@ def conllned(trace=1):
     VAN = re.compile(vnv, re.VERBOSE)
     
     print
-    print "van(PER, ORG) -- raw rtuples with context:"
+    print "Dutch CoNLL2002: van(PER, ORG) -- raw rtuples with context:"
     print "=" * 45
     for doc in conll2002.chunked_sents('ned.train'):
         lcon = rcon = False
         if trace:
                 lcon = rcon = True
-        for rel in relextract('PER', 'ORG', doc, corpus='conll2002', pattern=VAN):
+        for rel in extract_rels('PER', 'ORG', doc, corpus='conll2002', pattern=VAN):
             print show_raw_rtuple(rel, lcon=lcon, rcon=rcon)
     
-    #############################################
-    ## Spanish CONLL2002: (PER, ORG)
-    #############################################
+#############################################
+## Spanish CONLL2002: (PER, ORG)
+#############################################
 
 def conllesp():
     from nltk.corpus import conll2002
@@ -392,25 +402,22 @@ def conllesp():
     DE = re.compile(de, re.VERBOSE)
     
     print
-    print "de(ORG, LOC) -- just the first 10 clauses:"
+    print "Spanish CoNLL2002: de(ORG, LOC) -- just the first 10 clauses:"
     print "=" * 45
     rels = [rel for doc in conll2002.chunked_sents('esp.train')
-            for rel in relextract('ORG', 'LOC', doc, corpus='conll2002', pattern = DE)]
+            for rel in extract_rels('ORG', 'LOC', doc, corpus='conll2002', pattern = DE)]
     for r in rels[:10]: print show_clause(r, relsym='DE')
     print
 
-#s = 'mcglashan_&amp;_sarrail'
-#l = ['mcglashan', '&amp;', 'sarrail']
-#pattern = re.compile("&(\w+?);")
-#new = list2sym(l)
-#s = pattern.sub(descape_entity, s)
-#print s, new
+
 
 if __name__ == '__main__':
     in_demo(trace=0)
-    #roles_demo(trace=0)
-    #conllned()
-    #conllesp()
+    roles_demo(trace=0)
+    ieer
+    conllned()
+    conllesp()
+    ieer_headlines()
 
 
 
