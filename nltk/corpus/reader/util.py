@@ -906,7 +906,7 @@ class SeekableUnicodeStreamReader(object):
     to C{codecs.StreamReadedr}, which provide *broken* C{seek()} and
     C{tell()} methods.
 
-    This class was motivated by L{StreamBackedCorpusReader}, which
+    This class was motivated by L{StreamBackedCorpusView}, which
     makes extensive use of C{seek()} and C{tell()}, and needs to be
     able to handle unicode-encoded files.
     

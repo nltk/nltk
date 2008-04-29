@@ -108,7 +108,7 @@ def log_likelihood(reference, test):
     @type reference: C{list}
     @param test: A list of probability distributions over values to
         compare against the corresponding reference values.
-    @type test: C{list} of L{ProbDist}
+    @type test: C{list} of L{ProbDistI}
     """
     if len(reference) != len(test):
         raise ValueError("Lists must have the same length.")

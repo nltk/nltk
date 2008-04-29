@@ -46,7 +46,7 @@ they return.  Some common examples, and their return types, are:
   - I{corpus}.raw(): unprocessed corpus contents
 
 For example, to read a list of the words in the Brown Corpus, use
-L{nltk.corpus.brown.words()}:
+C{nltk.corpus.brown.words()}:
 
     >>> from nltk.corpus import brown
     >>> print brown.words()

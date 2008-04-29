@@ -29,10 +29,8 @@ chunk structure's L{leaves<Tree.leaves>} method.
 
 The C{parser.chunk} module defines L{ChunkParserI}, a standard interface for
 chunking texts; and L{RegexpChunkParser}, a regular-expression based
-implementation of that interface.  It uses the L{tree.chunk} and
-L{tree.conll_chunk} methods, which tokenize strings containing chunked
-and tagged texts.  It defines L{ChunkScore}, a utility class for
-scoring chunk parsers.
+implementation of that interface. It also defines L{ChunkScore}, a
+utility class for scoring chunk parsers.
 
 RegexpChunkParser
 =================

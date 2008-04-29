@@ -18,7 +18,7 @@ class StemmerI(object):
         Strip affixes from the token and return the stem.
 
         @param token: The token that should be stemmed.
-        @type token: L{string}
+        @type token: C{str}
         """
         raise NotImplementedError()
 

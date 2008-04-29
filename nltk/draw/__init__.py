@@ -2325,7 +2325,7 @@ def in_idle():
     """
     @rtype: C{boolean}
     @return: true if this function is run within idle.  Tkinter
-    programs that are run in idle should never call L{Tk.mainloop}; so
+    programs that are run in idle should never call C{Tk.mainloop}; so
     this function should be used to gate all calls to C{Tk.mainloop}.
 
     @warning: This function works by checking C{sys.stdin}.  If the
@@ -2391,3 +2391,7 @@ from rdparser import *
 from srparser import *
 from tree import *
 from dispersion import *
+
+# Make sure that nltk.draw.cfg and nltk.draw.tree refer to the correct
+# modules (and not to nltk.cfg & nltk.tree)
+import cfg, tree

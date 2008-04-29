@@ -193,7 +193,7 @@ class PunktSentenceTokenizer(TokenizerI):
         that occur at the training data at the beginning of a sentence
         (after the first pass of annotation).  Especially common
         sentence starters are extracted from this frequency
-        distribution, and stored in L{sent_starters}.
+        distribution, and stored in L{_sent_starters}.
         """
         
         if train_text:

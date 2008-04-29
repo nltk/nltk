@@ -298,7 +298,7 @@ def getSense(form, pos=NOUN, senseno=0):
     @param pos: the desired part of speech. Defaults to 'noun'.
     @type  senseno: C{int}
     @param senseno: the id of the desired word sense. Defaults to 0.
-    @return: the L{Sense} object corresponding to form, pos and senseno, if it exists.
+    @return: the L{Synset} object corresponding to form, pos and senseno, if it exists.
     """
     return getWord(form, pos)[senseno]
 

@@ -151,7 +151,7 @@ class PropbankInstance(object):
         
         self.roleset = roleset
         """The name of the roleset used by this instance's predicate.
-        Use L{propbank.roleset() <PropbankCorusReader.roleset>} to
+        Use L{propbank.roleset() <PropbankCorpusReader.roleset>} to
         look up information about the roleset."""
         
         self.inflection = inflection

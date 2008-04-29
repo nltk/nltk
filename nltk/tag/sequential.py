@@ -11,7 +11,8 @@
 Classes for tagging sentences sequentially, left to right.  The
 abastract base class L{SequentialBackoffTagger} serves as the base
 class for all the taggers in this module.  Tagging of individual words
-is performed by the method L{choose_tag()}, which is defined by
+is performed by the method L{choose_tag()
+<SequentialBackoffTagger.choose_tag>}, which is defined by
 subclasses of L{SequentialBackoffTagger}.  If a tagger is unable to
 determine a tag for the specified token, then its I{backoff tagger} is
 consulted instead.  Any C{SequentialBackoffTagger} may serve as a
@@ -115,8 +116,10 @@ class ContextTagger(SequentialBackoffTagger):
     A C{ContextTagger} chooses the tag for a token by calculating the
     token's context, and looking up the corresponding tag in a table.
     This table can be constructed manually; or it can be automatically
-    constructed based on a training corpus, using the L{train()}
+    constructed based on a training corpus, using the L{_train()}
     factory method.
+
+    @ivar _context_to_tag: Dictionary mapping contexts to tags.
     """
     def __init__(self, context_to_tag, backoff=None):
         """
@@ -326,8 +329,8 @@ class AffixTagger(ContextTagger, yaml.YAMLObject):
     substrings are not necessarily "true" morphological affixes).  In
     particular, a fixed-length substring of the word is looked up in a
     table, and the corresponding tag is returned.  Affix taggers are
-    typically constructed by training them on a tagged corpys; see
-    L{train()}.
+    typically constructed by training them on a tagged corpus; see
+    L{the constructor <__init__>}.
     """
     yaml_tag = '!nltk.AffixTagger'
 

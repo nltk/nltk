@@ -12,11 +12,6 @@ Unit tests for the NLTK modules.  These tests are intented to ensure
 that changes that we make to NLTK's code don't accidentally introduce
 bugs.
 
-Each module in this package tests a specific aspect of NLTK.  Modules
-are typically named for the module or class that they test (e.g.,
-L{nltk.test.tree} performs tests on the L{nltk.tree}
-module).
-
 Use doctest_driver.py to run the tests::
 
   doctest_driver.py --help
