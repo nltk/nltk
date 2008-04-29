@@ -39,7 +39,7 @@ class Word(object):
         >>> N['dog'].synsets()
         [{noun: dog, domestic dog, Canis familiaris}, {noun: frump, dog}, {noun: dog}, {noun: cad, bounder, blackguard, dog, hound, heel}, {noun: frank, frankfurter, hotdog, hot dog, dog, wiener, wienerwurst, weenie}, {noun: pawl, detent, click, dog}, {noun: andiron, firedog, dog, dog-iron}]
 
-        @return: A list of this L{Word}'s L{Synsets}s
+        @return: A list of this L{Word}'s L{Synset}s
         """
 
         try:

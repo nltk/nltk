@@ -396,7 +396,7 @@ class InstantiateVarsChart(Chart):
     start with '@', by replacing them with unique new variables.
     In particular, whenever a complete edge is added to the chart, any
     variables in the edge's C{lhs} whose names start with '@' will be
-    replaced by unique new L{IndVariable}s.
+    replaced by unique new L{Variable}s.
     """
     def __init__(self, tokens):
         Chart.__init__(self, tokens)

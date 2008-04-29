@@ -11,7 +11,7 @@ A utility for displaying lexical dispersion.
 
 from Tkinter import Canvas
 
-def plot(text, words, rowheight=15, rowwidth=800):
+def dispersion_plot(text, words, rowheight=15, rowwidth=800):
     """
     Generate a lexical dispersion plot.
 
