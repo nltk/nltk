@@ -12,10 +12,10 @@ Collected by A Kumaran, Microsoft Research, India
 Distributed with permission
 
 Contents:
-- Bangla: IIT Kharagpur
-- Hindi: Microsoft Research India
-- Marathi: IIT Bombay
-- Telugu: IIIT Hyderabad
+  - Bangla: IIT Kharagpur
+  - Hindi: Microsoft Research India
+  - Marathi: IIT Bombay
+  - Telugu: IIIT Hyderabad
 """       
 
 from nltk.corpus.reader.util import *

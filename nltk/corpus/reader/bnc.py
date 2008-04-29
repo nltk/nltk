@@ -115,7 +115,7 @@ class BNCCorpusReader(XMLCorpusReader):
         words or a list of sentences, optionally tagged.
         
         @param filename: The name of the underlying file.
-        @param sent: If true, include sentence bracketing.
+        @param bracket_sent: If true, include sentence bracketing.
         @param tag: The name of the tagset to use, or None for no tags.
         @param strip_space: If true, strip spaces from word tokens.
         @param stem: If true, then substitute stems for words.

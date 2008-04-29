@@ -324,7 +324,7 @@ class VerbnetCorpusReader(XMLCorpusReader):
         Return a string containing a pretty-printed representation of
         the given verbnet frame.
         
-        @param vnclass: An ElementTree containing the xml contents of
+        @param vnframe: An ElementTree containing the xml contents of
         a verbnet frame.
         """
         s = self.pprint_description(vnframe, indent) + '\n'
@@ -338,7 +338,7 @@ class VerbnetCorpusReader(XMLCorpusReader):
         Return a string containing a pretty-printed representation of
         the given verbnet frame description.
         
-        @param vnclass: An ElementTree containing the xml contents of
+        @param vnframe: An ElementTree containing the xml contents of
         a verbnet frame.
         """
         descr = vnframe.find('DESCRIPTION')
@@ -352,7 +352,7 @@ class VerbnetCorpusReader(XMLCorpusReader):
         Return a string containing a pretty-printed representation of
         the given verbnet frame syntax.
         
-        @param vnclass: An ElementTree containing the xml contents of
+        @param vnframe: An ElementTree containing the xml contents of
         a verbnet frame.
         """
         pieces = []
@@ -375,7 +375,7 @@ class VerbnetCorpusReader(XMLCorpusReader):
         Return a string containing a pretty-printed representation of
         the given verbnet frame semantics.
         
-        @param vnclass: An ElementTree containing the xml contents of
+        @param vnframe: An ElementTree containing the xml contents of
         a verbnet frame.
         """
         pieces = []

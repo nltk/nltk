@@ -18,7 +18,7 @@ classifiers can be used...
   - to classify sentences by their author.
 
 Features
---------
+========
 In order to decide which category label is appropriate for a given
 token, classifiers examine one or more 'features' of the token.  These
 X{features} are typically chosen by hand, and indicate which aspects
@@ -27,7 +27,7 @@ example, a document classifier might use a separate feature for each
 word, recording how often that word occured in the document.
 
 Featuresets
------------
+===========
 The features describing a token are encoded using a X{featureset},
 which is a dictionary that maps from X{feature names} to X{feature
 values}.  Feature names are unique strings that indicate what aspect
@@ -53,7 +53,7 @@ function is applied to each token before it is fed to the classifier:
     ...     print doc_name, classifier.classify(document_features(doc))
 
 Training Classifiers
---------------------
+====================
 Most classifiers are built by training them on a list of hand-labeled
 examples, known as the X{training set}.  Training sets are represented
 as lists of C{(featuredict, label)} tuples.

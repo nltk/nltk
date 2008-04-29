@@ -13,12 +13,12 @@ were regularized.
 
 Filenames are of the form rte*_dev.xml and rte*_test.xml. The latter are the gold standard annotated files.
 
-Each entailment corpus is a list of 'text'/'hypothesis' pairs. The following example is taken from RTE3:
+Each entailment corpus is a list of 'text'/'hypothesis' pairs. The following example is taken from RTE3::
 
-<pair id="1" entailment="YES" task="IE" length="short" >
+ <pair id="1" entailment="YES" task="IE" length="short" >
     <t>The sale was made to pay Yukos' US$ 27.5 billion tax bill, Yuganskneftegaz was originally sold for US$ 9.4 billion to a little known company Baikalfinansgroup which was later bought by the Russian state-owned oil company Rosneft .</t>
    <h>Baikalfinansgroup was sold to Rosneft.</h>
-</pair>
+ </pair>
 
 In order to provide globally unique IDs for each pair, a new attribute C{challenge} has been added to the root element C{entailment-corpus} of each file, taking values 1, 2 or 3.  The GID is formatted 'm-n', where 'm' is the challenge number and 'n' is the pair ID.
 """

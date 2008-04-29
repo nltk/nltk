@@ -167,9 +167,9 @@ def re_show(regexp, string, left="{", right="}"):
     @type param: C{string}
     @param string: The string being matched.
     @type string: C{string}
-    @param left: The left delimiter (printed before the matched substring), default "{"
+    @param left: The left delimiter (printed before the matched substring)
     @type left: C{string}
-    @param right: The right delimiter (printed after the matched substring), default "}"
+    @param right: The right delimiter (printed after the matched substring)
     @type right: C{string}
     @rtype: C{string}
     @return: A string with markers surrounding the matched substrings.
@@ -228,12 +228,12 @@ def guess_encoding(data):
     Tries the standard 'UTF8' and 'latin-1' encodings,
     Plus several gathered from locale information.
 
-    The calling program *must* first call 
+    The calling program *must* first call::
+
         locale.setlocale(locale.LC_ALL, '')
 
-    If successful it returns 
-        (decoded_unicode, successful_encoding)
-    If unsuccessful it raises a ``UnicodeError``
+    If successful it returns C{(decoded_unicode, successful_encoding)}.
+    If unsuccessful it raises a C{UnicodeError}.
     """
     successful_encoding = None
     # we make 'utf-8' the first encoding

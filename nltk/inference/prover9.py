@@ -112,16 +112,18 @@ class Prover9Parent:
            
     def prover9_files(self, prefix='prover9', p9_dir=None):
         """
-        Generate names for the input and output files and write to the input file.
+        Generate names for the input and output files and write to the
+        input file.
         
-        @parameter prefix: prefix to use for the input files; 
-        appropriate values are 'prover9' and 'mace4'. 
-        The full filename is created by the C{tempfile} module.
-        @type filename: C{str}
-        @parameter p9_dir: location of directory for writing input and output files; 
-        if not specified, the C{tempfile} module specifies the directory.
+        @type prefix: C{str}
+        @parameter prefix: prefix to use for the input files;
+            appropriate values are 'prover9' and 'mace4'.  The full
+            filename is created by the C{tempfile} module.
+        
         @type p9_dir: C{str}
-        
+        @parameter p9_dir: location of directory for writing input and
+            output files; if not specified, the C{tempfile} module
+            specifies the directory.
         """     
         (fd, filename) = tempfile.mkstemp(suffix=".in", prefix=prefix, dir=p9_dir)
         self._infile = filename

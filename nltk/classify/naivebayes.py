@@ -147,7 +147,7 @@ class NaiveBayesClassifier(ClassifierI):
         classifier.  For the purpose of this function, the
         informativeness of a feature C{(fname,fval)} is equal to the
         highest value of P(fname=fval|label), for any label, divided by
-        the lowest value of P(fname=fval|label), for any label.
+        the lowest value of P(fname=fval|label), for any label::
 
           max[ P(fname=fval|label1) / P(fname=fval|label2) ]
         """

@@ -1188,8 +1188,8 @@ def error_list (train_sents, test_sents, radius=2):
 
     @param train_sents: The correct tagging of the corpus
     @type train_sents: C{list} of C{tuple}
-    @param tokens: The tagged corpus
-    @type tokens: C{list} of C{tuple}
+    @param test_sents: The tagged corpus
+    @type test_sents: C{list} of C{tuple}
     @param radius: How many tokens on either side of a wrongly-tagged token
         to include in the error string.  For example, if C{radius}=2,
         each error string will show the incorrect token plus two
