@@ -36,11 +36,8 @@ using (by default, ``grammars/sem4.fcfg``):
     NP[loc=?l,num=?n,sem=?np] -> PropN[loc=?l,num=?n,sem=?np]
     ...
 
-The grammar can be explicitly set when the constructor is invoked:
-
-.. doctest-ignore::
-..    >>> dt = DiscourseTester(['a boxer walks', 'every boxer chases a girl'], gramfile="file:mygrammar.fcfg") 
-
+A different grammar can be invoked by using the optional ``gramfile``
+parameter when a ``DiscourseTester`` object is created.
 
 Readings and Threads
 ====================
@@ -319,9 +316,7 @@ the preceding discourse.
 Adding Background Knowledge
 ===========================
 
-Consider a new discourse. We use the ``filter=True`` setting to only
-give us consistent threads (though in this case, all the threads are consistent).
-
+Let's build a new discourse, and look at the readings of the component sentences:
 
     >>> dt = DiscourseTester(['Vincent is a boxer', 'Fido is a boxer', 'Vincent is married', 'Fido barks'])
     >>> dt.readings()
@@ -344,8 +339,17 @@ give us consistent threads (though in this case, all the threads are consistent)
     ------------------------------
     s3-r0: (bark Fido)
 
+This gives us a lot of threads:
 
-Now let's add some background information.
+    >>> dt.readings(threaded=True)
+    d0: ['s0-r0', 's1-r0', 's2-r0', 's3-r0']
+    d1: ['s0-r0', 's1-r1', 's2-r0', 's3-r0']
+    d2: ['s0-r1', 's1-r0', 's2-r0', 's3-r0']
+    d3: ['s0-r1', 's1-r1', 's2-r0', 's3-r0']
+
+
+We can eliminate some of the readings, and hence some of the threads,
+by adding background information.
 
     >>> import nltk.data
     >>> bg = nltk.data.load('grammars/background1.fol')
@@ -367,6 +371,9 @@ on ``readings()``.
 
     >>> dt.readings(filter=True)
     d2: ['s0-r1', 's1-r0', 's2-r0', 's3-r0']
+
+The ``models()`` method gives us more information about the surviving thread.
+
     >>> dt.models()
     --------------------------------------------------------------------------------
     Model for Discourse Thread d0
@@ -460,3 +467,31 @@ on ``readings()``.
         s3-r0: (bark Fido)
     <BLANKLINE>
 
+
+..  This will not be visible in the html output: create a tempdir to
+    play in.
+    >>> import tempfile, os
+    >>> tempdir = tempfile.mkdtemp()
+    >>> old_dir = os.path.abspath('.')
+    >>> os.chdir(tempdir)
+
+In order to play around with your own version of background knowledge,
+you might want to start off with a local copy of ``background1.fol``:
+
+    >>> nltk.data.retrieve('grammars/background1.fol')
+    Retrieving 'grammars/background1.fol', saving to 'background1.fol'
+
+After you have modified the file, the ``parse_fol()`` function will parse the strings in the file into
+expressions of ``nltk.logic``.
+
+    >>> mybg = parse_fol(open('background1.fol').read())
+
+The result can be loaded as an argument of ``add_background()`` in the
+manner shown earlier.
+
+..  This will not be visible in the html output: clean up the tempdir.
+    >>> os.chdir(old_dir)
+    >>> for f in os.listdir(tempdir):
+    ...     os.remove(os.path.join(tempdir, f))
+    >>> os.rmdir(tempdir)
+    >>> nltk.data.clear_cache()
