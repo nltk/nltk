@@ -273,10 +273,6 @@ class EarleyChartParser(ParserI):
         
         @type grammar: C{cfg.Grammar}
         @param grammar: The grammar used to parse texts.
-        #@type lexicon: C{dict} from C{string} to (C{list} of C{string})
-        #@param lexicon: A lexicon of words that records the parts of
-            #speech that each word can have.  Each key is a word, and
-            #the corresponding value is a list of parts of speech.
         @type trace: C{int}
         @param trace: The level of tracing that should be used when
             parsing a text.  C{0} will generate no tracing output;

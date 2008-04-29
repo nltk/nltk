@@ -22,7 +22,7 @@ Implementation Notes
 Notes I'm keeping as I rework the original code...
 
 Differenes
-~~~~~~~~~~
+----------
 In general, I tried to ensure that my code would generate the same
 basic values as the original code, even if it used different methods
 or data structures to do so (e.g., stand-off annotation for word
@@ -32,26 +32,25 @@ because the original code appeared to have a bug, or because it
 allowed me to simplify the code without (hopefully) affecting the
 overall result.  Here's a list of substanitive differences:
 
-- in count_orthography_context(), '.?!' are included in a list of
-  'word-internal punctuation'.
+  - in count_orthography_context(), '.?!' are included in a list of
+    'word-internal punctuation'.
+    
+  - the original has a bunch of places where it will try to scan the
+    next token, but gives up if there's too many intervening newlines.
+    The new code doesn't preserve that behavior.
+    
+  - the original code only looked for collocations if the first word
+    was (a) tagged as an abbreviation, or (b) a digit or initial.
+    In case (a), the collocation heuristic will be redundant -- the
+    given word will never be tagged as a sentence boundary by the first
+    pass.  I saw no mention of these conditions in the original paper,
+    so I replaced them with the simple condition that the first word
+    end with a period.
   
-- the original has a bunch of places where it will try to scan the
-  next token, but gives up if there's too many intervening newlines.
-  The new code doesn't preserve that behavior.
-  
-- the original code only looked for collocations if the first word
-  was (a) tagged as an abbreviation, or (b) a digit or initial.
-  In case (a), the collocation heuristic will be redundant -- the
-  given word will never be tagged as a sentence boundary by the first
-  pass.  I saw no mention of these conditions in the original paper,
-  so I replaced them with the simple condition that the first word
-  end with a period.
-
-- for rare abbrevs caused by words followed by lowercase letters, the
-  code & the comment diagreed in the original file.  I chose to follow
-  the code, since I believe that the comment describes a condition
-  that will never be true.
-
+  - for rare abbrevs caused by words followed by lowercase letters, the
+    code & the comment diagreed in the original file.  I chose to follow
+    the code, since I believe that the comment describes a condition
+    that will never be true.
 """
 
 import re, math

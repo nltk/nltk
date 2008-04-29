@@ -114,18 +114,18 @@ class Synset(object):
     >>> V['think'][0].synset.verbFrames
     (5, 9)
 
-    @type  pos: C{string}
-    @param pos: The part of speech -- one of NOUN, VERB, ADJECTIVE, ADVERB.
+    @type pos: C{string}
+    @ivar pos: The part of speech -- one of NOUN, VERB, ADJECTIVE, ADVERB.
 
-    @type  offset: C{int}
-    @param offset: An integer offset into the part-of-speech file. Together
+    @type offset: C{int}
+    @ivar offset: An integer offset into the part-of-speech file. Together
         with pos, this can be used as a unique id.
 
-    @type  gloss: C{string}
-    @param gloss: A gloss (dictionary definition) for the sense.
+    @type gloss: C{string}
+    @ivar gloss: A gloss (dictionary definition) for the sense.
 
-    @type  verbFrames: C{list} of C{integer}
-    @param verbFrames: A sequence of integers that index into
+    @type verbFrames: C{list} of C{integer}
+    @ivar verbFrames: A sequence of integers that index into
         VERB_FRAME_STRINGS. These list the verb frames that any
         Sense in this synset participates in. (See also
         Sense.verbFrames.) Defined only for verbs.

@@ -37,8 +37,6 @@ def config_megam(bin=None):
         then nltk will search the system for a C{megam} binary; and if
         one is not found, it will raise a C{LookupError} exception.
     @type bin: C{string}
-    @param options: A list of options that should be passed to the
-        C{megam} binary when it is called.
     """
     global _megam_bin
 
@@ -97,7 +95,7 @@ def write_megam_file(train_toks, encoding, stream,
         pairs, the first member of which is a feature dictionary,
         and the second of which is a classification label.
 
-    @type encoding: L{MaxentFeatureEncoding}
+    @type encoding: L{MaxentFeatureEncodingI}
     @param encoding: A feature encoding, used to convert featuresets
         into feature vectors.
 

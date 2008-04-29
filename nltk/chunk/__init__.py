@@ -27,7 +27,7 @@ chunks in the sentence "I saw the big dog on the hill" is::
 To convert a chunk structure back to a list of tokens, simply use the
 chunk structure's L{leaves<Tree.leaves>} method.
 
-The C{parser.chunk} module defines L{ChunkI}, a standard interface for
+The C{parser.chunk} module defines L{ChunkParserI}, a standard interface for
 chunking texts; and L{RegexpChunkParser}, a regular-expression based
 implementation of that interface.  It uses the L{tree.chunk} and
 L{tree.conll_chunk} methods, which tokenize strings containing chunked

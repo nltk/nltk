@@ -191,9 +191,9 @@ class CategorizedCorpusReader(object):
 
     Subclasses are expected to:
 
-      * Call L{__init__()} to set up the mapping.
+      - Call L{__init__()} to set up the mapping.
         
-      * Override all view methods to accept a C{categories} parameter,
+      - Override all view methods to accept a C{categories} parameter,
         which can be used *instead* of the C{files} parameter, to
         select which files should be included in the returned view.
     """

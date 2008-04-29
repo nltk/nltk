@@ -23,7 +23,7 @@ def accuracy(chunker, gold):
     the chunker, then compute the accuracy score.
 
     @type chunker: C{ChunkParserI}
-    @param tagger: The chunker being evaluated.
+    @param chunker: The chunker being evaluated.
     @type gold: C{tree}
     @param gold: The chunk structures to score the chunker on.
     @rtype: C{float}
@@ -332,7 +332,7 @@ def conllstr2tree(s, chunk_types=('NP', 'PP', 'VP'), top_node="S"):
     @param chunk_types: The chunk types to be converted.
     @type chunk_types: C{tuple}
     @param top_node: The node label to use for the root.
-    @type chunk_types: C{string}
+    @type top_node: C{string}
     @return: A chunk structure for a single sentence
         encoded in the given CONLL 2000 style string.
     @rtype: L{Tree}

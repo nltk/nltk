@@ -12,22 +12,22 @@ Read tokens, phonemes and audio data from the NLTK TIMIT Corpus.
 
 This corpus contains selected portion of the TIMIT corpus.
 
-* 16 speakers from 8 dialect regions
-* 1 male and 1 female from each dialect region
-* total 130 sentences (10 sentences per speaker.  Note that some
+- 16 speakers from 8 dialect regions
+- 1 male and 1 female from each dialect region
+- total 130 sentences (10 sentences per speaker.  Note that some
   sentences are shared among other speakers, especially sa1 and sa2
   are spoken by all speakers.)
-* total 160 recording of sentences (10 recordings per speaker)
-* audio format: NIST Sphere, single channel, 16kHz sampling,
+- total 160 recording of sentences (10 recordings per speaker)
+- audio format: NIST Sphere, single channel, 16kHz sampling,
   16 bit sample, PCM encoding
 
 
 Module contents
----------------
+===============
 
 The timit corpus reader provides 4 functions and 4 data items.
 
-* utterances
+- utterances
 
   List of utterances in the corpus.  There are total 160 utterances,
   each of which corresponds to a unique utterance of a speaker.
@@ -43,7 +43,7 @@ The timit corpus reader provides 4 functions and 4 data items.
         | `------------ sex (m:male, f:female)
         `-------------- dialect region (1..8)
 
-* speakers
+- speakers
 
   List of speaker IDs.  An example of speaker ID:
 
@@ -59,12 +59,12 @@ The timit corpus reader provides 4 functions and 4 data items.
       
   The second element of the result is a sentence ID.
   
-* dictionary()
+- dictionary()
 
   Phonetic dictionary of words contained in this corpus.  This is a Python
   dictionary from words to phoneme lists.
   
-* spkrinfo()
+- spkrinfo()
 
   Speaker information table.  It's a Python dictionary from speaker IDs to
   records of 10 fields.  Speaker IDs the same as the ones in timie.speakers.
@@ -90,28 +90,28 @@ The timit corpus reader provides 4 functions and 4 data items.
   
 The 4 functions are as follows.
 
-* tokenized(sentences=items, offset=False)
+- tokenized(sentences=items, offset=False)
 
   Given a list of items, returns an iterator of a list of word lists,
   each of which corresponds to an item (sentence).  If offset is set to True,
   each element of the word list is a tuple of word(string), start offset and
   end offset, where offset is represented as a number of 16kHz samples.
     
-* phonetic(sentences=items, offset=False)
+- phonetic(sentences=items, offset=False)
 
   Given a list of items, returns an iterator of a list of phoneme lists,
   each of which corresponds to an item (sentence).  If offset is set to True,
   each element of the phoneme list is a tuple of word(string), start offset
   and end offset, where offset is represented as a number of 16kHz samples.
 
-* audiodata(item, start=0, end=None)
+- audiodata(item, start=0, end=None)
 
   Given an item, returns a chunk of audio samples formatted into a string.
   When the fuction is called, if start and end are omitted, the entire
   samples of the recording will be returned.  If only end is omitted,
   samples from the start offset to the end of the recording will be returned.
 
-* play(data)
+- play(data)
 
   Play the given audio samples. The audio samples can be obtained from the
   timit.audiodata function.
@@ -375,10 +375,9 @@ class TimitCorpusReader(CorpusReader):
 
     def play(self, utterance, start=0, end=None):
         """
-        Play the given audio samples.
+        Play the given audio sample.
         
-        @param data: audio samples
-        @type data: string of bytes of audio samples
+        @param utterance: The utterance id of the sample to play
         """
         # Method 1: os audio dev.
         try:

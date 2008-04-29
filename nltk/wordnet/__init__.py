@@ -12,7 +12,7 @@ Wordnet interface, based on Oliver Steele's Pywordnet, together
 with an implementation of Ted Pedersen's Wordnet::Similarity package.
 
 Usage
------
+=====
 
     >>> from nltk.wordnet import *
 

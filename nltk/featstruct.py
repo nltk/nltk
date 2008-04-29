@@ -55,11 +55,41 @@ L{unify()} function.
 When unbound variables are unified with one another, they become
 X{aliased}.  This is encoded by binding one variable to the other.
 
-
 Lightweight Feature Structures
-------------------------------
-using python lists & dicts...
-(come back to this)
+==============================
+Many of the functions defined by L{nltk.featstruct} can be applied
+directly to simple Python dictionaries and lists, rather than to
+full-fledged L{FeatDict} and L{FeatList} objects.  In other words,
+Python C{dicts} and C{lists} can be used as "light-weight" feature
+structures.
+
+    >>> from nltk.featstruct import unify
+    >>> unify(dict(x=1, y=dict()), dict(a='a', y=dict(b='b')))
+    {'y': {'b': 'b'}, 'x': 1, 'a': 'a'}
+
+However, you should keep in mind the following caveats:
+
+  - Python dictionaries & lists ignore reentrance when checking for
+    equality between values.  But two FeatStructs with different
+    reentrances are considered nonequal, even if all their base
+    values are equal.
+  
+  - FeatStructs can be easily frozen, allowing them to be used as
+    keys in hash tables.  Python dictionaries and lists can not.
+  
+  - FeatStructs display reentrance in their string representations;
+    Python dictionaries and lists do not.
+  
+  - FeatStructs may *not* be mixed with Python dictionaries and lists
+    (e.g., when performing unification).
+  
+  - FeatStructs provide a number of useful methods, such as L{walk()
+    <FeatStruct.walk>} and L{cyclic() <FeatStruct.cyclic>}, which are
+    not available for Python dicts & lists.
+
+In general, if your feature structures will contain any reentrances,
+or if you plan to use them as dictionary keys, it is strongly
+recommended that you use full-fledged L{FeatStruct} objects.
 """
 
 import re, copy
@@ -78,11 +108,11 @@ class FeatStruct(SubstituteBindingsI):
     integer), or a nested feature structure.  There are two types of
     feature structure:
 
-    - I{feature dictionaries}, implemented by L{FeatDict}, act like
-      Python dictionaries.  Feature identifiers may be strings or
-      instances of the L{Feature} class.
-    - I{feature lists}, implemented by L{FeatList}, act like Python
-      lists.  Feature identifiers are integers.
+      - I{feature dictionaries}, implemented by L{FeatDict}, act like
+        Python dictionaries.  Feature identifiers may be strings or
+        instances of the L{Feature} class.
+      - I{feature lists}, implemented by L{FeatList}, act like Python
+        lists.  Feature identifiers are integers.
 
     Feature structures may be indexed using either simple feature
     identifiers or 'feature paths.'  A X{feature path} is a sequence
@@ -520,8 +550,8 @@ class FeatStruct(SubstituteBindingsI):
         
 # Mutation: disable if frozen.
 _FROZEN_ERROR = "Frozen FeatStructs may not be modified."
-_FROZEN_NOTICE = "\nIf self is frozen, raise ValueError."
-def _check_frozen(method):
+_FROZEN_NOTICE = "\n%sIf self is frozen, raise ValueError."
+def _check_frozen(method, indent=''):
     """
     Given a method function, return a new method function that first
     checks if C{self._frozen} is true; and if so, raises C{ValueError}
@@ -532,7 +562,7 @@ def _check_frozen(method):
         if self._frozen: raise ValueError(_FROZEN_ERROR)
         else: return method(self, *args, **kwargs)
     wrapped.__name__ = method.__name__
-    wrapped.__doc__ = (method.__doc__ or '') + _FROZEN_NOTICE
+    wrapped.__doc__ = (method.__doc__ or '') + (_FROZEN_NOTICE % indent)
     return wrapped
 
 
@@ -688,7 +718,7 @@ class FeatDict(FeatStruct, dict):
         return selfcopy
 
     ##////////////////////////////////////////////////////////////
-    #{ Structural Information
+    #{ Uniform Accessor Methods
     ##////////////////////////////////////////////////////////////
 
     def _keys(self): return self.keys()
@@ -866,10 +896,10 @@ class FeatList(FeatStruct, list):
         """
         Create a new feature list, with the specified features.
 
-        @param: The initial list of features for this feature list.
-        If C{features} is a string, then it is paresd using
-        L{FeatStructParser}.  Otherwise, it should be a sequence of
-        basic values and nested feature structures.
+        @param features: The initial list of features for this feature
+            list.  If C{features} is a string, then it is paresd using
+            L{FeatStructParser}.  Otherwise, it should be a sequence
+            of basic values and nested feature structures.
         """
         if isinstance(features, basestring):
             FeatStructParser().parse(features, self)
@@ -932,8 +962,8 @@ class FeatList(FeatStruct, list):
         else:
             raise TypeError(self._INDEX_ERROR % name_or_path)
     
-    __delslice__ = _check_frozen(list.__delslice__)
-    __setslice__ = _check_frozen(list.__setslice__)
+    __delslice__ = _check_frozen(list.__delslice__, '               ')
+    __setslice__ = _check_frozen(list.__setslice__, '               ')
     __iadd__ = _check_frozen(list.__iadd__)
     __imul__ = _check_frozen(list.__imul__)
     append = _check_frozen(list.append)
@@ -954,7 +984,7 @@ class FeatList(FeatStruct, list):
         return selfcopy
 
     ##////////////////////////////////////////////////////////////
-    #{ Structural Information
+    #{ Uniform Accessor Methods
     ##////////////////////////////////////////////////////////////
 
     def _keys(self): return range(len(self))
@@ -1237,7 +1267,7 @@ def unify(fstruct1, fstruct2, bindings=None, trace=False,
         variables are replaced by their representative variable
         (if unbound) or the value of their representative variable
         (if bound).  I.e., if variable C{I{v}} is in C{bindings},
-        then C{I{v}} is replaced by C{bindings[I{v}].  This will
+        then C{I{v}} is replaced by C{bindings[I{v}]}.  This will
         be repeated until the variable is replaced by an unbound
         variable or a non-variable value.
 
@@ -2101,7 +2131,7 @@ class FeatStructParser(object):
     #: A table indicating how feature values should be parsed.  Each
     #: entry in the table is a pair (handler, regexp).  The first entry
     #: with a matching regexp will have its handler called.  Handlers
-    #: should have the following signature:
+    #: should have the following signature::
     #:
     #:    def handler(s, position, reentrances, match): ...
     #:
