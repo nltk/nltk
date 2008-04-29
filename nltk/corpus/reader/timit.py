@@ -88,7 +88,7 @@ The timit corpus reader provides 4 functions and 4 data items.
                 PHD:doctorate degree (PhD,JD,MD), ??:unknown)
      comments   comments by the recorder
    
- The 4 functions are as follows.
+The 4 functions are as follows.
  
  - tokenized(sentences=items, offset=False)
  
