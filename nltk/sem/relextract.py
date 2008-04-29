@@ -91,7 +91,7 @@ def descape_entity(m, defs=htmlentitydefs.entitydefs):
     #pattern = re.compile("&(\w+?);")
     #new = list2sym(l)
     #s = pattern.sub(descape_entity, s)
-    print s, new
+    #print s, new
     try:
         return defs[m.group(1)]
     
