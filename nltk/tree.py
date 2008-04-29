@@ -198,8 +198,8 @@ class Tree(list):
         """
         Generate all the subtrees of this tree, optionally restricted
         to trees matching the filter function.
-        @type: filter: C{function}
-        @param: filter: the function to filter all local trees
+        @type filter: C{function}
+        @param filter: the function to filter all local trees
         """
         if not filter or filter(self):
             yield self
@@ -248,14 +248,15 @@ class Tree(list):
     def chomsky_normal_form(self, factor = "right", horzMarkov = None, vertMarkov = 0, childChar = "|", parentChar = "^"):
         """
         This method can modify a tree in three ways:
-        1. Convert a tree into its Chomsky Normal Form (CNF) equivalent -- Every subtree
-        has either two non-terminals or one terminal as its children.  This process
-        requires the creation of more "artificial" non-terminal nodes.
-        2. Markov (vertical) smoothing of children in new artificial nodes
-        3. Horizontal (parent) annotation of nodes
+        
+          1. Convert a tree into its Chomsky Normal Form (CNF)
+             equivalent -- Every subtree has either two non-terminals
+             or one terminal as its children.  This process requires
+             the creation of more"artificial" non-terminal nodes.
+          2. Markov (vertical) smoothing of children in new artificial
+             nodes
+          3. Horizontal (parent) annotation of nodes
       
-        @param tree: The Tree to be modified
-        @type  tree: C{Tree}
         @param factor: Right or left factoring method (default = "right")
         @type  factor: C{string} = [left|right]
         @param horzMarkov: Markov order for sibling smoothing in artificial nodes (None (default) = include all siblings)
@@ -274,12 +275,13 @@ class Tree(list):
     def un_chomsky_normal_form(self, expandUnary = True, childChar = "|", parentChar = "^", unaryChar = "+"):
         """
         This method modifies the tree in three ways:
-          1. Transforms a tree in Chomsky Normal Form back to its original structure (branching greater than two)
+        
+          1. Transforms a tree in Chomsky Normal Form back to its
+             original structure (branching greater than two)
           2. Removes any parent annotation (if it exists)
-          3. (optional) expands unary subtrees (if previously collapsed with collapseUnary(...) )
-      
-        @param tree: The Tree to be modified
-        @type  tree: C{Tree}
+          3. (optional) expands unary subtrees (if previously
+             collapsed with collapseUnary(...) )
+          
         @param expandUnary: Flag to expand unary or not (default = True)
         @type  expandUnary: C{boolean}
         @param childChar: A string separating the head node from its children in an artificial node (default = "|")

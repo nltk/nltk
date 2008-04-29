@@ -325,7 +325,8 @@ def edit_dist(s1, s2):
     been done in other orders, but at least three steps are needed.
 
     @param s1, s2: The strings to be analysed
-    @type s1, s2: C{string}
+    @type s1: C{string}
+    @type s2: C{string}
     @rtype C{int}
     """
     # set up a 2-D array

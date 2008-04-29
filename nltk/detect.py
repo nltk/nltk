@@ -22,7 +22,7 @@ def feature(functions):
     to each token.
 
     @type functions: dictionary of functions
-    @param properties: one or more functions in one string argument to compute
+    @param functions: one or more functions in one string argument to compute
     the features.
     """
         

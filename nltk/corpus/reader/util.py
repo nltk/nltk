@@ -759,6 +759,14 @@ class SyntaxCorpusReader(CorpusReader):
       - L{_parse}, which takes a block and returns a list of parsed
         sentences.
     """
+    def _parse(self, s):
+        raise AssertionError('Abstract method')
+    def _word(self, s):
+        raise AssertionError('Abstract method')
+    def _tag(self, s):
+        raise AssertionError('Abstract method')
+    def _read_block(self, stream):
+        raise AssertionError('Abstract method')
 
     def raw(self, files=None):
         return concat([codecs.open(path, 'rb', enc).read()

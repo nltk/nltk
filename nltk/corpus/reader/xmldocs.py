@@ -61,12 +61,12 @@ class XMLCorpusView(StreamBackedCorpusView):
     paths, where a tag path is a list of element tag names, sepaated
     by '/', indicating the ancestry of the element.  Some examples:
 
-      * C{'foo'}: A top-level element whose tag is C{foo}.
-      * C{'foo/bar'}: An element whose tag is C{bar} and whose parent
+      - C{'foo'}: A top-level element whose tag is C{foo}.
+      - C{'foo/bar'}: An element whose tag is C{bar} and whose parent
         is a top-level element whose tag is C{foo}.
-      * C{'.*/foo'}: An element whose tag is C{foo}, appearing anywhere
+      - C{'.*/foo'}: An element whose tag is C{foo}, appearing anywhere
         in the xml tree.
-      * C{'.*/(foo|bar)'}: An wlement whose tag is C{foo} or C{bar},
+      - C{'.*/(foo|bar)'}: An wlement whose tag is C{foo} or C{bar},
         appearing anywhere in the xml tree.
     
     The view items are generated from the selected XML elements via

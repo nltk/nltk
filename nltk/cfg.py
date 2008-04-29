@@ -387,7 +387,7 @@ class Grammar(object):
         Check whether the grammar rules cover the given list of tokens.
 
         @param tokens: the given list of tokens.
-        @type sentence: a C{list} of C{string} objects.
+        @type tokens: a C{list} of C{string} objects.
         @return: True/False
         """
         for token in tokens:
@@ -496,7 +496,7 @@ class WeightedProduction(Production, ImmutableProbabilisticMixIn):
         @type lhs: L{Nonterminal}
         @param rhs: The right-hand side of the new C{WeightedProduction}.
         @type rhs: sequence of (C{Nonterminal} and (terminal))
-        @param **prob: Probability parameters of the new C{WeightedProduction}.
+        @param prob: Probability parameters of the new C{WeightedProduction}.
         """
         ImmutableProbabilisticMixIn.__init__(self, **prob)
         Production.__init__(self, lhs, rhs)

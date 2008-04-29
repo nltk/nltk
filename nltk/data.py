@@ -15,7 +15,7 @@ supported:
   - "C{file:I{path}}": Specifies the file whose path is C{I{path}}.
     Both relative and absolute paths may be used.
     
-  - "C{http://I{host}/{path}": Specifies the file stored on the web
+  - "C{http://I{host}/{path}}": Specifies the file stored on the web
     server C{I{host}} at path C{I{path}}.
     
   - "C{nltk:I{path}}": Specifies the file stored in the NLTK data

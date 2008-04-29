@@ -30,7 +30,7 @@ class BracketParseCorpusReader(SyntaxCorpusReader):
         """
         @param root: The root directory for this corpus.
         @param files: A list or regexp specifying the files in this corpus.
-        @param comment: The character which can appear at the start of
+        @param comment_char: The character which can appear at the start of
             a line to indicate that the rest of the line is a comment.
         @param detect_blocks: The method that is used to find blocks
           in the corpus; can be 'unindented_paren' (every unindented

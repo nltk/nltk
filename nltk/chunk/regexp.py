@@ -917,13 +917,13 @@ class RegexpParser(ChunkParserI):
     The rules are all implemented using regular expression matching
     and substitution.
 
-    A grammar contains one or more clauses in the following form:
+    A grammar contains one or more clauses in the following form::
 
-    NP:
-      {<DT|JJ>}          # chunk determiners and adjectives
-      }<[\.VI].*>+{      # chink any tag beginning with V, I, or .
-      <.*>}{<DT>         # split a chunk at a determiner
-      <DT|JJ>{}<NN.*>    # merge chunk ending with det/adj with one starting with a noun
+     NP:
+       {<DT|JJ>}          # chunk determiners and adjectives
+       }<[\.VI].*>+{      # chink any tag beginning with V, I, or .
+       <.*>}{<DT>         # split a chunk at a determiner
+       <DT|JJ>{}<NN.*>    # merge chunk ending with det/adj with one starting with a noun
 
     The patterns of a clause are executed in order.  An earlier
     pattern may introduce a chunk boundary that prevents a later
