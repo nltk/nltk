@@ -303,8 +303,6 @@ class Tree(list):
         would require loss of useful information.  The Tree is modified 
         directly (since it is passed by reference) and no value is returned.
     
-        @param tree: The Tree to be collapsed
-        @type  tree: C{Tree}
         @param collapsePOS: 'False' (default) will not collapse the parent of leaf nodes (ie. 
                             Part-of-Speech tags) since they are always unary productions
         @type  collapsePOS: C{boolean}
