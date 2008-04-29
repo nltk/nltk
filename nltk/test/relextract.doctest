@@ -153,7 +153,7 @@ signature <ORG, LOC>.
     >>> IN = re.compile(r'.*\bin\b(?!\b.+ing\b)')
     >>> for file in ieer.files():
     ...     for doc in ieer.parsed_docs(file):
-    ...         for rel in relextract.relextract('ORG', 'LOC', doc, pattern = IN):
+    ...         for rel in relextract.extract_rels('ORG', 'LOC', doc, pattern = IN):
     ...             print relextract.show_raw_rtuple(rel)  # doctest: +ELLIPSIS
     [ORG: 'Christian Democrats'] ', the leading political forces in' [LOC: 'Italy']
     [ORG: 'AP'] ') _ Lebanese guerrillas attacked Israeli forces in southern' [LOC: 'Lebanon']
@@ -205,7 +205,7 @@ of roles that a PERSON can occupy in an ORGANIZATION.
     >>> ROLES = re.compile(roles, re.VERBOSE)
     >>> for file in ieer.files():
     ...     for doc in ieer.parsed_docs(file):
-    ...         for rel in relextract.relextract('PER', 'ORG', doc, pattern=ROLES):
+    ...         for rel in relextract.extract_rels('PER', 'ORG', doc, pattern=ROLES):
     ...             print relextract.show_raw_rtuple(rel) # doctest: +ELLIPSIS
     [PER: 'Kivutha Kibwana'] ', of the' [ORG: 'National Convention Assembly']
     [PER: 'Boban Boskovic'] ', chief executive of the' [ORG: 'Plastika']
@@ -228,7 +228,7 @@ presented as something that looks more like a clause in a logical language.
     ... """
     >>> DE = re.compile(de, re.VERBOSE)
     >>> rels = [rel for doc in conll2002.chunked_sents('esp.train')
-    ...         for rel in relextract.relextract('ORG', 'LOC', doc, corpus='conll2002', pattern = DE)]
+    ...         for rel in relextract.extract_rels('ORG', 'LOC', doc, corpus='conll2002', pattern = DE)]
     >>> for r in rels[:10]:
     ...     print relextract.show_clause(r, relsym='DE')
     DE('tribunal_supremo', 'victoria')
