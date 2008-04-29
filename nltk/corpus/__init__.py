@@ -5,6 +5,7 @@
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
+# [xx] this docstring isnt' up-to-date!
 """
 NLTK corpus readers.  The modules in this package provide functions
 that can be used to read corpus files in a variety of formats.  These
@@ -13,7 +14,7 @@ distributed in the NLTK corpus package, and corpus files that are part
 of external corpora.
 
 Corpus Reader Functions
------------------------
+=======================
 Each corpus module defines one or more X{corpus reader functions},
 which can be used to read documents from that corpus.  These functions
 take an argument, C{item}, which is used to indicate which document
@@ -52,9 +53,9 @@ L{nltk.corpus.brown.words()}:
     ['The', 'Fulton', 'County', 'Grand', 'Jury', 'said', ...]
 
 Corpus Metadata
----------------
+===============
 Metadata about the NLTK corpora, and their individual documents, is
-stored using L{Open Language Archives Community (OLAC)
+stored using U{Open Language Archives Community (OLAC)
 <http://www.language-archives.org/>} metadata records.  These records
 can be accessed using C{nltk.corpus.I{corpus}.olac()}.
 """
@@ -141,7 +142,18 @@ treebank_chunk = LazyCorpusLoader(
 treebank_raw = LazyCorpusLoader(
     'treebank/raw', PlaintextCorpusReader, r'wsj_.*')
 udhr = LazyCorpusLoader(
-    'udhr', PlaintextCorpusReader, r'(?!README|\.svn).*')
+    'udhr', PlaintextCorpusReader, r'(?!README|\.svn).*',
+    # Encodings specified in filenames but not mapped to anything:
+    # DallakHelv, VIQR, Cyrillic+Abkh, WinResearcher, font,
+    # Afenegus6..60375, VG2Main, VPS, Turkish, TCVN, Az.Times.Lat0117,
+    # EUC, Baltic, err, Az.Times.Cyr.Normal0117, T61, Amahuaca, Agra
+    encoding=[('.*-UTF8$', 'utf-8'), ('.*-Latin1$', 'latin-1'),
+              ('.*-Hebrew$', 'hebrew'), ('.*-Arabic$', 'arabic'),
+              ('.*-Cyrillic$', 'cyrillic'), ('.*-SJIS$', 'SJIS'),
+              ('.*-GB2312$', 'GB2312'), ('.*-Latin2$', 'ISO-8859-2'),
+              ('.*-Greek$', 'greek'), ('.*-UFT8$', 'utf-8'),
+              ('Hungarian_Magyar-Unicode', 'utf-16-le')]
+    )
 verbnet = LazyCorpusLoader(
     'verbnet', VerbnetCorpusReader, r'(?!\.svn).*\.xml')
 webtext = LazyCorpusLoader(
