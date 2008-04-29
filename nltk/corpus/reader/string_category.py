@@ -27,7 +27,7 @@ import os
 # in nltk, we use the form (data, tag) -- e.g., tagged words and
 # labeled texts for classifiers.
 class StringCategoryCorpusReader(CorpusReader):
-    def __init__(self, delimiter=' ', encoding=None):
+    def __init__(self, root, files, delimiter=' ', encoding=None):
         """
         @param root: The root directory for this corpus.
         @param files: A list or regexp specifying the files in this corpus.
