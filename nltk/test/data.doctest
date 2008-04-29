@@ -105,7 +105,7 @@ Describe how caching works, and how to use `clear_cache()`.
 Retrieving other Data Sources
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    >>> formulas = nltk.data.load('grammars/background.fol')
+    >>> formulas = nltk.data.load('grammars/background1.fol')
     >>> for f in formulas: print str(f.infixify())
     all x.((boxerdog x) implies (dog x))
     all x.((boxer x) implies (person x))
