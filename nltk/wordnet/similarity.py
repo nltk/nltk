@@ -28,12 +28,12 @@ def path_similarity(synset1, synset2, verbose=False):
     many distinct verb taxonomies), in which case -1 is returned. A score of
     1 represents identity i.e. comparing a sense with itself will return 1.
 
-    @type  synset2: L{Sense}
-    @param synset2: The L{Sense} that this L{Sense} is being compared to.
+    @type  synset2: L{Synset}
+    @param synset2: The L{Synset} that this L{Synset} is being compared to.
 
-    @return: A score denoting the similarity of the two L{Sense}s,
+    @return: A score denoting the similarity of the two L{Synset}s,
         normally between 0 and 1. -1 is returned if no connecting path
-        could be found. 1 is returned if a L{Sense} is compared with
+        could be found. 1 is returned if a L{Synset} is compared with
         itself.
     """
 
@@ -51,10 +51,10 @@ def lch_similarity(synset1, synset2, verbose=False):
     of the taxonomy in which the senses occur. The relationship is given as
     -log(p/2d) where p is the shortest path length and d is the taxonomy depth.
 
-    @type  synset2: L{Sense}
-    @param synset2: The L{Sense} that this L{Sense} is being compared to.
+    @type  synset2: L{Synset}
+    @param synset2: The L{Synset} that this L{Synset} is being compared to.
 
-    @return: A score denoting the similarity of the two L{Sense}s,
+    @return: A score denoting the similarity of the two L{Synset}s,
         normally greater than 0. -1 is returned if no connecting path
         could be found. If a L{Synset} is compared with itself, the
         maximum score is returned, which varies depending on the taxonomy depth.
@@ -88,9 +88,9 @@ def wup_similarity(synset1, synset2, verbose=False):
     the LCS has multiple paths to the root, the longer path is used for
     the purposes of the calculation.
 
-    @type  synset2: L{Sense}
-    @param synset2: The L{Sense} that this L{Sense} is being compared to.
-    @return: A float score denoting the similarity of the two L{Sense}s,
+    @type  synset2: L{Synset}
+    @param synset2: The L{Synset} that this L{Synset} is being compared to.
+    @return: A float score denoting the similarity of the two L{Synset}s,
         normally greater than zero. If no connecting path between the two
         senses can be found, -1 is returned.
     """
@@ -128,9 +128,9 @@ def res_similarity(synset1, synset2, datafile="", verbose=False):
     of which should be passed as the 'datafile' argument. For more
     information on how they are calculated, check brown_ic.py.
 
-    @type  synset2: L{Sense}
-    @param synset2: The L{Sense} that this L{Sense} is being compared to.
-    @return: A float score denoting the similarity of the two L{Sense}s.
+    @type  synset2: L{Synset}
+    @param synset2: The L{Synset} that this L{Synset} is being compared to.
+    @return: A float score denoting the similarity of the two L{Synset}s.
         Synsets whose LCS is the root node of the taxonomy will have a
         score of 0 (e.g. N['dog'][0] and N['table'][0]). If no path exists
         between the two synsets a score of -1 is returned.
@@ -167,9 +167,9 @@ def jcn_similarity(synset1, synset2, datafile="", verbose=False):
     as an argument. For more information on how they are calculated,
     check brown_ic.py.
 
-    @type  synset2: L{Sense}
-    @param synset2: The L{Sense} that this L{Sense} is being compared to.
-    @return: A float score denoting the similarity of the two L{Sense}s.
+    @type  synset2: L{Synset}
+    @param synset2: The L{Synset} that this L{Synset} is being compared to.
+    @return: A float score denoting the similarity of the two L{Synset}s.
         If no path exists between the two synsets a score of -1 is returned.
     """
 
@@ -215,9 +215,9 @@ def lin_similarity(synset1, synset2, datafile="", verbose=False):
     as an argument. For more information on how they are calculated,
     check brown_ic.py.
 
-    @type  synset2: L{Sense}
-    @param synset2: The L{Sense} that this L{Sense} is being compared to.
-    @return: A float score denoting the similarity of the two L{Sense}s,
+    @type  synset2: L{Synset}
+    @param synset2: The L{Synset} that this L{Synset} is being compared to.
+    @return: A float score denoting the similarity of the two L{Synset}s,
         in the range 0 to 1. If no path exists between the two synsets a
         score of -1 is returned.
     """

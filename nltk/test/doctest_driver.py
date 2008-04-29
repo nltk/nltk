@@ -27,7 +27,7 @@ A number of other flags can be given; call the driver with the
 import os, os.path, sys, unittest, pdb, bdb, re, tempfile, traceback
 import textwrap
 from doctest import *
-from doctest import DocTestCase
+from doctest import DocTestCase, DocTestRunner
 from optparse import OptionParser, OptionGroup, Option
 from StringIO import StringIO
 import coverage
@@ -195,10 +195,12 @@ class UpdateRunner(DocTestRunner):
     output with an incorrect value.
     """
     def __init__(self, verbose=False, mark_updates=False):
+        '''Construct a new update runner'''
         self._mark_updates = mark_updates
         DocTestRunner.__init__(self, verbose=verbose)
 
     def run(self, test, compileflags=None, out=None, clear_globs=True):
+        '''Run the update runner'''
         self._new_want = {}
         (f,t) = DocTestRunner.run(self, test, compileflags, out, clear_globs)
 

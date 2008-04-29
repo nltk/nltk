@@ -35,6 +35,10 @@ from nltk.corpus.reader.propbank import *
 from nltk.corpus.reader.verbnet import *
 from nltk.corpus.reader.bnc import *
 
+# Make sure that nltk.corpus.reader.bracket_parse gives the module, not
+# the function bracket_parse() defined in nltk.tree:
+import bracket_parse
+
 __all__ = [
     'CorpusReader', 'CategorizedCorpusReader',
     'PlaintextCorpusReader', 'find_corpus_files',

@@ -63,14 +63,14 @@ class NaiveBayesClassifier(ClassifierI):
     def __init__(self, label_probdist, feature_probdist):
         """
         @param label_probdist: P(label), the probability distribution
-            over labels.  It is expressed as a L{ProbDist} whose
+            over labels.  It is expressed as a L{ProbDistI} whose
             samples are labels.  I.e., P(label) =
             C{label_probdist.prob(label)}.
         
         @param feature_probdist: P(fname=fval|label), the probability
             distribution for feature values, given labels.  It is
             expressed as a dictionary whose keys are C{(label,fname)}
-            pairs and whose values are L{ProbDist}s over feature
+            pairs and whose values are L{ProbDistI}s over feature
             values.  I.e., P(fname=fval|label) =
             C{feature_probdist[label,fname].prob(fval)}.  If a given
             C{(label,fname)} is not a key in C{feature_probdist}, then

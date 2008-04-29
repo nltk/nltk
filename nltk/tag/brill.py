@@ -343,7 +343,7 @@ class ProximateTagsRule(ProximateTokensRule):
     """
     A rule which examines the tags of nearby tokens.
     @see: superclass L{ProximateTokensRule} for details.
-    @see: L{ProximateTagsTemplate}, which generates these rules.
+    @see: L{SymmetricProximateTokensTemplate}, which generates these rules.
     """
     PROPERTY_NAME = 'tag' # for printing.
     yaml_tag = '!ProximateTagsRule'
@@ -356,7 +356,7 @@ class ProximateWordsRule(ProximateTokensRule):
     """
     A rule which examines the base types of nearby tokens.
     @see: L{ProximateTokensRule} for details.
-    @see: L{ProximateWordsTemplate}, which generates these rules.
+    @see: L{SymmetricProximateTokensTemplate}, which generates these rules.
     """
     PROPERTY_NAME = 'text' # for printing.
     yaml_tag = '!ProximateWordsRule'
@@ -521,9 +521,9 @@ class SymmetricProximateTokensTemplate(BrillTemplateI):
     C{ProximateTokensTemplate} is constructed with the negative
     of all the arguments in reversed order.  For example, a
     C{SymmetricProximateTokensTemplate} using the pair (-2,-1) and the
-    constructor C{ProximateTagsTemplate} generates the same rules as a
-    C{ProximateTagsTemplate} using (-2,-1) plus a second
-    C{ProximateTagsTemplate} using (1,2).
+    constructor C{SymmetricProximateTokensTemplate} generates the same rules as a
+    C{SymmetricProximateTokensTemplate} using (-2,-1) plus a second
+    C{SymmetricProximateTokensTemplate} using (1,2).
 
     This is useful because we typically don't want templates to
     specify only \"following\" or only \"preceding\"; we'd like our
@@ -1229,12 +1229,12 @@ def demo(num_sents=100, max_rules=200, min_score=3,
         be considered
     @type min_score: L{int}
     @param error_output: the file where errors will be saved
-    @type error_output: L{string}
+    @type error_output: C{string}
     @param rule_output: the file where rules will be saved
-    @type rule_output: L{string}
+    @type rule_output: C{string}
     @param randomize: whether the training data should be a random subset
         of the corpus
-    @type randomize: L{boolean}
+    @type randomize: boolean
     @param train: the fraction of the the corpus to be used for training
         (1=all)
     @type train: L{float}

@@ -13,7 +13,7 @@ Relations are stored internally as dictionaries ('reldicts').
 The two serialization outputs are I{rtuple} and I{clause}. 
    - An I{rtuple} is a tuple of the form C{(subj, filler, obj)}, 
      where C{subj} and C{obj} are pairs of Named Entity mentions, and C{filler} is the string of words   
-     occurring between C{sub} and C{obj} (with no intervening NEs). Strings are printed via ``repr()`` to
+     occurring between C{sub} and C{obj} (with no intervening NEs). Strings are printed via C{repr()} to
      circumvent locale variations in rendering utf-8 encoded strings.
    - A I{clause} is an atom of the form C{relsym(subjsym, objsym)}, 
      where the relation, subject and object have been canonicalized to single strings.
@@ -185,7 +185,7 @@ def extract_rels(subjclass, objclass, doc, corpus='ieer', pattern=None, window=1
     @param objclass: the class of the object Named Entity.
     @type objclass: C{string}
     @param doc: input document
-    @type doc: L{ieer} document or a list of chunk trees
+    @type doc: C{ieer} document or a list of chunk trees
     @param corpus: name of the corpus to take as input; possible values are         
     'ieer' and 'conll2002'
     @type corpus: C{string}

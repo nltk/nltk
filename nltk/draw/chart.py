@@ -464,13 +464,13 @@ class ChartComparer(object):
     @ivar _left_chart: The left L{Chart}.
     @ivar _left_name: The name C{_left_chart} (derived from filename)
     @ivar _left_matrix: The L{ChartMatrixView} for C{_left_chart}
-    @ivar _left_selector: The drop-down L{MutableOptionsMenu} used
+    @ivar _left_selector: The drop-down C{MutableOptionsMenu} used
           to select C{_left_chart}.
     
     @ivar _right_chart: The right L{Chart}.
     @ivar _right_name: The name C{_right_chart} (derived from filename)
     @ivar _right_matrix: The L{ChartMatrixView} for C{_right_chart}
-    @ivar _right_selector: The drop-down L{MutableOptionsMenu} used
+    @ivar _right_selector: The drop-down C{MutableOptionsMenu} used
           to select C{_right_chart}.
     
     @ivar _out_chart: The out L{Chart}.

@@ -51,10 +51,7 @@ WORD = re.compile(r':[^:()|]+:([^:()|]+)')
 
 class SinicaTreebankCorpusReader(SyntaxCorpusReader):
     """
-    Reader for corpora that consist of treebank-style trees.  For
-    reading the Treebank corpus itself, you may wish to use
-    L{TreebankCorpusReader}, which combines this reader with readers
-    for the other formats available in the treebank.
+    Reader for the sinica treebank.
     """
     def _read_block(self, stream):
         sent = stream.readline()

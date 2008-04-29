@@ -25,7 +25,7 @@ class ParserI(object):
 
     Subclasses may define:
       - L{grammar()}
-      - either L{prob_classify()} or L{batch_prob_classify()} (or both)
+      - either L{prob_parse()} or L{batch_prob_parse()} (or both)
     """
     def grammar(self):
         """
@@ -103,7 +103,7 @@ class ParserI(object):
         
         @param sent: The sentence to be parsed
         @type sent: L{list} of L{string}
-        @rtype: L{ProbDist} of L{Tree}
+        @rtype: L{ProbDistI} of L{Tree}
         """
         if overridden(self.batch_prob_parse):
             return self.batch_prob_parse([sent])[0]
@@ -146,7 +146,7 @@ class ParserI(object):
 
             >>> return [self.prob_parse(sent) for sent in sents]
 
-        @rtype: C{list} of L{ProbDist} of L{Tree}
+        @rtype: C{list} of L{ProbDistI} of L{Tree}
         """
         return [self.prob_parse(sent) for sent in sents]
 

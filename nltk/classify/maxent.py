@@ -346,7 +346,18 @@ class MaxentFeatureEncodingI(object):
         """
         raise AssertionError('Not implemented')
 
+    def train(cls, train_toks):
+        """
+        Construct and return new feature encoding, based on a given
+        training corpus C{train_toks}.
 
+        @type train_toks: C{list} of C{tuples} of (C{dict}, C{str})
+        @param train_toks: Training data, represented as a list of
+            pairs, the first member of which is a feature dictionary,
+            and the second of which is a classification label.
+        """
+        raise AssertionError('Not implemented')
+    
 class FunctionBackedMaxentFeatureEncoding(MaxentFeatureEncodingI):
     """
     A feature encoding that calls a user-supplied function to map a

@@ -524,9 +524,9 @@ class Chart(object):
         """
         Add a new edge to the chart.
 
-        @type edge: L{Edge}
+        @type edge: L{EdgeI}
         @param edge: The new edge
-        @type child_pointer_list: C{tuple} of L{Edge}
+        @type child_pointer_list: C{tuple} of L{EdgeI}
         @param child_pointer_list: A list of the edges that were used to
             form this edge.  This list is used to reconstruct the trees
             (or partial trees) that are associated with C{edge}.
@@ -669,7 +669,7 @@ class Chart(object):
     
     def child_pointer_lists(self, edge):
         """
-        @rtype: C{list} of C{list} of C{Edge}
+        @rtype: C{list} of C{list} of C{EdgeI}
         @return: The set of child pointer lists for the given edge.
             Each child pointer list is a list of edges that have
             been used to form this edge.
