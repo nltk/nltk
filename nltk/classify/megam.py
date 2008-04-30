@@ -22,6 +22,7 @@ usage:
 __docformat__ = 'epytext en'
 
 import numpy, os, os.path, subprocess
+from nltk.internals import find_binary
 
 ######################################################################
 #{ Configuration
@@ -39,46 +40,11 @@ def config_megam(bin=None):
     @type bin: C{string}
     """
     global _megam_bin
-
-    BIN_NAMES = ['megam', 'megam_686', 'megam_i686.opt']
-
-    # Set the binary
-    if bin is not None:
-        if not os.path.exists(bin):
-            raise ValueError('Cound not find megam binary at %r' % bin)
-        _megam_bin = bin
-
-    # Check the MEGAM environment variable.
-    for env_var in ['MEGAM',  'MEGAM_HOME']:
-        if _megam_bin is None and env_var in os.environ:
-            if os.path.isfile(os.environ[env_var]):
-                _megam_bin = os.environ[env_var]
-                print '[Found megam: %s]' % _megam_bin
-            elif os.path.isdir(os.environ[env_var]):
-                for bin in BIN_NAMES:
-                    if os.path.isfile(os.path.join(os.environ[env_var], bin)):
-                        _megam_bin = os.path.join(os.environ[env_var], bin)
-                        print '[Found megam: %s]' % _megam_bin
-                        break
-                        
-    # If we're on a POSIX system, try using the 'which' command to
-    # find a megam binary.
-    if _megam_bin is None and os.name == 'posix':
-        for bin in BIN_NAMES:
-            try:
-                p = subprocess.Popen(['which', bin], stdout=subprocess.PIPE)
-                stdout, stderr = p.communicate()
-                path = stdout.strip()
-                if path.endswith(bin) and os.path.exists(path):
-                    _megam_bin = path
-                print '[Found megam: %s]' % path
-                break
-            except:
-                pass
-
-    if _megam_bin is None:
-        raise LookupError('Unable to find megam!  Use config_megam() '
-                          'or set the MEGAMHOME environment variable.')
+    _megam_bin = find_binary(
+        'megam', bin,
+        env_vars=['MEGAM',  'MEGAM_HOME'],
+        binary_names=['megam', 'megam_686o', 'megam_i686.opto'],
+        url='http://www.cs.utah.edu/~hal/megam/')
 
 ######################################################################
 #{ Megam Interface Functions
