@@ -140,8 +140,8 @@ class DiscourseTester(object):
         self.readings(quiet=True)
         if not quiet:
             print "Current sentences are "
-            for sent in self._sentences:
-                print sent
+            for (sentid, sent) in sorted(self._sentences.items()):
+                print '%s: %s' % (sentid, sent)
             
     def grammar(self):
         """
