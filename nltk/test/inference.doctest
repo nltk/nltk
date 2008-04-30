@@ -49,8 +49,8 @@ Install these into an appropriate location; the
 ``prover9_search`` variable is currently configured to look in the
 following locations:
 
-    >>> Prover9.prover9_search # doctest: +NORMALIZE_WHITESPACE
-    ['.', '/usr/local/bin/prover9', '/usr/local/bin/prover9/bin',
+    >>> prover9_path # doctest: +NORMALIZE_WHITESPACE
+    ['/usr/local/bin/prover9', '/usr/local/bin/prover9/bin',
     '/usr/local/bin', '/usr/bin', '/usr/local/prover9',
     '/usr/local/share/prover9']
 
@@ -59,16 +59,21 @@ If the executables cannot be found, ``Prover9`` will issue a warning message:
     >>> p = Prover9() # doctest: +SKIP
     Traceback (most recent call last):
       ...
-    ValueError: 
-    Unable to find Prover9 executable! Use 
-    Prover9().config_prover9(path='/path/to/prover9directory'),
-    or set the PROVER9HOME environment variable to a valid path.
-    For more information about Prover9, please see 
-    http://www.cs.unm.edu/~mccune/prover9/
+    LookupError: 
+    ===========================================================================
+      NLTK was unable to find the prover9 executable!  Use config_prover9() or
+      set the PROVER9HOME environment variable.
+    <BLANKLINE>
+        >> config_prover9('/path/to/prover9')
+    <BLANKLINE>
+      For more information, on prover9, see:
+        <http://www.cs.unm.edu/~mccune/prover9/>
+    ===========================================================================
 
-The path to the correct directory can be set in the following manner:
+The path to the correct directory can be set manually in the following
+manner:
 
-    >>> p.config_prover9(path='/usr/local/bin') # doctest: +SKIP
+    >>> config_prover9(path='/usr/local/bin') # doctest: +SKIP
     [Found prover9: /usr/local/bin/prover9]
     
     
@@ -186,7 +191,7 @@ statements as new assumptions.
     Prover9 (...) version ...
     Process ... was started by ... on ...
     ...
-    The command was ".../prover9 -f ...".
+    The command was ".../prover9".
     ============================== end of head ===========================
     <BLANKLINE>
     ============================== end of input ==========================
