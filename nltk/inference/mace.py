@@ -12,30 +12,26 @@ from string import join
 from nltk.sem.logic import *
 from api import ModelBuilderI
 import prover9
-from prover9 import Prover9Parent
+from prover9 import Prover9Parent, call_mace4, call_interpformat
 
 """
 A model builder that makes use of the external 'Mace4' package.
 """
 
 class Mace(Prover9Parent, ModelBuilderI):
-    def get_executable(self):
-        return 'mace4'
+    _valuation = None #: text output from running mace
+    _result = None    #: bool indicating if a model was found
 
     def build_model(self):
         """
         Use Mace4 to build a first order model.
         
-        @return: C{True} if a model was found (i.e. Mace returns value of 0), else C{False}        
+        @return: C{True} if a model was found (i.e. Mace returns value of 0),
+        else C{False}        
         """
-        self.prover9_files('mace')
-        exe = os.path.join(self._executable_path, self.get_executable())
-        execute_string = '%s -c -f %s > %s 2>> %s' % \
-            (exe, self._infile, self._outfile, self._outfile)
-                
-        valuation = None
-                
-        self._result = (os.system(execute_string) == 0)
+        stdout, returncode = call_mace4(self.prover9_input())
+        self._result = (returncode == 0)
+        self._valuation = stdout
         return self._result
 
     def convert2val(self):
@@ -48,10 +44,10 @@ class Mace(Prover9Parent, ModelBuilderI):
         from nltk.sem import Valuation
         valuation = None
         if self.model_found():
-            self._transform_output('standard')
+            valuation_standard_format = self._transform_output('standard')
             
             d = {}
-            for line in open(os.path.join(self._p9_dir, 'mace.standard.out')):
+            for line in valuation_standard_format.splitlines(False):
                 l = line.strip()
                 # find the number of entities in the model
                 if l.startswith('interpretation'):
@@ -111,10 +107,12 @@ class Mace(Prover9Parent, ModelBuilderI):
         """
         Test whether Mace4 can build a model.
         
-        @return: C{True} if a model was found (i.e. Mace returns value of 0), else C{False}        
+        @return: C{True} if a model was found (i.e. Mace returns value
+        of 0), else C{False}
         """
-        if not self._outfile:
-            print "You have to call build_model() first to get a model!"
+        if not self._valuation:
+            raise ValueError("You have to call build_model() first "
+                             "to get a model!")
         return self._result
     
     def show_model(self, format=None):
@@ -122,21 +120,18 @@ class Mace(Prover9Parent, ModelBuilderI):
         Print out a Mace4 model using any Mace4 C{interpformat} format. 
         See U{http://www.cs.unm.edu/~mccune/mace4/manual/} for details.
         
-        @parameter format: Output format for displaying models. Defaults to 'standard' format.
+        @parameter format: Output format for displaying
+        models. Defaults to 'standard' format.
         @type format: C{str}
         """
-        if self._outfile:
-            if not format:
-                for l in open(self._outfile):
-                    print l,
-            else:
-                for l in open(self._transform_output(format)):
-                    print l,
-            print
+        if not self._valuation:
+            raise ValueError("You have to call build_model() first to "
+                             "get a model!")
+        if not format:
+            print self._valuation
         else:
-            print "You have to call build_model() first to get a model!"
-        return None
-    
+            print self._transform_output(format)
+
     def _transform_output(self, format):
         """
         Transform the output file into any Mace4 C{interpformat} format. 
@@ -144,24 +139,11 @@ class Mace(Prover9Parent, ModelBuilderI):
         @parameter format: Output format for displaying models. 
         @type format: C{str}
         """
-        output_file = None
-        
-        if self._outfile:
-            if format in ['standard', 'standard2', 'portable', 'tabular', 
-                          'raw', 'cooked', 'xml', 'tex']:
-                output_file = os.path.join(self._p9_dir, 'mace.' + format + '.out')
-                
-                exe = os.path.join(self._executable_path, 'interpformat')
-                execute_string = '%s %s -f %s > %s 2>> %s' % \
-                    (exe, format, self._outfile, output_file, output_file)
-                os.system(execute_string)
-            else:
-                print "The specified format does not exist"
+        if format in ['standard', 'standard2', 'portable', 'tabular', 
+                      'raw', 'cooked', 'xml', 'tex']:
+            return call_interpformat(self._valuation, [format])[0]
         else:
-            print "You have to call build_model() first to get a model!"
-            
-        return output_file
-        
+            print "The specified format does not exist"
 
 def spacer(num=30):
     print '-' * num

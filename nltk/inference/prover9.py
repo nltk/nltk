@@ -12,7 +12,7 @@ import subprocess
 from string import join
 from nltk.sem.logic import *
 from api import ProverI
-from nltk.internals import deprecated, Deprecated
+from nltk.internals import deprecated, Deprecated, find_binary
 
 """
 A theorem prover that makes use of the external 'Prover9' package.
@@ -20,136 +20,232 @@ A theorem prover that makes use of the external 'Prover9' package.
 #
 # Following is not yet used. Return code for 2 actually realized as 512. 
 #
-p9_return_codes = {0: True,
-                   1:  "(FATAL)",       #A fatal error occurred (user's syntax error or Prover9's bug).
-                   2: False,           # (SOS_EMPTY) Prover9 ran out of things to do (sos list exhausted).
-                   3: "(MAX_MEGS)",    # The max_megs (memory limit) parameter was exceeded.
-                   4: "(MAX_SECONDS)", # The max_seconds parameter was exceeded.
-                   5: "(MAX_GIVEN)",   # The max_given parameter was exceeded.
-                   6: "(MAX_KEPT)",    # The max_kept parameter was exceeded.
-                   7: "(ACTION)",      # A Prover9 action terminated the search.
-                   101: "(SIGSEGV)",   # Prover9 crashed, most probably due to a bug.   
+p9_return_codes = {
+    0: True,
+    1:  "(FATAL)",      #A fatal error occurred (user's syntax error).
+    2: False,           # (SOS_EMPTY) Prover9 ran out of things to do
+                        #   (sos list exhausted).
+    3: "(MAX_MEGS)",    # The max_megs (memory limit) parameter was exceeded.
+    4: "(MAX_SECONDS)", # The max_seconds parameter was exceeded.
+    5: "(MAX_GIVEN)",   # The max_given parameter was exceeded.
+    6: "(MAX_KEPT)",    # The max_kept parameter was exceeded.
+    7: "(ACTION)",      # A Prover9 action terminated the search.
+    101: "(SIGSEGV)",   # Prover9 crashed, most probably due to a bug.   
  }
  
-HELPMSG = """
-Unable to find Prover9 executable! Use 
-Prover9().config_prover9(path='/path/to/prover9directory'),
-or set the PROVER9HOME environment variable to a valid path.
-For more information about Prover9, please see 
-http://www.cs.unm.edu/~mccune/prover9/
-"""
+######################################################################
+#{ Configuration
+######################################################################
 
-
+_prover9_bin = None
+_prooftrans_bin = None
+_mace4_bin = None
+_interpformat_bin = None
+def config_prover9(bin=None):
+    """
+    Configure NLTK's interface to the C{prover9} package.  This
+    searches for a directory containing the executables for
+    C{prover9}, C{mace4}, C{prooftrans}, and C{interpformat}.
     
+    @param bin: The full path to the C{prover9} binary.  If not
+        specified, then nltk will search the system for a C{prover9}
+        binary; and if one is not found, it will raise a
+        C{LookupError} exception.
+    @type bin: C{string}
+    """
+    # Find the prover9 binary.
+    prover9_bin = find_binary('prover9', bin,
+        searchpath=prover9_path, env_vars=['PROVER9HOME'],
+        url='http://www.cs.unm.edu/~mccune/prover9/')
+
+    # Make sure that mace4 and prooftrans are available, too.
+    basedir = os.path.split(prover9_bin)[0]
+    mace4_bin = os.path.join(basedir, 'mace4')
+    prooftrans_bin = os.path.join(basedir, 'prooftrans')
+    interpformat_bin = os.path.join(basedir, 'interpformat')
+    if not os.path.isfile(mace4_bin):
+        raise ValueError('prover9 was found, but mace4 was not -- '
+                         'incomplete prover9 installation?')
+    if not os.path.isfile(prooftrans_bin):
+        raise ValueError('prover9 was found, but prooftrans was not -- '
+                         'incomplete prover9 installation?')
+    if not os.path.isfile(interpformat_bin):
+        raise ValueError('prover9 was found, but interpformat was not -- '
+                         'incomplete prover9 installation?')
+
+    # Save the locations of all three binaries.
+    global _prover9_bin, _prooftrans_bin, _mace4_bin, _interpformat_bin
+    _prover9_bin = prover9_bin
+    _mace4_bin = mace4_bin
+    _prooftrans_bin = prooftrans_bin
+    _interpformat_bin = interpformat_bin
+
+#: A list of directories that should be searched for the prover9
+#: executables.  This list is used by L{config_prover9} when searching
+#: for the prover9 executables.
+prover9_path = ['/usr/local/bin/prover9',
+                '/usr/local/bin/prover9/bin',
+                '/usr/local/bin',
+                '/usr/bin',
+                '/usr/local/prover9',
+                '/usr/local/share/prover9']
+
+######################################################################
+#{ Interface to Binaries
+######################################################################
+
+def call_prover9(input_str, args=[]):
+    """
+    Call the C{prover9} binary with the given input.
+
+    @param input_str: A string whose contents are used as stdin.
+    @param args: A list of command-line arguments.
+    @return: A tuple (stdout, returncode)
+    @see: L{config_prover9}
+    """
+    if _prover9_bin is None:
+        config_prover9()
+        
+    # Call prover9 via a subprocess
+    cmd = [_prover9_bin] + args
+    p = subprocess.Popen(cmd, stdout=subprocess.PIPE,
+                         stderr=subprocess.STDOUT,
+                         stdin=subprocess.PIPE)
+    (stdout, stderr) = p.communicate(input_str)
+    return (stdout, p.returncode)
+
+def call_prooftrans(input_str, args=[]):
+    """
+    Call the C{prooftrans} binary with the given input.
+
+    @param input_str: A string whose contents are used as stdin.
+    @param args: A list of command-line arguments.
+    @return: A tuple (stdout, returncode)
+    @see: L{config_prover9}
+    """
+    if _prooftrans_bin is None:
+        config_prover9()
+        
+    # Call prooftrans via a subprocess
+    cmd = [_prooftrans_bin] + args
+    p = subprocess.Popen(cmd, stdout=subprocess.PIPE,
+                         stderr=subprocess.STDOUT,
+                         stdin=subprocess.PIPE)
+    (stdout, stderr) = p.communicate(input_str)
+    return (stdout, p.returncode)
+
+def call_mace4(input_str, args=[]):
+    """
+    Call the C{mace4} binary with the given input.
+
+    @param input_str: A string whose contents are used as stdin.
+    @param args: A list of command-line arguments.
+    @return: A tuple (stdout, returncode)
+    @see: L{config_prover9}
+    """
+    if _mace4_bin is None:
+        config_prover9()
+        
+    # Call mace4 via a subprocess
+    cmd = [_mace4_bin] + args
+    p = subprocess.Popen(cmd, stdout=subprocess.PIPE,
+                         stderr=subprocess.STDOUT,
+                         stdin=subprocess.PIPE)
+    (stdout, stderr) = p.communicate(input_str)
+    return (stdout, p.returncode)
+
+def call_interpformat(input_str, args=[]):
+    """
+    Call the C{interpformat} binary with the given input.
+
+    @param input_str: A string whose contents are used as stdin.
+    @param args: A list of command-line arguments.
+    @return: A tuple (stdout, returncode)
+    @see: L{config_prover9}
+    """
+    if _interpformat_bin is None:
+        config_prover9()
+        
+    # Call interpformat via a subprocess
+    cmd = [_interpformat_bin] + args
+    p = subprocess.Popen(cmd, stdout=subprocess.PIPE,
+                         stderr=subprocess.STDOUT,
+                         stdin=subprocess.PIPE)
+    (stdout, stderr) = p.communicate(input_str)
+    return (stdout, p.returncode)
+
+######################################################################
+#{ Base Class
+######################################################################
     
 class Prover9Parent:
+    """
+    A common base class used by both L{Prover9} and L{Mace
+    <mace.Mace>}, which is responsible for maintaining a goal and a
+    set of assumptions, and generating prover9-style input files from
+    them.
+    """
     def __init__(self, goal=None, assumptions=[], timeout=60):
         """
         @param goal: Input expression to prove
         @type goal: L{logic.Expression}
-        @param assumptions: Input expressions to use as assumptions in the proof
-        @type assumptions: C{list} of L{logic.Expression} objects
-        @param timeout: number of seconds before timeout; set to 0 for no timeout.
+        @param assumptions: Input expressions to use as assumptions in
+            the proof.
+        @type assumptions: C{list} of L{logic.Expression}
+        @param timeout: number of seconds before timeout; set to 0 for
+            no timeout.
         @type timeout: C{int}
         """
-        self.config_prover9(verbose=False)
-        self._goal = goal       
-        self._assumptions = assumptions
-        self._p9_dir = ''
-        self._infile = ''
-        self._outfile = '' 
+        self._goal = goal
+        """The logic expression to prove.
+           L{logic.Expression}"""
+        
+        self._assumptions = list(assumptions)
+        """The set of expressions to use as assumptions in the proof.
+           C{list} of L{logic.Expression}"""
+        
         self._p9_assumptions = []
+        """The set of assumption expressions listed in L{self._assumptions},
+           transformed into a list of string expressions using
+           L{convert_to_prover9()}."""
+        
+        self._p9_goal = None
+        """The logic ecpression to prove (L{self._goal}), transformed
+           into a string expression using L{convert_to_prover9()}."""
+        
         if goal:
             self._p9_goal = convert_to_prover9(self._goal)
-        else:
-            self._p9_goal = None
+            
         if self._assumptions:
             self._p9_assumptions = convert_to_prover9(self._assumptions)
-        else:
-            self._p9_assumptions = []
-        self._result = None
-        self._timeout = timeout
-        
-    prover9_search = ['.',
-                    '/usr/local/bin/prover9',
-                    '/usr/local/bin/prover9/bin',
-                    '/usr/local/bin',
-                    '/usr/bin',
-                    '/usr/local/prover9',
-                    '/usr/local/share/prover9']
-
-    def config_prover9(self, path=None, verbose=True):
-        """
-        Configure the location of Prover9 Executable
-        
-        @param path: Path to the Prover9 executable
-        @type path: C{str}
-        """
-
-        self._executable_path = None
-        
-        if path is not None:
-            searchpath = (path,)
-    
-        if  path is  None:
-            searchpath = Prover9Parent.prover9_search
-            if 'PROVER9HOME' in os.environ:
-                searchpath.insert(0, os.environ['PROVER9HOME'])
-    
-        for path in searchpath:
-            exe = os.path.join(path, self.get_executable())
-            if os.path.exists(exe):
-                self._executable_path = path
-                if verbose:
-                    print '[Found %s: %s]' % (self.get_executable(), exe)
-                break
-      
-        if self._executable_path is None:
-            if verbose:
-                print "Searching in these locations:\n %s" % join(searchpath, sep=', ')
-            raise ValueError(HELPMSG)
             
-           
-    def prover9_files(self, prefix='prover9', p9_dir=None):
+        self._timeout = timeout
+        """The timeout value for prover9.  If a proof can not be found
+           in this amount of time, then prover9 will return false.
+           (Use 0 for no timeout.)"""
+        
+    def prover9_input(self):
         """
-        Generate names for the input and output files and write to the
-        input file.
-        
-        @type prefix: C{str}
-        @parameter prefix: prefix to use for the input files;
-            appropriate values are 'prover9' and 'mace4'.  The full
-            filename is created by the C{tempfile} module.
-        
-        @type p9_dir: C{str}
-        @parameter p9_dir: location of directory for writing input and
-            output files; if not specified, the C{tempfile} module
-            specifies the directory.
-        """     
-        (fd, filename) = tempfile.mkstemp(suffix=".in", prefix=prefix, dir=p9_dir)
-        self._infile = filename
-        self._outfile = os.path.splitext(filename)[0] + '.out'
-        #NB self._p9_dir is used by _transform_output() in the mace module
-        if p9_dir is None:
-            self._p9_dir = os.path.split(filename)[0]
-        fp = os.fdopen(fd, 'w')
-        
+        @return: The input string that should be provided to the
+        prover9 binary.  This string is formed based on the goal,
+        assumptions, and timeout value of this object.
+        """
+        s = ''
         if self._timeout > 0:
-            fp.write('assign(max_seconds, %d).\n' % self._timeout)
+            s += 'assign(max_seconds, %d).\n' % self._timeout
             
         if self._p9_assumptions:
-            fp.write('formulas(assumptions).\n')
+            s += 'formulas(assumptions).\n'
             for p9_assumption in self._p9_assumptions:
-                fp.write('    %s.\n' % p9_assumption)
-            fp.write('end_of_list.\n\n')
+                s += '    %s.\n' % p9_assumption
+            s += 'end_of_list.\n\n'
     
-        fp.write('formulas(goals).\n')
+        s += 'formulas(goals).\n'
         if self._p9_goal:
-            fp.write('    %s.\n' % self._p9_goal)
-        fp.write('end_of_list.\n\n')
+            s += '    %s.\n' % self._p9_goal
+        s += 'end_of_list.\n\n'
 
-        fp.close()
-            
-        return None
+        return s
     
     def add_assumptions(self, new_assumptions):
         """
@@ -172,13 +268,13 @@ class Prover9Parent:
         @param retracted: assumptions to be retracted
         @type retracted: C{list} of L{sem.logic.Expression}s
         """
-        
-        result = set(self._assumptions) - set(retracted)
-        if debug and result == set(self._assumptions):
+        retracted = set(retracted)
+        result = [a for a in self._assumptions if a not in retracted]
+        if debug and result == self._assumptions:
             print Warning("Assumptions list has not been changed:")
             self.assumptions()
             
-        self._assumptions = list(result)
+        self._assumptions = result
         self._p9_assumptions = convert_to_prover9(self._assumptions)
         return None
     
@@ -193,7 +289,8 @@ class Prover9Parent:
             for a in self._p9_assumptions:
                 print a
         else:
-            raise NameError("Unrecognized value for 'output_format': %s" % output_format)
+            raise NameError("Unrecognized value for 'output_format': %s" %
+                            output_format)
         
 #{ Deprecated     
     @deprecated("Use nltk.data.load(<file.fol>) instead.")    
@@ -209,6 +306,10 @@ class Prover9Parent:
             result.append(lp.parse(s))
         return result                 
 #}       
+
+######################################################################
+#{ Prover9 <-> logic.Expression conversion
+######################################################################
 
 def convert_to_prover9(input):
     """
@@ -297,7 +398,14 @@ def _toProver9String_Constant(current):
     return current.name
 
 
+######################################################################
+#{ Prover9
+######################################################################
+
 class Prover9(Prover9Parent, ProverI):
+    _proof = None  #: text output from running prover9
+    _result = None #: bool indicating if proof succeeded
+    
     def get_executable(self):
         return 'prover9'
 
@@ -307,38 +415,13 @@ class Prover9(Prover9Parent, ProverI):
         @return: C{True} if the proof was successful 
         (i.e. returns value of 0), else C{False}        
         """
-        if self._executable_path is None:
-            print HELPMSG
-            return None
-        self.prover9_files()
-        exe = os.path.join(self._executable_path, self.get_executable())
-        
-        cmd = [exe, '-f', self._infile]
-        outfile = open(self._outfile, 'wb')
-        p = subprocess.Popen(cmd, stdout=outfile, stderr=outfile)
-        p.communicate()
-        outfile.close()
-
-        self._result = (p.returncode == 0)
+        stdout, returncode = call_prover9(self.prover9_input())
+        self._result = (returncode == 0)
+        self._proof = stdout
         return self._result
     
     def proof_successful(self):
         return self._result
-    
-    def _simplify_proof(self):
-        """
-        Simplify a Prover9 output file.    
-        """
-        output_file = None
-        
-        (dir, base) = os.path.split(self._outfile)
-        output_file = os.path.join(dir, 'prooftrans.' + base)
-        exe = os.path.join(self._executable_path, 'prooftrans')
-        execute_string = '%s -f %s striplabels > %s 2>> %s' % \
-            (exe, self._outfile, output_file, output_file)
-        os.system(execute_string)
-            
-        return output_file
     
     def show_proof(self, simplify=True):
         """
@@ -348,15 +431,19 @@ class Prover9(Prover9Parent, ProverI):
         using Prover9's C{prooftrans}.
         @type simplify: C{bool}
         """
-        if self._outfile:
-            proof_file = self._outfile
-            if simplify:
-                proof_file = self._simplify_proof()
-            for l in open(proof_file):
-                print l,
-        else:
+        if not self._proof:
             raise LookupError("You have to call prove() first to get a proof!")
+            
+        if simplify:
+            #print 'calling with\n', self._proof
+            print call_prooftrans(self._proof, ['striplabels'])[0].rstrip()
+        else:
+            print self._proof.rstrip()
 
+
+######################################################################
+#{ Tests & Demos
+######################################################################
 
 def test_config():
     
@@ -366,7 +453,7 @@ def test_config():
     p._executable_path = None
     p.prover9_search=[]
     p.prove()
-    p.config_prover9(path='/usr/local/bin')
+    #config_prover9('/usr/local/bin')
     print p.prove()
     p.show_proof()
     
