@@ -388,7 +388,7 @@ def find_binary(name, path_to_bin=None, env_vars=(),
     @param path_to_bin: The user-supplied binary location, or None.
     @param env_vars: A list of environment variable names to check
     @param binary_names: A list of alternative binary names to check.
-    @param path: List of directories to search.
+    @param searchpath: List of directories to search.
     """
     if binary_names is None: binary_names = [name]
     assert isinstance(name, basestring)
