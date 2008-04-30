@@ -71,41 +71,12 @@ def config_java(bin=None, options=None):
     @type options: C{list} of C{string}
     """
     global _java_bin, _java_options
-    if bin is not None:
-        if not os.path.exists(bin):
-            raise ValueError('Could not find java binary at %r' % bin)
-        _java_bin = bin
+    _java_bin = find_binary('java', bin, env_vars=['JAVAHOME', 'JAVA_HOME'])
+        
     if options is not None:
         if isinstance(options, basestring):
             options = options.split()
         _java_options = list(options)
-
-    # Check the JAVAHOME environment variable.
-    for env_var in ['JAVAHOME', 'JAVA_HOME']:
-        if _java_bin is None and env_var in os.environ:
-            paths = [os.path.join(os.environ[env_var], 'java'),
-                     os.path.join(os.environ[env_var], 'bin', 'java')]
-            for path in paths:
-                if os.path.exists(path):
-                    _java_bin = path
-                    print '[Found java: %s]' % path
-
-    # If we're on a POSIX system, try using the 'which' command to
-    # find a java binary.
-    if _java_bin is None and os.name == 'posix':
-        try:
-            p = subprocess.Popen(['which', 'java'], stdout=subprocess.PIPE)
-            stdout, stderr = p.communicate()
-            path = stdout.strip()
-            if path.endswith('java') and os.path.exists(path):
-                _java_bin = path
-                print '[Found java: %s]' % path
-        except:
-            pass
-
-    if _java_bin is None:
-        raise LookupError('Unable to find java!  Use config_java() '
-                          'or set the JAVAHOME environment variable.')
 
 def java(cmd, classpath=None, stdin=None, stdout=None, stderr=None):
     """
@@ -403,4 +374,96 @@ class Counter:
         self._value += 1
         return self._value
 
+##########################################################################
+# Search for binaries
+##########################################################################
+
+def find_binary(name, path_to_bin=None, env_vars=(), 
+                searchpath=(), binary_names=None, url=None,
+                verbose=True):
+    """
+    Search for the binary for a program that is used by nltk.
+
+    @param name: The name of the program
+    @param path_to_bin: The user-supplied binary location, or None.
+    @param env_vars: A list of environment variable names to check
+    @param binary_names: A list of alternative binary names to check.
+    @param path: List of directories to search.
+    """
+    if binary_names is None: binary_names = [name]
+    assert isinstance(name, basestring)
+    assert not isinstance(binary_names, basestring)
+    assert not isinstance(searchpath, basestring)
+    if isinstance(env_vars, basestring):
+        env_vars = env_vars.split()
+    
+    # If an explicit bin was given, then check it, and return it if
+    # it's present; otherwise, complain.
+    if path_to_bin is not None:
+        if os.path.isfile(path_to_bin):
+            return path_to_bin
+        for bin in binary_names:
+            if os.path.isfile(os.path.join(path_to_bin, bin)):
+                return os.path.join(path_to_bin, bin)
+            if os.path.isfile(os.path.join(path_to_bin, 'bin', bin)):
+                return os.path.join(path_to_bin, 'bin', bin)
+        raise ValueError('Could not find %s binary at %s' %
+                         (name, path_to_bin))
+    
+    # Check environment variables
+    for env_var in env_vars:
+        if env_var in os.environ:
+            path_to_bin = os.environ[env_var]
+            if os.path.isfile(path_to_bin):
+                if verbose: print '[Found %s: %s]' % (name, path_to_bin)
+                return os.environ[env_var]
+            else:
+                for bin_name in binary_names:
+                    path_to_bin = os.path.join(os.environ[env_var], bin_name)
+                    if os.path.isfile(path_to_bin):
+                        if verbose: print '[Found %s: %s]'%(name, path_to_bin)
+                        return path_to_bin
+                    path_to_bin = os.path.join(os.environ[env_var], 'bin',
+                                               bin_name)
+                    if os.path.isfile(path_to_bin):
+                        if verbose: print '[Found %s: %s]'%(name, path_to_bin)
+                        return path_to_bin
+
+    # Check the path list.
+    for directory in searchpath:
+        for bin in binary_names:
+            path_to_bin = os.path.join(directory, bin)
+            if os.path.isfile(path_to_bin):
+                return path_to_bin
+        
+
+    # If we're on a POSIX system, then try using the 'which' command
+    # to find the binary.
+    if os.name == 'posix':
+        for bin in binary_names:
+            try:
+                p = subprocess.Popen(['which', bin], stdout=subprocess.PIPE)
+                stdout, stderr = p.communicate()
+                path = stdout.strip()
+                if path.endswith(bin) and os.path.exists(path):
+                    if verbose: print '[Found %s: %s]' % (name, path)
+                    return path
+            except KeyboardInterrupt, SystemExit:
+                raise
+            except:
+                pass
+
+    msg = ("NLTK was unable to find the %s executable!  Use "
+           "config_%s()" % (name, name))
+    if env_vars: msg += ' or set the %s environment variable' % env_vars[0]
+    msg = textwrap.fill(msg+'.', initial_indent='  ',
+                        subsequent_indent='  ')
+    msg += "\n\n    >>> config_%s('/path/to/%s')" % (name, name)
+    if searchpath:
+        msg += '\n\n  Searched in:'
+        msg += ''.join('\n    - %s' % d for d in searchpath)
+    if url: msg += ('\n\n  For more information, on %s, see:\n    <%s>' %
+                    (name, url))
+    div = '='*75
+    raise LookupError('\n\n%s\n%s\n%s' % (div, msg, div))
 
