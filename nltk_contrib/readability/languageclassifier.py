@@ -13,7 +13,7 @@ from nltk.corpus import stopwords
 from urlextracter import URLextracter
 from sgmllib import *
 
-class NaiveBayes():
+class NaiveBayes(object):
        
     p_word_given_lang = {}
     
