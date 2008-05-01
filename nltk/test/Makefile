@@ -5,6 +5,6 @@ TESTS = chunk.doctest classify.doctest corpus.doctest data.doctest drt.doctest f
 ERRS := $(TESTS:.doctest=.errs)
 
 .doctest.errs:
-	python ./doctest_driver.py $< >& $@
+	python ./doctest_driver.py $< > $@ 2>&1
 
 all: $(ERRS)
