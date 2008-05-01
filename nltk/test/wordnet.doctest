@@ -278,4 +278,15 @@ this dictionary.
     False
 
 
+---------------------------------------------------------------------------
+Regression Tests
+---------------------------------------------------------------------------
+
+Bug 1796793: WordNet verbFrameStrings
+
+    >>> w = nltk.wordnet.V['fly']
+    >>> s = w.synsets()[0]
+    >>> s.verbFrameStrings
+    ['Something fly', 'Somebody fly', 'Something is flying PP', 'Somebody fly PP']
+
 

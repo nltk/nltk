@@ -201,7 +201,7 @@ class Synset(object):
         Return a list of verb frame strings for this synset.
         """
         # extract a frame index if 3rd item is 00
-        frame_indices = [int(t[1], 16) for t in vfTuples if int(t[2], 16) == 0]
+        frame_indices = [int(t[1]) for t in vfTuples if int(t[2], 16) == 0]
         try:
             verbFrames = [VERB_FRAME_STRINGS[i] for i in frame_indices]
         except IndexError:
