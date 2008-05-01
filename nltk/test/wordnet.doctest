@@ -289,4 +289,11 @@ Bug 1796793: WordNet verbFrameStrings
     >>> s.verbFrameStrings
     ['Something fly', 'Somebody fly', 'Something is flying PP', 'Somebody fly PP']
 
+Bug 1940398 UnboundLocalError in wordnet.util line 426
+
+    >>> from nltk.wordnet import util
+    >>> util.getIndex('good-for-nothing')
+    good-for-nothing (noun)
+    >>> util.getIndex('good for nothing')
+    good-for-nothing (noun)
 

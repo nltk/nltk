@@ -423,10 +423,10 @@ def getIndex(form, pos=NOUN):
             return dictionary[form]
         elif substitutions:
             (old, new) = substitutions[0]
-            substitute = string.replace(form, old, new) and substitute != form
-            if substitute and substitute in dictionary:
+            substitute = string.replace(form, old, new)
+            if substitute and substitute != form and substitute in dictionary:
                 return dictionary[substitute]
-            return              trySubstitutions(form, substitutions[1:], lookup=False) or \
+            return trySubstitutions(form, substitutions[1:], lookup=False) or \
                 (substitute and trySubstitutions(substitute, substitutions[1:]))
     return trySubstitutions(form, GET_INDEX_SUBSTITUTIONS)
 
