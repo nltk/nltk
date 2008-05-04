@@ -8,16 +8,28 @@ Overview
 ~~~~~~~~
 The `nltk.data` module contains functions that can be used to load
 NLTK resource files, such as corpora, grammars, and saved processing
-objects.  Resources are loaded using the function `nltk.data.load()`:
+objects.
 
-    >>> tokenizer = nltk.data.load('tokenizers/punkt/english.pickle')
+Loading Data Files
+~~~~~~~~~~~~~~~~~~
+Resources are loaded using the function `nltk.data.load()`, which
+takes as its first argument a URL specifying what file should be
+loaded.  The ``nltk:`` protocol loads files from the NLTK data
+distribution:
+
+    >>> tokenizer = nltk.data.load('nltk:tokenizers/punkt/english.pickle')
     >>> tokenizer.tokenize('Hello.  This is a test.  It works!')
     ['Hello.', 'This is a test.', 'It works!']
 
-By default, `nltk.data.load()` looks for resource files in the NLTK
-data package.  But it is also possible to load resources from HTTP and
-FTP URLs:
+The ``nltk:`` protocol is used by default if no protocol is specified:
 
+    >>> nltk.data.load('tokenizers/punkt/english.pickle') # doctest: +ELLIPSIS
+    <nltk.tokenize.punkt.PunktSentenceTokenizer object at ...>
+
+But it is also possible to load resources from ``http:``, ``ftp:``,
+and ``file:`` URLs:
+
+    >>> # Load a grammar from the NLTK webpage.
     >>> cfg = nltk.data.load('http://nltk.org/examples/parse/toy.cfg')
     >>> print cfg # doctest: +ELLIPSIS
     Grammar with 14 productions (start state = S)
@@ -27,9 +39,7 @@ FTP URLs:
         P -> 'on'
         P -> 'in'
 
-Resources can also be loaded from files, by using URLs with the
-"``file:``" protocol specifier:
-
+    >>> # Load a grammar using an absolute path.
     >>> url = 'file:%s' % nltk.data.find('grammars/toy.cfg')
     >>> url # doctest: +ELLIPSIS
     'file:/.../grammars/toy.cfg'
@@ -40,6 +50,62 @@ Resources can also be loaded from files, by using URLs with the
         ...
         P -> 'on'
         P -> 'in'
+
+The second argument to the `nltk.data.load()` function specifies the
+file format, which determines how the file's contents are processed
+before they are returned by ``load()``.  The formats that are
+currently supported by the data module are described by the dictionary
+`nltk.data.FORMATS`:
+
+    >>> for format, descr in sorted(nltk.data.FORMATS.items()):
+    ...     print '%-7s %s' % (format, descr) # doctest: +NORMALIZE_WHITESPACE
+    cfg     A context free grammar, parsed by nltk.cfg.parse_cfg().
+    fcfg    A feature CFG, parsed by nltk.cfg.parse_fcfg().
+    fol     A list of first order logic expressions, parsed by
+              nltk.sem.parse_fol().
+    pcfg    A probabilistic CFG, parsed by nltk.cfg.parse_pcfg().
+    pickle  A serialized python object, stored using the pickle module.
+    raw     The raw (byte string) contents of a file.
+    val     A semantic valuation, parsed by nltk.sem.parse_valuation().
+    yaml    A serialzied python object, stored using the yaml module.
+
+`nltk.data.load()` will raise a ValueError if a bad format name is
+specified:
+
+    >>> nltk.data.load('grammars/toy.cfg', 'bar')
+    Traceback (most recent call last):
+      . . .
+    ValueError: Unknown format type!
+
+By default, the ``"auto"`` format is used, which chooses a format
+based on the filename's extension.  The mapping from file extensions
+to format names is specified by `nltk.data.AUTO_FORMATS`:
+
+    >>> for ext, format in sorted(nltk.data.AUTO_FORMATS.items()):
+    ...     print '.%-7s -> %s' % (ext, format)
+    .cfg     -> cfg
+    .fcfg    -> fcfg
+    .fol     -> fol
+    .pcfg    -> pcfg
+    .pickle  -> pickle
+    .val     -> val
+    .yaml    -> yaml
+
+If `nltk.data.load()` is unable to determine the format based on the
+filename's extension, it will raise a ValueError:
+
+    >>> nltk.data.load('foo.bar')
+    Traceback (most recent call last):
+      . . .
+    ValueError: Could not determine format for foo.bar based on its file
+    extension; use the "format" argument to specify the format explicitly.
+
+Note that by explicitly specifying the ``format`` argument, you can
+override the load method's default processing behavior.  For example,
+to get the raw contents of any file, simply use ``format="raw"``:
+
+    >>> nltk.data.load('grammars/toy.cfg', 'raw') # doctest: +ELLIPSIS
+    "S -> NP VP\nPP -> P NP\nNP -> Det N | NP PP\nVP -> V NP | VP PP\n..."
 
 Making Local Copies
 ~~~~~~~~~~~~~~~~~~~
@@ -59,10 +125,10 @@ sample grammars.
     
     >>> # Simulate editing the grammar.
     >>> s = open('toy.cfg').read().replace('NP', 'DP')
-    >>> out = open('toy2.cfg', 'w'); out.write(s); out.close()
+    >>> out = open('toy.cfg', 'w'); out.write(s); out.close()
 
     >>> # Load the edited grammar, & display it.
-    >>> cfg = nltk.data.load('file:toy2.cfg')
+    >>> cfg = nltk.data.load('file:toy.cfg')
     >>> print cfg # doctest: +ELLIPSIS
     Grammar with 14 productions (start state = S)
         S -> DP VP
@@ -71,7 +137,29 @@ sample grammars.
         P -> 'on'
         P -> 'in'
 
-[XX] Should this be called `nltk.data.copy()` instead?
+The second argument to `nltk.data.retrieve()` specifies the filename
+for the new copy of the file.  By default, the source file's filename
+is used.
+
+    >>> nltk.data.retrieve('grammars/toy.cfg', 'mytoy.cfg')
+    Retrieving 'grammars/toy.cfg', saving to 'mytoy.cfg'
+    >>> os.path.isfile('./mytoy.cfg')
+    True
+    >>> nltk.data.retrieve('grammars/np.fcfg')
+    Retrieving 'grammars/np.fcfg', saving to 'np.fcfg'
+    >>> os.path.isfile('./np.fcfg')
+    True
+
+If a file with the specified (or default) filename already exists in
+the current directory, then `nltk.data.retrieve()` will raise a
+ValueError exception.  It will *not* overwrite the file:
+
+    >>> os.path.isfile('./toy.cfg')
+    True
+    >>> nltk.data.retrieve('grammars/toy.cfg') # doctest: +ELLIPSIS
+    Traceback (most recent call last):
+      . . .
+    ValueError: File '.../toy.cfg' already exists!
 
 ..  This will not be visible in the html output: clean up the tempdir.
     >>> os.chdir(old_dir)
@@ -99,12 +187,44 @@ keyword argument ``format="raw"``:
 
 Resource Caching
 ~~~~~~~~~~~~~~~~
-Describe how caching works, and how to use `clear_cache()`.
 
+NLTK uses a weakref dictionary to maintain a cache of resources that
+have been loaded.  If you load a resource that is already stored in
+the cache, then the cached copy will be returned.  This behavior can
+be seen by the trace output generated when verbose=True:
+
+    >>> feat0 = nltk.data.load('grammars/feat0.fcfg', verbose=True)
+    <<Loading grammars/feat0.fcfg>>
+    >>> feat0 = nltk.data.load('grammars/feat0.fcfg', verbose=True)
+    <<Using cached copy of grammars/feat0.fcfg>>
+
+If you wish to load a resource from its source, bypassing the cache,
+use the ``cache=False`` argument to `nltk.data.load()`.  This can be
+useful, for example, if the resource is loaded from a local file, and
+you are actively editing that file:
+
+    >>> feat0 = nltk.data.load('grammars/feat0.fcfg',cache=False,verbose=True)
+    <<Loading grammars/feat0.fcfg>>
+
+The cache uses weak references, so a resource wil automatically be
+expunged from the cache when no more objects are using it.  In the
+following example, when we clear the variable ``feat0``, the reference
+count for the feature grammar object drops to zero.  This causes it to
+be garbage collected and removed from the cache.  Thus, when we load
+it again, it is no longer in the cache, so `nltk.data.load()` must load
+it from the source file.
+
+    >>> del feat0
+    >>> feat0 = nltk.data.load('grammars/feat0.fcfg', verbose=True)
+    <<Loading grammars/feat0.fcfg>>
+
+You can clear the entire contents of the cache, using
+`nltk.data.clear_cache()`:
+
+    >>> nltk.data.clear_cache()
 
 Retrieving other Data Sources
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
     >>> formulas = nltk.data.load('grammars/background1.fol')
     >>> for f in formulas: print str(f.infixify())
     all x.((boxerdog x) implies (dog x))
@@ -116,4 +236,67 @@ Retrieving other Data Sources
     (not (Vincent = Mia))
     (not (Vincent = Fido))
     (not (Mia = Fido))
+
+Regression Tests
+~~~~~~~~~~~~~~~~
+Create a temp dir for tests that write files:
+
+    >>> import tempfile, os
+    >>> tempdir = tempfile.mkdtemp()
+    >>> old_dir = os.path.abspath('.')
+    >>> os.chdir(tempdir)
+
+The `retrieve()` function accepts all url types:
+
+    >>> urls = ['http://nltk.org/examples/parse/toy.cfg',
+    ...         'file:%s' % nltk.data.find('grammars/toy.cfg'),
+    ...         'nltk:grammars/toy.cfg',
+    ...         'grammars/toy.cfg']
+    >>> for i, url in enumerate(urls):
+    ...     nltk.data.retrieve(url, 'toy-%d.cfg' % i) # doctest: +ELLIPSIS
+    Retrieving 'http://nltk.org/examples/parse/toy.cfg', saving to 'toy-0.cfg'
+    Retrieving 'file:/.../data/grammars/toy.cfg', saving to 'toy-1.cfg'
+    Retrieving 'nltk:grammars/toy.cfg', saving to 'toy-2.cfg'
+    Retrieving 'grammars/toy.cfg', saving to 'toy-3.cfg'
+
+
+Clean up the temp dir:
+
+    >>> os.chdir(old_dir)
+    >>> for f in os.listdir(tempdir):
+    ...     os.remove(os.path.join(tempdir, f))
+    >>> os.rmdir(tempdir)
+
+.. note:: load(..., format='yaml') is not currently tested, because we
+    do not have any yaml files in our data distribution yet.  We should
+    probably have a trained brill tagger there.
+
+Lazy Loader
+-----------
+A lazy loader is a wrapper object that defers loading a resource until
+it is accessed or used in any way.  This is mainly intended for
+internal use by NLTK's corpus readers.
+
+    >>> # Create a lazy loader for toy.cfg.
+    >>> ll = nltk.data.LazyLoader('grammars/toy.cfg')
+
+    >>> # Show that it's not loaded yet:
+    >>> object.__repr__(ll) # doctest: +ELLIPSIS
+    '<nltk.data.LazyLoader object at ...>'
+    
+    >>> # printing it is enough to cause it to be loaded:
+    >>> print ll
+    <Grammar with 14 productions>
+
+    >>> # Show that it's now been loaded:
+    >>> object.__repr__(ll) # doctest: +ELLIPSIS
+    '<nltk.cfg.Grammar object at ...>'
+
+
+    >>> # Test that accessing an attribute also loads it:
+    >>> ll = nltk.data.LazyLoader('grammars/toy.cfg')
+    >>> ll.start()
+    <S>
+    >>> object.__repr__(ll) # doctest: +ELLIPSIS
+    '<nltk.cfg.Grammar object at ...>'
 
