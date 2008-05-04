@@ -131,7 +131,8 @@ def retrieve(resource_url, filename=None, verbose=True):
         else:
             filename = re.sub(r'(^\w+:)?.*/', '', resource_url)
     if os.path.exists(filename):
-        raise ValueError, "%r already exists!" % filename
+        filename = os.path.abspath(filename)
+        raise ValueError, "File %r already exists!" % filename
     
     if verbose:
         print 'Retrieving %r, saving to %r' % (resource_url, filename)
@@ -149,6 +150,33 @@ def retrieve(resource_url, filename=None, verbose=True):
     # Close both files.
     infile.close()
     outfile.close()
+
+#: A dictionary describing the formats that are supported by NLTK's
+#: L{load()} method.  Keys are format names, and values are format
+#: descriptions.
+FORMATS = {
+    'pickle': "A serialized python object, stored using the pickle module.",
+    'yaml': "A serialzied python object, stored using the yaml module.",
+    'cfg': "A context free grammar, parsed by nltk.cfg.parse_cfg().",
+    'pcfg': "A probabilistic CFG, parsed by nltk.cfg.parse_pcfg().",
+    'fcfg': "A feature CFG, parsed by nltk.cfg.parse_fcfg().",
+    'fol': "A list of first order logic expressions, parsed by "
+            "nltk.sem.parse_fol().",
+    'val': "A semantic valuation, parsed by nltk.sem.parse_valuation().",
+    'raw': "The raw (byte string) contents of a file.",
+    }
+
+#: A dictionary mapping from file extensions to format names, used
+#: by L{load()} when C{format="auto"} to decide the format for a
+#: given resource url.
+AUTO_FORMATS = {
+    'pickle': 'pickle',
+    'yaml': 'yaml',
+    'cfg': 'cfg',
+    'pcfg': 'pcfg',
+    'fcfg': 'fcfg',
+    'fol': 'fol',
+    'val': 'val'}
 
 def load(resource_url, format='auto', cache=True, verbose=False):
     """
@@ -197,13 +225,13 @@ def load(resource_url, format='auto', cache=True, verbose=False):
 
     # Determine the format of the resource.
     if format == 'auto':
-        if resource_url.endswith('.pickle'): format = 'pickle'
-        if resource_url.endswith('.yaml'): format = 'yaml'
-        if resource_url.endswith('.cfg'): format = 'cfg'
-        if resource_url.endswith('.pcfg'): format = 'pcfg'
-        if resource_url.endswith('.fcfg'): format = 'fcfg'
-        if resource_url.endswith('.fol'): format = 'fol'
-        if resource_url.endswith('.val'): format = 'val'
+        ext = resource_url.split('.')[-1]
+        format = AUTO_FORMATS.get(ext)
+        if format is None:
+            raise ValueError('Could not determine format for %s based '
+                             'on its file\nextension; use the "format" '
+                             'argument to specify the format explicitly.'
+                             % resource_url)
         
     # Load the resource.
     if format == 'pickle':
@@ -223,6 +251,7 @@ def load(resource_url, format='auto', cache=True, verbose=False):
     elif format == 'raw':
         resource_val = _open(resource_url).read()
     else:
+        assert format not in FORMATS
         raise ValueError('Unknown format type!')
 
     # If requested, add it to the cache.
@@ -308,3 +337,8 @@ class LazyLoader(object):
         # __class__ to something new:
         return getattr(self, attr)
 
+    def __repr__(self):
+        self.__load()
+        # This looks circular, but its not, since __load() changes our
+        # __class__ to something new:
+        return '%r' % self
