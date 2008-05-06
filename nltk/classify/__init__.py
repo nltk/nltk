@@ -38,19 +38,41 @@ contains the word C{'library'}.  Feature values are typically
 booleans, numbers, or strings, depending on which feature they
 describe.
 
-Featuresets are typically constructed using a X{feature
-extraction function}, which takes a token as its input, and returns a
-featuresets describing that token.  This feature extraction
-function is applied to each token before it is fed to the classifier:
+Featuresets are typically constructed using a X{feature detector}
+(also known as a X{feature extractor}).  A feature detector is a
+function that takes a token (and sometimes information about its
+context) as its input, and returns a featureset describing that token.
+For example, the following feature detector converts a document
+(stored as a list of words) to a featureset describing the set of
+words included in the document:
 
-    >>> # Define a feature extraction function.
+    >>> # Define a feature detector function.
     >>> def document_features(document):
-    ...     return dict([('contains-word(%s)'%w,True) for w in document])
+    ...     return dict([('contains-word(%s)' % w, True) for w in document])
+
+Feature detectors are typically applied to each token before it is fed
+to the classifier:
 
     >>> Classify each Gutenberg document.
     >>> for file in gutenberg.files():
     ...     doc = gutenberg.tokenized(file)
     ...     print doc_name, classifier.classify(document_features(doc))
+
+The parameters that a feature detector expects will vary, depending on
+the task and the needs of the feature detector.  For example, a
+feature detector for word sense disambiguation (WSD) might take as its
+input a sentence, and the index of a word that should be classified,
+and return a featureset for that word.  The following feature detector
+for WSD includes features describing the left and right contexts of
+the target word:
+
+    >>> def wsd_features(sentence, index):
+    ...     featureset = {}
+    ...     for i in range(max(0, index-3), index):
+    ...         featureset['left-context(%s)' % sentence[i]] = True
+    ...     for i in range(index, max(index+3, len(sentence))
+    ...         featureset['right-context(%s)' % sentence[i]] = True
+    ...     return featureset
 
 Training Classifiers
 ====================
