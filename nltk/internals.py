@@ -7,7 +7,7 @@
 # For license information, see LICENSE.TXT
 
 import subprocess, os.path, re, warnings, textwrap
-import types
+import types, sys
 
 ######################################################################
 # Regular Expression Processing
@@ -277,8 +277,8 @@ def _mro(cls):
 ######################################################################
 # [xx] dedent msg first if it comes from  a docstring.
 
-def _add_deprecated_field(obj, message):
-    """Add a @deprecated field to a given object's docstring."""
+def _add_epytext_field(obj, field, message):
+    """Add an epytext @field to a given object's docstring."""
     indent = ''
     # If we already have a docstring, then add a blank line to separate
     # it from the new field, and check its indentation.
@@ -290,7 +290,7 @@ def _add_deprecated_field(obj, message):
     else:
         obj.__doc__ = ''
 
-    obj.__doc__ += textwrap.fill('@deprecated: %s' % message,
+    obj.__doc__ += textwrap.fill('@%s: %s' % (field, message),
                                  initial_indent=indent,
                                  subsequent_indent=indent+'    ')
 
@@ -318,7 +318,7 @@ def deprecated(message):
         newFunc.__doc__ = func.__doc__
         newFunc.__deprecated__ = True
         # Add a @deprecated field to the docstring.
-        _add_deprecated_field(newFunc, message)
+        _add_epytext_field(newFunc, 'deprecated', message)
         return newFunc
     return decorator
 
@@ -466,4 +466,61 @@ def find_binary(name, path_to_bin=None, env_vars=(),
                     (name, url))
     div = '='*75
     raise LookupError('\n\n%s\n%s\n%s' % (div, msg, div))
+
+##########################################################################
+# Import Stdlib Module
+##########################################################################
+
+def import_from_stdlib(module):
+    """
+    When python is run from within the nltk/ directory tree, the
+    current directory is included at the beginning of the search path.
+    Unfortunately, that means that modules within nltk can sometimes
+    shadow standard library modules.  As an example, the stdlib
+    'inspect' module will attempt to import the stdlib 'tokenzie'
+    module, but will instead end up importing NLTK's 'tokenize' module
+    instead (causing the import to fail).
+    """
+    old_path = sys.path
+    sys.path = [d for d in sys.path if d not in ('', '.')]
+    m = __import__(module)
+    sys.path = old_path
+    return m
+
+##########################################################################
+# Abstract declaration
+##########################################################################
+
+def abstract(func):
+    """
+    A decorator used to mark methods as abstract.  I.e., methods that
+    are marked by this decorator must be overridden by subclasses.  If
+    an abstract method is called (either in the base class or in a
+    subclass that does not override the base class method), it will
+    raise C{NotImplementedError}.
+    """
+    # Avoid problems caused by nltk.tokenize shadowing the stdlib tokenize:
+    inspect = import_from_stdlib('inspect')
+
+    # Read the function's signature.
+    args, varargs, varkw, defaults = inspect.getargspec(func)
+
+    # Create a new function with the same signature (minus defaults)
+    # that raises NotImplementedError.
+    msg = '%s is an abstract method.' % func.__name__
+    signature = inspect.formatargspec(args, varargs, varkw, ())
+    exec ('def newfunc%s: raise NotImplementedError(%r)' % (signature, msg))
+
+    # Substitute in the defaults after-the-fact, since eval(repr(val))
+    # may not work for some default values.
+    newfunc.func_defaults = func.func_defaults
+    
+    # Copy the name and docstring
+    newfunc.__name__ = func.__name__
+    newfunc.__doc__ = func.__doc__
+    newfunc.__abstract__ = True
+    _add_epytext_field(newfunc, "note", "This method is abstract.")
+
+    # Return the function.
+    return newfunc
 
