@@ -19,6 +19,11 @@ class TaggerI(object):
     Tags are case sensitive strings that identify some property of each
     token, such as its part of speech or its sense.
 
+    Some taggers require specific types for their tokens.  This is
+    generally indicated by the use of a sub-interface to C{TaggerI}.
+    For example, I{featureset taggers}, which are subclassed from
+    L{FeaturesetTaggerI}, require that each token be a I{featureset}.
+
     Subclasses must define:
       - either L{tag()} or L{batch_tag()} (or both)
     """
@@ -42,3 +47,11 @@ class TaggerI(object):
             >>> return [self.tag(tokens) for tokens in sentences]
         """
         return [self.tag(tokens) for tokens in sentences]
+
+class FeaturesetTaggerI(TaggerI):
+    """
+    A tagger that requires tokens to be I{featuresets}.  A featureset
+    is a dictionary that maps from I{feature names} to I{feature
+    values}.  See L{nltk.classify} for more information about features
+    and featuresets.
+    """
