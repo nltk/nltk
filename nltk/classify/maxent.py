@@ -163,7 +163,7 @@ class MaxentClassifier(ClassifierI):
 
     @classmethod
     def train(cls, train_toks, algorithm=None, trace=3, encoding=None, 
-              labels=None, sparse=False, gaussian_prior_sigma=0, **cutoffs):
+              labels=None, sparse=True, gaussian_prior_sigma=0, **cutoffs):
         """
         Train a new maxent classifier based on the given corpus of
         training samples.  This classifier will have its weights
@@ -1032,7 +1032,7 @@ def calculate_deltas(train_toks, classifier, unattested, ffreq_empirical,
 # could be used to make trace output consistent with iis/gis.
 def train_maxent_classifier_with_scipy(train_toks, trace=3, encoding=None,
                                        labels=None,  algorithm='CG',
-                                       sparse=False, gaussian_prior_sigma=0,
+                                       sparse=True, gaussian_prior_sigma=0,
                                        **cutoffs):
     """
     Train a new C{ConditionalExponentialClassifier}, using the given
