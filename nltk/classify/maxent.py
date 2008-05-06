@@ -1137,23 +1137,26 @@ def train_maxent_classifier_with_megam(train_toks, trace=3, encoding=None,
     @see: L{train_maxent_classifier()} for parameter descriptions.
     @see: L{nltk.classify.megam}
     """
+    explicit = True
+    
     # Construct an encoding from the training data.
     if encoding is None:
         encoding = BinaryMaxentFeatureEncoding.train(train_toks, labels=labels)
     elif labels is not None:
-        raise ValueError('Specify encoding or labels, not both')
+            raise ValueError('Specify encoding or labels, not both')
 
     # Write a training file for megam.
     try:
         fd, trainfile_name = tempfile.mkstemp(prefix='nltk-')
         trainfile = os.fdopen(fd, 'wb')
-        write_megam_file(train_toks, encoding, trainfile, explicit=True)
+        write_megam_file(train_toks, encoding, trainfile, explicit=explicit)
         trainfile.close()
     except (OSError, IOError, ValueError), e:
         raise ValueError('Error while creating megam training file: %s' % e)
 
     # Run megam on the training file.
-    options = ['-explicit', '-nobias']
+    options = ['-nobias']
+    if explicit: options += ['-explicit']
     if gaussian_prior_sigma:
         # [XX] *why* is this the right formula to convert sigma to
         # lambda?  how is lambda defined??  The 7.01 is pretty random
@@ -1177,7 +1180,7 @@ def train_maxent_classifier_with_megam(train_toks, trace=3, encoding=None,
         print 'Warning: unable to delete %s: %s' % (trainfile_name, e)
 
     # Parse the generated weight vector.
-    weights = parse_megam_weights(stdout)
+    weights = parse_megam_weights(stdout, explicit)
 
     # Convert from base-e to base-2 weights.
     weights *= numpy.log2(numpy.e)
