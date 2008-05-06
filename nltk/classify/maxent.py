@@ -1143,7 +1143,7 @@ def train_maxent_classifier_with_megam(train_toks, trace=3, encoding=None,
     if encoding is None:
         encoding = BinaryMaxentFeatureEncoding.train(train_toks, labels=labels)
     elif labels is not None:
-            raise ValueError('Specify encoding or labels, not both')
+        raise ValueError('Specify encoding or labels, not both')
 
     # Write a training file for megam.
     try:
