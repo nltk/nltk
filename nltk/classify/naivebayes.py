@@ -125,21 +125,22 @@ class NaiveBayesClassifier(ClassifierI):
         cpdist = self._feature_probdist
         print '\nMost Informative Features'
 
-        for (fname, fval) in self.most_informative_features(10):
+        for (fname, fval) in self.most_informative_features(n):
             def labelprob(l):
                 return cpdist[l,fname].prob(fval)
             labels = sorted([l for l in self._labels
-                             if (l,fname) in cpdist], key=labelprob)
+                             if fval in cpdist[l,fname].samples()],
+                            key=labelprob)
             if len(labels) == 1: continue
             l0 = labels[0]
             l1 = labels[-1]
             if cpdist[l0,fname].prob(fval) == 0:
                 ratio = 'INF'
             else:
-                ratio = '%.1f' % (cpdist[l1,fname].prob(fval) /
+                ratio = '%8.1f' % (cpdist[l1,fname].prob(fval) /
                                   cpdist[l0,fname].prob(fval))
-            print ('%24s = %-7r  %s:%s = %s : 1.0' %
-                   (fname, fval, l1, l0, ratio))
+            print ('%24s = %-16r %5s : %-5s = %s : 1.0' %
+                   (fname, fval, l1[:5], l0[:5], ratio))
 
     def most_informative_features(self, n=100):
         """
