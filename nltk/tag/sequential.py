@@ -24,6 +24,7 @@ from nltk import FreqDist, ConditionalFreqDist
 from nltk.tag.api import *
 from nltk.tag.util import *
 from nltk.internals import deprecated, Deprecated
+from nltk.classify.naivebayes import NaiveBayesClassifier
 
 ######################################################################
 #{ Abstract Base Classes
