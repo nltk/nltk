@@ -68,12 +68,12 @@ Test the naive bayes classifier:
     >>> classifier.show_most_informative_features()
     <BLANKLINE>
     Most Informative Features
-                           c = 0        x:y = 2.0 : 1.0
-                           c = 1        y:x = 1.5 : 1.0
-                           a = 1        y:x = 1.4 : 1.0
-                           a = 0        x:y = 1.2 : 1.0
-                           b = 0        x:y = 1.2 : 1.0
-                           b = 1        y:x = 1.1 : 1.0
+                           c = 0                    x : y     =      2.0 : 1.0
+                           c = 1                    y : x     =      1.5 : 1.0
+                           a = 1                    y : x     =      1.4 : 1.0
+                           a = 0                    x : y     =      1.2 : 1.0
+                           b = 0                    x : y     =      1.2 : 1.0
+                           b = 1                    y : x     =      1.1 : 1.0
 
 Test the decision tree classifier:
 
