@@ -135,13 +135,17 @@ class DiscourseTester(object):
         @type sentence: C{str}
         @parameter quiet: If C{False},  report on the updated list of sentences.
         """
-        self._input.remove(sentence)
+        try:
+            self._input.remove(sentence)
+        except ValueError:
+            print "Retraction failed. The sentence '%s' is not part of the current discourse:" % sentence
+            self.sentences()
+            return None
         self._sentences = dict([('s%s' % i, sent) for i, sent in enumerate(self._input)])
         self.readings(quiet=True)
         if not quiet:
             print "Current sentences are "
-            for (sentid, sent) in sorted(self._sentences.items()):
-                print '%s: %s' % (sentid, sent)
+            self.sentences()
             
     def grammar(self):
         """
@@ -167,6 +171,8 @@ class DiscourseTester(object):
         """
         Use C{self._sentences} to construct a value for C{self._readings}.
         """
+        # re-initialize self._readings in case we have retracted a sentence
+        self._readings = {}
         for sid in self._sentences:
             readings = self._get_readings(self._sentences[sid])
             self._readings[sid] = dict([("%s-r%s" % (sid, rid), reading)
@@ -311,7 +317,7 @@ class DiscourseTester(object):
                     print "    %s: %s" % (rid, reading)
                 print 
         
-    def add_background(self, background, quiet=False):
+    def add_background(self, background, quiet=True):
         """
         Add a list of background assumptions for reasoning about the discourse.
         
