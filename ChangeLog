@@ -1,3 +1,19 @@
+Version 0.9.3 2008-05-13
+	
+NLTK:
+- new classifier-based tagger, BNC corpus reader
+- improved unicode support for corpus readers
+- improved interfaces to Weka, Prover9/Mace4
+- new support for using MEGAM and SciPy to train maxent classifiers
+- code clean-ups throughout
+
+Book:
+- miscellaneous fixes in response to feedback from readers
+
+Contrib:
+- implementation of incremental algorithm for generating
+  referring expressions (contributed by Margaret Mitchell)
+	
 Version 0.9.2 2008-03-04
 
 NLTK:
