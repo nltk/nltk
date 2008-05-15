@@ -200,10 +200,15 @@ summary="">
         rel_word_examples = [''] * 4
         for y in rk[1]:
             rel_word_examples[y[1]] = rel_words[y]
-        hlp = ''.join('<td align="center"><a href="M' + \
-                quote_plus(x + '#' + str(bu.uniq_cntr())) + '">' + \
-                            x.replace('_', ' ') + '</a></td>' \
-                                    for x in rel_word_examples)
+
+        def format_td(x):
+            formst_str = '<td align="center"><a href="M%s">%s</a></td>'
+            quoted_href = quote_plus(x + '#' + str(bu.uniq_cntr()))
+            anchor = x.replace('_', ' ')
+            return format_str % (quoted_href, anchor)
+        
+        hlp = concat_map(format_td, rel_word_examples)
+        # This line doesn't work, I wonder if there is a bug above?
         hlp = hlp.replace('<a href="M"></a>','-')
         html += hlp + '</tr>\n'
     html += '</table>' + bu.html_trailer
