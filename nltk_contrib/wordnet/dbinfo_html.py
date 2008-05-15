@@ -202,7 +202,7 @@ summary="">
             rel_word_examples[y[1]] = rel_words[y]
 
         def format_td(x):
-            formst_str = '<td align="center"><a href="M%s">%s</a></td>'
+            format_str = '<td align="center"><a href="M%s">%s</a></td>'
             quoted_href = quote_plus(x + '#' + str(bu.uniq_cntr()))
             anchor = x.replace('_', ' ')
             return format_str % (quoted_href, anchor)
