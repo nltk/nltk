@@ -16,7 +16,6 @@ import browseutil as bu
 
 all_pos = ['noun', 'verb', 'adj', 'adv']
 col_heads = ['Noun', 'Verb', 'Adjective', 'Adverb', 'Total']
-data_path = os.environ['NLTK_DATA'] + '\\corpora\\wordnet\\'
 display_names = [('forms','Word forms'), ('simple','--- simple words'),
     ('collo','--- collocations'), ('syns','Synsets'),
     ('w_s_pairs','Word-Sense Pairs'),
@@ -26,6 +25,18 @@ display_names = [('forms','Word forms'), ('simple','--- simple words'),
     ('apimw','Average Polysemy Including Monosemous Words'),
     ('apemw','Average Polysemy Excluding Monosemous Words'),
     ('rels','Relations')]
+WORDNET_PATH = "nltk:corpora/wordnet/"
+
+
+def getData(type, pos):
+    """
+    Read an index data file for the given part of speach and return a
+    list of lines from it.
+    """
+    data = nltk.data.load("%s%s.%s" % (WORDNET_PATH, type, pos), format='raw')
+    return [ line for line in data.split('\n') if 
+             not line.startswith('  ') and line != "" ] 
+
 
 def create_db_info():
     '''
@@ -44,10 +55,9 @@ def create_db_info():
     for n_pos,pos in enumerate(all_pos): #['adv']): #all_pos):
         print '\n\nStarting the summary for POS: %s' % col_heads[n_pos]
         d = defaultdict(int)
-        # Word counts
-        for ind in open(data_path + 'index.' + pos):
-            if ind.startswith('  '):
-                continue
+
+        # Word counts.
+        for ind in getData("index", pos):
             ind_parts = ind.split()
             syn_count = int(ind_parts[2])
             d['w_s_pairs'] += syn_count
@@ -67,9 +77,7 @@ def create_db_info():
         d['apemw'] = 1.0 * d['poly_senses'] / d['poly_words']
 
         # Synsets and relations
-        for syns in open(data_path + 'data.' + pos):
-            if syns.startswith('  '):
-                continue
+        for syns in getData("data", pos):
             d['syns'] += 1
             synset = getSynset(pos,int(syns[:8]))
             syn_rel = bu.relations_2(synset)
@@ -176,6 +184,12 @@ summary="">
     return
 
 
-if __name__ == '__main__':
+def main():
+    """
+    Program entry point"
+    """
     create_db_info()
 
+
+if __name__ == '__main__':
+    main()
