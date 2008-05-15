@@ -6,7 +6,9 @@
 # For license information, see LICENSE.TXT
 
 import os
-from collections import defaultdict
+import copy
+
+from nltk import defaultdict
 from itertools import groupby
 from urllib import quote_plus
 
@@ -28,7 +30,7 @@ display_names = [('forms','Word forms'), ('simple','--- simple words'),
 WORDNET_PATH = "nltk:corpora/wordnet/"
 
 
-def getData(type, pos):
+def get_data(type, pos):
     """
     Read an index data file for the given part of speach and return a
     list of lines from it.
@@ -36,6 +38,30 @@ def getData(type, pos):
     data = nltk.data.load("%s%s.%s" % (WORDNET_PATH, type, pos), format='raw')
     return [ line for line in data.split('\n') if 
              not line.startswith('  ') and line != "" ] 
+
+
+def make_list(data, num):
+    """
+    Make a list of 'data' items 'num' elements long
+    """
+    # Copy is required here to avoid aliasing the data, so that a
+    # change to one item in the resulting lists changes all the items.
+    return [copy.copy(data) for x in range(num)]
+
+
+def concat_map(func, list):
+    """
+    Map the function over the list and then concatente the items
+    in the list using the plus operator
+    """
+    # Note that this uses a generator expression, it will only
+    # traverse the items in the list once
+    return reduce(lambda a, b: a+b, (func(i) for i in list))
+
+
+def first(x):
+    "Return the first element from the given sequence"
+    return x[0]
 
 
 def create_db_info():
@@ -46,8 +72,7 @@ def create_db_info():
     print
     print 'Producing this summary may, depending on your computer,'
     print 'take a couple of minutes. Please be patient!'
-    counts = [[0 for i in range(len(col_heads))]
-                    for j in range(len(display_names))]
+    counts = make_list(make_list(0, len(col_heads)), len(display_names))
     rel_counts = defaultdict(int)
     rel_words = {}
     unique_beginners = defaultdict(list)
@@ -57,7 +82,7 @@ def create_db_info():
         d = defaultdict(int)
 
         # Word counts.
-        for ind in getData("index", pos):
+        for ind in get_data("index", pos):
             ind_parts = ind.split()
             syn_count = int(ind_parts[2])
             d['w_s_pairs'] += syn_count
@@ -77,7 +102,7 @@ def create_db_info():
         d['apemw'] = 1.0 * d['poly_senses'] / d['poly_words']
 
         # Synsets and relations
-        for syns in getData("data", pos):
+        for syns in get_data("data", pos):
             d['syns'] += 1
             synset = getSynset(pos,int(syns[:8]))
             syn_rel = bu.relations_2(synset)
@@ -118,22 +143,25 @@ summary="">
 <th align="center">Adjective</th><th align="center">Adverb</th>
 <th align="center">Total</th></tr>
 '''
+    
     for n,(x,y) in enumerate(display_names):
+        num_counts = len(counts[n])
         if x == 'rels':
-            html += '<tr><th align="left"> </th>'
-            html += ''.join('<td align="right"> </td>' for c in counts[n]) \
-                    + '</tr>\n'
-        html += '<tr><th align="left">' + '%s' % y + '</th>'
+            html += '<tr><th align="left"> </th>' + \
+                ('<td align="right"></td>'*num_counts) + \
+                '</tr>\n'
+        html += '<tr><th align="left">%s</th>' % y
         if  x == 'apimw' or x == 'apemw':
-            html += ''.join('<td align="right">' + '%6.2f ' % c + '</td>' \
-                                            for c in counts[n]) + '</tr>\n'
+            html += concat_map(lambda c: '<td align="right">%6.2f</td>' % c,
+                               counts[n])
         else:
-            html += ''.join('<td align="right">' + '%6d ' % c + '</td>' \
-                                            for c in counts[n]) + '</tr>\n'
+            html += concat_map(lambda c: '<td align="right">%6d</td>' % c,
+                               counts[n])
+        html += '</tr>\n'
 
     # Format the relation counts
-    r_counts = [0 for i in range(len(col_heads))]
-    for rk in groupby(sorted(rel_counts.keys()),key=lambda x:x[0]):
+    r_counts = make_list(0, len(col_heads))
+    for rk in groupby(sorted(rel_counts.keys()),key=first):
         for i in range(len(col_heads)):
             r_counts[i] = 0
         dn = bu._dbname_to_dispname(rk[0]).split('/')
@@ -141,12 +169,14 @@ summary="">
             dn = rk[0] + '(???)'
         else:
             dn = dn[0]
-        html += '<tr><th align="left">' + '%s' % ('--- ' + dn) + '</th>'
+        html += '<tr><th align="left">--- %s</th>' % dn
         for y in rk[1]:
             r_counts[y[1]] = rel_counts[y]
         r_counts[len(col_heads) - 1] = sum(r_counts)
-        html += ''.join('<td align="right">' + '%6d ' % rc + '</td>'
-                         for rc in r_counts) + '</tr>\n'
+        html += concat_map(lambda rc: '<td align="right">%6d</td>' % rc,
+                           r_counts)
+        html += '</tr>\n'
+    
     html += '</table>'
 
     # Format the example words for relations
@@ -160,7 +190,7 @@ summary="">
 <tr><th>Relation</th><th>Noun</th><th>Verb</th><th>Adjective</th><th>Adverb</th></tr>
 '''
 
-    for rk in groupby(sorted(rel_counts.keys()),key=lambda x:x[0]):
+    for rk in groupby(sorted(rel_counts.keys()),key=first):
         dn = bu._dbname_to_dispname(rk[0]).split('/')
         if dn[0] == '???':
             dn = rk[0] + '(???)'
