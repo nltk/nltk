@@ -64,6 +64,19 @@ def first(x):
     return x[0]
 
 
+def group_rel_count_keys_by_first(rel_counts):
+    return groupby(sorted(rel_counts.keys()),key=first)
+
+
+def display_name_from_rk(rk):
+    dn = bu._dbname_to_dispname(rk[0]).split('/')
+    if dn[0] == '???':
+        dn = rk[0] + '(???)'
+    else:
+        dn = dn[0]
+    return dn
+
+
 def create_db_info():
     '''
     Create the file: NLTK Wordnet Browser Database Info.html
@@ -161,14 +174,10 @@ summary="">
 
     # Format the relation counts
     r_counts = make_list(0, len(col_heads))
-    for rk in groupby(sorted(rel_counts.keys()),key=first):
+    for rk in group_rel_count_keys_by_first(rel_counts):
         for i in range(len(col_heads)):
             r_counts[i] = 0
-        dn = bu._dbname_to_dispname(rk[0]).split('/')
-        if dn[0] == '???':
-            dn = rk[0] + '(???)'
-        else:
-            dn = dn[0]
+        dn = display_name_from_rk(rk)
         html += '<tr><th align="left">--- %s</th>' % dn
         for y in rk[1]:
             r_counts[y[1]] = rel_counts[y]
@@ -190,12 +199,8 @@ summary="">
 <tr><th>Relation</th><th>Noun</th><th>Verb</th><th>Adjective</th><th>Adverb</th></tr>
 '''
 
-    for rk in groupby(sorted(rel_counts.keys()),key=first):
-        dn = bu._dbname_to_dispname(rk[0]).split('/')
-        if dn[0] == '???':
-            dn = rk[0] + '(???)'
-        else:
-            dn = dn[0]
+    for rk in group_rel_count_keys_by_first(rel_counts):
+        dn = display_name_from_rk(rk)
         html += '<tr><th align="center">' + dn + '</th>'
         rel_word_examples = [''] * 4
         for y in rk[1]:
