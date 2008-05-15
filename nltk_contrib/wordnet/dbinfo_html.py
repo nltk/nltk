@@ -16,9 +16,9 @@ from nltk.wordnet.synset import *
 
 import browseutil as bu
 
-all_pos = ['noun', 'verb', 'adj', 'adv']
-col_heads = ['Noun', 'Verb', 'Adjective', 'Adverb', 'Total']
-display_names = [('forms','Word forms'), ('simple','--- simple words'),
+ALL_POS = ['noun', 'verb', 'adj', 'adv']
+COL_HEADS = ['Noun', 'Verb', 'Adjective', 'Adverb', 'Total']
+DISPLAY_NAMES = [('forms','Word forms'), ('simple','--- simple words'),
     ('collo','--- collocations'), ('syns','Synsets'),
     ('w_s_pairs','Word-Sense Pairs'),
     ('monos','Monosemous Words and Senses'),
@@ -77,7 +77,18 @@ def display_name_from_rk(rk):
     return dn
 
 
-def create_db_info():
+class Stats:
+    """
+    Statistics gathered from the NLTK Wordnet database.
+    """
+    
+    def __init__(self, counts, rel_counts, rel_words):
+        self.counts = counts
+        self.rel_counts = rel_counts
+        self.rel_words = rel_words
+
+
+def get_stats_from_database():
     '''
     Create the file: NLTK Wordnet Browser Database Info.html
     '''
@@ -85,13 +96,13 @@ def create_db_info():
     print
     print 'Producing this summary may, depending on your computer,'
     print 'take a couple of minutes. Please be patient!'
-    counts = make_list(make_list(0, len(col_heads)), len(display_names))
+    counts = make_list(make_list(0, len(COL_HEADS)), len(DISPLAY_NAMES))
     rel_counts = defaultdict(int)
     rel_words = {}
     unique_beginners = defaultdict(list)
 
-    for n_pos,pos in enumerate(all_pos): #['adv']): #all_pos):
-        print '\n\nStarting the summary for POS: %s' % col_heads[n_pos]
+    for n_pos,pos in enumerate(ALL_POS): #['adv']): #all_pos):
+        print '\n\nStarting the summary for POS: %s' % COL_HEADS[n_pos]
         d = defaultdict(int)
 
         # Word counts.
@@ -128,7 +139,7 @@ def create_db_info():
 
         # Prepare counts for displaying
         nd = {}
-        for n,(x,y) in enumerate(display_names):
+        for n,(x,y) in enumerate(DISPLAY_NAMES):
             nd[x] = n
             if x in d:
                 counts[n][n_pos] = d[x]
@@ -141,7 +152,10 @@ def create_db_info():
                     counts[n][4] = 1.0 * (m_c + m_ps) / (m_c + m_pw)
                 else:
                     counts[n][4] = 1.0 * m_ps /  m_pw
+    return Stats(counts, rel_counts, rel_words)
 
+
+def htmlize_stats(stats):
     # Format the counts
     print '\n\nStarting the construction of result tables'
 
@@ -157,8 +171,8 @@ summary="">
 <th align="center">Total</th></tr>
 '''
     
-    for n,(x,y) in enumerate(display_names):
-        num_counts = len(counts[n])
+    for n,(x,y) in enumerate(DISPLAY_NAMES):
+        num_counts = len(stats.counts[n])
         if x == 'rels':
             html += '<tr><th align="left"> </th>' + \
                 ('<td align="right"></td>'*num_counts) + \
@@ -166,22 +180,22 @@ summary="">
         html += '<tr><th align="left">%s</th>' % y
         if  x == 'apimw' or x == 'apemw':
             html += concat_map(lambda c: '<td align="right">%6.2f</td>' % c,
-                               counts[n])
+                               stats.counts[n])
         else:
             html += concat_map(lambda c: '<td align="right">%6d</td>' % c,
-                               counts[n])
+                               stats.counts[n])
         html += '</tr>\n'
 
     # Format the relation counts
-    r_counts = make_list(0, len(col_heads))
-    for rk in group_rel_count_keys_by_first(rel_counts):
-        for i in range(len(col_heads)):
+    r_counts = make_list(0, len(COL_HEADS))
+    for rk in group_rel_count_keys_by_first(stats.rel_counts):
+        for i in range(len(COL_HEADS)):
             r_counts[i] = 0
         dn = display_name_from_rk(rk)
         html += '<tr><th align="left">--- %s</th>' % dn
         for y in rk[1]:
-            r_counts[y[1]] = rel_counts[y]
-        r_counts[len(col_heads) - 1] = sum(r_counts)
+            r_counts[y[1]] = stats.rel_counts[y]
+        r_counts[len(COL_HEADS) - 1] = sum(r_counts)
         html += concat_map(lambda rc: '<td align="right">%6d</td>' % rc,
                            r_counts)
         html += '</tr>\n'
@@ -199,12 +213,12 @@ summary="">
 <tr><th>Relation</th><th>Noun</th><th>Verb</th><th>Adjective</th><th>Adverb</th></tr>
 '''
 
-    for rk in group_rel_count_keys_by_first(rel_counts):
+    for rk in group_rel_count_keys_by_first(stats.rel_counts):
         dn = display_name_from_rk(rk)
         html += '<tr><th align="center">' + dn + '</th>'
         rel_word_examples = [''] * 4
         for y in rk[1]:
-            rel_word_examples[y[1]] = rel_words[y]
+            rel_word_examples[y[1]] = stats.rel_words[y]
 
         def format_td(x):
             format_str = '<td align="center"><a href="M%s">%s</a></td>'
@@ -217,18 +231,19 @@ summary="">
         hlp = hlp.replace('<a href="M"></a>','-')
         html += hlp + '</tr>\n'
     html += '</table>' + bu.html_trailer
-    dbinfo_html_file = open('NLTK Wordnet Browser Database Info.html', 'wt')
-    dbinfo_html_file.write(html)
-    dbinfo_html_file.close()
-    print '\n\nCreation complete: NLTK Wordnet Browser Database Info.html'
-    return
+    return html
 
 
 def main():
     """
     Program entry point"
     """
-    create_db_info()
+    stats = get_stats_from_database()
+    html = htmlize_stats(stats)
+    dbinfo_html_file = open('NLTK Wordnet Browser Database Info.html', 'wt')
+    dbinfo_html_file.write(html)
+    dbinfo_html_file.close()
+    print '\n\nCreation complete: NLTK Wordnet Browser Database Info.html'
 
 
 if __name__ == '__main__':
