@@ -30,7 +30,7 @@ class AbstractDrs(Expression):
         f1 = self.simplify().toFol();
         f2 = other.simplify().toFol();
         bicond = IffExpression(f1, f2)
-        return inference.get_prover(bicond).prove()
+        return inference.get_prover(bicond, prover_name='tableau').prove()
 
     def __add__(self, other):
         """DRS Concatenation"""
@@ -113,16 +113,20 @@ class DRS(AbstractDrs):
         
         return accum
     
+    def __eq__(self, other):
+        return isinstance(other, DRS) and \
+                self.refs == other.refs and self.conds == other.conds
+    
     def __str__(self):
         return Tokens.DRS + '([' + ','.join([str(ref) for ref in self.refs]) + \
                '],[' + ', '.join([str(cond) for cond in self.conds]) + '])'
 
-class EqualityExpression(AbstractDrs, logic.EqualityExpression):
+class EqualityExpression(logic.EqualityExpression, AbstractDrs):
     def isNullResolution(self):
         return (isinstance(self.second, PossibleAntecedents) and not self.second) or \
                 (isinstance(self.first, PossibleAntecedents) and not self.first)
 
-class VariableExpression(AbstractDrs, logic.VariableExpression):
+class VariableExpression(logic.VariableExpression, AbstractDrs):
     def toFol(self):
         return self
     
@@ -132,21 +136,21 @@ class VariableExpression(AbstractDrs, logic.VariableExpression):
     def get_refs(self):
         return []
 
-class NegatedExpression(AbstractDrs, logic.NegatedExpression):
+class NegatedExpression(logic.NegatedExpression, AbstractDrs):
     def toFol(self):
         return logic.NegatedExpression(self.term.toFol())
 
     def resolve_anaphora(self, trail=[]):
         return self.__class__(self.term.resolve_anaphora(trail + [self]))
 
-class LambdaExpression(AbstractDrs, logic.LambdaExpression):
+class LambdaExpression(logic.LambdaExpression, AbstractDrs):
     def resolve_anaphora(self, trail=[]):
         return self.__class__(self.variables, self.term.resolve_anaphora(trail + [self]))
 
     def toFol(self):
         return logic.LambdaExpression(self.variables, self.term.toFol())
 
-class ImpExpression(Expression, logic.ImpExpression):
+class ImpExpression(logic.ImpExpression, AbstractDrs):
     def resolve_anaphora(self, trail=[]):
         trail_addition = [self, self.first]
         r_first = self.first.resolve_anaphora(trail + trail_addition)
@@ -175,7 +179,7 @@ class ImpExpression(Expression, logic.ImpExpression):
             
         return accum
 
-class ConcatenationDRS(AbstractDrs, logic.BooleanExpression):
+class ConcatenationDRS(logic.BooleanExpression, AbstractDrs):
     """DRS of the form '(DRS + DRS)'"""
     def replace(self, variable, expression, replace_bound=False):
         """Replace all instances of variable v with expression E in self,
@@ -240,9 +244,8 @@ class ConcatenationDRS(AbstractDrs, logic.BooleanExpression):
         
     def toFol(self):
         return AndExpression( self.first.toFol(), self.second.toFol() )
-        
 
-class ApplicationExpression(AbstractDrs, logic.ApplicationExpression):
+class ApplicationExpression(logic.ApplicationExpression, AbstractDrs):
     def resolve_anaphora(self, trail=[]):
         if isinstance(self.function, VariableExpression) and self.function.name == Tokens.PRONOUN:
             assert len(self.args) == 1 #only one arg is allowed in PRO(x)
@@ -596,7 +599,7 @@ class DrtParser(LogicParser):
         self.assertToken(self.token(), Tokens.OPEN_BRACKET)
         refs = []
         while self.token(0) != Tokens.CLOSE_BRACKET:
-            # Support expressions like: DRS([x y],C) == DRS([x, y],C)
+            # Support expressions like: DRS([x y],C) == DRS([x,y],C)
             if self.token(0) == Tokens.COMMA:
                 self.token() # swallow the comma
             else:
@@ -643,6 +646,10 @@ class DrtParser(LogicParser):
         return LambdaExpression(variables, term)
     
 class TestSuite(logic.TestSuite):
+    def __init__(self):
+        self.count = 0
+        self.failures = 0
+    
     def run(self):
         self.count = 0
         self.failures = 0
@@ -652,13 +659,14 @@ class TestSuite(logic.TestSuite):
         self.test_toFol()
         self.test_replace()
         self.test_resolve_anaphora()
+        self.test_tp_equals()
         
         print '='*55
         print 'Tests:    %s' % self.count
         print 'Failures: %s' % self.failures
 
     def test_parser(self):
-        n = 1
+        n = Tokens.NEW_NLTK
         print '='*20 + 'TEST PARSE' + '='*20
         self.parse_test(r'DRS([x,y],[sees(x,y)])')
         self.parse_test(r'DRS([x],[man(x), walks(x)])')
@@ -698,7 +706,7 @@ class TestSuite(logic.TestSuite):
         self.assert_equal(f, str(p), expected)
                     
     def test_simplify(self):
-        n = 1
+        n = Tokens.NEW_NLTK
         print '='*20 + 'TEST SIMPLIFY' + '='*20
         self.simplify_test(r'DRS([x,y],[sees(x,y)])')
         self.simplify_test(r'DRS([x],[man(x), walks(x)])')
@@ -727,7 +735,7 @@ class TestSuite(logic.TestSuite):
         
         self.simplify_test(r'(\Q.(DRS([x],[(x = john),walks(x)]) + Q))(DRS([x],[PRO(x),leaves(x)]))', r'DRS([x,z1],[(x = john), walks(x), PRO(z1), leaves(z1)])')
     
-    def simplify_test(self, f, expected=None, throw=False):
+    def simplify_test(self, f, expected=None, throw=True):
         logic._counter._value = 0
         if not expected:
             expected = f
@@ -771,7 +779,7 @@ class TestSuite(logic.TestSuite):
         self.assert_equal(f, str(p), expected)
         
     def test_resolve_anaphora(self):
-        n = 1
+        n = Tokens.NEW_NLTK
         print '='*20 + 'Test resolve_anaphora()' + '='*20
         self.resolve_anaphora_test(r'DRS([x,y,z],[dog(x), cat(y), walks(z), PRO(z)])', r'DRS([x,y,z],[dog(x), cat(y), walks(z), (z = [x,y])])', True)
         self.resolve_anaphora_test(r'DRS([],[(DRS([x],[dog(x)]) -> DRS([y],[walks(y), PRO(y)]))])', r'DRS([],[(DRS([x],[dog(x)]) -> DRS([y],[walks(y), (y = x)]))])')
@@ -791,7 +799,7 @@ class TestSuite(logic.TestSuite):
         self.assert_equal(f, str(p), expected)
 
     def test_replace(self):
-        n = 1
+        n = Tokens.NEW_NLTK
         print '='*20 + 'TEST REPLACE' + '='*20
         #replace bound
         self.replace_test(r'DRS([x],[give(x,y,z)])', 'x', 'a', False, 'DRS([x],[give(x,y,z)])')
@@ -842,6 +850,18 @@ class TestSuite(logic.TestSuite):
                 result = err.message
         self.assert_equal('%s, %s, %s, %s' % (e,v,r,replace_bound), str(result), expected)
 
+    def test_tp_equals(self):
+        self.tp_equals_test(r'DRS([x],[man(x), walks(x)])', r'DRS([x],[walks(x), man(x)])', True)
+        
+    def tp_equals_test(self, a, b, expected):
+        n = Tokens.NEW_NLTK
+        print '='*20 + 'TEST Theorem Prover Equality' + '='*20
+        
+        d1 = DrtParser().parse(a)
+        d2 = DrtParser().parse(b)
+        result = d1.tp_equals(d2)
+        self.assert_equal('%s == %s: %s' % (d1,d2,result), str(result), str(expected))
+        
 
 def test_draw():
     expressions = [
@@ -863,13 +883,6 @@ def test_draw():
     for e in expressions:
         d = DrtParser().parse(e)
         d.draw()
-
-
-def testTp_equals():
-    a = DrtParser().parse(r'DRS([x],[man(x), walks(x)])')
-    b = DrtParser().parse(r'DRS([x],[walks(x), man(x)])')
-    print '%s == %s' % (a,b)
-    print a.tp_equals(b)
 
 if __name__ == '__main__':
     TestSuite().run()
