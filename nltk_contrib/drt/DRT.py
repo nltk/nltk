@@ -12,6 +12,7 @@ from nltk.sem.logic import LogicParser, \
                            ExistsExpression, \
                            AllExpression, \
                            UnexpectedTokenException
+import resolve_anaphora as RA
 
 class Expression(logic.Expression):
     def __repr__(self):
@@ -35,8 +36,11 @@ class AbstractDrs(Expression):
     def __add__(self, other):
         """DRS Concatenation"""
         return ConcatenationDRS(self, other)
+    
+    def get_pronoun_token(self):
+        return Tokens.PRONOUN
 
-class DRS(AbstractDrs):
+class DRS(AbstractDrs, RA.DRS):
     """A Discourse Representation Structure."""
     def __init__(self, refs, conds):
         """
@@ -83,17 +87,6 @@ class DRS(AbstractDrs):
     def get_refs(self):
         return self.refs
     
-    def resolve_anaphora(self, trail=[]):
-        r_conds = []
-        for cond in self.conds:
-            r_cond = cond.resolve_anaphora(trail + [self])
-            
-            # if the condition is of the form '(x = [])' then do not include it
-            if not isinstance(r_cond, EqualityExpression) or not r_cond.isNullResolution():
-                r_conds.append(r_cond)
-                
-        return self.__class__(self.refs, r_conds)
-    
     def simplify(self):
         r_refs = [ref.simplify() for ref in self.refs]
         r_conds = [cond.simplify() for cond in self.conds]
@@ -121,42 +114,25 @@ class DRS(AbstractDrs):
         return Tokens.DRS + '([' + ','.join([str(ref) for ref in self.refs]) + \
                '],[' + ', '.join([str(cond) for cond in self.conds]) + '])'
 
-class EqualityExpression(logic.EqualityExpression, AbstractDrs):
-    def isNullResolution(self):
-        return (isinstance(self.second, PossibleAntecedents) and not self.second) or \
-                (isinstance(self.first, PossibleAntecedents) and not self.first)
+class EqualityExpression(logic.EqualityExpression, AbstractDrs, RA.EqualityExpression):
+    pass
 
-class VariableExpression(logic.VariableExpression, AbstractDrs):
+class VariableExpression(logic.VariableExpression, AbstractDrs, RA.VariableExpression):
     def toFol(self):
-        return self
-    
-    def resolve_anaphora(self, trail=[]):
         return self
     
     def get_refs(self):
         return []
 
-class NegatedExpression(logic.NegatedExpression, AbstractDrs):
+class NegatedExpression(logic.NegatedExpression, AbstractDrs, RA.NegatedExpression):
     def toFol(self):
         return logic.NegatedExpression(self.term.toFol())
 
-    def resolve_anaphora(self, trail=[]):
-        return self.__class__(self.term.resolve_anaphora(trail + [self]))
-
-class LambdaExpression(logic.LambdaExpression, AbstractDrs):
-    def resolve_anaphora(self, trail=[]):
-        return self.__class__(self.variables, self.term.resolve_anaphora(trail + [self]))
-
+class LambdaExpression(logic.LambdaExpression, AbstractDrs, RA.LambdaExpression):
     def toFol(self):
         return logic.LambdaExpression(self.variables, self.term.toFol())
 
-class ImpExpression(logic.ImpExpression, AbstractDrs):
-    def resolve_anaphora(self, trail=[]):
-        trail_addition = [self, self.first]
-        r_first = self.first.resolve_anaphora(trail + trail_addition)
-        r_second = self.second.resolve_anaphora(trail + trail_addition)
-        return self.__class__(r_first, r_second)
-
+class ImpExpression(logic.ImpExpression, AbstractDrs, RA.ImpExpression):
     def get_refs(self):
         return []
 
@@ -179,7 +155,7 @@ class ImpExpression(logic.ImpExpression, AbstractDrs):
             
         return accum
 
-class ConcatenationDRS(logic.BooleanExpression, AbstractDrs):
+class ConcatenationDRS(logic.BooleanExpression, AbstractDrs, RA.ConcatenationDRS):
     """DRS of the form '(DRS + DRS)'"""
     def replace(self, variable, expression, replace_bound=False):
         """Replace all instances of variable v with expression E in self,
@@ -217,11 +193,6 @@ class ConcatenationDRS(logic.BooleanExpression, AbstractDrs):
             
         return self.__class__(first, second)
     
-    def resolve_anaphora(self, trail=[]):
-        r_first = self.first.resolve_anaphora(trail + [self])
-        r_second = self.second.resolve_anaphora(trail + [self])
-        return self.__class__(r_first, r_second)
-
     def get_refs(self):
         return self.first.get_refs() + self.second.get_refs()
             
@@ -245,30 +216,7 @@ class ConcatenationDRS(logic.BooleanExpression, AbstractDrs):
     def toFol(self):
         return AndExpression( self.first.toFol(), self.second.toFol() )
 
-class ApplicationExpression(logic.ApplicationExpression, AbstractDrs):
-    def resolve_anaphora(self, trail=[]):
-        if isinstance(self.function, VariableExpression) and self.function.name == Tokens.PRONOUN:
-            assert len(self.args) == 1 #only one arg is allowed in PRO(x)
-            possible_antecedents = PossibleAntecedents()
-            for ancestor in trail:
-                if isinstance(ancestor, AbstractDrs):
-                    possible_antecedents.extend(ancestor.get_refs())
-            #===============================================================================
-            #   This line ensures that statements of the form ( x = x ) wont appear.
-            #   Possibly amend to remove antecedents with the wrong 'gender' 
-            #===============================================================================
-            arg = self.args[0]
-            possible_antecedents.remove(arg)
-            if len(possible_antecedents) == 1:
-                equalityExp = EqualityExpression(arg, possible_antecedents[0])
-            else:
-                equalityExp = EqualityExpression(arg ,possible_antecedents) 
-            return equalityExp
-        else:
-            r_function = self.function.resolve_anaphora(trail + [self])
-            r_args = [arg.resolve_anaphora(trail + [self]) for arg in self.args]
-            return self.__class__(r_function, r_args)
-
+class ApplicationExpression(logic.ApplicationExpression, AbstractDrs, RA.ApplicationExpression):
     def toFol(self):
         return logic.ApplicationExpression(self.function.toFol(), 
                                            [arg.toFol() for arg in self.args])
@@ -289,28 +237,6 @@ class ApplicationExpression(logic.ApplicationExpression, AbstractDrs):
                 
         return function + Tokens.OPEN + \
                ','.join([str(arg) for arg in self.args]) + Tokens.CLOSE
-
-class PossibleAntecedents(list, Expression):
-    def free(self):
-        """Set of free variables."""
-        return set(self)
-
-    def replace(self, variable, expression, replace_bound=False):
-        """Replace all instances of variable v with expression E in self,
-        where v is free in self."""
-        result = PossibleAntecedents()
-        for item in self:
-            if item == variable:
-                self.append(expression)
-            else:
-                self.append(item)
-        return result
-    
-    def simplify(self):
-        return self
-
-    def __str__(self):
-        return '[' + ','.join([str(item) for item in self]) + ']'
 
 
 class DrsDrawer:
@@ -860,7 +786,7 @@ class TestSuite(logic.TestSuite):
         d1 = DrtParser().parse(a)
         d2 = DrtParser().parse(b)
         result = d1.tp_equals(d2)
-        self.assert_equal('%s == %s: %s' % (d1,d2,result), str(result), str(expected))
+        self.assert_equal('%s == %s' % (d1,d2), str(result), str(expected))
         
 
 def test_draw():
