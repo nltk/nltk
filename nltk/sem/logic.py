@@ -34,6 +34,12 @@ class Expression:
     def negate(self):
         return -self
     
+    def __eq__(self, other):
+        raise NotImplementedError()
+    
+    def __hash__(self):
+        return hash(repr(self))
+    
     def __repr__(self):
         return self.__class__.__name__ + ': ' + str(self)
 
@@ -78,6 +84,10 @@ class ApplicationExpression(Expression):
         for arg in self.args:
             accum |= arg.free()
         return accum
+    
+    def __eq__(self, other):
+        return isinstance(other, self.__class__) and \
+                self.function == other.function and self.args == other.args 
 
     def __str__(self):
         function = str(self.function)
@@ -112,14 +122,11 @@ class VariableExpression(Expression):
         return set([self])
     
     def __eq__(self, other):
-        return isinstance(other, VariableExpression) and self.name == other.name
+        return isinstance(other, self.__class__) and self.name == other.name
         
     def __str__(self):
         return self.name
     
-    def __hash__(self):
-        return hash(self.name)
-        
 class LambdaExpression(Expression):
     """
     @param variable: C{list} of C{VariableExpression}, for the abstracted variables
@@ -159,9 +166,13 @@ class LambdaExpression(Expression):
     def free(self):
         return self.term.free() - set(self.variables)
 
+    def __eq__(self, other):
+        return isinstance(other, self.__class__) \
+                and self.variables == other.variables and self.term == other.term
+
     def __str__(self):
         return Tokens.LAMBDA[n] + ' '.join([str(v) for v in self.variables]) +\
-               Tokens.DOT + str(self.term)
+               Tokens.DOT[n] + str(self.term)
 
 class QuantifiedExpression(Expression):
     """
@@ -202,8 +213,12 @@ class QuantifiedExpression(Expression):
     def free(self):
         return self.term.free() - set([self.variable])
 
+    def __eq__(self, other):
+        return isinstance(other, self.__class__) \
+                and self.variable == other.variable and self.term == other.term
+
     def __str__(self):
-        return self.getPredicate() + ' ' + str(self.variable) + Tokens.DOT + str(self.term)
+        return self.getPredicate() + ' ' + str(self.variable) + Tokens.DOT[n] + str(self.term)
         
 class ExistsExpression(QuantifiedExpression):
     def getPredicate(self):
@@ -226,6 +241,9 @@ class NegatedExpression(Expression):
     def free(self):
         return self.term.free()
 
+    def __eq__(self, other):
+        return isinstance(other, self.__class__) and self.term == other.term
+
     def __str__(self):
         return Tokens.NOT[n] + str(self.term)
         
@@ -243,6 +261,10 @@ class BooleanExpression(Expression):
 
     def free(self):
         return self.first.free() | self.second.free()
+
+    def __eq__(self, other):
+        return isinstance(other, self.__class__) \
+                and self.first == other.first and self.second == other.second
 
     def __str__(self):
         return Tokens.OPEN + str(self.first) + ' ' + self.getOp() + ' ' + str(self.second) + Tokens.CLOSE
@@ -268,31 +290,37 @@ class EqualityExpression(BooleanExpression):
         return Tokens.EQ[n]
 
 class Tokens:
-    LAMBDA = ['\\', '\\']
+    # Syntaxes
+    OLD_NLTK = 0
+    NEW_NLTK = 1
+    PROVER9  = 2
+    
+    
+    LAMBDA = ['\\', '\\', '\\']
     
     #Quantifiers
-    EXISTS = ['some', 'exists']
-    ALL = ['all', 'all']
+    EXISTS = ['some', 'exists', 'exists']
+    ALL = ['all', 'all', 'all']
     
     #Punctuation
-    DOT = '.'
+    DOT = ['.', '.', ' ']
     OPEN = '('
     CLOSE = ')'
     COMMA = ','
     
     #Operations
-    NOT = ['not', '-']
-    AND = ['and', '&']
-    OR = ['or', '|']
-    IMP = ['implies', '->']
-    IFF = ['iff', '<->']
-    EQ = ['=', '=']
+    NOT = ['not', '-', '-']
+    AND = ['and', '&', '&']
+    OR = ['or', '|', '|']
+    IMP = ['implies', '->', '->']
+    IFF = ['iff', '<->', '<->']
+    EQ = ['=', '=', '=']
     
     #Collection of tokens
     BOOLS = AND + OR + IMP + IFF
     BINOPS = BOOLS + EQ
     QUANTS = EXISTS + ALL
-    PUNCT = [DOT, OPEN, CLOSE, COMMA]
+    PUNCT = [DOT[0], OPEN, CLOSE, COMMA]
     
     TOKENS = BINOPS + QUANTS + LAMBDA + PUNCT + NOT
     
@@ -579,6 +607,10 @@ class Operator: pass
 
 
 class TestSuite:
+    def __init__(self):
+        self.count = 0
+        self.failures = 0
+    
     def run(self):
         self.count = 0
         self.failures = 0
@@ -603,7 +635,7 @@ class TestSuite:
             self.failures += 1
     
     def test_parser(self):
-        n = 1
+        n = Tokens.NEW_NLTK
         print '='*20 + 'TEST PARSE' + '='*20
         self.parse_test(r'man(x)')
         self.parse_test(r'-man(x)')
@@ -642,7 +674,7 @@ class TestSuite:
         self.assert_equal(f, str(p), expected)
         
     def test_simplify(self):
-        n = 1
+        n = Tokens.NEW_NLTK
         print '='*20 + 'TEST SIMPLIFY' + '='*20
         self.simplify_test(r'\x.man(x)(john)', r'man(john)')
         self.simplify_test(r'\x y.sees(x,y)(john, mary)', r'sees(john,mary)')
@@ -673,7 +705,7 @@ class TestSuite:
         self.assert_equal(input, LogicParser().process(input), ' &  -> X - X <-> X')
     
     def test_replace(self):
-        n = 1
+        n = Tokens.NEW_NLTK
         print '='*20 + 'TEST REPLACE' + '='*20
         self.replace_test(r'man(x)', 'x', 'a', False, 'man(a)')
         self.replace_test(r'(man(x) & tall(x))', 'x', 'a', False, r'(man(a) & tall(a))')

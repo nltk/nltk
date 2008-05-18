@@ -6,7 +6,7 @@
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
-from nltk.sem.logic import ApplicationExpression, Operator, LogicParser
+from nltk.sem.logic import LogicParser, IffExpression
 import tableau
 import prover9
 import mace
@@ -70,30 +70,30 @@ def demo_drt_glue_remove_duplicates(show_example=-1):
 def demo():
     from nltk_contrib.drt import DRT
 
-    DRT.testTp_equals()
+    DRT.TestSuite().test_tp_equals()
     print '\n'
     
     lp = LogicParser()
-    a = lp.parse(r'some x.((man x) and (walks x))')
-    b = lp.parse(r'some x.((walks x) and (man x))')
-    bicond = ApplicationExpression(ApplicationExpression(Operator('iff'), a), b)
-    print "Trying to prove:\n '%s <-> %s'" % (a.infixify(), b.infixify())
+    a = lp.parse(r'some x.(man(x) and walks(x))')
+    b = lp.parse(r'some x.(walks(x) and man(x))')
+    bicond = IffExpression(a, b)
+    print "Trying to prove:\n '%s <-> %s'" % (a, b)
     print 'tableau: %s' % get_prover(bicond, prover_name='tableau').prove()
     print 'Prover9: %s' % get_prover(bicond, prover_name='Prover9').prove()
     print '\n'
     
-    demo_drt_glue_remove_duplicates()
-
     lp = LogicParser()
-    a = lp.parse(r'all x.((man x) implies (mortal x))')
-    b = lp.parse(r'(man socrates)')
-    c1 = lp.parse(r'(mortal socrates)')
-    c2 = lp.parse(r'(not (mortal socrates))')
+    a = lp.parse(r'all x.(man(x) -> mortal(x))')
+    b = lp.parse(r'man(socrates)')
+    c1 = lp.parse(r'mortal(socrates)')
+    c2 = lp.parse(r'-mortal(socrates)')
 
     print get_prover(c1, [a,b], 'prover9').prove()
     print get_prover(c2, [a,b], 'prover9').prove()
     print get_model_builder(c1, [a,b], 'mace').build_model()
     print get_model_builder(c2, [a,b], 'mace').build_model()
+
+    demo_drt_glue_remove_duplicates()
 
 if __name__ == '__main__': 
     demo()
