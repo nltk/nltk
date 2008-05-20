@@ -55,7 +55,7 @@ overall result.  Here's a list of substanitive differences:
 
 import re, math
 from nltk import defaultdict
-from api import TokenizerI
+from nltk.tokenize.api import TokenizerI
 from nltk.probability import FreqDist
 
 ######################################################################
@@ -414,8 +414,9 @@ class PunktSentenceTokenizer(TokenizerI):
         
         for i in range(len(tokens)-1):
             tok, next_tok = tokens[i], tokens[i+1]
-            typ = self.type_of_token(tok, False)
-            next_typ = self.type_of_token(next_tok, (i+1 in sentbreak_toks))
+            typ = self.type_of_token(tok, strip_final_period=False)
+            next_typ = self.type_of_token(next_tok, strip_final_period=
+                                                     (i+1 in sentbreak_toks))
             tok_is_initial = re.match(r'[A-Za-z]\.$', tokens[i])
 
             if not tok.endswith('.'):
@@ -536,7 +537,8 @@ class PunktSentenceTokenizer(TokenizerI):
         # strip off final periods.)  Also keep track of the number of
         # tokens that end in periods.
         for tok in tokens:
-            self._type_fdist.inc(self.type_of_token(tok,False))
+            typ = self.type_of_token(tok, strip_final_period=False)
+            self._type_fdist.inc(typ)
             if tok.endswith('.'):
                 self._num_period_toks += 1
         
@@ -597,7 +599,8 @@ class PunktSentenceTokenizer(TokenizerI):
 
             # Find the case-normalized type of the token.  If it's a
             # sentence-final token, strip off the period.
-            typ = self.type_of_token(token, (i in sentbreak_toks))
+            typ = self.type_of_token(token, strip_final_period=
+                                               (i in sentbreak_toks))
             
             # Update the orthographic context table.
             if self.is_upper(token[:1]) and context=='initial':
@@ -698,7 +701,8 @@ class PunktSentenceTokenizer(TokenizerI):
             if i in sentbreak_toks and i not in abbrev_toks:
                 # Find the case-normalized type of the token.  If it's
                 # a sentence-final token, strip off the period.
-                typ = self.type_of_token(tokens[i], (i in sentbreak_toks))
+                typ = self.type_of_token(tokens[i], strip_final_period=
+                                                      (i in sentbreak_toks))
                 
                 # If the type hasn't been categorized as an
                 # abbreviation already, and is sufficiently rare...
@@ -720,7 +724,8 @@ class PunktSentenceTokenizer(TokenizerI):
                     # [xx] should the check for (ii) be modified??
                     elif self.is_lower(tokens[i+1][:1]):
                         typ2 = self.type_of_token(tokens[i+1],
-                                                 (i+1 in sentbreak_toks))
+                                                  strip_final_period=
+                                                    (i+1 in sentbreak_toks))
                         typ2_ortho_context = self._ortho_context[typ2]
                         if ( (typ2_ortho_context & _ORTHO_BEG_UC) and
                              not (typ2_ortho_context & _ORTHO_MID_UC) ):
@@ -809,8 +814,9 @@ class PunktSentenceTokenizer(TokenizerI):
                  re.match('(\d+|[A-Z-a-z])\.$', tok1))):
                 # Get the types of both tokens.  If typ1 ends in a period,
                 # then strip that off.
-                typ1 = self.type_of_token(tok1, False)
-                typ2 = self.type_of_token(tok2, (i+1 in sentbreak_toks))
+                typ1 = self.type_of_token(tok1, strip_final_period=True)
+                typ2 = self.type_of_token(tok2, strip_final_period=
+                                                    (i+1 in sentbreak_toks))
                 self._collocation_fdist.inc( (typ1,typ2) )
     
     def _find_collocations(self, tokens, abbrev_toks,
@@ -849,7 +855,8 @@ class PunktSentenceTokenizer(TokenizerI):
                  # [xx] different def of ordinals here than in orig.
                  (not re.match(r'([A-Za-z]|\d+)\.$', tokens[i-1])) and
                  (re.match(r'[A-Za-z]+$', tokens[i])) ):
-                typ = self.type_of_token(tokens[i], i in sentbreak_toks)
+                typ = self.type_of_token(tokens[i], strip_final_period=
+                                                      (i in sentbreak_toks) )
                 self._sent_starter_fdist.inc(typ)
 
     def _find_sent_starters(self, tokens, sentbreak_toks, verbose):
