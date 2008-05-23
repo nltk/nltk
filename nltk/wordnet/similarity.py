@@ -136,8 +136,6 @@ def res_similarity(synset1, synset2, datafile="", verbose=False):
         between the two synsets a score of -1 is returned.
     """
 
-    _check_datafile(datafile)
-
     # TODO: Once this data has been loaded for the first time preserve it
     # in memory in some way to prevent unnecessary recomputation.
     (noun_freqs, verb_freqs) = _load_ic_data(datafile)
@@ -172,8 +170,6 @@ def jcn_similarity(synset1, synset2, datafile="", verbose=False):
     @return: A float score denoting the similarity of the two L{Synset}s.
         If no path exists between the two synsets a score of -1 is returned.
     """
-
-    _check_datafile(datafile)
 
     if synset1 == synset2:
         return inf
@@ -222,8 +218,6 @@ def lin_similarity(synset1, synset2, datafile="", verbose=False):
         score of -1 is returned.
     """
 
-    _check_datafile(datafile)
-
     # TODO: Once this data has been loaded cache it to save unnecessary recomputation.
     (noun_freqs, verb_freqs) = _load_ic_data(datafile)
 
@@ -239,6 +233,22 @@ def lin_similarity(synset1, synset2, datafile="", verbose=False):
 
 # Utility functions
 
+def common_hypernyms(synset1, synset2):
+    """
+    Find all synsets that are hypernyms of both input synsets.
+
+    @type  synset1: L{Synset}
+    @param synset1: First input synset.
+    @type  synset2: L{Synset}
+    @param synset2: Second input synset.
+    @return: The synsets that are hypernyms of both synset1 and synset2.
+    """
+
+    # can't use set operations here
+    hypernyms1 = [synset1] + list(synset1.closure(HYPERNYM))
+    hypernyms2 = [synset2] + list(synset2.closure(HYPERNYM))
+    return [s for s in hypernyms1 if s in hypernyms2]
+    
 def _lcs_by_depth(synset1, synset2, verbose=False):
     """
     Finds the least common subsumer of two synsets in a Wordnet taxonomy,
@@ -254,10 +264,7 @@ def _lcs_by_depth(synset1, synset2, verbose=False):
     subsumer = None
     max_min_path_length = -1
 
-    # can't use set operations here
-    hypernyms1 = [synset1] + list(synset1.closure(HYPERNYM))
-    hypernyms2 = [synset2] + list(synset2.closure(HYPERNYM))
-    subsumers = [s for s in hypernyms1 if s in hypernyms2]
+    subsumers = common_hypernyms(synset1, synset2)
     
     if verbose:
         print "> Subsumers1:", subsumers
@@ -318,15 +325,7 @@ def _lcs_by_content(synset1, synset2, freqs, verbose=False):
     subsumer = None
     subsumer_ic = -1
 
-#    subsumers = set(synset1.closure(HYPERNYM)) & set(synset2.closure(HYPERNYM))  -- Broken
-
-    subsumers = set()
-    for s1 in synset1.closure(HYPERNYM):
-        for s2 in synset2.closure(HYPERNYM):
-            if s1 == s2:
-                subsumers.add(s1)
-    subsumers.add(synset1)
-    subsumers.add(synset2)
+    subsumers = common_hypernyms(synset1, synset2)
 
     # For each candidate, calculate its IC value. Keep track of the candidate
     # with the highest score.
@@ -341,4 +340,24 @@ def _lcs_by_content(synset1, synset2, freqs, verbose=False):
     
     return (subsumer, subsumer_ic)
 
+# Utility functions
+
+def _load_ic_data(filename):
+    """
+    Load in some precomputed frequency distribution data from a file. It is
+    expected that this data has been stored as two pickled dicts.
+
+    TODO: Possibly place the dicts into a global variable or something so
+    that they don't have to be repeatedly loaded from disk.
+    
+    TODO: Get this to use nltk.data.find('corpora/wordnet_ic/filename').
+    This expects separate noun and verb dictionaries (not sure how they
+    are done in the file.)
+    """
+    infile = open(filename, "rb")
+    noun_freqs = pickle.load(infile)
+    verb_freqs = pickle.load(infile)
+    infile.close()
+
+    return (noun_freqs, verb_freqs)
 

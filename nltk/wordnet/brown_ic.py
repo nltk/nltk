@@ -20,54 +20,51 @@ from nltk.stem.wordnet import morphy
 from util import *
 from dictionary import N, V
 
-def substr_binary_search(item, list):
+# Perform a binary search through the list of all compounds. The
+# search necessarily accepts partial matches. The search returns
+# the compound type ('nc' for noun compound or 'vbc' for verb
+# compound) of the matched compound, or False if no match was
+# found. Recording the compound type is necessary so that the
+# correct frequency distribution can be updated later.
 
-    if not list:
+def substr_binary_search(item, data):
+    if not data:
         return None
-
     low = 0
-    high = len(list) - 1
+    high = len(data) - 1
     mid = high / 2
 
-    while list[mid].find(item) < 0:
-
-        if mid >= high or mid <= low: return False
-
-        elif list[mid] > item:
+    while data[mid].find(item) < 0:
+        if mid >= high or mid <= low:
+            return False
+        elif data[mid] > item:
             high = mid
             mid -= (high - low) / 2
-
-        elif list[mid] < item:
+        elif data[mid] < item:
             low = mid
             mid += (high - low) / 2
             
-    return list[mid].split(':')[1]
+    return data[mid].split(':')[1]
 
 def generate_compound_list(filename=None):
 
     dictionaries = [N, V]
     compound_types = ['nc', 'vbc']
 
-    if filename: outfile = open(filename, 'w')
-    else: outfile = sys.stdout
+    if filename:
+        outfile = open(filename, 'w')
+    else:
+        outfile = sys.stdout
 
     for dict, type in zip(dictionaries, compound_types):
-
         for term in dict:
             term = term.form
-            if ' ' in term: outfile.write("%s:%s\n" % (term, type))
+            if ' ' in term:
+                outfile.write("%s:%s\n" % (term, type))
 
 def read_word_list(filename):
-
-    word_list = []
-    infile = open(filename, 'r')
-
-    for line in infile:
-        line = line.rstrip()
-        word_list.append(line)
-
+    word_list = [line.rstrip() for line in open(filename, 'r')]
     word_list.sort()
-
     return word_list
 
 def get_roots(dictionary):
@@ -213,14 +210,6 @@ def brown_information_content(output_filename, compounds_filename, \
                 # Add this token to the current compound string, creating a
                 # candidate compound token that may or may not exist in Wordnet.
                 compound_token = compound[0] + ' ' + token
-
-                # Perform a binary search through the list of all compounds. The
-                # search necessarily accepts partial matches. The search returns
-                # the compound type ('nc' for noun compound or 'vbc' for verb
-                # compound) of the matched compound, or False if no match was
-                # found. Recording the compound type is necessary so that the
-                # correct frequency distribution can be updated later.
-
                 compound_tag = substr_binary_search(compound_token, compounds)
 
                 if compound_tag:
@@ -259,12 +248,10 @@ def brown_information_content(output_filename, compounds_filename, \
                     pos = "noun"
                     dictionary = N
                     freq_dist = noun_fd
-
                 elif tag in verb_tags:
                     pos = "verb"
                     dictionary = V
                     freq_dist = verb_fd
-
                 else:
                     token = None
 
@@ -272,8 +259,7 @@ def brown_information_content(output_filename, compounds_filename, \
                 # or uninflected form.
 
                 if token is not None:
-
-                    if dictionary.has_key(token):
+                    if token in dictionary:
                         uninflected_token = token
                     else:
                         uninflected_token = morphy(token, pos)
@@ -285,7 +271,7 @@ def brown_information_content(output_filename, compounds_filename, \
                 # Brown corpus (SemCor would be another story).
 
                 if uninflected_token:
-                    if dictionary.has_key(uninflected_token):
+                    if uninflected_token in dictionary:
                         for synset in dictionary[uninflected_token]:
                             freq_dist.inc(synset.offset)
 
