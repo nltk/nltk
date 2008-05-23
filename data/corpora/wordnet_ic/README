@@ -1,0 +1,134 @@
+			/WordNet-InfoContent-3.0 README
+
+This directory contains information content files created for use with 
+the WordNet::Similarity package. You can find out more about this package  
+at: http://wn-similarity.sourceforge.net
+
+These files are provided in order to save you the trouble of creating your 
+own information content files. There are two reasons you might want to do 
+take advantage of this. First, some of the corpora are not freely 
+available (BNC and Treebank). We aren't giving you the corpora here, but 
+we are giving you the information content values derived from those 
+corpora. Second, the programs that create information content can run for 
+quite a while, especially BNC.
+
+WARNING: These files are for use with WordNet 3.0.  They will not work  
+with any other version of WordNet. You can find these files for 
+other versions of WordNet at http://wn-similarity.sourceforge.net
+
+==========================================================================
+LIST OF IC FILES PROVIDED:
+
+ic-bnc-add1.dat
+ic-bnc.dat
+ic-bnc-resnik.dat
+ic-bnc-resnik-add1.dat
+
+ic-brown-add1.dat
+ic-brown.dat
+ic-brown-resnik-add1.dat
+ic-brown-resnik.dat
+
+ic-semcor-add1.dat
+ic-semcor.dat			
+
+ic-semcorraw-add1.dat
+ic-semcorraw-resnik-add1.dat
+ic-semcorraw-resnik.dat
+ic-semcorraw.dat
+
+ic-shaks-add1.dat
+ic-shaks.dat
+ic-shaks-resnik.dat
+ic-shaks-resnink-add1.dat
+
+ic-treebank-add1.dat
+ic-treebank.dat
+ic-treebank-resnik-add1.dat
+ic-treebank-resnik.dat
+
+==========================================================================
+IC FILE NAMES:
+
+The file names show the source of data and the options used to create it. 
+
+Data sources:
+
+bnc         : British National Corpus, world edition, December 2000
+	      Release, http://www.hcu.ox.ac.uk/BNC/
+
+brown       : Brown corpus, from the ICAME Collection of English 
+	      Language Corpora Second Edition, 1999, 
+	      http://www.hit.uib.no/icame/cd
+
+treebank    : Penn Treebank, from the Linguistic Data Consortium, 
+	      Release 2, CDROM, http://ldc.upenn.edu
+
+semcor	    : SemCor, this is based on the cntlist file distributed
+	      with WordNet 3.0.
+
+semcorraw   : SemCor (treated as raw text, sense tags are ignored)
+              from http://www.cs.unt.edu/~rada/downloads.html#semcor
+
+shaks       : Complete Works of Shakespeare, from Project Gutenburg
+	      ftp://sailor.gutenberg.org/pub/gutenberg/etext94/shaks12.txt
+	      included in this directory as shaks12.txt
+
+Options:
+
+resnik: a file created via "resnik counting", which means that each  
+concept associated with a word type receives an equal share of each  
+count. If there are two senses of a word xyz, then when we observe xyz
+in a corpus each of the concepts associated with each sense is updated
+by .5. In our default counting scheme, each concept received a full count  
+for each word types associated with it. Thus, in the case of xyz, each of 
+the two concepts will receive a count of 1. 
+
+add1: add 1 smoothing has been carried out. Each concept starts with 
+a count of 1 associated with it. Thus, no concepts will have 0 counts 
+associated with them.
+
+==========================================================================
+CREATING INFORMATION CONTENT FILES:
+
+The programs that generated these information content files are  
+distributed with the WordNet::Similarity Perl module. The script 
+IC-compute.sh will re-create these files for you (assuming you have
+the corpora available). 
+
+You will also need the following files:
+
+1) stoplist.txt, which is available in /samples and also included in 
+this tar ball
+
+Please note that we provided a file wn30compounds.txt, but that is 
+just for your information. As of WordNet::Similarity 2.0 the *Freq.pl 
+programs find compounds automatically now without reference to a 
+compound file list.  
+==========================================================================
+INTENDED USE OF INFORMATION CONTENT FILES
+
+You can refer to a different information content file by providing a 
+configuration file to your res, lin, or jcn measure, with the location 
+of your info content file specified. For example, suppose the following
+is contained in a file called new-lin.config: 
+
+----------------- cut here ---------------
+WordNet::Similarity::lin
+
+infocontent::/home/tpederse/MyPerlLib/WordNet/ic-brown-resnik.dat
+----------------- cut here ---------------
+
+Then, you could run similarity.pl and use that information content
+file for the lin measure rather than the default file ic-semcor.dat
+
+perl similarity.pl --type WordNet::Similarity::lin 
+	--config ./new-lin.config dog cat
+
+You could also replace the ic-semcor.dat file in your distribution by 
+renaming your file as ic-semcor.dat and putting it in the default 
+location for the info content file, typically LIB/WordNet/ic-semcor.dat,
+where LIB is the directory where Perl modules are installed.
+
+==========================================================================
+Date of Last Update: April 11, 2008 by TDP
