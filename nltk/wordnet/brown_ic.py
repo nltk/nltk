@@ -4,6 +4,7 @@
 # Author: Oliver Steele <steele@osteele.com>
 #         David Ormiston Smith <daosmith@csse.unimelb.edu.au>>
 #         Steven Bird <sb@csse.unimelb.edu.au>
+#         Jordan Boyd-Graber <jbg@cs.princeton.edu>
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
@@ -14,6 +15,8 @@ from itertools import islice
 
 from nltk.corpus import brown
 from nltk.probability import FreqDist
+from nltk.stem.wordnet import morphy
+
 from util import *
 from dictionary import N, V
 
@@ -75,14 +78,16 @@ def get_roots(dictionary):
             if len(hypernyms) == 0: roots.append(synset)
     return roots
 
-def propogate_frequencies(freq_dist, synset):
-    hyponyms = set(synset[HYPONYM]) | set(synset[INSTANCE_HYPONYM])
-    for hyponym in hyponyms:
-        freq_dist.inc(hyponym, propogate_frequencies(freq_dist, hyponym))
-    return freq_dist[synset]
+def propagate_frequencies(freq_dist, synset, count):
+    parents = set()
+    for path in synset.hypernym_paths():
+        parents = parents | set(map(lambda x: x.offset, path))
+    parents = parents - set(synset.offset)
+    for i in parents:
+        freq_dist.inc(i, count)
 
 def brown_information_content(output_filename, compounds_filename, \
-        stopwords_filename=None, smoothing=True):
+        stopwords_filename=None, smoothing=False):
 
     # A list of all the noun and verb parts of speech as recorded in the
     # Brown corpus. Currently many are ignored because the Wordnet morphy()
@@ -149,11 +154,28 @@ def brown_information_content(output_filename, compounds_filename, \
     verb_fd = FreqDist()
 
     count = 0
-    increment = 10000
+    increment = 1000
 
-    sys.stdout.write("Building initial frequency distributions")
+    # If smoothing is True perform Laplacian smoothing i.e. add 1 to each
+    # synset's frequency count.
+
+    if smoothing:
+        for term in N:
+            for sense in N[term]:
+                if noun_fd[sense.offset] == 0:
+                    noun_fd.inc(sense.offset)
+        for term in V:
+            for sense in V[term]:
+                if verb_fd[sense.offset] == 0:
+                    verb_fd.inc(sense.offset)
+
+
+    sys.stdout.write("Building initial frequency distributions...\n")
 
     for file in brown.files():
+        sys.stdout.write("\t%s/%s\n" % (file, brown.files()[-1]))
+        sys.stdout.flush()
+
         for sentence in brown.tagged_sents(file):
 
             if len(sentence) == 0:
@@ -172,7 +194,10 @@ def brown_information_content(output_filename, compounds_filename, \
             # exceed length four so the quadratic search space wouldn't be too scary).
 
             new_sentence = []
-            compound = sentence.pop(0)
+            (token, tag) = sentence.pop(0)
+            token = token.lower()
+            tag = tag.lower()
+            compound = (token, tag)
 
             # Pop (word token, PoS tag) tuples from the sentence until all words
             # have been consumed. Glue the word tokens together while they form
@@ -183,6 +208,7 @@ def brown_information_content(output_filename, compounds_filename, \
             while len(sentence) > 0:
                 (token, tag) = sentence.pop(0)
                 token = token.lower()
+                tag = tag.lower()
 
                 # Add this token to the current compound string, creating a
                 # candidate compound token that may or may not exist in Wordnet.
@@ -222,9 +248,6 @@ def brown_information_content(output_filename, compounds_filename, \
 
                 count += 1
 
-                if count % increment == 0:
-                    sys.stdout.write('.')
-
                 # Basic splitting based on the word token's POS. Later this could
                 # be further developed using the additional (now commented out)
                 # tag types and adding conditional checks to turn e.g. "you'll"
@@ -262,19 +285,11 @@ def brown_information_content(output_filename, compounds_filename, \
                 # Brown corpus (SemCor would be another story).
 
                 if uninflected_token:
-                    for synset in dictionary[uninflected_token]:
-                        freq_dist.inc(synset)
+                    if dictionary.has_key(uninflected_token):
+                        for synset in dictionary[uninflected_token]:
+                            freq_dist.inc(synset.offset)
 
-    # If smoothing is True perform Laplacian smoothing i.e. add 1 to each
-    # synset's frequency count.
-
-    if smoothing:
-        for sample in noun_fd:
-            noun_fd.inc(sample)
-        for sample in verb_fd:
-            verb_fd.inc(sample)
-
-    # Propogate the frequency counts up the taxonomy structure. Thus the
+    # Propagate the frequency counts up the taxonomy structure. Thus the
     # root node (or nodes) will have a frequency equal to the sum of all
     # of their descendent node frequencies (plus a bit extra, if the root
     # node appeared in the source text). The distribution will then adhere
@@ -282,19 +297,37 @@ def brown_information_content(output_filename, compounds_filename, \
     # have a higher information content.
 
     sys.stdout.write(" done.\n")
-    sys.stdout.write("Finding taxonomy roots...")
 
-    noun_roots = get_roots(N)
-    verb_roots = get_roots(V)
+    sys.stdout.write("Propagating frequencies up the taxonomy trees...\n")
+    sys.stdout.flush()
 
-    sys.stdout.write(" done.\n")
-    sys.stdout.write("Propogating frequencies up the taxonomy trees...")
+    # Keep track of how many synsets we need to percolate counts up for
+    synsets_done = 0
+    synsets_total = len(noun_fd) + len(verb_fd)
 
-    for root in noun_roots:
-        propogate_frequencies(noun_fd, root)
+    # We'll copy the information in noun_fd into a new distribution
+    # and percolate up the tree
+    temp = FreqDist()
+    for noun_offset in noun_fd:
+        if synsets_done % increment == 0:
+            sys.stdout.write("\tSynset %d/%d\n" % (synsets_done, synsets_total))
+            sys.stdout.flush()
+        synsets_done += 1
 
-    for root in verb_roots:
-        propogate_frequencies(verb_fd, root)
+        count = noun_fd[noun_offset]
+        propagate_frequencies(temp, N.getSynset(noun_offset), count)
+    noun_fd = temp
+
+    temp = FreqDist()
+    for verb_offset in verb_fd:
+        if synsets_done % increment == 0:
+            sys.stdout.write("\tSynset %d/%d\n" % (synsets_done, synsets_total))
+            sys.stdout.flush()
+        synsets_done += 1
+
+        count = verb_fd[verb_offset]
+        propagate_frequencies(temp, V.getSynset(verb_offset), count)
+    verb_fd = temp
 
     sys.stdout.write(" done.\n")
 
@@ -315,14 +348,15 @@ def brown_information_content(output_filename, compounds_filename, \
     # consequence that root nodes have a probability of 1 and an
     # Information Content (IC) score of 0.
 
-    root = N['entity'][0].synset
+    root = N['entity'][0]
 
     for sample in noun_fd:
-        noun_dict[sample.offset] = (noun_fd[sample], noun_fd[root])
+        root = N.getSynset(sample).hypernym_paths()[0][0]
+        noun_dict[sample] = (noun_fd[sample], noun_fd[root.offset])
 
     for sample in verb_fd:
-        root = sample.hypernym_paths()[0][0]
-        verb_dict[sample.offset] = (verb_fd[sample], verb_fd[root])
+        root = V.getSynset(sample).hypernym_paths()[0][0]
+        verb_dict[sample] = (verb_fd[sample], verb_fd[root.offset])
 
     sys.stdout.write(" done.\n")
     sys.stdout.write("Writing probability hashes to file %s..." % (output_filename))
