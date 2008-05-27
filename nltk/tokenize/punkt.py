@@ -231,6 +231,8 @@ class _PunktBaseClass(object):
     
     def __init__(self):
         self._params = PunktParameters()
+        """The collection of parameters that determines the behavior
+        of the punkt tokenizer."""
 
     #////////////////////////////////////////////////////////////
     #{ Helper Functions
@@ -416,14 +418,16 @@ class PunktTrainer(_PunktBaseClass):
         bigrams in the training data where the first word ends in a
         period.  Bigrams are encoded as tuples of word types.
         Especially common collocations are extracted from this
-        frequency distribution, and stored in L{_collocations}."""
+        frequency distribution, and stored in
+        L{_params}.L{collocations <PunktParameters._collocations>}."""
         
         self._sent_starter_fdist = FreqDist()
         """A frequency distribution giving the frequency of all words
         that occur at the training data at the beginning of a sentence
         (after the first pass of annotation).  Especially common
         sentence starters are extracted from this frequency
-        distribution, and stored in L{_sent_starters}.
+        distribution, and stored in L{_params}.L{_sent_starters
+        <PunktParameters._sent_starters>}.
         """
 
         self._sentbreak_count = 0
