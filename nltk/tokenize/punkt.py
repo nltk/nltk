@@ -55,42 +55,20 @@ _ORTHO_UC = _ORTHO_BEG_UC + _ORTHO_MID_UC + _ORTHO_UNK_UC
 _ORTHO_LC = _ORTHO_BEG_LC + _ORTHO_MID_LC + _ORTHO_UNK_LC
 """Orthogaphic context: occurs with lower case."""
 
-_C_BEG = 0
-_C_MID = 1
-_C_UNK = 2
-
-_C_NC = 0
-_C_UC = 1
-_C_LC = 2
-
-_ORTHO_MAP = (
-        (0, 0, 0),
-        (_ORTHO_BEG_UC, _ORTHO_MID_UC, _ORTHO_UNK_UC),
-        (_ORTHO_BEG_LC, _ORTHO_MID_LC, _ORTHO_UNK_LC),
-)
-"""Maps case and sentence position features to the appropriate flag."""
+_ORTHO_MAP = {
+        ('initial',  'upper'): _ORTHO_BEG_UC,
+        ('internal', 'upper'): _ORTHO_MID_UC,
+        ('unknown',  'upper'): _ORTHO_UNK_UC,
+        ('initial',  'lower'): _ORTHO_BEG_LC,
+        ('internal', 'lower'): _ORTHO_MID_LC,
+        ('unknown',  'lower'): _ORTHO_UNK_LC,
+}
+"""A map from context position and first-letter case to the
+appropriate orthographic context flag."""
 
 #} (end orthographic context constants)
 ######################################################################
-
-######################################################################
-#{ Augmented token indicies
-######################################################################
-# Since annotations on each token are stored as elements in a tuple,
-# the following are the respective indices for each element stored to
-# augment the token.
-
-_I_TOKEN = 0
-_I_PARASTART = 1
-_I_LINESTART = 2
-_I_TYPE = 3
-_I_SENTBREAK = 4
-_I_ABBR = 5
-_I_ELLIPSIS = 6
-
-#} (end augmented token indicies)
-######################################################################
-
+        
 ######################################################################
 #{ Regular expressions for annotation
 ######################################################################
@@ -99,11 +77,15 @@ _I_ELLIPSIS = 6
 _ORD_RE = r'-?[\.,]?\d[\d,\.-]*'
 _RE_ELLIPSIS = re.compile(r'\.\.+$')
 _RE_NUMERIC = re.compile(r'^'+_ORD_RE+'\.?$')
-_RE_PERIODS = re.compile(r'\.+$')
 _RE_INITIAL = re.compile(r'[^\W\d]\.$', re.UNICODE)
 _RE_INITIAL_OR_ORD = re.compile(r'('+_ORD_RE+'|[^\W\d])\.$')
 _RE_ALPHA_CHAR = re.compile(r'[^\W\d]', re.UNICODE)
 _RE_ALPHA = re.compile(r'[^\W\d]+$', re.UNICODE)
+
+_RE_BOUNDARY_REALIGNMENT = re.compile(r'["\')\]}]+?(?: |(?=--)|$)',
+        re.MULTILINE)
+"""Used to realign punctuation that should be included in a sentence although
+it follows the period (or ?, !)."""
 
 #} (end regular expressions for annotation)
 ######################################################################
@@ -176,49 +158,135 @@ class PunktParameters(object):
     """Stores data used to perform sentence boundary detection with punkt."""
 
     def __init__(self):
-        self._abbrev_types = set()
+        self.abbrev_types = set()
         """A set of word types for known abbreviations."""
         
-        self._collocations = set()
+        self.collocations = set()
         """A set of word type tuples for known common collocations
         where the first word ends in a period.  E.g., ('S.', 'Bach')
         is a common collocation in a text that discusses 'Johann
         S. Bach'.  These count as negative evidence for sentence
         boundaries."""
         
-        self._sent_starters = set()
+        self.sent_starters = set()
         """A set of word types for words that often appear at the
         beginning of sentences."""
         
-        self._ortho_context = defaultdict(int)
+        self.ortho_context = defaultdict(int)
         """A dictionary mapping word types to the set of orthographic
         contexts that word type appears in.  Contexts are represented
         by adding orthographic context flags: ..."""
 
     def clear_abbrevs(self):
-        self._abbrev_types = set()
-
-    def remove_abbrev(self, abbr):
-        self._abbrev_types.remove(abbr)
-
-    def add_abbrev(self, abbr):
-        self._abbrev_types.add(abbr)
+        self.abbrev_types = set()
 
     def clear_collocations(self):
-        self._collocations = set()
-
-    def add_collocation(self, colloc):
-        self._collocations.add(colloc)
+        self.collocations = set()
 
     def clear_sent_starters(self):
-        self._sent_starters = set()
-
-    def add_sent_starter(self, word):
-        self._sent_starters.add(word)
+        self.sent_starters = set()
 
     def add_ortho_context(self, typ, flag):
-        self._ortho_context[typ] |= flag
+        self.ortho_context[typ] |= flag
 
+######################################################################
+#{ PunktToken
+######################################################################
+
+class PunktToken(object):
+    """Stores a token of text with annotations produced during
+    sentence boundary detection."""
+
+    _properties = [
+        'parastart', 'linestart',
+        'sentbreak', 'abbr', 'ellipsis'
+    ]
+    __slots__ = ['tok', 'type'] + _properties
+
+    def __init__(self, tok, parastart=False, linestart=False):
+        self.tok = tok
+        self.type = self._get_type()
+
+        for p in self._properties:
+            setattr(self, p, None)
+        self.parastart = parastart
+        self.linestart = linestart
+
+    def _get_type(self):
+        """Returns a case-normalized representation of the token."""
+        return _RE_NUMERIC.sub('##number##', self.tok.lower())
+
+    @property
+    def type_no_period(self):
+        """
+        The type with its final period removed if it has one.
+        """
+        if len(self.type) > 1 and self.type[-1] == '.':
+            return self.type[:-1]
+        return self.type
+
+    @property
+    def type_no_sentperiod(self):
+        """
+        The type with its final period removed if it is marked as a
+        sentence break.
+        """
+        if self.sentbreak:
+            return self.type_no_period
+        return self.type
+
+    @property
+    def first_upper(self):
+        """True if the token's first character is uppercase."""
+        # Not Unicode-compliant!
+        return 'A' <= self.tok[0] <= 'Z'
+
+    @property
+    def first_lower(self):
+        """True if the token's first character is lowercase."""
+        # Not Unicode-compliant!
+        return 'a' <= self.tok[0] <= 'z'
+
+    @property
+    def first_case(self):
+        if self.first_lower:
+            return 'lower'
+        elif self.first_upper:
+            return 'upper'
+        return 'none'
+    
+    def __repr__(self):
+        """
+        A string representation of the token that can reproduce it
+        with eval(), which lists all the token's non-default
+        annotations.
+        """
+        if self.type != self.tok:
+            typestr = ' type=%s,' % repr(self.type)
+        else:
+            typestr = ''
+
+        propvals = ', '.join(
+            '%s=%s' % (p, repr(getattr(self, p)))
+            for p in self._properties
+            if getattr(self, p)
+        )
+
+        return '%s(%s,%s %s)' % (self.__class__.__name__,
+            repr(self.tok), typestr, propvals)
+
+    def __str__(self):
+        """
+        A string representation akin to that used by Kiss and Strunk.
+        """
+        res = self.tok
+        if self.abbr:
+            res += '<A>'
+        if self.ellipsis:
+            res += '<E>'
+        if self.sentbreak:
+            res += '<S>'
+        return res
 
 ######################################################################
 #{ Punkt base class
@@ -237,46 +305,6 @@ class _PunktBaseClass(object):
     #////////////////////////////////////////////////////////////
     #{ Helper Functions
     #////////////////////////////////////////////////////////////
-
-    @staticmethod
-    def type_of_token(tok):
-        """
-        Case-normalizes the given token and replaces numbers by
-        '##number##'.
-        """
-        return _RE_NUMERIC.sub('##number##', tok.lower())
-
-    @staticmethod
-    def stripped_type(aug_tok, always_strip=False):
-        """
-        Given an augmented token, strip a final period if the token is
-        marked as a sentence break, or if always_strip=True.
-        """
-        if ((always_strip or aug_tok[_I_SENTBREAK])
-            and len(aug_tok[_I_TYPE]) > 1
-            and aug_tok[_I_TYPE][-1] == '.'):
-            return aug_tok[_I_TYPE][:-1]
-        return aug_tok[_I_TYPE]
-
-    @staticmethod
-    def is_upper(c):
-        assert len(c)==1
-        return 'A' <= c <= 'Z'
-
-    @staticmethod
-    def is_lower(c):
-        assert len(c)==1
-        return 'a' <= c <= 'z'
-
-    @staticmethod
-    def char_case(c):
-        # Not Unicode-compliant!
-        assert len(c)==1
-        if 'a' <= c <= 'z':
-            return _C_LC
-        elif 'A' <= c <= 'Z':
-            return _C_UC
-        return _C_NC
 
     @staticmethod
     def pair_iter(it):
@@ -309,51 +337,19 @@ class _PunktBaseClass(object):
             if line.strip():
                 line_toks = iter(punkt_word_tokenize(line))
 
-                yield (line_toks.next(), parastart, True)
+                yield PunktToken(line_toks.next(),
+                        parastart=parastart, linestart=True)
                 parastart = False
 
                 for t in line_toks:
-                    yield (t, False, False)
+                    yield PunktToken(t)
             else:
                 parastart = True
 
-    def _augment_tokens(self, tokens):
-        """
-        Augments each given token to a format compatible with the output of
-        _tokenize_words().
-        """
-        tokens = iter(tokens)
-        first_tok = tokens.next()
-        fn = self._get_token_augmenter(first_tok)
-        yield fn(first_tok)
-        for tok in tokens:
-            yield fn(tok)
-
-    def _get_token_augmenter(self, sample_tok):
-        if type(sample_tok) != type(()):
-            # Assume tokens are plain text
-            # No paragraph or line starts can be determined
-            return lambda t: (t, False, False)
-        elif len(sample_tok) == 3:
-            # Assume tokens are (text, parastart, linestart)
-            return lambda t: t
-        elif len(sample_tok) == 2:
-            # Assume tokens are (text, parastart)
-            return lambda t: t + (False,)
-        else:
-            raise ValueError(
-                "Tokens should be plain text, or tuples of size 2-3")
 
     #////////////////////////////////////////////////////////////
     #{ Annotation Procedures
     #////////////////////////////////////////////////////////////
-
-    def _mark_types(self, tokens):
-        """
-        Augments a token with its type, as determined by type_of_token().
-        """
-        for t in tokens:
-            yield t + (self.type_of_token(t[_I_TOKEN]),)
 
     def _annotate_first_pass(self, tokens):
         """
@@ -373,27 +369,29 @@ class _PunktBaseClass(object):
           - ellipsis_toks: The indices of all ellipsis marks.
         """
         for aug_tok in tokens:
-            yield self._first_pass_annotation(aug_tok)
+            self._first_pass_annotation(aug_tok)
+            yield aug_tok
 
     def _first_pass_annotation(self, aug_tok):
         """
         Performs type-based annotation on a single token.
         """
 
-        tok = aug_tok[_I_TOKEN]
+        tok = aug_tok.tok
 
         if tok in ('?','!','.'):
-            return aug_tok + (True, False, False) # sentence break
+            aug_tok.sentbreak = True
         elif _RE_ELLIPSIS.match(tok):
-            return aug_tok + (False, False, True) # ellipsis
+            aug_tok.ellipsis = True
         elif tok.endswith('.') and not tok.endswith('..'):
-            if (tok[:-1].lower() in self._params._abbrev_types or
-                tok[:-1].lower().split('-')[-1] in self._params._abbrev_types):
-                return aug_tok + (False, True, False) # abbreviation
-            else:
-                return aug_tok + (True, False, False) # sentence break
+            if (tok[:-1].lower() in self._params.abbrev_types or
+                tok[:-1].lower().split('-')[-1] in self._params.abbrev_types):
 
-        return aug_tok + (False, False, False)
+                aug_tok.abbr = True
+            else:
+                aug_tok.sentbreak = True
+
+        return
 
 ######################################################################
 #{ Punkt Trainer
@@ -419,15 +417,15 @@ class PunktTrainer(_PunktBaseClass):
         period.  Bigrams are encoded as tuples of word types.
         Especially common collocations are extracted from this
         frequency distribution, and stored in
-        L{_params}.L{collocations <PunktParameters._collocations>}."""
+        L{_params}.L{collocations <PunktParameters.collocations>}."""
         
         self._sent_starter_fdist = FreqDist()
         """A frequency distribution giving the frequency of all words
         that occur at the training data at the beginning of a sentence
         (after the first pass of annotation).  Especially common
         sentence starters are extracted from this frequency
-        distribution, and stored in L{_params}.L{_sent_starters
-        <PunktParameters._sent_starters>}.
+        distribution, and stored in L{_params}.L{sent_starters
+        <PunktParameters.sent_starters>}.
         """
 
         self._sentbreak_count = 0
@@ -456,6 +454,11 @@ class PunktTrainer(_PunktBaseClass):
 
     ABBREV = 0.3
     """cut-off value whether a 'token' is an abbreviation"""
+
+    IGNORE_ABBREV_PENALTY = False
+    """allows the disabling of the abbreviation penalty heuristic, which
+    exponentially disadvantages words that are found at times without a
+    final period."""
 
     ABBREV_BACKOFF = 5
     """upper cut-off for Mikheev's(2002) abbreviation detection algorithm"""
@@ -511,7 +514,7 @@ class PunktTrainer(_PunktBaseClass):
         """
         Collects training data from a given list of tokens.
         """
-        self._train_tokens(self._augment_tokens(tokens), verbose)
+        self._train_tokens((PunktToken(t) for t in tokens), verbose)
         if finalize:
             self.finalize_training(verbose)
 
@@ -519,14 +522,14 @@ class PunktTrainer(_PunktBaseClass):
         self._finalized = False
 
         # Ensure tokens are a list
-        tokens = list(self._mark_types(tokens))
+        tokens = list(tokens)
 
         # Find the frequency of each case-normalized type.  (Don't
         # strip off final periods.)  Also keep track of the number of
         # tokens that end in periods.
         for aug_tok in tokens:
-            self._type_fdist.inc(aug_tok[_I_TYPE])
-            if aug_tok[_I_TOKEN].endswith('.'):
+            self._type_fdist.inc(aug_tok.type)
+            if aug_tok.tok.endswith('.'):
                 self._num_period_toks += 1
 
         # Look for new abbreviations, and for types that no longer are
@@ -534,7 +537,7 @@ class PunktTrainer(_PunktBaseClass):
         for abbr, score, is_add in self._reclassify_abbrev_types(unique_types):
             if score >= self.ABBREV:
                 if is_add:
-                    self._params.add_abbrev(abbr)
+                    self._params.abbrev_types.add(abbr)
                     if verbose:
                         print ('  Abbreviation: [%6.4f] %s' %
                                (score, abbr))
@@ -559,28 +562,26 @@ class PunktTrainer(_PunktBaseClass):
         # The remaining heuristics relate to pairs of tokens where the first
         # ends in a period.
         for aug_tok1, aug_tok2 in self.pair_iter(tokens):
-            if not aug_tok1[_I_TOKEN].endswith('.') or not aug_tok2:
+            if not aug_tok1.tok.endswith('.') or not aug_tok2:
                 continue
 
             # Is the first token a rare abbreviation?
             if self._is_rare_abbrev_type(aug_tok1, aug_tok2):
-                self._params._abbrev_types.add(
-                    self.stripped_type(aug_tok1, True))
+                self._params.abbrev_types.add(aug_tok1.type_no_period)
                 if verbose:
-                    print ('  Rare Abbrev: %s' % aug_tok1[_I_TYPE])
+                    print ('  Rare Abbrev: %s' % aug_tok1.type)
 
             # Does second token have a high likelihood of starting a sentence?
             if self._is_potential_sent_starter(aug_tok2, aug_tok1):
-                self._sent_starter_fdist.inc(aug_tok2[_I_TYPE])
+                self._sent_starter_fdist.inc(aug_tok2.type)
 
             # Is this bigram a potential collocation?
             if self._is_potential_collocation(aug_tok1, aug_tok2):
                 self._collocation_fdist.inc(
-                    (self.stripped_type(aug_tok1, True),
-                     self.stripped_type(aug_tok2)))
+                    (aug_tok1.type_no_period, aug_tok2.type_no_sentperiod))
 
     def _unique_types(self, tokens):
-        return set(aug_tok[_I_TYPE] for aug_tok in tokens)
+        return set(aug_tok.type for aug_tok in tokens)
         
     def finalize_training(self, verbose=False):
         """
@@ -589,13 +590,13 @@ class PunktTrainer(_PunktBaseClass):
         """
         self._params.clear_sent_starters()
         for typ, ll in self._find_sent_starters():
-            self._params.add_sent_starter(typ)
+            self._params.sent_starters.add(typ)
             if verbose:
                 print ('  Sent Starter: [%6.4f] %r' % (ll, typ))
 
         self._params.clear_collocations()
         for (typ1, typ2), ll in self._find_collocations():
-            self._params.add_collocation( (typ1,typ2) )
+            self._params.collocations.add( (typ1,typ2) )
             if verbose:
                 print ('  Collocation: [%6.4f] %r+%r' %
                        (ll, typ1, typ2))
@@ -618,7 +619,7 @@ class PunktTrainer(_PunktBaseClass):
             for tok, count in self._type_fdist.iteritems():
                 if count < ortho_thresh:
                     try:
-                        del self._params._ortho_context[tok]
+                        del self._params.ortho_context[tok]
                     except KeyError:
                         pass
 
@@ -657,7 +658,7 @@ class PunktTrainer(_PunktBaseClass):
         positions.
         """
         # 'initial' or 'internal' or 'unknown'
-        context = _C_MID
+        context = 'internal'
         tokens = list(tokens)
         
         for aug_tok in tokens:
@@ -665,34 +666,33 @@ class PunktTrainer(_PunktBaseClass):
             # that it's a sentence break.  But err on the side of
             # caution (by not positing a sentence break) if we just
             # saw an abbreviation.
-            if aug_tok[_I_PARASTART] and context != _C_UNK:
-                context = _C_BEG
+            if aug_tok.parastart and context != 'unknown':
+                context = 'initial'
 
             # If we're at the beginning of a line, then err on the
             # side of calling our context 'initial'.
-            if aug_tok[_I_LINESTART] and context == _C_MID:
-                context = _C_UNK
+            if aug_tok.linestart and context == 'internal':
+                context = 'unknown'
 
             # Find the case-normalized type of the token.  If it's a
             # sentence-final token, strip off the period.
-            typ = self.stripped_type(aug_tok)
-            token = aug_tok[_I_TOKEN]
+            typ = aug_tok.type_no_sentperiod
             
             # Update the orthographic context table.
-            flag = _ORTHO_MAP[self.char_case(token[:1])][context]
+            flag = _ORTHO_MAP.get((context, aug_tok.first_case), 0)
             if flag:
                 self._params.add_ortho_context(typ, flag)
 
             # Decide whether the next word is at a sentence boundary.
-            if aug_tok[_I_SENTBREAK]:
-                if not _RE_INITIAL_OR_ORD.match(token):
-                    context = _C_BEG
+            if aug_tok.sentbreak:
+                if not _RE_INITIAL_OR_ORD.match(aug_tok.tok):
+                    context = 'initial'
                 else:
-                    context = _C_UNK
-            elif aug_tok[_I_ELLIPSIS] or aug_tok[_I_ABBR]:
-                context = _C_UNK
+                    context = 'unknown'
+            elif aug_tok.ellipsis or aug_tok.abbr:
+                context = 'unknown'
             else:
-                context = _C_MID
+                context = 'internal'
         
     #////////////////////////////////////////////////////////////
     #{ Abbreviations
@@ -723,12 +723,12 @@ class PunktTrainer(_PunktBaseClass):
                 continue
             
             if typ.endswith('.'):
-                if typ in self._params._abbrev_types:
+                if typ in self._params.abbrev_types:
                     continue
                 typ = typ[:-1]
                 is_add = True
             else:
-                if typ not in self._params._abbrev_types:
+                if typ not in self._params.abbrev_types:
                     continue
                 is_add = False
 
@@ -756,7 +756,8 @@ class PunktTrainer(_PunktBaseClass):
             #   F_penalty: penalize occurances w/o a period
             f_length = math.exp(-num_nonperiods)
             f_periods = num_periods
-            f_penalty = math.pow(num_nonperiods, -count_without_period)
+            f_penalty = (int(self.IGNORE_ABBREV_PENALTY)
+                    or math.pow(num_nonperiods, -count_without_period))
             score = ll * f_length * f_periods * f_penalty
 
             yield typ, score, is_add
@@ -771,7 +772,7 @@ class PunktTrainer(_PunktBaseClass):
         tokens = (typ for typ in self._type_fdist if typ and typ.endswith('.'))
         for abbr, score, is_add in self._reclassify_abbrev_types(tokens):
             if score >= self.ABBREV:
-                self._params.add_abbrev(abbr)
+                self._params.abbrev_types.add(abbr)
 
     # This function combines the work done by the original code's
     # functions `count_orthography_context`, `get_orthography_count`,
@@ -786,23 +787,23 @@ class PunktTrainer(_PunktBaseClass):
             sometimes appears with upper case, but never occurs with
             lower case at the beginning of sentences.
         """
-        if cur_tok[_I_ABBR] or not cur_tok[_I_SENTBREAK]:
+        if cur_tok.abbr or not cur_tok.sentbreak:
             return False
 
         # Find the case-normalized type of the token.  If it's
         # a sentence-final token, strip off the period.
-        typ = self.stripped_type(cur_tok)
+        typ = cur_tok.type_no_sentperiod
         
         # Proceed only if the type hasn't been categorized as an
         # abbreviation already, and is sufficiently rare...
         count = self._type_fdist[typ] + self._type_fdist[typ[:-1]]
-        if (typ in self._params._abbrev_types or count >= self.ABBREV_BACKOFF):
+        if (typ in self._params.abbrev_types or count >= self.ABBREV_BACKOFF):
             return False
 
         # Record this token as an abbreviation if the next
         # token is a sentence-internal punctuation mark.
         # [XX] :1 or check the whole thing??
-        if next_tok[_I_TOKEN][:1] in self.INTERNAL_PUNCTUATION:
+        if next_tok.tok[:1] in self.INTERNAL_PUNCTUATION:
             return True
 
         # Record this type as an abbreviation if the next
@@ -811,11 +812,11 @@ class PunktTrainer(_PunktBaseClass):
         # and (iii) never occus with an uppercase letter
         # sentence-internally.
         # [xx] should the check for (ii) be modified??
-        elif self.is_lower(next_tok[_I_TOKEN][:1]):
-            typ2 = self.stripped_type(next_tok)
-            typ2_ortho_context = self._params._ortho_context[typ2]
-            if ( (typ2_ortho_context & _ORTHO_BEG_UC) and
-                 not (typ2_ortho_context & _ORTHO_MID_UC) ):
+        elif next_tok.first_lower:
+            typ2 = next_tok.type_no_sentperiod
+            typ2ortho_context = self._params.ortho_context[typ2]
+            if ( (typ2ortho_context & _ORTHO_BEG_UC) and
+                 not (typ2ortho_context & _ORTHO_MID_UC) ):
                 return True
 
     #////////////////////////////////////////////////////////////
@@ -890,10 +891,11 @@ class PunktTrainer(_PunktBaseClass):
         log-likelihood statistics.
         """
         return ((self.INCLUDE_ALL_COLLOCS or
-                (self.INCLUDE_ABBREV_COLLOCS and aug_tok1[_I_ABBR]) or
-                (aug_tok1[_I_SENTBREAK] and
-                    _RE_INITIAL_OR_ORD.match(aug_tok1[_I_TOKEN])))
-                and _RE_ALPHA_CHAR.search(aug_tok2[_I_TYPE]))
+                (self.INCLUDE_ABBREV_COLLOCS and aug_tok1.abbr) or
+                (aug_tok1.sentbreak and
+                    _RE_INITIAL_OR_ORD.match(aug_tok1.tok)))
+                and _RE_ALPHA_CHAR.search(aug_tok1.type)
+                and _RE_ALPHA_CHAR.search(aug_tok2.type))
 
     def _find_collocations(self):
         """
@@ -905,7 +907,7 @@ class PunktTrainer(_PunktBaseClass):
             except TypeError:
                 # types may be None after calling freq_threshold()
                 continue
-            if typ2 in self._params._sent_starters:
+            if typ2 in self._params.sent_starters:
                 continue
 
             typ1_count = self._type_fdist[typ1]+self._type_fdist[typ1+'.']
@@ -934,10 +936,10 @@ class PunktTrainer(_PunktBaseClass):
         # If a token (i) is preceeded by a sentece break that is
         # not a potential ordinal number or initial, and (ii) is
         # alphabetic, then it is a a sentence-starter.
-        return ( prev_tok[_I_SENTBREAK] and 
+        return ( prev_tok.sentbreak and 
              # [xx] different def of ordinals here than in orig.
-             (not _RE_INITIAL_OR_ORD.match(prev_tok[_I_TOKEN])) and
-             (_RE_ALPHA.match(cur_tok[_I_TOKEN])) )
+             (not _RE_INITIAL_OR_ORD.match(prev_tok.tok)) and
+             (_RE_ALPHA.match(cur_tok.tok)) )
 
     def _find_sent_starters(self):
         """
@@ -968,7 +970,7 @@ class PunktTrainer(_PunktBaseClass):
         Returns the number of sentence breaks marked in a given set of
         augmented tokens.
         """
-        return sum(1 for aug_tok in tokens if aug_tok[_I_SENTBREAK])
+        return sum(1 for aug_tok in tokens if aug_tok.sentbreak)
 
 
 ######################################################################
@@ -1008,17 +1010,25 @@ class PunktSentenceTokenizer(_PunktBaseClass,TokenizerI):
     #{ Tokenization
     #////////////////////////////////////////////////////////////
 
-    def tokenize(self, text):
+    def tokenize(self, text, realign_boundaries=False):
         """
         Given a text, returns a list of the sentences in that text.
         """
-        return list(self.sentences_from_text(text))
+        return list(self.sentences_from_text(text, realign_boundaries))
 
-    def sentences_from_text(self, text):
+    def sentences_from_text(self, text, realign_boundaries=False):
         """
         Given a text, generates the sentences in that text by only
-        testing candidate sentence breaks.
+        testing candidate sentence breaks. If realign_boundaries is
+        True, includes in the sentence closing punctuation that
+        follows the period.
         """
+        sents = self._sentences_from_text(text)
+        if realign_boundaries:
+            sents = self._realign_boundaries(sents)
+        return sents
+
+    def _sentences_from_text(self, text):
         last_break = 0
         for match in _punkt_period_context_regexp.finditer(text):
             if self.text_contains_sentbreak(match.group(0)):
@@ -1031,32 +1041,65 @@ class PunktSentenceTokenizer(_PunktBaseClass,TokenizerI):
                     last_break = match.start(2)
         yield text[last_break:]
 
+    @staticmethod
+    def _realign_boundaries(sents):
+        """
+        Attempts to realign punctuation that falls after the period but
+        should otherwise be included in the same sentence.
+
+        For example: "(Sent1.) Sent2." will otherwise be split as:
+            ["(Sent1.", ") Sent1."].
+        This method will produce:
+            ["(Sent1.)", "Sent2."].
+        """
+        realign = 0
+        for s1, s2 in self.pair_iter(sents):
+            s1 = s1[realign:]
+            if not s2:
+                if s1:
+                    yield s1
+                continue
+
+            m = _RE_BOUNDARY_REALIGNMENT.match(s2)
+            if m:
+                yield s1 + m.group(0).strip()
+                realign = m.end()
+            else:
+                realign = 0
+                if s1:
+                    yield s1
+
     def text_contains_sentbreak(self, text):
         """
         Returns True if the given text includes a sentence break.
         """
+        found = False # used to ignore last token
         for t in self._annotate_tokens(self._tokenize_words(text)):
-            if t[_I_SENTBREAK]:
+            if found:
                 return True
+            if t.sentbreak:
+                found = True
         return False
    
     def sentences_from_text_legacy(self, text):
         """
-        Given a text, generates the sentences in that text.
+        Given a text, generates the sentences in that text. Annotates all
+        tokens, rather than just those with possible sentence breaks. Should
+        produce the same results as L{sentences_from_text}.
         """
         tokens = self._annotate_tokens(self._tokenize_words(text))
         return self._build_sentence_list(text, tokens)
 
     def sentences_from_tokens(self, tokens):
         """
-        Given a set of tokens, generates lists of tokens, each list
+        Given a sequence of tokens, generates lists of tokens, each list
         corresponding to a sentence.
         """
-        tokens = iter(self._annotate_tokens(self._augment_tokens(tokens)))
+        tokens = iter(self._annotate_tokens(PunktToken(t) for t in tokens))
         sentence = []
         for aug_tok in tokens:
-            sentence.append(aug_tok[_I_TOKEN])
-            if aug_tok[_I_SENTBREAK]:
+            sentence.append(aug_tok.tok)
+            if aug_tok.sentbreak:
                 yield sentence
                 sentence = []
         if sentence:
@@ -1068,10 +1111,6 @@ class PunktSentenceTokenizer(_PunktBaseClass,TokenizerI):
         paragraph-start, returns an iterator through those tokens with full
         annotation including predicted sentence breaks.
         """
-        # Break the text into tokens; and record which token indices
-        # correspond to line starts and paragraph starts.
-        tokens = self._mark_types(tokens)
-
         # Make a preliminary pass through the document, marking likely
         # sentence breaks, abbreviations, and ellipsis tokens.
         tokens = self._annotate_first_pass(tokens)
@@ -1104,7 +1143,7 @@ class PunktSentenceTokenizer(_PunktBaseClass,TokenizerI):
         
         sentence = ''
         for aug_tok in tokens:
-            tok = aug_tok[_I_TOKEN]
+            tok = aug_tok.tok
 
             # Find the whitespace before this token, and update pos.
             ws = WS_REGEXP.match(text, pos).group()
@@ -1133,7 +1172,7 @@ class PunktSentenceTokenizer(_PunktBaseClass,TokenizerI):
                 sentence += tok
 
             # If we're at a sentence break, then start a new sentence.
-            if aug_tok[_I_SENTBREAK]:
+            if aug_tok.sentbreak:
                 yield sentence
                 sentence = ''
 
@@ -1146,17 +1185,14 @@ class PunktSentenceTokenizer(_PunktBaseClass,TokenizerI):
         print 'writing to /tmp/punkt.new...'
         out = open('/tmp/punkt.new', 'w')
         for aug_tok in tokens:
-            if aug_tok[_I_PARASTART]:
+            if aug_tok.parastart:
                 out.write('\n\n')
-            elif aug_tok[_I_LINESTART]:
+            elif aug_tok.linestart:
                 out.write('\n')
             else:
                 out.write(' ')
 
-            out.write(aug_tok[_I_TOKEN])
-            if aug_tok[_I_ABBR]: out.write('<A>')
-            if aug_tok[_I_ELLIPSIS]: out.write('<E>')
-            if aug_tok[_I_SENTBREAK]: out.write('<S>')
+            out.write(str(aug_tok))
         out.close()
 
     #////////////////////////////////////////////////////////////
@@ -1176,7 +1212,8 @@ class PunktSentenceTokenizer(_PunktBaseClass,TokenizerI):
         heuristic (4.1.2) and frequent sentence starter heuristic (4.1.3).
         """
         for t1, t2 in self.pair_iter(tokens):
-            yield self._second_pass_annotation(t1, t2)
+            self._second_pass_annotation(t1, t2)
+            yield t1
 
     def _second_pass_annotation(self, aug_tok1, aug_tok2):
         """
@@ -1185,16 +1222,16 @@ class PunktSentenceTokenizer(_PunktBaseClass,TokenizerI):
         """
         # Is it the last token? We can't do anything then.
         if not aug_tok2:
-            return aug_tok1
+            return
 
-        tok = aug_tok1[_I_TOKEN]
+        tok = aug_tok1.tok
         if not tok.endswith('.'):
             # We only care about words ending in periods.
-            return aug_tok1
+            return
 
-        typ = aug_tok1[_I_TYPE]
-        next_tok = aug_tok2[_I_TOKEN]
-        next_typ = self.stripped_type(aug_tok2)
+        typ = aug_tok1.type_no_period
+        next_tok = aug_tok2.tok
+        next_typ = aug_tok2.type_no_sentperiod
         tok_is_initial = _RE_INITIAL.match(tok)
 
         # [4.1.2. Collocational Heuristic] If there's a
@@ -1203,28 +1240,32 @@ class PunktSentenceTokenizer(_PunktBaseClass,TokenizerI):
         # a sentence break. Note that collocations with
         # frequent sentence starters as their second word are
         # excluded in training.
-        if (typ, next_typ) in self._params._collocations:
-            return aug_tok1[:_I_SENTBREAK] + (False, True) + aug_tok1[_I_ABBR+1:]
+        if (typ, next_typ) in self._params.collocations:
+            aug_tok1.sentbreak = False
+            aug_tok1.abbr = True
+            return
 
         # [4.2. Token-Based Reclassification of Abbreviations] If
         # the token is an abbreviation or an ellipsis, then decide
         # whether we should *also* classify it as a sentbreak.
-        if ( (aug_tok1[_I_ABBR] or aug_tok1[_I_ELLIPSIS]) and
+        if ( (aug_tok1.abbr or aug_tok1.ellipsis) and
              (not tok_is_initial) ):
             # [4.1.1. Orthographic Heuristic] Check if there's
             # orthogrpahic evidence about whether the next word
             # starts a sentence or not.
-            is_sent_starter = self._ortho_heuristic(next_tok, next_typ)
+            is_sent_starter = self._ortho_heuristic(aug_tok2)
             if is_sent_starter == True:
-                return aug_tok1[:_I_SENTBREAK] + (True,) + aug_tok1[_I_SENTBREAK+1:]
+                aug_tok1.sentbreak = True
+                return
 
             # [4.1.3. Frequent Sentence Starter Heruistic] If the
             # next word is capitalized, and is a member of the
             # frequent-sentence-starters list, then label tok as a
             # sentence break.
-            if ( self.is_upper(next_tok[:1]) and
-                 next_typ in self._params._sent_starters):
-                return aug_tok1[:_I_SENTBREAK] + (True,) + aug_tok1[_I_SENTBREAK+1:]
+            if ( aug_tok2.first_upper and
+                 next_typ in self._params.sent_starters):
+                aug_tok1.sentbreak = True
+                return
 
         # [4.3. Token-Based Detection of Initials and Ordinals]
         # Check if any initials or ordinals tokens that are marked
@@ -1233,34 +1274,37 @@ class PunktSentenceTokenizer(_PunktBaseClass,TokenizerI):
             # [4.1.1. Orthographic Heuristic] Check if there's
             # orthogrpahic evidence about whether the next word
             # starts a sentence or not.
-            is_sent_starter = self._ortho_heuristic(next_tok, next_typ)
+            is_sent_starter = self._ortho_heuristic(aug_tok2)
             if is_sent_starter == False:
-                return aug_tok1[:_I_SENTBREAK] + (False, True) + aug_tok1[_I_ABBR+1:]
+                aug_tok1.sentbreak = False
+                aug_tok1.abbr = True
+                return
 
             # Special heuristic for initials: if orthogrpahic
             # heuristc is unknown, and next word is always
             # capitalized, then mark as abbrev (eg: J. Bach).
             if ( is_sent_starter == 'unknown' and tok_is_initial and
-                 self.is_upper(next_tok[:1]) and
-                 not (self._params._ortho_context[next_typ] & _ORTHO_UC) ):
-                return aug_tok1[:_I_SENTBREAK] + (False, True) + aug_tok1[_I_ABBR+1:]
+                 aug_tok2.first_upper and
+                 not (self._params.ortho_context[next_typ] & _ORTHO_LC) ):
+                aug_tok1.abbr = True
+                return
 
-        return aug_tok1
+        return
 
-    def _ortho_heuristic(self, tok, typ):
+    def _ortho_heuristic(self, aug_tok):
         """
         Decide whether the given token is the first token in a sentence.
         """
         # Sentences don't start with punctuation marks:
-        if tok in self.PUNCTUATION:
+        if aug_tok.tok in self.PUNCTUATION:
             return False
 
-        ortho_context = self._params._ortho_context[typ]
+        ortho_context = self._params.ortho_context[aug_tok.type_no_sentperiod]
 
         # If the word is capitalized, occurs at least once with a
         # lower case first letter, and never occurs with an upper case
         # first letter sentence-internally, then it's a sentence starter.
-        if ( self.is_upper(tok[:1]) and
+        if ( aug_tok.first_upper and
              (ortho_context & _ORTHO_LC) and
              not (ortho_context & _ORTHO_MID_UC) ):
             return True
@@ -1269,7 +1313,7 @@ class PunktSentenceTokenizer(_PunktBaseClass,TokenizerI):
         # with upper case, or (b) we've never seen it used
         # sentence-initially with lower case, then it's not a sentence
         # starter.
-        if ( self.is_lower(tok[:1]) and
+        if ( aug_tok.first_lower and
              ((ortho_context & _ORTHO_UC) or
               not (ortho_context & _ORTHO_BEG_LC)) ):
             return False
