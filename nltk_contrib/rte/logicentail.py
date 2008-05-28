@@ -11,7 +11,7 @@ from nltk import evaluate
 from nltk import wordnet
 from nltk.stem.wordnet import WordnetStemmer
 from nltk.sem import logic
-from nltk_contrib.gluesemantics import drt_glue
+from nltk_contrib.gluesemantics.drt_glue import DrtGlue
 from nltk import inference
 import ctypes
 import threading
@@ -38,14 +38,14 @@ class RTEInferenceTagger(object):
         """
         Tag a RTEPair as to whether the hypothesis can be inferred from the text.
         """
-        
-        text_drs_list = drt_glue.parse_to_meaning(text, dependency=True)
+        glueclass = DrtGlue(dependency=True)
+        text_drs_list = glueclass.parse_to_meaning(text)
         if text_drs_list:
             text_ex = text_drs_list[0].simplify().toFol()
         else:
             if verbose: print 'ERROR: No readings were generated for the Text'
         
-        hyp_drs_list  = drt_glue.parse_to_meaning(hyp, dependency=True)
+        hyp_drs_list = glueclass.parse_to_meaning(hyp)
         if hyp_drs_list:
             hyp_ex = hyp_drs_list[0].simplify().toFol()
         else:
@@ -68,7 +68,7 @@ class RTEInferenceTagger(object):
             if verbose: 
                 print 'Generated Background Knowledge:'
                 for bk_ex in bk_exs:
-                    print bk_ex.infixify()
+                    print bk_ex
                 
             result = inference.get_prover(hyp_ex, [text_ex]+bk_exs).prove()
             if verbose: print 'prove: (T & BK) -> H: %s' % result
@@ -164,9 +164,9 @@ class RTEInferenceTagger(object):
                         hypernyms.add(hypernym_text)
                     
         ######################################
-        # synonym: all x.((synonym x) implies (word x))
-        # hypernym: all x.((word x) implies (hypernym x))
-        # synset-sister: all x.((word x) implies (not (sister x)))
+        # synonym: all x.((synonym x) -> (word x))
+        # hypernym: all x.((word x) -> (hypernym x))
+        # synset-sister: all x.((word x) -> (not (sister x)))
         ######################################            
         
         for synonym_text in synonyms:
@@ -192,13 +192,13 @@ class RTEInferenceTagger(object):
         
     def _common_BK():
         # From Recognising Textual Entailment by Bos&Markert
-        return [LogicParser().parse('all x y z.(((in x y) and (in y z)) implies (in x z))'),
-                LogicParser().parse('all e x y.(((event e) and (subj e x) and (in e y)) implies (in x y))'),
-                LogicParser().parse('all e x y.(((event e) and (obj e x) and (in e y)) implies (in x y))'),
-                LogicParser().parse('all e x y.(((event e) and (theme e x) and (in e y)) implies (in x y))'),
-                LogicParser().parse('all x y.((in x y) implies some e.((locate e) and (obj e x) and (in e y)))'),
-                LogicParser().parse('all x y.((of x y) implies some e.((have e) and (subj e y) and (obj e x)))'),
-                LogicParser().parse('all e y.(((event e) and (subj e x)) implies (by e x))')]
+        return [LogicParser().parse('all x y z.((in(x,y) & in(y,z)) -> in(x,z))'),
+                LogicParser().parse('all e x y.((event(e) & subj(e,x) & in(e,y)) -> in(x,y))'),
+                LogicParser().parse('all e x y.((event(e) & obj(e,x) & in(e,y)) -> in(x,y))'),
+                LogicParser().parse('all e x y.((event(e) & theme(e,x) & in(e,y)) -> in(x,y))'),
+                LogicParser().parse('all x y.(in(x,y) -> some e.(locate(e) & obj(e,x) & in(e,y)))'),
+                LogicParser().parse('all x y.(of(x,y) -> some e.(have(e) & subj(e,y) & obj(e,x)))'),
+                LogicParser().parse('all e y.((event(e) & subj(e,x)) -> by(e,x))')]
     
     def _create_axiom(self, word_text, word_synset, nym_text, pos, operator):
         nym_text = nym_text.split('(')[0];
@@ -209,7 +209,7 @@ class RTEInferenceTagger(object):
         word_text = word_text.replace('.', '')
         nym_text = nym_text.replace('.', '')
 
-        exp_text = 'all x.((%s x) %s (%s x))' % (word_text, operator, nym_text)
+        exp_text = 'all x.(%s(x) %s %s(x))' % (word_text, operator, nym_text)
         return (logic.LogicParser().parse(exp_text), dist)
 
     def _create_axiom_reverse(self, word_text, word_synset, nym_text, pos, operator):
@@ -221,13 +221,13 @@ class RTEInferenceTagger(object):
         word_text = word_text.replace('.', '')
         nym_text = nym_text.replace('.', '')
 
-        exp_text = 'all x.((%s x) %s (%s x))' % (nym_text, operator, word_text)
+        exp_text = 'all x.(%s(x) %s %s(x))' % (nym_text, operator, word_text)
         return (logic.LogicParser().parse(exp_text), dist)
 
     def _create_axiom_synset_sisters(self, text1, word1_synset, text2, word2_synset, pos):
         """
-        Return an expression of the form 'all x.((word x) implies (not (sister x)))'.
-        The reverse is not needed because it is equal to 'all x.((not (word x)) or (not (sister x)))'
+        Return an expression of the form 'all x.(word(x) -> (not sister(x)))'.
+        The reverse is not needed because it is equal to 'all x.((not word(x)) or (not sister(x)))'
         """
         
         text2 = text2.split('(')[0];
@@ -237,7 +237,7 @@ class RTEInferenceTagger(object):
         text1 = text1.replace('.', '')
         text2 = text2.replace('.', '')
 
-        exp_text = 'all x.((%s x) implies (not (%s x)))' % (text1, text2)
+        exp_text = 'all x.(%s(x) -> (not %s(x)))' % (text1, text2)
         return (logic.LogicParser().parse(exp_text), dist)
     
     def _parallel_prove_satisfy(self, goal=None, assumptions=[]):
@@ -292,16 +292,17 @@ def demo_inference_tagger(verbose=False):
     hyp = 'John watch an auto'
     print 'Hyp:  ', hyp
 
-#    text_ex = logic.LogicParser().parse('some e x y.((david x) and ((own e) and ((subj e x) and ((obj e y) and (car y)))))))')
-#    hyp_ex = logic.LogicParser().parse('some e x y.((david x) and ((have e) and ((subj e x) and ((obj e y) and (auto y)))))))')
+#    text_ex = logic.LogicParser().parse('exists e x y.(david(x) & own(e)  & subj(e,x) & obj(e,y) & car(y))')
+#    hyp_ex  = logic.LogicParser().parse('exists e x y.(david(x) & have(e) & subj(e,x) & obj(e,y) & auto(y))')
 
-    text_drs_list = drt_glue.parse_to_meaning(text, dependency=True, verbose=verbose)
+    glueclass = DrtGlue(dependency=True, verbose=verbose)
+    text_drs_list = glueclass.parse_to_meaning(text)
     if text_drs_list:
         text_ex = text_drs_list[0].simplify().toFol()
     else:
         print 'ERROR: No readings were be generated for the Text'
     
-    hyp_drs_list  = drt_glue.parse_to_meaning(hyp, dependency=True, verbose=verbose)
+    hyp_drs_list = glueclass.parse_to_meaning(hyp)
     if hyp_drs_list:
         hyp_ex = hyp_drs_list[0].simplify().toFol()
     else:
@@ -330,7 +331,7 @@ def demo_inference_tagger(verbose=False):
     
     print 'Generated Background Knowledge:'
     for bk_ex in bk_exs:
-        print bk_ex.infixify()
+        print bk_ex
     print ''
         
     result = inference.get_prover(hyp_ex, [text_ex]+bk_exs).prove()
@@ -370,12 +371,10 @@ def demo_inference_tagger(verbose=False):
         print 'Inconsistency -> Entailment unknown\n'
     
 def test_check_consistency():
-    a = logic.LogicParser().parse('(man j)')
-    b = logic.LogicParser().parse('(not (man j))')
-    print '%s, %s: %s' % (a.infixify(), b.infixify(), 
-                          RTEInferenceTagger().check_consistency([a,b], True))
-    print '%s, %s: %s' % (a.infixify(), a.infixify(), 
-                          RTEInferenceTagger().check_consistency([a,a], True))
+    a = logic.LogicParser().parse('man(j)')
+    b = logic.LogicParser().parse('-man(j))')
+    print '%s, %s: %s' % (a, b, RTEInferenceTagger().check_consistency([a,b], True))
+    print '%s, %s: %s' % (a, a, RTEInferenceTagger().check_consistency([a,a], True))
 
 def tag(text, hyp):
     print 'Text: ', text

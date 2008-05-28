@@ -6,23 +6,30 @@ from nltk.sem import logic
 from nltk.sem.logic import LogicParser, \
                            BooleanExpression, \
                            AndExpression, \
-                           OrExpression, \
-                           IffExpression, \
-                           EqualityExpression, \
                            ExistsExpression, \
                            AllExpression, \
                            UnexpectedTokenException
 import resolve_anaphora as RA
 
-class Expression(logic.Expression):
-    def __repr__(self):
-        return 'DRT ' + self.__class__.__name__ + ': ' + str(self)
+def unique_variable():
+    return DrtVariableExpression('z' + str(logic._counter.get()))
 
-    def draw(self):
-        DrsDrawer(self).draw()
+class AbstractDrs:
+    def __call__(self, other):
+        self.applyto(other)
+    
+    def applyto(self, other):
+        if not isinstance(other, list):
+            other = [other]
+        return DrtApplicationExpression(self, other)
+    
+    def __neg__(self):
+        return DrtNegatedExpression(self)
+    
+    def negate(self):
+        return -self
 
-class AbstractDrs(Expression):
-    def tp_equals(self, other):
+    def tp_equals(self, other, prover_name='Prover9'):
         """Pass the expression (self <-> other) to the theorem prover.   
         If the prover says it is valid, then the self and other are equal."""
         assert isinstance(other, AbstractDrs)
@@ -30,8 +37,8 @@ class AbstractDrs(Expression):
         from nltk.inference import inference
         f1 = self.simplify().toFol();
         f2 = other.simplify().toFol();
-        bicond = IffExpression(f1, f2)
-        return inference.get_prover(bicond, prover_name='tableau').prove()
+        bicond = logic.IffExpression(f1, f2)
+        return inference.get_prover(bicond, prover_name=prover_name).prove()
 
     def __add__(self, other):
         """DRS Concatenation"""
@@ -40,11 +47,14 @@ class AbstractDrs(Expression):
     def get_pronoun_token(self):
         return Tokens.PRONOUN
 
-class DRS(AbstractDrs, RA.DRS):
+    def draw(self):
+        DrsDrawer(self).draw()
+
+class DRS(AbstractDrs, logic.Expression, RA.DRS):
     """A Discourse Representation Structure."""
     def __init__(self, refs, conds):
         """
-        @param refs: C{list} of C{VariableExpression} for the discourse referents
+        @param refs: C{list} of C{DrtVariableExpression} for the discourse referents
         @param conds: C{list} of C{Expression} for the conditions
         """ 
         self.refs = refs
@@ -67,7 +77,7 @@ class DRS(AbstractDrs, RA.DRS):
             # any bound variable that appears in the expression must
             # be alpha converted to avoid a confict
             for ref in (set(self.refs) & expression.free()):
-                newvar = logic.unique_variable()
+                newvar = unique_variable()
                 i = self.refs.index(ref)
                 self = DRS(self.refs[:i]+[newvar]+self.refs[i+1:],
                            [cond.replace(ref, newvar, True) for cond in self.conds])
@@ -114,25 +124,26 @@ class DRS(AbstractDrs, RA.DRS):
         return Tokens.DRS + '([' + ','.join([str(ref) for ref in self.refs]) + \
                '],[' + ', '.join([str(cond) for cond in self.conds]) + '])'
 
-class EqualityExpression(logic.EqualityExpression, AbstractDrs, RA.EqualityExpression):
-    pass
-
-class VariableExpression(logic.VariableExpression, AbstractDrs, RA.VariableExpression):
+class DrtVariableExpression(AbstractDrs, logic.VariableExpression, RA.VariableExpression):
     def toFol(self):
         return self
     
     def get_refs(self):
         return []
 
-class NegatedExpression(logic.NegatedExpression, AbstractDrs, RA.NegatedExpression):
+class DrtNegatedExpression(AbstractDrs, logic.NegatedExpression, RA.NegatedExpression):
     def toFol(self):
         return logic.NegatedExpression(self.term.toFol())
 
-class LambdaExpression(logic.LambdaExpression, AbstractDrs, RA.LambdaExpression):
+class DrtLambdaExpression(AbstractDrs, logic.LambdaExpression, RA.LambdaExpression):
     def toFol(self):
         return logic.LambdaExpression(self.variables, self.term.toFol())
 
-class ImpExpression(logic.ImpExpression, AbstractDrs, RA.ImpExpression):
+class DrtOrExpression(AbstractDrs, logic.ImpExpression):
+    def toFol(self):
+        return logic.OrExpression(self.first.toFol(), self.second.toFol())
+
+class DrtImpExpression(AbstractDrs, logic.ImpExpression, RA.ImpExpression):
     def get_refs(self):
         return []
 
@@ -155,7 +166,15 @@ class ImpExpression(logic.ImpExpression, AbstractDrs, RA.ImpExpression):
             
         return accum
 
-class ConcatenationDRS(logic.BooleanExpression, AbstractDrs, RA.ConcatenationDRS):
+class DrtIffExpression(AbstractDrs, logic.IffExpression, RA.IffExpression):
+    def toFol(self):
+        return logic.IffExpression(self.first.toFol(), self.second.toFol())
+
+class DrtEqualityExpression(AbstractDrs, logic.EqualityExpression, RA.EqualityExpression):
+    def toFol(self):
+        return logic.EqualityExpression(self.first.toFol(), self.second.toFol())
+
+class ConcatenationDRS(AbstractDrs, logic.BooleanExpression, RA.ConcatenationDRS):
     """DRS of the form '(DRS + DRS)'"""
     def replace(self, variable, expression, replace_bound=False):
         """Replace all instances of variable v with expression E in self,
@@ -184,7 +203,7 @@ class ConcatenationDRS(logic.BooleanExpression, AbstractDrs, RA.ConcatenationDRS
         else:
             # alpha convert every ref that is free in 'expression'
             for ref in (set(self.get_refs()) & expression.free()): 
-                v = logic.unique_variable()
+                v = unique_variable()
                 first  = first.replace(ref, v, True)
                 second = second.replace(ref, v, True)
 
@@ -204,7 +223,7 @@ class ConcatenationDRS(logic.BooleanExpression, AbstractDrs, RA.ConcatenationDRS
             # For any ref that is in both 'first' and 'second'
             for ref in (set(first.refs) & set(second.refs)):
                 # alpha convert the ref in 'second' to prevent collision
-                second = second.replace(ref, logic.unique_variable(), True)
+                second = second.replace(ref, unique_variable(), True)
             
             return DRS(first.refs + second.refs, first.conds + second.conds)
         else:
@@ -216,7 +235,7 @@ class ConcatenationDRS(logic.BooleanExpression, AbstractDrs, RA.ConcatenationDRS
     def toFol(self):
         return AndExpression( self.first.toFol(), self.second.toFol() )
 
-class ApplicationExpression(logic.ApplicationExpression, AbstractDrs, RA.ApplicationExpression):
+class DrtApplicationExpression(AbstractDrs, logic.ApplicationExpression, RA.ApplicationExpression):
     def toFol(self):
         return logic.ApplicationExpression(self.function.toFol(), 
                                            [arg.toFol() for arg in self.args])
@@ -227,9 +246,9 @@ class ApplicationExpression(logic.ApplicationExpression, AbstractDrs, RA.Applica
     def __str__(self):
         function = str(self.function)
 
-        if isinstance(self.function, LambdaExpression):
-            if isinstance(self.function.term, ApplicationExpression):
-                if not isinstance(self.function.term.function, VariableExpression):
+        if isinstance(self.function, DrtLambdaExpression):
+            if isinstance(self.function.term, DrtApplicationExpression):
+                if not isinstance(self.function.term.function, DrtVariableExpression):
                     function = Tokens.OPEN + function + Tokens.CLOSE
             elif not isinstance(self.function.term, BooleanExpression) and \
                  not isinstance(self.function.term, DRS):
@@ -329,17 +348,17 @@ class DrsDrawer:
                 #the values have not been cached yet, so compute them
                 pass
         
-        if isinstance(expression, VariableExpression):
+        if isinstance(expression, DrtVariableExpression):
             factory = self._handle_VariableExpression
         elif isinstance(expression, DRS):
             factory = self._handle_DRS
-        elif isinstance(expression, NegatedExpression):
+        elif isinstance(expression, DrtNegatedExpression):
             factory = self._handle_NegatedExpression
-        elif isinstance(expression, LambdaExpression):
+        elif isinstance(expression, DrtLambdaExpression):
             factory = self._handle_LambdaExpression
         elif isinstance(expression, BooleanExpression):
             factory = self._handle_BooleanExpression
-        elif isinstance(expression, ApplicationExpression):
+        elif isinstance(expression, DrtApplicationExpression):
             factory = self._handle_ApplicationExpression
         elif isinstance(expression, PossibleAntecedents):
             factory = self._handle_PossibleAntecedents
@@ -410,8 +429,7 @@ class DrsDrawer:
         right = command(Tokens.OPEN, right, centred_string_top)[0]
         
         # Handle each arg
-        for i in range(len(expression.args)):
-            arg = expression.args[i]
+        for (i,arg) in enumerate(expression.args):
             arg_drawing_top = self._get_centered_top(y, line_height, arg._drawing_height)
             right = self._handle(arg, command, right, arg_drawing_top)[0]
             
@@ -502,7 +520,7 @@ class DrtParser(LogicParser):
         
         if tok in Tokens.NOT:
             #it's a negated expression
-            return NegatedExpression(self.parse_Expression())
+            return DrtNegatedExpression(self.parse_Expression())
         
         elif tok in Tokens.LAMBDA:
             return self.handle_lambda(tok)
@@ -553,23 +571,23 @@ class DrtParser(LogicParser):
         if op == Tokens.DRS_CONC:
             factory = ConcatenationDRS
         elif op in Tokens.OR:
-            factory = OrExpression
+            factory = DrtOrExpression
         elif op in Tokens.IMP:
-            factory = ImpExpression
+            factory = DrtImpExpression
         elif op in Tokens.IFF:
-            factory = IffExpression
+            factory = DrtIffExpression
         elif op in Tokens.EQ:
-            factory = EqualityExpression
+            factory = DrtEqualityExpression
         return factory
 
     def make_ApplicationExpression(self, function, args):
-        return ApplicationExpression(function, args)
+        return DrtApplicationExpression(function, args)
     
     def make_VariableExpression(self, name):
-        return VariableExpression(name)
+        return DrtVariableExpression(name)
     
     def make_LambdaExpression(self, variables, term):
-        return LambdaExpression(variables, term)
+        return DrtLambdaExpression(variables, term)
     
 class TestSuite(logic.TestSuite):
     def __init__(self):
@@ -628,7 +646,7 @@ class TestSuite(logic.TestSuite):
             if throw:
                 raise
             else:
-                p = e.message
+                p = e.__class__.__name__ + ': ' + e.message
         self.assert_equal(f, str(p), expected)
                     
     def test_simplify(self):
@@ -671,7 +689,7 @@ class TestSuite(logic.TestSuite):
             if throw:
                 raise
             else:
-                p = e.message
+                p = e.__class__.__name__ + ': ' + e.message
         self.assert_equal(f, str(p), expected)
     
     def test_toFol(self):
@@ -692,6 +710,10 @@ class TestSuite(logic.TestSuite):
         self.toFol_test(r'DRS([x],[man(x), -DRS([],[walks(x)])])', r'exists x.(man(x) & -walks(x))')
         self.toFol_test(r'DRS([],[(DRS([x],[man(x)]) -> DRS([],[walks(x)]))])',r'all x.(man(x) -> walks(x))')
     
+        self.toFol_test(r'DRS([x],[man(x) | walks(x)])', r'exists x.(man(x) | walks(x))')
+        self.toFol_test(r'DRS([x],[man(x) <-> walks(x)])', r'exists x.(man(x) <-> walks(x))')
+        self.toFol_test(r'P(x) + DRS([x],[walks(x)])', r'(P(x) & exists x.walks(x))')
+
     def toFol_test(self, f, expected=None, throw=False):
         if not expected:
             expected = f
@@ -701,7 +723,7 @@ class TestSuite(logic.TestSuite):
             if throw:
                 raise
             else:
-                p = e.message
+                p = e.__class__.__name__ + ': ' + e.message
         self.assert_equal(f, str(p), expected)
         
     def test_resolve_anaphora(self):
@@ -721,7 +743,7 @@ class TestSuite(logic.TestSuite):
             if throw:
                 raise
             else:
-                p = e.message
+                p = e.__class__.__name__ + ': ' + e.message
         self.assert_equal(f, str(p), expected)
 
     def test_replace(self):

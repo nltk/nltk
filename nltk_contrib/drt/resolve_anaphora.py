@@ -24,11 +24,6 @@ class DRS:
                 
         return self.__class__(self.refs, r_conds)
     
-class EqualityExpression(logic.EqualityExpression):
-    def isNullResolution(self):
-        return (isinstance(self.second, PossibleAntecedents) and not self.second) or \
-                (isinstance(self.first, PossibleAntecedents) and not self.first)
-
 class VariableExpression:
     def resolve_anaphora(self, trail=[]):
         return self
@@ -41,18 +36,30 @@ class LambdaExpression:
     def resolve_anaphora(self, trail=[]):
         return self.__class__(self.variables, self.term.resolve_anaphora(trail + [self]))
 
-class ImpExpression:
+class BooleanExpression:
+    def resolve_anaphora(self, trail=[]):
+        return self.__class__(self.first.resolve_anaphora(trail + [self]), 
+                              self.second.resolve_anaphora(trail + [self]))
+
+class OrExpression(BooleanExpression):
+    pass
+
+class ImpExpression(BooleanExpression):
     def resolve_anaphora(self, trail=[]):
         trail_addition = [self, self.first]
-        r_first = self.first.resolve_anaphora(trail + trail_addition)
-        r_second = self.second.resolve_anaphora(trail + trail_addition)
-        return self.__class__(r_first, r_second)
+        return self.__class__(self.first.resolve_anaphora(trail + trail_addition),
+                              self.second.resolve_anaphora(trail + trail_addition))
 
-class ConcatenationDRS:
-    def resolve_anaphora(self, trail=[]):
-        r_first = self.first.resolve_anaphora(trail + [self])
-        r_second = self.second.resolve_anaphora(trail + [self])
-        return self.__class__(r_first, r_second)
+class IffExpression(BooleanExpression):
+    pass
+
+class EqualityExpression(BooleanExpression, logic.EqualityExpression):
+    def isNullResolution(self):
+        return (isinstance(self.second, PossibleAntecedents) and not self.second) or \
+                (isinstance(self.first, PossibleAntecedents) and not self.first)
+
+class ConcatenationDRS(BooleanExpression):
+    pass
 
 class ApplicationExpression:
     def resolve_anaphora(self, trail=[]):

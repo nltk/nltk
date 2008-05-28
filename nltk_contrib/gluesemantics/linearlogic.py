@@ -5,895 +5,545 @@
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
+from nltk.sem import logic
+from nltk.sem.logic import UnexpectedTokenException
 from nltk.internals import Counter
 
-import glue
-import drt_glue
-
-class Error(Exception): pass
-
-class UnificationError(Exception): pass
-
-class Variable:
-    """A variable, either free or bound."""
-    
-    def __init__(self, name):
-        """
-        Create a new C{Variable}.
-
-        @type name: C{string}
-        @param name: The name of the variable.
-        """
-        self.name = name
-
-    def __eq__(self, other):
-        return self.equals(other)
-
-    def __ne__(self, other):
-        return not self.equals(other)
-
-    def equals(self, other):
-        """A comparison function."""
-        assert isinstance(other, Variable)
-        return self.name == other.name
-
-    def can_unify_with(self, other, varbindings):
-        """ Returns True if self and other are unifiable given
-            the bindings already in varbindings.
-        """
-        if not (isinstance(other, Variable) and \
-                varbindings.lookup_binding_of(self, True).name == \
-                   varbindings.lookup_binding_of(other, True).name) and \
-           not (isinstance(other, Constant) and \
-                varbindings.lookup_binding_of(self, True).name == other.name):
-               return varbindings.is_consistant_with(VariableBinding(self, other))
-        else:
-            return True
-        
-    def unify_with(self, other, varbindings):
-        """ Tries to unify self with other.  If it can, then the
-            necessary binding is added to varbindings as a side-effect.
-        """
-        if not (isinstance(other, Variable) and \
-                varbindings.lookup_binding_of(self, True).name == \
-                   varbindings.lookup_binding_of(other, True).name) and \
-           not (isinstance(other, Constant) and \
-                varbindings.lookup_binding_of(self, True).name == other.name):
-            try:
-                varbindings.append(VariableBinding(self, other))
-            except VariableBindingException:
-                raise UnificationError
-
-    def __str__(self): return self.name
-
-    def __repr__(self): return "Variable('%s')" % self.name
-
-    def __hash__(self): return hash(repr(self))
-
-class Constant:
-    """A nonlogical constant."""
-    
-    def __init__(self, name):
-        """
-        Create a new C{Constant}.
-
-        @type name: C{string}
-        @param name: The name of the constant.
-        """
-        self.name = name
-
-    def __eq__(self, other):
-        return self.equals(other)
-
-    def __ne__(self, other):
-        return not self.equals(other)
-
-    def equals(self, other):
-        """A comparison function."""
-        assert isinstance(other, Constant)
-        return self.name == other.name
-        
-    def can_unify_with(self, other, varbindings):
-        if isinstance(other, Variable) and \
-           not self.name == varbindings.lookup_binding_of(other, True).name:
-            return varbindings.is_consistant_with(VariableBinding(other, self))
-        elif isinstance(other, Constant) and self != other:
-            return False
-        else:
-            return True
-
-    def unify_with(self, other, varbindings):
-        if isinstance(other, Variable) and \
-           not self.name == varbindings.lookup_binding_of(other, True).name:
-            try:
-                varbindings.append(VariableBinding(other, self))
-            except VariableBindingException:
-                raise UnificationError
-        elif isinstance(other, Constant) and self != other:
-            raise UnificationError
-
-    def __str__(self): return self.name
-
-    def __repr__(self): return "Constant('%s')" % self.name
-
-    def __hash__(self): return hash(repr(self))
+_counter = Counter()
 
 class Expression:
-    """The abstract class of a linear logic expression."""
-    def __init__(self):
-        if self.__class__ is Expression:
-            raise NotImplementedError
-
-    def __eq__(self, other):
-        return self.equals(other)
-
-    def __ne__(self, other):
-        return not self.equals(other)
-
-    def equals(self, other):
-        """Are the two expressions equal, modulo alpha conversion?"""
-        return NotImplementedError
-
-    def variables(self):
-        """Set of all variables."""
-        raise NotImplementedError
-
-    def free(self):
-        """Set of free variables."""
-        raise NotImplementedError
-
-    def subterms(self):
-        """Set of all subterms (including self)."""
-        raise NotImplementedError
-
-
-    def replace(self, variable, expression):
-        """Replace all instances of variable v with expression E in self,
-        where v is free in self."""
-        raise NotImplementedError
-
-    def simplify(self, varbindings=[]):
-        """Evaluate the form by repeatedly applying applications."""
-        raise NotImplementedError
-
-    def compile_pos(self, fresh_index, drt=False):
-        """From Iddo Lev's PhD Dissertation p108-109"""
-        raise NotImplementedError
-
-    def compile_neg(self, fresh_index, drt=False):
-        """From Iddo Lev's PhD Dissertation p108-109"""
-        raise NotImplementedError
-
-    def skolemise(self):
-        """
-        Perform a simple Skolemisation operation.  Existential quantifiers are
-        simply dropped and all variables they introduce are renamed so that
-        they are unique.
-        """
-        return self._skolemise(set(), Counter())
-
-    def _skolemise(self, bound_vars, counter):
-        raise NotImplementedError
-
-    def __str__(self):
-        raise NotImplementedError
-
+    def applyto(self, other, other_indices=None):
+        return ApplicationExpression(self, other, other_indices)
+    
+    def __call__(self, other):
+        return self.applyto(other)
+    
     def __repr__(self):
-        raise NotImplementedError
+        return self.__class__.__name__ + ': ' + str(self)
+    
+class AtomicExpression(Expression):
+    def __init__(self, name, dependencies=None):
+        """
+        @param name: C{str} for the constant name
+        @param dependencies: C{list} of C{int} for the indices on which this atom is dependent
+        """
+        assert isinstance(name, str)
+        self.name = name
+        
+        if not dependencies:
+            dependencies = []
+        self.dependencies = dependencies
+        
+    def simplify(self, bindings=None):
+        """
+        If 'self' is bound by 'bindings', return the atomic to which it is bound.  
+        Otherwise, return self.
+        
+        @param bindings: C{BindingDict} A dictionary of bindings used to simplify
+        @return: C{AtomicExpression}
+        """
+        if bindings and self in bindings.d:
+            return bindings[self]
+        else:
+            return self
+        
+    def compile_pos(self, index_counter, glueFormulaFactory):
+        """
+        From Iddo Lev's PhD Dissertation p108-109
+        
+        @param index_counter: C{Counter} for unique indices
+        @param glueFormulaFactory: C{GlueFormula} for creating new glue formulas
+        @return: (C{Expression},C{set}) for the compiled linear logic and any newly created glue formulas
+        """
+        self.dependencies = []
+        return (self, [])
+
+    def compile_neg(self, index_counter, glueFormulaFactory):
+        """
+        From Iddo Lev's PhD Dissertation p108-109
+        
+        @param index_counter: C{Counter} for unique indices
+        @param glueFormulaFactory: C{GlueFormula} for creating new glue formulas
+        @return: (C{Expression},C{set}) for the compiled linear logic and any newly created glue formulas
+        """
+        self.dependencies = []
+        return (self, [])
+    
+    def initialize_labels(self, fstruct):
+        self.name = fstruct.initialize_label(self.name.lower())
+    
+    def __eq__(self, other):
+        return self.__class__ == other.__class__ and self.name == other.name
+        
+    def __str__(self):
+        accum = self.name
+        if self.dependencies:
+            accum += str(self.dependencies)
+        return accum
 
     def __hash__(self):
-        raise NotImplementedError
+        return hash(self.name)
 
-class VariableExpression(Expression):
-    """A variable expression which consists solely of a variable."""
-    def __init__(self, variable, dependencies=[]):
-        Expression.__init__(self)
-        assert isinstance(variable, Variable)
-        self.variable = variable
-        self.dependencies = dependencies
+class ConstantExpression(AtomicExpression):
+    def unify(self, other, bindings):
+        """
+        If 'other' is a constant, then it must be equal to 'self'.  If 'other' is a variable,
+        then it must not be bound to anything other than 'self'.
+        
+        @param other: C{AtomicExpression}
+        @param bindings: C{BindingDict} A dictionary of all current bindings
+        @return: C{BindingDict} A new combined dictionary of of 'bindings' and any new binding
+        @raise UnificationException: If 'self' and 'other' cannot be unified in the context of 'bindings'
+        """
+        assert isinstance(other, AtomicExpression)
+        if isinstance(other, ConstantExpression):
+            if self == other:
+                return bindings
+        elif isinstance(other, VariableExpression):
+            try:
+                return bindings + BindingDict([(other, self)])
+            except VariableBindingException:
+                pass
+        raise UnificationException(self, other, bindings)
 
-    def can_unify_with(self, other, varbindings):
-        if isinstance(other, VariableExpression):
-            return self.variable.can_unify_with(other.variable, varbindings)
-        elif isinstance(other, ConstantExpression):
-            return self.variable.can_unify_with(other.constant, varbindings)
-
-    def unify_with(self, other, varbindings):
+class VariableExpression(AtomicExpression):
+    def unify(self, other, bindings):
+        """
+        'self' must not be bound to anything other than 'other'.
+        
+        @param other: C{AtomicExpression}
+        @param bindings: C{BindingDict} A dictionary of all current bindings
+        @return: C{BindingDict} A new combined dictionary of of 'bindings' and the new binding
+        @raise UnificationException: If 'self' and 'other' cannot be unified in the context of 'bindings'
+        """
+        assert isinstance(other, AtomicExpression)
         try:
-            if isinstance(other, VariableExpression):
-                self.variable.unify_with(other.variable, varbindings)
-            elif isinstance(other, ConstantExpression):
-                self.variable.unify_with(other.constant, varbindings)
-        except UnificationError:
-            raise
+            return bindings + BindingDict([(self, other)])
+        except VariableBindingException:
+            raise UnificationException(self, other, bindings)
 
-    def equals(self, other):
-        if isinstance(self, VariableExpression) and \
-           isinstance(other, VariableExpression):
-            return self.variable.equals(other.variable)
-        else:
-            return False
-
-    def variables(self):
-        return set([self.variable])
-
-    def free(self):
-        return set([self.variable])
-
-    def subterms(self):
-        return set([self])
-
-    def replace(self, variable, expression):
-        if self.variable.equals(variable):
-            return expression
-        else:
-            return self
+class ImpExpression(Expression):
+    def __init__(self, antecedent, consequent):
+        """
+        @param antecedent: C{Expression} for the antecedent
+        @param consequent: C{Expression} for the consequent
+        """
+        assert isinstance(antecedent, Expression)
+        assert isinstance(consequent, Expression)
+        self.antecedent = antecedent
+        self.consequent = consequent
         
-    def simplify(self, varbindings=[]):
-        if varbindings:
-            binding = varbindings.lookup_binding_of(self.variable, True)
-            if isinstance(binding, Variable):
-                return VariableExpression(binding, self.dependencies)
-            elif isinstance(binding, Constant):
-                return ConstantExpression(binding, self.dependencies)
-            else:
-                raise Exception, 'binding (%s) is not Variable or Constant' % binding
-        else:
-            return self
-
-    def infixify(self):
-        return self
-
-    def name(self):
-        return self.variable.name
-
-    def compile_pos(self, fresh_index, drt=False):
-        """From Iddo Lev's PhD Dissertation p108-109"""
-        self.dependencies = []
-        return (self, [])
-
-    def compile_neg(self, fresh_index, drt=False):
-        """From Iddo Lev's PhD Dissertation p108-109"""
-        self.dependencies = []
-        return (self, [])
-
-    def _skolemise(self, bound_vars, counter):
-        return self
-
-    def __str__(self):
-        accum = '%s' % self.variable
-        if self.dependencies:
-            accum += '%s' % self.dependencies
-        return accum
-
-    def __repr__(self):
-        accum = "VariableExpression('%s')" % self.variable
-        if self.dependencies:
-            accum += '%s' % self.dependencies
-        return accum
-
-    def __hash__(self): return hash(repr(self))
-
-class VariableBindingError(Exception): pass
-
-class VariableBinding:
-    def __init__(self, var, arg):
-        # var must be a Variable
-        if not isinstance(var, Variable):
-            raise VariableBindingError, 'Cannot create tuple (%s, %s): first arg of tuple not a Variable' % (var, arg)
-        
-        # arg can be a Constant or Variable
-        if not (isinstance(arg, Constant) or \
-                isinstance(var, Variable)):
-            raise VariableBindingError, 'Cannot create tuple (%s, %s): second arg of tuple not a Constant or a Variable' % (var, arg)
-
-        if var.name == arg.name:
-            raise VariableBindingException, 'Cannot bind Variable %s to itself' % var
-
-        # else, it's ok
-        self.var = var
-        self.arg = arg
-
-    def __repr__(self): return "VariableBinding('%s', '%s')" % (self.var, self.arg)
-
-    def __str__(self): return "(%s, %s)" % (self.var, self.arg)
-
-class VariableBindingsList(list):
-    def append(self, vb):
-        if self.is_consistant_with(vb):
-            self += [vb]
-        else:
-            raise VariableBindingException, 'Variable of %s already bound to another value' % (vb)
-
-    def is_consistant_with(self, vb):
-        if not isinstance(vb, VariableBinding):
-            raise RuntimeError, 'Attempting to check consistancy with non-VariableBinding %s' % (vb)
-
-        # check if the variable of the binding is already in the list
-        binding = self.lookup_binding_of(vb.var, False)
-
-        ## TASK: ADD A CHECK TO ENSURE NEW VB WOULDN'T CAUSE A CYCLE
-
-        if not binding:
-            return True
-        
-        else:
-            # if it doesn't conflict with the list, i.e. vb.var is already bound to vb.arg
-            if binding.name == vb.arg.name:
-                return True
-            # else, it DOES conflict with the list
-            else:
-                return False
+    def simplify(self, bindings=None):
+        return self.__class__(self.antecedent.simplify(bindings), self.consequent.simplify(bindings))
     
-    def lookup_binding_of(self, var, return_var_if_no_match):
-        if not isinstance(var, Variable):
-            raise RuntimeError, 'Attempting to look up binding of non-Variable %s' % (var)
+    def unify(self, other, bindings):
+        """
+        Both the antecedent and consequent of 'self' and 'other' must unify.
         
-        for vb in self:
-            # if vb has the var we are looking for
-            if var == vb.var:
-                # if the arg of the binding found is itself a variable
-                if isinstance(vb.arg, Variable):
-                    # return the binding of THAT variable, or itself if it's not bound
-                    return self.lookup_binding_of(vb.arg, True)
-                else:
-                    # return the binding found since it is not a variable itself
-                    return vb.arg
-        # if no match is found in the list
-        if return_var_if_no_match:
-            return var
+        @param other: C{ImpExpression}
+        @param bindings: C{BindingDict} A dictionary of all current bindings
+        @return: C{BindingDict} A new combined dictionary of of 'bindings' and any new bindings
+        @raise UnificationException: If 'self' and 'other' cannot be unified in the context of 'bindings'
+        """
+        assert isinstance(other, ImpExpression)
+        try:
+            return bindings + self.antecedent.unify(other.antecedent, bindings) + self.consequent.unify(other.consequent, bindings)
+        except VariableBindingException:
+            raise UnificationException(self, other, bindings)
+        
+    def compile_pos(self, index_counter, glueFormulaFactory):
+        """
+        From Iddo Lev's PhD Dissertation p108-109
+        
+        @param index_counter: C{Counter} for unique indices
+        @param glueFormulaFactory: C{GlueFormula} for creating new glue formulas
+        @return: (C{Expression},C{set}) for the compiled linear logic and any newly created glue formulas
+        """
+        (a, a_new) = self.antecedent.compile_neg(index_counter, glueFormulaFactory)
+        (c, c_new) = self.consequent.compile_pos(index_counter, glueFormulaFactory)
+        return (ImpExpression(a,c), a_new + c_new)
+
+    def compile_neg(self, index_counter, glueFormulaFactory):
+        """
+        From Iddo Lev's PhD Dissertation p108-109
+        
+        @param index_counter: C{Counter} for unique indices
+        @param glueFormulaFactory: C{GlueFormula} for creating new glue formulas
+        @return: (C{Expression},C{list} of C{GlueFormula}) for the compiled linear logic and any newly created glue formulas
+        """
+        (a, a_new) = self.antecedent.compile_pos(index_counter, glueFormulaFactory)
+        (c, c_new) = self.consequent.compile_neg(index_counter, glueFormulaFactory)
+        fresh_index = index_counter.get()
+        c.dependencies.append(fresh_index)
+        new_v = glueFormulaFactory('v%s' % fresh_index, a, set([fresh_index]))
+        return (c, a_new + c_new + [new_v])
+
+    def initialize_labels(self, fstruct):
+        self.antecedent.initialize_labels(fstruct)
+        self.consequent.initialize_labels(fstruct)
+
+    def __eq__(self, other):
+        return self.__class__ == other.__class__ and \
+                self.antecedent == other.antecedent and self.consequent == other.consequent
+        
+    def __str__(self):
+        return Tokens.OPEN + str(self.antecedent) + ' ' + Tokens.IMP + \
+               ' ' + str(self.consequent) + Tokens.CLOSE
+
+    def __hash__(self):
+        return hash('%s%s%s' % (hash(self.antecedent), Tokens.IMP, hash(self.consequent)))
+
+class ApplicationExpression(Expression):
+    def __init__(self, function, argument, argument_indices=None):
+        """
+        @param function: C{Expression} for the function
+        @param argument: C{Expression} for the argument
+        @param argument_indices: C{set} for the indices of the glue formula from which the argument came
+        @raise LinearLogicApplicationException: If 'function' cannot be applied to 'argument' given 'argument_indices'.
+        """
+        function_simp = function.simplify()
+        argument_simp = argument.simplify()
+
+        assert isinstance(function_simp, ImpExpression)
+        assert isinstance(argument_simp, Expression)
+        
+        bindings = BindingDict()
+        
+        try:
+            if isinstance(function, ApplicationExpression):
+                bindings += function.bindings
+            if isinstance(argument, ApplicationExpression):
+                bindings += argument.bindings
+            bindings += function_simp.antecedent.unify(argument_simp, bindings)
+        except UnificationException, e:
+            raise LinearLogicApplicationException, 'Cannot apply %s to %s. %s' % (function_simp, argument_simp, e)
+        
+        # If you are running it on complied premises, more conditions apply
+        if argument_indices:
+            # A.dependencies of (A -o (B -o C)) must be a proper subset of argument_indices
+            if not set(function_simp.antecedent.dependencies) < argument_indices:
+                raise LinearLogicApplicationException, 'Dependencies unfulfilled when attempting to apply Linear Logic formula %s to %s' % (function_simp, argument_simp)
+            if set(function_simp.antecedent.dependencies) == argument_indices:
+                raise LinearLogicApplicationException, 'Dependencies not a proper subset of indices when attempting to apply Linear Logic formula %s to %s' % (function_simp, argument_simp)
+
+        self.function = function
+        self.argument = argument
+        self.bindings = bindings
+
+    def simplify(self, bindings=None):
+        """
+        Since function is an implication, return its consequent.  There should be 
+        no need to check that the application is valid since the checking is done 
+        by the constructor.
+        
+        @param bindings: C{BindingDict} A dictionary of bindings used to simplify
+        @return: C{Expression}
+        """
+        if not bindings:
+            bindings = self.bindings
+        
+        return self.function.simplify(bindings).consequent
+        
+    def __eq__(self, other):
+        return self.__class__ == other.__class__ and \
+                self.function == other.function and self.argument == other.argument
+        
+    def __str__(self):
+        return str(self.function) + Tokens.OPEN + str(self.argument) + Tokens.CLOSE
+
+    def __hash__(self):
+        return hash('%s%s%s' % (hash(self.antecedent), Tokens.OPEN, hash(self.consequent)))
+
+class BindingDict:
+    def __init__(self, binding_list=None):
+        """
+        @param binding_list: C{list} of (C{VariableExpression}, C{AtomicExpression}) to initialize the dictionary
+        """
+        self.d = {}
+
+        if binding_list:
+            for (v, b) in binding_list:
+                self[v] = b
+    
+    def __setitem__(self, variable, binding):
+        """
+        A binding is consistent with the dict if its variable is not already bound, OR if its 
+        variable is already bound to its argument.
+        
+        @param variable: C{VariableExpression} The variable bind
+        @param binding: C{AtomicExpression} The atomic to which 'variable' should be bound
+        @raise VariableBindingException: If the variable cannot be bound in this dictionary
+        """
+        assert isinstance(variable, VariableExpression)
+        assert isinstance(binding, AtomicExpression) 
+        
+        assert variable != binding
+        
+        try:
+            existing = self.d[variable]
+        except KeyError:
+            existing = None
+            
+        if not existing or binding == existing:
+            self.d[variable] = binding
         else:
-            return None
+            raise VariableBindingException, 'Variable %s already bound to another value' % (variable)
+
+    def __getitem__(self, variable):
+        """
+        Return the expression to which 'variable' is bound
+        """
+        assert isinstance(variable, AtomicExpression)
+
+        intermediate = self.d[variable]
+        while intermediate:
+            try:
+                intermediate = self.d[intermediate]
+            except KeyError:
+                return intermediate
 
     def __add__(self, other):
+        """
+        @param other: C{BindingDict} The dict with which to combine self
+        @return: C{BindingDict} A new dict containing all the elements of both parameters
+        @raise VariableBindingException: If the parameter dictionaries are not consistent with each other
+        """
         try:
-            l = VariableBindingsList()
-            for vb in self:
-                l.append(vb)
-            for vb in other:
-                l.append(vb)
-            return l
+            combined = BindingDict()
+            for v in self.d:
+                combined[v] = self.d[v]
+            for v in other.d:
+                combined[v] = other.d[v]
+            return combined
         except VariableBindingException:
             raise VariableBindingException, 'Attempting to add two contradicting VariableBindingsLists'
 
     def __str__(self):
-        accum = '['
-        first = True
-        for vb in self:
-            if first:
-                first = False
-            else:
-                accum += ', '
-            accum += vb.__str__()
-        return accum + ']'
+        return '{' + ', '.join(['%s: %s' % (v, self.d[v]) for v in self.d]) + '}'
 
     def __repr__(self):
-        return self.__str__()
+        return 'BindingDict: ' + str(self)
             
-                    
 class VariableBindingException(Exception): pass
-                
-class ApplicationExpression(Expression):
-    """An application expression: (M N)."""
-    def __init__(self, first=None, second=None, seconds_indicies=set([])):
-        Expression.__init__(self)
 
-        if first:
-            first_simp = first.simplify()
-            second_simp = second.simplify()
-            
-            try:
-                # create a NEW, combined variable bindings list
-                self.varbindings = VariableBindingsList()
+class UnificationException(Exception): 
+    def __init__(self, a, b, bindings):
+        Exception.__init__(self, 'Cannot unify %s with %s given %s' % (a, b, bindings))
 
-                # if first is a type that has a list of variable bindings
-                if isinstance(first, ApplicationExpression):
-                    for varbind in first.varbindings:
-                        self.varbindings.append(varbind)
+class LinearLogicApplicationException(Exception): pass
 
-                # if second is a type that has a list of variable bindings
-                if isinstance(second, ApplicationExpression):
-                    for varbind in second.varbindings:
-                        self.varbindings.append(varbind)
-            
-            except VariableBindingException:
-                raise LinearLogicApplicationError, \
-                      'Attempting to apply Linear Logic formula %s to %s' % \
-                       (first_simp.infixify(), second_simp.infixify())
-
-            try:
-                if isinstance(first_simp, ApplicationExpression) and \
-                   isinstance(first_simp.first, ApplicationExpression) and \
-                   isinstance(first_simp.first.first, Operator) and \
-                   first_simp.op == Parser.IMPLIES:
-                        first_simp.first.second.unify_with(second_simp, self.varbindings)
-
-                        # If you are running it on complied premises, more conditions apply
-                        if seconds_indicies:
-                            # A.dependencies of (A -o (B -o C)) must be a proper subset of seconds_indicies
-                            if not set(first_simp.first.second.dependencies).issubset(seconds_indicies):
-                                raise LinearLogicApplicationError, \
-                                      'Dependencies unfulfilled when attempting to apply Linear Logic formula %s to %s' % (first_simp, second_simp)
-                            if set(first_simp.first.second.dependencies) == seconds_indicies:
-                                raise LinearLogicApplicationError, \
-                                      'Dependencies not a proper subset of indicies when attempting to apply Linear Logic formula %s to %s' % (first_simp, second_simp)
-
-            except UnificationError:
-                # self is of the form is '(((-> A) B) C)' a.k.a. '((A -> B) C)'
-                #   where A!=C, meaning that this is not a valid application
-                raise LinearLogicApplicationError, \
-                      'Attempting to apply Linear Logic formula %s to %s' % (first_simp, second_simp)
-
-            # else, it's ok
-            assert isinstance(first, Expression)
-            assert isinstance(second, Expression)
-            self.first = first
-            self.second = second
-
-    def can_unify_with(self, other, varbindings):
-        if self.__class__ == other.__class__:
-            return self.first.can_unify_with(other.first, varbindings) and \
-                   self.second.can_unify_with(other.second, varbindings)
-        else:
-            return False
-
-    def unify_with(self, other, varbindings):
-        if self.__class__ == other.__class__:
-            try:
-                self.first.unify_with(other.first, varbindings)
-                self.second.unify_with(other.second, varbindings)
-            except UnificationError:
-                raise
-        else:
-            raise UnificationError
-
-    def applyto(self, arg, seconds_indicies=set([])):
-        return ApplicationExpression(self, arg, seconds_indicies)
-
-    def equals(self, other):
-        if self.__class__ == other.__class__:
-            return self.first.equals(other.first) and \
-                self.second.equals(other.second)
-        else:
-            return False
-
-    def variables(self):
-        return self.first.variables().union(self.second.variables())
-
-    def free(self):
-        return self.first.free().union(self.second.free())
-
-    def _functor(self):
-        if isinstance(self.first, ApplicationExpression):
-            return self.first._functor()
-        else:
-            return self.first
-
-    fun = property(_functor,
-                   doc="Every ApplicationExpression has a functor.")
-
-
-    def _operator(self):
-        functor = self._functor()
-        if isinstance(functor, Operator):
-            return str(functor)
-        else: 
-            raise AttributeError
-
-    op = property(_operator,
-                  doc="Only some ApplicationExpressions have operators." )
-
-    def _arglist(self):
-        """Uncurry the argument list."""
-        arglist = [str(self.second)]
-        if isinstance(self.first, ApplicationExpression):
-            arglist.extend(self.first._arglist())
-        return arglist
-
-    def _args(self):
-        arglist = self._arglist()
-        arglist.reverse()
-        return arglist
-
-    args = property(_args,
-                   doc="Every ApplicationExpression has args.")
-
-    def subterms(self):
-        first = self.first.subterms()
-
-        second = self.second.subterms()
-        return first.union(second).union(set([self]))
-
-    def replace(self, variable, expression):
-        return self.__class__(self.first.replace(variable, expression),\
-                              self.second.replace(variable, expression))
-
-    def initialize_labels(self, fstruct):
-        if isinstance(self.first, ApplicationExpression):
-            self.first.initialize_labels(fstruct)
-        elif isinstance(self.first, ConstantExpression) and not isinstance(self.first, Operator):
-            new_label = fstruct.initialize_label(self.first.constant.name.lower())
-            if new_label[0].isupper():
-                self.first = VariableExpression(Variable(new_label))
-            else:
-                self.first = ConstantExpression(Constant(new_label))
-        elif isinstance(self.first, VariableExpression):
-            new_label = fstruct.initialize_label(self.first.variable.name.lower())
-            if new_label[0].isupper():
-                self.first = VariableExpression(Variable(new_label))
-            else:
-                self.first = ConstantExpression(Constant(new_label))
-
-        if isinstance(self.second, ApplicationExpression):
-            self.second.initialize_labels(fstruct)
-        elif isinstance(self.second, ConstantExpression):
-            new_label = fstruct.initialize_label(self.second.constant.name.lower())
-            if new_label[0].isupper():
-                self.second = VariableExpression(Variable(new_label))
-            else:
-                self.second = ConstantExpression(Constant(new_label))
-        elif isinstance(self.second, VariableExpression):
-            new_label = fstruct.initialize_label(self.second.variable.name.lower())
-            if new_label[0].isupper():
-                self.second = VariableExpression(Variable(new_label))
-            else:
-                self.second = ConstantExpression(Constant(new_label))
-                            
-    def simplify(self, varbindings_input=None):
-        if varbindings_input is None:
-            first = self.first.simplify(self.varbindings)
-            second = self.second.simplify(self.varbindings)
-        else:
-            first = self.first.simplify(varbindings_input)
-            second = self.second.simplify(varbindings_input)
-
-        # if first=(A -o B), then second=A (because of the processing in __init__)
-        #   so, return B
-        if isinstance(first, ApplicationExpression) and \
-           isinstance(first.first, ApplicationExpression) and \
-           first.op == Parser.IMPLIES:
-            # Reduce Modus Ponens
-            return first.second
-        else:
-            return self.__class__(first, second)
-
-    def infixify(self):
-        first = self.first.infixify()
-        second = self.second.infixify()
-        if isinstance(first, Operator):
-            ret_val = self.__class__(second, first)
-        else:
-            ret_val = self.__class__()
-            ret_val.first = first
-            ret_val.second = second
-        ret_val.varbindings = self.varbindings
-        return ret_val
-
-    def compile_pos(self, fresh_index, drt=False):
-        """From Iddo Lev's PhD Dissertation p108-109"""
-        # ((-o A) B)
-        assert isinstance(self.first, ApplicationExpression) and \
-               self.first.op == Parser.IMPLIES
-        second_clausified = self.second.compile_pos(fresh_index, drt)
-        first_clausified  = self.first.second.compile_neg(fresh_index, drt)
-        assert isinstance(first_clausified[0], ConstantExpression) or \
-               isinstance(first_clausified[0], VariableExpression)
-        return (ApplicationExpression(ApplicationExpression(Operator(Parser.IMPLIES),first_clausified[0]),second_clausified[0]), \
-                first_clausified[1]+second_clausified[1])
-
-    def compile_neg(self, fresh_index, drt=False):
-        """From Iddo Lev's PhD Dissertation p108-109"""
-
-        # ((-o A) B)
-        assert isinstance(self.first, ApplicationExpression) and \
-               self.first.op == Parser.IMPLIES
-        second_clausified = self.second.compile_neg(fresh_index, drt)
-        assert isinstance(second_clausified[0], ConstantExpression) or \
-               isinstance(second_clausified[0], VariableExpression)
-        first_clausified  = self.first.second.compile_pos(fresh_index, drt)
-        second_clausified[0].dependencies.append(fresh_index[0])
-
-        if drt:
-            new_gf = drt_glue.GlueFormula('v%s' % fresh_index[0], first_clausified[0], set([fresh_index[0]]))
-        else:
-            new_gf = glue.GlueFormula('v%s' % fresh_index[0], first_clausified[0], set([fresh_index[0]]))
-        fresh_index[0]+=1
-        return (second_clausified[0],
-                [new_gf]+first_clausified[1]+second_clausified[1])
-
-    def _skolemise(self, bound_vars, counter):
-        first = self.first._skolemise(bound_vars, counter)
-        second = self.second._skolemise(bound_vars, counter)
-        return self.__class__(first, second)
-
-    def __str__(self, print_varbindings=True):
-        # Print ((M N) P) as (M N P).
-        strFirst = str(self.first)
-        if isinstance(self.first, ApplicationExpression):
-            if not isinstance(self.second, Operator):
-                strFirst = strFirst[1:-1]
-        return_str = '(%s %s)' % (strFirst, self.second)
-        if self.varbindings != []:
-            return_str += ' ['
-            first = True
-            for varbind in self.varbindings:
-                if first:
-                    first = False
-                else:
-                    return_str += ', '
-                return_str += varbind.__str__()
-            return_str += ']'
-        return return_str
-
-    def __repr__(self): return "ApplicationExpression('%s', '%s') %s" % (self.first, self.second, self.varbindings)
-
-    def __hash__(self): return hash(repr(self))
-
-class ConstantExpression(Expression):
-    """A constant expression, consisting solely of a constant."""
-    def __init__(self, constant, dependencies=[]):
-        Expression.__init__(self)
-        assert isinstance(constant, Constant)
-        self.constant = constant
-        self.dependencies = dependencies
-
-    def can_unify_with(self, other, varbindings):
-        if isinstance(other, VariableExpression):
-            return self.constant.can_unify_with(other.variable, varbindings)
-        elif isinstance(other, ConstantExpression):
-            return self.constant.can_unify_with(other.constant, varbindings)
-        else:
-            raise Exception, '%s is neither a VariableExpression or a ConstantExpression' % other.__repr__()
-
-    def unify_with(self, other, varbindings):
-        try:
-            if isinstance(other, VariableExpression):
-                self.constant.unify_with(other.variable, varbindings)
-            elif isinstance(other, ConstantExpression):
-                self.constant.unify_with(other.constant, varbindings)
-            else:
-                raise Exception, '%s is neither a VariableExpression or a ConstantExpression' % other.__repr__()
-        except UnificationError:
-            raise
-
-    def equals(self, other):
-        if self.__class__ == other.__class__:
-            return self.constant.equals(other.constant)
-        else:
-            return False
-
-    def variables(self):
-        return set()
-
-    def free(self):
-        return set()
-
-    def subterms(self):
-        return set([self])
-
-    def replace(self, variable, expression):
-        return self
-        
-    def simplify(self, varbindings=[]):
-        return self
-
-    def infixify(self):
-        return self
-
-    def name(self):
-        return self.constant.name
-
-    def _skolemise(self, bound_vars, counter):
-        return self
-
-    def compile_pos(self, fresh_index, drt=False):
-        """From Iddo Lev's PhD Dissertation p108-109"""
-        self.dependencies = []
-        return (self, [])
-
-    def compile_neg(self, fresh_index, drt=False):
-        """From Iddo Lev's PhD Dissertation p108-109"""
-        self.dependencies = []
-        return (self, [])
-
-    def __str__(self):
-        accum = '%s' % self.constant
-        if self.dependencies:
-            accum += '%s' % self.dependencies
-        return accum
-
-    def __repr__(self):
-        accum = "ConstantExpression('%s')" % self.constant
-        if self.dependencies:
-            accum += '%s' % self.dependencies
-        return accum
-
-    def __hash__(self): return hash(repr(self))
-
-
-class Operator(ConstantExpression):
-    """
-    A boolean operator, such as 'not' or 'and', or the equality
-    relation ('=').
-    """
-    def __init__(self, operator):
-        Expression.__init__(self)
-        assert operator in Parser.OPS
-        self.constant = operator
-        self.operator = operator
-
-    def can_unify_with(self, other, varbindings):
-        return (isinstance(other, Operator) and self == other)
-
-    def unify_with(self, other, varbindings):
-        if not (isinstance(other, Operator) and self == other):
-            raise UnificationError
-
-    def equals(self, other):
-        if self.__class__ == other.__class__:
-            return self.constant == other.constant
-        else:
-            return False
-
-    def simplify(self, varbindings=[]):
-        return self
-
-    def compile_pos(self, fresh_index, drt=False):
-        """From Iddo Lev's PhD Dissertation p108-109"""
-        raise NotImplementedError
-
-    def compile_neg(self, fresh_index, drt=False):
-        """From Iddo Lev's PhD Dissertation p108-109"""
-        raise NotImplementedError
-
-    def __str__(self): return '%s' % self.operator
-
-    def __repr__(self): return "Operator('%s')" % self.operator
-
-class LinearLogicApplicationError(RuntimeError): pass
-
-class Parser:
-    """Linear Logic Expression Parser."""
-    
-    # Tokens.
+class Tokens:
+    #Punctuation
     OPEN = '('
     CLOSE = ')'
-    IMPLIES = '-o'
-    BOOL = [IMPLIES]
-    OPS = BOOL
+    
+    #Operations
+    IMP = '-o'
+    
+    PUNCT = [OPEN, CLOSE]
+    TOKENS = PUNCT + [IMP] 
 
-    def __init__(self, data=None, constants=None):
-        if data is not None:
-            self.buffer = data
-            self.process()
-        else:
-            self.buffer = ''
-        if constants is not None:
-            self.constants = constants
-        else:
-            self.constants = []
-        
-
-    def feed(self, data):
-        """Feed another batch of data to the parser."""
-        self.buffer += data
-        self.process()
-
-    def parse(self, data):
-        """
-        Provides a method similar to other NLTK parsers.
-
-        @type data: str
-        @returns: a parsed Expression
-        """
-        self.feed(data)
-        result = self.next()
-        return result
-
-    def process(self):
-        """Process the waiting stream to make it trivial to parse."""
-        self.buffer = self.buffer.replace('\t', ' ')
-        self.buffer = self.buffer.replace('\n', ' ')
-        self.buffer = self.buffer.replace('(', ' ( ')
-        self.buffer = self.buffer.replace(')', ' ) ')
-        for op in Parser.OPS:
-            self.buffer = self.buffer.replace(op, ' %s ' % op)
-
-    def token(self, destructive=1):
-        """Get the next waiting token.  The destructive flag indicates
-        whether the token will be removed from the buffer; setting it to
-        0 gives lookahead capability."""
-        if self.buffer == '':
-            raise Error, "end of stream"
-        tok = None
-        buffer = self.buffer
-        while not tok:
-            seq = buffer.split(' ', 1)
-            if len(seq) == 1:
-                tok, buffer = seq[0], ''
-            else:
-                assert len(seq) == 2
-                tok, buffer = seq
-            if tok:
-                if destructive:
-                    self.buffer = buffer
-                return tok
-        assert 0 # control never gets here
-        return None
-
-    def next(self):
+class LinearLogicParser(logic.LogicParser):
+    """A linear logic expression parser."""
+    
+    def get_all_symbols(self):
+        return Tokens.TOKENS
+    
+    def parse_Expression(self):
         """Parse the next complete expression from the stream and return it."""
         tok = self.token()
         
-        if tok == Parser.OPEN:
-            # Expression is an application expression: (M N)
-            first = self.next()
-            second = self.next()
-            exps = []
-            while self.token(0) != Parser.CLOSE:
-                # Support expressions like: (M N P) == ((M N) P)
-                exps.append(self.next())
-            tok = self.token() # swallow the close token
-            assert tok == Parser.CLOSE
-            if isinstance(second, Operator):
-                accum = self.make_ApplicationExpression(second, first)
-            else:
-                accum = self.make_ApplicationExpression(first, second)
-            while exps:
-                exp, exps = exps[0], exps[1:]
-                accum = self.make_ApplicationExpression(accum, exp)
-            return accum
-
-        elif tok in self.constants:
-            # Expression is a simple constant expression: a
-            return ConstantExpression(Constant(tok))
-
-        elif tok in Parser.OPS:
-            # Expression is a boolean operator or the equality symbol
-            return Operator(tok)
-
+        if tok not in Tokens.TOKENS:
+            return self.handle_variable(tok)
+        
+        elif tok == Tokens.OPEN:
+            return self.handle_open(tok)
+        
         else:
-            # If the token is not punctuation or an operator
-            if tok not in [Parser.OPEN, Parser.CLOSE] and \
-               tok not in Parser.BOOL:
-                if tok[0].isupper():
-                    # A variable is a value that starts with a capital letter
-                    return VariableExpression(Variable(tok))
-                else:
-                    # A constant is a value that starts with a lowercase letter
-                    return ConstantExpression(Constant(tok))
+            raise UnexpectedTokenException(tok)
+     
+    def get_BooleanExpression_factory(self):
+        if self.token(0) == Tokens.IMP:
+            return ImpExpression
+        else:
+            return None
+
+    def attempt_ApplicationExpression(self, expression):
+        """Attempt to make an application expression.  If the next tokens 
+        are an argument in parens, then the argument expression is a
+        function being applied to the arguments.  Otherwise, return the
+        argument expression."""
+        if self.inRange(0) and self.token(0) == Tokens.OPEN:
+            self.token() #swallow then open paren
+            argument = self.parse_Expression()
+            self.assertToken(self.token(), Tokens.CLOSE)
+            return ApplicationExpression(expression, argument, None) 
+        else:
+            return expression
+    
+    def make_VariableExpression(self, name):
+        if name[0].isupper():
+            return VariableExpression(name)
+        else:
+            return ConstantExpression(name)
+
+class TestSuite(logic.TestSuite):
+    def __init__(self):
+        self.count = 0
+        self.failures = 0
+    
+    def run(self):
+        self.count = 0
+        self.failures = 0
+        
+        self.test_parser()
+        self.test_simplify()
+        self.test_BindingDict()
+        self.test_unifiy()
+        self.test_compile()
+        
+        print '='*55
+        print 'Tests:    %s' % self.count
+        print 'Failures: %s' % self.failures
+
+    def test_parser(self):
+        print '='*20 + 'TEST PARSE' + '='*20
+        self.parse_test(r'f')
+        self.parse_test(r'(g -o f)')
+        self.parse_test(r'(g -o (h -o f))')
+        self.parse_test(r'((g -o G) -o G)')
+        self.parse_test(r'(g -o f)(g)')
+        self.parse_test(r'((g -o G) -o G)((g -o f))')
+
+    def parse_test(self, f, expected=None, throw=False):
+        if not expected:
+            expected = f
+        try:
+            p = LinearLogicParser().parse(f)
+        except Exception, e:
+            if throw:
+                raise
             else:
-                raise Error, "parse error, unexpected token: %s" % tok
-    
-    # This is intended to be overridden, so that you can derive a Parser class
-    # that constructs expressions using your subclasses.  So far we only need
-    # to overridde ApplicationExpression, but the same thing could be done for
-    # other expression types.
-    def make_ApplicationExpression(self, first, second):
-        return ApplicationExpression(first, second)
+                p = e.__class__.__name__ + ': ' + e.message
+        self.assert_equal(f, str(p), expected)
 
-def demo():
-    llp = Parser()
-    p = llp.parse('p')
-    p_q = llp.parse('(p -o q)')
-    print p_q
-    print p_q.infixify()
-    q = p_q.applyto(p)
-    print q.__repr__()
-    print q.simplify().infixify()
-    
-    print ''
+    def test_simplify(self):
+        print '='*20 + 'TEST SIMPLIFY' + '='*20
+        self.simplify_test(r'f', r'f')
+        self.simplify_test(r'(g -o f)', r'(g -o f)')
+        self.simplify_test(r'((g -o G) -o G)', r'((g -o G) -o G)')
+        self.simplify_test(r'(g -o f)(g)', r'f')
+        self.simplify_test(r'(g -o f)(f)', 'LinearLogicApplicationException: Cannot apply (g -o f) to f. Cannot unify g with f given {}')
+        self.simplify_test(r'(G -o f)(g)', r'f')
+        self.simplify_test(r'((g -o G) -o G)((g -o f))', r'f')
 
-    gf = llp.parse('(g -o f)')
-    gGG = llp.parse('((g -o G) -o G)')
-    f = gGG.applyto(gf)
-    print f.__repr__()
-    print f.simplify().infixify()
-    HHG = llp.parse('(H -o (H -o G))')
-    ff = HHG.applyto(f)
-    print ff
-    print ff.simplify().infixify()
+    def simplify_test(self, f, expected=None, throw=False):
+        if not expected:
+            expected = f
+        try:
+            p = LinearLogicParser().parse(f).simplify()
+        except Exception, e:
+            if throw:
+                raise
+            else:
+                p = e.__class__.__name__ + ': ' + e.message
+        self.assert_equal(f, str(p), expected)
+
+    def test_BindingDict(self):
+        print '='*20 + 'TEST BindingDict' + '='*20
+        
+        h = ConstantExpression('h')
+        g = ConstantExpression('g')
+        f = ConstantExpression('f')
+        
+        H = VariableExpression('H')
+        G = VariableExpression('G')
+        F = VariableExpression('F')
+        
+        d1 = BindingDict()
+        d1[H] = h
+        d2 = BindingDict()
+        d2[F] = f
+        d2[G] = F
+        d12 = d1 + d2
+        all12 = ['%s: %s' % (v, d12[v]) for v in d12.d]
+        all12.sort()
+        self.assert_equal('(%s + %s)' % (str(d1), str(d2)), ', '.join(all12), 'F: f, G: f, H: h')
+        
+        d4 = BindingDict()
+        d4[F] = f
+        result = None
+        try:
+            d4[F] = g
+        except Exception, e:
+            result = e
+        self.assert_equal(str(d4) + ' + {F: g}', str(result), 'Variable F already bound to another value')
+        
+    def test_unifiy(self):
+        print '='*20 + 'TEST UNIFY' + '='*20
+        
+        h = ConstantExpression('h')
+        g = ConstantExpression('g')
+        f = ConstantExpression('f')
+        
+        H = VariableExpression('H')
+        G = VariableExpression('G')
+        F = VariableExpression('F')
+        
+        self.unify_test(f, g, 'UnificationException: Cannot unify f with g given {}')
+        
+        self.unify_test(f, G, '{G: f}')
+        self.unify_test(f, G, 'UnificationException: Cannot unify f with G given {G: h}', BindingDict([(G,h)]))
+        self.unify_test(f, G, '{G: f}', BindingDict([(G,f)]))
+        self.unify_test(f, G, '{G: f, H: f}', BindingDict([(H,f)]))
+        
+        self.unify_test(G, f, '{G: f}')
+        self.unify_test(G, f, 'UnificationException: Cannot unify G with f given {G: h}', BindingDict([(G,h)]))
+        self.unify_test(G, f, '{G: f}', BindingDict([(G,f)]))
+        self.unify_test(G, f, '{G: f, H: f}', BindingDict([(H,f)]))
+        
+        self.unify_test(G, F, '{G: F}')
+        self.unify_test(G, F, 'UnificationException: Cannot unify G with F given {G: H}', BindingDict([(G,H)]))
+        self.unify_test(G, F, '{G: F}', BindingDict([(G,F)]))
+        self.unify_test(G, F, '{G: F, H: F}', BindingDict([(H,F)]))
+
+    def unify_test(self, a, b, expected, bindings=None, throw=False):
+        if not bindings:
+            bindings = BindingDict()
+        bindingsStr = str(bindings)
+        
+        try:
+            p = a.unify(b, bindings)
+        except Exception, e:
+            if throw:
+                raise
+            else:
+                p = e.__class__.__name__ + ': ' + e.message
+        self.assert_equal('%s: unify(%s,%s)' % (bindingsStr, a, b), str(p), expected)
+
+    def test_compile(self):
+        print '='*20 + 'TEST COMPILE' + '='*20
+        
+        self.compile_test(r'g', '(g, [])')
+        self.compile_test(r'(g -o f)', '((g -o f), [])')
+        self.compile_test(r'(g -o (h -o f))', '((g -o (h -o f)), [])')
+
+    def compile_test(self, f, expected, throw=False):
+        import glue
+
+        if not expected:
+            expected = f
+        
+        try:
+            p = LinearLogicParser().parse(f)
+            (llf, indices) = p.compile_pos(Counter(), glue.GlueFormula)
+            result = '(%s, %s)' % (str(llf), list(indices))
+        except Exception, e:
+            if throw:
+                raise
+            else:
+                result = e.message
+        self.assert_equal(f, result, expected)
 
 if __name__ == '__main__':
-    demo()
-
+    TestSuite().run()

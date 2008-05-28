@@ -6,50 +6,60 @@
 # For license information, see LICENSE.TXT
 
 import os
+import tempfile
+import subprocess
 from nltk import tokenize
 from nltk.stem.wordnet import WordnetStemmer
 from nltk_contrib.dependency import DepGraph
 from nltk_contrib.tag import tnt
+from nltk.internals import find_binary
 
-def config_malt(path=None, verbose=False):
+_malt_bin = None
+
+def config_malt(bin=None, verbose=False):
     """
-    Configure the location of MaltParser Executable
+    Configure NLTK's interface to the C{malt} package.  This
+    searches for a directory containing the malt jar
     
-    @param path: Path to the MaltParser executable
-    @type path: C{str}
+    @param bin: The full path to the C{malt} binary.  If not
+        specified, then nltk will search the system for a C{malt}
+        binary; and if one is not found, it will raise a
+        C{LookupError} exception.
+    @type bin: C{string}
     """
+    try:
+        if _malt_bin:
+            return _malt_bin
+    except UnboundLocalError:
+        pass
     
-    malt_path = None
+    # Find the malt binary.
+    malt_bin = find_binary('malt.jar', bin,
+        searchpath=malt_path, env_vars=['MALTPARSERHOME'],
+        url='http://w3.msi.vxu.se/~jha/maltparser/index.html',
+        verbose=verbose)
     
-    malt_search = ['.',
-                   '/usr/local/bin',
-                   '/usr/local/bin/malt-1.0.2',
-                   '/usr/local/malt-1.0.2',
-                   '/usr/local/share/malt-1.0.2',
-                   'c:\\cygwin\\usr\\local\\bin\\malt-1.0.2']
-
-    if path is not None:
-        searchpath = (path,)
-
-    if  path is  None:
-        searchpath = malt_search
-        if 'MALTHOME' in os.environ:
-            searchpath.insert(0, os.environ['MALTHOME'])
-
-    for path in searchpath:
-        jar = os.path.join(path, 'malt.jar')
-        if os.path.exists(jar):
-            malt_path = path
-            if verbose:
-                print '[Found MaltParser: %s]' % jar
-            return malt_path
+    _malt_bin = malt_bin
+    return _malt_bin
+    
+    
+        
   
-    if malt_path is None:
-        raise LookupError("Unable to find MaltParser executable in '%s'\n" 
-            "Use 'config_malt(path=<path>) '," 
-            " or set the MALTHOME environment variable to a valid path." % join(searchpath)) 
+#: A list of directories that should be searched for the malt
+#: executables.  This list is used by L{config_malt} when searching
+#: for the malt executables.
+malt_path = ['.',
+             '/usr/lib/malt-1.0.4',
+             '/usr/local/bin',
+             '/usr/local/bin/malt-1.0.4',
+             '/usr/local/malt-1.0.4',
+             '/usr/local/share/malt-1.0.4']
 
-def parse(sentence, tagger='tnt', stem=True, verbose=False):
+######################################################################
+#{ Interface to Binaries
+######################################################################
+
+def parse(sentence, mco='temp', tagger='tnt', stem=True, verbose=False):
     """
     Use MaltParser to parse a sentence
     
@@ -61,29 +71,14 @@ def parse(sentence, tagger='tnt', stem=True, verbose=False):
     @return: C{DepGraph} the dependency graph representation of the sentence
     """
     
-    malt_path = config_malt(verbose=verbose)
-    jar_path = '%s/malt.jar' % malt_path
+    _malt_bin = config_malt(verbose=verbose)
     
-    mco_file = 'glue'
-    dep_path = '%s/nltk_contrib/dependency' % os.environ['PYTHONPATH']
-    input_file =  '%s/in.conll' % dep_path
-    output_file = '%s/out.conll' % dep_path
-    
-    win_path = os.path.exists('c:\\')
-    if win_path:
-        full_jar_path = '`cygpath -w %s`' % jar_path
-        full_dep_path = '`cygpath -w %s`' % dep_path
-        full_input_file =  '`cygpath -w %s`' % input_file
-        full_output_file = '`cygpath -w %s`' % output_file
-    else:
-        full_jar_path = jar_path
-        full_dep_path = dep_path
-        full_input_file =  input_file
-        full_output_file = output_file
+    input_file = os.path.join(tempfile.gettempdir(), "malt_input")
+    output_file = os.path.join(tempfile.gettempdir(), "malt_output")
     
     execute_string = 'java -jar %s -w %s -c %s -i %s -o %s -m parse'
     if not verbose:
-        execute_string += ' > %s/malt.out' % dep_path
+        execute_string += ' > ' + os.path.join(tempfile.gettempdir(), "malt.out")
     
     depgraph = None
     
@@ -101,23 +96,25 @@ def parse(sentence, tagger='tnt', stem=True, verbose=False):
             tagged_words = pos_tag(sentence)
         else:
             raise AssertionError, 'tagger \'%s\' is not recognized' % tagger
-         
-        for i in range(len(tagged_words)):
+        
+        assert tagged_words, 'tagged_words is empty'
+        if verbose: print 'tagged_words =', tagged_words
+        
+        for (i, word) in enumerate(tagged_words):
             #f.write('%s\t%s\t%s\t%s%s\n' % (i+1, words[i], '\t_'*4, '0', '\t_'*3))
             f.write('%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' % 
-                    (i+1, tagged_words[i][0], '_', tagged_words[i][1], tagged_words[i][1], '_', '0', 'a', '_', '_'))
+                    (i+1, word[0], '_', word[1], word[1], '_', '0', 'a', '_', '_'))
         f.write('\n')
         f.close()
         if verbose: print 'End input file creation'
     
         if verbose:
-            print 'full_jar_path=%s' % full_jar_path 
-            print 'full_dep_path=%s' % full_dep_path
-            print 'full_mco_file=%s' % mco_file
-            print 'full_input_file=%s' % full_input_file
-            print 'full_output_file=%s' % full_output_file
+            print '_malt_bin=%s' % _malt_bin 
+            print 'mco_file=%s/%s.mco' % (os.environ['MALTPARSERHOME'],mco)
+            print 'input_file=%s' % input_file
+            print 'output_file=%s' % output_file
     
-        execute_string = execute_string % (full_jar_path, full_dep_path, mco_file, full_input_file, full_output_file)
+        execute_string = execute_string % (_malt_bin, os.environ['MALTPARSERHOME'], mco, input_file, output_file)
         
         if verbose: 
             print 'execute_string=%s' % execute_string
@@ -145,9 +142,12 @@ def parse(sentence, tagger='tnt', stem=True, verbose=False):
                         word = word_stem
                 depgraph_input += '%s\t%s\t%s\t%s\n' % (word, tokens[3], tokens[6], tokens[7])
 
+        assert depgraph_input, 'depgraph_input is empty'
+
         if verbose:
             print 'Begin DepGraph creation'
             print 'depgraph_input=\n%s' % depgraph_input
+        
         depgraph = DepGraph().read(depgraph_input)
         if verbose:
             print 'End DepGraph creation'
@@ -179,45 +179,30 @@ def pos_tag(sentence, verbose=False):
         tagged_words.append((word, tag))
     return tagged_words
 
-def train(verbose=False):
+def train(mco='temp', conll='temp_train.conll', verbose=False):
     """
     Train MaltParser
     
+    @param mco: C{str} for the mco output file.  i.e. if mco='temp', the file will be 'temp.mco'
+    @param conll: C{str} the training input data
     @param sentence: Input sentence to parse
-    @type sentence: L{str}
-    @return: C{DepGraph} the dependency graph representation of the sentence
     """
+    _malt_bin = config_malt(verbose=verbose)
     
-    malt_path = config_malt(verbose=verbose)
-    jar_path = '%s/malt.jar' % malt_path
-    
-    mco_file = 'glue'
-    dep_path = '%s/nltk_contrib/dependency' % os.environ['PYTHONPATH']
-    input_file =  '%s/glue_train.conll' % dep_path
-    
-    win_path = os.path.exists('c:\\')
-    if win_path:
-        full_jar_path = '`cygpath -w %s`' % jar_path
-        full_dep_path = '`cygpath -w %s`' % dep_path
-        full_input_file =  '`cygpath -w %s`' % input_file
-    else:
-        full_jar_path = jar_path
-        full_dep_path = dep_path
-        full_input_file =  input_file
-    
+    input_file = os.path.join(os.environ['MALTPARSERHOME'], conll)
+
     execute_string = 'java -jar %s -w %s -c %s -i %s -m learn'
     if not verbose:
-        execute_string += ' > %s/malt.out' % dep_path
+        execute_string += ' > %s/malt.out' % tempfile.gettempdir()
     
     depgraph = None
     
     if verbose:
-        print 'full_jar_path=%s' % full_jar_path 
-        print 'full_dep_path=%s' % full_dep_path
-        print 'full_mco_file=%s' % mco_file
-        print 'full_input_file=%s' % full_input_file
+        print 'malt_bin=%s' % _malt_bin 
+        print 'mco_file=%s/%s.mco' % (mco, os.environ['MALTPARSERHOME'])
+        print 'input_file=%s' % input_file
 
-    execute_string = execute_string % (full_jar_path, full_dep_path, mco_file, full_input_file)
+    execute_string = execute_string % (_malt_bin, os.environ['MALTPARSERHOME'], mco, input_file)
     
     if verbose: 
         print 'execute_string=%s' % execute_string
@@ -226,10 +211,12 @@ def train(verbose=False):
     malt_exit = os.system(execute_string)
     if verbose: print 'End Training (exit code=%s)' % malt_exit
 
+def demo():
+    mco = 'glue'
+    train(mco, 'glue_train.conll', verbose=True)
 
-if __name__ == '__main__':
-    train(True)
-
-    parse('John sees Mary', verbose=True)
-    parse('a man runs', verbose=True)
+    parse('John sees Mary', mco, verbose=True)
+    parse('a man runs', mco, verbose=True)
     
+if __name__ == '__main__':
+    demo()
