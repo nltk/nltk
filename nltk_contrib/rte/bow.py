@@ -107,5 +107,6 @@ def demo():
     print "Bag of Words overlap:"
     print "%0.3f" % (accuracy(tagger, gold) * 100)
         
-demo()
+if __name__ == '__main__':
+    demo()
 
