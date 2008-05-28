@@ -21,12 +21,12 @@ def unique_variable():
 
 class Expression:
     def __call__(self, other):
+        return self.applyto(other)
+    
+    def applyto(self, other):
         if not isinstance(other, list):
             other = [other]
         return ApplicationExpression(self, other)
-    
-    def applyto(self, other):
-        return self(other)
     
     def __neg__(self):
         return NegatedExpression(self)
@@ -63,12 +63,12 @@ class ApplicationExpression(Expression):
                                         ','.join([str(arg) for arg in self.args])))
     
             term = function.term
-            for i in range(len(args)):
-                term = term.replace(function.variables[i], args[i])
+            for (i,arg) in enumerate(args):
+                term = term.replace(function.variables[i], arg)
             
             #If not all the abstracted variables were used in the application, keep them
             if i+1 < len(function.variables):
-                return LambdaExpression(function.variables[i+1:], term.simplify())
+                return function.__class__(function.variables[i+1:], term.simplify())
             else:
                 return term.simplify()
         else:
@@ -147,7 +147,7 @@ class LambdaExpression(Expression):
                 return self
             else: 
                 vars = self.variables[:i]+[expression]+self.variables[i+1:]
-                return LambdaExpression(vars, self.term.replace(variable, expression, True))
+                return self.__class__(vars, self.term.replace(variable, expression, True))
         except ValueError:
             #variable not bound by this lambda
             
@@ -157,7 +157,7 @@ class LambdaExpression(Expression):
                 newvar = unique_variable()
                 i = self.variables.index(var)
                 vars = self.variables[:i]+[newvar]+self.variables[i+1:]
-                self = LambdaExpression(vars, self.term.replace(var, newvar, True))
+                self = self.__class__(vars, self.term.replace(var, newvar, True))
                 
             #replace in the term
             return self.__class__(self.variables,
@@ -332,7 +332,8 @@ class LogicParser:
 
     def __init__(self, data=None):
         """
-        @param data: C{str}, a string to parse"""
+        @param data: C{str}, a string to parse
+        """
         self._currentIndex = 0
         self._buffer = []
         self.feed(data)
@@ -670,7 +671,7 @@ class TestSuite:
             if throw:
                 raise
             else:
-                p = e.message
+                p = e.__class__.__name__ + ': ' + e.message
         self.assert_equal(f, str(p), expected)
         
     def test_simplify(self):
@@ -678,10 +679,10 @@ class TestSuite:
         print '='*20 + 'TEST SIMPLIFY' + '='*20
         self.simplify_test(r'\x.man(x)(john)', r'man(john)')
         self.simplify_test(r'\x y.sees(x,y)(john, mary)', r'sees(john,mary)')
-        self.simplify_test(r'\x.\y.sees(x,y)(john, mary)', r'The function \y.sees(x,y) abstracts 1 variables but there are 2 arguments: (john,mary)')
+        self.simplify_test(r'\x.\y.sees(x,y)(john, mary)', r'ParseException: The function \y.sees(x,y) abstracts 1 variables but there are 2 arguments: (john,mary)')
         self.simplify_test(r'\x.\y.sees(x,y)(mary)(john)', r'sees(john,mary)')
         self.simplify_test(r'(\x.\y.sees(x,y)(mary))(john)', r'sees(john,mary)')
-        self.simplify_test(r'\x y.sees(x,y)(mary)(john)', r'parse error, unexpected token: (')
+        self.simplify_test(r'\x y.sees(x,y)(mary)(john)', r'UnexpectedTokenException: parse error, unexpected token: (')
         self.simplify_test(r'\x y.sees(x,y)(john)', r'\y.sees(john,y)')
         self.simplify_test(r'(\x y.sees(x,y)(john))(mary)', r'sees(john,mary)')
         self.simplify_test(r'exists x.(man(x) & (\x.exists y.walks(x,y))(x))', r'exists x.(man(x) & exists y.walks(x,y))')
@@ -696,7 +697,7 @@ class TestSuite:
             if throw:
                 raise
             else:
-                p = e.message
+                p = e.__class__.__name__ + ': ' + e.message
         self.assert_equal(f, str(p), expected)
         
     def test_process(self):
