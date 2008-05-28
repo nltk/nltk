@@ -73,19 +73,14 @@ appropriate orthographic context flag."""
 #{ Regular expressions for annotation
 ######################################################################
 
-# Note: [A-Za-z] is approximated by [^\W\d] in the general case.
-_ORD_RE = r'-?[\.,]?\d[\d,\.-]*'
-_RE_ELLIPSIS = re.compile(r'\.\.+$')
-_RE_NUMERIC = re.compile(r'^'+_ORD_RE+'\.?$')
-_RE_INITIAL = re.compile(r'[^\W\d]\.$', re.UNICODE)
-_RE_INITIAL_OR_ORD = re.compile(r'('+_ORD_RE+'|[^\W\d])\.$')
-_RE_ALPHA_CHAR = re.compile(r'[^\W\d]', re.UNICODE)
-_RE_ALPHA = re.compile(r'[^\W\d]+$', re.UNICODE)
+_RE_NON_PUNCT = re.compile(r'[^\W\d]', re.UNICODE)
+"""Matches token types that are not merely punctuation. (Types for
+numeric tokens are changed to ##number## and hence contain alpha.)"""
 
 _RE_BOUNDARY_REALIGNMENT = re.compile(r'["\')\]}]+?(?: |(?=--)|$)',
         re.MULTILINE)
-"""Used to realign punctuation that should be included in a sentence although
-it follows the period (or ?, !)."""
+"""Used to realign punctuation that should be included in a sentence
+although it follows the period (or ?, !)."""
 
 #} (end regular expressions for annotation)
 ######################################################################
@@ -201,20 +196,34 @@ class PunktToken(object):
         'parastart', 'linestart',
         'sentbreak', 'abbr', 'ellipsis'
     ]
-    __slots__ = ['tok', 'type'] + _properties
+    __slots__ = ['tok', 'type', 'period_final'] + _properties
 
-    def __init__(self, tok, parastart=False, linestart=False):
+    def __init__(self, tok, **params):
         self.tok = tok
         self.type = self._get_type()
+        self.period_final = tok.endswith('.')
 
         for p in self._properties:
             setattr(self, p, None)
-        self.parastart = parastart
-        self.linestart = linestart
+        for k, v in params.iteritems():
+            setattr(self, k, v)
+
+    #////////////////////////////////////////////////////////////
+    #{ Regular expressions for properties
+    #////////////////////////////////////////////////////////////
+    # Note: [A-Za-z] is approximated by [^\W\d] in the general case.
+    _RE_ELLIPSIS = re.compile(r'\.\.+$')
+    _RE_NUMERIC = re.compile(r'^-?[\.,]?\d[\d,\.-]*\.?$')
+    _RE_INITIAL = re.compile(r'[^\W\d]\.$', re.UNICODE)
+    _RE_ALPHA = re.compile(r'[^\W\d]+$', re.UNICODE)
+
+    #////////////////////////////////////////////////////////////
+    #{ Derived properties
+    #////////////////////////////////////////////////////////////
 
     def _get_type(self):
         """Returns a case-normalized representation of the token."""
-        return _RE_NUMERIC.sub('##number##', self.tok.lower())
+        return self._RE_NUMERIC.sub('##number##', self.tok.lower())
 
     @property
     def type_no_period(self):
@@ -238,14 +247,12 @@ class PunktToken(object):
     @property
     def first_upper(self):
         """True if the token's first character is uppercase."""
-        # Not Unicode-compliant!
-        return 'A' <= self.tok[0] <= 'Z'
+        return self.tok[0].isupper()
 
     @property
     def first_lower(self):
         """True if the token's first character is lowercase."""
-        # Not Unicode-compliant!
-        return 'a' <= self.tok[0] <= 'z'
+        return self.tok[0].islower()
 
     @property
     def first_case(self):
@@ -254,7 +261,36 @@ class PunktToken(object):
         elif self.first_upper:
             return 'upper'
         return 'none'
+
+    @property
+    def is_ellipsis(self):
+        """True if the token text is that of an ellipsis."""
+        return self._RE_ELLIPSIS.match(self.tok)
+
+    @property
+    def is_number(self):
+        """True if the token text is that of a number."""
+        return self.type.startswith('##number##')
+
+    @property
+    def is_initial(self):
+        """True if the token text is that of an initial."""
+        return self._RE_INITIAL.match(self.tok)
+
+    @property
+    def is_alpha(self):
+        """True if the token text is all alphabetic."""
+        return self._RE_ALPHA.match(self.tok)
+
+    @property
+    def is_non_punct(self):
+        """True if the token is either a number or is alphabetic."""
+        return _RE_NON_PUNCT.search(self.type)
     
+    #////////////////////////////////////////////////////////////
+    #{ String representation
+    #////////////////////////////////////////////////////////////
+
     def __repr__(self):
         """
         A string representation of the token that can reproduce it
@@ -297,6 +333,10 @@ class _PunktBaseClass(object):
     Includes common components of PunktTrainer and PunktSentenceTokenizer.
     """
     
+    _Token = PunktToken
+    """The token definition that should be used by this class. This allows for
+    redefinition of some parameters of the token type."""
+    
     def __init__(self):
         self._params = PunktParameters()
         """The collection of parameters that determines the behavior
@@ -337,12 +377,12 @@ class _PunktBaseClass(object):
             if line.strip():
                 line_toks = iter(punkt_word_tokenize(line))
 
-                yield PunktToken(line_toks.next(),
+                yield self._Token(line_toks.next(),
                         parastart=parastart, linestart=True)
                 parastart = False
 
                 for t in line_toks:
-                    yield PunktToken(t)
+                    yield self._Token(t)
             else:
                 parastart = True
 
@@ -381,9 +421,9 @@ class _PunktBaseClass(object):
 
         if tok in ('?','!','.'):
             aug_tok.sentbreak = True
-        elif _RE_ELLIPSIS.match(tok):
+        elif aug_tok.is_ellipsis:
             aug_tok.ellipsis = True
-        elif tok.endswith('.') and not tok.endswith('..'):
+        elif aug_tok.period_final and not tok.endswith('..'):
             if (tok[:-1].lower() in self._params.abbrev_types or
                 tok[:-1].lower().split('-')[-1] in self._params.abbrev_types):
 
@@ -514,7 +554,7 @@ class PunktTrainer(_PunktBaseClass):
         """
         Collects training data from a given list of tokens.
         """
-        self._train_tokens((PunktToken(t) for t in tokens), verbose)
+        self._train_tokens((self._Token(t) for t in tokens), verbose)
         if finalize:
             self.finalize_training(verbose)
 
@@ -529,7 +569,7 @@ class PunktTrainer(_PunktBaseClass):
         # tokens that end in periods.
         for aug_tok in tokens:
             self._type_fdist.inc(aug_tok.type)
-            if aug_tok.tok.endswith('.'):
+            if aug_tok.period_final:
                 self._num_period_toks += 1
 
         # Look for new abbreviations, and for types that no longer are
@@ -562,7 +602,7 @@ class PunktTrainer(_PunktBaseClass):
         # The remaining heuristics relate to pairs of tokens where the first
         # ends in a period.
         for aug_tok1, aug_tok2 in self.pair_iter(tokens):
-            if not aug_tok1.tok.endswith('.') or not aug_tok2:
+            if not aug_tok1.period_final or not aug_tok2:
                 continue
 
             # Is the first token a rare abbreviation?
@@ -685,7 +725,7 @@ class PunktTrainer(_PunktBaseClass):
 
             # Decide whether the next word is at a sentence boundary.
             if aug_tok.sentbreak:
-                if not _RE_INITIAL_OR_ORD.match(aug_tok.tok):
+                if not (aug_tok.is_number or aug_tok.is_initial):
                     context = 'initial'
                 else:
                     context = 'unknown'
@@ -719,7 +759,7 @@ class PunktTrainer(_PunktBaseClass):
         for typ in types:
             # Check some basic conditions, to rule out words that are
             # clearly not abbrev_types.
-            if not _RE_ALPHA_CHAR.search(typ) or typ == '##number##':
+            if not _RE_NON_PUNCT.search(typ) or typ == '##number##':
                 continue
             
             if typ.endswith('.'):
@@ -893,9 +933,9 @@ class PunktTrainer(_PunktBaseClass):
         return ((self.INCLUDE_ALL_COLLOCS or
                 (self.INCLUDE_ABBREV_COLLOCS and aug_tok1.abbr) or
                 (aug_tok1.sentbreak and
-                    _RE_INITIAL_OR_ORD.match(aug_tok1.tok)))
-                and _RE_ALPHA_CHAR.search(aug_tok1.type)
-                and _RE_ALPHA_CHAR.search(aug_tok2.type))
+                    (aug_tok1.is_number or aug_tok1.is_initial)))
+                and aug_tok1.is_non_punct
+                and aug_tok2.is_non_punct)
 
     def _find_collocations(self):
         """
@@ -937,9 +977,8 @@ class PunktTrainer(_PunktBaseClass):
         # not a potential ordinal number or initial, and (ii) is
         # alphabetic, then it is a a sentence-starter.
         return ( prev_tok.sentbreak and 
-             # [xx] different def of ordinals here than in orig.
-             (not _RE_INITIAL_OR_ORD.match(prev_tok.tok)) and
-             (_RE_ALPHA.match(cur_tok.tok)) )
+             not (prev_tok.is_number or prev_tok.is_initial) and
+             cur_tok.is_alpha )
 
     def _find_sent_starters(self):
         """
@@ -1095,7 +1134,7 @@ class PunktSentenceTokenizer(_PunktBaseClass,TokenizerI):
         Given a sequence of tokens, generates lists of tokens, each list
         corresponding to a sentence.
         """
-        tokens = iter(self._annotate_tokens(PunktToken(t) for t in tokens))
+        tokens = iter(self._annotate_tokens(self._Token(t) for t in tokens))
         sentence = []
         for aug_tok in tokens:
             sentence.append(aug_tok.tok)
@@ -1225,14 +1264,14 @@ class PunktSentenceTokenizer(_PunktBaseClass,TokenizerI):
             return
 
         tok = aug_tok1.tok
-        if not tok.endswith('.'):
+        if not aug_tok1.period_final:
             # We only care about words ending in periods.
             return
 
         typ = aug_tok1.type_no_period
         next_tok = aug_tok2.tok
         next_typ = aug_tok2.type_no_sentperiod
-        tok_is_initial = _RE_INITIAL.match(tok)
+        tok_is_initial = aug_tok1.is_initial
 
         # [4.1.2. Collocational Heuristic] If there's a
         # collocation between the word before and after the
@@ -1271,10 +1310,12 @@ class PunktSentenceTokenizer(_PunktBaseClass,TokenizerI):
         # Check if any initials or ordinals tokens that are marked
         # as sentbreaks should be reclassified as abbreviations.
         if tok_is_initial or typ == '##number##':
+
             # [4.1.1. Orthographic Heuristic] Check if there's
             # orthogrpahic evidence about whether the next word
             # starts a sentence or not.
             is_sent_starter = self._ortho_heuristic(aug_tok2)
+
             if is_sent_starter == False:
                 aug_tok1.sentbreak = False
                 aug_tok1.abbr = True
@@ -1286,6 +1327,7 @@ class PunktSentenceTokenizer(_PunktBaseClass,TokenizerI):
             if ( is_sent_starter == 'unknown' and tok_is_initial and
                  aug_tok2.first_upper and
                  not (self._params.ortho_context[next_typ] & _ORTHO_LC) ):
+                aug_tok1.sentbreak = False
                 aug_tok1.abbr = True
                 return
 
