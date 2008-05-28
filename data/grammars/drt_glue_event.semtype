@@ -4,31 +4,31 @@
 # Entries are links from semantics types to Lists of Glue Formulas
 #############################
 
-adj_attributive_intersective : (\x.drs([],[(<word> x)]), f), (\P Q x.((P x)+(Q x)), (f -o ((super.v -o super.r) -o (super.v -o super.r))))
-adj_attributive_nonintersective : (\x.drs([],[(<word> x)]), f), (\P Q x.(P (Q x)), (f -o ((super.v -o super.r) -o (super.v -o super.r))))
-adj_attributive_relative_intersective :    (\x R.drs([],[(<word> x R)]), f), (\P x R.((P x R)+(R x)), (f -o (super.v -o ((super.v -o super.r) -o super.r))))
-adj_attributive_relative_nonintersective : (\x R.drs([],[(<word> x R)]), f), (\P x R.(P x R),         (f -o (super.v -o ((super.v -o super.r) -o super.r))))
-adj_predicative : (\P.(drs([x],[(<word> x)])+(P x)), ((f -o Var) -o Var))
-adv : (\x.drs([],[(<word> x)]), f), (\P Q x.(P (Q x)), (f -o (super -o super)))
-adv_ModifyingRelativeAdj : (\x.drs([],[(<word> x)]), f), (\P Q x R.(P (Q x R)), (f -o (super -o super)))
-art_def : (\P Q.drs([x],[((drs([y],[])+(Q y)) iff (x = y)), (P x)]), ((v -o r) -o ((f -o Var) -o Var)))
+adj_attributive_intersective : (\x.drs([],[<word>(x)]), f), (\P Q x.(P(x)+Q(x)), (f -o ((super.v -o super.r) -o (super.v -o super.r))))
+adj_attributive_nonintersective : (\x.drs([],[<word>(x)]), f), (\P Q x.P(Q(x)), (f -o ((super.v -o super.r) -o (super.v -o super.r))))
+adj_attributive_relative_intersective : (\x R.drs([],[<word>(x,R)]), f), (\P x R.(P(x,R)+R(x)), (f -o (super.v -o ((super.v -o super.r) -o super.r))))
+adj_attributive_relative_nonintersective : (\x R.drs([],[<word>(x,R)]), f), (\P x R.P(x,R),         (f -o (super.v -o ((super.v -o super.r) -o super.r))))
+adj_predicative : (\P.(drs([x],[<word>(x)])+P(x)), ((f -o Var) -o Var))
+adv : (\x.drs([],[<word>(x)]), f), (\P Q x.P(Q(x)), (f -o (super -o super)))
+adv_ModifyingRelativeAdj : (\x.drs([],[<word>(x)]), f), (\P Q x R.P(Q(x,R)), (f -o (super -o super)))
+art_def : (\P Q.drs([x],[((drs([y],[])+Q(y)) iff (x = y)), P(x)]), ((v -o r) -o ((f -o Var) -o Var)))
 cc_clause : (\P Q.(P + Q), (a -o (b -o f)))
-ex_quant : (\P Q.((drs([x],[])+(P x))+(Q x)), ((v -o r) -o ((f -o Var) -o Var)))
-NN :  (\x.drs([],[(<word> x)]), (v -o r)) : [spec]
-NN :  (\Q.(drs([x],[(<word> x)])+(Q x)), ((f -o Var) -o Var)) : [] # treat a noun missing its spec as implicitly existentially quantified
-no_quant : (\P Q.(not ((drs([x],[])+(P x))+(Q x))), ((v -o r) -o ((f -o Var) -o Var)))
-NNP : (\P.(drs([x],[(<word> x)])+(P x)), ((f -o Var) -o Var))
-PRP : (\P.(drs([x],[(PRO x)])+(P x)), ((f -o Var) -o Var))
-recip : (\x P.drs([],[(RECIP x P)]), (Var -o ((Var -o (f -o super)) -o super)))
-tense : (\P.drs([],[(<word> P)]), (f -o f))
-univ_quant : (\P Q.drs([],[((drs([x],[])+(P x)) implies (Q x))]), ((v -o r) -o ((f -o Var) -o Var)))
-VB : (\x.drs([e],[(<word> e),(subj x e)]), (subj -o f)) [subj] #iv
-VB : (\x y.drs([e],[(<word> e), (subj x e), (obj y e)]), (subj -o (obj -o f))) : [subj, obj] #tv
-VB : (\x y z.drs([e],[(<word> e), (subj x e), (obj y e), (theme e z)]), (subj -o (obj -o (theme -o f)))) : [subj, obj, theme] #dtv
-VB : (\y z.some x.(<word> z y x), obj -o (theme -o f)) : [obj, theme] #incomplete dtv
-VB : (\x z.some y.(<word> z y x), subj -o (theme -o f)) : [subj, theme] #incomplete dtv
-VB : (\z.some x y.(<word> z y x), theme -o f) : [theme] #incomplete dtv
-VB : (\x y.(drs([e],[(<word> e), (subj x e), (comp y e)])+(P e)), (subj -o (comp -o f))) : [subj, comp] #tv_comp
-VB : (\x P.drs([e],[(<word> e), (subj x e), (xcomp e P)]), (subj -o ((xcomp.subj -o xcomp) -o f))) : [subj, xcomp] #equi
-VB : (\x y P.drs([e],[(<word> e), (subj x e), (obj y e), (xcomp e P)]), (subj -o (obj -o ((xcomp.subj -o xcomp) -o f)))) : [subj, obj, xcomp] # object equi
-VB : (\P.drs([e],[(<word> e), (xcomp P e)]), (xcomp -o f)) : [xcomp] #raising
+ex_quant : (\P Q.((drs([x],[])+P(x))+Q(x)), ((v -o r) -o ((f -o Var) -o Var)))
+NN :  (\x.drs([],[<word>(x)]), (v -o r)) : [spec]
+NN :  (\Q.(drs([x],[<word>(x)])+Q(x)), ((f -o Var) -o Var)) : [] # treat a noun missing its spec as implicitly existentially quantified
+no_quant : (\P Q.(not ((drs([x],[])+P(x))+Q(x))), ((v -o r) -o ((f -o Var) -o Var)))
+NNP : (\P.(drs([x],[<word>(x)])+P(x)), ((f -o Var) -o Var))
+PRP : (\P.(drs([x],[PRO(x)])+P(x)), ((f -o Var) -o Var))
+recip : (\x P.drs([],[RECIP(x,P)]), (Var -o ((Var -o (f -o super)) -o super)))
+tense : (\P.drs([],[<word>(P)]), (f -o f))
+univ_quant : (\P Q.drs([],[((drs([x],[])+P(x)) -> Q(x))]), ((v -o r) -o ((f -o Var) -o Var)))
+VB : (\x.drs([e],[<word>(e),subj(e,x)]), (subj -o f)) [subj] #iv
+VB : (\x y.drs([e],[<word>(e), subj(e,x), obj(e,y)]), (subj -o (obj -o f))) : [subj, obj] #tv
+VB : (\x y z.drs([e],[<word>(e), subj(e,x), obj(e,y), theme(e,z)]), (subj -o (obj -o (theme -o f)))) : [subj, obj, theme] #dtv
+VB : (\y z.drs([e,x],[<word>(e), subj(e,x), obj(e,y), theme(e,z)]), obj -o (theme -o f)) : [obj, theme] #incomplete dtv
+VB : (\x z.drs([e,y],[<word>(e), subj(e,x), obj(e,y), theme(e,z)]), subj -o (theme -o f)) : [subj, theme] #incomplete dtv
+VB : (\z.drs([e,x,y],[<word>(e), subj(e,x), obj(e,y), theme(e,z)]), theme -o f) : [theme] #incomplete dtv
+VB : (\x y.(drs([e],[<word>(e), subj(e,x), comp(e,y)])+P(e)), (subj -o (comp -o f))) : [subj, comp] #tv_comp
+VB : (\x P.drs([e],[<word>(e), subj(e,x), xcomp(e,P)]), (subj -o ((xcomp.subj -o xcomp) -o f))) : [subj, xcomp] #equi
+VB : (\x y P.drs([e],[<word>(e), subj(e,x), obj(e,y), (xcomp e P)]), (subj -o (obj -o ((xcomp.subj -o xcomp) -o f)))) : [subj, obj, xcomp] # object equi
+VB : (\P.drs([e],[<word>(e), xcomp(e,P)]), (xcomp -o f)) : [xcomp] #raising
