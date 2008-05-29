@@ -9,7 +9,7 @@
 
 """
 Classes for tagging sentences sequentially, left to right.  The
-abastract base class L{SequentialBackoffTagger} serves as the base
+abstract base class L{SequentialBackoffTagger} serves as the base
 class for all the taggers in this module.  Tagging of individual words
 is performed by the method L{choose_tag()
 <SequentialBackoffTagger.choose_tag>}, which is defined by
@@ -243,7 +243,7 @@ class NgramTagger(ContextTagger, yaml.YAMLObject):
     on the preceeding I{n} word's tags.  In particular, a tuple
     C{(tags[i-n:i-1], words[i])} is looked up in a table, and the
     corresponding tag is returned.  N-gram taggers are typically
-    trained them on a tagged corpus.
+    trained on a tagged corpus.
     """
     yaml_tag = '!nltk.NgramTagger'
     
