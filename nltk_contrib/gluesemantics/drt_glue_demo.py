@@ -11,11 +11,13 @@ from nltk.draw import *
 from nltk import parse, tokenize
 from nltk.draw.cfg import *
 import string
-from nltk_contrib.gluesemantics import drt_glue
 from Tkinter import *
 import tkFont
 from tkFont import Font
-from nltk_contrib.drt import DRT
+from nltk.sem import logic
+
+from nltk_contrib.drt import DrsDrawer
+from nltk_contrib.gluesemantics.drt_glue import DrtGlue
 
 
 class DrtGlueDemo(object):
@@ -356,7 +358,7 @@ class DrtGlueDemo(object):
             self._exampleList.selection_clear(0, 'end')
             self._exampleList.selection_set(self._curExample)
 
-            self._readings = drt_glue.parse_to_meaning(example, self._remove_duplicates)
+            self._readings = DrtGlue(dependency=True, remove_duplicates=self._remove_duplicates).parse_to_meaning(example)
             self._populate_readingListbox()
             
             self._drs = None
@@ -379,7 +381,8 @@ class DrtGlueDemo(object):
             self._readingList.selection_clear(0, 'end')
             self._readingList.selection_set(index)
 
-            self._drs = reading.simplify().resolve_anaphora().infixify()
+            logic._counter._value = 0
+            self._drs = reading.simplify().resolve_anaphora()
             
             self._redraw()
         else:
@@ -396,8 +399,8 @@ class DrsWidget(object):
         self.bbox = (0, 0, 0, 0)
 
     def draw(self):
-        bottom_right = self._drs.draw(3, 3, self._canvas);
-        self.bbox = (0, 0, bottom_right[0]+1, bottom_right[1]+1) 
+        (right, bottom) = DrsDrawer(self._drs, canvas=self._canvas).draw();
+        self.bbox = (0, 0, right+1, bottom+1) 
 
     def clear(self):
         self._canvas.create_rectangle(self.bbox, fill="white", width="0" )

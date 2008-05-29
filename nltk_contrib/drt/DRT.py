@@ -1,7 +1,11 @@
+# Natural Language Toolkit: Discourse Representation Theory (DRT) 
+#
+# Author: Dan Garrette <dhgarrette@gmail.com>
+#
+# URL: <http://nltk.sf.net>
+# For license information, see LICENSE.TXT
+
 from nltk.internals import Counter
-from Tkinter import Canvas
-from Tkinter import Tk
-from tkFont import Font
 from nltk.sem import logic
 from nltk.sem.logic import LogicParser, \
                            BooleanExpression, \
@@ -10,6 +14,11 @@ from nltk.sem.logic import LogicParser, \
                            AllExpression, \
                            UnexpectedTokenException
 import resolve_anaphora as RA
+
+from Tkinter import Canvas
+from Tkinter import Tk
+from tkFont import Font
+from nltk.draw import in_idle
 
 def unique_variable():
     return DrtVariableExpression('z' + str(logic._counter.get()))
@@ -261,38 +270,57 @@ class DrtApplicationExpression(AbstractDrs, logic.ApplicationExpression, RA.Appl
 class DrsDrawer:
     BUFFER = 3
     
-    def __init__(self, drs, size_canvas=True):
+    def __init__(self, drs, size_canvas=True, canvas=None):
         """
         @param drs: C{AbstractDrs}, The DRS to be drawn
         @param size_canvas: C{boolean}, True if the canvas size should be the exact size of the DRS
+        @param canvas: C{Canvas} The canvas on which to draw the DRS.  If none is given, create a new canvas. 
         """
-        master = Tk()
-
-        font = Font(family='helvetica', size=12)
-        
-        if size_canvas:
-            canvas = Canvas(master, width=0, height=0)
-            canvas.font = font
-            self.canvas = canvas
-            size = self._visit(drs, self.BUFFER, self.BUFFER)
-            canvas = Canvas(master, width=size[0], height=size[1], bg='white')
-        else:
-            canvas = Canvas(master, width=300, height=300)
+        master = None
+        if not canvas:
+            master = Tk()
+            master.title("DRT")
+    
+            font = Font(family='helvetica', size=12)
             
-        canvas.pack()
-        canvas.font = font
+            if size_canvas:
+                canvas = Canvas(master, width=0, height=0)
+                canvas.font = font
+                self.canvas = canvas
+                (right, bottom) = self._visit(drs, self.BUFFER, self.BUFFER)
+                canvas = Canvas(master, width=max(right, 100), height=bottom)#, bg='white')
+            else:
+                canvas = Canvas(master, width=300, height=300)
+                
+            canvas.pack()
+            canvas.font = font
+
         self.canvas = canvas
         self.drs = drs
+        self.master = master
         
     def _get_text_height(self):
         """Get the height of a line of text"""
         return self.canvas.font.metrics("linespace")
         
-    def draw(self):
+    def draw(self, x=BUFFER, y=BUFFER):
         """Draw the DRS"""
-        self._handle(self.drs, self._draw_command, self.BUFFER, self.BUFFER)
+        self._handle(self.drs, self._draw_command, x, y)
+
+        if self.master and not in_idle():
+            self.master.mainloop()
+        else:
+            return self._visit(self.drs, x, y)
         
     def _visit(self, expression, x, y):
+        """
+        Return the bottom-rightmost point without actually drawing the item
+        
+        @param item: the item to visit
+        @param x: the top of the current drawing area
+        @param y: the left side of the current drawing area
+        @return: the bottom-rightmost point
+        """
         return self._handle(expression, self._visit_command, x, y)
 
     def _draw_command(self, item, x, y):
@@ -319,7 +347,7 @@ class DrsDrawer:
         """
         Return the bottom-rightmost point without actually drawing the item
         
-        @param item: the item to draw
+        @param item: the item to visit
         @param x: the top of the current drawing area
         @param y: the left side of the current drawing area
         @return: the bottom-rightmost point
@@ -360,8 +388,8 @@ class DrsDrawer:
             factory = self._handle_BooleanExpression
         elif isinstance(expression, DrtApplicationExpression):
             factory = self._handle_ApplicationExpression
-        elif isinstance(expression, PossibleAntecedents):
-            factory = self._handle_PossibleAntecedents
+        elif isinstance(expression, RA.PossibleAntecedents):
+            factory = self._handle_VariableExpression
         else:
             raise Exception, expression.__class__.__name__
             
@@ -444,7 +472,7 @@ class DrsDrawer:
 
     def _handle_LambdaExpression(self, expression, command, x, y):
         # Find the width of the lambda symbol and abstracted variables
-        variables = Tokens.LAMBDA[logic.n] + ' '.join([str(v) for v in expression.variables]) + Tokens.DOT
+        variables = Tokens.LAMBDA[logic.n] + ' '.join([str(v) for v in expression.variables]) + Tokens.DOT[logic.n]
         right = self._visit_command(variables, x, y)[0]
 
         # Handle term
@@ -834,6 +862,3 @@ def test_draw():
 
 if __name__ == '__main__':
     TestSuite().run()
-
-#    test_draw()
-    
