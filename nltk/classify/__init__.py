@@ -86,6 +86,7 @@ from util import *
 from naivebayes import *
 from decisiontree import *
 from weka import *
+from megam import *
 from nltk.internals import deprecated, Deprecated
 
 __all__ = [
@@ -98,7 +99,7 @@ __all__ = [
     # Utility functions.  Note that accuracy() is intentionally
     # omitted -- it should be accessed as nltk.classify.accuracy();
     # similarly for log_likelihood() and attested_labels().
-    'config_weka',
+    'config_weka', 'config_megam',
     
     # Demos -- not included.
     ]
