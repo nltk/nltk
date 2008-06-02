@@ -8,6 +8,7 @@
 # For license information, see LICENSE.TXT
 
 from util import *
+from nltk import defaultdict
 import math
 
 # Similarity metrics
@@ -115,40 +116,29 @@ def wup_similarity(synset1, synset2, verbose=False):
     len2 = synset2.shortest_path_distance(subsumer) + depth
     return (2.0 * depth) / (len1 + len2)
 
-def res_similarity(synset1, synset2, datafile="", verbose=False):
+def res_similarity(synset1, synset2, ic, verbose=False):
     """
     Resnik Similarity:
     Return a score denoting how similar two word senses are, based on the
     Information Content (IC) of the Least Common Subsumer (most specific
-    ancestor node). Note that at this time the scores given do _not_
-    always agree with those given by Pedersen's Perl implementation of
-    Wordnet Similarity, although they are mostly very similar.
+    ancestor node).
 
-    The required IC values are precomputed and stored in a file, the name
-    of which should be passed as the 'datafile' argument. For more
-    information on how they are calculated, check brown_ic.py.
-
+    @type  synset1: L{Synset}
+    @param synset1: The first synset being compared
     @type  synset2: L{Synset}
-    @param synset2: The L{Synset} that this L{Synset} is being compared to.
+    @param synset2: The second synset being compared
+    @type  ic: L{InformationContent}
+    @param ic: an information content object
     @return: A float score denoting the similarity of the two L{Synset}s.
         Synsets whose LCS is the root node of the taxonomy will have a
         score of 0 (e.g. N['dog'][0] and N['table'][0]). If no path exists
         between the two synsets a score of -1 is returned.
     """
 
-    # TODO: Once this data has been loaded for the first time preserve it
-    # in memory in some way to prevent unnecessary recomputation.
-    (noun_freqs, verb_freqs) = _load_ic_data(datafile)
-
-    if synset1.pos is NOUN:
-        (lcs, lcs_ic) = _lcs_by_content(synset1, synset2, noun_freqs)
-
-    elif synset1.pos is VERB:
-        (lcs, lcs_ic) = _lcs_by_content(synset1, synset2, verb_freqs)
-
+    ic1, ic2, lcs_ic = _lcs_ic(synset1, synset2, ic)
     return lcs_ic
 
-def jcn_similarity(synset1, synset2, datafile="", verbose=False):
+def jcn_similarity(synset1, synset2, ic, verbose=False):
     """
     Jiang-Conrath Similarity:
     Return a score denoting how similar two word senses are, based on the
@@ -156,45 +146,29 @@ def jcn_similarity(synset1, synset2, datafile="", verbose=False):
     ancestor node) and that of the two input Synsets. The relationship is
     given by the equation 1 / (IC(s1) + IC(s2) - 2 * IC(lcs)).
 
-    Note that at this time the scores given do _not_ always agree with
-    those given by Pedersen's Perl implementation of Wordnet Similarity,
-    although they are mostly very similar.
-
-    The required IC values are calculated using precomputed frequency
-    counts, which are accessed from the 'datafile' file which is supplied
-    as an argument. For more information on how they are calculated,
-    check brown_ic.py.
-
+    @type  synset1: L{Synset}
+    @param synset1: The first synset being compared
     @type  synset2: L{Synset}
-    @param synset2: The L{Synset} that this L{Synset} is being compared to.
+    @param synset2: The second synset being compared
+    @type  ic: L{InformationContent}
+    @param ic: an information content object
     @return: A float score denoting the similarity of the two L{Synset}s.
         If no path exists between the two synsets a score of -1 is returned.
     """
 
     if synset1 == synset2:
         return inf
-
-    # TODO: Once this data has been loaded for the first time preserve it
-    # in memory in some way to prevent unnecessary recomputation.
-    (noun_freqs, verb_freqs) = _load_ic_data(datafile)
-
-    # Get the correct frequency dict as dependent on the input synsets'
-    # pos (Part of Speech) attribute.
-    if synset1.pos is NOUN: freqs = noun_freqs
-    elif synset1.pos is VERB: freqs = verb_freqs
-    else: return -1
-
-    ic1 = synset1.information_content(freqs)
-    ic2 = synset2.information_content(freqs)
-    (lcs, lcs_ic) = _lcs_by_content(synset1, synset2, freqs)
+    
+    ic1, ic2, lcs_ic = _lcs_ic(synset1, synset2, ic)
 
     # If either of the input synsets are the root synset, or have a
     # frequency of 0 (sparse data problem), return 0.
-    if ic1 is 0 or ic2 is 0: return 0
+    if ic1 == 0 or ic2 == 0:
+        return 0
 
     return 1 / (ic1 + ic2 - 2 * lcs_ic)
 
-def lin_similarity(synset1, synset2, datafile="", verbose=False):
+def lin_similarity(synset1, synset2, ic, verbose=False):
     """
     Lin Similarity:
     Return a score denoting how similar two word senses are, based on the
@@ -202,33 +176,18 @@ def lin_similarity(synset1, synset2, datafile="", verbose=False):
     ancestor node) and that of the two input Synsets. The relationship is
     given by the equation 2 * IC(lcs) / (IC(s1) + IC(s2)).
 
-    Note that at this time the scores given do _not_ always agree with
-    those given by Pedersen's Perl implementation of Wordnet Similarity,
-    although they are mostly very similar.
-
-    The required IC values are calculated using precomputed frequency
-    counts, which are accessed from the 'datafile' file which is supplied
-    as an argument. For more information on how they are calculated,
-    check brown_ic.py.
-
+    @type  synset1: L{Synset}
+    @param synset1: The first synset being compared
     @type  synset2: L{Synset}
-    @param synset2: The L{Synset} that this L{Synset} is being compared to.
+    @param synset2: The second synset being compared
+    @type  ic: L{InformationContent}
+    @param ic: an information content object
     @return: A float score denoting the similarity of the two L{Synset}s,
         in the range 0 to 1. If no path exists between the two synsets a
         score of -1 is returned.
     """
 
-    # TODO: Once this data has been loaded cache it to save unnecessary recomputation.
-    (noun_freqs, verb_freqs) = _load_ic_data(datafile)
-
-    if synset1.pos is NOUN: freqs = noun_freqs
-    elif synset1.pos is VERB: freqs = verb_freqs
-    else: return -1
-
-    ic1 = synset1.information_content(freqs)
-    ic2 = synset2.information_content(freqs)
-    (lcs, lcs_ic) = _lcs_by_content(synset1, synset2, freqs)
-
+    ic1, ic2, lcs_ic = _lcs_ic(synset1, synset2, ic)
     return (2.0 * lcs_ic) / (ic1 + ic2)
 
 # Utility functions
@@ -305,59 +264,75 @@ def _lcs_by_depth(synset1, synset2, verbose=False):
         print "> LCS Subsumer by depth:", subsumer
     return subsumer
 
-def _lcs_by_content(synset1, synset2, freqs, verbose=False):
+def _lcs_ic(synset1, synset2, ic, verbose=False):
     """
-    Get the least common subsumer of the two input synsets, where the least
-    common subsumer is defined as the ancestor synset common to both input
-    synsets which has the highest information content (IC) value. The IC
-    value is calculated by extracting the probability of an ancestor synset
-    from a precomputed set.
+    Get the information content of the least common subsumer that has
+    the highest information content value.
 
     @type  synset1: L{Synset}
     @param synset1: First input synset.
-
     @type  synset2: L{Synset}
     @param synset2: Second input synset.
-
-    @return: The ancestor synset common to both input synsets which is also
-        the LCS.
+    @type  ic: L{InformationContent}
+    @param ic: an information content object
+    @return: The information content of the two synsets and their most informative subsumer
     """
-    subsumer = None
-    subsumer_ic = -1
 
-    subsumers = common_hypernyms(synset1, synset2)
-
-    # For each candidate, calculate its IC value. Keep track of the candidate
-    # with the highest score.
-    for candidate in subsumers:
-        ic = candidate.information_content(freqs)
-        if (subsumer == None and ic > 0) or ic > subsumer_ic:
-            subsumer = candidate
-            subsumer_ic = ic
+    pos = synset1.pos
+    ic1 = information_content(synset1, ic)
+    ic2 = information_content(synset2, ic)
+    subsumer_ic = max(information_content(s, ic) for s in common_hypernyms(synset1, synset2))
 
     if verbose:
-        print "> LCS Subsumer by content:", subsumer, subsumer_ic
+        print "> LCS Subsumer by content:", subsumer_ic
     
-    return (subsumer, subsumer_ic)
+    return ic1, ic2, subsumer_ic
 
 # Utility functions
 
-def _load_ic_data(filename):
-    """
-    Load in some precomputed frequency distribution data from a file. It is
-    expected that this data has been stored as two pickled dicts.
+def information_content(synset, ic):
+    pos = synset.pos
+    return -math.log(ic[pos][synset.offset] / ic[pos][0])
 
-    TODO: Possibly place the dicts into a global variable or something so
-    that they don't have to be repeatedly loaded from disk.
-    
-    TODO: Get this to use nltk.data.find('corpora/wordnet_ic/filename').
-    This expects separate noun and verb dictionaries (not sure how they
-    are done in the file.)
+# this load function would be more efficient if the data was pickled
+# Note that we can't use NLTK's frequency distributions because
+# synsets are overlapping (each instance of a synset also counts
+# as an instance of its hypernyms)
+def load_ic(icfile):
     """
-    infile = open(filename, "rb")
-    noun_freqs = pickle.load(infile)
-    verb_freqs = pickle.load(infile)
-    infile.close()
+    Load an information content file from the wordnet_ic corpus
+    and return a dictionary.  This dictionary has just two keys,
+    NOUN and VERB, whose values are dictionaries that map from
+    synsets to information content values.
 
-    return (noun_freqs, verb_freqs)
+    @type  icfile: L{str}
+    @param icfile: The name of the wordnet_ic file (e.g. "ic-brown.dat")
+    @return: An information content dictionary
+    """
+    icfile = nltk.data.find('corpora/wordnet_ic/' + icfile)
+    ic = {}
+    ic[NOUN] = defaultdict(int)
+    ic[VERB] = defaultdict(int)
+    for num, line in enumerate(open(icfile)):
+        if num == 0: # skip the header
+            continue
+        fields = line.split()
+        offset = int(fields[0][:-1])
+        value = float(fields[1])
+        pos = _get_pos(fields[0])
+        if num == 1: # store root count
+            ic[pos][0] = value
+        if value != 0:
+            ic[pos][offset] = value
+    return ic
+ 
+# get the part of speech (NOUN or VERB) from the information content record
+# (each identifier has a 'n' or 'v' suffix)
+def _get_pos(field):
+    if field[-1] == 'n':
+        return NOUN
+    elif field[-1] == 'v':
+        return VERB
+    else:
+        raise ValueError, "Unidentified part of speech in WordNet Information Content file"
 

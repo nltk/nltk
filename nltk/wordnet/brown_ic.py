@@ -8,6 +8,12 @@
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
+# This module can be used to build information content files.
+# However, NLTK's WordNet Similarity code uses pre-built IC
+# files obtained from the WordNet Similarity website [1] and
+# distributed as part of the NLTK corpus collection.
+# [1] http://wn-similarity.sourceforge.net
+
 import pickle
 import sys
 

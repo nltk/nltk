@@ -167,51 +167,46 @@ the purposes of the calculation.
     >>> V['run'][0].wup_similarity(V['think'][0])
     -1
 
-res_similarity(self, other_sense, datafile=""):
+information_content(icfile):
+Information Content:
+Load an information content file from the wordnet_ic corpus
+and return a dictionary.  This dictionary has just two keys,
+NOUN and VERB, whose values are dictionaries that map from
+synsets to information content values.
+
+res_similarity(self, other_sense, ic):
 Resnik Similarity:
 Return a score denoting how similar two word senses are, based on the
 Information Content (IC) of the Least Common Subsumer (most specific
-ancestor node). Note that at this time the scores given do _not_
-always agree with those given by Pedersen's Perl implementation of
-Wordnet Similarity, although they are mostly very similar.
+ancestor node).
 
-The required IC values are precomputed and stored in a file, the name
-of which should be passed as the 'datafile' argument. For more
-information on how they are calculated, check brown_ic.py.
+    >>> ic = nltk.wordnet.load_ic('ic-bnc-resnik.dat')
+    >>> furnace = nltk.wordnet.N['furnace'][0]
+    >>> stove = nltk.wordnet.N['stove'][0]
+    >>> furnace.res_similarity(stove, ic)
+    2.52024528123
 
-jcn_similarity(self, other_sense, datafile=""):
+jcn_similarity(self, other_sense, ic):
 Jiang-Conrath Similarity
 Return a score denoting how similar two word senses are, based on the
 Information Content (IC) of the Least Common Subsumer (most specific
 ancestor node) and that of the two input Synsets. The relationship is
 given by the equation 1 / (IC(s1) + IC(s2) - 2 * IC(lcs)).
 
-Note that at this time the scores given do _not_ always agree with
-those given by Pedersen's Perl implementation of Wordnet Similarity,
-although they are mostly very similar.
+    >>> ic = nltk.wordnet.load_ic('ic-brown.dat')
+    >>> furnace.jcn_similarity(stove, ic)
+    0.0640910491174
 
-The required IC values are calculated using precomputed frequency
-counts, which are accessed from the 'datafile' file which is supplied
-as an argument. For more information on how they are calculated,
-check brown_ic.py.
-
-lin_similarity(self, other_sense, datafile=""):
+lin_similarity(self, other_sense, ic):
 Lin Similarity:
 Return a score denoting how similar two word senses are, based on the
 Information Content (IC) of the Least Common Subsumer (most specific
 ancestor node) and that of the two input Synsets. The relationship is
 given by the equation 2 * IC(lcs) / (IC(s1) + IC(s2)).
 
-Note that at this time the scores given do _not_ always agree with
-those given by Pedersen's Perl implementation of Wordnet Similarity,
-although they are mostly very similar.
-
-The required IC values are calculated using precomputed frequency
-counts, which are accessed from the 'datafile' file which is supplied
-as an argument. For more information on how they are calculated,
-check brown_ic.py.
-
-
+    >>> ic = nltk.wordnet.load_ic('ic-semcor.dat')
+    >>> furnace.lin_similarity(stove, ic)
+    0.229384690502
 
 getWord(form, pos=NOUN):
 Return a word with the given lexical form and pos.

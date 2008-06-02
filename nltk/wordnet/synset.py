@@ -132,7 +132,7 @@ class Synset(object):
     """
     
     def __init__(self, pos, offset, line):
-        """Initialize the Synset from a line in a WordNet synset file."""
+        """Initialize the synset from a line in a WordNet synset file."""
 
         # Part of speech -- one of NOUN, VERB, ADJECTIVE, ADVERB.
         self.pos = pos
@@ -442,26 +442,6 @@ class Synset(object):
 
         return path_distance
 
-    def information_content(self, freq_data):
-        """
-        Get the Information Content value of this L{Synset}, using
-        the supplied dict 'freq_data'.
-
-        @type  freq_data: C{dict}
-        @param freq_data: Dictionary mapping synset identifiers (offsets) to
-            a tuple containing the frequency count of the synset, and the
-            frequency count of the root synset.
-        @return: The IC value of this L{Synset}, or -1 if no IC value can be
-            computed.
-        """
-        key = self.offset
-
-        if freq_data.has_key(key):
-            prob = float(freq_data[key][0]) / freq_data[key][1]
-            return -math.log(prob)
-
-        else: return -1
-
     def tree(self, rel, depth=-1, cut_mark=None):
         """
         >>> dog = N['dog'][0]
@@ -499,14 +479,14 @@ class Synset(object):
     def wup_similarity(self, other, verbose=False):
         return wup_similarity(self, other, verbose)
 
-    def res_similarity(self, other, datafile="", verbose=False):
-        return res_similarity(self, other, datafile, verbose)
+    def res_similarity(self, other, ic, verbose=False):
+        return res_similarity(self, other, ic, verbose)
 
-    def jcn_similarity(self, other, datafile="", verbose=False):
-        return jcn_similarity(self, other, datafile, verbose)
-        bd
-    def lin_similarity(self, other, datafile="", verbose=False):
-        return lin_similarity(self, other, datafile, verbose)
+    def jcn_similarity(self, other, ic, verbose=False):
+        return jcn_similarity(self, other, ic, verbose)
+    
+    def lin_similarity(self, other, ic, verbose=False):
+        return lin_similarity(self, other, ic, verbose)
 
 
 # Lexical Relations
