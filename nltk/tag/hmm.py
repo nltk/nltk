@@ -908,7 +908,7 @@ def demo():
 def load_pos(num_sents):
     from nltk.corpus import brown
 
-    sentences = brown.tagged_sents('a')[:num_sents]
+    sentences = brown.tagged_sents(categories='a')[:num_sents]
 
     sequences = []
     sequence = []
