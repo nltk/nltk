@@ -54,18 +54,18 @@ The build requires docutils, pdflatex, python imaging library, epydoc, cdrtools
   5. make python numpy pylab (potentially slow; to download all python distros if necessary)
   6. make iso (fast; see dist/ for the iso image)
   7. list distributions and compare size with previous distribution
-
--rw-r--r--  1 sb  staff    1708357  4 Mar 18:19 nltk-0.9.2-1.noarch.rpm
--rw-r--r--@ 1 sb  staff  140807260  4 Mar 18:59 nltk-0.9.2.dmg
--rw-r--r--  1 sb  staff  338051072  4 Mar 19:09 nltk-0.9.2.iso
--rw-r--r--  1 sb  staff     750901  4 Mar 18:21 nltk-0.9.2.tar.gz
--rw-r--r--  1 sb  staff     947126  4 Mar 18:19 nltk-0.9.2.win32.exe
--rw-r--r--  1 sb  staff     895585  4 Mar 18:09 nltk-0.9.2.zip
--rw-r--r--  1 sb  staff    1772964  4 Mar 18:59 nltk-contribdoc-0.9.2.zip
--rw-r--r--  1 sb  staff   78534316  4 Mar 18:23 nltk-data-0.9.2.zip
--rw-r--r--  1 sb  staff   42324978  4 Mar 18:22 nltk-doc-0.9.2.zip
--rw-r--r--  1 sb  staff      85739  4 Mar 18:22 nltk-examples-0.9.2.zip
-
+  
+-rw-r--r--  1 sb    staff    1749280 Jun  3 19:49 nltk-0.9.3-1.noarch.rpm
+-rw-r--r--@ 1 root  staff  140812776 Jun  3 19:57 nltk-0.9.3.dmg
+-rw-r--r--  1 sb    staff  367073280 Jun  3 20:03 nltk-0.9.3.iso
+-rw-r--r--  1 sb    staff     787020 Jun  3 19:50 nltk-0.9.3.tar.gz
+-rw-r--r--  1 sb    staff     984202 Jun  3 19:51 nltk-0.9.3.win32.exe
+-rw-r--r--  1 sb    staff     932679 Jun  3 19:46 nltk-0.9.3.zip
+-rw-r--r--  1 sb    staff    1689918 Jun  3 20:00 nltk-contribdoc-0.9.3.zip
+-rw-r--r--  1 sb    staff   92638653 Jun  3 20:01 nltk-data-0.9.3.zip
+-rw-r--r--  1 sb    staff   41108093 Jun  3 19:58 nltk-doc-0.9.3.zip
+-rw-r--r--  1 sb    staff      85739 Jun  3 20:00 nltk-examples-0.9.3.zip
+  
   (test the distributions?)
 
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
