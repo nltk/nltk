@@ -127,8 +127,8 @@ def res_similarity(synset1, synset2, ic, verbose=False):
     @param synset1: The first synset being compared
     @type  synset2: L{Synset}
     @param synset2: The second synset being compared
-    @type  ic: L{InformationContent}
-    @param ic: an information content object
+    @type  ic: C{dict}
+    @param ic: an information content object (as returned by L{load_ic()}).
     @return: A float score denoting the similarity of the two L{Synset}s.
         Synsets whose LCS is the root node of the taxonomy will have a
         score of 0 (e.g. N['dog'][0] and N['table'][0]). If no path exists
@@ -150,8 +150,8 @@ def jcn_similarity(synset1, synset2, ic, verbose=False):
     @param synset1: The first synset being compared
     @type  synset2: L{Synset}
     @param synset2: The second synset being compared
-    @type  ic: L{InformationContent}
-    @param ic: an information content object
+    @type  ic: C{dict}
+    @param ic: an information content object (as returned by L{load_ic()}).
     @return: A float score denoting the similarity of the two L{Synset}s.
         If no path exists between the two synsets a score of -1 is returned.
     """
@@ -180,8 +180,8 @@ def lin_similarity(synset1, synset2, ic, verbose=False):
     @param synset1: The first synset being compared
     @type  synset2: L{Synset}
     @param synset2: The second synset being compared
-    @type  ic: L{InformationContent}
-    @param ic: an information content object
+    @type  ic: C{dict}
+    @param ic: an information content object (as returned by L{load_ic()}).
     @return: A float score denoting the similarity of the two L{Synset}s,
         in the range 0 to 1. If no path exists between the two synsets a
         score of -1 is returned.
@@ -273,8 +273,8 @@ def _lcs_ic(synset1, synset2, ic, verbose=False):
     @param synset1: First input synset.
     @type  synset2: L{Synset}
     @param synset2: Second input synset.
-    @type  ic: L{InformationContent}
-    @param ic: an information content object
+    @type  ic: C{dict}
+    @param ic: an information content object (as returned by L{load_ic()}).
     @return: The information content of the two synsets and their most informative subsumer
     """
 
