@@ -20,6 +20,9 @@ usage:
 
 all: dist
 
+upload:
+	rsync -avP -e ssh dist/* $(USER)@frs.sourceforge.net:uploads/
+
 doc:
 	$(MAKE) -C doc all
 
