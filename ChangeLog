@@ -1,10 +1,13 @@
 Version 0.9.3 2008-05-13
 	
 NLTK:
+- modified WordNet similarity code to use pre-built information content files
 - new classifier-based tagger, BNC corpus reader
 - improved unicode support for corpus readers
 - improved interfaces to Weka, Prover9/Mace4
 - new support for using MEGAM and SciPy to train maxent classifiers
+- rewrite of Punkt sentence segmenter (Joel Nothman)
+- bugfixes for WordNet information content module (Jordan Boyd-Graber)
 - code clean-ups throughout
 
 Book:
@@ -13,7 +16,11 @@ Book:
 Contrib:
 - implementation of incremental algorithm for generating
   referring expressions (contributed by Margaret Mitchell)
-	
+- refactoring WordNet browser (Paul Bone)
+  
+Corpora:
+- included WordNet information content files
+
 Version 0.9.2 2008-03-04
 
 NLTK:
