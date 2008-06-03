@@ -1086,9 +1086,12 @@ class PunktSentenceTokenizer(_PunktBaseClass,TokenizerI):
         Attempts to realign punctuation that falls after the period but
         should otherwise be included in the same sentence.
 
-        For example: "(Sent1.) Sent2." will otherwise be split as:
+        For example: "(Sent1.) Sent2." will otherwise be split as::
+        
             ["(Sent1.", ") Sent1."].
-        This method will produce:
+            
+        This method will produce::
+        
             ["(Sent1.)", "Sent2."].
         """
         realign = 0
