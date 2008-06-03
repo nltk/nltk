@@ -183,8 +183,8 @@ ancestor node).
     >>> ic = nltk.wordnet.load_ic('ic-bnc-resnik.dat')
     >>> furnace = nltk.wordnet.N['furnace'][0]
     >>> stove = nltk.wordnet.N['stove'][0]
-    >>> furnace.res_similarity(stove, ic)
-    2.52024528123
+    >>> furnace.res_similarity(stove, ic) # doctest: +ELLIPSIS
+    2.52024528...
 
 jcn_similarity(self, other_sense, ic):
 Jiang-Conrath Similarity
@@ -194,8 +194,8 @@ ancestor node) and that of the two input Synsets. The relationship is
 given by the equation 1 / (IC(s1) + IC(s2) - 2 * IC(lcs)).
 
     >>> ic = nltk.wordnet.load_ic('ic-brown.dat')
-    >>> furnace.jcn_similarity(stove, ic)
-    0.0640910491174
+    >>> furnace.jcn_similarity(stove, ic) # doctest: +ELLIPSIS
+    0.0640910491...
 
 lin_similarity(self, other_sense, ic):
 Lin Similarity:
@@ -205,8 +205,8 @@ ancestor node) and that of the two input Synsets. The relationship is
 given by the equation 2 * IC(lcs) / (IC(s1) + IC(s2)).
 
     >>> ic = nltk.wordnet.load_ic('ic-semcor.dat')
-    >>> furnace.lin_similarity(stove, ic)
-    0.229384690502
+    >>> furnace.lin_similarity(stove, ic) # doctest: +ELLIPSIS
+    0.229384690...
 
 getWord(form, pos=NOUN):
 Return a word with the given lexical form and pos.
