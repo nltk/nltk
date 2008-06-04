@@ -21,8 +21,12 @@ usage:
 """
 __docformat__ = 'epytext en'
 
-import numpy, os, os.path, subprocess
+import os, os.path, subprocess
 from nltk.internals import find_binary
+try:
+    import numpy
+except ImportError:
+    numpy = None
 
 ######################################################################
 #{ Configuration
@@ -112,6 +116,8 @@ def parse_megam_weights(s, explicit=True):
     model, return a C{numpy} array containing the corresponding weight
     vector.  This function does not currently handle bias features.
     """
+    if numpy is None:
+        raise ValueError('This function requires that numpy be installed')
     assert explicit, 'non-explicit not supported yet'
     lines = s.strip().split('\n')
     weights = numpy.zeros(len(lines), 'd')
