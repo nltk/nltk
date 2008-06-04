@@ -58,7 +58,7 @@ except ImportError:
                 args = tuple()
             else:
                 args = self.default_factory,
-            return type(self), args, None, None, self.items()
+            return type(self), args, None, None, self.iteritems()
         def copy(self):
             return self.__copy__()
         def __copy__(self):
