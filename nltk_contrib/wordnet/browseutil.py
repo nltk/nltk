@@ -5,15 +5,9 @@
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
-__version__ = '$Revision: 9 $'
-# $Source$
 
 from urllib import quote_plus, unquote_plus
 import itertools as it
-
-# The following is only possible starting with Python version 2.5
-# and the NLTK download pages says that NLTK requires at least 2.4 so:
-# from collections import defaultdict
 
 from nltk import defaultdict
 from nltk.wordnet.util import *
@@ -24,7 +18,29 @@ from nltk.wordnet.synset import _RELATION_TABLE
 
 __all__ = ['page_word','relations_2', 'new_word_and_body', 'uniq_cntr']
 
-# The following function probably should be a method of the Synset class in synset.py
+
+"""
+Wordnet Browser Utilities.
+
+This provides a backend to both wxbrowse and browserver.py.
+"""
+
+
+#
+# TODO: The following issues exist with this module, and should
+# ideally be fixed.  These line numbers have changed since these items
+# where recorded.
+#
+# All through: SHOULD add docstrings.
+# Line 29: Some or all of relations_2 SHOULD be moved to synst.py
+# Line 343: MAY re-write expression so that it's more readable.
+# Line 395: MAY rewrite this and previous statment.
+#           to avoid creating serperflous "<i>/</i>"
+# Line 454: MAY replace lambda expression with 'first'.
+# Line 695: MAY rewrite expression to build string so that it is more readable.
+#
+
+
 
 def relations_2(synsetObj, rel_name=None, word_match=False):
     """
@@ -79,7 +95,8 @@ def relations_2(synsetObj, rel_name=None, word_match=False):
         return synsetObj._relations
 
 
-_pos_tuples = [(N,'N','noun'), (V,'V','verb'), (ADJ,'J','adj'), (ADV,'R','adv')]
+_pos_tuples = [(N,'N','noun'), (V,'V','verb'), (ADJ,'J','adj'), 
+               (ADV,'R','adv')]
 
 def _pos_match(pos_tuple):
     for n,x in enumerate(pos_tuple):
@@ -203,7 +220,8 @@ word links and others. Clicking a word link carries out a search for the word
 in the Wordnet database.</li>
 <li>Clicking a link of the other type opens a display section of data attached
 to that link. Clicking that link a second time closes the section again.</li>
-<li>Clicking <u>S:</u> opens a section showing the relations for that synset.</li>
+<li>Clicking <u>S:</u> opens a section showing the relations for that synset.
+</li>
 <li>Clicking on a relation name opens a section that displays the associated
 synsets.</li>
 <li>Type a search word in the <b>Word</b> field and start the search by the
@@ -226,7 +244,8 @@ def _li(txt): return '<li>%s</li>' % txt
 
 def pg(word, body):
     '''
-    Return a HTML page of NLTK Browser format constructed from the word and body
+    Return a HTML page of NLTK Browser format constructed from the
+    word and body
 
     @param word: The word that the body corresponds to
     @type word: str
@@ -250,6 +269,13 @@ full_hyponym_cont_text = \
 _uniq_cntr = 0
 
 def uniq_cntr():
+    """
+    Return a unique counter, a state is kept to ensure that the same
+    counter is not provided multiple times.
+
+    @return: A unique integer for this module instance.
+    @rtype: int
+    """
     global _uniq_cntr
     _uniq_cntr += 1
     return _uniq_cntr
@@ -287,8 +313,10 @@ def _collect_one(word, s_or_w, prev_synset_key):
         typ = 'S'
         synset_key = _pos_match((None,None,synset.pos))[1] + str(synset.offset)
         synset_key  += ',' + prev_synset_key
-    if synset.pos.startswith('ad'):  descr = synset.pos
-    else:                            descr = synset.pos[0]
+    if synset.pos.startswith('ad'):
+        descr = synset.pos
+    else:
+        descr = synset.pos[0]
     s = '<li><a href="' + typ + quote_plus(word + '#' + synset_key + '#' + \
             str(u_c)) + '">' + typ + ':</a>' + ' (' + descr + ') '
     if isinstance(s_or_w, tuple): # It's a word
@@ -324,19 +352,20 @@ def _collect_one(word, s_or_w, prev_synset_key):
             else:
                 gl += '; '
             gl += g
-    if hyph_not_found: gl += ')'
-    if not hyph_not_found: gl += '</i>'
+    if hyph_not_found: 
+        gl += ')'
+    else:
+        gl += '</i>'
     return s + gl + '</li>\n'
 
 def _collect_all(word, pos):
-    s = '<ul>'
-    for synset in pos[word]:
-        s += _collect_one(word, synset, '')
-    return s + '\n</ul>\n'
+    return '<ul>%s\n</ul>\n' % \
+        ''.join((_collect_one(word, synset, '') for synset in pos[word]))
 
 def _rel_ref(word, synset_keys, rel):
-    return '<a href="R' + quote_plus(word + '#' + synset_keys + '#' + \
-            rel + '#' + str(uniq_cntr())) + '"><i>' + rel + '</i></a>'
+    return '<a href="R%s"><i>%s</i></a>' % \
+        (quote_plus('#'.join((word, synset_keys, rel, str(uniq_cntr())))),
+         rel)
 
 def _anto_or_similar_anto(synset):
     anto = relations_2(synset, rel_name=ANTONYM, word_match=True)
@@ -417,9 +446,8 @@ def _hyponym_ul_structure(word, tree):
 def _hypernym_ul_structure(word, tree):
     htm = '<ul>\n' + _collect_one(word, tree[0], '') + '\n'
     if len(tree) > 1:
-        tree = tree[1:]
-        for t in tree: htm += _hypernym_ul_structure(word, t)
-    return htm  + '\n</ul>\n'
+        htm += ''.join((_hypernym_ul_structure(word, t) for t in tree[1:]))
+    return htm + '\n</ul>\n'
 
 def _word_ul_structure(word, synset, rel_name, synset_keys):
     synset_key,prev_synset_key = synset_keys.split(',')
@@ -439,19 +467,12 @@ def _word_ul_structure(word, synset, rel_name, synset_keys):
             syns = _get_synset(sk0)
             ind = int(sk1)
             hlp = [((s1.pos,s1.offset,i1),(s0.pos,s0.offset,i0))
-                      for ((s0,i0),(s1,i1)) in rel
-                      if s0.pos == syns.pos and s0.offset == syns.offset
-                      and i0 == ind]
+                      for ((s0,i0),(s1,i1))
+                      in rel
+                      if (s0.pos == syns.pos) 
+                         and (s0.offset == syns.offset)
+                         and (i0 == ind)]
         hlp = it.groupby(hlp,key=lambda x:x[0])
-        '''
-        for h in hlp:
-            forms = []
-            for h2 in h[1]:
-                forms.append(h2[1])
-            forms.sort()
-            print 'h[0], forms:', h[0], forms
-            s += _collect_one(word, (rel_form,(s1,h[0],forms)), synset_key)
-        '''
         hlp_2 = []
         for h in hlp:
             forms = []
@@ -471,7 +492,7 @@ def _word_ul_structure(word, synset, rel_name, synset_keys):
                     form = (s0.pos,s0.offset,i0)
                     oppo = (s1.pos,s1.offset,i1)
                     s += _collect_one(word, \
-                                (' [Indirect via ',(s1,oppo,[form])), synset_key)
+                            (' [Indirect via ',(s1,oppo,[form])), synset_key)
     return s
 
 def _relation_section(rel_name, word, synset_keys):
@@ -485,8 +506,9 @@ def _relation_section(rel_name, word, synset_keys):
         else: depth = -1
         tree = synset.tree(HYPONYM, depth, cut_mark='...')
         html = '\n' + _hyponym_ul_structure(word, tree[1:]) + '\n'
-        for x in synset[INSTANCE_HYPONYM]:
-            html += _collect_one(word, x, '')
+        html += ''.join((_collect_one(word, x, '') 
+                         for x 
+                         in synset[INSTANCE_HYPONYM]))
         return _ul(html + '\n')
     elif rel_name == 'inherited hypernym':
         tree = synset.tree(HYPERNYM)
@@ -496,8 +518,7 @@ def _relation_section(rel_name, word, synset_keys):
         for x in synset[HYPERNYM]:
             s += _collect_one(word, x, '')
             s += '<ul>'
-            for y in x[HYPONYM]:
-                s += _collect_one(word, y, '')
+            s += ''.join((_collect_one(word, y, '') for y in x[HYPONYM]))
             s += '\n</ul>'
         return _ul(s + '\n')
     elif rel_name == 'sentence frame':
@@ -529,7 +550,8 @@ def _relation_section(rel_name, word, synset_keys):
             oppo = None
             for syns in w:
                 for wlr in relations_2(syns, CLASSIF_REGIONAL,True):
-                    if not isinstance(wlr, tuple): continue
+                    if not isinstance(wlr, tuple):
+                        continue
                     syn,i = wlr[1]
                     syns,j = wlr[0]
                     if syn == synset and syns.words[j] == wrd:
@@ -539,21 +561,21 @@ def _relation_section(rel_name, word, synset_keys):
                 if oppo: break
             if oppo:
                 s += _collect_one(word, \
-                                (' [Related to: ',(synset,oppo,[form])), synset_key)
+                        (' [Related to: ',(synset,oppo,[form])), synset_key)
         return _ul(s + '\n')
     else:
         rel = _dispname_to_dbname(rel_name)
+        # word level
         if rel == ANTONYM or \
-                isinstance(relations_2(synset)[rel][0], basestring): # word level
+                isinstance(relations_2(synset)[rel][0], basestring): 
             s = _word_ul_structure(word, synset, rel_name, synset_keys)
             return _ul(s + '\n')
         else:
-            s = ''
-            for x in synset[rel]:
-                s += _collect_one(word, x, '')
+            s = ''.join((_collect_one(word, x, '') for x in synset[rel]))
             if rel == HYPONYM:
-                for x in synset[INSTANCE_HYPONYM]:
-                    s += _collect_one(word, x, '')
+                x += ''.join((_collect_one(word, x, '') 
+                              for x 
+                              in synset[INSTANCE_HYPONYM]))
             return _ul(s + '\n')
 
 def _w_b(word, overview):
@@ -562,14 +584,6 @@ def _w_b(word, overview):
     words = [w.strip() for w in words]
     for pos_str in ['noun', 'verb', 'adj', 'adv']:
         for w in words:
-            '''
-            if overview:
-                pos_forms[pos_str].append(w)
-            else:
-                for form in _morphy(w, pos=pos_str):
-                    if form not in pos_forms[pos_str]:
-                        pos_forms[pos_str].append(form)
-            '''
             for form in _morphy(w, pos=pos_str):
                 if form not in pos_forms[pos_str]:
                     pos_forms[pos_str].append(form)
