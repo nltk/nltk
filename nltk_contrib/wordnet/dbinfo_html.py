@@ -31,6 +31,19 @@ WORDNET_PATH = "nltk:corpora/wordnet/"
 
 
 #
+# TODO: Some items in this file are tagged with TODO and XXX, to indicate work
+# that should be done to improve this code,  Other general issues exist:
+#
+# TODO Line 34 and 175: Output SHOULD be optional, and MAY be off by default.
+#      This may make it easier to use dbinfo_html in a scripting context.
+#
+# TODO Docstrings should be changed so that they document expected types and
+#      values of parameters and return values.
+#
+
+
+
+#
 # Utility procedures,
 #
 
@@ -241,13 +254,16 @@ summary="">
             rel_word_examples[y[1]] = stats.rel_words[y]
 
         def format_td(x):
+            # XXX: The links generated here don't work.  I don't know what
+            # they are supposed to link to.
             format_str = '<td align="center"><a href="M%s">%s</a></td>'
             quoted_href = quote_plus(x + '#' + str(bu.uniq_cntr()))
             anchor = x.replace('_', ' ')
             return format_str % (quoted_href, anchor)
         
         hlp = concat_map(format_td, rel_word_examples)
-        # This line doesn't work, I wonder if there is a bug above?
+        # XXX: This line doesn't work, Since when there is no anchor above
+        # there is still a quoted_href.
         hlp = hlp.replace('<a href="M"></a>','-')
         html += hlp + '</tr>\n'
     html += '</table>' + bu.html_trailer
