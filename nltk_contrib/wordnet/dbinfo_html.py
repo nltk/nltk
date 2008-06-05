@@ -30,6 +30,10 @@ DISPLAY_NAMES = [('forms','Word forms'), ('simple','--- simple words'),
 WORDNET_PATH = "nltk:corpora/wordnet/"
 
 
+#
+# Utility procedures,
+#
+
 def get_data(type, pos):
     """
     Read an index data file for the given part of speach and return a
@@ -77,6 +81,16 @@ def display_name_from_rk(rk):
     return dn
 
 
+#
+# dbinfo_html.py is split into two main procedures.
+#
+# 1. get_stats_from_database() --- Retrive data and build stats.
+#
+# 2. htmlize_stats() --- Format the statistics into a web page.
+#
+# get_stats_from_database() returns a 'Stats' object, which htmlize_stats()
+# interprets.
+
 class Stats:
     """
     Statistics gathered from the NLTK Wordnet database.
@@ -90,7 +104,7 @@ class Stats:
 
 def get_stats_from_database():
     '''
-    Create the file: NLTK Wordnet Browser Database Info.html
+    Gather statistics from the database.  This returns a Stats object.
     '''
     print 'Database information is being gathered!'
     print
@@ -103,6 +117,8 @@ def get_stats_from_database():
 
     for n_pos,pos in enumerate(ALL_POS): #['adv']): #all_pos):
         print '\n\nStarting the summary for POS: %s' % COL_HEADS[n_pos]
+        # TODO: this dictionary could probably be replaced by a number of
+        # variables.
         d = defaultdict(int)
 
         # Word counts.
@@ -130,7 +146,8 @@ def get_stats_from_database():
             d['syns'] += 1
             synset = getSynset(pos,int(syns[:8]))
             syn_rel = bu.relations_2(synset)
-            if HYPERNYM not in syn_rel and 'hypernym (instance)' not in syn_rel:
+            if (HYPERNYM not in syn_rel) and \
+                    ('hypernym (instance)' not in syn_rel):
                 unique_beginners[n_pos].append(synset)
             d['rels'] += len(syn_rel)
             for sr in syn_rel:
@@ -156,7 +173,9 @@ def get_stats_from_database():
 
 
 def htmlize_stats(stats):
-    # Format the counts
+    """
+    Given a stats object build a HTML page summarising them.
+    """
     print '\n\nStarting the construction of result tables'
 
     html = (bu.html_header % '* Database Info *') + \
@@ -210,7 +229,8 @@ summary="">
 <caption></caption>
 <col align="center"><col align="center"><col align="center">
 <col align="center"><col align="center">
-<tr><th>Relation</th><th>Noun</th><th>Verb</th><th>Adjective</th><th>Adverb</th></tr>
+<tr><th>Relation</th><th>Noun</th><th>Verb</th><th>Adjective</th>
+<th>Adverb</th></tr>
 '''
 
     for rk in group_rel_count_keys_by_first(stats.rel_counts):
@@ -236,7 +256,7 @@ summary="">
 
 def main():
     """
-    Program entry point"
+    Program entry point
     """
     stats = get_stats_from_database()
     html = htmlize_stats(stats)
