@@ -67,11 +67,8 @@ def relations_2(synsetObj, rel_name=None, word_match=False):
                     source_tuple = (synsetObj,source_ind)
                     target_tuple = (synset,target_ind)
                     relations[rel].append((source_tuple,target_tuple))
-                    #relations[rel].append( \
-                    #   (synsetObj.words[source_ind],synset[target_ind]))
                 else:
                     relations[rel].append(synset[target_ind])
-                    #relations[rel].append(synset[target_ind - 1])
             else:
                 relations[rel].append(synset)
         synsetObj._relations = dict(relations)
@@ -249,8 +246,6 @@ def _abbc(txt):
 full_hyponym_cont_text = \
     _ul(_li(_italic('(has full hyponym continuation)'))) + '\n'
 
-# This counter function is used to guarantee unique counter values
-#uniq_cntr = it.count().next
 
 _uniq_cntr = 0
 
@@ -411,10 +406,8 @@ def _hyponym_ul_structure(word, tree):
     if tree == ['...']: return full_hyponym_cont_text
     head = tree[0]
     tail = tree[1:]
-    #print 'head, tail:', head, tail
     htm = _collect_one(word, head[0], '') + '\n'
     if isinstance(head, list) and len(head) > 1:
-        #print 'head[1:]:', head[1:]
         htm += '<ul>'
         htm += _hyponym_ul_structure(word, head[1:])
         htm += '\n</ul>'
@@ -426,7 +419,6 @@ def _hypernym_ul_structure(word, tree):
     if len(tree) > 1:
         tree = tree[1:]
         for t in tree: htm += _hypernym_ul_structure(word, t)
-        #htm += '\n</ul>\n'
     return htm  + '\n</ul>\n'
 
 def _word_ul_structure(word, synset, rel_name, synset_keys):
@@ -438,7 +430,6 @@ def _word_ul_structure(word, synset, rel_name, synset_keys):
         rel_form = ' [Related to: '
     s = ''
     rel = relations_2(synset, rel_name=rel_name, word_match=True)
-    #print 'rel:', rel
     if rel:
         hlp = [((s1.pos,s1.offset,i1),(s0.pos,s0.offset,i0))
                   for ((s0,i0),(s1,i1)) in rel]
@@ -467,10 +458,8 @@ def _word_ul_structure(word, synset, rel_name, synset_keys):
             for h2 in h[1]:
                 forms.append(h2[1])
             forms.sort()
-            #print 'h[0], forms:', h[0], forms
             hlp_2 = [(h[0],forms)] + hlp_2
         for h,f in hlp_2:
-            #print 'h, f:', h, f
             s += _collect_one(word, (rel_form,(s1,h,f)), synset_key)
     elif rel_name == ANTONYM:
         similar = relations_2(synset, rel_name=SIMILAR)
@@ -490,28 +479,17 @@ def _relation_section(rel_name, word, synset_keys):
     synset = _get_synset(synset_key.split(':')[0])
     if rel_name == 'full hyponym' or rel_name == 'full troponym':
         if rel_name == 'full hyponym':
-            #depth = max(1, 2**int(math.sqrt(synset.min_depth())) - 1)
             depth = synset.min_depth()
             if depth <= 2: depth = 1
             elif depth == 3: depth = 2
-            #else: depth += 1
         else: depth = -1
         tree = synset.tree(HYPONYM, depth, cut_mark='...')
-        #print tree
-        '''
-        if pruned:
-            msg = '(The following list is pruned; max. depth = %d)' % depth
-            return '<ul>\n' + _li(_bold(_italic(msg))) + \
-                              _hyponym_ul_structure(word, tree[1:]) + '\n</ul>'
-        else:
-        '''
         html = '\n' + _hyponym_ul_structure(word, tree[1:]) + '\n'
         for x in synset[INSTANCE_HYPONYM]:
             html += _collect_one(word, x, '')
         return _ul(html + '\n')
     elif rel_name == 'inherited hypernym':
         tree = synset.tree(HYPERNYM)
-        #print tree
         return _hypernym_ul_structure(word, tree[1:][0]) # + '\n</ul>'
     elif rel_name == 'sister term':
         s = ''
@@ -666,7 +644,6 @@ def page_word(page, word, href):
     link_type = href[0]
     q_link = href[1:]
     u_link = unquote_plus(q_link)
-    #print link_type, q_link, u_link
     if link_type == 'M' or link_type == 'N': # Search for this new word
         word, u_c = u_link.split('#')
         word,body = new_word_and_body(word)
@@ -677,7 +654,6 @@ def page_word(page, word, href):
     elif link_type == 'R': # Relation links
         # A relation link looks like this:
         # word#synset_keys#relation_name#uniq_cntr
-        #print 'u_link:', u_link
         word,synset_keys,rel_name,u_c = u_link.split('#')
         '''
         word = word.strip()
@@ -685,9 +661,7 @@ def page_word(page, word, href):
         rel_name = rel_name.strip()
         u_c = u_c.strip()
         '''
-        #print 'word,synset_keys,rel_name,u_c:',word,synset_keys,rel_name,u_c
         ind = page.find(q_link) + len(q_link) + 2
-        #print page[ind:]
         # If the link text is in bold, the user wants to
         # close the section beneath the link
         if page[ind:ind+3] == '<b>':
@@ -700,9 +674,7 @@ def page_word(page, word, href):
             # and if it is, then remove boldness & close the section below
             end = page.find('\n', ind)
             start = page.rfind('\n', 0, ind)
-            #print 'page[start:end]:', page[start:end]
             start = page.find('<b>', start, end)
-            #print 'start:', start
             if start != -1:
                 page = _ul_section_removed(page, ind)
                 end = page.find('</b>', start, end)
@@ -713,14 +685,12 @@ def page_word(page, word, href):
             if rel_name in implemented_rel_names:
                 ind = page.find(q_link) + len(q_link) + 2
                 ind_2 = ind + len(rel_name) + 7
-                #print 'page[:ind]:', page[:ind]
                 page = page[:ind] + _bold(page[ind:ind_2]) + \
                        page[ind_2:]
                 # find the start of the next line
                 ind = page.find('\n', ind) + 1
                 section = \
                     _relation_section(rel_name, word, synset_keys)
-                #print 'page[:ind]:', page[:ind]
                 page = page[:ind] + section + page[ind:]
                 return page, word
             else:
@@ -731,31 +701,23 @@ def page_word(page, word, href):
         # A synset link looks like this:
         # Sword#synset_key,prev_synset_key#link_counter
         l_t = link_type + ':'
-        #print 'l_t, u_link:', l_t, u_link
         word,syns_keys,link_counter = u_link.split('#')
-        #print 'word,syns_keys,link_counter:',word,syns_keys,link_counter
-        #syns_key,prev_syns_key = syns_keys.split(',')
         ind = page.find(q_link) + len(q_link) + 2
-        #print page[ind:]
         # If the link text is in bold, the user wants to
         # close the section beneath the link
         if page[ind:ind+3] == '<b>':
             page = _ul_section_removed(page, ind)
-            #page = page[:ind] + 'S:' + page[ind + 9:]
             page = page[:ind] + l_t + page[ind + 9:]
             return page, word
         else: # The user wants to see the relation names
             # Make this link text bold on page
-            #page = page[:ind] + _bold('S:') + page[ind + 2:]
             page = page[:ind] + _bold(l_t) + page[ind + 2:]
             # Insert the relation names
             ind = page.find('\n', ind) + 1
             # First remove the full_hyponym_cont_text if found here
-            #print page[:ind+5] + '>>>>><<<<<' + page[ind+5:]
             if page[ind+5:].startswith(full_hyponym_cont_text):
                 page = page[0:ind+5] + \
                         page[ind+5+len(full_hyponym_cont_text):]
-            #print page[:ind+5] + '>>>>><<<<<' + page[ind+5:]
             s_r = _synset_relations(word, link_type, syns_keys)
             s_r = s_r.split('\n')[:-1]
             s_r = [_li(sr) for sr in s_r]
