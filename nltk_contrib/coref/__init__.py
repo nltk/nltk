@@ -1,8 +1,8 @@
 # Natural Language Toolkit (NLTK) Coreference Module
 #
 # Copyright (C) 2008 Joseph Frazee
-# Authors: Joseph Frazee <jfrazee@mail.utexas.edu>
-# URL:     http://nltk.org/
+# Author: Joseph Frazee <jfrazee@mail.utexas.edu>
+# URL: http://nltk.org/
 # For license information, see LICENSE.TXT
 
 """
@@ -32,4 +32,4 @@ __author_email__ = __maintainer_email__
 
 
 # Processing packages -- these all define __all__ carefully.
-
+from ace2 import *
