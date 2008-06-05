@@ -1,12 +1,14 @@
-# Natural Language Toolkit: Wordnet Interface: Graphical Wordnet Browser
-#
-# Copyright (C) 2007 - 2008 University of Pennsylvania
-# Author: Jussi Salmela <jtsalmela@users.sourceforge.net>
-# URL: <http://nltk.sf.net>
-# For license information, see LICENSE.TXT
+#!/usr/bin/python
 
-__version__ = '$Revision: 9 $'
-# $Source$
+"""
+Wordnet Interface: Graphical Wordnet Browser
+
+Copyright (C) 2007 - 2008 University of Pennsylvania
+Author: Jussi Salmela <jtsalmela@users.sourceforge.net>
+URL: <http://nltk.sf.net>
+For license information, see LICENSE.TXT
+
+"""
 
 import  os
 import  os.path
@@ -21,28 +23,42 @@ import  wx
 import  wx.html as  html
 import  wx.lib.wxpTag
 
-#from browseutil import page_word, new_word_and_body, explanation
 import browseutil as bu
 
 __all__ = ['demo']
 
-#explanation_text = None
+
+#
+# Comments within this code indicate future work.  These comments are
+# marked with 'XXX'
+#
+
+
+# XXX: write these global constants in shouting case.
+#
+# Additionally, through-out this module docstrings should be entered.
+#
+
+
 frame_title = 'NLTK Wordnet Browser'
-help_about = frame_title + \
-'''
-
-Copyright (C) 2007 University of Pennsylvania
-
-Author: Jussi Salmela <jtsalmela@users.sourceforge.net>
-
-URL: <http://nltk.sf.net>
-
-For license information, see LICENSE.TXT
-'''
+help_about = frame_title + __doc__
 
 # This is used to save options in and to be pickled at exit
 options_dict = {}
-pickle_file_name = frame_title + '.pkl'
+
+try:
+    nltk_prefs_dir = os.path.join(os.environ['HOME'], ".nltk")
+except KeyError:
+    # XXX: This fallback may have problems on windows.
+    nltk_prefs_dir = os.path.curdir
+pickle_file_name = os.path.join(nltk_prefs_dir, 
+                                (frame_title + os.path.extsep + 'pkl'))
+
+### XXX: MUST find a standard location for the stats HTML page,
+###      perhapsw in NLTK_DATA.
+
+WORDNET_DB_INFO_FILEPATH = 'NLTK Wordnet Browser Database Info.html' 
+
 
 
 class MyHtmlWindow(html.HtmlWindow):
@@ -50,11 +66,8 @@ class MyHtmlWindow(html.HtmlWindow):
         html.HtmlWindow.__init__(self, parent, id,
                                     style=wx.NO_FULL_REPAINT_ON_RESIZE)
         self.parent = parent
-        #if 'gtk2' in wx.PlatformInfo:
-        #self.SetStandardFonts()
         self.font_size = self.normal_font_size = \
                          options_dict['font_size']
-        #print 'self.font_size:', self.font_size
         self.incr_decr_font_size(0) # Keep it as it is
 
     def OnLinkClicked(self, linkinfo):
@@ -79,41 +92,26 @@ class MyHtmlWindow(html.HtmlWindow):
                 self.parent.parent.show_page_and_word(page)
         else:
             self.show_msg('Relation "%s" is not implemented yet!' % rel_name)
-            #print 'Relation "%s" is not implemented yet!' % rel_name
-        '''
-        else:
-            print 'We should be in a Help Window now! Are we?'
-            super(MyHtmlWindow, self).OnLinkClicked(linkinfo)
-        '''
+
+        # XXX: MAY simplfy the if predicate. */
         if tab_to_return_to is not None:
             self.parent.switch_html_page(tab_to_return_to)
-            '''
-            self.parent.current_page = tab_to_return_to
-            self.parent.SetSelection(tab_to_return_to)
-            self.parent.h_w = self.parent.GetPage(tab_to_return_to)
-            if self.parent.h_w.prev_wp_list == []:
-                self.parent.prev_btn.Enable(False)
-            if self.parent.h_w.next_wp_list == []:
-                self.parent.next_btn.Enable(False)
-            '''
 
     def OnSetTitle(self, title):
+        "no-op"
         pass
-        #super(MyHtmlWindow, self).OnSetTitle(title)
 
     def OnCellMouseHover(self, cell, x, y):
-        #super(MyHtmlWindow, self).OnCellMouseHover(cell, x, y)
+        "no-op"
         pass
 
     def OnOpeningURL(self, type, url):
-        #super(MyHtmlWindow, self).OnCellMouseHover(cell, x, y)
+        "no-op"
         pass
 
     def OnCellClicked(self, cell, x, y, evt):
         linkinfo = cell.GetLink()
         if linkinfo is not None:
-            #html.HtmlCellEvent.SetLinkClicked(True)
-            #evt.SetLinkClicked(True)
             pass
         else:
             pass
@@ -128,16 +126,8 @@ class MyHtmlWindow(html.HtmlWindow):
         else:
             self.font_size  = self.normal_font_size
         options_dict['font_size'] = self.font_size
-        # Font size behavior is very odd. This is a hack
-        #self.SetFonts('times new roman', 'courier new', [self.font_size]*7)
         self.SetStandardFonts(size=self.font_size)
         self.SetPage(page_to_restore)
-
-    #def show_body(self, word, body):
-        #self.SetPage((html_header % word) + body + html_trailer)
-
-    #def show_help(self):
-    #    self.parent.parent.show_page_and_word(bu.explanation, 'green')
 
     def show_msg(self, msg):
         msg1 = '*'*8 + '   ' + msg + '   ' + '*'*8
@@ -157,14 +147,9 @@ class MyHtmlWindow(html.HtmlWindow):
 #----------------------------------------------------------------------------
 class NB(wx.Notebook):
     def __init__(self, parent):
-        wx.Notebook.__init__(self, parent, -1, size=(21,21), style=
-                             wx.BK_DEFAULT
-                             #wx.BK_TOP
-                             #wx.BK_BOTTOM
-                             #wx.BK_LEFT
-                             #wx.BK_RIGHT
-                             # | wx.NB_MULTILINE
-                             )
+        wx.Notebook.__init__(self, parent, -1, size=(21,21),
+                             style=wx.BK_DEFAULT)
+
         self.parent = parent
         self.add_html_page()
         self.Bind(wx.EVT_NOTEBOOK_PAGE_CHANGED, self.OnPageChanged)
@@ -178,6 +163,7 @@ class NB(wx.Notebook):
             self.switch_html_page(new)
         event.Skip()
 
+# XXX: MAY remove three statments with no effect. */
     def OnPageChanging(self, event):
         old = event.GetOldSelection()
         new = event.GetSelection()
@@ -196,7 +182,8 @@ class NB(wx.Notebook):
         h_w = MyHtmlWindow(self, -1)
         if 'gtk2' in wx.PlatformInfo:
             h_w.SetStandardFonts()
-        h_w.SetRelatedFrame(self.parent.frame, self.parent.titleBase + ' -- %s')
+        h_w.SetRelatedFrame(self.parent.frame, 
+                            self.parent.titleBase + ' -- %s')
         h_w.SetRelatedStatusBar(0)
         h_w.current_word = ''
         # Init the word-page list for history browsing
@@ -217,6 +204,7 @@ class HtmlPanel(wx.Panel):
     def __init__(self, frame):
         wx.Panel.__init__(self, frame, -1, style=wx.NO_FULL_REPAINT_ON_RESIZE)
         self.frame = frame
+# XXX: MAY simplify setting self.cwdJust use os.getcwd(). */
         self.cwd = os.path.split(sys.argv[0])[0]
 
         if not self.cwd:
@@ -253,11 +241,7 @@ class HtmlPanel(wx.Panel):
         subbox_1.Add(lbl, 5, wx.GROW | wx.ALL, 2)
 
         self.search_word = wx.TextCtrl(self, -1, '', style=wx.TE_PROCESS_ENTER)
-        #self.Bind(wx.EVT_TEXT, self.on_word_change, self.search_word)
         self.Bind(wx.EVT_TEXT_ENTER, self.on_word_enter, self.search_word)
-        #self.Bind(wx.EVT_KEY_DOWN, self.on_key_down, self.search_word)
-        #self.Bind(wx.EVT_KEY_UP, self.on_key_up, self.search_word)
-        #self.Bind(wx.EVT_CHAR, self.on_char, self.search_word)
         self.search_word.Bind(wx.EVT_LEFT_UP, self.on_mouse_up)
         subbox_1.Add(self.search_word, 20, wx.GROW | wx.ALL, 2)
 
@@ -299,8 +283,6 @@ class HtmlPanel(wx.Panel):
             self.search_word.SetValue(word)
             self.nb.h_w.SetPage(page)
             self.nb.h_w.Scroll(x, y)
-        #else:
-        #    self.nb.h_w.show_msg('At the start of page history already')
 
     def on_next_page(self, event):
         if self.nb.h_w.next_wp_list:
@@ -320,8 +302,6 @@ class HtmlPanel(wx.Panel):
             self.search_word.SetValue(word)
             self.nb.h_w.SetPage(page)
             self.nb.h_w.Scroll(x, y)
-        #else:
-        #    self.nb.h_w.show_msg('At the end of page history already!')
 
     def on_help(self, event):
         self.frame.on_help_help(None)
@@ -388,7 +368,8 @@ class MyHtmlFrame(wx.Frame):
         nt = menu_1_2.Append(-1, 'New tabsheet\tCtrl+T')
         ct = menu_1_2.Append(-1, 'Close tabsheet\tCtrl+W')
         menu_1_2.AppendSeparator()
-        ssw_nt = menu_1_2.Append(-1, 'Show search word in new tabsheet\tAlt+Enter')
+        ssw_nt = menu_1_2.Append(-1, 
+                                 'Show search word in new tabsheet\tAlt+Enter')
         menu_bar.Append(menu_1_2, '&Tabsheets')
 
         menu_2 = wx.Menu()
@@ -458,10 +439,8 @@ class MyHtmlFrame(wx.Frame):
         self.Bind(wx.EVT_MOVE, self.on_frame_move)
         self.Bind(wx.EVT_CLOSE, self.on_frame_close)
 
-        #self.Bind(wx.EVT_KEY_DOWN, self.on_key_down)
-        #self.Bind(wx.EVT_KEY_UP, self.on_key_up)
-
         self.panel = HtmlPanel(self)
+
 
     def on_key_down(self, event):
         event.Skip()
@@ -476,6 +455,8 @@ class MyHtmlFrame(wx.Frame):
             pos = (0,0)
         options_dict['frame_pos'] = pos
         options_dict['frame_size'] = size
+        if not os.access(nltk_prefs_dir, os.F_OK):
+            os.mkdir(nltk_prefs_dir)
         pkl = open(pickle_file_name, 'wb')
         pickle.dump(options_dict, pkl, -1)
         pkl.close()
@@ -560,16 +541,20 @@ class MyHtmlFrame(wx.Frame):
         word = '* Database Info *'
         current_page = self.panel.nb.add_html_page()
         self.panel.nb.SetPageText(current_page,word)
-        if os.path.isfile('NLTK Wordnet Browser Database Info.html'):
-            html = open('NLTK Wordnet Browser Database Info.html').read()
-        else:
+        try:
+            file = open(WORDNET_DB_INFO_FILEPATH)
+            html = file.read()
+            file.close()
+        except IOError:
+            # TODO: Should give instructions for using dbinfo_html.py
             html = (html_header % word) + '<p>The database info file:'\
-                   '<p><b>NLTK Wordnet Browser Database Info.html</b>' + \
-                   '<p>was not found. Run this:<p><b>python dbinfo_html.py</b>' + \
-                   '<p>to produce it.' + html_trailer
+                   '<p><b>%s</b>' + \
+                   '<p>was not found. Run the <b>dbinfo_html.py</b>' + \
+                   'script to produce it.' + html_trailer
         self.panel.show_page_and_word(html, word)
         return
 
+    # These files need to be placed in a known location.
     def read_file(self, path):
         try:
             if not path.endswith('.htm') and not path.endswith('.html'):
@@ -621,11 +606,6 @@ class MyHtmlFrame(wx.Frame):
                 if not path.endswith('.htm') and not path.endswith('.html'):
                     path += '.html'
                 f = open(path, 'w')
-                '''
-                txt = '<title>' + frame_title + ' display of: ' + \
-                      self.panel.nb.h_w.current_word  + '</title></head>'
-                source = source.replace('</head>', txt)
-                '''
                 f.write(source)
                 f.close()
             except:
@@ -650,7 +630,7 @@ class MyHtmlFrame(wx.Frame):
         dlg.Destroy()
 
     def print_(self):
-        self.panel.printer.GetPrintData().SetFilename('onnaax ???')
+        self.panel.printer.GetPrintData().SetFilename('unnamed')
         html = self.panel.nb.h_w.GetParser().GetSource()
         self.panel.printer.PrintText(html)
 
@@ -723,7 +703,6 @@ def _adjust_pos_and_size(frame):
     frame.Iconize(False)
 
 def demo():
-    #global explanation_text
     global options_dict
 
     app = wx.PySimpleApp()
@@ -733,8 +712,6 @@ def demo():
     # This succeeds in Windows, so let's make it conditional
     if platform.system() == 'Windows':
         ico = wx.Icon('favicon.ico', wx.BITMAP_TYPE_ICO)
-        # ??? tbi = wx.TaskBarIcon()
-        # ??? tbi.SetIcon(ico, 'this is the tip, you know')
         frm.SetIcon(ico)
     word,body = bu.new_word_and_body('green')
     frm.panel.nb.SetPageText(0,word)
@@ -744,7 +721,6 @@ def demo():
     frm.panel.nb.h_w.show_page(bu.pg('green', body))
     page = frm.panel.nb.h_w.GetParser().GetSource()
     page = frm.panel.nb.GetPage(0).GetParser().GetSource()
-    #explanation_text = body
     frm.Show()
     frm.Maximize(True)
     _adjust_pos_and_size(frm)
