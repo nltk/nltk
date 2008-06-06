@@ -1,4 +1,4 @@
-# Natural Language Toolkit (NLTK) ACE-2 Corpus Reader
+# Natural Language Toolkit (NLTK) MUC-6 Corpus Reader
 #
 # Copyright (C) 2008 Joseph Frazee
 # Author: Joseph Frazee <jfrazee@mail.utexas.edu>
@@ -6,7 +6,7 @@
 # For license information, see LICENSE.TXT
 
 """
-Corpus reader for the ACE-2 Corpus.
+Corpus reader for the MUC-6 Corpus.
 
 """
 
@@ -20,7 +20,7 @@ from nltk.tokenize.regexp import *
 from nltk.tokenize.simple import *
 
 
-class ACE2CorpusReader(CorpusReader):
+class MUC6CorpusReader(CorpusReader):
     """
     """
 
@@ -30,17 +30,23 @@ class ACE2CorpusReader(CorpusReader):
     def words(self, files=None):
         """
         """
-        return concat([ACE2SourceDocument(filename).words()
+        return concat([MUC6Document(filename).words()
                        for filename in self.abspaths(files)])
 
     def sents(self, files=None):
         """
         """
-        return concat([ACE2SourceDocument(filename).sents()
+        return concat([MUC6Document(filename).sents()
+                       for filename in self.abspaths(files)])
+
+    def paras(self, files=None):
+        """
+        """
+        return concat([MUC6Document(filename).paras()
                        for filename in self.abspaths(files)])
 
 
-class ACE2SourceDocument(str):
+class MUC6Document(str):
     """
     """
 
@@ -55,30 +61,13 @@ class ACE2SourceDocument(str):
         """
         if self._sgmldoc_:
             return self._sgmldoc_
-        self._sgmldoc_ = ACE2SGMLParser().parse(self)
+        self._sgmldoc_ = MUC6SGMLParser().parse(self)
         return self._sgmldoc_
-        
-    def _sent_tokenizer(self):
-        """
-        """
-        if self.docsource() == 'broadcast news':
-            return PunktSentenceTokenizer()
-        if self.docsource() == 'newswire':
-            return PunktSentenceTokenizer()
-        if self.docsource() == 'newspaper':
-            return PunktSentenceTokenizer()
-        raise
 
     def _word_tokenizer(self):
         """
         """
-        if self.docsource() == 'broadcast news':
-            return PunktWordTokenizer()
-        if self.docsource() == 'newswire':
-            return PunktWordTokenizer()
-        if self.docsource() == 'newspaper':
-            return PunktWordTokenizer()
-        raise
+        return PunktWordTokenizer()
 
     def words(self):
         """
@@ -93,8 +82,20 @@ class ACE2SourceDocument(str):
         """
         """
         result = []
-        for sent in self._sent_tokenizer().tokenize(self._sgmldoc().text()):
-            result.append(self._word_tokenizer().tokenize(sent))
+        for p in self.paras():
+            result.extend(p)
+        assert None not in result
+        return result
+
+    def paras(self):
+        """
+        """
+        result = []
+        for p in self._sgmldoc().text():
+            sent = []
+            for s in p:
+                sent.append(self._word_tokenizer().tokenize(s))
+            result.append(sent)
         assert None not in result
         return result
 
@@ -105,22 +106,8 @@ class ACE2SourceDocument(str):
         assert result
         return result
 
-    def doctype(self):
-        """
-        """
-        result = self._sgmldoc().doctype()
-        assert result
-        return result
 
-    def docsource(self):
-        """
-        """
-        result = self._sgmldoc().docsource()
-        assert result
-        return result
-
-
-class ACE2SGMLParser(SGMLParser):
+class MUC6SGMLParser(SGMLParser):
     """
     """
 
@@ -134,10 +121,12 @@ class ACE2SGMLParser(SGMLParser):
         """
         SGMLParser.reset(self)
         self._parsed = False
-        self._text = None
         self._docno = None
-        self._doctype = None
-        self._docsource = None
+        self._headline = None
+        self._source = None
+        self._p = None
+        self._s = None
+        self._current = None
         self._in = []
 
     def start_doc(self, attrs):
@@ -150,17 +139,39 @@ class ACE2SGMLParser(SGMLParser):
         """
         self._in.remove('doc')
 
-    def start_text(self, attrs):
+    def start_hl(self, attrs):
         """
         """
-        self._in.insert(0, 'text')
-        self._text = ''
+        self._in.insert(0, 'hl')
+        self._headline = ''
 
-    def end_text(self):
+    def end_hl(self):
         """
         """
-        self._in.remove('text')
-        self._text = self._text.strip()
+        self._headline = self._headline.strip()
+        self._in.remove('hl')
+
+    def start_so(self, attrs):
+        """
+        """
+        self._in.insert(0, 'so')
+        self._source = ''
+
+    def end_so(self):
+        """
+        """
+        self._source = self._source.strip()
+        self._in.remove('so')
+
+    def start_txt(self, attrs):
+        """
+        """
+        self._in.insert(0, 'txt')
+
+    def end_txt(self):
+        """
+        """
+        self._in.remove('txt')
 
     def start_docno(self, attrs):
         """
@@ -171,35 +182,49 @@ class ACE2SGMLParser(SGMLParser):
     def end_docno(self):
         """
         """
-        self._in.remove('docno')
         self._docno = self._docno.strip()
+        self._in.remove('docno')
 
-    def start_doctype(self, attrs):
+    def start_p(self, attrs):
         """
         """
-        self._in.insert(0, 'doctype')
-        self._doctype = ''
-        self._docsource = ''
-        for k, v in attrs:
-            if k == 'source':
-                self._docsource = v 
-                break
+        self._in.insert(0, 'p')
+        if self._p == None:
+            self._p = []
 
-    def end_doctype(self):
+    def end_p(self):
         """
         """
-        self._in.remove('doctype')
-        self._doctype = self._doctype.strip()
+        self._p.append(self._s)
+        self._s = None
+        self._in.remove('p')
+
+    def start_s(self, attrs):
+        """
+        """
+        self._in.insert(0, 's')
+        if self._s == None:
+            self._s = []
+        self._current = ''
+
+    def end_s(self):
+        """
+        """
+        self._s.append(self._current.strip())
+        self._current = None
+        self._in.remove('s')
 
     def handle_data(self, data):
         """
         """
-        if self._in and self._in[0] == 'text':
-            self._text += data
+        if self._in and self._in[0] == 'hl':
+            self._headline += data
+        if self._in and self._in[0] == 'so':
+            self._source += data
         if self._in and self._in[0] == 'docno':
             self._docno += data
-        if self._in and self._in[0] == 'doctype':
-            self._doctype += data
+        if self._in and self._in[0] == 's':
+            self._current += data.replace('\n', '')
 
     def parse(self, filename):
         """
@@ -214,8 +239,8 @@ class ACE2SGMLParser(SGMLParser):
     def text(self):
         """
         """
-        assert self._parsed and self._text
-        return self._text
+        assert self._parsed and self._p
+        return self._p
 
     def docno(self):
         """
@@ -223,26 +248,30 @@ class ACE2SGMLParser(SGMLParser):
         assert self._parsed and self._docno
         return self._docno
 
-    def doctype(self):
+    def headline(self):
         """
         """
-        assert self._parsed and self._doctype
-        return self._doctype
+        assert self._parsed and self._headline
+        return self._headline
 
-    def docsource(self):
+    def source(self):
         """
         """
-        assert self._parsed and self._docsource
-        return self._docsource
-
+        assert self._parsed and self._source
+        return self._source
 
 def _demo(root, file):
     """
     """
+    import os.path
     from nltk_contrib.coref.ace2 import ACE2CorpusReader
 
     try:
-        reader = ACE2CorpusReader(root, file)
+        reader = MUC6CorpusReader(root, file)
+        print 'Paragraphs for %s:' % (file)
+        for para in reader.paras():
+            print '    %s' % (para)
+            print
         print 'Sentences for %s:' % (file)
         for sent in reader.sents():
             print '    %s' % (sent)
@@ -262,18 +291,11 @@ def demo():
     import os.path
 
     try:
-        ace2_dir = os.environ['ACE2_DIR']
+        muc6_dir = os.environ['MUC6_DIR']
     except KeyError:
-        raise 'Demo requires ACE-2 Corpus, set ACE2_DIR environment variable!' 
+        raise 'Demo requires MUC-6 Corpus, set MUC6_DIR environment variable!' 
 
-    bnews_dir = os.path.join(ace2_dir, 'data/ace2_train/', 'bnews')
-    _demo(bnews_dir, 'ABC19980106.1830.0029.sgm')
-
-    npaper_dir = os.path.join(ace2_dir, 'data/ace2_train/', 'npaper')
-    _demo(npaper_dir, '9801.139.sgm')
-
-    nwire_dir = os.path.join(ace2_dir, 'data/ace2_train/', 'nwire')
-    _demo(nwire_dir, 'APW19980213.1302.sgm')
+    _demo(muc6_dir, 'dryrun-trng01.muc6')
 
 if __name__ == '__main__':
     demo()
