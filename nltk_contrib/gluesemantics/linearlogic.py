@@ -42,7 +42,7 @@ class AtomicExpression(Expression):
         @param bindings: C{BindingDict} A dictionary of bindings used to simplify
         @return: C{AtomicExpression}
         """
-        if bindings and self in bindings.d:
+        if bindings and self in bindings:
             return bindings[self]
         else:
             return self
@@ -301,6 +301,9 @@ class BindingDict:
                 intermediate = self.d[intermediate]
             except KeyError:
                 return intermediate
+            
+    def __contains__(self, item):
+        return item in self.d
 
     def __add__(self, other):
         """

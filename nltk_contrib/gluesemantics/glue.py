@@ -92,21 +92,17 @@ class GlueFormula:
 
 class GlueDict(dict):
     def __init__(self, filename=None):
-        self.read_file(filename)
+        self.filename = filename
+        self.read_file()
     
-    def get_default_file(self):
-        return 'glue_event.semtype'
-
-    def read_file(self, filename=None, empty_first=True):
-        if not filename:
-            filename = self.get_default_file()
+    def read_file(self, empty_first=True):
         if empty_first: 
             self.clear()
 
         try:
-            f = open(data.find(os.path.join('grammars', filename)))
+            f = open(data.find(os.path.join('grammars', self.filename)))
         except LookupError:
-            f = open(filename)
+            f = open(self.filename)
         lines = f.readlines()
         f.close()
 
@@ -227,10 +223,17 @@ class GlueDict(dict):
         return GlueFormula
 
 class Glue:
-    def __init__(self, verbose=False, dependency=False, remove_duplicates=False):
+    def __init__(self, verbose=False, dependency=False, semtype_file=None, remove_duplicates=False):
         self.verbose = verbose
         self.dependency = dependency
         self.remove_duplicates = remove_duplicates
+        
+        if semtype_file:
+            self.semtype_file = semtype_file
+        elif dependency:
+            self.semtype_file = 'glue_event.semtype'
+        else:
+            self.semtype_file = 'glue.semtype'
     
     def parse_to_meaning(self, sentence):
         readings = []
@@ -342,7 +345,7 @@ class Glue:
         return glueformulas
     
     def get_glue_dict(self):
-        return GlueDict()
+        return GlueDict(self.semtype_file)
     
     def gfl_to_compiled(self, gfl):
         index_counter = Counter()
@@ -495,8 +498,8 @@ def demo(show_example=-1, dependency=False):
                 'every man believes a dog sleeps',
                 'John gives David a sandwich',
                 'John chases himself',
-                'John tries to go',
                 'John persuades David to order a pizza',
+                'John tries to go',
                 'John tries to find a unicorn',
                 'John seems to vanish',
                 'a unicorn seems to approach',
@@ -505,6 +508,12 @@ def demo(show_example=-1, dependency=False):
                 'every big gray cat leaves',
                 'a former senator leaves']
 
+    print '============== DEMO =============='
+    if dependency: 
+        print '     ====== DEPENDENCY ======     '
+    else: 
+        print '     ========= FCFG =========     '
+    
     for (i, sentence) in zip(range(len(examples)), examples):
         if i==show_example or show_example==-1:
             print '[[[Example %s]]]  %s' % (i, sentence)
@@ -518,5 +527,7 @@ if __name__ == '__main__':
     compile_demo()
     print "\n\n"
     compiled_proof_demo()
+#    print "\n\n"
+#    demo(dependency=False)
     print "\n\n"
     demo(dependency=True)

@@ -42,18 +42,24 @@ class DrtGlueFormula(glue.GlueFormula):
         return DRT.DrtLambdaExpression(variables, term)
         
 class DrtGlueDict(glue.GlueDict):
-    def __init__(self, filename=None):
-        self.read_file(filename)
-    
-    def get_default_file(self):
-        return 'drt_glue_event.semtype'
-    
     def get_GlueFormula_factory(self):
         return DrtGlueFormula
 
 class DrtGlue(glue.Glue):
+    def __init__(self, verbose=False, dependency=False, semtype_file=None, remove_duplicates=False):
+        self.verbose = verbose
+        self.dependency = dependency
+        self.remove_duplicates = remove_duplicates
+        
+        if semtype_file:
+            self.semtype_file = semtype_file
+        elif dependency:
+            self.semtype_file = 'drt_glue_event.semtype'
+        else:
+            self.semtype_file = 'drt_glue.semtype'
+
     def get_glue_dict(self):
-        return DrtGlueDict()
+        return DrtGlueDict(self.semtype_file)
     
 
 def compile_demo():
