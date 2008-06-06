@@ -10,10 +10,7 @@ Corpus reader for the ACE-2 Corpus.
 
 """
 
-try:
-    import xml.etree.cElementTree as ElementTree
-except ImportError:
-    import nltk.etree.ElementTree
+from sgmllib import SGMLParser
 
 from nltk.corpus.reader.api import *
 from nltk.corpus.reader.util import *
@@ -48,42 +45,20 @@ class ACE2SourceDocument(str):
     """
     """
 
-    try:
-        import xml.etree.cElementTree as ElementTree
-    except ImportError:
-        import nltk.etree.ElementTree
-
-    import htmlentitydefs
-
-    from nltk.tokenize.punkt import PunktWordTokenizer
-    from nltk.tokenize.regexp import BlanklineTokenizer
-    from nltk.tokenize.simple import LineTokenizer 
-
     def __init__(self, path):
         """
         """
         str.__init__(self, path)
-        self._xmldoc_ = None
+        self._sgmldoc_ = None
 
-    def _xmldoc(self):
+    def _sgmldoc(self):
         """
         """
-        if self._xmldoc_:
-            return self._xmldoc_
-        self._xmldoc_ = ElementTree.parse(self).getroot()
-        return self._xmldoc_
+        if self._sgmldoc_:
+            return self._sgmldoc_
+        self._sgmldoc_ = ACE2SGMLParser().parse(self)
+        return self._sgmldoc_
         
-    def _xpath(self):
-        """
-        """
-        if self.docsource() == 'broadcast news':
-            return './/TEXT/turn'
-        if self.docsource() == 'newswire':
-            return './/TEXT'
-        if self.docsource() == 'newspaper':
-            return './/TEXT'
-        raise
-
     def _sent_tokenizer(self):
         """
         """
@@ -92,16 +67,19 @@ class ACE2SourceDocument(str):
         if self.docsource() == 'newswire':
             return PunktSentenceTokenizer()
         if self.docsource() == 'newspaper':
-            return BlanklineTokenizer()
+            return PunktSentenceTokenizer()
         raise
 
     def _word_tokenizer(self):
-        return PunktWordTokenizer()
-
-    def xmldoc(self):
         """
         """
-        return self._xmldoc()
+        if self.docsource() == 'broadcast news':
+            return PunktWordTokenizer()
+        if self.docsource() == 'newswire':
+            return PunktWordTokenizer()
+        if self.docsource() == 'newspaper':
+            return PunktWordTokenizer()
+        raise
 
     def words(self):
         """
@@ -116,33 +94,147 @@ class ACE2SourceDocument(str):
         """
         """
         result = []
-        for xmltext in self._xmldoc().findall(self._xpath()):
-            result.extend([self._word_tokenizer().tokenize(xmlsent)
-                           for xmlsent in
-                           self._sent_tokenizer().tokenize(xmltext.text)])
+        for sent in self._sent_tokenizer().tokenize(self._sgmldoc().text()):
+            result.append(self._word_tokenizer().tokenize(sent))
         assert None not in result
         return result
 
     def docno(self):
         """
         """
-        result = self._xmldoc().find('.//DOCNO').text.strip()
+        result = self._sgmldoc().docno()
         assert result
         return result
 
     def doctype(self):
         """
         """
-        result = self._xmldoc().find('.//DOCTYPE').text.strip()
+        result = self._sgmldoc().doctype()
         assert result
         return result
 
     def docsource(self):
         """
         """
-        result = self._xmldoc().find('.//DOCTYPE').get('SOURCE').strip()
+        result = self._sgmldoc().docsource()
         assert result
         return result
+
+
+class ACE2SGMLParser(SGMLParser):
+    """
+    """
+
+    def __init__(self):
+        """
+        """
+        SGMLParser.__init__(self)
+
+    def reset(self):
+        """
+        """
+        SGMLParser.reset(self)
+        self._parsed = False
+        self._text = None
+        self._docno = None
+        self._doctype = None
+        self._docsource = None
+        self._in = []
+
+    def start_doc(self, attrs):
+        """
+        """
+        self._in.insert(0, 'doc')
+
+    def end_doc(self):
+        """
+        """
+        self._in.remove('doc')
+
+    def start_text(self, attrs):
+        """
+        """
+        self._in.insert(0, 'text')
+        self._text = ''
+
+    def end_text(self):
+        """
+        """
+        self._in.remove('text')
+        self._text = self._text.strip()
+
+    def start_docno(self, attrs):
+        """
+        """
+        self._in.insert(0, 'docno')
+        self._docno = ''
+
+    def end_docno(self):
+        """
+        """
+        self._in.remove('docno')
+        self._docno = self._docno.strip()
+
+    def start_doctype(self, attrs):
+        """
+        """
+        self._in.insert(0, 'doctype')
+        self._doctype = ''
+        self._docsource = ''
+        for k, v in attrs:
+            if k == 'source':
+                self._docsource = v 
+                break
+
+    def end_doctype(self):
+        """
+        """
+        self._in.remove('doctype')
+        self._doctype = self._doctype.strip()
+
+    def handle_data(self, data):
+        """
+        """
+        if self._in and self._in[0] == 'text':
+            self._text += data
+        if self._in and self._in[0] == 'docno':
+            self._docno += data
+        if self._in and self._in[0] == 'doctype':
+            self._doctype += data
+
+    def parse(self, filename):
+        """
+        """
+        file = open(filename)
+        for line in file:
+            self.feed(line)
+        file.close()
+        self._parsed = True
+        return self
+
+    def text(self):
+        """
+        """
+        assert self._parsed and self._text
+        return self._text
+
+    def docno(self):
+        """
+        """
+        assert self._parsed and self._docno
+        return self._docno
+
+    def doctype(self):
+        """
+        """
+        assert self._parsed and self._doctype
+        return self._doctype
+
+    def docsource(self):
+        """
+        """
+        assert self._parsed and self._docsource
+        return self._docsource
 
 
 def _demo(root, file):
@@ -154,11 +246,11 @@ def _demo(root, file):
         reader = ACE2CorpusReader(root, file)
         print 'Sentences for %s:' % (file)
         for sent in reader.sents():
-            print sent
+            print '    %s' % (sent)
         print
         print 'Words for %s:' % (file)
         for word in reader.words():
-            print word
+            print '    %s' % (word)
         print
     except Exception, e:
         print 'Error encountered while running demo for %s: %s' % (file, e)
@@ -169,12 +261,19 @@ def demo():
     """
     import os
     import os.path
-    ace2_dir = os.environ['ACE2_DIR']
+
+    try:
+        ace2_dir = os.environ['ACE2_DIR']
+    except KeyError:
+        raise 'Demo requires ACE-2 Corpus, set ACE2_DIR environment variable!' 
+
     bnews_dir = os.path.join(ace2_dir, 'data/ace2_train/', 'bnews')
-    npaper_dir = os.path.join(ace2_dir, 'data/ace2_train/', 'npaper')
-    nwire_dir = os.path.join(ace2_dir, 'data/ace2_train/', 'nwire')
     _demo(bnews_dir, 'ABC19980106.1830.0029.sgm')
+
+    npaper_dir = os.path.join(ace2_dir, 'data/ace2_train/', 'npaper')
     _demo(npaper_dir, '9801.139.sgm')
+
+    nwire_dir = os.path.join(ace2_dir, 'data/ace2_train/', 'nwire')
     _demo(nwire_dir, 'APW19980213.1302.sgm')
 
 if __name__ == '__main__':
