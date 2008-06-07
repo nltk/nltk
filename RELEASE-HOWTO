@@ -55,16 +55,16 @@ The build requires docutils, pdflatex, python imaging library, epydoc, cdrtools
   6. make iso (fast; see dist/ for the iso image)
   7. list distributions and compare size with previous distribution
   
--rw-r--r--  1 sb    staff    1749280 Jun  3 19:49 nltk-0.9.3-1.noarch.rpm
--rw-r--r--@ 1 root  staff  140812776 Jun  3 19:57 nltk-0.9.3.dmg
--rw-r--r--  1 sb    staff  367073280 Jun  3 20:03 nltk-0.9.3.iso
--rw-r--r--  1 sb    staff     787020 Jun  3 19:50 nltk-0.9.3.tar.gz
--rw-r--r--  1 sb    staff     984202 Jun  3 19:51 nltk-0.9.3.win32.exe
--rw-r--r--  1 sb    staff     932679 Jun  3 19:46 nltk-0.9.3.zip
--rw-r--r--  1 sb    staff    1689918 Jun  3 20:00 nltk-contribdoc-0.9.3.zip
--rw-r--r--  1 sb    staff   92638653 Jun  3 20:01 nltk-data-0.9.3.zip
--rw-r--r--  1 sb    staff   41108093 Jun  3 19:58 nltk-doc-0.9.3.zip
--rw-r--r--  1 sb    staff      85739 Jun  3 20:00 nltk-examples-0.9.3.zip
+-rw-r--r--  1 sb      1749280 Jun  3 19:49 nltk-0.9.3-1.noarch.rpm
+-rw-r--r--@ 1 root  167856401 Jun  6 23:09 nltk-0.9.3.dmg
+-rw-r--r--  1 sb    393977856 Jun  6 23:12 nltk-0.9.3.iso
+-rw-r--r--  1 sb       787020 Jun  3 19:50 nltk-0.9.3.tar.gz
+-rw-r--r--  1 sb       984202 Jun  3 19:51 nltk-0.9.3.win32.exe
+-rw-r--r--  1 sb       932679 Jun  3 19:46 nltk-0.9.3.zip
+-rw-r--r--  1 sb      1689918 Jun  3 20:00 nltk-contribdoc-0.9.3.zip
+-rw-r--r--  1 sb     92499832 Jun  6 22:58 nltk-data-0.9.3.zip
+-rw-r--r--  1 sb     41108093 Jun  3 19:58 nltk-doc-0.9.3.zip
+-rw-r--r--  1 sb        85739 Jun  3 20:00 nltk-examples-0.9.3.zip
   
   (test the distributions?)
 

@@ -1,4 +1,4 @@
-Version 0.9.3 2008-05-13
+Version 0.9.3 2008-06-03
 	
 NLTK:
 - modified WordNet similarity code to use pre-built information content files
