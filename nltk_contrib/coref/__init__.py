@@ -35,3 +35,4 @@ __author_email__ = __maintainer_email__
 from ace2 import *
 from muc6 import *
 from muc7 import *
+from freiburg import *
