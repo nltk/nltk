@@ -309,6 +309,7 @@ class PropbankTreePointer(object):
         Convert this pointer to a standard 'tree position' pointer,
         given that it points to the given tree.
         """
+        if tree is None: raise ValueError('Parse tree not avaialable')
         stack = [tree]
         treepos = []
 
