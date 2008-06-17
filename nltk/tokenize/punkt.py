@@ -20,9 +20,12 @@ described in Kiss & Strunk (2006)::
 """
 
 import re, math
-from nltk import defaultdict
-from api import TokenizerI
-from nltk.probability import FreqDist
+#from nltk import defaultdict
+#from api import TokenizerI
+#from nltk.probability import FreqDist
+from compat import defaultdict
+class TokenizerI: pass
+from probability import FreqDist
 
 ######################################################################
 #{ Orthographic Context Constants
@@ -180,6 +183,9 @@ class PunktParameters(object):
 
     def clear_sent_starters(self):
         self.sent_starters = set()
+
+    def clear_ortho_context(self):
+        self.ortho_context = defaultdict(int)
 
     def add_ortho_context(self, typ, flag):
         self.ortho_context[typ] |= flag
@@ -656,12 +662,11 @@ class PunktTrainer(_PunktBaseClass):
         retained.
         """
         if ortho_thresh > 1:
+            old_oc = self._params.ortho_context
+            self._params.clear_ortho_context()
             for tok, count in self._type_fdist.iteritems():
-                if count < ortho_thresh:
-                    try:
-                        del self._params.ortho_context[tok]
-                    except KeyError:
-                        pass
+                if count >= ortho_thresh:
+                    self._params.ortho_context[tok] = old_oc[tok]
 
         self._type_fdist = self._freq_threshold(self._type_fdist, type_thresh)
         self._collocation_fdist = self._freq_threshold(
@@ -1041,7 +1046,7 @@ class PunktSentenceTokenizer(_PunktBaseClass,TokenizerI):
         given. Repeated calls to this method destroy previous parameters. For
         incremental training, instantiate a separate PunktTrainer instance.
         """
-        if isinstance(train_text, PunktParameters):
+        if type(train_text) not in (type(''), type(u'')):
             return train_text
         return PunktTrainer(train_text).get_params()        
     
