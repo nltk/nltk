@@ -573,7 +573,7 @@ def _relation_section(rel_name, word, synset_keys):
         else:
             s = ''.join((_collect_one(word, x, '') for x in synset[rel]))
             if rel == HYPONYM:
-                x += ''.join((_collect_one(word, x, '') 
+                s += ''.join((_collect_one(word, x, '') 
                               for x 
                               in synset[INSTANCE_HYPONYM]))
             return _ul(s + '\n')
