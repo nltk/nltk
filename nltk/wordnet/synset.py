@@ -51,8 +51,11 @@ class Word(object):
             del self._synsetOffsets
             return self._synsets
 
-    def counts(self):
-        return [s.count(self.form) for s in self.synsets()]
+    def senses(self):
+        return [s.wordSense(self.form) for s in self.synsets()]
+
+    def senseCounts(self):
+        return [s.count() for s in self.senses()]
 
     def isTagged(self):
         """
@@ -102,17 +105,87 @@ class Word(object):
 
 class WordSense(object):
     """
-    A single word-sense pairing, indicated by a WordNet sense key of form::
+    A single word-sense pairing, indicated by in WordNet by a sense key of
+    form::
        lemma%ss_type:lex_filenum:lex_id:head_word:head_id
     """
 
-    def __init__(self, senseKey, synset=None):
+    _ssTypeMap = {'n': 1, 'v': 2, 'a': 3, 'r': 4, 's':5}
+    _ssTypeRevMap = dict((v,k) for k,v in _ssTypeMap.iteritems())
+
+    def __init__(self, senseKey):
         self.senseKey = senseKey
-        self.synset = synset
         self.lemma, remainder = senseKey.split('%', 1)
+        (ssType, lexFilenum, lexId,
+                self.headWord, headId) = remainder.split(':')
+
+        self.ssType = self._ssTypeRevMap[int(ssType)]
+        self.lexFilenum = int(lexFilenum)
+        self.lexId = int(lexId)
+        try:
+            self.headId = int(headId)
+        except ValueError:
+            self.headId = None
 
     def count(self):
         return senseCount(self.senseKey)
+    
+    def _senseIndexLine(self):
+        try:
+            WordSense._index
+        except AttributeError:
+            path = nltk.data.find('corpora/wordnet/index.sense')
+            WordSense._index = open(path, FILE_OPEN_MODE)
+        
+        res = binarySearchFile(WordSense._index, self.senseKey)
+        if res:
+            return res
+        raise ValueError("Count not find data for sense '%s'. "
+            "Is the key wrong?" % self.senseKey)
+
+    def synset(self):
+        line = self._senseIndexLine()
+        return getSynset(self.ssType, int(line.split()[1]))
+
+    def word(self):
+        return getWord(self.lemma, self.ssType)
+
+    def senseNo(self):
+        line = self._senseIndexLine()
+        return int(line.split()[2])
+
+    def lexname(self):
+        return Lexname.lexnames[self.lexFilenum]
+
+    def __str__(self):
+        return ('%s (%s) %d'
+                % (self.lemma, normalizePOS(self.ssType), self.senseNo()))
+
+    __repr__ = __str__
+
+    @staticmethod
+    def fromSynset(synset, lemma, lex_id):
+        ss_type = WordSense._ssTypeMap[synset.ssType]
+        lex_filenum = synset.lexname.id
+        head_word = ''
+        head_id = ''
+        if synset.ssType == 's':
+            # Satellite adjectives are treated specially
+            head_word = synset.headSynset.words[0]
+            head_id = synset.headSynset.lex_ids[0]
+
+        return WordSense.fromKeyParams(
+                lemma, ss_type, lex_filenum, lex_id, head_word, head_id)
+
+    @staticmethod
+    def fromKeyParams(lemma, ss_type, lex_filenum, lex_id,
+            head_word='', head_id=''):
+
+        if head_word:
+            head_id = '%02d' % head_id
+
+        return WordSense('%s%%%d:%02d:%02d:%s:%s'
+                % (lemma, ss_type, lex_filenum, lex_id, head_word, head_id))
 
 
 class Synset(object):
@@ -152,7 +225,7 @@ class Synset(object):
     """
     
     def __init__(self, pos, offset, line):
-        """Initialize the synset from a line in a WordNet synset file."""
+        """Initialize the synset from a line in a WordNet lexicographer file."""
 
         # Part of speech -- one of NOUN, VERB, ADJECTIVE, ADVERB.
         self.pos = pos
@@ -188,9 +261,8 @@ class Synset(object):
         if self.ssType == 's':
             # need head synset available for finding sense_keys
             self.headSynset = self.relation('similar')[0]
-        self.wordSenses = []
-        for form, lex_id in senseTuples:
-            self.wordSenses.append(WordSense(self._senseKey(form, int(lex_id, 16))))
+        self.wordSenses = [WordSense.fromSynset(self, form, int(lex_id, 16))
+                           for form, lex_id in senseTuples]
 
         #frames: In data.verb only, a list of numbers corresponding to the
         #generic verb sentence frames for word s in the synset. frames is of
@@ -225,20 +297,19 @@ class Synset(object):
             #A list of verb frame strings for this synset
             self.verbFrameStrings = self.extractVerbFrameStrings(vfTuples)
 
-    _ss_type_map = {'n': 1, 'v': 2, 'a': 3, 'r': 4, 's': 5}
+    def wordSense(self, word):
+        word = word.replace(' ', '_')
+        try:
+            index = self.words.index(word)
+        except IndexError:
+            try:
+                # Try for title case
+                index = self.words.index(word.title())
+            except IndexError:
+                raise ValueError(
+                        "Could not find word '%s' for this synset." % word)
 
-    def _senseKey(self, lemma, lex_id):
-        ss_type = Synset._ss_type_map[self.ssType]
-        lex_filenum = self.lexname.id
-        head_word = ''
-        head_id = ''
-        if self.ssType == 's':
-            # Satellite adjectives are treated specially
-            head_word = self.headSynset.words[0]
-            head_id = '%02d' % self.headSynset.lex_ids[0]
-
-        return ('%s%%%d:%02d:%02d:%s:%s'
-                % (lemma, ss_type, lex_filenum, lex_id, head_word, head_id))
+        return self.wordSenses[index]
 
     def extractVerbFrameStrings(self, vfTuples):
         """

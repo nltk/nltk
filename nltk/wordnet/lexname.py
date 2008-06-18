@@ -25,6 +25,8 @@ class Lexname(object):
    def __str__(self):
        return self.name
 
+   __repr__ = __str__
+
 # Create Lexname objects, originally sourced from the lexnames file available
 # as a patch from the Pywordnet sourceforge site. This list may be updated by
 # the creators of Wordnet at any time.
