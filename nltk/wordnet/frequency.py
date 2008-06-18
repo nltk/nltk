@@ -26,9 +26,10 @@ class SenseCount(object):
             self._file = open(path, FILE_OPEN_MODE)
             self._loaded = True
     
-    def count(self, key):
+    def __call__(self, key):
         self.load()
         line = binarySearchFile(self._file, key)
-        # incomplete
+        if line:
+            return int(line.rsplit(' ', 1)[-1])
 
-S = SenseCount()
+senseCount = SenseCount()
