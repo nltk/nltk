@@ -12,6 +12,7 @@ import math, pickle, string, re
 from util import *
 from similarity import *
 from dictionary import *
+from frequency import *
 from lexname import Lexname
 from nltk import defaultdict
 
@@ -49,6 +50,9 @@ class Word(object):
                              for offset in self._synsetOffsets]
             del self._synsetOffsets
             return self._synsets
+
+    def counts(self):
+        return [s.count(self.form) for s in self.synsets()]
 
     def isTagged(self):
         """
@@ -94,7 +98,23 @@ class Word(object):
 
     def __str__(self):
         return self.form + ' (' + self.pos + ")"
-    
+
+
+class WordSense(object):
+    """
+    A single word-sense pairing, indicated by a WordNet sense key of form::
+       lemma%ss_type:lex_filenum:lex_id:head_word:head_id
+    """
+
+    def __init__(self, senseKey, synset=None):
+        self.senseKey = senseKey
+        self.synset = synset
+        self.lemma, remainder = senseKey.split('%', 1)
+
+    def count(self):
+        return senseCount(self.senseKey)
+
+
 class Synset(object):
     """
     A set of synonyms.
@@ -156,12 +176,21 @@ class Synset(object):
         # synset_offset lex_filenum ss_type w_cnt word lex_id [word lex_id...] p_cnt [ptr...] [frames...] | gloss 
         
         synset_cnt = int(tokens[3], 16) # hex integer representing number of items in the synset; same as w_cnt above
-        
-        #extract all pairs of the form (sense, sense_index), plus a remainder
+
+        #extract all pairs of the form (sense, lex_id), plus a remainder
         (senseTuples, remainder1) = _partition(tokens[4:], 2, synset_cnt)
-        self.words = [form for form, i in senseTuples]
+        self.words = [form for form, lex_id in senseTuples]
+
         #extract all pointer quadruples, plus a remainder
         (self._pointerTuples, remainder2) = _partition(remainder1[1:], 4, int(remainder1[0]))
+
+        # Find word senses (via sense keys) from lemma and lex_id
+        if self.ssType == 's':
+            # need head synset available for finding sense_keys
+            self.headSynset = self.relation('similar')[0]
+        self.wordSenses = []
+        for form, lex_id in senseTuples:
+            self.wordSenses.append(WordSense(self._senseKey(form, int(lex_id, 16))))
 
         #frames: In data.verb only, a list of numbers corresponding to the
         #generic verb sentence frames for word s in the synset. frames is of
@@ -195,7 +224,22 @@ class Synset(object):
             
             #A list of verb frame strings for this synset
             self.verbFrameStrings = self.extractVerbFrameStrings(vfTuples)
-    
+
+    _ss_type_map = {'n': 1, 'v': 2, 'a': 3, 'r': 4, 's': 5}
+
+    def _senseKey(self, lemma, lex_id):
+        ss_type = Synset._ss_type_map[self.ssType]
+        lex_filenum = self.lexname.id
+        head_word = ''
+        head_id = ''
+        if self.ssType == 's':
+            # Satellite adjectives are treated specially
+            head_word = self.headSynset.words[0]
+            head_id = '%02d' % self.headSynset.lex_ids[0]
+
+        return ('%s%%%d:%02d:%02d:%s:%s'
+                % (lemma, ss_type, lex_filenum, lex_id, head_word, head_id))
+
     def extractVerbFrameStrings(self, vfTuples):
         """
         Return a list of verb frame strings for this synset.
