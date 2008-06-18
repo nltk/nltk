@@ -7,10 +7,6 @@
 
 # Count of a tagged sense in a semantic concordance
 
-# Incomplete:
-# work out how to construct key
-# access method for individual wordsense, e.g. N['dog'][0].count()
-
 import types
 from util import *
 import nltk.data
