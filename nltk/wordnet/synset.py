@@ -52,9 +52,15 @@ class Word(object):
             return self._synsets
 
     def senses(self):
+        """
+        Return a list of WordSense objects corresponding to this word's L{synset}s.
+        """
         return [s.wordSense(self.form) for s in self.synsets()]
 
     def senseCounts(self):
+        """
+        Return the frequencies of each sense of this word in a tagged concordance.
+        """
         return [s.count() for s in self.senses()]
 
     def isTagged(self):
@@ -106,7 +112,7 @@ class Word(object):
 class WordSense(object):
     """
     A single word-sense pairing, indicated by in WordNet by a sense key of
-    form::
+    the form::
        lemma%ss_type:lex_filenum:lex_id:head_word:head_id
     """
 
@@ -175,7 +181,7 @@ class WordSense(object):
             head_id = synset.headSynset.lex_ids[0]
 
         return WordSense.fromKeyParams(
-                lemma, ss_type, lex_filenum, lex_id, head_word, head_id)
+                lemma.lower(), ss_type, lex_filenum, lex_id, head_word, head_id)
 
     @staticmethod
     def fromKeyParams(lemma, ss_type, lex_filenum, lex_id,
@@ -298,14 +304,17 @@ class Synset(object):
             self.verbFrameStrings = self.extractVerbFrameStrings(vfTuples)
 
     def wordSense(self, word):
+        """
+        Return the WordSense object for the given word in this synset.
+        """
         word = word.replace(' ', '_')
         try:
             index = self.words.index(word)
-        except IndexError:
+        except ValueError:
             try:
-                # Try for title case
+                # Try for proper noun
                 index = self.words.index(word.title())
-            except IndexError:
+            except ValueError:
                 raise ValueError(
                         "Could not find word '%s' for this synset." % word)
 
