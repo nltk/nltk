@@ -18,6 +18,7 @@ class Lexname(object):
    def __init__(self, name, category):
        self.name = name
        self.category = category
+       self.id = len(Lexname.dict)
        Lexname.dict[name] = self
        Lexname.lexnames.append(self)
    
@@ -27,10 +28,10 @@ class Lexname(object):
 # Create Lexname objects, originally sourced from the lexnames file available
 # as a patch from the Pywordnet sourceforge site. This list may be updated by
 # the creators of Wordnet at any time.
+# It must remain in the given order:
 
 Lexname("adj.all", ADJECTIVE)
 Lexname("adj.pert", ADJECTIVE)
-Lexname("adj.ppl", ADJECTIVE)
 Lexname("adv.all", ADVERB)
 Lexname("noun.Tops", NOUN)
 Lexname("noun.act", NOUN)
@@ -73,4 +74,4 @@ Lexname("verb.possession", VERB)
 Lexname("verb.social", VERB)
 Lexname("verb.stative", VERB)
 Lexname("verb.weather", VERB)
-
+Lexname("adj.ppl", ADJECTIVE)
