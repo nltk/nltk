@@ -180,9 +180,7 @@ class HiddenMarkovModelTagger(TaggerI):
         """
 
         path = self.best_path(unlabeled_sequence)
-        for i in range(len(path)):
-            unlabeled_sequence[i] = (unlabeled_sequence[i][_TEXT], path[i])
-        return unlabeled_sequence
+        return zip(unlabeled_sequence, path)
 
     def _output_logprob(self, state, symbol):
         """
@@ -211,7 +209,7 @@ class HiddenMarkovModelTagger(TaggerI):
                 S[self._symbols[k]] = k
             self._cache = (P, O, X, S)
 
-    def best_path(self, unlabeled_sequence):
+    def best_path(self, symbols):
         """
         Returns the state sequence of the optimal (most probable) path through
         the HMM. Uses the Viterbi algorithm to calculate this part by dynamic
@@ -223,7 +221,6 @@ class HiddenMarkovModelTagger(TaggerI):
         @type unlabeled_sequence: list
         """
 
-        symbols = [token[_TEXT] for token in unlabeled_sequence]
         T = len(symbols)
         N = len(self._states)
         self._create_cache()
@@ -269,7 +266,7 @@ class HiddenMarkovModelTagger(TaggerI):
         B = {}
 
         # find the starting log probabilities for each state
-        symbol = unlabeled_sequence[0][_TEXT]
+        symbol = unlabeled_sequence[0]
         for i, state in enumerate(self._states):
             V[0, i] = self._priors.logprob(state) + \
                       self._output_logprob(state, symbol)
@@ -277,7 +274,7 @@ class HiddenMarkovModelTagger(TaggerI):
 
         # find the maximum log probabilities for reaching each state at time t
         for t in range(1, T):
-            symbol = unlabeled_sequence[t][_TEXT]
+            symbol = unlabeled_sequence[t]
             for j in range(N):
                 sj = self._states[j]
                 best = None
@@ -359,23 +356,23 @@ class HiddenMarkovModelTagger(TaggerI):
         Returns the entropy over labellings of the given sequence. This is
         given by::
 
-         H(O) = - sum_S Pr(S | O) log Pr(S | O)
+        H(O) = - sum_S Pr(S | O) log Pr(S | O)
 
         where the summation ranges over all state sequences, S. Let M{Z =
         Pr(O) = sum_S Pr(S, O)} where the summation ranges over all state
         sequences and O is the observation sequence. As such the entropy can
         be re-expressed as::
 
-         H = - sum_S Pr(S | O) log [ Pr(S, O) / Z ]
-           = log Z - sum_S Pr(S | O) log Pr(S, 0)
-           = log Z - sum_S Pr(S | O) [ log Pr(S_0) + sum_t Pr(S_t | S_{t-1})
-                                                   + sum_t Pr(O_t | S_t) ]
+        H = - sum_S Pr(S | O) log [ Pr(S, O) / Z ]
+          = log Z - sum_S Pr(S | O) log Pr(S, 0)
+          = log Z - sum_S Pr(S | O) [ log Pr(S_0) + sum_t Pr(S_t | S_{t-1})
+                                                  + sum_t Pr(O_t | S_t) ]
         
         The order of summation for the log terms can be flipped, allowing
         dynamic programming to be used to calculate the entropy. Specifically,
         we use the forward and backward probabilities (alpha, beta) giving::
 
-         H = log Z - sum_s0 alpha_0(s0) beta_0(s0) / Z * log Pr(s0)
+        H = log Z - sum_s0 alpha_0(s0) beta_0(s0) / Z * log Pr(s0)
                 + sum_t,si,sj alpha_t(si) Pr(sj | si) Pr(O_t+1 | sj) beta_t(sj)
                                 / Z * log Pr(sj | si)
                 + sum_t,st alpha_t(st) beta_t(st) / Z * log Pr(O_t | st)
@@ -896,7 +893,7 @@ def demo():
 
         print 'Testing with state sequence', test
         print 'probability =', model.probability(sequence)
-        print 'tagging =    ', model.tag(sequence)
+        print 'tagging =    ', model.tag([word for (word,tag) in sequence])
         print 'p(tagged) =  ', model.probability(sequence)
         print 'H =          ', model.entropy(sequence)
         print 'H_exh =      ', model._exhaustive_entropy(sequence)
@@ -910,13 +907,11 @@ def load_pos(num_sents):
 
     sentences = brown.tagged_sents(categories='a')[:num_sents]
 
-    sequences = []
-    sequence = []
-    symbols = set()
-
     tag_re = re.compile(r'[*]|--|[^+*-]+')
     tag_set = set()
+    symbols = set()
 
+    cleaned_sentences = []
     for sentence in sentences:
         for i in range(len(sentence)):
             word, tag = sentence[i]
@@ -926,8 +921,9 @@ def load_pos(num_sents):
             tag = tag_re.match(tag).group()
             tag_set.add(tag)
             sentence[i] = (word, tag)  # store cleaned-up tagged token
+        cleaned_sentences += [sentence]
 
-    return sentences, list(tag_set), list(symbols)
+    return cleaned_sentences, list(tag_set), list(symbols)
 
 def test_pos(model, sentences, display=False):
     from sys import stdout
@@ -935,7 +931,7 @@ def test_pos(model, sentences, display=False):
     count = correct = 0
     for sentence in sentences:
         orig_tags = [token[_TAG] for token in sentence]
-        sentence = [(token[_TEXT], None) for token in sentence]
+        sentence = [token[_TEXT] for token in sentence]
         new_tags = model.best_path(sentence)
         if display:
             print 'Untagged:'
@@ -943,7 +939,7 @@ def test_pos(model, sentences, display=False):
             print 'HMM-tagged:'
             print new_tags
             print 'Entropy:'
-            print model.entropy(sentence)
+            print model.entropy([(word,None) for word in sentence])
             print '-' * 60
         else:
             print '\b.',
@@ -1053,3 +1049,5 @@ if __name__ == '__main__':
     demo_pos_bw()
 #    demo_bw()
 
+
+ 	  	 
