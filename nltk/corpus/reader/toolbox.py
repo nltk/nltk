@@ -10,7 +10,8 @@
 # For license information, see LICENSE.TXT
 
 """
-Module for reading, writing and manipulating Toolbox databases.
+Module for reading, writing and manipulating 
+Toolbox databases and settings files.
 """
 
 import os, re
@@ -282,6 +283,70 @@ def to_sfm_string(tree, encoding=None, errors='strict', unicode_fields=None):
                     l.append("\\%s%s\n" % (mkr, value))
     return ''.join(l[1:])
 
+class ToolboxSettings(StandardFormat):
+    """This class is the base class for settings files."""
+    
+    def __init__(self):
+        super(ToolboxSettings, self).__init__()
+
+    def parse(self, encoding=None, errors='strict', **kwargs):
+        """Parses a settings file using ElementTree.
+        
+        @param encoding: encoding used by settings file
+        @type  encoding: string        
+        @param errors: Error handling scheme for codec. Same as C{.decode} inbuilt method.
+        @type errors: string
+        @param kwargs: Keyword arguments passed to L{StandardFormat.fields()}
+        @type kwargs: keyword arguments dictionary
+        @rtype:   ElementTree._ElementInterface
+        @return:  contents of toolbox settings file with a nested structure
+        """
+        builder = TreeBuilder()
+        for mkr, value in self.fields(encoding=encoding, errors=errors, **kwargs):
+            # Check whether the first char of the field marker
+            # indicates a block start (+) or end (-)
+            block=mkr[0]
+            if block in ("+", "-"):
+                mkr=mkr[1:]
+            else:
+                block=None
+            # Build tree on the basis of block char
+            if block == "+":
+                builder.start(mkr, {})
+                builder.data(value)
+            elif block == '-':
+                builder.end(mkr)
+            else:
+                builder.start(mkr, {})
+                builder.data(value)
+                builder.end(mkr)
+        return builder.close()
+
+def to_settings_string(tree, encoding=None, errors='strict', unicode_fields=None):
+    # write XML to file
+    l = list()
+    _to_settings_string(tree.getroot(), l, encoding=encoding, errors=errors, unicode_fields=unicode_fields)
+    return ''.join(l)
+
+def _to_settings_string(node, l, **kwargs):
+    # write XML to file
+    tag = node.tag
+    text = node.text
+    if len(node) == 0:
+        if text:
+            l.append('\\%s %s\n' % (tag, text))
+        else:
+            l.append('\\%s\n' % tag)
+    else:
+        if text:
+            l.append('\\+%s %s\n' % (tag, text))
+        else:
+            l.append('\\+%s\n' % tag)
+        for n in node:
+            _to_settings_string(n, l, **kwargs)
+        l.append('\\-%s\n' % tag)
+    return
+
 def demo():
     from nltk.corpus import toolbox
     from itertools import islice
@@ -298,6 +363,16 @@ def demo():
     print '\nlx fields:'
     for field in islice(lexicon.findall('record/lx'), 10):
         print field.text
+
+    from nltk.etree.ElementTree import ElementTree
+    
+    settings = ToolboxSettings()
+    # need a more general solution for the following line
+    settings.open(os.path.join(os.environ['NLTK_DATA'], 'corpora', 'toolbox', 'MDF', 'MDF_AltH.typ'))
+    tree = settings.parse(unwrap=False, encoding='cp1252')
+    print tree.find('expset/expMDF/rtfPageSetup/paperSize').text
+    settings_tree = ElementTree(tree)
+    print to_settings_string(settings_tree).encode('utf8')
 
 if __name__ == '__main__':
     demo()
