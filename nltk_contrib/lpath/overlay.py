@@ -144,6 +144,16 @@ def find_overlays(sql, localdb, oldTree, newTree):
         for sym,tup in m:
             L.append(h[tup[2]])
         oldTree.lpBfs(g,L)
+
+        # The sql allows a node to be selected multiple time in a single
+        # query result. This caused a problem of totally wrong overlay
+        # display. Here we just filter out those query results.
+        seen = {}
+        for x in L:
+            if x[1] not in seen:
+                seen[x[1]] = 1
+        if len(seen) != len(L): continue
+
         M.append(Overlay(L))
     return M
 
