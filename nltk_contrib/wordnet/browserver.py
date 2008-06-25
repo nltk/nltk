@@ -65,17 +65,21 @@ class MyServerHandler(BaseHTTPRequestHandler):
         global uc_to_pn, curr_page_num, viewed_pages
         sp = self.path[1:]
         if unquote_plus(sp) == 'SHUTDOWN THE SERVER':
-            print 'Server shutting down!'
-            os._exit(0)
+            if server_mode:
+                page = "Server must be killed with SIGTERM."
+                type = "text/plain"
+            else:
+                print 'Server shutting down!'
+                os._exit(0)
 
-        if sp == 'favicon.ico':
+        elif sp == 'favicon.ico':
             type = 'image/x-icon'
             page = open(sp).read()
             
         elif sp == '': # First request.
-            type = 'html'
+            type = 'text/html'
             old_uc = uniq_cntr() # Trigger the update of old uc:s
-            if firstClient:
+            if not server_mode and firstClient:
                 firstClient = False
                 page = open('index.html').read()
             else:
@@ -83,7 +87,7 @@ class MyServerHandler(BaseHTTPRequestHandler):
             word = 'green'
         
         elif sp.endswith('.html'): # Trying to fetch a HTML file
-            type = 'html'
+            type = 'text/html'
             old_uc = uniq_cntr() # Trigger the update of old uc:s
             usp = unquote_plus(sp)
             if usp == 'NLTK Wordnet Browser Database Info.html':
@@ -107,7 +111,7 @@ class MyServerHandler(BaseHTTPRequestHandler):
                         '<p><b>' + usp + '</b>' + \
                         '<p>was not found.' + html_trailer
         else:
-            type = 'html'
+            type = 'text/html'
             old_uc = uniq_cntr() # Trigger the update of old uc:s
             
             # Handle search queries.
@@ -135,11 +139,9 @@ class MyServerHandler(BaseHTTPRequestHandler):
         self.wfile.write(page)
 
 
-    def send_head(self, textType=None):
-        if textType == None:
-            textType = 'plain'
+    def send_head(self, type=None):
         self.send_response(200)
-        self.send_header('Content-type', 'text/' + textType)
+        self.send_header('Content-type', type)
         self.end_headers()
 
 
