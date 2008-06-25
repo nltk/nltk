@@ -5,10 +5,27 @@
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
-# BrowServer is a server for browsing the NLTK Wordnet database
-# It first launches a browser client to be used for browsing and
-# then starts serving the requests of that and maybe other clients
-#
+"""
+BrowServer is a server for browsing the NLTK Wordnet database It first
+launches a browser client to be used for browsing and then starts
+serving the requests of that and maybe other clients
+
+Usage:
+    browserver.py -h
+    browserver.py [-s] [-p <port>]
+
+Options:
+
+    -h or --help
+        Display this help message.
+
+    -p <port> or --port <port>
+        Run the web server on this TCP port, defaults to 8000.
+
+    -s or --server-mode
+        Do not start a web browser, and do not allow a user to
+        shotdown the server through the web interface.
+"""
 
 import os
 from sys import argv
@@ -19,6 +36,7 @@ import datetime
 import re
 import threading
 import time
+import getopt
 
 from browseutil import page_word, uniq_cntr
 
@@ -219,10 +237,28 @@ def startBrowser(url, server_ready):
     return t
 
 
-if __name__ == '__main__':
-    if len(argv) > 1:
-        port = int(argv[1])
-    else:
-        port = 8000
-    demo(port)
+def usage():
+    """
+    Display the command line help message.
+    """
+    print __doc__
 
+
+if __name__ == '__main__':
+    # Parse and interpret options.
+    (opts, _) = getopt.getopt(argv[1:], "p:sh", ["port=", "server-mode", "help"])
+    port = 8000
+    server_mode = False
+    help_mode = False
+    for (opt, value) in opts:
+        if (opt == "-p") or (opt == "--port"):
+            port = int(value)
+        elif (opt == "-s") or (opt == "--server-mode"):
+            server_mode = True
+        elif (opt == "-h") or (opt == "--help"):
+            help_mode = True
+
+    if help_mode:
+        usage()
+    else:
+        demo(port, not server_mode)
