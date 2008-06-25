@@ -71,54 +71,69 @@ class MyServerHandler(BaseHTTPRequestHandler):
         if sp == 'favicon.ico':
             type = 'image/x-icon'
             page = open(sp).read()
+            
+        elif sp == '': # First request.
+            type = 'html'
+            old_uc = uniq_cntr() # Trigger the update of old uc:s
+            if firstClient:
+                firstClient = False
+                page = open('index.html').read()
+            else:
+                page = open('index_2.html').read()
+            word = 'green'
+        
+        elif sp.endswith('.html'): # Trying to fetch a HTML file
+            type = 'html'
+            old_uc = uniq_cntr() # Trigger the update of old uc:s
+            usp = unquote_plus(sp)
+            if usp == 'NLTK Wordnet Browser Database Info.html':
+                word = '* Database Info *'
+                if os.path.isfile(usp):
+                    page = open(usp).read()
+                else:
+                    page = (html_header % word) + \
+                        '<p>The database info file:'\
+                        '<p><b>' + usp + '</b>' + \
+                        '<p>was not found. Run this:' + \
+                        '<p><b>python dbinfo_html.py</b>' + \
+                        '<p>to produce it.' + html_trailer
+            else:
+                if os.path.isfile(usp):
+                    word = sp
+                    page = open(usp).read()
+                else:
+                    word = ''
+                    page = (html_header % word) + '<p>The file:'\
+                        '<p><b>' + usp + '</b>' + \
+                        '<p>was not found.' + html_trailer
         else:
             type = 'html'
             old_uc = uniq_cntr() # Trigger the update of old uc:s
-            if sp == '': # We are starting
-                if firstClient:
-                    firstClient = False
-                    page = open('index.html').read()
-                else:
-                    page = open('index_2.html').read()
-                word = 'green'
-            elif sp.endswith('.html'): # Trying to fetch a HTML file
-                usp = unquote_plus(sp)
-                if usp == 'NLTK Wordnet Browser Database Info.html':
-                    word = '* Database Info *'
-                    if os.path.isfile(usp):
-                        page = open(usp).read()
-                    else:
-                        page = (html_header % word) + \
-                            '<p>The database info file:'\
-                            '<p><b>' + usp + '</b>' + \
-                            '<p>was not found. Run this:' + \
-                            '<p><b>python dbinfo_html.py</b>' + \
-                               '<p>to produce it.' + html_trailer
-                else:
-                    if os.path.isfile(usp):
-                        word = sp
-                        page = open(usp).read()
-                    else:
-                        word = ''
-                        page = (html_header % word) + '<p>The file:'\
-                               '<p><b>' + usp + '</b>' + \
-                               '<p>was not found.' + html_trailer
-            else:
-                # Grab the unique counter
-                uc = int(sp[sp.rfind('%23') + 3:])
-                # Page lookup needs not and cannot be done for the search words
-                if uc:
-                    if uc in uc_to_pn and uc_to_pn[uc] in viewed_pages:
-                        page = viewed_pages[uc_to_pn[uc]]
-                page,word = page_word(page, word, sp)
+            
+            # Handle search queries.
+            if sp.startswith("search"):
+                parts = (sp.split("?")[1]).split("&")
+                word = [p.split("=")[1] 
+                          for p in parts if p.startswith("nextWord")][0]
+                sp = "M%s%%23%d" % (word, 0)
+            
+            uc = get_unique_counter_from_url(sp)
+            # Page lookup needs not and cannot be done for the search words
+            if uc:
+                if uc in uc_to_pn and uc_to_pn[uc] in viewed_pages:
+                    page = viewed_pages[uc_to_pn[uc]]
+            page,word = page_word(page, word, sp)
             page = uc_updated_page(page, old_uc)
             new_uc = uniq_cntr()
             for uc in range(old_uc, new_uc):
                 uc_to_pn[uc] = curr_page_num
             viewed_pages[curr_page_num] = page
             curr_page_num += 1
+        
+        # Send result.
         self.send_head(type)
         self.wfile.write(page)
+
 
     def send_head(self, textType=None):
         if textType == None:
@@ -126,6 +141,19 @@ class MyServerHandler(BaseHTTPRequestHandler):
         self.send_response(200)
         self.send_header('Content-type', 'text/' + textType)
         self.end_headers()
+
+
+def get_unique_counter_from_url(sp):
+    """
+    Extract the unique counter from the URL if it has one.  Otherwise return
+    null.
+    """
+    pos = sp.rfind('%23')
+    if pos != -1:
+        return int(sp[(pos + 3):])
+    else:
+        return None
+
 
 def demo(port=8000, runBrowser=True):
     """
