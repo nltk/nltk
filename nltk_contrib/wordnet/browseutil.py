@@ -669,12 +669,6 @@ def page_word(page, word, href):
         # A relation link looks like this:
         # word#synset_keys#relation_name#uniq_cntr
         word,synset_keys,rel_name,u_c = u_link.split('#')
-        '''
-        word = word.strip()
-        synset_keys = synset_keys.strip()
-        rel_name = rel_name.strip()
-        u_c = u_c.strip()
-        '''
         ind = page.find(q_link) + len(q_link) + 2
         # If the link text is in bold, the user wants to
         # close the section beneath the link
