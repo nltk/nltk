@@ -17,6 +17,8 @@ from urllib import unquote_plus
 import webbrowser
 import datetime
 import re
+import threading
+import time
 
 from browseutil import page_word, uniq_cntr
 
@@ -31,6 +33,10 @@ curr_page_num = 1
 uc_to_pn = {}
 
 uc_pat = re.compile('(%23\d+">)')
+
+# True if we're not also running a web browser.  The value f server_mode
+# gets set by demo().
+server_mode = None 
 
 def uc_updated_page(page, old_uc):
     '''
@@ -52,14 +58,11 @@ def uc_updated_page(page, old_uc):
 class MyServerHandler(BaseHTTPRequestHandler):
 
     def do_HEAD(self):
-        #print 'dh'
         self.send_head()
-        #print 'dh2'
 
     def do_GET(self):
         global page, word, firstClient
         global uc_to_pn, curr_page_num, viewed_pages
-        #print 'path = ', self.path
         sp = self.path[1:]
         if unquote_plus(sp) == 'SHUTDOWN THE SERVER':
             print 'Server shutting down!'
@@ -85,7 +88,8 @@ class MyServerHandler(BaseHTTPRequestHandler):
                     if os.path.isfile(usp):
                         page = open(usp).read()
                     else:
-                        page = (html_header % word) + '<p>The database info file:'\
+                        page = (html_header % word) + \
+                            '<p>The database info file:'\
                             '<p><b>' + usp + '</b>' + \
                             '<p>was not found. Run this:' + \
                             '<p><b>python dbinfo_html.py</b>' + \
@@ -99,11 +103,7 @@ class MyServerHandler(BaseHTTPRequestHandler):
                         page = (html_header % word) + '<p>The file:'\
                                '<p><b>' + usp + '</b>' + \
                                '<p>was not found.' + html_trailer
-                        #self.send_error(404)
             else:
-                #print '######################################################'
-                #print 'SP==>', sp, '\n<==SP'
-                #print '######################################################'
                 # Grab the unique counter
                 uc = int(sp[sp.rfind('%23') + 3:])
                 # Page lookup needs not and cannot be done for the search words
@@ -127,18 +127,72 @@ class MyServerHandler(BaseHTTPRequestHandler):
         self.send_header('Content-type', 'text/' + textType)
         self.end_headers()
 
-def demo():
+def demo(port=8000, runBrowser=True):
+    """
+    Run NLTK Wordnet Browser Server.
+    
+    @param port: The port number for the server to listen on, defaults to
+                 8000
+    @type  port: C{int}
+
+    @param runBrowser: True to start a web browser and point it at the web
+                       server.
+    @type  runBrowser: C{boolean}
+    """
+    # The webbrowser module is unpredictable, typically it blocks if it uses
+    # a console web browser, and doesn't block if it uses a GUI webbrowser,
+    # so we need to force it to have a clear correct behaviour.
+    # 
+    # Normally the server should run for as long as the user wants. they
+    # should idealy be able to control this from the UI by closing the
+    # window or tab.  Second best would be clicking a button to say
+    # 'Shutdown' that first shutsdown the server and closes the window or
+    # tab, or exits the text-mode browser.  Both of these are unfreasable.
+    #
+    # The next best alternative is to start the server, have it close when
+    # it receives SIGTERM (default), and run the browser as well.  The user
+    # may have to shutdown both programs.
+    #
+    # Since webbrowser may block, and the webserver will block, we must run
+    # them in seperate threads.
+    #
+    global server_mode
+    server_mode = not runBrowser
+
+    url = 'http://localhost:' + str(port)
+    if runBrowser:
+        server_ready = threading.Event()
+        browser_thread = startBrowser(url, server_ready)
+
+    server = HTTPServer(('', port), MyServerHandler)
+    print 'NLTK Wordnet browser server running ... serving: ' + url
+    if runBrowser:
+        server_ready.set()
+    
+    try:
+        server.serve_forever()
+    except KeyboardInterrupt:
+        pass
+    
+    if runBrowser:
+        browser_thread.join()
+
+
+def startBrowser(url, server_ready):
+    def run():
+        server_ready.wait()
+        time.sleep(1) # Wait a little bit more, there's still the chance of
+                      # a race condition.
+        webbrowser.open(url, new = 2, autoraise = 1)
+    t = threading.Thread(target=run)
+    t.start()
+    return t
+
+
+if __name__ == '__main__':
     if len(argv) > 1:
         port = int(argv[1])
     else:
         port = 8000
-    url = 'http://localhost:' + str(port)
-    webbrowser.open(url, new = 2, autoraise = 1)
-    server = HTTPServer(('', port), MyServerHandler)
-    print 'NLTK Wordnet browser server running ... serving: ' + url
-    server.serve_forever()
-
-
-if __name__ == '__main__':
-    demo()
+    demo(port)
 
