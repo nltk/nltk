@@ -1,0 +1,8 @@
+summer.py is basically the wordCountReducerAdv.py, which I think can serve as a general summer
+wordCountReducerAdv and wordCountMapperAdv are two somewhat advanced version of wordCount program
+wordTagCountMapper count the word/tag pair and word occurences
+test.sh can test the wordTagCountMapper program
+
+wordCountMapper subclasses Mapper
+wordCountReducer subclasses Reducer
+these are the prototype of the class hierarchy
