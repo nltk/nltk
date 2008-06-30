@@ -30,35 +30,49 @@ class ConllChunkCorpusReader(CorpusReader):
 
     def words(self, files=None):
         return concat([ConllChunkCorpusView(filename, enc,
-                                            False, False, False)
+                                            False, False, False, False)
                        for (filename, enc) in self.abspaths(files, True)])
 
     def sents(self, files=None):
         return concat([ConllChunkCorpusView(filename, enc,
-                                            False, True, False)
+                                            False, True, False, False)
                        for (filename, enc) in self.abspaths(files, True)])
 
     def tagged_words(self, files=None):
         return concat([ConllChunkCorpusView(filename, enc,
-                                            True, False, False)
+                                            True, False, False, False)
                        for (filename, enc) in self.abspaths(files, True)])
 
     def tagged_sents(self, files=None):
         return concat([ConllChunkCorpusView(filename, enc,
-                                            True, True, False)
+                                            True, True, False, False)
                        for (filename, enc) in self.abspaths(files, True)])
 
     def chunked_words(self, files=None, chunk_types=None):
         if chunk_types is None: chunk_types = self.chunk_types
         return concat([ConllChunkCorpusView(filename, enc,
-                                            True, False, True,
+                                            True, False, True, False,
                                             chunk_types)
                        for (filename, enc) in self.abspaths(files, True)])
 
     def chunked_sents(self, files=None, chunk_types=None):
         if chunk_types is None: chunk_types = self.chunk_types
         return concat([ConllChunkCorpusView(filename, enc,
-                                            True, True, True,
+                                            True, True, True, False,
+                                            chunk_types)
+                       for (filename, enc) in self.abspaths(files, True)])
+
+    def bio_words(self, files=None, chunk_types=None):
+        if chunk_types is None: chunk_types = self.chunk_types
+        return concat([ConllChunkCorpusView(filename, enc,
+                                            True, False, False, True,
+                                            chunk_types)
+                       for (filename, enc) in self.abspaths(files, True)])
+
+    def bio_sents(self, files=None, chunk_types=None):
+        if chunk_types is None: chunk_types = self.chunk_types
+        return concat([ConllChunkCorpusView(filename, enc,
+                                            True, True, True, True,
                                             chunk_types)
                        for (filename, enc) in self.abspaths(files, True)])
 
@@ -86,10 +100,11 @@ class ConllChunkCorpusView(StreamBackedCorpusView):
     """
     """
     def __init__(self, corpus_file, encoding, tagged, group_by_sent,
-                 chunked, chunk_types=None):
+                 chunked, bio, chunk_types=None):
         self._tagged = tagged
         self._chunked = chunked
         self._group_by_sent = group_by_sent
+        self._bio = bio
         self._chunk_types = chunk_types
         StreamBackedCorpusView.__init__(self, corpus_file, encoding=encoding)
 
@@ -102,24 +117,36 @@ class ConllChunkCorpusView(StreamBackedCorpusView):
         if sent.startswith(self._DOCSTART):
             sent = sent[len(self._DOCSTART):].lstrip()
         
-        # If format is chunked, use the conllstr2tree function to parse it.
+        # If format is chunked and BIO tags are wanted, split the string into
+        # lines and selected out the word&tag&bio tag else use the 
+        # conllstr2tree function to parse it.
         if self._chunked:
-            # Use conllstr2tree to parse the tree.
-            sent = chunk.conllstr2tree(sent, self._chunk_types)
-            # Strip off POS tags, if requested:
-            if not self._tagged:
-                for i, child in enumerate(sent):
-                    if isinstance(child, tree.Tree):
-                        for j, child2 in enumerate(child):
-                            child[j] = child2[0]
-                    else:
-                        sent[i] = child[0]
+            if self._bio:
+                lines = [line.split() for line in sent.split('\n')]
+                sent = [(word, tag, chunk_typ)
+                        for (word, tag, chunk_typ) in lines]
+            else:
+                # Use conllstr2tree to parse the tree.
+                sent = chunk.conllstr2tree(sent, self._chunk_types)
+                print sent
+                # Strip off POS tags, if requested:
+                if not self._tagged:
+                    for i, child in enumerate(sent):
+                        if isinstance(child, tree.Tree):
+                            for j, child2 in enumerate(child):
+                                child[j] = child2[0]
+                        else:
+                            sent[i] = child[0]
 
         # Otherwise, split the string into lines and select out either the
-        # word&tag (tagged) or just the word (raw) from each line.
+        # word&tag&bio tag (BIO), word&tag (tagged) or just the word (raw) 
+        # from each line.
         else:
             lines = [line.split() for line in sent.split('\n')]
-            if self._tagged:
+            if self._bio:
+                sent = [(word, tag, chunk_typ)
+                        for (word, tag, chunk_typ) in lines]
+            elif self._tagged:
                 sent = [(word, tag) for (word, tag, chunk_typ) in lines]
             else:
                 sent = [word for (word, tag, chunk_typ) in lines]
