@@ -209,6 +209,34 @@ class HiddenMarkovModelTagger(TaggerI):
                 S[self._symbols[k]] = k
             self._cache = (P, O, X, S)
 
+    def _update_cache(self, symbols):
+        # add new symbols to the symbol table and repopulate the output
+        # probabilities and symbol table mapping
+        if symbols:
+            self._create_cache()
+            P, O, X, S = self._cache
+            for symbol in symbols:
+                if symbol not in self._symbols:
+                    self._cache = None
+                    self._symbols.append(symbol)
+            # don't bother with the work if there aren't any new symbols
+            if not self._cache:
+                N = len(self._states)
+                M = len(self._symbols)
+                Q = O.shape[1]
+                # add new columns to the output probability table without
+                # destroying the old probabilities
+                O = hstack([O, zeros((N, M - Q), float32)])
+                for i in range(N):
+                    si = self._states[i]
+                    # only calculate probabilities for new symbols
+                    for k in range(Q, M):
+                        O[i, k] = self._outputs[si].logprob(self._symbols[k])
+                # only create symbol mappings for new symbols
+                for k in range(Q, M):
+                    S[self._symbols[k]] = k
+                self._cache = (P, O, X, S)
+
     def best_path(self, symbols):
         """
         Returns the state sequence of the optimal (most probable) path through
@@ -224,6 +252,7 @@ class HiddenMarkovModelTagger(TaggerI):
         T = len(symbols)
         N = len(self._states)
         self._create_cache()
+        self._update_cache(symbols)
         P, O, X, S = self._cache
     
         V = zeros((T, N), float32)

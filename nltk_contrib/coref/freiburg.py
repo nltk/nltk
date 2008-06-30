@@ -179,7 +179,8 @@ class FreiburgSGMLParser(SGMLParser):
         """
         """
         self._in.insert(0, 'w')
-        self._current_pos = attrs[0][1]
+        if attrs:
+            self._current_pos = attrs[0][1]
 
     def start_c(self, attrs):
         """
