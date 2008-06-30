@@ -2,7 +2,10 @@ import re
 import os
 import nltk
 from sexp import *
+from link import *
+from specialfs import *
 
+counter = 0
 def fuf_to_featstruct(fuf):
     """
     Convert a FUF (as a sexpr string) to a FeatureStruct object.
@@ -11,23 +14,36 @@ def fuf_to_featstruct(fuf):
     sexp = slp.parse(fuf)
     #sexp = SexpListParser.parse(fuf)
     fstruct = _convert_fuf_featstruct(sexp)
-    _resolve_fs_links(fstruct, [])
+
+    # resole relative and absolute links
+    resolver = LinkResolver()
+    # we dont resolve before we break stuff up
+    #resolver.resolve(fstruct)
     return fstruct
 
 def _convert_fuf_featstruct(sexp):
     assert sexp.lparen == '('
     fs = nltk.FeatStruct()
     for child in sexp:
+        if "%" in child or "control" in child:
+            continue
         feat, val = _convert_fuf_feature(child)
+        print fs.has_key(feat)
         fs[feat] = val
     return fs
 
 def _convert_fuf_feature(sexp):
     assert sexp.lparen == '(', sexp
-    feat, name, val = ('', '','')
-    if sexp[0] == 'alt' and isinstance(sexp[1], basestring):
-        assert len(sexp) == 3
-        feat, name, val = sexp
+    feat, name, index, val = ('', '', '', '')
+
+    if sexp == []:
+        return "empty", nltk.FeatStruct()
+
+    # Special handling for the alt feature
+    if sexp[0] == 'alt':
+        feat, name, index, val = parse_alt(sexp)
+    elif sexp[0] == 'opt':
+        feat, name, index, val = parse_opt(sexp)
     else:
         assert len(sexp) == 2, sexp[1]
         assert isinstance(sexp[0], basestring), sexp
@@ -41,14 +57,19 @@ def _convert_fuf_feature(sexp):
     # Special handling of the alt feature
     if feat == 'alt':
         assert isinstance(val, SexpList) and val.lparen == '('
-        choices = [_convert_fuf_featstruct(c) for c in val]
-        val = nltk.FeatStruct(dict([('%d' % (i+1), choice)
-                                    for i, choice in enumerate(choices)]))
+        choices = list()
+        for c in val:
+            if isinstance(c, basestring):
+                choices.append(c)
+            else:
+                choices.append(_convert_fuf_featstruct(c))
+            val = nltk.FeatStruct(dict([('%d' % (i+1), choice)
+                                        for i, choice in enumerate(choices)]))
         # Process the alt with a name
         if len(name) > 0:
-            fs = nltk.FeatStruct()
-            fs[name] = val
-            return feat, fs
+            tempfs = nltk.FeatStruct()
+            tempfs[name] = val
+            return feat, tempfs
         return feat, val
 
     if isinstance(val, SexpList):
@@ -65,53 +86,6 @@ def _convert_fuf_feature(sexp):
     # Otherwise, return the value as a string.
     return feat, val
 
-class ReentranceLink(object):
-    """
-    Used to store fuf's reenttrance links; these are resolved *after* the
-    entire input has been parsed, to make the resolution algorithm simpler.
-    
-    First go up C{self.up} levels, then follow the feature path C{self.down}
-    """
-    def __init__(self, path):
-        self.up = 0
-        self.down = []
-
-        for feat in path:
-            if feat == '^':
-                self.up += 1
-                assert self.down == []
-            else:
-                self.down.append(feat)
-        self.down = tuple(self.down)
-
-    def __repr__(self):
-        return '{%s%s}' % ('^ '*self.up, ' '.join(self.down))
-
-_unique_var_counter = 0
-def _unique_var():
-    global _unique_var_counter
-    _unique_var_counter += 1
-    return nltk.Variable('?x%s' % _unique_var_counter)
-
-def _resolve_fs_links(fstruct, ancestors):
-    ancestors = ancestors + [fstruct]
-    for feat, val in fstruct.items():
-        if isinstance(val, nltk.FeatStruct):
-            _resolve_fs_links(val, ancestors)
-        elif isinstance(val, ReentranceLink):
-            target = ancestors[len(ancestors)-1-val.up]
-            for i, path_feat in enumerate(val.down):
-                # Create the target, if necessary.
-                if path_feat not in target:
-                    if i == len(val.down)-1:
-                        target[path_feat] = _unique_var()
-                    else:
-                        target[path_feat] = nltk.FeatStruct()
-                # Walk down the feature path.
-                target = target[path_feat]
-            # The final value of 'target' is the value we
-            # should use to replace the reentrance link.
-            fstruct[feat] = target
 
 ######################################################################
 # Test code:
@@ -119,6 +93,7 @@ def _resolve_fs_links(fstruct, ancestors):
 
 
 if __name__ == '__main__':
+    TEST_FILES = False
     t = r"""
         ((alt top (((cat s) 
             (prot ((cat np))) 
@@ -127,9 +102,8 @@ if __name__ == '__main__':
                    (number {prot number}))) 
             (pattern (prot verb goal))) 
            ((cat np) 
-            (n ((cat noun) 
-                (number {^ ^ number}))) 
-            (alt (((proper yes) 
+            (n ((cat noun) (number {^ ^ number}))) 
+            (alt altname (((proper yes) 
                    (pattern (n))) 
                   ((proper no) 
                    (pattern (det n)) 
@@ -142,16 +116,24 @@ if __name__ == '__main__':
            ((cat verb)) 
            ((cat article)))))
     """
+    # the relative path should refer to the value of 
+    #  prot number
+    # TODO: absolute paths and resolving relative paths correctly
+    te = r"""
+    ((cat s)
+     (prot (( cat np)
+            ( number sing)))
+     (verb ((cat vp) 
+            (number {^ ^ prot number}))))
+    """
+    t = open("tests/gr4.fuf").read()
     print fuf_to_featstruct(t)
-    print
 
-    for gfile in os.listdir('tests/'):
-        print "FILE: %s" % gfile
-        text = open("tests/%s" % gfile).read()
-        try:
-            print fuf_to_featstruct(t)
-        except Exception,e:
-            print "Exception -->> %s" % e
-
-
-
+    if TEST_FILES:
+        for gfile in os.listdir('tests/'):
+            print "FILE: %s" % gfile
+            text = open("tests/%s" % gfile).read()
+            try:
+                print fuf_to_featstruct(t)
+            except Exception,e:
+                print "Exception -->> %s" % e

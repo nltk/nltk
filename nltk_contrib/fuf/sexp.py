@@ -99,6 +99,12 @@ class SexpListParser(object):
         """
         try:
             tok = self.tokenizer.next().group()
+            # collect strings
+            if tok.startswith('"') and not tok.endswith('"'):
+                while True:
+                    tok = "%s %s" % (tok, self.tokenizer.next().group())
+                    if tok.endswith('"'):
+                        break
         except Exception:
             return self._end, ""
         
@@ -154,9 +160,6 @@ class SexpListParser(object):
 
         return self.machine.stack[0][0]
 
-    #def _error(self, token):
-        #pass
-        
     @staticmethod
     def _error(s, match):
         pos = match.start()
@@ -182,6 +185,7 @@ class SexpListParser(object):
 
 if __name__ == "__main__":
     tests = [
+    '(cat "something again")',
     "(cat sp (number {prot another} ))",
     " (prot ((cat np)))",
     "((d e) (a b))",
@@ -238,6 +242,7 @@ if __name__ == "__main__":
     for test in tests:
         try:
             print '%s' % test
+            l = SexpListParser().parse(test)
             print '==>', SexpListParser().parse(test)
         except Exception, e:
             print 'Exception:', e

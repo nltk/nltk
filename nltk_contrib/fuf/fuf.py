@@ -1,6 +1,5 @@
 import nltk
 import fufconvert
-#from nltk.featstruct import FeatStruct
 
 
 def unify_with_grammar(input_fs, grammar_fs):
@@ -83,6 +82,26 @@ def unify_with_grammar(input_fs, grammar_fs):
     # make a copy of the original input
     return unify_with_grammar_helper(input_fs.copy(), grammar_rules)
 
+def draw(fstruct, filename=None):
+    """
+    Draw graph representation of the feature structure using graphviz syntax
+    """
+    def draw_helper(output, fstruct, pcount, ccount):
+        output += 'fs%d [label=" " style="filled" fillcolor="white"];\n' % (pcount)
+        for fs, val in fstruct.items():
+            if isinstance(val, nltk.FeatStruct):
+                output +=  'fs%d -> fs%d [label="%s"];\n' % (pcount, ccount, fs)
+                output, ccount = draw_helper(output, val, ccount,
+                                                     ccount+1)
+            else:
+                output +=  'fs%d -> fs%d [label="%s"]; fs%d [label="%s" \
+                style=filled fillcolor=grey];\n' % (pcount, ccount, fs,
+                                                            ccount, val)
+            ccount +=1 
+        return output, ccount
+
+    output, ccount = draw_helper("", fstruct, 0, 1)
+    return "digraph fs {\n nodesep=1.0;\n" + output + "\n}";
 
 if __name__ == "__main__":
     input_fs = nltk.featstruct.FeatStruct("""
@@ -115,7 +134,10 @@ if __name__ == "__main__":
                ((cat article)))))
        """
 
+    grammar = open('tests/gr4.fuf').read()
     grammar_fs = fufconvert.fuf_to_featstruct(grammar)
+    #print draw(grammar_fs)
+    exit()
     result = unify_with_grammar(input_fs, grammar_fs)
     # the number doesn't propagate which means that we will have to set it
     #result['number'] = 3
