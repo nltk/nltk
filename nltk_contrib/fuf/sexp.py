@@ -134,8 +134,7 @@ class SexpListParser(object):
         # close the and make it an item of the previous list
         closed_sexp_list = self.machine.stack.pop()
         # this makes sure that we dont add any of the tracing stuff 
-        if not any(i in closed_sexp_list for i in ("control-demo", "control",
-                                                   ":demo", "trace")):
+        if not any(i in closed_sexp_list for i in ("control-demo", "control", ":demo", "trace")):
             self.machine.stack[-1].append(closed_sexp_list)
         return self._transition()
 
