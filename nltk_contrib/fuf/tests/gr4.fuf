@@ -377,7 +377,7 @@
 	       ((voice receptive)
 		;; Warning: a receptive is not always translated into a
 		;; passive verb!!!: "this string won't tie" (no actor).
-		(alt (index process-type)
+		(alt (:index process-type)
 		    (((process-type action)
 		      (verb ((voice passive)))
 		      (alt 

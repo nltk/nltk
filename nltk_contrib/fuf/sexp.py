@@ -92,6 +92,7 @@ class SexpListParser(object):
             raise ValueError("Expression must start with an open paren")
         stack_w_list = self.machine.run(tokens=start)
         return stack_w_list[0][0]
+    
 
     def _transition(self):
         """
@@ -132,8 +133,10 @@ class SexpListParser(object):
             raise ValueError("Mismatched paren")
         # close the and make it an item of the previous list
         closed_sexp_list = self.machine.stack.pop()
-        self.machine.stack[-1].append(closed_sexp_list)
-        
+        # this makes sure that we dont add any of the tracing stuff 
+        if not any(i in closed_sexp_list for i in ("control-demo", "control",
+                                                   ":demo", "trace")):
+            self.machine.stack[-1].append(closed_sexp_list)
         return self._transition()
 
     def _word(self, current):
@@ -143,7 +146,8 @@ class SexpListParser(object):
         # add the word to the last list
         if len(self.machine.stack) == 0:
             raise ValueError("Expected open paren")
-        self.machine.stack[-1].append(current)
+        if not ('%' in current):
+            self.machine.stack[-1].append(current)
         return self._transition()
 
     def _end(self, token):
@@ -181,7 +185,6 @@ class SexpListParser(object):
                 result.append(temp)
         return "".join(result)
     
-
 
 if __name__ == "__main__":
     tests = [

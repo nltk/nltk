@@ -5,39 +5,30 @@ from sexp import *
 from link import *
 from specialfs import *
 
-counter = 0
 def fuf_to_featstruct(fuf):
     """
     Convert a FUF (as a sexpr string) to a FeatureStruct object.
     """
     slp = SexpListParser()
     sexp = slp.parse(fuf)
-    #sexp = SexpListParser.parse(fuf)
-    fstruct = _convert_fuf_featstruct(sexp)
-
-    # resole relative and absolute links
-    resolver = LinkResolver()
-    # we dont resolve before we break stuff up
-    #resolver.resolve(fstruct)
-    return fstruct
+    return _convert_fuf_featstruct(sexp)
 
 def _convert_fuf_featstruct(sexp):
     assert sexp.lparen == '('
     fs = nltk.FeatStruct()
     for child in sexp:
-        if "%" in child or "control" in child:
-            continue
-        feat, val = _convert_fuf_feature(child)
-        print fs.has_key(feat)
-        fs[feat] = val
+        if isinstance(child, basestring):
+            feat, val = _convert_fuf_feature(sexp)
+            fs[feat] = val
+            break
+        else:
+            feat, val = _convert_fuf_feature(child)
+            fs[feat] = val
     return fs
 
 def _convert_fuf_feature(sexp):
     assert sexp.lparen == '(', sexp
     feat, name, index, val = ('', '', '', '')
-
-    if sexp == []:
-        return "empty", nltk.FeatStruct()
 
     # Special handling for the alt feature
     if sexp[0] == 'alt':
@@ -50,7 +41,7 @@ def _convert_fuf_feature(sexp):
         feat, val = sexp
 
     # Special handling for pattern feature
-    if feat == 'pattern':
+    if feat in ('pattern', 'cset'):
         assert isinstance(val, SexpList) and val.lparen == '('
         return feat, nltk.FeatureValueTuple(val)
 
@@ -67,9 +58,12 @@ def _convert_fuf_feature(sexp):
                                         for i, choice in enumerate(choices)]))
         # Process the alt with a name
         if len(name) > 0:
-            tempfs = nltk.FeatStruct()
-            tempfs[name] = val
-            return feat, tempfs
+            return "%s_%s" % (feat, name), val
+
+        # there is an index defined on this alt
+        if isinstance(index, SexpList):
+            ifs = _convert_fuf_featstruct(index)
+            val["_index_"] = ifs[":index"]
         return feat, val
 
     if isinstance(val, SexpList):
@@ -93,47 +87,33 @@ def _convert_fuf_feature(sexp):
 
 
 if __name__ == '__main__':
-    TEST_FILES = False
-    t = r"""
-        ((alt top (((cat s) 
-            (prot ((cat np))) 
-            (goal ((cat np))) 
-            (verb ((cat vp) 
-                   (number {prot number}))) 
-            (pattern (prot verb goal))) 
-           ((cat np) 
-            (n ((cat noun) (number {^ ^ number}))) 
-            (alt altname (((proper yes) 
-                   (pattern (n))) 
-                  ((proper no) 
-                   (pattern (det n)) 
-                   (det ((cat article) 
-                         (lex the))))))) 
-           ((cat vp) 
-            (pattern (v)) 
-            (v ((cat verb)))) 
-          ((cat noun)) 
-           ((cat verb)) 
-           ((cat article)))))
-    """
-    # the relative path should refer to the value of 
-    #  prot number
-    # TODO: absolute paths and resolving relative paths correctly
-    te = r"""
-    ((cat s)
-     (prot (( cat np)
-            ( number sing)))
-     (verb ((cat vp) 
-            (number {^ ^ prot number}))))
-    """
-    t = open("tests/gr4.fuf").read()
-    print fuf_to_featstruct(t)
+    # the tests below are for conversion of fuf syntax to nltk.FeatStruct
 
-    if TEST_FILES:
-        for gfile in os.listdir('tests/'):
-            print "FILE: %s" % gfile
-            text = open("tests/%s" % gfile).read()
-            try:
-                print fuf_to_featstruct(t)
-            except Exception,e:
-                print "Exception -->> %s" % e
+    #test the alt feature
+
+    # test the relative link feature
+    print "START LINK TEST"
+    linklines = open('tests/link.fuf').readlines()
+    for line in linklines:
+        print "INPUT:", line
+        print fuf_to_featstruct(line)
+        print
+
+    # test the opt feature
+    print "START OPT TEST"
+    optlines = open('tests/opt.fuf').readlines()
+    for line in optlines:
+        print "INPUT:", line
+        print fuf_to_featstruct(line)
+        print
+
+
+    # test the example grammars
+    grammar_files = [gfile for gfile in os.listdir('tests/') if gfile.startswith('gr')]
+    print grammar_files
+    for gfile in grammar_files:
+        print "FILE: %s" % gfile
+        text = open('tests/%s' % gfile).read()
+        print fuf_to_featstruct(text)
+        print
+    

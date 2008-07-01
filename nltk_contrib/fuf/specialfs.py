@@ -4,18 +4,20 @@ Handling for special feature names
 
 from sexp import *
 
-def _remove_specials(sexpl):
-    i = 0
-    length = len(sexpl)
-    while i < length:
-        sublist = sexpl[i]
-        if isinstance(sublist[0], basestring):
-            if sublist[0] in (":demo", "trace") or "%" in sublist[0]:
-                sexpl.remove(sublist)
-                i -= 1
-                length -= 1
-        i += 1
-    return sexpl
+#def remove_specials(sexpl):
+    #i = 0
+    #if isinstance(sexpl, basestring): return sexpl
+    #length = len(sexpl)
+    #while i < length:
+        #sublist = sexpl[i]
+        #if isinstance(sublist[0], basestring):
+            #if sublist[0] in (":demo", "trace") or "%" in sublist[0]:
+                #print sexpl
+                #sexpl.remove(sublist)
+                #i -= 1
+                #length -= 1
+        #i += 1
+    #return sexpl
 
 
 def parse_alt(sexpl):
@@ -24,7 +26,6 @@ def parse_alt(sexpl):
     """
 
     feat, name, index, val = ('', '', '', '')
-    sexpl = _remove_specials(sexpl)
 
     # named alt
     if isinstance(sexpl[1], basestring):
@@ -48,10 +49,6 @@ def parse_alt(sexpl):
 def parse_opt(sexpl):
     feat, name, index, val = ('','','','')
     sexpl[0] = "alt"
-    #sexpl[-1].append(SexpList("(", ")"))
     feat, name, index, val = parse_alt(sexpl)
-    #val.append(SexpList("(", ")"))
-    temp = SexpList('(', ')')
-    temp.append(val)
-    val = temp
+    val.append(SexpList("(", ")"))
     return feat, name, index, val
