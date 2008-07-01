@@ -7,17 +7,23 @@ import Mapper
 class wordCountMapper(Mapper.Mapper):
 	"""advanced Mapper, using Python iterators and generators."""
 
-	def map(self, separator='\t'):
+	def read_input(self, file):
+		for line in file:
+		# split the line into words
+			yield line
+
+	def map(self, key, value, separator='\t'):
+		words = value.split()
+		for word in words:
+			print '%s%s%d' % (word, separator, 1)
+
+	def mapCaller(self, separator='\t'):
 		# input comes from STDIN (standard input)
 		data = self.read_input(sys.stdin)
-		for words in data:
-		# write the results to STDOUT (standard output);
-		# what we output here will be the input for the
-		# Reduce step, i.e. the input for reducer.py
-		#
-		# tab-delimited; the trivial word count is 1
-			for word in words:
-				print '%s%s%d' % (word, separator, 1)
+		lineNo = 0
+		for line in data:
+			lineNo += 1
+			self.map(lineNo, line)
 
 if __name__ == "__main__":
-	wordCountMapper().map()
+	wordCountMapper().mapCaller()
