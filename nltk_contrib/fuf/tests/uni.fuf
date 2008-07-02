@@ -1,0 +1,2 @@
+((cat s) (prot (n (lex john))) (verb (v (lex link))) (goal (n (lex mary))))
+((alt top (((cat s) (prot ((cat np))) (goal ((cat np))) (verb ((cat vp) (number {prot number}))) (pattern (prot verb goal))) ((cat np) (n ((cat noun) (number {^ ^ number}))) (alt (((proper yes) (pattern (n))) ((proper no) (pattern (det n)) (det ((cat article) (lex the))))))) ((cat vp) (pattern (v)) (v ((cat verb)))) ((cat noun)) ((cat verb)) ((cat article)))))

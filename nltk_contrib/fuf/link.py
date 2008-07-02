@@ -35,8 +35,11 @@ class LinkResolver(object):
                 elif isinstance(val, ReentranceLink):
                     target = None
                     parent = None
-                    # find the parent of the absolute path
-                    parent = (ancestors, ancestors[:-1*val.up])[val.up != 0]
+                    # decide if this is a relative or absolute link
+                    if val.up > 0:
+                        parent = ancestors[:-1*(val.up-1)]
+                    else:
+                        parent = [ancestors[0]]
                     # if the parent is empty then introduce a variable
                     if len(parent) == 0:
                         target = self._unique_var()
@@ -45,7 +48,11 @@ class LinkResolver(object):
                         for path_feat in val.down:
                             # if the features doesn't exist there
                             if path_feat not in target:
-                                target[path_feat] = self._unique_var()
+                                if path_feat == val.down[-1]:
+                                    target[path_feat] = self._unique_var()
+                                else:
+                                    target[path_feat] = nltk.FeatStruct()
+                                target = target[path_feat]
                             else:
                                 target = target[path_feat]
                     fstruct[feat] = target
