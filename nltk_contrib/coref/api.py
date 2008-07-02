@@ -1,6 +1,8 @@
 import sys
 import optparse
 
+from itertools import *
+
 try:
     import cPickle as pickle
 except:
@@ -9,6 +11,7 @@ except:
 from nltk.data import *
 from nltk.corpus import *
 from nltk.tag.hmm import *
+from nltk.utilities import * 
 from nltk.chunk.util import *
 
 def lidstone_estimator(fd, bins):
@@ -23,20 +26,22 @@ def train_hmm(labeled_sequence, test_sequence):
             symbols.add(word)
             tag_set.add(tag)
     trainer = HiddenMarkovModelTrainer(list(tag_set), list(symbols))
-    self = trainer.train_supervised(labeled_sequence, 
+    hmm_tagger = trainer.train_supervised(labeled_sequence, 
                                     estimator=lidstone_estimator)
     if test_sequence:
-        test_pos(self, test_sequence, False)
+        test_pos(hmm_tagger, test_sequence, False)
+
+    return hmm_tagger
 
 class TreebankTagger(HiddenMarkovModelTagger):
     def __init__(self, labeled_sequence, test_sequence=None):
-        self = train_hmm(labeled_sequence, test_sequence)
+        self._hmm_tagger = train_hmm(labeled_sequence, test_sequence)
 
-class HiddenMarkovModelChunker(HiddenMarkovModelTagger):
-    def __init__(self, labeled_sequence, test_sequence=None):
-        self = train_hmm(labeled_sequence, test_sequence)
+    def __getattr__(self, name):
+        if name != '_hmm_tagger':
+            return getattr(self._hmm_tagger, name)
 
-class TreebankChunker(HiddenMarkovModelChunker):
+class TreebankChunker(HiddenMarkovModelTagger):
     _CLOSED_CATS = set(['CC', 'DT', 'MD', 'POS', 'PP$', 'RP', 'TO', 'WDT',
                         'WP$', 'EX', 'IN', 'PDT', 'PRP', 'WP', 'WRB'])
 
@@ -48,7 +53,11 @@ class TreebankChunker(HiddenMarkovModelChunker):
             test_sequence = [[(self._word(token), self._tag(token))
                               for token in sentence] 
                              for sentence in test_sequence]
-        HiddenMarkovModelChunker.__init__(self, labeled_sequence, test_sequence)
+        self._hmm_tagger = train_hmm(labeled_sequence, test_sequence)
+
+    def __getattr__(self, name):
+        if name != '_hmm_tagger':
+            return getattr(self._hmm_tagger, name)
 
     def _word(self, token):
         word, tag = token[:2]
@@ -65,14 +74,53 @@ class TreebankChunker(HiddenMarkovModelChunker):
             return (tag, chunk_typ)
 
     def tag(self, tokens):
-        return HiddenMarkovModelChunker.tag(self, 
+        tags = HiddenMarkovModelTagger.tag(self, 
                     [self._word(token) for token in tokens])
+        for i in range(len(tokens)):
+            # is this really the best way to do this?
+            tokens[i] += tags[i][-1:][0][-1:]
+        return tokens
 
     def parse(self, tokens):
-        tags = self.tag(tokens)
-        for i in range(len(tokens)):
-            tokens[i] += tags[i][-1:]
-        return conllstr2tree('\n'.join([' '.join(token) for token in tokens]))
+        return conllstr2tree('\n'.join([' '.join(token) 
+                                        for token in self.tag(tokens)]))
+
+class TreebankTaggerCorpusReader(CorpusReader):
+    """A decorator.
+    """
+    def __init__(self, reader):
+        self._reader = reader
+        self._treebank_tagger = \
+            nltk.data.load('nltk:taggers/treebank.tagger.pickle')
+
+    def __getattr__(self, name):
+        if name not in ['_reader', '_treebank_tagger', 'tagged_sents']:
+            return getattr(self._reader, name)
+
+    def tagged_sents(self):
+        return LazyMappedList(self.sents(),
+                              self._treebank_tagger.tag)
+
+class TreebankChunkerCorpusReader(CorpusReader):
+    """A decorator.
+    """
+    def __init__(self, reader):
+        self._reader = TreebankTaggerCorpusReader(reader)
+        self._treebank_chunker = \
+            nltk.data.load('nltk:chunkers/treebank.chunker.pickle')
+
+    def __getattr__(self, name):
+        if name not in ['_reader', '_treebank_chunker',
+                        'chunked_sents', 'parsed_sents']:
+            return getattr(self._reader, name)
+
+    def chunked_sents(self):
+        return LazyMappedList(self._reader.tagged_sents(), 
+                              self._treebank_chunker.tag)
+
+    def parsed_sents(self):
+        return LazyMappedList(self._reader.tagged_sents(),
+                              self._treebank_chunker.parse)
 
 def train_treebank_tagger(pickle_file, num_train_sents, num_test_sents):
     treebank_train = LazyCorpusLoader(
@@ -139,6 +187,16 @@ def train_treebank_chunker(pickle_file, num_train_sents, num_test_sents):
 
 def demo():
     print 'Demo...'
+    conll2000_test = LazyCorpusLoader(
+         'conll2000', ConllChunkCorpusReader, ['test.txt'], ('NP','VP','PP')) 
+    tagger_reader = TreebankTaggerCorpusReader(conll2000_test)
+    chunker_reader = TreebankChunkerCorpusReader(conll2000_test)
+    for sent in tagger_reader.tagged_sents()[:1]:
+        print sent
+        print
+    for sent in chunker_reader.parsed_sents()[:1]:
+        print sent
+        print
 
 if __name__ == '__main__':
     parser = optparse.OptionParser()
