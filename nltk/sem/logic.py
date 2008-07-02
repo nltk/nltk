@@ -171,8 +171,11 @@ class LambdaExpression(Expression):
                 and self.variables == other.variables and self.term == other.term
 
     def __str__(self):
-        return Tokens.LAMBDA[n] + ' '.join([str(v) for v in self.variables]) +\
-               Tokens.DOT[n] + str(self.term)
+        if len(self.variables) > 1:
+            return Tokens.LAMBDA[n] + Tokens.LT + ','.join([str(v) for v in self.variables]) +\
+               Tokens.GT + Tokens.DOT[n] + str(self.term)
+        else:
+            return Tokens.LAMBDA[n] + str(self.variables[0]) + Tokens.DOT[n] + str(self.term)
 
 class QuantifiedExpression(Expression):
     """
@@ -307,6 +310,8 @@ class Tokens:
     OPEN = '('
     CLOSE = ')'
     COMMA = ','
+    LT = '<'
+    GT = '>'
     
     #Operations
     NOT = ['not', '-', '-']
@@ -320,7 +325,7 @@ class Tokens:
     BOOLS = AND + OR + IMP + IFF
     BINOPS = BOOLS + EQ
     QUANTS = EXISTS + ALL
-    PUNCT = [DOT[0], OPEN, CLOSE, COMMA]
+    PUNCT = [DOT[0], OPEN, CLOSE, COMMA, LT, GT]
     
     TOKENS = BINOPS + QUANTS + LAMBDA + PUNCT + NOT
     
@@ -451,14 +456,32 @@ class LogicParser:
             return self.make_VariableExpression(tok)
         
     def handle_lambda(self, tok):
-        # Expression is a lambda expression: \x.M
-        vars = [self.make_VariableExpression(self.token())]
-        while self.isvariable(self.token(0)):
-            # Support expressions like: \x y.M == \x.\y.M
-            vars.append(self.make_VariableExpression(self.token()))
-        self.assertToken(self.token(), Tokens.DOT)
+        # Expression is a lambda expression
+        if self.token(0) == Tokens.LT:
+            # Expression lists multiple abstracted variables: \<x,y>.E OR \<x y>.E
+            self.token() #swallow LT token
+            vars = [self.make_VariableExpression(self.token())]
+            while self.token(0) != Tokens.GT:
+                # Support expressions like: \x y.M == \x.\y.M
+                if self.token(0) == Tokens.COMMA:
+                    self.token() #swallow the comma
+                else:
+                    vars.append(self.make_VariableExpression(self.token()))
+            self.token() #swallow the GT token
+            self.assertToken(self.token(), Tokens.DOT)
+            
+            accum = self.make_LambdaExpression(vars, self.parse_Expression())
+        else:
+            vars = [self.make_VariableExpression(self.token())]
+            while self.isvariable(self.token(0)):
+                # Support expressions like: \x y.M == \x.\y.M
+                vars.append(self.make_VariableExpression(self.token()))
+            self.assertToken(self.token(), Tokens.DOT)
+            
+            accum = self.parse_Expression()
+            while vars:
+                accum = self.make_LambdaExpression([vars.pop()], accum)
 
-        accum = self.make_LambdaExpression(vars, self.parse_Expression())
         accum = self.attempt_ApplicationExpression(accum)
         return self.attempt_BooleanExpression(accum)
         
@@ -651,13 +674,15 @@ class TestSuite:
         self.parse_test(r'exists x.man(x)')
         self.parse_test(r'exists x.(man(x) & tall(x))')
         self.parse_test(r'\x.man(x)')
+        self.parse_test(r'\x y.man(x,y)',r'\x.\y.man(x,y)')
+        self.parse_test(r'\<x y>.man(x,y)',r'\<x,y>.man(x,y)')
         self.parse_test(r'john')
         self.parse_test(r'\x.man(x)(john)')
         self.parse_test(r'\x.man(x)(john) & tall(x)', r'(\x.man(x)(john) & tall(x))')
-        self.parse_test(r'\x y.sees(x,y)(john)')
+        self.parse_test(r'\<x,y>.sees(x,y)(john)')
         self.parse_test(r'\x.\y.sees(x,y)(john)')
         self.parse_test(r'\x.\y.sees(x,y)(john)(mary)', r'(\x.\y.sees(x,y)(john))(mary)')
-        self.parse_test(r'\x y.sees(x,y)(john, mary)', r'\x y.sees(x,y)(john,mary)')
+        self.parse_test(r'\<x,y>.sees(x,y)(john, mary)', r'\<x,y>.sees(x,y)(john,mary)')
         self.parse_test(r'P(Q)')
         self.parse_test(r'(\x.exists y.walks(x,y))(x)')
         self.parse_test(r'exists x.(x = john)')
@@ -678,13 +703,13 @@ class TestSuite:
         n = Tokens.NEW_NLTK
         print '='*20 + 'TEST SIMPLIFY' + '='*20
         self.simplify_test(r'\x.man(x)(john)', r'man(john)')
-        self.simplify_test(r'\x y.sees(x,y)(john, mary)', r'sees(john,mary)')
+        self.simplify_test(r'\<x,y>.sees(x,y)(john, mary)', r'sees(john,mary)')
         self.simplify_test(r'\x.\y.sees(x,y)(john, mary)', r'ParseException: The function \y.sees(x,y) abstracts 1 variables but there are 2 arguments: (john,mary)')
         self.simplify_test(r'\x.\y.sees(x,y)(mary)(john)', r'sees(john,mary)')
         self.simplify_test(r'(\x.\y.sees(x,y)(mary))(john)', r'sees(john,mary)')
-        self.simplify_test(r'\x y.sees(x,y)(mary)(john)', r'UnexpectedTokenException: parse error, unexpected token: (')
-        self.simplify_test(r'\x y.sees(x,y)(john)', r'\y.sees(john,y)')
-        self.simplify_test(r'(\x y.sees(x,y)(john))(mary)', r'sees(john,mary)')
+        self.simplify_test(r'\<x,y>.sees(x,y)(mary)(john)', r'UnexpectedTokenException: parse error, unexpected token: (')
+        self.simplify_test(r'\<x,y>.sees(x,y)(john)', r'\y.sees(john,y)')
+        self.simplify_test(r'(\<x,y>.sees(x,y)(john))(mary)', r'sees(john,mary)')
         self.simplify_test(r'exists x.(man(x) & (\x.exists y.walks(x,y))(x))', r'exists x.(man(x) & exists y.walks(x,y))')
         self.simplify_test(r'exists x.(man(x) & (\x.exists y.walks(x,y))(y))', r'exists x.(man(x) & exists z1.walks(y,z1))')
     
@@ -716,12 +741,12 @@ class TestSuite:
         self.replace_test(r'exists x.give(x,y,z)', 'y', 'a', True, r'exists x.give(x,a,z)')
         self.replace_test(r'exists x.give(x,y,z)', 'y', 'x', False, r'exists z1.give(z1,x,z)')
         self.replace_test(r'exists x.give(x,y,z)', 'y', 'x', True, r'exists z1.give(z1,x,z)')
-        self.replace_test(r'\x y z.give(x,y,z)', 'y', 'a', False, r'\x y z.give(x,y,z)')
-        self.replace_test(r'\x y z.give(x,y,z)', 'y', 'a', True, r'\x a z.give(x,a,z)')
-        self.replace_test(r'\x y.give(x,y,z)', 'z', 'a', False, r'\x y.give(x,y,a)')
-        self.replace_test(r'\x y.give(x,y,z)', 'z', 'a', True, r'\x y.give(x,y,a)')
-        self.replace_test(r'\x y.give(x,y,z)', 'z', 'x', False, r'\z1 y.give(z1,y,x)')
-        self.replace_test(r'\x y.give(x,y,z)', 'z', 'x', True, r'\z1 y.give(z1,y,x)')
+        self.replace_test(r'\<x,y,z>.give(x,y,z)', 'y', 'a', False, r'\<x,y,z>.give(x,y,z)')
+        self.replace_test(r'\<x,y,z>.give(x,y,z)', 'y', 'a', True, r'\<x,a,z>.give(x,a,z)')
+        self.replace_test(r'\<x,y>.give(x,y,z)', 'z', 'a', False, r'\<x,y>.give(x,y,a)')
+        self.replace_test(r'\<x,y>.give(x,y,z)', 'z', 'a', True, r'\<x,y>.give(x,y,a)')
+        self.replace_test(r'\<x,y>.give(x,y,z)', 'z', 'x', False, r'\<z1,y>.give(z1,y,x)')
+        self.replace_test(r'\<x,y>.give(x,y,z)', 'z', 'x', True, r'\<z1,y>.give(z1,y,x)')
         self.replace_test(r'\x.give(x,y,z)', 'z', 'y', False, r'\x.give(x,y,y)')
         self.replace_test(r'\x.give(x,y,z)', 'z', 'y', True, r'\x.give(x,y,y)')
     
