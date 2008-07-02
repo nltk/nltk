@@ -625,7 +625,7 @@ class TestSuite(logic.TestSuite):
     def run(self):
         self.count = 0
         self.failures = 0
-        
+
         self.test_parser()
         self.test_simplify()
         self.test_toFol()
@@ -643,10 +643,10 @@ class TestSuite(logic.TestSuite):
         self.parse_test(r'DRS([x,y],[sees(x,y)])')
         self.parse_test(r'DRS([x],[man(x), walks(x)])')
         self.parse_test(r'\x.DRS([],[man(x), walks(x)])')
-        self.parse_test(r'\x y.DRS([],[sees(x,y)])')
+        self.parse_test(r'\x.\y.DRS([],[sees(x,y)])')
     
         self.parse_test(r'\x.DRS([],[walks(x)])(john)')
-        self.parse_test(r'\R x.DRS([],[big(x,R)])(\y.DRS([],[mouse(y)]))')
+        self.parse_test(r'\R.\x.DRS([],[big(x,R)])(\y.DRS([],[mouse(y)]))')
     
         self.parse_test(r'(DRS([x],[walks(x)]) + DRS([y],[runs(y)]))')
         self.parse_test(r'(DRS([x,y],[walks(x), jumps(y)]) + (DRS([z],[twos(z)]) + DRS([w],[runs(w)])))')
@@ -683,10 +683,10 @@ class TestSuite(logic.TestSuite):
         self.simplify_test(r'DRS([x,y],[sees(x,y)])')
         self.simplify_test(r'DRS([x],[man(x), walks(x)])')
         self.simplify_test(r'\x.DRS([],[man(x), walks(x)])')
-        self.simplify_test(r'\x y.DRS([],[sees(x,y)])')
+        self.simplify_test(r'\x.\y.DRS([],[sees(x,y)])')
     
         self.simplify_test(r'\x.DRS([],[walks(x)])(john)', r'DRS([],[walks(john)])')
-        self.simplify_test(r'\R x.DRS([],[big(x,R)])(\y.DRS([],[mouse(y)]))', r'\x.DRS([],[big(x,\y.DRS([],[mouse(y)]))])')
+        self.simplify_test(r'\<R,x>.DRS([],[big(x,R)])(\y.DRS([],[mouse(y)]))', r'\x.DRS([],[big(x,\y.DRS([],[mouse(y)]))])')
     
         self.simplify_test(r'(DRS([x],[walks(x)]) + DRS([y],[runs(y)]))', r'DRS([x,y],[walks(x), runs(y)])')
         self.simplify_test(r'(DRS([x,y],[walks(x), jumps(y)]) + (DRS([z],[twos(z)]) + DRS([w],[runs(w)])))' ,r'DRS([x,y,z,w],[walks(x), jumps(y), twos(z), runs(w)])')
@@ -725,10 +725,10 @@ class TestSuite(logic.TestSuite):
         self.toFol_test(r'DRS([x,y],[sees(x,y)])', r'exists x.exists y.sees(x,y)')
         self.toFol_test(r'DRS([x],[man(x), walks(x)])', r'exists x.(man(x) & walks(x))')
         self.toFol_test(r'\x.DRS([],[man(x), walks(x)])', r'\x.(man(x) & walks(x))')
-        self.toFol_test(r'\x y.DRS([],[sees(x,y)])', r'\x y.sees(x,y)')
+        self.toFol_test(r'\x y.DRS([],[sees(x,y)])', r'\x.\y.sees(x,y)')
     
         self.toFol_test(r'\x.DRS([],[walks(x)])(john)', r'\x.walks(x)(john)')
-        self.toFol_test(r'\R x.DRS([],[big(x,R)])(\y.DRS([],[mouse(y)]))', r'\R x.big(x,R)(\y.mouse(y))')
+        self.toFol_test(r'\<R,x>.DRS([],[big(x,R)])(\y.DRS([],[mouse(y)]))', r'\<R,x>.big(x,R)(\y.mouse(y))')
     
         self.toFol_test(r'(DRS([x],[walks(x)]) + DRS([y],[runs(y)]))', r'(exists x.walks(x) & exists y.runs(y))')
     
