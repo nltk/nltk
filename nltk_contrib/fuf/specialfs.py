@@ -4,6 +4,22 @@ Handling for special feature names
 
 from sexp import *
 
+#def remove_specials(sexpll):
+    #i = 0
+    #if isinstance(sexpl, basestring): return sexpl
+    #length = len(sexpl)
+    #while i < length:
+        #sublist = sexpl[i]
+        #if isinstance(sublist[0], basestring):
+            #if sublist[0] in (":demo", "trace") or "%" in sublist[0]:
+                #print sexpl
+                #sexpl.remove(sublist)
+                #i -= 1
+                #length -= 1
+        #i += 1
+    #return sexpl
+
+
 def parse_alt(sexpl):
     """
     Convert the alt feature

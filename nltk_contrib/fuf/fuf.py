@@ -1,5 +1,6 @@
 import nltk
 import fufconvert
+from link import *
 
 
 def unify_with_grammar(input_fs, grammar_fs):
@@ -18,16 +19,21 @@ def unify_with_grammar(input_fs, grammar_fs):
         # make a copy of everything without the alt
         fs = nltk.featstruct.FeatStruct()
         for gkey, gvalue in grammar.items():
-            if gkey != "alt":
+            if gkey != "alt" and not gkey.startswith("alt_"):
                 fs[gkey] = gvalue
 
         # unpacking the alt
-        if not grammar.has_key('alt'):
+        alts = [key for key in grammar.keys() \
+                if key.startswith('alt_') or key == 'alt']
+        
+        # If there are no alts our work here is done
+        if len(alts) == 0:
             return grammar
 
-        if grammar.has_key('alt'):
-            alt = grammar['alt']
-            alt_keys = alt.keys()
+
+        for alt_name in alts:
+            alt = grammar[alt_name]
+            alt_keys = grammar[alt_name].keys()
             # if this is a named alt structure go one level deeper
             if len(alt_keys) == 1 and alt_keys[0].isalpha():
                 alt = grammar['alt'][alt_keys[0]]
@@ -78,6 +84,17 @@ def unify_with_grammar(input_fs, grammar_fs):
     # Unpack the alt's in the grammar
     # Generates a list of grammar rules
     grammar_rules = unpack_alt(grammar_fs)
+
+    # resolve the links
+    for rule in grammar_rules:
+        print rule
+        LinkResolver().resolve(rule)
+        print
+        print rule
+        print '---------'
+
+    # before the unification we have to resolve all the relative and absolute
+    # links 
 
     # make a copy of the original input
     return unify_with_grammar_helper(input_fs.copy(), grammar_rules)
@@ -134,12 +151,13 @@ if __name__ == "__main__":
                ((cat article)))))
        """
 
-    grammar = open('tests/gr4.fuf').read()
     grammar_fs = fufconvert.fuf_to_featstruct(grammar)
-    #print draw(grammar_fs)
-    exit()
+    print 'grammar'
+    print grammar_fs
     result = unify_with_grammar(input_fs, grammar_fs)
-    # the number doesn't propagate which means that we will have to set it
-    #result['number'] = 3
+
+    print 'input'
+    print input_fs
+    print "RESULT"
     print result
 
