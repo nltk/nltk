@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+#
 # Natural Language Toolkit: Wordnet Interface: Graphical Wordnet Browser
 #
 # Copyright (C) 2007 - 2008 University of Pennsylvania
@@ -18,6 +20,10 @@ Options:
 
     -h or --help
         Display this help message.
+
+    -l <file> or --log-file <file>
+        Logs messages to the given file, If this option is not specified
+        messages are silently dropped.
 
     -p <port> or --port <port>
         Run the web server on this TCP port, defaults to 8000.
@@ -55,6 +61,10 @@ uc_pat = re.compile('(%23\d+">)')
 # True if we're not also running a web browser.  The value f server_mode
 # gets set by demo().
 server_mode = None 
+
+# If set this is a file object for writting log messages.
+logfile = None
+
 
 def uc_updated_page(page, old_uc):
     '''
@@ -162,6 +172,16 @@ class MyServerHandler(BaseHTTPRequestHandler):
         self.send_header('Content-type', type)
         self.end_headers()
 
+    def log_message(self, format, *args):
+        global logfile
+
+        if logfile:
+            logfile.write(
+                "%s - - [%s] %s\n" %
+                (self.address_string(),
+                 self.log_date_time_string(),
+                 format%args))
+
 
 def get_unique_counter_from_url(sp):
     """
@@ -175,7 +195,7 @@ def get_unique_counter_from_url(sp):
         return None
 
 
-def demo(port=8000, runBrowser=True):
+def demo(port=8000, runBrowser=True, logfilename=None):
     """
     Run NLTK Wordnet Browser Server.
     
@@ -204,16 +224,31 @@ def demo(port=8000, runBrowser=True):
     # Since webbrowser may block, and the webserver will block, we must run
     # them in seperate threads.
     #
-    global server_mode
+    global server_mode, logfile
     server_mode = not runBrowser
 
+    # Setup logging.
+    if logfilename:
+        try:
+            logfile = open(logfilename, "a", 1) # 1 means 'line buffering'
+        except IOError, e:
+            sys.stderr.write("Couldn't open %s for writing: %s", 
+                             logfilename, e)
+            sys.exit(1)
+    else:
+        logfile = None
+
+    # Compute URL and start web browser
     url = 'http://localhost:' + str(port)
     if runBrowser:
         server_ready = threading.Event()
         browser_thread = startBrowser(url, server_ready)
 
+    # Start the server.
     server = HTTPServer(('', port), MyServerHandler)
-    print 'NLTK Wordnet browser server running ... serving: ' + url
+    if logfile:
+        logfile.write(
+            'NLTK Wordnet browser server running serving: %s\n' % url)
     if runBrowser:
         server_ready.set()
     
@@ -246,12 +281,16 @@ def usage():
 
 if __name__ == '__main__':
     # Parse and interpret options.
-    (opts, _) = getopt.getopt(argv[1:], "p:sh", ["port=", "server-mode", "help"])
+    (opts, _) = getopt.getopt(argv[1:], "l:p:sh", 
+                              ["logfile=", "port=", "server-mode", "help"])
     port = 8000
     server_mode = False
     help_mode = False
+    logfilename = None
     for (opt, value) in opts:
-        if (opt == "-p") or (opt == "--port"):
+        if (opt == "-l") or (opt == "--logfile"):
+            logfilename = str(value)
+        elif (opt == "-p") or (opt == "--port"):
             port = int(value)
         elif (opt == "-s") or (opt == "--server-mode"):
             server_mode = True
@@ -261,4 +300,4 @@ if __name__ == '__main__':
     if help_mode:
         usage()
     else:
-        demo(port, not server_mode)
+        demo(port, not server_mode, logfilename)
