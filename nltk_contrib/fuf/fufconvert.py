@@ -4,6 +4,7 @@ import nltk
 from sexp import *
 from link import *
 from specialfs import *
+from fstypes import *
 
 def fuf_to_featstruct(fuf):
     """
@@ -80,6 +81,40 @@ def _convert_fuf_feature(sexp):
     # Otherwise, return the value as a string.
     return feat, val
 
+ 
+def fuf_file_to_featstruct(fuf_filename):
+    """
+    Convert fuf file to C{nltk.FeatStruct}
+    Returns the type table and the converted feature structure
+    """
+
+    # Convert the fuf code into expression lists
+    sfp = SexpFileParser(fuf_filename)
+    lsexp = sfp.parse()
+    assert lsexp
+
+    type_table = FeatureTypeTable()
+    fs = nltk.FeatStruct()
+
+    # process the type defs and the grammar
+    for sexp in lsexp:
+        if isinstance(sexp[0], basestring) and sexp[0] == 'define-feature-type':
+            assert len(sexp) == 3
+            name, children = sexp[1], sexp[2]
+            type_table.define_type(name, children)
+        else:
+            # assuming that it is a feature structure
+            fs = _convert_fuf_featstruct(sexp)
+            # there should be nothing following the feature definition
+            break
+    return type_table, fs
+            
+            
+            
+
+
+
+
 
 ######################################################################
 # Test code:
@@ -117,3 +152,6 @@ if __name__ == '__main__':
         print fuf_to_featstruct(text)
         print
     
+    type_table, grammar = fuf_file_to_featstruct('tests/typed_gr4.fuf')
+    print type_table
+    print grammar

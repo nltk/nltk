@@ -52,9 +52,9 @@ class LinkResolver(object):
                                     target[path_feat] = self._unique_var()
                                 else:
                                     target[path_feat] = nltk.FeatStruct()
-                                target = target[path_feat]
-                            else:
-                                target = target[path_feat]
+                            target = target[path_feat]
+                            #else:
+                                #target = target[path_feat]
                     fstruct[feat] = target
 
         resolve_helper(fstruct, [fstruct])

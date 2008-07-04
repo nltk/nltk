@@ -1,0 +1,11 @@
+(cat "something again")
+(cat sp (number {prot another} ))
+(prot ((cat np)))
+((d e) (a b))
+((cat s))
+foo bar baz
+foo (bar baz) bap
+((cat s) (prot ((n ((lex john))))) (verb ((v ((lex like))))) (goal ((n ((lex mary))))))
+(())
+(p whtvr (br) (br) (p something (ul (li ok) (li ok2))))
+((alt top ( ((cat s) (prot ((cat np))) (goal ((cat np))) (verb ((cat vp) (number {prot number}))) (pattern (prot verb goal))) ((cat np) (n ((cat noun) (number {^ ^ number}))) (alt ( ((proper yes) (pattern (n))) ((proper no) (pattern (det n)) (det ((cat article) (lex "the"))))))) ((cat vp) (pattern (v dots)) (v ((cat verb)))) ((cat noun)) ((cat verb)) ((cat article)))))
