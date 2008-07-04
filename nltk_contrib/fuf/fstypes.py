@@ -33,8 +33,8 @@ if __name__ == "__main__":
     for typedef in typedefs:
         sexp = SexpListParser().parse(typedef)
         type_table.define_type(sexp[1], sexp[2])
-    print type_table
 
+    print type_table
     print type_table.subsume('np', 'common')
     print type_table.subsume('mood', 'imperative')
 

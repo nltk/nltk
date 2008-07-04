@@ -1,0 +1,4 @@
+((cat s) (prot ((n === john))) (verb ((v === like))) (goal ((n === mary))))
+((cat s) (prot ((n === john) (number sing))) (verb ((v === like) (number plural))) (goal ((n === mary))))
+((cat s) (prot ((n === "John"))) (verb ((v === sell))) (goal ((n === car) (number plural))))
+((cat s) (prot ((n === man) (proper no))) (verb ((v === eat))) (goal ((n === meal) (proper no))))

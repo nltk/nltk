@@ -1,0 +1,2 @@
+((cat append) (x ~(a b)) (y ~(c d)))) 
+((cat append) (x ((car a) (cdr ( (cdr ~(c)))))) (y ~(d e)) (z ((car a) (cdr ((car b)))))))

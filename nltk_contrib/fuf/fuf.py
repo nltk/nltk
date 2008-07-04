@@ -121,43 +121,11 @@ def draw(fstruct, filename=None):
     return "digraph fs {\n nodesep=1.0;\n" + output + "\n}";
 
 if __name__ == "__main__":
-    input_fs = nltk.featstruct.FeatStruct("""
-        [cat=s, 
-            prot=[n=[lex=John]],
-            verb=[v=[lex=like]],
-            goal=[n=[lex=Mary]]]""")
-    # convert the grammar to featstruct
-    grammar = r"""
-    ((alt top (((cat s) 
-                (prot ((cat np))) 
-                (goal ((cat np))) 
-                (verb ((cat vp) 
-                       (number {prot number}))) 
-                (pattern (prot verb goal))) 
-               ((cat np) 
-                (n ((cat noun) 
-                    (number {^ ^ number}))) 
-                (alt (((proper yes) 
-                       (pattern (n))) 
-                      ((proper no) 
-                       (pattern (det n)) 
-                       (det ((cat article) 
-                             (lex the))))))) 
-               ((cat vp) 
-                (pattern (v)) 
-                (v ((cat verb)))) 
-              ((cat noun)) 
-               ((cat verb)) 
-               ((cat article)))))
-       """
-
-    grammar_fs = fufconvert.fuf_to_featstruct(grammar)
-    print 'grammar'
-    print grammar_fs
-    result = unify_with_grammar(input_fs, grammar_fs)
-
-    print 'input'
-    print input_fs
-    print "RESULT"
-    print result
-
+    # tests for unification
+    grammar_files = [gfile for gfile in os.listdir('tests/') if gfile.startswith('gr')]
+    input_files = [ifile for ifile in os.listdir('tests/') if ifile.startswith('ir')]
+    print grammar_files
+    for gfile in grammar_files:
+        print "FILE: %s" % gfile
+        text = open('tests/%s' % gfile).read()
+        print fuf_to_featstruct(text)

@@ -3,6 +3,7 @@ Module for tokenizing and parsing s-expressions
 """
 import nltk
 import re
+import os
 
 
 from statemachine import PushDownMachine
@@ -184,67 +185,45 @@ class SexpListParser(object):
                 result.append(temp)
         return "".join(result)
     
+class SexpFileParser(object):
+    """
+    Parse a file that contains multiple s-expressions
+    """
+
+    def __init__(self, filename):
+        """
+        Construct and return the object
+        """
+        self.sfile = filename
+
+        # The SexpListParser parses one expression at a time
+        # We wrap the whole file into single expression
+        self.source = "(\n%s\n)" % open(self.sfile).read()
+        
+    def parse(self):
+        """
+        Parse the file and retun a list of s-expressions
+        """
+
+        slp = SexpListParser()
+        return slp.parse(self.source)
+
 
 if __name__ == "__main__":
-    tests = [
-    '(cat "something again")',
-    "(cat sp (number {prot another} ))",
-    " (prot ((cat np)))",
-    "((d e) (a b))",
-    "((cat s))",
-    'foo bar baz',
-    'foo (bar baz) bap',
-    """
-    ((cat s) 
-     (prot ((n ((lex john))))) 
-     (verb ((v ((lex like))))) 
-     (goal ((n ((lex mary))))))
-    """, 
-    "(())",
-    "(p whtvr (br) (br) (p something (ul (li ok) (li ok2))))",
-    """((alt top ( 
-              ;; a grammar always has the same form: an alternative
-              ;; with one branch for each constituent category.
-              
-              ;; First branch of the alternative 
-              ;; Describe the category S.
-              ((cat s)
-               (prot ((cat np))) ;; this is anotehr comment
-               (goal ((cat np)))
-               (verb ((cat vp)
-                      (number {prot number})))
-               (pattern (prot verb goal)))
-              
-              ;; Second branch: NP
-              ((cat np)
-               (n ((cat noun) (number {^ ^ number})))
-               (alt (
-                     ;; Proper names don't need an article
-                     ((proper yes)
-                      (pattern (n)))
-                     ;; Common names do
-                     ((proper no)
-                      (pattern (det n))
-                      (det ((cat article)
-                            (lex "the")))))))
-              
-              ;; Third branch: VP
-              ((cat vp)
-               (pattern (v dots))
-               (v ((cat verb))))
-              
-              ;; Last branches: ARTICLE, NOUN, VERB
-              ;; don't do anything
-              ((cat noun))
-              ((cat verb))
-              ((cat article))
-              )))
-    """]
-
-    for test in tests:
+    # testing SexpListParser
+    lines = open('tests/sexp.txt').readlines()
+    for test in lines:
         try:
             print '%s' % test
             l = SexpListParser().parse(test)
             print '==>', SexpListParser().parse(test)
+            print
         except Exception, e:
             print 'Exception:', e
+    
+    # testing the SexpFileParser
+    sfp = SexpFileParser('tests/typed_gr4.fuf')
+    print sfp.parse()
+
+    
+    
