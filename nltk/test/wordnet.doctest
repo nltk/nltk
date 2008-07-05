@@ -1,12 +1,10 @@
-===================
- WordNet Interface
-===================
+=================
+WordNet Interface
+=================
 
-(Tested with WordNet 2.1)
-
----------------------------------------------------------------------------
+-----
 Words
----------------------------------------------------------------------------
+-----
 
 A `Word` is an index into the database. More specifically, a list of
 the Senses of the supplied word string. These senses can be accessed
@@ -34,9 +32,9 @@ via index notation ``word[n]`` or via the ``word.getSenses()`` method.
 ..   >>> ADJ['clear'].getAdjectivePositions()
 ..   [None, 'predicative']
 
----------------------------------------------------------------------------
+-------
 Synsets
----------------------------------------------------------------------------
+-------
 
 `Synset`: a set of synonyms that share a common meaning.
 
@@ -94,9 +92,31 @@ getIC(self, freq_data):
 Get the Information Content (IC) value of this `Synset`, using
 the supplied dict 'freq_data'.
 
----------------------------------------------------------------------------
+-----------
+Word Senses
+-----------
+
+A pairing between a word and a sense.
+
+>>> w = getWord('eat', 'v')
+>>> w.senseCounts()
+[61, 13, 4, None, None, None]
+>>> w[2].words
+['feed', 'eat']
+>>> s = w[2].wordSense('eat')
+>>> s
+eat (verb) 3
+>>> s.count()
+4
+>>> k = s.senseKey
+>>> k
+'eat%2:34:02::'
+>>> WordSense(k).synset()
+{verb: feed, eat}
+
+----------
 Similarity
----------------------------------------------------------------------------
+----------
 
 path_similarity(self, other_sense):
 Return a score denoting how similar two word senses are, based on the
@@ -218,9 +238,9 @@ getSynset(pos, offset):
 Lookup a synset by its offset. Used by repr(synset).
 
 
----------------------------------------------------------------------------
+------------------------------
 N, V, ADJ and ADV Dictionaries
----------------------------------------------------------------------------
+------------------------------
 
 Dictionary classes, which allow users to access
 Wordnet data via a handy dict notation (see below). Also defined are the
