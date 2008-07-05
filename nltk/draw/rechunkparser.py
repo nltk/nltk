@@ -395,10 +395,10 @@ class RegexpChunkDemo:
             left-3, top, justify='right', anchor='ne', 
             text='%d%%' % (100*max_precision))
         self.evalbox.create_text(
-            left, bot+3, justify='center', anchor='nw', text='0.0',
+            left, bot+3, justify='center', anchor='nw', 
             text='%d%%' % (100*min_recall))
         self.evalbox.create_text(
-            right, bot+3, justify='center', anchor='ne', text='100.0',
+            right, bot+3, justify='center', anchor='ne', 
             text='%d%%' % (100*max_recall))
 
         # Display the scores.
