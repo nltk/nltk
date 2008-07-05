@@ -973,5 +973,5 @@ class RegexpChunkDemo:
         if in_idle(): return
         self.top.mainloop(*args, **kwargs)
 
-from nltk.draw import *
-RegexpChunkDemo().mainloop()
+if __name__ == '__main__':
+    RegexpChunkDemo().mainloop()
