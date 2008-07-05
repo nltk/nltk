@@ -14,9 +14,8 @@ parser (L{RegexpChunkParser<nltk.chunk.regex.RegexpChunkParser>}).
 
 from Tkinter import *
 import tkFont, time, textwrap, re
-import nltk
-
 import nltk, random, re
+from nltk.draw import *
 from nltk.corpus import conll2000
 
 class RegexpChunkDemo:
@@ -205,7 +204,7 @@ class RegexpChunkDemo:
     _STATUS_PARAMS = dict(
         background='#9bb', relief='groove', border=2)
     _FONT_PARAMS = dict(
-        family='helvetica', size=20)
+        family='helvetica', size=-20)
     _FRAME_PARAMS = dict(
         background='#777', padx=2, pady=2, border=3)
     _EVALBOX_PARAMS = dict(
@@ -217,8 +216,8 @@ class RegexpChunkDemo:
         highlightbackground='#777')
     _HELPTAB_BG_COLOR = '#aba'
     _HELPTAB_FG_COLOR = '#efe'
-    _HELPTAB_PARAMS = dict(font=('helvetica', 14))
-    _HELPTAB_MAIN_PARAMS = dict(font=('helvetica', 20))
+    _HELPTAB_PARAMS = dict(font=('helvetica', -14))
+    _HELPTAB_MAIN_PARAMS = dict(font=('helvetica', -20))
                            
     _HELPTAB_FG_PARAMS = dict(background='#efe')
     _HELPTAB_BG_PARAMS = dict(background='#aba')
@@ -596,11 +595,11 @@ class RegexpChunkDemo:
         bg = self._FRAME_PARAMS['background']
         frame2 = Frame(frame0, background=bg)
         frame2.grid(column=3, row=7, sticky='EW')
-        self._autoscale = Tkinter.IntVar(self.top)
+        self._autoscale = IntVar(self.top)
         self._autoscale.set(False)
         Checkbutton(frame2, variable=self._autoscale, command=self._eval_plot,
                     text='Zoom', **self._BUTTON_PARAMS).pack(side='left')
-        self._eval_lines = Tkinter.IntVar(self.top)
+        self._eval_lines = IntVar(self.top)
         self._eval_lines.set(False)
         Checkbutton(frame2, variable=self._eval_lines, command=self._eval_plot,
                     text='Lines', **self._BUTTON_PARAMS).pack(side='left')
@@ -626,8 +625,6 @@ class RegexpChunkDemo:
         frame0.pack(fill='both', expand=True)
 
         # Set up colors for the devset box
-        self.devsetbox.tag_config('break', font=('helvetica', -6))
-        self.devsetbox.tag_config('tag', font=('helvetica', 12))
         self.devsetbox.tag_config('true-pos', background='#afa',
                                   underline='True')
         self.devsetbox.tag_config('false-neg', underline='True',
@@ -729,8 +726,6 @@ class RegexpChunkDemo:
             else:
                 self.helptabs[name].config(**self._HELPTAB_BG_PARAMS)
         self.helpbox['state'] = 'disabled'
-        # hack:
-        self.helptabs[self.HELP[0][0]].config(font=('helvetica', 20))
 
     def _history_prev(self, *e):
         self._view_history(self._history_index-1)
@@ -845,7 +840,7 @@ class RegexpChunkDemo:
         chunks = set()
         wordnum = 0
         for child in tree:
-            if isinstance(child, Tree):
+            if isinstance(child, nltk.Tree):
                 if child.node == self._chunk_node:
                     chunks.add( (wordnum, wordnum+len(child)) )
                 wordnum += len(child)
