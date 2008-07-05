@@ -328,7 +328,50 @@ class RegexpChunkRule(object):
         """
         return ('<RegexpChunkRule: '+`self._regexp.pattern`+
                 '->'+`self._repl`+'>')
+
+    @staticmethod
+    def parse(s):
+        """
+        Create a RegexpChunkRule from a string description.
+        Currently, the following formats are supported::
+
+          {regexp}         # chunk rule
+          }regexp{         # chink rule
+          regexp}{regexp   # split rule
+          regexp{}regexp   # merge rule
+
+        Where C{regexp} is a regular expression for the rule.  Any
+        text following the comment marker (C{#}) will be used as
+        the rule's description:
         
+        >>> RegexpChunkRule.parse('{<DT>?<NN.*>+}')
+        <ChunkRule: '<DT>?<NN.*>+'>
+        """
+        # Split off the comment (but don't split on '\#')
+        m = re.match(r'(?P<rule>(\\.|[^#])*)(?P<comment>#.*)?', s)
+        rule = m.group('rule').strip()
+        comment = (m.group('comment') or '')[1:].strip()
+        
+        # Pattern bodies: chunk, chink, split, merge
+        try:
+            if not rule:
+                raise ValueError('Empty chunk pattern')
+            if rule[0] == '{' and rule[-1] == '}':
+                return ChunkRule(rule[1:-1], comment)
+            elif rule[0] == '}' and rule[-1] == '{':
+                return ChinkRule(rule[1:-1], comment)
+            elif '}{' in rule:
+                left, right = rule.split('}{')
+                return SplitRule(left, right, comment)
+            elif '{}' in rule:
+                left, right = rule.split('{}')
+                return MergeRule(left, right, comment)
+            else:
+                raise ValueError('Illegal chunk pattern: %s' % rule)
+        except re.error:
+            raise ValueError('Illegal chunk pattern: %s' % rule)
+
+
 class ChunkRule(RegexpChunkRule):
     """
     A rule specifying how to add chunks to a C{ChunkString}, using a
@@ -968,44 +1011,58 @@ class RegexpParser(ChunkParserI):
         self._stages = []
         self._grammar = grammar
         self._loop = loop
+
+        if isinstance(grammar, basestring):
+            self._parse_grammar(grammar, top_node, trace)
+        else:
+            # Make sur the grammar looks like it has the right type:
+            type_err = ('Expected string or list of RegexpChunkParsers '
+                        'for the grammar.')
+            try: grammar = list(grammar)
+            except: raise TypeError(type_err)
+            for elt in grammar:
+                if not isinstance(elt, RegexpChunkParser):
+                    raise TypeError(type_err)
+            self._stages = grammar
+
+    def _parse_grammar(self, grammar, top_node, trace):
+        """
+        Helper function for __init__: parse the grammar if it is a
+        string.
+        """
         rules = []
+        lhs = None
         for line in grammar.split('\n'):
-            # Process any comments
-            line = re.sub(r'\\#', r'_HASH_', line)
-            if '#' in line:
-                line, comment = line.split('#', 1)   # split at first hash
-            else:
-                comment = ''
-            line = re.sub(r'_HASH_', r'\\#', line)
-            comment = comment.strip()
-
-            # New stage begins
-            if ':' in line:
-                if rules != []:
-                    parser = RegexpChunkParser(rules, chunk_node=lhs, trace=trace)
-                    self._stages.append(parser)
-                lhs, line = line.split(":")
-                lhs = lhs.strip()
-                rules = []
-
             line = line.strip()
-            if not line: continue
+            
+            # New stage begins if there's an unescaped ':'
+            m = re.match('(?P<nonterminal>(\\.|[^:])*)(:(?P<rule>.*))', line)
+            if m:
+                # Record the stage that we just completed.
+                self._add_stage(rules, lhs, top_node, trace)
+                # Start a new stage.
+                lhs = m.group('nonterminal').strip()
+                rules = []
+                line = m.group('rule').strip()
 
-            # Pattern bodies: chunk, chink, split, merge
-            if line[0] == '{' and line[-1] == '}':
-                rules.append(ChunkRule(line[1:-1], comment))
-            elif line[0] == '}' and line[-1] == '{':
-                rules.append(ChinkRule(line[1:-1], comment))
-            elif '}{' in line:
-                left, right = line.split('}{')
-                rules.append(SplitRule(left, right, comment))
-            elif '{}' in line:
-                left, right = line.split('{}')
-                rules.append(MergeRule(left, right, comment))
-            else:
-                raise ValueError, 'Illegal chunk pattern: %s' % line
+            # Skip blank & comment-only lines
+            if line=='' or line.startswith('#'): continue
+
+            # Add the rule
+            rules.append(RegexpChunkRule.parse(line))
+
+        # Record the final stage
+        self._add_stage(rules, lhs, top_node, trace)
+
+    def _add_stage(self, rules, lhs, top_node, trace):
+        """
+        Helper function for __init__: add a new stage to the parser.
+        """
         if rules != []:
-            parser = RegexpChunkParser(rules, chunk_node=lhs, top_node=top_node, trace=trace)
+            if not lhs:
+                raise ValueError('Expected stage marker (eg NP:)')
+            parser = RegexpChunkParser(rules, chunk_node=lhs,
+                                       top_node=top_node, trace=trace)
             self._stages.append(parser)
 
     def parse(self, chunk_struct, trace=None):
