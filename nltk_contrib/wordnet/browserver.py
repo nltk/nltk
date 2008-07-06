@@ -44,7 +44,7 @@ import threading
 import time
 import getopt
 
-from browseutil import page_word, uniq_cntr
+from browseutil import page_word, uniq_cntr, html_header, html_trailer
 
 page = None
 word = None
