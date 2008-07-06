@@ -102,10 +102,13 @@ class SexpListParser(object):
         try:
             tok = self.tokenizer.next().group()
             # collect strings
-            if tok.startswith('"') and not tok.endswith('"'):
+            if tok.startswith('"') and tok.endswith('"'):
+                tok = tok[1:-1]
+            elif tok.startswith('"') and not tok.endswith('"'):
                 while True:
                     tok = "%s %s" % (tok, self.tokenizer.next().group())
                     if tok.endswith('"'):
+                        tok = tok.replace('"', '')
                         break
         except Exception:
             return self._end, ""
