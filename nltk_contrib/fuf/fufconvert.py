@@ -36,6 +36,12 @@ def _convert_fuf_feature(sexp):
         feat, name, index, val = parse_alt(sexp)
     elif sexp[0] == 'opt':
         feat, name, index, val = parse_opt(sexp)
+    elif len(sexp) == 3 and sexp[1] == '===':
+        temp = SexpList('(', ')')
+        temp.append('lex')
+        temp.append(sexp.pop())
+        sexp[1] = temp
+        feat, val = sexp
     else:
         assert len(sexp) == 2, sexp[1]
         assert isinstance(sexp[0], basestring), sexp
@@ -84,7 +90,7 @@ def _convert_fuf_feature(sexp):
  
 def fuf_file_to_featstruct(fuf_filename):
     """
-    Convert fuf file to C{nltk.FeatStruct}
+    Convert fuf file to C{nltk.FeatStruct} and processed the type definitions
     Returns the type table and the converted feature structure
     """
 
@@ -151,6 +157,8 @@ if __name__ == '__main__':
         text = open('tests/%s' % gfile).read()
         print fuf_to_featstruct(text)
         print
+        exit()
+
     
     type_table, grammar = fuf_file_to_featstruct('tests/typed_gr4.fuf')
     print type_table

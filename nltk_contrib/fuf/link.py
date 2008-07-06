@@ -37,7 +37,7 @@ class LinkResolver(object):
                     parent = None
                     # decide if this is a relative or absolute link
                     if val.up > 0:
-                        parent = ancestors[:-1*(val.up-1)]
+                        parent = ancestors[:(-1*val.up)]
                     else:
                         parent = [ancestors[0]]
                     # if the parent is empty then introduce a variable
@@ -84,3 +84,22 @@ class ReentranceLink(object):
     def __repr__(self):
         return "{%s%s}" % ("^"* self.up, ' '.join( self.down))
 
+if __name__ == '__main__':
+    # testing the link resolution using gr0.fuf grammar and ir0.fuf inputs
+    import os
+    from fufconvert import *
+    from fuf import *
+
+
+    gfs = fuf_to_featstruct(open('tests/gr0.fuf').read())
+ 
+    gfs_output = "<td><pre>%s</pre></td>" % gfs
+    itext = open('tests/ir0.fuf').readlines()[2]
+    ifs = fuf_to_featstruct(itext)
+    ifs_output = "<td><pre>%s</pre></td>" % ifs
+    result = unify_with_grammar(ifs, gfs)
+
+    result_output = "<td><pre>%s</pre></td>" % result
+
+    print "<table border=1><tr>%s\n%s\n%s</tr></table>" % (ifs_output, gfs_output, result_output)
+    exit()
