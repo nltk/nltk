@@ -1,17 +1,12 @@
-#!/usr/bin/env python
-
 import sys
 from itertools import groupby
 from operator import itemgetter
+from InputFormat import KeyValueInput
 
-class Reducer:
+class ReducerBase:
+	""" base class for every reduce tasks"""
 	def __init__(self):
 		pass
-
-	def read_mapper_input(self, file, separator='\t'):
-		""" split the data """
-		for line in file:
-			yield line.rstrip().split(separator, 1)
 
 	def group_data(self, data):
 		""" group data"""
@@ -19,8 +14,11 @@ class Reducer:
 			values = map(itemgetter(1), group)
 			yield key, values
 
-	def reduceCaller(self, separator='\t'):
+	def reduce(self, key, values):
+		raise NotImplementedError('reduce() is not implemented in this class')
+
+	def reduceCaller(self):
 		# input comes from STDIN (standard input)
-		data = self.read_mapper_input(sys.stdin, separator=separator)
+		data = KeyValueInput.readLine()
 		for key, values in self.group_data(data):
 			self.reduce(key, values)

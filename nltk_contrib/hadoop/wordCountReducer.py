@@ -1,21 +1,20 @@
 #!/usr/bin/env python
 # Based on: http://www.michael-noll.com/wiki/Writing_An_Hadoop_MapReduce_Program_In_Python
 
-import Reducer
+from Reducer import ReducerBase
+from outputCollector import lineOutput
 
-class wordCountReducer(Reducer.Reducer):
-	"""advanced Reducer, using Python iterators and generators."""
+class wordCountReducer(ReducerBase):
 
-	def reduce(self, key, values):
+	def reduce(self, key, values, outputCollector=lineOutput):
 		sum  = 0
 		try:
 			for value in values:
 				sum += int(value) 
-			print "%s%s%d" % (key, '\t', sum)
+			lineOutput.collect(key, sum)
 		except ValueError:
 			#count was not a number, so silently discard this item
 			pass
-
 
 if __name__ == "__main__":
 	wordCountReducer().reduceCaller()
