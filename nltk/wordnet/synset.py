@@ -178,7 +178,7 @@ class WordSense(object):
         if synset.ssType == 's':
             # Satellite adjectives are treated specially
             head_word = synset.headSynset.words[0]
-            head_id = synset.headSynset.lex_ids[0]
+            head_id = synset.headSynset.wordSenses[0].lexId
 
         return WordSense.fromKeyParams(
                 lemma.lower(), ss_type, lex_filenum, lex_id, head_word, head_id)
