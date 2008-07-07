@@ -245,8 +245,8 @@ class HiddenMarkovModelTagger(TaggerI):
 
         @return: the state sequence
         @rtype: sequence of any
-        @param unlabeled_sequence: the sequence of unlabeled symbols 
-        @type unlabeled_sequence: list
+        @param symbols: the sequence of unlabeled symbols 
+        @type symbols: list
         """
 
         T = len(symbols)
@@ -385,26 +385,26 @@ class HiddenMarkovModelTagger(TaggerI):
         Returns the entropy over labellings of the given sequence. This is
         given by::
 
-        H(O) = - sum_S Pr(S | O) log Pr(S | O)
+         H(O) = - sum_S Pr(S | O) log Pr(S | O)
 
         where the summation ranges over all state sequences, S. Let M{Z =
         Pr(O) = sum_S Pr(S, O)} where the summation ranges over all state
         sequences and O is the observation sequence. As such the entropy can
         be re-expressed as::
 
-        H = - sum_S Pr(S | O) log [ Pr(S, O) / Z ]
-          = log Z - sum_S Pr(S | O) log Pr(S, 0)
-          = log Z - sum_S Pr(S | O) [ log Pr(S_0) + sum_t Pr(S_t | S_{t-1})
-                                                  + sum_t Pr(O_t | S_t) ]
+         H = - sum_S Pr(S | O) log [ Pr(S, O) / Z ]
+           = log Z - sum_S Pr(S | O) log Pr(S, 0)
+           = log Z - sum_S Pr(S | O) [ log Pr(S_0) + sum_t Pr(S_t | S_{t-1})
+                                                   + sum_t Pr(O_t | S_t) ]
         
         The order of summation for the log terms can be flipped, allowing
         dynamic programming to be used to calculate the entropy. Specifically,
         we use the forward and backward probabilities (alpha, beta) giving::
 
-        H = log Z - sum_s0 alpha_0(s0) beta_0(s0) / Z * log Pr(s0)
-                + sum_t,si,sj alpha_t(si) Pr(sj | si) Pr(O_t+1 | sj) beta_t(sj)
-                                / Z * log Pr(sj | si)
-                + sum_t,st alpha_t(st) beta_t(st) / Z * log Pr(O_t | st)
+         H = log Z - sum_s0 alpha_0(s0) beta_0(s0) / Z * log Pr(s0)
+                 + sum_t,si,sj alpha_t(si) Pr(sj | si) Pr(O_t+1 | sj) beta_t(sj)
+                                 / Z * log Pr(sj | si)
+                 + sum_t,st alpha_t(st) beta_t(st) / Z * log Pr(O_t | st)
 
         This simply uses alpha and beta to find the probabilities of partial
         sequences, constrained to include the given state(s) at some point in
