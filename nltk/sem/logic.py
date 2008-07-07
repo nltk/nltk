@@ -2,7 +2,7 @@
 #
 # Author: Daniel H. Garrette <dhgarrette@gmail.com>
 #
-# URL: <http://nltk.sf.net>
+# URL: <http://www.nltk.org>
 # For license information, see LICENSE.TXT
 
 """
@@ -98,6 +98,8 @@ class ApplicationExpression(Expression):
                     function = Tokens.OPEN + function + Tokens.CLOSE
             elif not isinstance(self.function.term, BooleanExpression):
                 function = Tokens.OPEN + function + Tokens.CLOSE
+        elif isinstance(self.function, ApplicationExpression):
+            function = Tokens.OPEN + function + Tokens.CLOSE
                 
         return function + Tokens.OPEN + \
                ','.join([str(arg) for arg in self.args]) + Tokens.CLOSE
@@ -686,6 +688,7 @@ class TestSuite:
         self.parse_test(r'P(Q)')
         self.parse_test(r'(\x.exists y.walks(x,y))(x)')
         self.parse_test(r'exists x.(x = john)')
+        self.parse_test(r'((\P.\Q.exists x.(P(x) & Q(x)))(\x.dog(x)))(\x.bark(x))')
             
     def parse_test(self, f, expected=None, throw=False):
         if not expected:
@@ -712,6 +715,8 @@ class TestSuite:
         self.simplify_test(r'(\<x,y>.sees(x,y)(john))(mary)', r'sees(john,mary)')
         self.simplify_test(r'exists x.(man(x) & (\x.exists y.walks(x,y))(x))', r'exists x.(man(x) & exists y.walks(x,y))')
         self.simplify_test(r'exists x.(man(x) & (\x.exists y.walks(x,y))(y))', r'exists x.(man(x) & exists z1.walks(y,z1))')
+        self.simplify_test(r'(\P Q.exists x.(P(x) & Q(x)))(\x.dog(x))', r'\Q.exists x.(dog(x) & Q(x))')
+        self.simplify_test(r'((\P.\Q.exists x.(P(x) & Q(x)))(\x.dog(x)))(\x.bark(x))', r'exists x.(dog(x) & bark(x))')
     
     def simplify_test(self, f, expected=None, throw=False):
         if not expected:
