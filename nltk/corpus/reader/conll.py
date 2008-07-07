@@ -128,7 +128,6 @@ class ConllChunkCorpusView(StreamBackedCorpusView):
             else:
                 # Use conllstr2tree to parse the tree.
                 sent = chunk.conllstr2tree(sent, self._chunk_types)
-                print sent
                 # Strip off POS tags, if requested:
                 if not self._tagged:
                     for i, child in enumerate(sent):
