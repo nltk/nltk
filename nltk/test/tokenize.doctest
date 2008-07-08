@@ -203,7 +203,7 @@ English.
     ... name.
     ... """
     >>> tokenizer = nltk.data.load('tokenizers/punkt/english.pickle')
-    >>> print '\n-----\n'.join(tokenizer.tokenize(text))
+    >>> print '\n-----\n'.join(tokenizer.tokenize(text.strip()))
     Punkt knows that the periods in Mr. Smith and Johann S. Bach
     do not mark sentence boundaries.
     -----
