@@ -57,20 +57,11 @@ class ApplicationExpression(Expression):
         args = [arg.simplify() for arg in self.args]
 
         if isinstance(function, LambdaExpression):
-            if len(self.args) > len(function.variables):
+            if len(self.args) != 1:
                 raise ParseException("The function %s abstracts %s variables but there are %s arguments: (%s)" 
                                      % (function, len(function.variables), len(self.args), 
                                         ','.join([str(arg) for arg in self.args])))
-    
-            term = function.term
-            for (i,arg) in enumerate(args):
-                term = term.replace(function.variables[i], arg)
-            
-            #If not all the abstracted variables were used in the application, keep them
-            if i+1 < len(function.variables):
-                return function.__class__(function.variables[i+1:], term.simplify())
-            else:
-                return term.simplify()
+            return function.term.replace(function.variable, arg).simplify()
         else:
             return self.__class__(function, args)
         
@@ -131,53 +122,43 @@ class VariableExpression(Expression):
     
 class LambdaExpression(Expression):
     """
-    @param variable: C{list} of C{VariableExpression}, for the abstracted variables
+    @param variable: C{VariableExpression}, for the abstracted variable
     @param term: C{Expression}, for the term
     """
-    def __init__(self, variables, term):
-        self.variables = variables
+    def __init__(self, variable, term):
+        self.variable = variable
         self.term = term
 
     def simplify(self):
-        return self.__class__(self.variables, self.term.simplify())
+        return self.__class__(self.variable, self.term.simplify())
 
     def replace(self, variable, expression, replace_bound=False):
-        try:
-            #if a bound variable is the thing being replaced
-            i = self.variables.index(variable)
+        #if the bound variable is the thing being replaced
+        if self.variable == variable:
             if not replace_bound:
                 return self
             else: 
-                vars = self.variables[:i]+[expression]+self.variables[i+1:]
-                return self.__class__(vars, self.term.replace(variable, expression, True))
-        except ValueError:
-            #variable not bound by this lambda
-            
-            # any bound variable that appears in the expression must
-            # be alpha converted to avoid a confict
-            for var in (set(self.variables) & expression.free()):
+                return self.__class__(expression, self.term.replace(variable, expression, True))
+        else:
+            # if the bound variable appears in the expression, then it must
+            # be alpha converted to avoid a conflict
+            if self.variable in expression.free():
                 newvar = unique_variable()
-                i = self.variables.index(var)
-                vars = self.variables[:i]+[newvar]+self.variables[i+1:]
-                self = self.__class__(vars, self.term.replace(var, newvar, True))
+                self = self.__class__(newvar, self.term.replace(self.variable, newvar, True))
                 
             #replace in the term
-            return self.__class__(self.variables,
+            return self.__class__(self.variable, 
                                   self.term.replace(variable, expression, replace_bound))
 
     def free(self):
-        return self.term.free() - set(self.variables)
+        return self.term.free() - set([self.variable])
 
     def __eq__(self, other):
         return isinstance(other, self.__class__) \
-                and self.variables == other.variables and self.term == other.term
+                and self.variable == other.variable and self.term == other.term
 
     def __str__(self):
-        if len(self.variables) > 1:
-            return Tokens.LAMBDA[n] + Tokens.LT + ','.join([str(v) for v in self.variables]) +\
-               Tokens.GT + Tokens.DOT[n] + str(self.term)
-        else:
-            return Tokens.LAMBDA[n] + str(self.variables[0]) + Tokens.DOT[n] + str(self.term)
+        return Tokens.LAMBDA[n] + str(self.variable) + Tokens.DOT[n] + str(self.term)
 
 class QuantifiedExpression(Expression):
     """
@@ -202,7 +183,7 @@ class QuantifiedExpression(Expression):
                 
         else:
             # if the bound variable appears in the expression, then it must
-            # be alpha converted to avoid a confict
+            # be alpha converted to avoid a conflict
             if self.variable in expression.free():
                 self = self.alpha_convert(unique_variable())
                 
@@ -312,8 +293,6 @@ class Tokens:
     OPEN = '('
     CLOSE = ')'
     COMMA = ','
-    LT = '<'
-    GT = '>'
     
     #Operations
     NOT = ['not', '-', '-']
@@ -327,7 +306,7 @@ class Tokens:
     BOOLS = AND + OR + IMP + IFF
     BINOPS = BOOLS + EQ
     QUANTS = EXISTS + ALL
-    PUNCT = [DOT[0], OPEN, CLOSE, COMMA, LT, GT]
+    PUNCT = [DOT[0], OPEN, CLOSE, COMMA]
     
     TOKENS = BINOPS + QUANTS + LAMBDA + PUNCT + NOT
     
@@ -337,18 +316,27 @@ class Tokens:
 class LogicParser:
     """A lambda calculus expression parser."""
 
-    def __init__(self, data=None):
+    def __init__(self):
         """
         @param data: C{str}, a string to parse
         """
         self._currentIndex = 0
         self._buffer = []
-        self.feed(data)
 
-    def feed(self, data):
-        """Feed another batch of data to the parser."""
-        self._buffer += WhitespaceTokenizer().tokenize(self.process(data))
-        
+    def parse(self, data):
+        """
+        Parse the expression.
+
+        @param data: C{str} for the input to be parsed
+        @returns: a parsed Expression
+        """
+        self._currentIndex = 0
+        self._buffer = WhitespaceTokenizer().tokenize(self.process(data))
+        result = self.parse_Expression()
+        if self.inRange(0):
+            raise UnexpectedTokenException(self.token(0))
+        return result
+
     def process(self, data):
         """Put whitespace between symbols to make parsing easier"""
         out = ''
@@ -395,19 +383,6 @@ class LogicParser:
         except IndexError:
             raise UnexpectedTokenException, 'The given location is out of range'
 
-    def parse(self, data):
-        """
-        Parse the expression.
-
-        @type data: str
-        @returns: a parsed Expression
-        """
-        self.feed(data)
-        result = self.parse_Expression()
-        if self.inRange(0):
-            raise UnexpectedTokenException(self.token(0))
-        return result
-
     def isvariable(self, tok):
         return tok not in Tokens.TOKENS
     
@@ -445,11 +420,11 @@ class LogicParser:
             #gather the arguments
             args = []
             if self.token(0) != Tokens.CLOSE:
-                args.append(self.make_VariableExpression(self.token()))
+                args.append(self.parse_Expression())
                 while self.token(0) == Tokens.COMMA:
                     self.token() #swallow the comma
                     args.append(self.parse_Expression())
-            self.token() #swallow the close paren
+            self.assertToken(self.token(), Tokens.CLOSE)
             
             expression = self.make_ApplicationExpression(self.make_VariableExpression(tok), args)
             return self.attempt_BooleanExpression(expression)
@@ -459,30 +434,24 @@ class LogicParser:
         
     def handle_lambda(self, tok):
         # Expression is a lambda expression
-        if self.token(0) == Tokens.LT:
-            # Expression lists multiple abstracted variables: \<x,y>.E OR \<x y>.E
-            self.token() #swallow LT token
-            vars = [self.make_VariableExpression(self.token())]
-            while self.token(0) != Tokens.GT:
-                # Support expressions like: \x y.M == \x.\y.M
-                if self.token(0) == Tokens.COMMA:
-                    self.token() #swallow the comma
-                else:
-                    vars.append(self.make_VariableExpression(self.token()))
-            self.token() #swallow the GT token
-            self.assertToken(self.token(), Tokens.DOT)
-            
-            accum = self.make_LambdaExpression(vars, self.parse_Expression())
-        else:
-            vars = [self.make_VariableExpression(self.token())]
+        
+        vars = [self.make_VariableExpression(self.token())]
+        while True:
             while self.isvariable(self.token(0)):
                 # Support expressions like: \x y.M == \x.\y.M
                 vars.append(self.make_VariableExpression(self.token()))
             self.assertToken(self.token(), Tokens.DOT)
             
-            accum = self.parse_Expression()
-            while vars:
-                accum = self.make_LambdaExpression([vars.pop()], accum)
+            if self.token(0) in Tokens.LAMBDA:
+                #if it's directly followed by another lambda, keep the lambda 
+                #expressions together, so that \x.\y.M == \x y.M
+                self.token() #swallow the lambda symbol
+            else:
+                break
+        
+        accum = self.parse_Expression()
+        while vars:
+            accum = self.make_LambdaExpression(vars.pop(), accum)
 
         accum = self.attempt_ApplicationExpression(accum)
         return self.attempt_BooleanExpression(accum)
@@ -523,7 +492,7 @@ class LogicParser:
             factory = self.get_BooleanExpression_factory()
             if factory: #if a factory was returned
                 self.token() #swallow the operator
-                return factory(expression, self.parse_Expression())
+                return self.make_BooleanExpression(factory, expression, self.parse_Expression())
         #otherwise, no boolean expression can be created
         return expression
     
@@ -543,6 +512,11 @@ class LogicParser:
         elif op in Tokens.EQ:
             factory = EqualityExpression
         return factory
+    
+    def make_BooleanExpression(self, type, first, second):
+        """This method exists to be overridden by parsers
+        with more complex logic for creating BooleanExpressions"""
+        return type(first, second)
         
     def attempt_ApplicationExpression(self, expression):
         """Attempt to make an application expression.  The next tokens are
@@ -556,15 +530,25 @@ class LogicParser:
                                      "' is not a Lambda Expression or an Application Expression, so it may not take arguments")
         
             self.token() #swallow then open paren
-            args = []
-            if self.token(0) != Tokens.CLOSE:
-                args.append(self.parse_Expression())
-                while self.token(0) == Tokens.COMMA:
-                    self.token() #swallow the comma
+            if isinstance(expression, LambdaExpression):
+                accum = expression
+                if self.token(0) != Tokens.CLOSE:
+                    accum = self.make_ApplicationExpression(accum, [self.parse_Expression()])
+                    while self.token(0) == Tokens.COMMA:
+                        self.token() #swallow the comma
+                        accum = self.make_ApplicationExpression(accum, [self.parse_Expression()])
+                self.assertToken(self.token(), Tokens.CLOSE)
+                retEx = accum
+            else:
+                args = []
+                if self.token(0) != Tokens.CLOSE:
                     args.append(self.parse_Expression())
-            
-            self.token() #swallow the close paren
-            return self.make_ApplicationExpression(expression, args) 
+                    while self.token(0) == Tokens.COMMA:
+                        self.token() #swallow the comma
+                        args.append(self.parse_Expression())
+                self.assertToken(self.token(), Tokens.CLOSE)
+                retEx = self.make_ApplicationExpression(expression, args)
+            return self.attempt_ApplicationExpression(retEx) 
         else:
             return expression
 
@@ -585,12 +569,12 @@ class LogicParser:
             if tok != expected:
                 raise UnexpectedTokenException(tok, expected)
 
-            
     def __repr__(self):
         if self.inRange(0):
             return 'Next token: ' + self.token(0)
         else:
             return 'No more tokens'
+
             
 class StringTrie(dict):
     LEAF = "<leaf>" 
@@ -663,6 +647,7 @@ class TestSuite:
     def test_parser(self):
         n = Tokens.NEW_NLTK
         print '='*20 + 'TEST PARSE' + '='*20
+        self.parse_test(r'john')
         self.parse_test(r'man(x)')
         self.parse_test(r'-man(x)')
         self.parse_test(r'--man(x)')
@@ -676,16 +661,19 @@ class TestSuite:
         self.parse_test(r'exists x.man(x)')
         self.parse_test(r'exists x.(man(x) & tall(x))')
         self.parse_test(r'\x.man(x)')
-        self.parse_test(r'\x y.man(x,y)',r'\x.\y.man(x,y)')
-        self.parse_test(r'\<x y>.man(x,y)',r'\<x,y>.man(x,y)')
-        self.parse_test(r'john')
         self.parse_test(r'\x.man(x)(john)')
         self.parse_test(r'\x.man(x)(john) & tall(x)', r'(\x.man(x)(john) & tall(x))')
-        self.parse_test(r'\<x,y>.sees(x,y)(john)')
-        self.parse_test(r'\x.\y.sees(x,y)(john)')
-        self.parse_test(r'\x.\y.sees(x,y)(john)(mary)', r'(\x.\y.sees(x,y)(john))(mary)')
-        self.parse_test(r'\<x,y>.sees(x,y)(john, mary)', r'\<x,y>.sees(x,y)(john,mary)')
+        self.parse_test(r'\x.\y.sees(x,y)',r'\x.\y.sees(x,y)')
+        self.parse_test(r'\x  y.sees(x,y)',r'\x.\y.sees(x,y)')
+        self.parse_test(r'\x.\y.sees(x,y)(a)', r'(\x.\y.sees(x,y))(a)')
+        self.parse_test(r'\x  y.sees(x,y)(a)', r'(\x.\y.sees(x,y))(a)')
+        self.parse_test(r'\x.\y.sees(x,y)(a)(b)', r'((\x.\y.sees(x,y))(a))(b)')
+        self.parse_test(r'\x  y.sees(x,y)(a)(b)', r'((\x.\y.sees(x,y))(a))(b)')
+        self.parse_test(r'\x.\y.sees(x,y)(a,b)',r'((\x.\y.sees(x,y))(a))(b)')
+        self.parse_test(r'\x  y.sees(x,y)(a,b)',r'((\x.\y.sees(x,y))(a))(b)')
+        self.parse_test(r'((\x.\y.sees(x,y))(a))(b)', r'((\x.\y.sees(x,y))(a))(b)')
         self.parse_test(r'P(Q)')
+        self.parse_test(r'P(Q(x))')
         self.parse_test(r'(\x.exists y.walks(x,y))(x)')
         self.parse_test(r'exists x.(x = john)')
         self.parse_test(r'((\P.\Q.exists x.(P(x) & Q(x)))(\x.dog(x)))(\x.bark(x))')
@@ -706,13 +694,14 @@ class TestSuite:
         n = Tokens.NEW_NLTK
         print '='*20 + 'TEST SIMPLIFY' + '='*20
         self.simplify_test(r'\x.man(x)(john)', r'man(john)')
-        self.simplify_test(r'\<x,y>.sees(x,y)(john, mary)', r'sees(john,mary)')
-        self.simplify_test(r'\x.\y.sees(x,y)(john, mary)', r'ParseException: The function \y.sees(x,y) abstracts 1 variables but there are 2 arguments: (john,mary)')
-        self.simplify_test(r'\x.\y.sees(x,y)(mary)(john)', r'sees(john,mary)')
-        self.simplify_test(r'(\x.\y.sees(x,y)(mary))(john)', r'sees(john,mary)')
-        self.simplify_test(r'\<x,y>.sees(x,y)(mary)(john)', r'UnexpectedTokenException: parse error, unexpected token: (')
-        self.simplify_test(r'\<x,y>.sees(x,y)(john)', r'\y.sees(john,y)')
-        self.simplify_test(r'(\<x,y>.sees(x,y)(john))(mary)', r'sees(john,mary)')
+        self.simplify_test(r'\x.\y.sees(x,y)(john, mary)', r'sees(john,mary)')
+        self.simplify_test(r'\x  y.sees(x,y)(john, mary)', r'sees(john,mary)')
+        self.simplify_test(r'\x.\y.sees(x,y)(john)(mary)', r'sees(john,mary)')
+        self.simplify_test(r'\x  y.sees(x,y)(john)(mary)', r'sees(john,mary)')
+        self.simplify_test(r'\x.\y.sees(x,y)(john)', r'\y.sees(john,y)')
+        self.simplify_test(r'\x  y.sees(x,y)(john)', r'\y.sees(john,y)')
+        self.simplify_test(r'(\x.\y.sees(x,y)(john))(mary)', r'sees(john,mary)')
+        self.simplify_test(r'(\x  y.sees(x,y)(john))(mary)', r'sees(john,mary)')
         self.simplify_test(r'exists x.(man(x) & (\x.exists y.walks(x,y))(x))', r'exists x.(man(x) & exists y.walks(x,y))')
         self.simplify_test(r'exists x.(man(x) & (\x.exists y.walks(x,y))(y))', r'exists x.(man(x) & exists z1.walks(y,z1))')
         self.simplify_test(r'(\P Q.exists x.(P(x) & Q(x)))(\x.dog(x))', r'\Q.exists x.(dog(x) & Q(x))')
@@ -746,12 +735,12 @@ class TestSuite:
         self.replace_test(r'exists x.give(x,y,z)', 'y', 'a', True, r'exists x.give(x,a,z)')
         self.replace_test(r'exists x.give(x,y,z)', 'y', 'x', False, r'exists z1.give(z1,x,z)')
         self.replace_test(r'exists x.give(x,y,z)', 'y', 'x', True, r'exists z1.give(z1,x,z)')
-        self.replace_test(r'\<x,y,z>.give(x,y,z)', 'y', 'a', False, r'\<x,y,z>.give(x,y,z)')
-        self.replace_test(r'\<x,y,z>.give(x,y,z)', 'y', 'a', True, r'\<x,a,z>.give(x,a,z)')
-        self.replace_test(r'\<x,y>.give(x,y,z)', 'z', 'a', False, r'\<x,y>.give(x,y,a)')
-        self.replace_test(r'\<x,y>.give(x,y,z)', 'z', 'a', True, r'\<x,y>.give(x,y,a)')
-        self.replace_test(r'\<x,y>.give(x,y,z)', 'z', 'x', False, r'\<z1,y>.give(z1,y,x)')
-        self.replace_test(r'\<x,y>.give(x,y,z)', 'z', 'x', True, r'\<z1,y>.give(z1,y,x)')
+        self.replace_test(r'\x y z.give(x,y,z)', 'y', 'a', False, r'\x.\y.\z.give(x,y,z)')
+        self.replace_test(r'\x y z.give(x,y,z)', 'y', 'a', True, r'\x.\a.\z.give(x,a,z)')
+        self.replace_test(r'\x.\y.give(x,y,z)', 'z', 'a', False, r'\x.\y.give(x,y,a)')
+        self.replace_test(r'\x.\y.give(x,y,z)', 'z', 'a', True, r'\x.\y.give(x,y,a)')
+        self.replace_test(r'\x.\y.give(x,y,z)', 'z', 'x', False, r'\z1.\y.give(z1,y,x)')
+        self.replace_test(r'\x.\y.give(x,y,z)', 'z', 'x', True, r'\z1.\y.give(z1,y,x)')
         self.replace_test(r'\x.give(x,y,z)', 'z', 'y', False, r'\x.give(x,y,y)')
         self.replace_test(r'\x.give(x,y,z)', 'z', 'y', True, r'\x.give(x,y,y)')
     
