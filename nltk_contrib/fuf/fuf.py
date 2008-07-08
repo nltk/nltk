@@ -4,6 +4,7 @@ import fufconvert
 from fufconvert import *
 from link import *
 from linearizer import *
+from util import output_html
 
 
 def unify_with_grammar(input_fs, grammar_fs):
@@ -36,30 +37,26 @@ def unify_with_grammar(input_fs, grammar_fs):
 
         for alt_name in alts:
             alt = grammar[alt_name]
-            alt_keys = grammar[alt_name].keys()
-            # if this is a named alt structure go one level deeper
-            if len(alt_keys) == 1 and alt_keys[0].isalpha():
-                alt = grammar['alt'][alt_keys[0]]
-            for key in alt.keys():
+            alt_keys = alt.keys()
+            alt_keys.sort()
+            for key in alt_keys:
                 fscopy = fs.copy()
-                if isinstance(alt[key], nltk.sem.Variable):
-                    fscopy[key] = alt[key]
-                else:
-                    for akey, avalue in alt[key].items():
-                        fscopy[akey] = avalue
+                for akey, avalue in alt[key].items():
+                    fscopy[akey] = avalue
                 packs.append(fscopy)
 
         # recursively try to unpack any
         # possible nested alts
         unpacked = list()
         while len(packs) > 0:
-            pack = packs.pop(0)
+            pack = packs.pop()
             temp = unpack_alt(pack)
             if isinstance(temp, list):
                 for i in temp:
                     packs.append(i)
             else:
                 unpacked.append(temp)
+        
         return unpacked
 
 
@@ -69,30 +66,56 @@ def unify_with_grammar(input_fs, grammar_fs):
         """
         # Try unifying the given feature structure with each of 
         # the grammar rules
-        for grammar_rule in grammar_rules:
-            unified_fstruct = fstruct.unify(grammar_rule)
+        for i, grammar_rule in enumerate(grammar_rules):
+            try:
+                unified_fstruct = fstruct.unify(grammar_rule)
+            except Exception, e:
+                print 
+                print 'EXCEPTION:', e
+                print fstruct
+                print 
+                print grammar_rule
+                exit()
             if unified_fstruct is not None:
                 # unified, now recursively apply grammar rules to 
                 # the child features
+                #lr.resolve(unified_fstruct)
+
+                # debugging_start
+                #raw_input('paused')
+                temp = [fstruct, '%d' % i, grammar_rule, unified_fstruct ]
+                header = ['input', 'grammar_number', 'grammar', 'result']
+                print output_html(temp, header)
+                # debuggin_end
+
                 for (feat_name, feat_val) in unified_fstruct.items():
                     if isinstance(feat_val, nltk.FeatStruct):
                         new_val = unify_with_grammar_helper(feat_val,
                                                             grammar_rules)
                         unified_fstruct[feat_name] = new_val
+
                 return unified_fstruct
-         
+
         return unified_fstruct
 
 
     # Unpack the alt's in the grammar
     # Generates a list of grammar rules
     grammar_rules = unpack_alt(grammar_fs)
+    grammar_rules.reverse()
+
 
     # resolve the links
     lr = LinkResolver()
-    for rule in grammar_rules:
+    
+    # debugging_start
+    for i, rule in enumerate(grammar_rules):
         lr.resolve(rule)
+        print output_html(['%s' % i, rule])
+    # debugging_end
 
+    # before the unification we have to resolve all the relative and absolute
+    # links 
 
     # make a copy of the original input
     return unify_with_grammar_helper(input_fs.copy(), grammar_rules)
@@ -120,54 +143,31 @@ def draw(fstruct, filename=None):
 
 if __name__ == "__main__":
     # tests for unification
+    from util import output_html
 
-
-    # simple
-    #itext, gtext = open('tests/uni.fuf').readlines()
-    #ifs = fuf_to_featstruct(itext)
-    #gfs = fuf_to_featstruct(gtext)
-    #result = unify_with_grammar(ifs, gfs)
-    #print ifs
-    #print 
-    #print gfs
-    #print
-    #print result
-
+    #simple
+    itext, gtext = open('tests/uni.fuf').readlines()
+    ifs = fuf_to_featstruct(itext)
+    gfs = fuf_to_featstruct(gtext)
+    result = unify_with_grammar(ifs, gfs)
 
     # inputs and grammars from fuf distribution
     grammar_files = [gfile for gfile in os.listdir('tests/') if gfile.startswith('gr')]
     input_files = [ifile for ifile in os.listdir('tests/') if ifile.startswith('ir')]
     for ifile, gfile in zip(input_files, grammar_files):
         # input files contain more than one definition of input
+        output = None
         result = None
         print ifile, gfile
         print "INPUT FILE: %s, GRAMMAR FILE: %s" % (ifile, gfile)
         gfs = fuf_to_featstruct(open('tests/%s' % gfile).read())
         for iline in open('tests/%s' % ifile).readlines():
-            print 'GRAMMAR'
-            print gfs
-            print
             try:
                 ifs = fuf_to_featstruct(iline)
             except Exception, e:
-                print e
-                print 'failed to convert'
-                print iline
+                print 'Failed to convert %s to nltk.FeatStruct' % iline
                 exit()
-            print "INPUT"
-            print ifs
-            print
             result = unify_with_grammar(ifs, gfs)
-            print 'RESULT'
-            print result
-            print 
-            print 'LINEARIZATION'
             if result:
-                print " ".join(linearize(result))
-            else:
-                print ''
-            print
-            print '----------' 
-            
-            # quit after the first 2 sets of files have been processed
-        exit()
+                output = " ".join(linearize(result))
+                print output_html([ifs, gfs, result, output])

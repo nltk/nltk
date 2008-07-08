@@ -2,7 +2,7 @@
    (
     ;; 01 CAT S : sentence -------------------------------------------
     ((cat s)
-     (pattern ((* focus) dots))
+     (pattern ( focus dots))
      (alt s
       (
        ;; VERB VOICE ACTIVE (DEFAULT OR EXPLICIT) ----------------------

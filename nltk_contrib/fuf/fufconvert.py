@@ -157,9 +157,11 @@ if __name__ == '__main__':
         text = open('tests/%s' % gfile).read()
         print fuf_to_featstruct(text)
         print
-        exit()
 
     
     type_table, grammar = fuf_file_to_featstruct('tests/typed_gr4.fuf')
     print type_table
     print grammar
+
+    gr5 = fuf_to_featstruct(open('tests/gr5.fuf').read())
+    print gr5

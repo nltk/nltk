@@ -4,6 +4,7 @@ The linearizer for unified fuf feature structures
 """
 
 import nltk
+from link import *
 
 def linearize(fstruct):
     """
@@ -15,6 +16,8 @@ def linearize(fstruct):
             if item == 'dots':
                 output.append('')
             else:
+                if isinstance(fs[item], ReentranceLink):
+                    LinkResolver().resolve(fs)
                 if fs[item].has_key('pattern'):
                     lin_helper(fs[item], fs[item]['pattern'], output)
                 elif fs[item].has_key('lex'):
