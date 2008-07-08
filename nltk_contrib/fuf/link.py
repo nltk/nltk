@@ -25,39 +25,64 @@ class LinkResolver(object):
         Resolve the relative and absolute links in the feature structure
         """
 
-        def resolve_helper(fstruct, ancestors):
-            for feat, val in fstruct.items():
-                if isinstance(val, nltk.FeatStruct):
-                    # bulding the path of how we got here
-                    ancestors.append(val)
-                    resolve_helper(val, ancestors)
-                    ancestors.pop()
-                elif isinstance(val, ReentranceLink):
-                    target = None
-                    parent = None
-                    # decide if this is a relative or absolute link
-                    if val.up > 0:
-                        parent = ancestors[:(-1*val.up)]
-                    else:
-                        parent = [ancestors[0]]
-                    # if the parent is empty then introduce a variable
-                    if len(parent) == 0:
-                        target = self._unique_var()
-                    else:
-                        target = parent[-1]
-                        for path_feat in val.down:
-                            # if the features doesn't exist there
-                            if path_feat not in target:
-                                if path_feat == val.down[-1]:
-                                    target[path_feat] = self._unique_var()
-                                else:
-                                    target[path_feat] = nltk.FeatStruct()
-                            target = target[path_feat]
-                            #else:
-                                #target = target[path_feat]
-                    fstruct[feat] = target
+        def get_link_value(fs, path):
+            target = None
+            
+            # in case we find another link keep a copy
+            ancestors = [fs]
+            resolved_inner_link = False
 
-        resolve_helper(fstruct, [fstruct])
+            # to to the end
+            last_step = path[-1]
+            path = path[:-1]
+
+            for step in path:
+                if step in fs and not isinstance(fs[step], ReentranceLink):
+                    fs = fs[step]
+                    ancestors.append(fs)
+                elif step not in fs:
+                    fs[step] = nltk.FeatStruct()
+                    fs = fs[step]
+                    ancestors.append(fs)
+                elif isinstance(fs[step], ReentranceLink):
+                    fs[step] = get_link_value(ancestors[-1*fs[step].up],
+                                              fs[step].down)
+                    fs = fs[step]
+                    resolved_inner_link = True
+                    
+            if last_step in fs:
+                if isinstance(fs[last_step], ReentranceLink):
+                    print 'doh'
+                    exit()
+                return fs[last_step]
+            fs[last_step] = self._unique_var()
+            return fs[last_step]
+
+
+        def resolve_helper2(fs, ancestors, lnk=None):
+            # start looking for links
+            for feat, val in fs.items():
+                # add to path and recurse
+                if isinstance(val, nltk.FeatStruct):
+                    ancestors.append(val)
+                    resolve_helper2(val, ancestors)
+                    ancestors.pop()
+                # found the link
+                elif isinstance(val, ReentranceLink):
+                    if val.up > 0 and len(val.down) > 0:
+                        # relative link with a path
+                        if (val.up >= len(ancestors)):
+                            fs[feat] = get_link_value(ancestors[-1*val.up], val.down)
+                        else:
+                            # we will try to resolve this link later
+                            pass
+                    elif val.up == 0 and len(val.down) > 0:
+                        # get the value for the absolute link
+                        fs[feat] = get_link_value(ancestors[0], val.down)
+                    else:
+                        raise ValueError("Malformed Link: %s" % val)
+
+        resolve_helper2(fstruct, [fstruct])
 
 
 class ReentranceLink(object):
@@ -90,16 +115,10 @@ if __name__ == '__main__':
     from fufconvert import *
     from fuf import *
 
-
     gfs = fuf_to_featstruct(open('tests/gr0.fuf').read())
- 
-    gfs_output = "<td><pre>%s</pre></td>" % gfs
     itext = open('tests/ir0.fuf').readlines()[2]
+    
     ifs = fuf_to_featstruct(itext)
-    ifs_output = "<td><pre>%s</pre></td>" % ifs
     result = unify_with_grammar(ifs, gfs)
 
-    result_output = "<td><pre>%s</pre></td>" % result
-
-    print "<table border=1><tr>%s\n%s\n%s</tr></table>" % (ifs_output, gfs_output, result_output)
-    exit()
+    print output_html([ifs, gfs, result])
