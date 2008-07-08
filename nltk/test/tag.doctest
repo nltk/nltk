@@ -331,7 +331,7 @@ model gives for the probability of the sequence w/ no states specified.
 
 Find the most likely set of tags for the test sequence.
 
-    >>> model.tag(sequence)
+    >>> model.tag(test)
     [('up', 'bull'), ('down', 'bear'), ('up', 'bull')]
 
 Find some entropy values.  These are all in base 2 (i.e., bits).
