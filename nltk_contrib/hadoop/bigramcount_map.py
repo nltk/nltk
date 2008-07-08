@@ -5,7 +5,6 @@ import sys
 for line in sys.stdin:
 	line = line.strip()
 	words = filter(lambda word: word, line.split())
-	words.append("$EOL")
 	# increase counters
 	for word in words:
 		# write the results to STDOUT (standard output);

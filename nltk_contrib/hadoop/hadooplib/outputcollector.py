@@ -1,4 +1,4 @@
-class lineOutput:
+class LineOutput:
 	""" default output class, output key and value as key'\t'value"""
 	@staticmethod
 	def collect(key, value):
