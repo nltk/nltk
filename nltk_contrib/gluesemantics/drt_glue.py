@@ -38,8 +38,8 @@ class DrtGlueFormula(glue.GlueFormula):
     def make_VariableExpression(self, name):
         return DRT.DrtVariableExpression(name)
         
-    def make_LambdaExpression(self, variables, term):
-        return DRT.DrtLambdaExpression(variables, term)
+    def make_LambdaExpression(self, variable, term):
+        return DRT.DrtLambdaExpression(variable, term)
         
 class DrtGlueDict(glue.GlueDict):
     def get_GlueFormula_factory(self):

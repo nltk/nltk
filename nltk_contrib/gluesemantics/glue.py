@@ -52,7 +52,7 @@ class GlueFormula:
         arg_meaning_abstracted = arg.meaning
         if return_indices:
             for dep in self.glue.simplify().antecedent.dependencies[::-1]: # if self.glue is (A -o B), dep is in A.dependencies
-                arg_meaning_abstracted = self.make_LambdaExpression([self.make_VariableExpression('v%s' % dep)], 
+                arg_meaning_abstracted = self.make_LambdaExpression(self.make_VariableExpression('v%s' % dep), 
                                                                     arg_meaning_abstracted)
         return_meaning = self.meaning.applyto(arg_meaning_abstracted)
 
@@ -61,13 +61,13 @@ class GlueFormula:
     def make_VariableExpression(self, name):
         return logic.VariableExpression(name)
         
-    def make_LambdaExpression(self, variables, term):
-        return logic.LambdaExpression(variables, term)
+    def make_LambdaExpression(self, variable, term):
+        return logic.LambdaExpression(variable, term)
         
     def lambda_abstract(self, other):
         assert isinstance(other, GlueFormula)
         assert isinstance(other.meaning, logic.VariableExpression)
-        return self.__class__(self.make_LambdaExpression([other.meaning], self.meaning), \
+        return self.__class__(self.make_LambdaExpression(other.meaning, self.meaning), \
                               linearlogic.ImpExpression(other.glue, self.glue))
 
     def compile(self, counter=None):

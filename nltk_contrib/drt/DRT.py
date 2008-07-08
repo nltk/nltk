@@ -84,7 +84,7 @@ class DRS(AbstractDrs, logic.Expression, RA.DRS):
             #variable not bound by this DRS
             
             # any bound variable that appears in the expression must
-            # be alpha converted to avoid a confict
+            # be alpha converted to avoid a conflict
             for ref in (set(self.refs) & expression.free()):
                 newvar = unique_variable()
                 i = self.refs.index(ref)
@@ -146,7 +146,7 @@ class DrtNegatedExpression(AbstractDrs, logic.NegatedExpression, RA.NegatedExpre
 
 class DrtLambdaExpression(AbstractDrs, logic.LambdaExpression, RA.LambdaExpression):
     def toFol(self):
-        return logic.LambdaExpression(self.variables, self.term.toFol())
+        return logic.LambdaExpression(self.variable, self.term.toFol())
 
 class DrtOrExpression(AbstractDrs, logic.ImpExpression):
     def toFol(self):
@@ -472,7 +472,7 @@ class DrsDrawer:
 
     def _handle_LambdaExpression(self, expression, command, x, y):
         # Find the width of the lambda symbol and abstracted variables
-        variables = Tokens.LAMBDA[logic.n] + ' '.join([str(v) for v in expression.variables]) + Tokens.DOT[logic.n]
+        variables = Tokens.LAMBDA[logic.n] + str(expression.variable) + Tokens.DOT[logic.n]
         right = self._visit_command(variables, x, y)[0]
 
         # Handle term
@@ -532,8 +532,8 @@ class Tokens(logic.Tokens):
 class DrtParser(LogicParser):
     """A lambda calculus expression parser."""
     
-    def __init__(self, data=None):
-        LogicParser.__init__(self, data)
+    def __init__(self):
+        LogicParser.__init__(self)
 
     def get_all_symbols(self):
         """This method exists to be overridden"""
@@ -646,7 +646,7 @@ class TestSuite(logic.TestSuite):
         self.parse_test(r'\x.\y.DRS([],[sees(x,y)])')
     
         self.parse_test(r'\x.DRS([],[walks(x)])(john)')
-        self.parse_test(r'\R.\x.DRS([],[big(x,R)])(\y.DRS([],[mouse(y)]))')
+        self.parse_test(r'\R.\x.DRS([],[big(x,R)])(\y.DRS([],[mouse(y)]))', r'(\R.\x.DRS([],[big(x,R)]))(\y.DRS([],[mouse(y)]))')
     
         self.parse_test(r'(DRS([x],[walks(x)]) + DRS([y],[runs(y)]))')
         self.parse_test(r'(DRS([x,y],[walks(x), jumps(y)]) + (DRS([z],[twos(z)]) + DRS([w],[runs(w)])))')
@@ -686,7 +686,7 @@ class TestSuite(logic.TestSuite):
         self.simplify_test(r'\x.\y.DRS([],[sees(x,y)])')
     
         self.simplify_test(r'\x.DRS([],[walks(x)])(john)', r'DRS([],[walks(john)])')
-        self.simplify_test(r'\<R,x>.DRS([],[big(x,R)])(\y.DRS([],[mouse(y)]))', r'\x.DRS([],[big(x,\y.DRS([],[mouse(y)]))])')
+        self.simplify_test(r'\R x.DRS([],[big(x,R)])(\y.DRS([],[mouse(y)]))', r'\x.DRS([],[big(x,\y.DRS([],[mouse(y)]))])')
     
         self.simplify_test(r'(DRS([x],[walks(x)]) + DRS([y],[runs(y)]))', r'DRS([x,y],[walks(x), runs(y)])')
         self.simplify_test(r'(DRS([x,y],[walks(x), jumps(y)]) + (DRS([z],[twos(z)]) + DRS([w],[runs(w)])))' ,r'DRS([x,y,z,w],[walks(x), jumps(y), twos(z), runs(w)])')
@@ -707,7 +707,7 @@ class TestSuite(logic.TestSuite):
         
         self.simplify_test(r'(\Q.(DRS([x],[(x = john),walks(x)]) + Q))(DRS([x],[PRO(x),leaves(x)]))', r'DRS([x,z1],[(x = john), walks(x), PRO(z1), leaves(z1)])')
     
-    def simplify_test(self, f, expected=None, throw=True):
+    def simplify_test(self, f, expected=None, throw=False):
         logic._counter._value = 0
         if not expected:
             expected = f
@@ -728,7 +728,7 @@ class TestSuite(logic.TestSuite):
         self.toFol_test(r'\x y.DRS([],[sees(x,y)])', r'\x.\y.sees(x,y)')
     
         self.toFol_test(r'\x.DRS([],[walks(x)])(john)', r'\x.walks(x)(john)')
-        self.toFol_test(r'\<R,x>.DRS([],[big(x,R)])(\y.DRS([],[mouse(y)]))', r'\<R,x>.big(x,R)(\y.mouse(y))')
+        self.toFol_test(r'\R x.DRS([],[big(x,R)])(\y.DRS([],[mouse(y)]))', r'(\R.\x.big(x,R))(\y.mouse(y))')
     
         self.toFol_test(r'(DRS([x],[walks(x)]) + DRS([y],[runs(y)]))', r'(exists x.walks(x) & exists y.runs(y))')
     
