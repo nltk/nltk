@@ -498,17 +498,17 @@ class TestSuite(logic.TestSuite):
         self.unify_test(f, G, '{G: f}')
         self.unify_test(f, G, 'UnificationException: Cannot unify f with G given {G: h}', BindingDict([(G,h)]))
         self.unify_test(f, G, '{G: f}', BindingDict([(G,f)]))
-        self.unify_test(f, G, '{G: f, H: f}', BindingDict([(H,f)]))
+        self.unify_test(f, G, '{H: f, G: f}', BindingDict([(H,f)]))
         
         self.unify_test(G, f, '{G: f}')
         self.unify_test(G, f, 'UnificationException: Cannot unify G with f given {G: h}', BindingDict([(G,h)]))
         self.unify_test(G, f, '{G: f}', BindingDict([(G,f)]))
-        self.unify_test(G, f, '{G: f, H: f}', BindingDict([(H,f)]))
+        self.unify_test(G, f, '{H: f, G: f}', BindingDict([(H,f)]))
         
         self.unify_test(G, F, '{G: F}')
         self.unify_test(G, F, 'UnificationException: Cannot unify G with F given {G: H}', BindingDict([(G,H)]))
         self.unify_test(G, F, '{G: F}', BindingDict([(G,F)]))
-        self.unify_test(G, F, '{G: F, H: F}', BindingDict([(H,F)]))
+        self.unify_test(G, F, '{H: F, G: F}', BindingDict([(H,F)]))
 
     def unify_test(self, a, b, expected, bindings=None, throw=False):
         if not bindings:
