@@ -1,7 +1,7 @@
-import sys
 from itertools import groupby
 from operator import itemgetter
-from InputFormat import KeyValueInput
+
+from inputformat import KeyValueInput
 
 class ReducerBase:
 	""" base class for every reduce tasks"""
@@ -17,8 +17,8 @@ class ReducerBase:
 	def reduce(self, key, values):
 		raise NotImplementedError('reduce() is not implemented in this class')
 
-	def reduceCaller(self):
+	def call_reduce(self):
 		# input comes from STDIN (standard input)
-		data = KeyValueInput.readLine()
+		data = KeyValueInput.read_line()
 		for key, values in self.group_data(data):
 			self.reduce(key, values)

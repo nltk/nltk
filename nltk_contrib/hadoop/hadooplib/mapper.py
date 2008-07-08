@@ -1,4 +1,4 @@
-from InputFormat import TextLineInput
+from inputformat import TextLineInput
 
 
 class MapperBase:
@@ -10,9 +10,9 @@ class MapperBase:
 	def map(self, key, value, outputCollector):
 		raise NotImplementedError('map() is not implemented in this class')
 
-	def mapCaller(self, separator='\t'):
+	def call_map(self, separator='\t'):
 		""" driver function for map task, call the map() function for subclass"""
 		# input comes from STDIN (standard input)
-		data = TextLineInput.readLine()
+		data = TextLineInput.read_line()
 		for line in data:
 			self.map(None, line)
