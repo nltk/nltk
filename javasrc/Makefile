@@ -37,7 +37,7 @@ find-mallet:
 
 nltk.jar: $(JAVA_SRC)
 	$(JAVAC) -cp "$(CLASSPATH)" $(JAVA_SRC)
-	jar -cf nltk.jar $(JAVA_CLS)
+	jar -cf nltk.jar `find org/nltk -name '*.class'`
 
 clean:
 	rm -f $(JAVA_CLS) nltk.jar
