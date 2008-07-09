@@ -317,6 +317,46 @@ In general, if your feature structures will contain any reentrances,
 or if you plan to use them as dictionary keys, it is strongly
 recommended that you use full-fledged `FeatStruct` objects.
 
+Custom Feature Values
+---------------------
+The abstract base class `CustomFeatureValue` can be used to define new
+base value types that have custom unification methods.  For example,
+the following feature value type encodes a range, and defines
+unification as taking the intersection on the ranges:
+
+    >>> from nltk.featstruct import CustomFeatureValue, UnificationFailure
+    >>> class Range(CustomFeatureValue):
+    ...     def __init__(self, low, high):
+    ...         assert low <= high
+    ...         self.low = low
+    ...         self.high = high
+    ...     def unify(self, other):
+    ...         if not isinstance(other, Range):
+    ...             return UnificationFailure
+    ...         low = max(self.low, other.low)
+    ...         high = min(self.high, other.high)
+    ...         if low <= high: return Range(low, high)
+    ...         else: return UnificationFailure
+    ...     def __repr__(self):
+    ...         return '(%s<x<%s)' % (self.low, self.high)
+    ...     def __cmp__(self, other):
+    ...         if not isinstance(other, Range): return -1
+    ...         return cmp((self.low, self.high), (other.low, other.high))
+
+    >>> fs1 = FeatStruct(x=Range(5,8), y=FeatStruct(z=Range(7,22)))
+    >>> print fs1.unify(FeatStruct(x=Range(6, 22)))
+    [ x = (6<x<8)          ]
+    [                      ]
+    [ y = [ z = (7<x<22) ] ]
+    >>> print fs1.unify(FeatStruct(x=Range(9, 12)))
+    None
+    >>> print fs1.unify(FeatStruct(x=12))
+    None
+    >>> print fs1.unify(FeatStruct('[x=?x, y=[z=?x]]'))
+    [ x = (7<x<8)         ]
+    [                     ]
+    [ y = [ z = (7<x<8) ] ]
+
 Regression Tests
 ~~~~~~~~~~~~~~~~
 
@@ -1051,16 +1091,16 @@ Tracing
       |   |    / ?x
       |   |   |\ 'C'
       |   |   |
-      |   |   +-->'C'
+      |   |   +-->Variable('?x')
       |   |
-      |   +-->[b=[], c='C']
+      |   +-->[b=[], c=?x]
       |       Bindings: {?x: 'C'}
       |
       | Unify feature: e
       |    / [f=?x]
       |   |\ [g=[c='C']]
       |   |
-      |   +-->[f=?x, g=[b=[], c='C']]
+      |   +-->[f=?x, g=[b=[], c=?x]]
       |       Bindings: {?x: 'C'}
       |
       +-->[a=(1)[b=(2)[], c='C'], d->(2), e=[f='C', g->(1)]]
