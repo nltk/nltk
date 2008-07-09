@@ -190,3 +190,4 @@ clean_code:
 	rm -f `find . -name '*.pyo'`
 	rm -f `find . -name '*~'`
 	$(MAKE) -C javasrc clean
+	rm -f nltk/nltk.jar
