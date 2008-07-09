@@ -105,9 +105,18 @@ public class TrainCRF
             throw new RuntimeException("Unexpected state structure "+
                                        crfInfo.stateStructure);
 
-        // Add a start state, and set the initial costs for all other
-        // states to POSITIVE_INFINITY??
-        /*[xxx]*/
+        // Set up the weight groups.
+        if (crfInfo.weightGroupInfoList != null) {
+            Iterator wgIter = crfInfo.weightGroupInfoList.iterator();
+            while (wgIter.hasNext()) {
+                CRFInfo.WeightGroupInfo wg = (CRFInfo.WeightGroupInfo)
+                    wgIter.next();
+                FeatureSelection fs = FeatureSelection.createFromRegex
+                    (crf.getInputAlphabet(), 
+                     Pattern.compile(wg.featureSelectionRegex));
+                crf.setFeatureSelection(crf.getWeightsIndex(wg.name), fs);
+            }
+        }
 
         // Train the CRF.
         crf.train (trainingData, null, null, null, crfInfo.maxIterations);
