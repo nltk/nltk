@@ -7,8 +7,8 @@
 # For license information, see LICENSE.TXT
 
 import re, types
-from api import *
-from util import *
+from nltk.chunk.api import *
+from nltk.chunk.util import *
 from nltk import Tree
 
 ##//////////////////////////////////////////////////////
@@ -366,6 +366,9 @@ class RegexpChunkRule(object):
             elif '{}' in rule:
                 left, right = rule.split('{}')
                 return MergeRule(left, right, comment)
+            elif re.match('[^{}]*{[^{}]*}[^{}]*', rule):
+                left, chunk, right = re.split('[{}]', rule)
+                return ChunkRuleWithContext(left, chunk, right, comment)
             else:
                 raise ValueError('Illegal chunk pattern: %s' % rule)
         except re.error:
@@ -658,12 +661,12 @@ class ExpandLeftRule(RegexpChunkRule):
 
 class ExpandRightRule(RegexpChunkRule):
     """
-    A rule specifying how to expand chunks in a C{ChunkString} to the right,
-    using two matching tag patterns: a left pattern, and a right pattern.
-    When applied to a C{ChunkString}, it will find any chunk whose end
-    matches left pattern, and immediately followed by a chink whose
-    beginning matches right pattern.  It will then expand the chunk to incorporate
-    the new material on the right.
+    A rule specifying how to expand chunks in a C{ChunkString} to the
+    right, using two matching tag patterns: a left pattern, and a
+    right pattern.  When applied to a C{ChunkString}, it will find any
+    chunk whose end matches left pattern, and immediately followed by
+    a chink whose beginning matches right pattern.  It will then
+    expand the chunk to incorporate the new material on the right.
     """
     def __init__(self, left_tag_pattern, right_tag_pattern, descr):
         """
@@ -710,6 +713,69 @@ class ExpandRightRule(RegexpChunkRule):
         return ('<ExpandRightRule: '+`self._left_tag_pattern`+', '+
                 `self._right_tag_pattern`+'>')
 
+class ChunkRuleWithContext(RegexpChunkRule):
+    """
+    A rule specifying how to add chunks to a C{ChunkString}, using
+    three matching tag patterns: one for the left context, one for the
+    chunk, and one for the right context.  When applied to a
+    C{ChunkString}, it will find any substring that matches the chunk
+    tag pattern, is surrounded by substrings that match the two
+    context patterns, and is not already part of a chunk; and create a
+    new chunk containing the substring that matched the chunk tag
+    pattern.
+
+    Caveat: Both the left and right context are consumed when this
+    rule matches; therefore, if you need to find overlapping matches,
+    you will need to apply your rule more than once.
+    """
+    def __init__(self, left_context_tag_pattern, chunk_tag_pattern,
+                 right_context_tag_pattern, descr):
+        """
+        Construct a new C{ChunkRuleWithContext}.
+        
+        @type left_context_tag_pattern: C{string}
+        @param left_context_tag_pattern: A tag pattern that must match
+            the left context of C{chunk_tag_pattern} for this rule to
+            apply.
+        @type chunk_tag_pattern: C{string}
+        @param chunk_tag_pattern: A tag pattern that must match for this
+            rule to apply.  If the rule does apply, then this pattern
+            also identifies the substring that will be made into a chunk.
+        @type right_context_tag_pattern: C{string}
+        @param right_context_tag_pattern: A tag pattern that must match
+            the right context of C{chunk_tag_pattern} for this rule to
+            apply.
+        @type descr: C{string}
+        @param descr: A short description of the purpose and/or effect
+            of this rule.
+        """
+        self._left_context_tag_pattern = left_context_tag_pattern
+        self._chunk_tag_pattern = chunk_tag_pattern
+        self._right_context_tatg_pattern = right_context_tag_pattern
+
+        regexp = re.compile('(?P<left>%s)(?P<chunk>%s)(?P<right>%s)%s' %
+                            (tag_pattern2re_pattern(left_context_tag_pattern),
+                             tag_pattern2re_pattern(chunk_tag_pattern),
+                             tag_pattern2re_pattern(right_context_tag_pattern),
+                             ChunkString.IN_CHINK_PATTERN))
+        replacement = r'\g<left>{\g<chunk>}\g<right>'
+        RegexpChunkRule.__init__(self, regexp, replacement, descr)
+
+    def __repr__(self):
+        """
+        @rtype: C{string}
+        @return: A string representation of this rule.  This
+             string representation has the form::
+
+                 <ChunkRuleWithContext: '<IN>', '<NN>', '<DT>'>
+
+             Note that this representation does not include the
+             description string; that string can be accessed
+             separately with the C{descr} method.
+        """
+        return '<ChunkRuleWithContext: %r, %r, %r>' % (
+            self.left_context_tag_pattern, self.chunk_tag_pattern,
+            self.right_context_tag_pattern)
 
 ##//////////////////////////////////////////////////////
 ##  Tag Pattern Format Conversion
@@ -966,7 +1032,8 @@ class RegexpParser(ChunkParserI):
        {<DT|JJ>}          # chunk determiners and adjectives
        }<[\.VI].*>+{      # chink any tag beginning with V, I, or .
        <.*>}{<DT>         # split a chunk at a determiner
-       <DT|JJ>{}<NN.*>    # merge chunk ending with det/adj with one starting with a noun
+       <DT|JJ>{}<NN.*>    # merge chunk ending with det/adj
+                          # with one starting with a noun
 
     The patterns of a clause are executed in order.  An earlier
     pattern may introduce a chunk boundary that prevents a later
@@ -985,7 +1052,8 @@ class RegexpParser(ChunkParserI):
     each time the corresponding pattern is applied.
 
     @type _start: C{string}
-    @ivar _start: The start symbol of the grammar (the root node of resulting trees)
+    @ivar _start: The start symbol of the grammar (the root node of
+        resulting trees)
     @type _stages: C{int}
     @ivar _stages: The list of parsing stages corresponding to the grammar
         
