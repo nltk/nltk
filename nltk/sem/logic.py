@@ -395,7 +395,7 @@ class LogicParser:
         
         elif tok in Tokens.NOT:
             #it's a negated expression
-            return NegatedExpression(self.parse_Expression())
+            return self.make_NegatedExpression(self.parse_Expression())
         
         elif tok in Tokens.LAMBDA:
             return self.handle_lambda(tok)
@@ -408,6 +408,9 @@ class LogicParser:
         
         else:
             raise UnexpectedTokenException(tok)
+        
+    def make_NegatedExpression(self, expression):
+        return NegatedExpression(expression)
         
     def handle_variable(self, tok):
         #It's either: 1) a predicate expression: sees(x,y)
@@ -456,14 +459,21 @@ class LogicParser:
         accum = self.attempt_ApplicationExpression(accum)
         return self.attempt_BooleanExpression(accum)
         
-    def handle_quant(self, tok):
-        # Expression is a quantified expression: some x.M
+    def get_QuantifiedExpression_factory(self, tok):
+        """This method serves as a hook for other logic parsers that
+        have different quantifiers"""
+        factory = None
         if tok in Tokens.EXISTS:
             factory = ExistsExpression
         elif tok in Tokens.ALL:
             factory = AllExpression
         else:
             self.assertToken(tok, Tokens.EXISTS + Tokens.ALL)
+        return factory
+
+    def handle_quant(self, tok):
+        # Expression is a quantified expression: some x.M
+        factory = self.get_QuantifiedExpression_factory(tok)
 
         vars = [self.token()]
         while self.isvariable(self.token(0)):
