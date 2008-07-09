@@ -127,11 +127,17 @@ def java(cmd, classpath=None, stdin=None, stdout=None, stderr=None):
     # Make sure we know where a java binary is.
     if _java_bin is None:
         config_java()
-        
+
+    # Set up the classpath.
+    if classpath is None:
+        classpath = NLTK_JAR
+    else:
+        classpath += ':' + NLTK_JAR
+    print 'MY CLASSPATH', classpath
+
     # Construct the full command string.
     cmd = list(cmd)
-    if classpath is not None:
-        cmd = ['-cp', classpath] + cmd
+    cmd = ['-cp', classpath] + cmd
     cmd = [_java_bin] + _java_options + cmd
 
     # Call java via a subprocess
