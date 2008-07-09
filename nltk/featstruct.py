@@ -1490,9 +1490,11 @@ def _unify_feature_values(fname, fval1, fval2, bindings, forward,
     
     # Case 3: An unbound variable and a value (bind)
     elif isinstance(fval1, Variable):
-        result = bindings[fval1] = fval2
+        bindings[fval1] = fval2
+        result = fval1
     elif isinstance(fval2, Variable):
-        result = bindings[fval2] = fval1
+        bindings[fval2] = fval1
+        result = fval2
 
     # Case 4: A feature structure & a base value (fail)
     elif isinstance(fval1, fs_class) or isinstance(fval2, fs_class):
@@ -1500,14 +1502,38 @@ def _unify_feature_values(fname, fval1, fval2, bindings, forward,
         
     # Case 5: Two base values
     else:
+        # Case 5a: Feature defines a custom unification method for base values
         if isinstance(fname, Feature):
             result = fname.unify_base_values(fval1, fval2, bindings)
-            if fvar1 is not None: bindings[fvar1] = result
-            if fvar2 is not None: bindings[fvar2] = result
-        elif fval1 == fval2:
-            result = fval1
+        # Case 5b: Feature value defines custom unification method
+        elif isinstance(fval1, CustomFeatureValue):
+            result = fval1.unify(fval2)
+            # Sanity check: unify value should be symmetric
+            if (isinstance(fval2, CustomFeatureValue) and
+                result != fval2.unify(fval1)):
+                raise AssertionError(
+                    'CustomFeatureValue objects %r and %r disagree '
+                    'about unification value: %r vs. %r' %
+                    (fval1, fval2, result, fval2.unify(fval1)))
+        elif isinstance(fval2, CustomFeatureValue):
+            result = fval2.unify(fval1)
+        # Case 5c: Simple values -- check if they're equal.
         else:
-            result = UnificationFailure
+            if fval1 == fval2:
+                result = fval1
+            else:
+                result = UnificationFailure
+                
+        # If either value was a bound variable, then update the
+        # bindings.  (This is really only necessary if fname is a
+        # Feature or if either value is a CustomFeatureValue.)
+        if result is not UnificationFailure:
+            if fvar1 is not None:
+                bindings[fvar1] = result
+                result = fvar1
+            if fvar2 is not None:
+                bindings[fvar2] = result
+                result = fvar2
 
     # If we unification failed, call the failure function; it
     # might decide to continue anyway.
@@ -1840,6 +1866,39 @@ class RangeFeature(Feature):
 SLASH = SlashFeature('slash', default=False, display='slash')
 TYPE = Feature('type', display='prefix')
     
+######################################################################
+# Specialized Feature Values
+######################################################################
+
+class CustomFeatureValue(object):
+    """
+    An abstract base class for base values that define a custom
+    unification method.  A C{CustomFeatureValue}'s custom unification
+    method will be used during feature structure unification if:
+
+      - The C{CustomFeatureValue} is unified with another base value.
+      - The C{CustomFeatureValue} is not the value of a customized
+        L{Feature} (which defines its own unification method).
+
+    If two C{CustomFeatureValue} objects are unified with one another
+    during feature structure unification, then the unified base values
+    they return I{must} be equal; otherwise, an C{AssertionError} will
+    be raised.
+
+    Subclasses must define L{unify()} and L{__cmp__()}.  Subclasses
+    may also wish to define L{__hash__()}.
+    """
+    def unify(self, other):
+        """
+        If this base value unifies with C{other}, then return the
+        unified value.  Otherwise, return L{UnificationFailure}.
+        """
+        raise NotImplementedError('abstract base class')
+    def __cmp__(self, other):
+        raise NotImplementedError('abstract base class')
+    def __hash__(self):
+        raise TypeError('%s objects or unhashable' % self.__class__.__name__)
+
 ######################################################################
 # Feature Structure Parser
 ######################################################################
