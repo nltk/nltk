@@ -13,7 +13,7 @@ Corpus reader for corpora whose documents are xml files.
 
 from nltk.corpus.reader.api import CorpusReader
 from nltk.corpus.reader.util import *
-from nltk.internals import deprecated
+from nltk.internals import deprecated, ElementWrapper
 import codecs
 
 # Use the c version of ElementTree, which is faster, if possible:
@@ -28,12 +28,23 @@ class XMLCorpusReader(CorpusReader):
     C{encoding} argument, because the unicode encoding is specified by
     the XML files themselves.  See the XML specs for more info.
     """
-    def __init__(self, root, files):
+    def __init__(self, root, files, wrap_etree=False):
+        self._wrap_etree = wrap_etree
         CorpusReader.__init__(self, root, files)
         
-    def xml(self, files=None):
-        return concat([ElementTree.parse(filename).getroot()
-                       for filename in self.abspaths(files)])
+    def xml(self, fileid=None):
+        # Make sure we have exactly one file -- no concatinating xml.
+        if fileid is None and len(self._files) == 1:
+            fileid = self._files[0]
+        if not isinstance(fileid, basestring):
+            raise TypeError('Expected a single file identifier string')
+        # Read the XML in using ElementTree.
+        elt = ElementTree.parse(self.abspath(fileid)).getroot()
+        # If requested, wrap it.
+        if self._wrap_etree:
+            elt = ElementWrapper(elt)
+        # Return the ElementTree element.
+        return elt
 
     def raw(self, files=None):
         return concat([open(filename).read()

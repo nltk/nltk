@@ -14,8 +14,8 @@ import re, textwrap
 class VerbnetCorpusReader(XMLCorpusReader):
 
     # No unicode encoding param, since the data files are all XML.
-    def __init__(self, root, files):
-        CorpusReader.__init__(self, root, files)
+    def __init__(self, root, files, wrap_etree=False):
+        XMLCorpusReader.__init__(self, root, files, wrap_etree)
         
         self._lemma_to_class = defaultdict(list)
         """A dictionary mapping from verb lemma strings to lists of
