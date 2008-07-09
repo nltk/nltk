@@ -6,7 +6,10 @@ from inputformat import KeyValueInput
 class ReducerBase:
 	""" base class for every reduce tasks"""
 	def __init__(self):
-		pass
+		self.inputformat = KeyValueInput
+
+	def set_inputformat(self, format):
+		self.inputformat = format
 
 	def group_data(self, data):
 		""" group data"""
@@ -19,6 +22,6 @@ class ReducerBase:
 
 	def call_reduce(self):
 		# input comes from STDIN (standard input)
-		data = KeyValueInput.read_line()
+		data = self.inputformat.read_line()
 		for key, values in self.group_data(data):
 			self.reduce(key, values)

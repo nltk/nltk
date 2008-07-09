@@ -1,3 +1,3 @@
 #!/bin/sh
 
-cat brown-ca01 | ./wordTagCountMapper.py | sort | ./summer.py
+cat brown-ca01 | ./wordcount_mapper.py | sort | ./wordcount_reducer.py
