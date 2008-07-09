@@ -177,6 +177,12 @@ public class CRFInfo
         // Get the state's name.
         stateInfo.name = getName(stateNode);
 
+        //...
+        if (stateNode.hasAttribute("initialCost"))
+            stateInfo.initialCost = getAttribDouble(stateNode, "initialCost");
+        if (stateNode.hasAttribute("finalCost"))
+            stateInfo.finalCost = getAttribDouble(stateNode, "finalCost");
+
         // Get all the other info.
         NodeList nodes = stateNode.getChildNodes();
         for (int n=0; n<nodes.getLength(); n++) {
@@ -214,18 +220,16 @@ public class CRFInfo
         for (int j=0; j<transitions.getLength(); j++) {
             Element transition = (Element) transitions.item(j);
 
-            stateInfo.destinationNames[j] = getName(getElementByTagName(
-                transition, "destination"));
-            stateInfo.labelNames[j] = getName(getElementByTagName(
-                transition, "label"));
+            stateInfo.destinationNames[j] = getAttrib(transition, 
+                                                      "destination");
+            stateInfo.labelNames[j] = getAttrib(transition, "label");
 
             // Fill in the weight names.
-            NodeList wnElts = transition.getElementsByTagName
-                ("weightGroup");
-            stateInfo.weightNames[j] = new String[wnElts.getLength()];
-            for (int k=0; k<wnElts.getLength(); k++) {
-                String wn = getName((Element)wnElts.item(k));
-                stateInfo.weightNames[j][k] = wn;
+            String wg = getAttrib(transition, "weightGroups");
+            String[] wgs = wg.split("\\s+");
+            stateInfo.weightNames[j] = new String[wgs.length];
+            for (int k=0; k<wgs.length; k++) {
+                stateInfo.weightNames[j][k] = wgs[k];
             }
         }
     }
@@ -272,6 +276,14 @@ public class CRFInfo
 
     private int getAttribInt(Element element, String attrib) {
         try { return Integer.parseInt(getAttrib(element, attrib)); }
+        catch (NumberFormatException e)
+            { throw new RuntimeException("Bad value for "+attrib); }
+    }
+
+    private double getAttribDouble(Element element, String attrib) {
+        if (getAttrib(element, attrib).equals("+inf"))
+            return Double.POSITIVE_INFINITY;
+        try { return Double.parseDouble(getAttrib(element, attrib)); }
         catch (NumberFormatException e)
             { throw new RuntimeException("Bad value for "+attrib); }
     }
