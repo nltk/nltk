@@ -7,7 +7,7 @@ class TextLineInput:
 	def read_line(file=stdin):
 		for line in file:
 		# split the line into words
-			yield line
+			yield None, line
 
 class KeyValueInput:
 	""" the input is lines of key'\t'value """
