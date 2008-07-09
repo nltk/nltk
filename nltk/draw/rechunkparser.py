@@ -10,13 +10,21 @@
 """
 A graphical tool for exploring the regular expression based chunk
 parser (L{RegexpChunkParser<nltk.chunk.regex.RegexpChunkParser>}).
+
+@todo: Add a menubar
+@todo: Add save/load functionality for grammars.  It should be possible
+    to save the current grammar, or the history of all grammars.
+@todo: Add a way to select the development set from the menubar.  This
+    might just need to be a selection box (conll vs treebank etc) plus
+    configuration parameters to select what's being chunked (eg VP vs NP)
+    and what part of the data is being used as the development set.
+@todo: Add a way for the user to modify the size of the development set?
 """
 
 from Tkinter import *
 import tkFont, time, textwrap, re
 import nltk, random, re
 from nltk.draw import *
-from nltk.corpus import conll2000
 
 class RegexpChunkDemo:
     """
@@ -31,7 +39,8 @@ class RegexpChunkDemo:
     ##/////////////////////////////////////////////////////////////////
 
     #: A dictionary mapping from part of speech tags to descriptions,
-    #: which is used in the help text.
+    #: which is used in the help text.  (This should probably live with
+    #: the conll and/or treebank corpus instead.)
     TAGSET = {
         'CC':   'Coordinating conjunction',   'PRP$': 'Possessive pronoun',
         'CD':   'Cardinal number',            'RB':   'Adverb',
@@ -189,6 +198,14 @@ class RegexpChunkDemo:
        demon each time it runs."""
     _EVAL_FREQ = 0.2
     """The frequency (in seconds) at which the eval demon is run"""
+    _EVAL_DEMON_MIN = .02
+    """The minimum amount of time that the eval demon should take each time
+       it runs -- if it takes less than this time, _EVAL_CHUNK will be
+       modified upwards."""
+    _EVAL_DEMON_MAX = .04
+    """The maximum amount of time that the eval demon should take each time
+       it runs -- if it takes more than this time, _EVAL_CHUNK will be
+       modified downwards."""
     
     _GRAMMARBOX_PARAMS = dict(
         width=40, height=12, background='#efe', highlightbackground='#efe',
@@ -224,14 +241,17 @@ class RegexpChunkDemo:
     _HELPTAB_SPACER = 6
 
     def normalize_grammar(self, grammar):
-        grammar = grammar.strip()
+        # Strip comments
+        grammar = re.sub(r'((\\.|[^#])*)(#.*)?', r'\1', grammar)
+        # Normalize whitespace
         grammar = re.sub(' +', ' ', grammar)
         grammar = re.sub('\n\s+', '\n', grammar)
+        grammar = grammar.strip()
         # [xx] Hack: automatically backslash $!
         grammar = re.sub(r'([^\\])\$', r'\1\\$', grammar)
         return grammar
     
-    def __init__(self, devset=None, grammar = '',
+    def __init__(self, devset='conll2000', grammar = '',
                  chunk_node='NP', tagset=None):
         """
         @param tagset: Dictionary from tags to string descriptions, used
@@ -243,18 +263,11 @@ class RegexpChunkDemo:
         self.tagset = tagset
         
         # Default development set:
-        if devset is None:
-            devset = conll2000.chunked_sents('train.txt')[:100]
+        if devset == 'conll2000':
+            devset = nltk.corpus.conll2000.chunked_sents('train.txt')[:100]
+        elif devset == 'treebank':
+            devset = nltk.corpus.treebank_chunk.chunked_sents()[:100]
 
-        # [xx] hack check:
-        tags = set()
-        for sent in devset:
-            for w,t in sent.leaves():
-                tags.add(t)
-        for tag in tags:
-            if tag not in self.TAGSET:
-                print 'unknown tag', `tag`
-                
         self.chunker = None
         """The chunker built from the grammar string"""
 
@@ -279,6 +292,11 @@ class RegexpChunkDemo:
         self._history = []
         self._history_index = 0
 
+        self._eval_grammar = None
+        self._eval_normalized_grammar = None
+        self._eval_index = 0
+        self._eval_score = nltk.chunk.ChunkScore()
+
         top = self.top = Tk()
         top.geometry('+50+50')
         top.title('Regexp Chunk Parser Demo')
@@ -299,11 +317,6 @@ class RegexpChunkDemo:
 
         self.show_devset(0)
         self.update()
-
-        self._eval_grammar = None
-        self._eval_normalized_grammar = None
-        self._eval_index = 0
-        self._eval_score = nltk.chunk.ChunkScore()
 
         # Redraw the eval graph when the window size changes
         self.evalbox.bind('<Configure>', self._eval_plot)
@@ -431,6 +444,9 @@ class RegexpChunkDemo:
             self._eval_demon_running = False
             return
 
+        # Note our starting time.
+        t0 = time.time()
+
         # If are still typing, then wait for them to finish.
         if (time.time()-self._last_keypress < self._EVAL_DELAY and
             self.normalized_grammar != self._eval_normalized_grammar):
@@ -480,10 +496,26 @@ class RegexpChunkDemo:
             self._eval_normalized_grammar = None
         else:
             progress = 100*self._eval_index/len(self.devset)
-            self.status['text'] = ('Evaluating on Development Set (%d%%)'
-                                   % progress)
+            self.status['text'] = ('Evaluating on Development Set (%d%%)' % progress)
             self._eval_demon_running = True
+            self._adaptively_modify_eval_chunk(time.time() - t0)
             self.top.after(int(self._EVAL_FREQ*1000), self._eval_demon)
+
+    def _adaptively_modify_eval_chunk(self, t):
+        """
+        Modify _EVAL_CHUNK to try to keep the amount of time that the eval demon
+        takes between _EVAL_DEMON_MIN and _EVAL_DEMON_MAX.
+        
+        @param t: The amount of time that the eval demon took.
+        """
+        if t > self._EVAL_DEMON_MAX and self._EVAL_CHUNK > 5:
+            self._EVAL_CHUNK = min(self._EVAL_CHUNK-1,
+                                   max(int(self._EVAL_CHUNK*(self._EVAL_DEMON_MAX/t)),
+                                           self._EVAL_CHUNK-10))
+        elif t < self._EVAL_DEMON_MIN:
+            self._EVAL_CHUNK = max(self._EVAL_CHUNK+1,
+                                   min(int(self._EVAL_CHUNK*(self._EVAL_DEMON_MIN/t)),
+                                           self._EVAL_CHUNK+10))
 
     def _init_widgets(self, top):
         frame0 = Frame(top, **self._FRAME_PARAMS)
@@ -856,11 +888,14 @@ class RegexpChunkDemo:
         for lineno, line in enumerate(grammar.split('\n')):
             if not line.strip(): continue
             m = re.match(r'(\\.|[^#])*(#.*)?', line)
+            comment_start = None
             if m.group(2):
+                comment_start = m.start(2)
                 s = '%d.%d' % (lineno+1, m.start(2))
                 e = '%d.%d' % (lineno+1, m.end(2))
                 self.grammarbox.tag_add('comment', s, e)
             for m in re.finditer('[<>{}]', line):
+                if comment_start is not None and m.start() >= comment_start: break
                 s = '%d.%d' % (lineno+1, m.start())
                 e = '%d.%d' % (lineno+1, m.end())
                 if m.group() in '<>':
@@ -874,6 +909,7 @@ class RegexpChunkDemo:
         self.grammarbox.tag_remove('error', '1.0', 'end')
         self._grammarcheck_errs = []
         for lineno, line in enumerate(grammar.split('\n')):
+            line = re.sub(r'((\\.|[^#])*)(#.*)?', r'\1', line)
             line = line.strip()
             if line:
                 try: nltk.chunk.regexp.RegexpChunkRule.parse(line)
@@ -909,8 +945,11 @@ class RegexpChunkDemo:
         # parse, do nothing.  (flag error location?)
         try:
             # Note: the normalized grammar has no blank lines.
-            rules = [nltk.chunk.regexp.RegexpChunkRule.parse(line)
-                     for line in normalized_grammar.split('\n')]
+            if normalized_grammar:
+                rules = [nltk.chunk.regexp.RegexpChunkRule.parse(line)
+                         for line in normalized_grammar.split('\n')]
+            else:
+                rules = []
         except ValueError, e:
             # Use the un-normalized grammar for error highlighting.
             self._grammarcheck(grammar)
@@ -968,5 +1007,8 @@ class RegexpChunkDemo:
         if in_idle(): return
         self.top.mainloop(*args, **kwargs)
 
-if __name__ == '__main__':
+def demo():
     RegexpChunkDemo().mainloop()
+    
+if __name__ == '__main__':
+    demo()
