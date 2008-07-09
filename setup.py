@@ -30,6 +30,10 @@ setup(
     # platforms = <platforms>,
     
     #############################################
+    ## Package Data
+    package_data = {'nltk': ['nltk.jar', 'test/*.doctest']},
+    
+    #############################################
     ## Package List
     packages = ['nltk',
                 'nltk.chat',
