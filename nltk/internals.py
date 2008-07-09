@@ -9,6 +9,10 @@
 import subprocess, os.path, re, warnings, textwrap
 import types, sys, os, nltk
 
+# Use the c version of ElementTree, which is faster, if possible:
+try: from xml.etree import cElementTree as ElementTree
+except ImportError: from nltk.etree import ElementTree
+
 ######################################################################
 # Regular Expression Processing
 ######################################################################
@@ -534,3 +538,121 @@ def abstract(func):
     # Return the function.
     return newfunc
 
+##########################################################################
+# Wrapper for ElementTree Elements
+##########################################################################
+
+class ElementWrapper(object):
+    """
+    A wrapper around ElementTree Element objects whose main purpose is
+    to provide nicer __repr__ and __str__ methods.  In addition, any
+    of the wrapped Element's methods that return other Element objects
+    are overridden to wrap those values before returning them.
+
+    This makes Elements more convenient to work with in
+    interactive sessions and doctests, at the expense of some
+    efficiency.
+    """
+    
+    # Prevent double-wrapping:
+    def __new__(cls, etree):
+        """
+        Create and return a wrapper around a given Element object.
+        If C{etree} is an C{ElementWrapper}, then C{etree} is
+        returned as-is.
+        """
+        if isinstance(etree, ElementWrapper):
+            return etree
+        else:
+            return object.__new__(ElementWrapper, etree)
+
+    def __init__(self, etree):
+        """
+        Initialize a new Element wrapper for C{etree}.  If
+        C{etree} is a string, then it will be converted to an
+        Element object using C{Element.fromstring()} first.
+        """
+        if isinstance(etree, basestring):
+            etree = Element.fromstring(etree)
+        self.__dict__['_etree'] = etree
+
+    def unwrap(self):
+        """
+        Return the Element object wrapped by this wrapper.
+        """
+        return self._etree
+
+    ##////////////////////////////////////////////////////////////
+    #{ String Representation
+    ##////////////////////////////////////////////////////////////
+    
+    def __repr__(self):
+        s = Element.tostring(self._etree)
+        if len(s) > 60:
+            e = s.rfind('<')
+            if (len(s)-e) > 30: e = -20
+            s = '%s...%s' % (s[:30], s[e:])
+        return '<Element %r>' % s
+
+    def __str__(self):
+        """
+        @return: the result of applying C{Element.tostring()} to
+        the wrapped Element object.
+        """
+        return Element.tostring(self._etree)
+
+    ##////////////////////////////////////////////////////////////
+    #{ Element interface Delegation (pass-through)
+    ##////////////////////////////////////////////////////////////
+    
+    def __getattr__(self, attrib):
+        return getattr(self._etree, attrib)
+    
+    def __setattr__(self, attr, value):
+        return setattr(self._etree, attr, value)
+    
+    def __delattr__(self, attr):
+        return delattr(self._etree, attr)
+
+    def __setitem__(self, index, element):
+        self._etree[index] = element
+
+    def __delitem__(self, index):
+        del self._etree[index]
+
+    def __setslice__(self, start, stop, elements):
+        self._etree[start:stop] = elements
+
+    def __delslice__(self, start, stop):
+        del self._etree[start:stop]
+
+    def __len__(self):
+        return len(self._etree)
+
+    ##////////////////////////////////////////////////////////////
+    #{ Element interface Delegation (wrap result)
+    ##////////////////////////////////////////////////////////////
+    
+    def __getitem__(self, index):
+        return ElementWrapper(self._etree[index])
+
+    def __getslice__(self, start, stop):
+        return [ElementWrapper(elt) for elt in self._etree[start:stop]]
+
+    def getchildren(self):
+        return [ElementWrapper(elt) for elt in self._etree]
+
+    def getiterator(self, tag=None):
+        return (ElementWrapper(elt)
+                for elt in self._etree.getiterator(tag))
+
+    def makeelement(self, tag, attrib):
+        return ElementWrapper(self._etree.makeelement(tag, attrib))
+
+    def find(self, path):
+        elt = self._etree.find(path)
+        if elt is None: return elt
+        else: return ElementWrapper(elt)
+
+    def findall(self, path):
+        return [ElementWrapper(elt) for elt in self._etree.findall(path)]
