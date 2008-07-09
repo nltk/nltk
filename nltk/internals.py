@@ -133,7 +133,6 @@ def java(cmd, classpath=None, stdin=None, stdout=None, stderr=None):
         classpath = NLTK_JAR
     else:
         classpath += ':' + NLTK_JAR
-    print 'MY CLASSPATH', classpath
 
     # Construct the full command string.
     cmd = list(cmd)
