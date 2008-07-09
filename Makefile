@@ -8,6 +8,7 @@
 
 PYTHON = python
 NLTK_VERSION = $(shell python -c 'import nltk; print nltk.__version__')
+NLTK_URL = $(shell python -c 'import nltk; print nltk.__url__')
 
 .PHONY: usage all doc clean clean_code clean_up
 
@@ -47,6 +48,16 @@ demotest:
           -exec echo ==== '{}' ==== \; -exec python '{}' \;
 
 ########################################################################
+# JAVA
+########################################################################
+
+jar: nltk/nltk.jar
+
+nltk/nltk.jar:
+	$(MAKE) -C javasrc jar
+	cp javasrc/nltk.jar nltk/nltk.jar
+
+########################################################################
 # DISTRIBUTIONS
 ########################################################################
 
@@ -82,7 +93,7 @@ datadist:
 
 nightlydist: codedist
 	REVISION = `svn info | grep Revision: | sed "s/Revision: //"`
-        
+
 ########################################################################
 # ISO Image
 ########################################################################
@@ -178,3 +189,4 @@ clean_code:
 	rm -f `find . -name '*.pyc'`
 	rm -f `find . -name '*.pyo'`
 	rm -f `find . -name '*~'`
+	$(MAKE) -C javasrc clean

@@ -7,7 +7,7 @@
 # For license information, see LICENSE.TXT
 
 import subprocess, os.path, re, warnings, textwrap
-import types, sys
+import types, sys, os, nltk
 
 ######################################################################
 # Regular Expression Processing
@@ -53,6 +53,7 @@ def convert_regexp_to_nongrouping(pattern):
 
 _java_bin = None
 _java_options = []
+# [xx] add classpath option to config_java?
 def config_java(bin=None, options=None):
     """
     Configure nltk's java interface, by letting nltk know where it can
@@ -113,6 +114,9 @@ def java(cmd, classpath=None, stdin=None, stdout=None, stderr=None):
 
     @raise OSError: If the java command returns a nonzero return code.
     """
+    if stdin == 'pipe': stdin = subprocess.PIPE
+    if stdout == 'pipe': stdout = subprocess.PIPE
+    if stderr == 'pipe': stderr = subprocess.PIPE
     if isinstance(cmd, basestring):
         raise TypeError('cmd should be a list of strings')
 
@@ -136,6 +140,12 @@ def java(cmd, classpath=None, stdin=None, stdout=None, stderr=None):
         raise OSError('Java command failed!')
 
     return (stdout, stderr)
+
+#: The location of the NLTK jar file, which is used to communicate
+#: with external Java packages (such as Mallet) that do not have
+#: a sufficiently powerful native command-line interface.
+NLTK_JAR = os.path.abspath(os.path.join(os.path.split(nltk.__file__)[0],
+                                        'nltk.jar'))
 
 if 0:
     #config_java(options='-Xmx512m')
