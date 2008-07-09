@@ -73,14 +73,9 @@ def accuracy(tagger, gold):
     @param gold: The list of tagged tokens to score the tagger on.
     @rtype: C{float}
     """
-
-    gold_tokens = []
-    test_tokens = []
-    for sent in gold:
-        sent = list(sent)
-        gold_tokens += sent
-        test_tokens += list(tagger.tag(untag(sent)))
-
+    tagged_sents = tagger.batch_tag([untag(sent) for sent in gold])
+    gold_tokens = sum(gold, [])
+    test_tokens = sum(tagged_sents, [])
     return evaluate.accuracy(gold_tokens, test_tokens)
 
 ######################################################################
