@@ -1,5 +1,10 @@
 /*
- * java TrainCRF --model-file FILE --crf-info FILE --train-file FILE
+ * Command-line interface to mallet's CRF, used by NLTK.
+ *
+ * Options:
+ *  --model-file FILE    -- zip file containing crf-info.xml.
+ *  --train-file FILE    -- training data filename: one token per line,
+ *                          sequences seperated by newlines.
  */
 
 package org.nltk.mallet;
@@ -8,6 +13,7 @@ import java.io.*;
 import java.util.logging.*;
 import java.util.regex.*;
 import java.util.*;
+import java.util.zip.*;
 
 import edu.umass.cs.mallet.base.types.*;
 import edu.umass.cs.mallet.base.fst.*;
@@ -23,28 +29,23 @@ public class TrainCRF
     // Option definitions.
     //////////////////////////////////////////////////////////////////
 
-     private static final CommandOption.File modelFileOption =
-         new CommandOption.File
-         (TrainCRF.class, "model-file", "FILENAME", true, null,
-          "The filename for the model.", null);
-
      private static final CommandOption.File trainFileOption =
          new CommandOption.File
          (TrainCRF.class, "train-file", "FILENAME", true, null,
           "The filename for the training data.", null);
 
-     private static final CommandOption.File crfInfoFileOption =
+     private static final CommandOption.File modelFileOption =
          new CommandOption.File
-         (TrainCRF.class, "crf-info", "FILENAME", true, null,
-          "The CRF structure specification file.", null);
+         (TrainCRF.class, "model-file", "FILENAME", true, null,
+          "The CRF model file, a zip file containing crf-info.xml."+
+          "TrainCRF will add crf-model.ser to this file.", null);
 
     private static final CommandOption.List commandOptions =
         new CommandOption.List 
         ("Train a CRF tagger.",
          new CommandOption[] {
-             modelFileOption,
              trainFileOption,
-             crfInfoFileOption});
+             modelFileOption});
 
 
     //////////////////////////////////////////////////////////////////
@@ -176,26 +177,37 @@ public class TrainCRF
         }
         if (modelFileOption.value == null) {
             commandOptions.printUsage(true);
-            throw new IllegalArgumentException("Expected --model-file MODEL");
-        }
-        if (crfInfoFileOption.value == null) {
-            commandOptions.printUsage(true);
-            throw new IllegalArgumentException("Expected --crf-info XMLFILE");
+            throw new IllegalArgumentException("Expected --model-file FILE");
         }
 
         // Get the CRF structure specification.
-        CRFInfo crfInfo = new CRFInfo(crfInfoFileOption.value);
+        ZipFile zipFile = new ZipFile(modelFileOption.value);
+        ZipEntry zipEntry = zipFile.getEntry("crf-info.xml");
+        CRFInfo crfInfo = new CRFInfo(zipFile.getInputStream(zipEntry));
+        byte[] crfInfoBytes = new byte[(int)zipEntry.getSize()];
+        zipFile.getInputStream(zipEntry).read(crfInfoBytes);
 
         // Create the CRF, and train it.
         CRF4 crf = createCRF(trainFileOption.value, crfInfo);
 
-        // Save the CRF classifier model to disk.
-        ObjectOutputStream s =
-            new ObjectOutputStream(
-                new FileOutputStream(modelFileOption.value));
-        s.writeObject(crf);
-        s.flush();
-        s.close();
+        // Create a new zip file for our output.  This will overwrite
+        // the file we used for input.
+        ZipOutputStream zos = 
+            new ZipOutputStream(new FileOutputStream(modelFileOption.value));
+        
+        // Copy the CRF info xml to the output zip file.
+        zos.putNextEntry(new ZipEntry("crf-info.xml"));
+        zos.write(crfInfoBytes);
+        zos.closeEntry();
+
+        // Save the CRF classifier model to the output zip file.
+        zos.putNextEntry(new ZipEntry("crf-model.ser"));
+        ObjectOutputStream oos = 
+            new ObjectOutputStream(zos);
+        oos.writeObject(crf);
+        oos.flush();
+        zos.closeEntry();
+        zos.close();
     }
 }
 
