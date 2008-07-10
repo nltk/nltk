@@ -199,7 +199,7 @@ def train(mco='temp', conll='temp_train.conll', verbose=False):
     
     if verbose:
         print 'malt_bin=%s' % _malt_bin 
-        print 'mco_file=%s/%s.mco' % (mco, os.environ['MALTPARSERHOME'])
+        print 'mco_file=%s/%s.mco' % (os.environ['MALTPARSERHOME'], mco)
         print 'input_file=%s' % input_file
 
     execute_string = execute_string % (_malt_bin, os.environ['MALTPARSERHOME'], mco, input_file)

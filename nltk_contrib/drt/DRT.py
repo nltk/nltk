@@ -38,7 +38,7 @@ class AbstractDrs:
     def negate(self):
         return -self
 
-    def tp_equals(self, other, prover_name='Prover9'):
+    def tp_equals(self, other, prover_name='tableau'):
         """Pass the expression (self <-> other) to the theorem prover.   
         If the prover says it is valid, then the self and other are equal."""
         assert isinstance(other, AbstractDrs)
@@ -46,8 +46,7 @@ class AbstractDrs:
         from nltk.inference import inference
         f1 = self.simplify().toFol();
         f2 = other.simplify().toFol();
-        bicond = logic.IffExpression(f1, f2)
-        return inference.get_prover(bicond, prover_name=prover_name).prove()
+        return f1.tp_equals(f2, prover_name)
 
     def __add__(self, other):
         """DRS Concatenation"""
