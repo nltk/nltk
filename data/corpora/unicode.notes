@@ -1,0 +1,36 @@
+The following corpora contain a few non-ascii chars; but they appear
+to basically just be typos and/or noisy data sources (i.e., there
+might not even be a single encoding)
+  - treebank (treebank/raw/wsj_0142)
+  - abc (rural.txt and science.txt)
+  - webtext (pirates, wine, overheard)
+  - reuters (reuters/test/17980)
+  - qc (train.txt)
+  - problem_reports
+
+The following are xml with encoding specified:
+  - alpino
+  - rte
+  - paradigms [xx] assming that kanarese.xml is utf-8
+
+The following need to have encoding determined:
+  - indian
+  - floresta
+  - toolbox (*.typ and *.db and *.pcx files)
+  - pil
+  - gutenber (appears to be latin-1?)
+  - mac_morpho (latin-1?)
+  - stopwords (different encodings for different files?)
+  - inaugural and state_union -- some encoding where '\xa1X' is 
+    used for em-dash.
+  - conll2002 (esp.* and ned.*) -- latin-1?
+  - genesis
+  - sinica treebank
+  - cess_cat (latin-1?)
+    [xx] note -- some cess_cat files consist of 100% null characters!
+  - cess_esp (latin-1?)
+  - udhr -- encoding specified as part of the filename (for *most*
+    of the files)
+
+
+The following have known encodings that should be set:
