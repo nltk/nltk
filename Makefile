@@ -192,3 +192,4 @@ clean_code:
 	rm -f `find . -name '*.pyc'`
 	rm -f `find . -name '*.pyo'`
 	rm -f `find . -name '*~'`
+	rm -f MANIFEST # regenerate manifest from MANIFEST.in
