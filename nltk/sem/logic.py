@@ -43,7 +43,7 @@ class Expression:
         assert isinstance(other, Expression)
         
         from nltk.inference import inference
-        bicond = IffExpression(self, other)
+        bicond = IffExpression(self.simplify(), other.simplify())
         prover = inference.get_prover(bicond, prover_name=prover_name)
         return prover.prove()
 
