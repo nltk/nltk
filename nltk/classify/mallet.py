@@ -61,7 +61,8 @@ def config_mallet(mallet_home=None):
                                   if filename.endswith('.jar')])
 
     
-def call_mallet(cmd, classpath=None, stdin=None, stdout=None, stderr=None):
+def call_mallet(cmd, classpath=None, stdin=None, stdout=None, stderr=None,
+                blocking=True):
     """
     Call L{nltk.internals.java()} with the given command, and with the
     classpath modified to include both C{nltk.jar} and all the C{.jar}
@@ -76,4 +77,4 @@ def call_mallet(cmd, classpath=None, stdin=None, stdout=None, stderr=None):
     else:
         classpath += ':' + _mallet_classpath
     # Delegate to java()
-    return java(cmd, classpath, stdin, stdout, stderr)
+    return java(cmd, classpath, stdin, stdout, stderr, blocking)
