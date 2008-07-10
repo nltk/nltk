@@ -53,7 +53,8 @@ demotest:
 
 jar: nltk/nltk.jar
 
-nltk/nltk.jar:
+JAVA_SRC = $(shell find javasrc/org/nltk -name '*.java')
+nltk/nltk.jar: $(JAVA_SRC)
 	$(MAKE) -C javasrc jar
 	cp javasrc/nltk.jar nltk/nltk.jar
 
