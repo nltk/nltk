@@ -1,14 +1,13 @@
 /* 
  * Command-line interface to mallet's CRF, used by NLTK.
  *
- * Have a seperate RunCRF and TrainCRF?
+ * Options:
+ *  --model-file FILE    -- zip file containing crf-info.xml and 
+ *                          crf-model.ser (serialized mallet CRF model).
+ *  --test-file FILE     -- test data filename: one token per line,
+ *                          sequences seperated by newlines.
  *
- * Files:
- *  --model-file     -- used to store the model.
- *  --train-file     -- holds the training data
- *  --test-file      -- holds test data
- *  --results-file   -- used to write the results.
- *  --crf-info       -- xml specificaiton of the crf structure (train only)
+ * Results are written to stdout.
  */
 
 package org.nltk.mallet;
@@ -27,6 +26,7 @@ import java.util.Random;
 import java.util.regex.*;
 import java.util.logging.*;
 import java.io.*;
+import java.util.zip.*;
 
 public class RunCRF
 {
@@ -95,8 +95,10 @@ public class RunCRF
         }
 
         // Load the classifier model.
+        ZipFile zipFile = new ZipFile(modelFileOption.value);
+        ZipEntry zipEntry = zipFile.getEntry("crf-model.ser");
         ObjectInputStream s =
-            new ObjectInputStream(new FileInputStream(modelFileOption.value));
+            new ObjectInputStream(zipFile.getInputStream(zipEntry));
         crf = (CRF4) s.readObject();
         s.close();
 

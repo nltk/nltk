@@ -57,6 +57,16 @@ public class CRFInfo
     /** CRF4.transductionType */
     public int transductionType = CRF4.VITERBI;
 
+    /** The Mallet model filename */
+    public String modelFile = null;
+
+    /** The feature detector function's name */
+    public String featureDetectorName = null;
+
+    /** Does NLTK add a start & end state? */
+    public boolean addStartState = false;
+    public boolean addEndState = false;
+
     public class StateInfo {
         public String name;
         public double initialCost=0;
@@ -95,6 +105,16 @@ public class CRFInfo
         parse(db.parse(file).getDocumentElement());
     }
 
+    CRFInfo(InputStream stream) 
+           throws ParserConfigurationException, SAXException,
+                  java.io.IOException {
+        // Load the DOM document builder
+        DocumentBuilderFactory dbf =DocumentBuilderFactory.newInstance();
+        DocumentBuilder db = dbf.newDocumentBuilder();
+        // Parse the xml
+        parse(db.parse(stream).getDocumentElement());
+    }
+
     //////////////////////////////////////////////////////////////////////
     // Parsing
     //////////////////////////////////////////////////////////////////////
@@ -129,7 +149,15 @@ public class CRFInfo
                     readStates((Element)node);
                 } else if (tag.equals("weightGroups")) {
                     readWeightGroups((Element)node);
-                } 
+                } else if (tag.equals("modelFile")) {
+                    modelFile = getText((Element)node); 
+                } else if (tag.equals("featureDetector")) {
+                    featureDetectorName = getAttrib((Element)node, "name"); 
+                } else if (tag.equals("addStartState")) {
+                    addStartState = getTextBoolean((Element)node);
+                } else if (tag.equals("addEndState")) {
+                    addEndState = getTextBoolean((Element)node);
+                }
                 else
                     throw new RuntimeException("Unexpected tag "+tag);
             }
@@ -301,6 +329,12 @@ public class CRFInfo
 
     private int getTextInt(Node node) {
         try { return Integer.parseInt(getText(node)); }
+        catch (NumberFormatException e)
+            { throw new RuntimeException("Bad value for "+node); }
+    }
+
+    private boolean getTextBoolean(Node node) {
+        try { return Boolean.parseBoolean(getText(node)); }
         catch (NumberFormatException e)
             { throw new RuntimeException("Bad value for "+node); }
     }
