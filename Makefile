@@ -114,7 +114,7 @@ python:
 	wget -N -P python/win  $(PYFTP)/python-2.5.2.msi
 	wget -N -P python/unix $(PYFTP)/Python-2.5.2.tgz
 	touch .python.done
-	
+
 numpy:
 	mkdir -p python/{mac,win,unix}
 	wget -N -P python/mac  $(NUMPY)/numpy-1.1.0-py2.5-macosx10.5.dmg?download
@@ -182,6 +182,8 @@ clean:	clean_up
 	rm -rf build iso dist MANIFEST
 	$(MAKE) -C doc clean
 	$(MAKE) -C doc_contrib clean
+	$(MAKE) -C javasrc clean
+	rm -f nltk/nltk.jar
 
 clean_up: clean_code
 	$(MAKE) -C doc clean_up
@@ -190,5 +192,3 @@ clean_code:
 	rm -f `find . -name '*.pyc'`
 	rm -f `find . -name '*.pyo'`
 	rm -f `find . -name '*~'`
-	$(MAKE) -C javasrc clean
-	rm -f nltk/nltk.jar
