@@ -37,6 +37,16 @@ class Expression:
     def __eq__(self, other):
         raise NotImplementedError()
     
+    def tp_equals(self, other, prover_name='tableau'):
+        """Pass the expression (self <-> other) to the theorem prover.   
+        If the prover says it is valid, then the self and other are equal."""
+        assert isinstance(other, Expression)
+        
+        from nltk.inference import inference
+        bicond = IffExpression(self, other)
+        prover = inference.get_prover(bicond, prover_name=prover_name)
+        return prover.prove()
+
     def __hash__(self):
         return hash(repr(self))
     

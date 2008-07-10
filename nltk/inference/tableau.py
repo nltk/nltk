@@ -33,7 +33,7 @@ class Tableau(ProverI):
         try:
             agenda = Agenda()
             if self._goal:
-                agenda.put(negate(self._goal))
+                agenda.put(-self._goal)
             agenda.put_all(self._assumptions)
             tp_result = _attempt_proof(agenda, set(), set(), (debug, 0))
         except RuntimeError, e:
@@ -130,7 +130,7 @@ class Agenda(object):
     def put_atoms(self, atoms):
         for atom in atoms:
             if atom[1]:
-                self[Categories.N_ATOM].add(negate(atom[0]))
+                self[Categories.N_ATOM].add(-atom[0])
             else:
                 self[Categories.ATOM].add(atom[0])
         
@@ -290,11 +290,11 @@ def _attempt_proof_d_neg(current, agenda, accessible_vars, atoms, debug=(False, 
     return _attempt_proof(agenda, accessible_vars, atoms, (debug[0], debug[1]+1))
     
 def _attempt_proof_n_all(current, agenda, accessible_vars, atoms, debug=(False, 0)):
-    agenda[Categories.EXISTS].add(ExistsExpression(current.term.variable, negate(current.term.term)))
+    agenda[Categories.EXISTS].add(ExistsExpression(current.term.variable, -current.term.term))
     return _attempt_proof(agenda, accessible_vars, atoms, (debug[0], debug[1]+1))
     
 def _attempt_proof_n_some(current, agenda, accessible_vars, atoms, debug=(False, 0)):
-    agenda[Categories.ALL].add(AllExpression(current.term.variable, negate(current.term.term)))
+    agenda[Categories.ALL].add(AllExpression(current.term.variable, -current.term.term))
     return _attempt_proof(agenda, accessible_vars, atoms, (debug[0], debug[1]+1))
 
 def _attempt_proof_and(current, agenda, accessible_vars, atoms, debug=(False, 0)):
@@ -303,13 +303,13 @@ def _attempt_proof_and(current, agenda, accessible_vars, atoms, debug=(False, 0)
     return _attempt_proof(agenda, accessible_vars, atoms, (debug[0], debug[1]+1))
     
 def _attempt_proof_n_or(current, agenda, accessible_vars, atoms, debug=(False, 0)):
-    agenda.put(negate(current.term.first))
-    agenda.put(negate(current.term.second))
+    agenda.put(-current.term.first)
+    agenda.put(-current.term.second)
     return _attempt_proof(agenda, accessible_vars, atoms, (debug[0], debug[1]+1))
 
 def _attempt_proof_n_imp(current, agenda, accessible_vars, atoms, debug=(False, 0)):
     agenda.put(current.term.first)
-    agenda.put(negate(current.term.second))
+    agenda.put(-current.term.second)
     return _attempt_proof(agenda, accessible_vars, atoms, (debug[0], debug[1]+1))
 
 def _attempt_proof_or(current, agenda, accessible_vars, atoms, debug=(False, 0)):
@@ -321,15 +321,15 @@ def _attempt_proof_or(current, agenda, accessible_vars, atoms, debug=(False, 0))
     
 def _attempt_proof_imp(current, agenda, accessible_vars, atoms, debug=(False, 0)):
     new_agenda = agenda.clone()
-    agenda.put(negate(current.first))
+    agenda.put(-current.first)
     new_agenda.put(current.second)
     return _attempt_proof(agenda, accessible_vars, atoms, (debug[0], debug[1]+1)) and \
             _attempt_proof(new_agenda, accessible_vars, atoms, (debug[0], debug[1]+1))
     
 def _attempt_proof_n_and(current, agenda, accessible_vars, atoms, debug=(False, 0)):
     new_agenda = agenda.clone()
-    agenda.put(negate(current.term.first))
-    new_agenda.put(negate(current.term.second))
+    agenda.put(-current.term.first)
+    new_agenda.put(-current.term.second)
     return _attempt_proof(agenda, accessible_vars, atoms, (debug[0], debug[1]+1)) and \
             _attempt_proof(new_agenda, accessible_vars, atoms, (debug[0], debug[1]+1))
     
@@ -337,16 +337,16 @@ def _attempt_proof_iff(current, agenda, accessible_vars, atoms, debug=(False, 0)
     new_agenda = agenda.clone()
     agenda.put(current.first)
     agenda.put(current.second)
-    new_agenda.put(negate(current.first))
-    new_agenda.put(negate(current.second))
+    new_agenda.put(-current.first)
+    new_agenda.put(-current.second)
     return _attempt_proof(agenda, accessible_vars, atoms, (debug[0], debug[1]+1)) and \
             _attempt_proof(new_agenda, accessible_vars, atoms, (debug[0], debug[1]+1))
 
 def _attempt_proof_n_iff(current, agenda, accessible_vars, atoms, debug=(False, 0)):
     new_agenda = agenda.clone()
     agenda.put(current.term.first)
-    agenda.put(negate(current.term.second))
-    new_agenda.put(negate(current.term.first))
+    agenda.put(-current.term.second)
+    new_agenda.put(-current.term.first)
     new_agenda.put(current.term.second)
     return _attempt_proof(agenda, accessible_vars, atoms, (debug[0], debug[1]+1)) and \
             _attempt_proof(new_agenda, accessible_vars, atoms, (debug[0], debug[1]+1))
@@ -403,10 +403,6 @@ def _attempt_proof_all(current, agenda, accessible_vars, atoms, debug=(False, 0)
         agenda.mark_alls_fresh()
         return _attempt_proof(agenda, accessible_vars|set([new_unique_variable]), atoms, (debug[0], debug[1]+1))
 
-def negate(expression):
-    assert isinstance(expression, Expression)
-    return -expression
-    
 
 class Categories:
     ATOM     = 0
