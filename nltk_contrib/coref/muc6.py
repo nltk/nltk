@@ -45,6 +45,18 @@ class MUC6CorpusReader(CorpusReader):
         return concat([MUC6Document(filename).paras()
                        for filename in self.abspaths(files)])
 
+    def chunks(self, files=None):
+        """
+        """
+        return concat([MUC6Document(filename).chunks()
+                       for filename in self.abspaths(files)])
+
+    def bio_chunks(self, files=None):
+        """
+        """
+        return concat([MUC6Document(filename).bio_chunks()
+                       for filename in self.abspaths(files)])
+
 
 class MUC6Document(str):
     """
@@ -94,16 +106,69 @@ class MUC6Document(str):
         for p in self._sgmldoc().text():
             sent = []
             for s in p:
-                sent.append(self._word_tokenizer().tokenize(s))
+                sent.append(self._word_tokenizer().tokenize(' '.join(s)))
             result.append(sent)
         assert None not in result
         return result
 
+    def chunks(self):
+        """
+        """
+        result = []
+        for p in self._sgmldoc().text():
+            for s in p:
+                result.extend(s)
+        assert None not in result
+        return result
+
+    def bio_chunks(self):
+        """
+        """
+        result = []
+        for chunk in self.chunks():
+            result.append([(token, token.bio(), token.type()) 
+                           for token in chunk.words()])
+        assert None not in result
+        return result
+        
     def docno(self):
         """
         """
         result = self._sgmldoc().docno()
         assert result
+        return result
+
+
+class NamedEntityString(str):
+    """
+    """
+
+    def __new__(self, s, bio, type):
+        return str.__new__(self, s)
+
+    def __init__(self, s, bio='I', type=None):
+        self._bio = bio
+        self._type = type
+
+    def _word_tokenizer(self):
+        return PunktWordTokenizer()
+
+    def bio(self):
+        return self._bio
+
+    def type(self):
+        return self._type
+
+    def words(self):
+        result = []
+        for token in self._word_tokenizer().tokenize(self):
+            if not result and self._bio == 'B':
+                result.append(NamedEntityString(token, 'B', self._type))
+            elif self._bio != 'O':
+                result.append(NamedEntityString(token, 'I', self._type))
+            else:
+                result.append(NamedEntityString(token, 'O', self._type))
+        assert None not in result
         return result
 
 
@@ -126,7 +191,9 @@ class MUC6SGMLParser(SGMLParser):
         self._source = None
         self._p = None
         self._s = None
+        self._chunks = None
         self._current = None
+        self._ne_type = None
         self._in = []
 
     def start_doc(self, attrs):
@@ -205,14 +272,45 @@ class MUC6SGMLParser(SGMLParser):
         self._in.insert(0, 's')
         if self._s == None:
             self._s = []
+        self._chunks = []
         self._current = ''
 
     def end_s(self):
         """
         """
-        self._s.append(self._current.strip())
+        if self._current.strip():
+            self._chunks.append(NamedEntityString(self._current.strip(), 
+                                                'O', self._ne_type))
+        if self._chunks:
+            self._s.append(self._chunks)
+        self._chunks = None
         self._current = None
         self._in.remove('s')
+
+    def start_enamex(self, attrs):
+        """
+        """
+        if self._in and self._in[0] == 's':
+            if self._current.strip():
+                self._chunks.append(NamedEntityString(self._current.strip(), 
+                                                    'O', self._ne_type))
+            self._in.insert(0, 'ne')
+            self._current = ''
+            for attr in attrs:
+                if attr[0] == 'type':
+                    self._ne_type = attr[1]
+                    break
+
+    def end_enamex(self):
+        """
+        """
+        if self._in and self._in[0] == 'ne':
+            if self._current.strip():
+                self._chunks.append(NamedEntityString(self._current.strip(), 
+                                                    'B', self._ne_type))
+            self._ne_type = None
+            self._current = ''
+            self._in.remove('ne')
 
     def handle_data(self, data):
         """
@@ -223,7 +321,7 @@ class MUC6SGMLParser(SGMLParser):
             self._source += data
         if self._in and self._in[0] == 'docno':
             self._docno += data
-        if self._in and self._in[0] == 's':
+        if self._in and self._in[0] in ['s', 'ne']:
             self._current += data.replace('\n', '')
 
     def parse(self, filename):
@@ -264,25 +362,26 @@ def _demo(root, file):
     """
     """
     import os.path
-    from nltk_contrib.coref.ace2 import ACE2CorpusReader
+    from nltk_contrib.coref.muc6 import MUC6CorpusReader
+    from nltk_contrib.coref.muc6 import NamedEntityString
 
-    try:
-        reader = MUC6CorpusReader(root, file)
-        print 'Paragraphs for %s:' % (file)
-        for para in reader.paras():
-            print '    %s' % (para)
-            print
-        print 'Sentences for %s:' % (file)
-        for sent in reader.sents():
-            print '    %s' % (sent)
+    reader = MUC6CorpusReader(root, file)
+    print 'Paragraphs for %s:' % (file)
+    for para in reader.paras():
+        print '    %s' % (para)
         print
-        print 'Words for %s:' % (file)
-        for word in reader.words():
-            print '    %s' % (word)
-        print
-    except Exception, e:
-        print 'Error encountered while running demo for %s: %s' % (file, e)
-        print
+    print 'Sentences for %s:' % (file)
+    for sent in reader.sents():
+        print '    %s' % (sent)
+    print
+    print 'Chunks for %s:' % (file)
+    for chunk in reader.bio_chunks():
+            print chunk
+    print
+    print 'Words for %s:' % (file)
+    for word in reader.words():
+        print '    %s' % (word)
+    print
 
 def demo():
     """
@@ -295,7 +394,7 @@ def demo():
     except KeyError:
         raise 'Demo requires MUC-6 Corpus, set MUC6_DIR environment variable!' 
 
-    _demo(muc6_dir, 'dryrun-trng01.muc6')
+    _demo(muc6_dir, '891101-0050.ne.v1.3.sgm')
 
 if __name__ == '__main__':
     demo()
