@@ -1,4 +1,5 @@
 from inputformat import TextLineInput
+from outputcollector import LineOutput
 
 
 class MapperBase:
@@ -6,6 +7,7 @@ class MapperBase:
 
 	def __init__(self):
 		self.inputformat = TextLineInput
+		self.outputCollector = LineOutput
 
 	def set_inputformat(self, format):
 		self.inputformat = format
@@ -18,4 +20,4 @@ class MapperBase:
 		# input comes from STDIN (standard input)
 		data = self.inputformat.read_line()
 		for key, value in data:
-			self.map(key, value)
+			self.map(key, value, self.outputCollector)

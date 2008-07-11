@@ -2,11 +2,13 @@ from itertools import groupby
 from operator import itemgetter
 
 from inputformat import KeyValueInput
+from outputcollector import LineOutput
 
 class ReducerBase:
 	""" base class for every reduce tasks"""
 	def __init__(self):
 		self.inputformat = KeyValueInput
+		self.outputcollector = LineOutput
 
 	def set_inputformat(self, format):
 		self.inputformat = format
@@ -24,4 +26,4 @@ class ReducerBase:
 		# input comes from STDIN (standard input)
 		data = self.inputformat.read_line()
 		for key, values in self.group_data(data):
-			self.reduce(key, values)
+			self.reduce(key, values, self.outputcollector)
