@@ -1,14 +1,15 @@
+#!/usr/bin/env python
+
 from hadooplib.reducer import ReducerBase
-from hadooplib.outputcollector import LineOutput
 
 class WordCountReducer(ReducerBase):
 
-	def reduce(self, key, values, outputCollector=LineOutput):
+	def reduce(self, key, values, outputcollector):
 		sum  = 0
 		try:
 			for value in values:
 				sum += int(value) 
-			LineOutput.collect(key, sum)
+			outputcollector.collect(key, sum)
 		except ValueError:
 			#count was not a number, so silently discard this item
 			pass
