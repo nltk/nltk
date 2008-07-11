@@ -11,9 +11,11 @@
 # Wordnet data via a handy dict notation (see below).
 
 import types
-from util import *
-import nltk.data
 from cache import entityCache
+
+import nltk.data
+
+from util import *
 
 class Dictionary(object):
     """

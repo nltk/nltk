@@ -66,13 +66,14 @@ parameters or unsupervised learning using the Baum-Welch algorithm, a variant
 of EM.
 """
 
-from api import *
+from numpy import *
+import re
+
 from nltk import FreqDist, ConditionalFreqDist, ConditionalProbDist, \
      DictionaryProbDist, DictionaryConditionalProbDist, LidstoneProbDist, \
      MutableProbDist, MLEProbDist
 
-from numpy import *
-import re
+from api import *
 
 # _NINF = float('-inf')  # won't work on Windows
 _NINF = float('-1e300')

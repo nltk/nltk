@@ -6,9 +6,11 @@
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
+import numpy
+import random
+
 from api import *
 from util import *
-import numpy, random
 
 class KMeans(VectorSpace):
     """

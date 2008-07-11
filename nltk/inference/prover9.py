@@ -10,9 +10,11 @@ import os
 import tempfile
 import subprocess
 from string import join
+
 from nltk.sem.logic import *
-from api import ProverI
 from nltk.internals import deprecated, Deprecated, find_binary
+
+from api import ProverI
 
 """
 A theorem prover that makes use of the external 'Prover9' package.

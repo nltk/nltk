@@ -19,10 +19,13 @@ described in Kiss & Strunk (2006)::
     Boundary Detection.  Computational Linguistics 32: 485-525.
 """
 
-import re, math
+import re
+import math
+
 from nltk import defaultdict
-from api import TokenizerI
 from nltk.probability import FreqDist
+
+from api import TokenizerI
 
 ######################################################################
 #{ Orthographic Context Constants

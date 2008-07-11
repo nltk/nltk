@@ -16,7 +16,6 @@
 
 import pickle
 import sys
-
 from itertools import islice
 
 from nltk.corpus import brown

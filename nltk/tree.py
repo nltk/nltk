@@ -12,7 +12,9 @@ Class for representing hierarchical language structures, such as
 syntax trees and morphological trees.
 """
 
-import re, string
+import re
+import string
+
 import nltk.cfg
 from nltk.probability import ProbabilisticMixIn
 

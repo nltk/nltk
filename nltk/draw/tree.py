@@ -10,10 +10,13 @@
 """
 Graphically display a C{Tree}.
 """
+
 from Tkinter import *
-from nltk import tree
-from nltk.draw import *
 import sys
+
+from nltk import tree
+
+from nltk.draw import *
 
 ##//////////////////////////////////////////////////////
 ##  Tree Segment

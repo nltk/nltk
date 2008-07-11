@@ -20,11 +20,13 @@ backoff tagger for any other C{SequentialBackoffTagger}.
 """
 
 import re, yaml
+
 from nltk import FreqDist, ConditionalFreqDist
-from nltk.tag.api import *
-from nltk.tag.util import *
 from nltk.internals import deprecated, Deprecated
 from nltk.classify.naivebayes import NaiveBayesClassifier
+
+from api import *
+from util import *
 
 ######################################################################
 #{ Abstract Base Classes

@@ -21,7 +21,10 @@ usage:
 """
 __docformat__ = 'epytext en'
 
-import os, os.path, subprocess
+import os
+import os.path
+import subprocess
+
 from nltk.internals import find_binary
 try:
     import numpy

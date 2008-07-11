@@ -75,14 +75,16 @@ Possible future improvements:
     responsible for that.
 """
 
-from nltk.draw.tree import *
-from nltk.draw import *
-from nltk import parse
-from nltk.draw.cfg import CFGEditor
-from nltk import tokenize
 import string
 from Tkinter import *
 import tkFont
+
+from nltk import parse, tokenize
+
+from nltk.draw.tree import *
+from nltk.draw import *
+from nltk.draw.cfg import CFGEditor
+
         
 class ShiftReduceDemo(object):
     """

@@ -11,14 +11,15 @@
 Brill's transformational rule-based tagger.
 """
 
-from api import *
-from util import untag
 import bisect        # for binary search through a subset of indices
 import random        # for shuffling WSJ files
 import yaml          # to save and load taggers in files
 import textwrap
-from nltk import yamltags # why?
+
 from nltk import defaultdict
+
+from util import untag
+from api import *
 
 ######################################################################
 ## The Brill Tagger

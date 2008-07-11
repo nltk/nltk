@@ -8,8 +8,10 @@
 # Count of a tagged sense in a semantic concordance
 
 import types
-from util import *
+
 import nltk.data
+
+from util import *
 
 class SenseCount(object):
     

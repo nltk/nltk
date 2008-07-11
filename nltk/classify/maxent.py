@@ -54,14 +54,18 @@ interface.
 """
 __docformat__ = 'epytext en'
 
-import numpy, time, tempfile, os
-import nltk.classify.util # for accuracy & log_likelihood
-from nltk.classify.api import *
-from nltk.classify.util import attested_labels, CutoffChecker
-from nltk.probability import *
-from nltk.classify.megam import call_megam, write_megam_file
-from nltk.classify.megam import parse_megam_weights
+import numpy
+import time
+import tempfile
+import os
+
 from nltk import defaultdict
+from nltk.probability import *
+
+import nltk.classify.util # for accuracy & log_likelihood
+from api import *
+from util import attested_labels, CutoffChecker
+from megam import call_megam, write_megam_file, parse_megam_weights
 
 
 ######################################################################
