@@ -1,37 +1,57 @@
 import sys
 import optparse
 
-from itertools import *
-
 try:
     import cPickle as pickle
 except:
     import pickle
 
 from nltk.data import *
-from nltk.corpus import *
-from nltk.tag.hmm import *
-from nltk.utilities import * 
-from nltk.chunk.util import *
+from nltk.corpus import * 
+from nltk.tag.hmm import HiddenMarkovModelTrainer, HiddenMarkovModelTagger, \
+                         SpecializedHiddenMarkovModelTrainer, \
+                         SpecializedHiddenMarkovModelTagger, test_pos
+from nltk.utilities import LazyMappedList, LazyMappedChain
+from nltk.chunk.util import conllstr2tree
+from nltk.probability import LidstoneProbDist
 
 def lidstone_estimator(fd, bins):
     return LidstoneProbDist(fd, 0.1, bins)
 
-def train_hmm(labeled_sequence, test_sequence):
-    symbols = set()
-    tag_set = set()
-    for sentence in labeled_sequence:
-        for token in sentence:
-            word, tag = token
-            symbols.add(word)
-            tag_set.add(tag)
-    trainer = HiddenMarkovModelTrainer(list(tag_set), list(symbols))
-    hmm_tagger = trainer.train_supervised(labeled_sequence, 
-                                    estimator=lidstone_estimator)
-    if test_sequence:
-        test_pos(hmm_tagger, test_sequence, False)
+def chunk_transform(sequence, hmm=None):
+    closed_cats = set(['CC', 'DT', 'MD', 'POS', 'PP$', 'RP', 'TO', 'WDT',
+                    'WP$', 'EX', 'IN', 'PDT', 'PRP', 'WP', 'WRB'])
+    result = []
+    for token in sequence:
+        if len(token) == 3:
+            word, tag, chunk_typ = token
+            if tag in closed_cats:
+                result.append((token[:2], token))
+            else:
+                result.append((tag, (tag, chunk_typ)))
+        elif len(token) == 2:
+            word, tag = token[:2]
+            if tag in closed_cats:
+                result.append((word, tag))
+            else:
+                result.append(tag)
+        else:
+            raise
+    return result
 
+def train_hmm(labeled_sequence, test_sequence,
+              transform=lambda sequence: sequence):
+    symbols = list(set(word for sent in labeled_sequence 
+                            for word, tag in transform(sent)))
+    tag_set = list(set(tag for sent in labeled_sequence
+                           for word, tag in transform(sent)))
+    trainer = SpecializedHiddenMarkovModelTrainer(tag_set, symbols, transform)
+    hmm_tagger = trainer.train_supervised(labeled_sequence,
+                                          estimator=lidstone_estimator)
+    if test_sequence:
+        test_pos(hmm_tagger, LazyMappedList(test_sequence, transform), False)
     return hmm_tagger
+
 
 class TreebankTagger(HiddenMarkovModelTagger):
     def __init__(self, labeled_sequence, test_sequence=None):
@@ -41,49 +61,28 @@ class TreebankTagger(HiddenMarkovModelTagger):
         if name != '_hmm_tagger':
             return getattr(self._hmm_tagger, name)
 
-class TreebankChunker(HiddenMarkovModelTagger):
-    _CLOSED_CATS = set(['CC', 'DT', 'MD', 'POS', 'PP$', 'RP', 'TO', 'WDT',
-                        'WP$', 'EX', 'IN', 'PDT', 'PRP', 'WP', 'WRB'])
 
-    def __init__(self, labeled_sequence, test_sequence=None):
-        labeled_sequence = [[(self._word(token), self._tag(token))
-                             for token in sentence] 
-                            for sentence in labeled_sequence]
-        if test_sequence:
-            test_sequence = [[(self._word(token), self._tag(token))
-                              for token in sentence] 
-                             for sentence in test_sequence]
-        self._hmm_tagger = train_hmm(labeled_sequence, test_sequence)
+class TreebankChunker(SpecializedHiddenMarkovModelTagger):
+    def __init__(self, labeled_sequence, test_sequence=None, 
+                 transform=chunk_transform):
+        self._chunk_transform = transform 
+        self._hmm_tagger = train_hmm(labeled_sequence, test_sequence,
+                                     self._chunk_transform)
 
     def __getattr__(self, name):
-        if name != '_hmm_tagger':
+        if name not in ['_hmm_tagger', 'parse']:
             return getattr(self._hmm_tagger, name)
 
-    def _word(self, token):
-        word, tag = token[:2]
-        if tag in self._CLOSED_CATS:
-            return (word, tag)
-        else:
-            return tag
-
-    def _tag(self, token):
-        word, tag, chunk_typ = token
-        if tag in self._CLOSED_CATS:
-            return token
-        else:
-            return (tag, chunk_typ)
-
-    def tag(self, tokens):
-        tags = HiddenMarkovModelTagger.tag(self, 
-                    [self._word(token) for token in tokens])
-        for i in range(len(tokens)):
-            # is this really the best way to do this?
-            tokens[i] += tags[i][-1:][0][-1:]
-        return tokens
-
     def parse(self, tokens):
-        return conllstr2tree('\n'.join([' '.join(token) 
-                                        for token in self.tag(tokens)]))
+        return conllstr2tree('\n'.join(' '.join(i + j[-1:]) 
+                                       for (i, j) in self.tag(tokens)))
+
+
+#class MUC6NamedEntityRecognizer(SpecializedHiddenMarkovModelTagger):
+#    def __init__(self, labeled_sequence, test_sequence=None):
+#        self._hmm_tagger = train_hmm(labeled_sequence, test_sequence,
+#                                     self._chunk_transform)
+
 
 class TreebankTaggerCorpusReader(CorpusReader):
     """A decorator.
@@ -100,6 +99,11 @@ class TreebankTaggerCorpusReader(CorpusReader):
     def tagged_sents(self):
         return LazyMappedList(self.sents(),
                               self._treebank_tagger.tag)
+
+    def tagged_words(self):
+        return LazyMappedChain(self.sents(),
+                               self._treebank_tagger.tag)
+
 
 class TreebankChunkerCorpusReader(CorpusReader):
     """A decorator.
@@ -121,6 +125,7 @@ class TreebankChunkerCorpusReader(CorpusReader):
     def parsed_sents(self):
         return LazyMappedList(self._reader.tagged_sents(),
                               self._treebank_chunker.parse)
+
 
 def train_treebank_tagger(pickle_file, num_train_sents, num_test_sents):
     treebank_train = LazyCorpusLoader(
@@ -154,6 +159,7 @@ def train_treebank_tagger(pickle_file, num_train_sents, num_test_sents):
         print 'Saving model...'
 
         pickle.dump(treebank_tagger, open(pickle_file, 'wb'))
+        treebank_tagger = pickle.load(open(pickle_file))
 
 def train_treebank_chunker(pickle_file, num_train_sents, num_test_sents):
     conll2000_train = LazyCorpusLoader(
@@ -184,6 +190,7 @@ def train_treebank_chunker(pickle_file, num_train_sents, num_test_sents):
         print 'Saving model...'
 
         pickle.dump(treebank_chunker, open(pickle_file, 'wb'))
+        treebank_chunker = pickle.load(open(pickle_file))
 
 def demo():
     print 'Demo...'
@@ -194,7 +201,7 @@ def demo():
     for sent in tagger_reader.tagged_sents()[:1]:
         print sent
         print
-    for sent in chunker_reader.parsed_sents()[:1]:
+    for sent in chunker_reader.parsed_sents()[:5]:
         print sent
         print
 
