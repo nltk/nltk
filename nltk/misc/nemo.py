@@ -10,7 +10,8 @@ Instant Regular Expressions
 Created by Aristide Grange
 """
 import Tkinter as tk
-import sre, itertools
+import sre
+import itertools
 
 windowTitle = "Finding (and Replacing) Nemo"
 initialFind = r"n(.*?)e(.*?)m(.*?)o"

@@ -6,7 +6,11 @@
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
-import copy, sys, math, numpy
+import copy
+import sys
+import math
+import numpy
+
 from api import *
 
 class VectorSpace(ClusterI):

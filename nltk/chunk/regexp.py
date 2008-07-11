@@ -6,10 +6,13 @@
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
-import re, types
-from nltk.chunk.api import *
-from nltk.chunk.util import *
+import re
+import types
+
 from nltk import Tree
+
+from api import *
+from util import *
 
 ##//////////////////////////////////////////////////////
 ##  ChunkString

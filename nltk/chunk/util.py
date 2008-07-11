@@ -6,10 +6,13 @@
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
-from api import *
+import re
+import string
+
 from nltk import Tree
 import nltk.tag.util
-import re, string
+
+from api import *
 
 ##//////////////////////////////////////////////////////
 ## EVALUATION

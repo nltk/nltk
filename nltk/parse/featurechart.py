@@ -13,14 +13,16 @@ feature structures as nodes.
 """
 
 import yaml
-from api import *
-from chart import *
+
 from nltk.featstruct import FeatStruct, unify, FeatStructParser
 from nltk.sem.logic import SubstituteBindingsI, unique_variable
 from nltk import cfg, defaultdict
 from nltk.cfg import FeatStructNonterminal
 from nltk.internals import Counter
 import nltk.data
+
+from api import *
+from chart import *
 
 def load_earley(filename, trace=0, cache=False, verbose=False,
                 chart_class=Chart):

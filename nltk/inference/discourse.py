@@ -6,11 +6,13 @@
 # For license information, see LICENSE.TXT
 # $Id$
 
+import os
+
 from nltk.sem import root_semrep, Expression
 from nltk import parse
-from nltk.inference import Mace, spacer, get_prover
 from nltk.data import show_cfg
-import os
+
+from nltk.inference import Mace, spacer, get_prover
 
 """
 Module for incrementally developing simple discourses, and checking for semantic ambiguity, 

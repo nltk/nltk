@@ -67,8 +67,8 @@ X{expanding} M{lhs} to M{rhs} in M{tree}.
 """
 
 import re
-import nltk.featstruct
-from nltk.featstruct import FeatStruct, FeatDict, FeatStructParser
+
+from nltk.featstruct import FeatStruct, FeatDict, FeatStructParser, SLASH, TYPE
 
 #################################################################
 # Nonterminal
@@ -734,7 +734,7 @@ def parse_fcfg(input, features=None):
     as a list of strings.
     """
     if features is None:
-        features = (nltk.featstruct.SLASH, nltk.featstruct.TYPE)
+        features = (SLASH, TYPE)
     fstruct_parser = FeatStructParser(features, FeatStructNonterminal)
     if isinstance(input, str):
         lines = input.split('\n')

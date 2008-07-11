@@ -5,7 +5,11 @@
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
-import locale, re, types, textwrap, pydoc
+import locale
+import re
+import types
+import textwrap
+import pydoc
 
 ######################################################################
 # Short usage message

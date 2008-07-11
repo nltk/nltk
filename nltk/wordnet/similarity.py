@@ -7,9 +7,11 @@
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
-from util import *
-from nltk import defaultdict
 import math
+
+from nltk import defaultdict
+
+from util import *
 
 # Similarity metrics
 

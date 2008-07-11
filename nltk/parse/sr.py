@@ -6,10 +6,12 @@
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
+import string
+
 from nltk import tokenize, cfg
 from nltk.tree import Tree
+
 from api import *
-import string
 
 ##//////////////////////////////////////////////////////
 ##  Shift/Reduce Parser

@@ -36,7 +36,8 @@ L{ConditionalProbDist}, a derived distribution.
 
 """
 
-import types, math
+import types
+import math
 
 ##//////////////////////////////////////////////////////
 ##  Frequency Distributions

@@ -6,9 +6,10 @@
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
+import numpy
+
 from api import *
 from util import *
-import numpy
 
 class GroupAverageAgglomerative(VectorSpace):
     """

@@ -6,6 +6,7 @@
 # For license information, see LICENSE.TXT
 
 from nltk.sem.logic import *
+
 from api import ProverI
 
 """

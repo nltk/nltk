@@ -1,3 +1,11 @@
+# Natural Language Toolkit: Generating from a CFG
+#
+# Copyright (C) 2001-2008 University of Pennsylvania
+# Author: Steven Bird <sb@csse.unimelb.edu.au>
+# URL: <http://nltk.sf.net>
+# For license information, see LICENSE.TXT
+#
+
 from nltk import cfg
 
 def generate(grammar, start=None):
