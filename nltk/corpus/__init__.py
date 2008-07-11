@@ -60,11 +60,13 @@ stored using U{Open Language Archives Community (OLAC)
 can be accessed using C{nltk.corpus.I{corpus}.olac()}.
 """
 
-from nltk.corpus.util import LazyCorpusLoader
-from nltk.corpus.reader import *
-from nltk.tokenize import RegexpTokenizer
-import nltk.corpus.chat80
 import re
+
+from nltk.tokenize import RegexpTokenizer
+
+from util import LazyCorpusLoader
+from reader import *
+import chat80
 
 abc = LazyCorpusLoader(
     'abc', PlaintextCorpusReader, r'(?!\.svn).*\.txt')

@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# -*- coding: utf8 -*-
+# -*- coding: utf-8 -*-
 
 # Natural Language Toolkit: RSLP Stemmer
 #
@@ -32,8 +32,9 @@
 # e/ou melhor para o português. Também sugiro utilizar-se a lista de discussão
 # do NLTK para o português para qualquer debate.
 
+import nltk.data
+
 from api import *
-from nltk import data
 
 class RSLPStemmer(StemmerI):
     """
@@ -51,7 +52,7 @@ class RSLPStemmer(StemmerI):
         self._model.append( self.read_rule("step6.pt") )
 
     def read_rule (self, filename):
-        rules = data.load('nltk:stemmers/rslp/' + filename, format='raw').decode("utf8")
+        rules = nltk.data.load('nltk:stemmers/rslp/' + filename, format='raw').decode("utf8")
         lines = rules.split("\n")
   
         lines = [line for line in lines if line != u""]     # remove blank lines

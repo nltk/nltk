@@ -11,10 +11,18 @@
 Classifiers that make use of the external 'Weka' package.
 """
 
-import time, tempfile, os, os.path, subprocess, re, zipfile
-from api import *
+import time
+import tempfile
+import os
+import os.path
+import subprocess
+import re
+import zipfile
+
 from nltk.probability import *
 from nltk.internals import java, config_java
+
+from api import *
 
 _weka_classpath = None
 _weka_search = ['.',

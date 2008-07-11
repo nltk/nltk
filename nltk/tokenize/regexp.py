@@ -12,9 +12,12 @@ Tokenizers that divide strings into substrings using regular
 expressions that can match either tokens or separators between tokens.
 """
 
-import re, sre_constants
-from api import *
+import re
+import sre_constants
+
 from nltk.internals import convert_regexp_to_nongrouping
+
+from api import *
 
 class RegexpTokenizer(TokenizerI):
     """

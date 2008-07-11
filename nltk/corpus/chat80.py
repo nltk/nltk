@@ -123,9 +123,13 @@ current directory.
 """
 
 import re
-import shelve, os, sys
-from util import *
+import shelve
+import os
+import sys
+
 import nltk.data
+
+from util import *
 
 ###########################################################################
 # Chat-80 relation metadata bundles needed to build the valuation

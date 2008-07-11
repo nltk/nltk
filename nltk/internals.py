@@ -6,8 +6,16 @@
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
-import subprocess, os.path, re, warnings, textwrap
-import types, sys, os, nltk
+import subprocess
+import os
+import os.path
+import re
+import warnings
+import textwrap
+import types
+import sys
+
+from nltk import __file__
 
 # Use the c version of ElementTree, which is faster, if possible:
 try: from xml.etree import cElementTree as ElementTree
@@ -160,7 +168,7 @@ def java(cmd, classpath=None, stdin=None, stdout=None, stderr=None,
 #: The location of the NLTK jar file, which is used to communicate
 #: with external Java packages (such as Mallet) that do not have
 #: a sufficiently powerful native command-line interface.
-NLTK_JAR = os.path.abspath(os.path.join(os.path.split(nltk.__file__)[0],
+NLTK_JAR = os.path.abspath(os.path.join(os.path.split(__file__)[0],
                                         'nltk.jar'))
 
 if 0:

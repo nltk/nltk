@@ -66,15 +66,15 @@ Keyboard Shortcuts::
       [q]\t Quit
 """
 
-from nltk.draw.tree import *
-from nltk.draw import *
-from nltk import parse, tokenize
-from nltk.draw.cfg import *
 import string
 import tkFont
 from Tkinter import *
 
+from nltk import parse, tokenize
 
+from nltk.draw.tree import *
+from nltk.draw import *
+from nltk.draw.cfg import *
         
 class RecursiveDescentDemo(object):
     """

@@ -41,7 +41,8 @@ edge you wish to apply a rule to.
 import pickle
 from tkFileDialog import asksaveasfilename, askopenfilename
 import Tkinter, tkFont, tkMessageBox
-import math, string
+import math
+import string
 import os.path
 
 from nltk.parse.chart import *

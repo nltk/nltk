@@ -17,12 +17,20 @@ token to a featureset.  Each feature/value pair is then encoded as a
 single binary feature for Mallet.
 """
 
-from nltk.tag.api import *
-from nltk.classify.maxent import *
 from tempfile import *
-import textwrap, re, time, subprocess, sys, zipfile, pickle
+import textwrap
+import re
+import time
+import subprocess
+import sys
+import zipfile
+import pickle
+
+from nltk.classify.maxent import *
 from nltk.classify.mallet import call_mallet
 from nltk.etree import ElementTree
+
+from api import *
 
 class MalletCRF(FeaturesetTaggerI):
     """

@@ -81,13 +81,14 @@ examples, known as the X{training set}.  Training sets are represented
 as lists of C{(featuredict, label)} tuples.
 """
 
+from nltk.internals import deprecated, Deprecated
+
 from api import *
 from util import *
 from naivebayes import *
 from decisiontree import *
 from weka import *
 from megam import *
-from nltk.internals import deprecated, Deprecated
 
 __all__ = [
     # Classifier Interfaces

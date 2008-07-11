@@ -6,8 +6,9 @@
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
-from api import *
 from nltk.wordnet import morphy
+
+from api import *
 
 class WordnetStemmer(StemmerI):
     """

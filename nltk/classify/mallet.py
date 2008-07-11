@@ -19,7 +19,9 @@ usage:
 """
 __docformat__ = 'epytext en'
 
-import os, os.path
+import os
+import os.path
+
 from nltk.internals import find_binary, java
 
 ######################################################################

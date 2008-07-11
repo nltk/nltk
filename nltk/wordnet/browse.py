@@ -10,10 +10,11 @@
 See also the NLTK Wordnet Graphical Browser in nltk_contrib.wordnet
 """
 
-from util import *
-from dictionary import *
 from textwrap import TextWrapper
 from random import randint
+
+from util import *
+from dictionary import *
 
 tw = TextWrapper(subsequent_indent="    ")
 

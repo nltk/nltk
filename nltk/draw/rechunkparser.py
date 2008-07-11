@@ -22,8 +22,14 @@ parser (L{RegexpChunkParser<nltk.chunk.regex.RegexpChunkParser>}).
 """
 
 from Tkinter import *
-import tkFont, time, textwrap, re
-import nltk, random, re
+import tkFont
+import time
+import textwrap
+import re
+import random
+
+import nltk
+
 from nltk.draw import *
 
 class RegexpChunkDemo:

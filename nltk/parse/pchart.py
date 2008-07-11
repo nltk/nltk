@@ -39,6 +39,7 @@ This option is most useful with InsideChartParser.
 
 from nltk.tree import Tree, ProbabilisticTree
 from nltk import Nonterminal
+
 from api import *
 from chart import Chart, LeafEdge, TreeEdge, AbstractChartRule
 

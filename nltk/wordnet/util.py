@@ -8,7 +8,10 @@
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
-import os, string, types
+import os
+import string
+import types
+
 import nltk.data
 
 ANTONYM = 'antonym'

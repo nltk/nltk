@@ -9,8 +9,9 @@
 """
 Utility functions and classes for classifiers.
 """
-#from nltk.util import Deprecated
 import math
+
+#from nltk.util import Deprecated
 import nltk.classify.util # for accuracy & log_likelihood
 from nltk.utilities import LazyMappedList
 

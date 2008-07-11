@@ -31,7 +31,15 @@ adds it to a resource cache; and L{retrieve()} copies a given resource
 to a local file.
 """
 
-import sys, os, os.path, pickle, textwrap, weakref, yaml, re, urllib
+import sys
+import os, os.path
+import pickle
+import textwrap
+import weakref
+import yaml
+import re
+import urllib
+
 from nltk import cfg, sem
 
 ######################################################################

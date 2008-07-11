@@ -32,9 +32,10 @@ sum to one::
                        SUM[l]( P(l) * P(f1|l) * ... * P(fn|l) )
 """
 
-from api import *
-from nltk.probability import *
 from nltk import defaultdict
+from nltk.probability import *
+
+from api import *
 
 ##//////////////////////////////////////////////////////
 ##  Naive Bayes Classifier

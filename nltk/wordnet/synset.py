@@ -7,7 +7,10 @@
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
-import math, pickle, string, re
+import math
+import pickle
+import string
+import re
 
 from util import *
 from similarity import *

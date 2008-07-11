@@ -6,10 +6,12 @@
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
+import string
+
 from nltk import tokenize, cfg
 from nltk.tree import Tree, ImmutableTree
+
 from api import *
-import string
 
 ##//////////////////////////////////////////////////////
 ##  Recursive Descent Parser

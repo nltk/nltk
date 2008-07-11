@@ -8,11 +8,13 @@
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
-from dictionary import dictionaryFor
-import nltk.data
-from util import *
-from nltk import defaultdict
 from itertools import islice
+
+import nltk.data
+from nltk import defaultdict
+
+from dictionary import dictionaryFor
+from util import *
 
 MORPHOLOGICAL_SUBSTITUTIONS = {
     NOUN:
@@ -116,8 +118,4 @@ def demo():
 if __name__ == '__main__':
     demo()
 
-__all__ = ['demo', 'morphy']
-
-    
-    
-
+__all__ = ['demo', 'morphy', '_morphy']

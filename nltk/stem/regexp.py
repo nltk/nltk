@@ -7,8 +7,9 @@
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
-from api import *
 import re
+
+from api import *
 
 class RegexpStemmer(StemmerI):
     """
