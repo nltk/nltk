@@ -13,7 +13,7 @@ from nltk.sem.logic import LogicParser, \
                            ExistsExpression, \
                            AllExpression, \
                            UnexpectedTokenException
-import resolve_anaphora as RA
+import drt_resolve_anaphora as RA
 
 from Tkinter import Canvas
 from Tkinter import Tk
