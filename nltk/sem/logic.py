@@ -1,853 +1,660 @@
 # Natural Language Toolkit: Logic
 #
-# Based on church.py, Version 1.0
-# Available from http://www.alcyone.com/pyos/church/
-# Copyright (C) 2001-2002 Erik Max Francis
-# Author: Erik Max Francis <max@alcyone.com>
+# Author: Daniel H. Garrette <dhgarrette@gmail.com>
 #
-# Modifications by: Steven Bird <sb@csse.unimelb.edu.au>
-#                   Peter Wang
-#                   Ewan Klein <ewan@inf.ed.ac.uk>
-#                   Rob Speer  <rspeer@mit.edu>
-#                   Edward Loper <edloper@gradient.cis.upenn.edu>
-# URL: <http://nltk.sf.net>
+# URL: <http://www.nltk.org>
 # For license information, see LICENSE.TXT
-#
-# $Iid:$
 
 """
-A version of first order logic, built on top of the untyped lambda calculus.
-
-The class of C{Expression} has various subclasses:
-
-  - C{VariableExpression}
-  
+A version of first order predicate logic, built on top of the untyped lambda calculus.
 """
 
 from nltk.internals import Counter
-import re
+from nltk.tokenize.simple import WhitespaceTokenizer
 
-######################################################################
-# Variables & Bindings
-######################################################################
-
-class Variable(object):
-    """A variable, either free or bound."""
-    
-    def __init__(self, name):
-        """
-        Create a new C{Variable}.
-
-        @type name: C{string}
-        @param name: The name of the variable.
-        """
-        self.name = name
-
-    def __cmp__(self, other):
-        if not isinstance(other, Variable): return -1
-        return cmp(self.name, other.name)
-
-    def __str__(self): return self.name
-
-    def __repr__(self): return "Variable('%s')" % self.name
-
-    def __hash__(self): return hash(self.name)
-
-    def substitute_bindings(self, bindings):
-        return bindings.get(self, self)
-        
-class SubstituteBindingsI(object):
-    """
-    An interface for classes that can perform substitutions for
-    variables.
-    """
-    def substitute_bindings(self, bindings):
-        """
-        @return: The object that is obtained by replacing
-        each variable bound by C{bindings} with its values.
-        Aliases are already resolved. (maybe?)
-        @rtype: (any)
-        """
-        raise NotImplementedError()
-
-    def variables(self):
-        """
-        @return: A list of all variables in this object.
-        """
-        raise NotImplementedError()
-            
-######################################################################
-# ...
-######################################################################
+n = 1
 
 _counter = Counter()
 
-def unique_variable(counter=None):
-    if counter is None: counter = _counter
-    unique = counter.get()
-    return VariableExpression(Variable('x'+str(unique)))
+def unique_variable():
+    return VariableExpression('z' + str(_counter.get()))
 
-class Error(Exception): pass # used by the parser.
-
-class Constant(object):
-    """A nonlogical constant."""
+class Expression:
+    def __call__(self, other):
+        return self.applyto(other)
     
-    def __init__(self, name):
-        """
-        Create a new C{Constant}.
-
-        @type name: C{string}
-        @param name: The name of the constant.
-        """
-        self.name = name
-
-    def __cmp__(self, other):
-        if not isinstance(other, Constant): return -1
-        return cmp(self.name, other.name)
-
-    def __str__(self): return self.name
-
-    def __repr__(self): return "Constant('%s')" % self.name
-
-    def __hash__(self): return hash(repr(self))
-
-class Expression(SubstituteBindingsI):
-    """The abstract class of a lambda calculus expression."""
-    def __init__(self):
-        if self.__class__ is Expression:
-            raise NotImplementedError
-
+    def applyto(self, other):
+        if not isinstance(other, list):
+            other = [other]
+        return ApplicationExpression(self, other)
+    
+    def __neg__(self):
+        return NegatedExpression(self)
+    
+    def negate(self):
+        return -self
+    
     def __eq__(self, other):
-        """Are the two expressions equal, modulo alpha conversion?"""
-        return NotImplementedError
-
-    def __ne__(self, other):
-        return not (self == other)
-
-    def variables(self):
-        """Set of all variables."""
-        raise NotImplementedError
-
-    def free(self):
-        """Set of free variables."""
-        raise NotImplementedError
-
-    def subterms(self):
-        """Set of all subterms (including self)."""
-        raise NotImplementedError
-
-
-    def replace(self, variable, expression, replace_bound=False):
-        """Replace all instances of variable v with expression E in self,
-        where v is free in self."""
-        raise NotImplementedError
+        raise NotImplementedError()
     
-    def replace_unique(self, variable, counter=None, replace_bound=False):
-        """
-        Replace a variable v with a new, uniquely-named variable.
-        """
-        return self.replace(variable, unique_variable(counter),
-                            replace_bound)
-
-    def simplify(self):
-        """Evaluate the form by repeatedly applying applications."""
-        raise NotImplementedError
-
-    def skolemise(self):
-        """
-        Perform a simple Skolemisation operation.  Existential quantifiers are
-        simply dropped and all variables they introduce are renamed so that
-        they are unique.
-        """
-        return self._skolemise(set(), Counter())
-
-    skolemize = skolemise
-
-    def _skolemise(self, bound_vars, counter):
-        raise NotImplementedError
-
-    def clauses(self):
-        return [self]
-
-    def __str__(self):
-        raise NotImplementedError
-
-    def __repr__(self):
-        raise NotImplementedError
+    def tp_equals(self, other, prover_name='tableau'):
+        """Pass the expression (self <-> other) to the theorem prover.   
+        If the prover says it is valid, then the self and other are equal."""
+        assert isinstance(other, Expression)
+        
+        from nltk.inference import inference
+        bicond = IffExpression(self.simplify(), other.simplify())
+        prover = inference.get_prover(bicond, prover_name=prover_name)
+        return prover.prove()
 
     def __hash__(self):
-        raise NotImplementedError, self.__class__
+        return hash(repr(self))
     
-    def normalize(self, replace='.*', replacement='z%d'):
-        """
-        @param replace: A regular expression indicating which variables
-            should be replaced with normalized names.
-        @param replacement: A string template used to construct the
-            replacement variable name.  It will be combined via the
-            C{%} operator with an integer.
-        """
-        if (hasattr(self, '_normalized') and
-            replace=='.*' and replacement=='z%d'):
-            return self._normalized
-        result = self
-        vars = self.variables()
-        counter = 0
-        for var in vars:
-            if re.match(replace+'\Z', var.name):
-                counter += 1
-                new_name = replacement % counter
-                result = result.replace(var, Variable(new_name),
-                                        replace_bound=True)
-        if replace=='.*' and replacement=='z%d':
-            self._normalized = result
-        return result
+    def __repr__(self):
+        return self.__class__.__name__ + ': ' + str(self)
+
+class ApplicationExpression(Expression):
+    """
+    @param function: C{Expression}, for the function expression
+    @param args: C{list} of C{Expression}, for the arguments   
+    """
+    def __init__(self, function, args):
+        self.function = function
+        self.args = args
+        
+    def simplify(self):
+        function = self.function.simplify()
+        args = [arg.simplify() for arg in self.args]
+
+        if isinstance(function, LambdaExpression):
+            if len(self.args) != 1:
+                raise ParseException("The function %s abstracts %s variables but there are %s arguments: (%s)" 
+                                     % (function, len(function.variables), len(self.args), 
+                                        ','.join([str(arg) for arg in self.args])))
+            return function.term.replace(function.variable, arg).simplify()
+        else:
+            return self.__class__(function, args)
+        
+    def replace(self, variable, expression, replace_bound=False):
+        return self.__class__(self.function.replace(variable, expression, replace_bound),
+                              [arg.replace(variable, expression, replace_bound)
+                               for arg in self.args])
+        
+    def free(self):
+        accum = self.function.free()
+        for arg in self.args:
+            accum |= arg.free()
+        return accum
     
-    def substitute_bindings(self, bindings):
-        expr = self
-        for var in expr.free():
-            if var in bindings:
-                val = bindings[var]
-                if isinstance(val, Variable):
-                    val = VariableExpression(val)
-                if isinstance(val, Constant):
-                    val = ConstantExpression(const)
-                if not isinstance(val, Expression):
-                    raise ValueError('Can not substitute a non-expresion '
-                                     'value into an expression: %r' % val)
-                # Substitute bindings in the target value.
-                val = val.substitute_bindings(bindings)
-                # Replace var w/ the target value.
-                expr = expr.replace(var, val)
-        return expr.simplify()
+    def __eq__(self, other):
+        return isinstance(other, self.__class__) and \
+                self.function == other.function and self.args == other.args 
+
+    def __str__(self):
+        function = str(self.function)
+
+        if isinstance(self.function, LambdaExpression):
+            if isinstance(self.function.term, ApplicationExpression):
+                if not isinstance(self.function.term.function, VariableExpression):
+                    function = Tokens.OPEN + function + Tokens.CLOSE
+            elif not isinstance(self.function.term, BooleanExpression):
+                function = Tokens.OPEN + function + Tokens.CLOSE
+        elif isinstance(self.function, ApplicationExpression):
+            function = Tokens.OPEN + function + Tokens.CLOSE
+                
+        return function + Tokens.OPEN + \
+               ','.join([str(arg) for arg in self.args]) + Tokens.CLOSE
 
 class VariableExpression(Expression):
-    """A variable expression which consists solely of a variable."""
-    def __init__(self, variable):
-        Expression.__init__(self)
-        assert isinstance(variable, Variable)
-        self.variable = variable
+    """
+    @param name: C{str}, for the variable name
+    """
+    def __init__(self, name):
+        self.name = name
 
-    # nb: __ne__ defined by Expression
-    def __eq__(self, other):
-        """
-        Allow equality between instances of C{VariableExpression} and
-        C{IndVariableExpression}.
-        """
-        if isinstance(self, VariableExpression) and \
-           isinstance(other, VariableExpression):
-            return self.variable == other.variable
-        else:
-            return False
-
-    def variables(self):
-        return [self.variable]
-
-    def free(self):
-        return set([self.variable])
-
-    def subterms(self):
-        return set([self])
+    def simplify(self):
+        return self
 
     def replace(self, variable, expression, replace_bound=False):
-        if self.variable == variable:
-            if isinstance(expression, Variable):
-                return VariableExpression(expression)
-            else:
-                return expression
+        if self == variable:
+            return expression
         else:
             return self
-        
-    def simplify(self):
-        return self
-
-    def infixify(self):
-        return self
-
-    def name(self):
-        return self.__str__()
-
-    def _skolemise(self, bound_vars, counter):
-        return self
-
-    def __str__(self): return '%s' % self.variable
-
-    def __repr__(self): return "VariableExpression('%s')" % self.variable
-
-    def __hash__(self): return hash(repr(self))
-
-
-def is_indvar(expr):
-    """
-    Check whether an expression has the form of an individual variable.
     
-    An individual variable matches the following regex:
-    C{'^[wxyz](\d*)'}.
-    
-    @rtype: Boolean
-    @param expr: String
-    """
-    result = expr[0] in ['w', 'x', 'y', 'z']
-    if len(expr) > 1:
-        return result and expr[1:].isdigit()
-    else:
-        return result
-    
-class IndVariableExpression(VariableExpression):
-    """
-    An individual variable expression, as determined by C{is_indvar()}.
-    """
-    def __init__(self, variable):
-        Expression.__init__(self)
-        assert isinstance(variable, Variable), "Not a Variable: %s" % variable
-        assert is_indvar(str(variable)), "Wrong format for an Individual Variable: %s" % variable
-        self.variable = variable
-
-    def __repr__(self): return "IndVariableExpression('%s')" % self.variable 
-        
-
-class ConstantExpression(Expression):
-    """A constant expression, consisting solely of a constant."""
-    def __init__(self, constant):
-        Expression.__init__(self)
-        assert isinstance(constant, Constant)
-        self.constant = constant
-
-    # nb: __ne__ defined by Expression
-    def __eq__(self, other):
-        if self.__class__ == other.__class__:
-            return self.constant == other.constant
-        else:
-            return False
-
-    def variables(self):
-        return []
-
     def free(self):
-        return set()
-
-    def subterms(self):
         return set([self])
-
-    def replace(self, variable, expression, replace_bound=False):
-        return self
-        
-    def simplify(self):
-        return self
-
-    def infixify(self):
-        return self
-
-    def name(self):
-        return self.__str__()
-
-    def _skolemise(self, bound_vars, counter):
-        return self
-
-    def __str__(self): return '%s' % self.constant
-
-    def __repr__(self): return "ConstantExpression('%s')" % self.constant
-
-    def __hash__(self): return hash(repr(self))
-
-
-class Operator(ConstantExpression):
-    """
-    A boolean operator, such as 'not' or 'and', or the equality
-    relation ('=').
-    """
-    def __init__(self, operator):
-        Expression.__init__(self)
-        assert operator in LogicParser.OPS
-        self.constant = operator
-        self.operator = operator
-
-    # nb: __ne__ defined by Expression
+    
     def __eq__(self, other):
-        if self.__class__ == other.__class__:
-            return self.constant == other.constant
-        else:
-            return False
-
-    def simplify(self):
-        return self
-
-    def __str__(self): return '%s' % self.operator
-
-    def __repr__(self): return "Operator('%s')" % self.operator
-
-
-
-class VariableBinderExpression(Expression):
-    """A variable binding expression: e.g. \\x.M."""
-
-    # for generating "unique" variable names during alpha conversion.
-    _counter = Counter()
-
+        return isinstance(other, self.__class__) and self.name == other.name
+        
+    def __str__(self):
+        return self.name
+    
+class LambdaExpression(Expression):
+    """
+    @param variable: C{VariableExpression}, for the abstracted variable
+    @param term: C{Expression}, for the term
+    """
     def __init__(self, variable, term):
-        Expression.__init__(self)
-        assert isinstance(variable, Variable)
-        assert isinstance(term, Expression)
         self.variable = variable
         self.term = term
-        self.prefix = self.__class__.PREFIX.rstrip()
-        self.binder = (self.prefix, self.variable.name)
-        self.body = str(self.term)
-
-    # nb: __ne__ defined by Expression
-    def __eq__(self, other):
-        r"""
-        Defines equality modulo alphabetic variance.
-
-        If we are comparing \x.M  and \y.N, then
-        check equality of M and N[x/y].
-        """
-        if self.__class__ == other.__class__:
-            if self.variable == other.variable:
-                return self.term == other.term
-            else:
-                # Comparing \x.M  and \y.N.
-                # Relabel y in N with x and continue.
-                relabeled = self._relabel(other)
-                return self.term == relabeled
-        else:
-            return False
-
-    def _relabel(self, other):
-        """
-        Relabel C{other}'s bound variables to be the same as C{self}'s
-        variable.
-        """
-        var = VariableExpression(self.variable)
-        return other.term.replace(other.variable, var)
-
-    def variables(self):
-        vars = [self.variable]
-        for var in self.term.variables():
-            if var not in vars: vars.append(var)
-        return vars
-
-    def free(self):
-        return self.term.free().difference(set([self.variable]))
-
-    def subterms(self):
-        return self.term.subterms().union([self])
-
-    def replace(self, variable, expression, replace_bound=False):
-        if self.variable == variable:
-            if not replace_bound: return self
-            else: return self.__class__(expression,
-                self.term.replace(variable, expression, True))
-        if replace_bound or self.variable in expression.free():
-            v = 'z' + str(self._counter.get())
-            if not replace_bound: self = self.alpha_convert(Variable(v))
-        return self.__class__(self.variable,
-            self.term.replace(variable, expression, replace_bound))
-
-    def alpha_convert(self, newvar):
-        """
-        Rename all occurrences of the variable introduced by this variable
-        binder in the expression to @C{newvar}.
-        """
-        term = self.term.replace(self.variable, VariableExpression(newvar))
-        return self.__class__(newvar, term)
 
     def simplify(self):
         return self.__class__(self.variable, self.term.simplify())
 
-    def infixify(self):
-        return self.__class__(self.variable, self.term.infixify())
-
-    def __str__(self, continuation=0):
-        # Print \x.\y.M as \x y.M.
-        if continuation:
-            prefix = ' '
+    def replace(self, variable, expression, replace_bound=False):
+        #if the bound variable is the thing being replaced
+        if self.variable == variable:
+            if not replace_bound:
+                return self
+            else: 
+                return self.__class__(expression, self.term.replace(variable, expression, True))
         else:
-            prefix = self.__class__.PREFIX
-        if self.term.__class__ == self.__class__:
-            return '%s%s%s' % (prefix, self.variable, self.term.__str__(1))
-        else:
-            return '%s%s.%s' % (prefix, self.variable, self.term)
-
-    def __hash__(self):
-        return hash(str(self.normalize()))
-    
-class LambdaExpression(VariableBinderExpression):
-    """A lambda expression: \\x.M."""
-    PREFIX = '\\'
-
-    def _skolemise(self, bound_vars, counter):
-        bv = bound_vars.copy()
-        bv.add(self.variable)
-        return self.__class__(self.variable, self.term._skolemise(bv, counter))
-
-    def __repr__(self):
-        return "LambdaExpression('%s', '%s')" % (self.variable, self.term)
-
-class SomeExpression(VariableBinderExpression):
-    """An existential quantification expression: some x.M."""
-    PREFIX = 'some '
-
-    def _skolemise(self, bound_vars, counter):
-        if self.variable in bound_vars:
-            var = Variable("_s" + str(counter.get()))
-            term = self.term.replace(self.variable, VariableExpression(var))
-        else:
-            var = self.variable
-            term = self.term
-        bound_vars.add(var)
-        return term._skolemise(bound_vars, counter)
-
-    def __repr__(self):
-        return str(self)
-        #return "SomeExpression('%s', '%s')" % (self.variable, self.term)
-
-
-class AllExpression(VariableBinderExpression):
-    """A universal quantification expression: all x.M."""
-    PREFIX = 'all '
-
-    def _skolemise(self, bound_vars, counter):
-        bv = bound_vars.copy()
-        bv.add(self.variable)
-        return self.__class__(self.variable, self.term._skolemise(bv, counter))
-
-    def __repr__(self):
-        return "AllExpression('%s', '%s')" % (self.variable, self.term)
-
-
-
-class ApplicationExpression(Expression):
-    """An application expression: (M N)."""
-    def __init__(self, first, second):
-        Expression.__init__(self)
-        assert isinstance(first, Expression)
-        assert isinstance(second, Expression)
-        self.first = first
-        self.second = second
-
-    # nb: __ne__ defined by Expression
-    def __eq__(self, other):
-        if self.__class__ == other.__class__:
-            return (self.first == other.first and
-                    self.second == other.second)
-        else:
-            return False
-
-    def variables(self):
-        vars = self.first.variables()
-        for var in self.second.variables():
-            if var not in vars: vars.append(var)
-        return vars
+            # if the bound variable appears in the expression, then it must
+            # be alpha converted to avoid a conflict
+            if self.variable in expression.free():
+                newvar = unique_variable()
+                self = self.__class__(newvar, self.term.replace(self.variable, newvar, True))
+                
+            #replace in the term
+            return self.__class__(self.variable, 
+                                  self.term.replace(variable, expression, replace_bound))
 
     def free(self):
-        return self.first.free().union(self.second.free())
+        return self.term.free() - set([self.variable])
 
-    def _functor(self):
-        if isinstance(self.first, ApplicationExpression):
-            return self.first._functor()
-        else:
-            return self.first
+    def __eq__(self, other):
+        return isinstance(other, self.__class__) \
+                and self.variable == other.variable and self.term == other.term
 
-    fun = property(_functor,
-                   doc="Every ApplicationExpression has a functor.")
+    def __str__(self):
+        return Tokens.LAMBDA[n] + str(self.variable) + Tokens.DOT[n] + str(self.term)
 
-
-    def _operator(self):
-        functor = self._functor()
-        if isinstance(functor, Operator):
-            return str(functor)
-        else: 
-            raise AttributeError
-
-    op = property(_operator,
-                  doc="Only some ApplicationExpressions have operators." )
-
-    def _arglist(self):
-        """Uncurry the argument list."""
-        arglist = [self.second]
-        if isinstance(self.first, ApplicationExpression):
-            arglist.extend(self.first._arglist())
-        return arglist
-
-    def _args(self):
-        arglist = self._arglist()
-        arglist.reverse()
-        return arglist
-
-    args = property(_args,
-                   doc="Every ApplicationExpression has args.")
-
-    def subterms(self):
-        first = self.first.subterms()
-
-        second = self.second.subterms()
-        return first.union(second).union(set([self]))
-
-    def replace(self, variable, expression, replace_bound=False):
-        return self.__class__(
-            self.first.replace(variable, expression, replace_bound),
-            self.second.replace(variable, expression, replace_bound))
+class QuantifiedExpression(Expression):
+    """
+    @param variable: C{VariableExpression}, for the variable
+    @param term: C{Expression}, for the term
+    """
+    def __init__(self, variable, term):
+        self.variable = variable
+        self.term = term
 
     def simplify(self):
-        first = self.first.simplify()
-        second = self.second.simplify()
-        if isinstance(first, LambdaExpression):
-            variable = first.variable
-            term = first.term
-            return term.replace(variable, second).simplify()
+        return self.__class__(self.variable, self.term.simplify())
+
+    def replace(self, variable, expression, replace_bound=False):
+        #if the bound variable is the thing being replaced
+        if self.variable == variable:
+            if replace_bound: 
+                return self.__class__(expression, 
+                                      self.term.replace(variable, expression, True))
+            else: 
+                return self
+                
         else:
-            return self.__class__(first, second)
+            # if the bound variable appears in the expression, then it must
+            # be alpha converted to avoid a conflict
+            if self.variable in expression.free():
+                self = self.alpha_convert(unique_variable())
+                
+            #replace in the term
+            return self.__class__(self.variable,
+                                  self.term.replace(variable, expression, replace_bound))
 
-    def infixify(self):
-        first = self.first.infixify()
-        second = self.second.infixify()
-        if isinstance(first, Operator) and not str(first) == 'not':
-            return self.__class__(second, first)
-        else:
-            return self.__class__(first, second)    
+    def alpha_convert(self, newvar):
+        """Rename all occurrences of the variable introduced by this variable
+        binder in the expression to @C{newvar}."""
+        return self.__class__(newvar, self.term.replace(self.variable, newvar, True))
 
-    def _skolemise(self, bound_vars, counter):
-        first = self.first._skolemise(bound_vars, counter)
-        second = self.second._skolemise(bound_vars, counter)
-        return self.__class__(first, second)
+    def free(self):
+        return self.term.free() - set([self.variable])
 
-    def clauses(self):
-        if isinstance(self.first, ApplicationExpression) and\
-           isinstance(self.first.first, Operator) and\
-           self.first.first.operator == 'and':
-           return self.first.second.clauses() + self.second.clauses()
-        else: return [self]
+    def __eq__(self, other):
+        return isinstance(other, self.__class__) \
+                and self.variable == other.variable and self.term == other.term
+
     def __str__(self):
-        # Print ((M N) P) as (M N P).
-        strFirst = str(self.first)
-        if isinstance(self.first, ApplicationExpression):
-            if not isinstance(self.second, Operator):
-                strFirst = strFirst[1:-1]
-        return '(%s %s)' % (strFirst, self.second)
+        return self.getPredicate() + ' ' + str(self.variable) + Tokens.DOT[n] + str(self.term)
+        
+class ExistsExpression(QuantifiedExpression):
+    def getPredicate(self):
+        return Tokens.EXISTS[n]
 
-    def __repr__(self):
-        return "ApplicationExpression('%s', '%s')" % (self.first, self.second)
+class AllExpression(QuantifiedExpression):
+    def getPredicate(self):
+        return Tokens.ALL[n]
 
-    def __hash__(self):
-        return hash(str(self.normalize()))
+class NegatedExpression(Expression):
+    def __init__(self, term):
+        self.term = term
+        
+    def simplify(self):
+        return self
 
-class LogicParser(object):
-    """A lambda calculus expression parser."""
+    def replace(self, variable, expression, replace_bound=False):
+        return self.__class__(self.term.replace(variable, expression, replace_bound))
 
-    # Tokens.
-    LAMBDA = '\\'
-    SOME = 'some'
-    ALL = 'all'
-    DOT = '.'
+    def free(self):
+        return self.term.free()
+
+    def __eq__(self, other):
+        return isinstance(other, self.__class__) and self.term == other.term
+
+    def __str__(self):
+        return Tokens.NOT[n] + str(self.term)
+        
+class BooleanExpression(Expression):
+    def __init__(self, first, second):
+        self.first = first
+        self.second = second
+    
+    def simplify(self):
+        return self.__class__(self.first.simplify(), self.second.simplify())
+
+    def replace(self, variable, expression, replace_bound=False):
+        return self.__class__(self.first.replace(variable, expression, replace_bound),
+                              self.second.replace(variable, expression, replace_bound))
+
+    def free(self):
+        return self.first.free() | self.second.free()
+
+    def __eq__(self, other):
+        return isinstance(other, self.__class__) \
+                and self.first == other.first and self.second == other.second
+
+    def __str__(self):
+        return Tokens.OPEN + str(self.first) + ' ' + self.getOp() + ' ' + str(self.second) + Tokens.CLOSE
+        
+class AndExpression(BooleanExpression):
+    def getOp(self):
+        return Tokens.AND[n]
+
+class OrExpression(BooleanExpression):
+    def getOp(self):
+        return Tokens.OR[n]
+
+class ImpExpression(BooleanExpression):
+    def getOp(self):
+        return Tokens.IMP[n]
+
+class IffExpression(BooleanExpression):
+    def getOp(self):
+        return Tokens.IFF[n]
+
+class EqualityExpression(BooleanExpression):
+    def getOp(self):
+        return Tokens.EQ[n]
+
+class Tokens:
+    # Syntaxes
+    OLD_NLTK = 0
+    NEW_NLTK = 1
+    PROVER9  = 2
+    
+    
+    LAMBDA = ['\\', '\\', '\\']
+    
+    #Quantifiers
+    EXISTS = ['some', 'exists', 'exists']
+    ALL = ['all', 'all', 'all']
+    
+    #Punctuation
+    DOT = ['.', '.', ' ']
     OPEN = '('
     CLOSE = ')'
-    BOOL = ['and', 'or', 'not', 'implies', 'iff']
-    EQ = '='
-    OPS = BOOL
-    OPS.append(EQ)
+    COMMA = ','
     
-    def __init__(self, data=None, constants=None):
-        if data is not None:
-            self.buffer = data
-            self.process()
-        else:
-            self.buffer = ''
-        if constants is not None:
-            self.constants = constants
-        else:
-            self.constants = []
-        
+    #Operations
+    NOT = ['not', '-', '-']
+    AND = ['and', '&', '&']
+    OR = ['or', '|', '|']
+    IMP = ['implies', '->', '->']
+    IFF = ['iff', '<->', '<->']
+    EQ = ['=', '=', '=']
+    
+    #Collection of tokens
+    BOOLS = AND + OR + IMP + IFF
+    BINOPS = BOOLS + EQ
+    QUANTS = EXISTS + ALL
+    PUNCT = [DOT[0], OPEN, CLOSE, COMMA]
+    
+    TOKENS = BINOPS + QUANTS + LAMBDA + PUNCT + NOT
+    
+    #Special
+    SYMBOLS = LAMBDA + PUNCT + [AND[1], OR[1], NOT[1], IMP[1], IFF[1]] + EQ 
 
-    def feed(self, data):
-        """Feed another batch of data to the parser."""
-        self.buffer += data
-        self.process()
+class LogicParser:
+    """A lambda calculus expression parser."""
+
+    def __init__(self):
+        """
+        @param data: C{str}, a string to parse
+        """
+        self._currentIndex = 0
+        self._buffer = []
 
     def parse(self, data):
-        # [xx] um.. similar to other nltk parsers how?
         """
-        Provides a method similar to other NLTK parsers.
+        Parse the expression.
 
-        @type data: str
+        @param data: C{str} for the input to be parsed
         @returns: a parsed Expression
         """
-        self.feed(data)
-        result = self.next()
+        self._currentIndex = 0
+        self._buffer = WhitespaceTokenizer().tokenize(self.process(data))
+        result = self.parse_Expression()
+        if self.inRange(0):
+            raise UnexpectedTokenException(self.token(0))
         return result
 
-    def process(self):
-        """Process the waiting stream to make it trivial to parse."""
-        self.buffer = self.buffer.replace('\t', ' ')
-        self.buffer = self.buffer.replace('\n', ' ')
-        self.buffer = self.buffer.replace('\\', ' \\ ')
-        self.buffer = self.buffer.replace('.', ' . ')
-        self.buffer = self.buffer.replace('(', ' ( ')
-        self.buffer = self.buffer.replace(')', ' ) ')
-
-    def token(self, destructive=1):
-        """Get the next waiting token.  The destructive flag indicates
-        whether the token will be removed from the buffer; setting it to
-        0 gives lookahead capability."""
-        if self.buffer == '':
-            raise Error, "end of stream"
-        tok = None
-        buffer = self.buffer
-        while not tok:
-            seq = buffer.split(' ', 1)
-            if len(seq) == 1:
-                tok, buffer = seq[0], ''
+    def process(self, data):
+        """Put whitespace between symbols to make parsing easier"""
+        out = ''
+        tokenTrie = StringTrie(self.get_all_symbols())
+        while data:
+            st = tokenTrie
+            c = data[0]
+            token = ''
+            while c in st:
+                token += c
+                st = st[c]
+                if len(data) > len(token):
+                    c = data[len(token)]
+                else:
+                    break
+            if token:
+                out += ' '+token+' '
+                data = data[len(token):]
             else:
-                assert len(seq) == 2
-                tok, buffer = seq
-            if tok:
-                if destructive:
-                    self.buffer = buffer
-                return tok
-        assert 0 # control never gets here
-        return None
+                out += c
+                data = data[1:]
+        return out
 
-    def isVariable(self, token):
-        """Is this token a variable (that is, not one of the other types)?"""
-        TOKENS = [LogicParser.LAMBDA, LogicParser.SOME, LogicParser.ALL,
-               LogicParser.DOT, LogicParser.OPEN, LogicParser.CLOSE, LogicParser.EQ]
-        TOKENS.extend(self.constants)
-        TOKENS.extend(LogicParser.BOOL)
-        return token not in TOKENS 
+    def get_all_symbols(self):
+        """This method exists to be overridden"""
+        return Tokens.SYMBOLS
 
-    def next(self):
+    def inRange(self, location):
+        """Return TRUE if the given location is within the buffer"""
+        return self._currentIndex+location < len(self._buffer)
+
+    def token(self, location=None):
+        """Get the next waiting token.  If a location is given, then 
+        return the token at currentIndex+location without advancing
+        currentIndex; setting it gives lookahead/lookback capability."""
+        try:
+            if location == None:
+                tok = self._buffer[self._currentIndex]
+                self._currentIndex += 1
+            else:
+                assert isinstance(location,int) 
+                tok = self._buffer[self._currentIndex+location]
+            return tok
+        except IndexError:
+            raise UnexpectedTokenException, 'The given location is out of range'
+
+    def isvariable(self, tok):
+        return tok not in Tokens.TOKENS
+    
+    def parse_Expression(self):
         """Parse the next complete expression from the stream and return it."""
         tok = self.token()
         
-        if tok in [LogicParser.LAMBDA, LogicParser.SOME, LogicParser.ALL]:
-            # Expression is a lambda expression: \x.M
-            # or a some expression: some x.M
-            if tok == LogicParser.LAMBDA:
-                factory = self.make_LambdaExpression
-            elif tok == LogicParser.SOME:
-                factory = self.make_SomeExpression
-            elif tok == LogicParser.ALL:
-                factory = self.make_AllExpression
-            else:
-                raise ValueError(tok)
-
-            vars = [self.token()]
-            while self.isVariable(self.token(0)):
-                # Support expressions like: \x y.M == \x.\y.M
-                # and: some x y.M == some x.some y.M
-                vars.append(self.token())
-            tok = self.token()
-
-            if tok != LogicParser.DOT:
-                raise Error, "parse error, unexpected token: %s" % tok
-            term = self.next()
-            accum = factory(Variable(vars.pop()), term)
-            while vars:
-                accum = factory(Variable(vars.pop()), accum)
-            return accum
+        if self.isvariable(tok):
+            return self.handle_variable(tok)
+        
+        elif tok in Tokens.NOT:
+            #it's a negated expression
+            return self.make_NegatedExpression(self.parse_Expression())
+        
+        elif tok in Tokens.LAMBDA:
+            return self.handle_lambda(tok)
             
-        elif tok == LogicParser.OPEN:
-            # Expression is an application expression: (M N)
-            first = self.next()
-            second = self.next()
-            exps = []
-            while self.token(0) != LogicParser.CLOSE:
-                # Support expressions like: (M N P) == ((M N) P)
-                exps.append(self.next())
-            tok = self.token() # swallow the close token
-            assert tok == LogicParser.CLOSE
-            if isinstance(second, Operator):
-                accum = self.make_ApplicationExpression(second, first)
-            else:
-                accum = self.make_ApplicationExpression(first, second)
-            while exps:
-                exp, exps = exps[0], exps[1:]
-                accum = self.make_ApplicationExpression(accum, exp)
-            return accum
-
-        elif tok in self.constants:
-            # Expression is a simple constant expression: a
-            return ConstantExpression(Constant(tok))
-
-        elif tok in LogicParser.OPS:
-            # Expression is a boolean operator or the equality symbol
-            return Operator(tok)
-
-        elif is_indvar(tok):
-            # Expression is a boolean operator or the equality symbol
-            return IndVariableExpression(Variable(tok))
+        elif tok in Tokens.QUANTS:
+            return self.handle_quant(tok)
+            
+        elif tok == Tokens.OPEN:
+            return self.handle_open(tok)
         
         else:
-            if self.isVariable(tok):
-                # Expression is a simple variable expression: x
-                return VariableExpression(Variable(tok))
+            raise UnexpectedTokenException(tok)
+        
+    def make_NegatedExpression(self, expression):
+        return NegatedExpression(expression)
+        
+    def handle_variable(self, tok):
+        #It's either: 1) a predicate expression: sees(x,y)
+        #             2) an application expression: P(x)
+        #             3) a solo variable: john OR x
+        if self.inRange(0) and self.token(0) == Tokens.OPEN:
+            #The predicate has arguments
+            self.token() #swallow the Open Paren
+            
+            #gather the arguments
+            args = []
+            if self.token(0) != Tokens.CLOSE:
+                args.append(self.parse_Expression())
+                while self.token(0) == Tokens.COMMA:
+                    self.token() #swallow the comma
+                    args.append(self.parse_Expression())
+            self.assertToken(self.token(), Tokens.CLOSE)
+            
+            expression = self.make_ApplicationExpression(self.make_VariableExpression(tok), args)
+            return self.attempt_BooleanExpression(expression)
+        else:
+            #The predicate has no arguments: it's a solo variable
+            return self.make_VariableExpression(tok)
+        
+    def handle_lambda(self, tok):
+        # Expression is a lambda expression
+        
+        vars = [self.make_VariableExpression(self.token())]
+        while True:
+            while self.isvariable(self.token(0)):
+                # Support expressions like: \x y.M == \x.\y.M
+                vars.append(self.make_VariableExpression(self.token()))
+            self.assertToken(self.token(), Tokens.DOT)
+            
+            if self.token(0) in Tokens.LAMBDA:
+                #if it's directly followed by another lambda, keep the lambda 
+                #expressions together, so that \x.\y.M == \x y.M
+                self.token() #swallow the lambda symbol
             else:
-                raise Error, "parse error, unexpected token: %s" % tok
-    
-    # This is intended to be overridden, so that you can derive a Parser class
-    # that constructs expressions using your subclasses.  So far we only need
-    # to overridde ApplicationExpression, but the same thing could be done for
-    # other expression types.
-    def make_ApplicationExpression(self, first, second):
-        return ApplicationExpression(first, second)
-    def make_LambdaExpression(self, first, second):
-        return LambdaExpression(first, second)
-    def make_SomeExpression(self, first, second):
-        return SomeExpression(first, second)
-    def make_AllExpression(self, first, second):
-        return AllExpression(first, second)
+                break
+        
+        accum = self.parse_Expression()
+        while vars:
+            accum = self.make_LambdaExpression(vars.pop(), accum)
 
-def expressions():
-    """Return a sequence of test expressions."""
-    a = Variable('a')
-    x = Variable('x')
-    y = Variable('y')
-    z = Variable('z')
-    A = VariableExpression(a)
-    X = IndVariableExpression(x)
-    Y = IndVariableExpression(y)
-    Z = IndVariableExpression(z)
-    XA = ApplicationExpression(X, A)
-    XY = ApplicationExpression(X, Y)
-    XZ = ApplicationExpression(X, Z)
-    YZ = ApplicationExpression(Y, Z)
-    XYZ = ApplicationExpression(XY, Z)
-    I = LambdaExpression(x, X)
-    K = LambdaExpression(x, LambdaExpression(y, X))
-    L = LambdaExpression(x, XY)
-    S = LambdaExpression(x, LambdaExpression(y, LambdaExpression(z, \
-            ApplicationExpression(XZ, YZ))))
-    B = LambdaExpression(x, LambdaExpression(y, LambdaExpression(z, \
-            ApplicationExpression(X, YZ))))
-    C = LambdaExpression(x, LambdaExpression(y, LambdaExpression(z, \
-            ApplicationExpression(XZ, Y))))
-    O = LambdaExpression(x, LambdaExpression(y, XY))
-    N = ApplicationExpression(LambdaExpression(x, XA), I)
-    T = LogicParser('\\x y.(x y z)').next()
-    return [X, XZ, XYZ, I, K, L, S, B, C, O, N, T]
+        accum = self.attempt_ApplicationExpression(accum)
+        return self.attempt_BooleanExpression(accum)
+        
+    def get_QuantifiedExpression_factory(self, tok):
+        """This method serves as a hook for other logic parsers that
+        have different quantifiers"""
+        factory = None
+        if tok in Tokens.EXISTS:
+            factory = ExistsExpression
+        elif tok in Tokens.ALL:
+            factory = AllExpression
+        else:
+            self.assertToken(tok, Tokens.EXISTS + Tokens.ALL)
+        return factory
+
+    def handle_quant(self, tok):
+        # Expression is a quantified expression: some x.M
+        factory = self.get_QuantifiedExpression_factory(tok)
+
+        vars = [self.token()]
+        while self.isvariable(self.token(0)):
+            # Support expressions like: some x y.M == some x.some y.M
+            vars.append(self.token())
+        self.assertToken(self.token(), Tokens.DOT)
+
+        term = self.parse_Expression()
+        accum = factory(self.make_VariableExpression(vars.pop()), term)
+        while vars:
+            accum = factory(self.make_VariableExpression(vars.pop()), accum)
+        
+        return self.attempt_BooleanExpression(accum)
+        
+    def handle_open(self, tok):
+        #Expression is in parens
+        newExpression = self.attempt_BooleanExpression(self.parse_Expression())
+        self.assertToken(self.token(), Tokens.CLOSE)
+        return self.attempt_ApplicationExpression(newExpression)
+        
+    def attempt_BooleanExpression(self, expression):
+        """Attempt to make a boolean expression.  If the next token is a boolean 
+        operator, then a BooleanExpression will be returned.  Otherwise, the 
+        parameter will be returned."""
+        if self.inRange(0):
+            factory = self.get_BooleanExpression_factory()
+            if factory: #if a factory was returned
+                self.token() #swallow the operator
+                return self.make_BooleanExpression(factory, expression, self.parse_Expression())
+        #otherwise, no boolean expression can be created
+        return expression
+    
+    def get_BooleanExpression_factory(self):
+        """This method serves as a hook for other logic parsers that
+        have different boolean operators"""
+        factory = None
+        op = self.token(0)
+        if op in Tokens.AND:
+            factory = AndExpression
+        elif op in Tokens.OR:
+            factory = OrExpression
+        elif op in Tokens.IMP:
+            factory = ImpExpression
+        elif op in Tokens.IFF:
+            factory = IffExpression
+        elif op in Tokens.EQ:
+            factory = EqualityExpression
+        return factory
+    
+    def make_BooleanExpression(self, type, first, second):
+        """This method exists to be overridden by parsers
+        with more complex logic for creating BooleanExpressions"""
+        return type(first, second)
+        
+    def attempt_ApplicationExpression(self, expression):
+        """Attempt to make an application expression.  The next tokens are
+        a list of arguments in parens, then the argument expression is a
+        function being applied to the arguments.  Otherwise, return the
+        argument expression."""
+        if self.inRange(0) and self.token(0) == Tokens.OPEN:
+            if not isinstance(expression, LambdaExpression) and \
+               not isinstance(expression, ApplicationExpression):
+                raise ParseException("The function '" + str(expression) + 
+                                     "' is not a Lambda Expression or an Application Expression, so it may not take arguments")
+        
+            self.token() #swallow then open paren
+            if isinstance(expression, LambdaExpression):
+                accum = expression
+                if self.token(0) != Tokens.CLOSE:
+                    accum = self.make_ApplicationExpression(accum, [self.parse_Expression()])
+                    while self.token(0) == Tokens.COMMA:
+                        self.token() #swallow the comma
+                        accum = self.make_ApplicationExpression(accum, [self.parse_Expression()])
+                self.assertToken(self.token(), Tokens.CLOSE)
+                retEx = accum
+            else:
+                args = []
+                if self.token(0) != Tokens.CLOSE:
+                    args.append(self.parse_Expression())
+                    while self.token(0) == Tokens.COMMA:
+                        self.token() #swallow the comma
+                        args.append(self.parse_Expression())
+                self.assertToken(self.token(), Tokens.CLOSE)
+                retEx = self.make_ApplicationExpression(expression, args)
+            return self.attempt_ApplicationExpression(retEx) 
+        else:
+            return expression
+
+    def make_ApplicationExpression(self, function, args):
+        return ApplicationExpression(function, args)
+    
+    def make_VariableExpression(self, name):
+        return VariableExpression(name)
+    
+    def make_LambdaExpression(self, variables, term):
+        return LambdaExpression(variables, term)
+    
+    def assertToken(self, tok, expected):
+        if isinstance(expected, list):
+            if tok not in expected:
+                raise UnexpectedTokenException(tok, expected)
+        else:
+            if tok != expected:
+                raise UnexpectedTokenException(tok, expected)
+
+    def __repr__(self):
+        if self.inRange(0):
+            return 'Next token: ' + self.token(0)
+        else:
+            return 'No more tokens'
+
+            
+class StringTrie(dict):
+    LEAF = "<leaf>" 
+
+    def __init__(self, strings=None):
+        if strings:
+            for string in strings:
+                self.insert(string)
+    
+    def insert(self, string):
+        if len(string):
+            k = string[0]
+            if k not in self:
+                self[k] = StringTrie()
+            self[k].insert(string[1:])
+        else:
+            #mark the string is complete
+            self[StringTrie.LEAF] = None 
+
+class ParseException(Exception):
+    def __init__(self, message):
+        Exception.__init__(self, message)
+
+class UnexpectedTokenException(Exception):
+    def __init__(self, tok, expected=None):
+        if expected:
+            Exception.__init__(self, "parse error, unexpected token: %s.  Expected token: %s" % (tok, expected))
+        else:
+            Exception.__init__(self, "parse error, unexpected token: %s" % tok)
+        
+        
+###############################
+#TODO: DELETE ALL
+################################
+class Error: pass
+class Variable: pass
+def is_indvar(): pass
+class SubstituteBindingsI: pass
+class Operator: pass
+
 
 def demo():
-    p = Variable('p')
-    q = Variable('q')
-    P = VariableExpression(p)
-    Q = VariableExpression(q)
-    for l in expressions():
-        print "Expression:", l
-        print "Variables:", l.variables()
-        print "Free:", l.free()
-        print "Subterms:", l.subterms()
-        print "Simplify:",l.simplify()
-        la = ApplicationExpression(ApplicationExpression(l, P), Q)
-        las = la.simplify()
-        print "Apply and simplify: %s -> %s" % (la, las)
-        ll = LogicParser(str(l)).next()
-        print 'l is:', l
-        print 'll is:', ll
-        assert l == ll
-        print "Serialize and reparse: %s -> %s" % (l, ll)
-        print "Variables:", ll.variables()
-        print "Normalize: %s" % ll.normalize()
-
+    lp = LogicParser()
+    print lp.parse(r'john')
+    print lp.parse(r'man(x)')
+    print lp.parse(r'-man(x)')
+    print lp.parse(r'(man(x) & tall(x) & walks(x))')
+    print lp.parse(r'exists x.(man(x) & tall(x))')
+    print lp.parse(r'\x.man(x)')
+    print lp.parse(r'\x.man(x)(john)')
+    print lp.parse(r'\x y.sees(x,y)')
+    print lp.parse(r'\x  y.sees(x,y)(a,b)')
+    print lp.parse(r'(\x.exists y.walks(x,y))(x)')
+    print lp.parse(r'exists x.(x = john)')
+    print lp.parse(r'\P Q.exists x.(P(x) & Q(x))')
+    
+    print lp.parse(r'\x.\y.sees(x,y)(john)(mary)').simplify()
+    print lp.parse(r'\x.\y.sees(x,y)(john, mary)').simplify()
+    print lp.parse(r'exists x.(man(x) & (\x.exists y.walks(x,y))(x))').simplify()
+    print lp.parse(r'((\P.\Q.exists x.(P(x) & Q(x)))(\x.dog(x)))(\x.bark(x))').simplify()
 
 if __name__ == '__main__':
     demo()
-
