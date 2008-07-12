@@ -1,214 +1,113 @@
+# Natural Language Toolkit: Discourse Representation Theory (DRT) 
+#
+# Author: Dan Garrette <dhgarrette@gmail.com>
+#
+# URL: <http://nltk.sf.net>
+# For license information, see LICENSE.TXT
+
 from nltk.internals import Counter
+from nltk.sem import logic
+from nltk.sem.logic import LogicParser, \
+                           BooleanExpression, \
+                           AndExpression, \
+                           ExistsExpression, \
+                           AllExpression, \
+                           UnexpectedTokenException
+import resolve_anaphora as RA
+
 from Tkinter import Canvas
 from Tkinter import Tk
 from tkFont import Font
-from nltk.sem import logic
+from nltk.draw import in_idle
 
-class Error(Exception): pass
+def unique_variable():
+    return DrtVariableExpression('z' + str(logic._counter.get()))
 
-def unique_variable(counter=None):
-    if counter is None: counter = DRS._counter
-    unique = counter.get()
-    return VariableExpression(Variable('z'+str(unique)))
-
-class Expression(logic.Expression):
-    def replace_unique(self, variable, counter=None, replace_bound=False):
-        """
-        Replace a variable v with a new, uniquely-named variable.
-        """
-        return self.replace(variable, unique_variable(counter), replace_bound)
-
-    def toFol(self):
-        return self
+class AbstractDrs:
+    def __call__(self, other):
+        self.applyto(other)
     
-    def resolve_anaphora(self, trail=[]):
-        return self
-
+    def applyto(self, other):
+        if not isinstance(other, list):
+            other = [other]
+        return DrtApplicationExpression(self, other)
+    
+    def __neg__(self):
+        return DrtNegatedExpression(self)
+    
     def negate(self):
-        if isinstance(self, AbstractDRS):
-            return ApplicationDrs(DrsOperator('not'), self)
-        else:
-            return ApplicationExpression(FolOperator('not'), self)
-        
-class VariableBinderExpression(Expression, logic.VariableBinderExpression):
-    """A variable binding expression: e.g. \\x.M."""
+        return -self
 
-    # for generating "unique" variable names during alpha conversion.
-    _counter = Counter()
-
-    def resolve_anaphora(self, trail=[]):
-        return self.__class__(self.variable, self.term.resolve_anaphora(trail + [self]))
-
-    def toFol(self):
-        return self.__class__(self.variable, self.term.toFol())
-
-class LambdaExpression(VariableBinderExpression, logic.LambdaExpression):
-    pass
-
-class SomeExpression(VariableBinderExpression, logic.SomeExpression):
-    pass
-
-class AllExpression(VariableBinderExpression, logic.AllExpression):
-    pass
-
-class Variable(logic.Variable):
-    pass
-
-class VariableExpression(Expression, logic.VariableExpression):
-    pass
-
-class Constant(logic.Constant):
-    pass
-
-class ConstantExpression(Expression, logic.ConstantExpression):
-    pass
-
-class IndVariableExpression(VariableExpression, logic.IndVariableExpression):
-    pass 
-
-class FolOperator(ConstantExpression, logic.Operator):
-    pass
-
-class AbstractDRS(Expression):
-    """A Discourse Representation Structure."""
-    def __init__(self):
-        Expression.__init__(self)
-        if self.__class__ is AbstractDRS:
-            raise NotImplementedError
-        self._size = None
-    
-    def __add__(self, other):
-        raise NotImplementedError
-        
-    def replace(self, variable, expression, replace_bound=False):
-        raise NotImplementedError
-
-    def free(self):
-        raise NotImplementedError
-
-    def get_refs(self):
-        return []
-
-    def simplify(self):
-        raise NotImplementedError
-    
-    def infixify(self):
-        raise NotImplementedError
-    
-    def __repr__(self):
-        raise NotImplementedError
-
-    def __str__(self):
-        raise NotImplementedError
-    
-    def toFol(self):
-        raise NotImplementedError
-    
-    def tp_equals(self, other):
-        '''
-        Pass the expression (self <-> other) to the theorem prover.   
-        If the prover says it is valid, then the self and other are equal.
-        '''
-        assert isinstance(self, AbstractDRS)
-        assert isinstance(other, AbstractDRS)
+    def tp_equals(self, other, prover_name='tableau'):
+        """Pass the expression (self <-> other) to the theorem prover.   
+        If the prover says it is valid, then the self and other are equal."""
+        assert isinstance(other, AbstractDrs)
         
         from nltk.inference import inference
         f1 = self.simplify().toFol();
         f2 = other.simplify().toFol();
-        bicond = ApplicationExpression(ApplicationExpression(FolOperator('iff'), f1), f2)
-        return inference.get_prover(bicond).prove()
-
-    def draw(self, x=3, y=3, canvas=None, use_parens=None):
-        raise NotImplementedError
-
-    def get_drawing_size(self, canvas=None, use_parens=None):
-        raise NotImplementedError
-
-class DRS(AbstractDRS):
-    # for generating "unique" variable names during alpha conversion.
-    _counter = Counter()
-
-    """A Discourse Representation Structure."""
-    def __init__(self, refs, conds):
-        AbstractDRS.__init__(self)
-        self.refs = refs   # a list of Variables
-        self.conds = conds # a list of Expressions, DRSs, and DRS_concs
+        return f1.tp_equals(f2, prover_name)
 
     def __add__(self, other):
         """DRS Concatenation"""
-        assert isinstance(other, DRS)
-        return ConcatenationDRS(ApplicationDRS(DrsOperator(Tokens.DRS_CONC), self), other)
+        return ConcatenationDRS(self, other)
     
+    def get_pronoun_token(self):
+        return Tokens.PRONOUN
+
+    def draw(self):
+        DrsDrawer(self).draw()
+
+class DRS(AbstractDrs, logic.Expression, RA.DRS):
+    """A Discourse Representation Structure."""
+    def __init__(self, refs, conds):
+        """
+        @param refs: C{list} of C{DrtVariableExpression} for the discourse referents
+        @param conds: C{list} of C{Expression} for the conditions
+        """ 
+        self.refs = refs
+        self.conds = conds
+
     def replace(self, variable, expression, replace_bound=False):
         """Replace all instances of variable v with expression E in self,
         where v is free in self."""
-        r_refs = [] #the list of refs after replacements
-        r_conds = [cond for cond in self.conds]
-        for ref in self.refs:
-            if ref.variable in expression.free():
-                v = Variable('z' + str(self._counter.get())) #get a new var name
-                r_conds = [cond.replace(ref.variable, VariableExpression(v), True) for cond in r_conds] #replace every instance of 'ref' with 'v' in every condition
-                r_refs.append(VariableExpression(v)) #add the new ref ('v') to the list
-            else:
-                r_refs.append(ref) #no replacement needed; add the ref to the list
-        #===============================================================================
-        # Alpha convert variables that appear on the left side of an implication.  This special processing is
-        # required because referents on the left side of an implication are accessable to the right
-        #===============================================================================
-        for cond in r_conds:
-            if isinstance(cond, ApplicationDRS) and isinstance(cond.first, ApplicationDRS) and isinstance(cond.first.first, DrsOperator) and cond.first.first.operator == 'implies':
-                for ref in cond.first.second.get_refs():
-                    if ref.variable in expression.free():
-                        r_conds.remove(cond)
-                        v = Variable('z' + str(self._counter.get())) #get a new var name
-                        r_conds.append(cond.replace(ref.variable, VariableExpression(v), True)) #replace every instance of 'ref' with 'v' in the condition
-        if replace_bound:
-            try:
-                r_refs.remove(IndVariableExpression(variable))
-                r_refs.append(expression)
-            except ValueError: pass
-        r_conds = [cond.replace(variable, expression, replace_bound) for cond in r_conds] #replace 'variable' with 'expression' in each condition
-        return DRS(r_refs, r_conds)
+        try:
+            #if a bound variable is the thing being replaced
+            i = self.refs.index(variable)
+            if not replace_bound:
+                return self
+            else: 
+                return DRS(self.refs[:i]+[expression]+self.refs[i+1:],
+                           [cond.replace(variable, expression, True) for cond in self.conds])
+        except ValueError:
+            #variable not bound by this DRS
+            
+            # any bound variable that appears in the expression must
+            # be alpha converted to avoid a conflict
+            for ref in (set(self.refs) & expression.free()):
+                newvar = unique_variable()
+                i = self.refs.index(ref)
+                self = DRS(self.refs[:i]+[newvar]+self.refs[i+1:],
+                           [cond.replace(ref, newvar, True) for cond in self.conds])
+                
+            #replace in the conditions
+            return DRS(self.refs,
+                       [cond.replace(variable, expression, replace_bound) 
+                        for cond in self.conds])
 
     def free(self):
         conds_free = set()
         for cond in self.conds:
-            conds_free = conds_free.union(cond.free())
-        refs_set = set([ref.variable for ref in self.refs])
-        return conds_free #.difference(refs_set)
+            conds_free |= cond.free()
+        refs_set = set(self.refs)
+        return conds_free - refs_set
 
     def get_refs(self):
         return self.refs
     
-    def resolve_anaphora(self, trail=[]):
-        r_conds = []
-        for cond in self.conds:
-            r_cond = cond.resolve_anaphora(trail + [self])
-            
-            # if the condition is of the form '(x = [])' then do not include it
-            if not DRS._isNullResolution(r_cond):
-                r_conds.append(r_cond)
-                
-        return self.__class__(self.refs, r_conds)
-    
-    def _isNullResolution(self):
-        return isinstance(self, ApplicationExpression) and \
-               isinstance(self.first, ApplicationExpression) and \
-               isinstance(self.first.first, FolOperator) and \
-               self.first.first.operator == Tokens.EQ and \
-               ((isinstance(self.second, PossibleAntecedents) and not self.second) or \
-                (isinstance(self.first.second, PossibleAntecedents) and not self.first.second))
-
-    _isNullResolution = staticmethod(_isNullResolution)
-
     def simplify(self):
         r_refs = [ref.simplify() for ref in self.refs]
         r_conds = [cond.simplify() for cond in self.conds]
-        return DRS(r_refs, r_conds)
-    
-    def infixify(self):
-        r_refs = [ref.infixify() for ref in self.refs]
-        r_conds = [cond.infixify() for cond in self.conds]
         return DRS(r_refs, r_conds)
     
     def toFol(self):
@@ -218,677 +117,109 @@ class DRS(AbstractDRS):
             if not accum:
                 accum = cond.toFol()
             else:
-                accum = ApplicationExpression( ApplicationExpression(FolOperator('and'), cond.toFol()), accum) 
+                accum = AndExpression(cond.toFol(), accum) 
 
         for ref in self.refs[::-1]:
-            accum = SomeExpression(ref.variable, accum)
+            accum = ExistsExpression(ref, accum)
         
         return accum
     
-    def __repr__(self):
-        accum = '%s([' % (Tokens.DRS)
-        first = True
-        for ref in self.refs:
-            if not first:
-                accum += ','
-            else:
-                first = False
-            accum += ref.__str__()
-        accum += '],['
-        first = True
-        for cond in self.conds:
-            if not first:
-                accum += ','
-            else:
-                first = False
-            accum += cond.__str__()
-        accum += '])'
-        return accum
-
+    def __eq__(self, other):
+        return isinstance(other, DRS) and \
+                self.refs == other.refs and self.conds == other.conds
+    
     def __str__(self):
-        return self.__repr__()
+        return Tokens.DRS + '([' + ','.join([str(ref) for ref in self.refs]) + \
+               '],[' + ', '.join([str(cond) for cond in self.conds]) + '])'
 
-    def draw(self, x=3, y=3, canvas=None, use_parens=None): #args define the top-left corner of the box
-        if not canvas:
-            canvas = init_canvas(self)
-        if not self._size:
-            self.get_drawing_size(canvas, use_parens)
-            
-        text_height = canvas.font.metrics("linespace")
-        x_current = x+canvas._BUFFER #indent the left side
-        y_current = y+canvas._BUFFER #indent the top
-        
-        ######################################
-        # Draw Discourse Referents
-        ######################################
-        text = ''
-        first = True
-        for ref in self.refs:
-            if not first:
-                text += ', '
-            else:
-                first = False
-            text += str(ref.variable)
-        canvas.create_text(x_current, y_current, anchor='nw', font=canvas.font, text=text)
-        max_width = canvas.font.measure(text)
-        y_current += text_height+canvas._BUFFER
-        horiz_line_y = y_current
-        y_current += canvas._BUFFER
-
-        ######################################
-        # Draw Conditions
-        ######################################
-        for cond in self.conds:
-            if isinstance(cond, AbstractDRS) or isinstance(cond, ApplicationExpression):
-                bottom_right_corner = cond.draw(x_current, y_current, canvas)
-                max_width = max(max_width, bottom_right_corner[0]-x_current)
-                y_current = bottom_right_corner[1]+canvas._BUFFER
-            else:
-                text = str(cond)
-                canvas.create_text(x_current, y_current, anchor='nw', font=canvas.font, text=text)
-                max_width = max(max_width, canvas.font.measure(text))
-                y_current += text_height+canvas._BUFFER
-
-        ######################################
-        # Draw Box
-        ######################################
-        x_current = x+max_width+canvas._BUFFER*2
-        if (y_current - horiz_line_y) < text_height:
-            y_current += text_height
-        canvas.create_rectangle(x, y, x_current, y_current)
-        canvas.create_line(x, horiz_line_y, x_current, horiz_line_y)
-
-        return (x_current, y_current)
-
-    def get_drawing_size(self, canvas=None, use_parens=None): 
-        if not canvas:
-            canvas = init_canvas(self)
-
-        text_height = canvas.font.metrics("linespace")
-        x_current = canvas._BUFFER #indent the left side
-        y_current = canvas._BUFFER #indent the top
-        
-        ######################################
-        # Draw Discourse Referents
-        ######################################
-        text = ''
-        first = True
-        for ref in self.refs:
-            if not first:
-                text += ', '
-            else:
-                first = False
-            text += str(ref.variable)
-        max_width = canvas.font.measure(text)
-        y_current += text_height+canvas._BUFFER
-        horiz_line_y = y_current
-        y_current += canvas._BUFFER
-
-        ######################################
-        # Draw Conditions
-        ######################################
-        for cond in self.conds:
-            if isinstance(cond, AbstractDRS) or isinstance(cond, ApplicationExpression):
-                cond_size = cond.get_drawing_size(canvas)
-                max_width = max(max_width, cond_size[0])
-                y_current += cond_size[1]+canvas._BUFFER
-            else:
-                text = str(cond)
-                max_width = max(max_width, canvas.font.measure(text))
-                y_current += text_height+canvas._BUFFER
-
-        ######################################
-        # Draw Box
-        ######################################
-        x_current = max_width+canvas._BUFFER*2
-        if (y_current - horiz_line_y) < text_height:
-            y_current += text_height
-
-        self._size = (x_current, y_current)
-        return self._size
-
-class DRSVariable(AbstractDRS):
-    """A Variable DRS which consists solely of a variable."""
-    def __init__(self, variable):
-        AbstractDRS.__init__(self)
-        assert isinstance(variable, Variable)
-        self.variable = variable
-
-    def variables(self):
-        return set([self.variable])
-
-    def free(self):
-        return set([self.variable])
-
-    def subterms(self):
-        return set([self])
-
-    def replace(self, variable, expression, replace_bound=False):
-        if self.variable == variable:
-            return expression
-        else:
-            return self
-        
-    def simplify(self):
-        return self
-
-    def infixify(self):
-        return self
-
-    def name(self):
-        return self.__str__()
-
-    def _skolemise(self, bound_vars, counter):
-        return self
-
-    def __str__(self): return '%s' % self.variable
-    
+class DrtVariableExpression(AbstractDrs, logic.VariableExpression, RA.VariableExpression):
     def toFol(self):
-        return VariableExpression(self.variable)
-
-    def __repr__(self): return "DRSVariable('%s')" % self.variable
-
-    def __hash__(self): return hash(repr(self))
-
-    def draw(self, x=3, y=3, canvas=None, use_parens=None): #args define the top-left corner of the box
-        if not canvas:
-            canvas = init_canvas(self)
-        if not self._size:
-            self.get_drawing_size(canvas, use_parens)
-        text_height = canvas.font.metrics("linespace")
-
-        canvas.create_text(x, y, anchor='nw', font=canvas.font, text=self.variable)
-        return (x+canvas.font.measure(self.variable), y+text_height)
-       
-    def get_drawing_size(self, canvas=None, use_parens=None): #args define the top-left corner of the box
-        if not canvas:
-            canvas = init_canvas(self)
-        text_height = canvas.font.metrics("linespace")
-
-        self._size = (canvas.font.measure(self.variable), text_height)
-        return self._size
-       
-
-class LambdaDRS(AbstractDRS):
-    """A lambda expression: \\x.M."""
-    PREFIX = '\\'
-
-    def __init__(self, variable, term):
-        AbstractDRS.__init__(self)
-        assert isinstance(variable, Variable)
-        assert isinstance(term, AbstractDRS)
-        self.variable = variable
-        self.term = term
-        self.prefix = self.__class__.PREFIX.rstrip()
-        self.binder = (self.prefix, self.variable.name)
-        self.body = str(self.term)
-
-    def _relabel(self, other):
-        """
-        Relabel C{other}'s bound variables to be the same as C{self}'s
-        variable.
-        """
-        var = VariableExpression(self.variable)
-        return other.term.replace(other.variable, var)
-
-    def applyto(self, other):
-        return ApplicationDRS(self, other)
-
-    def variables(self):
-        return set([self.variable]).union(self.term.variables())
-
-    def free(self):
-        return self.term.free().difference(set([self.variable]))
-
-    def subterms(self):
-        return self.term.subterms().union([self])
-
-    def replace(self, variable, expression, replace_bound=False):
-        if self.variable == variable:
-            return self
-        if self.variable in expression.free():
-            v = 'z' + str(DRS._counter.get())
-            self = self.alpha_convert(Variable(v))
-        return self.__class__(self.variable, self.term.replace(variable, expression, replace_bound))
-                               
-
-    def alpha_convert(self, newvar):
-        """
-        Rename all occurrences of the variable introduced by this variable
-        binder in the expression to @C{newvar}.
-        """
-        term = self.term.replace(self.variable, VariableExpression(newvar))
-        return self.__class__(newvar, term)
-
-    def resolve_anaphora(self, trail=[]):
-        return self.__class__(self.variable, self.term.resolve_anaphora(trail + [self]))
-
-    def simplify(self):
-        return self.__class__(self.variable, self.term.simplify())
-
-    def infixify(self):
-        return self.__class__(self.variable, self.term.infixify())
-    
-    def toFol(self):
-        return LambdaExpression(self.variable, self.term.toFol())
-
-    def __str__(self, continuation=0):
-        # Print \x.\y.M as \x y.M.
-        if continuation:
-            prefix = ' '
-        else:
-            prefix = self.__class__.PREFIX
-        if self.term.__class__ == self.__class__:
-            return '%s%s%s' % (prefix, self.variable, self.term.__str__(1))
-        else:
-            return '%s%s.%s' % (prefix, self.variable, self.term)
-
-    def __hash__(self):
-        return hash(repr(self))
-
-    def _skolemise(self, bound_vars, counter):
-        bv = bound_vars.copy()
-        bv.add(self.variable)
-        return self.__class__(self.variable, self.term._skolemise(bv, counter))
-
-    def __repr__(self):
-        return "LambdaDRS('%s', '%s')" % (self.variable, self.term)
-
-    def draw(self, x=3, y=3, canvas=None, use_parens=None): #args define the top-left corner of the box
-        if not canvas:
-            canvas = init_canvas(self)
-        if not self._size:
-            self.get_drawing_size(canvas, use_parens)
-        text_height = canvas.font.metrics("linespace")
-        
-        # Get Variable Info
-        text = '%s%s' % (self.__class__.PREFIX, self.variable)
-        drs = self.term
-        while isinstance(drs, LambdaDRS):
-            text += ' %s' % drs.variable
-            drs = drs.term
-        text += Tokens.DOT
-        variables_width = canvas.font.measure(text)
-
-        # Draw Term (first, so that we know where to place the variable)
-        bottom_right_corner = drs.draw(x+variables_width, y, canvas)
-        # Draw Variables
-        canvas.create_text(x, y+(bottom_right_corner[1]-y)/2, anchor='w', font=canvas.font, text=text)
-
-        return bottom_right_corner
-
-    def get_drawing_size(self, canvas=None, use_parens=None): #args define the top-left corner of the box
-        if not canvas:
-            canvas = init_canvas(self)
-        text_height = canvas.font.metrics("linespace")
-        
-        text = '%s%s' % (self.__class__.PREFIX, self.variable)
-        drs = self.term
-        while isinstance(drs, LambdaDRS):
-            text += ' %s' % self.variable
-            drs = drs.term
-        text += Tokens.DOT
-        variables_width = canvas.font.measure(text)
-
-        size = drs.get_drawing_size(canvas)
-        
-        self._size = (size[0]+variables_width, size[1])
-        return self._size
-
-class DrsOperator(AbstractDRS):
-    """
-    A boolean operator, such as 'not' or 'and', or the equality
-    relation ('=').
-    """
-    def __init__(self, operator):
-        AbstractDRS.__init__(self)
-        assert operator in Tokens.DRS_OPS
-        self.constant = operator
-        self.operator = operator
-
-    def replace(self, variable, expression, replace_bound=False):
-        return self
-
-    def free(self):
-        return set()
-
-    def simplify(self):
-        return self
-
-    def infixify(self):
         return self
     
-    def toFol(self):
-        return FolOperator(self.operator)
-
-    def __str__(self): return '%s' % self.operator
-
-    def __repr__(self): return "DrsOperator('%s')" % self.operator
-
-    def draw(self, x=3, y=3, canvas=None, use_parens=None): #args define the top-left corner of the box
-        if not canvas:
-            canvas = init_canvas(self)
-        if not self._size:
-            self.get_drawing_size(canvas, use_parens)
-        text_height = canvas.font.metrics("linespace")
-
-        canvas.create_text(x, y, anchor='nw', font=canvas.font, text=self.operator)
-        return (x+canvas.font.measure(self.operator), y+text_height)
-       
-    def get_drawing_size(self, canvas=None, use_parens=None): #args define the top-left corner of the box
-        if not canvas:
-            canvas = init_canvas(self)
-        self._size = (canvas.font.measure(self.operator), canvas.font.metrics("linespace"))
-        return self._size
-       
-class ApplicationDRS(AbstractDRS):
-    """An application expression: (M N)."""
-    def __init__(self, first, second):
-        AbstractDRS.__init__(self)
-        first_simp = first.simplify()
-        assert isinstance(first, AbstractDRS)
-        if not (isinstance(first_simp, LambdaDRS) or \
-                isinstance(first_simp, DRSVariable) or \
-                isinstance(first_simp, ApplicationDRS)):
-            assert isinstance(second, AbstractDRS)
-        self.first = first
-        self.second = second
-
-    def variables(self):
-        return self.first.variables().union(self.second.variables())
-
-    def free(self):
-        return self.first.free().union(self.second.free())
-
-    def _functor(self):
-        if isinstance(self.first, ApplicationDRS):
-            return self.first._functor()
-        else:
-            return self.first
-
-    fun = property(_functor,
-                   doc="Every ApplicationDRS has a functor.")
-
-
-    def _operator(self):
-        functor = self._functor()
-        if isinstance(functor, DrsOperator):
-            return str(functor)
-        else: 
-            raise AttributeError
-
-    op = property(_operator,
-                  doc="Only some ApplicationDRSs have operators." )
-
-    def _arglist(self):
-        """Uncurry the argument list."""
-        arglist = [str(self.second)]
-        if isinstance(self.first, ApplicationDRS):
-            arglist.extend(self.first._arglist())
-        return arglist
-
-    def _args(self):
-        arglist = self._arglist()
-        arglist.reverse()
-        return arglist
-
-    args = property(_args,
-                   doc="Every ApplicationDRS has args.")
-
-    def subterms(self):
-        first = self.first.subterms()
-
-        second = self.second.subterms()
-        return first.union(second).union(set([self]))
-
-    def replace(self, variable, expression, replace_bound=False):
-        return self.__class__(self.first.replace(variable, expression, replace_bound),\
-                              self.second.replace(variable, expression, replace_bound))
-
     def get_refs(self):
-        first = self.first.simplify()
-        if isinstance(first, DrsOperator) and first.operator == Tokens.DRS_CONC:
-            second = self.second.simplify()
-            refs = second.get_refs()
-            return refs
-        else:
-            return []
+        return []
 
-    def resolve_anaphora(self, trail=[]):
-        trail_addition = [self]
-        if isinstance(self.first, ApplicationDRS) \
-                and isinstance(self.first.first, DrsOperator) \
-                and self.first.first.operator == 'implies':
-            trail_addition.append(self.first.second)
-
-        r_first = self.first.resolve_anaphora(trail + trail_addition)
-        r_second = self.second.resolve_anaphora(trail + trail_addition)
-        return self.__class__(r_first, r_second)
-
-    def simplify(self):
-        first = self.first.simplify()
-        second = self.second.simplify()
-        if isinstance(first, LambdaDRS):
-            variable = first.variable
-            term = first.term
-            return term.replace(variable, second).simplify()
-        else:
-            return self.__class__(first, second)
-
-    def infixify(self):
-        first = self.first.infixify()
-        second = self.second.infixify()
-        if isinstance(first, DrsOperator) and not str(first) == 'not':
-            return self.__class__(second, first)
-        else:
-            return self.__class__(first, second)    
-        
+class DrtNegatedExpression(AbstractDrs, logic.NegatedExpression, RA.NegatedExpression):
     def toFol(self):
-        if isinstance(self.first, ApplicationDRS) \
-                and isinstance(self.first.first, DrsOperator) \
-                and self.first.first.operator == 'implies':
-            first_drs = self.first.second
-            second_drs = self.second
+        return logic.NegatedExpression(self.term.toFol())
 
-            accum = None
+class DrtLambdaExpression(AbstractDrs, logic.LambdaExpression, RA.LambdaExpression):
+    def toFol(self):
+        return logic.LambdaExpression(self.variable, self.term.toFol())
+
+class DrtOrExpression(AbstractDrs, logic.ImpExpression):
+    def toFol(self):
+        return logic.OrExpression(self.first.toFol(), self.second.toFol())
+
+class DrtImpExpression(AbstractDrs, logic.ImpExpression, RA.ImpExpression):
+    def get_refs(self):
+        return []
+
+    def toFol(self):
+        first_drs = self.first
+        second_drs = self.second
+
+        accum = None
             
-            for cond in first_drs.conds[::-1]:
-                if not accum:
-                    accum = cond.toFol()
-                else:
-                    accum = ApplicationExpression(ApplicationExpression(FolOperator('and'), cond.toFol()), accum) 
+        for cond in first_drs.conds[::-1]:
+            if not accum:
+                accum = cond.toFol()
+            else:
+                accum = AndExpression(cond.toFol(), accum) 
    
-            accum = ApplicationExpression(ApplicationExpression(FolOperator('implies'), accum ), second_drs.toFol())
+        accum = logic.ImpExpression(accum, second_drs.toFol())
     
-            for ref in first_drs.refs[::-1]:
-                accum = AllExpression(ref.variable, accum)
+        for ref in first_drs.refs[::-1]:
+            accum = AllExpression(ref, accum)
             
-            return accum
-        
-        else:    
-            return ApplicationExpression(self.first.toFol(), self.second.toFol())
+        return accum
 
-    def _skolemise(self, bound_vars, counter):
-        first = self.first._skolemise(bound_vars, counter)
-        second = self.second._skolemise(bound_vars, counter)
-        return self.__class__(first, second)
+class DrtIffExpression(AbstractDrs, logic.IffExpression, RA.IffExpression):
+    def toFol(self):
+        return logic.IffExpression(self.first.toFol(), self.second.toFol())
 
-    def __str__(self):
-        # Print ((M N) P) as (M N P).
-        strFirst = str(self.first)
-        if isinstance(self.first, ApplicationDRS) and \
-           not isinstance(self.second, DrsOperator):
-            strFirst = strFirst[1:-1]
-        return '(%s %s)' % (strFirst, self.second)
+class DrtEqualityExpression(AbstractDrs, logic.EqualityExpression, RA.EqualityExpression):
+    def toFol(self):
+        return logic.EqualityExpression(self.first.toFol(), self.second.toFol())
 
-    def __repr__(self): return "ApplicationDRS('%s', '%s')" % (self.first, self.second)
-
-    def __hash__(self): return hash(repr(self))
-
-    def draw(self, x=3, y=3, canvas=None, use_parens=True): #args define the top-left corner of the box
-        if not canvas:
-            canvas = init_canvas(self)
-        if not self._size:
-            self.get_drawing_size(canvas, use_parens)
-
-        ######################################
-        # Get sizes of 'first' and 'second'
-        ######################################
-        if isinstance(self.first, AbstractDRS):
-            first_size = self.first._size
-        else:
-            first_size = (canvas.font.measure(self.first), canvas.font.metrics("linespace"))
-            
-        if isinstance(self.second, AbstractDRS):
-            second_size = self.second._size
-        else:
-            second_size = (canvas.font.measure(self.second), canvas.font.metrics("linespace"))
-            
-        max_height = max(first_size[1], second_size[1])
-
-        if (isinstance(self.first, ApplicationDRS) or isinstance(self.first, ApplicationExpression)) and \
-           not isinstance(self.second, DrsOperator):
-            first_use_parens = False
-        else:
-            first_use_parens = True
-
-        x_current = x
-
-        if use_parens:
-            #Draw Open Paren
-            y_current = y+(max_height-canvas.font.metrics("linespace"))/2
-            canvas.create_text(x_current, y_current, anchor='nw', font=canvas.font, text=Tokens.OPEN_PAREN)
-            x_current += canvas.font.measure(Tokens.OPEN_PAREN)
-
-        ######################################
-        # Handle 'first'
-        ######################################
-        y_current = y+(max_height-first_size[1])/2
-        if isinstance(self.first, AbstractDRS):
-            first_bottom_right_corner = self.first.draw(x_current, y_current, canvas, first_use_parens)
-        else:
-            text = str(self.first)
-            if not first_use_parens:
-                text = text[1:-1]
-            canvas.create_text(x_current, y_current, anchor='nw', font=canvas.font, text=text)
-            first_bottom_right_corner = (x_current+canvas.font.measure(text), y_current+canvas.font.metrics("linespace"))
-
-        #Put a space between 'first' and 'second'
-        x_current = first_bottom_right_corner[0] + canvas.font.measure(' ')
-
-        ######################################
-        # Handle 'second'
-        ######################################
-        y_current = y+(max_height-second_size[1])/2
-        if isinstance(self.second, AbstractDRS):
-            second_bottom_right_corner = self.second.draw(x_current, y_current, canvas)
-        else:
-            canvas.create_text(x_current, y_current, anchor='nw', font=canvas.font, text=self.second)
-            second_bottom_right_corner = (x_current+canvas.font.measure(self.second), y_current+canvas.font.metrics("linespace"))
-
-        x_current = second_bottom_right_corner[0]
-
-        if use_parens:
-            canvas.create_text(x_current, y+(max_height-canvas.font.metrics("linespace"))/2, anchor='nw', font=canvas.font, text=Tokens.CLOSE_PAREN)
-            x_current += canvas.font.measure(Tokens.CLOSE_PAREN)
-
-        return (x_current, y+max_height)
-
-    def get_drawing_size(self, canvas=None, use_parens=True): #args define the top-left corner of the box
-        if not canvas:
-            canvas = init_canvas(self)
-
-        ######################################
-        # Get sizes of 'first' and 'second'
-        ######################################
-        if isinstance(self.first, AbstractDRS):
-            first_size = self.first.get_drawing_size(canvas)
-        else:
-            first_size = (canvas.font.measure(self.first), canvas.font.metrics("linespace"))
-            
-        if isinstance(self.second, AbstractDRS):
-            second_size = self.second.get_drawing_size(canvas)
-        else:
-            second_size = (canvas.font.measure(self.second), canvas.font.metrics("linespace"))
-            
-        max_height = max(first_size[1], second_size[1])
-
-        if (isinstance(self.first, ApplicationDRS) or isinstance(self.first, ApplicationExpression)) and \
-           not isinstance(self.second, DrsOperator):
-            first_use_parens = False
-        else:
-            first_use_parens = True
-
-        x_current = 0
-
-        if use_parens:
-            #Draw Open Paren
-            y_current = (max_height-canvas.font.metrics("linespace"))/2
-            canvas.create_text(x_current, y_current, anchor='nw', font=canvas.font, text=Tokens.OPEN_PAREN)
-            x_current += canvas.font.measure(Tokens.OPEN_PAREN)
-
-        ######################################
-        # Handle 'first'
-        ######################################
-        y_current = (max_height-first_size[1])/2
-        if isinstance(self.first, AbstractDRS):
-            first_bottom_right_corner = (x_current+self.first._size[0], y_current+self.first._size[1])
-        else:
-            text = str(self.first)
-            if not first_use_parens:
-                text = text[1:-1]
-            first_bottom_right_corner = (x_current+canvas.font.measure(text), y_current+canvas.font.metrics("linespace"))
-
-        #Put a space between 'first' and 'second'
-        x_current = first_bottom_right_corner[0] + canvas.font.measure(' ')
-
-        ######################################
-        # Handle 'second'
-        ######################################
-        y_current = (max_height-second_size[1])/2
-        if isinstance(self.second, AbstractDRS):
-            second_bottom_right_corner = (x_current+self.second._size[0], y_current+self.second._size[1])
-        else:
-            second_bottom_right_corner = (x_current+canvas.font.measure(self.second), y_current+canvas.font.metrics("linespace"))
-
-        if use_parens:
-            x_current = second_bottom_right_corner[0]
-            x_current += canvas.font.measure(Tokens.CLOSE_PAREN)
-
-        self._size = (x_current, max_height)
-        return self._size
-
-class ConcatenationDRS(ApplicationDRS):
+class ConcatenationDRS(AbstractDrs, logic.BooleanExpression, RA.ConcatenationDRS):
     """DRS of the form '(DRS + DRS)'"""
-    def __init__(self, first, second):
-        AbstractDRS.__init__(self)
-        first_simp = first.simplify()
-        second_simp = second.simplify()
-        assert (isinstance(first, ApplicationDRS) and isinstance(first_simp.first, DrsOperator) and first_simp.first.operator == Tokens.DRS_CONC and isinstance(second, AbstractDRS)) or \
-               (isinstance(first, ApplicationDRS) and isinstance(first_simp.second, DrsOperator) and first_simp.second.operator == Tokens.DRS_CONC and isinstance(second, AbstractDRS))
-        self.first = first
-        self.second = second
-
     def replace(self, variable, expression, replace_bound=False):
         """Replace all instances of variable v with expression E in self,
         where v is free in self."""
         first = self.first
         second = self.second
-        all_refs = self.get_refs()
-        for ref in all_refs: # for every ref, across the whole concatenation sequence
-            if ref.variable in expression.free():
-                v = VariableExpression(Variable('z' + str(DRS._counter.get()))) #get a new var name
-                first  = first.replace(ref.variable, v, True)
-                second = second.replace(ref.variable, v, True)
-        first  = first.replace(variable, expression, replace_bound)
-        second = second.replace(variable, expression, replace_bound)
+
+        # If variable is bound by both first and second 
+        if isinstance(first, DRS) and isinstance(second, DRS) and \
+           variable in (set(first.get_refs()) & set(second.get_refs())):
+            first  = first.replace(variable, expression, True)
+            second = second.replace(variable, expression, True)
+            
+        # If variable is bound by first
+        elif isinstance(first, DRS) and variable in first.refs:
+            if replace_bound: 
+                first  = first.replace(variable, expression, replace_bound)
+                second = second.replace(variable, expression, replace_bound)
+
+        # If variable is boudn by second
+        elif isinstance(second, DRS) and variable in second.refs:
+            if replace_bound:
+                first  = first.replace(variable, expression, replace_bound)
+                second = second.replace(variable, expression, replace_bound)
+
+        else:
+            # alpha convert every ref that is free in 'expression'
+            for ref in (set(self.get_refs()) & expression.free()): 
+                v = unique_variable()
+                first  = first.replace(ref, v, True)
+                second = second.replace(ref, v, True)
+
+            first  = first.replace(variable, expression, replace_bound)
+            second = second.replace(variable, expression, replace_bound)
+            
         return self.__class__(first, second)
     
-    def resolve_anaphora(self, trail=[]):
-        r_first = self.first.resolve_anaphora(trail + [self])
-        r_second = self.second.resolve_anaphora(trail + [self])
-        return self.__class__(r_first, r_second)
-
     def get_refs(self):
         return self.first.get_refs() + self.second.get_refs()
             
@@ -896,640 +227,443 @@ class ConcatenationDRS(ApplicationDRS):
         first = self.first.simplify()
         second = self.second.simplify()
 
-        if isinstance(first.second, DRS) and isinstance(second, DRS):
-            r_refs = first.second.refs + second.refs
-            r_conds = first.second.conds + second.conds
-            return DRS(r_refs, r_conds)
+        if isinstance(first, DRS) and isinstance(second, DRS):
+            # For any ref that is in both 'first' and 'second'
+            for ref in (set(first.refs) & set(second.refs)):
+                # alpha convert the ref in 'second' to prevent collision
+                second = second.replace(ref, unique_variable(), True)
+            
+            return DRS(first.refs + second.refs, first.conds + second.conds)
         else:
             return self.__class__(first,second)
         
-    def toFol(self):
-        return ApplicationExpression( ApplicationExpression(FolOperator('and'), self.first.second.toFol()), self.second.toFol())
+    def getOp(self):
+        return Tokens.DRS_CONC
         
-    def __repr__(self): return "ConcatenationDRS('%s', '%s')" % (self.first, self.second)
-
-    def draw(self, x=3, y=3, canvas=None, use_parens=True): #args define the top-left corner of the box
-        if not canvas:
-            canvas = init_canvas(self)
-        if not self._size:
-            self.get_drawing_size(canvas, use_parens)
-
-        first_size = self.first._size
-        second_size = self.second._size
-
-        max_height = max(first_size[1], second_size[1])
-
-        x_current = x
-        
-        if (isinstance(self.first, ApplicationDRS) or isinstance(self.first, ApplicationExpression)) and \
-           not isinstance(self.second, DrsOperator):
-            first_use_parens = False
-        else:
-            first_use_parens = True
-
-        if use_parens:
-            canvas.create_text(x_current, y+(first_size[1]-canvas.font.metrics("linespace"))/2, anchor='nw', font=canvas.font, text=Tokens.OPEN_PAREN)
-            x_current += canvas.font.measure(Tokens.OPEN_PAREN)
-
-        first_bottom_right_corner = self.first.draw(x_current, y + (max_height - first_size[1])/2, canvas, first_use_parens)
-        x_current = first_bottom_right_corner[0] + canvas.font.measure(' ')
-        second_bottom_right_corner = self.second.draw(x_current, y + (max_height - second_size[1])/2, canvas)
-        x_current = second_bottom_right_corner[0]
-
-        if use_parens:
-            canvas.create_text(x_current, y+(first_size[1]-canvas.font.metrics("linespace"))/2, anchor='nw', font=canvas.font, text=Tokens.CLOSE_PAREN)
-            x_current += canvas.font.measure(Tokens.CLOSE_PAREN)
-
-        return (x_current, max(first_bottom_right_corner[1], second_bottom_right_corner[1]))
-
-    def get_drawing_size(self, canvas=None, use_parens=True):
-        if not canvas:
-            canvas = init_canvas(self)
-
-        first_size = self.first._size
-        second_size = self.second._size
-
-        max_height = max(first_size[1], second_size[1])
-
-        if (isinstance(self.first, ApplicationDRS) or isinstance(self.first, ApplicationExpression)) and \
-           not isinstance(self.second, DrsOperator):
-            first_use_parens = False
-        else:
-            first_use_parens = True
-
-        x_current = 0
-
-        if use_parens:
-            x_current += canvas.font.measure(Tokens.OPEN_PAREN)
-
-        first_size = self.first.get_drawing_size(canvas, first_use_parens)
-        x_current += first_size[0] + canvas.font.measure(' ')
-        second_size = self.second._size
-        x_current += second_size[0]
-
-        if use_parens:
-            x_current += canvas.font.measure(Tokens.CLOSE_PAREN)
-
-        self._size = (x_current, max(first_size[1], second_size[1]))
-        return self._size
-
-class ApplicationExpression(Expression, logic.ApplicationExpression):
-    def _arglist(self):
-        """Uncurry the argument list."""
-        arglist = [self.second]
-        if isinstance(self.first, ApplicationExpression):
-            arglist.extend(self.first._arglist())
-        return arglist
-
-    def resolve_anaphora(self, trail=[]):
-        if isinstance(self.first, VariableExpression) and self.first.variable.name == Tokens.PRONOUN:
-            possible_antecedents = PossibleAntecedents()
-            for ancestor in trail:
-                if isinstance(ancestor, AbstractDRS):
-                    possible_antecedents.extend(ancestor.get_refs())
-        #===============================================================================
-        #   This line ensures that statements of the form ( x = x ) wont appear.
-        #   Possibly amend to remove antecedents with the wrong 'gender' 
-        #===============================================================================
-            possible_antecedents.remove(self.second)
-            if len(possible_antecedents) == 1:
-                eqalityExp = ApplicationExpression(ApplicationExpression(FolOperator(Tokens.EQ), self.second),possible_antecedents[0])
-            else:
-                eqalityExp = ApplicationExpression(ApplicationExpression(FolOperator(Tokens.EQ), self.second),possible_antecedents) 
-            return eqalityExp
-        else:
-            r_first = self.first.resolve_anaphora(trail + [self])
-            r_second = self.second.resolve_anaphora(trail + [self])
-            return self.__class__(r_first, r_second)
-
     def toFol(self):
-        return self.__class__(self.first.toFol(), self.second.toFol())
+        return AndExpression( self.first.toFol(), self.second.toFol() )
 
-    def draw(self, x=3, y=3, canvas=None, use_parens=True): #args define the top-left corner of the box
-        if not canvas:
-            canvas = init_canvas(self)
-        if not self._size:
-            self.get_drawing_size(canvas, use_parens)
+class DrtApplicationExpression(AbstractDrs, logic.ApplicationExpression, RA.ApplicationExpression):
+    def toFol(self):
+        return logic.ApplicationExpression(self.function.toFol(), 
+                                           [arg.toFol() for arg in self.args])
 
-        ######################################
-        # Get sizes of 'first' and 'second'
-        ######################################
-        if isinstance(self.first, AbstractDRS):
-            first_size = self.first._size
-        else:
-            first_size = (canvas.font.measure(self.first), canvas.font.metrics("linespace"))
-            
-        if isinstance(self.second, AbstractDRS):
-            second_size = self.second._size
-        else:
-            second_size = (canvas.font.measure(self.second), canvas.font.metrics("linespace"))
-            
-        max_height = max(first_size[1], second_size[1])
+    def get_refs(self):
+        return []
 
-        if (isinstance(self.first, ApplicationDRS) or isinstance(self.first, ApplicationExpression)) and \
-           not isinstance(self.second, DrsOperator):
-            first_use_parens = False
-        else:
-            first_use_parens = True
-
-        x_current = x
-
-        if use_parens:
-            #Draw Open Paren
-            y_current = y+(max_height-canvas.font.metrics("linespace"))/2
-            canvas.create_text(x_current, y_current, anchor='nw', font=canvas.font, text=Tokens.OPEN_PAREN)
-            x_current += canvas.font.measure(Tokens.OPEN_PAREN)
-
-        ######################################
-        # Handle 'first'
-        ######################################
-        y_current = y+(max_height-first_size[1])/2
-        if isinstance(self.first, AbstractDRS):
-            first_bottom_right_corner = self.first.draw(x_current, y_current, canvas, first_use_parens)
-        else:
-            text = str(self.first)
-            if not first_use_parens:
-                text = text[1:-1]
-            canvas.create_text(x_current, y_current, anchor='nw', font=canvas.font, text=text)
-            first_bottom_right_corner = (x_current+canvas.font.measure(text), y_current+canvas.font.metrics("linespace"))
-
-        #Put a space between 'first' and 'second'
-        x_current = first_bottom_right_corner[0] + canvas.font.measure(' ')
-
-        ######################################
-        # Handle 'second'
-        ######################################
-        y_current = y+(max_height-second_size[1])/2
-        if isinstance(self.second, AbstractDRS):
-            second_bottom_right_corner = self.second.draw(x_current, y_current, canvas)
-        else:
-            canvas.create_text(x_current, y_current, anchor='nw', font=canvas.font, text=self.second)
-            second_bottom_right_corner = (x_current+canvas.font.measure(self.second), y_current+canvas.font.metrics("linespace"))
-
-        x_current = second_bottom_right_corner[0]
-
-        if use_parens:
-            canvas.create_text(x_current, y+(max_height-canvas.font.metrics("linespace"))/2, anchor='nw', font=canvas.font, text=Tokens.CLOSE_PAREN)
-            x_current += canvas.font.measure(Tokens.CLOSE_PAREN)
-
-        return (x_current, y+max_height)
-
-    def get_drawing_size(self, canvas=None, use_parens=True): #args define the top-left corner of the box
-        if not canvas:
-            canvas = init_canvas(self)
-
-        ######################################
-        # Get sizes of 'first' and 'second'
-        ######################################
-        if isinstance(self.first, AbstractDRS):
-            first_size = self.first.get_drawing_size(canvas)
-        else:
-            first_size = (canvas.font.measure(self.first), canvas.font.metrics("linespace"))
-            
-        if isinstance(self.second, AbstractDRS):
-            second_size = self.second.get_drawing_size(canvas)
-        else:
-            second_size = (canvas.font.measure(self.second), canvas.font.metrics("linespace"))
-            
-        max_height = max(first_size[1], second_size[1])
-
-        if (isinstance(self.first, ApplicationDRS) or isinstance(self.first, ApplicationExpression)) and \
-           not isinstance(self.second, DrsOperator):
-            first_use_parens = False
-        else:
-            first_use_parens = True
-
-        x_current = 0
-
-        if use_parens:
-            #Draw Open Paren
-            y_current = (max_height-canvas.font.metrics("linespace"))/2
-            x_current += canvas.font.measure(Tokens.OPEN_PAREN)
-
-        ######################################
-        # Handle 'first'
-        ######################################
-        y_current = (max_height-first_size[1])/2
-        if isinstance(self.first, AbstractDRS):
-            first_bottom_right_corner = self.first.get_drawing_size(canvas, first_use_parens)
-        else:
-            text = str(self.first)
-            if not first_use_parens:
-                text = text[1:-1]
-            first_bottom_right_corner = (x_current+canvas.font.measure(text), y_current+canvas.font.metrics("linespace"))
-
-        #Put a space between 'first' and 'second'
-        x_current = first_bottom_right_corner[0] + canvas.font.measure(' ')
-
-        ######################################
-        # Handle 'second'
-        ######################################
-        y_current = (max_height-second_size[1])/2
-        if isinstance(self.second, AbstractDRS):
-            second_bottom_right_corner = self.second._size
-        else:
-            second_bottom_right_corner = (x_current+canvas.font.measure(self.second), y_current+canvas.font.metrics("linespace"))
-
-        if use_parens:
-            x_current = second_bottom_right_corner[0]
-            x_current += canvas.font.measure(Tokens.CLOSE_PAREN)
-
-        self._size = (x_current, max_height)
-        return self._size
-
-class PossibleAntecedents(list, Expression):
-    def variables(self):
-        """Set of all variables."""
-        raise NotImplementedError
-
-    def free(self):
-        """Set of free variables."""
-        return set(self)
-
-    def subterms(self):
-        """Set of all subterms (including self)."""
-        return set([self]) + set(self)
-
-    def replace(self, variable, expression, replace_bound=False):
-        """Replace all instances of variable v with expression E in self,
-        where v is free in self."""
-        result = PossibleAntecedents()
-        for item in self:
-            if item == variable:
-                self.append(expression)
-            else:
-                self.append(item)
-        return result
-    
-    def simplify(self):
-        return self
-
-    def infixify(self):
-        return self
-    
     def __str__(self):
-        result = '['
-        for item in self:
-            result += item.__str__() + ','
-        return result.rstrip(',') + ']'
+        function = str(self.function)
 
-class Tokens:
+        if isinstance(self.function, DrtLambdaExpression):
+            if isinstance(self.function.term, DrtApplicationExpression):
+                if not isinstance(self.function.term.function, DrtVariableExpression):
+                    function = Tokens.OPEN + function + Tokens.CLOSE
+            elif not isinstance(self.function.term, BooleanExpression) and \
+                 not isinstance(self.function.term, DRS):
+                function = Tokens.OPEN + function + Tokens.CLOSE
+                
+        return function + Tokens.OPEN + \
+               ','.join([str(arg) for arg in self.args]) + Tokens.CLOSE
+
+
+class DrsDrawer:
+    BUFFER = 3
+    
+    def __init__(self, drs, size_canvas=True, canvas=None):
+        """
+        @param drs: C{AbstractDrs}, The DRS to be drawn
+        @param size_canvas: C{boolean}, True if the canvas size should be the exact size of the DRS
+        @param canvas: C{Canvas} The canvas on which to draw the DRS.  If none is given, create a new canvas. 
+        """
+        master = None
+        if not canvas:
+            master = Tk()
+            master.title("DRT")
+    
+            font = Font(family='helvetica', size=12)
+            
+            if size_canvas:
+                canvas = Canvas(master, width=0, height=0)
+                canvas.font = font
+                self.canvas = canvas
+                (right, bottom) = self._visit(drs, self.BUFFER, self.BUFFER)
+                canvas = Canvas(master, width=max(right, 100), height=bottom)#, bg='white')
+            else:
+                canvas = Canvas(master, width=300, height=300)
+                
+            canvas.pack()
+            canvas.font = font
+
+        self.canvas = canvas
+        self.drs = drs
+        self.master = master
+        
+    def _get_text_height(self):
+        """Get the height of a line of text"""
+        return self.canvas.font.metrics("linespace")
+        
+    def draw(self, x=BUFFER, y=BUFFER):
+        """Draw the DRS"""
+        self._handle(self.drs, self._draw_command, x, y)
+
+        if self.master and not in_idle():
+            self.master.mainloop()
+        else:
+            return self._visit(self.drs, x, y)
+        
+    def _visit(self, expression, x, y):
+        """
+        Return the bottom-rightmost point without actually drawing the item
+        
+        @param item: the item to visit
+        @param x: the top of the current drawing area
+        @param y: the left side of the current drawing area
+        @return: the bottom-rightmost point
+        """
+        return self._handle(expression, self._visit_command, x, y)
+
+    def _draw_command(self, item, x, y):
+        """
+        Draw the given item at the given location
+        
+        @param item: the item to draw
+        @param x: the top of the current drawing area
+        @param y: the left side of the current drawing area
+        @return: the bottom-rightmost point 
+        """
+        if isinstance(item, str):
+            self.canvas.create_text(x, y, anchor='nw', font=self.canvas.font, text=item)
+        elif isinstance(item, tuple):
+            # item is the lower-right of a box
+            (right, bottom) = item
+            self.canvas.create_rectangle(x, y, right, bottom)
+            horiz_line_y = y + self._get_text_height() + (self.BUFFER * 2) #the line separating refs from conds
+            self.canvas.create_line(x, horiz_line_y, right, horiz_line_y)
+            
+        return self._visit_command(item, x, y)
+        
+    def _visit_command(self, item, x, y):
+        """
+        Return the bottom-rightmost point without actually drawing the item
+        
+        @param item: the item to visit
+        @param x: the top of the current drawing area
+        @param y: the left side of the current drawing area
+        @return: the bottom-rightmost point
+        """
+        if isinstance(item, str):
+            return (x + self.canvas.font.measure(item), y + self._get_text_height())
+        elif isinstance(item, tuple):
+            return item
+    
+    def _handle(self, expression, command, x=0, y=0):
+        """
+        @param expression: the expression to handle
+        @param command: the function to apply, either _draw_command or _visit_command
+        @param x: the top of the current drawing area
+        @param y: the left side of the current drawing area
+        @return: the bottom-rightmost point
+        """
+        if command == self._visit_command:
+            #if we don't need to draw the item, then we can use the cached values
+            try:
+                #attempt to retrieve cached values
+                right = expression._drawing_width + x
+                bottom = expression._drawing_height + y
+                return (right, bottom)
+            except AttributeError:
+                #the values have not been cached yet, so compute them
+                pass
+        
+        if isinstance(expression, DrtVariableExpression):
+            factory = self._handle_VariableExpression
+        elif isinstance(expression, DRS):
+            factory = self._handle_DRS
+        elif isinstance(expression, DrtNegatedExpression):
+            factory = self._handle_NegatedExpression
+        elif isinstance(expression, DrtLambdaExpression):
+            factory = self._handle_LambdaExpression
+        elif isinstance(expression, BooleanExpression):
+            factory = self._handle_BooleanExpression
+        elif isinstance(expression, DrtApplicationExpression):
+            factory = self._handle_ApplicationExpression
+        elif isinstance(expression, RA.PossibleAntecedents):
+            factory = self._handle_VariableExpression
+        else:
+            raise Exception, expression.__class__.__name__
+            
+        (right, bottom) = factory(expression, command, x, y)
+        
+        #cache the values
+        expression._drawing_width = right - x
+        expression._drawing_height = bottom - y
+            
+        return (right, bottom)
+
+    def _handle_VariableExpression(self, expression, command, x, y):
+        return command(str(expression), x, y)
+       
+    def _handle_NegatedExpression(self, expression, command, x, y):
+        # Find the width of the negation symbol
+        right = self._visit_command(Tokens.NOT[logic.n], x, y)[0]
+
+        # Handle term
+        (right, bottom) = self._handle(expression.term, command, right, y)
+
+        # Handle variables now that we know the y-coordinate
+        command(Tokens.NOT[logic.n], x, self._get_centered_top(y, bottom - y, self._get_text_height()))
+
+        return (right, bottom)
+       
+    def _handle_DRS(self, expression, command, x, y): 
+        left = x + self.BUFFER #indent the left side
+        bottom = y + self.BUFFER #indent the top
+        
+        # Handle Discourse Referents
+        if expression.refs:
+            refs = ' '.join([str(ref) for ref in expression.refs])
+        else:
+            refs = '     '
+        (max_right, bottom) = command(refs, left, bottom)
+        bottom += (self.BUFFER * 2)
+
+        # Handle Conditions
+        if expression.conds:
+            for cond in expression.conds:
+                (right, bottom) = self._handle(cond, command, left, bottom)
+                max_right = max(max_right, right)
+                bottom += self.BUFFER
+        else:
+            bottom += self._get_text_height() + self.BUFFER
+
+        # Handle Box
+        max_right += self.BUFFER
+        return command((max_right, bottom), x, y)
+
+    def _handle_ApplicationExpression(self, expression, command, x, y):
+        # Get the max bottom of any element on the line
+        function_bottom = self._visit(expression.function, x, y)[1]
+        max_bottom = max([function_bottom] + [self._visit(arg, x, y)[1] for arg in expression.args])
+            
+        line_height = max_bottom - y
+            
+        # Handle 'function'
+        function_drawing_top = self._get_centered_top(y, line_height, expression.function._drawing_height)
+        right = self._handle(expression.function, command, x, function_drawing_top)[0]
+        
+        # Handle open paren
+        centred_string_top = self._get_centered_top(y, line_height, self._get_text_height())
+        right = command(Tokens.OPEN, right, centred_string_top)[0]
+        
+        # Handle each arg
+        for (i,arg) in enumerate(expression.args):
+            arg_drawing_top = self._get_centered_top(y, line_height, arg._drawing_height)
+            right = self._handle(arg, command, right, arg_drawing_top)[0]
+            
+            if i+1 < len(expression.args):
+                #since it's not the last arg, add a comma
+                right = command(Tokens.COMMA + ' ', right, centred_string_top)[0]
+        
+        # Handle close paren
+        right = command(Tokens.CLOSE, right, centred_string_top)[0]
+        
+        return (right, max_bottom)
+
+    def _handle_LambdaExpression(self, expression, command, x, y):
+        # Find the width of the lambda symbol and abstracted variables
+        variables = Tokens.LAMBDA[logic.n] + str(expression.variable) + Tokens.DOT[logic.n]
+        right = self._visit_command(variables, x, y)[0]
+
+        # Handle term
+        (right, bottom) = self._handle(expression.term, command, right, y)
+
+        # Handle variables now that we know the y-coordinate
+        command(variables, x, self._get_centered_top(y, bottom - y, self._get_text_height()))
+
+        return (right, bottom)
+
+    def _handle_BooleanExpression(self, expression, command, x, y):
+        # Get the full height of the line, based on the operands
+        first_height = self._visit(expression.first, 0, 0)[1]
+        second_height = self._visit(expression.second, 0, 0)[1]
+        line_height = max(first_height, second_height)
+        
+        # Handle open paren
+        centred_string_top = self._get_centered_top(y, line_height, self._get_text_height())
+        right = command(Tokens.OPEN, x, centred_string_top)[0]
+        
+        # Handle the first operand
+        first_height = expression.first._drawing_height
+        (right, first_bottom) = self._handle(expression.first, command, right, self._get_centered_top(y, line_height, first_height))
+
+        # Handle the operator
+        right = command(' %s ' % expression.getOp(), right, centred_string_top)[0]
+        
+        # Handle the second operand
+        second_height = expression.second._drawing_height
+        (right, second_bottom) = self._handle(expression.second, command, right, self._get_centered_top(y, line_height, second_height))
+        
+        # Handle close paren
+        right = command(Tokens.CLOSE, right, centred_string_top)[0]
+        
+        return (right, max(first_bottom, second_bottom))
+
+    def _get_centered_top(self, top, full_height, item_height):
+        """Get the y-coordinate of the point that a figure should start at if
+        its height is 'item_height' and it needs to be centered in an area that
+        starts at 'top' and is 'full_height' tall."""
+        return top + (full_height - item_height) / 2
+
+
+class Tokens(logic.Tokens):
     DRS = 'DRS'
     DRS_CONC = '+'
-    LAMBDA = '\\'
-    DOT = '.'
-    COMMA = ','
-    OPEN_PAREN = '('
-    CLOSE_PAREN = ')'
+    PRONOUN = 'PRO'
     OPEN_BRACKET = '['
     CLOSE_BRACKET = ']'
-    DRS_OPS = ['or', 'not', 'implies', 'iff']
-    DRS_OPS.append(DRS_CONC)
-    EQ = '='
-    FOL_OPS = [EQ]
-    PRONOUN = 'PRO'
     
-class Parser:
+    PUNCT = [DRS_CONC, OPEN_BRACKET, CLOSE_BRACKET]
+    
+    SYMBOLS = logic.Tokens.SYMBOLS + PUNCT
+    
+    TOKENS = logic.Tokens.TOKENS + [DRS] + PUNCT
+    
+class DrtParser(LogicParser):
     """A lambda calculus expression parser."""
     
-    def __init__(self, data=None, constants=None):
-        if data is not None:
-            self.buffer = data
-            self.process()
-        else:
-            self.buffer = ''
-        if constants is not None:
-            self.constants = constants
-        else:
-            self.constants = []
-        
+    def __init__(self):
+        LogicParser.__init__(self)
 
-    def feed(self, data):
-        """Feed another batch of data to the parser."""
-        self.buffer += data
-        self.process()
+    def get_all_symbols(self):
+        """This method exists to be overridden"""
+        return Tokens.SYMBOLS
 
-    def parse(self, data):
-        """
-        Provides a method similar to other NLTK parsers.
+    def isvariable(self, tok):
+        return tok not in Tokens.TOKENS
 
-        @type data: str
-        @returns: a parsed Expression
-        """
-        self.feed(data)
-        result = self.next()
-        return result
-
-    def process(self):
-        """Process the waiting stream to make it trivial to parse."""
-        self.buffer = self.buffer.replace('\t', ' ')
-        self.buffer = self.buffer.replace('\n', ' ')
-        self.buffer = self.buffer.replace(Tokens.LAMBDA, ' %s ' % Tokens.LAMBDA)
-        self.buffer = self.buffer.replace(Tokens.DRS, ' %s ' % Tokens.DRS)
-        self.buffer = self.buffer.replace(Tokens.DRS.lower(), ' %s ' % Tokens.DRS)
-        self.buffer = self.buffer.replace(Tokens.DOT, ' %s ' % Tokens.DOT)
-        self.buffer = self.buffer.replace(Tokens.COMMA, ' %s ' % Tokens.COMMA)
-        self.buffer = self.buffer.replace(Tokens.OPEN_PAREN, ' %s ' % Tokens.OPEN_PAREN)
-        self.buffer = self.buffer.replace(Tokens.CLOSE_PAREN, ' %s ' % Tokens.CLOSE_PAREN)
-        self.buffer = self.buffer.replace(Tokens.OPEN_BRACKET, ' %s ' % Tokens.OPEN_BRACKET)
-        self.buffer = self.buffer.replace(Tokens.CLOSE_BRACKET, ' %s ' % Tokens.CLOSE_BRACKET)
-        self.buffer = self.buffer.replace(Tokens.EQ, ' %s ' % Tokens.EQ)
-
-    def token(self, destructive=1):
-        """Get the next waiting token.  The destructive flag indicates
-        whether the token will be removed from the buffer; setting it to
-        0 gives lookahead capability."""
-        if self.buffer == '':
-            raise Error, "end of stream"
-        tok = None
-        buffer = self.buffer
-        while not tok:
-            seq = buffer.split(' ', 1)
-            if len(seq) == 1:
-                tok, buffer = seq[0], ''
-            else:
-                assert len(seq) == 2
-                tok, buffer = seq
-            if tok:
-                if destructive:
-                    self.buffer = buffer
-                return tok
-        assert 0 # control never gets here
-        return None
-
-    def isVariable(self, token):
-        """Is this token a variable (that is, not one of the other types)?"""
-        TOKENS = [Tokens.DRS, Tokens.LAMBDA, Tokens.DOT, Tokens.OPEN_PAREN,
-                  Tokens.CLOSE_PAREN, Tokens.OPEN_BRACKET, Tokens.CLOSE_BRACKET]
-        TOKENS.extend(self.constants)
-        TOKENS.extend(Tokens.DRS_OPS)
-        TOKENS.extend(Tokens.FOL_OPS)
-
-        return token not in TOKENS 
-
-    def next(self):
+    def parse_Expression(self):
         """Parse the next complete expression from the stream and return it."""
         tok = self.token()
         
-        if tok == Tokens.LAMBDA:
-            # Expression is a lambda expression: \x.M
-
-            vars = [self.token()]
-            while self.isVariable(self.token(0)):
-                # Support expressions like: \x y.M == \x.\y.M
-                vars.append(self.token())
-            tok = self.token()
-
-            if tok != Tokens.DOT:
-                raise Error, "parse error, unexpected token: %s" % tok
-            term = self.next()
-            accum = LambdaDRS(Variable(vars.pop()), term)
-            while vars:
-                accum = LambdaDRS(Variable(vars.pop()), accum)
-            return accum
-
-        elif tok == Tokens.DRS:
-            # a DRS
-            assert self.token() == Tokens.OPEN_PAREN
-            assert self.token() == Tokens.OPEN_BRACKET
-            refs = []
-            while self.token(0) != Tokens.CLOSE_BRACKET:
-                # Support expressions like: drs([x y],C) == drs([x, y],C)
-                if self.token(0) == Tokens.COMMA:
-                    self.token() # swallow the comma
-                else:
-                    refs.append(self.next())
-            assert self.token() == Tokens.CLOSE_BRACKET # swallow the CLOSE_BRACKET token
-            assert self.token() == Tokens.COMMA
-            conds = self.next()
-            assert self.token() == Tokens.CLOSE_PAREN
-            return DRS(refs, conds)
-
-        elif tok == Tokens.OPEN_BRACKET:
-            # A list of DRS Conditions
-            conds = []
-            while self.token(0) != Tokens.CLOSE_BRACKET:
-                if self.token(0) == Tokens.COMMA:
-                    self.token() # swallow the comma
-                else:
-                    conds.append(self.next())
-            self.token() # swallow the CLOSE_BRACKET token
-            return conds
+        if tok in Tokens.NOT:
+            #it's a negated expression
+            return DrtNegatedExpression(self.parse_Expression())
         
-        elif tok == Tokens.OPEN_PAREN:
-            # Expression is an application expression: (M N)
-            first = self.next()
-            second = self.next()
-            exps = []
-            while self.token(0) != Tokens.CLOSE_PAREN:
-                # Support expressions like: (M N P) == ((M N) P)
-                exps.append(self.next())
-            tok = self.token() # swallow the CLOSE_PAREN token
-            assert tok == Tokens.CLOSE_PAREN
-            if isinstance(second, DrsOperator):
-                accum = ApplicationDRS(second, first) # DrsOperators can only be applied to DRSs
-            elif isinstance(second, FolOperator):
-                accum = ApplicationExpression(second, first)
-            else:
-                accum = self.make_Application(first, second)
-            while exps:
-                exp, exps = exps[0], exps[1:]
-                accum = self.make_Application(accum, exp)
-            return accum
+        elif tok in Tokens.LAMBDA:
+            return self.handle_lambda(tok)
+            
+        elif tok == Tokens.OPEN:
+            return self.handle_open(tok)
+        
+        elif tok.upper() == Tokens.DRS:
+            return self.handle_DRS()
 
-        elif tok in self.constants:
-            # Expression is a simple constant expression: a
-            return ConstantExpression(Constant(tok))
-
-        elif tok in Tokens.DRS_OPS:
-            # Expression is a boolean operator or the equality symbol
-            return DrsOperator(tok)
-    
-        elif tok in Tokens.FOL_OPS:
-            # Expression is a boolean operator or the equality symbol
-            return FolOperator(tok)
-
-        elif logic.is_indvar(tok):
-            # Expression is a boolean operator or the equality symbol
-            return IndVariableExpression(Variable(tok))
+        elif self.isvariable(tok):
+            return self.handle_variable(tok)
         
         else:
-            if self.isVariable(tok):
-                if tok[0].isupper() and tok != Tokens.PRONOUN:
-                    # Uppercase variables stand for DRSs
-                    return DRSVariable(Variable(tok))
-                else:
-                    # Expression is a simple variable expression: x
-                    return VariableExpression(Variable(tok))
+            raise UnexpectedTokenException(tok)
+
+    def handle_DRS(self):
+        # a DRS
+        self.assertToken(self.token(), Tokens.OPEN)
+        self.assertToken(self.token(), Tokens.OPEN_BRACKET)
+        refs = []
+        while self.token(0) != Tokens.CLOSE_BRACKET:
+            # Support expressions like: DRS([x y],C) == DRS([x,y],C)
+            if self.token(0) == Tokens.COMMA:
+                self.token() # swallow the comma
             else:
-                raise Error, "parse error, unexpected token: %s" % tok
-    
-    # This is intended to be overridden, so that you can derive a Parser class
-    # that constructs expressions using your subclasses.  So far we only need
-    # to overridde Application, but the same thing could be done for
-    # other expression types.
-    def make_Application(self, first, second):
-        first_simp = first.simplify()
-        second_simp = second.simplify()
-        if (isinstance(first_simp, ApplicationDRS) and isinstance(first_simp.first, DrsOperator) and first_simp.first.operator == Tokens.DRS_CONC and isinstance(second_simp, AbstractDRS)) or \
-           (isinstance(second_simp, ApplicationDRS) and isinstance(second_simp.first, DrsOperator) and second_simp.first.operator == Tokens.DRS_CONC and isinstance(first_simp, AbstractDRS)):
-            return ConcatenationDRS(first, second)
-        elif isinstance(first, DrsOperator) or isinstance(first, AbstractDRS):
-            return ApplicationDRS(first, second)
-        else:
-            return ApplicationExpression(first, second)
-
-
-    def __repr__(self):
-        return 'Next token: \'%s\'' % self.token(0)
-
-    def __str__(self):
-        return self.__repr__()
-
-def init_canvas(drs):
-    #font = Font(family='helvetica', size=12)
-    buffer = 3
-
-    master = Tk()
-    canvas = Canvas(master, width=0, height=0)
-    font = Font(font=canvas.itemcget(canvas.create_text(0, 0, text=''), 'font'))
-    canvas.font = font
-    canvas._BUFFER = buffer
-
-    size = drs.get_drawing_size(canvas)
-
-    canvas = Canvas(master, width=size[0]+20, height=size[1]+20, bg='white')
-    #canvas = Canvas(master, width=300, height=300)
-    canvas.pack()
-    canvas.font = font
-    canvas._BUFFER = buffer
-    return canvas
-
-def expressions():
-    return ['drs([x,y],[(sees x y)])',
-            'drs([x],[(man x), (walks x)])',
-            '\\x.drs([],[(man x), (walks x)])',
-            '\\x y.drs([],[(sees x y)])',
-
-            '(\\x.drs([],[(walks x)]) john)',
-            '(\\R x.drs([],[(big x R)]) \\y.drs([],[(mouse y)]))',
-            
-#            '(drs([x],[(walks x)]) + drs([y],[(runs y)]))',
-#            '(drs([x,y],[(walks x), (jumps y)]) + (drs([z],[(twos z)]) + drs([w],[(runs w)])))',
-#            '((drs([],[(walks x)]) + drs([],[(twos x)])) + drs([],[(runs x)]))',
-            '((drs([],[(walks x)]) + drs([],[(runs x)])) + (drs([],[(threes x)]) + drs([],[(fours x)])))',
-#            '(drs([],[(walks x)]) + (runs x))',
-#            '((walks x) + drs([],[(runs x)]))',
-#            '((walks x) + (runs x))',
-
-            '(drs([],[(walks x)]) implies drs([],[(runs x)]))',
-#            '(drs([],[(walks x)]) implies (runs x))',
-#            '((walks x) implies drs([],[(walks x)]))',
-#            '((walks x) implies (runs x))'
-            
-            'drs([x],[(PRO x),(sees John x)])',
-            'drs([x],[(man x), (not drs([],[(walks x)]))])',
-            'drs([],[(drs([x],[(man x)]) implies drs([],[(walks x)]))])'
-            ]
-
-def demo(ex=-1, draw=False, catch_exception=True):
-    exps = expressions()
-    for (i, exp) in zip(range(len(exps)),exps):
-        if i==ex or ex==-1:
-            drs = Parser().parse(exp).simplify().infixify()
-            if(not draw):
-                print '[[[Example %s]]]: %s' % (i, exp)
-                try:
-                    print '  %s' % drs
-                except Exception, (strerror):
-                    if catch_exception:
-                        print '  Error: %s' % strerror
-                    else:
-                        raise
-                print ''
+                refs.append(self.make_VariableExpression(self.token()))
+        self.token() # swallow the CLOSE_BRACKET token
+        self.assertToken(self.token(), Tokens.COMMA)
+        self.assertToken(self.token(), Tokens.OPEN_BRACKET)
+        conds = []
+        while self.token(0) != Tokens.CLOSE_BRACKET:
+            # Support expressions like: DRS([x y],C) == DRS([x, y],C)
+            if self.token(0) == Tokens.COMMA:
+                self.token() # swallow the comma
             else:
-                canvas = init_canvas(drs)
-                y_current = canvas._BUFFER
-                canvas.create_text(canvas._BUFFER, y_current, anchor='nw', font=canvas.font, text='Example %s: %s' % (i, exp))
-                try:
-                    y_current += canvas.font.metrics("linespace")+canvas._BUFFER
-                    size = drs.draw(canvas._BUFFER,y_current,canvas)
-                    y_current += size[1]+canvas._BUFFER
-                    drs.draw(canvas._BUFFER, y_current, canvas)
-                except Exception, (strerror):
-                    if catch_exception:
-                        canvas.create_text(canvas._BUFFER, y_current, anchor='nw', font=canvas.font, text='  Error: %s' % strerror)
-                    else:
-                        raise
-                
-def testToFol():
-    for t in expressions():
-        p = Parser().parse(t)
-        s = p.simplify()
-        f = s.toFol();
-        i = f.infixify()
-        print i
-        
-def test():
-    a = Parser().parse(r'\Q.(drs([x],[(dog x)]) + (Q x))')
-    b = Parser().parse(r'\x2.drs([],[(drs([x],[(girl x)]) implies drs([],[(chases x x2)]))])')
-    ab = a.applyto(b)
-    print ab
-    s = ab.simplify()
-    print s
-    
-def test2():
-    a = Parser().parse(r'\Q.(drs([x],[(x = john),(walks x)]) + Q)')
-    b = Parser().parse(r'drs([x],[(PRO x),(leaves x)])')
-    ab = a.applyto(b)
-    print ab
-    s = ab.simplify()
-    print s
-    
-def test3():
-    a = Parser().parse(r'\Q.drs([],[(drs([x],[(girl x)]) implies (Q x))])')
-    b = Parser().parse(r'\x1.drs([x],[(dog x),(chases x1 x)])')
-    ab = a.applyto(b)
-    print ab
-    s = ab.simplify()
-    print s
-    
-def testAlpha():
-    a = Parser().parse(r'\P Q.((drs([x],[(dog x)]) + (P x)) + (Q x))')
-    print a
-    x = Parser().parse(r'x')
-    z = Parser().parse(r'z')
-    print a.replace(x.variable, z, True)
-    print a.replace(x.variable, z, False)
-    print a.replace_unique(x.variable, None, True)
-    
-def testResolve_anaphora():
-    print 'Test resolve_anaphora():'
-    drs = Parser().parse(r'drs([x,y,z],[(dog x), (cat y), (walks z), (PRO z)])')
-    print '    ' + str(drs.infixify())
-    print '    resolves to: ' + str(drs.simplify().resolve_anaphora().infixify()) + '\n'
+                conds.append(self.parse_Expression())
+        self.token() # swallow the CLOSE_BRACKET token
+        self.assertToken(self.token(), Tokens.CLOSE) 
+        drs = DRS(refs, conds)
+        return self.attempt_BooleanExpression(drs)
 
-    drs = Parser().parse(r'drs([],[(drs([x],[(dog x)]) implies drs([y],[(walks y), (PRO y)]))])')
-    print '    ' + str(drs.infixify())
-    print '    resolves to: ' + str(drs.simplify().resolve_anaphora().infixify()) + '\n'
+    def get_BooleanExpression_factory(self):
+        """This method serves as a hook for other logic parsers that
+        have different boolean operators"""
+        factory = None
+        op = self.token(0)
+        if op == Tokens.DRS_CONC:
+            factory = ConcatenationDRS
+        elif op in Tokens.OR:
+            factory = DrtOrExpression
+        elif op in Tokens.IMP:
+            factory = DrtImpExpression
+        elif op in Tokens.IFF:
+            factory = DrtIffExpression
+        elif op in Tokens.EQ:
+            factory = DrtEqualityExpression
+        return factory
 
-    drs = Parser().parse(r'drs([],[((drs([x],[]) + drs([],[(dog x)])) implies drs([y],[(walks y), (PRO y)]))])')
-    print '    ' + str(drs.infixify())
-    print '    resolves to: ' + str(drs.simplify().resolve_anaphora().infixify()) + '\n'
+    def make_ApplicationExpression(self, function, args):
+        return DrtApplicationExpression(function, args)
+    
+    def make_VariableExpression(self, name):
+        return DrtVariableExpression(name)
+    
+    def make_LambdaExpression(self, variables, term):
+        return DrtLambdaExpression(variables, term)
+    
+def demo():
+    n = Tokens.NEW_NLTK
+    print '='*20 + 'TEST PARSE' + '='*20
+    parser = DrtParser()
+    print parser.parse(r'DRS([x,y],[sees(x,y)])')
+    print parser.parse(r'DRS([x],[man(x), walks(x)])')
+    print parser.parse(r'\x.\y.DRS([],[sees(x,y)])')
+    print parser.parse(r'\x.DRS([],[walks(x)])(john)')
+    print parser.parse(r'(DRS([x],[walks(x)]) + DRS([y],[runs(y)]))')
+    print parser.parse(r'(DRS([],[walks(x)]) -> DRS([],[runs(x)]))')
+    print parser.parse(r'DRS([x],[PRO(x), sees(John,x)])')
+    print parser.parse(r'DRS([x],[man(x), -DRS([],[walks(x)])])')
+    print parser.parse(r'DRS([],[(DRS([x],[man(x)]) -> DRS([],[walks(x)]))])')
 
-    drs = Parser().parse(r'drs([x],[(walks x), (PRO x)])')
-    print '    ' + str(drs.infixify())
-    print '    resolves to: ' + str(drs.simplify().resolve_anaphora().infixify()) + '\n'
+    print '='*20 + 'Test toFol()' + '='*20
+    print parser.parse(r'DRS([x,y],[sees(x,y)])').toFol()
 
-def testTp_equals():
-    a = Parser().parse(r'drs([x],[(man x), (walks x)])')
-    b = Parser().parse(r'drs([x],[(walks x), (man x)])')
-    print '%s == %s' % (a,b)
+    print '='*20 + 'Test resolve_anaphora()' + '='*20
+    print parser.parse(r'DRS([x,y,z],[dog(x), cat(y), walks(z), PRO(z)])').resolve_anaphora()
+    print parser.parse(r'DRS([],[(DRS([x],[dog(x)]) -> DRS([y],[walks(y), PRO(y)]))])').resolve_anaphora()
+    print parser.parse(r'(DRS([x,y],[]) + DRS([],[PRO(x)]))').resolve_anaphora()
+    print parser.parse(r'DRS([x],[walks(x), PRO(x)])').resolve_anaphora()
+    
+    a = parser.parse(r'DRS([x],[man(x), walks(x)])')
+    b = parser.parse(r'DRS([x],[walks(x), man(x)])')
     print a.tp_equals(b)
+    
+        
+def test_draw():
+    expressions = [
+            r'x',
+            r'DRS([],[])',
+            r'DRS([x],[])',
+            r'DRS([x],[man(x)])',
+
+            r'drs([x,y],[sees(x,y)])',
+            r'drs([x],[man(x), walks(x)])',
+            r'\x.drs([],[man(x), walks(x)])',
+            r'\x y.drs([],[sees(x,y)])',
+            r'drs([],[(drs([],[walks(x)]) + drs([],[runs(x)]))])',
+            
+            r'drs([x],[man(x), -drs([],[walks(x)])])',
+            r'drs([],[(drs([x],[man(x)]) -> drs([],[walks(x)]))])'
+            ]
+    
+    for e in expressions:
+        d = DrtParser().parse(e)
+        d.draw()
 
 if __name__ == '__main__':
     demo()
-    print '\n'
-    testResolve_anaphora()
-    print '\n'
-    testToFol()
