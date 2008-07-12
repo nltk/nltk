@@ -1,110 +1,111 @@
-from nltk_contrib.drt import *
+# Natural Language Toolkit: Resolve Anaphora for DRT 
+#
+# Author: Dan Garrette <dhgarrette@gmail.com>
+#
+# URL: <http://nltk.sf.net>
+# For license information, see LICENSE.TXT
 
-def resolve(drs):
-    print drs
-    print drs.__class__
-    print AbstractDRS
-    print isinstance(drs, AbstractDRS)
-    assert isinstance(drs, AbstractDRS)
-    return _resolve(drs, [])
+"""
+This module performs the anaphora resolution functionality for DRT.py.  It may be 
+modified or swapped out to test different resolution techniques.
+"""
 
-def _resolve(current, trail):
-    resolve_method = None
-    if isinstance(current, DRS):
-        resolve_method = _resolve_DRS
-    elif isinstance(current, LambdaDRS):
-        resolve_method = _resolve_LambdaDRS
-    elif isinstance(current, ConcatenationDRS):
-        resolve_method = _resolve_ConcatenationDRS
-    elif isinstance(current, ApplicationDRS):
-        resolve_method = _resolve_ApplicationDRS
-    elif isinstance(current, ApplicationExpression):
-        resolve_method = _resolve_ApplicationExpression
-    elif isinstance(current, VariableBinderExpression):    
-        resolve_method = _resolve_VariableBinderExpression
-    elif isinstance(current, Expression):
-        resolve_method = _resolve_Expression
-    else:
-        raise AssertionError, 'Not a valid expression'
+from nltk.sem import logic
 
-    return resolve_method(current, trail)
-
-
-def _resolve_DRS(current, trail):
-    r_conds = []
-    for cond in current.conds:
-        r_cond = _resolve(cond, trail + [current])
-        
-        # if the condition is of the form '(x = [])' then do not include it
-        if not _isNullResolution(r_cond):
-            r_conds.append(r_cond)
+class DRS:
+    def resolve_anaphora(self, trail=[]):
+        r_conds = []
+        for cond in self.conds:
+            r_cond = cond.resolve_anaphora(trail + [self])
             
-    return current.__class__(current.refs, r_conds)
+            # if the condition is of the form '(x = [])' then do not include it
+            if not isinstance(r_cond, EqualityExpression) or not r_cond.isNullResolution():
+                r_conds.append(r_cond)
+                
+        return self.__class__(self.refs, r_conds)
     
-def _isNullResolution(current):
-    return isinstance(current, ApplicationExpression) and \
-           isinstance(current.first, ApplicationExpression) and \
-           isinstance(current.first.first, FolOperator) and \
-           current.first.first.operator == Tokens.EQ and \
-           ((isinstance(current.second, PossibleAntecedents) and not current.second) or \
-            (isinstance(current.first.second, PossibleAntecedents) and not current.first.second))
+class VariableExpression:
+    def resolve_anaphora(self, trail=[]):
+        return self
 
-def _resolve_LambdaDRS(current, trail):
-    return current.__class__(current.variable, _resolve(current.term, trail + [current]))
+class NegatedExpression:
+    def resolve_anaphora(self, trail=[]):
+        return self.__class__(self.term.resolve_anaphora(trail + [self]))
 
-def _resolve_ApplicationDRS(current, trail):
-    trail_addition = [current]
-    if isinstance(current.first, ApplicationDRS) \
-            and isinstance(current.first.first, DrsOperator) \
-            and current.first.first.operator == 'implies':
-        trail_addition.append(current.first.second)
+class LambdaExpression:
+    def resolve_anaphora(self, trail=[]):
+        return self.__class__(self.variables, self.term.resolve_anaphora(trail + [self]))
 
-    r_first = _resolve(current.first, trail + trail_addition)
-    r_second = _resolve(current.second, trail + trail_addition)
-    return current.__class__(r_first, r_second)
+class BooleanExpression:
+    def resolve_anaphora(self, trail=[]):
+        return self.__class__(self.first.resolve_anaphora(trail + [self]), 
+                              self.second.resolve_anaphora(trail + [self]))
 
-def _resolve_ConcatenationDRS(current, trail):
-    r_first = _resolve(current.first, trail + [current])
-    r_second = _resolve(current.second, trail + [current])
-    return current.__class__(r_first, r_second)
+class OrExpression(BooleanExpression):
+    pass
 
-def _resolve_ApplicationExpression(current, trail):
-    if isinstance(current.first, VariableExpression) and current.first.variable.name == Tokens.PRONOUN:
-        possible_antecedents = PossibleAntecedents()
-        for ancestor in trail:
-            if isinstance(ancestor, AbstractDRS):
-                possible_antecedents.extend(ancestor.get_refs())
-    #===============================================================================
-    #   This line ensures that statements of the form ( x = x ) wont appear.
-    #   Possibly change to remove antecedents with the wrong 'gender' 
-    #===============================================================================
-        possible_antecedents.remove(current.second)
-        eqalityExp = ApplicationExpression(ApplicationExpression(FolOperator(Tokens.EQ), current.second),possible_antecedents) 
-        return eqalityExp
-    else:
-        r_first = _resolve(current.first, trail + [current])
-        r_second = _resolve(current.second, trail + [current])
-        return current.__class__(r_first, r_second)
+class ImpExpression(BooleanExpression):
+    def resolve_anaphora(self, trail=[]):
+        trail_addition = [self, self.first]
+        return self.__class__(self.first.resolve_anaphora(trail + trail_addition),
+                              self.second.resolve_anaphora(trail + trail_addition))
 
-def _resolve_Expression(current, trail):
-    return current
+class IffExpression(BooleanExpression):
+    pass
 
-def _resolve_VariableBinderExpression(current, trail):
-    return current.__class__(current.variable, _resolve(current.term, trail + [current]))
+class EqualityExpression(BooleanExpression, logic.EqualityExpression):
+    def isNullResolution(self):
+        return (isinstance(self.second, PossibleAntecedents) and not self.second) or \
+                (isinstance(self.first, PossibleAntecedents) and not self.first)
 
-def testResolve_anaphora():
-    print 'Test resolve_anaphora():'
-    drs = Parser().parse(r'drs([x,y,z],[(dog x), (cat y), (walks z), (PRO z)])')
-    print '    ' + str(drs.infixify())
-    print '    resolves to: ' + str(resolve(drs.simplify()).infixify()) + '\n'
+class ConcatenationDRS(BooleanExpression):
+    pass
 
-    drs = Parser().parse(r'drs([],[(drs([x],[(dog x)]) implies drs([y],[(walks y), (PRO y)]))])')
-    print '    ' + str(drs.infixify())
-    print '    resolves to: ' + str(resolve(drs.simplify()).infixify()) + '\n'
+class ApplicationExpression:
+    def resolve_anaphora(self, trail=[]):
+        if isinstance(self.function, VariableExpression) and self.function.name == self.get_pronoun_token():
+            assert len(self.args) == 1 #only one arg is allowed in PRO(x)
+            possible_antecedents = PossibleAntecedents()
+            for ancestor in trail:
+                try:
+                    possible_antecedents.extend(ancestor.get_refs())
+                except AttributeError:
+                    pass #the ancestor does not have a get_refs method
+                
+            #===============================================================================
+            #   This line ensures that statements of the form ( x = x ) wont appear.
+            #   Possibly amend to remove antecedents with the wrong 'gender' 
+            #===============================================================================
+            arg = self.args[0]
+            possible_antecedents.remove(arg)
+            if len(possible_antecedents) == 1:
+                equalityExp = EqualityExpression(arg, possible_antecedents[0])
+            else:
+                equalityExp = EqualityExpression(arg, possible_antecedents) 
+            return equalityExp
+        else:
+            r_function = self.function.resolve_anaphora(trail + [self])
+            r_args = [arg.resolve_anaphora(trail + [self]) for arg in self.args]
+            return self.__class__(r_function, r_args)
 
-    drs = Parser().parse(r'drs([],[((drs([x],[]) + drs([],[(dog x)])) implies drs([y],[(walks y), (PRO y)]))])')
-    print '    ' + str(drs.infixify())
-    print '    resolves to: ' + str(resolve(drs.simplify()).infixify()) + '\n'
+class PossibleAntecedents(list, logic.Expression):
+    def free(self):
+        """Set of free variables."""
+        return set(self)
 
-if __name__ == '__main__':
-    testResolve_anaphora()
+    def replace(self, variable, expression, replace_bound=False):
+        """Replace all instances of variable v with expression E in self,
+        where v is free in self."""
+        result = PossibleAntecedents()
+        for item in self:
+            if item == variable:
+                self.append(expression)
+            else:
+                self.append(item)
+        return result
+    
+    def simplify(self):
+        return self
+
+    def __str__(self):
+        return '[' + ','.join([str(item) for item in self]) + ']'

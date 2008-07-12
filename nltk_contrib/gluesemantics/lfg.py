@@ -5,13 +5,18 @@
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
+from nltk.internals import Counter
+
 class FStructure(dict):
     def read_depgraph(depgraph):
-        return FStructure._read_depgraph(depgraph.root, depgraph, [0])
+        return FStructure._read_depgraph(depgraph.root, depgraph)
     
     read_depgraph = staticmethod(read_depgraph)
     
-    def _read_depgraph(node, depgraph, current_label=[0], parent=None):
+    def _read_depgraph(node, depgraph, label_counter=None, parent=None):
+        if not label_counter:
+            label_counter = Counter()
+        
         if node['rel'].lower() in ['spec']:
             # the value of a 'spec' entry is a word, not an FStructure
             return (node['word'], node['tag'])
@@ -19,8 +24,7 @@ class FStructure(dict):
         else:
             self = FStructure()
             self.pred = None
-            self.label = ['f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','a','b','c','d','e'][current_label[0]]
-            current_label[0] += 1
+            self.label = FStructure._make_label(label_counter.get())
     
             self.parent = parent
             
@@ -35,14 +39,31 @@ class FStructure(dict):
     
             children = [depgraph.nodelist[idx] for idx in node['deps']]
             for child in children:
-                self[child['rel']] = FStructure._read_depgraph(child, depgraph, current_label, self)
+                self[child['rel']] = FStructure._read_depgraph(child, depgraph, label_counter, self)
     
             return self
 
     _read_depgraph = staticmethod(_read_depgraph)
     
-    
-    
+    def _make_label(value):
+        """
+        Pick an alphabetic character as identifier for an entity in the model.
+        
+        @parameter value: where to index into the list of characters
+        @type value: C{int}
+        """
+        letter = ['f','g','h','i','j','k','l','m','n','o','p','q','r','s',
+                  't','u','v','w','x','y','z','a','b','c','d','e'][value-1]
+        num = int(value) / 26
+        if num > 0:
+            return letter + str(num)
+        else:
+            return letter
+        
+    _make_label = staticmethod(_make_label)
+
+
+
     def read_parsetree(pt, current_label=[0], parent=None):
         self = FStructure()
         
@@ -226,7 +247,10 @@ class FStructure(dict):
 
         return glueformulas
 
-    def initialize_label(self, expression, unique_var_id=[0]):
+    def initialize_label(self, expression, counter=None):
+        if not counter:
+            counter = Counter()
+        
         try:
             dot = expression.index('.')
 
@@ -238,14 +262,14 @@ class FStructure(dict):
                 try:
                     return self[before_dot].initialize_label(after_dot)
                 except KeyError:
-                    raise KeyError, 'FStructure doesn\'t contain a feature %s' % before_dot
+                    raise KeyError, "FStructure doesn't contain a feature %s" % before_dot
         except ValueError:
             lbl = self.label
             if expression=='f':       return lbl
             elif expression=='v':     return '%sv' % lbl
             elif expression=='r':     return '%sr' % lbl
             elif expression=='super': return self.parent.label
-            elif expression=='var':   return '%s%s' % (self.label.upper(), unique_var_id[0])
+            elif expression=='var':   return '%s%s' % (self.label.upper(), counter.get())
             elif expression=='a':     return self['conjuncts'][0].label
             elif expression=='b':     return self['conjuncts'][1].label
             else:                     return self[expression].label

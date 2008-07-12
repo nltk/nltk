@@ -1,22 +1,16 @@
 # Natural Language Toolkit: GUI Demo for Glue Semantics with Discourse 
-#                           Represtation Theory (DRT) as meaning language 
+#                           Representation Theory (DRT) as meaning language 
 #
 # Author: Dan Garrette <dhgarrette@gmail.com>
 #
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
-from nltk.draw.tree import *
 from nltk.draw import *
-from nltk import parse, tokenize
-from nltk.draw.cfg import *
-import string
-from nltk_contrib.gluesemantics import drt_glue
-from Tkinter import *
-import tkFont
 from tkFont import Font
-from nltk_contrib.drt import DRT
-
+from nltk.sem import logic
+from nltk_contrib.drt import DrsDrawer, DrtVariableExpression
+from nltk_contrib.gluesemantics.drt_glue import DrtGlue
 
 class DrtGlueDemo(object):
     def __init__(self, examples):
@@ -27,20 +21,23 @@ class DrtGlueDemo(object):
         # Set up key bindings.
         self._init_bindings()
 
-        # Initialize the fonts.
+        # Initialize the fonts.self._error = None
         self._init_fonts(self._top)
 
         self._examples = examples
+        self._readingCache = [None for example in examples]
 
         # The user can hide the grammar.
         self._show_grammar = IntVar(self._top)
         self._show_grammar.set(1)
 
         # Set the data to None
+        self._curExample = -1
         self._readings = []
         self._drs = None
         self._drsWidget = None
         self._remove_duplicates = False
+        self._error = None
 
         # Create the basic frames.
         self._init_menubar(self._top)
@@ -51,27 +48,27 @@ class DrtGlueDemo(object):
 
         # Resize callback
         self._canvas.bind('<Configure>', self._configure)
-        
+
     #########################################
     ##  Initialization Helpers
     #########################################
         
     def _init_fonts(self, root):
         # See: <http://www.astro.washington.edu/owen/ROTKFolklore.html>
-        self._sysfont = tkFont.Font(font=Button()["font"])
+        self._sysfont = Font(font=Button()["font"])
         root.option_add("*Font", self._sysfont)
         
         # TWhat's our font size (default=same as sysfont)
         self._size = IntVar(root)
         self._size.set(self._sysfont.cget('size'))
 
-        self._boldfont = tkFont.Font(family='helvetica', weight='bold',
+        self._boldfont = Font(family='helvetica', weight='bold',
                                     size=self._size.get())
-        self._font = tkFont.Font(family='helvetica',
+        self._font = Font(family='helvetica',
                                     size=self._size.get())
         if self._size.get() < 0: big = self._size.get()-2
         else: big = self._size.get()+2
-        self._bigfont = tkFont.Font(family='helvetica', weight='bold',
+        self._bigfont = Font(family='helvetica', weight='bold',
                                     size=big)
 
     def _init_exampleListbox(self, parent):
@@ -145,8 +142,6 @@ class DrtGlueDemo(object):
         self._top.bind('<space>', self.next)
         self._top.bind('p', self.prev)
         self._top.bind('<BackSpace>', self.prev)
-        self._top.bind('<h>', self.help)
-        self._top.bind('<F1>', self.help)
 
     def _init_buttons(self, parent):
         # Set up the frames.
@@ -232,10 +227,13 @@ class DrtGlueDemo(object):
         if self._drsWidget is not None:
             self._drsWidget.clear()
 
-        if(self._drs):
+        if self._drs:
             self._drsWidget = DrsWidget( self._canvas, self._drs )
             self._drsWidget.draw()
-            
+
+        if self._error:
+            self._drsWidget = DrsWidget( self._canvas, self._error )
+            self._drsWidget.draw()
 
     #########################################
     ##  Button Callbacks
@@ -259,15 +257,25 @@ class DrtGlueDemo(object):
             
                 # if it's on (or before) the first item
                 if index <= 0:  
-                    newIndex = readingListSize - 1
+                    self._select_previous_example()
                 else:
-                    newIndex = index - 1
+                    self._readingList_store_selection(index-1)
 
             else:
                 #select its first reading
-                newIndex = 0
-                
-            self._readingList_store_selection(newIndex)
+                self._readingList_store_selection(readingListSize-1)
+
+        else:
+            self._select_previous_example()
+            
+            
+    def _select_previous_example(self):
+        #if the current example is not the first example
+        if self._curExample > 0:
+            self._exampleList_store_selection(self._curExample-1)
+        else:
+            #go to the last example
+            self._exampleList_store_selection(len(self._examples)-1)
 
     def next(self, *e):
         selection = self._readingList.curselection()
@@ -280,17 +288,26 @@ class DrtGlueDemo(object):
                 index = int(selection[0])
             
                 # if it's on (or past) the last item
-                if index >= (readingListSize - 1):
-                    # select the first item
-                    newIndex = 0
+                if index >= (readingListSize-1):
+                    self._select_next_example()
                 else:
-                    newIndex = index + 1
+                    self._readingList_store_selection(index+1)
         
             else:
                 #select its first reading
-                newIndex = 0
-                
-            self._readingList_store_selection(newIndex)
+                self._readingList_store_selection(0)
+        
+        else:
+            self._select_next_example()
+        
+    def _select_next_example(self):
+        #if the current example is not the last example
+        if self._curExample < len(self._examples)-1:
+            self._exampleList_store_selection(self._curExample+1)
+        else:
+            #go to the first example
+            self._exampleList_store_selection(0)
+
 
     def about(self, *e):
         ABOUT = ("NLTK Discourse Representation Theory (DRT) Glue Semantics Demo\n"+
@@ -302,16 +319,6 @@ class DrtGlueDemo(object):
         except:
             ShowText(self._top, TITLE, ABOUT)
             
-    def help(self, *e):
-        self._autostep = 0
-        # The default font's not very legible; try using 'fixed' instead. 
-        try:
-            ShowText(self._top, 'Help: Recursive Descent Parser Demo',
-                     (__doc__).strip(), width=75, font='fixed')
-        except:
-            ShowText(self._top, 'Help: Recursive Descent Parser Demo',
-                     (__doc__).strip(), width=75)
-
     def postscript(self, *e):
         self._autostep = 0
         self._cframe.print_to_file()
@@ -341,6 +348,9 @@ class DrtGlueDemo(object):
         self._exampleList.selection_clear(0, 'end')
         self._readings = []
         self._populate_readingListbox()
+        self._readingCache = [None for ex in self._examples]
+        self._curExample = -1
+        self._error = None
         
         self._drs = None
         self._redraw()
@@ -349,42 +359,61 @@ class DrtGlueDemo(object):
     def _exampleList_select(self, event):
         selection = self._exampleList.curselection()
         if len(selection) != 1: return
-        self._curExample = int(selection[0])
-        example = self._examples[self._curExample]
+        self._exampleList_store_selection(int(selection[0]))
 
+    def _exampleList_store_selection(self, index):
+        self._curExample = index
+        example = self._examples[index]
+
+        self._exampleList.selection_clear(0, 'end')
         if example:
-            self._exampleList.selection_clear(0, 'end')
-            self._exampleList.selection_set(self._curExample)
-
-            self._readings = drt_glue.parse_to_meaning(example, self._remove_duplicates)
+            cache = self._readingCache[index]
+            if cache:
+                if isinstance(cache, list):
+                    self._readings = cache
+                    self._error = None
+                else:
+                    self._readings = []
+                    self._error = cache
+            else:
+                try:
+                    self._readings = DrtGlue(dependency=True, remove_duplicates=self._remove_duplicates).parse_to_meaning(example)
+                    self._error = None
+                    self._readingCache[index] = self._readings
+                except Exception, e:
+                    self._readings = []
+                    self._error = DrtVariableExpression('Error: ' + str(e))
+                    self._readingCache[index] = self._error
+    
+                    #add a star to the end of the example
+                    self._exampleList.delete(index)
+                    self._exampleList.insert(index, ('  %s *' % example))
+                    self._exampleList.config(height=min(len(self._examples), 25), width=40)
+            
             self._populate_readingListbox()
             
+            self._exampleList.selection_set(index)
+
             self._drs = None
             self._redraw()
-            
-        else:
-            # Reset the example selections.
-            self._exampleList.selection_clear(0, 'end')
-
+    
+    
     def _readingList_select(self, event):
         selection = self._readingList.curselection()
         if len(selection) != 1: return
-        index = int(selection[0])
-        self._readingList_store_selection(index)
+        self._readingList_store_selection(int(selection[0]))
 
     def _readingList_store_selection(self, index):
         reading = self._readings[index]
 
+        self._readingList.selection_clear(0, 'end')
         if reading:
-            self._readingList.selection_clear(0, 'end')
             self._readingList.selection_set(index)
 
-            self._drs = reading.simplify().resolve_anaphora().infixify()
+            logic._counter._value = 0
+            self._drs = reading.simplify().resolve_anaphora()
             
             self._redraw()
-        else:
-            # Reset the reading selections.
-            self._readingList.selection_clear(0, 'end')
 
 
 class DrsWidget(object):
@@ -396,8 +425,8 @@ class DrsWidget(object):
         self.bbox = (0, 0, 0, 0)
 
     def draw(self):
-        bottom_right = self._drs.draw(3, 3, self._canvas);
-        self.bbox = (0, 0, bottom_right[0]+1, bottom_right[1]+1) 
+        (right, bottom) = DrsDrawer(self._drs, canvas=self._canvas).draw();
+        self.bbox = (0, 0, right+1, bottom+1) 
 
     def clear(self):
         self._canvas.create_rectangle(self.bbox, fill="white", width="0" )
