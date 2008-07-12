@@ -415,8 +415,8 @@ def getIndex(form, pos=NOUN):
     underscores with hyphens, hyphens with underscores, removes
     hyphens and underscores, and removes periods in an attempt to find
     a form of the string that is an exact match for an entry in the
-    index file corresponding to _pos_.  getWord() is called on each
-    transformed string until a match is found or all the different
+    index file corresponding to _pos_.  The dictionary is looked up for
+    each transformed string until a match is found or all the different
     strings have been tried. It returns a Word or None."""
 
     from dictionary import dictionaryFor

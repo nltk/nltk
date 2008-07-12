@@ -14,7 +14,7 @@ via index notation ``word[n]`` or via the ``word.getSenses()`` method.
     
     >>> N['dog']
     dog (noun)
-    >>> N.getWord('dog')
+    >>> N.word('dog')
     dog (noun)
     >>> N['dog'].pos
     'noun'
@@ -40,7 +40,7 @@ Synsets
 
 Each synset contains one or more lemmas, which represent a specific
 sense of a specific word.  Senses can be retrieved via
-synset.getSenses() or through the index notations synset[0],
+synset.senses() or through the index notations synset[0],
 synset[string], or synset[word]. Synsets are related to other
 synsets, and we can get a dictionary of relations using the
 relations() function.
@@ -98,7 +98,7 @@ Word Senses
 
 A pairing between a word and a sense.
 
->>> w = getWord('eat', 'v')
+>>> w = word('eat', 'v')
 >>> w.senseCounts()
 [61, 13, 4, None, None, None]
 >>> w[2].words
@@ -228,13 +228,13 @@ given by the equation 2 * IC(lcs) / (IC(s1) + IC(s2)).
     >>> furnace.lin_similarity(stove, ic) # doctest: +ELLIPSIS
     0.229384690...
 
-getWord(form, pos=NOUN):
+word(form, pos=NOUN):
 Return a word with the given lexical form and pos.
 
-getSense(form, pos=NOUN, senseno=0):
+sense(form, pos=NOUN, senseno=0):
 Lookup a sense by its sense number. Used by repr(sense).
 
-getSynset(pos, offset):
+synset(pos, offset):
 Lookup a synset by its offset. Used by repr(synset).
 
 

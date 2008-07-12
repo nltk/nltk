@@ -14,6 +14,7 @@ import types
 from cache import entityCache
 
 import nltk.data
+from nltk.internals import deprecated
 
 from util import *
 
@@ -62,8 +63,13 @@ class Dictionary(object):
 
         return "<%s.%s instance for %s>" % \
             (self.__module__, "Dictionary", self.pos)
-    
+            
+    # Deprecated since 0.9.4
+    @deprecated("Use Dictionary.word() instead.")
     def getWord(self, form, line=None):
+        return word(self, form, line)
+    
+    def word(self, form, line=None):
         """
         @type  form: C{string}
         @param form: word string e.g, 'dog'
@@ -85,7 +91,12 @@ class Dictionary(object):
         if word: return word
         else: raise KeyError, "%s is not in the %s database" % (`form`, `pos`)
     
+    # Deprecated since 0.9.4
+    @deprecated("Use Dictionary.word() instead.")
     def getSynset(self, offset):
+        return synset(self, offset)
+    
+    def synset(self, offset):
         """
         @type  offset: C{int}
         @param offset: integer offset into a Wordnet file, at which the
@@ -157,11 +168,11 @@ class Dictionary(object):
         """
         self.load()
         if type(index) in types.StringTypes:
-            return self.getWord(index)
+            return self.word(index)
 
         elif type(index) == types.IntType:
             line = self.indexFile[index]
-            return self.getWord(string.replace(line[:string.find(line, ' ')], '_', ' '), line)
+            return self.word(string.replace(line[:string.find(line, ' ')], '_', ' '), line)
 
         else:
             raise TypeError, "%s is not a String or Int" % `index`
@@ -276,7 +287,12 @@ def dictionaryFor(pos):
 
 # Lookup functions
 
+# Deprecated since 0.9.4
+@deprecated("Use dictionary.word() instead.")
 def getWord(form, pos=NOUN):
+    return word(form, pos)
+    
+def word(form, pos=NOUN):
     """
     Return a word with the given lexical form and pos.
 
@@ -288,9 +304,14 @@ def getWord(form, pos=NOUN):
 
     @return: the L{Word} object corresponding to form and pos, if it exists.
     """
-    return dictionaryFor(pos).getWord(form)
+    return dictionaryFor(pos).word(form)
 
+# Deprecated since 0.9.4
+@deprecated("Use dictionary.sense() instead.")
 def getSense(form, pos=NOUN, senseno=0):
+    return sense(form, pos, senseno)
+    
+def sense(form, pos=NOUN, senseno=0):
     """
     Lookup a sense by its sense number. Used by repr(sense).
 
@@ -302,9 +323,14 @@ def getSense(form, pos=NOUN, senseno=0):
     @param senseno: the id of the desired word sense. Defaults to 0.
     @return: the L{Synset} object corresponding to form, pos and senseno, if it exists.
     """
-    return getWord(form, pos)[senseno]
+    return word(form, pos)[senseno]
 
+# Deprecated since 0.9.4
+@deprecated("Use dictionary.synset() instead.")
 def getSynset(pos, offset):
+    return synset(pos, offset)
+    
+def synset(pos, offset):
     """
     Lookup a synset by its offset.
 
@@ -314,5 +340,4 @@ def getSynset(pos, offset):
     @param offset: the offset into the relevant Wordnet dictionary file.
     @return: the L{Synset} object extracted from the Wordnet dictionary file.
     """
-    return dictionaryFor(pos).getSynset(offset)
-
+    return dictionaryFor(pos).synset(offset)
