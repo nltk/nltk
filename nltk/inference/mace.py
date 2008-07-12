@@ -10,6 +10,7 @@ import os
 import tempfile
 from string import join
 from nltk.sem.logic import *
+from nltk.sem import Valuation
 from api import ModelBuilderI
 import prover9
 from prover9 import Prover9Parent, call_mace4, call_interpformat
@@ -41,7 +42,6 @@ class Mace(Prover9Parent, ModelBuilderI):
         @return: A model if one is generated; None otherwise.
         @rtype: L{nltk.sem.Valuation} 
         """
-        from nltk.sem import Valuation
         valuation = None
         if self.model_found():
             valuation_standard_format = self._transform_output('standard')
@@ -168,21 +168,21 @@ def test_model_found(arguments):
         m.build_model()
         found = m.model_found()
         for a in alist:
-            print '   %s' % a.infixify()
-        print '|- %s: %s\n' % (g.infixify(), decode_result(found))
+            print '   %s' % a
+        print '|- %s: %s\n' % (g, decode_result(found))
         
         
 def test_build_model(arguments):
     """
     Try to build a L{nltk.sem.Valuation}.
     """
-    g = LogicParser().parse('all x.(man x)')
-    alist = [LogicParser().parse(a) for a in ['(man John)', 
-                                              '(man Socrates)', 
-                                              '(man Bill)', 
-                                              'some x.((not (x = John)) and ((man x) and (sees John x)))',
-                                              'some x.((not (x = Bill)) and (man x))',
-                                              'all x.some y.((man x) implies (gives Socrates x y))']]
+    g = LogicParser().parse('all x.man(x)')
+    alist = [LogicParser().parse(a) for a in ['man(John)', 
+                                              'man(Socrates)', 
+                                              'man(Bill)', 
+                                              'some x.((not (x = John)) and (man(x) and sees(John,x)))',
+                                              'some x.((not (x = Bill)) and man(x))',
+                                              'all x.some y.(man(x) -> gives(Socrates,x,y))']]
     
     m = Mace(g, assumptions=alist)
     m.build_model()
@@ -190,8 +190,8 @@ def test_build_model(arguments):
     print "Assumptions and Goal"
     spacer()
     for a in alist:
-        print '   %s' % a.infixify()
-    print '|- %s: %s\n' % (g.infixify(), decode_result(m.model_found()))
+        print '   %s' % a
+    print '|- %s: %s\n' % (g, decode_result(m.model_found()))
     spacer()
     #m.show_model('standard')
     #m.show_model('cooked')
@@ -208,8 +208,8 @@ def test_transform_output(argument_pair):
     m = Mace(g, assumptions=alist)
     m.build_model()
     for a in alist:
-        print '   %s' % a.infixify()
-    print '|- %s: %s\n' % (g.infixify(), m.model_found())
+        print '   %s' % a
+    print '|- %s: %s\n' % (g, m.model_found())
     for format in ['standard', 'portable', 'xml', 'cooked']:
         spacer()
         print "Using '%s' format" % format 
@@ -221,8 +221,8 @@ def test_make_model_dict():
     print Mace._make_model_dict(num_entities=3, values=[0,0,0,0,0,0,1,0,0])
     
 arguments = [
-    ('(mortal Socrates)', ['all x.((man x) implies (mortal x))', '(man Socrates)']),
-    ('(not (mortal Socrates))', ['all x.((man x) implies (mortal x))', '(man Socrates)'])
+    ('mortal(Socrates)', ['all x.(man(x) -> mortal(x))', 'man(Socrates)']),
+    ('(not mortal(Socrates))', ['all x.(man(x) -> mortal(x))', 'man(Socrates)'])
 ]
 
 if __name__ == '__main__':
