@@ -1,5 +1,9 @@
-# NLTK CCG Chart Parser
-# Author: Graeme Gange
+# Natural Language Toolkit: Combinatory Categorial Grammar
+#
+# Copyright (C) 2001-2008 NLTK Project
+# Author: Graeme Gange <ggange@csse.unimelb.edu.au>
+# URL: <http://nltk.sf.net>
+# For license information, see LICENSE.TXT
 
 from nltk.parse.api import *
 from nltk.parse.chart import AbstractChartRule, EdgeI, Chart
@@ -175,11 +179,11 @@ class CCGChartParser(ParserI):
     def nbest_parse(self, tokens, n=None):
         tokens = list(tokens)
         chart = CCGChart(list(tokens))
-        lexicon = self._lexicon
+        lex = self._lexicon
       
         # Initialize leaf edges.
         for index in range(chart.num_leaves()):
-            for cat in lexicon.categories(chart.leaf(index)):
+            for cat in lex.categories(chart.leaf(index)):
                 new_edge = CCGLeafEdge(index, cat, chart.leaf(index))
                 chart.insert(new_edge, ())
 
@@ -199,11 +203,11 @@ class CCGChartParser(ParserI):
                             # Generate all possible combinations of the two edges
                             for rule in self._rules:
                                 edges_added_by_rule = 0
-                                for newedge in rule.apply_iter(chart,lexicon,left,right):
+                                for newedge in rule.apply_iter(chart,lex,left,right):
                                     edges_added_by_rule += 1
         
         # Output the resulting parses
-        return chart.parses(lexicon.start())[:n]
+        return chart.parses(lex.start())[:n]
 
 class CCGChart(Chart):
     def __init__(self, tokens):
@@ -296,3 +300,45 @@ def printCCGTree(lwidth,tree):
     print respadlen*' ' + str(res)
     return rwidth
 
+
+### Demonstration code
+
+# Construct the lexicon
+lex = lexicon.parseLexicon('''
+    :- S, NP, N, VP    # Primitive categories, S is the target primitive
+
+    Det :: NP/N         # Family of words
+    Pro :: NP
+    TV :: VP/NP
+    Modal :: (S\\NP)/VP # Backslashes need to be escaped
+
+    I => Pro             # Word -> Category mapping
+    you => Pro
+    
+    the => Det
+
+    # Variables have the special keyword 'var'
+    # '.' prevents permutation
+    # ',' prevents composition
+    and => var\\.,var/.,var
+
+    which => (N\\N)/(S/NP)
+
+    will => Modal # Categories can be either explicit, or families.
+    might => Modal
+
+    cook => TV
+    eat => TV
+
+    mushrooms => N
+    parsnips => N
+    bacon => N
+    ''')
+
+def demo():
+    parser = CCGChartParser(lex, DefaultRuleSet)
+    for parse in parser.nbest_parse("I might cook and eat the bacon".split(), 3):
+        printCCGDerivation(parse)
+
+if __name__ == '__main__':
+    demo()
