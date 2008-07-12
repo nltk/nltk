@@ -1,7 +1,7 @@
 # Natural Language Toolkit: Interface to the Prover9 Theorem Prover 
 #
 # Author: Dan Garrette <dhgarrette@gmail.com>
-#              Ewan Klein <ewan@inf.ed.ac.uk>
+#         Ewan Klein <ewan@inf.ed.ac.uk>
 
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
@@ -11,7 +11,9 @@ import tempfile
 import subprocess
 from string import join
 
+from nltk.sem import logic 
 from nltk.sem.logic import *
+
 from nltk.internals import deprecated, Deprecated, find_binary
 
 from api import ProverI
@@ -150,7 +152,8 @@ def call_mace4(input_str, args=[]):
         
     # Call mace4 via a subprocess
     cmd = [_mace4_bin] + args
-    p = subprocess.Popen(cmd, stdout=subprocess.PIPE,
+    p = subprocess.Popen(cmd, 
+                         stdout=subprocess.PIPE,
                          stderr=subprocess.STDOUT,
                          stdin=subprocess.PIPE)
     (stdout, stderr) = p.communicate(input_str)
@@ -216,10 +219,10 @@ class Prover9Parent:
            into a string expression using L{convert_to_prover9()}."""
         
         if goal:
-            self._p9_goal = convert_to_prover9(self._goal)
+            self._p9_goal = self.convert_to_prover9(self._goal)
             
         if self._assumptions:
-            self._p9_assumptions = convert_to_prover9(self._assumptions)
+            self._p9_assumptions = self.convert_to_prover9(self._assumptions)
             
         self._timeout = timeout
         """The timeout value for prover9.  If a proof can not be found
@@ -257,7 +260,7 @@ class Prover9Parent:
         @type new_assumptions: C{list} of L{sem.logic.Expression}s
         """
         self._assumptions += new_assumptions
-        self._p9_assumptions += convert_to_prover9(new_assumptions)
+        self._p9_assumptions += self.convert_to_prover9(new_assumptions)
         return None
     
     def retract_assumptions(self, retracted, debug=False):
@@ -277,7 +280,7 @@ class Prover9Parent:
             self.assumptions()
             
         self._assumptions = result
-        self._p9_assumptions = convert_to_prover9(self._assumptions)
+        self._p9_assumptions = self.convert_to_prover9(self._assumptions)
         return None
     
     def assumptions(self, output_format='nltk'):
@@ -286,7 +289,7 @@ class Prover9Parent:
         """
         if output_format.lower() == 'nltk':
             for a in self._assumptions:
-                print a.infixify()
+                print a
         elif output_format.lower() == 'prover9':
             for a in self._p9_assumptions:
                 print a
@@ -294,6 +297,25 @@ class Prover9Parent:
             raise NameError("Unrecognized value for 'output_format': %s" %
                             output_format)
         
+    def convert_to_prover9(self, input):
+        """
+        Convert C{logic.Expression}s to Prover9 format.
+        """
+        logic.n = logic.Tokens.PROVER9
+        if isinstance(input, list):
+            result = []
+            for s in input:
+                try:
+                    result.append(str(s.simplify()))
+                except AssertionError:
+                    print 'input %s cannot be converted to Prover9 input syntax' % input
+            return result    
+        else:
+            try:
+                return str(input.simplify())
+            except AssertionError:
+                print 'input %s cannot be converted to Prover9 input syntax' % input
+
 #{ Deprecated     
     @deprecated("Use nltk.data.load(<file.fol>) instead.")    
     def load(self, filename):
@@ -308,96 +330,6 @@ class Prover9Parent:
             result.append(lp.parse(s))
         return result                 
 #}       
-
-######################################################################
-#{ Prover9 <-> logic.Expression conversion
-######################################################################
-
-def convert_to_prover9(input):
-    """
-    Convert C{logic.Expression}s to Prover9 format.
-    """
-    if isinstance(input, list):
-        result = []
-        for s in input:
-            try:
-                result.append(toProver9String(s.simplify().infixify()))
-            except AssertionError:
-                print 'input %s cannot be converted to Prover9 input syntax' % input
-        return result    
-    else:
-        try:
-            return toProver9String(input.simplify().infixify())
-        except AssertionError:
-            print 'input %s cannot be converted to Prover9 input syntax' % input
-    
-def toProver9String(current):
-    toProver9String_method = None
-    if isinstance(current, SomeExpression):
-        toProver9String_method = _toProver9String_SomeExpression
-    elif isinstance(current, VariableBinderExpression):
-        toProver9String_method = _toProver9String_VariableBinderExpression
-    elif isinstance(current, ApplicationExpression):
-        toProver9String_method = _toProver9String_ApplicationExpression
-    elif isinstance(current, Operator):
-        toProver9String_method = _toProver9String_Operator
-    elif isinstance(current, Expression):
-        toProver9String_method = _toProver9String_Expression
-    elif isinstance(current, Variable):
-        toProver9String_method = _toProver9String_Variable
-    elif isinstance(current, Constant):
-        toProver9String_method = _toProver9String_Constant
-    else:
-        raise AssertionError, 'Not a valid expression'
-
-    return toProver9String_method(current)
-
-def _toProver9String_SomeExpression(current):
-    return '%s %s %s' % ('exists', toProver9String(current.variable), toProver9String(current.term))
-    
-def _toProver9String_VariableBinderExpression(current):
-    prefix = current.__class__.PREFIX
-    variable = toProver9String(current.variable)
-    term = toProver9String(current.term)
-    return '%s%s %s' % (prefix, variable, term)
-
-def _toProver9String_ApplicationExpression(current):
-    # Print '((M op) N)' as '(M op N)'.
-    # Print '(M N)' as 'M(N)'.
-    if isinstance(current.first, ApplicationExpression) \
-        and isinstance(current.first.second, Operator):
-            firstStr = toProver9String(current.first.first)
-            opStr = toProver9String(current.first.second)
-            secondStr = toProver9String(current.second)
-            return '(%s %s %s)' % (firstStr, opStr, secondStr)
-    else:
-        accum = '%s(' % toProver9String(current.fun)
-        for arg in current.args:
-            accum += '%s, ' % toProver9String(arg)
-        return '%s)' % accum[0:-2]
-    
-def _toProver9String_Operator(current):
-    if(current.operator == 'and'):
-        return '&';
-    if(current.operator == 'or'):
-        return '|';
-    if(current.operator == 'not'):
-        return '-';
-    if(current.operator == 'implies'):
-        return '->';
-    if(current.operator == 'iff'):
-        return '<->';
-    else:
-        return current.operator
-
-def _toProver9String_Expression(current):
-    return current.__str__()
-
-def _toProver9String_Variable(current):
-    return current.name
-
-def _toProver9String_Constant(current):
-    return current.name
 
 
 ######################################################################
@@ -444,13 +376,13 @@ class Prover9(Prover9Parent, ProverI):
 
 
 ######################################################################
-#{ Tests & Demos
+#{ Tests and Demos
 ######################################################################
 
 def test_config():
     
-    a = LogicParser().parse('((walk j) and (sing j))')
-    g = LogicParser().parse('(walk j)')
+    a = LogicParser().parse('(walk(j) & sing(j))')
+    g = LogicParser().parse('walk(j)')
     p = Prover9(g, assumptions=[a])
     p._executable_path = None
     p.prover9_search=[]
@@ -465,7 +397,7 @@ def test_convert_to_prover9(expr):
     """
     for t in expr:
         e = LogicParser().parse(t)
-        print convert_to_prover9(e)
+        print Prover9Parent().convert_to_prover9(e)
         
 def test_prove(arguments):
     """
@@ -476,41 +408,41 @@ def test_prove(arguments):
         alist = [LogicParser().parse(a) for a in assumptions]
         p = Prover9(g, assumptions=alist).prove()
         for a in alist:
-            print '   %s' % a.infixify()
-        print '|- %s: %s\n' % (g.infixify(), p)
+            print '   %s' % a
+        print '|- %s: %s\n' % (g, p)
     
 arguments = [
-    ('((man x) iff (not (not (man x))))', []),
-    ('(not ((man x) and (not (man x))))', []),
-    ('((man x) or (not (man x)))', []),
-    ('((man x) and (not (man x)))', []),
-    ('((man x) implies (man x))', []),
-    ('(not ((man x) and (not (man x))))', []),
-    ('((man x) or (not (man x)))', []),
-    ('((man x) implies (man x))', []),
-    ('((man x) iff (man x))', []),
-    ('(not ((man x) iff (not (man x))))', []),
-    ('(mortal Socrates)', ['all x.((man x) implies (mortal x))', '(man Socrates)']),
-    ('((all x.((man x) implies (walks x)) and (man Socrates)) implies some y.(walks y))', []),
-    ('(all x.(man x) implies all x.(man x))', []),
-    ('some x.all y.(sees x y)', []),
-    ('some e3.((walk e3) and (subj e3 mary))', 
-        ['some e1.((see e1) and (subj e1 john) and some e2.((pred e1 e2) and (walk e2) and (subj e2 mary)))']),
-    ('some x e1.((see e1) and (subj e1 x) and some e2.((pred e1 e2) and (walk e2) and (subj e2 mary)))', 
-       ['some e1.((see e1) and (subj e1 john) and some e2.((pred e1 e2) and (walk e2) and (subj e2 mary)))'])
+    ('(man(x) <-> (not (not man(x))))', []),
+    ('(not (man(x) & (not man(x))))', []),
+    ('(man(x) | (not man(x)))', []),
+    ('(man(x) & (not man(x)))', []),
+    ('(man(x) -> man(x))', []),
+    ('(not (man(x) & (not man(x))))', []),
+    ('(man(x) | (not man(x)))', []),
+    ('(man(x) -> man(x))', []),
+    ('(man(x) <-> man(x))', []),
+    ('(not (man(x) <-> (not man(x))))', []),
+    ('mortal(Socrates)', ['all x.(man(x) -> mortal(x))', 'man(Socrates)']),
+    ('((all x.(man(x) -> walks(x)) & man(Socrates)) -> some y.walks(y))', []),
+    ('(all x.man(x) -> all x.man(x))', []),
+    ('some x.all y.sees(x,y)', []),
+    ('some e3.(walk(e3) & subj(e3, mary))', 
+        ['some e1.(see(e1) & subj(e1, john) & some e2.(pred(e1, e2) & walk(e2) & subj(e2, mary)))']),
+    ('some x e1.(see(e1) & subj(e1, x) & some e2.(pred(e1, e2) & walk(e2) & subj(e2, mary)))', 
+       ['some e1.(see(e1) & subj(e1, john) & some e2.(pred(e1, e2) & walk(e2) & subj(e2, mary)))'])
 ]
 
-expressions = [r'some x y.(sees x y)',
-               r'some x.((man x) and (walks x))',
-               r'\x.((man x) and (walks x))',
-               r'\x y.(sees x y)',
-               r'(walks john)',
-               r'\x.(big x \y.(mouse y))',
-               r'((walks x) and ((runs x) and ((threes x) and (fours x))))',
-               r'((walks x) implies (runs x))',
-               r'some x.((PRO x) and (sees John x))',
-               r'some x.((man x) and (not (walks x)))',
-               r'all x.((man x) implies (walks x))']
+expressions = [r'some x y.sees(x,y)',
+               r'some x.(man(x) & walks(x))',
+               r'\x.(man(x) & walks(x))',
+               r'\x y.sees(x,y)',
+               r'walks(john)',
+               r'\x.big(x, \y.mouse(y))',
+               r'(walks(x) & (runs(x) & (threes(x) & fours(x))))',
+               r'(walks(x) -> runs(x))',
+               r'some x.(PRO(x) & sees(John, x))',
+               r'some x.(man(x) & (not walks(x)))',
+               r'all x.(man(x) -> walks(x))']
 
 def spacer(num=45):
     print '-' * num

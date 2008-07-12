@@ -34,9 +34,9 @@ class Tableau(ProverI):
         try:
             agenda = Agenda()
             if self._goal:
-                agenda.put(negate(self._goal))
+                agenda.put(-self._goal)
             agenda.put_all(self._assumptions)
-            tp_result = _attempt_proof(agenda, set([]), set([]), (debug, 0))
+            tp_result = _attempt_proof(agenda, set(), set(), (debug, 0))
         except RuntimeError, e:
             if self._assume_false and str(e).startswith('maximum recursion depth exceeded'):
                 tp_result = False
@@ -83,24 +83,24 @@ class Tableau(ProverI):
         List the current assumptions.       
         """
         for a in self._assumptions:
-            print a.infixify()
+            print a
 
 
 class Agenda(object):
     def __init__(self):
-        self.sets = tuple(set([]) for i in range(17))
+        self.sets = tuple(set() for i in range(17))
         
     def clone(self):
         new_agenda = Agenda()
         set_list = [s.copy() for s in self.sets]
         
-        new_allExs = set([])
+        new_allExs = set()
         for allEx in set_list[Categories.ALL]:
             new_allEx = AllExpression(allEx.variable, allEx.term)
             try:
                 new_allEx._used_vars = set(used for used in allEx._used_vars)
             except AttributeError:
-                new_allEx._used_vars = set([])
+                new_allEx._used_vars = set()
             new_allExs.add(new_allEx)
         set_list[Categories.ALL] = new_allExs
                 
@@ -119,10 +119,10 @@ class Agenda(object):
             try:
                 ex_to_add._used_vars = set(used for used in expression._used_vars)
             except AttributeError:
-                ex_to_add._used_vars = set([])
+                ex_to_add._used_vars = set()
         else:
             ex_to_add = expression
-        self.sets[Agenda._categorize_expression(ex_to_add)].add(ex_to_add)
+        self.sets[self._categorize_expression(ex_to_add)].add(ex_to_add)
         
     def put_all(self, expressions):
         for expression in expressions:
@@ -131,7 +131,7 @@ class Agenda(object):
     def put_atoms(self, atoms):
         for atom in atoms:
             if atom[1]:
-                self[Categories.N_ATOM].add(negate(atom[0]))
+                self[Categories.N_ATOM].add(-atom[0])
             else:
                 self[Categories.ATOM].add(atom[0])
         
@@ -154,7 +154,7 @@ class Agenda(object):
     
         
     def replace_all(self, old, new):
-        self.sets = tuple(set(ex.replace(old.variable, new) for ex in s) for s in self.sets)
+        self.sets = tuple(set(ex.replace(old, new) for ex in s) for s in self.sets)
 
     def mark_alls_fresh(self):
         for u in self.sets[Categories.ALL]:
@@ -164,79 +164,52 @@ class Agenda(object):
         for neq in self.sets[Categories.N_EQ]:
             neq._exhausted = False
 
-    def _categorize_expression(current):
+    def _categorize_expression(self, current):
         if isinstance(current, AllExpression):
             return Categories.ALL
+        elif isinstance(current, AndExpression):
+            return Categories.AND
+        elif isinstance(current, OrExpression):
+            return Categories.OR
+        elif isinstance(current, ImpExpression):
+            return Categories.IMP
+        elif isinstance(current, IffExpression):
+            return Categories.IFF
+        elif isinstance(current, EqualityExpression):
+            return Categories.EQ
+        elif isinstance(current, NegatedExpression):
+            return self._categorize_NegatedExpression(current)
+        elif isinstance(current, ExistsExpression):
+            return Categories.EXISTS
         elif isinstance(current, ApplicationExpression):
-            return Agenda._categorize_ApplicationExpression(current)
-        elif isinstance(current, SomeExpression):
-            return Categories.SOME
-        else:
-            raise ProverParseError
-    
-    _categorize_expression = staticmethod(_categorize_expression)
-        
-    def _categorize_ApplicationExpression(current):
-        # if current is a binary operation
-        if isinstance(current.first, ApplicationExpression) \
-            and isinstance(current.first.first, Operator):
-                first = current.first.second
-                op = current.first.first
-                second = current.second
-                
-                if str(op) == 'and':
-                    return Categories.AND
-                elif str(op) == 'or':
-                    return Categories.OR
-                elif str(op) == 'implies':
-                    return Categories.IMP
-                elif str(op) == 'iff':
-                    return Categories.IFF
-                elif str(op) == '=':
-                    return Categories.EQ
-    
-        #if current is a negation
-        elif isinstance(current.first, Operator) and str(current.first.operator) == 'not':
-            negated = current.second
-            
-            #if current is a negated AllExpression
-            if isinstance(negated, AllExpression):
-                return Categories.N_ALL
-            
-            #if current is a negated SomeExpression
-            elif isinstance(negated, SomeExpression):
-                return Categories.N_SOME
-            
-            # if current is a negated binary operation
-            elif isinstance(negated.first, ApplicationExpression) \
-                and isinstance(negated.first.first, Operator):
-                    inner_first = negated.first.second
-                    inner_op = negated.first.first
-                    inner_second = negated.second
-                    
-                    if str(inner_op) == 'and':
-                        return Categories.N_AND
-                    elif str(inner_op) == 'or':
-                        return Categories.N_OR
-                    elif str(inner_op) == 'implies':
-                        return Categories.N_IMP
-                    elif str(inner_op) == 'iff':
-                        return Categories.N_IFF
-                    elif str(inner_op) == '=':
-                        return Categories.N_EQ
-                        
-            #if current is a double negation
-            elif isinstance(negated.first, Operator) and str(negated.first.operator) == 'not':
-                return Categories.D_NEG
-            
-            else:
-                return Categories.N_ATOM
-            
-        else:
             return Categories.ATOM
+        else:
+            raise ProverParseError()
     
-    _categorize_ApplicationExpression = staticmethod(_categorize_ApplicationExpression)
+    def _categorize_NegatedExpression(self, current):
+        negated = current.term
         
+        if isinstance(negated, AllExpression):
+            return Categories.N_ALL
+        elif isinstance(negated, AndExpression):
+            return Categories.N_AND
+        elif isinstance(negated, OrExpression):
+            return Categories.N_OR
+        elif isinstance(negated, ImpExpression):
+            return Categories.N_IMP
+        elif isinstance(negated, IffExpression):
+            return Categories.N_IFF
+        elif isinstance(negated, EqualityExpression):
+            return Categories.N_EQ
+        elif isinstance(negated, NegatedExpression):
+            return Categories.D_NEG
+        elif isinstance(negated, ExistsExpression):
+            return Categories.N_EXISTS
+        elif isinstance(negated, ApplicationExpression):
+            return Categories.N_ATOM
+        else:
+            raise ProverParseError()
+
 def _attempt_proof(agenda, accessible_vars, atoms, debug=(False, 0)):
     (current, category) = agenda.pop_first()
     
@@ -245,23 +218,23 @@ def _attempt_proof(agenda, accessible_vars, atoms, debug=(False, 0)):
         debug_line('AGENDA EMPTY', (debug[0], debug[1]+1)) 
         return False
     
-    proof_method = { Categories.ATOM:   _attempt_proof_atom,
-                     Categories.N_ATOM: _attempt_proof_n_atom,
-                     Categories.N_EQ:   _attempt_proof_n_eq,
-                     Categories.D_NEG:  _attempt_proof_d_neg,
-                     Categories.N_ALL:  _attempt_proof_n_all,
-                     Categories.N_SOME: _attempt_proof_n_some,
-                     Categories.AND:    _attempt_proof_and,
-                     Categories.N_OR:   _attempt_proof_n_or,
-                     Categories.N_IMP:  _attempt_proof_n_imp,
-                     Categories.OR:     _attempt_proof_or,
-                     Categories.IMP:    _attempt_proof_imp,
-                     Categories.N_AND:  _attempt_proof_n_and,
-                     Categories.IFF:    _attempt_proof_iff,
-                     Categories.N_IFF:  _attempt_proof_n_iff,
-                     Categories.EQ:     _attempt_proof_eq,
-                     Categories.SOME:   _attempt_proof_some,
-                     Categories.ALL:    _attempt_proof_all,
+    proof_method = { Categories.ATOM:     _attempt_proof_atom,
+                     Categories.N_ATOM:   _attempt_proof_n_atom,
+                     Categories.N_EQ:     _attempt_proof_n_eq,
+                     Categories.D_NEG:    _attempt_proof_d_neg,
+                     Categories.N_ALL:    _attempt_proof_n_all,
+                     Categories.N_EXISTS: _attempt_proof_n_some,
+                     Categories.AND:      _attempt_proof_and,
+                     Categories.N_OR:     _attempt_proof_n_or,
+                     Categories.N_IMP:    _attempt_proof_n_imp,
+                     Categories.OR:       _attempt_proof_or,
+                     Categories.IMP:      _attempt_proof_imp,
+                     Categories.N_AND:    _attempt_proof_n_and,
+                     Categories.IFF:      _attempt_proof_iff,
+                     Categories.N_IFF:    _attempt_proof_n_iff,
+                     Categories.EQ:       _attempt_proof_eq,
+                     Categories.EXISTS:   _attempt_proof_some,
+                     Categories.ALL:      _attempt_proof_all,
                     }[category]
     
     debug_line(current, debug)
@@ -277,7 +250,7 @@ def debug_line(data, debug):
                 additional += ':   []'
         
         if isinstance(data, Expression):
-            data = data.infixify()
+            data = data
         
         print '%s%s%s' % ('   '*debug[1], data, additional)
 
@@ -289,93 +262,93 @@ def _attempt_proof_atom(current, agenda, accessible_vars, atoms, debug=(False, 0
 
     #mark all AllExpressions as 'not exhausted' into the agenda since we are (potentially) adding new accessible vars
     agenda.mark_alls_fresh();
-    return _attempt_proof(agenda, accessible_vars|set(args(current)), atoms|set([(current, False)]), (debug[0], debug[1]+1)) 
+    return _attempt_proof(agenda, accessible_vars|set(current.args), atoms|set([(current, False)]), (debug[0], debug[1]+1)) 
     
 def _attempt_proof_n_atom(current, agenda, accessible_vars, atoms, debug=(False, 0)):
     # Check if the branch is closed.  Return 'True' if it is
-    if (current.second, False) in atoms:
+    if (current.term, False) in atoms:
         debug_line('CLOSED', (debug[0], debug[1]+1)) 
         return True
 
     #mark all AllExpressions as 'not exhausted' into the agenda since we are (potentially) adding new accessible vars
     agenda.mark_alls_fresh();
-    return _attempt_proof(agenda, accessible_vars|set(args(current.second)), atoms|set([(current.second, True)]), (debug[0], debug[1]+1)) 
+    return _attempt_proof(agenda, accessible_vars|set(current.term.args), atoms|set([(current.term, True)]), (debug[0], debug[1]+1)) 
     
 def _attempt_proof_n_eq(current, agenda, accessible_vars, atoms, debug=(False, 0)):
     ###########################################################################
     # Since 'current' is of type '~(a=b)', the path is closed if 'a' == 'b'
     ###########################################################################
-    if current.second.first.second == current.second.second:
+    if current.term.first == current.term.second:
         debug_line('CLOSED', (debug[0], debug[1]+1)) 
         return True
     
     agenda[Categories.N_EQ].add(current)
     current._exhausted = True
-    return _attempt_proof(agenda, accessible_vars|set(args(current.second)), atoms, (debug[0], debug[1]+1)) 
+    return _attempt_proof(agenda, accessible_vars|set([current.term.first, current.term.second]), atoms, (debug[0], debug[1]+1)) 
     
 def _attempt_proof_d_neg(current, agenda, accessible_vars, atoms, debug=(False, 0)):
-    agenda.put(current.second.second)
+    agenda.put(current.term.term)
     return _attempt_proof(agenda, accessible_vars, atoms, (debug[0], debug[1]+1))
     
 def _attempt_proof_n_all(current, agenda, accessible_vars, atoms, debug=(False, 0)):
-    agenda[Categories.SOME].add(SomeExpression(current.second.variable, negate(current.second.term)))
+    agenda[Categories.EXISTS].add(ExistsExpression(current.term.variable, -current.term.term))
     return _attempt_proof(agenda, accessible_vars, atoms, (debug[0], debug[1]+1))
     
 def _attempt_proof_n_some(current, agenda, accessible_vars, atoms, debug=(False, 0)):
-    agenda[Categories.ALL].add(AllExpression(current.second.variable, negate(current.second.term)))
+    agenda[Categories.ALL].add(AllExpression(current.term.variable, -current.term.term))
     return _attempt_proof(agenda, accessible_vars, atoms, (debug[0], debug[1]+1))
 
 def _attempt_proof_and(current, agenda, accessible_vars, atoms, debug=(False, 0)):
-    agenda.put(current.first.second)
+    agenda.put(current.first)
     agenda.put(current.second)
     return _attempt_proof(agenda, accessible_vars, atoms, (debug[0], debug[1]+1))
     
 def _attempt_proof_n_or(current, agenda, accessible_vars, atoms, debug=(False, 0)):
-    agenda.put(negate(current.second.first.second))
-    agenda.put(negate(current.second.second))
+    agenda.put(-current.term.first)
+    agenda.put(-current.term.second)
     return _attempt_proof(agenda, accessible_vars, atoms, (debug[0], debug[1]+1))
 
 def _attempt_proof_n_imp(current, agenda, accessible_vars, atoms, debug=(False, 0)):
-    agenda.put(current.second.first.second)
-    agenda.put(negate(current.second.second))
+    agenda.put(current.term.first)
+    agenda.put(-current.term.second)
     return _attempt_proof(agenda, accessible_vars, atoms, (debug[0], debug[1]+1))
 
 def _attempt_proof_or(current, agenda, accessible_vars, atoms, debug=(False, 0)):
     new_agenda = agenda.clone()
-    agenda.put(current.first.second)
+    agenda.put(current.first)
     new_agenda.put(current.second)
     return _attempt_proof(agenda, accessible_vars, atoms, (debug[0], debug[1]+1)) and \
             _attempt_proof(new_agenda, accessible_vars, atoms, (debug[0], debug[1]+1))
     
 def _attempt_proof_imp(current, agenda, accessible_vars, atoms, debug=(False, 0)):
     new_agenda = agenda.clone()
-    agenda.put(negate(current.first.second))
+    agenda.put(-current.first)
     new_agenda.put(current.second)
     return _attempt_proof(agenda, accessible_vars, atoms, (debug[0], debug[1]+1)) and \
             _attempt_proof(new_agenda, accessible_vars, atoms, (debug[0], debug[1]+1))
     
 def _attempt_proof_n_and(current, agenda, accessible_vars, atoms, debug=(False, 0)):
     new_agenda = agenda.clone()
-    agenda.put(negate(current.second.first.second))
-    new_agenda.put(negate(current.second.second))
+    agenda.put(-current.term.first)
+    new_agenda.put(-current.term.second)
     return _attempt_proof(agenda, accessible_vars, atoms, (debug[0], debug[1]+1)) and \
             _attempt_proof(new_agenda, accessible_vars, atoms, (debug[0], debug[1]+1))
     
 def _attempt_proof_iff(current, agenda, accessible_vars, atoms, debug=(False, 0)):
     new_agenda = agenda.clone()
-    agenda.put(current.first.second)
+    agenda.put(current.first)
     agenda.put(current.second)
-    new_agenda.put(negate(current.first.second))
-    new_agenda.put(negate(current.second))
+    new_agenda.put(-current.first)
+    new_agenda.put(-current.second)
     return _attempt_proof(agenda, accessible_vars, atoms, (debug[0], debug[1]+1)) and \
             _attempt_proof(new_agenda, accessible_vars, atoms, (debug[0], debug[1]+1))
 
 def _attempt_proof_n_iff(current, agenda, accessible_vars, atoms, debug=(False, 0)):
     new_agenda = agenda.clone()
-    agenda.put(current.second.first.second)
-    agenda.put(negate(current.second.second))
-    new_agenda.put(negate(current.second.first.second))
-    new_agenda.put(current.second.second)
+    agenda.put(current.term.first)
+    agenda.put(-current.term.second)
+    new_agenda.put(-current.term.first)
+    new_agenda.put(current.term.second)
     return _attempt_proof(agenda, accessible_vars, atoms, (debug[0], debug[1]+1)) and \
             _attempt_proof(new_agenda, accessible_vars, atoms, (debug[0], debug[1]+1))
 
@@ -385,10 +358,10 @@ def _attempt_proof_eq(current, agenda, accessible_vars, atoms, debug=(False, 0))
     # of 'a' with 'b'
     #########################################################################
     agenda.put_atoms(atoms)
-    agenda.replace_all(current.first.second, current.second)
-    accessible_vars.discard(current.first.second)
+    agenda.replace_all(current.first, current.second)
+    accessible_vars.discard(current.first)
     agenda.mark_neqs_fresh();
-    return _attempt_proof(agenda, accessible_vars, set([]), (debug[0], debug[1]+1))
+    return _attempt_proof(agenda, accessible_vars, set(), (debug[0], debug[1]+1))
 
 def _attempt_proof_some(current, agenda, accessible_vars, atoms, debug=(False, 0)):
     new_unique_variable = unique_variable()
@@ -400,7 +373,7 @@ def _attempt_proof_all(current, agenda, accessible_vars, atoms, debug=(False, 0)
     try:
         current._used_vars
     except AttributeError:
-        current._used_vars = set([])
+        current._used_vars = set()
     
     #if there are accessible_vars on the path
     if accessible_vars:
@@ -431,93 +404,74 @@ def _attempt_proof_all(current, agenda, accessible_vars, atoms, debug=(False, 0)
         agenda.mark_alls_fresh()
         return _attempt_proof(agenda, accessible_vars|set([new_unique_variable]), atoms, (debug[0], debug[1]+1))
 
-def negate(expression):
-    assert isinstance(expression, Expression)
-    return ApplicationExpression(Operator('not'), expression)
-    
-def args(appEx):
-    """
-    Uncurry the argument list.  
-    This is an 'overload' of logic.ApplicationExpression._args() 
-    because this version returns a list of Expressions instead 
-    of str objects.
-    """
-    assert isinstance(appEx, ApplicationExpression)
-    if isinstance(appEx.first, ApplicationExpression):
-        return args(appEx.first) + [appEx.second]
-    else:
-        return [appEx.second]
-    
+
 class Categories:
-    ATOM   = 0
-    N_ATOM = 1
-    N_EQ   = 2
-    D_NEG  = 3
-    N_ALL  = 4
-    N_SOME = 5
-    AND    = 6
-    N_OR   = 7
-    N_IMP  = 8
-    OR     = 9
-    IMP    = 10
-    N_AND  = 11
-    IFF    = 12
-    N_IFF  = 13
-    EQ     = 14
-    SOME   = 15
-    ALL    = 16
+    ATOM     = 0
+    N_ATOM   = 1
+    N_EQ     = 2
+    D_NEG    = 3
+    N_ALL    = 4
+    N_EXISTS = 5
+    AND      = 6
+    N_OR     = 7
+    N_IMP    = 8
+    OR       = 9
+    IMP      = 10
+    N_AND    = 11
+    IFF      = 12
+    N_IFF    = 13
+    EQ       = 14
+    EXISTS   = 15
+    ALL      = 16
 
 def testTableau():
-    f = LogicParser().parse(r'((man x) implies (not (not (man x))))')
-    print '|- %s: %s' % (f.infixify(), Tableau(f).prove())
-    f = LogicParser().parse(r'(not ((man x) and (not (man x))))')
-    print '|- %s: %s' % (f.infixify(), Tableau(f).prove())
-    f = LogicParser().parse(r'((man x) or (not (man x)))')
-    print '|- %s: %s' % (f.infixify(), Tableau(f).prove())
-    f = LogicParser().parse(r'((man x) implies (man x))')
-    print '|- %s: %s' % (f.infixify(), Tableau(f).prove())
-    f = LogicParser().parse(r'(not ((man x) and (not (man x))))')
-    print '|- %s: %s' % (f.infixify(), Tableau(f).prove())
-    f = LogicParser().parse(r'((man x) or (not (man x)))')
-    print '|- %s: %s' % (f.infixify(), Tableau(f).prove())
-    f = LogicParser().parse(r'((man x) implies (man x))')
-    print '|- %s: %s' % (f.infixify(), Tableau(f).prove())
-    f = LogicParser().parse(r'((man x) iff (man x))')
-    print '|- %s: %s' % (f.infixify(), Tableau(f).prove())
-    f = LogicParser().parse(r'(not ((man x) iff (not (man x))))')
-    print '|- %s: %s' % (f.infixify(), Tableau(f).prove())
-    p1 = LogicParser().parse(r'all x.((man x) implies (mortal x))')
-    p2 = LogicParser().parse(r'(man Socrates)')
-    c = LogicParser().parse(r'(mortal Socrates)')
-    print '%s, %s |- %s: %s' % (p1.infixify(), p2.infixify(), c.infixify(), Tableau(c, [p1,p2]).prove())
-    p1 = LogicParser().parse(r'all x.((man x) implies (walks x))')
-    p2 = LogicParser().parse(r'(man John)')
-    c = LogicParser().parse(r'some y.(walks y)')
-    print '%s, %s |- %s: %s' % (p1.infixify(), p2.infixify(), c.infixify(), Tableau(c, [p1,p2]).prove())
-    f = LogicParser().parse('all x.(man x)')
-    print '%s |- %s: %s' % (f.infixify(), f.infixify(), Tableau(f, [f]).prove())
-    p = LogicParser().parse(r'((x = y) and (walks y))')
-    c = LogicParser().parse(r'(walks x)')
-    print '%s |- %s: %s' % (p.infixify(), c.infixify(), Tableau(c, [p]).prove())
+    tableau_test(r'man(x)')
+    tableau_test(r'(man(x) -> man(x))')
+    tableau_test(r'(man(x) -> --man(x))')
+    tableau_test(r'-(man(x) and -man(x))')
+    tableau_test(r'(man(x) or -man(x))')
+    tableau_test(r'(man(x) -> man(x))')
+    tableau_test(r'-(man(x) and -man(x))')
+    tableau_test(r'(man(x) or -man(x))')
+    tableau_test(r'(man(x) -> man(x))')
+    tableau_test(r'(man(x) iff man(x))')
+    tableau_test(r'-(man(x) iff -man(x))')
+    tableau_test('all x.man(x)')
+    tableau_test('all x.all y.((x = y) -> (y = x))')
+    tableau_test('all x.all y.all z.(((x = y) & (y = z)) -> (x = z))')
+    tableau_test('-all x.some y.F(x,y) & some x.all y.(-F(x,y))')
+    tableau_test('some x.all y.sees(x,y)')
+
+    p1 = LogicParser().parse(r'all x.(man(x) -> mortal(x))')
+    p2 = LogicParser().parse(r'man(Socrates)')
+    c = LogicParser().parse(r'mortal(Socrates)')
+    print '%s, %s |- %s: %s' % (p1, p2, c, Tableau(c, [p1,p2]).prove())
+    
+    p1 = LogicParser().parse(r'all x.(man(x) -> walks(x))')
+    p2 = LogicParser().parse(r'man(John)')
+    c = LogicParser().parse(r'some y.walks(y)')
+    print '%s, %s |- %s: %s' % (p1, p2, c, Tableau(c, [p1,p2]).prove())
+    
+    p = LogicParser().parse(r'((x = y) and walks(y))')
+    c = LogicParser().parse(r'walks(x)')
+    print '%s |- %s: %s' % (p, c, Tableau(c, [p]).prove())
+    
     p = LogicParser().parse(r'((x = y) and ((y = z) and (z = w)))')
     c = LogicParser().parse(r'(x = w)')
-    print '%s |- %s: %s' % (p.infixify(), c.infixify(), Tableau(c, [p]).prove())
-    f = LogicParser().parse('all x.all y.((x = y) implies (y = x))')
-    print '|- %s: %s' % (f.infixify(), Tableau(f).prove())
-    f = LogicParser().parse('all x.all y.all z.(((x = y)and(y = z))implies(x = z))')
-    print '|- %s: %s' % (f.infixify(), Tableau(f).prove())
-    f = LogicParser().parse('(not(all x.some y.(F y x) and some x.all y.(not(F y x))))')
-    print '|- %s: %s' % (f.infixify(), Tableau(f).prove())
-    f = LogicParser().parse('some x.all y.(sees x y)')
-    print '|- %s: %s' % (f.infixify(), Tableau(f).prove())
-
-    p = LogicParser().parse(r'some e1.some e2.((believe e1 john e2) and (walk e2 mary))')
-    c = LogicParser().parse(r'some e0.(walk e0 mary)')
-    print '%s |- %s: %s' % (p.infixify(), c.infixify(), Tableau(c, [p]).prove())
+    print '%s |- %s: %s' % (p, c, Tableau(c, [p]).prove())
+    
+    p = LogicParser().parse(r'some e1.some e2.(believe(e1,john,e2) & walk(e2,mary))')
+    c = LogicParser().parse(r'some e0.walk(e0,mary)')
+    print '%s |- %s: %s' % (p, c, Tableau(c, [p]).prove())
     
 #    p = LogicParser().parse(r'some e1.some e2.((believe e1 john e2) and (walk e2 mary))')
 #    c = LogicParser().parse(r'some x.some e3.some e4.((believe e3 x e4) and (walk e4 mary))')
-#    print '%s |- %s: %s' % (p.infixify(), c.infixify(), Tableau(c,[p]).prove())
+#    print '%s |- %s: %s' % (p, c, Tableau(c,[p]).prove())
+
+def tableau_test(e):
+    f = LogicParser().parse(e)
+    t = Tableau(f)
+    print '|- %s: %s' % (f, t.prove())
 
 if __name__ == '__main__':
     testTableau()
