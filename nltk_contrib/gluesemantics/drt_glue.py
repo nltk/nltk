@@ -6,7 +6,7 @@
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
-from nltk_contrib.drt import DRT
+from nltk.sem import drt
 import linearlogic
 import lfg
 import glue
@@ -21,8 +21,8 @@ class DrtGlueFormula(glue.GlueFormula):
             indices = set()
 
         if isinstance(meaning, str):
-            self.meaning = DRT.DrtParser().parse(meaning)
-        elif isinstance(meaning, DRT.AbstractDrs):
+            self.meaning = drt.DrtParser().parse(meaning)
+        elif isinstance(meaning, drt.AbstractDrs):
             self.meaning = meaning
         else:
             raise RuntimeError, 'Meaning term neither string or expression: %s, %s' % (meaning, meaning.__class__)
@@ -37,10 +37,10 @@ class DrtGlueFormula(glue.GlueFormula):
         self.indices = indices
 
     def make_VariableExpression(self, name):
-        return DRT.DrtVariableExpression(name)
+        return drt.DrtVariableExpression(name)
         
     def make_LambdaExpression(self, variable, term):
-        return DRT.DrtLambdaExpression(variable, term)
+        return drt.DrtLambdaExpression(variable, term)
         
 class DrtGlueDict(glue.GlueDict):
     def get_GlueFormula_factory(self):
@@ -233,11 +233,12 @@ def demo(show_example=-1, remove_duplicates=False):
         print 'example not found'
 
 def test():
-    every = DRT.DrtParser().parse(r'\P Q.drs([],[((drs([x],[])+P(x)) -> Q(x))])')
-    man = DRT.DrtParser().parse(r'\x.drs([],[man(x)])')
-    chases = DRT.DrtParser().parse(r'\x y.drs([],[chases(x,y)])')
-    a = DRT.DrtParser().parse(r'\P Q.((drs([x],[])+P(x))+Q(x))')
-    dog = DRT.DrtParser().parse(r'\x.drs([],[dog(x)])')
+    parser = drt.DrtParser()
+    every = parser.parse(r'\P Q.drs([],[((drs([x],[])+P(x)) -> Q(x))])')
+    man = parser.parse(r'\x.drs([],[man(x)])')
+    chases = parser.parse(r'\x y.drs([],[chases(x,y)])')
+    a = parser.parse(r'\P Q.((drs([x],[])+P(x))+Q(x))')
+    dog = parser.parse(r'\x.drs([],[dog(x)])')
 
 def test1():
     cs = parse_to_compiled('David walks')
@@ -332,7 +333,7 @@ def test_event_representations():
 #    applied to the entire formula 
     finalize = DrtGlueFormula(r'\P.drs([e],[P(e)])', '(f -o f)')
     print '4) a dog walks.'
-    x = DRT.DrtParser().parse(r'(\P.drs([e],[P(e)]) \e.DRS([x],[dog(x),walk(e),subj(x,e)]))')
+    x = drt.DrtParser().parse(r'(\P.drs([e],[P(e)]) \e.DRS([x],[dog(x),walk(e),subj(x,e)]))')
     print x.simplify()
     for r in get_readings(gfl_to_compiled([a,dog,walks,finalize])):
         print r 
@@ -340,7 +341,7 @@ def test_event_representations():
     print ''
 
 #    This approach always adds 'finalize' manually  
-    finalize = DRT.DrtParser().parse(r'\P.(drs([e],[]) + P(e))')
+    finalize = drt.DrtParser().parse(r'\P.(drs([e],[]) + P(e))')
     print '5) a dog walks.'
     for r in get_readings(gfl_to_compiled([a,dog,walks])):
         print finalize.applyto(r).simplify()

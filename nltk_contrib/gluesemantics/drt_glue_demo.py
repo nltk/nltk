@@ -9,7 +9,7 @@
 from nltk.draw import *
 from tkFont import Font
 from nltk.sem import logic
-from nltk_contrib.drt import DrsDrawer, DrtVariableExpression
+from nltk.sem.drt import DrsDrawer, DrtVariableExpression
 from nltk_contrib.gluesemantics.drt_glue import DrtGlue
 
 class DrtGlueDemo(object):
