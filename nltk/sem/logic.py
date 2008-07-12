@@ -16,9 +16,6 @@ n = 1
 
 _counter = Counter()
 
-def unique_variable():
-    return VariableExpression('z' + str(_counter.get()))
-
 class Expression(object):
     def __call__(self, other):
         return self.applyto(other)
@@ -50,6 +47,9 @@ class Expression(object):
     def __hash__(self):
         return hash(repr(self))
     
+    def unique_variable(self):
+        return VariableExpression('z' + str(_counter.get()))
+
     def __repr__(self):
         return self.__class__.__name__ + ': ' + str(self)
 
@@ -155,7 +155,7 @@ class VariableBinderExpression(Expression):
             # if the bound variable appears in the expression, then it must
             # be alpha converted to avoid a conflict
             if self.variable in expression.free():
-                self = self.alpha_convert(unique_variable())
+                self = self.alpha_convert(self.unique_variable())
                 
             #replace in the term
             return self.__class__(self.variable,
@@ -608,7 +608,6 @@ def is_indvar(): pass
 class SubstituteBindingsI: pass
 class Operator: pass
 
-
 def demo():
     lp = LogicParser()
     print '='*20 + 'Test parser' + '='*20
@@ -640,3 +639,17 @@ def demo():
 
 if __name__ == '__main__':
     demo()
+
+    lp = LogicParser()
+    print lp.parse(r'\x.man(x) john')
+    print lp.parse(r'\x.man(x)(john)')
+    print ''
+    print lp.parse(r'\P.P(x) \x.man(x)')
+    print lp.parse(r'\P.P(x)(\x.man(x))')
+    print ''
+    print lp.parse(r'exists b.a(b) & a(b)')
+    print lp.parse(r'(exists b.a(b)) & a(b)')
+    print ''
+    print lp.parse(r'\x.(P(x))(y)') 
+    print lp.parse(r'(\x.P(x))(y)" instead of "\x.(P(x)(y))')
+
