@@ -12,12 +12,13 @@ import pickle
 import string
 import re
 
+from nltk import defaultdict
+
 from util import *
-from similarity import *
-from dictionary import *
+import dictionary
+import similarity
 from frequency import *
 from lexname import Lexname
-from nltk import defaultdict
 
 class Word(object):
     def __init__(self, line):
@@ -49,7 +50,7 @@ class Word(object):
         try:
             return self._synsets
         except AttributeError:
-            self._synsets = [getSynset(self.pos, offset)
+            self._synsets = [dictionary.synset(self.pos, offset)
                              for offset in self._synsetOffsets]
             del self._synsetOffsets
             return self._synsets
@@ -154,10 +155,10 @@ class WordSense(object):
 
     def synset(self):
         line = self._senseIndexLine()
-        return getSynset(self.ssType, int(line.split()[1]))
+        return dictionary.synset(self.ssType, int(line.split()[1]))
 
     def word(self):
-        return getWord(self.lemma, self.ssType)
+        return dictionary.word(self.lemma, self.ssType)
 
     def senseNo(self):
         line = self._senseIndexLine()
@@ -203,14 +204,9 @@ class Synset(object):
     
     Each synset contains one or more Senses, which represent a
     specific sense of a specific word.  Senses can be retrieved via
-    synset.getSenses() or through the index notations synset[0],
-    synset[string], or synset[word]. Synsets also originate zero or
-    more typed pointers, which can be accessed via
-    synset.getPointers() or synset.getPointers(pointerType). The
-    targets of a synset pointer can be retrieved via
-    synset.getPointerTargets() or
-    synset.getPointerTargets(pointerType), which are equivalent to
-    map(Pointer.getTarget(), synset.getPointerTargets(...)).
+    synset.senses() or through the index notations synset[0],
+    synset[string], or synset[word]. Synsets participate in
+    lexical relations, which can be accessed via synset.relations().
 
     >>> from nltk.wordnet import *
     >>> V['think'][0].synset.verbFrames
@@ -340,11 +336,7 @@ class Synset(object):
             
     def relations(self):
         """
-        Return a dictionary of synsets
-
-        If pointerType is specified, only pointers of that type are
-        returned. In this case, pointerType should be an element of
-        POINTER_TYPES.
+        Return a dictionary of synsets, one per lexical relation
 
         @return: relations defined on this L{Synset}.
         """
@@ -359,7 +351,7 @@ class Synset(object):
                 pos = normalizePOS(pos)
                 offset = int(offset)
 
-                synset = getSynset(pos, offset)
+                synset = dictionary.synset(pos, offset)
                 if idx:
                     relations[rel].append(synset[idx-1])
                 else:
@@ -598,22 +590,22 @@ class Synset(object):
     # interface to similarity methods
      
     def path_similarity(self, other, verbose=False):
-        return path_similarity(self, other, verbose)
+        return similarity.path_similarity(self, other, verbose)
 
     def lch_similarity(self, other, verbose=False):
-        return lch_similarity(self, other, verbose)
+        return similarity.lch_similarity(self, other, verbose)
         
     def wup_similarity(self, other, verbose=False):
-        return wup_similarity(self, other, verbose)
+        return similarity.wup_similarity(self, other, verbose)
 
     def res_similarity(self, other, ic, verbose=False):
-        return res_similarity(self, other, ic, verbose)
+        return similarity.res_similarity(self, other, ic, verbose)
 
     def jcn_similarity(self, other, ic, verbose=False):
-        return jcn_similarity(self, other, ic, verbose)
+        return similarity.jcn_similarity(self, other, ic, verbose)
     
     def lin_similarity(self, other, ic, verbose=False):
-        return lin_similarity(self, other, ic, verbose)
+        return similarity.lin_similarity(self, other, ic, verbose)
 
 
 # Lexical Relations
@@ -738,7 +730,6 @@ def demo():
     print "Closures and Trees:"
     print
 
-
     pprint(wordnet.ADJ['red'][0].closure(wordnet.SIMILAR, depth=1))
     pprint(wordnet.ADJ['red'][0].closure(wordnet.SIMILAR, depth=2))
     pprint(dog[0].tree(wordnet.HYPERNYM))
@@ -760,7 +751,7 @@ def demo():
     print [word for synset in dog[0][wordnet.HYPONYM] for word in synset]
 
     print "Hyponyms of the first (and only) sense of 'animal' that are homophonous with verbs:"
-    print [word for synset in wordnet.N['animal'][0].closure(wordnet.HYPONYM) for word in synset if word in V]
+    print [word for synset in wordnet.N['animal'][0].closure(wordnet.HYPONYM) for word in synset if word in wordnet.V]
 
     # BROKEN
     print "Senses of 'raise'(v.) and 'lower'(v.) that are antonyms:"
