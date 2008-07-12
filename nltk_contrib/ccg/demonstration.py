@@ -1,10 +1,10 @@
 # Demonstration code for using the CCG parser
 # Author: Graeme Gange
-import ccgparser
-import ccglexicon
+import parser
+import lexicon
 
 # Construct the lexicon
-lexicon = ccglexicon.parseLexicon('''
+lexicon = lexicon.parseLexicon('''
    :- S, NP, N, VP   # Primitive categories, S is the target primitive
 
    Det :: NP/N       # Family of words
@@ -36,8 +36,8 @@ lexicon = ccglexicon.parseLexicon('''
    ''')
 
 # Construct the parser
-parser = ccgparser.CCGChartParser(lexicon,ccgparser.DefaultRuleSet)
+parser = parser.CCGChartParser(lexicon,parser.DefaultRuleSet)
 
 # Parse a sentence
 for parse in parser.nbest_parse("I might cook and eat the bacon".split(),3):
-   ccgparser.printCCGDerivation(parse)
+   parser.printCCGDerivation(parse)

@@ -3,7 +3,7 @@
 
 import re
 from nltk import defaultdict
-from ccgcateg import *
+from api import *
 
 #------------
 # Regular expressions used for parsing components of the lexicon
@@ -161,8 +161,7 @@ def augParseCategory(line,primitives,families,var = None):
 
     return (res,var)
 
-# Takes an input string, and converts it into a lexicon for
-# CCGs.
+# Takes an input string, and converts it into a lexicon for CCGs.
 def parseLexicon(lex_str):
     primitives = []
     families = {}

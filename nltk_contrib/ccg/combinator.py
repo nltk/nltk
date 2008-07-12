@@ -1,7 +1,7 @@
 # Source file for CCG combinators
 # Author: Graeme Gange
 
-from ccgcateg import *
+from api import *
 
 class UndirectedBinaryCombinator:
     """

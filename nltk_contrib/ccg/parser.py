@@ -5,7 +5,7 @@ from nltk.parse.api import *
 from nltk.parse.chart import AbstractChartRule, EdgeI, Chart
 from nltk import Tree, defaultdict
 
-import ccglexicon
+import lexicon
 from combinator import *
 
 # Based on the EdgeI class from NLTK.

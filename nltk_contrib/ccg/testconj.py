@@ -1,8 +1,8 @@
 # Various experiments on CCGs.
 # Author: Graeme Gange
-from ccgparser import CCGChartParser, ApplicationRuleSet, CompositionRuleSet, SubstitutionRuleSet, TypeRaiseRuleSet
-from ccgparser import printCCGDerivation
-import ccglexicon
+from parser import CCGChartParser, ApplicationRuleSet, CompositionRuleSet, SubstitutionRuleSet, TypeRaiseRuleSet
+from parser import printCCGDerivation
+import lexicon
 
 # Lexicons for the tests
 test1_lex = '''
@@ -37,7 +37,7 @@ test2_lex = '''
 # Tests handling of conjunctions
 # Note that while the two derivations are different, they are semantically equivalent.
 def test1():
-    lexicon = ccglexicon.parseLexicon(test1_lex)
+    lexicon = lexicon.parseLexicon(test1_lex)
     parser = CCGChartParser(lexicon,ApplicationRuleSet + CompositionRuleSet + SubstitutionRuleSet)
     for parse in parser.nbest_parse("I will cook and might eat the mushrooms and parsnips".split()):
        printCCGDerivation(parse)
@@ -45,7 +45,7 @@ def test1():
 # Tests handling subject extraction
 # Interesting to point that the two parses are clearly semantically different.
 def test2():
-    lexicon = ccglexicon.parseLexicon(test2_lex)
+    lexicon = lexicon.parseLexicon(test2_lex)
 
     parser = CCGChartParser(lexicon,ApplicationRuleSet + CompositionRuleSet + SubstitutionRuleSet)
     for parse in parser.nbest_parse("articles which I will file and forget without reading".split()):
