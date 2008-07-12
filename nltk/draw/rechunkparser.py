@@ -32,7 +32,7 @@ import nltk
 
 from nltk.draw import *
 
-class RegexpChunkDemo:
+class RegexpChunkDemo(object):
     """
     A graphical tool for exploring the regular expression based chunk
     parser (L{RegexpChunkParser<nltk.chunk.regex.RegexpChunkParser>}).
@@ -141,7 +141,7 @@ class RegexpChunkDemo:
          "<hangindent>"
          "\t<<var>T</var>>\ta word with tag <var>T</var> "
          "(where <var>T</var> may be a regexp).\n"
-         "\t<var>x</var>?\tan optional <var>x</var>'s\n"
+         "\t<var>x</var>?\tan optional <var>x</var>\n"
          "\t<var>x</var>+\ta sequence of 1 or more <var>x</var>'s\n"
          "\t<var>x</var>*\ta sequence of 0 or more <var>x</var>'s\n"
          "\t<var>x</var>|<var>y</var>\t<var>x</var> or <var>y</var>\n"
