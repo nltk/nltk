@@ -94,8 +94,8 @@ recommended that you use full-fledged L{FeatStruct} objects.
 
 import re, copy
 
-from nltk.sem.logic import Variable, Expression, SubstituteBindingsI
-from nltk.sem.logic import LogicParser
+from nltk.sem.lambdalogic import Variable, Expression, SubstituteBindingsI
+from nltk.sem.lambdalogic import LogicParser
 import nltk.internals
 
 ######################################################################
