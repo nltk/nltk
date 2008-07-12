@@ -306,7 +306,7 @@ def brown_information_content(output_filename, compounds_filename, \
         synsets_done += 1
 
         count = noun_fd[noun_offset]
-        propagate_frequencies(temp, N.getSynset(noun_offset), count)
+        propagate_frequencies(temp, N.synset(noun_offset), count)
     noun_fd = temp
 
     temp = FreqDist()
@@ -317,7 +317,7 @@ def brown_information_content(output_filename, compounds_filename, \
         synsets_done += 1
 
         count = verb_fd[verb_offset]
-        propagate_frequencies(temp, V.getSynset(verb_offset), count)
+        propagate_frequencies(temp, V.synset(verb_offset), count)
     verb_fd = temp
 
     sys.stdout.write(" done.\n")
@@ -342,11 +342,11 @@ def brown_information_content(output_filename, compounds_filename, \
     root = N['entity'][0]
 
     for sample in noun_fd:
-        root = N.getSynset(sample).hypernym_paths()[0][0]
+        root = N.synset(sample).hypernym_paths()[0][0]
         noun_dict[sample] = (noun_fd[sample], noun_fd[root.offset])
 
     for sample in verb_fd:
-        root = V.getSynset(sample).hypernym_paths()[0][0]
+        root = V.synset(sample).hypernym_paths()[0][0]
         verb_dict[sample] = (verb_fd[sample], verb_fd[root.offset])
 
     sys.stdout.write(" done.\n")

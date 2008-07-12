@@ -56,6 +56,7 @@ Get those synsets of which 'dog' is a member meronym:
 from util import *
 from cache import *
 from lexname import *
+from dictionary import *
 from similarity import *
 from synset import *
 from browse import *
