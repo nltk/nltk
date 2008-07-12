@@ -60,7 +60,6 @@ setup(
                 'nltk_contrib.classifier.exceptions',
                 'nltk_contrib.classifier_tests',
                 'nltk_contrib.dependency',
-                'nltk_contrib.drt',
                 'nltk_contrib.fst',
                 'nltk_contrib.gluesemantics',
                 'nltk_contrib.lpath',
