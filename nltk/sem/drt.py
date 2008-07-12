@@ -20,9 +20,6 @@ from Tkinter import Tk
 from tkFont import Font
 from nltk.draw import in_idle
 
-def unique_variable():
-    return DrtVariableExpression('z' + str(logic._counter.get()))
-
 class AbstractDrs:
     def __call__(self, other):
         self.applyto(other)
@@ -54,6 +51,12 @@ class AbstractDrs:
     
     def get_pronoun_token(self):
         return Tokens.PRONOUN
+    
+    def get_EqualityExpression(self):
+        return DrtEqualityExpression
+
+    def unique_variable(self):
+        return DrtVariableExpression('z' + str(logic._counter.get()))
 
     def draw(self):
         DrsDrawer(self).draw()
@@ -85,7 +88,7 @@ class DRS(AbstractDrs, logic.Expression, RA.DRS):
             # any bound variable that appears in the expression must
             # be alpha converted to avoid a conflict
             for ref in (set(self.refs) & expression.free()):
-                newvar = unique_variable()
+                newvar = self.unique_variable()
                 i = self.refs.index(ref)
                 self = DRS(self.refs[:i]+[newvar]+self.refs[i+1:],
                            [cond.replace(ref, newvar, True) for cond in self.conds])
@@ -211,7 +214,7 @@ class ConcatenationDRS(AbstractDrs, logic.BooleanExpression, RA.ConcatenationDRS
         else:
             # alpha convert every ref that is free in 'expression'
             for ref in (set(self.get_refs()) & expression.free()): 
-                v = unique_variable()
+                v = self.unique_variable()
                 first  = first.replace(ref, v, True)
                 second = second.replace(ref, v, True)
 
@@ -231,7 +234,7 @@ class ConcatenationDRS(AbstractDrs, logic.BooleanExpression, RA.ConcatenationDRS
             # For any ref that is in both 'first' and 'second'
             for ref in (set(first.refs) & set(second.refs)):
                 # alpha convert the ref in 'second' to prevent collision
-                second = second.replace(ref, unique_variable(), True)
+                second = second.replace(ref, self.unique_variable(), True)
             
             return DRS(first.refs + second.refs, first.conds + second.conds)
         else:
@@ -633,12 +636,21 @@ def demo():
     print '='*20 + 'Test toFol()' + '='*20
     print parser.parse(r'DRS([x,y],[sees(x,y)])').toFol()
 
+
+    print '='*20 + 'Test alpha conversion and lambda expression equality' + '='*20
+    e1 = parser.parse(r'\x.drs([],[P(x)])')
+    print e1
+    e2 = e1.alpha_convert(DrtVariableExpression('z'))
+    print e2
+    print e1 == e2
+
     print '='*20 + 'Test resolve_anaphora()' + '='*20
     print parser.parse(r'DRS([x,y,z],[dog(x), cat(y), walks(z), PRO(z)])').resolve_anaphora()
     print parser.parse(r'DRS([],[(DRS([x],[dog(x)]) -> DRS([y],[walks(y), PRO(y)]))])').resolve_anaphora()
     print parser.parse(r'(DRS([x,y],[]) + DRS([],[PRO(x)]))').resolve_anaphora()
     print parser.parse(r'DRS([x],[walks(x), PRO(x)])').resolve_anaphora()
-    
+
+    print '='*20 + 'Test tp_equals()' + '='*20
     a = parser.parse(r'DRS([x],[man(x), walks(x)])')
     b = parser.parse(r'DRS([x],[walks(x), man(x)])')
     print a.tp_equals(b)

@@ -364,7 +364,7 @@ def _attempt_proof_eq(current, agenda, accessible_vars, atoms, debug=(False, 0))
     return _attempt_proof(agenda, accessible_vars, set(), (debug[0], debug[1]+1))
 
 def _attempt_proof_some(current, agenda, accessible_vars, atoms, debug=(False, 0)):
-    new_unique_variable = unique_variable()
+    new_unique_variable = current.unique_variable()
     agenda.put(current.term.replace(current.variable, new_unique_variable))
     agenda.mark_alls_fresh()
     return _attempt_proof(agenda, accessible_vars|set([new_unique_variable]), atoms, (debug[0], debug[1]+1))
@@ -396,7 +396,7 @@ def _attempt_proof_all(current, agenda, accessible_vars, atoms, debug=(False, 0)
             return _attempt_proof(agenda, accessible_vars, atoms, (debug[0], debug[1]+1))
             
     else:
-        new_unique_variable = unique_variable()
+        new_unique_variable = current.unique_variable()
         debug_line('--> Using \'%s\'' % new_unique_variable, (debug[0], debug[1]+2))
         current._used_vars |= set([new_unique_variable])
         agenda.put(current.term.replace(current.variable, new_unique_variable))

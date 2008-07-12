@@ -53,7 +53,7 @@ class ImpExpression(BooleanExpression):
 class IffExpression(BooleanExpression):
     pass
 
-class EqualityExpression(BooleanExpression, logic.EqualityExpression):
+class EqualityExpression(BooleanExpression):
     def isNullResolution(self):
         return (isinstance(self.second, PossibleAntecedents) and not self.second) or \
                 (isinstance(self.first, PossibleAntecedents) and not self.first)
@@ -78,10 +78,11 @@ class ApplicationExpression:
             #===============================================================================
             arg = self.args[0]
             possible_antecedents.remove(arg)
+            equalityExpression = self.get_EqualityExpression()
             if len(possible_antecedents) == 1:
-                equalityExp = EqualityExpression(arg, possible_antecedents[0])
+                equalityExp = equalityExpression(arg, possible_antecedents[0])
             else:
-                equalityExp = EqualityExpression(arg, possible_antecedents) 
+                equalityExp = equalityExpression(arg, possible_antecedents) 
             return equalityExp
         else:
             r_function = self.function.resolve_anaphora(trail + [self])
