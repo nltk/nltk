@@ -8,7 +8,12 @@ import sys
 
 # Requires eGenix.com mx Base Distribution
 # http://www.egenix.com/products/python/mxBase/
-from mx.DateTime import *
+try:
+    from mx.DateTime import *
+except ImportError:
+    print """
+Requires eGenix.com mx Base Distribution
+http://www.egenix.com/products/python/mxBase/"""
 
 # Predefined strings.
 numbers = "(^a(?=\s)|one|two|three|four|five|six|seven|eight|nine|ten| \
@@ -74,31 +79,31 @@ def tag(text):
     return text
 
 # Hash function for week days to simplify the grounding task.
- # [Mon..Sun] -> [0..6]
-hashweekdays =
-    {'Monday': 0,
-     'Tuesday': 1,
-     'Wednesday': 2,
-     'Thursday': 3,
-     'Friday': 4,
-     'Saturday': 5,
-     'Sunday': 6}
+# [Mon..Sun] -> [0..6]
+hashweekdays = {
+    'Monday': 0,
+    'Tuesday': 1,
+    'Wednesday': 2,
+    'Thursday': 3,
+    'Friday': 4,
+    'Saturday': 5,
+    'Sunday': 6}
 
 # Hash function for months to simplify the grounding task.
 # [Jan..Dec] -> [1..12]
-hashmonths =
-    {'January': 1,
-     'February': 2,
-     'March': 3,
-     'April': 4,
-     'May': 5,
-     'June': 6,
-     'July': 7,
-     'August': 8,
-     'September': 9,
-     'October': 10,
-     'November': 11,
-     'December': 12}
+hashmonths = {
+    'January': 1,
+    'February': 2,
+    'March': 3,
+    'April': 4,
+    'May': 5,
+    'June': 6,
+    'July': 7,
+    'August': 8,
+    'September': 9,
+    'October': 10,
+    'November': 11,
+    'December': 12}
 
 # Hash number in words into the corresponding integer value
 def hashnum(number):
@@ -344,6 +349,7 @@ def ground(tagged_text, base_date):
 ####
 
 def demo():
+    import nltk
     text = nltk.corpus.abc.raw('rural.txt')[:10000]
     print tag(text)
 
