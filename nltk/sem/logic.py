@@ -19,7 +19,7 @@ _counter = Counter()
 def unique_variable():
     return VariableExpression('z' + str(_counter.get()))
 
-class Expression:
+class Expression(object):
     def __call__(self, other):
         return self.applyto(other)
     
@@ -63,17 +63,17 @@ class ApplicationExpression(Expression):
         self.args = args
         
     def simplify(self):
-        function = self.function.simplify()
-        args = [arg.simplify() for arg in self.args]
+        accum = self.function.simplify()
 
-        if isinstance(function, LambdaExpression):
-            if len(self.args) != 1:
-                raise ParseException("The function %s abstracts %s variables but there are %s arguments: (%s)" 
-                                     % (function, len(function.variables), len(self.args), 
-                                        ','.join([str(arg) for arg in self.args])))
-            return function.term.replace(function.variable, arg).simplify()
+        if isinstance(accum, LambdaExpression):
+            for arg in self.args:
+                if isinstance(accum, LambdaExpression):
+                    accum = accum.term.replace(accum.variable, arg.simplify()).simplify()
+                else:
+                    accum = self.__class__(accum, [arg.simplify()])
+            return accum
         else:
-            return self.__class__(function, args)
+            return self.__class__(accum, [arg.simplify() for arg in self.args])
         
     def replace(self, variable, expression, replace_bound=False):
         return self.__class__(self.function.replace(variable, expression, replace_bound),
@@ -130,52 +130,12 @@ class VariableExpression(Expression):
     def __str__(self):
         return self.name
     
-class LambdaExpression(Expression):
-    """
-    @param variable: C{VariableExpression}, for the abstracted variable
-    @param term: C{Expression}, for the term
-    """
+class VariableBinderExpression(Expression):
     def __init__(self, variable, term):
-        self.variable = variable
-        self.term = term
-
-    def simplify(self):
-        return self.__class__(self.variable, self.term.simplify())
-
-    def replace(self, variable, expression, replace_bound=False):
-        #if the bound variable is the thing being replaced
-        if self.variable == variable:
-            if not replace_bound:
-                return self
-            else: 
-                return self.__class__(expression, self.term.replace(variable, expression, True))
-        else:
-            # if the bound variable appears in the expression, then it must
-            # be alpha converted to avoid a conflict
-            if self.variable in expression.free():
-                newvar = unique_variable()
-                self = self.__class__(newvar, self.term.replace(self.variable, newvar, True))
-                
-            #replace in the term
-            return self.__class__(self.variable, 
-                                  self.term.replace(variable, expression, replace_bound))
-
-    def free(self):
-        return self.term.free() - set([self.variable])
-
-    def __eq__(self, other):
-        return isinstance(other, self.__class__) \
-                and self.variable == other.variable and self.term == other.term
-
-    def __str__(self):
-        return Tokens.LAMBDA[n] + str(self.variable) + Tokens.DOT[n] + str(self.term)
-
-class QuantifiedExpression(Expression):
-    """
-    @param variable: C{VariableExpression}, for the variable
-    @param term: C{Expression}, for the term
-    """
-    def __init__(self, variable, term):
+        """
+        @param variable: C{VariableExpression}, for the variable
+        @param term: C{Expression}, for the term
+        """
         self.variable = variable
         self.term = term
 
@@ -210,9 +170,22 @@ class QuantifiedExpression(Expression):
         return self.term.free() - set([self.variable])
 
     def __eq__(self, other):
-        return isinstance(other, self.__class__) \
-                and self.variable == other.variable and self.term == other.term
+        r"""Defines equality modulo alphabetic variance.
+        If we are comparing \x.M  and \y.N, then check equality of M and N[x/y]."""
+        if isinstance(other, self.__class__):
+            if self.variable == other.variable:
+                return self.term == other.term
+            else:
+                # Comparing \x.M  and \y.N.  Relabel y in N with x and continue.
+                return self.term == other.term.replace(other.variable, self.variable)
+        else:
+            return False
 
+class LambdaExpression(VariableBinderExpression):
+    def __str__(self):
+        return Tokens.LAMBDA[n] + str(self.variable) + Tokens.DOT[n] + str(self.term)
+
+class QuantifiedExpression(VariableBinderExpression):
     def __str__(self):
         return self.getPredicate() + ' ' + str(self.variable) + Tokens.DOT[n] + str(self.term)
         
@@ -578,8 +551,8 @@ class LogicParser:
     def make_VariableExpression(self, name):
         return VariableExpression(name)
     
-    def make_LambdaExpression(self, variables, term):
-        return LambdaExpression(variables, term)
+    def make_LambdaExpression(self, variable, term):
+        return LambdaExpression(variable, term)
     
     def assertToken(self, tok, expected):
         if isinstance(expected, list):
@@ -638,6 +611,7 @@ class Operator: pass
 
 def demo():
     lp = LogicParser()
+    print '='*20 + 'Test parser' + '='*20
     print lp.parse(r'john')
     print lp.parse(r'man(x)')
     print lp.parse(r'-man(x)')
@@ -651,10 +625,18 @@ def demo():
     print lp.parse(r'exists x.(x = john)')
     print lp.parse(r'\P Q.exists x.(P(x) & Q(x))')
     
+    print '='*20 + 'Test simplify' + '='*20
     print lp.parse(r'\x.\y.sees(x,y)(john)(mary)').simplify()
     print lp.parse(r'\x.\y.sees(x,y)(john, mary)').simplify()
     print lp.parse(r'exists x.(man(x) & (\x.exists y.walks(x,y))(x))').simplify()
     print lp.parse(r'((\P.\Q.exists x.(P(x) & Q(x)))(\x.dog(x)))(\x.bark(x))').simplify()
+    
+    print '='*20 + 'Test alpha conversion and binder expression equality' + '='*20
+    e1 = lp.parse('exists x.P(x)')
+    print e1
+    e2 = e1.alpha_convert(VariableExpression('z'))
+    print e2
+    print e1 == e2
 
 if __name__ == '__main__':
     demo()
