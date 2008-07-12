@@ -1,7 +1,7 @@
 # Various experiments on CCGs.
 # Author: Graeme Gange
-from parser import CCGChartParser, ApplicationRuleSet, CompositionRuleSet, SubstitutionRuleSet, TypeRaiseRuleSet
-from parser import printCCGDerivation
+from chart import CCGChartParser, ApplicationRuleSet, CompositionRuleSet, SubstitutionRuleSet, TypeRaiseRuleSet
+from chart import printCCGDerivation
 import lexicon
 
 # Lexicons for the tests
