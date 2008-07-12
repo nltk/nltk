@@ -74,7 +74,7 @@ class GlueFormula:
         """From Iddo Lev's PhD Dissertation p108-109"""
         if not counter:
             counter = Counter()
-        (compiled_glue, new_forms) = self.glue.simplify().compile_pos(counter, GlueFormula)
+        (compiled_glue, new_forms) = self.glue.simplify().compile_pos(counter, self.__class__)
         return new_forms + [self.__class__(self.meaning, compiled_glue, set([counter.get()]))]
 
     def simplify(self):
@@ -306,7 +306,7 @@ class Glue:
         if self.remove_duplicates:
             for reading in reading_list:
                 try:
-                    if reading.tp_equals(glueformula.meaning):
+                    if reading.tp_equals(glueformula.meaning, 'Prover9'):
                         add_reading = False
                         break;
                 except:
