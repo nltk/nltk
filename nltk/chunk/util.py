@@ -93,6 +93,9 @@ class ChunkScore(object):
           C{correct} will not return more than this number of true
           negative examples.  This does *not* affect any of the
           numerical metrics (precision, recall, or f-measure)
+
+        - chunk_node: A regular expression indicating which chunks
+          should be compared.  Defaults to C{'.*'} (i.e., all chunks).
         
     @type _tp: C{list} of C{Token}
     @ivar _tp: List of true positives
@@ -117,6 +120,7 @@ class ChunkScore(object):
         self._max_tp = kwargs.get('max_tp_examples', 100)
         self._max_fp = kwargs.get('max_fp_examples', 100)
         self._max_fn = kwargs.get('max_fn_examples', 100)
+        self._chunk_node = kwargs.get('chunk_node', '.*')
         self._tp_num = 0
         self._fp_num = 0
         self._fn_num = 0
@@ -145,9 +149,8 @@ class ChunkScore(object):
         @type guessed: chunk structure
         @param guessed: The chunked sentence to be scored.
         """
-
-        self._correct |= _chunksets(correct, self._count)
-        self._guessed |= _chunksets(guessed, self._count)
+        self._correct |= _chunksets(correct, self._count, self._chunk_node)
+        self._guessed |= _chunksets(guessed, self._count, self._chunk_node)
         self._count += 1
         self._measuresNeedUpdate = True
 
@@ -257,22 +260,17 @@ class ChunkScore(object):
                 ("    Recall:    %5.1f%%\n" % (self.recall()*100))+
                 ("    F-Measure: %5.1f%%" % (self.f_measure()*100)))
         
-    def _chunk_toks(self, text):
-        """
-        @return: The list of tokens contained in C{text}.
-        """
-        return [tok for tok in text if isinstance(tok, AbstractTree)]
-
 # extract chunks, and assign unique id, the absolute position of
 # the first word of the chunk
-def _chunksets(t, count):
+def _chunksets(t, count, chunk_node):
     pos = 0
     chunks = []
     for child in t:
-        try:
-            chunks.append(((count, pos), tuple(child.freeze())))
-            pos += len(child)
-        except AttributeError:
+        if isinstance(child, Tree):
+            if re.match(chunk_node, child.node):
+                chunks.append(((count, pos), tuple(child.freeze())))
+            pos += len(child.leaves())
+        else:
             pos += 1
     return set(chunks)
 
