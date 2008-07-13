@@ -104,7 +104,7 @@ class Agenda(object):
             new_allExs.add(new_allEx)
         set_list[Categories.ALL] = new_allExs
                 
-        set_list[Categories.N_EQ] = set(ApplicationExpression(n_eq.first, n_eq.second) 
+        set_list[Categories.N_EQ] = set(NegatedExpression(n_eq.term) 
                                         for n_eq in set_list[Categories.N_EQ])
 
         new_agenda.sets = tuple(set_list)
