@@ -54,11 +54,11 @@ class Expression(object):
         return self.__class__.__name__ + ': ' + str(self)
 
 class ApplicationExpression(Expression):
-    """
-    @param function: C{Expression}, for the function expression
-    @param args: C{list} of C{Expression}, for the arguments   
-    """
     def __init__(self, function, args):
+        """
+        @param function: C{Expression}, for the function expression
+        @param args: C{list} of C{Expression}, for the arguments   
+        """
         self.function = function
         self.args = args
         
@@ -106,10 +106,10 @@ class ApplicationExpression(Expression):
                ','.join([str(arg) for arg in self.args]) + Tokens.CLOSE
 
 class VariableExpression(Expression):
-    """
-    @param name: C{str}, for the variable name
-    """
     def __init__(self, name):
+        """
+        @param name: C{str}, for the variable name
+        """
         self.name = name
 
     def simplify(self):
@@ -129,6 +129,9 @@ class VariableExpression(Expression):
         
     def __str__(self):
         return self.name
+    
+class IndividualVariableExpression(VariableExpression):
+    pass
     
 class VariableBinderExpression(Expression):
     def __init__(self, variable, term):
@@ -314,7 +317,7 @@ class LogicParser:
         @returns: a parsed Expression
         """
         self._currentIndex = 0
-        self._buffer = WhitespaceTokenizer().tokenize(self.process(data))
+        self._buffer = self.process(data).split()
         result = self.parse_Expression()
         if self.inRange(0):
             raise UnexpectedTokenException(self.token(0))
@@ -412,6 +415,9 @@ class LogicParser:
                     args.append(self.parse_Expression())
             self.assertToken(self.token(), Tokens.CLOSE)
             
+            if is_indvar(tok):
+                raise ParseException('\'%s\' is an illegal variable name.  Predicate '
+                                     'variables may not be individual variables' % tok)
             expression = self.make_ApplicationExpression(self.make_VariableExpression(tok), args)
             return self.attempt_BooleanExpression(expression)
         else:
@@ -464,10 +470,13 @@ class LogicParser:
             vars.append(self.token())
         self.assertToken(self.token(), Tokens.DOT)
 
-        term = self.parse_Expression()
-        accum = factory(self.make_VariableExpression(vars.pop()), term)
+        accum = self.parse_Expression()
         while vars:
-            accum = factory(self.make_VariableExpression(vars.pop()), accum)
+            var = vars.pop()
+            if not is_indvar(var):
+                raise ParseException('\'%s\' is an illegal variable name.  Quantifier '
+                                     'variables must be individual variables' % var)
+            accum = factory(self.make_VariableExpression(var), accum)
         
         return self.attempt_BooleanExpression(accum)
         
@@ -549,7 +558,10 @@ class LogicParser:
         return ApplicationExpression(function, args)
     
     def make_VariableExpression(self, name):
-        return VariableExpression(name)
+        if is_indvar(name):
+            return IndividualVariableExpression(name)
+        else:
+            return VariableExpression(name)
     
     def make_LambdaExpression(self, variable, term):
         return LambdaExpression(variable, term)
@@ -591,21 +603,30 @@ class ParseException(Exception):
     def __init__(self, message):
         Exception.__init__(self, message)
 
-class UnexpectedTokenException(Exception):
+class UnexpectedTokenException(ParseException):
     def __init__(self, tok, expected=None):
         if expected:
-            Exception.__init__(self, "parse error, unexpected token: %s.  Expected token: %s" % (tok, expected))
+            ParseException.__init__(self, "parse error, unexpected token: %s.  Expected token: %s" % (tok, expected))
         else:
-            Exception.__init__(self, "parse error, unexpected token: %s" % tok)
+            ParseException.__init__(self, "parse error, unexpected token: %s" % tok)
         
         
+def is_indvar(expr):
+    """
+    An individual variable must be a single lowercase character followed by
+    zero or more digits.
+    
+    @param expr: C{str}
+    @return: C{boolean} True if expr is of the correct form 
+    """
+    assert isinstance(expr, str)
+    return expr[0].isalpha() and expr[0].islower() and \
+            (len(expr) == 1 or expr[1:].isdigit())
+
 ###############################
 #TODO: DELETE ALL
 ################################
-class Error: pass
 class Variable: pass
-def is_indvar(): pass
-class SubstituteBindingsI: pass
 class Operator: pass
 
 def demo():
@@ -639,17 +660,3 @@ def demo():
 
 if __name__ == '__main__':
     demo()
-
-    lp = LogicParser()
-    print lp.parse(r'\x.man(x) john')
-    print lp.parse(r'\x.man(x)(john)')
-    print ''
-    print lp.parse(r'\P.P(x) \x.man(x)')
-    print lp.parse(r'\P.P(x)(\x.man(x))')
-    print ''
-    print lp.parse(r'exists b.a(b) & a(b)')
-    print lp.parse(r'(exists b.a(b)) & a(b)')
-    print ''
-    print lp.parse(r'\x.(P(x))(y)') 
-    print lp.parse(r'(\x.P(x))(y)" instead of "\x.(P(x)(y))')
-
