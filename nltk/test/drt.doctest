@@ -7,32 +7,220 @@
 A DRS is created with ``DRS()``. This takes two arguments: a list of
 discourse referents and list of conditions. 
 
-    >>> from nltk_contrib.drt import DRT
-    >>> dp = DRT.Parser()
-    >>> man_x = dp.parse('(man x)')
-    >>> walk_x = dp.parse('(walks x)')
+    >>> from nltk.sem.drt import *
+    
+    >>> dp = DrtParser()
+    
+    >>> man_x = dp.parse('man(x)')
+    >>> walk_x = dp.parse('walk(x)')
     >>> x = dp.parse('x')
-    >>> drs1 = DRT.DRS([x], [man_x, walk_x])
-    >>> drs1
-    DRS([x],[(man x),(walks x)])
+    >>> print DRS([x], [man_x, walk_x])
+    DRS([x],[man(x), walk(x)])
 
 The ``parse()`` method can also be applied directly to DRS
 expressions, which allows them to be specified more
 easily.
 
-    >>> drs1 = dp.parse('DRS([x],[(man x),(walks x)])')
-    >>> drs1
-    DRS([x],[(man x),(walks x)])
+    >>> drs1 = dp.parse('DRS([x],[man(x),walk(x)])')
+    >>> print drs1
+    DRS([x],[man(x), walk(x)])
 
 DRSs can be *merged* using the ``+`` operator.
 
-    >>> drs2 = dp.parse('DRS([y],[(woman y),(stops y)])')
+    >>> drs2 = dp.parse('DRS([y],[woman(y),stop(y)])')
     >>> drs3 = drs1 + drs2
-    >>> drs3.simplify()
-    DRS([x,y],[(man x),(walks x),(woman y),(stops y)])
+    >>> print drs3.simplify()
+    DRS([x,y],[man(x), walk(x), woman(y), stop(y)])
 
 We can embed DRSs as components of an ``implies`` condition.
 
-    >>> s = 'DRS([], [(%s implies %s)])' % (drs1, drs2)
-    >>> dp.parse(s).infixify()
-    DRS([],[(DRS([x],[(man x),(walks x)]) implies DRS([y],[(woman y),(stops y)]))])
+    >>> s = 'DRS([], [(%s -> %s)])' % (drs1, drs2)
+    >>> print dp.parse(s)
+    DRS([],[(DRS([x],[man(x), walk(x)]) -> DRS([y],[woman(y), stop(y)]))])
+
+
+Parser
+    
+    >>> n = Tokens.NEW_NLTK
+
+    >>> dp.parse(r'DRS([x,y],[sees(x,y)])')
+    DRS([x,y],[sees(x,y)])
+    >>> dp.parse(r'DRS([x],[man(x), walks(x)])')
+    DRS([x],[man(x), walks(x)])
+    >>> dp.parse(r'\x.DRS([],[man(x), walks(x)])')
+    \x.DRS([],[man(x), walks(x)])
+    >>> dp.parse(r'\x.\y.DRS([],[sees(x,y)])')
+    \x.\y.DRS([],[sees(x,y)])
+
+    >>> dp.parse(r'\x.DRS([],[walks(x)])(john)')
+    \x.DRS([],[walks(x)])(john)
+    >>> dp.parse(r'\R.\x.DRS([],[big(x,R)])(\y.DRS([],[mouse(y)]))')
+    (\R.\x.DRS([],[big(x,R)]))(\y.DRS([],[mouse(y)]))
+
+    >>> dp.parse(r'(DRS([x],[walks(x)]) + DRS([y],[runs(y)]))')
+    (DRS([x],[walks(x)]) + DRS([y],[runs(y)]))
+    >>> dp.parse(r'(DRS([x,y],[walks(x), jumps(y)]) + (DRS([z],[twos(z)]) + DRS([w],[runs(w)])))')
+    (DRS([x,y],[walks(x), jumps(y)]) + (DRS([z],[twos(z)]) + DRS([w],[runs(w)])))
+    >>> dp.parse(r'((DRS([],[walks(x)]) + DRS([],[twos(x)])) + DRS([],[runs(x)]))')
+    ((DRS([],[walks(x)]) + DRS([],[twos(x)])) + DRS([],[runs(x)]))
+    >>> dp.parse(r'((DRS([],[walks(x)]) + DRS([],[runs(x)])) + (DRS([],[threes(x)]) + DRS([],[fours(x)])))')
+    ((DRS([],[walks(x)]) + DRS([],[runs(x)])) + (DRS([],[threes(x)]) + DRS([],[fours(x)])))
+    >>> dp.parse(r'(DRS([],[walks(x)]) + runs(x))')
+    (DRS([],[walks(x)]) + runs(x))
+    >>> dp.parse(r'(walks(x) + DRS([],[runs(x)]))')
+    (walks(x) + DRS([],[runs(x)]))
+    >>> dp.parse(r'(walks(x) + runs(x))')
+    (walks(x) + runs(x))
+
+    >>> dp.parse(r'(DRS([],[walks(x)]) -> DRS([],[runs(x)]))')
+    (DRS([],[walks(x)]) -> DRS([],[runs(x)]))
+    >>> dp.parse(r'(DRS([],[walks(x)]) -> runs(x))')
+    (DRS([],[walks(x)]) -> runs(x))
+    >>> dp.parse(r'(walks(x) -> DRS([],[walks(x)]))')
+    (walks(x) -> DRS([],[walks(x)]))
+    >>> dp.parse(r'(walks(x) -> runs(x))')
+    (walks(x) -> runs(x))
+
+    >>> dp.parse(r'DRS([x],[PRO(x), sees(John,x)])')
+    DRS([x],[PRO(x), sees(John,x)])
+    >>> dp.parse(r'DRS([x],[man(x), -DRS([],[walks(x)])])')
+    DRS([x],[man(x), -DRS([],[walks(x)])])
+    >>> dp.parse(r'DRS([],[(DRS([x],[man(x)]) -> DRS([],[walks(x)]))])')
+    DRS([],[(DRS([x],[man(x)]) -> DRS([],[walks(x)]))])
+    
+Simplify
+
+    >>> dp.parse(r'\x.DRS([],[man(x), walks(x)])(john)').simplify()
+    DRS([],[man(john), walks(john)])
+    >>> dp.parse(r'\x.\y.DRS([z],[dog(z),sees(x,y)])(john)(mary)').simplify()
+    DRS([z],[dog(z), sees(john,mary)])
+    >>> dp.parse(r'\R x.DRS([],[big(x,R)])(\y.DRS([],[mouse(y)]))').simplify()
+    \x.DRS([],[big(x,\y.DRS([],[mouse(y)]))])
+    
+    >>> dp.parse(r'(DRS([x],[walks(x)]) + DRS([y],[runs(y)]))').simplify()
+    DRS([x,y],[walks(x), runs(y)])
+    >>> dp.parse(r'(DRS([x,y],[walks(x), jumps(y)]) + (DRS([z],[twos(z)]) + DRS([w],[runs(w)])))').simplify()
+    DRS([x,y,z,w],[walks(x), jumps(y), twos(z), runs(w)])
+    >>> dp.parse(r'((DRS([],[walks(x)]) + DRS([],[runs(x)]) + DRS([],[threes(x)]) + DRS([],[fours(x)])))').simplify()
+    DRS([],[walks(x), runs(x), threes(x), fours(x)])
+    >>> d1 = dp.parse(r'DRS([x],[man(x)])+DRS([x],[walks(x)])').simplify()
+    >>> d2 = dp.parse(r'DRS([x,z1],[man(x), walks(z1)])')
+    >>> d1 == d2
+    True
+        
+    >>> d1 = dp.parse(r'(\Q.(DRS([x],[(x = john),walks(x)]) + Q))(DRS([x],[PRO(x),leaves(x)]))').simplify()
+    >>> d2 = dp.parse(r'DRS([x,z1],[(x = john), walks(x), PRO(z1), leaves(z1)])')
+    >>> d1 == d2
+    True
+    
+toFol()
+
+    >>> dp.parse(r'DRS([x,y],[sees(x,y)])').toFol()
+    exists x.exists y.sees(x,y)
+    >>> dp.parse(r'DRS([x],[man(x), walks(x)])').toFol()
+    exists x.(man(x) & walks(x))
+    >>> dp.parse(r'\x.DRS([],[man(x), walks(x)])').toFol()
+    \x.(man(x) & walks(x))
+    >>> dp.parse(r'\x y.DRS([],[sees(x,y)])').toFol()
+    \x.\y.sees(x,y)
+
+    >>> dp.parse(r'\x.DRS([],[walks(x)])(john)').toFol()
+    \x.walks(x)(john)
+    >>> dp.parse(r'\R x.DRS([],[big(x,R)])(\y.DRS([],[mouse(y)]))').toFol()
+    (\R.\x.big(x,R))(\y.mouse(y))
+
+    >>> dp.parse(r'(DRS([x],[walks(x)]) + DRS([y],[runs(y)]))').toFol()
+    (exists x.walks(x) & exists y.runs(y))
+
+    >>> dp.parse(r'(DRS([],[walks(x)]) -> DRS([],[runs(x)]))').toFol()
+    (walks(x) -> runs(x))
+
+    >>> dp.parse(r'DRS([x],[PRO(x), sees(John,x)])').toFol()
+    exists x.(PRO(x) & sees(John,x))
+    >>> dp.parse(r'DRS([x],[man(x), -DRS([],[walks(x)])])').toFol()
+    exists x.(man(x) & -walks(x))
+    >>> dp.parse(r'DRS([],[(DRS([x],[man(x)]) -> DRS([],[walks(x)]))])',r'')
+    all x.(man(x) -> walks(x))
+
+    >>> dp.parse(r'DRS([x],[man(x) | walks(x)])').toFol()
+    exists x.(man(x) | walks(x))
+    >>> dp.parse(r'DRS([x],[man(x) <-> walks(x)])').toFol()
+    exists x.(man(x) <-> walks(x))
+    >>> dp.parse(r'P(x) + DRS([x],[walks(x)])').toFol()
+    (P(x) & exists x.walks(x))
+
+resolve_anaphora()
+
+    >>> dp.parse(r'DRS([x,y,z],[dog(x), cat(y), walks(z), PRO(z)])').resolve_anaphora()
+    DRS([x,y,z],[dog(x), cat(y), walks(z), (z = [x,y])])
+    >>> dp.parse(r'DRS([],[(DRS([x],[dog(x)]) -> DRS([y],[walks(y), PRO(y)]))])').resolve_anaphora()
+    DRS([],[(DRS([x],[dog(x)]) -> DRS([y],[walks(y), (y = x)]))])
+    >>> dp.parse(r'(DRS([x,y],[]) + DRS([],[PRO(x)]))').resolve_anaphora()
+    DRS([x,y],[(x = y)])
+    >>> dp.parse(r'DRS([x],[walks(x), PRO(x)])').resolve_anaphora()
+    DRS([x],[walks(x)])
+    
+    
+replace():
+	>>> a = dp.parse(r'a')
+	>>> x = dp.parse(r'x')
+	>>> y = dp.parse(r'y')
+	>>> z = dp.parse(r'z')
+
+
+replace bound
+    >>> dp.parse(r'DRS([x],[give(x,y,z)])').replace(x, a, False)
+    DRS([x],[give(x,y,z)])
+    >>> dp.parse(r'DRS([x],[give(x,y,z)])').replace(x, a, True)
+    DRS([a],[give(a,y,z)])
+replace unbound
+    >>> dp.parse(r'DRS([x],[give(x,y,z)])').replace(y, a, False)
+    DRS([x],[give(x,a,z)])
+    >>> dp.parse(r'DRS([x],[give(x,y,z)])').replace(y, a, True)
+    DRS([x],[give(x,a,z)])
+replace unbound with bound
+    >>> dp.parse(r'DRS([x],[give(x,y,z)])').replace(y, x, False)
+    >>> d2 = dp.parse('DRS([z1],[give(z1,x,z)])')
+    >>> d1 == d2
+    True
+    >>> dp.parse(r'DRS([x],[give(x,y,z)])').replace(y, x, True)
+    >>> d2 = dp.parse('DRS([z1],[give(z1,x,z)])')
+    >>> d1 == d2
+    True
+replace unbound with unbound
+    >>> dp.parse(r'DRS([x],[give(x,y,z)])').replace(y, z, False)
+    DRS([x],[give(x,z,z)])
+    >>> dp.parse(r'DRS([x],[give(x,y,z)])').replace(y, z, True)
+    DRS([x],[give(x,z,z)])
+    
+replace unbound
+    >>> dp.parse(r'DRS([x],[P(x,y,z)])+DRS([y],[Q(x,y,z)])').replace(z, a, False)
+    (DRS([x],[P(x,y,a)]) + DRS([y],[Q(x,y,a)]))
+    >>> dp.parse(r'DRS([x],[P(x,y,z)])+DRS([y],[Q(x,y,z)])').replace(z, a, True)
+    (DRS([x],[P(x,y,a)]) + DRS([y],[Q(x,y,a)]))
+replace bound
+    >>> dp.parse(r'DRS([x],[P(x,y,z)])+DRS([y],[Q(x,y,z)])').replace(x, a, False)
+    (DRS([x],[P(x,y,z)]) + DRS([y],[Q(x,y,z)]))
+    >>> dp.parse(r'DRS([x],[P(x,y,z)])+DRS([y],[Q(x,y,z)])').replace(x, a, True)
+    (DRS([a],[P(a,y,z)]) + DRS([y],[Q(a,y,z)]))
+replace unbound with unbound
+    >>> dp.parse(r'DRS([x],[P(x,y,z)])+DRS([y],[Q(x,y,z)])').replace(z, a, False)
+    (DRS([x],[P(x,y,a)]) + DRS([y],[Q(x,y,a)]))
+    >>> dp.parse(r'DRS([x],[P(x,y,z)])+DRS([y],[Q(x,y,z)])').replace(z, a, True)
+    (DRS([x],[P(x,y,a)]) + DRS([y],[Q(x,y,a)]))
+replace unbound with bound on same side
+    >>> dp.parse(r'DRS([x],[P(x,y,z)])+DRS([y],[Q(x,y,w)])').replace(z, x, False)
+    (DRS([z1],[P(z1,y,x)]) + DRS([y],[Q(z1,y,w)]))
+    >>> dp.parse(r'DRS([x],[P(x,y,z)])+DRS([y],[Q(x,y,w)])').replace(z, x, True)
+    (DRS([z1],[P(z1,y,x)]) + DRS([y],[Q(z1,y,w)]))
+replace unbound with bound on other side
+    >>> dp.parse(r'DRS([x],[P(x,y,z)])+DRS([y],[Q(x,y,w)])').replace(w, x, False)
+    (DRS([z1],[P(z1,y,z)]) + DRS([y],[Q(z1,y,x)]))
+    >>> dp.parse(r'DRS([x],[P(x,y,z)])+DRS([y],[Q(x,y,w)])').replace(w, x, True)
+    (DRS([z1],[P(z1,y,z)]) + DRS([y],[Q(z1,y,x)]))
+replace unbound with double bound
+    >>> dp.parse(r'DRS([x],[P(x,y,z)])+DRS([x],[Q(x,y,w)])').replace(z, x, False)
+    (DRS([z1],[P(z1,y,x)]) + DRS([z1],[Q(z1,y,w)]))
+    >>> dp.parse(r'DRS([x],[P(x,y,z)])+DRS([x],[Q(x,y,w)])').replace(z, x, True)
+    (DRS([z1],[P(z1,y,x)]) + DRS([z1],[Q(z1,y,w)]))
+    

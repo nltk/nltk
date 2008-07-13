@@ -25,9 +25,9 @@ instance of the ``Expression`` class specified by ``nltk.sem.logic``.
 In the following example, the proof goal is a biconditional.
 
     >>> from nltk.inference import *
-    >>> from nltk.sem import LogicParser, ApplicationExpression, Operator
+    >>> from nltk.sem import LogicParser, ApplicationExpression
     >>> lp = LogicParser()
-    >>> bicond = lp.parse('(some x.((man x) and (walks x)) iff some x.((walks x) and (man x)))')
+    >>> bicond = lp.parse('(exists x.(man(x) and walks(x)) <-> exists x.(walks(x) and man(x)))')
     >>> get_prover(bicond, prover_name='tableau').prove()
     True
     >>> get_prover(bicond, prover_name='Prover9').prove()
@@ -90,7 +90,7 @@ initialized with a proof goal and, possibly, some assumptions. The
 ``prove()`` method attempts to find a proof of the goal, given the
 list of assumptions (in this case, none).
 
-    >>> goal = LogicParser().parse('((man x) iff (not (not (man x))))')
+    >>> goal = LogicParser().parse('(man(x) <-> --man(x))')
     >>> prover = Prover9(goal)
     >>> prover.prove()
     True
@@ -128,11 +128,11 @@ provided by Prover9, shown in abbreviated form here::
 As mentioned earlier, we may want to list some assumptions for
 the proof, as shown here.
 
-    >>> g = LogicParser().parse('(mortal socrates)')
-    >>> a1 = LogicParser().parse('all x.((man x) implies (mortal x))')
+    >>> g = LogicParser().parse('mortal(socrates)')
+    >>> a1 = LogicParser().parse('all x.(man(x) -> mortal(x))')
     >>> prover = Prover9(g, assumptions=[a1])
     >>> prover.assumptions()
-    all x.((man x) implies (mortal x))
+    all x.(man(x) -> mortal(x))
 
 However, the assumptions are not sufficient to derive the goal:
 
@@ -141,11 +141,11 @@ However, the assumptions are not sufficient to derive the goal:
 
 So let's add another assumption:
 
-    >>> a2 = LogicParser().parse('(man socrates)')    
+    >>> a2 = LogicParser().parse('man(socrates)')    
     >>> prover.add_assumptions([a2])
     >>> prover.assumptions()
-    all x.((man x) implies (mortal x))
-    (man socrates)
+    all x.(man(x) -> mortal(x))
+    man(socrates)
     >>> print prover.prove()
     True
 
@@ -164,25 +164,25 @@ Assumptions can be retracted from the list of assumptions.
 
     >>> prover.retract_assumptions([a1])
     >>> prover.assumptions()
-    (man socrates)
+    man(socrates)
     >>> prover.retract_assumptions([a1])
 
 Statements can be loaded from a file and parsed. We can then add these
 statements as new assumptions.
 
-    >>> g = LogicParser().parse('all x. ((boxer x) implies (not (boxerdog x)))')
+    >>> g = LogicParser().parse('all x.(boxer(x) -> -boxerdog(x))')
     >>> prover = Prover9(g)
     >>> prover.prove()
     False
     >>> import nltk.data
     >>> new = nltk.data.load('grammars/background0.fol')
     >>> for a in new:
-    ...     print a.infixify()
-    all x.((boxerdog x) implies (dog x))
-    all x.((boxer x) implies (person x))
-    all x.(not ((dog x) and (person x)))
-    some x.(boxer x)
-    some x.(boxerdog x)
+    ...     print a
+    all x.(boxerdog(x) -> dog(x))
+    all x.(boxer(x) -> person(x))
+    all x.-(dog(x) & person(x))
+    exists x.boxer(x)
+    exists x.boxerdog(x)
     >>> prover.add_assumptions(new)
     >>> print prover.prove()
     True
@@ -230,9 +230,9 @@ two Discourse Representation Structures (DRSs) have the same meaning.
 The ``tp_equals()`` method calls Prover9 to determine whether (the
 FOL versions of) two DRSs are logically equivalent.
 
-    >>> from nltk_contrib.drt import DRT
-    >>> a = DRT.Parser().parse(r'drs([x],[(man x), (walks x)])')
-    >>> b = DRT.Parser().parse(r'drs([x],[(walks x), (man x)])')
+    >>> from nltk.sem.drt import DrtParser
+    >>> a = DrtParser().parse(r'drs([x],[man(x), walks(x)])')
+    >>> b = DrtParser().parse(r'drs([x],[walks(x), man(x)])')
     >>> print a.tp_equals(b)
     True
 
@@ -240,13 +240,16 @@ Checking for equality of two DRSs is very useful when generating readings of a s
 For example, the ``drt_glue`` module generates two readings for the sentence 
 *John sees Mary*:
 
-    >>> from nltk_contrib.gluesemantics import drt_glue
-    >>> readings = drt_glue.parse_to_meaning('John sees Mary')
+	>>> from nltk.sem import logic
+	>>> from nltk.internals import Counter
+	>>> logic._counter = Counter()
+    >>> from nltk_contrib.gluesemantics.drt_glue import DrtGlue
+    >>> readings = DrtGlue().parse_to_meaning('John sees Mary')
     >>> 
     >>> for drs in readings: print drs.simplify()
     ...
-    DRS([z1,x],[(= z1 John),(= x Mary),(sees x z1)])
-    DRS([z2,x],[(= z2 Mary),(= x John),(sees z2 x)])
+    DRS([x,z1],[(x = Mary), (z1 = John), sees(z1,x)])
+    DRS([x,z2],[(x = John), (z2 = Mary), sees(x,z2)])
 
 However, it is easy to tell that these two readings are logically the
 same, and therefore one of them is superfluous.  We can use the theorem prover
@@ -273,9 +276,9 @@ Thus, the following interaction shows how both ``{a, c1}`` and ``{a, c2}``
 are consistent sets, since Mace succeeds in a building a
 model for each of them, while ``{c1, c2}`` is inconsistent.
 
-    >>> a3 = lp.parse('some x.((man x) and (walks x))')
-    >>> c1 = lp.parse('(mortal socrates)')
-    >>> c2 = lp.parse('(not (mortal socrates))')
+    >>> a3 = lp.parse('exists x.(man(x) and walks(x))')
+    >>> c1 = lp.parse('mortal(socrates)')
+    >>> c2 = lp.parse('-mortal(socrates)')
     >>> print get_model_builder('', [a3, c1]).build_model()
     True
     >>> print get_model_builder('', [a3, c2]).build_model()
@@ -293,16 +296,16 @@ than Prover9 concludes that it cannot find the required proof.
 Conversely, if ``g`` *is* provable from ``S``, Mace4 may take a long
 time unsuccessfully trying to find a counter model, and will eventually give up.
 
-In the following example, we see that the model builder does succeeed
+In the following example, we see that the model builder does succeed
 in building a model of the assumptions together with the negation of
 the goal. That is, it succeeds in finding a model
 where there is a woman that every man loves; Adam is a man; Eve is a
 woman; but Adam does not love Eve.
 
-    >>> a4 = lp.parse('some y. ((woman y) and all x. ((man x) implies (love y x)))')
-    >>> a5 = lp.parse('(man adam)')
-    >>> a6 = lp.parse('(woman eve)')
-    >>> g = lp.parse('(love eve adam)')
+    >>> a4 = lp.parse('exists y. (woman(y) & all x. (man(x) -> love(x,y)))')
+    >>> a5 = lp.parse('man(adam)')
+    >>> a6 = lp.parse('woman(eve)')
+    >>> g = lp.parse('love(adam,eve)')
     >>> print get_model_builder(g, [a4, a5, a6]).build_model()
     True
 
@@ -323,7 +326,7 @@ Using Mace4
 
 Check whether Mace4 can find a model.
 
-    >>> a = LogicParser().parse('((see john mary) and (not (mary = john)))')
+    >>> a = LogicParser().parse('(see(mary,john) and -(mary = john))')
     >>> mb = Mace(assumptions=[a])
     >>> mb.build_model()
     True
@@ -343,8 +346,8 @@ Show the model in 'tabular' format.
      see : 
            | 0 1
         ---+----
-         0 | 0 1
-         1 | 0 0
+         0 | 0 0
+         1 | 1 0
     <BLANKLINE>
 
 Show the model in 'tabular' format.
@@ -360,8 +363,8 @@ Show the model in 'tabular' format.
     mary = 1.
     <BLANKLINE>
     - see(0,0).
-      see(0,1).
-    - see(1,0).
+    - see(0,1).
+      see(1,0).
     - see(1,1).
     <BLANKLINE>
 
@@ -370,7 +373,7 @@ The method ``convert2val()`` returns a ``Valuation``.
     >>> print mb.convert2val()
     {'john': 'a',
      'mary': 'b',
-     'see': {'a': {'a': False, 'b': True}, 'b': {'a': False, 'b': False}}}
+     'see': {'a': {'a': False, 'b': False}, 'b': {'a': True, 'b': False}}}
 
 We can return to our earlier example and inspect the model:
 
@@ -395,8 +398,8 @@ We can return to our earlier example and inspect the model:
       woman(1).
     <BLANKLINE>
     - love(0,0).
-    - love(0,1).
-      love(1,0).
+      love(0,1).
+    - love(1,0).
     - love(1,1).
     <BLANKLINE>
 
