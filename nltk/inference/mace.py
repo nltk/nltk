@@ -55,6 +55,8 @@ class Mace(Prover9Parent, ModelBuilderI):
                 # replace the integer identifier with a corresponding alphabetic character
                 elif l.startswith('function') and l.find('_') == -1:
                     name = l[l.index('(')+1:l.index(',')].strip()
+                    if is_indvar(name):
+                        name = name.upper()
                     d[name] = Mace._make_model_var(int(l[l.index('[')+1:l.index(']')].strip()))
                 
                 elif l.startswith('relation'):

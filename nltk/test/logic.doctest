@@ -16,22 +16,22 @@ Test for equality under alpha-conversion.
     True
 
     
-    >>> l = lp.parse(r'(\x.\x.x(x)(1))').simplify()
-    >>> id = lp.parse(r'\x.x(x)')
+    >>> l = lp.parse(r'(\X.\X.X(X)(1))').simplify()
+    >>> id = lp.parse(r'\X.X(X)')
     >>> l == id
     True
 
 Test numerals
 
-    >>> zero = lp.parse(r'\f x.x')
-    >>> one = lp.parse(r'\f x.f(x)')
-    >>> two = lp.parse(r'\f x.f(f(x))')
-    >>> three = lp.parse(r'\f x.f(f(f(x)))')
-    >>> four = lp.parse(r'\f x.f(f(f(f(x))))')
-    >>> succ = lp.parse(r'\n f x.f(n(f,x))')
-    >>> plus = lp.parse(r'\m n f x.m(f,n(f,x))')
-    >>> mult = lp.parse(r'\m n f.m(n(f))')
-    >>> pred = lp.parse(r'\n f x.n(\g h.h(g(f))(\u.x)(\u.u))')
+    >>> zero = lp.parse(r'\F x.x')
+    >>> one = lp.parse(r'\F x.F(x)')
+    >>> two = lp.parse(r'\F x.F(F(x))')
+    >>> three = lp.parse(r'\F x.F(F(F(x)))')
+    >>> four = lp.parse(r'\F x.F(F(F(F(x))))')
+    >>> succ = lp.parse(r'\N F x.F(N(F,x))')
+    >>> plus = lp.parse(r'\M N F x.M(F,N(F,x))')
+    >>> mult = lp.parse(r'\M N F.M(N(F))')
+    >>> pred = lp.parse(r'\N F x.N(\G H.H(G(F))(\u.x)(\u.u))')
     >>> v1 = ApplicationExpression(succ, [zero]).simplify()
     >>> v1 == one
     True
@@ -53,12 +53,12 @@ Test numerals
 
 From B&B's *Representation and Inference for Natural Language*.
 
-    >>> x1 = lp.parse(r'\p.p(mia)(\x.walk(x))').simplify()
+    >>> x1 = lp.parse(r'\P.P(mia)(\x.walk(x))').simplify()
     >>> x2 = lp.parse(r'walk(mia)').simplify()
     >>> x1 == x2
     True
     
-    >>> x1 = lp.parse(r'exists x.(man(x) & ((\p.exists x.(woman(x) & p(x)))(\y.love(x,y))))').simplify()
+    >>> x1 = lp.parse(r'exists x.(man(x) & ((\P.exists x.(woman(x) & P(x)))(\y.love(x,y))))').simplify()
     >>> x2 = lp.parse(r'exists x.(man(x) & exists y.(woman(y) & love(x,y)))').simplify()
     >>> x1 == x2
     True
@@ -84,67 +84,67 @@ From B&B's *Representation and Inference for Natural Language*.
     >>> x1 == x2
     True
     
-    >>> x1 = lp.parse(r'p((\a.sleep(a)(vincent)))').simplify()
-    >>> x2 = lp.parse(r'p(sleep(vincent))').simplify()
+    >>> x1 = lp.parse(r'P((\a.sleep(a)(vincent)))').simplify()
+    >>> x2 = lp.parse(r'P(sleep(vincent))').simplify()
     >>> x1 == x2
     True
     
-    >>> x1 = lp.parse(r'\a.a((\b.sleep(b)(vincent)))').simplify()
-    >>> x2 = lp.parse(r'\a.a(sleep(vincent))').simplify()
+    >>> x1 = lp.parse(r'\A.A((\b.sleep(b)(vincent)))').simplify()
+    >>> x2 = lp.parse(r'\A.A(sleep(vincent))').simplify()
     >>> x1 == x2
     True
     
-    >>> x1 = lp.parse(r'\a.a(sleep(vincent))').simplify()
-    >>> x2 = lp.parse(r'\a.a(sleep(vincent))').simplify()
+    >>> x1 = lp.parse(r'\A.A(sleep(vincent))').simplify()
+    >>> x2 = lp.parse(r'\A.A(sleep(vincent))').simplify()
     >>> x1 == x2
     True
     
-    >>> x1 = lp.parse(r'(\a.a(vincent)(\b.sleep(b)))').simplify()
+    >>> x1 = lp.parse(r'(\A.A(vincent)(\b.sleep(b)))').simplify()
     >>> x2 = lp.parse(r'sleep(vincent)').simplify()
     >>> x1 == x2
     True
     
-    >>> x1 = lp.parse(r'\a.believe(mia,a(vincent))(\b.sleep(b))').simplify()
+    >>> x1 = lp.parse(r'\A.believe(mia,A(vincent))(\b.sleep(b))').simplify()
     >>> x2 = lp.parse(r'believe(mia,sleep(vincent))').simplify()
     >>> x1 == x2
     True
     
-    >>> x1 = lp.parse(r'(\a.(a(vincent) & a(mia)))(\b.sleep(b))').simplify()
+    >>> x1 = lp.parse(r'(\A.(A(vincent) & A(mia)))(\b.sleep(b))').simplify()
     >>> x2 = lp.parse(r'(sleep(vincent) & sleep(mia))').simplify()
     >>> x1 == x2
     True
     
-    >>> x1 = lp.parse(r'(\a.\b.((\c.c(a(vincent)))(\d.probably(d)) & (\c.c(b(mia))(\d.improbably(d)))))(\e.walk(e))(\e.talk(e))').simplify()
+    >>> x1 = lp.parse(r'(\A.\B.((\C.C(A(vincent)))(\d.probably(d)) & (\C.C(B(mia))(\d.improbably(d)))))(\e.walk(e))(\e.talk(e))').simplify()
     >>> x2 = lp.parse(r'(probably(walk(vincent)) & improbably(talk(mia)))').simplify()
     >>> x1 == x2
     True
     
-    >>> x1 = lp.parse(r'(\a.\b.(\c.c(a,b)(\d.\e.love(d,e))))(jules)(mia)').simplify()
+    >>> x1 = lp.parse(r'(\a.\b.(\C.C(a,b)(\d.\e.love(d,e))))(jules)(mia)').simplify()
     >>> x2 = lp.parse(r'love(jules,mia)').simplify()
     >>> x1 == x2
     True
     
-    >>> x1 = lp.parse(r'(\a.\b.exists c.(a(c) & b(c)))(\d.boxer(d),\d.sleep(d))').simplify()
+    >>> x1 = lp.parse(r'(\A.\B.exists c.(A(c) & B(c)))(\d.boxer(d),\d.sleep(d))').simplify()
     >>> x2 = lp.parse(r'exists c.(boxer(c) & sleep(c))').simplify()
     >>> x1 == x2
     True
     
-    >>> x1 = lp.parse(r'\a.z(a)(\c.\a.like(a,c))').simplify()
-    >>> x2 = lp.parse(r'z(\c.\a.like(a,c))').simplify()
+    >>> x1 = lp.parse(r'\a.Z(a)(\c.\a.like(a,c))').simplify()
+    >>> x2 = lp.parse(r'Z(\c.\a.like(a,c))').simplify()
     >>> x1 == x2
     True
     
-    >>> x1 = lp.parse(r'\a.\b.a(b)(\c.\b.like(b,c))').simplify()
+    >>> x1 = lp.parse(r'\A.\b.A(b)(\c.\b.like(b,c))').simplify()
     >>> x2 = lp.parse(r'\b.(\c.\b.like(b,c)(b))').simplify()
     >>> x1 == x2
     True
     
-    >>> x1 = lp.parse(r'(\a.\b.(\c.c(a,b)(\b.\a.loves(b,a))))(jules)(mia)').simplify()
+    >>> x1 = lp.parse(r'(\a.\b.(\C.C(a,b)(\b.\a.loves(b,a))))(jules)(mia)').simplify()
     >>> x2 = lp.parse(r'loves(jules,mia)').simplify()
     >>> x1 == x2
     True
     
-    >>> x1 = lp.parse(r'(\a.\b.((exists b.a(b)) & a(b)))(\c.boxer(c))(vincent)').simplify()
+    >>> x1 = lp.parse(r'(\A.\b.((exists b.A(b)) & A(b)))(\c.boxer(c))(vincent)').simplify()
     >>> x2 = lp.parse(r'((exists b.boxer(b)) & boxer(vincent))').simplify()
     >>> x1 == x2
     True
@@ -253,56 +253,41 @@ Replace
 
         >>> print lp.parse(r'man(x)').replace(x, a, False)
         man(a)
-
         >>> print lp.parse(r'(man(x) & tall(x))').replace(x, a, False)
         (man(a) & tall(a))
-
         >>> print lp.parse(r'exists x.man(x)').replace(x, a, False)
         exists x.man(x)
-
         >>> print lp.parse(r'exists x.man(x)').replace(x, a, True)
         exists a.man(a)
-
         >>> print lp.parse(r'exists x.give(x,y,z)').replace(y, a, False)
         exists x.give(x,a,z)
-
         >>> print lp.parse(r'exists x.give(x,y,z)').replace(y, a, True)
         exists x.give(x,a,z)
-
         >>> e1 = lp.parse(r'exists x.give(x,y,z)').replace(y, x, False)
         >>> e2 = lp.parse(r'exists z1.give(z1,x,z)')
         >>> e1 == e2
         True
-
         >>> e1 = lp.parse(r'exists x.give(x,y,z)').replace(y, x, True)
         >>> e2 = lp.parse(r'exists z1.give(z1,x,z)')
         >>> e1 == e2
         True
-
         >>> print lp.parse(r'\x y z.give(x,y,z)').replace(y, a, False)
         \x.\y.\z.give(x,y,z)
-
         >>> print lp.parse(r'\x y z.give(x,y,z)').replace(y, a, True)
         \x.\a.\z.give(x,a,z)
-
         >>> print lp.parse(r'\x.\y.give(x,y,z)').replace(z, a, False)
         \x.\y.give(x,y,a)
-
         >>> print lp.parse(r'\x.\y.give(x,y,z)').replace(z, a, True)
         \x.\y.give(x,y,a)
-
         >>> e1 = lp.parse(r'\x.\y.give(x,y,z)').replace(z, x, False)
         >>> e2 = lp.parse(r'\z1.\y.give(z1,y,x)')
         >>> e1 == e2
         True
-
         >>> e1 = lp.parse(r'\x.\y.give(x,y,z)').replace(z, x, True)
         >>> e2 = lp.parse(r'\z1.\y.give(z1,y,x)')
         >>> e1 == e2
         True
-
         >>> print lp.parse(r'\x.give(x,y,z)').replace(z, y, False)
         \x.give(x,y,y)
-
         >>> print lp.parse(r'\x.give(x,y,z)').replace(z, y, True)
         \x.give(x,y,y)
