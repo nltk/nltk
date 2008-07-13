@@ -11,8 +11,8 @@ import types
 
 from nltk import Tree
 
-from api import *
-from util import *
+from nltk.chunk.api import *
+from nltk.chunk.util import *
 
 ##//////////////////////////////////////////////////////
 ##  ChunkString
@@ -533,6 +533,11 @@ class MergeRule(RegexpChunkRule):
         @param descr: A short description of the purpose and/or effect
             of this rule.
         """
+        # Ensure that the individual patterns are coherent.  E.g., if
+        # left='(' and right=')', then this will raise an exception:
+        re.compile(tag_pattern2re_pattern(left_tag_pattern))
+        re.compile(tag_pattern2re_pattern(right_tag_pattern))
+
         self._left_tag_pattern = left_tag_pattern
         self._right_tag_pattern = right_tag_pattern
         regexp = re.compile('(?P<left>%s)}{(?=%s)' %
@@ -586,6 +591,11 @@ class SplitRule(RegexpChunkRule):
         @param descr: A short description of the purpose and/or effect
             of this rule.
         """
+        # Ensure that the individual patterns are coherent.  E.g., if
+        # left='(' and right=')', then this will raise an exception:
+        re.compile(tag_pattern2re_pattern(left_tag_pattern))
+        re.compile(tag_pattern2re_pattern(right_tag_pattern))
+
         self._left_tag_pattern = left_tag_pattern
         self._right_tag_pattern = right_tag_pattern
         regexp = re.compile('(?P<left>%s)(?=%s)' % 
@@ -640,6 +650,11 @@ class ExpandLeftRule(RegexpChunkRule):
         @param descr: A short description of the purpose and/or effect
             of this rule.
         """
+        # Ensure that the individual patterns are coherent.  E.g., if
+        # left='(' and right=')', then this will raise an exception:
+        re.compile(tag_pattern2re_pattern(left_tag_pattern))
+        re.compile(tag_pattern2re_pattern(right_tag_pattern))
+
         self._left_tag_pattern = left_tag_pattern
         self._right_tag_pattern = right_tag_pattern
         regexp = re.compile('(?P<left>%s)\{(?P<right>%s)' %
@@ -694,6 +709,11 @@ class ExpandRightRule(RegexpChunkRule):
         @param descr: A short description of the purpose and/or effect
             of this rule.
         """
+        # Ensure that the individual patterns are coherent.  E.g., if
+        # left='(' and right=')', then this will raise an exception:
+        re.compile(tag_pattern2re_pattern(left_tag_pattern))
+        re.compile(tag_pattern2re_pattern(right_tag_pattern))
+
         self._left_tag_pattern = left_tag_pattern
         self._right_tag_pattern = right_tag_pattern
         regexp = re.compile('(?P<left>%s)\}(?P<right>%s)' %
@@ -752,10 +772,15 @@ class ChunkRuleWithContext(RegexpChunkRule):
         @param descr: A short description of the purpose and/or effect
             of this rule.
         """
+        # Ensure that the individual patterns are coherent.  E.g., if
+        # left='(' and right=')', then this will raise an exception:
+        re.compile(tag_pattern2re_pattern(left_context_tag_pattern))
+        re.compile(tag_pattern2re_pattern(chunk_tag_pattern))
+        re.compile(tag_pattern2re_pattern(right_context_tag_pattern))
+
         self._left_context_tag_pattern = left_context_tag_pattern
         self._chunk_tag_pattern = chunk_tag_pattern
-        self._right_context_tatg_pattern = right_context_tag_pattern
-
+        self._right_context_tag_pattern = right_context_tag_pattern
         regexp = re.compile('(?P<left>%s)(?P<chunk>%s)(?P<right>%s)%s' %
                             (tag_pattern2re_pattern(left_context_tag_pattern),
                              tag_pattern2re_pattern(chunk_tag_pattern),
@@ -777,8 +802,8 @@ class ChunkRuleWithContext(RegexpChunkRule):
              separately with the C{descr} method.
         """
         return '<ChunkRuleWithContext: %r, %r, %r>' % (
-            self.left_context_tag_pattern, self.chunk_tag_pattern,
-            self.right_context_tag_pattern)
+            self._left_context_tag_pattern, self._chunk_tag_pattern,
+            self._right_context_tag_pattern)
 
 ##//////////////////////////////////////////////////////
 ##  Tag Pattern Format Conversion
