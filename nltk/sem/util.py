@@ -184,7 +184,7 @@ def parse_fol(s):
         if line.startswith('#') or line=='': continue
         try:
             statements.append(lp.parse(line))
-        except Error:
+        except ParseException:
             raise ValueError, 'Unable to parse line %s: %s' % (linenum, line)
     return statements
         
