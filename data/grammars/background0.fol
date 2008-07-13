@@ -9,13 +9,13 @@
 ##
 ## $Id:$
 
-all x. ((boxerdog x) implies (dog x))
-all x. ((boxer x) implies (person x))
+all x. (boxerdog(x) -> dog(x))
+all x. (boxer(x) -> person(x))
 
-all x. (not ((dog x) and (person x)))
+all x. (-(dog(x) & person(x)))
 
-some x. (boxer x)
-some x. (boxerdog x)
+some x. boxer(x)
+some x. boxerdog(x)
 
 
 
