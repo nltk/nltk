@@ -293,6 +293,14 @@ class StreamBackedCorpusView(AbstractCorpusView):
         self._cache = (-1, -1, None)
 
     def read_block(self, stream):
+        """
+        Read a block from the input stream. 
+
+        @return: a block of tokens from the input stream
+        @rtype: list of any
+        @param stream: an input stream
+        @type stream: stream
+        """
         raise NotImplementedError('Abstract Method')
 
     def close(self):
