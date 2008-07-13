@@ -11,17 +11,14 @@
 A graphical tool for exploring the regular expression based chunk
 parser (L{RegexpChunkParser<nltk.chunk.regex.RegexpChunkParser>}).
 
-@todo: Add a menubar
-@todo: Add save/load functionality for grammars.  It should be possible
-    to save the current grammar, or the history of all grammars.
 @todo: Add a way to select the development set from the menubar.  This
     might just need to be a selection box (conll vs treebank etc) plus
     configuration parameters to select what's being chunked (eg VP vs NP)
     and what part of the data is being used as the development set.
-@todo: Add a way for the user to modify the size of the development set?
 """
 
 from Tkinter import *
+from tkFileDialog import asksaveasfilename, askopenfilename
 import tkFont
 import time
 import textwrap
@@ -215,10 +212,10 @@ class RegexpChunkDemo(object):
     
     _GRAMMARBOX_PARAMS = dict(
         width=40, height=12, background='#efe', highlightbackground='#efe',
-        highlightthickness=1, relief='groove', border=2)
+        highlightthickness=1, relief='groove', border=2, wrap='word')
     _HELPBOX_PARAMS = dict(
         width=15, height=15, background='#efe', highlightbackground='#efe',
-        foreground='#555', font=('helvetica', -14),
+        foreground='#555', 
         highlightthickness=1, relief='groove', border=2, wrap='word')
     _DEVSETBOX_PARAMS = dict(
         width=70, height=10, background='#eef', highlightbackground='#eef',
@@ -239,8 +236,6 @@ class RegexpChunkDemo(object):
         highlightbackground='#777')
     _HELPTAB_BG_COLOR = '#aba'
     _HELPTAB_FG_COLOR = '#efe'
-    _HELPTAB_PARAMS = dict(font=('helvetica', -14))
-    _HELPTAB_MAIN_PARAMS = dict(font=('helvetica', -20))
                            
     _HELPTAB_FG_PARAMS = dict(background='#efe')
     _HELPTAB_BG_PARAMS = dict(background='#aba')
@@ -257,36 +252,49 @@ class RegexpChunkDemo(object):
         grammar = re.sub(r'([^\\])\$', r'\1\\$', grammar)
         return grammar
     
-    def __init__(self, devset='conll2000', grammar = '',
-                 chunk_node='NP', tagset=None):
+    def __init__(self, devset_name='conll2000', devset=None,
+                 grammar = '', chunk_node='NP', tagset=None):
         """
+        @param devset_name: The name of the development set; used for
+            display & for save files.  If either the name 'treebank'
+            or the name 'conll2000' is used, and devset is None, then
+            devset will be set automatically.
+        @param devset: A list of chunked sentences
+        @param grammar: The initial grammar to display.
         @param tagset: Dictionary from tags to string descriptions, used
-        for the help page.
+            for the help page.  Defaults to C{self.TAGSET}.
         """
         self._chunk_node = chunk_node
         
         if tagset is None: tagset = self.TAGSET
         self.tagset = tagset
         
-        # Default development set:
-        if devset == 'conll2000':
-            devset = nltk.corpus.conll2000.chunked_sents('train.txt')[:100]
-        elif devset == 'treebank':
-            devset = nltk.corpus.treebank_chunk.chunked_sents()[:100]
+        # Named development sets:
+        if devset is None:
+            if devset_name == 'conll2000':
+                devset = nltk.corpus.conll2000.chunked_sents('train.txt')#[:100]
+            elif devset == 'treebank':
+                devset = nltk.corpus.treebank_chunk.chunked_sents()#[:100]
+            else:
+                raise ValueError('Unknown development set %s' % devset_name)
 
         self.chunker = None
         """The chunker built from the grammar string"""
 
-        self.grammar = None # set by update(), below.
+        self.grammar = grammar
         """The unparsed grammar string"""
 
         self.normalized_grammar = None
+        """A normalized version of L{self.grammar}."""
 
         self.grammar_changed = 0
         """The last time() that the grammar was changed."""
             
         self.devset = devset
         """The development set -- a list of chunked sentences."""
+
+        self.devset_name = devset_name
+        """The name of the development set (for save files)."""
 
         self.devset_index = -1
         """The index into the development set of the first instance
@@ -296,40 +304,135 @@ class RegexpChunkDemo(object):
         """The time() when a key was most recently pressed"""
 
         self._history = []
+        """A list of (grammar, precision, recall, fscore) tuples for
+           grammars that the user has already tried."""
+        
         self._history_index = 0
+        """When the user is scrolling through previous grammars, this
+           is used to keep track of which grammar they're looking at."""
 
         self._eval_grammar = None
+        """The grammar that is being currently evaluated by the eval
+           demon."""
+        
         self._eval_normalized_grammar = None
+        """A normalized copy of L{_eval_grammar}."""
+        
         self._eval_index = 0
-        self._eval_score = nltk.chunk.ChunkScore()
+        """The index of the next sentence in the development set that
+           should be looked at by the eval demon."""
+        
+        self._eval_score = nltk.chunk.ChunkScore(chunk_node=chunk_node)
+        """The L{ChunkScore <nltk.chunk.Chunkscore> object that's used
+           to keep track of the score of the current grammar on the
+           development set."""
 
+        # Set up the main window.
         top = self.top = Tk()
         top.geometry('+50+50')
         top.title('Regexp Chunk Parser Demo')
         top.bind('<Control-q>', self.destroy)
+
+        # Varaible that restricts how much of the devset we look at.
+        self._devset_size = IntVar(top)
+        self._devset_size.set(100)
+
+        # Set up all the tkinter widgets
+        self._init_fonts(top)
+        self._init_widgets(top)
+        self._init_bindings(top)
+        self._init_menubar(top)
+        self.grammarbox.focus()
+
+
+        # If a grammar was given, then display it.
+        if grammar:
+            self.grammarbox.insert('end', grammar+'\n')
+            self.grammarbox.mark_set('insert', '1.0')
+
+        # Display the first item in the development set
+        self.show_devset(0)
+        self.update()
+
+    def _init_bindings(self, top):
         top.bind('<Control-n>', self._devset_next)
         top.bind('<Control-p>', self._devset_prev)
         top.bind('<Control-t>', self.toggle_show_trace)
         top.bind('<KeyPress>', self.update)
-        self._init_widgets(top)
+        top.bind('<Control-s>', lambda e: self.save_grammar())
+        top.bind('<Control-o>', lambda e: self.load_grammar())
         self.grammarbox.bind('<Control-t>', self.toggle_show_trace)
         self.grammarbox.bind('<Control-n>', self._devset_next)
         self.grammarbox.bind('<Control-p>', self._devset_prev)
         
-        # Insert a grammar & some devset stuff.
-        self.grammarbox.insert('end', grammar+'\n')
-        self.grammarbox.mark_set('insert', '1.0')
-        self.grammarbox.focus()
-
-        self.show_devset(0)
-        self.update()
-
         # Redraw the eval graph when the window size changes
         self.evalbox.bind('<Configure>', self._eval_plot)
-        # Draw the empty eval graph.
-        #self._eval_plot(width=self.evalbox.winfo_reqwidth(),
-        #                height=self.evalbox.winfo_reqheight())
 
+    def _init_fonts(self, top):
+        # TWhat's our font size (default=same as sysfont)
+        self._size = IntVar(top)
+        self._size.set(20)
+        self._font = tkFont.Font(family='helvetica',
+                                 size=-self._size.get())
+        self._smallfont = tkFont.Font(family='helvetica',
+                                      size=-(self._size.get()*14/20))
+        
+    def _init_menubar(self, parent):
+        menubar = Menu(parent)
+
+        filemenu = Menu(menubar, tearoff=0)
+        filemenu.add_command(label='Reset Demo', underline=0,
+                             command=self.reset)
+        filemenu.add_command(label='Save Current Grammar', underline=0,
+                             accelerator='Ctrl-s',
+                             command=self.save_grammar)
+        filemenu.add_command(label='Load Grammar', underline=0,
+                             accelerator='Ctrl-o',
+                             command=self.load_grammar)
+
+        filemenu.add_command(label='Save Grammar History', underline=13,
+                             command=self.save_history)
+
+        filemenu.add_command(label='Exit', underline=1,
+                             command=self.destroy, accelerator='Ctrl-q')
+        menubar.add_cascade(label='File', underline=0, menu=filemenu)
+
+        viewmenu = Menu(menubar, tearoff=0)
+        viewmenu.add_radiobutton(label='Tiny', variable=self._size,
+                                 underline=0, value=10, command=self.resize)
+        viewmenu.add_radiobutton(label='Small', variable=self._size,
+                                 underline=0, value=16, command=self.resize)
+        viewmenu.add_radiobutton(label='Medium', variable=self._size,
+                                 underline=0, value=20, command=self.resize)
+        viewmenu.add_radiobutton(label='Large', variable=self._size,
+                                 underline=0, value=24, command=self.resize)
+        viewmenu.add_radiobutton(label='Huge', variable=self._size,
+                                 underline=0, value=34, command=self.resize)
+        menubar.add_cascade(label='View', underline=0, menu=viewmenu)
+
+        devsetmenu = Menu(menubar, tearoff=0)
+        devsetmenu.add_radiobutton(label='50 sentences',
+                                   variable=self._devset_size,
+                                   value=50, command=self.set_devset_size)
+        devsetmenu.add_radiobutton(label='100 sentences',
+                                   variable=self._devset_size,
+                                   value=100, command=self.set_devset_size)
+        devsetmenu.add_radiobutton(label='200 sentences',
+                                   variable=self._devset_size,
+                                   value=200, command=self.set_devset_size)
+        devsetmenu.add_radiobutton(label='500 sentences',
+                                   variable=self._devset_size,
+                                   value=500, command=self.set_devset_size)
+        menubar.add_cascade(label='Development-Set', underline=0,
+                            menu=devsetmenu)
+
+        helpmenu = Menu(menubar, tearoff=0)
+        helpmenu.add_command(label='About', underline=0,
+                             command=self.about)
+        menubar.add_cascade(label='Help', underline=0, menu=helpmenu)
+        
+        parent.config(menu=menubar)
+        
     def toggle_show_trace(self, *e):
         if self._showing_trace:
             self.show_devset()
@@ -472,26 +575,30 @@ class RegexpChunkDemo(object):
                     self._eval_normalized_grammar = None
                     return
             self._eval_index = 0
-            self._eval_score = nltk.chunk.ChunkScore()
+            self._eval_score = nltk.chunk.ChunkScore(chunk_node=
+                                                     self._chunk_node)
             self._eval_grammar = self.grammar
             self._eval_normalized_grammar = self.normalized_grammar
 
-        # Efficiency hack -- if the grammar is empty, then don't
-        # bother evaluating it; the score will just come out to 0.
+        # If the grammar is empty, the don't bother evaluating it, or
+        # recording it in history -- the score will just be 0.
         if self.normalized_grammar.strip() == '':
-            self._eval_index = len(self.devset)
+            #self._eval_index = self._devset_size.get()
+            self._eval_demon_running = False
+            return
 
         # Score the next set of examples
         for gold in self.devset[self._eval_index:
-                                self._eval_index+self._EVAL_CHUNK]:
-            guess = self.chunker.parse(gold.leaves())
+                                min(self._eval_index+self._EVAL_CHUNK,
+                                    self._devset_size.get())]:
+            guess = self._chunkparse(gold.leaves())
             self._eval_score.score(gold, guess)
 
         # update our index in the devset.
         self._eval_index += self._EVAL_CHUNK
 
         # Check if we're done
-        if self._eval_index >= len(self.devset):
+        if self._eval_index >= self._devset_size.get():
             self._history.append( (self._eval_grammar,
                                    self._eval_score.precision(),
                                    self._eval_score.recall(),
@@ -501,27 +608,28 @@ class RegexpChunkDemo(object):
             self._eval_demon_running = False
             self._eval_normalized_grammar = None
         else:
-            progress = 100*self._eval_index/len(self.devset)
-            self.status['text'] = ('Evaluating on Development Set (%d%%)' % progress)
+            progress = 100*self._eval_index/self._devset_size.get()
+            self.status['text'] = ('Evaluating on Development Set (%d%%)' %
+                                   progress)
             self._eval_demon_running = True
             self._adaptively_modify_eval_chunk(time.time() - t0)
             self.top.after(int(self._EVAL_FREQ*1000), self._eval_demon)
 
     def _adaptively_modify_eval_chunk(self, t):
         """
-        Modify _EVAL_CHUNK to try to keep the amount of time that the eval demon
-        takes between _EVAL_DEMON_MIN and _EVAL_DEMON_MAX.
+        Modify _EVAL_CHUNK to try to keep the amount of time that the
+        eval demon takes between _EVAL_DEMON_MIN and _EVAL_DEMON_MAX.
         
         @param t: The amount of time that the eval demon took.
         """
         if t > self._EVAL_DEMON_MAX and self._EVAL_CHUNK > 5:
             self._EVAL_CHUNK = min(self._EVAL_CHUNK-1,
-                                   max(int(self._EVAL_CHUNK*(self._EVAL_DEMON_MAX/t)),
-                                           self._EVAL_CHUNK-10))
+                         max(int(self._EVAL_CHUNK*(self._EVAL_DEMON_MAX/t)),
+                             self._EVAL_CHUNK-10))
         elif t < self._EVAL_DEMON_MIN:
             self._EVAL_CHUNK = max(self._EVAL_CHUNK+1,
-                                   min(int(self._EVAL_CHUNK*(self._EVAL_DEMON_MIN/t)),
-                                           self._EVAL_CHUNK+10))
+                         min(int(self._EVAL_CHUNK*(self._EVAL_DEMON_MIN/t)),
+                             self._EVAL_CHUNK+10))
 
     def _init_widgets(self, top):
         frame0 = Frame(top, **self._FRAME_PARAMS)
@@ -530,12 +638,10 @@ class RegexpChunkDemo(object):
         frame0.grid_rowconfigure(1, weight=1)
         frame0.grid_rowconfigure(5, weight=1)
         
-        # Create a font.
-        font = self.font = tkFont.Font(**self._FONT_PARAMS)
-
         # The grammar
-        self.grammarbox = Text(frame0, font=font, **self._GRAMMARBOX_PARAMS)
-        self.grammarlabel = Label(frame0, font=font, text='Grammar:',
+        self.grammarbox = Text(frame0, font=self._font,
+                               **self._GRAMMARBOX_PARAMS)
+        self.grammarlabel = Label(frame0, font=self._font, text='Grammar:',
                       highlightcolor='black',
                       background=self._GRAMMARBOX_PARAMS['background'])
         self.grammarlabel.grid(column=0, row=0, sticky='SW')
@@ -556,15 +662,15 @@ class RegexpChunkDemo(object):
                **self._BUTTON_PARAMS).pack(side='left')
 
         # Help box
-        self.helpbox = Text(frame0, **self._HELPBOX_PARAMS)
+        self.helpbox = Text(frame0, font=self._smallfont,
+                            **self._HELPBOX_PARAMS)
         self.helpbox.grid(column=3, row=1, sticky='NEWS')
         self.helptabs = {}
         bg = self._FRAME_PARAMS['background']
         helptab_frame = Frame(frame0, background=bg)
         helptab_frame.grid(column=3, row=0, sticky='SW')
         for i, (tab, tabstops, text) in enumerate(self.HELP):
-            label = Label(helptab_frame, text=tab,
-                          **self._HELPTAB_PARAMS)
+            label = Label(helptab_frame, text=tab, font=self._smallfont)
             label.grid(column=i*2, row=0, sticky='S')
             #help_frame.grid_columnconfigure(i, weight=1)
             #label.pack(side='left')
@@ -572,7 +678,7 @@ class RegexpChunkDemo(object):
             self.helptabs[tab] = label
             Frame(helptab_frame, height=1, width=self._HELPTAB_SPACER,
                   background=bg).grid(column=i*2+1, row=0)
-        self.helptabs[self.HELP[0][0]].configure(**self._HELPTAB_MAIN_PARAMS)
+        self.helptabs[self.HELP[0][0]].configure(font=self._font)
         self.helpbox.tag_config('elide', elide=True)
         for (tag, params) in self.HELP_AUTOTAG:
             self.helpbox.tag_config('tag-%s' % tag, **params)
@@ -585,10 +691,11 @@ class RegexpChunkDemo(object):
         
         # The dev set
         frame4 = Frame(frame0, background=self._FRAME_PARAMS['background'])
-        self.devsetbox = Text(frame4, font=font, **self._DEVSETBOX_PARAMS)
+        self.devsetbox = Text(frame4, font=self._font,
+                              **self._DEVSETBOX_PARAMS)
         self.devsetbox.pack(expand=True, fill='both')
-        self.devsetlabel = Label(frame0, font=font, text='Development Set:',
-                      justify='right',
+        self.devsetlabel = Label(frame0, font=self._font,
+                      text='Development Set:', justify='right',
                       background=self._DEVSETBOX_PARAMS['background'])
         self.devsetlabel.grid(column=0, row=4, sticky='SW')
         frame4.grid(column=0, row=5, sticky='NEWS')
@@ -624,8 +731,8 @@ class RegexpChunkDemo(object):
 
         # evaluation box
         self.evalbox = Canvas(frame0, **self._EVALBOX_PARAMS)
-        label = Label(frame0, font=font, text='Evaluation:', justify='right',
-                      background=self._EVALBOX_PARAMS['background'])
+        label = Label(frame0, font=self._font, text='Evaluation:',
+              justify='right', background=self._EVALBOX_PARAMS['background'])
         label.grid(column=3, row=4, sticky='SW')
         self.evalbox.grid(column=3, row=5, sticky='NEWS', columnspan=2)
 
@@ -645,7 +752,7 @@ class RegexpChunkDemo(object):
                **self._BUTTON_PARAMS).pack(side='right')
 
         # The status label
-        self.status = Label(frame0, font=font, **self._STATUS_PARAMS)
+        self.status = Label(frame0, font=self._font, **self._STATUS_PARAMS)
         self.status.grid(column=0, row=9, sticky='NEW', padx=3, pady=2,
                          columnspan=5)
 
@@ -677,6 +784,7 @@ class RegexpChunkDemo(object):
         self.grammarbox.tag_config('comment', foreground='#840')
         self.grammarbox.tag_config('angle', foreground='#00f')
         self.grammarbox.tag_config('brace', foreground='#0a0')
+        self.grammarbox.tag_config('hangindent', lmargin1=0, lmargin2=40)
 
     _showing_trace = False
     def show_trace(self, *e):
@@ -688,7 +796,7 @@ class RegexpChunkDemo(object):
         #self.devsetbox['wrap'] = 'none'
         self.devsetbox.delete('1.0', 'end')
         self.devsetlabel['text']='Development Set (%d/%d)' % (
-            (self.devset_index+1, len(self.devset)))
+            (self.devset_index+1, self._devset_size.get()))
         
         if self.chunker is None:
             self.devsetbox.insert('1.0', 'Trace: waiting for a valid grammar.')
@@ -718,10 +826,10 @@ class RegexpChunkDemo(object):
                 self.devsetbox.tag_add('trace', 'end -2c linestart', 'end -2c')
             # Display the tag sequence.
             self.devsetbox.insert('end', tagseq+'\n')
-            self.devsetbox.tag_add('wrapindent', 'end -2c linestart', 'end -2c')
+            self.devsetbox.tag_add('wrapindent','end -2c linestart','end -2c')
             # Run a partial parser, and extract gold & test chunks
             chunker = nltk.RegexpChunkParser(rules[:i])
-            test_tree = chunker.parse(gold_tree.leaves())
+            test_tree = self._chunkparse(gold_tree.leaves())
             gold_chunks = self._chunks(gold_tree)
             test_chunks = self._chunks(test_tree)
             # Compare them.
@@ -787,11 +895,15 @@ class RegexpChunkDemo(object):
         self.grammarbox.insert('end', self._history[index][0])
         self.grammarbox.mark_set('insert', '1.0')
         self._history_index = index
+        self._syntax_highlight_grammar(self._history[index][0])
         # Record the normalized grammar & regenerate the chunker.
         self.normalized_grammar = self.normalize_grammar(
             self._history[index][0])
-        rules = [nltk.chunk.regexp.RegexpChunkRule.parse(line)
-                 for line in self.normalized_grammar.split('\n')]
+        if self.normalized_grammar:
+            rules = [nltk.chunk.regexp.RegexpChunkRule.parse(line)
+                     for line in self.normalized_grammar.split('\n')]
+        else:
+            rules = []
         self.chunker = nltk.RegexpChunkParser(rules)
         # Show the score.
         self._eval_plot()
@@ -826,7 +938,7 @@ class RegexpChunkDemo(object):
         elif command == 'scroll' and args[1].startswith('page'):
             self.show_devset(self.devset_index+N*int(args[0]))
         elif command == 'moveto':
-            self.show_devset(int(float(args[0])*len(self.devset)))
+            self.show_devset(int(float(args[0])*self._devset_size.get()))
         else:
             assert 0, 'bad scroll command %s %s' % (command, args)
         if showing_trace:
@@ -836,7 +948,7 @@ class RegexpChunkDemo(object):
         if index is None: index = self.devset_index
 
         # Bounds checking
-        index = min(max(0, index), len(self.devset)-2)
+        index = min(max(0, index), self._devset_size.get()-1)
         
         if index == self.devset_index and not self._showing_trace: return
         self.devset_index = index
@@ -850,7 +962,7 @@ class RegexpChunkDemo(object):
         self.devsetbox['wrap'] = 'word'
         self.devsetbox.delete('1.0', 'end')
         self.devsetlabel['text']='Development Set (%d/%d)' % (
-            (self.devset_index+1, len(self.devset)))
+            (self.devset_index+1, self._devset_size.get()))
 
         # Add the sentences
         sample = self.devset[self.devset_index:self.devset_index+1]
@@ -870,8 +982,8 @@ class RegexpChunkDemo(object):
         self.devsetbox['state'] = 'disabled'
 
         # Update the scrollbar
-        first = float(self.devset_index)/len(self.devset)
-        last = float(self.devset_index+2)/len(self.devset)
+        first = float(self.devset_index)/self._devset_size.get()
+        last = float(self.devset_index+2)/self._devset_size.get()
         self.devset_scroll.set(first, last)
 
     def _chunks(self, tree):
@@ -891,6 +1003,7 @@ class RegexpChunkDemo(object):
         self.grammarbox.tag_remove('comment', '1.0', 'end')
         self.grammarbox.tag_remove('angle', '1.0', 'end')
         self.grammarbox.tag_remove('brace', '1.0', 'end')
+        self.grammarbox.tag_add('hangindent', '1.0', 'end')
         for lineno, line in enumerate(grammar.split('\n')):
             if not line.strip(): continue
             m = re.match(r'(\\.|[^#])*(#.*)?', line)
@@ -901,7 +1014,8 @@ class RegexpChunkDemo(object):
                 e = '%d.%d' % (lineno+1, m.end(2))
                 self.grammarbox.tag_add('comment', s, e)
             for m in re.finditer('[<>{}]', line):
-                if comment_start is not None and m.start() >= comment_start: break
+                if comment_start is not None and m.start() >= comment_start:
+                    break
                 s = '%d.%d' % (lineno+1, m.start())
                 e = '%d.%d' % (lineno+1, m.end())
                 if m.group() in '<>':
@@ -930,14 +1044,13 @@ class RegexpChunkDemo(object):
             self._last_keypress = time.time()
         
         # Read the grammar from the Text box.
-        grammar = self.grammarbox.get('1.0', 'end')
+        self.grammar = grammar = self.grammarbox.get('1.0', 'end')
         
         # If the grammar hasn't changed, do nothing:
         normalized_grammar = self.normalize_grammar(grammar)
         if normalized_grammar == self.normalized_grammar:
             return
         else:
-            self.grammar = grammar
             self.normalized_grammar = normalized_grammar
 
         # If the grammar has changed, and we're looking at history,
@@ -985,7 +1098,7 @@ class RegexpChunkDemo(object):
         # Run the grammar on the test cases.
         for sentnum, gold_tree in enumerate(sample):
             # Run the chunk parser
-            test_tree = self.chunker.parse(gold_tree.leaves())
+            test_tree = self._chunkparse(gold_tree.leaves())
             # Extract gold & test chunks
             gold_chunks = self._chunks(gold_tree)
             test_chunks = self._chunks(test_tree)
@@ -997,11 +1110,136 @@ class RegexpChunkDemo(object):
             for chunk in test_chunks - gold_chunks:
                 self._color_chunk(sentnum, chunk, 'false-pos')
 
+    def _chunkparse(self, words):
+        try:
+            return self.chunker.parse(words)
+        except (ValueError, IndexError), e:
+            # There's an error somewhere in the grammar, but we're not sure
+            # exactly where, so just mark the whole grammar as bad.
+            # E.g., this is caused by: "({<NN>})"
+            self.grammarbox.tag_add('error', '1.0', 'end')
+            # Treat it as tagging nothing:
+            return words
+
     def _color_chunk(self, sentnum, chunk, tag):
         start, end = chunk
         self.devsetbox.tag_add(tag,
             '%s.%s' % (self.linenum[sentnum], self.charnum[sentnum, start]),
             '%s.%s' % (self.linenum[sentnum], self.charnum[sentnum, end]-1))
+
+    def reset(self):
+        # Clear various variables
+        self.chunker = None
+        self.grammar = None
+        self.normalized_grammar = None
+        self.grammar_changed = 0
+        self._history = []
+        self._history_index = 0
+        # Update the on-screen display.
+        self.grammarbox.delete('1.0', 'end')
+        self.show_devset(0)
+        self.update()
+        #self._eval_plot()
+
+    SAVE_GRAMMAR_TEMPLATE = (
+        '# Regexp Chunk Parsing Grammar\n'
+        '# Saved %(date)s\n'
+        '#\n'
+        '# Development set: %(devset)s\n'
+        '#   Precision: %(precision)s\n'
+        '#   Recall:    %(recall)s\n'
+        '#   F-score:   %(fscore)s\n\n'
+        '%(grammar)s\n')
+
+    def save_grammar(self, filename=None):
+        if not filename:
+            ftypes = [('Chunk Gramamr', '.chunk'),
+                      ('All files', '*')]
+            filename = asksaveasfilename(filetypes=ftypes,
+                                         defaultextension='.chunk')
+            if not filename: return
+        if (self._history and self.normalized_grammar ==
+            self.normalize_grammar(self._history[-1][0])):
+            precision, recall, fscore = ['%.2f%%' % (100*v) for v in
+                                         self._history[-1][1:]]
+        elif self.chunker is None:
+            precision = recall = fscore = 'Grammar not well formed'
+        else:
+            precision = recall = fscore = 'Not finished evaluation yet'
+            
+        out = open(filename, 'w')
+        out.write(self.SAVE_GRAMMAR_TEMPLATE % dict(
+            date=time.ctime(), devset=self.devset_name,
+            precision=precision, recall=recall, fscore=fscore,
+            grammar=self.grammar.strip()))
+        out.close()
+
+    def load_grammar(self, filename=None):
+        if not filename:
+            ftypes = [('Chunk Gramamr', '.chunk'),
+                      ('All files', '*')]
+            filename = askopenfilename(filetypes=ftypes,
+                                       defaultextension='.chunk')
+            if not filename: return
+        self.grammarbox.delete('1.0', 'end')
+        self.update()
+        grammar = open(filename).read()
+        grammar = re.sub('^\# Regexp Chunk Parsing Grammar[\s\S]*'
+                         'F-score:.*\n', '', grammar).lstrip()
+        self.grammarbox.insert('1.0', grammar)
+        self.update()
+
+    def save_history(self, filename=None):
+        if not filename:
+            ftypes = [('Chunk Gramamr History', '.txt'),
+                      ('All files', '*')]
+            filename = asksaveasfilename(filetypes=ftypes,
+                                         defaultextension='.txt')
+            if not filename: return
+
+        out = open(filename, 'w')
+        out.write('# Regexp Chunk Parsing Grammar History\n')
+        out.write('# Saved %s\n' % time.ctime())
+        out.write('# Development set: %s\n' % self.devset_name)
+        for i, (g, p, r, f) in enumerate(self._history):
+            hdr = ('Grammar %d/%d (precision=%.2f%%, recall=%.2f%%, '
+                   'fscore=%.2f%%)' % (i+1, len(self._history),
+                                       p*100, r*100, f*100))
+            out.write('\n%s\n' % hdr)
+            out.write(''.join('  %s\n' % line for line in g.strip().split()))
+
+        if not (self._history and self.normalized_grammar ==
+                self.normalize_grammar(self._history[-1][0])):
+            if self.chunker is None:
+                out.write('\nCurrent Grammar (not well-formed)\n')
+            else:
+                out.write('\nCurrent Grammar (not evaluated)\n')
+            out.write(''.join('  %s\n' % line for line
+                              in self.grammar.strip().split()))
+        out.close()
+
+    def about(self, *e):
+        ABOUT = ("NLTK RegExp Chunk Parser Demo\n"+
+                 "Written by Edward Loper")
+        TITLE = 'About: Regular Expression Chunk Parser Demo'
+        try:
+            from tkMessageBox import Message
+            Message(message=ABOUT, title=TITLE).show()
+        except:
+            ShowText(self.top, TITLE, ABOUT)
+
+    def set_devset_size(self, size=None):
+        if size is not None: self._devset_size.set(size)
+        self._devset_size.set(min(len(self.devset), self._devset_size.get()))
+        self.show_devset(1)
+        self.show_devset(0)
+        # what about history?  Evaluated at diff dev set sizes!
+            
+    def resize(self, size=None):
+        if size is not None: self._size.set(size)
+        size = self._size.get()
+        self._font.configure(size=-(abs(size)))
+        self._smallfont.configure(size=min(-10, -(abs(size))*14/20))
 
     def mainloop(self, *args, **kwargs):
         """
