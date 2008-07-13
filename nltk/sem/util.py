@@ -14,7 +14,7 @@ a first-order model.
 import evaluate
 import re
 import nltk
-from logic import LogicParser, Error
+from logic import LogicParser, ParseException
 
 
 ##############################################################
