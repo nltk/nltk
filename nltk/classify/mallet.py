@@ -49,7 +49,7 @@ def config_mallet(mallet_home=None):
         'mallet', mallet_home,
         env_vars=['MALLET',  'MALLET_HOME'],
         binary_names=['mallethon'],
-        url='<http://mallet.cs.umass.edu/>')
+        url='http://mallet.cs.umass.edu>')
     # Record the location where mallet lives.
     bin_dir = os.path.split(mallethon_bin)[0]
     _mallet_home = os.path.split(bin_dir)[0]
@@ -73,6 +73,9 @@ def call_mallet(cmd, classpath=None, stdin=None, stdout=None, stderr=None,
     See L{nltk.internals.java()} for parameter and return value
     descriptions.
     """
+    if _mallet_classpath is None:
+        config_mallet()
+    
     # Set up the classpath
     if classpath is None:
         classpath = _mallet_classpath
