@@ -7,7 +7,7 @@
 # For license information, see LICENSE.TXT
 
 """
-Read conll-style chunk files.
+Read CoNLL-style chunk files.
 """       
 
 from util import *
@@ -17,6 +17,10 @@ import os, codecs
 from nltk.internals import deprecated
 
 class ConllChunkCorpusReader(CorpusReader):
+    """
+    A CoNLL-style chunk corpus reader.
+    """ 
+
     def __init__(self, root, files, chunk_types, encoding=None):
         CorpusReader.__init__(self, root, files, encoding)
         self.chunk_types = tuple(chunk_types)
@@ -62,14 +66,32 @@ class ConllChunkCorpusReader(CorpusReader):
                                             chunk_types)
                        for (filename, enc) in self.abspaths(files, True)])
 
-    def bio_words(self, files=None, chunk_types=None):
+    def iob_words(self, files=None, chunk_types=None):
+        """
+        @return: a list of word/tag/IOB tuples 
+        @rtype: C{list} of C{tuple}
+        @param files: the list of files that make up this corpus 
+        @type files: C{None} or C{str} or C{list}
+        @param chunk_types: list of chunks to recognize when returning
+                            tokens
+        @type chunk_types: C{list} of C{str}
+        """
         if chunk_types is None: chunk_types = self.chunk_types
         return concat([ConllChunkCorpusView(filename, enc,
                                             True, False, False, True,
                                             chunk_types)
                        for (filename, enc) in self.abspaths(files, True)])
 
-    def bio_sents(self, files=None, chunk_types=None):
+    def iob_sents(self, files=None, chunk_types=None):
+        """
+        @return: a list of lists of word/tag/IOB tuples 
+        @rtype: C{list} of C{list}
+        @param files: the list of files that make up this corpus 
+        @type files: C{None} or C{str} or C{list}
+        @param chunk_types: list of chunks to recognize when returning
+                            tokens
+        @type chunk_types: C{list} of C{str}
+        """
         if chunk_types is None: chunk_types = self.chunk_types
         return concat([ConllChunkCorpusView(filename, enc,
                                             True, True, True, True,
@@ -98,13 +120,38 @@ class ConllChunkCorpusReader(CorpusReader):
     
 class ConllChunkCorpusView(StreamBackedCorpusView):
     """
+    A view of the CoNLL-style chunk corpus.  Subclasses 
+    C{StreamBackedCorpusView}.
     """
+
     def __init__(self, corpus_file, encoding, tagged, group_by_sent,
-                 chunked, bio, chunk_types=None):
+                 chunked, iob, chunk_types=None):
+        """
+        Create a new CoNLL-style chunk corpus view.
+
+        @param corpus_file: a corpus filename
+        @type corpus_file: C{str}
+        @param encoding: the unicode encoding that should be used to read the
+                         file's contents
+        @type encoding: C{str}
+        @param tagged: flag indicating whether to return POS tags with tokens 
+        @type tagged: C{bool}
+        @param group_by_sent: flag indicating whether to return a list of
+                              sentences, rather than a list of words
+        @type group_by_sent: C{bool}
+        @param chunked: flag indicating whether to return a list of chunks, 
+                        rather than a list of sentences or words 
+        @type chunked: C{bool}
+        @param iob: flag indicating whether to return IOB tags with tokens
+        @type iob: C{bool}
+        @param chunk_types: list of chunks to recognize when returning
+                            tokens
+        @type chunk_types: C{list} of C{str}
+        """
         self._tagged = tagged
         self._chunked = chunked
         self._group_by_sent = group_by_sent
-        self._bio = bio
+        self._iob = iob
         self._chunk_types = chunk_types
         StreamBackedCorpusView.__init__(self, corpus_file, encoding=encoding)
 
@@ -117,11 +164,11 @@ class ConllChunkCorpusView(StreamBackedCorpusView):
         if sent.startswith(self._DOCSTART):
             sent = sent[len(self._DOCSTART):].lstrip()
         
-        # If format is chunked and BIO tags are wanted, split the string into
-        # lines and selected out the word&tag&bio tag else use the 
+        # If format is chunked and IOB tags are wanted, split the string into
+        # lines and selected out the word&tag&iob tag else use the 
         # conllstr2tree function to parse it.
         if self._chunked:
-            if self._bio:
+            if self._iob:
                 lines = [line.split() for line in sent.split('\n')]
                 sent = [(word, tag, chunk_typ)
                         for (word, tag, chunk_typ) in lines]
@@ -138,11 +185,11 @@ class ConllChunkCorpusView(StreamBackedCorpusView):
                             sent[i] = child[0]
 
         # Otherwise, split the string into lines and select out either the
-        # word&tag&bio tag (BIO), word&tag (tagged) or just the word (raw) 
+        # word&tag&iob tag (IOB), word&tag (tagged) or just the word (raw) 
         # from each line.
         else:
             lines = [line.split() for line in sent.split('\n')]
-            if self._bio:
+            if self._iob:
                 sent = [(word, tag, chunk_typ)
                         for (word, tag, chunk_typ) in lines]
             elif self._tagged:
