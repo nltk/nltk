@@ -685,7 +685,7 @@ class Model(object):
         try:
             parsed = LogicParser(constants=self.valuation.symbols).parse(expr)
         except TypeError:
-            print "Cannot parse %s" % expr
+            raise Undefined("Cannot parse %s" % expr)
             
         try:
             first, second = parsed.binder, parsed.body
