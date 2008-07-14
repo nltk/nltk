@@ -7,12 +7,6 @@
 
 from nltk.internals import Counter
 from nltk.sem import logic
-from nltk.sem.logic import LogicParser, \
-                           BooleanExpression, \
-                           AndExpression, \
-                           ExistsExpression, \
-                           AllExpression, \
-                           UnexpectedTokenException
 import drt_resolve_anaphora as RA
 
 from Tkinter import Canvas
@@ -21,8 +15,11 @@ from tkFont import Font
 from nltk.draw import in_idle
 
 class AbstractDrs:
-    def __call__(self, other):
-        self.applyto(other)
+    def __call__(self, other, *additional):
+        accum = self.applyto(other)
+        for a in additional:
+            accum = accum.applyto(a)
+        return accum
     
     def applyto(self, other):
         if not isinstance(other, list):
@@ -34,7 +31,22 @@ class AbstractDrs:
     
     def negate(self):
         return -self
-
+    
+    def __and__(self, other):
+        raise NotImplementedError()
+    
+    def __or__(self, other):
+        assert isinstance(other, AbstractDrs)
+        return DrtOrExpression(self, other)
+    
+    def __gt__(self, other):
+        assert isinstance(other, AbstractDrs)
+        return DrtImpExpression(self, other)
+    
+    def __lt__(self, other):
+        assert isinstance(other, AbstractDrs)
+        return DrtIffExpression(self, other)
+    
     def tp_equals(self, other, prover_name='tableau'):
         """Pass the expression (self <-> other) to the theorem prover.   
         If the prover says it is valid, then the self and other are equal."""
@@ -46,7 +58,6 @@ class AbstractDrs:
         return f1.tp_equals(f2, prover_name)
 
     def __add__(self, other):
-        """DRS Concatenation"""
         return ConcatenationDRS(self, other)
     
     def get_pronoun_token(self):
@@ -56,7 +67,7 @@ class AbstractDrs:
         return DrtEqualityExpression
 
     def unique_variable(self):
-        return DrtVariableExpression('z' + str(logic._counter.get()))
+        return DrtIndividualVariableExpression('z' + str(logic._counter.get()))
 
     def draw(self):
         DrsDrawer(self).draw()
@@ -120,22 +131,39 @@ class DRS(AbstractDrs, logic.Expression, RA.DRS):
             if not accum:
                 accum = cond.toFol()
             else:
-                accum = AndExpression(cond.toFol(), accum) 
+                accum = logic.AndExpression(cond.toFol(), accum) 
 
         for ref in self.refs[::-1]:
-            accum = ExistsExpression(ref, accum)
+            accum = logic.ExistsExpression(ref, accum)
         
         return accum
     
     def __eq__(self, other):
-        return isinstance(other, DRS) and \
-                self.refs == other.refs and self.conds == other.conds
+        r"""Defines equality modulo alphabetic variance.
+        If we are comparing \x.M  and \y.N, then check equality of M and N[x/y]."""
+        if isinstance(other, self.__class__):
+            if len(self.refs) == len(other.refs):
+                converted_other = other
+                for (i,ref) in enumerate(self.refs):
+                    other_ref = converted_other.refs[i]
+                    converted_other = converted_other.replace(other_ref, ref, True)
+                return self.conds == converted_other.conds
+        return False
     
     def __str__(self):
         return Tokens.DRS + '([' + ','.join([str(ref) for ref in self.refs]) + \
                '],[' + ', '.join([str(cond) for cond in self.conds]) + '])'
 
-class DrtVariableExpression(AbstractDrs, logic.VariableExpression, RA.VariableExpression):
+class DrtVariableExpression(AbstractDrs, logic.VariableExpression, 
+                            RA.VariableExpression):
+    def toFol(self):
+        return self
+    
+    def get_refs(self):
+        return []
+
+class DrtIndividualVariableExpression(AbstractDrs, logic.IndividualVariableExpression, 
+                                      RA.VariableExpression):
     def toFol(self):
         return self
     
@@ -168,12 +196,12 @@ class DrtImpExpression(AbstractDrs, logic.ImpExpression, RA.ImpExpression):
             if not accum:
                 accum = cond.toFol()
             else:
-                accum = AndExpression(cond.toFol(), accum) 
+                accum = logic.AndExpression(cond.toFol(), accum) 
    
         accum = logic.ImpExpression(accum, second_drs.toFol())
     
         for ref in first_drs.refs[::-1]:
-            accum = AllExpression(ref, accum)
+            accum = logic.AllExpression(ref, accum)
             
         return accum
 
@@ -242,9 +270,24 @@ class ConcatenationDRS(AbstractDrs, logic.BooleanExpression, RA.ConcatenationDRS
         
     def getOp(self):
         return Tokens.DRS_CONC
+    
+    def __eq__(self, other):
+        r"""Defines equality modulo alphabetic variance.
+        If we are comparing \x.M  and \y.N, then check equality of M and N[x/y]."""
+        if isinstance(other, self.__class__):
+            self_refs = self.get_refs()
+            other_refs = other.get_refs()
+            if len(self_refs) == len(other_refs):
+                converted_other = other
+                for (i,ref) in enumerate(self_refs):
+                    other_ref = other_refs[i]
+                    converted_other = converted_other.replace(other_ref, ref, True)
+                return self.first == converted_other.first and \
+                        self.second == converted_other.second
+        return False
         
     def toFol(self):
-        return AndExpression( self.first.toFol(), self.second.toFol() )
+        return logic.AndExpression(self.first.toFol(), self.second.toFol())
 
 class DrtApplicationExpression(AbstractDrs, logic.ApplicationExpression, RA.ApplicationExpression):
     def toFol(self):
@@ -261,7 +304,7 @@ class DrtApplicationExpression(AbstractDrs, logic.ApplicationExpression, RA.Appl
             if isinstance(self.function.term, DrtApplicationExpression):
                 if not isinstance(self.function.term.function, DrtVariableExpression):
                     function = Tokens.OPEN + function + Tokens.CLOSE
-            elif not isinstance(self.function.term, BooleanExpression) and \
+            elif not isinstance(self.function.term, logic.BooleanExpression) and \
                  not isinstance(self.function.term, DRS):
                 function = Tokens.OPEN + function + Tokens.CLOSE
                 
@@ -386,7 +429,7 @@ class DrsDrawer:
             factory = self._handle_NegatedExpression
         elif isinstance(expression, DrtLambdaExpression):
             factory = self._handle_LambdaExpression
-        elif isinstance(expression, BooleanExpression):
+        elif isinstance(expression, logic.BooleanExpression):
             factory = self._handle_BooleanExpression
         elif isinstance(expression, DrtApplicationExpression):
             factory = self._handle_ApplicationExpression
@@ -531,11 +574,11 @@ class Tokens(logic.Tokens):
     
     TOKENS = logic.Tokens.TOKENS + [DRS] + PUNCT
     
-class DrtParser(LogicParser):
+class DrtParser(logic.LogicParser):
     """A lambda calculus expression parser."""
     
     def __init__(self):
-        LogicParser.__init__(self)
+        logic.LogicParser.__init__(self)
 
     def get_all_symbols(self):
         """This method exists to be overridden"""
@@ -544,13 +587,11 @@ class DrtParser(LogicParser):
     def isvariable(self, tok):
         return tok not in Tokens.TOKENS
 
-    def parse_Expression(self):
-        """Parse the next complete expression from the stream and return it."""
-        tok = self.token()
-        
+    def handle(self, tok):
+        """This method is intended to be overridden for logics that 
+        use different operators or expressions"""
         if tok in Tokens.NOT:
-            #it's a negated expression
-            return DrtNegatedExpression(self.parse_Expression())
+            return self.handle_negation()
         
         elif tok in Tokens.LAMBDA:
             return self.handle_lambda(tok)
@@ -563,10 +604,10 @@ class DrtParser(LogicParser):
 
         elif self.isvariable(tok):
             return self.handle_variable(tok)
-        
-        else:
-            raise UnexpectedTokenException(tok)
 
+    def make_NegatedExpression(self, expression):
+        return DrtNegatedExpression(expression)
+        
     def handle_DRS(self):
         # a DRS
         self.assertToken(self.token(), Tokens.OPEN)
@@ -614,7 +655,10 @@ class DrtParser(LogicParser):
         return DrtApplicationExpression(function, args)
     
     def make_VariableExpression(self, name):
-        return DrtVariableExpression(name)
+        if logic.is_indvar(name):
+            return DrtIndividualVariableExpression(name)
+        else:
+            return DrtVariableExpression(name)
     
     def make_LambdaExpression(self, variables, term):
         return DrtLambdaExpression(variables, term)
