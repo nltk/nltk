@@ -17,8 +17,11 @@ n = 1
 _counter = Counter()
 
 class Expression(object):
-    def __call__(self, other):
-        return self.applyto(other)
+    def __call__(self, other, *additional):
+        accum = self.applyto(other)
+        for a in additional:
+            accum = accum.applyto(a)
+        return accum
     
     def applyto(self, other):
         if not isinstance(other, list):
@@ -30,6 +33,22 @@ class Expression(object):
     
     def negate(self):
         return -self
+    
+    def __and__(self, other):
+        assert isinstance(other, Expression)
+        return AndExpression(self, other)
+    
+    def __or__(self, other):
+        assert isinstance(other, Expression)
+        return OrExpression(self, other)
+    
+    def __gt__(self, other):
+        assert isinstance(other, Expression)
+        return ImpExpression(self, other)
+    
+    def __lt__(self, other):
+        assert isinstance(other, Expression)
+        return IffExpression(self, other)
     
     def __eq__(self, other):
         raise NotImplementedError()
@@ -48,7 +67,7 @@ class Expression(object):
         return hash(repr(self))
     
     def unique_variable(self):
-        return VariableExpression('z' + str(_counter.get()))
+        return IndividualVariableExpression('z' + str(_counter.get()))
 
     def __repr__(self):
         return self.__class__.__name__ + ': ' + str(self)
@@ -372,16 +391,29 @@ class LogicParser:
     def isvariable(self, tok):
         return tok not in Tokens.TOKENS
     
-    def parse_Expression(self):
+    def parse_Expression(self, allow_adjuncts=True):
         """Parse the next complete expression from the stream and return it."""
         tok = self.token()
         
+        accum = self.handle(tok)
+        
+        if not accum:
+            raise UnexpectedTokenException(tok)
+        
+        if allow_adjuncts:
+            accum = self.attempt_ApplicationExpression(accum)
+            accum = self.attempt_BooleanExpression(accum)
+        
+        return accum
+    
+    def handle(self, tok):
+        """This method is intended to be overridden for logics that 
+        use different operators or expressions"""
         if self.isvariable(tok):
             return self.handle_variable(tok)
         
         elif tok in Tokens.NOT:
-            #it's a negated expression
-            return self.make_NegatedExpression(self.parse_Expression())
+            return self.handle_negation()
         
         elif tok in Tokens.LAMBDA:
             return self.handle_lambda(tok)
@@ -391,9 +423,9 @@ class LogicParser:
             
         elif tok == Tokens.OPEN:
             return self.handle_open(tok)
-        
-        else:
-            raise UnexpectedTokenException(tok)
+            
+    def handle_negation(self):
+        return self.make_NegatedExpression(self.parse_Expression())
         
     def make_NegatedExpression(self, expression):
         return NegatedExpression(expression)
@@ -418,8 +450,7 @@ class LogicParser:
             if is_indvar(tok):
                 raise ParseException('\'%s\' is an illegal variable name.  Predicate '
                                      'variables may not be individual variables' % tok)
-            expression = self.make_ApplicationExpression(self.make_VariableExpression(tok), args)
-            return self.attempt_BooleanExpression(expression)
+            return self.make_ApplicationExpression(self.make_VariableExpression(tok), args)
         else:
             #The predicate has no arguments: it's a solo variable
             return self.make_VariableExpression(tok)
@@ -441,12 +472,10 @@ class LogicParser:
             else:
                 break
         
-        accum = self.parse_Expression()
+        accum = self.parse_Expression(False)
         while vars:
             accum = self.make_LambdaExpression(vars.pop(), accum)
-
-        accum = self.attempt_ApplicationExpression(accum)
-        return self.attempt_BooleanExpression(accum)
+        return accum
         
     def get_QuantifiedExpression_factory(self, tok):
         """This method serves as a hook for other logic parsers that
@@ -470,21 +499,20 @@ class LogicParser:
             vars.append(self.token())
         self.assertToken(self.token(), Tokens.DOT)
 
-        accum = self.parse_Expression()
+        accum = self.parse_Expression(False)
         while vars:
             var = vars.pop()
             if not is_indvar(var):
                 raise ParseException('\'%s\' is an illegal variable name.  Quantifier '
                                      'variables must be individual variables' % var)
             accum = factory(self.make_VariableExpression(var), accum)
-        
-        return self.attempt_BooleanExpression(accum)
+        return accum
         
     def handle_open(self, tok):
         #Expression is in parens
-        newExpression = self.attempt_BooleanExpression(self.parse_Expression())
+        accum = self.parse_Expression()
         self.assertToken(self.token(), Tokens.CLOSE)
-        return self.attempt_ApplicationExpression(newExpression)
+        return accum
         
     def attempt_BooleanExpression(self, expression):
         """Attempt to make a boolean expression.  If the next token is a boolean 
@@ -540,7 +568,6 @@ class LogicParser:
                         self.token() #swallow the comma
                         accum = self.make_ApplicationExpression(accum, [self.parse_Expression()])
                 self.assertToken(self.token(), Tokens.CLOSE)
-                retEx = accum
             else:
                 args = []
                 if self.token(0) != Tokens.CLOSE:
@@ -549,8 +576,8 @@ class LogicParser:
                         self.token() #swallow the comma
                         args.append(self.parse_Expression())
                 self.assertToken(self.token(), Tokens.CLOSE)
-                retEx = self.make_ApplicationExpression(expression, args)
-            return self.attempt_ApplicationExpression(retEx) 
+                accum = self.make_ApplicationExpression(expression, args)
+            return self.attempt_ApplicationExpression(accum)
         else:
             return expression
 
@@ -657,6 +684,6 @@ def demo():
     e2 = e1.alpha_convert(VariableExpression('z'))
     print e2
     print e1 == e2
-
+        
 if __name__ == '__main__':
     demo()
