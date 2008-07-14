@@ -125,17 +125,11 @@ class DRS(AbstractDrs, logic.Expression, RA.DRS):
         return DRS(r_refs, r_conds)
     
     def toFol(self):
-        accum = None
-        
-        for cond in self.conds[::-1]:
-            if not accum:
-                accum = cond.toFol()
-            else:
-                accum = logic.AndExpression(cond.toFol(), accum) 
-
+        accum = self.conds[-1].toFol()
+        for cond in self.conds[::-1][1:]:
+            accum = logic.AndExpression(cond.toFol(), accum) 
         for ref in self.refs[::-1]:
             accum = logic.ExistsExpression(ref, accum)
-        
         return accum
     
     def __eq__(self, other):
@@ -162,7 +156,8 @@ class DrtVariableExpression(AbstractDrs, logic.VariableExpression,
     def get_refs(self):
         return []
 
-class DrtIndividualVariableExpression(AbstractDrs, logic.IndividualVariableExpression, 
+class DrtIndividualVariableExpression(DrtVariableExpression, 
+                                      logic.IndividualVariableExpression, 
                                       RA.VariableExpression):
     def toFol(self):
         return self
@@ -190,13 +185,9 @@ class DrtImpExpression(AbstractDrs, logic.ImpExpression, RA.ImpExpression):
         first_drs = self.first
         second_drs = self.second
 
-        accum = None
-            
-        for cond in first_drs.conds[::-1]:
-            if not accum:
-                accum = cond.toFol()
-            else:
-                accum = logic.AndExpression(cond.toFol(), accum) 
+        accum = first_drs.conds[-1].toFol()
+        for cond in first_drs.conds[::-1][1:]:
+            accum = logic.AndExpression(cond.toFol(), accum) 
    
         accum = logic.ImpExpression(accum, second_drs.toFol())
     
