@@ -40,10 +40,10 @@ Simplify
     ((g -o G) -o G)
     >>> print llp.parse(r'(g -o f)(g)').simplify()
     f
-	>>> try: llp.parse(r'(g -o f)(f)').simplify()
-	... except LinearLogicApplicationException, e: print e
-	... 
-	Cannot apply (g -o f) to f. Cannot unify g with f given {}
+    >>> try: llp.parse(r'(g -o f)(f)').simplify()
+    ... except LinearLogicApplicationException, e: print e
+    ... 
+    Cannot apply (g -o f) to f. Cannot unify g with f given {}
     >>> print llp.parse(r'(G -o f)(g)').simplify()
     f
     >>> print llp.parse(r'((g -o G) -o G)((g -o f))').simplify()
@@ -64,7 +64,7 @@ Test BindingDict
     >>> all12 = ['%s: %s' % (v, d12[v]) for v in d12.d]
     >>> all12.sort()
     >>> print all12
-	['F: f', 'G: f', 'H: h']
+    ['F: f', 'G: f', 'H: h']
 
     >>> d4 = BindingDict([(F,f)])
     >>> try: d4[F] = g
@@ -72,51 +72,51 @@ Test BindingDict
     Variable F already bound to another value
         
 Test Unify
-	>>> try: f.unify(g, BindingDict())
-	... except UnificationException, e: print e
-	... 
-	Cannot unify f with g given {}
+    >>> try: f.unify(g, BindingDict())
+    ... except UnificationException, e: print e
+    ... 
+    Cannot unify f with g given {}
 
-	>>> print f.unify(G, BindingDict())
-	{G: f}
-	>>> try: f.unify(G, BindingDict([(G,h)]))
-	... except UnificationException, e: print e
-	... 
-	Cannot unify f with G given {G: h}
-	>>> print f.unify(G, BindingDict([(G,f)]))
-	{G: f}
-	>>> print f.unify(G, BindingDict([(H,f)]))
-	{H: f, G: f}
+    >>> print f.unify(G, BindingDict())
+    {G: f}
+    >>> try: f.unify(G, BindingDict([(G,h)]))
+    ... except UnificationException, e: print e
+    ... 
+    Cannot unify f with G given {G: h}
+    >>> print f.unify(G, BindingDict([(G,f)]))
+    {G: f}
+    >>> print f.unify(G, BindingDict([(H,f)]))
+    {H: f, G: f}
         
-	>>> print G.unify(f, BindingDict())
-	{G: f}
-	>>> try: G.unify(f, BindingDict([(G,h)]))
-	... except UnificationException, e: print e
-	... 
-	Cannot unify G with f given {G: h}
-	>>> print G.unify(f, BindingDict([(G,f)]))
-	{G: f}
-	>>> print G.unify(f, BindingDict([(H,f)]))
-	{H: f, G: f}
+    >>> print G.unify(f, BindingDict())
+    {G: f}
+    >>> try: G.unify(f, BindingDict([(G,h)]))
+    ... except UnificationException, e: print e
+    ... 
+    Cannot unify G with f given {G: h}
+    >>> print G.unify(f, BindingDict([(G,f)]))
+    {G: f}
+    >>> print G.unify(f, BindingDict([(H,f)]))
+    {H: f, G: f}
         
-	>>> print G.unify(F, BindingDict())
-	{G: F}
-	>>> try: G.unify(F, BindingDict([(G,H)]))
-	... except UnificationException, e: print e
-	... 
-	Cannot unify G with F given {G: H}
-	>>> print G.unify(F, BindingDict([(G,F)]))
-	{G: F}
-	>>> print G.unify(F, BindingDict([(H,F)]))
-	{H: F, G: F}
+    >>> print G.unify(F, BindingDict())
+    {G: F}
+    >>> try: G.unify(F, BindingDict([(G,H)]))
+    ... except UnificationException, e: print e
+    ... 
+    Cannot unify G with F given {G: H}
+    >>> print G.unify(F, BindingDict([(G,F)]))
+    {G: F}
+    >>> print G.unify(F, BindingDict([(H,F)]))
+    {H: F, G: F}
 
 Test Compile
-	>>> print llp.parse('g').compile_pos(Counter(), GlueFormula)
-	(ConstantExpression: g, [])
-	>>> print llp.parse('(g -o f)').compile_pos(Counter(), GlueFormula)
-	(ImpExpression: (g -o f), [])
-	>>> print llp.parse('(g -o (h -o f))').compile_pos(Counter(), GlueFormula)
-	(ImpExpression: (g -o (h -o f)), [])
+    >>> print llp.parse('g').compile_pos(Counter(), GlueFormula)
+    (ConstantExpression: g, [])
+    >>> print llp.parse('(g -o f)').compile_pos(Counter(), GlueFormula)
+    (ImpExpression: (g -o f), [])
+    >>> print llp.parse('(g -o (h -o f))').compile_pos(Counter(), GlueFormula)
+    (ImpExpression: (g -o (h -o f)), [])
 
 
 ======================
@@ -182,8 +182,8 @@ Noun Quantification can only be done one way:
     \Q.all x.(girl(x) -> Q(x)) : ((g -o G) -o G)
     >>> a_dog = a.applyto(dog)
     >>> print a_dog.simplify()
-	\Q.exists x.(dog(x) & Q(x)) : ((h -o H) -o H)
-	
+    \Q.exists x.(dog(x) & Q(x)) : ((h -o H) -o H)
+    
 The first reading is achieved by combining 'chases' with 'a dog' first.
 Since 'a girl' requires something of the form '(h -o H)' we must
 get rid of the 'g' in the glue of 'see'.  We will do this with
@@ -265,10 +265,10 @@ Compilation
 Demo of 'a man walks' using Compilation
 ---------------------------------------
 Premises
-	>>> a = GlueFormula('\\P Q.some x.(P(x) and Q(x))', '((gv -o gr) -o ((g -o G) -o G))')
-	>>> print a
-	\P.\Q.exists x.(P(x) & Q(x)) : ((gv -o gr) -o ((g -o G) -o G))
-	
+    >>> a = GlueFormula('\\P Q.some x.(P(x) and Q(x))', '((gv -o gr) -o ((g -o G) -o G))')
+    >>> print a
+    \P.\Q.exists x.(P(x) & Q(x)) : ((gv -o gr) -o ((g -o G) -o G))
+
     >>> man = GlueFormula('\\x.man(x)', '(gv -o gr)')
     >>> print man
     \x.man(x) : (gv -o gr)
