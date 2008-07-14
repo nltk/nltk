@@ -135,7 +135,7 @@ class DRS(AbstractDrs, logic.Expression, RA.DRS):
     def __eq__(self, other):
         r"""Defines equality modulo alphabetic variance.
         If we are comparing \x.M  and \y.N, then check equality of M and N[x/y]."""
-        if isinstance(other, self.__class__):
+        if self.__class__ == other.__class__:
             if len(self.refs) == len(other.refs):
                 converted_other = other
                 for (i,ref) in enumerate(self.refs):
@@ -265,7 +265,7 @@ class ConcatenationDRS(AbstractDrs, logic.BooleanExpression, RA.ConcatenationDRS
     def __eq__(self, other):
         r"""Defines equality modulo alphabetic variance.
         If we are comparing \x.M  and \y.N, then check equality of M and N[x/y]."""
-        if isinstance(other, self.__class__):
+        if self.__class__ == other.__class__:
             self_refs = self.get_refs()
             other_refs = other.get_refs()
             if len(self_refs) == len(other_refs):
