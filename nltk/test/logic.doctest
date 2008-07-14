@@ -31,7 +31,7 @@ Test numerals
     >>> succ = lp.parse(r'\N F x.F(N(F,x))')
     >>> plus = lp.parse(r'\M N F x.M(F,N(F,x))')
     >>> mult = lp.parse(r'\M N F.M(N(F))')
-    >>> pred = lp.parse(r'\N F x.N(\G H.H(G(F))(\u.x)(\u.u))')
+    >>> pred = lp.parse(r'\N F x.(N(\G H.H(G(F)))(\u.x)(\u.u))')
     >>> v1 = ApplicationExpression(succ, [zero]).simplify()
     >>> v1 == one
     True
@@ -48,6 +48,34 @@ Test numerals
     >>> v5 == two
     True
     
+Overloaded operators also exist for convenience
+
+	>>> print succ(zero).simplify() == one
+	True
+	>>> print plus(one,two).simplify() == three
+	True
+	>>> print mult(two,two).simplify() == four
+	True
+	>>> print pred(pred(four)).simplify() == two
+	True
+	
+	>>> john = lp.parse(r'john')
+	>>> man = lp.parse(r'\x.man(x)')
+	>>> walk = lp.parse(r'\x.walk(x)')
+	>>> print man(john).simplify()
+	man(john)
+	>>> print -walk(john).simplify()
+	-walk(john)
+	>>> print (man(john) & walk(john)).simplify()
+	(man(john) & walk(john))
+	>>> print (man(john) | walk(john)).simplify()
+	(man(john) | walk(john))
+	>>> print (man(john) > walk(john)).simplify()
+	(man(john) -> walk(john))
+	>>> print (man(john) < walk(john)).simplify()
+	(man(john) <-> walk(john))
+	
+    
 ``betaConversionTestSuite.pl``
 ------------------------------
 
@@ -62,7 +90,7 @@ From B&B's *Representation and Inference for Natural Language*.
     >>> x2 = lp.parse(r'exists x.(man(x) & exists y.(woman(y) & love(x,y)))').simplify()
     >>> x1 == x2
     True
-    >>> x1 = lp.parse(r'(\a.sleep(a)(mia))').simplify()
+    >>> x1 = lp.parse(r'\a.sleep(a)(mia)').simplify()
     >>> x2 = lp.parse(r'sleep(mia)').simplify()
     >>> x1 == x2
     True
@@ -114,7 +142,7 @@ From B&B's *Representation and Inference for Natural Language*.
     >>> x1 == x2
     True
     
-    >>> x1 = lp.parse(r'(\A.\B.((\C.C(A(vincent)))(\d.probably(d)) & (\C.C(B(mia))(\d.improbably(d)))))(\e.walk(e))(\e.talk(e))').simplify()
+    >>> x1 = lp.parse(r'\A.\B.(\C.C(A(vincent))(\d.probably(d)) & (\C.C(B(mia))(\d.improbably(d))))(\e.walk(e))(\e.talk(e))').simplify()
     >>> x2 = lp.parse(r'(probably(walk(vincent)) & improbably(talk(mia)))').simplify()
     >>> x1 == x2
     True
@@ -144,7 +172,7 @@ From B&B's *Representation and Inference for Natural Language*.
     >>> x1 == x2
     True
     
-    >>> x1 = lp.parse(r'(\A.\b.((exists b.A(b)) & A(b)))(\c.boxer(c))(vincent)').simplify()
+    >>> x1 = lp.parse(r'(\A.\b.(exists b.A(b) & A(b)))(\c.boxer(c))(vincent)').simplify()
     >>> x2 = lp.parse(r'((exists b.boxer(b)) & boxer(vincent))').simplify()
     >>> x1 == x2
     True
@@ -202,6 +230,8 @@ Test Parser
         ((\x.\y.sees(x,y))(a))(b)
         >>> print lp.parse(r'((\x.\y.sees(x,y))(a))(b)')
         ((\x.\y.sees(x,y))(a))(b)
+        >>> print lp.parse(r'P(x)(y)(z)')
+        ((P(x))(y))(z)
         >>> print lp.parse(r'P(Q)')
         P(Q)
         >>> print lp.parse(r'P(Q(x))')
@@ -212,10 +242,20 @@ Test Parser
         exists x.(x = john)
         >>> print lp.parse(r'((\P.\Q.exists x.(P(x) & Q(x)))(\x.dog(x)))(\x.bark(x))')
         ((\P.\Q.exists x.(P(x) & Q(x)))(\x.dog(x)))(\x.bark(x))
+    	>>> a = lp.parse(r'exists c.exists b.A(b,c) & A(b,c)')
+		>>> b = lp.parse(r'(exists c.(exists b.A(b,c))) & A(b,c)')
+		>>> print a == b
+		True
+    	>>> a = lp.parse(r'exists c.(exists b.A(b,c) & A(b,c))')
+		>>> b = lp.parse(r'exists c.((exists b.A(b,c)) & A(b,c))')
+		>>> print a == b
+		True
 
 Simplify            
 
         >>> print lp.parse(r'\x.man(x)(john)').simplify()
+        man(john)
+        >>> print lp.parse(r'\x.((man(x)))(john)').simplify()
         man(john)
         >>> print lp.parse(r'\x.\y.sees(x,y)(john, mary)').simplify()
         sees(john,mary)
@@ -243,6 +283,8 @@ Simplify
         \Q.exists x.(dog(x) & Q(x))
         >>> print lp.parse(r'((\P.\Q.exists x.(P(x) & Q(x)))(\x.dog(x)))(\x.bark(x))').simplify()
         exists x.(dog(x) & bark(x))
+        >>> print lp.parse(r'\P.(P(x)(y))(\a b.Q(a,b))').simplify()
+        Q(x,y)
     
 Replace
 
