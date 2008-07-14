@@ -352,18 +352,11 @@ class LinearLogicParser(logic.LogicParser):
     def get_all_symbols(self):
         return Tokens.TOKENS
     
-    def parse_Expression(self):
-        """Parse the next complete expression from the stream and return it."""
-        tok = self.token()
-        
+    def handle(self, tok):
         if tok not in Tokens.TOKENS:
             return self.handle_variable(tok)
-        
         elif tok == Tokens.OPEN:
             return self.handle_open(tok)
-        
-        else:
-            raise UnexpectedTokenException(tok)
      
     def get_BooleanExpression_factory(self):
         if self.token(0) == Tokens.IMP:
@@ -389,3 +382,17 @@ class LinearLogicParser(logic.LogicParser):
             return VariableExpression(name)
         else:
             return ConstantExpression(name)
+
+def demo():
+    llp = LinearLogicParser()
+    
+    print llp.parse(r'f')
+    print llp.parse(r'(g -o f)')
+    print llp.parse(r'((g -o G) -o G)')
+    print llp.parse(r'(g -o f)(g)').simplify()
+    print llp.parse(r'(H -o f)(g)').simplify()
+    print llp.parse(r'((g -o G) -o G)((g -o f))').simplify()
+
+
+if __name__ == '__main__':
+    demo()
