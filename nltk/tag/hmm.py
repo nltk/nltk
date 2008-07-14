@@ -879,8 +879,8 @@ class SpecializedHiddenMarkovModelTrainer(HiddenMarkovModelTrainer):
     and named entity recognition.
     """
 
-    def __init__(self, states=None, symbols=None, 
-                 transform=lambda sequence, hmm: sequence):
+    def __init__(self, states=None, symbols=None, z=(1,2),
+                 transform=(lambda sequence, hmm: sequence)):
         """
         Creates an HMM trainer to induce a specialized HMM with the given 
         states, output symbol alphabet, and symbol transformation function.
@@ -956,7 +956,7 @@ class SpecializedHiddenMarkovModelTagger(HiddenMarkovModelTagger):
     """
 
     def __init__(self, symbols, states, transitions, 
-                 outputs, priors, transform=lambda sequence, hmm: sequence):
+                 outputs, priors, transform=(lambda sequence, hmm: sequence)):
         """
         Creates a specialized hidden markov model parametised by the the 
         states, transition probabilities, output probabilities and priors.
