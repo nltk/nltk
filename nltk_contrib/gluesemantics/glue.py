@@ -52,14 +52,14 @@ class GlueFormula:
         arg_meaning_abstracted = arg.meaning
         if return_indices:
             for dep in self.glue.simplify().antecedent.dependencies[::-1]: # if self.glue is (A -o B), dep is in A.dependencies
-                arg_meaning_abstracted = self.make_LambdaExpression(self.make_VariableExpression('v%s' % dep), 
+                arg_meaning_abstracted = self.make_LambdaExpression(self.make_IndividualVariableExpression('v%s' % dep), 
                                                                     arg_meaning_abstracted)
         return_meaning = self.meaning.applyto(arg_meaning_abstracted)
 
         return self.__class__(return_meaning, return_glue, return_indices)
         
-    def make_VariableExpression(self, name):
-        return logic.VariableExpression(name)
+    def make_IndividualVariableExpression(self, name):
+        return logic.IndividualVariableExpression(name)
         
     def make_LambdaExpression(self, variable, term):
         return logic.LambdaExpression(variable, term)
@@ -406,12 +406,12 @@ def compiled_proof_demo():
 
     print "  Derivation:"
     g14 = g4.applyto(g1)
-#    print "    %s" % g14.simplify()
+    print "    %s" % g14.simplify()
     g134 = g3.applyto(g14)
-#    print "    %s" % g134.simplify()
+    print "    %s" % g134.simplify()
 
     g25 = g5.applyto(g2)
-#    print "    %s" % g25.simplify()
+    print "    %s" % g25.simplify()
     g12345 = g134.applyto(g25)
     print "    %s" % g12345.simplify()
     
