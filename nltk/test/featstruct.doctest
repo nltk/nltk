@@ -2,7 +2,12 @@
  Feature Structures & Unification
 ==================================
     >>> from nltk.featstruct import FeatStruct
-    >>> from nltk.sem import Variable
+    >>> from nltk.sem.lambdalogic import Constant, ConstantExpression
+    >>> from nltk.sem.lambdalogic import Variable, LogicParser
+
+.. note:: For now, featstruct uses the older lambdalogic semantics
+   module.  Eventually, it should be updated to use the new first
+   order predicate logic module.
 
 Overview
 ~~~~~~~~
@@ -972,7 +977,6 @@ Unification Bindings
 
 Expressions
 -----------
-    >>> from nltk.sem.logic import LogicParser, Constant, ConstantExpression
     >>> e=LogicParser('\\x y.(x y z)').next()
     >>> fs1 = FeatStruct(x=e, y=Variable('z'))
     >>> fs2 = FeatStruct(y=ConstantExpression(Constant('John')))
