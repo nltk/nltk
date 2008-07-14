@@ -226,16 +226,16 @@ You can clear the entire contents of the cache, using
 Retrieving other Data Sources
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     >>> formulas = nltk.data.load('grammars/background1.fol')
-    >>> for f in formulas: print str(f.infixify())
-    all x.((boxerdog x) implies (dog x))
-    all x.((boxer x) implies (person x))
-    all x.(not ((dog x) and (person x)))
-    all x.((married x) iff some y.(marry y x))
-    all x.((bark x) implies (dog x))
-    all x y.((marry y x) implies ((person x) and (person y)))
-    (not (Vincent = Mia))
-    (not (Vincent = Fido))
-    (not (Mia = Fido))
+    >>> for f in formulas: print str(f)
+    all x.(boxerdog(x) -> dog(x))
+    all x.(boxer(x) -> person(x))
+    all x.-(dog(x) & person(x))
+    all x.(married(x) <-> exists y.marry(x,y))
+    all x.(bark(x) -> dog(x))
+    all x.all y.(marry(x,y) -> (person(x) & person(y)))
+    -(Vincent = Mia)
+    -(Vincent = Fido)
+    -(Mia = Fido)
 
 Regression Tests
 ~~~~~~~~~~~~~~~~
