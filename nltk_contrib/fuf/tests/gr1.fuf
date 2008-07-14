@@ -8,7 +8,7 @@
     (prot ((cat np)))
     (goal ((cat np)))
     (verb ((cat vp)))
-    (alt (
+    (alt DINGUS (
       ((voice active)
        (subject {^ prot})
        (object  {^ goal}))
@@ -20,7 +20,8 @@
        (subject {^ goal})
        (object  {^ by-obj}))))
     (verb ((number {^ ^ subject number})
-	   (voice  {^ ^ voice})))
+	   (voice  {^ ^ voice})
+       (cat vp)))
     (pattern (subject verb object)))
 
    ;; Second branch: NP

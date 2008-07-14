@@ -20,69 +20,78 @@ class LinkResolver(object):
         self.unique_var_counter += 1
         return nltk.Variable("?x%s" % self.unique_var_counter)
     
-    def resolve(self, fstruct, alt_check=True):
+    def _get_value(self, fs, path):
+        """
+        Find and return the value within the feature structure
+        given a path
+        """
+        target = None
+        
+        # in case we find another link keep a copy
+        ancestors = [fs]
+        resolved_inner_link = False
+
+        # to to the end
+        last_step = path[-1]
+        path = path[:-1]
+
+        for step in path:
+            if step in fs and not isinstance(fs[step], ReentranceLink):
+                fs = fs[step]
+                ancestors.append(fs)
+            elif step not in fs:
+                fs[step] = nltk.FeatStruct()
+                fs = fs[step]
+                ancestors.append(fs)
+            elif isinstance(fs[step], ReentranceLink):
+                parent = ancestors[-1*fs[step].up]
+                new_path = fs[step].down
+                fs[step] = self._get_value(parent, new_path)
+                fs = fs[step]
+                resolved_inner_link = True
+                
+        if last_step in fs:
+            assert (not isinstance(fs[last_step], ReentranceLink))
+            return fs[last_step]
+
+        # All the way through the path but the value doesn't exist
+        # create a variable
+        fs[last_step] = self._unique_var()
+        return fs[last_step]
+
+    def resolve(self, fstruct):
         """
         Resolve the relative and absolute links in the feature structure
         """
 
-        def get_link_value(fs, path):
-            target = None
-            
-            # in case we find another link keep a copy
-            ancestors = [fs]
-            resolved_inner_link = False
-
-            # to to the end
-            last_step = path[-1]
-            path = path[:-1]
-
-            for step in path:
-                if step in fs and not isinstance(fs[step], ReentranceLink):
-                    fs = fs[step]
-                    ancestors.append(fs)
-                elif step not in fs:
-                    fs[step] = nltk.FeatStruct()
-                    fs = fs[step]
-                    ancestors.append(fs)
-                elif isinstance(fs[step], ReentranceLink):
-                    fs[step] = get_link_value(ancestors[-1*fs[step].up],
-                                              fs[step].down)
-                    fs = fs[step]
-                    resolved_inner_link = True
-                    
-            if last_step in fs:
-                if isinstance(fs[last_step], ReentranceLink):
-                    print 'doh'
-                    exit()
-                return fs[last_step]
-            fs[last_step] = self._unique_var()
-            return fs[last_step]
-
-
-        def resolve_helper2(fs, ancestors, lnk=None):
+        def resolve_helper(fs, ancestors):
             # start looking for links
             for feat, val in fs.items():
                 # add to path and recurse
                 if isinstance(val, nltk.FeatStruct):
                     ancestors.append(val)
-                    resolve_helper2(val, ancestors)
+                    resolve_helper(val, ancestors)
                     ancestors.pop()
                 # found the link
                 elif isinstance(val, ReentranceLink):
                     if val.up > 0 and len(val.down) > 0:
                         # relative link with a path
                         if (val.up >= len(ancestors)):
-                            fs[feat] = get_link_value(ancestors[-1*val.up], val.down)
+                            parent = ancestors[-1*val.up]
+                            path = val.down
+                            fs[feat] = self._get_value(parent, path)
                         else:
                             # we will try to resolve this link later
                             pass
                     elif val.up == 0 and len(val.down) > 0:
                         # get the value for the absolute link
-                        fs[feat] = get_link_value(ancestors[0], val.down)
+                        parent = ancestors[0]
+                        path = val.down
+                        fs[feat] = self._get_value(parent, path)
                     else:
                         raise ValueError("Malformed Link: %s" % val)
 
-        resolve_helper2(fstruct, [fstruct])
+        resolve_helper(fstruct, [fstruct])
 
 
 class ReentranceLink(object):
