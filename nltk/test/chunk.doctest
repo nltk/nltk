@@ -336,20 +336,22 @@ Test parsing of other rule types:
 
     >>> print RegexpParser('''
     ... X:
-    ...   }<a><b>{   # chink rule
-    ...   <a>}{<b>   # split rule
-    ...   <a>{}<b>   # merge rule
+    ...   }<a><b>{     # chink rule
+    ...   <a>}{<b>     # split rule
+    ...   <a>{}<b>     # merge rule
+    ...   <a>{<b>}<c>  # chunk rule w/ context
     ... ''')
     chunk.RegexpParser with 1 stages:
-    RegexpChunkParser with 3 rules:
-        chink rule   <ChinkRule: '<a><b>'>
-        split rule   <SplitRule: '<a>', '<b>'>
-        merge rule   <MergeRule: '<a>', '<b>'>
+    RegexpChunkParser with 4 rules:
+        chink rule              <ChinkRule: '<a><b>'>
+        split rule              <SplitRule: '<a>', '<b>'>
+        merge rule              <MergeRule: '<a>', '<b>'>
+        chunk rule w/ context   <ChunkRuleWithContext: '<a>', '<b>', '<c>'>
 
 Illegal patterns give an error message:
 
-    >>> print RegexpParser('X: <foo> {<bar>}')
+    >>> print RegexpParser('X: {<foo>} {<bar>}')
     Traceback (most recent call last):
       . . .
-    ValueError: Illegal chunk pattern: <foo> {<bar>}
+    ValueError: Illegal chunk pattern: {<foo>} {<bar>}
 
