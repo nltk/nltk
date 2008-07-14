@@ -27,6 +27,13 @@ def _convert_fuf_featstruct(sexp):
             fs[feat] = val
     return fs
 
+def _convert_triple_eq(sexp):
+    temp = SexpList('(', ')')
+    temp.append('lex')
+    temp.append(sexp.pop())
+    sexp[1] = temp
+    return sexp
+
 def _convert_fuf_feature(sexp):
     assert sexp.lparen == '(', sexp
     feat, name, index, val = ('', '', '', '')
@@ -37,12 +44,23 @@ def _convert_fuf_feature(sexp):
     elif sexp[0] == 'opt':
         feat, name, index, val = parse_opt(sexp)
     elif len(sexp) == 3 and sexp[1] == '===':
-        temp = SexpList('(', ')')
-        temp.append('lex')
-        temp.append(sexp.pop())
-        sexp[1] = temp
+        #temp = SexpList('(', ')')
+        #temp.append('lex')
+        #temp.append(sexp.pop())
+        #sexp[1] = temp
+        #feat, val = sexp
+        feat, val = _convert_triple_eq(sexp)
+
+    elif len(sexp) == 3 and sexp[1] == '~':
+        del sexp[1]
+        result = _list_convert(sexp[1])
+        sexp[1] = result
+        print sexp[1]
         feat, val = sexp
     else:
+        #print
+        #for i, item in enumerate(sexp):
+            #print "%d:%s" % (i, item)
         assert len(sexp) == 2, sexp[1]
         assert isinstance(sexp[0], basestring), sexp
         feat, val = sexp
@@ -115,12 +133,26 @@ def fuf_file_to_featstruct(fuf_filename):
             break
     return type_table, fs
             
-            
-            
-
-
-
-
+        
+def _list_convert(lst):
+    result = SexpList('(', ')')
+    res_copy = result
+    for item in lst:
+        result.append('car')
+        result.append(SexpList('(', ')'))
+        result = result[-1]
+        if isinstance(item, SexpList):
+            if '===' in item:
+                item = _convert_triple_eq(item)
+            result.append(_list_convert(item))
+        else:
+            result.append(item)
+        result.append(SexpList('(', ')'))
+        result = result[-1]
+        result.append('cdr')
+        result.append(SexpList('(', ')'))
+        result = result[-1]
+    return res_copy
 
 ######################################################################
 # Test code:
@@ -132,12 +164,25 @@ if __name__ == '__main__':
 
     #test the alt feature
 
+    print 'START LIST TEST'
+    listlines = open('tests/list.fuf').readlines()
+    for line in listlines:
+        print 'INPUTS:', line
+        print '<pre>'
+        print fuf_to_featstruct(line)
+        print '</pre>'
+        print
+
+
+    
     # test the relative link feature
     print "START LINK TEST"
     linklines = open('tests/link.fuf').readlines()
     for line in linklines:
         print "INPUT:", line
+        print '<pre>'
         print fuf_to_featstruct(line)
+        print '</pre>'
         print
 
     # test the opt feature
