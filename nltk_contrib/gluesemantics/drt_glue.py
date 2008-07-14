@@ -36,8 +36,8 @@ class DrtGlueFormula(glue.GlueFormula):
 
         self.indices = indices
 
-    def make_VariableExpression(self, name):
-        return drt.DrtVariableExpression(name)
+    def make_IndividualVariableExpression(self, name):
+        return drt.DrtIndividualVariableExpression(name)
         
     def make_LambdaExpression(self, variable, term):
         return drt.DrtLambdaExpression(variable, term)
