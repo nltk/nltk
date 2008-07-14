@@ -323,7 +323,7 @@ class RegexpChunkDemo(object):
            should be looked at by the eval demon."""
         
         self._eval_score = nltk.chunk.ChunkScore(chunk_node=chunk_node)
-        """The L{ChunkScore <nltk.chunk.Chunkscore> object that's used
+        """The L{ChunkScore <nltk.chunk.Chunkscore>} object that's used
            to keep track of the score of the current grammar on the
            development set."""
 
