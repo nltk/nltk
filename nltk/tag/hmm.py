@@ -1053,8 +1053,8 @@ class SpecializedHiddenMarkovModelTagger(HiddenMarkovModelTagger):
 
         @return: the state sequence
         @rtype: sequence of any
-        @param unlabeled_sequence: the sequence of unlabeled symbols 
-        @type unlabeled_sequence: list
+        @param symbols: the sequence of unlabeled symbols 
+        @type symbols: list
         """
         return HiddenMarkovModelTagger.best_path_simple(self,
                         self._transform(symbols, self))
