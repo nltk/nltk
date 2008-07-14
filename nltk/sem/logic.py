@@ -106,7 +106,7 @@ class ApplicationExpression(Expression):
         return accum
     
     def __eq__(self, other):
-        return isinstance(other, self.__class__) and \
+        return self.__class__ == other.__class__ and \
                 self.function == other.function and self.args == other.args 
 
     def __str__(self):
@@ -144,7 +144,7 @@ class VariableExpression(Expression):
         return set([self])
     
     def __eq__(self, other):
-        return isinstance(other, self.__class__) and self.name == other.name
+        return self.__class__ == other.__class__ and self.name == other.name
         
     def __str__(self):
         return self.name
@@ -194,7 +194,7 @@ class VariableBinderExpression(Expression):
     def __eq__(self, other):
         r"""Defines equality modulo alphabetic variance.
         If we are comparing \x.M  and \y.N, then check equality of M and N[x/y]."""
-        if isinstance(other, self.__class__):
+        if self.__class__ == other.__class__:
             if self.variable == other.variable:
                 return self.term == other.term
             else:
@@ -233,7 +233,7 @@ class NegatedExpression(Expression):
         return self.term.free()
 
     def __eq__(self, other):
-        return isinstance(other, self.__class__) and self.term == other.term
+        return self.__class__ == other.__class__ and self.term == other.term
 
     def __str__(self):
         return Tokens.NOT[n] + str(self.term)
@@ -254,7 +254,7 @@ class BooleanExpression(Expression):
         return self.first.free() | self.second.free()
 
     def __eq__(self, other):
-        return isinstance(other, self.__class__) \
+        return self.__class__ == other.__class__ \
                 and self.first == other.first and self.second == other.second
 
     def __str__(self):
