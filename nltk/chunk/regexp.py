@@ -374,7 +374,7 @@ class RegexpChunkRule(object):
                 return ChunkRuleWithContext(left, chunk, right, comment)
             else:
                 raise ValueError('Illegal chunk pattern: %s' % rule)
-        except re.error:
+        except (ValueError, re.error):
             raise ValueError('Illegal chunk pattern: %s' % rule)
 
 
