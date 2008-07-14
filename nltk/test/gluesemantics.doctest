@@ -14,6 +14,9 @@ Linear logic
     
     >>> llp = LinearLogicParser()
     
+    >>> from nltk.sem import logic
+    >>> logic.n = logic.Tokens.NEW_NLTK
+    
 Parser
     >>> print llp.parse(r'f')
     f
@@ -121,6 +124,7 @@ Glue
 ======================
 
 Demo of "John walks"
+--------------------
     >>> john = GlueFormula("John", "g")
     >>> print john
     John : g
@@ -134,6 +138,7 @@ Demo of "John walks"
 
 
 Demo of "A dog walks"
+---------------------
     >>> a = GlueFormula("\P Q.some x.(P(x) and Q(x))", "((gv -o gr) -o ((g -o G) -o G))")
     >>> print a
     \P.\Q.exists x.(P(x) & Q(x)) : ((gv -o gr) -o ((g -o G) -o G))
@@ -151,7 +156,8 @@ Demo of "A dog walks"
     exists x.(man(x) & walks(x)) : f
 
 
-Meaning of 'every girl chases a dog'
+Demo of 'every girl chases a dog'
+---------------------------------
 
 Individual words:
     >>> every = GlueFormula("\P Q.all x.(P(x) implies Q(x))", "((gv -o gr) -o ((g -o G) -o G))")
@@ -198,8 +204,10 @@ combine with the true subject."
     >>> print chases_a_dog.simplify()
     \x1.exists x.(dog(x) & chases(x1,x)) : (g -o f)
     >>> every_girl_chases_a_dog = every_girl.applyto(chases_a_dog)
-    >>> print every_girl_chases_a_dog.simplify()
-    all x.(girl(x) -> exists z1.(dog(z1) & chases(x,z1))) : f
+    >>> r1 = every_girl_chases_a_dog.simplify()
+    >>> r2 = GlueFormula(r'all x.(girl(x) -> exists z1.(dog(z1) & chases(x,z1)))', 'f')
+    >>> r1 == r2
+    True
 
 The second reading is achieved by combining 'every girl' with 'chases' first.
     >>> xPrime = GlueFormula("x1", "g")
@@ -224,5 +232,81 @@ The second reading is achieved by combining 'every girl' with 'chases' first.
     >>> print every_girl_chases.simplify()
     \x2.all x.(girl(x) -> chases(x,x2)) : (h -o f)
     >>> every_girl_chases_a_dog = a_dog.applyto(every_girl_chases)
-    >>> print every_girl_chases_a_dog.simplify()
-    exists x.(dog(x) & all z2.(girl(z2) -> chases(z2,x))) : f
+    >>> r1 = every_girl_chases_a_dog.simplify()
+    >>> r2 = GlueFormula(r'exists x.(dog(x) & all z2.(girl(z2) -> chases(z2,x)))', 'f')
+    >>> r1 == r2
+    True
+    
+    
+Compilation
+-----------
+    >>> for cp in GlueFormula('m', '(b -o a)').compile(Counter()): print cp
+    m : (b -o a) : {1}
+    >>> for cp in GlueFormula('m', '((c -o b) -o a)').compile(Counter()): print cp
+    v1 : c : {1}
+    m : (b[1] -o a) : {2}
+    >>> for cp in GlueFormula('m', '((d -o (c -o b)) -o a)').compile(Counter()): print cp
+    v1 : c : {1}
+    v2 : d : {2}
+    m : (b[1, 2] -o a) : {3}
+    >>> for cp in GlueFormula('m', '((d -o e) -o ((c -o b) -o a))').compile(Counter()): print cp
+    v1 : d : {1}
+    v2 : c : {2}
+    m : (e[1] -o (b[2] -o a)) : {3}
+    >>> for cp in GlueFormula('m', '(((d -o c) -o b) -o a)').compile(Counter()): print cp
+    v1 : (d -o c) : {1}
+    m : (b[1] -o a) : {2}
+    >>> for cp in GlueFormula('m', '((((e -o d) -o c) -o b) -o a)').compile(Counter()): print cp
+    v1 : e : {1}
+    v2 : (d[1] -o c) : {2}
+    m : (b[2] -o a) : {3}
+        
+
+Demo of 'a man walks' using Compilation
+---------------------------------------
+Premises
+	>>> a = GlueFormula('\\P Q.some x.(P(x) and Q(x))', '((gv -o gr) -o ((g -o G) -o G))')
+	>>> print a
+	\P.\Q.exists x.(P(x) & Q(x)) : ((gv -o gr) -o ((g -o G) -o G))
+	
+    >>> man = GlueFormula('\\x.man(x)', '(gv -o gr)')
+    >>> print man
+    \x.man(x) : (gv -o gr)
+    
+    >>> walks = GlueFormula('\\x.walks(x)', '(g -o f)')
+    >>> print walks
+    \x.walks(x) : (g -o f)
+    
+Compiled Premises:
+    >>> counter = Counter()
+    >>> ahc = a.compile(counter)
+    >>> g1 = ahc[0]
+    >>> print g1
+    v1 : gv : {1}
+    >>> g2 = ahc[1]
+    >>> print g2
+    v2 : g : {2}
+    >>> g3 = ahc[2]
+    >>> print g3
+    \P.\Q.exists x.(P(x) & Q(x)) : (gr[1] -o (G[2] -o G)) : {3}
+    >>> g4 = man.compile(counter)[0]
+    >>> print g4
+    \x.man(x) : (gv -o gr) : {4}
+    >>> g5 = walks.compile(counter)[0]
+    >>> print g5
+    \x.walks(x) : (g -o f) : {5}
+
+Derivation:
+    >>> g14 = g4.applyto(g1)
+    >>> print g14.simplify()
+    man(v1) : gr : {1, 4}
+    >>> g134 = g3.applyto(g14)
+    >>> print g134.simplify()
+    \Q.exists x.(man(x) & Q(x)) : (G[2] -o G) : {1, 3, 4}
+    >>> g25 = g5.applyto(g2)
+    >>> print g25.simplify()
+    walks(v2) : f : {2, 5}
+    >>> g12345 = g134.applyto(g25)
+    >>> print g12345.simplify()
+    exists x.(man(x) & walks(x)) : f : {1, 2, 3, 4, 5}
+        
