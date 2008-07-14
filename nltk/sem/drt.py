@@ -352,7 +352,7 @@ class DrsDrawer:
         """
         Return the bottom-rightmost point without actually drawing the item
         
-        @param item: the item to visit
+        @param expression: the item to visit
         @param x: the top of the current drawing area
         @param y: the left side of the current drawing area
         @return: the bottom-rightmost point

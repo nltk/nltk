@@ -322,9 +322,6 @@ class LogicParser:
     """A lambda calculus expression parser."""
 
     def __init__(self):
-        """
-        @param data: C{str}, a string to parse
-        """
         self._currentIndex = 0
         self._buffer = []
 
