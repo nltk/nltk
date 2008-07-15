@@ -12,7 +12,7 @@ import itertools as it
 from nltk import defaultdict
 from nltk.wordnet.util import *
 from nltk.wordnet.dictionary import *
-from nltk.wordnet.morphy import _morphy
+from nltk.wordnet import _morphy
 from nltk.wordnet.synset import *
 from nltk.wordnet.synset import _RELATION_TABLE
 
