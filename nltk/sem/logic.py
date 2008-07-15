@@ -6,15 +6,53 @@
 # For license information, see LICENSE.TXT
 
 """
-A version of first order predicate logic, built on top of the untyped lambda calculus.
+A version of first order predicate logic, built on 
+top of the untyped lambda calculus.
 """
 
 from nltk.internals import Counter
 from nltk.tokenize.simple import WhitespaceTokenizer
 
-n = 1
-
 _counter = Counter()
+
+class Tokens:
+    # Syntaxes
+    OLD_NLTK = 0
+    NEW_NLTK = 1
+    PROVER9  = 2
+    
+    
+    LAMBDA = ['\\', '\\', '\\']
+    
+    #Quantifiers
+    EXISTS = ['some', 'exists', 'exists']
+    ALL = ['all', 'all', 'all']
+    
+    #Punctuation
+    DOT = ['.', '.', ' ']
+    OPEN = '('
+    CLOSE = ')'
+    COMMA = ','
+    
+    #Operations
+    NOT = ['not', '-', '-']
+    AND = ['and', '&', '&']
+    OR = ['or', '|', '|']
+    IMP = ['implies', '->', '->']
+    IFF = ['iff', '<->', '<->']
+    EQ = ['=', '=', '=']
+    
+    #Collection of tokens
+    BOOLS = AND + OR + IMP + IFF
+    BINOPS = BOOLS + EQ
+    QUANTS = EXISTS + ALL
+    PUNCT = [DOT[0], OPEN, CLOSE, COMMA]
+    
+    TOKENS = BINOPS + QUANTS + LAMBDA + PUNCT + NOT
+    
+    #Special
+    SYMBOLS = LAMBDA + PUNCT + [AND[1], OR[1], NOT[1], IMP[1], IFF[1]] + EQ 
+
 
 class Expression(object):
     def __call__(self, other, *additional):
@@ -71,6 +109,9 @@ class Expression(object):
 
     def __repr__(self):
         return self.__class__.__name__ + ': ' + str(self)
+    
+    def __str__(self):
+        return self.str();
 
 class ApplicationExpression(Expression):
     def __init__(self, function, args):
@@ -87,7 +128,8 @@ class ApplicationExpression(Expression):
         if isinstance(accum, LambdaExpression):
             for arg in self.args:
                 if isinstance(accum, LambdaExpression):
-                    accum = accum.term.replace(accum.variable, arg.simplify()).simplify()
+                    accum = accum.term.replace(accum.variable, 
+                                               arg.simplify()).simplify()
                 else:
                     accum = self.__class__(accum, [arg.simplify()])
             return accum
@@ -95,7 +137,8 @@ class ApplicationExpression(Expression):
             return self.__class__(accum, [arg.simplify() for arg in self.args])
         
     def replace(self, variable, expression, replace_bound=False):
-        return self.__class__(self.function.replace(variable, expression, replace_bound),
+        return self.__class__(self.function.replace(variable, expression, 
+                                                    replace_bound),
                               [arg.replace(variable, expression, replace_bound)
                                for arg in self.args])
         
@@ -109,12 +152,13 @@ class ApplicationExpression(Expression):
         return self.__class__ == other.__class__ and \
                 self.function == other.function and self.args == other.args 
 
-    def __str__(self):
-        function = str(self.function)
+    def str(self, syntax=Tokens.NEW_NLTK):
+        function = self.function.str(syntax)
 
         if isinstance(self.function, LambdaExpression):
             if isinstance(self.function.term, ApplicationExpression):
-                if not isinstance(self.function.term.function, VariableExpression):
+                if not isinstance(self.function.term.function, 
+                                  VariableExpression):
                     function = Tokens.OPEN + function + Tokens.CLOSE
             elif not isinstance(self.function.term, BooleanExpression):
                 function = Tokens.OPEN + function + Tokens.CLOSE
@@ -122,7 +166,7 @@ class ApplicationExpression(Expression):
             function = Tokens.OPEN + function + Tokens.CLOSE
                 
         return function + Tokens.OPEN + \
-               ','.join([str(arg) for arg in self.args]) + Tokens.CLOSE
+               ','.join([arg.str(syntax) for arg in self.args]) + Tokens.CLOSE
 
 class VariableExpression(Expression):
     def __init__(self, name):
@@ -146,7 +190,7 @@ class VariableExpression(Expression):
     def __eq__(self, other):
         return self.__class__ == other.__class__ and self.name == other.name
         
-    def __str__(self):
+    def str(self, syntax=Tokens.NEW_NLTK):
         return self.name
     
 class IndividualVariableExpression(VariableExpression):
@@ -169,10 +213,10 @@ class VariableBinderExpression(Expression):
         if self.variable == variable:
             if replace_bound: 
                 return self.__class__(expression, 
-                                      self.term.replace(variable, expression, True))
+                                      self.term.replace(variable, expression, 
+                                                        True))
             else: 
                 return self
-                
         else:
             # if the bound variable appears in the expression, then it must
             # be alpha converted to avoid a conflict
@@ -181,43 +225,48 @@ class VariableBinderExpression(Expression):
                 
             #replace in the term
             return self.__class__(self.variable,
-                                  self.term.replace(variable, expression, replace_bound))
+                                  self.term.replace(variable, expression, 
+                                                    replace_bound))
 
     def alpha_convert(self, newvar):
         """Rename all occurrences of the variable introduced by this variable
         binder in the expression to @C{newvar}."""
-        return self.__class__(newvar, self.term.replace(self.variable, newvar, True))
+        return self.__class__(newvar, self.term.replace(self.variable, newvar, 
+                                                        True))
 
     def free(self):
         return self.term.free() - set([self.variable])
 
     def __eq__(self, other):
-        r"""Defines equality modulo alphabetic variance.
-        If we are comparing \x.M  and \y.N, then check equality of M and N[x/y]."""
+        r"""Defines equality modulo alphabetic variance.  If we are comparing 
+        \x.M  and \y.N, then check equality of M and N[x/y]."""
         if self.__class__ == other.__class__:
             if self.variable == other.variable:
                 return self.term == other.term
             else:
                 # Comparing \x.M  and \y.N.  Relabel y in N with x and continue.
-                return self.term == other.term.replace(other.variable, self.variable)
+                return self.term == other.term.replace(other.variable, 
+                                                       self.variable)
         else:
             return False
 
 class LambdaExpression(VariableBinderExpression):
-    def __str__(self):
-        return Tokens.LAMBDA[n] + str(self.variable) + Tokens.DOT[n] + str(self.term)
+    def str(self, syntax=Tokens.NEW_NLTK):
+        return Tokens.LAMBDA[syntax] + self.variable.str(syntax) + \
+               Tokens.DOT[syntax] + self.term.str(syntax)
 
 class QuantifiedExpression(VariableBinderExpression):
-    def __str__(self):
-        return self.getPredicate() + ' ' + str(self.variable) + Tokens.DOT[n] + str(self.term)
+    def str(self, syntax=Tokens.NEW_NLTK):
+        return self.getPredicate(syntax) + ' ' + self.variable.str(syntax) + \
+               Tokens.DOT[syntax] + self.term.str(syntax)
         
 class ExistsExpression(QuantifiedExpression):
-    def getPredicate(self):
-        return Tokens.EXISTS[n]
+    def getPredicate(self, syntax=Tokens.NEW_NLTK):
+        return Tokens.EXISTS[syntax]
 
 class AllExpression(QuantifiedExpression):
-    def getPredicate(self):
-        return Tokens.ALL[n]
+    def getPredicate(self, syntax=Tokens.NEW_NLTK):
+        return Tokens.ALL[syntax]
 
 class NegatedExpression(Expression):
     def __init__(self, term):
@@ -227,7 +276,8 @@ class NegatedExpression(Expression):
         return self
 
     def replace(self, variable, expression, replace_bound=False):
-        return self.__class__(self.term.replace(variable, expression, replace_bound))
+        return self.__class__(self.term.replace(variable, expression, 
+                                                replace_bound))
 
     def free(self):
         return self.term.free()
@@ -235,8 +285,8 @@ class NegatedExpression(Expression):
     def __eq__(self, other):
         return self.__class__ == other.__class__ and self.term == other.term
 
-    def __str__(self):
-        return Tokens.NOT[n] + str(self.term)
+    def str(self, syntax=Tokens.NEW_NLTK):
+        return Tokens.NOT[syntax] + self.term.str(syntax)
         
 class BooleanExpression(Expression):
     def __init__(self, first, second):
@@ -247,8 +297,10 @@ class BooleanExpression(Expression):
         return self.__class__(self.first.simplify(), self.second.simplify())
 
     def replace(self, variable, expression, replace_bound=False):
-        return self.__class__(self.first.replace(variable, expression, replace_bound),
-                              self.second.replace(variable, expression, replace_bound))
+        return self.__class__(self.first.replace(variable, expression, 
+                                                 replace_bound),
+                              self.second.replace(variable, expression, 
+                                                  replace_bound))
 
     def free(self):
         return self.first.free() | self.second.free()
@@ -257,66 +309,30 @@ class BooleanExpression(Expression):
         return self.__class__ == other.__class__ \
                 and self.first == other.first and self.second == other.second
 
-    def __str__(self):
-        return Tokens.OPEN + str(self.first) + ' ' + self.getOp() + ' ' + str(self.second) + Tokens.CLOSE
+    def str(self, syntax=Tokens.NEW_NLTK):
+        return Tokens.OPEN + self.first.str(syntax) + ' ' + self.getOp(syntax) \
+                + ' ' + self.second.str(syntax) + Tokens.CLOSE
         
 class AndExpression(BooleanExpression):
-    def getOp(self):
-        return Tokens.AND[n]
+    def getOp(self, syntax=Tokens.NEW_NLTK):
+        return Tokens.AND[syntax]
 
 class OrExpression(BooleanExpression):
-    def getOp(self):
-        return Tokens.OR[n]
+    def getOp(self, syntax=Tokens.NEW_NLTK):
+        return Tokens.OR[syntax]
 
 class ImpExpression(BooleanExpression):
-    def getOp(self):
-        return Tokens.IMP[n]
+    def getOp(self, syntax=Tokens.NEW_NLTK):
+        return Tokens.IMP[syntax]
 
 class IffExpression(BooleanExpression):
-    def getOp(self):
-        return Tokens.IFF[n]
+    def getOp(self, syntax=Tokens.NEW_NLTK):
+        return Tokens.IFF[syntax]
 
 class EqualityExpression(BooleanExpression):
-    def getOp(self):
-        return Tokens.EQ[n]
+    def getOp(self, syntax=Tokens.NEW_NLTK):
+        return Tokens.EQ[syntax]
 
-class Tokens:
-    # Syntaxes
-    OLD_NLTK = 0
-    NEW_NLTK = 1
-    PROVER9  = 2
-    
-    
-    LAMBDA = ['\\', '\\', '\\']
-    
-    #Quantifiers
-    EXISTS = ['some', 'exists', 'exists']
-    ALL = ['all', 'all', 'all']
-    
-    #Punctuation
-    DOT = ['.', '.', ' ']
-    OPEN = '('
-    CLOSE = ')'
-    COMMA = ','
-    
-    #Operations
-    NOT = ['not', '-', '-']
-    AND = ['and', '&', '&']
-    OR = ['or', '|', '|']
-    IMP = ['implies', '->', '->']
-    IFF = ['iff', '<->', '<->']
-    EQ = ['=', '=', '=']
-    
-    #Collection of tokens
-    BOOLS = AND + OR + IMP + IFF
-    BINOPS = BOOLS + EQ
-    QUANTS = EXISTS + ALL
-    PUNCT = [DOT[0], OPEN, CLOSE, COMMA]
-    
-    TOKENS = BINOPS + QUANTS + LAMBDA + PUNCT + NOT
-    
-    #Special
-    SYMBOLS = LAMBDA + PUNCT + [AND[1], OR[1], NOT[1], IMP[1], IFF[1]] + EQ 
 
 class LogicParser:
     """A lambda calculus expression parser."""
@@ -422,7 +438,7 @@ class LogicParser:
             return self.handle_open(tok)
             
     def handle_negation(self):
-        return self.make_NegatedExpression(self.parse_Expression())
+        return self.make_NegatedExpression(self.parse_Expression(False))
         
     def make_NegatedExpression(self, expression):
         return NegatedExpression(expression)
@@ -445,9 +461,11 @@ class LogicParser:
             self.assertToken(self.token(), Tokens.CLOSE)
             
             if is_indvar(tok):
-                raise ParseException('\'%s\' is an illegal variable name.  Predicate '
-                                     'variables may not be individual variables' % tok)
-            return self.make_ApplicationExpression(self.make_VariableExpression(tok), args)
+                raise ParseException('\'%s\' is an illegal variable name.  '
+                                     'Predicate variables may not be '
+                                     'individual variables' % tok)
+            return self.make_ApplicationExpression(
+                        self.make_VariableExpression(tok), args)
         else:
             #The predicate has no arguments: it's a solo variable
             return self.make_VariableExpression(tok)
@@ -500,8 +518,9 @@ class LogicParser:
         while vars:
             var = vars.pop()
             if not is_indvar(var):
-                raise ParseException('\'%s\' is an illegal variable name.  Quantifier '
-                                     'variables must be individual variables' % var)
+                raise ParseException('\'%s\' is an illegal variable name.  '
+                                     'Quantifier variables must be individual '
+                                     'variables' % var)
             accum = factory(self.make_VariableExpression(var), accum)
         return accum
         
@@ -519,7 +538,8 @@ class LogicParser:
             factory = self.get_BooleanExpression_factory()
             if factory: #if a factory was returned
                 self.token() #swallow the operator
-                return self.make_BooleanExpression(factory, expression, self.parse_Expression())
+                return self.make_BooleanExpression(factory, expression, 
+                                                   self.parse_Expression())
         #otherwise, no boolean expression can be created
         return expression
     
@@ -554,16 +574,19 @@ class LogicParser:
             if not isinstance(expression, LambdaExpression) and \
                not isinstance(expression, ApplicationExpression):
                 raise ParseException("The function '" + str(expression) + 
-                                     "' is not a Lambda Expression or an Application Expression, so it may not take arguments")
-        
+                                     ' is not a Lambda Expression or an '
+                                     'Application Expression, so it may not '
+                                     'take arguments')
             self.token() #swallow then open paren
             if isinstance(expression, LambdaExpression):
                 accum = expression
                 if self.token(0) != Tokens.CLOSE:
-                    accum = self.make_ApplicationExpression(accum, [self.parse_Expression()])
+                    accum = self.make_ApplicationExpression(
+                                            accum, [self.parse_Expression()])
                     while self.token(0) == Tokens.COMMA:
                         self.token() #swallow the comma
-                        accum = self.make_ApplicationExpression(accum, [self.parse_Expression()])
+                        accum = self.make_ApplicationExpression(
+                                            accum, [self.parse_Expression()])
                 self.assertToken(self.token(), Tokens.CLOSE)
             else:
                 args = []
@@ -630,9 +653,11 @@ class ParseException(Exception):
 class UnexpectedTokenException(ParseException):
     def __init__(self, tok, expected=None):
         if expected:
-            ParseException.__init__(self, "parse error, unexpected token: %s.  Expected token: %s" % (tok, expected))
+            ParseException.__init__(self, "parse error, unexpected token: %s.  "
+                                    "Expected token: %s" % (tok, expected))
         else:
-            ParseException.__init__(self, "parse error, unexpected token: %s" % tok)
+            ParseException.__init__(self, "parse error, unexpected token: %s" 
+                                            % tok)
         
         
 def is_indvar(expr):
@@ -673,7 +698,7 @@ def demo():
     print lp.parse(r'\x.\y.sees(x,y)(john)(mary)').simplify()
     print lp.parse(r'\x.\y.sees(x,y)(john, mary)').simplify()
     print lp.parse(r'exists x.(man(x) & (\x.exists y.walks(x,y))(x))').simplify()
-    print lp.parse(r'((\P.\Q.exists x.(P(x) & Q(x)))(\x.dog(x)))(\x.bark(x))').simplify()
+    print lp.parse(r'(\P.\Q.exists x.(P(x) & Q(x)))(\x.dog(x))(\x.bark(x))').simplify()
     
     print '='*20 + 'Test alpha conversion and binder expression equality' + '='*20
     e1 = lp.parse('exists x.P(x)')

@@ -7,7 +7,6 @@
 # For license information, see LICENSE.TXT
 
 from nltk.sem import logic 
-from nltk.sem.logic import LogicParser, IffExpression
 
 import tableau
 import prover9
@@ -44,16 +43,16 @@ def get_model_builder(goal=None, assumptions=[], model_builder_name='Mace'):
     return builder_module(goal, assumptions)
 
 def demo():
-    lp = LogicParser()
+    lp = logic.LogicParser()
     a = lp.parse(r'some x.(man(x) and walks(x))')
     b = lp.parse(r'some x.(walks(x) and man(x))')
-    bicond = IffExpression(a, b)
+    bicond = logic.IffExpression(a, b)
     print "Trying to prove:\n '%s <-> %s'" % (a, b)
     print 'tableau: %s' % get_prover(bicond, prover_name='tableau').prove()
     print 'Prover9: %s' % get_prover(bicond, prover_name='Prover9').prove()
     print '\n'
     
-    lp = LogicParser()
+    lp = logic.LogicParser()
     a = lp.parse(r'all x.(man(x) -> mortal(x))')
     b = lp.parse(r'man(socrates)')
     c1 = lp.parse(r'mortal(socrates)')
