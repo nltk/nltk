@@ -9,7 +9,7 @@ import chart
 import lexicon
 
 # Construct the lexicon
-lexicon = lexicon.parseLexicon('''
+lex = lexicon.parseLexicon('''
     :- S, NP, N, VP
 
     Det :: NP/N
@@ -60,7 +60,7 @@ lexicon = lexicon.parseLexicon('''
     persuade => (VP/VP[to])/NP
     ''')
 
-parser = chart.CCGChartParser(lexicon, chart.DefaultRuleSet)
+parser = chart.CCGChartParser(lex, chart.DefaultRuleSet)
 print "Wh-relative Clauses"
 print "==================="
 for parse in parser.nbest_parse("you prefer that cake".split(),1):
@@ -78,7 +78,7 @@ for parse in parser.nbest_parse("that is the cake which you prefer".split(),1):
 print "Subject Extraction"
 print "==================="
 sent = "that is the dough which you will eat without cooking".split()
-nosub_parser = chart.CCGChartParser(lexicon, chart.ApplicationRuleSet +
+nosub_parser = chart.CCGChartParser(lex, chart.ApplicationRuleSet +
                       chart.CompositionRuleSet + chart.TypeRaiseRuleSet)
 
 print "Without Substitution:"

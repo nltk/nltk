@@ -42,17 +42,17 @@ test2_lex = '''
 # Tests handling of conjunctions
 # Note that while the two derivations are different, they are semantically equivalent.
 def test1():
-    lexicon = lexicon.parseLexicon(test1_lex)
-    parser = CCGChartParser(lexicon,ApplicationRuleSet + CompositionRuleSet + SubstitutionRuleSet)
+    lex = lexicon.parseLexicon(test1_lex)
+    parser = CCGChartParser(lex, ApplicationRuleSet + CompositionRuleSet + SubstitutionRuleSet)
     for parse in parser.nbest_parse("I will cook and might eat the mushrooms and parsnips".split()):
        printCCGDerivation(parse)
 
 # Tests handling subject extraction
 # Interesting to point that the two parses are clearly semantically different.
 def test2():
-    lexicon = lexicon.parseLexicon(test2_lex)
+    lex = lexicon.parseLexicon(test2_lex)
 
-    parser = CCGChartParser(lexicon,ApplicationRuleSet + CompositionRuleSet + SubstitutionRuleSet)
+    parser = CCGChartParser(lex, ApplicationRuleSet + CompositionRuleSet + SubstitutionRuleSet)
     for parse in parser.nbest_parse("articles which I will file and forget without reading".split()):
         printCCGDerivation(parse)
 

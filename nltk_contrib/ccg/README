@@ -23,4 +23,6 @@ It is probably better to call:
   chart.printCCGDerivation(<parse tree extracted from list>)
 which should print a nice representation of the derivation.
 
-This entire process is shown far more clearly in demonstration.py.
+This entire process is shown far more clearly in the demonstration:
+python chart.py
+
