@@ -13,4 +13,4 @@
 S[sem = <app(?vp,?subj)>] -> NP[sem=?subj] VP[sem=?vp]
 VP[sem=?v] -> V[sem=?v]
 NP[sem=<john>] -> 'John'
-V[sem=<\x.(walk x)>] -> 'walks'
+V[sem=<\x.walk(x)>] -> 'walks'
