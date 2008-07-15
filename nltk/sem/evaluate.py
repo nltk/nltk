@@ -12,9 +12,10 @@ This module provides data structures for representing first-order
 models. 
 """
 
-from logic import LogicParser, Variable, is_indvar
+#from logic import LogicParser, Variable, is_indvar
 
-from pprint import pformat
+from logic import *
+
 
 class Error(Exception): pass
 
@@ -28,20 +29,19 @@ class CharFun(dict):
     def __init__(self, charfun=None):
         dict.__init__(self)
         if charfun:
-            #assert isinstance(charfun, dict)
             self.update(charfun)
  
         
-    def _isrel(self, s):
-        """Check whether a set represents a relation (of any arity)."""
+    #def _isrel(self, s):
+        #"""Check whether a set represents a relation (of any arity)."""
         
-        assert isinstance(s, set), "Argument is not a set"
-        if len(s) == 0:
-            return True
-        elif not isinstance(max(s),tuple) or len(max(s))==len(min(s)):
-            return True
-        else:
-            raise ValueError, "Set contains sequences of different lengths"
+        #assert isinstance(s, set), "Argument is not a set"
+        #if len(s) == 0:
+            #return True
+        #elif not isinstance(max(s),tuple) or len(max(s))==len(min(s)):
+            #return True
+        #else:
+            #raise ValueError, "Set contains sequences of different lengths"
 
     def _item2dict(self, item):
         """
@@ -119,42 +119,72 @@ class CharFun(dict):
 
     domain = property(_getDomain, doc='Set-theoretic domain of a curried function')
 
-    
 def isrel(s):
-    """
-    Check whether a set represents a relation (of any arity).
-    
-    @param s: a set containing tuples
-    @type s: set
-    """
-    
-    assert isinstance(s, set), "Argument is not a set"
-    if len(s) == 0:
-        return True
-    elif not isinstance(max(s),tuple) or len(max(s))==len(min(s)):
-        return True
-    else:
-        raise ValueError, "Set contains sequences of different lengths"
+        """
+        Check whether a set represents a relation (of any arity).
         
-def flatten(d):
-    """
-    @return: The set of keys of a L{CharFun} instance.
-    @rtype: set
-    @type d: dict
-    """
-    flat = []
-    try:
-        flat.extend(d.keys())
-        for v in d.values():
-            if isinstance(v, dict):
-                flat.extend(flatten(v))
-            else:
-                flat.append(v)
-    except AttributeError:
-        flat.append(d)
-    result = set(flat)
-    result.discard(True)
-    return result
+        @param s: a set containing tuples
+        @type s: set
+        """
+        # we have the empty relation set()
+        if len(s) == 0:
+            return True
+        # the longest element of the set is not a tuple, i.e., it's just a set of strings or ints
+        #elif not isinstance(max(s),tuple):
+            #return True
+        # all the elements are tuples of the same length
+        # TODO deal with case where s contains an int
+        elif len(max(s))==len(min(s)):
+                return True
+        else:
+            raise ValueError, "Set %r contains sequences of different lengths" % s
+
+def inds2tuples(s):
+    new = set()
+    for elem in s:
+        if isinstance(elem, str):
+            new.add((elem,))
+        elif isinstance(elem, int):
+            new.add((str(elem,)))
+        else:
+            new.add(elem)
+    return new   
+
+        
+#class Rel(set):
+    #"""
+    #Set--theoretical treatment of relations as a set of tuples of the same length.
+     #"""
+ 
+    #def __init__(self, iter):
+        #set.__init__(self, iter)
+        #new = inds2tuples(self)
+        #assert isrel(new)
+        #self = new
+        
+    #def __str__(self):
+        #return "{%s}" % ', '.join(map(str, self))
+        
+#def flatten(d):
+    #"""
+    #@return: The set of keys of a L{CharFun} instance.
+    #@rtype: set
+    #@type d: dict
+    #"""
+    #flat = []
+    #try:
+        #flat.extend(d.keys())
+        #for v in d.values():
+            #if isinstance(v, dict):
+                #flat.extend(flatten(v))
+            #else:
+                #flat.append(v)
+    #except AttributeError:
+        #flat.append(d)
+    #result = set(flat)
+    #result.discard(True)
+    #return result
+
 
 
 def depth(cf):
@@ -175,7 +205,6 @@ class Valuation(dict):
     """
     A dictionary which represents a model-theoretic Valuation of non-logical constants.
 
-    
     An attempt to initialize a L{Valuation} with an individual
     variable expression (e.g., 'x3') will raise an error, as will an
     attemp to read a list containing an individual variable
@@ -185,21 +214,27 @@ class Valuation(dict):
     just behave like a standard  dictionary) if indexed with an expression that
     is not in its list of symbols.
     """
-    def __init__(self, valuation=None):
+    def __init__(self, iter):
         dict.__init__(self)
-        if valuation:
-            for k in valuation.keys():
-                #if is_indvar(k):
-                    #raise Error, "This looks like an individual variable: '%s'" % k
-                # Check if the valuation is of the form {'p': True}
-                if isinstance(valuation[k], bool):
-                    self[k] = valuation[k]
-                else:
-                    try:
-                        cf = CharFun(valuation[k])
-                        self[k] = cf
-                    except (TypeError, ValueError):
-                        self[k] = valuation[k]
+        for (sym, val) in iter:
+            if isinstance(val, str):
+                self[sym] = val
+            elif isinstance(val, set):
+                self[sym] = inds2tuples(val)
+
+        #if valuation:
+            #for k in valuation.keys():
+                ##if is_indvar(k):
+                    ##raise Error, "This looks like an individual variable: '%s'" % k
+                ## Check if the valuation is of the form {'p': True}
+                #if isinstance(valuation[k], bool):
+                    #self[k] = valuation[k]
+                #else:
+                    #try:
+                        #cf = CharFun(valuation[k])
+                        #self[k] = cf
+                    #except (TypeError, ValueError):
+                        #self[k] = valuation[k]
 
     def __getitem__(self, key):
         if key in self:
@@ -207,34 +242,38 @@ class Valuation(dict):
         else:
             raise Undefined,  "Unknown expression: '%s'" % key
                     
-    def read(self, seq):
-        """
-        Parse a list such as  C{[('j', 'b1'), ('girl', set(['g1', 'g2']))]} into a L{Valuation}.
-        @rtype: L{Valuation}
-        @param seq: A list of tuples of the form (I{constant}, I{relation}), where I{relation} is a set of tuples.
-        """
-        d = dict(seq)
-        for k in d.keys():
-            if is_indvar(k):
-                raise Error, "This looks like an individual variable: '%s'" % k
-            val = d[k]
-            if isinstance(val, str):
-                pass
-            else:
-                cf = CharFun()
-                cf.read(d[k])        
-                d[k] = cf
-        self.update(d)
+    #def read(self, seq):
+        #"""
+        #Parse a list such as  C{[('j', 'b1'), ('girl', set(['g1', 'g2']))]} into a L{Valuation}.
+        #@rtype: L{Valuation}
+        #@param seq: A list of tuples of the form (I{constant}, I{relation}), where I{relation} is a set of tuples.
+        #"""
+        #d = dict(seq)
+        ## Each sym is a non-logical constant
+        #for sym in d:
+            ##if is_indvar(k):
+                ##raise Error, "This looks like an individual variable: '%s'" % k
+            #val = d[sym]
+            ## Does val represent an individual?
+            #if isinstance(val, str):
+                #pass
+            #else:
+                #cf = CharFun()
+                #cf.read(d[k])        
+                #d[k] = cf
+        #self.update(d)
 
     def __str__(self):
         return pformat(self)
         
     def _getDomain(self):
-        dom = set()
-        for v in self.values():
-            flat = flatten(v)
-            dom = dom.union(flat)
-        return dom
+        dom = []
+        for val in self.values():
+            if isinstance(val, str):
+                dom.append(val)
+            else:
+                dom.extend([elem for tuple in val for elem in tuple])
+        return set(dom)
 
     domain = property(_getDomain,
              doc='Set-theoretic domain of the value-space of a Valuation.')
@@ -330,9 +369,9 @@ class Assignment(dict):
         """
         assert val in self.domain,\
                "%s is not in the domain %s" % (val, self.domain)
-        assert is_indvar(var),\
+        assert isinstance(var, IndividualVariableExpression),\
                "Wrong format for an Individual Variable: '%s'" % var
-        self[var] = val
+        self[var.name] = val
         self._addvariant()
         return self
 
@@ -344,8 +383,6 @@ class Model(object):
     A domain M{D} is a set, and a valuation M{V} is a map that associates
     expressions with values in the model.
     The domain of M{V} should be a subset of M{D}.
-
-   
     """
     
     def __init__(self, domain, valuation, prop=None):
@@ -406,21 +443,37 @@ class Model(object):
                       "%s can't be applied as a function to %s" % (fun, arg)
             
 
-
-    NOT =      {True: False, False: True}
-    AND =      {True: {True: True, False: False},
-                False: {True: False, False: False}}
-    OR =       {True: {True: True, False: True},
-                False: {True: True, False: False}}
-    IMPLIES =  {True: {True: True, False: False},
-                False: {True: True, False: True}}
-    IFF =      {True: {True: True, False: False},
-                False: {True: False, False: True}}
-
-    OPS = {'&': AND,
-           '|': OR,
-           '->': IMPLIES,
-           '<->': IFF}
+    # Interpretations for the biinary boolean operators
+    #############################
+    def AND(arg1, arg2):
+        return min(arg1, arg2)
+    
+    def OR(arg1, arg2):
+        return max(arg1, arg2)
+    
+    def IMPLIES(arg1, arg2):
+        return max(not arg1, arg2)
+    
+    def IFF(arg1, arg2):
+        return arg1 == arg2
+    
+    # Interpretations for the classical quantifiers
+    #########################
+    
+    def ALL(self, sat):
+        return sat == self.domain
+    
+    def EXISTS(self, sat):
+        for u in sat:
+            return True
+        return False
+    
+    OPS = {
+        '&': AND,
+        '|': OR,
+        '->': IMPLIES,
+        '<->': IFF
+    }
 
     def evaluate(self, expr, g, trace=None):
         """
@@ -432,16 +485,21 @@ class Model(object):
         @rtype: C{bool} or 'Undefined'
         """
         try:
-            value = self.satisfy(expr, g, trace=trace)
+            lp = LogicParser(constants=self.valuation.symbols)
+            parsed = lp.parse(expr)
+            value = self.satisfy(parsed, g, trace=trace)
             if trace:
+                print
                 print "'%s' evaluates to %s under M, %s" %  (expr, value, g)
             return value
         except Undefined:
+            if trace:
+                print
+                print "'%s' is undefined under M, %s" %  (expr, g)
             return 'Undefined'
         
 
-
-    def satisfy(self, expr, g, trace=None):
+    def satisfy(self, parsed, g, trace=None):
         """
         Recursive interpretation function for a formula of first-order logic.
 
@@ -459,122 +517,133 @@ class Model(object):
 
         OPS = Model.OPS
 
-#         OPS = {'and': Model.AND,
-#                'or': Model.OR,
-#                'implies': Model.IMPLIES,
-#                'iff': Model.IFF}
+        if isinstance(parsed, ApplicationExpression):
+            argvals = tuple([self.satisfy(arg, g) for arg in parsed.args])
+            funval = self.satisfy(parsed.function, g)
+            return argvals in funval
+        elif isinstance(parsed, NegatedExpression):
+            return not self.satisfy(parsed.term, g)
+        elif isinstance(parsed, BooleanExpression):
+            op = parsed.getOp()
+            return OPS[op](self.satisfy(parsed.first, g), self.satisfy(parsed.second, g))
+        elif isinstance(parsed, AllExpression):
+            return self.ALL(self.satisfiers(parsed.term, parsed.variable, g))
+        elif isinstance(parsed, ExistsExpression):
+            satisfiers = self.satisfiers(parsed.term, parsed.variable, g)
+            return self.EXISTS(satisfiers)
+        else:
+            return self.i(parsed, g, trace)
+        
+        #try:
+            #parsed = self.decompose(expr)
+            ## expr is a variable or constant; we don't want to decompose it further
+            #if isinstance(parsed, str):
+                #return self.i(expr, g, trace)
+            ## parsed is a pair of strings
+            #else:
+                #first, second = parsed
+                ## maybe _first_ is an operator like 'and', 'not' or '=' and _second_ is a list of args
+                #phi = second[0]
+                #try:
+                    #psi = second[1]
+                ## second can't be decomposed further
+                #except IndexError:
+                    #pass
 
+                #if first == 'not':
+                    #if trace:
+                        #print "    '%s' evaluates to %s under M, %s." % (phi, self.satisfy(phi, g), g)
+                    #return not self.satisfy(phi, g, trace)
 
-        try:
-            parsed = self.decompose(expr)
-            # expr is a variable or constant; we don't want to decompose it further
-            if isinstance(parsed, str):
-                return self.i(expr, g, trace)
-            # parsed is a pair of strings
-            else:
-                first, second = parsed
-                # maybe _first_ is an operator like 'and', 'not' or '=' and _second_ is a list of args
-                phi = second[0]
-                try:
-                    psi = second[1]
-                # second can't be decomposed further
-                except IndexError:
-                    pass
+                #elif first in OPS:
+                    #value = OPS[first][self.satisfy(phi, g, trace)][self.satisfy(psi, g, trace)]
+                    #if trace:
+                        #print "   '%s' evaluates to %s under M, %s" %  (phi, self.satisfy(phi, g, trace), g)
+                        #print "   '%s' evaluates to %s under M, %s" %  (psi, self.satisfy(psi, g, trace), g)
+                    #return value
 
-                if first == 'not':
-                    if trace:
-                        print "    '%s' evaluates to %s under M, %s." % (phi, self.satisfy(phi, g), g)
-                    return not self.satisfy(phi, g, trace)
-
-                elif first in OPS:
-                    value = OPS[first][self.satisfy(phi, g, trace)][self.satisfy(psi, g, trace)]
-                    if trace:
-                        print "   '%s' evaluates to %s under M, %s" %  (phi, self.satisfy(phi, g, trace), g)
-                        print "   '%s' evaluates to %s under M, %s" %  (psi, self.satisfy(psi, g, trace), g)
-                    return value
-
-                elif first == '=':
-                    value = (self.satisfy(phi, g, trace) == self.satisfy(psi, g, trace))
-                    if trace:
-                        print "   '%s' evaluates to %s under M, %s" %  (phi, self.satisfy(phi, g, trace), g)
-                        print "   '%s' evaluates to %s under M, %s" %  (psi, self.satisfy(psi, g, trace), g)
-                    return value
+                #elif first == '=':
+                    #value = (self.satisfy(phi, g, trace) == self.satisfy(psi, g, trace))
+                    #if trace:
+                        #print "   '%s' evaluates to %s under M, %s" %  (phi, self.satisfy(phi, g, trace), g)
+                        #print "   '%s' evaluates to %s under M, %s" %  (psi, self.satisfy(psi, g, trace), g)
+                    #return value
 
                 
-                # _first_ is existsthing like '\\ x' and _second_ is existsthing like 'boy(x)'
-                elif first[0] == '\\':
-                    var = first[1]
-                    phi = second
-                    cf = CharFun()
-                    for u in self.domain:
-                        val = self.satisfy(phi, g.add(u, var), trace)
-                        if val:
-                            cf[u] = val
+                ## _first_ is existsthing like '\\ x' and _second_ is existsthing like 'boy(x)'
+                #elif first[0] == '\\':
+                    #var = first[1]
+                    #phi = second
+                    #cf = CharFun()
+                    #for u in self.domain:
+                        #val = self.satisfy(phi, g.add(u, var), trace)
+                        #if val:
+                            #cf[u] = val
                                
-                    if trace:
-                        print "   '%s' evaluates to %s under M, %s" %  (expr, cf, g)
-                    return cf
+                    #if trace:
+                        #print "   '%s' evaluates to %s under M, %s" %  (expr, cf, g)
+                    #return cf
 
-                # _first_ is existsthing like 'exists x' and _second_ is existsthing like 'boy(x)'
-                elif first[0] == 'exists':
-                    var = first[1]
-                    phi = second
-                    # seq is an iterator
-                    seq = self.satisfiers(phi, var, g, trace, nesting=1)
-                    #any returns True if seq is nonempty
-                    value = self.any(seq)
-                    if trace:
-                        if value:
-                            print "   '%s' evaluates to %s under M, %s" %  (phi, value, g)
-                            if trace > 1:
-                                print "    satisfiers of %s under %s are %s" % (phi, g, sat)
-                        else:
-                            print "   '%s' evaluates to %s under M, %s" %  (phi, value, g)
-                            if trace > 1:
-                                print "    satisfiers of %s under %s are %s" % (phi, g, sat)
-                    return value
+                ## _first_ is existsthing like 'exists x' and _second_ is existsthing like 'boy(x)'
+                #elif first[0] == 'exists':
+                    #var = first[1]
+                    #phi = second
+                    ## seq is an iterator
+                    #seq = self.satisfiers(phi, var, g, trace, nesting=1)
+                    ##any returns True if seq is nonempty
+                    #value = self.any(seq)
+                    #if trace:
+                        #if value:
+                            #print "   '%s' evaluates to %s under M, %s" %  (phi, value, g)
+                            #if trace > 1:
+                                #print "    satisfiers of %s under %s are %s" % (phi, g, sat)
+                        #else:
+                            #print "   '%s' evaluates to %s under M, %s" %  (phi, value, g)
+                            #if trace > 1:
+                                #print "    satisfiers of %s under %s are %s" % (phi, g, sat)
+                    #return value
 
-                elif first[0] == 'all':
-                    var = first[1]
-                    phi = second
-                    sat = self.satisfiers(phi, var, g, trace, nesting=1)
-                    #issubset can take an iterator as argument
-                    value = self.domain.issubset(sat)
-                    if trace:
-                        if value:
-                            print "   '%s' evaluates to %s under M, %s" %  (phi, self.satisfy(phi, g, trace), g)
-                        else:
-                            notphi = '(not %s)' % phi
-                            witness = self.satisfiers(notphi, var, g).pop()
-                            g.add(witness, var)
-                            print "   '%s' evaluates to %s under M, %s" %  (phi, self.satisfy(phi, g, trace), g)
+                #elif first[0] == 'all':
+                    #var = first[1]
+                    #phi = second
+                    #sat = self.satisfiers(phi, var, g, trace, nesting=1)
+                    ##issubset can take an iterator as argument
+                    #value = self.domain.issubset(sat)
+                    #if trace:
+                        #if value:
+                            #print "   '%s' evaluates to %s under M, %s" %  (phi, self.satisfy(phi, g, trace), g)
+                        #else:
+                            #notphi = '(not %s)' % phi
+                            #witness = self.satisfiers(notphi, var, g).pop()
+                            #g.add(witness, var)
+                            #print "   '%s' evaluates to %s under M, %s" %  (phi, self.satisfy(phi, g, trace), g)
 
-                    return value
+                    #return value
                 
-                # maybe _first_ is existsthing like 'boy' and _second_ is an argument expression like 'x'
-                else:
-                    try:
-                        funval = self.satisfy(first, g, trace)
-                        argval =  self.satisfy(second, g, trace)
-                        app = self.app(funval, argval)
-                        if trace > 1:
-                            print "'%s': %s applied to %s yields %s"\
-                            %  (expr, funval, argval, app)
-                        return app
-                    # we can't get a proper interpretation
-                    except TypeError:
-                        print "The interpretation of %s cannot be applied to the interpretation of %s"\
-                              % (first, second)
-                        print "'%s': %s applied to %s yields %s"\
-                            %  (expr, funval, argval, app)
-                        raise
+                ## maybe _first_ is existsthing like 'boy' and _second_ is an argument expression like 'x'
+                #else:
+                    #try:
+                        #funval = self.satisfy(first, g, trace)
+                        #argval =  self.satisfy(second, g, trace)
+                        #app = self.app(funval, argval)
+                        #if trace > 1:
+                            #print "'%s': %s applied to %s yields %s"\
+                            #%  (expr, funval, argval, app)
+                        #return app
+                    ## we can't get a proper interpretation
+                    #except TypeError:
+                        #print "The interpretation of %s cannot be applied to the interpretation of %s"\
+                              #% (first, second)
+                        #print "'%s': %s applied to %s yields %s"\
+                            #%  (expr, funval, argval, app)
+                        #raise
 
-        except ValueError:
-             raise Undefined, "Cannot parse %s", expr
+        #except ValueError:
+             #raise Undefined, "Cannot parse %s", expr
         
 
 
-    def i(self, expr, g, trace=False):
+    def i(self, parsed, g, trace=False):
         """
         An interpretation function.
 
@@ -590,17 +659,24 @@ class Model(object):
         @param g: an assignment to individual variables.
         @return: a semantic value
         """
-        try:
-            if trace > 1:
-                print "   i, %s('%s') = %s" % (g, expr, self.valuation[expr])
-            # expr is a non-logical constant, i.e., in self.valuation.symbols
-            return self.valuation[expr]
-        except Undefined:
-            if trace > 1:
-                print "    (checking whether '%s' is an individual variable)" % expr
+        if isinstance(parsed, IndividualVariableExpression):
+            return g[parsed.name]
+        elif parsed.name in self.valuation.symbols:
+            return self.valuation[parsed.name]
+        else:
+            raise Undefined, "Can't find a value for %s" % parsed
+        
+        #try:
+            #if trace > 1:
+                #print "   i, %s('%s') = %s" % (g, expr, self.valuation[expr])
+            ## expr is a non-logical constant, i.e., in self.valuation.symbols
+            #return self.valuation[expr]
+        #except Undefined:
+            #if trace > 1:
+                #print "    (checking whether '%s' is an individual variable)" % expr
  
-            # expr wasn't a constant; maybe a variable that g knows about?
-            return g[expr]
+            ## expr wasn't a constant; maybe a variable that g knows about?
+            #return g[expr]
         
  
 
@@ -617,24 +693,24 @@ class Model(object):
         variable = Variable(var)
         return variable in parsed.free()
         
-    def satisfiers(self, expr, var, g, trace=False, nesting=0):
+    def satisfiers(self, parsed, var, g, trace=True, nesting=0):
         """
         Generate the entities from the model's domain that satisfy an open formula.
 
-        @param expr: the open formula
-        @param var: the relevant free variable in C{expr}.
+        @param parsed: the open formula
+        @param var: the relevant free variable in C{parsed}.
         @param g: the variable assignment
-        @return: an iterator over the entities that satisfy C{expr}.
+        @return: an iterator over the entities that satisfy C{parsed}.
         """
 
         spacer = '   '
         indent = spacer + (spacer * nesting)
         candidates = []
         
-        if self.freevar(var, expr):
+        if var in parsed.free():
             if trace:
                 print
-                print (spacer * nesting) + "Open formula is '%s' with assignment %s" % (expr, g)
+                print (spacer * nesting) + "Open formula is '%s' with assignment %s" % (parsed, g)
             for u in self.domain:
                 new_g = g.copy()
                 new_g.add(u, var)
@@ -642,70 +718,70 @@ class Model(object):
                     lowtrace = trace-1
                 else:
                     lowtrace = 0
-                value = self.satisfy(expr, new_g, lowtrace)
+                value = self.satisfy(parsed, new_g, lowtrace)
                 
                 if trace:
                     print indent + "(trying assignment %s)" % new_g
                     
-                # expr == False under g[u/var]?
+                # parsed == False under g[u/var]?
                 if value == False:
                     if trace:
-                        print  indent + "value of '%s' under %s is False" % (expr, new_g)
+                        print  indent + "value of '%s' under %s is False" % (parsed, new_g)
                  
                     
                 # so g[u/var] is a satisfying assignment
                 else:
                     candidates.append(u)
                     if trace:
-                        print indent + "value of '%s' under %s is %s" % (expr, new_g, value)
+                        print indent + "value of '%s' under %s is %s" % (parsed, new_g, value)
                    
             result = set(c for c in candidates)
-        # var isn't free in expr
+        # var isn't free in parsed
         else:
-            raise Undefined, "%s is not free in %s" % (var, expr)
+            raise Undefined, "%s is not free in %s" % (var, parsed)
 
         return result
 
 
-    def decompose(self, expr):
-        """
-        Function to communicate with a first-order functional language.
+    #def decompose(self, expr):
+        #"""
+        #Function to communicate with a first-order functional language.
 
-        This function tries to make weak assumptions about the parse structure
-        provided by the logic module. It makes the assumption that an expression
-        can be broken down into a pair of subexpressions:
+        #This function tries to make weak assumptions about the parse structure
+        #provided by the logic module. It makes the assumption that an expression
+        #can be broken down into a pair of subexpressions:
 
-          - The C{(binder, body)} pair is for decomposing quantified formulae.
-          - The C{(op, args)} pair is for decomposing formulae with a boolean operator.
-          - The C{(fun, args)} pair should catch other relevant cases.
+          #- The C{(binder, body)} pair is for decomposing quantified formulae.
+          #- The C{(op, args)} pair is for decomposing formulae with a boolean operator.
+          #- The C{(fun, args)} pair should catch other relevant cases.
 
-        @param expr: A string representation of a first-order formula.
-        """
+        #@param expr: A string representation of a first-order formula.
+        #"""
 
-        try:
-            lp = LogicParser(constants=self.valuation.symbols)
-            parsed = lp.parse(expr)
-        except TypeError:
-            raise Undefined("Cannot parse %s" % expr)
+        #try:
+            #lp = LogicParser(constants=self.valuation.symbols)
+            #parsed = lp.parse(expr)
+        #except TypeError:
+            #raise Undefined("Cannot parse %s" % expr)
             
-        try:
-            first, second = parsed.binder, parsed.body
-            #print 'first is %s, second is %s' % (first, second)
-            return (first, second)
-        except AttributeError:
-            pass
-        try: 
-            first, second = parsed.op, map(str, parsed.args)
-            #print 'first is %s, second is %s' % (first, second)
-            return (first, second)
-        except AttributeError:
-            pass
-        try: 
-            first, second = str(parsed.first), str(parsed.second)
-            #print 'first is %s, second is %s' % (first, second)
-            return (first, second)
-        except (AttributeError, TypeError):
-            return expr
+        #try:
+            #first, second = parsed.binder, parsed.body
+            ##print 'first is %s, second is %s' % (first, second)
+            #return (first, second)
+        #except AttributeError:
+            #pass
+        #try: 
+            #first, second = parsed.op, map(str, parsed.args)
+            ##print 'first is %s, second is %s' % (first, second)
+            #return (first, second)
+        #except AttributeError:
+            #pass
+        #try: 
+            #first, second = str(parsed.first), str(parsed.second)
+            ##print 'first is %s, second is %s' % (first, second)
+            #return (first, second)
+        #except (AttributeError, TypeError):
+            #return expr
 
     def any(self, seq):
         """
@@ -870,6 +946,48 @@ def satdemo(trace=None):
         g2.purge()
         print "The satisfiers of '%s' are: %s" % (fmla, list(m2.satisfiers(fmla, 'x', g2, trace)))
 
+def unit(trace=None):
+    global val0, dom0, m0, g0
+    #r1 = Rel([("a","b"), ("c", "d"), 3])
+    #r2 = Rel(["a","b", 3])
+    #r2 = Rel([2])
+    #r2  = Rel([1, 3])
+    #print r1, r2
+    #print repr(r1), repr(r2)
+    
+    sents = [
+        #'love(adam, betty)',
+        #'love(adam, sue)',
+        #'dog(fido)',
+        #'- dog(fido)',
+        #'- - dog(fido)',
+        #'- dog(sue)',
+        #'dog(fido) & boy(adam)',
+        #'- (dog(fido) & boy(adam))',
+        #'- dog(fido) & boy(adam)',
+        #'dog(fido) | boy(adam)',
+        #'- (dog(fido) | boy(adam))',
+        #'- dog(fido) | boy(adam)',
+        #'- dog(fido) | - boy(adam)',
+        #'dog(fido) -> boy(adam)',
+        #'- (dog(fido) -> boy(adam))',
+        #'- dog(fido) -> boy(adam)', 
+        'exists x . love(adam, x)',
+        'all x . love(adam, x)',
+    ]
+
+    v0 = [('adam', 'b1'), ('betty', 'g1'), ('fido', 'd1'),\
+         ('girl', set(['g1', 'g2'])), ('boy', set(['b1', 'b2'])), ('dog', set(['d1'])),
+         ('love', set([('b1', 'g1'), ('b2', 'g2'), ('g1', 'b1'), ('g2', 'b1')]))]
+    
+    val0 = Valuation(v0)
+    dom0 = val0.domain
+    m0 = Model(dom0, val0)
+    g0 = Assignment(dom0)
+    
+    for s in sents:
+        print m0.evaluate(s, g0, trace=1)
+        
         
 def demo(num=0, trace=None):
     """
@@ -883,16 +1001,18 @@ def demo(num=0, trace=None):
 
     @param trace: trace = 1, or trace = 2 for more verbose tracing
     """
-    demos = {1: propdemo,
-             2: folmodel,
-             3: foldemo,
-             4: satdemo}
+    demos = {
+        0: unit,
+        1: propdemo,
+        2: folmodel,
+        3: foldemo,
+        4: satdemo}
     
     try:
         demos[num](trace=trace)
     except KeyError:
-        for num in demos.keys():
+        for num in demos:
             demos[num](trace=trace)
 
 if __name__ == "__main__":
-    demo(trace=0)
+    demo()
