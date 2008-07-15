@@ -41,8 +41,6 @@ We can embed DRSs as components of an ``implies`` condition.
 
 Parser
     
-    >>> n = Tokens.NEW_NLTK
-
     >>> print dp.parse(r'DRS([x,y],[sees(x,y)])')
     DRS([x,y],[sees(x,y)])
     >>> print dp.parse(r'DRS([x],[man(x), walks(x)])')
@@ -162,11 +160,11 @@ resolve_anaphora()
     
     
 replace():
-	>>> a = dp.parse(r'a')
-	>>> w = dp.parse(r'w')
-	>>> x = dp.parse(r'x')
-	>>> y = dp.parse(r'y')
-	>>> z = dp.parse(r'z')
+    >>> a = dp.parse(r'a')
+    >>> w = dp.parse(r'w')
+    >>> x = dp.parse(r'x')
+    >>> y = dp.parse(r'y')
+    >>> z = dp.parse(r'z')
 
 
 replace bound

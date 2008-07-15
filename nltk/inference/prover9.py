@@ -12,7 +12,7 @@ import subprocess
 from string import join
 
 from nltk.sem import logic 
-from nltk.sem.logic import *
+from nltk.sem.logic import LogicParser
 
 from nltk.internals import deprecated, Deprecated, find_binary
 
@@ -60,7 +60,8 @@ def config_prover9(bin=None):
     # Find the prover9 binary.
     prover9_bin = find_binary('prover9', bin,
         searchpath=prover9_path, env_vars=['PROVER9HOME'],
-        url='http://www.cs.unm.edu/~mccune/prover9/')
+        url='http://www.cs.unm.edu/~mccune/prover9/',
+        verbose=False)
 
     # Make sure that mace4 and prooftrans are available, too.
     basedir = os.path.split(prover9_bin)[0]
@@ -301,18 +302,17 @@ class Prover9Parent:
         """
         Convert C{logic.Expression}s to Prover9 format.
         """
-        logic.n = logic.Tokens.PROVER9
         if isinstance(input, list):
             result = []
             for s in input:
                 try:
-                    result.append(str(s.simplify()))
+                    result.append(s.simplify().str(logic.Tokens.PROVER9))
                 except AssertionError:
                     print 'input %s cannot be converted to Prover9 input syntax' % input
             return result    
         else:
             try:
-                return str(input.simplify())
+                return input.simplify().str(logic.Tokens.PROVER9)
             except AssertionError:
                 print 'input %s cannot be converted to Prover9 input syntax' % input
 
@@ -448,14 +448,14 @@ def spacer(num=45):
     print '-' * num
 
 if __name__ == '__main__':
-    print "Testing configuration"
-    spacer()
-    test_config()
-    print
-    print "Testing conversion to Prover9 format"
-    spacer()
-    test_convert_to_prover9(expressions)
-    print
-    print "Testing proofs"
-    spacer()
+#    print "Testing configuration"
+#    spacer()
+#    test_config()
+#    print
+#    print "Testing conversion to Prover9 format"
+#    spacer()
+#    test_convert_to_prover9(expressions)
+#    print
+#    print "Testing proofs"
+#    spacer()
     test_prove(arguments)
