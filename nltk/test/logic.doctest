@@ -50,31 +50,31 @@ Test numerals
     
 Overloaded operators also exist for convenience
 
-	>>> print succ(zero).simplify() == one
-	True
-	>>> print plus(one,two).simplify() == three
-	True
-	>>> print mult(two,two).simplify() == four
-	True
-	>>> print pred(pred(four)).simplify() == two
-	True
-	
-	>>> john = lp.parse(r'john')
-	>>> man = lp.parse(r'\x.man(x)')
-	>>> walk = lp.parse(r'\x.walk(x)')
-	>>> print man(john).simplify()
-	man(john)
-	>>> print -walk(john).simplify()
-	-walk(john)
-	>>> print (man(john) & walk(john)).simplify()
-	(man(john) & walk(john))
-	>>> print (man(john) | walk(john)).simplify()
-	(man(john) | walk(john))
-	>>> print (man(john) > walk(john)).simplify()
-	(man(john) -> walk(john))
-	>>> print (man(john) < walk(john)).simplify()
-	(man(john) <-> walk(john))
-	
+    >>> print succ(zero).simplify() == one
+    True
+    >>> print plus(one,two).simplify() == three
+    True
+    >>> print mult(two,two).simplify() == four
+    True
+    >>> print pred(pred(four)).simplify() == two
+    True
+    
+    >>> john = lp.parse(r'john')
+    >>> man = lp.parse(r'\x.man(x)')
+    >>> walk = lp.parse(r'\x.walk(x)')
+    >>> print man(john).simplify()
+    man(john)
+    >>> print -walk(john).simplify()
+    -walk(john)
+    >>> print (man(john) & walk(john)).simplify()
+    (man(john) & walk(john))
+    >>> print (man(john) | walk(john)).simplify()
+    (man(john) | walk(john))
+    >>> print (man(john) > walk(john)).simplify()
+    (man(john) -> walk(john))
+    >>> print (man(john) < walk(john)).simplify()
+    (man(john) <-> walk(john))
+    
     
 ``betaConversionTestSuite.pl``
 ------------------------------
@@ -179,7 +179,6 @@ From B&B's *Representation and Inference for Natural Language*.
 
 Test Parser
 
-        >>> n = Tokens.NEW_NLTK
         >>> print lp.parse(r'john')
         john
         >>> print lp.parse(r'x')
@@ -206,6 +205,8 @@ Test Parser
         exists x.man(x)
         >>> print lp.parse(r'exists x.(man(x) & tall(x))')
         exists x.(man(x) & tall(x))
+        >>> lp.parse(r'-P(x) & Q(x)') == lp.parse(r'(-P(x)) & Q(x)')
+        True
         >>> print lp.parse(r'\x.man(x)')
         \x.man(x)
         >>> print lp.parse(r'\x.man(x)(john)')
@@ -242,14 +243,14 @@ Test Parser
         exists x.(x = john)
         >>> print lp.parse(r'((\P.\Q.exists x.(P(x) & Q(x)))(\x.dog(x)))(\x.bark(x))')
         ((\P.\Q.exists x.(P(x) & Q(x)))(\x.dog(x)))(\x.bark(x))
-    	>>> a = lp.parse(r'exists c.exists b.A(b,c) & A(b,c)')
-		>>> b = lp.parse(r'(exists c.(exists b.A(b,c))) & A(b,c)')
-		>>> print a == b
-		True
-    	>>> a = lp.parse(r'exists c.(exists b.A(b,c) & A(b,c))')
-		>>> b = lp.parse(r'exists c.((exists b.A(b,c)) & A(b,c))')
-		>>> print a == b
-		True
+        >>> a = lp.parse(r'exists c.exists b.A(b,c) & A(b,c)')
+        >>> b = lp.parse(r'(exists c.(exists b.A(b,c))) & A(b,c)')
+        >>> print a == b
+        True
+        >>> a = lp.parse(r'exists c.(exists b.A(b,c) & A(b,c))')
+        >>> b = lp.parse(r'exists c.((exists b.A(b,c)) & A(b,c))')
+        >>> print a == b
+        True
 
 Simplify            
 

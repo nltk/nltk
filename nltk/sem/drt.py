@@ -144,9 +144,9 @@ class DRS(AbstractDrs, logic.Expression, RA.DRS):
                 return self.conds == converted_other.conds
         return False
     
-    def __str__(self):
-        return Tokens.DRS + '([' + ','.join([str(ref) for ref in self.refs]) + \
-               '],[' + ', '.join([str(cond) for cond in self.conds]) + '])'
+    def str(self, syntax=logic.Tokens.NEW_NLTK):
+        return Tokens.DRS + '([' + ','.join([ref.str(syntax) for ref in self.refs]) + \
+               '],[' + ', '.join([cond.str(syntax) for cond in self.conds]) + '])'
 
 class DrtVariableExpression(AbstractDrs, logic.VariableExpression, 
                             RA.VariableExpression):
@@ -259,7 +259,7 @@ class ConcatenationDRS(AbstractDrs, logic.BooleanExpression, RA.ConcatenationDRS
         else:
             return self.__class__(first,second)
         
-    def getOp(self):
+    def getOp(self, syntax=logic.Tokens.NEW_NLTK):
         return Tokens.DRS_CONC
     
     def __eq__(self, other):
@@ -288,8 +288,8 @@ class DrtApplicationExpression(AbstractDrs, logic.ApplicationExpression, RA.Appl
     def get_refs(self):
         return []
 
-    def __str__(self):
-        function = str(self.function)
+    def str(self, syntax=logic.Tokens.NEW_NLTK):
+        function = self.function.str(syntax)
 
         if isinstance(self.function, DrtLambdaExpression):
             if isinstance(self.function.term, DrtApplicationExpression):
@@ -300,7 +300,7 @@ class DrtApplicationExpression(AbstractDrs, logic.ApplicationExpression, RA.Appl
                 function = Tokens.OPEN + function + Tokens.CLOSE
                 
         return function + Tokens.OPEN + \
-               ','.join([str(arg) for arg in self.args]) + Tokens.CLOSE
+               ','.join([arg.str(syntax) for arg in self.args]) + Tokens.CLOSE
 
 
 class DrsDrawer:
@@ -334,6 +334,7 @@ class DrsDrawer:
         self.canvas = canvas
         self.drs = drs
         self.master = master
+        self.syntax = logic.Tokens.NEW_NLTK
         
     def _get_text_height(self):
         """Get the height of a line of text"""
@@ -438,17 +439,17 @@ class DrsDrawer:
         return (right, bottom)
 
     def _handle_VariableExpression(self, expression, command, x, y):
-        return command(str(expression), x, y)
+        return command(expression.str(self.syntax), x, y)
        
     def _handle_NegatedExpression(self, expression, command, x, y):
         # Find the width of the negation symbol
-        right = self._visit_command(Tokens.NOT[logic.n], x, y)[0]
+        right = self._visit_command(Tokens.NOT[self.syntax], x, y)[0]
 
         # Handle term
         (right, bottom) = self._handle(expression.term, command, right, y)
 
         # Handle variables now that we know the y-coordinate
-        command(Tokens.NOT[logic.n], x, self._get_centered_top(y, bottom - y, self._get_text_height()))
+        command(Tokens.NOT[self.syntax], x, self._get_centered_top(y, bottom - y, self._get_text_height()))
 
         return (right, bottom)
        
@@ -458,7 +459,7 @@ class DrsDrawer:
         
         # Handle Discourse Referents
         if expression.refs:
-            refs = ' '.join([str(ref) for ref in expression.refs])
+            refs = ' '.join([ref.str(self.syntax) for ref in expression.refs])
         else:
             refs = '     '
         (max_right, bottom) = command(refs, left, bottom)
@@ -508,7 +509,7 @@ class DrsDrawer:
 
     def _handle_LambdaExpression(self, expression, command, x, y):
         # Find the width of the lambda symbol and abstracted variables
-        variables = Tokens.LAMBDA[logic.n] + str(expression.variable) + Tokens.DOT[logic.n]
+        variables = Tokens.LAMBDA[self.syntax] + expression.variable.str(self.syntax) + Tokens.DOT[self.syntax]
         right = self._visit_command(variables, x, y)[0]
 
         # Handle term
@@ -534,7 +535,7 @@ class DrsDrawer:
         (right, first_bottom) = self._handle(expression.first, command, right, self._get_centered_top(y, line_height, first_height))
 
         # Handle the operator
-        right = command(' %s ' % expression.getOp(), right, centred_string_top)[0]
+        right = command(' %s ' % expression.getOp(self.syntax), right, centred_string_top)[0]
         
         # Handle the second operand
         second_height = expression.second._drawing_height
