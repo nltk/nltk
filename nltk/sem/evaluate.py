@@ -189,8 +189,8 @@ class Valuation(dict):
         dict.__init__(self)
         if valuation:
             for k in valuation.keys():
-                if is_indvar(k):
-                    raise Error, "This looks like an individual variable: '%s'" % k
+                #if is_indvar(k):
+                    #raise Error, "This looks like an individual variable: '%s'" % k
                 # Check if the valuation is of the form {'p': True}
                 if isinstance(valuation[k], bool):
                     self[k] = valuation[k]
@@ -417,10 +417,10 @@ class Model(object):
     IFF =      {True: {True: True, False: False},
                 False: {True: False, False: True}}
 
-    OPS = {'and': AND,
-           'or': OR,
-           'implies': IMPLIES,
-           'iff': IFF}
+    OPS = {'&': AND,
+           '|': OR,
+           '->': IMPLIES,
+           '<->': IFF}
 
     def evaluate(self, expr, g, trace=None):
         """
@@ -501,7 +501,7 @@ class Model(object):
                     return value
 
                 
-                # _first_ is something like '\\ x' and _second_ is something like '(boy x)'
+                # _first_ is existsthing like '\\ x' and _second_ is existsthing like 'boy(x)'
                 elif first[0] == '\\':
                     var = first[1]
                     phi = second
@@ -515,8 +515,8 @@ class Model(object):
                         print "   '%s' evaluates to %s under M, %s" %  (expr, cf, g)
                     return cf
 
-                # _first_ is something like 'some x' and _second_ is something like '(boy x)'
-                elif first[0] == 'some':
+                # _first_ is existsthing like 'exists x' and _second_ is existsthing like 'boy(x)'
+                elif first[0] == 'exists':
                     var = first[1]
                     phi = second
                     # seq is an iterator
@@ -551,7 +551,7 @@ class Model(object):
 
                     return value
                 
-                # maybe _first_ is something like 'boy' and _second_ is an argument expression like 'x'
+                # maybe _first_ is existsthing like 'boy' and _second_ is an argument expression like 'x'
                 else:
                     try:
                         funval = self.satisfy(first, g, trace)
@@ -683,7 +683,8 @@ class Model(object):
         """
 
         try:
-            parsed = LogicParser(constants=self.valuation.symbols).parse(expr)
+            lp = LogicParser(constants=self.valuation.symbols)
+            parsed = lp.parse(expr)
         except TypeError:
             raise Undefined("Cannot parse %s" % expr)
             
@@ -740,25 +741,24 @@ def propdemo(trace=None):
     print '*' * mult
     print "Model m1:\n", m1
     print '*' * mult
-
     sentences = [
-    '(p and q)',
-    '(p and r)',
-    '(not p)',
-    '(not r)',
-    '(not (not p))',
-    '(not (p and r))',
-    '(p or r)',
-    '(r or p)',
-    '(r or r)',
-    '((not p) or r))',
-    '(p or (not p))',
-    '(p implies q)',
-    '(p implies r)',
-    '(r implies p)',
-    '(p iff p)',
-    '(r iff r)',
-    '(p iff r)',
+    '(p & q)',
+    '(p & r)',
+    '- p',
+    '- r',
+    '- - p',
+    '- (p & r)',
+    '(p | r)',
+    '(r | p)',
+    '(r | r)',
+    '(- p | r)',
+    '(p | - p)',
+    '(p -> q)',
+    '(p -> r)',
+    '(r -> p)',
+    '(p <-> p)',
+    '(r <-> r)',
+    '(p <-> r)',
     ]
 
     for sent in sentences:
@@ -805,20 +805,20 @@ def foldemo(trace=None):
     print '*' * mult
 
     formulas = [
-    '(love adam betty)',
+    'love (adam, betty)',
     '(adam = mia)',
-    '\\x. ((boy x) or (girl x))',
-    '\\x y. ((boy x) and (love y x))',
-    '\\x. some y. ((boy x) and (love y x))',
-    'some z1. (boy z1)',
-    'some x. ((boy x) and (not (x = adam)))',
-    'some x. ((boy x) and all y. (love x y))',
-    'all x. ((boy x) or (girl x))',
-    'all x. ((girl x) implies some y. (boy y) and (love y x))',    #Every girl loves some boy.
-    'some x. ((boy x) and all y. ((girl y) implies (love x y)))',  #There is some boy that every girl loves.
-    'some x. ((boy x) and all y. ((girl y) implies (love y x)))',  #Some boy loves every girl.
-    'all x. ((dog x) implies (not (girl x)))',
-    'some x. some y. ((love y x) and (love y x))'
+    '\\x. (boy(x) | girl(x))',
+    '\\x y. (boy(x) & love(x, y))',
+    '\\x. exists y. (boy(x) & love(x, y))',
+    'exists z1. boy(z1)',
+    'exists x. (boy(x) &  -(x = adam))',
+    'exists x. (boy(x) & all y. love(y, x))',
+    'all x. (boy(x) | girl(x))',
+    'all x. (girl(x) -> exists y. boy(y) & love(x, y))',    #Every girl loves exists boy.
+    'exists x. (boy(x) & all y. (girl(y) -> love(y, x)))',  #There is exists boy that every girl loves.
+    'exists x. (boy(x) & all y. (girl(y) -> love(x, y)))',  #exists boy loves every girl.
+    'all x. (dog(x) -> - girl(x))',
+    'exists x. exists y. (love(x, y) & love(x, y))'
     ]
 
 
@@ -842,25 +842,25 @@ def satdemo(trace=None):
     folmodel()
     
     formulas = [
-               '(boy x)',
+               'boy(x)',
                '(x = x)',
-               '((boy x) or (girl x))',
-               '((boy x) and (girl x))',
-               '(love x adam)',
-               '(love adam x)',
-               '(not (x = adam))',
-               'some z22. (love z22 x)',
-               'some y. (love x y)',
-               'all y. ((girl y) implies (love y x))',
-               'all y. ((girl y) implies (love x y))',
-               'all y. ((girl y) implies ((boy x) and (love x y)))',
-               '((boy x) and all y. ((girl y) implies (love y x)))',
-               '((boy x) and all y. ((girl y) implies (love x y)))',
-               '((boy x) and some y. ((girl y) and (love x y)))',
-               '((girl x) implies (dog x))',
-               'all y. ((dog y) implies (x = y))',
-               '(not some y. (love x y))',
-               'some y. ((love y adam) and (love x y))'
+               '(boy(x) | girl(x))',
+               '(boy(x) & girl(x))',
+               'love(adam, x)',
+               'love(x, adam)',
+               '-(x = adam)',
+               'exists z22. love(x, z22)',
+               'exists y. love(y, x)',
+               'all y. (girl(y) -> love(x, y))',
+               'all y. (girl(y) -> love(y, x))',
+               'all y. (girl(y) -> (boy(x) & love(y, x)))',
+               '(boy(x) & all y. (girl(y) -> love(x, y)))',
+               '(boy(x) & all y. (girl(y) -> love(y, x)))',
+               '(boy(x) & exists y. (girl(y) & love(y, x)))',
+               '(girl(x) -> dog(x))',
+               'all y. ((dog y) -> (x = y))',
+               '- (exists y. love(y, x))',
+               'exists y. (love(adam, y) & love(y, x))'
                 ]
 
     if trace:
@@ -873,7 +873,7 @@ def satdemo(trace=None):
         
 def demo(num=0, trace=None):
     """
-    Run some demos.
+    Run exists demos.
 
      - num = 1: propositional logic demo
      - num = 2: first order model demo (only if trace is set)
