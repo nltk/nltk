@@ -337,9 +337,13 @@ class EqualityExpression(BooleanExpression):
 class LogicParser:
     """A lambda calculus expression parser."""
 
-    def __init__(self):
+    def __init__(self, constants=None):
         self._currentIndex = 0
         self._buffer = []
+        if constants is not None:
+            self.constants = constants
+        else:
+            self.constants = []
 
     def parse(self, data):
         """
