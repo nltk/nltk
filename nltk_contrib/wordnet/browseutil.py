@@ -581,7 +581,13 @@ def _relation_section(rel_name, word, synset_keys):
 def _w_b(word, overview):
     pos_forms = defaultdict(list)
     words = word.split(',')
-    words = [w.strip() for w in words]
+    words = [w.strip() for w in words if w.strip() != ""]
+    if len(words) == 0:
+        # No words were found.
+        return "", "Please specify a word to search for."
+    
+    # This looks up multiple words at once.  This is probably not
+    # necessary and may lead to problems.
     for pos_str in ['noun', 'verb', 'adj', 'adv']:
         for w in words:
             for form in _morphy(w, pos=pos_str):
@@ -601,7 +607,7 @@ def _w_b(word, overview):
                 except KeyError:
                     pass
     if not body:
-        word = None
+        body = "The word '%s' was not found in the dictonary." % word
     return word,body
 
 def new_word_and_body(word):
@@ -658,13 +664,12 @@ def page_word(page, word, href):
     link_type = href[0]
     q_link = href[1:]
     u_link = unquote_plus(q_link)
+
     if link_type == 'M' or link_type == 'N': # Search for this new word
         word, u_c = u_link.split('#')
         word,body = new_word_and_body(word)
-        if word:
-            return pg(word, body), word
-        else:
-            return pg(word, 'The word s%s" was not found!' % word), word
+        return pg(word, body), word
+
     elif link_type == 'R': # Relation links
         # A relation link looks like this:
         # word#synset_keys#relation_name#uniq_cntr
