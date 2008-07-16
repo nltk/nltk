@@ -113,8 +113,8 @@ class PropbankCorpusReader(CorpusReader):
     def _read_instance_block(self, stream):
         block = []
 
-        # Read 20 at a time.
-        for i in range(20):
+        # Read 100 at a time.
+        for i in range(100):
             line = stream.readline().strip()
             if line:
                 block.append(PropbankInstance.parse(
@@ -231,10 +231,32 @@ class PropbankInstance(object):
         return PropbankInstance(filename, sentnum, wordnum, tagger,
                                 roleset, inflection, predicate,
                                 arguments, parse_corpus)
+
+class PropbankPointer(object):
+    """
+    A pointer used by propbank to identify one or more constituents in
+    a parse tree.  C{PropbankPointer} is an abstract base class with
+    three concrete subclasses:
+
+      - L{PropbankTreePointer} is used to point to single constituents.
+      - L{PropbankSplitTreePointer} is used to point to 'split'
+        constituents, which consist of a sequence of two or more
+        C{PropbankTreePointer}s.
+      - L{PropbankChainTreePointer} is used to point to entire trace
+        chains in a tree.  It consists of a sequence of pieces, which
+        can be C{PropbankTreePointer}s or C{PropbankSplitTreePointer}s.
+    """
+    def __init__(self):
+        if self.__class__ == PropbankPoitner:
+            raise AssertionError('PropbankPointer is an abstract base class')
             
-class PropbankChainTreePointer(object):
+class PropbankChainTreePointer(PropbankPointer):
     def __init__(self, pieces):
         self.pieces = pieces
+        """A list of the pieces that make up this chain.  Elements may
+           be either L{PropbankSplitTreePointer}s or
+           L{PropbankTreePointer}s."""
+        
     def __str__(self):
         return '*'.join('%s' % p for p in self.pieces)
     def __repr__(self):
@@ -243,9 +265,12 @@ class PropbankChainTreePointer(object):
         if tree is None: raise ValueError('Parse tree not avaialable')
         return Tree('*CHAIN*', [p.select(tree) for p in self.pieces])
 
-class PropbankSplitTreePointer(object):
+class PropbankSplitTreePointer(PropbankPointer):
     def __init__(self, pieces):
         self.pieces = pieces
+        """A list of the pieces that make up this chain.  Elements are
+           all L{PropbankTreePointer}s."""
+        
     def __str__(self):
         return ','.join('%s' % p for p in self.pieces)
     def __repr__(self):
@@ -254,7 +279,7 @@ class PropbankSplitTreePointer(object):
         if tree is None: raise ValueError('Parse tree not avaialable')
         return Tree('*SPLIT*', [p.select(tree) for p in self.pieces])
 
-class PropbankTreePointer(object):
+class PropbankTreePointer(PropbankPointer):
     """
     wordnum:height*wordnum:height*...
     wordnum:height,
@@ -295,7 +320,7 @@ class PropbankTreePointer(object):
             other = other.pieces[0]
         
         if not isinstance(other, PropbankTreePointer):
-            return object.__cmp__(self, other)
+            return cmp(id(self), id(other))
 
         return cmp( (self.wordnum, -self.height),
                     (other.wordnum, -other.height) )
