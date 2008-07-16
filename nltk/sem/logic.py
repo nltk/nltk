@@ -54,7 +54,27 @@ class Tokens:
     SYMBOLS = LAMBDA + PUNCT + [AND[1], OR[1], NOT[1], IMP[1], IFF[1]] + EQ 
 
 
-class Expression(object):
+class SubstituteBindingsI(object):
+    """
+    An interface for classes that can perform substitutions for
+    variables.
+    """
+    def substitute_bindings(self, bindings):
+        """
+        @return: The object that is obtained by replacing
+        each variable bound by C{bindings} with its values.
+        Aliases are already resolved. (maybe?)
+        @rtype: (any)
+        """
+        raise NotImplementedError()
+
+    def variables(self):
+        """
+        @return: A list of all variables in this object.
+        """
+        raise NotImplementedError()
+
+class Expression(SubstituteBindingsI):
     def __call__(self, other, *additional):
         accum = self.applyto(other)
         for a in additional:
@@ -107,6 +127,20 @@ class Expression(object):
     def unique_variable(self):
         return IndividualVariableExpression('z' + str(_counter.get()))
 
+    def substitute_bindings(self, bindings):
+        expr = self
+        for var in expr.free():
+            if var in bindings:
+                val = bindings[var]
+                if not isinstance(val, Expression):
+                    raise ValueError('Can not substitute a non-expresion '
+                                     'value into an expression: %r' % val)
+                # Substitute bindings in the target value.
+                val = val.substitute_bindings(bindings)
+                # Replace var w/ the target value.
+                expr = expr.replace(var, val)
+        return expr.simplify()
+
     def __repr__(self):
         return self.__class__.__name__ + ': ' + str(self)
     
@@ -142,6 +176,12 @@ class ApplicationExpression(Expression):
                               [arg.replace(variable, expression, replace_bound)
                                for arg in self.args])
         
+    def variables(self):
+        accum = self.function.variables()
+        for arg in self.args:
+            accum |= arg.variables()
+        return accum
+
     def free(self):
         accum = self.function.free()
         for arg in self.args:
@@ -184,12 +224,20 @@ class VariableExpression(Expression):
         else:
             return self
     
+    def variables(self):
+        return set([self])
+
     def free(self):
         return set([self])
     
     def __eq__(self, other):
-        return self.__class__ == other.__class__ and self.name == other.name
+        """Allow equality between instances of C{VariableExpression} and
+        C{IndividualVariableExpression}."""
+        return isinstance(other, VariableExpression) and self.name == other.name
         
+    def substitute_bindings(self, bindings):
+        return bindings.get(self, self)
+
     def str(self, syntax=Tokens.NEW_NLTK):
         return self.name
     
@@ -233,6 +281,9 @@ class VariableBinderExpression(Expression):
         binder in the expression to @C{newvar}."""
         return self.__class__(newvar, self.term.replace(self.variable, newvar, 
                                                         True))
+
+    def variables(self):
+        return self.term.variables() | set([self.variable])
 
     def free(self):
         return self.term.free() - set([self.variable])
@@ -279,6 +330,9 @@ class NegatedExpression(Expression):
         return self.__class__(self.term.replace(variable, expression, 
                                                 replace_bound))
 
+    def variables(self):
+        return self.term.variables()
+
     def free(self):
         return self.term.free()
 
@@ -301,6 +355,9 @@ class BooleanExpression(Expression):
                                                  replace_bound),
                               self.second.replace(variable, expression, 
                                                   replace_bound))
+
+    def variables(self):
+        return self.first.variables() | self.second.variables()
 
     def free(self):
         return self.first.free() | self.second.free()
