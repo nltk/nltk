@@ -1224,7 +1224,7 @@ demonstrations.
 
 The most common corpus view is the `StreamBackedCorpusView`, which
 acts as a read-only list of tokens.  Two additional corpus view
-classes, `ConcatenatedCorpusView` and `CorpusViewSlice`, make it
+classes, `ConcatenatedCorpusView` and `LazySubsequence`, make it
 possible to create concatenations and take slices of
 `StreamBackedCorpusView` objects without actually storing the
 resulting list-like object's elements in memory.
@@ -1716,11 +1716,12 @@ Slicing
 First, do some tests with fairly small slices.  These will all
 generate tuple values.
 
+    >>> from nltk.utilities import LazySubsequence
     >>> c1 = StreamBackedCorpusView(f1, read_whitespace_block)
     >>> l1 = open(f1).read().split()
     >>> print len(c1)
     21
-    >>> len(c1) < CorpusViewSlice.MIN_SIZE
+    >>> len(c1) < LazySubsequence.MIN_SIZE
     True
 
 Choose a list of indices, based on the length, that covers the
@@ -1751,13 +1752,13 @@ Test slicing with start=stop=None:
     True
 
 Next, we'll do some tests with much longer slices.  These will
-generate CorpusViewSlice objects.
+generate LazySubsequence objects.
 
     >>> c3 = StreamBackedCorpusView(f3, read_whitespace_block)
     >>> l3 = open(f3).read().split()
     >>> print len(c3)
     5430
-    >>> len(c3) > CorpusViewSlice.MIN_SIZE*2
+    >>> len(c3) > LazySubsequence.MIN_SIZE*2
     True
 
 Choose a list of indices, based on the length, that covers the
