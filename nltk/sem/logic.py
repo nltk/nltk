@@ -397,10 +397,6 @@ class LogicParser:
     def __init__(self, constants=None):
         self._currentIndex = 0
         self._buffer = []
-        if constants is not None:
-            self.constants = constants
-        else:
-            self.constants = []
 
     def parse(self, data):
         """
