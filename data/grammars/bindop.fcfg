@@ -28,17 +28,17 @@
 ##   IV -> intransitive verbs...
 ##   Det -> determiners...
 
-S[sem=[core=<(?vp ?subj)>, bo={?b1+?b2}]] -> NP[sem=[core=?subj, bo=?b1]] VP[sem=[core=?vp, bo=?b2]]
+S[sem=[core=<?vp(?subj)>, bo={?b1+?b2}]] -> NP[sem=[core=?subj, bo=?b1]] VP[sem=[core=?vp, bo=?b2]]
 
-VP[sem=[core=<(?v ?obj)>, bo={?b1+?b2}]] -> TV[sem=[core=?v, bo=?b1]] NP[sem=[core=?obj, bo=?b2]]
+VP[sem=[core=<?v(?obj)>, bo={?b1+?b2}]] -> TV[sem=[core=?v, bo=?b1]] NP[sem=[core=?obj, bo=?b2]]
 
 VP[sem=?s] -> IV[sem=?s]
 
-NP[sem=[core=<@x>, bo={{<(bo @x (?det ?n))>}+?b1+?b2}]] -> Det[sem=[core=?det, bo=?b1]] N[sem=[core=?n, bo=?b2]]
+NP[sem=[core=<@x>, bo={{<bo(?det(?n),@x)>}+?b1+?b2}]] -> Det[sem=[core=?det, bo=?b1]] N[sem=[core=?n, bo=?b2]]
 
 # Lexical items:
-Det[sem=[core=<\Q P.some x.((Q x) and (P x))>, bo={/}]] -> 'a'
+Det[sem=[core=<\Q P.exists x.(Q(x) & P(x))>, bo={/}]] -> 'a'
 N[sem=[core=<dog>, bo={/}]] -> 'dog' | 'cat' | 'mouse' 
-IV[sem=[core=<\x.(bark x)>, bo={/}]] -> 'barks' | 'eats' | 'walks'
-TV[sem=[core=<\x y.(feed x y)>, bo={/}]] -> 'feeds' | 'walks'
-NP[sem=[core=<@x>, bo={<(bo @x \P. (P John))>}]] -> 'john' | 'alex'
+IV[sem=[core=<\x.bark(x)>, bo={/}]] -> 'barks' | 'eats' | 'walks'
+TV[sem=[core=<\x y.feed(y,x)>, bo={/}]] -> 'feeds' | 'walks'
+NP[sem=[core=<@x>, bo={<bo(\P. P(John),@x)>}]] -> 'john' | 'alex'
