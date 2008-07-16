@@ -43,8 +43,10 @@ import re
 import threading
 import time
 import getopt
+import base64
 
-from browseutil import page_word, uniq_cntr, html_header, html_trailer
+from browseutil import page_word, uniq_cntr, html_header, html_trailer, \
+    get_static_index_page, get_static_page_by_path
 
 page = None
 word = None
@@ -102,16 +104,16 @@ class MyServerHandler(BaseHTTPRequestHandler):
 
         elif sp == 'favicon.ico':
             type = 'image/x-icon'
-            page = open(sp).read()
+            page = favicon_data()
             
         elif sp == '': # First request.
             type = 'text/html'
             old_uc = uniq_cntr() # Trigger the update of old uc:s
             if not server_mode and firstClient:
                 firstClient = False
-                page = open('index.html').read()
+                page = get_static_index_page(True)
             else:
-                page = open('index_2.html').read()
+                page = get_static_index_page(False)
             word = 'green'
         
         elif sp.endswith('.html'): # Trying to fetch a HTML file
@@ -130,14 +132,9 @@ class MyServerHandler(BaseHTTPRequestHandler):
                         '<p><b>python dbinfo_html.py</b>' + \
                         '<p>to produce it.' + html_trailer
             else:
-                if os.path.isfile(usp):
-                    word = sp
-                    page = open(usp).read()
-                else:
-                    word = ''
-                    page = (html_header % word) + '<p>The file:'\
-                        '<p><b>' + usp + '</b>' + \
-                        '<p>was not found.' + html_trailer
+                # TODO Handle files here.
+                word = sp
+                page = get_static_page_by_path(usp)
         else:
             type = 'text/html'
             old_uc = uniq_cntr() # Trigger the update of old uc:s
@@ -181,6 +178,58 @@ class MyServerHandler(BaseHTTPRequestHandler):
                 (self.address_string(),
                  self.log_date_time_string(),
                  format%args))
+
+
+# This data was encoded with the following procedure
+def encode_icon():
+    f = open("favicon.ico", "rb")
+    s = f.read()
+    f.close()
+
+    def split(s):
+        if len(s) <= 72:
+            return [s]
+        else:
+            return [s[0:72]] + split(s[72:])
+
+    print split(base64.urlsafe_b64encode(s))
+
+
+FAVICON_BASE64_DATA = \
+['AAABAAEAEBAAAAAAAABoBQAAFgAAACgAAAAQAAAAIAAAAAEACAAAAAAAAAAAAAAAAAAAAAAA',
+ 'AAAAAAAAAAD___8A9___ANb3_wDO9_8AjPf_ALXv_wCc7_8AjO__AHvv_wBz7_8Aa-__AKXn',
+ '_wCc5_8AlOf_AITn_wBz5_8Aa-f_AGPn_wBa5_8Ac97_AGve_wBj3v8AWt7_AFLe_wBK3v8A',
+ 'Qt7_AFrW_wBS1v8AStb_AELW_wA51v8AMdb_ACnO_wAhzv8AGM7_ABjG_wD___cA__f3APf3',
+ '9wB73vcAUtb3AErW9wAhxvcAAMb3AFLO7wAYxu8AEMbvACG95wAYvecA9-fWAHPG1gBKvdYA',
+ 'Ob3WACG91gDv3s4Axt7OACm1zgCMtb0ASq29ACGlvQBStbUAUq21ADGttQA5pbUA3satAEqc',
+ 'rQDWvaUAY62lAOfGnADWvZwAtbWcAJStnADGrZQAzq2MAIycjABznIwAa5yMAN61hADWrXsA',
+ 'zq17AMalewCtpXsAa4x7AMaccwC9nHMAtZRzAISUcwBrjHMAzqVrALWUawCtlGsArYxrAHuE',
+ 'awBre2sAY3trAHuEYwBzhGMAc3tjAGt7YwDGlFoAvYxaAGNzWgBSa1oAxpRSAK2MUgDGjEoA',
+ 'vYxKAL2ESgC1hEoArYRKAIRzSgB7a0oAc2tKAGtrSgBaY0oAtYRCAK17QgCle0IApXM5AJxz',
+ 'OQCcazkAjGMxAIRaMQBzWjEAa1oxAIRaKQB7ShAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+ 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+ 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+ 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+ 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+ 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+ 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+ 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+ 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+ 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+ 'AAAAAAAAAAAAAAAGFh4YLAYAAAAAAAAAAAAHGB4gIBYWBgAAAAAAAAAAFhgzQR45MixGMQAA',
+ 'AAAAABQYTF0WbzplWQAAAABFVEgKFExdFG59eywWCwBAdHRJCgpLXRhxe3IvIiIDT2p0VAdh',
+ 'fn5xbzplciAwFFNqanQ3BwoKChYYGB4gICxYanRqalRPWVRZRhMYHiAYTmlqdnZ2dnh5eX1G',
+ 'FhgeFEVjaT1SVithKzg7WhMYGAsATmM9UjgwXDt2eFsIFgcAAAAAFDRDLUo-bnhZAAAAAAAA',
+ 'AAgwRS1cO3Z2WgAAAAAAAAADUTZHbVJ0d0kAAAAAAAAAADFPY2pqZEgAAAAAAAAA__8AAP__',
+ 'AAD__wAAsaEAAE5eAABOXgAA__4AAPv_AAD__wAA__8AAM3-AADw_wAA__8AAML-AAD__wAA',
+ 'xf4=']
+
+
+def favicon_data():
+    """
+    Return the data for the favicon image.
+    """
+    return base64.urlsafe_b64decode(''.join(FAVICON_BASE64_DATA))
 
 
 def get_unique_counter_from_url(sp):
@@ -301,3 +350,4 @@ if __name__ == '__main__':
         usage()
     else:
         demo(port, not server_mode, logfilename)
+
