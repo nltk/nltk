@@ -15,7 +15,7 @@ feature structures as nodes.
 import yaml
 
 from nltk.featstruct import FeatStruct, unify, FeatStructParser
-from nltk.sem.logic import VariableExpression
+from nltk.sem import logic
 from nltk import cfg, defaultdict
 from nltk.cfg import FeatStructNonterminal
 from nltk.internals import Counter
@@ -429,12 +429,12 @@ class InstantiateVarsChart(Chart):
     
     counter = Counter(100)
     def inst_vars(self, edge):
-        return dict((var, self.unique_variable().variable)
+        return dict((var, self.unique_variable())
                     for var in edge.lhs().variables()
                     if var.name.startswith('@'))
 
     def unique_variable(self):
-        return VariableExpression('z%s' % self.counter.get())
+        return logic.IndividualVariableExpression('z%s' % logic._counter.get())
 
 #////////////////////////////////////////////////////////////
 # Demo
@@ -511,4 +511,3 @@ if __name__ == '__main__':
     trees = cp.nbest_parse(tokens)
     for tree in trees:
         print tree
-

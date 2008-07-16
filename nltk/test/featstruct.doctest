@@ -2,8 +2,7 @@
  Feature Structures & Unification
 ==================================
     >>> from nltk.featstruct import FeatStruct
-    >>> from nltk.sem.lambdalogic import Constant, ConstantExpression
-    >>> from nltk.sem.lambdalogic import Variable, LogicParser
+    >>> from nltk.sem.logic import VariableExpression, LogicParser
 
 .. note:: For now, featstruct uses the older lambdalogic semantics
    module.  Eventually, it should be updated to use the new first
@@ -34,8 +33,8 @@ the same value.  For example, the following feature structure requires
 that the feature fs3['agr']['number'] be bound to the same value as the
 feature fs3['subj']['number'].
 
-    >>> fs3 = FeatStruct(agr=FeatStruct(number=Variable('?n')),
-    ...                  subj=FeatStruct(number=Variable('?n')))
+    >>> fs3 = FeatStruct(agr=FeatStruct(number=VariableExpression('?n')),
+    ...                  subj=FeatStruct(number=VariableExpression('?n')))
     >>> print fs3
     [ agr  = [ number = ?n ] ]
     [                        ]
@@ -92,8 +91,8 @@ only if they have equal lengths, and all of their feature values
 match.  If you wish to write a feature list that contains 'unknown'
 values, you must use variables:
 
-    >>> fs1 = FeatStruct([1,2,Variable('?y')])
-    >>> fs2 = FeatStruct([1,Variable('?x'),3])
+    >>> fs1 = FeatStruct([1,2,VariableExpression('?y')])
+    >>> fs2 = FeatStruct([1,VariableExpression('?x'),3])
     >>> fs1.unify(fs2)
     [1, 2, 3]
 
@@ -236,7 +235,7 @@ Feature value tuples are written with parenthases:
     >>> fs1 = FeatStruct('[x=(?x, ?y)]')
     >>> fs1
     [x=(?x, ?y)]
-    >>> fs1.substitute_bindings({Variable('?x'): 1, Variable('?y'): 2})
+    >>> fs1.substitute_bindings({VariableExpression('?x'): 1, VariableExpression('?y'): 2})
     [x=(1, 2)]
 
 Feature sets are written with braces:
@@ -244,7 +243,7 @@ Feature sets are written with braces:
     >>> fs1 = FeatStruct('[x={?x, ?y}]')
     >>> fs1
     [x={?x, ?y}]
-    >>> fs1.substitute_bindings({Variable('?x'): 1, Variable('?y'): 2})
+    >>> fs1.substitute_bindings({VariableExpression('?x'): 1, VariableExpression('?y'): 2})
     [x={1, 2}]
 
 In addition to the basic feature value tuple & set classes, nltk
@@ -678,8 +677,8 @@ Here the slash feature gets coerced:
 
     >>> FeatStruct('NP[sem=<bob>]/NP')
     NP[sem=<bob>]/NP[]
-    >>> FeatStruct('S[sem=<(walk bob)>]')
-    S[sem=<(walk bob)>]
+    >>> FeatStruct('S[sem=<walk(bob)>]')
+    S[sem=<walk(bob)>]
     >>> print FeatStruct('NP[sem=<bob>]/NP')
     [ *type*  = 'NP'              ]
     [                             ]
@@ -731,13 +730,13 @@ do quite the right thing, -- ?x vs x.
     >>> FeatStruct(r'NP[sem=<bob>]/NP')
     NP[sem=<bob>]/NP[]
     >>> FeatStruct(r'S[sem=<app(?x, ?y)>]')
-    S[sem=<(?x ?y)>]
+    S[sem=<?x(?y)>]
     >>> FeatStruct('?x/?x')
     ?x[]/?x[]
     >>> FeatStruct('VP[+fin, agr=?x, tense=past]/NP[+pl, agr=?x]')
     VP[agr=?x, +fin, tense='past']/NP[agr=?x, +pl]
     >>> FeatStruct('S[sem = <app(?subj, ?vp)>]')
-    S[sem=<(?subj ?vp)>]
+    S[sem=<?subj(?vp)>]
     
     >>> FeatStruct('S')
     S[]
@@ -914,7 +913,7 @@ Variable bindings should preserve reentrance.
     >>> bindings = {}
     >>> fs1 = FeatStruct("[a=?x]")
     >>> fs2 = fs1.unify(FeatStruct("[a=[]]"), bindings)
-    >>> fs2['a'] is bindings[Variable('?x')]
+    >>> fs2['a'] is bindings[VariableExpression('?x')]
     True
     >>> fs2.unify(FeatStruct("[b=?x]"), bindings)
     [a=(1)[], b->(1)]
@@ -928,7 +927,7 @@ Aliased variable tests
     >>> fs3
     [a=?x, b=?x, c=?x]
     >>> bindings
-    {Variable('?y'): Variable('?x')}
+    {VariableExpression: ?y: VariableExpression: ?x}
     >>> fs3.unify(FeatStruct("[a=1]"))
     [a=1, b=1, c=1]
 
@@ -941,7 +940,7 @@ over multiple calls to unify.
     >>> fs2.unify(FeatStruct('[b=?x]'), bindings)
     [a=(1)[], b->(1)]
     >>> bindings
-    {Variable('?x'): []}
+    {VariableExpression: ?x: []}
 
 ..
     >>> del fs1, fs2, fs3, fs4, fs5 # clean-up
@@ -956,7 +955,7 @@ Unification Bindings
     >>> fs1.unify(fs2, bindings)
     [a=12]
     >>> bindings
-    {Variable('?x'): 12}
+    {VariableExpression: ?x: 12}
     >>> fs3.substitute_bindings(bindings)
     [b=12]
     >>> fs3 # substitute_bindings didn't mutate fs3.
@@ -970,18 +969,18 @@ Unification Bindings
     >>> fs1.unify(fs2, bindings)
     [a=5, b=1]
     >>> sorted(bindings.items())
-    [(Variable('?x'), 5), (Variable('?x2'), 1)]
+    [(VariableExpression: ?x, 5), (VariableExpression: ?x2, 1)]
 
 ..
     >>> del fs1, fs2, fs3 # clean-up
 
 Expressions
 -----------
-    >>> e=LogicParser('\\x y.(x y z)').next()
-    >>> fs1 = FeatStruct(x=e, y=Variable('z'))
-    >>> fs2 = FeatStruct(y=ConstantExpression(Constant('John')))
+    >>> e=LogicParser().parse('\\P y.P(z,y)')
+    >>> fs1 = FeatStruct(x=e, y=VariableExpression('z'))
+    >>> fs2 = FeatStruct(y=VariableExpression('John'))
     >>> fs1.unify(fs2)
-    [x=<\x y.(x y John)>, y=<John>]
+    [x=<\P.\y.P(John,y)>, y=<John>]
 
 Remove Variables
 ----------------
@@ -1095,7 +1094,7 @@ Tracing
       |   |    / ?x
       |   |   |\ 'C'
       |   |   |
-      |   |   +-->Variable('?x')
+      |   |   +-->VariableExpression: ?x
       |   |
       |   +-->[b=[], c=?x]
       |       Bindings: {?x: 'C'}
@@ -1133,7 +1132,7 @@ It's possible to do unification on dictionaries:
 
 It's possible to do unification on lists as well:
 
-    >>> unify([1, 2, 3], [1, Variable('x'), 3])
+    >>> unify([1, 2, 3], [1, VariableExpression('x'), 3])
     [1, 2, 3]
 
 Mixing dicts and lists is fine:
@@ -1185,11 +1184,11 @@ Retracting Bindings
     [                           ]
     [ b -> (1)                  ]
     >>> print bindings
-    {Variable('?y'): [d=1], Variable('?x'): [c=[d=1]]}
+    {VariableExpression: ?y: [d=1], VariableExpression: ?x: [c=[d=1]]}
     >>> retract_bindings(fs3, bindings)
     [a=?x, b=?x]
     >>> print bindings
-    {Variable('?y'): [d=1], Variable('?x'): [c=?y]}
+    {VariableExpression: ?y: [d=1], VariableExpression: ?x: [c=?y]}
 
 Squashed Bugs
 ~~~~~~~~~~~~~
@@ -1205,7 +1204,7 @@ There was a bug in svn revision 5172 that caused `rename_variables` to
 rename variables to names that are already used.
 
     >>> FeatStruct('[a=?x, b=?x2]').rename_variables(
-    ...     vars=[Variable('?x')])
+    ...     vars=[VariableExpression('?x')])
     [a=?x3, b=?x2]
     >>> fs1 = FeatStruct('[a=?x]')
     >>> fs2 = FeatStruct('[a=?x, b=?x2]')
