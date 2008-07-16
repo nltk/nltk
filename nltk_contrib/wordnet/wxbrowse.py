@@ -384,8 +384,9 @@ class MyHtmlFrame(wx.Frame):
             'Decrease Font Size\tCtrl+-  or Ctrl+Numpad-  or Ctrl+DownArrow')
         n_f = menu_3.Append(-1, 'Normal Font Size\tCtrl+0')
         menu_3.AppendSeparator()
-        db_i = menu_3.Append(-1, 'Show Database Info')
-        menu_3.AppendSeparator()
+# The Database Info File is not supported in this version.
+#        db_i = menu_3.Append(-1, 'Show Database Info')
+#        menu_3.AppendSeparator()
         s_s = menu_3.Append(-1, 'Show HTML Source\tCtrl+U')
         menu_bar.Append(menu_3, '&View')
 
@@ -409,7 +410,8 @@ class MyHtmlFrame(wx.Frame):
         self.Bind(wx.EVT_MENU, self.on_incr_font, i_f)
         self.Bind(wx.EVT_MENU, self.on_decr_font, d_f)
         self.Bind(wx.EVT_MENU, self.on_norm_font, n_f)
-        self.Bind(wx.EVT_MENU, self.on_db_info, db_i)
+# The Database Info File is not supported in this version.
+#        self.Bind(wx.EVT_MENU, self.on_db_info, db_i)
         self.Bind(wx.EVT_MENU, self.on_show_source, s_s)
         self.Bind(wx.EVT_MENU, self.on_help_help, h_h)
         self.Bind(wx.EVT_MENU, self.on_help_about, h_a)
@@ -547,10 +549,10 @@ class MyHtmlFrame(wx.Frame):
             file.close()
         except IOError:
             # TODO: Should give instructions for using dbinfo_html.py
-            html = (html_header % word) + '<p>The database info file:'\
-                   '<p><b>%s</b>' + \
-                   '<p>was not found. Run the <b>dbinfo_html.py</b>' + \
-                   'script to produce it.' + html_trailer
+            html = (bu.html_header % word) + '<p>The database info file:'\
+                   '<p><b>%s</b>' % WORDNET_DB_INFO_FILEPATH + \
+                   '<p>was not found. Run the <b>dbinfo_html.py</b> ' + \
+                   'script to produce it.' + bu.html_trailer
         self.panel.show_page_and_word(html, word)
         return
 
@@ -559,9 +561,7 @@ class MyHtmlFrame(wx.Frame):
         try:
             if not path.endswith('.htm') and not path.endswith('.html'):
                 path += '.html'
-            f = open(path)
-            page = f.read()
-            f.close()
+            page = bu.get_static_page_by_path(path)
             if path == 'NLTK Wordnet Browser Help.html':
                 word = '* Help *'
             else:

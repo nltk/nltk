@@ -16,7 +16,12 @@ from nltk.wordnet import _morphy
 from nltk.wordnet.synset import *
 from nltk.wordnet.synset import _RELATION_TABLE
 
-__all__ = ['page_word','relations_2', 'new_word_and_body', 'uniq_cntr']
+__all__ = ['get_static_index_page',
+           'get_static_page_by_path',
+           'new_word_and_body', 
+           'page_word',
+           'relations_2', 
+           'uniq_cntr']
 
 
 """
@@ -738,3 +743,391 @@ def page_word(page, word, href):
             page = page[:ind] + s_r + page[ind:]
             return page, word
 
+
+def get_static_page_by_path(path):
+    """
+    Return a static HTML page from the path given.
+    """
+    if path == "index_2.html":
+        return get_static_index_page(False)
+    elif path == "index.html":
+        return get_static_index_page(True)
+    elif path == "NLTK Wordnet Browser Database Info.html":
+        return "Display of Wordnet Database Statistics is not supported"
+    elif path == "start.html":
+        return get_static_start_page()
+    elif path == "upper_2.html":
+        return get_static_upper_page(False)
+    elif path == "upper.html":
+        return get_static_upper_page(True)
+    elif path == "web_help.html":
+        return get_static_web_help_page()
+    elif path == "wx_help.html":
+        return get_static_wx_help_page()
+    else:
+        return "Internal error: Path for static page '%s' is unknown" % path
+
+    f = open(path)
+    page = f.read()
+    f.close()
+    return page
+
+
+def get_static_web_help_page():
+    """
+    Return the static web help page.
+    """
+    return \
+"""
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+     <!-- Natural Language Toolkit: Wordnet Interface: Graphical Wordnet Browser
+            Copyright (C) 2007 - 2008 University of Pennsylvania
+            Author: Jussi Salmela <jtsalmela@users.sourceforge.net>
+            URL: <http://nltk.sf.net>
+            For license information, see LICENSE.TXT -->
+     <head>
+          <meta http-equiv='Content-Type' content='text/html; charset=us-ascii'>
+          <title>NLTK Wordnet Browser display of: * Help *</title>
+     </head>
+<body bgcolor='#F5F5F5' text='#000000'>
+<h2>NLTK Wordnet Browser Help</h2>
+<p>The NLTK Wordnet Browser is a tool to use in browsing the Wordnet database. It tries to behave like the Wordnet project's web browser but the difference is that the NLTK Wordnet Browser uses a local Wordnet database.
+<p><b>You are using the Javascript client part of the NLTK Wordnet BrowseServer.</b> We assume your browser is in tab sheets enabled mode.</p>
+<p>For background information on Wordnet, see the Wordnet project home page: <a href="http://wordnet.princeton.edu/"><b> http://wordnet.princeton.edu/</b></a>. For more information on the NLTK project, see the project home:
+<a href="http://nltk.sourceforge.net/"><b>http://nltk.sourceforge.net/</b></a>. To get an idea of what the Wordnet version used by this browser includes choose <b>Show Database Info</b> from the <b>View</b> submenu.</p>
+<h3>Word search</h3>
+<p>The word to be searched is typed into the <b>New Word</b> field and the search started with Enter or by clicking the <b>Search</b> button. There is no uppercase/lowercase distinction: the search word is transformed to lowercase before the search.</p>
+<p>In addition, the word does not have to be in base form. The browser tries to find the possible base form(s) by making certain morphological substitutions. Typing <b>fLIeS</b> as an obscure example gives one <a href="MfLIeS">this</a>. Click the previous link to see what this kind of search looks like and then come back to this page by using the <b>Alt+LeftArrow</b> key combination.</p>
+<p>The result of a search is a display of one or more
+<b>synsets</b> for every part of speech in which a form of the
+search word was found to occur. A synset is a set of words
+having the same sense or meaning. Each word in a synset that is
+underlined is a hyperlink which can be clicked to trigger an
+automatic search for that word.</p>
+<p>Every synset has a hyperlink <b>S:</b> at the start of its
+display line. Clicking that symbol shows you the name of every
+<b>relation</b> that this synset is part of. Every relation name is a hyperlink that opens up a display for that relation. Clicking it another time closes the display again. Clicking another relation name on a line that has an opened relation closes the open relation and opens the clicked relation.</p>
+<p>It is also possible to give two or more words or collocations to be searched at the same time separating them with a comma like this <a href="Mcheer up,clear up">cheer up,clear up</a>, for example. Click the previous link to see what this kind of search looks like and then come back to this page by using the <b>Alt+LeftArrow</b> key combination. As you could see the search result includes the synsets found in the same order than the forms were given in the search field.</p>
+<p>
+There are also word level (lexical) relations recorded in the Wordnet database. Opening this kind of relation displays lines with a hyperlink <b>W:</b> at their beginning. Clicking this link shows more info on the word in question.</p>
+<h3>The Buttons</h3>
+<p>The <b>Search</b> and <b>Help</b> buttons need no more explanation. </p>
+<p>The <b>Show Database Info</b> button shows a collection of Wordnet database statistics.</p>
+<p>The <b>Shutdown the Server</b> button is shown for the first client of the BrowServer program i.e. for the client that is automatically launched when the BrowServer is started but not for the succeeding clients in order to protect the server from accidental shutdowns.
+</p></body>
+</html>
+"""
+
+def get_static_wx_help_page():
+    """
+    Return static WX help page.
+    """
+    return \
+"""
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+     <!-- Natural Language Toolkit: Wordnet Interface: Graphical Wordnet Browser
+            Copyright (C) 2007 - 2008 University of Pennsylvania
+            Author: Jussi Salmela <jtsalmela@users.sourceforge.net>
+            URL: <http://nltk.sf.net>
+            For license information, see LICENSE.TXT -->
+     <head>
+          <meta http-equiv='Content-Type' content='text/html; charset=us-ascii'>
+          <title>NLTK Wordnet Browser display of: * Help *</title>
+     </head>
+<body bgcolor='#F5F5F5' text='#000000'>
+<h2>NLTK Wordnet Browser Help</h2>
+<p>The NLTK Wordnet Browser is a tool to use in browsing the Wordnet database. It tries to behave like the Wordnet project's web browser but the difference is that the NLTK Wordnet Browser uses a local Wordnet database. The NLTK Wordnet Browser has only a part of normal browser functionality and it is <b>not</b> an Internet browser.</p>
+<p>For background information on Wordnet, see the Wordnet project home page: <b>http://wordnet.princeton.edu/</b>. For more information on the NLTK project, see the project home: <b>http://nltk.sourceforge.net/</b>. To get an idea of what the Wordnet version used by this browser includes choose <b>Show Database Info</b> from the <b>View</b> submenu.</p>
+<h3>The User Interface</h3>
+<p>The user interface is a so called <b>notebook</b> interface. This
+is familiar nowadays for almost everyone from Internet browsers,
+for example. It consists of one or more independent pages often
+(and here also) called <b>tabsheets</b>.</p>
+<p>Every tabsheet contains its own search history which can be
+browsed back and forth at will. The result of a new word search
+will be shown on the currently active tabsheet if nothing else is
+wanted. It is also possible to open a new tabsheet for the search
+word given.</p>
+<p>The position and size of the browser window as well as font size can be adjusted and the selections are retained between sessions.</p>
+<h3>Word search</h3>
+<p>The word to be searched is typed into the <b>Word(s):</b> field and the search started with Enter or by clicking the <b>Search the word(s)</b> button. There is no uppercase/lowercase distinction: the search word is transformed to lowercase before the search.</p>
+<p>In addition, the word does not have to be in base form. The browser tries to find the possible base form(s) by making certain morphological substitutions. Typing <b>fLIeS</b> as an obscure example gives one <a href="MfLIeS">this</a>. Click the previous link to see what this kind of search looks like and then come back to this page by clicking the <b>Previous Page</b> button.</p>
+<p>The result of a search is a display of one or more
+<b>synsets</b> for every part of speech in which a form of the
+search word was found to occur. A synset is a set of words
+having the same sense or meaning. Each word in a synset that is
+underlined is a hyperlink which can be clicked to trigger an
+automatic search for that word.</p>
+<p>Every synset has a hyperlink <b>S:</b> at the start of its
+display line. Clicking that symbol shows you the name of every
+<b>relation</b> that this synset is part of. Every relation name is a hyperlink that opens up a display for that relation. Clicking it another time closes the display again. Clicking another relation name on a line that has an opened relation closes the open relation and opens the clicked relation.</p>
+<p>It is also possible to give two or more words or collocations to be searched at the same time separating them with a comma like this <a href="Mcheer up,clear up">cheer up,clear up</a>, for example. Click the previous link to see what this kind of search looks like and then come back to this page by clicking the <b>Previous Page</b> button. As you could see the search result includes the synsets found in the same order than the forms were given in the search field.</p>
+<p>
+There are also word level (lexical) relations recorded in the Wordnet database. Opening this kind of relation displays lines with a hyperlink <b>W:</b> at their beginning. Clicking this link shows more info on the word in question.</p>
+<h3>Menu Structure</h3>
+The browser has a menubar that you can use to invoke a set of
+different operations. Most of the menu selections also have a
+corresponding keyboard shortcut.
+<h4>The File Menu</h4>
+<p>Using the file menu you can <b>open</b> a previously saved NLTK
+Wordnet Browser page. Note that only pages saved with this browser
+can be read.</p>
+<p>And as indicated above you can <b>save</b> a search page. The
+resulting file is a normal HTML mode file which can be viewed,
+printed etc. as any other HTML file.</p>
+<p>You can also <b>print</b> a page and <b>preview</b> a page to be
+printed. The selected printing settings are remembered during the
+session.</p>
+<h4>The Tabsheets Menu</h4>
+<p>You can <b>open an empty tabsheet</b> and <b>close</b> the
+currently active tabsheet.</p>
+<p>When you enter a new search word in the search word field you
+can make the search result be shown in a <b>new tabsheet</b>.</p>
+<h4>Page History</h4>
+You can browse the page history of the currently active tabsheet
+either <b>forwards</b> or <b>backwards</b>. <b>Next Page</b>
+browses towards the newer pages and <b>Previous Page</b> towards
+the older pages.
+<h4>The View Menu</h4>
+<p>You can <b>increase</b>, <b>decrease</b> and <b>normalize</b>
+the font size. The font size chosen is retained between
+sessions.</p>
+<p>You can choose <b>Show Database Info</b> to see the word, synset and relation counts by POS as well as one example word (as a hyperlink) for every relation&amp;POS pair occuring.</p>
+<p>You can view the <b>HTML source</b> of a page if you are
+curious.</p>
+<h4>The Help Menu</h4>
+You can view this <b>help text</b> as you already know. The
+<b>about</b> selection tells you something about the program.
+<h3>The Keyboard Shortcuts</h3>
+<p>The following keyboard shortcuts can be used to quickly launch
+the desired operation.</p>
+<table border="1" cellpadding="1" cellspacing="1" summary="">
+<col align="center">
+<col align="center">
+<tr>
+<th>Keyboard Shortcut</th>
+<th>Operation</th>
+</tr>
+<tr>
+<td>Ctrl+O</td>
+<td>Open a file</td>
+</tr>
+<tr>
+<td>Ctrl+S</td>
+<td>Save current page as</td>
+</tr>
+<tr>
+<td>Ctrl+P</td>
+<td>Print current page</td>
+</tr>
+<tr>
+<td>Ctrl+T</td>
+<td>Open a new (empty) tabsheet</td>
+</tr>
+<tr>
+<td>Ctrl+W</td>
+<td>Close the current tabsheet</td>
+</tr>
+<tr>
+<td>Ctrl+LinkClick</td>
+<td>Open the link in a new unfocused tabsheet</td>
+</tr>
+<tr>
+<td>Ctrl+Shift+LinkClick</td>
+<td>Opent the link in a new focused tabsheet</td>
+</tr>
+<tr>
+<td>Alt+Enter (1)</td>
+<td>Show the word in search word field in a new tabsheet</td>
+</tr>
+<tr>
+<td>Alt+LeftArrow</td>
+<td>Previous page in page history</td>
+</tr>
+<tr>
+<td>Ctrl+LeftArrow (2)</td>
+<td>Previous page in page history</td>
+</tr>
+<tr>
+<td>Alt+RightArrow</td>
+<td>Next page in page history</td>
+</tr>
+<tr>
+<td>Ctlr+RightArrow (2)</td>
+<td>Next page in page history</td>
+</tr>
+<tr>
+<td>Ctrl++/Ctrl+Numpad+/Ctrl+UpArrow (3)</td>
+<td>Increase font size</td>
+</tr>
+<tr>
+<td>Ctrl+-/Ctrl+Numpad-/Ctrl+DownArrow (3)</td>
+<td>Decrease font size</td>
+</tr>
+<tr>
+<td>Ctrl+0 (4)</td>
+<td>Normal font size</td>
+</tr>
+<tr>
+<td>Ctrl+U</td>
+<td>Show HTML source</td>
+</tr>
+</table>
+<dl>
+<dt>(1)</dt>
+<dd>This works only when the search word field is active i.e. the
+caret is in it.</dd>
+<dt>(2)</dt>
+<dd>These are nonstandard combinations, the usual ones being
+Alt+LeftArrow and Alt+RightArrow. These are still functional because there used to be difficulties with the standard ones earlier in the life of this program. Use these if the standard combinations do not work properly for you.</dd>
+<dt>(3)</dt>
+<dd>There are so many of these combinations because the usual i.e.
+Ctrl++/Ctrl+- combinations did not work on the author's laptop and
+the Numpad combinations were cumbersome to use. Hopefully the first
+ones work on the computers of others.</dd>
+<dt>(4)</dt>
+<dd>This combination Ctrl+0 is "Ctrl+zero" not "Ctrl+ou".</dd>
+</dl>
+</body>
+</html>
+"""
+
+
+def get_static_start_page():
+    """
+    Get the static start page.
+    """
+    # TODO.  Part of this page should be dynamic so it is updated with the wordnet database.
+    return \
+"""
+<!DOCTYPE html PUBLIC '-//W3C//DTD HTML 4.01//EN' 'http://www.w3.org/TR/html4/strict.dtd'>
+<html>
+    <!-- Natural Language Toolkit: Wordnet Interface: Graphical Wordnet Browser
+        Copyright (C) 2007 - 2008 University of Pennsylvania
+        Author: Jussi Salmela <jtsalmela@users.sourceforge.net>
+        URL: <http://nltk.sf.net>
+        For license information, see LICENSE.TXT -->
+    <head>
+        <meta http-equiv='Content-Type' content=
+        'text/html; charset=us-ascii'>
+        <title>NLTK Wordnet Browser display of: green</title>
+    </head>
+<body bgcolor='#F5F5F5' text='#000000'>
+
+<h3>Search Help</h3>
+<ul><li>The display below the line is an example of the output the browser
+shows you when you enter a search word. The search word was <b>green</b>.</li>
+<li>The search result shows for different parts of speech the <b>synsets</b>
+i.e. different meanings for the word.</li>
+<li>All underlined texts are hypertext links. There are two types of links:
+word links and others. Clicking a word link carries out a search for the word
+in the Wordnet database.</li>
+<li>Clicking a link of the other type opens a display section of data attached
+to that link. Clicking that link a second time closes the section again.</li>
+<li>Clicking <u>S:</u> opens a section showing the relations for that synset.</li>
+<li>Clicking on a relation name opens a section that displays the associated
+synsets.</li>
+<li>Type a search word in the <b>Next Word</b> field and start the search by the
+<b>Enter/Return</b> key or click the <b>Search</b> button.</li>
+</ul>
+<hr width='100%'>
+<h3>Noun</h3>
+<ul><li><a href="Sgreen%23N4967191%2C%2347">S:</a> (n) <b>green</b>, <a href="Mgreenness%2348">greenness</a>, <a href="Mviridity%2349">viridity</a> (green color or pigment; resembling the color of growing grass)</li>
+<li><a href="Sgreen%23N8615374%2C%2350">S:</a> (n) <a href="Mpark%2351">park</a>, <a href="Mcommons%2352">commons</a>, <a href="Mcommon%2353">common</a>, <b>green</b> (a piece of open land for recreational use in an urban area) <i>"they went for a walk in the park"</i></li>
+<li><a href="Sgreen%23N11013324%2C%2354">S:</a> (n) <b>Green</b>, <a href="MWilliam+Green%2355">William Green</a> (United States labor leader who was president of the American Federation of Labor from 1924 to 1952 and who led the struggle with the Congress of Industrial Organizations (1873-1952))</li>
+<li><a href="Sgreen%23N10060904%2C%2356">S:</a> (n) <b>Green</b> (an environmentalist who belongs to the Green Party)</li>
+<li><a href="Sgreen%23N9294066%2C%2357">S:</a> (n) <b>Green</b>, <a href="MGreen+River%2358">Green River</a> (a river that rises in western Wyoming and flows southward through Utah to become a tributary of the Colorado River)</li>
+<li><a href="Sgreen%23N8579780%2C%2359">S:</a> (n) <b>green</b>, <a href="Mputting+green%2360">putting green</a>, <a href="Mputting+surface%2361">putting surface</a> (an area of closely cropped grass surrounding the hole on a golf course) <i>"the ball rolled across the green and into the bunker"</i></li>
+<li><a href="Sgreen%23N7709333%2C%2362">S:</a> (n) <a href="Mgreens%2363">greens</a>, <b>green</b>, <a href="Mleafy+vegetable%2364">leafy vegetable</a> (any of various leafy plants or their leaves and stems eaten as vegetables)</li>
+<li><a href="Sgreen%23N3606572%2C%2365">S:</a> (n) <a href="MK%2366">K</a>, <a href="Mjet%2367">jet</a>, <a href="Msuper+acid%2368">super acid</a>, <a href="Mspecial+K%2369">special K</a>, <a href="Mhoney+oil%2370">honey oil</a>, <b>green</b>, <a href="Mcat+valium%2371">cat valium</a>, <a href="Msuper+C%2372">super C</a> (street names for ketamine)</li>
+
+</ul>
+<h3>Verb</h3>
+<ul><li><a href="Sgreen%23V521478%2C%2373">S:</a> (v) <b>green</b> (turn or become green) <i>"The trees are greening"</i></li>
+
+</ul>
+<h3>Adjective</h3>
+<ul><li><a href="Sgreen%23J375969%2C%2374">S:</a> (adj) <b>green</b>, <a href="Mgreenish%2375">greenish</a>, <a href="Mlight-green%2376">light-green</a>, <a href="Mdark-green%2377">dark-green</a> (of the color between blue and yellow in the color spectrum; similar to the color of fresh grass) <i>"a green tree"; "green fields"; "green paint"</i></li>
+<li><a href="Sgreen%23J3069937%2C%2378">S:</a> (adj) <b>green</b> (concerned with or supporting or in conformity with the political principles of the Green Party)</li>
+<li><a href="Sgreen%23J1493897%2C%2379">S:</a> (adj) <b>green</b>, <a href="Munripe%2380">unripe</a>, <a href="Munripened%2381">unripened</a>, <a href="Mimmature%2382">immature</a> (not fully developed or mature; not ripe) <i>"unripe fruit"; "fried green tomatoes"; "green wood"</i></li>
+<li><a href="Sgreen%23J2545257%2C%2383">S:</a> (adj) <b>green</b> (looking pale and unhealthy) <i>"you're looking green"; "green around the gills"</i></li>
+<li><a href="Sgreen%23J2272485%2C%2384">S:</a> (adj) <a href="Mfleeceable%2385">fleeceable</a>, <b>green</b>, <a href="Mgullible%2386">gullible</a> (naive and easily deceived or tricked) <i>"at that early age she had been gullible and in love"</i></li>
+
+</ul>
+
+</body>
+</html>
+"""
+
+def get_static_index_page(with_shutdown):
+    """
+    Get the static index page.
+    """
+    template = \
+"""
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN"  "http://www.w3.org/TR/html4/frameset.dtd">
+<HTML>
+     <!-- Natural Language Toolkit: Wordnet Interface: Graphical Wordnet Browser
+            Copyright (C) 2007 - 2008 University of Pennsylvania
+            Author: Jussi Salmela <jtsalmela@users.sourceforge.net>
+            URL: <http://nltk.sf.net>
+            For license information, see LICENSE.TXT -->
+     <HEAD>
+	     <TITLE>NLTK Wordnet Browser</TITLE>
+     </HEAD>
+
+<frameset rows="7%%,93%%">
+    <frame src="%s" name="header">
+    <frame src="start.html" name="body">
+</frameset>
+</HTML>
+"""
+    if with_shutdown:
+        upper_link = "upper.html"
+    else:
+        upper_link = "upper_2.html"
+
+    return template % upper_link
+
+
+def get_static_upper_page(with_shutdown):
+    """
+    Return the upper frame page,
+
+    If with_shutdown is True then a 'shutdown' button is also provided
+    to shutdown the server.
+    """
+    template = \
+"""
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+    <!-- Natural Language Toolkit: Wordnet Interface: Graphical Wordnet Browser
+        Copyright (C) 2007 - 2008 University of Pennsylvania
+        Author: Jussi Salmela <jtsalmela@users.sourceforge.net>
+        URL: <http://nltk.sf.net>
+        For license information, see LICENSE.TXT -->
+	<head>
+                <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+		<title>Untitled Document</title>
+	</head>
+	<body>
+	<form method="GET" action="search" target="body">
+	        Current Word:&nbsp;<input type="text" id="currentWord" size="10" disabled>
+			Next Word:&nbsp;<input type="text" id="nextWord" name="nextWord" size="10">
+			<input name="searchButton" type="submit" value="Search">
+	</form>
+        <a target="body" href="web_help.html">Help</a>
+        <a target="body" href="NLTK Wordnet Browser Database Info.html">Show Database Info</a>
+        %s
+
+</body>
+</html>
+"""
+    if with_shutdown:
+        shutdown_link = "<a href=\"SHUTDOWN THE SERVER\">Shutdown</a>"
+    else:
+        shutdown_link = ""
+    
+    return template % shutdown_link
