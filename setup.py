@@ -53,6 +53,7 @@ setup(
                 'nltk.test',
                 'nltk.tokenize',
                 'nltk.wordnet',
+                'nltk.wordnet.browser',
                 'nltk.etree',
                 'nltk_contrib',
                 'nltk_contrib.bioreader',
