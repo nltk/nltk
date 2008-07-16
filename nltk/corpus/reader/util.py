@@ -12,149 +12,14 @@ from nltk.corpus.reader.api import CorpusReader
 from nltk import tokenize
 from nltk.etree import ElementTree
 from nltk.internals import deprecated
+from nltk.utilities import AbstractLazySequence, LazySubsequence
+from nltk.utilities import LazyConcatenation
 
 ######################################################################
 #{ Corpus View
 ######################################################################
 
-class AbstractCorpusView(object):
-    """
-    Abstract base class for corpus views.  See L{StreamBackedCorpusView}
-    for more information about corpus views.
-
-    Subclasses must define: L{__len__()}, L{__getitem__()}, and
-    L{iterate_from()}.
-    """
-    def __len__(self):
-        """
-        Return the number of tokens in the corpus file underlying this
-        corpus view.
-        """
-        raise NotImplementedError('should be implemented by subclass')
-    
-    def iterate_from(self, start):
-        """
-        Return an iterator that generates the tokens in the corpus
-        file underlying this corpus view, starting at the token number
-        C{start}.  If C{start>=len(self)}, then this iterator will
-        generate no tokens.
-        """
-        raise NotImplementedError('should be implemented by subclass')
-    
-    def __getitem__(self, i):
-        """
-        Return the C{i}th token in the corpus file underlying this
-        corpus view.  Negative indices and spans are both supported.
-        """
-        raise NotImplementedError('should be implemented by subclass')
-
-    def __iter__(self):
-        """Return an iterator that generates the tokens in the corpus
-        file underlying this corpus view."""
-        return self.iterate_from(0)
-
-    def count(self, value):
-        """Return the number of times this list contains C{value}."""
-        return sum(1 for elt in self if elt==value)
-    
-    def index(self, value, start=None, stop=None):
-        """Return the index of the first occurance of C{value} in this
-        list that is greater than or equal to C{start} and less than
-        C{stop}.  Negative start & stop values are treated like negative
-        slice bounds -- i.e., they count from the end of the list."""
-        start, stop = self._slice_bounds(slice(start, stop))
-        for i, elt in enumerate(islice(self, start, stop)):
-            if elt == value: return i+start
-        raise ValueError('index(x): x not in list')
-
-    def __contains__(self, value):
-        """Return true if this list contains C{value}."""
-        return bool(self.count(value))
-    
-    def __add__(self, other):
-        """Return a list concatenating self with other."""
-        return concat([self, other])
-    
-    def __radd__(self, other):
-        """Return a list concatenating other with self."""
-        return concat([other, self])
-    
-    def __mul__(self, count):
-        """Return a list concatenating self with itself C{count} times."""
-        return concat([self] * count)
-    
-    def __rmul__(self, count):
-        """Return a list concatenating self with itself C{count} times."""
-        return concat([self] * count)
-
-    _MAX_REPR_SIZE = 60
-    def __repr__(self):
-        """
-        @return: A string representation for this corpus view that is
-        similar to a list's representation; but if it would be more
-        than 60 characters long, it is truncated.
-        """
-        pieces = []
-        length = 5
-        for elt in self:
-            pieces.append(repr(elt))
-            length += len(pieces[-1]) + 2
-            if length > self._MAX_REPR_SIZE and len(pieces) > 2:
-                return '[%s, ...]' % ', '.join(pieces[:-1])
-        else:
-            return '[%s]' % ', '.join(pieces)
-
-    def __cmp__(self, other):
-        """
-        Return a number indicating how C{self} relates to other.
-
-          - If C{other} is not a corpus view or a C{list}, return -1.
-          - Otherwise, return C{cmp(list(self), list(other))}.
-
-        Note: corpus views do not compare equal to tuples containing
-        equal elements.  Otherwise, transitivity would be violated,
-        since tuples do not compare equal to lists.
-        """
-        if not isinstance(other, (AbstractCorpusView, list)): return -1
-        return cmp(list(self), list(other))
-
-    def __hash__(self):
-        """
-        @raise ValueError: Corpus view objects are unhashable.
-        """
-        raise ValueError('%s objects are unhashable' %
-                         self.__class__.__name__)
-
-    def _slice_bounds(self, slice_obj):
-        """
-        Given a slice, return the corresponding (start, stop) bounds,
-        taking into account None indices, negative indices, etc.  When
-        possible, avoid calculating len(self), since it can be slow
-        for corpus view objects.
-        """
-        start, stop = slice_obj.start, slice_obj.stop
-        
-        # Handle None indices.
-        if start is None: start = 0
-        if stop is None: stop = len(self)
-        
-        # Handle negative indices.
-        if start < 0: start = max(0, len(self)+start)
-        if stop < 0: stop = max(0, len(self)+stop)
-    
-        # Make sure stop doesn't go past the end of the list.
-        if stop > 0:
-            try: self[stop-1]
-            except IndexError: stop = len(self)
-        
-        # Make sure start isn't past stop.
-        start = min(start, stop)
-    
-        # That's all folks!
-        return start, stop
-
-    
-class StreamBackedCorpusView(AbstractCorpusView):
+class StreamBackedCorpusView(AbstractLazySequence):
     """
     A 'view' of a corpus file, which acts like a sequence of tokens:
     it can be accessed by index, iterated over, etc.  However, the
@@ -274,6 +139,20 @@ class StreamBackedCorpusView(AbstractCorpusView):
         self._filename = filename
         self._stream = None
 
+        self._current_toknum = None
+        """This variable is set to the index of the next token that
+           will be read, immediately before L{self.read_block()} is
+           called.  This is provided for the benefit of the block
+           reader, which under rare circumstances may need to know
+           the current token number."""
+        
+        self._current_blocknum = None
+        """This variable is set to the index of the next block that
+           will be read, immediately before L{self.read_block()} is
+           called.  This is provided for the benefit of the block
+           reader, which under rare circumstances may need to know
+           the current block number."""
+        
         # Find the length of the file.  This also checks that the file
         # exists and is readable & seekable.
         try:
@@ -331,7 +210,7 @@ class StreamBackedCorpusView(AbstractCorpusView):
             if offset <= start and stop < self._cache[1]:
                 return self._cache[2][start-offset:stop-offset]
             # Construct & return the result.
-            return CorpusViewSlice(self, start, stop)
+            return LazySubsequence(self, start, stop)
         else:
             # Handle negative indices
             if i < 0: i += len(self)
@@ -357,6 +236,7 @@ class StreamBackedCorpusView(AbstractCorpusView):
             toknum = self._toknum[block_index]
             filepos = self._filepos[block_index]
         else:
+            block_index = len(self._toknum)-1
             toknum = self._toknum[-1]
             filepos = self._filepos[-1]
 
@@ -373,6 +253,8 @@ class StreamBackedCorpusView(AbstractCorpusView):
         while True:
             # Read the next block.
             self._stream.seek(filepos)
+            self._current_toknum = toknum
+            self._current_blocknum = block_index
             tokens = self.read_block(self._stream)
             assert isinstance(tokens, (tuple, list)), \
                    'block reader should return list or tuple.'
@@ -385,13 +267,13 @@ class StreamBackedCorpusView(AbstractCorpusView):
             # Update our mapping.
             assert toknum <= self._toknum[-1]
             if num_toks > 0:
+                block_index += 1
                 if toknum == self._toknum[-1]:
                     assert new_filepos > self._filepos[-1] # monotonic!
                     self._filepos.append(new_filepos)
                     self._toknum.append(toknum+num_toks)
                 else:
                     # Check for consistency:
-                    block_index += 1
                     assert new_filepos == self._filepos[block_index], (
                         'inconsistent block reader (num chars read)')
                     assert toknum+num_toks == self._toknum[block_index], (
@@ -411,41 +293,18 @@ class StreamBackedCorpusView(AbstractCorpusView):
             toknum += num_toks
             filepos = new_filepos
 
-class CorpusViewSlice(AbstractCorpusView):
-    MIN_SIZE = 100
-    
-    def __new__(cls, source, start, stop):
-        "We assume that negative bounds etc have been handled already."
-        # If the slice is small enough, just use a tuple.
-        if stop-start < cls.MIN_SIZE:
-            return list(islice(source.iterate_from(start), stop-start))
-        else:
-            return object.__new__(cls, source, start, stop)
-        
-    def __init__(self, source, start, stop):
-        self._source = source
-        self._start = start
-        self._stop = stop
+    # Use concat for these, so we can use a ConcatenatedCorpusView
+    # when possible.
+    def __add__(self, other):
+        return concat([self, other])
+    def __radd__(self, other):
+        return concat([other, self])
+    def __mul__(self, count):
+        return concat([self] * count)
+    def __rmul__(self, count):
+        return concat([self] * count)
 
-    def __len__(self):
-        return self._stop - self._start
-
-    def iterate_from(self, start):
-        return islice(self._source.iterate_from(start+self._start), len(self))
-
-    def __getitem__(self, i):
-        if isinstance(i, slice):
-            start, stop = self._slice_bounds(i)
-            return CorpusViewSlice(self, start, stop)
-        else:
-            # Handle out-of-bound indices.
-            if i < 0: i += len(self)
-            if (i < 0) or (i >= len(self)):
-                raise IndexError('index out of range')
-            # Get the value.
-            return self._source[self._start + i]
-    
-class ConcatenatedCorpusView(AbstractCorpusView):
+class ConcatenatedCorpusView(AbstractLazySequence):
     """
     A 'view' of a corpus file that joins together one or more
     L{StreamBackedCorpusViews<StreamBackedCorpusView>}.  At most
@@ -471,33 +330,6 @@ class ConcatenatedCorpusView(AbstractCorpusView):
             for tok in self.iterate_from(self._offsets[-1]): pass
             
         return self._offsets[-1]
-
-    def __getitem__(self, i):
-        if isinstance(i, slice):
-            start, stop = self._slice_bounds(i)
-            # Check if it's within a single view -- then we might be
-            # able to use that view's cache.
-            piecenum = bisect.bisect_right(self._offsets, start)-1
-            if ((piecenum+1) < len(self._offsets) and
-                stop < self._offsets[piecenum+1]):
-                offset = self._offsets[piecenum]
-                return self._pieces[piecenum][start-offset:stop-offset]
-            
-            # Otherwise, just use a slice over self:
-            else:
-                return CorpusViewSlice(self, start, stop)
-        else:
-            # Handle negative indices
-            if i < 0: i += len(self)
-            if i < 0: raise IndexError('index out of range')
-            # Use iterate_from to extract it.
-            try:
-                return self.iterate_from(i).next()
-            except StopIteration:
-                raise IndexError('index out of range')
-
-    def __iter__(self):
-        return self.iterate_from(0)
 
     def close(self):
         for piece in self._pieces:
@@ -547,10 +379,18 @@ def concat(docs):
 
     # If they're all corpus views, then use ConcatenatedCorpusView.
     for typ in types:
-        if not issubclass(typ, AbstractCorpusView):
+        if not issubclass(typ, (StreamBackedCorpusView,
+                                ConcatenatedCorpusView)):
             break
     else:
         return ConcatenatedCorpusView(docs)
+
+    # If they're all lazy sequences, use a lazy concatenation
+    for typ in types:
+        if not issubclass(typ, AbstractLazySequence):
+            break
+    else:
+        return LazyConcatenation(docs)
 
     # Otherwise, see what we can do:
     if len(types) == 1:
