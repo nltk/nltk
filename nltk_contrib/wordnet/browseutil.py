@@ -1119,7 +1119,6 @@ def get_static_upper_page(with_shutdown):
 			<input name="searchButton" type="submit" value="Search">
 	</form>
         <a target="body" href="web_help.html">Help</a>
-        <a target="body" href="NLTK Wordnet Browser Database Info.html">Show Database Info</a>
         %s
 
 </body>
