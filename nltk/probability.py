@@ -38,6 +38,8 @@ L{ConditionalProbDist}, a derived distribution.
 
 import types
 import math
+import random
+import warnings
 
 ##//////////////////////////////////////////////////////
 ##  Frequency Distributions
@@ -288,6 +290,10 @@ class ProbDistI(object):
     used to model the probability distribution of the experiment used
     to generate a frequency distribution.
     """
+    SUM_TO_ONE = True
+    """True if the probabilities of the samples in this probability
+       distribution will always sum to one."""
+    
     def __init__(self):
         if self.__class__ == ProbDistI:
             raise AssertionError, "Interfaces can't be instantiated"
@@ -339,6 +345,27 @@ class ProbDistI(object):
         @rtype: C{list}
         """
         raise AssertionError()
+
+    # Subclasses shuld define more efficient implementations of this,
+    # where possible.
+    def generate(self):
+        """
+        @return: A randomly selected sample from this probabilitiy
+            distribution.  The probability of returning each sample
+            C{samp} is equal to C{self.prob(samp)}.
+        """
+        p = random.random()
+        for sample in self.samples():
+            p -= self.prob(sample)
+            if p <= 0: return sample
+        # allow for some rounding error:
+        if p < .0001:
+            return sample
+        # we *should* never get here
+        if self.SUM_TO_ONE:
+            warnings.warn("Probability distribution %r sums to %r; generate()"
+                          " is returning an arbitrary sample." % (self, 1-p))
+        return random.choice(list(self.samples()))
 
 class UniformProbDist(ProbDistI):
     """
@@ -493,6 +520,7 @@ class LidstoneProbDist(ProbDistI):
     M{gamma} to the count for each bin, and taking the maximum
     likelihood estimate of the resulting frequency distribution.
     """
+    SUM_TO_ONE = False
     def __init__(self, freqdist, gamma, bins=None):
         """
         Use the Lidstone estimate to create a probability distribution
@@ -668,6 +696,7 @@ class HeldoutProbDist(ProbDistI):
        in the base distribution.  C{_max_r} is used to decide how
        large C{_estimate} must be.
     """
+    SUM_TO_ONE = False
     def __init__(self, base_fdist, heldout_fdist, bins=None):
         """
         Use the heldout estimate to create a probability distribution
@@ -756,6 +785,9 @@ class HeldoutProbDist(ProbDistI):
         """        
         return self._heldout_fdist
     
+    def samples(self):
+        return self._base_fdist.keys()
+
     def prob(self, sample):
         # Use our precomputed probability estimate.
         r = self._base_fdist[sample]
@@ -783,6 +815,7 @@ class CrossValidationProbDist(ProbDistI):
     is found by averaging the held-out estimates for the sample in
     each pair of frequency distributions.
     """
+    SUM_TO_ONE = False
     def __init__(self, freqdists, bins):
         """
         Use the cross-validation estimate to create a probability
@@ -817,6 +850,10 @@ class CrossValidationProbDist(ProbDistI):
             C{ProbDist} is based on.
         """
         return self._freqdists
+
+    def samples(self):
+        # [xx] nb: this is not too efficient
+        return set(sum([fd.keys() for fd in self._freqdists], []))
 
     def prob(self, sample):
         # Find the average probability estimate returned by each
@@ -1571,12 +1608,18 @@ def demo(numsamples=6, numoutcomes=500):
     FORMATSTR = 'Total ' + '%8.6f '*(len(pdists)) + '| %8.6f'
     print  FORMATSTR % tuple(sums)
     print '='*9*(len(pdists)+2)
-    
+
     # Display the distributions themselves, if they're short enough.
     if len(`str(fdist1)`) < 70:
         print '  fdist1:', str(fdist1)
         print '  fdist2:', str(fdist2)
         print '  fdist3:', str(fdist3)
+    print
+
+    print 'Generating:'
+    for pdist in pdists:
+        fdist = FreqDist(pdist.generate() for i in range(5000))
+        print '%20s %s' % (pdist.__class__.__name__[:20], str(fdist)[:55])
     print
 
 if __name__ == '__main__':
