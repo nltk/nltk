@@ -9,7 +9,7 @@ Test for equality under alpha-conversion.
     >>> e1 = lp.parse('exists x.P(x)')
     >>> print e1
     exists x.P(x)
-    >>> e2 = e1.alpha_convert(VariableExpression('z'))
+    >>> e2 = e1.alpha_convert(Variable('z'))
     >>> print e2
     exists z.P(z)
     >>> e1 == e2
@@ -251,6 +251,8 @@ Test Parser
         >>> b = lp.parse(r'exists c.((exists b.A(b,c)) & A(b,c))')
         >>> print a == b
         True
+        >>> lp.parse(r'exists x.x = y') == lp.parse(r'exists x.(x = y)')
+        True
 
 Simplify            
 
@@ -294,43 +296,43 @@ Replace
         >>> y = lp.parse(r'y')
         >>> z = lp.parse(r'z')
 
-        >>> print lp.parse(r'man(x)').replace(x, a, False)
+        >>> print lp.parse(r'man(x)').replace(x.variable, a, False)
         man(a)
-        >>> print lp.parse(r'(man(x) & tall(x))').replace(x, a, False)
+        >>> print lp.parse(r'(man(x) & tall(x))').replace(x.variable, a, False)
         (man(a) & tall(a))
-        >>> print lp.parse(r'exists x.man(x)').replace(x, a, False)
+        >>> print lp.parse(r'exists x.man(x)').replace(x.variable, a, False)
         exists x.man(x)
-        >>> print lp.parse(r'exists x.man(x)').replace(x, a, True)
+        >>> print lp.parse(r'exists x.man(x)').replace(x.variable, a, True)
         exists a.man(a)
-        >>> print lp.parse(r'exists x.give(x,y,z)').replace(y, a, False)
+        >>> print lp.parse(r'exists x.give(x,y,z)').replace(y.variable, a, False)
         exists x.give(x,a,z)
-        >>> print lp.parse(r'exists x.give(x,y,z)').replace(y, a, True)
+        >>> print lp.parse(r'exists x.give(x,y,z)').replace(y.variable, a, True)
         exists x.give(x,a,z)
-        >>> e1 = lp.parse(r'exists x.give(x,y,z)').replace(y, x, False)
+        >>> e1 = lp.parse(r'exists x.give(x,y,z)').replace(y.variable, x, False)
         >>> e2 = lp.parse(r'exists z1.give(z1,x,z)')
         >>> e1 == e2
         True
-        >>> e1 = lp.parse(r'exists x.give(x,y,z)').replace(y, x, True)
+        >>> e1 = lp.parse(r'exists x.give(x,y,z)').replace(y.variable, x, True)
         >>> e2 = lp.parse(r'exists z1.give(z1,x,z)')
         >>> e1 == e2
         True
-        >>> print lp.parse(r'\x y z.give(x,y,z)').replace(y, a, False)
+        >>> print lp.parse(r'\x y z.give(x,y,z)').replace(y.variable, a, False)
         \x.\y.\z.give(x,y,z)
-        >>> print lp.parse(r'\x y z.give(x,y,z)').replace(y, a, True)
+        >>> print lp.parse(r'\x y z.give(x,y,z)').replace(y.variable, a, True)
         \x.\a.\z.give(x,a,z)
-        >>> print lp.parse(r'\x.\y.give(x,y,z)').replace(z, a, False)
+        >>> print lp.parse(r'\x.\y.give(x,y,z)').replace(z.variable, a, False)
         \x.\y.give(x,y,a)
-        >>> print lp.parse(r'\x.\y.give(x,y,z)').replace(z, a, True)
+        >>> print lp.parse(r'\x.\y.give(x,y,z)').replace(z.variable, a, True)
         \x.\y.give(x,y,a)
-        >>> e1 = lp.parse(r'\x.\y.give(x,y,z)').replace(z, x, False)
+        >>> e1 = lp.parse(r'\x.\y.give(x,y,z)').replace(z.variable, x, False)
         >>> e2 = lp.parse(r'\z1.\y.give(z1,y,x)')
         >>> e1 == e2
         True
-        >>> e1 = lp.parse(r'\x.\y.give(x,y,z)').replace(z, x, True)
+        >>> e1 = lp.parse(r'\x.\y.give(x,y,z)').replace(z.variable, x, True)
         >>> e2 = lp.parse(r'\z1.\y.give(z1,y,x)')
         >>> e1 == e2
         True
-        >>> print lp.parse(r'\x.give(x,y,z)').replace(z, y, False)
+        >>> print lp.parse(r'\x.give(x,y,z)').replace(z.variable, y, False)
         \x.give(x,y,y)
-        >>> print lp.parse(r'\x.give(x,y,z)').replace(z, y, True)
+        >>> print lp.parse(r'\x.give(x,y,z)').replace(z.variable, y, True)
         \x.give(x,y,y)

@@ -371,7 +371,7 @@ class Assignment(dict):
                "%s is not in the domain %s" % (val, self.domain)
         assert isinstance(var, IndividualVariableExpression),\
                "Wrong format for an Individual Variable: '%s'" % var
-        self[var.name] = val
+        self[var.variable.name] = val
         self._addvariant()
         return self
 
@@ -548,7 +548,8 @@ class Model(object):
         elif isinstance(parsed, LambdaExpression):
             cf = CharFun()
             for u in self.domain:
-                val = self.satisfy(parsed.term, g.add(u, parsed.variable))
+                varex = self.make_VariableExpression(parsed.variable)
+                val = self.satisfy(parsed.term, g.add(u, varex))
                 # the dict is a lot smaller if we do this:
                 # if val: cf[u] = val
                 cf[u] = val
@@ -575,10 +576,10 @@ class Model(object):
         # If parsed is a propositional letter 'p', 'q', etc, it could be in valuation.symbols 
         # and also be an IndividualVariableExpression. We want to catch this first case.
         # So there is a procedural consequence to the ordering of clauses here:
-        if parsed.name in self.valuation.symbols:
-            return self.valuation[parsed.name]
+        if parsed.variable.name in self.valuation.symbols:
+            return self.valuation[parsed.variable.name]
         elif isinstance(parsed, IndividualVariableExpression):
-            return g[parsed.name]
+            return g[parsed.variable.name]
 
         else:
             raise Undefined, "Can't find a value for %s" % parsed
@@ -616,7 +617,7 @@ class Model(object):
                 print (spacer * nesting) + "Open formula is '%s' with assignment %s" % (parsed, g)
             for u in self.domain:
                 new_g = g.copy()
-                new_g.add(u, var)
+                new_g.add(u, self.make_VariableExpression(var))
                 if trace > 1:
                     lowtrace = trace-1
                 else:
@@ -645,6 +646,12 @@ class Model(object):
 
         return result
 
+
+    def make_VariableExpression(self, variable):
+        if is_indvar(variable.name):
+            return IndividualVariableExpression(variable)
+        else:
+            return VariableExpression(variable)
 
         
 #//////////////////////////////////////////////////////////////////////
@@ -802,7 +809,7 @@ def satdemo(trace=None):
         
     parsed = [lp.parse(fmla) for fmla in formulas]
     
-    var = IndividualVariableExpression('x')
+    var = Variable('x')
     for p in parsed:
         g2.purge()
         print "The satisfiers of '%s' are: %s" % (p, m2.satisfiers(p, var, g2, trace))
