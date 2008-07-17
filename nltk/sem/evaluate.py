@@ -7,20 +7,33 @@
 #
 # $Id$
 
+#TODO:
+    #- fix tracing
+    #- fix iterator-based approach to existentials
+    
+    
 """
 This module provides data structures for representing first-order
 models. 
 """
-
-#from logic import LogicParser, Variable, is_indvar
+from pprint import pformat
+import inspect
+from nltk.decorator import decorator
+from nltk.internals import deprecated
 
 from logic import *
-from pprint import pformat
+
 
 class Error(Exception): pass
 
 class Undefined(Error): pass
 
+def trace_eval(f, *args, **kw):
+    argspec = inspect.getargspec(f)
+    d = dict(zip(argspec[0], args))
+    for i in d.items():
+        print "%s => %s" % i
+        
 class CharFun(dict):
     """
     A dictionary which represents a curryed characteristic function.
@@ -120,26 +133,35 @@ class CharFun(dict):
     domain = property(_getDomain, doc='Set-theoretic domain of a curried function')
 
 def isrel(s):
+    """
+    Check whether a set represents a relation (of any arity).
+
+    @param s: a set containing C{tuple}s of C{str} elements
+    @type s: C{set}
+    @rtype: C{bool}
         """
-        Check whether a set represents a relation (of any arity).
-        
-        @param s: a set containing tuples
-        @type s: set
-        """
-        # we have the empty relation set()
-        if len(s) == 0:
-            return True
-        # the longest element of the set is not a tuple, i.e., it's just a set of strings or ints
-        #elif not isinstance(max(s),tuple):
-            #return True
-        # all the elements are tuples of the same length
-        # TODO deal with case where s contains an int
-        elif len(max(s))==len(min(s)):
-                return True
-        else:
-            raise ValueError, "Set %r contains sequences of different lengths" % s
+    # we have the empty relation, i.e. set()
+    if len(s) == 0:
+        return True
+    # all the elements are tuples of the same length
+    elif len(max(s))==len(min(s)):
+        return True
+    else:
+        raise ValueError, "Set %r contains sequences of different lengths" % s
 
 def inds2tuples(s):
+    """
+    Convert a set containing individuals (strings or numbers) into a set of 
+    unary tuples. Any tuples of strings already in the set are passed through 
+    unchanged.
+    
+    For example:
+      - set(['a', 'b']) => set([('a',), ('b',)])
+      - set([3, 27]) => set([('3',), ('27',)])
+      
+    @type s: C{set}
+    @rtype: C{set} of C{tuple} of C{str}
+    """
     new = set()
     for elem in s:
         if isinstance(elem, str):
@@ -150,71 +172,22 @@ def inds2tuples(s):
             new.add(elem)
     return new   
 
-        
-#class Rel(set):
-    #"""
-    #Set--theoretical treatment of relations as a set of tuples of the same length.
-     #"""
- 
-    #def __init__(self, iter):
-        #set.__init__(self, iter)
-        #new = inds2tuples(self)
-        #assert isrel(new)
-        #self = new
-        
-    #def __str__(self):
-        #return "{%s}" % ', '.join(map(str, self))
-        
-#def flatten(d):
-    #"""
-    #@return: The set of keys of a L{CharFun} instance.
-    #@rtype: set
-    #@type d: dict
-    #"""
-    #flat = []
-    #try:
-        #flat.extend(d.keys())
-        #for v in d.values():
-            #if isinstance(v, dict):
-                #flat.extend(flatten(v))
-            #else:
-                #flat.append(v)
-    #except AttributeError:
-        #flat.append(d)
-    #result = set(flat)
-    #result.discard(True)
-    #return result
-
-
-
-def depth(cf):
-    """
-    Calculate the depth of a L{CharFun}.
-
-    @rtype: C{int}
-    @type cf: L{CharFun}
-    """
-    if True in cf.values():
-        return 1
-    else:
-        key = cf.keys()[0]
-        return 1+depth(cf[key])
-    
 
 class Valuation(dict):
     """
     A dictionary which represents a model-theoretic Valuation of non-logical constants.
+    Keys are strings representing the constants to be interpreted, and values correspond 
+    to individuals (represented as strings) and n-ary relations (represented as sets of tuples
+    of strings).
 
-    An attempt to initialize a L{Valuation} with an individual
-    variable expression (e.g., 'x3') will raise an error, as will an
-    attemp to read a list containing an individual variable
-    expression.
-    
     An instance of L{Valuation} will raise a KeyError exception (i.e.,
     just behave like a standard  dictionary) if indexed with an expression that
     is not in its list of symbols.
     """
     def __init__(self, iter):
+        """
+        @param iter: a C{list} of (symbol, value) pairs.
+        """
         dict.__init__(self)
         for (sym, val) in iter:
             if isinstance(val, str) or isinstance(val, bool):
@@ -222,50 +195,22 @@ class Valuation(dict):
             elif isinstance(val, set):
                 self[sym] = inds2tuples(val)
 
-        #if valuation:
-            #for k in valuation.keys():
-                ##if is_indvar(k):
-                    ##raise Error, "This looks like an individual variable: '%s'" % k
-                ## Check if the valuation is of the form {'p': True}
-                #if isinstance(valuation[k], bool):
-                    #self[k] = valuation[k]
-                #else:
-                    #try:
-                        #cf = CharFun(valuation[k])
-                        #self[k] = cf
-                    #except (TypeError, ValueError):
-                        #self[k] = valuation[k]
-
     def __getitem__(self, key):
         if key in self:
             return dict.__getitem__(self, key)
         else:
             raise Undefined,  "Unknown expression: '%s'" % key
-                    
-    #def read(self, seq):
-        #"""
-        #Parse a list such as  C{[('j', 'b1'), ('girl', set(['g1', 'g2']))]} into a L{Valuation}.
-        #@rtype: L{Valuation}
-        #@param seq: A list of tuples of the form (I{constant}, I{relation}), where I{relation} is a set of tuples.
-        #"""
-        #d = dict(seq)
-        ## Each sym is a non-logical constant
-        #for sym in d:
-            ##if is_indvar(k):
-                ##raise Error, "This looks like an individual variable: '%s'" % k
-            #val = d[sym]
-            ## Does val represent an individual?
-            #if isinstance(val, str):
-                #pass
-            #else:
-                #cf = CharFun()
-                #cf.read(d[k])        
-                #d[k] = cf
-        #self.update(d)
 
+    #def __str__(self):
+        #return "{%s}" % ', '.join(map(str, self))
+
+    @deprecated("Call the valuation as an initialization parameter instead")        
+    def read(self, seq):
+        self.update(seq)
+ 
     def __str__(self):
         return pformat(self)
-        
+
     def _getDomain(self):
         dom = []
         for val in self.values():
@@ -296,11 +241,17 @@ class Assignment(dict):
     valuation assigns an interpretation to M{a} as a constant, and if
     this fails, M{i} will delegate the interpretation of M{a} to
     M{g}. M{g} only assigns values to individual variables (i.e.,
-    members of the class L{IndVariableExpression} in the L{logic}
+    members of the class L{IndividualVariableExpression} in the L{logic}
     module. If a variable is not assigned a value by M{g}, it will raise
     an C{Undefined} exception.
     """
     def __init__(self, domain, assignment=None):
+        """
+        @param domain: the domain of discourse
+        @type domain: C{set}
+        @param assignment: a map from variable names to values
+        @type domain: C{dict}
+        """
         dict.__init__(self)
         self.domain = domain
         if assignment:
@@ -402,46 +353,14 @@ class Model(object):
         if prop is None:
             if not domain.issuperset(valuation.domain):
                 raise Error,\
-                "The valuation domain, %s, must be a subset of the model's domain, %s"\
-                % (valuation.domain, domain)
+                      "The valuation domain, %s, must be a subset of the model's domain, %s"\
+                      % (valuation.domain, domain)
 
-        
     def __repr__(self):
         return "(%r, %r)" % (self.domain, self.valuation)
 
     def __str__(self):
         return "Domain = %s,\nValuation = \n%s" % (self.domain, self.valuation)
-
-    def app(self, fun, arg):
-        """
-        Wrapper for handling KeyErrors and TypeErrors raised by
-        function application.
-        
-        This constrains instances of L{CharFun} to return C{False} in
-        the right circumstances.
-
-        @param fun: an instance of L{CharFun}.
-        @param arg: an arbitrary semantic object
-        @return: If C{arg} is in C{fun}'s domain, then returns C{fun[arg]},\
-                 else if C{arg} is in C{self.domain}, returns C{False},\
-                 else raises C{Undefined} error.
-        """
-        
-        try:
-            return fun[arg]
-        except KeyError:
-            if arg in self.domain:
-                return False
-            else:
-                raise Undefined,\
-                      "%s can't be applied as a function to '%s'" % (fun, arg)
-        except TypeError:
-            if fun == False:
-                return False
-            else:
-                raise Undefined,\
-                      "%s can't be applied as a function to %s" % (fun, arg)
-            
 
     # Interpretations for the binary boolean operators
     #############################
@@ -485,15 +404,15 @@ class Model(object):
 
     def evaluate(self, expr, g, trace=None):
         """
-        Provides a handler for L{satisfy}
-        that blocks further propagation of C{Undefined} error.
+        Call the L{LogicParser} to parse input expressions, and
+        provide a handler for L{satisfy}
+        that blocks further propagation of the C{Undefined} error.
         @param expr: An C{Expression} of L{logic}.
         @type g: L{Assignment}
         @param g: an assignment to individual variables.
         @rtype: C{bool} or 'Undefined'
         """
         try:
-            #lp = LogicParser(constants=self.valuation.symbols)
             lp = LogicParser()
             parsed = lp.parse(expr)
             value = self.satisfy(parsed, g, trace=trace)
@@ -529,8 +448,8 @@ class Model(object):
         if isinstance(parsed, ApplicationExpression):
             argvals = tuple([self.satisfy(arg, g) for arg in parsed.args])
             funval = self.satisfy(parsed.function, g)
-            # the function is a LambdaExpression
-            if isinstance(funval, CharFun):
+            # the function is a LambdaExpression, interpreted as dictionary
+            if isinstance(funval, dict):
                 return funval[argvals[0]]
             # the function is an n-ary relation
             else:
@@ -546,17 +465,20 @@ class Model(object):
             satisfiers = self.satisfiers(parsed.term, parsed.variable, g)
             return self.EXISTS(satisfiers)
         elif isinstance(parsed, LambdaExpression):
-            cf = CharFun()
+            cf = {}
             for u in self.domain:
                 varex = self.make_VariableExpression(parsed.variable)
                 val = self.satisfy(parsed.term, g.add(u, varex))
-                # the dict is a lot smaller if we do this:
+                # NB the dict would be a lot smaller if we do this:
                 # if val: cf[u] = val
+                # But then need to deal with cases where f(a) should yield
+                # a function rather than just False.
                 cf[u] = val
             return cf
         else:
             return self.i(parsed, g, trace)
 
+    #@decorator(trace_eval)   
     def i(self, parsed, g, trace=False):
         """
         An interpretation function.
@@ -567,7 +489,6 @@ class Model(object):
          - else if C{expr} is an individual variable, calls assignment M{g}
          - else returns C{Undefined}.
 
-        
         @param expr: an C{Expression} of L{logic}.
         @type g: L{Assignment}
         @param g: an assignment to individual variables.
@@ -732,7 +653,9 @@ def folmodel(trace=None):
                 print "The interpretation of '%s' in m2 is Undefined" % p
     
 def foldemo(trace=None):
-    """Interpretation of closed expressions in a first-order model."""
+    """
+    Interpretation of closed expressions in a first-order model.
+    """
     folmodel()
 
     print
