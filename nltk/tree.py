@@ -243,6 +243,47 @@ class Tree(list):
                 pos.append((child, self.node))
         return pos
 
+    def leaf_treeposition(self, index):
+        """
+        @return: The tree position of the C{index}-th leaf in this
+            tree.  I.e., if C{tp=self.leaf_treeposition(i)}, then
+            C{self[tp]==self.leaves()[i]}.
+        
+        @raise IndexError: If this tree contains fewer than C{index+1}
+            leaves, or if C{index<0}.
+        """
+        if index < 0: raise IndexError('index must be non-negative')
+
+        stack = [(self, ())]
+        while stack:
+            value, treepos = stack.pop()
+            if not isinstance(value, Tree):
+                if index == 0: return treepos
+                else: index -= 1
+            else:
+                for i in range(len(value)-1, -1, -1):
+                    stack.append( (value[i], treepos+(i,)) )
+
+        raise IndexError('index must be less than or equal to len(self)')
+
+    def treeposition_spanning_leaves(self, start, end):
+        """
+        @return: The tree position of the lowest descendant of this
+            tree that dominates C{self.leaves()[start:end]}.
+        @raise ValueError: if C{end <= start}
+        """
+        if end <= start:
+            raise ValueError('end must be greater than start')
+        # Find the tree positions of the start & end leaves, and
+        # take the longest common subsequence.
+        start_treepos = self.leaf_treeposition(start)
+        end_treepos = self.leaf_treeposition(end-1)
+        # Find the first index where they mismatch:
+        for i in range(len(start_treepos)):
+            if i == len(end_treepos) or start_treepos[i] != end_treepos[i]:
+                return start_treepos[:i]
+        return start_treepos
+
     #////////////////////////////////////////////////////////////
     # Transforms
     #////////////////////////////////////////////////////////////
