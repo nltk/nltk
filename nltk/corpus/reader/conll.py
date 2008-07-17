@@ -10,12 +10,13 @@
 Read CoNLL-style chunk files.
 """       
 
-from util import *
-from api import *
+from nltk.corpus.reader.util import *
+from nltk.corpus.reader.api import *
 from nltk import chunk, tree, bracket_parse
 import os, codecs
 from nltk.internals import deprecated
 from nltk import Tree, LazyMap, LazyConcatenation
+import textwrap
 
 class ConllCorpusReader(CorpusReader):
     """
@@ -60,7 +61,7 @@ class ConllCorpusReader(CorpusReader):
     
     def __init__(self, root, files, columntypes,
                  chunk_types=None, top_node='S', pos_in_tree=False,
-                 encoding=None):
+                 srl_includes_roleset=True, encoding=None):
         for columntype in columntypes:
             if columntype not in self.COLUMN_TYPES:
                 raise ValueError('Bad colum type %r' % columntyp)
@@ -68,7 +69,8 @@ class ConllCorpusReader(CorpusReader):
         self._chunk_types = chunk_types
         self._colmap = dict((c,i) for (i,c) in enumerate(columntypes))
         self._pos_in_tree = pos_in_tree
-        self._top_node = 'S' # for chunks
+        self._top_node = top_node # for chunks
+        self._srl_includes_roleset = srl_includes_roleset
         CorpusReader.__init__(self, root, files, encoding)
 
     #/////////////////////////////////////////////////////////////////
@@ -115,10 +117,15 @@ class ConllCorpusReader(CorpusReader):
         self._require(self.WORDS, self.POS, self.TREE)
         return LazyMap(self._get_parsed_sent, self._grids(files))
 
-    def srl_spans(self, files=None, pos_in_tree=False):
+    def srl_spans(self, files=None):
         self._require(self.SRL)
-        if pos_in_tree is False: pos_in_tree = self._pos_in_tree
         return LazyMap(self._get_srl_spans, self._grids(files))
+
+    def srl_instances(self, files=None, pos_in_tree=False, flatten=True):
+        self._require(self.WORDS, self.POS, self.TREE, self.SRL)
+        result = LazyMap(self._get_srl_instances, self._grids(files))
+        if flatten: result = LazyConcatenation(result)
+        return result
 
     def iob_words(self, files=None):
         """
@@ -234,6 +241,10 @@ class ConllCorpusReader(CorpusReader):
         
         treestr = ''
         for (word, pos_tag, parse_tag) in zip(words, pos_tags, parse_tags):
+            if word == '(': word = '-LRB-'
+            if word == ')': word = '-RRB-'
+            if pos_tag == '(': pos_tag = '-LRB-'
+            if pos_tag == ')': pos_tag = '-RRB-'
             (left, right) = parse_tag.split('*')
             right = right.count(')')*')' # only keep ')'.
             treestr += '%s (%s %s) %s' % (left, pos_tag, word, right)
@@ -253,14 +264,22 @@ class ConllCorpusReader(CorpusReader):
 
     def _get_srl_spans(self, grid):
         """
-        list of list of (tag, start, end) tuples.
+        list of list of (start, end), tag) tuples
         """
-        predicates = self._get_column(grid, self._colmap['srl'])
+        if self._srl_includes_roleset:
+            predicates = self._get_column(grid, self._colmap['srl']+1)
+            start_col = self._colmap['srl']+2
+        else:
+            predicates = self._get_column(grid, self._colmap['srl'])
+            start_col = self._colmap['srl']+1
+            
+        # Count how many predicates there are.  This tells us how many
+        # columns to expect for SRL data.
         num_preds = len([p for p in predicates if p != '-'])
-
+        
         spanlists = []
         for i in range(num_preds):
-            col = self._get_column(grid, self._colmap['srl']+1+i)
+            col = self._get_column(grid, start_col+i)
             spanlist = []
             stack = []
             for wordnum, srl_tag in enumerate(col):
@@ -270,10 +289,38 @@ class ConllCorpusReader(CorpusReader):
                         stack.append((tag, wordnum))
                 for i in range(right.count(')')):
                     (tag, start) = stack.pop()
-                    spanlist.append( (tag, start, wordnum+1) )
+                    spanlist.append( ((start, wordnum+1), tag) )
             spanlists.append(spanlist)
 
         return spanlists
+
+    def _get_srl_instances(self, grid):
+        tree = self._get_parsed_sent(grid)
+        spanlists = self._get_srl_spans(grid)
+        if self._srl_includes_roleset:
+            predicates = self._get_column(grid, self._colmap['srl']+1)
+            rolesets = self._get_column(grid, self._colmap['srl'])
+        else:
+            predicates = self._get_column(grid, self._colmap['srl'])
+            rolesets = [None] * len(predicates)
+
+        instances = []
+        for wordnum, predicate in enumerate(predicates):
+            if predicate == '-': continue
+            # Decide which spanlist to use.  Don't assume that they're
+            # sorted in the same order as the predicates (even though
+            # they usually are).
+            for spanlist in spanlists:
+                for (start, end), tag in spanlist:
+                    if start == wordnum and tag in ('V', 'C-V'): break
+                else: continue
+                break
+            else:
+                raise ValueError('No srl column found for %r' % predicate)
+            instances.append(ConllSRLInstance(tree, wordnum, predicate,
+                                              rolesets[wordnum], spanlist))
+
+        return instances
 
     #/////////////////////////////////////////////////////////////////
     # Helper Methods
@@ -311,7 +358,74 @@ class ConllCorpusReader(CorpusReader):
     def tagged(self, items):
         return self.tagged_words(items)
     #}
+
+class ConllSRLInstance(object):
+    """
+    An SRL instance from a CoNLL corpus, which identifies and
+    providing labels for the arguments of a single verb.
+    """
+    # [xx] add inst.core_arguments, inst.argm_arguments?
     
+    def __init__(self, tree, verb_head, verb_stem, roleset, tagged_spans):
+        self.verb = []
+        """A list of the word indices of the words that compose the
+           verb whose arguments are identified by this instance.
+           This will contain multiple word indices when multi-word
+           verbs are used (e.g. 'turn on')."""
+
+        self.verb_head = verb_head
+        """The word index of the head word of the verb whose arguments
+           are identified by this instance.  E.g., for a sentence that
+           uses the verb 'turn on,' C{verb_head} will be the word index
+           of the word 'turn'."""
+
+        self.verb_stem = verb_stem
+
+        self.roleset = roleset
+        
+        self.arguments = []
+        """A list of C{(argspan, argid)} tuples, specifying the location
+           and type for each of the arguments identified by this
+           instance.  C{argspan} is a tuple C{start, end}, indicating
+           that the argument consists of the C{words[start:end]}."""
+
+        self.tagged_spans = tagged_spans
+        """A list of C{(span, id)} tuples, specifying the location and
+           type for each of the arguments, as well as the verb pieces,
+           that make up this instance."""
+        
+        self.tree = tree
+        """The parse tree for the sentence containing this instance."""
+
+        self.words = tree.leaves()
+        """A list of the words in the sentence containing this
+           instance."""
+
+        # Fill in the self.verb and self.arguments values.
+        for (start, end), tag in tagged_spans:
+            if tag in ('V', 'C-V'):
+                self.verb += range(start, end)
+            else:
+                self.arguments.append( ((start, end), tag) )
+
+    def __repr__(self):
+        plural = len(self.arguments)!=1 and 's' or ''
+        return '<ConllSRLInstance for %r with %d argument%s>' % (
+            (self.verb_stem, len(self.arguments), plural))
+
+    def pprint(self):
+        verbstr = ' '.join(self.words[i][0] for i in self.verb)
+        hdr = 'SRL for %r (stem=%r):\n' % (verbstr, self.verb_stem)
+        s = ''
+        for i, (word, pos) in enumerate(self.words):
+            for (start, end), argid in self.arguments:
+                if i == start: s += '[%s ' % argid
+                if i == end: s += '] '
+            if i in self.verb: word = '<<%s>>' % word
+            s += word + ' '
+        return hdr + textwrap.fill(s.replace(' ]', ']'),
+                                   initial_indent='    ',
+                                   subsequent_indent='    ')
 
 class ConllChunkCorpusReader(ConllCorpusReader):
     """
