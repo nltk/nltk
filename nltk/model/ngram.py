@@ -5,6 +5,8 @@
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
+import random
+
 from nltk.probability import ConditionalProbDist, ConditionalFreqDist, MLEProbDist
 
 from api import *
@@ -18,12 +20,15 @@ class NgramModel(ModelI):
         '''Create a new language model.'''
 
         self._n = n
+        self._candidate_set_size = 10
+        self._vocab = set()  # discard hapax legomena?
 
         fd = ConditionalFreqDist()
         for sentence in train:
             for index, token in enumerate(sentence):
                 context = self.context(sentence, index)
                 fd[context].inc(token)
+		self._vocab.add(token)
 
         self._model = ConditionalProbDist(fd, probdist_factory,
                                           supply_condition, *factory_args)
@@ -41,9 +46,11 @@ class NgramModel(ModelI):
 
     def choose_random_word(self, context):
         '''Randomly select a word that is likely to appear in this context.'''
-        # too simple, instead we want a random sample from the probability
-        # distribution
-        return self._model[context].max()
+        # too simple: return self._model[context].max()
+
+        probs = [(self.prob(word, context), word) for word in self._vocab]
+        probs.sort()  # wasteful for finding n-best
+        return random.choice(probs[:self._candidate_set_size])
 
     def generate(self, n):
         tokens = []
@@ -56,16 +63,19 @@ class NgramModel(ModelI):
         '''Evaluate the total entropy of a message with respect to the model.
         This is the sum of the log probability of each word in the message.'''
 
-        e = 0
+        e = 0.0
         for index, token in enumerate(sentence):
             context = self.context(sentence, index)
             e -= self.logprob(token, context)
         return e
 
+    def __repr__(self):
+        return '<NgramModel with vocabulary of %d words>' % len(self._vocab)
 
 def demo():
     from nltk.corpus import brown
     lm = NgramModel(2, brown.sents(categories='a'), MLEProbDist)
+    print lm
     sent = brown.sents()[0]
     print sent
     print lm.entropy(sent)
@@ -73,3 +83,4 @@ def demo():
 
 if __name__ == '__main__':
     demo()
+
