@@ -537,7 +537,8 @@ class LazySubsequence(AbstractLazySequence):
         return self._stop - self._start
 
     def iterate_from(self, start):
-        return islice(self._source.iterate_from(start+self._start), len(self))
+        return islice(self._source.iterate_from(start+self._start),
+                      max(0, len(self)-start))
 
 class LazyConcatenation(AbstractLazySequence):
     """
@@ -563,8 +564,14 @@ class LazyConcatenation(AbstractLazySequence):
             sublist_index = len(self._offsets)-1
 
         index = self._offsets[sublist_index]
-        while sublist_index < len(self._list):
-            sublist = self._list[sublist_index]
+
+        # Construct an iterator over the sublists.
+        if isinstance(self._list, AbstractLazySequence):
+            sublist_iter = self._list.iterate_from(sublist_index)
+        else:
+            sublist_iter = islice(self._list, sublist_index, None)
+
+        for sublist in sublist_iter:
             if sublist_index == (len(self._offsets)-1):
                 assert index+len(sublist) >= self._offsets[-1], (
                         'offests not monotonic increasing!')
