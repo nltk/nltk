@@ -67,7 +67,6 @@ setup(
                 'nltk_contrib.readability',
                 'nltk_contrib.rte',
                 'nltk_contrib.toolbox',
-                'nltk_contrib.wordnet',
                 'yaml'
                 ],
     )
