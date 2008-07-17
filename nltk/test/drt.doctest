@@ -168,78 +168,78 @@ replace():
 
 
 replace bound
-    >>> print dp.parse(r'DRS([x],[give(x,y,z)])').replace(x, a, False)
+    >>> print dp.parse(r'DRS([x],[give(x,y,z)])').replace(x.variable, a, False)
     DRS([x],[give(x,y,z)])
-    >>> print dp.parse(r'DRS([x],[give(x,y,z)])').replace(x, a, True)
+    >>> print dp.parse(r'DRS([x],[give(x,y,z)])').replace(x.variable, a, True)
     DRS([a],[give(a,y,z)])
 
 replace unbound
-    >>> print dp.parse(r'DRS([x],[give(x,y,z)])').replace(y, a, False)
+    >>> print dp.parse(r'DRS([x],[give(x,y,z)])').replace(y.variable, a, False)
     DRS([x],[give(x,a,z)])
-    >>> print dp.parse(r'DRS([x],[give(x,y,z)])').replace(y, a, True)
+    >>> print dp.parse(r'DRS([x],[give(x,y,z)])').replace(y.variable, a, True)
     DRS([x],[give(x,a,z)])
 
 replace unbound with bound
-    >>> d1 = dp.parse(r'DRS([x],[give(x,y,z)])').replace(y, x, False)
+    >>> d1 = dp.parse(r'DRS([x],[give(x,y,z)])').replace(y.variable, x, False)
     >>> d2 = dp.parse('DRS([z1],[give(z1,x,z)])')
     >>> d1 == d2
     True
-    >>> d1 = dp.parse(r'DRS([x],[give(x,y,z)])').replace(y, x, True)
+    >>> d1 = dp.parse(r'DRS([x],[give(x,y,z)])').replace(y.variable, x, True)
     >>> d2 = dp.parse('DRS([z1],[give(z1,x,z)])')
     >>> d1 == d2
     True
 
 replace unbound with unbound
-    >>> print dp.parse(r'DRS([x],[give(x,y,z)])').replace(y, z, False)
+    >>> print dp.parse(r'DRS([x],[give(x,y,z)])').replace(y.variable, z, False)
     DRS([x],[give(x,z,z)])
-    >>> print dp.parse(r'DRS([x],[give(x,y,z)])').replace(y, z, True)
+    >>> print dp.parse(r'DRS([x],[give(x,y,z)])').replace(y.variable, z, True)
     DRS([x],[give(x,z,z)])
     
 
 replace unbound
-    >>> print dp.parse(r'DRS([x],[P(x,y,z)])+DRS([y],[Q(x,y,z)])').replace(z, a, False)
+    >>> print dp.parse(r'DRS([x],[P(x,y,z)])+DRS([y],[Q(x,y,z)])').replace(z.variable, a, False)
     (DRS([x],[P(x,y,a)]) + DRS([y],[Q(x,y,a)]))
-    >>> print dp.parse(r'DRS([x],[P(x,y,z)])+DRS([y],[Q(x,y,z)])').replace(z, a, True)
+    >>> print dp.parse(r'DRS([x],[P(x,y,z)])+DRS([y],[Q(x,y,z)])').replace(z.variable, a, True)
     (DRS([x],[P(x,y,a)]) + DRS([y],[Q(x,y,a)]))
 
 replace bound
-    >>> print dp.parse(r'DRS([x],[P(x,y,z)])+DRS([y],[Q(x,y,z)])').replace(x, a, False)
+    >>> print dp.parse(r'DRS([x],[P(x,y,z)])+DRS([y],[Q(x,y,z)])').replace(x.variable, a, False)
     (DRS([x],[P(x,y,z)]) + DRS([y],[Q(x,y,z)]))
-    >>> print dp.parse(r'DRS([x],[P(x,y,z)])+DRS([y],[Q(x,y,z)])').replace(x, a, True)
+    >>> print dp.parse(r'DRS([x],[P(x,y,z)])+DRS([y],[Q(x,y,z)])').replace(x.variable, a, True)
     (DRS([a],[P(a,y,z)]) + DRS([y],[Q(a,y,z)]))
 
 replace unbound with unbound
-    >>> print dp.parse(r'DRS([x],[P(x,y,z)])+DRS([y],[Q(x,y,z)])').replace(z, a, False)
+    >>> print dp.parse(r'DRS([x],[P(x,y,z)])+DRS([y],[Q(x,y,z)])').replace(z.variable, a, False)
     (DRS([x],[P(x,y,a)]) + DRS([y],[Q(x,y,a)]))
-    >>> print dp.parse(r'DRS([x],[P(x,y,z)])+DRS([y],[Q(x,y,z)])').replace(z, a, True)
+    >>> print dp.parse(r'DRS([x],[P(x,y,z)])+DRS([y],[Q(x,y,z)])').replace(z.variable, a, True)
     (DRS([x],[P(x,y,a)]) + DRS([y],[Q(x,y,a)]))
 
 replace unbound with bound on same side
-    >>> a = dp.parse(r'DRS([x],[P(x,y,z)])+DRS([y],[Q(x,y,w)])').replace(z, x, False)
+    >>> a = dp.parse(r'DRS([x],[P(x,y,z)])+DRS([y],[Q(x,y,w)])').replace(z.variable, x, False)
     >>> b = dp.parse(r'(DRS([z1],[P(z1,y,x)]) + DRS([y],[Q(z1,y,w)]))')
     >>> a == b
     True
-    >>> a = dp.parse(r'DRS([x],[P(x,y,z)])+DRS([y],[Q(x,y,w)])').replace(z, x, True)
+    >>> a = dp.parse(r'DRS([x],[P(x,y,z)])+DRS([y],[Q(x,y,w)])').replace(z.variable, x, True)
     >>> b = dp.parse(r'(DRS([z1],[P(z1,y,x)]) + DRS([y],[Q(z1,y,w)]))')
     >>> a == b
     True
 
 replace unbound with bound on other side
-    >>> a = dp.parse(r'DRS([x],[P(x,y,z)])+DRS([y],[Q(x,y,w)])').replace(w, x, False)
+    >>> a = dp.parse(r'DRS([x],[P(x,y,z)])+DRS([y],[Q(x,y,w)])').replace(w.variable, x, False)
     >>> b = dp.parse(r'(DRS([z1],[P(z1,y,z)]) + DRS([y],[Q(z1,y,x)]))')
     >>> a == b
     True
-    >>> a = dp.parse(r'DRS([x],[P(x,y,z)])+DRS([y],[Q(x,y,w)])').replace(w, x, True)
+    >>> a = dp.parse(r'DRS([x],[P(x,y,z)])+DRS([y],[Q(x,y,w)])').replace(w.variable, x, True)
     >>> b = dp.parse(r'(DRS([z1],[P(z1,y,z)]) + DRS([y],[Q(z1,y,x)]))')
     >>> a == b
     True
 
 replace unbound with double bound
-    >>> a = dp.parse(r'DRS([x],[P(x,y,z)])+DRS([x],[Q(x,y,w)])').replace(z, x, False)
+    >>> a = dp.parse(r'DRS([x],[P(x,y,z)])+DRS([x],[Q(x,y,w)])').replace(z.variable, x, False)
     >>> b = dp.parse(r'(DRS([z1],[P(z1,y,x)]) + DRS([z1],[Q(z1,y,w)]))')
     >>> a == b
     True
-    >>> a = dp.parse(r'DRS([x],[P(x,y,z)])+DRS([x],[Q(x,y,w)])').replace(z, x, True)
+    >>> a = dp.parse(r'DRS([x],[P(x,y,z)])+DRS([x],[Q(x,y,w)])').replace(z.variable, x, True)
     >>> b = dp.parse(r'(DRS([z1],[P(z1,y,x)]) + DRS([z1],[Q(z1,y,w)]))')
     >>> a == b
     True

@@ -7,6 +7,7 @@
 
 from nltk.internals import Counter
 from nltk.sem import logic
+from nltk.sem.logic import Variable
 import drt_resolve_anaphora as RA
 
 from Tkinter import Canvas
@@ -66,8 +67,14 @@ class AbstractDrs:
     def get_EqualityExpression(self):
         return DrtEqualityExpression
 
+    def make_VariableExpression(self, variable):
+        if logic.is_indvar(variable.name):
+            return DrtIndividualVariableExpression(variable)
+        else:
+            return DrtVariableExpression(variable)
+
     def unique_variable(self):
-        return DrtIndividualVariableExpression('z' + str(logic._counter.get()))
+        return Variable('z' + str(logic._counter.get()))
 
     def draw(self):
         DrsDrawer(self).draw()
@@ -91,7 +98,7 @@ class DRS(AbstractDrs, logic.Expression, RA.DRS):
             if not replace_bound:
                 return self
             else: 
-                return DRS(self.refs[:i]+[expression]+self.refs[i+1:],
+                return DRS(self.refs[:i]+[expression.variable]+self.refs[i+1:],
                            [cond.replace(variable, expression, True) for cond in self.conds])
         except ValueError:
             #variable not bound by this DRS
@@ -99,10 +106,12 @@ class DRS(AbstractDrs, logic.Expression, RA.DRS):
             # any bound variable that appears in the expression must
             # be alpha converted to avoid a conflict
             for ref in (set(self.refs) & expression.free()):
-                newvar = self.unique_variable()
+                newvar = self.unique_variable() 
+                newvarex = DrtIndividualVariableExpression(newvar)
                 i = self.refs.index(ref)
                 self = DRS(self.refs[:i]+[newvar]+self.refs[i+1:],
-                           [cond.replace(ref, newvar, True) for cond in self.conds])
+                           [cond.replace(ref, newvarex, True) 
+                            for cond in self.conds])
                 
             #replace in the conditions
             return DRS(self.refs,
@@ -120,9 +129,7 @@ class DRS(AbstractDrs, logic.Expression, RA.DRS):
         return self.refs
     
     def simplify(self):
-        r_refs = [ref.simplify() for ref in self.refs]
-        r_conds = [cond.simplify() for cond in self.conds]
-        return DRS(r_refs, r_conds)
+        return DRS(self.refs, [cond.simplify() for cond in self.conds])
     
     def toFol(self):
         accum = self.conds[-1].toFol()
@@ -140,13 +147,15 @@ class DRS(AbstractDrs, logic.Expression, RA.DRS):
                 converted_other = other
                 for (i,ref) in enumerate(self.refs):
                     other_ref = converted_other.refs[i]
-                    converted_other = converted_other.replace(other_ref, ref, True)
+                    varex = self.make_VariableExpression(ref)
+                    converted_other = converted_other.replace(other_ref, 
+                                                              varex, True)
                 return self.conds == converted_other.conds
         return False
     
     def str(self, syntax=logic.Tokens.NEW_NLTK):
-        return Tokens.DRS + '([' + ','.join([ref.str(syntax) for ref in self.refs]) + \
-               '],[' + ', '.join([cond.str(syntax) for cond in self.conds]) + '])'
+        return Tokens.DRS + '([' + ','.join([str(ref) for ref in self.refs]) + \
+            '],[' + ', '.join([cond.str(syntax) for cond in self.conds]) + '])'
 
 class DrtVariableExpression(AbstractDrs, logic.VariableExpression, 
                             RA.VariableExpression):
@@ -165,11 +174,13 @@ class DrtIndividualVariableExpression(DrtVariableExpression,
     def get_refs(self):
         return []
 
-class DrtNegatedExpression(AbstractDrs, logic.NegatedExpression, RA.NegatedExpression):
+class DrtNegatedExpression(AbstractDrs, logic.NegatedExpression, 
+                           RA.NegatedExpression):
     def toFol(self):
         return logic.NegatedExpression(self.term.toFol())
 
-class DrtLambdaExpression(AbstractDrs, logic.LambdaExpression, RA.LambdaExpression):
+class DrtLambdaExpression(AbstractDrs, logic.LambdaExpression, 
+                          RA.LambdaExpression):
     def toFol(self):
         return logic.LambdaExpression(self.variable, self.term.toFol())
 
@@ -224,7 +235,7 @@ class ConcatenationDRS(AbstractDrs, logic.BooleanExpression, RA.ConcatenationDRS
                 first  = first.replace(variable, expression, replace_bound)
                 second = second.replace(variable, expression, replace_bound)
 
-        # If variable is boudn by second
+        # If variable is bound by second
         elif isinstance(second, DRS) and variable in second.refs:
             if replace_bound:
                 first  = first.replace(variable, expression, replace_bound)
@@ -233,7 +244,7 @@ class ConcatenationDRS(AbstractDrs, logic.BooleanExpression, RA.ConcatenationDRS
         else:
             # alpha convert every ref that is free in 'expression'
             for ref in (set(self.get_refs()) & expression.free()): 
-                v = self.unique_variable()
+                v = DrtIndividualVariableExpression(self.unique_variable())
                 first  = first.replace(ref, v, True)
                 second = second.replace(ref, v, True)
 
@@ -253,7 +264,8 @@ class ConcatenationDRS(AbstractDrs, logic.BooleanExpression, RA.ConcatenationDRS
             # For any ref that is in both 'first' and 'second'
             for ref in (set(first.refs) & set(second.refs)):
                 # alpha convert the ref in 'second' to prevent collision
-                second = second.replace(ref, self.unique_variable(), True)
+                newvar = DrtIndividualVariableExpression(self.unique_variable())
+                second = second.replace(ref, newvar, True)
             
             return DRS(first.refs + second.refs, first.conds + second.conds)
         else:
@@ -272,7 +284,9 @@ class ConcatenationDRS(AbstractDrs, logic.BooleanExpression, RA.ConcatenationDRS
                 converted_other = other
                 for (i,ref) in enumerate(self_refs):
                     other_ref = other_refs[i]
-                    converted_other = converted_other.replace(other_ref, ref, True)
+                    varex = self.make_VariableExpression(ref)
+                    converted_other = converted_other.replace(other_ref, 
+                                                              varex, True)
                 return self.first == converted_other.first and \
                         self.second == converted_other.second
         return False
@@ -459,7 +473,7 @@ class DrsDrawer:
         
         # Handle Discourse Referents
         if expression.refs:
-            refs = ' '.join([ref.str(self.syntax) for ref in expression.refs])
+            refs = ' '.join([str(ref) for ref in expression.refs])
         else:
             refs = '     '
         (max_right, bottom) = command(refs, left, bottom)
@@ -610,7 +624,7 @@ class DrtParser(logic.LogicParser):
             if self.token(0) == Tokens.COMMA:
                 self.token() # swallow the comma
             else:
-                refs.append(self.make_VariableExpression(self.token()))
+                refs.append(logic.Variable(self.token()))
         self.token() # swallow the CLOSE_BRACKET token
         self.assertToken(self.token(), Tokens.COMMA)
         self.assertToken(self.token(), Tokens.OPEN_BRACKET)
@@ -623,8 +637,12 @@ class DrtParser(logic.LogicParser):
                 conds.append(self.parse_Expression())
         self.token() # swallow the CLOSE_BRACKET token
         self.assertToken(self.token(), Tokens.CLOSE) 
-        drs = DRS(refs, conds)
-        return self.attempt_BooleanExpression(drs)
+        return DRS(refs, conds)
+
+    def make_EqualityExpression(self, first, second):
+        """This method serves as a hook for other logic parsers that
+        have different equality expression classes"""
+        return DrtEqualityExpression(first, second)
 
     def get_BooleanExpression_factory(self):
         """This method serves as a hook for other logic parsers that
@@ -639,8 +657,6 @@ class DrtParser(logic.LogicParser):
             factory = DrtImpExpression
         elif op in Tokens.IFF:
             factory = DrtIffExpression
-        elif op in Tokens.EQ:
-            factory = DrtEqualityExpression
         return factory
 
     def make_ApplicationExpression(self, function, args):
@@ -648,9 +664,9 @@ class DrtParser(logic.LogicParser):
     
     def make_VariableExpression(self, name):
         if logic.is_indvar(name):
-            return DrtIndividualVariableExpression(name)
+            return DrtIndividualVariableExpression(Variable(name))
         else:
-            return DrtVariableExpression(name)
+            return DrtVariableExpression(Variable(name))
     
     def make_LambdaExpression(self, variables, term):
         return DrtLambdaExpression(variables, term)

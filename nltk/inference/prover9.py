@@ -448,14 +448,14 @@ def spacer(num=45):
     print '-' * num
 
 if __name__ == '__main__':
-#    print "Testing configuration"
-#    spacer()
-#    test_config()
-#    print
-#    print "Testing conversion to Prover9 format"
-#    spacer()
-#    test_convert_to_prover9(expressions)
-#    print
-#    print "Testing proofs"
-#    spacer()
+    print "Testing configuration"
+    spacer()
+    test_config()
+    print
+    print "Testing conversion to Prover9 format"
+    spacer()
+    test_convert_to_prover9(expressions)
+    print
+    print "Testing proofs"
+    spacer()
     test_prove(arguments)

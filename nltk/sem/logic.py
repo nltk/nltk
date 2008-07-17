@@ -43,15 +43,34 @@ class Tokens:
     EQ = ['=', '=', '=']
     
     #Collection of tokens
-    BOOLS = AND + OR + IMP + IFF
-    BINOPS = BOOLS + EQ
+    BINOPS = AND + OR + IMP + IFF
     QUANTS = EXISTS + ALL
     PUNCT = [DOT[0], OPEN, CLOSE, COMMA]
     
-    TOKENS = BINOPS + QUANTS + LAMBDA + PUNCT + NOT
+    TOKENS = BINOPS + EQ + QUANTS + LAMBDA + PUNCT + NOT
     
     #Special
     SYMBOLS = LAMBDA + PUNCT + [AND[1], OR[1], NOT[1], IMP[1], IFF[1]] + EQ 
+
+
+class Variable(object):
+    def __init__(self, name):
+        """
+        @param name: the name of the variable
+        """
+        self.name = name
+
+    def __eq__(self, other):
+        return self.__class__ == other.__class__ and self.name == other.name
+
+    def __hash__(self):
+        return hash(self.name)
+
+    def __str__(self):
+        return self.name
+
+    def __repr__(self):
+        return self.name
 
 
 class SubstituteBindingsI(object):
@@ -125,7 +144,7 @@ class Expression(SubstituteBindingsI):
         return hash(repr(self))
     
     def unique_variable(self):
-        return IndividualVariableExpression('z' + str(_counter.get()))
+        return Variable('z' + str(_counter.get()))
 
     def substitute_bindings(self, bindings):
         expr = self
@@ -145,7 +164,7 @@ class Expression(SubstituteBindingsI):
         return self.__class__.__name__ + ': ' + str(self)
     
     def __str__(self):
-        return self.str();
+        return self.str()
 
 class ApplicationExpression(Expression):
     def __init__(self, function, args):
@@ -171,6 +190,12 @@ class ApplicationExpression(Expression):
             return self.__class__(accum, [arg.simplify() for arg in self.args])
         
     def replace(self, variable, expression, replace_bound=False):
+        """
+        Replace every instance of 'variable' with 'expression'
+        @param variable: C{Variable} The variable to replace
+        @param expression: C{Expression} The expression with which to replace it
+        @param replace_bound: C{boolean} Should bound variables be replaced?  
+        """
         return self.__class__(self.function.replace(variable, expression, 
                                                     replace_bound),
                               [arg.replace(variable, expression, replace_bound)
@@ -209,45 +234,53 @@ class ApplicationExpression(Expression):
                ','.join([arg.str(syntax) for arg in self.args]) + Tokens.CLOSE
 
 class VariableExpression(Expression):
-    def __init__(self, name):
+    def __init__(self, variable):
         """
-        @param name: C{str}, for the variable name
+        @param variable: C{Variable}, for the variable
         """
-        self.name = name
+        self.variable = variable
 
     def simplify(self):
         return self
 
     def replace(self, variable, expression, replace_bound=False):
-        if self == variable:
+        """
+        Replace every instance of 'variable' with 'expression'
+        @param variable: C{Variable} The variable to replace
+        @param expression: C{Expression} The expression with which to replace it
+        @param replace_bound: C{boolean} Should bound variables be replaced?  
+        """
+        if self.variable == variable:
             return expression
         else:
             return self
     
     def variables(self):
-        return set([self])
+        return set()
 
     def free(self):
-        return set([self])
+        return set([self.variable])
     
     def __eq__(self, other):
         """Allow equality between instances of C{VariableExpression} and
         C{IndividualVariableExpression}."""
-        return isinstance(other, VariableExpression) and self.name == other.name
+        return isinstance(other, VariableExpression) and \
+               self.variable == other.variable
         
     def substitute_bindings(self, bindings):
         return bindings.get(self, self)
 
     def str(self, syntax=Tokens.NEW_NLTK):
-        return self.name
+        return str(self.variable)
     
 class IndividualVariableExpression(VariableExpression):
-    pass
+    def free(self):
+        return set([self.variable])
     
 class VariableBinderExpression(Expression):
     def __init__(self, variable, term):
         """
-        @param variable: C{VariableExpression}, for the variable
+        @param variable: C{Variable}, for the variable
         @param term: C{Expression}, for the term
         """
         self.variable = variable
@@ -257,6 +290,12 @@ class VariableBinderExpression(Expression):
         return self.__class__(self.variable, self.term.simplify())
 
     def replace(self, variable, expression, replace_bound=False):
+        """
+        Replace every instance of 'variable' with 'expression'
+        @param variable: C{Variable} The variable to replace
+        @param expression: C{Expression} The expression with which to replace it
+        @param replace_bound: C{boolean} Should bound variables be replaced?  
+        """
         #if the bound variable is the thing being replaced
         if self.variable == variable:
             if replace_bound: 
@@ -278,9 +317,11 @@ class VariableBinderExpression(Expression):
 
     def alpha_convert(self, newvar):
         """Rename all occurrences of the variable introduced by this variable
-        binder in the expression to @C{newvar}."""
-        return self.__class__(newvar, self.term.replace(self.variable, newvar, 
-                                                        True))
+        binder in the expression to @C{newvar}.
+        @param newvar: C{Variable}, for the new variable
+        """
+        return self.__class__(newvar, self.term.replace(self.variable, 
+                                            VariableExpression(newvar), True))
 
     def variables(self):
         return self.term.variables() | set([self.variable])
@@ -296,27 +337,30 @@ class VariableBinderExpression(Expression):
                 return self.term == other.term
             else:
                 # Comparing \x.M  and \y.N.  Relabel y in N with x and continue.
-                return self.term == other.term.replace(other.variable, 
-                                                       self.variable)
+                if is_indvar(self.variable.name):
+                    varex = IndividualVariableExpression(self.variable)
+                else:
+                    varex = VariableExpression(self.variable)
+                return self.term == other.term.replace(other.variable, varex)
         else:
             return False
 
 class LambdaExpression(VariableBinderExpression):
     def str(self, syntax=Tokens.NEW_NLTK):
-        return Tokens.LAMBDA[syntax] + self.variable.str(syntax) + \
+        return Tokens.LAMBDA[syntax] + str(self.variable) + \
                Tokens.DOT[syntax] + self.term.str(syntax)
 
 class QuantifiedExpression(VariableBinderExpression):
     def str(self, syntax=Tokens.NEW_NLTK):
-        return self.getPredicate(syntax) + ' ' + self.variable.str(syntax) + \
+        return self.getQuantifier(syntax) + ' ' + str(self.variable) + \
                Tokens.DOT[syntax] + self.term.str(syntax)
         
 class ExistsExpression(QuantifiedExpression):
-    def getPredicate(self, syntax=Tokens.NEW_NLTK):
+    def getQuantifier(self, syntax=Tokens.NEW_NLTK):
         return Tokens.EXISTS[syntax]
 
 class AllExpression(QuantifiedExpression):
-    def getPredicate(self, syntax=Tokens.NEW_NLTK):
+    def getQuantifier(self, syntax=Tokens.NEW_NLTK):
         return Tokens.ALL[syntax]
 
 class NegatedExpression(Expression):
@@ -327,6 +371,12 @@ class NegatedExpression(Expression):
         return self
 
     def replace(self, variable, expression, replace_bound=False):
+        """
+        Replace every instance of 'variable' with 'expression'
+        @param variable: C{Variable} The variable to replace
+        @param expression: C{Expression} The expression with which to replace it
+        @param replace_bound: C{boolean} Should bound variables be replaced?  
+        """
         return self.__class__(self.term.replace(variable, expression, 
                                                 replace_bound))
 
@@ -351,6 +401,12 @@ class BooleanExpression(Expression):
         return self.__class__(self.first.simplify(), self.second.simplify())
 
     def replace(self, variable, expression, replace_bound=False):
+        """
+        Replace every instance of 'variable' with 'expression'
+        @param variable: C{Variable} The variable to replace
+        @param expression: C{Expression} The expression with which to replace it
+        @param replace_bound: C{boolean} Should bound variables be replaced?  
+        """
         return self.__class__(self.first.replace(variable, expression, 
                                                  replace_bound),
                               self.second.replace(variable, expression, 
@@ -394,7 +450,7 @@ class EqualityExpression(BooleanExpression):
 class LogicParser:
     """A lambda calculus expression parser."""
 
-    def __init__(self, constants=None):
+    def __init__(self):
         self._currentIndex = 0
         self._buffer = []
 
@@ -452,7 +508,6 @@ class LogicParser:
                 tok = self._buffer[self._currentIndex]
                 self._currentIndex += 1
             else:
-                assert isinstance(location,int) 
                 tok = self._buffer[self._currentIndex+location]
             return tok
         except IndexError:
@@ -521,20 +576,21 @@ class LogicParser:
                 raise ParseException('\'%s\' is an illegal variable name.  '
                                      'Predicate variables may not be '
                                      'individual variables' % tok)
-            return self.make_ApplicationExpression(
-                        self.make_VariableExpression(tok), args)
+            accum = self.make_ApplicationExpression(
+                         self.make_VariableExpression(tok), args)
         else:
             #The predicate has no arguments: it's a solo variable
-            return self.make_VariableExpression(tok)
+            accum = self.make_VariableExpression(tok)
+        return self.attempt_EqualityExpression(accum)
         
     def handle_lambda(self, tok):
         # Expression is a lambda expression
         
-        vars = [self.make_VariableExpression(self.token())]
+        vars = [Variable(self.token())]
         while True:
             while self.isvariable(self.token(0)):
                 # Support expressions like: \x y.M == \x.\y.M
-                vars.append(self.make_VariableExpression(self.token()))
+                vars.append(Variable(self.token()))
             self.assertToken(self.token(), Tokens.DOT)
             
             if self.token(0) in Tokens.LAMBDA:
@@ -558,7 +614,7 @@ class LogicParser:
         elif tok in Tokens.ALL:
             factory = AllExpression
         else:
-            self.assertToken(tok, Tokens.EXISTS + Tokens.ALL)
+            self.assertToken(tok, Tokens.QUANTS)
         return factory
 
     def handle_quant(self, tok):
@@ -578,7 +634,7 @@ class LogicParser:
                 raise ParseException('\'%s\' is an illegal variable name.  '
                                      'Quantifier variables must be individual '
                                      'variables' % var)
-            accum = factory(self.make_VariableExpression(var), accum)
+            accum = factory(Variable(var), accum)
         return accum
         
     def handle_open(self, tok):
@@ -587,6 +643,20 @@ class LogicParser:
         self.assertToken(self.token(), Tokens.CLOSE)
         return accum
         
+    def attempt_EqualityExpression(self, expression):
+        """Attempt to make a boolean expression.  If the next token is a boolean 
+        operator, then a BooleanExpression will be returned.  Otherwise, the 
+        parameter will be returned."""
+        if self.inRange(0) and self.token(0) in Tokens.EQ:
+            self.token() #swallow the "="
+            return self.make_EqualityExpression(expression, self.parse_Expression())
+        return expression
+    
+    def make_EqualityExpression(self, first, second):
+        """This method serves as a hook for other logic parsers that
+        have different equality expression classes"""
+        return EqualityExpression(first, second)
+
     def attempt_BooleanExpression(self, expression):
         """Attempt to make a boolean expression.  If the next token is a boolean 
         operator, then a BooleanExpression will be returned.  Otherwise, the 
@@ -613,8 +683,6 @@ class LogicParser:
             factory = ImpExpression
         elif op in Tokens.IFF:
             factory = IffExpression
-        elif op in Tokens.EQ:
-            factory = EqualityExpression
         return factory
     
     def make_BooleanExpression(self, type, first, second):
@@ -663,9 +731,9 @@ class LogicParser:
     
     def make_VariableExpression(self, name):
         if is_indvar(name):
-            return IndividualVariableExpression(name)
+            return IndividualVariableExpression(Variable(name))
         else:
-            return VariableExpression(name)
+            return VariableExpression(Variable(name))
     
     def make_LambdaExpression(self, variable, term):
         return LambdaExpression(variable, term)
@@ -729,11 +797,12 @@ def is_indvar(expr):
     return expr[0].isalpha() and expr[0].islower() and \
             (len(expr) == 1 or expr[1:].isdigit())
 
+
 ###############################
-#TODO: DELETE ALL
+#TODO: DELETE
 ################################
-class Variable: pass
 class Operator: pass
+
 
 def demo():
     lp = LogicParser()
