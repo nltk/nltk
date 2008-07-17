@@ -1685,7 +1685,7 @@ class SubstituteBindingsSequence(SubstituteBindingsI):
     """
     def variables(self):
         return ([elt for elt in self if isinstance(elt, Variable)] +
-                sum([elt.variables() for elt in self
+                sum([list(elt.variables()) for elt in self
                      if isinstance(elt, SubstituteBindingsI)], []))
     
     def substitute_bindings(self, bindings):
