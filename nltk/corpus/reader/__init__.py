@@ -57,5 +57,5 @@ __all__ = [
     'CategorizedPlaintextCorpusReader',
     'tagged_treebank_para_block_reader',
     'PropbankCorpusReader', 'VerbnetCorpusReader',
-    'BNCCorpusReader',
+    'BNCCorpusReader', 'ConllCorpusReader',
 ]
