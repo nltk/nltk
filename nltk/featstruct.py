@@ -41,7 +41,7 @@ structures.  In the feature structure resulting from unification, any
 modifications to a reentrant feature value will be visible using any
 of its feature paths.
 
-Feature structure variables are encoded using the L{nltk.sem.VariableExpression}
+Feature structure variables are encoded using the L{nltk.sem.Variable}
 class.  The variables' values are tracked using a X{bindings}
 dictionary, which maps variables to their values.  When two feature
 structures are unified, a fresh bindings dictionary is created to
@@ -94,7 +94,7 @@ recommended that you use full-fledged L{FeatStruct} objects.
 
 import re, copy
 
-from nltk.sem.logic import VariableExpression, Expression, SubstituteBindingsI
+from nltk.sem.logic import Variable, Expression, SubstituteBindingsI
 from nltk.sem.logic import LogicParser, ParseException
 import nltk.internals
 
@@ -504,7 +504,7 @@ class FeatStruct(SubstituteBindingsI):
         """
         @rtype: L{FeatStruct}
         @return: The feature structure that is obtained by deleting
-        all features whose values are L{VariableExpression}s.
+        all features whose values are L{Variable}s.
         """
         return remove_variables(self)
 
@@ -756,14 +756,14 @@ class FeatDict(FeatStruct, dict):
                 segments.append('%s->(%s)' %
                                 (fname, reentrance_ids[id(fval)]))
             elif (display == 'prefix' and not prefix and
-                  isinstance(fval, (VariableExpression, basestring))):
+                  isinstance(fval, (Variable, basestring))):
                     prefix = '%s' % fval
             elif display == 'slash' and not suffix:
-                if isinstance(fval, VariableExpression):
+                if isinstance(fval, Variable):
                     suffix = '/%s' % fval.name
                 else:
                     suffix = '/%r' % fval
-            elif isinstance(fval, VariableExpression):
+            elif isinstance(fval, Variable):
                 segments.append('%s=%s' % (fname, fval.name))
             elif fval is True:
                 segments.append('+%s' % fname)
@@ -815,7 +815,7 @@ class FeatDict(FeatStruct, dict):
         # through to comparing values.
         for (fname, fval) in sorted(self.items()):
             fname = str(fname).ljust(maxfnamelen)
-            if isinstance(fval, VariableExpression):
+            if isinstance(fval, Variable):
                 lines.append('%s = %s' % (fname,fval.name))
                 
             elif isinstance(fval, Expression):
@@ -1011,7 +1011,7 @@ class FeatList(FeatStruct, list):
         for fval in self:
             if id(fval) in reentrance_ids:
                 segments.append('->(%s)' % reentrance_ids[id(fval)])
-            elif isinstance(fval, VariableExpression):
+            elif isinstance(fval, Variable):
                 segments.append(fval.name)
             elif isinstance(fval, Expression):
                 segments.append('%s' % fval)
@@ -1034,7 +1034,7 @@ def substitute_bindings(fstruct, bindings, fs_class='default'):
     variable's value.  If a variable is aliased to an unbound
     variable, then it will be replaced by that variable.
     
-    @type bindings: C{dict} with L{VariableExpression} keys
+    @type bindings: C{dict} with L{Variable} keys
     @param bindings: A dictionary mapping from variables to values.
     """
     if fs_class == 'default': fs_class = _default_fs_class(fstruct)
@@ -1051,7 +1051,7 @@ def _substitute_bindings(fstruct, bindings, fs_class, visited):
     elif _is_sequence(fstruct): items = enumerate(fstruct)
     else: raise ValueError('Expected mapping or sequence')
     for (fname, fval) in items:
-        while (isinstance(fval, VariableExpression) and fval in bindings):
+        while (isinstance(fval, Variable) and fval in bindings):
             fval = fstruct[fname] = bindings[fval]
         if isinstance(fval, fs_class):
             _substitute_bindings(fval, bindings, fs_class, visited)
@@ -1095,7 +1095,7 @@ def _retract_bindings(fstruct, inv_bindings, fs_class, visited):
 def find_variables(fstruct, fs_class='default'):
     """
     @return: The set of variables used by this feature structure.
-    @rtype: C{set} of L{VariableExpression}
+    @rtype: C{set} of L{Variable}
     """
     if fs_class == 'default': fs_class = _default_fs_class(fstruct)
     return _variables(fstruct, set(), fs_class, set())
@@ -1108,7 +1108,7 @@ def _variables(fstruct, vars, fs_class, visited):
     elif _is_sequence(fstruct): items = enumerate(fstruct)
     else: raise ValueError('Expected mapping or sequence')
     for (fname, fval) in items:
-        if isinstance(fval, VariableExpression):
+        if isinstance(fval, Variable):
             vars.add(fval)
         elif isinstance(fval, fs_class):
             _variables(fval, vars, fs_class, visited)
@@ -1134,7 +1134,7 @@ def rename_variables(fstruct, vars=None, used_vars=(), new_vars=None,
     @param used_vars: A set of variables whose names should not be
     used by the new variables.
     
-    @type new_vars: C{dict} from L{VariableExpression} to L{VariableExpression}
+    @type new_vars: C{dict} from L{Variable} to L{Variable}
     @param new_vars: A dictionary that is used to hold the mapping
     from old variables to new variables.  For each variable M{v}
     in this feature structure:
@@ -1178,7 +1178,7 @@ def _rename_variables(fstruct, vars, used_vars, new_vars, fs_class, visited):
     elif _is_sequence(fstruct): items = enumerate(fstruct)
     else: raise ValueError('Expected mapping or sequence')
     for (fname, fval) in items:
-        if isinstance(fval, VariableExpression):
+        if isinstance(fval, Variable):
             # If it's in new_vars, then rebind it.
             if fval in new_vars:
                 fstruct[fname] = new_vars[fval]
@@ -1203,14 +1203,14 @@ def _rename_variables(fstruct, vars, used_vars, new_vars, fs_class, visited):
 def _rename_variable(var, used_vars):
     name, n = re.sub('\d+$', '', var.name), 2
     if not name: name = '?'
-    while VariableExpression('%s%s' % (name, n)) in used_vars: n += 1
-    return VariableExpression('%s%s' % (name, n))
+    while Variable('%s%s' % (name, n)) in used_vars: n += 1
+    return Variable('%s%s' % (name, n))
 
 def remove_variables(fstruct, fs_class='default'):
     """
     @rtype: L{FeatStruct}
     @return: The feature structure that is obtained by deleting
-    all features whose values are L{VariableExpression}s.
+    all features whose values are L{Variable}s.
     """
     if fs_class == 'default': fs_class = _default_fs_class(fstruct)
     return _remove_variables(copy.deepcopy(fstruct), fs_class, set())
@@ -1222,7 +1222,7 @@ def _remove_variables(fstruct, fs_class, visited):
     elif _is_sequence(fstruct): items = enumerate(fstruct)
     else: raise ValueError('Expected mapping or sequence')
     for (fname, fval) in items:
-        if isinstance(fval, VariableExpression):
+        if isinstance(fval, Variable):
             del fstruct[fname]
         elif isinstance(fval, fs_class):
             _remove_variables(fval, fs_class, visited)
@@ -1260,7 +1260,7 @@ def unify(fstruct1, fstruct2, bindings=None, trace=False,
     C{fstruct2} specify incompatible values for some feature), then
     unification fails, and C{unify} returns C{None}.
 
-    @type bindings: C{dict} with L{VariableExpression} keys
+    @type bindings: C{dict} with L{Variable} keys
     @param bindings: A set of variable bindings to be used and
         updated during unification.
 
@@ -1471,10 +1471,10 @@ def _unify_feature_values(fname, fval1, fval2, bindings, forward,
     # includes aliased variables, which are encoded as
     # variables bound to other variables.
     fvar1 = fvar2 = None
-    while isinstance(fval1, VariableExpression) and fval1 in bindings:
+    while isinstance(fval1, Variable) and fval1 in bindings:
         fvar1 = fval1
         fval1 = bindings[fval1]
-    while isinstance(fval2, VariableExpression) and fval2 in bindings:
+    while isinstance(fval2, Variable) and fval2 in bindings:
         fvar2 = fval2
         fval2 = bindings[fval2]
 
@@ -1484,16 +1484,16 @@ def _unify_feature_values(fname, fval1, fval2, bindings, forward,
                                       trace, fail, fs_class, fpath)
 
     # Case 2: Two unbound variables (create alias)
-    elif (isinstance(fval1, VariableExpression) and
-          isinstance(fval2, VariableExpression)):
+    elif (isinstance(fval1, Variable) and
+          isinstance(fval2, Variable)):
         if fval1 != fval2: bindings[fval2] = fval1
         result = fval1
     
     # Case 3: An unbound variable and a value (bind)
-    elif isinstance(fval1, VariableExpression):
+    elif isinstance(fval1, Variable):
         bindings[fval1] = fval2
         result = fval1
-    elif isinstance(fval2, VariableExpression):
+    elif isinstance(fval2, Variable):
         bindings[fval2] = fval1
         result = fval2
 
@@ -1596,7 +1596,7 @@ def _resolve_aliases(bindings):
     any unbound aliased vars with their representative var.
     """
     for (var, value) in bindings.items():
-        while isinstance(value, VariableExpression) and value in bindings:
+        while isinstance(value, Variable) and value in bindings:
             value = bindings[var] = bindings[value]
                 
 def _trace_unify_start(path, fval1, fval2):
@@ -1631,7 +1631,7 @@ def _trace_bindings(path, bindings):
             for (var, val) in binditems)
         print '  '+'|   '*len(path)+'    Bindings: '+bindstr
 def _trace_valrepr(val):
-    if isinstance(val, VariableExpression):
+    if isinstance(val, Variable):
         return '%s' % val
     else:
         return '%r' % val
@@ -1684,8 +1684,8 @@ class SubstituteBindingsSequence(SubstituteBindingsI):
     substitute_bindings() over the object's elements.
     """
     def variables(self):
-        return ([elt for elt in self if isinstance(elt, VariableExpression)] +
-                sum([list(elt.variables()) for elt in self
+        return ([elt for elt in self if isinstance(elt, Variable)] +
+                sum([elt.variables() for elt in self
                      if isinstance(elt, SubstituteBindingsI)], []))
     
     def substitute_bindings(self, bindings):
@@ -1725,7 +1725,7 @@ class FeatureValueSet(SubstituteBindingsSequence, frozenset):
 class FeatureValueUnion(SubstituteBindingsSequence, frozenset):
     """
     A base feature value that represents the union of two or more
-    L{FeatureValueSet}s or L{VariableExpression}s.
+    L{FeatureValueSet}s or L{Variable}s.
     """
     def __new__(cls, values):
         # If values contains FeatureValueUnions, then collapse them.
@@ -1733,7 +1733,7 @@ class FeatureValueUnion(SubstituteBindingsSequence, frozenset):
         
         # If the resulting list contains no variables, then 
         # use a simple FeatureValueSet instead.
-        if sum(isinstance(v, VariableExpression) for v in values) == 0:
+        if sum(isinstance(v, Variable) for v in values) == 0:
             values = _flatten(values, FeatureValueSet)
             return FeatureValueSet(values)
         
@@ -1753,7 +1753,7 @@ class FeatureValueUnion(SubstituteBindingsSequence, frozenset):
 class FeatureValueConcat(SubstituteBindingsSequence, tuple):
     """
     A base feature value that represents the concatenation of two or
-    more L{FeatureValueTuple}s or L{VariableExpression}s.
+    more L{FeatureValueTuple}s or L{Variable}s.
     """
     def __new__(cls, values):
         # If values contains FeatureValueConcats, then collapse them.
@@ -1761,7 +1761,7 @@ class FeatureValueConcat(SubstituteBindingsSequence, tuple):
         
         # If the resulting list contains no variables, then 
         # use a simple FeatureValueTuple instead.
-        if sum(isinstance(v, VariableExpression) for v in values) == 0:
+        if sum(isinstance(v, Variable) for v in values) == 0:
             values = _flatten(values, FeatureValueTuple)
             return FeatureValueTuple(values)
         
@@ -2064,7 +2064,7 @@ class FeatStructParser(object):
                 raise ValueError('open bracket or identifier', match.start(2))
             prefixval = match.group(2).strip()
             if prefixval.startswith('?'):
-                prefixval = VariableExpression(prefixval)
+                prefixval = Variable(prefixval)
             fstruct[self._prefix_feature] = prefixval
 
         # If group 3 is empty, then we just have a bare prefix, so
@@ -2222,7 +2222,7 @@ class FeatStructParser(object):
 
     # Note: the '?' is included in the variable name.
     def parse_var_value(self, s, position, reentrances, match):
-        return VariableExpression(match.group()), match.end()
+        return Variable(match.group()), match.end()
 
     _SYM_CONSTS = {'None':None, 'True':True, 'False':False}
     def parse_sym_value(self, s, position, reentrances, match):
@@ -2238,7 +2238,7 @@ class FeatStructParser(object):
         try:
             try:
                 expr = parser.parse(match.group(1))
-            except ParseException: 
+            except ParseException:
                 raise ValueError()
             return expr, match.end()
         except ValueError:
