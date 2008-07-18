@@ -419,12 +419,6 @@ class CategorySearchView:
     def _init_query_box(self, parent):
         innerframe = Frame(parent, background=self.BACKGROUND_COLOUR)
         innerframe.grid(row=1, column=0, rowspan=5, columnspan=4)
-#        scrollbar = Scrollbar(innerframe)
-#        scrollbar.grid(row=0, column=1, sticky=E)
-#        self.query = Text(innerframe, height = 10, yscrollcommand=scrollbar.set)
-#        self.query.grid(row=0, column=0)
-#        self.query.insert('1.0', 'Enter query here')
-#        scrollbar.config(command=self.query.yview)
         self.query_box = Entry(innerframe, width=40)
         self.query_box.grid(row=0, column = 0, padx=2, pady=20, sticky=E)
         Button(innerframe, text="Search", command=self.search, borderwidth=1, highlightthickness=1).grid(row=0, column = 1, padx=2, pady=20, sticky=W)
@@ -435,12 +429,14 @@ class CategorySearchView:
         self.results_box['state'] = 'disabled'
         query = self.query_box.get()
         self.status['text']  = 'Searching for ' + query
-        results = self.model.search(query)
-        self.write_results(results)
-        if len(results) == 0:
-            self.status['text'] = 'No results found for ' + query
-        else:
-            self.status['text'] = ""
+        try:
+        	results = self.model.search(query)
+        	self.write_results(results)
+        	self.status['text'] = ""
+        	if len(results) == 0:
+				self.status['text'] = 'No results found for ' + query
+        except QueryError:
+        	self.status['text'] = 'Error in query' 
         
     def write_results(self, results):
         self.results_box['state'] = 'normal'
@@ -448,6 +444,7 @@ class CategorySearchView:
         for each in results:
             if len(each[0].strip()) != 0:
                 self.results_box.insert(str(row) + ".0", align(each[0].strip(), each[1], 35, 45) + '\n')
+                self.results_box.tag_add("HIGHLIGHT", str(row) + ".35", str(row) + '.' + str(each[2] - each[1] + 35))
                 row += 1
         self.results_box['state'] = 'disabled'
     
@@ -457,6 +454,7 @@ class CategorySearchView:
         scrollbar = Scrollbar(innerframe, borderwidth=1)
         scrollbar.grid(row=0, column=1, sticky='NSE')
         self.results_box = Text(innerframe, width=80, height = 30, state="disabled", borderwidth=1, yscrollcommand=scrollbar.set)
+        self.results_box.tag_config("HIGHLIGHT", foreground='#F00')
         self.results_box.grid(row=0, column =0)
         scrollbar.config(command=self.results_box.yview)
                 
@@ -501,15 +499,24 @@ class CategorySearchModel:
         q = process(query)
         sent_pos = []
         i = 0
-        for sent in self.tagged_sents:
-            m = re.search(query, sent)
-            if m:
-                sent_pos.append((sent, m.start()))
-                i += 1
-                if i > num:
-                    break
+     	for sent in self.tagged_sents:
+     		try:
+     			m = re.search(q, sent)
+     		except re.error:
+     			raise QueryError, 'Error in query ' + q
+        	if m:
+				sent_pos.append((sent, m.start(), m.end()))
+				i += 1
+				if i > num:
+					break
         return sent_pos
         
+class QueryError(Exception):
+	def __init__(self, value):
+		self.value = value
+		
+	def __str__(self):
+		return repr(self.value)
 
 def demo():
     d = CategorySearchView()
