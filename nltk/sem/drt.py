@@ -326,6 +326,8 @@ class DrsDrawer:
         @param size_canvas: C{boolean}, True if the canvas size should be the exact size of the DRS
         @param canvas: C{Canvas} The canvas on which to draw the DRS.  If none is given, create a new canvas. 
         """
+        self.syntax = logic.Tokens.NEW_NLTK
+
         master = None
         if not canvas:
             master = Tk()
@@ -348,7 +350,6 @@ class DrsDrawer:
         self.canvas = canvas
         self.drs = drs
         self.master = master
-        self.syntax = logic.Tokens.NEW_NLTK
         
     def _get_text_height(self):
         """Get the height of a line of text"""
@@ -523,7 +524,7 @@ class DrsDrawer:
 
     def _handle_LambdaExpression(self, expression, command, x, y):
         # Find the width of the lambda symbol and abstracted variables
-        variables = Tokens.LAMBDA[self.syntax] + expression.variable.str(self.syntax) + Tokens.DOT[self.syntax]
+        variables = Tokens.LAMBDA[self.syntax] + str(expression.variable) + Tokens.DOT[self.syntax]
         right = self._visit_command(variables, x, y)[0]
 
         # Handle term

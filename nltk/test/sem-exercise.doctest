@@ -43,7 +43,7 @@ Here's an example to get you started.
 Key: k = 'Kim sings', l = 'Lee sings'
 
     >>> lp.parse('(k -> -l)')
-    ImpExpression: (k -> -l)
+    <ImpExpression (k -> -l)>
 
 This output provides some information about the kind of expression
 that the parser has recognized, namely an
@@ -301,7 +301,7 @@ Since lambda abstracts are functors, they can be applied to arguments,
 yielding an ``ApplicationExpression``:
 
     >>> lp.parse('\\x. love(kim,x)(fido)')
-    ApplicationExpression: \x.love(kim,x)(fido)
+    <ApplicationExpression \x.love(kim,x)(fido)>
 
 To carry out beta-conversion, we call the ``simplify()`` method on the
 expression, as shown here.
