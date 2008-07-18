@@ -392,7 +392,7 @@ class CategorySearchView:
         self._init_query_box(self.main_frame)
         self._init_results_box(self.main_frame)
         self._init_status(self.main_frame)
-        self.main_frame.pack(fill='both')
+        self.main_frame.pack(fill='both', expand=False)
                 
     def _init_corpus_select(self, parent):
         self.var = StringVar(parent)
@@ -454,9 +454,9 @@ class CategorySearchView:
     def _init_results_box(self, parent):
         innerframe = Frame(parent)
         innerframe.grid(row=6, column =0, rowspan=5, columnspan=4)
-        scrollbar = Scrollbar(innerframe)
-        scrollbar.grid(row=0, column=1, sticky=E)
-        self.results_box = Text(innerframe, width=80, height = 30, state="disabled", yscrollcommand=scrollbar.set)
+        scrollbar = Scrollbar(innerframe, borderwidth=1)
+        scrollbar.grid(row=0, column=1, sticky='NSE')
+        self.results_box = Text(innerframe, width=80, height = 30, state="disabled", borderwidth=1, yscrollcommand=scrollbar.set)
         self.results_box.grid(row=0, column =0)
         scrollbar.config(command=self.results_box.yview)
                 
