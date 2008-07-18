@@ -927,7 +927,7 @@ Aliased variable tests
     >>> fs3
     [a=?x, b=?x, c=?x]
     >>> bindings
-    {Variable: ?y: Variable: ?x}
+    {Variable('?y'): Variable('?x')}
     >>> fs3.unify(FeatStruct("[a=1]"))
     [a=1, b=1, c=1]
 
@@ -940,7 +940,7 @@ over multiple calls to unify.
     >>> fs2.unify(FeatStruct('[b=?x]'), bindings)
     [a=(1)[], b->(1)]
     >>> bindings
-    {Variable: ?x: []}
+    {Variable('?x'): []}
 
 ..
     >>> del fs1, fs2, fs3, fs4, fs5 # clean-up
@@ -955,7 +955,7 @@ Unification Bindings
     >>> fs1.unify(fs2, bindings)
     [a=12]
     >>> bindings
-    {Variable: ?x: 12}
+    {Variable('?x'): 12}
     >>> fs3.substitute_bindings(bindings)
     [b=12]
     >>> fs3 # substitute_bindings didn't mutate fs3.
@@ -969,7 +969,7 @@ Unification Bindings
     >>> fs1.unify(fs2, bindings)
     [a=5, b=1]
     >>> sorted(bindings.items())
-    [(Variable: ?x, 5), (Variable: ?x2, 1)]
+    [(Variable('?x2'), 1), (Variable('?x'), 5)]
 
 ..
     >>> del fs1, fs2, fs3 # clean-up
@@ -1094,7 +1094,7 @@ Tracing
       |   |    / ?x
       |   |   |\ 'C'
       |   |   |
-      |   |   +-->Variable: ?x
+      |   |   +-->Variable('?x')
       |   |
       |   +-->[b=[], c=?x]
       |       Bindings: {?x: 'C'}
@@ -1184,11 +1184,11 @@ Retracting Bindings
     [                           ]
     [ b -> (1)                  ]
     >>> print bindings
-    {Variable: ?y: [d=1], Variable: ?x: [c=[d=1]]}
+    {Variable('?y'): [d=1], Variable('?x'): [c=[d=1]]}
     >>> retract_bindings(fs3, bindings)
     [a=?x, b=?x]
     >>> print bindings
-    {Variable: ?y: [d=1], Variable: ?x: [c=?y]}
+    {Variable('?y'): [d=1], Variable('?x'): [c=?y]}
 
 Squashed Bugs
 ~~~~~~~~~~~~~
