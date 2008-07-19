@@ -242,6 +242,7 @@ class FreqDist(dict):
     def sorted_samples(self):
         raise AttributeError, "Use FreqDist.sorted() to get the sorted samples"
 
+    # SB: cache the sorted samples?
     def sorted(self):
         """
         Return the samples sorted in decreasing order of frequency.  Instances
@@ -1224,6 +1225,14 @@ class ConditionalFreqDist(object):
         """
         return self._fdists.keys()
 
+    def __len__(self):
+        """
+        @return: The number of conditions that have been accessed
+            for this C{ConditionalFreqDist}.
+        @rtype: C{int}
+        """
+        return len(self._fdists)
+
     def __repr__(self):
         """
         @return: A string representation of this
@@ -1257,6 +1266,14 @@ class ConditionalProbDistI(object):
         @param condition: The condition whose probability distribution
             should be returned.
         @type condition: any
+        """
+        raise AssertionError
+
+    def __len__(self):
+        """
+        @return: The number of conditions that are represented by
+            this C{ConditionalProbDist}.
+        @rtype: C{int}
         """
         raise AssertionError
 
@@ -1357,14 +1374,16 @@ class ConditionalProbDist(ConditionalProbDistI):
     def conditions(self):
         return self._pdists.keys()
 
+    def __len__(self):
+        return len(self._pdists)
+
     def __repr__(self):
         """
         @return: A string representation of this
             C{ConditionalProbDist}.
         @rtype: C{string}
         """
-        n = len(self._pdists)
-        return '<ConditionalProbDist with %d conditions>' % n
+        return '<ConditionalProbDist with %d conditions>' % self.__len__()
 
 class DictionaryConditionalProbDist(ConditionalProbDistI):
     """
