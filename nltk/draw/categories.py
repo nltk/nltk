@@ -375,6 +375,7 @@ being, she wrote in a letter posted %(NR)s."""
 
 CORPUS_LOADED_EVENT = 'CL_EVENT'
 SEARCH_TERMINATED_EVENT = 'ST_EVENT'
+SEARCH_ERROR_EVENT = 'SE_EVENT'
 
 class CategorySearchView:
     _BACKGROUND_COLOUR='#808080'#some grey
@@ -422,18 +423,22 @@ class CategorySearchView:
         om.grid(row=0, column=0)
         
     def _init_event_actions(self):
-        self._actions = {CORPUS_LOADED_EVENT:self.handle_corpus_loaded, SEARCH_TERMINATED_EVENT:self.handle_search_terminated}
+        self._actions = {CORPUS_LOADED_EVENT:self.handle_corpus_loaded, 
+                         SEARCH_TERMINATED_EVENT:self.handle_search_terminated,
+                         SEARCH_ERROR_EVENT:self.handle_search_error}
         
-    def handle_corpus_loaded(self, results):
+    def handle_corpus_loaded(self, nothing):
         self.status['text'] = self.var.get() + ' corpus is loaded'
         self.clear_all()
-        self.unfreeze_editable()
     
     def handle_search_terminated(self, results):
         self.write_results(results)
         self.status['text'] = ''
         if len(results) == 0:
             self.status['text'] = 'No results found for ' + query
+            
+    def handle_search_error(self, message):
+        self.status['text'] = message
         
     def corpus_selected(self, *args):
         new_selection = self.var.get()
@@ -466,10 +471,8 @@ class CategorySearchView:
         query = self.query_box.get()
         if (len(query.strip()) == 0): return
         self.status['text']  = 'Searching for ' + query
-        try:
-        	self.model.search(query)
-        except QueryError, e:
-        	self.status['text'] = e.value 
+        self.freeze_editable()
+        self.model.search(query)
         
     def write_results(self, results):
         self.results_box['state'] = 'normal'
@@ -515,6 +518,7 @@ class CategorySearchView:
         
     def update(self, event, results):
         self._actions[event](results)
+        self.unfreeze_editable()
         
     def mainloop(self, *args, **kwargs):
         if in_idle(): return
@@ -573,20 +577,14 @@ class CategorySearchModel:
                 try:
                     m = re.search(q, sent)
                 except re.error:
-                    raise QueryError, 'Error in query ' + str(self.query)
+                    self.model.notify_listeners(SEARCH_ERROR_EVENT, 'Error in query ' + self.query)
+                    return
                 if m:
                     sent_pos.append((sent, m.start(), m.end()))
                     i += 1
                     if i > self.num: break
             self.model.notify_listeners(SEARCH_TERMINATED_EVENT, sent_pos)
         
-class QueryError(Exception):
-	def __init__(self, value):
-		self.value = value
-		
-	def __str__(self):
-		return repr(self.value)
-
 def demo():
     d = CategorySearchView()
     d.mainloop()
