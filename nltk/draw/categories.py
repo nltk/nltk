@@ -7,6 +7,7 @@ import re
 from string import join
 from Tkinter import *
 from nltk.draw import *
+import threading
 
 
 def build_word_associations():
@@ -372,6 +373,9 @@ being, she wrote in a letter posted %(NR)s."""
 # Category Search Demo
 ############################################
 
+CORPUS_LOADED_EVENT = 'CL_EVENT'
+SEARCH_TERMINATED_EVENT = 'ST_EVENT'
+
 class CategorySearchView:
     _BACKGROUND_COLOUR='#808080'#some grey
     
@@ -386,9 +390,12 @@ class CategorySearchView:
     
     def __init__(self):
         self.model = CategorySearchModel()
+        self.model.add_listener(self)
         self.top = Tk()
         self._init_top(self.top)
         self._init_widgets(self.top)
+        self._init_event_actions()
+        self.load_corpus(self.model.DEFAULT_CORPUS)
         self.query_box.focus_set()
         
     def _init_top(self, top):
@@ -414,14 +421,30 @@ class CategorySearchView:
         om['highlightthickness'] = 1
         om.grid(row=0, column=0)
         
+    def _init_event_actions(self):
+        self._actions = {CORPUS_LOADED_EVENT:self.handle_corpus_loaded, SEARCH_TERMINATED_EVENT:self.handle_search_terminated}
+        
+    def handle_corpus_loaded(self, results):
+        self.status['text'] = self.var.get() + ' corpus is loaded'
+        self.clear_all()
+        self.unfreeze_editable()
+    
+    def handle_search_terminated(self, results):
+        self.write_results(results)
+        self.status['text'] = ''
+        if len(results) == 0:
+            self.status['text'] = 'No results found for ' + query
+        
     def corpus_selected(self, *args):
         new_selection = self.var.get()
-        if self.model.selected_corpus != new_selection:
-            self.status['text'] = 'Loading ' + self.var.get() + ' corpus'
-            self.model.load_corpus(new_selection)
-            self.status['text'] = self.var.get() + ' corpus is loaded'
-            self.clear_all()
-        
+        self.load_corpus(new_selection)
+
+    def load_corpus(self, selection):
+        if self.model.selected_corpus != selection:
+            self.status['text'] = 'Loading ' + selection + ' corpus...'
+            self.freeze_editable()
+            self.model.load_corpus(selection)
+
     def _init_status(self, parent):
         self.status = Label(parent, justify=LEFT, relief=SUNKEN, background=self._BACKGROUND_COLOUR, border=0, padx = 1, pady = 0)
         self.status.grid(row = 11, column= 0, columnspan=4, sticky=W)
@@ -431,7 +454,8 @@ class CategorySearchView:
         innerframe.grid(row=1, column=0, rowspan=5, columnspan=4)
         self.query_box = Entry(innerframe, width=40)
         self.query_box.grid(row=0, column = 0, padx=2, pady=20, sticky=E)
-        Button(innerframe, text='Search', command=self.search, borderwidth=1, highlightthickness=1).grid(row=0, column = 1, padx=2, pady=20, sticky=W)
+        self.search_button = Button(innerframe, text='Search', command=self.search, borderwidth=1, highlightthickness=1)
+        self.search_button.grid(row=0, column = 1, padx=2, pady=20, sticky=W)
         self.query_box.bind('<KeyPress-Return>', self.search_enter_keypress_handler)
         
     def search_enter_keypress_handler(self, *event):
@@ -443,11 +467,7 @@ class CategorySearchView:
         if (len(query.strip()) == 0): return
         self.status['text']  = 'Searching for ' + query
         try:
-        	results = self.model.search(query)
-        	self.write_results(results)
-        	self.status['text'] = ""
-        	if len(results) == 0:
-				self.status['text'] = 'No results found for ' + query
+        	self.model.search(query)
         except QueryError, e:
         	self.status['text'] = e.value 
         
@@ -483,7 +503,18 @@ class CategorySearchView:
     def clear_results_box(self):
         self.results_box['state'] = 'normal'
         self.results_box.delete("1.0", END)
-        self.results_box['state'] = 'disabled'        
+        self.results_box['state'] = 'disabled'   
+        
+    def freeze_editable(self):
+        self.query_box['state'] = 'disabled'
+        self.search_button['state'] = 'disabled'
+        
+    def unfreeze_editable(self):
+        self.query_box['state'] = 'normal'
+        self.search_button['state'] = 'normal'
+        
+    def update(self, event, results):
+        self._actions[event](results)
         
     def mainloop(self, *args, **kwargs):
         if in_idle(): return
@@ -491,11 +522,11 @@ class CategorySearchView:
         
 class CategorySearchModel:
     def __init__(self):
+        self.listeners = []
         self._BROWN_CORPUS = 'brown'
         self.CORPORA = {self._BROWN_CORPUS:nltk.corpus.brown , 'indian':nltk.corpus.indian}
         self.DEFAULT_CORPUS = self._BROWN_CORPUS
-        self.selected_corpus = self.DEFAULT_CORPUS
-        self.load_tagged_sents(self.DEFAULT_CORPUS)
+        self.selected_corpus = None
         
     def non_default_corpora(self):
         copy = []
@@ -505,27 +536,49 @@ class CategorySearchModel:
     
     def load_corpus(self, name):
         self.selected_corpus = name
-        self.load_tagged_sents(name)
-        
-    def load_tagged_sents(self, name):
-        ts = self.CORPORA[name].tagged_sents()
-        self.tagged_sents = as_strings(ts)
+        self.tagged_sents = []
+        runner_thread = self.LoadCorpus(name, self)
+        runner_thread.start()
         
     def search(self, query, num=50):
-        q = process(query)
-        sent_pos = []
-        i = 0
-     	for sent in self.tagged_sents:
-     		try:
-     			m = re.search(q, sent)
-     		except re.error:
-     			raise QueryError, 'Error in query ' + str(query)
-        	if m:
-				sent_pos.append((sent, m.start(), m.end()))
-				i += 1
-				if i > num:
-					break
-        return sent_pos
+        self.SearchCorpus(self, query, num).start()
+    
+    def add_listener(self, listener):
+        self.listeners.append(listener)
+        
+    def notify_listeners(self, event, results):
+        for each in self.listeners:
+            each.update(event, results)
+            
+    class LoadCorpus(threading.Thread):
+        def __init__(self, name, model):
+            self.model, self.name = model, name
+            threading.Thread.__init__(self)
+            
+        def run(self):
+            ts = self.model.CORPORA[self.name].tagged_sents()
+            self.model.tagged_sents = as_strings(ts)
+            self.model.notify_listeners(CORPUS_LOADED_EVENT, None)
+            
+    class SearchCorpus(threading.Thread):
+        def __init__(self, model, query, num):
+            self.model, self.query, self.num = model, query, num
+            threading.Thread.__init__(self)
+        
+        def run(self):
+            q = process(self.query)
+            sent_pos = []
+            i = 0
+            for sent in self.model.tagged_sents:
+                try:
+                    m = re.search(q, sent)
+                except re.error:
+                    raise QueryError, 'Error in query ' + str(self.query)
+                if m:
+                    sent_pos.append((sent, m.start(), m.end()))
+                    i += 1
+                    if i > self.num: break
+            self.model.notify_listeners(SEARCH_TERMINATED_EVENT, sent_pos)
         
 class QueryError(Exception):
 	def __init__(self, value):
