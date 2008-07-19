@@ -373,13 +373,23 @@ being, she wrote in a letter posted %(NR)s."""
 ############################################
 
 class CategorySearchView:
+    _BACKGROUND_COLOUR='#808080'#some grey
+    
+    #Colour of highlighted results
+    _HIGHLIGHT_COLOUR='#F00'#red
+    _HIGHLIGHT_TAG='HL_TAG'
+    
+    #Number of characters before the position of search item
+    _CHAR_BEFORE=35
+    #Number of characters after the position of search item
+    _CHAR_AFTER=45
+    
     def __init__(self):
-        self.BACKGROUND_COLOUR='#808080'
         self.model = CategorySearchModel()
         self.top = Tk()
         self._init_top(self.top)
         self._init_widgets(self.top)
-        
+        self.query_box.focus_set()
         
     def _init_top(self, top):
         top.geometry('+50+50')
@@ -387,7 +397,7 @@ class CategorySearchView:
         top.bind('<Control-q>', self.destroy)
         
     def _init_widgets(self, parent):
-        self.main_frame = Frame(parent, dict(background=self.BACKGROUND_COLOUR, padx=1, pady=1, border=1))        
+        self.main_frame = Frame(parent, dict(background=self._BACKGROUND_COLOUR, padx=1, pady=1, border=1))        
         self._init_corpus_select(self.main_frame)
         self._init_query_box(self.main_frame)
         self._init_results_box(self.main_frame)
@@ -397,7 +407,7 @@ class CategorySearchView:
     def _init_corpus_select(self, parent):
         self.var = StringVar(parent)
         self.var.set(self.model.DEFAULT_CORPUS)
-        Label(parent, justify=LEFT, text=' Corpus: ', background=self.BACKGROUND_COLOUR, padx = 2, pady = 1, border = 0).grid(row=0, column = 0, sticky = W)
+        Label(parent, justify=LEFT, text=' Corpus: ', background=self._BACKGROUND_COLOUR, padx = 2, pady = 1, border = 0).grid(row=0, column = 0, sticky = W)
         other_corpora = self.model.CORPORA.keys().remove(self.model.DEFAULT_CORPUS)
         om = OptionMenu(parent, self.var, self.model.DEFAULT_CORPUS, command=self.corpus_selected, *self.model.non_default_corpora())
         om['borderwidth'] = 0
@@ -410,24 +420,27 @@ class CategorySearchView:
             self.status['text'] = 'Loading ' + self.var.get() + ' corpus'
             self.model.load_corpus(new_selection)
             self.status['text'] = self.var.get() + ' corpus is loaded'
-            self.reset_all()
+            self.clear_all()
         
     def _init_status(self, parent):
-        self.status = Label(parent, justify=LEFT, relief=SUNKEN, background=self.BACKGROUND_COLOUR, border=0, padx = 1, pady = 0)
+        self.status = Label(parent, justify=LEFT, relief=SUNKEN, background=self._BACKGROUND_COLOUR, border=0, padx = 1, pady = 0)
         self.status.grid(row = 11, column= 0, columnspan=4, sticky=W)
     
     def _init_query_box(self, parent):
-        innerframe = Frame(parent, background=self.BACKGROUND_COLOUR)
+        innerframe = Frame(parent, background=self._BACKGROUND_COLOUR)
         innerframe.grid(row=1, column=0, rowspan=5, columnspan=4)
         self.query_box = Entry(innerframe, width=40)
         self.query_box.grid(row=0, column = 0, padx=2, pady=20, sticky=E)
-        Button(innerframe, text="Search", command=self.search, borderwidth=1, highlightthickness=1).grid(row=0, column = 1, padx=2, pady=20, sticky=W)
+        Button(innerframe, text='Search', command=self.search, borderwidth=1, highlightthickness=1).grid(row=0, column = 1, padx=2, pady=20, sticky=W)
+        self.query_box.bind('<KeyPress-Return>', self.search_enter_keypress_handler)
+        
+    def search_enter_keypress_handler(self, *event):
+        self.search()
                 
     def search(self):
-        self.results_box['state'] = 'normal'
-        self.results_box.delete("1.0", END)
-        self.results_box['state'] = 'disabled'
+        self.clear_results_box()
         query = self.query_box.get()
+        if (len(query.strip()) == 0): return
         self.status['text']  = 'Searching for ' + query
         try:
         	results = self.model.search(query)
@@ -435,27 +448,27 @@ class CategorySearchView:
         	self.status['text'] = ""
         	if len(results) == 0:
 				self.status['text'] = 'No results found for ' + query
-        except QueryError:
-        	self.status['text'] = 'Error in query' 
+        except QueryError, e:
+        	self.status['text'] = e.value 
         
     def write_results(self, results):
         self.results_box['state'] = 'normal'
         row = 0
         for each in results:
             if len(each[0].strip()) != 0:
-                self.results_box.insert(str(row) + ".0", align(each[0].strip(), each[1], 35, 45) + '\n')
-                self.results_box.tag_add("HIGHLIGHT", str(row) + ".35", str(row) + '.' + str(each[2] - each[1] + 35))
+                self.results_box.insert(str(row) + '.0', align(each[0].strip(), each[1], self._CHAR_BEFORE, self._CHAR_AFTER) + '\n')
+                self.results_box.tag_add(self._HIGHLIGHT_TAG, str(row) + '.' + str(self._CHAR_BEFORE), str(row) + '.' + str(each[2] - each[1] + self._CHAR_BEFORE))
                 row += 1
         self.results_box['state'] = 'disabled'
     
     def _init_results_box(self, parent):
         innerframe = Frame(parent)
-        innerframe.grid(row=6, column =0, rowspan=5, columnspan=4)
+        innerframe.grid(row=6, column=0, rowspan=5, columnspan=4)
         scrollbar = Scrollbar(innerframe, borderwidth=1)
         scrollbar.grid(row=0, column=1, sticky='NSE')
-        self.results_box = Text(innerframe, width=80, height = 30, state="disabled", borderwidth=1, yscrollcommand=scrollbar.set)
-        self.results_box.tag_config("HIGHLIGHT", foreground='#F00')
-        self.results_box.grid(row=0, column =0)
+        self.results_box = Text(innerframe, width=80, height=30, state='disabled', borderwidth=1, yscrollcommand=scrollbar.set)
+        self.results_box.tag_config(self._HIGHLIGHT_TAG, foreground=self._HIGHLIGHT_COLOUR)
+        self.results_box.grid(row=0, column=0)
         scrollbar.config(command=self.results_box.yview)
                 
     def destroy(self, *e):
@@ -463,11 +476,14 @@ class CategorySearchView:
         self.top.destroy()
         self.top = None
         
-    def reset_all(self):
-        self.query_box['text'] = ""
+    def clear_all(self):
+        self.query_box['text'] = ''
+        self.clear_results_box()
+        
+    def clear_results_box(self):
         self.results_box['state'] = 'normal'
         self.results_box.delete("1.0", END)
-        self.results_box['state'] = 'disabled'
+        self.results_box['state'] = 'disabled'        
         
     def mainloop(self, *args, **kwargs):
         if in_idle(): return
@@ -475,8 +491,8 @@ class CategorySearchView:
         
 class CategorySearchModel:
     def __init__(self):
-        self._BROWN_CORPUS = "brown"
-        self.CORPORA = {self._BROWN_CORPUS:nltk.corpus.brown , "indian":nltk.corpus.indian}
+        self._BROWN_CORPUS = 'brown'
+        self.CORPORA = {self._BROWN_CORPUS:nltk.corpus.brown , 'indian':nltk.corpus.indian}
         self.DEFAULT_CORPUS = self._BROWN_CORPUS
         self.selected_corpus = self.DEFAULT_CORPUS
         self.load_tagged_sents(self.DEFAULT_CORPUS)
@@ -503,7 +519,7 @@ class CategorySearchModel:
      		try:
      			m = re.search(q, sent)
      		except re.error:
-     			raise QueryError, 'Error in query ' + q
+     			raise QueryError, 'Error in query ' + str(query)
         	if m:
 				sent_pos.append((sent, m.start(), m.end()))
 				i += 1
