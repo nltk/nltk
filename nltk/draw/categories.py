@@ -435,7 +435,7 @@ class CategorySearchView:
         self.write_results(results)
         self.status['text'] = ''
         if len(results) == 0:
-            self.status['text'] = 'No results found for ' + query
+            self.status['text'] = 'No results found for ' + self.query
             
     def handle_search_error(self, message):
         self.status['text'] = message
@@ -468,7 +468,7 @@ class CategorySearchView:
                 
     def search(self):
         self.clear_results_box()
-        query = self.query_box.get()
+        self.query = query = self.query_box.get()
         if (len(query.strip()) == 0): return
         self.status['text']  = 'Searching for ' + query
         self.freeze_editable()
