@@ -262,7 +262,7 @@ def _attempt_proof_atom(current, agenda, accessible_vars, atoms, debug=(False, 0
 
     #mark all AllExpressions as 'not exhausted' into the agenda since we are (potentially) adding new accessible vars
     agenda.mark_alls_fresh();
-    return _attempt_proof(agenda, accessible_vars|set(current.args), atoms|set([(current, False)]), (debug[0], debug[1]+1)) 
+    return _attempt_proof(agenda, accessible_vars|set([current.argument]), atoms|set([(current, False)]), (debug[0], debug[1]+1)) 
     
 def _attempt_proof_n_atom(current, agenda, accessible_vars, atoms, debug=(False, 0)):
     # Check if the branch is closed.  Return 'True' if it is
@@ -272,7 +272,7 @@ def _attempt_proof_n_atom(current, agenda, accessible_vars, atoms, debug=(False,
 
     #mark all AllExpressions as 'not exhausted' into the agenda since we are (potentially) adding new accessible vars
     agenda.mark_alls_fresh();
-    return _attempt_proof(agenda, accessible_vars|set(current.term.args), atoms|set([(current.term, True)]), (debug[0], debug[1]+1)) 
+    return _attempt_proof(agenda, accessible_vars|set([current.term.argument]), atoms|set([(current.term, True)]), (debug[0], debug[1]+1)) 
     
 def _attempt_proof_n_eq(current, agenda, accessible_vars, atoms, debug=(False, 0)):
     ###########################################################################

@@ -62,6 +62,15 @@ class Variable(object):
 
     def __eq__(self, other):
         return self.__class__ == other.__class__ and self.name == other.name
+    
+    def __cmp__(self, other):
+        assert isinstance(other, Variable)
+        if self.name == other.name:
+            return 0
+        elif self.name < other.name:
+            return -1
+        else:
+            return 1
 
     def __hash__(self):
         return hash(self.name)
@@ -94,15 +103,14 @@ class SubstituteBindingsI(object):
         raise NotImplementedError()
 
 class Expression(SubstituteBindingsI):
+    """This is the base abstract object for all logical expressions"""
     def __call__(self, other, *additional):
         accum = self.applyto(other)
         for a in additional:
-            accum = accum.applyto(a)
+            accum = accum(a)
         return accum
     
     def applyto(self, other):
-        if not isinstance(other, list):
-            other = [other]
         return ApplicationExpression(self, other)
     
     def __neg__(self):
@@ -167,27 +175,47 @@ class Expression(SubstituteBindingsI):
         return self.str()
 
 class ApplicationExpression(Expression):
-    def __init__(self, function, args):
+    r"""
+    This class is used to represent two related types of logical expressions.
+    
+    The first is a Predicate Expression, such as "P(x,y)".  A predicate 
+    expression is comprised of a VariableExpression as the predicate and a list
+    of Expressions as the arguments.
+    
+    The second is a an application of one expression to another, such as 
+    "(\x.dog(x))(fido)".
+    
+    The reason Predicate Expressions are treated as Application Expressions is
+    that the VariableExpression predicate of the expression may be replaced with
+    another Expression, such as a LambdaExpression, which would mean that the
+    Predicate should be thought of as being applied to the arguments.
+    
+    The LogicParser will always curry arguments in a application expression.
+    So, "\x y.see(x,y)(john,mary)" will be represented internally as 
+    "((\x y.(see(x))(y))(john))(mary)".  This simplifies the internals since 
+    there will always be exactly one argument in an application.
+    
+    The str() method will usually print the curried forms of application 
+    expressions.  The one exception is when the the application expression is
+    really a predicate expression (ie, underlying function is a 
+    VariableExpression).  This means that the example from above will be 
+    returned as "(\x y.see(x,y)(john))(mary)".
+    """
+    def __init__(self, function, argument):
         """
         @param function: C{Expression}, for the function expression
-        @param args: C{list} of C{Expression}, for the arguments   
+        @param argument: C{Expression}, for the argument   
         """
         self.function = function
-        self.args = args
+        self.argument = argument
         
     def simplify(self):
-        accum = self.function.simplify()
-
-        if isinstance(accum, LambdaExpression):
-            for arg in self.args:
-                if isinstance(accum, LambdaExpression):
-                    accum = accum.term.replace(accum.variable, 
-                                               arg.simplify()).simplify()
-                else:
-                    accum = self.__class__(accum, [arg.simplify()])
-            return accum
+        function = self.function.simplify()
+        argument = self.argument.simplify()
+        if isinstance(function, LambdaExpression):
+            return function.term.replace(function.variable, argument).simplify()
         else:
-            return self.__class__(accum, [arg.simplify() for arg in self.args])
+            return self.__class__(function, argument)
         
     def replace(self, variable, expression, replace_bound=False):
         """
@@ -196,44 +224,62 @@ class ApplicationExpression(Expression):
         @param expression: C{Expression} The expression with which to replace it
         @param replace_bound: C{boolean} Should bound variables be replaced?  
         """
-        return self.__class__(self.function.replace(variable, expression, 
-                                                    replace_bound),
-                              [arg.replace(variable, expression, replace_bound)
-                               for arg in self.args])
+        function = self.function.replace(variable, expression, replace_bound)
+        argument = self.argument.replace(variable, expression, replace_bound)
+        return self.__class__(function, argument)
         
     def variables(self):
-        accum = self.function.variables()
-        for arg in self.args:
-            accum |= arg.variables()
-        return accum
+        return self.function.variables() | self.argument.variables() 
 
     def free(self):
-        accum = self.function.free()
-        for arg in self.args:
-            accum |= arg.free()
-        return accum
+        return self.function.free() | self.argument.free() 
     
     def __eq__(self, other):
         return self.__class__ == other.__class__ and \
-                self.function == other.function and self.args == other.args 
+                self.function == other.function and \
+                self.argument == other.argument 
 
     def str(self, syntax=Tokens.NEW_NLTK):
-        function = self.function.str(syntax)
-
-        if isinstance(self.function, LambdaExpression):
-            if isinstance(self.function.term, ApplicationExpression):
-                if not isinstance(self.function.term.function, 
-                                  VariableExpression):
-                    function = Tokens.OPEN + function + Tokens.CLOSE
-            elif not isinstance(self.function.term, BooleanExpression):
-                function = Tokens.OPEN + function + Tokens.CLOSE
-        elif isinstance(self.function, ApplicationExpression):
-            function = Tokens.OPEN + function + Tokens.CLOSE
+        # uncurry the arguments and find the base function
+        function, args = self.uncurry()
+        if isinstance(function, VariableExpression):
+            #It's a predicate expression ("P(x,y)"), so uncurry arguments
+            arg_str = ','.join([arg.str(syntax) for arg in args[::-1]])
+        else:
+            #Leave arguments curried
+            function = self.function
+            arg_str = self.argument.str(syntax)
+        
+        function_str = function.str(syntax)
+        parenthesize_function = False
+        if isinstance(function, LambdaExpression):
+            if isinstance(function.term, ApplicationExpression):
+                if not isinstance(function.term.function, VariableExpression):
+                    parenthesize_function = True
+            elif not isinstance(function.term, BooleanExpression):
+                parenthesize_function = True
+        elif isinstance(function, ApplicationExpression):
+            parenthesize_function = True
                 
-        return function + Tokens.OPEN + \
-               ','.join([arg.str(syntax) for arg in self.args]) + Tokens.CLOSE
+        if parenthesize_function:
+            function_str = Tokens.OPEN + function_str + Tokens.CLOSE
+            
+        return function_str + Tokens.OPEN + arg_str + Tokens.CLOSE
+
+    def uncurry(self):
+        """
+        return: A tuple (base-function, arg-list)
+        """
+        function = self.function
+        args = [self.argument]
+        while isinstance(function, ApplicationExpression):
+            #(\x.\y.sees(x,y)(john))(mary)
+            args.append(function.argument)
+            function = function.function
+        return (function, args)
 
 class VariableExpression(Expression):
+    """This class represents a variable to be used as a predicate or entity"""
     def __init__(self, variable):
         """
         @param variable: C{Variable}, for the variable
@@ -274,10 +320,14 @@ class VariableExpression(Expression):
         return str(self.variable)
     
 class IndividualVariableExpression(VariableExpression):
+    """This class represents variables that take the form of a single lowercase
+    character followed by zero or more digits."""
     def free(self):
         return set([self.variable])
     
 class VariableBinderExpression(Expression):
+    """This an abstract class for any Expression that binds a variable in an
+    Expression.  This includes LambdaExpressions and Quanitifed Expressions"""
     def __init__(self, variable, term):
         """
         @param variable: C{Variable}, for the variable
@@ -427,22 +477,27 @@ class BooleanExpression(Expression):
                 + ' ' + self.second.str(syntax) + Tokens.CLOSE
         
 class AndExpression(BooleanExpression):
+    """This class represents conjunctions"""
     def getOp(self, syntax=Tokens.NEW_NLTK):
         return Tokens.AND[syntax]
 
 class OrExpression(BooleanExpression):
+    """This class represents disjunctions"""
     def getOp(self, syntax=Tokens.NEW_NLTK):
         return Tokens.OR[syntax]
 
 class ImpExpression(BooleanExpression):
+    """This class represents implications"""
     def getOp(self, syntax=Tokens.NEW_NLTK):
         return Tokens.IMP[syntax]
 
 class IffExpression(BooleanExpression):
+    """This class represents biconditionals"""
     def getOp(self, syntax=Tokens.NEW_NLTK):
         return Tokens.IFF[syntax]
 
 class EqualityExpression(BooleanExpression):
+    """This class represents equality expressions like "(x = y)"."""
     def getOp(self, syntax=Tokens.NEW_NLTK):
         return Tokens.EQ[syntax]
 
@@ -559,46 +614,32 @@ class LogicParser:
         #It's either: 1) a predicate expression: sees(x,y)
         #             2) an application expression: P(x)
         #             3) a solo variable: john OR x
+        accum = self.make_VariableExpression(tok)
         if self.inRange(0) and self.token(0) == Tokens.OPEN:
             #The predicate has arguments
-            self.token() #swallow the Open Paren
-            
-            #gather the arguments
-            args = []
-            if self.token(0) != Tokens.CLOSE:
-                args.append(self.parse_Expression())
-                while self.token(0) == Tokens.COMMA:
-                    self.token() #swallow the comma
-                    args.append(self.parse_Expression())
-            self.assertToken(self.token(), Tokens.CLOSE)
-            
             if is_indvar(tok):
                 raise ParseException('\'%s\' is an illegal variable name.  '
                                      'Predicate variables may not be '
                                      'individual variables' % tok)
-            accum = self.make_ApplicationExpression(
-                         self.make_VariableExpression(tok), args)
-        else:
-            #The predicate has no arguments: it's a solo variable
-            accum = self.make_VariableExpression(tok)
+            self.token() #swallow the Open Paren
+            
+            #curry the arguments
+            accum = self.make_ApplicationExpression(accum, 
+                                                    self.parse_Expression())
+            while self.token(0) == Tokens.COMMA:
+                self.token() #swallow the comma
+                accum = self.make_ApplicationExpression(accum, 
+                                                        self.parse_Expression())
+            self.assertToken(self.token(), Tokens.CLOSE)
         return self.attempt_EqualityExpression(accum)
         
     def handle_lambda(self, tok):
         # Expression is a lambda expression
-        
         vars = [Variable(self.token())]
-        while True:
-            while self.isvariable(self.token(0)):
-                # Support expressions like: \x y.M == \x.\y.M
-                vars.append(Variable(self.token()))
-            self.assertToken(self.token(), Tokens.DOT)
-            
-            if self.token(0) in Tokens.LAMBDA:
-                #if it's directly followed by another lambda, keep the lambda 
-                #expressions together, so that \x.\y.M == \x y.M
-                self.token() #swallow the lambda symbol
-            else:
-                break
+        while self.isvariable(self.token(0)):
+            # Support expressions like: \x y.M == \x.\y.M
+            vars.append(Variable(self.token()))
+        self.assertToken(self.token(), Tokens.DOT)
         
         accum = self.parse_Expression(False)
         while vars:
@@ -703,31 +744,20 @@ class LogicParser:
                                      'Application Expression, so it may not '
                                      'take arguments')
             self.token() #swallow then open paren
-            if isinstance(expression, LambdaExpression):
-                accum = expression
-                if self.token(0) != Tokens.CLOSE:
-                    accum = self.make_ApplicationExpression(
-                                            accum, [self.parse_Expression()])
-                    while self.token(0) == Tokens.COMMA:
-                        self.token() #swallow the comma
-                        accum = self.make_ApplicationExpression(
-                                            accum, [self.parse_Expression()])
-                self.assertToken(self.token(), Tokens.CLOSE)
-            else:
-                args = []
-                if self.token(0) != Tokens.CLOSE:
-                    args.append(self.parse_Expression())
-                    while self.token(0) == Tokens.COMMA:
-                        self.token() #swallow the comma
-                        args.append(self.parse_Expression())
-                self.assertToken(self.token(), Tokens.CLOSE)
-                accum = self.make_ApplicationExpression(expression, args)
+            #curry the arguments
+            accum = self.make_ApplicationExpression(expression, 
+                                                    self.parse_Expression())
+            while self.token(0) == Tokens.COMMA:
+                self.token() #swallow the comma
+                accum = self.make_ApplicationExpression(accum, 
+                                                        self.parse_Expression())
+            self.assertToken(self.token(), Tokens.CLOSE)
             return self.attempt_ApplicationExpression(accum)
         else:
             return expression
 
-    def make_ApplicationExpression(self, function, args):
-        return ApplicationExpression(function, args)
+    def make_ApplicationExpression(self, function, argument):
+        return ApplicationExpression(function, argument)
     
     def make_VariableExpression(self, name):
         if is_indvar(name):

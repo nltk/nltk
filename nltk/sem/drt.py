@@ -15,16 +15,18 @@ from Tkinter import Tk
 from tkFont import Font
 from nltk.draw import in_idle
 
-class AbstractDrs:
+class AbstractDrs(object):
+    """
+    This is the base abstract abstract DRT Expression from which every DRT 
+    Expression extends.
+    """
     def __call__(self, other, *additional):
         accum = self.applyto(other)
         for a in additional:
-            accum = accum.applyto(a)
+            accum = accum(a)
         return accum
     
     def applyto(self, other):
-        if not isinstance(other, list):
-            other = [other]
         return DrtApplicationExpression(self, other)
     
     def __neg__(self):
@@ -61,8 +63,12 @@ class AbstractDrs:
     def __add__(self, other):
         return ConcatenationDRS(self, other)
     
-    def get_pronoun_token(self):
-        return Tokens.PRONOUN
+    def is_pronoun_function(self):
+        """ Is self of the form "PRO(x)"? """
+        return isinstance(self, DrtApplicationExpression) and \
+               isinstance(self.function, DrtVariableExpression) and \
+               self.function.variable.name == Tokens.PRONOUN and \
+               isinstance(self.argument, DrtIndividualVariableExpression)
     
     def get_EqualityExpression(self):
         return DrtEqualityExpression
@@ -297,25 +303,10 @@ class ConcatenationDRS(AbstractDrs, logic.BooleanExpression, RA.ConcatenationDRS
 class DrtApplicationExpression(AbstractDrs, logic.ApplicationExpression, RA.ApplicationExpression):
     def toFol(self):
         return logic.ApplicationExpression(self.function.toFol(), 
-                                           [arg.toFol() for arg in self.args])
+                                           self.argument.toFol())
 
     def get_refs(self):
         return []
-
-    def str(self, syntax=logic.Tokens.NEW_NLTK):
-        function = self.function.str(syntax)
-
-        if isinstance(self.function, DrtLambdaExpression):
-            if isinstance(self.function.term, DrtApplicationExpression):
-                if not isinstance(self.function.term.function, DrtVariableExpression):
-                    function = Tokens.OPEN + function + Tokens.CLOSE
-            elif not isinstance(self.function.term, logic.BooleanExpression) and \
-                 not isinstance(self.function.term, DRS):
-                function = Tokens.OPEN + function + Tokens.CLOSE
-                
-        return function + Tokens.OPEN + \
-               ','.join([arg.str(syntax) for arg in self.args]) + Tokens.CLOSE
-
 
 class DrsDrawer:
     BUFFER = 3
@@ -494,26 +485,32 @@ class DrsDrawer:
         return command((max_right, bottom), x, y)
 
     def _handle_ApplicationExpression(self, expression, command, x, y):
+        function, args = expression.uncurry()
+        if not isinstance(function, DrtVariableExpression):
+            #It's not a predicate expression ("P(x,y)"), so leave arguments curried
+            function = expression.function
+            args = [expression.argument]
+        
         # Get the max bottom of any element on the line
-        function_bottom = self._visit(expression.function, x, y)[1]
-        max_bottom = max([function_bottom] + [self._visit(arg, x, y)[1] for arg in expression.args])
+        function_bottom = self._visit(function, x, y)[1]
+        max_bottom = max([function_bottom] + [self._visit(arg, x, y)[1] for arg in args])
             
         line_height = max_bottom - y
             
         # Handle 'function'
-        function_drawing_top = self._get_centered_top(y, line_height, expression.function._drawing_height)
-        right = self._handle(expression.function, command, x, function_drawing_top)[0]
+        function_drawing_top = self._get_centered_top(y, line_height, function._drawing_height)
+        right = self._handle(function, command, x, function_drawing_top)[0]
         
         # Handle open paren
         centred_string_top = self._get_centered_top(y, line_height, self._get_text_height())
         right = command(Tokens.OPEN, right, centred_string_top)[0]
         
         # Handle each arg
-        for (i,arg) in enumerate(expression.args):
+        for (i,arg) in enumerate(args):
             arg_drawing_top = self._get_centered_top(y, line_height, arg._drawing_height)
             right = self._handle(arg, command, right, arg_drawing_top)[0]
             
-            if i+1 < len(expression.args):
+            if i+1 < len(args):
                 #since it's not the last arg, add a comma
                 right = command(Tokens.COMMA + ' ', right, centred_string_top)[0]
         
@@ -660,8 +657,8 @@ class DrtParser(logic.LogicParser):
             factory = DrtIffExpression
         return factory
 
-    def make_ApplicationExpression(self, function, args):
-        return DrtApplicationExpression(function, args)
+    def make_ApplicationExpression(self, function, argument):
+        return DrtApplicationExpression(function, argument)
     
     def make_VariableExpression(self, name):
         if logic.is_indvar(name):
