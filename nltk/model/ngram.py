@@ -55,9 +55,13 @@ class NgramModel(ModelI):
         '''Evaluate the log probability of this word in this context.'''
         return self._model[context].logprob(word)
 
+#    def beta(self, context):
+
+    # todo: implement Katz backoff
     def generate(self, n, context=()):
         text = list(context)
         for i in range(n):
+            print self.context(text, i), self._model[self.context(text, i)]
             word = self._model[self.context(text, i)].generate()
             text.append(word)
         return text
@@ -73,13 +77,13 @@ class NgramModel(ModelI):
         return e
 
     def __repr__(self):
-        return '<NgramModel with %d ngrams>' % len(self._model)
+        return '<NgramModel with %d %d-grams>' % (len(self._model), self._n)
 
 def demo():
     from nltk.corpus import brown
     from nltk.probability import LidstoneProbDist
     estimator = lambda fdist, bins: LidstoneProbDist(fdist, 0.2, bins)
-    lm = NgramModel(3, brown.sents(categories='a'), estimator)
+    lm = NgramModel(2, brown.sents(categories='a'), estimator)
     print lm
     sent = brown.sents()[0]
     print sent

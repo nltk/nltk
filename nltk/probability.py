@@ -347,6 +347,14 @@ class ProbDistI(object):
         """
         raise AssertionError()
 
+    # cf self.SUM_TO_ONE
+    def discount(self):
+        """
+        @return: The ratio by which counts are discounted on average: c*/c
+        @rtype: C{float}
+        """
+        return 0.0
+
     # Subclasses shuld define more efficient implementations of this,
     # where possible.
     def generate(self):
@@ -581,6 +589,10 @@ class LidstoneProbDist(ProbDistI):
     def samples(self):
         return self._freqdist.keys()
 
+    def discount(self):
+        gb = self._gamma * self._bins
+        return gb / (self._N + gb)
+
     def __repr__(self):
         """
         @rtype: C{string}
@@ -800,6 +812,9 @@ class HeldoutProbDist(ProbDistI):
         # should give the right answer *most* of the time. :)
         return self._base_fdist.max()
 
+    def discount(self):
+        raise NotImplementedError()
+
     def __repr__(self):
         """
         @rtype: C{string}
@@ -863,6 +878,9 @@ class CrossValidationProbDist(ProbDistI):
         for heldout_probdist in self._heldout_probdists:
             prob += heldout_probdist.prob(sample)
         return prob/len(self._heldout_probdists)
+
+    def discount(self):
+        raise NotImplementedError()
 
     def __repr__(self):
         """
@@ -946,6 +964,9 @@ class WittenBellProbDist(ProbDistI):
     def freqdist(self):
         return self._freqdist
 
+    def discount(self):
+        raise NotImplementedError()
+
     def __repr__(self):
         """
         @rtype: C{string}
@@ -1017,6 +1038,9 @@ class GoodTuringProbDist(ProbDistI):
     
     def samples(self):
         return self._freqdist.keys()
+
+    def discount(self):
+        raise NotImplementedError()
 
     def freqdist(self):
         return self._freqdist
