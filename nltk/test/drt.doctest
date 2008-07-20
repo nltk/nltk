@@ -51,7 +51,7 @@ Parser
     \x.\y.DRS([],[sees(x,y)])
 
     >>> print dp.parse(r'\x.DRS([],[walks(x)])(john)')
-    \x.DRS([],[walks(x)])(john)
+    (\x.DRS([],[walks(x)]))(john)
     >>> print dp.parse(r'\R.\x.DRS([],[big(x,R)])(\y.DRS([],[mouse(y)]))')
     (\R.\x.DRS([],[big(x,R)]))(\y.DRS([],[mouse(y)]))
 

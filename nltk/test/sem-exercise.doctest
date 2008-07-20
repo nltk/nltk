@@ -301,7 +301,7 @@ Since lambda abstracts are functors, they can be applied to arguments,
 yielding an ``ApplicationExpression``:
 
     >>> lp.parse('\\x. love(kim,x)(fido)')
-    <ApplicationExpression \x.love(kim,x)(fido)>
+    <ApplicationExpression (\x.love(kim,x))(fido)>
 
 To carry out beta-conversion, we call the ``simplify()`` method on the
 expression, as shown here.
@@ -316,7 +316,7 @@ then use the ``ApplicationExpression`` constructor to do the application:
 
     >>> e1 = lp.parse('\\x. all y. love(y,x)')
     >>> e2 = lp.parse('kim')
-    >>> e3 = ApplicationExpression(e1, [e2])
+    >>> e3 = ApplicationExpression(e1, e2)
     >>> print e3.simplify()
     all y.love(y,kim)
 
@@ -350,7 +350,7 @@ find a value for ``e1`` such that a given reduction holds. Here's an example:
 (5.1)
     
     >>> e2 = lp.parse('kim')
-    >>> e3 = ApplicationExpression(e1, [e2])
+    >>> e3 = ApplicationExpression(e1, e2)
     >>> print e3.simplify()
     exists y.love(kim,y)
 
@@ -367,7 +367,7 @@ version of the final output.
 (5.2)
     
     >>> e2 = lp.parse('kim')
-    >>> e3 = ApplicationExpression(e1, [e2])
+    >>> e3 = ApplicationExpression(e1, e2)
     >>> print e3.simplify()
     exists y.(love(kim,y) | love(y,kim))
 
@@ -377,7 +377,7 @@ version of the final output.
 (5.3)
     
     >>> e2 = lp.parse('kim')
-    >>> e3 = ApplicationExpression(e1, [e2])
+    >>> e3 = ApplicationExpression(e1, e2)
     >>> print e3.simplify()
     (exists y.love(kim,y) | all z.love(z,kim))
 
@@ -387,7 +387,7 @@ version of the final output.
 (5.3)
     
     >>> e2 = lp.parse('kim')
-    >>> e3 = ApplicationExpression(e1, [e2])
+    >>> e3 = ApplicationExpression(e1, e2)
     >>> print e3.simplify()
     (-exists y.love(kim,y) | love(kim,kim))
 
@@ -398,7 +398,7 @@ version of the final output.
 (5.4)
     
     >>> e2 = lp.parse('kim')
-    >>> e3 = ApplicationExpression(e1, [e2])
+    >>> e3 = ApplicationExpression(e1, e2)
     >>> print e3.simplify()
     walk(fido)
 
@@ -431,7 +431,7 @@ this way. Consider the following example:
 
     >>> e1 = lp.parse('\\P. \\x. P(x,kim)')
     >>> e2 = lp.parse('chase')
-    >>> e3 = ApplicationExpression(e1, [e2])
+    >>> e3 = ApplicationExpression(e1, e2)
     >>> print e3.simplify()
     \x.chase(x,kim)
 
@@ -445,7 +445,7 @@ abstraction, as shown here:
 
 ..
     >>> e2 = lp.parse('chase')
-    >>> e3 = ApplicationExpression(e1, [e2])
+    >>> e3 = ApplicationExpression(e1, e2)
     >>> print e3.simplify()
     \x.chase(x,kim)
 
@@ -464,7 +464,7 @@ Now, find an ``e1`` that gives the following results:
 (6.1)
 
     >>> e2 = lp.parse('chase')
-    >>> e3 = ApplicationExpression(e1, [e2])
+    >>> e3 = ApplicationExpression(e1, e2)
     >>> print e3.simplify()
     \x.all y.(dog(y) -> chase(x,kim))
 
@@ -475,7 +475,7 @@ Now, find an ``e1`` that gives the following results:
 (6.2)
 
     >>> e2 = lp.parse('chase')
-    >>> e3 = ApplicationExpression(e1, [e2])
+    >>> e3 = ApplicationExpression(e1, e2)
     >>> print e3.simplify()
     \x.exists y.(dog(y) & chase(kim,x))
 
@@ -486,7 +486,7 @@ Now, find an ``e1`` that gives the following results:
 (6.3)
 
     >>> e2 = lp.parse('give')
-    >>> e3 = ApplicationExpression(e1, [e2])
+    >>> e3 = ApplicationExpression(e1, e2)
     >>> print e3.simplify()
     \x0.\x1.exists y.(present(y) & give(x1,y,x0))
 
@@ -501,7 +501,7 @@ this:
 
     >>> e1 = lp.parse('\\P. all x. (dog(x) -> P(x))')
     >>> e2 = lp.parse('bark')
-    >>> e3 = ApplicationExpression(e1, [e2])
+    >>> e3 = ApplicationExpression(e1, e2)
     >>> print e3.simplify()
     all x.(dog(x) -> bark(x))
 
@@ -514,7 +514,7 @@ Now, find ``e1`` such that the following hold:
 (6.4)
 
     >>> e2 = lp.parse('bark')
-    >>> e3 = ApplicationExpression(e1, [e2])
+    >>> e3 = ApplicationExpression(e1, e2)
     >>> print e3.simplify()
     exists y.(dog(x) & bark(x))
 
@@ -524,7 +524,7 @@ Now, find ``e1`` such that the following hold:
 (6.5)
 
     >>> e2 = lp.parse('bark')
-    >>> e3 = ApplicationExpression(e1, [e2])
+    >>> e3 = ApplicationExpression(e1, e2)
     >>> print e3.simplify()
     bark(fido)
 
@@ -541,7 +541,7 @@ obtained:
 (6.6)
     
     >>> e2 = lp.parse('\\P. all x. (dog(x) -> P(x))')
-    >>> e3 = ApplicationExpression(e1, [e2])
+    >>> e3 = ApplicationExpression(e1, e2)
     >>> print e3.simplify()
     all x.(dog(x) -> bark(x))
 
