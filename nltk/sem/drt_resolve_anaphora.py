@@ -63,9 +63,7 @@ class ConcatenationDRS(BooleanExpression):
 
 class ApplicationExpression:
     def resolve_anaphora(self, trail=[]):
-        if isinstance(self.function, VariableExpression) and \
-           self.function.variable.name == self.get_pronoun_token():
-            assert len(self.args) == 1 #only one arg is allowed in PRO(x)
+        if self.is_pronoun_function():
             possible_antecedents = PossibleAntecedents()
             for ancestor in trail:
                 try:
@@ -75,22 +73,23 @@ class ApplicationExpression:
                 except AttributeError:
                     pass #the ancestor does not have a get_refs method
                 
-            arg = self.args[0]
             #===============================================================================
             #   This line ensures that statements of the form ( x = x ) wont appear.
             #   Possibly amend to remove antecedents with the wrong 'gender' 
             #===============================================================================
-            possible_antecedents.remove(arg)
+            possible_antecedents.remove(self.argument)
             equalityExpression = self.get_EqualityExpression()
             if len(possible_antecedents) == 1:
-                equalityExp = equalityExpression(arg, possible_antecedents[0])
+                equalityExp = equalityExpression(self.argument, 
+                                                 possible_antecedents[0])
             else:
-                equalityExp = equalityExpression(arg, possible_antecedents) 
+                equalityExp = equalityExpression(self.argument, 
+                                                 possible_antecedents) 
             return equalityExp
         else:
             r_function = self.function.resolve_anaphora(trail + [self])
-            r_args = [arg.resolve_anaphora(trail + [self]) for arg in self.args]
-            return self.__class__(r_function, r_args)
+            r_argument = self.argument.resolve_anaphora(trail + [self])
+            return self.__class__(r_function, r_argument)
 
 class PossibleAntecedents(list, logic.Expression):
     def free(self):

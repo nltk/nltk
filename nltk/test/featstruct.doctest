@@ -969,7 +969,7 @@ Unification Bindings
     >>> fs1.unify(fs2, bindings)
     [a=5, b=1]
     >>> sorted(bindings.items())
-    [(Variable('?x2'), 1), (Variable('?x'), 5)]
+    [(Variable('?x'), 5), (Variable('?x2'), 1)]
 
 ..
     >>> del fs1, fs2, fs3 # clean-up

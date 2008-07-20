@@ -32,19 +32,19 @@ Test numerals
     >>> plus = lp.parse(r'\M N F x.M(F,N(F,x))')
     >>> mult = lp.parse(r'\M N F.M(N(F))')
     >>> pred = lp.parse(r'\N F x.(N(\G H.H(G(F)))(\u.x)(\u.u))')
-    >>> v1 = ApplicationExpression(succ, [zero]).simplify()
+    >>> v1 = ApplicationExpression(succ, zero).simplify()
     >>> v1 == one
     True
-    >>> v2 = ApplicationExpression(succ, [v1]).simplify()
+    >>> v2 = ApplicationExpression(succ, v1).simplify()
     >>> v2 == two
     True
-    >>> v3 = ApplicationExpression(ApplicationExpression(plus, [v1]), [v2]).simplify()
+    >>> v3 = ApplicationExpression(ApplicationExpression(plus, v1), v2).simplify()
     >>> v3 == three
     True
-    >>> v4 = ApplicationExpression(ApplicationExpression(mult, [v2]), [v2]).simplify()
+    >>> v4 = ApplicationExpression(ApplicationExpression(mult, v2), v2).simplify()
     >>> v4 == four
     True
-    >>> v5 = ApplicationExpression(pred, [ApplicationExpression(pred, [v4])]).simplify()
+    >>> v5 = ApplicationExpression(pred, ApplicationExpression(pred, v4)).simplify()
     >>> v5 == two
     True
     
@@ -62,8 +62,8 @@ Overloaded operators also exist for convenience
     >>> john = lp.parse(r'john')
     >>> man = lp.parse(r'\x.man(x)')
     >>> walk = lp.parse(r'\x.walk(x)')
-    >>> print man(john).simplify()
-    man(john)
+    >>> man(john).simplify()
+    <ApplicationExpression man(john)>
     >>> print -walk(john).simplify()
     -walk(john)
     >>> print (man(john) & walk(john)).simplify()
@@ -75,6 +75,14 @@ Overloaded operators also exist for convenience
     >>> print (man(john) < walk(john)).simplify()
     (man(john) <-> walk(john))
     
+Python's built-in lambda operator can also be used with Expressions 
+
+    >>> john = VariableExpression(Variable('john'))
+    >>> run_var = VariableExpression(Variable('run'))
+    >>> run = lambda x: run_var(x)
+    >>> run(john)
+    <ApplicationExpression run(john)>
+
     
 ``betaConversionTestSuite.pl``
 ------------------------------
@@ -232,7 +240,7 @@ Test Parser
         >>> print lp.parse(r'((\x.\y.sees(x,y))(a))(b)')
         ((\x.\y.sees(x,y))(a))(b)
         >>> print lp.parse(r'P(x)(y)(z)')
-        ((P(x))(y))(z)
+        P(x,y,z)
         >>> print lp.parse(r'P(Q)')
         P(Q)
         >>> print lp.parse(r'P(Q(x))')
