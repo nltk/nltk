@@ -28,110 +28,15 @@ class Error(Exception): pass
 
 class Undefined(Error): pass
 
-def trace_eval(f, *args, **kw):
+def trace(f, *args, **kw):
     argspec = inspect.getargspec(f)
     d = dict(zip(argspec[0], args))
-    for i in d.items():
-        print "%s => %s" % i
+    if d.pop('trace', None):
+        print
+        for item in d.items():
+            print "%s => %s" % item
+    return f(*args, **kw)
         
-class CharFun(dict):
-    """
-    A dictionary which represents a curryed characteristic function.
-    """
-
-    def __init__(self, charfun=None):
-        dict.__init__(self)
-        if charfun:
-            self.update(charfun)
- 
-        
-    #def _isrel(self, s):
-        #"""Check whether a set represents a relation (of any arity)."""
-        
-        #assert isinstance(s, set), "Argument is not a set"
-        #if len(s) == 0:
-            #return True
-        #elif not isinstance(max(s),tuple) or len(max(s))==len(min(s)):
-            #return True
-        #else:
-            #raise ValueError, "Set contains sequences of different lengths"
-
-    def _item2dict(self, item):
-        """
-        Given an input such as the triple ('a', 'b', 'c'), return the L{CharFun}
-        {'c': {'b': {'a' : True}}}
-        
-        @return: A characteristic function corresponding to the input.
-        @rtype: L{CharFun}
-        @param item: a literal or a tuple
-        """
-        
-        chf = {}
-        if isinstance(item, tuple):
-            # reverse the tuple
-            l = list(item)
-            l.reverse()
-            item = tuple(l)
-            if len(item)==1:
-                chf[item[0]] = True
-            elif len(item) > 1:
-                chf[item[0]] = self._item2dict(item[1:])
-        else:
-            chf[item] = True
-        return chf
-
-    def _merge(self, chf1, chf2):
-        k = chf2.keys()[0]
-        if k not in chf1:
-            chf1.update(chf2)
-        else:
-            self._merge(chf1[k], chf2[k])
-        return chf1
-                           
-    def read(self, s):
-        """
-        Convert an M{n}-ary relation into its corresponding characteristic function.
-        @rtype: L{CharFun}
-        @type s: set
-        """
-
-        assert isrel(s)
-
-        charfuns = []
-        for item in s:
-            charfuns.append(self._item2dict(item))
-            
-        chf = reduce(self._merge, charfuns, {})
-        self.update(chf)
-
-    def tuples(self):
-        """
-        Convert a L{CharFun} back into a set of tuples.
-
-        Given an input such as the L{CharFun} {'c': {'b': {'a': True}}},
-        return set([('a', 'b', 'c')])
-        """
-        n = depth(self)
-        if n == 1:
-            tuples = self.domain
-        elif n == 2:
-            tuples = [(k2, k1) for k1 in self.keys() for k2 in self[k1].keys()]
-        elif n == 3:
-            tuples = [(k3, k2, k1) for k1 in self.keys() for k2 in self[k1].keys() for k3 in self[k1][k2].keys()]
-        else:
-            raise Error, "Only defined for CharFuns of depth <= 3"
-        result = set(tuples)
-        return result
-
-##     def __repr__(self):
-##         items = ['%s: %s' % t for t in sorted(self.items())]
-##         return '{%s}' % ', '.join(items)
-
-    def _getDomain(self):
-        return flatten(self)
-
-    domain = property(_getDomain, doc='Set-theoretic domain of a curried function')
-
 def isrel(s):
     """
     Check whether a set represents a relation (of any arity).
@@ -171,6 +76,31 @@ def inds2tuples(s):
         else:
             new.add(elem)
     return new   
+
+def arity(rel):
+    """
+    Check the arity of a relation.
+    @type rel: C{set} of C{tuple}s
+    @rtype: C{int} of C{tuple} of C{str}
+    """
+    if len(rel) == 0:
+        return 0
+    return len(list(rel)[0])
+
+@decorator(trace)
+def app(rel, arg, trace=False):
+    """
+    Apply a relation (as set of tuples) to an argument.
+    
+    @type rel: C{set} of C{tuple}s
+    @param arg: any appropriate semantic argument
+    @rtype: C{bool} or a C{set} of C{tuple}s
+    """
+    reduced = set([tup[1:] for tup in rel if tup[0] == arg])
+    if arity(rel) <= 1:
+        return bool(len(reduced))
+    else:
+        return reduced
 
 
 class Valuation(dict):
@@ -224,7 +154,7 @@ class Valuation(dict):
              doc='Set-theoretic domain of the value-space of a Valuation.')
 
     def _getSymbols(self):
-        return self.keys()
+        return sorted(self.keys())
 
     symbols = property(_getSymbols,
               doc='The non-logical constants which the Valuation recognizes.')
@@ -364,36 +294,39 @@ class Model(object):
 
     # Interpretations for the binary boolean operators
     #############################
-    def AND(arg1, arg2):
+
+    def AND(self, arg1, arg2):
         return min(arg1, arg2)
     
-    def OR(arg1, arg2):
+
+    def OR(self, arg1, arg2):
         return max(arg1, arg2)
     
-    def IMPLIES(arg1, arg2):
+
+    def IMPLIES(self, arg1, arg2):
         return max(not arg1, arg2)
     
-    def IFF(arg1, arg2):
+
+    def IFF(self, arg1, arg2):
         return arg1 == arg2
     
     # EQUALITY
     ########
-    
-    def EQ(arg1, arg2):
+
+    def EQ(self, arg1, arg2):
         return arg1 == arg2
     
     # Interpretations for the classical quantifiers
     #########################
-    
+ 
     def ALL(self, sat):
         return sat == self.domain
-    
+     
     def EXISTS(self, sat):
         for u in sat:
             return True
         return False
-    
-        
+           
     OPS = {
         '&': AND,
         '|': OR,
@@ -446,19 +379,14 @@ class Model(object):
         OPS = Model.OPS
 
         if isinstance(parsed, ApplicationExpression):
-            argvals = tuple([self.satisfy(arg, g) for arg in parsed.args])
+            argval = self.satisfy(parsed.argument, g) 
             funval = self.satisfy(parsed.function, g)
-            # the function is a LambdaExpression, interpreted as dictionary
-            if isinstance(funval, dict):
-                return funval[argvals[0]]
-            # the function is an n-ary relation
-            else:
-                return argvals in funval
+            return app(funval, argval)
         elif isinstance(parsed, NegatedExpression):
             return not self.satisfy(parsed.term, g)
         elif isinstance(parsed, BooleanExpression):
             op = parsed.getOp()
-            return OPS[op](self.satisfy(parsed.first, g), self.satisfy(parsed.second, g))
+            return OPS[op](self, self.satisfy(parsed.first, g), self.satisfy(parsed.second, g))
         elif isinstance(parsed, AllExpression):
             return self.ALL(self.satisfiers(parsed.term, parsed.variable, g))
         elif isinstance(parsed, ExistsExpression):
@@ -466,8 +394,8 @@ class Model(object):
             return self.EXISTS(satisfiers)
         elif isinstance(parsed, LambdaExpression):
             cf = {}
+            varex = self.make_VariableExpression(parsed.variable)
             for u in self.domain:
-                varex = self.make_VariableExpression(parsed.variable)
                 val = self.satisfy(parsed.term, g.add(u, varex))
                 # NB the dict would be a lot smaller if we do this:
                 # if val: cf[u] = val
@@ -667,6 +595,7 @@ def foldemo(trace=None):
     'love (adam, betty)',
     '(adam = mia)',
     '\\x. (boy(x) | girl(x))',
+    '\\x y. love(x, y)',
     '\\x y. (boy(x) & love(x, y))',
     '\\x. exists y. (boy(x) & love(x, y))',
     'exists z1. boy(z1)',
@@ -737,67 +666,6 @@ def satdemo(trace=None):
         g2.purge()
         print "The satisfiers of '%s' are: %s" % (p, m2.satisfiers(p, var, g2, trace))
 
-def unit(trace=None):
-    global val0, dom0, m0, g0
-    #r1 = Rel([("a","b"), ("c", "d"), 3])
-    #r2 = Rel(["a","b", 3])
-    #r2 = Rel([2])
-    #r2  = Rel([1, 3])
-    #print r1, r2
-    #print repr(r1), repr(r2)
-    
-    sents = [
-        #'love(adam, betty)',
-        #'love(adam, sue)',
-        #'dog(fido)',
-        #'- dog(fido)',
-        #'- - dog(fido)',
-        #'- dog(sue)',
-        #'dog(fido) & boy(adam)',
-        #'- (dog(fido) & boy(adam))',
-        #'- dog(fido) & boy(adam)',
-        #'dog(fido) | boy(adam)',
-        #'- (dog(fido) | boy(adam))',
-        #'- dog(fido) | boy(adam)',
-        #'- dog(fido) | - boy(adam)',
-        #'dog(fido) -> boy(adam)',
-        #'- (dog(fido) -> boy(adam))',
-        #'- dog(fido) -> boy(adam)', 
-        #'exists x . love(adam, x)',
-        #'all x . love(adam, x)',
-        #'fido = fido',
-        #'exists x . all y. love(x, y)',
-        #'exists x . (x = fido)',
-        #'all x . (dog(x) | - dog(x)) '
-        r'\x. \y. love(x, y)',
-        r'\x. dog(x) (adam)',
-        r'\x. (dog(x) | boy(x)) (adam)',
-        r'\x. \y. love(x, y)(fido)',
-        r'\x. \y. love(x, y)(adam)',
-        r'\x. \y. love(x, y)(betty)',       
-        r'\x. \y. love(x, y)(betty)(adam)',        
-        r'\x. \y. love(x, y)(betty, adam)',
-        r'\y. \x. love(x, y)(fido)(adam)',        
-        r'\y. \x. love(x, y)(betty, adam)',
-        r'\x. exists y. love(x, y)',
-        #r'\z. adam',
-        #r'\z. love(x, y)',
-        #r'\x. x(adam)',
-        #r'\P. P(adam)',
-    ]
-
-    v0 = [('adam', 'b1'), ('betty', 'g1'), ('fido', 'd1'),\
-         ('girl', set(['g1', 'g2'])), ('boy', set(['b1', 'b2'])), ('dog', set(['d1'])),
-         ('love', set([('b1', 'g1'), ('b2', 'g2'), ('g1', 'b1'), ('g2', 'b1')]))]
-    
-    val0 = Valuation(v0)
-    dom0 = val0.domain
-    m0 = Model(dom0, val0)
-    g0 = Assignment(dom0)
-    
-    for s in sents:
-        print m0.evaluate(s, g0, trace=1)
-        
         
 def demo(num=0, trace=None):
     """
