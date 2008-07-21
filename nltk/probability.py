@@ -557,9 +557,10 @@ class LidstoneProbDist(ProbDistI):
                              'must have at least one bin.')
         if (bins is not None) and (bins < freqdist.B()):
             name = self.__class__.__name__[:-8]
-            raise ValueError('\nThe number of bins in a %s must be ' % name +
-                             'greater than or equal to\nthe number of '+
-                             'bins in the FreqDist used to create it.')
+            raise ValueError('\nThe number of bins in a %s distribution ' % name +
+                             '(%d) must be greater than or equal to\n' % bins +
+                             'the number of bins in the FreqDist used ' +
+                             'to create it (%d).' % freqdist.N())
         
         self._freqdist = freqdist
         self._gamma = float(gamma)
