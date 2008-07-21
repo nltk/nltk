@@ -16,6 +16,7 @@ class NgramModel(ModelI):
     A processing interface for assigning a probability to the next word.
     """
 
+    # add cutoff
     def __init__(self, n, train, estimator=None):
         """
         Creates an ngram language model to capture patterns in n consecutive
@@ -43,19 +44,34 @@ class NgramModel(ModelI):
                 cfd[context].inc(token)
 
         self._model = ConditionalProbDist(cfd, estimator, False, len(cfd))
-        
+
+        # recursively construct the lower-order models
+        if n>1:
+            self._backoff_model = NgramModel(n-1, train, estimator)
+
     def context(self, tokens, index):
         return tuple(tokens[max(0,index-self._n+1):index])
 
+    # Katz Backoff probability
     def prob(self, word, context):
         '''Evaluate the probability of this word in this context.'''
-        return self._model[context].prob(word)
 
-    def logprob(self, word, context):
-        '''Evaluate the log probability of this word in this context.'''
-        return self._model[context].logprob(word)
+        # C(w_<i-n+1,i>) > 0
+        if context in self and word in self[context].freqdist():
+            return self[context].prob(word)
 
-#    def beta(self, context):
+        # C(w_<i-n+2,i>) > 0
+        if context[:-1] in self._backoff_model and word in self._backoff_model[context[:-1]].freqdist():
+            return self._alpha(context) * self._backoff_model.prob(word, context[:-1])
+
+        print "Unreachable?"
+        # C(w_<i-n+2,i>) = 0   (redundant, since alpha=1 in this case?)
+        return self._backoff_model.prob(word, context[:-1])
+
+# add Katz backoff
+#    def logprob(self, word, context):
+#        '''Evaluate the log probability of this word in this context.'''
+#        return self._model[context].logprob(word)
 
     # todo: implement Katz backoff
     def generate(self, n, context=()):
@@ -65,6 +81,15 @@ class NgramModel(ModelI):
             word = self._model[self.context(text, i)].generate()
             text.append(word)
         return text
+
+    def _alpha(self, tokens):
+        return self._beta(tokens) / self._backoff_model._beta(tokens[:-1])
+
+    def _beta(self, tokens):
+        if tokens in self:
+            return self[tokens].discount()
+        else:
+            return 1
 
     def entropy(self, text):
         '''Evaluate the total entropy of a text with respect to the model.
@@ -76,19 +101,25 @@ class NgramModel(ModelI):
             e -= self.logprob(token, context)
         return e
 
+    def __in__(self, item):
+        return tuple(item) in self._model
+
+    def __getitem__(self, item):
+        return self._model[tuple(item)]
+
     def __repr__(self):
         return '<NgramModel with %d %d-grams>' % (len(self._model), self._n)
 
 def demo():
     from nltk.corpus import brown
     from nltk.probability import LidstoneProbDist
-    estimator = lambda fdist, bins: LidstoneProbDist(fdist, 0.2, bins)
-    lm = NgramModel(2, brown.sents(categories='a'), estimator)
+    estimator = lambda fdist, bins: LidstoneProbDist(fdist, 0.2)
+    lm = NgramModel(3, brown.sents(categories='a'), estimator)
     print lm
     sent = brown.sents()[0]
     print sent
-    print lm.entropy(sent)
-    print lm.generate(20)
+#    print lm.entropy(sent)
+    print lm.generate(40)
 
 if __name__ == '__main__':
     demo()
