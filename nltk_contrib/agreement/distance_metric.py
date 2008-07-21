@@ -22,17 +22,19 @@ def binary(set1,set2):
 
 
 def masi(set1,set2):
-    """Passonneau 2005, Measuring Agreement on Set-Valued Items (MASI) for Semantic and Pragmatic Annotation.
+    """Distance metric that takes into account partial agreement when multiple
+    labels are assigned.
 
-    Takes into account partial agreement when multiple labels are assigned.
+    Passonneau 2005, Measuring Agreement on Set-Valued Items (MASI) for Semantic and Pragmatic Annotation.
     """
 
     return 1 - float(len(set1.intersection(set2)))/float(max(len(set1),len(set2)))
 
 
 def interval(set1,set2):
-    """Krippendorff.
+    """
 
+    Krippendorff 1980, Content Analysis: An Introduction to its Methodology
     """
     try:
         return pow(int(list(set1)[0])-int(list(set2)[0]),2)
