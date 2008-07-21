@@ -59,34 +59,45 @@ class TypedApplicationExpression(logic.ApplicationExpression, TypedExpression):
             #(\x y.man(x,y))(john)
             f_type = self.function.gettype()
             assert(f_type, ComplexType)
-            assert(len(self.args) == 1)
-            if f_type.first == self.args[0].gettype():
+            if f_type.first == self.argument.gettype():
                 return f_type.second
             else:
                 raise TypeException("The function %s cannot be applied to %s." 
-                                    % (self.function, self.args[0]))
+                                    % (self.function, self.argument))
         else:
             #is a predicate expression
             return TruthValueType()
         
     def _get_abstract_type(self):
-        if isinstance(self.function, TypedLambdaExpression):
-            self.gettype()
+        function, args = self.uncurry()
+        if not isinstance(function, TypedVariableExpression):
+            #It's not a predicate expression ("P(x,y)"), so leave arguments curried
+            function = self.function
+            args = [self.argument]
+
+        if isinstance(function, TypedLambdaExpression):
+            return self.gettype()
         else:
             #is a predicate expression
             f_found = TruthValueType()
-            for arg in self.args[::-1]:
+            for arg in args[::-1]:
                 f_found = ComplexType(arg._get_abstract_type(), f_found)
             return f_found
         
     def _findtype(self, variable):
         """Find the type of the given variable as used in self"""
-        if self.function == TypedVariableExpression(variable):
+        function, args = self.uncurry()
+        if not isinstance(function, TypedVariableExpression):
+            #It's not a predicate expression ("P(x,y)"), so leave arguments curried
+            function = expression.function
+            args = [expression.argument]
+        
+        if function == TypedVariableExpression(variable):
             f_found = self._get_abstract_type()
         else:
-            f_found = self.function._findtype(variable)
+            f_found = function._findtype(variable)
 
-        arg_found = [arg._findtype(variable) for arg in self.args]
+        arg_found = [arg._findtype(variable) for arg in args]
         s = set([found for found in [f_found]+arg_found if found != None])
         if len(s) == 0:
             return None
@@ -241,20 +252,19 @@ class TestSuite(object):
         print 'Failures: %s' % self.failures
 
     def test_gettype(self):
-        n = logic.Tokens.NEW_NLTK
         print '='*20 + 'TEST gettype()' + '='*20
         self.gettype_test(r'man(x)', 't')
         self.gettype_test(r'-man(x)', 't')
         self.gettype_test(r'(man(x) <-> tall(x))', 't')
         self.gettype_test(r'exists x.(man(x) & tall(x))', 't')
         self.gettype_test(r'\x.man(x)', '<e,t>')
-        self.gettype_test(r'\x y.man(x,y)', '<e,<e,t>>')
         self.gettype_test(r'john', 'e')
+        self.gettype_test(r'\x y.sees(x,y)', '<e,<e,t>>')
         self.gettype_test(r'\x.man(x)(john)', 't')
         self.gettype_test(r'\x.\y.sees(x,y)(john)', '<e,t>')
         self.gettype_test(r'\x.\y.sees(x,y)(john)(mary)', 't')
         self.gettype_test(r'\P.\Q.exists x.(P(x) & Q(x))', '<<e,t>,<<e,t>,t>>')
-            
+        
     def gettype_test(self, f, expected_type, throw=True):
         try:
             t = TypedLogicParser().parse(f).gettype()
@@ -272,7 +282,6 @@ class TestSuite(object):
             self.failures += 1
         
     def test_findtype(self):
-        n = logic.Tokens.NEW_NLTK
         print '='*20 + 'TEST _findtype()' + '='*20
         self.findtype_test(r'man(x)', 'man', '<e,t>')
         self.findtype_test(r'see(x,y)', 'see', '<e,<e,t>>')
@@ -283,7 +292,7 @@ class TestSuite(object):
     def findtype_test(self, f, var, expected_type, throw=False):
         try:
             p = TypedLogicParser()
-            t = p.parse(f)._findtype(p.parse(var))
+            t = p.parse(f)._findtype(p.parse(var).variable)
         except Exception, e:
             if throw:
                 raise
