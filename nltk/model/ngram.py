@@ -33,15 +33,15 @@ class NgramModel(ModelI):
         """
 
         self._n = n
-
+        
         if estimator == None:
             estimator = lambda fdist, bins: MLEProbDist(fdist)
 
         cfd = ConditionalFreqDist()
-        for sentence in train:
-            for index, token in enumerate(sentence):
-                context = self.context(sentence, index)
-                cfd[context].inc(token)
+        for i in range(self._n - 1, len(train)):
+            context = tuple(train[i - self._n + 1, i - 1])
+            token = train[i - 1]
+            cfd[context].inc(token)
 
         self._model = ConditionalProbDist(cfd, estimator, False, len(cfd))
 
@@ -49,19 +49,20 @@ class NgramModel(ModelI):
         if n>1:
             self._backoff_model = NgramModel(n-1, train, estimator)
 
-    def context(self, tokens, index):
-        return tuple(tokens[max(0,index-self._n+1):index])
-
     # Katz Backoff probability
     def prob(self, word, context):
         '''Evaluate the probability of this word in this context.'''
 
+        print "HERE"
+        
         # C(w_<i-n+1,i>) > 0
-        if context in self and word in self[context].freqdist():
+        if self._attested(word, context):
+            print context, word, self[context].prob(word)
             return self[context].prob(word)
 
         # C(w_<i-n+2,i>) > 0
-        if context[:-1] in self._backoff_model and word in self._backoff_model[context[:-1]].freqdist():
+        if self._backoff_model._attested(word, context[:-1]):
+            print context[:-1], word, self._alpha(context) * self._backoff_model.prob(word, context[:-1])
             return self._alpha(context) * self._backoff_model.prob(word, context[:-1])
 
         print "Unreachable?"
@@ -75,12 +76,25 @@ class NgramModel(ModelI):
 
     # todo: implement Katz backoff
     def generate(self, n, context=()):
-        text = list(context)
+        context = list(context)
         for i in range(n):
-            print self.context(text, i), self._model[self.context(text, i)]
-            word = self._model[self.context(text, i)].generate()
-            text.append(word)
+            next = self._generate_one(context)
+            text.append(next)
+            context.append(next)
+            if len(context) >= self._n:
+                context = context[-self._n+1:]
         return text
+
+    def _generate_one(self, context):
+        if context in self and random.random() > self[context].discount():
+            return self[context].generate()
+        elif self._n > 1:
+            return self._backoff_model._generate_one(context[:-1])
+        else:
+            return '.'
+    
+    def _attested(self, word, context):
+        return context in self and word in self[context].freqdist()
 
     def _alpha(self, tokens):
         return self._beta(tokens) / self._backoff_model._beta(tokens[:-1])
@@ -96,8 +110,9 @@ class NgramModel(ModelI):
         This is the sum of the log probability of each word in the message.'''
 
         e = 0.0
-        for index, token in enumerate(text):
-            context = self.context(text, index)
+        for i in range(self._n - 1, len(text)):
+            context = tuple(text[i - self._n + 1, i - 1])
+            token = text[i]
             e -= self.logprob(token, context)
         return e
 
@@ -114,7 +129,7 @@ def demo():
     from nltk.corpus import brown
     from nltk.probability import LidstoneProbDist
     estimator = lambda fdist, bins: LidstoneProbDist(fdist, 0.2)
-    lm = NgramModel(3, brown.sents(categories='a'), estimator)
+    lm = NgramModel(3, brown.words(categories='a'), estimator)
     print lm
     sent = brown.sents()[0]
     print sent
