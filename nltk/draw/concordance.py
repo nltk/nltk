@@ -42,7 +42,6 @@ class CategorySearchView:
         self._init_widgets(self.top)
         self._bind_event_handlers()
         self.load_corpus(self.model.DEFAULT_CORPUS)
-        self.query_box.focus_set()
         
     def _init_top(self, top):
         top.geometry('+50+50')
@@ -67,6 +66,32 @@ class CategorySearchView:
         om['highlightthickness'] = 1
         om.grid(row=0, column=0)
         
+    def _init_status(self, parent):
+        self.status = Label(parent, justify=LEFT, relief=SUNKEN, background=self._BACKGROUND_COLOUR, border=0, padx = 1, pady = 0)
+        self.status.grid(row = 11, column= 0, columnspan=4, sticky=W)
+    
+    def _init_query_box(self, parent):
+        innerframe = Frame(parent, background=self._BACKGROUND_COLOUR)
+        innerframe.grid(row=1, column=0, rowspan=5, columnspan=4)
+        self.query_box = Entry(innerframe, width=40)
+        self.query_box.grid(row=0, column = 0, padx=2, pady=20, sticky=E)
+        self.search_button = Button(innerframe, text='Search', command=self.search, borderwidth=1, highlightthickness=1)
+        self.search_button.grid(row=0, column = 1, padx=2, pady=20, sticky=W)
+        self.query_box.bind('<KeyPress-Return>', self.search_enter_keypress_handler)
+        
+    def search_enter_keypress_handler(self, *event):
+        self.search()
+    
+    def _init_results_box(self, parent):
+        innerframe = Frame(parent)
+        innerframe.grid(row=6, column=0, rowspan=5, columnspan=4)
+        scrollbar = Scrollbar(innerframe, borderwidth=1)
+        scrollbar.grid(row=0, column=1, sticky='NSE')
+        self.results_box = Text(innerframe, width=80, height=30, state='disabled', borderwidth=1, yscrollcommand=scrollbar.set)
+        self.results_box.tag_config(self._HIGHLIGHT_TAG, foreground=self._HIGHLIGHT_COLOUR)
+        self.results_box.grid(row=0, column=0)
+        scrollbar.config(command=self.results_box.yview)
+        
     def _bind_event_handlers(self):
         self.top.bind(CORPUS_LOADED_EVENT, self.handle_corpus_loaded)
         self.top.bind(SEARCH_TERMINATED_EVENT, self.handle_search_terminated)
@@ -83,17 +108,17 @@ class CategorySearchView:
         self.status['text'] = self.var.get() + ' corpus is loaded'
         self.unfreeze_editable()
         self.clear_all()
+        self.query_box.focus_set()
     
     def handle_search_terminated(self, event):
-        results = self.returned['results']
-        self.write_results(results)
+        self.write_results(self.model.results)
         self.status['text'] = ''
-        if len(results) == 0:
-            self.status['text'] = 'No results found for ' + self.returned['query']
+        if len(self.model.results) == 0:
+            self.status['text'] = 'No results found for ' + self.model.query
         self.unfreeze_editable()
             
     def handle_search_error(self, event):
-        self.status['text'] = 'Error in query ' + self.returned['query']
+        self.status['text'] = 'Error in query ' + self.model.query
         self.unfreeze_editable()
         
     def corpus_selected(self, *args):
@@ -106,22 +131,6 @@ class CategorySearchView:
             self.freeze_editable()
             self.model.load_corpus(selection)
 
-    def _init_status(self, parent):
-        self.status = Label(parent, justify=LEFT, relief=SUNKEN, background=self._BACKGROUND_COLOUR, border=0, padx = 1, pady = 0)
-        self.status.grid(row = 11, column= 0, columnspan=4, sticky=W)
-    
-    def _init_query_box(self, parent):
-        innerframe = Frame(parent, background=self._BACKGROUND_COLOUR)
-        innerframe.grid(row=1, column=0, rowspan=5, columnspan=4)
-        self.query_box = Entry(innerframe, width=40)
-        self.query_box.grid(row=0, column = 0, padx=2, pady=20, sticky=E)
-        self.search_button = Button(innerframe, text='Search', command=self.search, borderwidth=1, highlightthickness=1)
-        self.search_button.grid(row=0, column = 1, padx=2, pady=20, sticky=W)
-        self.query_box.bind('<KeyPress-Return>', self.search_enter_keypress_handler)
-        
-    def search_enter_keypress_handler(self, *event):
-        self.search()
-                
     def search(self):
         self.clear_results_box()
         query = self.query_box.get()
@@ -139,16 +148,6 @@ class CategorySearchView:
                 self.results_box.tag_add(self._HIGHLIGHT_TAG, str(row) + '.' + str(self._CHAR_BEFORE), str(row) + '.' + str(each[2] - each[1] + self._CHAR_BEFORE))
                 row += 1
         self.results_box['state'] = 'disabled'
-    
-    def _init_results_box(self, parent):
-        innerframe = Frame(parent)
-        innerframe.grid(row=6, column=0, rowspan=5, columnspan=4)
-        scrollbar = Scrollbar(innerframe, borderwidth=1)
-        scrollbar.grid(row=0, column=1, sticky='NSE')
-        self.results_box = Text(innerframe, width=80, height=30, state='disabled', borderwidth=1, yscrollcommand=scrollbar.set)
-        self.results_box.tag_config(self._HIGHLIGHT_TAG, foreground=self._HIGHLIGHT_COLOUR)
-        self.results_box.grid(row=0, column=0)
-        scrollbar.config(command=self.results_box.yview)
                 
     def destroy(self, *e):
         if self.top is None: return
@@ -156,14 +155,15 @@ class CategorySearchView:
         self.top = None
         
     def clear_all(self):
-        current = self.query_box.get()
-        self.query_box.delete(0, len(current))
+        self.query_box.delete(0, END)
+        self.model.reset_query()
         self.clear_results_box()
         
     def clear_results_box(self):
         self.results_box['state'] = 'normal'
         self.results_box.delete("1.0", END)
         self.results_box['state'] = 'disabled'   
+        self.model.reset_results()
         
     def freeze_editable(self):
         self.query_box['state'] = 'disabled'
@@ -173,10 +173,7 @@ class CategorySearchView:
         self.query_box['state'] = 'normal'
         self.search_button['state'] = 'normal'
         
-    def fire_event(self, event, **kwargs):
-        #Unfortunately cannot embed this information in the event
-        #there is a circuitous way of calling event handlers with params but that is equally hacky
-        self.returned = kwargs
+    def fire_event(self, event):
         #Firing an event so that rendering of widgets happen in the mainloop thread
         self.top.event_generate(event, when='tail')
         
@@ -194,6 +191,8 @@ class CategorySearchModel:
                         'Treebank':nltk.corpus.treebank}
         self.DEFAULT_CORPUS = self._BROWN_CORPUS
         self.selected_corpus = None
+        self.reset_query()
+        self.reset_results()
         
     def non_default_corpora(self):
         copy = []
@@ -208,14 +207,24 @@ class CategorySearchModel:
         runner_thread.start()
         
     def search(self, query, num=50):
-        self.SearchCorpus(self, query, num).start()
+        self.query = query
+        self.SearchCorpus(self, num).start()
     
     def add_listener(self, listener):
         self.listeners.append(listener)
         
-    def notify_listeners(self, event, **kwargs):
+    def notify_listeners(self, event):
         for each in self.listeners:
-            each.fire_event(event, **kwargs)
+            each.fire_event(event)
+            
+    def reset_results(self):
+        self.results = None
+        
+    def reset_query(self):
+        self.query = None
+        
+    def set_results(self, results):
+        self.results = results
             
     class LoadCorpus(threading.Thread):
         def __init__(self, name, model):
@@ -231,8 +240,8 @@ class CategorySearchModel:
                 self.model.notify_listeners(ERROR_LOADING_CORPUS_EVENT)
             
     class SearchCorpus(threading.Thread):
-        def __init__(self, model, query, num):
-            self.model, self.query, self.num = model, query, num
+        def __init__(self, model, num):
+            self.model, self.num = model, num
             threading.Thread.__init__(self)
         
         def run(self):
@@ -243,17 +252,19 @@ class CategorySearchModel:
                 try:
                     m = re.search(q, sent)
                 except re.error:
-                    self.model.notify_listeners(SEARCH_ERROR_EVENT, query = self.query)
+                    self.model.reset_results()
+                    self.model.notify_listeners(SEARCH_ERROR_EVENT)
                     return
                 if m:
                     sent_pos.append((sent, m.start(), m.end()))
                     i += 1
                     if i > self.num: break
-            self.model.notify_listeners(SEARCH_TERMINATED_EVENT, query = self.query, results = sent_pos)
+            self.model.set_results(sent_pos)
+            self.model.notify_listeners(SEARCH_TERMINATED_EVENT)
             
         def processed_query(self):
             new = []
-            for term in self.query.split():
+            for term in self.model.query.split():
                 if re.match('[A-Z]+$', term):
                     new.append(BOUNDARY + WORD_OR_TAG + '/' + term + BOUNDARY)
                 elif '/' in term:
