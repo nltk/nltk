@@ -221,14 +221,23 @@ statements as new assumptions.
     <BLANKLINE>
     ============================== end of proof ==========================
 
-------------
-DRS Equality
-------------
+----------------------
+The tp_equals() method
+----------------------
 
 One application of the theorem prover functionality is to check if
-two Discourse Representation Structures (DRSs) have the same meaning.
-The ``tp_equals()`` method calls Prover9 to determine whether (the
-FOL versions of) two DRSs are logically equivalent.
+two Expressions have the same meaning.
+The ``tp_equals()`` method calls a theorem prover to determine whether two 
+Expressions are logically equivalent.
+
+    >>> a = LogicParser().parse(r'exists x.(man(x) & walks(x))')
+    >>> b = LogicParser().parse(r'exists x.(walks(x) & man(x))')
+    >>> print a.tp_equals(b)
+    True
+
+The same method can be used on Discourse Representation Structures (DRSs).  
+In this case, each DRS is converted to a first order logic form, and then
+passed to the theorem prover.
 
     >>> from nltk.sem.drt import DrtParser
     >>> a = DrtParser().parse(r'drs([x],[man(x), walks(x)])')
@@ -253,7 +262,9 @@ For example, the ``drt_glue`` module generates two readings for the sentence
 
 However, it is easy to tell that these two readings are logically the
 same, and therefore one of them is superfluous.  We can use the theorem prover
-to determine this equivalence, and then delete one of them.
+to determine this equivalence, and then delete one of them.  A particular
+theorem prover may be specified, or the argument may be left off to use the
+default.
 
     >>> readings[0].tp_equals(readings[1])
     True
@@ -326,7 +337,7 @@ Using Mace4
 
 Check whether Mace4 can find a model.
 
-    >>> a = LogicParser().parse('(see(mary,john) and -(mary = john))')
+    >>> a = LogicParser().parse('(see(mary,john) & -(mary = john))')
     >>> mb = Mace(assumptions=[a])
     >>> mb.build_model()
     True
