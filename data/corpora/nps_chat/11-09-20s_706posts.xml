@@ -1,0 +1,5420 @@
+<!-- edited with XMLSpy v2007 sp1 (http://www.altova.com) by Eric Forsyth (Naval Postgraduate School) -->
+<Session xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="postClassPOSTagset.xsd">
+	<Posts>
+		<Post class="Emotion" user="11-09-20sUser114">LoL<terminals>
+				<t pos="UH" word="LoL"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser59">im like five seconds from ripping into a bottle of jack<terminals>
+				<t pos="PRP" word="im"/>
+				<t pos="UH" word="like"/>
+				<t pos="CD" word="five"/>
+				<t pos="NNS" word="seconds"/>
+				<t pos="IN" word="from"/>
+				<t pos="VBG" word="ripping"/>
+				<t pos="IN" word="into"/>
+				<t pos="DT" word="a"/>
+				<t pos="NN" word="bottle"/>
+				<t pos="IN" word="of"/>
+				<t pos="NNP" word="jack"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser11">PART<terminals>
+				<t pos="VB" word="PART"/>
+			</terminals>
+		</Post>
+		<Post class="Accept" user="11-09-20sUser114">Yes he is<terminals>
+				<t pos="UH" word="Yes"/>
+				<t pos="PRP" word="he"/>
+				<t pos="VBZ" word="is"/>
+			</terminals>
+		</Post>
+		<Post class="whQuestion" user="11-09-20sUser105">how are we all?<terminals>
+				<t pos="WRB" word="how"/>
+				<t pos="VBP" word="are"/>
+				<t pos="PRP" word="we"/>
+				<t pos="DT" word="all"/>
+				<t pos="." word="?"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser59">tick tock<terminals>
+				<t pos="UH" word="tick"/>
+				<t pos="UH" word="tock"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser81">PART<terminals>
+				<t pos="VB" word="PART"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser59">tick tock<terminals>
+				<t pos="UH" word="tick"/>
+				<t pos="UH" word="tock"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser114">He's moved on to 11-09-20sUser80 now though.<terminals>
+				<t pos="PRP" word="He"/>
+				<t pos="BES" word="&apos;s"/>
+				<t pos="VBD" word="moved"/>
+				<t pos="IN" word="on"/>
+				<t pos="TO" word="to"/>
+				<t pos="NNP" word="11-09-20sUser80"/>
+				<t pos="RB" word="now"/>
+				<t pos="RB" word="though"/>
+				<t pos="." word="."/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser119">JOIN<terminals>
+				<t pos="VB" word="JOIN"/>
+			</terminals>
+		</Post>
+		<Post class="ynQuestion" user="11-09-20sUser31">11-09-20sUser101 yes im here<terminals>
+				<t pos="NNP" word="11-09-20sUser101"/>
+				<t pos="UH" word="yes"/>
+				<t pos="PRP" word="im"/>
+				<t pos="RB" word="here"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser120">JOIN<terminals>
+				<t pos="VB" word="JOIN"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser121">JOIN<terminals>
+				<t pos="VB" word="JOIN"/>
+			</terminals>
+		</Post>
+		<Post class="ynQuestion" user="11-09-20sUser12">HELLO ROOM ANYONE WANNA CHAT WITH 23 FEMALE FROM VIRGINIA<terminals>
+				<t pos="UH" word="HELLO"/>
+				<t pos="NN" word="ROOM"/>
+				<t pos="NN" word="ANYONE"/>
+				<t pos="VBP" word="WANNA"/>
+				<t pos="VB" word="CHAT"/>
+				<t pos="IN" word="WITH"/>
+				<t pos="CD" word="23"/>
+				<t pos="NN" word="FEMALE"/>
+				<t pos="IN" word="FROM"/>
+				<t pos="NNP" word="VIRGINIA"/>
+			</terminals>
+		</Post>
+		<Post class="ynQuestion" user="11-09-20sUser101">ohhhh damn,,,, i  have been cast aside??<terminals>
+				<t pos="UH" word="ohhhh"/>
+				<t pos="UH" word="damn"/>
+				<t pos=":" word=",,,,"/>
+				<t pos="PRP" word="i"/>
+				<t pos="VBP" word="have"/>
+				<t pos="VBN" word="been"/>
+				<t pos="VBN" word="cast"/>
+				<t pos="RB" word="aside"/>
+				<t pos="." word="??"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser114">.4 Rule 4. Please do not type in all CAPS, it is considered yelling. (Three warnings Max)<terminals>
+				<t pos="SYM" word="."/>
+				<t pos="CD" word="4"/>
+				<t pos="NN" word="Rule"/>
+				<t pos="CD" word="4"/>
+				<t pos="." word="."/>
+				<t pos="VB" word="Please"/>
+				<t pos="VB" word="do"/>
+				<t pos="RB" word="not"/>
+				<t pos="VB" word="type"/>
+				<t pos="IN" word="in"/>
+				<t pos="DT" word="all"/>
+				<t pos="NNS" word="CAPS"/>
+				<t pos="," word=","/>
+				<t pos="PRP" word="it"/>
+				<t pos="VBZ" word="is"/>
+				<t pos="VBN" word="considered"/>
+				<t pos="VBG" word="yelling"/>
+				<t pos="." word="."/>
+				<t pos="(" word="("/>
+				<t pos="CD" word="Three"/>
+				<t pos="NNS" word="warnings"/>
+				<t pos="JJ" word="Max"/>
+				<t pos=")" word=")"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser122">JOIN<terminals>
+				<t pos="VB" word="JOIN"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser60">Officer 11-09-20sUser114...on the ball as usual<terminals>
+				<t pos="NNP" word="Officer"/>
+				<t pos="NNP" word="11-09-20sUser114"/>
+				<t pos=":" word="..."/>
+				<t pos="IN" word="on"/>
+				<t pos="DT" word="the"/>
+				<t pos="NN" word="ball"/>
+				<t pos="IN" word="as"/>
+				<t pos="JJ" word="usual"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser114">You have.<terminals>
+				<t pos="PRP" word="You"/>
+				<t pos="VBP" word="have"/>
+				<t pos="." word="."/>
+			</terminals>
+		</Post>
+		<Post class="ynQuestion" user="11-09-20sUser33">anyone want to chat with me<terminals>
+				<t pos="NN" word="anyone"/>
+				<t pos="VB" word="want"/>
+				<t pos="TO" word="to"/>
+				<t pos="VB" word="chat"/>
+				<t pos="IN" word="with"/>
+				<t pos="PRP" word="me"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser105">!20<terminals>
+				<t pos="SYM" word="!"/>
+				<t pos="CD" word="20"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser94">.Question:. Favorite junk food besides candy?<terminals>
+				<t pos="SYM" word="."/>
+				<t pos="NN" word="Question"/>
+				<t pos=":" word=":."/>
+				<t pos="JJ" word="Favorite"/>
+				<t pos="NN" word="junk"/>
+				<t pos="NN" word="food"/>
+				<t pos="IN" word="besides"/>
+				<t pos="NN" word="candy"/>
+				<t pos="." word="?"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser123">JOIN<terminals>
+				<t pos="VB" word="JOIN"/>
+			</terminals>
+		</Post>
+		<Post class="whQuestion" user="11-09-20sUser101">11-09-20sUser31 why arent you employed?<terminals>
+				<t pos="NNP" word="11-09-20sUser31"/>
+				<t pos="WRB" word="why"/>
+				<t pos="VBP" word="arent"/>
+				<t pos="PRP" word="you"/>
+				<t pos="JJ" word="employed"/>
+				<t pos="." word="?"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser68">CHIPS<terminals>
+				<t pos="NNS" word="CHIPS"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser114">.ACTION tips her hat to 11-09-20sUser60.<terminals>
+				<t pos="SYM" word="."/>
+				<t pos="NN" word="ACTION"/>
+				<t pos="VBZ" word="tips"/>
+				<t pos="PRP" word="her"/>
+				<t pos="NN" word="hat"/>
+				<t pos="TO" word="to"/>
+				<t pos="NNP" word="11-09-20sUser60"/>
+				<t pos="." word="."/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser90">PART<terminals>
+				<t pos="VB" word="PART"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser59">!scorpio<terminals>
+				<t pos="SYM" word="!"/>
+				<t pos="NNP" word="scorpio"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser94">.Scorpio.: Have you been spending too much time on something that is essentially a lost cause? Think about this matter very seriously. Is it making your life easier or harder? Could you put your energy to better use?.<terminals>
+				<t pos="SYM" word="."/>
+				<t pos="NNP" word="Scorpio"/>
+				<t pos=":" word=".:"/>
+				<t pos="VBP" word="Have"/>
+				<t pos="PRP" word="you"/>
+				<t pos="VBN" word="been"/>
+				<t pos="VBG" word="spending"/>
+				<t pos="RB" word="too"/>
+				<t pos="JJ" word="much"/>
+				<t pos="NN" word="time"/>
+				<t pos="IN" word="on"/>
+				<t pos="NN" word="something"/>
+				<t pos="WDT" word="that"/>
+				<t pos="VBZ" word="is"/>
+				<t pos="RB" word="essentially"/>
+				<t pos="DT" word="a"/>
+				<t pos="JJ" word="lost"/>
+				<t pos="IN" word="cause"/>
+				<t pos="." word="?"/>
+				<t pos="VBP" word="Think"/>
+				<t pos="IN" word="about"/>
+				<t pos="DT" word="this"/>
+				<t pos="VB" word="matter"/>
+				<t pos="RB" word="very"/>
+				<t pos="RB" word="seriously"/>
+				<t pos="." word="."/>
+				<t pos="VBZ" word="Is"/>
+				<t pos="PRP" word="it"/>
+				<t pos="VBG" word="making"/>
+				<t pos="PRP$" word="your"/>
+				<t pos="NN" word="life"/>
+				<t pos="JJR" word="easier"/>
+				<t pos="CC" word="or"/>
+				<t pos="JJR" word="harder"/>
+				<t pos="." word="?"/>
+				<t pos="MD" word="Could"/>
+				<t pos="PRP" word="you"/>
+				<t pos="VBP" word="put"/>
+				<t pos="PRP$" word="your"/>
+				<t pos="NN" word="energy"/>
+				<t pos="TO" word="to"/>
+				<t pos="JJR" word="better"/>
+				<t pos="NN" word="use"/>
+				<t pos="." word="?."/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser121">any girls wana chat with 27-m-canada pm me<terminals>
+				<t pos="DT" word="any"/>
+				<t pos="NNS" word="girls"/>
+				<t pos="VBP" word="wana"/>
+				<t pos="VB" word="chat"/>
+				<t pos="IN" word="with"/>
+				<t pos="CD" word="27"/>
+				<t pos="CC" word="-"/>
+				<t pos="NN" word="m"/>
+				<t pos="CC" word="-"/>
+				<t pos="NNP" word="canada"/>
+				<t pos="VB" word="pm"/>
+				<t pos="PRP" word="me"/>
+			</terminals>
+		</Post>
+		<Post class="ynQuestion" user="11-09-20sUser105">Quarter Pounder<terminals>
+				<t pos="NNP" word="Quarter"/>
+				<t pos="NNP" word="Pounder"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser76">PART<terminals>
+				<t pos="VB" word="PART"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser124">JOIN<terminals>
+				<t pos="VB" word="JOIN"/>
+			</terminals>
+		</Post>
+		<Post class="Emotion" user="11-09-20sUser59">lmao<terminals>
+				<t pos="UH" word="lmao"/>
+			</terminals>
+		</Post>
+		<Post class="Accept" user="11-09-20sUser114">I'm with you on that 11-09-20sUser68<terminals>
+				<t pos="PRP" word="I"/>
+				<t pos="VBP" word="&apos;m"/>
+				<t pos="IN" word="with"/>
+				<t pos="PRP" word="you"/>
+				<t pos="IN" word="on"/>
+				<t pos="DT" word="that"/>
+				<t pos="NNP" word="11-09-20sUser68"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser0">!virgo <terminals>
+				<t pos="SYM" word="!"/>
+				<t pos="NNP" word="virgo"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser13">I'd like to chat cutie<terminals>
+				<t pos="PRP" word="I"/>
+				<t pos="MD" word="&apos;d"/>
+				<t pos="VB" word="like"/>
+				<t pos="TO" word="to"/>
+				<t pos="VB" word="chat"/>
+				<t pos="UH" word="cutie"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser60">beer<terminals>
+				<t pos="NN" word="beer"/>
+			</terminals>
+		</Post>
+		<Post class="Greet" user="11-09-20sUser124">Hiya everyone <terminals>
+				<t pos="UH" word="Hiya"/>
+				<t pos="NN" word="everyone"/>
+			</terminals>
+		</Post>
+		<Post class="Emotion" user="11-09-20sUser114">Aww<terminals>
+				<t pos="UH" word="Aww"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser13">you can pm<terminals>
+				<t pos="PRP" word="you"/>
+				<t pos="MD" word="can"/>
+				<t pos="VB" word="pm"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser59">that's hilarious<terminals>
+				<t pos="DT" word="that"/>
+				<t pos="BES" word="&apos;s"/>
+				<t pos="JJ" word="hilarious"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser31">11-09-20sUser101 im sorry i said  wanna ago<terminals>
+				<t pos="NNP" word="11-09-20sUser101"/>
+				<t pos="PRP" word="im"/>
+				<t pos="JJ" word="sorry"/>
+				<t pos="PRP" word="i"/>
+				<t pos="VBD" word="said"/>
+				<t pos="VBP" word="wanna"/>
+				<t pos="RB" word="ago"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser80">i warned him<terminals>
+				<t pos="PRP" word="i"/>
+				<t pos="VBD" word="warned"/>
+				<t pos="PRP" word="him"/>
+			</terminals>
+		</Post>
+		<Post class="Emotion" user="11-09-20sUser114">LOL<terminals>
+				<t pos="UH" word="LOL"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser114">Oh<terminals>
+				<t pos="UH" word="Oh"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser125">JOIN<terminals>
+				<t pos="VB" word="JOIN"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser114">I missed that.<terminals>
+				<t pos="PRP" word="I"/>
+				<t pos="VBD" word="missed"/>
+				<t pos="DT" word="that"/>
+				<t pos="." word="."/>
+			</terminals>
+		</Post>
+		<Post class="ynQuestion" user="11-09-20sUser23">anybody from wisconsin?<terminals>
+				<t pos="NN" word="anybody"/>
+				<t pos="IN" word="from"/>
+				<t pos="NNP" word="wisconsin"/>
+				<t pos="." word="?"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser80">lol its ok<terminals>
+				<t pos="UH" word="lol"/>
+				<t pos="PRP" word="its"/>
+				<t pos="JJ" word="ok"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser59">!rooster<terminals>
+				<t pos="SYM" word="!"/>
+				<t pos="NNP" word="rooster"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser94">.Rooster.: If you're single, you're going to meet the person of your dreams. If your neighbor or a relation looks for a quarrel, turn your back. This astral climate will enable you to settle important problems concerning the family's belongings or a sensitive matter of inheritance; however, remain vigilant and even distrustful. You'll enter this day in very good physical and moral shape; try not to rush too much. Tense climate in<terminals>
+				<t pos="SYM" word="."/>
+				<t pos="NNP" word="Rooster"/>
+				<t pos=":" word=".:"/>
+				<t pos="IN" word="If"/>
+				<t pos="PRP" word="you"/>
+				<t pos="VBP" word="&apos;re"/>
+				<t pos="JJ" word="single"/>
+				<t pos="," word=","/>
+				<t pos="PRP" word="you"/>
+				<t pos="VBP" word="&apos;re"/>
+				<t pos="VBG" word="going"/>
+				<t pos="TO" word="to"/>
+				<t pos="VB" word="meet"/>
+				<t pos="DT" word="the"/>
+				<t pos="NN" word="person"/>
+				<t pos="IN" word="of"/>
+				<t pos="PRP$" word="your"/>
+				<t pos="NNS" word="dreams"/>
+				<t pos="." word="."/>
+				<t pos="IN" word="If"/>
+				<t pos="PRP$" word="your"/>
+				<t pos="NN" word="neighbor"/>
+				<t pos="CC" word="or"/>
+				<t pos="DT" word="a"/>
+				<t pos="NN" word="relation"/>
+				<t pos="VBZ" word="looks"/>
+				<t pos="IN" word="for"/>
+				<t pos="DT" word="a"/>
+				<t pos="NN" word="quarrel"/>
+				<t pos="," word=","/>
+				<t pos="VB" word="turn"/>
+				<t pos="PRP$" word="your"/>
+				<t pos="NN" word="back"/>
+				<t pos="." word="."/>
+				<t pos="DT" word="This"/>
+				<t pos="JJ" word="astral"/>
+				<t pos="NN" word="climate"/>
+				<t pos="MD" word="will"/>
+				<t pos="VB" word="enable"/>
+				<t pos="PRP" word="you"/>
+				<t pos="TO" word="to"/>
+				<t pos="VB" word="settle"/>
+				<t pos="JJ" word="important"/>
+				<t pos="NNS" word="problems"/>
+				<t pos="VBG" word="concerning"/>
+				<t pos="DT" word="the"/>
+				<t pos="NN" word="family"/>
+				<t pos="POS" word="&apos;s"/>
+				<t pos="NNS" word="belongings"/>
+				<t pos="CC" word="or"/>
+				<t pos="DT" word="a"/>
+				<t pos="JJ" word="sensitive"/>
+				<t pos="VB" word="matter"/>
+				<t pos="IN" word="of"/>
+				<t pos="NN" word="inheritance"/>
+				<t pos=":" word=";"/>
+				<t pos="RB" word="however"/>
+				<t pos="," word=","/>
+				<t pos="VBP" word="remain"/>
+				<t pos="JJ" word="vigilant"/>
+				<t pos="CC" word="and"/>
+				<t pos="RB" word="even"/>
+				<t pos="JJ" word="distrustful"/>
+				<t pos="." word="."/>
+				<t pos="PRP" word="You"/>
+				<t pos="MD" word="&apos;ll"/>
+				<t pos="VB" word="enter"/>
+				<t pos="DT" word="this"/>
+				<t pos="NN" word="day"/>
+				<t pos="IN" word="in"/>
+				<t pos="RB" word="very"/>
+				<t pos="JJ" word="good"/>
+				<t pos="JJ" word="physical"/>
+				<t pos="CC" word="and"/>
+				<t pos="JJ" word="moral"/>
+				<t pos="NN" word="shape"/>
+				<t pos=":" word=";"/>
+				<t pos="VB" word="try"/>
+				<t pos="RB" word="not"/>
+				<t pos="TO" word="to"/>
+				<t pos="VB" word="rush"/>
+				<t pos="RB" word="too"/>
+				<t pos="RB" word="much"/>
+				<t pos="." word="."/>
+				<t pos="JJ" word="Tense"/>
+				<t pos="NN" word="climate"/>
+				<t pos="IN" word="in"/>
+			</terminals>
+		</Post>
+		<Post class="Continuer" user="11-09-20sUser94">your home; watch out so as not to spark a crisis..<terminals>
+				<t pos="PRP$" word="your"/>
+				<t pos="NN" word="home"/>
+				<t pos=":" word=";"/>
+				<t pos="VB" word="watch"/>
+				<t pos="RP" word="out"/>
+				<t pos="IN" word="so"/>
+				<t pos="IN" word="as"/>
+				<t pos="RB" word="not"/>
+				<t pos="TO" word="to"/>
+				<t pos="VB" word="spark"/>
+				<t pos="DT" word="a"/>
+				<t pos="NN" word="crisis"/>
+				<t pos=":" word=".."/>
+			</terminals>
+		</Post>
+		<Post class="whQuestion" user="11-09-20sUser101">huh?<terminals>
+				<t pos="UH" word="huh"/>
+				<t pos="." word="?"/>
+			</terminals>
+		</Post>
+		<Post class="Emotion" user="11-09-20sUser114">LoL<terminals>
+				<t pos="UH" word="LoL"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser126">JOIN<terminals>
+				<t pos="VB" word="JOIN"/>
+			</terminals>
+		</Post>
+		<Post class="Reject" user="11-09-20sUser114">Nooo<terminals>
+				<t pos="UH" word="Nooo"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser13">I have some really good friends there 11-09-20sUser23<terminals>
+				<t pos="PRP" word="I"/>
+				<t pos="VBP" word="have"/>
+				<t pos="DT" word="some"/>
+				<t pos="RB" word="really"/>
+				<t pos="JJ" word="good"/>
+				<t pos="NNS" word="friends"/>
+				<t pos="RB" word="there"/>
+				<t pos="NNP" word="11-09-20sUser23"/>
+			</terminals>
+		</Post>
+		<Post class="Emotion" user="11-09-20sUser114">LOL<terminals>
+				<t pos="UH" word="LOL"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser105">JOIN<terminals>
+				<t pos="VB" word="JOIN"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser80">there if he isnt bothering you you can play<terminals>
+				<t pos="UH" word="there"/>
+				<t pos="IN" word="if"/>
+				<t pos="PRP" word="he"/>
+				<t pos="VBZ" word="isnt"/>
+				<t pos="VBG" word="bothering"/>
+				<t pos="PRP" word="you"/>
+				<t pos="PRP" word="you"/>
+				<t pos="MD" word="can"/>
+				<t pos="VB" word="play"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser127">JOIN<terminals>
+				<t pos="VB" word="JOIN"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser114">I am perving<terminals>
+				<t pos="PRP" word="I"/>
+				<t pos="VBP" word="am"/>
+				<t pos="VBG" word="perving"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser60">.ACTION spins Lil Jon f. Pastor Troy ~ Let's Go!.<terminals>
+				<t pos="SYM" word="."/>
+				<t pos="NN" word="ACTION"/>
+				<t pos="VBZ" word="spins"/>
+				<t pos="NNP" word="Lil"/>
+				<t pos="NNP" word="Jon"/>
+				<t pos="NNP" word="f."/>
+				<t pos="NNP" word="Pastor"/>
+				<t pos="NNP" word="Troy"/>
+				<t pos=":" word="~"/>
+				<t pos="VB" word="Let"/>
+				<t pos="PRP" word="&apos;s"/>
+				<t pos="VB" word="Go"/>
+				<t pos="." word="!."/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser101">no comprende<terminals>
+				<t pos="DT" word="no"/>
+				<t pos="FW" word="comprende"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser13">one in appleton<terminals>
+				<t pos="NN" word="one"/>
+				<t pos="IN" word="in"/>
+				<t pos="NNP" word="appleton"/>
+			</terminals>
+		</Post>
+		<Post class="ynQuestion" user="11-09-20sUser121">any ladies wana chat with a canadaian<terminals>
+				<t pos="DT" word="any"/>
+				<t pos="NNS" word="ladies"/>
+				<t pos="VBP" word="wana"/>
+				<t pos="VB" word="chat"/>
+				<t pos="IN" word="with"/>
+				<t pos="DT" word="a"/>
+				<t pos="^JJ" word="canadaian"/>
+			</terminals>
+		</Post>
+		<Post class="Greet" user="11-09-20sUser127">hi room<terminals>
+				<t pos="UH" word="hi"/>
+				<t pos="NN" word="room"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser56">PART<terminals>
+				<t pos="VB" word="PART"/>
+			</terminals>
+		</Post>
+		<Post class="whQuestion" user="11-09-20sUser105">What the bloody hell happened there<terminals>
+				<t pos="WP" word="What"/>
+				<t pos="DT" word="the"/>
+				<t pos="JJ" word="bloody"/>
+				<t pos="NN" word="hell"/>
+				<t pos="VBD" word="happened"/>
+				<t pos="RB" word="there"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser124">PART<terminals>
+				<t pos="VB" word="PART"/>
+			</terminals>
+		</Post>
+		<Post class="ynQuestion" user="11-09-20sUser59">somebody type perving?<terminals>
+				<t pos="NN" word="somebody"/>
+				<t pos="VB" word="type"/>
+				<t pos="VBG" word="perving"/>
+				<t pos="." word="?"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser114">.ACTION plays with 11-09-20sUser68 like a puppet.<terminals>
+				<t pos="SYM" word="."/>
+				<t pos="NN" word="ACTION"/>
+				<t pos="VBZ" word="plays"/>
+				<t pos="IN" word="with"/>
+				<t pos="NNP" word="11-09-20sUser68"/>
+				<t pos="IN" word="like"/>
+				<t pos="DT" word="a"/>
+				<t pos="NN" word="puppet"/>
+				<t pos="." word="."/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser128">JOIN<terminals>
+				<t pos="VB" word="JOIN"/>
+			</terminals>
+		</Post>
+		<Post class="Emotion" user="11-09-20sUser59">lol<terminals>
+				<t pos="UH" word="lol"/>
+			</terminals>
+		</Post>
+		<Post class="Greet" user="11-09-20sUser126">Hi guys..<terminals>
+				<t pos="UH" word="Hi"/>
+				<t pos="NNS" word="guys"/>
+				<t pos=":" word=".."/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser55">PART<terminals>
+				<t pos="VB" word="PART"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser105">JRZ sorry about that<terminals>
+				<t pos="NNP" word="JRZ"/>
+				<t pos="JJ" word="sorry"/>
+				<t pos="IN" word="about"/>
+				<t pos="DT" word="that"/>
+			</terminals>
+		</Post>
+		<Post class="whQuestion" user="11-09-20sUser31">11-09-20sUser101  like what<terminals>
+				<t pos="NNP" word="11-09-20sUser101"/>
+				<t pos="IN" word="like"/>
+				<t pos="WP" word="what"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser0">yeah I get perved often for some reason <terminals>
+				<t pos="UH" word="yeah"/>
+				<t pos="PRP" word="I"/>
+				<t pos="VBP" word="get"/>
+				<t pos="VBD" word="perved"/>
+				<t pos="RB" word="often"/>
+				<t pos="IN" word="for"/>
+				<t pos="DT" word="some"/>
+				<t pos="NN" word="reason"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser127">any females want to chat with norny guy pm me<terminals>
+				<t pos="DT" word="any"/>
+				<t pos="NNS" word="females"/>
+				<t pos="VB" word="want"/>
+				<t pos="TO" word="to"/>
+				<t pos="VB" word="chat"/>
+				<t pos="IN" word="with"/>
+				<t pos="^JJ" word="norny"/>
+				<t pos="NN" word="guy"/>
+				<t pos="VB" word="pm"/>
+				<t pos="PRP" word="me"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser56">JOIN<terminals>
+				<t pos="VB" word="JOIN"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser105">PART<terminals>
+				<t pos="VB" word="PART"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser60">.ACTION dances like a fuckin fool.<terminals>
+				<t pos="SYM" word="."/>
+				<t pos="NN" word="ACTION"/>
+				<t pos="VBZ" word="dances"/>
+				<t pos="IN" word="like"/>
+				<t pos="DT" word="a"/>
+				<t pos="VBG" word="fuckin"/>
+				<t pos="NN" word="fool"/>
+				<t pos="." word="."/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser105">I got cut off<terminals>
+				<t pos="PRP" word="I"/>
+				<t pos="VBD" word="got"/>
+				<t pos="VBN" word="cut"/>
+				<t pos="RP" word="off"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser114">11-09-20sUser105 you've grown a tail<terminals>
+				<t pos="NNP" word="11-09-20sUser105"/>
+				<t pos="PRP" word="you"/>
+				<t pos="VBP" word="&apos;ve"/>
+				<t pos="VBN" word="grown"/>
+				<t pos="DT" word="a"/>
+				<t pos="NN" word="tail"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser59">i never get perved<terminals>
+				<t pos="PRP" word="i"/>
+				<t pos="RB" word="never"/>
+				<t pos="VBP" word="get"/>
+				<t pos="VBD" word="perved"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser129">JOIN<terminals>
+				<t pos="VB" word="JOIN"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser31">11-09-20sUser80 i like you<terminals>
+				<t pos="NNP" word="11-09-20sUser80"/>
+				<t pos="PRP" word="i"/>
+				<t pos="VBP" word="like"/>
+				<t pos="PRP" word="you"/>
+			</terminals>
+		</Post>
+		<Post class="Greet" user="11-09-20sUser33">hey<terminals>
+				<t pos="UH" word="hey"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser101">i perved ya 11-09-20sUser59<terminals>
+				<t pos="PRP" word="i"/>
+				<t pos="VBD" word="perved"/>
+				<t pos="PRP" word="ya"/>
+				<t pos="NNP" word="11-09-20sUser59"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser130">JOIN<terminals>
+				<t pos="VB" word="JOIN"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser114">Seee 11-09-20sUser101...<terminals>
+				<t pos="^VB" word="Seee"/>
+				<t pos="NNP" word="11-09-20sUser101"/>
+				<t pos=":" word="..."/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser80">lol thanks i think<terminals>
+				<t pos="UH" word="lol"/>
+				<t pos="UH" word="thanks"/>
+				<t pos="PRP" word="i"/>
+				<t pos="VBP" word="think"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser60">bob and weave bob and weave<terminals>
+				<t pos="VB" word="bob"/>
+				<t pos="CC" word="and"/>
+				<t pos="VB" word="weave"/>
+				<t pos="VB" word="bob"/>
+				<t pos="CC" word="and"/>
+				<t pos="VB" word="weave"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser34">ok ok im back<terminals>
+				<t pos="UH" word="ok"/>
+				<t pos="UH" word="ok"/>
+				<t pos="PRP" word="im"/>
+				<t pos="RB" word="back"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser59">its always....."ewwwww"<terminals>
+				<t pos="PRP" word="its"/>
+				<t pos="RB" word="always"/>
+				<t pos=":" word="....."/>
+				<t pos="&apos;&apos;" word="&quot;"/>
+				<t pos="UH" word="ewwwww"/>
+				<t pos="&apos;&apos;" word="&quot;"/>
+			</terminals>
+		</Post>
+		<Post class="whQuestion" user="11-09-20sUser126">what is the conversion about..?any guide for me?<terminals>
+				<t pos="WP" word="what"/>
+				<t pos="VBZ" word="is"/>
+				<t pos="DT" word="the"/>
+				<t pos="NN" word="conversion"/>
+				<t pos="IN" word="about"/>
+				<t pos=":" word=".."/>
+				<t pos="." word="?"/>
+				<t pos="DT" word="any"/>
+				<t pos="NN" word="guide"/>
+				<t pos="IN" word="for"/>
+				<t pos="PRP" word="me"/>
+				<t pos="." word="?"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser114">I did to 11-09-20sUser59<terminals>
+				<t pos="PRP" word="I"/>
+				<t pos="VBD" word="did"/>
+				<t pos="^JJ" word="to"/>
+				<t pos="NNP" word="11-09-20sUser59"/>
+			</terminals>
+		</Post>
+		<Post class="whQuestion" user="11-09-20sUser105">What the hell? Where did the 2 come from???<terminals>
+				<t pos="WP" word="What"/>
+				<t pos="DT" word="the"/>
+				<t pos="NN" word="hell"/>
+				<t pos="." word="?"/>
+				<t pos="WRB" word="Where"/>
+				<t pos="VBD" word="did"/>
+				<t pos="DT" word="the"/>
+				<t pos="NN" word="2"/>
+				<t pos="VB" word="come"/>
+				<t pos="IN" word="from"/>
+				<t pos="." word="???"/>
+			</terminals>
+		</Post>
+		<Post class="whQuestion" user="11-09-20sUser59">who did?<terminals>
+				<t pos="WP" word="who"/>
+				<t pos="VBD" word="did"/>
+				<t pos="." word="?"/>
+			</terminals>
+		</Post>
+		<Post class="Emotion" user="11-09-20sUser114">LoL<terminals>
+				<t pos="UH" word="LoL"/>
+			</terminals>
+		</Post>
+		<Post class="Emotion" user="11-09-20sUser59">lmao<terminals>
+				<t pos="UH" word="lmao"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser34">!smooch room damn it<terminals>
+				<t pos="SYM" word="!"/>
+				<t pos="VB" word="smooch"/>
+				<t pos="NN" word="room"/>
+				<t pos="VB" word="damn"/>
+				<t pos="PRP" word="it"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser94">.ACTION walks up to room damn it, runs their fingers thru the back of room damn it's hair, closes their eyes, and gently kisses room damn it on the neck, Compliments of 11-09-20sUser34!.<terminals>
+				<t pos="SYM" word="."/>
+				<t pos="NN" word="ACTION"/>
+				<t pos="VBZ" word="walks"/>
+				<t pos="IN" word="up"/>
+				<t pos="TO" word="to"/>
+				<t pos="NNP" word="room"/>
+				<t pos="NNP" word="damn"/>
+				<t pos="NNP" word="it"/>
+				<t pos="," word=","/>
+				<t pos="VBZ" word="runs"/>
+				<t pos="PRP$" word="their"/>
+				<t pos="NNS" word="fingers"/>
+				<t pos="IN" word="thru"/>
+				<t pos="DT" word="the"/>
+				<t pos="NN" word="back"/>
+				<t pos="IN" word="of"/>
+				<t pos="NNP" word="room"/>
+				<t pos="NNP" word="damn"/>
+				<t pos="NNP" word="it"/>
+				<t pos="POS" word="&apos;s"/>
+				<t pos="NN" word="hair"/>
+				<t pos="," word=","/>
+				<t pos="VBZ" word="closes"/>
+				<t pos="PRP$" word="their"/>
+				<t pos="NNS" word="eyes"/>
+				<t pos="," word=","/>
+				<t pos="CC" word="and"/>
+				<t pos="RB" word="gently"/>
+				<t pos="VBZ" word="kisses"/>
+				<t pos="NNP" word="room"/>
+				<t pos="NNP" word="damn"/>
+				<t pos="NNP" word="it"/>
+				<t pos="IN" word="on"/>
+				<t pos="DT" word="the"/>
+				<t pos="NN" word="neck"/>
+				<t pos="," word=","/>
+				<t pos="NNS" word="Compliments"/>
+				<t pos="IN" word="of"/>
+				<t pos="NNP" word="11-09-20sUser34"/>
+				<t pos="." word="!."/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser10">PART<terminals>
+				<t pos="VB" word="PART"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser129">hi 31f ga im me to chat<terminals>
+				<t pos="UH" word="hi"/>
+				<t pos="CD" word="31"/>
+				<t pos="NN" word="f"/>
+				<t pos="NNP" word="ga"/>
+				<t pos="VB" word="im"/>
+				<t pos="PRP" word="me"/>
+				<t pos="TO" word="to"/>
+				<t pos="VB" word="chat"/>
+			</terminals>
+		</Post>
+		<Post class="Greet" user="11-09-20sUser130">waddup<terminals>
+				<t pos="UH" word="waddup"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser105">!20<terminals>
+				<t pos="SYM" word="!"/>
+				<t pos="CD" word="20"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser94">.Question:. Who do you respect the most?<terminals>
+				<t pos="SYM" word="."/>
+				<t pos="NN" word="Question"/>
+				<t pos=":" word=":."/>
+				<t pos="WP" word="Who"/>
+				<t pos="VBP" word="do"/>
+				<t pos="PRP" word="you"/>
+				<t pos="VBP" word="respect"/>
+				<t pos="DT" word="the"/>
+				<t pos="RBS" word="most"/>
+				<t pos="." word="?"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser34">me<terminals>
+				<t pos="PRP" word="me"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser131">JOIN<terminals>
+				<t pos="VB" word="JOIN"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser114">My mum<terminals>
+				<t pos="PRP$" word="My"/>
+				<t pos="NN" word="mum"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser60">.wz 29803<terminals>
+				<t pos="SYM" word="."/>
+				<t pos="NN" word="wz"/>
+				<t pos="CD" word="29803"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser94"> .Aiken, South Carolina. -- 6.  6:38 PM EST<terminals>
+				<t pos="SYM" word="."/>
+				<t pos="NNP" word="Aiken"/>
+				<t pos="," word=","/>
+				<t pos="NNP" word="South"/>
+				<t pos="NNP" word="Carolina"/>
+				<t pos="." word="."/>
+				<t pos=":" word="--"/>
+				<t pos="CD" word="6"/>
+				<t pos="." word="."/>
+				<t pos="CD" word="6:38"/>
+				<t pos="JJ" word="PM"/>
+				<t pos="NNP" word="EST"/>
+			</terminals>
+		</Post>
+		<Post class="Greet" user="11-09-20sUser131">hi<terminals>
+				<t pos="UH" word="hi"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser94"> .Temp. 70%    <terminals>
+				<t pos="SYM" word="."/>
+				<t pos="NN" word="Temp."/>
+				<t pos="CD" word="70%"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser0">.wz 92780 <terminals>
+				<t pos="SYM" word="."/>
+				<t pos="NN" word="wz"/>
+				<t pos="CD" word="92780"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser105">PART<terminals>
+				<t pos="VB" word="PART"/>
+			</terminals>
+		</Post>
+		<Post class="ynQuestion" user="11-09-20sUser126">Anyone who want to chat?<terminals>
+				<t pos="NN" word="Anyone"/>
+				<t pos="WP" word="who"/>
+				<t pos="VBP" word="want"/>
+				<t pos="TO" word="to"/>
+				<t pos="VB" word="chat"/>
+				<t pos="." word="?"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser74">PART<terminals>
+				<t pos="VB" word="PART"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser60">ah good night to have the top down<terminals>
+				<t pos="UH" word="ah"/>
+				<t pos="JJ" word="good"/>
+				<t pos="NN" word="night"/>
+				<t pos="TO" word="to"/>
+				<t pos="VB" word="have"/>
+				<t pos="DT" word="the"/>
+				<t pos="NN" word="top"/>
+				<t pos="IN" word="down"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser132">JOIN<terminals>
+				<t pos="VB" word="JOIN"/>
+			</terminals>
+		</Post>
+		<Post class="Greet" user="11-09-20sUser132">hey<terminals>
+				<t pos="UH" word="hey"/>
+			</terminals>
+		</Post>
+		<Post class="nAnswer" user="11-09-20sUser34">no 11-09-20sUser126 im just here to look<terminals>
+				<t pos="UH" word="no"/>
+				<t pos="NNP" word="11-09-20sUser126"/>
+				<t pos="PRP" word="im"/>
+				<t pos="RB" word="just"/>
+				<t pos="RB" word="here"/>
+				<t pos="TO" word="to"/>
+				<t pos="VB" word="look"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser34">thanks anyways<terminals>
+				<t pos="UH" word="thanks"/>
+				<t pos="UH" word="anyways"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser133">JOIN<terminals>
+				<t pos="VB" word="JOIN"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser31">11-09-20sUser80 you like me<terminals>
+				<t pos="NNP" word="11-09-20sUser80"/>
+				<t pos="PRP" word="you"/>
+				<t pos="VBP" word="like"/>
+				<t pos="PRP" word="me"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser59">maybe i should put a new pic up<terminals>
+				<t pos="RB" word="maybe"/>
+				<t pos="PRP" word="i"/>
+				<t pos="MD" word="should"/>
+				<t pos="VB" word="put"/>
+				<t pos="DT" word="a"/>
+				<t pos="JJ" word="new"/>
+				<t pos="NN" word="pic"/>
+				<t pos="RP" word="up"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser114">.ACTION snuggles 11-09-20sUser80.<terminals>
+				<t pos="SYM" word="."/>
+				<t pos="NN" word="ACTION"/>
+				<t pos="VBZ" word="snuggles"/>
+				<t pos="NNP" word="11-09-20sUser80"/>
+				<t pos="." word="."/>
+			</terminals>
+		</Post>
+		<Post class="Accept" user="11-09-20sUser126">ah, ok 11-09-20sUser34<terminals>
+				<t pos="UH" word="ah"/>
+				<t pos="," word=","/>
+				<t pos="UH" word="ok"/>
+				<t pos="NNP" word="11-09-20sUser34"/>
+			</terminals>
+		</Post>
+		<Post class="Reject" user="11-09-20sUser0">nah your pic is just fine <terminals>
+				<t pos="UH" word="nah"/>
+				<t pos="PRP$" word="your"/>
+				<t pos="NN" word="pic"/>
+				<t pos="VBZ" word="is"/>
+				<t pos="RB" word="just"/>
+				<t pos="JJ" word="fine"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser105">JOIN<terminals>
+				<t pos="VB" word="JOIN"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser57">PART<terminals>
+				<t pos="VB" word="PART"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser134">JOIN<terminals>
+				<t pos="VB" word="JOIN"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser59">well i look different now<terminals>
+				<t pos="UH" word="well"/>
+				<t pos="PRP" word="i"/>
+				<t pos="VBP" word="look"/>
+				<t pos="JJ" word="different"/>
+				<t pos="RB" word="now"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser105">ok Now Im pissed<terminals>
+				<t pos="UH" word="ok"/>
+				<t pos="RB" word="Now"/>
+				<t pos="PRP" word="Im"/>
+				<t pos="JJ" word="pissed"/>
+			</terminals>
+		</Post>
+		<Post class="Reject" user="11-09-20sUser34">no problemo<terminals>
+				<t pos="DT" word="no"/>
+				<t pos="FW" word="problemo"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser59">i dyed my hair and chopped it off<terminals>
+				<t pos="PRP" word="i"/>
+				<t pos="VBD" word="dyed"/>
+				<t pos="PRP$" word="my"/>
+				<t pos="NN" word="hair"/>
+				<t pos="CC" word="and"/>
+				<t pos="VBD" word="chopped"/>
+				<t pos="PRP" word="it"/>
+				<t pos="RP" word="off"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser114">See i told you what to do<terminals>
+				<t pos="UH" word="See"/>
+				<t pos="PRP" word="i"/>
+				<t pos="VBD" word="told"/>
+				<t pos="PRP" word="you"/>
+				<t pos="WP" word="what"/>
+				<t pos="TO" word="to"/>
+				<t pos="VB" word="do"/>
+			</terminals>
+		</Post>
+		<Post class="Continuer" user="11-09-20sUser114">and you just left<terminals>
+				<t pos="CC" word="and"/>
+				<t pos="PRP" word="you"/>
+				<t pos="RB" word="just"/>
+				<t pos="VBD" word="left"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser114">isn't my fault<terminals>
+				<t pos="VBZ" word="is"/>
+				<t pos="RB" word="n&apos;t"/>
+				<t pos="PRP$" word="my"/>
+				<t pos="NN" word="fault"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser17">PART<terminals>
+				<t pos="VB" word="PART"/>
+			</terminals>
+		</Post>
+		<Post class="whQuestion" user="11-09-20sUser34">11-09-20sUser105 why u pissed<terminals>
+				<t pos="NNP" word="11-09-20sUser105"/>
+				<t pos="WRB" word="why"/>
+				<t pos="PRP" word="u"/>
+				<t pos="JJ" word="pissed"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser135">JOIN<terminals>
+				<t pos="VB" word="JOIN"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser0">I see <terminals>
+				<t pos="PRP" word="I"/>
+				<t pos="VBP" word="see"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser80">i dont know you 11-09-20sUser31 <terminals>
+				<t pos="PRP" word="i"/>
+				<t pos="VBP" word="dont"/>
+				<t pos="VB" word="know"/>
+				<t pos="PRP" word="you"/>
+				<t pos="NNP" word="11-09-20sUser31"/>
+			</terminals>
+		</Post>
+		<Post class="ynQuestion" user="11-09-20sUser105">Did some fucker cut me off<terminals>
+				<t pos="VBD" word="Did"/>
+				<t pos="DT" word="some"/>
+				<t pos="NN" word="fucker"/>
+				<t pos="VB" word="cut"/>
+				<t pos="PRP" word="me"/>
+				<t pos="RP" word="off"/>
+			</terminals>
+		</Post>
+		<Post class="nAnswer" user="11-09-20sUser114">No<terminals>
+				<t pos="UH" word="No"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser131">PART<terminals>
+				<t pos="VB" word="PART"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser136">JOIN<terminals>
+				<t pos="VB" word="JOIN"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser34">cut you off<terminals>
+				<t pos="VB" word="cut"/>
+				<t pos="PRP" word="you"/>
+				<t pos="RP" word="off"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser28">PART<terminals>
+				<t pos="VB" word="PART"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser114">it happens sometimes.<terminals>
+				<t pos="PRP" word="it"/>
+				<t pos="VBZ" word="happens"/>
+				<t pos="RB" word="sometimes"/>
+				<t pos="." word="."/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser137">JOIN<terminals>
+				<t pos="VB" word="JOIN"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser105">!20<terminals>
+				<t pos="SYM" word="!"/>
+				<t pos="CD" word="20"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser94">.Question:. Hug or a kiss?<terminals>
+				<t pos="SYM" word="."/>
+				<t pos="NN" word="Question"/>
+				<t pos=":" word=":."/>
+				<t pos="NN" word="Hug"/>
+				<t pos="CC" word="or"/>
+				<t pos="DT" word="a"/>
+				<t pos="NN" word="kiss"/>
+				<t pos="." word="?"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser0">so I guess I shouldn't use your pic as wallpaper for my laptop :) lol <terminals>
+				<t pos="UH" word="so"/>
+				<t pos="PRP" word="I"/>
+				<t pos="VBP" word="guess"/>
+				<t pos="PRP" word="I"/>
+				<t pos="MD" word="should"/>
+				<t pos="RB" word="n&apos;t"/>
+				<t pos="VB" word="use"/>
+				<t pos="PRP$" word="your"/>
+				<t pos="NN" word="pic"/>
+				<t pos="IN" word="as"/>
+				<t pos="NN" word="wallpaper"/>
+				<t pos="IN" word="for"/>
+				<t pos="PRP$" word="my"/>
+				<t pos="NN" word="laptop"/>
+				<t pos="UH" word=":)"/>
+				<t pos="UH" word="lol"/>
+			</terminals>
+		</Post>
+		<Post class="Emotion" user="11-09-20sUser59">lol<terminals>
+				<t pos="UH" word="lol"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser136">any girls wanna chat PM me<terminals>
+				<t pos="DT" word="any"/>
+				<t pos="NNS" word="girls"/>
+				<t pos="VBP" word="wanna"/>
+				<t pos="VB" word="chat"/>
+				<t pos="VB" word="PM"/>
+				<t pos="PRP" word="me"/>
+			</terminals>
+		</Post>
+		<Post class="Emphasis" user="11-09-20sUser114">Oh just fucking ignore me then!<terminals>
+				<t pos="UH" word="Oh"/>
+				<t pos="RB" word="just"/>
+				<t pos="RB" word="fucking"/>
+				<t pos="VB" word="ignore"/>
+				<t pos="PRP" word="me"/>
+				<t pos="RB" word="then"/>
+				<t pos="." word="!"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser59">i ll get you a more current one :-o <terminals>
+				<t pos="PRP" word="i"/>
+				<t pos="^MD" word="ll"/>
+				<t pos="VB" word="get"/>
+				<t pos="PRP" word="you"/>
+				<t pos="DT" word="a"/>
+				<t pos="RBR" word="more"/>
+				<t pos="JJ" word="current"/>
+				<t pos="NN" word="one"/>
+				<t pos="UH" word=":-o"/>
+			</terminals>
+		</Post>
+		<Post class="Bye" user="11-09-20sUser80">brb<terminals>
+				<t pos="UH" word="brb"/>
+			</terminals>
+		</Post>
+		<Post class="Bye" user="11-09-20sUser114">hb!<terminals>
+				<t pos="UH" word="hb"/>
+				<t pos="." word="!"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser105">A fuck would suffice haha <terminals>
+				<t pos="DT" word="A"/>
+				<t pos="NN" word="fuck"/>
+				<t pos="MD" word="would"/>
+				<t pos="VB" word="suffice"/>
+				<t pos="UH" word="haha"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser130">PART<terminals>
+				<t pos="VB" word="PART"/>
+			</terminals>
+		</Post>
+		<Post class="Greet" user="11-09-20sUser82">hi 11-09-20sUser45<terminals>
+				<t pos="UH" word="hi"/>
+				<t pos="NNP" word="11-09-20sUser45"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser49">PART<terminals>
+				<t pos="VB" word="PART"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser34">propper english<terminals>
+				<t pos="^JJ" word="propper"/>
+				<t pos="NN" word="english"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser72">its a family tradition<terminals>
+				<t pos="PRP" word="its"/>
+				<t pos="DT" word="a"/>
+				<t pos="NN" word="family"/>
+				<t pos="NN" word="tradition"/>
+			</terminals>
+		</Post>
+		<Post class="Emotion" user="11-09-20sUser34">lol<terminals>
+				<t pos="UH" word="lol"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser138">JOIN<terminals>
+				<t pos="VB" word="JOIN"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser139">JOIN<terminals>
+				<t pos="VB" word="JOIN"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser114">!spin<terminals>
+				<t pos="SYM" word="!"/>
+				<t pos="VB" word="spin"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser94">11-09-20sUser114 spins the bottle .....<terminals>
+				<t pos="NNP" word="11-09-20sUser114"/>
+				<t pos="VBZ" word="spins"/>
+				<t pos="DT" word="the"/>
+				<t pos="NN" word="bottle"/>
+				<t pos=":" word="....."/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser31">PART<terminals>
+				<t pos="VB" word="PART"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser139">!seen 11-09-20sUser988<terminals>
+				<t pos="SYM" word="!"/>
+				<t pos="VBN" word="seen"/>
+				<t pos="NNP" word="11-09-20sUser988"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser94">Where it will point nobody knows ....<terminals>
+				<t pos="WRB" word="Where"/>
+				<t pos="PRP" word="it"/>
+				<t pos="MD" word="will"/>
+				<t pos="VB" word="point"/>
+				<t pos="NN" word="nobody"/>
+				<t pos="VBZ" word="knows"/>
+				<t pos=":" word="...."/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser94">Round and round it goes .....<terminals>
+				<t pos="RP" word="Round"/>
+				<t pos="CC" word="and"/>
+				<t pos="RP" word="round"/>
+				<t pos="PRP" word="it"/>
+				<t pos="VBZ" word="goes"/>
+				<t pos=":" word="....."/>
+			</terminals>
+		</Post>
+		<Post class="Emphasis" user="11-09-20sUser94">slowly comes to a stop... pointing at 11-09-20sUser43!!!<terminals>
+				<t pos="RB" word="slowly"/>
+				<t pos="VBZ" word="comes"/>
+				<t pos="TO" word="to"/>
+				<t pos="DT" word="a"/>
+				<t pos="NN" word="stop"/>
+				<t pos=":" word="..."/>
+				<t pos="VBG" word="pointing"/>
+				<t pos="IN" word="at"/>
+				<t pos="NNP" word="11-09-20sUser43"/>
+				<t pos="." word="!!!"/>
+			</terminals>
+		</Post>
+		<Post class="Greet" user="11-09-20sUser89">hello darlings<terminals>
+				<t pos="UH" word="hello"/>
+				<t pos="NNS" word="darlings"/>
+			</terminals>
+		</Post>
+		<Post class="Emphasis" user="11-09-20sUser94">Now 11-09-20sUser114 you must dance with --&gt; 11-09-20sUser43!!<terminals>
+				<t pos="RB" word="Now"/>
+				<t pos="NNP" word="11-09-20sUser114"/>
+				<t pos="PRP" word="you"/>
+				<t pos="MD" word="must"/>
+				<t pos="VB" word="dance"/>
+				<t pos="IN" word="with"/>
+				<t pos="PRP" word="--&gt;"/>
+				<t pos="NNP" word="11-09-20sUser43"/>
+				<t pos="." word="!!"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser60">*fuck the system hel over the comon man just to dis em believe int he power of the single man to take the power trippin world in his hand*<terminals>
+				<t pos="SYM" word="*"/>
+				<t pos="VB" word="fuck"/>
+				<t pos="DT" word="the"/>
+				<t pos="NN" word="system"/>
+				<t pos="^UH" word="hel"/>
+				<t pos="IN" word="over"/>
+				<t pos="DT" word="the"/>
+				<t pos="^JJ" word="comon"/>
+				<t pos="NN" word="man"/>
+				<t pos="RB" word="just"/>
+				<t pos="TO" word="to"/>
+				<t pos="VB" word="dis"/>
+				<t pos="PRP" word="em"/>
+				<t pos="VB" word="believe"/>
+				<t pos="IN" word="in"/>
+				<t pos="^DT" word="t he"/>
+				<t pos="NN" word="power"/>
+				<t pos="IN" word="of"/>
+				<t pos="DT" word="the"/>
+				<t pos="JJ" word="single"/>
+				<t pos="NN" word="man"/>
+				<t pos="TO" word="to"/>
+				<t pos="VB" word="take"/>
+				<t pos="DT" word="the"/>
+				<t pos="NN" word="power"/>
+				<t pos="VBG" word="trippin"/>
+				<t pos="NN" word="world"/>
+				<t pos="IN" word="in"/>
+				<t pos="PRP$" word="his"/>
+				<t pos="NN" word="hand"/>
+				<t pos="SYM" word="*"/>
+			</terminals>
+		</Post>
+		<Post class="whQuestion" user="11-09-20sUser134">11-09-20sUser53 where are you?<terminals>
+				<t pos="NNP" word="11-09-20sUser53"/>
+				<t pos="WRB" word="where"/>
+				<t pos="VBP" word="are"/>
+				<t pos="PRP" word="you"/>
+				<t pos="." word="?"/>
+			</terminals>
+		</Post>
+		<Post class="Accept" user="11-09-20sUser105">Yeah 11-09-20sUser34 haha its proper<terminals>
+				<t pos="UH" word="Yeah"/>
+				<t pos="NNP" word="11-09-20sUser34"/>
+				<t pos="UH" word="haha"/>
+				<t pos="PRP" word="its"/>
+				<t pos="JJ" word="proper"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser94">11-09-20sUser988 (11-09-20sUser988@11-09-20sUser988) Last seen: 6 hours, 32 minutes ago.<terminals>
+				<t pos="NNP" word="11-09-20sUser988"/>
+				<t pos="(" word="("/>
+				<t pos="NNP" word="11-09-20sUser988"/>
+				<t pos="IN" word="@"/>
+				<t pos="NNP" word="11-09-20sUser988"/>
+				<t pos=")" word=")"/>
+				<t pos="JJ" word="Last"/>
+				<t pos="VBN" word="seen"/>
+				<t pos=":" word=":"/>
+				<t pos="CD" word="6"/>
+				<t pos="NNS" word="hours"/>
+				<t pos="," word=","/>
+				<t pos="CD" word="32"/>
+				<t pos="NNS" word="minutes"/>
+				<t pos="RB" word="ago"/>
+				<t pos="." word="."/>
+			</terminals>
+		</Post>
+		<Post class="Greet" user="11-09-20sUser114">Wb 11-09-20sUser89!!!!<terminals>
+				<t pos="UH" word="Wb"/>
+				<t pos="NNP" word="11-09-20sUser89"/>
+				<t pos="." word="!!!!"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser89">!kiss 11-09-20sUser114 my baby<terminals>
+				<t pos="." word="!"/>
+				<t pos="VB" word="kiss"/>
+				<t pos="NNP" word="11-09-20sUser114"/>
+				<t pos="PRP$" word="my"/>
+				<t pos="NN" word="baby"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser94">.ACTION watches as 11-09-20sUser89 kisses 11-09-20sUser114 my baby so passionately that the channel shoots a scintillating beam of magical energy!.<terminals>
+				<t pos="SYM" word="."/>
+				<t pos="NN" word="ACTION"/>
+				<t pos="VBZ" word="watches"/>
+				<t pos="IN" word="as"/>
+				<t pos="NNP" word="11-09-20sUser89"/>
+				<t pos="VBZ" word="kisses"/>
+				<t pos="NNP" word="11-09-20sUser114"/>
+				<t pos="PRP$" word="my"/>
+				<t pos="NN" word="baby"/>
+				<t pos="RB" word="so"/>
+				<t pos="RB" word="passionately"/>
+				<t pos="IN" word="that"/>
+				<t pos="DT" word="the"/>
+				<t pos="NN" word="channel"/>
+				<t pos="VBZ" word="shoots"/>
+				<t pos="DT" word="a"/>
+				<t pos="JJ" word="scintillating"/>
+				<t pos="NN" word="beam"/>
+				<t pos="IN" word="of"/>
+				<t pos="JJ" word="magical"/>
+				<t pos="NN" word="energy"/>
+				<t pos="." word="!."/>
+			</terminals>
+		</Post>
+		<Post class="Emotion" user="11-09-20sUser114">:)<terminals>
+				<t pos="UH" word=":)"/>
+			</terminals>
+		</Post>
+		<Post class="Reject" user="11-09-20sUser34">no i meant yr propper eng for saying that<terminals>
+				<t pos="UH" word="no"/>
+				<t pos="PRP" word="i"/>
+				<t pos="VBD" word="meant"/>
+				<t pos="PRP$" word="yr"/>
+				<t pos="^JJ" word="propper"/>
+				<t pos="NN" word="eng"/>
+				<t pos="IN" word="for"/>
+				<t pos="VBG" word="saying"/>
+				<t pos="DT" word="that"/>
+			</terminals>
+		</Post>
+		<Post class="whQuestion" user="11-09-20sUser33">who wants to play<terminals>
+				<t pos="WP" word="who"/>
+				<t pos="VBZ" word="wants"/>
+				<t pos="TO" word="to"/>
+				<t pos="VB" word="play"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser140">JOIN<terminals>
+				<t pos="VB" word="JOIN"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser114">.ACTION dances with 11-09-20sUser43.<terminals>
+				<t pos="SYM" word="."/>
+				<t pos="NN" word="ACTION"/>
+				<t pos="VBZ" word="dances"/>
+				<t pos="IN" word="with"/>
+				<t pos="NNP" word="11-09-20sUser43"/>
+				<t pos="." word="."/>
+			</terminals>
+		</Post>
+		<Post class="ynQuestion" user="11-09-20sUser89">rather dance with me 11-09-20sUser114<terminals>
+				<t pos="RB" word="rather"/>
+				<t pos="VB" word="dance"/>
+				<t pos="IN" word="with"/>
+				<t pos="PRP" word="me"/>
+				<t pos="NNP" word="11-09-20sUser114"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser72">if i get stoned im just carrying on a family tradition<terminals>
+				<t pos="IN" word="if"/>
+				<t pos="PRP" word="i"/>
+				<t pos="VBP" word="get"/>
+				<t pos="VBN" word="stoned"/>
+				<t pos="PRP" word="im"/>
+				<t pos="RB" word="just"/>
+				<t pos="VBG" word="carrying"/>
+				<t pos="IN" word="on"/>
+				<t pos="DT" word="a"/>
+				<t pos="NN" word="family"/>
+				<t pos="NN" word="tradition"/>
+			</terminals>
+		</Post>
+		<Post class="yAnswer" user="11-09-20sUser114">Yes<terminals>
+				<t pos="UH" word="Yes"/>
+			</terminals>
+		</Post>
+		<Post class="Emotion" user="11-09-20sUser114">LOL<terminals>
+				<t pos="UH" word="LOL"/>
+			</terminals>
+		</Post>
+		<Post class="Accept" user="11-09-20sUser60">amen 11-09-20sUser72<terminals>
+				<t pos="UH" word="amen"/>
+				<t pos="NNP" word="11-09-20sUser72"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser114">!dance 11-09-20sUser89<terminals>
+				<t pos="." word="!"/>
+				<t pos="VB" word="dance"/>
+				<t pos="NNP" word="11-09-20sUser89"/>
+			</terminals>
+		</Post>
+		<Post class="Greet" user="11-09-20sUser134">hey 11-09-20sUser114<terminals>
+				<t pos="UH" word="hey"/>
+				<t pos="NNP" word="11-09-20sUser114"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser0">puff puff pass to 11-09-20sUser72 <terminals>
+				<t pos="UH" word="puff"/>
+				<t pos="UH" word="puff"/>
+				<t pos="VB" word="pass"/>
+				<t pos="TO" word="to"/>
+				<t pos="NNP" word="11-09-20sUser72"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser94">.ACTION turns up the music as 11-09-20sUser114 dances with 11-09-20sUser89..<terminals>
+				<t pos="SYM" word="."/>
+				<t pos="NN" word="ACTION"/>
+				<t pos="VBZ" word="turns"/>
+				<t pos="RP" word="up"/>
+				<t pos="DT" word="the"/>
+				<t pos="NN" word="music"/>
+				<t pos="IN" word="as"/>
+				<t pos="NNP" word="11-09-20sUser114"/>
+				<t pos="VBZ" word="dances"/>
+				<t pos="IN" word="with"/>
+				<t pos="NNP" word="11-09-20sUser89"/>
+				<t pos=":" word=".."/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser34">you daft twit scum bag git<terminals>
+				<t pos="PRP" word="you"/>
+				<t pos="^DT" word="daft"/>
+				<t pos="NN" word="twit"/>
+				<t pos="NN" word="scum"/>
+				<t pos="NN" word="bag"/>
+				<t pos="VB" word="git"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser59">!seen meyooky<terminals>
+				<t pos="SYM" word="!"/>
+				<t pos="VBN" word="seen"/>
+				<t pos="NNP" word="meyooky"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser94">I've never seen: meyooky.<terminals>
+				<t pos="PRP" word="I"/>
+				<t pos="VBP" word="&apos;ve"/>
+				<t pos="RB" word="never"/>
+				<t pos="VBN" word="seen"/>
+				<t pos=":" word=":"/>
+				<t pos="NNP" word="meyooky"/>
+				<t pos="." word="."/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser105">!20<terminals>
+				<t pos="SYM" word="!"/>
+				<t pos="CD" word="20"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser94">.Question:. Would you ever walk downtown without any shoes on your feet? <terminals>
+				<t pos="." word="."/>
+				<t pos="NN" word="Question"/>
+				<t pos=":" word=":."/>
+				<t pos="MD" word="Would"/>
+				<t pos="PRP" word="you"/>
+				<t pos="RB" word="ever"/>
+				<t pos="VB" word="walk"/>
+				<t pos="NN" word="downtown"/>
+				<t pos="IN" word="without"/>
+				<t pos="DT" word="any"/>
+				<t pos="NNS" word="shoes"/>
+				<t pos="IN" word="on"/>
+				<t pos="PRP$" word="your"/>
+				<t pos="NNS" word="feet"/>
+				<t pos="." word="?"/>
+			</terminals>
+		</Post>
+		<Post class="Greet" user="11-09-20sUser114">hi 11-09-20sUser134<terminals>
+				<t pos="UH" word="hi"/>
+				<t pos="NNP" word="11-09-20sUser134"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser139">PART<terminals>
+				<t pos="VB" word="PART"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser89">11-09-20sUser34 long time no see lover<terminals>
+				<t pos="NNP" word="11-09-20sUser34"/>
+				<t pos="RB" word="long"/>
+				<t pos="NN" word="time"/>
+				<t pos="DT" word="no"/>
+				<t pos="VB" word="see"/>
+				<t pos="UH" word="lover"/>
+			</terminals>
+		</Post>
+		<Post class="ynQuestion" user="11-09-20sUser134">have you seen 11-09-20sUser53?<terminals>
+				<t pos="VBP" word="have"/>
+				<t pos="PRP" word="you"/>
+				<t pos="VBN" word="seen"/>
+				<t pos="NNP" word="11-09-20sUser53"/>
+				<t pos="." word="?"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser141">JOIN<terminals>
+				<t pos="VB" word="JOIN"/>
+			</terminals>
+		</Post>
+		<Post class="ynQuestion" user="11-09-20sUser41">hey people any females want to chat to a guy from downunder?<terminals>
+				<t pos="UH" word="hey"/>
+				<t pos="NNS" word="people"/>
+				<t pos="DT" word="any"/>
+				<t pos="NNS" word="females"/>
+				<t pos="VB" word="want"/>
+				<t pos="TO" word="to"/>
+				<t pos="VB" word="chat"/>
+				<t pos="TO" word="to"/>
+				<t pos="DT" word="a"/>
+				<t pos="NN" word="guy"/>
+				<t pos="IN" word="from"/>
+				<t pos="NNP" word="down"/>
+				<t pos="NNP" word="under"/>
+				<t pos="." word="?"/>
+			</terminals>
+		</Post>
+		<Post class="Accept" user="11-09-20sUser34">yes darling long time <terminals>
+				<t pos="UH" word="yes"/>
+				<t pos="UH" word="darling"/>
+				<t pos="RB" word="long"/>
+				<t pos="NN" word="time"/>
+			</terminals>
+		</Post>
+		<Post class="ynQuestion" user="11-09-20sUser134">she's not answering her pms??<terminals>
+				<t pos="PRP" word="she"/>
+				<t pos="BES" word="&apos;s"/>
+				<t pos="RB" word="not"/>
+				<t pos="VBG" word="answering"/>
+				<t pos="PRP" word="her"/>
+				<t pos="NNS" word="pms"/>
+				<t pos="." word="??"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser34">!kiss 11-09-20sUser89<terminals>
+				<t pos="SYM" word="!"/>
+				<t pos="VB" word="kiss"/>
+				<t pos="NNP" word="11-09-20sUser89"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser94">.ACTION awww come on 11-09-20sUser89 give 11-09-20sUser34 a kiss! Type !kiss 11-09-20sUser34.<terminals>
+				<t pos="SYM" word="."/>
+				<t pos="NN" word="ACTION"/>
+				<t pos="UH" word="awww"/>
+				<t pos="VB" word="come"/>
+				<t pos="RP" word="on"/>
+				<t pos="NNP" word="11-09-20sUser89"/>
+				<t pos="VBP" word="give"/>
+				<t pos="NNP" word="11-09-20sUser34"/>
+				<t pos="DT" word="a"/>
+				<t pos="NN" word="kiss"/>
+				<t pos="." word="!"/>
+				<t pos="VB" word="Type"/>
+				<t pos="SYM" word="!"/>
+				<t pos="VB" word="kiss"/>
+				<t pos="NNP" word="11-09-20sUser34"/>
+				<t pos="." word="."/>
+			</terminals>
+		</Post>
+		<Post class="whQuestion" user="11-09-20sUser89">o0 what we dancing to 11-09-20sUser114?<terminals>
+				<t pos="UH" word="o0"/>
+				<t pos="WP" word="what"/>
+				<t pos="PRP" word="we"/>
+				<t pos="VBG" word="dancing"/>
+				<t pos="TO" word="to"/>
+				<t pos="NNP" word="11-09-20sUser114"/>
+				<t pos="." word="?"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser60">me and my widow ready to hit the town<terminals>
+				<t pos="PRP" word="me"/>
+				<t pos="CC" word="and"/>
+				<t pos="PRP$" word="my"/>
+				<t pos="NN" word="widow"/>
+				<t pos="JJ" word="ready"/>
+				<t pos="TO" word="to"/>
+				<t pos="VB" word="hit"/>
+				<t pos="DT" word="the"/>
+				<t pos="NN" word="town"/>
+			</terminals>
+		</Post>
+		<Post class="ynQuestion" user="11-09-20sUser41">pm me?<terminals>
+				<t pos="VB" word="pm"/>
+				<t pos="PRP" word="me"/>
+				<t pos="." word="?"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser89">!frenchkiss 11-09-20sUser34<terminals>
+				<t pos="." word="!"/>
+				<t pos="VB" word="frenchkiss"/>
+				<t pos="NNP" word="11-09-20sUser34"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser94">.ACTION WHOA! We got some action baby.... 11-09-20sUser89 and 11-09-20sUser34 are french kissing!.<terminals>
+				<t pos="SYM" word="."/>
+				<t pos="NN" word="ACTION"/>
+				<t pos="UH" word="WHOA"/>
+				<t pos="." word="!"/>
+				<t pos="PRP" word="We"/>
+				<t pos="VBD" word="got"/>
+				<t pos="DT" word="some"/>
+				<t pos="NN" word="action"/>
+				<t pos="UH" word="baby"/>
+				<t pos=":" word="...."/>
+				<t pos="NNP" word="11-09-20sUser89"/>
+				<t pos="CC" word="and"/>
+				<t pos="NNP" word="11-09-20sUser34"/>
+				<t pos="VBP" word="are"/>
+				<t pos="JJ" word="french"/>
+				<t pos="VBG" word="kissing"/>
+				<t pos="." word="!."/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser114">I think she is afk<terminals>
+				<t pos="PRP" word="I"/>
+				<t pos="VBP" word="think"/>
+				<t pos="PRP" word="she"/>
+				<t pos="VBZ" word="is"/>
+				<t pos="RB" word="afk"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser120">PART<terminals>
+				<t pos="VB" word="PART"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser20">JOIN<terminals>
+				<t pos="VB" word="JOIN"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser125">PART<terminals>
+				<t pos="VB" word="PART"/>
+			</terminals>
+		</Post>
+		<Post class="Greet" user="11-09-20sUser27">hi to all canadian girls <terminals>
+				<t pos="UH" word="hi"/>
+				<t pos="TO" word="to"/>
+				<t pos="DT" word="all"/>
+				<t pos="JJ" word="canadian"/>
+				<t pos="NNS" word="girls"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser142">JOIN<terminals>
+				<t pos="VB" word="JOIN"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser134">hope she didn't go to sleep<terminals>
+				<t pos="VB" word="hope"/>
+				<t pos="PRP" word="she"/>
+				<t pos="VBD" word="did"/>
+				<t pos="RB" word="n&apos;t"/>
+				<t pos="VB" word="go"/>
+				<t pos="TO" word="to"/>
+				<t pos="VB" word="sleep"/>
+			</terminals>
+		</Post>
+		<Post class="ynQuestion" user="11-09-20sUser34">11-09-20sUser41 are you down under a table?<terminals>
+				<t pos="NNP" word="11-09-20sUser41"/>
+				<t pos="VBP" word="are"/>
+				<t pos="PRP" word="you"/>
+				<t pos="IN" word="down"/>
+				<t pos="IN" word="under"/>
+				<t pos="DT" word="a"/>
+				<t pos="NN" word="table"/>
+				<t pos="." word="?"/>
+			</terminals>
+		</Post>
+		<Post class="Greet" user="11-09-20sUser142">hey room<terminals>
+				<t pos="UH" word="hey"/>
+				<t pos="NN" word="room"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser34">you filthy boy<terminals>
+				<t pos="PRP" word="you"/>
+				<t pos="JJ" word="filthy"/>
+				<t pos="NN" word="boy"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser134">i really gotta talk to her.<terminals>
+				<t pos="PRP" word="i"/>
+				<t pos="RB" word="really"/>
+				<t pos="VBD" word="gotta"/>
+				<t pos="VB" word="talk"/>
+				<t pos="TO" word="to"/>
+				<t pos="PRP" word="her"/>
+				<t pos="." word="."/>
+			</terminals>
+		</Post>
+		<Post class="Emphasis" user="11-09-20sUser114">I think she said something about chinese food!<terminals>
+				<t pos="PRP" word="I"/>
+				<t pos="VBP" word="think"/>
+				<t pos="PRP" word="she"/>
+				<t pos="VBD" word="said"/>
+				<t pos="NN" word="something"/>
+				<t pos="IN" word="about"/>
+				<t pos="JJ" word="chinese"/>
+				<t pos="NN" word="food"/>
+				<t pos="." word="!"/>
+			</terminals>
+		</Post>
+		<Post class="whQuestion" user="11-09-20sUser121">were are all the ladies at<terminals>
+				<t pos="^WRB" word="were"/>
+				<t pos="VBP" word="are"/>
+				<t pos="DT" word="all"/>
+				<t pos="DT" word="the"/>
+				<t pos="NNS" word="ladies"/>
+				<t pos="IN" word="at"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser72">puff puff here you go someone take it toke<terminals>
+				<t pos="UH" word="puff"/>
+				<t pos="UH" word="puff"/>
+				<t pos="RB" word="here"/>
+				<t pos="PRP" word="you"/>
+				<t pos="VBP" word="go"/>
+				<t pos="NN" word="someone"/>
+				<t pos="VB" word="take"/>
+				<t pos="PRP" word="it"/>
+				<t pos="VB" word="toke"/>
+			</terminals>
+		</Post>
+		<Post class="whQuestion" user="11-09-20sUser27">who wants to learn spanish <terminals>
+				<t pos="WP" word="who"/>
+				<t pos="VBZ" word="wants"/>
+				<t pos="TO" word="to"/>
+				<t pos="VB" word="learn"/>
+				<t pos="NNP" word="spanish"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser34">ribs<terminals>
+				<t pos="NNS" word="ribs"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser134">ahh and she didn't invite me!<terminals>
+				<t pos="UH" word="ahh"/>
+				<t pos="CC" word="and"/>
+				<t pos="PRP" word="she"/>
+				<t pos="VBD" word="did"/>
+				<t pos="RB" word="n&apos;t"/>
+				<t pos="VB" word="invite"/>
+				<t pos="PRP" word="me"/>
+				<t pos="." word="!"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser27">just ask<terminals>
+				<t pos="RB" word="just"/>
+				<t pos="VB" word="ask"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser89">ooh chinese food<terminals>
+				<t pos="UH" word="ooh"/>
+				<t pos="JJ" word="chinese"/>
+				<t pos="NN" word="food"/>
+			</terminals>
+		</Post>
+		<Post class="whQuestion" user="11-09-20sUser41">lol.......why are you getting xcitable?<terminals>
+				<t pos="UH" word="lol"/>
+				<t pos=":" word="......."/>
+				<t pos="WRB" word="why"/>
+				<t pos="VBP" word="are"/>
+				<t pos="PRP" word="you"/>
+				<t pos="VBG" word="getting"/>
+				<t pos="^JJ" word="xcitable"/>
+				<t pos="." word="?"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser123">PART<terminals>
+				<t pos="VB" word="PART"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser137">PART<terminals>
+				<t pos="VB" word="PART"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser143">JOIN<terminals>
+				<t pos="VB" word="JOIN"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser34">grassyass garciae<terminals>
+				<t pos="JJ" word="grassy"/>
+				<t pos="NN" word="ass"/>
+				<t pos="^NNP" word="garciae"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser144">JOIN<terminals>
+				<t pos="VB" word="JOIN"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser119">PART<terminals>
+				<t pos="VB" word="PART"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser105">!20<terminals>
+				<t pos="SYM" word="!"/>
+				<t pos="CD" word="20"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser145">JOIN<terminals>
+				<t pos="VB" word="JOIN"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser94">.Question:. Eggs - Sunny side up or scrambled?<terminals>
+				<t pos="SYM" word="."/>
+				<t pos="NN" word="Question"/>
+				<t pos=":" word=":."/>
+				<t pos="NNS" word="Eggs"/>
+				<t pos=":" word="-"/>
+				<t pos="JJ" word="Sunny"/>
+				<t pos="NN" word="side"/>
+				<t pos="RP" word="up"/>
+				<t pos="CC" word="or"/>
+				<t pos="JJ" word="scrambled"/>
+				<t pos="." word="?"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser60">.ACTION spins Lil Wyte ~ I know you Strapped.<terminals>
+				<t pos="SYM" word="."/>
+				<t pos="NN" word="ACTION"/>
+				<t pos="VBZ" word="spins"/>
+				<t pos="NNP" word="Lil"/>
+				<t pos="NNP" word="Wyte"/>
+				<t pos=":" word="~"/>
+				<t pos="PRP" word="I"/>
+				<t pos="VBP" word="know"/>
+				<t pos="PRP" word="you"/>
+				<t pos="VBD" word="Strapped"/>
+				<t pos="." word="."/>
+			</terminals>
+		</Post>
+		<Post class="Greet" user="11-09-20sUser144">Heyy everyone<terminals>
+				<t pos="UH" word="Heyy"/>
+				<t pos="NN" word="everyone"/>
+			</terminals>
+		</Post>
+		<Post class="Greet" user="11-09-20sUser143">aloha room<terminals>
+				<t pos="UH" word="aloha"/>
+				<t pos="NN" word="room"/>
+			</terminals>
+		</Post>
+		<Post class="Greet" user="11-09-20sUser114">Hey 11-09-20sUser144!!!<terminals>
+				<t pos="UH" word="Hey"/>
+				<t pos="NNP" word="11-09-20sUser144"/>
+				<t pos="." word="!!!"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser0">scrambled <terminals>
+				<t pos="JJ" word="scrambled"/>
+			</terminals>
+		</Post>
+		<Post class="Greet" user="11-09-20sUser144">=] Hi 11-09-20sUser114<terminals>
+				<t pos="UH" word="=]"/>
+				<t pos="UH" word="Hi"/>
+				<t pos="NNP" word="11-09-20sUser114"/>
+			</terminals>
+		</Post>
+		<Post class="Bye" user="11-09-20sUser80">bbl im gonna play a game with my moms<terminals>
+				<t pos="UH" word="bbl"/>
+				<t pos="PRP" word="im"/>
+				<t pos="VBG" word="gonna"/>
+				<t pos="VB" word="play"/>
+				<t pos="DT" word="a"/>
+				<t pos="NN" word="game"/>
+				<t pos="IN" word="with"/>
+				<t pos="PRP$" word="my"/>
+				<t pos="NNS" word="moms"/>
+			</terminals>
+		</Post>
+		<Post class="Emphasis" user="11-09-20sUser144">Over medium!<terminals>
+				<t pos="RP" word="Over"/>
+				<t pos="JJ" word="medium"/>
+				<t pos="." word="!"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser60">trippy song when ya blazed<terminals>
+				<t pos="JJ" word="trippy"/>
+				<t pos="NN" word="song"/>
+				<t pos="WRB" word="when"/>
+				<t pos="PRP" word="ya"/>
+				<t pos="VBD" word="blazed"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser143">both ways...wid salsa<terminals>
+				<t pos="DT" word="both"/>
+				<t pos="NNS" word="ways"/>
+				<t pos=":" word="..."/>
+				<t pos="IN" word="wid"/>
+				<t pos="NN" word="salsa"/>
+			</terminals>
+		</Post>
+		<Post class="Emotion" user="11-09-20sUser103">West Little Rock, Arkansas here<terminals>
+				<t pos="NNP" word="West"/>
+				<t pos="NNP" word="Little"/>
+				<t pos="NNP" word="Rock"/>
+				<t pos="," word=","/>
+				<t pos="NNP" word="Arkansas"/>
+				<t pos="RB" word="here"/>
+			</terminals>
+		</Post>
+		<Post class="whQuestion" user="11-09-20sUser144">Why are there only two choices<terminals>
+				<t pos="WRB" word="Why"/>
+				<t pos="VBP" word="are"/>
+				<t pos="RB" word="there"/>
+				<t pos="RB" word="only"/>
+				<t pos="CD" word="two"/>
+				<t pos="NNS" word="choices"/>
+			</terminals>
+		</Post>
+		<Post class="Bye" user="11-09-20sUser114">Okkkkkk hb 11-09-20sUser80.<terminals>
+				<t pos="UH" word="Okkkkkk"/>
+				<t pos="UH" word="hb"/>
+				<t pos="NNP" word="11-09-20sUser80"/>
+				<t pos="." word="."/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser34">well i would be 11-09-20sUser41 but my table too dam low<terminals>
+				<t pos="UH" word="well"/>
+				<t pos="PRP" word="i"/>
+				<t pos="MD" word="would"/>
+				<t pos="VB" word="be"/>
+				<t pos="NNP" word="11-09-20sUser41"/>
+				<t pos="CC" word="but"/>
+				<t pos="PRP$" word="my"/>
+				<t pos="NN" word="table"/>
+				<t pos="RB" word="too"/>
+				<t pos="^RB" word="dam"/>
+				<t pos="JJ" word="low"/>
+			</terminals>
+		</Post>
+		<Post class="Greet" user="11-09-20sUser144">Heyy 11-09-20sUser103<terminals>
+				<t pos="UH" word="Heyy"/>
+				<t pos="NNP" word="11-09-20sUser103"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser143">28 m hawaii here if n e 1 is interested<terminals>
+				<t pos="CD" word="28"/>
+				<t pos="NN" word="m"/>
+				<t pos="NNP" word="hawaii"/>
+				<t pos="RB" word="here"/>
+				<t pos="IN" word="if"/>
+				<t pos="DT" word="n e"/>
+				<t pos="NN" word="1"/>
+				<t pos="VBZ" word="is"/>
+				<t pos="JJ" word="interested"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser144">I'm in Arkansas too<terminals>
+				<t pos="PRP" word="I"/>
+				<t pos="VBP" word="&apos;m"/>
+				<t pos="IN" word="in"/>
+				<t pos="NNP" word="Arkansas"/>
+				<t pos="RB" word="too"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser127">PART<terminals>
+				<t pos="VB" word="PART"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser146">JOIN<terminals>
+				<t pos="VB" word="JOIN"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser62">PART<terminals>
+				<t pos="VB" word="PART"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser147">JOIN<terminals>
+				<t pos="VB" word="JOIN"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser101">ok i am gonna go goof off at work somemore<terminals>
+				<t pos="UH" word="ok"/>
+				<t pos="PRP" word="i"/>
+				<t pos="VBP" word="am"/>
+				<t pos="VBG" word="gonna"/>
+				<t pos="VB" word="go"/>
+				<t pos="VB" word="goof"/>
+				<t pos="RP" word="off"/>
+				<t pos="IN" word="at"/>
+				<t pos="NN" word="work"/>
+				<t pos="DT" word="some"/>
+				<t pos="JJR" word="more"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser146">yay got in<terminals>
+				<t pos="UH" word="yay"/>
+				<t pos="VBD" word="got"/>
+				<t pos="IN" word="in"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser80">PART<terminals>
+				<t pos="VB" word="PART"/>
+			</terminals>
+		</Post>
+		<Post class="whQuestion" user="11-09-20sUser143">howz every1 today?<terminals>
+				<t pos="WRB" word="howz"/>
+				<t pos="NN" word="every1"/>
+				<t pos="RB" word="today"/>
+				<t pos="." word="?"/>
+			</terminals>
+		</Post>
+		<Post class="Bye" user="11-09-20sUser101">see ya all later<terminals>
+				<t pos="VB" word="see"/>
+				<t pos="PRP" word="ya"/>
+				<t pos="DT" word="all"/>
+				<t pos="RB" word="later"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser132">PART<terminals>
+				<t pos="VB" word="PART"/>
+			</terminals>
+		</Post>
+		<Post class="Bye" user="11-09-20sUser34">c ya 11-09-20sUser101<terminals>
+				<t pos="VB" word="c"/>
+				<t pos="PRP" word="ya"/>
+				<t pos="NNP" word="11-09-20sUser101"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser121">27-m-canada with cam girls pm me<terminals>
+				<t pos="CD" word="27"/>
+				<t pos="CC" word="-"/>
+				<t pos="NN" word="m"/>
+				<t pos="CC" word="-"/>
+				<t pos="NNP" word="canada"/>
+				<t pos="IN" word="with"/>
+				<t pos="NN" word="cam"/>
+				<t pos="NNS" word="girls"/>
+				<t pos="VB" word="pm"/>
+				<t pos="PRP" word="me"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser146">22 f arizona here<terminals>
+				<t pos="CD" word="22"/>
+				<t pos="NN" word="f"/>
+				<t pos="NNP" word="arizona"/>
+				<t pos="RB" word="here"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser89">my friend studied in little rock for a year<terminals>
+				<t pos="PRP$" word="my"/>
+				<t pos="NN" word="friend"/>
+				<t pos="VBD" word="studied"/>
+				<t pos="IN" word="in"/>
+				<t pos="NNP" word="little"/>
+				<t pos="NNP" word="rock"/>
+				<t pos="IN" word="for"/>
+				<t pos="DT" word="a"/>
+				<t pos="NN" word="year"/>
+			</terminals>
+		</Post>
+		<Post class="Greet" user="11-09-20sUser138">hey everyone<terminals>
+				<t pos="UH" word="hey"/>
+				<t pos="NN" word="everyone"/>
+			</terminals>
+		</Post>
+		<Post class="Greet" user="11-09-20sUser103">Hey 11-09-20sUser144<terminals>
+				<t pos="UH" word="Hey"/>
+				<t pos="NNP" word="11-09-20sUser144"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser132">JOIN<terminals>
+				<t pos="VB" word="JOIN"/>
+			</terminals>
+		</Post>
+		<Post class="Greet" user="11-09-20sUser142">hi 11-09-20sUser146<terminals>
+				<t pos="UH" word="hi"/>
+				<t pos="NNP" word="11-09-20sUser146"/>
+			</terminals>
+		</Post>
+		<Post class="whQuestion" user="11-09-20sUser146">whats up every1<terminals>
+				<t pos="WP" word="whats"/>
+				<t pos="RP" word="up"/>
+				<t pos="NN" word="every1"/>
+			</terminals>
+		</Post>
+		<Post class="Greet" user="11-09-20sUser143">aloha 11-09-20sUser146<terminals>
+				<t pos="UH" word="aloha"/>
+				<t pos="NNP" word="11-09-20sUser146"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser105">!20<terminals>
+				<t pos="SYM" word="!"/>
+				<t pos="CD" word="20"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser94">.Question:. Have you ever felt even more stressed after a massage? Yes or No?<terminals>
+				<t pos="SYM" word="."/>
+				<t pos="NN" word="Question"/>
+				<t pos=":" word=":."/>
+				<t pos="VBP" word="Have"/>
+				<t pos="PRP" word="you"/>
+				<t pos="RB" word="ever"/>
+				<t pos="VBD" word="felt"/>
+				<t pos="RB" word="even"/>
+				<t pos="RBR" word="more"/>
+				<t pos="JJ" word="stressed"/>
+				<t pos="IN" word="after"/>
+				<t pos="DT" word="a"/>
+				<t pos="NN" word="massage"/>
+				<t pos="." word="?"/>
+				<t pos="UH" word="Yes"/>
+				<t pos="CC" word="or"/>
+				<t pos="UH" word="No"/>
+				<t pos="." word="?"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser41">it smells down there anyways<terminals>
+				<t pos="PRP" word="it"/>
+				<t pos="VBZ" word="smells"/>
+				<t pos="IN" word="down"/>
+				<t pos="RB" word="there"/>
+				<t pos="UH" word="anyways"/>
+			</terminals>
+		</Post>
+		<Post class="Greet" user="11-09-20sUser34">hey 11-09-20sUser103<terminals>
+				<t pos="UH" word="hey"/>
+				<t pos="NNP" word="11-09-20sUser103"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser101">PART<terminals>
+				<t pos="VB" word="PART"/>
+			</terminals>
+		</Post>
+		<Post class="Greet" user="11-09-20sUser146">hey 11-09-20sUser142<terminals>
+				<t pos="UH" word="hey"/>
+				<t pos="NNP" word="11-09-20sUser142"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser72">"all my ex's live in texas"<terminals>
+				<t pos="&apos;&apos;" word="&quot;"/>
+				<t pos="DT" word="all"/>
+				<t pos="PRP$" word="my"/>
+				<t pos="NNS" word="ex&apos;s"/>
+				<t pos="VB" word="live"/>
+				<t pos="IN" word="in"/>
+				<t pos="NNP" word="texas"/>
+				<t pos="&apos;&apos;" word="&quot;"/>
+			</terminals>
+		</Post>
+		<Post class="Greet" user="11-09-20sUser146">hey 11-09-20sUser143<terminals>
+				<t pos="UH" word="hey"/>
+				<t pos="NNP" word="11-09-20sUser143"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser132">PART<terminals>
+				<t pos="VB" word="PART"/>
+			</terminals>
+		</Post>
+		<Post class="yAnswer" user="11-09-20sUser105">Yes in Holland<terminals>
+				<t pos="UH" word="Yes"/>
+				<t pos="IN" word="in"/>
+				<t pos="NNP" word="Holland"/>
+			</terminals>
+		</Post>
+		<Post class="Greet" user="11-09-20sUser0">Hi 11-09-20sUser146 <terminals>
+				<t pos="UH" word="Hi"/>
+				<t pos="NNP" word="11-09-20sUser146"/>
+			</terminals>
+		</Post>
+		<Post class="yAnswer" user="11-09-20sUser134">yes my mom massaged my feet they hurt more than they  were to being with! <terminals>
+				<t pos="UH" word="yes"/>
+				<t pos="PRP$" word="my"/>
+				<t pos="NN" word="mom"/>
+				<t pos="VBD" word="massaged"/>
+				<t pos="PRP$" word="my"/>
+				<t pos="NNS" word="feet"/>
+				<t pos="PRP" word="they"/>
+				<t pos="VBD" word="hurt"/>
+				<t pos="RBR" word="more"/>
+				<t pos="IN" word="than"/>
+				<t pos="PRP" word="they"/>
+				<t pos="VBD" word="were"/>
+				<t pos="TO" word="to"/>
+				<t pos="VBG" word="being"/>
+				<t pos="IN" word="with"/>
+				<t pos="." word="!"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser34">lol 11-09-20sUser41 then shut yr mouth ..smell go away<terminals>
+				<t pos="UH" word="lol"/>
+				<t pos="NNP" word="11-09-20sUser41"/>
+				<t pos="IN" word="then"/>
+				<t pos="VB" word="shut"/>
+				<t pos="PRP$" word="yr"/>
+				<t pos="NN" word="mouth"/>
+				<t pos=":" word=".."/>
+				<t pos="NN" word="smell"/>
+				<t pos="VB" word="go"/>
+				<t pos="RB" word="away"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser3">PART<terminals>
+				<t pos="VB" word="PART"/>
+			</terminals>
+		</Post>
+		<Post class="whQuestion" user="11-09-20sUser142">what are u up to today 11-09-20sUser146<terminals>
+				<t pos="WP" word="what"/>
+				<t pos="VBP" word="are"/>
+				<t pos="PRP" word="u"/>
+				<t pos="RP" word="up"/>
+				<t pos="TO" word="to"/>
+				<t pos="NN" word="today"/>
+				<t pos="NNP" word="11-09-20sUser146"/>
+			</terminals>
+		</Post>
+		<Post class="whQuestion" user="11-09-20sUser143">how are u doing?<terminals>
+				<t pos="WRB" word="how"/>
+				<t pos="VBP" word="are"/>
+				<t pos="PRP" word="u"/>
+				<t pos="VBG" word="doing"/>
+				<t pos="." word="?"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser89">a good massage relaxes<terminals>
+				<t pos="DT" word="a"/>
+				<t pos="JJ" word="good"/>
+				<t pos="NN" word="massage"/>
+				<t pos="VBZ" word="relaxes"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser72">"thats why i hang my hat in tennessee"<terminals>
+				<t pos="&apos;&apos;" word="&quot;"/>
+				<t pos="DT" word="thats"/>
+				<t pos="WRB" word="why"/>
+				<t pos="PRP" word="i"/>
+				<t pos="VBP" word="hang"/>
+				<t pos="PRP$" word="my"/>
+				<t pos="NN" word="hat"/>
+				<t pos="IN" word="in"/>
+				<t pos="NNP" word="tennessee"/>
+				<t pos="&apos;&apos;" word="&quot;"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser114">11-09-20sUser105, do you just come here to play with the bot?<terminals>
+				<t pos="NNP" word="11-09-20sUser105"/>
+				<t pos="," word=","/>
+				<t pos="VBP" word="do"/>
+				<t pos="PRP" word="you"/>
+				<t pos="RB" word="just"/>
+				<t pos="VB" word="come"/>
+				<t pos="RB" word="here"/>
+				<t pos="TO" word="to"/>
+				<t pos="VB" word="play"/>
+				<t pos="IN" word="with"/>
+				<t pos="DT" word="the"/>
+				<t pos="NN" word="bot"/>
+				<t pos="." word="?"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser60">all my ex's are burried in the back yard<terminals>
+				<t pos="DT" word="all"/>
+				<t pos="PRP$" word="my"/>
+				<t pos="NNS" word="ex&apos;s"/>
+				<t pos="VBP" word="are"/>
+				<t pos="^VBD" word="burried"/>
+				<t pos="IN" word="in"/>
+				<t pos="DT" word="the"/>
+				<t pos="NN" word="back"/>
+				<t pos="NN" word="yard"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser134">She's good with her hands<terminals>
+				<t pos="PRP" word="She"/>
+				<t pos="BES" word="&apos;s"/>
+				<t pos="JJ" word="good"/>
+				<t pos="IN" word="with"/>
+				<t pos="PRP$" word="her"/>
+				<t pos="NNS" word="hands"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser148">JOIN<terminals>
+				<t pos="VB" word="JOIN"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser105">Well the questions are quite entertaining<terminals>
+				<t pos="UH" word="Well"/>
+				<t pos="DT" word="the"/>
+				<t pos="NNS" word="questions"/>
+				<t pos="VBP" word="are"/>
+				<t pos="RB" word="quite"/>
+				<t pos="JJ" word="entertaining"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser149">JOIN<terminals>
+				<t pos="VB" word="JOIN"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser0">PART<terminals>
+				<t pos="VB" word="PART"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser150">JOIN<terminals>
+				<t pos="VB" word="JOIN"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser34">!20<terminals>
+				<t pos="SYM" word="!"/>
+				<t pos="CD" word="20"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser41">ouch.......close your legs and we'll both be able to breath<terminals>
+				<t pos="UH" word="ouch"/>
+				<t pos=":" word="......."/>
+				<t pos="VB" word="close"/>
+				<t pos="PRP$" word="your"/>
+				<t pos="NNS" word="legs"/>
+				<t pos="CC" word="and"/>
+				<t pos="PRP" word="we"/>
+				<t pos="MD" word="&apos;ll"/>
+				<t pos="DT" word="both"/>
+				<t pos="VB" word="be"/>
+				<t pos="JJ" word="able"/>
+				<t pos="TO" word="to"/>
+				<t pos="VB" word="breath"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser151">JOIN<terminals>
+				<t pos="VB" word="JOIN"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser114">I am sure i could think of more entertaining ones.<terminals>
+				<t pos="PRP" word="I"/>
+				<t pos="VBP" word="am"/>
+				<t pos="JJ" word="sure"/>
+				<t pos="PRP" word="i"/>
+				<t pos="MD" word="could"/>
+				<t pos="VB" word="think"/>
+				<t pos="IN" word="of"/>
+				<t pos="RBR" word="more"/>
+				<t pos="JJ" word="entertaining"/>
+				<t pos="NNS" word="ones"/>
+				<t pos="." word="."/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser60">PART<terminals>
+				<t pos="VB" word="PART"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser149">PART<terminals>
+				<t pos="VB" word="PART"/>
+			</terminals>
+		</Post>
+		<Post class="Greet" user="11-09-20sUser147">hheeyyy gguyyyzzzz<terminals>
+				<t pos="UH" word="hheeyyy"/>
+				<t pos="^NNS" word="gguyyyzzzz"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser150">PART<terminals>
+				<t pos="VB" word="PART"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser144">11-09-20sUser145, I'd appreciate it if you'd stay out of my PM<terminals>
+				<t pos="NNP" word="11-09-20sUser145"/>
+				<t pos="," word=","/>
+				<t pos="PRP" word="I"/>
+				<t pos="MD" word="&apos;d"/>
+				<t pos="VB" word="appreciate"/>
+				<t pos="PRP" word="it"/>
+				<t pos="IN" word="if"/>
+				<t pos="PRP" word="you"/>
+				<t pos="MD" word="&apos;d"/>
+				<t pos="VB" word="stay"/>
+				<t pos="IN" word="out"/>
+				<t pos="IN" word="of"/>
+				<t pos="PRP$" word="my"/>
+				<t pos="NN" word="PM"/>
+			</terminals>
+		</Post>
+		<Post class="Greet" user="11-09-20sUser143">alohas<terminals>
+				<t pos="NNS" word="alohas"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser144">*ignore*<terminals>
+				<t pos="SYM" word="*"/>
+				<t pos="VB" word="ignore"/>
+				<t pos="SYM" word="*"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser89">ooh 11-09-20sUser114 you vamp you<terminals>
+				<t pos="UH" word="ooh"/>
+				<t pos="NNP" word="11-09-20sUser114"/>
+				<t pos="PRP" word="you"/>
+				<t pos="NN" word="vamp"/>
+				<t pos="PRP" word="you"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser37">PART<terminals>
+				<t pos="VB" word="PART"/>
+			</terminals>
+		</Post>
+		<Post class="Emotion" user="11-09-20sUser114">LMAO<terminals>
+				<t pos="UH" word="LMAO"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser152">JOIN<terminals>
+				<t pos="VB" word="JOIN"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser34">11-09-20sUser41...shut up and make your self use full down there<terminals>
+				<t pos="NNP" word="11-09-20sUser41"/>
+				<t pos=":" word="..."/>
+				<t pos="VB" word="shut"/>
+				<t pos="RP" word="up"/>
+				<t pos="CC" word="and"/>
+				<t pos="VB" word="make"/>
+				<t pos="PRP$" word="your"/>
+				<t pos="NN" word="self"/>
+				<t pos="^JJ" word="use full"/>
+				<t pos="IN" word="down"/>
+				<t pos="RB" word="there"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser114">.ACTION bares her teeth.<terminals>
+				<t pos="SYM" word="."/>
+				<t pos="NN" word="ACTION"/>
+				<t pos="VBZ" word="bares"/>
+				<t pos="PRP" word="her"/>
+				<t pos="NNS" word="teeth"/>
+				<t pos="." word="."/>
+			</terminals>
+		</Post>
+		<Post class="Continuer" user="11-09-20sUser34">or get out<terminals>
+				<t pos="CC" word="or"/>
+				<t pos="VB" word="get"/>
+				<t pos="RP" word="out"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser105">And unless someone wants to talk music, UFC, soccer as you Americans call it, or politics or history then I dont have anyone to talk to<terminals>
+				<t pos="CC" word="And"/>
+				<t pos="IN" word="unless"/>
+				<t pos="NN" word="someone"/>
+				<t pos="VBZ" word="wants"/>
+				<t pos="TO" word="to"/>
+				<t pos="VB" word="talk"/>
+				<t pos="NN" word="music"/>
+				<t pos="," word=","/>
+				<t pos="NNP" word="UFC"/>
+				<t pos="," word=","/>
+				<t pos="NN" word="soccer"/>
+				<t pos="IN" word="as"/>
+				<t pos="PRP" word="you"/>
+				<t pos="NNPS" word="Americans"/>
+				<t pos="VB" word="call"/>
+				<t pos="PRP" word="it"/>
+				<t pos="," word=","/>
+				<t pos="CC" word="or"/>
+				<t pos="NNS" word="politics"/>
+				<t pos="CC" word="or"/>
+				<t pos="NN" word="history"/>
+				<t pos="RB" word="then"/>
+				<t pos="PRP" word="I"/>
+				<t pos="VBP" word="dont"/>
+				<t pos="VB" word="have"/>
+				<t pos="NN" word="anyone"/>
+				<t pos="TO" word="to"/>
+				<t pos="VB" word="talk"/>
+				<t pos="TO" word="to"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser83">PART<terminals>
+				<t pos="VB" word="PART"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser100">PART<terminals>
+				<t pos="VB" word="PART"/>
+			</terminals>
+		</Post>
+		<Post class="whQuestion" user="11-09-20sUser103">What part of Ark are you from 11-09-20sUser144?<terminals>
+				<t pos="WP" word="What"/>
+				<t pos="NN" word="part"/>
+				<t pos="IN" word="of"/>
+				<t pos="NNP" word="Ark"/>
+				<t pos="VBP" word="are"/>
+				<t pos="PRP" word="you"/>
+				<t pos="IN" word="from"/>
+				<t pos="NNP" word="11-09-20sUser144"/>
+				<t pos="." word="?"/>
+			</terminals>
+		</Post>
+		<Post class="Greet" user="11-09-20sUser152">good evening to everyone up in here <terminals>
+				<t pos="JJ" word="good"/>
+				<t pos="NN" word="evening"/>
+				<t pos="TO" word="to"/>
+				<t pos="NN" word="everyone"/>
+				<t pos="IN" word="up"/>
+				<t pos="IN" word="in"/>
+				<t pos="RB" word="here"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser153">JOIN<terminals>
+				<t pos="VB" word="JOIN"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser33">someone play with me<terminals>
+				<t pos="NN" word="someone"/>
+				<t pos="VB" word="play"/>
+				<t pos="IN" word="with"/>
+				<t pos="PRP" word="me"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser114">&lt;&lt; not American<terminals>
+				<t pos="PRP" word="&lt;&lt;"/>
+				<t pos="RB" word="not"/>
+				<t pos="JJ" word="American"/>
+			</terminals>
+		</Post>
+		<Post class="ynQuestion" user="11-09-20sUser44">any naughty guys out there? pm<terminals>
+				<t pos="DT" word="any"/>
+				<t pos="JJ" word="naughty"/>
+				<t pos="NNS" word="guys"/>
+				<t pos="IN" word="out"/>
+				<t pos="RB" word="there"/>
+				<t pos="." word="?"/>
+				<t pos="VB" word="pm"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser144">Jonesboro, 11-09-20sUser103<terminals>
+				<t pos="NNP" word="Jonesboro"/>
+				<t pos="," word=","/>
+				<t pos="NNP" word="11-09-20sUser103"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser147">hheeyy guyzz i just joined<terminals>
+				<t pos="UH" word="hheeyy"/>
+				<t pos="^NNS" word="guyzz"/>
+				<t pos="PRP" word="i"/>
+				<t pos="RB" word="just"/>
+				<t pos="VBD" word="joined"/>
+			</terminals>
+		</Post>
+		<Post class="ynQuestion" user="11-09-20sUser105">Really<terminals>
+				<t pos="UH" word="Really"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser154">JOIN<terminals>
+				<t pos="VB" word="JOIN"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser155">JOIN<terminals>
+				<t pos="VB" word="JOIN"/>
+			</terminals>
+		</Post>
+		<Post class="nAnswer" user="11-09-20sUser114">Nope.<terminals>
+				<t pos="UH" word="Nope"/>
+				<t pos="." word="."/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser89">&lt;---not japanese or turkish<terminals>
+				<t pos="PRP" word="&lt;---"/>
+				<t pos="RB" word="not"/>
+				<t pos="JJ" word="japanese"/>
+				<t pos="CC" word="or"/>
+				<t pos="JJ" word="turkish"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser114">I live in Kent.<terminals>
+				<t pos="PRP" word="I"/>
+				<t pos="VBP" word="live"/>
+				<t pos="IN" word="in"/>
+				<t pos="NNP" word="Kent"/>
+				<t pos="." word="."/>
+			</terminals>
+		</Post>
+		<Post class="Emotion" user="11-09-20sUser114">LoL 11-09-20sUser89.<terminals>
+				<t pos="UH" word="LoL"/>
+				<t pos="NNP" word="11-09-20sUser89"/>
+				<t pos="." word="."/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser154">22/f/mi<terminals>
+				<t pos="CD" word="22"/>
+				<t pos="CC" word="/"/>
+				<t pos="NN" word="f"/>
+				<t pos="CC" word="/"/>
+				<t pos="NNP" word="mi"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser41">i'll need the right drugs to clear up your infection<terminals>
+				<t pos="PRP" word="i"/>
+				<t pos="MD" word="&apos;ll"/>
+				<t pos="VB" word="need"/>
+				<t pos="DT" word="the"/>
+				<t pos="JJ" word="right"/>
+				<t pos="NNS" word="drugs"/>
+				<t pos="TO" word="to"/>
+				<t pos="VB" word="clear"/>
+				<t pos="RP" word="up"/>
+				<t pos="PRP$" word="your"/>
+				<t pos="NN" word="infection"/>
+			</terminals>
+		</Post>
+		<Post class="whQuestion" user="11-09-20sUser72">what kind of music<terminals>
+				<t pos="WP" word="what"/>
+				<t pos="NN" word="kind"/>
+				<t pos="IN" word="of"/>
+				<t pos="NN" word="music"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser89">i live in the attic<terminals>
+				<t pos="PRP" word="i"/>
+				<t pos="VBP" word="live"/>
+				<t pos="IN" word="in"/>
+				<t pos="DT" word="the"/>
+				<t pos="NN" word="attic"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser156">JOIN<terminals>
+				<t pos="VB" word="JOIN"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser157">JOIN<terminals>
+				<t pos="VB" word="JOIN"/>
+			</terminals>
+		</Post>
+		<Post class="whQuestion" user="11-09-20sUser105">Whereabouts in kent?<terminals>
+				<t pos="WRB" word="Whereabouts"/>
+				<t pos="IN" word="in"/>
+				<t pos="NNP" word="kent"/>
+				<t pos="." word="?"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser34">.ACTION passes 11-09-20sUser41 some yoghurt...get in with it.<terminals>
+				<t pos="SYM" word="."/>
+				<t pos="NN" word="ACTION"/>
+				<t pos="VBZ" word="passes"/>
+				<t pos="NNP" word="11-09-20sUser41"/>
+				<t pos="DT" word="some"/>
+				<t pos="^NN" word="yoghurt"/>
+				<t pos=":" word="..."/>
+				<t pos="VB" word="get"/>
+				<t pos="IN" word="in"/>
+				<t pos="IN" word="with"/>
+				<t pos="PRP" word="it"/>
+				<t pos="." word="."/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser143">i live in hawaii....for a few more months<terminals>
+				<t pos="PRP" word="i"/>
+				<t pos="VBP" word="live"/>
+				<t pos="IN" word="in"/>
+				<t pos="NNP" word="hawaii"/>
+				<t pos=":" word="...."/>
+				<t pos="IN" word="for"/>
+				<t pos="DT" word="a"/>
+				<t pos="JJ" word="few"/>
+				<t pos="RBR" word="more"/>
+				<t pos="NNS" word="months"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser156">!seen 11-09-20sUser989<terminals>
+				<t pos="SYM" word="!"/>
+				<t pos="VBN" word="seen"/>
+				<t pos="NNP" word="11-09-20sUser989"/>
+			</terminals>
+		</Post>
+		<Post class="Greet" user="11-09-20sUser89">they never let me out<terminals>
+				<t pos="PRP" word="they"/>
+				<t pos="RB" word="never"/>
+				<t pos="VBP" word="let"/>
+				<t pos="PRP" word="me"/>
+				<t pos="RP" word="out"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser114">And I can talk about most of the things you stated just not politics!<terminals>
+				<t pos="CC" word="And"/>
+				<t pos="PRP" word="I"/>
+				<t pos="MD" word="can"/>
+				<t pos="VB" word="talk"/>
+				<t pos="IN" word="about"/>
+				<t pos="JJS" word="most"/>
+				<t pos="IN" word="of"/>
+				<t pos="DT" word="the"/>
+				<t pos="NNS" word="things"/>
+				<t pos="PRP" word="you"/>
+				<t pos="VBD" word="stated"/>
+				<t pos="RB" word="just"/>
+				<t pos="RB" word="not"/>
+				<t pos="NNS" word="politics"/>
+				<t pos="." word="!"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser94">11-09-20sUser989 (11-09-20sUser989@11-09-20sUser989) Last seen: 2 days, 18 hours, 51 minutes ago.<terminals>
+				<t pos="NNP" word="11-09-20sUser989"/>
+				<t pos="(" word="("/>
+				<t pos="NNP" word="11-09-20sUser989"/>
+				<t pos="IN" word="@"/>
+				<t pos="NNP" word="11-09-20sUser989"/>
+				<t pos=")" word=")"/>
+				<t pos="JJ" word="Last"/>
+				<t pos="VBN" word="seen"/>
+				<t pos=":" word=":"/>
+				<t pos="CD" word="2"/>
+				<t pos="NNS" word="days"/>
+				<t pos="," word=","/>
+				<t pos="CD" word="18"/>
+				<t pos="NNS" word="hours"/>
+				<t pos="," word=","/>
+				<t pos="CD" word="51"/>
+				<t pos="NNS" word="minutes"/>
+				<t pos="RB" word="ago"/>
+				<t pos="." word="."/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser34">*on<terminals>
+				<t pos="SYM" word="*"/>
+				<t pos="IN" word="on"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser114">Maidstone.<terminals>
+				<t pos="NNP" word="Maidstone"/>
+				<t pos="." word="."/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser34">my sis lives in maidstone<terminals>
+				<t pos="PRP$" word="my"/>
+				<t pos="NN" word="sis"/>
+				<t pos="VBZ" word="lives"/>
+				<t pos="IN" word="in"/>
+				<t pos="NN" word="maidstone"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser141">PART<terminals>
+				<t pos="VB" word="PART"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser34">walderslade<terminals>
+				<t pos="NNP" word="walderslade"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser114">Cool 11-09-20sUser34<terminals>
+				<t pos="UH" word="Cool"/>
+				<t pos="NNP" word="11-09-20sUser34"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser114">Yea I know it.<terminals>
+				<t pos="UH" word="Yea"/>
+				<t pos="PRP" word="I"/>
+				<t pos="VBP" word="know"/>
+				<t pos="PRP" word="it"/>
+				<t pos="." word="."/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser156">21/f/oklahoma <terminals>
+				<t pos="CD" word="21"/>
+				<t pos="CC" word="/"/>
+				<t pos="NN" word="f"/>
+				<t pos="CC" word="/"/>
+				<t pos="NNP" word="oklahoma"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser103">Cool,  from there originally?<terminals>
+				<t pos="UH" word="Cool"/>
+				<t pos="," word=","/>
+				<t pos="IN" word="from"/>
+				<t pos="RB" word="there"/>
+				<t pos="RB" word="originally"/>
+				<t pos="." word="?"/>
+			</terminals>
+		</Post>
+		<Post class="Greet" user="11-09-20sUser143">aloha 11-09-20sUser156<terminals>
+				<t pos="UH" word="aloha"/>
+				<t pos="NNP" word="11-09-20sUser156"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser69">PART<terminals>
+				<t pos="VB" word="PART"/>
+			</terminals>
+		</Post>
+		<Post class="ynQuestion" user="11-09-20sUser105">Maidstone! You dont happen to have family in Catterick do you?<terminals>
+				<t pos="NNP" word="Maidstone"/>
+				<t pos="." word="!"/>
+				<t pos="PRP" word="You"/>
+				<t pos="VBP" word="dont"/>
+				<t pos="VB" word="happen"/>
+				<t pos="TO" word="to"/>
+				<t pos="VB" word="have"/>
+				<t pos="NN" word="family"/>
+				<t pos="IN" word="in"/>
+				<t pos="NNP" word="Catterick"/>
+				<t pos="VBP" word="do"/>
+				<t pos="PRP" word="you"/>
+				<t pos="." word="?"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser114">I have a good friend that lives there.<terminals>
+				<t pos="PRP" word="I"/>
+				<t pos="VBP" word="have"/>
+				<t pos="DT" word="a"/>
+				<t pos="JJ" word="good"/>
+				<t pos="NN" word="friend"/>
+				<t pos="WDT" word="that"/>
+				<t pos="VBZ" word="lives"/>
+				<t pos="RB" word="there"/>
+				<t pos="." word="."/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser34">im gonna be ther monday wanna chase some traffic with me 11-09-20sUser114<terminals>
+				<t pos="PRP" word="im"/>
+				<t pos="VBG" word="gonna"/>
+				<t pos="VB" word="be"/>
+				<t pos="^RB" word="ther"/>
+				<t pos="NNP" word="monday"/>
+				<t pos="VBP" word="wanna"/>
+				<t pos="VB" word="chase"/>
+				<t pos="DT" word="some"/>
+				<t pos="NN" word="traffic"/>
+				<t pos="IN" word="with"/>
+				<t pos="PRP" word="me"/>
+				<t pos="NNP" word="11-09-20sUser114"/>
+			</terminals>
+		</Post>
+		<Post class="Greet" user="11-09-20sUser147">HHEEYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY<terminals>
+				<t pos="UH" word="HHEEYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY"/>
+			</terminals>
+		</Post>
+		<Post class="Greet" user="11-09-20sUser156">aloha  <terminals>
+				<t pos="UH" word="aloha"/>
+			</terminals>
+		</Post>
+		<Post class="Greet" user="11-09-20sUser142">hey 11-09-20sUser156<terminals>
+				<t pos="UH" word="hey"/>
+				<t pos="NNP" word="11-09-20sUser156"/>
+			</terminals>
+		</Post>
+		<Post class="nAnswer" user="11-09-20sUser114">No, I am actually from Norfolk.<terminals>
+				<t pos="NNP" word="No"/>
+				<t pos="," word=","/>
+				<t pos="PRP" word="I"/>
+				<t pos="VBP" word="am"/>
+				<t pos="RB" word="actually"/>
+				<t pos="IN" word="from"/>
+				<t pos="NNP" word="Norfolk"/>
+				<t pos="." word="."/>
+			</terminals>
+		</Post>
+		<Post class="Emotion" user="11-09-20sUser114">LoL 11-09-20sUser34!<terminals>
+				<t pos="UH" word="LoL"/>
+				<t pos="NNP" word="11-09-20sUser34"/>
+				<t pos="." word="!"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser152">fongul <terminals>
+				<t pos="UH" word="fongul"/>
+			</terminals>
+		</Post>
+		<Post class="Greet" user="11-09-20sUser156">yello <terminals>
+				<t pos="UH" word="yello"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser41">high ho high ho it's of to work we go<terminals>
+				<t pos="UH" word="high"/>
+				<t pos="UH" word="ho"/>
+				<t pos="UH" word="high"/>
+				<t pos="UH" word="ho"/>
+				<t pos="PRP" word="it"/>
+				<t pos="BES" word="&apos;s"/>
+				<t pos="^IN" word="of"/>
+				<t pos="TO" word="to"/>
+				<t pos="NN" word="work"/>
+				<t pos="PRP" word="we"/>
+				<t pos="VBP" word="go"/>
+			</terminals>
+		</Post>
+		<Post class="whQuestion" user="11-09-20sUser143">how are u doin?<terminals>
+				<t pos="WRB" word="how"/>
+				<t pos="VBP" word="are"/>
+				<t pos="PRP" word="u"/>
+				<t pos="VBG" word="doin"/>
+				<t pos="." word="?"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser68">PART<terminals>
+				<t pos="VB" word="PART"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser126">PART<terminals>
+				<t pos="VB" word="PART"/>
+			</terminals>
+		</Post>
+		<Post class="Greet" user="11-09-20sUser143">aloha 11-09-20sUser147<terminals>
+				<t pos="UH" word="aloha"/>
+				<t pos="NNP" word="11-09-20sUser147"/>
+			</terminals>
+		</Post>
+		<Post class="whQuestion" user="11-09-20sUser105">Oh, so what about UFC 11-09-20sUser114?<terminals>
+				<t pos="UH" word="Oh"/>
+				<t pos="," word=","/>
+				<t pos="IN" word="so"/>
+				<t pos="WP" word="what"/>
+				<t pos="IN" word="about"/>
+				<t pos="NNP" word="UFC"/>
+				<t pos="NNP" word="11-09-20sUser114"/>
+				<t pos="." word="?"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser158">JOIN<terminals>
+				<t pos="VB" word="JOIN"/>
+			</terminals>
+		</Post>
+		<Post class="ynQuestion" user="11-09-20sUser34">11-09-20sUser41?<terminals>
+				<t pos="NNP" word="11-09-20sUser41"/>
+				<t pos="." word="?"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser159">JOIN<terminals>
+				<t pos="VB" word="JOIN"/>
+			</terminals>
+		</Post>
+		<Post class="Greet" user="11-09-20sUser147">alohaaa<terminals>
+				<t pos="UH" word="alohaaa"/>
+			</terminals>
+		</Post>
+		<Post class="Greet" user="11-09-20sUser159">Hey room<terminals>
+				<t pos="UH" word="Hey"/>
+				<t pos="NN" word="room"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser142">26/m/cal<terminals>
+				<t pos="CD" word="26"/>
+				<t pos="CC" word="/"/>
+				<t pos="NN" word="m"/>
+				<t pos="CC" word="/"/>
+				<t pos="NNP" word="cal"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser160">JOIN<terminals>
+				<t pos="VB" word="JOIN"/>
+			</terminals>
+		</Post>
+		<Post class="whQuestion" user="11-09-20sUser143">how are u doin?<terminals>
+				<t pos="WRB" word="how"/>
+				<t pos="VBP" word="are"/>
+				<t pos="PRP" word="u"/>
+				<t pos="VBG" word="doin"/>
+				<t pos="." word="?"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser161">JOIN<terminals>
+				<t pos="VB" word="JOIN"/>
+			</terminals>
+		</Post>
+		<Post class="Greet" user="11-09-20sUser156">waz up  <terminals>
+				<t pos="UH" word="waz"/>
+				<t pos="RP" word="up"/>
+			</terminals>
+		</Post>
+		<Post class="ynQuestion" user="11-09-20sUser34">11-09-20sUser41?<terminals>
+				<t pos="NNP" word="11-09-20sUser41"/>
+				<t pos="." word="?"/>
+			</terminals>
+		</Post>
+		<Post class="Greet" user="11-09-20sUser158">heyy 11-09-20sUser14<terminals>
+				<t pos="UH" word="heyy"/>
+				<t pos="NNP" word="11-09-20sUser14"/>
+			</terminals>
+		</Post>
+		<Post class="yAnswer" user="11-09-20sUser41">yes 11-09-20sUser34<terminals>
+				<t pos="UH" word="yes"/>
+				<t pos="NNP" word="11-09-20sUser34"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser114">Um<terminals>
+				<t pos="UH" word="Um"/>
+			</terminals>
+		</Post>
+		<Post class="Greet" user="11-09-20sUser158">hey 11-09-20sUser156<terminals>
+				<t pos="UH" word="hey"/>
+				<t pos="NNP" word="11-09-20sUser156"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser1">TEXT SIZE<terminals>
+				<t pos="NN" word="TEXT"/>
+				<t pos="NN" word="SIZE"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser162">JOIN<terminals>
+				<t pos="VB" word="JOIN"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser89">dratts 11-09-20sUser34...you can go to kent but not wiltou fascist<terminals>
+				<t pos="UH" word="dratts"/>
+				<t pos="NNP" word="11-09-20sUser34"/>
+				<t pos=":" word="..."/>
+				<t pos="PRP" word="you"/>
+				<t pos="MD" word="can"/>
+				<t pos="VB" word="go"/>
+				<t pos="TO" word="to"/>
+				<t pos="NNP" word="kent"/>
+				<t pos="CC" word="but"/>
+				<t pos="RB" word="not"/>
+				<t pos="NNP" word="wiltou"/>
+				<t pos="NN" word="fascist"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser143">im doing good....<terminals>
+				<t pos="PRP" word="im"/>
+				<t pos="VBG" word="doing"/>
+				<t pos="JJ" word="good"/>
+				<t pos=":" word="...."/>
+			</terminals>
+		</Post>
+		<Post class="Greet" user="11-09-20sUser155">hey room<terminals>
+				<t pos="UH" word="hey"/>
+				<t pos="NN" word="room"/>
+			</terminals>
+		</Post>
+		<Post class="Greet" user="11-09-20sUser158">heyy 11-09-20sUser114<terminals>
+				<t pos="UH" word="heyy"/>
+				<t pos="NNP" word="11-09-20sUser114"/>
+			</terminals>
+		</Post>
+		<Post class="whQuestion" user="11-09-20sUser34">hello how are you<terminals>
+				<t pos="UH" word="hello"/>
+				<t pos="WRB" word="how"/>
+				<t pos="VBP" word="are"/>
+				<t pos="PRP" word="you"/>
+			</terminals>
+		</Post>
+		<Post class="Emotion" user="11-09-20sUser34">lol<terminals>
+				<t pos="UH" word="lol"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser16">PART<terminals>
+				<t pos="VB" word="PART"/>
+			</terminals>
+		</Post>
+		<Post class="Greet" user="11-09-20sUser156">hey 11-09-20sUser156 <terminals>
+				<t pos="UH" word="hey"/>
+				<t pos="NNP" word="11-09-20sUser156"/>
+			</terminals>
+		</Post>
+		<Post class="ynQuestion" user="11-09-20sUser114">United football club?<terminals>
+				<t pos="NNP" word="United"/>
+				<t pos="NNP" word="football"/>
+				<t pos="NNP" word="club"/>
+				<t pos="." word="?"/>
+			</terminals>
+		</Post>
+		<Post class="Emotion" user="11-09-20sUser114">LOL<terminals>
+				<t pos="UH" word="LOL"/>
+			</terminals>
+		</Post>
+		<Post class="Greet" user="11-09-20sUser158">hyy 11-09-20sUser89<terminals>
+				<t pos="^UH" word="hyy"/>
+				<t pos="NNP" word="11-09-20sUser89"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser163">JOIN<terminals>
+				<t pos="VB" word="JOIN"/>
+			</terminals>
+		</Post>
+		<Post class="Clarify" user="11-09-20sUser158">hey even<terminals>
+				<t pos="UH" word="hey"/>
+				<t pos="RB" word="even"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser159">PART<terminals>
+				<t pos="VB" word="PART"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser164">JOIN<terminals>
+				<t pos="VB" word="JOIN"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser89">grettings 11-09-20sUser156<terminals>
+				<t pos="^UH" word="grettings"/>
+				<t pos="NNP" word="11-09-20sUser156"/>
+			</terminals>
+		</Post>
+		<Post class="Greet" user="11-09-20sUser114">Heyyyyyyy 11-09-20sUser156!<terminals>
+				<t pos="UH" word="Heyyyyyyy"/>
+				<t pos="NNP" word="11-09-20sUser156"/>
+				<t pos="." word="!"/>
+			</terminals>
+		</Post>
+		<Post class="Bye" user="11-09-20sUser1">BYE<terminals>
+				<t pos="UH" word="BYE"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser34">kent is like 20 mins from me<terminals>
+				<t pos="NNP" word="kent"/>
+				<t pos="VBZ" word="is"/>
+				<t pos="UH" word="like"/>
+				<t pos="CD" word="20"/>
+				<t pos="NNS" word="mins"/>
+				<t pos="IN" word="from"/>
+				<t pos="PRP" word="me"/>
+			</terminals>
+		</Post>
+		<Post class="whQuestion" user="11-09-20sUser143">how r u doing?<terminals>
+				<t pos="WRB" word="how"/>
+				<t pos="VBP" word="r"/>
+				<t pos="PRP" word="u"/>
+				<t pos="VBG" word="doing"/>
+				<t pos="." word="?"/>
+			</terminals>
+		</Post>
+		<Post class="Greet" user="11-09-20sUser114">Hi 11-09-20sUser163!!<terminals>
+				<t pos="UH" word="Hi"/>
+				<t pos="NNP" word="11-09-20sUser163"/>
+				<t pos="." word="!!"/>
+			</terminals>
+		</Post>
+		<Post class="Continuer" user="11-09-20sUser1">ALL <terminals>
+				<t pos="DT" word="ALL"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser41">i've got the scuba gear on and going for gold<terminals>
+				<t pos="PRP" word="i"/>
+				<t pos="VBP" word="&apos;ve"/>
+				<t pos="VBN" word="got"/>
+				<t pos="DT" word="the"/>
+				<t pos="NN" word="scuba"/>
+				<t pos="NN" word="gear"/>
+				<t pos="IN" word="on"/>
+				<t pos="CC" word="and"/>
+				<t pos="VBG" word="going"/>
+				<t pos="IN" word="for"/>
+				<t pos="NN" word="gold"/>
+			</terminals>
+		</Post>
+		<Post class="Greet" user="11-09-20sUser164">hey everyone<terminals>
+				<t pos="UH" word="hey"/>
+				<t pos="NN" word="everyone"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser105">Ah ha you said you would converse about the topics I stated lol<terminals>
+				<t pos="UH" word="Ah"/>
+				<t pos="UH" word="ha"/>
+				<t pos="PRP" word="you"/>
+				<t pos="VBD" word="said"/>
+				<t pos="PRP" word="you"/>
+				<t pos="MD" word="would"/>
+				<t pos="VB" word="converse"/>
+				<t pos="IN" word="about"/>
+				<t pos="DT" word="the"/>
+				<t pos="NNS" word="topics"/>
+				<t pos="PRP" word="I"/>
+				<t pos="VBD" word="stated"/>
+				<t pos="UH" word="lol"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser156">i am  so bored  out  of  my mind i am  <terminals>
+				<t pos="PRP" word="i"/>
+				<t pos="VBP" word="am"/>
+				<t pos="RB" word="so"/>
+				<t pos="JJ" word="bored"/>
+				<t pos="IN" word="out"/>
+				<t pos="IN" word="of"/>
+				<t pos="PRP$" word="my"/>
+				<t pos="NN" word="mind"/>
+				<t pos="PRP" word="i"/>
+				<t pos="VBP" word="am"/>
+			</terminals>
+		</Post>
+		<Post class="Greet" user="11-09-20sUser158">heyy 11-09-20sUser144<terminals>
+				<t pos="UH" word="heyy"/>
+				<t pos="NNP" word="11-09-20sUser144"/>
+			</terminals>
+		</Post>
+		<Post class="Emotion" user="11-09-20sUser34">lmao <terminals>
+				<t pos="UH" word="lmao"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser1">22/F/818 CALI<terminals>
+				<t pos="CD" word="22"/>
+				<t pos="CC" word="/"/>
+				<t pos="NN" word="F"/>
+				<t pos="CC" word="/"/>
+				<t pos="CD" word="818"/>
+				<t pos="NNP" word="CALI"/>
+			</terminals>
+		</Post>
+		<Post class="Greet" user="11-09-20sUser163">hi 11-09-20sUser114<terminals>
+				<t pos="UH" word="hi"/>
+				<t pos="NNP" word="11-09-20sUser114"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser105">Only kidding<terminals>
+				<t pos="RB" word="Only"/>
+				<t pos="VBG" word="kidding"/>
+			</terminals>
+		</Post>
+		<Post class="Emotion" user="11-09-20sUser114">11-09-20sUser34 we should hook up!<terminals>
+				<t pos="NNP" word="11-09-20sUser34"/>
+				<t pos="PRP" word="we"/>
+				<t pos="MD" word="should"/>
+				<t pos="VB" word="hook"/>
+				<t pos="RP" word="up"/>
+				<t pos="." word="!"/>
+			</terminals>
+		</Post>
+		<Post class="ynQuestion" user="11-09-20sUser89">hey 11-09-20sUser34..too good for wiltshire?<terminals>
+				<t pos="UH" word="hey"/>
+				<t pos="NNP" word="11-09-20sUser34"/>
+				<t pos=":" word=".."/>
+				<t pos="RB" word="too"/>
+				<t pos="JJ" word="good"/>
+				<t pos="IN" word="for"/>
+				<t pos="NNP" word="wiltshire"/>
+				<t pos="." word="?"/>
+			</terminals>
+		</Post>
+		<Post class="Greet" user="11-09-20sUser9">elo elo<terminals>
+				<t pos="UH" word="elo"/>
+				<t pos="UH" word="elo"/>
+			</terminals>
+		</Post>
+		<Post class="Emotion" user="11-09-20sUser89">lmao<terminals>
+				<t pos="UH" word="lmao"/>
+			</terminals>
+		</Post>
+		<Post class="Emphasis" user="11-09-20sUser114">I thought it was that!<terminals>
+				<t pos="PRP" word="I"/>
+				<t pos="VBD" word="thought"/>
+				<t pos="PRP" word="it"/>
+				<t pos="VBD" word="was"/>
+				<t pos="DT" word="that"/>
+				<t pos="." word="!"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser8">PART<terminals>
+				<t pos="VB" word="PART"/>
+			</terminals>
+		</Post>
+		<Post class="whQuestion" user="11-09-20sUser114">Tell me what it is?<terminals>
+				<t pos="VB" word="Tell"/>
+				<t pos="PRP" word="me"/>
+				<t pos="WP" word="what"/>
+				<t pos="PRP" word="it"/>
+				<t pos="VBZ" word="is"/>
+				<t pos="." word="?"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser165">JOIN<terminals>
+				<t pos="VB" word="JOIN"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser143">28 m hawaii here<terminals>
+				<t pos="CD" word="28"/>
+				<t pos="NN" word="m"/>
+				<t pos="NNP" word="hawaii"/>
+				<t pos="RB" word="here"/>
+			</terminals>
+		</Post>
+		<Post class="nAnswer" user="11-09-20sUser105">And no, its Ultimate Fighting<terminals>
+				<t pos="CC" word="And"/>
+				<t pos="UH" word="no"/>
+				<t pos="," word=","/>
+				<t pos="PRP" word="its"/>
+				<t pos="NNP" word="Ultimate"/>
+				<t pos="NNP" word="Fighting"/>
+			</terminals>
+		</Post>
+		<Post class="Accept" user="11-09-20sUser18">ok<terminals>
+				<t pos="UH" word="ok"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser121">any girls out there wana chat pm me<terminals>
+				<t pos="DT" word="any"/>
+				<t pos="NNS" word="girls"/>
+				<t pos="IN" word="out"/>
+				<t pos="RB" word="there"/>
+				<t pos="VBP" word="wana"/>
+				<t pos="VB" word="chat"/>
+				<t pos="VB" word="pm"/>
+				<t pos="PRP" word="me"/>
+			</terminals>
+		</Post>
+		<Post class="Emphasis" user="11-09-20sUser114">Oh I've heard of it!<terminals>
+				<t pos="UH" word="Oh"/>
+				<t pos="PRP" word="I"/>
+				<t pos="VBP" word="&apos;ve"/>
+				<t pos="VBN" word="heard"/>
+				<t pos="IN" word="of"/>
+				<t pos="PRP" word="it"/>
+				<t pos="." word="!"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser151">11-09-20sUser64 are in the room<terminals>
+				<t pos="NNP" word="11-09-20sUser64"/>
+				<t pos="VBP" word="are"/>
+				<t pos="IN" word="in"/>
+				<t pos="DT" word="the"/>
+				<t pos="NN" word="room"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser156">need  some  sweet  loveing <terminals>
+				<t pos="MD" word="need"/>
+				<t pos="DT" word="some"/>
+				<t pos="JJ" word="sweet"/>
+				<t pos="^VBG" word="loveing"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser53">OMG that was quite the run<terminals>
+				<t pos="UH" word="OMG"/>
+				<t pos="DT" word="that"/>
+				<t pos="VBD" word="was"/>
+				<t pos="RB" word="quite"/>
+				<t pos="DT" word="the"/>
+				<t pos="NN" word="run"/>
+			</terminals>
+		</Post>
+		<Post class="ynQuestion" user="11-09-20sUser152">any chics here like italians <terminals>
+				<t pos="DT" word="any"/>
+				<t pos="NNS" word="chics"/>
+				<t pos="RB" word="here"/>
+				<t pos="IN" word="like"/>
+				<t pos="NNPS" word="italians"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser114">But it's not something I'd have a whole convo about.<terminals>
+				<t pos="CC" word="But"/>
+				<t pos="PRP" word="it"/>
+				<t pos="BES" word="&apos;s"/>
+				<t pos="RB" word="not"/>
+				<t pos="NN" word="something"/>
+				<t pos="PRP" word="I"/>
+				<t pos="MD" word="&apos;d"/>
+				<t pos="VB" word="have"/>
+				<t pos="DT" word="a"/>
+				<t pos="JJ" word="whole"/>
+				<t pos="NN" word="convo"/>
+				<t pos="RB" word="about"/>
+				<t pos="." word="."/>
+			</terminals>
+		</Post>
+		<Post class="Greet" user="11-09-20sUser89">wb 11-09-20sUser53<terminals>
+				<t pos="UH" word="wb"/>
+				<t pos="NNP" word="11-09-20sUser53"/>
+			</terminals>
+		</Post>
+		<Post class="Other" user="11-09-20sUser59">........<terminals>
+				<t pos=":" word="........"/>
+			</terminals>
+		</Post>
+		<Post class="ynQuestion" user="11-09-20sUser34">11-09-20sUser114 you work in the bear place in maidstone opposite the coffe placce?<terminals>
+				<t pos="NNP" word="11-09-20sUser114"/>
+				<t pos="PRP" word="you"/>
+				<t pos="VBP" word="work"/>
+				<t pos="IN" word="in"/>
+				<t pos="DT" word="the"/>
+				<t pos="NN" word="bear"/>
+				<t pos="NN" word="place"/>
+				<t pos="IN" word="in"/>
+				<t pos="NNP" word="maidstone"/>
+				<t pos="IN" word="opposite"/>
+				<t pos="DT" word="the"/>
+				<t pos="^NN" word="coffe"/>
+				<t pos="^NN" word="placce"/>
+				<t pos="." word="?"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser53">ty <terminals>
+				<t pos="UH" word="ty"/>
+			</terminals>
+		</Post>
+		<Post class="Greet" user="11-09-20sUser158">heyy 11-09-20sUser87<terminals>
+				<t pos="UH" word="heyy"/>
+				<t pos="NNP" word="11-09-20sUser87"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser163">!scramble<terminals>
+				<t pos="SYM" word="!"/>
+				<t pos="VB" word="scramble"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser94">UnScramble: biebsa<terminals>
+				<t pos="VB" word="UnScramble"/>
+				<t pos=":" word=":"/>
+				<t pos="^NN" word="biebsa"/>
+			</terminals>
+		</Post>
+		<Post class="Emotion" user="11-09-20sUser114">LOL shhhh<terminals>
+				<t pos="UH" word="LOL"/>
+				<t pos="UH" word="shhhh"/>
+			</terminals>
+		</Post>
+		<Post class="Greet" user="11-09-20sUser34">wb wife love of my life<terminals>
+				<t pos="UH" word="wb"/>
+				<t pos="NN" word="wife"/>
+				<t pos="NN" word="love"/>
+				<t pos="IN" word="of"/>
+				<t pos="PRP$" word="my"/>
+				<t pos="NN" word="life"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser158">the runs?<terminals>
+				<t pos="DT" word="the"/>
+				<t pos="NNS" word="runs"/>
+				<t pos="." word="?"/>
+			</terminals>
+		</Post>
+		<Post class="whQuestion" user="11-09-20sUser105">Oh by the way, to my American friends, Matt Hughes Or Rush St Pierre?<terminals>
+				<t pos="UH" word="Oh"/>
+				<t pos="IN" word="by"/>
+				<t pos="DT" word="the"/>
+				<t pos="NN" word="way"/>
+				<t pos="," word=","/>
+				<t pos="TO" word="to"/>
+				<t pos="PRP$" word="my"/>
+				<t pos="JJ" word="American"/>
+				<t pos="NNS" word="friends"/>
+				<t pos="," word=","/>
+				<t pos="NNP" word="Matt"/>
+				<t pos="NNP" word="Hughes"/>
+				<t pos="CC" word="Or"/>
+				<t pos="NNP" word="Rush"/>
+				<t pos="NNP" word="St"/>
+				<t pos="NNP" word="Pierre"/>
+				<t pos="." word="?"/>
+			</terminals>
+		</Post>
+		<Post class="Bye" user="11-09-20sUser1">AWAY SEE LATER<terminals>
+				<t pos="RB" word="AWAY"/>
+				<t pos="VB" word="SEE"/>
+				<t pos="RB" word="LATER"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser163">babies<terminals>
+				<t pos="NNS" word="babies"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser94">That's the way 11-09-20sUser163..<terminals>
+				<t pos="DT" word="That"/>
+				<t pos="BES" word="&apos;s"/>
+				<t pos="DT" word="the"/>
+				<t pos="NN" word="way"/>
+				<t pos="NNP" word="11-09-20sUser163"/>
+				<t pos=":" word=".."/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser143">*munches on rum soaked pineapples*<terminals>
+				<t pos="SYM" word="*"/>
+				<t pos="VBZ" word="munches"/>
+				<t pos="IN" word="on"/>
+				<t pos="NN" word="rum"/>
+				<t pos="JJ" word="soaked"/>
+				<t pos="NNS" word="pineapples"/>
+				<t pos="SYM" word="*"/>
+			</terminals>
+		</Post>
+		<Post class="Emphasis" user="11-09-20sUser114">You trying to get me stalked!<terminals>
+				<t pos="PRP" word="You"/>
+				<t pos="VBG" word="trying"/>
+				<t pos="TO" word="to"/>
+				<t pos="VB" word="get"/>
+				<t pos="PRP" word="me"/>
+				<t pos="VBD" word="stalked"/>
+				<t pos="." word="!"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser34">11-09-20sUser156 you sexy thing<terminals>
+				<t pos="NNP" word="11-09-20sUser156"/>
+				<t pos="PRP" word="you"/>
+				<t pos="JJ" word="sexy"/>
+				<t pos="NN" word="thing"/>
+			</terminals>
+		</Post>
+		<Post class="Bye" user="11-09-20sUser143">alterz 11-09-20sUser1<terminals>
+				<t pos="^UH" word="alterz"/>
+				<t pos="NNP" word="11-09-20sUser1"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser114">Something is making a strange noise.<terminals>
+				<t pos="NN" word="Something"/>
+				<t pos="VBZ" word="is"/>
+				<t pos="VBG" word="making"/>
+				<t pos="DT" word="a"/>
+				<t pos="JJ" word="strange"/>
+				<t pos="NN" word="noise"/>
+				<t pos="." word="."/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser59">i wish i had a stalker<terminals>
+				<t pos="PRP" word="i"/>
+				<t pos="VBP" word="wish"/>
+				<t pos="PRP" word="i"/>
+				<t pos="VBD" word="had"/>
+				<t pos="DT" word="a"/>
+				<t pos="NN" word="stalker"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser147">llloooozzzzeeerrrrzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz<terminals>
+				<t pos="^NNS" word="llloooozzzzeeerrrrzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser50">PART<terminals>
+				<t pos="VB" word="PART"/>
+			</terminals>
+		</Post>
+		<Post class="Greet" user="11-09-20sUser160">hey folks<terminals>
+				<t pos="UH" word="hey"/>
+				<t pos="NNS" word="folks"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser166">JOIN<terminals>
+				<t pos="VB" word="JOIN"/>
+			</terminals>
+		</Post>
+		<Post class="Emphasis" user="11-09-20sUser34">i may pop in  or just moonie you as i go past one day!!!!!!<terminals>
+				<t pos="PRP" word="i"/>
+				<t pos="MD" word="may"/>
+				<t pos="VB" word="pop"/>
+				<t pos="RP" word="in"/>
+				<t pos="CC" word="or"/>
+				<t pos="RB" word="just"/>
+				<t pos="^VB" word="moonie"/>
+				<t pos="PRP" word="you"/>
+				<t pos="IN" word="as"/>
+				<t pos="PRP" word="i"/>
+				<t pos="VBP" word="go"/>
+				<t pos="RP" word="past"/>
+				<t pos="CD" word="one"/>
+				<t pos="NN" word="day"/>
+				<t pos="." word="!!!!!!"/>
+			</terminals>
+		</Post>
+		<Post class="ynQuestion" user="11-09-20sUser158">heyy 11-09-20sUser34? lol<terminals>
+				<t pos="UH" word="heyy"/>
+				<t pos="NNP" word="11-09-20sUser34"/>
+				<t pos="." word="?"/>
+				<t pos="UH" word="lol"/>
+			</terminals>
+		</Post>
+		<Post class="ynQuestion" user="11-09-20sUser156">11-09-20sUser156   so sweet  do u need some sweet  love  <terminals>
+				<t pos="NNP" word="11-09-20sUser156"/>
+				<t pos="RB" word="so"/>
+				<t pos="JJ" word="sweet"/>
+				<t pos="VBP" word="do"/>
+				<t pos="PRP" word="u"/>
+				<t pos="VBP" word="need"/>
+				<t pos="DT" word="some"/>
+				<t pos="JJ" word="sweet"/>
+				<t pos="NN" word="love"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser143">n e 1 wants some rum soaked pineapple?<terminals>
+				<t pos="DT" word="n e"/>
+				<t pos="NN" word="1"/>
+				<t pos="VBZ" word="wants"/>
+				<t pos="DT" word="some"/>
+				<t pos="NN" word="rum"/>
+				<t pos="VBN" word="soaked"/>
+				<t pos="NN" word="pineapple"/>
+				<t pos="." word="?"/>
+			</terminals>
+		</Post>
+		<Post class="Greet" user="11-09-20sUser160">hI FOLKS<terminals>
+				<t pos="UH" word="hI"/>
+				<t pos="NNS" word="FOLKS"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser158">always needs sweet love<terminals>
+				<t pos="RB" word="always"/>
+				<t pos="VBZ" word="needs"/>
+				<t pos="JJ" word="sweet"/>
+				<t pos="NN" word="love"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser103"> /away  I'm not at the computer right now,  if you'd like to reach me, you can e-mail me at  11-09-20sUser103@AOL.COM,  because I'm back and fourth from the computer so much.<terminals>
+				<t pos="X" word="/"/>
+				<t pos="RB" word="away"/>
+				<t pos="PRP" word="I"/>
+				<t pos="VBP" word="&apos;m"/>
+				<t pos="RB" word="not"/>
+				<t pos="IN" word="at"/>
+				<t pos="DT" word="the"/>
+				<t pos="NN" word="computer"/>
+				<t pos="JJ" word="right"/>
+				<t pos="RB" word="now"/>
+				<t pos="," word=","/>
+				<t pos="IN" word="if"/>
+				<t pos="PRP" word="you"/>
+				<t pos="MD" word="&apos;d"/>
+				<t pos="VB" word="like"/>
+				<t pos="TO" word="to"/>
+				<t pos="VB" word="reach"/>
+				<t pos="PRP" word="me"/>
+				<t pos="," word=","/>
+				<t pos="PRP" word="you"/>
+				<t pos="MD" word="can"/>
+				<t pos="VB" word="e-mail"/>
+				<t pos="PRP" word="me"/>
+				<t pos="IN" word="at"/>
+				<t pos="NNP" word="11-09-20sUser103"/>
+				<t pos="IN" word="@"/>
+				<t pos="NNP" word="AOL.COM"/>
+				<t pos="," word=","/>
+				<t pos="IN" word="because"/>
+				<t pos="PRP" word="I"/>
+				<t pos="VBP" word="&apos;m"/>
+				<t pos="RB" word="back"/>
+				<t pos="CC" word="and"/>
+				<t pos="^RB" word="fourth"/>
+				<t pos="IN" word="from"/>
+				<t pos="DT" word="the"/>
+				<t pos="NN" word="computer"/>
+				<t pos="RB" word="so"/>
+				<t pos="JJ" word="much"/>
+				<t pos="." word="."/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser89">.ACTION munches on 11-09-20sUser114.<terminals>
+				<t pos="SYM" word="."/>
+				<t pos="NN" word="ACTION"/>
+				<t pos="VBZ" word="munches"/>
+				<t pos="IN" word="on"/>
+				<t pos="NNP" word="11-09-20sUser114"/>
+				<t pos="." word="."/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser114">Ooo<terminals>
+				<t pos="UH" word="Ooo"/>
+			</terminals>
+		</Post>
+		<Post class="Other" user="11-09-20sUser160">NTMN<terminals>
+				<t pos="X" word="NTMN"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser156">aww i give to ya  <terminals>
+				<t pos="UH" word="aww"/>
+				<t pos="PRP" word="i"/>
+				<t pos="VBP" word="give"/>
+				<t pos="TO" word="to"/>
+				<t pos="PRP" word="ya"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser34">11-09-20sUser156 ill love you<terminals>
+				<t pos="NNP" word="11-09-20sUser156"/>
+				<t pos="PRP" word="ill"/>
+				<t pos="VBP" word="love"/>
+				<t pos="PRP" word="you"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser146">22 f az<terminals>
+				<t pos="CD" word="22"/>
+				<t pos="NN" word="f"/>
+				<t pos="NNP" word="az"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser89">o0o<terminals>
+				<t pos="UH" word="o0o"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser157">PART<terminals>
+				<t pos="VB" word="PART"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser167">JOIN<terminals>
+				<t pos="VB" word="JOIN"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser34">Kiss me you fool<terminals>
+				<t pos="VB" word="Kiss"/>
+				<t pos="PRP" word="me"/>
+				<t pos="PRP" word="you"/>
+				<t pos="NN" word="fool"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser163">!scramble<terminals>
+				<t pos="SYM" word="!"/>
+				<t pos="VB" word="scramble"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser94">UnScramble: armtnpeat<terminals>
+				<t pos="VB" word="UnScramble"/>
+				<t pos=":" word=":"/>
+				<t pos="^NN" word="armtnpeat"/>
+			</terminals>
+		</Post>
+		<Post class="whQuestion" user="11-09-20sUser143">howz arizona?<terminals>
+				<t pos="WRB" word="howz"/>
+				<t pos="NNP" word="arizona"/>
+				<t pos="." word="?"/>
+			</terminals>
+		</Post>
+		<Post class="Emotion" user="11-09-20sUser156">lick me  you fool  lol  <terminals>
+				<t pos="VB" word="lick"/>
+				<t pos="PRP" word="me"/>
+				<t pos="PRP" word="you"/>
+				<t pos="NN" word="fool"/>
+				<t pos="UH" word="lol"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser114">Permenant<terminals>
+				<t pos="^JJ" word="Permenant"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser158">kisses 11-09-20sUser34<terminals>
+				<t pos="VBZ" word="kisses"/>
+				<t pos="NNP" word="11-09-20sUser34"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser163">petanmart<terminals>
+				<t pos="^NN" word="petanmart"/>
+			</terminals>
+		</Post>
+		<Post class="Other" user="11-09-20sUser160">HE<terminals>
+				<t pos="X" word="HE"/>
+			</terminals>
+		</Post>
+		<Post class="Other" user="11-09-20sUser160">GN,GNG  <terminals>
+				<t pos="X" word="GN"/>
+				<t pos="," word=","/>
+				<t pos="X" word="GNG"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser163">permanent<terminals>
+				<t pos="JJ" word="permanent"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser67">PART<terminals>
+				<t pos="VB" word="PART"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser158">apartment<terminals>
+				<t pos="NN" word="apartment"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser94">You got it 11-09-20sUser158..<terminals>
+				<t pos="PRP" word="You"/>
+				<t pos="VBD" word="got"/>
+				<t pos="PRP" word="it"/>
+				<t pos="NNP" word="11-09-20sUser158"/>
+				<t pos=":" word=".."/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser163">!scramble<terminals>
+				<t pos="SYM" word="!"/>
+				<t pos="VB" word="scramble"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser94">UnScramble: onuimso<terminals>
+				<t pos="VB" word="UnScramble"/>
+				<t pos=":" word=":"/>
+				<t pos="^NN" word="onuimso"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser168">JOIN<terminals>
+				<t pos="VB" word="JOIN"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser158">unisom<terminals>
+				<t pos="^NN" word="unisom"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser79">PART<terminals>
+				<t pos="VB" word="PART"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser169">JOIN<terminals>
+				<t pos="VB" word="JOIN"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser34">well done 11-09-20sUser156 wow your so grea<terminals>
+				<t pos="RB" word="well"/>
+				<t pos="VBN" word="done"/>
+				<t pos="NNP" word="11-09-20sUser156"/>
+				<t pos="UH" word="wow"/>
+				<t pos="^PRP" word="your"/>
+				<t pos="RB" word="so"/>
+				<t pos="^JJ" word="grea"/>
+			</terminals>
+		</Post>
+		<Post class="Continuer" user="11-09-20sUser34">t<terminals>
+				<t pos="^JJ" word="t"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser158">omnious<terminals>
+				<t pos="^JJ" word="omnious"/>
+			</terminals>
+		</Post>
+		<Post class="Emotion" user="11-09-20sUser158">heyyy 11-09-20sUser168<terminals>
+				<t pos="UH" word="heyyy"/>
+				<t pos="NNP" word="11-09-20sUser168"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser34">!smooch 11-09-20sUser156<terminals>
+				<t pos="SYM" word="!"/>
+				<t pos="VB" word="smooch"/>
+				<t pos="NNP" word="11-09-20sUser156"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser94">.ACTION walks up to 11-09-20sUser156, runs their fingers thru the back of 11-09-20sUser156's hair, closes their eyes, and gently kisses 11-09-20sUser156 on the neck, Compliments of 11-09-20sUser34!.<terminals>
+				<t pos="SYM" word="."/>
+				<t pos="NN" word="ACTION"/>
+				<t pos="VBZ" word="walks"/>
+				<t pos="IN" word="up"/>
+				<t pos="TO" word="to"/>
+				<t pos="NNP" word="11-09-20sUser156"/>
+				<t pos="," word=","/>
+				<t pos="VBZ" word="runs"/>
+				<t pos="PRP$" word="their"/>
+				<t pos="NNS" word="fingers"/>
+				<t pos="IN" word="thru"/>
+				<t pos="DT" word="the"/>
+				<t pos="NN" word="back"/>
+				<t pos="IN" word="of"/>
+				<t pos="NNP" word="11-09-20sUser156"/>
+				<t pos="POS" word="&apos;s"/>
+				<t pos="NN" word="hair"/>
+				<t pos="," word=","/>
+				<t pos="VBZ" word="closes"/>
+				<t pos="PRP$" word="their"/>
+				<t pos="NNS" word="eyes"/>
+				<t pos="," word=","/>
+				<t pos="CC" word="and"/>
+				<t pos="RB" word="gently"/>
+				<t pos="VBZ" word="kisses"/>
+				<t pos="NNP" word="11-09-20sUser156"/>
+				<t pos="IN" word="on"/>
+				<t pos="DT" word="the"/>
+				<t pos="NN" word="neck"/>
+				<t pos="," word=","/>
+				<t pos="NNS" word="Compliments"/>
+				<t pos="IN" word="of"/>
+				<t pos="NNP" word="11-09-20sUser34"/>
+				<t pos="." word="!."/>
+			</terminals>
+		</Post>
+		<Post class="whQuestion" user="11-09-20sUser168">11-09-20sUser156 . . . how are you hon<terminals>
+				<t pos="NNP" word="11-09-20sUser156"/>
+				<t pos=":" word=". . ."/>
+				<t pos="WRB" word="how"/>
+				<t pos="VBP" word="are"/>
+				<t pos="PRP" word="you"/>
+				<t pos="UH" word="hon"/>
+			</terminals>
+		</Post>
+		<Post class="whQuestion" user="11-09-20sUser156">11-09-20sUser156  so  how  u been  sweet  thing  <terminals>
+				<t pos="NNP" word="11-09-20sUser156"/>
+				<t pos="UH" word="so"/>
+				<t pos="WRB" word="how"/>
+				<t pos="PRP" word="u"/>
+				<t pos="VBN" word="been"/>
+				<t pos="JJ" word="sweet"/>
+				<t pos="NN" word="thing"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser163">ominous<terminals>
+				<t pos="JJ" word="ominous"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser94">You got it 11-09-20sUser163..<terminals>
+				<t pos="PRP" word="You"/>
+				<t pos="VBD" word="got"/>
+				<t pos="PRP" word="it"/>
+				<t pos="NNP" word="11-09-20sUser163"/>
+				<t pos=":" word=".."/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser34">11-09-20sUser168 get of he's mine<terminals>
+				<t pos="NNP" word="11-09-20sUser168"/>
+				<t pos="VB" word="get"/>
+				<t pos="^RP" word="of"/>
+				<t pos="PRP" word="he"/>
+				<t pos="BES" word="&apos;s"/>
+				<t pos="PRP" word="mine"/>
+			</terminals>
+		</Post>
+		<Post class="whQuestion" user="11-09-20sUser158">fine 11-09-20sUser168 and you?<terminals>
+				<t pos="JJ" word="fine"/>
+				<t pos="NNP" word="11-09-20sUser168"/>
+				<t pos="CC" word="and"/>
+				<t pos="PRP" word="you"/>
+				<t pos="." word="?"/>
+			</terminals>
+		</Post>
+		<Post class="Greet" user="11-09-20sUser160">hello<terminals>
+				<t pos="UH" word="hello"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser160">PART<terminals>
+				<t pos="VB" word="PART"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser157">JOIN<terminals>
+				<t pos="VB" word="JOIN"/>
+			</terminals>
+		</Post>
+		<Post class="whQuestion" user="11-09-20sUser143">wha time is it in the mainland?<terminals>
+				<t pos="WP" word="wha"/>
+				<t pos="NN" word="time"/>
+				<t pos="VBZ" word="is"/>
+				<t pos="PRP" word="it"/>
+				<t pos="IN" word="in"/>
+				<t pos="DT" word="the"/>
+				<t pos="NN" word="mainland"/>
+				<t pos="." word="?"/>
+			</terminals>
+		</Post>
+		<Post class="Greet" user="11-09-20sUser89">wb 11-09-20sUser168 my dear<terminals>
+				<t pos="UH" word="wb"/>
+				<t pos="NNP" word="11-09-20sUser168"/>
+				<t pos="PRP$" word="my"/>
+				<t pos="NN" word="dear"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser156">nobody  like  me  lol  <terminals>
+				<t pos="NN" word="nobody"/>
+				<t pos="VB" word="like"/>
+				<t pos="PRP" word="me"/>
+				<t pos="UH" word="lol"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser89">aww 11-09-20sUser156 i'm sure someone does<terminals>
+				<t pos="UH" word="aww"/>
+				<t pos="NNP" word="11-09-20sUser156"/>
+				<t pos="PRP" word="i"/>
+				<t pos="VBP" word="&apos;m"/>
+				<t pos="JJ" word="sure"/>
+				<t pos="NN" word="someone"/>
+				<t pos="VBZ" word="does"/>
+			</terminals>
+		</Post>
+		<Post class="whQuestion" user="11-09-20sUser158">ive been fine and you 11-09-20sUser156?<terminals>
+				<t pos="PRP" word="ive"/>
+				<t pos="VBN" word="been"/>
+				<t pos="JJ" word="fine"/>
+				<t pos="CC" word="and"/>
+				<t pos="PRP" word="you"/>
+				<t pos="NNP" word="11-09-20sUser156"/>
+				<t pos="." word="?"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser41">u can throw yourself at me 11-09-20sUser156<terminals>
+				<t pos="PRP" word="u"/>
+				<t pos="MD" word="can"/>
+				<t pos="VB" word="throw"/>
+				<t pos="PRP" word="yourself"/>
+				<t pos="IN" word="at"/>
+				<t pos="PRP" word="me"/>
+				<t pos="NNP" word="11-09-20sUser156"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser129">31f ga im me<terminals>
+				<t pos="CD" word="31"/>
+				<t pos="NN" word="f"/>
+				<t pos="NNP" word="ga"/>
+				<t pos="VB" word="im"/>
+				<t pos="VBP" word="me"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser156">i am okay  <terminals>
+				<t pos="PRP" word="i"/>
+				<t pos="VBP" word="am"/>
+				<t pos="JJ" word="okay"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser143">i likes you 11-09-20sUser156<terminals>
+				<t pos="PRP" word="i"/>
+				<t pos="VBZ" word="likes"/>
+				<t pos="PRP" word="you"/>
+				<t pos="NNP" word="11-09-20sUser156"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser156">aww  ty  <terminals>
+				<t pos="UH" word="aww"/>
+				<t pos="UH" word="ty"/>
+			</terminals>
+		</Post>
+		<Post class="whQuestion" user="11-09-20sUser143">how r u today?<terminals>
+				<t pos="WRB" word="how"/>
+				<t pos="VBP" word="r"/>
+				<t pos="PRP" word="u"/>
+				<t pos="NN" word="today"/>
+				<t pos="." word="?"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser41">y/w  :-) <terminals>
+				<t pos="UH" word="y/w"/>
+				<t pos="UH" word=":-)"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser89">!light up cos i want to appear like so cool<terminals>
+				<t pos="." word="!"/>
+				<t pos="NN" word="light"/>
+				<t pos="RP" word="up"/>
+				<t pos="^IN" word="cos"/>
+				<t pos="PRP" word="i"/>
+				<t pos="VBP" word="want"/>
+				<t pos="TO" word="to"/>
+				<t pos="VB" word="appear"/>
+				<t pos="UH" word="like"/>
+				<t pos="RB" word="so"/>
+				<t pos="JJ" word="cool"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser94">.ACTION graciously lights 11-09-20sUser89's cigarette.<terminals>
+				<t pos="SYM" word="."/>
+				<t pos="NN" word="ACTION"/>
+				<t pos="RB" word="graciously"/>
+				<t pos="VBZ" word="lights"/>
+				<t pos="NNP" word="11-09-20sUser89"/>
+				<t pos="POS" word="&apos;s"/>
+				<t pos="NN" word="cigarette"/>
+				<t pos="." word="."/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser88">PART<terminals>
+				<t pos="VB" word="PART"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser156">i am now  happpy i  been  good  <terminals>
+				<t pos="PRP" word="i"/>
+				<t pos="VBP" word="am"/>
+				<t pos="RB" word="now"/>
+				<t pos="^JJ" word="happpy"/>
+				<t pos="PRP" word="i"/>
+				<t pos="VBN" word="been"/>
+				<t pos="JJ" word="good"/>
+			</terminals>
+		</Post>
+		<Post class="Greet" user="11-09-20sUser19">hi<terminals>
+				<t pos="UH" word="hi"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser88">JOIN<terminals>
+				<t pos="VB" word="JOIN"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser143">excellent<terminals>
+				<t pos="JJ" word="excellent"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser157">Look guys if u are going to pm me be nice not a jerk or pervert ok period...........<terminals>
+				<t pos="VB" word="Look"/>
+				<t pos="NNS" word="guys"/>
+				<t pos="IN" word="if"/>
+				<t pos="PRP" word="u"/>
+				<t pos="VBP" word="are"/>
+				<t pos="VBG" word="going"/>
+				<t pos="TO" word="to"/>
+				<t pos="VB" word="pm"/>
+				<t pos="PRP" word="me"/>
+				<t pos="VB" word="be"/>
+				<t pos="JJ" word="nice"/>
+				<t pos="RB" word="not"/>
+				<t pos="DT" word="a"/>
+				<t pos="NN" word="jerk"/>
+				<t pos="CC" word="or"/>
+				<t pos="NN" word="pervert"/>
+				<t pos="UH" word="ok"/>
+				<t pos="NN" word="period"/>
+				<t pos=":" word="..........."/>
+			</terminals>
+		</Post>
+		<Post class="whQuestion" user="11-09-20sUser143">where are you from ms. 11-09-20sUser156?<terminals>
+				<t pos="WRB" word="where"/>
+				<t pos="VBP" word="are"/>
+				<t pos="PRP" word="you"/>
+				<t pos="IN" word="from"/>
+				<t pos="NNP" word="ms."/>
+				<t pos="NNP" word="11-09-20sUser156"/>
+				<t pos="." word="?"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser89">i am like so good<terminals>
+				<t pos="PRP" word="i"/>
+				<t pos="VBP" word="am"/>
+				<t pos="UH" word="like"/>
+				<t pos="RB" word="so"/>
+				<t pos="JJ" word="good"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser113">PART<terminals>
+				<t pos="VB" word="PART"/>
+			</terminals>
+		</Post>
+		<Post class="ynQuestion" user="11-09-20sUser156">yepper s <terminals>
+				<t pos="^UH" word="yepper s"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser156">oklahoma <terminals>
+				<t pos="NNP" word="oklahoma"/>
+			</terminals>
+		</Post>
+		<Post class="ynQuestion" user="11-09-20sUser34">11-09-20sUser156 can i ask you a few questions<terminals>
+				<t pos="NNP" word="11-09-20sUser156"/>
+				<t pos="MD" word="can"/>
+				<t pos="PRP" word="i"/>
+				<t pos="VB" word="ask"/>
+				<t pos="PRP" word="you"/>
+				<t pos="DT" word="a"/>
+				<t pos="JJ" word="few"/>
+				<t pos="NNS" word="questions"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser170">JOIN<terminals>
+				<t pos="VB" word="JOIN"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser143">home of the sooners<terminals>
+				<t pos="NN" word="home"/>
+				<t pos="IN" word="of"/>
+				<t pos="DT" word="the"/>
+				<t pos="NNPS" word="sooners"/>
+			</terminals>
+		</Post>
+		<Post class="whQuestion" user="11-09-20sUser158">ok I really do want to know how a 11-09-20sUser129 is a female and how does the nick abide by talkcitys rules?<terminals>
+				<t pos="UH" word="ok"/>
+				<t pos="PRP" word="I"/>
+				<t pos="RB" word="really"/>
+				<t pos="VBP" word="do"/>
+				<t pos="VB" word="want"/>
+				<t pos="TO" word="to"/>
+				<t pos="VB" word="know"/>
+				<t pos="WRB" word="how"/>
+				<t pos="DT" word="a"/>
+				<t pos="NNP" word="11-09-20sUser129"/>
+				<t pos="VBZ" word="is"/>
+				<t pos="DT" word="a"/>
+				<t pos="NN" word="female"/>
+				<t pos="CC" word="and"/>
+				<t pos="WRB" word="how"/>
+				<t pos="VBZ" word="does"/>
+				<t pos="DT" word="the"/>
+				<t pos="NN" word="nick"/>
+				<t pos="VB" word="abide"/>
+				<t pos="IN" word="by"/>
+				<t pos="NNP" word="talkcity"/>
+				<t pos="POS" word="s"/>
+				<t pos="NNS" word="rules"/>
+				<t pos="." word="?"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser89">!hug 11-09-20sUser168<terminals>
+				<t pos="SYM" word="!"/>
+				<t pos="VB" word="hug"/>
+				<t pos="NNP" word="11-09-20sUser168"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser94">.ACTION watches 11-09-20sUser89 hug the stuffin' outta 11-09-20sUser168....<terminals>
+				<t pos="SYM" word="."/>
+				<t pos="NN" word="ACTION"/>
+				<t pos="VBZ" word="watches"/>
+				<t pos="NNP" word="11-09-20sUser89"/>
+				<t pos="VB" word="hug"/>
+				<t pos="DT" word="the"/>
+				<t pos="NN" word="stuffin&apos;"/>
+				<t pos="IN" word="outta"/>
+				<t pos="NNP" word="11-09-20sUser168"/>
+				<t pos=":" word="...."/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser143">callifornia here but im in hawaii<terminals>
+				<t pos="^NNP" word="callifornia"/>
+				<t pos="RB" word="here"/>
+				<t pos="CC" word="but"/>
+				<t pos="PRP" word="im"/>
+				<t pos="IN" word="in"/>
+				<t pos="NNP" word="hawaii"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser89">!kiss 11-09-20sUser168<terminals>
+				<t pos="." word="!"/>
+				<t pos="VB" word="kiss"/>
+				<t pos="NNP" word="11-09-20sUser168"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser94">.ACTION watches 11-09-20sUser89 kiss 11-09-20sUser168's big toe..<terminals>
+				<t pos="SYM" word="."/>
+				<t pos="NN" word="ACTION"/>
+				<t pos="VBZ" word="watches"/>
+				<t pos="NNP" word="11-09-20sUser89"/>
+				<t pos="VB" word="kiss"/>
+				<t pos="NNP" word="11-09-20sUser168"/>
+				<t pos="POS" word="&apos;s"/>
+				<t pos="JJ" word="big"/>
+				<t pos="NN" word="toe"/>
+				<t pos=":" word=".."/>
+			</terminals>
+		</Post>
+		<Post class="Accept" user="11-09-20sUser156">@$$  right  <terminals>
+				<t pos="UH" word="@$$"/>
+				<t pos="UH" word="right"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser158">yes 11-09-20sUser34 If I dont know the answers I will make one up<terminals>
+				<t pos="UH" word="yes"/>
+				<t pos="NNP" word="11-09-20sUser34"/>
+				<t pos="IN" word="If"/>
+				<t pos="PRP" word="I"/>
+				<t pos="VBP" word="dont"/>
+				<t pos="VB" word="know"/>
+				<t pos="DT" word="the"/>
+				<t pos="NNS" word="answers"/>
+				<t pos="PRP" word="I"/>
+				<t pos="MD" word="will"/>
+				<t pos="VB" word="make"/>
+				<t pos="NN" word="one"/>
+				<t pos="RP" word="up"/>
+			</terminals>
+		</Post>
+		<Post class="Greet" user="11-09-20sUser170">HELLO PEOPLE<terminals>
+				<t pos="UH" word="HELLO"/>
+				<t pos="NNP" word="PEOPLE"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser89">!seduce 11-09-20sUser168<terminals>
+				<t pos="SYM" word="!"/>
+				<t pos="VB" word="seduce"/>
+				<t pos="NNP" word="11-09-20sUser168"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser63">PART<terminals>
+				<t pos="VB" word="PART"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser34">cool<terminals>
+				<t pos="UH" word="cool"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser40">i am going to hawaii tommorrow<terminals>
+				<t pos="PRP" word="i"/>
+				<t pos="VBP" word="am"/>
+				<t pos="VBG" word="going"/>
+				<t pos="TO" word="to"/>
+				<t pos="NNP" word="hawaii"/>
+				<t pos="^RB" word="tommorrow"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser47">PART<terminals>
+				<t pos="VB" word="PART"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser171">JOIN<terminals>
+				<t pos="VB" word="JOIN"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser158">awesome 11-09-20sUser40<terminals>
+				<t pos="JJ" word="awesome"/>
+				<t pos="NNP" word="11-09-20sUser40"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser172">JOIN<terminals>
+				<t pos="VB" word="JOIN"/>
+			</terminals>
+		</Post>
+		<Post class="Greet" user="11-09-20sUser38">hi 11-09-20sUser170<terminals>
+				<t pos="UH" word="hi"/>
+				<t pos="NNP" word="11-09-20sUser170"/>
+			</terminals>
+		</Post>
+		<Post class="whQuestion" user="11-09-20sUser170">whats up guys<terminals>
+				<t pos="WP" word="whats"/>
+				<t pos="RP" word="up"/>
+				<t pos="NNS" word="guys"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser77">PART<terminals>
+				<t pos="VB" word="PART"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser59">PART<terminals>
+				<t pos="VB" word="PART"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser19">PART<terminals>
+				<t pos="VB" word="PART"/>
+			</terminals>
+		</Post>
+		<Post class="ynQuestion" user="11-09-20sUser34">question number 1: do you like to play with Dolls<terminals>
+				<t pos="NN" word="question"/>
+				<t pos="NN" word="number"/>
+				<t pos="CD" word="1"/>
+				<t pos=":" word=":"/>
+				<t pos="VBP" word="do"/>
+				<t pos="PRP" word="you"/>
+				<t pos="VBP" word="like"/>
+				<t pos="TO" word="to"/>
+				<t pos="VB" word="play"/>
+				<t pos="IN" word="with"/>
+				<t pos="NNS" word="Dolls"/>
+			</terminals>
+		</Post>
+		<Post class="whQuestion" user="11-09-20sUser143">awesomes! which island?<terminals>
+				<t pos="UH" word="awesomes"/>
+				<t pos="." word="!"/>
+				<t pos="WDT" word="which"/>
+				<t pos="NN" word="island"/>
+				<t pos="." word="?"/>
+			</terminals>
+		</Post>
+		<Post class="Greet" user="11-09-20sUser12"> HELLO ROOM<terminals>
+				<t pos="UH" word="HELLO"/>
+				<t pos="NN" word="ROOM"/>
+			</terminals>
+		</Post>
+		<Post class="whQuestion" user="11-09-20sUser38">not much u 11-09-20sUser170<terminals>
+				<t pos="RB" word="not"/>
+				<t pos="JJ" word="much"/>
+				<t pos="PRP" word="u"/>
+				<t pos="NNP" word="11-09-20sUser170"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser173">JOIN<terminals>
+				<t pos="VB" word="JOIN"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser89">the moon is up<terminals>
+				<t pos="DT" word="the"/>
+				<t pos="NN" word="moon"/>
+				<t pos="VBZ" word="is"/>
+				<t pos="RP" word="up"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser174">JOIN<terminals>
+				<t pos="VB" word="JOIN"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser158">only blowup dolls<terminals>
+				<t pos="RB" word="only"/>
+				<t pos="JJ" word="blowup"/>
+				<t pos="NNS" word="dolls"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser175">JOIN<terminals>
+				<t pos="VB" word="JOIN"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser41">nice pick up 11-09-20sUser156 i've been wondering that when he/she first came in<terminals>
+				<t pos="JJ" word="nice"/>
+				<t pos="VB" word="pick"/>
+				<t pos="RP" word="up"/>
+				<t pos="NNP" word="11-09-20sUser156"/>
+				<t pos="PRP" word="i"/>
+				<t pos="VBP" word="&apos;ve"/>
+				<t pos="VBN" word="been"/>
+				<t pos="VBG" word="wondering"/>
+				<t pos="DT" word="that"/>
+				<t pos="WRB" word="when"/>
+				<t pos="PRP" word="he"/>
+				<t pos="CC" word="/"/>
+				<t pos="PRP" word="she"/>
+				<t pos="RB" word="first"/>
+				<t pos="VBD" word="came"/>
+				<t pos="IN" word="in"/>
+			</terminals>
+		</Post>
+		<Post class="Emotion" user="11-09-20sUser89">lol 11-09-20sUser156<terminals>
+				<t pos="UH" word="lol"/>
+				<t pos="NNP" word="11-09-20sUser156"/>
+			</terminals>
+		</Post>
+		<Post class="whQuestion" user="11-09-20sUser170">what r u guys doing <terminals>
+				<t pos="WP" word="what"/>
+				<t pos="VBP" word="r"/>
+				<t pos="PRP" word="u"/>
+				<t pos="NNS" word="guys"/>
+				<t pos="VBG" word="doing"/>
+			</terminals>
+		</Post>
+		<Post class="Greet" user="11-09-20sUser175">hi guts<terminals>
+				<t pos="UH" word="hi"/>
+				<t pos="^NNS" word="guts"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser38">chatting<terminals>
+				<t pos="VBG" word="chatting"/>
+			</terminals>
+		</Post>
+		<Post class="Clarify" user="11-09-20sUser175">guys<terminals>
+				<t pos="NNS" word="guys"/>
+			</terminals>
+		</Post>
+		<Post class="Reject" user="11-09-20sUser34">not bay ones 11-09-20sUser156<terminals>
+				<t pos="RB" word="not"/>
+				<t pos="NN" word="bay"/>
+				<t pos="NNS" word="ones"/>
+				<t pos="NNP" word="11-09-20sUser156"/>
+			</terminals>
+		</Post>
+		<Post class="Emotion" user="11-09-20sUser175">lol<terminals>
+				<t pos="UH" word="lol"/>
+			</terminals>
+		</Post>
+		<Post class="Greet" user="11-09-20sUser158">hey 11-09-20sUser175<terminals>
+				<t pos="UH" word="hey"/>
+				<t pos="NNP" word="11-09-20sUser175"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser89">chattingsmoking<terminals>
+				<t pos="VBG" word="chatting"/>
+				<t pos="VBG" word="smoking"/>
+			</terminals>
+		</Post>
+		<Post class="Emphasis" user="11-09-20sUser144">Oy! I'm so hungry!<terminals>
+				<t pos="NNP" word="Oy"/>
+				<t pos="." word="!"/>
+				<t pos="PRP" word="I"/>
+				<t pos="VBP" word="&apos;m"/>
+				<t pos="RB" word="so"/>
+				<t pos="JJ" word="hungry"/>
+				<t pos="." word="!"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser34">baby*<terminals>
+				<t pos="UH" word="baby"/>
+				<t pos="SYM" word="*"/>
+			</terminals>
+		</Post>
+		<Post class="Accept" user="11-09-20sUser158">no 11-09-20sUser34<terminals>
+				<t pos="DT" word="no"/>
+				<t pos="NNP" word="11-09-20sUser34"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser89">flirting<terminals>
+				<t pos="VBG" word="flirting"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser65">PART<terminals>
+				<t pos="VB" word="PART"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser89">downloading<terminals>
+				<t pos="VBG" word="downloading"/>
+			</terminals>
+		</Post>
+		<Post class="Accept" user="11-09-20sUser34">ok<terminals>
+				<t pos="UH" word="ok"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser157">Let's try this again one more guy pms me and is a jerk or pervert u are getting ignored period. ok don't like it then don't pm me<terminals>
+				<t pos="VB" word="Let"/>
+				<t pos="PRP" word="&apos;s"/>
+				<t pos="VBP" word="try"/>
+				<t pos="DT" word="this"/>
+				<t pos="RB" word="again"/>
+				<t pos="CD" word="one"/>
+				<t pos="RBR" word="more"/>
+				<t pos="NN" word="guy"/>
+				<t pos="VBZ" word="pms"/>
+				<t pos="PRP" word="me"/>
+				<t pos="CC" word="and"/>
+				<t pos="VBZ" word="is"/>
+				<t pos="DT" word="a"/>
+				<t pos="NN" word="jerk"/>
+				<t pos="CC" word="or"/>
+				<t pos="NN" word="pervert"/>
+				<t pos="PRP" word="u"/>
+				<t pos="VBP" word="are"/>
+				<t pos="VBG" word="getting"/>
+				<t pos="VBN" word="ignored"/>
+				<t pos="NN" word="period"/>
+				<t pos="." word="."/>
+				<t pos="UH" word="ok"/>
+				<t pos="VBP" word="do"/>
+				<t pos="RB" word="n&apos;t"/>
+				<t pos="VB" word="like"/>
+				<t pos="PRP" word="it"/>
+				<t pos="IN" word="then"/>
+				<t pos="VBP" word="do"/>
+				<t pos="RB" word="n&apos;t"/>
+				<t pos="VB" word="pm"/>
+				<t pos="PRP" word="me"/>
+			</terminals>
+		</Post>
+		<Post class="Greet" user="11-09-20sUser175">hi 11-09-20sUser156<terminals>
+				<t pos="UH" word="hi"/>
+				<t pos="NNP" word="11-09-20sUser156"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser158">feeds 11-09-20sUser144<terminals>
+				<t pos="VBZ" word="feeds"/>
+				<t pos="NNP" word="11-09-20sUser144"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser168">!smooch 11-09-20sUser89<terminals>
+				<t pos="SYM" word="!"/>
+				<t pos="VB" word="smooch"/>
+				<t pos="NNP" word="11-09-20sUser89"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser94">.ACTION walks up to 11-09-20sUser89, runs their fingers thru the back of 11-09-20sUser89's hair, closes their eyes, and gently kisses 11-09-20sUser89 on the neck, Compliments of 11-09-20sUser168!.<terminals>
+				<t pos="SYM" word="."/>
+				<t pos="NN" word="ACTION"/>
+				<t pos="VBZ" word="walks"/>
+				<t pos="IN" word="up"/>
+				<t pos="TO" word="to"/>
+				<t pos="NNP" word="11-09-20sUser89"/>
+				<t pos="," word=","/>
+				<t pos="VBZ" word="runs"/>
+				<t pos="PRP$" word="their"/>
+				<t pos="NNS" word="fingers"/>
+				<t pos="IN" word="thru"/>
+				<t pos="DT" word="the"/>
+				<t pos="NN" word="back"/>
+				<t pos="IN" word="of"/>
+				<t pos="NNP" word="11-09-20sUser89"/>
+				<t pos="POS" word="&apos;s"/>
+				<t pos="NN" word="hair"/>
+				<t pos="," word=","/>
+				<t pos="VBZ" word="closes"/>
+				<t pos="PRP$" word="their"/>
+				<t pos="NNS" word="eyes"/>
+				<t pos="," word=","/>
+				<t pos="CC" word="and"/>
+				<t pos="RB" word="gently"/>
+				<t pos="VBZ" word="kisses"/>
+				<t pos="NNP" word="11-09-20sUser89"/>
+				<t pos="IN" word="on"/>
+				<t pos="DT" word="the"/>
+				<t pos="NN" word="neck"/>
+				<t pos="," word=","/>
+				<t pos="NNS" word="Compliments"/>
+				<t pos="IN" word="of"/>
+				<t pos="NNP" word="11-09-20sUser168"/>
+				<t pos="." word="!."/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser143">drinking beer b4 heading out<terminals>
+				<t pos="VBG" word="drinking"/>
+				<t pos="NN" word="beer"/>
+				<t pos="IN" word="b4"/>
+				<t pos="VBG" word="heading"/>
+				<t pos="IN" word="out"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser176">JOIN<terminals>
+				<t pos="VB" word="JOIN"/>
+			</terminals>
+		</Post>
+		<Post class="Emotion" user="11-09-20sUser89">o0<terminals>
+				<t pos="UH" word="o0"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser144">Thanks 11-09-20sUser156 baby!<terminals>
+				<t pos="UH" word="Thanks"/>
+				<t pos="NNP" word="11-09-20sUser156"/>
+				<t pos="UH" word="baby"/>
+				<t pos="." word="!"/>
+			</terminals>
+		</Post>
+		<Post class="ynQuestion" user="11-09-20sUser34">11-09-20sUser156 question number 2: am i annoying you yet?<terminals>
+				<t pos="NNP" word="11-09-20sUser156"/>
+				<t pos="NN" word="question"/>
+				<t pos="NN" word="number"/>
+				<t pos="CD" word="2"/>
+				<t pos=":" word=":"/>
+				<t pos="VBP" word="am"/>
+				<t pos="PRP" word="i"/>
+				<t pos="VBG" word="annoying"/>
+				<t pos="PRP" word="you"/>
+				<t pos="RB" word="yet"/>
+				<t pos="." word="?"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser56">PART<terminals>
+				<t pos="VB" word="PART"/>
+			</terminals>
+		</Post>
+		<Post class="Emotion" user="11-09-20sUser144">;)<terminals>
+				<t pos="UH" word=";)"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser56">JOIN<terminals>
+				<t pos="VB" word="JOIN"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser166">PART<terminals>
+				<t pos="VB" word="PART"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser89">i love being kissed on my neck<terminals>
+				<t pos="PRP" word="i"/>
+				<t pos="VBP" word="love"/>
+				<t pos="VBG" word="being"/>
+				<t pos="VBD" word="kissed"/>
+				<t pos="IN" word="on"/>
+				<t pos="PRP$" word="my"/>
+				<t pos="NN" word="neck"/>
+			</terminals>
+		</Post>
+		<Post class="nAnswer" user="11-09-20sUser158">no youre not 11-09-20sUser34<terminals>
+				<t pos="DT" word="no"/>
+				<t pos="PRP" word="you"/>
+				<t pos="^VBP" word="re"/>
+				<t pos="RB" word="not"/>
+				<t pos="NNP" word="11-09-20sUser34"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser177">JOIN<terminals>
+				<t pos="VB" word="JOIN"/>
+			</terminals>
+		</Post>
+		<Post class="ynQuestion" user="11-09-20sUser156">do  your boobs  hang  low  do they  <terminals>
+				<t pos="VB" word="do"/>
+				<t pos="PRP$" word="your"/>
+				<t pos="NNS" word="boobs"/>
+				<t pos="VBP" word="hang"/>
+				<t pos="JJ" word="low"/>
+				<t pos="VBP" word="do"/>
+				<t pos="PRP" word="they"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser158">anytime 11-09-20sUser144<terminals>
+				<t pos="RB" word="anytime"/>
+				<t pos="NNP" word="11-09-20sUser144"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser167">PART<terminals>
+				<t pos="VB" word="PART"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser168">(__I__) just for you 11-09-20sUser89<terminals>
+				<t pos="UH" word="(__I__)"/>
+				<t pos="RB" word="just"/>
+				<t pos="IN" word="for"/>
+				<t pos="PRP" word="you"/>
+				<t pos="NNP" word="11-09-20sUser89"/>
+			</terminals>
+		</Post>
+		<Post class="Emotion" user="11-09-20sUser89">o0<terminals>
+				<t pos="UH" word="o0"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser144">.ACTION watches CSI.<terminals>
+				<t pos="SYM" word="."/>
+				<t pos="NN" word="ACTION"/>
+				<t pos="VBZ" word="watches"/>
+				<t pos="UH" word="CSI"/>
+				<t pos="." word="."/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser178">JOIN<terminals>
+				<t pos="VB" word="JOIN"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser158">11-09-20sUser175 is pretty<terminals>
+				<t pos="NNP" word="11-09-20sUser175"/>
+				<t pos="VBZ" word="is"/>
+				<t pos="JJ" word="pretty"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser89">11-09-20sUser168 flashed me<terminals>
+				<t pos="NNP" word="11-09-20sUser168"/>
+				<t pos="VBD" word="flashed"/>
+				<t pos="PRP" word="me"/>
+			</terminals>
+		</Post>
+		<Post class="whQuestion" user="11-09-20sUser143">which island are u headed to 11-09-20sUser40?<terminals>
+				<t pos="WDT" word="which"/>
+				<t pos="NN" word="island"/>
+				<t pos="VBP" word="are"/>
+				<t pos="PRP" word="u"/>
+				<t pos="VBD" word="headed"/>
+				<t pos="TO" word="to"/>
+				<t pos="NNP" word="11-09-20sUser40"/>
+				<t pos="." word="?"/>
+			</terminals>
+		</Post>
+		<Post class="ynQuestion" user="11-09-20sUser34">ok question number 3 ..How big is yr dik?  lol not really...... ar you married <terminals>
+				<t pos="UH" word="ok"/>
+				<t pos="NN" word="question"/>
+				<t pos="NN" word="number"/>
+				<t pos="CD" word="3"/>
+				<t pos=":" word=".."/>
+				<t pos="WRB" word="How"/>
+				<t pos="JJ" word="big"/>
+				<t pos="VBZ" word="is"/>
+				<t pos="PRP$" word="yr"/>
+				<t pos="^NN" word="dik"/>
+				<t pos="." word="?"/>
+				<t pos="UH" word="lol"/>
+				<t pos="RB" word="not"/>
+				<t pos="RB" word="really"/>
+				<t pos=":" word="......"/>
+				<t pos="^VBP" word="ar"/>
+				<t pos="PRP" word="you"/>
+				<t pos="JJ" word="married"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser168">( o Y o )<terminals>
+				<t pos="UH" word="( o Y o )"/>
+			</terminals>
+		</Post>
+		<Post class="nAnswer" user="11-09-20sUser158">no divorced and it is small<terminals>
+				<t pos="UH" word="no"/>
+				<t pos="JJ" word="divorced"/>
+				<t pos="CC" word="and"/>
+				<t pos="PRP" word="it"/>
+				<t pos="VBZ" word="is"/>
+				<t pos="JJ" word="small"/>
+			</terminals>
+		</Post>
+		<Post class="Emotion" user="11-09-20sUser34">lol<terminals>
+				<t pos="UH" word="lol"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser168">again for you 11-09-20sUser89<terminals>
+				<t pos="RB" word="again"/>
+				<t pos="IN" word="for"/>
+				<t pos="PRP" word="you"/>
+				<t pos="NNP" word="11-09-20sUser89"/>
+			</terminals>
+		</Post>
+		<Post class="Emotion" user="11-09-20sUser89">double o0<terminals>
+				<t pos="JJ" word="double"/>
+				<t pos="UH" word="o0"/>
+			</terminals>
+		</Post>
+		<Post class="Emotion" user="11-09-20sUser89">0o<terminals>
+				<t pos="CD" word="0"/>
+				<t pos="UH" word="o"/>
+			</terminals>
+		</Post>
+		<Post class="Emotion" user="11-09-20sUser89">0o<terminals>
+				<t pos="CD" word="0"/>
+				<t pos="UH" word="o"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser34">woohoo 11-09-20sUser168 nice<terminals>
+				<t pos="UH" word="woohoo"/>
+				<t pos="NNP" word="11-09-20sUser168"/>
+				<t pos="JJ" word="nice"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser168">.ACTION takes a bow.<terminals>
+				<t pos="SYM" word="."/>
+				<t pos="NN" word="ACTION"/>
+				<t pos="VBZ" word="takes"/>
+				<t pos="DT" word="a"/>
+				<t pos="NN" word="bow"/>
+				<t pos="." word="."/>
+			</terminals>
+		</Post>
+		<Post class="Greet" user="11-09-20sUser143">aloha to all!<terminals>
+				<t pos="UH" word="aloha"/>
+				<t pos="TO" word="to"/>
+				<t pos="DT" word="all"/>
+				<t pos="." word="!"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser34">11-09-20sUser156 ..question number 4: do you give up<terminals>
+				<t pos="NNP" word="11-09-20sUser156"/>
+				<t pos=":" word=".."/>
+				<t pos="NN" word="question"/>
+				<t pos="NN" word="number"/>
+				<t pos="IN" word="4"/>
+				<t pos=":" word=":"/>
+				<t pos="VBP" word="do"/>
+				<t pos="PRP" word="you"/>
+				<t pos="VBP" word="give"/>
+				<t pos="RP" word="up"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser109">!seen cool1024<terminals>
+				<t pos="SYM" word="!"/>
+				<t pos="VBN" word="seen"/>
+				<t pos="NNP" word="cool1024"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser94">I've never seen: cool1024.<terminals>
+				<t pos="PRP" word="I"/>
+				<t pos="VBP" word="&apos;ve"/>
+				<t pos="RB" word="never"/>
+				<t pos="VBN" word="seen"/>
+				<t pos=":" word=":"/>
+				<t pos="NNP" word="cool1024"/>
+				<t pos="." word="."/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser136">any girls wanna chat PM me<terminals>
+				<t pos="DT" word="any"/>
+				<t pos="NNS" word="girls"/>
+				<t pos="VBP" word="wanna"/>
+				<t pos="VB" word="chat"/>
+				<t pos="VB" word="PM"/>
+				<t pos="PRP" word="me"/>
+			</terminals>
+		</Post>
+		<Post class="ynQuestion" user="11-09-20sUser96">anybody here know how to play heartbreaker on the electric guitar?<terminals>
+				<t pos="NN" word="anybody"/>
+				<t pos="RB" word="here"/>
+				<t pos="VBP" word="know"/>
+				<t pos="WRB" word="how"/>
+				<t pos="TO" word="to"/>
+				<t pos="VB" word="play"/>
+				<t pos="NN" word="heartbreaker"/>
+				<t pos="IN" word="on"/>
+				<t pos="DT" word="the"/>
+				<t pos="JJ" word="electric"/>
+				<t pos="NN" word="guitar"/>
+				<t pos="." word="?"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser143">*breaks out a case up rum soaked pineapples*<terminals>
+				<t pos="SYM" word="*"/>
+				<t pos="VBZ" word="breaks"/>
+				<t pos="IN" word="out"/>
+				<t pos="DT" word="a"/>
+				<t pos="NN" word="case"/>
+				<t pos="^IN" word="up"/>
+				<t pos="NN" word="rum"/>
+				<t pos="JJ" word="soaked"/>
+				<t pos="NNS" word="pineapples"/>
+				<t pos="SYM" word="*"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser27">this morning when i was going to work i heard that my boss died so went in to work and told my coworkers that he died in a car wrek and nobody belive me <terminals>
+				<t pos="DT" word="this"/>
+				<t pos="NN" word="morning"/>
+				<t pos="WRB" word="when"/>
+				<t pos="PRP" word="i"/>
+				<t pos="VBD" word="was"/>
+				<t pos="VBG" word="going"/>
+				<t pos="TO" word="to"/>
+				<t pos="NN" word="work"/>
+				<t pos="PRP" word="i"/>
+				<t pos="VBD" word="heard"/>
+				<t pos="IN" word="that"/>
+				<t pos="PRP$" word="my"/>
+				<t pos="NN" word="boss"/>
+				<t pos="VBD" word="died"/>
+				<t pos="RB" word="so"/>
+				<t pos="VBD" word="went"/>
+				<t pos="IN" word="in"/>
+				<t pos="TO" word="to"/>
+				<t pos="NN" word="work"/>
+				<t pos="CC" word="and"/>
+				<t pos="VBD" word="told"/>
+				<t pos="PRP$" word="my"/>
+				<t pos="NNS" word="coworkers"/>
+				<t pos="IN" word="that"/>
+				<t pos="PRP" word="he"/>
+				<t pos="VBD" word="died"/>
+				<t pos="IN" word="in"/>
+				<t pos="DT" word="a"/>
+				<t pos="NN" word="car"/>
+				<t pos="^NN" word="wrek"/>
+				<t pos="CC" word="and"/>
+				<t pos="NN" word="nobody"/>
+				<t pos="^VBP" word="belive"/>
+				<t pos="PRP" word="me"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser89">.ACTION applaudes whilst shouting ''encore, encore''.<terminals>
+				<t pos="SYM" word="."/>
+				<t pos="NN" word="ACTION"/>
+				<t pos="^VBZ" word="applaudes"/>
+				<t pos="IN" word="whilst"/>
+				<t pos="VBG" word="shouting"/>
+				<t pos="&apos;&apos;" word="&apos;&apos;"/>
+				<t pos="UH" word="encore"/>
+				<t pos="," word=","/>
+				<t pos="UH" word="encore"/>
+				<t pos="&apos;&apos;" word="&apos;&apos;"/>
+				<t pos="." word="."/>
+			</terminals>
+		</Post>
+		<Post class="yAnswer" user="11-09-20sUser158">yes I give p I told you I suck at guessing<terminals>
+				<t pos="UH" word="yes"/>
+				<t pos="PRP" word="I"/>
+				<t pos="VBP" word="give"/>
+				<t pos="^RP" word="p"/>
+				<t pos="PRP" word="I"/>
+				<t pos="VBD" word="told"/>
+				<t pos="PRP" word="you"/>
+				<t pos="PRP" word="I"/>
+				<t pos="VBP" word="suck"/>
+				<t pos="IN" word="at"/>
+				<t pos="VBG" word="guessing"/>
+			</terminals>
+		</Post>
+		<Post class="Greet" user="11-09-20sUser176">hi all<terminals>
+				<t pos="UH" word="hi"/>
+				<t pos="DT" word="all"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser34">i told you sucking is a goodthing<terminals>
+				<t pos="PRP" word="i"/>
+				<t pos="VBD" word="told"/>
+				<t pos="PRP" word="you"/>
+				<t pos="VBG" word="sucking"/>
+				<t pos="VBZ" word="is"/>
+				<t pos="DT" word="a"/>
+				<t pos="JJ" word="good"/>
+				<t pos="NN" word="thing"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser42">PART<terminals>
+				<t pos="VB" word="PART"/>
+			</terminals>
+		</Post>
+		<Post class="Emotion" user="11-09-20sUser34">haha<terminals>
+				<t pos="UH" word="haha"/>
+			</terminals>
+		</Post>
+		<Post class="Emotion" user="11-09-20sUser158">lol<terminals>
+				<t pos="UH" word="lol"/>
+			</terminals>
+		</Post>
+		<Post class="Emotion" user="11-09-20sUser89">lol<terminals>
+				<t pos="UH" word="lol"/>
+			</terminals>
+		</Post>
+		<Post class="Greet" user="11-09-20sUser87">mornign people<terminals>
+				<t pos="^UH" word="mornign"/>
+				<t pos="NNS" word="people"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser89">11-09-20sUser34 you dirrrrty girl<terminals>
+				<t pos="NNP" word="11-09-20sUser34"/>
+				<t pos="PRP" word="you"/>
+				<t pos="^JJ" word="dirrrrty"/>
+				<t pos="NN" word="girl"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser179">JOIN<terminals>
+				<t pos="VB" word="JOIN"/>
+			</terminals>
+		</Post>
+		<Post class="Greet" user="11-09-20sUser34">morning 11-09-20sUser87<terminals>
+				<t pos="UH" word="morning"/>
+				<t pos="NNP" word="11-09-20sUser87"/>
+			</terminals>
+		</Post>
+		<Post class="whQuestion" user="11-09-20sUser89">innit?<terminals>
+				<t pos="UH" word="innit"/>
+				<t pos="." word="?"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser87">NICK :11-09-20sUser87<terminals>
+				<t pos="NN" word="NICK"/>
+				<t pos=":" word=":"/>
+				<t pos="NNP" word="11-09-20sUser87"/>
+			</terminals>
+		</Post>
+		<Post class="Greet" user="11-09-20sUser158">mornin 11-09-20sUser87 but its night<terminals>
+				<t pos="UH" word="mornin"/>
+				<t pos="NNP" word="11-09-20sUser87"/>
+				<t pos="CC" word="but"/>
+				<t pos="PRP" word="its"/>
+				<t pos="NN" word="night"/>
+			</terminals>
+		</Post>
+		<Post class="Emotion" user="11-09-20sUser34">lol<terminals>
+				<t pos="UH" word="lol"/>
+			</terminals>
+		</Post>
+		<Post class="Greet" user="11-09-20sUser143">aloha 11-09-20sUser87<terminals>
+				<t pos="UH" word="aloha"/>
+				<t pos="NNP" word="11-09-20sUser87"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser140">PART<terminals>
+				<t pos="VB" word="PART"/>
+			</terminals>
+		</Post>
+		<Post class="Greet" user="11-09-20sUser96">morning 11-09-20sUser87<terminals>
+				<t pos="UH" word="morning"/>
+				<t pos="NNP" word="11-09-20sUser87"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser87">pfft i just got up .. its morning<terminals>
+				<t pos="UH" word="pfft"/>
+				<t pos="PRP" word="i"/>
+				<t pos="RB" word="just"/>
+				<t pos="VBD" word="got"/>
+				<t pos="RP" word="up"/>
+				<t pos=":" word=".."/>
+				<t pos="PRP" word="its"/>
+				<t pos="NN" word="morning"/>
+			</terminals>
+		</Post>
+		<Post class="Accept" user="11-09-20sUser34">yes it night!!!!<terminals>
+				<t pos="UH" word="yes"/>
+				<t pos="PRP" word="it"/>
+				<t pos="NN" word="night"/>
+				<t pos="." word="!!!!"/>
+			</terminals>
+		</Post>
+		<Post class="Greet" user="11-09-20sUser87">aloha<terminals>
+				<t pos="UH" word="aloha"/>
+			</terminals>
+		</Post>
+		<Post class="Greet" user="11-09-20sUser87">morning<terminals>
+				<t pos="UH" word="morning"/>
+			</terminals>
+		</Post>
+		<Post class="Greet" user="11-09-20sUser87">ciao<terminals>
+				<t pos="UH" word="ciao"/>
+			</terminals>
+		</Post>
+		<Post class="Greet" user="11-09-20sUser89">hello eskimo woman<terminals>
+				<t pos="UH" word="hello"/>
+				<t pos="NNP" word="eskimo"/>
+				<t pos="NNP" word="woman"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser87">whatever else it is to you people<terminals>
+				<t pos="WDT" word="whatever"/>
+				<t pos="RB" word="else"/>
+				<t pos="PRP" word="it"/>
+				<t pos="VBZ" word="is"/>
+				<t pos="TO" word="to"/>
+				<t pos="PRP" word="you"/>
+				<t pos="NNS" word="people"/>
+			</terminals>
+		</Post>
+		<Post class="Reject" user="11-09-20sUser87">lol im not eskimo<terminals>
+				<t pos="UH" word="lol"/>
+				<t pos="PRP" word="im"/>
+				<t pos="RB" word="not"/>
+				<t pos="NN" word="eskimo"/>
+			</terminals>
+		</Post>
+		<Post class="Emotion" user="11-09-20sUser144">Lol 11-09-20sUser87<terminals>
+				<t pos="UH" word="Lol"/>
+				<t pos="NNP" word="11-09-20sUser87"/>
+			</terminals>
+		</Post>
+		<Post class="Emotion" user="11-09-20sUser96">lol<terminals>
+				<t pos="UH" word="lol"/>
+			</terminals>
+		</Post>
+		<Post class="ynQuestion" user="11-09-20sUser12">ANY ONE WANNA CHAT WITH A 23 FEMALE FROM VIRGINIA IM SINGLEEEEEEEE<terminals>
+				<t pos="DT" word="ANY"/>
+				<t pos="NN" word="ONE"/>
+				<t pos="VBP" word="WANNA"/>
+				<t pos="VB" word="CHAT"/>
+				<t pos="IN" word="WITH"/>
+				<t pos="NNP" word="A"/>
+				<t pos="CD" word="23"/>
+				<t pos="NN" word="FEMALE"/>
+				<t pos="IN" word="FROM"/>
+				<t pos="NNP" word="VIRGINIA"/>
+				<t pos="PRP" word="IM"/>
+				<t pos="^JJ" word="SINGLEEEEEEEE"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser34">cold tho<terminals>
+				<t pos="JJ" word="cold"/>
+				<t pos="RB" word="tho"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser89">i know but i just get a cheap thrill from teasing<terminals>
+				<t pos="PRP" word="i"/>
+				<t pos="VBP" word="know"/>
+				<t pos="CC" word="but"/>
+				<t pos="PRP" word="i"/>
+				<t pos="RB" word="just"/>
+				<t pos="VBP" word="get"/>
+				<t pos="DT" word="a"/>
+				<t pos="JJ" word="cheap"/>
+				<t pos="NN" word="thrill"/>
+				<t pos="IN" word="from"/>
+				<t pos="VBG" word="teasing"/>
+			</terminals>
+		</Post>
+		<Post class="Greet" user="11-09-20sUser41">still morning here so morning 11-09-20sUser87!!<terminals>
+				<t pos="RB" word="still"/>
+				<t pos="NN" word="morning"/>
+				<t pos="RB" word="here"/>
+				<t pos="IN" word="so"/>
+				<t pos="UH" word="morning"/>
+				<t pos="NNP" word="11-09-20sUser87"/>
+				<t pos="." word="!!"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser89">duh<terminals>
+				<t pos="UH" word="duh"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser180">JOIN<terminals>
+				<t pos="VB" word="JOIN"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser87">.wz 99703<terminals>
+				<t pos="SYM" word="."/>
+				<t pos="NN" word="wz"/>
+				<t pos="CD" word="99703"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser94"> .Fort Wainwright, Alaska. -- 3.  2:55 PM AKST<terminals>
+				<t pos="SYM" word="."/>
+				<t pos="NNP" word="Fort"/>
+				<t pos="NNP" word="Wainwright"/>
+				<t pos="," word=","/>
+				<t pos="NNP" word="Alaska"/>
+				<t pos="." word="."/>
+				<t pos=":" word="--"/>
+				<t pos="CD" word="3"/>
+				<t pos="." word="."/>
+				<t pos="CD" word="2:55"/>
+				<t pos="JJ" word="PM"/>
+				<t pos="NNP" word="AKST"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser94"> .Temp.  -6F/-21C    .Humidity:. 85%    <terminals>
+				<t pos="SYM" word="."/>
+				<t pos="NN" word="Temp."/>
+				<t pos="CD" word="-6"/>
+				<t pos="NN" word="F"/>
+				<t pos="CC" word="/"/>
+				<t pos="CD" word="-21"/>
+				<t pos="NN" word="C"/>
+				<t pos="." word="."/>
+				<t pos="NN" word="Humidity"/>
+				<t pos=":" word=":."/>
+				<t pos="CD" word="85%"/>
+			</terminals>
+		</Post>
+		<Post class="Greet" user="11-09-20sUser87">morning<terminals>
+				<t pos="UH" word="morning"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser89">gotta get my kicks where i can<terminals>
+				<t pos="VBD" word="gotta"/>
+				<t pos="VB" word="get"/>
+				<t pos="PRP$" word="my"/>
+				<t pos="NNS" word="kicks"/>
+				<t pos="WRB" word="where"/>
+				<t pos="PRP" word="i"/>
+				<t pos="MD" word="can"/>
+			</terminals>
+		</Post>
+		<Post class="Greet" user="11-09-20sUser143">aloha 11-09-20sUser12<terminals>
+				<t pos="UH" word="aloha"/>
+				<t pos="NNP" word="11-09-20sUser12"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser87">wow it got warm<terminals>
+				<t pos="UH" word="wow"/>
+				<t pos="PRP" word="it"/>
+				<t pos="VBD" word="got"/>
+				<t pos="JJ" word="warm"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser12">soory<terminals>
+				<t pos="^JJ" word="soory"/>
+			</terminals>
+		</Post>
+		<Post class="Greet" user="11-09-20sUser27">hi 11-09-20sUser12<terminals>
+				<t pos="UH" word="hi"/>
+				<t pos="NNP" word="11-09-20sUser12"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser144">PART<terminals>
+				<t pos="VB" word="PART"/>
+			</terminals>
+		</Post>
+		<Post class="Statement" user="11-09-20sUser87">i know 11-09-20sUser89<terminals>
+				<t pos="PRP" word="i"/>
+				<t pos="VBP" word="know"/>
+				<t pos="NNP" word="11-09-20sUser89"/>
+			</terminals>
+		</Post>
+		<Post class="whQuestion" user="11-09-20sUser158">it got warm?<terminals>
+				<t pos="PRP" word="it"/>
+				<t pos="VBD" word="got"/>
+				<t pos="JJ" word="warm"/>
+				<t pos="." word="?"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser34">.ACTION kicks 11-09-20sUser89 there you go sweet heart.<terminals>
+				<t pos="SYM" word="."/>
+				<t pos="NN" word="ACTION"/>
+				<t pos="VBZ" word="kicks"/>
+				<t pos="NNP" word="11-09-20sUser89"/>
+				<t pos="RB" word="there"/>
+				<t pos="PRP" word="you"/>
+				<t pos="VBP" word="go"/>
+				<t pos="JJ" word="sweet"/>
+				<t pos="NN" word="heart"/>
+				<t pos="." word="."/>
+			</terminals>
+		</Post>
+		<Post class="Accept" user="11-09-20sUser18">ok<terminals>
+				<t pos="UH" word="ok"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser171">.wz 92129<terminals>
+				<t pos="SYM" word="."/>
+				<t pos="NN" word="wz"/>
+				<t pos="CD" word="92129"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser94"> .San Diego, California. -- 4.  4:03 PM PST<terminals>
+				<t pos="SYM" word="."/>
+				<t pos="NNP" word="San"/>
+				<t pos="NNP" word="Diego"/>
+				<t pos="," word=","/>
+				<t pos="NNP" word="California"/>
+				<t pos="." word="."/>
+				<t pos=":" word="--"/>
+				<t pos="CD" word="4"/>
+				<t pos="." word="."/>
+				<t pos="CD" word="4:03"/>
+				<t pos="JJ" word="PM"/>
+				<t pos="NNP" word="PST"/>
+			</terminals>
+		</Post>
+		<Post class="System" user="11-09-20sUser94"> .Temp. 73%    <terminals>
+				<t pos="SYM" word="."/>
+				<t pos="NN" word="Temp."/>
+				<t pos="CD" word="73%"/>
+			</terminals>
+		</Post>
+		<Post class="ynQuestion" user="11-09-20sUser112">-17 is warm???<terminals>
+				<t pos="CD" word="-17"/>
+				<t pos="VBZ" word="is"/>
+				<t pos="JJ" word="warm"/>
+				<t pos="." word="???"/>
+			</terminals>
+		</Post>
+	</Posts>
+</Session>
