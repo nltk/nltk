@@ -64,7 +64,7 @@ class Mace(Prover9Parent, ModelBuilderI):
                     values = [int(v.strip()) for v in l[l.index('[')+1:l.index(']')].split(',')]
                     d[name] = Mace._make_model_dict(num_entities, values)
                     
-            valuation = Valuation(d)
+            valuation = Valuation(d.items())
         return valuation
         
     def _make_model_dict(num_entities, values):
