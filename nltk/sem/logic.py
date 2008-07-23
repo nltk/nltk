@@ -159,6 +159,8 @@ class Expression(SubstituteBindingsI):
         for var in expr.free():
             if var in bindings:
                 val = bindings[var]
+                if isinstance(val, Variable):
+                    val = VariableExpression(val)
                 if not isinstance(val, Expression):
                     raise ValueError('Can not substitute a non-expresion '
                                      'value into an expression: %r' % val)
@@ -826,12 +828,6 @@ def is_indvar(expr):
     assert isinstance(expr, str)
     return expr[0].isalpha() and expr[0].islower() and \
             (len(expr) == 1 or expr[1:].isdigit())
-
-
-###############################
-#TODO: DELETE
-################################
-class Operator: pass
 
 
 def demo():

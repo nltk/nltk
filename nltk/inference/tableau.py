@@ -262,7 +262,8 @@ def _attempt_proof_atom(current, agenda, accessible_vars, atoms, debug=(False, 0
 
     #mark all AllExpressions as 'not exhausted' into the agenda since we are (potentially) adding new accessible vars
     agenda.mark_alls_fresh();
-    return _attempt_proof(agenda, accessible_vars|set([current.argument]), atoms|set([(current, False)]), (debug[0], debug[1]+1)) 
+    args = current.uncurry()[1]
+    return _attempt_proof(agenda, accessible_vars|set(args), atoms|set([(current, False)]), (debug[0], debug[1]+1)) 
     
 def _attempt_proof_n_atom(current, agenda, accessible_vars, atoms, debug=(False, 0)):
     # Check if the branch is closed.  Return 'True' if it is
@@ -272,7 +273,8 @@ def _attempt_proof_n_atom(current, agenda, accessible_vars, atoms, debug=(False,
 
     #mark all AllExpressions as 'not exhausted' into the agenda since we are (potentially) adding new accessible vars
     agenda.mark_alls_fresh();
-    return _attempt_proof(agenda, accessible_vars|set([current.term.argument]), atoms|set([(current.term, True)]), (debug[0], debug[1]+1)) 
+    args = current.term.uncurry()[1]
+    return _attempt_proof(agenda, accessible_vars|set(args), atoms|set([(current.term, True)]), (debug[0], debug[1]+1)) 
     
 def _attempt_proof_n_eq(current, agenda, accessible_vars, atoms, debug=(False, 0)):
     ###########################################################################
@@ -452,11 +454,11 @@ def testTableau():
     c = LogicParser().parse(r'some y.walks(y)')
     print '%s, %s |- %s: %s' % (p1, p2, c, Tableau(c, [p1,p2]).prove())
     
-    p = LogicParser().parse(r'((x = y) and walks(y))')
+    p = LogicParser().parse(r'((x = y) & walks(y))')
     c = LogicParser().parse(r'walks(x)')
     print '%s |- %s: %s' % (p, c, Tableau(c, [p]).prove())
     
-    p = LogicParser().parse(r'((x = y) and ((y = z) and (z = w)))')
+    p = LogicParser().parse(r'((x = y) & ((y = z) & (z = w)))')
     c = LogicParser().parse(r'(x = w)')
     print '%s |- %s: %s' % (p, c, Tableau(c, [p]).prove())
     
@@ -464,6 +466,9 @@ def testTableau():
     c = LogicParser().parse(r'some e0.walk(e0,mary)')
     print '%s |- %s: %s' % (p, c, Tableau(c, [p]).prove())
     
+    c = LogicParser().parse(r'(exists x.exists z3.((x = Mary) & ((z3 = John) & sees(z3,x))) <-> exists x.exists z4.((x = John) & ((z4 = Mary) & sees(x,z4))))')
+    print '|- %s: %s' % (c, Tableau(c, []).prove())
+
 #    p = LogicParser().parse(r'some e1.some e2.((believe e1 john e2) and (walk e2 mary))')
 #    c = LogicParser().parse(r'some x.some e3.some e4.((believe e3 x e4) and (walk e4 mary))')
 #    print '%s |- %s: %s' % (p, c, Tableau(c,[p]).prove())
