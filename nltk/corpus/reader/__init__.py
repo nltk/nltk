@@ -34,6 +34,7 @@ from nltk.corpus.reader.string_category import *
 from nltk.corpus.reader.propbank import *
 from nltk.corpus.reader.verbnet import *
 from nltk.corpus.reader.bnc import *
+from nltk.corpus.reader.nps_chat import *
 
 # Make sure that nltk.corpus.reader.bracket_parse gives the module, not
 # the function bracket_parse() defined in nltk.tree:
@@ -58,4 +59,5 @@ __all__ = [
     'tagged_treebank_para_block_reader',
     'PropbankCorpusReader', 'VerbnetCorpusReader',
     'BNCCorpusReader', 'ConllCorpusReader',
+    'NPSChatCorpusReader',
 ]
