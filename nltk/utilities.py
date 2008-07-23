@@ -337,6 +337,60 @@ def clean_url(url):
    html = urlopen(url).read()
    return clean_html(html)
 
+##########################################################################
+# Ngram iteration
+##########################################################################
+
+def ngram(sequence, n):
+    """
+    A utility that produces a sequence of ngrams from a sequence of items.
+    For example:
+    
+    >>> ngram([1,2,3,4,5], 3)
+    [(1, 2, 3), (2, 3, 4), (3, 4, 5)]
+    
+    Use ingram for an iterator version of this function.
+
+    @param sequence: the source data to be converted into ngrams
+    @type sequence: C{sequence} or C{iterator}
+    @param n: the degree of the ngram
+    @type n: C{int}
+    @return: The ngrams
+    @rtype: C{list} of C{tuple}s
+    """
+
+    count = max(0, len(list(sequence)) - n + 1)
+    return [tuple(sequence[i:i+n]) for i in range(count)]
+
+def ingram(sequence, n):
+    """
+    A utility that produces an iterator over ngrams generated from a sequence of items.
+    
+    For example:
+    
+    >>> list(ingram([1,2,3,4,5], 3))
+    [(1, 2, 3), (2, 3, 4), (3, 4, 5)]
+    
+    Use ngram for a list version of this function.
+
+    @param sequence: the source data to be converted into ngrams
+    @type sequence: C{sequence} or C{iterator}
+    @param n: the degree of the ngram
+    @type n: C{int}
+    @return: The ngrams
+    @rtype: C{iterator} of C{tuple}s
+        """
+
+    sequence = iter(sequence)
+    history = []
+    while n > 1:
+        history.append(sequence.next())
+        n -= 1
+    for item in sequence:
+        history.append(item)
+        yield tuple(history)
+        del history[0]
+
 ######################################################################
 # Lazy Sequences
 ######################################################################
@@ -505,8 +559,8 @@ class AbstractLazySequence(object):
 class LazySubsequence(AbstractLazySequence):
     """
     A subsequence produced by slicing a lazy sequence.  This slice
-    keeps a reference to it source sequence, and generates its values
-    by looking them up in the source sequenc.
+    keeps a reference to its source sequence, and generates its values
+    by looking them up in the source sequence.
     """
 
     MIN_SIZE = 100

@@ -49,11 +49,11 @@ class FreqDist(dict):
     """
     A frequency distribution for the outcomes of an experiment.  A
     frequency distribution records the number of times each outcome of
-    an experiment has occured.  For example, a frequency distribution
+    an experiment has occurred.  For example, a frequency distribution
     could be used to record the frequency of each word type in a
     document.  Formally, a frequency distribution can be defined as a
     function mapping from each sample to the number of times that
-    sample occured as an outcome.
+    sample occurred as an outcome.
 
     Frequency distributions are generally constructed by running a
     number of experiments, and incrementing the count for a sample
@@ -222,7 +222,7 @@ class FreqDist(dict):
         Return the sample with the greatest number of outcomes in this
         frequency distribution.  If two or more samples have the same
         number of outcomes, return one of them; which sample is
-        returned is undefined.  If no outcomes have occured in this
+        returned is undefined.  If no outcomes have occurred in this
         frequency distribution, return C{None}.
 
         @return: The sample with the maximum number of outcomes in this
@@ -1164,7 +1164,7 @@ class ConditionalFreqDist(object):
     A collection of frequency distributions for a single experiment
     run under different conditions.  Conditional frequency
     distributions are used to record the number of times each sample
-    occured, given the condition under which the experiment was run.
+    occurred, given the condition under which the experiment was run.
     For example, a conditional frequency distribution could be used to
     record the frequency of each word (type) in a document, given its
     length.  Formally, a conditional frequency distribution can be
