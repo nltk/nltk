@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 from hadooplib.mapper import MapperBase
-from hadooplib.inputformat import KeyValueInput
+from hadooplib.outputcollector import LineOutput
 
 class NameMapper(MapperBase):
 	"""
@@ -10,7 +10,7 @@ class NameMapper(MapperBase):
 	e.g. Adam -> Adam, A
 	"""
 
-	def map(self, key, value, outputcollector):
+	def map(self, key, value, outputcollector = LineOutput):
 		outputcollector.collect(value.strip(), value[0])
 
 if __name__ == "__main__":
