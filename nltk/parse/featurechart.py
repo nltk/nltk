@@ -429,12 +429,12 @@ class InstantiateVarsChart(Chart):
     
     counter = Counter(100)
     def inst_vars(self, edge):
-        return dict((var, self.unique_variable())
+        return dict((var, self.unique_variable(self.counter))
                     for var in edge.lhs().variables()
                     if var.name.startswith('@'))
 
-    def unique_variable(self):
-        return logic.IndividualVariableExpression('z%s' % logic._counter.get())
+    def unique_variable(self, counter):
+        return Variable('z%s' % counter.get())
 
 #////////////////////////////////////////////////////////////
 # Demo
