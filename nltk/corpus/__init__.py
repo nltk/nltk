@@ -95,6 +95,8 @@ gutenberg = LazyCorpusLoader(
     'gutenberg', GutenbergCorpusReader, r'(?!\.svn).*\.txt')
 ieer = LazyCorpusLoader(
     'ieer', IEERCorpusReader, r'(?!README|\.svn).*')
+nps_chat = LazyCorpusLoader(
+    'nps_chat', NPSChatCorpusReader, r'(?!README|\.svn).*')
 inaugural = LazyCorpusLoader(
     'inaugural', PlaintextCorpusReader, r'(?!\.svn).*\.txt')
 # [XX] This should probably just use TaggedCorpusReader:
