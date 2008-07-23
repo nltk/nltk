@@ -8,6 +8,7 @@
 import random
 
 from nltk.probability import ConditionalProbDist, ConditionalFreqDist, MLEProbDist
+from nltk.utilities import ingram
 
 from api import *
 
@@ -38,10 +39,8 @@ class NgramModel(ModelI):
             estimator = lambda fdist, bins: MLEProbDist(fdist)
 
         cfd = ConditionalFreqDist()
-        for i in range(self._n - 1, len(train)):
-            context = tuple(train[i - self._n + 1, i - 1])
-            token = train[i - 1]
-            cfd[context].inc(token)
+        for ngram in ingram(train, n):
+            cfd[ngram[:-1]].inc(ngram[-1])
 
         self._model = ConditionalProbDist(cfd, estimator, False, len(cfd))
 
