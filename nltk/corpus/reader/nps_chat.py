@@ -1,7 +1,7 @@
 # Natural Language Toolkit: NPS Chat Corpus Reader
 #
 # Copyright (C) 2001-2008 University of Pennsylvania
-# Author: Steven Bird <sb@csse.unimelb.edu.au>
+# Author: Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
@@ -51,12 +51,3 @@ class NPSChatCorpusReader(XMLCorpusReader):
         
     def _elt_to_tagged_words(self, elt, handler):
         return [(t.attrib['word'], t.attrib['pos']) for t in elt.findall('t')]
-        
-# Example post:
-# <Post class="Greet" user="10-19-20sUser59">hey everyone
-#   <terminals>
-#     <t pos="UH" word="hey"/>
-#     <t pos="NN" word="everyone"/>
-#   </terminals>
-# </Post>
-# to [hey/UH everyone/NN] -> tagged_sents(), tagged_words(), sents(), words()
