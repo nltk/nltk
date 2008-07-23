@@ -265,6 +265,7 @@ class CategorySearchModel:
         def processed_query(self):
             new = []
             for term in self.model.query.split():
+                term = re.sub(r'\.', r'[^/ ]', term)
                 if re.match('[A-Z]+$', term):
                     new.append(BOUNDARY + WORD_OR_TAG + '/' + term + BOUNDARY)
                 elif '/' in term:
@@ -277,3 +278,5 @@ def demo():
     d = CategorySearchView()
     d.mainloop()
         
+if __name__ == '__main__':
+    demo()
