@@ -824,10 +824,11 @@ def is_indvar(expr):
     @param expr: C{str}
     @return: C{boolean} True if expr is of the correct form 
     """
-    assert isinstance(expr, str)
-    return expr[0].isalpha() and expr[0].islower() and \
+    try:
+        return expr[0].isalpha() and expr[0].islower() and \
             (len(expr) == 1 or expr[1:].isdigit())
-
+    except TypeError:
+        return False
 
 def demo():
     lp = LogicParser()

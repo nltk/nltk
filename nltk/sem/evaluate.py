@@ -26,7 +26,7 @@ from logic import *
 
 class Error(Exception): pass
 
-class Undefined(Error): pass
+class Undefined(Error):  pass
 
 def trace(f, *args, **kw):
     argspec = inspect.getargspec(f)
@@ -37,7 +37,7 @@ def trace(f, *args, **kw):
             print "%s => %s" % item
     return f(*args, **kw)
         
-def isrel(s):
+def is_rel(s):
     """
     Check whether a set represents a relation (of any arity).
 
@@ -54,7 +54,7 @@ def isrel(s):
     else:
         raise ValueError, "Set %r contains sequences of different lengths" % s
 
-def inds2tuples(s):
+def set2rel(s):
     """
     Convert a set containing individuals (strings or numbers) into a set of 
     unary tuples. Any tuples of strings already in the set are passed through 
@@ -92,17 +92,34 @@ def app(rel, arg, trace=False):
     """
     Apply a relation (as set of tuples) to an argument.
     
+    If C{rel} has arity n <= 1, then C{app} returns a Boolean value.
+    If If C{rel} has arity n > 1, then C{app} returns a relation of arity n-1.
+    
     @type rel: C{set} of C{tuple}s
     @param arg: any appropriate semantic argument
     @rtype: C{bool} or a C{set} of C{tuple}s
     """
+    assert is_rel(rel)
     reduced = set([tup[1:] for tup in rel if tup[0] == arg])
     if arity(rel) <= 1:
         return bool(len(reduced))
     else:
         return reduced
 
-
+def make_VariableExpression(var):
+    """
+    Convert a string into an instance of L{VariableExpression}
+    
+    @type var: C{str}
+    @rtype: C{VariableExpression} or C{IndividualVariableExpression}
+    """
+    
+    variable = Variable(var)
+    if is_indvar(var):
+        return IndividualVariableExpression(variable)
+    else:
+        return VariableExpression(variable)
+        
 class Valuation(dict):
     """
     A dictionary which represents a model-theoretic Valuation of non-logical constants.
@@ -123,7 +140,7 @@ class Valuation(dict):
             if isinstance(val, str) or isinstance(val, bool):
                 self[sym] = val
             elif isinstance(val, set):
-                self[sym] = inds2tuples(val)
+                self[sym] = set2rel(val)
 
     def __getitem__(self, key):
         if key in self:
@@ -175,7 +192,7 @@ class Assignment(dict):
     module. If a variable is not assigned a value by M{g}, it will raise
     an C{Undefined} exception.
     """
-    def __init__(self, domain, assignment=None):
+    def __init__(self, domain, iter=None):
         """
         @param domain: the domain of discourse
         @type domain: C{set}
@@ -184,14 +201,13 @@ class Assignment(dict):
         """
         dict.__init__(self)
         self.domain = domain
-        if assignment:
-            for var in assignment.keys():
-                val = assignment[var]
+        if iter:
+            for (var, val) in iter:
                 assert val in self.domain,\
                        "'%s' is not in the domain: %s" % (val, self.domain)
                 assert is_indvar(var),\
                        "Wrong format for an Individual Variable: '%s'" % var
-            self.update(assignment)
+                self[var] = val
         self._addvariant()
 
     def __getitem__(self, key):
@@ -240,19 +256,19 @@ class Assignment(dict):
         self.variant = list
         return None
 
-    def add(self, val, var):
+    def add(self, var, val):
         """
         Add a new variable-value pair to the assignment, and update
         C{self.variant}.
 
-        We write the arguments in the order 'val, var' by analogy with the
-        notation 'g[u/x]'.
         """
         assert val in self.domain,\
                "%s is not in the domain %s" % (val, self.domain)
-        assert isinstance(var, IndividualVariableExpression),\
+        #assert isinstance(var, IndividualVariableExpression),\
+        assert is_indvar(var),\
                "Wrong format for an Individual Variable: '%s'" % var
-        self[var.variable.name] = val
+        #self[var.variable.name] = val
+        self[var] = val
         self._addvariant()
         return self
 
@@ -381,7 +397,10 @@ class Model(object):
         if isinstance(parsed, ApplicationExpression):
             argval = self.satisfy(parsed.argument, g) 
             funval = self.satisfy(parsed.function, g)
-            return app(funval, argval)
+            if isinstance(funval, dict):
+                return funval[argval]
+            else:
+                return app(funval, argval)
         elif isinstance(parsed, NegatedExpression):
             return not self.satisfy(parsed.term, g)
         elif isinstance(parsed, BooleanExpression):
@@ -394,14 +413,15 @@ class Model(object):
             return self.EXISTS(satisfiers)
         elif isinstance(parsed, LambdaExpression):
             cf = {}
-            varex = self.make_VariableExpression(parsed.variable)
+            #varex = self.make_VariableExpression(parsed.variable)
+            var = parsed.variable.name
             for u in self.domain:
-                val = self.satisfy(parsed.term, g.add(u, varex))
+                val = self.satisfy(parsed.term, g.add(var, u))
                 # NB the dict would be a lot smaller if we do this:
                 # if val: cf[u] = val
                 # But then need to deal with cases where f(a) should yield
                 # a function rather than just False.
-                cf[u] = val
+                if val: cf[u] = val
             return cf
         else:
             return self.i(parsed, g, trace)
@@ -446,27 +466,36 @@ class Model(object):
             #return g[expr]
         
  
-    def satisfiers(self, parsed, var, g, trace=None, nesting=0):
+    def satisfiers(self, parsed, varex, g, trace=None, nesting=0):
         """
         Generate the entities from the model's domain that satisfy an open formula.
 
-        @param parsed: the open formula
-        @param var: the relevant free variable in C{parsed}.
-        @param g: the variable assignment
-        @return: an iterator over the entities that satisfy C{parsed}.
+        @param parsed: an open formula
+        @type parsed: L{Expression}
+        @param varex: the relevant free individual variable in C{parsed}.
+        @type varex: C{VariableExpression} or C{str}
+        @param g: a variable assignment
+        @type g:  L{Assignment}
+        @return: a C{set} of the entities that satisfy C{parsed}.
         """
 
         spacer = '   '
         indent = spacer + (spacer * nesting)
         candidates = []
         
+        if isinstance(varex, str):
+            var = make_VariableExpression(varex).variable
+        else:
+            var = varex
+             
         if var in parsed.free():
             if trace:
                 print
                 print (spacer * nesting) + "Open formula is '%s' with assignment %s" % (parsed, g)
             for u in self.domain:
                 new_g = g.copy()
-                new_g.add(u, self.make_VariableExpression(var))
+                #new_g.add(u, self.make_VariableExpression(var))
+                new_g.add(var.name, u)
                 if trace > 1:
                     lowtrace = trace-1
                 else:
@@ -491,16 +520,12 @@ class Model(object):
             result = set(c for c in candidates)
         # var isn't free in parsed
         else:
-            raise Undefined, "%s is not free in %s" % (var, parsed)
+            raise Undefined, "%s is not free in %s" % (var.name, parsed)
 
         return result
 
 
-    def make_VariableExpression(self, variable):
-        if is_indvar(variable.name):
-            return IndividualVariableExpression(variable)
-        else:
-            return VariableExpression(variable)
+    
 
         
 #//////////////////////////////////////////////////////////////////////
@@ -508,7 +533,9 @@ class Model(object):
 #//////////////////////////////////////////////////////////////////////        
 # number of spacer chars
 mult = 30
-    
+
+# Demo 1: Propositional Logic
+#################
 def propdemo(trace=None):
     """Example of a propositional model."""
     
@@ -551,6 +578,9 @@ def propdemo(trace=None):
         else:
             print "The value of '%s' is: %s" % (sent, m1.evaluate(sent, g1))
 
+# Demo 2: FOL Model
+#############
+            
 def folmodel(trace=None):
     """Example of a first-order model."""
 
@@ -562,24 +592,30 @@ def folmodel(trace=None):
     val2 = Valuation(v2)
     dom2 = val2.domain
     m2 = Model(dom2, val2)
-    g2 = Assignment(dom2, {'x': 'b1', 'y': 'g2'})
+    g2 = Assignment(dom2, [('x', 'b1'), ('y', 'g2')])
 
     if trace:
         print "*" * mult
         print "Model m2\n", m2
         print "*" * mult
+        print g2
+        g2.purge()
+        print g2
         
     exprs = ['adam', 'girl', 'love', 'walks', 'x', 'y', 'z']
     lp = LogicParser()
-    parsed = [lp.parse(e) for e in exprs]
+    parsed_exprs = [lp.parse(e) for e in exprs]
     
     if trace:
-        for p in parsed:
+        for parsed in parsed_exprs:
             try:
-                print "The interpretation of '%s' in m2 is %s" % (p, m2.i(p, g2))
+                print "The interpretation of '%s' in m2 is %s" % (parsed, m2.i(parsed, g2))
             except Undefined:
-                print "The interpretation of '%s' in m2 is Undefined" % p
+                print "The interpretation of '%s' in m2 is Undefined" % parsed
     
+# Demo 3: FOL
+#########
+                
 def foldemo(trace=None):
     """
     Interpretation of closed expressions in a first-order model.
@@ -595,7 +631,10 @@ def foldemo(trace=None):
     'love (adam, betty)',
     '(adam = mia)',
     '\\x. (boy(x) | girl(x))',
+    '\\x. boy(x)(adam)',
     '\\x y. love(x, y)',
+    '\\x y. love(x, y)(adam)(betty)',
+    '\\x y. love(x, y)(adam, betty)',
     '\\x y. (boy(x) & love(x, y))',
     '\\x. exists y. (boy(x) & love(x, y))',
     'exists z1. boy(z1)',
@@ -613,12 +652,14 @@ def foldemo(trace=None):
     for fmla in formulas:
         g2.purge()
         if trace:
-            print
             m2.evaluate(fmla, g2, trace)
         else:
             print "The value of '%s' is: %s" % (fmla, m2.evaluate(fmla, g2))
 
-
+            
+# Demo 3: Satisfaction
+#############
+            
 def satdemo(trace=None):
     """Satisfiers of an open formula in a first order model."""
 
@@ -661,10 +702,9 @@ def satdemo(trace=None):
         
     parsed = [lp.parse(fmla) for fmla in formulas]
     
-    var = Variable('x')
     for p in parsed:
         g2.purge()
-        print "The satisfiers of '%s' are: %s" % (p, m2.satisfiers(p, var, g2, trace))
+        print "The satisfiers of '%s' are: %s" % (p, m2.satisfiers(p, 'x', g2, trace))
 
         
 def demo(num=0, trace=None):
@@ -691,5 +731,6 @@ def demo(num=0, trace=None):
         for num in demos:
             demos[num](trace=trace)
 
+            
 if __name__ == "__main__":
-    demo(5, trace=1)
+    demo(4, trace=1)
