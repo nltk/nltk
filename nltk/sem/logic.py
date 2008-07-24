@@ -72,6 +72,9 @@ class Variable(object):
         else:
             return 1
 
+    def substitute_bindings(self, bindings):
+        return bindings.get(self, self)
+
     def __hash__(self):
         return hash(self.name)
 
@@ -304,7 +307,7 @@ class VariableExpression(Expression):
             return self
     
     def variables(self):
-        return set()
+        return set([self.variable])
 
     def free(self):
         return set([self.variable])
@@ -315,17 +318,13 @@ class VariableExpression(Expression):
         return isinstance(other, VariableExpression) and \
                self.variable == other.variable
         
-    def substitute_bindings(self, bindings):
-        return bindings.get(self, self)
-
     def str(self, syntax=Tokens.NEW_NLTK):
         return str(self.variable)
     
 class IndividualVariableExpression(VariableExpression):
     """This class represents variables that take the form of a single lowercase
     character followed by zero or more digits."""
-    def free(self):
-        return set([self.variable])
+    pass
     
 class VariableBinderExpression(Expression):
     """This an abstract class for any Expression that binds a variable in an

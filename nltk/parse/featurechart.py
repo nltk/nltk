@@ -434,7 +434,7 @@ class InstantiateVarsChart(Chart):
                     if var.name.startswith('@'))
 
     def unique_variable(self, counter):
-        return Variable('z%s' % counter.get())
+        return logic.Variable('z%s' % counter.get())
 
 #////////////////////////////////////////////////////////////
 # Demo
