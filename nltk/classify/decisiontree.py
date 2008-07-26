@@ -133,7 +133,7 @@ class DecisionTreeClassifier(ClassifierI):
                 best_error = stump_error
                 best_stump = stump
         print ('best stump for %4d toks uses %20s err=%6.4f' %
-               (len(labeled_featuresets), best_stump._fname, stump_error))
+               (len(labeled_featuresets), best_stump._fname, best_error))
         return best_stump
 
 ##//////////////////////////////////////////////////////
