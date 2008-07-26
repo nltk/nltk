@@ -80,8 +80,8 @@ Test the decision tree classifier:
     >>> classifier = nltk.DecisionTreeClassifier.train(
     ...     train, entropy_cutoff=0,
     ...                                                support_cutoff=0)
-    best stump for    9 toks uses                    c err=0.4444
-    best stump for    3 toks uses                    a err=0.3333
+    best stump for    9 toks uses                    c err=0.3333
+    best stump for    3 toks uses                    a err=0.0000
     best stump for    6 toks uses                 None err=0.3333
     >>> sorted(classifier.labels())
     ['x', 'y']
