@@ -1,8 +1,8 @@
 # Natural Language Toolkit: Wordnet Interface: Graphical Wordnet Browser
 #
-# Copyright (C) 2007 - 2008 University of Pennsylvania
+# Copyright (C) 2007 - 2008 NLTK Project
 # Author: Jussi Salmela <jtsalmela@users.sourceforge.net>
-# URL: <http://nltk.sf.net>
+# URL: <http://nltk.org>
 # For license information, see LICENSE.TXT
 
 
@@ -782,9 +782,9 @@ def get_static_web_help_page():
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
      <!-- Natural Language Toolkit: Wordnet Interface: Graphical Wordnet Browser
-            Copyright (C) 2007 - 2008 University of Pennsylvania
+            Copyright (C) 2007 - 2008 NLTK Project
             Author: Jussi Salmela <jtsalmela@users.sourceforge.net>
-            URL: <http://nltk.sf.net>
+            URL: <http://nltk.org>
             For license information, see LICENSE.TXT -->
      <head>
           <meta http-equiv='Content-Type' content='text/html; charset=us-ascii'>
@@ -828,9 +828,9 @@ def get_static_wx_help_page():
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
      <!-- Natural Language Toolkit: Wordnet Interface: Graphical Wordnet Browser
-            Copyright (C) 2007 - 2008 University of Pennsylvania
+            Copyright (C) 2007 - 2008 NLTK Project
             Author: Jussi Salmela <jtsalmela@users.sourceforge.net>
-            URL: <http://nltk.sf.net>
+            URL: <http://nltk.org>
             For license information, see LICENSE.TXT -->
      <head>
           <meta http-equiv='Content-Type' content='text/html; charset=us-ascii'>
@@ -1005,9 +1005,9 @@ def get_static_start_page():
 <!DOCTYPE html PUBLIC '-//W3C//DTD HTML 4.01//EN' 'http://www.w3.org/TR/html4/strict.dtd'>
 <html>
     <!-- Natural Language Toolkit: Wordnet Interface: Graphical Wordnet Browser
-        Copyright (C) 2007 - 2008 University of Pennsylvania
+        Copyright (C) 2007 - 2008 NLTK Project
         Author: Jussi Salmela <jtsalmela@users.sourceforge.net>
-        URL: <http://nltk.sf.net>
+        URL: <http://nltk.org>
         For license information, see LICENSE.TXT -->
     <head>
         <meta http-equiv='Content-Type' content=
@@ -1070,9 +1070,9 @@ def get_static_index_page(with_shutdown):
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN"  "http://www.w3.org/TR/html4/frameset.dtd">
 <HTML>
      <!-- Natural Language Toolkit: Wordnet Interface: Graphical Wordnet Browser
-            Copyright (C) 2007 - 2008 University of Pennsylvania
+            Copyright (C) 2007 - 2008 NLTK Project
             Author: Jussi Salmela <jtsalmela@users.sourceforge.net>
-            URL: <http://nltk.sf.net>
+            URL: <http://nltk.org>
             For license information, see LICENSE.TXT -->
      <HEAD>
 	     <TITLE>NLTK Wordnet Browser</TITLE>
@@ -1104,9 +1104,9 @@ def get_static_upper_page(with_shutdown):
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
     <!-- Natural Language Toolkit: Wordnet Interface: Graphical Wordnet Browser
-        Copyright (C) 2007 - 2008 University of Pennsylvania
+        Copyright (C) 2007 - 2008 NLTK Project
         Author: Jussi Salmela <jtsalmela@users.sourceforge.net>
-        URL: <http://nltk.sf.net>
+        URL: <http://nltk.org>
         For license information, see LICENSE.TXT -->
 	<head>
                 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />

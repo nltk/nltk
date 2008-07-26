@@ -2,7 +2,7 @@
 #
 # Copyright (C) 2005 University of Melbourne
 # Author: Will Hardy
-# URL: <http://nltk.sf.net>
+# URL: <http://nltk.org>
 # For license information, see LICENSE.TXT
 
 # Parses a paradigm query and produces an XML representation of

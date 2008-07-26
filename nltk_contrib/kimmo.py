@@ -5,7 +5,7 @@
 #         Beracah Yankama <beracah@mit.edu>
 #         Robert Berwick <berwick@ai.mit.edu>
 #
-# URL: <http://nltk.sf.net>
+# URL: <http://nltk.org>
 # For license information, see LICENSE.TXT
 
 """

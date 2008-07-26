@@ -2,9 +2,9 @@
 #
 ## Natural Language Toolkit: Deprecated Function & Class Finder
 #
-# Copyright (C) 2007 University of Pennsylvania
+# Copyright (C) 2007 NLTK Project
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
-# URL: <http://nltk.sf.net>
+# URL: <http://nltk.org>
 # For license information, see LICENSE.TXT
 #
 # $Id:$

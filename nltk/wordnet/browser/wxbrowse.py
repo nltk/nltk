@@ -3,9 +3,9 @@
 """
 Wordnet Interface: Graphical Wordnet Browser
 
-Copyright (C) 2007 - 2008 University of Pennsylvania
+Copyright (C) 2007 - 2008 NLTK Project
 Author: Jussi Salmela <jtsalmela@users.sourceforge.net>
-URL: <http://nltk.sf.net>
+URL: <http://nltk.org>
 For license information, see LICENSE.TXT
 
 """

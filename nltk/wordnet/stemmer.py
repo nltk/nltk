@@ -1,11 +1,11 @@
 # Natural Language Toolkit: Wordnet Stemmer
 #
-# Copyright (C) 2001-2008 University of Pennsylvania
+# Copyright (C) 2001-2008 NLTK Project
 # Author: Oliver Steele <steele@osteele.com>
 #         Steven Bird <sb@csse.unimelb.edu.au>
 #         David Ormiston Smith <daosmith@csse.unimelb.edu.au>
 #         Jussi Salmela <jtsalmela@users.sourceforge.net>
-# URL: <http://nltk.sf.net>
+# URL: <http://nltk.org>
 # For license information, see LICENSE.TXT
 
 from itertools import islice

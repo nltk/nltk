@@ -1,7 +1,7 @@
 # Natural Language Toolkit: Shoebox Text
 #
 # Author: Stuart Robinson <stuart@zapata.org>
-# URL: <http://nltk.sf.net>
+# URL: <http://nltk.org>
 # For license information, see LICENSE.TXT
 
 """

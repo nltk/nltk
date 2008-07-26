@@ -3,9 +3,9 @@
 
 # Natural Language Toolkit: RSLP Stemmer
 #
-# Copyright (C) 2001-2008 University of Pennsylvania
+# Copyright (C) 2001-2008 NLTK Project
 # Author: Tiago Tresoldi <tresoldi@gmail.com>
-# URL: <http://nltk.sf.net>
+# URL: <http://nltk.org>
 # For license information, see LICENSE.TXT
 
 # This code is based on the algorithm presented in the paper "A Stemming

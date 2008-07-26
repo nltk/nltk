@@ -1,9 +1,9 @@
 # Natural Language Toolkit: Finite State Automata
 #
-# Copyright (C) 2001-2006 University of Pennsylvania
+# Copyright (C) 2001-2006 NLTK Project
 # Authors: Steven Bird <sb@ldc.upenn.edu>
 #          Rob Speer <rspeer@mit.edu>
-# URL: <http://nltk.sf.net>
+# URL: <http://nltk.org>
 # For license information, see LICENSE.TXT
 
 """

@@ -1,7 +1,7 @@
 # Natural Language Toolkit: Generating referring expressions
 #
 # Author: Margaret Mitchell <itallow@u.washington.edu>
-# URL: <http://nltk.sf.net>
+# URL: <http://nltk.org>
 # For license information, see LICENSE.TXT
 
 import sys

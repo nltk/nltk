@@ -1,8 +1,8 @@
 # Natural Language Toolkit: Chart Parser for Feature-Based Grammars
 #
-# Copyright (C) 2001-2007 University of Pennsylvania
+# Copyright (C) 2001-2007 NLTK Project
 # Author: Rob Speer <rspeer@mit.edu>
-# URL: <http://nltk.sf.net>
+# URL: <http://nltk.org>
 # For license information, see LICENSE.TXT
 #
 # $Id: featurechart.py 4107 2007-02-01 00:07:42Z stevenbird $

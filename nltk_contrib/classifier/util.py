@@ -1,7 +1,7 @@
 # Natural Language Toolkit utilities used in classifier module, should be migrated to main utilities later
 # Author: Sumukh Ghodke <sumukh dot ghodke at gmail dot com>
 #
-# URL: <http://nltk.sf.net>
+# URL: <http://nltk.org>
 # This software is distributed under GPL, for license information see LICENSE.TXT
 import UserList, math
 

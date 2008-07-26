@@ -19,7 +19,7 @@ B. NLTK VERSION
   2. Edit doc/definitions.txt with new version number
   3. Edit data/README.txt with the new version number
   4. Commit these changes
-  5. Clone wiki install page for new version N.N, and call it Installation-N.N
+  5. Clone wiki download page for new version N.N, and call it Download-N.N
        and save in HTML format to /nltk
 
 C. ERROR CHECKING
@@ -87,7 +87,7 @@ B. WEBSITE
 
   1. make rsync
   2. add release notice to wiki
-  3. move wiki install page from Installation-N.N to Installation   
+  3. move wiki download page from Download-N.N to Download
   4. post a news item on the sourceforge site
        http://sourceforge.net/news/?group_id=30982
   5. register with Python Cheeseshop

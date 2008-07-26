@@ -1,8 +1,8 @@
 # Natural Language Toolkit: Decision Tree Classifiers
 #
-# Copyright (C) 2001-2008 University of Pennsylvania
+# Copyright (C) 2001-2008 NLTK Project
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
-# URL: <http://nltk.sf.net>
+# URL: <http://nltk.org>
 # For license information, see LICENSE.TXT
 #
 # $Id: naivebayes.py 2063 2004-07-17 21:02:24Z edloper $
