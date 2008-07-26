@@ -174,3 +174,10 @@ Trees can be compared for equality:
     >>> tree < tree2 or tree > tree2
     True
 
+Squashed Bugs
+=============
+This used to cause an infinite loop (fixed in svn xx):
+
+    >>> tree < None
+    False
+
