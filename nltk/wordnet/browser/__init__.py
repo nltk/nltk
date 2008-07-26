@@ -6,6 +6,8 @@
 # URL: <http://nltk.org>
 # For license information, see LICENSE.TXT
 
+__docformat__ = 'restructuredtext en'
+
 """
 =================================
  Details of using the 3 programs
