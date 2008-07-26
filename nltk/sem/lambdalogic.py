@@ -10,7 +10,7 @@
 #                   Ewan Klein <ewan@inf.ed.ac.uk>
 #                   Rob Speer  <rspeer@mit.edu>
 #                   Edward Loper <edloper@gradient.cis.upenn.edu>
-# URL: <http://nltk.sf.net>
+# URL: <http://nltk.org>
 # For license information, see LICENSE.TXT
 #
 # $Iid:$

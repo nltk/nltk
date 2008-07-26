@@ -1,11 +1,11 @@
 # Natural Language Toolkit: Brown Corpus Information Content Module
 #
-# Copyright (C) 2001-2008 University of Pennsylvania
+# Copyright (C) 2001-2008 NLTK Project
 # Author: Oliver Steele <steele@osteele.com>
 #         David Ormiston Smith <daosmith@csse.unimelb.edu.au>>
 #         Steven Bird <sb@csse.unimelb.edu.au>
 #         Jordan Boyd-Graber <jbg@cs.princeton.edu>
-# URL: <http://nltk.sf.net>
+# URL: <http://nltk.org>
 # For license information, see LICENSE.TXT
 
 # This module can be used to build information content files.

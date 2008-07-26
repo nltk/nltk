@@ -1,8 +1,8 @@
 # Natural Language Toolkit: Conditional Random Fields
 #
-# Copyright (C) 2001-2008 University of Pennsylvania
+# Copyright (C) 2001-2008 NLTK Project
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
-# URL: <http://nltk.sf.net>
+# URL: <http://nltk.org>
 # For license information, see LICENSE.TXT
 #
 # $Id: hmm.py 5994 2008-06-02 12:07:07Z stevenbird $

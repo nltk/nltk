@@ -1,8 +1,8 @@
 # Natural Language Toolkit: Recursive Descent Parser Demo
 #
-# Copyright (C) 2001-2008 University of Pennsylvania
+# Copyright (C) 2001-2008 NLTK Project
 # Author: Sumukh Ghodke <sghodke@csse.unimelb.edu.au>
-# URL: <http://nltk.sf.net>
+# URL: <http://nltk.org>
 # For license information, see LICENSE.TXT
 #
 # $Id: concordance.py 6121 2008-07-11 02:10:33Z stevenbird $

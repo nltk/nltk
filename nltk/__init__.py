@@ -1,6 +1,6 @@
 # Natural Language Toolkit (NLTK)
 #
-# Copyright (C) 2001-2008 University of Pennsylvania
+# Copyright (C) 2001-2008 NLTK Project
 # Authors: Steven Bird <sb@csse.unimelb.edu.au>
 #          Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL:     http://nltk.org/
@@ -24,7 +24,7 @@ __version__ = "0.9.3"
 
 # Copyright notice
 __copyright__ = """\
-Copyright (C) 2001-2008 University of Pennsylvania.
+Copyright (C) 2001-2008 NLTK Project.
 
 Distributed and Licensed under provisions of the GNU Public
 License, which is included by reference.
@@ -39,7 +39,7 @@ __keywords__ = ['NLP', 'CL', 'natural language processing',
                 'computational linguistics', 'parsing', 'tagging',
                 'tokenizing', 'syntax', 'linguistics', 'language',
                 'natural language']
-__url__ = "http://nltk.sf.net/"
+__url__ = "http://nltk.org/"
 
 # Maintainer, contributors, etc.
 __maintainer__ = "Steven Bird, Edward Loper, Ewan Klein"
