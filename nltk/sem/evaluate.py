@@ -431,13 +431,13 @@ class Model(object):
         """
         An interpretation function.
 
-        Assuming that C{expr} is atomic:
+        Assuming that C{parsed} is atomic:
 
-         - if C{expr} is a non-logical constant, calls the valuation M{V} 
-         - else if C{expr} is an individual variable, calls assignment M{g}
+         - if C{parsed} is a non-logical constant, calls the valuation M{V} 
+         - else if C{parsed} is an individual variable, calls assignment M{g}
          - else returns C{Undefined}.
 
-        @param expr: an C{Expression} of L{logic}.
+        @param parsed: an C{Expression} of L{logic}.
         @type g: L{Assignment}
         @param g: an assignment to individual variables.
         @return: a semantic value
