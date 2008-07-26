@@ -2179,8 +2179,11 @@ class FeatStructParser(object):
         raise ValueError('value', position)
 
     def _error(self, s, expected, position):
+        lines = s.split('\n')
+        while position > len(lines[0]):
+            position -= len(lines.pop(0))+1 # +1 for the newline.
         estr = ('Error parsing feature structure\n    ' +
-                s + '\n    ' + ' '*position + '^ ' +
+                lines[0] + '\n    ' + ' '*position + '^ ' +
                 'Expected %s' % expected)
         raise ValueError, estr
 
