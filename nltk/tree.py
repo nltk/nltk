@@ -453,7 +453,7 @@ class Tree(list):
             then it will return a tree of that type.
         @rtype: C{Tree}
         """
-        if len(brackets) != 2 or not isinstance(brackets, basestring):
+        if not isinstance(brackets, basestring) or len(brackets) != 2:
             raise TypeError('brackets must be a length-2 string')
         if re.search('\s', brackets):
             raise TypeError('whitespace brackets not allowed')
