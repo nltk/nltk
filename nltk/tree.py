@@ -103,7 +103,7 @@ class Tree(list):
     #////////////////////////////////////////////////////////////
 
     def __getitem__(self, index):
-        if isinstance(index, int):
+        if isinstance(index, (int, slice)):
             return list.__getitem__(self, index)
         else:
             if len(index) == 0:
@@ -114,7 +114,7 @@ class Tree(list):
                 return self[int(index[0])][index[1:]]
     
     def __setitem__(self, index, value):
-        if isinstance(index, int):
+        if isinstance(index, (int, slice)):
             return list.__setitem__(self, index, value)
         else:
             if len(index) == 0:
@@ -126,7 +126,7 @@ class Tree(list):
                 self[index[0]][index[1:]] = value
     
     def __delitem__(self, index):
-        if isinstance(index, int):
+        if isinstance(index, (int, slice)):
             return list.__delitem__(self, index)
         else:
             if len(index) == 0:
@@ -410,7 +410,7 @@ class Tree(list):
 
     def __repr__(self):
         childstr = ", ".join(repr(c) for c in self)
-        return 'Tree(%r, [%s])' % (self.node, childstr)
+        return '%s(%r, [%s])' % (self.__class__.__name__, self.node, childstr)
 
     def __str__(self):
         return self.pprint()
@@ -490,9 +490,16 @@ class Tree(list):
             return '%s%r%s %s%s' % (parens[0], self.node, nodesep, 
                                     string.join(childstrs), parens[1])
 
-# [xx] this really should do some work to make sure self.node isn't
-# modified.
 class ImmutableTree(Tree):
+    def __init__(self, node, children):
+        super(ImmutableTree, self).__init__(node, children)
+        # Precompute our hash value.  This ensures that we're really
+        # immutable.  It also means we only have to calculate it once.
+        try:
+            self._hash = hash( (self.node, tuple(self)) )
+        except (TypeError, ValueError):
+            raise ValueError("ImmutableTree's node value and children "
+                             "must be immutable")
     def __setitem__(self):
         raise ValueError, 'ImmutableTrees may not be modified'
     def __setslice__(self):
@@ -518,7 +525,7 @@ class ImmutableTree(Tree):
     def sort(self):
         raise ValueError, 'ImmutableTrees may not be modified'
     def __hash__(self):
-        return hash( (self.node, tuple(self)) )
+        return self._hash
 
 
 ######################################################################
@@ -642,6 +649,7 @@ def bracket_parse(s):
                 tree = stack[0]
                 # If the tree has an extra level with node='', then get
                 # rid of it.  (E.g., "((S (NP ...) (VP ...)))")
+                # [xx] make this behavior optional!!
                 if tree.node == '':
                     tree = tree[0]
                 return tree
