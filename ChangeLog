@@ -17,6 +17,11 @@ NLTK:
 - new WordSense class in wordnet.synset supporting access to synsets
   from sense keys and accessing sense counts (see section 3 of
   http://nltk.org/doc/guides/wordnet.html)
+- Added classes for single-parented and multi-parented trees that 
+  automatically maintain parent pointers (nltk.tree.ParentedTree and
+  nltk.tree.MultiParentedTree)
+- Improved support for lazy sequences
+- Added generate() method to probability distributions
 
 Contrib:
 - FUF...
@@ -30,6 +35,8 @@ Data:
 - Implemented HMM-based Treebank POS tagger and phrase chunker for 
   nltk_contrib.coref in api.py. Pickled versions of these objects are checked
   in in data/taggers and data/chunkers.
+- Added NPS Chat Corpus and corpus reader (nltk.corpus.nps_chat)
+- ConllCorpusReader can now be used to read CoNLL 2004 and 2005 corpora.
 
 
 	
