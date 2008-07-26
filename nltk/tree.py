@@ -67,23 +67,23 @@ class Tree(list):
     # Comparison operators
     #////////////////////////////////////////////////////////////
 
-    def __cmp__(self, other):
-        c = cmp(self.node, other.node)
-        if c != 0: return c
-        else: return list.__cmp__(self, other)
     def __eq__(self, other):
         if not isinstance(other, Tree): return False
         return self.node == other.node and list.__eq__(self, other)
     def __ne__(self, other):
         return not (self == other)
     def __lt__(self, other):
-        return cmp(self, other) < 0
+        if not isinstance(other, Tree): return False
+        return self.node < other.node or list.__lt__(self, other)
     def __le__(self, other):
-        return cmp(self, other) <= 0
+        if not isinstance(other, Tree): return False
+        return self.node <= other.node or list.__le__(self, other)
     def __gt__(self, other):
-        return cmp(self, other) > 0
+        if not isinstance(other, Tree): return True
+        return self.node > other.node or list.__gt__(self, other)
     def __ge__(self, other):
-        return cmp(self, other) >= 0
+        if not isinstance(other, Tree): return False
+        return self.node >= other.node or list.__ge__(self, other)
     
     #////////////////////////////////////////////////////////////
     # Disabled list operations
