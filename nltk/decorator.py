@@ -5,6 +5,7 @@ http://www.phyast.pitt.edu/~micheles/python/documentation.html
 
 Included in NLTK for its support of a nice memoization decorator.
 """
+__docformat__ = 'restructuredtext en'
 
 ## The basic trick is to generate the source code for the decorated function
 ## with the right signature and to evaluate it.
