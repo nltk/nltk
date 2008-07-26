@@ -12,11 +12,12 @@ BrowServer is a server for browsing the NLTK Wordnet database It first
 launches a browser client to be used for browsing and then starts
 serving the requests of that and maybe other clients
 
-Usage:
+Usage::
+
     browserver.py -h
     browserver.py [-s] [-p <port>]
 
-Options:
+Options::
 
     -h or --help
         Display this help message.
