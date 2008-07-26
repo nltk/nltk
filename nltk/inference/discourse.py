@@ -2,7 +2,7 @@
 #
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>
 #
-# URL: <http://nltk.sf.net>
+# URL: <http://nltk.org>
 # For license information, see LICENSE.TXT
 # $Id$
 

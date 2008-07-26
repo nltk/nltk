@@ -2,7 +2,7 @@
 #
 # Author: Sumukh Ghodke <sumukh dot ghodke at gmail dot com>
 #
-# URL: <http://nltk.sf.net>
+# URL: <http://nltk.org>
 # This software is distributed under GPL, for license information see LICENSE.TXT
 
 from nltk_contrib.classifier import cfile, item, format

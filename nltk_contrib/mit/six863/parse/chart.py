@@ -1,10 +1,10 @@
 # Natural Language Toolkit: A Chart Parser
 #
-# Copyright (C) 2001-2007 University of Pennsylvania
+# Copyright (C) 2001-2007 NLTK Project
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
 #         Steven Bird <sb@csse.unimelb.edu.au>
 #         Jean Mark Gawron <gawron@mail.sdsu.edu>
-# URL: <http://nltk.sf.net>
+# URL: <http://nltk.org>
 # For license information, see LICENSE.TXT
 #
 # $Id: chart.py 4157 2007-02-28 09:56:25Z stevenbird $

@@ -1,12 +1,12 @@
 # Natural Language Toolkit: Punkt sentence tokenizer
 #
-# Copyright (C) 2001-2008 University of Pennsylvania
+# Copyright (C) 2001-2008 NLTK Project
 # Algorithm: Kiss & Strunk (2006)
 # Author: Willy <willy@csse.unimelb.edu.au> (original Python port)
 #         Steven Bird <sb@csse.unimelb.edu.au> (additions)
 #         Edward Loper <edloper@gradient.cis.upenn.edu> (rewrite)
 #         Joel Nothman <jnothman@student.usyd.edu.au> (almost rewrite)
-# URL: <http://nltk.sf.net>
+# URL: <http://nltk.org>
 # For license information, see LICENSE.TXT
 #
 # $Id: probability.py 4865 2007-07-11 22:16:07Z edloper $

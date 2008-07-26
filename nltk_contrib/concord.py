@@ -2,7 +2,7 @@
 #
 # Copyright (C) 2005 University of Melbourne
 # Author: Peter Spiller
-# URL: <http://nltk.sf.net>
+# URL: <http://nltk.org>
 # For license information, see LICENSE.TXT
 
 from nltk.corpus import brown

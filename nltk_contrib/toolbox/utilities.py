@@ -1,8 +1,8 @@
 # Natural Language Toolkit: Shoebox Utilities
 #
-# Copyright (C) 2001-2006 University of Pennsylvania
+# Copyright (C) 2001-2006 NLTK Project
 # Author: Stuart Robinson <stuart@zapata.org>
-# URL: <http://nltk.sf.net>
+# URL: <http://nltk.org>
 # For license information, see LICENSE.TXT
 
 """

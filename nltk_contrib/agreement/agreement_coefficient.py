@@ -1,8 +1,8 @@
 # Natural Language Toolkit: Agreement Metrics
 #
-# Copyright (C) 2001-2008 University of Pennsylvania
+# Copyright (C) 2001-2008 NLTK Project
 # Author: Tom Lippincott <tom@cs.columbia.edu>
-# URL: <http://nltk.sf.net>
+# URL: <http://nltk.org>
 # For license information, see LICENSE.TXT
 #
 import sets

@@ -3,9 +3,9 @@
 
 # Natural Language Toolkit: Toolbox data file parser
 #
-# Copyright (C) 2001-2006 University of Pennsylvania
+# Copyright (C) 2001-2006 NLTK Project
 # Author: Greg Aumann <greg_aumann@sil.org>
-# URL: <http://nltk.sf.net>
+# URL: <http://nltk.org>
 # For license information, see LICENSE.TXT
 
 """
