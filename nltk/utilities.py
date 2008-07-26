@@ -13,7 +13,7 @@ import pydoc
 import bisect
 from itertools import islice
 from pprint import pprint
-from nltk.internals import Deprecated
+from nltk.internals import Deprecated, slice_bounds
 
 ######################################################################
 # Short usage message
@@ -439,7 +439,7 @@ class AbstractLazySequence(object):
         corpus view.  Negative indices and spans are both supported.
         """
         if isinstance(i, slice):
-            start, stop = self._slice_bounds(i)
+            start, stop = slice_bounds(self, i)
             return LazySubsequence(self, start, stop)
         else:
             # Handle negative indices
@@ -465,7 +465,7 @@ class AbstractLazySequence(object):
         list that is greater than or equal to C{start} and less than
         C{stop}.  Negative start & stop values are treated like negative
         slice bounds -- i.e., they count from the end of the list."""
-        start, stop = self._slice_bounds(slice(start, stop))
+        start, stop = slice_bounds(self, slice(start, stop))
         for i, elt in enumerate(islice(self, start, stop)):
             if elt == value: return i+start
         raise ValueError('index(x): x not in list')
@@ -527,34 +527,6 @@ class AbstractLazySequence(object):
         """
         raise ValueError('%s objects are unhashable' %
                          self.__class__.__name__)
-
-    def _slice_bounds(self, slice_obj):
-        """
-        Given a slice, return the corresponding (start, stop) bounds,
-        taking into account None indices, negative indices, etc.  When
-        possible, avoid calculating len(self), since it can be slow
-        for corpus view objects.
-        """
-        start, stop = slice_obj.start, slice_obj.stop
-        
-        # Handle None indices.
-        if start is None: start = 0
-        if stop is None: stop = len(self)
-        
-        # Handle negative indices.
-        if start < 0: start = max(0, len(self)+start)
-        if stop < 0: stop = max(0, len(self)+stop)
-    
-        # Make sure stop doesn't go past the end of the list.
-        if stop > 0:
-            try: self[stop-1]
-            except IndexError: stop = len(self)
-        
-        # Make sure start isn't past stop.
-        start = min(start, stop)
-    
-        # That's all folks!
-        return start, stop
 
 class LazySubsequence(AbstractLazySequence):
     """
