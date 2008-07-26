@@ -398,6 +398,143 @@ class Tree(list):
         return newcopy
 
     #////////////////////////////////////////////////////////////
+    # Parsing
+    #////////////////////////////////////////////////////////////
+
+    @classmethod
+    def parse(cls, s, brackets='()', parse_node=None, parse_leaf=None,
+              node_pattern=None, leaf_pattern=None, 
+              remove_empty_top_bracketing=False):
+        """
+        Parse a bracketed tree string and return the resulting tree.
+        Trees are represented as nested brackettings, such as::
+
+          (S (NP (NNP John)) (VP (V runs)))
+
+        @type s: C{str}
+        @param s: The string to parse
+        
+        @type bracket: length-2 C{str}
+        @param brackets: The bracket characters used to mark the
+            beginning and end of trees and subtrees.
+            
+        @type parse_node, parse_leaf: C{function}
+        @param parse_node, parse_leaf: If specified, these functions
+            are applied to the substrings of C{s} corresponding to
+            nodes and leaves (respectively) to obtain the values for
+            those nodes and leaves.  They should have the following
+            signature:
+
+               >>> parse_node(str) -> value
+
+            For example, these functions could be used to parse nodes
+            and leaves whose values should be some type other than
+            string (such as L{FeatStruct <nltk.featstruct.FeatStruct>}).
+            Note that by default, node strings and leaf strings are
+            delimited by whitespace and brackets; to override this
+            default, use the C{node_pattern} and C{leaf_pattern}
+            arguments.
+
+        @type node_pattern, leaf_pattern: C{str}
+        @param node_pattern, leaf_pattern: Regular expression patterns
+            used to find node and leaf substrings in C{s}.  By
+            default, both nodes patterns are defined to match any
+            sequence of non-whitespace non-bracket characters.
+
+        @type remove_empty_top_bracketing: C{bool}
+        @param remove_empty_top_bracketing: If the resulting tree has
+            an empty node label, and is length one, then return its
+            single child instead.  This is useful for treebank trees,
+            which sometimes contain an extra level of bracketing.
+
+        @return: A tree corresponding to the string representation C{s}.
+            If this class method is called using a subclass of C{Tree},
+            then it will return a tree of that type.
+        @rtype: C{Tree}
+        """
+        if len(brackets) != 2 or not isinstance(brackets, basestring):
+            raise TypeError('brackets must be a length-2 string')
+        if re.search('\s', brackets):
+            raise TypeError('whitespace brackets not allowed')
+        # Construct a regexp that will tokenize the string.
+        open_b, close_b = brackets
+        open_pattern, close_pattern = (re.escape(open_b), re.escape(close_b))
+        if node_pattern is None:
+            node_pattern = '[^\s%s%s]+' % (open_pattern, close_pattern)
+        if leaf_pattern is None:
+            leaf_pattern = '[^\s%s%s]+' % (open_pattern, close_pattern)
+        token_re = re.compile('%s\s*(%s)?|%s|(%s)' % (
+            open_pattern, node_pattern, close_pattern, leaf_pattern))
+        # Walk through each token, updating a stack of trees.
+        stack = [(None, [])] # list of (node, children) tuples
+        for match in token_re.finditer(s):
+            token = match.group()
+            # Beginning of a tree/subtree
+            if token[0] == open_b:
+                if len(stack) == 1 and len(stack[0][1]) > 0:
+                    cls._parse_error(s, match, 'end-of-string')
+                node = token[1:].lstrip()
+                if parse_node is not None: node = parse_node(node)
+                stack.append((node, []))
+            # End of a tree/subtree
+            elif token == close_b:
+                if len(stack) == 1:
+                    if len(stack[0][1]) == 0:
+                        cls._parse_error(s, match, open_b)
+                    else:
+                        cls._parse_error(s, match, 'end-of-string')
+                node, children = stack.pop()
+                stack[-1][1].append(cls(node, children))
+            # Leaf node
+            else:
+                if len(stack) == 1:
+                    cls._parse_error(s, match, open_b)
+                if parse_leaf is not None: token = parse_leaf(token)
+                stack[-1][1].append(token)
+
+        # check that we got exactly one complete tree.
+        if len(stack) > 1:
+            cls._parse_error(s, 'end-of-string', close_b)
+        elif len(stack[0][1]) == 0:
+            cls._parse_error(s, 'end-of-string', open_b)
+        else:
+            assert stack[0][0] is None
+            assert len(stack[0][1]) == 1
+        tree = stack[0][1][0]
+        
+        # If the tree has an extra level with node='', then get rid of
+        # it.  E.g.: "((S (NP ...) (VP ...)))"
+        if remove_empty_top_bracketing and tree.node == '' and len(tree) == 1:
+            tree = tree[0]
+        # return the tree.
+        return tree
+
+    @classmethod
+    def _parse_error(cls, s, match, expecting):
+        """
+        Display a friendly error message when parsing a tree string fails.
+        @param s: The string we're parsing.
+        @param match: regexp match of the problem token.
+        @param expecting: what we expected to see instead.
+        """
+        # Construct a basic error message
+        if match == 'end-of-string':
+            pos, token = len(s), 'end-of-string'
+        else:
+            pos, token = match.start(), match.group()
+        msg = '%s.parse(): expected %r but got %r\n%sat index %d.' % (
+            cls.__name__, expecting, token, ' '*12, pos)
+        # Add a display showing the error token itsels:
+        s = s.replace('\n', ' ').replace('\t', ' ')
+        offset = pos
+        if len(s) > pos+10:
+            s = s[:pos+10]+'...'
+        if pos > 10:
+            s = '...'+s[pos-10:]
+            offset = 13
+        msg += '\n%s"%s"\n%s^' % (' '*16, s, ' '*(17+offset))
+        raise ValueError(msg)
+    #////////////////////////////////////////////////////////////
     # Visualization & String Representation
     #////////////////////////////////////////////////////////////
     
@@ -613,6 +750,8 @@ def _child_names(tree):
 ## Parsing
 ######################################################################
     
+# We should consider deprecating this function:
+#@deprecated('Use Tree.parse(s, remove_top_empty_bracketing=True) instead.')
 def bracket_parse(s):
     """
     Parse a treebank string and return a tree.  Trees are represented
@@ -623,48 +762,7 @@ def bracket_parse(s):
     @param s: The string to be converted
     @type s: C{string}
     """
-
-    SPACE = re.compile(r'\s*')
-    WORD = re.compile(r'\s*([^\s\(\)]*)\s*')
-
-    # Skip any initial whitespace.
-    pos = SPACE.match(s).end()
-    
-    if pos == len(s): # only got whitespace
-        return None
-
-    stack = []
-    while pos < len(s):
-        # Beginning of a tree/subtree.
-        if s[pos] == '(':
-            match = WORD.match(s, pos+1)
-            stack.append(Tree(match.group(1), []))
-            pos = match.end()
-
-        # End of a tree/subtree.
-        elif s[pos] == ')':
-            pos = SPACE.match(s, pos+1).end()
-            if len(stack) == 1:
-                if pos != len(s): raise ValueError
-                tree = stack[0]
-                # If the tree has an extra level with node='', then get
-                # rid of it.  (E.g., "((S (NP ...) (VP ...)))")
-                # [xx] make this behavior optional!!
-                if tree.node == '':
-                    tree = tree[0]
-                return tree
-            stack[-2].append(stack[-1]) # [xx] might get index out of range
-            stack.pop()
-
-        # Leaf token.
-        else:
-            match = WORD.match(s, pos)
-            leaf = match.group(1)
-            stack[-1].append(leaf)
-            pos = match.end()
-
-    raise ValueError, 'mismatched parens'
-
+    return Tree.parse(s, remove_empty_top_bracketing=True)
 
 def sinica_parse(s):
     """
