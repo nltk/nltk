@@ -676,3 +676,46 @@ class ElementWrapper(object):
 
     def findall(self, path):
         return [ElementWrapper(elt) for elt in self._etree.findall(path)]
+
+######################################################################
+# Helper for Handling Slicing 
+######################################################################
+
+def slice_bounds(sequence, slice_obj):
+    """
+    Given a slice, return the corresponding (start, stop) bounds,
+    taking into account None indices and negative indices.  The
+    following guarantees are made for the returned start and stop values:
+
+      - 0 <= start <= len(sequence)
+      - 0 <= stop <= len(sequence)
+      - start <= stop
+
+    @raise ValueError: If C{slice_obj.step} is not C{None}.
+    """
+    if slice_obj.step is not None:
+        raise ValueError('slices with steps are not supported by %s' %
+                         sequence.__class__.__name__)
+    start, stop = slice_obj.start, slice_obj.stop
+
+    # Handle None indices.
+    if start is None: start = 0
+    if stop is None: stop = len(sequence)
+    
+    # Handle negative indices.
+    if start < 0: start = max(0, len(sequence)+start)
+    if stop < 0: stop = max(0, len(sequence)+stop)
+
+    # Make sure stop doesn't go past the end of the list.  Note that
+    # we avoid calculating len(sequence) if possible, because for lazy
+    # sequences, calculating the length of a sequence can be expensive.
+    if stop > 0:
+        try: sequence[stop-1]
+        except IndexError: stop = len(sequence)
+    
+    # Make sure start isn't past stop.
+    start = min(start, stop)
+
+    # That's all folks!
+    return start, stop    
+
