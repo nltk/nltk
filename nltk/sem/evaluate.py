@@ -380,14 +380,14 @@ class Model(object):
         """
         Recursive interpretation function for a formula of first-order logic.
 
-        Raises an C{Undefined} error when C{expr} is an atomic string
+        Raises an C{Undefined} error when C{parsed} is an atomic string
         but is not a symbol or an individual variable.
 
-        @return: Returns a truth value or C{Undefined} if C{expr} is\
-        complex, and calls the interpretation function C{i} if C{expr}\
+        @return: Returns a truth value or C{Undefined} if C{parsed} is\
+        complex, and calls the interpretation function C{i} if C{parsed}\
         is atomic.
         
-        @param expr: An expression of L{logic}.
+        @param parsed: An expression of L{logic}.
         @type g: L{Assignment}
         @param g: an assignment to individual variables.
         """
