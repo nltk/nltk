@@ -133,12 +133,8 @@ class ConllCorpusReader(CorpusReader):
         @rtype: C{list} of C{tuple}
         @param files: the list of files that make up this corpus 
         @type files: C{None} or C{str} or C{list}
-        @param chunk_types: list of chunks to recognize when returning
-                            tokens
-        @type chunk_types: C{list} of C{str}
         """
         self._require(self.WORDS, self.POS, self.CHUNK)
-        if chunk_types is None: chunk_types = self._chunk_types
         return LazyConcatenation(LazyMap(self._get_iob_words,
                                          self._grids(files)))
 
@@ -148,12 +144,8 @@ class ConllCorpusReader(CorpusReader):
         @rtype: C{list} of C{list}
         @param files: the list of files that make up this corpus 
         @type files: C{None} or C{str} or C{list}
-        @param chunk_types: list of chunks to recognize when returning
-                            tokens
-        @type chunk_types: C{list} of C{str}
         """
         self._require(self.WORDS, self.POS, self.CHUNK)
-        if chunk_types is None: chunk_types = self._chunk_types
         return LazyMap(self._get_iob_words, self._grids(files))
     
     #/////////////////////////////////////////////////////////////////
