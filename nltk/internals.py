@@ -590,10 +590,10 @@ class ElementWrapper(object):
         """
         Initialize a new Element wrapper for C{etree}.  If
         C{etree} is a string, then it will be converted to an
-        Element object using C{Element.fromstring()} first.
+        Element object using C{ElementTree.fromstring()} first.
         """
         if isinstance(etree, basestring):
-            etree = Element.fromstring(etree)
+            etree = ElementTree.fromstring(etree)
         self.__dict__['_etree'] = etree
 
     def unwrap(self):
@@ -607,7 +607,7 @@ class ElementWrapper(object):
     ##////////////////////////////////////////////////////////////
     
     def __repr__(self):
-        s = Element.tostring(self._etree)
+        s = ElementTree.tostring(self._etree)
         if len(s) > 60:
             e = s.rfind('<')
             if (len(s)-e) > 30: e = -20
@@ -616,10 +616,10 @@ class ElementWrapper(object):
 
     def __str__(self):
         """
-        @return: the result of applying C{Element.tostring()} to
+        @return: the result of applying C{ElementTree.tostring()} to
         the wrapped Element object.
         """
-        return Element.tostring(self._etree)
+        return ElementTree.tostring(self._etree)
 
     ##////////////////////////////////////////////////////////////
     #{ Element interface Delegation (pass-through)
