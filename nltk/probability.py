@@ -991,7 +991,7 @@ class GoodTuringProbDist(ProbDistI):
     # TODO - add a cut-off parameter, above which the counts are unmodified
     # (see J&M p216)
 
-    def __init__(self, freqdist, bins):
+    def __init__(self, freqdist, bins=None):
         """
         Creates a Good-Turing probability distribution estimate.  This method
         calculates the probability mass to assign to events with zero or low
