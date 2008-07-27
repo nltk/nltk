@@ -164,8 +164,7 @@ def parse_valuation(s):
         try: statements.append(parse_valuation_line(line))
         except ValueError:
             raise ValueError, 'Unable to parse line %s: %s' % (linenum, line)
-    val = evaluate.Valuation()
-    val.read(statements)
+    val = evaluate.Valuation(statements)
     return val
 
 def parse_fol(s):
