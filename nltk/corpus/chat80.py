@@ -305,8 +305,8 @@ class Concept(object):
 
 
         """
-        from nltk.sem import isrel
-        assert isrel(self.extension)
+        from nltk.sem import is_rel
+        assert is_rel(self.extension)
         if 'symmetric' in self.closures:
             pairs = []
             for (x, y) in self.extension:
@@ -481,8 +481,8 @@ def make_valuation(concepts, read=False, lexicon=False):
     if lexicon: read = True
     if read:
         from nltk.sem import Valuation
-        val = Valuation()
-        val.read(vals)
+        val = Valuation(vals)
+        # val.read(vals)
         # add labels for individuals
         val = label_indivs(val, lexicon=lexicon)
         return val
