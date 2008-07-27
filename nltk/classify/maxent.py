@@ -557,13 +557,13 @@ class BinaryMaxentFeatureEncoding(MaxentFeatureEncodingI):
             # Otherwise, we might want to fire an "unseen-value feature".
             elif self._unseen:
                 # Have we seen this fname/fval combination with any label?
-                for label in self._labels:
-                    if (fname, fval, label) in self._mapping:
+                for label2 in self._labels:
+                    if (fname, fval, label2) in self._mapping:
                         break # we've seen this fname/fval combo
                 # We haven't -- fire the unseen-value feature
                 else:
                     if fname in self._unseen:
-                        encodings.append( (self._unseen[fname], 1) )
+                        encoding.append( (self._unseen[fname], 1) )
 
         # Add always-on features:
         if self._alwayson and label in self._alwayson:
@@ -600,10 +600,7 @@ class BinaryMaxentFeatureEncoding(MaxentFeatureEncodingI):
 
     def length(self):
         # Inherit docs.
-        if self._alwayson:
-            return len(self._mapping)+len(self._alwayson)
-        else:
-            return len(self._mapping)
+        return self._length
 
     @classmethod
     def train(cls, train_toks, count_cutoff=0, labels=None, **options):
@@ -621,7 +618,7 @@ class BinaryMaxentFeatureEncoding(MaxentFeatureEncodingI):
         @type count_cutoff: C{int}
         @param count_cutoff: A cutoff value that is used to discard
             rare joint-features.  If a joint-feature's value is 1
-            fewer than C{count_cutoff} tims in the training corpus,
+            fewer than C{count_cutoff} times in the training corpus,
             then that joint-feature is not included in the generated
             encoding.
 
