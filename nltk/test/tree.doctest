@@ -216,7 +216,7 @@ then `Tree.parse` raises an exception:
     >>> Tree.parse('<VP <V enjoyed> <NP my cookie>>', brackets=12)
     Traceback (most recent call last):
       . . .
-    TypeError: object of type 'int' has no len()
+    TypeError: brackets must be a length-2 string
     >>> Tree.parse('<<NP my cookie>>', brackets=('<<','>>'))
     Traceback (most recent call last):
       . . .
