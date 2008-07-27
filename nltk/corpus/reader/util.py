@@ -6,12 +6,14 @@
 # URL: <http://nltk.org>
 # For license information, see LICENSE.TXT
 
-import os, sys, bisect, re, codecs
+import os, sys, bisect, re, codecs, tempfile
+try: import cPickle as pickle
+except ImportError: import pickle
 from itertools import islice
 from nltk.corpus.reader.api import CorpusReader
 from nltk import tokenize
 from nltk.etree import ElementTree
-from nltk.internals import deprecated
+from nltk.internals import deprecated, slice_bounds
 from nltk.utilities import AbstractLazySequence, LazySubsequence
 from nltk.utilities import LazyConcatenation
 
@@ -171,6 +173,9 @@ class StreamBackedCorpusView(AbstractLazySequence):
         # increase efficiency of random access.
         self._cache = (-1, -1, None)
 
+    filename = property(lambda self: self._filename, doc="""
+        The filename of the file that is accessed by this view.""")
+
     def read_block(self, stream):
         """
         Read a block from the input stream. 
@@ -204,10 +209,10 @@ class StreamBackedCorpusView(AbstractLazySequence):
     
     def __getitem__(self, i):
         if isinstance(i, slice):
-            start, stop = self._slice_bounds(i)
+            start, stop = slice_bounds(self, i)
             # Check if it's in the cache.
             offset = self._cache[0]
-            if offset <= start and stop < self._cache[1]:
+            if offset <= start and stop <= self._cache[1]:
                 return self._cache[2][start-offset:stop-offset]
             # Construct & return the result.
             return LazySubsequence(self, start, stop)
@@ -409,6 +414,86 @@ def concat(docs):
 
     # No method found!
     raise ValueError("Don't know how to concatenate types: %r" % types)
+
+######################################################################
+#{ Corpus View for Pickled Sequences
+######################################################################
+
+class PickleCorpusView(StreamBackedCorpusView):
+    """
+    A stream backed corpus view for corpus files that consist of
+    sequences of serialized Python objects (serialized using
+    C{pickle.dump}).  One use case for this class is to store the
+    result of running feature detection on a corpus to disk.  This can
+    be useful when performing feature detection is expensive (so we
+    don't want to repeat it); but the corpus is too large to store in
+    memory.  The following example illustrates this technique:
+
+        >>> feature_corpus = LazyMap(detect_features, corpus)
+        >>> PickleCorpusView.write(feature_corpus, some_filename)
+        >>> pcv = PickledCorpusView(some_filename)
+    """
+    BLOCK_SIZE = 100
+    PROTOCOL = -1
+
+    def __init__(self, filename, delete_on_gc=False):
+        """
+        Create a new corpus view that reads the pickle corpus
+        C{filename}.
+
+        @param delete_on_gc: If true, then C{filename} will be deleted
+            whenever this object gets garbage-collected.
+        """
+        self._delete_on_gc = delete_on_gc
+        StreamBackedCorpusView.__init__(self, filename)
+    
+    def read_block(self, stream):
+        result = []
+        for i in range(self.BLOCK_SIZE):
+            try: result.append(pickle.load(stream))
+            except EOFError: break
+        return result
+
+    def __del__(self):
+        """
+        If C{delete_on_gc} was set to true when this
+        C{PickleCorpusView} was created, then delete the corpus view's
+        filename.  (This method is called whenever a
+        C{PickledCorpusView} is garbage-collected.
+        """
+        if getattr(self, '_delete_on_gc'):
+            if os.path.exists(self._filename):
+                try: os.remove(self._filename)
+                except (OSError, IOError): pass
+        self.__dict__.clear() # make the garbage collector's job easier
+
+    @classmethod
+    def write(cls, sequence, output_file):
+        if isinstance(output_file, basestring):
+            output_file = open(output_file, 'wb')
+        for item in sequence:
+            pickle.dump(item, output_file, cls.PROTOCOL)
+
+    @classmethod
+    def cache_to_tempfile(cls, sequence, delete_on_gc=True):
+        """
+        Write the given sequence to a temporary file as a pickle
+        corpus; and then return a C{PickleCorpusView} view for that
+        temporary corpus file.
+        
+        @param delete_on_gc: If true, then the temporary file will be
+            deleted whenever this object gets garbage-collected.
+        """
+        try:
+            fd, output_file_name = tempfile.mkstemp('.pcv', 'nltk-')
+            output_file = os.fdopen(fd, 'wb')
+            cls.write(sequence, output_file)
+            output_file.close()
+            return PickleCorpusView(output_file_name, delete_on_gc)
+        except (OSError, IOError), e:
+            raise ValueError('Error while creating temp file: %s' % e)
+        
+
 
 ######################################################################
 #{ Block Readers
