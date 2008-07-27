@@ -12,7 +12,7 @@ Read CoNLL-style chunk files.
 
 from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
-from nltk import chunk, tree, bracket_parse
+from nltk import chunk, tree, Tree
 import os, codecs
 from nltk.internals import deprecated
 from nltk import Tree, LazyMap, LazyConcatenation
@@ -61,7 +61,8 @@ class ConllCorpusReader(CorpusReader):
     
     def __init__(self, root, files, columntypes,
                  chunk_types=None, top_node='S', pos_in_tree=False,
-                 srl_includes_roleset=True, encoding=None):
+                 srl_includes_roleset=True, encoding=None,
+                 tree_class=Tree):
         for columntype in columntypes:
             if columntype not in self.COLUMN_TYPES:
                 raise ValueError('Bad colum type %r' % columntyp)
@@ -71,6 +72,7 @@ class ConllCorpusReader(CorpusReader):
         self._pos_in_tree = pos_in_tree
         self._top_node = top_node # for chunks
         self._srl_includes_roleset = srl_includes_roleset
+        self._tree_class = tree_class
         CorpusReader.__init__(self, root, files, encoding)
 
     #/////////////////////////////////////////////////////////////////
@@ -113,17 +115,23 @@ class ConllCorpusReader(CorpusReader):
             return self._get_chunked_words(grid, chunk_types)
         return LazyMap(get_chunked_words, self._grids(files))
     
-    def parsed_sents(self, files=None, pos_in_tree=False):
+    def parsed_sents(self, files=None, pos_in_tree=None):
         self._require(self.WORDS, self.POS, self.TREE)
-        return LazyMap(self._get_parsed_sent, self._grids(files))
+        if pos_in_tree is None: pos_in_tree = self._pos_in_tree
+        def get_parsed_sent(grid): # capture pos_in_tree as local var
+            return self._get_parsed_sent(grid, pos_in_tree)
+        return LazyMap(get_parsed_sent, self._grids(files))
 
     def srl_spans(self, files=None):
         self._require(self.SRL)
         return LazyMap(self._get_srl_spans, self._grids(files))
 
-    def srl_instances(self, files=None, pos_in_tree=False, flatten=True):
+    def srl_instances(self, files=None, pos_in_tree=None, flatten=True):
         self._require(self.WORDS, self.POS, self.TREE, self.SRL)
-        result = LazyMap(self._get_srl_instances, self._grids(files))
+        if pos_in_tree is None: pos_in_tree = self._pos_in_tree
+        def get_srl_instances(grid): # capture pos_in_tree as local var
+            return self._get_srl_instances(grid, pos_in_tree)
+        result = LazyMap(get_srl_instances, self._grids(files))
         if flatten: result = LazyConcatenation(result)
         return result
 
@@ -161,20 +169,25 @@ class ConllCorpusReader(CorpusReader):
                        for (filename, enc) in self.abspaths(files, True)])
 
     def _read_grid_block(self, stream):
-        # Read the grid describing a single sentence.
-        block = read_blankline_block(stream)[0].strip()
-        grid = [line.split() for line in block.split('\n')]
-        
-        # If there's a docstart row, then discard. ([xx] eventually it
-        # would be good to actually use it)
-        if grid[0][self._colmap.get('words', 0)] == '-DOCSTART-':
-            del grid[0]
-        
-        # Check that the grid is consistent.
-        for row in grid:
-            if len(row) != len(grid[0]):
-                raise ValueError('Inconsistent number of columns')
-        return [grid]
+        grids = []
+        for block in read_blankline_block(stream):
+            block = block.strip()
+            if not block: continue
+            
+            grid = [line.split() for line in block.split('\n')]
+            
+            # If there's a docstart row, then discard. ([xx] eventually it
+            # would be good to actually use it)
+            if grid[0][self._colmap.get('words', 0)] == '-DOCSTART-':
+                del grid[0]
+                
+            # Check that the grid is consistent.
+            for row in grid:
+                if len(row) != len(grid[0]):
+                    raise ValueError('Inconsistent number of columns:\n%s'
+                                     % block)
+            grids.append(grid)
+        return grids
 
     #/////////////////////////////////////////////////////////////////
     # Transforms
@@ -226,7 +239,7 @@ class ConllCorpusReader(CorpusReader):
 
         return stack[0]
 
-    def _get_parsed_sent(self, grid):
+    def _get_parsed_sent(self, grid, pos_in_tree):
         words = self._get_column(grid, self._colmap['words'])
         pos_tags = self._get_column(grid, self._colmap['pos'])
         parse_tags = self._get_column(grid, self._colmap['tree'])
@@ -241,11 +254,12 @@ class ConllCorpusReader(CorpusReader):
             right = right.count(')')*')' # only keep ')'.
             treestr += '%s (%s %s) %s' % (left, pos_tag, word, right)
         try:
-            tree = bracket_parse(treestr)
+            tree = self._tree_class.parse(treestr)
         except (ValueError, IndexError):
-            tree = bracket_parse('(%s %s)' % (self._top_node, treestr))
+            tree = self._tree_class.parse('(%s %s)' %
+                                          (self._top_node, treestr))
         
-        if not self._pos_in_tree:
+        if not pos_in_tree:
             for subtree in tree.subtrees():
                 for i, child in enumerate(subtree):
                     if (isinstance(child, nltk.Tree) and len(child)==1 and 
@@ -286,8 +300,8 @@ class ConllCorpusReader(CorpusReader):
 
         return spanlists
 
-    def _get_srl_instances(self, grid):
-        tree = self._get_parsed_sent(grid)
+    def _get_srl_instances(self, grid, pos_in_tree):
+        tree = self._get_parsed_sent(grid, pos_in_tree)
         spanlists = self._get_srl_spans(grid)
         if self._srl_includes_roleset:
             predicates = self._get_column(grid, self._colmap['srl']+1)
@@ -296,7 +310,7 @@ class ConllCorpusReader(CorpusReader):
             predicates = self._get_column(grid, self._colmap['srl'])
             rolesets = [None] * len(predicates)
 
-        instances = []
+        instances = ConllSRLInstanceList(tree)
         for wordnum, predicate in enumerate(predicates):
             if predicate == '-': continue
             # Decide which spanlist to use.  Don't assume that they're
@@ -304,7 +318,8 @@ class ConllCorpusReader(CorpusReader):
             # they usually are).
             for spanlist in spanlists:
                 for (start, end), tag in spanlist:
-                    if start == wordnum and tag in ('V', 'C-V'): break
+                    if wordnum in range(start,end) and tag in ('V', 'C-V'):
+                        break
                 else: continue
                 break
             else:
@@ -409,7 +424,8 @@ class ConllSRLInstance(object):
         verbstr = ' '.join(self.words[i][0] for i in self.verb)
         hdr = 'SRL for %r (stem=%r):\n' % (verbstr, self.verb_stem)
         s = ''
-        for i, (word, pos) in enumerate(self.words):
+        for i, word in enumerate(self.words):
+            if isinstance(word, tuple): word = word[0]
             for (start, end), argid in self.arguments:
                 if i == start: s += '[%s ' % argid
                 if i == end: s += '] '
@@ -419,6 +435,73 @@ class ConllSRLInstance(object):
                                    initial_indent='    ',
                                    subsequent_indent='    ')
 
+class ConllSRLInstanceList(list):
+    """
+    Set of instances for a single sentence
+    """
+    def __init__(self, tree, instances=()):
+        self.tree = tree
+        list.__init__(self, instances)
+
+    def __str__(self):
+        return self.pprint()
+
+    def pprint(self, include_tree=False):
+        # Sanity check: trees should be the same
+        for inst in self:
+            if inst.tree != self.tree:
+                raise ValueError('Tree mismatch!')
+
+        # If desired, add trees:
+        if include_tree:
+            words = self.tree.leaves()
+            pos = [None] * len(words)
+            synt = ['*'] * len(words)
+            self._tree2conll(self.tree, 0, words, pos, synt)
+
+        s = ''
+        for i in range(len(words)):
+            # optional tree columns
+            if include_tree:
+                s += '%-20s ' % words[i]
+                s += '%-8s ' % pos[i]
+                s += '%15s*%-8s ' % tuple(synt[i].split('*'))
+                
+            # verb head column
+            for inst in self:
+                if i == inst.verb_head:
+                    s += '%-20s ' % inst.verb_stem
+                    break
+            else:
+                s += '%-20s ' % '-'
+            # Remaining columns: self
+            for inst in self:
+                argstr = '*'
+                for (start, end), argid in inst.tagged_spans:
+                    if i==start: argstr = '(%s%s' % (argid, argstr)
+                    if i==(end-1): argstr += ')'
+                s += '%-12s ' % argstr
+            s += '\n'
+        return s
+
+    def _tree2conll(self, tree, wordnum, words, pos, synt):
+        assert isinstance(tree, Tree)
+        if len(tree) == 1 and isinstance(tree[0], basestring):
+            pos[wordnum] = tree.node
+            assert words[wordnum] == tree[0]
+            return wordnum+1
+        elif len(tree) == 1 and isinstance(tree[0], tuple):
+            assert len(tree[0]) == 2
+            pos[wordnum], pos[wordnum] = tree[0]
+            return wordnum+1
+        else:
+            synt[wordnum] = '(%s%s' % (tree.node, synt[wordnum])
+            for child in tree:
+                wordnum = self._tree2conll(child, wordnum, words,
+                                                  pos, synt)
+            synt[wordnum-1] += ')'
+            return wordnum
+            
 class ConllChunkCorpusReader(ConllCorpusReader):
     """
     A ConllCorpusReader whose data file contains three columns: words,
