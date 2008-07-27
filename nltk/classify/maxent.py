@@ -137,7 +137,7 @@ class MaxentClassifier(ClassifierI):
         
     def prob_classify(self, featureset):
         prob_dict = {}
-        for i, label in enumerate(self._encoding.labels()):
+        for label in self._encoding.labels():
             feature_vector = self._encoding.encode(featureset, label)
 
             if self._logarithmic:
@@ -156,6 +156,55 @@ class MaxentClassifier(ClassifierI):
         return DictionaryProbDist(prob_dict, log=self._logarithmic,
                                   normalize=True)
         
+    def explain(self, featureset, columns=4):
+        """
+        Print a table showing the effect of each of the features in
+        the given feature set, and how they combine to determine the
+        probabilities of each label for that featureset.
+        """
+        descr_width = 50
+        TEMPLATE = '  %-'+str(descr_width-2)+'s%s%8.3f'
+
+        pdist = self.prob_classify(featureset)
+        labels = sorted(pdist.samples(), key=pdist.prob, reverse=True)
+        labels = labels[:columns]
+        print '  Feature'.ljust(descr_width)+''.join(
+            '%8s' % l[:7] for l in labels)
+        print '  '+'-'*(descr_width-2+8*len(labels))
+        sums = defaultdict(int)
+        for i, label in enumerate(labels):
+            feature_vector = self._encoding.encode(featureset, label)
+            feature_vector.sort(key=lambda (fid,_): abs(self._weights[fid]),
+                                reverse=True)
+            for (f_id, f_val) in feature_vector:
+                if self._logarithmic: score = self._weights[f_id] * f_val
+                else: score = self._weights[fid] ** f_val
+                descr = self._encoding.describe(f_id)
+                descr = descr.split(' and label is ')[0] # hack
+                if len(descr) > 47: descr = descr[:44]+'...'
+                print TEMPLATE % (descr, i*8*' ', score)
+                sums[label] += score
+        print '  '+'-'*(descr_width-1+8*len(labels))
+        print '  TOTAL:'.ljust(descr_width)+''.join(
+            '%8.3f' % sums[l] for l in labels)
+        print '  PROBS:'.ljust(descr_width)+''.join(
+            '%8.3f' % pdist.prob(l) for l in labels)
+
+    def show_most_informative_features(self, n=10, show='all'):
+        """
+        @param: all, neg, or pos (for negative-only or positive-only)
+        """
+        fids = sorted(range(len(self._weights)),
+                      key=lambda fid: abs(self._weights[fid]),
+                      reverse=True)
+        if show == 'pos':
+            fids = [fid for fid in fids if self._weights[fid]>0]
+        elif show == 'neg':
+            fids = [fid for fid in fids if self._weights[fid]<0]
+        for fid in fids[:n]:
+            print '%8.3f %s' % (self._weights[fid],
+                                self._encoding.describe(fid))
+                    
     def __repr__(self):
         return ('<ConditionalExponentialClassifier: %d labels, %d features>' %
                 (len(self._encoding.labels()), self._encoding.length()))
