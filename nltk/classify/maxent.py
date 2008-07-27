@@ -1159,7 +1159,7 @@ def train_maxent_classifier_with_scipy(train_toks, trace=3, encoding=None,
         else: model.tol = cutoffs['tolerance']
 
     # Train the model.
-    model.fit(algorithm='CG')
+    model.fit(algorithm=algorithm)
 
     # Convert the model's weights from base-e to base-2 weights.
     weights = model.params * numpy.log2(numpy.e)
