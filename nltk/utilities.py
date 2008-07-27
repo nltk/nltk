@@ -518,7 +518,7 @@ class AbstractLazySequence(object):
         equal elements.  Otherwise, transitivity would be violated,
         since tuples do not compare equal to lists.
         """
-        if not isinstance(other, (AbstractCorpusView, list)): return -1
+        if not isinstance(other, (AbstractLazySequence, list)): return -1
         return cmp(list(self), list(other))
 
     def __hash__(self):
@@ -660,19 +660,50 @@ class LazyMap(AbstractLazySequence):
             self._cache = {}
         else:
             self._cache = None
+            
+        self._all_lazy = bool(sum(isinstance(lst, AbstractLazySequence)
+                                  for lst in lists))
 
     def iterate_from(self, index):
-        while True:
-            try: elements = [lst[index] for lst in self._lists]
-            except IndexError:
-                elements = [None] * len(self._lists)
-                for i, lst in enumerate(self._lists):
-                    try: elements[i] = lst[index]
-                    except IndexError: pass
+        # Special case: one lazy sublist
+        if len(self._lists) == 1 and self._all_lazy:
+            for value in self._lists[0].iterate_from(index):
+                yield self._func(value)
+            return
+        
+        # Special case: one non-lazy sublist
+        elif len(self._lists) == 1:
+            while True:
+                try: yield self._func(self._lists[0][index])
+                except IndexError: return
+                index += 1
+
+        # Special case: n lazy sublists
+        elif self._all_lazy:
+            iterators = [lst.iterate_from(index) for lst in self._lists]
+            while True:
+                elements = []
+                for iterator in iterators:
+                    try: elements.append(iterator.next())
+                    except: elements.append(None)
                 if elements == [None] * len(self._lists):
                     return
-            yield self._func(*elements)
-            index += 1
+                yield self._func(*elements)
+                index += 1
+
+        # general case
+        else:
+            while True:
+                try: elements = [lst[index] for lst in self._lists]
+                except IndexError:
+                    elements = [None] * len(self._lists)
+                    for i, lst in enumerate(self._lists):
+                        try: elements[i] = lst[index]
+                        except IndexError: pass
+                    if elements == [None] * len(self._lists):
+                        return
+                yield self._func(*elements)
+                index += 1
 
     def __getitem__(self, index):
         if isinstance(index, slice):
