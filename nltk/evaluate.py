@@ -12,6 +12,7 @@ Utility functions for evaluating processing modules.
 """
 
 import math
+from nltk.probability import FreqDist
 
 def accuracy(reference, test):
     """
@@ -135,7 +136,7 @@ class ConfusionMatrix(object):
     corresponds to correct values; and the off-diagonal entries
     correspond to incorrect values.
     """
-    def __init__(self, reference, test):
+    def __init__(self, reference, test, sort_by_count=False):
         """
         Construct a new confusion matrix from a list of reference
         values and a corresponding list of test values.
@@ -152,7 +153,13 @@ class ConfusionMatrix(object):
             raise ValueError('Lists must have the same length.')
             
         # Get a list of all values.
-        values = sorted(set(reference+test))
+        if sort_by_count:
+            ref_fdist = FreqDist(reference)
+            test_fdist = FreqDist(test)
+            def key(v): return -(ref_fdist[v]+test_fdist[v])
+            values = sorted(set(reference+test), key=key)
+        else:
+            values = sorted(set(reference+test))
 
         # Construct a value->index dictionary
         indices = dict((val,i) for (i,val) in enumerate(values))
@@ -171,7 +178,7 @@ class ConfusionMatrix(object):
         #: The confusion matrix itself (as a list of lists of counts).
         self._confusion = confusion
         #: The greatest count in L{self._confusion} (used for printing).
-        self._max_conf = 0
+        self._max_conf = max_conf
         #: The total number of values in the confusion matrix.
         self._total = len(reference)
         #: The number of correct (on-diagonal) values in the matrix.
@@ -209,14 +216,16 @@ class ConfusionMatrix(object):
 
         # Construct a format string for row values
         valuelen = max(len(str(val)) for val in values)
-        value_format = '%' + `valuelen` + 's |'
+        value_format = '%' + `valuelen` + 's | '
         # Construct a format string for matrix entries
         if show_percents:
             entrylen = 6
             entry_format = '%5.1f%%'
+            zerostr = '     .'
         else:
             entrylen = len(`self._max_conf`)
             entry_format = '%' + `entrylen` + 'd'
+            zerostr = ' '*(entrylen-1) + '.'
 
         # Write the column values.
         value_strings = [str(val) for val in values]
@@ -237,12 +246,17 @@ class ConfusionMatrix(object):
         for i in range(len(values)):
             s += value_format % values[i]
             for j in range(len(values)):
-                s += ' '
-                if show_percents:
+                if confusion[i][j] == 0:
+                    s += zerostr
+                elif show_percents:
                     s += entry_format % (100.0*confusion[i][j]/self._total)
                 else:
                     s += entry_format % confusion[i][j]
-            s += ' |\n'
+                if i == j:
+                    prevspace = s.rfind(' ')
+                    s = s[:prevspace] + '<' + s[prevspace+1:] + '>'
+                else: s += ' '
+            s += '|\n'
             
         # Write a dividing line
         s += '%s-+-%s+\n' % ('-'*valuelen, '-'*((entrylen+1)*len(values)))
