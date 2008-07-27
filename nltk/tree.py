@@ -415,7 +415,7 @@ class Tree(list):
         @type s: C{str}
         @param s: The string to parse
         
-        @type bracket: length-2 C{str}
+        @type brackets: length-2 C{str}
         @param brackets: The bracket characters used to mark the
             beginning and end of trees and subtrees.
             
