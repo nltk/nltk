@@ -542,6 +542,7 @@ class BinaryMaxentFeatureEncoding(MaxentFeatureEncodingI):
             fnames = set(fname for (fname, fval, label) in mapping)
             self._unseen = dict([(fname, i+self._length)
                                  for (i, fname) in enumerate(fnames)])
+            self._length += len(fnames)
 
     def encode(self, featureset, label):
         # Inherit docs.
