@@ -18,6 +18,17 @@ class SexpList(list):
     """
     
     def __init__(self, lparen, rparen, values=()):
+        """
+        Initialize and return the object.
+
+        @param lparen: The style of left parenthesis to use for this list
+        @type lparen: string
+        @param rparen: The style of right parenthesis to use for this list
+        @type rparen: string
+        @param values: The values the the list should contain
+        @type values: Tuple
+        """
+
         # left (open) parenthesis
         self.lparen = lparen
         # right (close) parenthesis
@@ -37,6 +48,11 @@ class SexpList(list):
         return s + self.rparen
 
     def __repr__(self):
+        """
+        Returns the string representation of this list
+
+        @return: The string representation of the list
+        """
         return '<SexpList: %s>' % self.pp()
 
 
@@ -85,6 +101,10 @@ class SexpListParser(object):
     def parse(self, to_parse):
         """
         Parse the text and return the C{SexpList}
+
+        @param to_parse: The string to parse
+        @type to_parse: string
+        @return: list of lists 
         """
 
         self.tokenizer = self._tokenizer(SexpListParser.remove_comments(to_parse))
@@ -206,6 +226,8 @@ class SexpFileParser(object):
     def parse(self):
         """
         Parse the file and retun a list of s-expressions
+
+        @return: list of lists
         """
 
         slp = SexpListParser()

@@ -9,6 +9,9 @@ class LinkResolver(object):
     """
 
     def __init__(self):
+        """
+        Initialize and return the object.
+        """
         self.unique_var_counter = 0
 
     
@@ -23,13 +26,18 @@ class LinkResolver(object):
     def _get_value(self, fs, path):
         """
         Find and return the value within the feature structure
-        given a path
+        given a path.
+
+        @param fs: Feature structre
+        @type fs: C{nltk.featstruct.FeatStruct}
+        @param path: list of keys to follow
+        @type path: list
+        @return: the feature value at the end of the path
         """
         target = None
         
         # in case we find another link keep a copy
         ancestors = [fs]
-        resolved_inner_link = False
 
         # to to the end
         last_step = path[-1]
@@ -48,8 +56,10 @@ class LinkResolver(object):
                 new_path = fs[step].down
                 fs[step] = self._get_value(parent, new_path)
                 fs = fs[step]
-                resolved_inner_link = True
                 
+        if isinstance(fs, nltk.sem.Variable):
+            return fs
+
         if last_step in fs:
             assert (not isinstance(fs[last_step], ReentranceLink))
             return fs[last_step]
@@ -62,6 +72,10 @@ class LinkResolver(object):
     def resolve(self, fstruct):
         """
         Resolve the relative and absolute links in the feature structure
+        
+        @param fstruct: Feature structure that may contain relative and absolute
+        links
+        @type fstruct: C{nltk.featstruct.FeatStruct}
         """
 
         def resolve_helper(fs, ancestors):
@@ -104,6 +118,12 @@ class ReentranceLink(object):
     """
 
     def __init__(self, path):
+        """
+        Initialize and return the object
+
+        @param path: the path to the value of the link
+        @type path: list
+        """
         self.up = 0
         self.down = []
 
@@ -116,6 +136,9 @@ class ReentranceLink(object):
         self.down = tuple(self.down)
 
     def __repr__(self):
+        """
+        Return a string representation of this link
+        """
         return "{%s%s}" % ("^"* self.up, ' '.join( self.down))
 
 if __name__ == '__main__':

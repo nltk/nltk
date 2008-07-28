@@ -1,28 +1,17 @@
 """
-Handling for special feature names
+Handling for special feature names during parsing
 """
 
 from sexp import *
 
-#def remove_specials(sexpll):
-    #i = 0
-    #if isinstance(sexpl, basestring): return sexpl
-    #length = len(sexpl)
-    #while i < length:
-        #sublist = sexpl[i]
-        #if isinstance(sublist[0], basestring):
-            #if sublist[0] in (":demo", "trace") or "%" in sublist[0]:
-                #print sexpl
-                #sexpl.remove(sublist)
-                #i -= 1
-                #length -= 1
-        #i += 1
-    #return sexpl
-
-
 def parse_alt(sexpl):
     """
-    Convert the alt feature
+    Parse the I{alt} feature definition. 
+
+    @param sexpl: An s-expression list that represents an I{alt} struture
+    @type sexpl: C{sexp.SexpList} 
+    @return: A tuple composed of ('alt', 'optional alt name', 'optional alt
+    index', 'alt values')
     """
 
     feat, name, index, val = ('', '', '', '')
@@ -47,6 +36,14 @@ def parse_alt(sexpl):
     return (feat, name, index, val)
 
 def parse_opt(sexpl):
+    """
+    Parse the I{opt} structure
+
+    @param sexpl: An s-expression list that represents an I{opt} structure
+    @type sexpl: C{sexp.SexpList}
+    @return: A tuple composed of ('opt', 'optional opt name', 'opt index', 'opt
+    value')
+    """
     feat, name, index, val = ('','','','')
     sexpl[0] = "alt"
     feat, name, index, val = parse_alt(sexpl)

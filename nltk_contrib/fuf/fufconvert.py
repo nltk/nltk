@@ -8,7 +8,12 @@ from fstypes import *
 
 def fuf_to_featstruct(fuf):
     """
-    Convert a FUF (as a sexpr string) to a FeatureStruct object.
+    Convert a FUF string into a FeatStruct. Note the string
+    must be a s-expression.
+
+    @param fuf: The fuf string
+    @type fuf: string
+    @return: C{nltk.featstruct.FeatStruct}
     """
     slp = SexpListParser()
     sexp = slp.parse(fuf)
@@ -110,6 +115,11 @@ def fuf_file_to_featstruct(fuf_filename):
     """
     Convert fuf file to C{nltk.FeatStruct} and processed the type definitions
     Returns the type table and the converted feature structure
+
+    @param fuf_filename: The name of the file that contains the grammar
+    @type fuf_filename: string
+    @return: The type table (C{fstypes.FeatureTypeTable}) and the grammar
+    as a C{nltk.featstruct.FeatStruct}.
     """
 
     # Convert the fuf code into expression lists

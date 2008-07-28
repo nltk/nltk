@@ -4,6 +4,17 @@ FUF convesion/unification results
 """
 
 def output_html(lst, header=[], style=""):
+    """
+    Output the I{lst} as an html table with I{header} items
+    and the applied I{style}
+
+    @param lst: The list of items to be shown
+    @type lst: list
+    @param header: The table header
+    @type header: list
+    @param style: The style to apply to the table
+    @type style: string
+    """
     s = " <table border=1 style='%s'> <tr> " % style
     for item in header:
         s += "<td><b>%s</b></td>" % item
@@ -18,6 +29,11 @@ def output_html(lst, header=[], style=""):
 def draw(fstruct, filename=None):
     """
     Draw graph representation of the feature structure using graphviz syntax
+
+    @param fstruct: A feature structure
+    @type fstruct: C{nltk.featstruct.FeatStruct}
+    @param filename: The filename to output the graphviz code to
+    @type filename: string
     """
     def draw_helper(output, fstruct, pcount, ccount):
         output += 'fs%d [label=" " style="filled" fillcolor="white"];\n' % (pcount)
@@ -35,3 +51,23 @@ def draw(fstruct, filename=None):
 
     output, ccount = draw_helper("", fstruct, 0, 1)
     return "digraph fs {\n nodesep=1.0;\n" + output + "\n}";
+
+def flatten(lst):
+    """
+    Flatten a list that contains nested lists
+    
+    @param lst: The source list
+    @type lst: list
+    @return: flat list
+    """
+    def flatten_helper(current, flat):
+        # flatten a list of nested lists
+        for item in current:
+            if isinstance(item, list):
+                flat = flatten_helper(item, flat)
+            else:
+                flat.append(item)
+        return flat 
+
+    assert isinstance(lst, list)
+    return flatten_helper(lst, [])
