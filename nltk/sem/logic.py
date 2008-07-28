@@ -84,6 +84,9 @@ class Variable(object):
     def __repr__(self):
         return 'Variable(\'' + self.name + '\')'
 
+def unique_variable():
+    return Variable('z' + str(_counter.get()))
+
 
 class SubstituteBindingsI(object):
     """
@@ -154,9 +157,6 @@ class Expression(SubstituteBindingsI):
     def __hash__(self):
         return hash(repr(self))
     
-    def unique_variable(self):
-        return Variable('z' + str(_counter.get()))
-
     def substitute_bindings(self, bindings):
         expr = self
         for var in expr.free():
@@ -359,7 +359,7 @@ class VariableBinderExpression(Expression):
             # if the bound variable appears in the expression, then it must
             # be alpha converted to avoid a conflict
             if self.variable in expression.free():
-                self = self.alpha_convert(self.unique_variable())
+                self = self.alpha_convert(unique_variable())
                 
             #replace in the term
             return self.__class__(self.variable,
