@@ -39,6 +39,9 @@ import weakref
 import yaml
 import re
 import urllib
+import zipfile
+try: import cStringIO as StringIO
+except: import StringIO
 
 from nltk import cfg, sem
 
@@ -82,6 +85,152 @@ else: path += [
     '/usr/local/lib/nltk/data']
 
 ######################################################################
+# Path Pointers
+######################################################################
+
+class PathPointer(object):
+    """
+    An abstract base class for 'path pointers,' used by NLTK's data
+    package to identify specific paths.  Two subclasses exist:
+    L{FileSystemPathPointer} identifies a file that can be accessed
+    directly via a given absolute path.  L{ZipFilePathPointer}
+    identifies a file contained within a zipfile, that can be accessed
+    by reading that zipfile.
+    """
+    def open(self, mode='rb', encoding=None):
+        """
+        Return a seekable read-only stream that can be used to read
+        the contents of the file identified by this path pointer.
+
+        @raise IOError: If the path specified by this pointer does
+            not contain a readable file.
+        """
+        raise NotImplementedError('abstract base class')
+
+    def file_size(self):
+        """
+        Return the size of the file pointed to by this path pointer,
+        in bytes.
+
+        @raise IOError: If the path specified by this pointer does
+            not contain a readable file.
+        """
+        raise NotImplementedError('abstract base class')
+    
+    def join(self, fileid):
+        """
+        Return a new path pointer formed by starting at the path
+        identified by this pointer, and then following the relative
+        path given by C{fileid}.  The path components of C{fileid}
+        should be seperated by forward slashes (C{/}), regardless of
+        the underlying file system's path seperator character.
+        """
+        raise NotImplementedError('abstract base class')
+
+class FileSystemPathPointer(PathPointer, unicode):
+    """
+    A path pointer that identifies a file which can be accessed
+    directly via a given absolute path.  C{FileSystemPathPointer} is a
+    subclass of C{unicode} for backwards compatibility purposes --
+    this allows old code that expected C{nltk.data.find()} to expect a
+    string to usually work (assuming the resource is not found in a
+    zipfile).
+    """
+    def __init__(self, path):
+        """
+        Create a new path pointer for the given absolute path.
+
+        @raise IOError: If the given path does not exist.
+        """
+        path = os.path.abspath(path)
+        if not os.path.exists(path):
+            raise IOError('Path %r does not exist' % path)
+        self._path = path
+        unicode.__init__(self, path)
+
+    path = property(lambda self: self._path, doc="""
+        The absolute path identified by this path pointer.""")
+
+    def open(self, mode='rb', encoding=None):
+        if mode is None: mode = 'rb'
+        if encoding is None:
+            return open(self._path, mode)
+        else:
+            # [xx] use SeekableUnicodeStreamReader instead??
+            return codecs.open(self._path, mode, encoding)
+
+    def file_size(self):
+        return os.stat(self._path).st_size
+
+    def join(self, fileid):
+        path = os.path.join(self._path, *fileid.split('/'))
+        return FileSystemPathPointer(path)
+
+    def __repr__(self):
+        return 'FileSystemPathPointer(%r)' % self._path
+
+    def __str__(self):
+        return self._path
+
+class ZipFilePathPointer(PathPointer):
+    """
+    A path pointer that identifies a file contained within a zipfile,
+    which can be accessed by reading that zipfile.
+    """
+    def __init__(self, zipfile, entry=''):
+        """
+        Create a new path pointer pointing at the specified entry
+        in the given zipfile.
+
+        @raise IOError: If the given zipfile does not exist, or if it
+        does not contain the specified entry.
+        """
+        if isinstance(zipfile, basestring):
+            zipfile = OpenOnDemandZipFile(os.path.abspath(zipfile))
+            
+        # Normalize the entry string:
+        entry = re.sub('(^|/)/+', r'\1', entry)
+
+        # Check that the entry exists:
+        if entry:
+            try: zipfile.getinfo(entry)
+            except: raise IOError('Zipfile %r does not contain %r' % 
+                                  (zipfile.filename, entry))
+        self._zipfile = zipfile
+        self._entry = entry
+
+    zipfile = property(lambda self: self._zipfile, doc="""
+        The C{zipfile.ZipFile} object used to access the zip file
+        containing the entry identified by this path pointer.""")
+    entry = property(lambda self: self._entry, doc="""
+        The name of the file within C{zipfile} that this path
+        pointer points to.""")
+
+    def open(self, mode='rb', encoding=None):
+        if mode not in ('r', 'rb', 'rU', 'rbU', 'rUb', None):
+            raise ValueError('ZipFilePathPointer only supports mode="rb"')
+        data = self._zipfile.read(self._entry)
+        if encoding: data = data.decode(encoding)
+        # [xx] n.b.: ignoring universal newline flag here!
+        return StringIO.StringIO(data)
+
+    def file_size(self):
+        return self._zipfile.getinfo(self._entry).file_size
+
+    def join(self, fileid):
+        entry = '%s/%s' % (self._entry, fileid)
+        return ZipFilePathPointer(self._zipfile, entry)
+    
+    def __repr__(self):
+        # tempyhack!:
+        if self._entry:
+            return repr(self._zipfile.filename[:-4])
+        
+        return 'ZipFilePathPointer(%r, %r)' % (
+            self._zipfile.filename, self._entry)
+        
+
+######################################################################
 # Access Functions
 ######################################################################
 
@@ -105,12 +254,30 @@ def find(resource_name):
         separator.
     @rtype: C{str}
     """
-    # Check each directory in our path:
-    for directory in path:
-        p = os.path.join(directory, os.path.join(*resource_name.split('/')))
-        if os.path.exists(p):
-            return p
+    # Check if the resource name includes a zipfile name
+    m = re.match('(.*\.zip)/?(.*)$|', resource_name)
+    zipfile, zipentry = m.groups()
+    
+    # Check each item in our path
+    for path_item in path:
         
+        # Is the path item a zipfile?
+        if os.path.isfile(path_item) and path_item.endswith('.zip'):
+            try: return ZipFilePathPointer(path_item, resource_name)
+            except IOError: continue # resource not in zipfile
+
+        # Is the path item a path_item?
+        elif os.path.isdir(path_item):
+            if zipfile is None:
+                p = os.path.join(path_item, *resource_name.split('/'))
+                if os.path.exists(p):
+                    return FileSystemPathPointer(p)
+            else:
+                p = os.path.join(path_item, *zipfile.split('/'))
+                if os.path.exists(p):
+                    try: return ZipFilePathPointer(p, zipentry)
+                    except IOError: continue # resource not in zipfile
+
     # Display a friendly error message if the resource wasn't found:
     msg = textwrap.fill(
         'Resource %r not found.  For installation instructions, '
@@ -316,7 +483,7 @@ def _open(resource_url, mode='rb'):
     protocol, path = re.match('(?:(\w+):)?(.*)', resource_url).groups()
 
     if protocol is None or protocol.lower() == 'nltk':
-        return open(find(path), mode)
+        return find(path).open(mode)
     elif protocol.lower() == 'file':
         # urllib might not use mode='rb', so handle this one ourselves:
         return open(path, mode)
@@ -350,3 +517,42 @@ class LazyLoader(object):
         # This looks circular, but its not, since __load() changes our
         # __class__ to something new:
         return '%r' % self
+
+######################################################################
+# ZipFile subclass
+######################################################################
+
+class OpenOnDemandZipFile(zipfile.ZipFile):
+    """
+    A subclass of C{zipfile.ZipFile} that closes its file pointer
+    whenever it is not using it; and re-opens it when it needs to read
+    data from the zipfile.  This is useful for reducing the number of
+    open file handles when many zip files are being accessed at once.
+    C{OpenOnDemandZipFile} must be constructed from a filename, not a
+    file-like object (to allow re-opening).  C{OpenOnDemandZipFile} is
+    read-only (i.e., C{write} and C{writestr} are disabled.
+    """
+    def __init__(self, filename):
+        if not isinstance(filename, basestring):
+            raise TypeError('ReopenableZipFile filename must be a string')
+        zipfile.ZipFile.__init__(self, filename)
+        assert self.filename == filename
+        self.close()
+        
+    def read(self, name):
+        assert self.fp is None
+        self.fp = open(self.filename, 'rb')
+        value = zipfile.ZipFile.read(self, name)
+        self.close()
+        return value
+
+    def write(self, *args, **kwargs):
+        """@raise NotImplementedError: OpenOnDemandZipfile is read-only"""
+        raise NotImplementedError('OpenOnDemandZipfile is read-only')
+
+    def writestr(self, *args, **kwargs):
+        """@raise NotImplementedError: OpenOnDemandZipfile is read-only"""
+        raise NotImplementedError('OpenOnDemandZipfile is read-only')
+
+    def __repr__(self):
+        return 'OpenOnDemandZipFile(%r)' % self.filename
