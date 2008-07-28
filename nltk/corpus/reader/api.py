@@ -14,6 +14,7 @@ import os, re
 from nltk import defaultdict
 from nltk.internals import deprecated
 import nltk.corpus.reader.util
+from nltk.data import PathPointer, FileSystemPathPointer, ZipFilePathPointer
 
 class CorpusReader(object):
     """
@@ -35,7 +36,10 @@ class CorpusReader(object):
     """
     def __init__(self, root, files, encoding=None):
         """
-        @param root: The root directory for this corpus.
+        @type root: L{PathPointer} or C{str}
+        @param root: A path pointer identifying the root directory for
+            this corpus.  If a string is specified, then it will be
+            converted to a L{PathPointer} automatically.
         @param files: A list of the files that make up this corpus.
             This list can either be specified explicitly, as a list of
             strings; or implicitly, as a regular expression over file
@@ -62,8 +66,18 @@ class CorpusReader(object):
               - C{None}: the file contents of all files will be
                 processed using non-unicode byte strings.
         """
-        if not os.path.isdir(root):
-            raise ValueError('Root directory %r not found!' % root)
+        # Convert the root to a path pointer, if necessary.
+        if isinstance(root, basestring):
+            m = re.match('(.*\.zip)/?(.*)$|', resource_name)
+            zipfile, zipentry = m.groups()
+            if zipfile:
+                root = ZipFilePathPointer(zipfile, zipentry)
+            else:
+                root = FileSystemPathPointer(root)
+        elif not isinstance(root, PathPointer):
+            raise TypeError('CorpusReader: expected a string or a PathPointer')
+
+        # If `files` is a regexp, then expand it.
         if isinstance(files, basestring):
             files = nltk.corpus.reader.find_corpus_files(root, files)
             
@@ -92,7 +106,11 @@ class CorpusReader(object):
            contents are processed using byte strings (C{str})."""
         
     def __repr__(self):
-        return '<%s in %r>' % (self.__class__.__name__, self._root)
+        if isinstance(self._root, ZipFilePathPointer):
+            path = '%s/%s' % (self._root.zipfile.filename, self._root.entry)
+        else:
+            path = '%s' % self._root.path
+        return '<%s in %r>' % (self.__class__.__name__, path)
 
     def files(self):
         """
@@ -108,8 +126,10 @@ class CorpusReader(object):
         @type file: C{str}
         @param file: The file identifier for the file whose path
             should be returned.
+            
+        @rtype: L{PathPointer}
         """
-        return os.path.join(self._root, file)
+        return self._root.join(file)
 
     def abspaths(self, files=None, include_encoding=False):
         """
@@ -125,32 +145,32 @@ class CorpusReader(object):
             single file identifier.
             
         @param include_encoding: If true, then return a list of
-            C{(abspath, encoding)} tuples.
+            C{(path_pointer, encoding)} tuples.
+
+        @rtype: C{list} of L{PathPointer}
         """
         if files is None:
             files = self._files
         elif isinstance(files, basestring):
             files = [files]
 
-        if not include_encoding:
-            return [os.path.join(self._root, f) for f in files]
+        paths = [self._root.join(f) for f in files]
+
+        if include_encoding:            
+            return zip(paths, [self.encoding(f) for f in files])
         else:
-            return [(os.path.join(self._root, f), self.encoding(f))
-                    for f in files]
+            return paths
 
     def open(self, file):
         """
         Return an open stream that can be used to read the given file.
-        If the file's encoding is known, then the stream will
+        If the file's encoding is not C{None}, then the stream will
         automatically decode the file's contents into unicode.
 
         @param file: The file identifier of the file to read.
         """
-        enc = self.encoding(file)
-        if enc is None:
-            return open(file, 'rb')
-        else:
-            return codecs.open(file, 'rb', enc)
+        encoding = self.encoding(file)
+        return self._root.join(file).open(encoding)
 
     def encoding(self, file):
         """
@@ -165,7 +185,9 @@ class CorpusReader(object):
         
     def _get_root(self): return self._root
     root = property(_get_root, doc="""
-        The directory where this corpus is stored.""")
+        The directory where this corpus is stored.
+
+        @type: L{PathPointer}""")
 
     #{ Deprecated since 0.9.1
     @deprecated("Use corpus.files() instead")
@@ -264,7 +286,7 @@ class CategorizedCorpusReader(object):
                     self._add(file_id, category)
 
         elif self._file is not None:
-            for line in open(os.path.join(self.root, self._file)).readlines():
+            for line in self.open(self._file).readlines():
                 line = line.strip()
                 file_id, categories = line.split(self._delimiter, 1)
                 if file_id not in self.files():
