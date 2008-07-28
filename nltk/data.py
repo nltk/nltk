@@ -40,6 +40,7 @@ import yaml
 import re
 import urllib
 import zipfile
+import codecs
 try: import cStringIO as StringIO
 except: import StringIO
 
