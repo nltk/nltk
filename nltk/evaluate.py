@@ -12,6 +12,8 @@ Utility functions for evaluating processing modules.
 """
 
 import math
+
+from nltk.utilities import LazyZip
 from nltk.probability import FreqDist
 
 def accuracy(reference, test):
@@ -31,8 +33,11 @@ def accuracy(reference, test):
     """
     if len(reference) != len(test):
         raise ValueError("Lists must have the same length.")
-    num_correct = [1 for x,y in zip(reference, test) if x==y]
-    return float(len(num_correct)) / len(reference)
+    num_correct = 0
+    for x, y in LazyZip(reference, test):
+        if x == y:
+            num_correct += 1
+    return float(num_correct) / len(reference)
 
 def precision(reference, test):
     """
