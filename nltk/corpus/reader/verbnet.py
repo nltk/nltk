@@ -182,7 +182,7 @@ class VerbnetCorpusReader(XMLCorpusReader):
         Initialize the indexes L{_lemma_to_class},
         L{_wordnet_to_class}, and L{_class_to_fileid} by scanning
         through the corpus files.  This doesn't do proper xml parsing,
-        but is good enough to find everything in the standard propbank
+        but is good enough to find everything in the standard verbnet
         corpus -- and it runs about 30 times faster than xml parsing
         (with the python ElementTree; only 2-3 times faster with
         cElementTree).
@@ -193,8 +193,7 @@ class VerbnetCorpusReader(XMLCorpusReader):
             vnclass = fileid[:-4] # strip the '.xml'
             self._class_to_fileid[vnclass] = fileid
             self._shortid_to_longid[self.shortid(vnclass)] = vnclass
-            filename = self.abspath(fileid)
-            for m in self._INDEX_RE.finditer(open(filename).read()):
+            for m in self._INDEX_RE.finditer(self.open(fileid).read()):
                 groups = m.groups()
                 if groups[0] is not None:
                     self._lemma_to_class[groups[0]].append(vnclass)

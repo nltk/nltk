@@ -50,8 +50,9 @@ class SensevalCorpusReader(CorpusReader):
         """
         @return: the text contents of the given files, as a single string.
         """
-        return concat([codecs.open(path, 'rb', enc).read()
-                       for (path,enc) in self.abspaths(files, True)])
+        if files is None: files = self._files
+        elif isinstance(files, basestring): files = [files]
+        return concat([self.open(f).read() for f in files])
     
     def _entry(self, tree):
         elts = []

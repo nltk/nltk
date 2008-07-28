@@ -33,8 +33,9 @@ class ToolboxCorpusReader(CorpusReader):
                        for (filename, enc) in self.abspaths(files)])
 
     def raw(self, files):
-        return concat([codecs.open(path, 'rb', enc).read()
-                       for (path,enc) in self.abspaths(files, True)])
+        if files is None: files = self._files
+        elif isinstance(files, basestring): files = [files]
+        return concat([self.open(f).read() for f in files])
 
     #{ Deprecated since 0.8
     @deprecated("Use .xml() instead.")
@@ -60,7 +61,12 @@ class StandardFormat(object):
         @param sfm_file: name of the standard format marker input file
         @type sfm_file: string
         """
-        self._file = codecs.open(sfm_file, 'rU', self._encoding)
+        if isinstance(sfm_file, PathPointer):
+            # [xx] We don't use 'rU' mode here -- do we need to?
+            #      (PathPointer.open doesn't take a mode option)
+            self._file = sfm_file.open(self._encoding)
+        else:
+            self._file = codecs.open(sfm_file, 'rU', self._encoding)
 
     def open_string(self, s):
         """Open a standard format marker string for sequential reading. 

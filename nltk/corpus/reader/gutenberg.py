@@ -17,15 +17,15 @@ class GutenbergCorpusReader(PlaintextCorpusReader):
             startpos = 0
             
             # Search for a preamble.
-            stream = codecs.open(filename, 'rb', encoding)
+            self._open()
             for i in range(300):
-                line = stream.readline()
+                line = self._stream.readline()
                 if line == '':
                     break # No preamble found!
                 if re.match(r'\*END\*?\s*THE\s*SMALL\s*PRINT', line):
-                    startpos = stream.tell()
+                    startpos = self._stream.tell()
                     break # End of the preamble!
-            stream.close()
+            self.close()
     
             StreamBackedCorpusView.__init__(self, filename,
                                             block_reader, startpos,
