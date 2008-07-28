@@ -6,7 +6,7 @@
 # URL: <http://nltk.org>
 # For license information, see LICENSE.TXT
 
-import os, sys, bisect, re, codecs, tempfile
+import os, sys, bisect, re, tempfile
 try: import cPickle as pickle
 except ImportError: import pickle
 from itertools import islice
@@ -805,8 +805,9 @@ def find_corpus_files(root, regexp):
     # Find files in a zipfile: scan the zipfile's namelist.  Filter
     # out entries that end in '/' -- they're directories.
     if isinstance(root, ZipFilePathPointer):
-        items = [name for name in root.zipfile.namelist()
-                 if (not name.endswith('/')) and re.match(regexp, name)]
+        files = [name[len(root.entry):] for name in root.zipfile.namelist()
+                 if not name.endswith('/')]
+        items = [name for name in files if re.match(regexp, name)]
         return tuple(sorted(items))
 
     # Find files in a directory: use os.walk to search all
