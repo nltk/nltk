@@ -398,6 +398,9 @@ chart.  To do this, we use a special subclass of `Chart`, called
 
 A simple intransitive sentence:
 
+    >>> from nltk.sem import logic
+    >>> logic._counter._value = 100
+     
     >>> trees = cp.nbest_parse('john barks'.split())
               |.jo.ba.|
     Scanner   |[--]  .| [0:1] 'john'
