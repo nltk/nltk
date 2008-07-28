@@ -7,7 +7,7 @@
 
 from nltk.internals import Counter
 from nltk.sem import logic
-from nltk.sem.logic import Variable
+from nltk.sem.logic import Variable, unique_variable
 import drt_resolve_anaphora as RA
 
 from Tkinter import Canvas
@@ -79,9 +79,6 @@ class AbstractDrs(object):
         else:
             return DrtVariableExpression(variable)
 
-    def unique_variable(self):
-        return Variable('z' + str(logic._counter.get()))
-
     def draw(self):
         DrsDrawer(self).draw()
 
@@ -112,7 +109,7 @@ class DRS(AbstractDrs, logic.Expression, RA.DRS):
             # any bound variable that appears in the expression must
             # be alpha converted to avoid a conflict
             for ref in (set(self.refs) & expression.free()):
-                newvar = self.unique_variable() 
+                newvar = unique_variable() 
                 newvarex = DrtIndividualVariableExpression(newvar)
                 i = self.refs.index(ref)
                 self = DRS(self.refs[:i]+[newvar]+self.refs[i+1:],
@@ -250,7 +247,7 @@ class ConcatenationDRS(AbstractDrs, logic.BooleanExpression, RA.ConcatenationDRS
         else:
             # alpha convert every ref that is free in 'expression'
             for ref in (set(self.get_refs()) & expression.free()): 
-                v = DrtIndividualVariableExpression(self.unique_variable())
+                v = DrtIndividualVariableExpression(unique_variable())
                 first  = first.replace(ref, v, True)
                 second = second.replace(ref, v, True)
 
@@ -270,7 +267,7 @@ class ConcatenationDRS(AbstractDrs, logic.BooleanExpression, RA.ConcatenationDRS
             # For any ref that is in both 'first' and 'second'
             for ref in (set(first.refs) & set(second.refs)):
                 # alpha convert the ref in 'second' to prevent collision
-                newvar = DrtIndividualVariableExpression(self.unique_variable())
+                newvar = DrtIndividualVariableExpression(unique_variable())
                 second = second.replace(ref, newvar, True)
             
             return DRS(first.refs + second.refs, first.conds + second.conds)

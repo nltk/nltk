@@ -18,7 +18,6 @@ from nltk.featstruct import FeatStruct, unify, FeatStructParser
 from nltk.sem import logic
 from nltk import cfg, defaultdict
 from nltk.cfg import FeatStructNonterminal
-from nltk.internals import Counter
 import nltk.data
 
 from api import *
@@ -427,14 +426,10 @@ class InstantiateVarsChart(Chart):
         return FeatureTreeEdge(edge.span(), lhs, edge.rhs(),
                                edge.dot(), edge.bindings())
     
-    counter = Counter(100)
     def inst_vars(self, edge):
-        return dict((var, self.unique_variable(self.counter))
+        return dict((var, logic.unique_variable())
                     for var in edge.lhs().variables()
                     if var.name.startswith('@'))
-
-    def unique_variable(self, counter):
-        return logic.Variable('z%s' % counter.get())
 
 #////////////////////////////////////////////////////////////
 # Demo
