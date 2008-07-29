@@ -268,16 +268,20 @@ class StreamBackedCorpusView(AbstractLazySequence):
             
         # Each iteration through this loop, we read a single block
         # from the stream.
-        while True:
+        while filepos < self._eofpos:
             # Read the next block.
             self._stream.seek(filepos)
             self._current_toknum = toknum
             self._current_blocknum = block_index
             tokens = self.read_block(self._stream)
-            assert isinstance(tokens, (tuple, list)), \
-                   'block reader should return list or tuple.'
+            assert isinstance(tokens, (tuple, list)), (
+                'block reader %s() should return list or tuple.' %
+                self.read_block.__name__)
             num_toks = len(tokens)
             new_filepos = self._stream.tell()
+            assert new_filepos > filepos, (
+                'block reader %s() should consume at least 1 byte' %
+                (self.read_block.__name__, filepos))
 
             # Update our cache.
             self._cache = (toknum, toknum+num_toks, list(tokens))
@@ -302,15 +306,17 @@ class StreamBackedCorpusView(AbstractLazySequence):
             # may be modified.
             for tok in tokens[max(0, start_tok-toknum):]:
                 yield tok
-            # If we're at the end of the file, then we're done; set
-            # our length and terminate the generator.
+            # If we're at the end of the file, then we're done.
+            assert new_filepos <= self._eofpos
             if new_filepos == self._eofpos:
-                self._len = toknum + num_toks
-                return
+                break
             # Update our indices
             toknum += num_toks
             filepos = new_filepos
 
+        # Set our length and terminate the generator.
+        self._len = toknum + num_toks
+        
     # Use concat for these, so we can use a ConcatenatedCorpusView
     # when possible.
     def __add__(self, other):
