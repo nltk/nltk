@@ -192,7 +192,7 @@ class MaxentClassifier(ClassifierI):
 
     def show_most_informative_features(self, n=10, show='all'):
         """
-        @param: all, neg, or pos (for negative-only or positive-only)
+        @param show: all, neg, or pos (for negative-only or positive-only)
         """
         fids = sorted(range(len(self._weights)),
                       key=lambda fid: abs(self._weights[fid]),
