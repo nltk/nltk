@@ -1871,7 +1871,7 @@ the ``codecs.StreamReader`` class.  To construct a new reader, we call
 the constructor with an underlying stream and an encoding name:
 
     >>> from cStringIO import StringIO
-    >>> from nltk.corpus.reader.util import SeekableUnicodeStreamReader
+    >>> from nltk.data import SeekableUnicodeStreamReader
     >>> stream = StringIO(u"""\
     ... This is a test file.
     ... It is encoded in ascii.
