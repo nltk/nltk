@@ -9,7 +9,10 @@
 #{ Lazy Corpus Loader
 ######################################################################
 
+import re
 import nltk
+
+TRY_ZIPFILE_FIRST = False
 
 class LazyCorpusLoader(object):
     """
@@ -37,8 +40,22 @@ class LazyCorpusLoader(object):
         self.__kwargs = kwargs
 
     def __load(self):
-        # Find the corpus root directory, and load the corpus.
-        root = nltk.data.find('corpora/' + self.__name)
+        # Find the corpus root directory.
+        zip_name = re.sub(r'(([^/]*)(/.*)?)', r'\2.zip/\1/', self.__name)
+        if TRY_ZIPFILE_FIRST:
+            try: 
+                root = nltk.data.find('corpora/%s' % zip_name)
+            except LookupError:
+                raise
+                root = nltk.data.find('corpora/%s' % self.__name)
+        else:
+            try:
+                root = nltk.data.find('corpora/%s' % self.__name)
+            except LookupError, e:
+                try: root = nltk.data.find('corpora/%s' % zip_name)
+                except LookupError: raise e
+
+        # Load the corpus.
         corpus = self.__reader_cls(root, *self.__args, **self.__kwargs)
         
         # This is where the magic happens!  Transform ourselves into
