@@ -10,6 +10,7 @@ import re, codecs
 from plaintext import PlaintextCorpusReader
 from nltk.corpus.reader.api import *
 from nltk.corpus.reader.util import *
+from nltk.data import FileSystemPathPointer
 
 class GutenbergCorpusReader(PlaintextCorpusReader):
     class CorpusView(StreamBackedCorpusView):
@@ -17,15 +18,18 @@ class GutenbergCorpusReader(PlaintextCorpusReader):
             startpos = 0
             
             # Search for a preamble.
-            self._open()
+            if isinstance(filename, PathPointer):
+                stream = filename.open(encoding)
+            else:
+                stream = FileSystemPathPointer(filename).open(encoding)
             for i in range(300):
-                line = self._stream.readline()
+                line = stream.readline()
                 if line == '':
                     break # No preamble found!
                 if re.match(r'\*END\*?\s*THE\s*SMALL\s*PRINT', line):
-                    startpos = self._stream.tell()
+                    startpos = stream.tell()
                     break # End of the preamble!
-            self.close()
+            stream.close()
     
             StreamBackedCorpusView.__init__(self, filename,
                                             block_reader, startpos,
