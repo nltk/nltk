@@ -54,9 +54,9 @@ Test unify()
     >>> print Clause([P(A), -Q(y)]).unify(Clause([-P(x), Q(B)]))
     {}
  
- -------------------------
- Test remove_tautologies()
- -------------------------
+-------------------------
+Test remove_tautologies()
+-------------------------
     >>> print Clause([P(x), -P(A)]).remove_tautologies()
     {}
     >>> print Clause([P(x), -P(A), Q(x)]).remove_tautologies()
@@ -66,9 +66,9 @@ Test unify()
     >>> print Clause([P(x), -Q(A)]).remove_tautologies()
     {P(x), -Q(A)}
  
- ------------
- Test prove()
- ------------
+------------
+Test prove()
+------------
  	
     >>> print Resolution(lp.parse('man(x)')).prove()
     False
