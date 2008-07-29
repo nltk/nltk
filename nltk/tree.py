@@ -419,7 +419,8 @@ class Tree(list):
         @param brackets: The bracket characters used to mark the
             beginning and end of trees and subtrees.
             
-        @type parse_node, parse_leaf: C{function}
+        @type parse_node: C{function}
+        @type parse_leaf: C{function}
         @param parse_node, parse_leaf: If specified, these functions
             are applied to the substrings of C{s} corresponding to
             nodes and leaves (respectively) to obtain the values for
@@ -436,7 +437,8 @@ class Tree(list):
             default, use the C{node_pattern} and C{leaf_pattern}
             arguments.
 
-        @type node_pattern, leaf_pattern: C{str}
+        @type node_pattern: C{str}
+        @type leaf_pattern: C{str}
         @param node_pattern, leaf_pattern: Regular expression patterns
             used to find node and leaf substrings in C{s}.  By
             default, both nodes patterns are defined to match any
