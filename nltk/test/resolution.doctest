@@ -1,0 +1,136 @@
+=========================
+Resolution Theorem Prover
+=========================
+
+    >>> from nltk_contrib.sem.resolution import *
+    >>> from nltk.sem import logic
+    >>> from nltk.sem.logic import *
+    >>> logic._counter._value = 0
+    >>> lp = LogicParser()
+    
+    >>> P = lp.parse('P')
+    >>> Q = lp.parse('Q')
+    >>> R = lp.parse('R')
+    >>> A = lp.parse('A')
+    >>> B = lp.parse('B')
+    >>> x = lp.parse('x')
+    >>> y = lp.parse('y')
+    
+-------------------------------
+Test most_general_unification()
+-------------------------------
+
+    >>> print most_general_unification(x, x)
+    {}
+    >>> print most_general_unification(A, A)
+    {}
+    >>> print most_general_unification(A, x)
+    {x: A}
+    >>> print most_general_unification(x, A)
+    {x: A}
+    >>> print most_general_unification(x, y)
+    {x: y}
+    >>> print most_general_unification(P(x), P(A))
+    {x: A}
+    >>> print most_general_unification(P(x,B), P(A,y))
+    {y: B, x: A}
+    >>> print most_general_unification(P(x,B), P(B,x))
+    {x: B}
+    >>> print most_general_unification(P(x,y), P(A,x))
+    {y: x, x: A}
+    >>> print most_general_unification(P(Q(x)), P(y))
+    {y: Q(x)}
+
+------------
+Test unify()
+------------
+
+    >>> print Clause([P(x)]).unify(Clause([-P(A)]))
+    {}
+    >>> print Clause([P(A), Q(x)]).unify(Clause([-P(x), R(x)]))
+    {Q(A), R(A)}
+    >>> print Clause([P(A), Q(x), R(x,y)]).unify(Clause([-P(x), Q(y)]))
+    {R(A,y), Q(y), Q(A)}
+    >>> print Clause([P(A), -Q(y)]).unify(Clause([-P(x), Q(B)]))
+    {}
+ 
+ -------------------------
+ Test remove_tautologies()
+ -------------------------
+    >>> print Clause([P(x), -P(A)]).remove_tautologies()
+    {}
+    >>> print Clause([P(x), -P(A), Q(x)]).remove_tautologies()
+    {Q(A)}
+    >>> print Clause([-Q(A), P(x), -P(A), Q(x), -R(y)]).remove_tautologies()
+    {-R(y)}
+    >>> print Clause([P(x), -Q(A)]).remove_tautologies()
+    {P(x), -Q(A)}
+ 
+ ------------
+ Test prove()
+ ------------
+ 	
+    >>> print Resolution(lp.parse('man(x)')).prove()
+    False
+    >>> print Resolution(lp.parse('(man(x) -> man(x))')).prove()
+    True
+    >>> print Resolution(lp.parse('(man(x) -> --man(x))')).prove()
+    True
+    >>> print Resolution(lp.parse('-(man(x) & -man(x))')).prove()
+    True
+    >>> print Resolution(lp.parse('(man(x) | -man(x))')).prove()
+    True
+    >>> print Resolution(lp.parse('(man(x) -> man(x))')).prove()
+    True
+    >>> print Resolution(lp.parse('-(man(x) & -man(x))')).prove()
+    True
+    >>> print Resolution(lp.parse('(man(x) | -man(x))')).prove()
+    True
+    >>> print Resolution(lp.parse('(man(x) -> man(x))')).prove()
+    True
+    >>> print Resolution(lp.parse('(man(x) <-> man(x))')).prove()
+    True
+    >>> print Resolution(lp.parse('-(man(x) <-> -man(x))')).prove()
+    True
+    >>> print Resolution(lp.parse('all x.man(x)')).prove()
+    False
+    >>> print Resolution(lp.parse('-all x.some y.F(x,y) & some x.all y.(-F(x,y))')).prove()
+    False
+    >>> print Resolution(lp.parse('some x.all y.sees(x,y)')).prove()
+    False
+
+    >>> p1 = lp.parse('all x.(man(x) -> mortal(x))')
+    >>> p2 = lp.parse('man(Socrates)')
+    >>> c = lp.parse('mortal(Socrates)')
+    >>> Resolution(c, [p1,p2]).prove()
+    True
+    
+    >>> p1 = lp.parse('all x.(man(x) -> walks(x))')
+    >>> p2 = lp.parse('man(John)')
+    >>> c = lp.parse('some y.walks(y)')
+    >>> Resolution(c, [p1,p2]).prove()
+    True
+    
+    >>> p = lp.parse('some e1.some e2.(believe(e1,john,e2) & walk(e2,mary))')
+    >>> c = lp.parse('some e0.walk(e0,mary)')
+    >>> Resolution(c, [p]).prove()
+    True
+
+-----------------
+Test show_proof()
+-----------------
+
+    >>> p1 = lp.parse('all x.(man(x) -> mortal(x))')
+    >>> p2 = lp.parse('man(Socrates)')
+    >>> c = lp.parse('mortal(Socrates)')
+    >>> tp = Resolution(c, [p1,p2])
+    >>> tp.prove()
+    True
+    >>> logic._counter._value = 0
+    >>> tp.show_proof()
+    {-mortal(Socrates)}
+    {-man(z2), mortal(z2)}
+    {man(Socrates)}
+    {-man(Socrates)}
+    {mortal(Socrates)}
+    {}
