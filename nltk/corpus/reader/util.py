@@ -307,15 +307,18 @@ class StreamBackedCorpusView(AbstractLazySequence):
             for tok in tokens[max(0, start_tok-toknum):]:
                 yield tok
             # If we're at the end of the file, then we're done.
+            # Set our length and terminate the generator.
             assert new_filepos <= self._eofpos
             if new_filepos == self._eofpos:
+                self._len = toknum + num_toks
                 break
             # Update our indices
             toknum += num_toks
             filepos = new_filepos
 
-        # Set our length and terminate the generator.
-        self._len = toknum + num_toks
+        # If we reach this point, then we should know our length.
+        assert self._len is not None
+
         
     # Use concat for these, so we can use a ConcatenatedCorpusView
     # when possible.
