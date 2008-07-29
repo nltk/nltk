@@ -33,11 +33,53 @@ class DepGraph(object):
 		as its head. This also means that the indexing of the nodelist
 		corresponds directly to the Malt-TAB format, which starts at 1.
 		"""
-		top = {'word':None, 'deps':[], 'rel': 'TOP'}
+		top = {'word':None, 'deps':[], 'rel': 'TOP', 'address': 0}
 		self.nodelist = [top]
 		self.root = None
 		self.stream = None
 
+	def remove_by_address(self, address):
+		node_index = len(self.nodelist) - 1
+		while(node_index >= 0):
+			node = self.nodelist[node_index]
+			if(node['address'] == address):
+				self.nodelist.pop(node_index)
+			node_index -= 1
+
+# originals is a list
+	def redirect_arcs(self, originals, redirect):
+		for node in self.nodelist:
+			new_deps = []
+			for dep in node['deps']:
+				if dep in originals:
+					new_deps.append(redirect)
+				else:
+					new_deps.append(dep)
+			node['deps'] = new_deps
+
+	def add_arc(self, head_address, mod_address):
+		for node in self.nodelist:
+			if(node['address'] == head_address and (not (mod_address in node['deps']))):
+				node['deps'].append(mod_address)
+
+	def connect_graph(self):
+		for node1 in self.nodelist:
+			for node2 in self.nodelist:
+				if(node1['address'] != node2['address'] and node2['rel'] != 'TOP'):
+					node1['deps'].append(node2['address'])
+
+	def get_by_address(self, node_address):
+		for node in self.nodelist:
+			if(node['address'] == node_address):
+				return node
+		print 'THROW ERROR: address not found in -get_by_address-'
+
+	def contains_address(self, node_address):
+		for node in self.nodelist:
+			if(node['address'] == node_address):
+				return True
+		return False
+					
 	def __str__(self):
 		return pformat(self.nodelist)
 
@@ -171,6 +213,65 @@ class DepGraph(object):
 		except IndexError:
 			return None
 
+	# def contains_cycle(self):
+	# 	return self.check_cycle(self.root, [])
+	# 
+	# def check_cycle(self, curr_node, visited_nodes):
+	# 	if(curr_node['address'] in visited_nodes):
+	# 		return True
+	# 	visited_nodes.append(curr_node['address'])
+	# 	for dep in curr_node['deps']:
+	# 	 	if self.check_cycle(self.nodelist[dep], visited_nodes):
+	# 			return True
+	# 	return False
+	# 		
+
+	def contains_cycle(self):
+		distances = {}
+		for node in self.nodelist:
+			for dep in node['deps']:
+				key = tuple([node['address'], dep]) #'%d -> %d' % (node['address'], dep)
+				distances[key] = 1
+#		print distances
+		window = 0
+		for n in range(len(self.nodelist)):
+			new_entries = {}
+			for pair1 in distances:
+				for pair2 in distances:
+#					print pair1, pair2
+					if(pair1[1] == pair2[0]):
+						key = tuple([pair1[0], pair2[1]])
+						new_entries[key] = distances[pair1] + distances[pair2]
+			for pair in new_entries:
+				distances[pair] = new_entries[pair]
+				if(pair[0] == pair[1]):
+					print pair[0]
+					path = self.get_cycle_path(self.get_by_address(pair[0]), pair[0]) #self.nodelist[pair[0]], pair[0])
+#					print distances
+					return path
+		#distances.extend(new_entries)
+#		print distances
+		return False
+
+	def get_cycle_path(self, curr_node, goal_node_index):
+#		print 'new call:', curr_node['address']
+		for dep in curr_node['deps']:
+#			print dep
+			if(dep == goal_node_index):
+				return [curr_node['address'], goal_node_index]
+#		if(len(curr_node['deps']) == 0):
+#			return []
+#		else:
+		for dep in curr_node['deps']:
+#			print 'dep:', dep
+			path = self.get_cycle_path(self.get_by_address(dep), goal_node_index)#self.nodelist[dep], goal_node_index)
+#			print 'path', path
+			if(len(path) > 0):
+				path.insert(0, curr_node['address'])
+				return path
+		return [] 
+				
+
 def nx_graph(self):
 	"""
 	Convert the data in a C{nodelist} into a networkx 
@@ -191,9 +292,11 @@ def nx_graph(self):
 	return g
 
 def demo():
-	malt_demo()
-	conll_demo()
+#	malt_demo()
+#	conll_demo()
 #	conll_file_demo()
+	cycle_finding_demo()
+	demo_remove()
 
 def malt_demo(nx=False):
     """
@@ -374,8 +477,61 @@ def conll_file_demo():
 		tree = graph.deptree()
 		print '\n' + tree.pprint()
 
+def cycle_finding_demo():
+	dg = DepGraph().read("""Pierre  NNP     2       NMOD
+	Vinken  NNP     8       SUB
+	,       ,       2       P
+	61      CD      5       NMOD
+	years   NNS     6       AMOD
+	old     JJ      2       NMOD
+	,       ,       2       P
+	will    MD      0       ROOT
+	join    VB      8       VC
+	the     DT      11      NMOD
+	board   NN      9       OBJ
+	as      IN      9       VMOD
+	a       DT      15      NMOD
+	nonexecutive    JJ      15      NMOD
+	director        NN      12      PMOD
+	Nov.    NNP     9       VMOD
+	29      CD      16      NMOD
+	.       .       9       VMOD
+	""")
+	print dg.contains_cycle()
+	cyclic_dg = DepGraph()
+	top =    {'word':None, 'deps':[1],    'rel': 'TOP', 'address': 0}	
+	child1 = {'word':None, 'deps':[2],   'rel': 'NTOP', 'address': 1}
+	child2 = {'word':None, 'deps':[4], 'rel': 'NTOP', 'address': 2}
+	child3 = {'word':None, 'deps':[1],   'rel': 'NTOP', 'address': 3}
+	child4 = {'word':None, 'deps':[3],   'rel': 'NTOP', 'address': 4}
+	cyclic_dg.nodelist = [top, child1, child2, child3, child4]
+	cyclic_dg.root = top
+#	print cyclic_dg.nodelist
+	print cyclic_dg.contains_cycle()
 
-
+def demo_remove():
+	# Temp demo for testing methods in dev.
+	cyclic_dg = DepGraph()
+	top =    {'word':None, 'deps':[1],    'rel': 'TOP', 'address': 0}	
+	child1 = {'word':None, 'deps':[2],   'rel': 'NTOP', 'address': 1}
+	child2 = {'word':None, 'deps':[4], 'rel': 'NTOP', 'address': 2}
+	child3 = {'word':None, 'deps':[1],   'rel': 'NTOP', 'address': 3}
+	child4 = {'word':None, 'deps':[3],   'rel': 'NTOP', 'address': 4}
+	cyclic_dg.nodelist = [top, child1, child2, child3, child4]
+	print 'orignial:'
+	print cyclic_dg
+	cyclic_dg.remove_by_address(2)
+	print
+	print 'removed:'
+	print cyclic_dg
+	cyclic_dg.redirect_pointers([1], 5)
+	print
+	print 'redirected'
+	print cyclic_dg
+	cyclic_dg.add_arc(1,3)
+	print
+	print 'arc added 1->3'
+	print cyclic_dg
 
 if __name__ == '__main__':
 	demo()
