@@ -109,7 +109,7 @@ generate the same results.
     ...             try: nltk.classify.megam.config_megam()
     ...             except: raise #continue
     ...         classifiers[algorithm] = nltk.MaxentClassifier.train(
-    ...             train, algorithm, trace=0, max_iter=100)
+    ...             train, algorithm, trace=0, max_iter=500)
     ...     print ' '*11+''.join(['      test[%s]  ' % i
     ...                           for i in range(len(test))])
     ...     print ' '*11+'     p(x)  p(y)'*len(test)
