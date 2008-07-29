@@ -13,6 +13,7 @@ Corpus reader for corpora whose documents are xml files.
 
 from nltk.corpus.reader.api import CorpusReader
 from nltk.corpus.reader.util import *
+from nltk.data import SeekableUnicodeStreamReader
 from nltk.internals import deprecated, ElementWrapper
 import codecs
 
