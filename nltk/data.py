@@ -153,11 +153,10 @@ class FileSystemPathPointer(PathPointer, unicode):
         The absolute path identified by this path pointer.""")
 
     def open(self, encoding=None):
-        if encoding is None:
-            return open(self._path, 'rb')
-        else:
-            return SeekableUnicodeStreamReader(open(self._path, 'rb'),
-                                               encoding)
+        stream = open(self._path, 'rb')
+        if encoding is not None:
+            stream = SeekableUnicodeStreamReader(stream, encoding)
+        return stream
 
     def file_size(self):
         return os.stat(self._path).st_size
@@ -208,9 +207,10 @@ class ZipFilePathPointer(PathPointer):
 
     def open(self, encoding=None):
         data = self._zipfile.read(self._entry)
-        if encoding: data = data.decode(encoding)
-        # [xx] n.b.: ignoring universal newline flag here!
-        return StringIO.StringIO(data)
+        stream = StringIO.StringIO(data)
+        if encoding is not None:
+            stream = SeekableUnicodeStreamReader(stream, encoding)
+        return stream
 
     def file_size(self):
         return self._zipfile.getinfo(self._entry).file_size
