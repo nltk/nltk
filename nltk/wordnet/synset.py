@@ -112,6 +112,12 @@ class Word(object):
     def __str__(self):
         return self.form + ' (' + self.pos + ")"
 
+    def __cmp__(self, other):
+        return _compareInstances(self, other, ('form', 'pos'))
+
+    def __hash__(self):
+        return hash((self.form, self.pos))
+
 
 class WordSense(object):
     """
@@ -170,6 +176,13 @@ class WordSense(object):
     def __str__(self):
         return ('%s (%s) %d'
                 % (self.lemma, normalizePOS(self.ssType), self.senseNo()))
+            
+    def __cmp__(self, other):
+        return _compareInstances(self, other, ('senseKey',))
+        
+    def __hash__(self):
+        return hash(self.senseKey)
+        
 
     __repr__ = __str__
 
@@ -394,8 +407,8 @@ class Synset(object):
     def __cmp__(self, other):
         return _compareInstances(self, other, ('pos', 'offset'))
     
-    def __eq__(self, other):
-        return _compareInstances(self, other, ('pos', 'offset')) == 0
+    def __hash__(self):
+        return hash((self.pos, self.offset))
 
     def __ne__(self, other):
         return not (self==other)
