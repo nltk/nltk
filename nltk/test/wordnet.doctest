@@ -312,3 +312,18 @@ Bug 1940398 UnboundLocalError in wordnet.util line 426
     >>> util.getIndex('good for nothing')
     good-for-nothing (noun)
 
+Bug: __hash__ method not properly implemented for Synset, Word, WordSense
+
+    >>> from nltk.wordnet import N
+    >>> word1 = N['kin']
+    >>> word2 = N['kin']
+    >>> hash(word1) == hash(word2)
+    True
+    >>> syn1 = word1.synsets()[0]
+    >>> syn2 = word2.synsets()[0]
+    >>> hash(syn1) == hash(syn2)
+    True
+    >>> sense1 = syn1.wordSenses[0]
+    >>> sense2 = syn2.wordSenses[0]
+    >>> hash(sense1) == hash(sense2)
+    True
