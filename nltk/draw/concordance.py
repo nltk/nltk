@@ -274,9 +274,9 @@ class CategorySearchModel:
                     new.append(BOUNDARY + term + '/' + WORD_OR_TAG + BOUNDARY)
             return join(new)
         
-def demo():
+def pos_concordance():
     d = CategorySearchView()
     d.mainloop()
         
 if __name__ == '__main__':
-    demo()
+    pos_concordance()
