@@ -29,10 +29,13 @@ class CategorySearchView:
     _HIGHLIGHT_COLOUR='#F00'#red
     _HIGHLIGHT_TAG='HL_TAG'
     
+    #Percentage of text left of the scrollbar position
+    _PERCENTAGE_LEFT_TEXT=0.20
+    
     #Number of characters before the position of search item
-    _CHAR_BEFORE=35
+    _CHAR_BEFORE=75
     #Number of characters after the position of search item
-    _CHAR_AFTER=45
+    _CHAR_AFTER=85
     
     def __init__(self):
         self.model = CategorySearchModel()
@@ -44,8 +47,8 @@ class CategorySearchView:
         self.load_corpus(self.model.DEFAULT_CORPUS)
         
     def _init_top(self, top):
-        top.geometry('+50+50')
-        top.title('Category Search Demo')
+        top.geometry('700x500+50+50')
+        top.title('Concordance Search Demo')
         top.bind('<Control-q>', self.destroy)
         
     def _init_widgets(self, parent):
@@ -54,43 +57,58 @@ class CategorySearchView:
         self._init_query_box(self.main_frame)
         self._init_results_box(self.main_frame)
         self._init_status(self.main_frame)
-        self.main_frame.pack(fill='both', expand=False)
+        self.main_frame.pack(fill='both', expand=True)
                 
     def _init_corpus_select(self, parent):
-        self.var = StringVar(parent)
+    	innerframe = Frame(parent, background=self._BACKGROUND_COLOUR)
+        self.var = StringVar(innerframe)
         self.var.set(self.model.DEFAULT_CORPUS)
-        Label(parent, justify=LEFT, text=' Corpus: ', background=self._BACKGROUND_COLOUR, padx = 2, pady = 1, border = 0).grid(row=0, column = 0, sticky = W)
+        Label(innerframe, justify=LEFT, text=' Corpus: ', background=self._BACKGROUND_COLOUR, padx = 2, pady = 1, border = 0).pack(side='left')
+        
         other_corpora = self.model.CORPORA.keys().remove(self.model.DEFAULT_CORPUS)
-        om = OptionMenu(parent, self.var, self.model.DEFAULT_CORPUS, command=self.corpus_selected, *self.model.non_default_corpora())
+        om = OptionMenu(innerframe, self.var, self.model.DEFAULT_CORPUS, command=self.corpus_selected, *self.model.non_default_corpora())
         om['borderwidth'] = 0
         om['highlightthickness'] = 1
-        om.grid(row=0, column=0)
+        om.pack(side='left')
+        innerframe.pack(side='top', fill='x', anchor='n')
         
     def _init_status(self, parent):
         self.status = Label(parent, justify=LEFT, relief=SUNKEN, background=self._BACKGROUND_COLOUR, border=0, padx = 1, pady = 0)
-        self.status.grid(row = 11, column= 0, columnspan=4, sticky=W)
+        self.status.pack(side='top', anchor='sw')
     
     def _init_query_box(self, parent):
         innerframe = Frame(parent, background=self._BACKGROUND_COLOUR)
-        innerframe.grid(row=1, column=0, rowspan=5, columnspan=4)
-        self.query_box = Entry(innerframe, width=40)
-        self.query_box.grid(row=0, column = 0, padx=2, pady=20, sticky=E)
-        self.search_button = Button(innerframe, text='Search', command=self.search, borderwidth=1, highlightthickness=1)
-        self.search_button.grid(row=0, column = 1, padx=2, pady=20, sticky=W)
+        another = Frame(innerframe, background=self._BACKGROUND_COLOUR)
+        self.query_box = Entry(another, width=60)
+        self.query_box.pack(side='left', fill='x', pady=25, anchor='center')
+        self.search_button = Button(another, text='Search', command=self.search, borderwidth=1, highlightthickness=1)
+        self.search_button.pack(side='left', fill='x', pady=25, anchor='center')
         self.query_box.bind('<KeyPress-Return>', self.search_enter_keypress_handler)
+        another.pack()
+        innerframe.pack(side='top', fill='x', anchor='n')
         
     def search_enter_keypress_handler(self, *event):
         self.search()
     
     def _init_results_box(self, parent):
         innerframe = Frame(parent)
-        innerframe.grid(row=6, column=0, rowspan=5, columnspan=4)
-        scrollbar = Scrollbar(innerframe, borderwidth=1)
-        scrollbar.grid(row=0, column=1, sticky='NSE')
-        self.results_box = Text(innerframe, width=80, height=30, state='disabled', borderwidth=1, yscrollcommand=scrollbar.set)
+        i1 = Frame(innerframe)
+        i2 = Frame(innerframe)
+        vscrollbar = Scrollbar(i1, borderwidth=1)
+        hscrollbar = Scrollbar(i2, borderwidth=1, orient='horiz')
+        self.results_box = Text(i1, state='disabled', borderwidth=1, 
+							yscrollcommand=vscrollbar.set, xscrollcommand=hscrollbar.set, wrap='none')
+        self.results_box.pack(side='left', fill='both', expand=True)
         self.results_box.tag_config(self._HIGHLIGHT_TAG, foreground=self._HIGHLIGHT_COLOUR)
-        self.results_box.grid(row=0, column=0)
-        scrollbar.config(command=self.results_box.yview)
+        vscrollbar.pack(side='left', fill='y', anchor='e')
+        vscrollbar.config(command=self.results_box.yview)
+        hscrollbar.pack(side='left', fill='x', expand=True, anchor='w')
+        hscrollbar.config(command=self.results_box.xview)
+        #there is no other way of avoiding the overlap of scrollbars while using pack layout manager!!!
+        Label(i2, text='   ', background=self._BACKGROUND_COLOUR).pack(side='left', anchor='e')
+        i1.pack(side='top', fill='both', expand=True, anchor='n')
+        i2.pack(side='bottom', fill='x', anchor='s')
+        innerframe.pack(side='top', fill='both', expand=True)
         
     def _bind_event_handlers(self):
         self.top.bind(CORPUS_LOADED_EVENT, self.handle_corpus_loaded)
@@ -116,7 +134,8 @@ class CategorySearchView:
         if len(self.model.results) == 0:
             self.status['text'] = 'No results found for ' + self.model.query
         self.unfreeze_editable()
-            
+        self.results_box.xview_moveto(self._PERCENTAGE_LEFT_TEXT)
+
     def handle_search_error(self, event):
         self.status['text'] = 'Error in query ' + self.model.query
         self.unfreeze_editable()
@@ -143,12 +162,24 @@ class CategorySearchView:
         self.results_box['state'] = 'normal'
         row = 1
         for each in results:
-            if len(each[0].strip()) != 0:
-                self.results_box.insert(str(row) + '.0', each[0].strip()[each[1]-self._CHAR_BEFORE:each[1]+self._CHAR_AFTER] + '\n')
+            sent = each[0].strip()
+            if len(sent) != 0:
+            	pos1 = each[1]
+            	pos2 = each[2]
+            	if len(sent) < self._CHAR_BEFORE:
+            		sent, pos1, pos2 = self._pad(sent, pos1, pos2)
+                self.results_box.insert(str(row) + '.0', sent[each[1]-self._CHAR_BEFORE:pos1+self._CHAR_AFTER] + '\n')
                 self.results_box.tag_add(self._HIGHLIGHT_TAG, str(row) + '.' + str(self._CHAR_BEFORE), str(row) + '.' + str(each[2] - each[1] + self._CHAR_BEFORE))
                 row += 1
         self.results_box['state'] = 'disabled'
                 
+    def _pad(self, sent, start, end):
+    	if len(sent) >= self._CHAR_BEFORE:
+    		return sent, start, end
+    	topad = self._CHAR_BEFORE - start
+    	sent = ''.join([' '] * topad) + sent
+    	return sent, start + topad, end + topad
+    
     def destroy(self, *e):
         if self.top is None: return
         self.top.destroy()
