@@ -16,7 +16,8 @@ class Type:
         return str(self)
     
     def __eq__(self, other):
-        return str(self) == str(other)
+        return self.__class__ == other.__class__ \
+               and str(self) == str(other)
     
     def __hash__(self):
         return hash(str(self))
@@ -50,7 +51,7 @@ class TruthValueType(BasicType):
     
 
 class TypedExpression(logic.Expression):
-    def _get_abstract_type(self):
+    def _infer_function_type(self):
         return self.gettype()
     
 class TypedApplicationExpression(logic.ApplicationExpression, TypedExpression):
@@ -68,7 +69,7 @@ class TypedApplicationExpression(logic.ApplicationExpression, TypedExpression):
             #is a predicate expression
             return TruthValueType()
         
-    def _get_abstract_type(self):
+    def _infer_function_type(self):
         function, args = self.uncurry()
         if not isinstance(function, TypedVariableExpression):
             #It's not a predicate expression ("P(x,y)"), so leave arguments curried
@@ -81,23 +82,23 @@ class TypedApplicationExpression(logic.ApplicationExpression, TypedExpression):
             #is a predicate expression
             f_found = TruthValueType()
             for arg in args[::-1]:
-                f_found = ComplexType(arg._get_abstract_type(), f_found)
+                f_found = ComplexType(arg._infer_function_type(), f_found)
             return f_found
         
-    def _findtype(self, variable):
+    def findtype(self, variable):
         """Find the type of the given variable as used in self"""
         function, args = self.uncurry()
         if not isinstance(function, TypedVariableExpression):
             #It's not a predicate expression ("P(x,y)"), so leave arguments curried
-            function = expression.function
-            args = [expression.argument]
+            function = self.function
+            args = [self.argument]
         
         if function == TypedVariableExpression(variable):
-            f_found = self._get_abstract_type()
+            f_found = self._infer_function_type()
         else:
-            f_found = function._findtype(variable)
+            f_found = function.findtype(variable)
 
-        arg_found = [arg._findtype(variable) for arg in args]
+        arg_found = [arg.findtype(variable) for arg in args]
         s = set([found for found in [f_found]+arg_found if found != None])
         if len(s) == 0:
             return None
@@ -110,7 +111,7 @@ class TypedVariableExpression(logic.VariableExpression, TypedExpression):
     def gettype(self):
         return EntityType()
 
-    def _findtype(self, variable):
+    def findtype(self, variable):
         """Find the type of the given variable as used in self"""
         if self.variable == variable:
             return EntityType()
@@ -118,13 +119,16 @@ class TypedVariableExpression(logic.VariableExpression, TypedExpression):
             return None
 
 class TypedVariableBinderExpression(logic.VariableBinderExpression, TypedExpression):
-    def _findtype(self, variable):
+    def findtype(self, variable):
         """Find the type of the given variable as used in self"""
-        return self.term._findtype(variable)
+        if variable==self.variable:
+            return None
+        else:
+            return self.term.findtype(variable)
 
 class TypedLambdaExpression(logic.LambdaExpression, TypedVariableBinderExpression):
     def gettype(self):
-        return ComplexType(self.term._findtype(self.variable), self.term.gettype())
+        return ComplexType(self.term.findtype(self.variable), self.term.gettype())
 
 class TypedQuantifiedExpression(logic.QuantifiedExpression, TypedVariableBinderExpression):
     def gettype(self):
@@ -140,18 +144,18 @@ class TypedNegatedExpression(logic.NegatedExpression, TypedExpression):
     def gettype(self):
         return TruthValueType()
         
-    def _findtype(self, variable):
+    def findtype(self, variable):
         """Find the type of the given variable as used in self"""
-        return self.expression._findtype(variable)
+        return self.expression.findtype(variable)
 
 class TypedBooleanExpression(logic.BooleanExpression, TypedExpression):
     def gettype(self):
         return TruthValueType()
         
-    def _findtype(self, variable):
+    def findtype(self, variable):
         """Find the type of the given variable as used in self"""
-        f = self.first._findtype(variable)
-        s = self.second._findtype(variable)
+        f = self.first.findtype(variable)
+        s = self.second.findtype(variable)
         if f == s or s == None:
             return f
         elif f == None:
@@ -264,6 +268,7 @@ class TestSuite(object):
         self.gettype_test(r'\x.\y.sees(x,y)(john)', '<e,t>')
         self.gettype_test(r'\x.\y.sees(x,y)(john)(mary)', 't')
         self.gettype_test(r'\P.\Q.exists x.(P(x) & Q(x))', '<<e,t>,<<e,t>,t>>')
+#        self.gettype_test(r'\x.y', '?')
         
     def gettype_test(self, f, expected_type, throw=True):
         try:
@@ -282,17 +287,17 @@ class TestSuite(object):
             self.failures += 1
         
     def test_findtype(self):
-        print '='*20 + 'TEST _findtype()' + '='*20
+        print '='*20 + 'TEST findtype()' + '='*20
         self.findtype_test(r'man(x)', 'man', '<e,t>')
         self.findtype_test(r'see(x,y)', 'see', '<e,<e,t>>')
-        self.findtype_test(r'\P.\Q.exists x.(P(x) & Q(x))', 'P', '<e,t>')
         self.findtype_test(r'exists x y.(P(x) & P(x,y))', 'P', 'InconsistantTypeHeirarchyException: The variable P was found in multiple places with different types in (P(x) & P(x,y)).')
         self.findtype_test(r'P(Q(R(x)))', 'Q', '<<e,t>,t>')
-            
+        self.findtype_test(r'\P.((\P.P(x,y))(man)) & P(x)', 'P', '<e,t>')
+                    
     def findtype_test(self, f, var, expected_type, throw=False):
         try:
             p = TypedLogicParser()
-            t = p.parse(f)._findtype(p.parse(var).variable)
+            t = p.parse(f).findtype(p.parse(var).variable)
         except Exception, e:
             if throw:
                 raise
