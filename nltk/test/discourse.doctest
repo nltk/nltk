@@ -218,7 +218,7 @@ us to check:
     Inconsistent discourse d0 ['s0-r0', 's1-r0', 's2-r0']:
         s0-r0: exists x.(student(x) & dance(x))
         s1-r0: all x.(student(x) -> person(x))
-        s2-r0: -exists x.(person(x) & \x.dance(x)(x))
+        s2-r0: -exists x.(person(x) & dance(x))
     <BLANKLINE>
     >>> dt.readings()
     <BLANKLINE>
@@ -232,7 +232,7 @@ us to check:
     <BLANKLINE>
     s2 readings:
     ------------------------------
-    s2-r0: -exists x.(person(x) & \x.dance(x)(x))
+    s2-r0: -exists x.(person(x) & dance(x))
 
 So let's retract the inconsistent sentence:
 
