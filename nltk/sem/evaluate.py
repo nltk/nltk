@@ -164,7 +164,7 @@ class Valuation(dict):
             if isinstance(val, str):
                 dom.append(val)
             else:
-                dom.extend([elem for tuple in val for elem in tuple])
+                dom.extend([elem for tuple in val for elem in tuple if elem is not None])
         return set(dom)
 
     domain = property(_getDomain,
@@ -421,7 +421,7 @@ class Model(object):
                 # if val: cf[u] = val
                 # But then need to deal with cases where f(a) should yield
                 # a function rather than just False.
-                if val: cf[u] = val
+                cf[u] = val
             return cf
         else:
             return self.i(parsed, g, trace)
