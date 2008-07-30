@@ -53,13 +53,13 @@ that sentence is given an identifier `s`\ :sub:`i`-`r`\ :sub:`j`.
     <BLANKLINE>
     s0 readings:
     ------------------------------
-    s0-r0: some z1.((boxerdog z1) and (walk z1))
-    s0-r1: some z1.((boxer z1) and (walk z1))
+    s0-r0: exists z1.(boxerdog(z1) & walk(z1))
+    s0-r1: exists z1.(boxer(z1) & walk(z1))
     <BLANKLINE>
     s1 readings:
     ------------------------------
-    s1-r0: all z1.((boxerdog z1) implies some z2.((girl z2) and (chase z2 z1)))
-    s1-r1: all z1.((boxer z1) implies some z2.((girl z2) and (chase z2 z1)))
+    s1-r0: all z1.(boxerdog(z1) -> exists z2.(girl(z2) & (chase z2 z1)))
+    s1-r1: all z1.(boxer(z1) -> exists z2.(girl(z2) & (chase z2 z1)))
 
 
 In this case, the only source of ambiguity lies in the word *boxer*,
@@ -74,8 +74,8 @@ We can also investigate the readings of a specific sentence:
 
     >>> dt.readings('a boxer walks')
     The sentence 'a boxer walks' has these readings:
-        some x.((boxerdog x) and (walk x))
-        some x.((boxer x) and (walk x))
+        exists x.(boxerdog(x) & walk(x))
+        exists x.(boxer(x) & walk(x))
 
 Given that each sentence is two-ways ambiguous, we potentially have
 four different discourse 'threads', taking all combinations of
@@ -135,8 +135,8 @@ current discourse. However, we can also specify just one thread, say ``d1``.
     - chase(1,1).
     <BLANKLINE>
     Consistent discourse: d1 ['s0-r0', 's1-r1']:
-        s0-r0: some x.((boxerdog x) and (walk x))
-        s1-r1: all x.((boxer x) implies some z689.((girl z689) and (chase z689 x)))
+        s0-r0: exists x.(boxerdog(x) & walk(x))
+        s1-r1: all x.(boxer(x) -> exists z689.(girl(z689) & (chase z689 x)))
     <BLANKLINE>
 
 There are various formats for rendering **Mace4** models --- here,
@@ -174,18 +174,18 @@ couple of them.
     <BLANKLINE>
     s0 readings:
     ------------------------------
-    s0-r0: some z1.((boxerdog z1) and (walk z1))
-    s0-r1: some z1.((boxer z1) and (walk z1))
+    s0-r0: exists z1.(boxerdog(z1) & walk(z1))
+    s0-r1: exists z1.(boxer(z1) & walk(z1))
     <BLANKLINE>
     s1 readings:
     ------------------------------
-    s1-r0: all z1.((boxerdog z1) implies some z2.((girl z2) and (chase z2 z1)))
-    s1-r1: all z1.((boxer z1) implies some z2.((girl z2) and (chase z2 z1)))
+    s1-r0: all z1.(boxerdog(z1) -> exists z2.(girl(z2) & (chase z2 z1)))
+    s1-r1: all z1.(boxer(z1) -> exists z2.(girl(z2) & (chase z2 z1)))
     <BLANKLINE>
     s2 readings:
     ------------------------------
-    s2-r0: (boxerdog John)
-    s2-r1: (boxer John)
+    s2-r0: boxerdog(John)
+    s2-r1: boxer(John)
     >>> dt.readings(threaded=True)
     d0: ['s0-r0', 's1-r0', 's2-r0']
     d1: ['s0-r0', 's1-r0', 's2-r1']
@@ -201,10 +201,10 @@ method will remind you of what readings it consists of:
 
     >>> thread = dt.expand_threads('d6')
     >>> for rid, reading in thread:
-    ...     print rid, str(reading.infixify().normalize('[xyz]\d*'))
-    s0-r1 some z1.((boxer z1) and (walk z1))
-    s1-r1 all z1.((boxer z1) implies some z2.((girl z2) and (chase z2 z1)))
-    s2-r0 (boxerdog John)
+    ...     print rid, str(reading.normalize('[xyz]\d*'))
+    s0-r1 exists z1.(boxer(z1) & walk(z1))
+    s1-r1 all z1.(boxer(z1) -> exists z2.(girl(z2) & chase(z1,z2)))
+    s2-r0 boxerdog(John)
 
 Suppose we have already defined a discourse, as follows:
 
@@ -216,23 +216,23 @@ us to check:
 
     >>> dt.add_sentence('No person dances', consistchk=True)
     Inconsistent discourse d0 ['s0-r0', 's1-r0', 's2-r0']:
-        s0-r0: some x.((student x) and (dance x))
-        s1-r0: all x.((student x) implies (person x))
-        s2-r0: (not some x.((person x) and (dance x)))
+        s0-r0: exists x.((student x) & (dance x))
+        s1-r0: all x.((student x) -> person(x))
+        s2-r0: (not exists x.(person(x) & (dance x)))
     <BLANKLINE>
     >>> dt.readings()
     <BLANKLINE>
     s0 readings:
     ------------------------------
-    s0-r0: some z1.((student z1) and (dance z1))
+    s0-r0: exists z1.((student z1) & (dance z1))
     <BLANKLINE>
     s1 readings:
     ------------------------------
-    s1-r0: all z1.((student z1) implies (person z1))
+    s1-r0: all z1.((student z1) -> person(z1))
     <BLANKLINE>
     s2 readings:
     ------------------------------
-    s2-r0: (not some z1.((person z1) and (dance z1)))
+    s2-r0: (not exists z1.(person(z1) & (dance z1)))
 
 So let's retract the inconsistent sentence:
 
@@ -264,8 +264,8 @@ We can now verify that result is consistent.
     - student(1).
     <BLANKLINE>
     Consistent discourse: d0 ['s0-r0', 's1-r0']:
-        s0-r0: some x.((student x) and (dance x))
-        s1-r0: all x.((student x) implies (person x))
+        s0-r0: exists x.((student x) & (dance x))
+        s1-r0: all x.((student x) -> person(x))
     <BLANKLINE>
 
 Checking Informativity
@@ -277,7 +277,7 @@ but this time, we check whether it is informative with respect to what
 has gone before.
 
     >>> dt.add_sentence('A person dances', informchk=True)
-    Sentence 'A person dances' under reading 'some x.((person x) and (dance x))':
+    Sentence 'A person dances' under reading 'exists x.(person(x) & (dance x))':
     Not informative relative to thread 'd0'
 
 In fact, we are just checking whether the new sentence is entailed by
@@ -306,9 +306,9 @@ the preceding discourse.
     - student(1).
     <BLANKLINE>
     Consistent discourse: d0 ['s0-r0', 's1-r0', 's2-r0']:
-        s0-r0: some x.((student x) and (dance x))
-        s1-r0: all x.((student x) implies (person x))
-        s2-r0: some x.((person x) and (dance x))
+        s0-r0: exists x.((student x) & (dance x))
+        s1-r0: all x.((student x) -> person(x))
+        s2-r0: exists x.(person(x) & (dance x))
     <BLANKLINE>
 
 
@@ -323,21 +323,21 @@ Let's build a new discourse, and look at the readings of the component sentences
     <BLANKLINE>
     s0 readings:
     ------------------------------
-    s0-r0: (boxerdog Vincent)
-    s0-r1: (boxer Vincent)
+    s0-r0: boxerdog(Vincent)
+    s0-r1: boxer(Vincent)
     <BLANKLINE>
     s1 readings:
     ------------------------------
-    s1-r0: (boxerdog Fido)
-    s1-r1: (boxer Fido)
+    s1-r0: boxerdog(Fido)
+    s1-r1: boxer(Fido)
     <BLANKLINE>
     s2 readings:
     ------------------------------
-    s2-r0: (married Vincent)
+    s2-r0: married(Vincent)
     <BLANKLINE>
     s3 readings:
     ------------------------------
-    s3-r0: (bark Fido)
+    s3-r0: bark(Fido)
 
 This gives us a lot of threads:
 
@@ -355,12 +355,12 @@ by adding background information.
     >>> bg = nltk.data.load('grammars/background1.fol')
     >>> dt.add_background(bg)
     >>> dt.background()
-    all x.((boxerdog x) implies (dog x))
-    all x.((boxer x) implies (person x))
-    all x.(not ((dog x) and (person x)))
-    all x.((married x) iff some y.(marry y x))
-    all x.((bark x) implies (dog x))
-    all x y.((marry y x) implies ((person x) and (person y)))
+    all x.(boxerdog(x) -> dog(x))
+    all x.(boxer(x) -> person(x))
+    all x.(not (dog(x) & person(x)))
+    all x.(married(x) <-> exists y.marry(x,y))
+    all x.(bark(x) -> dog(x))
+    all x y.((marry y x) -> (person(x) & person(y)))
     (not (Vincent = Mia))
     (not (Vincent = Fido))
     (not (Mia = Fido))
@@ -443,28 +443,28 @@ The ``models()`` method gives us more information about the surviving thread.
     No model found!
     <BLANKLINE>
     Inconsistent discourse d0 ['s0-r0', 's1-r0', 's2-r0', 's3-r0']:
-        s0-r0: (boxerdog Vincent)
-        s1-r0: (boxerdog Fido)
-        s2-r0: (married Vincent)
-        s3-r0: (bark Fido)
+        s0-r0: boxerdog(Vincent)
+        s1-r0: boxerdog(Fido)
+        s2-r0: married(Vincent)
+        s3-r0: bark(Fido)
     <BLANKLINE>
     Inconsistent discourse d1 ['s0-r0', 's1-r1', 's2-r0', 's3-r0']:
-        s0-r0: (boxerdog Vincent)
-        s1-r1: (boxer Fido)
-        s2-r0: (married Vincent)
-        s3-r0: (bark Fido)
+        s0-r0: boxerdog(Vincent)
+        s1-r1: boxer(Fido)
+        s2-r0: married(Vincent)
+        s3-r0: bark(Fido)
     <BLANKLINE>
     Consistent discourse: d2 ['s0-r1', 's1-r0', 's2-r0', 's3-r0']:
-        s0-r1: (boxer Vincent)
-        s1-r0: (boxerdog Fido)
-        s2-r0: (married Vincent)
-        s3-r0: (bark Fido)
+        s0-r1: boxer(Vincent)
+        s1-r0: boxerdog(Fido)
+        s2-r0: married(Vincent)
+        s3-r0: bark(Fido)
     <BLANKLINE>
     Inconsistent discourse d3 ['s0-r1', 's1-r1', 's2-r0', 's3-r0']:
-        s0-r1: (boxer Vincent)
-        s1-r1: (boxer Fido)
-        s2-r0: (married Vincent)
-        s3-r0: (bark Fido)
+        s0-r1: boxer(Vincent)
+        s1-r1: boxer(Fido)
+        s2-r0: married(Vincent)
+        s3-r0: bark(Fido)
     <BLANKLINE>
 
 
