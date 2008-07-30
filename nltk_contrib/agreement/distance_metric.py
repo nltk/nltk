@@ -41,7 +41,7 @@ def masi(label1,label2):
 
 
 def interval(label1,label2):
-    """
+    """Krippendorff'1 interval distance metric
 
     >>> interval(1,10)
     81
@@ -63,6 +63,15 @@ def presence(label):
 
 def fractional_presence(label):
     return lambda x,y:abs((float(1.0/len(x)) - float(1.0/len(y))))*(label in x and label in y) or 0.0*(label not in x and label not in y) or abs((float(1.0/len(x))))*(label in x and label not in y) or ((float(1.0/len(y))))*(label not in x and label in y)
+
+def custom(file):
+    data = {}
+    for l in open(file):
+        labelA,labelB,dist = l.strip().split("\t")
+        labelA = frozenset([labelA])
+        labelB = frozenset([labelB])
+        data[frozenset([labelA,labelB])] = float(dist)
+    return lambda x,y:data[frozenset([x,y])]
 
 if __name__ == "__main__":
     import doctest

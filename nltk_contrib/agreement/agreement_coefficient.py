@@ -20,7 +20,7 @@ class AnnotationTask():
     is the MASI metric, which requires Python sets.
     """
 
-    def __init__(self,data=None,distance=binary,verbose=False):
+    def __init__(self,data=None,distance=binary,verbose=0):
         """Initialize an empty annotation task.
 
         """
@@ -55,7 +55,7 @@ class AnnotationTask():
         kA = filter(lambda x:x['coder']==cA and x['item']==i,self.data)[0]
         kB = filter(lambda x:x['coder']==cB and x['item']==i,self.data)[0]
         ret = 1.0 - float(self.distance(kA['labels'],kB['labels']))
-        if(self.verbose):
+        if(self.verbose>1):
             print "Observed agreement between %s and %s on %s: %f"%(cA,cB,i,ret)
             print "Distance between \"%s\" and \"%s\": %f"%(",".join(kA['labels']),",".join(kB['labels']),1.0 - ret)
         return ret
@@ -72,16 +72,16 @@ class AnnotationTask():
             ret = len(filter(lambda x:k==x['labels'] and c==x['coder'],self.data))
         else:
             print "You must pass either i or c, not both!"
-        if(self.verbose):
+        if(self.verbose>1):
             print "Count on N[%s,%s,%s]: %d"%(k,i,c,ret)
-        return ret
+        return float(ret)
 
     def Ao(self,cA,cB):
         """Observed agreement between two coders on all items.
 
         """
         ret = float(sum(map(lambda x:self.agr(cA,cB,x),self.I)))/float(len(self.I))
-        if(self.verbose):
+        if(self.verbose>0):
             print "Observed agreement between %s and %s: %f"%(cA,cB,ret)
         return ret
 
@@ -98,7 +98,7 @@ class AnnotationTask():
                 total += self.Ao(cA,cB)
                 counter += 1.0
         ret = total/counter
-        if(self.verbose):
+        if(self.verbose>0):
             print "Average observed agreement: %f"%(ret)
         return ret
 
@@ -114,8 +114,8 @@ class AnnotationTask():
                 for l in self.K:
                     total += float(self.N(i=i,k=j)*self.N(i=i,k=l))*self.distance(l,j)
         ret = (1.0/float((len(self.I)*len(self.C)*(len(self.C)-1))))*total
-        if(self.verbose):
-            print "Observed disagreement between %s and %s: %f"%(cA,cB,ret)
+        if(self.verbose>0):
+            print "Observed disagreement: %f"%(ret)
         return ret
 
     # Agreement Coefficients
@@ -149,7 +149,7 @@ class AnnotationTask():
         for k in self.K:
             Ae += (float(self.N(c=cA,k=k))/float(len(self.I))) * (float(self.N(c=cB,k=k))/float(len(self.I)))
         ret = (self.Ao(cA,cB)-Ae)/(1.0-Ae)
-        if(self.verbose):
+        if(self.verbose>0):
             print "Kappa between %s and %s: %f"%(cA,cB,ret)
         return ret
 
@@ -172,12 +172,19 @@ class AnnotationTask():
             for l in self.K:
                 De += float(self.N(k=j)*self.N(k=l))*self.distance(j,l)
         De = (1.0/(len(self.I)*len(self.C)*(len(self.I)*len(self.C)-1)))*De
+        if(self.verbose>0):
+            print "Expected disagreement: %f"%(De)
         ret = 1.0 - (self.Do()/De)
         return ret
 
 
 if(__name__=='__main__'):
 
+#    import doctest
+#    doctest.testmod()
+
+
+#def temp():
     import re
     import optparse
     import distance_metric
@@ -189,7 +196,7 @@ if(__name__=='__main__'):
     parser.add_option("-e","--exclude",dest="exclude",action="append",default=[],help="coder names to exclude (comma-separated), e.g. jane,mike")
     parser.add_option("-i","--include",dest="include",action="append",default=[],help="coder names to include, same format as exclude")
     parser.add_option("-f","--file",dest="file",help="file to read labelings from, each line with three columns: 'labeler item labels'")
-    parser.add_option("-v","--verbose",dest="verbose",default=False,action="store_true",help="print debugging to stderr?")
+    parser.add_option("-v","--verbose",dest="verbose",default=0,help="print debugging to stderr?")
     parser.add_option("-c","--columnsep",dest="columnsep",default="\t",help="char/string that separates the three columns in the file, defaults to tab")
     parser.add_option("-l","--labelsep",dest="labelsep",default=",",help="char/string that separates labels (if labelers can assign more than one), defaults to comma")
     parser.add_option("-p","--presence",dest="presence",default=None,help="convert each labeling into 1 or 0, based on presence of LABEL")
@@ -204,7 +211,7 @@ if(__name__=='__main__'):
             data.append((coder,object,labels))
 
     if(options.presence):
-        task = AnnotationTask(data,getattr(distance_metric,options.distance)(options.presence),options.verbose)
+        task = AnnotationTask(data,getattr(distance_metric,options.distance)(options.presence),int(options.verbose))
     else:
-        task = AnnotationTask(data,getattr(distance_metric,options.distance),options.verbose)
+        task = AnnotationTask(data,getattr(distance_metric,options.distance),int(options.verbose))
     print getattr(task,options.agreement)()
