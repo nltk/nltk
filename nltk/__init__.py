@@ -52,7 +52,7 @@ __author_email__ = __maintainer_email__
 from compat import *
 from cfg import *
 from containers import *
-from decorator import decorator, memoize
+from decorators import decorator, memoize
 from evaluate import *
 from featstruct import *
 from olac import *
