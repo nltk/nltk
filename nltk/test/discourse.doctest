@@ -53,13 +53,13 @@ that sentence is given an identifier `s`\ :sub:`i`-`r`\ :sub:`j`.
     <BLANKLINE>
     s0 readings:
     ------------------------------
-    s0-r0: exists z1.(boxerdog(z1) & walk(z1))
-    s0-r1: exists z1.(boxer(z1) & walk(z1))
+    s0-r0: exists x.(boxerdog(x) & walk(x))
+    s0-r1: exists x.(boxer(x) & walk(x))
     <BLANKLINE>
     s1 readings:
     ------------------------------
-    s1-r0: all z1.(boxerdog(z1) -> exists z2.(girl(z2) & (chase z2 z1)))
-    s1-r1: all z1.(boxer(z1) -> exists z2.(girl(z2) & (chase z2 z1)))
+    s1-r0: all x.(boxerdog(x) -> exists z1.(girl(z1) & chase(x,z1)))
+    s1-r1: all x.(boxer(x) -> exists z2.(girl(z2) & chase(x,z2)))
 
 
 In this case, the only source of ambiguity lies in the word *boxer*,
@@ -136,7 +136,7 @@ current discourse. However, we can also specify just one thread, say ``d1``.
     <BLANKLINE>
     Consistent discourse: d1 ['s0-r0', 's1-r1']:
         s0-r0: exists x.(boxerdog(x) & walk(x))
-        s1-r1: all x.(boxer(x) -> exists z689.(girl(z689) & (chase z689 x)))
+        s1-r1: all x.(boxer(x) -> exists z8.(girl(z8) & chase(x,z8)))
     <BLANKLINE>
 
 There are various formats for rendering **Mace4** models --- here,
@@ -174,13 +174,13 @@ couple of them.
     <BLANKLINE>
     s0 readings:
     ------------------------------
-    s0-r0: exists z1.(boxerdog(z1) & walk(z1))
-    s0-r1: exists z1.(boxer(z1) & walk(z1))
+    s0-r0: exists x.(boxerdog(x) & walk(x))
+    s0-r1: exists x.(boxer(x) & walk(x))
     <BLANKLINE>
     s1 readings:
     ------------------------------
-    s1-r0: all z1.(boxerdog(z1) -> exists z2.(girl(z2) & (chase z2 z1)))
-    s1-r1: all z1.(boxer(z1) -> exists z2.(girl(z2) & (chase z2 z1)))
+    s1-r0: all x.(boxerdog(x) -> exists z9.(girl(z9) & chase(x,z9)))
+    s1-r1: all x.(boxer(x) -> exists z10.(girl(z10) & chase(x,z10)))
     <BLANKLINE>
     s2 readings:
     ------------------------------
@@ -201,9 +201,9 @@ method will remind you of what readings it consists of:
 
     >>> thread = dt.expand_threads('d6')
     >>> for rid, reading in thread:
-    ...     print rid, str(reading.normalize('[xyz]\d*'))
-    s0-r1 exists z1.(boxer(z1) & walk(z1))
-    s1-r1 all z1.(boxer(z1) -> exists z2.(girl(z2) & chase(z1,z2)))
+    ...     print rid, str(reading)
+    s0-r1 exists x.(boxer(x) & walk(x))
+    s1-r1 all x.(boxer(x) -> exists z12.(girl(z12) & chase(x,z12)))
     s2-r0 boxerdog(John)
 
 Suppose we have already defined a discourse, as follows:
@@ -216,23 +216,23 @@ us to check:
 
     >>> dt.add_sentence('No person dances', consistchk=True)
     Inconsistent discourse d0 ['s0-r0', 's1-r0', 's2-r0']:
-        s0-r0: exists x.((student x) & (dance x))
-        s1-r0: all x.((student x) -> person(x))
-        s2-r0: (not exists x.(person(x) & (dance x)))
+        s0-r0: exists x.(student(x) & dance(x))
+        s1-r0: all x.(student(x) -> person(x))
+        s2-r0: -exists x.(person(x) & \x.dance(x)(x))
     <BLANKLINE>
     >>> dt.readings()
     <BLANKLINE>
     s0 readings:
     ------------------------------
-    s0-r0: exists z1.((student z1) & (dance z1))
+    s0-r0: exists x.(student(x) & dance(x))
     <BLANKLINE>
     s1 readings:
     ------------------------------
-    s1-r0: all z1.((student z1) -> person(z1))
+    s1-r0: all x.(student(x) -> person(x))
     <BLANKLINE>
     s2 readings:
     ------------------------------
-    s2-r0: (not exists z1.(person(z1) & (dance z1)))
+    s2-r0: -exists x.(person(x) & \x.dance(x)(x))
 
 So let's retract the inconsistent sentence:
 
@@ -264,8 +264,8 @@ We can now verify that result is consistent.
     - student(1).
     <BLANKLINE>
     Consistent discourse: d0 ['s0-r0', 's1-r0']:
-        s0-r0: exists x.((student x) & (dance x))
-        s1-r0: all x.((student x) -> person(x))
+        s0-r0: exists x.(student(x) & dance(x))
+        s1-r0: all x.(student(x) -> person(x))
     <BLANKLINE>
 
 Checking Informativity
@@ -277,7 +277,7 @@ but this time, we check whether it is informative with respect to what
 has gone before.
 
     >>> dt.add_sentence('A person dances', informchk=True)
-    Sentence 'A person dances' under reading 'exists x.(person(x) & (dance x))':
+    Sentence 'A person dances' under reading 'exists x.(person(x) & dance(x))':
     Not informative relative to thread 'd0'
 
 In fact, we are just checking whether the new sentence is entailed by
@@ -306,9 +306,9 @@ the preceding discourse.
     - student(1).
     <BLANKLINE>
     Consistent discourse: d0 ['s0-r0', 's1-r0', 's2-r0']:
-        s0-r0: exists x.((student x) & (dance x))
-        s1-r0: all x.((student x) -> person(x))
-        s2-r0: exists x.(person(x) & (dance x))
+        s0-r0: exists x.(student(x) & dance(x))
+        s1-r0: all x.(student(x) -> person(x))
+        s2-r0: exists x.(person(x) & dance(x))
     <BLANKLINE>
 
 
@@ -357,13 +357,13 @@ by adding background information.
     >>> dt.background()
     all x.(boxerdog(x) -> dog(x))
     all x.(boxer(x) -> person(x))
-    all x.(not (dog(x) & person(x)))
+    all x.-(dog(x) & person(x))
     all x.(married(x) <-> exists y.marry(x,y))
     all x.(bark(x) -> dog(x))
-    all x y.((marry y x) -> (person(x) & person(y)))
-    (not (Vincent = Mia))
-    (not (Vincent = Fido))
-    (not (Mia = Fido))
+    all x.all y.(marry(x,y) -> (person(x) & person(y)))
+    -(Vincent = Mia)
+    -(Vincent = Fido)
+    -(Mia = Fido)
 
 The background information allows us to reject three of the threads as
 inconsistent. To see what remains, use the ``filter=True`` parameter

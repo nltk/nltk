@@ -543,7 +543,7 @@ Load a valuation from a file.
     >>> m = Model(dom, val)
     >>> g = Assignment(dom)
 
-    >>> inputs = ['John walks in Noosa', 'every dog barks']
+    >>> inputs = ['John sees a girl', 'every dog barks']
     >>> for s in inputs:
     ...     print
     ...     print "Sentence: %s" % s
@@ -551,19 +551,17 @@ Load a valuation from a file.
     ...         print "Parse:\n %s" %tree
     ...     print "Semantics: %s" %  root_semrep(tree)
     <BLANKLINE>
-    Sentence: John walks in Noosa
+    Sentence: John sees a girl
     Parse:
-     (S[sem=<(walk(john) & in(john,noosa))>]
+     (S[sem=<exists x.(girl(x) & see(john,x))>]
       (NP[-loc, num='sg', sem=<\P.P(john)>]
         (PropN[-loc, num='sg', sem=<\P.P(john)>] John))
-      (VP[num='sg', sem=<\x.(walk(x) & in(x,noosa))>]
-        (VP[num='sg', sem=<\x.walk(x)>]
-          (IV[num='sg', sem=<\x.walk(x)>, tns='pres'] walks))
-        (PP[sem=<\P.\x.(P(x) & in(x,noosa))>]
-          (P[+loc, sem=<\X.\P.\x.X(\y.(P(x) & in(x,y)))>] in)
-          (NP[+loc, num='sg', sem=<\P.P(noosa)>]
-            (PropN[+loc, num='sg', sem=<\P.P(noosa)>] Noosa)))))
-    Semantics: (walk(john) & in(john,noosa))
+      (VP[num='sg', sem=<\y.exists x.(girl(x) & see(y,x))>]
+        (TV[num='sg', sem=<\X.\y.X(\x.see(y,x))>, tns='pres'] sees)
+        (NP[num='sg', sem=<\Q.exists x.(girl(x) & Q(x))>]
+          (Det[num='sg', sem=<\P.\Q.exists x.(P(x) & Q(x))>] a)
+          (Nom[num='sg', sem=<girl>] (N[num='sg', sem=<girl>] girl)))))
+    Semantics: exists x.(girl(x) & see(john,x))
     <BLANKLINE>
     Sentence: every dog barks
     Parse:
