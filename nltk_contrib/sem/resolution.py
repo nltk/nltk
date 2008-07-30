@@ -2,6 +2,7 @@
 #
 # Author: Dan Garrette <dhgarrette@gmail.com>
 #
+# Copyright (C) 2001-2008 NLTK Project
 # URL: <http://www.nltk.org>
 # For license information, see LICENSE.TXT
 
@@ -30,6 +31,7 @@ class Resolution(ProverI):
         self._assumptions = assumptions
         self._options = options
         self._assume_false=True
+        self._proof = None
 
     def prove(self, verbose=False):
         tp_result = None
@@ -39,7 +41,7 @@ class Resolution(ProverI):
                 clauses.extend(clausify(-self._goal))
             for a in self._assumptions:
                 clauses.extend(clausify(a))
-            tp_result = _attempt_proof(clauses, verbose)
+            tp_result = self._attempt_proof(clauses)
         except RuntimeError, e:
             if self._assume_false and str(e).startswith('maximum recursion depth exceeded'):
                 tp_result = False
@@ -49,12 +51,55 @@ class Resolution(ProverI):
                 else:
                     raise e
         return tp_result
+
+    def _attempt_proof(self, clauses):
+        tried = []
+        i = 0
+        while i < len(clauses):
+            if not clauses[i].is_tautology():
+                j = 1
+                while j < len(clauses):
+                    #don't: 1) unify a clause with itself, 
+                    #       2) retry parings, 
+                    #       3) use tautologies
+                    if i != j and (i,j) not in tried and \
+                       not clauses[j].is_tautology(): 
+                        tried.append((i,j))
+                        try:
+                            newclause = clauses[i].unify(clauses[j])
+                            newclause._parents = (i+1,j+1)
+                            clauses.append(newclause)
+                            if not len(newclause):
+                                self._proof = clauses
+                                return True 
+                            i=-1 #since we added a new clause, restart from the top 
+                            break
+                        except UnificationException:
+                            pass #the clauses could not be unified
+                    j += 1
+            i += 1
+        self._proof = clauses
+        return False
         
     def show_proof(self):
         """
         Print out the proof.
         """
-        self.prove(True)
+        if self._proof is None:
+            raise Exception("show_proof() cannot be called before prove()")
+        
+        clauses = self._proof
+        
+        max_clause_len = max([len(str(clause)) for clause in clauses])
+        for i in range(len(clauses)):
+            parents = 'A'
+            taut = ''
+            if clauses[i].is_tautology():
+                taut = 'Tautology'
+            if clauses[i]._parents:
+                parents = str(clauses[i]._parents)
+            parents = ' '*(max_clause_len-len(str(clauses[i]))+1) + parents
+            print '[%s] %s %s %s' % (i+1, clauses[i], parents, taut) 
     
     def add_assumptions(self, new_assumptions):
         """
@@ -89,32 +134,6 @@ class Resolution(ProverI):
             print a
 
 
-def _attempt_proof(clauses, verbose=False):
-    tried = []
-    i = 0
-    while i < len(clauses):
-        clauses[i] = clauses[i].remove_tautologies()
-        j = 1
-        while j < len(clauses):
-            if i != j and (i,j) not in tried: #don't retry parings
-                tried.append((i,j))
-                try:
-                    newclause = clauses[i].unify(clauses[j])
-                    clauses.append(newclause)
-                    if not len(newclause):
-                        if verbose: 
-                            for clause in clauses: print clause
-                        return True 
-                    i=-1 #since we added a new clause, restart from the top 
-                    break
-                except UnificationException:
-                    pass #the clauses could not be unified
-            j += 1
-        i += 1
-    if verbose: 
-        for clause in clauses: print clause
-    return False
-
 def unify(a, b, bindings=None):
     """
     Two expressions are unifiable if there exists a substitution function S 
@@ -144,6 +163,12 @@ def unify(a, b, bindings=None):
 
 
 class Clause(set):
+    def __init__(self, data):
+        set.__init__(self, data)
+        self._is_tautology = None
+        self._proof_line = None
+        self._parents = None
+    
     def unify(self, other):
         """
         Attempt to unify this Clause with the other, returning one, unified
@@ -176,28 +201,17 @@ class Clause(set):
         else:
             raise UnificationException(self, other)
     
-    def remove_tautologies(self):
-        bindings_accum = None
-        used = [] #atoms that have been unified with something else
+    def is_tautology(self):
+        if self._is_tautology is not None:
+            return self._is_tautology
         for a in self:
-            if a in used:
-                continue # don't unify atoms that have already been unified
             for b in self:
-                if b in used:
-                    continue # don't unify atoms that have already been unified
                 if a is not b: # don't try to unify with self
-                    bindings = unify(a, b, bindings_accum)
-                    if bindings:
-                        used.extend([a,b])
-                        if bindings_accum:
-                            bindings_accum += bindings
-                        else:
-                            bindings_accum = bindings
-        if bindings_accum:
-            newclause = Clause(self-set(used))
-            return newclause.substitute_bindings(bindings_accum)
-        else:
-            return self
+                    if unify(a, b):
+                        self._is_tautology = True
+                        return True
+        self._is_tautology = False
+        return False
     
     def free(self):
         s = set()
@@ -206,6 +220,13 @@ class Clause(set):
         return s
     
     def replace(self, variable, expression):
+        """
+        Replace every instance of variable with expression across every atom
+        in the clause
+        
+        @param variable: C{Variable}
+        @param expression: C{Expression}
+        """
         return Clause([atom.replace(variable, expression) for atom in self])
     
     def substitute_bindings(self, bindings):
