@@ -5,7 +5,6 @@
 # URL: <http://nltk.org>
 # For license information, see LICENSE.TXT
 #
-import sets
 from distance_metric import *
 
 class AnnotationTask():
@@ -21,15 +20,18 @@ class AnnotationTask():
     is the MASI metric, which requires Python sets.
     """
 
-    def __init__(self,distance=binary):
+    def __init__(self,data=None,distance=binary,verbose=False):
         """Initialize an empty annotation task.
 
         """
+        self.verbose = verbose
         self.distance = distance
-        self.I = sets.Set()
-        self.K = sets.Set()
-        self.C = sets.Set()
+        self.I = set()
+        self.K = set()
+        self.C = set()
         self.data = []
+        if(data!=None):
+            self.load_array(data)
 
     def __str__(self):
         return "\r\n".join(map(lambda x:"%s\t%s\t%s"%(x['coder'],x['item'].replace('_',"\t"),",".join(x['labels'])),self.data))
@@ -52,26 +54,36 @@ class AnnotationTask():
         """
         kA = filter(lambda x:x['coder']==cA and x['item']==i,self.data)[0]
         kB = filter(lambda x:x['coder']==cB and x['item']==i,self.data)[0]
-        return 1.0 - float(self.distance(kA['labels'],kB['labels']))
+        ret = 1.0 - float(self.distance(kA['labels'],kB['labels']))
+        if(self.verbose):
+            print "Observed agreement between %s and %s on %s: %f"%(cA,cB,i,ret)
+            print "Distance between \"%s\" and \"%s\": %f"%(",".join(kA['labels']),",".join(kB['labels']),1.0 - ret)
+        return ret
 
     def N(self,k="",i="",c=""):
         """Implements the "n-notation" used in Artstein and Poesio (2007)
 
         """
         if(k!="" and i=="" and c==""):
-            return len(filter(lambda x:k==x['labels'],self.data))
+            ret = len(filter(lambda x:k==x['labels'],self.data))
         elif(k!="" and i!="" and c==""):
-            return len(filter(lambda x:k==x['labels'] and i==x['item'],self.data))
+            ret = len(filter(lambda x:k==x['labels'] and i==x['item'],self.data))
         elif(k!="" and c!="" and i==""):
-            return len(filter(lambda x:k==x['labels'] and c==x['coder'],self.data))
+            ret = len(filter(lambda x:k==x['labels'] and c==x['coder'],self.data))
         else:
             print "You must pass either i or c, not both!"
+        if(self.verbose):
+            print "Count on N[%s,%s,%s]: %d"%(k,i,c,ret)
+        return ret
 
     def Ao(self,cA,cB):
         """Observed agreement between two coders on all items.
 
         """
-        return float(sum(map(lambda x:self.agr(cA,cB,x),self.I)))/float(len(self.I))
+        ret = float(sum(map(lambda x:self.agr(cA,cB,x),self.I)))/float(len(self.I))
+        if(self.verbose):
+            print "Observed agreement between %s and %s: %f"%(cA,cB,ret)
+        return ret
 
     def avg_Ao(self):
         """Average observed agreement across all coders and items.
@@ -85,7 +97,10 @@ class AnnotationTask():
             for cB in s:
                 total += self.Ao(cA,cB)
                 counter += 1.0
-        return total/counter
+        ret = total/counter
+        if(self.verbose):
+            print "Average observed agreement: %f"%(ret)
+        return ret
 
     def Do(self):
         """The observed disagreement.
@@ -99,6 +114,8 @@ class AnnotationTask():
                 for l in self.K:
                     total += float(self.N(i=i,k=j)*self.N(i=i,k=l))*self.distance(l,j)
         ret = (1.0/float((len(self.I)*len(self.C)*(len(self.C)-1))))*total
+        if(self.verbose):
+            print "Observed disagreement between %s and %s: %f"%(cA,cB,ret)
         return ret
 
     # Agreement Coefficients
@@ -107,7 +124,8 @@ class AnnotationTask():
 
         """
         Ae = 1.0/float(len(self.K))        
-        return (self.avg_Ao() - Ae)/(1.0 - Ae)
+        ret = (self.avg_Ao() - Ae)/(1.0 - Ae)
+        return ret
 
     def pi(self):
         """Scott 1955
@@ -117,12 +135,13 @@ class AnnotationTask():
         for k in self.K:
             total += self.N(k=k)**2
         Ae = (1.0/(4.0*float(len(self.I)**2)))*total
-        return (self.avg_Ao()-Ae)/(1-Ae)
+        ret = (self.avg_Ao()-Ae)/(1-Ae)
+        return ret
 
     def pi_avg(self):
         pass
 
-    def kappa(self,cA,cB):
+    def kappa_two(self,cA,cB):
         """Cohen 1960
 
         """
@@ -130,16 +149,19 @@ class AnnotationTask():
         for k in self.K:
             Ae += (float(self.N(c=cA,k=k))/float(len(self.I))) * (float(self.N(c=cB,k=k))/float(len(self.I)))
         ret = (self.Ao(cA,cB)-Ae)/(1.0-Ae)
+        if(self.verbose):
+            print "Kappa between %s and %s: %f"%(cA,cB,ret)
         return ret
 
-    def kappa_avg(self):
+    def kappa(self):
         vals = {}
         for a in self.C:
             for b in self.C:
                 if(a==b or "%s%s"%(b,a) in vals):
                     continue
-                vals["%s%s"%(a,b)] = self.kappa(a,b)
-        return sum(vals.values())/float(len(vals))
+                vals["%s%s"%(a,b)] = self.kappa_two(a,b)
+        ret = sum(vals.values())/float(len(vals))
+        return ret
 
     def alpha(self):
         """Krippendorff 1980
@@ -156,18 +178,33 @@ class AnnotationTask():
 
 if(__name__=='__main__'):
 
+    import re
     import optparse
+    import distance_metric
 
     # process command-line arguments
     parser = optparse.OptionParser()
     parser.add_option("-d","--distance",dest="distance",default="binary",help="distance metric to use")
-    parser.add_option("-a","--agreement",dest="agreement",default="",help="agreement coefficient to calculate")
-    parser.add_option("-e","--exclude",dest="exclude",default="",help="coder names to exclude (comma-separated), e.g. jane,mike")
-    parser.add_option("-i","--include",dest="include",default="",help="coder names to include, same format as exclude")
+    parser.add_option("-a","--agreement",dest="agreement",default="kappa",help="agreement coefficient to calculate")
+    parser.add_option("-e","--exclude",dest="exclude",action="append",default=[],help="coder names to exclude (comma-separated), e.g. jane,mike")
+    parser.add_option("-i","--include",dest="include",action="append",default=[],help="coder names to include, same format as exclude")
     parser.add_option("-f","--file",dest="file",help="file to read labelings from, each line with three columns: 'labeler item labels'")
+    parser.add_option("-v","--verbose",dest="verbose",default=False,action="store_true",help="print debugging to stderr?")
     parser.add_option("-c","--columnsep",dest="columnsep",default="\t",help="char/string that separates the three columns in the file, defaults to tab")
     parser.add_option("-l","--labelsep",dest="labelsep",default=",",help="char/string that separates labels (if labelers can assign more than one), defaults to comma")
+    parser.add_option("-p","--presence",dest="presence",default=None,help="convert each labeling into 1 or 0, based on presence of LABEL")
     (options,remainder) = parser.parse_args()
 
-    include = options.include.split(',')
-    exclude = options.exclude.split(',')
+    # read in data from the specified file
+    data = []
+    for l in open(options.file):
+        toks = l.split(options.columnsep)
+        coder,object,labels = toks[0],str(toks[1:-1]),frozenset(toks[-1].strip().split(options.labelsep))
+        if((options.include==options.exclude) or (len(options.include)>0 and coder in options.include) or (len(options.exclude)>0 and coder not in options.exclude)):
+            data.append((coder,object,labels))
+
+    if(options.presence):
+        task = AnnotationTask(data,getattr(distance_metric,options.distance)(options.presence),options.verbose)
+    else:
+        task = AnnotationTask(data,getattr(distance_metric,options.distance),options.verbose)
+    print getattr(task,options.agreement)()
