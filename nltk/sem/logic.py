@@ -419,7 +419,7 @@ class NegatedExpression(Expression):
         self.term = term
         
     def simplify(self):
-        return self
+        return self.__class__(self.term.simplify())
 
     def replace(self, variable, expression, replace_bound=False):
         """
