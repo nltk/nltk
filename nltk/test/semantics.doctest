@@ -1,154 +1,51 @@
-===========
- Semantics
-===========
-   >>> from nltk.sem import *
-
-Characteristic Functions
-========================
-
-Within ``sem.models``, Curried characteristic functions are implemented as
-a subclass of dictionaries, using the ``CharFun`` constructor.
-
-   >>> cf = CharFun({'d1' : CharFun({'d2': True}), 'd2' : CharFun({'d1': True})})
-
-Values of a ``CharFun`` are accessed by indexing in the usual way:
-
-   >>> cf['d1']
-   {'d2': True}
-   >>> cf['d1']['d2']
-   True
-
-``CharFun``\ s are 'sparse' data structures in the sense that they omit
-entries of the form ``{e: False}``. In fact, they
-behave just like ordinary dictionaries on keys which are
-out of their domain, rather than yielding the value ``False``:
-
-   >>> cf['not in domain']
-   Traceback (most recent call last):
-   ...
-   KeyError: 'not in domain'
-
-The assignment of ``False`` values is delegated to a wrapper method
-``app`` of the ``Model`` class. ``app`` embodies the Closed World
-assumption; i.e., where ``m`` is an instance of ``Model``. In the
-following example, ``m.app(cf, 'd1')`` yields the value ``False`` since
-although ``'d1'`` belongs to the domain of the model, it is not in the
-extension of the value of 'boy'. 
-
-   >>> val = Valuation()
-   >>> v = [('adam', 'b1'), ('betty', 'g1'), ('fido', 'd1'),
-   ... ('girl', set(['g1', 'g2'])), ('boy', set(['b1', 'b2'])), ('dog', set(['d1'])),
-   ... ('love', set([('b1', 'g1'), ('b2', 'g2'), ('g1', 'b1'), ('g2', 'b1')]))]
-   >>> val.read(v)
-   >>> dom = val.domain
-   >>> m = Model(dom, val)
-   >>> g = Assignment(dom, {'x': 'b1', 'y': 'g2'})
-   >>> symbols = ['adam', 'girl', 'love', 'walks', 'x', 'y', 'z']
-   >>> cf = val['boy']
-   >>> cf
-   {'b1': True, 'b2': True}
-   >>> m.app(cf, 'd1')
-   False
-
-If however we apply a function to an object that is not in the domain,
-an ``'Undefined'`` exception is raised.
-
-   >>> m.app(cf, 'not in domain')
-   Traceback (most recent call last):
-   ...
-   Undefined: {'b1': True, 'b2': True} can't be applied as a function to 'not in domain'
-
-In practise, it will often be more convenient for a user to specify
-interpretations as *n*-ary relations (i.e., sets of *n*-tuples) rather
-than as *n*-ary functions. ``CharFun`` provides a ``read()`` method which
-will convert such relations into Curried characteristic functions:
-
-   >>> s = set([('d1', 'd2'), ('d3', 'd4')])
-   >>> cf = CharFun()
-   >>> cf.read(s)
-   >>> cf
-   {'d4': {'d3': True}, 'd2': {'d1': True}}
+=========
+Semantics
+=========
 
 
-``read`` will raise an exception if the set is not in fact a
-relation (i.e., contains tuples of different lengths):
+Overview
+========
 
-  >>> wrong = set([('d1', 'd2'), ('d2', 'd1', 'd3')])
-  >>> cf.read(wrong)
-  Traceback (most recent call last):
-  ...
-  ValueError: Set contains sequences of different lengths
+The ``nltk.sem`` module has two main components:
 
-However, unary relations can be parsed to characteristic functions.
+ - ``logic`` provides a parser for analyzing expressions of First
+   Order Logic (FOL).
+ - ``evaluate`` allows users to recursively determine truth in a
+   model for formulas of FOL.
 
-  >>> cf = CharFun()
-  >>> unary = set(['d1', 'd2'])
-  >>> cf.read(unary)
-  >>> cf
-  {'d2': True, 'd1': True}
+A model consists of a domain of discourse and a valuation function,
+which assigns values to non-logical constants. We assume that entities
+in the domain are represented as strings such as ``'b1'``, ``'g1'``,
+etc. A ``Valuation`` is initialized with a list of (symbol, value)
+pairs, where values are entities, sets of entities or sets of tuples
+of entities.
 
-The function ``flatten`` returns a set of the entities used as keys in
-a ``CharFun`` instance. The same information can be accessed via the
-``domain`` attribute of ``CharFun``.
+    >>> import nltk
+    >>> v = [('adam', 'b1'), ('betty', 'g1'), ('fido', 'd1'),
+    ... ('girl', set(['g1', 'g2'])), ('boy', set(['b1', 'b2'])),
+    ... ('dog', set(['d1'])),
+    ... ('love', set([('b1', 'g1'), ('b2', 'g2'), ('g1', 'b1'), ('g2', 'b1')]))]
+    >>> val = nltk.sem.Valuation(v)
 
-   >>> cf = CharFun({'d1' : {'d2': True}, 'd2' : {'d1': True}})
-   >>> flatten(cf)
-   set(['d2', 'd1'])
-   >>> cf.domain
-   set(['d2', 'd1'])
+The domain of discourse can be inferred from the valuation, and model
+is then created with domain and valuation as parameters.
 
-Valuations and Assignments
-==========================
-
-Valuations
-----------
-
-A *Valuation* is a mapping from non-logical constants to appropriate semantic
-values in the model. Valuations are created using the ``Valuation`` constructor.
-
-   >>> val = Valuation({'Fido' : 'd1', 'dog' : {'d1' : True, 'd2' : True}})
-   >>> val
-   {'Fido': 'd1', 'dog': {'d2': True, 'd1': True}}
-
-As with ``CharFun``, an instance of ``Valuation`` will read valuations using
-relations rather than characteristic functions as interpretations.
-
-   >>> setval = [('adam', 'b1'), ('betty', 'g1'),
-   ... ('girl', set(['g2', 'g1'])), ('boy', set(['b1', 'b2'])),
-   ... ('love', set([('b1', 'g1'), ('b2', 'g2'), ('g1', 'b1'), ('g2', 'b1')]))]
-   >>> val = Valuation()
-   >>> val.read(setval)
-
-.. doctest-ignore::
-   >>> print val
-   {'adam': 'b1',
-    'betty': 'g1',
-    'boy': {'b1': True, 'b2': True},
-    'girl': {'g1': True, 'g2': True},
-    'love': {'b1': {'g1': True, 'g2': True},
-             'g1': {'b1': True},
-             'g2': {'b2': True}}}
-
-Valuations have a ``domain`` attribute, like ``CharFun``, and also a ``symbols``
-attribute.
-
-   >>> val.domain
-   set(['g1', 'g2', 'b2', 'b1'])
-   >>> val.symbols
-   ['boy', 'girl', 'love', 'adam', 'betty']
+    >>> dom = val.domain
+    >>> m = nltk.sem.Model(dom, val)
 
 
 Assignments
 -----------
 
 A variable *Assignment* is a mapping from individual variables to
-entities in the domain. Individual variables are indicated with the
-letters 'x', 'y', 'w' and 'z', optionally followed by an integer
-(e.g., 'x0', 'y332').  Assignments are created using the ``Assignment``
-constructor, which also takes the domain as a parameter.
+entities in the domain. Individual variables are usually indicated
+with the letters ``'x'``, ``'y'``, ``'w'`` and ``'z'``, optionally
+followed by an integer (e.g., ``'x0'``, ``'y332'``).  Assignments are
+created using the ``Assignment`` constructor, which also takes the
+domain as a parameter.
 
    >>> dom = set(['u1', 'u2', 'u3', 'u4'])
-   >>> g3 = Assignment(dom, {'x': 'u1', 'y': 'u2'})
+   >>> g3 = nltk.sem.Assignment(dom, [('x', 'u1'), ('y', 'u2')])
    >>> g3
    {'y': 'u2', 'x': 'u1'}
 
@@ -158,44 +55,13 @@ closer to that in logic textbooks:
    >>> print g3
    g[u2/y][u1/x]
 
-Initialization of an ``Assignment`` instance checks that the variable
-really is an individual variable and also that the value belongs to
-the domain of discourse:
-
-    >>> Assignment(dom, {'xxx': 'u1', 'y': 'u2'})
-    Traceback (most recent call last):
-    ...
-    AssertionError: Wrong format for an Individual Variable: 'xxx'
-    >>> Assignment(dom, {'x': 'u5', 'y': 'u2'})
-    Traceback (most recent call last):
-    ...
-    AssertionError: 'u5' is not in the domain: set(['u4', 'u1', 'u3', 'u2'])
 
 It is also possible to update an assignment using the ``add`` method:
 
     >>> dom = set(['u1', 'u2', 'u3', 'u4'])
-    >>> g4 = Assignment(dom, {})
-    >>> g4.add('u1', 'x')
+    >>> g4 = nltk.sem.Assignment(dom)
+    >>> g4.add('x', 'u1')
     {'x': 'u1'}
-    >>> g4.add('u1', 'xyz')
-    Traceback (most recent call last):
-    ...
-    AssertionError: Wrong format for an Individual Variable: 'xyz'
-    >>> g4.add('u2', 'x').add('u3', 'y').add('u4', 'x0')
-    {'y': 'u3', 'x': 'u2', 'x0': 'u4'}
-    >>> g4.add('u5', 'x')
-    Traceback (most recent call last):
-    ...
-    AssertionError: u5 is not in the domain set(['u4', 'u1', 'u3', 'u2'])
-
-Variables (and their values) can be selectively removed from an
-assignment with the ``purge()`` method:
-
-    >>> g4
-    {'y': 'u3', 'x': 'u2', 'x0': 'u4'}
-    >>> g4.purge('x')
-    >>> g4
-    {'y': 'u3', 'x0': 'u4'}
 
 With no arguments,  ``purge()`` is equivalent to ``clear()`` on a dictionary:
 
@@ -204,197 +70,106 @@ With no arguments,  ``purge()`` is equivalent to ``clear()`` on a dictionary:
     {}
 
 
-Models
-======
-
-The ``Model`` constructor takes two parameters, a ``set`` and a ``Valuation``.
-
-   >>> val = Valuation()
-   >>> v = [('adam', 'b1'), ('betty', 'g1'), ('fido', 'd1'),
-   ... ('girl', set(['g1', 'g2'])), ('boy', set(['b1', 'b2'])), ('dog', set(['d1'])),
-   ... ('love', set([('b1', 'g1'), ('b2', 'g2'), ('g1', 'b1'), ('g2', 'b1')]))]
-   >>> val.read(v)
-   >>> dom = val.domain
-   >>> m = Model(dom, val)
-   >>> g = Assignment(dom, {'x': 'b1', 'y': 'g2'})
-   >>> symbols = ['adam', 'girl', 'love', 'walks', 'x', 'y', 'z']
+Evaluation
+----------
    
-The top-level method of a ``Model`` instance is ``evaluate}, which
-assigns a semantic value to expressions of the ``logic`` module, under an assignment ``g``:
+The top-level method of a ``Model`` instance is ``evaluate()``, which
+assigns a semantic value to expressions of the ``logic`` module, under
+an assignment ``g``:
 
-   >>> m.evaluate('all x. ((boy x) implies (not (girl x)))', g)
-   True
+    >>> dom = val.domain
+    >>> g = nltk.sem.Assignment(dom)
+    >>> m.evaluate('all x.(boy(x) -> - girl(x))', g)
+    True
 
-evaluate
---------
 
-``evaluate`` calls a recursive function ``satisfy``, which in turn calls
-a function ``i`` to interpret non-logical constants and individual
-variables. ``i`` first tries to call the model's ``Valuation`` and if
-that fails, calls the variable assignment ``g``. Any atomic expression
-which cannot be assigned a value by ``i`` raises an ``Undefined``
-exception; this is caught by ``evaluate``, which returns the string
-``'Undefined'``.
+``evaluate()`` calls a recursive function ``satisfy()``, which in turn
+calls a function ``i()`` to interpret non-logical constants and
+individual variables. ``i()`` delegates the interpretation of these to
+the the model's ``Valuation`` and the variable assignment ``g``
+respectively. Any atomic expression which cannot be assigned a value
+by ``i`` raises an ``Undefined`` exception; this is caught by
+``evaluate``, which returns the string ``'Undefined'``.
 
-    >>> m.evaluate('(walk adam)', g, trace=2)
-        (checking whether 'walk' is an individual variable)
+    >>> m.evaluate('walk(adam)', g, trace=2)
+    <BLANKLINE>
+    'walk(adam)' is undefined under M, g
     'Undefined'
 
-
-Boolean operators such as *not*, *and* and *implies* are
-implemented as dictionaries. For example:
-
-    >>> m.AND
-    {False: {False: False, True: False}, True: {False: False, True: True}}
-
-A formula such as ``'(p and q)'`` is interpreted by indexing
-the value of ``'and'`` with the values of the two propositional arguments,
-in the following manner:
-
-   >>> val1 = Valuation({'p': True, 'q': True, 'r': False})
-   >>> dom1 = set([])
-   >>> m1 = Model(dom1, val1, prop=True)
-   >>> g1 = Assignment(dom1)
-   >>> m1.AND[m1.evaluate('p', g)][m1.evaluate('q', g)]
-   True
-
-satisfy
--------
-
-The ``satisfy()`` method assigns semantic values to arbitrary expressions
-according to their syntactic structure, as determined by ``decompose()``.
 
 
 Unit Tests
 ==========
 
-Unit tests for parsing logical expressions
-------------------------------------------
 
-    >>>
+Unit tests for relations and valuations
+---------------------------------------
+
     >>> from nltk.sem import *
-    >>> v = Valuation()
-    >>> m = Model(set([]), v)
 
-Existential quantification
-
-    >>> pair = m.decompose('some x.(M N)')
-    >>> print pair[0]
-    ('some', 'x')
-    >>> print pair[1]
-    (M N)
-
-Universal quantification
-
-    >>> pair = m.decompose('all x.(M N)')
-    >>> print pair[0]
-    ('all', 'x')
-    >>> print pair[1]
-    (M N)
-
-Boolean operators
-
-    >>> pair = m.decompose('(and (M N) (P Q))')
-    >>> print pair[0]
-    and
-    >>> print pair[1]
-    ['(M N)', '(P Q)']
-
-    >>> pair = m.decompose('(not M N P Q)')
-    >>> print pair[0]
-    not
-    >>> print pair[1]
-    ['M', 'N', 'P', 'Q']
-
-Just an application expression
-
-    >>> pair = m.decompose('(M N P)')
-    >>> print pair[0],
-    (M N)
-    >>> print pair[1]
-    P
-    >>> 
-
-Unit tests for characteristic functions and valuations
-------------------------------------------------------
-
-Define a characteristic function.
-
-    >>> cf = CharFun({'d1' : {'d1': True, 'd2': True}, 'd2' : {'d1': True}})
-    >>> cf['d1'] == {'d1': True, 'd2': True}
-    True
-    >>> print cf['d1']['d2']
-    True
-
-``cf`` not defined on 'foo'.
-
-    >>> print  cf['foo']
-    Traceback (most recent call last):
-    ...
-    KeyError: 'foo'
-    >>> print cf['d1']['foo']
-    Traceback (most recent call last):
-    ...
-    KeyError: 'foo'
-
-Flattening characteristic functions to sets and reading sets into
-characteristic functions.
-
-    >>> flatten(cf) == set(['d1', 'd2'])
-    True
-    >>> flatten(cf) == cf.domain
-    True
+Relations are sets of tuples, all of the same length.
 
     >>> s1 = set([('d1', 'd2'), ('d1', 'd1'), ('d2', 'd1')])
-    >>> cf1 = CharFun()
-    >>> cf1.read(s1)
-    >>> cf == cf1
+    >>> is_rel(s1)
     True
-    >>> cf1.tuples() == s1
-    True
-    >>> s2 = set([('d1', 'd2'), ('d1', 'd2'), ('d1', 'd1'), ('d2', 'd1')])
-    >>> cf2 = CharFun()
-    >>> cf2.read(s2)
-    >>> cf1 == cf2
-    True
-
-    >>> unary = set(['d1', 'd2'])
-    >>> cf.read(unary)
-    >>> cf == {'d2': True, 'd1': True}
-    True
-
-    >>> wrong = set([('d1', 'd2'), ('d2', 'd1', 'd3')])
-    >>> cf.read(wrong)
+    >>> s2 = set([('d1', 'd2'), ('d1', 'd2'), ('d1',)])
+    >>> is_rel(s2)
     Traceback (most recent call last):
-    ...
-    ValueError: Set contains sequences of different lengths
+      . . .
+    ValueError: Set set([('d1', 'd2'), ('d1',)]) contains sequences of different lengths
+    >>> s3 = set(['d1', 'd2'])
+    >>> is_rel(s3)
+    True
+    >>> is_rel(set())
+    True
+    >>> null_binary_rel = set([(None, None)])
+    >>> is_rel(null_binary_rel)
+    True
 
-    >>> val = Valuation({'Fido' : 'd1', 'dog' : {'d1' : True, 'd2' : True}})
-    >>> val['dog'] == cf
+Sets of entities are converted into sets of singleton tuples.
+
+    >>> set2rel(s3)
+    set([('d1',), ('d2',)])
+    >>> set2rel(set([1,3,5,]))
+    set(['1', '3', '5'])
+    >>> set2rel(set())
+    set([])
+    >>> set2rel(set2rel(s3))
+    set([('d1',), ('d2',)])
+
+Predication is carried out with ``app()``.
+
+    >>> app(s1, 'd1')
+    set([('d1',), ('d2',)])
+    >>> app(s1, 'd2')
+    set([('d1',)])
+    >>> app(app(s1, 'd1'), 'd1')
     True
-    >>> print val['dog'][val['Fido']]
-    True
+    >>> app(app(s1, 'd2'), 'd2')
+    False
+    >>> app(set(), 'd1')
+    False
+    >>> app(s1, 'd3')
+    set([])
+    >>> app(app(s1, 'd3'), 'd1')
+    False
+    >>> app(s2, 'd1')
+    Traceback (most recent call last):
+      . . .
+    ValueError: Set set([('d1', 'd2'), ('d1',)]) contains sequences of different lengths
+    >>> app(null_binary_rel, 'd1')
+    set([])
+    >>> app(app(null_binary_rel, 'd1'), 'd1')
+    False
+
+    >>> val = Valuation([('Fido', 'd1'), ('dog', set(['d1', 'd2'])), ('walk', set())])
+    >>> val['dog'] 
+    set([('d1',), ('d2',)])
     >>> val.domain == set(['d1', 'd2'])
     True
     >>> print val.symbols
-    ['Fido', 'dog']
+    ['Fido', 'dog', 'walk']
     
-    >>> setval = [('Fido', 'd1'), ('dog', set(['d1', 'd2']))]
-    >>> val1 = Valuation()
-    >>> val1.read(setval)
-    >>> val == val1
-    True
-
-    >>> val1 = Valuation({'love': {'g1': {'b1': True}, 'b1': {'g1': True}, 'b2': {'g2': True}, 'g2': {'b1': True}}})
-    >>> love1 = val1['love']
-    >>> relation = set([('b1', 'g1'),  ('g1', 'b1'), ('g2', 'b2'), ('b1', 'g2')])
-    >>> love1.tuples() == relation
-    True
-    >>> val2 = Valuation()
-    >>> val2.read([('love', set([('b1', 'g1'), ('g1', 'b1'), ('g2', 'b2'), ('b1', 'g2')]))])
-    >>> love2 = val2['love']
-    >>> love1.tuples() == love2.tuples()
-    True
 
 Parse a valuation from a string.
 
@@ -419,78 +194,136 @@ Parse a valuation from a string.
 
 .. doctest-ignore::
     >>> print val
-    {'bark': {'d1': True, 'd2': True},
-     'boy': {'b1': True, 'b2': True},
-     'chase': {'d1': {'g1': True},
-               'd2': {'g2': True},
-               'g1': {'b1': True, 'b2': True}},
-     'dog': {'d1': True, 'd2': True},
+    {'bark': set([('d1',), ('d2',)]),
+     'boy': set([('b1',), ('b2',)]),
+     'chase': set([('b1', 'g1'), ('g2', 'd2'), ('g1', 'd1'), ('b2', 'g1')]),
+     'dog': set([('d1',), ('d2',)]),
      'fido': 'd1',
-     'girl': {'g1': True, 'g2': True},
-     'in': {'n': {'b1': True, 'b2': True, 'd2': True}},
+     'girl': set([('g2',), ('g1',)]),
+     'in': set([('d2', 'n'), ('b1', 'n'), ('b2', 'n')]),
      'john': 'b1',
      'mary': 'g1',
      'noosa': 'n',
-     'see': {'b1': {'d2': True, 'g1': True},
-             'd2': {'b2': True},
-             'g1': {'b1': True},
-             'n': {'g2': True}},
+     'see': set([('b1', 'g1'), ('b2', 'd2'), ('d2', 'b1'), ('g2', 'n'), ('g1', 'b1')]),
      'suzie': 'g2',
      'tess': 'd2',
-     'walk': {'b1': True, 'd1': True, 'g2': True},
-     'with': {'b1': {'d1': True, 'g1': True},
-              'd1': {'b1': True},
-              'g1': {'b1': True}}}
+     'walk': set([('d1',), ('b1',), ('g2',)]),
+     'with': set([('b1', 'g1'), ('d1', 'b1'), ('b1', 'd1'), ('g1', 'b1')])}
     
 
 Unit tests for function argument application in a Model
 -------------------------------------------------------
 
-    >>> val = Valuation()
     >>> v = [('adam', 'b1'), ('betty', 'g1'), ('fido', 'd1'),\
     ...      ('girl', set(['g1', 'g2'])), ('boy', set(['b1', 'b2'])), ('dog', set(['d1'])),
-    ...      ('love', set([('b1', 'g1'), ('b2', 'g2'), ('g1', 'b1'), ('g2', 'b1')]))]
-    >>> val.read(v)
+    ...      ('love', set([('b1', 'g1'), ('b2', 'g2'), ('g1', 'b1'), ('g2', 'b1')])),
+    ...      ('kiss', null_binary_rel)]
+    >>> val = Valuation(v)
     >>> dom = val.domain
     >>> m = Model(dom, val)
     >>> g = Assignment(dom)
 
-    >>> print m.app(val['boy'], 'b1')
+    >>> print app(val['boy'], 'b1')
     True
-    >>> print m.app(val['boy'], 'g1')
+    >>> print app(val['boy'], 'g1')
     False
-    >>> print m.app(val['boy'], 'foo')
-    Traceback (most recent call last):
-    ...
-    Undefined: {'b1': True, 'b2': True} can't be applied as a function to 'foo'
+    >>> print app(val['boy'], 'foo')
+    False
+    >>> print app(val['love'], 'b1')
+    set([('g1',)])
+    >>> print app(val['kiss'], 'b1')
+    set([])
+    >>> print app(app(val['kiss'], 'b1'), 'b1')
+    False
+    >>> val.domain
+    set(['d1', 'g1', 'b1', 'b2', 'g2'])
 
 
 Model Tests
 ===========
 
+Extension of Lambda expressions
+    
+    >>> exprs = [
+    ...     r'\x. \y. love(x, y)',
+    ...     r'\x. dog(x) (adam)',
+    ...     r'\x. (dog(x) | boy(x)) (adam)',
+    ...     r'\x. \y. love(x, y)(fido)',
+    ...     r'\x. \y. love(x, y)(adam)',
+    ...     r'\x. \y. love(x, y)(betty)',       
+    ...     r'\x. \y. love(x, y)(betty)(adam)',        
+    ...     r'\x. \y. love(x, y)(betty, adam)',
+    ...     r'\y. \x. love(x, y)(fido)(adam)',        
+    ...     r'\y. \x. love(x, y)(betty, adam)',
+    ...     r'\x. exists y. love(x, y)',
+    ...     r'\z. adam',
+    ...     r'\z. love(x, y)'
+    ...     ]
+    
+    >>> v0 = [('adam', 'b1'), ('betty', 'g1'), ('fido', 'd1'),\
+    ... ('girl', set(['g1', 'g2'])), ('boy', set(['b1', 'b2'])),
+    ... ('dog', set(['d1'])),
+    ... ('love', set([('b1', 'g1'), ('b2', 'g2'), ('g1', 'b1'), ('g2', 'b1')]))]
+    
+    >>> val0 = Valuation(v0)
+    >>> dom0 = val0.domain
+    >>> m0 = Model(dom0, val0)
+    >>> g0 = Assignment(dom0)
+    
+    >>> for e in exprs:
+    ...     print e
+    ...     print m0.evaluate(e, g0)
+    \x. \y. love(x, y)
+    {'g2': {'g2': False, 'b2': False, 'b1': True, 'g1': False, 'd1': False}, 'b2': {'g2': True, 'b2': False, 'b1': False, 'g1': False, 'd1': False}, 'b1': {'g2': False, 'b2': False, 'b1': False, 'g1': True, 'd1': False}, 'g1': {'g2': False, 'b2': False, 'b1': True, 'g1': False, 'd1': False}, 'd1': {'g2': False, 'b2': False, 'b1': False, 'g1': False, 'd1': False}}
+    \x. dog(x) (adam)
+    False
+    \x. (dog(x) | boy(x)) (adam)
+    True
+    \x. \y. love(x, y)(fido)
+    {'g2': False, 'b2': False, 'b1': False, 'g1': False, 'd1': False}
+    \x. \y. love(x, y)(adam)
+    {'g2': False, 'b2': False, 'b1': False, 'g1': True, 'd1': False}
+    \x. \y. love(x, y)(betty)
+    {'g2': False, 'b2': False, 'b1': True, 'g1': False, 'd1': False}
+    \x. \y. love(x, y)(betty)(adam)
+    True
+    \x. \y. love(x, y)(betty, adam)
+    True
+    \y. \x. love(x, y)(fido)(adam)
+    False
+    \y. \x. love(x, y)(betty, adam)
+    True
+    \x. exists y. love(x, y)
+    {'g2': True, 'b2': True, 'b1': True, 'g1': True, 'd1': False}
+    \z. adam
+    {'g2': 'b1', 'b2': 'b1', 'b1': 'b1', 'g1': 'b1', 'd1': 'b1'}
+    \z. love(x, y)
+    {'g2': False, 'b2': False, 'b1': False, 'g1': False, 'd1': False}
+
+
 Propositional Model Test
 ------------------------
 
     >>> tests = [
-    ...     ('(p and q)', True),
-    ...     ('(p and r)', False),
-    ...     ('(not p)', False),
-    ...     ('(not r)', True),
-    ...     ('(not (not p))', True),
-    ...     ('(not (p and r))', True),
-    ...     ('(p or r)', True),
-    ...     ('(r or p)', True),
-    ...     ('(r or r)', False),
-    ...     ('((not p) or r))', False),
-    ...     ('(p or (not p))', True),
-    ...     ('(p implies q)', True),
-    ...     ('(p implies r)', False),
-    ...     ('(r implies p)', True),
-    ...     ('(p iff p)', True),
-    ...     ('(r iff r)', True),
-    ...     ('(p iff r)', False),
+    ...     ('p & q', True),
+    ...     ('p & r', False),
+    ...     ('- p', False),
+    ...     ('- r', True),
+    ...     ('- - p', True),
+    ...     ('- (p & r)', True),
+    ...     ('p | r', True),
+    ...     ('r | p', True),
+    ...     ('r | r', False),
+    ...     ('- p | r', False),
+    ...     ('p | - p', True),
+    ...     ('p -> q', True),
+    ...     ('p -> r', False),
+    ...     ('r -> p', True),
+    ...     ('p <-> p', True),
+    ...     ('r <-> r', True),
+    ...     ('p <-> r', False),
     ...     ]
-    >>> val = Valuation({'p': True, 'q': True, 'r': False})
+    >>> val = Valuation([('p', True), ('q', True), ('r', False)])
     >>> dom = set([])
     >>> m = Model(dom, val, prop=True)
     >>> g = Assignment(dom)
@@ -504,23 +337,24 @@ Propositional Model Test
 Test of i Function
 ------------------
 
-    >>> val = Valuation()
     >>> v = [('adam', 'b1'), ('betty', 'g1'), ('fido', 'd1'),
     ...      ('girl', set(['g1', 'g2'])), ('boy', set(['b1', 'b2'])), ('dog', set(['d1'])),
     ...      ('love', set([('b1', 'g1'), ('b2', 'g2'), ('g1', 'b1'), ('g2', 'b1')]))]
-    >>> val.read(v)
+    >>> val = Valuation(v)
     >>> dom = val.domain
     >>> m = Model(dom, val)
-    >>> g = Assignment(dom, {'x': 'b1', 'y': 'g2'})
-    >>> symbols = ['adam', 'girl', 'love', 'walks', 'x', 'y', 'z']
-    >>> for s in symbols:
+    >>> g = Assignment(dom, [('x', 'b1'), ('y', 'g2')])
+    >>> exprs = ['adam', 'girl', 'love', 'walks', 'x', 'y', 'z']
+    >>> lp = LogicParser()
+    >>> parsed_exprs = [lp.parse(e) for e in exprs]
+    >>> for parsed in parsed_exprs:
     ...     try:
-    ...         print "'%s' gets value %s" % (s, m.i(s, g))
+    ...         print "'%s' gets value %s" % (parsed, m.i(parsed, g))
     ...     except Undefined:
-    ...         print "'%s' is Undefined" % s
+    ...         print "'%s' is Undefined" % parsed
     'adam' gets value b1
-    'girl' gets value {'g2': True, 'g1': True}
-    'love' gets value {'b1': {'g2': True, 'g1': True}, 'g1': {'b1': True}, 'g2': {'b2': True}}
+    'girl' gets value set([('g2',), ('g1',)])
+    'love' gets value set([('b1', 'g1'), ('b2', 'g2'), ('g1', 'b1'), ('g2', 'b1')])
     'walks' is Undefined
     'x' gets value b1
     'y' gets value g2
@@ -530,20 +364,40 @@ Test for formulas in Model
 --------------------------
 
     >>> tests = [
-    ...     ('(love adam betty)', True),
-    ...     ('(adam = mia)', 'Undefined'),
-    ...     ('\\x. ((boy x) or (girl x))', {'b2': True, 'g2': True, 'g1': True, 'b1': True}),
-    ...     ('\\x y. ((boy x) and (love y x))', {'b1': {'g1': True}, 'b2': {'g2': True}}),
-    ...     ('\\x. some y. ((boy x) and (love y x))', {'b1': True, 'b2': True}),
-    ...     ('some z1. (boy z1)', True),
-    ...     ('some x. ((boy x) and (not (x = adam)))', True),
-    ...     ('some x. ((boy x) and all y. (love x y))', False),
-    ...     ('all x. ((boy x) or (girl x))', False),
-    ...     ('all x. ((girl x) implies some y. (boy y) and (love y x))', False),
-    ...     ('some x. ((boy x) and all y. ((girl y) implies (love x y)))', True), 
-    ...     ('some x. ((boy x) and all y. ((girl y) implies (love y x)))', False), 
-    ...     ('all x. ((dog x) implies (not (girl x)))', True),
-    ...     ('some x. some y. ((love y x) and (love y x))', True),
+    ...     ('love(adam, betty)', True),
+    ...     ('love(adam, sue)', 'Undefined'),
+    ...     ('dog(fido)', True),
+    ...     ('- dog(fido)', False),
+    ...     ('- - dog(fido)', True),
+    ...     ('- dog(sue)', 'Undefined'),
+    ...     ('dog(fido) & boy(adam)', True),
+    ...     ('- (dog(fido) & boy(adam))', False),
+    ...     ('- dog(fido) & boy(adam)', False),
+    ...     ('dog(fido) | boy(adam)', True),
+    ...     ('- (dog(fido) | boy(adam))', False),
+    ...     ('- dog(fido) | boy(adam)', True),
+    ...     ('- dog(fido) | - boy(adam)', False),
+    ...     ('dog(fido) -> boy(adam)', True),
+    ...     ('- (dog(fido) -> boy(adam))', False),
+    ...     ('- dog(fido) -> boy(adam)', True), 
+    ...     ('exists x . love(adam, x)', True),
+    ...     ('all x . love(adam, x)', False),
+    ...     ('fido = fido', True),
+    ...     ('exists x . all y. love(x, y)', False),
+    ...     ('exists x . (x = fido)', True),
+    ...     ('all x . (dog(x) | - dog(x))', True),
+    ...     ('adam = mia', 'Undefined'),
+    ...     ('\\x. (boy(x) | girl(x))', {'g2': True, 'b2': True, 'b1': True, 'g1': True, 'd1': False}),
+    ...     ('\\x. exists y. (boy(x) & love(x, y))', {'g2': False, 'b2': True, 'b1': True, 'g1': False, 'd1': False}),
+    ...     ('exists z1. boy(z1)', True),
+    ...     ('exists x. (boy(x) & - (x = adam))', True),
+    ...     ('exists x. (boy(x) & all y. love(y, x))', False),
+    ...     ('all x. (boy(x) | girl(x))', False),
+    ...     ('all x. (girl(x) -> exists y. boy(y) & love(x, y))', False),
+    ...     ('exists x. (boy(x) & all y. (girl(y) -> love(y, x)))', True), 
+    ...     ('exists x. (boy(x) & all y. (girl(y) -> love(x, y)))', False), 
+    ...     ('all x. (dog(x) -> - girl(x))', True),
+    ...     ('exists x. exists y. (love(x, y) & love(x, y))', True),
     ...     ]
     >>> for (sent, testvalue) in tests:
     ...     semvalue = m.evaluate(sent, g)
@@ -551,120 +405,120 @@ Test for formulas in Model
     ...         print '*',
     ...     else:
     ...         print sent, semvalue
-    * * * * * * * * * * * * * *
+    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
 Satisfier Tests
 ---------------
 
     >>> formulas = [
-    ...     '(boy x)',
+    ...     'boy(x)',
     ...     '(x = x)',
-    ...     '((boy x) or (girl x))',
-    ...     '((boy x) and (girl x))',
-    ...     '(love x adam)',
-    ...     '(love adam x)',
-    ...     '(not (x = adam))',
-    ...     'some z22. (love z22 x)',
-    ...     'some y. (love x y)',
-    ...     'all y. ((girl y) implies (love y x))',
-    ...     'all y. ((girl y) implies (love x y))',
-    ...     'all y. ((girl y) implies ((boy x) and (love x y)))',
-    ...     '((boy x) and all y. ((girl y) implies (love y x)))',
-    ...     '((boy x) and all y. ((girl y) implies (love x y)))',
-    ...     '((boy x) and some y. ((girl y) and (love x y)))',
-    ...     '((girl x) implies (dog x))',
-    ...     'all y. ((dog y) implies (x = y))',
-    ...     '(not some y. (love x y))',
-    ...     'some y. ((love y adam) and (love x y))'
+    ...     '(boy(x) | girl(x))',
+    ...     '(boy(x) & girl(x))',
+    ...     'love(adam, x)',
+    ...     'love(x, adam)',
+    ...     '- (x = adam)',
+    ...     'exists z22. love(x, z22)',
+    ...     'exists y. love(y, x)',
+    ...     'all y. (girl(y) -> love(x, y))',
+    ...     'all y. (girl(y) -> love(y, x))',
+    ...     'all y. (girl(y) -> (boy(x) & love(y, x)))',
+    ...     'boy(x) & all y. (girl(y) -> love(x, y))',
+    ...     'boy(x) & all y. (girl(y) -> love(y, x))',
+    ...     'boy(x) & exists y. (girl(y) & love(y, x))',
+    ...     'girl(x) -> dog(x)',
+    ...     'all y. (dog(y) -> (x = y))',
+    ...     '- exists y. love(y, x)',
+    ...     'exists y. (love(adam, y) & love(y, x))'
     ...     ]
+    >>> g.purge()
+    >>> g.add('x', 'b1')
+    {'x': 'b1'}
     >>> for f in formulas:
     ...     try:
     ...         print "'%s' gets value: %s" % (f, m.evaluate(f, g))
     ...     except Undefined:
     ...         print "'%s' is Undefined" % f
-    '(boy x)' gets value: True
+    'boy(x)' gets value: True
     '(x = x)' gets value: True
-    '((boy x) or (girl x))' gets value: True
-    '((boy x) and (girl x))' gets value: False
-    '(love x adam)' gets value: False
-    '(love adam x)' gets value: False
-    '(not (x = adam))' gets value: False
-    'some z22. (love z22 x)' gets value: True
-    'some y. (love x y)' gets value: True
-    'all y. ((girl y) implies (love y x))' gets value: False
-    'all y. ((girl y) implies (love x y))' gets value: True
-    'all y. ((girl y) implies ((boy x) and (love x y)))' gets value: True
-    '((boy x) and all y. ((girl y) implies (love y x)))' gets value: False
-    '((boy x) and all y. ((girl y) implies (love x y)))' gets value: True
-    '((boy x) and some y. ((girl y) and (love x y)))' gets value: True
-    '((girl x) implies (dog x))' gets value: True
-    'all y. ((dog y) implies (x = y))' gets value: False
-    '(not some y. (love x y))' gets value: False
-    'some y. ((love y adam) and (love x y))' gets value: True
+    '(boy(x) | girl(x))' gets value: True
+    '(boy(x) & girl(x))' gets value: False
+    'love(adam, x)' gets value: False
+    'love(x, adam)' gets value: False
+    '- (x = adam)' gets value: False
+    'exists z22. love(x, z22)' gets value: True
+    'exists y. love(y, x)' gets value: True
+    'all y. (girl(y) -> love(x, y))' gets value: False
+    'all y. (girl(y) -> love(y, x))' gets value: True
+    'all y. (girl(y) -> (boy(x) & love(y, x)))' gets value: True
+    'boy(x) & all y. (girl(y) -> love(x, y))' gets value: False
+    'boy(x) & all y. (girl(y) -> love(y, x))' gets value: True
+    'boy(x) & exists y. (girl(y) & love(y, x))' gets value: True
+    'girl(x) -> dog(x)' gets value: True
+    'all y. (dog(y) -> (x = y))' gets value: False
+    '- exists y. love(y, x)' gets value: False
+    'exists y. (love(adam, y) & love(y, x))' gets value: True
 
 Tests based on the Blackburn & Bos testsuite
 --------------------------------------------
 
-    >>> val1 = Valuation()
     >>> v1 = [('jules', 'd1'), ('vincent', 'd2'), ('pumpkin', 'd3'),
     ...       ('honey_bunny', 'd4'), ('yolanda', 'd5'),
     ...       ('customer', set(['d1', 'd2'])),
     ...       ('robber', set(['d3', 'd4'])),
     ...       ('love', set([('d3', 'd4')]))]
-    >>> val1.read(v1)
+    >>> val1 = Valuation(v1)
     >>> dom1 = val1.domain
     >>> m1 = Model(dom1, val1)
     >>> g1 = Assignment(dom1)
 
-    >>> val2 = Valuation()
     >>> v2 = [('jules', 'd1'), ('vincent', 'd2'), ('pumpkin', 'd3'),
     ...       ('honey_bunny', 'd4'), ('yolanda', 'd4'),
     ...       ('customer', set(['d1', 'd2', 'd5', 'd6'])),
     ...       ('robber', set(['d3', 'd4'])),
-    ...       ('love', set())]
-    >>> val2.read(v2)
+    ...       ('love', set([(None, None)]))]
+    >>> val2 = Valuation(v2)
     >>> dom2 = set(['d1', 'd2', 'd3', 'd4', 'd5', 'd6'])
     >>> m2 = Model(dom2, val2)
     >>> g2 = Assignment(dom2)
     >>> g21 = Assignment(dom2)
-    >>> g21.add('d3', 'y')
+    >>> g21.add('y', 'd3')
     {'y': 'd3'}
 
-    >>> val3 = Valuation()
     >>> v3 = [('mia', 'd1'), ('jody', 'd2'), ('jules', 'd3'),
     ...       ('vincent', 'd4'),
     ...       ('woman', set(['d1', 'd2'])), ('man', set(['d3', 'd4'])),
     ...       ('joke', set(['d5', 'd6'])), ('episode', set(['d7', 'd8'])),
     ...       ('in', set([('d5', 'd7'), ('d5', 'd8')])),
     ...       ('tell', set([('d1', 'd5'), ('d2', 'd6')]))]
-    >>> val3.read(v3)
+    >>> val3 = Valuation(v3)
     >>> dom3 = set(['d1', 'd2', 'd3', 'd4', 'd5', 'd6', 'd7', 'd8'])
     >>> m3 = Model(dom3, val3)
     >>> g3 = Assignment(dom3)
 
     >>> tests = [
-    ...     ('some x. (robber x)', m1, g1, True),
-    ...     ('some x. some y. (love x y)', m1, g1, True),
-    ...     ('some x0. some x1. (love x0 x1)', m2, g2, False),
-    ...     ('all x. all y. (love x y)', m2, g2, False),
-    ...     ('(not all x. all y. (love x y))', m2, g2, True),
-    ...     ('all x. all y. (not (love x y))', m2, g2, True),
-    ...     ('(yolanda = honey_bunny)', m2, g2, True),
-    ...     ('(mia = honey_bunny)', m2, g2, 'Undefined'),
-    ...     ('(not (yolanda = honey_bunny))', m2, g2, False),
-    ...     ('(not (mia = honey_bunny))', m2, g2, 'Undefined'),
-    ...     ('all x. ((robber x) or (customer x))', m2, g2, True),
-    ...     ('(not all x. ((robber x) or (customer x)))', m2, g2, False),
-    ...     ('((robber x) or (customer x))', m2, g2, 'Undefined'),
-    ...     ('((robber y) or (customer y))', m2, g21, True),
-    ...     ('some x. ((man x) and some x. (woman x))', m3, g3, True),
-    ...     ('(some x. (man x) and some x. (woman x))', m3, g3, True),
-    ...     ('(not some x. (woman x))', m3, g3, False),
-    ...     ('some x. ((tasty x) and (burger x))', m3, g3, 'Undefined'),
-    ...     ('(not some x. ((tasty x) and (burger x)))', m3, g3, 'Undefined'),
-    ...     ('some x. ((man x) and (not some y. (woman y)))', m3, g3, False),
-    ...     ('some x. ((man x) and (not some x. (woman x)))', m3, g3, False),
-    ...     ('some x. ((woman x) and (not some x. (customer x)))', m2, g2, 'Undefined'),
+    ...     ('exists x. robber(x)', m1, g1, True),
+    ...     ('exists x. exists y. love(y, x)', m1, g1, True),
+    ...     ('exists x0. exists x1. love(x1, x0)', m2, g2, False),
+    ...     ('all x. all y. love(y, x)', m2, g2, False),
+    ...     ('- (all x. all y. love(y, x))', m2, g2, True),
+    ...     ('all x. all y. - love(y, x)', m2, g2, True),
+    ...     ('yolanda = honey_bunny', m2, g2, True),
+    ...     ('mia = honey_bunny', m2, g2, 'Undefined'),
+    ...     ('- (yolanda = honey_bunny)', m2, g2, False),
+    ...     ('- (mia = honey_bunny)', m2, g2, 'Undefined'),
+    ...     ('all x. (robber(x) | customer(x))', m2, g2, True),
+    ...     ('- (all x. (robber(x) | customer(x)))', m2, g2, False),
+    ...     ('(robber(x) | customer(x))', m2, g2, 'Undefined'),
+    ...     ('(robber(y) | customer(y))', m2, g21, True),
+    ...     ('exists x. (man(x) & exists x. woman(x))', m3, g3, True),
+    ...     ('exists x. (man(x) & exists x. woman(x))', m3, g3, True),
+    ...     ('- exists x. woman(x)', m3, g3, False),
+    ...     ('exists x. (tasty(x) & burger(x))', m3, g3, 'Undefined'),
+    ...     ('- exists x. (tasty(x) & burger(x))', m3, g3, 'Undefined'),
+    ...     ('exists x. (man(x) & - exists y. woman(y))', m3, g3, False),
+    ...     ('exists x. (man(x) & - exists x. woman(x))', m3, g3, False),
+    ...     ('exists x. (woman(x) & - exists x. customer(x))', m2, g2, 'Undefined'),
     ... ]
 
     >>> for item in tests:
@@ -689,12 +543,69 @@ Load a valuation from a file.
     >>> m = Model(dom, val)
     >>> g = Assignment(dom)
 
-    >>> sent = 'every boy chases a girl in Noosa'
+    >>> inputs = ['John walks in Noosa', 'every dog barks']
+    >>> for s in inputs:
+    ...     print
+    ...     print "Sentence: %s" % s
+    ...     for tree in text_parse(inputs, grammar)[s]:
+    ...         print "Parse:\n %s" %tree
+    ...     print "Semantics: %s" %  root_semrep(tree)
+    <BLANKLINE>
+    Sentence: John walks in Noosa
+    Parse:
+     (S[sem=<(walk(john) & in(john,noosa))>]
+      (NP[-loc, num='sg', sem=<\P.P(john)>]
+        (PropN[-loc, num='sg', sem=<\P.P(john)>] John))
+      (VP[num='sg', sem=<\x.(walk(x) & in(x,noosa))>]
+        (VP[num='sg', sem=<\x.walk(x)>]
+          (IV[num='sg', sem=<\x.walk(x)>, tns='pres'] walks))
+        (PP[sem=<\P.\x.(P(x) & in(x,noosa))>]
+          (P[+loc, sem=<\X.\P.\x.X(\y.(P(x) & in(x,y)))>] in)
+          (NP[+loc, num='sg', sem=<\P.P(noosa)>]
+            (PropN[+loc, num='sg', sem=<\P.P(noosa)>] Noosa)))))
+    Semantics: (walk(john) & in(john,noosa))
+    <BLANKLINE>
+    Sentence: every dog barks
+    Parse:
+     (S[sem=<all x.(dog(x) -> bark(x))>]
+      (NP[num='sg', sem=<\Q.all x.(dog(x) -> Q(x))>]
+        (Det[num='sg', sem=<\P.\Q.all x.(P(x) -> Q(x))>] every)
+        (Nom[num='sg', sem=<dog>] (N[num='sg', sem=<dog>] dog)))
+      (VP[num='sg', sem=<\x.bark(x)>]
+        (IV[num='sg', sem=<\x.bark(x)>, tns='pres'] barks)))
+    Semantics: all x.(dog(x) -> bark(x))
+
+    >>> sent = "every dog barks"
+    >>> result = nltk.sem.text_interpret([sent], grammar)
+    >>> for (syntree, semrep) in result[sent]:
+    ...     print syntree
+    ...     print
+    ...     print semrep
+    (S[sem=<all x.(dog(x) -> bark(x))>]
+      (NP[num='sg', sem=<\Q.all x.(dog(x) -> Q(x))>]
+        (Det[num='sg', sem=<\P.\Q.all x.(P(x) -> Q(x))>] every)
+        (Nom[num='sg', sem=<dog>] (N[num='sg', sem=<dog>] dog)))
+      (VP[num='sg', sem=<\x.bark(x)>]
+        (IV[num='sg', sem=<\x.bark(x)>, tns='pres'] barks)))
+    <BLANKLINE>
+    all x.(dog(x) -> bark(x))
+
     >>> result = nltk.sem.text_evaluate([sent], grammar, m, g)
-    >>> for (syntree, semrep, value) in result[sent]:
-    ... 	print "'%s' is %s in Model m\n" % (semrep.infixify(), value)
-    ... 
-    'all x.((boy x) implies (some z214.((girl z214) and (chase z214 x)) and (in noosa x)))' is True in Model m
+    >>> for (syntree, semrel, value) in result[sent]:
+    ...     print syntree
+    ...     print
+    ...     print semrep
+    ...     print
+    ...     print value
+    (S[sem=<all x.(dog(x) -> bark(x))>]
+      (NP[num='sg', sem=<\Q.all x.(dog(x) -> Q(x))>]
+        (Det[num='sg', sem=<\P.\Q.all x.(P(x) -> Q(x))>] every)
+        (Nom[num='sg', sem=<dog>] (N[num='sg', sem=<dog>] dog)))
+      (VP[num='sg', sem=<\x.bark(x)>]
+        (IV[num='sg', sem=<\x.bark(x)>, tns='pres'] barks)))
     <BLANKLINE>
-    'all x.((boy x) implies some z307.(((girl z307) and (in noosa z307)) and (chase z307 x)))' is False in Model m
+    all x.(dog(x) -> bark(x))
     <BLANKLINE>
+    True
+
+ 
