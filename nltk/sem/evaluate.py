@@ -18,7 +18,7 @@ models.
 """
 from pprint import pformat
 import inspect
-from nltk.decorator import decorator
+from nltk.decorators import decorator
 from nltk.internals import deprecated
 
 from logic import *
