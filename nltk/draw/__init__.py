@@ -2392,6 +2392,7 @@ from srparser import *
 from tree import *
 from dispersion import dispersion_plot
 from rechunkparser import RegexpChunkDemo
+from concordance import pos_concordance
 
 # Make sure that nltk.draw.cfg and nltk.draw.tree refer to the correct
 # modules (and not to nltk.cfg & nltk.tree)

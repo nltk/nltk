@@ -2,9 +2,11 @@
 #
 # Copyright (C) 2001-2008 NLTK Project
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
-#         Steven Bird <sb@csse.unimelb.edu.au> (minor additions)
+#         Steven Bird <sb@csse.unimelb.edu.au>
 # URL: <http://nltk.org>
 # For license information, see LICENSE.TXT
+
+import re
 
 from nltk.internals import deprecated
 
@@ -77,6 +79,81 @@ def accuracy(tagger, gold):
     gold_tokens = sum(gold, [])
     test_tokens = sum(tagged_sents, [])
     return evaluate.accuracy(gold_tokens, test_tokens)
+
+######################################################################
+#{ Mapping tags to simplified tags
+######################################################################
+
+# http://khnt.hit.uib.no/icame/manuals/brown/INDEX.HTM
+
+def simplify_brown_tag(tag):
+    tag = tag.lower()
+    tag = re.sub(r'fw-',      '',   tag)  # foreign word
+    tag = re.sub(r'-[th]l',   '',   tag)  # headlines, titles
+    tag = re.sub(r'-nc',      '',   tag)  # cited
+    tag = re.sub(r'ber?',     'vb', tag)  # verb "to be"
+    tag = re.sub(r'hv',       'vb', tag)  # verb "to have"
+    tag = re.sub(r'do',       'vb', tag)  # verb "to do"
+    tag = re.sub(r'nc',       'nn', tag)  # cited word
+    tag = re.sub(r'z',        '',   tag)  # third-person singular
+    tag = re.sub(r'\bj[^-+]*', 'J', tag)  # adjectives
+    tag = re.sub(r'\bp[^-+]*', 'PR', tag)  # pronouns
+    tag = re.sub(r'\bm[^-+]*', 'M', tag)  # modals
+    tag = re.sub(r'\bq[^-+]*', 'Q', tag)  # qualifiers
+    tag = re.sub(r'\babl',     'Q', tag)  # qualifiers
+    tag = re.sub(r'\bab[nx]',  'D', tag)  # determiners
+    tag = re.sub(r'\bap',      'D', tag)  # determiners
+    tag = re.sub(r'\bd[^-+]*', 'D', tag)  # determiners
+    tag = re.sub(r'\bat',      'D', tag)  # determiners
+    tag = re.sub(r'\bw[^-+]*', 'W', tag)  # wh words
+    tag = re.sub(r'\br[^-+]*', 'R', tag)  # adverbs
+    tag = re.sub(r'\bto',      'T', tag)  # "to"
+    tag = re.sub(r'\bc[cs]',   'C', tag)  # conjunctions
+    tag = re.sub(r's',         '',  tag)  # plurals
+    tag = re.sub(r'\bin',      'P', tag)  # prepositions
+    tag = re.sub(r'\buh',      'U', tag)  # interjections (uh)
+    tag = re.sub(r'\bex',      'E', tag)  # existential "there"
+    tag = re.sub(r'\bvbn',     'VN', tag) # past participle
+    tag = re.sub(r'\bvbd',     'VD', tag) # past tense
+    tag = re.sub(r'\bvbg',     'VG', tag) # gerund
+    tag = re.sub(r'\bvb',      'V', tag)  # verb
+    tag = re.sub(r'\bnn',      'N', tag)  # noun
+    tag = re.sub(r'\bnp',      'NP', tag) # proper noun
+    tag = re.sub(r'\bnr',      'NR', tag) # adverbial noun
+    tag = re.sub(r'\bex',      'E', tag)  # existential "there"
+    tag = re.sub(r'\bod',      'OD', tag) # ordinal
+    tag = re.sub(r'\bcd',      'CD', tag) # cardinal
+    tag = re.sub(r'-t',        '', tag)   # misc
+    tag = re.sub(r'[a-z\*]',   '', tag)   # misc
+    return tag
+
+# Wall Street Journal tags (Penn Treebank)
+
+wsj_mapping = {
+    '-lrb-': 'B',   '-rrb-': 'B',    '-lsb-': 'B',
+    '-rsb-': 'B',   '-lcb-': 'B',    '-rcb-': 'B',
+    '-none-': '',   'cc': 'CC',      'cd': 'CD',
+    'dt': 'D',      'ex': 'X',       'fw': 'F', # existential "there", foreign word
+    'in': 'P',      'jj': 'J',       'jjr': 'J',
+    'jjs': 'J',     'ls': 'L',       'md': 'M',  # list item marker
+    'nn': 'N',      'nnp': 'NP',     'nnps': 'NP',
+    'nns': 'N',     'pdt': 'D',      'pos': '',
+    'prp': 'PR',    'prp$': 'PR',    'rb': 'R',
+    'rbr': 'R',     'rbs': 'R',      'rp': 'P',
+    'sym': 'S',     'to': 'TO',      'uh': 'UH',
+    'vb': 'V',      'vbd': 'VD',     'vbg': 'VG',
+    'vbn': 'VN',    'vbp': 'V',      'vbz': 'V',
+    'wdt': 'W',     'wp': 'W',       'wp$': 'W',
+    'wrb': 'W'
+    }
+
+
+def simplify_wsj_tag(tag):
+    try:
+        tag = wsj_mapping[tag.lower()]
+    except KeyError:
+        pass
+    return tag
 
 ######################################################################
 #{ Deprecated
