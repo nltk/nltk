@@ -15,6 +15,7 @@ Resolution Theorem Prover
     >>> B = lp.parse('B')
     >>> x = lp.parse('x')
     >>> y = lp.parse('y')
+    >>> z = lp.parse('z')
     
 -------------------------------
 Test most_general_unification()
@@ -55,16 +56,16 @@ Test unify()
     {}
  
 -------------------------
-Test remove_tautologies()
+Test is_tautology()
 -------------------------
-    >>> print Clause([P(x), -P(A)]).remove_tautologies()
-    {}
-    >>> print Clause([P(x), -P(A), Q(x)]).remove_tautologies()
-    {Q(A)}
-    >>> print Clause([-Q(A), P(x), -P(A), Q(x), -R(y)]).remove_tautologies()
-    {-R(y)}
-    >>> print Clause([P(x), -Q(A)]).remove_tautologies()
-    {P(x), -Q(A)}
+    >>> print Clause([P(x), -P(A)]).is_tautology()
+    True
+    >>> print Clause([P(x), -P(A), Q(x)]).is_tautology()
+    True
+    >>> print Clause([-Q(A), P(x), -P(A), Q(x), -R(y)]).is_tautology()
+    True
+    >>> print Clause([P(x), -Q(A)]).is_tautology()
+    False
  
 ------------
 Test prove()
@@ -128,9 +129,10 @@ Test show_proof()
     True
     >>> logic._counter._value = 0
     >>> tp.show_proof()
-    {-mortal(Socrates)}
-    {-man(z2), mortal(z2)}
-    {man(Socrates)}
-    {-man(Socrates)}
-    {mortal(Socrates)}
-    {}
+    [1] {-mortal(Socrates)}       A 
+    [2] {-man(z44), mortal(z44)}  A 
+    [3] {man(Socrates)}           A 
+    [4] {-man(Socrates)}          (1, 2) 
+    [5] {mortal(Socrates)}        (2, 3) 
+    [6] {}                        (1, 5) 
+
