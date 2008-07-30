@@ -1,10 +1,10 @@
-Version 0.9.4 2008-07-18?
+Version 0.9.4 2008-07-31
 	
 NLTK:
 - first order predicate logic implementation 
   (resolve_anaphora.py, linearlogic.py, glue.py, drt_glue.py 
   lfg.py, loginentail.py, malt.py, tnt.py)
-- bugfixes: Punkt, ...
+- misc bugfixes incl Punkt, synsets, maxent
 - interface to Mallet's linear chain CRF implementation (nltk.tag.crf)
 - chunking
   - more flexible chunk corpus reader
@@ -14,31 +14,40 @@ NLTK:
     to allow reading (word, tag, chunk_typ) tuples off of CoNLL-2000 corpus. Also 
     modified ConllChunkCorpusView to support these changes.
 - feature structures support values with custom unification methods
+- new support for trees with parent pointers, multiple parents
+  nltk.ParentedTree, nltk.MultiParentedTree
+- new chunk parser GUI nltk.draw.rechunkparser
+- new pos-tagged concordance tool nltk.draw.pos_concordance
 - new WordSense class in wordnet.synset supporting access to synsets
   from sense keys and accessing sense counts (see section 3 of
   http://nltk.org/doc/guides/wordnet.html)
+- new package for ngram language modeling with Katz backoff nltk.model
 - Added classes for single-parented and multi-parented trees that 
   automatically maintain parent pointers (nltk.tree.ParentedTree and
   nltk.tree.MultiParentedTree)
 - Improved support for lazy sequences
 - Added generate() method to probability distributions
+- more flexible parser for converting bracketed strings to trees
+- Fixes to docstrings
 
 Contrib:
 - FUF...
-- Dependency parsers...
+- Dependency parsers (Jason Narad)
 - MapReduce...
 - Coref, ACE-2, MUC-6 and MUC-7 corpus readers
 - Cleaned up code in nltk_contrib.wordnet
 - CCG Parser (Graeme Gange)
+- First order resolution theorem prover (Dan Garrette)
 
 Data:
+- New NPS Chat Corpus and corpus reader (nltk.corpus.nps_chat)
+- ConllCorpusReader can now be used to read CoNLL 2004 and 2005 corpora.
 - Implemented HMM-based Treebank POS tagger and phrase chunker for 
   nltk_contrib.coref in api.py. Pickled versions of these objects are checked
   in in data/taggers and data/chunkers.
-- Added NPS Chat Corpus and corpus reader (nltk.corpus.nps_chat)
-- ConllCorpusReader can now be used to read CoNLL 2004 and 2005 corpora.
 
-
+Book:
+- misc corrections in response to feedback from readers
 	
 Version 0.9.3 2008-06-03
 	
