@@ -63,6 +63,7 @@ can be accessed using C{nltk.corpus.I{corpus}.olac()}.
 import re
 
 from nltk.tokenize import RegexpTokenizer
+from nltk.tag import simplify_brown_tag
 
 from util import LazyCorpusLoader
 from reader import *
@@ -74,7 +75,7 @@ alpino = LazyCorpusLoader(
     'alpino', AlpinoCorpusReader)
 brown = LazyCorpusLoader(
     'brown', CategorizedTaggedCorpusReader, r'c[a-z]\d\d',
-    cat_pattern=r'c([a-z])\d\d')
+    cat_pattern=r'c([a-z])\d\d', tag_mapping_function=simplify_brown_tag)
 cess_cat = LazyCorpusLoader(
     'cess_cat', BracketParseCorpusReader, r'(?!\.svn).*\.tbf')
 cess_esp = LazyCorpusLoader(
