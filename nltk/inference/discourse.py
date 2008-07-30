@@ -115,9 +115,9 @@ class DiscourseTester(object):
                 assumptions = [reading for (rid, reading) in self.expand_threads(tid)]
                 assumptions += self._background
                 for sent_reading in self._get_readings(sentence):
-                    tp = get_prover(goal=sent_reading, assumptions=assumptions)
+                    tp = get_prover(goal=sent_reading, assumptions=assumptions, prover_name='Prover9')
                     if tp.prove():
-                        print "Sentence '%s' under reading '%s':" % (sentence, str(sent_reading.infixify()))
+                        print "Sentence '%s' under reading '%s':" % (sentence, str(sent_reading))
                         print "Not informative relative to thread '%s'" % tid
            
         self._input.append(sentence)
@@ -203,7 +203,7 @@ class DiscourseTester(object):
         """
         if sentence is not None:
             print "The sentence '%s' has these readings:" % sentence
-            for r in [str(reading.infixify()) for reading in (self._get_readings(sentence))]:
+            for r in [str(reading) for reading in (self._get_readings(sentence))]:
                 print "    %s" % r
         else:
             for sid in sorted(self._readings.keys()):
@@ -211,8 +211,8 @@ class DiscourseTester(object):
                 print '%s readings:' % sid
                 print '-' * 30
                 for rid in sorted(self._readings[sid]):
-                    lf = self._readings[sid][rid].infixify()
-                    lf = lf.normalize('[xyz]\d*', 'z%d')
+                    lf = self._readings[sid][rid]
+                    #TODO lf = lf.normalize('[xyz]\d*', 'z%d')
                     print "%s: %s" % (rid, lf)
     
     def _show_threads(self, filter=False):
@@ -282,7 +282,7 @@ class DiscourseTester(object):
                 spacer(80)
                 if not quiet:
                     for a in assumptions:
-                        print a.infixify()
+                        print a
                     spacer(80)
                 if modelfound:
                     mb.show_model(format='cooked')
@@ -310,12 +310,12 @@ class DiscourseTester(object):
             
             if not modelfound:
                 print "Inconsistent discourse %s %s:" % (tid, idlist)
-                for  rid, reading in [(rid, str(reading.infixify()))  for (rid, reading) in self.expand_threads(tid)]:
+                for  rid, reading in [(rid, str(reading))  for (rid, reading) in self.expand_threads(tid)]:
                     print "    %s: %s" % (rid, reading)
                 print 
             else:
                 print "Consistent discourse: %s %s:" % (tid, idlist)
-                for  rid, reading in [(rid, str(reading.infixify()))  for (rid, reading) in self.expand_threads(tid)]:
+                for  rid, reading in [(rid, str(reading))  for (rid, reading) in self.expand_threads(tid)]:
                     print "    %s: %s" % (rid, reading)
                 print 
         
@@ -342,7 +342,7 @@ class DiscourseTester(object):
         Show the current background assumptions.
         """
         for e in self._background:
-            print str(e.infixify())
+            print str(e)
     
    ###############################
     # Misc

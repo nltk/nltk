@@ -231,3 +231,8 @@ if __name__ == '__main__':
     test_model_found(arguments)
     test_build_model(arguments)
     test_transform_output(arguments[1])
+    
+    a = LogicParser().parse('(see(mary,john) & -(mary = john))')
+    mb = Mace(assumptions=[a])
+    mb.build_model()
+    print mb.convert2val()
