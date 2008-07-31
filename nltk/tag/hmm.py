@@ -5,6 +5,7 @@
 #         Philip Blunsom <pcbl@csse.unimelb.edu.au>
 #         Tiago Tresoldi <tiago@tresoldi.pro.br> (fixes)
 #         Steven Bird <sb@csse.unimelb.edu.au> (fixes)
+#         Joseph Frazee <jfrazee@mail.utexas.edu> (fixes)
 # URL: <http://nltk.org>
 # For license information, see LICENSE.TXT
 #
@@ -66,13 +67,20 @@ parameters or unsupervised learning using the Baum-Welch algorithm, a variant
 of EM.
 """
 
-from numpy import *
 import re
+
+from new import function
+from types import MethodType, LambdaType
+from marshal import dumps, loads
+
+from numpy import *
 
 from nltk import FreqDist, ConditionalFreqDist, ConditionalProbDist, \
      DictionaryProbDist, DictionaryConditionalProbDist, LidstoneProbDist, \
      MutableProbDist, MLEProbDist
-from nltk.utilities import LazyMappedList
+from nltk.internals import deprecated
+from nltk.evaluate import accuracy
+from nltk.utilities import LazyMap, LazyConcatenation
 
 from api import *
 
@@ -92,37 +100,117 @@ class HiddenMarkovModelTagger(TaggerI):
     more detail in the module documentation.
     
     This implementation is based on the HMM description in Chapter 8, Huang,
-    Acero and Hon, Spoken Language Processing.
+    Acero and Hon, Spoken Language Processing and includes an extension for
+    training shallow HMM parsers as in Molina et. al, 2002.
     """
-    def __init__(self, symbols, states, transitions, outputs, priors):
+    def __init__(self, symbols, states, transitions, outputs, priors, **kwargs):
         """
         Creates a hidden markov model parametised by the the states,
         transition probabilities, output probabilities and priors.
 
-        @param  symbols:        the set of output symbols (alphabet)
-        @type   symbols:        (seq) of any
-        @param  states:         a set of states representing state space
-        @type   states:         seq of any
-        @param  transitions:    transition probabilities; Pr(s_i | s_j)
-                                is the probability of transition from state i
-                                given the model is in state_j
-        @type   transitions:    C{ConditionalProbDistI}
-        @param  outputs:        output probabilities; Pr(o_k | s_i) is the
-                                probability of emitting symbol k when entering
-                                state i
-        @type   outputs:        C{ConditionalProbDistI}
-        @param  priors:         initial state distribution; Pr(s_i) is the
-                                probability of starting in state i
-        @type   priors:         C{ProbDistI}
+        @param symbols: the set of output symbols (alphabet)
+        @type symbols: seq of any
+        @param states: a set of states representing state space
+        @type states: seq of any
+        @param transitions: transition probabilities; Pr(s_i | s_j) is the
+            probability of transition from state i given the model is in
+            state_j
+        @type transitions: C{ConditionalProbDistI}
+        @param outputs: output probabilities; Pr(o_k | s_i) is the probability
+            of emitting symbol k when entering state i
+        @type outputs: C{ConditionalProbDistI}
+        @param priors: initial state distribution; Pr(s_i) is the probability
+            of starting in state i
+        @type priors: C{ProbDistI}
+        @kwparam transform: an optional function for transforming training
+            instances, defaults to the identity function, see L{transform()}
+        @type transform: C{function}
         """
-
         self._states = states
         self._transitions = transitions
         self._symbols = symbols
         self._outputs = outputs
         self._priors = priors
+        self._transform = kwargs.get('transform', self.transform)       
         self._cache = None
+    
+    @classmethod
+    def transform(cls, sequence):
+        """
+        A transformation function that allows for training a shallow HMM
+        parser or specialized HMM (Molina et. al 2002).  A specialized HMM
+        modifies training data by applying a specialization function to create
+        a new training set that is more appropriate for sequential tagging
+        with an HMM.  A typical use case is chunking.
+        
+        @return: a transformed sequence of symbols
+        @rtype: C{list} of C{tuple}
+        @param sequence: a sequence of symbols
+        @type sequence: C{list} of C{tuple}
+        """
+        return sequence
+        
+    @classmethod
+    def train(cls, labeled_sequence, test_sequence=None,
+    		       unlabeled_sequence=None, **kwargs):
+    	
+    	"""
+    	Train a new C{HiddenMarkovModelTagger} using the given labeled and
+    	unlabeled training instances. Testing will be performed if test
+    	instances are provided.
+    	
+    	@return: a hidden markov model tagger
+    	@rtype: C{HiddenMarkovModelTagger}
+    	@param labeled_sequence: a sequence of labeled training instances,
+    	    i.e. a list of sentences represented as tuples
+    	@type labeled_sequence: C{list} of C{list}
+    	@param test_sequence: a sequence of labeled test instances
+    	@type test_sequence: C{list} of C{list}
+    	@param unlabeled_sequence: a sequence of unlabeled training instances,
+    	    i.e. a list of sentences represented as words
+    	@type unlabeled_sequence: C{list} of C{list}
+        @kwparam transform: an optional function for transforming training
+            instances, defaults to the identity function, see L{transform()}
+        @type transform: C{function}
+        @kwparam estimator: an optional function or class that maps a
+            condition's frequency distribution to its probability
+            distribution, defaults to a Lidstone distribution with gamma = 0.1
+        @type estimator: C{class} or C{function}
+        @kwparam verbose: boolean flag indicating whether training should be
+            verbose or include printed output
+        @type verbose: C{bool}
+        @kwparam max_iterations: number of Baum-Welch interations to perform
+        @type max_iterations: C{int}
+    	"""
+    	transform = kwargs.get('transform', cls.transform)
+    	estimator = kwargs.get('estimator', 
+    	                     lambda fd, bins: LidstoneProbDist(fd, 0.1, bins))
+    	                     
+    	labeled_sequence = LazyMap(transform, labeled_sequence)
+    	
+        symbols = list(set(word for sent in labeled_sequence
+                                for word, tag in sent))
+        tag_set = list(set(tag for sent in labeled_sequence
+                               for word, tag in sent))
+                               
+        trainer = HiddenMarkovModelTrainer(tag_set, symbols)
+        hmm = trainer.train_supervised(labeled_sequence,
+                                       estimator=estimator)
 
+        if test_sequence:
+            test_sequence = LazyMap(transform, test_sequence)
+            hmm.test(test_sequence, verbose=kwargs.get('verbose', False))
+
+        if unlabeled_sequence:
+            max_iterations = kwargs.get('max_iterations', 5)
+            hmm = trainer.train_unsupervised(unlabeled_sequence, model=hmm, 
+                                             max_iterations=max_iterations)
+            if test_sequence:
+                hmm.test(test_sequence, verbose=kwargs.get('verbose', False))
+
+        return cls(hmm._symbols, hmm._states, hmm._transitions, 
+                   hmm._outputs, hmm._priors, transform=transform)
+    
     def probability(self, sequence):
         """
         Returns the probability of the given symbol sequence. If the sequence
@@ -136,7 +224,7 @@ class HiddenMarkovModelTagger(TaggerI):
             property, and optionally the TAG property
         @type sequence:  Token
         """
-        return 2**(self.log_probability(sequence))
+        return 2**(self.log_probability(self._transform(sequence)))
 
     def log_probability(self, sequence):
         """
@@ -151,7 +239,8 @@ class HiddenMarkovModelTagger(TaggerI):
             property, and optionally the TAG property
         @type sequence:  Token
         """
-
+        sequence = self._transform(sequence)
+        
         T = len(sequence)
         N = len(self._states)
 
@@ -180,7 +269,6 @@ class HiddenMarkovModelTagger(TaggerI):
         @param unlabeled_sequence: the sequence of unlabeled symbols 
         @type unlabeled_sequence: list
         """
-
         path = self.best_path(unlabeled_sequence)
         return zip(unlabeled_sequence, path)
 
@@ -239,7 +327,7 @@ class HiddenMarkovModelTagger(TaggerI):
                     S[self._symbols[k]] = k
                 self._cache = (P, O, X, S)
 
-    def best_path(self, symbols):
+    def best_path(self, unlabeled_sequence):
         """
         Returns the state sequence of the optimal (most probable) path through
         the HMM. Uses the Viterbi algorithm to calculate this part by dynamic
@@ -247,25 +335,26 @@ class HiddenMarkovModelTagger(TaggerI):
 
         @return: the state sequence
         @rtype: sequence of any
-        @param symbols: the sequence of unlabeled symbols 
-        @type symbols: list
+        @param unlabeled_sequence: the sequence of unlabeled symbols 
+        @type unlabeled_sequence: list
         """
+        unlabeled_sequence = self._transform(unlabeled_sequence)
 
-        T = len(symbols)
+        T = len(unlabeled_sequence)
         N = len(self._states)
         self._create_cache()
-        self._update_cache(symbols)
+        self._update_cache(unlabeled_sequence)
         P, O, X, S = self._cache
     
         V = zeros((T, N), float32)
         B = ones((T, N), int) * -1
     
-        V[0] = P + O[:, S[symbols[0]]]
+        V[0] = P + O[:, S[unlabeled_sequence[0]]]
         for t in range(1, T):
             for j in range(N):
                 vs = V[t-1, :] + X[:, j]
                 best = argmax(vs)
-                V[t, j] = vs[best] + O[j, S[symbols[t]]]
+                V[t, j] = vs[best] + O[j, S[unlabeled_sequence[t]]]
                 B[t, j] = best
     
         current = argmax(V[T-1,:])
@@ -290,7 +379,8 @@ class HiddenMarkovModelTagger(TaggerI):
         @param unlabeled_sequence: the sequence of unlabeled symbols 
         @type unlabeled_sequence: list
         """
-
+        unlabeled_sequence = self._transform(unlabeled_sequence)
+        
         T = len(unlabeled_sequence)
         N = len(self._states)
         V = zeros((T, N), float64)
@@ -412,6 +502,7 @@ class HiddenMarkovModelTagger(TaggerI):
         sequences, constrained to include the given state(s) at some point in
         time.
         """
+        unlabeled_sequence = self._transform(unlabeled_sequence)
 
         T = len(unlabeled_sequence)
         N = len(self._states)
@@ -455,6 +546,7 @@ class HiddenMarkovModelTagger(TaggerI):
         Returns the pointwise entropy over the possible states at each
         position in the chain, given the observation sequence.
         """
+        unlabeled_sequence = self._transform(unlabeled_sequence)
 
         T = len(unlabeled_sequence)
         N = len(self._states)
@@ -475,6 +567,8 @@ class HiddenMarkovModelTagger(TaggerI):
         return entropies
 
     def _exhaustive_entropy(self, unlabeled_sequence):
+        unlabeled_sequence = self._transform(unlabeled_sequence)
+        
         T = len(unlabeled_sequence)
         N = len(self._states)
 
@@ -512,6 +606,8 @@ class HiddenMarkovModelTagger(TaggerI):
         return entropy
 
     def _exhaustive_point_entropy(self, unlabeled_sequence):
+        unlabeled_sequence = self._transform(unlabeled_sequence)
+        
         T = len(unlabeled_sequence)
         N = len(self._states)
 
@@ -613,9 +709,69 @@ class HiddenMarkovModelTagger(TaggerI):
 
         return beta
 
+    def test(self, test_sequence, **kwargs):
+        """
+        Tests the C{HiddenMarkovModelTagger} instance.
+
+    	@param test_sequence: a sequence of labeled test instances
+        @type test_sequence: C{list} of C{list}
+        @kwparam verbose: boolean flag indicating whether training should be
+            verbose or include printed output
+        @type verbose: C{bool}
+        """
+        count = len(test_sequence)
+        predicted_sequence = \
+            LazyMap(lambda sent: self.tag([word[_TEXT] for word in sent]),
+                    test_sequence)
+                    
+        if kwargs.get('verbose', False):
+            # This will be used again later for accuracy so there's no sense
+            # in tagging it twice.
+            predicted_sequence = list(predicted_sequence)
+
+            for sent in predicted_sequence:
+                print 'Untagged:', \
+                    ' '.join([word[_TEXT] for word in sent])
+                print 'HMM-tagged:', \
+                    ' '.join(['%s/%s' % word for word in sent])
+                print 'Entropy:', \
+                    self.entropy([(word[_TEXT], None) for word in sent])
+                print '-' * 60
+                
+        acc = accuracy(LazyConcatenation(test_sequence), 
+                       LazyConcatenation(predicted_sequence))
+        print 'accuracy over %d tokens %.2f' % (count, acc * 100)
+        
     def __repr__(self):
         return ('<HiddenMarkovModelTagger %d states and %d output symbols>'
                 % (len(self._states), len(self._symbols)))
+
+    def __getstate__(self):
+        state = self.__dict__
+        state['_lambda_functions'] = {}
+        state['_instance_methods'] = {}
+        for name, attr in state.items():
+            if isinstance(attr, LambdaType) and attr.__name__ == '<lambda>':
+                state['_lambda_functions'][name] = dumps(attr.func_code)
+                del state[name]
+            elif isinstance(attr, MethodType):
+                state['_instance_methods'][name] = \
+                    (attr.im_self, attr.im_func.func_name)
+                del state[name]
+        return state
+    
+    def __setstate__(self, state):
+        for name, mcode in state.get('_lambda_functions', {}).items():
+            state[name] = function(loads(mcode), {})
+        if '_lambda_functions' in state:
+            del state['_lambda_functions']
+        for name, (im_self, im_func_name) \
+        in state.get('_instance_methods', {}).items():
+            state[name] = getattr(im_self, im_func_name)
+        if '_instance_methods' in state:
+            del state['_instance_methods']
+        self.__dict__ = state
+        
 
 class HiddenMarkovModelTrainer(object):
     """
@@ -869,232 +1025,6 @@ class HiddenMarkovModelTrainer(object):
                                
         return HiddenMarkovModelTagger(self._symbols, self._states, A, B, pi)
 
-class SpecializedHiddenMarkovModelTrainer(HiddenMarkovModelTrainer):
-    """
-    A subclass of C{HiddenMarkovModelTrainer} that allows for training a
-    shallow HMM parser or specialized HMM (Molina et. al 2002). A
-    specialized HMM trainer modifies the training data by applying a 
-    specialization function to create a new training set that is more 
-    appropriate for use with an HMM.  Typical use cases include chunking 
-    and named entity recognition.
-    """
-
-    def __init__(self, states=None, symbols=None, z=(1,2),
-                 transform=(lambda sequence, hmm: sequence)):
-        """
-        Creates an HMM trainer to induce a specialized HMM with the given 
-        states, output symbol alphabet, and symbol transformation function.
-        A supervised and unsupervised training method may be used.  If either 
-        of the states or symbols are not given, these may be derived from 
-        supervised training.  If a transform function is not given the
-        identity function is used as the default.
-
-        @param states: the set of state labels
-        @type states: sequence of any
-        @param symbols: the set of observation symbols
-        @type symbols: sequence of any
-        @param transform: the symbol transformation function 
-        @type transform: a function taking a sequence of any 
-        """
-        self._transform = transform
-        HiddenMarkovModelTrainer.__init__(self, states, symbols)
-
-    def train_supervised(self, labelled_sequences, **kwargs):
-        """
-        Extends train_supervised from C{HiddenMarkovModelTrainer}.  Applies
-        transform function to training data before calling superclass method.
-
-        @return: the trained model
-        @rtype: HiddenMarkovModelTagger
-        @param labelled_sequences: the training data, a set of
-            labelled sequences of observations
-        @type labelled_sequences: list
-        @param kwargs: may include an 'estimator' parameter, a function taking
-            a C{FreqDist} and a number of bins and returning a C{ProbDistI};
-            otherwise a MLE estimate is used
-        """
-        labelled_sequences = LazyMappedList(labelled_sequences,
-                              lambda sequence: self._transform(sequence, self))
-        hmm = HiddenMarkovModelTrainer.train_supervised(self, 
-                                              labelled_sequences, **kwargs)
-        hmm._transform = self._transform
-        return hmm
-
-    def train_unsupervised(self, unlabeled_sequences, **kwargs):
-        """
-        Extends train_unsupervised from C{HiddenMarkovModelTrainer}.  Applies
-        transform function to training data before calling superclass method.
-
-        @return: the trained model
-        @rtype: HiddenMarkovModelTagger
-        @param unlabeled_sequences: the training data, a set of
-            sequences of observations
-        @type unlabeled_sequences: list
-        @param kwargs: may include the following parameters::
-            model - a HiddenMarkovModelTagger instance used to begin
-                the Baum-Welch algorithm
-            max_iterations - the maximum number of EM iterations
-            convergence_logprob - the maximum change in log probability to
-                allow convergence
-        """
-        labelled_sequences = LazyMappedList(unlabeled_sequences,
-                              lambda sequence: self._transform(sequence, self))
-        hmm = HiddenMarkovModelTrainer.train_unsupervised(self, 
-                                              unlabeled_sequences, **kwargs)
-        hmm._transform = self._transform
-        return hmm
-
-class SpecializedHiddenMarkovModelTagger(HiddenMarkovModelTagger):
-    """
-    A subclass of C{HiddenMarkovModelTagger} that allows for shallow parsing.
-    (Molina et. al 2002).  A specialized HMM tagger modifies unlabeled data by 
-    applying a specialization function to create a new unlabeled sequence
-    that corresponds to the training data used by
-    C{SpecializedHiddenMarkovModelTrainer}.  This makes an HMM more
-    appropriate for certain tasks.  Typical use cases include chunking and
-    named entity recognition.
-    """
-
-    def __init__(self, symbols, states, transitions, 
-                 outputs, priors, transform=(lambda sequence, hmm: sequence)):
-        """
-        Creates a specialized hidden markov model parametised by the the 
-        states, transition probabilities, output probabilities and priors.
-        Uses transform to create new sequences from unlabeled sequences
-        during method invocation.  If a transform function is not given the
-        identity function is used as the default.
-
-        @param symbols: the set of output symbols (alphabet)
-        @type symbols: (seq) of any
-        @param states: a set of states representing state space
-        @type states: seq of any
-        @param transitions: transition probabilities; Pr(s_i | s_j) is the 
-                            probability of transition from state i given the 
-                            model is in state_j
-        @type transitions: C{ConditionalProbDistI}
-        @param outputs: output probabilities; Pr(o_k | s_i) is the probability 
-                        of emitting symbol k when entering state i
-        @type outputs: C{ConditionalProbDistI}
-        @param priors: initial state distribution; Pr(s_i) is the probability 
-                       of starting in state i
-        @type priors: C{ProbDistI}
-        @param transform: the symbol transformation function 
-        @type transform: a function taking a sequence of any 
-        """
-        self._transform = transform
-        HiddenMarkovModelTagger.__init__(self, symbols, states,
-                                         transitions, outputs, priors)
-
-    def probability(self, sequence):
-        """
-        Returns the probability of the given symbol sequence.  Extends 
-        probability from C{HiddenMarkovModelTagger}.  Applies transform 
-        function to sequence before calling superclass method.
-
-        @return: the probability of the sequence
-        @rtype: float
-        @param sequence: the sequence of symbols which must contain the TEXT
-            property, and optionally the TAG property
-        @type sequence:  Token
-        """
-        return HiddenMarkovModelTagger.probability(self,
-                        self._transform(sequence, self))
-
-    def log_probability(self, sequence):
-        """
-        Returns the log-probability of the given symbol sequence.  Extends 
-        log_probability from C{HiddenMarkovModelTagger}.  Applies transform 
-        function to sequence before calling superclass method.
-
-        @return: the log-probability of the sequence
-        @rtype: float
-        @param sequence: the sequence of symbols which must contain the TEXT
-                         property, and optionally the TAG property
-        @type sequence:  Token
-        """
-        return HiddenMarkovModelTagger.log_probability(self,
-                        self._transform(sequence, self))
-
-    def tag(self, unlabeled_sequence):
-        """
-        Tags the sequence with the highest probability state sequence.  This
-        uses the best_path method to find the Viterbi path.  Extends tag from 
-        C{HiddenMarkovModelTagger}.  Applies transform function to 
-        unlabeled_sequence before calling superclass method.
-
-        @return: a labelled sequence of symbols
-        @rtype: list
-        @param unlabeled_sequence: the sequence of unlabeled symbols 
-        @type unlabeled_sequence: list
-        """
-        return HiddenMarkovModelTagger.tag(self, unlabeled_sequence)
-
-    def best_path(self, symbols):
-        """
-        Returns the state sequence of the optimal (most probable) path through
-        the HMM.  Uses the Viterbi algorithm to calculate this part by dynamic
-        programming.  Extends best_path from C{HiddenMarkovModelTagger}.  
-        Applies transform function to symbols before calling superclass method.
-
-        @return: the state sequence
-        @rtype: sequence of any
-        @param symbols: the sequence of unlabeled symbols 
-        @type symbols: list
-        """
-        return HiddenMarkovModelTagger.best_path(self,
-                        self._transform(symbols, self))
-
-    def best_path_simple(self, symbols):
-        """
-        Returns the state sequence of the optimal (most probable) path through
-        the HMM.  Uses the Viterbi algorithm to calculate this part by dynamic
-        programming.  Extends best_path_simple from C{HiddenMarkovModelTagger}.
-        Applies transform function to symbols before calling superclass method.
-
-        @return: the state sequence
-        @rtype: sequence of any
-        @param symbols: the sequence of unlabeled symbols 
-        @type symbols: list
-        """
-        return HiddenMarkovModelTagger.best_path_simple(self,
-                        self._transform(symbols, self))
-
-    def entropy(self, unlabeled_sequence):
-        """
-        Returns the entropy over labellings of the given sequence.  Extends 
-        entropy from C{HiddenMarkovModelTagger}.  Applies transform function 
-        to unlabeled_sequence before calling superclass method.
-
-        @return: entropy over labellings of the unlabeled sequence 
-        @rtype: float 
-        @param unlabeled_sequence: the sequence of unlabeled symbols 
-        @type unlabeled_sequence: list
-        """
-        return HiddenMarkovModelTagger.entropy(self,
-                        self._transform(unlabeled_sequence, self))
-
-    def point_entropy(self, unlabeled_sequence):
-        """
-        Returns the pointwise entropy over the possible states at each
-        position in the chain, given the observation sequence.  Extends 
-        point_entropy from C{HiddenMarkovModelTagger}.  Applies transform 
-        function to unlabeled_sequence before calling superclass method.
-
-        @return: pointwise entropy over possible states
-        @rtype: float 
-        @param unlabeled_sequence: the sequence of unlabeled symbols 
-        @type unlabeled_sequence: list
-        """
-        return HiddenMarkovModelTagger.point_entropy(self,
-                        self._transform(unlabeled_sequence, self))
-
-    def _exhaustive_entropy(self, unlabeled_sequence):
-        return HiddenMarkovModelTagger._exhaustive_entropy(self,
-                        self._transform(unlabeled_sequence, self))
-
-    def _exhaustive_point_entropy(self, unlabeled_sequence):
-        return HiddenMarkovModelTagger._exhaustive_point_entropy(self,
-                        self._transform(unlabeled_sequence, self))
 
 def _log_add(*values):
     """
@@ -1159,7 +1089,6 @@ def demo():
         print 'H_exh(point)=', model._exhaustive_point_entropy(sequence)
         print
 
-
 def load_pos(num_sents):
     from nltk.corpus import brown
 
@@ -1183,31 +1112,9 @@ def load_pos(num_sents):
 
     return cleaned_sentences, list(tag_set), list(symbols)
 
+@deprecated("Use model.test(sentences, **kwargs) instead.")
 def test_pos(model, sentences, display=False):
-    from sys import stdout
-
-    count = correct = 0
-    for sentence in sentences:
-        orig_tags = [token[_TAG] for token in sentence]
-        sentence = [token[_TEXT] for token in sentence]
-        new_tags = model.best_path(sentence)
-        if display:
-            print 'Untagged:'
-            print sentence
-            print 'HMM-tagged:'
-            print new_tags
-            print 'Entropy:'
-            print model.entropy([(word,None) for word in sentence])
-            print '-' * 60
-        else:
-            print '\b.',
-            stdout.flush()
-        for orig_tag, new_tag in zip(orig_tags, new_tags):
-            count += 1
-            if orig_tag == new_tag:
-                correct += 1
-
-    print 'accuracy over', count, 'tokens %.1f' % (100.0 * correct / count)
+    return model.test(sentences, verbose=display)
 
 def demo_pos():
     # demonstrates POS tagging using supervised training
@@ -1223,7 +1130,7 @@ def demo_pos():
                     estimator=lambda fd, bins: LidstoneProbDist(fd, 0.1, bins))
 
     print 'Testing...'
-    test_pos(hmm, labelled_sequences[:10], True)
+    hmm.test(labelled_sequences[:10], verbose=True)
 
 def _untag(sentences):
     unlabeled = []
@@ -1252,7 +1159,7 @@ def demo_pos_bw():
     # it's rather slow - so only use 10 samples
     unlabeled = _untag(sentences[200:210])
     hmm = trainer.train_unsupervised(unlabeled, model=hmm, max_iterations=5)
-    test_pos(hmm, sentences[:10], True)
+    hmm.test(sentences[:10], verbose=True)
 
 def demo_bw():
     # demo Baum Welch by generating some sequences and then performing
