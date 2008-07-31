@@ -26,7 +26,8 @@ class BracketParseCorpusReader(SyntaxCorpusReader):
     trees.
     """
     def __init__(self, root, files, comment_char=None,
-                 detect_blocks='unindented_paren', encoding=None):
+                 detect_blocks='unindented_paren', encoding=None,
+                 tag_mapping_function=None):
         """
         @param root: The root directory for this corpus.
         @param files: A list or regexp specifying the files in this corpus.
@@ -40,6 +41,7 @@ class BracketParseCorpusReader(SyntaxCorpusReader):
         CorpusReader.__init__(self, root, files, encoding)
         self._comment_char = comment_char
         self._detect_blocks = detect_blocks
+        self._tag_mapping_function = tag_mapping_function
 
     def _read_block(self, stream):
         if self._detect_blocks == 'sexpr':
@@ -88,8 +90,12 @@ class BracketParseCorpusReader(SyntaxCorpusReader):
             #sys.stderr.write(' '.join(t.split())+'\n')
             return Tree('S', self._tag(t))
 
-    def _tag(self, t):
-        return [(w,t) for (t,w) in TAGWORD.findall(self._normalize(t))]
+    def _tag(self, t, simplify_tags=False):
+        tagged_sent = [(w,t) for (t,w) in TAGWORD.findall(self._normalize(t))]
+        if simplify_tags:
+            tagged_sent = [(w, self._tag_mapping_function(t))
+                           for (w,t) in tagged_sent]
+        return tagged_sent
 
     def _word(self, t):
         return WORD.findall(self._normalize(t))
@@ -98,10 +104,11 @@ class AlpinoCorpusReader(BracketParseCorpusReader):
     """
     Reader for the Alpino Dutch Treebank.
     """
-    def __init__(self, root, encoding=None):
+    def __init__(self, root, encoding=None, tag_mapping_function=None):
         BracketParseCorpusReader.__init__(self, root, 'alpino\.xml',
-                                          detect_blocks='blankline',
-                                          encoding=encoding)
+                                 detect_blocks='blankline',
+                                 encoding=encoding,
+                                 tag_mapping_function=tag_mapping_function)
 
     def _normalize(self, t):
         if t[:10] != "<alpino_ds":

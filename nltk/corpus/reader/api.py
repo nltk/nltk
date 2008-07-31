@@ -33,7 +33,7 @@ class CorpusReader(object):
     selection arguments, such as C{files} or C{categories}, which can
     be used to select which portion of the corpus should be returned.
     """
-    def __init__(self, root, files, encoding=None):
+    def __init__(self, root, files, encoding=None, tag_mapping_function=None):
         """
         @param root: The root directory for this corpus.
         @param files: A list of the files that make up this corpus.
@@ -61,6 +61,9 @@ class CorpusReader(object):
                 non-unicode byte strings.
               - C{None}: the file contents of all files will be
                 processed using non-unicode byte strings.
+        @param tag_mapping_function: A function for normalizing or
+                simplifying the POS tags returned by the tagged_words()
+                or tagged_sents() methods.
         """
         if not os.path.isdir(root):
             raise ValueError('Root directory %r not found!' % root)
@@ -90,6 +93,7 @@ class CorpusReader(object):
         """The default unicode encoding for the files that make up
            this corpus.  If C{encoding} is C{None}, then the file
            contents are processed using byte strings (C{str})."""
+        self._tag_mapping_function = tag_mapping_function
         
     def __repr__(self):
         return '<%s in %r>' % (self.__class__.__name__, self._root)

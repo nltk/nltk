@@ -14,6 +14,7 @@ which is known as X{tagging}, is defined by the L{TaggerI} interface.
 
 from api import *
 from util import *
+from simplify import *
 from sequential import *
 from brill import *
 

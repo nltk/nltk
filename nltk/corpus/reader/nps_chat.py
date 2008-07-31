@@ -15,8 +15,9 @@ import re, textwrap
 
 class NPSChatCorpusReader(XMLCorpusReader):
 
-    def __init__(self, root, files, wrap_etree=False):
+    def __init__(self, root, files, wrap_etree=False, tag_mapping_function=None):
         XMLCorpusReader.__init__(self, root, files, wrap_etree)
+        self._tag_mapping_function = tag_mapping_function
 
     def xml_posts(self, files=None):
         if self._wrap_etree:
@@ -32,16 +33,18 @@ class NPSChatCorpusReader(XMLCorpusReader):
                                      self._elt_to_words)
                        for filename in self.abspaths(files)])
 
-    def tagged_posts(self, files=None):
+    def tagged_posts(self, files=None, simplify_tags=False):
+        def reader(elt, handler):
+            return self._elt_to_tagged_words(elt, handler, simplify_tags)
         return concat([XMLCorpusView(filename, 'Session/Posts/Post/terminals',
-                                     self._elt_to_tagged_words)
+                                     reader)
                        for filename in self.abspaths(files)])
 
     def words(self, files=None):
         return LazyConcatenation(self.posts(files))
 
-    def tagged_words(self, files=None):
-        return LazyConcatenation(self.tagged_posts(files))
+    def tagged_words(self, files=None, simplify_tags=False):
+        return LazyConcatenation(self.tagged_posts(files, simplify_tags))
 
     def _wrap_elt(self, elt, handler):
         return ElementWrapper(elt)
@@ -49,5 +52,9 @@ class NPSChatCorpusReader(XMLCorpusReader):
     def _elt_to_words(self, elt, handler):
         return [t.attrib['word'] for t in elt.findall('t')]
         
-    def _elt_to_tagged_words(self, elt, handler):
-        return [(t.attrib['word'], t.attrib['pos']) for t in elt.findall('t')]
+    def _elt_to_tagged_words(self, elt, handler, simplify_tags=False):
+        tagged_post = [(t.attrib['word'], t.attrib['pos']) for t in elt.findall('t')]
+        if simplify_tags:
+            tagged_post = [(w, self._tag_mapping_function(t))
+                           for (w,t) in tagged_post]
+        return tagged_post

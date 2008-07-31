@@ -706,27 +706,25 @@ class SyntaxCorpusReader(CorpusReader):
                        for (path,enc) in self.abspaths(files, True)])
 
     def parsed_sents(self, files=None):
-        return concat([StreamBackedCorpusView(filename,
-                                              self._read_parsed_sent_block,
-                                              encoding=enc)
+        reader = self._read_parsed_sent_block
+        return concat([StreamBackedCorpusView(filename, reader, encoding=enc)
                        for filename, enc in self.abspaths(files, True)])
 
-    def tagged_sents(self, files=None):
-        return concat([StreamBackedCorpusView(filename,
-                                              self._read_tagged_sent_block,
-                                              encoding=enc)
+    def tagged_sents(self, files=None, simplify_tags=False):
+        def reader(stream):
+            return self._read_tagged_sent_block(stream, simplify_tags)
+        return concat([StreamBackedCorpusView(filename, reader, encoding=enc)
                        for filename, enc in self.abspaths(files, True)])
 
     def sents(self, files=None):
-        return concat([StreamBackedCorpusView(filename,
-                                              self._read_sent_block,
-                                              encoding=enc)
+        reader = self._read_sent_block
+        return concat([StreamBackedCorpusView(filename, reader, encoding=enc)
                        for filename, enc in self.abspaths(files, True)])
 
-    def tagged_words(self, files=None):
-        return concat([StreamBackedCorpusView(filename,
-                                              self._read_tagged_word_block,
-                                              encoding=enc)
+    def tagged_words(self, files=None, simplify_tags=False):
+        def reader(stream):
+            return self._read_tagged_word_block(stream, simplify_tags)
+        return concat([StreamBackedCorpusView(filename, reader, encoding=enc)
                        for filename, enc in self.abspaths(files, True)])
 
     def words(self, files=None):
@@ -741,20 +739,18 @@ class SyntaxCorpusReader(CorpusReader):
     def _read_word_block(self, stream):
         return sum(self._read_sent_block(stream), [])
 
-    def _read_tagged_word_block(self, stream):
-        return sum(self._read_tagged_sent_block(stream), [])
+    def _read_tagged_word_block(self, stream, simplify_tags=False):
+        return sum(self._read_tagged_sent_block(stream, simplify_tags), [])
 
     def _read_sent_block(self, stream):
-        sents = [self._word(t) for t in self._read_block(stream)]
-        return [sent for sent in sents if sent]
+        return filter(None, [self._word(t) for t in self._read_block(stream)])
     
-    def _read_tagged_sent_block(self, stream):
-        tagged_sents = [self._tag(t) for t in self._read_block(stream)]
-        return [tagged_sent for tagged_sent in tagged_sents if tagged_sent]
+    def _read_tagged_sent_block(self, stream, simplify_tags=False):
+        return filter(None, [self._tag(t, simplify_tags)
+                             for t in self._read_block(stream)])
 
     def _read_parsed_sent_block(self, stream):
-        trees = [self._parse(t) for t in self._read_block(stream)]
-        return [tree for tree in trees if tree is not None]
+        return filter(None, [self._parse(t) for t in self._read_block(stream)])
 
     #} End of Block Readers
     #------------------------------------------------------------

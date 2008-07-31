@@ -67,7 +67,7 @@ nltk/nltk.jar: $(JAVA_SRC)
 dist: codedist docdist exampledist datadist contribdocdist
 	touch .dist.done
 
-codedist: gztardist zipdist rpmdist wininstdist dmgdist
+codedist: gztardist zipdist rpmdist windist dmgdist
 
 gztardist: clean_code
 	$(PYTHON) setup.py -q sdist --format=gztar
@@ -75,7 +75,7 @@ zipdist: clean_code
 	$(PYTHON) setup.py -q sdist --format=zip
 rpmdist: clean_code
 	$(PYTHON) setup.py -q bdist --format=rpm
-wininstdist: clean_code
+windist: clean_code
 	$(PYTHON) setup.py -q bdist --format=wininst
 dmgdist:
 	$(MAKE) -C tools/mac
@@ -90,7 +90,7 @@ exampledist:
 	find examples -print | egrep -v '.svn' | zip dist/nltk-examples-$(NLTK_VERSION).zip -@
 
 datadist:
-	find data -print | egrep -v '.svn' | zip dist/nltk-data-$(NLTK_VERSION).zip -@
+	find data -print | egrep -v '.svn|.DS_Store' | zip dist/nltk-data-$(NLTK_VERSION).zip -@
 
 nightlydist: codedist
 	REVISION = `svn info | grep Revision: | sed "s/Revision: //"`
