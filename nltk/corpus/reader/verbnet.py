@@ -11,6 +11,10 @@ from nltk.corpus.reader.api import *
 from nltk.corpus.reader.xmldocs import *
 import re, textwrap
 
+# normalize periods to underscore (Windows filename issue)
+def _dotmap(name):
+    return name.replace('.', '_')
+
 class VerbnetCorpusReader(XMLCorpusReader):
 
     # No unicode encoding param, since the data files are all XML.
@@ -37,10 +41,10 @@ class VerbnetCorpusReader(XMLCorpusReader):
         # runs 2-30 times faster.
         self._quick_index()
 
-    _LONGID_RE = re.compile(r'([^\-\.]*)-([\d+.\-]+)$')
+    _LONGID_RE = re.compile(r'([^\-\.]*)-([\d+_\-]+)$')
     """Regular expression that matches (and decomposes) longids"""
     
-    _SHORTID_RE = re.compile(r'[\d+.\-]+$')
+    _SHORTID_RE = re.compile(r'[\d+_\-]+$')
     """Regular expression that matches shortids"""
     
     _INDEX_RE = re.compile(r'<MEMBER name="\??([^"]+)" wn="([^"]*)"/?>|'
@@ -99,7 +103,7 @@ class VerbnetCorpusReader(XMLCorpusReader):
             return self._wordnet_to_class[wordnetid]
         elif classid is not None:
             xmltree = self.vnclass(classid)
-            return [subclass.get('ID') for subclass in
+            return [_dotmap(subclass.get('ID')) for subclass in
                     xmltree.findall('SUBCLASSES/VNSUBCLASS')]
         else:
             return sorted(self._class_to_fileid.keys())
@@ -124,11 +128,11 @@ class VerbnetCorpusReader(XMLCorpusReader):
         if classid in self._class_to_fileid:
             fileid = self._class_to_fileid[self.longid(classid)]
             tree = self.xml(fileid)
-            if classid == tree.get('ID'):
+            if classid == _dotmap(tree.get('ID')):
                 return tree
             else:
                 for subclass in tree.findall('.//VNSUBCLASS'):
-                    if classid == subclass.get('ID'):
+                    if classid == _dotmap(subclass.get('ID')):
                         return subclass
                 else:
                     assert False # we saw it during _index()!
@@ -167,7 +171,7 @@ class VerbnetCorpusReader(XMLCorpusReader):
 
     def _index_helper(self, xmltree, fileid):
         """Helper for L{_index()}"""
-        vnclass = xmltree.get('ID')
+        vnclass = _dotmap(xmltree.get('ID'))
         self._class_to_fileid[vnclass] = fileid
         self._shortid_to_longid[self.shortid(vnclass)] = vnclass
         for member in xmltree.findall('MEMBERS/MEMBER'):
@@ -215,6 +219,7 @@ class VerbnetCorpusReader(XMLCorpusReader):
         """Given a short verbnet class identifier (eg '37.10'), map it
         to a long id (eg 'confess-37.10').  If C{shortid} is already a
         long id, then return it as-is"""
+        shortid = _dotmap(shortid)
         if self._LONGID_RE.match(shortid):
             return shortid # it's already a longid.
         elif not self._SHORTID_RE.match(shortid):
@@ -228,6 +233,7 @@ class VerbnetCorpusReader(XMLCorpusReader):
         """Given a long verbnet class identifier (eg 'confess-37.10'),
         map it to a short id (eg '37.10').  If C{longid} is already a
         short id, then return it as-is."""
+        longid = _dotmap(longid)
         if self._SHORTID_RE.match(longid):
             return longid # it's already a shortid.
         m = self._LONGID_RE.match(longid)
@@ -251,7 +257,7 @@ class VerbnetCorpusReader(XMLCorpusReader):
         if isinstance(vnclass, basestring):
             vnclass = self.vnclass(vnclass)
 
-        s = vnclass.get('ID') + '\n'
+        s = _dotmap(vnclass.get('ID')) + '\n'
         s += self.pprint_subclasses(vnclass, indent='  ') + '\n'
         s += self.pprint_members(vnclass, indent='  ') + '\n'
         s += '  Thematic roles:\n'
@@ -272,7 +278,7 @@ class VerbnetCorpusReader(XMLCorpusReader):
         if isinstance(vnclass, basestring):
             vnclass = self.vnclass(vnclass)
 
-        subclasses = [subclass.get('ID') for subclass in 
+        subclasses = [_dotmap(subclass.get('ID')) for subclass in 
                       vnclass.findall('SUBCLASSES/VNSUBCLASS')]
         if not subclasses: subclasses = ['(none)']
         s = 'Subclasses: ' + ' '.join(subclasses)

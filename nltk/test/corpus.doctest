@@ -149,6 +149,15 @@ Indian text annotated with part-of-speech tags:
     >>> print indian.tagged_words() # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
     [('\xe0\xa6\xae\xe0\xa6\xb9\xe0\xa6\xbf...', 'NN'),
      ('\xe0\xa6\xb8\xe0\xa6\xa8\xe0\xa7\x8d\xe0...', 'NN'), ...]
+     
+Tagged corpora support access to simplified tags, e.g. where all nouns
+tags are collapsed to a single category ``N``:
+
+    >>> print brown.tagged_sents(simplify_tags=True) # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+    [[('The', 'DET'), ('Fulton', 'NP'), ('County', 'N'), ('Grand', 'ADJ'), ...],
+     [('The', 'DET'), ('jury', 'N'), ('further', 'ADV'), ('said', 'VD'), ...]...]
+
+Use ``nltk.draw.pos-concordance()`` to access a GUI for searching tagged corpora.
 
 Chunked Corpora
 ===============
@@ -872,31 +881,31 @@ retrieved with the following methods:
     >>> verbnet.lemmas()[20:25]
     ['accelerate', 'accept', 'acclaim', 'accompany', 'accrue']
     >>> verbnet.classids()[:5]
-    ['accompany-51.7', 'admire-31.2', 'admire-31.2-1', 'admit-65', 'adopt-93']
+    ['accompany-51_7', 'admire-31_2', 'admire-31_2-1', 'admit-65', 'adopt-93']
 
 The `classids()` method may also be used to retrieve the classes that
 a given lemma belongs to:
 
     >>> verbnet.classids('accept')
-    ['approve-77', 'characterize-29.2-1-1', 'obtain-13.5.2']
+    ['approve-77', 'characterize-29_2-1-1', 'obtain-13_5_2']
 
 The primary object in the lexicon is a class record, which is stored
 as an ElementTree xml object.  The class record for a given class
 identifier is returned by the `vnclass()` method:
 
-    >>> verbnet.vnclass('remove-10.1') # doctest: +ELLIPSIS
+    >>> verbnet.vnclass('remove-10_1') # doctest: +ELLIPSIS
     <Element 'VNCLASS' at ...>
 
 The `vnclass()` method also accepts "short" identifiers, such as '10.1':
 
-    >>> verbnet.vnclass('10.1') # doctest: +ELLIPSIS
+    >>> verbnet.vnclass('10_1') # doctest: +ELLIPSIS
     <Element 'VNCLASS' at ...>
 
 See the Verbnet documentation, or the Verbnet files, for information
 about the structure of this xml.  As an example, we can retrieve a
 list of thematic roles for a given Verbnet class:
 
-    >>> vn_31_2 = verbnet.vnclass('admire-31.2')
+    >>> vn_31_2 = verbnet.vnclass('admire-31_2')
     >>> for themrole in vn_31_2.findall('THEMROLES/THEMROLE'):
     ...     print themrole.attrib['type'],
     ...     for selrestr in themrole.findall('SELRESTRS/SELRESTR'):
@@ -1645,29 +1654,29 @@ Make sure we're picking up the right number of elements:
 Selecting classids based on various selectors:
 
     >>> verbnet.classids(lemma='take') # doctest: +NORMALIZE_WHITESPACE
-    ['bring-11.3', 'characterize-29.2', 'convert-26.6.2', 'cost-54.2',
-     'fit-54.3', 'performance-26.7-2', 'steal-10.5']
+    ['bring-11_3', 'characterize-29_2', 'convert-26_6_2', 'cost-54_2',
+     'fit-54_3', 'performance-26_7-2', 'steal-10_5']
     >>> verbnet.classids(wordnetid='lead%2:38:01')
-    ['accompany-51.7']
+    ['accompany-51_7']
     >>> verbnet.classids(fileid='approve-77.xml')
     ['approve-77']
-    >>> verbnet.classids(classid='admire-31.2') # subclasses
-    ['admire-31.2-1']
+    >>> verbnet.classids(classid='admire-31_2') # subclasses
+    ['admire-31_2-1']
 
 vnclass() accepts filenames, long ids, and short ids:
 
-    >>> a = ElementTree.tostring(verbnet.vnclass('admire-31.2.xml'))
-    >>> b = ElementTree.tostring(verbnet.vnclass('admire-31.2'))
-    >>> c = ElementTree.tostring(verbnet.vnclass('31.2'))
+    >>> a = ElementTree.tostring(verbnet.vnclass('admire-31_2.xml'))
+    >>> b = ElementTree.tostring(verbnet.vnclass('admire-31_2'))
+    >>> c = ElementTree.tostring(verbnet.vnclass('31_2'))
     >>> a == b == c
     True
 
 files() can be used to get files based on verbnet class ids:
 
-    >>> verbnet.files('admire-31.2')
-    ['admire-31.2.xml']
-    >>> verbnet.files(['admire-31.2', 'obtain-13.5.2'])
-    ['admire-31.2.xml', 'obtain-13.5.2.xml']
+    >>> verbnet.files('admire-31_2')
+    ['admire-31_2.xml']
+    >>> verbnet.files(['admire-31_2', 'obtain-13_5_2'])
+    ['admire-31_2.xml', 'obtain-13_5_2.xml']
     >>> verbnet.files('badidentifier')
     Traceback (most recent call last):
       . . .
@@ -1675,14 +1684,14 @@ files() can be used to get files based on verbnet class ids:
 
 longid() and shortid() can be used to convert identifiers:
 
-    >>> verbnet.longid('31.2')
+    >>> verbnet.longid('31_2')
     'admire-31.2'
-    >>> verbnet.longid('admire-31.2')
-    'admire-31.2'
-    >>> verbnet.shortid('31.2')
-    '31.2'
-    >>> verbnet.shortid('admire-31.2')
-    '31.2'
+    >>> verbnet.longid('admire-31_2')
+    'admire-31_2'
+    >>> verbnet.shortid('31_2')
+    '31_2'
+    >>> verbnet.shortid('admire-31_2')
+    '31_2'
     >>> verbnet.longid('badidentifier')
     Traceback (most recent call last):
       . . .
