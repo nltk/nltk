@@ -23,7 +23,7 @@ from nltk.corpus.reader.api import *
 from nltk import tokenize
 import codecs
 from nltk.internals import deprecated
-import nltk.tag.util # for str2tuple
+from nltk.tag.util import str2tuple
 
 class IndianCorpusReader(CorpusReader):
     """
@@ -34,9 +34,13 @@ class IndianCorpusReader(CorpusReader):
                                         False, False)
                        for (filename, enc) in self.abspaths(files, True)])
 
-    def tagged_words(self, files=None):
+    def tagged_words(self, files=None, simplify_tags=False):
+        if simplify_tags:
+            tag_mapping_function = self._tag_mapping_function
+        else:
+            tag_mapping_function = None
         return concat([IndianCorpusView(filename, enc,
-                                        True, False)
+                                        True, False, tag_mapping_function)
                        for (filename, enc) in self.abspaths(files, True)])
 
     def sents(self, files=None):
@@ -44,9 +48,13 @@ class IndianCorpusReader(CorpusReader):
                                         False, True)
                        for (filename, enc) in self.abspaths(files, True)])
 
-    def tagged_sents(self, files=None):
+    def tagged_sents(self, files=None, simplify_tags=False):
+        if simplify_tags:
+            tag_mapping_function = self._tag_mapping_function
+        else:
+            tag_mapping_function = None
         return concat([IndianCorpusView(filename, enc,
-                                        True, True)
+                                        True, True, tag_mapping_function)
                        for (filename, enc) in self.abspaths(files, True)])
 
     def raw(self, files=None):
@@ -69,19 +77,24 @@ class IndianCorpusReader(CorpusReader):
     #}
     
 class IndianCorpusView(StreamBackedCorpusView):
-    def __init__(self, corpus_file, encoding, tagged, group_by_sent):
+    def __init__(self, corpus_file, encoding, tagged,
+                 group_by_sent, tag_mapping_function=None):
         self._tagged = tagged
         self._group_by_sent = group_by_sent
+        self._tag_mapping_function = tag_mapping_function
         StreamBackedCorpusView.__init__(self, corpus_file, encoding=encoding)
 
     def read_block(self, stream):
         line = stream.readline()
-        if line.startswith('<'): return []
-        sent = [nltk.tag.util.str2tuple(word, sep='_')
-                for word in line.split()]
+        if line.startswith('<'):
+            return []
+        sent = [str2tuple(word, sep='_') for word in line.split()]
+        if self._tag_mapping_function:
+            sent = [(w, self._tag_mapping_function(t)) for (w,t) in sent]
         if not self._tagged: sent = [w for (w,t) in sent]
         if self._group_by_sent:
             return [sent]
         else:
             return sent
+        
 

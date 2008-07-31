@@ -277,6 +277,7 @@ class TaggedCorpusView(StreamBackedCorpusView):
                 block.extend(para)
         return block
 
+# needs to implement simplified tags
 class MacMorphoCorpusReader(TaggedCorpusReader):
     """
     A corpus reader for the MAC_MORPHO corpus.  Each line contains a
@@ -286,13 +287,14 @@ class MacMorphoCorpusReader(TaggedCorpusReader):
     L{self.paras()} and L{self.tagged_paras()} contains a single
     sentence.
     """
-    def __init__(self, root, files, encoding=None):
+    def __init__(self, root, files, encoding=None, tag_mapping_function=None):
         TaggedCorpusReader.__init__(
             self, root, files, sep='_',
             word_tokenizer=LineTokenizer(),
             sent_tokenizer=RegexpTokenizer('.*\n'),
             para_block_reader=self._read_block,
-            encoding=encoding)
+            encoding=encoding,
+            tag_mapping_function=tag_mapping_function)
 
     def _read_block(self, stream):
         return read_regexp_block(stream, r'.*', r'.*_\.')

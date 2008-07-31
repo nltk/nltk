@@ -14,10 +14,9 @@ NLTK:
     to allow reading (word, tag, chunk_typ) tuples off of CoNLL-2000 corpus. Also 
     modified ConllChunkCorpusView to support these changes.
 - feature structures support values with custom unification methods
-- new support for trees with parent pointers, multiple parents
-  nltk.ParentedTree, nltk.MultiParentedTree
 - new chunk parser GUI nltk.draw.rechunkparser
 - new pos-tagged concordance tool nltk.draw.pos_concordance
+- new flag on tagged corpus readers to use simplified tagsets
 - new WordSense class in wordnet.synset supporting access to synsets
   from sense keys and accessing sense counts (see section 3 of
   http://nltk.org/doc/guides/wordnet.html)
@@ -45,6 +44,7 @@ Data:
 - Implemented HMM-based Treebank POS tagger and phrase chunker for 
   nltk_contrib.coref in api.py. Pickled versions of these objects are checked
   in in data/taggers and data/chunkers.
+- Renamed Verbnet files for MSWindows
 
 Book:
 - misc corrections in response to feedback from readers

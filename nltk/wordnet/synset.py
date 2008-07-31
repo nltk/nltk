@@ -222,8 +222,12 @@ class Synset(object):
     lexical relations, which can be accessed via synset.relations().
 
     >>> from nltk.wordnet import *
-    >>> V['think'][0].synset.verbFrames
-    (5, 9)
+    >>> N['dog'][0]
+    {noun: dog, domestic_dog, Canis_familiaris}
+    >>> N['dog'][0][HYPERNYM]
+    [{noun: canine, canid}, {noun: domestic_animal, domesticated_animal}]
+    >>> V['think'][0].verbFrameStrings
+    ['Something think something Adjective/Noun', 'Somebody think somebody']
 
     @type pos: C{string}
     @ivar pos: The part of speech -- one of NOUN, VERB, ADJECTIVE, ADVERB.

@@ -62,9 +62,12 @@ class SinicaTreebankCorpusReader(SyntaxCorpusReader):
     def _parse(self, sent):
         return tree.sinica_parse(sent)
 
-    def _tag(self, sent):
-        return [(w,t) for (t,w) in TAGWORD.findall(sent)]
+    def _tag(self, sent, simplify_tags=None):
+        tagged_sent = [(w,t) for (t,w) in TAGWORD.findall(sent)]
+        if simplify_tags:
+            tagged_sent = [(w, self._tag_mapping_function(t))
+                           for (w,t) in tagged_sent]
+        return tagged_sent
 
     def _word(self, sent):
         return WORD.findall(sent)
-

@@ -63,7 +63,9 @@ can be accessed using C{nltk.corpus.I{corpus}.olac()}.
 import re
 
 from nltk.tokenize import RegexpTokenizer
-from nltk.tag import simplify_brown_tag
+from nltk.tag import simplify_brown_tag, simplify_wsj_tag,\
+                     simplify_alpino_tag, simplify_indian_tag,\
+                     simplify_tag
 
 from util import LazyCorpusLoader
 from reader import *
@@ -72,14 +74,16 @@ import chat80
 abc = LazyCorpusLoader(
     'abc', PlaintextCorpusReader, r'(?!\.svn).*\.txt')
 alpino = LazyCorpusLoader(
-    'alpino', AlpinoCorpusReader)
+    'alpino', AlpinoCorpusReader, tag_mapping_function=simplify_alpino_tag)
 brown = LazyCorpusLoader(
     'brown', CategorizedTaggedCorpusReader, r'c[a-z]\d\d',
     cat_pattern=r'c([a-z])\d\d', tag_mapping_function=simplify_brown_tag)
 cess_cat = LazyCorpusLoader(
-    'cess_cat', BracketParseCorpusReader, r'(?!\.svn).*\.tbf')
+    'cess_cat', BracketParseCorpusReader, r'(?!\.svn).*\.tbf',
+    tag_mapping_function=simplify_tag)
 cess_esp = LazyCorpusLoader(
-    'cess_esp', BracketParseCorpusReader, r'(?!\.svn).*\.tbf')
+    'cess_esp', BracketParseCorpusReader, r'(?!\.svn).*\.tbf',
+    tag_mapping_function=simplify_tag)
 cmudict = LazyCorpusLoader(
     'cmudict', CMUDictCorpusReader, ['cmudict'])
 conll2000 = LazyCorpusLoader(
@@ -89,27 +93,31 @@ conll2002 = LazyCorpusLoader(
     'conll2002', ConllChunkCorpusReader, '.*\.(test|train).*', 
     ('LOC', 'PER', 'ORG', 'MISC'))
 floresta = LazyCorpusLoader(
-    'floresta', BracketParseCorpusReader, r'(?!\.svn).*\.ptb', '#')
+    'floresta', BracketParseCorpusReader, r'(?!\.svn).*\.ptb', '#',
+    tag_mapping_function=simplify_tag)
 genesis = LazyCorpusLoader(
     'genesis', PlaintextCorpusReader, r'(?!\.svn).*\.txt')
 gutenberg = LazyCorpusLoader(
     'gutenberg', GutenbergCorpusReader, r'(?!\.svn).*\.txt')
 ieer = LazyCorpusLoader(
     'ieer', IEERCorpusReader, r'(?!README|\.svn).*')
-nps_chat = LazyCorpusLoader(
-    'nps_chat', NPSChatCorpusReader, r'(?!README|\.svn).*')
 inaugural = LazyCorpusLoader(
     'inaugural', PlaintextCorpusReader, r'(?!\.svn).*\.txt')
 # [XX] This should probably just use TaggedCorpusReader:
 indian = LazyCorpusLoader(
-    'indian', IndianCorpusReader, r'(?!\.svn).*\.pos')
+    'indian', IndianCorpusReader, r'(?!\.svn).*\.pos',
+    tag_mapping_function=simplify_indian_tag)
 mac_morpho = LazyCorpusLoader(
-    'mac_morpho', MacMorphoCorpusReader, r'(?!\.svn).*\.txt')
+    'mac_morpho', MacMorphoCorpusReader, r'(?!\.svn).*\.txt',
+    tag_mapping_function=simplify_tag)
 movie_reviews = LazyCorpusLoader(
     'movie_reviews', CategorizedPlaintextCorpusReader,
     r'(?!\.svn).*\.txt', cat_pattern=r'(neg|pos)/.*')
 names = LazyCorpusLoader(
     'names', WordListCorpusReader, r'(?!\.svn).*\.txt')
+nps_chat = LazyCorpusLoader(
+    'nps_chat', NPSChatCorpusReader, r'(?!README|\.svn).*',
+    tag_mapping_function=simplify_wsj_tag)
 ppattach = LazyCorpusLoader(
     'ppattach', PPAttachmentCorpusReader, ['training', 'test', 'devset'])
 qc = LazyCorpusLoader(
@@ -124,7 +132,8 @@ senseval = LazyCorpusLoader(
 shakespeare = LazyCorpusLoader(
     'shakespeare', XMLCorpusReader, r'(?!\.svn).*\.xml')
 sinica_treebank = LazyCorpusLoader(
-    'sinica_treebank', SinicaTreebankCorpusReader, ['parsed'])
+    'sinica_treebank', SinicaTreebankCorpusReader, ['parsed'],
+    tag_mapping_function=simplify_tag)
 state_union = LazyCorpusLoader(
     'state_union', PlaintextCorpusReader, r'(?!\.svn).*\.txt')
 stopwords = LazyCorpusLoader(
@@ -134,7 +143,8 @@ timit = LazyCorpusLoader(
 toolbox = LazyCorpusLoader(
     'toolbox', ToolboxCorpusReader, r'(?!.*(README|\.svn)).*\.(dic|txt)')
 treebank = LazyCorpusLoader(
-    'treebank/combined', BracketParseCorpusReader, r'wsj_.*\.mrg')
+    'treebank/combined', BracketParseCorpusReader, r'wsj_.*\.mrg',
+    tag_mapping_function=simplify_wsj_tag)
 propbank = LazyCorpusLoader(
     'propbank', PropbankCorpusReader,
     'prop.txt', 'frames/.*\.xml', 'verbs.txt',

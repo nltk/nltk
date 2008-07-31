@@ -22,15 +22,70 @@ SEARCH_TERMINATED_EVENT = '<<ST_EVENT>>'
 SEARCH_ERROR_EVENT = '<<SE_EVENT>>'
 ERROR_LOADING_CORPUS_EVENT = '<<ELC_EVENT>>'
 
-class CategorySearchView:
-    _BACKGROUND_COLOUR='#FFF'#white
+def _simplify_tags(tagged_reader):
+    return lambda: tagged_reader(simplify_tags=True)
+
+_DEFAULT = 'English: Brown Corpus (Humor, simplified)'
+_CORPORA = {
+            'Catalan: CESS-CAT Corpus (simplified)':
+                _simplify_tags(nltk.corpus.cess_cat.tagged_sents),
+            'English: Brown Corpus':
+                nltk.corpus.brown.tagged_sents,
+            'English: Brown Corpus (simplified)':
+                _simplify_tags(nltk.corpus.brown.tagged_sents),
+            'English: Brown Corpus (Press, simplified)':
+                lambda: nltk.corpus.brown.tagged_sents(categories='abc', simplify_tags=True),
+            'English: Brown Corpus (Religion, simplified)':
+                lambda: nltk.corpus.brown.tagged_sents(categories='d', simplify_tags=True),
+            'English: Brown Corpus (Learned, simplified)':
+                lambda: nltk.corpus.brown.tagged_sents(categories='j', simplify_tags=True),
+            'English: Brown Corpus (Science Fiction, simplified)':
+                lambda: nltk.corpus.brown.tagged_sents(categories='m', simplify_tags=True),
+            'English: Brown Corpus (Romance, simplified)':
+                lambda: nltk.corpus.brown.tagged_sents(categories='p', simplify_tags=True),
+            'English: Brown Corpus (Humor, simplified)':
+                lambda: nltk.corpus.brown.tagged_sents(categories='r', simplify_tags=True),
+            'English: NPS Chat Corpus':
+                nltk.corpus.nps_chat.tagged_posts,
+            'English: NPS Chat Corpus (simplified)':
+                _simplify_tags(nltk.corpus.nps_chat.tagged_posts),
+            'English: Wall Street Journal Corpus':
+                nltk.corpus.treebank.tagged_sents,
+            'English: Wall Street Journal Corpus (simplified)':
+                _simplify_tags(nltk.corpus.treebank.tagged_sents),
+            'Chinese: Sinica Corpus':
+                nltk.corpus.sinica_treebank.tagged_sents,
+            'Chinese: Sinica Corpus (simplified)':
+                _simplify_tags(nltk.corpus.sinica_treebank.tagged_sents),
+            'Dutch: Alpino Corpus':
+                nltk.corpus.alpino.tagged_sents,
+            'Dutch: Alpino Corpus (simplified)':
+                _simplify_tags(nltk.corpus.alpino.tagged_sents),
+            'Hindi: Indian Languages Corpus':
+                lambda: nltk.corpus.indian.tagged_sents(files='hindi.pos'),
+            'Hindi: Indian Languages Corpus (simplified)':
+                _simplify_tags(lambda: nltk.corpus.indian.tagged_sents(files='hindi.pos')),
+            'Portuguese: Floresta Corpus (Portugal)':
+                nltk.corpus.floresta.tagged_sents,
+            'Portuguese: Floresta Corpus (Portugal, simplified)':
+                _simplify_tags(nltk.corpus.floresta.tagged_sents),
+            'Portuguese: MAC-MORPHO Corpus (Brazil)':
+                nltk.corpus.mac_morpho.tagged_sents,
+            'Portuguese: MAC-MORPHO Corpus (Brazil, simplified)':
+                _simplify_tags(nltk.corpus.mac_morpho.tagged_sents),
+            'Spanish: CESS-ESP Corpus (simplified)':
+                _simplify_tags(nltk.corpus.cess_esp.tagged_sents),
+           }
+
+class CategorySearchView(object):
+    _BACKGROUND_COLOUR='#FFF' #white
     
     #Colour of highlighted results
-    _HIGHLIGHT_COLOUR='#F00'#red
+    _HIGHLIGHT_COLOUR='#F00' #red
     _HIGHLIGHT_TAG='HL_TAG'
     
     #Percentage of text left of the scrollbar position
-    _PERCENTAGE_LEFT_TEXT=0.20
+    _FRACTION_LEFT_TEXT=0.20
     
     #Number of characters before the position of search item
     _CHAR_BEFORE=75
@@ -48,7 +103,7 @@ class CategorySearchView:
         
     def _init_top(self, top):
         top.geometry('700x500+50+50')
-        top.title('Concordance Search Demo')
+        top.title('NLTK Concordance Search')
         top.bind('<Control-q>', self.destroy)
         
     def _init_widgets(self, parent):
@@ -117,13 +172,13 @@ class CategorySearchView:
         self.top.bind(ERROR_LOADING_CORPUS_EVENT, self.handle_error_loading_corpus)
         
     def handle_error_loading_corpus(self, event):
-        self.status['text'] = 'Error in loading ' + self.var.get() + ' corpus'
+        self.status['text'] = 'Error in loading ' + self.var.get()
         self.unfreeze_editable()
         self.clear_all()
         self.freeze_editable()
         
     def handle_corpus_loaded(self, event):
-        self.status['text'] = self.var.get() + ' corpus is loaded'
+        self.status['text'] = self.var.get() + ' is loaded'
         self.unfreeze_editable()
         self.clear_all()
         self.query_box.focus_set()
@@ -134,7 +189,7 @@ class CategorySearchView:
         if len(self.model.results) == 0:
             self.status['text'] = 'No results found for ' + self.model.query
         self.unfreeze_editable()
-        self.results_box.xview_moveto(self._PERCENTAGE_LEFT_TEXT)
+        self.results_box.xview_moveto(self._FRACTION_LEFT_TEXT)
 
     def handle_search_error(self, event):
         self.status['text'] = 'Error in query ' + self.model.query
@@ -146,7 +201,7 @@ class CategorySearchView:
 
     def load_corpus(self, selection):
         if self.model.selected_corpus != selection:
-            self.status['text'] = 'Loading ' + selection + ' corpus...'
+            self.status['text'] = 'Loading ' + selection + '...'
             self.freeze_editable()
             self.model.load_corpus(selection)
 
@@ -158,27 +213,29 @@ class CategorySearchView:
         self.freeze_editable()
         self.model.search(query)
         
+
     def write_results(self, results):
         self.results_box['state'] = 'normal'
         row = 1
         for each in results:
-            sent = each[0].strip()
+            sent, pos1, pos2 = each[0].strip(), each[1], each[2]
             if len(sent) != 0:
-            	pos1 = each[1]
-            	pos2 = each[2]
-            	if len(sent) < self._CHAR_BEFORE:
-            		sent, pos1, pos2 = self._pad(sent, pos1, pos2)
-                self.results_box.insert(str(row) + '.0', sent[each[1]-self._CHAR_BEFORE:pos1+self._CHAR_AFTER] + '\n')
-                self.results_box.tag_add(self._HIGHLIGHT_TAG, str(row) + '.' + str(self._CHAR_BEFORE), str(row) + '.' + str(each[2] - each[1] + self._CHAR_BEFORE))
+                if (pos1 < self._CHAR_BEFORE):
+                    sent, pos1, pos2 = self.pad(sent, pos1, pos2)
+                self.results_box.insert(str(row) + '.0',
+                    sent[pos1-self._CHAR_BEFORE:pos1+self._CHAR_AFTER] + '\n')
+                self.results_box.tag_add(self._HIGHLIGHT_TAG,
+                    str(row) + '.' + str(self._CHAR_BEFORE),
+                    str(row) + '.' + str(pos2 - pos1 + self._CHAR_BEFORE))
                 row += 1
         self.results_box['state'] = 'disabled'
-                
-    def _pad(self, sent, start, end):
-    	if len(sent) >= self._CHAR_BEFORE:
-    		return sent, start, end
-    	topad = self._CHAR_BEFORE - start
-    	sent = ''.join([' '] * topad) + sent
-    	return sent, start + topad, end + topad
+
+    def pad(self, sent, hstart, hend):
+        if hstart >= self._CHAR_BEFORE:
+            return sent, hstart, hend
+        d = self._CHAR_BEFORE - hstart
+        sent = ''.join([' '] * d) + sent
+        return sent, hstart + d, hend + d
     
     def destroy(self, *e):
         if self.top is None: return
@@ -212,15 +269,11 @@ class CategorySearchView:
         if in_idle(): return
         self.top.mainloop(*args, **kwargs)
         
-class CategorySearchModel:
+class CategorySearchModel(object):
     def __init__(self):
         self.listeners = []
-        self._BROWN_CORPUS = 'Brown'
-        self.CORPORA = {self._BROWN_CORPUS:nltk.corpus.brown , 
-                        'Indian':nltk.corpus.indian,
-                        'YCOE':nltk.corpus.ycoe, 
-                        'Treebank':nltk.corpus.treebank}
-        self.DEFAULT_CORPUS = self._BROWN_CORPUS
+        self.CORPORA = _CORPORA
+        self.DEFAULT_CORPUS = _DEFAULT
         self.selected_corpus = None
         self.reset_query()
         self.reset_results()
@@ -229,6 +282,7 @@ class CategorySearchModel:
         copy = []
         copy.extend(self.CORPORA.keys())
         copy.remove(self.DEFAULT_CORPUS)
+        copy.sort()
         return copy
     
     def load_corpus(self, name):
@@ -264,7 +318,7 @@ class CategorySearchModel:
             
         def run(self):
             try:
-                ts = self.model.CORPORA[self.name].tagged_sents()
+                ts = self.model.CORPORA[self.name]()
                 self.model.tagged_sents = [join(w+'/'+t for (w,t) in sent) for sent in ts]
                 self.model.notify_listeners(CORPUS_LOADED_EVENT)
             except:
