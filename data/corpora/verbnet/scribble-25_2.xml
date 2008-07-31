@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE VNCLASS SYSTEM "vn_class-3.dtd">
+<VNCLASS ID="scribble-25.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="vn_schema-3.xsd">
+    <MEMBERS>
+        <MEMBER name="carve" wn="carve%2:35:02"/>
+        <MEMBER name="chalk" wn="chalk%2:36:00"/>
+        <MEMBER name="charcoal" wn="charcoal%2:36:00"/>
+        <MEMBER name="copy" wn="copy%2:36:05 copy%2:36:01"/>
+        <MEMBER name="crayon" wn="crayon%2:36:00"/>
+        <MEMBER name="doodle" wn="doodle%2:36:00"/>
+        <MEMBER name="draw" wn="draw%2:31:00 draw%2:36:00 draw%2:36:02"/>
+        <MEMBER name="forge" wn="forge%2:36:01"/>
+        <MEMBER name="ink" wn="ink%2:32:00"/>
+        <MEMBER name="misspell" wn=""/>
+        <MEMBER name="paint" wn="paint%2:36:01 paint%2:36:00"/>
+        <MEMBER name="pencil" wn="pencil%2:36:00"/>
+        <MEMBER name="plot" wn="plot%2:36:00"/>
+        <MEMBER name="print" wn="print%2:36:03"/>
+        <MEMBER name="scratch" wn=""/>
+        <MEMBER name="scrawl" wn="scrawl%2:36:00"/>
+        <MEMBER name="scribble" wn="scribble%2:32:00 scribble%2:36:00"/>
+        <MEMBER name="sketch" wn="sketch%2:36:00"/>
+        <MEMBER name="spell" wn=""/>
+        <MEMBER name="spraypaint" wn=""/>
+        <MEMBER name="stencil" wn="stencil%2:36:00"/>
+        <MEMBER name="trace" wn="trace%2:35:00 trace%2:36:00"/>
+        <MEMBER name="type" wn="type%2:32:00"/>
+        <MEMBER name="write" wn="write%2:36:01"/>
+    </MEMBERS>
+    <THEMROLES>
+        <!--In most predicates, such as location, Theme really means image_of(Theme)-->
+        <THEMROLE type="Agent">
+            <SELRESTRS logic="or">
+                <SELRESTR Value="+" type="animate"/>
+                <SELRESTR Value="+" type="machine"/>
+            </SELRESTRS>
+        </THEMROLE>
+        <THEMROLE type="Theme">
+            <SELRESTRS/>
+        </THEMROLE>
+        <THEMROLE type="Destination">
+            <SELRESTRS>
+                <SELRESTR Value="+" type="concrete"/>
+            </SELRESTRS>
+        </THEMROLE>
+    </THEMROLES>
+    <FRAMES>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.2" primary="Basic Transitive" secondary="" xtag="0.2"/>
+            <EXAMPLES>
+                <EXAMPLE>The jeweler printed the name.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Theme">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="created_image">
+                    <ARGS>
+                        <ARG type="Event" value="result(E)"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="location">
+                    <ARGS>
+                        <ARG type="Event" value="end(E)"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                        <ARG type="ThemRole" value="?Destination"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.2" primary="NP-PP" secondary="locative-PP" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>The jeweler printed the name on the ring.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Theme">
+                    <SYNRESTRS/>
+                </NP>
+                <PREP>
+                    <SELRESTRS logic="or">
+                        <SELRESTR Value="+" type="loc"/>
+                        <SELRESTR Value="+" type="dest_conf"/>
+                    </SELRESTRS>
+                </PREP>
+                <NP value="Destination">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="created_image">
+                    <ARGS>
+                        <ARG type="Event" value="result(E)"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="Prep">
+                    <ARGS>
+                        <ARG type="Event" value="end(E)"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                        <ARG type="ThemRole" value="Destination"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="1.2.1" primary="Unspecified Object" secondary="" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>Smith was scribbling.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="created_image">
+                    <ARGS>
+                        <ARG type="Event" value="result(E)"/>
+                        <ARG type="ThemRole" value="?Theme"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="location">
+                    <ARGS>
+                        <ARG type="Event" value="end(E)"/>
+                        <ARG type="ThemRole" value="?Theme"/>
+                        <ARG type="ThemRole" value="?Destination"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+    </FRAMES>
+    <SUBCLASSES/>
+</VNCLASS>
+

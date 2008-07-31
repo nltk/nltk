@@ -1,0 +1,407 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE VNCLASS SYSTEM "vn_class-3.dtd">
+<VNCLASS ID="spray-9.7" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="vn_schema-3.xsd">
+    <MEMBERS/>
+    <THEMROLES>
+        <THEMROLE type="Agent">
+            <SELRESTRS>
+                <SELRESTR Value="+" type="animate"/>
+            </SELRESTRS>
+        </THEMROLE>
+        <THEMROLE type="Theme">
+            <SELRESTRS/>
+        </THEMROLE>
+        <THEMROLE type="Destination">
+            <SELRESTRS>
+                <SELRESTR Value="+" type="location"/>
+                <SELRESTR Value="-" type="region"/>
+            </SELRESTRS>
+        </THEMROLE>
+    </THEMROLES>
+    <FRAMES>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.2" primary="NP-PP" secondary="locative-PP" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>Jessica loaded boxes into the wagon.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Theme">
+                    <SYNRESTRS/>
+                </NP>
+                <PREP>
+                    <SELRESTRS logic="or">
+                        <SELRESTR Value="+" type="loc"/>
+                        <SELRESTR Value="+" type="dest_conf"/>
+                    </SELRESTRS>
+                </PREP>
+                <NP value="Destination">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="motion">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                    </ARGS>
+                </PRED>
+                <PRED bool="!" value="Prep">
+                    <ARGS>
+                        <ARG type="Event" value="start(E)"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                        <ARG type="ThemRole" value="Destination"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="Prep">
+                    <ARGS>
+                        <ARG type="Event" value="end(E)"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                        <ARG type="ThemRole" value="Destination"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="2.3" primary="NP-PP" secondary="Location Object, with-PP" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>Jessica loaded the wagon with boxes.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Destination">
+                    <SYNRESTRS/>
+                </NP>
+                <PREP value="with">
+                    <SELRESTRS/>
+                </PREP>
+                <NP value="Theme">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="motion">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                    </ARGS>
+                </PRED>
+                <PRED bool="!" value="location">
+                    <ARGS>
+                        <ARG type="Event" value="start(E)"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                        <ARG type="ThemRole" value="Destination"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="location">
+                    <ARGS>
+                        <ARG type="Event" value="end(E)"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                        <ARG type="ThemRole" value="Destination"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.2" primary="Transitive" secondary="Theme Object" xtag="0.2"/>
+            <!-- frame not mentioned by Levin-->
+            <EXAMPLES>
+                <EXAMPLE>Jessica squirted water.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Theme">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="motion">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                    </ARGS>
+                </PRED>
+                <PRED bool="!" value="location">
+                    <ARGS>
+                        <ARG type="Event" value="start(E)"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                        <ARG type="ThemRole" value="?Destination"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="location">
+                    <ARGS>
+                        <ARG type="Event" value="end(E)"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                        <ARG type="ThemRole" value="?Destination"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.2" primary="Transitive" secondary="Destination Object" xtag="0.2"/>
+            <!-- frame not mentioned by Levin-->
+            <EXAMPLES>
+                <EXAMPLE>Jessica sprayed the wall.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Destination">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="motion">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="?Theme"/>
+                    </ARGS>
+                </PRED>
+                <PRED bool="!" value="location">
+                    <ARGS>
+                        <ARG type="Event" value="start(E)"/>
+                        <ARG type="ThemRole" value="?Theme"/>
+                        <ARG type="ThemRole" value="Destination"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="location">
+                    <ARGS>
+                        <ARG type="Event" value="end(E)"/>
+                        <ARG type="ThemRole" value="?Theme"/>
+                        <ARG type="ThemRole" value="Destination"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+    </FRAMES>
+    <SUBCLASSES>
+        <VNSUBCLASS ID="spray-9.7-1">
+            <MEMBERS>
+                <MEMBER name="brush" wn="brush%2:35:10"/>
+                <MEMBER name="drizzle" wn="drizzle%2:35:00"/>
+                <MEMBER name="hang" wn="hang%2:35:00 hang%2:36:00 hang%2:35:04"/>
+                <MEMBER name="plaster" wn="plaster%2:35:11 plaster%2:35:10 plaster%2:35:02 plaster%2:35:01 plaster%2:35:00 plaster%2:29:00"/>
+                <MEMBER name="pump" wn="pump%2:33:00 pump%2:40:00 pump%2:38:02"/>
+                <MEMBER name="rub" wn="rub%2:35:00"/>
+                <MEMBER name="scatter" wn="scatter%2:35:00 scatter%2:35:01 scatter%2:38:02"/>
+                <MEMBER name="seed" wn="seed%2:35:01"/>
+                <MEMBER name="sew" wn="sew%2:35:00"/>
+                <MEMBER name="shower" wn="shower%2:40:00 shower%2:35:00 shower%2:34:12"/>
+                <MEMBER name="smear" wn="smear%2:35:03 smear%2:35:01"/>
+                <MEMBER name="smudge" wn="smudge%2:35:00"/>
+                <MEMBER name="sow" wn="sow%2:35:00 sow%2:35:02"/>
+                <MEMBER name="spatter" wn="spatter%2:35:00 spatter%2:35:01"/>
+                <MEMBER name="splash" wn="splash%2:35:00 splash%2:35:04"/>
+                <MEMBER name="splatter" wn="splatter%2:35:00 splatter%2:35:01"/>
+                <MEMBER name="spray" wn="spray%2:35:01 spray%2:35:00 spray%2:35:03"/>
+                <MEMBER name="spread" wn="spread%2:42:00 spread%2:35:12 spread%2:35:13"/>
+                <MEMBER name="sprinkle" wn="sprinkle%2:35:01 sprinkle%2:30:00"/>
+                <MEMBER name="spritz" wn="spritz%2:35:02 spritz%2:35:00"/>
+                <MEMBER name="squirt" wn="squirt%2:35:00 squirt%2:35:10"/>
+                <MEMBER name="stick" wn="?stick%2:35:02 stick%2:35:04 stick%2:35:03"/>
+                <MEMBER name="strew" wn="strew%2:35:00 strew%2:35:04"/>
+                <MEMBER name="string" wn="string%2:35:02"/>
+                <MEMBER name="swab" wn="swab%2:35:00 swab%2:35:01"/>
+                <MEMBER name="?wash" wn="wash%2:35:10"/>
+                <MEMBER name="spurt" wn="spurt%2:38:01"/>
+                <MEMBER name="wrap" wn="wrap%2:35:00 wrap%2:35:02 wrap%2:35:01"/>
+            </MEMBERS>
+            <THEMROLES>
+                <THEMROLE type="Theme">
+                    <SELRESTRS logic="or">
+                        <SELRESTR Value="+" type="substance"/>
+                        <SELRESTRS>
+                            <SELRESTR Value="+" type="concrete"/>
+                            <SELRESTR Value="+" type="plural"/>
+                        </SELRESTRS>
+                    </SELRESTRS>
+                </THEMROLE>
+            </THEMROLES>
+            <FRAMES>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="" primary="PP" secondary="locative-PP" xtag=""/>
+                    <EXAMPLES>
+                        <EXAMPLE>Paint sprayed onto the wall.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Theme">
+                            <SYNRESTRS/>
+                        </NP>
+                        <VERB/>
+                        <PREP>
+                            <SELRESTRS logic="or">
+                                <SELRESTR Value="+" type="loc"/>
+                                <SELRESTR Value="+" type="dir"/>
+                                <SELRESTR Value="+" type="dest_conf"/>
+                            </SELRESTRS>
+                        </PREP>
+                        <NP value="Destination">
+                            <SYNRESTRS/>
+                        </NP>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="motion">
+                            <ARGS>
+                                <ARG type="Event" value="during(E)"/>
+                                <ARG type="ThemRole" value="Theme"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED bool="!" value="Prep">
+                            <ARGS>
+                                <ARG type="Event" value="start(E)"/>
+                                <ARG type="ThemRole" value="Theme"/>
+                                <ARG type="ThemRole" value="Destination"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="Prep">
+                            <ARGS>
+                                <ARG type="Event" value="end(E)"/>
+                                <ARG type="ThemRole" value="Theme"/>
+                                <ARG type="ThemRole" value="Destination"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="" primary="Conative" secondary="" xtag=""/>
+                    <EXAMPLES>
+                        <EXAMPLE>Jessica squirted water at me.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Agent">
+                            <SYNRESTRS/>
+                        </NP>
+                        <VERB/>
+                        <NP value="Theme">
+                            <SYNRESTRS/>
+                        </NP>
+                        <LEX value="at"/>
+                        <NP value="Destination">
+                            <SYNRESTRS/>
+                        </NP>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="motion">
+                            <ARGS>
+                                <ARG type="Event" value="during(E)"/>
+                                <ARG type="ThemRole" value="Theme"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED bool="!" value="location">
+                            <ARGS>
+                                <ARG type="Event" value="start(E)"/>
+                                <ARG type="ThemRole" value="Theme"/>
+                                <ARG type="ThemRole" value="Destination"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="cause">
+                            <ARGS>
+                                <ARG type="ThemRole" value="Agent"/>
+                                <ARG type="Event" value="E"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                    <!--describes an attempted action-->
+                </FRAME>
+            </FRAMES>
+            <SUBCLASSES>
+                <VNSUBCLASS ID="spray-9.7-1-1">
+                    <MEMBERS>
+                        <MEMBER name="cram" wn="cram%2:35:00 cram%2:35:10"/>
+                        <MEMBER name="crowd" wn="crowd%2:38:01 crowd%2:42:00"/>
+                        <MEMBER name="jam" wn="jam%2:38:00 jam%2:35:00 jam%2:35:02"/>
+                        <MEMBER name="pack" wn="pack%2:35:00 pack%2:38:02 pack%2:35:02 pack%2:38:00"/>
+                        <MEMBER name="pile" wn="pile%2:35:00"/>
+                    </MEMBERS>
+                    <THEMROLES/>
+                    <FRAMES>
+                        <FRAME>
+                            <DESCRIPTION descriptionNumber="" primary="Transitive" secondary="Theme Subject" xtag=""/>
+                            <EXAMPLES>
+                                <EXAMPLE>Crowds packed the stands.</EXAMPLE>
+                            </EXAMPLES>
+                            <SYNTAX>
+                                <NP value="Theme">
+                                    <SYNRESTRS/>
+                                </NP>
+                                <VERB/>
+                                <NP value="Destination">
+                                    <SYNRESTRS/>
+                                </NP>
+                            </SYNTAX>
+                            <SEMANTICS>
+                                <PRED value="location">
+                                    <ARGS>
+                                        <ARG type="Event" value="during(E)"/>
+                                        <ARG type="ThemRole" value="Theme"/>
+                                        <ARG type="ThemRole" value="Destination"/>
+                                    </ARGS>
+                                </PRED>
+                            </SEMANTICS>
+                            <!--Stative unlike the other instances here. describes situation which is result of Theme being put into a space.-->
+                        </FRAME>
+                    </FRAMES>
+                    <SUBCLASSES/>
+                </VNSUBCLASS>
+            </SUBCLASSES>
+        </VNSUBCLASS>
+        <VNSUBCLASS ID="spray-9.7-2">
+            <MEMBERS>
+                <MEMBER name="drape" wn="drape%2:35:00 drape%2:35:01 drape%2:35:10"/>
+                <MEMBER name="load" wn="load%2:35:01 load%2:35:10"/>
+                <MEMBER name="dab" wn="dab%2:35:01"/>
+                <MEMBER name="daub" wn="daub%2:35:01 daub%2:35:02 daub%2:35:00"/>
+                <MEMBER name="mound" wn="mound%2:36:00"/>
+                <MEMBER name="dust" wn="dust%2:35:03"/>
+                <MEMBER name="heap" wn="heap%2:35:00 heap%2:30:00"/>
+                <MEMBER name="slather" wn="slather%2:35:00"/>
+                <MEMBER name="stack" wn="stack%2:35:01 stack%2:35:00"/>
+                <MEMBER name="stock" wn="stock%2:40:02"/>
+            </MEMBERS>
+            <THEMROLES>
+                <THEMROLE type="Theme">
+                    <SELRESTRS>
+                        <SELRESTR Value="+" type="concrete"/>
+                    </SELRESTRS>
+                </THEMROLE>
+            </THEMROLES>
+            <FRAMES/>
+            <SUBCLASSES/>
+        </VNSUBCLASS>
+    </SUBCLASSES>
+</VNCLASS>

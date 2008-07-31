@@ -1,0 +1,697 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE VNCLASS SYSTEM "vn_class-3.dtd">
+<VNCLASS ID="mix-22.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="vn_schema-3.xsd">
+    <MEMBERS/>
+    <THEMROLES>
+        <!--Patient1 is interpreted as Figure, Patient2 as Ground
+        We are only dealing with the physical sense of the verbs-->
+        <THEMROLE type="Agent">
+            <SELRESTRS>
+                <SELRESTR Value="+" type="int_control"/>
+            </SELRESTRS>
+        </THEMROLE>
+        <THEMROLE type="Patient">
+            <SELRESTRS>
+                <SELRESTR Value="+" type="concrete"/>
+            </SELRESTRS>
+        </THEMROLE>
+        <THEMROLE type="Patient1">
+            <SELRESTRS>
+                <SELRESTR Value="+" type="concrete"/>
+            </SELRESTRS>
+        </THEMROLE>
+        <THEMROLE type="Patient2">
+            <SELRESTRS>
+                <SELRESTR Value="+" type="concrete"/>
+            </SELRESTRS>
+        </THEMROLE>
+    </THEMROLES>
+    <FRAMES/>
+    <SUBCLASSES>
+        <VNSUBCLASS ID="mix-22.1-1">
+            <MEMBERS>
+                <!--physical, change of integrity of Patients (but note alternate interpretation when both Patients are plural and countable - "mixed eggs and marbles")-->
+                <MEMBER name="cream" wn="cream%2:35:00"/>
+            </MEMBERS>
+            <THEMROLES/>
+            <FRAMES>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="2.5.1" primary="NP-PP" secondary="with-PP" xtag=""/>
+                    <EXAMPLES>
+                        <EXAMPLE>Herman mixed the eggs with the cream.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Agent">
+                            <SYNRESTRS/>
+                        </NP>
+                        <VERB/>
+                        <NP value="Patient1">
+                            <SYNRESTRS/>
+                        </NP>
+                        <PREP value="with into to">
+                            <SELRESTRS/>
+                        </PREP>
+                        <NP value="Patient2">
+                            <SYNRESTRS/>
+                        </NP>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="cause">
+                            <ARGS>
+                                <ARG type="ThemRole" value="Agent"/>
+                                <ARG type="Event" value="E"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="degradation_material_integrity">
+                            <ARGS>
+                                <ARG type="Event" value="result(E)"/>
+                                <ARG type="ThemRole" value="Patient1"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="degradation_material_integrity">
+                            <ARGS>
+                                <ARG type="Event" value="result(E)"/>
+                                <ARG type="ThemRole" value="Patient2"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="mingled">
+                            <ARGS>
+                                <ARG type="Event" value="result(E)"/>
+                                <ARG type="Constant" value="physical"/>
+                                <ARG type="ThemRole" value="Patient1"/>
+                                <ARG type="ThemRole" value="Patient2"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="2.5.1" primary="Simple Reciprocal Transitive" secondary="" xtag=""/>
+                    <EXAMPLES>
+                        <EXAMPLE>Herman mixed the eggs.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Agent">
+                            <SYNRESTRS/>
+                        </NP>
+                        <VERB/>
+                        <NP value="Patient">
+                            <SYNRESTRS>
+                                <SYNRESTR Value="+" type="plural"/>
+                            </SYNRESTRS>
+                        </NP>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="cause">
+                            <ARGS>
+                                <ARG type="ThemRole" value="Agent"/>
+                                <ARG type="Event" value="E"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="degradation_material_integrity">
+                            <ARGS>
+                                <ARG type="Event" value="result(E)"/>
+                                <ARG type="ThemRole" value="Patient_i"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="degradation_material_integrity">
+                            <ARGS>
+                                <ARG type="Event" value="result(E)"/>
+                                <ARG type="ThemRole" value="Patient_j"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="mingled">
+                            <ARGS>
+                                <ARG type="Event" value="result(E)"/>
+                                <ARG type="Constant" value="physical"/>
+                                <ARG type="ThemRole" value="Patient_i"/>
+                                <ARG type="ThemRole" value="Patient_j"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="2.5.2" primary="Together Reciprocal Alternation Transitive" secondary="" xtag=""/>
+                    <EXAMPLES>
+                        <EXAMPLE>Herman mixed the eggs and the cream together.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Agent">
+                            <SYNRESTRS/>
+                        </NP>
+                        <VERB/>
+                        <NP value="Patient">
+                            <SYNRESTRS>
+                                <SYNRESTR Value="+" type="plural"/>
+                            </SYNRESTRS>
+                        </NP>
+                        <LEX value="together"/>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="cause">
+                            <ARGS>
+                                <ARG type="ThemRole" value="Agent"/>
+                                <ARG type="Event" value="E"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="degradation_material_integrity">
+                            <ARGS>
+                                <ARG type="Event" value="result(E)"/>
+                                <ARG type="ThemRole" value="Patient_i"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="degradation_material_integrity">
+                            <ARGS>
+                                <ARG type="Event" value="result(E)"/>
+                                <ARG type="ThemRole" value="Patient_j"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="mingled">
+                            <ARGS>
+                                <ARG type="Event" value="result(E)"/>
+                                <ARG type="Constant" value="physical"/>
+                                <ARG type="ThemRole" value="Patient_i"/>
+                                <ARG type="ThemRole" value="Patient_j"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="2.5.4" primary="PP" secondary="with-PP" xtag=""/>
+                    <EXAMPLES>
+                        <EXAMPLE>The eggs mixed with the cream.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Patient1">
+                            <SYNRESTRS/>
+                        </NP>
+                        <VERB/>
+                        <PREP value="with into to">
+                            <SELRESTRS/>
+                        </PREP>
+                        <NP value="Patient2">
+                            <SYNRESTRS/>
+                        </NP>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="degradation_material_integrity">
+                            <ARGS>
+                                <ARG type="Event" value="result(E)"/>
+                                <ARG type="ThemRole" value="Patient1"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="degradation_material_integrity">
+                            <ARGS>
+                                <ARG type="Event" value="result(E)"/>
+                                <ARG type="ThemRole" value="Patient2"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="mingled">
+                            <ARGS>
+                                <ARG type="Event" value="result(E)"/>
+                                <ARG type="Constant" value="physical"/>
+                                <ARG type="ThemRole" value="Patient1"/>
+                                <ARG type="ThemRole" value="Patient2"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="1.1.1" primary="Middle Construction" secondary="" xtag=""/>
+                    <EXAMPLES>
+                        <EXAMPLE>Eggs mix well with cream.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Patient1">
+                            <SYNRESTRS/>
+                        </NP>
+                        <VERB/>
+                        <ADV/>
+                        <PREP value="with into to">
+                            <SELRESTRS/>
+                        </PREP>
+                        <NP value="Patient2">
+                            <SYNRESTRS/>
+                        </NP>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="property">
+                            <ARGS>
+                                <ARG type="ThemRole" value="Patient1+Patient2"/>
+                                <ARG type="VerbSpecific" value="Prop"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="Adv">
+                            <ARGS>
+                                <ARG type="VerbSpecific" value="Prop"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="1.1.1" primary="Middle Construction" secondary="" xtag=""/>
+                    <EXAMPLES>
+                        <EXAMPLE>Eggs mix well.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Patient">
+                            <SYNRESTRS>
+                                <SYNRESTR Value="+" type="plural"/>
+                            </SYNRESTRS>
+                        </NP>
+                        <VERB/>
+                        <ADV/>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="property">
+                            <ARGS>
+                                <ARG type="ThemRole" value="Patient_i+Patient_j"/>
+                                <ARG type="VerbSpecific" value="Prop"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="Adv">
+                            <ARGS>
+                                <ARG type="VerbSpecific" value="Prop"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="1.1.1" primary="Middle Construction" secondary="" xtag=""/>
+                    <EXAMPLES>
+                        <EXAMPLE>Eggs and cream mix well together.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Patient">
+                            <SYNRESTRS>
+                                <SYNRESTR Value="+" type="plural"/>
+                            </SYNRESTRS>
+                        </NP>
+                        <VERB/>
+                        <ADV/>
+                        <LEX value="together"/>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="property">
+                            <ARGS>
+                                <ARG type="ThemRole" value="Patient_i+Patient_j"/>
+                                <ARG type="VerbSpecific" value="Prop"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="Adv">
+                            <ARGS>
+                                <ARG type="VerbSpecific" value="Prop"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+            </FRAMES>
+            <SUBCLASSES>
+                <VNSUBCLASS ID="mix-22.1-1-1">
+                    <MEMBERS>
+                        <!--physical, change of integrity of Patients (but note alternate interpretation when both Patients are plural and countable - "mixed eggs and marbles")-->
+                        <MEMBER name="blend" wn="blend%2:35:00"/>
+                        <MEMBER name="combine" wn="combine%2:35:01"/>
+                        <MEMBER name="commingle" wn="?commingle%2:35:00"/>
+                        <MEMBER name="fuse" wn="fuse%2:30:00"/>
+                        <MEMBER name="merge" wn="merge%2:30:01"/>
+                        <MEMBER name="mingle" wn="mingle%2:35:00"/>
+                        <MEMBER name="mix" wn="mix%2:30:00 mix%2:30:01"/>
+                    </MEMBERS>
+                    <THEMROLES/>
+                    <FRAMES>
+                        <FRAME>
+                            <DESCRIPTION descriptionNumber="2.5.4" primary="Simple Reciprocal Intransitive" secondary="" xtag=""/>
+                            <EXAMPLES>
+                                <EXAMPLE>The eggs and the cream mixed.</EXAMPLE>
+                            </EXAMPLES>
+                            <SYNTAX>
+                                <NP value="Patient">
+                                    <SYNRESTRS>
+                                        <SYNRESTR Value="+" type="plural"/>
+                                    </SYNRESTRS>
+                                </NP>
+                                <VERB/>
+                            </SYNTAX>
+                            <SEMANTICS>
+                                <PRED value="degradation_material_integrity">
+                                    <ARGS>
+                                        <ARG type="Event" value="result(E)"/>
+                                        <ARG type="ThemRole" value="Patient_i"/>
+                                    </ARGS>
+                                </PRED>
+                                <PRED value="degradation_material_integrity">
+                                    <ARGS>
+                                        <ARG type="Event" value="result(E)"/>
+                                        <ARG type="ThemRole" value="Patient_j"/>
+                                    </ARGS>
+                                </PRED>
+                                <PRED value="mingled">
+                                    <ARGS>
+                                        <ARG type="Event" value="result(E)"/>
+                                        <ARG type="Constant" value="physical"/>
+                                        <ARG type="ThemRole" value="Patient_i"/>
+                                        <ARG type="ThemRole" value="Patient_j"/>
+                                    </ARGS>
+                                </PRED>
+                            </SEMANTICS>
+                        </FRAME>
+                        <FRAME>
+                            <DESCRIPTION descriptionNumber="2.5.5" primary="Together Reciprocal Alternation Intransitive" secondary="" xtag=""/>
+                            <EXAMPLES>
+                                <EXAMPLE>The eggs and the cream mixed together.</EXAMPLE>
+                            </EXAMPLES>
+                            <SYNTAX>
+                                <NP value="Patient">
+                                    <SYNRESTRS>
+                                        <SYNRESTR Value="+" type="plural"/>
+                                    </SYNRESTRS>
+                                </NP>
+                                <VERB/>
+                                <LEX value="together"/>
+                            </SYNTAX>
+                            <SEMANTICS>
+                                <PRED value="degradation_material_integrity">
+                                    <ARGS>
+                                        <ARG type="Event" value="result(E)"/>
+                                        <ARG type="ThemRole" value="Patient_i"/>
+                                    </ARGS>
+                                </PRED>
+                                <PRED value="degradation_material_integrity">
+                                    <ARGS>
+                                        <ARG type="Event" value="result(E)"/>
+                                        <ARG type="ThemRole" value="Patient_j"/>
+                                    </ARGS>
+                                </PRED>
+                                <PRED value="mingled">
+                                    <ARGS>
+                                        <ARG type="Event" value="result(E)"/>
+                                        <ARG type="Constant" value="physical"/>
+                                        <ARG type="ThemRole" value="Patient_i"/>
+                                        <ARG type="ThemRole" value="Patient_j"/>
+                                    </ARGS>
+                                </PRED>
+                            </SEMANTICS>
+                        </FRAME>
+                    </FRAMES>
+                    <SUBCLASSES/>
+                </VNSUBCLASS>
+            </SUBCLASSES>
+        </VNSUBCLASS>
+        <VNSUBCLASS ID="mix-22.1-2">
+            <MEMBERS>
+                <!--physical, no change of integrity of Patients-->
+                <MEMBER name="add" wn="add%2:30:00"/>
+            </MEMBERS>
+            <THEMROLES/>
+            <FRAMES>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="2.5.1" primary="NP-PP" secondary="to-PP" xtag=""/>
+                    <EXAMPLES>
+                        <EXAMPLE>Herman added a computer to the network.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Agent">
+                            <SYNRESTRS/>
+                        </NP>
+                        <VERB/>
+                        <NP value="Patient1">
+                            <SYNRESTRS/>
+                        </NP>
+                        <PREP value="with into to">
+                            <SELRESTRS/>
+                        </PREP>
+                        <NP value="Patient2">
+                            <SYNRESTRS/>
+                        </NP>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="cause">
+                            <ARGS>
+                                <ARG type="ThemRole" value="Agent"/>
+                                <ARG type="Event" value="E"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="together">
+                            <ARGS>
+                                <ARG type="Event" value="end(E)"/>
+                                <ARG type="Constant" value="physical"/>
+                                <ARG type="ThemRole" value="Patient1"/>
+                                <ARG type="ThemRole" value="Patient2"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="2.5.1" primary="Simple Reciprocal Transitive" secondary="" xtag=""/>
+                    <EXAMPLES>
+                        <EXAMPLE>Herman connected the computers.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Agent">
+                            <SYNRESTRS/>
+                        </NP>
+                        <VERB/>
+                        <NP value="Patient">
+                            <SYNRESTRS>
+                                <SYNRESTR Value="+" type="plural"/>
+                            </SYNRESTRS>
+                        </NP>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="cause">
+                            <ARGS>
+                                <ARG type="ThemRole" value="Agent"/>
+                                <ARG type="Event" value="E"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="together">
+                            <ARGS>
+                                <ARG type="Event" value="end(E)"/>
+                                <ARG type="Constant" value="physical"/>
+                                <ARG type="ThemRole" value="Patient_i"/>
+                                <ARG type="ThemRole" value="Patient_j"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="2.5.2" primary="Together Reciprocal Alternation Transitive" secondary="" xtag=""/>
+                    <EXAMPLES>
+                        <EXAMPLE>Herman connected the computers together.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Agent">
+                            <SYNRESTRS/>
+                        </NP>
+                        <VERB/>
+                        <NP value="Patient">
+                            <SYNRESTRS>
+                                <SYNRESTR Value="+" type="plural"/>
+                            </SYNRESTRS>
+                        </NP>
+                        <LEX value="together"/>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="cause">
+                            <ARGS>
+                                <ARG type="ThemRole" value="Agent"/>
+                                <ARG type="Event" value="E"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="together">
+                            <ARGS>
+                                <ARG type="Event" value="end(E)"/>
+                                <ARG type="Constant" value="physical"/>
+                                <ARG type="ThemRole" value="Patient_i"/>
+                                <ARG type="ThemRole" value="Patient_j"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="1.1.1" primary="Middle Construction" secondary="" xtag=""/>
+                    <EXAMPLES>
+                        <EXAMPLE>This computer will connect well to the network.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Patient1">
+                            <SYNRESTRS/>
+                        </NP>
+                        <VERB/>
+                        <ADV/>
+                        <PREP value="with into to">
+                            <SELRESTRS/>
+                        </PREP>
+                        <NP value="Patient2">
+                            <SYNRESTRS/>
+                        </NP>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="property">
+                            <ARGS>
+                                <ARG type="ThemRole" value="Patient1+Patient2"/>
+                                <ARG type="VerbSpecific" value="Prop"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="Adv">
+                            <ARGS>
+                                <ARG type="VerbSpecific" value="Prop"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="1.1.1" primary="Middle Construction" secondary="" xtag=""/>
+                    <EXAMPLES>
+                        <EXAMPLE>These computers connected well.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Patient">
+                            <SYNRESTRS>
+                                <SYNRESTR Value="+" type="plural"/>
+                            </SYNRESTRS>
+                        </NP>
+                        <VERB/>
+                        <ADV/>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="property">
+                            <ARGS>
+                                <ARG type="ThemRole" value="Patient_i+Patient_j"/>
+                                <ARG type="VerbSpecific" value="Prop"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="Adv">
+                            <ARGS>
+                                <ARG type="VerbSpecific" value="Prop"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="1.1.1" primary="Middle Construction" secondary="" xtag=""/>
+                    <EXAMPLES>
+                        <EXAMPLE>These computers connected well together.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Patient">
+                            <SYNRESTRS>
+                                <SYNRESTR Value="+" type="plural"/>
+                            </SYNRESTRS>
+                        </NP>
+                        <VERB/>
+                        <ADV/>
+                        <LEX value="together"/>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="property">
+                            <ARGS>
+                                <ARG type="ThemRole" value="Patient_i+Patient_j"/>
+                                <ARG type="VerbSpecific" value="Prop"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="Adv">
+                            <ARGS>
+                                <ARG type="VerbSpecific" value="Prop"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+            </FRAMES>
+            <SUBCLASSES>
+                <VNSUBCLASS ID="mix-22.1-2-1">
+                    <MEMBERS>
+                        <MEMBER name="concatenate" wn="concatenate%2:30:00"/>
+                        <MEMBER name="connect" wn="connect%2:35:00"/>
+                        <MEMBER name="join" wn="join%2:35:01 join%2:35:00 join%2:42:01"/>
+                        <MEMBER name="link" wn="link%2:35:00 link%2:42:01 link%2:35:02"/>
+                        <MEMBER name="pool" wn="pool%2:40:00"/>
+                        <MEMBER name="network" wn="network%2:32:00"/>
+                    </MEMBERS>
+                    <THEMROLES/>
+                    <FRAMES>
+                        <FRAME>
+                            <DESCRIPTION descriptionNumber="2.5.4" primary="PP" secondary="with/into/to-PP" xtag=""/>
+                            <EXAMPLES>
+                                <EXAMPLE>My computer connected to his computer.</EXAMPLE>
+                            </EXAMPLES>
+                            <SYNTAX>
+                                <NP value="Patient1">
+                                    <SYNRESTRS/>
+                                </NP>
+                                <VERB/>
+                                <PREP value="with into to">
+                                    <SELRESTRS/>
+                                </PREP>
+                                <NP value="Patient2">
+                                    <SYNRESTRS/>
+                                </NP>
+                            </SYNTAX>
+                            <SEMANTICS>
+                                <PRED value="together">
+                                    <ARGS>
+                                        <ARG type="Event" value="end(E)"/>
+                                        <ARG type="Constant" value="physical"/>
+                                        <ARG type="ThemRole" value="Patient1"/>
+                                        <ARG type="ThemRole" value="Patient2"/>
+                                    </ARGS>
+                                </PRED>
+                            </SEMANTICS>
+                        </FRAME>
+                        <FRAME>
+                            <DESCRIPTION descriptionNumber="2.5.4" primary="Simple Reciprocal Intransitive" secondary="" xtag=""/>
+                            <EXAMPLES>
+                                <EXAMPLE>Our computers connected.</EXAMPLE>
+                            </EXAMPLES>
+                            <SYNTAX>
+                                <NP value="Patient">
+                                    <SYNRESTRS>
+                                        <SYNRESTR Value="+" type="plural"/>
+                                    </SYNRESTRS>
+                                </NP>
+                                <VERB/>
+                            </SYNTAX>
+                            <SEMANTICS>
+                                <PRED value="together">
+                                    <ARGS>
+                                        <ARG type="Event" value="end(E)"/>
+                                        <ARG type="Constant" value="physical"/>
+                                        <ARG type="ThemRole" value="Patient_i"/>
+                                        <ARG type="ThemRole" value="Patient_j"/>
+                                    </ARGS>
+                                </PRED>
+                            </SEMANTICS>
+                        </FRAME>
+                        <FRAME>
+                            <DESCRIPTION descriptionNumber="2.5.5" primary="Together Reciprocal Alternation Intransitive" secondary="" xtag=""/>
+                            <EXAMPLES>
+                                <EXAMPLE>Our computers connected together.</EXAMPLE>
+                            </EXAMPLES>
+                            <SYNTAX>
+                                <NP value="Patient">
+                                    <SYNRESTRS>
+                                        <SYNRESTR Value="+" type="plural"/>
+                                    </SYNRESTRS>
+                                </NP>
+                                <VERB/>
+                                <LEX value="together"/>
+                            </SYNTAX>
+                            <SEMANTICS>
+                                <PRED value="together">
+                                    <ARGS>
+                                        <ARG type="Event" value="end(E)"/>
+                                        <ARG type="Constant" value="physical"/>
+                                        <ARG type="ThemRole" value="Patient_i"/>
+                                        <ARG type="ThemRole" value="Patient_j"/>
+                                    </ARGS>
+                                </PRED>
+                            </SEMANTICS>
+                        </FRAME>
+                    </FRAMES>
+                    <SUBCLASSES/>
+                </VNSUBCLASS>
+            </SUBCLASSES>
+        </VNSUBCLASS>
+    </SUBCLASSES>
+</VNCLASS>
+

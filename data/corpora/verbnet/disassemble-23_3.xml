@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE VNCLASS SYSTEM "vn_class-3.dtd">
+<VNCLASS ID="disassemble-23.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="vn_schema-3.xsd">
+    <MEMBERS>
+        <MEMBER name="detach" wn="detach%2:35:01"/>
+        <MEMBER name="disassemble" wn="disassemble%2:36:00"/>
+        <MEMBER name="disconnect" wn="disconnect%2:35:03 ?disconnect%2:35:00"/>
+        <MEMBER name="dismantle" wn=""/>
+        <MEMBER name="dismount" wn=""/>
+        <MEMBER name="partition" wn="partition%2:30:00"/>
+        <MEMBER name="sift" wn="sift%2:35:00"/>
+        <MEMBER name="sunder" wn="sunder%2:30:00"/>
+        <MEMBER name="unbolt" wn="unbolt%2:35:00"/>
+        <MEMBER name="unbuckle" wn="unbuckle%2:35:00"/>
+        <MEMBER name="unbutton" wn="unbutton%2:35:00"/>
+        <MEMBER name="unchain" wn="unchain%2:35:00"/>
+        <MEMBER name="unclamp" wn=""/>
+        <MEMBER name="unclasp" wn=""/>
+        <MEMBER name="unclip" wn="unclip%2:35:00"/>
+        <MEMBER name="unfasten" wn="unfasten%2:35:01 unfasten%2:35:00"/>
+        <MEMBER name="unfix" wn=""/>
+        <MEMBER name="unglue" wn=""/>
+        <MEMBER name="unhinge" wn="unhinge%2:30:00"/>
+        <MEMBER name="unhitch" wn="unhitch%2:35:00"/>
+        <MEMBER name="unhook" wn="unhook%2:35:00"/>
+        <MEMBER name="unlace" wn=""/>
+        <MEMBER name="unlatch" wn=""/>
+        <MEMBER name="unlock" wn="unlock%2:35:00 unlock%2:30:00"/>
+        <MEMBER name="unleash" wn="unleash%2:35:01"/>
+        <MEMBER name="unpeg" wn=""/>
+        <MEMBER name="unpin" wn="unpin%2:35:00"/>
+        <MEMBER name="unscrew" wn="unscrew%2:35:00 unscrew%2:35:01"/>
+        <MEMBER name="unshackle" wn=""/>
+        <MEMBER name="unstaple" wn="unstaple%2:35:00"/>
+        <MEMBER name="unstitch" wn=""/>
+        <MEMBER name="untie" wn="untie%2:35:00"/>
+        <MEMBER name="unzip" wn="unzip%2:35:00"/>
+    </MEMBERS>
+    <THEMROLES>
+        <!--Patient1 is interpreted as Figure, Patient2 as Ground-->
+        <THEMROLE type="Agent">
+            <SELRESTRS logic="or">
+                <SELRESTR Value="+" type="animate"/>
+                <SELRESTR Value="+" type="machine"/>
+            </SELRESTRS>
+        </THEMROLE>
+        <THEMROLE type="Patient">
+            <SELRESTRS>
+                <SELRESTR Value="+" type="concrete"/>
+            </SELRESTRS>
+        </THEMROLE>
+        <THEMROLE type="Patient1">
+            <SELRESTRS>
+                <SELRESTR Value="+" type="concrete"/>
+            </SELRESTRS>
+        </THEMROLE>
+        <THEMROLE type="Patient2">
+            <SELRESTRS>
+                <SELRESTR Value="+" type="concrete"/>
+            </SELRESTRS>
+        </THEMROLE>
+    </THEMROLES>
+    <FRAMES>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.2" primary="Basic Transitive" secondary="" xtag="0.2"/>
+            <EXAMPLES>
+                <EXAMPLE>I unscrewed the handle.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Patient1">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="together">
+                    <ARGS>
+                        <ARG type="Event" value="start(E)"/>
+                        <ARG type="Constant" value="physical"/>
+                        <ARG type="ThemRole" value="Patient1"/>
+                        <ARG type="ThemRole" value="?Patient2"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="apart">
+                    <ARGS>
+                        <ARG type="Event" value="result(E)"/>
+                        <ARG type="Constant" value="physical"/>
+                        <ARG type="ThemRole" value="Patient1"/>
+                        <ARG type="ThemRole" value="?Patient2"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.2" primary="NP-PP" secondary="Source-PP" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>I unscrewed the handle from the box.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Patient1">
+                    <SYNRESTRS/>
+                </NP>
+                <PREP value="from">
+                    <SELRESTRS/>
+                </PREP>
+                <NP value="Patient2">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="together">
+                    <ARGS>
+                        <ARG type="Event" value="start(E)"/>
+                        <ARG type="Constant" value="physical"/>
+                        <ARG type="ThemRole" value="Patient1"/>
+                        <ARG type="ThemRole" value="Patient2"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="apart">
+                    <ARGS>
+                        <ARG type="Event" value="result(E)"/>
+                        <ARG type="Constant" value="physical"/>
+                        <ARG type="ThemRole" value="Patient1"/>
+                        <ARG type="ThemRole" value="Patient2"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="1.1.1" primary="Middle Construction" secondary="" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>That new handle unscrews easily.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Patient">
+                    <SYNRESTRS>
+                        <SYNRESTR Value="+" type="plural"/>
+                    </SYNRESTRS>
+                </NP>
+                <VERB/>
+                <ADV/>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="property">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Patient"/>
+                        <ARG type="VerbSpecific" value="Prop"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="Adv">
+                    <ARGS>
+                        <ARG type="VerbSpecific" value="Prop"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+    </FRAMES>
+    <SUBCLASSES/>
+</VNCLASS>

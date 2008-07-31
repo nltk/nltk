@@ -1,0 +1,549 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE VNCLASS SYSTEM "vn_class-3.dtd">
+<VNCLASS ID="spank-18.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="vn_schema-3.xsd">
+    <MEMBERS>
+        <MEMBER name="belt" wn="belt%2:35:00"/>
+        <MEMBER name="birch" wn="birch%2:35:00"/>
+        <MEMBER name="bludgeon" wn="bludgeon%2:35:00"/>
+        <MEMBER name="bonk" wn="bonk%2:35:00"/>
+        <MEMBER name="brain" wn="brain%2:35:01"/>
+        <MEMBER name="cane" wn="cane%2:35:00"/>
+        <MEMBER name="clobber" wn="clobber%2:35:01"/>
+        <MEMBER name="club" wn="club%2:35:00"/>
+        <MEMBER name="conk" wn="conk%2:35:00"/>
+        <MEMBER name="cosh" wn="cosh%2:35:00"/>
+        <MEMBER name="cudgel" wn="cudgel%2:35:00"/>
+        <MEMBER name="cuff" wn="cuff%2:35:00"/>
+        <MEMBER name="flog" wn="flog%2:35:00 flog%2:35:01"/>
+        <MEMBER name="knife" wn="knife%2:35:00"/>
+        <MEMBER name="k.o." wn=""/>
+        <MEMBER name="paddle" wn="paddle%2:35:07"/>
+        <MEMBER name="paddywhack" wn=""/>
+        <MEMBER name="pummel" wn="pummel%2:35:00"/>
+        <MEMBER name="sock" wn="sock%2:35:00"/>
+        <MEMBER name="spank" wn="spank%2:35:00"/>
+        <MEMBER name="stabb" wn=""/>
+        <MEMBER name="strap" wn="strap%2:35:01"/>
+        <MEMBER name="thrash" wn="thrash%2:35:00 thrash%2:35:01"/>
+        <MEMBER name="truncheon" wn=""/>
+        <MEMBER name="wallop" wn="wallop%2:35:00"/>
+        <MEMBER name="whip" wn="whip%2:35:00 whip%2:35:02"/>
+        <MEMBER name="whisk" wn="whisk%2:35:01"/>
+    </MEMBERS>
+    <THEMROLES>
+        <THEMROLE type="Agent">
+            <SELRESTRS>
+                <SELRESTR Value="+" type="int_control"/>
+            </SELRESTRS>
+        </THEMROLE>
+        <THEMROLE type="Patient">
+            <SELRESTRS>
+                <SELRESTR Value="+" type="concrete"/>
+            </SELRESTRS>
+        </THEMROLE>
+        <THEMROLE type="Instrument">
+            <SELRESTRS>
+                <SELRESTR Value="+" type="concrete"/>
+            </SELRESTRS>
+        </THEMROLE>
+    </THEMROLES>
+    <FRAMES>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.2" primary="Basic Transitive" secondary="" xtag="0.2"/>
+            <EXAMPLES>
+                <EXAMPLE>Paula spanked the child.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Patient">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="manner">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="Constant" value="directedmotion"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                    </ARGS>
+                </PRED>
+                <PRED bool="!" value="contact">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="ThemRole" value="Patient"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="manner">
+                    <ARGS>
+                        <ARG type="Event" value="end(E)"/>
+                        <ARG type="Constant" value="forceful"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="contact">
+                    <ARGS>
+                        <ARG type="Event" value="end(E)"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="ThemRole" value="Patient"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.2" primary="NP-PP" secondary="Instrument-PP" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>Paula spanked the child with her right hand.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Patient">
+                    <SYNRESTRS/>
+                </NP>
+                <PREP value="with">
+                    <SELRESTRS/>
+                </PREP>
+                <NP value="Instrument">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="manner">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="Constant" value="directedmotion"/>
+                        <ARG type="ThemRole" value="Instrument"/>
+                    </ARGS>
+                </PRED>
+                <PRED bool="!" value="contact">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Instrument"/>
+                        <ARG type="ThemRole" value="Patient"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="manner">
+                    <ARGS>
+                        <ARG type="Event" value="end(E)"/>
+                        <ARG type="Constant" value="forceful"/>
+                        <ARG type="ThemRole" value="Instrument"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="contact">
+                    <ARGS>
+                        <ARG type="Event" value="end(E)"/>
+                        <ARG type="ThemRole" value="Instrument"/>
+                        <ARG type="ThemRole" value="Patient"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="use">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="ThemRole" value="Instrument"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.4" primary="NP-ADJP" secondary="Resultative" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>They spanked him dead.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Patient">
+                    <SYNRESTRS/>
+                </NP>
+                <ADJ/>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="manner">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="Constant" value="directedmotion"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                    </ARGS>
+                </PRED>
+                <PRED bool="!" value="contact">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="ThemRole" value="Patient"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="manner">
+                    <ARGS>
+                        <ARG type="Event" value="end(E)"/>
+                        <ARG type="Constant" value="forceful"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="contact">
+                    <ARGS>
+                        <ARG type="Event" value="end(E)"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="ThemRole" value="Patient"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="Pred">
+                    <ARGS>
+                        <ARG type="Event" value="result(E)"/>
+                        <ARG type="ThemRole" value="Patient"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.4" primary="NP-PP" secondary="Result-PP" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>They spanked him to death.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Patient">
+                    <SYNRESTRS/>
+                </NP>
+                <PREP value="to into">
+                    <SELRESTRS/>
+                </PREP>
+                <NP value="Oblique">
+                    <SELRESTRS>
+                        <SELRESTR Value="+" type="state"/>
+                    </SELRESTRS>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="manner">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="Constant" value="directedmotion"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                    </ARGS>
+                </PRED>
+                <PRED bool="!" value="contact">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="ThemRole" value="Patient"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="manner">
+                    <ARGS>
+                        <ARG type="Event" value="end(E)"/>
+                        <ARG type="Constant" value="forceful"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="contact">
+                    <ARGS>
+                        <ARG type="Event" value="end(E)"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="ThemRole" value="Patient"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="Pred">
+                    <ARGS>
+                        <ARG type="Event" value="result(E)"/>
+                        <ARG type="ThemRole" value="Patient"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.4" primary="NP-PP-PP" secondary="Result-PP, Instrument-PP" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>They spanked him to death with a bat.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Patient">
+                    <SYNRESTRS/>
+                </NP>
+                <PREP value="to into">
+                    <SELRESTRS/>
+                </PREP>
+                <NP value="Oblique">
+                    <SELRESTRS>
+                        <SELRESTR Value="+" type="state"/>
+                    </SELRESTRS>
+                </NP>
+                <PREP value="with">
+                    <SELRESTRS/>
+                </PREP>
+                <NP value="Instrument">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="manner">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="Constant" value="directedmotion"/>
+                        <ARG type="ThemRole" value="Instrument"/>
+                    </ARGS>
+                </PRED>
+                <PRED bool="!" value="contact">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Instrument"/>
+                        <ARG type="ThemRole" value="Patient"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="manner">
+                    <ARGS>
+                        <ARG type="Event" value="end(E)"/>
+                        <ARG type="Constant" value="forceful"/>
+                        <ARG type="ThemRole" value="Instrument"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="contact">
+                    <ARGS>
+                        <ARG type="Event" value="end(E)"/>
+                        <ARG type="ThemRole" value="Instrument"/>
+                        <ARG type="ThemRole" value="Patient"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="Pred">
+                    <ARGS>
+                        <ARG type="Event" value="result(E)"/>
+                        <ARG type="ThemRole" value="Patient"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="use">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="ThemRole" value="Instrument"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="" primary="NP-PP" secondary="Body-part-PP" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>Paula spanked the naughty child on the back.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Patient">
+                    <SYNRESTRS/>
+                </NP>
+                <PREP>
+                    <SELRESTRS>
+                        <SELRESTR Value="+" type="loc"/>
+                    </SELRESTRS>
+                </PREP>
+                <NP value="Oblique">
+                    <SELRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="manner">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="Constant" value="directedmotion"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                    </ARGS>
+                </PRED>
+                <PRED bool="!" value="contact">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="ThemRole" value="Patient"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="manner">
+                    <ARGS>
+                        <ARG type="Event" value="end(E)"/>
+                        <ARG type="Constant" value="forceful"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="contact">
+                    <ARGS>
+                        <ARG type="Event" value="end(E)"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="ThemRole" value="Patient"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="" primary="NP-PP-PP" secondary="Body-part-PP Instrument-PP" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>Paula spanked the naught child on the back with a paddle.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Patient">
+                    <SYNRESTRS/>
+                </NP>
+                <PREP>
+                    <SELRESTRS>
+                        <SELRESTR Value="+" type="loc"/>
+                    </SELRESTRS>
+                </PREP>
+                <NP value="Oblique">
+                    <SELRESTRS/>
+                </NP>
+                <PREP value="with">
+                    <SELRESTRS/>
+                </PREP>
+                <NP value="Instrument">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="manner">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="Constant" value="directedmotion"/>
+                        <ARG type="ThemRole" value="Instrument"/>
+                    </ARGS>
+                </PRED>
+                <PRED bool="!" value="contact">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Instrument"/>
+                        <ARG type="ThemRole" value="Patient"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="manner">
+                    <ARGS>
+                        <ARG type="Event" value="end(E)"/>
+                        <ARG type="Constant" value="forceful"/>
+                        <ARG type="ThemRole" value="Instrument"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="contact">
+                    <ARGS>
+                        <ARG type="Event" value="end(E)"/>
+                        <ARG type="ThemRole" value="Instrument"/>
+                        <ARG type="ThemRole" value="Patient"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="" primary="NP-PP" secondary="Body Part Object" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>Paula spanked the naughty child's back.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Patient">
+                    <SYNRESTRS>
+                        <SYNRESTR Value="+" type="genitive"/>
+                    </SYNRESTRS>
+                </NP>
+                <NP value="Oblique">
+                    <SELRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="manner">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="Constant" value="directedmotion"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                    </ARGS>
+                </PRED>
+                <PRED bool="!" value="contact">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="ThemRole" value="Patient"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="manner">
+                    <ARGS>
+                        <ARG type="Event" value="end(E)"/>
+                        <ARG type="Constant" value="forceful"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="contact">
+                    <ARGS>
+                        <ARG type="Event" value="end(E)"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="ThemRole" value="Patient"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+    </FRAMES>
+    <SUBCLASSES/>
+</VNCLASS>

@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE VNCLASS SYSTEM "vn_class-3.dtd">
+<VNCLASS ID="dub-29.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="vn_schema-3.xsd">
+    <MEMBERS>
+        <MEMBER name="call" wn="call%2:32:02 call%2:32:00 call%2:41:14"/>
+        <MEMBER name="decree" wn="decree%2:31:00"/>
+        <MEMBER name="dub" wn="dub%2:32:00"/>
+        <MEMBER name="make" wn="make%2:30:00 make%2:41:03"/>
+        <MEMBER name="pronounce" wn="pronounce%2:32:01 pronounce%2:32:00"/>
+        <MEMBER name="rule" wn="rule%2:31:00"/>
+        <MEMBER name="stamp" wn="stamp%2:39:00"/>
+        <MEMBER name="term" wn="term%2:32:00"/>
+        <MEMBER name="vote" wn="vote%2:41:12"/>
+    </MEMBERS>
+    <THEMROLES>
+        <THEMROLE type="Agent">
+            <SELRESTRS logic="or">
+                <SELRESTR Value="+" type="animate"/>
+                <SELRESTR Value="+" type="organization"/>
+            </SELRESTRS>
+        </THEMROLE>
+        <THEMROLE type="Theme">
+            <SELRESTRS logic="or">
+                <SELRESTR Value="+" type="concrete"/>
+                <SELRESTR Value="+" type="organization"/>
+            </SELRESTRS>
+        </THEMROLE>
+        <THEMROLE type="Predicate">
+            <SELRESTRS/>
+        </THEMROLE>
+    </THEMROLES>
+    <FRAMES>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.2" primary="NP-NP" secondary="" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>The captain named the ship Seafarer.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Theme">
+                    <SYNRESTRS/>
+                </NP>
+                <NP value="Predicate">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="designated">
+                    <ARGS>
+                        <ARG type="Event" value="result(E)"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                        <ARG type="ThemRole" value="Predicate"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="" primary="Basic Transitive" secondary="" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>The captain baptized the ship.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Theme">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="designated">
+                    <ARGS>
+                        <ARG type="Event" value="result(E)"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                        <ARG type="ThemRole" value="?Predicate"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+    </FRAMES>
+    <SUBCLASSES>
+        <VNSUBCLASS ID="dub-29.3-1">
+            <MEMBERS>
+                <MEMBER name="anoint" wn="anoint%2:29:00"/>
+                <MEMBER name="baptize" wn="baptize%2:32:00"/>
+                <MEMBER name="brand" wn="brand%2:32:00"/>
+                <MEMBER name="christen" wn="christen%2:32:00"/>
+                <MEMBER name="consecrate" wn="consecrate%2:41:00 consecrate%2:32:01 consecrate%2:32:00"/>
+                <MEMBER name="crown" wn="crown%2:41:00"/>
+                <MEMBER name="label" wn="label%2:32:01"/>
+                <MEMBER name="name" wn="name%2:32:03 name%2:41:01 name%2:41:00"/>
+                <MEMBER name="nickname" wn="nickname%2:32:00"/>
+                <MEMBER name="style" wn="style%2:32:00"/>
+            </MEMBERS>
+            <THEMROLES/>
+            <FRAMES>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="" primary="NP-PP" secondary="after-PP" xtag=""/>
+                    <EXAMPLES>
+                        <EXAMPLE>They named it after Ira Cohen.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Agent">
+                            <SYNRESTRS/>
+                        </NP>
+                        <VERB/>
+                        <NP value="Theme">
+                            <SYNRESTRS/>
+                        </NP>
+                        <PREP value="after">
+                            <SELRESTRS/>
+                        </PREP>
+                        <NP value="Predicate">
+                            <SYNRESTRS/>
+                        </NP>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="designated">
+                            <ARGS>
+                                <ARG type="Event" value="result(E)"/>
+                                <ARG type="ThemRole" value="Theme"/>
+                                <ARG type="ThemRole" value="Predicate"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="cause">
+                            <ARGS>
+                                <ARG type="ThemRole" value="Agent"/>
+                                <ARG type="Event" value="E"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="" primary="NP-PP" secondary="for-PP" xtag=""/>
+                    <EXAMPLES>
+                        <EXAMPLE>They named it for Charlie Brown.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Agent">
+                            <SYNRESTRS/>
+                        </NP>
+                        <VERB/>
+                        <NP value="Theme">
+                            <SYNRESTRS/>
+                        </NP>
+                        <PREP value="for">
+                            <SELRESTRS/>
+                        </PREP>
+                        <NP value="Predicate">
+                            <SYNRESTRS/>
+                        </NP>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="designated">
+                            <ARGS>
+                                <ARG type="Event" value="result(E)"/>
+                                <ARG type="ThemRole" value="Theme"/>
+                                <ARG type="ThemRole" value="Predicate"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="cause">
+                            <ARGS>
+                                <ARG type="ThemRole" value="Agent"/>
+                                <ARG type="Event" value="E"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+            </FRAMES>
+            <SUBCLASSES/>
+        </VNSUBCLASS>
+    </SUBCLASSES>
+</VNCLASS>

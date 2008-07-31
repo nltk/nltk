@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE VNCLASS SYSTEM "vn_class-3.dtd">
+<VNCLASS ID="fulfilling-13.4.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="vn_schema-3.xsd">
+    <MEMBERS>
+        <MEMBER name="issue" wn="issue%2:41:00"/>
+        <MEMBER name="leave" wn="?leave%2:31:05 leave%2:40:01 leave%2:40:02"/>
+        <MEMBER name="present" wn="present%2:39:00 present%2:32:00 present%2:32:06"/>
+        <MEMBER name="trust" wn="trust%2:40:00"/>
+    </MEMBERS>
+    <THEMROLES>
+        <THEMROLE type="Agent">
+            <SELRESTRS logic="or">
+                <SELRESTR Value="+" type="animate"/>
+                <SELRESTR Value="+" type="organization"/>
+            </SELRESTRS>
+        </THEMROLE>
+        <THEMROLE type="Theme">
+            <SELRESTRS/>
+        </THEMROLE>
+        <THEMROLE type="Recipient">
+            <SELRESTRS logic="or">
+                <SELRESTR Value="+" type="animate"/>
+                <SELRESTR Value="+" type="organization"/>
+            </SELRESTRS>
+        </THEMROLE>
+    </THEMROLES>
+    <FRAMES>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.2" primary="NP-PP" secondary="Recipient-PP" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>Brown presented a plaque to Jones.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Theme">
+                    <SYNRESTRS/>
+                </NP>
+                <PREP value="to">
+                    <SELRESTRS/>
+                </PREP>
+                <NP value="Recipient">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="has_possession">
+                    <ARGS>
+                        <ARG type="Event" value="start(E)"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="has_possession">
+                    <ARGS>
+                        <ARG type="Event" value="end(E)"/>
+                        <ARG type="ThemRole" value="Recipient"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="transfer">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="2.6" primary="Fulfilling Alternation" secondary="" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>Brown presented Jones with a plaque.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Recipient">
+                    <SYNRESTRS/>
+                </NP>
+                <PREP value="with">
+                    <SELRESTRS/>
+                </PREP>
+                <NP value="Theme">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="has_possession">
+                    <ARGS>
+                        <ARG type="Event" value="start(E)"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="has_possession">
+                    <ARGS>
+                        <ARG type="Event" value="end(E)"/>
+                        <ARG type="ThemRole" value="Recipient"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="transfer">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.2" primary="Transitive" secondary="" xtag="0.2"/>
+            <EXAMPLES>
+                <EXAMPLE>Brown presented the plaque.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Theme">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="has_possession">
+                    <ARGS>
+                        <ARG type="Event" value="start(E)"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="has_possession">
+                    <ARGS>
+                        <ARG type="Event" value="end(E)"/>
+                        <ARG type="ThemRole" value="?Recipient"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="transfer">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+    </FRAMES>
+    <SUBCLASSES>
+        <VNSUBCLASS ID="fulfilling-13.4.1-1">
+            <MEMBERS>
+                <MEMBER name="credit" wn="credit%2:31:01 credit%2:31:12"/>
+                <MEMBER name="entrust" wn="entrust%2:40:00 entrust%2:40:01"/>
+                <MEMBER name="furnish" wn="furnish%2:40:00"/>
+                <MEMBER name="serve" wn="serve%2:34:01 serve%2:34:00 serve%2:35:00"/>
+                <MEMBER name="supply" wn="supply%2:40:00 supply%2:41:00 supply%2:34:00"/>
+            </MEMBERS>
+            <THEMROLES/>
+            <FRAMES>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="" primary="Basic Transitive" secondary="" xtag=""/>
+                    <EXAMPLES>
+                        <EXAMPLE>Hess supplied its customers.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Agent">
+                            <SYNRESTRS/>
+                        </NP>
+                        <VERB/>
+                        <NP value="Recipient">
+                            <SYNRESTRS/>
+                        </NP>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="has_possession">
+                            <ARGS>
+                                <ARG type="Event" value="start(E)"/>
+                                <ARG type="ThemRole" value="Agent"/>
+                                <ARG type="ThemRole" value="?Theme"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="has_possession">
+                            <ARGS>
+                                <ARG type="Event" value="end(E)"/>
+                                <ARG type="ThemRole" value="Recipient"/>
+                                <ARG type="ThemRole" value="?Theme"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="transfer">
+                            <ARGS>
+                                <ARG type="Event" value="during(E)"/>
+                                <ARG type="ThemRole" value="?Theme"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="cause">
+                            <ARGS>
+                                <ARG type="ThemRole" value="Agent"/>
+                                <ARG type="Event" value="E"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+            </FRAMES>
+            <SUBCLASSES/>
+        </VNSUBCLASS>
+        <VNSUBCLASS ID="fulfilling-13.4.1-2">
+            <MEMBERS>
+                <MEMBER name="provide" wn="provide%2:40:00 provide%2:34:00"/>
+            </MEMBERS>
+            <THEMROLES>
+                <THEMROLE type="Recipient">
+                    <SELRESTRS logic="or">
+                        <SELRESTR Value="+" type="abstract"/>
+                        <SELRESTR Value="+" type="animate"/>
+                    </SELRESTRS>
+                </THEMROLE>
+                <THEMROLE type="Agent">
+                    <SELRESTRS logic="or">
+                        <SELRESTR Value="+" type="abstract"/>
+                        <SELRESTR Value="+" type="animate"/>
+                    </SELRESTRS>
+                </THEMROLE>
+            </THEMROLES>
+            <FRAMES>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="" primary="PP" secondary="for-PP" xtag=""/>
+                    <EXAMPLES>
+                        <EXAMPLE>Hess provides for its customers.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Agent">
+                            <SYNRESTRS/>
+                        </NP>
+                        <VERB/>
+                        <PREP value="for">
+                            <SELRESTRS/>
+                        </PREP>
+                        <NP value="Recipient">
+                            <SYNRESTRS/>
+                        </NP>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="has_possession">
+                            <ARGS>
+                                <ARG type="Event" value="start(E)"/>
+                                <ARG type="ThemRole" value="Agent"/>
+                                <ARG type="ThemRole" value="?Theme"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="has_possession">
+                            <ARGS>
+                                <ARG type="Event" value="end(E)"/>
+                                <ARG type="ThemRole" value="Recipient"/>
+                                <ARG type="ThemRole" value="?Theme"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="transfer">
+                            <ARGS>
+                                <ARG type="Event" value="during(E)"/>
+                                <ARG type="ThemRole" value="?Theme"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="cause">
+                            <ARGS>
+                                <ARG type="ThemRole" value="Agent"/>
+                                <ARG type="Event" value="E"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+            </FRAMES>
+            <SUBCLASSES/>
+        </VNSUBCLASS>
+    </SUBCLASSES>
+</VNCLASS>

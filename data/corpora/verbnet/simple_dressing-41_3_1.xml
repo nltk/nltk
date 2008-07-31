@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE VNCLASS SYSTEM "vn_class-3.dtd">
+<VNCLASS ID="simple_dressing-41.3.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="vn_schema-3.xsd">
+    <MEMBERS>
+        <MEMBER name="don" wn="don%2:29:00"/>
+        <MEMBER name="doff" wn="doff%2:35:00"/>
+        <MEMBER name="wear" wn="wear%2:29:00 wear%2:29:04 wear%2:29:01"/>
+    </MEMBERS>
+    <THEMROLES>
+        <THEMROLE type="Agent">
+            <SELRESTRS>
+                <SELRESTR Value="+" type="animate"/>
+            </SELRESTRS>
+        </THEMROLE>
+        <THEMROLE type="Theme">
+            <SELRESTRS>
+                <SELRESTR Value="+" type="garment"/>
+            </SELRESTRS>
+        </THEMROLE>
+    </THEMROLES>
+    <FRAMES>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.2" primary="Basic Transitive" secondary="" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>She always wears purple dresses.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Theme">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="wear">
+                    <ARGS>
+                        <ARG type="Event" value="E"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+    </FRAMES>
+    <SUBCLASSES/>
+</VNCLASS>

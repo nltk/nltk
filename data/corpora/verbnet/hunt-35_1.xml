@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE VNCLASS SYSTEM "vn_class-3.dtd">
+<VNCLASS ID="hunt-35.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="vn_schema-3.xsd">
+    <MEMBERS>
+        <MEMBER name="dig" wn="dig%2:35:00 dig%2:35:02"/>
+        <MEMBER name="feel" wn="feel%2:39:10 feel%2:40:00"/>
+        <MEMBER name="fish" wn="fish%2:33:00"/>
+        <MEMBER name="hunt" wn="hunt%2:33:00 hunt%2:38:00 hunt%2:35:03 hunt%2:33:02"/>
+        <MEMBER name="mine" wn="mine%2:34:00"/>
+        <MEMBER name="poach" wn="poach%2:33:00"/>
+        <MEMBER name="scrounge" wn="scrounge%2:40:00"/>
+    </MEMBERS>
+    <THEMROLES>
+        <THEMROLE type="Agent">
+            <SELRESTRS>
+                <SELRESTR Value="+" type="animate"/>
+            </SELRESTRS>
+        </THEMROLE>
+        <THEMROLE type="Location">
+            <SELRESTRS/>
+        </THEMROLE>
+        <THEMROLE type="Theme">
+            <SELRESTRS/>
+        </THEMROLE>
+    </THEMROLES>
+    <FRAMES>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.2" primary="NP-PP" secondary="Theme-PP" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>I hunted the woods for game.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Location">
+                    <SYNRESTRS/>
+                </NP>
+                <PREP value="for">
+                    <SELRESTRS/>
+                </PREP>
+                <NP value="Theme">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="search">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="ThemRole" value="Location"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.1" primary="PP-PP" secondary="Theme-PP Location-PP" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>I hunted for game in the woods.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <PREP value="for">
+                    <SELRESTRS/>
+                </PREP>
+                <NP value="Theme">
+                    <SYNRESTRS/>
+                </NP>
+                <PREP>
+                    <SELRESTRS>
+                        <SELRESTR Value="+" type="loc"/>
+                    </SELRESTRS>
+                </PREP>
+                <NP value="Location">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="search">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="ThemRole" value="Location"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.1" primary="PP" secondary="Location-PP Theme-PP" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>I hunted in the woods for game.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <PREP>
+                    <SELRESTRS>
+                        <SELRESTR Value="+" type="loc"/>
+                    </SELRESTRS>
+                </PREP>
+                <NP value="Location">
+                    <SYNRESTRS/>
+                </NP>
+                <PREP value="for">
+                    <SELRESTRS/>
+                </PREP>
+                <NP value="Theme">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="search">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="ThemRole" value="Location"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.2" primary="NP-PP" secondary="Location-PP" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>I hunted game in the woods.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Theme">
+                    <SYNRESTRS/>
+                </NP>
+                <PREP>
+                    <SELRESTRS>
+                        <SELRESTR Value="+" type="loc"/>
+                    </SELRESTRS>
+                </PREP>
+                <NP value="Location">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="search">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="ThemRole" value="Location"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="1.2.1" primary="Basic Transitive" secondary="" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>I was hunting game.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Theme">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="search">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="ThemRole" value="?Location"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="1.2.1" primary="Basic Intransitive" secondary="" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>I was hunting.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="search">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="ThemRole" value="?Location"/>
+                        <ARG type="ThemRole" value="?Theme"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+    </FRAMES>
+    <SUBCLASSES/>
+</VNCLASS>

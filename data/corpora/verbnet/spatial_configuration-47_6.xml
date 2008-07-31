@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE VNCLASS SYSTEM "vn_class-3.dtd">
+<VNCLASS ID="spatial_configuration-47.6" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="vn_schema-3.xsd">
+    <MEMBERS>
+        <!--individual verbs specify what spatial position Pos refers to
+        "straddle" also takes a transitive ("John straddled the horse")-->
+        <MEMBER name="balance" wn="balance%2:42:00 balance%2:42:01"/>
+        <MEMBER name="bend" wn="bend%2:38:00 bend%2:35:00"/>
+        <MEMBER name="bow" wn="bow%2:32:00 bow%2:38:00 bow%2:38:01"/>
+        <MEMBER name="crouch" wn="crouch%2:35:00"/>
+        <MEMBER name="dangle" wn="dangle%2:42:00 dangle%2:35:00"/>
+        <MEMBER name="droop" wn=""/>
+        <MEMBER name="flop" wn=""/>
+        <MEMBER name="fly" wn="fly%2:39:00"/>
+        <MEMBER name="hang" wn="hang%2:35:03 hang%2:35:00 hang%2:35:02 hang%2:42:01 hang%2:36:00 hang%2:35:05 hang%2:35:04 hang%2:30:00"/>
+        <MEMBER name="hover" wn="hover%2:38:00 hover%2:38:01"/>
+        <MEMBER name="jut" wn="jut%2:42:00"/>
+        <MEMBER name="kneel" wn="kneel%2:35:00"/>
+        <MEMBER name="lean" wn="lean%2:38:00 lean%2:35:00"/>
+        <MEMBER name="lie" wn="lie%2:42:00 lie%2:35:00"/>
+        <MEMBER name="loll" wn="loll%2:42:01"/>
+        <MEMBER name="loom" wn="loom%2:42:06"/>
+        <MEMBER name="lounge" wn="lounge%2:35:00"/>
+        <MEMBER name="nestle" wn="nestle%2:35:00"/>
+        <MEMBER name="open" wn="open%2:35:00"/>
+        <MEMBER name="perch" wn="perch%2:35:00 perch%2:35:10"/>
+        <MEMBER name="plop" wn="plop%2:35:00"/>
+        <MEMBER name="project" wn="project%2:42:00 project%2:36:03"/>
+        <MEMBER name="protrude" wn="protrude%2:42:00"/>
+        <MEMBER name="recline" wn="recline%2:38:00 recline%2:35:00"/>
+        <MEMBER name="repose" wn=""/>
+        <MEMBER name="rest" wn="rest%2:35:00 rest%2:42:12 rest%2:35:04 rest%2:35:01"/>
+        <MEMBER name="rise" wn="rise%2:42:00"/>
+        <MEMBER name="roost" wn="roost%2:35:00"/>
+        <MEMBER name="sag" wn="sag%2:38:00 sag%2:38:01"/>
+        <MEMBER name="sit" wn="sit%2:35:00 sit%2:42:00"/>
+        <MEMBER name="slope" wn="slope%2:38:00"/>
+        <MEMBER name="slouch" wn=""/>
+        <MEMBER name="slump" wn=""/>
+        <MEMBER name="sprawl" wn="sprawl%2:35:00"/>
+        <MEMBER name="squat" wn="squat%2:35:00 squat%2:42:01"/>
+        <MEMBER name="stand" wn="stand%2:35:00 stand%2:35:01"/>
+        <MEMBER name="stoop" wn="stoop%2:38:05"/>
+        <MEMBER name="straddle" wn="straddle%2:42:01"/>
+        <MEMBER name="swing" wn="swing%2:38:02 swing%2:42:00"/>
+        <MEMBER name="tilt" wn="tilt%2:38:00"/>
+        <MEMBER name="tower" wn="tower%2:42:00"/>
+    </MEMBERS>
+    <THEMROLES>
+        <THEMROLE type="Agent">
+            <SELRESTRS>
+                <SELRESTR Value="+" type="animate"/>
+            </SELRESTRS>
+        </THEMROLE>
+        <THEMROLE type="Theme">
+            <SELRESTRS>
+                <SELRESTR Value="+" type="concrete"/>
+            </SELRESTRS>
+        </THEMROLE>
+        <THEMROLE type="Location">
+            <SELRESTRS>
+                <SELRESTR Value="+" type="location"/>
+                <SELRESTR Value="-" type="region"/>
+            </SELRESTRS>
+        </THEMROLE>
+    </THEMROLES>
+    <FRAMES>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.1" primary="Basic Intransitive" secondary="" xtag="0.1"/>
+            <EXAMPLES>
+                <EXAMPLE>John slouched.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Theme">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="position">
+                    <ARGS>
+                        <ARG type="Event" value="E"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                        <ARG type="VerbSpecific" value="Pos"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+            <!--some verbs-->
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.1" primary="PP" secondary="locative-PP" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>The statue stood on the corner.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Theme">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <PREP>
+                    <SELRESTRS>
+                        <SELRESTR Value="+" type="loc"/>
+                    </SELRESTRS>
+                </PREP>
+                <NP value="Location">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="position">
+                    <ARGS>
+                        <ARG type="Event" value="E"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                        <ARG type="VerbSpecific" value="Pos"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="Prep">
+                    <ARGS>
+                        <ARG type="Event" value="E"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                        <ARG type="ThemRole" value="Location"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="6.1" primary="PP-NP" secondary="Expletive-there Subject" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>There stood on the corner a statue.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <LEX value="there"/>
+                <VERB/>
+                <PREP>
+                    <SELRESTRS>
+                        <SELRESTR Value="+" type="loc"/>
+                    </SELRESTRS>
+                </PREP>
+                <NP value="Location">
+                    <SYNRESTRS/>
+                </NP>
+                <NP value="Theme">
+                    <SYNRESTRS>
+                        <SYNRESTR Value="-" type="definite"/>
+                    </SYNRESTRS>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="position">
+                    <ARGS>
+                        <ARG type="Event" value="E"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                        <ARG type="VerbSpecific" value="Pos"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="Prep">
+                    <ARGS>
+                        <ARG type="Event" value="E"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                        <ARG type="ThemRole" value="Location"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="6.2" primary="Locative Inversion" secondary="" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>On the pedestal stood a statue.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <PREP>
+                    <SELRESTRS>
+                        <SELRESTR Value="+" type="loc"/>
+                    </SELRESTRS>
+                </PREP>
+                <NP value="Location">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Theme">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="position">
+                    <ARGS>
+                        <ARG type="Event" value="E"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                        <ARG type="VerbSpecific" value="Pos"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="Prep">
+                    <ARGS>
+                        <ARG type="Event" value="E"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                        <ARG type="ThemRole" value="Location"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="" primary="NP" secondary="Causative variant" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>They stood the statue on the pedestal.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Theme">
+                    <SYNRESTRS/>
+                </NP>
+                <PREP>
+                    <SELRESTRS>
+                        <SELRESTR Value="+" type="loc"/>
+                    </SELRESTRS>
+                </PREP>
+                <NP value="Location">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+                <PRED bool="!" value="position">
+                    <ARGS>
+                        <ARG type="Event" value="start(E)"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                        <ARG type="VerbSpecific" value="Pos"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="position">
+                    <ARGS>
+                        <ARG type="Event" value="end(E)"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                        <ARG type="VerbSpecific" value="Pos"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="Prep">
+                    <ARGS>
+                        <ARG type="Event" value="E"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                        <ARG type="ThemRole" value="Location"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+            <!--some verbs, cf. put_spatial-9.2-->
+        </FRAME>
+    </FRAMES>
+    <SUBCLASSES/>
+</VNCLASS>

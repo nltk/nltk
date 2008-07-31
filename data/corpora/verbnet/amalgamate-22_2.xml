@@ -1,0 +1,681 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE VNCLASS SYSTEM "vn_class-3.dtd">
+<VNCLASS ID="amalgamate-22.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="vn_schema-3.xsd">
+    <MEMBERS/>
+    <THEMROLES>
+        <!--Patient1 is interpreted as Figure, Patient2 as Ground
+        Selectional restriction on Patient1 is the same as on Patient2 (could be either concrete or abstract...)-->
+        <THEMROLE type="Agent">
+            <SELRESTRS logic="or">
+                <SELRESTR Value="+" type="animate"/>
+                <SELRESTR Value="+" type="machine"/>
+            </SELRESTRS>
+        </THEMROLE>
+        <THEMROLE type="Patient">
+            <SELRESTRS/>
+        </THEMROLE>
+        <THEMROLE type="Patient1">
+            <SELRESTRS/>
+        </THEMROLE>
+        <THEMROLE type="Patient2">
+            <SELRESTRS/>
+        </THEMROLE>
+    </THEMROLES>
+    <FRAMES>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="1.1.1" primary="Middle Construction" secondary="" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>Folk songs alternate well with pop songs.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Patient1">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <ADV/>
+                <PREP value="with">
+                    <SELRESTRS/>
+                </PREP>
+                <NP value="Patient2">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="property">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Patient1+Patient2"/>
+                        <ARG type="VerbSpecific" value="Prop"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="Adv">
+                    <ARGS>
+                        <ARG type="VerbSpecific" value="Prop"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="1.1.1" primary="Middle Construction" secondary="" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>The pieces interconnect easily.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Patient">
+                    <SYNRESTRS>
+                        <SYNRESTR Value="+" type="plural"/>
+                    </SYNRESTRS>
+                </NP>
+                <VERB/>
+                <ADV/>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="property">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Patient_i+Patient_j"/>
+                        <ARG type="VerbSpecific" value="Prop"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="Adv">
+                    <ARGS>
+                        <ARG type="VerbSpecific" value="Prop"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+    </FRAMES>
+    <SUBCLASSES>
+        <VNSUBCLASS ID="amalgamate-22.2-1">
+            <!--physical, change of integrity of Patients (but note alternate interpretation when both Patients are plural and countable - "mixed eggs and marbles")-->
+            <MEMBERS>
+                <MEMBER name="couple" wn=""/>
+                <MEMBER name="incorporate" wn="incorporate%2:30:00 incorporate%2:35:00"/>
+                <MEMBER name="integrate" wn="integrate%2:30:00 integrate%2:30:01"/>
+                <MEMBER name="match" wn=""/>
+                <MEMBER name="overlap" wn=""/>
+            </MEMBERS>
+            <THEMROLES>
+                <THEMROLE type="Patient1">
+                    <SELRESTRS>
+                        <SELRESTR Value="+" type="concrete"/>
+                    </SELRESTRS>
+                </THEMROLE>
+                <THEMROLE type="Patient2">
+                    <SELRESTRS>
+                        <SELRESTR Value="+" type="concrete"/>
+                    </SELRESTRS>
+                </THEMROLE>
+            </THEMROLES>
+            <FRAMES>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="2.5.1" primary="NP-PP" secondary="into/to/with-PP" xtag=""/>
+                    <EXAMPLES>
+                        <EXAMPLE>Diabetics can now incorporate sugar into their desserts.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Agent">
+                            <SYNRESTRS/>
+                        </NP>
+                        <VERB/>
+                        <NP value="Patient1">
+                            <SYNRESTRS/>
+                        </NP>
+                        <PREP value="into to with">
+                            <SELRESTRS/>
+                        </PREP>
+                        <NP value="Patient2">
+                            <SYNRESTRS/>
+                        </NP>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="cause">
+                            <ARGS>
+                                <ARG type="ThemRole" value="Agent"/>
+                                <ARG type="Event" value="E"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="degradation_material_integrity">
+                            <ARGS>
+                                <ARG type="Event" value="result(E)"/>
+                                <ARG type="ThemRole" value="Patient1"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="degradation_material_integrity">
+                            <ARGS>
+                                <ARG type="Event" value="result(E)"/>
+                                <ARG type="ThemRole" value="Patient2"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="mingled">
+                            <ARGS>
+                                <ARG type="Event" value="result(E)"/>
+                                <ARG type="Constant" value="physical"/>
+                                <ARG type="ThemRole" value="Patient1"/>
+                                <ARG type="ThemRole" value="Patient2"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="2.5.1" primary="Simple Reciprocal Transitive" secondary="" xtag=""/>
+                    <EXAMPLES>
+                        <EXAMPLE>A new firm will integrate their ice cream production lines.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Agent">
+                            <SYNRESTRS/>
+                        </NP>
+                        <VERB/>
+                        <NP value="Patient">
+                            <SYNRESTRS>
+                                <SYNRESTR Value="+" type="plural"/>
+                            </SYNRESTRS>
+                        </NP>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="cause">
+                            <ARGS>
+                                <ARG type="ThemRole" value="Agent"/>
+                                <ARG type="Event" value="E"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="degradation_material_integrity">
+                            <ARGS>
+                                <ARG type="Event" value="result(E)"/>
+                                <ARG type="ThemRole" value="Patient_i"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="degradation_material_integrity">
+                            <ARGS>
+                                <ARG type="Event" value="result(E)"/>
+                                <ARG type="ThemRole" value="Patient_j"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="mingled">
+                            <ARGS>
+                                <ARG type="Event" value="result(E)"/>
+                                <ARG type="Constant" value="physical"/>
+                                <ARG type="ThemRole" value="Patient_i"/>
+                                <ARG type="ThemRole" value="Patient_j"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="2.5.4" primary="PP" secondary="with-PP" xtag=""/>
+                    <EXAMPLES>
+                        <EXAMPLE>Ice cream integrates with desserts.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Patient1">
+                            <SYNRESTRS/>
+                        </NP>
+                        <VERB/>
+                        <PREP value="with">
+                            <SELRESTRS/>
+                        </PREP>
+                        <NP value="Patient2">
+                            <SYNRESTRS/>
+                        </NP>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="degradation_material_integrity">
+                            <ARGS>
+                                <ARG type="Event" value="result(E)"/>
+                                <ARG type="ThemRole" value="Patient1"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="degradation_material_integrity">
+                            <ARGS>
+                                <ARG type="Event" value="result(E)"/>
+                                <ARG type="ThemRole" value="Patient2"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="mingled">
+                            <ARGS>
+                                <ARG type="Event" value="result(E)"/>
+                                <ARG type="Constant" value="physical"/>
+                                <ARG type="ThemRole" value="Patient1"/>
+                                <ARG type="ThemRole" value="Patient2"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+            </FRAMES>
+            <SUBCLASSES>
+                <VNSUBCLASS ID="amalgamate-22.2-1-1">
+                    <!--physical, change of integrity of Patients (but note alternate interpretation when both Patients are plural and countable - "mixed eggs and marbles")-->
+                    <MEMBERS>
+                        <MEMBER name="amalgamate" wn="amalgamate%2:35:00"/>
+                        <MEMBER name="coalesce" wn="coalesce%2:30:00 coalesce%2:35:00"/>
+                        <MEMBER name="consolidate" wn="consolidate%2:30:00 consolidate%2:30:01 consolidate%2:30:04 consolidate%2:30:03"/>
+                        <MEMBER name="intermingle" wn="intermingle%2:35:00"/>
+                    </MEMBERS>
+                    <THEMROLES/>
+                    <FRAMES>
+                        <FRAME>
+                            <DESCRIPTION descriptionNumber="2.5.4" primary="Simple Reciprocal Intransitive" secondary="" xtag=""/>
+                            <EXAMPLES>
+                                <EXAMPLE>The yolks and the whites intermingled.</EXAMPLE>
+                            </EXAMPLES>
+                            <SYNTAX>
+                                <NP value="Patient">
+                                    <SYNRESTRS>
+                                        <SYNRESTR Value="+" type="plural"/>
+                                    </SYNRESTRS>
+                                </NP>
+                                <VERB/>
+                            </SYNTAX>
+                            <SEMANTICS>
+                                <PRED value="degradation_material_integrity">
+                                    <ARGS>
+                                        <ARG type="Event" value="result(E)"/>
+                                        <ARG type="ThemRole" value="Patient_i"/>
+                                    </ARGS>
+                                </PRED>
+                                <PRED value="degradation_material_integrity">
+                                    <ARGS>
+                                        <ARG type="Event" value="result(E)"/>
+                                        <ARG type="ThemRole" value="Patient_j"/>
+                                    </ARGS>
+                                </PRED>
+                                <PRED value="mingled">
+                                    <ARGS>
+                                        <ARG type="Event" value="result(E)"/>
+                                        <ARG type="Constant" value="physical"/>
+                                        <ARG type="ThemRole" value="Patient_i"/>
+                                        <ARG type="ThemRole" value="Patient_j"/>
+                                    </ARGS>
+                                </PRED>
+                            </SEMANTICS>
+                        </FRAME>
+                    </FRAMES>
+                    <SUBCLASSES/>
+                </VNSUBCLASS>
+            </SUBCLASSES>
+        </VNSUBCLASS>
+        <VNSUBCLASS ID="amalgamate-22.2-2">
+            <!--physical, no change of integrity of Patients-->
+            <MEMBERS>
+                <MEMBER name="conjoin" wn="conjoin%2:35:00"/>
+                <MEMBER name="entangle" wn="entangle%2:42:00"/>
+                <MEMBER name="muddle" wn="muddle%2:31:00"/>
+                <MEMBER name="pair" wn="pair%2:41:00 pair%2:35:01 pair%2:35:00"/>
+                <MEMBER name="team" wn="team%2:33:00"/>
+                <MEMBER name="affiliate" wn="affiliate%2:41:00 affiliate%2:41:12"/>
+                <MEMBER name="associate" wn="associate%2:31:00 associate%2:41:02 associate%2:41:00"/>
+                <MEMBER name="compare" wn="compare%2:31:00 compare%2:42:00 compare%2:31:01"/>
+                <MEMBER name="confederate" wn="confederate%2:41:00 confederate%2:41:10"/>
+                <MEMBER name="confuse" wn="confuse%2:31:02 confuse%2:36:00"/>
+                <MEMBER name="incorporate" wn="incorporate%2:30:00 incorporate%2:35:00"/>
+                <MEMBER name="integrate" wn="integrate%2:30:00 integrate%2:30:01"/>
+                <MEMBER name="total" wn="?total%2:42:00 total%2:32:00"/>
+                <MEMBER name="identity" wn=""/>
+            </MEMBERS>
+            <THEMROLES>
+                <THEMROLE type="Patient1">
+                    <SELRESTRS>
+                        <SELRESTR Value="+" type="concrete"/>
+                    </SELRESTRS>
+                </THEMROLE>
+                <THEMROLE type="Patient2">
+                    <SELRESTRS logic="or">
+                        <SELRESTR Value="+" type="animate"/>
+                        <SELRESTR Value="+" type="abstract"/>
+                    </SELRESTRS>
+                </THEMROLE>
+                <THEMROLE type="Agent">
+                    <SELRESTRS logic="or">
+                        <SELRESTR Value="+" type="animate"/>
+                        <SELRESTR Value="+" type="abstract"/>
+                    </SELRESTRS>
+                </THEMROLE>
+            </THEMROLES>
+            <FRAMES>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="2.5.1" primary="NP-PP" secondary="to-PP" xtag=""/>
+                    <EXAMPLES>
+                        <EXAMPLE>The merger associated company A with company B.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Agent">
+                            <SYNRESTRS/>
+                        </NP>
+                        <VERB/>
+                        <NP value="Patient1">
+                            <SYNRESTRS/>
+                        </NP>
+                        <PREP value="with">
+                            <SELRESTRS/>
+                        </PREP>
+                        <NP value="Patient2">
+                            <SYNRESTRS/>
+                        </NP>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="cause">
+                            <ARGS>
+                                <ARG type="ThemRole" value="Agent"/>
+                                <ARG type="Event" value="E"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="together">
+                            <ARGS>
+                                <ARG type="Event" value="end(E)"/>
+                                <ARG type="Constant" value="physical"/>
+                                <ARG type="ThemRole" value="Patient1"/>
+                                <ARG type="ThemRole" value="Patient2"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="2.5.1" primary="Simple Reciprocal Transitive" secondary="" xtag=""/>
+                    <EXAMPLES>
+                        <EXAMPLE>The merger associated the two companies.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Agent">
+                            <SYNRESTRS/>
+                        </NP>
+                        <VERB/>
+                        <NP value="Patient">
+                            <SYNRESTRS>
+                                <SYNRESTR Value="+" type="plural"/>
+                            </SYNRESTRS>
+                        </NP>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="cause">
+                            <ARGS>
+                                <ARG type="ThemRole" value="Agent"/>
+                                <ARG type="Event" value="E"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="together">
+                            <ARGS>
+                                <ARG type="Event" value="end(E)"/>
+                                <ARG type="Constant" value="physical"/>
+                                <ARG type="ThemRole" value="Patient_i"/>
+                                <ARG type="ThemRole" value="Patient_j"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="2.5.4" primary="Simple Reciprocal Intransitive" secondary="" xtag=""/>
+                    <EXAMPLES>
+                        <EXAMPLE>Company A associated with Company B.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Patient1">
+                            <SYNRESTRS/>
+                        </NP>
+                        <VERB/>
+                        <PREP value="with">
+                            <SELRESTRS/>
+                        </PREP>
+                        <NP value="Patient2">
+                            <SYNRESTRS/>
+                        </NP>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="together">
+                            <ARGS>
+                                <ARG type="Event" value="end(E)"/>
+                                <ARG type="Constant" value="physical"/>
+                                <ARG type="ThemRole" value="Patient1"/>
+                                <ARG type="ThemRole" value="Patient2"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+            </FRAMES>
+            <SUBCLASSES>
+                <VNSUBCLASS ID="amalgamate-22.2-2-1">
+                    <!--physical, no change of integrity of Patients-->
+                    <MEMBERS>
+                        <MEMBER name="alternate" wn="alternate%2:30:01 alternate%2:30:02 alternate%2:30:00"/>
+                        <MEMBER name="crisscross" wn="crisscross%2:38:00"/>
+                        <MEMBER name="entwine" wn="entwine%2:36:00 entwine%2:35:00"/>
+                        <MEMBER name="interchange" wn="interchange%2:40:00 interchange%2:30:01 interchange%2:30:00"/>
+                        <MEMBER name="interconnect" wn="interconnect%2:42:00 interconnect%2:35:01"/>
+                        <MEMBER name="interlace" wn="interlace%2:35:00"/>
+                        <MEMBER name="interlink" wn="interlink%2:42:00 interlink%2:35:01"/>
+                        <MEMBER name="interlock" wn="?interlock%2:30:00 ?interlock%2:35:00"/>
+                        <MEMBER name="intersperse" wn="intersperse%2:35:02"/>
+                        <MEMBER name="intertwine" wn="intertwine%2:35:00"/>
+                        <MEMBER name="interweave" wn="interweave%2:35:00"/>
+                        <MEMBER name="mate" wn="mate%2:35:00 mate%2:35:02"/>
+                        <MEMBER name="unite" wn="unite%2:30:00 ?unite%2:42:01 unite%2:42:02 unite%2:30:02"/>
+                        <MEMBER name="coalesce" wn="coalesce%2:30:00"/>
+                        <MEMBER name="coincide" wn="coincide%2:30:00"/>
+                        <MEMBER name="consolidate" wn="consolidate%2:30:00 consolidate%2:30:01"/>
+                        <MEMBER name="contrast" wn="contrast%2:42:00"/>
+                        <MEMBER name="correlate" wn="correlate%2:42:00 correlate%2:31:00"/>
+                        <MEMBER name="harmonize" wn="harmonize%2:42:00"/>
+                        <MEMBER name="intermingle" wn="intermingle%2:35:00"/>
+                        <MEMBER name="interrelate" wn="interrelate%2:31:00"/>
+                        <MEMBER name="rhyme" wn="rhyme%2:42:00"/>
+                        <MEMBER name="unify" wn="unify%2:35:00 unify%2:30:01"/>
+                    </MEMBERS>
+                    <THEMROLES/>
+                    <FRAMES>
+                        <FRAME>
+                            <DESCRIPTION descriptionNumber="2.5.4" primary="Simple Reciprocal Intransitive" secondary="" xtag=""/>
+                            <EXAMPLES>
+                                <EXAMPLE>Plays and ballets alternate.</EXAMPLE>
+                            </EXAMPLES>
+                            <SYNTAX>
+                                <NP value="Patient">
+                                    <SYNRESTRS>
+                                        <SYNRESTR Value="+" type="plural"/>
+                                    </SYNRESTRS>
+                                </NP>
+                                <VERB/>
+                            </SYNTAX>
+                            <SEMANTICS>
+                                <PRED value="together">
+                                    <ARGS>
+                                        <ARG type="Event" value="end(E)"/>
+                                        <ARG type="Constant" value="physical"/>
+                                        <ARG type="ThemRole" value="Patient_i"/>
+                                        <ARG type="ThemRole" value="Patient_j"/>
+                                    </ARGS>
+                                </PRED>
+                            </SEMANTICS>
+                        </FRAME>
+                    </FRAMES>
+                    <SUBCLASSES/>
+                </VNSUBCLASS>
+            </SUBCLASSES>
+        </VNSUBCLASS>
+        <VNSUBCLASS ID="amalgamate-22.2-3">
+            <MEMBERS>
+                <MEMBER name="oppose" wn="oppose%2:33:00"/>
+            </MEMBERS>
+            <THEMROLES/>
+            <FRAMES>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="2.5.1" primary="Simple Reciprocal Transitive" secondary="" xtag=""/>
+                    <EXAMPLES>
+                        <EXAMPLE>John opposed the two ideas.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Agent">
+                            <SYNRESTRS/>
+                        </NP>
+                        <VERB/>
+                        <NP value="Patient">
+                            <SYNRESTRS>
+                                <SYNRESTR Value="+" type="plural"/>
+                            </SYNRESTRS>
+                        </NP>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="cause">
+                            <ARGS>
+                                <ARG type="ThemRole" value="Agent"/>
+                                <ARG type="Event" value="E"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="together">
+                            <ARGS>
+                                <ARG type="Event" value="end(E)"/>
+                                <ARG type="Constant" value="abstract/physical"/>
+                                <ARG type="ThemRole" value="Patient_i"/>
+                                <ARG type="ThemRole" value="Patient_j"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+            </FRAMES>
+            <SUBCLASSES>
+                <VNSUBCLASS ID="amalgamate-22.2-3-1">
+                    <MEMBERS>
+                        <MEMBER name="introduce" wn="introduce%2:32:00 introduce%2:36:00 introduce%2:38:00 introduce%2:35:00"/>
+                        <MEMBER name="figure" wn=""/>
+                    </MEMBERS>
+                    <THEMROLES/>
+                    <FRAMES>
+                        <FRAME>
+                            <DESCRIPTION descriptionNumber="2.5.1" primary="NP-PP" secondary="to-PP" xtag=""/>
+                            <EXAMPLES>
+                                <EXAMPLE>John introduced Mary to me.</EXAMPLE>
+                            </EXAMPLES>
+                            <SYNTAX>
+                                <NP value="Agent">
+                                    <SYNRESTRS/>
+                                </NP>
+                                <VERB/>
+                                <NP value="Patient1">
+                                    <SYNRESTRS/>
+                                </NP>
+                                <PREP value="to">
+                                    <SELRESTRS/>
+                                </PREP>
+                                <NP value="Patient2">
+                                    <SYNRESTRS/>
+                                </NP>
+                            </SYNTAX>
+                            <SEMANTICS>
+                                <PRED value="cause">
+                                    <ARGS>
+                                        <ARG type="ThemRole" value="Agent"/>
+                                        <ARG type="Event" value="E"/>
+                                    </ARGS>
+                                </PRED>
+                                <PRED value="together">
+                                    <ARGS>
+                                        <ARG type="Event" value="end(E)"/>
+                                        <ARG type="Constant" value="abstract/physical"/>
+                                        <ARG type="ThemRole" value="Patient1"/>
+                                        <ARG type="ThemRole" value="Patient2"/>
+                                    </ARGS>
+                                </PRED>
+                            </SEMANTICS>
+                        </FRAME>
+                    </FRAMES>
+                    <SUBCLASSES>
+                        <VNSUBCLASS ID="amalgamate-22.2-3-1-1">
+                            <MEMBERS>
+                                <MEMBER name="marry" wn="marry%2:41:00 marry%2:41:01"/>
+                                <MEMBER name="wed" wn="wed%2:41:00 wed%2:41:01"/>
+                            </MEMBERS>
+                            <THEMROLES>
+                                <THEMROLE type="Agent">
+                                    <SELRESTRS>
+                                        <SELRESTR Value="+" type="animate"/>
+                                    </SELRESTRS>
+                                </THEMROLE>
+                                <THEMROLE type="Patient1">
+                                    <SELRESTRS>
+                                        <SELRESTR Value="+" type="animate"/>
+                                    </SELRESTRS>
+                                </THEMROLE>
+                                <THEMROLE type="Patient2">
+                                    <SELRESTRS>
+                                        <SELRESTR Value="+" type="animate"/>
+                                    </SELRESTRS>
+                                </THEMROLE>
+                            </THEMROLES>
+                            <FRAMES>
+                                <FRAME>
+                                    <DESCRIPTION descriptionNumber="2.5.4" primary="Simple Reciprocal Intransitive" secondary="" xtag=""/>
+                                    <EXAMPLES>
+                                        <EXAMPLE>John and Mary married.</EXAMPLE>
+                                    </EXAMPLES>
+                                    <SYNTAX>
+                                        <NP value="Patient">
+                                            <SYNRESTRS>
+                                                <SYNRESTR Value="+" type="plural"/>
+                                            </SYNRESTRS>
+                                        </NP>
+                                        <VERB/>
+                                    </SYNTAX>
+                                    <SEMANTICS>
+                                        <PRED value="together">
+                                            <ARGS>
+                                                <ARG type="Event" value="end(E)"/>
+                                                <ARG type="Constant" value="abstract/physical"/>
+                                                <ARG type="ThemRole" value="Patient_i"/>
+                                                <ARG type="ThemRole" value="Patient_j"/>
+                                            </ARGS>
+                                        </PRED>
+                                    </SEMANTICS>
+                                </FRAME>
+                            </FRAMES>
+                            <SUBCLASSES/>
+                        </VNSUBCLASS>
+                    </SUBCLASSES>
+                </VNSUBCLASS>
+                <VNSUBCLASS ID="amalgamate-22.2-3-2">
+                    <MEMBERS>
+                        <MEMBER name="engage" wn="engage%2:32:00"/>
+                    </MEMBERS>
+                    <THEMROLES>
+                        <THEMROLE type="Agent">
+                            <SELRESTRS/>
+                        </THEMROLE>
+                        <THEMROLE type="Patient1">
+                            <SELRESTRS>
+                                <SELRESTR Value="+" type="concrete"/>
+                            </SELRESTRS>
+                        </THEMROLE>
+                        <THEMROLE type="Patient2">
+                            <SELRESTRS>
+                                <SELRESTR Value="+" type="concrete"/>
+                            </SELRESTRS>
+                        </THEMROLE>
+                    </THEMROLES>
+                    <FRAMES>
+                        <FRAME>
+                            <DESCRIPTION descriptionNumber="2.5.4" primary="Simple Reciprocal Intransitive" secondary="" xtag=""/>
+                            <EXAMPLES>
+                                <EXAMPLE>John and Mary are engaged.</EXAMPLE>
+                            </EXAMPLES>
+                            <SYNTAX>
+                                <NP value="Patient">
+                                    <SYNRESTRS>
+                                        <SYNRESTR Value="+" type="plural"/>
+                                    </SYNRESTRS>
+                                </NP>
+                                <VERB/>
+                            </SYNTAX>
+                            <SEMANTICS>
+                                <PRED value="together">
+                                    <ARGS>
+                                        <ARG type="Event" value="end(E)"/>
+                                        <ARG type="Constant" value="physical"/>
+                                        <ARG type="ThemRole" value="Patient_i"/>
+                                        <ARG type="ThemRole" value="Patient_j"/>
+                                    </ARGS>
+                                </PRED>
+                            </SEMANTICS>
+                        </FRAME>
+                    </FRAMES>
+                    <SUBCLASSES/>
+                </VNSUBCLASS>
+            </SUBCLASSES>
+        </VNSUBCLASS>
+    </SUBCLASSES>
+</VNCLASS>

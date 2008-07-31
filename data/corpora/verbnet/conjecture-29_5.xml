@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE VNCLASS SYSTEM "vn_class-3.dtd">
+<VNCLASS ID="conjecture-29.5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="vn_schema-3.xsd">
+    <MEMBERS/>
+    <THEMROLES>
+        <THEMROLE type="Agent">
+            <SELRESTRS logic="or">
+                <SELRESTR Value="+" type="animate"/>
+                <SELRESTR Value="+" type="organization"/>
+            </SELRESTRS>
+        </THEMROLE>
+        <THEMROLE type="Theme">
+            <SELRESTRS/>
+        </THEMROLE>
+        <THEMROLE type="Predicate">
+            <SELRESTRS/>
+        </THEMROLE>
+    </THEMROLES>
+    <FRAMES/>
+    <SUBCLASSES>
+        <VNSUBCLASS ID="conjecture-29.5-1">
+            <MEMBERS>
+                <MEMBER name="allow" wn="allow%2:41:00 allow%2:42:00"/>
+                <MEMBER name="conjecture" wn="conjecture%2:31:00"/>
+                <MEMBER name="deny" wn="?deny%2:32:04"/>
+                <MEMBER name="doubt" wn=""/>
+                <MEMBER name="feel" wn="feel%2:31:00"/>
+                <MEMBER name="foreknow" wn=""/>
+                <MEMBER name="foresee" wn=""/>
+                <MEMBER name="foretell" wn=""/>
+                <MEMBER name="guess" wn="guess%2:31:01"/>
+                <MEMBER name="hold" wn="hold%2:31:01 hold%2:32:11"/>
+                <MEMBER name="know" wn="know%2:31:11"/>
+                <MEMBER name="prophesy" wn=""/>
+                <MEMBER name="realize" wn=""/>
+                <MEMBER name="repute" wn="repute%2:31:00"/>
+                <MEMBER name="recognize" wn="recognize%2:39:01 recognize%2:31:01 recognize%2:31:00"/>
+                <MEMBER name="surmise" wn=""/>
+                <MEMBER name="suspect" wn="suspect%2:32:00"/>
+                <MEMBER name="swear" wn=""/>
+                <MEMBER name="mean" wn="mean%2:31:00"/>
+                <MEMBER name="vaticinate" wn=""/>
+            </MEMBERS>
+            <THEMROLES/>
+            <FRAMES>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="" primary="Infinitival Copular Clause" secondary="" xtag=""/>
+                    <EXAMPLES>
+                        <EXAMPLE>He felt the choice to be a bad one.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Agent">
+                            <SYNRESTRS/>
+                        </NP>
+                        <VERB/>
+                        <NP value="Theme">
+                            <SYNRESTRS/>
+                        </NP>
+                        <LEX value="to"/>
+                        <LEX value="be"/>
+                        <NP value="Predicate">
+                            <SYNRESTRS/>
+                        </NP>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="believe">
+                            <ARGS>
+                                <ARG type="Event" value="during(E)"/>
+                                <ARG type="ThemRole" value="Agent"/>
+                                <ARG type="ThemRole" value="Theme"/>
+                                <ARG type="ThemRole" value="Predicate"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="" primary="S" secondary="" xtag=""/>
+                    <EXAMPLES>
+                        <EXAMPLE>The populace feel that the RIAA has too much power.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Agent">
+                            <SYNRESTRS/>
+                        </NP>
+                        <VERB/>
+                        <NP value="Theme">
+                            <SYNRESTRS>
+                                <SYNRESTR Value="+" type="that_comp"/>
+                            </SYNRESTRS>
+                        </NP>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="believe">
+                            <ARGS>
+                                <ARG type="Event" value="during(E)"/>
+                                <ARG type="ThemRole" value="Agent"/>
+                                <ARG type="ThemRole" value="Theme"/>
+                                <ARG type="ThemRole" value="?Predicate"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="" primary="Basic Transitive" secondary="" xtag=""/>
+                    <EXAMPLES>
+                        <EXAMPLE>He denied the horrid woman's statement.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Agent">
+                            <SYNRESTRS/>
+                        </NP>
+                        <VERB/>
+                        <NP value="Theme">
+                            <SYNRESTRS>
+                                <SYNRESTR Value="-" type="sentential"/>
+                            </SYNRESTRS>
+                        </NP>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="believe">
+                            <ARGS>
+                                <ARG type="Event" value="during(E)"/>
+                                <ARG type="ThemRole" value="Agent"/>
+                                <ARG type="ThemRole" value="Theme"/>
+                                <ARG type="ThemRole" value="?Predicate"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+            </FRAMES>
+            <SUBCLASSES/>
+        </VNSUBCLASS>
+        <VNSUBCLASS ID="conjecture-29.5-2">
+            <MEMBERS>
+                <MEMBER name="admit" wn="admit%2:32:00"/>
+                <MEMBER name="assert" wn="assert%2:32:00"/>
+                <MEMBER name="discover" wn="discover%2:39:03"/>
+                <MEMBER name="grant" wn="grant%2:32:00"/>
+                <MEMBER name="guarantee" wn="guarantee%2:32:01"/>
+                <MEMBER name="maintain" wn="?maintain%2:32:00 ?maintain%2:32:01"/>
+                <MEMBER name="observe" wn="observe%2:39:02"/>
+                <MEMBER name="show" wn="show%2:31:00"/>
+            </MEMBERS>
+            <THEMROLES/>
+            <FRAMES>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="" primary="Infinitival Copular Clause" secondary="" xtag=""/>
+                    <EXAMPLES>
+                        <EXAMPLE>He asserts himself to be the world's foremost authority.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Agent">
+                            <SYNRESTRS/>
+                        </NP>
+                        <VERB/>
+                        <NP value="Theme">
+                            <SYNRESTRS/>
+                        </NP>
+                        <LEX value="to"/>
+                        <LEX value="be"/>
+                        <NP value="Predicate">
+                            <SYNRESTRS/>
+                        </NP>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="declare">
+                            <ARGS>
+                                <ARG type="Event" value="during(E)"/>
+                                <ARG type="ThemRole" value="Agent"/>
+                                <ARG type="ThemRole" value="Theme"/>
+                                <ARG type="ThemRole" value="Predicate"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="" primary="S" secondary="" xtag=""/>
+                    <EXAMPLES>
+                        <EXAMPLE>The prisoner admitted that he may have been in the area.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Agent">
+                            <SYNRESTRS/>
+                        </NP>
+                        <VERB/>
+                        <NP value="Theme">
+                            <SYNRESTRS>
+                                <SYNRESTR Value="+" type="that_comp"/>
+                            </SYNRESTRS>
+                        </NP>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="declare">
+                            <ARGS>
+                                <ARG type="Event" value="during(E)"/>
+                                <ARG type="ThemRole" value="Agent"/>
+                                <ARG type="ThemRole" value="Theme"/>
+                                <ARG type="ThemRole" value="?Predicate"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="" primary="Basic Transitive" secondary="" xtag=""/>
+                    <EXAMPLES>
+                        <EXAMPLE>The prisoner admitted his guilt.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Agent">
+                            <SYNRESTRS/>
+                        </NP>
+                        <VERB/>
+                        <NP value="Theme">
+                            <SYNRESTRS>
+                                <SYNRESTR Value="-" type="sentential"/>
+                            </SYNRESTRS>
+                        </NP>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="declare">
+                            <ARGS>
+                                <ARG type="Event" value="during(E)"/>
+                                <ARG type="ThemRole" value="Agent"/>
+                                <ARG type="ThemRole" value="Theme"/>
+                                <ARG type="ThemRole" value="?Predicate"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+            </FRAMES>
+            <SUBCLASSES/>
+        </VNSUBCLASS>
+    </SUBCLASSES>
+</VNCLASS>

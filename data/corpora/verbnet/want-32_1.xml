@@ -1,0 +1,369 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE VNCLASS SYSTEM "vn_class-3.dtd">
+<VNCLASS ID="want-32.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="vn_schema-3.xsd">
+    <MEMBERS>
+        <MEMBER name="covet" wn="covet%2:37:00"/>
+        <MEMBER name="crave" wn="crave%2:34:00"/>
+        <MEMBER name="desire" wn=""/>
+        <MEMBER name="fancy" wn="fancy%2:37:00"/>
+        <MEMBER name="need" wn="need%2:34:00 need%2:34:01"/>
+        <MEMBER name="want" wn="want%2:37:00 want%2:34:00 want%2:31:01 want%2:35:00 want%2:42:01"/>
+    </MEMBERS>
+    <THEMROLES>
+        <THEMROLE type="Experiencer">
+            <SELRESTRS>
+                <SELRESTR Value="+" type="animate"/>
+            </SELRESTRS>
+        </THEMROLE>
+        <THEMROLE type="Theme">
+            <SELRESTRS/>
+        </THEMROLE>
+        <THEMROLE type="Attribute">
+            <SELRESTRS/>
+        </THEMROLE>
+    </THEMROLES>
+    <FRAMES>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.2" primary="Basic Transitive" secondary="" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>Dorothy needs new shoes.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Experiencer">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Theme">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="desire">
+                    <ARGS>
+                        <ARG type="Event" value="E"/>
+                        <ARG type="ThemRole" value="Experiencer"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="2.13.1" primary="NP-PP" secondary="Possessor Object, Attribute-PP" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>Dorothy needs her for her skills.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Experiencer">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Theme">
+                    <SYNRESTRS/>
+                </NP>
+                <PREP value="for">
+                    <SELRESTRS/>
+                </PREP>
+                <NP value="Attribute">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="desire">
+                    <ARGS>
+                        <ARG type="Event" value="E"/>
+                        <ARG type="ThemRole" value="Experiencer"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+    </FRAMES>
+    <SUBCLASSES>
+        <VNSUBCLASS ID="want-32.1-1">
+            <MEMBERS>
+                <MEMBER name="enjoy" wn=""/>
+                <MEMBER name="crave" wn=""/>
+            </MEMBERS>
+            <THEMROLES/>
+            <FRAMES>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="8.1" primary="FOR-TO-INF" secondary="" xtag="0.1"/>
+                    <EXAMPLES>
+                        <EXAMPLE>I need for her to be happy.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Experiencer">
+                            <SYNRESTRS/>
+                        </NP>
+                        <VERB/>
+                        <NP value="Theme">
+                            <SYNRESTRS>
+                                <SYNRESTR Value="+" type="for_comp"/>
+                            </SYNRESTRS>
+                        </NP>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="desire">
+                            <ARGS>
+                                <ARG type="Event" value="E"/>
+                                <ARG type="ThemRole" value="Experiencer"/>
+                                <ARG type="ThemRole" value="Theme"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="8.1" primary="ING-NP-OMIT" secondary="" xtag="0.1"/>
+                    <EXAMPLES>
+                        <EXAMPLE>I need exercising.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Experiencer">
+                            <SYNRESTRS/>
+                        </NP>
+                        <VERB/>
+                        <NP value="Theme">
+                            <SYNRESTRS>
+                                <SYNRESTR Value="+" type="np_omit_ing"/>
+                            </SYNRESTRS>
+                        </NP>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="desire">
+                            <ARGS>
+                                <ARG type="Event" value="E"/>
+                                <ARG type="ThemRole" value="Experiencer"/>
+                                <ARG type="ThemRole" value="Theme"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="8.1" primary="NP-ADJP-PRED" secondary="" xtag="0.1"/>
+                    <EXAMPLES>
+                        <EXAMPLE>She wanted the meat red.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Experiencer">
+                            <SYNRESTRS/>
+                        </NP>
+                        <VERB/>
+                        <NP value="Theme">
+                            <SYNRESTRS/>
+                        </NP>
+                        <ADJ/>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="desire">
+                            <ARGS>
+                                <ARG type="Event" value="E"/>
+                                <ARG type="ThemRole" value="Experiencer"/>
+                                <ARG type="ThemRole" value="Theme"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="8.1" primary="NP-ADVP-PRED" secondary="" xtag="0.1"/>
+                    <EXAMPLES>
+                        <EXAMPLE>I needed him here.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Experiencer">
+                            <SYNRESTRS/>
+                        </NP>
+                        <VERB/>
+                        <NP value="Theme">
+                            <SYNRESTRS/>
+                        </NP>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="desire">
+                            <ARGS>
+                                <ARG type="Event" value="E"/>
+                                <ARG type="ThemRole" value="Experiencer"/>
+                                <ARG type="ThemRole" value="Theme"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="8.1" primary="NP-ING" secondary="" xtag="0.1"/>
+                    <EXAMPLES>
+                        <EXAMPLE>I need him cooking.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Experiencer">
+                            <SYNRESTRS/>
+                        </NP>
+                        <VERB/>
+                        <NP value="Theme">
+                            <SYNRESTRS>
+                                <SYNRESTR Value="+" type="acc_ing"/>
+                            </SYNRESTRS>
+                        </NP>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="desire">
+                            <ARGS>
+                                <ARG type="Event" value="E"/>
+                                <ARG type="ThemRole" value="Experiencer"/>
+                                <ARG type="ThemRole" value="Theme"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="8.1" primary="NP-VEN-NP-OMIT" secondary="" xtag="0.1"/>
+                    <EXAMPLES>
+                        <EXAMPLE>I need the children found.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Experiencer">
+                            <SYNRESTRS/>
+                        </NP>
+                        <VERB/>
+                        <NP value="Theme">
+                            <SYNRESTRS>
+                                <SYNRESTR Value="+" type="np_ppart"/>
+                            </SYNRESTRS>
+                        </NP>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="desire">
+                            <ARGS>
+                                <ARG type="Event" value="E"/>
+                                <ARG type="ThemRole" value="Experiencer"/>
+                                <ARG type="ThemRole" value="Theme"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="8.1" primary="POSSING" secondary="" xtag="0.1"/>
+                    <EXAMPLES>
+                        <EXAMPLE>I needed his cooking.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Experiencer">
+                            <SYNRESTRS/>
+                        </NP>
+                        <VERB/>
+                        <NP value="Theme">
+                            <SYNRESTRS>
+                                <SYNRESTR Value="+" type="poss_ing"/>
+                            </SYNRESTRS>
+                        </NP>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="desire">
+                            <ARGS>
+                                <ARG type="Event" value="E"/>
+                                <ARG type="ThemRole" value="Experiencer"/>
+                                <ARG type="ThemRole" value="Theme"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="8.1" primary="TO-INF-SC" secondary="" xtag="0.1"/>
+                    <EXAMPLES>
+                        <EXAMPLE>I needed to come.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Experiencer">
+                            <SYNRESTRS/>
+                        </NP>
+                        <VERB/>
+                        <NP value="Theme">
+                            <SYNRESTRS>
+                                <SYNRESTR Value="+" type="sc_to_inf"/>
+                            </SYNRESTRS>
+                        </NP>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="desire">
+                            <ARGS>
+                                <ARG type="Event" value="E"/>
+                                <ARG type="ThemRole" value="Experiencer"/>
+                                <ARG type="ThemRole" value="Theme"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+            </FRAMES>
+            <SUBCLASSES>
+                <VNSUBCLASS ID="want-32.1-1-1">
+                    <MEMBERS>
+                        <MEMBER name="want" wn="want%2:37:00 want%2:34:00 want%2:31:01 want%2:35:00 want%2:42:01"/>
+                        <MEMBER name="need" wn="need%2:34:00 need%2:34:01"/>
+                        <MEMBER name="like" wn=""/>
+                        <MEMBER name="prefer" wn=""/>
+                        <MEMBER name="desire" wn="desire%2:37:00 desire%2:37:01"/>
+                    </MEMBERS>
+                    <THEMROLES/>
+                    <FRAMES>
+                        <FRAME>
+                            <DESCRIPTION descriptionNumber="8.1" primary="NP-TO-INF" secondary="" xtag="0.1"/>
+                            <EXAMPLES>
+                                <EXAMPLE>I needed him to go.</EXAMPLE>
+                            </EXAMPLES>
+                            <SYNTAX>
+                                <NP value="Experiencer">
+                                    <SYNRESTRS/>
+                                </NP>
+                                <VERB/>
+                                <NP value="Theme">
+                                    <SYNRESTRS>
+                                        <SYNRESTR Value="+" type="np_to_inf"/>
+                                    </SYNRESTRS>
+                                </NP>
+                            </SYNTAX>
+                            <SEMANTICS>
+                                <PRED value="desire">
+                                    <ARGS>
+                                        <ARG type="Event" value="E"/>
+                                        <ARG type="ThemRole" value="Experiencer"/>
+                                        <ARG type="ThemRole" value="Theme"/>
+                                    </ARGS>
+                                </PRED>
+                            </SEMANTICS>
+                        </FRAME>
+                        <FRAME>
+                            <DESCRIPTION descriptionNumber="8.1" primary="NP-TOBE" secondary="" xtag="0.1"/>
+                            <EXAMPLES>
+                                <EXAMPLE>I need him to be nice.</EXAMPLE>
+                            </EXAMPLES>
+                            <SYNTAX>
+                                <NP value="Experiencer">
+                                    <SYNRESTRS/>
+                                </NP>
+                                <VERB/>
+                                <NP value="Theme">
+                                    <SYNRESTRS>
+                                        <SYNRESTR Value="+" type="to_be"/>
+                                    </SYNRESTRS>
+                                </NP>
+                            </SYNTAX>
+                            <SEMANTICS>
+                                <PRED value="desire">
+                                    <ARGS>
+                                        <ARG type="Event" value="E"/>
+                                        <ARG type="ThemRole" value="Experiencer"/>
+                                        <ARG type="ThemRole" value="Theme"/>
+                                    </ARGS>
+                                </PRED>
+                            </SEMANTICS>
+                        </FRAME>
+                    </FRAMES>
+                    <SUBCLASSES/>
+                </VNSUBCLASS>
+            </SUBCLASSES>
+        </VNSUBCLASS>
+    </SUBCLASSES>
+</VNCLASS>
+
+
+
+
+

@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE VNCLASS SYSTEM "vn_class-3.dtd">
+<VNCLASS ID="chit_chat-37.6" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="vn_schema-3.xsd">
+    <MEMBERS>
+        <MEMBER name="argue" wn="argue%2:32:00"/>
+        <MEMBER name="chat" wn="chat%2:32:00"/>
+        <MEMBER name="chatter" wn="chatter%2:32:01 chatter%2:32:00"/>
+        <MEMBER name="chitchat" wn="chitchat%2:32:00"/>
+        <MEMBER name="confer" wn="confer%2:32:00"/>
+        <MEMBER name="converse" wn="converse%2:32:00"/>
+        <MEMBER name="gab" wn=""/>
+        <MEMBER name="gossip" wn="gossip%2:32:00 gossip%2:32:01"/>
+        <MEMBER name="rap" wn="rap%2:32:00"/>
+        <MEMBER name="schmooze" wn="schmooze%2:32:00"/>
+        <MEMBER name="yak" wn=""/>
+    </MEMBERS>
+    <THEMROLES>
+        <THEMROLE type="Actor">
+            <SELRESTRS logic="or">
+                <SELRESTR Value="+" type="animate"/>
+                <SELRESTR Value="+" type="organization"/>
+            </SELRESTRS>
+        </THEMROLE>
+        <THEMROLE type="Actor1">
+            <SELRESTRS logic="or">
+                <SELRESTR Value="+" type="animate"/>
+                <SELRESTR Value="+" type="organization"/>
+            </SELRESTRS>
+        </THEMROLE>
+        <THEMROLE type="Actor2">
+            <SELRESTRS logic="or">
+                <SELRESTR Value="+" type="animate"/>
+                <SELRESTR Value="+" type="organization"/>
+            </SELRESTRS>
+        </THEMROLE>
+        <THEMROLE type="Topic">
+            <SELRESTRS>
+                <SELRESTR Value="+" type="communication"/>
+            </SELRESTRS>
+        </THEMROLE>
+    </THEMROLES>
+    <FRAMES>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.1" primary="Basic Intransitive" secondary="" xtag="0.1"/>
+            <EXAMPLES>
+                <EXAMPLE>Susan was chitchatting.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Actor1">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="transfer_info">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Actor1"/>
+                        <ARG type="ThemRole" value="?Actor2"/>
+                        <ARG type="ThemRole" value="?Topic"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Actor1"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.1" primary="PP" secondary="with-PP" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>Susan chitchatted with Rachel.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Actor1">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <PREP value="with">
+                    <SELRESTRS/>
+                </PREP>
+                <NP value="Actor2">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="transfer_info">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Actor1"/>
+                        <ARG type="ThemRole" value="Actor2"/>
+                        <ARG type="ThemRole" value="?Topic"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="transfer_info">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Actor2"/>
+                        <ARG type="ThemRole" value="Actor1"/>
+                        <ARG type="ThemRole" value="?Topic"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Actor1"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.1" primary="PP-PP" secondary="with-PP Topic-PP" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>Susan chitchatted with Rachel about the problem.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Actor1">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <PREP value="with">
+                    <SELRESTRS/>
+                </PREP>
+                <NP value="Actor2">
+                    <SYNRESTRS/>
+                </NP>
+                <PREP value="about">
+                    <SELRESTRS/>
+                </PREP>
+                <NP value="Topic">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="transfer_info">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Actor1"/>
+                        <ARG type="ThemRole" value="Actor2"/>
+                        <ARG type="ThemRole" value="Topic"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="transfer_info">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Actor2"/>
+                        <ARG type="ThemRole" value="Actor1"/>
+                        <ARG type="ThemRole" value="Topic"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Actor1"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="2.5.4" primary="Simple Reciprocal Intransitive" secondary="" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>Susan and Rachel chitchatted.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Actor">
+                    <SYNRESTRS>
+                        <SYNRESTR Value="+" type="plural"/>
+                    </SYNRESTRS>
+                </NP>
+                <VERB/>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="transfer_info">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Actor_i"/>
+                        <ARG type="ThemRole" value="Actor_j"/>
+                        <ARG type="ThemRole" value="?Topic"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="transfer_info">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Actor_j"/>
+                        <ARG type="ThemRole" value="Actor_i"/>
+                        <ARG type="ThemRole" value="?Topic"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="" primary="PP-PP" secondary="Topic-PP with-PP" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>Susan chitchatted about the problem with Rachel.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Actor1">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <PREP value="about">
+                    <SELRESTRS/>
+                </PREP>
+                <NP value="Topic">
+                    <SYNRESTRS/>
+                </NP>
+                <PREP value="with">
+                    <SELRESTRS/>
+                </PREP>
+                <NP value="Actor2">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="transfer_info">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Actor1"/>
+                        <ARG type="ThemRole" value="Actor2"/>
+                        <ARG type="ThemRole" value="Topic"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="transfer_info">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Actor2"/>
+                        <ARG type="ThemRole" value="Actor1"/>
+                        <ARG type="ThemRole" value="Topic"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Actor1"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="" primary="PP" secondary="Simple Reciprocal Subject, Topic-PP" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>Susan and Rachel chitchatted about matters of great import.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Actor">
+                    <SYNRESTRS>
+                        <SYNRESTR Value="+" type="plural"/>
+                    </SYNRESTRS>
+                </NP>
+                <VERB/>
+                <PREP value="about">
+                    <SELRESTRS/>
+                </PREP>
+                <NP value="Topic">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="transfer_info">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Actor_i"/>
+                        <ARG type="ThemRole" value="Actor_j"/>
+                        <ARG type="ThemRole" value="Topic"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="transfer_info">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Actor_j"/>
+                        <ARG type="ThemRole" value="Actor_i"/>
+                        <ARG type="ThemRole" value="Topic"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="" primary="PP" secondary="Topic-PP" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>Susan chitchatted about matters of great import.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Actor1">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <PREP value="about">
+                    <SELRESTRS/>
+                </PREP>
+                <NP value="Topic">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="transfer_info">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Actor1"/>
+                        <ARG type="ThemRole" value="?Actor2"/>
+                        <ARG type="ThemRole" value="Topic"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+    </FRAMES>
+    <SUBCLASSES/>
+</VNCLASS>

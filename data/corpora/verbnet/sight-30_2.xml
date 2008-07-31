@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE VNCLASS SYSTEM "vn_class-3.dtd">
+<VNCLASS ID="sight-30.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="vn_schema-3.xsd">
+    <MEMBERS>
+        <MEMBER name="descry" wn="descry%2:39:00"/>
+        <MEMBER name="discover" wn="discover%2:36:00 discover%2:40:00 discover%2:39:00"/>
+        <MEMBER name="espy" wn="espy%2:39:00"/>
+        <MEMBER name="examine" wn="examine%2:31:00 examine%2:39:00"/>
+        <MEMBER name="experience" wn=""/>
+        <MEMBER name="eye" wn="eye%2:39:00"/>
+        <MEMBER name="glimpse" wn="glimpse%2:39:00"/>
+        <MEMBER name="inspect" wn="inspect%2:39:00 inspect%2:38:00 inspect%2:31:00"/>
+        <MEMBER name="investigate" wn="investigate%2:32:00 investigate%2:32:01"/>
+        <MEMBER name="make_out" wn=""/>
+        <MEMBER name="note" wn="note%2:39:00 note%2:39:02 note%2:32:01"/>
+        <MEMBER name="observe" wn="observe%2:39:02 observe%2:39:01 observe%2:41:00 observe%2:31:00"/>
+        <MEMBER name="overhear" wn="overhear%2:39:00"/>
+        <MEMBER name="perceive" wn="perceive%2:39:00"/>
+        <MEMBER name="peruse" wn=""/>
+        <MEMBER name="recognize" wn="recognize%2:39:01 recognize%2:32:01"/>
+        <MEMBER name="regard" wn="regard%2:39:00"/>
+        <MEMBER name="savor" wn="savor%2:37:00 savor%2:39:00"/>
+        <MEMBER name="scan" wn="scan%2:39:01 scan%2:39:00"/>
+        <MEMBER name="scent" wn="scent%2:39:01"/>
+        <MEMBER name="scrutinize" wn="scrutinize%2:39:00 scrutinize%2:31:00"/>
+        <MEMBER name="sight" wn="sight%2:39:00"/>
+        <MEMBER name="spot" wn="spot%2:39:00 spot%2:30:00"/>
+        <MEMBER name="spy" wn="spy%2:39:00 spy%2:32:01"/>
+        <MEMBER name="study" wn="study%2:31:02"/>
+        <MEMBER name="survey" wn="survey%2:39:00 survey%2:39:13"/>
+        <MEMBER name="view" wn="view%2:39:02"/>
+        <MEMBER name="watch" wn="watch%2:39:00 watch%2:41:00 watch%2:39:05 watch%2:39:02 watch%2:39:01 watch%2:39:03"/>
+        <MEMBER name="witness" wn="witness%2:39:00 witness%2:39:01"/>
+        <MEMBER name="sniff" wn="sniff%2:39:00"/>
+    </MEMBERS>
+    <THEMROLES>
+        <THEMROLE type="Experiencer">
+            <SELRESTRS>
+                <SELRESTR Value="+" type="animate"/>
+            </SELRESTRS>
+        </THEMROLE>
+        <THEMROLE type="Stimulus">
+            <SELRESTRS/>
+        </THEMROLE>
+    </THEMROLES>
+    <FRAMES>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.2" primary="Basic Transitive" secondary="" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>The crew spotted the island.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Experiencer">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Stimulus">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="perceive">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Experiencer"/>
+                        <ARG type="ThemRole" value="Stimulus"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="in_reaction_to">
+                    <ARGS>
+                        <ARG type="Event" value="E"/>
+                        <ARG type="ThemRole" value="Stimulus"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+    </FRAMES>
+    <SUBCLASSES/>
+</VNCLASS>

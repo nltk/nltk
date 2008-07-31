@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE VNCLASS SYSTEM "vn_class-3.dtd">
+<VNCLASS ID="occurrence-48.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="vn_schema-3.xsd">
+    <MEMBERS>
+        <MEMBER name="ensue" wn="ensue%2:42:00"/>
+        <MEMBER name="eventuate" wn="eventuate%2:42:00"/>
+        <MEMBER name="happen" wn="happen%2:30:00 happen%2:30:01"/>
+        <MEMBER name="occur" wn="occur%2:30:00"/>
+        <MEMBER name="recur" wn="recur%2:30:00"/>
+        <MEMBER name="transpire" wn="transpire%2:30:09"/>
+        <MEMBER name="befall" wn=""/>
+        <MEMBER name="chance" wn=""/>
+        <MEMBER name="develop" wn=""/>
+        <MEMBER name="pass" wn=""/>
+        <MEMBER name="turn_out" wn=""/>
+    </MEMBERS>
+    <THEMROLES>
+        <THEMROLE type="Theme">
+            <SELRESTRS/>
+        </THEMROLE>
+        <THEMROLE type="Location">
+            <SELRESTRS/>
+        </THEMROLE>
+    </THEMROLES>
+    <FRAMES>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.1" primary="Basic Intransitive" secondary="" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>A serious accident happened.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Theme">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="occur">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="6.1" primary="NP" secondary="Expletive-there Subject" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>There happened a serious accident.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <LEX value="there"/>
+                <VERB/>
+                <NP value="Theme">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="occur">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.1" primary="PP" secondary="Location-PP" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>A serious accident happened in front of them.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Theme">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <PREP>
+                    <SELRESTRS>
+                        <SELRESTR Value="+" type="loc"/>
+                    </SELRESTRS>
+                </PREP>
+                <NP value="Location">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="occur">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="Prep">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                        <ARG type="ThemRole" value="Location"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="6.2" primary="Locative Inversion" secondary="" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>In front of them happened a serious accident.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <PREP>
+                    <SELRESTRS>
+                        <SELRESTR Value="+" type="loc"/>
+                    </SELRESTRS>
+                </PREP>
+                <NP value="Location">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Theme">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="occur">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="Prep">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                        <ARG type="ThemRole" value="Location"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="8.1" primary="SEEM-S" secondary="" xtag="0.2"/>
+            <EXAMPLES>
+                <EXAMPLE>It occurred that they left.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <LEX value="it"/>
+                <VERB/>
+                <NP value="Theme">
+                    <SYNRESTRS>
+                        <SYNRESTR Value="+" type="that_comp"/>
+                    </SYNRESTRS>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="occur">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+    </FRAMES>
+    <SUBCLASSES/>
+</VNCLASS>
+
+
+
+
+
+
+
+

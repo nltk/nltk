@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE VNCLASS SYSTEM "vn_class-3.dtd">
+<VNCLASS ID="knead-26.5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="vn_schema-3.xsd">
+    <MEMBERS>
+        <MEMBER name="beat" wn="beat%2:36:00"/>
+        <MEMBER name="bend" wn="bend%2:35:00"/>
+        <MEMBER name="coil" wn="?coil%2:35:00"/>
+        <MEMBER name="collect" wn="collect%2:35:00"/>
+        <MEMBER name="compress" wn="compress%2:35:01 compress%2:35:00"/>
+        <MEMBER name="contort" wn=""/>
+        <MEMBER name="curve" wn=""/>
+        <MEMBER name="distort" wn=""/>
+        <MEMBER name="fold" wn="fold%2:35:00 fold%2:30:10"/>
+        <MEMBER name="freeze" wn="freeze%2:30:00 freeze%2:30:02 freeze%2:30:04"/>
+        <MEMBER name="knead" wn="knead%2:35:00"/>
+        <MEMBER name="melt" wn="melt%2:30:01 melt%2:30:00"/>
+        <MEMBER name="shake" wn="shake%2:38:00"/>
+        <MEMBER name="squash" wn="squash%2:35:00"/>
+        <MEMBER name="squeeze" wn="squeeze%2:35:05"/>
+        <MEMBER name="squish" wn=""/>
+        <MEMBER name="twirl" wn="twirl%2:38:01"/>
+        <MEMBER name="twist" wn="twist%2:35:02 twist%2:35:01"/>
+        <MEMBER name="wad" wn="wad%2:35:01"/>
+        <MEMBER name="whip" wn="whip%2:35:00 ?whip%2:35:01"/>
+        <MEMBER name="wind" wn="wind%2:35:00 wind%2:35:02"/>
+        <MEMBER name="work" wn="work%2:36:12 work%2:35:00"/>
+    </MEMBERS>
+    <THEMROLES>
+        <THEMROLE type="Agent">
+            <SELRESTRS logic="or">
+                <SELRESTR Value="+" type="animate"/>
+                <SELRESTR Value="+" type="machine"/>
+            </SELRESTRS>
+        </THEMROLE>
+        <THEMROLE type="Product">
+            <SELRESTRS/>
+        </THEMROLE>
+        <THEMROLE type="Material">
+            <SELRESTRS/>
+        </THEMROLE>
+    </THEMROLES>
+    <FRAMES>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="1.1.2.1" primary="PP" secondary="Inchoative variant, Product-PP" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>The dough twirled into a pretzel.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Material">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <PREP value="into">
+                    <SELRESTRS/>
+                </PREP>
+                <NP value="Product">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED bool="!" value="exist">
+                    <ARGS>
+                        <ARG type="Event" value="start(E)"/>
+                        <ARG type="ThemRole" value="Product"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="exist">
+                    <ARGS>
+                        <ARG type="Event" value="result(E)"/>
+                        <ARG type="ThemRole" value="Product"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="made_of">
+                    <ARGS>
+                        <ARG type="Event" value="result(E)"/>
+                        <ARG type="ThemRole" value="Product"/>
+                        <ARG type="ThemRole" value="Material"/>
+                    </ARGS>
+                </PRED>
+                <PRED bool="!" value="state">
+                    <ARGS>
+                        <ARG type="Event" value="start(E)"/>
+                        <ARG type="VerbSpecific" value="Endstate"/>
+                        <ARG type="ThemRole" value="Material"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="state">
+                    <ARGS>
+                        <ARG type="Event" value="result(E)"/>
+                        <ARG type="VerbSpecific" value="Endstate"/>
+                        <ARG type="ThemRole" value="Material"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="1.1.2.1" primary="NP-PP" secondary="Causative variant, Product-PP" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>I kneaded the dough into a loaf.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Material">
+                    <SYNRESTRS/>
+                </NP>
+                <PREP value="into">
+                    <SELRESTRS/>
+                </PREP>
+                <NP value="Product">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED bool="!" value="exist">
+                    <ARGS>
+                        <ARG type="Event" value="start(E)"/>
+                        <ARG type="ThemRole" value="Product"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="exist">
+                    <ARGS>
+                        <ARG type="Event" value="result(E)"/>
+                        <ARG type="ThemRole" value="Product"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="made_of">
+                    <ARGS>
+                        <ARG type="Event" value="result(E)"/>
+                        <ARG type="ThemRole" value="Product"/>
+                        <ARG type="ThemRole" value="Material"/>
+                    </ARGS>
+                </PRED>
+                <PRED bool="!" value="state">
+                    <ARGS>
+                        <ARG type="Event" value="start(E)"/>
+                        <ARG type="VerbSpecific" value="Endstate"/>
+                        <ARG type="ThemRole" value="Material"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="state">
+                    <ARGS>
+                        <ARG type="Event" value="result(E)"/>
+                        <ARG type="VerbSpecific" value="Endstate"/>
+                        <ARG type="ThemRole" value="Material"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="1.1.2.1" primary="Transitive" secondary="Causative variant, Material Object" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>I kneaded the dough.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Material">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED bool="!" value="state">
+                    <ARGS>
+                        <ARG type="Event" value="start(E)"/>
+                        <ARG type="VerbSpecific" value="Endstate"/>
+                        <ARG type="ThemRole" value="Material"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="state">
+                    <ARGS>
+                        <ARG type="Event" value="result(E)"/>
+                        <ARG type="VerbSpecific" value="Endstate"/>
+                        <ARG type="ThemRole" value="Material"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+    </FRAMES>
+    <SUBCLASSES/>
+</VNCLASS>
+

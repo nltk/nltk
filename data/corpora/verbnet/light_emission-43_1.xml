@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE VNCLASS SYSTEM "vn_class-3.dtd">
+<VNCLASS ID="light_emission-43.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="vn_schema-3.xsd">
+    <MEMBERS>
+        <MEMBER name="beam" wn="beam%2:29:00"/>
+        <MEMBER name="blaze" wn=""/>
+        <MEMBER name="blink" wn="blink%2:39:00"/>
+        <MEMBER name="burn" wn="burn%2:43:01"/>
+        <MEMBER name="flame" wn="flame%2:43:00"/>
+        <MEMBER name="flare" wn="flare%2:43:00 flare%2:43:01"/>
+        <MEMBER name="flash" wn="flash%2:39:00 flash%2:30:04"/>
+        <MEMBER name="flicker" wn="flicker%2:38:00 flicker%2:43:00 flicker%2:39:00"/>
+        <MEMBER name="fluoresce" wn=""/>
+        <MEMBER name="glare" wn="glare%2:43:01 glare%2:39:01"/>
+        <MEMBER name="gleam" wn="gleam%2:39:01 gleam%2:39:00"/>
+        <MEMBER name="glimmer" wn="glimmer%2:39:00"/>
+        <MEMBER name="glint" wn="glint%2:39:00"/>
+        <MEMBER name="glisten" wn="glisten%2:39:00"/>
+        <MEMBER name="glitter" wn="glitter%2:39:00"/>
+        <MEMBER name="glow" wn="glow%2:39:00 glow%2:43:00"/>
+        <MEMBER name="incandesce" wn="incandesce%2:30:01 incandesce%2:30:00"/>
+        <MEMBER name="scintillate" wn="scintillate%2:43:00"/>
+        <MEMBER name="shimmer" wn="shimmer%2:43:00"/>
+        <MEMBER name="shine" wn="shine%2:43:01 shine%2:43:00 shine%2:39:01 shine%2:42:00"/>
+        <MEMBER name="sparkle" wn="sparkle%2:43:00"/>
+        <MEMBER name="twinkle" wn="twinkle%2:39:00 twinkle%2:43:00"/>
+    </MEMBERS>
+    <THEMROLES>
+        <THEMROLE type="Theme">
+            <SELRESTRS>
+                <SELRESTR Value="-" type="animate"/>
+            </SELRESTRS>
+        </THEMROLE>
+        <THEMROLE type="Location">
+            <SELRESTRS/>
+        </THEMROLE>
+        <THEMROLE type="Agent">
+            <SELRESTRS/>
+        </THEMROLE>
+    </THEMROLES>
+    <FRAMES>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.1" primary="Intransitive" secondary="" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>The jewel sparkled.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Theme">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="emit">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                        <ARG type="VerbSpecific" value="Prop"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.1" primary="PP" secondary="Location-PP" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>Jewels sparkled on the crown.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Theme">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <PREP>
+                    <SELRESTRS>
+                        <SELRESTR Value="+" type="loc"/>
+                    </SELRESTRS>
+                </PREP>
+                <NP value="Location">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="emit">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                        <ARG type="VerbSpecific" value="Prop"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="Prep">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="VerbSpecific" value="Prop"/>
+                        <ARG type="ThemRole" value="Location"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="2.3" primary="PP" secondary="Location Subject, with-PP" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>The crown sparkled with jewels.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Location">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <PREP value="with">
+                    <SELRESTRS/>
+                </PREP>
+                <NP value="Theme">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="emit">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                        <ARG type="VerbSpecific" value="Prop"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="location">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="VerbSpecific" value="Prop"/>
+                        <ARG type="ThemRole" value="Location"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="6.2" primary="Locative Inversion" secondary="" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>There sparkled a magnificent diamond on his finger.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <LEX value="there"/>
+                <VERB/>
+                <NP value="Theme">
+                    <SYNRESTRS/>
+                </NP>
+                <PREP>
+                    <SELRESTRS>
+                        <SELRESTR Value="+" type="loc"/>
+                    </SELRESTRS>
+                </PREP>
+                <NP value="Location">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="emit">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                        <ARG type="VerbSpecific" value="Prop"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="Prep">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="VerbSpecific" value="Prop"/>
+                        <ARG type="ThemRole" value="Location"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="6.1" primary="There-insertion" secondary="" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>On his finger there sparkled a magnificent diamond.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <PREP>
+                    <SELRESTRS>
+                        <SELRESTR Value="+" type="loc"/>
+                    </SELRESTRS>
+                </PREP>
+                <NP value="Location">
+                    <SYNRESTRS/>
+                </NP>
+                <LEX value="there"/>
+                <VERB/>
+                <NP value="Theme">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="emit">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                        <ARG type="VerbSpecific" value="Prop"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="Prep">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="VerbSpecific" value="Prop"/>
+                        <ARG type="ThemRole" value="Location"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="1.1.2" primary="NP" secondary="Causative variant" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>The stagehand flashed the lights.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Theme">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="emit">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                        <ARG type="VerbSpecific" value="Prop"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+            <!--some verbs-->
+        </FRAME>
+        <!--Prop comes from the verb-->
+    </FRAMES>
+    <SUBCLASSES/>
+</VNCLASS>

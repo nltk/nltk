@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE VNCLASS SYSTEM "vn_class-3.dtd">
+<VNCLASS ID="entity_specific_cos-45.5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="vn_schema-3.xsd">
+    <MEMBERS>
+        <MEMBER name="blister" wn="blister%2:30:00"/>
+        <MEMBER name="bloom" wn="bloom%2:30:00"/>
+        <MEMBER name="blossom" wn="blossom%2:30:01"/>
+        <MEMBER name="bud" wn=""/>
+        <MEMBER name="burgeon" wn=""/>
+        <MEMBER name="burn" wn="burn%2:43:01"/>
+        <MEMBER name="corrode" wn="corrode%2:30:00"/>
+        <MEMBER name="decay" wn="decay%2:30:00 decay%2:30:02"/>
+        <MEMBER name="deteriorate" wn="deteriorate%2:30:00 deteriorate%2:29:00"/>
+        <MEMBER name="erode" wn="erode%2:30:01"/>
+        <MEMBER name="ferment" wn="ferment%2:30:00"/>
+        <MEMBER name="flower" wn="flower%2:30:00"/>
+        <MEMBER name="germinate" wn="germinate%2:30:00"/>
+        <MEMBER name="molder" wn="molder%2:30:00"/>
+        <MEMBER name="molt" wn="molt%2:29:00"/>
+        <MEMBER name="rot" wn="rot%2:30:00"/>
+        <MEMBER name="rust" wn="rust%2:30:00"/>
+        <MEMBER name="spoil" wn=""/>
+        <MEMBER name="sprout" wn="sprout%2:30:00"/>
+        <MEMBER name="stagnate" wn="stagnate%2:42:00"/>
+        <MEMBER name="swell" wn="swell%2:30:02 swell%2:30:00"/>
+        <MEMBER name="tarnish" wn=""/>
+        <MEMBER name="wane" wn=""/>
+        <MEMBER name="wilt" wn="wilt%2:30:00"/>
+        <MEMBER name="wither" wn="wither%2:30:00"/>
+    </MEMBERS>
+    <THEMROLES>
+        <THEMROLE type="Patient">
+            <SELRESTRS>
+                <SELRESTR Value="+" type="concrete"/>
+            </SELRESTRS>
+        </THEMROLE>
+    </THEMROLES>
+    <FRAMES>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.1" primary="Intransitive" secondary="Inchoative" xtag="0.1"/>
+            <EXAMPLES>
+                <EXAMPLE>The roses bloomed.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Patient">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="state">
+                    <ARGS>
+                        <ARG type="Event" value="result(E)"/>
+                        <ARG type="VerbSpecific" value="Endstate"/>
+                        <ARG type="ThemRole" value="Patient"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+    </FRAMES>
+    <SUBCLASSES/>
+</VNCLASS>
+

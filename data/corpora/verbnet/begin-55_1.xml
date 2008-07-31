@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE VNCLASS SYSTEM "vn_class-3.dtd">
+<VNCLASS ID="begin-55.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="vn_schema-3.xsd">
+    <MEMBERS>
+        <MEMBER name="go_on" wn=""/>
+        <MEMBER name="proceed" wn=""/>
+    </MEMBERS>
+    <THEMROLES>
+        <THEMROLE type="Agent">
+            <SELRESTRS logic="or">
+                <SELRESTR Value="+" type="animate"/>
+                <SELRESTR Value="+" type="organization"/>
+            </SELRESTRS>
+        </THEMROLE>
+        <THEMROLE type="Theme">
+            <SELRESTRS/>
+        </THEMROLE>
+        <THEMROLE type="Instrument">
+            <SELRESTRS/>
+        </THEMROLE>
+    </THEMROLES>
+    <FRAMES>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="8.1" primary="TO-INF-SC" secondary="" xtag="0.2"/>
+            <EXAMPLES>
+                <EXAMPLE>He began to pack.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Theme">
+                    <SYNRESTRS>
+                        <SYNRESTR Value="+" type="sc_to_inf"/>
+                    </SYNRESTRS>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="begin">
+                    <ARGS>
+                        <ARG type="Event" value="E"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+    </FRAMES>
+    <SUBCLASSES>
+        <VNSUBCLASS ID="begin-55.1-1">
+            <MEMBERS>
+                <MEMBER name="begin" wn="begin%2:30:00 begin%2:42:00 begin%2:30:01 begin%2:42:04 begin%2:41:04 begin%2:41:00"/>
+                <MEMBER name="start" wn="start%2:30:00 start%2:30:01 start%2:38:02 start%2:38:01 start%2:38:00 start%2:41:00 start%2:41:04"/>
+                <MEMBER name="start_off" wn=""/>
+                <MEMBER name="commence" wn="commence%2:30:00 commence%2:30:01"/>
+                <MEMBER name="recommence" wn=""/>
+                <MEMBER name="resume" wn="resume%2:30:00 resume%2:30:01"/>
+                <MEMBER name="undertake" wn=""/>
+            </MEMBERS>
+            <THEMROLES/>
+            <FRAMES>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="8.1" primary="ING-SC/BE-ING-SC" secondary="" xtag=""/>
+                    <EXAMPLES>
+                        <EXAMPLE>John began going to the area.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Agent">
+                            <SYNRESTRS/>
+                        </NP>
+                        <VERB/>
+                        <NP value="Theme">
+                            <SYNRESTRS>
+                                <SYNRESTR Value="+" type="be_sc_ing"/>
+                            </SYNRESTRS>
+                        </NP>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="begin">
+                            <ARGS>
+                                <ARG type="Event" value="E"/>
+                                <ARG type="ThemRole" value="Theme"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="cause">
+                            <ARGS>
+                                <ARG type="ThemRole" value="Agent"/>
+                                <ARG type="Event" value="E"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="" primary="Intransitive" secondary="Inchoative" xtag=""/>
+                    <EXAMPLES>
+                        <EXAMPLE>The storm began.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Theme">
+                            <SYNRESTRS/>
+                        </NP>
+                        <VERB/>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="begin">
+                            <ARGS>
+                                <ARG type="Event" value="E"/>
+                                <ARG type="ThemRole" value="Theme"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="" primary="Basic Transitive" secondary="" xtag=""/>
+                    <EXAMPLES>
+                        <EXAMPLE>John started the party.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Agent">
+                            <SYNRESTRS/>
+                        </NP>
+                        <VERB/>
+                        <NP value="Theme">
+                            <SYNRESTRS/>
+                        </NP>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="begin">
+                            <ARGS>
+                                <ARG type="Event" value="E"/>
+                                <ARG type="ThemRole" value="Theme"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="cause">
+                            <ARGS>
+                                <ARG type="ThemRole" value="Agent"/>
+                                <ARG type="Event" value="E"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="" primary="PP" secondary="with-PP" xtag=""/>
+                    <EXAMPLES>
+                        <EXAMPLE>The party began with a bang.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Theme">
+                            <SYNRESTRS/>
+                        </NP>
+                        <VERB/>
+                        <PREP value="with">
+                            <SELRESTRS/>
+                        </PREP>
+                        <NP value="Instrument">
+                            <SYNRESTRS/>
+                        </NP>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="begin">
+                            <ARGS>
+                                <ARG type="Event" value="E"/>
+                                <ARG type="ThemRole" value="Theme"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="use">
+                            <ARGS>
+                                <ARG type="Event" value="during(E)"/>
+                                <ARG type="ThemRole" value="?Agent"/>
+                                <ARG type="ThemRole" value="Instrument"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="" primary="NP-PP" secondary="with-PP" xtag=""/>
+                    <EXAMPLES>
+                        <EXAMPLE>I began the party with a speech.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Agent">
+                            <SYNRESTRS/>
+                        </NP>
+                        <VERB/>
+                        <NP value="Theme">
+                            <SYNRESTRS/>
+                        </NP>
+                        <PREP value="with">
+                            <SELRESTRS/>
+                        </PREP>
+                        <NP value="Instrument">
+                            <SYNRESTRS/>
+                        </NP>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="begin">
+                            <ARGS>
+                                <ARG type="Event" value="E"/>
+                                <ARG type="ThemRole" value="Theme"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="use">
+                            <ARGS>
+                                <ARG type="Event" value="during(E)"/>
+                                <ARG type="ThemRole" value="Agent"/>
+                                <ARG type="ThemRole" value="Instrument"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="cause">
+                            <ARGS>
+                                <ARG type="ThemRole" value="Agent"/>
+                                <ARG type="Event" value="E"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="8.1" primary="NP-PP" secondary="Oblique-PP" xtag=""/>
+                    <EXAMPLES>
+                        <EXAMPLE>We began the campaign by soliciting donations.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Agent">
+                            <SYNRESTRS/>
+                        </NP>
+                        <VERB/>
+                        <NP value="Theme">
+                            <SYNRESTRS/>
+                        </NP>
+                        <PREP value="by">
+                            <SELRESTRS/>
+                        </PREP>
+                        <NP value="Oblique">
+                            <SELRESTRS/>
+                        </NP>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="begin">
+                            <ARGS>
+                                <ARG type="Event" value="E"/>
+                                <ARG type="ThemRole" value="Theme"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="cause">
+                            <ARGS>
+                                <ARG type="ThemRole" value="Agent"/>
+                                <ARG type="Event" value="E"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="manner">
+                            <ARGS>
+                                <ARG type="Event" value="during(E)"/>
+                                <ARG type="ThemRole" value="Oblique"/>
+                                <ARG type="ThemRole" value="Agent"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="8.1" primary="Intransitive" secondary="Instrument Subject" xtag=""/>
+                    <EXAMPLES>
+                        <EXAMPLE>A murder began the book.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Instrument">
+                            <SYNRESTRS/>
+                        </NP>
+                        <VERB/>
+                        <NP value="Theme">
+                            <SYNRESTRS/>
+                        </NP>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="begin">
+                            <ARGS>
+                                <ARG type="Event" value="E"/>
+                                <ARG type="ThemRole" value="Theme"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="use">
+                            <ARGS>
+                                <ARG type="Event" value="during(E)"/>
+                                <ARG type="ThemRole" value="?Agent"/>
+                                <ARG type="ThemRole" value="Instrument"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+            </FRAMES>
+            <SUBCLASSES/>
+        </VNSUBCLASS>
+    </SUBCLASSES>
+</VNCLASS>
+
+
+
+
+

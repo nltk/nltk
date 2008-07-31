@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE VNCLASS SYSTEM "vn_class-3.dtd">
+<VNCLASS ID="contiguous_location-47.8" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="vn_schema-3.xsd">
+    <MEMBERS>
+        <!--Removed "miss" from the class-->
+        <!--Verbs may add more specific description of the spatial relationship between Theme1 and Theme2-->
+        <MEMBER name="bestride" wn=""/>
+        <MEMBER name="blanket" wn="blanket%2:35:00 blanket%2:42:00"/>
+        <MEMBER name="border" wn="border%2:35:01 border%2:42:00 border%2:35:00"/>
+        <MEMBER name="bound" wn="bound%2:42:00"/>
+        <MEMBER name="bracket" wn=""/>
+        <MEMBER name="bridge" wn="bridge%2:42:00"/>
+        <MEMBER name="cap" wn="cap%2:42:00"/>
+        <MEMBER name="circle" wn=""/>
+        <MEMBER name="contain" wn="contain%2:42:13"/>
+        <MEMBER name="cover" wn="cover%2:35:01"/>
+        <MEMBER name="edge" wn="edge%2:35:00"/>
+        <MEMBER name="encircle" wn="encircle%2:35:12"/>
+        <MEMBER name="enclose" wn="enclose%2:35:01 enclose%2:35:00"/>
+        <MEMBER name="encompass" wn=""/>
+        <MEMBER name="engulf" wn=""/>
+        <MEMBER name="fence" wn="?fence%2:35:00"/>
+        <MEMBER name="fill" wn="fill%2:42:00"/>
+        <MEMBER name="flank" wn="flank%2:42:00"/>
+        <MEMBER name="follow" wn=""/>
+        <MEMBER name="frame" wn="frame%2:35:00 frame%2:42:00"/>
+        <MEMBER name="head" wn="head%2:42:00"/>
+        <MEMBER name="hug" wn="hug%2:35:00"/>
+        <MEMBER name="line" wn="line%2:42:00"/>
+        <MEMBER name="overcast" wn=""/>
+        <MEMBER name="overhang" wn="overhang%2:42:01 overhang%2:42:00"/>
+        <MEMBER name="precede" wn="precede%2:42:01 precede%2:38:00"/>
+        <MEMBER name="rim" wn="rim%2:42:00"/>
+        <MEMBER name="ring" wn="ring%2:35:03"/>
+        <MEMBER name="skirt" wn="skirt%2:35:00"/>
+        <MEMBER name="span" wn="span%2:42:00"/>
+        <MEMBER name="straddle" wn="straddle%2:42:01 straddle%2:42:02"/>
+        <MEMBER name="support" wn="support%2:35:00"/>
+        <MEMBER name="surmount" wn="surmount%2:42:00"/>
+        <MEMBER name="surround" wn="surround%2:35:00"/>
+        <MEMBER name="top" wn="top%2:40:00"/>
+        <MEMBER name="traverse" wn=""/>
+        <MEMBER name="underlie" wn="underlie%2:42:00 underlie%2:42:01"/>
+    </MEMBERS>
+    <THEMROLES>
+        <THEMROLE type="Theme1">
+            <SELRESTRS>
+                <SELRESTR Value="+" type="concrete"/>
+            </SELRESTRS>
+        </THEMROLE>
+        <THEMROLE type="Theme2">
+            <SELRESTRS>
+                <SELRESTR Value="+" type="concrete"/>
+            </SELRESTRS>
+        </THEMROLE>
+    </THEMROLES>
+    <FRAMES>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.2" primary="Basic Transitive" secondary="" xtag="0.2"/>
+            <EXAMPLES>
+                <EXAMPLE>Italy borders France.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Theme1">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Theme2">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="contact">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Theme1"/>
+                        <ARG type="ThemRole" value="Theme2"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="exist">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Theme1"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="exist">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Theme2"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+    </FRAMES>
+    <SUBCLASSES>
+        <VNSUBCLASS ID="contiguous_location-47.8-1">
+            <MEMBERS>
+                <MEMBER name="abut" wn="abut%2:35:00"/>
+                <MEMBER name="adjoin" wn="adjoin%2:35:02 adjoin%2:35:03"/>
+                <MEMBER name="cross" wn="cross%2:38:03"/>
+                <MEMBER name="hit" wn=""/>
+                <MEMBER name="intersect" wn="intersect%2:38:00"/>
+                <MEMBER name="meet" wn="meet%2:42:02 meet%2:35:00"/>
+                <MEMBER name="touch" wn="touch%2:35:01"/>
+            </MEMBERS>
+            <THEMROLES/>
+            <FRAMES>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="1.2.4" primary="Understood Reciprocal Object" secondary="" xtag=""/>
+                    <EXAMPLES>
+                        <EXAMPLE>Italy and France touch.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Theme1">
+                            <SYNRESTRS/>
+                        </NP>
+                        <LEX value="and"/>
+                        <NP value="Theme2">
+                            <SYNRESTRS/>
+                        </NP>
+                        <VERB/>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="contact">
+                            <ARGS>
+                                <ARG type="Event" value="during(E)"/>
+                                <ARG type="ThemRole" value="Theme1"/>
+                                <ARG type="ThemRole" value="Theme2"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="exist">
+                            <ARGS>
+                                <ARG type="Event" value="during(E)"/>
+                                <ARG type="ThemRole" value="Theme1"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="exist">
+                            <ARGS>
+                                <ARG type="Event" value="during(E)"/>
+                                <ARG type="ThemRole" value="Theme2"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+            </FRAMES>
+            <SUBCLASSES/>
+        </VNSUBCLASS>
+        <VNSUBCLASS ID="contiguous_location-47.8-2">
+            <MEMBERS>
+                <MEMBER name="dominate" wn="?dominate%2:42:02"/>
+            </MEMBERS>
+            <THEMROLES/>
+            <FRAMES>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="" primary="Unspecified Object" secondary="" xtag=""/>
+                    <EXAMPLES>
+                        <EXAMPLE>DEC has often dominated.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Theme1">
+                            <SYNRESTRS/>
+                        </NP>
+                        <VERB/>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="contact">
+                            <ARGS>
+                                <ARG type="Event" value="during(E)"/>
+                                <ARG type="ThemRole" value="Theme1"/>
+                                <ARG type="ThemRole" value="?Theme2"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="exist">
+                            <ARGS>
+                                <ARG type="Event" value="during(E)"/>
+                                <ARG type="ThemRole" value="Theme1"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="exist">
+                            <ARGS>
+                                <ARG type="Event" value="during(E)"/>
+                                <ARG type="ThemRole" value="?Theme2"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+            </FRAMES>
+            <SUBCLASSES/>
+        </VNSUBCLASS>
+    </SUBCLASSES>
+</VNCLASS>

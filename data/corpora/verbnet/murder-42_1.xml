@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE VNCLASS SYSTEM "vn_class-3.dtd">
+<VNCLASS ID="murder-42.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="vn_schema-3.xsd">
+    <MEMBERS>
+        <MEMBER name="assassinate" wn="assassinate%2:41:00"/>
+        <MEMBER name="butcher" wn="butcher%2:35:00"/>
+        <MEMBER name="dispatch" wn="dispatch%2:41:01"/>
+        <MEMBER name="eliminate" wn="eliminate%2:30:00"/>
+        <MEMBER name="execute" wn="execute%2:41:00 execute%2:41:01"/>
+        <MEMBER name="immolate" wn="immolate%2:40:00"/>
+        <MEMBER name="liquidate" wn="liquidate%2:35:00"/>
+        <MEMBER name="massacre" wn="massacre%2:30:00"/>
+        <MEMBER name="murder" wn="murder%2:41:00"/>
+        <MEMBER name="slaughter" wn="slaughter%2:35:00 slaughter%2:30:00"/>
+        <MEMBER name="slay" wn="slay%2:41:00"/>
+    </MEMBERS>
+    <THEMROLES>
+        <THEMROLE type="Agent">
+            <SELRESTRS>
+                <SELRESTR Value="+" type="animate"/>
+            </SELRESTRS>
+        </THEMROLE>
+        <THEMROLE type="Patient">
+            <SELRESTRS>
+                <SELRESTR Value="+" type="animate"/>
+            </SELRESTRS>
+        </THEMROLE>
+        <THEMROLE type="Instrument">
+            <SELRESTRS/>
+        </THEMROLE>
+    </THEMROLES>
+    <FRAMES>
+        <!--Levin also includes resultative for "kill" - "kill him dead"-->
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.2" primary="Basic Transitive" secondary="" xtag="0.2"/>
+            <EXAMPLES>
+                <EXAMPLE>Brutus murdered Julius Cesar.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Patient">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="alive">
+                    <ARGS>
+                        <ARG type="Event" value="start(E)"/>
+                        <ARG type="ThemRole" value="Patient"/>
+                    </ARGS>
+                </PRED>
+                <PRED bool="!" value="alive">
+                    <ARGS>
+                        <ARG type="Event" value="result(E)"/>
+                        <ARG type="ThemRole" value="Patient"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="" primary="NP-PP" secondary="Instrument-PP" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>Caesar killed Brutus with a knife.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Patient">
+                    <SYNRESTRS/>
+                </NP>
+                <PREP value="with">
+                    <SELRESTRS/>
+                </PREP>
+                <NP value="Instrument">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="alive">
+                    <ARGS>
+                        <ARG type="Event" value="start(E)"/>
+                        <ARG type="ThemRole" value="Patient"/>
+                    </ARGS>
+                </PRED>
+                <PRED bool="!" value="alive">
+                    <ARGS>
+                        <ARG type="Event" value="result(E)"/>
+                        <ARG type="ThemRole" value="Patient"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="use">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="ThemRole" value="Instrument"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+    </FRAMES>
+    <SUBCLASSES>
+        <VNSUBCLASS ID="murder-42.1-1">
+            <MEMBERS>
+                <MEMBER name="kill" wn="kill%2:35:00 kill%2:35:01 kill%2:42:00 kill%2:35:02"/>
+            </MEMBERS>
+            <THEMROLES>
+                <THEMROLE type="Instrument">
+                    <SELRESTRS>
+                        <SELRESTR Value="+" type="concrete"/>
+                    </SELRESTRS>
+                </THEMROLE>
+            </THEMROLES>
+            <FRAMES>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="3.3" primary="Instrument Subject Alternation" secondary="" xtag=""/>
+                    <EXAMPLES>
+                        <EXAMPLE>The DDT killed the insects.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Instrument">
+                            <SYNRESTRS/>
+                        </NP>
+                        <VERB/>
+                        <NP value="Patient">
+                            <SYNRESTRS/>
+                        </NP>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="alive">
+                            <ARGS>
+                                <ARG type="Event" value="start(E)"/>
+                                <ARG type="ThemRole" value="Patient"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED bool="!" value="alive">
+                            <ARGS>
+                                <ARG type="Event" value="result(E)"/>
+                                <ARG type="ThemRole" value="Patient"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="cause">
+                            <ARGS>
+                                <ARG type="ThemRole" value="?Agent"/>
+                                <ARG type="Event" value="E"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="use">
+                            <ARGS>
+                                <ARG type="Event" value="during(E)"/>
+                                <ARG type="ThemRole" value="?Agent"/>
+                                <ARG type="ThemRole" value="Instrument"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+            </FRAMES>
+            <SUBCLASSES/>
+        </VNSUBCLASS>
+    </SUBCLASSES>
+</VNCLASS>

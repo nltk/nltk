@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE VNCLASS SYSTEM "vn_class-3.dtd">
+<VNCLASS ID="escape-51.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="vn_schema-3.xsd">
+    <!--each verb specifies the Prep_Dirthat is it's default-->
+    <MEMBERS/>
+    <THEMROLES>
+        <THEMROLE type="Theme">
+            <SELRESTRS>
+                <SELRESTR Value="+" type="concrete"/>
+            </SELRESTRS>
+        </THEMROLE>
+    </THEMROLES>
+    <FRAMES/>
+    <SUBCLASSES>
+        <VNSUBCLASS ID="escape-51.1-1">
+            <MEMBERS>
+                <MEMBER name="ascend" wn="ascend%2:38:02 ascend%2:38:04 ascend%2:38:01 ascend%2:38:03"/>
+                <MEMBER name="?climb" wn="climb%2:38:00"/>
+                <MEMBER name="?cross" wn="cross%2:38:00"/>
+                <MEMBER name="depart" wn="depart%2:38:04 depart%2:38:01"/>
+                <MEMBER name="descend" wn="descend%2:38:00"/>
+                <MEMBER name="disembark" wn=""/>
+                <MEMBER name="enter" wn="enter%2:38:00 enter%2:36:00"/>
+                <MEMBER name="escape" wn="escape%2:38:00"/>
+                <MEMBER name="exit" wn="exit%2:38:00"/>
+                <MEMBER name="flee" wn="flee%2:38:00"/>
+                <MEMBER name="leave" wn="leave%2:38:01 leave%2:38:00"/>
+                <MEMBER name="vacate" wn=""/>
+            </MEMBERS>
+            <THEMROLES>
+                <THEMROLE type="Location">
+                    <SELRESTRS>
+                        <SELRESTR Value="+" type="concrete"/>
+                    </SELRESTRS>
+                </THEMROLE>
+            </THEMROLES>
+            <FRAMES>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="0.1" primary="Basic Intransitive" secondary="" xtag="0.1"/>
+                    <EXAMPLES>
+                        <EXAMPLE>The convict escaped.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Theme">
+                            <SYNRESTRS/>
+                        </NP>
+                        <VERB/>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="motion">
+                            <ARGS>
+                                <ARG type="Event" value="during(E)"/>
+                                <ARG type="ThemRole" value="Theme"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="direction">
+                            <ARGS>
+                                <ARG type="Event" value="during(E)"/>
+                                <ARG type="VerbSpecific" value="Prep_Dir"/>
+                                <ARG type="ThemRole" value="Theme"/>
+                                <ARG type="ThemRole" value="?Location"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="0.1" primary="PP" secondary="path-PP" xtag=""/>
+                    <EXAMPLES>
+                        <EXAMPLE>The convict escaped from the prison.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Theme">
+                            <SYNRESTRS/>
+                        </NP>
+                        <VERB/>
+                        <PREP>
+                            <SELRESTRS>
+                                <SELRESTR Value="+" type="path"/>
+                            </SELRESTRS>
+                        </PREP>
+                        <NP value="Location">
+                            <SYNRESTRS/>
+                        </NP>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="motion">
+                            <ARGS>
+                                <ARG type="Event" value="during(E)"/>
+                                <ARG type="ThemRole" value="Theme"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="direction">
+                            <ARGS>
+                                <ARG type="Event" value="during(E)"/>
+                                <ARG type="VerbSpecific" value="Prep_Dir"/>
+                                <ARG type="ThemRole" value="Theme"/>
+                                <ARG type="ThemRole" value="Location"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="1.4.1" primary="Locative Preposition Drop" secondary="" xtag=""/>
+                    <EXAMPLES>
+                        <EXAMPLE>The convict escaped the prison.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Theme">
+                            <SYNRESTRS/>
+                        </NP>
+                        <VERB/>
+                        <NP value="Location">
+                            <SYNRESTRS/>
+                        </NP>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="motion">
+                            <ARGS>
+                                <ARG type="Event" value="during(E)"/>
+                                <ARG type="ThemRole" value="Theme"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="direction">
+                            <ARGS>
+                                <ARG type="Event" value="during(E)"/>
+                                <ARG type="VerbSpecific" value="Prep_Dir"/>
+                                <ARG type="ThemRole" value="Theme"/>
+                                <ARG type="ThemRole" value="Location"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+            </FRAMES>
+            <SUBCLASSES/>
+        </VNSUBCLASS>
+        <VNSUBCLASS ID="escape-51.1-2">
+            <MEMBERS>
+                <MEMBER name="advance" wn="advance%2:38:00"/>
+                <MEMBER name="approach" wn=""/>
+                <MEMBER name="come" wn="come%2:38:00 come%2:38:04"/>
+                <MEMBER name="fall" wn="fall%2:38:03 fall%2:38:15 fall%2:38:14"/>
+                <MEMBER name="go" wn="go%2:38:00 go%2:38:01"/>
+                <MEMBER name="plunge" wn="plunge%2:38:05 plunge%2:38:00"/>
+                <MEMBER name="recede" wn="recede%2:38:01 recede%2:33:00 recede%2:30:00"/>
+                <MEMBER name="return" wn="return%2:38:00"/>
+                <MEMBER name="rise" wn="rise%2:38:00 rise%2:38:05 rise%2:38:04 rise%2:29:08 rise%2:38:08"/>
+                <MEMBER name="tumble" wn="tumble%2:38:00 tumble%2:38:04"/>
+            </MEMBERS>
+            <THEMROLES/>
+            <FRAMES>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="0.1" primary="Basic Intransitive" secondary="" xtag="0.1"/>
+                    <!-- each verb specifies the Prep_Dir (and sometimes the Oblique) that is it's default-->
+                    <EXAMPLES>
+                        <EXAMPLE>The prisoners advanced.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Theme">
+                            <SYNRESTRS/>
+                        </NP>
+                        <VERB/>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="motion">
+                            <ARGS>
+                                <ARG type="Event" value="during(E)"/>
+                                <ARG type="ThemRole" value="Theme"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="direction">
+                            <ARGS>
+                                <ARG type="Event" value="during(E)"/>
+                                <ARG type="VerbSpecific" value="Prep_Dir"/>
+                                <ARG type="ThemRole" value="Theme"/>
+                                <ARG type="ThemRole" value="?Oblique"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="0.1" primary="PP" secondary="path-PP" xtag=""/>
+                    <EXAMPLES>
+                        <EXAMPLE>The prisoners  advanced across the field.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Theme">
+                            <SYNRESTRS/>
+                        </NP>
+                        <VERB/>
+                        <PREP>
+                            <SELRESTRS>
+                                <SELRESTR Value="+" type="path"/>
+                            </SELRESTRS>
+                        </PREP>
+                        <NP value="Oblique">
+                            <SELRESTRS/>
+                        </NP>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="motion">
+                            <ARGS>
+                                <ARG type="Event" value="during(E)"/>
+                                <ARG type="ThemRole" value="Theme"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="direction">
+                            <ARGS>
+                                <ARG type="Event" value="during(E)"/>
+                                <ARG type="VerbSpecific" value="Prep_Dir"/>
+                                <ARG type="ThemRole" value="Theme"/>
+                                <ARG type="ThemRole" value="Oblique"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+            </FRAMES>
+            <SUBCLASSES>
+                <VNSUBCLASS ID="escape-51.1-2-1">
+                    <MEMBERS>
+                        <MEMBER name="arrive" wn="arrive%2:38:00"/>
+                    </MEMBERS>
+                    <THEMROLES/>
+                    <FRAMES>
+                        <FRAME>
+                            <DESCRIPTION descriptionNumber="" primary="PP" secondary="in-PP" xtag=""/>
+                            <EXAMPLES>
+                                <EXAMPLE>He arrived in the U.S.</EXAMPLE>
+                            </EXAMPLES>
+                            <SYNTAX>
+                                <NP value="Theme">
+                                    <SYNRESTRS/>
+                                </NP>
+                                <VERB/>
+                                <PREP value="in">
+                                    <SELRESTRS/>
+                                </PREP>
+                                <NP value="Oblique">
+                                    <SELRESTRS/>
+                                </NP>
+                            </SYNTAX>
+                            <SEMANTICS>
+                                <PRED value="motion">
+                                    <ARGS>
+                                        <ARG type="Event" value="during(E)"/>
+                                        <ARG type="ThemRole" value="Theme"/>
+                                    </ARGS>
+                                </PRED>
+                                <PRED value="location">
+                                    <ARGS>
+                                        <ARG type="Event" value="end(E)"/>
+                                        <ARG type="ThemRole" value="Theme"/>
+                                        <ARG type="ThemRole" value="Oblique"/>
+                                    </ARGS>
+                                </PRED>
+                            </SEMANTICS>
+                        </FRAME>
+                    </FRAMES>
+                    <SUBCLASSES/>
+                </VNSUBCLASS>
+            </SUBCLASSES>
+        </VNSUBCLASS>
+    </SUBCLASSES>
+</VNCLASS>

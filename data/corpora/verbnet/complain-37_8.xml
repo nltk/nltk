@@ -1,0 +1,359 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE VNCLASS SYSTEM "vn_class-3.dtd">
+<VNCLASS ID="complain-37.8" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="vn_schema-3.xsd">
+    <MEMBERS>
+        <!--verbs add a manner predicate describing the tone of the communication-->
+        <MEMBER name="boast" wn="boast%2:32:00"/>
+        <MEMBER name="brag" wn="brag%2:32:00"/>
+        <MEMBER name="complain" wn="complain%2:32:00"/>
+        <MEMBER name="crab" wn=""/>
+        <MEMBER name="gripe" wn="gripe%2:32:00"/>
+        <MEMBER name="grouch" wn="grouch%2:32:00"/>
+        <MEMBER name="grouse" wn="grouse%2:33:00"/>
+        <MEMBER name="grumble" wn="grumble%2:32:01 grumble%2:32:00"/>
+        <MEMBER name="kvetch" wn="kvetch%2:32:00"/>
+        <MEMBER name="object" wn="object%2:32:00"/>
+    </MEMBERS>
+    <THEMROLES>
+        <THEMROLE type="Agent">
+            <SELRESTRS logic="or">
+                <SELRESTR Value="+" type="animate"/>
+                <SELRESTR Value="+" type="organization"/>
+            </SELRESTRS>
+        </THEMROLE>
+        <THEMROLE type="Topic">
+            <SELRESTRS>
+                <SELRESTR Value="+" type="communication"/>
+            </SELRESTRS>
+        </THEMROLE>
+        <THEMROLE type="Recipient">
+            <SELRESTRS logic="or">
+                <SELRESTR Value="+" type="animate"/>
+                <SELRESTR Value="+" type="organization"/>
+            </SELRESTRS>
+        </THEMROLE>
+    </THEMROLES>
+    <FRAMES>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.1" primary="Basic Intransitive" secondary="" xtag="0.1"/>
+            <EXAMPLES>
+                <EXAMPLE>Susan complained.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="transfer_info">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="ThemRole" value="?Recipient"/>
+                        <ARG type="ThemRole" value="?Topic"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.1" primary="PP" secondary="Recipient-PP" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>Susan complained to Rachel.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <PREP value="to">
+                    <SELRESTRS/>
+                </PREP>
+                <NP value="Recipient">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="transfer_info">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="ThemRole" value="Recipient"/>
+                        <ARG type="ThemRole" value="?Topic"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.5" primary="S" secondary="" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>Susan complained that the party would be tonight.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Topic">
+                    <SYNRESTRS>
+                        <SYNRESTR Value="+" type="that_comp"/>
+                    </SYNRESTRS>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="transfer_info">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="ThemRole" value="?Recipient"/>
+                        <ARG type="ThemRole" value="Topic"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.5" primary="PP-S" secondary="Recipient-PP" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>Susan complained to Rachel that the party would be tonight.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <PREP value="to">
+                    <SELRESTRS/>
+                </PREP>
+                <NP value="Recipient">
+                    <SYNRESTRS/>
+                </NP>
+                <NP value="Topic">
+                    <SYNRESTRS>
+                        <SYNRESTR Value="+" type="that_comp"/>
+                    </SYNRESTRS>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="transfer_info">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="ThemRole" value="Recipient"/>
+                        <ARG type="ThemRole" value="Topic"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.2" primary="PP" secondary="Topic-PP" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>Ellen complained about the situation.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <PREP value="about">
+                    <SELRESTRS/>
+                </PREP>
+                <NP value="Topic">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="transfer_info">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="ThemRole" value="?Recipient"/>
+                        <ARG type="ThemRole" value="Topic"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.2" primary="PP-PP" secondary="Topic-PP Recipient-PP" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>Ellen complained about the situation to Helen.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <PREP value="about">
+                    <SELRESTRS/>
+                </PREP>
+                <NP value="Topic">
+                    <SYNRESTRS/>
+                </NP>
+                <PREP value="to">
+                    <SELRESTRS/>
+                </PREP>
+                <NP value="Recipient">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="transfer_info">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="ThemRole" value="Recipient"/>
+                        <ARG type="ThemRole" value="Topic"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.3" primary="QUOT" secondary="" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>Ellen complained, 'The mail didn't come today.'</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Topic">
+                    <SYNRESTRS>
+                        <SYNRESTR Value="+" type="quotation"/>
+                    </SYNRESTRS>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="transfer_info">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="ThemRole" value="?Recipient"/>
+                        <ARG type="ThemRole" value="Topic"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.3" primary="PP-QUOT" secondary="Recipient-PP" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>Ellen complained to Helen, 'The mail didn't come today.'</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <PREP value="to">
+                    <SELRESTRS/>
+                </PREP>
+                <NP value="Recipient">
+                    <SYNRESTRS/>
+                </NP>
+                <NP value="Topic">
+                    <SYNRESTRS>
+                        <SYNRESTR Value="+" type="quotation"/>
+                    </SYNRESTRS>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="transfer_info">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="ThemRole" value="Recipient"/>
+                        <ARG type="ThemRole" value="Topic"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="" primary="PP-PP" secondary="Recipient-PP Topic-PP" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>The prime minister complained to the former president about U.S. interference in his country's affairs.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <PREP value="to">
+                    <SELRESTRS/>
+                </PREP>
+                <NP value="Recipient">
+                    <SYNRESTRS/>
+                </NP>
+                <PREP value="about">
+                    <SELRESTRS/>
+                </PREP>
+                <NP value="Topic">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="transfer_info">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="ThemRole" value="Recipient"/>
+                        <ARG type="ThemRole" value="Topic"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+    </FRAMES>
+    <SUBCLASSES/>
+</VNCLASS>

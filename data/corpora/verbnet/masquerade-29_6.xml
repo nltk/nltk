@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE VNCLASS SYSTEM "vn_class-3.dtd">
+<VNCLASS ID="masquerade-29.6" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="vn_schema-3.xsd">
+    <MEMBERS>
+        <MEMBER name="behave" wn="behave%2:29:00"/>
+        <MEMBER name="camouflage" wn="camouflage%2:39:00"/>
+        <MEMBER name="count" wn=""/>
+        <MEMBER name="function" wn=""/>
+        <MEMBER name="masquerade" wn="masquerade%2:32:00"/>
+        <MEMBER name="officiate" wn="officiate%2:33:00"/>
+        <MEMBER name="qualify" wn="qualify%2:42:00"/>
+        <MEMBER name="rank" wn="rank%2:31:13"/>
+        <MEMBER name="rate" wn="rate%2:42:01"/>
+    </MEMBERS>
+    <THEMROLES>
+        <THEMROLE type="Agent">
+            <SELRESTRS>
+                <SELRESTR Value="+" type="animate"/>
+            </SELRESTRS>
+        </THEMROLE>
+        <THEMROLE type="Predicate">
+            <SELRESTRS/>
+        </THEMROLE>
+    </THEMROLES>
+    <FRAMES>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.1" primary="PP" secondary="as-PP" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>Dina masqueraded as a lawyer.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <LEX value="as"/>
+                <NP value="Predicate">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="masquerade">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="ThemRole" value="Predicate"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+    </FRAMES>
+    <SUBCLASSES>
+        <VNSUBCLASS ID="masquerade-29.6-1">
+            <MEMBERS>
+                <MEMBER name="act" wn="act%2:29:00 act%2:33:00"/>
+                <MEMBER name="behave" wn="behave%2:29:00"/>
+            </MEMBERS>
+            <THEMROLES/>
+            <FRAMES>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="" primary="PP" secondary="like-PP" xtag=""/>
+                    <EXAMPLES>
+                        <EXAMPLE>Dina acted like a cretin.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Agent">
+                            <SYNRESTRS/>
+                        </NP>
+                        <VERB/>
+                        <LEX value="like"/>
+                        <NP value="Predicate">
+                            <SYNRESTRS/>
+                        </NP>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="masquerade">
+                            <ARGS>
+                                <ARG type="Event" value="during(E)"/>
+                                <ARG type="ThemRole" value="Agent"/>
+                                <ARG type="ThemRole" value="Predicate"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+            </FRAMES>
+            <SUBCLASSES/>
+        </VNSUBCLASS>
+        <VNSUBCLASS ID="masquerade-29.6-2">
+            <MEMBERS>
+                <MEMBER name="serve" wn="serve%2:42:03 serve%2:33:00"/>
+                <MEMBER name="pose" wn="pose%2:32:13"/>
+            </MEMBERS>
+            <THEMROLES/>
+            <FRAMES>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="" primary="Basic Transitive" secondary="" xtag=""/>
+                    <EXAMPLES>
+                        <EXAMPLE>They serve a restricted role on the bench.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Agent">
+                            <SYNRESTRS/>
+                        </NP>
+                        <VERB/>
+                        <NP value="Predicate">
+                            <SYNRESTRS/>
+                        </NP>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="masquerade">
+                            <ARGS>
+                                <ARG type="Event" value="during(E)"/>
+                                <ARG type="ThemRole" value="Agent"/>
+                                <ARG type="ThemRole" value="Predicate"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="" primary="PP" secondary="in-PP" xtag=""/>
+                    <EXAMPLES>
+                        <EXAMPLE>He had served in financial planning positions.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Agent">
+                            <SYNRESTRS/>
+                        </NP>
+                        <VERB/>
+                        <PREP value="in">
+                            <SELRESTRS/>
+                        </PREP>
+                        <NP value="Predicate">
+                            <SYNRESTRS/>
+                        </NP>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="masquerade">
+                            <ARGS>
+                                <ARG type="Event" value="during(E)"/>
+                                <ARG type="ThemRole" value="Agent"/>
+                                <ARG type="ThemRole" value="Predicate"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+            </FRAMES>
+            <SUBCLASSES/>
+        </VNSUBCLASS>
+    </SUBCLASSES>
+</VNCLASS>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE VNCLASS SYSTEM "vn_class-3.dtd">
+<VNCLASS ID="peer-30.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="vn_schema-3.xsd">
+    <MEMBERS>
+        <MEMBER name="check" wn="check%2:31:00"/>
+        <MEMBER name="gape" wn="gape%2:39:00"/>
+        <MEMBER name="gawk" wn="gawk%2:39:00"/>
+        <MEMBER name="gaze" wn="gaze%2:39:00"/>
+        <MEMBER name="glance" wn="glance%2:39:00"/>
+        <MEMBER name="glare" wn="glare%2:29:00"/>
+        <MEMBER name="goggle" wn="goggle%2:39:00"/>
+        <MEMBER name="leer" wn="leer%2:39:00"/>
+        <MEMBER name="listen" wn="listen%2:39:00 listen%2:39:01"/>
+        <MEMBER name="look" wn="look%2:39:00 look%2:39:02"/>
+        <MEMBER name="ogle" wn="ogle%2:39:00"/>
+        <MEMBER name="peek" wn="peek%2:39:02"/>
+        <MEMBER name="peep" wn="peep%2:39:00"/>
+        <MEMBER name="peer" wn="peer%2:39:00"/>
+        <MEMBER name="sniff" wn="sniff%2:39:00"/>
+        <MEMBER name="snoop" wn="snoop%2:32:00"/>
+        <MEMBER name="squint" wn="squint%2:29:00"/>
+        <MEMBER name="stare" wn="stare%2:39:00"/>
+    </MEMBERS>
+    <THEMROLES>
+        <THEMROLE type="Experiencer">
+            <SELRESTRS>
+                <SELRESTR Value="+" type="animate"/>
+            </SELRESTRS>
+        </THEMROLE>
+        <THEMROLE type="Stimulus">
+            <SELRESTRS/>
+        </THEMROLE>
+    </THEMROLES>
+    <FRAMES>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.2" primary="PP" secondary="Theme-PP" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>We peered at the baby.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Experiencer">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <PREP>
+                    <SELRESTRS>
+                        <SELRESTR Value="+" type="spatial"/>
+                    </SELRESTRS>
+                </PREP>
+                <NP value="Stimulus">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="perceive">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Experiencer"/>
+                        <ARG type="ThemRole" value="Stimulus"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="in_reaction_to">
+                    <ARGS>
+                        <ARG type="Event" value="E"/>
+                        <ARG type="ThemRole" value="Stimulus"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+    </FRAMES>
+    <SUBCLASSES/>
+</VNCLASS>

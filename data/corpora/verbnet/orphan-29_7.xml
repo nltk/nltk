@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE VNCLASS SYSTEM "vn_class-3.dtd">
+<VNCLASS ID="orphan-29.7" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="vn_schema-3.xsd">
+    <MEMBERS>
+        <MEMBER name="apprentice" wn=""/>
+        <MEMBER name="canonize" wn="canonize%2:32:00"/>
+        <MEMBER name="cripple" wn="cripple%2:29:00"/>
+        <MEMBER name="cuckold" wn="cuckold%2:41:00"/>
+        <MEMBER name="knight" wn="knight%2:41:01"/>
+        <MEMBER name="martyr" wn="martyr%2:35:00 martyr%2:29:00"/>
+        <MEMBER name="orphan" wn="orphan%2:40:00"/>
+        <MEMBER name="outlaw" wn="outlaw%2:41:00"/>
+        <MEMBER name="pauper" wn=""/>
+        <MEMBER name="recruit" wn="recruit%2:40:00 recruit%2:33:00"/>
+        <MEMBER name="widow" wn="widow%2:30:00"/>
+    </MEMBERS>
+    <THEMROLES>
+        <THEMROLE type="Agent">
+            <SELRESTRS/>
+        </THEMROLE>
+        <THEMROLE type="Theme">
+            <SELRESTRS/>
+        </THEMROLE>
+    </THEMROLES>
+    <FRAMES>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.2" primary="Basic Transitive" secondary="" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>The king knighted the brave soldier.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Theme">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="designated">
+                    <ARGS>
+                        <ARG type="Event" value="result(E)"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                        <ARG type="VerbSpecific" value="Role"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+    </FRAMES>
+    <SUBCLASSES/>
+</VNCLASS>

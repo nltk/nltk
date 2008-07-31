@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE VNCLASS SYSTEM "vn_class-3.dtd">
+<VNCLASS ID="put_spatial-9.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="vn_schema-3.xsd">
+    <!--Perhaps make a subclass put_spatial-9.2-2 (dangle, hang, suspend) that allows Prep[from]-->
+    <MEMBERS>
+        <!--members specify Pos argument in position predicate-->
+        <MEMBER name="lay" wn="lay%2:35:01 lay%2:35:00"/>
+        <MEMBER name="prop" wn=""/>
+    </MEMBERS>
+    <THEMROLES>
+        <!--Destination can also be realized as a locative adverb ("here, there")-->
+        <THEMROLE type="Agent">
+            <SELRESTRS>
+                <SELRESTR Value="+" type="animate"/>
+            </SELRESTRS>
+        </THEMROLE>
+        <THEMROLE type="Theme">
+            <SELRESTRS>
+                <SELRESTR Value="+" type="concrete"/>
+            </SELRESTRS>
+        </THEMROLE>
+        <THEMROLE type="Destination">
+            <SELRESTRS>
+                <SELRESTR Value="+" type="location"/>
+                <SELRESTR Value="-" type="region"/>
+            </SELRESTRS>
+        </THEMROLE>
+    </THEMROLES>
+    <FRAMES>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.2" primary="NP-PP" secondary="locative-PP" xtag=""/>
+            <!-- many verbs cross-listed with spatial_configuration-47.6, where the change in-->
+            <!-- position of Theme is emphasized; here we emphasize change in Destination-->
+            <EXAMPLES>
+                <EXAMPLE>Cheryl stood the books on the shelf.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Theme">
+                    <SYNRESTRS/>
+                </NP>
+                <PREP>
+                    <SELRESTRS>
+                        <SELRESTR Value="+" type="loc"/>
+                    </SELRESTRS>
+                </PREP>
+                <NP value="Destination">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="motion">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                    </ARGS>
+                </PRED>
+                <PRED bool="!" value="Prep">
+                    <ARGS>
+                        <ARG type="Event" value="start(E)"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                        <ARG type="ThemRole" value="Destination"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="Prep">
+                    <ARGS>
+                        <ARG type="Event" value="end(E)"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                        <ARG type="ThemRole" value="Destination"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="position">
+                    <ARGS>
+                        <ARG type="Event" value="end(E)"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                        <ARG type="VerbSpecific" value="Pos"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.2" primary="NP-ADVP-PRED" secondary="here/there" xtag=""/>
+            <!-- discourse has to provide specific Destination and configuration (Prep) of Theme wrt Destination-->
+            <EXAMPLES>
+                <EXAMPLE>Cheryl stood the books there.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Theme">
+                    <SYNRESTRS/>
+                </NP>
+                <NP value="Destination">
+                    <SYNRESTRS>
+                        <SYNRESTR Value="+" type="adv_loc"/>
+                    </SYNRESTRS>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="motion">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                    </ARGS>
+                </PRED>
+                <PRED bool="!" value="Prep">
+                    <ARGS>
+                        <ARG type="Event" value="start(E)"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                        <ARG type="ThemRole" value="Destination"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="Prep">
+                    <ARGS>
+                        <ARG type="Event" value="end(E)"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                        <ARG type="ThemRole" value="Destination"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="position">
+                    <ARGS>
+                        <ARG type="Event" value="end(E)"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                        <ARG type="VerbSpecific" value="Pos"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+    </FRAMES>
+    <SUBCLASSES>
+        <VNSUBCLASS ID="put_spatial-9.2-1">
+            <MEMBERS>
+                <MEMBER name="dangle" wn="dangle%2:42:00 dangle%2:35:00"/>
+                <MEMBER name="hang" wn="hang%2:35:03 hang%2:35:00 hang%2:42:01 hang%2:36:00 hang%2:35:04 hang%2:30:00"/>
+                <MEMBER name="lean" wn="lean%2:38:00 lean%2:35:00"/>
+                <MEMBER name="perch" wn="perch%2:35:00 perch%2:35:10"/>
+                <MEMBER name="rest" wn="rest%2:35:04 rest%2:35:01 rest%2:35:02"/>
+                <MEMBER name="sit" wn="sit%2:35:00 sit%2:42:00 sit%2:38:00 sit%2:35:01"/>
+                <MEMBER name="stand" wn="stand%2:42:03 stand%2:35:01"/>
+                <MEMBER name="suspend" wn="suspend%2:35:00"/>
+            </MEMBERS>
+            <THEMROLES/>
+            <FRAMES>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="0.1" primary="PP" secondary="Destination-PP" xtag=""/>
+                    <!-- The verb is used to describe a state rather than an action-->
+                    <EXAMPLES>
+                        <EXAMPLE>The books lean against the shelf.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Theme">
+                            <SYNRESTRS/>
+                        </NP>
+                        <VERB/>
+                        <PREP>
+                            <SELRESTRS>
+                                <SELRESTR Value="+" type="loc"/>
+                            </SELRESTRS>
+                        </PREP>
+                        <NP value="Destination">
+                            <SYNRESTRS/>
+                        </NP>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="Prep">
+                            <ARGS>
+                                <ARG type="Event" value="E"/>
+                                <ARG type="ThemRole" value="Theme"/>
+                                <ARG type="ThemRole" value="Destination"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="position">
+                            <ARGS>
+                                <ARG type="Event" value="E"/>
+                                <ARG type="ThemRole" value="Theme"/>
+                                <ARG type="VerbSpecific" value="Pos"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="0.1" primary="ADVP" secondary="here/there" xtag=""/>
+                    <!-- discourse has to provide specific Destination and configuration (Prep) of Theme wrt Destination-->
+                    <EXAMPLES>
+                        <EXAMPLE>The books lean there.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Theme">
+                            <SYNRESTRS/>
+                        </NP>
+                        <VERB/>
+                        <NP value="Destination">
+                            <SYNRESTRS>
+                                <SYNRESTR Value="+" type="adv_loc"/>
+                            </SYNRESTRS>
+                        </NP>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="Prep">
+                            <ARGS>
+                                <ARG type="Event" value="E"/>
+                                <ARG type="ThemRole" value="Theme"/>
+                                <ARG type="ThemRole" value="Destination"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="position">
+                            <ARGS>
+                                <ARG type="Event" value="E"/>
+                                <ARG type="ThemRole" value="Theme"/>
+                                <ARG type="VerbSpecific" value="Pos"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+            </FRAMES>
+            <SUBCLASSES/>
+        </VNSUBCLASS>
+    </SUBCLASSES>
+</VNCLASS>
+

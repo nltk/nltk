@@ -1,0 +1,972 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE VNCLASS SYSTEM "vn_class-3.dtd">
+<VNCLASS ID="inquire-37.1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="vn_schema-3.xsd">
+    <MEMBERS>
+        <MEMBER name="ask" wn=""/>
+        <MEMBER name="enquire" wn=""/>
+        <MEMBER name="inquire" wn=""/>
+        <MEMBER name="consult" wn=""/>
+        <MEMBER name="pry" wn=""/>
+    </MEMBERS>
+    <THEMROLES>
+        <THEMROLE type="Agent">
+            <SELRESTRS logic="or">
+                <SELRESTR Value="+" type="animate"/>
+                <SELRESTR Value="+" type="organization"/>
+            </SELRESTRS>
+        </THEMROLE>
+        <THEMROLE type="Recipient">
+            <SELRESTRS logic="or">
+                <SELRESTR Value="+" type="animate"/>
+                <SELRESTR Value="+" type="organization"/>
+            </SELRESTRS>
+        </THEMROLE>
+        <THEMROLE type="Topic">
+            <SELRESTRS/>
+        </THEMROLE>
+    </THEMROLES>
+    <FRAMES>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="8.1" primary="HOW-S" secondary="" xtag="0.2"/>
+            <EXAMPLES>
+                <EXAMPLE>I asked how she did it.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Topic">
+                    <SYNRESTRS>
+                        <SYNRESTR Value="+" type="how_extract"/>
+                    </SYNRESTRS>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="transfer_info">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="ThemRole" value="?Recipient"/>
+                        <ARG type="ThemRole" value="Topic"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="8.1" primary="HOW-TO-INF" secondary="" xtag="0.2"/>
+            <EXAMPLES>
+                <EXAMPLE>I asked how to do it.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Topic">
+                    <SYNRESTRS>
+                        <SYNRESTR Value="+" type="wh_inf"/>
+                    </SYNRESTRS>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="transfer_info">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="ThemRole" value="?Recipient"/>
+                        <ARG type="ThemRole" value="Topic"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.1" primary="Basic Intransitive" secondary="" xtag="0.2"/>
+            <EXAMPLES>
+                <EXAMPLE>I asked.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="transfer_info">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="ThemRole" value="?Recipient"/>
+                        <ARG type="ThemRole" value="?Topic"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.2" primary="Basic Transitive" secondary="Recipient Object" xtag="0.2"/>
+            <EXAMPLES>
+                <EXAMPLE>I asked him.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Recipient">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="transfer_info">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="ThemRole" value="Recipient"/>
+                        <ARG type="ThemRole" value="?Topic"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.2" primary="Basic Transitive" secondary="Topic Object" xtag="0.2"/>
+            <EXAMPLES>
+                <EXAMPLE>I asked a question.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Topic">
+                    <SYNRESTRS>
+                        <SYNRESTR Value="-" type="sentential"/>
+                    </SYNRESTRS>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="transfer_info">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="ThemRole" value="?Recipient"/>
+                        <ARG type="ThemRole" value="Topic"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.2" primary="NP-PP" secondary="about-PP" xtag="0.2"/>
+            <EXAMPLES>
+                <EXAMPLE>I asked him about it.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Recipient">
+                    <SYNRESTRS/>
+                </NP>
+                <PREP value="about">
+                    <SELRESTRS/>
+                </PREP>
+                <NP value="Topic">
+                    <SYNRESTRS>
+                        <SYNRESTR Value="-" type="sentential"/>
+                    </SYNRESTRS>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="transfer_info">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="ThemRole" value="Recipient"/>
+                        <ARG type="ThemRole" value="Topic"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="8.1" primary="NP-WH-S" secondary="" xtag="0.2"/>
+            <EXAMPLES>
+                <EXAMPLE>I asked him whether he was going.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Recipient">
+                    <SYNRESTRS/>
+                </NP>
+                <NP value="Topic">
+                    <SYNRESTRS>
+                        <SYNRESTR Value="+" type="wh_comp"/>
+                    </SYNRESTRS>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="transfer_info">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="ThemRole" value="Recipient"/>
+                        <ARG type="ThemRole" value="Topic"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="8.1" primary="NP-WHAT-S" secondary="" xtag="0.2"/>
+            <EXAMPLES>
+                <EXAMPLE>I asked him what he was doing.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Recipient">
+                    <SYNRESTRS/>
+                </NP>
+                <NP value="Topic">
+                    <SYNRESTRS>
+                        <SYNRESTR Value="+" type="what_extract"/>
+                    </SYNRESTRS>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="transfer_info">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="ThemRole" value="Recipient"/>
+                        <ARG type="ThemRole" value="Topic"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="8.1" primary="NP-WH-TO-INF" secondary="" xtag="0.2"/>
+            <EXAMPLES>
+                <EXAMPLE>I asked him whether to clean the house.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Recipient">
+                    <SYNRESTRS/>
+                </NP>
+                <NP value="Topic">
+                    <SYNRESTRS>
+                        <SYNRESTR Value="+" type="wheth_inf"/>
+                    </SYNRESTRS>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="transfer_info">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="ThemRole" value="Recipient"/>
+                        <ARG type="ThemRole" value="Topic"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="8.1" primary="NP-WHAT-TO-INF" secondary="" xtag="0.2"/>
+            <EXAMPLES>
+                <EXAMPLE>He asked him what to do.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Recipient">
+                    <SYNRESTRS/>
+                </NP>
+                <NP value="Topic">
+                    <SYNRESTRS>
+                        <SYNRESTR Value="+" type="what_inf"/>
+                    </SYNRESTRS>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="transfer_info">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="ThemRole" value="Recipient"/>
+                        <ARG type="ThemRole" value="Topic"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="8.1" primary="P-WH-S" secondary="about-PP" xtag="0.2"/>
+            <EXAMPLES>
+                <EXAMPLE>He asked about whether he wanted to go.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <PREP value="about">
+                    <SELRESTRS/>
+                </PREP>
+                <NP value="Topic">
+                    <SYNRESTRS>
+                        <SYNRESTR Value="+" type="wh_comp"/>
+                    </SYNRESTRS>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="transfer_info">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="ThemRole" value="?Recipient"/>
+                        <ARG type="ThemRole" value="Topic"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="8.1" primary="P-WHAT-S" secondary="about-PP" xtag="0.2"/>
+            <EXAMPLES>
+                <EXAMPLE>He asked him about what he wanted.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Recipient">
+                    <SYNRESTRS/>
+                </NP>
+                <PREP value="about">
+                    <SELRESTRS/>
+                </PREP>
+                <NP value="Topic">
+                    <SYNRESTRS>
+                        <SYNRESTR Value="+" type="what_extract"/>
+                    </SYNRESTRS>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="transfer_info">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="ThemRole" value="Recipient"/>
+                        <ARG type="ThemRole" value="Topic"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="8.1" primary="P-WH-TO-INF" secondary="about-PP" xtag="0.2"/>
+            <EXAMPLES>
+                <EXAMPLE>He asked about whether to go.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <PREP value="about">
+                    <SELRESTRS/>
+                </PREP>
+                <NP value="Topic">
+                    <SYNRESTRS>
+                        <SYNRESTR Value="+" type="wheth_inf"/>
+                    </SYNRESTRS>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="transfer_info">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="ThemRole" value="?Recipient"/>
+                        <ARG type="ThemRole" value="Topic"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="8.1" primary="P-WHAT-TO-INF" secondary="about-PP" xtag="0.2"/>
+            <EXAMPLES>
+                <EXAMPLE>He asked about what to do.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <PREP value="about">
+                    <SELRESTRS/>
+                </PREP>
+                <NP value="Topic">
+                    <SYNRESTRS>
+                        <SYNRESTR Value="+" type="what_inf"/>
+                    </SYNRESTRS>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="transfer_info">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="ThemRole" value="?Recipient"/>
+                        <ARG type="ThemRole" value="Topic"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.1" primary="PP" secondary="about-PP" xtag="0.2"/>
+            <EXAMPLES>
+                <EXAMPLE>I asked about it.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <PREP value="about">
+                    <SELRESTRS/>
+                </PREP>
+                <NP value="Topic">
+                    <SYNRESTRS>
+                        <SYNRESTR Value="-" type="sentential"/>
+                    </SYNRESTRS>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="transfer_info">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="ThemRole" value="?Recipient"/>
+                        <ARG type="ThemRole" value="Topic"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.1" primary="PP-HOW-S" secondary="of-PP" xtag="0.2"/>
+            <EXAMPLES>
+                <EXAMPLE>He asked of her how it works.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <PREP value="of">
+                    <SELRESTRS/>
+                </PREP>
+                <NP value="Recipient">
+                    <SELRESTRS/>
+                </NP>
+                <NP value="Topic">
+                    <SYNRESTRS>
+                        <SYNRESTR Value="+" type="how_extract"/>
+                    </SYNRESTRS>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="transfer_info">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="ThemRole" value="Recipient"/>
+                        <ARG type="ThemRole" value="Topic"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="8.1" primary="PP-HOW-TO-INF" secondary="of-PP" xtag="0.2"/>
+            <EXAMPLES>
+                <EXAMPLE>He asked of her how to do it.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <PREP value="of">
+                    <SELRESTRS/>
+                </PREP>
+                <NP value="Recipient">
+                    <SYNRESTRS/>
+                </NP>
+                <NP value="Topic">
+                    <SYNRESTRS>
+                        <SYNRESTR Value="+" type="wh_inf"/>
+                    </SYNRESTRS>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="transfer_info">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="ThemRole" value="Recipient"/>
+                        <ARG type="ThemRole" value="Topic"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="8.1" primary="PP-P-WH-S" secondary="of-PP about-PP" xtag="0.2"/>
+            <EXAMPLES>
+                <EXAMPLE>He asked of her about whether he should kill the peasants.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <PREP value="of">
+                    <SELRESTRS/>
+                </PREP>
+                <NP value="Recipient">
+                    <SYNRESTRS/>
+                </NP>
+                <PREP value="about">
+                    <SELRESTRS/>
+                </PREP>
+                <NP value="Topic">
+                    <SYNRESTRS>
+                        <SYNRESTR Value="+" type="wh_comp"/>
+                    </SYNRESTRS>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="transfer_info">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="ThemRole" value="Recipient"/>
+                        <ARG type="ThemRole" value="Topic"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="8.1" primary="PP-P-WHAT-S" secondary="of-PP about-PP" xtag="0.2"/>
+            <EXAMPLES>
+                <EXAMPLE>He asked of her about what he should do.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <PREP value="of">
+                    <SELRESTRS/>
+                </PREP>
+                <NP value="Recipient">
+                    <SYNRESTRS/>
+                </NP>
+                <PREP value="about">
+                    <SELRESTRS/>
+                </PREP>
+                <NP value="Topic">
+                    <SYNRESTRS>
+                        <SYNRESTR Value="+" type="what_extract"/>
+                    </SYNRESTRS>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="transfer_info">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="ThemRole" value="Recipient"/>
+                        <ARG type="ThemRole" value="Topic"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="8.1" primary="PP-P-WHAT-TO-INF" secondary="of-PP about-PP" xtag="0.2"/>
+            <EXAMPLES>
+                <EXAMPLE>He asked of her about what to do.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <PREP value="of">
+                    <SELRESTRS/>
+                </PREP>
+                <NP value="Recipient">
+                    <SYNRESTRS/>
+                </NP>
+                <PREP value="about">
+                    <SELRESTRS/>
+                </PREP>
+                <NP value="Topic">
+                    <SYNRESTRS>
+                        <SYNRESTR Value="+" type="what_inf"/>
+                    </SYNRESTRS>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="transfer_info">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="ThemRole" value="Recipient"/>
+                        <ARG type="ThemRole" value="Topic"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="8.1" primary="PP-P-WH-TO-INF" secondary="of-PP about-PP" xtag="0.2"/>
+            <EXAMPLES>
+                <EXAMPLE>I asked of him about whether to go.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <PREP value="of">
+                    <SELRESTRS/>
+                </PREP>
+                <NP value="Recipient">
+                    <SYNRESTRS/>
+                </NP>
+                <PREP value="about">
+                    <SELRESTRS/>
+                </PREP>
+                <NP value="Topic">
+                    <SYNRESTRS>
+                        <SYNRESTR Value="+" type="wheth_inf"/>
+                    </SYNRESTRS>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="transfer_info">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="ThemRole" value="Recipient"/>
+                        <ARG type="ThemRole" value="Topic"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="8.1" primary="WH-S" secondary="" xtag="0.2"/>
+            <EXAMPLES>
+                <EXAMPLE>He asked whether he should come.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Topic">
+                    <SYNRESTRS>
+                        <SYNRESTR Value="+" type="wh_comp"/>
+                    </SYNRESTRS>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="transfer_info">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="ThemRole" value="?Recipient"/>
+                        <ARG type="ThemRole" value="Topic"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="8.1" primary="WHAT-S" secondary="" xtag="0.2"/>
+            <EXAMPLES>
+                <EXAMPLE>He asked what he should do.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Topic">
+                    <SYNRESTRS>
+                        <SYNRESTR Value="+" type="what_extract"/>
+                    </SYNRESTRS>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="transfer_info">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="ThemRole" value="?Recipient"/>
+                        <ARG type="ThemRole" value="Topic"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="8.1" primary="WH-TO-INF" secondary="" xtag="0.2"/>
+            <EXAMPLES>
+                <EXAMPLE>He asked whether to clean the house.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Topic">
+                    <SYNRESTRS>
+                        <SYNRESTR Value="+" type="wheth_inf"/>
+                    </SYNRESTRS>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="transfer_info">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="ThemRole" value="?Recipient"/>
+                        <ARG type="ThemRole" value="Topic"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="8.1" primary="WHAT-TO-INF" secondary="" xtag="0.2"/>
+            <EXAMPLES>
+                <EXAMPLE>He asked what to do.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Topic">
+                    <SYNRESTRS>
+                        <SYNRESTR Value="+" type="what_inf"/>
+                    </SYNRESTRS>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="transfer_info">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="ThemRole" value="?Recipient"/>
+                        <ARG type="ThemRole" value="Topic"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="8.1" primary="NP-HOW-S" secondary="" xtag="0.2"/>
+            <EXAMPLES>
+                <EXAMPLE>He asked him how he came.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Recipient">
+                    <SYNRESTRS/>
+                </NP>
+                <NP value="Topic">
+                    <SYNRESTRS>
+                        <SYNRESTR Value="+" type="how_extract"/>
+                    </SYNRESTRS>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="transfer_info">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="ThemRole" value="Recipient"/>
+                        <ARG type="ThemRole" value="Topic"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+    </FRAMES>
+    <SUBCLASSES/>
+</VNCLASS>
+
+
+

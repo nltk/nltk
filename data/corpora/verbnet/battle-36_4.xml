@@ -1,0 +1,619 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE VNCLASS SYSTEM "vn_class-3.dtd">
+<VNCLASS ID="battle-36.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="vn_schema-3.xsd">
+    <MEMBERS>
+        <MEMBER name="consult" wn=""/>
+        <MEMBER name="exile" wn=""/>
+    </MEMBERS>
+    <THEMROLES>
+        <THEMROLE type="Actor">
+            <SELRESTRS logic="or">
+                <SELRESTR Value="+" type="animate"/>
+                <SELRESTR Value="+" type="organization"/>
+            </SELRESTRS>
+        </THEMROLE>
+        <THEMROLE type="Actor1">
+            <SELRESTRS logic="or">
+                <SELRESTR Value="+" type="animate"/>
+                <SELRESTR Value="+" type="organization"/>
+            </SELRESTRS>
+        </THEMROLE>
+        <THEMROLE type="Actor2">
+            <SELRESTRS logic="or">
+                <SELRESTR Value="+" type="animate"/>
+                <SELRESTR Value="+" type="organization"/>
+            </SELRESTRS>
+        </THEMROLE>
+        <THEMROLE type="Topic">
+            <SELRESTRS/>
+        </THEMROLE>
+    </THEMROLES>
+    <FRAMES>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="8.1" primary="PP-P-WH-S" secondary="with-PP about-PP" xtag="0.2"/>
+            <EXAMPLES>
+                <EXAMPLE>I battled with him about whether he should kill the peasants.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Actor1">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <PREP value="with">
+                    <SELRESTRS/>
+                </PREP>
+                <NP value="Actor2">
+                    <SYNRESTRS/>
+                </NP>
+                <PREP value="about">
+                    <SELRESTRS/>
+                </PREP>
+                <NP value="Topic">
+                    <SYNRESTRS>
+                        <SYNRESTR Value="+" type="wh_comp"/>
+                    </SYNRESTRS>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="social_interaction">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Actor1"/>
+                        <ARG type="ThemRole" value="Actor2"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="conflict">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Actor1"/>
+                        <ARG type="ThemRole" value="Actor2"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="about">
+                    <ARGS>
+                        <ARG type="Event" value="E"/>
+                        <ARG type="ThemRole" value="Topic"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="8.1" primary="PP-P-WHAT-S" secondary="with-PP about-PP" xtag="0.2"/>
+            <EXAMPLES>
+                <EXAMPLE>I battled with him about whether he should go.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Actor1">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <PREP value="with">
+                    <SELRESTRS/>
+                </PREP>
+                <NP value="Actor2">
+                    <SYNRESTRS/>
+                </NP>
+                <PREP value="about">
+                    <SELRESTRS/>
+                </PREP>
+                <NP value="Topic">
+                    <SYNRESTRS>
+                        <SYNRESTR Value="+" type="what_extract"/>
+                    </SYNRESTRS>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="social_interaction">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Actor1"/>
+                        <ARG type="ThemRole" value="Actor2"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="conflict">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Actor1"/>
+                        <ARG type="ThemRole" value="Actor2"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="about">
+                    <ARGS>
+                        <ARG type="Event" value="E"/>
+                        <ARG type="ThemRole" value="Topic"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="8.1" primary="PP-P-WHAT-TO-INF" secondary="with-PP about-PP" xtag="0.2"/>
+            <EXAMPLES>
+                <EXAMPLE>I battled with him about what to do.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Actor1">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <PREP value="with">
+                    <SELRESTRS/>
+                </PREP>
+                <NP value="Actor2">
+                    <SYNRESTRS/>
+                </NP>
+                <PREP value="about">
+                    <SELRESTRS/>
+                </PREP>
+                <NP value="Topic">
+                    <SYNRESTRS>
+                        <SYNRESTR Value="+" type="what_inf"/>
+                    </SYNRESTRS>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="social_interaction">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Actor1"/>
+                        <ARG type="ThemRole" value="Actor2"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="conflict">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Actor1"/>
+                        <ARG type="ThemRole" value="Actor2"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="about">
+                    <ARGS>
+                        <ARG type="Event" value="E"/>
+                        <ARG type="ThemRole" value="Topic"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="8.1" primary="PP-P-WH-TO-INF" secondary="with-PP about-PP" xtag="0.2"/>
+            <EXAMPLES>
+                <EXAMPLE>I battled with him about whether to go.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Actor1">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <PREP value="with">
+                    <SELRESTRS/>
+                </PREP>
+                <NP value="Actor2">
+                    <SYNRESTRS/>
+                </NP>
+                <PREP value="about">
+                    <SELRESTRS/>
+                </PREP>
+                <NP value="Topic">
+                    <SYNRESTRS>
+                        <SYNRESTR Value="+" type="wheth_inf"/>
+                    </SYNRESTRS>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="social_interaction">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Actor1"/>
+                        <ARG type="ThemRole" value="Actor2"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="conflict">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Actor1"/>
+                        <ARG type="ThemRole" value="Actor2"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="about">
+                    <ARGS>
+                        <ARG type="Event" value="E"/>
+                        <ARG type="ThemRole" value="Topic"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="8.1" primary="PP-PP" secondary="with-PP about-PP" xtag="0.2"/>
+            <EXAMPLES>
+                <EXAMPLE>I battled with him about it.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Actor1">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <PREP value="with">
+                    <SELRESTRS/>
+                </PREP>
+                <NP value="Actor2">
+                    <SYNRESTRS/>
+                </NP>
+                <PREP value="about">
+                    <SELRESTRS/>
+                </PREP>
+                <NP value="Topic">
+                    <SYNRESTRS>
+                        <SYNRESTR Value="-" type="sentential"/>
+                    </SYNRESTRS>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="social_interaction">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Actor1"/>
+                        <ARG type="ThemRole" value="Actor2"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="conflict">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Actor1"/>
+                        <ARG type="ThemRole" value="Actor2"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="about">
+                    <ARGS>
+                        <ARG type="Event" value="E"/>
+                        <ARG type="ThemRole" value="Topic"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+    </FRAMES>
+    <SUBCLASSES>
+        <VNSUBCLASS ID="battle-36.4-1">
+            <MEMBERS>
+                <MEMBER name="argue" wn="argue%2:32:00"/>
+                <MEMBER name="bargain" wn=""/>
+                <MEMBER name="battle" wn=""/>
+                <MEMBER name="bicker" wn="bicker%2:32:00"/>
+                <MEMBER name="brawl" wn="brawl%2:32:00"/>
+                <MEMBER name="clash" wn="clash%2:32:00"/>
+                <MEMBER name="combat" wn="combat%2:33:00"/>
+                <MEMBER name="compete" wn="compete%2:33:00"/>
+                <MEMBER name="conflict" wn="conflict%2:42:00"/>
+                <MEMBER name="correspond" wn=""/>
+                <MEMBER name="communicate" wn=""/>
+                <MEMBER name="dicker" wn="dicker%2:40:00"/>
+                <MEMBER name="differ" wn="differ%2:32:00"/>
+                <MEMBER name="disagree" wn="disagree%2:32:00"/>
+                <MEMBER name="dispute" wn="dispute%2:32:01"/>
+                <MEMBER name="duel" wn="duel%2:33:00"/>
+                <MEMBER name="feud" wn="feud%2:33:00"/>
+                <MEMBER name="fight" wn=""/>
+                <MEMBER name="joust" wn="joust%2:33:00"/>
+                <MEMBER name="quarrel" wn="quarrel%2:32:00"/>
+                <MEMBER name="quibble" wn="quibble%2:32:00"/>
+                <MEMBER name="scuffle" wn="scuffle%2:35:00"/>
+                <MEMBER name="skirmish" wn="skirmish%2:33:00"/>
+                <MEMBER name="spar" wn="spar%2:35:01 spar%2:35:00 spar%2:32:00"/>
+                <MEMBER name="spat" wn="spat%2:32:00"/>
+                <MEMBER name="struggle" wn=""/>
+                <MEMBER name="squabble" wn="squabble%2:32:00"/>
+                <MEMBER name="tilt" wn="tilt%2:33:00"/>
+                <MEMBER name="tussle" wn="tussle%2:35:01"/>
+                <MEMBER name="vie" wn="vie%2:33:00"/>
+                <MEMBER name="war" wn="war%2:33:00"/>
+                <MEMBER name="wrangle" wn="wrangle%2:32:00"/>
+                <MEMBER name="wrestle" wn="wrestle%2:35:00"/>
+            </MEMBERS>
+            <THEMROLES/>
+            <FRAMES>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="8.1" primary="Intransitive" secondary="Plural Subject" xtag="0.1"/>
+                    <EXAMPLES>
+                        <EXAMPLE>They battled.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Actor">
+                            <SYNRESTRS>
+                                <SYNRESTR Value="+" type="plural"/>
+                            </SYNRESTRS>
+                        </NP>
+                        <VERB/>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="social_interaction">
+                            <ARGS>
+                                <ARG type="Event" value="during(E)"/>
+                                <ARG type="ThemRole" value="Actor_i"/>
+                                <ARG type="ThemRole" value="Actor_j"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="conflict">
+                            <ARGS>
+                                <ARG type="Event" value="during(E)"/>
+                                <ARG type="ThemRole" value="Actor_i"/>
+                                <ARG type="ThemRole" value="Actor_j"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="about">
+                            <ARGS>
+                                <ARG type="Event" value="E"/>
+                                <ARG type="ThemRole" value="?Topic"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="8.1" primary="P-POSSING" secondary="about-PP" xtag="0.1"/>
+                    <EXAMPLES>
+                        <EXAMPLE>They battled about his coming.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Actor">
+                            <SYNRESTRS>
+                                <SYNRESTR Value="+" type="plural"/>
+                            </SYNRESTRS>
+                        </NP>
+                        <VERB/>
+                        <PREP value="about">
+                            <SELRESTRS/>
+                        </PREP>
+                        <NP value="Topic">
+                            <SYNRESTRS>
+                                <SYNRESTR Value="+" type="poss_ing"/>
+                            </SYNRESTRS>
+                        </NP>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="social_interaction">
+                            <ARGS>
+                                <ARG type="Event" value="during(E)"/>
+                                <ARG type="ThemRole" value="Actor_i"/>
+                                <ARG type="ThemRole" value="Actor_j"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="conflict">
+                            <ARGS>
+                                <ARG type="Event" value="during(E)"/>
+                                <ARG type="ThemRole" value="Actor_i"/>
+                                <ARG type="ThemRole" value="Actor_j"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="about">
+                            <ARGS>
+                                <ARG type="Event" value="E"/>
+                                <ARG type="ThemRole" value="Topic"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="8.1" primary="P-WH-S" secondary="about-PP" xtag="0.1"/>
+                    <EXAMPLES>
+                        <EXAMPLE>They battled about whether he should go.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Actor">
+                            <SYNRESTRS>
+                                <SYNRESTR Value="+" type="plural"/>
+                            </SYNRESTRS>
+                        </NP>
+                        <VERB/>
+                        <PREP value="about">
+                            <SELRESTRS/>
+                        </PREP>
+                        <NP value="Topic">
+                            <SYNRESTRS>
+                                <SYNRESTR Value="+" type="wh_comp"/>
+                            </SYNRESTRS>
+                        </NP>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="social_interaction">
+                            <ARGS>
+                                <ARG type="Event" value="during(E)"/>
+                                <ARG type="ThemRole" value="Actor_i"/>
+                                <ARG type="ThemRole" value="Actor_j"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="conflict">
+                            <ARGS>
+                                <ARG type="Event" value="during(E)"/>
+                                <ARG type="ThemRole" value="Actor_i"/>
+                                <ARG type="ThemRole" value="Actor_j"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="about">
+                            <ARGS>
+                                <ARG type="Event" value="E"/>
+                                <ARG type="ThemRole" value="Topic"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="8.1" primary="P-WHAT-S" secondary="about-PP" xtag="0.1"/>
+                    <EXAMPLES>
+                        <EXAMPLE>They battled about what was the right thing.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Actor">
+                            <SYNRESTRS>
+                                <SYNRESTR Value="+" type="plural"/>
+                            </SYNRESTRS>
+                        </NP>
+                        <VERB/>
+                        <PREP value="about">
+                            <SELRESTRS/>
+                        </PREP>
+                        <NP value="Topic">
+                            <SYNRESTRS>
+                                <SYNRESTR Value="+" type="what_extract"/>
+                            </SYNRESTRS>
+                        </NP>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="social_interaction">
+                            <ARGS>
+                                <ARG type="Event" value="during(E)"/>
+                                <ARG type="ThemRole" value="Actor_i"/>
+                                <ARG type="ThemRole" value="Actor_j"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="conflict">
+                            <ARGS>
+                                <ARG type="Event" value="during(E)"/>
+                                <ARG type="ThemRole" value="Actor_i"/>
+                                <ARG type="ThemRole" value="Actor_j"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="about">
+                            <ARGS>
+                                <ARG type="Event" value="E"/>
+                                <ARG type="ThemRole" value="Topic"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="8.1" primary="P-WH-TO-INF" secondary="about-PP" xtag="0.1"/>
+                    <EXAMPLES>
+                        <EXAMPLE>They battled about whether to go.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Actor">
+                            <SYNRESTRS>
+                                <SYNRESTR Value="+" type="plural"/>
+                            </SYNRESTRS>
+                        </NP>
+                        <VERB/>
+                        <PREP value="about">
+                            <SELRESTRS/>
+                        </PREP>
+                        <NP value="Topic">
+                            <SYNRESTRS>
+                                <SYNRESTR Value="+" type="wheth_inf"/>
+                            </SYNRESTRS>
+                        </NP>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="social_interaction">
+                            <ARGS>
+                                <ARG type="Event" value="during(E)"/>
+                                <ARG type="ThemRole" value="Actor_i"/>
+                                <ARG type="ThemRole" value="Actor_j"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="conflict">
+                            <ARGS>
+                                <ARG type="Event" value="during(E)"/>
+                                <ARG type="ThemRole" value="Actor_i"/>
+                                <ARG type="ThemRole" value="Actor_j"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="about">
+                            <ARGS>
+                                <ARG type="Event" value="E"/>
+                                <ARG type="ThemRole" value="Topic"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="8.1" primary="P-WHAT-TO-INF" secondary="about-PP" xtag="0.1"/>
+                    <EXAMPLES>
+                        <EXAMPLE>They battled about what to do.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Actor">
+                            <SYNRESTRS>
+                                <SYNRESTR Value="+" type="plural"/>
+                            </SYNRESTRS>
+                        </NP>
+                        <VERB/>
+                        <PREP value="about">
+                            <SELRESTRS/>
+                        </PREP>
+                        <NP value="Topic">
+                            <SYNRESTRS>
+                                <SYNRESTR Value="+" type="what_inf"/>
+                            </SYNRESTRS>
+                        </NP>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="social_interaction">
+                            <ARGS>
+                                <ARG type="Event" value="during(E)"/>
+                                <ARG type="ThemRole" value="Actor_i"/>
+                                <ARG type="ThemRole" value="Actor_j"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="conflict">
+                            <ARGS>
+                                <ARG type="Event" value="during(E)"/>
+                                <ARG type="ThemRole" value="Actor_i"/>
+                                <ARG type="ThemRole" value="Actor_j"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="about">
+                            <ARGS>
+                                <ARG type="Event" value="E"/>
+                                <ARG type="ThemRole" value="Topic"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="8.1" primary="PP" secondary="about-PP" xtag="0.1"/>
+                    <EXAMPLES>
+                        <EXAMPLE>They battled about it.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Actor">
+                            <SYNRESTRS>
+                                <SYNRESTR Value="+" type="plural"/>
+                            </SYNRESTRS>
+                        </NP>
+                        <VERB/>
+                        <PREP value="about">
+                            <SELRESTRS/>
+                        </PREP>
+                        <NP value="Topic">
+                            <SYNRESTRS>
+                                <SYNRESTR Value="-" type="sentential"/>
+                            </SYNRESTRS>
+                        </NP>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="social_interaction">
+                            <ARGS>
+                                <ARG type="Event" value="during(E)"/>
+                                <ARG type="ThemRole" value="Actor_i"/>
+                                <ARG type="ThemRole" value="Actor_j"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="conflict">
+                            <ARGS>
+                                <ARG type="Event" value="during(E)"/>
+                                <ARG type="ThemRole" value="Actor_i"/>
+                                <ARG type="ThemRole" value="Actor_j"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="about">
+                            <ARGS>
+                                <ARG type="Event" value="E"/>
+                                <ARG type="ThemRole" value="Topic"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+            </FRAMES>
+            <SUBCLASSES/>
+        </VNSUBCLASS>
+    </SUBCLASSES>
+</VNCLASS>
+
+
+

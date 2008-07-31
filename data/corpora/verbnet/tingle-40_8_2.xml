@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE VNCLASS SYSTEM "vn_class-3.dtd">
+<VNCLASS ID="tingle-40.8.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="vn_schema-3.xsd">
+    <MEMBERS>
+        <!--added "ache" from pain-40.8.1-->
+        <MEMBER name="ache" wn="ache%2:39:00"/>
+        <MEMBER name="burn" wn="burn%2:39:04"/>
+        <MEMBER name="hum" wn="?hum%2:32:01"/>
+        <MEMBER name="pound" wn="pound%2:38:00"/>
+        <MEMBER name="prickle" wn=""/>
+        <MEMBER name="pucker" wn="pucker%2:35:00 ?pucker%2:35:02"/>
+        <MEMBER name="reel" wn=""/>
+        <MEMBER name="smart" wn="smart%2:39:00"/>
+        <MEMBER name="spin" wn=""/>
+        <MEMBER name="split" wn=""/>
+        <MEMBER name="sting" wn=""/>
+        <MEMBER name="swim" wn=""/>
+        <MEMBER name="throb" wn="throb%2:39:00"/>
+        <MEMBER name="tickle" wn=""/>
+        <MEMBER name="tingle" wn=""/>
+    </MEMBERS>
+    <THEMROLES>
+        <THEMROLE type="Experiencer">
+            <SELRESTRS>
+                <SELRESTR Value="+" type="animate"/>
+            </SELRESTRS>
+        </THEMROLE>
+        <THEMROLE type="Patient">
+            <SELRESTRS>
+                <SELRESTR Value="+" type="body_part"/>
+            </SELRESTRS>
+        </THEMROLE>
+        <THEMROLE type="Cause">
+            <SELRESTRS/>
+        </THEMROLE>
+    </THEMROLES>
+    <FRAMES>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.1" primary="Basic Intransitive" secondary="" xtag="0.1"/>
+            <EXAMPLES>
+                <EXAMPLE>My heart is pounding.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Patient">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="discomfort">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Patient"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="experience">
+                    <ARGS>
+                        <ARG type="Event" value="E"/>
+                        <ARG type="ThemRole" value="?Experiencer"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.1" primary="PP" secondary="Cause-PP" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>My heart is pounding from fear.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Patient">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <PREP value="from at">
+                    <SELRESTRS/>
+                </PREP>
+                <NP value="Cause">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="discomfort">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Patient"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="experience">
+                    <ARGS>
+                        <ARG type="Event" value="E"/>
+                        <ARG type="ThemRole" value="?Experiencer"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="in_reaction_to">
+                    <ARGS>
+                        <ARG type="Event" value="E"/>
+                        <ARG type="ThemRole" value="Cause"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+    </FRAMES>
+    <SUBCLASSES/>
+</VNCLASS>

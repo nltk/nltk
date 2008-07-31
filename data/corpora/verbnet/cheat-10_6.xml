@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE VNCLASS SYSTEM "vn_class-3.dtd">
+<VNCLASS ID="cheat-10.6" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="vn_schema-3.xsd">
+    <!--Also split class based on manner(illegal)-->
+    <MEMBERS>
+        <MEMBER name="bereave" wn="bereave%2:40:00"/>
+        <MEMBER name="break" wn="break%2:42:04"/>
+        <MEMBER name="cleanse" wn="cleanse%2:30:05"/>
+        <MEMBER name="cure" wn="cure%2:29:00"/>
+        <MEMBER name="denude" wn="denude%2:30:00"/>
+        <MEMBER name="deplete" wn="deplete%2:34:00"/>
+        <MEMBER name="depopulate" wn="depopulate%2:30:00"/>
+        <MEMBER name="deprive" wn="deprive%2:40:01 deprive%2:40:00 deprive%2:30:00"/>
+        <MEMBER name="despoil" wn="despoil%2:40:00 despoil%2:35:00"/>
+        <MEMBER name="disabuse" wn="disabuse%2:32:00"/>
+        <MEMBER name="disarm" wn="disarm%2:33:01"/>
+        <MEMBER name="disencumber" wn="disencumber%2:35:00"/>
+        <MEMBER name="dispossess" wn="dispossess%2:40:00"/>
+        <MEMBER name="divest" wn="divest%2:40:01 divest%2:41:00 divest%2:40:00"/>
+        <MEMBER name="purge" wn="purge%2:30:00"/>
+        <MEMBER name="purify" wn="purify%2:30:00 purify%2:30:01"/>
+        <MEMBER name="ransack" wn="ransack%2:40:00"/>
+        <MEMBER name="relieve" wn="relieve%2:41:01 relieve%2:37:00 relieve%2:32:00 relieve%2:40:01 relieve%2:40:00"/>
+        <MEMBER name="render" wn=""/>
+        <MEMBER name="rid" wn="rid%2:40:00"/>
+        <MEMBER name="rifle" wn="rifle%2:40:00"/>
+        <MEMBER name="strip" wn="strip%2:40:03 strip%2:30:06 strip%2:30:05 strip%2:40:00 strip%2:35:04 strip%2:30:12"/>
+        <MEMBER name="unburden" wn="unburden%2:40:00 unburden%2:35:00"/>
+        <MEMBER name="void" wn="void%2:30:04"/>
+        <MEMBER name="wean" wn="wean%2:37:00"/>
+        <MEMBER name="bilk" wn="bilk%2:41:00"/>
+        <MEMBER name="balk" wn=""/>
+        <MEMBER name="bleed" wn="bleed%2:40:09 bleed%2:30:00"/>
+        <MEMBER name="cheat" wn="cheat%2:41:00"/>
+        <MEMBER name="defraud" wn="defraud%2:41:00"/>
+        <MEMBER name="rob" wn="rob%2:40:00"/>
+        <MEMBER name="sap" wn=""/>
+        <MEMBER name="gull" wn=""/>
+        <MEMBER name="fleece" wn="fleece%2:40:00"/>
+        <MEMBER name="cull" wn=""/>
+    </MEMBERS>
+    <THEMROLES>
+        <!--Theme is inalienable possession of Source-->
+        <THEMROLE type="Agent">
+            <SELRESTRS logic="or">
+                <SELRESTR Value="+" type="animate"/>
+                <SELRESTR Value="+" type="organization"/>
+            </SELRESTRS>
+        </THEMROLE>
+        <THEMROLE type="Theme">
+            <SELRESTRS/>
+        </THEMROLE>
+        <THEMROLE type="Source">
+            <SELRESTRS logic="or">
+                <SELRESTR Value="+" type="animate"/>
+                <SELRESTRS>
+                    <SELRESTR Value="+" type="location"/>
+                    <SELRESTR Value="-" type="region"/>
+                </SELRESTRS>
+            </SELRESTRS>
+        </THEMROLE>
+    </THEMROLES>
+    <FRAMES>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.2" primary="NP-PP" secondary="of-PP" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>The doctor cured Pat of pneumonia.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Source">
+                    <SYNRESTRS/>
+                </NP>
+                <PREP value="of">
+                    <SELRESTRS/>
+                </PREP>
+                <NP value="Theme">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="location">
+                    <ARGS>
+                        <ARG type="Event" value="start(E)"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                        <ARG type="ThemRole" value="Source"/>
+                    </ARGS>
+                </PRED>
+                <PRED bool="!" value="location">
+                    <ARGS>
+                        <ARG type="Event" value="end(E)"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                        <ARG type="ThemRole" value="Source"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.2" primary="NP-PP" secondary="out_of-PP" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>The swindler cheated Pat out of her fortune.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Source">
+                    <SYNRESTRS/>
+                </NP>
+                <PREP value="out_of">
+                    <SELRESTRS/>
+                </PREP>
+                <NP value="Theme">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="location">
+                    <ARGS>
+                        <ARG type="Event" value="start(E)"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                        <ARG type="ThemRole" value="Source"/>
+                    </ARGS>
+                </PRED>
+                <PRED bool="!" value="location">
+                    <ARGS>
+                        <ARG type="Event" value="end(E)"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                        <ARG type="ThemRole" value="Source"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.2" primary="Transitive" secondary="dropped Theme" xtag="0.2"/>
+            <EXAMPLES>
+                <EXAMPLE>The doctor cured Pat.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Source">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="location">
+                    <ARGS>
+                        <ARG type="Event" value="start(E)"/>
+                        <ARG type="ThemRole" value="?Theme"/>
+                        <ARG type="ThemRole" value="Source"/>
+                    </ARGS>
+                </PRED>
+                <PRED bool="!" value="location">
+                    <ARGS>
+                        <ARG type="Event" value="end(E)"/>
+                        <ARG type="ThemRole" value="?Theme"/>
+                        <ARG type="ThemRole" value="Source"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+    </FRAMES>
+    <SUBCLASSES>
+        <VNSUBCLASS ID="cheat-10.6-1">
+            <MEMBERS>
+                <MEMBER name="burgle" wn="?burgle%2:41:00"/>
+                <MEMBER name="con" wn="con%2:41:00"/>
+                <MEMBER name="drain" wn="drain%2:34:00 drain%2:30:01"/>
+                <MEMBER name="ease" wn="ease%2:37:00"/>
+                <MEMBER name="milk" wn="milk%2:34:00"/>
+                <MEMBER name="mulct" wn="mulct%2:41:00"/>
+                <MEMBER name="plunder" wn="plunder%2:40:00 plunder%2:35:01"/>
+                <MEMBER name="swindle" wn="swindle%2:41:00"/>
+            </MEMBERS>
+            <THEMROLES/>
+            <FRAMES>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="" primary="NP-PP" secondary="from-PP" xtag=""/>
+                    <EXAMPLES>
+                        <EXAMPLE>The swindler bilked 20 dollars from his boss.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Agent">
+                            <SYNRESTRS/>
+                        </NP>
+                        <VERB/>
+                        <NP value="Theme">
+                            <SYNRESTRS/>
+                        </NP>
+                        <PREP value="from">
+                            <SELRESTRS/>
+                        </PREP>
+                        <NP value="Source">
+                            <SYNRESTRS/>
+                        </NP>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="cause">
+                            <ARGS>
+                                <ARG type="ThemRole" value="Agent"/>
+                                <ARG type="Event" value="E"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="location">
+                            <ARGS>
+                                <ARG type="Event" value="start(E)"/>
+                                <ARG type="ThemRole" value="Theme"/>
+                                <ARG type="ThemRole" value="Source"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED bool="!" value="location">
+                            <ARGS>
+                                <ARG type="Event" value="end(E)"/>
+                                <ARG type="ThemRole" value="Theme"/>
+                                <ARG type="ThemRole" value="Source"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+            </FRAMES>
+            <SUBCLASSES>
+                <VNSUBCLASS ID="cheat-10.6-1-1">
+                    <MEMBERS>
+                        <MEMBER name="free" wn="free%2:41:00 free%2:40:02 free%2:35:02 free%2:41:02 free%2:35:01 free%2:32:00"/>
+                        <MEMBER name="absolve" wn="absolve%2:32:02 absolve%2:32:00"/>
+                        <MEMBER name="acquit" wn="acquit%2:32:00"/>
+                        <MEMBER name="exonerate" wn="exonerate%2:32:00"/>
+                        <MEMBER name="pardon" wn="pardon%2:32:00"/>
+                    </MEMBERS>
+                    <THEMROLES>
+                        <THEMROLE type="Predicate">
+                            <SELRESTRS/>
+                        </THEMROLE>
+                    </THEMROLES>
+                    <FRAMES>
+                        <FRAME>
+                            <DESCRIPTION descriptionNumber="" primary="NP-PP" secondary="as-PP" xtag=""/>
+                            <EXAMPLES>
+                                <EXAMPLE>Studies exonerated program trading as a source of volatility.</EXAMPLE>
+                            </EXAMPLES>
+                            <SYNTAX>
+                                <NP value="Agent">
+                                    <SYNRESTRS/>
+                                </NP>
+                                <VERB/>
+                                <NP value="Theme">
+                                    <SYNRESTRS/>
+                                </NP>
+                                <LEX value="as"/>
+                                <NP value="Predicate">
+                                    <SYNRESTRS/>
+                                </NP>
+                            </SYNTAX>
+                            <SEMANTICS>
+                                <PRED value="cause">
+                                    <ARGS>
+                                        <ARG type="ThemRole" value="Agent"/>
+                                        <ARG type="Event" value="E"/>
+                                    </ARGS>
+                                </PRED>
+                                <PRED bool="!" value="Pred">
+                                    <ARGS>
+                                        <ARG type="Event" value="end(E)"/>
+                                        <ARG type="ThemRole" value="Theme"/>
+                                        <ARG type="ThemRole" value="Predicate"/>
+                                    </ARGS>
+                                </PRED>
+                            </SEMANTICS>
+                        </FRAME>
+                    </FRAMES>
+                    <SUBCLASSES/>
+                </VNSUBCLASS>
+            </SUBCLASSES>
+        </VNSUBCLASS>
+    </SUBCLASSES>
+</VNCLASS>
+

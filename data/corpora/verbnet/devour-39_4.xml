@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE VNCLASS SYSTEM "vn_class-3.dtd">
+<VNCLASS ID="devour-39.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="vn_schema-3.xsd">
+    <MEMBERS/>
+    <THEMROLES>
+        <THEMROLE type="Agent">
+            <SELRESTRS>
+                <SELRESTR Value="+" type="animate"/>
+            </SELRESTRS>
+        </THEMROLE>
+    </THEMROLES>
+    <FRAMES/>
+    <SUBCLASSES>
+        <VNSUBCLASS ID="devour-39.4-1">
+            <MEMBERS>
+                <MEMBER name="consume" wn="consume%2:34:03"/>
+                <MEMBER name="devour" wn="devour%2:34:01 devour%2:34:00"/>
+                <MEMBER name="ingest" wn=""/>
+            </MEMBERS>
+            <THEMROLES>
+                <THEMROLE type="Patient">
+                    <SELRESTRS>
+                        <SELRESTR Value="+" type="comestible"/>
+                        <SELRESTR Value="+" type="solid"/>
+                    </SELRESTRS>
+                </THEMROLE>
+            </THEMROLES>
+            <FRAMES>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="" primary="Basic Transitive" secondary="" xtag=""/>
+                    <EXAMPLES>
+                        <EXAMPLE>Cynthia devoured the pizza.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Agent">
+                            <SYNRESTRS/>
+                        </NP>
+                        <VERB/>
+                        <NP value="Patient">
+                            <SYNRESTRS/>
+                        </NP>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="take_in">
+                            <ARGS>
+                                <ARG type="Event" value="during(E)"/>
+                                <ARG type="ThemRole" value="Agent"/>
+                                <ARG type="ThemRole" value="Patient"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+            </FRAMES>
+            <SUBCLASSES/>
+        </VNSUBCLASS>
+        <VNSUBCLASS ID="devour-39.4-2">
+            <MEMBERS>
+                <MEMBER name="imbibe" wn="imbibe%2:34:00"/>
+                <MEMBER name="swill" wn="swill%2:34:00"/>
+            </MEMBERS>
+            <THEMROLES>
+                <THEMROLE type="Patient">
+                    <SELRESTRS>
+                        <SELRESTR Value="+" type="comestible"/>
+                        <SELRESTR Value="-" type="solid"/>
+                    </SELRESTRS>
+                </THEMROLE>
+            </THEMROLES>
+            <FRAMES>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="" primary="Basic Transitive" secondary="" xtag=""/>
+                    <EXAMPLES>
+                        <EXAMPLE>Cynthia swilled the beverage.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Agent">
+                            <SYNRESTRS/>
+                        </NP>
+                        <VERB/>
+                        <NP value="Patient">
+                            <SYNRESTRS/>
+                        </NP>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="take_in">
+                            <ARGS>
+                                <ARG type="Event" value="during(E)"/>
+                                <ARG type="ThemRole" value="Agent"/>
+                                <ARG type="ThemRole" value="Patient"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+            </FRAMES>
+            <SUBCLASSES/>
+        </VNSUBCLASS>
+    </SUBCLASSES>
+</VNCLASS>

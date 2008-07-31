@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE VNCLASS SYSTEM "vn_class-3.dtd">
+<VNCLASS ID="reflexive_appearance-48.1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="vn_schema-3.xsd">
+    <MEMBERS>
+        <MEMBER name="assert" wn="assert%2:32:01"/>
+        <MEMBER name="declare" wn="declare%2:32:01"/>
+        <MEMBER name="define" wn="define%2:42:00"/>
+        <MEMBER name="exhibit" wn=""/>
+        <MEMBER name="expose" wn=""/>
+        <MEMBER name="express" wn="express%2:32:01"/>
+        <MEMBER name="flaunt" wn=""/>
+        <MEMBER name="form" wn="form%2:42:02"/>
+        <MEMBER name="intrude" wn="intrude%2:32:00"/>
+        <MEMBER name="manifest" wn="manifest%2:32:00"/>
+        <MEMBER name="offer" wn="offer%2:31:00"/>
+        <MEMBER name="pose" wn="pose%2:42:00"/>
+        <MEMBER name="present" wn="present%2:32:00 present%2:42:00"/>
+        <MEMBER name="proffer" wn="proffer%2:40:00"/>
+        <MEMBER name="recommend" wn="recommend%2:32:00"/>
+        <MEMBER name="shape" wn="?shape%2:31:00"/>
+        <MEMBER name="show" wn="show%2:31:00 show%2:32:00 show%2:39:00 show%2:39:01"/>
+        <MEMBER name="suggest" wn="suggest%2:32:00 suggest%2:32:02 suggest%2:32:01"/>
+    </MEMBERS>
+    <THEMROLES>
+        <THEMROLE type="Theme">
+            <SELRESTRS/>
+        </THEMROLE>
+        <THEMROLE type="Agent">
+            <SELRESTRS>
+                <SELRESTR Value="+" type="animate"/>
+            </SELRESTRS>
+        </THEMROLE>
+        <THEMROLE type="Recipient">
+            <SELRESTRS>
+                <SELRESTR Value="+" type="animate"/>
+            </SELRESTRS>
+        </THEMROLE>
+    </THEMROLES>
+    <FRAMES>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.2" primary="Basic Transitive" secondary="" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>I presented a solution.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Theme">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="appear">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.2" primary="NP-PP" secondary="Recipient-PP" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>I presented a solution to him.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Theme">
+                    <SYNRESTRS/>
+                </NP>
+                <PREP value="to">
+                    <SELRESTRS/>
+                </PREP>
+                <NP value="Recipient">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="appear">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="4.2" primary="Reflexive of Appearance" secondary="" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>A solution presented itself yesterday.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Theme">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Oblique">
+                    <SELRESTRS>
+                        <SELRESTR Value="+" type="refl"/>
+                    </SELRESTRS>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="appear">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+    </FRAMES>
+    <SUBCLASSES/>
+</VNCLASS>
