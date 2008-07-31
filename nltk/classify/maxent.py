@@ -552,7 +552,7 @@ class BinaryMaxentFeatureEncoding(MaxentFeatureEncodingI):
         for fname, fval in featureset.items():
             # Known feature name & value:
             if (fname, fval, label) in self._mapping:
-                encoding.append( (self._mapping[fname, fval, label], 1) )
+                encoding.append((self._mapping[fname, fval, label], 1))
                 
             # Otherwise, we might want to fire an "unseen-value feature".
             elif self._unseen:
@@ -563,11 +563,11 @@ class BinaryMaxentFeatureEncoding(MaxentFeatureEncodingI):
                 # We haven't -- fire the unseen-value feature
                 else:
                     if fname in self._unseen:
-                        encoding.append( (self._unseen[fname], 1) )
+                        encoding.append((self._unseen[fname], 1))
 
         # Add always-on features:
         if self._alwayson and label in self._alwayson:
-            encoding.append( (self._alwayson[label], 1) )
+            encoding.append((self._alwayson[label], 1))
             
         return encoding
 
@@ -1192,7 +1192,8 @@ def train_maxent_classifier_with_megam(train_toks, trace=3, encoding=None,
     
     # Construct an encoding from the training data.
     if encoding is None:
-        encoding = BinaryMaxentFeatureEncoding.train(train_toks, labels=labels)
+        encoding = BinaryMaxentFeatureEncoding.train(train_toks, 
+                                        labels=labels, alwayson_features=True)
     elif labels is not None:
         raise ValueError('Specify encoding or labels, not both')
 
