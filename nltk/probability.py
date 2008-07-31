@@ -36,10 +36,13 @@ L{ConditionalProbDist}, a derived distribution.
 
 """
 
-import types
 import math
 import random
 import warnings
+
+from new import function
+from types import MethodType, LambdaType
+from marshal import dumps, loads
 
 ##//////////////////////////////////////////////////////
 ##  Frequency Distributions
@@ -1409,7 +1412,33 @@ class ConditionalProbDist(ConditionalProbDistI):
         @rtype: C{string}
         """
         return '<ConditionalProbDist with %d conditions>' % self.__len__()
-
+    
+    def __getstate__(self):
+        state = self.__dict__
+        state['_lambda_functions'] = {}
+        state['_instance_methods'] = {}
+        for name, attr in state.items():
+            if isinstance(attr, LambdaType) and attr.__name__ == '<lambda>':
+                state['_lambda_functions'][name] = dumps(attr.func_code)
+                del state[name]
+            elif isinstance(attr, MethodType):
+                state['_instance_methods'][name] = \
+                    (attr.im_self, attr.im_func.func_name)
+                del state[name]
+        return state
+    
+    def __setstate__(self, state):
+        for name, mcode in state.get('_lambda_functions', {}).items():
+            state[name] = function(loads(mcode), {})
+        if '_lambda_functions' in state:
+            del state['_lambda_functions']
+        for name, (im_self, im_func_name) \
+        in state.get('_instance_methods', {}).items():
+            state[name] = getattr(im_self, im_func_name)
+        if '_instance_methods' in state:
+            del state['_instance_methods']
+        self.__dict__ = state
+        
 class DictionaryConditionalProbDist(ConditionalProbDistI):
     """
     An alternative ConditionalProbDist that simply wraps a dictionary of
