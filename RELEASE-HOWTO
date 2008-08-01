@@ -77,13 +77,11 @@ The build requires docutils, pdflatex, python imaging library, epydoc,
 
 A. UPLOAD DISTRIBUTIONS
 
-  1. cd nltk/dist/
-  2. ftp upload.sourceforge.net (anonymous)
-  3. cd incoming; binary; mput * (wait...)
-  4. visit https://sourceforge.net/project/admin/editpackages.php?group_id=30982
-  5. add release: release name is just x.x (no nltk prefix)
-  6. associate files to release; set types using earlier release as model
-  7. past in ChangeLog
+  1. make upload
+  2. visit https://sourceforge.net/project/admin/editpackages.php?group_id=30982
+  3. add release: release name is just x.x (no nltk prefix)
+  4. associate files to release; set types using earlier release as model
+  5. past in ChangeLog
 
 B. WEBSITE
 
