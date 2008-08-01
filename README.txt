@@ -18,7 +18,7 @@ available from the NLTK website: http://nltk.org/
 
   - The book covers a wide range of introductory topics in NLP, and
     shows how to do all the processing tasks using the toolkit.
-    http://nltk.org/index.php/Book
+    http://nltk.org/book.html
 
   - The toolkit's reference documentation describes every module,
     interface, class, method, function, and variable in the toolkit.
