@@ -151,8 +151,11 @@ class CategorySearchView(object):
         i2 = Frame(innerframe)
         vscrollbar = Scrollbar(i1, borderwidth=1)
         hscrollbar = Scrollbar(i2, borderwidth=1, orient='horiz')
-        self.results_box = Text(i1, state='disabled', borderwidth=1, 
-							yscrollcommand=vscrollbar.set, xscrollcommand=hscrollbar.set, wrap='none')
+        self.results_box = Text(i1,
+                                font=tkFont.Font(family='courier', size='16'),
+                                state='disabled', borderwidth=1, 
+							    yscrollcommand=vscrollbar.set,
+                                xscrollcommand=hscrollbar.set, wrap='none')
         self.results_box.pack(side='left', fill='both', expand=True)
         self.results_box.tag_config(self._HIGHLIGHT_TAG, foreground=self._HIGHLIGHT_COLOUR)
         vscrollbar.pack(side='left', fill='y', anchor='e')
