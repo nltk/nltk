@@ -7,10 +7,10 @@
 
 TMP=/tmp/nltk-installer/
 cd $TMP
-/usr/bin/sudo /Library/Frameworks/Python.framework/Versions/Current/bin/python ./setup.py install
+/usr/bin/sudo python ./setup.py install
 
 # Clean up after ourselves by deleting /tmp/nltk-installer?
 # rm -rf $TMP
 
 export NLTK_DATA=/usr/share/nltk
-echo export NLTK_DATA=/usr/share/nltk >> /.bashrc
+echo export NLTK_DATA=/usr/share/nltk >> /private/etc/bashrc
