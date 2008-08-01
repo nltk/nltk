@@ -578,7 +578,7 @@ def demo():
 
     orig = []
     stemmed = []
-    for item in treebank.items[:3]:
+    for item in treebank.files()[:3]:
         for (word, tag) in treebank.tagged_words(item):
             orig.append(word)
             stemmed.append(stemmer.stem(word))
