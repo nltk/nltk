@@ -81,13 +81,13 @@ dmgdist:
 	$(MAKE) -C tools/mac
 
 docdist:
-	find doc -print | egrep -v '.svn' | zip dist/nltk-doc-$(NLTK_VERSION).zip -@
+	find doc -print | egrep -v '.svn|.DS_Store' | zip dist/nltk-doc-$(NLTK_VERSION).zip -@
 
 contribdocdist:
-	find doc_contrib -print | egrep -v '.svn' | zip dist/nltk-contribdoc-$(NLTK_VERSION).zip -@
+	find doc_contrib -print | egrep -v '.svn|.DS_Store' | zip dist/nltk-contribdoc-$(NLTK_VERSION).zip -@
 
 exampledist:
-	find examples -print | egrep -v '.svn' | zip dist/nltk-examples-$(NLTK_VERSION).zip -@
+	find examples -print | egrep -v '.svn|.DS_Store' | zip dist/nltk-examples-$(NLTK_VERSION).zip -@
 
 datadist:
 	find data -print | egrep -v '.svn|.DS_Store' | zip dist/nltk-data-$(NLTK_VERSION).zip -@
