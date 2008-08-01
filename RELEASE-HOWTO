@@ -18,8 +18,9 @@ B. NLTK VERSION
   1. Modify nltk/__init__.py with the version number (2 places)
   2. Edit doc/definitions.txt with new version number
   3. Edit data/README.txt with the new version number
-  4. Commit these changes
-  5. Clone wiki download page for new version N.N, and call it Download-N.N
+  4. Edit tools/mac/nltk.pmdoc with the new version number
+  5. Commit these changes
+  6. Clone wiki download page for new version N.N, and call it Download-N.N
        and save in HTML format to /nltk
 
 C. ERROR CHECKING
