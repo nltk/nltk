@@ -38,7 +38,7 @@ import textwrap
 import weakref
 import yaml
 import re
-import urllib
+import urllib2
 
 from nltk import cfg, sem
 
@@ -305,7 +305,7 @@ def _open(resource_url, mode='rb'):
     protocol, or uses no protocol, then use L{nltk.data.find} to find
     its path, and open it with the given mode; if the resource URL
     uses the 'file' protocol, then open the file with the given mode;
-    otherwise, delegate to C{urllib.urlopen}.
+    otherwise, delegate to C{urllib2.urlopen}.
     
     @type resource_url: C{str}
     @param resource_url: A URL specifying where the resource should be
@@ -321,7 +321,7 @@ def _open(resource_url, mode='rb'):
         # urllib might not use mode='rb', so handle this one ourselves:
         return open(path, mode)
     else:
-        return urllib.urlopen(resource_url)
+        return urllib2.urlopen(resource_url)
 
 ######################################################################
 # Lazy Resource Loader
