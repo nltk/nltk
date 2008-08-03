@@ -2,7 +2,7 @@
 Resolution Theorem Prover
 =========================
 
-    >>> from nltk_contrib.sem.resolution import *
+    >>> from nltk.inference.resolution import *
     >>> from nltk.sem import logic
     >>> from nltk.sem.logic import *
     >>> logic._counter._value = 0
@@ -20,7 +20,6 @@ Resolution Theorem Prover
 -------------------------------
 Test most_general_unification()
 -------------------------------
-
     >>> print most_general_unification(x, x)
     {}
     >>> print most_general_unification(A, A)
@@ -45,15 +44,18 @@ Test most_general_unification()
 ------------
 Test unify()
 ------------
-
+    >>> print Clause([]).unify(Clause([]))
+    []
     >>> print Clause([P(x)]).unify(Clause([-P(A)]))
-    {}
+    [{}]
     >>> print Clause([P(A), Q(x)]).unify(Clause([-P(x), R(x)]))
-    {Q(A), R(A)}
+    [{Q(A), R(A)}]    
     >>> print Clause([P(A), Q(x), R(x,y)]).unify(Clause([-P(x), Q(y)]))
-    {R(A,y), Q(y), Q(A)}
+    [{Q(A), R(A,y), Q(y)}]
     >>> print Clause([P(A), -Q(y)]).unify(Clause([-P(x), Q(B)]))
-    {}
+    [{}]
+    >>> print Clause([P(x,x), Q(x), R(x)]).unify(Clause([-P(A,z), -Q(B)]))
+    [{Q(A), R(A), -Q(B)}, {P(B,B), R(B), -P(A,z)}]
  
 -------------------------
 Test is_tautology()
@@ -70,7 +72,6 @@ Test is_tautology()
 ------------
 Test prove()
 ------------
- 	
     >>> print Resolution(lp.parse('man(x)')).prove()
     False
     >>> print Resolution(lp.parse('(man(x) -> man(x))')).prove()
@@ -120,19 +121,66 @@ Test prove()
 -----------------
 Test show_proof()
 -----------------
-
     >>> p1 = lp.parse('all x.(man(x) -> mortal(x))')
     >>> p2 = lp.parse('man(Socrates)')
     >>> c = lp.parse('mortal(Socrates)')
+    >>> logic._counter._value = 0
     >>> tp = Resolution(c, [p1,p2])
     >>> tp.prove()
     True
-    >>> logic._counter._value = 0
     >>> tp.show_proof()
     [1] {-mortal(Socrates)}       A 
-    [2] {-man(z44), mortal(z44)}  A 
+    [2] {-man(z2), mortal(z2)}  A 
     [3] {man(Socrates)}           A 
     [4] {-man(Socrates)}          (1, 2) 
     [5] {mortal(Socrates)}        (2, 3) 
     [6] {}                        (1, 5) 
 
+------------------
+Question Answering
+------------------
+One answer
+    >>> p1 = lp.parse('father_of(art,john)')
+    >>> p2 = lp.parse('father_of(bob,kim)')
+    >>> p3 = lp.parse('all x.all y.(father_of(x,y) -> parent_of(x,y))')
+    >>> c = lp.parse('all x.(parent_of(x,john) -> ANSWER(x))')
+    >>> logic._counter._value = 0
+    >>> tp = Resolution(None, [p1,p2,p3,c])
+    >>> print tp.find_answers()
+    set([<VariableExpression art>])
+    >>> tp.show_proof()
+    [1] {father_of(art,john)}                  A 
+    [2] {father_of(bob,kim)}                   A 
+    [3] {-father_of(z4,z3), parent_of(z4,z3)}  A 
+    [4] {-parent_of(z6,john), ANSWER(z6)}      A 
+    [5] {parent_of(art,john)}                  (1, 3) 
+    [6] {parent_of(bob,kim)}                   (2, 3) 
+    [7] {-father_of(z6,john), ANSWER(z6)}      (3, 4) 
+    [8] {ANSWER(art)}                          (1, 7) 
+    [9] {ANSWER(art)}                          (4, 5) 
+
+Multiple answers
+    >>> p1 = lp.parse('father_of(art,john)')
+    >>> p2 = lp.parse('mother_of(ann,john)')
+    >>> p3 = lp.parse('all x.all y.(father_of(x,y) -> parent_of(x,y))')
+    >>> p4 = lp.parse('all x.all y.(mother_of(x,y) -> parent_of(x,y))')
+    >>> c = lp.parse('all x.(parent_of(x,john) -> ANSWER(x))')
+    >>> logic._counter._value = 0
+    >>> tp = Resolution(None, [p1,p2,p3,p4,c])
+    >>> print tp.find_answers()
+    set([<VariableExpression art>, <VariableExpression ann>])
+    >>> tp.show_proof()
+    [ 1] {father_of(art,john)}                  A 
+    [ 2] {mother_of(ann,john)}                  A 
+    [ 3] {-father_of(z4,z3), parent_of(z4,z3)}  A 
+    [ 4] {-mother_of(z8,z7), parent_of(z8,z7)}  A 
+    [ 5] {-parent_of(z10,john), ANSWER(z10)}    A 
+    [ 6] {parent_of(art,john)}                  (1, 3) 
+    [ 7] {parent_of(ann,john)}                  (2, 4) 
+    [ 8] {-father_of(z10,john), ANSWER(z10)}    (3, 5) 
+    [ 9] {ANSWER(art)}                          (1, 8) 
+    [10] {-mother_of(z10,john), ANSWER(z10)}    (4, 5) 
+    [11] {ANSWER(ann)}                          (2, 10) 
+    [12] {ANSWER(art)}                          (5, 6) 
+    [13] {ANSWER(ann)}                          (5, 7) 
+  
