@@ -55,14 +55,41 @@ class Tree(list):
     M{iN})}, specifying
     C{self[M{i1}][M{i2}]...[M{iN}]}.
     """
-    def __init__(self, node, children):
+    def __new__(cls, node_or_str, children=None):
+        if children is None:
+            if not isinstance(node_or_str, basestring):
+                raise TypeError("%s: Expected a node value and child list "
+                                "or a single string" % cls.__name__)
+            return cls.parse(node_or_str)
+        else:
+            if (isinstance(children, basestring) or
+                not hasattr(children, '__iter__')):
+                raise TypeError("%s() argument 2 should be a list, not a "
+                                "string" % cls.__name__)
+            return list.__new__(cls, node_or_str, children)
+    
+    def __init__(self, node_or_str, children=None):
         """
-        Construct a new tree.
+        Construct a new tree.  This constructor can be called in one
+        of two ways:
+
+          - C{Tree(node, children)} constructs a new tree with the
+            specified node value and list of children.
+            
+          - C{Tree(s)} constructs a new tree by parsing the string
+            C{s}.  It is equivalent to calling the class method
+            C{Tree.parse(s)}.
         """
-        if isinstance(children, (str, unicode)):
-            raise TypeError, 'children should be a list, not a string'
+        # Because __new__ may delegate to Tree.parse(), the __init__
+        # method may end up getting called more than once (once when
+        # constructing the return value for Tree.parse; and again when
+        # __new__ returns).  We therefore check if `children` is None
+        # (which will cause __new__ to call Tree.parse()); if so, then
+        # __init__ has already been called once, so just return.
+        if children is None: return
+        
         list.__init__(self, children)
-        self.node = node
+        self.node = node_or_str
 
     #////////////////////////////////////////////////////////////
     # Comparison operators
@@ -631,8 +658,9 @@ class Tree(list):
                                     string.join(childstrs), parens[1])
 
 class ImmutableTree(Tree):
-    def __init__(self, node, children):
-        super(ImmutableTree, self).__init__(node, children)
+    def __init__(self, node_or_str, children=None):
+        if children is None: return # see note in Tree.__init__()
+        super(ImmutableTree, self).__init__(node_or_str, children)
         # Precompute our hash value.  This ensures that we're really
         # immutable.  It also means we only have to calculate it once.
         try:
@@ -667,6 +695,16 @@ class ImmutableTree(Tree):
     def __hash__(self):
         return self._hash
 
+    def _set_node(self, node):
+        """Set self._node.  This will only succeed the first time the
+        node value is set, which should occur in Tree.__init__()."""
+        if hasattr(self, 'node'):
+            raise ValueError, 'ImmutableTrees may not be modified'
+        self._node = node
+    def _get_node(self):
+        return self._node
+    node = property(_get_node, _set_node)
+
 ######################################################################
 ## Parented trees
 ######################################################################
@@ -695,8 +733,9 @@ class AbstractParentedTree(Tree):
       - L{_setparent()} is called whenever a new child is added.
       - L{_delparent()} is called whenever a child is removed.
     """
-    def __init__(self, node, children):
-        super(AbstractParentedTree, self).__init__(node, children)
+    def __init__(self, node_or_str, children=None):
+        if children is None: return # see note in Tree.__init__()
+        super(AbstractParentedTree, self).__init__(node_or_str, children)
         # iterate over self, and *not* children, because children
         # might be an iterator.
         for i, child in enumerate(self):
@@ -907,12 +946,16 @@ class ParentedTree(AbstractParentedTree):
     or C{MultiParentedTrees}.  Mixing tree implementations may result
     in incorrect parent pointers and in C{TypeError} exceptions.
     """
-    def __init__(self, node, children):
+    def __init__(self, node_or_str, children=None):
+        if children is None: return # see note in Tree.__init__()
+        
         self._parent = None
         """The parent of this Tree, or C{None} if it has no parent."""
 
-        super(ParentedTree, self).__init__(node, children)
+        super(ParentedTree, self).__init__(node_or_str, children)
 
+    def _frozen_class(self): return ImmutableParentedTree
+    
     #/////////////////////////////////////////////////////////////////
     # Properties
     #/////////////////////////////////////////////////////////////////
@@ -1016,14 +1059,18 @@ class MultiParentedTree(AbstractParentedTree):
     C{Trees} or C{ParentedTrees}.  Mixing tree implementations may
     result in incorrect parent pointers and in C{TypeError} exceptions.
     """
-    def __init__(self, node, children):
+    def __init__(self, node_or_str, children=None):
+        if children is None: return # see note in Tree.__init__()
+        
         self._parents = []
         """A list of this tree's parents.  This list should not
            contain duplicates, even if a parent contains this tree
            multiple times."""
 
-        super(MultiParentedTree, self).__init__(node, children)
+        super(MultiParentedTree, self).__init__(node_or_str, children)
 
+    def _frozen_class(self): return ImmutableMultiParentedTree
+    
     #/////////////////////////////////////////////////////////////////
     # Properties
     #/////////////////////////////////////////////////////////////////
@@ -1150,13 +1197,27 @@ class MultiParentedTree(AbstractParentedTree):
             else:
                 child._parents.append(self)
     
+class ImmutableParentedTree(ImmutableTree, ParentedTree):
+    def __init__(self, node_or_str, children=None):
+        if children is None: return # see note in Tree.__init__()
+        super(ImmutableParentedTree, self).__init__(node_or_str, children)
+
+class ImmutableMultiParentedTree(ImmutableTree, MultiParentedTree):
+    def __init__(self, node_or_str, children=None):
+        if children is None: return # see note in Tree.__init__()
+        super(ImmutableMultiParentedTree, self).__init__(node_or_str, children)
+
 ######################################################################
 ## Probabilistic trees
 ######################################################################
 class ProbabilisticTree(Tree, ProbabilisticMixIn):
-    def __init__(self, node, children, **prob_kwargs):
+    def __new__(cls, node_or_str, children=None, **prob_kwargs):
+        return super(ProbabilisticTree, cls).__new__(
+            cls, node_or_str, children)
+    def __init__(self, node_or_str, children=None, **prob_kwargs):
+        if children is None: return # see note in Tree.__init__()
+        Tree.__init__(self, node_or_str, children)
         ProbabilisticMixIn.__init__(self, **prob_kwargs)
-        Tree.__init__(self, node, children)
 
     # We have to patch up these methods to make them work right:
     def _frozen_class(self): return ImmutableProbabilisticTree
@@ -1188,9 +1249,13 @@ class ProbabilisticTree(Tree, ProbabilisticMixIn):
     convert = classmethod(convert)
 
 class ImmutableProbabilisticTree(ImmutableTree, ProbabilisticMixIn):
-    def __init__(self, node, children, **prob_kwargs):
+    def __new__(cls, node_or_str, children=None, **prob_kwargs):
+        return super(ImmutableProbabilisticTree, cls).__new__(
+            cls, node_or_str, children)
+    def __init__(self, node_or_str, children=None, **prob_kwargs):
+        if children is None: return # see note in Tree.__init__()
+        ImmutableTree.__init__(self, node_or_str, children)
         ProbabilisticMixIn.__init__(self, **prob_kwargs)
-        ImmutableTree.__init__(self, node, children)
 
     # We have to patch up these methods to make them work right:
     def _frozen_class(self): return ImmutableProbabilisticTree
@@ -1361,4 +1426,5 @@ if __name__ == '__main__':
 
 __all__ = ['ImmutableProbabilisticTree', 'ImmutableTree', 'ProbabilisticMixIn',
            'ProbabilisticTree', 'Tree', 'bracket_parse', 'demo',
-           'sinica_parse', 'ParentedTree', 'MultiParentedTree']
+           'sinica_parse', 'ParentedTree', 'MultiParentedTree',
+           'ImmutableParentedTree', 'ImmutableMultiParentedTree']
