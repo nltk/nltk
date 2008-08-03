@@ -16,8 +16,8 @@ strings are *not* accepted as children lists:
 
     >>> print Tree('NP', 'Bob')
     Traceback (most recent call last):
-      ...
-    TypeError: children should be a list, not a string
+      . . .
+    TypeError: Tree() argument 2 should be a list, not a string
 
 A single level can contain both leaves and subtrees:
 
@@ -141,10 +141,16 @@ tree object to one of several standard tree encodings:
             [.vp [.v CHASED ] [.np [.d THE ] [.np CAT ] ] ] ]
 
 Trees can be parsed from treebank strings with the static
-`Tree.parse` method:
+`Tree.parse()` method:
 
-    >>> tree2 = bracket_parse('(S (NP I) (VP (V enjoyed) (NP my cookie)))')
+    >>> tree2 = Tree.parse('(S (NP I) (VP (V enjoyed) (NP my cookie)))')
     >>> print tree2
+    (S (NP I) (VP (V enjoyed) (NP my cookie)))
+
+If the `Tree` constructor is called with a single string argument,
+then it simply delegates to `Tree.parse()`.
+
+    >>> print Tree('(S (NP I) (VP (V enjoyed) (NP my cookie)))')
     (S (NP I) (VP (V enjoyed) (NP my cookie)))
 
 Trees can be compared for equality:
