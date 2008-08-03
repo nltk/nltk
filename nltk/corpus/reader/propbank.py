@@ -60,8 +60,9 @@ class PropbankCorpusReader(CorpusReader):
         """
         @return: the text contents of the given files, as a single string.
         """
-        return concat([codecs.open(path, 'rb', enc).read()
-                       for (path,enc) in self.abspaths(files, True)])
+        if files is None: files = self._files
+        elif isinstance(files, basestring): files = [files]
+        return concat([self.open(f).read() for f in files])
 
     def instances(self):
         """
@@ -93,7 +94,7 @@ class PropbankCorpusReader(CorpusReader):
 
         # n.b.: The encoding for XML files is specified by the file
         # itself; so we ignore self._encoding here.
-        etree = ElementTree.parse(self.abspath(framefile)).getroot()
+        etree = ElementTree.parse(self.abspath(framefile).open()).getroot()
         for roleset in etree.findall('predicate/roleset'):
             if roleset.attrib['id'] == roleset_id:
                 return roleset
@@ -305,7 +306,7 @@ class PropbankTreePointer(PropbankPointer):
 
         # Deal with normal pointers.
         pieces = s.split(':')
-        if len(pieces) != 2: raise ValueError('bad propbank pointer %s' % s)
+        if len(pieces) != 2: raise ValueError('bad propbank pointer %r' % s)
         return PropbankTreePointer(int(pieces[0]), int(pieces[1]))
 
     def __str__(self):

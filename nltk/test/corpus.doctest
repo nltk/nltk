@@ -1144,18 +1144,20 @@ The ``abspath()`` method can be used to find the absolute path to a
 corpus file, given its file identifier:
 
     >>> nltk.corpus.brown.abspath('ce06') # doctest: +ELLIPSIS
-    '.../corpora/brown/ce06'
+    FileSystemPathPointer('.../corpora/brown/ce06')
 
 The ``abspaths()`` method can be used to find the absolute paths for
 one corpus file, a list of corpus files, or all corpus files,
 depending on its argument type:
 
-    >>> nltk.corpus.brown.abspaths() # doctest: +ELLIPSIS
-    ['.../corpora/brown/ca01', '.../corpora/brown/ca02', ...]
+    >>> nltk.corpus.brown.abspaths() # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+    [FileSystemPathPointer('.../corpora/brown/ca01'),
+     FileSystemPathPointer('.../corpora/brown/ca02'), ...]
     >>> nltk.corpus.brown.abspaths('ce06') # doctest: +ELLIPSIS
-    ['.../corpora/brown/ce06']
-    >>> nltk.corpus.brown.abspaths(['ce06', 'ce07']) # doctest: +ELLIPSIS
-    ['.../corpora/brown/ce06', '.../corpora/brown/ce07']
+    [FileSystemPathPointer('.../corpora/brown/ce06')]
+    >>> nltk.corpus.brown.abspaths(['ce06', 'ce07']) # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+    [FileSystemPathPointer('.../corpora/brown/ce06'),
+     FileSystemPathPointer('.../corpora/brown/ce07')]
 
 This method is mainly useful as a helper method when defining corpus
 data access methods, since data access methods can usually be called
@@ -1352,12 +1354,14 @@ entire corpus).  The method's implementation converts this argument to
 a list of path names using the `abspaths()` method, which handles all
 three value types (string, list, and None):
 
-    >>> nltk.corpus.brown.abspaths() # doctest: +ELLIPSIS
-    ['.../corpora/brown/ca01', '.../corpora/brown/ca02', ...]
+    >>> nltk.corpus.brown.abspaths() # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+    [FileSystemPathPointer('.../corpora/brown/ca01'),
+     FileSystemPathPointer('.../corpora/brown/ca02'), ...]
     >>> nltk.corpus.brown.abspaths('ce06') # doctest: +ELLIPSIS
-    ['.../corpora/brown/ce06']
-    >>> nltk.corpus.brown.abspaths(['ce06', 'ce07']) # doctest: +ELLIPSIS
-    ['.../corpora/brown/ce06', '.../corpora/brown/ce07']
+    [FileSystemPathPointer('.../corpora/brown/ce06')]
+    >>> nltk.corpus.brown.abspaths(['ce06', 'ce07']) # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+    [FileSystemPathPointer('.../corpora/brown/ce06'),
+     FileSystemPathPointer('.../corpora/brown/ce07')]
 
 An example of this type of method is the `words()` method, defined by
 the `PlaintextCorpusReader` as follows:
@@ -1624,7 +1628,7 @@ The Brown Corpus uses the tagged corpus reader:
     >>> brown.categories() # doctest: +ELLIPSIS
     ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'r']
     >>> brown.root # doctest: +ELLIPSIS
-    '...brown'
+    FileSystemPathPointer('.../corpora/brown')
     >>> brown.words()
     ['The', 'Fulton', 'County', 'Grand', 'Jury', 'said', ...]
     >>> brown.sents() # doctest: +ELLIPSIS
@@ -1880,7 +1884,7 @@ the ``codecs.StreamReader`` class.  To construct a new reader, we call
 the constructor with an underlying stream and an encoding name:
 
     >>> from cStringIO import StringIO
-    >>> from nltk.corpus.reader.util import SeekableUnicodeStreamReader
+    >>> from nltk.data import SeekableUnicodeStreamReader
     >>> stream = StringIO(u"""\
     ... This is a test file.
     ... It is encoded in ascii.

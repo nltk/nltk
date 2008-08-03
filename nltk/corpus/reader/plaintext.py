@@ -66,8 +66,9 @@ class PlaintextCorpusReader(CorpusReader):
         @return: the given file or files as a single string.
         @rtype: C{str}
         """
-        return concat([codecs.open(path, 'rb', enc).read()
-                       for (path,enc) in self.abspaths(files, True)])
+        if files is None: files = self._files
+        elif isinstance(files, basestring): files = [files]
+        return concat([self.open(f).read() for f in files])
     
     def words(self, files=None):
         """

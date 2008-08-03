@@ -122,7 +122,7 @@ from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
 from nltk.tree import Tree
 import sys, os, re, tempfile, time
-from nltk.internals import deprecated
+from nltk.internals import deprecated, import_from_stdlib
 
 class TimitCorpusReader(CorpusReader):
     """
@@ -152,6 +152,10 @@ class TimitCorpusReader(CorpusReader):
         Construct a new TIMIT corpus reader in the given directory.
         @param root: The root directory for this corpus.
         """
+        # Ensure that wave files don't get treated as unicode data:
+        if isinstance(encoding, basestring):
+            encoding = [('.*\.wav', None), ('.*', encoding)]
+        
         CorpusReader.__init__(self, root,
                               find_corpus_files(root, self._FILE_RE),
                               encoding=encoding)
@@ -218,8 +222,7 @@ class TimitCorpusReader(CorpusReader):
         each word.
         """
         _transcriptions = {}
-        path = os.path.join(self._root, 'timitdic.txt')
-        for line in codecs.open(path, 'rb', self.encoding('timitdic.txt')):
+        for line in self.open('timitdic.txt'):
             if not line.strip() or line[0] == ';': continue
             m = re.match(r'\s*(\S+)\s+/(.*)/\s*$', line)
             if not m: raise ValueError('Bad line: %r' % line)
@@ -252,8 +255,7 @@ class TimitCorpusReader(CorpusReader):
         
         if self._speakerinfo is None:
             self._speakerinfo = {}
-            path = os.path.join(self._root, 'spkrinfo.txt')
-            for line in codecs.open(path, 'rb', self.encoding('spkrinfo.txt')):
+            for line in self.open('spkrinfo.txt'):
                 if not line.strip() or line[0] == ';': continue
                 rec = line.strip().split(None, 9)
                 key = "dr%s-%s%s" % (rec[2],rec[1].lower(),rec[0].lower())
@@ -263,43 +265,37 @@ class TimitCorpusReader(CorpusReader):
 
     def phones(self, utterances=None):
         return [line.split()[-1]
-                for path in self._utterance_filenames(utterances, '.phn')
-                for line in codecs.open(path, 'rb', self._encoding)
-                if line.strip()]
+                for fileid in self._utterance_files(utterances, '.phn')
+                for line in self.open(fileid) if line.strip()]
 
     def phone_times(self, utterances=None):
         """
         offset is represented as a number of 16kHz samples!
         """
         return [(line.split()[2], int(line.split()[0]), int(line.split()[1]))
-                for path in self._utterance_filenames(utterances, '.phn')
-                for line in codecs.open(path, 'rb', self._encoding)
-                if line.strip()]
+                for fileid in self._utterance_files(utterances, '.phn')
+                for line in self.open(fileid) if line.strip()]
 
     def words(self, utterances=None):
         return [line.split()[-1]
-                for path in self._utterance_filenames(utterances, '.wrd')
-                for line in codecs.open(path, 'rb', self._encoding)
-                if line.strip()]
+                for fileid in self._utterance_files(utterances, '.wrd')
+                for line in self.open(fileid) if line.strip()]
 
     def word_times(self, utterances=None):
         return [(line.split()[2], int(line.split()[0]), int(line.split()[1]))
-                for path in self._utterance_filenames(utterances, '.wrd')
-                for line in codecs.open(path, 'rb', self._encoding)
-                if line.strip()]
+                for fileid in self._utterance_files(utterances, '.wrd')
+                for line in self.open(fileid) if line.strip()]
 
     def sents(self, utterances=None):
         return [[line.split()[-1]
-                 for line in codecs.open(path, 'rb', self._encoding)
-                 if line.strip()]
-                for path in self._utterance_filenames(utterances, '.wrd')]
+                 for line in self.open(fileid) if line.strip()]
+                for fileid in self._utterance_files(utterances, '.wrd')]
 
     def sent_times(self, utterances=None):
         return [(line.split(None,2)[-1].strip(),
                  int(line.split()[0]), int(line.split()[1]))
-                for path in self._utterance_filenames(utterances, '.txt')
-                for line in codecs.open(path, 'rb', self._encoding)
-                if line.strip()]
+                for fileid in self._utterance_files(utterances, '.txt')
+                for line in self.open(fileid) if line.strip()]
 
     def phone_trees(self, utterances=None):
         if utterances is None: utterances = self._utterances
@@ -326,13 +322,14 @@ class TimitCorpusReader(CorpusReader):
                     trees[-1].append(phone_times.pop(0)[0])
         return trees
 
+    # [xx] NOTE: This is currently broken -- we're assuming that the
+    # files are WAV files (aka RIFF), but they're actually NIST SPHERE
+    # files.
     def wav(self, utterance, start=0, end=None):
-        # We wait to import until here because the wave module wants
-        # to import the stdlib chunk module, and will get confused
-        # if it sees *our* chunk module instead.
-        import wave
+        # nltk.chunk conflicts with the stdlib module 'chunk'
+        wave = import_from_stdlib('wave')
 
-        w = wave.open(os.path.join(self._root, utterance+'.wav'), 'rb')
+        w = wave.open(self.open(utterance+'.wav'), 'rb')
         
         # If they want the whole thing, return it as-is.
         if start==0 and end is None:
@@ -360,18 +357,16 @@ class TimitCorpusReader(CorpusReader):
     def audiodata(self, utterance, start=0, end=None):
         assert(end is None or end > start)
         headersize = 44
-        fnam = os.path.join(self._root, utterance+'.wav')
         if end is None:
-            data = open(fnam, 'rb').read()
+            data = self.open(utterance+'.wav').read()
         else:
-            data = open(fnam, 'rb').read(headersize+end*2)
+            data = self.open(utterance+'.wav').read(headersize+end*2)
         return data[headersize+start*2:]
 
-    def _utterance_filenames(self, utterances, extension):
+    def _utterance_files(self, utterances, extension):
         if utterances is None: utterances = self._utterances
         if isinstance(utterances, basestring): utterances = [utterances]
-        return [os.path.join(self._root, '%s%s' % (utterance, extension))
-                for utterance in utterances]
+        return ['%s%s' % (u, extension) for u in utterances]
 
     def play(self, utterance, start=0, end=None):
         """
