@@ -74,8 +74,9 @@ class PPAttachmentCorpusReader(CorpusReader):
                        for (filename, enc) in self.abspaths(files, True)])
 
     def raw(self, files=None):
-        return concat([codecs.open(path, 'rb', enc).read()
-                       for (path,enc) in self.abspaths(files, True)])
+        if files is None: files = self._files
+        elif isinstance(files, basestring): files = [files]
+        return concat([self.open(f).read() for f in files])
 
     def _read_tuple_block(self, stream):
         line = stream.readline()

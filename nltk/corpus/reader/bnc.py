@@ -180,8 +180,9 @@ class BNCWordView(XMLCorpusView):
         XMLCorpusView.__init__(self, filename, tagspec)
         
         # Read in a tasty header.
-        stream = codecs.open(filename, 'rb', self._encoding)
-        self.read_block(stream, '.*/teiHeader$', self.handle_header)
+        self._open()
+        self.read_block(self._stream, '.*/teiHeader$', self.handle_header)
+        self.close()
 
         # Reset tag context.
         self._tag_context = {0: ()}

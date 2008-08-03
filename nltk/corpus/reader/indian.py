@@ -58,8 +58,9 @@ class IndianCorpusReader(CorpusReader):
                        for (filename, enc) in self.abspaths(files, True)])
 
     def raw(self, files=None):
-        return concat([codecs.open(path, 'rb', enc).read()
-                       for (path,enc) in self.abspaths(files, True)])
+        if files is None: files = self._files
+        elif isinstance(files, basestring): files = [files]
+        return concat([self.open(f).read() for f in files])
 
     #{ Deprecated since 0.8
     @deprecated("Use .raw() or .words() or .tagged_words() instead.")

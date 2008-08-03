@@ -13,6 +13,7 @@ Corpus reader for corpora whose documents are xml files.
 
 from nltk.corpus.reader.api import CorpusReader
 from nltk.corpus.reader.util import *
+from nltk.data import SeekableUnicodeStreamReader
 from nltk.internals import deprecated, ElementWrapper
 import codecs
 
@@ -39,7 +40,7 @@ class XMLCorpusReader(CorpusReader):
         if not isinstance(fileid, basestring):
             raise TypeError('Expected a single file identifier string')
         # Read the XML in using ElementTree.
-        elt = ElementTree.parse(self.abspath(fileid)).getroot()
+        elt = ElementTree.parse(self.abspath(fileid).open()).getroot()
         # If requested, wrap it.
         if self._wrap_etree:
             elt = ElementWrapper(elt)
@@ -47,8 +48,9 @@ class XMLCorpusReader(CorpusReader):
         return elt
 
     def raw(self, files=None):
-        return concat([open(filename).read()
-                       for filename in self.abspaths(files)])
+        if files is None: files = self._files
+        elif isinstance(files, basestring): files = [files]
+        return concat([self.open(f).read() for f in files])
 
     #{ Deprecated since 0.8
     @deprecated("Use .raw() or .xml() instead.")
@@ -130,7 +132,10 @@ class XMLCorpusView(StreamBackedCorpusView):
         StreamBackedCorpusView.__init__(self, filename, encoding=encoding)
 
     def _detect_encoding(self, filename):
-        s = open(filename, 'rb').readline()
+        if isinstance(filename, PathPointer):
+            s = filename.open().readline()
+        else:
+            s = open(filename, 'rb').readline()
         if s.startswith(codecs.BOM_UTF16_BE):
             return 'utf-16-be'
         if s.startswith(codecs.BOM_UTF16_LE):
