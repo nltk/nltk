@@ -126,7 +126,10 @@ class AnnotationTask():
         total = 0.0
         for i in self.I:
             total += self.distance(filter(lambda x:x['coder']==cA and x['item']==i,self.data)[0]['labels'],filter(lambda x:x['coder']==cB and x['item']==i,self.data)[0]['labels'])
-        return total/(len(self.I)*max_distance)
+        ret = total/(len(self.I)*max_distance)
+        if(self.verbose>0):
+            print "Observed disagreement between %s and %s: %f"%(cA,cB,ret)
+        return ret
 
     def Do_Kw(self,max_distance=1.0):
         """Averaged over all labelers
@@ -135,9 +138,12 @@ class AnnotationTask():
         vals = {}
         for cA in self.C:
             for cB in self.C:
-                if(not frozenset([cA,cB]) in vals.keys()):
+                if(not frozenset([cA,cB]) in vals.keys() and not cA==cB):
                     vals[frozenset([cA,cB])] = self.Do_Kw_pairwise(cA,cB,max_distance)
-        return sum(vals.values())/len(vals)
+        ret = sum(vals.values())/len(vals)
+        if(self.verbose>0):
+            print "Observed disagreement: %f"%(ret)
+        return ret
 
     # Agreement Coefficients
     def S(self):
