@@ -102,8 +102,9 @@ class AnnotationTask():
             print "Average observed agreement: %f"%(ret)
         return ret
 
-    def Do(self):
-        """The observed disagreement.
+    #TODO: VERY slow, speed this up!
+    def Do_alpha(self):
+        """The observed disagreement for the alpha coefficient.
 
         The alpha coefficient, unlike the other metrics, uses this rather than
         observed agreement.
@@ -117,6 +118,26 @@ class AnnotationTask():
         if(self.verbose>0):
             print "Observed disagreement: %f"%(ret)
         return ret
+
+    def Do_Kw_pairwise(self,cA,cB,max_distance=1.0):
+        """The observed disagreement for the weighted kappa coefficient.
+
+        """
+        total = 0.0
+        for i in self.I:
+            total += self.distance(filter(lambda x:x['coder']==cA and x['item']==i,self.data)[0]['labels'],filter(lambda x:x['coder']==cB and x['item']==i,self.data)[0]['labels'])
+        return total/(len(self.I)*max_distance)
+
+    def Do_Kw(self,max_distance=1.0):
+        """Averaged over all labelers
+        
+        """
+        vals = {}
+        for cA in self.C:
+            for cB in self.C:
+                if(not frozenset([cA,cB]) in vals.keys()):
+                    vals[frozenset([cA,cB])] = self.Do_Kw_pairwise(cA,cB,max_distance)
+        return sum(vals.values())/len(vals)
 
     # Agreement Coefficients
     def S(self):
@@ -141,8 +162,8 @@ class AnnotationTask():
     def pi_avg(self):
         pass
 
-    def kappa_two(self,cA,cB):
-        """Cohen 1960
+    def kappa_pairwise(self,cA,cB):
+        """
 
         """
         Ae = 0.0
@@ -150,16 +171,20 @@ class AnnotationTask():
             Ae += (float(self.N(c=cA,k=k))/float(len(self.I))) * (float(self.N(c=cB,k=k))/float(len(self.I)))
         ret = (self.Ao(cA,cB)-Ae)/(1.0-Ae)
         if(self.verbose>0):
+            print "Expected agreement between %s and %s: %f"%(cA,cB,Ae)
             print "Kappa between %s and %s: %f"%(cA,cB,ret)
         return ret
 
     def kappa(self):
+        """Cohen 1960
+
+        """
         vals = {}
         for a in self.C:
             for b in self.C:
                 if(a==b or "%s%s"%(b,a) in vals):
                     continue
-                vals["%s%s"%(a,b)] = self.kappa_two(a,b)
+                vals["%s%s"%(a,b)] = self.kappa_pairwise(a,b)
         ret = sum(vals.values())/float(len(vals))
         return ret
 
@@ -174,17 +199,36 @@ class AnnotationTask():
         De = (1.0/(len(self.I)*len(self.C)*(len(self.I)*len(self.C)-1)))*De
         if(self.verbose>0):
             print "Expected disagreement: %f"%(De)
-        ret = 1.0 - (self.Do()/De)
+        ret = 1.0 - (self.Do_alpha()/De)
         return ret
 
+    def weighted_kappa_pairwise(self,cA,cB,max_distance=1.0):
+        """Cohen 1968
+
+        """
+        total = 0.0
+        for j in self.K:
+            for l in self.K:
+                total += self.N(c=cA,k=j)*self.N(c=cB,k=l)*self.distance(j,l)
+        De = total/(max_distance*pow(len(self.I),2))
+        Do = self.Do_Kw()
+        return 1.0 - (Do/De)
+
+    def weighted_kappa(self):
+        """Cohen 1968
+
+        """
+        vals = {}
+        for a in self.C:
+            for b in self.C:
+                if(a==b or "%s%s"%(b,a) in vals):
+                    continue
+                vals["%s%s"%(a,b)] = self.weighted_kappa_pairwise(a,b)
+        ret = sum(vals.values())/float(len(vals))
+        return ret
 
 if(__name__=='__main__'):
 
-#    import doctest
-#    doctest.testmod()
-
-
-#def temp():
     import re
     import optparse
     import distance_metric
