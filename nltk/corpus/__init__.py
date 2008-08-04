@@ -145,6 +145,8 @@ toolbox = LazyCorpusLoader(
 treebank = LazyCorpusLoader(
     'treebank/combined', BracketParseCorpusReader, r'wsj_.*\.mrg',
     tag_mapping_function=simplify_wsj_tag)
+hebrew_treebank = LazyCorpusLoader(
+    'hebrew_treebank', BracketParseCorpusReader, r'.*\.txt')
 propbank = LazyCorpusLoader(
     'propbank', PropbankCorpusReader,
     'prop.txt', 'frames/.*\.xml', 'verbs.txt',
