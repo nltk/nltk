@@ -45,10 +45,6 @@ _CORPORA = {
                 lambda: nltk.corpus.brown.tagged_sents(categories='p', simplify_tags=True),
             'English: Brown Corpus (Humor, simplified)':
                 lambda: nltk.corpus.brown.tagged_sents(categories='r', simplify_tags=True),
-            'English: NPS Chat Corpus':
-                nltk.corpus.nps_chat.tagged_posts,
-            'English: NPS Chat Corpus (simplified)':
-                _simplify_tags(nltk.corpus.nps_chat.tagged_posts),
             'English: Wall Street Journal Corpus':
                 nltk.corpus.treebank.tagged_sents,
             'English: Wall Street Journal Corpus (simplified)':
@@ -85,7 +81,7 @@ class CategorySearchView(object):
     _HIGHLIGHT_TAG='HL_TAG'
     
     #Percentage of text left of the scrollbar position
-    _FRACTION_LEFT_TEXT=0.20
+    _FRACTION_LEFT_TEXT=0.30
     
     #Number of characters before the position of search item
     _CHAR_BEFORE=75
@@ -102,9 +98,10 @@ class CategorySearchView(object):
         self.load_corpus(self.model.DEFAULT_CORPUS)
         
     def _init_top(self, top):
-        top.geometry('700x500+50+50')
+        top.geometry('950x650+50+50')
         top.title('NLTK Concordance Search')
         top.bind('<Control-q>', self.destroy)
+        top.minsize(950,650)
         
     def _init_widgets(self, parent):
         self.main_frame = Frame(parent, dict(background=self._BACKGROUND_COLOUR, padx=1, pady=1, border=1))        
@@ -155,7 +152,7 @@ class CategorySearchView(object):
                                 font=tkFont.Font(family='courier', size='16'),
                                 state='disabled', borderwidth=1, 
 							    yscrollcommand=vscrollbar.set,
-                                xscrollcommand=hscrollbar.set, wrap='none')
+                                xscrollcommand=hscrollbar.set, wrap='none', width='40', height = '20')
         self.results_box.pack(side='left', fill='both', expand=True)
         self.results_box.tag_config(self._HIGHLIGHT_TAG, foreground=self._HIGHLIGHT_COLOUR)
         vscrollbar.pack(side='left', fill='y', anchor='e')
