@@ -49,11 +49,6 @@ def _convert_fuf_feature(sexp):
     elif sexp[0] == 'opt':
         feat, name, index, val = parse_opt(sexp)
     elif len(sexp) == 3 and sexp[1] == '===':
-        #temp = SexpList('(', ')')
-        #temp.append('lex')
-        #temp.append(sexp.pop())
-        #sexp[1] = temp
-        #feat, val = sexp
         feat, val = _convert_triple_eq(sexp)
 
     elif len(sexp) == 3 and sexp[1] == '~':
@@ -63,9 +58,6 @@ def _convert_fuf_feature(sexp):
         print sexp[1]
         feat, val = sexp
     else:
-        #print
-        #for i, item in enumerate(sexp):
-            #print "%d:%s" % (i, item)
         assert len(sexp) == 2, sexp[1]
         assert isinstance(sexp[0], basestring), sexp
         feat, val = sexp
@@ -175,33 +167,33 @@ if __name__ == '__main__':
     #test the alt feature
 
     print 'START LIST TEST'
-    listlines = open('tests/list.fuf').readlines()
-    for line in listlines:
-        print 'INPUTS:', line
-        print '<pre>'
-        print fuf_to_featstruct(line)
-        print '</pre>'
-        print
+    #listlines = open('tests/list.fuf').readlines()
+    #for line in listlines:
+        #print 'INPUTS:', line
+        #print '<pre>'
+        #print fuf_to_featstruct(line)
+        #print '</pre>'
+        #print
 
 
     
     # test the relative link feature
-    print "START LINK TEST"
-    linklines = open('tests/link.fuf').readlines()
-    for line in linklines:
-        print "INPUT:", line
-        print '<pre>'
-        print fuf_to_featstruct(line)
-        print '</pre>'
-        print
+    #print "START LINK TEST"
+    #linklines = open('tests/link.fuf').readlines()
+    #for line in linklines:
+        #print "INPUT:", line
+        #print '<pre>'
+        #print fuf_to_featstruct(line)
+        #print '</pre>'
+        #print
 
     # test the opt feature
-    print "START OPT TEST"
-    optlines = open('tests/opt.fuf').readlines()
-    for line in optlines:
-        print "INPUT:", line
-        print fuf_to_featstruct(line)
-        print
+    #print "START OPT TEST"
+    #optlines = open('tests/opt.fuf').readlines()
+    #for line in optlines:
+        #print "INPUT:", line
+        #print fuf_to_featstruct(line)
+        #print
 
 
     # test the example grammars
@@ -210,8 +202,10 @@ if __name__ == '__main__':
     for gfile in grammar_files:
         print "FILE: %s" % gfile
         text = open('tests/%s' % gfile).read()
+        print text
         print fuf_to_featstruct(text)
         print
+        1/0
 
     
     type_table, grammar = fuf_file_to_featstruct('tests/typed_gr4.fuf')
