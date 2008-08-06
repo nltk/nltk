@@ -70,7 +70,7 @@ of EM.
 import re
 
 from new import function
-from types import MethodType, LambdaType
+from types import MethodType, LambdaType, FunctionType
 from marshal import dumps, loads
 
 from numpy import *
@@ -89,7 +89,7 @@ _NINF = float('-1e300')
 
 _TEXT = 0  # index of text in a tuple
 _TAG = 1   # index of tag in a tuple
-
+    
 class HiddenMarkovModelTagger(TaggerI):
     """
     Hidden Markov model class, a generative model for labelling sequence data.
@@ -101,7 +101,11 @@ class HiddenMarkovModelTagger(TaggerI):
     
     This implementation is based on the HMM description in Chapter 8, Huang,
     Acero and Hon, Spoken Language Processing and includes an extension for
-    training shallow HMM parsers as in Molina et. al, 2002.
+    training shallow HMM parsers or specializaed HMMs as in Molina et. al,
+    2002.  A specialized HMM modifies training data by applying a 
+    specialization function to create a new training set that is more
+    appropriate for sequential tagging with an HMM.  A typical use case is 
+    chunking.
     """
     def __init__(self, symbols, states, transitions, outputs, priors, **kwargs):
         """
@@ -123,37 +127,65 @@ class HiddenMarkovModelTagger(TaggerI):
             of starting in state i
         @type priors: C{ProbDistI}
         @kwparam transform: an optional function for transforming training
-            instances, defaults to the identity function, see L{transform()}
-        @type transform: C{function}
+            instances, defaults to the identity function.         
+        @type transform: C{function} or C{HiddenMarkovModelTaggerTransform}
         """
         self._states = states
         self._transitions = transitions
         self._symbols = symbols
         self._outputs = outputs
         self._priors = priors
-        self._transform = kwargs.get('transform', self.transform)       
         self._cache = None
-    
+        
+        self._transform = kwargs.get('transform', IdentityTransform())
+        if isinstance(self._transform, FunctionType):
+            self._transform = LambdaTransform(self._transform)
+        elif not isinstance(self._transform, 
+                            HiddenMarkovModelTaggerTransformI):
+            raise
+            
     @classmethod
-    def transform(cls, sequence):
-        """
-        A transformation function that allows for training a shallow HMM
-        parser or specialized HMM (Molina et. al 2002).  A specialized HMM
-        modifies training data by applying a specialization function to create
-        a new training set that is more appropriate for sequential tagging
-        with an HMM.  A typical use case is chunking.
+    def _train(cls, labeled_sequence, test_sequence=None,
+    		        unlabeled_sequence=None, **kwargs):
+    	"""
+    	"""
         
-        @return: a transformed sequence of symbols
-        @rtype: C{list} of C{tuple}
-        @param sequence: a sequence of symbols
-        @type sequence: C{list} of C{tuple}
-        """
-        return sequence
-        
+        transform = kwargs.get('transform', IdentityTransform())
+        if isinstance(transform, FunctionType):
+            transform = LambdaTransform(transform)
+        elif \
+        not isinstance(transform, HiddenMarkovModelTaggerTransformI):
+            raise
+    	
+    	estimator = kwargs.get('estimator', lambda fd, bins: \
+    	                                    LidstoneProbDist(fd, 0.1, bins))
+    	                     
+    	labeled_sequence = LazyMap(transform.transform, labeled_sequence)
+        symbols = list(set(word for sent in labeled_sequence
+            for word, tag in sent))
+        tag_set = list(set(tag for sent in labeled_sequence
+            for word, tag in sent))
+                               
+        trainer = HiddenMarkovModelTrainer(tag_set, symbols)
+        hmm = trainer.train_supervised(labeled_sequence, estimator=estimator)
+        hmm = cls(hmm._symbols, hmm._states, hmm._transitions, hmm._outputs,
+                  hmm._priors, transform=transform)        
+
+        if test_sequence:
+            hmm.test(test_sequence, verbose=kwargs.get('verbose', False))
+
+        if unlabeled_sequence:
+            max_iterations = kwargs.get('max_iterations', 5)
+            hmm = trainer.train_unsupervised(unlabeled_sequence, model=hmm, 
+                max_iterations=max_iterations)
+            if test_sequence:
+                hmm.test(test_sequence, verbose=kwargs.get('verbose', False))
+
+        return hmm
+                
     @classmethod
     def train(cls, labeled_sequence, test_sequence=None,
     		       unlabeled_sequence=None, **kwargs):
-    	
     	"""
     	Train a new C{HiddenMarkovModelTagger} using the given labeled and
     	unlabeled training instances. Testing will be performed if test
@@ -182,35 +214,9 @@ class HiddenMarkovModelTagger(TaggerI):
         @kwparam max_iterations: number of Baum-Welch interations to perform
         @type max_iterations: C{int}
     	"""
-    	transform = kwargs.get('transform', cls.transform)
-    	estimator = kwargs.get('estimator', 
-    	                     lambda fd, bins: LidstoneProbDist(fd, 0.1, bins))
-    	                     
-    	labeled_sequence = LazyMap(transform, labeled_sequence)
-    	
-        symbols = list(set(word for sent in labeled_sequence
-                                for word, tag in sent))
-        tag_set = list(set(tag for sent in labeled_sequence
-                               for word, tag in sent))
-                               
-        trainer = HiddenMarkovModelTrainer(tag_set, symbols)
-        hmm = trainer.train_supervised(labeled_sequence,
-                                       estimator=estimator)
-
-        if test_sequence:
-            test_sequence = LazyMap(transform, test_sequence)
-            hmm.test(test_sequence, verbose=kwargs.get('verbose', False))
-
-        if unlabeled_sequence:
-            max_iterations = kwargs.get('max_iterations', 5)
-            hmm = trainer.train_unsupervised(unlabeled_sequence, model=hmm, 
-                                             max_iterations=max_iterations)
-            if test_sequence:
-                hmm.test(test_sequence, verbose=kwargs.get('verbose', False))
-
-        return cls(hmm._symbols, hmm._states, hmm._transitions, 
-                   hmm._outputs, hmm._priors, transform=transform)
-    
+        return cls._train(labeled_sequence, test_sequence,
+    		              unlabeled_sequence, **kwargs)
+        
     def probability(self, sequence):
         """
         Returns the probability of the given symbol sequence. If the sequence
@@ -224,7 +230,7 @@ class HiddenMarkovModelTagger(TaggerI):
             property, and optionally the TAG property
         @type sequence:  Token
         """
-        return 2**(self.log_probability(self._transform(sequence)))
+        return 2**(self.log_probability(self._transform.transform(sequence)))
 
     def log_probability(self, sequence):
         """
@@ -239,7 +245,7 @@ class HiddenMarkovModelTagger(TaggerI):
             property, and optionally the TAG property
         @type sequence:  Token
         """
-        sequence = self._transform(sequence)
+        sequence = self._transform.transform(sequence)
         
         T = len(sequence)
         N = len(self._states)
@@ -338,7 +344,7 @@ class HiddenMarkovModelTagger(TaggerI):
         @param unlabeled_sequence: the sequence of unlabeled symbols 
         @type unlabeled_sequence: list
         """
-        unlabeled_sequence = self._transform(unlabeled_sequence)
+        unlabeled_sequence = self._transform.transform(unlabeled_sequence)
 
         T = len(unlabeled_sequence)
         N = len(self._states)
@@ -379,7 +385,7 @@ class HiddenMarkovModelTagger(TaggerI):
         @param unlabeled_sequence: the sequence of unlabeled symbols 
         @type unlabeled_sequence: list
         """
-        unlabeled_sequence = self._transform(unlabeled_sequence)
+        unlabeled_sequence = self._transform.transform(unlabeled_sequence)
         
         T = len(unlabeled_sequence)
         N = len(self._states)
@@ -502,7 +508,7 @@ class HiddenMarkovModelTagger(TaggerI):
         sequences, constrained to include the given state(s) at some point in
         time.
         """
-        unlabeled_sequence = self._transform(unlabeled_sequence)
+        unlabeled_sequence = self._transform.transform(unlabeled_sequence)
 
         T = len(unlabeled_sequence)
         N = len(self._states)
@@ -546,7 +552,7 @@ class HiddenMarkovModelTagger(TaggerI):
         Returns the pointwise entropy over the possible states at each
         position in the chain, given the observation sequence.
         """
-        unlabeled_sequence = self._transform(unlabeled_sequence)
+        unlabeled_sequence = self._transform.transform(unlabeled_sequence)
 
         T = len(unlabeled_sequence)
         N = len(self._states)
@@ -567,7 +573,7 @@ class HiddenMarkovModelTagger(TaggerI):
         return entropies
 
     def _exhaustive_entropy(self, unlabeled_sequence):
-        unlabeled_sequence = self._transform(unlabeled_sequence)
+        unlabeled_sequence = self._transform.transform(unlabeled_sequence)
         
         T = len(unlabeled_sequence)
         N = len(self._states)
@@ -606,7 +612,7 @@ class HiddenMarkovModelTagger(TaggerI):
         return entropy
 
     def _exhaustive_point_entropy(self, unlabeled_sequence):
-        unlabeled_sequence = self._transform(unlabeled_sequence)
+        unlabeled_sequence = self._transform.transform(unlabeled_sequence)
         
         T = len(unlabeled_sequence)
         N = len(self._states)
@@ -719,28 +725,46 @@ class HiddenMarkovModelTagger(TaggerI):
             verbose or include printed output
         @type verbose: C{bool}
         """
-        count = len(test_sequence)
-        predicted_sequence = \
-            LazyMap(lambda sent: self.tag([word[_TEXT] for word in sent]),
-                    test_sequence)
-                    
+        predicted_sequence = LazyMap(lambda sent: \
+                self.tag([token for (token, tag) in sent]),
+            test_sequence)
+        test_sequence = LazyMap(self._transform.transform, test_sequence)            
+            
         if kwargs.get('verbose', False):
             # This will be used again later for accuracy so there's no sense
             # in tagging it twice.
+            test_sequence = list(test_sequence)
             predicted_sequence = list(predicted_sequence)
 
             for sent in predicted_sequence:
+                print 'Test:', \
+                    ' '.join(['%s/%s' % (str(token), str(tag)) 
+                              for (token, tag) in sent])
+                print
                 print 'Untagged:', \
-                    ' '.join([word[_TEXT] for word in sent])
+                    ' '.join([str(token) for (token, tag) in sent])
+                print
                 print 'HMM-tagged:', \
-                    ' '.join(['%s/%s' % word for word in sent])
+                    ' '.join(['%s/%s' % (str(token), str(tag)) 
+                              for (token, tag) in sent])
+                print
                 print 'Entropy:', \
-                    self.entropy([(word[_TEXT], None) for word in sent])
+                    self.entropy([(token, None) for (token, tag) in sent])
+                print
                 print '-' * 60
-                
-        acc = accuracy(LazyConcatenation(test_sequence), 
-                       LazyConcatenation(predicted_sequence))
-        print 'accuracy over %d tokens %.2f' % (count, acc * 100)
+        
+        test_tags = LazyConcatenation(LazyMap(lambda sent: \
+                [tag for (token, tag) in sent],
+            test_sequence))
+        predicted_tags = LazyConcatenation(LazyMap(lambda sent: \
+                [tag for (token, tag) in sent],
+            predicted_sequence))
+        
+        acc = accuracy(test_tags, predicted_tags)
+
+        count = sum([len(sent) for sent in test_sequence])
+
+        print 'accuracy over %d tokens: %.2f' % (count, acc * 100)
         
     def __repr__(self):
         return ('<HiddenMarkovModelTagger %d states and %d output symbols>'
@@ -1025,6 +1049,32 @@ class HiddenMarkovModelTrainer(object):
                                
         return HiddenMarkovModelTagger(self._symbols, self._states, A, B, pi)
 
+    
+class LambdaTransform(HiddenMarkovModelTaggerTransformI):
+    """
+    A subclass of C{HiddenMarkovModelTaggerTransformI} that is backed by an
+    arbitrary user-defined function, instance method, or lambda function.
+    """
+    def __init__(self, func):
+        """
+        @param func: a user-defined or lambda transform function
+        @type func: C{function}
+        """
+        self._func = func
+    
+    def transform(self, symbols):
+        return self._func(symbols)
+        
+
+class IdentityTransform(LambdaTransform):
+    """
+    A subclass of C{LambdaTransform} that implements L{transform()} as the
+    identity function, i.e. symbols passed to C{transform()} are returned
+    unmodified.
+    """
+    def __init__(self):
+        LambdaTransform.__init__(self, lambda symbols: symbols)
+        
 
 def _log_add(*values):
     """
