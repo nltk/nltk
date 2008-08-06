@@ -11,7 +11,6 @@ from nltk.parse import Tree
 from pprint import pformat
 from dependencygraph import *
 import re
-from sets import Set
 
 #################################################################
 # Dependency Production
@@ -130,16 +129,17 @@ class DependencyGrammar(object):
 					return True
 		return False
 		
-		# should be rewritten, the set comp won't work in all comparisons
-	def contains_exactly(self, head, modlist):
-		for production in self._productions:
-			if(len(production._rhs) == len(modlist)):
-				if(production._lhs == head):
-					set1 = Set(production._rhs)
-					set2 = Set(modlist)
-					if(set1 == set2):
-						return True
-		return False
+
+	# 	# should be rewritten, the set comp won't work in all comparisons
+	# def contains_exactly(self, head, modlist):
+	# 	for production in self._productions:
+	# 		if(len(production._rhs) == len(modlist)):
+	# 			if(production._lhs == head):
+	# 				set1 = Set(production._rhs)
+	# 				set2 = Set(modlist)
+	# 				if(set1 == set2):
+	# 					return True
+	# 	return False
 
 
 	def __str__(self):
@@ -285,5 +285,5 @@ def stat_demo():
 	print tree.pprint()
 
 
-#demo()
-#stat_demo()
+if __name__ == '__main__':
+	demo()

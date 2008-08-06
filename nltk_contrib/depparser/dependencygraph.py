@@ -33,7 +33,7 @@ class DepGraph(object):
 		as its head. This also means that the indexing of the nodelist
 		corresponds directly to the Malt-TAB format, which starts at 1.
 		"""
-		top = {'word':None, 'deps':[], 'rel': 'TOP', 'address': 0}
+		top = {'word':None, 'deps':[], 'rel': 'TOP', 'tag': 'TOP', 'address': 0}
 		self.nodelist = [top]
 		self.root = None
 		self.stream = None
@@ -110,6 +110,10 @@ class DepGraph(object):
 			if (child > int(self.nodelist[node_index]['address'])):
 				count += 1
 		return count
+	
+	def add_node(self, node):
+		if(not self.contains_address(node['address'])):
+			self.nodelist.append(node)
 
 	def read(self, input):
 		lines = input.split('\n')
@@ -137,9 +141,9 @@ class DepGraph(object):
 					elif(nrCells == 10):
 						(id, form, lemma, cpostag, postag, feats, head, deprel, phead, pdeprel) = line.split("\t")
 						head = int(head)
-						#not required, but useful for inspection
-						node['address'] = id
-						node['word'] = lemma
+						#not required, but useful for inspection - tag and word necessary for parsing
+						node['address'] = count #id
+						node['word'] = form
 						node['tag'] = postag
 						node['head'] = head
 						node['rel'] = deprel
@@ -252,13 +256,14 @@ class DepGraph(object):
 		#distances.extend(new_entries)
 #		print distances
 		return False
+		
 
 	def get_cycle_path(self, curr_node, goal_node_index):
 #		print 'new call:', curr_node['address']
 		for dep in curr_node['deps']:
 #			print dep
 			if(dep == goal_node_index):
-				return [curr_node['address'], goal_node_index]
+				return [curr_node['address']]
 #		if(len(curr_node['deps']) == 0):
 #			return []
 #		else:
