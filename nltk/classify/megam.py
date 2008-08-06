@@ -50,7 +50,7 @@ def config_megam(bin=None):
     _megam_bin = find_binary(
         'megam', bin,
         env_vars=['MEGAM',  'MEGAM_HOME'],
-        binary_names=['megam', 'megam_686o', 'megam_i686.opto'],
+        binary_names=['megam.opt', 'megam', 'megam_686o', 'megam_i686.opto'],
         url='http://www.cs.utah.edu/~hal/megam/')
 
 ######################################################################
@@ -97,7 +97,7 @@ def write_megam_file(train_toks, encoding, stream,
         stream.write('%d' % labelnum[label])
 
         # For implicit file formats, just list the features that fire
-        # for thie instance's actual label.
+        # for this instance's actual label.
         if not explicit:
             _write_megam_features(encoding.encode(featureset, label),
                                   stream, bernoulli)
