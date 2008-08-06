@@ -2,6 +2,7 @@
 #
 # Copyright (C) 2007 - 2008 NLTK Project
 # Author: Jussi Salmela <jtsalmela@users.sourceforge.net>
+#         Paul Bone <pbone@students.csse.unimelb.edu.au>
 # URL: <http://nltk.org>
 # For license information, see LICENSE.TXT
 
@@ -10,10 +11,8 @@ from urllib import quote_plus, unquote_plus
 import itertools as it
 
 from nltk import defaultdict
-from nltk.wordnet.util import *
-from nltk.wordnet.dictionary import *
-from nltk.wordnet import _morphy
-from nltk.wordnet.synset import *
+from nltk.wordnet import *
+from nltk.wordnet.stemmer import _morphy
 from nltk.wordnet.synset import _RELATION_TABLE
 
 __all__ = ['get_static_index_page',
@@ -82,7 +81,7 @@ def relations_2(synsetObj, rel_name=None, word_match=False):
             target_ind = int(indices[2:], 16) - 1
             pos = normalizePOS(pos)
             offset = int(offset)
-            synset = getSynset(pos, offset)
+            synset = dictionary.synset(pos, offset)
             if target_ind >= 0:
                 if word_match:
                     source_tuple = (synsetObj,source_ind)
@@ -288,7 +287,7 @@ def uniq_cntr():
 def _get_synset(synset_key):
     pos = _pos_match((None,synset_key[0],None))[2]
     offset = int(synset_key[1:])
-    return getSynset(pos, offset)
+    return dictionary.synset(pos, offset)
 
 def _collect_one(word, s_or_w, prev_synset_key):
     '''
@@ -307,7 +306,7 @@ def _collect_one(word, s_or_w, prev_synset_key):
     if isinstance(s_or_w, tuple): # It's a word
         form_str,(synset,oppo,forms) = s_or_w
         pos,offset,ind = oppo
-        synset = getSynset(pos, offset)
+        synset = dictionary.synset(pos, offset)
         synset_key = _pos_match((None,None,synset.pos))[1] + str(synset.offset)
         synset_key  += ':' + str(ind) + ',' + prev_synset_key
         oppo = synset.words[ind]
@@ -329,7 +328,7 @@ def _collect_one(word, s_or_w, prev_synset_key):
                         '">' + oppo + '</a> ' + form_str
         for w in forms:
             pos,offset,ind = w
-            w = getSynset(pos, offset).words[ind]
+            w = dictionary.synset(pos, offset).words[ind]
             w = w.replace('_', ' ')
             s += '<a href="M' + quote_plus(w + '#' + str(uniq_cntr())) + \
                             '">' + w + '</a>, '

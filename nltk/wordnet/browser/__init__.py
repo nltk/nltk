@@ -2,7 +2,7 @@
 #
 # Copyright (C) 2007-2008 NLTK Project
 # Author: Jussi Salmela <jtsalmela@users.sourceforge.net>
-#         Paul Bone <pbone@csse.unimelb.edu.au>
+#         Paul Bone <pbone@students.csse.unimelb.edu.au>
 # URL: <http://nltk.org>
 # For license information, see LICENSE.TXT
 

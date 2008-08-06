@@ -5,6 +5,7 @@ Wordnet Interface: Graphical Wordnet Browser
 
 Copyright (C) 2007 - 2008 NLTK Project
 Author: Jussi Salmela <jtsalmela@users.sourceforge.net>
+        Paul Bone <pbone@students.csse.unimelb.edu.au>
 URL: <http://nltk.org>
 For license information, see LICENSE.TXT
 
