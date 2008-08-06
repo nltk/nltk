@@ -70,6 +70,7 @@ from parse import *
 from chunk import *
 from stem import *
 from classify import *
+from model import *
 from misc import *
 
 from internals import config_java
