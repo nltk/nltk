@@ -329,7 +329,8 @@ def sense(form, pos=NOUN, senseno=0):
 @deprecated("Use dictionary.synset() instead.")
 def getSynset(pos, offset):
     return synset(pos, offset)
-    
+
+# shadows module
 def synset(pos, offset):
     """
     Lookup a synset by its offset.
