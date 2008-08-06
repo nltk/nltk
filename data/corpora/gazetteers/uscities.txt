@@ -1,0 +1,255 @@
+Birmingham
+Huntsville
+Mobile
+Montgomery
+Anchorage
+Chandler
+Glendale
+Mesa
+Peoria
+Phoenix
+Scottsdale
+Tempe
+Tucson
+Little Rock
+Anaheim
+Antioch
+Bakersfield
+Berkeley
+Burbank
+Chula Vista
+Concord
+Corona
+Costa Mesa
+Daly City
+Downey
+El Monte
+Elk Grove
+Escondido
+Fairfield
+Fontana
+Fremont
+Fresno
+Fullerton
+Garden Grove
+Glendale
+Hayward
+Huntington Beach
+Inglewood
+Irvine
+Lancaster
+Long Beach
+Los Angeles
+Modesto
+Moreno Valley
+Oakland
+Oceanside
+Ontario
+Orange
+Oxnard
+Palmdale
+Pasadena
+Pomona
+Rancho Cucamonga
+Richmond
+Riverside
+Roseville
+Sacramento
+Salinas
+San Bernardino
+San Buenaventura (Ventura)
+San Diego
+San Francisco
+San Jose
+Santa Ana
+Santa Clara
+Santa Clarita
+Santa Rosa
+Simi Valley
+Stockton
+Sunnyvale
+Thousand Oaks
+Torrance
+Vallejo
+Visalia
+West Covina
+Arvada
+Aurora
+Colorado Springs
+Denver
+Fort Collins
+Lakewood
+Pueblo
+Thornton
+Westminster
+Bridgeport
+Hartford
+New Haven
+Stamford
+Waterbury
+Washington
+Cape Coral
+Clearwater
+Coral Springs
+Fort Lauderdale
+Gainesville
+Hialeah
+Hollywood
+Jacksonville
+Miami
+Miramar
+Orlando
+Pembroke Pines
+Pompano Beach
+St. Petersburg
+Tallahassee
+Tampa
+Atlanta
+Columbus
+Macon
+Savannah
+Honolulu
+Boise
+Aurora
+Chicago
+Joliet
+Naperville
+Peoria
+Rockford
+Springfield
+Evansville
+Fort Wayne
+Indianapolis
+South Bend
+Cedar Rapids
+Des Moines
+Kansas City
+Olathe
+Overland Park
+Topeka
+Wichita
+Lexington
+Louisville-Jefferson County
+Baton Rouge
+Lafayette
+New Orleans
+Shreveport
+Baltimore
+Boston
+Cambridge
+Lowell
+Springfield
+Worcester
+Ann Arbor
+Detroit
+Flint
+Grand Rapids
+Lansing
+Sterling Heights
+Warren
+Minneapolis
+St. Paul
+Rochester
+Jackson
+Independence
+Kansas City
+Springfield
+St. Louis
+Lincoln
+Omaha
+Henderson
+Las Vegas
+North Las Vegas
+Reno
+Manchester
+Elizabeth
+Jersey City
+Newark
+Paterson
+Albuquerque
+Buffalo
+New York City
+Rochester
+Syracuse
+Yonkers
+Cary
+Charlotte
+Durham
+Fayetteville
+Greensboro
+High
+Raleigh
+Wilmington
+Winston-Salem
+Akron
+Cincinnati
+Cleveland
+Columbus
+Dayton
+Toledo
+Norman
+Oklahoma City
+Tulsa
+Eugene
+Portland
+Salem
+Allentown
+Erie
+Philadelphia
+Pittsburgh
+Providence
+Charleston
+Columbia
+Sioux Falls
+Chattanooga
+Clarksville
+Knoxville
+Memphis
+Nashville
+Abilene
+Amarillo
+Arlington
+Austin
+Beaumont
+Brownsville
+Carrollton
+Corpus Christi
+Dallas
+Denton
+El Paso
+Fort Worth
+Garland
+Grand Prairie
+Houston
+Irving
+Killeen
+Laredo
+Lubbock
+McAllen
+Mesquite
+Pasadena
+Plano
+San Antonio
+Wichita Falls
+Waco
+Provo
+Salt Lake City
+West Valley City
+Alexandria
+Arlington
+Chesapeake
+Hampton
+Newport News
+Norfolk
+Portsmouth
+Richmond
+Virginia Beach
+Bellevue
+Everett
+Seattle
+Spokane
+Tacoma
+Vancouver
+Green Bay
+Madison
+Milwaukee

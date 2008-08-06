@@ -1,0 +1,31 @@
+uscities.txt
+
+This data is licensed under the GNU Free Documentation License
+(http://www.gnu.org/copyleft/fdl.html).
+
+It uses material from the Wikipedia article
+List_of_cities_in_the_United_States_with_over_100%2C000_people
+(http://en.wikipedia.org/wiki/List_of_cities_in_the_United_States_with_over_100%2C000_people).
+
+
+countries.txt
+
+This data is licensed under the GNU Free Documentation License
+(http://www.gnu.org/copyleft/fdl.html).
+
+It is a derivative work of the Wikipedia article List_of_countries
+(http://en.wikipedia.org/wiki/List_of_countries).
+
+
+isocountries.txt
+
+This data is public domain and was obtained from:
+
+    http://www.guavastudios.com/country-list.htm
+
+
+nationalities.txt:
+
+This data is public domain and was obtained from:
+
+    http://www.guavastudios.com/nationalities-list.htm
