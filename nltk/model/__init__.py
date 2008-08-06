@@ -6,3 +6,7 @@
 # For license information, see LICENSE.TXT
 
 from ngram import *
+
+__all__ = [
+    'NgramModel',
+    ]

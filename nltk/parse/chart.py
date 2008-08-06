@@ -1279,7 +1279,7 @@ class ChartParser(ParserI):
             - Apply I{rule} to any applicable edges in the chart.
         - Return any complete parses in the chart
     """
-    def __init__(self, grammar, strategy, trace=0):
+    def __init__(self, grammar, strategy=TD_STRATEGY, trace=0):
         """
         Create a new chart parser, that uses C{grammar} to parse
         texts.
@@ -1288,7 +1288,7 @@ class ChartParser(ParserI):
         @param grammar: The grammar used to parse texts.
         @type strategy: C{list} of L{ChartRuleI}
         @param strategy: A list of rules that should be used to decide
-            what edges to add to the chart.
+            what edges to add to the chart (top-down strategy by default).
         @type trace: C{int}
         @param trace: The level of tracing that should be used when
             parsing a text.  C{0} will generate no tracing output;

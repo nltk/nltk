@@ -22,17 +22,17 @@ SEARCH_TERMINATED_EVENT = '<<ST_EVENT>>'
 SEARCH_ERROR_EVENT = '<<SE_EVENT>>'
 ERROR_LOADING_CORPUS_EVENT = '<<ELC_EVENT>>'
 
-def _simplify_tags(tagged_reader):
-    return lambda: tagged_reader(simplify_tags=True)
+# NB All corpora must be specified in a lambda expression so as not to be
+# loaded when the module is imported.
 
 _DEFAULT = 'English: Brown Corpus (Humor, simplified)'
 _CORPORA = {
             'Catalan: CESS-CAT Corpus (simplified)':
-                _simplify_tags(nltk.corpus.cess_cat.tagged_sents),
+                lambda: nltk.corpus.cess_cat.tagged_sents(simplify_tags=True),
             'English: Brown Corpus':
-                nltk.corpus.brown.tagged_sents,
+                lambda: nltk.corpus.brown.tagged_sents(),
             'English: Brown Corpus (simplified)':
-                _simplify_tags(nltk.corpus.brown.tagged_sents),
+                lambda: nltk.corpus.brown.tagged_sents(simplify_tags=True),
             'English: Brown Corpus (Press, simplified)':
                 lambda: nltk.corpus.brown.tagged_sents(categories='abc', simplify_tags=True),
             'English: Brown Corpus (Religion, simplified)':
@@ -45,32 +45,36 @@ _CORPORA = {
                 lambda: nltk.corpus.brown.tagged_sents(categories='p', simplify_tags=True),
             'English: Brown Corpus (Humor, simplified)':
                 lambda: nltk.corpus.brown.tagged_sents(categories='r', simplify_tags=True),
+            'English: NPS Chat Corpus':
+                lambda: nltk.corpus.nps_chat.tagged_posts(),
+            'English: NPS Chat Corpus (simplified)':
+                lambda: nltk.corpus.nps_chat.tagged_posts(simplify_tags=True),
             'English: Wall Street Journal Corpus':
-                nltk.corpus.treebank.tagged_sents,
+                lambda: nltk.corpus.treebank.tagged_sents(),
             'English: Wall Street Journal Corpus (simplified)':
-                _simplify_tags(nltk.corpus.treebank.tagged_sents),
+                lambda: nltk.corpus.treebank.tagged_sents(simplify_tags=True),
             'Chinese: Sinica Corpus':
-                nltk.corpus.sinica_treebank.tagged_sents,
+                lambda: nltk.corpus.sinica_treebank.tagged_sents(),
             'Chinese: Sinica Corpus (simplified)':
-                _simplify_tags(nltk.corpus.sinica_treebank.tagged_sents),
+                lambda: nltk.corpus.sinica_treebank.tagged_sents(simplify_tags=True),
             'Dutch: Alpino Corpus':
-                nltk.corpus.alpino.tagged_sents,
+                lambda: nltk.corpus.alpino.tagged_sents(),
             'Dutch: Alpino Corpus (simplified)':
-                _simplify_tags(nltk.corpus.alpino.tagged_sents),
+                lambda: nltk.corpus.alpino.tagged_sents(simplify_tags=True),
             'Hindi: Indian Languages Corpus':
                 lambda: nltk.corpus.indian.tagged_sents(files='hindi.pos'),
             'Hindi: Indian Languages Corpus (simplified)':
-                _simplify_tags(lambda: nltk.corpus.indian.tagged_sents(files='hindi.pos')),
+                lambda: nltk.corpus.indian.tagged_sents(files='hindi.pos', simplify_tags=True),
             'Portuguese: Floresta Corpus (Portugal)':
-                nltk.corpus.floresta.tagged_sents,
+                lambda: nltk.corpus.floresta.tagged_sents(),
             'Portuguese: Floresta Corpus (Portugal, simplified)':
-                _simplify_tags(nltk.corpus.floresta.tagged_sents),
+                lambda: nltk.corpus.floresta.tagged_sents(simplify_tags=True),
             'Portuguese: MAC-MORPHO Corpus (Brazil)':
-                nltk.corpus.mac_morpho.tagged_sents,
+                lambda: nltk.corpus.mac_morpho.tagged_sents(),
             'Portuguese: MAC-MORPHO Corpus (Brazil, simplified)':
-                _simplify_tags(nltk.corpus.mac_morpho.tagged_sents),
+                lambda: nltk.corpus.mac_morpho.tagged_sents(simplify_tags=True),
             'Spanish: CESS-ESP Corpus (simplified)':
-                _simplify_tags(nltk.corpus.cess_esp.tagged_sents),
+                lambda: nltk.corpus.cess_esp.tagged_sents(simplify_tags=True),
            }
 
 class CategorySearchView(object):
