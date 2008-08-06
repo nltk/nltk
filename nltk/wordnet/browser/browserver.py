@@ -47,7 +47,7 @@ import time
 import getopt
 import base64
 
-from browseutil import page_word, uniq_cntr, html_header, html_trailer, \
+from util import page_word, uniq_cntr, html_header, html_trailer, \
     get_static_index_page, get_static_page_by_path
 
 page = None
