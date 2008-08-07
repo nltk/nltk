@@ -217,7 +217,9 @@ class AnnotationTask():
             for l in self.K:
                 total += self.N(c=cA,k=j)*self.N(c=cB,k=l)*self.distance(j,l)
         De = total/(max_distance*pow(len(self.I),2))
-        Do = self.Do_Kw()
+        if(self.verbose>0):
+            print "Expected disagreement between %s and %s: %f"%(cA,cB,De)
+        Do = self.Do_Kw_pairwise(cA,cB)
         return 1.0 - (Do/De)
 
     def weighted_kappa(self):
