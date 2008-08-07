@@ -32,6 +32,10 @@ from optparse import OptionParser, OptionGroup, Option
 from StringIO import StringIO
 import coverage
 
+# Use local NLTK.
+root_dir = os.path.abspath(os.path.join(sys.path[0], '..', '..'))
+sys.path.insert(0, root_dir)
+
 __version__ = '0.1'
 
 ###########################################################################
