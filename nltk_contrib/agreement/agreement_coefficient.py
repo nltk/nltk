@@ -7,7 +7,7 @@
 #
 from distance_metric import *
 
-class AnnotationTask():
+class AnnotationTask:
     """Represents an annotation task, i.e. people assign labels to items.
     
     Notation tries to match notation in Artstein and Poesio (2007).
@@ -220,7 +220,10 @@ class AnnotationTask():
         if(self.verbose>0):
             print "Expected disagreement between %s and %s: %f"%(cA,cB,De)
         Do = self.Do_Kw_pairwise(cA,cB)
-        return 1.0 - (Do/De)
+        ret = 1.0 - (Do/De)
+        if(self.verbose>0):
+            print "Weighted kappa between %s and %s: %f"%(cA,cB,ret)
+        return ret
 
     def weighted_kappa(self):
         """Cohen 1968
