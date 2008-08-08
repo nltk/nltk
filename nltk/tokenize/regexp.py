@@ -131,7 +131,7 @@ class WordTokenizer(RegexpTokenizer):
     A tokenizer that divides a text into sequences of alphabetic
     characters.  Any non-alphabetic characters are discarded.  E.g.:
 
-        >>> WordPunctTokenizer().tokenize("She said 'hello'.")
+        >>> WordTokenizer().tokenize("She said 'hello'.")
         ['She', 'said', 'hello']
     """
     def __init__(self):
