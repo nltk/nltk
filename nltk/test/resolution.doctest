@@ -49,26 +49,55 @@ Test unify()
     >>> print Clause([P(x)]).unify(Clause([-P(A)]))
     [{}]
     >>> print Clause([P(A), Q(x)]).unify(Clause([-P(x), R(x)]))
-    [{Q(A), R(A)}]    
+    [{R(A), Q(A)}]    
     >>> print Clause([P(A), Q(x), R(x,y)]).unify(Clause([-P(x), Q(y)]))
-    [{Q(A), R(A,y), Q(y)}]
+    [{Q(y), Q(A), R(A,y)}]
     >>> print Clause([P(A), -Q(y)]).unify(Clause([-P(x), Q(B)]))
     [{}]
+    >>> print Clause([P(x), Q(x)]).unify(Clause([-P(A), -Q(B)]))
+    [{-Q(B), Q(A)}, {-P(A), P(B)}]
     >>> print Clause([P(x,x), Q(x), R(x)]).unify(Clause([-P(A,z), -Q(B)]))
-    [{Q(A), R(A), -Q(B)}, {P(B,B), R(B), -P(A,z)}]
+    [{-Q(B), Q(A), R(A)}, {-P(A,z), R(B), P(B,B)}]
+    
+    >>> a = clausify(lp.parse('P(A)'))
+    >>> b = clausify(lp.parse('A=B'))
+    >>> print a[0].unify(b[0])
+    [{P(B)}]
  
 -------------------------
 Test is_tautology()
 -------------------------
+    >>> print Clause([P(A), -P(A)]).is_tautology()
+    True
+    >>> print Clause([-P(A), P(A)]).is_tautology()
+    True
     >>> print Clause([P(x), -P(A)]).is_tautology()
+    False
+    >>> print Clause([Q(B), -P(A), P(A)]).is_tautology()
     True
-    >>> print Clause([P(x), -P(A), Q(x)]).is_tautology()
-    True
-    >>> print Clause([-Q(A), P(x), -P(A), Q(x), -R(y)]).is_tautology()
+    >>> print Clause([-Q(A), P(R(A)), -P(R(A)), Q(x), -R(y)]).is_tautology()
     True
     >>> print Clause([P(x), -Q(A)]).is_tautology()
     False
  
+-------------------------
+Test subsumes()
+-------------------------
+    >>> print Clause([P(A), Q(B)]).subsumes(Clause([P(A), Q(B)]))
+    True
+    >>> print Clause([-P(A)]).subsumes(Clause([P(A)]))
+    False
+    >>> print Clause([P(A), Q(B)]).subsumes(Clause([Q(B), P(A)]))
+    True
+    >>> print Clause([P(A), Q(B)]).subsumes(Clause([Q(B), R(A), P(A)]))
+    True
+    >>> print Clause([P(A), R(A), Q(B)]).subsumes(Clause([Q(B), P(A)]))
+    False
+    >>> print Clause([P(x)]).subsumes(Clause([P(A)]))
+    True
+    >>> print Clause([P(A)]).subsumes(Clause([P(x)]))
+    True
+
 ------------
 Test prove()
 ------------
@@ -155,7 +184,7 @@ One answer
     [4] {-parent_of(z6,john), ANSWER(z6)}      A 
     [5] {parent_of(art,john)}                  (1, 3) 
     [6] {parent_of(bob,kim)}                   (2, 3) 
-    [7] {-father_of(z6,john), ANSWER(z6)}      (3, 4) 
+    [7] {ANSWER(z6), -father_of(z6,john)}      (3, 4) 
     [8] {ANSWER(art)}                          (1, 7) 
     [9] {ANSWER(art)}                          (4, 5) 
 
@@ -177,10 +206,9 @@ Multiple answers
     [ 5] {-parent_of(z10,john), ANSWER(z10)}    A 
     [ 6] {parent_of(art,john)}                  (1, 3) 
     [ 7] {parent_of(ann,john)}                  (2, 4) 
-    [ 8] {-father_of(z10,john), ANSWER(z10)}    (3, 5) 
+    [ 8] {ANSWER(z10), -father_of(z10,john)}    (3, 5) 
     [ 9] {ANSWER(art)}                          (1, 8) 
-    [10] {-mother_of(z10,john), ANSWER(z10)}    (4, 5) 
+    [10] {ANSWER(z10), -mother_of(z10,john)}    (4, 5) 
     [11] {ANSWER(ann)}                          (2, 10) 
     [12] {ANSWER(art)}                          (5, 6) 
     [13] {ANSWER(ann)}                          (5, 7) 
-  
