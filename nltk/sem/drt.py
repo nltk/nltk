@@ -121,12 +121,23 @@ class DRS(AbstractDrs, logic.Expression, RA.DRS):
                        [cond.replace(variable, expression, replace_bound) 
                         for cond in self.conds])
 
-    def free(self):
+    def variables(self):
+        """
+        @see: logic.Expression.variables()
+        """
         conds_free = set()
         for cond in self.conds:
-            conds_free |= cond.free()
-        refs_set = set(self.refs)
-        return conds_free - refs_set
+            conds_free |= cond.variables()
+        return conds_free - set(self.refs)
+    
+    def free(self, indvar_only=True):
+        """
+        @see: logic.Expression.free()
+        """
+        conds_free = set()
+        for cond in self.conds:
+            conds_free |= cond.free(indvar_only)
+        return conds_free - set(self.refs)
 
     def get_refs(self):
         return self.refs
