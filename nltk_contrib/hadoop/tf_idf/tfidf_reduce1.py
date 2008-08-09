@@ -10,7 +10,7 @@ class TFIDFReducer1(ReducerBase):
 	word : (filename, occurences) -> word : [(filename, TF*IDF) ...]
 	"""
 
-	def reduce(self, key, values, outputcollector):
+	def reduce(self, key, values):
 		idf = 1
 		# first find the IDF value
 		for value in values:
@@ -25,7 +25,7 @@ class TFIDFReducer1(ReducerBase):
 			file, tf = value.split(',')
 			tf = int(tf.strip())
 			value_str += " " + str(file) + "," + str(tf*idf) + " "
-		outputcollector.collect(key, value_str)
+		self.outputcollector.collect(key, value_str)
 
 if __name__ == "__main__":
 	TFIDFReducer1().call_reduce()

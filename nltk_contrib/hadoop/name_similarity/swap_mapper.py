@@ -16,8 +16,8 @@ class SwapMapper(MapperBase):
 		self.set_inputformat(KeyValueInput)
 
 
-	def map(self, key, value, outputcollector):
-		outputcollector.collect(value, key)
+	def map(self, key, value):
+		self.outputcollector.collect(value, key)
 
 if __name__ == "__main__":
 	SwapMapper().call_map()

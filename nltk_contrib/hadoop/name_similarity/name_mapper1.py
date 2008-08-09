@@ -10,8 +10,8 @@ class NameMapper(MapperBase):
 	e.g. Adam -> Adam, A
 	"""
 
-	def map(self, key, value, outputcollector = LineOutput):
-		outputcollector.collect(value.strip(), value[0])
+	def map(self, key, value):
+		self.outputcollector.collect(value.strip(), value[0])
 
 if __name__ == "__main__":
 	NameMapper().call_map()

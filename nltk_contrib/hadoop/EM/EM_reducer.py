@@ -1,52 +1,81 @@
+#!/usr/bin/env python
+
+from hadooplib.reducer import ReducerBase
+from hadooplib.util import *
 from nltk.tag.hmm import _log_add, _NINF
 from numpy import *
+import sys
 
 
-def reduce(key, values):
-	name, i, j, value, lpk, N, M = values.strip().split()
-	N = int (N)
-	M = int (M)
-	i = int(i)
-	value = float(values)
-	A_numer = B_numer = A_denom = B_denom = None
+class EM_Reducer(ReducerBase):
 
-	# add these sums to the global A and B values
-	if name = "A":
-		j = int(j)
-		if not A_numer:
-			A_numer = ones((N, N), float64) * _NINF
-		A_numer[i, j] = _log_add(A_numer[i, j],
-				value - lpk)
-	elif name = "B":
-		j = int(j)
-		if not B_numer:
-			B_numer = ones((N, M), float64) * _NINF
-		B_numer[i, k] = _log_add(B_numer[i, k],
-				value - lpk)
-	elif name = "A_denom":
-		if not A_denom:
-			A_denom = ones(N, float64) * _NINF
-		A_denom[i] = _log_add(A_denom[i], value - lpk)
-	elif name = "B_denom":
-		if not B_denom:
-			B_denom = ones(N, float64) * _NINF
-		B_denom[i] = _log_add(B_denom[i], value - lpk)
+	def reduce(self, key, values):
+		A_numer = B_numer = A_denom = B_denom = None
+		N = M = 0
+		logprob = 0
 
-	# use the calculated values to update the transition and output
-	# probability values
+		states  = []
+		symbols = []
+		pi = {}
+		pi_printed = False
 
-	for i in range(N):
-		si = self._states[i]
-		for j in range(N):
-			sj = self._states[j]
-			model._transitions[si].update(sj, A_numer[i,j] -
-					A_denom[i])
-		for k in range(M):
-			ok = self._symbols[k]
-			model._outputs[si].update(ok, B_numer[i,k] - B_denom[i])
-		# Rabiner says the priors don't need to be updated. I don't
-		# believe him. FIXME
+		for value in values:
+			identifier = value.split()[0]
+			if identifier == "states":
+				if not states:
+					states = value.split()[1:]
+			elif identifier == "symbols":
+				if not symbols:
+					symbols = value.split()[1:]
+			elif identifier == "Pi":
+				state, prob = value.split()[1:]
+				pi[state] = float(prob)
+			else:
+				name, i, j, value, lpk, row, col = str2tuple(value)
+				row = int (row)
+				col = int (col)
+				i = int(i)
+				j = int(j)
+				value = float(value)
+				lpk = float(lpk)
+				logprob += lpk
 
-	# test for convergence
-	if iteration > 0 and abs(logprob - last_logprob) < epsilon:
-		converged = True
+				# add these sums to the global A and B values
+				if name == "A":
+					if A_numer is None:
+						A_numer = ones((row, col), float64) * _NINF
+						N = row
+					A_numer[i, j] = _log_add(A_numer[i, j],
+							value - lpk)
+				elif name == "B":
+					if B_numer is None:
+						B_numer = ones((row, col), float64) * _NINF
+						M = col
+					B_numer[i, j] = _log_add(B_numer[i, j],
+							value - lpk)
+				elif name == "A_denom":
+					if A_denom is None:
+						A_denom = ones(col, float64) * _NINF
+					A_denom[j] = _log_add(A_denom[j], value - lpk)
+				elif name == "B_denom":
+					if B_denom is None:
+						B_denom = ones(col, float64) * _NINF
+					B_denom[j] = _log_add(B_denom[j], value - lpk)
+
+		for e in pi:
+			self.outputcollector.collect("Pi", tuple2str((e, pi[e])))
+
+		for i in range(N):
+			for j in range(N):
+				self.outputcollector.collect("A", tuple2str((states[i], states[j], 2 ** (A_numer[i, j] - A_denom[i]))))
+
+
+		for i in range(N):
+			for j in range(M):
+				self.outputcollector.collect("B", tuple2str((states[i], symbols[j], 2 ** (B_numer[i, j] - B_denom[i]))))
+
+		self.outputcollector.collect("loglikelihood", logprob)
+
+
+if __name__ == "__main__":
+	EM_Reducer().call_reduce()

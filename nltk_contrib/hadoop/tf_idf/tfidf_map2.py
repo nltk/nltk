@@ -13,11 +13,11 @@ class TFIDFMapper2(MapperBase):
 		MapperBase.__init__(self)
 		self.set_inputformat(KeyValueInput)
 	
-	def map(self, key, value, outputcollector):
+	def map(self, key, value):
 		elements  = value.split()
 		for e in elements:
 			e = e.replace(',', ' ')
-			outputcollector.collect(e, key)
+			self.outputcollector.collect(e, key)
 	
 if __name__ == "__main__":
 	TFIDFMapper2().call_map()

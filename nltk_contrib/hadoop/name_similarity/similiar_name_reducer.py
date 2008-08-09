@@ -9,7 +9,7 @@ class Name2SimiliarName(ReducerBase):
 	e.g. Adam : Ada Adams -> Adam : Ada
 	"""
 
-	def reduce(self, key, values, outputcollector):
+	def reduce(self, key, values):
 		li  = values[0].strip().split()
 
 		# solve the boundary conditon, the name is at the head or at the tail
@@ -21,9 +21,9 @@ class Name2SimiliarName(ReducerBase):
 		sim2 = self.similiarity(key, after)
 
 		if sim1 >= sim2:
-			outputcollector.collect(key, before)
+			self.outputcollector.collect(key, before)
 		else:
-			outputcollector.collect(key, after)
+			self.outputcollector.collect(key, after)
 
 	def similiarity(self, name1, name2):
 		"""

@@ -1,8 +1,3 @@
-summer.py is basically the wordCountReducerAdv.py, which I think can serve as a general summer
-wordCountReducerAdv and wordCountMapperAdv are two somewhat advanced version of wordCount program
-wordTagCountMapper count the word/tag pair and word occurences
-test.sh can test the wordTagCountMapper program
+hadooplib direcotry provide the service of this library. It contains the base class for map and reduce class, the default input formatter and ouput collector
 
-wordCountMapper subclasses Mapper
-wordCountReducer subclasses Reducer
-these are the prototype of the class hierarchy
+other directory contains different demo programs to illustrate how to use this library

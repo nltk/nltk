@@ -15,9 +15,9 @@ class IDFMapper(MapperBase):
 		# use KeyValueInput instead of the default TextLineInput
 		self.set_inputformat(KeyValueInput)
 
-	def map(self, key, value, outputcollector):
+	def map(self, key, value):
 		word, filename = key.split()
-		outputcollector.collect(str(word) + str(" All"), 1)
+		self.outputcollector.collect(str(word) + str(" All"), 1)
 
 if __name__ == "__main__":
 	IDFMapper().call_map()

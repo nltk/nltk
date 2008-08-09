@@ -15,13 +15,13 @@ class Name2Names(MapperBase):
 		MapperBase.__init__(self)
 		self.set_inputformat(KeyValueInput)
 
-	def map(self, key, value, outputcollector):
+	def map(self, key, value):
 		namelist = value.strip().split()
 		namelist.insert(0, '')
 		namelist.append('')
 		n = len(namelist)
 		for i in range(1, n - 1):
-			outputcollector.collect(namelist[i], namelist[i-1] + " " + namelist[i+1])
+			self.outputcollector.collect(namelist[i], namelist[i-1] + " " + namelist[i+1])
 	
 if __name__ == "__main__":
 	Name2Names().call_map()

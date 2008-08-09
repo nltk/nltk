@@ -14,9 +14,9 @@ class TFIDFMapper1(MapperBase):
 		MapperBase.__init__(self)
 		self.set_inputformat(KeyValueInput)
 
-	def map(self, key, value, outputcollector):
+	def map(self, key, value):
 		word, filename = key.split()
-		outputcollector.collect(word, str(filename) + "," + value)
+		self.outputcollector.collect(word, str(filename) + "," + value)
 
 if __name__ == "__main__":
 	TFIDFMapper1().call_map()
