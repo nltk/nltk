@@ -33,7 +33,6 @@ to a local file.
 
 import sys
 import os, os.path
-import pickle
 import textwrap
 import weakref
 import yaml
@@ -41,8 +40,17 @@ import re
 import urllib2
 import zipfile
 import codecs
-try: import cStringIO as StringIO
-except: import StringIO
+import gzip
+
+try:
+    import cPickle as pickle
+except LoadError:
+    import pickle
+    
+try:
+    from cStringIO import StringIO
+except LoadError:
+    from StringIO import StringIO
 
 from nltk import cfg, sem
 
@@ -128,6 +136,7 @@ class PathPointer(object):
         """
         raise NotImplementedError('abstract base class')
 
+
 class FileSystemPathPointer(PathPointer, str):
     """
     A path pointer that identifies a file which can be accessed
@@ -171,6 +180,30 @@ class FileSystemPathPointer(PathPointer, str):
     def __str__(self):
         return self._path
 
+
+class GzipFileSystemPathPointer(FileSystemPathPointer):
+    """
+    A subclass of C{FileSystemPathPointer} that identifies a gzip-compressed
+    file located at a given absolute path.  C{GzipFileSystemPathPointer} is
+    appropriate for loading large gzip-compressed pickle objects efficiently.
+    """
+    # 2MB
+    BLOCK_SIZE = 2 * 2**20
+    
+    def open(self, encoding=None):
+        # Why do this? The default blocksize used by gzip.open readline() is
+        # too small which leads to poor performance loading large gzipped
+        # pickle objects.
+        stream = StringIO()
+        file = gzip.open(self._path, 'rb')
+        for line in iter(lambda: file.read(self.BLOCK_SIZE), ''):
+            stream.write(line)
+        stream = StringIO(stream.getvalue())
+        if encoding:
+            stream = SeekableUnicodeStreamReader(stream, encoding)
+        return stream
+
+
 class ZipFilePathPointer(PathPointer):
     """
     A path pointer that identifies a file contained within a zipfile,
@@ -207,7 +240,7 @@ class ZipFilePathPointer(PathPointer):
 
     def open(self, encoding=None):
         data = self._zipfile.read(self._entry)
-        stream = StringIO.StringIO(data)
+        stream = StringIO(data)
         if encoding is not None:
             stream = SeekableUnicodeStreamReader(stream, encoding)
         return stream
@@ -223,7 +256,6 @@ class ZipFilePathPointer(PathPointer):
         return 'ZipFilePathPointer(%r, %r)' % (
             self._zipfile.filename, self._entry)
         
-
 ######################################################################
 # Access Functions
 ######################################################################
@@ -265,7 +297,10 @@ def find(resource_name):
             if zipfile is None:
                 p = os.path.join(path_item, *resource_name.split('/'))
                 if os.path.exists(p):
-                    return FileSystemPathPointer(p)
+                    if p.endswith('.gz'):
+                        return GzipFileSystemPathPointer(p)
+                    else:   
+                        return FileSystemPathPointer(p)
             else:
                 p = os.path.join(path_item, *zipfile.split('/'))
                 if os.path.exists(p):
@@ -394,7 +429,10 @@ def load(resource_url, format='auto', cache=True, verbose=False):
 
     # Determine the format of the resource.
     if format == 'auto':
-        ext = resource_url.split('.')[-1]
+        resource_url_parts = resource_url.split('.')
+        ext = resource_url_parts[-1]
+        if ext == 'gz':
+            ext = resource_url_parts[-2]
         format = AUTO_FORMATS.get(ext)
         if format is None:
             raise ValueError('Could not determine format for %s based '
