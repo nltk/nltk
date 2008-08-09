@@ -13,121 +13,253 @@ from dependencygrammar import *
 from dependencygraph import *
 from pprint import pformat
 
-# classify imports
-#from nltk.classify.maxent import *
 
 
 #################################################################
-# Non-Projective Parsing
+# DependencyScorerI - Interface for Graph-Edge Weight Calculation
 #################################################################
 
-class ProbabilisticNonprojectiveParser(object):
-	
+class DependencyScorerI(object):
+	"""
+	A scorer for calculated the weights on the edges of a weighted 
+	dependency graph.  This is used by a 
+	C{ProbabilisticNonprojectiveParser} to initialize the edge  
+	weights of a C{DepGraph}.  While typically this would be done 
+	by training a binary classifier, any class that can return a 
+	multidimensional list representation of the edge weights can 
+	implement this interface.  As such, it has no necessary
+	fields.
+	"""
+
 	def __init__(self):
-		print 'initializing prob. nonprojective...'
+		if self.__class__ == DependencyScorerI:
+			raise TypeError('DependencyScorerI is an abstract interface')
 
 	def train(self, graphs):
-		print 'training...'
-		corpus = []
+		"""
+		@type graphs: A list of C{DepGraph}
+		@param graphs: A list of dependency graphs to train the scorer.
+		Typically the edges present in the graphs can be used as
+		positive training examples, and the edges not present as negative 
+		examples.
+		"""
+		raise AssertionError('DependencyScorerI is an abstract interface')
+
+	def score(self, graph):
+		"""
+		@type graph: A C{DepGraph}
+		@param graph: A dependency graph whose set of edges need to be 
+		scored.  
+		@rtype: A three-dimensional list of numbers.
+		@return: The score is returned in a multidimensional(3) list, such
+		that the outer-dimension refers to the head, and the
+		inner-dimension refers to the dependencies.  For instance,	
+		scores[0][1] would reference the list of scores corresponding to 
+		arcs from node 0 to node 1.  The node's 'address' field can be used 
+		to determine its number identification.
+		
+		For further illustration, a score list corresponding to Fig.2 of 
+		Keith Hall's 'K-best Spanning Tree Parsing' paper:
+		      scores = [[[], [5],  [1],  [1]],
+					   [[], [],   [11], [4]],
+					   [[], [10], [],   [5]],
+					   [[], [8],  [8],  []]]
+		When used in conjunction with a MaxEntClassifier, each score would 
+		correspond to the confidence of a particular edge being classified 
+		with the positive training examples.
+		"""
+		raise AssertionError('DependencyScorerI is an abstract interface')
+
+	#////////////////////////////////////////////////////////////
+	# Comparisons
+	#////////////////////////////////////////////////////////////
+	def __cmp__(self, other):
+		raise AssertionError('DependencyScorerI is an abstract interface')
+
+	def __hash__(self, other):
+		raise AssertionError('DependencyScorerI is an abstract interface')
+
+
+
+#################################################################
+# NaiveBayesDependencyScorer
+#################################################################
+
+class NaiveBayesDependencyScorer(DependencyScorerI):
+	"""
+	A dependency scorer built around a MaxEnt classifier.  In this
+	particular class that classifier is a C{NaiveBayesClassifier}.
+	It uses head-word, head-tag, child-word, and child-tag features
+	for classification.
+	"""
+
+	def __init__(self):
+		print # Do nothing without throwing error?
+
+	def train(self, graphs):
+		"""
+		Trains a C{NaiveBayesClassifier} using the edges present in 
+		graphs list as positive examples, the edges not present as
+		negative examples.  Uses a feature vector of head-word,
+		head-tag, child-word, and child-tag.
+		
+		@type graphs: A list of C{DepGraph}
+		@param graphs: A list of dependency graphs to train the scorer.		
+		"""
+
+		# Create training labeled training examples
+		labeled_examples = []
 		for graph in graphs:
 			for head_node in graph.nodelist:
 				for child_index in range(len(graph.nodelist)):
-#				for dep_index in head_node['deps']:
 					child_node = graph.get_by_address(child_index)
 					if(child_index in head_node['deps']):
 						label = "T"
 					else:
 						label = "F"
 					features = [head_node['word'], head_node['tag'], child_node['word'], child_node['tag']]
-					corpus.append((dict(a=head_node['word'],b=head_node['tag'],c=child_node['word'],d=child_node['tag']), label))
-#					print features
-#		pcorpus = dict(a=1, b=1, c=1)
-#		tcorpus = [(dict(a='zie',b='V',c='Cathy',d='N'), 'T'),
-#				   (dict(a='hoor',b='V',c=''))]
-		# corpus = [(dict(a=1,b=1,c=1), 'y'), 
-		# 		  (dict(a=1,b=1,c=1), 'x'), 
-		# 		  (dict(a=1,b=1,c=0), 'y'), 
-		# 		  (dict(a=0,b=1,c=1), 'x')]
-		test = [(dict(a='zie',b='V',c='Cathy',d='N')),
-				(dict(a='Cathy',b='N',c=None,d='TOP'))]
+					labeled_examples.append((dict(a=head_node['word'],b=head_node['tag'],c=child_node['word'],d=child_node['tag']), label))
+		# Train the classifier
 		import nltk
 		nltk.usage(nltk.ClassifierI)
-#		print corpus
-		self.classifier = nltk.classify.NaiveBayesClassifier.train(corpus)
-#		print classifier.batch_classify(test)
+		self.classifier = nltk.classify.NaiveBayesClassifier.train(labeled_examples)
 
-					
-					
-	def assign_scores(self, graph):
-		print 'Assigning scoring from classifier...'
+	def score(self, graph):
+		"""
+		Converts the graph into a feature-based representation of 
+		each edge, and then assigns a score to each based on the 
+		confidence of the classifier in assigning it to the 
+		positive label.  Scores are returned in a multidimensional list.
+		
+		@type graph: C{DepGraph}
+		@param graph: A dependency graph to score.
+		@rtype: 3 dimensional list
+		@return: Edge scores for the graph parameter.
+		"""
+		# Convert graph to feature representation
 		edges = []
-		print edges
-		print len(graph.nodelist)
-		print graph
 		for i in range(len(graph.nodelist)):
 			for j in range(len(graph.nodelist)):
-#				print i,j
 				head_node = graph.get_by_address(i)
 				child_node = graph.get_by_address(j)
+				print head_node
+				print child_node
 				edges.append((dict(a=head_node['word'],b=head_node['tag'],c=child_node['word'],d=child_node['tag'])))
-		print edges
+		# Score edges
 		edge_scores = []
 		row = []
 		count = 0
 		for pdist in self.classifier.batch_prob_classify(edges):
 			print '%.4f %.4f' % (pdist.prob('T'), pdist.prob('F'))
-			row.append(math.log(pdist.prob("T")))
-#			row.append(pdist.prob("T"))
+			row.append([math.log(pdist.prob("T"))])
 			count += 1
 			if(count == len(graph.nodelist)):
 				edge_scores.append(row)
 				row = []
 				count = 0
-		print edge_scores
+		return edge_scores				
 
-	
-	# def test_parse(self, tokens, tags):  # tags are just temp. provided
-	# 	print 'Parsing...\'%s\'' % (' '.join(tokens))
-	# 
-	# 	# Initialize test g_graph
-	# 	g_graph = DepGraph()
-	# 	count = 0
-	# 	for i in range(len(tokens)):
-	# 		count += 1
-	# 		g_graph.nodelist.append({'word':tokens[i], 'tag':tags[i], 'deps':[], 'rel': 'NTOP', 'address': count})
-	# 
-	# 	# Initialize edge weights - here just explicitly assigned
-	# 	self.scores = [[[-100], [5], [1], [1]],
-	# 				   [[-100], [-100], [11], [4]],
-	# 				   [[-100], [10], [-100], [5]],
-	# 				   [[-100], [8], [8], [-100]]]
-	# 
-	# 
-	# 	
-	# 	
-	
+
+#################################################################
+# Non-Projective Probabilistic Parsing
+#################################################################
+# A short class necessary to show parsing example from paper
+class DemoScorer:
+
+	def train(self, graphs):
+		print 'Training...'
+
+	def score(self, graph):
+		# scores for Keith Hall 'K-best Spanning Tree Parsing' paper
+	 	return [[[], [5],  [1],  [1]],
+				[[], [],   [11], [4]],
+				[[], [10], [],   [5]],
+				[[], [8],  [8],  []]]
+
+#################################################################
+# Non-Projective Probabilistic Parsing
+#################################################################
+
+class ProbabilisticNonprojectiveParser(object):
+	"""
+	A probabilistic non-projective dependency parser.  Nonprojective 
+	dependencies allows for "crossing branches" in the parse tree 
+	which is necessary for representing particular linguistic 
+	phenomena, or even typical parses in some languages.  This parser 
+	follows the MST parsing algorithm, outlined in McDonald(2005), 
+	which likens the search for the best non-projective parse to 
+	finding the maximum spanning tree in a weighted directed graph.
+	"""
+	def __init__(self):
+		"""
+		Creates a new non-projective parser.
+		"""
+		print 'initializing prob. nonprojective...'
+
+	def train(self, graphs, dependency_scorer):
+		"""
+		Trains a C{DependencyScorerI} from a set of C{DepGraph} objects,
+		and establishes this as the parser's scorer.  This is used to 
+		initialize the scores on a C{DepGraph} during the parsing 
+		procedure.
+		
+		@type graphs: A list of C{DepGraph}
+		@param graphs: A list of dependency graphs to train the scorer.
+		@type dependency_scorer: C{DependencyScorerI}
+		@param dependency_scorer: A scorer which implements the
+		C{DependencyScorerI} interface.
+		"""
+		self._scorer = dependency_scorer
+		self._scorer.train(graphs)
+
 	def initialize_edge_scores(self, graph):
-		self.scores = [[[], [5],  [1],  [1]],
-					   [[], [],   [11], [4]],
-					   [[], [10], [],   [5]],
-					   [[], [8],  [8],  []]]
-			
+		"""
+		Assigns a score to every edge in the C{DepGraph} graph.
+		These scores are generated via the parser's scorer which 
+		was assigned during the training process.
+		
+		@type graph: C{DepGraph}
+		@param graph: A dependency graph to assign scores to.
+		"""
+		self.scores = self._scorer.score(graph)
+
 	def collapse_nodes(self, new_node, cycle_path, g_graph, b_graph, c_graph):
+		"""
+		Takes a list of nodes that have been identified to belong to a cycle,
+		and collapses them into on larger node.  The arcs of all nodes in 
+		the graph must be updated to account for this.
+		
+		@type new_node: Node.
+		@param new_node: A Node (Dictionary) to collapse the cycle nodes into.
+		@type cycle_path: A list of integers.
+		@param cycle_path: A list of node addresses, each of which is in the cycle.
+		@type g_graph, b_graph, c_graph: C{DependencyGraph}
+		@param g_graph, b_graph, c_graph: Graphs which need to be updated.
+		"""
 		print 'Collapsing nodes...'
 		# Collapse all cycle nodes into v_n+1 in G_Graph
 		for cycle_node_index in cycle_path:
 			g_graph.remove_by_address(cycle_node_index)
 		g_graph.nodelist.append(new_node)
 		g_graph.redirect_arcs(cycle_path, new_node['address'])
-		#
 
 	def update_edge_scores(self, new_node, cycle_path):
+		"""
+		Updates the edge scores to reflect a collapse operation into
+		new_node.
+		
+		@type new_node: A Node.
+		@param new_node: The node which cycle nodes are collapsed into.
+		@type cycle_path: A list of integers.
+		@param cycle_path: A list of node addresses that belong to the cycle.
+		"""
 		print 'cycle', cycle_path
 		cycle_path = self.compute_original_indexes(cycle_path)
 		print 'old cycle ', cycle_path
 		print 'Prior to update:\n', self.scores
 		for i, row in enumerate(self.scores):
 			for j, column in enumerate(self.scores[i]):
+				print self.scores[i][j]
 				if(j in cycle_path and not i in cycle_path and len(self.scores[i][j]) > 0):
 					new_vals = []
 					subtract_val = self.compute_max_subtract_score(j, cycle_path)
@@ -142,6 +274,17 @@ class ProbabilisticNonprojectiveParser(object):
 		print 'After update:\n', self.scores
 
 	def compute_original_indexes(self, new_indexes):
+		"""
+		As nodes are collapsed into others, they are replaced 
+		by the new node in the graph, but it's still necessary
+		to keep track of what these original nodes were.  This
+		takes a list of node addresses and replaces any collapsed
+		node addresses with their original addresses.
+		
+		@type new_address: A list of integers.
+		@param new_addresses: A list of node addresses to check for
+		subsumed nodes.
+		"""
 		swapped = True
 		while(swapped):
 			originals = []
@@ -158,6 +301,18 @@ class ProbabilisticNonprojectiveParser(object):
 		return new_indexes
 		
 	def compute_max_subtract_score(self, column_index, cycle_indexes):
+		"""
+		When updating scores the score of the highest-weighted incoming
+		arc is subtracted upon collapse.  This returns the correct 
+		amount to subtract from that edge.
+		
+		@type column_index: integer.
+		@param column_index: A index representing the column of incoming arcs
+		to a particular node being updated
+		@type cycle_indexes: A list of integers.
+		@param cycle_indexes: Only arcs from cycle nodes are considered.  This 
+		is a list of such nodes addresses.
+		"""
 		max_score = -100000
 		for row_index in cycle_indexes:
 			for subtract_val in self.scores[row_index][column_index]:
@@ -165,59 +320,23 @@ class ProbabilisticNonprojectiveParser(object):
 					max_score = subtract_val
 		return max_score
 
-# 	def update_edge_scores(self, new_node, cycle_path):
-# 		print self.scores
-# 		print cycle_path.pop() # remove the duplicate value from the closed path
-# 		# Updates the scores to reflect the collapse
-# 		for i, row in enumerate(self.scores):
-# 			for j, column in enumerate(self.scores[i]):
-# 				if(j in cycle_path and not i in cycle_path and len(self.scores[i][j]) > 0):
-# 					# Subtract cell[k][j] from cell[i][j] where k is in the cycle path
-# 					for k in cycle_path:						 
-# #					for k, inner_row in enumerate(self.scores):
-# 						if(len(self.scores[k][j]) > 0):
-# 							new_vals = []
-# 							for val in self.scores[i][j]:
-# 								print 'Updating: [%d][%d] %s - [%d][%d] %s , %s' % (i, j, val, k, j, self.scores[k][j], sum(self.scores[k][j]))	
-# 								new_vals.append(val - sum(self.scores[k][j]))
-# 							self.scores[i][j] = new_vals
-# 		print self.scores
-# 		print
-# 		# Remove edges between cycle nodes
-# 		for i, row in enumerate(self.scores):
-# 			for j, cell in enumerate(self.scores[i]):
-# 				if(i in cycle_path and j in cycle_path):
-# 					self.scores[i][j] = []
-# 		# Add edges to the new node
-# 		for i, row in enumerate(self.scores):
-# 			new_edges = []
-# 			for j, cell in enumerate(self.scores[i]):
-# 				if(j in cycle_path):
-# 					new_edges += self.scores[i][j]
-# 			self.scores[i].append(new_edges)
-# 		# Add edges from the new node
-# #		new_out_edges = [[], [], [], [], []]  # replace with smart initialize
-# 		new_out_edges = []
-# 		while(len(new_out_edges) < len(self.scores[0])):
-# 			new_out_edges.append([])
-# 		for i, row in enumerate(self.scores):
-# 			if(i in cycle_path):
-# 				for j, cell in enumerate(self.scores[i]):
-# #					print j, '-', self.scores[i][j]
-# 					new_out_edges[j] += self.scores[i][j]
-# 		self.scores.append(new_out_edges)
-# 		print self.scores
-# 		print
-					
-				# print j, self.scores[i]
+
 	def best_incoming_arc(self, node_index):
-		print self.scores[0]
+		"""
+		Returns the source of the best incoming arc to the 
+		node with address: node_index
+		
+		@type node_index: integer.
+		@param node_index: The address of the 'destination' node,
+		the node that is arced to.
+		"""
 		originals = self.compute_original_indexes([node_index])
 		print 'originals:', originals
 		max_arc = None
 		max_score = None
 		for row_index in range(len(self.scores)):
 			for col_index in range(len(self.scores[row_index])):
+#				print self.scores[row_index][col_index]
 				if(col_index in originals and self.scores[row_index][col_index] > max_score):
 					max_score = self.scores[row_index][col_index]
 					max_arc = row_index
@@ -230,6 +349,9 @@ class ProbabilisticNonprojectiveParser(object):
 		return max_arc
 		
 	def original_best_arc(self, node_index):
+		"""
+		???
+		"""
 		originals = self.compute_original_indexes([node_index])
 		max_arc = None
 		max_score = None
@@ -240,38 +362,32 @@ class ProbabilisticNonprojectiveParser(object):
 					max_score = self.scores[row_index][col_index]
 					max_arc = row_index
 					max_orig = col_index
-		# for key in self.inner_nodes:
-		# 		replaced_nodes = self.inner_nodes[key]
-		# 		if(max_arc in replaced_nodes):
-		# 			return key
 		return [max_arc, max_orig]
-			
-				# 	def best_incoming_arc(self, node_index):
-				# 		print 'Finding best incoming arc to node ' , node_index
-				# 
-				# 		max_index = -1
-				# 		max_score = -101
-				# 		for index in range(len(self.scores)):
-				# 			for j in range(len(self.scores[index][node_index])):
-				# #				print index, j
-				# 				score = self.scores[index][node_index][j]
-				# 				if(score > max_score and not self.replaced_by.has_key(index)):
-				# 					max_score = score
-				# 					max_index = index
-				# 		return max_index
-						
+
 						
 	def parse(self, tokens, tags):
+		"""
+		Parses a list of tokens in accordance to the MST parsing algorithm
+		for non-projective dependency parses.  Assumes that the tokens to 
+		be parsed have already been tagged and those tags are provided.  Various 
+		scoring methods can be used by implementing the C{DependencyScorerI}
+		interface and passing it to the training algorithm.
+		
+		@type tokens: A list of C{String}.
+		@param tokens: A list of words or punctuation to be parsed.
+		@type tags: A List of C{String}.
+		@param tags: A list of tags corresponding by index to the words in the tokens list.
+		"""
 		self.inner_nodes = {}
 		# Initialize g_graph
 		g_graph = DepGraph()
 		for index, token in enumerate(tokens):
-			g_graph.nodelist.append({'word':token, 'deps':[], 'rel':'NTOP', 'address':index+1})
+			g_graph.nodelist.append({'word':token, 'tag':tags[index], 'deps':[], 'rel':'NTOP', 'address':index+1})
 		# Fully connect non-root nodes in g_graph
-		g_graph.connect_graph()
+		g_graph.connect_graph()	
 		original_graph = DepGraph()
 		for index, token in enumerate(tokens):
-			original_graph.nodelist.append({'word':token, 'deps':[], 'rel':'NTOP', 'address':index+1})
+			original_graph.nodelist.append({'word':token, 'tag':tags[index], 'deps':[], 'rel':'NTOP', 'address':index+1})
 
 		# Initialize b_graph
 		b_graph = DepGraph()
@@ -280,9 +396,10 @@ class ProbabilisticNonprojectiveParser(object):
 		c_graph = DepGraph()
 		c_graph.nodelist = []
 		for index, token in enumerate(tokens):
-			c_graph.nodelist.append({'word':token, 'deps':[], 'rel':'NTOP', 'address':index+1})
+			c_graph.nodelist.append({'word':token, 'tag':tags[index], 'deps':[], 'rel':'NTOP', 'address':index+1})
 		# Assign initial scores to g_graph edges
 		self.initialize_edge_scores(g_graph)
+		print self.scores
 		# Initialize a list of unvisited vertices (by node address)
 		unvisited_vertices = []
 		for vertex in c_graph.nodelist:
@@ -293,10 +410,10 @@ class ProbabilisticNonprojectiveParser(object):
 		while(len(unvisited_vertices) > 0):
 			# Mark current node as visited
 			current_vertex = unvisited_vertices.pop(0)
-#			print 'current_vertex:', current_vertex
+			print 'current_vertex:', current_vertex
 			# Get corresponding node n_i to vertex v_i
 			current_node = g_graph.get_by_address(current_vertex)
-#			print 'current_node:', current_node
+			print 'current_node:', current_node
 			# Get best in-edge node b for current node
 			best_in_edge = self.best_incoming_arc(current_vertex)
 			betas[current_vertex] = self.original_best_arc(current_vertex)
@@ -343,388 +460,84 @@ class ProbabilisticNonprojectiveParser(object):
 		print 'Recovering parse...'
 		for i in range(len(tokens) + 1, nr_vertices + 1):
 			betas[betas[i][1]] = betas[i]
-		print betas
+		print 'Betas: ', betas
 		new_graph = DepGraph()
 		for node in original_graph.nodelist:
 			node['deps'] = []
 		for i in range(1, len(tokens) + 1):
-			print i, betas[i]
+#			print i, betas[i]
 			original_graph.add_arc(betas[i][0], betas[i][1])
-		print original_graph
+#		print original_graph
+		return original_graph
 		print 'Done.'
 
-
-
-	def test(self):
-		self.inner_nodes = {}
-		self.update_edge_scores({'word': 'NONE', 'deps':[], 'rel': 'NTOP', 'address': 4}, [1,2])
-		self.inner_nodes[4] = [1,2]
-		self.update_edge_scores({'word': 'NONE', 'deps':[], 'rel': 'NTOP', 'address': 5}, [4,3])
-		self.inner_nodes[5] = [1,2,3,4]
 		
 
+#################################################################
+# Rule-based Non-Projective Parser
+#################################################################
 
-# 
-# 	def test_parse(self, tokens, tags):  # tags are just temp. provided
-# 		print 'parsing...\'%s\'' % (' '.join(tokens))		
-# 		tokens = ['v1', 'v2', 'v3']  # for testing, to match KH paper
-# 		
-# 		# Initialize g_graph
-# 		g_graph = DepGraph()
-# 		for index, token in enumerate(tokens):
-# 				g_graph.nodelist.append({'word':token, 'deps':[], 'rel': 'NTOP', 'address': index + 1})
-# 		
-# 		# Fully connect non-root nodes in g_graph
-# 		g_graph.connect_graph()
-# 		print 'Initial G_graph:\n', g_graph
-# 		print
-# 
-# 		# Initialize B_Graph
-# 		b_graph = DepGraph()
-# 		b_graph.nodelist = []  # Remove default 'TOP' node
-# 		print 'Initial B_Graph:\n', b_graph
-# 		print
-# 		
-# 		# Initialize C_Graph
-# 		c_graph = DepGraph()
-# 		c_graph.nodelist = []  # Remove default 'TOP' node
-# 		count = 0
-# 		for token in tokens:
-# 			count += 1
-# 			c_graph.nodelist.append({'word':token, 'deps':[], 'rel': 'NTOP', 'address': count})
-# 		print 'Initial C_Graph:\n', c_graph
-# 		
-# 		# Initialize edge weights - here just explicitly assigned
-# 		self.scores = [[[-100], [5], [1], [1]],
-# 					   [[-100], [-100], [11], [4]],
-# 					   [[-100], [10], [-100], [5]],
-# 					   [[-100], [8], [8], [-100]]]
-# 
-# 
-# 		nr_vertices = len(tokens)
-# 		unvisited_vertices = []
-# 		for vertex in c_graph.nodelist:
-# 			unvisited_vertices.append(vertex['address'])
-# 		while(len(unvisited_vertices) > 0):
-# 			# Mark v_i as unvisited
-# 			current_vertex = unvisited_vertices.pop(0)
-# 			print 'current_vertex:', current_vertex
-# 			# Get corresponding node n_i to vertex v_i
-# 			current_node = g_graph.get_by_address(current_vertex)
-# 			print 'current_node:', current_node
-# 			# Get highest-scoring incoming arc to node n_i
-# 			best_in_arc = self.best_incoming_arc(current_vertex)
-# 			print 'best_in_arc', best_in_arc
-# 
-# 			# Update B = B U b
-# 			for new_vertex in [current_vertex, best_in_arc]:
-# 				if(not b_graph.contains_address(new_vertex)):
-# 					word_label = new_vertex - 1
-# 					if(new_vertex - 1 > len(tokens) ):
-# 						word_label = 'TEMP'
-# 					b_graph.nodelist.append({'word':word_label, 'deps':[], 'rel': 'NTOP', 'address': new_vertex})
-# 			b_graph.add_arc(best_in_arc, current_vertex)
-# 
-# 			# Check for cycles in B_Graph
-# 			print
-# 			print 'Checking B_graph for cycles..\n', b_graph
-# 			cycle = b_graph.contains_cycle()
-# 			if(cycle):
-# 				print 'Cycle found:', cycle
-# 				
-# 				# New node v_n+1
-# 				new_cnode = {'word': 'NONE', 'deps':[], 'rel': 'NTOP', 'address': nr_vertices + 1}
-# 				# All Children of cycle are children of new_node in C_Graph
-# 				cycle.sort()
-# 				new_cnode['deps'] = cycle
-# 				c_graph.nodelist.append(new_cnode)
-# 				
-# 				# Update scoring to reflect collapsed cycle in G_Graph
-# #				subtract_from = []  # to store the list of global updates to be made
-# 				print self.scores
-# 				for cycle_node_index in cycle:
-# 					best_arc = self.best_incoming_arc(cycle_node_index)
-# #					subtract_score = max(self.scores[best_arc][cycle_node_index])
-# 					subtract_score = self.best_incoming_score(cycle_node_index)
-# 					for g_node in g_graph.nodelist:
-# 						if(cycle_node_index in g_node['deps']):
-# 							print 'Should update: ', g_node['address'], '-->', cycle_node_index, ' from ', self.scores[g_node['address']][cycle_node_index], ' - ', subtract_score
-# 							e_scores = self.scores[g_node['address']][cycle_node_index]
-# 							for i in range(len(e_scores)):
-# 								e_scores[i] -= subtract_score
-# 							self.scores[g_node['address']][cycle_node_index] = e_scores
-# 				print 'Updated scores\n',self.scores
-# 
-# 				# Collapse all cycle nodes into v_n+1 in G_Graph
-# 				new_gnode = {'word': 'NONE', 'deps':[], 'rel': 'NTOP', 'address': nr_vertices + 1}
-# 				for cycle_node_index in cycle:
-# 					g_graph.remove_by_address(cycle_node_index)
-# 				g_graph.nodelist.append(new_gnode)
-# 				g_graph.redirect_arcs(cycle, nr_vertices + 1)
-# 				
-# 				# Redirect the score arcs
-# 				# initialize to scores[i] size
-# 				new_out_scores = []
-# 				for i in range(len(self.scores[0])):
-# 					new_out_scores.append([])
-# 				for i in range(len(self.scores)):
-# 					# Empty out the arcs between the collapsed nodes
-# 					if(i in cycle):
-# 						for cycle_node_index in cycle:
-# 							self.scores[i][cycle_node_index] = []
-# 						for j in range(len(self.scores[i])):
-# 							new_out_scores[j] += self.scores[i][j]
-# 					# Add pointers from old non-cyclic nodes to the new node
-# 					new_in_scores = []
-# 					for cycle_node_index in cycle:
-# 						new_in_scores += self.scores[i][cycle_node_index]
-# 					self.scores[i].append(new_in_scores)
-# 				# Add pointers out from the new node to old nodes
-# 				new_out_scores.append([])
-# 				# Clean out all cyclic node out scores
-# 				for i in range(len(self.scores)):
-# 					if(i in cycle):
-# 						for j in range(len(self.scores[i])):
-# 							self.scores[i][j] = []
-# 				
-# 				# zero out arcs from non-cyclic to collapsed nodes
-# 				for i in range(len(self.scores)):
-# 					for cycle_node_index in cycle:
-# 						self.scores[i][cycle_node_index] = []
-# 									
-# 				print 'new out scores:', new_out_scores
-# 				self.scores.append(new_out_scores)
-# 				print 'Redirected scores\n', self.scores
-# 				
-# 
-# 						
-# 				# 	self.[index][nr_vertices +1] = self.scores[index][cycle_node_index]
-# 				# 	self.[index][cycle_node_index] = -100
-# 				
-# 
-# 				# Add v_n+1 to unvisited vertices list
-# 				unvisited_vertices.insert(0, nr_vertices + 1)
-# 
-# 				# Update nr_vertices
-# 				nr_vertices += 1
-# 				
-# 				# B_Graph = B_Graph - C_Graph
-# 				for c_node in c_graph.nodelist:
-# 					b_graph.remove_by_address(c_node['address'])
-# 
-# 			print
-# 			print 'Iteration complete.'
-# 			print 'G = \n', g_graph
-# 			print 'B = \n', b_graph
-# 			print 'C = \n', c_graph
-# 			print self.scores
-# 			print			
+class NonprojectiveDependencyParser(object):
+	
+	def __init__(self, dependency_grammar):
+		self._grammar = dependency_grammar
+
+	def parse(self, tokens):
+		# Create grahp representation of tokens
+		self._graph = DepGraph()
+		self._graph.nodelist = []  # Remove the default root
+		for index, token in enumerate(tokens):
+			self._graph.nodelist.append({'word':token, 'deps':[], 'rel':'NTOP', 'address':index+1})
+		for head_node in self._graph.nodelist:
+			deps = []
+			for dep_node in self._graph.nodelist:
+				print head_node['word'], dep_node['word']
+				if self._grammar.contains(head_node['word'], dep_node['word']) and not head_node['word'] == dep_node['word']:
+					deps.append(dep_node['address'])
+			head_node['deps'] = deps
+		print self._graph
+		# Traverse all possible paths of the graph n deep
+		for start_node in self._graph.nodelist:
+			path = self.get_paths(-1, start_node, len(tokens) - 1)
+			print 'Path', path
+
+	def get_paths(self, parent, node, depth):
+		print node['address'], depth
+		if(depth == 0):
+			return [{node['address']:parent}]
+		elif(len(node['deps']) > 0):
+			for dep in node['deps']:
+				dep_node = self._graph.get_by_address(dep)
+				paths = self.get_paths(node['address'], dep_node, depth - 2)
+				if(paths):
+					for path in paths:
+						path[node['address']] = parent
+					return paths
+				#return paths.append(node['address'])
+		else:
+			return None
 
 
-			# 	def parse(self, tokens, tags):  # tags are just temp. provided
-			# 		print 'parsing...\'%s\'' % (' '.join(tokens))		
-			# 		tokens = ['v1', 'v2', 'v3']  # for testing, to match KH paper
-			# 
-			# 		# Initialize g_graph
-			# 		g_graph = DepGraph()
-			# 		count = 0
-			# 		for token in tokens:
-			# 			count += 1
-			# 			g_graph.nodelist.append({'word':token, 'deps':[], 'rel': 'NTOP', 'address': count})
-			# 		# Fully connect non-root nodes in g_graph
-			# 		g_graph.connect_graph()
-			# 		print 'Initial G_graph:\n', g_graph
-			# 		print
-			# 
-			# 		# Initialize B_Graph
-			# 		b_graph = DepGraph()
-			# 		b_graph.nodelist = []  # Remove default 'TOP' node
-			# 		print 'Initial B_Graph:\n', b_graph
-			# 		print
-			# 
-			# 		# Initialize C_Graph
-			# 		c_graph = DepGraph()
-			# 		c_graph.nodelist = []  # Remove default 'TOP' node
-			# 		count = 0
-			# 		for token in tokens:
-			# 			count += 1
-			# 			c_graph.nodelist.append({'word':token, 'deps':[], 'rel': 'NTOP', 'address': count})
-			# 		print 'Initial C_Graph:\n', c_graph
-			# 
-			# 		nr_vertices = len(tokens)
-			# 		unvisited_vertices = []
-			# 		for vertex in c_graph.nodelist:
-			# 			unvisited_vertices.append(vertex['address'])
-			# 		while(len(unvisited_vertices) > 0):
-			# 			# Mark v_i as unvisited
-			# 			current_vertex = unvisited_vertices.pop(0)
-			# 			print 'current_vertex:', current_vertex
-			# 			# Get corresponding node n_i to vertex v_i
-			# 			current_node = g_graph.get_by_address(current_vertex)
-			# 			print 'current_node:', current_node
-			# 			# Get highest-scoring incoming arc to node n_i
-			# 			best_in_arc = self.best_incoming_arc(current_vertex)
-			# 			print 'best_in_arc', best_in_arc
-			# 
-			# 			# Update B = B U b
-			# 			for new_vertex in [current_vertex, best_in_arc]:
-			# 				if(not b_graph.contains_address(new_vertex)):
-			# 					word_label = new_vertex - 1
-			# 					if(new_vertex - 1 > len(tokens) ):
-			# 						word_label = 'TEMP'
-			# 					b_graph.nodelist.append({'word':word_label, 'deps':[], 'rel': 'NTOP', 'address': new_vertex})
-			# 			b_graph.add_arc(best_in_arc, current_vertex)
-			# 
-			# 			# Check for cycles in B_Graph
-			# 			print
-			# 			print 'Checking B_graph for cycles..\n', b_graph
-			# 			cycle = b_graph.contains_cycle()
-			# 			if(cycle):
-			# 				print 'Cycle found:', cycle
-			# 
-			# 				# New node v_n+1
-			# 				new_cnode = {'word': 'NONE', 'deps':[], 'rel': 'NTOP', 'address': nr_vertices + 1}
-			# 				# All Children of cycle are children of new_node in C_Graph
-			# 				cycle.sort()
-			# 				new_cnode['deps'] = cycle
-			# 				c_graph.nodelist.append(new_cnode)
-			# 
-			# 				# Update scoring to reflect collapsed cycle in G_Graph
-			# #				subtract_from = []  # to store the list of global updates to be made
-			# 				print self.scores
-			# 				for cycle_node_index in cycle:
-			# 					best_arc = self.best_incoming_arc(cycle_node_index)
-			# #					subtract_score = max(self.scores[best_arc][cycle_node_index])
-			# 					subtract_score = self.best_incoming_score(cycle_node_index)
-			# 					for g_node in g_graph.nodelist:
-			# 						if(cycle_node_index in g_node['deps']):
-			# 							print 'Should update: ', g_node['address'], '-->', cycle_node_index, ' from ', self.scores[g_node['address']][cycle_node_index], ' - ', subtract_score
-			# 							e_scores = self.scores[g_node['address']][cycle_node_index]
-			# 							for i in range(len(e_scores)):
-			# 								e_scores[i] -= subtract_score
-			# 							self.scores[g_node['address']][cycle_node_index] = e_scores
-			# 				print 'Updated scores\n',self.scores
-			# 
-			# 				# Collapse all cycle nodes into v_n+1 in G_Graph
-			# 				new_gnode = {'word': 'NONE', 'deps':[], 'rel': 'NTOP', 'address': nr_vertices + 1}
-			# 				for cycle_node_index in cycle:
-			# 					g_graph.remove_by_address(cycle_node_index)
-			# 				g_graph.nodelist.append(new_gnode)
-			# 				g_graph.redirect_arcs(cycle, nr_vertices + 1)
-			# 
-			# 				# Redirect the score arcs
-			# 				# initialize to scores[i] size
-			# 				new_out_scores = []
-			# 				for i in range(len(self.scores[0])):
-			# 					new_out_scores.append([])
-			# 				for i in range(len(self.scores)):
-			# 					# Empty out the arcs between the collapsed nodes
-			# 					if(i in cycle):
-			# 						for cycle_node_index in cycle:
-			# 							self.scores[i][cycle_node_index] = []
-			# 						for j in range(len(self.scores[i])):
-			# 							new_out_scores[j] += self.scores[i][j]
-			# 					# Add pointers from old non-cyclic nodes to the new node
-			# 					new_in_scores = []
-			# 					for cycle_node_index in cycle:
-			# 						new_in_scores += self.scores[i][cycle_node_index]
-			# 					self.scores[i].append(new_in_scores)
-			# 				# Add pointers out from the new node to old nodes
-			# 				new_out_scores.append([])
-			# 				# Clean out all cyclic node out scores
-			# 				for i in range(len(self.scores)):
-			# 					if(i in cycle):
-			# 						for j in range(len(self.scores[i])):
-			# 							self.scores[i][j] = []
-			# 
-			# 				# zero out arcs from non-cyclic to collapsed nodes
-			# 				for i in range(len(self.scores)):
-			# 					for cycle_node_index in cycle:
-			# 						self.scores[i][cycle_node_index] = []
-			# 
-			# 				print 'new out scores:', new_out_scores
-			# 				self.scores.append(new_out_scores)
-			# 				print 'Redirected scores\n', self.scores
-			# 
-			# 
-			# 
-			# 				# 	self.[index][nr_vertices +1] = self.scores[index][cycle_node_index]
-			# 				# 	self.[index][cycle_node_index] = -100
-			# 
-			# 
-			# 				# Add v_n+1 to unvisited vertices list
-			# 				unvisited_vertices.insert(0, nr_vertices + 1)
-			# 
-			# 				# Update nr_vertices
-			# 				nr_vertices += 1
-			# 
-			# 				# B_Graph = B_Graph - C_Graph
-			# 				for c_node in c_graph.nodelist:
-			# 					b_graph.remove_by_address(c_node['address'])
-			# 
-			# 			print
-			# 			print 'Iteration complete.'
-			# 			print 'G = \n', g_graph
-			# 			print 'B = \n', b_graph
-			# 			print 'C = \n', c_graph
-			# 			print self.scores
-			# 			print			
-
-
-
-# 	def best_incoming_arc(self, node_index):
-# 		print 'Finding best incoming arc to node ' , node_index
-# 
-# 		max_index = -1
-# 		max_score = -101
-# 		for index in range(len(self.scores)):
-# 			for j in range(len(self.scores[index][node_index])):
-# #				print index, j
-# 				score = self.scores[index][node_index][j]
-# 				if(score > max_score and not self.replaced_by.has_key(index)):
-# 					max_score = score
-# 					max_index = index
-# 		return max_index
-# 
-# # soon to be replaced....
-# 	def best_incoming_score(self, node_index):
-# 		print 'Finding best incoming score to node ' , node_index
-# 
-# 		max_index = -1
-# 		max_score = -101
-# 		for index in range(len(self.scores)):
-# 			for j in range(len(self.scores[index][node_index])):
-# 	#			print index, j
-# 				score = self.scores[index][node_index][j]
-# 				if(score > max_score and not self.replaced_by.has_key(index)):
-# 					max_score = score
-# 					max_index = index
-# 		return max_score
+			
+			
+		
+		
 
 #################################################################
 # Demos
 #################################################################
 
 def demo():
-    hall_demo()
+	hall_demo()
 #	nonprojective_conll_parse_demo()
-#	test_demo()
-	
-def test_demo():
-	npp = ProbabilisticNonprojectiveParser()
-	npp.scores = [[[], [5],  [1],  [1]],
-				   [[], [],   [11], [4]],
-				   [[], [10], [],   [5]],
-				   [[], [8],  [8],  []]]
-	npp.test()
-		
+#	rule_based_demo()
+
+
 def hall_demo():
 	npp = ProbabilisticNonprojectiveParser()
-	npp.scores = [[[-100], [5], [1], [1]],
-				   [[-100], [-100], [11], [4]],
-				   [[-100], [10], [-100], [5]],
-				   [[-100], [8], [8], [-100]]]
-	npp.parse(['v1', 'v2', 'v3'], [None, None, None])
+	npp.train([], DemoScorer())
+	parse_graph = npp.parse(['v1', 'v2', 'v3'], [None, None, None])
+	print parse_graph
 
 def nonprojective_conll_parse_demo():
 	infile = open('conll_sample.txt',"r")
@@ -737,11 +550,19 @@ def nonprojective_conll_parse_demo():
 		else:
 			entry += '\t' + line
 	npp = ProbabilisticNonprojectiveParser()
-	npp.train(graphs)
-	npp.parse(['v1', 'v2', 'v3'], [None, None, None])
-#	npp.parse(['Cathy', 'zag', 'hen', 'zwaaien', '.'], ['N', 'V', 'Pron', 'Adj', 'N', 'Punc'])
-#	npp.parse(['v1', 'v2', 'v3'])
+	npp.train(graphs, NaiveBayesDependencyScorer())
+	parse_graph = npp.parse(['Cathy', 'zag', 'hen', 'zwaaien', '.'], ['N', 'V', 'Pron', 'Adj', 'N', 'Punc'])
+	print parse_graph
 
+def rule_based_demo():
+	grammar = parse_dependency_grammar("""
+	'scratch' -> 'cats' | 'walls'
+	'walls' -> 'the'
+	'cats' -> 'the'
+	""")
+	print grammar
+	ndp = NonprojectiveDependencyParser(grammar)
+	ndp.parse(['cats', 'scratch', 'walls'])
 
 if __name__ == '__main__':
     demo()
