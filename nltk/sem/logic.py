@@ -159,12 +159,12 @@ class Expression(SubstituteBindingsI):
     
     def substitute_bindings(self, bindings):
         expr = self
-        for var in expr.free():
+        for var in expr.variables():
             if var in bindings:
                 val = bindings[var]
                 if isinstance(val, Variable):
                     val = VariableExpression(val)
-                if not isinstance(val, Expression):
+                elif not isinstance(val, Expression):
                     raise ValueError('Can not substitute a non-expresion '
                                      'value into an expression: %r' % val)
                 # Substitute bindings in the target value.
@@ -178,6 +178,23 @@ class Expression(SubstituteBindingsI):
     
     def __str__(self):
         return self.str()
+
+    def variables(self):
+        """
+        Return a set of all the variables that are available to be replaced.
+        This includes free (non-bound) variables as well as predicates.
+        @return: C{set} of C{Variable}s
+        """
+        raise NotImplementedError() 
+
+    def free(self, indvar_only=True):
+        """
+        Return a set of all the free (non-bound) variables in self.  Variables
+        serving as predicates are no included.
+        @param indvar_only: C{boolean} only return individual variables?
+        @return: C{set} of C{Variable}s
+        """
+        raise NotImplementedError()
 
 class ApplicationExpression(Expression):
     r"""
@@ -234,10 +251,19 @@ class ApplicationExpression(Expression):
         return self.__class__(function, argument)
         
     def variables(self):
+        """
+        @see: Expression.variables()
+        """
         return self.function.variables() | self.argument.variables() 
 
-    def free(self):
-        return self.function.free() | self.argument.free() 
+    def free(self, indvar_only=True):
+        """
+        @see: Expression.free()
+        """
+        if isinstance(self.function, VariableExpression):
+            return self.argument.free(indvar_only)
+        else:
+            return self.function.free(indvar_only) | self.argument.free(indvar_only) 
     
     def __eq__(self, other):
         return self.__class__ == other.__class__ and \
@@ -307,10 +333,19 @@ class VariableExpression(Expression):
             return self
     
     def variables(self):
+        """
+        @see: Expression.variables()
+        """
         return set([self.variable])
 
-    def free(self):
-        return set([self.variable])
+    def free(self, indvar_only=True):
+        """
+        @see: Expression.free()
+        """
+        if not indvar_only: 
+            return set([self.variable])
+        else: 
+            return set()
     
     def __eq__(self, other):
         """Allow equality between instances of C{VariableExpression} and
@@ -324,7 +359,11 @@ class VariableExpression(Expression):
 class IndividualVariableExpression(VariableExpression):
     """This class represents variables that take the form of a single lowercase
     character followed by zero or more digits."""
-    pass
+    def free(self, indvar_only=True):
+        """
+        @see: Expression.free()
+        """
+        return set([self.variable])
     
 class VariableBinderExpression(Expression):
     """This an abstract class for any Expression that binds a variable in an
@@ -375,10 +414,16 @@ class VariableBinderExpression(Expression):
                                             VariableExpression(newvar), True))
 
     def variables(self):
-        return self.term.variables() | set([self.variable])
+        """
+        @see: Expression.variables()
+        """
+        return self.term.variables() - set([self.variable])
 
-    def free(self):
-        return self.term.free() - set([self.variable])
+    def free(self, indvar_only=True):
+        """
+        @see: Expression.free()
+        """
+        return self.term.free(indvar_only) - set([self.variable])
 
     def __eq__(self, other):
         r"""Defines equality modulo alphabetic variance.  If we are comparing 
@@ -432,10 +477,16 @@ class NegatedExpression(Expression):
                                                 replace_bound))
 
     def variables(self):
+        """
+        @see: Expression.variables()
+        """
         return self.term.variables()
 
-    def free(self):
-        return self.term.free()
+    def free(self, indvar_only=True):
+        """
+        @see: Expression.free()
+        """
+        return self.term.free(indvar_only)
 
     def __eq__(self, other):
         return self.__class__ == other.__class__ and self.term == other.term
@@ -464,10 +515,16 @@ class BooleanExpression(Expression):
                                                   replace_bound))
 
     def variables(self):
+        """
+        @see: Expression.variables()
+        """
         return self.first.variables() | self.second.variables()
 
-    def free(self):
-        return self.first.free() | self.second.free()
+    def free(self, indvar_only=True):
+        """
+        @see: Expression.free()
+        """
+        return self.first.free(indvar_only) | self.second.free(indvar_only)
 
     def __eq__(self, other):
         return self.__class__ == other.__class__ \

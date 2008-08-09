@@ -92,7 +92,7 @@ class ApplicationExpression:
             return self.__class__(r_function, r_argument)
 
 class PossibleAntecedents(list, logic.Expression):
-    def free(self):
+    def free(self, indvar_only=True):
         """Set of free variables."""
         return set(self)
 
