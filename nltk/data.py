@@ -44,12 +44,12 @@ import gzip
 
 try:
     import cPickle as pickle
-except LoadError:
+except:
     import pickle
     
 try:
     from cStringIO import StringIO
-except LoadError:
+except:
     from StringIO import StringIO
 
 from nltk import cfg, sem
