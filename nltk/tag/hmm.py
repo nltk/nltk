@@ -79,8 +79,8 @@ from nltk import FreqDist, ConditionalFreqDist, ConditionalProbDist, \
      DictionaryProbDist, DictionaryConditionalProbDist, LidstoneProbDist, \
      MutableProbDist, MLEProbDist
 from nltk.internals import deprecated
-from nltk.evaluate import accuracy
 from nltk.utilities import LazyMap, LazyConcatenation
+import nltk
 
 from api import *
 
@@ -287,6 +287,27 @@ class HiddenMarkovModelTagger(TaggerI):
         return self._outputs[state].logprob(symbol)
 
     def _create_cache(self):
+        """
+        The cache is a tuple (P, O, X, S) where:
+
+          - S maps symbols to integers.  I.e., it is the inverse
+            mapping from self._symbols; for each symbol s in
+            self._symbols, the following is true::
+
+              self._symbols[S[s]] == s
+           
+          - O is the log output probabilities::
+
+              O[i,k] = log( P(token[t]=sym[k]|tag[t]=state[i]) )
+            
+          - X is the log transition probabilities::
+          
+              X[i,j] = log( P(tag[t]=state[j]|tag[t-1]=state[i]) )
+            
+          - P is the log prior probabilities::
+          
+              P[i] = log( P(tag[0]=state[i]) )
+        """
         if not self._cache:
             N = len(self._states)
             M = len(self._symbols)
@@ -760,7 +781,7 @@ class HiddenMarkovModelTagger(TaggerI):
                 [tag for (token, tag) in sent],
             predicted_sequence))
         
-        acc = accuracy(test_tags, predicted_tags)
+        acc = nltk.evaluate.accuracy(test_tags, predicted_tags)
 
         count = sum([len(sent) for sent in test_sequence])
 
