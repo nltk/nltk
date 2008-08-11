@@ -49,7 +49,7 @@ Test unify()
     >>> print Clause([P(x)]).unify(Clause([-P(A)]))
     [{}]
     >>> print Clause([P(A), Q(x)]).unify(Clause([-P(x), R(x)]))
-    [{R(A), Q(A)}]    
+    [{R(A), Q(A)}]
     >>> print Clause([P(A), Q(x), R(x,y)]).unify(Clause([-P(x), Q(y)]))
     [{Q(y), Q(A), R(A,y)}]
     >>> print Clause([P(A), -Q(y)]).unify(Clause([-P(x), Q(B)]))
@@ -158,12 +158,12 @@ Test show_proof()
     >>> tp.prove()
     True
     >>> tp.show_proof()
-    [1] {-mortal(Socrates)}       A 
+    [1] {-mortal(Socrates)}     A 
     [2] {-man(z2), mortal(z2)}  A 
-    [3] {man(Socrates)}           A 
-    [4] {-man(Socrates)}          (1, 2) 
-    [5] {mortal(Socrates)}        (2, 3) 
-    [6] {}                        (1, 5) 
+    [3] {man(Socrates)}         A 
+    [4] {-man(Socrates)}        (1, 2) 
+    [5] {mortal(Socrates)}      (2, 3) 
+    [6] {}                      (1, 5) 
 
 ------------------
 Question Answering
