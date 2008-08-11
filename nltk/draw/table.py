@@ -21,7 +21,7 @@ import operator
 class MultiListbox(Frame):
     """
     A multi-column listbox, where the current selection applies to an
-    entire row.  Based on the 'L{MultiListbox Tkinter widget
+    entire row.  Based on the 'U{MultiListbox Tkinter widget
     <http://code.activestate.com/recipes/52266/>}' recipe from the
     Python Cookbook.
 
@@ -39,11 +39,13 @@ class MultiListbox(Frame):
                         highlightthickness=1)
 
     #: Default configurations for the column labels.
-    LABEL_CONFIG = dict(font='helvetica -16 bold',
+    LABEL_CONFIG = dict(borderwidth=1, relief='raised',
+                        font='helvetica -16 bold',
                       background='#444', foreground='white')
 
     #: Default configuration for the column listboxes.
-    LISTBOX_CONFIG = dict(borderwidth=0, selectborderwidth=0,
+    LISTBOX_CONFIG = dict(borderwidth=1,
+                          selectborderwidth=0,
                           highlightthickness=0,
                           exportselection=False,
                           selectbackground='#888',
@@ -102,20 +104,17 @@ class MultiListbox(Frame):
         for i, label in enumerate(self._column_names):
             self.grid_columnconfigure(i, weight=column_weights[i])
 
-            # Calculate padx value for label & listbox.
-            padx = (1, int(i == (len(self._column_names)-1)))
-
             # Create a label for the column
             if include_labels:
                 l = Label(self, text=label, **self.LABEL_CONFIG)
                 self._labels.append(l)
-                l.grid(column=i, row=0, sticky='news', padx=padx, pady=1)
+                l.grid(column=i, row=0, sticky='news', padx=0, pady=0)
                 l.column_index = i
             
             # Create a listbox for the column
             lb = Listbox(self, **self.LISTBOX_CONFIG)
             self._listboxes.append(lb)
-            lb.grid(column=i, row=1, sticky='news', padx=padx, pady=(0,1))
+            lb.grid(column=i, row=1, sticky='news', padx=0, pady=0)
             lb.column_index = i
 
             # Clicking or dragging selects:
@@ -131,6 +130,12 @@ class MultiListbox(Frame):
             # Dragging outside the window has no effect (diable
             # the default listbox behavior, which scrolls):
             lb.bind('<B1-Leave>', lambda e: 'break')
+            # Columns can be resized by dragging them:
+            l.bind('<Button-1>', self._resize_column)
+
+        # Columns can be resized by dragging them.  (This binding is
+        # used if they click on the grid between columns:)
+        self.bind('<Button-1>', self._resize_column)
             
         # Set up key bindings for the widget:
         self.bind('<Up>', lambda e: self.select(delta=-1))
@@ -140,6 +145,55 @@ class MultiListbox(Frame):
 
         # Configuration customizations
         self.configure(cnf, **kw)
+
+    #/////////////////////////////////////////////////////////////////
+    # Column Resizing
+    #/////////////////////////////////////////////////////////////////
+
+    def _resize_column(self, event):
+        """
+        Callback used to resize a column of the table.  Return C{True}
+        if the column is actually getting resized (if the user clicked
+        on the far left or far right 5 pixels of a label); and
+        C{False} otherwies.
+        """
+        # If we're already waiting for a button release, then ignore
+        # the new button press.
+        if event.widget.bind('<ButtonRelease>'):
+            return False
+
+        # Decide which column (if any) to resize.
+        self._resize_column_index = None
+        if event.widget is self:
+            for i, lb in enumerate(self._listboxes):
+                if abs(event.x-(lb.winfo_x()+lb.winfo_width())) < 10:
+                    self._resize_column_index = i
+        elif event.x > (event.widget.winfo_width()-5):
+            self._resize_column_index = event.widget.column_index
+        elif event.x < 5 and event.widget.column_index != 0:
+            self._resize_column_index = event.widget.column_index-1
+
+        # Bind callbacks that are used to resize it.
+        if self._resize_column_index is not None:
+            event.widget.bind('<Motion>', self._resize_column_motion_cb)
+            event.widget.bind('<ButtonRelease-%d>' % event.num,
+                              self._resize_column_buttonrelease_cb)
+            return True
+        else:
+            return False
+            
+    def _resize_column_motion_cb(self, event):
+        lb = self._listboxes[self._resize_column_index]
+        charwidth = lb.winfo_width() / float(lb['width'])
+        
+        x1 = event.x + event.widget.winfo_x()
+        x2 = lb.winfo_x() + lb.winfo_width()
+
+        lb['width'] = max(3, lb['width'] + int((x1-x2)/charwidth))
+
+    def _resize_column_buttonrelease_cb(self, event):
+        event.widget.unbind('<ButtonRelease-%d>' % event.num)
+        event.widget.unbind('<Motion>')
 
     #/////////////////////////////////////////////////////////////////
     # Properties
@@ -200,7 +254,7 @@ class MultiListbox(Frame):
         @param see: If true, then call C{self.see()} with the newly
             selected index, to ensure that it is visible.
         """
-        if (index is not None) == (delta is not None):
+        if (index is not None) and (delta is not None):
             raise ValueError('specify index or delta, but not both')
 
         # If delta was given, then calculate index.
@@ -349,13 +403,12 @@ class MultiListbox(Frame):
         Display a column that has been hidden using L{hide_column()}.
         It is safe to call this on a column that is not hidden.
         """
-        padx = (1, int(col_index == (len(self._column_names)-1)))
         weight = self._column_weights[col_index]
         if self._labels:
             self._labels[col_index].grid(column=col_index, row=0,
-                                         sticky='news', padx=padx, pady=1)
+                                         sticky='news', padx=0, pady=0)
         self._listboxes[col_index].grid(column=col_index, row=1,
-                                        sticky='news', padx=padx, pady=(0,1))
+                                        sticky='news', padx=0, pady=0)
         self.grid_columnconfigure(col_index, weight=weight)
 
     #/////////////////////////////////////////////////////////////////
@@ -498,6 +551,11 @@ class Table(object):
     define C{__getitem__()}, C{__setitem__()}, and C{__nonzero__()} in
     a way that's incompatible with the fact that C{Table} behaves as a
     list-of-lists.
+
+    @ivar _mlb: The multi-column listbox used to display this table's data.
+    @ivar _rows: A list-of-lists used to hold the cell values of this
+        table.  Each element of _rows is a row value, i.e., a list of
+        cell values, one for each column in the row.
     """
     def __init__(self, master, column_names, rows=None,
                  column_weights=None,
@@ -641,7 +699,7 @@ class Table(object):
         is greater than or equal to C{row_index}, then they will be
         shifted down.
 
-        @param row_value: A tuple of cell values, one for each column
+        @param rowvalue: A tuple of cell values, one for each column
             in the new row.
         """
         self._checkrow(rowvalue)
@@ -667,7 +725,7 @@ class Table(object):
         """
         Add a new row to the end of the table.
 
-        @param row_value: A tuple of cell values, one for each column
+        @param rowvalue: A tuple of cell values, one for each column
             in the new row.
         """
         self.insert(len(self._rows), rowvalue)
@@ -852,12 +910,20 @@ class Table(object):
         self._restore_config_info(config_cookie, index_by_id=True, see=True)
         if self._DEBUG: self._check_table_vs_mlb()
     
-    def _sort(self, e):
+    def _sort(self, event):
         """Event handler for clicking on a column label -- sort by
         that column."""
-        try: column_index = e.widget.column_index
-        except AttributeError: return
-        self.sort_by(column_index)
+        column_index = event.widget.column_index
+        
+        # If they click on the far-left of far-right of a column's
+        # label, then resize rather than sorting.
+        if self._mlb._resize_column(event):
+            return 'continue'
+
+        # Otherwise, sort.
+        else:
+            self.sort_by(column_index)
+            return 'continue'
 
     #/////////////////////////////////////////////////////////////////
     #{ Table Drawing Helpers
@@ -956,7 +1022,7 @@ class Table(object):
     
     def _check_table_vs_mlb(self):
         """
-        Verify that the contents of the table's L{_row} variable match
+        Verify that the contents of the table's L{_rows} variable match
         the contents of its multi-listbox (L{_mlb}).  This is just
         included for debugging purposes, to make sure that the
         list-modifying operations are working correctly.
