@@ -170,13 +170,17 @@ ValueError exception.  It will *not* overwrite the file:
 Finding Files in the NLTK Data Package
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 The `nltk.data.find()` function searches the NLTK data package for a
-given file, and returns its filename.  This can then be used to read
-the string contents of the file.
+given file, and returns a pointer to that file.  This pointer can
+either be a `FileSystemPathPointer` (whose `path` attribute gives the
+absolute path of the file); or a `ZipFilePathPointer`, specifying a
+zipfile and the name of an entry within that zipfile.  Both pointer
+types define the `open()` method, which can be used to read the string
+contents of the file.
 
     >>> path = nltk.data.find('corpora/abc/rural.txt')
     >>> path # doctest: +ELLIPSIS
-    '.../corpora/abc/rural.txt'
-    >>> open(path, 'rb').read(60)
+    FileSystemPathPointer('.../corpora/abc/rural.txt')
+    >>> path.open().read(60)
     'PM denies knowledge of AWB kickbacks\nThe Prime Minister has '
 
 Alternatively, the `nltk.data.load()` function can be used with the
