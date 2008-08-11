@@ -101,8 +101,8 @@ class HiddenMarkovModelTagger(TaggerI):
     
     This implementation is based on the HMM description in Chapter 8, Huang,
     Acero and Hon, Spoken Language Processing and includes an extension for
-    training shallow HMM parsers or specializaed HMMs as in Molina et. al,
-    2002.  A specialized HMM modifies training data by applying a 
+    training shallow HMM parsers or specializaed HMMs as in Molina et. 
+    al, 2002.  A specialized HMM modifies training data by applying a 
     specialization function to create a new training set that is more
     appropriate for sequential tagging with an HMM.  A typical use case is 
     chunking.
