@@ -69,7 +69,7 @@ class Mace(Prover9Parent, ModelBuilderI):
         
     def _make_model_dict(num_entities, values):
         """
-        Convert a Mace4-style relation table into a dictionary}.
+        Convert a Mace4-style relation table into a dictionary.
         
         @parameter num_entities: the number of entities in the model; determines the row length in the table.
         @type num_entities: C{int}
