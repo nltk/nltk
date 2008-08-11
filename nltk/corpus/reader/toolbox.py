@@ -14,7 +14,7 @@ Module for reading, writing and manipulating
 Toolbox databases and settings files.
 """
 
-import os, re
+import os, re, codecs
 from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
 from StringIO import StringIO
