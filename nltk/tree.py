@@ -55,7 +55,9 @@ class Tree(list):
     M{iN})}, specifying
     C{self[M{i1}][M{i2}]...[M{iN}]}.
     """
-    def __new__(cls, node_or_str, children=None):
+    def __new__(cls, node_or_str=None, children=None):
+        if node_or_str is None:
+            return list.__new__(cls) # used by copy.deepcopy
         if children is None:
             if not isinstance(node_or_str, basestring):
                 raise TypeError("%s: Expected a node value and child list "
