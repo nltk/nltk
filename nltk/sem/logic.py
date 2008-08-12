@@ -41,16 +41,18 @@ class Tokens:
     IMP = ['implies', '->', '->']
     IFF = ['iff', '<->', '<->']
     EQ = ['=', '=', '=']
+    NEQ = ['!=', '!=', '!=']
     
     #Collection of tokens
     BINOPS = AND + OR + IMP + IFF
     QUANTS = EXISTS + ALL
     PUNCT = [DOT[0], OPEN, CLOSE, COMMA]
     
-    TOKENS = BINOPS + EQ + QUANTS + LAMBDA + PUNCT + NOT
+    TOKENS = BINOPS + EQ + NEQ + QUANTS + LAMBDA + PUNCT + NOT
     
     #Special
-    SYMBOLS = LAMBDA + PUNCT + [AND[1], OR[1], NOT[1], IMP[1], IFF[1]] + EQ 
+    SYMBOLS = LAMBDA + PUNCT + [AND[1], OR[1], NOT[1], IMP[1], IFF[1]] +\
+              EQ + NEQ 
 
 
 class Variable(object):
@@ -492,7 +494,11 @@ class NegatedExpression(Expression):
         return self.__class__ == other.__class__ and self.term == other.term
 
     def str(self, syntax=Tokens.NEW_NLTK):
-        return Tokens.NOT[syntax] + self.term.str(syntax)
+        if syntax == Tokens.PROVER9:
+            return Tokens.NOT[syntax] + Tokens.OPEN + self.term.str(syntax) +\
+                   Tokens.CLOSE
+        else:
+            return Tokens.NOT[syntax] + self.term.str(syntax)
         
 class BooleanExpression(Expression):
     def __init__(self, first, second):
@@ -748,7 +754,13 @@ class LogicParser:
         parameter will be returned."""
         if self.inRange(0) and self.token(0) in Tokens.EQ:
             self.token() #swallow the "="
-            return self.make_EqualityExpression(expression, self.parse_Expression())
+            return self.make_EqualityExpression(expression, 
+                                                self.parse_Expression())
+        elif self.inRange(0) and self.token(0) in Tokens.NEQ:
+            self.token() #swallow the "!="
+            return self.make_NegatedExpression(
+                        self.make_EqualityExpression(expression, 
+                                                     self.parse_Expression()))
         return expression
     
     def make_EqualityExpression(self, first, second):
