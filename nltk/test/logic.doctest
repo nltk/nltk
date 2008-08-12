@@ -261,6 +261,8 @@ Test Parser
     True
     >>> lp.parse(r'exists x.x = y') == lp.parse(r'exists x.(x = y)')
     True
+    >>> print lp.parse(r'A != B')
+    -(A = B)
 
 Simplify            
 
