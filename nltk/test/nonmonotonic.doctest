@@ -1,0 +1,132 @@
+=========================
+Resolution Theorem Prover
+=========================
+
+    >>> from nltk.inference import inference
+    >>> from nltk.sem import logic
+    >>> from nltk.sem.logic import *
+    >>> from nltk_contrib.sem.nonmonotonic import *
+    >>> logic._counter._value = 0
+    >>> lp = LogicParser()
+    
+------------------------
+Closed Domain Assumption
+------------------------
+    >>> p1 = lp.parse(r'all x.(man(x) -> mortal(x))')
+    >>> p2 = lp.parse(r'man(Socrates)')
+    >>> c = lp.parse(r'mortal(Socrates)')
+    >>> inference.get_prover(c, [p1,p2]).prove()
+    True
+    >>> cdp = ClosedDomainProver(c, [p1,p2])
+    >>> for a in cdp.augmented_assumptions()[1]: print a
+    man(Socrates)
+    (man(Socrates) -> mortal(Socrates))
+    -mortal(Socrates)
+    >>> cdp.prove()
+    True
+
+    >>> p1 = lp.parse(r'exists x.walk(x)')
+    >>> p2 = lp.parse(r'man(Socrates)')
+    >>> c = lp.parse(r'walk(Socrates)')
+    >>> inference.get_prover(c, [p1,p2]).prove()
+    False
+    >>> cdp = ClosedDomainProver(c, [p1,p2])
+    >>> for a in cdp.augmented_assumptions()[1]: print a
+    walk(Socrates)
+    man(Socrates)
+    -walk(Socrates)
+    >>> cdp.prove()
+    True
+
+    >>> p1 = lp.parse(r'exists x.walk(x)')
+    >>> p2 = lp.parse(r'man(Socrates)')
+    >>> p3 = lp.parse(r'man(Bill)')
+    >>> c = lp.parse(r'walk(Socrates)')
+    >>> inference.get_prover(c, [p1,p2,p3]).prove()
+    False
+    >>> cdp = ClosedDomainProver(c, [p1,p2,p3])
+    >>> for a in cdp.augmented_assumptions()[1]: print a
+    -walk(Socrates)
+    man(Bill)
+    man(Socrates)
+    (walk(Socrates) | walk(Bill))
+    >>> cdp.prove()
+    False
+
+-----------------------
+Unique Names Assumption
+-----------------------
+    >>> p1 = lp.parse(r'all x.(man(x) -> mortal(x))')
+    >>> p2 = lp.parse(r'man(Socrates)')
+    >>> c = lp.parse(r'mortal(Socrates)')
+    >>> inference.get_prover(c, [p1,p2]).prove()
+    True
+    >>> unp = UniqueNamesProver(c, [p1,p2])
+    >>> for a in unp.augmented_assumptions()[1]: print a
+    all x.(man(x) -> mortal(x))
+    man(Socrates)
+    >>> unp.prove()
+    True
+
+    >>> p1 = lp.parse(r'man(Socrates)')
+    >>> p2 = lp.parse(r'man(Bill)')
+    >>> c = lp.parse(r'exists x.exists y.-(x = y)')
+    >>> inference.get_prover(c, [p1,p2]).prove()
+    False
+    >>> unp = UniqueNamesProver(c, [p1,p2])
+    >>> for a in unp.augmented_assumptions()[1]: print a
+    man(Socrates)
+    man(Bill)
+    -(Bill = Socrates)
+    >>> unp.prove()
+    True
+
+    >>> p1 = lp.parse(r'all x.(walk(x) -> (x = Socrates))')
+    >>> p2 = lp.parse(r'Bill = William')
+    >>> p3 = lp.parse(r'Bill = Billy')
+    >>> c = lp.parse(r'-walk(William)')
+    >>> inference.get_prover(c, [p1,p2,p3], 'tableau').prove()
+    False
+    >>> unp = UniqueNamesProver(c, [p1,p2,p3], 'tableau')
+    >>> for a in unp.augmented_assumptions()[1]: print a
+    all x.(walk(x) -> (x = Socrates))
+    (Bill = William)
+    (Bill = Billy)
+    -(Bill = Socrates)
+    -(Billy = Socrates)
+    -(Socrates = William)
+    >>> unp.prove()
+    True
+
+-----------------------
+Closed World Assumption
+-----------------------
+    >>> p1 = lp.parse(r'walk(Socrates)')
+    >>> p2 = lp.parse(r'-(Socrates = Bill)')
+    >>> c = lp.parse(r'-walk(Bill)')
+    >>> inference.get_prover(c, [p1,p2]).prove()
+    False
+    >>> cwp = ClosedWorldProver(c, [p1,p2])
+    >>> for a in cwp.augmented_assumptions()[1]: print a
+    walk(Socrates)
+    -(Socrates = Bill)
+    all z1.(walk(z1) -> (z1 = Socrates))
+    >>> cwp.prove()
+    True
+
+    >>> p1 = lp.parse(r'see(Socrates, John)')
+    >>> p2 = lp.parse(r'see(John, Mary)')
+    >>> p3 = lp.parse(r'-(Socrates = John)')
+    >>> p4 = lp.parse(r'-(John = Mary)')
+    >>> c = lp.parse(r'-see(Socrates, Mary)')
+    >>> inference.get_prover(c, [p1,p2,p3,p4]).prove()
+    False
+    >>> cwp = ClosedWorldProver(c, [p1,p2,p3,p4])
+    >>> for a in cwp.augmented_assumptions()[1]: print a
+    see(Socrates,John)
+    see(John,Mary)
+    -(Socrates = John)
+    -(John = Mary)
+    all z3.all z4.(see(z3,z4) -> (((z3 = John) & (z4 = Socrates)) | ((z3 = Mary) & (z4 = John))))
+    >>> cwp.prove()
+    True
