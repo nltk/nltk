@@ -353,38 +353,6 @@ def morph_number(word, number):
     else:
         return word
 
-(define *indefinite-article* "a**")
-;  "An indefinite article when value of next word is still unknown
-;	(we don't know if it is a or an)")
-(define *a-an-marker* "***")
-;  "Marker to add to a noun that must be preceded by a determiner an
-;   (like an acronym)")
-(define *plural* "****")
-;  "Marker to add to a plural noun which ends with 's'")
-(define (mark-noun-as-plural word)
-  (string-append word *plural*))
-
-(define (unmark-noun-as-plural word)
-  (let ((l (string-length word)))
-    (substring word  0 (- l (string-length *plural*)))))
-
-(define (noun-marked-as-plural? word)
-  (and (> (string-length word) (string-length *plural*))
-       (string=?  (substring word (- (string-length word) (string-length *plural*)) 
-			(string-length word))
-		*plural*)))
-
-
-(define (mark-noun-as-an word)
-  (string-append *a-an-marker* word))
-
-(define (unmark-noun-as-an word)
-  (substring word (string-length *a-an-marker*) (string-length word)))
-
-(define (noun-marked-as-an? word)
-  (and (> (string-length word) (string-length *a-an-marker*))
-       (string=?  (substring word 0 (string-length *a-an-marker*)) *a-an-marker*)))
-
 # markers, not sure what they are used for
 # the original code is not very well documented.
 
