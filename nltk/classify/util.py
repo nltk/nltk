@@ -13,7 +13,7 @@ import math
 
 #from nltk.util import Deprecated
 import nltk.classify.util # for accuracy & log_likelihood
-from nltk.utilities import LazyMappedList
+from nltk.util import LazyMappedList
 
 ######################################################################
 #{ Helper Functions

@@ -79,7 +79,7 @@ from nltk import FreqDist, ConditionalFreqDist, ConditionalProbDist, \
      DictionaryProbDist, DictionaryConditionalProbDist, LidstoneProbDist, \
      MutableProbDist, MLEProbDist
 from nltk.internals import deprecated
-from nltk.utilities import LazyMap, LazyConcatenation
+from nltk.util import LazyMap, LazyConcatenation
 import nltk
 
 from api import *

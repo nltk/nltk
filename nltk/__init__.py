@@ -58,7 +58,7 @@ from featstruct import *
 from olac import *
 from probability import *
 from tree import *
-from utilities import *
+from util import *
 from yamltags import *
 
 import data
