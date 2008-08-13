@@ -14,8 +14,7 @@ from nltk.corpus.reader.api import CorpusReader
 from nltk import tokenize
 from nltk.etree import ElementTree
 from nltk.internals import deprecated, slice_bounds
-from nltk.utilities import AbstractLazySequence, LazySubsequence
-from nltk.utilities import LazyConcatenation
+from nltk.util import AbstractLazySequence, LazySubsequence, LazyConcatenation
 from nltk.data import PathPointer, FileSystemPathPointer, ZipFilePathPointer
 
 ######################################################################

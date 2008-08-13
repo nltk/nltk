@@ -9,7 +9,7 @@ from nltk.compat import *
 from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
 from nltk.corpus.reader.xmldocs import *
-from nltk.utilities import LazyConcatenation
+from nltk.util import LazyConcatenation
 from nltk.internals import ElementWrapper
 import re, textwrap
 

@@ -11,7 +11,7 @@ from nltk.corpus import *
 from nltk.tag.hmm import HiddenMarkovModelTrainer, HiddenMarkovModelTagger, \
                          SpecializedHiddenMarkovModelTrainer, \
                          SpecializedHiddenMarkovModelTagger, test_pos
-from nltk.utilities import LazyMappedList, LazyMappedChain
+from nltk.util import LazyMappedList, LazyMappedChain
 from nltk.chunk.util import conllstr2tree
 from nltk.probability import LidstoneProbDist
 

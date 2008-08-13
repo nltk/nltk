@@ -9,7 +9,7 @@ import random
 from itertools import chain
 
 from nltk.probability import ConditionalProbDist, ConditionalFreqDist, MLEProbDist
-from nltk.utilities import ingram
+from nltk.util import ingram
 
 from api import *
 

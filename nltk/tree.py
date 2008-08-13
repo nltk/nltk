@@ -16,8 +16,8 @@ import re
 import string
 
 import nltk.cfg
-from nltk.probability import ProbabilisticMixIn
-from nltk.utilities import slice_bounds
+from probability import ProbabilisticMixIn
+from util import slice_bounds
 
 ######################################################################
 ## Trees

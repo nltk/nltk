@@ -480,7 +480,7 @@ class Synset(object):
         >>> dog.closure(HYPERNYM)
         [{noun: dog, domestic dog, Canis familiaris}, {noun: canine, canid}, {noun: carnivore}, {noun: placental, placental mammal, eutherian, eutherian mammal}, {noun: mammal, mammalian}, {noun: vertebrate, craniate}, {noun: chordate}, {noun: animal, animate being, beast, brute, creature, fauna}, {noun: organism, being}, {noun: living thing, animate thing}, {noun: object, physical object}, {noun: physical entity}, {noun: entity}]
         """
-        from nltk.utilities import breadth_first
+        from nltk.util import breadth_first
         synset_offsets = []
         for synset in breadth_first(self, lambda s:s[rel], depth):
             if synset.offset != self.offset and synset.offset not in synset_offsets:
