@@ -11,10 +11,6 @@ Interface for tagging each token in a sentence with supplementary
 information, such as its part of speech.
 """
 
-from new import function
-from types import MethodType, LambdaType, FunctionType
-from marshal import dumps, loads
-
 from nltk.internals import overridden
 
 class TaggerI(object):
@@ -68,39 +64,14 @@ class HiddenMarkovModelTaggerTransformI(object):
     """
     def __init__(self):
         if self.__class__ == HiddenMarkovModelTaggerTransformI:
-            raise AssertionError, "Interfaces can't be instantiated"
-        
-    def transform(self, symbols):
+            raise AssertionError, "Interfaces can't be instantiated"      
+
+    def transform(self, labeled_symbols):
         """
         @return: a C{list} of transformed symbols
-        @rtype: list
-        @param symbols: a C{list} of symbols
-        @type symbols: list
+        @rtype: C{list}
+        @param labeled_symbols: a C{list} of labeled untransformed symbols, 
+            i.e. symbols that are not (token, tag) or (word, tag)
+        @type labeled_symbols: C{list}
         """      
-        raise NotImplementedError
-
-    def __getstate__(self):
-        state = self.__dict__
-        state['_lambda_functions'] = {}
-        state['_instance_methods'] = {}
-        for name, attr in state.items():
-            if isinstance(attr, LambdaType) and attr.__name__ == '<lambda>':
-                state['_lambda_functions'][name] = dumps(attr.func_code)
-                del state[name]
-            elif isinstance(attr, MethodType):
-                state['_instance_methods'][name] = \
-                    (attr.im_self, attr.im_func.func_name)
-                del state[name]
-        return state
-    
-    def __setstate__(self, state):
-        for name, mcode in state.get('_lambda_functions', {}).items():
-            state[name] = function(loads(mcode), {})
-        if '_lambda_functions' in state:
-            del state['_lambda_functions']
-        for name, (im_self, im_func_name) \
-        in state.get('_instance_methods', {}).items():
-            state[name] = getattr(im_self, im_func_name)
-        if '_instance_methods' in state:
-            del state['_instance_methods']
-        self.__dict__ = state      
+        raise NotImplementedError()
