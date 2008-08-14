@@ -1,6 +1,6 @@
 # Natural Language Toolkit (NLTK) Coreference Module
 #
-# Copyright (C) 2008 Joseph Frazee
+# Copyright (C) 2008 NLTK Project 
 # Author: Joseph Frazee <jfrazee@mail.utexas.edu>
 # URL: http://nltk.org/
 # For license information, see LICENSE.TXT
@@ -30,10 +30,12 @@ __author_email__ = __maintainer_email__
 
 # Import top-level functionality into top-level namespace
 
-
 # Processing packages -- these all define __all__ carefully.
 from api import *
 from ace2 import *
 from muc6 import *
 from muc7 import *
 from freiburg import *
+from util import *
+from chunk import *
+from features import *
