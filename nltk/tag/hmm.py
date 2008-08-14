@@ -79,8 +79,8 @@ from nltk import FreqDist, ConditionalFreqDist, ConditionalProbDist, \
      DictionaryProbDist, DictionaryConditionalProbDist, LidstoneProbDist, \
      MutableProbDist, MLEProbDist
 from nltk.internals import deprecated
-from nltk.util import LazyMap, LazyConcatenation
-import nltk
+from nltk.evaluate import accuracy as accuracy_
+from nltk.utilities import LazyMap, LazyConcatenation, LazyZip
 
 from api import *
 
@@ -147,9 +147,6 @@ class HiddenMarkovModelTagger(TaggerI):
     @classmethod
     def _train(cls, labeled_sequence, test_sequence=None,
     		        unlabeled_sequence=None, **kwargs):
-    	"""
-    	"""
-        
         transform = kwargs.get('transform', IdentityTransform())
         if isinstance(transform, FunctionType):
             transform = LambdaTransform(transform)
@@ -216,7 +213,7 @@ class HiddenMarkovModelTagger(TaggerI):
     	"""
         return cls._train(labeled_sequence, test_sequence,
     		              unlabeled_sequence, **kwargs)
-        
+
     def probability(self, sequence):
         """
         Returns the probability of the given symbol sequence. If the sequence
@@ -264,7 +261,7 @@ class HiddenMarkovModelTagger(TaggerI):
             alpha = self._forward_probability(sequence)
             p = _log_add(*alpha[T-1, :])
             return p
-
+        
     def tag(self, unlabeled_sequence):
         """
         Tags the sequence with the highest probability state sequence. This
@@ -275,7 +272,11 @@ class HiddenMarkovModelTagger(TaggerI):
         @param unlabeled_sequence: the sequence of unlabeled symbols 
         @type unlabeled_sequence: list
         """
-        path = self.best_path(unlabeled_sequence)
+        unlabeled_sequence = self._transform.transform(unlabeled_sequence)
+        return self._tag(unlabeled_sequence)
+    
+    def _tag(self, unlabeled_sequence):
+        path = self._best_path(unlabeled_sequence)
         return zip(unlabeled_sequence, path)
 
     def _output_logprob(self, state, symbol):
@@ -366,7 +367,9 @@ class HiddenMarkovModelTagger(TaggerI):
         @type unlabeled_sequence: list
         """
         unlabeled_sequence = self._transform.transform(unlabeled_sequence)
+        return self._best_path(unlabeled_sequence)
 
+    def _best_path(self, unlabeled_sequence):
         T = len(unlabeled_sequence)
         N = len(self._states)
         self._create_cache()
@@ -407,7 +410,9 @@ class HiddenMarkovModelTagger(TaggerI):
         @type unlabeled_sequence: list
         """
         unlabeled_sequence = self._transform.transform(unlabeled_sequence)
-        
+        return self._best_path_simple(unlabeled_sequence)
+    
+    def _best_path_simple(self, unlabeled_sequence):
         T = len(unlabeled_sequence)
         N = len(self._states)
         V = zeros((T, N), float64)
@@ -746,10 +751,15 @@ class HiddenMarkovModelTagger(TaggerI):
             verbose or include printed output
         @type verbose: C{bool}
         """
-        predicted_sequence = LazyMap(lambda sent: \
-                self.tag([token for (token, tag) in sent]),
-            test_sequence)
-        test_sequence = LazyMap(self._transform.transform, test_sequence)            
+        
+        def words(sent):
+            return [word for (word, tag) in sent]
+        
+        def tags(sent):
+            return [tag for (word, tag) in sent]
+        
+        test_sequence = LazyMap(self._transform.transform, test_sequence)
+        predicted_sequence = LazyMap(self._tag, LazyMap(words, test_sequence))
             
         if kwargs.get('verbose', False):
             # This will be used again later for accuracy so there's no sense
@@ -774,14 +784,10 @@ class HiddenMarkovModelTagger(TaggerI):
                 print
                 print '-' * 60
         
-        test_tags = LazyConcatenation(LazyMap(lambda sent: \
-                [tag for (token, tag) in sent],
-            test_sequence))
-        predicted_tags = LazyConcatenation(LazyMap(lambda sent: \
-                [tag for (token, tag) in sent],
-            predicted_sequence))
-        
-        acc = nltk.evaluate.accuracy(test_tags, predicted_tags)
+        test_tags = LazyConcatenation(LazyMap(tags, test_sequence))
+        predicted_tags = LazyConcatenation(LazyMap(tags, predicted_sequence))
+                
+        acc = accuracy_(test_tags, predicted_tags)
 
         count = sum([len(sent) for sent in test_sequence])
 
@@ -1070,32 +1076,67 @@ class HiddenMarkovModelTrainer(object):
                                
         return HiddenMarkovModelTagger(self._symbols, self._states, A, B, pi)
 
-    
-class LambdaTransform(HiddenMarkovModelTaggerTransformI):
+
+class HiddenMarkovModelTaggerTransform(HiddenMarkovModelTaggerTransformI):
     """
-    A subclass of C{HiddenMarkovModelTaggerTransformI} that is backed by an
+    An abstract subclass of C{HiddenMarkovModelTaggerTransformI}.
+    """
+    def __init__(self):
+        if self.__class__ == HiddenMarkovModelTaggerTransform:
+            raise AssertionError, "Abstract classes can't be instantiated"
+                    
+    def __getstate__(self):
+        state = self.__dict__
+        state['_lambda_functions'] = {}
+        state['_instance_methods'] = {}
+        for name, attr in state.items():
+            if isinstance(attr, LambdaType) and attr.__name__ == '<lambda>':
+                state['_lambda_functions'][name] = dumps(attr.func_code)
+                del state[name]
+            elif isinstance(attr, MethodType):
+                state['_instance_methods'][name] = \
+                    (attr.im_self, attr.im_func.func_name)
+                del state[name]
+        return state
+    
+    def __setstate__(self, state):
+        for name, mcode in state.get('_lambda_functions', {}).items():
+            state[name] = function(loads(mcode), {})
+        if '_lambda_functions' in state:
+            del state['_lambda_functions']
+        for name, (im_self, im_func_name) \
+        in state.get('_instance_methods', {}).items():
+            state[name] = getattr(im_self, im_func_name)
+        if '_instance_methods' in state:
+            del state['_instance_methods']
+        self.__dict__ = state 
+
+
+class LambdaTransform(HiddenMarkovModelTaggerTransform):
+    """
+    A subclass of C{HiddenMarkovModelTaggerTransform} that is backed by an
     arbitrary user-defined function, instance method, or lambda function.
     """
-    def __init__(self, func):
+    def __init__(self, transform):
         """
         @param func: a user-defined or lambda transform function
         @type func: C{function}
         """
-        self._func = func
-    
-    def transform(self, symbols):
-        return self._func(symbols)
+        self._transform = transform
+        
+    def transform(self, labeled_symbols):
+        return self._transform(labeled_symbols)
         
 
-class IdentityTransform(LambdaTransform):
+class IdentityTransform(HiddenMarkovModelTaggerTransform):
     """
-    A subclass of C{LambdaTransform} that implements L{transform()} as the
-    identity function, i.e. symbols passed to C{transform()} are returned
-    unmodified.
+    A subclass of C{HiddenMarkovModelTaggerTransform} that implements 
+    L{transform()} as the identity function, i.e. symbols passed to 
+    C{transform()} are returned unmodified.
     """
-    def __init__(self):
-        LambdaTransform.__init__(self, lambda symbols: symbols)
-        
+    def transform(self, labeled_symbols):
+        return labeled_symbols
+                
 
 def _log_add(*values):
     """
