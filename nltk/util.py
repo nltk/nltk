@@ -14,6 +14,8 @@ import bisect
 
 from itertools import islice
 from pprint import pprint
+from collections import defaultdict
+from UserDict import UserDict
 
 from nltk.internals import Deprecated, slice_bounds
 
@@ -392,6 +394,94 @@ def ingram(sequence, n):
         history.append(item)
         yield tuple(history)
         del history[0]
+        
+##########################################################################
+# Ordered Dictionary
+##########################################################################
+
+class OrderedDict(UserDict):
+    def __init__(self, data=None, **kwargs):
+        self._keys = self.keys(data, kwargs.get('keys'))
+        self._default_factory = kwargs.get('default_factory')
+        UserDict.__init__(self, data)
+
+    def __delitem__(self, key):
+        UserDict.__delitem__(self, key)
+        self._keys.remove(key)
+        
+    def __getitem__(self, key):
+        try:
+            return UserDict.__getitem__(self, key)
+        except KeyError:
+            return self.__missing__(key)
+
+    def __iter__(self):
+        return (key for key in self.keys())
+    
+    def __missing__(self, key):
+        if not self._default_factory and key not in self._keys:
+            raise KeyError()
+        else:
+            return self._default_factory()
+        
+    def __setitem__(self, key, item):
+        UserDict.__setitem__(self, key, item)
+        if key not in self._keys:
+            self._keys.append(key)
+        
+    def clear(self):
+        UserDict.clear(self)
+        self._keys.clear()
+
+    def copy(self):
+        dict = UserDict.copy(self)
+        dict._keys = self._keys
+        return dict
+
+    def items(self):
+        return zip(self.keys(), self.values())
+
+    def keys(self, data=None, keys=None):
+        if data:
+            if keys:
+                assert isinstance(keys, list)
+                assert len(data) == len(keys)
+                return keys
+            else:
+                assert isinstance(data, dict) or \
+                       isinstance(data, OrderedDict) or \
+                       isinstance(data, list)
+                if isinstance(data, dict) or isinstance(data, OrderedDict):
+                    return data.keys()
+                elif isinstance(data, list):
+                    return [key for (key, value) in data]
+        elif '_keys' in self.__dict__:
+            return self._keys
+        else:
+            return []
+
+    def popitem(self):
+        if self._keys:
+            key = self._keys.pop()
+            value = self[key]
+            del self[key]
+            return (key, value)
+        else:
+            raise KeyError()
+
+    def setdefault(self, key, failobj=None):
+        UserDict.setdefault(self, key, failobj)
+        if key not in self._keys:
+            self._keys.append(key)
+
+    def update(self, data):
+        UserDict.update(self, data)
+        for key in self.keys(data):
+            if key not in self._keys:
+                self._keys.append(key)
+
+    def values(self):
+        return map(self.get, self._keys)
 
 ######################################################################
 # Lazy Sequences
@@ -743,7 +833,7 @@ class LazyMappedList(Deprecated, LazyMap):
         LazyMap.__init__(self, func, lst)
         
         
-class LazyZip(AbstractLazySequence):
+class LazyZip(LazyMap):
     """
     A lazy sequence whose elements are tuples, each containing the i-th 
     element from each of the argument sequences.  The returned list is 
@@ -767,21 +857,19 @@ class LazyZip(AbstractLazySequence):
     avoiding the creation of an additional long sequence, memory usage can be
     significantly reduced.
     """
-    
     def __init__(self, *lists):
         """
         @param lists: the underlying lists
         @type lists: C{list} of C{list}
-        """        
-        self._lists = lists
+        """
+        LazyMap.__init__(self, lambda *elts: elts, *lists)
 
     def iterate_from(self, index):
-        while True:
-            try: elements = tuple(lst[index] for lst in self._lists)
-            except IndexError:
-                return
-            yield elements
+        iterator = LazyMap.iterate_from(self, index)
+        while index < len(self):
+            yield iterator.next()
             index += 1
+        return
     
     def __len__(self):
         return min(len(lst) for lst in self._lists)
