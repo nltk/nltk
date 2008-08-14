@@ -10,6 +10,7 @@ Corpus reader for the MUC-6 Corpus.
 
 """
 
+from itertools import chain
 from sgmllib import SGMLParser
 
 from nltk.corpus.reader.api import *
@@ -18,7 +19,6 @@ from nltk.corpus.reader.util import *
 from nltk.tokenize.punkt import *
 from nltk.tokenize.regexp import *
 from nltk.tokenize.simple import *
-
 
 class MUC6CorpusReader(CorpusReader):
     """
@@ -55,43 +55,36 @@ class MUC6Document(str):
         self._sgmldoc_ = MUC6SGMLParser().parse(self)
         return self._sgmldoc_
 
-    def words(self):
+    def paras(self):
         """
         """
         result = []
-        for sent in self.sents():
-            result.extend(sent)
+        for para in self._sgmldoc().text():
+            sents = []
+            for sent in para:
+                sents.append([word for chunk in sent for word in chunk.split()])
+            result.append(sents)
+        assert None not in result
+        return result
+        
+    def words(self):
+        """
+        """
+        result = list(chain(*self.sents()))
         assert None not in result
         return result
 
     def sents(self):
         """
         """
-        result = []
-        for p in self.paras():
-            result.extend(p)
-        assert None not in result
-        return result
-
-    def paras(self):
-        """
-        """
-        result = []
-        for p in self._sgmldoc().text():
-            sent = []
-            for s in p:
-                result.append([word for word in 
-                    PunktWordTokenizer().tokenize(' '.join(s))])
+        result = list(chain(*self.paras()))
         assert None not in result
         return result
 
     def chunks(self):
         """
         """
-        result = []
-        for p in self._sgmldoc().text():
-            for s in p:
-                result.extend(s)
+        result = list(chain(*chain(*self._sgmldoc().text())))
         assert None not in result
         return result
 
@@ -100,8 +93,11 @@ class MUC6Document(str):
         """
         result = []
         for chunk in self.chunks():
-            result.append([(token, token.iob_tag(), token.ne_type()) 
-                for token in chunk.split()])
+            if chunk.iob_tag() == MUC6NamedEntity.OUT:
+                result.append((str(chunk), chunk.iob_tag(), chunk.ne_type()))
+            else:
+                result.append([(str(word), word.iob_tag(), word.ne_type()) 
+                               for word in chunk.split()])
         assert None not in result
         return result
 
@@ -109,21 +105,36 @@ class MUC6Document(str):
         """
         """
         result = []
-        for p in self._sgmldoc().text():
-            for s in p:
-                result.append([(token, token.iob_tag(), token.ne_type())
-                    for chunk in s for token in chunk.split()])
+        for sent in self.sents():
+            result.append([(word, word.iob_tag(), word.ne_type()) 
+                           for word in sent])
         assert None not in result
         return result
 
     def ne_words(self):
         """
         """
-        result = []
-        for sent in self.iob_sents():
-            result.extend(sent)
+        result = list(chain(*self.ne_sents()))
         assert None not in result
         return result
+            
+    def iob_chunks(self):
+        result = []
+        for chunk in self.ne_chunks():
+            result.append([(word, iob_tag) for (word, iob_tag, ne_type) in chunk])
+        assert None not in result
+        return result
+
+    def iob_sents(self):
+        result = []
+        for sent in self.ne_sents():
+            result.append([(word, iob_tag) 
+                           for (word, iob_tag, ne_type) in sent])
+        assert None not in result
+        return result
+    
+    def iob_words(self):
+        result = list(chain(*self.iob_sents()))
         
     def docno(self):
         """
@@ -138,7 +149,7 @@ class MUC6NamedEntity(str):
     """
     
     IN = 'I'
-    OUT = None
+    OUT = 'O'
     BEGINS = 'B'
 
     def __new__(self, s, iob, ne_type):
@@ -148,6 +159,10 @@ class MUC6NamedEntity(str):
         self._iob = iob
         self._ne_type = ne_type
 
+    def __add__(self, y):
+        return MUC6NamedEntity(str.__add__(self, y), 
+                               self.iob_tag(), self.ne_type())
+        
     def iob_tag(self):
         return self._iob
 
@@ -291,8 +306,8 @@ class MUC6SGMLParser(SGMLParser):
         """
         if self._in and 's' in self._in[0]:
             if self._current.strip():
-                self._chunks.append(MUC6NamedEntity(self._current.strip(), 
-                    MUC6NamedEntity.OUT, self._ne_type))
+                self._chunks.extend(MUC6NamedEntity(self._current.strip(), 
+                    MUC6NamedEntity.OUT, self._ne_type).split())
             self._in.insert(0, 'enamex')
             self._current = ''
             for attr in attrs:
@@ -316,8 +331,8 @@ class MUC6SGMLParser(SGMLParser):
         """
         if self._in and 's' in self._in[0]:
             if self._current.strip():
-                self._chunks.append(MUC6NamedEntity(self._current.strip(), 
-                    MUC6NamedEntity.OUT, self._ne_type))
+                self._chunks.extend(MUC6NamedEntity(self._current.strip(), 
+                    MUC6NamedEntity.OUT, self._ne_type).split())
             self._in.insert(0, 'numex')
             self._current = ''
             for attr in attrs:
@@ -341,8 +356,8 @@ class MUC6SGMLParser(SGMLParser):
         """
         if self._in and 's' in self._in[0]:
             if self._current.strip():
-                self._chunks.append(MUC6NamedEntity(self._current.strip(), 
-                    MUC6NamedEntity.OUT, self._ne_type))
+                self._chunks.extend(MUC6NamedEntity(self._current.strip(), 
+                    MUC6NamedEntity.OUT, self._ne_type).split())
             self._in.insert(0, 'timex')
             self._current = ''
             for attr in attrs:

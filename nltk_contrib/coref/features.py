@@ -52,7 +52,7 @@ PERSON_SUFFIXES = ['sr', 'jr', 'phd', 'md']
 ORG_SUFFIXES = ['ltd', 'inc', 'co', 'corp', 'plc', 'llc', 'llp', 'gmbh',
                 'corporation', 'associates', 'partners', 'committee',
                 'institute', 'commission', 'university', 'college',
-                'airlines']
+                'airlines', 'magazine']
 
 CURRENCY_UNITS = ['dollar', 'cent', 'pound', 'euro']
                 
@@ -72,7 +72,7 @@ RE_TLA = '([A-Z0-9]\.?){2,}'
 
 RE_DATE = '\d+\/\d+(\/\d+)?'
 
-RE_CURRENCY = '$\s*%s' % RE_NUMERIC
+RE_CURRENCY = '\$\s*%s' % RE_NUMERIC
 
 RE_PERCENT = '%s\s*' % RE_NUMERIC + '%'
 
@@ -123,10 +123,15 @@ def is_number(s):
 
 def contains_number(s):
     return re_contains(RE_NUMBER, s)
-    
+
 def is_currency(s):
-    return bool(re.match(r'^%s$' % RE_CURRENCY, s)) or \
-           s.lower() in CURRENCY_UNITS
+    if re_is(RE_CURRENCY, s):
+        return True
+    else:
+        for cu in CURRENCY_UNITS:
+            if cu in s.lower():
+                return True
+    return False
 
 def contains_currency(s):
     return contains(is_currency, s)
@@ -242,7 +247,7 @@ def contains_day(s):
 
 def is_month(s):
     return is_title_case(s) and \
-        (s.lower() in MONTHS or s.lower() in [mon[:3] for mon in MONTHS])
+        (s.lower() in MONTHS or s.lower()[:3] in [mon[:3] for mon in MONTHS])
 
 def contains_month(s):
     return contains(is_month, s)
