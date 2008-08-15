@@ -1,6 +1,6 @@
 # Natural Language Toolkit (NLTK) Coreference Feature Functions
 #
-# Copyright (C) 2008 Joseph Frazee
+# Copyright (C) 2008 NLTK Project 
 # Author: Joseph Frazee <jfrazee@mail.utexas.edu>
 # URL: http://nltk.org/
 # For license information, see LICENSE.TXT
@@ -68,7 +68,9 @@ RE_ROMAN = 'M?M?M?(CM|CD|D?C?C?C?)(XC|XL|L?X?X?X?)(IX|IV|V?I?I?I?)'
 
 RE_INITIAL = '[A-Z]\.'
 
-RE_TLA = '([A-Z0-9]\.?){2,}'
+RE_TLA = '([A-Z0-9][\.\-]?){2,}'
+
+RE_ALPHA = '[A-Za-z]+'
 
 RE_DATE = '\d+\/\d+(\/\d+)?'
 
@@ -180,7 +182,7 @@ def contains_initial(s):
     return re_contains(RE_INITIAL, s)
 
 def is_tla(s):
-    return re_is(RE_TLA, s)
+    return re_is(RE_TLA, s) and re_contains(RE_ALPHA, s)
     
 def contains_tla(s):
     return re_contains(RE_TLA, s)
@@ -309,3 +311,45 @@ def contains_nationality(s):
 
 def log_length(s):
     return int(math.log(len(s)))
+    
+def word_type(word):
+    if not word:
+        return ()
+
+    word_type = []
+    if contains_person_prefix(word) or contains_person_suffix(word):
+        word_type.append('PERSON')
+    if contains_org_suffix(word):
+        word_type.append('ORG')
+    if is_name(word):
+        word_type.append('NAME')
+    if is_nationality(word):
+        word_type.append('NATIONALITY')
+    if is_city(word) or is_country(word):
+        word_type.append('LOCATION')
+    if is_roman_numeral(word):
+        word_type.append('ROMAN_NUMERAL')
+    if is_tla(word):
+        word_type.append('TLA')
+    if is_initial(word):
+        word_type.append('INITIAL')
+    if contains_currency(word):
+        word_type.append('CURRENCY')
+    if contains_percent(word):
+        word_type.append('PERCENT')
+    if contains_numeric(word) or contains_number(word) or \
+       contains_ordinal(word) or is_digit(word):
+        word_type.append('NUMBER')
+    if contains_day(word) or contains_month(word) or \
+       contains_date(word):
+        word_type.append('DATE')
+    if is_suffix(word):
+        word_type.append('SUFFIX')
+    if is_prefix(word):
+        word_type.append('PREFIX')
+    if is_title_case(word):
+        word_type.append('TITLE_CASE')
+    if is_punct(word):
+        word_type.append('PUNCT')
+
+    return tuple(word_type[:3])
