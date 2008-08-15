@@ -68,10 +68,7 @@ of EM.
 """
 
 import re
-
-from new import function
-from types import MethodType, LambdaType, FunctionType
-from marshal import dumps, loads
+import types
 
 from numpy import *
 
@@ -80,7 +77,7 @@ from nltk import FreqDist, ConditionalFreqDist, ConditionalProbDist, \
      MutableProbDist, MLEProbDist
 from nltk.internals import deprecated
 from nltk.evaluate import accuracy as accuracy_
-from nltk.utilities import LazyMap, LazyConcatenation, LazyZip
+from nltk.util import LazyMap, LazyConcatenation, LazyZip
 
 from api import *
 
@@ -138,7 +135,7 @@ class HiddenMarkovModelTagger(TaggerI):
         self._cache = None
         
         self._transform = kwargs.get('transform', IdentityTransform())
-        if isinstance(self._transform, FunctionType):
+        if isinstance(self._transform, types.FunctionType):
             self._transform = LambdaTransform(self._transform)
         elif not isinstance(self._transform, 
                             HiddenMarkovModelTaggerTransformI):
@@ -148,7 +145,7 @@ class HiddenMarkovModelTagger(TaggerI):
     def _train(cls, labeled_sequence, test_sequence=None,
     		        unlabeled_sequence=None, **kwargs):
         transform = kwargs.get('transform', IdentityTransform())
-        if isinstance(transform, FunctionType):
+        if isinstance(transform, types.FunctionType):
             transform = LambdaTransform(transform)
         elif \
         not isinstance(transform, HiddenMarkovModelTaggerTransformI):
@@ -796,32 +793,6 @@ class HiddenMarkovModelTagger(TaggerI):
     def __repr__(self):
         return ('<HiddenMarkovModelTagger %d states and %d output symbols>'
                 % (len(self._states), len(self._symbols)))
-
-    def __getstate__(self):
-        state = self.__dict__
-        state['_lambda_functions'] = {}
-        state['_instance_methods'] = {}
-        for name, attr in state.items():
-            if isinstance(attr, LambdaType) and attr.__name__ == '<lambda>':
-                state['_lambda_functions'][name] = dumps(attr.func_code)
-                del state[name]
-            elif isinstance(attr, MethodType):
-                state['_instance_methods'][name] = \
-                    (attr.im_self, attr.im_func.func_name)
-                del state[name]
-        return state
-    
-    def __setstate__(self, state):
-        for name, mcode in state.get('_lambda_functions', {}).items():
-            state[name] = function(loads(mcode), {})
-        if '_lambda_functions' in state:
-            del state['_lambda_functions']
-        for name, (im_self, im_func_name) \
-        in state.get('_instance_methods', {}).items():
-            state[name] = getattr(im_self, im_func_name)
-        if '_instance_methods' in state:
-            del state['_instance_methods']
-        self.__dict__ = state
         
 
 class HiddenMarkovModelTrainer(object):
@@ -1084,32 +1055,6 @@ class HiddenMarkovModelTaggerTransform(HiddenMarkovModelTaggerTransformI):
     def __init__(self):
         if self.__class__ == HiddenMarkovModelTaggerTransform:
             raise AssertionError, "Abstract classes can't be instantiated"
-                    
-    def __getstate__(self):
-        state = self.__dict__
-        state['_lambda_functions'] = {}
-        state['_instance_methods'] = {}
-        for name, attr in state.items():
-            if isinstance(attr, LambdaType) and attr.__name__ == '<lambda>':
-                state['_lambda_functions'][name] = dumps(attr.func_code)
-                del state[name]
-            elif isinstance(attr, MethodType):
-                state['_instance_methods'][name] = \
-                    (attr.im_self, attr.im_func.func_name)
-                del state[name]
-        return state
-    
-    def __setstate__(self, state):
-        for name, mcode in state.get('_lambda_functions', {}).items():
-            state[name] = function(loads(mcode), {})
-        if '_lambda_functions' in state:
-            del state['_lambda_functions']
-        for name, (im_self, im_func_name) \
-        in state.get('_instance_methods', {}).items():
-            state[name] = getattr(im_self, im_func_name)
-        if '_instance_methods' in state:
-            del state['_instance_methods']
-        self.__dict__ = state 
 
 
 class LambdaTransform(HiddenMarkovModelTaggerTransform):
