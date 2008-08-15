@@ -240,6 +240,21 @@ class FreqDist(dict):
 
     def sorted_samples(self):
         raise AttributeError, "Use FreqDist.sorted() to get the sorted samples"
+    
+    def plot(self, num=40, *args, **kwargs):
+        try:
+            import pylab
+        except ImportError:
+            raise ValueError('The plot function requires the matplotlib package.'
+                         'See http://matplotlib.sourceforge.net/')
+        samples = self.sorted()[:num]
+        values = [self[sample] for sample in samples]
+        if not args:
+            args = ["bo"]
+        pylab.grid(True, color="silver")
+        pylab.semilogy(values, *args, **kwargs)
+        pylab.xticks(range(num), samples, rotation=45, color="b")
+        pylab.show()
 
     # SB: cache the sorted samples?
     def sorted(self):
