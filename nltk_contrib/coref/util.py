@@ -7,13 +7,15 @@
 
 from nltk.data import load
 from nltk.corpus import CorpusReader
-from nltk.utilities import LazyMap, LazyConcatenation, LazyZip
+from nltk.util import LazyMap, LazyConcatenation, LazyZip
 
 #from nltk.tag.sequential import ClassifierBasedTagger
 
 #from nltk.classify import ClassifierI
 #from nltk.classify.maxent import MaxentClassifier, BinaryMaxentFeatureEncoding
 #from nltk.classify.naivebayes import NaiveBayesClassifier
+
+from nltk.probability import LidstoneProbDist
 
 from nltk_contrib.coref import *
 from nltk_contrib.coref.chunk import *
@@ -24,6 +26,11 @@ TREEBANK_TAGGER = 'nltk:taggers/treebank.tagger.pickle.gz'
 TREEBANK_CHUNKER = 'nltk:chunkers/treebank.chunker.pickle.gz'
 
 MUC6_NE_CHUNKER = 'nltk:chunkers/muc6.nechunker.pickle.gz'
+
+class LidstoneProbDistFactory(LidstoneProbDist):
+    def __init__(self, fd, bins, *factory_args):
+        LidstoneProbDist.__init__(self, fd, 0.1, bins)
+
 
 class CorpusReaderDecorator(CorpusReaderDecoratorI):
     def __init__(self, reader, **kwargs):

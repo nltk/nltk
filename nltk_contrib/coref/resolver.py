@@ -5,6 +5,7 @@
 # URL: http://nltk.org/
 # For license information, see LICENSE.TXT
 
+import gzip
 import time
 import optparse
 
@@ -18,20 +19,20 @@ try:
 except:
     from StringIO import StringIO
 
-from nltk.utilities import LazyMap, LazyZip, LazyConcatenation
+from nltk.util import LazyMap, LazyZip, LazyConcatenation
 
 from nltk.corpus import BracketParseCorpusReader, ConllChunkCorpusReader
 from nltk.corpus.util import LazyCorpusLoader
 
+from nltk.tag.hmm import HiddenMarkovModelTagger
+
 from nltk_contrib.coref import MUC6CorpusReader
 
-from nltk_contrib.coref.chunk import HiddenMarkovModelTagger, \
-     HiddenMarkovModelChunkTagger, ClosedCategoryChunkTransform, \
-     NamedEntityChunkTransform
+from nltk_contrib.coref.chunk import HiddenMarkovModelChunkTagger, \
+    ClosedCategoryChunkTransform, NamedEntityChunkTransform
      
-from nltk_contrib.coref.util import HiddenMarkovModelChunkTagger, \
-    ChunkTaggerCorpusReader, TreebankTaggerCorpusReader, \
-    TreebankChunkTaggerCorpusReader
+from nltk_contrib.coref.util import LidstoneProbDistFactory, \
+    TreebankTaggerCorpusReader, TreebankChunkTaggerCorpusReader
 from nltk_contrib.coref.util import zipzip
 
 TREEBANK_CLOSED_CATS = set(['CC', 'DT', 'MD', 'POS', 'PP$', 'RP', 'TO', 'WDT',
@@ -68,6 +69,26 @@ def train_model(train_class, labeled_sequence, test_sequence, pickle_file,
     print '%s sentences' % (sent_count)
     print '%s words' % (word_count)
     
+    try:
+        print 'Saving model...'        
+        if isinstance(pickle_file, str):
+            if pickle_file.endswith('.gz'):
+                _open = gzip.open
+            else:
+                _open = open
+            stream = _open(pickle_file, 'wb')
+            pickle.dump(model, stream)
+            stream.close()
+            model = pickle.load(_open(pickle_file, 'rb'))
+            print 'Model saved as %s' % pickle_file
+        else:
+            stream = StringIO()
+            pickle.dump(model, stream)
+            stream = StringIO(stream.getvalue())
+            model = pickle.load(stream)
+    except Exception, e:
+        print 'Error saving model, %s' % str(e)
+    
     print 'Testing...'
     
     start = time.time()
@@ -76,21 +97,7 @@ def train_model(train_class, labeled_sequence, test_sequence, pickle_file,
     
     print 'Test time: %.3fs' % (end - start)
     print 'Test time per sentence: %.3fs' % (float(end - start) / sent_count)    
-    print 'Test time per word: %.3fs' % (float(end - start) / word_count)    
-    
-    try:
-        print 'Saving model...'        
-        if isinstance(pickle_file, str):
-            pickle.dump(model, open(pickle_file, 'wb'))
-            model = pickle.load(open(pickle_file))
-        else:
-            stream = StringIO()
-            pickle.dump(model, stream)
-            stream = StringIO(stream.getvalue())
-            model = pickle.load(stream)
-        print 'Model saved'
-    except Error, (errno, error):
-        print "Error saving model, error(%s): %s" % (errno, error)
+    print 'Test time per word: %.3fs' % (float(end - start) / word_count)
 
     return model
 
@@ -155,10 +162,20 @@ if __name__ == '__main__':
     parser.add_option('-r', '--num-train-sents', metavar='NUM_TRAIN',
                       dest='num_train_sents', type=int, 
                       help='number of training sentences')
+    parser.add_option('-p', '--psyco', action='store_true',
+                      default=False, dest='psyco',
+                      help='use Psyco JIT, if available')
     parser.add_option('-v', '--verbose', action='store_true',
                       default=False, dest='verbose',
                       help='verbose')
     (options, args) = parser.parse_args()
+
+    if options.psyco:
+        try:
+            import psyco
+            psyco.full(memory=100)
+        except:
+            pass
 
     if options.train_tagger:
         treebank_train = LazyCorpusLoader(
@@ -169,12 +186,14 @@ if __name__ == '__main__':
             'penn-treebank-rel3/parsed/mrg/wsj/',
             BracketParseCorpusReader, r'24\/wsj_.*\.mrg')
         treebank_test_sequence = treebank_test.tagged_sents()
+        treebank_estimator = LidstoneProbDistFactory
         model = train_model(HiddenMarkovModelTagger, 
                             treebank_train_sequence, 
                             treebank_test_sequence,
                             options.model_file, 
                             options.num_train_sents, 
                             options.num_test_sents,
+                            estimator=treebank_estimator,
                             verbose=options.verbose)
 
     elif options.train_chunker:
@@ -186,6 +205,7 @@ if __name__ == '__main__':
             'conll2000', ConllChunkCorpusReader,
             ['test.txt'], ('NP','VP','PP'))
         conll2k_test_sequence = conll2k_test.iob_sents()
+        conll2k_estimator = LidstoneProbDistFactory
         conll2k_transform = ClosedCategoryChunkTransform(TREEBANK_CLOSED_CATS)
         model = train_model(HiddenMarkovModelChunkTagger, 
                             conll2k_train_sequence, 
@@ -193,6 +213,7 @@ if __name__ == '__main__':
                             options.model_file, 
                             options.num_train_sents, 
                             options.num_test_sents,
+                            estimator=conll2k_estimator,
                             transform=conll2k_transform,
                             verbose=options.verbose)
         
@@ -217,6 +238,8 @@ if __name__ == '__main__':
                    muc6_test.iob_sents()[:options.num_test_sents]))
 
         muc6_test_sequence = list(muc6_test_sequence[:options.num_test_sents])
+
+        muc6_estimator = LidstoneProbDistFactory
         muc6_transform = NamedEntityChunkTransform(TREEBANK_CLOSED_CATS)
         model = train_model(HiddenMarkovModelChunkTagger, 
                             muc6_train_sequence, 
@@ -224,6 +247,7 @@ if __name__ == '__main__':
                             options.model_file, 
                             options.num_train_sents, 
                             options.num_test_sents,
+                            estimator=muc6_estimator,
                             transform=muc6_transform,
                             verbose=options.verbose)
 

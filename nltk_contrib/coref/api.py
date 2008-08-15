@@ -1,6 +1,6 @@
 # Natural Language Toolkit (NLTK) Coreference API
 #
-# Copyright (C) 2008 Joseph Frazee
+# Copyright (C) 2008 NLTK Project 
 # Author: Joseph Frazee <jfrazee@mail.utexas.edu>
 # URL: http://nltk.org/
 # For license information, see LICENSE.TXT

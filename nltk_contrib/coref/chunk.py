@@ -5,51 +5,15 @@
 # URL: http://nltk.org/
 # For license information, see LICENSE.TXT
 
-from nltk.utilities import LazyMap, LazyConcatenation, LazyZip
+from nltk.util import LazyMap, LazyConcatenation, LazyZip
 from nltk.evaluate import precision, recall, accuracy, f_measure
 
 from nltk.chunk.util import conllstr2tree
 
-from nltk.tag.hmm import HiddenMarkovModelTagger, \
-     HiddenMarkovModelTaggerTransform
+from nltk.tag.hmm import HiddenMarkovModelTagger
 
 from nltk_contrib.coref import *
-from nltk_contrib.coref.features import *
-
-class HiddenMarkovModelChunkTaggerTransform(HiddenMarkovModelChunkTaggerTransformI):
-    """
-    An abstract subclass of C{HiddenMarkovModelChunkTaggerTransformI}.
-    """
-    def __init__(self):
-        if self.__class__ == HiddenMarkovModelTaggerTransform:
-            raise AssertionError, "Abstract classes can't be instantiated"
-                    
-    def __getstate__(self):
-        state = self.__dict__
-        state['_lambda_functions'] = {}
-        state['_instance_methods'] = {}
-        for name, attr in state.items():
-            if isinstance(attr, LambdaType) and attr.__name__ == '<lambda>':
-                state['_lambda_functions'][name] = dumps(attr.func_code)
-                del state[name]
-            elif isinstance(attr, MethodType):
-                state['_instance_methods'][name] = \
-                    (attr.im_self, attr.im_func.func_name)
-                del state[name]
-        return state
-    
-    def __setstate__(self, state):
-        for name, mcode in state.get('_lambda_functions', {}).items():
-            state[name] = function(loads(mcode), {})
-        if '_lambda_functions' in state:
-            del state['_lambda_functions']
-        for name, (im_self, im_func_name) \
-        in state.get('_instance_methods', {}).items():
-            state[name] = getattr(im_self, im_func_name)
-        if '_instance_methods' in state:
-            del state['_instance_methods']
-        self.__dict__ = state 
-        
+from nltk_contrib.coref.features import *        
 
 class ClosedCategoryChunkTransform(HiddenMarkovModelChunkTaggerTransformI):
     """
@@ -114,8 +78,13 @@ class NamedEntityChunkTransform(ClosedCategoryChunkTransform):
     """
     def is_closed_cat(self, symbol):
         word = symbol[0]
-        return ClosedCategoryChunkTransform.is_closed_cat(self, symbol) or \
-               self.word_type(word)
+        if isinstance(word, tuple):
+            return True
+        elif isinstance(word, str):
+            return word_type(word) or \
+                   ClosedCategoryChunkTransform.is_closed_cat(self, symbol)
+        else:
+            raise
                 
     def transform(self, labeled_symbols):
         typed_symbols = []
@@ -123,51 +92,14 @@ class NamedEntityChunkTransform(ClosedCategoryChunkTransform):
             symbol_len = len(symbol or []) 
             if symbol_len == 3:
                 word, tag, iob_tag = symbol
-                typed_symbol = (self.word_type(word) or word, tag, iob_tag)
+                typed_symbol = (word_type(word)[:2] or word, tag, iob_tag)
             elif symbol_len == 2:
                 word, tag = symbol
-                typed_symbol = (self.word_type(word) or word, tag)
+                typed_symbol = (word_type(word)[:2] or word, tag)
             else:
                 raise
             typed_symbols.append(typed_symbol)
         return ClosedCategoryChunkTransform.transform(self, typed_symbols)
-
-    def word_type(self, word):        
-        if contains_person_prefix(word) or contains_person_suffix(word):
-            return 'PERSON'
-        if contains_org_suffix(word):
-            return 'ORG'
-        if is_name(word):
-            return 'NAME'
-        if is_nationality(word):
-            return 'NATIONALITY'
-        if is_city(word) or is_country(word):
-            return 'LOCATION'
-        if is_roman_numeral(word):
-            return 'ROMAN_NUMERAL'
-        if is_tla(word):
-            return 'TLA'
-        if is_initial(word):
-            return 'INITIAL'
-        if contains_currency(word):
-            return 'CURRENCY'
-        if contains_percent(word):
-            return 'PERCENT'
-        if contains_numeric(word) or contains_number(word) or \
-           contains_ordinal(word) or is_digit(word):
-            return 'NUMBER'
-        if contains_day(word) or contains_month(word) or \
-           contains_date(word):
-            return 'DATE'
-        if is_suffix(word):
-            return 'SUFFIX'
-        if is_prefix(word):
-            return 'PREFIX'
-        if is_title_case(word):
-            return 'TITLE_CASE'
-        if is_punct(word):
-            return 'PUNCT'
-        return
                 
 
 class HiddenMarkovModelChunkTagger(HiddenMarkovModelTagger, TrainableI):
