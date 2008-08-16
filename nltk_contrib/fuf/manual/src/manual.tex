@@ -1,0 +1,1574 @@
+\documentclass[12pt]{article}
+
+% use concrete math fonts
+\usepackage{ccfonts} 
+\usepackage[T1]{fontenc}
+% make sure that we can to inverse search
+\usepackage{pdfsync}
+% dont waste space with huge margins
+\usepackage{fullpage}
+% nicer headers
+\usepackage{fancyhdr}
+% math stuff
+\usepackage{amsmath}
+% for figures
+\usepackage{graphicx}
+\usepackage{subfig}
+%feautre structures
+\usepackage{avm}
+\usepackage{amssymb}
+%better verbatim
+\usepackage{moreverb}
+%can do double spacing
+\usepackage{setspace}
+%can use \url
+\usepackage{url}
+
+%\doublespacing
+\begin{document}
+    
+
+\thispagestyle{empty}
+\title{\textsc{\Huge Implementing FUF in NLTK}}
+\author{\textsc{Petro Verkhogliad } 
+   \\ vpetro@gmail.com
+    }
+\thispagestyle{empty}
+
+\date{ }
+\maketitle
+
+\pagebreak
+\thispagestyle{empty}
+\begin{abstract}
+Natural language processing is a wide and varied field. This variety can been seen by the 
+large number of available frameworks and formalisms for working with text. The two 
+toolkits of interest to us are the \textit{Natural Language Toolkit}
+written in the Python programming language and the \textit{FUF/SURGE}
+system written in Common LISP. This paper describes the development and implementation of FUF module, \texttt{nltk.fuf},
+within the NLTK library. The complete source code of \texttt{nltk.fuf} is located in the NLTK public code repository, 
+{\footnotesize \texttt{https://nltk.svn.sourceforge.net/svnroot/nltk}}.
+\end{abstract}
+% dont put the page number on the first page
+\thispagestyle{empty}
+\pagebreak
+\tableofcontents
+\pagebreak
+\thispagestyle{empty}
+\listoffigures
+\pagebreak
+
+\section*{Acknowlegments}
+This work would not be possible without the help of Leo Ferres, Robert Dale, Edward Loper, Michael Elhadad and Jean-Pierre Corriveau. 
+The author would also like to thank all the people at NLTK, Python Foundation and Google 
+for the creation and support of the Summer of Code program.
+\pagebreak
+
+\section{Introduction}
+The Python programming language has long been viewed as a valuable tool for scientific research and teaching.
+At the same time, the Python \textit{Natural Language Toolkit} (NLTK) is widely recognized as one of the best
+packages for exploratory natural language parsing and understanding 
+However, prior to the work discussed here NLTK lacked support for natural language generation 
+
+There are a number of natural language generation packages implemented in languages such as Java, C, Prolog and
+LISP. One of the well received natural language generation projects is FUF/SURGE \cite{surge, fuf-man} (or FUF). 
+Initially implemented in Common LISP, FUF (Functional Unification Formalism)
+is an implementation of a natural language surface realizer which relies on \textit{functional unification}. 
+SURGE (Systemic Unification Realization Grammar of English) is the generation grammar for the English language. In the past, FUF/SURGE has been used successfully 
+in a number of different projects. The addition of a FUF-like realizer to the NLTK toolkit brings NLTK closer to 
+completeness in terms or natural language processing tasks. 
+This addition further encourages the use of the Python language for research and education.
+
+
+\section{Background}
+
+\subsection{Natural Language Generation}
+Natural language generation (NLG) is a subfield of natural language processing (NLP),
+which is in turn a subfield of artificial intelligence. 
+The task of generating text may be considered opposite of natural language
+understanding\footnote{Natural language processing = natural language understanding + natural language generation} 
+(NLU) as it starts with non-linguistic machine-understandable 
+representation of text and aims to produce one or more grammatically and syntactically
+correct sentences.
+
+\subsubsection{NLG as an Application}
+NLG systems can be viewed from several distinct points of view. From an application
+perspective, they generally serve as a front-end to some larger system. In this
+case the NLG system receives the result of some processing and is tasked to 
+render this information palatable to the human user. The most popular systems
+of this type are \textit{data-to-text} systems similar to 
+SumTime\footnote{\small \url{http://www.csd.abdn.ac.uk/research/sumtime/}}, 
+STOP\footnote{\small \url{http://www.csd.abdn.ac.uk/research/stop}} or 
+iGraph\footnote{\small \url{http://alba.carleton.ca/}}
+However, it should be mentioned that NLG technology
+has been used for other practical purposes such as teaching, marketing, 
+behaviour change and providing accessibility \cite{reiter-dale}.
+
+
+\subsubsection{NLG Research}
+NLG systems are an active area of research concerned primarily with being able
+to answer questions in the area of human-computer interaction. For instance, 
+what can be considered ``good'' and ``readable'' text? What role do certain
+constructs play in our understanding of the description of some phenomenon or piece
+of data? How can different types of representation (graphical, auditory)
+be converted into a textual representation? These questions are
+related to a variety of disciplines, from psychology to computer science. The 
+availability of different NLG frameworks or toolkits is essential for 
+researchers and educators and may help in answering these
+questions.
+
+
+\subsubsection{The Many Parts of NLG}
+
+A typical NLG system, whether it is an application front-end or research
+prototype, consists of the modules responsible for \cite{nlp-chap19}:
+
+\begin{itemize}
+    \item \textit{Discourse Planner}\\
+        The module that starts with the communicative goal
+        (ie what the system intends to communicate) and makes the following choices:
+        \begin{itemize}
+            \item Content selection \\
+                responsible for selecting the appropriate content from a possibly
+                overspecified input.
+
+            \item Lexical selection \\
+                responsible for selecting the appropriate lexical expressions.
+
+            \item Sentence structure \\
+                responsible for selecting the size of the sentences as well for the choice
+                of referring expressions\footnote{http://en.wikipedia.org/wiki/Referring\_expression}.
+        \end{itemize}
+    \item {\it Surface Realizer}\\
+        The module that receives a complete specification
+        of the discourse plan and produces complete and correctly structured sentences
+        as determined by its grammatical and lexical resources. 
+\end{itemize}
+
+Although the description above is ``good enough'' to describe a number of NLG systems it is by no
+means complete. Other architectures have been proposed and used with 
+considerable success in research prototypes.
+
+This paper is centered around surface realization, as such, the reader will benefit from an exploration of this topic.
+
+\subsubsection{Surface Realization}
+The surface realization module produces ordered sequences of words as determined by the provided
+lexicon and grammar. The vital point is that the surface realizer takes chunks of input (sentence specifications expressed
+with a given formalism) and combines them with a given grammar (expressed with the same formalism).
+One of the more popular approaches for expression of the input and the grammar and combining them
+to produce a textual output is the \textit{Functional Unification Grammar} \cite{fug-kay} 
+which is explored in more detail in the next section.
+
+
+\subsection{Functional Unification Grammar}
+
+This formalism was first introduced by Michael Kay in the paper titled
+``\textit{Functional Unification Grammar: A Formalism for Machine Translation}''. 
+The motivation for the development of the grammar was two-fold \cite{sheiber-avms}: 
+
+\begin{enumerate}
+    \item maintaining a computational aspect to the formalism\footnote{After all, the original 
+        design intended for this to be used for machine translation tasks}.
+    \item to allow structure and functional notions to work side by side
+\end{enumerate}
+
+The grammar formalism uses unification to manipulate and reason about
+\textit{feature structures}. The basic
+idea in FUG is to build the generation grammar as a feature structure with lists
+of possible alternations and then to unify the grammar with the input
+structure built using the same type of specification. It is precisely 
+this approach\footnote{with some extensions} that is used in the 
+{\fontfamily{ppl} \selectfont FUF/SURGE} % fuf-font
+system which is the focal point of the work discussed in this paper.
+
+
+\subsubsection{Feature Structures}
+
+A feature structure\footnote{Over the years these structures have surfaced
+under a variety of names such as feature bundles, feature matrices, functional
+structures, functional descriptions, or terms} is essentially a set of key-value pairs that provide a
+partial description of a sentence\footnote{A feature structure can also be
+viewed as a partial function from features to their values.}.
+Feature structures resemble first-order logic terms but have several restriction lifted:
+
+\begin{itemize}
+    \item Sub-structures are labeled symbolically, and are not inferred by argument position.
+    \item Fixed arity is not required. 
+    \item The distinction between function and argument is removed
+    \item Addition of variables and reentrance\footnote{Also known as, co-reference}.
+\end{itemize}
+
+Although varied in naming the generally accepted notation for 
+feature structures is shown in figure \ref{simple-feature}. \\
+
+\begin{figure}[h!]
+    \centering
+\begin{avm} 
+    {$\mathcal{F}_0 \rightarrow$}
+\[
+    \textit{article:} & \textit{"the"} \\
+    \textit{noun:} & \textit{"cat"}
+\] 
+\end{avm} 
+\\
+\caption{A simple feature structure}
+\label{simple-feature}
+\end{figure}
+
+The key set\footnote{or attribute set} of  $\mathcal{F}_0$
+is $\{article, noun\}$ and the value set is $\{``the'', ``cat''\}$. 
+Note that in a given structure a key can only be defined once.\footnote{Keys with the same
+name and different values may appear in the sub-features but not on the same ``level''
+of a given structure.} The mapping defined by the structure shown in figure \ref{feature-function}. 
+
+\begin{figure}[h!]
+    \centering
+\begin{align*}
+ \mathcal{F}_0(article) & \rightarrow "the" \\
+ \mathcal{F}_0(noun) & \rightarrow "cat"
+\end{align*}
+\caption{Feature structures as functions}
+\label{feature-function}
+\end{figure}
+
+
+One of the important features of the unification-based formalisms is that the feature structures
+may be nested (ie a value of a key in the structure may be another feature structure) 
+or contain variables. In figure \ref{nested-feature}, $\mathcal{F}_1$ is an example of a 
+structure that contains sub-features, whereas $\mathcal{F}_2$ contains the variable $x1?$.
+
+\begin{figure}[h!]
+    \centering
+\begin{avm} 
+{$\mathcal{F}_1 \rightarrow$}
+\[
+    \textit{cat:} &\textit{s} \\
+    \textit{prot:} & \[ \textit{n:} & \textit{"john"}\] \\
+    \textit{verb:} & \[ \textit{v:} & \textit{"like"}\] \\
+    \textit{goal:} & \[ \textit{n:} & \textit{"mary"}\] \\
+\] 
+\end{avm} 
+\\
+\begin{avm} 
+{$\mathcal{F}_2 \rightarrow$}
+\[
+    \textit{cat:} &\textit{s} \\
+    \textit{prot:} & \[ \textit{n:} & \textit{"john"}\] \\
+    \textit{verb:} & \[ \textit{v:} & \textit{"like"}\] \\
+    \textit{goal:} & \[ \textit{n:} & \textit{x1?}\] \\
+\] 
+\end{avm} 
+    \caption{Feature structures with nested values and variables}
+    \label{nested-feature}
+\end{figure}
+
+
+Another important component of feature structures is \textit{reentrance}.
+A reentrant feature structure is one in which two keys share common values.
+It must be noted that all the values shared by two different keys must be the same,
+otherwise the feature structure is not reentrant.
+
+As an example consider the structure $\mathcal{F}_{3}$ in figure \ref{reentrant-feature-structure}.
+In $\mathcal{F}_{3}$ there are two keys ${prot, goal}$ map onto different sub-features that contain
+the same values of the same type. The notation for this can be simplified as shown in figure
+\ref{simple-reentrant-feature-structure}. Note that a given feature structure may 
+contain a loop by the use of reentrance.
+
+\begin{figure}[h!]
+    \centering
+    \begin{avm}
+        {$\mathcal{F}_3 \rightarrow$}
+        \[
+            \textit{cat:} &\textit{s} \\
+            \textit{prot:} & \[ \textit{n:} & \textit{"john"}\] \\
+            \textit{verb:} & \[ \textit{v:} & \textit{"like"}\] \\
+            \textit{goal:} & \[ \textit{n:} & \textit{"john"}\] \\
+        \] 
+    \end{avm}
+    \\
+    \caption{$\mathcal{F}_{3}$ - A Reentrant Feature Structure}
+    \label{reentrant-feature-structure}
+\end{figure}
+
+
+\begin{figure}[h!]
+    \centering
+    \begin{avm}
+        {$\mathcal{F}_4 \rightarrow$}
+        \[
+            \textit{cat:} &\textit{s} \\
+            \textit{prot:} \@1 & \[ \textit{n:} & \textit{"john"}\] \\
+            \textit{verb:} & \[ \textit{v:} & \textit{"like"}\] \\
+            \textit{goal:} & \@1 \\
+        \] 
+    \end{avm}
+    \\
+    \caption{$\mathcal{F}_{4}$ - Reentrant Feature Structure Notation}
+    \label{simple-reentrant-feature-structure}
+\end{figure}
+
+
+A \textit{path} in a feature structure is a sequence of keys which can be used
+to select a specific value (be it primitive or complex) by repeated application. For example,
+the path $<prot~n>$ can be applied to the feature structure $\mathcal{F}_{3}$ 
+(Figure \ref{path-feature-value}).
+
+\begin{figure}[h!]
+    \centering
+\begin{align*}
+    \mathcal{F}_{3}(<prot~n>) & \rightarrow "john" \\
+\end{align*}
+\caption{Paths in Feature Structures}
+\label{path-feature-value}
+\end{figure}
+
+%\pagebreak
+
+Feature structures can also be viewed as 
+graphs. This representation becomes useful when we discuss some of the special 
+features in {\fontfamily{ppl} \selectfont FUF/SURGE} % fuf-font
+.
+
+\subsubsection{Feature Structures as Graphs}
+Feature structures can be viewed as rooted, directed, graphs\footnote{
+In some literature the structures are restricted to being acyclic only. However, 
+there is little that prevents one from building a cyclic feature structure as
+we have seen above.}. As an example we can represent the structure in figure
+\ref{nested-feature} as the graph in figure \ref{nested-figure-graph}.
+Note, the graph in figure shows the \textit{lex} keys which are 
+implicit in the abstract representation of feature structures we 
+have been working with up to now.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale=0.75]{fsgraph}
+    \caption{$\mathcal{F}_{1}$ - Feature Structure as a Graph}
+    \label{nested-figure-graph}
+\end{figure}
+
+The edges of the graph represent the keys of the features (or attributes). The grey colored
+nodes are terminal nodes\footnote{atomic values}, while the empty nodes 
+are nested sub-features. There are two compelling reasons for using graph notation
+with feature structures. One, graph theory gives us a simple and well-defined
+vocabulary with which to talk about and model features structure systems. Two,
+it provides a sound framework for investigating potential structure-combining
+operations.
+
+\subsubsection{Unification with Feature Structures}
+The most important operation that can be performed on feature structures
+is \textit{unification}. Two given structures $\mathcal{F}_{s0}$ and 
+$\mathcal{F}_{s1}$ unify if their key-value pairs are in agreement \cite{johnson-avl}.  The extra key-value
+pairs are simply copied into the result. At the same time, the structures
+$\mathcal{F}_{s0}$ and $\mathcal{F}_{s2}$ do not unify due to a conflict in the value of $<cat>$.
+
+\begin{figure}[h!]
+\centering
+\avmsortfont{\it}
+\avmvalfont{\it}
+\begin{avm} 
+  
+    {$\mathcal{F}_{s0} \rightarrow $}
+    \[
+        \textit{cat:} & \textit{np} \\
+        \textit{number:} & \textit{singular} \\
+    \] 
+\end{avm} 
+\\
+\begin{avm} 
+  
+    {$\mathcal{F}_{s1} \rightarrow $}
+    \[
+        \textit{cat:} & \textit{np} \\
+        \textit{sub:} & \[
+                            \textit{person:} & \textit{third} \\
+                        \]
+
+    \] 
+\end{avm} 
+\\
+\begin{avm} 
+  
+    {$\mathcal{F}_{s2} \rightarrow $}
+    \[
+        \textit{cat:} & \textit{v}
+
+    \] 
+\end{avm} 
+\\
+
+\begin{avm} 
+  
+    {$\mathcal{F}_{r0} \rightarrow $}
+    \[
+        \textit{cat:} & \textit{np} \\
+        \textit{number:} & \textit{singular} \\
+        \textit{sub:} & \[
+                            \textit{person:} & \textit{third} \\
+                        \]
+
+    \] 
+\end{avm} 
+    \caption{Unification of $\mathcal{F}_{s0}$ and $\mathcal{F}_{s1}$ and their result $\mathcal{F}_{r0}$}
+\end{figure}
+
+Given the example above we have an intuitive understanding of simple unification with basic feature structures. 
+The rest of the discussion builds on these topics.
+
+\section{Feature Structures in NLTK and FUF/SURGE}
+Both NLTK and FUF use slightly different syntax for representing feature structures. 
+Furthermore, FUF departs from the basic unification and syntax described above. In the following sections
+we will explore these differences.
+
+\subsection{NLTK}
+    Given that a feature structure is a mapping from keys to values NLTK uses \textit{feature dictionaries} and 
+    \textit{feature lists} for representing features and their values Creating a structure in NLTK is quite straightforward
+(figure \ref{fig:nltk-basic-fs}).
+%{
+\begin{figure}[h!]
+    \centering
+{\small
+\begin{listing}{1}
+    >>> from nltk.featstruct import FeatStruct
+    >>> fs1 = FeatStruct(number="singular", person=3)
+    >>> fs2 = FeatStruct(tense="past", arg=[number="sing", person=3])
+\end{listing}
+}
+\caption{Defining a feature structure with NLTK FeatStruct}
+\label{fig:nltk-basic-fs}
+\end{figure}
+
+In line 1 the code\footnote{For more information about the Python programming language the reader
+is invited to consult {\texttt{\footnotesize http://python.org}}} imports the libraries for representing and reasoning with feature structures.
+In line 2, a structure \texttt{fs1} is created which contains the keys $\{number,~person\}$ and their
+values $\{'singular',~3\}$. Finally in line 3, another more interesting feature structure, \texttt{fs2}, is defined.
+
+Earlier it was mentioned
+that that a single key may not have several values assigned to it. This is not the case in 
+in the NLTK implementation. Keys may have lists assigned to them as shown\footnote{In this example we use slightly different syntax for defining the 
+feature structure. The NLTK FeatStruct definition parser does not allow us to specify the feature structure
+as we have done in \ref{fig:nltk-basic-fs}} in figure \ref{fs-lists}.
+While this is a significant departure
+from the original definition it has little impact on this work as unification of keys with list 
+values is undefined\footnote{Unless we define custom unification for the value of said key}. At the same time, the use of lists allows us to handle \texttt{cset} and \texttt{pattern} attributes
+during processing discussed in section \ref{sec:special-fuf-features-values}.
+
+\begin{figure}[h!]
+    \centering
+{\small
+\begin{verbatim}
+    >>> fs3 = FeatStruct('[x = (1, 2, 3 4)]')
+    >>> print fs3
+    [ x = (1, 2, 3, 4) ]
+\end{verbatim}
+}
+\caption{NLTK feature structure with lists as values}
+\label{fs-lists}
+\end{figure}
+
+
+Figure \ref{fuf-nltk-features} compares NLTK's ``pretty'' representation of feature structures
+to the notation we have been using up to now.
+
+\begin{figure}[h!]
+\centering
+\begin{avm}
+{$\mathcal{F}_{s1} \rightarrow $}
+\[
+    \textit{cat:} & \textit{np} \\
+    \textit{sub:} & \[
+                        \textit{person:} & \textit{third} \\
+                    \]
+
+\] 
+\end{avm}
+\\
+{\scriptsize
+\begin{verbatim}
+                                            [ cat = 'np'                 ]
+                                            [                            ]
+                                            [ sub = [ person = 'third' ] ]
+\end{verbatim}
+}
+\caption{Notational difference between NLTK and the abstract feature structure syntax}
+\label{fuf-nltk-features}
+\end{figure}
+
+NLTK allows for reentrance. Figure \ref{nltk-reentrant} shows the
+interaction in the Python interpreter that creates a reentrant feature structure.
+In the structure in figure \ref{nltk-reentrant} the value at $<a>$ is an empty structure 
+and $<c~d>$ shares that value\footnote{The \texttt{=} is used for assignment of a value to 
+a feature. The \texttt{->} explicitly states that the value of \textit{b} is the value of \text{a}
+by reentrance}.
+
+
+\begin{figure}[h!]
+    \centering
+{\small
+\begin{listing}{1}
+    >>> from nltk.featstruct import FeatStruct
+    >>> fs2 = FeatStruct('[a=(1)[], b->(1), c=[d->(1)]]')
+    >>> print fs2
+\end{listing}
+}
+{\scriptsize
+\begin{verbatim}
+                                [ a = (1) []       ]
+                                [                  ]
+                                [ b -> (1)         ]
+                                [                  ]
+                                [ c = [ d -> (1) ] ]
+\end{verbatim}
+}
+\caption{Reentrant feature structure with NLTK}
+\label{nltk-reentrant}
+\end{figure}
+
+Feature structures in NLTK can also contain
+variables as shown in the figure \ref{nltk-variables}.
+
+\begin{figure}[h!]
+    \centering
+{\small
+\begin{listing}{1}
+    >>> from nltk.featstruct import FeatStruct
+    >>> from nltk.sem.logic import Variable
+    >>> fs4 = FeatStruct("[number='?x']")
+    >>> print fs4
+\end{listing}
+\begin{verbatim}
+                                [ number = '?x' ]
+\end{verbatim}
+}
+\caption{NLTK feature structure with a variable}
+\label{nltk-variables}
+\end{figure}
+
+In conclusion, the differences between the feature structure representation in NLTK and 
+found in the computational linguistics literature is mostly syntactic. There are no semantics
+defined on any of the keys or values in the feature structures defined in NLTK. 
+
+\subsection{FUF Feature Structures}
+
+The basics in FUF structures are very similar to those in the literature and NLTK. However, some 
+additional constructs were added during the development of FUF that simplify grammar writing and 
+the unification process. Before discussing the ``special'' keys and values we begin
+with some representational differences. Figure \ref{first-fs-fuf} 
+compares the abstract feature structure representation to its concrete implementations in FUF
+and NLTK.
+
+\begin{figure}[h!]
+    \centering
+{\scriptsize
+\begin{verbatim}
+                                          ((article "the") (noun "cat")) 
+
+                                              [ article = 'the' ]
+                                              [ noun    = 'cat' ]
+\end{verbatim}
+}
+\begin{avm}
+    \[
+        \textit{article:} & \textit{'the'}\\
+        \textit{noun:} & \textit{'cat'}
+    \]
+\end{avm}
+
+\caption{Syntactic representations of feature structures}
+\label{first-fs-fuf}
+\end{figure}
+
+\subsection{Special Features and Values in FUF}
+\label{sec:special-fuf-features-values}
+
+There are a number of special features and values defined in FUF to ease grammar writing and
+debugging. The first of these is \textit{relative and absolute paths}.
+Paths in FUF are represented as lists of symbols enclosed in curly braces. This notation
+escapes ambiguity since at each level of the structure there is at most one feature with
+a given attribute.
+
+As previously mentioned, paths can be \textit{absolute} or \textit{relative}. Absolute paths
+always begin at the very top of the feature structure and flow down along specified keys.
+A relative path uses the caret (\texttt{\^}) notation to signify that we must go up one level in 
+the current structure before following the list of symbols
+down. A given relative path may include any number of \texttt{\^} in order to go up any number of levels. 
+As the FUF representation of feature structures is not very easy to follow (figure \ref{fig:simple-fuf-grammar}) 
+we will use the NLTK
+representation from now on.
+The feature structure in figure \ref{fuf-path-fs} contains a value {\verb {^^ prot number\}}. 
+The dark arrows in the accompanying graph take the path specified by this link.
+\begin{figure}[h!]
+{\scriptsize
+    \begin{verbatim}
+                                    ((cat s)
+                                      (prot ((cat np)
+                                              (number sing)))
+                                      (verb ((cat vp)
+                                              (number {^^ prot number}))))
+\end{verbatim}
+}
+\caption{Simple FUF Feature}
+\label{fig:simple-fuf-grammar}
+\end{figure}
+
+\begin{figure}[h!]
+{\scriptsize
+    \begin{verbatim}
+                                    [ cat  = 's'                          ]
+                                    [                                     ]
+                                    [ prot = [ cat    = 'np'   ]          ]
+                                    [        [ number = 'sing' ]          ]
+                                    [                                     ]
+                                    [ verb = [ cat    = 'vp'            ] ]
+                                    [        [ number = {^^prot number} ] ]
+    
+    \end{verbatim}
+}
+\centering
+\includegraphics[scale=0.5]{fufpath}
+\caption{Feature structure with a relative path}
+\label{fuf-path-fs}
+\end{figure}
+
+The astute reader will notice that in the above feature structure we could have used reentrance instead 
+of a relative link to specify that {\small $<verb~number>$} shares its value with {\small $<prot~number>$}.
+However, FUF does not define extra syntax for reentrance. 
+At the same time, FUF links need not reference an existing value. The referenced value may be added to the structure
+during unification. This, in turn, extends the expressibility of the formalism. \cite{fuf-man}
+
+
+The next set of ``special'' features are those that have special unification behaviour. 
+The most frequently used ``special'' features are:
+\begin{itemize}
+    \item \textit{alt} - ordered alternation
+    \item \textit{ralt} - random alternation
+    \item \textit{opt} - optional unification
+    \item \textit{cset} - specification of unification elements
+    \item \textit{pattern} - sentence ordering
+\end{itemize}
+
+\subsubsection{\texttt{alt} and \texttt{ralt}}
+
+In FUF the syntax for specifying alternation is shown in figure \ref{fig:simple-alt-syntax}. 
+Figure \ref{fig:named-alt} shows an \texttt{alt} with a name, while figure \ref{fig:indexed-alt} 
+shows an indexed \texttt{alt}.
+\begin{figure}[h1]
+    \centering
+{\scriptsize
+\subfloat[\texttt{alt}]
+    {
+        \texttt{ (ALT {annotations*} (fs1 fs2 ... fsn)) }
+        \label{fig:simple-alt-syntax}
+    }
+\subfloat[Named \texttt{alt}]
+    {
+        \texttt{ (ALT TOP (fs1 fs2 ... fsn)) }
+        \label{fig:named-alt}
+    }
+\subfloat[Indexed \texttt{alt}]
+    {
+        \texttt{ (ALT (index topalt) (fs1 fs2 ... fsn)) }
+        \label{fig:indexed-alt}
+    }
+}
+\caption{\texttt{alt} syntax}
+\label{fig:alt-syntax}
+\end{figure}
+
+
+When the unifier encounters the \texttt{alt} key it does not try to unify against the entire
+\texttt{alt} sub-feature. It selects the sub-features of the \texttt{alt} one by one
+and attempts to unify them with the input. Should the unification fail with the first alternation,
+the next alternation is tried. If all the possible branches have been tried without a successful
+unification, the process is said to have failed.
+The ordering of the branches of the \texttt{alt} specifies the order in which the unification
+of the input structure is attempted with each of the alternations.
+However, if the order is not important the \texttt{ralt} feature can be used. Aside from the
+difference in the order of unification attempts there are no other differences between \texttt{alt}
+and \texttt{ralt}.
+
+As is usually the case with feature structures one member of the \texttt{alt} family 
+can be embedded within another, figure \ref{alt-syntax} illustrates this.
+
+\begin{figure}[h!]
+{\scriptsize
+\begin{verbatim}
+                                            (alt ( (cat n)
+                                                   (ralt (1 2 3 4))))
+\end{verbatim}
+}
+\caption{Nested \texttt{alt}}
+\label{alt-syntax}
+\end{figure}
+
+\subsubsection{\texttt{opt}}
+\label{sec:opt}
+\texttt{opt} specifies those features which, if they would cause unification to fail, 
+can be disregarded in order for the unification to succeed.
+The syntax for this feature is:
+
+\begin{figure}[h!]
+    \centering
+{\scriptsize
+\subfloat[Simple \texttt{opt}]{
+    \texttt{(opt (fs1 fs2)) }
+   \label{fig:simple-opt-sytax}
+}
+\subfloat[Named \texttt{opt}] {
+    \texttt{(opt top (fs1 fs2)) }
+    \label{fig:named-opt-sytax}
+    } 
+\subfloat[Named \texttt{opt} containing a path] {
+    \texttt{(opt top (\{ prot number \} fs2)) }
+    \label{fig:paths-opt-sytax}
+    }
+} 
+\caption{\texttt{opt} syntax}
+\label{opt-syntax}
+\end{figure}
+
+The above code causes that the unifier to attempt the unification with any of the feature
+structures specified in the \texttt{opt} list.
+However, if this fails then the unifier can try again without the optional
+features. If the unification fails again (ie without the optional features), the entire process is considered a failure. 
+
+\subsubsection{\texttt{cset}}
+In general the unifier in FUF begins at the root of the graph and works downward, recursively unifying
+the constituents of the grammar. By default the feature structures which contain
+the key \texttt{cat} or are in the \texttt{pattern} list are considered constituents.
+
+In order to simplify and reduce the amount of work the unifier
+has to do, the \textit{constituent set} (\texttt{cset}) can be specified explicitly as shown
+in figure \ref{cset-syntax}.
+\begin{figure}[h!]
+    \centering
+{\scriptsize
+\subfloat[Simple \texttt{cset}] {
+    \texttt{(cset (prot verb goal)) }
+    \label{fig:simple-cset-sytax}
+    }
+\subfloat[\texttt{cset} containing a path] {
+    \texttt{(cset (\{prot\} verb goal)) }
+    \label{fig:paths-cset-sytax}
+    }
+}
+\caption{\texttt{cset} syntax}
+\label{cset-syntax}
+\end{figure}
+
+Since the \texttt{cset} value is treated as a set, its members are unordered and can be unified
+with another differently ordered constituent set definition. At the same time, the \texttt{cset} can
+contain paths (figure \ref{fig:paths-cset-sytax}). 
+
+\subsubsection{\texttt{pattern}}
+The \texttt{pattern} feature describes the ordering of constituents that must be processed during 
+the generation of the textual output given the result of unification. The syntax for the pattern 
+feature is shown in figure \ref{pattern-syntax}.
+\begin{figure}[h!]
+    \centering
+{\scriptsize
+\subfloat[Simple \texttt{pattern}] {
+    \texttt{(pattern (prot verb goal)) }
+    \label{fig:simple-pattern-syntax}
+    } \\
+\subfloat[\texttt{pattern} with a path] {
+    \texttt{(pattern (\{prot\} verb goal)) }
+    \label{fig:paths-pattern-syntax}
+    } \\
+\subfloat[\texttt{pattern} with special values ] {
+    \texttt{(pattern (\{prot\} verb dots goal pound)) }
+    \label{fig:special-pattern}
+    } \\
+}
+\caption{\texttt{pattern} syntax}
+\label{pattern-syntax}
+\end{figure}
+
+Each of the members mentioned in the \texttt{pattern} may contain another pattern specification. Given
+the example syntax above the \textit{linearizer} module must sequentially (depth-first) process each of
+the members. This process will result in the final output sentence. The \texttt{pattern} directives
+are generally added to the final result by the grammar, since the input to the unifier should
+be a semantic, rather than syntactic, representation. Similar to the \texttt{cset} directives, \texttt{pattern}
+may use paths as elements. Furthermore, the symbols \texttt{dots} and \texttt{pound} were added to relax the \texttt{pattern}
+constraints during unification (figure \ref{fig:special-pattern}). The \texttt{dots} elements
+acts as the regular expression ``.*'', allowing for another value (or any number of values)
+to be substituted in its place. The 
+\texttt{pound} symbol acts as the regular expression ``?'', allowing for zero 
+or one appearances of the substituting symbol.
+
+For example, the pattern \texttt{(f1 dots f2)} specifies that constituent \texttt{f1} must precede 
+constituent \texttt{f2}. However, they need not be adjacent. The pattern \texttt{( pound f1 f2)}
+specifies that another term may appear before \texttt{f1}.
+It is important to note that similar to the \texttt{cset} directive the \texttt{pattern} directive specifies
+a list of terms as its value. This, in turn, requires special unification to be defined for all \texttt{pattern}
+values. Due to the addition of \texttt{dots} and \texttt{pound}, the unification of \texttt{pattern} values
+is non-deterministic. Figure \ref{pattern-unification1} defines two \texttt{pattern} values. 
+Figure \ref{pattern-unification2} shows possible results of unifying\footnote{This example is from the 
+FUF Manual v5.2}  \texttt{p1} and \texttt{p2}.
+\begin{figure}[h!]
+    \centering
+{\scriptsize
+\subfloat[p1]
+    {
+        \texttt{(pattern (dots a dots b dots))}
+        \label{fig:pattern1}
+    } \\
+\subfloat[p2]
+    {
+        \texttt{(pattern (dots c dots d dots))}
+        \label{fig:pattern2}
+    } \\
+}
+\caption{\texttt{pattern} values to be unified}
+\label{pattern-unification1}
+\end{figure}
+
+\begin{figure}[h!]
+{\scriptsize
+\begin{verbatim}
+                                (pattern (dots a dots b dots c dots d dots)) 
+                                (pattern (dots a dots c dots b dots d dots)) 
+                                (pattern (dots a dots c dots d dots b dots)) 
+                                (pattern (dots c dots a dots b dots d dots)) 
+                                (pattern (dots c dots a dots d dots b dots)) 
+                                (pattern (dots c dots d dots a dots b dots)) 
+\end{verbatim}
+}
+\caption{Possible results of pattern unification}
+\label{pattern-unification2}
+\end{figure}
+
+\subsection{Typed Feature Structures in FUF}
+Aside from using the ``special'' keys and values described above, FUF allows more general changes 
+to the semantics of features within a grammar.  
+
+\begin{figure}[h!]
+    \centering
+{\scriptsize
+\subfloat[Type definition syntax]
+    {
+        \label{fig:type-def-syntax}
+        \texttt{(define-feature-type <name> <children>)}
+    } \\
+\subfloat[Type definition example]
+    {
+        \label{fig:table-def-example}
+        \begin{tabular}{l}
+            \texttt{(define-feature-type noun (pronoun proper common))}\\
+            \texttt{(define-feature-type pronoun (personal-pronoun question-pronoun} \\
+                     ~~~~~~~~~~~~~~~~\texttt{demonstrative-pronoun quantified-pronoun)) } \\
+            \texttt{(define-feature-type common (count-noun mass-noun))}  \\
+
+        \end{tabular}
+    } \\
+\subfloat[Type definition usage]
+    {
+        \begin{tabular}{l}
+                \texttt{((cat noun)}  \\ 
+                ~\texttt{(alt (((cat pronoun)} \\
+                ~~~~~~\texttt{(cat  ((alt (question-pronoun personal-pronoun} \\
+                ~~~~~~~~~~~~~~\texttt{demonstrative-pronoun quantified-pronoun)))))}  \\
+                ~~~~~~\texttt{((cat proper))}   \\
+                ~~~~~~\texttt{((cat common)}   \\
+                ~~~~~~\texttt{(cat ((alt (count-noun mass-noun) )))))))}    \\
+        \end{tabular}
+        \label{fig:result-def-example}
+    }
+}
+\caption{Type definitions}
+\label{type-syntax}
+\end{figure}
+
+So far we have seen that feature structures in FUF can contain three types of values: sub-features, primitives and 
+variables. However, FUF adds another value to the preceding list: typed value. 
+Figure \ref{fig:table-def-example} shows how we can define types in FUF. Figure \ref{fig:result-def-example}
+shows how we can use the defined types in a grammar. By using type definitions we can use
+{\small \texttt{((cat personal-noun))}} instead of the much more verbose {\small \texttt{((cat noun) (noun pronoun) (pronoun personal))}}.
+
+Furthermore due to the added semantics of types, the FUF unification algorithm must be modified:  two primitive
+typed values $\mathcal{T}_0$ and $\mathcal{T}_1$ are unified if one subsumes the other
+(ie one of them is more general then the other). The result of their unification 
+is the most specific type. 
+
+\subsection{Special Operations on Feature Structures in FUF}
+Prior to generating an output sentence a unified feature structure must pass through the 
+FUF's \textit{linearizer} and \textit{morphology} modules.
+The linearizer interprets the \texttt{pattern} directives and assembles the words of a sentence 
+into a single string while taking care of punctuation and capitalization. The general algorithm
+for the linearizer is as follows \cite{fuf-man}:
+\begin{enumerate}
+    \item If there is a feature gap, return an empty string 
+    \item Otherwise, 
+        \begin{enumerate}
+            \item find the value of the \texttt{pattern} key and if found
+                recursively linearize its elements.
+            \item  If the \texttt{pattern} is not found try the following:
+                \begin{enumerate}
+                    \item Find the \texttt{lex} feature pass it through the morphology and return
+                        the result
+                    \item Identify and apply the punctuation
+                \end{enumerate}
+        \end{enumerate}
+\end{enumerate}
+
+If the linearization process is successful the resulting string (with appropriate punctuation and
+correct morphological features) is returned.
+
+\section{Implementing FUF Features and Operations in Python}
+The following describes the implementation, \texttt{nltk.fuf}, of the library features in the FUF realizer. 
+This section is structured from the point of view of an application developer attempting to use a 
+FUF grammar and input in order to generate a natural language sentence. The code is packaged in a library
+within NLTK under \texttt{nltk.fuf}. The most important modules are:
+\begin{itemize}
+    \item \texttt{fufconvert.py} - converts a given FUF grammar written as an s-expression to an \texttt{nltk.FeatSturct} 
+        object type.
+    \item \texttt{fuf.py} - unifies the input and grammar structures according to the FUF guidelines.
+    \item \texttt{linearizer.py \& morphology.py} - uses the result of the unification to produce the final output.
+\end{itemize}
+
+\subsection{\texttt{fufconvert.py} or Parsing the Input}
+The \texttt{fufconvert.py} module is responsible for converting a given s-expression\footnote{\texttt{\footnotesize http://en.wikipedia.org/wiki/S-expression}}
+into an NLTK feature structure.
+There are two main entry points to \texttt{fufconvert.py}.
+\begin{itemize}
+    \item \texttt{fufconvert.fuf\_to\_featstruct} function. This function takes as input a single s-expression and returns
+        an \texttt{nltk.FeatStruct} object.
+    \item \texttt{fufconvert.fuf\_file\_to\_featstruct} function. This function takes as input a FUF grammar file 
+        that may contain type definitions. It returns a Python tuple the first element of which is the type table
+        while the second element is the converted grammar (\texttt{nltk.FeatStruct}).
+\end{itemize}
+
+\begin{figure}[h!]
+{\small
+\begin{listing}{1}
+>>> # import the module
+>>> import fufconvert
+>>> # read a line from the text file
+>>> line = open('tests/gr0.fuf').readlines()[0]
+>>> print line
+>>> # convert the line to feature structure
+>>> fstruct = fufconvert.fuf_to_featstruct(line)
+>>> print fstruct \end{listing} 
+}
+\caption{Converting s-expression to \texttt{FeatStruct} object}
+\label{fig:convert-input}
+\end{figure}
+
+The code in figure \ref{fig:convert-input} actually takes several internal steps before returning the result. The trivial step is reading
+and showing the input (lines 4-6). The next step is the call to the conversion function. This function
+must correctly interpret the s-expression before outputting the result. The best way of doing this is by using 
+a push-down automata (PDA) \cite{lang-mach}. The PDA removes all the comments and directives 
+irrelevant to the semantic content of the structure, and proceeds to iterate through its states\footnote{For the exact specification of the states used in the PDA consult the code in the 
+NLTK Subversion repository}. Finally, the PDA returns its result: a Python list of lists with the same
+structure as the original s-expression (figure \ref{fig:sexp-parsing}).
+
+\begin{figure}[h!]
+    \centering
+{\scriptsize
+\subfloat[Input s-expression]
+    {
+       \label{fig:sexp-input}
+       \begin{tabular}{l}
+           \texttt{((cat s)} \\
+           \texttt{(prot ((n ((lex john)))))} \\
+           \texttt{(verb ((v ((lex like)))))} \\
+           \texttt{(goal ((n ((lex mary))))))} \\
+       \end{tabular}
+   } \\
+\subfloat[Parsing code]
+    {
+       \label{fig:sexp-parsing-code}
+       \begin{tabular}{l}
+           \texttt{>>> import sexp} \\
+           \texttt{>>> line = open('tests/sexp.txt').readlines()[-4]} \\
+           \texttt{>>> result = sexp.SexpListParser().parse(line)} \\
+       \end{tabular}
+   } \\
+\subfloat[S-expression parsing result]
+    {
+       \label{fig:sexp-parsing-result}
+       \begin{tabular}{l}
+           \texttt{<SexpList: ((cat s)} \\
+           \texttt{(prot ((n ((lex john)))))} \\
+           \texttt{(verb ((v ((lex like)))))} \\
+           \texttt{(goal ((n ((lex mary))))))>} \\
+       \end{tabular}
+   } \\
+}
+\caption{Parsing s-expressions}
+\label{fig:sexp-parsing}
+\end{figure}
+
+\begin{figure}[h!]
+    {\scriptsize
+    \begin{verbatim}
+                        >>> from fufconvert import fuf_file_to_featstruct
+                        >>> type_table, grammar = fuf_file_to_featstruct('tests/typed_gr4.fuf') \end{verbatim}
+    }
+\caption{Converting grammar with type definitions}
+\label{fig:convert-input-with-type}
+\end{figure}
+The code in figure \ref{fig:convert-input-with-type} is very similar to that in figure \ref{fig:convert-input}. The difference
+is that the file \texttt{\small 'tests/typed\_gr4.fuf'} contains type definitions as well as a generation grammar. Once again, the 
+PDA performs no semantic processing. It simply converts the type definitions into lists. Afterwards, it performs
+grammar conversion from s-expression to Python lists.
+
+Once the lists have been generated, the next step is to convert them into \texttt{FeatStruct} objects. For basic 
+feature structures this is quite straightforward. However, the ``special'' features of FUF structures
+must be processed. Those features with special unification semantics are discussed in later sections.  
+First we will focus on the structures with special syntax. These structures are:
+
+\begin{itemize}
+    \item \texttt{alt} and \texttt{ralt} - as mentioned previously these directives specify alternations 
+    \item \texttt{opt} - as discussed above \texttt{opt} specifies optional unification elements
+    \item relative and absolute links 
+\end{itemize}
+
+\pagebreak
+\begin{figure}[h!]
+{\scriptsize
+\begin{verbatim}
+                [           [     [ cat     = 's'                        ]            ] ]
+                [           [     [                                      ]            ] ]
+                [           [     [ goal    = [ cat = 'np' ]             ]            ] ]
+                [           [     [                                      ]            ] ]
+                [           [ 1 = [ pattern = (prot, verb, goal)         ]            ] ]
+                [           [     [                                      ]            ] ]
+                [           [     [ prot    = [ cat = 'np' ]             ]            ] ]
+                [           [     [                                      ]            ] ]
+                [           [     [ verb    = [ cat    = 'vp'          ] ]            ] ]
+                [           [     [           [ number = {prot number} ] ]            ] ]
+                [           [                                                         ] ]
+                [           [     [       [ 1 = [ pattern = (n)   ]               ] ] ] ]
+                [           [     [       [     [ proper  = 'yes' ]               ] ] ] ]
+                [           [     [       [                                       ] ] ] ]
+                [           [     [ alt = [     [ det     = [ cat = 'article' ] ] ] ] ] ]
+                [           [     [       [     [           [ lex = 'the'     ] ] ] ] ] ]
+                [           [     [       [ 2 = [                               ] ] ] ] ]
+                [ alt     = [ 2 = [       [     [ pattern = (det, n)            ] ] ] ] ]
+                [           [     [       [     [ proper  = 'no'                ] ] ] ] ]
+                [           [     [                                                 ] ] ]
+                [           [     [ cat = 'np'                                      ] ] ]
+                [           [     [                                                 ] ] ]
+                [           [     [ n   = [ cat    = 'noun'     ]                   ] ] ]
+                [           [     [       [ number = {^^number} ]                   ] ] ]
+                [           [                                                         ] ]
+                [           [     [ cat     = 'vp'             ]                      ] ]
+                [           [ 3 = [ pattern = (v)              ]                      ] ]
+                [           [     [                            ]                      ] ]
+                [           [     [ v       = [ cat = 'verb' ] ]                      ] ]
+                [           [                                                         ] ]
+                [           [ 4 = [ cat = 'noun' ]                                    ] ]
+                [           [                                                         ] ]
+                [           [ 5 = [ cat = 'verb' ]                                    ] ]
+                [           [                                                         ] ]
+                [           [ 6 = [ cat = 'article' ]                                 ] ]
+
+\end{verbatim}
+}
+\caption{\texttt{alt} feature structure}
+\label{fig:easy-alt}
+\end{figure}
+
+\pagebreak
+
+\begin{figure}[h!]
+{\scriptsize
+\begin{verbatim}
+                    [           [     [ cat     = 's'                        ]            ] ]
+                    [           [     [                                      ]            ] ]
+                    [           [     [ goal    = [ cat = 'np' ]             ]            ] ]
+                    [           [     [                                      ]            ] ]
+                    [           [ 1 = [ pattern = (prot, verb, goal)         ]            ] ]
+                    [           [     [                                      ]            ] ]
+                    [           [     [ prot    = [ cat = 'np' ]             ]            ] ]
+                    [           [     [                                      ]            ] ]
+                    [           [     [ verb    = [ cat    = 'vp'          ] ]            ] ]
+                    [           [     [           [ number = {prot number} ] ]            ] ]
+                    [           [                                                         ] ]
+                    [           [     [       [ 1 = [ pattern = (n)   ]               ] ] ] ]
+                    [           [     [       [     [ proper  = 'yes' ]               ] ] ] ]
+                    [           [     [       [                                       ] ] ] ]
+                    [           [     [ alt = [     [ det     = [ cat = 'article' ] ] ] ] ] ]
+                    [           [     [       [     [           [ lex = 'the'     ] ] ] ] ] ]
+                    [           [     [       [ 2 = [                               ] ] ] ] ]
+                    [ alt_top = [ 2 = [       [     [ pattern = (det, n)            ] ] ] ] ]
+                    [           [     [       [     [ proper  = 'no'                ] ] ] ] ]
+                    [           [     [                                                 ] ] ]
+                    [           [     [ cat = 'np'                                      ] ] ]
+                    [           [     [                                                 ] ] ]
+                    [           [     [ n   = [ cat    = 'noun'     ]                   ] ] ]
+                    [           [     [       [ number = {^^number} ]                   ] ] ]
+                    [           [                                                         ] ]
+                    [           [     [ cat     = 'vp'             ]                      ] ]
+                    [           [ 3 = [ pattern = (v)              ]                      ] ]
+                    [           [     [                            ]                      ] ]
+                    [           [     [ v       = [ cat = 'verb' ] ]                      ] ]
+                    [           [                                                         ] ]
+                    [           [ 4 = [ cat = 'noun' ]                                    ] ]
+                    [           [                                                         ] ]
+                    [           [ 5 = [ cat = 'verb' ]                                    ] ]
+                    [           [                                                         ] ]
+                    [           [ 6 = [ cat = 'article' ]                                 ] ]
+\end{verbatim}
+}
+\caption{Feature structure containing a named \texttt{alt}}
+\label{fig:nltk-named-alt}
+\end{figure}
+
+\pagebreak
+
+A typical \texttt{alt}-containing feature structure is shown in figure \ref{fig:easy-alt}.
+It contains a top level \texttt{alt} feature with six possible alternations. One of the alternations
+contains another \texttt{alt} feature.
+These can be named, as shown in figure \ref{fig:nltk-named-alt}.
+(The name is the string following the ``\_'' or ``top''.)
+
+The next attribute of interest is \texttt{opt}. As previously shown (section \ref{sec:opt}) \texttt{opt} is essentially an \texttt{alt}
+with an empty feature structure added to the list of alternatives. 
+Upon encountering an \texttt{opt} feature the implemented FUF grammar parser renames it to an \texttt{alt} and
+adds the empty feature to the list of alternatives.
+Figure \ref{fig:nltk-opt-parsing-input} shows a simple \texttt{opt} feature and figure 
+\ref{fig:nltk-opt-parsing-result} shows the same structure after conversion.
+Figure \ref{fig:named-opt} shows a named \texttt{opt} converted to a named \texttt{alt}.
+
+\begin{figure}[h!]
+    \centering
+    {\scriptsize
+    \subfloat[\texttt{opt} input s-expression]
+    {
+       \label{fig:nltk-opt-parsing-input}
+       \begin{tabular}{l}
+           \texttt{(opt ((punctuation ((after "."))) ) )} \\
+       \end{tabular}
+   } \\
+   \subfloat[\texttt{opt} parsing result]
+    {
+       \label{fig:nltk-opt-parsing-result}
+       \begin{tabular}{l}
+           \texttt{[~~~~~~~[ 1 = [ punctuation = [ after = '.' ] ] ]]}\\
+            \texttt{[ alt = [ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]]}\\
+            \texttt{[~~~~~~~[ 2 = [] ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]]}\\
+       \end{tabular}
+   } \\
+
+    }
+    \caption{\texttt{opt} converted to \texttt{alt}}
+\label{fig:easy-opt}
+\end{figure}
+
+\begin{figure}[h!]
+    {\scriptsize
+    \begin{verbatim}
+                            [                [ 1 = [ punctuation = [ after = '.' ] ] ] ]
+                            [ alt_somename = [                                       ] ]
+                            [                [ 2 = []                                ] ]
+    \end{verbatim}
+    }
+    \caption{Named \texttt{opt} converted into a named \texttt{alt}}
+\label{fig:named-opt}
+\end{figure}
+
+Since there is a little bit more work that needs to be done to convert these feature the code for doing so
+is found in the \texttt{nltk.fuf.specialfs} module.
+
+The larger \texttt{alt} structures also contains relative and absolute links. 
+These values remain unprocessed until unification starts.
+Looking at the converted structure in figure
+\ref{fig:nltk-named-alt}, one of the links is found at \texttt{\small alt\_top['2']['n']['number']} key. The 
+process of link resolution is discussed in section \ref{sec:unification}.
+Finally, after the input feature structure and the grammar have been converted, we can proceed to their 
+unification.
+
+\subsection{\texttt{fuf.py} or Towards a Result}
+Unification of FUF based feature structures is performed through the \texttt{nltk.fuf.fuf.Unifier} class.
+Before the unification can be started some housekeeping must be done. Part of this task 
+revolves around processing the \texttt{alt} features. Before the start of unification the code
+goes through all the possible alternations in the grammar and creates a list of those paths. This is done through
+the \texttt{nltk.fuf.fuf.GrammarPathResolver}. The result of the resolution is a list of all possible 
+feature structures that can be generated through the alternations. The original LISP FUF does not do this, 
+rather it picks one \texttt{alt} sub-feature after another and tries to unify them with the input. The expansion
+of all the nested paths in \texttt{nltk.fuf} leads to a exponential growth of unification attempts \cite{fuf-man}.
+In the future, this could be dealt with
+by implementing the \texttt{index} annotation present in FUF. The unifier can use the value of the index
+to choose one branch from the alternatives without ever
+considering the other branches\footnote{Consult the FUF manual for an extended example.}.
+
+Once the paths of the grammar have been generated, the next step is to check for feature value types. FUF types have been 
+discussed earlier, therefore, we only focus on their implementation. Feature value type handling is done through 
+the \texttt{nltk.fuf.fstypes} module. The two classes contained within the module are:
+\begin{itemize}
+    \item \texttt{FeatureValueTypeTable} - the type table does all the maintenance of the value types. The relationships
+        are stored within a Python \texttt{dict} object. Figures \ref{fig:fuf-type-table} and \ref{fig:nltk-type-table}
+        demonstrate the conversion of the type table from FUF to \texttt{nltk.fuf}.  
+        The type table can also be used to check for subsumption. This is shown in figure \ref{fig:subsumption}.
+
+    \item \texttt{TypedFeatureValue} - this class is used to represent the typed value within a feature structure.
+        The \texttt{TypedFeatureValue} is a subclass of the \texttt{CustomFeatureValue} class defined in
+        \texttt{nltk.featstruct} module. The \texttt{CustomFeatureValue} allows us to define special unification 
+        on the values that are instances of this class.
+\end{itemize}
+
+
+\begin{figure}[h!]
+    {\scriptsize
+    \begin{verbatim}
+
+                        (define-feature-type mood (finite non-finite))
+                        (define-feature-type finite (declarative interrogative bound relative))
+                        (define-feature-type non-finite (imperative present-participle infinitive))
+                        (define-feature-type interrogative (yes-no wh))
+
+    \end{verbatim}
+    }
+\caption{FUF Type Definitions}
+\label{fig:fuf-type-table}
+\end{figure}
+
+\begin{figure}[h!]
+    {\scriptsize
+    \begin{verbatim}
+                        relative <--- ['simple-relative', 'embedded-relative', 'be-deleted-relative', 
+                                            'wh-nominal-relative', 'wh-ever-nominal-relative']
+                        mood <--- ['finite', 'non-finite']
+                        non-finite <--- ['imperative', 'present-participle', 'infinitive']
+                        deontic-modality <--- ['duty', 'authorization']
+                        pronp <--- ['personal-pronoun', 'question-pronoun', 
+                                        'quantified-pronoun', 'demonstrative-pronoun']
+                        det <--- ['possessive-det', 'demonstrative-det', 'regular-det']
+                        interrogative <--- ['yes-no', 'wh']
+                        process-type <--- ['action', 'mental', 'attributive', 'equative']
+                        np <--- ['pronp', 'common', 'proper']
+                        finite <--- ['declarative', 'interrogative', 'bound', 'relative']
+                        possessive-det <--- ['np']
+                        modality <--- ['epistemic-modality', 'deontic-modality']
+                        epistemic-modality <--- ['fact', 'inference', 'possible']
+    \end{verbatim}
+    }
+    \caption{\texttt{nltk.fuf.fstypes} Type Table}
+\label{fig:nltk-type-table}
+\end{figure}
+
+\begin{figure}
+    {\scriptsize
+            \begin{verbatim}
+                        >>> type_table.subsume('np', 'common')
+                        >>> # or
+                        >>> types_table.subsume('mood', 'imperative')
+\end{verbatim}
+}
+\caption{Checking for subsumption in \texttt{nltk.fuf.fstypes}}
+\label{fig:subsumption}
+\end{figure}
+
+As in the case with the \texttt{alt} unpacking, before the grammar can be unified with the input feature structure, 
+feature values which are defined in the type table have to be instantiated within the grammar. 
+This work is performed by the 
+\texttt{fstypes.asssign\_types} function. It traverses the given feature structure and replaces 
+the primitive values with the instances of \texttt{TypedFeatureValue}. For an example of this consult
+code in \texttt{nltk.fuf.fstypes} module.
+
+\subsubsection{Unification}
+\label{sec:unification}
+Once all of the housekeeping is done we can proceed to the actual unification of the input and grammar 
+feature structures. The process of unification is defined in the \\ 
+\texttt{nltk.fuf.fuf.Unifier} class and more
+specifically the \texttt{unify} method, shown in figure \ref{fig:unify-method}.
+
+The unifier attempts to unify one of the alternations from the list of alternatives generated by the 
+\texttt{GrammarPathResolver} with the input. If all of the attempts fail to unify with the input 
+then the unification has failed. If one of the attempts succeeds, the resulting feature structure
+must be  checked for relative or absolute links.
+
+Dynamic link resolution is performed by the \texttt{nltk.fuf.link.LinkResolver} class. and the \texttt{resolve}
+method in particular. This class is capable of handling both types of links (figure \ref{fig:link-resolver}). It is worth nothing that the 
+\texttt{resolve} method will try to find the value of the link whether it is another feature structure
+or a primitive value. However, if the value cannot be found the link will be replaced with \texttt{nltk.sem.Variable}
+variable object. If the value of the link is found to be a variable, the variable in question will
+be copied. If the value of the link is another link, the resolver will first attempt to resolve the newly
+found link and then copy the value to the link that was encountered at the start of the resolution.
+\begin{figure}[h!]
+{\scriptsize
+    \begin{verbatim}
+                        >>> fs1 = fufconvert.fuf_to_featstruct("""
+                                           ((cat s)
+                                              (prot ((cat np)
+                                                      (number sing)))
+                                              (verb ((cat vp)
+                                                      (number { ^ ^ prot number})))) """)
+                        >>> print fs1
+                        >>> lr = LinkResolver()
+                        [ cat  = 's'                          ]
+                        [                                     ]
+                        [ prot = [ cat    = 'np'   ]          ]
+                        [        [ number = 'sing' ]          ]
+                        [                                     ]
+                        [ verb = [ cat    = 'vp'            ] ]
+                        [        [ number = {^^prot number} ] ]
+                        >>> lr.resolve(fs1)
+                        >>> print fs1
+                        [ cat  = 's'                 ]
+                        [                            ]
+                        [ prot = [ cat    = 'np'   ] ]
+                        [        [ number = 'sing' ] ]
+                        [                            ]
+                        [ verb = [ cat    = 'vp'   ] ]
+                        [        [ number = 'sing' ] ]
+\end{verbatim}
+}
+\caption{Link Resolution Example}
+\label{fig:link-resolver}
+\end{figure}
+
+
+Once the link resolution is finished on the result of the unification, the unifier goes through the sub-features 
+of the result
+and attempts to unify them with the alternations in the list of alternatives. Only those features which are considered 
+to be constituents are unified (what it means for a feature to be a constituents has been described earlier).
+Figures \ref{fig:unification-one}, \ref{fig:unification-two} and \ref{fig:unification-three} show the above
+described process.
+
+\begin{figure}
+    {\scriptsize
+\begin{verbatim}
+            @staticmethod
+            def _unify(fs, grs, resolver=None, trace=False):
+                unifs = None
+                for gr in grs:
+                    unifs = fs.unify(gr)
+                    if unifs:
+                        resolver.resolve(unifs)
+                        for fname, fval in unifs.items():
+                            if Unifier._isconstituent(unifs, fname, fval):
+                                newval = Unifier._unify(fval, grs, resolver)
+                                if newval:
+                                    unifs[fname] = newval
+                        return unifs
+                return unifs
+            
+
+            def unify(self):
+                """
+                Unify the input feature structure with the grammar feature structure
+                
+                @return: If unification is succesful the result is the unified
+                structure. Otherwise return value is None.
+                
+                """
+                
+                self.lr.resolve(self.fsinput)
+                # make a copy of the original input
+                return Unifier._unify(self.fsinput, self.grammar_paths, self.lr)
+\end{verbatim}
+}
+\caption{\texttt{unify} method}
+\label{fig:unify-method}
+\end{figure}
+\pagebreak
+
+\begin{figure}[h!]
+    {\scriptsize
+\begin{verbatim}
+            >>> itext, gtext = open('tests/uni.fuf').readlines()
+            # set up the input structure
+            >>> fsinput = fuf_to_featstruct(itext)
+            >>> print fsinput
+            [ cat  = 's'                      ]
+            [                                 ]
+            [ goal = [ n = [ lex = 'mary' ] ] ]
+            [                                 ]
+            [ prot = [ n = [ lex = 'john' ] ] ]
+            [                                 ]
+            [ verb = [ v = [ lex = 'link' ] ] ]\end{verbatim}
+}
+\caption{Unification part I: Convert the input}
+\label{fig:unification-one}
+\end{figure}
+\begin{figure}[h!]
+    {\scriptsize
+\begin{verbatim}
+            # set up the grammar structure
+            >>> fsgrammar = fuf_to_featstruct(gtext)
+            >>> print fsgrammar
+            [           [     [ cat     = 's'                        ]            ] ]
+            [           [     [                                      ]            ] ]
+            [           [     [ goal    = [ cat = 'np' ]             ]            ] ]
+            [           [     [                                      ]            ] ]
+            [           [ 1 = [ pattern = (prot, verb, goal)         ]            ] ]
+            [           [     [                                      ]            ] ]
+            [           [     [ prot    = [ cat = 'np' ]             ]            ] ]
+            [           [     [                                      ]            ] ]
+            [           [     [ verb    = [ cat    = 'vp'          ] ]            ] ]
+            [           [     [           [ number = {prot number} ] ]            ] ]
+            [           [                                                         ] ]
+            [           [     [       [ 1 = [ pattern = (n)   ]               ] ] ] ]
+            [           [     [       [     [ proper  = 'yes' ]               ] ] ] ]
+            [           [     [       [                                       ] ] ] ]
+            [           [     [ alt = [     [ det     = [ cat = 'article' ] ] ] ] ] ]
+            [           [     [       [     [           [ lex = 'the'     ] ] ] ] ] ]
+            [           [     [       [ 2 = [                               ] ] ] ] ]
+            [ alt_top = [ 2 = [       [     [ pattern = (det, n)            ] ] ] ] ]
+            [           [     [       [     [ proper  = 'no'                ] ] ] ] ]
+            [           [     [                                                 ] ] ]
+            [           [     [ cat = 'np'                                      ] ] ]
+            [           [     [                                                 ] ] ]
+            [           [     [ n   = [ cat    = 'noun'     ]                   ] ] ]
+            [           [     [       [ number = {^^number} ]                   ] ] ]
+            [           [                                                         ] ]
+            [           [     [ cat     = 'vp'             ]                      ] ]
+            [           [ 3 = [ pattern = (v)              ]                      ] ]
+            [           [     [                            ]                      ] ]
+            [           [     [ v       = [ cat = 'verb' ] ]                      ] ]
+            [           [                                                         ] ]
+            [           [ 4 = [ cat = 'noun' ]                                    ] ]
+            [           [                                                         ] ]
+            [           [ 5 = [ cat = 'verb' ]                                    ] ]
+            [           [                                                         ] ]
+            [           [ 6 = [ cat = 'article' ]                                 ] ]
+\end{verbatim}
+}
+\caption{Unification part II: Convert the grammar}
+\label{fig:unification-two}
+\end{figure}
+
+\begin{figure}[h!]
+    {\scriptsize
+\begin{verbatim}
+            # unify the input and the grammar
+            >>> fuf = Unifier(fsinput, fsgrammar)
+            >>> result = fuf.unify()
+            # show the result
+            >>> print result
+            [ cat     = 's'                               ]
+            [                                             ]
+            [           [ cat     = 'np'                ] ]
+            [           [                               ] ]
+            [           [           [ cat    = 'noun' ] ] ]
+            [           [ n       = [ lex    = 'mary' ] ] ]
+            [ goal    = [           [ number = ?x2    ] ] ]
+            [           [                               ] ]
+            [           [ number  = ?x2                 ] ]
+            [           [ pattern = (n)                 ] ]
+            [           [ proper  = 'yes'               ] ]
+            [                                             ]
+            [ pattern = (prot, verb, goal)                ]
+            [                                             ]
+            [           [ cat     = 'np'                ] ]
+            [           [                               ] ]
+            [           [           [ cat    = 'noun' ] ] ]
+            [           [ n       = [ lex    = 'john' ] ] ]
+            [ prot    = [           [ number = ?x1    ] ] ]
+            [           [                               ] ]
+            [           [ number  = ?x1                 ] ]
+            [           [ pattern = (n)                 ] ]
+            [           [ proper  = 'yes'               ] ]
+            [                                             ]
+            [           [ cat     = 'vp'             ]    ]
+            [           [ number  = ?x1              ]    ]
+            [ verb    = [ pattern = (v)              ]    ]
+            [           [                            ]    ]
+            [           [ v       = [ cat = 'verb' ] ]    ]
+            [           [           [ lex = 'link' ] ]    ]
+
+\end{verbatim}
+}
+\caption{Unification part III: Result}
+\label{fig:unification-three}
+\end{figure}
+
+\subsection{linearizer.py \& morphology.py or Reaching the Final Output}
+As previously mentioned the linearizer produces the final output given the result of the unification. 
+The Python code for this 
+is in \texttt{nltk.fuf.linearizer}, specifically the \texttt{linearize} function. The process for 
+linearization has been previously described in section \ref{sec:special-fuf-features-values}.
+
+Packaged alongside
+the \texttt{morphology} and \texttt{linearizer} modules is a lexicon module. It contains predefined sets of 
+irregular plurals, verbs as well as pronoun cases and comparatives. This dictionary is used
+by the \texttt{morphology} module to return the correct string to the \texttt{linearizer}. 
+
+The \texttt{nltk.fuf.morphology} module must be given special attention as prior to the work
+on \texttt{nltk.fuf} NLTK did not contain a morphology system. The current implementation is 
+a direct port of the LISP code in the FUF implementation. This system defines a useful application
+programming interface (API) that can be used for the development of alternative morphology systems in NLTK.
+The categories handled by the \texttt{nltk.fuf.morphology} module are the same ones handled by FUF. 
+For a complete specification the reader if invited to consult the FUF manual.
+The API outlined in figure \ref{fig:morph-api} is the current morphology implementation used 
+in \texttt{nltk.fuf.mophology}. Note that the functions shown here are equivalent to 
+abstract functions in languages such as Java. The \texttt{nltk.fuf.morphology} 
+contains both the abstract definitions and their concrete implementations.
+
+\begin{figure}[h!]
+    {\scriptsize
+\begin{verbatim}
+                        def pluralize(word):
+                            raise NotImplementedError()
+
+                        def form_ing(word):
+                            raise NotImplementedError()
+
+                        def form_past(word):
+                            raise NotImplementedError()
+
+                        def form_present_verb(word, number, person):
+                            raise NotImplementedError()
+
+                        def morph_fraction(lex, num, den, digit):
+                            raise NotImplementedError()
+
+                        def morph_be(number, person, tense):
+                            raise NotImplementedError()
+
+                        def morph_verb(word, ending, number, person, tense):
+                            raise NotImplementedError()
+
+                        def form_adj(word, ending):
+                            raise NotImplementedError()
+
+                        def morph_adj(word, superlative, comparative, inflection):
+                            raise NotImplementedError()
+
+                        def morph_pronoun(lex, pronoun_type, case, gender, 
+                                          number, distance, animate,
+                                          person, restrictive):
+                            raise NotImplementedError()
+
+                        def morph_number(word, number):
+                            raise NotImplementedError()
+
+                        def morph_number(word, number):
+                            raise NotImplementedError()
+\end{verbatim}
+}
+\caption{Morphology API}
+\label{fig:morph-api}
+\end{figure}
+
+Finally, the \texttt{linearizer} returns the generated sentence which concludes the work done by \texttt{nltk.fuf}.  
+
+\section{Conclusion and Future Work}
+In conclusion, the result of this work is two-fold. First and foremost, with with inclusion of \texttt{fuf} 
+module NLTK becomes a more fully-featured natural language processing library. It can be used for both research and
+education. Second, prior to the development of \texttt{nltk.fuf} the NLTK library did not include any kind 
+of morphology module. The author hopes that the new morphology
+API will lead to the development of new and exciting additions to NLTK.
+
+At the same time, there are a number of improvements and features that can be made and added to the \texttt{nltk.fuf} library.
+\begin{itemize}
+\item The index annotation in the alt feature is largely ignored at the moment.
+In LISP FUF this is used to control the number of the possible paths through grammar. 
+While this information is available in \texttt{nltk.fuf} it is not used at the moment.
+\item It should be possible to do the unification without unpacking all the alt paths through the grammar. 
+    (ie, expand the \texttt{alt} a little bit and go from there).
+\item Changing the alt handling requires changes to link resolution.
+\item During parsing all the comments and tracing calls are removed. It would be nice to be able to enable tracing all stages of processing.
+\item There are utility functions defined to control backtracking during unification and to
+    reduce the computational complexity of the unification algorithm.
+\item Currently there is no implementation of dependency directed backtracking.
+\end{itemize}
+
+\bibliographystyle{plain}
+\bibliography{nltkfuf}
+
+\end{document}
+
+
