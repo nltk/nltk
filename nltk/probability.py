@@ -241,20 +241,40 @@ class FreqDist(dict):
     def sorted_samples(self):
         raise AttributeError, "Use FreqDist.sorted() to get the sorted samples"
     
-    def plot(self, num=40, *args, **kwargs):
+    def plot(self, samples=None, *args, **kwargs):
+        """
+        Plot the given samples from the frequency distribution.
+        If no samples are specified, use all samples, in lexical sort order.
+        (Requires Matplotlib to be installed.)
+        
+        @param samples: The samples to plot.
+        @type samples: C{list} 
+        """
         try:
             import pylab
         except ImportError:
             raise ValueError('The plot function requires the matplotlib package.'
                          'See http://matplotlib.sourceforge.net/')
-        samples = self.sorted()[:num]
+        if not samples:
+            samples = sorted(self.samples())
         values = [self[sample] for sample in samples]
         if not args:
             args = ["bo"]
         pylab.grid(True, color="silver")
         pylab.semilogy(values, *args, **kwargs)
-        pylab.xticks(range(num), samples, rotation=45, color="b")
+        pylab.xticks(range(len(samples)), samples, rotation=45, color="b")
         pylab.show()
+        
+    def zipf_plot(self, num=40, *args, **kwargs):
+        """
+        Plot the most frequent samples of the frequency distribution.
+        (Requires Matplotlib to be installed.)
+        
+        @param num: The number of samples to plot.
+        @type num: C{int} 
+        """
+        samples = self.sorted()[:num]
+        self.plot(samples, *args, **kwargs)
 
     # SB: cache the sorted samples?
     def sorted(self):
