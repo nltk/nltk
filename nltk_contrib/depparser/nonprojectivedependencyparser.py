@@ -478,12 +478,40 @@ class ProbabilisticNonprojectiveParser(object):
 #################################################################
 
 class NonprojectiveDependencyParser(object):
-    
+    """
+    A non-projective, rule-based, dependency parser.  This parser 
+    will return the set of all possible non-projective parses based on 
+    the word-to-word relations defined in the parser's dependency 
+    grammar, and will allow the branches of the parse tree to cross 
+    in order to capture a variety of linguistic phenomena that a 
+    projective parser will not.
+    """
+
     def __init__(self, dependency_grammar):
+        """
+        Creates a new C{NonprojectiveDependencyParser}.
+
+        param dependency_grammar: a grammar of word-to-word relations.
+        type depenency_grammar: C{DependencyGrammar}
+	    """
         self._grammar = dependency_grammar
 
     def parse(self, tokens):
-        # Create grahp representation of tokens
+        """
+        Parses the input tokens with respect to the parser's grammar.  Parsing 
+        is accomplished by representing the search-space of possible parses as 
+        a fully-connected directed graph.  Arcs that would lead to ungrammatical 
+        parses are removed and a lattice is constructed of length n, where n is 
+        the number of input tokens, to represent all possible grammatical 
+        traversals.  All possible paths through the lattice are then enumerated
+        to produce the set of non-projective parses.
+
+        param tokens: A list of tokens to parse.
+        type tokens: A C{list} of L{String}.
+        return: A set of non-projective parses.
+        rtype: A C{list} of L{DepGraph} 
+        """
+        # Create graph representation of tokens
         self._graph = DepGraph()
         self._graph.nodelist = []  # Remove the default root
         for index, token in enumerate(tokens):
@@ -494,7 +522,7 @@ class NonprojectiveDependencyParser(object):
                 if self._grammar.contains(head_node['word'], dep_node['word']) and not head_node['word'] == dep_node['word']:
                     deps.append(dep_node['address'])
             head_node['deps'] = deps
-        
+        # Create lattice of possible heads
         roots = []
         possible_heads = []
         for i, word in enumerate(tokens):
@@ -505,14 +533,14 @@ class NonprojectiveDependencyParser(object):
             if(len(heads) == 0):
                 roots.append(i)
             possible_heads.append(heads)
-        
+        # Set roots to attempt
         if(len(roots) > 1):
             print "No parses found."
             return False
         elif(len(roots) == 0):
             for i in range(len(tokens)):
                 roots.append(i)
-        
+        # Traverse lattice
         analyses = []
         for root in roots:
             stack = []
@@ -562,7 +590,7 @@ class NonprojectiveDependencyParser(object):
                     i += 1
                 else:
                     i -= 1
-        
+        # Filter parses
         graphs = []
         #ensure 1 root, every thing has 1 head
         for analysis in analyses:
@@ -583,54 +611,11 @@ class NonprojectiveDependencyParser(object):
                             deps.append(j+1)
                     node['deps'] = deps
                     graph.nodelist.append(node)
+#                cycle = graph.contains_cycle()
+#                if(not cycle):
                 graphs.append(graph)
-        #ensure no cycles
         return graphs
 
-
-        # Traverse all possible paths of the graph n deep
-#       for start_node in self._graph.nodelist:
-#           path = self.get_paths(-1, start_node, len(tokens) - 1)
-#           print 'Path', path
-    # 
-    # def distance_matrix(self):
-    #   matrix = []
-    #   for i in range(len(self._graph.nodelist)):
-    #       matrix.append([])
-    #       node = self._graph.get_by_address(i)
-    #       for j in range(len(self._graph.nodelist)):
-    #           if(j in node['deps']):
-    #               matrix[i].append(1)
-    #           else:
-    #               matrix[i].append(0)
-    #   print matrix
-    #   print 'Matrix:'
-    #   for i in range(0, len(self._graph.nodelist)):
-    #       print matrix[i], '\n'
-    #   for window in (1,1):
-    #       for i in range(1, len(self._graph.nodelist)):
-    #           for j in range(len(self._graph.nodelist) - 1):
-    #               if(matrix[i-window][j] > 0 and matrix[i][j+1] > 0):
-    #                   matrix[i][j] = matrix[i-1][j] + matrix[i][j+1]
-    #   print 'Matrix:'
-    #   for i in range(0, len(self._graph.nodelist)):
-    #       print matrix[i], '\n'
-    # 
-    # def get_paths(self, parent, node, depth):
-    #   print node['address'], depth
-    #   if(depth == 0):
-    #       return [{node['address']:parent}]
-    #   elif(len(node['deps']) > 0):
-    #       for dep in node['deps']:
-    #           dep_node = self._graph.get_by_address(dep)
-    #           paths = self.get_paths(node['address'], dep_node, depth - 2)
-    #           if(paths):
-    #               for path in paths:
-    #                   path[node['address']] = parent
-    #               return paths
-    #           #return paths.append(node['address'])
-    #   else:
-    #       return None
 
 
             
@@ -644,7 +629,7 @@ class NonprojectiveDependencyParser(object):
 
 def demo():
 #   hall_demo()
-#   nonprojective_conll_parse_demo()
+    nonprojective_conll_parse_demo()
     rule_based_demo()
 
 
