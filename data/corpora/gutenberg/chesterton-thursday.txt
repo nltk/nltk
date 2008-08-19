@@ -291,7 +291,7 @@ The Man Who Was Thursday
 by G. K. Chesterton
 
 
-
+@@@@@@@@
 
 A WILD, MAD, HILARIOUS AND PROFOUNDLY MOVING TALE
 
@@ -7110,10 +7110,4 @@ hopped and sang, and found himself outside a fenced garden. There
 he saw the sister of Gregory, the girl with the gold-red hair,
 cutting lilac before breakfast, with the great unconscious gravity
 of a girl.
-
-
-
-
-
-End of Project Gutenberg Etext The Man Who Was Thursday, by Chesterton
 

@@ -279,7 +279,7 @@ Association / Carnegie-Mellon University".
 *END*THE SMALL PRINT! FOR PUBLIC DOMAIN ETEXTS*Ver.04.29.93*END*
 
 
-
+@@@@@@@@
 
 
 Project Gutenberg's Etext of Shakespeare's The Tragedie of 
@@ -381,6 +381,8 @@ and davidr@inconnect.com.  I hope that you enjoy this.
 David Reed
 
 The Tragedie of Julius Caesar
+
+@@@@@@@@
 
 Actus Primus. Scoena Prima.
 

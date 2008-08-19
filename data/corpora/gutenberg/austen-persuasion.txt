@@ -267,6 +267,7 @@ The Project Gutenberg Etext of Persuasion by Jane Austen
 Persuasion by Jane Austen (1818)
 
 
+@@@@@@@@
 
 
 Chapter 1
@@ -8735,7 +8736,5 @@ than in its national importance.
 
         Finis
 
-
-End of the Project Gutenberg Etext of Persuasion by Jane Austin
 
 

@@ -12,3 +12,8 @@ by the following authors:
 * John Milton
 * William Shakespeare (3)
 * Walt Whitman
+
+The beginning of the body of each book could not be identified automatically,
+so a marker: "@@@@@@@@" has been inserted into each file.  Some files ended
+with a line "End of The Project Gutenberg Etext...", and this has been deleted.
+
