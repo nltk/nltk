@@ -48,13 +48,21 @@ class NPSChatCorpusReader(XMLCorpusReader):
 
     def _wrap_elt(self, elt, handler):
         return ElementWrapper(elt)
-
+    
     def _elt_to_words(self, elt, handler):
-        return [t.attrib['word'] for t in elt.findall('t')]
+        return [self._simplify_username(t.attrib['word'])
+                for t in elt.findall('t')]
         
     def _elt_to_tagged_words(self, elt, handler, simplify_tags=False):
-        tagged_post = [(t.attrib['word'], t.attrib['pos']) for t in elt.findall('t')]
+        tagged_post = [(self._simplify_username(t.attrib['word']),
+                        t.attrib['pos']) for t in elt.findall('t')]
         if simplify_tags:
             tagged_post = [(w, self._tag_mapping_function(t))
                            for (w,t) in tagged_post]
         return tagged_post
+
+    @staticmethod
+    def _simplify_username(word):
+        if 'User' in word:
+            word = 'U' + word.split('User', 1)[1]
+        return word

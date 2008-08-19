@@ -57,6 +57,7 @@ from evaluate import *
 from featstruct import *
 from olac import *
 from probability import *
+from text import *
 from tree import *
 from util import *
 from yamltags import *
