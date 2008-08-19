@@ -9,9 +9,9 @@
 A utility for displaying lexical dispersion.
 """
 
-from Tkinter import Canvas
+import pylab
 
-def dispersion_plot(text, words, rowheight=15, rowwidth=800):
+def dispersion_plot(text, words):
     """
     Generate a lexical dispersion plot.
 
@@ -19,28 +19,20 @@ def dispersion_plot(text, words, rowheight=15, rowwidth=800):
     @type text: C{list} or C{enum} of C{str}
     @param words: The target words
     @type words: C{list} of C{str}
-    @param rowheight: Pixel height of a row
-    @type rowheight: C{int}
-    @param rowwidth: Pixel width of a row
-    @type rowwidth: C{int}
-
     """
-    canvas = Canvas(width=rowwidth, height=rowheight*len(words))
     text = list(text)
-    scale = float(rowwidth)/len(text)
-    position = 0
-    for word in text:
-        for i in range(len(words)):
-            x = position * scale
-            if word == words[i]:
-                y = i * rowheight
-                canvas.create_line(x, y, x, y+rowheight-1)
-        position += 1
-    canvas.pack()
-    canvas.mainloop()
+    points = [(x,y) for x in range(len(text))
+                    for y in range(len(words))
+                    if text[x] == words[y]]
+    x, y = zip(*points)
+    pylab.plot(x, y, "b|", scalex=.1)
+    pylab.yticks(range(len(words)), words, color="b")
+    pylab.ylim(-1, len(words))
+    pylab.title("Lexical Dispersion Plot")
+    pylab.xlabel("Word Offset")
+    pylab.show()
 
 if __name__ == '__main__':
     from nltk.corpus import gutenberg
-    from nltk.draw import dispersion
     words = ['Elinor', 'Marianne', 'Edward', 'Willoughby']
-    dispersion.plot(gutenberg.words('austen-sense.txt'), words)
+    dispersion_plot(gutenberg.words('austen-sense.txt'), words)

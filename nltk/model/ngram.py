@@ -76,7 +76,10 @@ class NgramModel(ModelI):
         else:
             return 1
 
+    # NB, this will always start with same word since model
+    # is trained on a single text
     def generate(self, num_words, context=()):
+        '''Generate random text based on the language model.'''
         text = list(context)
         for i in range(num_words):
             text.append(self._generate_one(text))
@@ -120,7 +123,9 @@ def demo():
     lm = NgramModel(3, brown.words(categories='a'), estimator)
     print lm
 #    print lm.entropy(sent)
-    print lm.generate(40)
+    text = lm.generate(100)
+    import textwrap
+    print '\n'.join(textwrap.wrap(' '.join(text)))
 
 if __name__ == '__main__':
     demo()
