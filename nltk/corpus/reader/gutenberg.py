@@ -22,11 +22,11 @@ class GutenbergCorpusReader(PlaintextCorpusReader):
                 stream = filename.open(encoding)
             else:
                 stream = FileSystemPathPointer(filename).open(encoding)
-            for i in range(300):
+            for i in range(400):
                 line = stream.readline()
                 if line == '':
                     break # No preamble found!
-                if re.match(r'\*END\*?\s*THE\s*SMALL\s*PRINT', line):
+                if line.startswith('@@@@@@@@'):
                     startpos = stream.tell()
                     break # End of the preamble!
             stream.close()
