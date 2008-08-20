@@ -279,7 +279,7 @@ class Clause(list):
     def free(self):
         s = set()
         for atom in self:
-            s |= atom.free()
+            s |= atom.free(False)
         return s
     
     def replace(self, variable, expression):
@@ -682,7 +682,7 @@ def most_general_unification(a, b, bindings=None):
     raise BindingException((a, b))
 
 def _mgu_var(var, expression, bindings):
-    if var.variable in expression.free():
+    if var.variable in expression.free(False):
         raise BindingException((var, expression))
     else:
         return BindingDict([(var.variable, expression)]) + bindings
@@ -777,4 +777,3 @@ if __name__ == '__main__':
     test_clausify()
     print
     testResolution()
-    
