@@ -5,7 +5,7 @@ Resolution Theorem Prover
     >>> from nltk.inference import inference
     >>> from nltk.sem import logic
     >>> from nltk.sem.logic import *
-    >>> from nltk_contrib.sem.nonmonotonic import *
+    >>> from nltk.inference.nonmonotonic import *
     >>> logic._counter._value = 0
     >>> lp = LogicParser()
     
