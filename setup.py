@@ -66,6 +66,7 @@ setup(
                 'nltk_contrib.lpath',
                 'nltk_contrib.lpath.lpath',
                 'nltk_contrib.lpath.at_lite',
+                'nltk_contrib.misc',
                 'nltk_contrib.readability',
                 'nltk_contrib.rte',
                 'nltk_contrib.toolbox',
