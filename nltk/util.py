@@ -756,8 +756,11 @@ class LazyMap(AbstractLazySequence):
         else:
             self._cache = None
             
-        self._all_lazy = bool(sum(isinstance(lst, AbstractLazySequence)
-                                  for lst in lists))
+        # If you just take bool() of sum() here _all_lazy will be true just
+        # in case n >= 1 list is an AbstractLazySequence.  Presumably this
+        # isn't what's intended.
+        self._all_lazy = sum(isinstance(lst, AbstractLazySequence) 
+                             for lst in lists) == len(lists)
 
     def iterate_from(self, index):
         # Special case: one lazy sublist
