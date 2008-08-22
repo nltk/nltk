@@ -16,7 +16,7 @@ from nltk.sem.logic import LogicParser
 
 from nltk.internals import deprecated, Deprecated, find_binary
 
-from api import ProverI
+from api import ProverCommand, Prover
 
 """
 A theorem prover that makes use of the external 'Prover9' package.
@@ -184,12 +184,32 @@ def call_interpformat(input_str, args=[]):
 #{ Base Class
 ######################################################################
     
-class Prover9Parent:
+class Prover9CommandParent(object):
     """
-    A common base class used by both L{Prover9} and L{Mace
-    <mace.Mace>}, which is responsible for maintaining a goal and a
+    A common base class used by both L{Prover9Command} and L{MaceCommand
+    <mace.MaceCommand>}, which is responsible for maintaining a goal and a
     set of assumptions, and generating prover9-style input files from
     them.
+    """
+    def print_assumptions(self, output_format='nltk'):
+        """
+        Print the list of the current assumptions.       
+        """
+        if output_format.lower() == 'nltk':
+            for a in self.assumptions():
+                print a
+        elif output_format.lower() == 'prover9':
+            for a in convert_to_prover9(self.assumptions()):
+                print a
+        else:
+            raise NameError("Unrecognized value for 'output_format': %s" %
+                            output_format)
+
+class Prover9Command(Prover9CommandParent, ProverCommand):
+    """
+    A L{ProverCommand} specific to the L{Prover9} prover.  It contains
+    the a print_assumptions() method that is used to print the list
+    of assumptions in multiple formats.
     """
     def __init__(self, goal=None, assumptions=[], timeout=60):
         """
@@ -202,35 +222,38 @@ class Prover9Parent:
             no timeout.
         @type timeout: C{int}
         """
-        self._goal = goal
-        """The logic expression to prove.
-           L{logic.Expression}"""
+        ProverCommand.__init__(self, Prover9(timeout), goal, assumptions)
         
-        self._assumptions = list(assumptions)
-        """The set of expressions to use as assumptions in the proof.
-           C{list} of L{logic.Expression}"""
+    def show_proof(self, simplify=True):
+        """
+        Print out a Prover9 proof.
         
-        self._p9_assumptions = []
-        """The set of assumption expressions listed in L{self._assumptions},
-           transformed into a list of string expressions using
-           L{convert_to_prover9()}."""
-        
-        self._p9_goal = None
-        """The logic ecpression to prove (L{self._goal}), transformed
-           into a string expression using L{convert_to_prover9()}."""
-        
-        if goal:
-            self._p9_goal = self.convert_to_prover9(self._goal)
+        @parameter simplify: if C{True}, simplify the output file 
+        using Prover9's C{prooftrans}.
+        @type simplify: C{bool}
+        """
+        if self._result is None:
+            raise LookupError("You have to call prove() first to get a proof!")
             
-        if self._assumptions:
-            self._p9_assumptions = self.convert_to_prover9(self._assumptions)
-            
+        if simplify:
+            print call_prooftrans(self._proof, ['striplabels'])[0].rstrip()
+        else:
+            print self._proof.rstrip()
+
+
+class Prover9Parent(object):
+    """
+    A common class extended by both L{Prover9} and L{Mace <mace.Mace>}.  
+    It contains the functionality required to convert NLTK-style 
+    expressions into Prover9-style expressions.
+    """
+    def __init__(self, timeout=60):
         self._timeout = timeout
         """The timeout value for prover9.  If a proof can not be found
            in this amount of time, then prover9 will return false.
            (Use 0 for no timeout.)"""
-        
-    def prover9_input(self):
+    
+    def prover9_input(self, goal, assumptions):
         """
         @return: The input string that should be provided to the
         prover9 binary.  This string is formed based on the goal,
@@ -240,141 +263,56 @@ class Prover9Parent:
         if self._timeout > 0:
             s += 'assign(max_seconds, %d).\n' % self._timeout
             
-        if self._p9_assumptions:
+        if assumptions:
             s += 'formulas(assumptions).\n'
-            for p9_assumption in self._p9_assumptions:
+            for p9_assumption in convert_to_prover9(assumptions):
                 s += '    %s.\n' % p9_assumption
             s += 'end_of_list.\n\n'
     
-        s += 'formulas(goals).\n'
-        if self._p9_goal:
-            s += '    %s.\n' % self._p9_goal
-        s += 'end_of_list.\n\n'
+        if goal:
+            s += 'formulas(goals).\n'
+            s += '    %s.\n' % convert_to_prover9(goal)
+            s += 'end_of_list.\n\n'
 
         return s
     
-    def add_assumptions(self, new_assumptions):
-        """
-        Add new assumptions to the assumption list.
-        
-        @param new_assumptions: new assumptions
-        @type new_assumptions: C{list} of L{sem.logic.Expression}s
-        """
-        self._assumptions += new_assumptions
-        self._p9_assumptions += self.convert_to_prover9(new_assumptions)
-        return None
-    
-    def retract_assumptions(self, retracted, debug=False):
-        """
-        Retract assumptions from the assumption list.
-        
-        @param debug: If True, give warning when C{retracted} is not present on 
-        assumptions list.
-        @type debug: C{bool}
-        @param retracted: assumptions to be retracted
-        @type retracted: C{list} of L{sem.logic.Expression}s
-        """
-        retracted = set(retracted)
-        result = [a for a in self._assumptions if a not in retracted]
-        if debug and result == self._assumptions:
-            print Warning("Assumptions list has not been changed:")
-            self.assumptions()
-            
-        self._assumptions = result
-        self._p9_assumptions = self.convert_to_prover9(self._assumptions)
-        return None
-    
-    def assumptions(self, output_format='nltk'):
-        """
-        List the current assumptions.       
-        """
-        if output_format.lower() == 'nltk':
-            for a in self._assumptions:
-                print a
-        elif output_format.lower() == 'prover9':
-            for a in self._p9_assumptions:
-                print a
-        else:
-            raise NameError("Unrecognized value for 'output_format': %s" %
-                            output_format)
-        
-    def convert_to_prover9(self, input):
-        """
-        Convert C{logic.Expression}s to Prover9 format.
-        """
-        if isinstance(input, list):
-            result = []
-            for s in input:
-                try:
-                    result.append(s.simplify().str(logic.Tokens.PROVER9))
-                except AssertionError:
-                    print 'input %s cannot be converted to Prover9 input syntax' % input
-            return result    
-        else:
+def convert_to_prover9(input):
+    """
+    Convert C{logic.Expression}s to Prover9 format.
+    """
+    if isinstance(input, list):
+        result = []
+        for s in input:
             try:
-                return input.simplify().str(logic.Tokens.PROVER9)
+                result.append(s.simplify().str(logic.Tokens.PROVER9))
             except AssertionError:
                 print 'input %s cannot be converted to Prover9 input syntax' % input
-
-#{ Deprecated     
-    @deprecated("Use nltk.data.load(<file.fol>) instead.")    
-    def load(self, filename):
-        """
-        Load and parse a file of logical statements.
-        These must be parsable by LogicParser.
-        """
-        statements = open(filename).readlines()
-        lp = LogicParser()
-        result = []
-        for s in statements:
-            result.append(lp.parse(s))
-        return result                 
-#}       
+        return result    
+    else:
+        try:
+            return input.simplify().str(logic.Tokens.PROVER9)
+        except AssertionError:
+            print 'input %s cannot be converted to Prover9 input syntax' % input
 
 
 ######################################################################
 #{ Prover9
 ######################################################################
 
-class Prover9(Prover9Parent, ProverI):
+class Prover9(Prover9Parent, Prover):
     _proof = None  #: text output from running prover9
-    _result = None #: bool indicating if proof succeeded
     
-    def get_executable(self):
-        return 'prover9'
-
-    def prove(self, debug=False):
+    def prove(self, goal=None, assumptions=[], debug=False):
         """
         Use Prover9 to prove a theorem.
-        @return: C{True} if the proof was successful 
-        (i.e. returns value of 0), else C{False}        
+        @return: A pair whose first element is a boolean indicating if the 
+        proof was successful (i.e. returns value of 0) and whose second element
+        is the output of the prover.        
         """
-        stdout, returncode = call_prover9(self.prover9_input())
-        self._result = (returncode == 0)
-        self._proof = stdout
-        return self._result
+        stdout, returncode = call_prover9(self.prover9_input(goal, 
+                                                             assumptions))
+        return (returncode == 0, stdout)
     
-    def proof_successful(self):
-        return self._result
-    
-    def show_proof(self, simplify=True):
-        """
-        Print out a Prover9 proof.    
-        
-        @parameter simplify: if C{True}, simplify the output file 
-        using Prover9's C{prooftrans}.
-        @type simplify: C{bool}
-        """
-        if not self._proof:
-            raise LookupError("You have to call prove() first to get a proof!")
-            
-        if simplify:
-            #print 'calling with\n', self._proof
-            print call_prooftrans(self._proof, ['striplabels'])[0].rstrip()
-        else:
-            print self._proof.rstrip()
-
-
 ######################################################################
 #{ Tests and Demos
 ######################################################################
@@ -383,7 +321,7 @@ def test_config():
     
     a = LogicParser().parse('(walk(j) & sing(j))')
     g = LogicParser().parse('walk(j)')
-    p = Prover9(g, assumptions=[a])
+    p = Prover9Command(g, assumptions=[a])
     p._executable_path = None
     p.prover9_search=[]
     p.prove()
@@ -397,7 +335,7 @@ def test_convert_to_prover9(expr):
     """
     for t in expr:
         e = LogicParser().parse(t)
-        print Prover9Parent().convert_to_prover9(e)
+        print convert_to_prover9(e)
         
 def test_prove(arguments):
     """
@@ -406,7 +344,7 @@ def test_prove(arguments):
     for (goal, assumptions) in arguments:
         g = LogicParser().parse(goal)
         alist = [LogicParser().parse(a) for a in assumptions]
-        p = Prover9(g, assumptions=alist).prove()
+        p = Prover9Command(g, assumptions=alist).prove()
         for a in alist:
             print '   %s' % a
         print '|- %s: %s\n' % (g, p)

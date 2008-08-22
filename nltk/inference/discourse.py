@@ -12,7 +12,7 @@ from nltk.sem import root_semrep, Expression
 from nltk import parse
 from nltk.data import show_cfg
 
-from nltk.inference import Mace, spacer, get_prover
+from nltk.inference import MaceCommand, spacer, get_prover
 
 """
 Module for incrementally developing simple discourses, and checking for semantic ambiguity, 
@@ -273,7 +273,7 @@ class DiscourseTester(object):
             assumptions = [reading for (rid, reading) in self.expand_threads(tid, threads=threads)]
             assumptions += self._background
             # if Mace4 finds a model, it always seems to find it quickly
-            mb = Mace('', assumptions, timeout=2)
+            mb = MaceCommand(None, assumptions, timeout=2)
             modelfound = mb.build_model()
             results.append((tid, modelfound))
             if show:

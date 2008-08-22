@@ -8,6 +8,7 @@
 
 from nltk.sem import logic 
 
+import api
 import tableau
 import prover9
 import mace
@@ -24,11 +25,9 @@ def get_prover(goal=None, assumptions=[], prover_name='Prover9'):
     @type assumptions: L{list} of logic.Expression objects
     """
     if prover_name.lower() == 'tableau':
-        prover_module = tableau.Tableau
+        return api.ProverCommand(tableau.Tableau(), goal, assumptions)
     elif prover_name.lower() == 'prover9':
-        prover_module = prover9.Prover9
-    
-    return prover_module(goal, assumptions)
+        return prover9.Prover9Command(goal, assumptions)
 
 def get_model_builder(goal=None, assumptions=[], model_builder_name='Mace'):
     """
@@ -38,9 +37,7 @@ def get_model_builder(goal=None, assumptions=[], model_builder_name='Mace'):
     @type assumptions: L{list} of logic.Expression objects
     """
     if model_builder_name.lower() == 'mace':
-        builder_module = mace.Mace
-    
-    return builder_module(goal, assumptions)
+        return mace.MaceCommand(goal, assumptions)
 
 def demo():
     lp = logic.LogicParser()

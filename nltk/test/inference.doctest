@@ -91,11 +91,11 @@ initialized with a proof goal and, possibly, some assumptions. The
 list of assumptions (in this case, none).
 
     >>> goal = LogicParser().parse('(man(x) <-> --man(x))')
-    >>> prover = Prover9(goal)
+    >>> prover = Prover9Command(goal)
     >>> prover.prove()
     True
     
-Given a ``Prover9`` instance ``prover``, the method
+Given a ``Prover9Command`` instance ``prover``, the method
 ``prover.show_proof()`` will print out the extensive proof information
 provided by Prover9, shown in abbreviated form here::
 
@@ -130,8 +130,8 @@ the proof, as shown here.
 
     >>> g = LogicParser().parse('mortal(socrates)')
     >>> a1 = LogicParser().parse('all x.(man(x) -> mortal(x))')
-    >>> prover = Prover9(g, assumptions=[a1])
-    >>> prover.assumptions()
+    >>> prover = Prover9Command(g, assumptions=[a1])
+    >>> prover.print_assumptions()
     all x.(man(x) -> mortal(x))
 
 However, the assumptions are not sufficient to derive the goal:
@@ -143,7 +143,7 @@ So let's add another assumption:
 
     >>> a2 = LogicParser().parse('man(socrates)')    
     >>> prover.add_assumptions([a2])
-    >>> prover.assumptions()
+    >>> prover.print_assumptions()
     all x.(man(x) -> mortal(x))
     man(socrates)
     >>> print prover.prove()
@@ -151,11 +151,11 @@ So let's add another assumption:
 
 We can also show the assumptions in ``Prover9`` format.
 
-    >>> prover.assumptions(output_format='Prover9')
+    >>> prover.print_assumptions(output_format='Prover9')
     all x (man(x) -> mortal(x))
     man(socrates)
 
-    >>> prover.assumptions(output_format='Spass')
+    >>> prover.print_assumptions(output_format='Spass')
     Traceback (most recent call last):
       . . .
     NameError: Unrecognized value for 'output_format': Spass
@@ -163,7 +163,7 @@ We can also show the assumptions in ``Prover9`` format.
 Assumptions can be retracted from the list of assumptions.
 
     >>> prover.retract_assumptions([a1])
-    >>> prover.assumptions()
+    >>> prover.print_assumptions()
     man(socrates)
     >>> prover.retract_assumptions([a1])
 
@@ -171,7 +171,7 @@ Statements can be loaded from a file and parsed. We can then add these
 statements as new assumptions.
 
     >>> g = LogicParser().parse('all x.(boxer(x) -> -boxerdog(x))')
-    >>> prover = Prover9(g)
+    >>> prover = Prover9Command(g)
     >>> prover.prove()
     False
     >>> import nltk.data
@@ -290,9 +290,9 @@ model for each of them, while ``{c1, c2}`` is inconsistent.
     >>> a3 = lp.parse('exists x.(man(x) and walks(x))')
     >>> c1 = lp.parse('mortal(socrates)')
     >>> c2 = lp.parse('-mortal(socrates)')
-    >>> print get_model_builder('', [a3, c1]).build_model()
+    >>> print get_model_builder(None, [a3, c1]).build_model()
     True
-    >>> print get_model_builder('', [a3, c2]).build_model()
+    >>> print get_model_builder(None, [a3, c2]).build_model()
     True
 
 We can also use the model builder as an adjunct to theorem prover.
@@ -338,7 +338,7 @@ Using Mace4
 Check whether Mace4 can find a model.
 
     >>> a = LogicParser().parse('(see(mary,john) & -(mary = john))')
-    >>> mb = Mace(assumptions=[a])
+    >>> mb = MaceCommand(assumptions=[a])
     >>> mb.build_model()
     True
 
@@ -388,7 +388,7 @@ The method ``convert2val()`` returns a ``Valuation``.
 
 We can return to our earlier example and inspect the model:
 
-    >>> mb = Mace(g, assumptions=[a4, a5, a6])
+    >>> mb = MaceCommand(g, assumptions=[a4, a5, a6])
     >>> m = mb.build_model()
     >>> mb.show_model(format='cooked')
     % number = 1

@@ -8,7 +8,7 @@
 
 from nltk.sem.logic import *
 from nltk.internals import Counter
-from nltk.inference.api import ProverI
+from nltk.inference.api import Prover, ProverCommand
 from nltk import defaultdict
 
 """
@@ -19,41 +19,35 @@ _skolem_function_counter = Counter()
 
 class ProverParseError(Exception): pass
 
-class Resolution(ProverI):
+class Resolution(Prover):
     ANSWER_KEY = 'ANSWER'
+    _assume_false=True
     
-    def __init__(self, goal=None, assumptions=[], **options):
+    def prove(self, goal=None, assumptions=[], verbose=False):
         """
         @param goal: Input expression to prove
         @type goal: L{logic.Expression}
         @param assumptions: Input expressions to use as assumptions in the proof
         @type assumptions: L{list} of logic.Expression objects
-        @param options: options to pass to Prover9
         """
-        self._goal = goal
-        self._assumptions = assumptions
-        self._options = options
-        self._assume_false=True
-        self._proof = None
-
-    def prove(self, verbose=False):
-        tp_result = None
+        result = None
         try:
             clauses = []
-            if self._goal:
-                clauses.extend(clausify(-self._goal))
-            for a in self._assumptions:
+            if goal:
+                clauses.extend(clausify(-goal))
+            for a in assumptions:
                 clauses.extend(clausify(a))
-            tp_result = self._attempt_proof(clauses)
+            result, proof = self._attempt_proof(clauses)
         except RuntimeError, e:
             if self._assume_false and str(e).startswith('maximum recursion depth exceeded'):
-                tp_result = False
+                result = False
+                proof = ''
             else:
                 if verbose:
                     print e
                 else:
                     raise e
-        return tp_result
+        return (result, proof)
 
     def _attempt_proof(self, clauses):
         #map indices to lists of indices, to store attempted unifications
@@ -80,38 +74,56 @@ class Resolution(ProverI):
                                 newclause._parents = (i+1, j+1)
                                 clauses.append(newclause)
                                 if not len(newclause): #if there's an empty clause
-                                    self._proof = clauses
-                                    return True 
+                                    return (True, clauses) 
                             i=-1 #since we added a new clause, restart from the top 
                             break
                     j += 1
             i += 1
-        self._proof = clauses
-        return False
+        return (False, clauses)
         
+class ResolutionCommand(ProverCommand):
+    def __init__(self, goal=None, assumptions=[]):
+        """
+        @param goal: Input expression to prove
+        @type goal: L{logic.Expression}
+        @param assumptions: Input expressions to use as assumptions in
+            the proof.
+        @type assumptions: C{list} of L{logic.Expression}
+        """
+        ProverCommand.__init__(self, Resolution(), goal, assumptions)
+        self._clauses = None
+    
+    def prove(self, verbose=False):
+        """
+        Perform the actual proof.  Store the result to prevent unnecessary
+        re-proving.
+        """
+        if self._result is None:
+            self._result, clauses = self._prover.prove(self.goal(), 
+                                                       self.assumptions(),
+                                                       verbose)
+            self._clauses = clauses
+            self._proof = self.decorate_proof(clauses)
+        return self._result
+
     def find_answers(self, verbose=False):
         self.prove(verbose)
         
         answers = set()
         answer_ex = VariableExpression(Variable(Resolution.ANSWER_KEY))
-        for clause in self._proof:
+        for clause in self._clauses:
             for term in clause:
                 if isinstance(term, ApplicationExpression) and\
                    term.function == answer_ex and\
                    not isinstance(term.argument, IndividualVariableExpression):
                     answers.add(term.argument)
         return answers
-                    
-        
-    def show_proof(self):
+    
+    def decorate_proof(self, clauses):
         """
-        Print out the proof.
+        Decorate the proof output.
         """
-        if self._proof is None:
-            raise Exception("show_proof() cannot be called before prove()")
-        
-        clauses = self._proof
-        
+        out = ''
         max_clause_len = max([len(str(clause)) for clause in clauses])
         max_seq_len = len(str(len(clauses)))
         for i in range(len(clauses)):
@@ -123,40 +135,9 @@ class Resolution(ProverI):
                 parents = str(clauses[i]._parents)
             parents = ' '*(max_clause_len-len(str(clauses[i]))+1) + parents
             seq = ' '*(max_seq_len-len(str(i+1))) + str(i+1)
-            print '[%s] %s %s %s' % (seq, clauses[i], parents, taut) 
+            out += '[%s] %s %s %s\n' % (seq, clauses[i], parents, taut)
+        return out 
     
-    def add_assumptions(self, new_assumptions):
-        """
-        Add new assumptions to the assumption list.
-        
-        @param new_assumptions: new assumptions
-        @type new_assumptions: C{list} of L{sem.logic.Expression}s
-        """
-        self._assumptions += new_assumptions
-    
-    def retract_assumptions(self, retracted, debug=False):
-        """
-        Retract assumptions from the assumption list.
-        
-        @param debug: If True, give warning when C{retracted} is not present on assumptions list.
-        @type debug: C{bool}
-        @param retracted: assumptions to be retracted
-        @type retracted: C{list} of L{sem.logic.Expression}s
-        """
-        
-        result = set(self._assumptions) - set(retracted)
-        if debug and result == set(self._assumptions):
-            print Warning("Assumptions list has not been changed:")
-            self.assumptions()
-        self._assumptions = list(result)
-    
-    def assumptions(self, output_format='nltk'):
-        """
-        List the current assumptions.       
-        """
-        for a in self._assumptions:
-            print a
-            
 class Clause(list):
     def __init__(self, data):
         list.__init__(self, data)
@@ -732,20 +713,20 @@ def testResolution():
     p1 = LogicParser().parse(r'all x.(man(x) -> mortal(x))')
     p2 = LogicParser().parse(r'man(Socrates)')
     c = LogicParser().parse(r'mortal(Socrates)')
-    print '%s, %s |- %s: %s' % (p1, p2, c, Resolution(c, [p1,p2]).prove())
+    print '%s, %s |- %s: %s' % (p1, p2, c, ProverCommand(Resolution(), c, [p1,p2]).prove())
     
     p1 = LogicParser().parse(r'all x.(man(x) -> walks(x))')
     p2 = LogicParser().parse(r'man(John)')
     c = LogicParser().parse(r'some y.walks(y)')
-    print '%s, %s |- %s: %s' % (p1, p2, c, Resolution(c, [p1,p2]).prove())
+    print '%s, %s |- %s: %s' % (p1, p2, c, ProverCommand(Resolution(), c, [p1,p2]).prove())
     
     p = LogicParser().parse(r'some e1.some e2.(believe(e1,john,e2) & walk(e2,mary))')
     c = LogicParser().parse(r'some e0.walk(e0,mary)')
-    print '%s |- %s: %s' % (p, c, Resolution(c, [p]).prove())
+    print '%s |- %s: %s' % (p, c, ProverCommand(Resolution(), c, [p]).prove())
     
 def resolution_test(e):
     f = LogicParser().parse(e)
-    t = Resolution(f)
+    t = ProverCommand(Resolution(), f)
     print '|- %s: %s' % (f, t.prove())
 
 def test_clausify():

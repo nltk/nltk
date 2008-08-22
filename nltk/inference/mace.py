@@ -11,30 +11,34 @@ import tempfile
 from string import join
 from nltk.sem.logic import *
 from nltk.sem import Valuation
-from api import ModelBuilderI
+from api import ModelBuilder, ModelBuilderCommand
 import prover9
-from prover9 import Prover9Parent, call_mace4, call_interpformat
+from prover9 import Prover9Parent, Prover9CommandParent, \
+                    call_mace4, call_interpformat
 
 """
 A model builder that makes use of the external 'Mace4' package.
 """
 
-class Mace(Prover9Parent, ModelBuilderI):
-    _valuation = None #: text output from running mace
-    _result = None    #: bool indicating if a model was found
-
-    def build_model(self):
+class MaceCommand(Prover9CommandParent, ModelBuilderCommand):
+    """
+    A L{MaceCommand} specific to the L{Mace} model builder.  It contains
+    the a print_assumptions() method that is used to print the list
+    of assumptions in multiple formats.
+    """
+    def __init__(self, goal=None, assumptions=[], timeout=60):
         """
-        Use Mace4 to build a first order model.
+        @param goal: Input expression to prove
+        @type goal: L{logic.Expression}
+        @param assumptions: Input expressions to use as assumptions in
+            the proof.
+        @type assumptions: C{list} of L{logic.Expression}
+        @param timeout: number of seconds before timeout; set to 0 for
+            no timeout.
+        @type timeout: C{int}
+        """
+        ModelBuilderCommand.__init__(self, Mace(timeout), goal, assumptions)
         
-        @return: C{True} if a model was found (i.e. Mace returns value of 0),
-        else C{False}        
-        """
-        stdout, returncode = call_mace4(self.prover9_input())
-        self._result = (returncode == 0)
-        self._valuation = stdout
-        return self._result
-
     def convert2val(self):
         """
         Transform the output file into an NLTK-style Valuation. 
@@ -43,7 +47,7 @@ class Mace(Prover9Parent, ModelBuilderI):
         @rtype: L{nltk.sem.Valuation} 
         """
         valuation = None
-        if self.model_found():
+        if self.build_model():
             valuation_standard_format = self._transform_output('standard')
             
             d = {}
@@ -57,12 +61,12 @@ class Mace(Prover9Parent, ModelBuilderI):
                     name = l[l.index('(')+1:l.index(',')].strip()
                     if is_indvar(name):
                         name = name.upper()
-                    d[name] = Mace._make_model_var(int(l[l.index('[')+1:l.index(']')].strip()))
+                    d[name] = MaceCommand._make_model_var(int(l[l.index('[')+1:l.index(']')].strip()))
                 
                 elif l.startswith('relation'):
                     name = l[l.index('(')+1:l.index('(', l.index('(')+1)].strip()
                     values = [int(v.strip()) for v in l[l.index('[')+1:l.index(']')].split(',')]
-                    d[name] = Mace._make_model_dict(num_entities, values)
+                    d[name] = MaceCommand._make_model_dict(num_entities, values)
                     
             valuation = Valuation(d.items())
         return valuation
@@ -82,8 +86,8 @@ class Mace(Prover9Parent, ModelBuilderI):
             d = {}
             for i in range(num_entities):
                 size = len(values) / num_entities
-                d[Mace._make_model_var(i)] = \
-                    Mace._make_model_dict(num_entities, values[i*size:(i+1)*size])
+                d[MaceCommand._make_model_var(i)] = \
+                    MaceCommand._make_model_dict(num_entities, values[i*size:(i+1)*size])
             return d
         
     _make_model_dict = staticmethod(_make_model_dict)
@@ -105,18 +109,6 @@ class Mace(Prover9Parent, ModelBuilderI):
         
     _make_model_var = staticmethod(_make_model_var)
                 
-    def model_found(self):
-        """
-        Test whether Mace4 can build a model.
-        
-        @return: C{True} if a model was found (i.e. Mace returns value
-        of 0), else C{False}
-        """
-        if not self._valuation:
-            raise ValueError("You have to call build_model() first "
-                             "to get a model!")
-        return self._result
-    
     def show_model(self, format=None):
         """
         Print out a Mace4 model using any Mace4 C{interpformat} format. 
@@ -147,6 +139,19 @@ class Mace(Prover9Parent, ModelBuilderI):
         else:
             print "The specified format does not exist"
 
+class Mace(Prover9Parent, ModelBuilder):
+    _valuation = None #: text output from running mace
+
+    def build_model(self, goal=None, assumptions=[], verbose=False):
+        """
+        Use Mace4 to build a first order model.
+        
+        @return: C{True} if a model was found (i.e. Mace returns value of 0),
+        else C{False}        
+        """
+        stdout, returncode = call_mace4(self.prover9_input(goal, assumptions))
+        return (returncode == 0, stdout)
+
 def spacer(num=30):
     print '-' * num
     
@@ -166,9 +171,8 @@ def test_model_found(arguments):
     for (goal, assumptions) in arguments:
         g = LogicParser().parse(goal)
         alist = [LogicParser().parse(a) for a in assumptions]
-        m = Mace(g, assumptions=alist, timeout=5)
-        m.build_model()
-        found = m.model_found()
+        m = MaceCommand(g, assumptions=alist, timeout=5)
+        found = m.build_model()
         for a in alist:
             print '   %s' % a
         print '|- %s: %s\n' % (g, decode_result(found))
@@ -186,14 +190,14 @@ def test_build_model(arguments):
                                               'some x.((not (x = Bill)) and man(x))',
                                               'all x.some y.(man(x) -> gives(Socrates,x,y))']]
     
-    m = Mace(g, assumptions=alist)
+    m = MaceCommand(g, assumptions=alist)
     m.build_model()
     spacer()
     print "Assumptions and Goal"
     spacer()
     for a in alist:
         print '   %s' % a
-    print '|- %s: %s\n' % (g, decode_result(m.model_found()))
+    print '|- %s: %s\n' % (g, decode_result(m.build_model()))
     spacer()
     #m.show_model('standard')
     #m.show_model('cooked')
@@ -207,11 +211,11 @@ def test_transform_output(argument_pair):
     """
     g = LogicParser().parse(argument_pair[0])
     alist = [LogicParser().parse(a) for a in argument_pair[1]]
-    m = Mace(g, assumptions=alist)
+    m = MaceCommand(g, assumptions=alist)
     m.build_model()
     for a in alist:
         print '   %s' % a
-    print '|- %s: %s\n' % (g, m.model_found())
+    print '|- %s: %s\n' % (g, m.build_model())
     for format in ['standard', 'portable', 'xml', 'cooked']:
         spacer()
         print "Using '%s' format" % format 
@@ -219,8 +223,8 @@ def test_transform_output(argument_pair):
         m.show_model(format=format)
         
 def test_make_model_dict():
-    print Mace._make_model_dict(num_entities=3, values=[1,0,1])
-    print Mace._make_model_dict(num_entities=3, values=[0,0,0,0,0,0,1,0,0])
+    print MaceCommand._make_model_dict(num_entities=3, values=[1,0,1])
+    print MaceCommand._make_model_dict(num_entities=3, values=[0,0,0,0,0,0,1,0,0])
     
 arguments = [
     ('mortal(Socrates)', ['all x.(man(x) -> mortal(x))', 'man(Socrates)']),
@@ -233,6 +237,6 @@ if __name__ == '__main__':
     test_transform_output(arguments[1])
     
     a = LogicParser().parse('(see(mary,john) & -(mary = john))')
-    mb = Mace(assumptions=[a])
+    mb = MaceCommand(assumptions=[a])
     mb.build_model()
     print mb.convert2val()

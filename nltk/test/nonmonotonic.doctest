@@ -15,26 +15,26 @@ Closed Domain Assumption
     >>> p1 = lp.parse(r'all x.(man(x) -> mortal(x))')
     >>> p2 = lp.parse(r'man(Socrates)')
     >>> c = lp.parse(r'mortal(Socrates)')
-    >>> inference.get_prover(c, [p1,p2]).prove()
+    >>> prover = inference.get_prover(c, [p1,p2])
+    >>> prover.prove()
     True
-    >>> cdp = ClosedDomainProver(c, [p1,p2])
-    >>> for a in cdp.augmented_assumptions()[1]: print a
+    >>> cdp = ClosedDomainProver(prover)
+    >>> for a in cdp.assumptions(): print a
     man(Socrates)
     (man(Socrates) -> mortal(Socrates))
-    -mortal(Socrates)
     >>> cdp.prove()
     True
 
     >>> p1 = lp.parse(r'exists x.walk(x)')
     >>> p2 = lp.parse(r'man(Socrates)')
     >>> c = lp.parse(r'walk(Socrates)')
-    >>> inference.get_prover(c, [p1,p2]).prove()
+    >>> prover = inference.get_prover(c, [p1,p2])
+    >>> prover.prove()
     False
-    >>> cdp = ClosedDomainProver(c, [p1,p2])
-    >>> for a in cdp.augmented_assumptions()[1]: print a
+    >>> cdp = ClosedDomainProver(prover)
+    >>> for a in cdp.assumptions(): print a
     walk(Socrates)
     man(Socrates)
-    -walk(Socrates)
     >>> cdp.prove()
     True
 
@@ -42,14 +42,14 @@ Closed Domain Assumption
     >>> p2 = lp.parse(r'man(Socrates)')
     >>> p3 = lp.parse(r'man(Bill)')
     >>> c = lp.parse(r'walk(Socrates)')
-    >>> inference.get_prover(c, [p1,p2,p3]).prove()
+    >>> prover = inference.get_prover(c, [p1,p2,p3])
+    >>> prover.prove()
     False
-    >>> cdp = ClosedDomainProver(c, [p1,p2,p3])
-    >>> for a in cdp.augmented_assumptions()[1]: print a
-    -walk(Socrates)
-    man(Bill)
+    >>> cdp = ClosedDomainProver(prover)
+    >>> for a in cdp.assumptions(): print a
     man(Socrates)
     (walk(Socrates) | walk(Bill))
+    man(Bill)
     >>> cdp.prove()
     False
 
@@ -59,10 +59,11 @@ Unique Names Assumption
     >>> p1 = lp.parse(r'all x.(man(x) -> mortal(x))')
     >>> p2 = lp.parse(r'man(Socrates)')
     >>> c = lp.parse(r'mortal(Socrates)')
-    >>> inference.get_prover(c, [p1,p2]).prove()
+    >>> prover = inference.get_prover(c, [p1,p2])
+    >>> prover.prove()
     True
-    >>> unp = UniqueNamesProver(c, [p1,p2])
-    >>> for a in unp.augmented_assumptions()[1]: print a
+    >>> unp = UniqueNamesProver(prover)
+    >>> for a in unp.assumptions(): print a
     all x.(man(x) -> mortal(x))
     man(Socrates)
     >>> unp.prove()
@@ -71,10 +72,11 @@ Unique Names Assumption
     >>> p1 = lp.parse(r'man(Socrates)')
     >>> p2 = lp.parse(r'man(Bill)')
     >>> c = lp.parse(r'exists x.exists y.-(x = y)')
-    >>> inference.get_prover(c, [p1,p2]).prove()
+    >>> prover = inference.get_prover(c, [p1,p2])
+    >>> prover.prove()
     False
-    >>> unp = UniqueNamesProver(c, [p1,p2])
-    >>> for a in unp.augmented_assumptions()[1]: print a
+    >>> unp = UniqueNamesProver(prover)
+    >>> for a in unp.assumptions(): print a
     man(Socrates)
     man(Bill)
     -(Bill = Socrates)
@@ -85,10 +87,11 @@ Unique Names Assumption
     >>> p2 = lp.parse(r'Bill = William')
     >>> p3 = lp.parse(r'Bill = Billy')
     >>> c = lp.parse(r'-walk(William)')
-    >>> inference.get_prover(c, [p1,p2,p3]).prove()
+    >>> prover = inference.get_prover(c, [p1,p2,p3])
+    >>> prover.prove()
     False
-    >>> unp = UniqueNamesProver(c, [p1,p2,p3], 'tableau')
-    >>> for a in unp.augmented_assumptions()[1]: print a
+    >>> unp = UniqueNamesProver(prover)
+    >>> for a in unp.assumptions(): print a
     all x.(walk(x) -> (x = Socrates))
     (Bill = William)
     (Bill = Billy)
@@ -104,10 +107,11 @@ Closed World Assumption
     >>> p1 = lp.parse(r'walk(Socrates)')
     >>> p2 = lp.parse(r'-(Socrates = Bill)')
     >>> c = lp.parse(r'-walk(Bill)')
-    >>> inference.get_prover(c, [p1,p2]).prove()
+    >>> prover = inference.get_prover(c, [p1,p2])
+    >>> prover.prove()
     False
-    >>> cwp = ClosedWorldProver(c, [p1,p2])
-    >>> for a in cwp.augmented_assumptions()[1]: print a
+    >>> cwp = ClosedWorldProver(prover)
+    >>> for a in cwp.assumptions(): print a
     walk(Socrates)
     -(Socrates = Bill)
     all z1.(walk(z1) -> (z1 = Socrates))
@@ -119,10 +123,11 @@ Closed World Assumption
     >>> p3 = lp.parse(r'-(Socrates = John)')
     >>> p4 = lp.parse(r'-(John = Mary)')
     >>> c = lp.parse(r'-see(Socrates, Mary)')
-    >>> inference.get_prover(c, [p1,p2,p3,p4]).prove()
+    >>> prover = inference.get_prover(c, [p1,p2,p3,p4])
+    >>> prover.prove()
     False
-    >>> cwp = ClosedWorldProver(c, [p1,p2,p3,p4])
-    >>> for a in cwp.augmented_assumptions()[1]: print a
+    >>> cwp = ClosedWorldProver(prover)
+    >>> for a in cwp.assumptions(): print a
     see(Socrates,John)
     see(John,Mary)
     -(Socrates = John)
@@ -136,14 +141,28 @@ Closed World Assumption
     >>> p3 = lp.parse(r'-ostrich(Sam)')
     >>> p4 = lp.parse(r'Sam != Tweety')
     >>> c = lp.parse(r'-bird(Sam)')
-    >>> print inference.get_prover(c, [p1,p2,p3,p4]).prove()
+    >>> prover = inference.get_prover(c, [p1,p2,p3,p4])
+    >>> prover.prove()
     False
-    >>> cwp = ClosedWorldProver(c, [p1,p2,p3,p4])
-    >>> for a in cwp.augmented_assumptions()[1]: print a
+    >>> cwp = ClosedWorldProver(prover)
+    >>> for a in cwp.assumptions(): print a
     all x.(ostrich(x) -> bird(x))
     bird(Tweety)
     -ostrich(Sam)
     -(Sam = Tweety)
     all z7.(bird(z7) -> ((z7 = Tweety) | ostrich(z7)))
     >>> print cwp.prove()
+    True
+
+-----------------------
+Multi-Decorator Example
+-----------------------
+    >>> p1 = lp.parse(r'see(Socrates, John)')
+    >>> p2 = lp.parse(r'see(John, Mary)')
+    >>> c = lp.parse(r'-see(Socrates, Mary)')
+    >>> prover = inference.get_prover(c, [p1,p2])
+    >>> print prover.prove()
+    False
+    >>> cmd = ClosedDomainProver(UniqueNamesProver(ClosedWorldProver(prover)))
+    >>> print cmd.prove()
     True

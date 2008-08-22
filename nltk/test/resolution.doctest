@@ -101,50 +101,50 @@ Test subsumes()
 ------------
 Test prove()
 ------------
-    >>> print Resolution(lp.parse('man(x)')).prove()
+    >>> print ResolutionCommand(lp.parse('man(x)')).prove()
     False
-    >>> print Resolution(lp.parse('(man(x) -> man(x))')).prove()
+    >>> print ResolutionCommand(lp.parse('(man(x) -> man(x))')).prove()
     True
-    >>> print Resolution(lp.parse('(man(x) -> --man(x))')).prove()
+    >>> print ResolutionCommand(lp.parse('(man(x) -> --man(x))')).prove()
     True
-    >>> print Resolution(lp.parse('-(man(x) & -man(x))')).prove()
+    >>> print ResolutionCommand(lp.parse('-(man(x) & -man(x))')).prove()
     True
-    >>> print Resolution(lp.parse('(man(x) | -man(x))')).prove()
+    >>> print ResolutionCommand(lp.parse('(man(x) | -man(x))')).prove()
     True
-    >>> print Resolution(lp.parse('(man(x) -> man(x))')).prove()
+    >>> print ResolutionCommand(lp.parse('(man(x) -> man(x))')).prove()
     True
-    >>> print Resolution(lp.parse('-(man(x) & -man(x))')).prove()
+    >>> print ResolutionCommand(lp.parse('-(man(x) & -man(x))')).prove()
     True
-    >>> print Resolution(lp.parse('(man(x) | -man(x))')).prove()
+    >>> print ResolutionCommand(lp.parse('(man(x) | -man(x))')).prove()
     True
-    >>> print Resolution(lp.parse('(man(x) -> man(x))')).prove()
+    >>> print ResolutionCommand(lp.parse('(man(x) -> man(x))')).prove()
     True
-    >>> print Resolution(lp.parse('(man(x) <-> man(x))')).prove()
+    >>> print ResolutionCommand(lp.parse('(man(x) <-> man(x))')).prove()
     True
-    >>> print Resolution(lp.parse('-(man(x) <-> -man(x))')).prove()
+    >>> print ResolutionCommand(lp.parse('-(man(x) <-> -man(x))')).prove()
     True
-    >>> print Resolution(lp.parse('all x.man(x)')).prove()
+    >>> print ResolutionCommand(lp.parse('all x.man(x)')).prove()
     False
-    >>> print Resolution(lp.parse('-all x.some y.F(x,y) & some x.all y.(-F(x,y))')).prove()
+    >>> print ResolutionCommand(lp.parse('-all x.some y.F(x,y) & some x.all y.(-F(x,y))')).prove()
     False
-    >>> print Resolution(lp.parse('some x.all y.sees(x,y)')).prove()
+    >>> print ResolutionCommand(lp.parse('some x.all y.sees(x,y)')).prove()
     False
 
     >>> p1 = lp.parse('all x.(man(x) -> mortal(x))')
     >>> p2 = lp.parse('man(Socrates)')
     >>> c = lp.parse('mortal(Socrates)')
-    >>> Resolution(c, [p1,p2]).prove()
+    >>> ResolutionCommand(c, [p1,p2]).prove()
     True
     
     >>> p1 = lp.parse('all x.(man(x) -> walks(x))')
     >>> p2 = lp.parse('man(John)')
     >>> c = lp.parse('some y.walks(y)')
-    >>> Resolution(c, [p1,p2]).prove()
+    >>> ResolutionCommand(c, [p1,p2]).prove()
     True
     
     >>> p = lp.parse('some e1.some e2.(believe(e1,john,e2) & walk(e2,mary))')
     >>> c = lp.parse('some e0.walk(e0,mary)')
-    >>> Resolution(c, [p]).prove()
+    >>> ResolutionCommand(c, [p]).prove()
     True
 
 -----------------
@@ -154,7 +154,7 @@ Test show_proof()
     >>> p2 = lp.parse('man(Socrates)')
     >>> c = lp.parse('mortal(Socrates)')
     >>> logic._counter._value = 0
-    >>> tp = Resolution(c, [p1,p2])
+    >>> tp = ResolutionCommand(c, [p1,p2])
     >>> tp.prove()
     True
     >>> tp.show_proof()
@@ -174,7 +174,7 @@ One answer
     >>> p3 = lp.parse('all x.all y.(father_of(x,y) -> parent_of(x,y))')
     >>> c = lp.parse('all x.(parent_of(x,john) -> ANSWER(x))')
     >>> logic._counter._value = 0
-    >>> tp = Resolution(None, [p1,p2,p3,c])
+    >>> tp = ResolutionCommand(None, [p1,p2,p3,c])
     >>> print tp.find_answers()
     set([<VariableExpression art>])
     >>> tp.show_proof()
@@ -195,7 +195,7 @@ Multiple answers
     >>> p4 = lp.parse('all x.all y.(mother_of(x,y) -> parent_of(x,y))')
     >>> c = lp.parse('all x.(parent_of(x,john) -> ANSWER(x))')
     >>> logic._counter._value = 0
-    >>> tp = Resolution(None, [p1,p2,p3,p4,c])
+    >>> tp = ResolutionCommand(None, [p1,p2,p3,p4,c])
     >>> print tp.find_answers()
     set([<VariableExpression art>, <VariableExpression ann>])
     >>> tp.show_proof()
