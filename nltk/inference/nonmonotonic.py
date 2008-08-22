@@ -379,7 +379,7 @@ def combination_prover_demo():
     print command.prove()
 
 if __name__ == '__main__':
-#    closed_domain_demo()
-#    unique_names_demo()
+    closed_domain_demo()
+    unique_names_demo()
     closed_world_demo()
-#    combination_prover_demo()
+    combination_prover_demo()
