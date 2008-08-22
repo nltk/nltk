@@ -277,7 +277,7 @@ class ApplicationExpression(Expression):
         function, args = self.uncurry()
         if isinstance(function, VariableExpression):
             #It's a predicate expression ("P(x,y)"), so uncurry arguments
-            arg_str = ','.join([arg.str(syntax) for arg in args[::-1]])
+            arg_str = ','.join([arg.str(syntax) for arg in args])
         else:
             #Leave arguments curried
             function = self.function
@@ -307,7 +307,7 @@ class ApplicationExpression(Expression):
         args = [self.argument]
         while isinstance(function, ApplicationExpression):
             #(\x.\y.sees(x,y)(john))(mary)
-            args.append(function.argument)
+            args.insert(0, function.argument)
             function = function.function
         return (function, args)
 
