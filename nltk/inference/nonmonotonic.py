@@ -164,22 +164,22 @@ class ClosedWorldProver(ProverCommandDecorator):
         predicates = self._make_predicate_dict(assumptions)
 
         assumptions2 = []
-        for p in predicates:
-            new_sig = self._make_unique_signature(predicates[p])
+        for p,predHolder in predicates.iteritems():
+            new_sig = self._make_unique_signature(predHolder)
             new_sig_exs = [IndividualVariableExpression(v) for v in new_sig]
             
             disjuncts = []
-            for sig in predicates[p].signatures:
+            for sig in predHolder.signatures:
                 equality_exs = []
-                for i,v in enumerate(sig):
-                    equality_exs.append(EqualityExpression(new_sig_exs[i],v)) 
+                for v1,v2 in zip(new_sig_exs, sig):
+                    equality_exs.append(EqualityExpression(v1,v2)) 
                 disjuncts.append(reduce(Expression.__and__, equality_exs))
 
-            for prop in predicates[p].properties:
+            for prop in predHolder.properties:
                 #replace variables from the signature with new sig variables
                 bindings = {}
-                for i,v in enumerate(prop[0]):
-                    bindings[v] = new_sig_exs[i]
+                for v1,v2 in zip(new_sig_exs, prop[0]):
+                    bindings[v2] = v1
                 disjuncts.append(prop[1].substitute_bindings(bindings))
 
             #make the implication
@@ -379,7 +379,7 @@ def combination_prover_demo():
     print command.prove()
 
 if __name__ == '__main__':
-    closed_domain_demo()
-    unique_names_demo()
+#    closed_domain_demo()
+#    unique_names_demo()
     closed_world_demo()
-    combination_prover_demo()
+#    combination_prover_demo()
