@@ -159,11 +159,9 @@ class DRS(AbstractDrs, logic.Expression, RA.DRS):
         if self.__class__ == other.__class__:
             if len(self.refs) == len(other.refs):
                 converted_other = other
-                for (i,ref) in enumerate(self.refs):
-                    other_ref = converted_other.refs[i]
-                    varex = self.make_VariableExpression(ref)
-                    converted_other = converted_other.replace(other_ref, 
-                                                              varex, True)
+                for (r1, r2) in zip(self.refs, converted_other.refs):
+                    varex = self.make_VariableExpression(r1)
+                    converted_other = converted_other.replace(r2, varex, True)
                 return self.conds == converted_other.conds
         return False
     
@@ -296,11 +294,9 @@ class ConcatenationDRS(AbstractDrs, logic.BooleanExpression, RA.ConcatenationDRS
             other_refs = other.get_refs()
             if len(self_refs) == len(other_refs):
                 converted_other = other
-                for (i,ref) in enumerate(self_refs):
-                    other_ref = other_refs[i]
-                    varex = self.make_VariableExpression(ref)
-                    converted_other = converted_other.replace(other_ref, 
-                                                              varex, True)
+                for (r1,r2) in zip(self_refs, other_refs):
+                    varex = self.make_VariableExpression(r1)
+                    converted_other = converted_other.replace(r2, varex, True)
                 return self.first == converted_other.first and \
                         self.second == converted_other.second
         return False
