@@ -12,73 +12,91 @@ A module to perform nonmonotonic reasoning
 
 from nltk.sem.logic import *
 from nltk.inference import inference
-from nltk.inference.api import ProverI
+from nltk.inference.api import Prover
 from nltk import defaultdict
 
-class NonmonotonicProver(ProverI):
-    def __init__(self, goal=None, assumptions=[], prover_name='Prover9'):
-        self._goal = goal
-        self._assumptions = assumptions
-        self._prover_name = prover_name
-        
-    def prove(self, debug=False):
+class ProverCommandDecorator(object):
+    """
+    A base decorator for the C{ProverCommand} class from which concrete 
+    prover command decorators can extend.
+    """
+    def __init__(self, proverCommand):
         """
-        @return: C{bool} Whether the proof was successful or not.
+        @param proverCommand: C{ProverCommand} to decorate
         """
-        (goal, assumptions) = self.augmented_assumptions()
+        self._proverCommand = proverCommand
         
-        prover = inference.get_prover(goal, assumptions, self._prover_name)
-        result = prover.prove(debug)
+    def prove(self, verbose=False):
+        return self.get_prover().prove(self.goal(), 
+                                       self.assumptions(), 
+                                       verbose)[0]
+    
+    def get_prover(self):
+        return self._proverCommand.get_prover()
         
-        if debug:
-            prover.show_proof()
-        
-        return result
+    def add_assumptions(self, new_assumptions):
+        self._proverCommand.add_assumptions(new_assumptions)
+    
+    def retract_assumptions(self, retracted, debug=False):
+        return self._proverCommand.retract_assumptions(retracted, debug)
+    
+    def print_assumptions(self):
+        self._proverCommand.print_assumptions()
 
-class ClosedDomainProver(NonmonotonicProver):
+
+class ClosedDomainProver(ProverCommandDecorator):
     """
-    This is a prover that adds domain closure assumptions before proving.
+    This is a prover decorator that adds domain closure assumptions before 
+    proving.
     """
-    def augmented_assumptions(self):
+    def assumptions(self):
         """
          - Domain = union([e.free(False) for e in all_expressions])
-         - translate "exists x.P" to "(z=d1 | z=d2 | ... ) & P.replace(x,z)" or "P.replace(x, d1) | P.replace(x, d2) | ..."
+         - translate "exists x.P" to "(z=d1 | z=d2 | ... ) & P.replace(x,z)" OR 
+                     "P.replace(x, d1) | P.replace(x, d2) | ..."
          - translate "all x.P" to "P.replace(x, d1) & P.replace(x, d2) & ..."
         """
-        assumptions = self._assumptions + [-self._goal]
+        assumptions = [a for a in self._proverCommand.assumptions()]
         
         domain = set()
-        for a in assumptions:
+        for a in assumptions + [-self._proverCommand.goal()]:
             domain |= (a.free(False) - a.free(True))
         
-        assumptions1 = set()
-        for a in assumptions:
-            if isinstance(a, ExistsExpression):
-                newterms = [a.term.replace(a.variable, VariableExpression(d)) for d in domain]
-                assumptions1.add(reduce(Expression.__or__, newterms))
+        new_assumptions = set()
+        self._handle_quant_ex(self._proverCommand.goal(), domain, assumptions)
+        while assumptions:
+            a = assumptions.pop() 
+            if isinstance(a, VariableBinderExpression):
+                self._handle_quant_ex(a, domain, assumptions)
             else:
-                assumptions1.add(a)
-                
-        assumptions2 = set()
-        for a in assumptions1:
-            if isinstance(a, AllExpression):
-                for d in domain:
-                    assumptions2.add(a.term.replace(a.variable, VariableExpression(d)))
-            else:
-                assumptions2.add(a)
+                new_assumptions.add(a)
 
-        return (None, assumptions2)
+        return list(new_assumptions)
     
-class UniqueNamesProver(NonmonotonicProver):
+    def goal(self):
+        return self._proverCommand.goal()
+    
+    def _handle_quant_ex(self, ex, domain, assumptions):
+        if isinstance(ex, ExistsExpression):
+            newterms = [ex.term.replace(ex.variable, VariableExpression(d)) 
+                        for d in domain]
+            assumptions.append(reduce(Expression.__or__, newterms))
+        elif isinstance(ex, AllExpression):
+            for d in domain:
+                assumptions.append(ex.term.replace(ex.variable, 
+                                                   VariableExpression(d)))
+    
+class UniqueNamesProver(ProverCommandDecorator):
     """
-    This is a prover that adds unique names assumptions before proving.
+    This is a prover decorator that adds unique names assumptions before 
+    proving.
     """
-    def augmented_assumptions(self):
+    def assumptions(self):
         """
          - Domain = union([e.free(False) for e in all_expressions])
          - if "d1 = d2" cannot be proven from the premises, then add "d1 != d2"
         """
-        assumptions = self._assumptions
+        assumptions = self._proverCommand.assumptions()
         
         domain = set()
         for a in assumptions:
@@ -106,11 +124,14 @@ class UniqueNamesProver(NonmonotonicProver):
                         #if we can't prove it, then assume it's false
                         assumptions2.append(-newEqEx)
                 
-        return (self._goal, assumptions + assumptions2)
+        return assumptions + assumptions2
+    
+    def goal(self):
+        return self._proverCommand.goal()
 
-class ClosedWorldProver(NonmonotonicProver):
+class ClosedWorldProver(ProverCommandDecorator):
     """
-    This is a prover that completes predicates before proving.
+    This is a prover decorator that completes predicates before proving.
 
     If the premises don't logically entail "P(A)" then add "-P(A)"
     all x.(P(x) -> (x=A)) is the completion of P
@@ -137,8 +158,8 @@ class ClosedWorldProver(NonmonotonicProver):
     -------------------
     -bird(Sam)
     """ 
-    def augmented_assumptions(self):
-        assumptions = self._assumptions
+    def assumptions(self):
+        assumptions = self._proverCommand.assumptions()
         
         predicates = self._make_predicate_dict(assumptions)
 
@@ -171,7 +192,7 @@ class ClosedWorldProver(NonmonotonicProver):
                 accum = AllExpression(new_sig_var, accum)
             assumptions2.append(accum)
         
-        return (self._goal, assumptions + assumptions2)
+        return assumptions + assumptions2
     
     def _make_unique_signature(self, predHolder):
         """
@@ -219,6 +240,9 @@ class ClosedWorldProver(NonmonotonicProver):
                     func = term.second.function
                     if isinstance(func, VariableExpression):
                         predDict[func].append_prop((tuple(sig), term.first))
+
+    def goal(self):
+        return self._proverCommand.goal()
 
 
 class PredHolder(object):
@@ -268,13 +292,21 @@ def closed_domain_demo():
     p1 = lp.parse(r'exists x.walk(x)')
     p2 = lp.parse(r'man(Socrates)')
     c = lp.parse(r'walk(Socrates)')
-    ClosedDomainProver(c, [p1,p2]).prove()
+    prover = inference.get_prover(c, [p1,p2])
+    print prover.prove()
+    cdp = ClosedDomainProver(prover)
+    for a in cdp.assumptions(): print a
+    print cdp.prove()
 
     p1 = lp.parse(r'exists x.walk(x)')
     p2 = lp.parse(r'man(Socrates)')
-    p3 = lp.parse(r'man(Bill)')
+    p3 = lp.parse(r'-walk(Bill)')
     c = lp.parse(r'walk(Socrates)')
-    ClosedDomainProver(c, [p1,p2,p3]).prove()
+    prover = inference.get_prover(c, [p1,p2,p3])
+    print prover.prove()
+    cdp = ClosedDomainProver(prover)
+    for a in cdp.assumptions(): print a
+    print cdp.prove()
 
 def unique_names_demo():
     lp = LogicParser()
@@ -282,18 +314,20 @@ def unique_names_demo():
     p1 = lp.parse(r'man(Socrates)')
     p2 = lp.parse(r'man(Bill)')
     c = lp.parse(r'exists x.exists y.(x != y)')
-    print inference.get_prover(c, [p1,p2]).prove()
-    unp = UniqueNamesProver(c, [p1,p2])
-    for a in unp.augmented_assumptions()[1]: print a
+    prover = inference.get_prover(c, [p1,p2])
+    print prover.prove()
+    unp = UniqueNamesProver(prover)
+    for a in unp.assumptions(): print a
     print unp.prove()
 
     p1 = lp.parse(r'all x.(walk(x) -> (x = Socrates))')
     p2 = lp.parse(r'Bill = William')
     p3 = lp.parse(r'Bill = Billy')
     c = lp.parse(r'-walk(William)')
-    print inference.get_prover(c, [p1,p2,p3]).prove()
-    unp = UniqueNamesProver(c, [p1,p2,p3], 'tableau')
-    for a in unp.augmented_assumptions()[1]: print a
+    prover = inference.get_prover(c, [p1,p2,p3])
+    print prover.prove()
+    unp = UniqueNamesProver(prover)
+    for a in unp.assumptions(): print a
     print unp.prove()
     
 def closed_world_demo():
@@ -302,9 +336,10 @@ def closed_world_demo():
     p1 = lp.parse(r'walk(Socrates)')
     p2 = lp.parse(r'(Socrates != Bill)')
     c = lp.parse(r'-walk(Bill)')
-    print inference.get_prover(c, [p1,p2]).prove()
-    cwp = ClosedWorldProver(c, [p1,p2])
-    for a in cwp.augmented_assumptions()[1]: print a
+    prover = inference.get_prover(c, [p1,p2])
+    print prover.prove()
+    cwp = ClosedWorldProver(prover)
+    for a in cwp.assumptions(): print a
     print cwp.prove()
 
     p1 = lp.parse(r'see(Socrates, John)')
@@ -312,9 +347,10 @@ def closed_world_demo():
     p3 = lp.parse(r'(Socrates != John)')
     p4 = lp.parse(r'(John != Mary)')
     c = lp.parse(r'-see(Socrates, Mary)')
-    print inference.get_prover(c, [p1,p2,p3,p4]).prove()
-    cwp = ClosedWorldProver(c, [p1,p2,p3,p4])
-    for a in cwp.augmented_assumptions()[1]: print a
+    prover = inference.get_prover(c, [p1,p2,p3,p4])
+    print prover.prove()
+    cwp = ClosedWorldProver(prover)
+    for a in cwp.assumptions(): print a
     print cwp.prove()
 
     p1 = lp.parse(r'all x.(ostrich(x) -> bird(x))')
@@ -322,12 +358,28 @@ def closed_world_demo():
     p3 = lp.parse(r'-ostrich(Sam)')
     p4 = lp.parse(r'Sam != Tweety')
     c = lp.parse(r'-bird(Sam)')
-    print inference.get_prover(c, [p1,p2,p3,p4]).prove()
-    cwp = ClosedWorldProver(c, [p1,p2,p3,p4])
-    for a in cwp.augmented_assumptions()[1]: print a
+    prover = inference.get_prover(c, [p1,p2,p3,p4])
+    print prover.prove()
+    cwp = ClosedWorldProver(prover)
+    for a in cwp.assumptions(): print a
     print cwp.prove()
+
+def combination_prover_demo():
+    lp = LogicParser()
+    
+    p1 = lp.parse(r'see(Socrates, John)')
+    p2 = lp.parse(r'see(John, Mary)')
+    c = lp.parse(r'-see(Socrates, Mary)')
+    prover = inference.get_prover(c, [p1,p2])
+    print prover.prove()
+    command = ClosedDomainProver(
+                  UniqueNamesProver(
+                      ClosedWorldProver(prover)))
+    for a in command.assumptions(): print a
+    print command.prove()
 
 if __name__ == '__main__':
     closed_domain_demo()
     unique_names_demo()
     closed_world_demo()
+    combination_prover_demo()

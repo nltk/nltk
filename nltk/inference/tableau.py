@@ -7,7 +7,7 @@
 
 from nltk.sem.logic import *
 
-from api import ProverI
+from api import Prover, ProverCommand
 
 """
 Module for a tableau-based First Order theorem prover.
@@ -15,77 +15,27 @@ Module for a tableau-based First Order theorem prover.
 
 class ProverParseError(Exception): pass
 
-class Tableau(ProverI):
-    def __init__(self, goal=None, assumptions=[], **options):
-        """
-        @param goal: Input expression to prove
-        @type goal: L{logic.Expression}
-        @param assumptions: Input expressions to use as assumptions in the proof
-        @type assumptions: L{list} of logic.Expression objects
-        @param options: options to pass to Prover9
-        """
-        self._goal = goal
-        self._assumptions = assumptions
-        self._options = options
-        self._assume_false=True
-
-    def prove(self, debug=False):
-        tp_result = None
+class Tableau(Prover):
+    _assume_false=False
+    
+    def prove(self, goal=None, assumptions=[], debug=False):
+        result = None
         try:
             agenda = Agenda()
-            if self._goal:
-                agenda.put(-self._goal)
-            agenda.put_all(self._assumptions)
-            tp_result = _attempt_proof(agenda, set(), set(), (debug, 0))
+            if goal:
+                agenda.put(-goal)
+            agenda.put_all(assumptions)
+            result = _attempt_proof(agenda, set(), set(), (debug, 0))
         except RuntimeError, e:
             if self._assume_false and str(e).startswith('maximum recursion depth exceeded'):
-                tp_result = False
+                result = False
             else:
                 if debug:
                     print e
                 else:
                     raise e
-        return tp_result
+        return (result, '')
         
-    def show_proof(self):
-        """
-        Print out the proof.
-        """
-        self.prove(True)
-    
-    def add_assumptions(self, new_assumptions):
-        """
-        Add new assumptions to the assumption list.
-        
-        @param new_assumptions: new assumptions
-        @type new_assumptions: C{list} of L{sem.logic.Expression}s
-        """
-        self._assumptions += new_assumptions
-    
-    def retract_assumptions(self, retracted, debug=False):
-        """
-        Retract assumptions from the assumption list.
-        
-        @param debug: If True, give warning when C{retracted} is not present on assumptions list.
-        @type debug: C{bool}
-        @param retracted: assumptions to be retracted
-        @type retracted: C{list} of L{sem.logic.Expression}s
-        """
-        
-        result = set(self._assumptions) - set(retracted)
-        if debug and result == set(self._assumptions):
-            print Warning("Assumptions list has not been changed:")
-            self.assumptions()
-        self._assumptions = list(result)
-    
-    def assumptions(self, output_format='nltk'):
-        """
-        List the current assumptions.       
-        """
-        for a in self._assumptions:
-            print a
-
-
 class Agenda(object):
     def __init__(self):
         self.sets = tuple(set() for i in range(17))
@@ -475,7 +425,7 @@ def testTableau():
 
 def tableau_test(e):
     f = LogicParser().parse(e)
-    t = Tableau(f)
+    t = ProverCommand(Tableau(), f)
     print '|- %s: %s' % (f, t.prove())
 
 if __name__ == '__main__':
