@@ -13,3 +13,5 @@ import nltk, re, pprint
 moby = nltk.Text(nltk.corpus.gutenberg.words('melville-moby_dick.txt'))
 sense = nltk.Text(nltk.corpus.gutenberg.words('austen-sense.txt'))
 chat = nltk.Text(nltk.corpus.nps_chat.words())
+inaugural = nltk.Text(nltk.corpus.inaugural.words())
+genesis = nltk.Text(nltk.corpus.genesis.words('english-kjv.txt'))
