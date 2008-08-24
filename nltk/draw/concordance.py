@@ -81,8 +81,12 @@ class CategorySearchView(object):
     _BACKGROUND_COLOUR='#FFF' #white
     
     #Colour of highlighted results
-    _HIGHLIGHT_COLOUR='#F00' #red
-    _HIGHLIGHT_TAG='HL_TAG'
+    _HIGHLIGHT_WORD_COLOUR='#F00' #red
+    _HIGHLIGHT_WORD_TAG='HL_WRD_TAG'
+    
+    _HIGHLIGHT_LABEL_COLOUR='#0FF'
+    _HIGHLIGHT_LABEL_TAG='HL_LBL_TAG'
+    
     
     #Percentage of text left of the scrollbar position
     _FRACTION_LEFT_TEXT=0.30
@@ -97,24 +101,41 @@ class CategorySearchView(object):
         self.model.add_listener(self)
         self.top = Tk()
         self._init_top(self.top)
+        self._init_menubar()
         self._init_widgets(self.top)
         self._bind_event_handlers()
         self.load_corpus(self.model.DEFAULT_CORPUS)
         
     def _init_top(self, top):
-        top.geometry('950x650+50+50')
+        top.geometry('950x680+50+50')
         top.title('NLTK Concordance Search')
         top.bind('<Control-q>', self.destroy)
-        top.minsize(950,650)
+        top.minsize(950,680)
         
     def _init_widgets(self, parent):
         self.main_frame = Frame(parent, dict(background=self._BACKGROUND_COLOUR, padx=1, pady=1, border=1))        
         self._init_corpus_select(self.main_frame)
         self._init_query_box(self.main_frame)
         self._init_results_box(self.main_frame)
+        self._init_paging(self.main_frame)
         self._init_status(self.main_frame)
         self.main_frame.pack(fill='both', expand=True)
-                
+
+    def _init_menubar(self):
+		menubar = Menu(self.top)
+		
+		filemenu = Menu(menubar, tearoff=0, borderwidth=0)
+		filemenu.add_command(label='Exit', underline=1,
+							 command=self.destroy, accelerator='Ctrl-q')
+		menubar.add_cascade(label='File', underline=0, menu=filemenu)
+
+		helpmenu = Menu(menubar, tearoff=0)
+		helpmenu.add_command(label='About', underline=0,
+							 command=self.about)
+		menubar.add_cascade(label='Help', underline=0, menu=helpmenu)
+		
+		self.top.config(menu=menubar)
+		
     def _init_corpus_select(self, parent):
     	innerframe = Frame(parent, background=self._BACKGROUND_COLOUR)
         self.var = StringVar(innerframe)
@@ -158,7 +179,8 @@ class CategorySearchView(object):
 							    yscrollcommand=vscrollbar.set,
                                 xscrollcommand=hscrollbar.set, wrap='none', width='40', height = '20')
         self.results_box.pack(side='left', fill='both', expand=True)
-        self.results_box.tag_config(self._HIGHLIGHT_TAG, foreground=self._HIGHLIGHT_COLOUR)
+        self.results_box.tag_config(self._HIGHLIGHT_WORD_TAG, foreground=self._HIGHLIGHT_WORD_COLOUR)
+        self.results_box.tag_config(self._HIGHLIGHT_LABEL_TAG, foreground=self._HIGHLIGHT_LABEL_COLOUR)
         vscrollbar.pack(side='left', fill='y', anchor='e')
         vscrollbar.config(command=self.results_box.yview)
         hscrollbar.pack(side='left', fill='x', expand=True, anchor='w')
@@ -168,6 +190,34 @@ class CategorySearchView(object):
         i1.pack(side='top', fill='both', expand=True, anchor='n')
         i2.pack(side='bottom', fill='x', anchor='s')
         innerframe.pack(side='top', fill='both', expand=True)
+        
+    def _init_paging(self, parent):
+    	innerframe = Frame(parent, background=self._BACKGROUND_COLOUR)
+    	self.prev = prev = Button(innerframe, text='Previous', command=self.previous, width='10', borderwidth=1, highlightthickness=1, state='disabled')
+    	prev.pack(side='left', anchor='center')
+    	self.next = next = Button(innerframe, text='Next', command=self.next, width='10', borderwidth=1, highlightthickness=1, state='disabled')
+    	next.pack(side='right', anchor='center')
+    	innerframe.pack(side='top', fill='y')
+        self.current_page = 0
+    	
+    def previous(self):
+        self.clear_results_box()
+        self.freeze_editable()    	
+        self.model.prev(self.current_page - 1)
+    
+    def next(self):
+        self.clear_results_box()
+        self.freeze_editable()
+        self.model.next(self.current_page + 1)        
+        
+    def about(self, *e):
+		ABOUT = ("NLTK Concordance Search Demo\n")
+		TITLE = 'About: NLTK Concordance Search Demo'
+		try:
+			from tkMessageBox import Message
+			Message(message=ABOUT, title=TITLE, parent=self.main_frame).show()
+		except:
+			ShowText(self.top, TITLE, ABOUT)
         
     def _bind_event_handlers(self):
         self.top.bind(CORPUS_LOADED_EVENT, self.handle_corpus_loaded)
@@ -188,12 +238,17 @@ class CategorySearchView(object):
         self.query_box.focus_set()
     
     def handle_search_terminated(self, event):
-        self.write_results(self.model.results)
+	    #todo: refactor the model such that it is less state sensitive
+        results = self.model.get_results()
+        self.write_results(results)
         self.status['text'] = ''
-        if len(self.model.results) == 0:
+        if len(results) == 0:
             self.status['text'] = 'No results found for ' + self.model.query
+        else:
+        	self.current_page = self.model.last_requested_page
         self.unfreeze_editable()
         self.results_box.xview_moveto(self._FRACTION_LEFT_TEXT)
+        
 
     def handle_search_error(self, event):
         self.status['text'] = 'Error in query ' + self.model.query
@@ -210,12 +265,14 @@ class CategorySearchView(object):
             self.model.load_corpus(selection)
 
     def search(self):
+        self.current_page = 0
         self.clear_results_box()
+        self.model.reset_results()
         query = self.query_box.get()
         if (len(query.strip()) == 0): return
         self.status['text']  = 'Searching for ' + query
         self.freeze_editable()
-        self.model.search(query)
+        self.model.search(query, self.current_page + 1)
         
 
     def write_results(self, results):
@@ -228,7 +285,7 @@ class CategorySearchView(object):
                     sent, pos1, pos2 = self.pad(sent, pos1, pos2)
                 self.results_box.insert(str(row) + '.0',
                     sent[pos1-self._CHAR_BEFORE:pos1+self._CHAR_AFTER] + '\n')
-                self.results_box.tag_add(self._HIGHLIGHT_TAG,
+                self.results_box.tag_add(self._HIGHLIGHT_WORD_TAG,
                     str(row) + '.' + str(self._CHAR_BEFORE),
                     str(row) + '.' + str(pos2 - pos1 + self._CHAR_BEFORE))
                 row += 1
@@ -255,15 +312,27 @@ class CategorySearchView(object):
         self.results_box['state'] = 'normal'
         self.results_box.delete("1.0", END)
         self.results_box['state'] = 'disabled'   
-        self.model.reset_results()
         
     def freeze_editable(self):
         self.query_box['state'] = 'disabled'
         self.search_button['state'] = 'disabled'
+        self.prev['state'] = 'disabled'
+        self.next['state'] = 'disabled'
         
     def unfreeze_editable(self):
         self.query_box['state'] = 'normal'
         self.search_button['state'] = 'normal'
+        self.set_paging_button_states()
+        
+    def set_paging_button_states(self):
+    	if self.current_page == 0 or self.current_page == 1:
+    		self.prev['state'] = 'disabled'
+    	else:
+    		self.prev['state'] = 'normal'
+        if self.model.has_more_pages(self.current_page):
+            self.next['state'] = 'normal'
+        else:
+            self.next['state'] = 'disabled'
         
     def fire_event(self, event):
         #Firing an event so that rendering of widgets happen in the mainloop thread
@@ -295,9 +364,21 @@ class CategorySearchModel(object):
         runner_thread = self.LoadCorpus(name, self)
         runner_thread.start()
         
-    def search(self, query, num=50):
+    def search(self, query, page, count=50):
         self.query = query
-        self.SearchCorpus(self, num).start()
+    	self.last_requested_page = page
+        self.SearchCorpus(self, page, count).start()        
+        
+    def next(self, page):
+    	self.last_requested_page = page
+    	if len(self.results) < page:
+    		self.search(self.query, page)
+    	else:
+    		self.notify_listeners(SEARCH_TERMINATED_EVENT)    		
+    
+    def prev(self, page):
+    	self.last_requested_page = page
+    	self.notify_listeners(SEARCH_TERMINATED_EVENT)
     
     def add_listener(self, listener):
         self.listeners.append(listener)
@@ -307,14 +388,25 @@ class CategorySearchModel(object):
             each.fire_event(event)
             
     def reset_results(self):
-        self.results = None
+        self.results = []
+        self.last_page = None        
         
     def reset_query(self):
         self.query = None
         
-    def set_results(self, results):
-        self.results = results
-            
+    def set_results(self, page, resultset):
+        self.results.insert(page - 1, resultset)
+
+    def get_results(self):
+        return self.results[self.last_requested_page - 1]
+    
+    def has_more_pages(self, page):
+    	if self.results == [] or self.results[0] == []:
+	    	return False
+        if self.last_page == None:
+	    	return True
+        return page < self.last_page
+    	
     class LoadCorpus(threading.Thread):
         def __init__(self, name, model):
             self.model, self.name = model, name
@@ -329,15 +421,15 @@ class CategorySearchModel(object):
                 self.model.notify_listeners(ERROR_LOADING_CORPUS_EVENT)
             
     class SearchCorpus(threading.Thread):
-        def __init__(self, model, num):
-            self.model, self.num = model, num
+        def __init__(self, model, page, count):
+            self.model, self.count, self.page = model, count, page
             threading.Thread.__init__(self)
         
         def run(self):
             q = self.processed_query()
             sent_pos = []
             i = 0
-            for sent in self.model.tagged_sents:
+            for sent in self.model.tagged_sents[(self.page - 1) * self.count:]:
                 try:
                     m = re.search(q, sent)
                 except re.error:
@@ -347,9 +439,10 @@ class CategorySearchModel(object):
                 if m:
                     sent_pos.append((sent, m.start(), m.end()))
                     i += 1
-                    if i > self.num: break
-            self.model.set_results(sent_pos)
-            self.model.notify_listeners(SEARCH_TERMINATED_EVENT)
+                    if i > self.count + 1: break
+            if (self.count >= len(sent_pos)): self.model.last_page = self.page
+            self.model.set_results(self.page, sent_pos[:-1])
+            self.model.notify_listeners(SEARCH_TERMINATED_EVENT)            
             
         def processed_query(self):
             new = []
