@@ -21,6 +21,7 @@ def dispersion_plot(text, words):
     @type words: C{list} of C{str}
     """
     text = list(text)
+    words.reverse()
     points = [(x,y) for x in range(len(text))
                     for y in range(len(words))
                     if text[x] == words[y]]
