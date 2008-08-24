@@ -5,7 +5,12 @@
 # URL: <http://nltk.org>
 # For license information, see LICENSE.TXT
 
-from nltk import FreqDist, defaultdict
+import textwrap
+
+from probability import FreqDist, LidstoneProbDist
+from compat import defaultdict
+from util import ngram
+from model import NgramModel
 
 class Text(list):
     """A text object, which can be loaded with a sequence of words,
@@ -28,10 +33,6 @@ class Text(list):
         """
         list.__init__(self, text)
         self.vocab = FreqDist(self)
-        self.offsets = defaultdict(list)
-        for i in range(len(self)):
-            word = self[i].lower()
-            self.offsets[word].append(i)
     
     def concordance(self, word, width=80, lines=25):
         """
@@ -44,13 +45,21 @@ class Text(list):
         @param lines: The number of lines to display (default=25)
         @type lines: C{int}
         """
+        if '_offsets' not in self.__dict__:
+            print "Building index..."
+            self._offsets = defaultdict(list)
+            for i in range(len(self)):
+                w = self[i].lower()
+                self._offsets[w].append(i)
+
         word = word.lower()
         half_width = (width - len(word)) / 2
         context = width/4 # approx number of words of context
-        if word in self.offsets:
-            print "Found %s matches; displaying first %s:" %\
-                    (len(self.offsets[word]), lines)
-            for i in self.offsets[word]:
+        if word in self._offsets:
+            lines = min(lines, self._offsets[word])
+            print "Displaying %s of %s matches:" %\
+                    (lines, len(self._offsets[word]))
+            for i in self._offsets[word]:
                 left = ' ' * half_width + ' '.join(self[i-context:i])
                 right = ' '.join(self[i+1:i+context])
                 left = left[-half_width:]
@@ -70,6 +79,7 @@ class Text(list):
         @type num: C{int}
         """
         if '_collocations' not in self.__dict__:
+            print "Building word index..."
             from operator import itemgetter
             text = filter(lambda w: len(w) > 2, self)
             fd = FreqDist(tuple(text[i:i+2])
@@ -92,13 +102,39 @@ class Text(list):
         @type length: C{int} 
         """
         if '_model' not in self.__dict__:
-            from nltk.probability import LidstoneProbDist
-            from nltk.model import NgramModel
+            print "Building ngram index..."
             estimator = lambda fdist, bins: LidstoneProbDist(fdist, 0.2)
             self._model = NgramModel(3, self, estimator)
         text = self._model.generate(length)
-        import textwrap
         print '\n'.join(textwrap.wrap(' '.join(text)))
+    
+    def similar(self, word, num=20):
+        """
+        Distributional similarity: find other words which appear in the
+        same contexts as the specified word.
+        
+        @param word: The word used to seed the similarity search
+        @type word: C{str} 
+        @param num: The number of words to generate (default=20)
+        @type num: C{int} 
+        """
+        
+        if '_word_context_map' not in self.__dict__:
+            print "Building word-context index..."
+            self._word_context_map = defaultdict(list)
+            for w1, w2, w3 in ngram([w.lower() for w in self], 3): 
+                self._word_context_map[w2].append( (w1, w3) )            
+
+        word = word.lower()
+        if word in self._word_context_map:
+            contexts = set(self._word_context_map[word])
+            fd = FreqDist(w for w in self._word_context_map
+                          for c in self._word_context_map[w]
+                          if c in contexts and not w == word)
+            words = fd.sorted()[:num]
+            print '\n'.join(textwrap.wrap(' '.join(words)))
+        else:
+            return "No matches"
     
     def dispersion_plot(self, words):
         from nltk.draw import dispersion_plot
@@ -125,6 +161,9 @@ def demo():
     print
     print "Concordance:"
     text.concordance('news')
+    print
+    print "Distributionally similar words:"
+    text.similar('news')
     print
     print "Collocations:"
     text.collocations()
