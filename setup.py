@@ -36,7 +36,6 @@ setup(
     #############################################
     ## Package List
     packages = ['nltk',
-                'nltk.book',
                 'nltk.chat',
                 'nltk.chunk',
                 'nltk.classify',
@@ -62,6 +61,7 @@ setup(
                 'nltk_contrib.classifier.exceptions',
                 'nltk_contrib.classifier_tests',
                 'nltk_contrib.dependency',
+                'nltk_contrib.depparser',
                 'nltk_contrib.fst',
                 'nltk_contrib.gluesemantics',
                 'nltk_contrib.lpath',
