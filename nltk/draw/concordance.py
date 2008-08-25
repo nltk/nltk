@@ -122,6 +122,7 @@ class CategorySearchView(object):
         self.main_frame.pack(fill='both', expand=True)
 
     def _init_menubar(self):
+		self._result_size = IntVar(self.top)
 		menubar = Menu(self.top)
 		
 		filemenu = Menu(menubar, tearoff=0, borderwidth=0)
@@ -129,12 +130,24 @@ class CategorySearchView(object):
 							 command=self.destroy, accelerator='Ctrl-q')
 		menubar.add_cascade(label='File', underline=0, menu=filemenu)
 
-		helpmenu = Menu(menubar, tearoff=0)
-		helpmenu.add_command(label='About', underline=0,
-							 command=self.about)
-		menubar.add_cascade(label='Help', underline=0, menu=helpmenu)
+		editmenu = Menu(menubar, tearoff=0)
+		rescntmenu = Menu(editmenu, tearoff=0)
+		rescntmenu.add_radiobutton(label='20', variable=self._result_size,
+								 underline=0, value=20, command=self.set_result_size)
+		rescntmenu.add_radiobutton(label='50', variable=self._result_size,
+								 underline=0, value=50, command=self.set_result_size)
+		rescntmenu.add_radiobutton(label='100', variable=self._result_size,
+								 underline=0, value=100, command=self.set_result_size)
+		rescntmenu.invoke(1)
+
+
+		editmenu.add_cascade(label='Result Count', underline=0, menu=rescntmenu)
+		menubar.add_cascade(label='Edit', underline=0, menu=editmenu)
 		
 		self.top.config(menu=menubar)
+		
+    def set_result_size(self, **kwargs):
+		self.model.result_count = self._result_size.get()
 		
     def _init_corpus_select(self, parent):
     	innerframe = Frame(parent, background=self._BACKGROUND_COLOUR)
@@ -350,6 +363,7 @@ class CategorySearchModel(object):
         self.selected_corpus = None
         self.reset_query()
         self.reset_results()
+        self.result_count = None
         
     def non_default_corpora(self):
         copy = []
@@ -364,10 +378,10 @@ class CategorySearchModel(object):
         runner_thread = self.LoadCorpus(name, self)
         runner_thread.start()
         
-    def search(self, query, page, count=50):
+    def search(self, query, page):
         self.query = query
     	self.last_requested_page = page
-        self.SearchCorpus(self, page, count).start()        
+        self.SearchCorpus(self, page, self.result_count).start()        
         
     def next(self, page):
     	self.last_requested_page = page
