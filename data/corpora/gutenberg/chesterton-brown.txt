@@ -1,235 +1,7 @@
-Project Gutenberg's The Wisdom of Father Brown, by G. K. Chesterton
-#3 in our series by G. K. Chesterton
+[The Wisdom of Father Brown by G. K. Chesterton 1914]
 
-Copyright laws are changing all over the world. Be sure to check the
-copyright laws for your country before downloading or redistributing
-this or any other Project Gutenberg eBook.
 
-This header should be the first thing seen when viewing this Project
-Gutenberg file.  Please do not remove it.  Do not change or edit the
-header without written permission.
-
-Please read the "legal small print," and other information about the
-eBook and Project Gutenberg at the bottom of this file.  Included is
-important information about your specific rights and restrictions in
-how the file may be used.  You can also find out about how to make a
-donation to Project Gutenberg, and how to get involved.
-
-
-**Welcome To The World of Free Plain Vanilla Electronic Texts**
-
-**eBooks Readable By Both Humans and By Computers, Since 1971**
-
-*****These eBooks Were Prepared By Thousands of Volunteers!*****
-
-
-Title: The Wisdom of Father Brown
-
-Author: G. K. Chesterton
-
-Release Date: February, 1995 [EBook #223]
-[This file was last updated on November 29, 2002]
-
-Edition: 11
-
-Language: English
-
-Character set encoding: ASCII
-
-*** START OF THE PROJECT GUTENBERG EBOOK THE WISDOM OF FATHER BROWN ***
-
-
-
-
-This etext was proofread by Martin Ward.
-
-If you find an error in this edition, please contact Martin Ward,
-Martin.Ward@durham.ac.uk
-
-
-
-***
-
-**Information prepared by the Project Gutenberg legal advisor**
-
-(Three Pages)
-
-
-***START**THE SMALL PRINT!**FOR PUBLIC DOMAIN ETEXTS**START***
-Why is this "Small Print!" statement here?  You know: lawyers.
-They tell us you might sue us if there is something wrong with
-your copy of this etext, even if you got it for free from
-someone other than us, and even if what's wrong is not our
-fault.  So, among other things, this "Small Print!" statement
-disclaims most of our liability to you.  It also tells you how
-you can distribute copies of this etext if you want to.
-
-*BEFORE!* YOU USE OR READ THIS ETEXT
-By using or reading any part of this PROJECT GUTENBERG-tm
-etext, you indicate that you understand, agree to and accept
-this "Small Print!" statement.  If you do not, you can receive
-a refund of the money (if any) you paid for this etext by
-sending a request within 30 days of receiving it to the person
-you got it from.  If you received this etext on a physical
-medium (such as a disk), you must return it with your request.
-
-ABOUT PROJECT GUTENBERG-TM ETEXTS
-This PROJECT GUTENBERG-tm etext, like most PROJECT GUTENBERG-
-tm etexts, is a "public domain" work distributed by Professor
-Michael S. Hart through the Project Gutenberg Association at
-Carnegie-Mellon University (the "Project").  Among other
-things, this means that no one owns a United States copyright
-on or for this work, so the Project (and you!) can copy and
-distribute it in the United States without permission and
-without paying copyright royalties.  Special rules, set forth
-below, apply if you wish to copy and distribute this etext
-under the Project's "PROJECT GUTENBERG" trademark.
-
-To create these etexts, the Project expends considerable
-efforts to identify, transcribe and proofread public domain
-works.  Despite these efforts, the Project's etexts and any
-medium they may be on may contain "Defects".  Among other
-things, Defects may take the form of incomplete, inaccurate or
-corrupt data, transcription errors, a copyright or other
-intellectual property infringement, a defective or damaged
-disk or other etext medium, a computer virus, or computer
-codes that damage or cannot be read by your equipment.
-
-LIMITED WARRANTY; DISCLAIMER OF DAMAGES
-But for the "Right of Replacement or Refund" described below,
-[1] the Project (and any other party you may receive this
-etext from as a PROJECT GUTENBERG-tm etext) disclaims all
-liability to you for damages, costs and expenses, including
-legal fees, and [2] YOU HAVE NO REMEDIES FOR NEGLIGENCE OR
-UNDER STRICT LIABILITY, OR FOR BREACH OF WARRANTY OR CONTRACT,
-INCLUDING BUT NOT LIMITED TO INDIRECT, CONSEQUENTIAL, PUNITIVE
-OR INCIDENTAL DAMAGES, EVEN IF YOU GIVE NOTICE OF THE
-POSSIBILITY OF SUCH DAMAGES.
-
-If you discover a Defect in this etext within 90 days of
-receiving it, you can receive a refund of the money (if any)
-you paid for it by sending an explanatory note within that
-time to the person you received it from.  If you received it
-on a physical medium, you must return it with your note, and
-such person may choose to alternatively give you a replacement
-copy.  If you received it electronically, such person may
-choose to alternatively give you a second opportunity to
-receive it electronically.
-
-THIS ETEXT IS OTHERWISE PROVIDED TO YOU "AS-IS".  NO OTHER
-WARRANTIES OF ANY KIND, EXPRESS OR IMPLIED, ARE MADE TO YOU AS
-TO THE ETEXT OR ANY MEDIUM IT MAY BE ON, INCLUDING BUT NOT
-LIMITED TO WARRANTIES OF MERCHANTABILITY OR FITNESS FOR A
-PARTICULAR PURPOSE.
-
-Some states do not allow disclaimers of implied warranties or
-the exclusion or limitation of consequential damages, so the
-above disclaimers and exclusions may not apply to you, and you
-may have other legal rights.
-
-INDEMNITY
-You will indemnify and hold the Project, its directors,
-officers, members and agents harmless from all liability, cost
-and expense, including legal fees, that arise directly or
-indirectly from any of the following that you do or cause:
-[1] distribution of this etext, [2] alteration, modification,
-or addition to the etext, or [3] any Defect.
-
-DISTRIBUTION UNDER "PROJECT GUTENBERG-tm"
-You may distribute copies of this etext electronically, or by
-disk, book or any other medium if you either delete this
-"Small Print!" and all other references to Project Gutenberg,
-or:
-
-[1]  Only give exact copies of it.  Among other things, this
-     requires that you do not remove, alter or modify the
-     etext or this "small print!" statement.  You may however,
-     if you wish, distribute this etext in machine readable
-     binary, compressed, mark-up, or proprietary form,
-     including any form resulting from conversion by word pro-
-     cessing or hypertext software, but only so long as
-     *EITHER*:
-
-     [*]  The etext, when displayed, is clearly readable, and
-          does *not* contain characters other than those
-          intended by the author of the work, although tilde
-          (~), asterisk (*) and underline (_) characters may
-          be used to convey punctuation intended by the
-          author, and additional characters may be used to
-          indicate hypertext links; OR
-
-     [*]  The etext may be readily converted by the reader at
-          no expense into plain ASCII, EBCDIC or equivalent
-          form by the program that displays the etext (as is
-          the case, for instance, with most word processors);
-          OR
-
-     [*]  You provide, or agree to also provide on request at
-          no additional cost, fee or expense, a copy of the
-          etext in its original plain ASCII form (or in EBCDIC
-          or other equivalent proprietary form).
-
-[2]  Honor the etext refund and replacement provisions of this
-     "Small Print!" statement.
-
-[3]  Pay a trademark license fee to the Project of 20% of the
-     net profits you derive calculated using the method you
-     already use to calculate your applicable taxes.  If you
-     don't derive profits, no royalty is due.  Royalties are
-     payable to "Project Gutenberg Association/Carnegie-Mellon
-     University" within the 60 days following each
-     date you prepare (or were legally required to prepare)
-     your annual (or equivalent periodic) tax return.
-
-WHAT IF YOU *WANT* TO SEND MONEY EVEN IF YOU DON'T HAVE TO?
-The Project gratefully accepts contributions in money, time,
-scanning machines, OCR software, public domain etexts, royalty
-free copyright licenses, and every other sort of contribution
-you can think of.  Money should be paid to "Project Gutenberg
-Association / Carnegie-Mellon University".
-
-*END*THE SMALL PRINT! FOR PUBLIC DOMAIN ETEXTS*Ver.04.29.93*END*
-
-
-
-
-
-                          G.  K.  CHESTERTON
-
-
-                              THE WISDOM
-                            OF FATHER BROWN
-
-
-                                  To
-
-                           LUCIAN OLDERSHAW
-
-
-
-                               CONTENTS
-
-
-1.  The Absence of Mr Glass
-2.  The Paradise of Thieves
-3.  The Duel of Dr Hirsch
-4.  The Man in the Passage
-5.  The Mistake of the Machine
-6.  The Head of Caesar
-7.  The Purple Wig
-8.  The Perishing of the Pendragons
-9.  The God of the Gongs
-10. The Salad of Colonel Cray
-11. The Strange Crime of John Boulnois
-12. The Fairy Tale of Father Brown
-
-
-@@@@@@@@
-
-                                  ONE
-
-
-                        The Absence of Mr Glass
+I. The Absence of Mr Glass
 
 
 THE consulting-rooms of Dr Orion Hood, the eminent criminologist
@@ -834,10 +606,7 @@ Scarborough, on Monday next at eight o'clock precisely.
 
 
 
-                                  TWO
-
-
-                        The Paradise of Thieves
+II. The Paradise of Thieves
 
 
 THE great Muscari, most original of the young Tuscan poets,
@@ -1557,9 +1326,7 @@ Glasgow, Chicago--in short, to enlightened, energetic, civilized society!"
 
 
 
-                                 THREE
-
-                         The Duel of Dr Hirsch
+III. The Duel of Dr Hirsch
 
 
 M. MAURICE BRUN and M. Armand Armagnac were crossing the sunlit
@@ -2183,10 +1950,7 @@ announced that Dr Hirsch had once more appeared upon the balcony.
 
 
 
-                                 FOUR
-
-
-                        The Man in the Passage
+IV. The Man in the Passage
 
 
 TWO men appeared simultaneously at the two ends of a sort of passage
@@ -2879,10 +2643,7 @@ I don't look at it so often."
 
 
 
-                                 FIVE
-
-
-                      The Mistake of the Machine
+V. The Mistake of the Machine
 
 
 FLAMBEAU and his friend the priest were sitting in the Temple Gardens
@@ -3507,10 +3268,7 @@ She had Arranged Freak Dinner.  Now Safe in--"
 
 
 
-                                  SIX
-
-
-                          The Head of Caesar
+VI. The Head of Caesar
 
 
 THERE is somewhere in Brompton or Kensington an interminable avenue
@@ -4139,10 +3897,7 @@ they are probably getting on very well."
 
 
 
-                                 SEVEN
-
-
-                            The Purple Wig
+VII. The Purple Wig
 
 
 MR EDWARD NUTT, the industrious editor of the Daily Reformer,
@@ -4704,10 +4459,7 @@ to the word "circumstances."
 
 
 
-                                 EIGHT
-
-
-                    The Perishing of the Pendragons
+VIII. The Perishing of the Pendragons
 
 
 FATHER BROWN was in no mood for adventures.  He had lately fallen ill
@@ -5482,10 +5234,7 @@ He received no answer:  Father Brown was asleep.
 
 
 
-                                 NINE
-
-
-                         The God of the Gongs
+IX. The God of the Gongs
 
 
 IT was one of those chilly and empty afternoons in early winter,
@@ -6143,10 +5892,7 @@ on the sands.
 
 
 
-                                  TEN
-
-
-                       The Salad of Colonel Cray
+X. The Salad of Colonel Cray
 
 
 FATHER BROWN was walking home from Mass on a white weird morning
@@ -6710,10 +6456,7 @@ a long time looking for the police."
 
 
 
-                                ELEVEN
-
-
-                  The Strange Crime of John Boulnois
+XI. The Strange Crime of John Boulnois
 
 
 MR CALHOUN KIDD was a very young gentleman with a very old face,
@@ -7366,10 +7109,7 @@ I have so luckily been let off?"
 
 
 
-                                TWELVE
-
-
-                    The Fairy Tale of Father Brown
+XII. The Fairy Tale of Father Brown
 
 
 THE picturesque city and state of Heiligwaldenstein was one of those

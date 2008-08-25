@@ -98,7 +98,7 @@ floresta = LazyCorpusLoader(
 genesis = LazyCorpusLoader(
     'genesis', PlaintextCorpusReader, r'(?!\.).*\.txt')
 gutenberg = LazyCorpusLoader(
-    'gutenberg', GutenbergCorpusReader, r'(?!\.).*\.txt')
+    'gutenberg', PlaintextCorpusReader, r'(?!\.).*\.txt')
 ieer = LazyCorpusLoader(
     'ieer', IEERCorpusReader, r'(?!README|\.).*')
 inaugural = LazyCorpusLoader(

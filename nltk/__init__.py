@@ -76,5 +76,5 @@ from misc import *
 
 from internals import config_java
 
-import book, chat, chunk, corpus, draw, parse, sem, stem, tag, tokenize, wordnet
+import chat, chunk, corpus, draw, parse, sem, stem, tag, tokenize, wordnet
 

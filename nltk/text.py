@@ -24,7 +24,7 @@ class Text(list):
     for use via the interactive console.
     """
     
-    def __init__(self, text):
+    def __init__(self, text, name=None):
         """
         Create a Text object.
         
@@ -32,7 +32,14 @@ class Text(list):
         @type words: C{sequence} of C{str}
         """
         list.__init__(self, text)
-        self.vocab = FreqDist(self)
+        
+        if name:
+            self.name = name
+        elif ']' in self[:20]:
+            end = self[:20].index(']')
+            self.name = " ".join(self[1:end])
+        else:
+            self.name = " ".join(self[:8]) + "..."
     
     def concordance(self, word, width=80, lines=25):
         """
@@ -84,7 +91,7 @@ class Text(list):
             text = filter(lambda w: len(w) > 2, self)
             fd = FreqDist(tuple(text[i:i+2])
                           for i in range(len(text)-1))
-            scored = [((w1,w2), fd[(w1,w2)] ** 3 / float(self.vocab[w1] * self.vocab[w2])) 
+            scored = [((w1,w2), fd[(w1,w2)] ** 3 / float(self.vocab()[w1] * self.vocab()[w2])) 
                       for w1, w2 in fd]
             scored.sort(key=itemgetter(1), reverse=True)
             self._collocations = map(itemgetter(0), scored)
@@ -140,19 +147,28 @@ class Text(list):
         from nltk.draw import dispersion_plot
         dispersion_plot(self, words)
 
+    def zipf_plot(self, *args):
+        self.vocab().zipf_plot(*args)
+    
+    def vocab(self):
+        if "_vocab" not in self.__dict__:
+            print "Building vocabulary index..."
+            self._vocab = FreqDist(self)
+        return self._vocab
+
     def __str__(self):
         """
         @return: A string representation of this C{FreqDist}.
         @rtype: string
         """
-        return '<Text with %d words>' % len(self)
+        return '<Text: %s>' % self.name
         
     def __repr__(self):
         """
         @return: A string representation of this C{FreqDist}.
         @rtype: string
         """
-        return '<Text with %d words>' % len(self)
+        return self.__str__()
         
 def demo():
     from nltk.corpus import brown
@@ -175,7 +191,7 @@ def demo():
     text.dispersion_plot(['news', 'report', 'said', 'announced'])
     print
     print "Vocabulary plot:"
-    text.vocab.zipf_plot()
+    text.zipf_plot()
     print
     print "Indexing:"
     print "text[3]:", text[3]
@@ -185,4 +201,4 @@ def demo():
 if __name__ == '__main__':
     demo()
 
-__all__ = ['Text']
+
