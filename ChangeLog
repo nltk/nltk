@@ -1,3 +1,39 @@
+Version 0.9.5 2008-08-26
+
+NLTK:
+* text module with support for concordancing, text generation, plotting
+* book module
+* Major reworking of the automated theorem proving modules (Dan Garrette)
+* draw.dispersion now uses pylab
+* draw.concordance GUI tool
+* nltk.data supports for reading corpora and other data files from within zipfiles
+* trees can be constructed from strings with Tree(s) (cf Tree.parse(s))
+
+Contrib (work in progress):
+* many updates to student projects
+  - nltk_contrib.agreement (Thomas Lippincott)
+  - nltk_contrib.coref (Joseph Frazee)
+  - nltk_contrib.depparser (Jason Narad)
+  - nltk_contrib.fuf (Petro Verkhogliad)
+  - nltk_contrib.hadoop (Xinfan Meng)
+* clean-ups: deleted stale files; moved some packages to misc
+
+Data
+* Cleaned up Gutenberg text corpora
+* added Moby Dick; removed redundant copy of Blake songs.
+* more tagger models
+* renamed to nltk_data to facilitate installation
+
+Book:
+* changed filenames to chNN format
+* reworked opening chapters (work in progress)
+
+Distributions:
+* fixed problem with mac installer that arose when Python binary
+  couldn't be found
+* removed dependency of NLTK on nltk_data so that NLTK code can be
+  installed before the data
+
 Version 0.9.4 2008-08-01
 	
 NLTK:
