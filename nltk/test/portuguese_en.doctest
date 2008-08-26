@@ -81,10 +81,10 @@ Count the word tokens and types, and determine the most common word:
 
     >>> words = floresta.words()
     >>> len(words)
-    211870
+    211852
     >>> fd = nltk.FreqDist(words)
     >>> len(fd)
-    29425
+    29421
     >>> fd.max()
     'de'
 
@@ -181,20 +181,20 @@ default tagger that tags every word as a noun, and see how well it does:
 
     >>> tagger0 = nltk.DefaultTagger('n')
     >>> nltk.tag.accuracy(tagger0, test)
-    0.17690941385435169
+    0.17697228144989338
 
 Evidently, about one in every six words is a noun.  Let's improve on this by
 training up a unigram tagger:
 
     >>> tagger1 = nltk.UnigramTagger(train, backoff=tagger0)
     >>> nltk.tag.accuracy(tagger1, test)
-    0.85115452930728241
+    0.85145700071073205
 
 Next a bigram tagger:
 
     >>> tagger2 = nltk.BigramTagger(train, backoff=tagger1)
     >>> nltk.tag.accuracy(tagger2, test)
-    0.86856127886323264
+    0.86922530206112292
 
 
 

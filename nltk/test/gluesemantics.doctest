@@ -18,6 +18,7 @@ Linear logic
     >>> logic.n = logic.Tokens.NEW_NLTK
     
 Parser
+
     >>> print llp.parse(r'f')
     f
     >>> print llp.parse(r'(g -o f)')
@@ -32,6 +33,7 @@ Parser
     ((g -o G) -o G)((g -o f))
 
 Simplify
+
     >>> print llp.parse(r'f').simplify()
     f
     >>> print llp.parse(r'(g -o f)').simplify()
@@ -50,6 +52,7 @@ Simplify
     f
 
 Test BindingDict
+
     >>> h = ConstantExpression('h')
     >>> g = ConstantExpression('g')
     >>> f = ConstantExpression('f')
@@ -72,6 +75,7 @@ Test BindingDict
     Variable F already bound to another value
         
 Test Unify
+
     >>> try: f.unify(g, BindingDict())
     ... except UnificationException, e: print e
     ... 
@@ -111,6 +115,7 @@ Test Unify
     {H: F, G: F}
 
 Test Compile
+
     >>> print llp.parse('g').compile_pos(Counter(), GlueFormula)
     (ConstantExpression: g, [])
     >>> print llp.parse('(g -o f)').compile_pos(Counter(), GlueFormula)
@@ -125,6 +130,7 @@ Glue
 
 Demo of "John walks"
 --------------------
+
     >>> john = GlueFormula("John", "g")
     >>> print john
     John : g
@@ -139,6 +145,7 @@ Demo of "John walks"
 
 Demo of "A dog walks"
 ---------------------
+
     >>> a = GlueFormula("\P Q.some x.(P(x) and Q(x))", "((gv -o gr) -o ((g -o G) -o G))")
     >>> print a
     \P.\Q.exists x.(P(x) & Q(x)) : ((gv -o gr) -o ((g -o G) -o G))
@@ -160,6 +167,7 @@ Demo of 'every girl chases a dog'
 ---------------------------------
 
 Individual words:
+
     >>> every = GlueFormula("\P Q.all x.(P(x) implies Q(x))", "((gv -o gr) -o ((g -o G) -o G))")
     >>> print every
     \P.\Q.all x.(P(x) -> Q(x)) : ((gv -o gr) -o ((g -o G) -o G))
@@ -177,6 +185,7 @@ Individual words:
     \x.dog(x) : (hv -o hr)
 
 Noun Quantification can only be done one way:
+
     >>> every_girl = every.applyto(girl)
     >>> print every_girl.simplify()
     \Q.all x.(girl(x) -> Q(x)) : ((g -o G) -o G)
@@ -188,6 +197,7 @@ The first reading is achieved by combining 'chases' with 'a dog' first.
 Since 'a girl' requires something of the form '(h -o H)' we must
 get rid of the 'g' in the glue of 'see'.  We will do this with
 the '-o elimination' rule.  So, x1 will be our subject placeholder.
+
     >>> xPrime = GlueFormula("x1", "g")
     >>> print xPrime
     x1 : g
@@ -199,7 +209,8 @@ the '-o elimination' rule.  So, x1 will be our subject placeholder.
     exists x.(dog(x) & chases(x1,x)) : f
 
 Now we can retract our subject placeholder using lambda-abstraction and 
-combine with the true subject."
+combine with the true subject.
+
     >>> chases_a_dog = xPrime_chases_a_dog.lambda_abstract(xPrime)
     >>> print chases_a_dog.simplify()
     \x1.exists x.(dog(x) & chases(x1,x)) : (g -o f)
@@ -210,6 +221,7 @@ combine with the true subject."
     True
 
 The second reading is achieved by combining 'every girl' with 'chases' first.
+
     >>> xPrime = GlueFormula("x1", "g")
     >>> print xPrime
     x1 : g
@@ -240,6 +252,7 @@ The second reading is achieved by combining 'every girl' with 'chases' first.
     
 Compilation
 -----------
+
     >>> for cp in GlueFormula('m', '(b -o a)').compile(Counter()): print cp
     m : (b -o a) : {1}
     >>> for cp in GlueFormula('m', '((c -o b) -o a)').compile(Counter()): print cp
@@ -264,7 +277,9 @@ Compilation
 
 Demo of 'a man walks' using Compilation
 ---------------------------------------
+
 Premises
+
     >>> a = GlueFormula('\\P Q.some x.(P(x) and Q(x))', '((gv -o gr) -o ((g -o G) -o G))')
     >>> print a
     \P.\Q.exists x.(P(x) & Q(x)) : ((gv -o gr) -o ((g -o G) -o G))
@@ -278,6 +293,7 @@ Premises
     \x.walks(x) : (g -o f)
     
 Compiled Premises:
+
     >>> counter = Counter()
     >>> ahc = a.compile(counter)
     >>> g1 = ahc[0]
@@ -297,6 +313,7 @@ Compiled Premises:
     \x.walks(x) : (g -o f) : {5}
 
 Derivation:
+
     >>> g14 = g4.applyto(g1)
     >>> print g14.simplify()
     man(v1) : gr : {1, 4}
