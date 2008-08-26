@@ -499,5 +499,8 @@ def pos_concordance():
     d = CategorySearchView()
     d.mainloop()
         
-if __name__ == '__main__':
+def demo():
     pos_concordance()
+
+if __name__ == '__main__':
+    demo()

@@ -319,7 +319,7 @@ def morph_pronoun(lex, pronoun_type, case, gender, number, distance, animate,
             return 'which'
         elif case == 'possessive':
             return 'whose'
-        elif case 'objective':
+        elif case == 'objective':
             if gender == 'neuter':
                 return 'what'
             else:
@@ -381,10 +381,10 @@ def is_noun_maked_as_an(word):
 def is_final_punctuation(letter):
     return (letter in ['.', ';', '!', ':', '?'])
 
-def morph_noun(word, number, a-an, feature):
+def morph_noun(word, number, a_an, feature):
     """If feature is possessive, then return the apostrephised form of the noun
     appropriate to the number.
-    If a-an is 'an mark noun with mark-noun-as-an to agree with determiner.
+    If a_an is 'an mark noun with mark-noun-as-an to agree with determiner.
     If noun is plural and ends with 's', mark noun as plural to let it agree
     with possessive mark that may follow it (single apostrophe or 's).
     Return word with number suffix."""
@@ -394,7 +394,7 @@ def morph_noun(word, number, a-an, feature):
     else:
         return word
 
-    if a-an = 'an':
+    if a_an == 'an':
         return mark_noun_as_an(word)
     else:
         return word
