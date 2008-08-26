@@ -18,7 +18,7 @@ ROOT = ./MyRoot
 LIB_PATH = $(ROOT)/tmp
 LIB_PATH_VERSION = $(LIB_PATH)/$(NLTK_VERSION)
 LIB_PATH_INST = $(LIB_PATH)/nltk-installer/
-DATA_PATH = $(ROOT)/usr/share/nltk/
+DATA_PATH = $(ROOT)/usr/share/nltk_data
 PM = /Developer/Applications/Utilities/PackageMaker.app/Contents/MacOS/PackageMaker 
 
 .PHONY: clean
@@ -45,7 +45,7 @@ copy:
 	unzip $(NLTK_ZIP) -d $(LIB_PATH)
 	mv $(LIB_PATH_VERSION)/* $(LIB_PATH_INST)
 	rmdir $(LIB_PATH_VERSION)
-	cp -R ../../data $(DATA_PATH)
+	cp -R ../../nltk_data $(DATA_PATH)
 	cp ../../LICENSE.txt ../../README.txt Resources/
 	chmod -R g+r $(DATA_PATH)
 	touch copy

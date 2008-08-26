@@ -90,7 +90,7 @@ exampledist:
 	find examples -print | egrep -v '.svn|.DS_Store' | zip dist/nltk-examples-$(NLTK_VERSION).zip -@
 
 datadist:
-	find data -print | egrep -v '.svn|.DS_Store' | zip dist/nltk-data-$(NLTK_VERSION).zip -@
+	find nltk_data -print | egrep -v '.svn|.DS_Store' | zip dist/nltk-data-$(NLTK_VERSION).zip -@
 
 nightlydist: codedist
 	REVISION = `svn info | grep Revision: | sed "s/Revision: //"`
@@ -117,12 +117,12 @@ python:
 
 numpy:
 	mkdir -p python/{mac,win,unix}
-	wget -N -P python/mac  $(NUMPY)/numpy-1.1.0-py2.5-macosx10.5.dmg?download
-	wget -N -P python/win  $(NUMPY)/numpy-1.1.0-win32-superpack-python2.5.exe?download
-	wget -N -P python/unix $(NUMPY)/numpy-1.1.0.tar.gz?download
-	mv python/win/numpy-1.1.0-py2.5-macosx10.5.dmg?download python/win/numpy-1.1.0-py2.5-macosx10.5.dmg
-	mv python/win/numpy-1.1.0-win32-superpack-python2.5.exe?download python/win/numpy-1.1.0-win32-superpack-python2.5.exe	
-	mv python/unix/numpy-1.1.0.tar.gz?download python/unix/numpy-1.1.0.tar.gz
+	wget -N -P python/mac  $(NUMPY)/numpy-1.1.1-py2.5-macosx10.5.dmg?download
+	wget -N -P python/win  $(NUMPY)/numpy-1.1.1-win32-superpack-python2.5.exe?download
+	wget -N -P python/unix $(NUMPY)/numpy-1.1.1.tar.gz?download
+	mv python/win/numpy-1.1.1-py2.5-macosx10.5.dmg?download python/win/numpy-1.1.1-py2.5-macosx10.5.dmg
+	mv python/win/numpy-1.1.1-win32-superpack-python2.5.exe?download python/win/numpy-1.1.1-win32-superpack-python2.5.exe	
+	mv python/unix/numpy-1.1.1.tar.gz?download python/unix/numpy-1.1.1.tar.gz
 	touch .numpy.done
 
 pylab:
