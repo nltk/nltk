@@ -881,13 +881,13 @@ retrieved with the following methods:
     >>> verbnet.lemmas()[20:25]
     ['accelerate', 'accept', 'acclaim', 'accompany', 'accrue']
     >>> verbnet.classids()[:5]
-    ['accompany-51.7', 'admire-31.2', 'admire-31.2-1', 'admit-65', 'adopt-93']
+    ['accompany-51_7', 'admire-31.2-1', 'admire-31_2', 'admit-65', 'adopt-93']
 
 The `classids()` method may also be used to retrieve the classes that
 a given lemma belongs to:
 
     >>> verbnet.classids('accept')
-    ['approve-77', 'characterize-29.2-1-1', 'obtain-13.5.2']
+    ['approve-77', 'characterize-29.2-1-1', 'obtain-13_5_2']
 
 The primary object in the lexicon is a class record, which is stored
 as an ElementTree xml object.  The class record for a given class
@@ -1658,14 +1658,14 @@ Make sure we're picking up the right number of elements:
 Selecting classids based on various selectors:
 
     >>> verbnet.classids(lemma='take') # doctest: +NORMALIZE_WHITESPACE
-    ['bring-11.3', 'characterize-29.2', 'convert-26.6.2', 'cost-54.2',
-     'fit-54.3', 'performance-26.7-2', 'steal-10.5']
+    ['bring-11_3', 'characterize-29_2', 'convert-26_6_2', 'cost-54_2',
+    'fit-54_3', 'performance-26.7-2', 'steal-10_5']
     >>> verbnet.classids(wordnetid='lead%2:38:01')
     ['accompany-51.7']
     >>> verbnet.classids(fileid='approve-77.xml')
     ['approve-77']
-    >>> verbnet.classids(classid='admire-31.2') # subclasses
-    ['admire-31.2-1']
+    >>> verbnet.classids(classid='admire-31_2') # subclasses
+    ['admire-31_2-1']
 
 vnclass() accepts filenames, long ids, and short ids:
 

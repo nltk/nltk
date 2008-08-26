@@ -249,9 +249,9 @@ Checking for equality of two DRSs is very useful when generating readings of a s
 For example, the ``drt_glue`` module generates two readings for the sentence 
 *John sees Mary*:
 
-	>>> from nltk.sem import logic
-	>>> from nltk.internals import Counter
-	>>> logic._counter = Counter()
+    >>> from nltk.sem import logic
+    >>> from nltk.internals import Counter
+    >>> logic._counter = Counter()
     >>> from nltk_contrib.gluesemantics.drt_glue import DrtGlue
     >>> readings = DrtGlue().parse_to_meaning('John sees Mary')
     >>> 
