@@ -1,4 +1,4 @@
-# Natural Language Toolkit: Recursive Descent Parser Demo
+# Natural Language Toolkit: Concordance Search Demo
 #
 # Copyright (C) 2001-2008 NLTK Project
 # Author: Sumukh Ghodke <sghodke@csse.unimelb.edu.au>
@@ -476,11 +476,13 @@ class CategorySearchModel(object):
                     if i > self.count:
                         self.model.last_sent_searched += sent_count - 1
                         break
-                sent_count += 1            
+                sent_count += 1  
             if (self.count >= len(sent_pos)): 
                 self.model.last_sent_searched += sent_count - 1
                 self.model.last_page = self.page
-            self.model.set_results(self.page, sent_pos[:-1])
+                self.model.set_results(self.page, sent_pos)
+            else:
+                self.model.set_results(self.page, sent_pos[:-1])
             self.model.notify_listeners(SEARCH_TERMINATED_EVENT)            
             
         def processed_query(self):
@@ -493,7 +495,7 @@ class CategorySearchModel(object):
                     new.append(BOUNDARY + term + BOUNDARY)
                 else:
                     new.append(BOUNDARY + term + '/' + WORD_OR_TAG + BOUNDARY)
-            return join(new)
+            return ' '.join(new)
         
 def pos_concordance():
     d = CategorySearchView()
