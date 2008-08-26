@@ -2,7 +2,7 @@
  Discourse Representation Theory
 ================================
 
-.. include:: ../../doc/definitions.txt
+.. include:: ../../doc/definitions.rst
 
 A DRS is created with ``DRS()``. This takes two arguments: a list of
 discourse referents and list of conditions. 

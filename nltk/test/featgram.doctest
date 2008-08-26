@@ -1,7 +1,8 @@
 =========================
  Feature Grammar Parsing
 =========================
-.. include:: ../../doc/definitions.txt
+
+.. include:: ../../doc/definitions.rst
 
 Grammars can be parsed from strings.
 
