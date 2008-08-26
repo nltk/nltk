@@ -18,7 +18,6 @@ from nltk.corpus.reader.cmudict import *
 from nltk.corpus.reader.conll import *
 from nltk.corpus.reader.chunked import *
 from nltk.corpus.reader.wordlist import *
-from nltk.corpus.reader.gutenberg import *
 from nltk.corpus.reader.xmldocs import *
 from nltk.corpus.reader.ppattach import *
 from nltk.corpus.reader.senseval import *
@@ -45,7 +44,6 @@ __all__ = [
     'PlaintextCorpusReader', 'find_corpus_files',
     'TaggedCorpusReader', 'CMUDictCorpusReader',
     'ConllChunkCorpusReader', 'WordListCorpusReader',
-    'GutenbergCorpusReader', 'XMLCorpusReader',
     'PPAttachmentCorpusReader', 'SensevalCorpusReader',
     'IEERCorpusReader', 'ChunkedCorpusReader',
     'SinicaTreebankCorpusReader', 'BracketParseCorpusReader',
@@ -59,5 +57,5 @@ __all__ = [
     'tagged_treebank_para_block_reader',
     'PropbankCorpusReader', 'VerbnetCorpusReader',
     'BNCCorpusReader', 'ConllCorpusReader',
-    'NPSChatCorpusReader',
+    'XMLCorpusReader', 'NPSChatCorpusReader'
 ]
