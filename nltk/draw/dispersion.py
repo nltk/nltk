@@ -9,8 +9,6 @@
 A utility for displaying lexical dispersion.
 """
 
-import pylab
-
 def dispersion_plot(text, words):
     """
     Generate a lexical dispersion plot.
@@ -20,6 +18,13 @@ def dispersion_plot(text, words):
     @param words: The target words
     @type words: C{list} of C{str}
     """
+
+    try:
+        import pylab
+    except ImportError:
+        raise ValueError('The plot function requires the matplotlib package.'
+                     'See http://matplotlib.sourceforge.net/')
+
     text = list(text)
     words.reverse()
     points = [(x,y) for x in range(len(text))
