@@ -84,7 +84,7 @@ class CategorySearchView(object):
     _HIGHLIGHT_WORD_COLOUR='#F00' #red
     _HIGHLIGHT_WORD_TAG='HL_WRD_TAG'
     
-    _HIGHLIGHT_LABEL_COLOUR='#0FF'
+    _HIGHLIGHT_LABEL_COLOUR='#C0C0C0' # dark grey
     _HIGHLIGHT_LABEL_TAG='HL_LBL_TAG'
     
     
@@ -285,7 +285,7 @@ class CategorySearchView(object):
         if (len(query.strip()) == 0): return
         self.status['text']  = 'Searching for ' + query
         self.freeze_editable()
-        self.model.search(query, self.current_page + 1)
+        self.model.search(query, self.current_page + 1, )
         
 
     def write_results(self, results):
@@ -296,13 +296,32 @@ class CategorySearchView(object):
             if len(sent) != 0:
                 if (pos1 < self._CHAR_BEFORE):
                     sent, pos1, pos2 = self.pad(sent, pos1, pos2)
-                self.results_box.insert(str(row) + '.0',
-                    sent[pos1-self._CHAR_BEFORE:pos1+self._CHAR_AFTER] + '\n')
-                self.results_box.tag_add(self._HIGHLIGHT_WORD_TAG,
-                    str(row) + '.' + str(self._CHAR_BEFORE),
-                    str(row) + '.' + str(pos2 - pos1 + self._CHAR_BEFORE))
+                sentence = sent[pos1-self._CHAR_BEFORE:pos1+self._CHAR_AFTER]
+                if not row == len(results):
+                    sentence += '\n'
+                self.results_box.insert(str(row) + '.0', sentence)
+                word_markers, label_markers = self.words_and_labels(sent, pos1, pos2)
+                for marker in word_markers: self.results_box.tag_add(self._HIGHLIGHT_WORD_TAG, str(row) + '.' + str(marker[0]), str(row) + '.' + str(marker[1]))
+                for marker in label_markers: self.results_box.tag_add(self._HIGHLIGHT_LABEL_TAG, str(row) + '.' + str(marker[0]), str(row) + '.' + str(marker[1]))
                 row += 1
         self.results_box['state'] = 'disabled'
+        
+    def words_and_labels(self, sentence, pos1, pos2):
+        search_exp = sentence[pos1:pos2]
+        words, labels = [], []
+        labeled_words = search_exp.split(' ')
+        index = 0
+        for each in labeled_words:
+            if each == '':
+                index += 1
+            else:
+                word, label = each.split('/')
+                words.append((self._CHAR_BEFORE + index, self._CHAR_BEFORE + index + len(word)))
+                index += len(word) + 1
+                labels.append((self._CHAR_BEFORE + index, self._CHAR_BEFORE + index + len(label)))
+                index += len(label)
+            index += 1
+        return words, labels
 
     def pad(self, sent, hstart, hend):
         if hstart >= self._CHAR_BEFORE:
@@ -354,7 +373,7 @@ class CategorySearchView(object):
     def mainloop(self, *args, **kwargs):
         if in_idle(): return
         self.top.mainloop(*args, **kwargs)
-        
+          
 class CategorySearchModel(object):
     def __init__(self):
         self.listeners = []
@@ -364,6 +383,7 @@ class CategorySearchModel(object):
         self.reset_query()
         self.reset_results()
         self.result_count = None
+        self.last_sent_searched = 0
         
     def non_default_corpora(self):
         copy = []
@@ -402,6 +422,7 @@ class CategorySearchModel(object):
             each.fire_event(event)
             
     def reset_results(self):
+        self.last_sent_searched = 0
         self.results = []
         self.last_page = None        
         
@@ -441,9 +462,8 @@ class CategorySearchModel(object):
         
         def run(self):
             q = self.processed_query()
-            sent_pos = []
-            i = 0
-            for sent in self.model.tagged_sents[(self.page - 1) * self.count:]:
+            sent_pos, i, sent_count = [], 0, 0
+            for sent in self.model.tagged_sents[self.model.last_sent_searched:]:
                 try:
                     m = re.search(q, sent)
                 except re.error:
@@ -453,8 +473,13 @@ class CategorySearchModel(object):
                 if m:
                     sent_pos.append((sent, m.start(), m.end()))
                     i += 1
-                    if i > self.count + 1: break
-            if (self.count >= len(sent_pos)): self.model.last_page = self.page
+                    if i > self.count:
+                        self.model.last_sent_searched += sent_count - 1
+                        break
+                sent_count += 1            
+            if (self.count >= len(sent_pos)): 
+                self.model.last_sent_searched += sent_count - 1
+                self.model.last_page = self.page
             self.model.set_results(self.page, sent_pos[:-1])
             self.model.notify_listeners(SEARCH_TERMINATED_EVENT)            
             
