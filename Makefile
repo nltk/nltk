@@ -127,6 +127,8 @@ pylab:
 	wget -N -P python/mac $(PYMAC)/matplotlib-0.91.1-py2.5-macosx10.4-2007-12-04.dmg
 	wget -N -P python/win $(PYLAB)/matplotlib-0.98.0.win32-py2.5.exe
 	wget -N -P python/unix $(PYLAB)/matplotlib-0.98.0.tar.gz
+	wget -N -P python/win http://www.dll-files.com/dllindex/msvcp71.zip?0VDlV0bHlS
+	mv msvcp71.zip?0VDlV0bHlS msvcp71.zip
 	touch .pylab.done
 
 prover:	
@@ -147,6 +149,7 @@ iso:	.dist.done .python.done .numpy.done .pylab.done
 	cp dist/nltk-contribdoc-$(NLTK_VERSION).zip iso
 	cp dist/nltk-examples-$(NLTK_VERSION).zip   iso
 	cp *.txt *.html                             iso
+	cp cd.pdf                                   iso
 	cp python/mac/*                             iso/mac/
 	cp python/win/*                             iso/win/
 	cp python/unix/*                            iso/unix/
