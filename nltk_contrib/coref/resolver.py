@@ -29,11 +29,14 @@ from nltk.tag.hmm import HiddenMarkovModelTagger
 from nltk_contrib.coref import MUC6CorpusReader
 
 from nltk_contrib.coref.chunk import HiddenMarkovModelChunkTagger, \
-    ClosedCategoryChunkTransform, NamedEntityChunkTransform
+     ClosedCategoryChunkTransform
+    
+from nltk_contrib.coref.ne import NamedEntityChunkTransform, \
+     NamedEntityFeatureDetector, NamedEntityClassifier, \
+     NamedEntityFeatureDetector2
      
 from nltk_contrib.coref.util import LidstoneProbDistFactory, \
-    TreebankTaggerCorpusReader, TreebankChunkTaggerCorpusReader
-from nltk_contrib.coref.util import zipzip
+    TreebankTaggerCorpusReader, TreebankChunkTaggerCorpusReader, zipzip
 
 TREEBANK_CLOSED_CATS = set(['CC', 'DT', 'MD', 'POS', 'PP$', 'RP', 'TO', 'WDT',
                             'WP$', 'EX', 'IN', 'PDT', 'PRP', 'WP', 'WRB'])
@@ -151,9 +154,10 @@ if __name__ == '__main__':
     parser.add_option('-c', '--train-chunker', action='store_true',
                       default=False, dest='train_chunker', 
                       help='train Treebank chunker')
-    parser.add_option('-n', '--train-ne-chunker', action='store_true',
-                      default=False, dest='train_ne_chunker', 
-                      help='train MUC6 named entity chunker')
+    parser.add_option('-n', '--train-ner', metavar='NER_COMPONENT',
+                      dest='train_ner', type='choice',
+                      choices=('chunker', 'classifier', 'classifier2', 'recognizer'),
+                      help='train NER components (chunker, classifier, classifier2, recognizer)')
     parser.add_option('-f', '--model-file', metavar='FILE',
                       dest='model_file', help='save model to FILE')
     parser.add_option('-e', '--num-test-sents', metavar='NUM_TEST',
@@ -173,7 +177,7 @@ if __name__ == '__main__':
     if options.psyco:
         try:
             import psyco
-            psyco.full(memory=100)
+            psyco.profile()
         except:
             pass
 
@@ -217,7 +221,7 @@ if __name__ == '__main__':
                             transform=conll2k_transform,
                             verbose=options.verbose)
         
-    elif options.train_ne_chunker:
+    elif options.train_ner == 'chunker':
         muc6_train = TreebankTaggerCorpusReader(
             LazyCorpusLoader(
                 'muc6', MUC6CorpusReader, 
@@ -236,9 +240,6 @@ if __name__ == '__main__':
                  for ((word, tag), (word, iob_tag)) in token],
             zipzip(muc6_test.tagged_sents()[:options.num_test_sents], 
                    muc6_test.iob_sents()[:options.num_test_sents]))
-
-        muc6_test_sequence = list(muc6_test_sequence[:options.num_test_sents])
-
         muc6_estimator = LidstoneProbDistFactory
         muc6_transform = NamedEntityChunkTransform(TREEBANK_CLOSED_CATS)
         model = train_model(HiddenMarkovModelChunkTagger, 
@@ -250,6 +251,73 @@ if __name__ == '__main__':
                             estimator=muc6_estimator,
                             transform=muc6_transform,
                             verbose=options.verbose)
+
+    elif options.train_ner == 'classifier':
+        def join(chunk):
+            if isinstance(chunk, tuple):
+                word, iob_tag, ne_tag = chunk
+            else:
+                word = ' '.join([word for (word, iob_tag, ne_tag) in chunk])
+                ne_tag = chunk[0][-1]
+            return [(word, ne_tag)]
+        muc6_train = LazyCorpusLoader(
+                        'muc6', MUC6CorpusReader, 
+                        r'.*\-(0[01][0-7][0-9])\..*\.sgm')
+        muc6_train_sequence = LazyMap(join, muc6_train.ne_chunks())
+        muc6_test = LazyCorpusLoader(
+                        'muc6', MUC6CorpusReader, 
+                        r'.*\-(01[8-9][0-9])\..*\.sgm')
+        muc6_test_sequence = LazyMap(join, muc6_test.ne_chunks())
+        model = train_model(NamedEntityClassifier, 
+                            muc6_train_sequence, 
+                            muc6_test_sequence,
+                            options.model_file, 
+                            options.num_train_sents, 
+                            options.num_test_sents,
+                            feature_detector=NamedEntityFeatureDetector,
+                            out_tag=None,                 
+                            verbose=options.verbose)
+                            
+        from nltk.tag.util import *
+        for sent in muc6_test_sequence[:options.num_test_sents]:
+            words = untag(sent)
+            gold_tags = tags(sent)
+            pred_tags = model.tag(words)
+            for x, y, z in zip(pred_tags, gold_tags, words):
+                if x == y:
+                    print '  ', (x, y, z)
+                else:
+                    print '* ', (x, y, z)
+
+    elif options.train_ner == 'classifier2':
+        muc6_train = LazyCorpusLoader(
+                        'muc6', MUC6CorpusReader, 
+                        r'.*\-(0[01][0-7][0-9])\..*\.sgm')
+        muc6_train_sequence = muc6_train.iob_sents()
+        muc6_test = LazyCorpusLoader(
+                        'muc6', MUC6CorpusReader, 
+                        r'.*\-(01[8-9][0-9])\..*\.sgm')
+        muc6_test_sequence = muc6_test.iob_sents()
+        model = train_model(NamedEntityClassifier, 
+                            muc6_train_sequence, 
+                            muc6_test_sequence,
+                            options.model_file, 
+                            options.num_train_sents, 
+                            options.num_test_sents,
+                            feature_detector=NamedEntityFeatureDetector2,
+                            out_tag='O',                 
+                            verbose=options.verbose)
+                            
+        from nltk.tag.util import *
+        for sent in muc6_test_sequence[:options.num_test_sents]:
+            words = untag(sent)
+            gold_tags = tags(sent)
+            pred_tags = model.tag(words)
+            for x, y, z in zip(pred_tags, gold_tags, words):
+                if x == y:
+                    print '  ', (x, y, z)
+                else:
+                    print '* ', (x, y, z)
 
     elif options.demo:
         demo()
