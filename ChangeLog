@@ -1,4 +1,4 @@
-Version 0.9.5 2008-08-26
+Version 0.9.5 2008-08-27
 
 NLTK:
 * text module with support for concordancing, text generation, plotting
@@ -23,6 +23,10 @@ Data
 * added Moby Dick; removed redundant copy of Blake songs.
 * more tagger models
 * renamed to nltk_data to facilitate installation
+* stored each corpus as a zip file for quicker installation
+  and access, and to solve a problem with the Propbank
+  corpus including a file with an illegal name for MSWindows
+  (con.xml).
 
 Book:
 * changed filenames to chNN format

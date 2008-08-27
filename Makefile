@@ -90,7 +90,7 @@ exampledist:
 	find examples -print | egrep -v '.svn|.DS_Store' | zip dist/nltk-examples-$(NLTK_VERSION).zip -@
 
 datadist:
-	find nltk_data -print | egrep -v '.svn|.DS_Store' | zip dist/nltk-data-$(NLTK_VERSION).zip -@
+	find nltk_data -print | egrep -v '.svn|.DS_Store' | zip -n .zip:.gz dist/nltk-data-$(NLTK_VERSION).zip -@
 
 nightlydist: codedist
 	REVISION = `svn info | grep Revision: | sed "s/Revision: //"`
