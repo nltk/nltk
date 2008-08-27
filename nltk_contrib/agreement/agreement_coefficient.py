@@ -232,9 +232,9 @@ class AnnotationTask:
         vals = {}
         for a in self.C:
             for b in self.C:
-                if(a==b or "%s%s"%(b,a) in vals):
+                if(a==b or frozenset([a,b]) in vals):
                     continue
-                vals["%s%s"%(a,b)] = self.weighted_kappa_pairwise(a,b)
+                vals[frozenset([a,b])] = self.weighted_kappa_pairwise(a,b)
         ret = sum(vals.values())/float(len(vals))
         return ret
 
