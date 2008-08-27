@@ -181,6 +181,7 @@ clean:	clean_up
 	$(MAKE) -C doc clean
 	$(MAKE) -C doc_contrib clean
 	$(MAKE) -C javasrc clean
+	$(MAKE) -C tools/mac clean
 	rm -f nltk/nltk.jar
 
 clean_up: clean_code
