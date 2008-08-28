@@ -171,12 +171,13 @@ iso:
 	cp dist/nltk-doc-$(VERSION).zip        iso
 	cp dist/nltk-contribdoc-$(VERSION).zip iso
 	cp dist/nltk-examples-$(VERSION).zip   iso
+	cp doc/en/book.pdf                     iso
 	cp *.txt *.html                        iso
 	cp cd.pdf                              iso
 	cp python/mac/*                        iso/mac/
 	cp python/win/*                        iso/win/
 	cp python/unix/*                       iso/unix/
-	ln -f -s iso dist/nltk-$(VERSION)
+	ln -f -s ../iso dist/nltk-$(VERSION)
 	mkisofs -f -r -o dist/nltk-$(VERSION).iso dist/nltk-$(VERSION)
 	rm -f dist/nltk-$(VERSION)
 
