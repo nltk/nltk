@@ -58,15 +58,17 @@ import numpy
 import time
 import tempfile
 import os
+import gzip
 
 from nltk import defaultdict
+from nltk.util import OrderedDict
 from nltk.probability import *
 
 import nltk.classify.util # for accuracy & log_likelihood
 from api import *
 from util import attested_labels, CutoffChecker
 from megam import call_megam, write_megam_file, parse_megam_weights
-
+from tadm import call_tadm, write_tadm_file, parse_tadm_weights
 
 ######################################################################
 #{ Classifier Model
@@ -212,7 +214,7 @@ class MaxentClassifier(ClassifierI):
     #: A list of the algorithm names that are accepted for the
     #: L{train()} method's C{algorithm} parameter.
     ALGORITHMS = ['GIS', 'IIS', 'CG', 'BFGS', 'Powell', 'LBFGSB',
-                  'Nelder-Mead', 'MEGAM']
+                  'Nelder-Mead', 'MEGAM', 'TADM']
 
     @classmethod
     def train(cls, train_toks, algorithm=None, trace=3, encoding=None, 
@@ -304,7 +306,8 @@ class MaxentClassifier(ClassifierI):
                 algorithm = 'iis'
         for key in cutoffs:
             if key not in ('max_iter', 'min_ll', 'min_lldelta',
-                           'tolerance', 'max_acc', 'min_accdelta'):
+                           'tolerance', 'max_acc', 'min_accdelta',
+                           'count_cutoff', 'norm'):
                 raise TypeError('Unexpected keyword arg %r' % key)
         algorithm = algorithm.lower()
         if algorithm == 'iis':
@@ -322,6 +325,13 @@ class MaxentClassifier(ClassifierI):
             return train_maxent_classifier_with_megam(
                 train_toks, trace, encoding, labels, 
                 gaussian_prior_sigma, **cutoffs)
+        elif algorithm == 'tadm':
+            kwargs = cutoffs
+            kwargs['trace'] = trace
+            kwargs['encoding'] = encoding
+            kwargs['labels'] = labels
+            kwargs['gaussian_prior_sigma'] = gaussian_prior_sigma
+            return TadmMaxentClassifier.train(train_toks, **kwargs)
         else:
             raise ValueError('Unknown algorithm %s' % algorithm)
 
@@ -709,7 +719,63 @@ class GISEncoding(BinaryMaxentFeatureEncoding):
             return 'Correction feature (%s)' % self._C
         else:
             return BinaryMaxentFeatureEncoding.describe(self, f_id)
+
+
+class TadmEventMaxentFeatureEncoding(BinaryMaxentFeatureEncoding):
+    def __init__(self, labels, mapping, unseen_features=False, 
+                       alwayson_features=False):
+        self._mapping = OrderedDict(mapping)
+        self._label_mapping = OrderedDict()
+        BinaryMaxentFeatureEncoding.__init__(self, labels, self._mapping,
+                                                   unseen_features, 
+                                                   alwayson_features)
+ 
+    def encode(self, featureset, label):
+        encoding = []
+        for feature, value in featureset.items():
+            if (feature, label) not in self._mapping:
+                self._mapping[(feature, label)] = len(self._mapping)
+            if value not in self._label_mapping:
+                if not isinstance(value, int):
+                    self._label_mapping[value] = len(self._label_mapping)
+                else:
+                    self._label_mapping[value] = value
+            encoding.append((self._mapping[(feature, label)], 
+                             self._label_mapping[value]))
+        return encoding
+
+    def labels(self):
+        return self._labels
+
+    def describe(self, fid):
+        for (feature, label) in self._mapping:
+            if self._mapping[(feature, label)] == fid:
+                return (feature, label)
+
+    def length(self):
+        return len(self._mapping)
+
+    @classmethod
+    def train(cls, train_toks, count_cutoff=0, labels=None, **options):
+        mapping = OrderedDict()
+        if not labels:
+            labels = []
+            
+        # This gets read twice, so compute the values in case it's lazy.
+        train_toks = list(train_toks)        
         
+        for (featureset, label) in train_toks:
+            if label not in labels:
+                labels.append(label)
+
+        for (featureset, label) in train_toks:
+            for label in labels:
+                for feature in featureset:
+                    if (feature, label) not in mapping:
+                        mapping[(feature, label)] = len(mapping)
+                        
+        return cls(labels, mapping, **options)
+
 ######################################################################
 #{ Classifier Trainer: Generalized Iterative Scaling
 ######################################################################
@@ -1177,7 +1243,7 @@ def train_maxent_classifier_with_scipy(train_toks, trace=3, encoding=None,
 # implicit formats anyway.
 def train_maxent_classifier_with_megam(train_toks, trace=3, encoding=None,
                                        labels=None, gaussian_prior_sigma=0,
-                                       **cutoffs):
+                                       **kwargs):
     """
     Train a new C{ConditionalExponentialClassifier}, using the given
     training samples, using the external C{megam} library.  This
@@ -1192,39 +1258,48 @@ def train_maxent_classifier_with_megam(train_toks, trace=3, encoding=None,
     
     # Construct an encoding from the training data.
     if encoding is None:
-        encoding = BinaryMaxentFeatureEncoding.train(train_toks, 
-                                        labels=labels, alwayson_features=True)
+        # Count cutoff can also be controlled by megam with the -minfc
+        # option. Not sure where the best place for it is.
+        count_cutoff = kwargs.get('count_cutoff', 0)
+        encoding = BinaryMaxentFeatureEncoding.train(train_toks, count_cutoff,
+                                                     labels=labels, 
+                                                     alwayson_features=True)
     elif labels is not None:
         raise ValueError('Specify encoding or labels, not both')
 
     # Write a training file for megam.
     try:
-        fd, trainfile_name = tempfile.mkstemp(prefix='nltk-')
-        trainfile = os.fdopen(fd, 'wb')
+        fd, trainfile_name = tempfile.mkstemp(prefix='nltk-', suffix='.gz')
+        trainfile = gzip.open(trainfile_name, 'wb')
         write_megam_file(train_toks, encoding, trainfile, explicit=explicit)
         trainfile.close()
     except (OSError, IOError, ValueError), e:
         raise ValueError('Error while creating megam training file: %s' % e)
 
     # Run megam on the training file.
-    options = ['-nobias']
-    if explicit: options += ['-explicit']
+    options = []
+    options += ['-nobias']
+    if explicit:
+        options += ['-explicit']
     if gaussian_prior_sigma:
-        # [XX] *why* is this the right formula to convert sigma to
-        # lambda?  how is lambda defined??  The 7.01 is pretty random
-        # seeming -- it was picked by experimentation.
-        options += ['-lambda', '%s' % (7.01/(gaussian_prior_sigma**2))]
+        # Lambda is just the precision of the Gaussian prior, i.e. it's the
+        # inverse variance, so the parameter conversion is 1.0/sigma**2.
+        # See http://www.cs.utah.edu/~hal/docs/daume04cg-bfgs.pdf.
+        inv_variance = 1.0 / gaussian_prior_sigma**2
     else:
-        options += ['-lambda', '0']
+        inv_variance = 0
+    options += ['-lambda', '%.2f' % inv_variance, '-tune']
     if trace < 3:
         options += ['-quiet']
-    if 'max_iter' in cutoffs:
-        options += ['-maxi', '%s' % cutoffs['max_iter']]
-    if 'll_delta' in cutoffs:
+    if 'max_iter' in kwargs:
+        options += ['-maxi', '%s' % kwargs['max_iter']]
+    if 'll_delta' in kwargs:
         # [xx] this is actually a perplexity delta, not a log
         # likelihood delta
-        options += ['-dpp', '%s' % abs(cutoffs['ll_delta'])]
-    stdout = call_megam(options+['multiclass', trainfile_name])
+        options += ['-dpp', '%s' % abs(kwargs['ll_delta'])]
+    options += ['multiclass', trainfile_name]
+    print options
+    stdout = call_megam(options)
 
     # Delete the training file
     try: os.remove(trainfile_name)
@@ -1239,7 +1314,69 @@ def train_maxent_classifier_with_megam(train_toks, trace=3, encoding=None,
 
     # Build the classifier
     return MaxentClassifier(encoding, weights)
-                             
+
+######################################################################
+#{ Classifier Trainer: tadm
+######################################################################
+                            
+class TadmMaxentClassifier(MaxentClassifier):
+    @classmethod
+    def train(cls, train_toks, **kwargs):
+        algorithm = kwargs.get('algorithm', 'tao_lmvm')
+        trace = kwargs.get('trace', 3)
+        encoding = kwargs.get('encoding', None)
+        labels = kwargs.get('labels', None)
+        sigma = kwargs.get('gaussian_prior_sigma', 0)
+        count_cutoff = kwargs.get('count_cutoff', 0)
+        max_iter = kwargs.get('max_iter')
+        ll_delta = kwargs.get('min_lldelta')
+        
+        # Construct an encoding from the training data.
+        if not encoding:
+            encoding = TadmEventMaxentFeatureEncoding.train(train_toks, 
+                                                            count_cutoff,
+                                                            labels=labels)
+
+        trainfile_fd, trainfile_name = \
+            tempfile.mkstemp(prefix='nltk-tadm-events-', suffix='.gz')
+        weightfile_fd, weightfile_name = \
+            tempfile.mkstemp(prefix='nltk-tadm-weights-')
+                    
+        trainfile = gzip.open(trainfile_name, 'wb')                    
+        write_tadm_file(train_toks, encoding, trainfile)
+        trainfile.close()
+        
+        options = []
+        options.extend(['-monitor'])
+        options.extend(['-method', algorithm])
+        if sigma:
+            options.extend(['-l2', '%.6f' % sigma**2])
+        if max_iter:
+            options.extend(['-max_it', '%d' % max_iter])
+        if ll_delta:
+            options.extend(['-fatol', '%.6f' % abs(ll_delta)])
+        options.extend(['-events_in', trainfile_name])
+        options.extend(['-params_out', weightfile_name])
+        if trace < 3:
+            options.extend(['2>&1'])
+        else:
+            options.extend(['-summary'])
+        
+        call_tadm(options)
+        
+        weightfile = open(weightfile_name, 'rb')
+        weights = parse_tadm_weights(weightfile)
+        weightfile.close()
+        
+        os.remove(trainfile_name)
+        os.remove(weightfile_name)
+    
+        # Convert from base-e to base-2 weights.
+        weights *= numpy.log2(numpy.e)
+
+        # Build the classifier
+        return cls(encoding, weights)
+        
 ######################################################################
 #{ Demo
 ######################################################################

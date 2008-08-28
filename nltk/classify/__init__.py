@@ -109,8 +109,8 @@ __all__ = [
 try:
     import numpy
     from maxent import *
-    __all__ += ['MaxentClassifier', 'ConditionalExponentialClassifier',
-                'train_maxent_classifier']
+    __all__ += ['MaxentClassifier', 'BinaryMaxentFeatureEncoding',
+                'ConditionalExponentialClassifier', 'train_maxent_classifier']
 except ImportError:
     pass
 
