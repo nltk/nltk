@@ -99,6 +99,8 @@ genesis = LazyCorpusLoader(
     'genesis', PlaintextCorpusReader, r'(?!\.).*\.txt')
 gutenberg = LazyCorpusLoader(
     'gutenberg', PlaintextCorpusReader, r'(?!\.).*\.txt')
+hebrew_treebank = LazyCorpusLoader(
+    'hebrew_treebank', BracketParseCorpusReader, r'.*\.txt')
 ieer = LazyCorpusLoader(
     'ieer', IEERCorpusReader, r'(?!README|\.).*')
 inaugural = LazyCorpusLoader(
@@ -145,13 +147,6 @@ toolbox = LazyCorpusLoader(
 treebank = LazyCorpusLoader(
     'treebank/combined', BracketParseCorpusReader, r'wsj_.*\.mrg',
     tag_mapping_function=simplify_wsj_tag)
-hebrew_treebank = LazyCorpusLoader(
-    'hebrew_treebank', BracketParseCorpusReader, r'.*\.txt')
-propbank = LazyCorpusLoader(
-    'propbank', PropbankCorpusReader,
-    'prop.txt', 'frames/.*\.xml', 'verbs.txt',
-    lambda filename: re.sub(r'^wsj/\d\d/', '', filename),
-    treebank) # Must be defined *after* treebank corpus.
 treebank_chunk = LazyCorpusLoader(
     'treebank/tagged', ChunkedCorpusReader, r'wsj_.*\.pos',
     sent_tokenizer=RegexpTokenizer(r'(?<=/\.)\s*(?![^\[]*\])', gaps=True),
@@ -179,6 +174,12 @@ words = LazyCorpusLoader(
     'words', WordListCorpusReader, r'(?!README|\.).*')
 ycoe = LazyCorpusLoader(
     'ycoe', YCOECorpusReader)
+# defined after treebank
+propbank = LazyCorpusLoader(
+    'propbank.zip', PropbankCorpusReader,
+    'prop.txt', 'frames/.*\.xml', 'verbs.txt',
+    lambda filename: re.sub(r'^wsj/\d\d/', '', filename),
+    treebank) # Must be defined *after* treebank corpus.
 
 
 def demo():

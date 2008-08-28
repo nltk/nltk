@@ -7,7 +7,7 @@
 # For license information, see LICENSE.TXT
 
 PYTHON = python
-NLTK_VERSION = $(shell python -c 'import nltk; print nltk.__version__')
+VERSION = $(shell python -c 'import nltk; print nltk.__version__')
 NLTK_URL = $(shell python -c 'import nltk; print nltk.__url__')
 
 .PHONY: usage all doc clean clean_code clean_up
@@ -77,23 +77,46 @@ rpmdist: clean_code
 	$(PYTHON) setup.py -q bdist --format=rpm
 windist: clean_code
 	$(PYTHON) setup.py -q bdist --format=wininst
-dmgdist:
-	$(MAKE) -C tools/mac
-
 docdist:
-	find doc -print | egrep -v '.svn|.DS_Store' | zip dist/nltk-doc-$(NLTK_VERSION).zip -@
+	find doc -print | egrep -v '.svn|.DS_Store' | zip dist/nltk-doc-$(VERSION).zip -@
 
 contribdocdist:
-	find doc_contrib -print | egrep -v '.svn|.DS_Store' | zip dist/nltk-contribdoc-$(NLTK_VERSION).zip -@
+	find doc_contrib -print | egrep -v '.svn|.DS_Store' | zip dist/nltk-contribdoc-$(VERSION).zip -@
 
 exampledist:
-	find examples -print | egrep -v '.svn|.DS_Store' | zip dist/nltk-examples-$(NLTK_VERSION).zip -@
+	find examples -print | egrep -v '.svn|.DS_Store' | zip dist/nltk-examples-$(VERSION).zip -@
 
 datadist:
-	find nltk_data -print | egrep -v '.svn|.DS_Store' | zip -n .zip:.gz dist/nltk-data-$(NLTK_VERSION).zip -@
+	find nltk_data -print | egrep -v '.svn|.DS_Store' | zip -n .zip:.gz dist/nltk-data-$(VERSION).zip -@
 
 nightlydist: codedist
 	REVISION = `svn info | grep Revision: | sed "s/Revision: //"`
+
+########################################################################
+# OS X
+########################################################################
+
+NLTK_ZIP = dist/nltk-$(VERSION).zip
+NLTK_PKG = nltk-$(VERSION).pkg
+NLTK_DMG = nltk-$(VERSION).dmg
+MACROOT = ./MacRoot
+LIB_PATH = $(MACROOT)/tmp/nltk-installer/
+DATA_PATH = $(MACROOT)/usr/share
+PM = /Developer/Applications/Utilities/PackageMaker.app/Contents/MacOS/PackageMaker 
+
+# this should work for both Leopard and Tiger, built under Leopard
+dmgdist:
+	rm -rf $(MACROOT)
+	mkdir -p $(DATA_PATH) $(LIB_PATH)
+	unzip $(NLTK_ZIP) -d $(LIB_PATH)
+	mv $(LIB_PATH)/nltk-$(VERSION)/* $(LIB_PATH)
+	rmdir $(LIB_PATH)/nltk-$(VERSION)
+	cp -R nltk_data $(DATA_PATH)
+	chmod -R a+r $(MACROOT)
+	mkdir -p nltk-$(VERSION)
+	$(PM) -d ./nltk.pmdoc -o nltk-$(VERSION)/$(NLTK_PKG)
+	rm -f dist/$(NLTK_DMG)
+	hdiutil create dist/$(NLTK_DMG) -srcfolder nltk-$(VERSION)
 
 ########################################################################
 # ISO Image
@@ -118,7 +141,7 @@ python:
 numpy:
 	mkdir -p python/{mac,win,unix}
 	wget -N -P python/mac $(NUMPY)/numpy-1.1.1-py2.5-macosx10.5.dmg
-	wget -N -P python/win  $(NUMPY)/numpy-1.1.1-win32-superpack-python2.5.exe
+	wget -N -P python/win $(NUMPY)/numpy-1.1.1-win32-superpack-python2.5.exe
 	wget -N -P python/unix $(NUMPY)/numpy-1.1.1.tar.gz
 	touch .numpy.done
 
@@ -137,24 +160,25 @@ prover:
 	wget -N -P python/unix http://www.cs.unm.edu/%7Emccune/prover9/gui/p9m4-v05.tar.gz
 	mv python/unix/p9m4-v05.tar.gz python/unix/Prover9-Mace4-v05-i386.tar.gz
 
-iso:	.dist.done .python.done .numpy.done .pylab.done
-	rm -rf iso nltk-$(NLTK_VERSION)
+iso:
+	rm -rf iso nltk-$(VERSION)
 	mkdir -p iso/{mac,win,unix}
-	cp dist/nltk-$(NLTK_VERSION).dmg            iso/mac/
-	cp dist/nltk-$(NLTK_VERSION).win32.exe      iso/win/
-	cp dist/nltk-$(NLTK_VERSION).tar.gz         iso/unix/
-	cp dist/nltk-$(NLTK_VERSION)-1.noarch.rpm   iso/unix/
-	cp dist/nltk-data-$(NLTK_VERSION).zip       iso
-	cp dist/nltk-doc-$(NLTK_VERSION).zip        iso
-	cp dist/nltk-contribdoc-$(NLTK_VERSION).zip iso
-	cp dist/nltk-examples-$(NLTK_VERSION).zip   iso
-	cp *.txt *.html                             iso
-	cp cd.pdf                                   iso
-	cp python/mac/*                             iso/mac/
-	cp python/win/*                             iso/win/
-	cp python/unix/*                            iso/unix/
-	ln -f -s iso nltk-$(NLTK_VERSION)
-	mkisofs -f -r -o dist/nltk-$(NLTK_VERSION).iso nltk-$(NLTK_VERSION)
+	cp dist/nltk-$(VERSION).dmg            iso/mac/
+	cp dist/nltk-$(VERSION).win32.exe      iso/win/
+	cp dist/nltk-$(VERSION).tar.gz         iso/unix/
+	cp dist/nltk-$(VERSION)-1.noarch.rpm   iso/unix/
+	cp dist/nltk-data-$(VERSION).zip       iso
+	cp dist/nltk-doc-$(VERSION).zip        iso
+	cp dist/nltk-contribdoc-$(VERSION).zip iso
+	cp dist/nltk-examples-$(VERSION).zip   iso
+	cp *.txt *.html                        iso
+	cp cd.pdf                              iso
+	cp python/mac/*                        iso/mac/
+	cp python/win/*                        iso/win/
+	cp python/unix/*                       iso/unix/
+	ln -f -s iso dist/nltk-$(VERSION)
+	mkisofs -f -r -o dist/nltk-$(VERSION).iso dist/nltk-$(VERSION)
+	rm -f dist/nltk-$(VERSION)
 
 ########################################################################
 # RSYNC
@@ -177,7 +201,7 @@ rsync:	clean_up
 .PHONY: clean clean_up
 
 clean:	clean_up
-	rm -rf build iso dist MANIFEST
+	rm -rf build iso dist MANIFEST $(MACROOT) nltk-$(VERSION)
 	$(MAKE) -C doc clean
 	$(MAKE) -C doc_contrib clean
 	$(MAKE) -C javasrc clean
