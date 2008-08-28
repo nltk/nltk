@@ -7,7 +7,7 @@
 
 from nltk.corpus import CorpusReader
 from nltk.tokenize.punkt import PunktWordTokenizer
-from nltk.tag import HiddenMarkovModelTaggerTransformI
+from nltk.tag import TaggerI, HiddenMarkovModelTaggerTransformI
 
 class TrainableI(object):
     """
@@ -128,47 +128,124 @@ class NamedEntityI(str):
         return result
 
 
+class ChunkTaggerI(TaggerI):
+    """
+    An interface for a chunk tagger class.
+    """
+    def __init__(self):
+        if self.__class__ == ChunkTaggerI:
+            raise AssertionError, "Interfaces can't be instantiated"
+    
+    def tag(self, sent):
+        """
+        Returns an IOB tagged sentence.
+        
+        @return: a C{list} of IOB-tagged tokens.
+        @rtype: C{list} or C{tuple}
+        @param sent: a C{list} of tokens
+        @type sent: C{list} of C{str} or C{tuple}
+        """
+        raise AssertionError()
+        
+    def chunk(self, sent):
+        """
+        Returns a chunked sentence.
+        
+        @return: a C{list} of chunked tokens.
+        @rtype: C{list} of C{list} or C{tuple}
+        @param sent: a C{list} of tokens
+        @type sent: C{list} of C{str} or C{tuple}
+        """
+        raise AssertionError()
+        
+      
 class CorefResolverI(object):
     """
     An interface for coreference resolvers.  Coreference resolvers identify
-    and label co-referring L{mentions()} from a discourse or sequence of text.
-    Instances of C{CorefResolverI} must implement L{mentions()}, 
+    and label co-referring L{mentions()} from a list of sentences.  Instances 
+    of C{CorefResolverI} must implement L{mentions()}, L{resolve_mention()},
     L{resolve_mentions()}, and L{resolve()}.
     """
     def __init__(self):
         if self.__class__ == CorefResolverI:
-            raise AssertionError, "Interfaces can't be instatiated"
+            raise AssertionError, "Interfaces can't be instantiated"
     
-    def mentions(self, discourse):
+    def mentions(self, sentences):
         """
-        Identify the mentions from a discourse or sequence of text.
+        Identify the mentions from a list of sentences.
+        
+        For a list of sentences consisting of words [[w1, w2, w3], [w4, w5, w6]]
+        where w2, w4, and w6 are mentions, L{mentions()} will yield the indexed
+        list [(w2, 1, 0, 2), (w4, 2, 1, 0), (w6, 3, 1, 2)] which contains 
+        4-tuples of the form (mention, mention id, sentence index, chunk index).
         
         @return: a C{list} of mentions.
         @rtype: C{list} of C{tuple}
-        @param discourse: a sequence of text.
-        @type discourse: C{list} of C{str} or C{tuple}
+        @param sentences: a C{list} of C{list} corresponding to a list of
+            sentences.
+        @type sentences: C{list} of C{list} of C{str} or C{tuple}
+        """
+        raise AssertionError()
+        
+    def resolve_mention(self, mentions, index, history):
+        """
+        Identify the coreferent, if any, for a mention in the mentions list.
+        
+        For a list of mentions consisting of 4-tuples of the form
+        (mention, mention id, sentence, index, chunk index), 
+        L{resolve_mention()} will yield the single coreferent 4-tuple for the
+        mention located at index in the mentions list.
+        
+        @return: a C{tuple} of mention, mention id, sentence id, and chunk id.
+        @rtype: C{tuple}
+        @param mentions: a C{list} of mentions.
+        @type mentions: C{list} of C{tuple}
+        @param index: the index of the mention to resolve.
+        @type index: C{int}
+        @param history: the C{list} of previous (or future) mentions that can
+            serve as coreferents.
+        @type history: C{list} of C{tuple}
         """
         raise AssertionError()
     
     def resolve_mentions(self, mentions):
         """
-        Identify co-referring discourse mentions from a sequence of mentions.
+        Identify co-referring discourse mentions from an indexed list of
+        mentions.
+        
+        For a list of mentions [(w2, 1, 0, 2), (w4, 2, 1, 0), (w6, 3, 1, 2)],
+        L{resolve_mentions()} will yield 
+        [(w2, 1, 0, 2), (w4, 2, 1, 0), (w6, 1, 1, 2)] 
+        iff. w2 and w6 co-refer and w4 does not co-refer with either w2 or w6.
+        In other words, L{resolve_mentions()} indexes the indexed list of
+        mentions so that each co-referring mention contains a matching index
+        in the second element of its 4-tuple and non-co-referring mentions.
         
         @return: a C{list} of resolved mentions.
         @rtype: C{list} of C{tuple}
-        @param mentions: a C{list} of discourse mentions.
+        @param mentions: a C{list} of mentions.
         @type mentions: C{list} of C{tuple}
         """
         raise AssertionError()
     
-    def resolve(self, discourse):
+    def resolve(self, sentences):
         """
         Identify and resolve co-referring discourse mentions from a discourse
         or sequence of text.
         
-        @return: a C{list} of discourse text with resolved mentions
+        For a discourse consisting of words [[w1, w2, w3], [w4, w5, w6]] where
+        w2, w4, and w6 are mentions and w2 and w6 co-refer L{resolve()} will
+        yield the indexed list 
+        [[(w1, None), (w2, 1), (w3, None)], [(w4, None), (w5, None), (w6, 1)]].
+        
+        @return: a C{list} of C{list} corresponding to a list of coreference
+            resolved sentences.
         @rtype: C{list} of C{tuple}
-        @param discourse: a C{list} of discourse text
-        @type discourse: C{list} of C{str} or C{tuple}
+        @param sentences: a C{list} of C{list} corresponding to a list of 
+            sentences.
+        @type sentences: C{list} of C{list} of C{str} or C{tuple}
         """
         raise AssertionError()
+        
+        
+            

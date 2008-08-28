@@ -73,35 +73,6 @@ class ClosedCategoryChunkTransform(HiddenMarkovModelChunkTaggerTransformI):
         return result
 
 
-class NamedEntityChunkTransform(ClosedCategoryChunkTransform):
-    """
-    """
-    def is_closed_cat(self, symbol):
-        word = symbol[0]
-        if isinstance(word, tuple):
-            return True
-        elif isinstance(word, str):
-            return word_type(word) or \
-                   ClosedCategoryChunkTransform.is_closed_cat(self, symbol)
-        else:
-            raise
-                
-    def transform(self, labeled_symbols):
-        typed_symbols = []
-        for symbol in labeled_symbols:
-            symbol_len = len(symbol or []) 
-            if symbol_len == 3:
-                word, tag, iob_tag = symbol
-                typed_symbol = (word_type(word)[:2] or word, tag, iob_tag)
-            elif symbol_len == 2:
-                word, tag = symbol
-                typed_symbol = (word_type(word)[:2] or word, tag)
-            else:
-                raise
-            typed_symbols.append(typed_symbol)
-        return ClosedCategoryChunkTransform.transform(self, typed_symbols)
-                
-
 class HiddenMarkovModelChunkTagger(HiddenMarkovModelTagger, TrainableI):
     """
     """
@@ -130,14 +101,22 @@ class HiddenMarkovModelChunkTagger(HiddenMarkovModelTagger, TrainableI):
     		              unlabeled_sequence, **kwargs)     
     		        
     def chunk(self, sent):
-        chunks = []
-        for node in self.parse(sent):
-            if not isinstance(node, tuple):
-                chunks.append(node.leaves())
+        result = []
+        chunk = []
+        for (word, tag), iob_tag in self.tag(sent):
+            if (iob_tag == self.OUT or iob_tag[:1] == self.BEGINS) and chunk:
+                result.append(chunk)
+                chunk = []
+            if iob_tag == self.OUT:
+                result.append((word, tag))
+            elif iob_tag[:1] in [self.IN, self.BEGINS]:
+                chunk.append((word, tag))
             else:
-                chunks.append(node)
-        return chunks
-
+                raise
+        if chunk:
+            result.append(chunk)
+        return result
+            
     def parse(self, sent):
         conllstr = '\n'.join('%s %s %s' % (word, tag, iob_tag)
                              for ((word, tag), iob_tag) in self.tag(sent))
@@ -186,10 +165,16 @@ class HiddenMarkovModelChunkTagger(HiddenMarkovModelTagger, TrainableI):
         print 'recall over %d tokens: %.2f' % (count, rec * 100)                    
         print 'F1 over %d tokens: %.2f' % (count, f1 * 100)
 
-
 def demo():
-    from nltk_contrib.coref.util import treebank_chunk_tagger_demo
-    treebank_chunk_tagger_demo()
+    from nltk_contrib.coref.util import baseline_chunk_tagger_demo, \
+        treebank_chunk_tagger_demo
+    baseline_chunk_tagger_demo()
+    #treebank_chunk_tagger_demo()
     
 if __name__ == '__main__':
+    try:
+        import psyco
+        psyco.full(memory=100)
+    except:
+        pass
     demo()

@@ -1,6 +1,6 @@
 # Natural Language Toolkit (NLTK) Coreference Module
 #
-# Copyright (C) 2008 NLTK Project 
+# Copyright (C) 2008 NLTK Project
 # Author: Joseph Frazee <jfrazee@mail.utexas.edu>
 # URL: http://nltk.org/
 # For license information, see LICENSE.TXT
@@ -16,7 +16,7 @@ Classes and interfaces for coreference resolution.
 
 # Copyright notice
 __copyright__ = """\
-Copyright (C) 2008 Joseph Frazee.
+Copyright (C) 2008 NLTK Project 
 
 Distributed and Licensed under provisions of the GNU Public
 License, which is included by reference.

@@ -18,6 +18,7 @@ from nltk.util import LazyMap, LazyConcatenation, LazyZip
 from nltk.probability import LidstoneProbDist
 
 from nltk_contrib.coref import *
+from nltk_contrib.coref.ne import *
 from nltk_contrib.coref.chunk import *
 from nltk_contrib.coref.features import *
 
@@ -25,7 +26,7 @@ TREEBANK_TAGGER = 'nltk:taggers/treebank.tagger.pickle.gz'
 
 TREEBANK_CHUNKER = 'nltk:chunkers/treebank.chunker.pickle.gz'
 
-MUC6_NE_CHUNKER = 'nltk:chunkers/muc6.nechunker.pickle.gz'
+MUC6_CHUNK_TAGGER = 'nltk:chunkers/muc6.chunk.tagger.pickle.gz'
 
 class LidstoneProbDistFactory(LidstoneProbDist):
     def __init__(self, fd, bins, *factory_args):
@@ -105,6 +106,15 @@ class TreebankChunkTaggerCorpusReader(ChunkTaggerCorpusReader):
     
     def parsed_sents(self):
         return LazyMap(self._chunker.parse, self.tagged_sents())
+
+
+class MUC6NamedEntityChunkTaggerCorpusReader(ChunkTaggerCorpusReader):
+    def __init__(self, reader):
+        chunker = load(MUC6_CHUNK_TAGGER)
+        tagger = load(TREEBANK_TAGGER)
+        ChunkTaggerCorpusReader.__init__(self, reader, 
+                                               chunker=chunker, tagger=tagger)
+        
         
 
 def zipzip(*lists):
@@ -149,13 +159,56 @@ def treebank_chunk_tagger_demo():
     for tree in state_union.parsed_sents()[500:505]:
         print tree
         print
-    print    
+    print
+    
+def muc6_chunk_tagger_demo():
+    from nltk.corpus.util import LazyCorpusLoader
+    from nltk.corpus import BracketParseCorpusReader
+    from nltk_contrib.coref.util import MUC6NamedEntityChunkTaggerCorpusReader
+            
+    treebank = LazyCorpusLoader(
+        'penn-treebank-rel3/parsed/mrg/wsj/',
+        BracketParseCorpusReader, r'0[12]\/wsj_.*\.mrg')  
+    treebank = MUC6NamedEntityChunkTaggerCorpusReader(treebank)
+    
+    print 'MUC6 named entity chunker demo...'
+    print 'Chunked sentences:'
+    for sent in treebank.chunked_sents()[:10]:
+        print sent
+        print      
+    print
+
+def baseline_chunk_tagger_demo():
+    from nltk.corpus.util import LazyCorpusLoader
+    from nltk.corpus import BracketParseCorpusReader
+    
+    chunker = BaselineNamedEntityChunkTagger()
+    treebank = LazyCorpusLoader(
+        'penn-treebank-rel3/parsed/mrg/wsj/',
+        BracketParseCorpusReader, r'0[12]\/wsj_.*\.mrg')
+    
+    print 'Baseline named entity chunker demo...'
+    print 'Chunked sentences:'
+    for sent in treebank.sents()[:10]:
+        print chunker.chunk(sent)
+        print
+    print 'IOB-tagged sentences:'
+    for sent in treebank.sents()[:10]:
+        print chunker.tag(sent)
+        print
+    print
 
 def demo():
     from nltk_contrib.coref.util import treebank_tagger_demo, \
-         treebank_chunk_tagger_demo
+         treebank_chunk_tagger_demo, muc6_chunk_tagger_demo
     treebank_tagger_demo()
     treebank_chunk_tagger_demo()
+    muc6_chunk_tagger_demo()
     
 if __name__ == '__main__':
+    try:
+        import psyco
+        psyco.profile()
+    except:
+        pass
     demo()

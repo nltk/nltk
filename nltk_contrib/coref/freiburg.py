@@ -1,6 +1,6 @@
 # Natural Language Toolkit (NLTK) Freiburg Corpora Reader
 #
-# Copyright (C) 2008 Joseph Frazee
+# Copyright (C) 2008 NLTK Project 
 # Author: Joseph Frazee <jfrazee@mail.utexas.edu>
 # URL: http://nltk.org
 # For license information, see LICENSE.TXT
@@ -186,7 +186,8 @@ class FreiburgSGMLParser(SGMLParser):
         """
         """
         self._in.insert(0, 'c')
-        self._current_pos = attrs[0][1]
+        if attrs:
+            self._current_pos = attrs[0][1]
 
     def start_text(self, attrs):
         """

@@ -19,27 +19,99 @@ try:
 except:
     from StringIO import StringIO
 
-from nltk.util import LazyMap, LazyZip, LazyConcatenation
+from nltk.util import LazyMap, LazyZip, LazyConcatenation, LazyEnumerate
 
 from nltk.corpus import BracketParseCorpusReader, ConllChunkCorpusReader
 from nltk.corpus.util import LazyCorpusLoader
 
 from nltk.tag.hmm import HiddenMarkovModelTagger
 
+from nltk_contrib.coref.api import *
+
 from nltk_contrib.coref import MUC6CorpusReader
+
+from nltk_contrib.coref.features import *
 
 from nltk_contrib.coref.chunk import HiddenMarkovModelChunkTagger, \
      ClosedCategoryChunkTransform
     
-from nltk_contrib.coref.ne import NamedEntityChunkTransform, \
-     NamedEntityFeatureDetector, NamedEntityClassifier, \
-     NamedEntityFeatureDetector2
+from nltk_contrib.coref.ne import BaselineNamedEntityChunkTagger, \
+     NamedEntityChunkTransform, NamedEntityFeatureDetector, \
+     NamedEntityClassifier, NamedEntityFeatureDetector2
      
 from nltk_contrib.coref.util import LidstoneProbDistFactory, \
     TreebankTaggerCorpusReader, TreebankChunkTaggerCorpusReader, zipzip
 
 TREEBANK_CLOSED_CATS = set(['CC', 'DT', 'MD', 'POS', 'PP$', 'RP', 'TO', 'WDT',
                             'WP$', 'EX', 'IN', 'PDT', 'PRP', 'WP', 'WRB'])
+
+class BaselineCorefResolver(CorefResolverI):
+    def __init__(self):
+        self._chunk_tagger = BaselineNamedEntityChunkTagger()
+
+    def resolve_mention(self, mentions, index, history):
+        mention, mention_id, sent_index, chunk_index = mentions[index]
+        
+        # If the mention is a pronoun and there is an antecedent available,
+        # link it to the most recent mention.
+        if history and isinstance(mention, str) and is_pronoun(mention):
+            prev_mention, prev_mention_id = history[-1][:2]
+            return (mention, prev_mention_id, sent_index, chunk_index)
+        
+        for previous_mention, previous_mention_id, previous_sent_index, \
+            previous_chunk_index in history:
+            
+            M = set([word.lower() for word in mention if len(word.lower()) > 2])
+            P = set([word.lower() for word in previous_mention if len(word.lower()) > 2])
+            
+            # If the current mention and a previous mention have some
+            # non-trivial overlap of words, then link the current mention to
+            # that previous mention.
+            if M.intersection(P):
+                return (mention, previous_mention_id, sent_index, chunk_index)
+        
+        # Otherwise, the current mention does not co-refer with any previous
+        # mentions.
+        return (mention, mention_id, sent_index, chunk_index)
+            
+    def mentions(self, discourse):
+        mentions = []
+        
+        chunked_discourse = LazyMap(self._chunk_tagger.chunk, discourse)
+        
+        mention_id = 0       
+        for sent_index, chunked_sent in LazyEnumerate(chunked_discourse):
+            for chunk_index, chunk in LazyEnumerate(chunked_sent):
+                if isinstance(chunk, list) or is_pronoun(chunk):
+                    mentions.append((chunk, mention_id, sent_index, chunk_index))
+                    mention_id += 1
+
+        return mentions
+
+    def resolve_mentions(self, mentions, **kwargs):
+        history = []
+        for index, (mention, i, j, k) in LazyEnumerate(mentions):
+            mentions[index] = self.resolve_mention(mentions, index, history)
+            history.append(mentions[index])
+        return mentions
+    
+    def resolve(self, discourse, **kwargs):
+        resolved_discourse = []
+                
+        mentions = {}
+        for mention, mention_id, sent_index, chunk_index \
+        in self.resolve_mentions(self.mentions(discourse)):
+            mentions[(sent_index, chunk_index)] = (mention, mention_id)
+        
+        chunked_discourse = LazyMap(self._chunk_tagger.chunk, discourse)        
+        for sent_index, sent in LazyEnumerate(chunked_discourse):
+            resolved_discourse.append([])
+            for chunk_index, chunk in LazyEnumerate(sent):
+                mention, mention_id = \
+                    mentions.get((sent_index, chunk_index), (None, None))
+                resolved_discourse[sent_index].append((chunk, mention_id))                    
+
+        return resolved_discourse
     
 def train_model(train_class, labeled_sequence, test_sequence, pickle_file,
                 num_train_sents, num_test_sents, **kwargs):
@@ -104,8 +176,41 @@ def train_model(train_class, labeled_sequence, test_sequence, pickle_file,
 
     return model
 
+def baseline_coref_resolver_demo():
+    from nltk.corpus.util import LazyCorpusLoader
+    from nltk.corpus import BracketParseCorpusReader
+    from nltk_contrib.coref.resolve import BaselineCorefResolver
+    
+    resolver = BaselineCorefResolver()
+    treebank = LazyCorpusLoader(
+        'penn-treebank-rel3/parsed/mrg/wsj/',
+        BracketParseCorpusReader, r'0[12]\/wsj_.*\.mrg')
+    
+    sents = LazyMap(lambda sent: \
+            [word for word in sent if not word.startswith('*')],
+        treebank.sents()[:10])
+    mentions = resolver.mentions(sents)
+    resolved_mentions = resolver.resolve_mentions(mentions)
+    resolved_discourse = resolver.resolve(sents)
+        
+    print 'Baseline coref resolver demo...'
+    print 'Mentions:'
+    for mention in mentions:
+        print mention
+    print
+    print 'Resolved mentions:'
+    for mention in resolved_mentions:
+        print mention
+    print
+    print 'Resolved discourse:'
+    for sent in resolved_discourse:
+        print sent
+        print
+    print
+    
 def demo():
     print 'Demo...'
+    baseline_coref_resolver_demo()
     # muc6_test = LazyCorpusLoader(
     #         'muc6', MUC6CorpusReader, 
     #         r'.*\-(01[8-9][0-9])\..*\.sgm')

@@ -25,23 +25,32 @@ DAYS = ['monday', 'tuesday', 'wednesday', 'thursday',
         'friday', 'saturday', 'sunday']
 
 MONTHS = ['january', 'february', 'march', 'april', 'may', 'june', 'july',
-          'august', 'september', 'october', 'novemeber', 'december']
+          'august', 'september', 'october', 'novemeber', 'december',
+          'jan', 'feb', 'mar', 'apr', 'jun', 'jul', 'aug', 'sep', 'sept',
+          'oct', 'nov', 'dec']
 
 NAMES = set([name.lower() for name in
     LazyCorpusLoader('names', WordListCorpusReader,
-                     r'(?!\.svn).*\.txt').words()])
+                     r'(?!\.).*\.txt').words()])
 
 CITIES = set([name.lower() for name in
     LazyCorpusLoader('gazetteers', WordListCorpusReader,
-                     r'(?!\.svn)uscities.txt').words()])
+                     r'(?!\.).*cities\.txt').words()])
 
 COUNTRIES = set([name.lower() for name in
     LazyCorpusLoader('gazetteers', WordListCorpusReader,
-                     r'(?!\.svn)countries.txt').words()])
+                     r'(?!\.)countries\.txt').words()])
+                     
+STATES = set([name.lower() for name in
+    LazyCorpusLoader('gazetteers', WordListCorpusReader,
+                     r'(?!\.).*(states|provinces)\.txt').words()])
+                     
+STATE_ABBREVIATIONS = set(LazyCorpusLoader('gazetteers', WordListCorpusReader,
+                     r'(?!\.).*(state|province)abbrev\.txt').words())
                      
 NATIONALITIES = set([name.lower() for name in
     LazyCorpusLoader('gazetteers', WordListCorpusReader,
-                     r'(?!\.svn)nationalities.txt').words()])                     
+                     r'(?!\.)nationalities\.txt').words()])                     
                      
 PERSON_PREFIXES = ['mr', 'mrs', 'ms', 'miss', 'dr', 'rev', 'judge',
                    'justice', 'honorable', 'hon', 'rep', 'sen', 'sec',
@@ -55,6 +64,8 @@ ORG_SUFFIXES = ['ltd', 'inc', 'co', 'corp', 'plc', 'llc', 'llp', 'gmbh',
                 'airlines', 'magazine']
 
 CURRENCY_UNITS = ['dollar', 'cent', 'pound', 'euro']
+
+ENGLISH_PRONOUNS = ['i', 'you', 'he', 'she', 'it', 'we', 'you', 'they']
                 
 RE_PUNCT = '[-!"#$%&\'\(\)\*\+,\./:;<=>^\?@\[\]\\\_`{\|}~]'
 
@@ -74,9 +85,13 @@ RE_ALPHA = '[A-Za-z]+'
 
 RE_DATE = '\d+\/\d+(\/\d+)?'
 
-RE_CURRENCY = '\$\s*%s' % RE_NUMERIC
+RE_CURRENCY = '\$\s*(%s)?' % RE_NUMERIC
 
 RE_PERCENT = '%s\s*' % RE_NUMERIC + '%'
+
+RE_YEAR = '(\d{4}s?|\d{2}s)'
+
+RE_TIME = '\d{1,2}(\:\d{2})?(\s*[aApP]\.?[mM]\.?)?'
 
 def contains(is_method, s):
     for word in s.split():
@@ -161,6 +176,11 @@ def is_lower_case(s):
 
 def is_title_case(s):
     return s.istitle()
+    
+def contains_title_case_sequence(s):
+    words = s.split()
+    count = sum([int(is_title_case(word)) for word in words])
+    return (count / len(words)) > 0.5
 
 def is_mixed_case(s):
     return s.isalpha() and not \
@@ -173,7 +193,7 @@ def is_roman_numeral(s):
     return re_is(RE_ROMAN, s)
     
 def contains_roman_numeral(s):
-    return re_contains(RE_ROMAN, s)
+    return contains(is_roman_numeral, s)
 
 def is_initial(s):
     return re_is(RE_INITIAL, s)
@@ -188,40 +208,59 @@ def contains_tla(s):
     return re_contains(RE_TLA, s)
 
 def is_name(s):
-    return is_title_case(s) and s.lower() in NAMES
+    return s.lower() in NAMES
 
 def contains_name(s):
     return contains(is_name, s)
 
+def contains_name_sequence(s):
+    count = 0.0
+    words = s.split()
+    for word in words:
+        if is_person_prefix(word) or is_name(word) or is_initial(word) or \
+           is_person_suffix(word) or is_roman_numeral(word):
+            count += 1
+    return (count / len(words)) > 0.5
+        
 def is_city(s):
-    return is_title_case(s) and s.lower() in CITIES
+    return s.lower() in CITIES
 
 def contains_city(s):
-    return contains(is_city, s)
+    if contains(is_city, s):
+        return True
+    for city in CITIES:
+        if city in s.lower():
+            return True
+    return False
 
 def part_of_city(s):
     for city in CITIES:
         if s.lower() in city:
             return True
     return False
+    
+def is_state(s):
+    return s.lower() in STATES or s in STATE_ABBREVIATIONS
+
+def contains_state(s):
+    if contains(is_state, s):
+        return True
+    for state in STATES:
+        if state in s.lower():
+            return True
+    return False
 
 def is_person_prefix(s):
-    return is_title_case(s) and s.replace('.', '').lower() in PERSON_PREFIXES
+    return s.replace('.', '').lower() in PERSON_PREFIXES
 
 def startswith_person_prefix(s):
     return startswith(is_person_prefix, s)
-    
-def endswith_person_prefix(s):
-    return startswith(is_person_prefix, s)    
 
 def contains_person_prefix(s):
     return contains(is_person_prefix, s)
 
 def is_person_suffix(s):
-    return is_title_case(s) and s.replace('.', '').lower() in PERSON_SUFFIXES
-
-def startswith_person_suffix(s):
-    return startswith(is_person_suffix, s)
+    return s.replace('.', '').lower() in PERSON_SUFFIXES
 
 def endswith_person_suffix(s):
     return endswith(is_person_suffix, s)
@@ -230,10 +269,7 @@ def contains_person_suffix(s):
     return contains(is_person_suffix, s)
 
 def is_org_suffix(s):
-    return is_title_case(s) and s.replace('.', '').lower() in ORG_SUFFIXES
-
-def startswith_org_suffix(s):
-    return startswith(is_org_suffix, s)
+    return s.replace('.', '').lower() in ORG_SUFFIXES
     
 def endswith_org_suffix(s):
     return endswith(is_org_suffix, s)
@@ -242,14 +278,13 @@ def contains_org_suffix(s):
     return contains(is_org_suffix, s)
 
 def is_day(s):
-    return is_title_case(s) and s.lower() in DAYS
+    return s.lower() in DAYS
 
 def contains_day(s):
     return contains(is_day, s)
 
 def is_month(s):
-    return is_title_case(s) and \
-        (s.lower() in MONTHS or s.lower()[:3] in [mon[:3] for mon in MONTHS])
+    return s.lower().replace('.', '') in MONTHS
 
 def contains_month(s):
     return contains(is_month, s)
@@ -288,18 +323,22 @@ def is_country(s):
                 words.append(word)
         return ' '.join(words) or s
         
-    if is_title_case(s) and s.lower() in COUNTRIES:
+    if s.lower() in COUNTRIES:
         return True
     else:
         country_name = _country_name(s)
-        if is_title_case(country_name):
-            for country in COUNTRIES:
-                if country_name.lower() == _country_name(country).lower():
-                    return True
+        for country in COUNTRIES:
+            if country_name.lower() == _country_name(country).lower():
+                return True
     return False
 
 def contains_country(s):
-    return contains(is_country, s)
+    if contains(is_country, s):
+        return True
+    for country in COUNTRIES:
+        if country in s.lower():
+            return True
+    return False
 
 def is_nationality(s):
     return s.lower() in NATIONALITIES or \
@@ -312,6 +351,41 @@ def contains_nationality(s):
 def log_length(s):
     return int(math.log(len(s)))
     
+def word_count(s):
+    return len(s.split())
+
+def contains_of_location(s):
+    for words in re.split(r'\s+of\s+', s)[1:]:
+        if is_city(words) or is_country(words) or is_state(words):
+            return True
+    return False
+    
+def is_location(s):
+    return is_city(s) or is_country(s) or is_state(s)
+
+def contains_location(s):
+    if contains(is_location, s):
+        return True
+    for location in CITIES.union(COUNTRIES).union(STATES):
+        if location in s.lower():
+            return True
+    return False
+
+def is_year(s):
+    return re_is(RE_YEAR, s)
+
+def contains_year(s):
+    return re_contains(RE_YEAR, s)
+    
+def is_time(s):
+    return re_is(RE_TIME, s)
+
+def contains_time(s):
+    return re_contains(RE_TIME, s)
+
+def is_pronoun(s):
+    return s.lower() in ENGLISH_PRONOUNS
+    
 def word_type(word):
     if not word:
         return ()
@@ -321,17 +395,17 @@ def word_type(word):
         word_type.append('PERSON')
     if contains_org_suffix(word):
         word_type.append('ORG')
-    if is_name(word):
+    if contains_name(word):
         word_type.append('NAME')
-    if is_nationality(word):
+    if contains_nationality(word):
         word_type.append('NATIONALITY')
-    if is_city(word) or is_country(word):
+    if contains_location(word):
         word_type.append('LOCATION')
-    if is_roman_numeral(word):
+    if contains_roman_numeral(word):
         word_type.append('ROMAN_NUMERAL')
-    if is_tla(word):
+    if contains_tla(word):
         word_type.append('TLA')
-    if is_initial(word):
+    if contains_initial(word):
         word_type.append('INITIAL')
     if contains_currency(word):
         word_type.append('CURRENCY')
@@ -341,15 +415,17 @@ def word_type(word):
        contains_ordinal(word) or is_digit(word):
         word_type.append('NUMBER')
     if contains_day(word) or contains_month(word) or \
-       contains_date(word):
+       contains_date(word) or contains_year(word):
         word_type.append('DATE')
+    if contains_time(word):
+        word_type.append('TIME')
     if is_suffix(word):
         word_type.append('SUFFIX')
     if is_prefix(word):
         word_type.append('PREFIX')
-    if is_title_case(word):
+    if contains_title_case_sequence(word):
         word_type.append('TITLE_CASE')
-    if is_punct(word):
+    if contains_punct(word):
         word_type.append('PUNCT')
 
     return tuple(word_type[:3])
