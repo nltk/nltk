@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 from hadooplib.mapper import MapperBase
-from hadooplib.outputcollector import LineOutput
 
 class NameMapper(MapperBase):
 	"""

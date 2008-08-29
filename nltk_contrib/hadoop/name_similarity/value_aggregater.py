@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 from hadooplib.reducer import ReducerBase
-from hadooplib.outputcollector import LineOutput
+from hadooplib.util import tuple2str
 
 class ValueAggregater(ReducerBase):
 	"""
@@ -11,10 +11,7 @@ class ValueAggregater(ReducerBase):
 	"""
 
 	def reduce(self, key, values):
-		values_str = ""
-		for value in values:
-			values_str += " " + str(value)
-
+		values_str = tuple2str(tuple(values))
 		self.outputcollector.collect(key, values_str)
 
 if __name__ == "__main__":

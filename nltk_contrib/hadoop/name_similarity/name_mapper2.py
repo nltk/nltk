@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
 from hadooplib.inputformat import KeyValueInput
-from hadooplib.outputcollector import LineOutput
 from hadooplib.mapper import MapperBase
+from hadooplib.util import tuple2str
 
 class Name2Names(MapperBase):
 	"""
@@ -21,7 +21,7 @@ class Name2Names(MapperBase):
 		namelist.append('')
 		n = len(namelist)
 		for i in range(1, n - 1):
-			self.outputcollector.collect(namelist[i], namelist[i-1] + " " + namelist[i+1])
+			self.outputcollector.collect(namelist[i], tuple2str((namelist[i-1] ,namelist[i+1])))
 	
 if __name__ == "__main__":
 	Name2Names().call_map()
