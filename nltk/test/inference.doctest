@@ -2,6 +2,9 @@
 Logical Inference and Model Building
 ====================================
 
+    >>> from nltk.sem import logic
+    >>> logic._counter._value = 0
+
 ------------
 Introduction
 ------------
@@ -59,12 +62,12 @@ then the prover command will be unable to display a proof.
     >>> prover.prove()
     True
     >>> print prover.proof()
-    [1] {-mortal(socrates)}         A 
-    [2] {man(socrates)}             A 
-    [3] {-man(z111), mortal(z111)}  A 
-    [4] {-man(socrates)}            (1, 3) 
-    [5] {mortal(socrates)}          (2, 3) 
-    [6] {}                          (1, 5) 
+    [1] {-mortal(socrates)}     A 
+    [2] {man(socrates)}         A 
+    [3] {-man(z4), mortal(z4)}  A 
+    [4] {-man(socrates)}        (1, 3) 
+    [5] {mortal(socrates)}      (2, 3) 
+    [6] {}                      (1, 5) 
     
 The prover command stores the result of proving so that if ``prove()`` is
 called again, then the command can return the result without executing the 
@@ -103,9 +106,9 @@ a call to ``prove()`` will execute the theorem prover.
     >>> prover.prove()
     False
     >>> print prover.proof()
-    [1] {-mortal(socrates)}         A 
-    [2] {-man(z113), mortal(z113)}  A 
-    [3] {-man(socrates)}            (1, 2) 
+    [1] {-mortal(socrates)}     A 
+    [2] {-man(z6), mortal(z6)}  A 
+    [3] {-man(socrates)}        (1, 2) 
     >>> prover.add_assumptions([lp.parse('man(socrates)')])
     >>> prover.prove()
     True

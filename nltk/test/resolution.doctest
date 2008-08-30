@@ -147,9 +147,9 @@ Test prove()
     >>> ResolutionCommand(c, [p]).prove()
     True
 
------------------
+------------
 Test proof()
------------------
+------------
     >>> p1 = lp.parse('all x.(man(x) -> mortal(x))')
     >>> p2 = lp.parse('man(Socrates)')
     >>> c = lp.parse('mortal(Socrates)')
