@@ -14,6 +14,7 @@ import warnings
 import textwrap
 import types
 import sys
+import stat
 
 from nltk import __file__
 
@@ -619,7 +620,7 @@ class ElementWrapper(object):
         @return: the result of applying C{ElementTree.tostring()} to
         the wrapped Element object.
         """
-        return ElementTree.tostring(self._etree)
+        return ElementTree.tostring(self._etree).rstrip()
 
     ##////////////////////////////////////////////////////////////
     #{ Element interface Delegation (pass-through)
@@ -719,3 +720,31 @@ def slice_bounds(sequence, slice_obj):
     # That's all folks!
     return start, stop    
 
+######################################################################
+# Permission Checking
+######################################################################
+
+def is_writable(path):
+    # Ensure that it exists.
+    if not os.path.exists(path):
+        return False
+
+    # If we're on a posix system, check its permissions.
+    if hasattr(os, 'getuid'):
+        statdata = os.stat(path)
+        perm = stat.S_IMODE(statdata.st_mode)
+        # is it world-writable?
+        if (perm & 0002):
+            return True
+        # do we own it?
+        elif statdata.st_uid == os.getuid() and (perm & 0200):
+            return True
+        # are we in a group that can write to it?
+        elif statdata.st_gid == os.getgid() and (perm & 0020):
+            return True
+        # otherwise, we can't write to it.
+        else:
+            return False
+
+    # Otherwise, we'll assume it's writable [xx] (!!)
+    return True
