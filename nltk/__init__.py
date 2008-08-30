@@ -74,6 +74,9 @@ from classify import *
 from model import *
 from misc import *
 
+# Corpus & Data Downloader
+from downloader import download, download_shell, download_gui
+
 from internals import config_java
 
 import chat, chunk, corpus, draw, parse, sem, stem, tag, tokenize, wordnet
