@@ -224,21 +224,21 @@ class Prover9Command(Prover9CommandParent, ProverCommand):
         """
         ProverCommand.__init__(self, Prover9(timeout), goal, assumptions)
         
-    def show_proof(self, simplify=True):
+    def proof(self, simplify=True):
         """
-        Print out a Prover9 proof.
+        Return the proof as a String.
         
         @parameter simplify: if C{True}, simplify the output file 
-        using Prover9's C{prooftrans}.
+                             using Prover9's C{prooftrans}.
         @type simplify: C{bool}
         """
         if self._result is None:
             raise LookupError("You have to call prove() first to get a proof!")
             
         if simplify:
-            print call_prooftrans(self._proof, ['striplabels'])[0].rstrip()
+            return call_prooftrans(self._proof, ['striplabels'])[0].rstrip()
         else:
-            print self._proof.rstrip()
+            return self._proof.rstrip()
 
 
 class Prover9Parent(object):
@@ -327,7 +327,7 @@ def test_config():
     p.prove()
     #config_prover9('/usr/local/bin')
     print p.prove()
-    p.show_proof()
+    print p.proof()
     
 def test_convert_to_prover9(expr):
     """

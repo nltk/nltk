@@ -12,6 +12,7 @@ import api
 import tableau
 import prover9
 import mace
+import resolution
 
 """
 A wrapper module that calls theorem provers and model builders.
@@ -28,6 +29,10 @@ def get_prover(goal=None, assumptions=[], prover_name='Prover9'):
         return api.ProverCommand(tableau.Tableau(), goal, assumptions)
     elif prover_name.lower() == 'prover9':
         return prover9.Prover9Command(goal, assumptions)
+    elif prover_name.lower() == 'resolution':
+        return resolution.ResolutionCommand(goal, assumptions)
+    
+    raise Exception('\'%s\' is not a valid prover name' % prover_name)
 
 def get_model_builder(goal=None, assumptions=[], model_builder_name='Mace'):
     """

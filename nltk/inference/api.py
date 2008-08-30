@@ -90,11 +90,10 @@ class TheoremToolCommand(object):
         @param retracted: assumptions to be retracted
         @type retracted: C{list} of L{sem.logic.Expression}s
         """
-        retracted = set(retracted)
-        result_list = [a for a in self._assumptions if a not in retracted]
+        result_list = [a for a in self._assumptions if a not in set(retracted)]
         if debug and result_list == self._assumptions:
             print Warning("Assumptions list has not been changed:")
-            self.assumptions()
+            self.print_assumptions()
             
         self._assumptions = result_list
         
@@ -148,8 +147,14 @@ class ProverCommand(TheoremToolCommand):
                                                            verbose)
         return self._result
 
-    def show_proof(self):
-        print self._proof
+    def proof(self):
+        """
+        Return the proof string
+        """
+        if self._result is None:
+            raise LookupError("You have to call prove() first to get a proof!")
+        else:
+            return self._proof
 
     def get_prover(self):
         return self._prover
