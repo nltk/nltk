@@ -746,5 +746,6 @@ def is_writable(path):
         else:
             return False
 
-    # Otherwise, we'll assume it's writable [xx] (!!)
+    # Otherwise, we'll assume it's writable.
+    # [xx] should we do other checks on other platforms?
     return True
