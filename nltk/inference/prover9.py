@@ -261,8 +261,8 @@ class Prover9Parent(object):
         """
         s = ''
         if self._timeout > 0:
-            s += 'assign(max_seconds, %d).\n' % self._timeout
-            
+            s += 'assign(max_seconds, %d).\n\n' % self._timeout
+        
         if assumptions:
             s += 'formulas(assumptions).\n'
             for p9_assumption in convert_to_prover9(assumptions):
@@ -312,6 +312,15 @@ class Prover9(Prover9Parent, Prover):
         stdout, returncode = call_prover9(self.prover9_input(goal, 
                                                              assumptions))
         return (returncode == 0, stdout)
+    
+    def prover9_input(self, goal, assumptions):
+        """
+        @see: Prover9Parent.prover9_input
+        """
+        s = 'clear(auto_denials).\n' #only one proof required
+        return s + Prover9Parent.prover9_input(self, goal, assumptions)
+        
+
     
 ######################################################################
 #{ Tests and Demos
