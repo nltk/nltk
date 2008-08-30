@@ -766,5 +766,7 @@ def demo(train_size=100, test_size=100,
     print 'Clean-up: deleting', crf.filename
     os.remove(crf.filename)
 
+    return crf
+
 if __name__ == '__main__':
-    demo(train_size=100)
+    crf = demo(train_size=100)
