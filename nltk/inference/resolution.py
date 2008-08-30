@@ -103,7 +103,7 @@ class ResolutionCommand(ProverCommand):
                                                        self.assumptions(),
                                                        verbose)
             self._clauses = clauses
-            self._proof = self.decorate_proof(clauses)
+            self._proof = self._decorate_proof(clauses)
         return self._result
 
     def find_answers(self, verbose=False):
@@ -119,7 +119,7 @@ class ResolutionCommand(ProverCommand):
                     answers.add(term.argument)
         return answers
     
-    def decorate_proof(self, clauses):
+    def _decorate_proof(self, clauses):
         """
         Decorate the proof output.
         """

@@ -17,22 +17,98 @@ used to access both theorem provers and model builders.
 NLTK Interface to Theorem Provers
 ---------------------------------
 
-The ``nltk.inference`` module contains a method
-``get_prover()`` that takes a proof goal and optionally, the name of a
-theorem prover.  The default is ``'Prover9'``, but the tableau prover
-may be used by specifying ``'tableau'``. The proof goal needs to be an
-instance of the ``Expression`` class specified by ``nltk.sem.logic``.
-In the following example, the proof goal is a biconditional.
+The main class used to interface with a theorem prover is the ``ProverCommand``
+class, found in ``nltk.api``.  A prover command is a holder for a theorem
+prover.  The command stores a theorem prover instance (of type ``Prover``), 
+a goal, a list of assumptions, the result of the proof, and a string version 
+of the entire proof.
+
+The ``nltk.inference`` module contains a method ``get_prover()`` that can be
+used to return a ``ProverCommand`` instance.  The ``get_prover()`` method has 
+three optional arguments: a goal, a list of assumptions, and the name of a
+theorem prover.  The default prover to use is ``'Prover9'``. The proof goal and 
+any assumptions need to be instances of the ``Expression`` class specified by 
+``nltk.sem.logic``.
 
     >>> from nltk.inference import *
     >>> from nltk.sem import LogicParser, ApplicationExpression
     >>> lp = LogicParser()
-    >>> bicond = lp.parse('(exists x.(man(x) and walks(x)) <-> exists x.(walks(x) and man(x)))')
-    >>> get_prover(bicond, prover_name='tableau').prove()
+    >>> p1 = lp.parse('man(socrates)')
+    >>> p2 = lp.parse('all x.(man(x) -> mortal(x))')
+    >>> c  = lp.parse('mortal(socrates)')
+    >>> get_prover(c, [p1,p2], prover_name='tableau').prove()
     True
-    >>> get_prover(bicond, prover_name='Prover9').prove()
+    >>> get_prover(c, [p1,p2], prover_name='Prover9').prove()
+    True
+    >>> get_prover(c, [p1,p2], prover_name='resolution').prove()
     True
 
+The ``proof()`` method returns a String form of the proof stored in the 
+``ProverCommand``.  However, if the ``prove()`` method has not been called,
+then the prover command will be unable to display a proof.
+   
+    >>> prover = get_prover(c, [p1,p2], 'resolution')
+    >>> print prover.proof() # doctest: +ELLIPSIS
+    Traceback (most recent call last):
+      File "...", line 1212, in __run
+        compileflags, 1) in test.globs
+      File "<doctest nltk/test/inference.doctest[10]>", line 1, in <module>
+      File "...", line ..., in proof
+        raise LookupError("You have to call prove() first to get a proof!")
+    LookupError: You have to call prove() first to get a proof!
+    >>> prover.prove()
+    True
+    >>> print prover.proof()
+    [1] {-mortal(socrates)}         A 
+    [2] {man(socrates)}             A 
+    [3] {-man(z111), mortal(z111)}  A 
+    [4] {-man(socrates)}            (1, 3) 
+    [5] {mortal(socrates)}          (2, 3) 
+    [6] {}                          (1, 5) 
+    
+The prover command stores the result of proving so that if ``prove()`` is
+called again, then the command can return the result without executing the 
+prover again.  This allows the user to access the result of the proof without
+wasting time to recomputing.
+
+    >>> prover.prove()
+    True
+    >>> prover.prove()
+    True
+
+The assumptions and goal may be accessed using the ``assumptions()`` and 
+``goal()`` methods, respectively.  
+
+    >>> prover.assumptions()
+    [<ApplicationExpression man(socrates)>, <AllExpression all x.(man(x) -> mortal(x))>]
+    >>> prover.goal()
+    <ApplicationExpression mortal(socrates)>
+
+The assumptions list may be modified using the ``add_assumptions()`` and 
+``retract_assumptions()`` methods.  Both methods take a list of ``Expression``
+objects.  Since adding or removing assumptions may change the result of the
+proof, the stored result is cleared when either of these methods are called.
+That means that ``proof()`` will be unavailable until ``prove()`` is called and 
+a call to ``prove()`` will execute the theorem prover.
+
+    >>> prover.retract_assumptions([lp.parse('man(socrates)')])
+    >>> print prover.proof() # doctest: +ELLIPSIS
+    Traceback (most recent call last):
+      File "...", line 1212, in __run
+        compileflags, 1) in test.globs
+      File "<doctest nltk/test/inference.doctest[10]>", line 1, in <module>
+      File "...", line ..., in proof
+        raise LookupError("You have to call prove() first to get a proof!")
+    LookupError: You have to call prove() first to get a proof!
+    >>> prover.prove()
+    False
+    >>> print prover.proof()
+    [1] {-mortal(socrates)}         A 
+    [2] {-man(z113), mortal(z113)}  A 
+    [3] {-man(socrates)}            (1, 2) 
+    >>> prover.add_assumptions([lp.parse('man(socrates)')])
+    >>> prover.prove()
+    True
 
 -------
 Prover9
@@ -95,8 +171,8 @@ list of assumptions (in this case, none).
     >>> prover.prove()
     True
     
-Given a ``Prover9Command`` instance ``prover``, the method
-``prover.show_proof()`` will print out the extensive proof information
+Given a ``ProverCommand`` instance ``prover``, the method
+``prover.proof()`` will return a String of the extensive proof information
 provided by Prover9, shown in abbreviated form here::
 
     ============================== Prover9 ===============================
@@ -186,7 +262,7 @@ statements as new assumptions.
     >>> prover.add_assumptions(new)
     >>> print prover.prove()
     True
-    >>> prover.show_proof() # doctest: +ELLIPSIS
+    >>> print prover.proof() # doctest: +ELLIPSIS
     ============================== prooftrans ============================
     Prover9 (...) version ...
     Process ... was started by ... on ...

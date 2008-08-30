@@ -148,7 +148,7 @@ Test prove()
     True
 
 -----------------
-Test show_proof()
+Test proof()
 -----------------
     >>> p1 = lp.parse('all x.(man(x) -> mortal(x))')
     >>> p2 = lp.parse('man(Socrates)')
@@ -157,7 +157,7 @@ Test show_proof()
     >>> tp = ResolutionCommand(c, [p1,p2])
     >>> tp.prove()
     True
-    >>> tp.show_proof()
+    >>> print tp.proof()
     [1] {-mortal(Socrates)}     A 
     [2] {-man(z2), mortal(z2)}  A 
     [3] {man(Socrates)}         A 
@@ -177,7 +177,7 @@ One answer
     >>> tp = ResolutionCommand(None, [p1,p2,p3,c])
     >>> print tp.find_answers()
     set([<VariableExpression art>])
-    >>> tp.show_proof()
+    >>> print tp.proof()
     [1] {father_of(art,john)}                  A 
     [2] {father_of(bob,kim)}                   A 
     [3] {-father_of(z4,z3), parent_of(z4,z3)}  A 
@@ -198,7 +198,7 @@ Multiple answers
     >>> tp = ResolutionCommand(None, [p1,p2,p3,p4,c])
     >>> print tp.find_answers()
     set([<VariableExpression art>, <VariableExpression ann>])
-    >>> tp.show_proof()
+    >>> print tp.proof()
     [ 1] {father_of(art,john)}                  A 
     [ 2] {mother_of(ann,john)}                  A 
     [ 3] {-father_of(z4,z3), parent_of(z4,z3)}  A 
