@@ -1,0 +1,26 @@
+# -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
+
+# $Id$
+
+PortSystem          1.0
+PortGroup           python25 1.0
+
+name                py25-nltk
+version             0.9.5
+categories          python textproc
+platforms           darwin
+maintainers         users.sourceforge.net:stevenbird
+description         Natural Language Toolkit
+long_description    NLTK is Python modules for research and development in natural language processing
+homepage            http://nltk.org/
+master_sites        sourceforge:nltk
+distname            nltk-${version}
+
+checksums           md5 e4eada7c3a4f68119ad910d86cfff6a2 \
+                    sha1 2267ac50c6c2cede9286c3b502ead98045678d80 \
+                    rmd160 079ccaf078405310028d2d1e93f0d46486d313ca
+
+depends_lib         port:py25-numpy \
+                    port:py25-matplotlib
+
+post-destroot       { xinstall -m 644 -W ${worksrcpath} ChangeLog LICENSE.txt README.txt ${destroot}${prefix}/share/doc/${name} }
