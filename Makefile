@@ -92,6 +92,11 @@ datadist:
 nightlydist: codedist
 	REVISION = `svn info | grep Revision: | sed "s/Revision: //"`
 
+checksums:
+	md5 dist/nltk-$(VERSION).tar.gz
+	openssl sha1 dist/nltk-$(VERSION).tar.gz 
+	openssl rmd160 dist/nltk-$(VERSION).tar.gz
+
 ########################################################################
 # OS X
 ########################################################################
