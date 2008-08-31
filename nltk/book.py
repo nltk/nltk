@@ -5,7 +5,7 @@ from nltk.text import Text
 
 print "Introductory Examples for the NLTK Book"
 print
-print "Loading 5 texts..."
+print "Loading 6 texts..."
 
 text1 = Text(gutenberg.words('melville-moby_dick.txt'))
 print "text1:", text1.name
@@ -24,3 +24,6 @@ text5 = Text(nps_chat.words(['10-26-teens_706posts.xml',
                              '11-09-teens_706posts.xml']),
                              name="Teen Chat Corpus")
 print "text5:", text5.name
+
+text6 = Text(gutenberg.words('chesterton-thursday.txt'))
+print "text6:", text6.name
