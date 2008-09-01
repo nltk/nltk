@@ -12,6 +12,12 @@ Resolution Theorem Prover
 ------------------------
 Closed Domain Assumption
 ------------------------
+
+The only entities in the domain are those found in the assumptions or goal.  
+If the domain only contains "A" and "B", then the expression "exists x.P(x)" can
+be replaced with "P(A) | P(B)" and an expression "all x.P(x)" can be replaced
+with "P(A) & P(B)". 
+
     >>> p1 = lp.parse(r'all x.(man(x) -> mortal(x))')
     >>> p2 = lp.parse(r'man(Socrates)')
     >>> c = lp.parse(r'mortal(Socrates)')
@@ -56,18 +62,11 @@ Closed Domain Assumption
 -----------------------
 Unique Names Assumption
 -----------------------
-    >>> p1 = lp.parse(r'all x.(man(x) -> mortal(x))')
-    >>> p2 = lp.parse(r'man(Socrates)')
-    >>> c = lp.parse(r'mortal(Socrates)')
-    >>> prover = inference.get_prover(c, [p1,p2])
-    >>> prover.prove()
-    True
-    >>> unp = UniqueNamesProver(prover)
-    >>> for a in unp.assumptions(): print a
-    all x.(man(x) -> mortal(x))
-    man(Socrates)
-    >>> unp.prove()
-    True
+
+No two entities in the domain represent the same entity unless it can be 
+explicitly proven that they do.  Therefore, if the domain contains "A" and "B", 
+then add the assumption "-(A = B)" if it is not the case that 
+"<assumptions> |- (A = B)".
 
     >>> p1 = lp.parse(r'man(Socrates)')
     >>> p2 = lp.parse(r'man(Bill)')
@@ -104,6 +103,16 @@ Unique Names Assumption
 -----------------------
 Closed World Assumption
 -----------------------
+
+The only entities that have certain properties are those that is it stated
+have the properties.  We accomplish this assumption by "completing" predicates.
+
+If the assumptions contain "P(A)", then "all x.(P(x) -> (x=A))" is the completion 
+of "P".  If the assumptions contain "all x.(ostrich(x) -> bird(x))", then 
+"all x.(bird(x) -> ostrich(x))" is the completion of "bird".  If the 
+assumptions don't contain anything that are "P", then "all x.-P(x)" is the 
+completion of "P". 
+
     >>> p1 = lp.parse(r'walk(Socrates)')
     >>> p2 = lp.parse(r'-(Socrates = Bill)')
     >>> c = lp.parse(r'-walk(Bill)')
@@ -151,12 +160,16 @@ Closed World Assumption
     -ostrich(Sam)
     -(Sam = Tweety)
     all z7.(bird(z7) -> ((z7 = Tweety) | ostrich(z7)))
+    all z8.-ostrich(z8)
     >>> print cwp.prove()
     True
 
 -----------------------
 Multi-Decorator Example
 -----------------------
+
+Decorators can be nested to utilize multiple assumptions.
+
     >>> p1 = lp.parse(r'see(Socrates, John)')
     >>> p2 = lp.parse(r'see(John, Mary)')
     >>> c = lp.parse(r'-see(Socrates, Mary)')
@@ -166,3 +179,69 @@ Multi-Decorator Example
     >>> cmd = ClosedDomainProver(UniqueNamesProver(ClosedWorldProver(prover)))
     >>> print cmd.prove()
     True
+
+-----------------
+Default Reasoning
+-----------------
+    >>> logic._counter._value = 0
+    >>> premises = []
+
+define the taxonomy
+    >>> premises.append(lp.parse(r'all x.(elephant(x)        -> animal(x))'))
+    >>> premises.append(lp.parse(r'all x.(bird(x)            -> animal(x))'))
+    >>> premises.append(lp.parse(r'all x.(dove(x)            -> bird(x))'))
+    >>> premises.append(lp.parse(r'all x.(ostrich(x)         -> bird(x))'))
+    >>> premises.append(lp.parse(r'all x.(flying_ostrich(x)  -> ostrich(x))'))
+
+default the properties using abnormalities
+    >>> premises.append(lp.parse(r'all x.((animal(x)  & -Ab1(x)) -> -fly(x))')) #normal animals don't fly
+    >>> premises.append(lp.parse(r'all x.((bird(x)    & -Ab2(x)) -> fly(x))')) #normal birds fly
+    >>> premises.append(lp.parse(r'all x.((ostrich(x) & -Ab3(x)) -> -fly(x))')) #normal ostriches don't fly
+    
+specify abnormal entities
+    >>> premises.append(lp.parse(r'all x.(bird(x)           -> Ab1(x))')) #flight
+    >>> premises.append(lp.parse(r'all x.(ostrich(x)        -> Ab2(x))')) #non-flying bird
+    >>> premises.append(lp.parse(r'all x.(flying_ostrich(x) -> Ab3(x))')) #flying ostrich
+
+define entities
+    >>> premises.append(lp.parse(r'elephant(E)'))
+    >>> premises.append(lp.parse(r'dove(D)'))
+    >>> premises.append(lp.parse(r'ostrich(O)'))
+    
+print the augmented assumptions list
+    >>> prover = inference.get_prover(None, premises)
+    >>> command = UniqueNamesProver(ClosedWorldProver(prover))
+    >>> for a in command.assumptions(): print a
+    all x.(elephant(x) -> animal(x))
+    all x.(bird(x) -> animal(x))
+    all x.(dove(x) -> bird(x))
+    all x.(ostrich(x) -> bird(x))
+    all x.(flying_ostrich(x) -> ostrich(x))
+    all x.((animal(x) & -Ab1(x)) -> -fly(x))
+    all x.((bird(x) & -Ab2(x)) -> fly(x))
+    all x.((ostrich(x) & -Ab3(x)) -> -fly(x))
+    all x.(bird(x) -> Ab1(x))
+    all x.(ostrich(x) -> Ab2(x))
+    all x.(flying_ostrich(x) -> Ab3(x))
+    elephant(E)
+    dove(D)
+    ostrich(O)
+    all z1.(elephant(z1) -> (z1 = E))
+    all z2.(dove(z2) -> (z2 = D))
+    all z3.(Ab1(z3) -> bird(z3))
+    all z4.-flying_ostrich(z4)
+    all z5.(Ab3(z5) -> flying_ostrich(z5))
+    all z6.(bird(z6) -> (dove(z6) | ostrich(z6)))
+    all z7.(ostrich(z7) -> ((z7 = O) | flying_ostrich(z7)))
+    all z8.(Ab2(z8) -> ostrich(z8))
+    all z9.(animal(z9) -> (elephant(z9) | bird(z9)))
+    -(D = E)
+    -(D = O)
+    -(E = O)
+
+    >>> UniqueNamesProver(ClosedWorldProver(inference.get_prover(lp.parse('-fly(E)'), premises))).prove()
+    True
+    >>> UniqueNamesProver(ClosedWorldProver(inference.get_prover(lp.parse('fly(D)'), premises))).prove()
+    True
+    >>> UniqueNamesProver(ClosedWorldProver(inference.get_prover(lp.parse('-fly(O)'), premises))).prove()
+	True

@@ -7,7 +7,9 @@
 # For license information, see LICENSE.TXT
 
 """
-A module to perform nonmonotonic reasoning
+A module to perform nonmonotonic reasoning.  The ideas and demonstrations in 
+this module are based on "Logical Foundations of Artificial Intelligence" by
+Michael R. Genesereth and Nils J. Nilsson.
 """
 
 from nltk.sem.logic import *
@@ -133,12 +135,13 @@ class ClosedWorldProver(ProverCommandDecorator):
     """
     This is a prover decorator that completes predicates before proving.
 
-    If the premises don't logically entail "P(A)" then add "-P(A)"
-    all x.(P(x) -> (x=A)) is the completion of P
+    If the assumptions contain "P(A)", then "all x.(P(x) -> (x=A))" is the completion of "P".
+    If the assumptions contain "all x.(ostrich(x) -> bird(x))", then "all x.(bird(x) -> ostrich(x))" is the completion of "bird".
+    If the assumptions don't contain anything that are "P", then "all x.-P(x)" is the completion of "P". 
     
     walk(Socrates)
     Socrates != Bill
-    + all x.(walk(x) -> (x = Socrates))
+    + all x.(walk(x) -> (x=Socrates))
     ----------------
     -walk(Bill)
 
@@ -155,6 +158,7 @@ class ClosedWorldProver(ProverCommandDecorator):
     -ostrich(Sam)
     Sam != Tweety
     + all x.(bird(x) -> (ostrich(x) | x=Tweety))
+    + all x.-ostrich(x)
     -------------------
     -bird(Sam)
     """ 
@@ -164,10 +168,11 @@ class ClosedWorldProver(ProverCommandDecorator):
         predicates = self._make_predicate_dict(assumptions)
 
         assumptions2 = []
-        for p,predHolder in predicates.iteritems():
+        for p, predHolder in predicates.iteritems():
             new_sig = self._make_unique_signature(predHolder)
             new_sig_exs = [IndividualVariableExpression(v) for v in new_sig]
             
+            #Turn the signatures into disjuncts
             disjuncts = []
             for sig in predHolder.signatures:
                 equality_exs = []
@@ -175,6 +180,7 @@ class ClosedWorldProver(ProverCommandDecorator):
                     equality_exs.append(EqualityExpression(v1,v2)) 
                 disjuncts.append(reduce(Expression.__and__, equality_exs))
 
+            #Turn the properties into disjuncts
             for prop in predHolder.properties:
                 #replace variables from the signature with new sig variables
                 bindings = {}
@@ -182,10 +188,15 @@ class ClosedWorldProver(ProverCommandDecorator):
                     bindings[v2] = v1
                 disjuncts.append(prop[1].substitute_bindings(bindings))
 
-            #make the implication
-            antecedent = self._make_antecedent(p, new_sig)
-            consequent = reduce(Expression.__or__, disjuncts)
-            accum = ImpExpression(antecedent, consequent)
+            #make the assumption
+            if disjuncts:
+                #disjuncts exist, so make an implication
+                antecedent = self._make_antecedent(p, new_sig)
+                consequent = reduce(Expression.__or__, disjuncts)
+                accum = ImpExpression(antecedent, consequent)
+            else:
+                #nothing has property 'p'
+                accum = NegatedExpression(self._make_antecedent(p, new_sig))
             
             #quantify the implication
             for new_sig_var in new_sig[::-1]:
@@ -203,6 +214,10 @@ class ClosedWorldProver(ProverCommandDecorator):
                       for i in range(predHolder.signature_len)])
         
     def _make_antecedent(self, predicate, signature):
+        """
+        Return an application expression with 'predicate' as the predicate 
+        and 'signature' as the list of arguments. 
+        """
         antecedent = predicate
         for v in signature:
             antecedent = antecedent(IndividualVariableExpression(v))
@@ -236,10 +251,16 @@ class ClosedWorldProver(ProverCommandDecorator):
                 sig.append(term.variable)
                 term = term.term
             if isinstance(term, ImpExpression):
-                if isinstance(term.second, ApplicationExpression):
-                    func = term.second.function
-                    if isinstance(func, VariableExpression):
-                        predDict[func].append_prop((tuple(sig), term.first))
+                if isinstance(term.first, ApplicationExpression) and \
+                   isinstance(term.second, ApplicationExpression):
+                    func1, args1 = term.first.uncurry()
+                    func2, args2 = term.second.uncurry()
+                    if isinstance(func1, VariableExpression) and \
+                       isinstance(func2, VariableExpression) and \
+                       sig == [v.variable for v in args1] and \
+                       sig == [v.variable for v in args2]:
+                        predDict[func2].append_prop((tuple(sig), term.first))
+                        predDict[func1].validate_sig_len(sig)
 
     def goal(self):
         return self._proverCommand.goal()
@@ -378,8 +399,51 @@ def combination_prover_demo():
     for a in command.assumptions(): print a
     print command.prove()
 
+def default_reasoning_demo():
+    lp = LogicParser()
+    
+    premises = []
+
+    #define taxonomy
+    premises.append(lp.parse(r'all x.(elephant(x)        -> animal(x))'))
+    premises.append(lp.parse(r'all x.(bird(x)            -> animal(x))'))
+    premises.append(lp.parse(r'all x.(dove(x)            -> bird(x))'))
+    premises.append(lp.parse(r'all x.(ostrich(x)         -> bird(x))'))
+    premises.append(lp.parse(r'all x.(flying_ostrich(x)  -> ostrich(x))'))
+
+    #default properties
+    premises.append(lp.parse(r'all x.((animal(x)  & -Ab1(x)) -> -fly(x))')) #normal animals don't fly
+    premises.append(lp.parse(r'all x.((bird(x)    & -Ab2(x)) -> fly(x))')) #normal birds fly
+    premises.append(lp.parse(r'all x.((ostrich(x) & -Ab3(x)) -> -fly(x))')) #normal ostriches don't fly
+    
+    #specify abnormal entities
+    premises.append(lp.parse(r'all x.(bird(x)           -> Ab1(x))')) #flight
+    premises.append(lp.parse(r'all x.(ostrich(x)        -> Ab2(x))')) #non-flying bird
+    premises.append(lp.parse(r'all x.(flying_ostrich(x) -> Ab3(x))')) #flying ostrich
+
+    #define entities
+    premises.append(lp.parse(r'elephant(E)'))
+    premises.append(lp.parse(r'dove(D)'))
+    premises.append(lp.parse(r'ostrich(O)'))
+    
+    #print the assumptions
+    prover = inference.get_prover(None, premises)
+    command = UniqueNamesProver(ClosedWorldProver(prover))
+    for a in command.assumptions(): print a
+
+    print_proof('-fly(E)', premises)
+    print_proof('fly(D)', premises)
+    print_proof('-fly(O)', premises)
+
+def print_proof(goal, premises):
+    lp = LogicParser()
+    prover = inference.get_prover(lp.parse(goal), premises)
+    command = UniqueNamesProver(ClosedWorldProver(prover))
+    print goal, prover.prove(), command.prove()
+
 if __name__ == '__main__':
     closed_domain_demo()
     unique_names_demo()
     closed_world_demo()
     combination_prover_demo()
+    default_reasoning_demo()
