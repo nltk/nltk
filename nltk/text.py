@@ -147,8 +147,8 @@ class Text(list):
         from nltk.draw import dispersion_plot
         dispersion_plot(self, words)
 
-    def zipf_plot(self, *args):
-        self.vocab().zipf_plot(*args)
+    def plot(self, *args):
+        self.vocab().plot(*args)
     
     def vocab(self):
         if "_vocab" not in self.__dict__:

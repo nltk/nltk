@@ -169,7 +169,7 @@ udhr = LazyCorpusLoader(
 verbnet = LazyCorpusLoader(
     'verbnet', VerbnetCorpusReader, r'(?!\.).*\.xml')
 webtext = LazyCorpusLoader(
-    'webtext', PlaintextCorpusReader, r'(?!README|\.).*')
+    'webtext', PlaintextCorpusReader, r'(?!README|\.).*\.txt')
 words = LazyCorpusLoader(
     'words', WordListCorpusReader, r'(?!README|\.).*')
 ycoe = LazyCorpusLoader(
