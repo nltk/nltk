@@ -241,9 +241,9 @@ class FreqDist(dict):
     def sorted_samples(self):
         raise AttributeError, "Use FreqDist.sorted() to get the sorted samples"
     
-    def plot(self, samples=None, *args, **kwargs):
+    def plot(self, samples=None, num=40, *args, **kwargs):
         """
-        Plot the given samples from the frequency distribution.
+        Plot the given samples from the frequency distribution (cumulative).
         If no samples are specified, use all samples, in lexical sort order.
         (Requires Matplotlib to be installed.)
         
@@ -255,27 +255,26 @@ class FreqDist(dict):
         except ImportError:
             raise ValueError('The plot function requires the matplotlib package.'
                          'See http://matplotlib.sourceforge.net/')
+        if not "linewidth" in kwargs:
+            kwargs["linewidth"] = 2
+        
         if not samples:
-            samples = sorted(self.samples())
+            samples = self.sorted()
+        samples = samples[:num]
+        
+        # accumulate the values and scale them
         values = [self[sample] for sample in samples]
+        print samples, values
+        values = [sum(values[:i+1]) * 100.0/self._N for i in range(len(values))]
         if not args:
             args = ["bo"]
         pylab.grid(True, color="silver")
-        pylab.semilogy(values, *args, **kwargs)
-        pylab.xticks(range(len(samples)), samples, rotation=45, color="b")
+        pylab.plot(values, *args, **kwargs)
+        pylab.xticks(range(len(samples)), samples, rotation=90, color="b")
+        pylab.xlabel("Samples")
+        pylab.ylabel("Cumulative Percentage")
         pylab.show()
         
-    def zipf_plot(self, num=40, *args, **kwargs):
-        """
-        Plot the most frequent samples of the frequency distribution.
-        (Requires Matplotlib to be installed.)
-        
-        @param num: The number of samples to plot.
-        @type num: C{int} 
-        """
-        samples = self.sorted()[:num]
-        self.plot(samples, *args, **kwargs)
-
     # SB: cache the sorted samples?
     def sorted(self):
         """
