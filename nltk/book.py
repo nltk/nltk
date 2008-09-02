@@ -2,6 +2,7 @@
 
 from nltk.corpus import gutenberg, genesis, inaugural, nps_chat, webtext, treebank
 from nltk.text import Text
+from nltk import FreqDist, bigrams
 
 print "Introductory Examples for the NLTK Book"
 print

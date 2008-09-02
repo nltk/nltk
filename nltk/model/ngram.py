@@ -9,7 +9,7 @@ import random
 from itertools import chain
 
 from nltk.probability import ConditionalProbDist, ConditionalFreqDist, MLEProbDist
-from nltk.util import ingram
+from nltk.util import ingrams
 
 from api import *
 
@@ -43,7 +43,7 @@ class NgramModel(ModelI):
         self._ngrams = set()
         self._prefix = ('',) * (n - 1)
         
-        for ngram in ingram(chain(self._prefix, train), n):
+        for ngram in ingrams(chain(self._prefix, train), n):
             self._ngrams.add(ngram)
             context = tuple(ngram[:-1])
             token = ngram[-1]

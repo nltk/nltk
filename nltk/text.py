@@ -9,7 +9,7 @@ import textwrap
 
 from probability import FreqDist, LidstoneProbDist
 from compat import defaultdict
-from util import ngram
+from util import ngrams
 from model import NgramModel
 
 class Text(list):
@@ -95,7 +95,9 @@ class Text(list):
                       for w1, w2 in fd]
             scored.sort(key=itemgetter(1), reverse=True)
             self._collocations = map(itemgetter(0), scored)
-        print '; '.join([w1+' '+w2 for w1, w2 in self._collocations[:num]])
+
+        colloc_strings = [w1+' '+w2 for w1, w2 in self._collocations[:num]]
+        print '\n'.join(textwrap.wrap('; '.join(colloc_strings)))
 
     def readability(self, method):
         # code from nltk_contrib.readability
@@ -129,7 +131,7 @@ class Text(list):
         if '_word_context_map' not in self.__dict__:
             print "Building word-context index..."
             self._word_context_map = defaultdict(list)
-            for w1, w2, w3 in ngram([w.lower() for w in self], 3): 
+            for w1, w2, w3 in ngrams([w.lower() for w in self], 3): 
                 self._word_context_map[w2].append( (w1, w3) )            
 
         word = word.lower()
@@ -191,7 +193,7 @@ def demo():
     text.dispersion_plot(['news', 'report', 'said', 'announced'])
     print
     print "Vocabulary plot:"
-    text.zipf_plot()
+    text.plot()
     print
     print "Indexing:"
     print "text[3]:", text[3]
