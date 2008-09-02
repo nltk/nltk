@@ -39,6 +39,7 @@ L{ConditionalProbDist}, a derived distribution.
 import math
 import random
 import warnings
+from operator import itemgetter
 
 ##//////////////////////////////////////////////////////
 ##  Frequency Distributions
@@ -241,14 +242,17 @@ class FreqDist(dict):
     def sorted_samples(self):
         raise AttributeError, "Use FreqDist.sorted() to get the sorted samples"
     
-    def plot(self, samples=None, num=40, *args, **kwargs):
+    def plot(self, samples=None, num=50, *args, **kwargs):
         """
-        Plot the given samples from the frequency distribution (cumulative).
-        If no samples are specified, use all samples, in lexical sort order.
+        Plot the given samples from the frequency distribution (cumulative),
+        displaying the most frequent sample first.
+        If no samples are specified, use the most frequent num samples.
         (Requires Matplotlib to be installed.)
         
-        @param samples: The samples to plot.
-        @type samples: C{list} 
+        @param samples: The samples to plot (default is most frequent samples)
+        @type samples: C{list}
+        @param num: The number of samples to plot (default=50)
+        @type num: C{int} 
         """
         try:
             import pylab
@@ -259,35 +263,40 @@ class FreqDist(dict):
             kwargs["linewidth"] = 2
         
         if not samples:
-            samples = self.sorted()
-        samples = samples[:num]
+            samples = self.sorted()[:num]
+        else:
+            samples = self.sorted(samples)
         
         # accumulate the values and scale them
         values = [self[sample] for sample in samples]
-        print samples, values
         values = [sum(values[:i+1]) * 100.0/self._N for i in range(len(values))]
-        if not args:
-            args = ["bo"]
+        
         pylab.grid(True, color="silver")
         pylab.plot(values, *args, **kwargs)
-        pylab.xticks(range(len(samples)), samples, rotation=90, color="b")
+        pylab.xticks(range(len(samples)), samples, rotation=90)
         pylab.xlabel("Samples")
         pylab.ylabel("Cumulative Percentage")
         pylab.show()
         
     # SB: cache the sorted samples?
-    def sorted(self):
+    def sorted(self, samples=None):
         """
         Return the samples sorted in decreasing order of frequency.  Instances
         with the same count will be arbitrarily ordered.  Instances with a
         count of zero will be omitted. This method is C{O(N^2)}, where C{N} is
         the number of samples, but will complete in a shorter time on average.
 
+        @param samples: an optional list of samples to sort by frequency
+        @type samples: C{list}
         @return: The set of samples in sorted order.
         @rtype: sequence of any
         """
-        from operator import itemgetter
-        return [sample for (sample, count) in sorted(self.items(), key=itemgetter(1), reverse=True)]
+        if samples:
+            items = [(sample, self[sample]) for sample in set(samples)]
+        else:
+            items = self.items()
+        return map(itemgetter(0), 
+                   sorted(items, key=itemgetter(1), reverse=True))
 
     def __repr__(self):
         """
