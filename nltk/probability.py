@@ -143,6 +143,13 @@ class FreqDist(dict):
         @rtype: C{list}
         """
         return self.keys()
+    
+    def hapaxes(self):
+        """
+        @return: A list of all samples that occur once (hapax legomena)
+        @rtype: C{list}
+        """
+        return [item for item in self if self[item] == 1]
 
     def Nr(self, r, bins=None):
         """
@@ -251,7 +258,7 @@ class FreqDist(dict):
         
         @param samples: The samples to plot (default is most frequent samples)
         @type samples: C{list}
-        @param num: The number of samples to plot (default=50)
+        @param num: The maximum number of samples to plot (default=50).  Specify num=0 to get all samples (slow).
         @type num: C{int} 
         """
         try:
@@ -263,9 +270,11 @@ class FreqDist(dict):
             kwargs["linewidth"] = 2
         
         if not samples:
-            samples = self.sorted()[:num]
+            samples = self.sorted()
         else:
             samples = self.sorted(samples)
+        if num != 0:
+            samples = samples[:num]
         
         # accumulate the values and scale them
         values = [self[sample] for sample in samples]
@@ -273,7 +282,7 @@ class FreqDist(dict):
         
         pylab.grid(True, color="silver")
         pylab.plot(values, *args, **kwargs)
-        pylab.xticks(range(len(samples)), samples, rotation=90)
+        pylab.xticks(range(len(samples)), [str(s) for s in samples], rotation=90)
         pylab.xlabel("Samples")
         pylab.ylabel("Cumulative Percentage")
         pylab.show()

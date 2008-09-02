@@ -345,19 +345,19 @@ def clean_url(url):
 # Ngram iteration
 ##########################################################################
 
-def ngram(sequence, n):
+def ngrams(sequence, n):
     """
     A utility that produces a sequence of ngrams from a sequence of items.
     For example:
     
-    >>> ngram([1,2,3,4,5], 3)
+    >>> ngrams([1,2,3,4,5], 3)
     [(1, 2, 3), (2, 3, 4), (3, 4, 5)]
     
     Use ingram for an iterator version of this function.
 
     @param sequence: the source data to be converted into ngrams
     @type sequence: C{sequence} or C{iterator}
-    @param n: the degree of the ngram
+    @param n: the degree of the ngrams
     @type n: C{int}
     @return: The ngrams
     @rtype: C{list} of C{tuple}s
@@ -366,24 +366,41 @@ def ngram(sequence, n):
     count = max(0, len(list(sequence)) - n + 1)
     return [tuple(sequence[i:i+n]) for i in range(count)]
 
-def ingram(sequence, n):
+def bigrams(sequence):
+    """
+    A utility that produces a sequence of bigrams from a sequence of items.
+    For example:
+    
+    >>> bigrams([1,2,3,4,5])
+    [(1, 2), (2, 3), (3, 4), (4, 5)]
+    
+    Use ibigrams for an iterator version of this function.
+
+    @param sequence: the source data to be converted into bigrams
+    @type sequence: C{sequence} or C{iterator}
+    @return: The bigrams
+    @rtype: C{list} of C{tuple}s
+    """
+    return bigrams(sequence, 2)
+
+def ingrams(sequence, n):
     """
     A utility that produces an iterator over ngrams generated from a sequence of items.
     
     For example:
     
-    >>> list(ingram([1,2,3,4,5], 3))
+    >>> list(ingrams([1,2,3,4,5], 3))
     [(1, 2, 3), (2, 3, 4), (3, 4, 5)]
     
-    Use ngram for a list version of this function.
+    Use ngrams for a list version of this function.
 
     @param sequence: the source data to be converted into ngrams
     @type sequence: C{sequence} or C{iterator}
-    @param n: the degree of the ngram
+    @param n: the degree of the ngrams
     @type n: C{int}
     @return: The ngrams
     @rtype: C{iterator} of C{tuple}s
-        """
+    """
 
     sequence = iter(sequence)
     history = []
@@ -394,6 +411,26 @@ def ingram(sequence, n):
         history.append(item)
         yield tuple(history)
         del history[0]
+        
+def ibigrams(sequence):
+    """
+    A utility that produces an iterator over bigrams generated from a sequence of items.
+    
+    For example:
+    
+    >>> list(ibigrams([1,2,3,4,5], 2))
+    [(1, 2), (2, 3), (3, 4), (4, 5)]
+    
+    Use bigrams for a list version of this function.
+
+    @param sequence: the source data to be converted into bigrams
+    @type sequence: C{sequence} or C{iterator}
+    @return: The bigrams
+    @rtype: C{iterator} of C{tuple}s
+    """
+
+    for item in ingrams(sequence, 2):
+        yield item
         
 ##########################################################################
 # Ordered Dictionary
