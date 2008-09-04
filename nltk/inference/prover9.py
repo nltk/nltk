@@ -16,7 +16,7 @@ from nltk.sem.logic import LogicParser
 
 from nltk.internals import deprecated, Deprecated, find_binary
 
-from api import ProverCommand, Prover
+from api import BaseProverCommand, Prover
 
 """
 A theorem prover that makes use of the external 'Prover9' package.
@@ -205,7 +205,7 @@ class Prover9CommandParent(object):
             raise NameError("Unrecognized value for 'output_format': %s" %
                             output_format)
 
-class Prover9Command(Prover9CommandParent, ProverCommand):
+class Prover9Command(Prover9CommandParent, BaseProverCommand):
     """
     A L{ProverCommand} specific to the L{Prover9} prover.  It contains
     the a print_assumptions() method that is used to print the list
@@ -222,7 +222,7 @@ class Prover9Command(Prover9CommandParent, ProverCommand):
             no timeout.
         @type timeout: C{int}
         """
-        ProverCommand.__init__(self, Prover9(timeout), goal, assumptions)
+        BaseProverCommand.__init__(self, Prover9(timeout), goal, assumptions)
         
     def proof(self, simplify=True):
         """

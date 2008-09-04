@@ -8,7 +8,7 @@
 
 from nltk.sem.logic import *
 from nltk.internals import Counter
-from nltk.inference.api import Prover, ProverCommand
+from nltk.inference.api import Prover, BaseProverCommand
 from nltk import defaultdict
 
 """
@@ -81,7 +81,7 @@ class Resolution(Prover):
             i += 1
         return (False, clauses)
         
-class ResolutionCommand(ProverCommand):
+class ResolutionCommand(BaseProverCommand):
     def __init__(self, goal=None, assumptions=[]):
         """
         @param goal: Input expression to prove
@@ -90,7 +90,7 @@ class ResolutionCommand(ProverCommand):
             the proof.
         @type assumptions: C{list} of L{logic.Expression}
         """
-        ProverCommand.__init__(self, Resolution(), goal, assumptions)
+        BaseProverCommand.__init__(self, Resolution(), goal, assumptions)
         self._clauses = None
     
     def prove(self, verbose=False):
@@ -713,20 +713,20 @@ def testResolution():
     p1 = LogicParser().parse(r'all x.(man(x) -> mortal(x))')
     p2 = LogicParser().parse(r'man(Socrates)')
     c = LogicParser().parse(r'mortal(Socrates)')
-    print '%s, %s |- %s: %s' % (p1, p2, c, ProverCommand(Resolution(), c, [p1,p2]).prove())
+    print '%s, %s |- %s: %s' % (p1, p2, c, BaseProverCommand(Resolution(), c, [p1,p2]).prove())
     
     p1 = LogicParser().parse(r'all x.(man(x) -> walks(x))')
     p2 = LogicParser().parse(r'man(John)')
     c = LogicParser().parse(r'some y.walks(y)')
-    print '%s, %s |- %s: %s' % (p1, p2, c, ProverCommand(Resolution(), c, [p1,p2]).prove())
+    print '%s, %s |- %s: %s' % (p1, p2, c, BaseProverCommand(Resolution(), c, [p1,p2]).prove())
     
     p = LogicParser().parse(r'some e1.some e2.(believe(e1,john,e2) & walk(e2,mary))')
     c = LogicParser().parse(r'some e0.walk(e0,mary)')
-    print '%s |- %s: %s' % (p, c, ProverCommand(Resolution(), c, [p]).prove())
+    print '%s |- %s: %s' % (p, c, BaseProverCommand(Resolution(), c, [p]).prove())
     
 def resolution_test(e):
     f = LogicParser().parse(e)
-    t = ProverCommand(Resolution(), f)
+    t = BaseProverCommand(Resolution(), f)
     print '|- %s: %s' % (f, t.prove())
 
 def test_clausify():

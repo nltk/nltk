@@ -11,7 +11,7 @@ import tempfile
 from string import join
 from nltk.sem.logic import *
 from nltk.sem import Valuation
-from api import ModelBuilder, ModelBuilderCommand
+from api import ModelBuilder, BaseModelBuilderCommand
 import prover9
 from prover9 import Prover9Parent, Prover9CommandParent, \
                     call_mace4, call_interpformat
@@ -20,7 +20,7 @@ from prover9 import Prover9Parent, Prover9CommandParent, \
 A model builder that makes use of the external 'Mace4' package.
 """
 
-class MaceCommand(Prover9CommandParent, ModelBuilderCommand):
+class MaceCommand(Prover9CommandParent, BaseModelBuilderCommand):
     """
     A L{MaceCommand} specific to the L{Mace} model builder.  It contains
     the a print_assumptions() method that is used to print the list
@@ -37,7 +37,7 @@ class MaceCommand(Prover9CommandParent, ModelBuilderCommand):
             no timeout.
         @type timeout: C{int}
         """
-        ModelBuilderCommand.__init__(self, Mace(timeout), goal, assumptions)
+        BaseModelBuilderCommand.__init__(self, Mace(timeout), goal, assumptions)
         
     def convert2val(self):
         """

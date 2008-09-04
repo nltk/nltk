@@ -26,7 +26,7 @@ def get_prover(goal=None, assumptions=[], prover_name='Prover9'):
     @type assumptions: L{list} of logic.Expression objects
     """
     if prover_name.lower() == 'tableau':
-        return api.ProverCommand(tableau.Tableau(), goal, assumptions)
+        return api.BaseProverCommand(tableau.Tableau(), goal, assumptions)
     elif prover_name.lower() == 'prover9':
         return prover9.Prover9Command(goal, assumptions)
     elif prover_name.lower() == 'resolution':

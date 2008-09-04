@@ -14,37 +14,19 @@ Michael R. Genesereth and Nils J. Nilsson.
 
 from nltk.sem.logic import *
 from nltk.inference import inference
-from nltk.inference.api import Prover
+from nltk.inference.api import Prover, ProverCommandDecorator
 from nltk import defaultdict
 
-class ProverCommandDecorator(object):
-    """
-    A base decorator for the C{ProverCommand} class from which concrete 
-    prover command decorators can extend.
-    """
-    def __init__(self, proverCommand):
-        """
-        @param proverCommand: C{ProverCommand} to decorate
-        """
-        self._proverCommand = proverCommand
-        
-    def prove(self, verbose=False):
-        return self.get_prover().prove(self.goal(), 
-                                       self.assumptions(), 
-                                       verbose)[0]
+def get_domain(goal, assumptions):
+    if goal is None:
+        all_expressions = assumptions
+    else:
+        all_expressions = assumptions + [-goal]
     
-    def get_prover(self):
-        return self._proverCommand.get_prover()
-        
-    def add_assumptions(self, new_assumptions):
-        self._proverCommand.add_assumptions(new_assumptions)
-    
-    def retract_assumptions(self, retracted, debug=False):
-        return self._proverCommand.retract_assumptions(retracted, debug)
-    
-    def print_assumptions(self):
-        self._proverCommand.print_assumptions()
-
+    domain = set()
+    for a in all_expressions:
+        domain |= (a.free(False) - a.free(True))
+    return domain
 
 class ClosedDomainProver(ProverCommandDecorator):
     """
@@ -60,9 +42,7 @@ class ClosedDomainProver(ProverCommandDecorator):
         """
         assumptions = [a for a in self._proverCommand.assumptions()]
         
-        domain = set()
-        for a in assumptions + [-self._proverCommand.goal()]:
-            domain |= (a.free(False) - a.free(True))
+        domain = get_domain(self._proverCommand.goal(), assumptions)
         
         new_assumptions = set()
         self._handle_quant_ex(self._proverCommand.goal(), domain, assumptions)
@@ -74,9 +54,6 @@ class ClosedDomainProver(ProverCommandDecorator):
                 new_assumptions.add(a)
 
         return list(new_assumptions)
-    
-    def goal(self):
-        return self._proverCommand.goal()
     
     def _handle_quant_ex(self, ex, domain, assumptions):
         if isinstance(ex, ExistsExpression):
@@ -100,37 +77,52 @@ class UniqueNamesProver(ProverCommandDecorator):
         """
         assumptions = self._proverCommand.assumptions()
         
-        domain = set()
-        for a in assumptions:
-            domain |= (a.free(False) - a.free(True))
-        domain = sorted(list(domain))
+        domain = list(get_domain(self._proverCommand.goal(), assumptions))
         
         #build a dictionary of obvious equalities
-        eq_dict = defaultdict(list)
+        eq_sets = SetHolder()
         for a in assumptions:
             if isinstance(a, EqualityExpression):
                 av = a.first.variable
                 bv = a.second.variable
-                if av < bv:
-                    eq_dict[av].append(bv)
-                else:
-                    eq_dict[bv].append(av)
+                #put 'a' and 'b' in the same set
+                eq_sets[av].add(bv)
         
-        assumptions2 = []
+        new_assumptions = []
         for i,a in enumerate(domain):
             for b in domain[i+1:]:
-                if b not in eq_dict[a]:
+                #if a and b are not already in the same equality set
+                if b not in eq_sets[a]:
                     newEqEx = EqualityExpression(VariableExpression(a), 
                                                  VariableExpression(b))
-                    if not inference.get_prover(newEqEx, assumptions).prove():
-                        #if we can't prove it, then assume it's false
-                        assumptions2.append(-newEqEx)
+                    if inference.get_prover(newEqEx, assumptions).prove():
+                        #we can prove that the names are the same entity.
+                        #remember that they are equal so we don't re-check.
+                        eq_sets[a].add(b)
+                    else:
+                        #we can't prove it, so assume unique names
+                        new_assumptions.append(-newEqEx)
                 
-        return assumptions + assumptions2
+        return assumptions + new_assumptions
     
-    def goal(self):
-        return self._proverCommand.goal()
-
+class SetHolder(list):
+    """
+    A list of sets of Variables.
+    """
+    def __getitem__(self, item):
+        """
+        @param item: C{Variable}
+        @return: the C{set} containing 'item'
+        """
+        assert isinstance(item, Variable)
+        for s in self:
+            if item in s:
+                return s
+        #item is not found in any existing set.  so create a new set
+        new = set([item])
+        self.append(new)
+        return new
+    
 class ClosedWorldProver(ProverCommandDecorator):
     """
     This is a prover decorator that completes predicates before proving.
@@ -167,7 +159,7 @@ class ClosedWorldProver(ProverCommandDecorator):
         
         predicates = self._make_predicate_dict(assumptions)
 
-        assumptions2 = []
+        new_assumptions = []
         for p, predHolder in predicates.iteritems():
             new_sig = self._make_unique_signature(predHolder)
             new_sig_exs = [IndividualVariableExpression(v) for v in new_sig]
@@ -201,9 +193,9 @@ class ClosedWorldProver(ProverCommandDecorator):
             #quantify the implication
             for new_sig_var in new_sig[::-1]:
                 accum = AllExpression(new_sig_var, accum)
-            assumptions2.append(accum)
+            new_assumptions.append(accum)
         
-        return assumptions + assumptions2
+        return assumptions + new_assumptions
     
     def _make_unique_signature(self, predHolder):
         """
@@ -261,10 +253,6 @@ class ClosedWorldProver(ProverCommandDecorator):
                        sig == [v.variable for v in args2]:
                         predDict[func2].append_prop((tuple(sig), term.first))
                         predDict[func1].validate_sig_len(sig)
-
-    def goal(self):
-        return self._proverCommand.goal()
-
 
 class PredHolder(object):
     """
