@@ -7,7 +7,7 @@
 
 from nltk.sem.logic import *
 
-from api import Prover, ProverCommand
+from api import Prover, BaseProverCommand
 
 """
 Module for a tableau-based First Order theorem prover.
@@ -425,7 +425,7 @@ def testTableau():
 
 def tableau_test(e):
     f = LogicParser().parse(e)
-    t = ProverCommand(Tableau(), f)
+    t = BaseProverCommand(Tableau(), f)
     print '|- %s: %s' % (f, t.prove())
 
 if __name__ == '__main__':

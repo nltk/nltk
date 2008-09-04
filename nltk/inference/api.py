@@ -7,7 +7,7 @@
 # For license information, see LICENSE.TXT
 
 """
-Interfaces for theorem provers and model builders.
+Interfaces and base classes for theorem provers and model builders.
 
 L{Prover} is a standard interface for a theorem prover which tries to prove a goal from a 
 list of assumptions.
@@ -20,9 +20,8 @@ the assumptions plus the negation of M{G}.
 
 class Prover(object):
     """
-    Interface for trying to prove a goal from assumptions. 
-    Both the goal and the assumptions are 
-    constrained to be formulas of L{logic.Expression}.
+    Interface for trying to prove a goal from assumptions.  Both the goal and 
+    the assumptions are constrained to be formulas of L{logic.Expression}.
     """
     def prove(self, goal=None, assumptions=[], verbose=False):
         """
@@ -30,23 +29,66 @@ class Prover(object):
         @rtype: C{bool} 
         """
         raise NotImplementedError()
+
     
+class ProverCommand(object):
+    """
+    This class holds a C{Prover}, a goal, and a list of assumptions.  When
+    prove() is called, the C{Prover} is executed with the goal and assumptions.
+    """
+    def prove(self, verbose=False):
+        """
+        Perform the actual proof.
+        """
+        raise NotImplementedError()
+
+    def proof(self):
+        """
+        Return the proof string
+        @return: C{str}
+        """
+        raise NotImplementedError()
+
+    def get_prover(self):
+        """
+        Return the prover object
+        @return: C{Prover}
+        """
+        raise NotImplementedError()
+
+
 class ModelBuilder(object):
     """
     Interface for trying to build a model of set of formulas.
     Open formulas are assumed to be universally quantified.
-    Both the goal and the assumptions are 
-    constrained to be formulas of L{logic.Expression}.
+    Both the goal and the assumptions are constrained to be formulas 
+    of L{logic.Expression}.
     """
     def build_model(self, goal=None, assumptions=[], verbose=False):
         """
+        Perform the actual model building.
         @return: A model if one is generated; None otherwise.
         @rtype: C{nltk.sem.evaluate.Valuation} 
         """
         raise NotImplementedError()
 
 
-class TheoremToolCommand(object):
+class ModelBuilderCommand(object):
+    """
+    This class holds a C{ModelBuilder}, a goal, and a list of assumptions.  
+    When build_model() is called, the C{ModelBuilder} is executed with the goal 
+    and assumptions.
+    """
+    def build_model(self, verbose=False):
+        """
+        Perform the actual model building.
+        @return: A model if one is generated; None otherwise.
+        @rtype: C{nltk.sem.evaluate.Valuation} 
+        """
+        raise NotImplementedError()
+
+
+class BaseTheoremToolCommand(object):
     """
     This class holds a goal and a list of assumptions to be used in proving
     or model building.
@@ -118,7 +160,8 @@ class TheoremToolCommand(object):
         for a in self.assumptions():
             print a
 
-class ProverCommand(TheoremToolCommand):
+
+class BaseProverCommand(BaseTheoremToolCommand, ProverCommand):
     """
     This class holds a C{Prover}, a goal, and a list of assumptions.  When
     prove() is called, the C{Prover} is executed with the goal and assumptions.
@@ -127,12 +170,12 @@ class ProverCommand(TheoremToolCommand):
         """
         @param prover: The theorem tool to execute with the assumptions
         @type prover: C{Prover}
-        @see: C{TheoremToolCommand}
+        @see: C{BaseTheoremToolCommand}
         """
         self._prover = prover
         """The theorem tool to execute with the assumptions"""
         
-        TheoremToolCommand.__init__(self, goal, assumptions)
+        BaseTheoremToolCommand.__init__(self, goal, assumptions)
         
         self._proof = None
 
@@ -158,8 +201,47 @@ class ProverCommand(TheoremToolCommand):
 
     def get_prover(self):
         return self._prover
+
     
-class ModelBuilderCommand(TheoremToolCommand):
+class ProverCommandDecorator(ProverCommand):
+    """
+    A base decorator for the C{ProverCommand} class from which concrete 
+    prover command decorators can extend.
+    """
+    def __init__(self, proverCommand):
+        """
+        @param proverCommand: C{ProverCommand} to decorate
+        """
+        self._proverCommand = proverCommand
+        
+    def prove(self, verbose=False):
+        return self.get_prover().prove(self.goal(), 
+                                       self.assumptions(), 
+                                       verbose)[0]
+    
+    def proof(self):
+        return self._proverCommand.proof()
+    
+    def get_prover(self):
+        return self._proverCommand.get_prover()
+    
+    def assumptions(self):
+        return self._proverCommand.assumptions()
+    
+    def goal(self):
+        return self._proverCommand.goal()
+        
+    def add_assumptions(self, new_assumptions):
+        self._proverCommand.add_assumptions(new_assumptions)
+    
+    def retract_assumptions(self, retracted, debug=False):
+        return self._proverCommand.retract_assumptions(retracted, debug)
+    
+    def print_assumptions(self):
+        self._proverCommand.print_assumptions()
+
+
+class BaseModelBuilderCommand(BaseTheoremToolCommand, ModelBuilderCommand):
     """
     This class holds a C{ModelBuilder}, a goal, and a list of assumptions.  When
     build_model() is called, the C{ModelBuilder} is executed with the goal and 
@@ -169,12 +251,12 @@ class ModelBuilderCommand(TheoremToolCommand):
         """
         @param modelbuilder: The theorem tool to execute with the assumptions
         @type modelbuilder: C{ModelBuilder}
-        @see: C{TheoremToolCommand}
+        @see: C{BaseTheoremToolCommand}
         """
         self._modelbuilder = modelbuilder
         """The theorem tool to execute with the assumptions"""
         
-        TheoremToolCommand.__init__(self, goal, assumptions)
+        BaseTheoremToolCommand.__init__(self, goal, assumptions)
         
         self._valuation = None
 
@@ -189,4 +271,3 @@ class ModelBuilderCommand(TheoremToolCommand):
                                                    self.assumptions(),
                                                    verbose)
         return self._result
-

@@ -78,7 +78,7 @@ then add the assumption "-(A = B)" if it is not the case that
     >>> for a in unp.assumptions(): print a
     man(Socrates)
     man(Bill)
-    -(Bill = Socrates)
+    -(Socrates = Bill)
     >>> unp.prove()
     True
 
@@ -94,9 +94,9 @@ then add the assumption "-(A = B)" if it is not the case that
     all x.(walk(x) -> (x = Socrates))
     (Bill = William)
     (Bill = Billy)
-    -(Bill = Socrates)
+    -(William = Socrates)
     -(Billy = Socrates)
-    -(Socrates = William)
+    -(Socrates = Bill)
     >>> unp.prove()
     True
 
@@ -235,9 +235,9 @@ print the augmented assumptions list
     all z7.(ostrich(z7) -> ((z7 = O) | flying_ostrich(z7)))
     all z8.(Ab2(z8) -> ostrich(z8))
     all z9.(animal(z9) -> (elephant(z9) | bird(z9)))
-    -(D = E)
-    -(D = O)
+    -(E = D)
     -(E = O)
+    -(D = O)
 
     >>> UniqueNamesProver(ClosedWorldProver(inference.get_prover(lp.parse('-fly(E)'), premises))).prove()
     True
