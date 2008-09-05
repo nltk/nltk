@@ -26,7 +26,7 @@ class MaceCommand(Prover9CommandParent, BaseModelBuilderCommand):
     the a print_assumptions() method that is used to print the list
     of assumptions in multiple formats.
     """
-    def __init__(self, goal=None, assumptions=[], timeout=60):
+    def __init__(self, goal=None, assumptions=None, timeout=60):
         """
         @param goal: Input expression to prove
         @type goal: L{logic.Expression}
@@ -142,13 +142,16 @@ class MaceCommand(Prover9CommandParent, BaseModelBuilderCommand):
 class Mace(Prover9Parent, ModelBuilder):
     _valuation = None #: text output from running mace
 
-    def build_model(self, goal=None, assumptions=[], verbose=False):
+    def build_model(self, goal=None, assumptions=None, verbose=False):
         """
         Use Mace4 to build a first order model.
         
         @return: C{True} if a model was found (i.e. Mace returns value of 0),
         else C{False}        
         """
+        if not assumptions:
+            assumptions = []
+            
         stdout, returncode = call_mace4(self.prover9_input(goal, assumptions))
         return (returncode == 0, stdout)
 

@@ -23,7 +23,7 @@ class Prover(object):
     Interface for trying to prove a goal from assumptions.  Both the goal and 
     the assumptions are constrained to be formulas of L{logic.Expression}.
     """
-    def prove(self, goal=None, assumptions=[], verbose=False):
+    def prove(self, goal=None, assumptions=None, verbose=False):
         """
         @return: Whether the proof was successful or not.
         @rtype: C{bool} 
@@ -64,7 +64,7 @@ class ModelBuilder(object):
     Both the goal and the assumptions are constrained to be formulas 
     of L{logic.Expression}.
     """
-    def build_model(self, goal=None, assumptions=[], verbose=False):
+    def build_model(self, goal=None, assumptions=None, verbose=False):
         """
         Perform the actual model building.
         @return: A model if one is generated; None otherwise.
@@ -93,7 +93,7 @@ class BaseTheoremToolCommand(object):
     This class holds a goal and a list of assumptions to be used in proving
     or model building.
     """
-    def __init__(self, goal=None, assumptions=[]):
+    def __init__(self, goal=None, assumptions=None):
         """
         @param goal: Input expression to prove
         @type goal: L{logic.Expression}
@@ -105,6 +105,9 @@ class BaseTheoremToolCommand(object):
         """The logic expression to prove.
            L{logic.Expression}"""
         
+        if not assumptions:
+            assumptions = []
+            
         self._assumptions = list(assumptions)
         """The set of expressions to use as assumptions in the proof.
            C{list} of L{logic.Expression}"""
@@ -166,7 +169,7 @@ class BaseProverCommand(BaseTheoremToolCommand, ProverCommand):
     This class holds a C{Prover}, a goal, and a list of assumptions.  When
     prove() is called, the C{Prover} is executed with the goal and assumptions.
     """
-    def __init__(self, prover, goal=None, assumptions=[]):
+    def __init__(self, prover, goal=None, assumptions=None):
         """
         @param prover: The theorem tool to execute with the assumptions
         @type prover: C{Prover}
@@ -247,7 +250,7 @@ class BaseModelBuilderCommand(BaseTheoremToolCommand, ModelBuilderCommand):
     build_model() is called, the C{ModelBuilder} is executed with the goal and 
     assumptions.
     """
-    def __init__(self, modelbuilder, goal=None, assumptions=[]):
+    def __init__(self, modelbuilder, goal=None, assumptions=None):
         """
         @param modelbuilder: The theorem tool to execute with the assumptions
         @type modelbuilder: C{ModelBuilder}

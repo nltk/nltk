@@ -22,7 +22,7 @@ def get_domain(goal, assumptions):
         all_expressions = assumptions
     else:
         all_expressions = assumptions + [-goal]
-    
+        
     domain = set()
     for a in all_expressions:
         domain |= (a.free(False) - a.free(True))
@@ -34,36 +34,42 @@ class ClosedDomainProver(ProverCommandDecorator):
     proving.
     """
     def assumptions(self):
+        assumptions = [a for a in self._proverCommand.assumptions()]
+        goal = self._proverCommand.goal()
+        domain = get_domain(goal, assumptions)
+        return list(self._handle(domain, assumptions))
+    
+    def goal(self):
+        goal = self._proverCommand.goal()
+        domain = get_domain(goal, self._proverCommand.assumptions())
+        return reduce(lambda x,y: x&y, self._handle(domain, [goal]))
+    
+    def _handle(self, domain, existing_terms):
         """
+        For every expression in 'existing_terms', apply the closed domain
+        assumption.
          - Domain = union([e.free(False) for e in all_expressions])
          - translate "exists x.P" to "(z=d1 | z=d2 | ... ) & P.replace(x,z)" OR 
                      "P.replace(x, d1) | P.replace(x, d2) | ..."
          - translate "all x.P" to "P.replace(x, d1) & P.replace(x, d2) & ..."
-        """
-        assumptions = [a for a in self._proverCommand.assumptions()]
-        
-        domain = get_domain(self._proverCommand.goal(), assumptions)
-        
-        new_assumptions = set()
-        self._handle_quant_ex(self._proverCommand.goal(), domain, assumptions)
-        while assumptions:
-            a = assumptions.pop() 
-            if isinstance(a, VariableBinderExpression):
-                self._handle_quant_ex(a, domain, assumptions)
-            else:
-                new_assumptions.add(a)
 
-        return list(new_assumptions)
-    
-    def _handle_quant_ex(self, ex, domain, assumptions):
-        if isinstance(ex, ExistsExpression):
-            newterms = [ex.term.replace(ex.variable, VariableExpression(d)) 
-                        for d in domain]
-            assumptions.append(reduce(Expression.__or__, newterms))
-        elif isinstance(ex, AllExpression):
-            for d in domain:
-                assumptions.append(ex.term.replace(ex.variable, 
-                                                   VariableExpression(d)))
+        @param existing_terms: C{list} of C{Expression}s
+        @param domain: C{set} of {Variable}s
+        """
+        new_terms = set()
+        while existing_terms:
+            ex = existing_terms.pop() 
+            if isinstance(ex, ExistsExpression):
+                newterms = [ex.term.replace(ex.variable, VariableExpression(d)) 
+                            for d in domain]
+                existing_terms.append(reduce(lambda x,y: x|y, newterms))
+            elif isinstance(ex, AllExpression):
+                for d in domain:
+                    existing_terms.append(ex.term.replace(ex.variable, 
+                                                        VariableExpression(d)))
+            else:
+                new_terms.add(ex)
+        return new_terms
     
 class UniqueNamesProver(ProverCommandDecorator):
     """
@@ -164,13 +170,14 @@ class ClosedWorldProver(ProverCommandDecorator):
             new_sig = self._make_unique_signature(predHolder)
             new_sig_exs = [IndividualVariableExpression(v) for v in new_sig]
             
-            #Turn the signatures into disjuncts
             disjuncts = []
+
+            #Turn the signatures into disjuncts
             for sig in predHolder.signatures:
                 equality_exs = []
                 for v1,v2 in zip(new_sig_exs, sig):
                     equality_exs.append(EqualityExpression(v1,v2)) 
-                disjuncts.append(reduce(Expression.__and__, equality_exs))
+                disjuncts.append(reduce(lambda x,y: x&y, equality_exs))
 
             #Turn the properties into disjuncts
             for prop in predHolder.properties:
@@ -184,7 +191,7 @@ class ClosedWorldProver(ProverCommandDecorator):
             if disjuncts:
                 #disjuncts exist, so make an implication
                 antecedent = self._make_antecedent(p, new_sig)
-                consequent = reduce(Expression.__or__, disjuncts)
+                consequent = reduce(lambda x,y: x|y, disjuncts)
                 accum = ImpExpression(antecedent, consequent)
             else:
                 #nothing has property 'p'

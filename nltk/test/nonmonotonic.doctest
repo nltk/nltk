@@ -59,6 +59,21 @@ with "P(A) & P(B)".
     >>> cdp.prove()
     False
 
+    >>> p1 = lp.parse(r'walk(Socrates)')
+    >>> p2 = lp.parse(r'walk(Bill)')
+    >>> c = lp.parse(r'all x.walk(x)')
+    >>> prover = inference.get_prover(c, [p1,p2])
+    >>> prover.prove()
+    False
+    >>> cdp = ClosedDomainProver(prover)
+    >>> for a in cdp.assumptions(): print a
+    walk(Socrates)
+    walk(Bill)
+    >>> print cdp.goal()
+    (walk(Socrates) & walk(Bill))
+    >>> cdp.prove()
+    True
+
 -----------------------
 Unique Names Assumption
 -----------------------

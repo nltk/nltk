@@ -18,7 +18,7 @@ import resolution
 A wrapper module that calls theorem provers and model builders.
 """
 
-def get_prover(goal=None, assumptions=[], prover_name='Prover9'):
+def get_prover(goal=None, assumptions=None, prover_name='Prover9'):
     """
     @param goal: Input expression to prove
     @type goal: L{logic.Expression}
@@ -34,7 +34,7 @@ def get_prover(goal=None, assumptions=[], prover_name='Prover9'):
     
     raise Exception('\'%s\' is not a valid prover name' % prover_name)
 
-def get_model_builder(goal=None, assumptions=[], model_builder_name='Mace'):
+def get_model_builder(goal=None, assumptions=None, model_builder_name='Mace'):
     """
     @param goal: Input expression to prove
     @type goal: L{logic.Expression}

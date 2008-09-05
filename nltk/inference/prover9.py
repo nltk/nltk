@@ -211,7 +211,7 @@ class Prover9Command(Prover9CommandParent, BaseProverCommand):
     the a print_assumptions() method that is used to print the list
     of assumptions in multiple formats.
     """
-    def __init__(self, goal=None, assumptions=[], timeout=60):
+    def __init__(self, goal=None, assumptions=None, timeout=60):
         """
         @param goal: Input expression to prove
         @type goal: L{logic.Expression}
@@ -222,6 +222,9 @@ class Prover9Command(Prover9CommandParent, BaseProverCommand):
             no timeout.
         @type timeout: C{int}
         """
+        if not assumptions:
+            assumptions = []
+            
         BaseProverCommand.__init__(self, Prover9(timeout), goal, assumptions)
         
     def proof(self, simplify=True):
@@ -302,13 +305,16 @@ def convert_to_prover9(input):
 class Prover9(Prover9Parent, Prover):
     _proof = None  #: text output from running prover9
     
-    def prove(self, goal=None, assumptions=[], debug=False):
+    def prove(self, goal=None, assumptions=None, debug=False):
         """
         Use Prover9 to prove a theorem.
         @return: A pair whose first element is a boolean indicating if the 
         proof was successful (i.e. returns value of 0) and whose second element
         is the output of the prover.        
         """
+        if not assumptions:
+            assumptions = []
+            
         stdout, returncode = call_prover9(self.prover9_input(goal, 
                                                              assumptions))
         return (returncode == 0, stdout)
