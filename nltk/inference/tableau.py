@@ -18,7 +18,10 @@ class ProverParseError(Exception): pass
 class Tableau(Prover):
     _assume_false=False
     
-    def prove(self, goal=None, assumptions=[], debug=False):
+    def prove(self, goal=None, assumptions=None, debug=False):
+        if not assumptions:
+            assumptions = []
+            
         result = None
         try:
             agenda = Agenda()

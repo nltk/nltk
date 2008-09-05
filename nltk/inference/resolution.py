@@ -23,13 +23,16 @@ class Resolution(Prover):
     ANSWER_KEY = 'ANSWER'
     _assume_false=True
     
-    def prove(self, goal=None, assumptions=[], verbose=False):
+    def prove(self, goal=None, assumptions=None, verbose=False):
         """
         @param goal: Input expression to prove
         @type goal: L{logic.Expression}
         @param assumptions: Input expressions to use as assumptions in the proof
         @type assumptions: L{list} of logic.Expression objects
         """
+        if not assumptions:
+            assumptions = []
+            
         result = None
         try:
             clauses = []
@@ -82,7 +85,7 @@ class Resolution(Prover):
         return (False, clauses)
         
 class ResolutionCommand(BaseProverCommand):
-    def __init__(self, goal=None, assumptions=[]):
+    def __init__(self, goal=None, assumptions=None):
         """
         @param goal: Input expression to prove
         @type goal: L{logic.Expression}
