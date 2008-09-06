@@ -17,6 +17,8 @@ from nltk.inference import inference
 from nltk.inference.api import Prover, ProverCommandDecorator
 from nltk import defaultdict
 
+class ProverParseError(Exception): pass
+
 def get_domain(goal, assumptions):
     if goal is None:
         all_expressions = assumptions
@@ -37,39 +39,41 @@ class ClosedDomainProver(ProverCommandDecorator):
         assumptions = [a for a in self._proverCommand.assumptions()]
         goal = self._proverCommand.goal()
         domain = get_domain(goal, assumptions)
-        return list(self._handle(domain, assumptions))
+        return list([self.replace_quants(ex, domain) for ex in assumptions])
     
     def goal(self):
         goal = self._proverCommand.goal()
         domain = get_domain(goal, self._proverCommand.assumptions())
-        return reduce(lambda x,y: x&y, self._handle(domain, [goal]))
+        return self.replace_quants(goal, domain)
     
-    def _handle(self, domain, existing_terms):
+    def replace_quants(self, ex, domain):
         """
-        For every expression in 'existing_terms', apply the closed domain
-        assumption.
+        Apply the closed domain assumption to the expression
          - Domain = union([e.free(False) for e in all_expressions])
          - translate "exists x.P" to "(z=d1 | z=d2 | ... ) & P.replace(x,z)" OR 
                      "P.replace(x, d1) | P.replace(x, d2) | ..."
          - translate "all x.P" to "P.replace(x, d1) & P.replace(x, d2) & ..."
-
-        @param existing_terms: C{list} of C{Expression}s
+        @param ex: C{Expression}
         @param domain: C{set} of {Variable}s
+        @return: C{Expression}
         """
-        new_terms = set()
-        while existing_terms:
-            ex = existing_terms.pop() 
-            if isinstance(ex, ExistsExpression):
-                newterms = [ex.term.replace(ex.variable, VariableExpression(d)) 
-                            for d in domain]
-                existing_terms.append(reduce(lambda x,y: x|y, newterms))
-            elif isinstance(ex, AllExpression):
-                for d in domain:
-                    existing_terms.append(ex.term.replace(ex.variable, 
-                                                        VariableExpression(d)))
-            else:
-                new_terms.add(ex)
-        return new_terms
+        if isinstance(ex, AllExpression):
+            conjuncts = [ex.term.replace(ex.variable, VariableExpression(d)) 
+                         for d in domain]
+            conjuncts = [self.replace_quants(c, domain) for c in conjuncts]
+            return reduce(lambda x,y: x&y, conjuncts)
+        elif isinstance(ex, BooleanExpression):
+            return ex.__class__(self.replace_quants(ex.first, domain),
+                                self.replace_quants(ex.second, domain) )
+        elif isinstance(ex, NegatedExpression):
+            return -self.replace_quants(ex.term, domain)
+        elif isinstance(ex, ExistsExpression):
+            disjuncts = [ex.term.replace(ex.variable, VariableExpression(d)) 
+                         for d in domain]
+            disjuncts = [self.replace_quants(d, domain) for d in disjuncts]
+            return reduce(lambda x,y: x|y, disjuncts)
+        else:
+            return ex
     
 class UniqueNamesProver(ProverCommandDecorator):
     """
@@ -311,7 +315,9 @@ def closed_domain_demo():
     prover = inference.get_prover(c, [p1,p2])
     print prover.prove()
     cdp = ClosedDomainProver(prover)
-    for a in cdp.assumptions(): print a
+    print 'assumptions:'
+    for a in cdp.assumptions(): print '   ', a
+    print 'goal:', cdp.goal()
     print cdp.prove()
 
     p1 = lp.parse(r'exists x.walk(x)')
@@ -321,7 +327,46 @@ def closed_domain_demo():
     prover = inference.get_prover(c, [p1,p2,p3])
     print prover.prove()
     cdp = ClosedDomainProver(prover)
-    for a in cdp.assumptions(): print a
+    print 'assumptions:'
+    for a in cdp.assumptions(): print '   ', a
+    print 'goal:', cdp.goal()
+    print cdp.prove()
+
+    p1 = lp.parse(r'exists x.walk(x)')
+    p2 = lp.parse(r'man(Socrates)')
+    p3 = lp.parse(r'-walk(Bill)')
+    c = lp.parse(r'walk(Socrates)')
+    prover = inference.get_prover(c, [p1,p2,p3])
+    print prover.prove()
+    cdp = ClosedDomainProver(prover)
+    print 'assumptions:'
+    for a in cdp.assumptions(): print '   ', a
+    print 'goal:', cdp.goal()
+    print cdp.prove()
+
+    p1 = lp.parse(r'walk(Socrates)')
+    p2 = lp.parse(r'walk(Bill)')
+    c = lp.parse(r'all x.walk(x)')
+    prover = inference.get_prover(c, [p1,p2])
+    print prover.prove()
+    cdp = ClosedDomainProver(prover)
+    print 'assumptions:'
+    for a in cdp.assumptions(): print '   ', a
+    print 'goal:', cdp.goal()
+    print cdp.prove()
+
+    p1 = lp.parse(r'girl(mary)')
+    p2 = lp.parse(r'dog(rover)')
+    p3 = lp.parse(r'all x.(girl(x) -> -dog(x))')
+    p4 = lp.parse(r'all x.(dog(x) -> -girl(x))')
+    p5 = lp.parse(r'chase(mary, rover)')
+    c = lp.parse(r'exists y.(dog(y) & all x.(girl(x) -> chase(x,y)))')
+    prover = inference.get_prover(c, [p1,p2,p3,p4,p5])
+    print prover.prove()
+    cdp = ClosedDomainProver(prover)
+    print 'assumptions:'
+    for a in cdp.assumptions(): print '   ', a
+    print 'goal:', cdp.goal()
     print cdp.prove()
 
 def unique_names_demo():
@@ -333,7 +378,9 @@ def unique_names_demo():
     prover = inference.get_prover(c, [p1,p2])
     print prover.prove()
     unp = UniqueNamesProver(prover)
-    for a in unp.assumptions(): print a
+    print 'assumptions:'
+    for a in unp.assumptions(): print '   ', a
+    print 'goal:', unp.goal()
     print unp.prove()
 
     p1 = lp.parse(r'all x.(walk(x) -> (x = Socrates))')
@@ -343,7 +390,9 @@ def unique_names_demo():
     prover = inference.get_prover(c, [p1,p2,p3])
     print prover.prove()
     unp = UniqueNamesProver(prover)
-    for a in unp.assumptions(): print a
+    print 'assumptions:'
+    for a in unp.assumptions(): print '   ', a
+    print 'goal:', unp.goal()
     print unp.prove()
     
 def closed_world_demo():
@@ -355,7 +404,9 @@ def closed_world_demo():
     prover = inference.get_prover(c, [p1,p2])
     print prover.prove()
     cwp = ClosedWorldProver(prover)
-    for a in cwp.assumptions(): print a
+    print 'assumptions:'
+    for a in cwp.assumptions(): print '   ', a
+    print 'goal:', cwp.goal()
     print cwp.prove()
 
     p1 = lp.parse(r'see(Socrates, John)')
@@ -366,7 +417,9 @@ def closed_world_demo():
     prover = inference.get_prover(c, [p1,p2,p3,p4])
     print prover.prove()
     cwp = ClosedWorldProver(prover)
-    for a in cwp.assumptions(): print a
+    print 'assumptions:'
+    for a in cwp.assumptions(): print '   ', a
+    print 'goal:', cwp.goal()
     print cwp.prove()
 
     p1 = lp.parse(r'all x.(ostrich(x) -> bird(x))')
@@ -377,7 +430,9 @@ def closed_world_demo():
     prover = inference.get_prover(c, [p1,p2,p3,p4])
     print prover.prove()
     cwp = ClosedWorldProver(prover)
-    for a in cwp.assumptions(): print a
+    print 'assumptions:'
+    for a in cwp.assumptions(): print '   ', a
+    print 'goal:', cwp.goal()
     print cwp.prove()
 
 def combination_prover_demo():
@@ -435,6 +490,23 @@ def print_proof(goal, premises):
     prover = inference.get_prover(lp.parse(goal), premises)
     command = UniqueNamesProver(ClosedWorldProver(prover))
     print goal, prover.prove(), command.prove()
+
+def test1():
+    lp = LogicParser()
+    
+    p = []
+    p.append(lp.parse(r'all x.(girl(x) <-> (x=mary))'))
+    p.append(lp.parse(r'all x.(dog(x) <-> (x=rover))'))
+    p.append(lp.parse(r'chase(mary, rover)'))
+    c = lp.parse(r'exists y.(dog(y) & all x.(girl(x) -> chase(x,y)))')
+
+    prover = inference.get_prover(c, p)
+    print prover.prove()
+    cdp = ClosedDomainProver(prover)
+    print 'assumptions:'
+    for a in cdp.assumptions(): print '   ', a
+    print 'goal:', cdp.goal()
+    print cdp.prove()
 
 if __name__ == '__main__':
     closed_domain_demo()
