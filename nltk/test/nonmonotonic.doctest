@@ -1,6 +1,6 @@
-=========================
-Resolution Theorem Prover
-=========================
+======================
+Nonmonotonic Reasoning
+======================
 
     >>> from nltk.inference import inference
     >>> from nltk.sem import logic
@@ -26,8 +26,8 @@ with "P(A) & P(B)".
     True
     >>> cdp = ClosedDomainProver(prover)
     >>> for a in cdp.assumptions(): print a
-    man(Socrates)
     (man(Socrates) -> mortal(Socrates))
+    man(Socrates)
     >>> cdp.prove()
     True
 
@@ -46,18 +46,18 @@ with "P(A) & P(B)".
 
     >>> p1 = lp.parse(r'exists x.walk(x)')
     >>> p2 = lp.parse(r'man(Socrates)')
-    >>> p3 = lp.parse(r'man(Bill)')
+    >>> p3 = lp.parse(r'-walk(Bill)')
     >>> c = lp.parse(r'walk(Socrates)')
     >>> prover = inference.get_prover(c, [p1,p2,p3])
     >>> prover.prove()
     False
     >>> cdp = ClosedDomainProver(prover)
     >>> for a in cdp.assumptions(): print a
-    man(Socrates)
     (walk(Socrates) | walk(Bill))
-    man(Bill)
+    man(Socrates)
+    -walk(Bill)
     >>> cdp.prove()
-    False
+    True
 
     >>> p1 = lp.parse(r'walk(Socrates)')
     >>> p2 = lp.parse(r'walk(Bill)')
@@ -72,6 +72,27 @@ with "P(A) & P(B)".
     >>> print cdp.goal()
     (walk(Socrates) & walk(Bill))
     >>> cdp.prove()
+    True
+
+    >>> p1 = lp.parse(r'girl(mary)')
+    >>> p2 = lp.parse(r'dog(rover)')
+    >>> p3 = lp.parse(r'all x.(girl(x) -> -dog(x))')
+    >>> p4 = lp.parse(r'all x.(dog(x) -> -girl(x))')
+    >>> p5 = lp.parse(r'chase(mary, rover)')
+    >>> c = lp.parse(r'exists y.(dog(y) & all x.(girl(x) -> chase(x,y)))')
+    >>> prover = inference.get_prover(c, [p1,p2,p3,p4,p5])
+    >>> print prover.prove()
+    False
+    >>> cdp = ClosedDomainProver(prover)
+    >>> for a in cdp.assumptions(): print a
+    girl(mary)
+    dog(rover)
+    ((girl(rover) -> -dog(rover)) & (girl(mary) -> -dog(mary)))
+    ((dog(rover) -> -girl(rover)) & (dog(mary) -> -girl(mary)))
+    chase(mary,rover)
+    >>> print cdp.goal()
+    ((dog(rover) & ((girl(rover) -> chase(rover,rover)) & (girl(mary) -> chase(mary,rover)))) | (dog(mary) & ((girl(rover) -> chase(rover,mary)) & (girl(mary) -> chase(mary,mary)))))
+    >>> print cdp.prove()
     True
 
 -----------------------

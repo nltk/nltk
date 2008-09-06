@@ -42,9 +42,10 @@ class ProverCommand(object):
         """
         raise NotImplementedError()
 
-    def proof(self):
+    def proof(self, simplify=True):
         """
         Return the proof string
+        @param simplify: C{boolean} simplify the proof?
         @return: C{str}
         """
         raise NotImplementedError()
@@ -193,9 +194,11 @@ class BaseProverCommand(BaseTheoremToolCommand, ProverCommand):
                                                            verbose)
         return self._result
 
-    def proof(self):
+    def proof(self, simplify=True):
         """
         Return the proof string
+        @param simplify: C{boolean} simplify the proof?
+        @return: C{str}
         """
         if self._result is None:
             raise LookupError("You have to call prove() first to get a proof!")
@@ -222,8 +225,13 @@ class ProverCommandDecorator(ProverCommand):
                                        self.assumptions(), 
                                        verbose)[0]
     
-    def proof(self):
-        return self._proverCommand.proof()
+    def proof(self, simplify=True):
+        """
+        Return the proof string
+        @param simplify: C{boolean} simplify the proof?
+        @return: C{str}
+        """
+        return self._proverCommand.proof(simplify)
     
     def get_prover(self):
         return self._proverCommand.get_prover()
