@@ -280,4 +280,4 @@ print the augmented assumptions list
     >>> UniqueNamesProver(ClosedWorldProver(inference.get_prover(lp.parse('fly(D)'), premises))).prove()
     True
     >>> UniqueNamesProver(ClosedWorldProver(inference.get_prover(lp.parse('-fly(O)'), premises))).prove()
-	True
+    True
