@@ -491,23 +491,6 @@ def print_proof(goal, premises):
     command = UniqueNamesProver(ClosedWorldProver(prover))
     print goal, prover.prove(), command.prove()
 
-def test1():
-    lp = LogicParser()
-    
-    p = []
-    p.append(lp.parse(r'all x.(girl(x) <-> (x=mary))'))
-    p.append(lp.parse(r'all x.(dog(x) <-> (x=rover))'))
-    p.append(lp.parse(r'chase(mary, rover)'))
-    c = lp.parse(r'exists y.(dog(y) & all x.(girl(x) -> chase(x,y)))')
-
-    prover = inference.get_prover(c, p)
-    print prover.prove()
-    cdp = ClosedDomainProver(prover)
-    print 'assumptions:'
-    for a in cdp.assumptions(): print '   ', a
-    print 'goal:', cdp.goal()
-    print cdp.prove()
-
 if __name__ == '__main__':
     closed_domain_demo()
     unique_names_demo()

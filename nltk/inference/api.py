@@ -203,7 +203,16 @@ class BaseProverCommand(BaseTheoremToolCommand, ProverCommand):
         if self._result is None:
             raise LookupError("You have to call prove() first to get a proof!")
         else:
-            return self._proof
+            return self.decorate_proof(self._proof, simplify)
+
+    def decorate_proof(self, proof_string, simplify=True):
+        """
+        Modify and return the proof string
+        @param proof_string: C{str} the proof to decorate
+        @param simplify: C{boolean} simplify the proof?
+        @return: C{str}
+        """
+        return proof_string
 
     def get_prover(self):
         return self._prover
@@ -220,10 +229,18 @@ class ProverCommandDecorator(ProverCommand):
         """
         self._proverCommand = proverCommand
         
+        #The decorator has its own versions of 'result' and 'proof' that may be
+        #because they may be different from the underlying command
+        self._result = None
+        self._proof = None
+        
     def prove(self, verbose=False):
-        return self.get_prover().prove(self.goal(), 
-                                       self.assumptions(), 
-                                       verbose)[0]
+        if self._result is None:
+            prover = self.get_prover()
+            self._result, self._proof = prover.prove(self.goal(), 
+                                                     self.assumptions(), 
+                                                     verbose)
+        return self._result
     
     def proof(self, simplify=True):
         """
@@ -231,8 +248,20 @@ class ProverCommandDecorator(ProverCommand):
         @param simplify: C{boolean} simplify the proof?
         @return: C{str}
         """
-        return self._proverCommand.proof(simplify)
+        if self._result is None:
+            raise LookupError("You have to call prove() first to get a proof!")
+        else:
+            return self.decorate_proof(self._proof, simplify)
     
+    def decorate_proof(self, proof_string, simplify=True):
+        """
+        Modify and return the proof string
+        @param proof_string: C{str} the proof to decorate
+        @param simplify: C{boolean} simplify the proof?
+        @return: C{str}
+        """
+        return self._proverCommand.decorate_proof(proof_string, simplify)
+
     def get_prover(self):
         return self._proverCommand.get_prover()
     
@@ -244,9 +273,11 @@ class ProverCommandDecorator(ProverCommand):
         
     def add_assumptions(self, new_assumptions):
         self._proverCommand.add_assumptions(new_assumptions)
+        self._result = None
     
     def retract_assumptions(self, retracted, debug=False):
-        return self._proverCommand.retract_assumptions(retracted, debug)
+        self._proverCommand.retract_assumptions(retracted, debug)
+        self._result = None
     
     def print_assumptions(self):
         self._proverCommand.print_assumptions()
