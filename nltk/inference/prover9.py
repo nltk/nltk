@@ -227,21 +227,14 @@ class Prover9Command(Prover9CommandParent, BaseProverCommand):
             
         BaseProverCommand.__init__(self, Prover9(timeout), goal, assumptions)
         
-    def proof(self, simplify=True):
+    def decorate_proof(self, proof_string, simplify=True):
         """
-        Return the proof as a String.
-        
-        @parameter simplify: if C{True}, simplify the output file 
-                             using Prover9's C{prooftrans}.
-        @type simplify: C{bool}
+        @see BaseProverCommand.decorate_proof()
         """
-        if self._result is None:
-            raise LookupError("You have to call prove() first to get a proof!")
-            
         if simplify:
-            return call_prooftrans(self._proof, ['striplabels'])[0].rstrip()
+            return call_prooftrans(proof_string, ['striplabels'])[0].rstrip()
         else:
-            return self._proof.rstrip()
+            return proof_string.rstrip()
 
 
 class Prover9Parent(object):
@@ -303,8 +296,6 @@ def convert_to_prover9(input):
 ######################################################################
 
 class Prover9(Prover9Parent, Prover):
-    _proof = None  #: text output from running prover9
-    
     def prove(self, goal=None, assumptions=None, debug=False):
         """
         Use Prover9 to prove a theorem.

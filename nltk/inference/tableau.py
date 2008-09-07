@@ -18,7 +18,7 @@ class ProverParseError(Exception): pass
 class Tableau(Prover):
     _assume_false=False
     
-    def prove(self, goal=None, assumptions=None, debug=False):
+    def prove(self, goal=None, assumptions=None, verbose=False):
         if not assumptions:
             assumptions = []
             
@@ -28,7 +28,8 @@ class Tableau(Prover):
             if goal:
                 agenda.put(-goal)
             agenda.put_all(assumptions)
-            result = _attempt_proof(agenda, set(), set(), (debug, 0))
+            debugger = Debug(verbose)
+            result = _attempt_proof(agenda, set(), set(), debugger)
         except RuntimeError, e:
             if self._assume_false and str(e).startswith('maximum recursion depth exceeded'):
                 result = False
@@ -37,7 +38,7 @@ class Tableau(Prover):
                     print e
                 else:
                     raise e
-        return (result, '')
+        return (result, '\n'.join(debugger.lines))
         
 class Agenda(object):
     def __init__(self):
@@ -163,12 +164,12 @@ class Agenda(object):
         else:
             raise ProverParseError()
 
-def _attempt_proof(agenda, accessible_vars, atoms, debug=(False, 0)):
+def _attempt_proof(agenda, accessible_vars, atoms, debug):
     (current, category) = agenda.pop_first()
     
     #if there's nothing left in the agenda, and we haven't closed the path
     if not current:
-        debug_line('AGENDA EMPTY', (debug[0], debug[1]+1)) 
+        debug.line('AGENDA EMPTY') 
         return False
     
     proof_method = { Categories.ATOM:     _attempt_proof_atom,
@@ -190,124 +191,138 @@ def _attempt_proof(agenda, accessible_vars, atoms, debug=(False, 0)):
                      Categories.ALL:      _attempt_proof_all,
                     }[category]
     
-    debug_line(current, debug)
+    debug.line(current)
     return proof_method(current, agenda, accessible_vars, atoms, debug)
 
-def debug_line(data, debug):
-    if debug[0]: 
+
+class Debug(object):
+    def __init__(self, verbose, indent=0, lines=None):
+        self.verbose = verbose
+        self.indent = indent
+        
+        if not lines:
+            lines = []
+        
+        self.lines = lines
+        
+    def __add__(self, increment):
+        return Debug(self.verbose, self.indent+1, self.lines)
+
+    def line(self, data, indent=0):
         additional = ''
         if isinstance(data, AllExpression):
             try:
                 additional += ':   %s' % str([ve.variable.name for ve in data._used_vars])
             except AttributeError:
                 additional += ':   []'
-        
-        if isinstance(data, Expression):
-            data = data
-        
-        print '%s%s%s' % ('   '*debug[1], data, additional)
 
-def _attempt_proof_atom(current, agenda, accessible_vars, atoms, debug=(False, 0)):
+        newline = '%s%s%s' % ('   '*(self.indent+indent), data, additional)
+        self.lines.append(newline)
+
+        if self.verbose: 
+            print newline
+
+def _attempt_proof_atom(current, agenda, accessible_vars, atoms, debug):
     # Check if the branch is closed.  Return 'True' if it is
     if (current, True) in atoms:
-        debug_line('CLOSED', (debug[0], debug[1]+1)) 
+        debug.line('CLOSED', 1) 
         return True
 
     #mark all AllExpressions as 'not exhausted' into the agenda since we are (potentially) adding new accessible vars
     agenda.mark_alls_fresh();
     args = current.uncurry()[1]
-    return _attempt_proof(agenda, accessible_vars|set(args), atoms|set([(current, False)]), (debug[0], debug[1]+1)) 
+    return _attempt_proof(agenda, accessible_vars|set(args), atoms|set([(current, False)]), debug+1) 
     
-def _attempt_proof_n_atom(current, agenda, accessible_vars, atoms, debug=(False, 0)):
+def _attempt_proof_n_atom(current, agenda, accessible_vars, atoms, debug):
     # Check if the branch is closed.  Return 'True' if it is
     if (current.term, False) in atoms:
-        debug_line('CLOSED', (debug[0], debug[1]+1)) 
+        debug.line('CLOSED', 1) 
         return True
 
     #mark all AllExpressions as 'not exhausted' into the agenda since we are (potentially) adding new accessible vars
     agenda.mark_alls_fresh();
     args = current.term.uncurry()[1]
-    return _attempt_proof(agenda, accessible_vars|set(args), atoms|set([(current.term, True)]), (debug[0], debug[1]+1)) 
+    return _attempt_proof(agenda, accessible_vars|set(args), atoms|set([(current.term, True)]), debug+1) 
     
-def _attempt_proof_n_eq(current, agenda, accessible_vars, atoms, debug=(False, 0)):
+def _attempt_proof_n_eq(current, agenda, accessible_vars, atoms, debug):
     ###########################################################################
     # Since 'current' is of type '~(a=b)', the path is closed if 'a' == 'b'
     ###########################################################################
     if current.term.first == current.term.second:
-        debug_line('CLOSED', (debug[0], debug[1]+1)) 
+        debug.line('CLOSED', 1) 
         return True
     
     agenda[Categories.N_EQ].add(current)
     current._exhausted = True
-    return _attempt_proof(agenda, accessible_vars|set([current.term.first, current.term.second]), atoms, (debug[0], debug[1]+1)) 
+    return _attempt_proof(agenda, accessible_vars|set([current.term.first, current.term.second]), atoms, debug+1) 
     
-def _attempt_proof_d_neg(current, agenda, accessible_vars, atoms, debug=(False, 0)):
+def _attempt_proof_d_neg(current, agenda, accessible_vars, atoms, debug):
     agenda.put(current.term.term)
-    return _attempt_proof(agenda, accessible_vars, atoms, (debug[0], debug[1]+1))
+    return _attempt_proof(agenda, accessible_vars, atoms, debug+1)
     
-def _attempt_proof_n_all(current, agenda, accessible_vars, atoms, debug=(False, 0)):
+def _attempt_proof_n_all(current, agenda, accessible_vars, atoms, debug):
     agenda[Categories.EXISTS].add(ExistsExpression(current.term.variable, -current.term.term))
-    return _attempt_proof(agenda, accessible_vars, atoms, (debug[0], debug[1]+1))
+    return _attempt_proof(agenda, accessible_vars, atoms, debug+1)
     
-def _attempt_proof_n_some(current, agenda, accessible_vars, atoms, debug=(False, 0)):
+def _attempt_proof_n_some(current, agenda, accessible_vars, atoms, debug):
     agenda[Categories.ALL].add(AllExpression(current.term.variable, -current.term.term))
-    return _attempt_proof(agenda, accessible_vars, atoms, (debug[0], debug[1]+1))
+    return _attempt_proof(agenda, accessible_vars, atoms, debug+1)
 
-def _attempt_proof_and(current, agenda, accessible_vars, atoms, debug=(False, 0)):
+def _attempt_proof_and(current, agenda, accessible_vars, atoms, debug):
     agenda.put(current.first)
     agenda.put(current.second)
-    return _attempt_proof(agenda, accessible_vars, atoms, (debug[0], debug[1]+1))
+    return _attempt_proof(agenda, accessible_vars, atoms, debug+1)
     
-def _attempt_proof_n_or(current, agenda, accessible_vars, atoms, debug=(False, 0)):
+def _attempt_proof_n_or(current, agenda, accessible_vars, atoms, debug):
     agenda.put(-current.term.first)
     agenda.put(-current.term.second)
-    return _attempt_proof(agenda, accessible_vars, atoms, (debug[0], debug[1]+1))
+    return _attempt_proof(agenda, accessible_vars, atoms, debug+1)
 
-def _attempt_proof_n_imp(current, agenda, accessible_vars, atoms, debug=(False, 0)):
+def _attempt_proof_n_imp(current, agenda, accessible_vars, atoms, debug):
     agenda.put(current.term.first)
     agenda.put(-current.term.second)
-    return _attempt_proof(agenda, accessible_vars, atoms, (debug[0], debug[1]+1))
+    return _attempt_proof(agenda, accessible_vars, atoms, debug+1)
 
-def _attempt_proof_or(current, agenda, accessible_vars, atoms, debug=(False, 0)):
+def _attempt_proof_or(current, agenda, accessible_vars, atoms, debug):
     new_agenda = agenda.clone()
     agenda.put(current.first)
     new_agenda.put(current.second)
-    return _attempt_proof(agenda, accessible_vars, atoms, (debug[0], debug[1]+1)) and \
-            _attempt_proof(new_agenda, accessible_vars, atoms, (debug[0], debug[1]+1))
+    return _attempt_proof(agenda, accessible_vars, atoms, debug+1) and \
+            _attempt_proof(new_agenda, accessible_vars, atoms, debug+1)
     
-def _attempt_proof_imp(current, agenda, accessible_vars, atoms, debug=(False, 0)):
+def _attempt_proof_imp(current, agenda, accessible_vars, atoms, debug):
     new_agenda = agenda.clone()
     agenda.put(-current.first)
     new_agenda.put(current.second)
-    return _attempt_proof(agenda, accessible_vars, atoms, (debug[0], debug[1]+1)) and \
-            _attempt_proof(new_agenda, accessible_vars, atoms, (debug[0], debug[1]+1))
+    return _attempt_proof(agenda, accessible_vars, atoms, debug+1) and \
+            _attempt_proof(new_agenda, accessible_vars, atoms, debug+1)
     
-def _attempt_proof_n_and(current, agenda, accessible_vars, atoms, debug=(False, 0)):
+def _attempt_proof_n_and(current, agenda, accessible_vars, atoms, debug):
     new_agenda = agenda.clone()
     agenda.put(-current.term.first)
     new_agenda.put(-current.term.second)
-    return _attempt_proof(agenda, accessible_vars, atoms, (debug[0], debug[1]+1)) and \
-            _attempt_proof(new_agenda, accessible_vars, atoms, (debug[0], debug[1]+1))
+    return _attempt_proof(agenda, accessible_vars, atoms, debug+1) and \
+            _attempt_proof(new_agenda, accessible_vars, atoms, debug+1)
     
-def _attempt_proof_iff(current, agenda, accessible_vars, atoms, debug=(False, 0)):
+def _attempt_proof_iff(current, agenda, accessible_vars, atoms, debug):
     new_agenda = agenda.clone()
     agenda.put(current.first)
     agenda.put(current.second)
     new_agenda.put(-current.first)
     new_agenda.put(-current.second)
-    return _attempt_proof(agenda, accessible_vars, atoms, (debug[0], debug[1]+1)) and \
-            _attempt_proof(new_agenda, accessible_vars, atoms, (debug[0], debug[1]+1))
+    return _attempt_proof(agenda, accessible_vars, atoms, debug+1) and \
+            _attempt_proof(new_agenda, accessible_vars, atoms, debug+1)
 
-def _attempt_proof_n_iff(current, agenda, accessible_vars, atoms, debug=(False, 0)):
+def _attempt_proof_n_iff(current, agenda, accessible_vars, atoms, debug):
     new_agenda = agenda.clone()
     agenda.put(current.term.first)
     agenda.put(-current.term.second)
     new_agenda.put(-current.term.first)
     new_agenda.put(current.term.second)
-    return _attempt_proof(agenda, accessible_vars, atoms, (debug[0], debug[1]+1)) and \
-            _attempt_proof(new_agenda, accessible_vars, atoms, (debug[0], debug[1]+1))
+    return _attempt_proof(agenda, accessible_vars, atoms, debug+1) and \
+            _attempt_proof(new_agenda, accessible_vars, atoms, debug+1)
 
-def _attempt_proof_eq(current, agenda, accessible_vars, atoms, debug=(False, 0)):
+def _attempt_proof_eq(current, agenda, accessible_vars, atoms, debug):
     #########################################################################
     # Since 'current' is of the form '(a = b)', replace ALL free instances  
     # of 'a' with 'b'
@@ -316,15 +331,15 @@ def _attempt_proof_eq(current, agenda, accessible_vars, atoms, debug=(False, 0))
     agenda.replace_all(current.first, current.second)
     accessible_vars.discard(current.first)
     agenda.mark_neqs_fresh();
-    return _attempt_proof(agenda, accessible_vars, set(), (debug[0], debug[1]+1))
+    return _attempt_proof(agenda, accessible_vars, set(), debug+1)
 
-def _attempt_proof_some(current, agenda, accessible_vars, atoms, debug=(False, 0)):
+def _attempt_proof_some(current, agenda, accessible_vars, atoms, debug):
     new_unique_variable = IndividualVariableExpression(unique_variable())
     agenda.put(current.term.replace(current.variable, new_unique_variable))
     agenda.mark_alls_fresh()
-    return _attempt_proof(agenda, accessible_vars|set([new_unique_variable]), atoms, (debug[0], debug[1]+1))
+    return _attempt_proof(agenda, accessible_vars|set([new_unique_variable]), atoms, debug+1)
     
-def _attempt_proof_all(current, agenda, accessible_vars, atoms, debug=(False, 0)):
+def _attempt_proof_all(current, agenda, accessible_vars, atoms, debug):
     try:
         current._used_vars
     except AttributeError:
@@ -337,27 +352,27 @@ def _attempt_proof_all(current, agenda, accessible_vars, atoms, debug=(False, 0)
         
         if bv_available:
             variable_to_use = list(bv_available)[0]
-            debug_line('--> Using \'%s\'' % variable_to_use, (debug[0], debug[1]+2))
+            debug.line('--> Using \'%s\'' % variable_to_use, 2)
             current._used_vars |= set([variable_to_use])
             agenda.put(current.term.replace(current.variable, variable_to_use))
             agenda[Categories.ALL].add(current)
-            return _attempt_proof(agenda, accessible_vars, atoms, (debug[0], debug[1]+1))
+            return _attempt_proof(agenda, accessible_vars, atoms, debug+1)
         
         else:
             #no more available variables to substitute
-            debug_line('--> Variables Exhausted', (debug[0], debug[1]+2))
+            debug.line('--> Variables Exhausted', 2)
             current._exhausted = True
             agenda[Categories.ALL].add(current)
-            return _attempt_proof(agenda, accessible_vars, atoms, (debug[0], debug[1]+1))
+            return _attempt_proof(agenda, accessible_vars, atoms, debug+1)
             
     else:
         new_unique_variable = IndividualVariableExpression(unique_variable())
-        debug_line('--> Using \'%s\'' % new_unique_variable, (debug[0], debug[1]+2))
+        debug.line('--> Using \'%s\'' % new_unique_variable, 2)
         current._used_vars |= set([new_unique_variable])
         agenda.put(current.term.replace(current.variable, new_unique_variable))
         agenda[Categories.ALL].add(current)
         agenda.mark_alls_fresh()
-        return _attempt_proof(agenda, accessible_vars|set([new_unique_variable]), atoms, (debug[0], debug[1]+1))
+        return _attempt_proof(agenda, accessible_vars|set([new_unique_variable]), atoms, debug+1)
 
 
 class Categories:
@@ -400,36 +415,36 @@ def testTableau():
     p1 = LogicParser().parse(r'all x.(man(x) -> mortal(x))')
     p2 = LogicParser().parse(r'man(Socrates)')
     c = LogicParser().parse(r'mortal(Socrates)')
-    print '%s, %s |- %s: %s' % (p1, p2, c, Tableau(c, [p1,p2]).prove())
+    print '%s, %s |- %s: %s' % (p1, p2, c, BaseProverCommand(Tableau(), c, [p1,p2]).prove())
     
     p1 = LogicParser().parse(r'all x.(man(x) -> walks(x))')
     p2 = LogicParser().parse(r'man(John)')
     c = LogicParser().parse(r'some y.walks(y)')
-    print '%s, %s |- %s: %s' % (p1, p2, c, Tableau(c, [p1,p2]).prove())
+    print '%s, %s |- %s: %s' % (p1, p2, c, BaseProverCommand(Tableau(), c, [p1,p2]).prove())
     
     p = LogicParser().parse(r'((x = y) & walks(y))')
     c = LogicParser().parse(r'walks(x)')
-    print '%s |- %s: %s' % (p, c, Tableau(c, [p]).prove())
+    print '%s |- %s: %s' % (p, c, BaseProverCommand(Tableau(), c, [p]).prove())
     
     p = LogicParser().parse(r'((x = y) & ((y = z) & (z = w)))')
     c = LogicParser().parse(r'(x = w)')
-    print '%s |- %s: %s' % (p, c, Tableau(c, [p]).prove())
+    print '%s |- %s: %s' % (p, c, BaseProverCommand(Tableau(), c, [p]).prove())
     
     p = LogicParser().parse(r'some e1.some e2.(believe(e1,john,e2) & walk(e2,mary))')
     c = LogicParser().parse(r'some e0.walk(e0,mary)')
-    print '%s |- %s: %s' % (p, c, Tableau(c, [p]).prove())
+    print '%s |- %s: %s' % (p, c, BaseProverCommand(Tableau(), c, [p]).prove())
     
     c = LogicParser().parse(r'(exists x.exists z3.((x = Mary) & ((z3 = John) & sees(z3,x))) <-> exists x.exists z4.((x = John) & ((z4 = Mary) & sees(x,z4))))')
-    print '|- %s: %s' % (c, Tableau(c, []).prove())
+    print '|- %s: %s' % (c, BaseProverCommand(Tableau(), c, []).prove())
 
 #    p = LogicParser().parse(r'some e1.some e2.((believe e1 john e2) and (walk e2 mary))')
 #    c = LogicParser().parse(r'some x.some e3.some e4.((believe e3 x e4) and (walk e4 mary))')
 #    print '%s |- %s: %s' % (p, c, Tableau(c,[p]).prove())
 
-def tableau_test(e):
+def tableau_test(e, debug=False):
     f = LogicParser().parse(e)
     t = BaseProverCommand(Tableau(), f)
-    print '|- %s: %s' % (f, t.prove())
+    print '|- %s: %s' % (f, t.prove(debug))
 
 if __name__ == '__main__':
     testTableau()
