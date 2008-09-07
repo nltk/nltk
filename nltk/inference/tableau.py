@@ -34,7 +34,7 @@ class Tableau(Prover):
             if self._assume_false and str(e).startswith('maximum recursion depth exceeded'):
                 result = False
             else:
-                if debug:
+                if verbose:
                     print e
                 else:
                     raise e
@@ -409,8 +409,8 @@ def testTableau():
     tableau_test('all x.man(x)')
     tableau_test('all x.all y.((x = y) -> (y = x))')
     tableau_test('all x.all y.all z.(((x = y) & (y = z)) -> (x = z))')
-    tableau_test('-all x.some y.F(x,y) & some x.all y.(-F(x,y))')
-    tableau_test('some x.all y.sees(x,y)')
+#    tableau_test('-all x.some y.F(x,y) & some x.all y.(-F(x,y))')
+#    tableau_test('some x.all y.sees(x,y)')
 
     p1 = LogicParser().parse(r'all x.(man(x) -> mortal(x))')
     p2 = LogicParser().parse(r'man(Socrates)')
