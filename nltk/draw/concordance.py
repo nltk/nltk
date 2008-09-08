@@ -91,11 +91,6 @@ class CategorySearchView(object):
     #Percentage of text left of the scrollbar position
     _FRACTION_LEFT_TEXT=0.30
     
-    #Number of characters before the position of search item
-    _CHAR_BEFORE=75
-    #Number of characters after the position of search item
-    _CHAR_AFTER=85
-    
     def __init__(self):
         self.model = CategorySearchModel()
         self.model.add_listener(self)
@@ -123,6 +118,8 @@ class CategorySearchView(object):
 
     def _init_menubar(self):
 		self._result_size = IntVar(self.top)
+		self._cntx_bf_len = IntVar(self.top)
+		self._cntx_af_len = IntVar(self.top)
 		menubar = Menu(self.top)
 		
 		filemenu = Menu(menubar, tearoff=0, borderwidth=0)
@@ -139,15 +136,43 @@ class CategorySearchView(object):
 		rescntmenu.add_radiobutton(label='100', variable=self._result_size,
 								 underline=0, value=100, command=self.set_result_size)
 		rescntmenu.invoke(1)
-
-
 		editmenu.add_cascade(label='Result Count', underline=0, menu=rescntmenu)
+		
+		cntxmenu = Menu(editmenu, tearoff=0)
+		cntxbfmenu = Menu(cntxmenu, tearoff=0)
+		cntxbfmenu.add_radiobutton(label='60 characters', variable=self._cntx_bf_len,
+								 underline=0, value=60, command=self.set_cntx_bf_len)
+		cntxbfmenu.add_radiobutton(label='80 characters', variable=self._cntx_bf_len,
+								 underline=0, value=80, command=self.set_cntx_bf_len)
+		cntxbfmenu.add_radiobutton(label='100 characters', variable=self._cntx_bf_len,
+								 underline=0, value=100, command=self.set_cntx_bf_len)
+		cntxbfmenu.invoke(1)
+		cntxmenu.add_cascade(label='Before', underline=0, menu=cntxbfmenu)
+
+		cntxafmenu = Menu(cntxmenu, tearoff=0)
+		cntxafmenu.add_radiobutton(label='70 characters', variable=self._cntx_af_len,
+								 underline=0, value=70, command=self.set_cntx_af_len)
+		cntxafmenu.add_radiobutton(label='90 characters', variable=self._cntx_af_len,
+								 underline=0, value=90, command=self.set_cntx_af_len)
+		cntxafmenu.add_radiobutton(label='110 characters', variable=self._cntx_af_len,
+								 underline=0, value=110, command=self.set_cntx_af_len)
+		cntxafmenu.invoke(1)
+		cntxmenu.add_cascade(label='After', underline=0, menu=cntxafmenu)
+		
+		editmenu.add_cascade(label='Context', underline=0, menu=cntxmenu)
+		
 		menubar.add_cascade(label='Edit', underline=0, menu=editmenu)
 		
 		self.top.config(menu=menubar)
 		
     def set_result_size(self, **kwargs):
 		self.model.result_count = self._result_size.get()
+
+    def set_cntx_af_len(self, **kwargs):
+        self._char_after = self._cntx_af_len.get()
+		
+    def set_cntx_bf_len(self, **kwargs):
+		self._char_before = self._cntx_bf_len.get()
 		
     def _init_corpus_select(self, parent):
     	innerframe = Frame(parent, background=self._BACKGROUND_COLOUR)
@@ -190,7 +215,7 @@ class CategorySearchView(object):
                                 font=tkFont.Font(family='courier', size='16'),
                                 state='disabled', borderwidth=1, 
 							    yscrollcommand=vscrollbar.set,
-                                xscrollcommand=hscrollbar.set, wrap='none', width='40', height = '20')
+                                xscrollcommand=hscrollbar.set, wrap='none', width='40', height = '20', exportselection=1)
         self.results_box.pack(side='left', fill='both', expand=True)
         self.results_box.tag_config(self._HIGHLIGHT_WORD_TAG, foreground=self._HIGHLIGHT_WORD_COLOUR)
         self.results_box.tag_config(self._HIGHLIGHT_LABEL_TAG, foreground=self._HIGHLIGHT_LABEL_COLOUR)
@@ -294,9 +319,9 @@ class CategorySearchView(object):
         for each in results:
             sent, pos1, pos2 = each[0].strip(), each[1], each[2]
             if len(sent) != 0:
-                if (pos1 < self._CHAR_BEFORE):
+                if (pos1 < self._char_before):
                     sent, pos1, pos2 = self.pad(sent, pos1, pos2)
-                sentence = sent[pos1-self._CHAR_BEFORE:pos1+self._CHAR_AFTER]
+                sentence = sent[pos1-self._char_before:pos1+self._char_after]
                 if not row == len(results):
                     sentence += '\n'
                 self.results_box.insert(str(row) + '.0', sentence)
@@ -316,17 +341,17 @@ class CategorySearchView(object):
                 index += 1
             else:
                 word, label = each.split('/')
-                words.append((self._CHAR_BEFORE + index, self._CHAR_BEFORE + index + len(word)))
+                words.append((self._char_before + index, self._char_before + index + len(word)))
                 index += len(word) + 1
-                labels.append((self._CHAR_BEFORE + index, self._CHAR_BEFORE + index + len(label)))
+                labels.append((self._char_before + index, self._char_before + index + len(label)))
                 index += len(label)
             index += 1
         return words, labels
 
     def pad(self, sent, hstart, hend):
-        if hstart >= self._CHAR_BEFORE:
+        if hstart >= self._char_before:
             return sent, hstart, hend
-        d = self._CHAR_BEFORE - hstart
+        d = self._char_before - hstart
         sent = ''.join([' '] * d) + sent
         return sent, hstart + d, hend + d
     
@@ -452,7 +477,8 @@ class CategorySearchModel(object):
                 ts = self.model.CORPORA[self.name]()
                 self.model.tagged_sents = [join(w+'/'+t for (w,t) in sent) for sent in ts]
                 self.model.notify_listeners(CORPUS_LOADED_EVENT)
-            except:
+            except Exception, e:
+            	print e 
                 self.model.notify_listeners(ERROR_LOADING_CORPUS_EVENT)
             
     class SearchCorpus(threading.Thread):
