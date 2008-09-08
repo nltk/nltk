@@ -50,4 +50,5 @@ sent6 = ["THE", "suburb", "of", "Saffron", "Park", "lay", "on", "the",
 sent7 = ["Pierre", "Vinken", ",", "61", "years", "old", ",",
          "will", "join", "the", "board", "as", "a", "nonexecutive",
          "director", "Nov.", "29", "."]
-
+sent8 = ['25', 'SEXY', 'MALE', ',', 'seeks', 'attrac', 'older',
+         'single', 'lady', ',', 'for', 'discreet', 'encounters', '.']
