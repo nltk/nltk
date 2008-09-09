@@ -49,7 +49,8 @@ def is_rel(s):
     if len(s) == 0:
         return True
     # all the elements are tuples of the same length
-    elif len(max(s))==len(min(s)):
+    elif s == set([elem for elem in s if isinstance(elem, tuple)]) and\
+         len(max(s))==len(min(s)):
         return True
     else:
         raise ValueError, "Set %r contains sequences of different lengths" % s
@@ -87,24 +88,17 @@ def arity(rel):
         return 0
     return len(list(rel)[0])
 
-@decorator(trace)
-def app(rel, arg, trace=False):
+#@decorator(trace)
+def app(rel, args, trace=False):
     """
     Apply a relation (as set of tuples) to an argument.
     
-    If C{rel} has arity n <= 1, then C{app} returns a Boolean value.
-    If If C{rel} has arity n > 1, then C{app} returns a relation of arity n-1.
-    
     @type rel: C{set} of C{tuple}s
-    @param arg: any appropriate semantic argument
-    @rtype: C{bool} or a C{set} of C{tuple}s
+    @param args: a sequence of appropriate semantic arguments
+    @rtype: C{bool} 
     """
     assert is_rel(rel)
-    reduced = set([tup[1:] for tup in rel if tup[0] == arg])
-    if arity(rel) <= 1:
-        return bool(len(reduced))
-    else:
-        return reduced
+    return args in rel
 
 def make_VariableExpression(var):
     """
@@ -393,14 +387,27 @@ class Model(object):
         """
 
         OPS = Model.OPS
-
+        
         if isinstance(parsed, ApplicationExpression):
-            argval = self.satisfy(parsed.argument, g) 
-            funval = self.satisfy(parsed.function, g)
-            if isinstance(funval, dict):
-                return funval[argval]
+            function, arguments = parsed.uncurry()
+            if isinstance(function, VariableExpression):
+                #It's a predicate expression ("P(x,y)"), so used uncurried arguments
+                funval = self.satisfy(function, g)
+                argvals = tuple([self.satisfy(arg, g) for arg in arguments])
+                return app(funval, argvals)
             else:
-                return app(funval, argval)
+                #It must be a lamba expression, so use curryed form
+                funval = self.satisfy(parsed.function, g)
+                argval = self.satisfy(parsed.argument, g)
+                return funval[argval]
+             
+        #if isinstance(parsed, ApplicationExpression):
+            #argval = self.satisfy(parsed.argument, g) 
+            #funval = self.satisfy(parsed.function, g)
+            #if isinstance(funval, dict):
+                #return funval[argval]
+            #else:
+                #return app(funval, argval)
         elif isinstance(parsed, NegatedExpression):
             return not self.satisfy(parsed.term, g)
         elif isinstance(parsed, BooleanExpression):
@@ -581,7 +588,7 @@ def propdemo(trace=None):
 # Demo 2: FOL Model
 #############
             
-def folmodel(trace=None):
+def folmodel(quiet=False, trace=None):
     """Example of a first-order model."""
 
     global val2, v2, dom2, m2, g2
@@ -593,26 +600,37 @@ def folmodel(trace=None):
     dom2 = val2.domain
     m2 = Model(dom2, val2)
     g2 = Assignment(dom2, [('x', 'b1'), ('y', 'g2')])
-
-    if trace:
-        print "*" * mult
-        print "Model m2\n", m2
-        print "*" * mult
-        print g2
-        g2.purge()
-        print g2
-        
-    exprs = ['adam', 'girl', 'love', 'walks', 'x', 'y', 'z']
-    lp = LogicParser()
-    parsed_exprs = [lp.parse(e) for e in exprs]
     
-    if trace:
+    if not quiet:
+        print
+        print '*' * mult
+        print "Models Demo"
+        print "*" * mult
+        print "Model m2:\n", "-" * 14,"\n", m2
+        print "Variable assignment = ", g2
+
+        exprs = ['adam', 'boy', 'love', 'walks', 'x', 'y', 'z']
+        lp = LogicParser()
+        parsed_exprs = [lp.parse(e) for e in exprs]
+        
+        print
         for parsed in parsed_exprs:
             try:
                 print "The interpretation of '%s' in m2 is %s" % (parsed, m2.i(parsed, g2))
             except Undefined:
                 print "The interpretation of '%s' in m2 is Undefined" % parsed
-    
+        
+     
+        applications = [('boy', ('adam')), ('walks', ('adam',)), ('love', ('adam', 'y')), ('love', ('y', 'adam'))]
+                        
+        for (fun, args) in applications:
+            try:
+                funval = m2.i(lp.parse(fun), g2)
+                argsval = tuple(m2.i(lp.parse(arg), g2) for arg in args)
+                print "app(%s, %s) evaluates to %s" % (fun, args, app(funval, argsval))
+            except Undefined:
+                print "app(%s, %s) evaluates to Undefined" % (fun, args)
+            
 # Demo 3: FOL
 #########
                 
@@ -620,7 +638,7 @@ def foldemo(trace=None):
     """
     Interpretation of closed expressions in a first-order model.
     """
-    folmodel()
+    folmodel(quiet=True)
 
     print
     print '*' * mult
@@ -668,7 +686,7 @@ def satdemo(trace=None):
     print "Satisfiers Demo"
     print '*' * mult
 
-    folmodel()
+    folmodel(quiet=True)
     
     formulas = [
                'boy(x)',
@@ -733,4 +751,4 @@ def demo(num=0, trace=None):
 
             
 if __name__ == "__main__":
-    demo(4, trace=1)
+    demo(0, trace=0)
