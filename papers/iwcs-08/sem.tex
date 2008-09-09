@@ -1,0 +1,348 @@
+\documentclass{article}
+
+\usepackage[pdftex,colorlinks=true,
+                      pdfstartview=FitV,
+                      linkcolor=blue,
+                      citecolor=blue,
+                      urlcolor=blue
+          ]{hyperref}
+
+\usepackage{amssymb}
+
+%\pdfinfo{
+%   /Author 		(Daniel H. Garrette)
+%   /Title  		(Computational Semantics in the Natural Language Toolkit)
+%   /Subject 		(Computational Semantics)
+%   /Keywords 		(Natural Language Processing;Computational Semantics;Natural Language Toolkit;NLTK)
+%}
+
+%\usepackage{natbib}
+%\bibpunct{[}{]}{;}{a}{,}{,}
+%\bibliographystyle{alpha}
+
+\usepackage{lingmacros}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Copied from covington.sty by Michael A. Covington
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\dhgdrs}[2]
+{
+    {
+    \it
+    \begin{tabular}{|l|}
+    \hline
+    ~ \vspace{-2ex} \\
+    #1
+    \\
+    ~ \vspace{-2ex} \\
+    \hline
+    ~ \vspace{-2ex} \\
+    #2
+    \\
+    ~ \\    % can't vspace here or the line will come out wrong
+    \hline
+    \end{tabular}
+    }
+}
+\newcommand{\dhgsdrs}[3]
+{\begin{tabular}{l}
+\mbox{\it #1} \\
+~ \\
+\dhgdrs{#2}{#3}
+\end{tabular}}\newcommand{\dhgifdrs}[4]
+{
+  \mbox{\dhgdrs{#1}{#2}~~{\large $\Rightarrow$}~\dhgdrs{#3}{#4}}
+}
+\newcommand{\dhgalifdrs}[4]
+{
+  \mbox{$\!\!\!$\dhgdrs{#1}{#2}~~{\large $\Rightarrow$}~\dhgdrs{#3}{#4}}
+}
+\newcommand{\dhgnegdrs}[2]
+{
+  \mbox{{\large $\neg$}\dhgdrs{#1}{#2}}
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% END covington.sty
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\newcommand{\dhgcode}[1]{{\tt #1}}
+%\newcommand{\dhgcode}[1]{\begin{verbatim}#1\end{verbatim}}
+
+\begin{document}
+
+\title{Computational Semantics in the Natural Language Toolkit}
+\author{Daniel H. Garrette}
+\date{August 2008}
+\maketitle
+
+\begin{abstract}
+
+\end{abstract}
+
+\section{Introduction}
+The Natural Language Toolkit (NLTK)\footnote{www.nltk.org} is a collection of open-source modules and corpora that allow students and researchers to experiment with natural language processing techniques.  The toolkit is written entirely in the programming language Python\footnote{www.python.org}, an object-oriented language well-suited for beginners studying NLP \cite{Multidisciplinary}.  The last two years have seen tremendous growth in the amount of semantics-related code in the toolkit.  NLTK now contains modules for first-order predicate logic, discourse representation theory (DRT) \cite{KampReyle}, glue semantics \cite{Dalrymple2001}, theorem proving (both third-party and home-grown), model building, nonmonotonic reasoning, and textual entailmlent.  The goal of this paper is to give the reader a brief introduction to each of these contributions.
+
+The semantics-related code in NLTK is inspired in a large part by the approach developed by Blackburn and Bos \cite{BB}.  However, by incorporating these ideas into NLTK, we provide one unified environment in which students may study and experiment with a wide range of NLP techniques.
+
+\section{First-Order Predicate Logic}
+The core of NLTK's semantics-related code is based on the \dhgcode{logic} module, \dhgcode{nltk.sem.logic}.  The logic library contains the classes needed to represent first-order predicate logic with lambda-abstraction.  The library also includes a parser so that the user may enter logical formulas as strings.  Shown below, (\ref{logic1}) depicts a representation of ``Every girl chases a dog".  
+
+\enumsentence{\label{logic1}\dhgcode{all x.(girl(x) -$>$ exists y.(dog(x) \& chase(x,y)))}}
+
+\subsection{Syntax}
+The syntax used attempts to mimic the syntax of first-order logic typically taught in schools.  The logical connectives used are ``\textbf{\dhgcode{-}}", ``\textbf{\dhgcode{\&}}", ``\textbf{\dhgcode{$|$}}", ``\textbf{\dhgcode{-$>$}}", and ``\textbf{\dhgcode{$<$-$>$}}" for \emph{negation}, \emph{conjunction}, \emph{disjunction}, \emph{implication}, and \emph{biconditional}, respectively.  The quantifiers $\forall$ and $\exists$ are represented as \textbf{\dhgcode{all}} and \textbf{\dhgcode{exists}}.  Additionally, for lambda-abstraction, the backslash, ``\textbf{\dhgcode{\textbackslash}}", is used to represent \textbf{\emph{$\lambda$}}.
+
+Previous versions of NLTK used a lambda-calculus-based representation of first-order logic (see (\ref{lambdalogic})), however the syntax was changed because it was thought that the old syntax could be difficult for some undergraduate students, and thus some instructors were avoiding using NLTK's semantics packages in their courses.
+
+\enumsentence{\label{lambdalogic}\dhgcode{all x.((girl x) implies (some y.((dog y) and (chase y x))))}}
+
+The current logic package contains a parser to parse strings into the Expression classes.
+
+\begin{verbatim}
+>>> from nltk.sem.logic import *
+>>> parser = LogicParser()
+>>> e = parser.parse('all x.(girl(x) -> exists y.(dog(y) & 
+chase(x,y)))')
+>>> print e
+all x.(girl(x) -> exists y.(dog(y) & chase(x,y)))
+\end{verbatim}
+
+These expression classes have numerous methods that can be used to perform standard logical operations.  The \dhgcode{simplify()} method is used to perform $\beta$-conversion.  The \dhgcode{free()} method can be used to find all the free variables in an expression.  Quantifed expressions have an \dhgcode{alpha\_convert()} method that will perform $\alpha$-conversion.  The logic module will also $\alpha$-convert automatically when it is appropriate to avoid name-clashes in the \dhgcode{replace()} method.
+
+\begin{verbatim}
+>>> e1 = parser.parse(r'\x.P(x)(y)')
+>>> print e1.simplify()
+P(y)
+>>> e2 = parser.parse('all x.P(x,a,b)')
+>>> print e2.free()
+set([<Variable('a'), Variable('b')])
+>>> print e2.alpha_convert(Variable('z'))
+all z.P(z,a,b)
+>>> e3 = parser.parse('x')
+>>> print e2.replace(Variable('b'), e3)
+all z1.P(z1,a,x)\end{verbatim}
+
+A feature of Python that lends itself well to working with logical expressions is its operator overloading.  The operators \dhgcode{-}, \dhgcode{\&}, \dhgcode{$|$}, \dhgcode{$>$}, \dhgcode{$<$} can be used for \emph{negation}, \emph{conjunction}, \emph{disjunction}, \emph{implication}, and \emph{biconditional}, respectively.  The parenthesis of a function call are overloaded to perform function application.  Python's built-in \dhgcode{lambda} operator can also be used with logical expressions because it uses function calls.
+
+\begin{verbatim}
+>>> P = parser.parse('P')
+>>> x = parser.parse('x')
+>>> Q = parser.parse('Q')
+>>> y = parser.parse('y')
+>>> print P(x) & Q(y)
+(P(x) & Q(y))
+>>> print (lambda x: P(x))(y)
+P(y)
+\end{verbatim}
+
+
+\subsection{Compositionality}
+In order to build semantic representations of sentences, the NLTK logic code allows for lambda-calculus functions that can be composed.  Below, (\ref{logic2}), (\ref{logic3}), and (\ref{logic4}) show representations for the words ``a", ``dog", and ``barks", respectively.  Below, it is shown how each word's representation can be parsed by the NLTK LogicParser and then the constituent parts may be composed.  The meaning of ``a" is applied to ``dog" to form the meaning of the NP ``a dog", and then the meaning of the NP can be applied to the meaning of the VP to form the meaning of the whole sentence.
+
+\enumsentence{\label{logic2}[a] $\lambda P.\lambda Q.\exists x.(P(x)~\&~Q(x))$}
+\enumsentence{\label{logic3}[dog] $\lambda x.dog(x)$}
+\enumsentence{\label{logic4}[bark] $\lambda x.bark(x)$}
+
+\begin{verbatim}
+>>> a = parser.parse(r'\P Q.exists x.(P(x) & Q(x))')
+>>> dog = parser.parse(r'\x.dog(x)')
+>>> bark = parser.parse(r'\x.bark(x)')
+>>> a_dog = a(dog)
+>>> print a_dog
+(\P.\Q.exists x.(P(x) & Q(x)))(\x.dog(x))
+>>> print a_dog.simplify()
+\Q.exists x.(dog(x) & Q(x))
+>>> a_dog_barks = a_dog(bark)
+>>> print a_dog_barks
+((\P.\Q.exists x.(P(x) & Q(x)))(\x.dog(x)))(\x.bark(x))
+>>> print a_dog_barks.simplify()
+exists x.(dog(x) & bark(x))
+\end{verbatim}
+
+
+\section{Discourse Representation Theory}
+Discourse Representation Theory (DRT) \cite{KampReyle}, provides an alternative way of representing first-order logic.  By using graphical structures known as Discourse Representation Structures (or DRSs), DRT allows for semantic representations that have some advantages over standard first-order logic representations, most notably in one's ability to represent the accessibility of anaphoric referents.  Using standard first-order predicate syntax we would represent ``John sees a dog" as (\ref{drt1}) whereas, in DRT, it would be represented as (\ref{drt2}).
+
+\enumsentence{\label{drt1}$\exists j.\exists d.((John = j)~\&~dog(d)~\&~sees(j,d))$}
+\enumsentence{\label{drt2}\dhgdrs{j,d}{(John = j)\\dog(d)\\sees(j,d)}}
+
+In the DRS, the top box contains a list of ``discourse referents", which are existentially quanitified variables.  The lower box contains a list of ``discourse conditions", which are first order expressions and sub-DRSs that provide the bulk of the representations.  Using NLTK's \dhgcode{nltk.sem.drt} library, we can represent (\ref{drt2}) as (\ref{drt3}), where the first set of brackets holds a list of variables representing the discourse referents and the second set of brackets holds a list of expressions representing the discourse conditions.
+
+\enumsentence{\label{drt3}\dhgcode{DRS([j,d],[(John = j), dog(d), sees(j,d)])}}
+
+In addition to having the functionality available in the logic module for first order logic, DRT expressions have a ``DRS concatenation" operator, represented as the ``+" symbol.  The concatenation of two DRSs results in one DRS containing the discourse referents and the discourse conditions from both argument DRSs.  DRS concatenation will also automatically $\alpha$-convert bound variables to avoid name-clashes.  The ``+" symbol is recognized by the parser as well as being overloaded so that DRT expressions can be "added" together easily.
+
+\begin{verbatim}
+>>> from nltk.sem import drt
+>>> drtParser = drt.DrtParser()
+>>> d1 = drtParser.parse(r'DRS([x],[walk(x)]) + DRS([y],[run(y)])')
+>>> print d1
+(DRS([x],[walk(x)]) + DRS([y],[run(y)]))
+>>> print d1.simplify()
+DRS([x,y],[walk(x), run(y)])
+>>> d2 = drtParser.parse(r'DRS([x],[walk(x)])')
+>>> d3 = drtParser.parse(r'DRS([x],[run(x)])')
+>>> print (d2+d3).simplify()
+DRS([x,z1],[walk(x), run(z1)])
+>>> print (d2+d3).simplify().toFol()
+\end{verbatim}
+
+DRT expressions can be converted to their first-order predicate logic equivalents using the \dhgcode{toFol()} method.  DRT classes in NLTK also have a method \dhgcode{draw()} that will pop up a window with the DRS drawn in its graphical form.
+
+\begin{verbatim}
+>>> d4 = drtParser.parse(r'DRS([x],[walk(x), talk(x)])')
+>>> print d4.toFol()
+exists x.(walk(x) & talk(x))
+>>> d4.draw()
+\end{verbatim}
+
+
+\subsection{Anaphora Resolution}
+NLTK also includes a extension to the DRT module that allows the user to resolve anaphoric pronouns, located in \dhgcode{nltk.sem.drt\_resolve\_anaphora}.  For instance, the three sentence discourse ``John walks.  Bill runs.  He talks." is shown below, along with its resolution.  The anaphora resolution procedure used by NLTK replaces any instance of the function``PRO(x)" with an expression equating ``x'' to a list of possible antecedents of ``x".  The list of possible antecedents contains any discourse referent in an accessible DRS.
+
+\begin{verbatim}
+>>> d = drt.DrtParser().parse(r'DRS([j,b,x],[(John=j), walk(j), 
+(Bill=b), run(b), PRO(x), talk(x)])')
+>>> print d.resolve_anaphora()
+DRS([j,b,x],[(John=j), walk(j), (Bill=b), run(b), (x=[j,b]), 
+talk(x)])
+\end{verbatim}
+
+
+\section{Inference tools}
+In order to perform inferences with semantic representations, NLTK includes interfaces to call Theorem Provers and Model Builders.  As is discussed in \cite{BB}, these tools can be very useful in computational semantics.  Most directly, a theorem prover can be used to check whether one expression entails another.  For instance, if every dog barks, and Rover is a dog, then is it true that Rover barks?  We can use the theorem prover interface in NLTK to check:
+
+\begin{verbatim}
+>>> from nltk.inference import inference
+>>> a = parser.parse('all x.(dog(x) -> bark(x))')
+>>> b = parser.parse('dog(rover)')
+>>> c = parser.parse('bark(rover)')
+>>> prover = inference.get_prover(c, [a,b])
+>>> prover.prove()
+True
+\end{verbatim}
+
+\subsection{Logical Equality}
+A theorem prover can also be used to check the logic equivalence of expressions.  A simple surface-level view can not easily determine that two expressions are logically equivalent.  For example, ``$\exists x.walk(x)$" equals ``$\exists z.walk(z)$", ``$(walk(x)~\&~talk(x))$" equals ``$(talk(x)~\&~walk(x))$", and ``$\neg(P(x)~\&~Q(x))$" equals ``$(\neg P(x)~|~\neg Q(x)$", but determining this requires knowledge of the rules for bound variables, the communitivity of conjunction, and DeMorgan's law.  However, for two expressions $A$ and $B$, we can pass $(A\iff B)$ into a theorem prover and know that the theorem will be proved if and only if the expressions are logically equivalent.  NLTK's standard equality operator for Expressions (``==") is able to handle the first situation by alpha converting one expression to make it look like the other, but more complex logic rules would be too intensive to use every time we checked for equality of two expressions.  Therefore, the logic package in NLTK has a separate method, \dhgcode{tp\_equals}, for checking ``logical equality".
+
+\begin{verbatim}
+>>> a = parser.parse('-(P(x) & Q(x))')
+>>> b = parser.parse('-P(x) | -Q(x)')
+>>> a == b
+False
+>>> a.tp_equals(b)
+True
+\end{verbatim}
+
+\subsection{Inference tools in NLTK}
+NLTK contains a tableau-based first-order theorem prover implemented totally in Python.  This module allows students to study how the tableau method of theorem proving works, and to provides an opportunity for experimentation.  In addition, NLTK provides interfaces to the off-the-shelf products Prover9, a theorem prover, and Mace4, a model builder \cite{McCune}.  Both Prover9 and Mace4 are high-performing tools suitable for research.
+
+\subsection{Other Uses}
+In addition to this ability to check inferences, theorem provers also have some other interesting uses.  First, we can use a theorem prover for consistancy checking.  If we pass a set of assumptions into the theorem prover with no goal, then the theorem prover will succeed in finding a proof if and only if the assumptions do not contain any contradictory information.  This can be helpful in discovering why an entailment failed, or in the case of a dialog system, whether the discourse is logically invalid.  For example, if we pass $\forall x.(car(x) \rightarrow red(x))$ and $\exists y.(car(x)~\&~blue(x)))$ then $False$ will be returned because both of the  statements cannot be true at the same time.  
+
+Second, we can use a theorem prover to check informativness.  If we run the theorem prover using currently known information as the assumptions, and new knowledge as the goal, then we can check whether the new information is entailed by the old.  If the new information is entailed, then it has not added anything to our knowledge base.  This ability is demonstrated in NLTK's discourse processing module, \dhgcode{nltk.inference.discourse}.  Based on \cite{BB}, this module processes sentences incrementally and performs informativity and consistancy checks on their semantics.
+
+\subsection{Model Building}
+A theorem prover works by trying to prove the given theorem by contradiction.  Given a list of assumptions and a goal, the prover begins by negating the goal and adding it to the list of assumptions.  It then tries to show that the resulting list of assumptions cannot be satisified by any model.  A model builder works in essentially the opposite way.  It also begins by negating the goal and adding it to the list of assumptions, but it then attempts to find a model that satisfies the new list of assumptions.  
+
+One problem with using first-order logic tools is that first-order logic is undecidabible.  This means that there is no theorem prover or model builder that will halt on every input.  However, it is the complemenary relationship of the theorem prover and the model builder that prevent undecidablility from limiting the usefulness of these tools.  A theorem prover will always halt on a valid proof.  However, on certain invalid proofs, it may run forever.  A model builder, on the other hand, will always find a model if one exists.  Beacuse a model exists if and only if the proof is invalid, we know that either the theorem prover or the model builder will halt on any given input.  Therefore, if we run the theorem prover and the model builder at the same time, when one tool finishes running, we can use its result and safely terminate the other tool.
+
+
+\subsection{Nonmonotonic Reasoning}
+
+NLTK contains a few simple demonstrations of nonmonotonic reasoning techniques.  There are three nonmonotonic ``assumptions" implemented in NLTK.  Each assumption is implemented as a "decorator" of a theorem prover object.  The decorator works by modifying the list of assumptions and the goal that gets passed to the prover.  By using the decorator pattern, the theorem prover can be wrapped by more than one decorator, thus applying more than one nonmonotonic ``assumption" during the proof.
+
+The closed domain assumption states that there are no entities in the domain other than the entities found in the assumptions and goal.  The closed domain decorator, therefore, finds all the domain entities and then removes quantifications by spelling out all the entire domain instead.  For example, if the domain contained ``$john$" and ``$mary$", then the assumption ``$\forall x.walk(x)$" would be replaced with ``$walk(john)~\&~walk(mary)$" and ``$\exists x.walk(x)$" would be replaced with ``$walk(john)~|~walk(mary)$".
+
+\begin{verbatim}
+>>> p1 = lp.parse(r'walk(Socrates)')
+>>> p2 = lp.parse(r'walk(Bill)')
+>>> c = lp.parse(r'all x.walk(x)')
+>>> prover = inference.get_prover(c, [p1,p2])
+>>> prover.prove()
+False
+>>> cdp = ClosedDomainProver(prover)
+>>> print cdp.goal()
+(walk(Socrates) & walk(Bill))
+>>> cdp.prove()
+True
+\end{verbatim}
+
+The unique names assumption states that two distinct names specify different domain entities unless it can be proven that they are equal.  For every pair of domain entities ``$d1$" and ``$d2$", if ``$d1 = d2$" cannot be proven from the starting list of assumptions, then the unique names decorator adds the assumption ``$-(d1 = d2)$".
+
+The closed domain assumption states that the only domain entities that have a particular property are the enenties that it can be proven have the property.  For a property ``$P$", the decorator finds any individuals ``$A$" such that ``$P(A)$" and any properties ``$Q$" such that ``$\forall x.(Q(x) \rightarrow P(x))$".  The decorator then \textbf{completes} ``$P$" by adding the assumption ``$\forall x.(P(x) \rightarrow (Q(x)~|~(x = A)))$".  In the case where no domain entities can be proven to have property ``$P$", then the assumption ``$\forall x.-P(x)$" is added.
+
+
+\section{Textual Entailment}
+Recognizing Textual Entailment is a task in which a computer is given a piece of text and a hypothesized conclusion and asked to determine whether the text entails the hypothesis.  For example if the text is ``John owns a red convertible" and the hypothesis is ``John has a red car", then the computer would have to answer ``True" since ``owns" is a synonym of ``has" and a convertible is a type of car.  
+
+NLTK includes a few simple modules to demonstrate how entailment can be recognized.  The simplest is the Bag of Words RTE tagger, located in \dhgcode{nltk\_contrib.rte.bow}.  The BOW tagger works by tokenizing both the text and the hypothesis, creating a set of the words in the text and a set for the words in the hypothesis, and computing the overlap by dividing the number of words that appear in both sets by the total number of words.  If the overlap is more than a certain perentage, say 33 perecent, then the the tagger deems that the hypothesis is entailed.  This approach is clearly overly simplistic for a real entailment system because it does not take into account any relationships between the words in sentences.
+
+A more sophisticated, and semantically-oriented, approach is seen in the Logical Entailment RTE tagger, located in \dhgcode{nltk\_contrib.rte.logicentail}.  Based on \cite{BosRTE}, the tagger begins by building a first-order logic semantic representation of both the text and the hypothesis.  It then runs a theorem prover and model builder in parallel with the text as the assumption and the hypothesis as the goal to check whether the text entails the hypothesis.  If a proof is found by the theorem prover, then we know that entailment holds.
+
+To add some robustness to the logical entailment, since it is unlikely that entailment will be proven without any additional information, if the first attempt fails, then the tagger will generate some background knowledge.  The background knowledge is a set of formulas automatically generated based on the words in text and hypothesis.  For example, if both ``convertable" and ``car" appeared in the set of words in the text and hypothesis, then we should generate the formula ``$\forall x.(convertable(x) \rightarrow car(x))$" since a convertable is a type of car.  The primary source of background knowledge is a computerized dictionary called WordNet.  NLTK includes an interface to WordNet in \dhgcode{nltk.wordnet}.  The WordNet interface allows the user to find, for any given word, its synonyms, hypernyms, hyponyms, part holoyms, and member meronyms.  Each of these relationships can be converted into an appropriate formula for background knowledge.
+
+
+\section{Glue Semantics}
+One interesting complication in computational semantics deals with semantic ambiguity.  Semantic abigutity arises when a sentence has more than one possible meaning for a single syntactic parsing.  A common example of semantic ambiguity is that caused by a sentence with multiple quantifiers.  For example, the sentence ``Every girl chases a dog", which is parsed unambiguously as [[Every girl]$_{NP}$ [chases [a dog]$_{NP}$]$_{VP}$] can be translated into first-order logic as either (\ref{hole1}) or (\ref{hole2}):
+
+\enumsentence{\label{hole1}$\forall x.(girl(x) \rightarrow \exists y.(dog(x)~\&~chase(x,y)))$}
+\enumsentence{\label{hole2}$\exists y.(dog(x)~\&~\forall x.(girl(x) \rightarrow chase(x,y)))$}
+
+Reading (\ref{hole1}) translates roughly as ``Every girl chases a possibly different dog" whereas (\ref{hole2}) can be read as ``There is a dog that every girl chases".  
+
+Glue Semantics is an approach to compositionality that tries to handle semantic ambiguity using logic in an elegant way.  The approach combines every first-order logic ``meaning" expression with a corresponding linear logic ``glue" expression.  The glue expressions dictates how the meaning expressions can be combined.  The proper combination of meaning expressions is found by constructing one or more proofs from the set of glue expressions.  Each different proof that can be written reflects a different semantic reading of the entire sentence.  
+
+\subsection{Linear Logic}
+The variant of linear logic that we use has \emph{implication} as its only operator, so the primary operation during the proof is Modus Ponens.  Linear logic is an appropriate logic to serve as ``glue" because it is resource-sensitive.  This means that when modus ponens is used to combine two formulas to create a new one, the two original formulas are ``consumed", and cannot be used again in the proof.  Additionally, every premise must be used for the proof to be valid.  This is resource-sensitivity inituitive for the combining of words in a sentence because each word contributes its meaning exactly once to the meaning of the whole.
+
+\enumsentence{\label{glue1}A, (A $\multimap$ B) $\vdash$ B}
+\enumsentence{\label{glue2}A, (A $\multimap$ B) $\nvdash$ A, B}
+\enumsentence{\label{glue3}A, A, (A $\multimap$ B) $\nvdash$ B}
+
+NLTK's \dhgcode{nltk\_contrib.gluesemantics.linearlogic} module contains an implementation of linear logic.
+
+\subsection{Glue Formulas}
+The primary rule used to compose glue formulas is given as (\ref{glue4}).  This rule indicates that the application of meaning expressions should mirror the application of linear logic ``glue" expressions, which is what allows the glue to guide the construction of the meaning.
+
+\enumsentence{\label{glue4}$\phi$ : A, $\psi$ : (A $\multimap$ B) $\vdash$ $\psi$($\phi$) : B}
+
+NLTK includes a two modules for glue semantics: glue semantics with meaning expressions in first order logic uses \dhgcode{nltk\_contrib.gluesemantics.glue} while \dhgcode{nltk\_contrib.gluesemantics.drt\_glue} handles glue with DRT expressions as meaning.  This simple demonstration shows the basic way glue formulas are created and combined to generate the meaning of ``John walks'':
+
+\begin{verbatim}
+>>> from nltk_contrib.gluesemantics.glue import GlueFormula
+>>> john = GlueFormula(r'john', 'g')
+>>> walks = GlueFormula(r'\x.walk(x)', '(g -o f)')
+>>> john_walks = walks.applyto(john)
+>>> print john_walks.meaning.simplify()
+walk(john)
+\end{verbatim}
+
+In this demonstration, the word ``john" is assigned the glue forumula ``$g$".  The word ``walks" is assigned ``$(g \multimap f)$" because is is a function that takes ``$g$" as its input and returns the meaning of ``$f$", the whole sentence.  Thus, the proof of ``$f$" from the premises has generated the full sentence's meaning.
+
+\subsection{Semantic Ambiguity}
+
+Some more complex types of words require a certain level of ambigutity in how they may be combined.  For instance, the sentence ``Every girl chases a dog" is semantically ambiguous because the quanitified noun phrases can be scoped in more than one way.  To allow for this ambiguity we use linear logic \textbf{variables} in the glue terms.  These variables may be bound to any linear logic constant, so long as the binding is consistant with previous bindings.
+
+The quantified noun phrase ``every girl" is represented as (\ref{glue5}):
+
+\enumsentence{\label{glue5}\textbf{[every girl]} $\lambda Q.\forall x.(girl(x) \rightarrow Q(x))$ : ((g $\multimap$ G) $\multimap$ G)}
+
+
+The automated glue derivation procedure demonstrated below correctly generates two readings for the sentence ``Every girl chases a dog'':
+
+\begin{verbatim}
+>>> from nltk_contrib.gluesemantics.glue import GlueFormula, Glue
+>>> a = GlueFormula(r'\Q.all x.(girl(x) -> Q(x))', '((g-oG)-oG)')
+>>> b = GlueFormula(r'\x y.chase(x,y)', '(g -o (h -o f))')
+>>> c = GlueFormula(r'\Q.exists x.(dog(x)&Q(x))', '((h-oH)-oH)')
+>>> for reading in Glue.compile_to_meaning([a,b,c]):
+...     print reading.meaning.simplify()
+all x.(girl(x) -> exists y.(dog(x) & chase(x,y)))
+exists y.(dog(x) & all x.(girl(x) -> chase(x,y)))
+\end{verbatim}
+
+\bibliography{sem}{}
+
+\end{document}
