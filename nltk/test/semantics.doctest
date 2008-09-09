@@ -119,6 +119,11 @@ Relations are sets of tuples, all of the same length.
     ValueError: Set set([('d1', 'd2'), ('d1',)]) contains sequences of different lengths
     >>> s3 = set(['d1', 'd2'])
     >>> is_rel(s3)
+    Traceback (most recent call last):
+      . . .
+    ValueError: Set set(['d2', 'd1']) contains sequences of different lengths
+    >>> s4 = set2rel(s3)
+    >>> is_rel(s4)
     True
     >>> is_rel(set())
     True
@@ -126,7 +131,8 @@ Relations are sets of tuples, all of the same length.
     >>> is_rel(null_binary_rel)
     True
 
-Sets of entities are converted into sets of singleton tuples.
+Sets of entities are converted into sets of singleton tuples
+(containing strings).
 
     >>> set2rel(s3)
     set([('d1',), ('d2',)])
@@ -139,28 +145,24 @@ Sets of entities are converted into sets of singleton tuples.
 
 Predication is carried out with ``app()``.
 
-    >>> app(s1, 'd1')
-    set([('d1',), ('d2',)])
-    >>> app(s1, 'd2')
-    set([('d1',)])
-    >>> app(app(s1, 'd1'), 'd1')
+    >>> 
+    >>> app(s1, ('d1', 'd2'))
     True
-    >>> app(app(s1, 'd2'), 'd2')
+    >>> app(s1, ('d2', 'd2'))
     False
-    >>> app(set(), 'd1')
+    >>> app(s1, ('d1',))
     False
-    >>> app(s1, 'd3')
-    set([])
-    >>> app(app(s1, 'd3'), 'd1')
+    >>> app(s1, 'd2')
     False
-    >>> app(s2, 'd1')
+    >>> app(set(), ('d1',))
+    False
+    >>> app(s2, ('d1',))
     Traceback (most recent call last):
       . . .
     ValueError: Set set([('d1', 'd2'), ('d1',)]) contains sequences of different lengths
     >>> app(null_binary_rel, 'd1')
-    set([])
-    >>> app(app(null_binary_rel, 'd1'), 'd1')
     False
+
 
     >>> val = Valuation([('Fido', 'd1'), ('dog', set(['d1', 'd2'])), ('walk', set())])
     >>> val['dog'] 
@@ -222,18 +224,17 @@ Unit tests for function argument application in a Model
     >>> dom = val.domain
     >>> m = Model(dom, val)
     >>> g = Assignment(dom)
-
-    >>> print app(val['boy'], 'b1')
+    >>> print val['boy']
+    set([('b1',), ('b2',)])
+    >>> print app(val['boy'], ('b1',))
     True
-    >>> print app(val['boy'], 'g1')
+    >>> print app(val['boy'], ('g1',))
     False
-    >>> print app(val['boy'], 'foo')
+    >>> print app(val['boy'], ('foo',))
     False
-    >>> print app(val['love'], 'b1')
-    set([('g1',)])
-    >>> print app(val['kiss'], 'b1')
-    set([])
-    >>> print app(app(val['kiss'], 'b1'), 'b1')
+    >>> print app(val['love'], ('b1', 'g1'))
+    True
+    >>> print app(val['kiss'], ('b1', 'b1'))
     False
     >>> val.domain
     set(['d1', 'g1', 'b1', 'b2', 'g2'])
