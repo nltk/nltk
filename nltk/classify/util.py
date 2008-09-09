@@ -26,7 +26,7 @@ from nltk.util import LazyMappedList
 def apply_features(feature_func, toks, labeled=None):
     """
     Use the L{LazyMappedList} class to construct a lazy list-like
-    object that is analagous to C{map(feature_func, toks)}.  In
+    object that is analogous to C{map(feature_func, toks)}.  In
     particular, if C{labeled=False}, then the returned list-like
     object's values are equal to::
 
