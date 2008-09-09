@@ -30,9 +30,9 @@ corpus.
 Regression Tests
 ~~~~~~~~~~~~~~~~
 We define a very simple training corpus with 3 binary features: ['a',
-'b', 'c'], and are two labels: ['x', 'y'].  We us a simple reason so
-that the correct answers can be calcualted analytically (although we
-haven't done this yet for all tests.
+'b', 'c'], and are two labels: ['x', 'y'].  We use a simple feature set so
+that the correct answers can be calculated analytically (although we
+haven't done this yet for all tests).
 
     >>> train = [
     ...     (dict(a=1,b=1,c=1), 'y'),
@@ -52,7 +52,7 @@ haven't done this yet for all tests.
     ...     (dict(a=0,b=1,c=0)), # seen 1 time, label=x
     ...     ]
 
-Test the naive bayes classifier:
+Test the Naive Bayes classifier:
 
     >>> classifier = nltk.NaiveBayesClassifier.train(train)
     >>> sorted(classifier.labels())
@@ -75,7 +75,7 @@ Test the naive bayes classifier:
                            b = 0                    x : y     =      1.2 : 1.0
                            b = 1                    y : x     =      1.1 : 1.0
 
-Test the decision tree classifier:
+Test the Decision Tree classifier:
 
     >>> classifier = nltk.DecisionTreeClassifier.train(
     ...     train, entropy_cutoff=0,
@@ -99,7 +99,7 @@ Test the decision tree classifier:
       . . .
     NotImplementedError
 
-Test the maxent classifier training algorithms; they should all
+Test the Maximum Entropy classifier training algorithms; they should all
 generate the same results. 
 
     >>> def test_maxent(algorithms):
