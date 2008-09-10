@@ -37,9 +37,9 @@ class Text(list):
             self.name = name
         elif ']' in self[:20]:
             end = self[:20].index(']')
-            self.name = " ".join(self[1:end])
+            self.name = " ".join(map(str, self[1:end]))
         else:
-            self.name = " ".join(self[:8]) + "..."
+            self.name = " ".join(map(str, self[:8])) + "..."
     
     def concordance(self, word, width=80, lines=25):
         """
