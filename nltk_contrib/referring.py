@@ -52,8 +52,8 @@ class IncrementalAlgorithm:
                     if "type" == attr_value[0]:
                         head_noun = True
                 if head_noun == False:
-                    self.L += ("type", \
-                               self.KB.basic_level_value(self.r, "type"))
+                    self.L = [("type", \
+                           self.KB.basic_level_value(self.r, "type"))] + self.L
                 else:
                     return self.L
 
