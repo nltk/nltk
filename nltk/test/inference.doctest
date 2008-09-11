@@ -423,7 +423,7 @@ Check whether Mace4 can find a model.
 
 Show the model in 'tabular' format.
 
-    >>> mb.show_model(format='tabular')
+    >>> print mb.model(format='tabular')
     % number = 1
     % seconds = 0
     <BLANKLINE>
@@ -442,7 +442,7 @@ Show the model in 'tabular' format.
 
 Show the model in 'tabular' format.
 
-    >>> mb.show_model(format='cooked')
+    >>> print mb.model(format='cooked')
     % number = 1
     % seconds = 0
     <BLANKLINE>
@@ -469,7 +469,7 @@ We can return to our earlier example and inspect the model:
 
     >>> mb = MaceCommand(g, assumptions=[a4, a5, a6])
     >>> m = mb.build_model()
-    >>> mb.show_model(format='cooked')
+    >>> print mb.model(format='cooked')
     % number = 1
     % seconds = 0
     <BLANKLINE>

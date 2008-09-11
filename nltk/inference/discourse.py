@@ -285,7 +285,7 @@ class DiscourseTester(object):
                         print a
                     spacer(80)
                 if modelfound:
-                    mb.show_model(format='cooked')
+                    print mb.model(format='cooked')
                 else:
                     print "No model found!\n"
         return results

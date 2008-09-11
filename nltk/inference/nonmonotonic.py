@@ -36,14 +36,14 @@ class ClosedDomainProver(ProverCommandDecorator):
     proving.
     """
     def assumptions(self):
-        assumptions = [a for a in self._proverCommand.assumptions()]
-        goal = self._proverCommand.goal()
+        assumptions = [a for a in self._command.assumptions()]
+        goal = self._command.goal()
         domain = get_domain(goal, assumptions)
         return list([self.replace_quants(ex, domain) for ex in assumptions])
     
     def goal(self):
-        goal = self._proverCommand.goal()
-        domain = get_domain(goal, self._proverCommand.assumptions())
+        goal = self._command.goal()
+        domain = get_domain(goal, self._command.assumptions())
         return self.replace_quants(goal, domain)
     
     def replace_quants(self, ex, domain):
@@ -85,9 +85,9 @@ class UniqueNamesProver(ProverCommandDecorator):
          - Domain = union([e.free(False) for e in all_expressions])
          - if "d1 = d2" cannot be proven from the premises, then add "d1 != d2"
         """
-        assumptions = self._proverCommand.assumptions()
+        assumptions = self._command.assumptions()
         
-        domain = list(get_domain(self._proverCommand.goal(), assumptions))
+        domain = list(get_domain(self._command.goal(), assumptions))
         
         #build a dictionary of obvious equalities
         eq_sets = SetHolder()
@@ -165,7 +165,7 @@ class ClosedWorldProver(ProverCommandDecorator):
     -bird(Sam)
     """ 
     def assumptions(self):
-        assumptions = self._proverCommand.assumptions()
+        assumptions = self._command.assumptions()
         
         predicates = self._make_predicate_dict(assumptions)
 
