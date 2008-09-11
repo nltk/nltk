@@ -109,22 +109,20 @@ class MaceCommand(Prover9CommandParent, BaseModelBuilderCommand):
         
     _make_model_var = staticmethod(_make_model_var)
                 
-    def show_model(self, format=None):
+    def decorate_model(self, valuation_str, format):
         """
         Print out a Mace4 model using any Mace4 C{interpformat} format. 
         See U{http://www.cs.unm.edu/~mccune/mace4/manual/} for details.
         
-        @parameter format: Output format for displaying
+        @param valuation_str: C{str} with the model builder's output 
+        @param format: C{str} indicating the format for displaying
         models. Defaults to 'standard' format.
-        @type format: C{str}
+        @return: C{str}
         """
-        if not self._valuation:
-            raise ValueError("You have to call build_model() first to "
-                             "get a model!")
         if not format:
-            print self._valuation
+            return self._valuation
         else:
-            print self._transform_output(format)
+            return self._transform_output(format)
 
     def _transform_output(self, format):
         """
@@ -137,11 +135,9 @@ class MaceCommand(Prover9CommandParent, BaseModelBuilderCommand):
                       'raw', 'cooked', 'xml', 'tex']:
             return call_interpformat(self._valuation, [format])[0]
         else:
-            print "The specified format does not exist"
+            raise LookupError("The specified format does not exist")
 
 class Mace(Prover9Parent, ModelBuilder):
-    _valuation = None #: text output from running mace
-
     def build_model(self, goal=None, assumptions=None, verbose=False):
         """
         Use Mace4 to build a first order model.
@@ -202,8 +198,8 @@ def test_build_model(arguments):
         print '   %s' % a
     print '|- %s: %s\n' % (g, decode_result(m.build_model()))
     spacer()
-    #m.show_model('standard')
-    #m.show_model('cooked')
+    #print m.model('standard')
+    #print m.model('cooked')
     print "Valuation"
     spacer()
     print m.convert2val(), '\n'
@@ -223,7 +219,7 @@ def test_transform_output(argument_pair):
         spacer()
         print "Using '%s' format" % format 
         spacer()
-        m.show_model(format=format)
+        print m.model(format=format)
         
 def test_make_model_dict():
     print MaceCommand._make_model_dict(num_entities=3, values=[1,0,1])
