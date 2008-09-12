@@ -13,6 +13,8 @@ from nltk import defaultdict
 
 from util import *
 
+_INF = 1e300
+
 # Similarity metrics
 
 # TODO: Add in the option to manually add a new root node; this will be
@@ -159,7 +161,7 @@ def jcn_similarity(synset1, synset2, ic, verbose=False):
     """
 
     if synset1 == synset2:
-        return inf
+        return _INF
     
     ic1, ic2, lcs_ic = _lcs_ic(synset1, synset2, ic)
 
