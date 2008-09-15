@@ -118,7 +118,7 @@ movie_reviews = LazyCorpusLoader(
 names = LazyCorpusLoader(
     'names', WordListCorpusReader, r'(?!\.).*\.txt')
 nps_chat = LazyCorpusLoader(
-    'nps_chat', NPSChatCorpusReader, r'(?!README|\.).*',
+    'nps_chat', NPSChatCorpusReader, r'(?!README|\.).*\.xml',
     tag_mapping_function=simplify_wsj_tag)
 ppattach = LazyCorpusLoader(
     'ppattach', PPAttachmentCorpusReader, ['training', 'test', 'devset'])
