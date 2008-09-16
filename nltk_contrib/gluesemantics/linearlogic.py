@@ -19,7 +19,7 @@ class Expression:
         return self.applyto(other)
     
     def __repr__(self):
-        return self.__class__.__name__ + ': ' + str(self)
+        return '<' + self.__class__.__name__ + ' ' + str(self) + '>'
     
 class AtomicExpression(Expression):
     def __init__(self, name, dependencies=None):
@@ -118,7 +118,10 @@ class VariableExpression(AtomicExpression):
         """
         assert isinstance(other, AtomicExpression)
         try:
-            return bindings + BindingDict([(self, other)])
+            if self == other:
+                return bindings
+            else:
+                return bindings + BindingDict([(self, other)])
         except VariableBindingException:
             raise UnificationException(self, other, bindings)
 

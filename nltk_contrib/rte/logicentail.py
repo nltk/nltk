@@ -14,8 +14,6 @@ from nltk.tokenize import word_tokenize
 from nltk.sem import logic
 from nltk_contrib.gluesemantics.drt_glue import DrtGlue
 from nltk import inference
-import ctypes
-import threading
 import bow
 
 class RTEInferenceTagger(object):
@@ -85,28 +83,7 @@ class RTEInferenceTagger(object):
         return result
     
     def check_consistency(self, assumptions, verbose=False):
-        # Set up two thread, Prover and ModelBuilder to run in parallel
-        prover = inference.get_prover(assumptions=assumptions)
-        model_builder = inference.get_model_builder(assumptions=assumptions)
-        
-        prover_result = [None]
-        prover_thread = ProverThread(prover, prover_result, verbose)
-        model_builder_result = [None]
-        model_builder_thread = ModelBuilderThread(model_builder, model_builder_result, verbose)
-        
-        prover_thread.start()
-        model_builder_thread.start()
-        
-        while not prover_result[0] and not model_builder_result[0]:
-            # wait until either the prover or the model builder is done
-            pass
-    
-        if prover_result[0]:
-            consistency = prover_result[0]
-        else:
-            consistency = model_builder_result[0]
-
-        return (consistency == 'consistent')
+        return inference.get_parallel_prover_builder(assumptions=assumptions).build_model()
         
     def _tag(self, text, hyp, verbose=False):
         self._generate_BK(text, hyp, verbose)
@@ -238,13 +215,6 @@ class RTEInferenceTagger(object):
         exp_text = 'all x.(%s(x) -> (not %s(x)))' % (text1, text2)
         return (logic.LogicParser().parse(exp_text), dist)
     
-    def _parallel_prove_satisfy(self, goal=None, assumptions=[]):
-        prover = inference.get_prover(assumptions=bk_exs+[text_ex])
-        model_builder = inference.get_model_builder(assumptions=bk_exs+[text_ex])
-        
-        inconsistent = ProverThread(prover).start()
-        consistent = ModelBuilderThread(model_builder).start()
-
     def _stem(self, word):
         stem = self.stemmer.stem(word)
         if stem:
@@ -252,35 +222,6 @@ class RTEInferenceTagger(object):
         else:
             return word
     
-class ProverThread(threading.Thread):
-    def __init__(self, prover, result, verbose=False):
-        self.prover = prover
-        self.result = result
-        self.verbose = verbose
-        threading.Thread.__init__(self)
-        
-    def run(self):
-        tp_result = self.prover.prove()
-        if tp_result:
-            self.result[0] = 'inconsistent'
-        else:
-            self.result[0] = 'consistent'
-        if self.verbose: print 'Prover finished with \'%s\'' % self.result[0]
-
-class ModelBuilderThread(threading.Thread):
-    def __init__(self, model_builder, result, verbose=False):
-        self.model_builder = model_builder
-        self.result = result
-        self.verbose = verbose
-        threading.Thread.__init__(self)
-        
-    def run(self):
-        mb_result = self.model_builder.build_model()
-        if mb_result:
-            self.result[0] = 'consistent'
-        else:
-            self.result[0] = 'inconsistent'
-        if self.verbose: print 'Model Builder finished with \'%s\'' % self.result[0]
 
 def demo_inference_tagger(verbose=False):
     tagger = RTEInferenceTagger()
@@ -370,7 +311,7 @@ def demo_inference_tagger(verbose=False):
     
 def test_check_consistency():
     a = logic.LogicParser().parse('man(j)')
-    b = logic.LogicParser().parse('-man(j))')
+    b = logic.LogicParser().parse('-man(j)')
     print '%s, %s: %s' % (a, b, RTEInferenceTagger().check_consistency([a,b], True))
     print '%s, %s: %s' % (a, a, RTEInferenceTagger().check_consistency([a,a], True))
 
@@ -381,9 +322,10 @@ def tag(text, hyp):
     print ''
 
 if __name__ == '__main__':
-#    test_check_consistency()
-#    print '\n'
-#    
-#    demo_inference_tagger(False)
+    test_check_consistency()
+    print '\n'
+    
+    demo_inference_tagger(False)
     
     tag('John sees a car', 'John watches an auto')
+    tag('John sees a car', 'John watches an airplane')

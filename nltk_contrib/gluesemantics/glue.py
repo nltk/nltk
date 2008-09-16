@@ -95,7 +95,7 @@ class GlueFormula:
         return str(self)
 
 class GlueDict(dict):
-    def __init__(self, filename=None):
+    def __init__(self, filename):
         self.filename = filename
         self.read_file()
     
