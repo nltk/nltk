@@ -346,7 +346,7 @@ class BaseModelBuilderCommand(BaseTheoremToolCommand, ModelBuilderCommand):
         return self._modelbuilder
 
 
-class TheoremToolCommandDecorator(object):
+class TheoremToolCommandDecorator(TheoremToolCommand):
     """
     A base decorator for the C{ProverCommandDecorator} and 
     C{ModelBuilderCommandDecorator} classes from which decorators can extend.
@@ -426,7 +426,7 @@ class ProverCommandDecorator(TheoremToolCommandDecorator, ProverCommand):
         return self._command.get_prover()
     
 
-class ModelBuilderCommandDecorator(ModelBuilderCommand):
+class ModelBuilderCommandDecorator(TheoremToolCommandDecorator, ModelBuilderCommand):
     """
     A base decorator for the C{ModelBuilderCommand} class from which other 
     prover command decorators can extend.
