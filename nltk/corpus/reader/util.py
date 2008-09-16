@@ -529,7 +529,7 @@ def read_whitespace_block(stream):
 def read_wordpunct_block(stream):
     toks = []
     for i in range(20): # Read 20 lines at a time.
-        toks.extend(wordpuct_tokenize(stream.readline()))
+        toks.extend(wordpunct_tokenize(stream.readline()))
     return toks
 
 def read_line_block(stream):
