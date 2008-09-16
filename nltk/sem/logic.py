@@ -192,7 +192,7 @@ class Expression(SubstituteBindingsI):
     def free(self, indvar_only=True):
         """
         Return a set of all the free (non-bound) variables in self.  Variables
-        serving as predicates are no included.
+        serving as predicates are not included.
         @param indvar_only: C{boolean} only return individual variables?
         @return: C{set} of C{Variable}s
         """
