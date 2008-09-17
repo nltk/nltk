@@ -10,7 +10,7 @@
 from nltk.parse import load_earley
 from nltk.draw.tree import draw_trees
 from nltk.inference import resolution
-import logic
+from nltk.sem import logic
 
 """
 An implementation of the Hole Semantics model, following Blackburn and Bos,
@@ -311,6 +311,7 @@ def main(sentence, grammar_filename=None, verbose=False):
     trees = parser.nbest_parse(tokens)
     if verbose: print 'Got %d different parses' % len(trees)
 
+    all_readings = []
     for tree in trees:
         # Get the semantic feature from the top of the parse tree.
         sem = tree.node['sem'].simplify()
@@ -321,7 +322,7 @@ def main(sentence, grammar_filename=None, verbose=False):
         # Skolemize away all quantifiers.  All variables become unique.
         while isinstance(sem, logic.LambdaExpression):
             sem = sem.term
-        skolemized = resolution.skolemize(sem.term)
+        skolemized = resolution.skolemize(sem)
         
         if verbose: print 'Skolemized:', skolemized
 
@@ -353,7 +354,10 @@ def main(sentence, grammar_filename=None, verbose=False):
                 print '%d. %s' % (i, r)
             print
         
-        return readings
+        all_readings.extend(readings)
+        
+    return all_readings
+
 
 if __name__ == '__main__':
     for r in main('a dog barks'):
