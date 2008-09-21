@@ -725,7 +725,7 @@ def parse_fcfg_production(line, fstruct_parser):
             
     return [Production(lhs, rhs) for rhs in rhsides]
 
-def parse_fcfg(input, features=None):
+def parse_fcfg(input, features=None, logic_parser=None, fstruct_parser=None):
     """
     Return a tuple (list of grammatical productions,
     lexicon dict).
@@ -735,7 +735,14 @@ def parse_fcfg(input, features=None):
     """
     if features is None:
         features = (SLASH, TYPE)
-    fstruct_parser = FeatStructParser(features, FeatStructNonterminal)
+    
+    if fstruct_parser is None:
+        fstruct_parser = FeatStructParser(features, FeatStructNonterminal, 
+                                          logic_parser=logic_parser)
+    elif logic_parser is not None:
+        raise Exception('\'logic_parser\' and \'fstruct_parser\' must '
+                        'not both be set')
+    
     if isinstance(input, str):
         lines = input.split('\n')
     else:

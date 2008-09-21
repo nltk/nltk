@@ -1906,7 +1906,7 @@ class CustomFeatureValue(object):
 
 class FeatStructParser(object):
     def __init__(self, features=(SLASH, TYPE), fdict_class=FeatStruct,
-                 flist_class=FeatList):
+                 flist_class=FeatList, logic_parser=None):
         self._features = dict((f.name,f) for f in features)
         self._fdict_class = fdict_class
         self._flist_class = flist_class
@@ -1923,6 +1923,9 @@ class FeatStructParser(object):
                 self._prefix_feature = feature
         self._features_with_defaults = [feature for feature in features
                                         if feature.default is not None]
+        if logic_parser is None:
+            logic_parser = LogicParser()
+        self._logic_parser = logic_parser
 
     def parse(self, s, fstruct=None):
         """
@@ -2234,13 +2237,12 @@ class FeatStructParser(object):
 
     def parse_app_value(self, s, position, reentrances, match):
         """Mainly included for backwards compat."""
-        return LogicParser().parse('%s(%s)' % match.group(2,3)), match.end()
+        return self._logic_parser.parse('%s(%s)' % match.group(2,3)), match.end()
 
     def parse_logic_value(self, s, position, reentrances, match):
-        parser = LogicParser()
         try:
             try:
-                expr = parser.parse(match.group(1))
+                expr = self._logic_parser.parse(match.group(1))
             except ParseException:
                 raise ValueError()
             return expr, match.end()

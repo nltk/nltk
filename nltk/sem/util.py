@@ -167,22 +167,26 @@ def parse_valuation(s):
     val = evaluate.Valuation(statements)
     return val
 
-def parse_fol(s):
+def parse_logic(s, logic_parser=None):
     """
     Convert a  file of First Order Formulas into a list of {Expression}s.
     
-    @parameter s: the contents of the file
+    @param s: the contents of the file
     @type s: C{str}
+    @param logic_parser: The parser to be used to parse the logical expression
+    @type logic_parser: C{LogicParser}
     @return: a list of parsed formulas.
     @rtype: C{list} of L{Expression}
     """
+    if logic_parser is None:
+        logic_parser = LogicParser()
+        
     statements = []
-    lp = LogicParser()
     for linenum, line in enumerate(s.splitlines()):
         line = line.strip()
         if line.startswith('#') or line=='': continue
         try:
-            statements.append(lp.parse(line))
+            statements.append(logic_parser.parse(line))
         except ParseException:
             raise ValueError, 'Unable to parse line %s: %s' % (linenum, line)
     return statements
