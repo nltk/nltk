@@ -248,4 +248,24 @@ replace unbound with double bound
     >>> b = dp.parse(r'(DRS([z1],[P(z1,y,x)]) + DRS([z1],[Q(z1,y,w)]))')
     >>> a == b
     True
-    
+
+
+Parse to semantics
+------------------
+	>>> logic._counter._value = 0
+
+A logic parser can be passed as a parameter to load_earley
+	>>> from nltk.parse import load_earley
+	>>> parser = load_earley('grammars/drt.fcfg', trace=0, logic_parser=DrtParser())
+	>>> trees = parser.nbest_parse('a dog barks'.split())
+	>>> print trees[0].node['sem'].simplify()
+	DRS([x],[dog(x), bark(x)])
+
+Alternatively, a FeatStructParser can be passed with the logic_parser set on it
+	>>> from nltk.featstruct import FeatStructParser
+	>>> from nltk.cfg import FeatStructNonterminal
+	>>> parser = load_earley('grammars/drt.fcfg', trace=0, fstruct_parser=FeatStructParser(fdict_class=FeatStructNonterminal, logic_parser=DrtParser()))
+	>>> trees = parser.nbest_parse('every girl chases a dog'.split())
+	>>> print trees[0].node['sem'].simplify()
+	DRS([],[(DRS([x],[girl(x)]) -> DRS([z2],[dog(z2), chase(x,z2)]))])
+	

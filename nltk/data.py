@@ -373,7 +373,8 @@ AUTO_FORMATS = {
     'fol': 'fol',
     'val': 'val'}
 
-def load(resource_url, format='auto', cache=True, verbose=False):
+def load(resource_url, format='auto', cache=True, verbose=False, 
+         logic_parser=None, fstruct_parser=None):
     """
     Load a given resource from the NLTK data package.  The following
     resource formats are currently supported:
@@ -405,6 +406,13 @@ def load(resource_url, format='auto', cache=True, verbose=False):
     @param verbose: If true, print a message when loading a resource.
         Messages are not displayed when a resource is retrieved from
         the cache.
+    
+    @type logic_parser: C{LogicParser}    
+    @param logic_parser: The parser that will be used to parse the 'sem' 
+    feature of an fcfg.
+    @type fstruct_parser: C{FeatStructParser}
+    @param fstruct_parser: The parser that will be used to parse the
+    feature structure of an fcfg.
     """
     # If we've cached the resource, then just return it.
     if cache:
@@ -441,9 +449,15 @@ def load(resource_url, format='auto', cache=True, verbose=False):
     elif format == 'pcfg':
         resource_val = cfg.parse_pcfg(_open(resource_url).read())
     elif format == 'fcfg':
-        resource_val = cfg.parse_fcfg(_open(resource_url).read())
+        resource_val = cfg.parse_fcfg(_open(resource_url).read(), 
+                                      logic_parser=logic_parser, 
+                                      fstruct_parser=fstruct_parser)
     elif format == 'fol':
-        resource_val = sem.parse_fol(_open(resource_url).read())
+        resource_val = sem.parse_logic(_open(resource_url).read(), 
+                                       logic_parser=sem.logic.LogicParser())
+    elif format == 'logic':
+        resource_val = sem.parse_logic(_open(resource_url).read(),
+                                       logic_parser=logic_parser)
     elif format == 'val':
         resource_val = sem.parse_valuation(_open(resource_url).read())
     elif format == 'raw':
