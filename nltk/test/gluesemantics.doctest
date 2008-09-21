@@ -11,11 +11,11 @@ Linear logic
 
     >>> from nltk_contrib.gluesemantics.linearlogic import *
     >>> from nltk_contrib.gluesemantics.glue import *
+    >>> from nltk_contrib.gluesemantics.drt_glue import *
     
     >>> llp = LinearLogicParser()
     
     >>> from nltk.sem import logic
-    >>> logic.n = logic.Tokens.NEW_NLTK
     
 Parser
 
@@ -117,11 +117,11 @@ Test Unify
 Test Compile
 
     >>> print llp.parse('g').compile_pos(Counter(), GlueFormula)
-    (ConstantExpression: g, [])
+    (<ConstantExpression g>, [])
     >>> print llp.parse('(g -o f)').compile_pos(Counter(), GlueFormula)
-    (ImpExpression: (g -o f), [])
+    (<ImpExpression (g -o f)>, [])
     >>> print llp.parse('(g -o (h -o f))').compile_pos(Counter(), GlueFormula)
-    (ImpExpression: (g -o (h -o f)), [])
+    (<ImpExpression (g -o (h -o f))>, [])
 
 
 ======================
@@ -326,4 +326,23 @@ Derivation:
     >>> g12345 = g134.applyto(g25)
     >>> print g12345.simplify()
     exists x.(man(x) & walks(x)) : f : {1, 2, 3, 4, 5}
-        
+
+--------------------
+Automated Derivation
+--------------------
+	>>> logic._counter._value = 0
+
+    >>> glue = Glue(verbose=False, dependency=False)
+    >>> for reading in glue.parse_to_meaning('every girl chases a dog'): print reading.simplify()
+    all x.(girl(x) -> exists z1.(dog(z1) & chases(x,z1)))
+    exists x.(dog(x) & all z2.(girl(z2) -> chases(z2,x)))
+
+    >>> glue = Glue(verbose=False, dependency=True)
+    >>> for reading in glue.parse_to_meaning('every girl chases a dog'): print reading.simplify()
+     all x.(girl(x) -> exists z3.(dog(z3) & exists e.(chase(e) & (subj(e,x) & obj(e,z3)))))
+    exists x.(dog(x) & all z4.(girl(z4) -> exists e.(chase(e) & (subj(e,z4) & obj(e,x)))))
+
+    >>> glue = DrtGlue(verbose=False, dependency=True)
+    >>> for reading in glue.parse_to_meaning('every girl chases a dog'): print reading.simplify()
+    DRS([],[(DRS([x],[girl(x)]) -> DRS([z5,e],[dog(z5), chase(e), subj(e,x), obj(e,z5)]))])
+    DRS([z6],[dog(z6), (DRS([x],[girl(x)]) -> DRS([e],[chase(e), subj(e,x), obj(e,z6)]))])
