@@ -356,7 +356,10 @@ FORMATS = {
     'pcfg': "A probabilistic CFG, parsed by nltk.cfg.parse_pcfg().",
     'fcfg': "A feature CFG, parsed by nltk.cfg.parse_fcfg().",
     'fol': "A list of first order logic expressions, parsed by "
-            "nltk.sem.parse_fol().",
+            "nltk.sem.parse_fol() using nltk.sem.logic.LogicParser.",
+    'logic': "A list of first order logic expressions, parsed by "
+            "nltk.sem.parse_logic().  Requires an additional logic_parser "
+            "parameter",
     'val': "A semantic valuation, parsed by nltk.sem.parse_valuation().",
     'raw': "The raw (byte string) contents of a file.",
     }
@@ -371,6 +374,7 @@ AUTO_FORMATS = {
     'pcfg': 'pcfg',
     'fcfg': 'fcfg',
     'fol': 'fol',
+    'logic': 'logic',
     'val': 'val'}
 
 def load(resource_url, format='auto', cache=True, verbose=False, 
@@ -384,6 +388,7 @@ def load(resource_url, format='auto', cache=True, verbose=False,
       - C{'pcfg'} (probabilistic CFGs)
       - C{'fcfg'} (feature-based CFGs)
       - C{'fol'} (formulas of First Order Logic)
+      - C{'logic'} (Logical formulas to be parsed by the given logic_parser)
       - C{'val'} (valuation of First Order Logic model)
       - C{'raw'}
 
@@ -407,9 +412,9 @@ def load(resource_url, format='auto', cache=True, verbose=False,
         Messages are not displayed when a resource is retrieved from
         the cache.
     
-    @type logic_parser: C{LogicParser}    
-    @param logic_parser: The parser that will be used to parse the 'sem' 
-    feature of an fcfg.
+    @type logic_parser: C{LogicParser}
+    @param logic_parser: The parser that will be used to parse logical 
+    expressions.
     @type fstruct_parser: C{FeatStructParser}
     @param fstruct_parser: The parser that will be used to parse the
     feature structure of an fcfg.

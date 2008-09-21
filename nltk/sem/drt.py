@@ -148,7 +148,7 @@ class DRS(AbstractDrs, logic.Expression, RA.DRS):
     def toFol(self):
         accum = self.conds[-1].toFol()
         for cond in self.conds[::-1][1:]:
-            accum = logic.AndExpression(cond.toFol(), accum) 
+            accum = logic.AndExpression(cond.toFol(), accum)
         for ref in self.refs[::-1]:
             accum = logic.ExistsExpression(ref, accum)
         return accum
@@ -208,11 +208,16 @@ class DrtImpExpression(AbstractDrs, logic.ImpExpression, RA.ImpExpression):
         first_drs = self.first
         second_drs = self.second
 
-        accum = first_drs.conds[-1].toFol()
-        for cond in first_drs.conds[::-1][1:]:
-            accum = logic.AndExpression(cond.toFol(), accum) 
+        accum = None
+        if len(first_drs.conds):
+            accum = first_drs.conds[-1].toFol()
+            for cond in first_drs.conds[::-1][1:]:
+                accum = logic.AndExpression(cond.toFol(), accum) 
    
-        accum = logic.ImpExpression(accum, second_drs.toFol())
+        if accum:
+            accum = logic.ImpExpression(accum, second_drs.toFol())
+        else:
+            accum = second_drs.toFol()
     
         for ref in first_drs.refs[::-1]:
             accum = logic.AllExpression(ref, accum)

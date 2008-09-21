@@ -61,8 +61,8 @@ currently supported by the data module are described by the dictionary
     ...     print '%-7s %s' % (format, descr) # doctest: +NORMALIZE_WHITESPACE
     cfg     A context free grammar, parsed by nltk.cfg.parse_cfg().
     fcfg    A feature CFG, parsed by nltk.cfg.parse_fcfg().
-    fol     A list of first order logic expressions, parsed by
-              nltk.sem.parse_fol().
+    fol     A list of first order logic expressions, parsed by nltk.sem.parse_fol() using nltk.sem.logic.LogicParser.
+    logic   A list of first order logic expressions, parsed by nltk.sem.parse_logic().  Requires an additional logic_parser parameter
     pcfg    A probabilistic CFG, parsed by nltk.cfg.parse_pcfg().
     pickle  A serialized python object, stored using the pickle module.
     raw     The raw (byte string) contents of a file.
@@ -86,6 +86,7 @@ to format names is specified by `nltk.data.AUTO_FORMATS`:
     .cfg     -> cfg
     .fcfg    -> fcfg
     .fol     -> fol
+    .logic   -> logic
     .pcfg    -> pcfg
     .pickle  -> pickle
     .val     -> val
