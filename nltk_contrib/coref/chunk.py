@@ -169,7 +169,7 @@ def demo():
     from nltk_contrib.coref.util import baseline_chunk_tagger_demo, \
         treebank_chunk_tagger_demo
     baseline_chunk_tagger_demo()
-    #treebank_chunk_tagger_demo()
+    treebank_chunk_tagger_demo()
     
 if __name__ == '__main__':
     try:

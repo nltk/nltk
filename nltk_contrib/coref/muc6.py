@@ -144,24 +144,30 @@ class MUC6Document(str):
         return result
 
 
-class MUC6NamedEntity(str):
+class MUC6Mention(str):
     """
     """
-    
+
     IN = 'I'
     OUT = 'O'
     BEGINS = 'B'
 
-    def __new__(self, s, iob, ne_type):
+    def __new__(self, s, **kwargs):
         return str.__new__(self, s)
 
-    def __init__(self, s, iob, ne_type):
-        self._iob = iob
-        self._ne_type = ne_type
+    def __init__(self, s, **kwargs):
+        mention_properties = ['ne_type', 'id', 'coref_type', 'coref_id', 'min']
+        self._properties = \
+            dict([(key, kwargs.get(key)) for key in mention_properties])
 
     def __add__(self, y):
         return MUC6NamedEntity(str.__add__(self, y), 
                                self.iob_tag(), self.ne_type())
+
+    def properties(self):
+        return properties.copy()
+
+    # Dictionary mix-in ?
         
     def iob_tag(self):
         return self._iob
@@ -376,6 +382,31 @@ class MUC6SGMLParser(SGMLParser):
             self._current = ''
             self._in.remove('timex')
 
+    def start_coref(self, attrs):
+        """
+        """
+        if self._in and 's' in self._in[0]:
+            if self._current.strip():
+                self._chunks.extend(MUC6NamedEntity(self._current.strip(), 
+                    MUC6NamedEntity.OUT, self._ne_type).split())
+            self._in.insert(0, 'coref')
+            self._current = ''
+            for attr in attrs:
+                if attr[0] == 'type':
+                    self._ne_type = attr[1]
+                    break
+
+    def end_coref(self):
+        """
+        """
+        if self._in and self._in[0] == 'coref':
+            if self._current.strip():
+                self._chunks.append(MUC6NamedEntity(self._current.strip(), 
+                    MUC6NamedEntity.BEGINS, self._ne_type))
+            self._ne_type = None
+            self._current = ''
+            self._in.remove('timex')
+
     def handle_data(self, data):
         """
         """
@@ -385,7 +416,7 @@ class MUC6SGMLParser(SGMLParser):
             self._source += data
         if self._in and self._in[0] == 'docno':
             self._docno += data
-        if self._in and self._in[0] in ['s', 'enamex', 'numex', 'timex']:
+        if self._in and self._in[0] in ['s', 'enamex', 'numex', 'timex', 'coref']:
             self._current += data.replace('\n', '')
 
     def parse(self, filename):

@@ -5,8 +5,8 @@
 # URL: http://nltk.org/
 # For license information, see LICENSE.TXT
 
-from nltk.data import load
-from nltk.corpus import CorpusReader
+from nltk.data import load, find
+from nltk.corpus import CorpusReader, BracketParseCorpusReader
 from nltk.util import LazyMap, LazyConcatenation, LazyZip
 
 #from nltk.tag.sequential import ClassifierBasedTagger
@@ -120,6 +120,14 @@ class MUC6NamedEntityChunkTaggerCorpusReader(ChunkTaggerCorpusReader):
 def zipzip(*lists):
     return LazyMap(lambda lst: zip(*lst), LazyZip(*lists))
 
+def load_treebank(sections):
+    treebank_path = os.environ.get('NLTK_TREEBANK', 'treebank/combined')
+    treebank = LazyCorpusLoader(
+        treebank_path,
+        BracketParseCorpusReader, 
+        r'(%s\/)?wsj_%s.*\.mrg' % (sections, sections))
+    return treebank
+
 def treebank_tagger_demo():
     from nltk.corpus.util import LazyCorpusLoader    
     from nltk.corpus.reader import PlaintextCorpusReader
@@ -165,11 +173,8 @@ def muc6_chunk_tagger_demo():
     from nltk.corpus.util import LazyCorpusLoader
     from nltk.corpus import BracketParseCorpusReader
     from nltk_contrib.coref.util import MUC6NamedEntityChunkTaggerCorpusReader
-            
-    treebank = LazyCorpusLoader(
-        'penn-treebank-rel3/parsed/mrg/wsj/',
-        BracketParseCorpusReader, r'0[12]\/wsj_.*\.mrg')  
-    treebank = MUC6NamedEntityChunkTaggerCorpusReader(treebank)
+     
+    treebank = MUC6NamedEntityChunkTaggerCorpusReader(load_treebank('0[12]'))
     
     print 'MUC6 named entity chunker demo...'
     print 'Chunked sentences:'
@@ -183,9 +188,7 @@ def baseline_chunk_tagger_demo():
     from nltk.corpus import BracketParseCorpusReader
     
     chunker = BaselineNamedEntityChunkTagger()
-    treebank = LazyCorpusLoader(
-        'penn-treebank-rel3/parsed/mrg/wsj/',
-        BracketParseCorpusReader, r'0[12]\/wsj_.*\.mrg')
+    treebank = load_treebank('0[12]')
     
     print 'Baseline named entity chunker demo...'
     print 'Chunked sentences:'
@@ -203,7 +206,7 @@ def demo():
          treebank_chunk_tagger_demo, muc6_chunk_tagger_demo
     treebank_tagger_demo()
     treebank_chunk_tagger_demo()
-    muc6_chunk_tagger_demo()
+    #muc6_chunk_tagger_demo()
     
 if __name__ == '__main__':
     try:

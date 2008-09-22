@@ -40,7 +40,8 @@ from nltk_contrib.coref.ne import BaselineNamedEntityChunkTagger, \
      NamedEntityClassifier, NamedEntityFeatureDetector2
      
 from nltk_contrib.coref.util import LidstoneProbDistFactory, \
-    TreebankTaggerCorpusReader, TreebankChunkTaggerCorpusReader, zipzip
+    TreebankTaggerCorpusReader, TreebankChunkTaggerCorpusReader, \
+    zipzip, load_treebank
 
 TREEBANK_CLOSED_CATS = set(['CC', 'DT', 'MD', 'POS', 'PP$', 'RP', 'TO', 'WDT',
                             'WP$', 'EX', 'IN', 'PDT', 'PRP', 'WP', 'WRB'])
@@ -182,9 +183,7 @@ def baseline_coref_resolver_demo():
     from nltk_contrib.coref.resolve import BaselineCorefResolver
     
     resolver = BaselineCorefResolver()
-    treebank = LazyCorpusLoader(
-        'penn-treebank-rel3/parsed/mrg/wsj/',
-        BracketParseCorpusReader, r'0[12]\/wsj_.*\.mrg')
+    treebank = load_treebank('0[12]')
     
     sents = LazyMap(lambda sent: \
             [word for word in sent if not word.startswith('*')],
@@ -287,13 +286,9 @@ if __name__ == '__main__':
             pass
 
     if options.train_tagger:
-        treebank_train = LazyCorpusLoader(
-            'penn-treebank-rel3/parsed/mrg/wsj/',
-            BracketParseCorpusReader, r'(0[2-9]|1[0-9]|2[01])\/wsj_.*\.mrg')
+        treebank_train = load_treebank('0[2-9]|1[0-9]|2[01])')
         treebank_train_sequence = treebank_train.tagged_sents()
-        treebank_test = LazyCorpusLoader(
-            'penn-treebank-rel3/parsed/mrg/wsj/',
-            BracketParseCorpusReader, r'24\/wsj_.*\.mrg')
+        treebank_test = load_treebank('24')
         treebank_test_sequence = treebank_test.tagged_sents()
         treebank_estimator = LidstoneProbDistFactory
         model = train_model(HiddenMarkovModelTagger, 
