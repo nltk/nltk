@@ -400,13 +400,14 @@ Test for formulas in Model
     ...     ('all x. (dog(x) -> - girl(x))', True),
     ...     ('exists x. exists y. (love(x, y) & love(x, y))', True),
     ...     ]
-    >>> for (sent, testvalue) in tests:
-    ...     semvalue = m.evaluate(sent, g)
-    ...     if semvalue == testvalue:
-    ...         print '*',
-    ...     else:
-    ...         print sent, semvalue
-    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+    >>> for i, (sent, testvalue) in enumerate(tests):
+    ...     try:
+    ...         semvalue = m.evaluate(sent, g)
+    ...         if semvalue != testvalue:
+    ...             print i, sent, semvalue
+    ...     except Exception, e:
+    ...         print i, sent, semvalue, e
+    
 
 Satisfier Tests
 ---------------
