@@ -156,7 +156,7 @@ class DRS(AbstractDrs, logic.Expression, RA.DRS):
     def __eq__(self, other):
         r"""Defines equality modulo alphabetic variance.
         If we are comparing \x.M  and \y.N, then check equality of M and N[x/y]."""
-        if self.__class__ == other.__class__:
+        if isinstance(other, DRS):
             if len(self.refs) == len(other.refs):
                 converted_other = other
                 for (r1, r2) in zip(self.refs, converted_other.refs):
@@ -196,7 +196,7 @@ class DrtLambdaExpression(AbstractDrs, logic.LambdaExpression,
     def toFol(self):
         return logic.LambdaExpression(self.variable, self.term.toFol())
 
-class DrtOrExpression(AbstractDrs, logic.ImpExpression):
+class DrtOrExpression(AbstractDrs, logic.OrExpression, RA.OrExpression):
     def toFol(self):
         return logic.OrExpression(self.first.toFol(), self.second.toFol())
 
@@ -228,11 +228,13 @@ class DrtIffExpression(AbstractDrs, logic.IffExpression, RA.IffExpression):
     def toFol(self):
         return logic.IffExpression(self.first.toFol(), self.second.toFol())
 
-class DrtEqualityExpression(AbstractDrs, logic.EqualityExpression, RA.EqualityExpression):
+class DrtEqualityExpression(AbstractDrs, logic.EqualityExpression, 
+                            RA.EqualityExpression):
     def toFol(self):
         return logic.EqualityExpression(self.first.toFol(), self.second.toFol())
 
-class ConcatenationDRS(AbstractDrs, logic.BooleanExpression, RA.ConcatenationDRS):
+class ConcatenationDRS(AbstractDrs, logic.BooleanExpression, 
+                       RA.ConcatenationDRS):
     """DRS of the form '(DRS + DRS)'"""
     def replace(self, variable, expression, replace_bound=False):
         """Replace all instances of variable v with expression E in self,
@@ -294,7 +296,7 @@ class ConcatenationDRS(AbstractDrs, logic.BooleanExpression, RA.ConcatenationDRS
     def __eq__(self, other):
         r"""Defines equality modulo alphabetic variance.
         If we are comparing \x.M  and \y.N, then check equality of M and N[x/y]."""
-        if self.__class__ == other.__class__:
+        if isinstance(other, ConcatenationDRS):
             self_refs = self.get_refs()
             other_refs = other.get_refs()
             if len(self_refs) == len(other_refs):
@@ -309,7 +311,8 @@ class ConcatenationDRS(AbstractDrs, logic.BooleanExpression, RA.ConcatenationDRS
     def toFol(self):
         return logic.AndExpression(self.first.toFol(), self.second.toFol())
 
-class DrtApplicationExpression(AbstractDrs, logic.ApplicationExpression, RA.ApplicationExpression):
+class DrtApplicationExpression(AbstractDrs, logic.ApplicationExpression, 
+                               RA.ApplicationExpression):
     def toFol(self):
         return logic.ApplicationExpression(self.function.toFol(), 
                                            self.argument.toFol())
@@ -436,8 +439,8 @@ class DrsDrawer:
             factory = self._handle_NegatedExpression
         elif isinstance(expression, DrtLambdaExpression):
             factory = self._handle_LambdaExpression
-        elif isinstance(expression, logic.BooleanExpression):
-            factory = self._handle_BooleanExpression
+        elif isinstance(expression, logic.BinaryExpression):
+            factory = self._handle_BinaryExpression
         elif isinstance(expression, DrtApplicationExpression):
             factory = self._handle_ApplicationExpression
         elif isinstance(expression, RA.PossibleAntecedents):
@@ -541,7 +544,7 @@ class DrsDrawer:
 
         return (right, bottom)
 
-    def _handle_BooleanExpression(self, expression, command, x, y):
+    def _handle_BinaryExpression(self, expression, command, x, y):
         # Get the full height of the line, based on the operands
         first_height = self._visit(expression.first, 0, 0)[1]
         second_height = self._visit(expression.second, 0, 0)[1]
@@ -590,9 +593,6 @@ class Tokens(logic.Tokens):
 class DrtParser(logic.LogicParser):
     """A lambda calculus expression parser."""
     
-    def __init__(self):
-        logic.LogicParser.__init__(self)
-
     def get_all_symbols(self):
         """This method exists to be overridden"""
         return Tokens.SYMBOLS

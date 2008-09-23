@@ -36,10 +36,13 @@ class LambdaExpression:
     def resolve_anaphora(self, trail=[]):
         return self.__class__(self.variables, self.term.resolve_anaphora(trail + [self]))
 
-class BooleanExpression:
+class BinaryExpression:
     def resolve_anaphora(self, trail=[]):
         return self.__class__(self.first.resolve_anaphora(trail + [self]), 
                               self.second.resolve_anaphora(trail + [self]))
+
+class BooleanExpression(BinaryExpression):
+    pass
 
 class OrExpression(BooleanExpression):
     pass
@@ -53,7 +56,7 @@ class ImpExpression(BooleanExpression):
 class IffExpression(BooleanExpression):
     pass
 
-class EqualityExpression(BooleanExpression):
+class EqualityExpression(BinaryExpression):
     def isNullResolution(self):
         return (isinstance(self.second, PossibleAntecedents) and not self.second) or \
                 (isinstance(self.first, PossibleAntecedents) and not self.first)

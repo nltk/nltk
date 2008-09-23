@@ -410,7 +410,7 @@ class Model(object):
                 #return app(funval, argval)
         elif isinstance(parsed, NegatedExpression):
             return not self.satisfy(parsed.term, g)
-        elif isinstance(parsed, BooleanExpression):
+        elif isinstance(parsed, BinaryExpression):
             op = parsed.getOp()
             return OPS[op](self, self.satisfy(parsed.first, g), self.satisfy(parsed.second, g))
         elif isinstance(parsed, AllExpression):

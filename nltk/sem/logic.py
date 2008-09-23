@@ -10,8 +10,8 @@ A version of first order predicate logic, built on
 top of the untyped lambda calculus.
 """
 
+from nltk import defaultdict
 from nltk.internals import Counter
-from nltk.tokenize.simple import WhitespaceTokenizer
 
 _counter = Counter()
 
@@ -63,7 +63,7 @@ class Variable(object):
         self.name = name
 
     def __eq__(self, other):
-        return self.__class__ == other.__class__ and self.name == other.name
+        return isinstance(other, Variable) and self.name == other.name
     
     def __cmp__(self, other):
         assert isinstance(other, Variable)
@@ -268,7 +268,7 @@ class ApplicationExpression(Expression):
             return self.function.free(indvar_only) | self.argument.free(indvar_only) 
     
     def __eq__(self, other):
-        return self.__class__ == other.__class__ and \
+        return isinstance(other, ApplicationExpression) and \
                 self.function == other.function and \
                 self.argument == other.argument 
 
@@ -430,7 +430,8 @@ class VariableBinderExpression(Expression):
     def __eq__(self, other):
         r"""Defines equality modulo alphabetic variance.  If we are comparing 
         \x.M  and \y.N, then check equality of M and N[x/y]."""
-        if self.__class__ == other.__class__:
+        if isinstance(self, other.__class__) or \
+           isinstance(other, self.__class__):
             if self.variable == other.variable:
                 return self.term == other.term
             else:
@@ -491,7 +492,7 @@ class NegatedExpression(Expression):
         return self.term.free(indvar_only)
 
     def __eq__(self, other):
-        return self.__class__ == other.__class__ and self.term == other.term
+        return isinstance(other, NegatedExpression) and self.term == other.term
 
     def str(self, syntax=Tokens.NEW_NLTK):
         if syntax == Tokens.PROVER9:
@@ -500,7 +501,7 @@ class NegatedExpression(Expression):
         else:
             return Tokens.NOT[syntax] + self.term.str(syntax)
         
-class BooleanExpression(Expression):
+class BinaryExpression(Expression):
     def __init__(self, first, second):
         self.first = first
         self.second = second
@@ -533,13 +534,17 @@ class BooleanExpression(Expression):
         return self.first.free(indvar_only) | self.second.free(indvar_only)
 
     def __eq__(self, other):
-        return self.__class__ == other.__class__ \
-                and self.first == other.first and self.second == other.second
+        return (isinstance(self, other.__class__) or \
+                isinstance(other, self.__class__)) and \
+               self.first == other.first and self.second == other.second
 
     def str(self, syntax=Tokens.NEW_NLTK):
         return Tokens.OPEN + self.first.str(syntax) + ' ' + self.getOp(syntax) \
                 + ' ' + self.second.str(syntax) + Tokens.CLOSE
         
+class BooleanExpression(BinaryExpression):
+    pass
+
 class AndExpression(BooleanExpression):
     """This class represents conjunctions"""
     def getOp(self, syntax=Tokens.NEW_NLTK):
@@ -560,7 +565,7 @@ class IffExpression(BooleanExpression):
     def getOp(self, syntax=Tokens.NEW_NLTK):
         return Tokens.IFF[syntax]
 
-class EqualityExpression(BooleanExpression):
+class EqualityExpression(BinaryExpression):
     """This class represents equality expressions like "(x = y)"."""
     def getOp(self, syntax=Tokens.NEW_NLTK):
         return Tokens.EQ[syntax]
@@ -749,9 +754,9 @@ class LogicParser:
         return accum
         
     def attempt_EqualityExpression(self, expression):
-        """Attempt to make a boolean expression.  If the next token is a boolean 
-        operator, then a BooleanExpression will be returned.  Otherwise, the 
-        parameter will be returned."""
+        """Attempt to make an equality expression.  If the next token is an 
+        equality operator, then an EqualityExpression will be returned.  
+        Otherwise, the parameter will be returned."""
         if self.inRange(0) and self.token(0) in Tokens.EQ:
             self.token() #swallow the "="
             return self.make_EqualityExpression(expression, 
@@ -848,25 +853,24 @@ class LogicParser:
 
     def __repr__(self):
         if self.inRange(0):
-            return 'Next token: ' + self.token(0)
+            msg = 'Next token: ' + self.token(0)
         else:
-            return 'No more tokens'
+            msg = 'No more tokens'
+        return '<' + self.__class__.__name__ + ': ' + msg + '>'
 
             
-class StringTrie(dict):
+class StringTrie(defaultdict):
     LEAF = "<leaf>" 
 
     def __init__(self, strings=None):
+        defaultdict.__init__(self, StringTrie)
         if strings:
             for string in strings:
                 self.insert(string)
     
     def insert(self, string):
         if len(string):
-            k = string[0]
-            if k not in self:
-                self[k] = StringTrie()
-            self[k].insert(string[1:])
+            self[string[0]].insert(string[1:])
         else:
             #mark the string is complete
             self[StringTrie.LEAF] = None 
@@ -918,7 +922,7 @@ def demo():
     print '='*20 + 'Test simplify' + '='*20
     print lp.parse(r'\x.\y.sees(x,y)(john)(mary)').simplify()
     print lp.parse(r'\x.\y.sees(x,y)(john, mary)').simplify()
-    print lp.parse(r'exists x.(man(x) & (\x.exists y.walks(x,y))(x))').simplify()
+    print lp.parse(r'all x.(man(x) & (\x.exists y.walks(x,y))(x))').simplify()
     print lp.parse(r'(\P.\Q.exists x.(P(x) & Q(x)))(\x.dog(x))(\x.bark(x))').simplify()
     
     print '='*20 + 'Test alpha conversion and binder expression equality' + '='*20
