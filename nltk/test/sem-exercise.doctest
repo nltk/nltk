@@ -488,7 +488,7 @@ Now, find an ``e1`` that gives the following results:
     >>> e2 = lp.parse('give')
     >>> e3 = ApplicationExpression(e1, e2)
     >>> print e3.simplify()
-    \x0.\x1.exists y.(present(y) & give(x1,y,x0))
+    \x0 x1.exists y.(present(y) & give(x1,y,x0))
 
 
 Let's suppose that we translate the verb *barks* as the

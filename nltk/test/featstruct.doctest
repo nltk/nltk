@@ -980,7 +980,7 @@ Expressions
     >>> fs1 = FeatStruct(x=e, y=Variable('z'))
     >>> fs2 = FeatStruct(y=VariableExpression(Variable('John')))
     >>> fs1.unify(fs2)
-    [x=<\P.\y.P(John,y)>, y=<John>]
+    [x=<\P y.P(John,y)>, y=<John>]
 
 Remove Variables
 ----------------

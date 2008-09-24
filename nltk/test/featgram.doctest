@@ -426,24 +426,24 @@ A transitive sentence:
     Scanner   |[-] . . .| [0:1] NP[sem=[bo={bo(\P.P(John),@x)}, core=<@x>]] -> 'john' *
     Completer |[-> . . .| [0:1] S[sem=[bo={?b1+?b2}, core=<?vp(?subj)>]] -> NP[sem=[bo=?b1, core=?subj]] * VP[sem=[bo=?b2, core=?vp]] {?b1: {bo(\P.P(John),z102)}, ?subj: <VariableExpression z102>}
     Scanner   |. [-] . .| [1:2] 'feeds'
-    Scanner   |. [-] . .| [1:2] TV[sem=[bo={/}, core=<\x.\y.feed(y,x)>]] -> 'feeds' *
-    Completer |. [-> . .| [1:2] VP[sem=[bo={?b1+?b2}, core=<?v(?obj)>]] -> TV[sem=[bo=?b1, core=?v]] * NP[sem=[bo=?b2, core=?obj]] {?b1: {/}, ?v: <LambdaExpression \x.\y.feed(y,x)>}
+    Scanner   |. [-] . .| [1:2] TV[sem=[bo={/}, core=<\x y.feed(y,x)>]] -> 'feeds' *
+    Completer |. [-> . .| [1:2] VP[sem=[bo={?b1+?b2}, core=<?v(?obj)>]] -> TV[sem=[bo=?b1, core=?v]] * NP[sem=[bo=?b2, core=?obj]] {?b1: {/}, ?v: <LambdaExpression \x y.feed(y,x)>}
     Scanner   |. . [-] .| [2:3] 'a'
-    Scanner   |. . [-] .| [2:3] Det[sem=[bo={/}, core=<\Q.\P.exists x.(Q(x) & P(x))>]] -> 'a' *
-    Completer |. . [-> .| [2:3] NP[sem=[bo={?b1+?b2+{bo(?det(?n),@x)}}, core=<@x>]] -> Det[sem=[bo=?b1, core=?det]] * N[sem=[bo=?b2, core=?n]] {?b1: {/}, ?det: <LambdaExpression \Q.\P.exists x.(Q(x) & P(x))>}
+    Scanner   |. . [-] .| [2:3] Det[sem=[bo={/}, core=<\Q P.exists x.(Q(x) & P(x))>]] -> 'a' *
+    Completer |. . [-> .| [2:3] NP[sem=[bo={?b1+?b2+{bo(?det(?n),@x)}}, core=<@x>]] -> Det[sem=[bo=?b1, core=?det]] * N[sem=[bo=?b2, core=?n]] {?b1: {/}, ?det: <LambdaExpression \Q P.exists x.(Q(x) & P(x))>}
     Scanner   |. . . [-]| [3:4] 'dog'
     Scanner   |. . . [-]| [3:4] N[sem=[bo={/}, core=<dog>]] -> 'dog' *
-    Completer |. . [---]| [2:4] NP[sem=[bo={bo(\P.exists x.(dog(x) & P(x)),@x)}, core=<@x>]] -> Det[sem=[bo={/}, core=<\Q.\P.exists x.(Q(x) & P(x))>]] N[sem=[bo={/}, core=<dog>]] *
-    Completer |. [-----]| [1:4] VP[sem=[bo={bo(\P.exists x.(dog(x) & P(x)),z103)}, core=<\y.feed(y,z103)>]] -> TV[sem=[bo={/}, core=<\x.\y.feed(y,x)>]] NP[sem=[bo={bo(\P.exists x.(dog(x) & P(x)),z103)}, core=<z103>]] *
+    Completer |. . [---]| [2:4] NP[sem=[bo={bo(\P.exists x.(dog(x) & P(x)),@x)}, core=<@x>]] -> Det[sem=[bo={/}, core=<\Q P.exists x.(Q(x) & P(x))>]] N[sem=[bo={/}, core=<dog>]] *
+    Completer |. [-----]| [1:4] VP[sem=[bo={bo(\P.exists x.(dog(x) & P(x)),z103)}, core=<\y.feed(y,z103)>]] -> TV[sem=[bo={/}, core=<\x y.feed(y,x)>]] NP[sem=[bo={bo(\P.exists x.(dog(x) & P(x)),z103)}, core=<z103>]] *
     Completer |[=======]| [0:4] S[sem=[bo={bo(\P.P(John),z102), bo(\P.exists x.(dog(x) & P(x)),z103)}, core=<feed(z102,z103)>]] -> NP[sem=[bo={bo(\P.P(John),z102)}, core=<z102>]] VP[sem=[bo={bo(\P.exists x.(dog(x) & P(x)),z103)}, core=<\y.feed(y,z103)>]] *
     Completer |[=======]| [0:4] [INIT][] -> S[] *
     >>> for tree in trees: print tree
     (S[sem=[bo={bo(\P.P(John),z102), bo(\P.exists x.(dog(x) & P(x)),z103)}, core=<feed(z102,z103)>]]
       (NP[sem=[bo={bo(\P.P(John),z102)}, core=<z102>]] john)
       (VP[sem=[bo={bo(\P.exists x.(dog(x) & P(x)),z103)}, core=<\y.feed(y,z103)>]]
-        (TV[sem=[bo={/}, core=<\x.\y.feed(y,x)>]] feeds)
+        (TV[sem=[bo={/}, core=<\x y.feed(y,x)>]] feeds)
         (NP[sem=[bo={bo(\P.exists x.(dog(x) & P(x)),z103)}, core=<z103>]]
-          (Det[sem=[bo={/}, core=<\Q.\P.exists x.(Q(x) & P(x))>]] a)
+          (Det[sem=[bo={/}, core=<\Q P.exists x.(Q(x) & P(x))>]] a)
           (N[sem=[bo={/}, core=<dog>]] dog))))
 
 Turn down the verbosity:
@@ -458,17 +458,17 @@ Reuse the same lexical item twice:
     (S[sem=[bo={bo(\P.P(John),z104), bo(\P.P(John),z105)}, core=<feed(z104,z105)>]]
       (NP[sem=[bo={bo(\P.P(John),z104)}, core=<z104>]] john)
       (VP[sem=[bo={bo(\P.P(John),z105)}, core=<\y.feed(y,z105)>]]
-        (TV[sem=[bo={/}, core=<\x.\y.feed(y,x)>]] feeds)
+        (TV[sem=[bo={/}, core=<\x y.feed(y,x)>]] feeds)
         (NP[sem=[bo={bo(\P.P(John),z105)}, core=<z105>]] john)))
 
     >>> trees = cp.nbest_parse('a dog feeds a dog'.split())
     >>> for tree in trees: print tree
     (S[sem=[bo={bo(\P.exists x.(dog(x) & P(x)),z106), bo(\P.exists x.(dog(x) & P(x)),z107)}, core=<feed(z106,z107)>]]
       (NP[sem=[bo={bo(\P.exists x.(dog(x) & P(x)),z106)}, core=<z106>]]
-        (Det[sem=[bo={/}, core=<\Q.\P.exists x.(Q(x) & P(x))>]] a)
+        (Det[sem=[bo={/}, core=<\Q P.exists x.(Q(x) & P(x))>]] a)
         (N[sem=[bo={/}, core=<dog>]] dog))
       (VP[sem=[bo={bo(\P.exists x.(dog(x) & P(x)),z107)}, core=<\y.feed(y,z107)>]]
-        (TV[sem=[bo={/}, core=<\x.\y.feed(y,x)>]] feeds)
+        (TV[sem=[bo={/}, core=<\x y.feed(y,x)>]] feeds)
         (NP[sem=[bo={bo(\P.exists x.(dog(x) & P(x)),z107)}, core=<z107>]]
-          (Det[sem=[bo={/}, core=<\Q.\P.exists x.(Q(x) & P(x))>]] a)
+          (Det[sem=[bo={/}, core=<\Q P.exists x.(Q(x) & P(x))>]] a)
           (N[sem=[bo={/}, core=<dog>]] dog))))

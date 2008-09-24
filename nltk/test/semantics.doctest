@@ -400,13 +400,13 @@ Test for formulas in Model
     ...     ('all x. (dog(x) -> - girl(x))', True),
     ...     ('exists x. exists y. (love(x, y) & love(x, y))', True),
     ...     ]
-    >>> for i, (sent, testvalue) in enumerate(tests):
-    ...     try:
-    ...         semvalue = m.evaluate(sent, g)
-    ...         if semvalue != testvalue:
-    ...             print i, sent, semvalue
-    ...     except Exception, e:
-    ...         print i, sent, semvalue, e
+    >>> for (sent, testvalue) in tests:
+    ...     semvalue = m.evaluate(sent, g)
+    ...     if semvalue == testvalue:
+    ...         print '*',
+    ...     else:
+    ...         print sent, semvalue
+    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
     
 
 Satisfier Tests
@@ -559,9 +559,9 @@ Load a valuation from a file.
       (NP[-loc, num='sg', sem=<\P.P(john)>]
         (PropN[-loc, num='sg', sem=<\P.P(john)>] John))
       (VP[num='sg', sem=<\y.exists x.(girl(x) & see(y,x))>]
-        (TV[num='sg', sem=<\X.\y.X(\x.see(y,x))>, tns='pres'] sees)
+        (TV[num='sg', sem=<\X y.X(\x.see(y,x))>, tns='pres'] sees)
         (NP[num='sg', sem=<\Q.exists x.(girl(x) & Q(x))>]
-          (Det[num='sg', sem=<\P.\Q.exists x.(P(x) & Q(x))>] a)
+          (Det[num='sg', sem=<\P Q.exists x.(P(x) & Q(x))>] a)
           (Nom[num='sg', sem=<girl>] (N[num='sg', sem=<girl>] girl)))))
     Semantics: exists x.(girl(x) & see(john,x))
     <BLANKLINE>
@@ -569,7 +569,7 @@ Load a valuation from a file.
     Parse:
      (S[sem=<all x.(dog(x) -> bark(x))>]
       (NP[num='sg', sem=<\Q.all x.(dog(x) -> Q(x))>]
-        (Det[num='sg', sem=<\P.\Q.all x.(P(x) -> Q(x))>] every)
+        (Det[num='sg', sem=<\P Q.all x.(P(x) -> Q(x))>] every)
         (Nom[num='sg', sem=<dog>] (N[num='sg', sem=<dog>] dog)))
       (VP[num='sg', sem=<\x.bark(x)>]
         (IV[num='sg', sem=<\x.bark(x)>, tns='pres'] barks)))
@@ -583,7 +583,7 @@ Load a valuation from a file.
     ...     print semrep
     (S[sem=<all x.(dog(x) -> bark(x))>]
       (NP[num='sg', sem=<\Q.all x.(dog(x) -> Q(x))>]
-        (Det[num='sg', sem=<\P.\Q.all x.(P(x) -> Q(x))>] every)
+        (Det[num='sg', sem=<\P Q.all x.(P(x) -> Q(x))>] every)
         (Nom[num='sg', sem=<dog>] (N[num='sg', sem=<dog>] dog)))
       (VP[num='sg', sem=<\x.bark(x)>]
         (IV[num='sg', sem=<\x.bark(x)>, tns='pres'] barks)))
@@ -599,7 +599,7 @@ Load a valuation from a file.
     ...     print value
     (S[sem=<all x.(dog(x) -> bark(x))>]
       (NP[num='sg', sem=<\Q.all x.(dog(x) -> Q(x))>]
-        (Det[num='sg', sem=<\P.\Q.all x.(P(x) -> Q(x))>] every)
+        (Det[num='sg', sem=<\P Q.all x.(P(x) -> Q(x))>] every)
         (Nom[num='sg', sem=<dog>] (N[num='sg', sem=<dog>] dog)))
       (VP[num='sg', sem=<\x.bark(x)>]
         (IV[num='sg', sem=<\x.bark(x)>, tns='pres'] barks)))
