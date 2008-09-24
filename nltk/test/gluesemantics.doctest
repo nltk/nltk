@@ -134,7 +134,7 @@ Demo of "John walks"
     >>> john = GlueFormula("John", "g")
     >>> print john
     John : g
-    >>> walks = GlueFormula("\\x.walks(x)", "(g -o f)")
+    >>> walks = GlueFormula(r"\x.walks(x)", "(g -o f)")
     >>> print walks
     \x.walks(x) : (g -o f)
     >>> print walks.applyto(john)
@@ -148,11 +148,11 @@ Demo of "A dog walks"
 
     >>> a = GlueFormula("\P Q.some x.(P(x) and Q(x))", "((gv -o gr) -o ((g -o G) -o G))")
     >>> print a
-    \P.\Q.exists x.(P(x) & Q(x)) : ((gv -o gr) -o ((g -o G) -o G))
-    >>> man = GlueFormula("\\x.man(x)", "(gv -o gr)")
+    \P Q.exists x.(P(x) & Q(x)) : ((gv -o gr) -o ((g -o G) -o G))
+    >>> man = GlueFormula(r"\x.man(x)", "(gv -o gr)")
     >>> print man
     \x.man(x) : (gv -o gr)
-    >>> walks = GlueFormula("\\x.walks(x)", "(g -o f)")
+    >>> walks = GlueFormula(r"\x.walks(x)", "(g -o f)")
     >>> print walks
     \x.walks(x) : (g -o f)
     >>> a_man = a.applyto(man)
@@ -168,19 +168,19 @@ Demo of 'every girl chases a dog'
 
 Individual words:
 
-    >>> every = GlueFormula("\P Q.all x.(P(x) implies Q(x))", "((gv -o gr) -o ((g -o G) -o G))")
+    >>> every = GlueFormula("\P Q.all x.(P(x) -> Q(x))", "((gv -o gr) -o ((g -o G) -o G))")
     >>> print every
-    \P.\Q.all x.(P(x) -> Q(x)) : ((gv -o gr) -o ((g -o G) -o G))
-    >>> girl = GlueFormula("\\x.girl(x)", "(gv -o gr)")
+    \P Q.all x.(P(x) -> Q(x)) : ((gv -o gr) -o ((g -o G) -o G))
+    >>> girl = GlueFormula(r"\x.girl(x)", "(gv -o gr)")
     >>> print girl
     \x.girl(x) : (gv -o gr)
-    >>> chases = GlueFormula("\\x y.chases(x,y)", "(g -o (h -o f))")
+    >>> chases = GlueFormula(r"\x y.chases(x,y)", "(g -o (h -o f))")
     >>> print chases
-    \x.\y.chases(x,y) : (g -o (h -o f))
+    \x y.chases(x,y) : (g -o (h -o f))
     >>> a = GlueFormula("\P Q.some x.(P(x) and Q(x))", "((hv -o hr) -o ((h -o H) -o H))")
     >>> print a
-    \P.\Q.exists x.(P(x) & Q(x)) : ((hv -o hr) -o ((h -o H) -o H))
-    >>> dog = GlueFormula("\\x.dog(x)", "(hv -o hr)")
+    \P Q.exists x.(P(x) & Q(x)) : ((hv -o hr) -o ((h -o H) -o H))
+    >>> dog = GlueFormula(r"\x.dog(x)", "(hv -o hr)")
     >>> print dog
     \x.dog(x) : (hv -o hr)
 
@@ -282,7 +282,7 @@ Premises
 
     >>> a = GlueFormula('\\P Q.some x.(P(x) and Q(x))', '((gv -o gr) -o ((g -o G) -o G))')
     >>> print a
-    \P.\Q.exists x.(P(x) & Q(x)) : ((gv -o gr) -o ((g -o G) -o G))
+    \P Q.exists x.(P(x) & Q(x)) : ((gv -o gr) -o ((g -o G) -o G))
 
     >>> man = GlueFormula('\\x.man(x)', '(gv -o gr)')
     >>> print man
@@ -304,7 +304,7 @@ Compiled Premises:
     v2 : g : {2}
     >>> g3 = ahc[2]
     >>> print g3
-    \P.\Q.exists x.(P(x) & Q(x)) : (gr[1] -o (G[2] -o G)) : {3}
+    \P Q.exists x.(P(x) & Q(x)) : (gr[1] -o (G[2] -o G)) : {3}
     >>> g4 = man.compile(counter)[0]
     >>> print g4
     \x.man(x) : (gv -o gr) : {4}

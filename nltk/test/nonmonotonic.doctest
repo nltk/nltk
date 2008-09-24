@@ -177,7 +177,7 @@ completion of "P".
     see(John,Mary)
     -(Socrates = John)
     -(John = Mary)
-    all z3.all z4.(see(z3,z4) -> (((z3 = Socrates) & (z4 = John)) | ((z3 = John) & (z4 = Mary))))
+    all z3 z4.(see(z3,z4) -> (((z3 = Socrates) & (z4 = John)) | ((z3 = John) & (z4 = Mary))))
     >>> cwp.prove()
     True
 

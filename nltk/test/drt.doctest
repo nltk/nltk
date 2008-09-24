@@ -48,7 +48,7 @@ Parser
     >>> print dp.parse(r'\x.DRS([],[man(x), walks(x)])')
     \x.DRS([],[man(x), walks(x)])
     >>> print dp.parse(r'\x.\y.DRS([],[sees(x,y)])')
-    \x.\y.DRS([],[sees(x,y)])
+    \x y.DRS([],[sees(x,y)])
 
     >>> print dp.parse(r'DRS([x,y],[(x = y)])')
     DRS([x,y],[(x = y)])
@@ -58,7 +58,7 @@ Parser
     >>> print dp.parse(r'\x.DRS([],[walks(x)])(john)')
     (\x.DRS([],[walks(x)]))(john)
     >>> print dp.parse(r'\R.\x.DRS([],[big(x,R)])(\y.DRS([],[mouse(y)]))')
-    (\R.\x.DRS([],[big(x,R)]))(\y.DRS([],[mouse(y)]))
+    (\R x.DRS([],[big(x,R)]))(\y.DRS([],[mouse(y)]))
 
     >>> print dp.parse(r'(DRS([x],[walks(x)]) + DRS([y],[runs(y)]))')
     (DRS([x],[walks(x)]) + DRS([y],[runs(y)]))
@@ -119,18 +119,18 @@ Simplify
 toFol()
 
     >>> print dp.parse(r'DRS([x,y],[sees(x,y)])').toFol()
-    exists x.exists y.sees(x,y)
+    exists x y.sees(x,y)
     >>> print dp.parse(r'DRS([x],[man(x), walks(x)])').toFol()
     exists x.(man(x) & walks(x))
     >>> print dp.parse(r'\x.DRS([],[man(x), walks(x)])').toFol()
     \x.(man(x) & walks(x))
     >>> print dp.parse(r'\x y.DRS([],[sees(x,y)])').toFol()
-    \x.\y.sees(x,y)
+    \x y.sees(x,y)
 
     >>> print dp.parse(r'\x.DRS([],[walks(x)])(john)').toFol()
     \x.walks(x)(john)
     >>> print dp.parse(r'\R x.DRS([],[big(x,R)])(\y.DRS([],[mouse(y)]))').toFol()
-    (\R.\x.big(x,R))(\y.mouse(y))
+    (\R x.big(x,R))(\y.mouse(y))
 
     >>> print dp.parse(r'(DRS([x],[walks(x)]) + DRS([y],[runs(y)]))').toFol()
     (exists x.walks(x) & exists y.runs(y))

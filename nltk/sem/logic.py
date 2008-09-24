@@ -446,13 +446,26 @@ class VariableBinderExpression(Expression):
 
 class LambdaExpression(VariableBinderExpression):
     def str(self, syntax=Tokens.NEW_NLTK):
-        return Tokens.LAMBDA[syntax] + str(self.variable) + \
-               Tokens.DOT[syntax] + self.term.str(syntax)
+        variables = [self.variable]
+        term = self.term
+        if syntax != Tokens.PROVER9:
+            while term.__class__ == self.__class__:
+                variables.append(term.variable)
+                term = term.term
+        return Tokens.LAMBDA[syntax] + ' '.join(str(v) for v in variables) + \
+               Tokens.DOT[syntax] + term.str(syntax)
 
 class QuantifiedExpression(VariableBinderExpression):
     def str(self, syntax=Tokens.NEW_NLTK):
-        return self.getQuantifier(syntax) + ' ' + str(self.variable) + \
-               Tokens.DOT[syntax] + self.term.str(syntax)
+        variables = [self.variable]
+        term = self.term
+        if syntax != Tokens.PROVER9:
+            while term.__class__ == self.__class__:
+                variables.append(term.variable)
+                term = term.term
+        return self.getQuantifier(syntax) + ' ' + \
+               ' '.join(str(v) for v in variables) + \
+               Tokens.DOT[syntax] + term.str(syntax)
         
 class ExistsExpression(QuantifiedExpression):
     def getQuantifier(self, syntax=Tokens.NEW_NLTK):
