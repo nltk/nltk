@@ -77,7 +77,7 @@ _CORPORA = {
                 lambda: nltk.corpus.cess_esp.tagged_sents(simplify_tags=True),
            }
 
-class CategorySearchView(object):
+class ConcordanceSearchView(object):
     _BACKGROUND_COLOUR='#FFF' #white
     
     #Colour of highlighted results
@@ -92,7 +92,7 @@ class CategorySearchView(object):
     _FRACTION_LEFT_TEXT=0.30
     
     def __init__(self):
-        self.model = CategorySearchModel()
+        self.model = ConcordanceSearchModel()
         self.model.add_listener(self)
         self.top = Tk()
         self._init_top(self.top)
@@ -399,7 +399,7 @@ class CategorySearchView(object):
         if in_idle(): return
         self.top.mainloop(*args, **kwargs)
           
-class CategorySearchModel(object):
+class ConcordanceSearchModel(object):
     def __init__(self):
         self.listeners = []
         self.CORPORA = _CORPORA
@@ -524,7 +524,7 @@ class CategorySearchModel(object):
             return ' '.join(new)
         
 def pos_concordance():
-    d = CategorySearchView()
+    d = ConcordanceSearchView()
     d.mainloop()
         
 def demo():
