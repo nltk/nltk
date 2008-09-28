@@ -58,15 +58,15 @@ class GlueFormula:
 
         return self.__class__(return_meaning, return_glue, return_indices)
         
-    def make_IndividualVariableExpression(self, name):
-        return logic.IndividualVariableExpression(name)
+    def make_VariableExpression(self, name):
+        return logic.VariableExpression(name)
         
     def make_LambdaExpression(self, variable, term):
         return logic.LambdaExpression(variable, term)
         
     def lambda_abstract(self, other):
         assert isinstance(other, GlueFormula)
-        assert isinstance(other.meaning, logic.VariableExpression)
+        assert isinstance(other.meaning, logic.AbstractVariableExpression)
         return self.__class__(self.make_LambdaExpression(other.meaning.variable, 
                                                          self.meaning),
                               linearlogic.ImpExpression(other.glue, self.glue))
