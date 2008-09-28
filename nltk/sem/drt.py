@@ -66,7 +66,7 @@ class AbstractDrs(object):
     def is_pronoun_function(self):
         """ Is self of the form "PRO(x)"? """
         return isinstance(self, DrtApplicationExpression) and \
-               isinstance(self.function, DrtVariableExpression) and \
+               isinstance(self.function, DrtAbstractVariableExpression) and \
                self.function.variable.name == Tokens.PRONOUN and \
                isinstance(self.argument, DrtIndividualVariableExpression)
     
@@ -74,10 +74,7 @@ class AbstractDrs(object):
         return DrtEqualityExpression
 
     def make_VariableExpression(self, variable):
-        if logic.is_indvar(variable.name):
-            return DrtIndividualVariableExpression(variable)
-        else:
-            return DrtVariableExpression(variable)
+        return DrtVariableExpression(variable)
 
     def draw(self):
         DrsDrawer(self).draw()
@@ -86,7 +83,8 @@ class DRS(AbstractDrs, logic.Expression, RA.DRS):
     """A Discourse Representation Structure."""
     def __init__(self, refs, conds):
         """
-        @param refs: C{list} of C{DrtVariableExpression} for the discourse referents
+        @param refs: C{list} of C{DrtIndividualVariableExpression} for the 
+        discourse referents
         @param conds: C{list} of C{Expression} for the conditions
         """ 
         self.refs = refs
@@ -110,7 +108,7 @@ class DRS(AbstractDrs, logic.Expression, RA.DRS):
             # be alpha converted to avoid a conflict
             for ref in (set(self.refs) & expression.free()):
                 newvar = unique_variable() 
-                newvarex = DrtIndividualVariableExpression(newvar)
+                newvarex = DrtVariableExpression(newvar)
                 i = self.refs.index(ref)
                 self = DRS(self.refs[:i]+[newvar]+self.refs[i+1:],
                            [cond.replace(ref, newvarex, True) 
@@ -169,22 +167,42 @@ class DRS(AbstractDrs, logic.Expression, RA.DRS):
         return Tokens.DRS + '([' + ','.join([str(ref) for ref in self.refs]) + \
             '],[' + ', '.join([cond.str(syntax) for cond in self.conds]) + '])'
 
-class DrtVariableExpression(AbstractDrs, logic.VariableExpression, 
-                            RA.VariableExpression):
+def DrtVariableExpression(variable):
+    """
+    This is a factory method that instantiates and returns a subtype of 
+    C{DrtAbstractVariableExpression} appropriate for the given variable.
+    """
+    if logic.is_indvar(variable.name):
+        return DrtIndividualVariableExpression(variable)
+    elif logic.is_funcvar(variable.name):
+        return DrtFunctionVariableExpression(variable)
+    else:
+        return DrtConstantExpression(variable)
+    
+
+class DrtAbstractVariableExpression(AbstractDrs, 
+                                    logic.AbstractVariableExpression, 
+                                    RA.AbstractVariableExpression):
     def toFol(self):
         return self
     
     def get_refs(self):
         return []
 
-class DrtIndividualVariableExpression(DrtVariableExpression, 
+class DrtFunctionVariableExpression(DrtAbstractVariableExpression, 
+                                    logic.FunctionVariableExpression, 
+                                    RA.AbstractVariableExpression):
+    pass
+
+class DrtConstantExpression(DrtAbstractVariableExpression, 
+                            logic.ConstantExpression, 
+                            RA.AbstractVariableExpression):
+    pass
+
+class DrtIndividualVariableExpression(DrtAbstractVariableExpression, 
                                       logic.IndividualVariableExpression, 
-                                      RA.VariableExpression):
-    def toFol(self):
-        return self
-    
-    def get_refs(self):
-        return []
+                                      RA.AbstractVariableExpression):
+    pass
 
 class DrtNegatedExpression(AbstractDrs, logic.NegatedExpression, 
                            RA.NegatedExpression):
@@ -263,7 +281,7 @@ class ConcatenationDRS(AbstractDrs, logic.BooleanExpression,
         else:
             # alpha convert every ref that is free in 'expression'
             for ref in (set(self.get_refs()) & expression.free()): 
-                v = DrtIndividualVariableExpression(unique_variable())
+                v = DrtVariableExpression(unique_variable())
                 first  = first.replace(ref, v, True)
                 second = second.replace(ref, v, True)
 
@@ -283,7 +301,7 @@ class ConcatenationDRS(AbstractDrs, logic.BooleanExpression,
             # For any ref that is in both 'first' and 'second'
             for ref in (set(first.refs) & set(second.refs)):
                 # alpha convert the ref in 'second' to prevent collision
-                newvar = DrtIndividualVariableExpression(unique_variable())
+                newvar = DrtVariableExpression(unique_variable())
                 second = second.replace(ref, newvar, True)
             
             return DRS(first.refs + second.refs, first.conds + second.conds)
@@ -431,7 +449,7 @@ class DrsDrawer:
                 #the values have not been cached yet, so compute them
                 pass
         
-        if isinstance(expression, DrtVariableExpression):
+        if isinstance(expression, DrtAbstractVariableExpression):
             factory = self._handle_VariableExpression
         elif isinstance(expression, DRS):
             factory = self._handle_DRS
@@ -498,7 +516,7 @@ class DrsDrawer:
 
     def _handle_ApplicationExpression(self, expression, command, x, y):
         function, args = expression.uncurry()
-        if not isinstance(function, DrtVariableExpression):
+        if not isinstance(function, DrtAbstractVariableExpression):
             #It's not a predicate expression ("P(x,y)"), so leave arguments curried
             function = expression.function
             args = [expression.argument]
@@ -670,10 +688,7 @@ class DrtParser(logic.LogicParser):
         return DrtApplicationExpression(function, argument)
     
     def make_VariableExpression(self, name):
-        if logic.is_indvar(name):
-            return DrtIndividualVariableExpression(Variable(name))
-        else:
-            return DrtVariableExpression(Variable(name))
+        return DrtVariableExpression(Variable(name))
     
     def make_LambdaExpression(self, variables, term):
         return DrtLambdaExpression(variables, term)

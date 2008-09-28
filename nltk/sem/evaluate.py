@@ -102,17 +102,13 @@ def app(rel, args, trace=False):
 
 def make_VariableExpression(var):
     """
-    Convert a string into an instance of L{VariableExpression}
+    Convert a string into an instance of L{AbstractVariableExpression}
     
     @type var: C{str}
-    @rtype: C{VariableExpression} or C{IndividualVariableExpression}
+    @rtype: C{AbstractVariableExpression}
     """
     
-    variable = Variable(var)
-    if is_indvar(var):
-        return IndividualVariableExpression(variable)
-    else:
-        return VariableExpression(variable)
+    return VariableExpression(Variable(var))
         
 class Valuation(dict):
     """
@@ -390,7 +386,7 @@ class Model(object):
         
         if isinstance(parsed, ApplicationExpression):
             function, arguments = parsed.uncurry()
-            if isinstance(function, VariableExpression):
+            if isinstance(function, AbstractVariableExpression):
                 #It's a predicate expression ("P(x,y)"), so used uncurried arguments
                 funval = self.satisfy(function, g)
                 argvals = tuple([self.satisfy(arg, g) for arg in arguments])

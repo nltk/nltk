@@ -176,7 +176,7 @@ One answer
     >>> logic._counter._value = 0
     >>> tp = ResolutionCommand(None, [p1,p2,p3,c])
     >>> print tp.find_answers()
-    set([<VariableExpression art>])
+    set([<ConstantExpression art>])
     >>> print tp.proof()
     [1] {father_of(art,john)}                  A 
     [2] {father_of(bob,kim)}                   A 
@@ -197,7 +197,7 @@ Multiple answers
     >>> logic._counter._value = 0
     >>> tp = ResolutionCommand(None, [p1,p2,p3,p4,c])
     >>> print tp.find_answers()
-    set([<VariableExpression art>, <VariableExpression ann>])
+    set([<ConstantExpression ann>, <ConstantExpression art>])
     >>> print tp.proof()
     [ 1] {father_of(art,john)}                  A 
     [ 2] {mother_of(ann,john)}                  A 

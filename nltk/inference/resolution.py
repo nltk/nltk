@@ -280,7 +280,7 @@ class Clause(list):
         """
         Replace every binding 
         
-        @param bindings: A C{list} of tuples mapping VariableExpressions to the
+        @param bindings: A C{list} of tuples mapping Variable Expressions to the
         Expressions to which they are bound
         @return: C{Clause}
         """
@@ -418,7 +418,7 @@ def clausify(expression):
     for clause in _clausify(skolemize(expression)):
         for free in clause.free():
             if is_indvar(free.name):
-                newvar = IndividualVariableExpression(unique_variable())
+                newvar = VariableExpression(unique_variable())
                 clause = clause.replace(free, newvar)
         clause_list.append(clause)
     return clause_list
@@ -456,7 +456,7 @@ def skolemize(expression, univ_scope=None):
 
     if isinstance(expression, AllExpression):
         term = skolemize(expression.term, univ_scope|set([expression.variable]))
-        return term.replace(expression.variable, IndividualVariableExpression(unique_variable()))
+        return term.replace(expression.variable, VariableExpression(unique_variable()))
     elif isinstance(expression, AndExpression):
         return skolemize(expression.first, univ_scope) &\
                skolemize(expression.second, univ_scope)
@@ -480,7 +480,7 @@ def skolemize(expression, univ_scope=None):
             if univ_scope:
                 return term.replace(negated.variable, _get_skolem_function(univ_scope))
             else:
-                skolem_constant = IndividualVariableExpression(unique_variable())
+                skolem_constant = VariableExpression(unique_variable())
                 return term.replace(negated.variable, skolem_constant)
         elif isinstance(negated, AndExpression):
             return to_cnf(skolemize(-negated.first, univ_scope), 
@@ -502,7 +502,7 @@ def skolemize(expression, univ_scope=None):
             return skolemize(negated.term, univ_scope)
         elif isinstance(negated, ExistsExpression):
             term = skolemize(-negated.term, univ_scope|set([negated.variable]))
-            return term.replace(negated.variable, IndividualVariableExpression(unique_variable()))
+            return term.replace(negated.variable, VariableExpression(unique_variable()))
         elif isinstance(negated, ApplicationExpression):
             return expression
         else:
@@ -512,12 +512,12 @@ def skolemize(expression, univ_scope=None):
         if univ_scope:
             return term.replace(expression.variable, _get_skolem_function(univ_scope))
         else:
-            skolem_constant = IndividualVariableExpression(unique_variable())
+            skolem_constant = VariableExpression(unique_variable())
             return term.replace(expression.variable, skolem_constant)
     elif isinstance(expression, ApplicationExpression):
         return expression
     else:
-        raise ProverParseError()
+        raise ProverParseError('\'%s\' cannot be skolemized' % expression)
 
 def to_cnf(first, second):
     """
@@ -536,9 +536,10 @@ def to_cnf(first, second):
 
 def _get_skolem_function(univ_scope):
     """
-    Return a skolem function over the varibles in univ_scope
+    Return a skolem function over the variables in univ_scope
     """
-    skolem_function = VariableExpression(Variable('F%s' % _skolem_function_counter.get()))
+    skolem_function = VariableExpression(
+                            Variable('F%s' % _skolem_function_counter.get()))
     for v in list(univ_scope):
         skolem_function = skolem_function(VariableExpression(v))
     return skolem_function
@@ -547,7 +548,7 @@ def _get_skolem_function(univ_scope):
 class BindingDict(object):
     def __init__(self, binding_list=None):
         """
-        @param binding_list: C{list} of (C{VariableExpression}, C{AtomicExpression}) to initialize the dictionary
+        @param binding_list: C{list} of (C{AbstractVariableExpression}, C{AtomicExpression}) to initialize the dictionary
         """
         self.d = {}
 
@@ -581,10 +582,7 @@ class BindingDict(object):
             except KeyError:
                 existing = None
                 
-            if is_indvar(variable.name):
-                binding2 = IndividualVariableExpression(variable)
-            else:
-                binding2 = VariableExpression(variable)
+            binding2 = VariableExpression(variable)
                 
             if not existing or binding2 == existing:
                 self.d[binding.variable] = binding2
@@ -655,9 +653,9 @@ def most_general_unification(a, b, bindings=None):
     
     if a == b:
         return bindings
-    elif isinstance(a, VariableExpression) and is_indvar(a.variable.name):
+    elif isinstance(a, IndividualVariableExpression):
         return _mgu_var(a, b, bindings)
-    elif isinstance(b, VariableExpression) and is_indvar(b.variable.name):
+    elif isinstance(b, IndividualVariableExpression):
         return _mgu_var(b, a, bindings)
     elif isinstance(a, ApplicationExpression) and\
          isinstance(b, ApplicationExpression):

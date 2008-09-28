@@ -24,7 +24,7 @@ class DRS:
                 
         return self.__class__(self.refs, r_conds)
     
-class VariableExpression:
+class AbstractVariableExpression:
     def resolve_anaphora(self, trail=[]):
         return self
 
