@@ -172,7 +172,7 @@ class ClosedWorldProver(ProverCommandDecorator):
         new_assumptions = []
         for p, predHolder in predicates.iteritems():
             new_sig = self._make_unique_signature(predHolder)
-            new_sig_exs = [IndividualVariableExpression(v) for v in new_sig]
+            new_sig_exs = [VariableExpression(v) for v in new_sig]
             
             disjuncts = []
 
@@ -223,7 +223,7 @@ class ClosedWorldProver(ProverCommandDecorator):
         """
         antecedent = predicate
         for v in signature:
-            antecedent = antecedent(IndividualVariableExpression(v))
+            antecedent = antecedent(VariableExpression(v))
         return antecedent
 
     def _make_predicate_dict(self, assumptions):
@@ -231,7 +231,7 @@ class ClosedWorldProver(ProverCommandDecorator):
         Create a dictionary of predicates from the assumptions.
         
         @param assumptions: a C{list} of C{Expression}s
-        @return: C{dict} mapping C{VariableExpression}s to of C{PredHolder}s
+        @return: C{dict} mapping C{AbstractVariableExpression} to C{PredHolder}
         """
         predicates = defaultdict(PredHolder)
         for a in assumptions:
@@ -241,7 +241,7 @@ class ClosedWorldProver(ProverCommandDecorator):
     def _map_predicates(self, expression, predDict):
         if isinstance(expression, ApplicationExpression):
             (func, args) = expression.uncurry()
-            if isinstance(func, VariableExpression):
+            if isinstance(func, AbstractVariableExpression):
                 predDict[func].append_sig(tuple(args))
         elif isinstance(expression, AndExpression):
             self._map_predicates(expression.first, predDict)
@@ -258,8 +258,8 @@ class ClosedWorldProver(ProverCommandDecorator):
                    isinstance(term.second, ApplicationExpression):
                     func1, args1 = term.first.uncurry()
                     func2, args2 = term.second.uncurry()
-                    if isinstance(func1, VariableExpression) and \
-                       isinstance(func2, VariableExpression) and \
+                    if isinstance(func1, AbstractVariableExpression) and \
+                       isinstance(func2, AbstractVariableExpression) and \
                        sig == [v.variable for v in args1] and \
                        sig == [v.variable for v in args2]:
                         predDict[func2].append_prop((tuple(sig), term.first))

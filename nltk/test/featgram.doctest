@@ -406,7 +406,7 @@ A simple intransitive sentence:
               |.jo.ba.|
     Scanner   |[--]  .| [0:1] 'john'
     Scanner   |[--]  .| [0:1] NP[sem=[bo={bo(\P.P(John),@x)}, core=<@x>]] -> 'john' *
-    Completer |[-->  .| [0:1] S[sem=[bo={?b1+?b2}, core=<?vp(?subj)>]] -> NP[sem=[bo=?b1, core=?subj]] * VP[sem=[bo=?b2, core=?vp]] {?b1: {bo(\P.P(John),z101)}, ?subj: <VariableExpression z101>}
+    Completer |[-->  .| [0:1] S[sem=[bo={?b1+?b2}, core=<?vp(?subj)>]] -> NP[sem=[bo=?b1, core=?subj]] * VP[sem=[bo=?b2, core=?vp]] {?b1: {bo(\P.P(John),z101)}, ?subj: <IndividualVariableExpression z101>}
     Scanner   |.  [--]| [1:2] 'barks'
     Scanner   |.  [--]| [1:2] IV[sem=[bo={/}, core=<\x.bark(x)>]] -> 'barks' *
     Completer |.  [--]| [1:2] VP[sem=[bo={/}, core=<\x.bark(x)>]] -> IV[sem=[bo={/}, core=<\x.bark(x)>]] *
@@ -424,7 +424,7 @@ A transitive sentence:
               |.j.f.a.d.|
     Scanner   |[-] . . .| [0:1] 'john'
     Scanner   |[-] . . .| [0:1] NP[sem=[bo={bo(\P.P(John),@x)}, core=<@x>]] -> 'john' *
-    Completer |[-> . . .| [0:1] S[sem=[bo={?b1+?b2}, core=<?vp(?subj)>]] -> NP[sem=[bo=?b1, core=?subj]] * VP[sem=[bo=?b2, core=?vp]] {?b1: {bo(\P.P(John),z102)}, ?subj: <VariableExpression z102>}
+    Completer |[-> . . .| [0:1] S[sem=[bo={?b1+?b2}, core=<?vp(?subj)>]] -> NP[sem=[bo=?b1, core=?subj]] * VP[sem=[bo=?b2, core=?vp]] {?b1: {bo(\P.P(John),z102)}, ?subj: <IndividualVariableExpression z102>}
     Scanner   |. [-] . .| [1:2] 'feeds'
     Scanner   |. [-] . .| [1:2] TV[sem=[bo={/}, core=<\x y.feed(y,x)>]] -> 'feeds' *
     Completer |. [-> . .| [1:2] VP[sem=[bo={?b1+?b2}, core=<?v(?obj)>]] -> TV[sem=[bo=?b1, core=?v]] * NP[sem=[bo=?b2, core=?obj]] {?b1: {/}, ?v: <LambdaExpression \x y.feed(y,x)>}

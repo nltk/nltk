@@ -111,8 +111,8 @@ Simplify
     >>> d1 == d2
     True
         
-    >>> d1 = dp.parse(r'\Q.(DRS([x],[(x = john),walks(x)]) + Q)(DRS([x],[PRO(x),leaves(x)]))').simplify()
-    >>> d2 = dp.parse(r'DRS([x,z1],[(x = john), walks(x), PRO(z1), leaves(z1)])')
+    >>> d1 = dp.parse(r'\Q.(DRS([x],[john(x),walks(x)]) + Q)(DRS([x],[PRO(x),leaves(x)]))').simplify()
+    >>> d2 = dp.parse(r'DRS([x,z1],[john(x), walks(x), PRO(z1), leaves(z1)])')
     >>> d1 == d2
     True
     
