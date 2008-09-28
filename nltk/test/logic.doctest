@@ -2,8 +2,8 @@
  Logic & Lambda Calculus
 =========================
     >>> from nltk.sem import *
-	>>> lp = LogicParser()
-	
+    >>> lp = LogicParser()
+    
 Test for equality under alpha-conversion. 
 
     >>> e1 = lp.parse('exists x.P(x)')
@@ -187,8 +187,6 @@ From B&B's *Representation and Inference for Natural Language*.
 
 Test Parser
 
-	>>> lp = LogicParser(True)
-
     >>> print lp.parse(r'john')
     john
     >>> print lp.parse(r'x')
@@ -361,50 +359,50 @@ Replace
 
 Variables / Free
 
-	>>> print lp.parse(r'walk(john)').variables()
-	set([Variable('john'), Variable('walk')])
-	>>> print lp.parse(r'walk(x)').variables()
-	set([Variable('x'), Variable('walk')])
-	>>> print lp.parse(r'see(john,mary)').variables()
-	set([Variable('see'), Variable('john'), Variable('mary')])
-	>>> print lp.parse(r'exists x.walk(x)').variables()
-	set([Variable('walk')])
-	>>> print lp.parse(r'\x.see(john,x)').variables()
-	set([Variable('see'), Variable('john')])
-	>>> print lp.parse(r'\x.see(john,x)(mary)').variables()
-	set([Variable('see'), Variable('john'), Variable('mary')])
+    >>> print lp.parse(r'walk(john)').variables()
+    set([Variable('john'), Variable('walk')])
+    >>> print lp.parse(r'walk(x)').variables()
+    set([Variable('x'), Variable('walk')])
+    >>> print lp.parse(r'see(john,mary)').variables()
+    set([Variable('see'), Variable('john'), Variable('mary')])
+    >>> print lp.parse(r'exists x.walk(x)').variables()
+    set([Variable('walk')])
+    >>> print lp.parse(r'\x.see(john,x)').variables()
+    set([Variable('see'), Variable('john')])
+    >>> print lp.parse(r'\x.see(john,x)(mary)').variables()
+    set([Variable('see'), Variable('john'), Variable('mary')])
 
-	>>> print lp.parse(r'walk(john)').free()
-	set([])
-	>>> print lp.parse(r'walk(x)').free()
-	set([Variable('x')])
-	>>> print lp.parse(r'see(john,mary)').free()
-	set([])
-	>>> print lp.parse(r'exists x.walk(x)').free()
-	set([])
-	>>> print lp.parse(r'\x.see(john,x)').free()
-	set([])
-	>>> print lp.parse(r'\x.see(john,x)(mary)').free()
-	set([])
-	
-	>>> print lp.parse(r'walk(john)').free(False)
-	set([Variable('john')])
-	>>> print lp.parse(r'walk(x)').free(False)
-	set([Variable('x')])
-	>>> print lp.parse(r'see(john,mary)').free(False)
-	set([Variable('john'), Variable('mary')])
-	>>> print lp.parse(r'exists x.walk(x)').free(False)
-	set([])
-	>>> print lp.parse(r'\x.see(john,x)').free(False)
-	set([Variable('john')])
-	>>> print lp.parse(r'\x.see(john,x)(mary)').free(False)
-	set([Variable('john'), Variable('mary')])
+    >>> print lp.parse(r'walk(john)').free()
+    set([])
+    >>> print lp.parse(r'walk(x)').free()
+    set([Variable('x')])
+    >>> print lp.parse(r'see(john,mary)').free()
+    set([])
+    >>> print lp.parse(r'exists x.walk(x)').free()
+    set([])
+    >>> print lp.parse(r'\x.see(john,x)').free()
+    set([])
+    >>> print lp.parse(r'\x.see(john,x)(mary)').free()
+    set([])
+    
+    >>> print lp.parse(r'walk(john)').free(False)
+    set([Variable('john')])
+    >>> print lp.parse(r'walk(x)').free(False)
+    set([Variable('x')])
+    >>> print lp.parse(r'see(john,mary)').free(False)
+    set([Variable('john'), Variable('mary')])
+    >>> print lp.parse(r'exists x.walk(x)').free(False)
+    set([])
+    >>> print lp.parse(r'\x.see(john,x)').free(False)
+    set([Variable('john')])
+    >>> print lp.parse(r'\x.see(john,x)(mary)').free(False)
+    set([Variable('john'), Variable('mary')])
 
 
 -----------
 Typed Logic
 -----------
-	>>> tlp = LogicParser(True)
+    >>> tlp = LogicParser(True)
 
 gettype()
 
@@ -448,57 +446,57 @@ findtype()
     <e,t>
 
 Type.__eq__()
-	>>> from nltk.sem.logic import *
-	
-	>>> e = ENTITY_TYPE
-	>>> t = TRUTH_TYPE
-	>>> a = ANY_TYPE
-	>>> et = ComplexType(e,t)
-	>>> eet = ComplexType(e,ComplexType(e,t))
-	>>> at = ComplexType(a,t)
-	>>> ea = ComplexType(e,a)
-	
-	>>> e == e
-	True
-	>>> t == t
-	True
-	>>> e == t
-	False
-	>>> a == t
-	False
-	>>> t == a
-	False
-	>>> a == a
-	True
-	>>> et == et
-	True
-	>>> a == et
-	False
-	>>> et == a
-	False
-	>>> a == ComplexType(a,ComplexType(a,a))
-	True
-	>>> ComplexType(a,ComplexType(a,a)) == a
-	True
+    >>> from nltk.sem.logic import *
+    
+    >>> e = ENTITY_TYPE
+    >>> t = TRUTH_TYPE
+    >>> a = ANY_TYPE
+    >>> et = ComplexType(e,t)
+    >>> eet = ComplexType(e,ComplexType(e,t))
+    >>> at = ComplexType(a,t)
+    >>> ea = ComplexType(e,a)
+    
+    >>> e == e
+    True
+    >>> t == t
+    True
+    >>> e == t
+    False
+    >>> a == t
+    False
+    >>> t == a
+    False
+    >>> a == a
+    True
+    >>> et == et
+    True
+    >>> a == et
+    False
+    >>> et == a
+    False
+    >>> a == ComplexType(a,ComplexType(a,a))
+    True
+    >>> ComplexType(a,ComplexType(a,a)) == a
+    True
 
 matches()
 
-	>>> e.matches(t)
-	False
-	>>> a.matches(t)
-	True
-	>>> t.matches(a)
-	True
-	>>> a.matches(et)
-	True
-	>>> et.matches(a)
-	True
-	>>> ea.matches(eet)
-	True
-	>>> eet.matches(ea)
-	True
+    >>> e.matches(t)
+    False
+    >>> a.matches(t)
+    True
+    >>> t.matches(a)
+    True
+    >>> a.matches(et)
+    True
+    >>> et.matches(a)
+    True
+    >>> ea.matches(eet)
+    True
+    >>> eet.matches(ea)
+    True
 
 parse()
-	>>> try: tlp.parse(r'\x.man(x)(\x.man(x))')
-	... except TypeException, e: print e
-	The function '\x.man(x)' is of type '<e,t>' and cannot be applied to '\x.man(x)' of type '<e,t>'.  Its argument must be of type 'e'.
+    >>> try: tlp.parse(r'\x.man(x)(\x.man(x))')
+    ... except TypeException, e: print e
+    The function '\x.man(x)' is of type '<e,t>' and cannot be applied to '\x.man(x)' of type '<e,t>'.  Its argument must be of type 'e'.
