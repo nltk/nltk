@@ -24,16 +24,16 @@ VP[num=?n,sem=<app(?v,?obj)>] -> TV[num=?n,sem=?v] NP[sem=?obj]
 # Lexical Rules
 #############################
 
-PropN[-loc,num=sg,sem=<\P.(DRS([x],[(x = John)])+P(x))>] -> 'John'
-PropN[-loc,num=sg,sem=<\P.(DRS([x],[(x = Mary)])+P(x))>] -> 'Mary'
-PropN[-loc,num=sg,sem=<\P.(DRS([x],[(x = Suzie)])+P(x))>] -> 'Suzie'
-PropN[-loc,num=sg,sem=<\P.(DRS([x],[(x = Vincent)])+P(x))>] -> 'Vincent'
-PropN[-loc,num=sg,sem=<\P.(DRS([x],[(x = Mia)])+P(x))>] -> 'Mia'
-PropN[-loc,num=sg,sem=<\P.(DRS([x],[(x = Marsellus)])+P(x))>] -> 'Marsellus'
-PropN[-loc,num=sg,sem=<\P.(DRS([x],[(x = Fido)])+P(x))>] -> 'Fido'
-PropN[+loc,num=sg,sem=<\P.(DRS([x],[(x = Noosa)])+P(x))>] -> 'Noosa'
-PropN[-loc,num=sg,sem=<\P.(DRS([x],[PRO(x)])+P(x))>] -> 'he'
-PropN[-loc,num=sg,sem=<\P.(DRS([x],[PRO(x)])+P(x))>] -> 'she'
+PropN[-loc,num=sg,sem=<\P.(DRS([x],[John(x)])+P(x))>] -> 'John'
+PropN[-loc,num=sg,sem=<\P.(DRS([x],[Mary(x)])+P(x))>] -> 'Mary'
+PropN[-loc,num=sg,sem=<\P.(DRS([x],[Suzie(x)])+P(x))>] -> 'Suzie'
+PropN[-loc,num=sg,sem=<\P.(DRS([x],[Vincent(x)])+P(x))>] -> 'Vincent'
+PropN[-loc,num=sg,sem=<\P.(DRS([x],[Mia(x)])+P(x))>] -> 'Mia'
+PropN[-loc,num=sg,sem=<\P.(DRS([x],[Marsellus(x)])+P(x))>] -> 'Marsellus'
+PropN[-loc,num=sg,sem=<\P.(DRS([x],[Fido(x)])+P(x))>] -> 'Fido'
+PropN[+loc,num=sg,sem=<\P.(DRS([x],[Noosa(x)])+P(x))>] -> 'Noosa'
+PropN[-loc,num=sg,sem=<\P.(DRS([x],[PRO(x(x)])+P(x))>] -> 'he'
+PropN[-loc,num=sg,sem=<\P.(DRS([x],[PRO(x(x)])+P(x))>] -> 'she'
 
 Det[num=sg,sem=<\P Q.DRS([],[((DRS([x],[])+P(x)) implies Q(x))])>] -> 'every' | 'Every' 
 Det[num=pl,sem=<\P Q.DRS([],[((DRS([x],[])+P(x)) implies Q(x))])>] -> 'all' | 'All'
