@@ -8,11 +8,15 @@
           ]{hyperref}
 
 \usepackage{amssymb}
-\usepackage{a4wide}
+\usepackage{graphicx}
+%\usepackage{float}
 
+\newcommand{\DRS}{\textsc{drs}}
 \newcommand{\DRT}{\textsc{drt}}
+\newcommand{\FOL}{\textsc{fol}}
 \newcommand{\NLP}{\textsc{nlp}}
 \newcommand{\NLTK}{\textsc{nltk}}
+\newcommand{\LF}{\textsc{lf}}
 
 %\pdfinfo{
 %   /Author 		(Daniel H. Garrette)
@@ -76,9 +80,10 @@
 
 \begin{document}
 
+
 \title{Computational Semantics in the Natural Language Toolkit}
 \author{Daniel H. Garrette}
-\date{August 2008}
+\date{\today}
 \maketitle
 
 \section{Introduction}
@@ -133,25 +138,6 @@ set-up in \NLTK\ to test a hypothesis is straightforward and quick,
 and the rich variety of existing components in the toolkit allows
 rapid assembly of quite sophisticated processing pipelines.
 
-\citet{Klein06altw} describes a preliminary effort in \NLTK\ to
-support model checking of first order formulas, using the untyped
-lambda calculus as a syntactic basis. Since then, there has been a
-rapid growth 
-% The Natural Language Toolkit (NLTK)\footnote{www.nltk.org} is a
-% collection of open-source modules and corpora that allow students and
-% researchers to experiment with natural language processing techniques.
-% The toolkit is written entirely in the programming language
-% Python\footnote{www.python.org}, an object-oriented language
-% well-suited for the study of NLP \cite{Multidisciplinary}.  The last
-% two years have seen tremendous growth 
-in the amount of semantics-related code in the toolkit.  For example,
-\NLTK\ now contains modules for first order predicate logic, Discourse
-Representation Theory (\DRT) \cite{KampReyle}, Hole Semantics
-\cite{BB}, Glue Semantics \cite{Dalrymple2001}, first order theorem proving (both
-third-party and home-grown), model building and nonmonotonic
-reasoning. 
-In the following sections, we will present an overview of the
-computational semantics components in \NLTK\ and illustrate their use.
 
 
 % The semantics-related code in NLTK is inspired in a large part by the
@@ -160,57 +146,176 @@ computational semantics components in \NLTK\ and illustrate their use.
 % environment in which students and researchers may study and experiment
 % with a wide range of NLP techniques.
 
+\section{Overview}
+\label{sec:overview}
+
+% \citet{Klein06altw} describes a preliminary effort in \NLTK\ to
+% support model checking of first order formulas, using the untyped
+% lambda calculus as a syntactic basis. Since then, there has been a
+% rapid growth 
+% The Natural Language Toolkit (NLTK)\footnote{www.nltk.org} is a
+% collection of open-source modules and corpora that allow students and
+% researchers to experiment with natural language processing techniques.
+% The toolkit is written entirely in the programming language
+% Python\footnote{www.python.org}, an object-oriented language
+% well-suited for the study of NLP \cite{Multidisciplinary}.  The last
+% two years have seen tremendous growth 
+% in the amount of semantics-related code in the toolkit.  For example,
+% \NLTK\ now contains modules for first order predicate logic, Discourse
+% Representation Theory (\DRT) \cite{KampReyle}, Hole Semantics
+% \cite{BB}, Glue Semantics \cite{Dalrymple2001}, first order theorem proving (both
+% third-party and home-grown), model building and nonmonotonic
+% reasoning. 
+% In the following sections, we will present an overview of the
+% computational semantics components in \NLTK\ and illustrate their use.
+
+% \begin{figure}
+% \label{modules}
+%   \centering
+% \includegraphics[scale=.75]{modules}  
+%   \caption{Overview of semantic processing in NLTK}
+% \end{figure}
+
+
+
+
+
+Like \citep{BB}, we assume that one of the most important tasks
+for the teacher is to ground students in the basic concepts of first
+order logic and the lambda calculus, model-theoretic interpretation
+and inference. This provides a basis for exploring more modern approaches like
+Discourse Representation Theory (\DRT
+s; \citet{KampReyle}) and underspecification. 
+
+In Figure~1, we give a diagrammatic overview of the
+main semantics-related functionality that is currently available in
+\NLTK. 
+Logical forms (\LF s) can be induced as result of syntactic parsing, using
+either feature-based grammars that are processed with an Earley chart
+parser, or else by associating \LF s with the output of a
+broad-coverage dependency parser. Our basic \LF s are expressions of
+first order logic, supplemented with the lambda operator. However, we
+also admit Discoures Representation Structures (\DRS
+s), and underspecified \LF s can be built using
+either Hole Semantics \citep{BB} or Glue Semantics
+\citep{Dalrymple2001}. Once we have constructed \LF s, they can be
+evaluated in a first order model \citep{Klein06altw}, tested for
+equivalance and validity in a variety of theorem provers, or tested for consistency in
+a model builder. Note that we have interfaces to third party
+components, specifically Prover9 and Mace.
+
+\includegraphics[scale=.75]{modules}  
+
+\noindent
+We do not have space in this paper to discuss all of these components,
+but will try to present some of the key aspects, in particular noting
+some points of difference \textit{vis-\`a-vis} \citet{BB}.
+
+
 \section{First-Order Predicate Logic}
-The core of NLTK's semantics-related code is based on the \dhgcode{logic} module, \dhgcode{nltk.sem.logic}.  The logic library contains the classes needed to represent first-order predicate logic with $\lambda$-abstraction.  The library also includes a parser so that the user may enter logical formulas as strings.  Shown below, (\ref{logic1}) depicts a representation of ``Every girl chases a dog".  
 
-\enumsentence{\label{logic1}\dhgcode{all x.(girl(x) -$>$ exists y.(dog(x) \& chase(x,y)))}}
+From a pedagogical point of view, it is usually important to ensure
+that students have some grasp of the language of first order predicate
+logic (\FOL), and can also manipulate $\lambda$ abstracts.  The
+\dhgcode{nltk.sem.logic} module contains an object-oriented approach
+to representing first-order predicate logic plus
+$\lambda$-abstraction. Logical formulas are typically input to the
+\texttt{logic} parser as strings, and then represented as instances of
+various subclasses of \texttt{Expression}, as we will see shortly.
 
-The syntax used attempts to mimic the standard syntax of first-order logic.  The logical connectives used are ``\textbf{\dhgcode{-}}", ``\textbf{\dhgcode{\&}}", ``\textbf{\dhgcode{$|$}}", ``\textbf{\dhgcode{-$>$}}", and ``\textbf{\dhgcode{$<$-$>$}}" for \emph{negation}, \emph{conjunction}, \emph{disjunction}, \emph{implication}, and \emph{biconditional}, respectively.  The quantifiers $\forall$ and $\exists$ are represented as \textbf{\dhgcode{all}} and \textbf{\dhgcode{exists}}.  Additionally, for lambda-abstraction, the backslash, ``\textbf{\dhgcode{\textbackslash}}", is used to represent \textbf{\emph{$\lambda$}}.
+%  Shown below,
+% (\ref{logic1}) depicts a representation of ``Every girl chases a dog''.
 
-The current logic package contains a parser to parse strings into the Expression classes.
+% \enumsentence{\label{logic1}\dhgcode{all x.(girl(x) -$>$ exists y.(dog(x) \& chase(x,y)))}}
 
+% The syntax used attempts to mimic the standard syntax of first-order logic.  The logical connectives used are ``\textbf{\dhgcode{-}}", ``\textbf{\dhgcode{\&}}", ``\textbf{\dhgcode{$|$}}", ``\textbf{\dhgcode{-$>$}}", and ``\textbf{\dhgcode{$<$-$>$}}" for \emph{negation}, \emph{conjunction}, \emph{disjunction}, \emph{implication}, and \emph{biconditional}, respectively.  The quantifiers $\forall$ and $\exists$ are represented as \textbf{\dhgcode{all}} and \textbf{\dhgcode{exists}}.  Additionally, for lambda-abstraction, the backslash, ``\textbf{\dhgcode{\textbackslash}}", is used to represent \textbf{\emph{$\lambda$}}.
+
+Note that one of the features of Python is an interactive interpreter
+which allows the user to load modules (i.e., using an \texttt{import}
+statement) and to enter Python expressions and statements for
+evaluation. In the example below and subsequently, \verb!>>>! is the
+Python interpreter's prompt. 
 \begin{verbatim}
->>> from nltk.sem.logic import *
->>> parse = LogicParser().parse
->>> e = parse('all x.(girl(x) -> exists y.(dog(y) & chase(x,y)))')
->>> print e
-all x.(girl(x) -> exists y.(dog(y) & chase(x,y)))
+>>> from nltk.sem import logic
+>>> lp = logic.LogicParser()
+>>> e = lp.parse('all x.(girl(x) -> exists y.(dog(y) & chase(x,y)))')
+>>> e
+<AllExpression all x.(girl(x) -> exists y.(dog(y) & chase(x,y)))>
 \end{verbatim}
 
-These expression classes have numerous methods that can be used to perform standard logical operations.  The \dhgcode{simplify()} method is used to perform $\beta$-conversion.  The \dhgcode{free()} method can be used to find all the free variables in an expression.  Quantified expressions have an \dhgcode{alpha\_convert()} method that will perform $\alpha$-conversion.  The logic module will also $\alpha$-convert automatically when it is appropriate to avoid name-clashes in the \dhgcode{replace()} method.
+As illustrated, \texttt{e} is an object belonging to the class
+\texttt{AllExpression}, itself a subclass of \texttt{Expression}.  All
+such subclasses have numerous methods that can be used to perform
+standard logical operations. For example, the \dhgcode{simplify()}
+method is used to perform $\beta$-conversion; the \dhgcode{free()}
+method can be used to find all the free variables in an expression;
+and quantified expressions (such as \texttt{AllExpression}s) have an
+\dhgcode{alpha\_convert()} method that will perform
+$\alpha$-conversion.  The \texttt{logic} module will also $\alpha$-convert
+automatically when it is appropriate to avoid name-clashes in the
+\dhgcode{replace()} method.
 
 \begin{verbatim}
->>> e1 = parser.parse(r'\x.P(x)(y)')
+>>> e1 = lp.parse(r'\x.P(x)(y)')
 >>> print e1.simplify()
 P(y)
->>> e2 = parser.parse('all x.P(x,a,b)')
+>>> e2 = lp.parse('all x.P(x,a,b)')
 >>> print e2.free()
 set([<Variable('a'), Variable('b')])
 >>> print e2.alpha_convert(Variable('z'))
 all z.P(z,a,b)
->>> e3 = parser.parse('x')
+>>> e3 = lp.parse('x')
 >>> print e2.replace(Variable('b'), e3)
 all z1.P(z1,a,x)
 \end{verbatim}
 
-A feature of Python that lends itself well to working with logical expressions is its operator overloading.  The operators \dhgcode{-}, \dhgcode{\&}, \dhgcode{$|$}, \dhgcode{$>$}, \dhgcode{$<$} can be used for \emph{negation}, \emph{conjunction}, \emph{disjunction}, \emph{implication}, and \emph{biconditional}, respectively.  The parenthesis of a function call are overloaded to perform function application.  Python's built-in \dhgcode{lambda} operator can also be used with logical expressions because it uses function calls.
+% A feature of Python that lends itself well to working with logical
+% expressions is its operator overloading.  The operators \dhgcode{-},
+% \dhgcode{\&}, \dhgcode{$|$}, \dhgcode{$>$}, \dhgcode{$<$} can be used
+% for \emph{negation}, \emph{conjunction}, \emph{disjunction},
+% \emph{implication}, and \emph{biconditional}, respectively.  The
+% parenthesis of a function call are overloaded to perform function
+% application.  Python's built-in \dhgcode{lambda} operator can also be
+% used with logical expressions because it uses function calls.
 
+% \begin{verbatim}
+% >>> P = parser.parse('P')
+% >>> x = parser.parse('x')
+% >>> y = parser.parse('y')
+% >>> print P(x) & P(y)
+% (P(x) & Q(y))
+% >>> print (lambda x: P(x))(y)
+% P(y)
+% \end{verbatim}
+
+Allowing students to build simple first order models, and evaluate
+expressions in those models, can be useful for helping them clarify
+their intuitions about quantification. In the next example, we show a
+simple means of specifying a model, and then using it to determine the
+set of satisfiers of an open formula such as
+\verb!exists y.(girl(y) & chase(x,y))!.
 \begin{verbatim}
->>> P = parser.parse('P')
->>> x = parser.parse('x')
->>> y = parser.parse('y')
->>> print P(x) & P(y)
-(P(x) & Q(y))
->>> print (lambda x: P(x))(y)
-P(y)
+>>> from nltk.sem import evaluate, parse_valuation
+>>> v = """
+... suzie => s
+... fido => f
+... rover => r
+... girl => {s}
+... chase => {(f, s), (r, s), (s, f)}
+... """
+>>> val = parse_valuation(v) #create a Valuation
+>>> m = evaluate.Model(val.domain, val) #initialize a Model
+>>> g = evaluate.Assignment(val.domain) #initialize an Assignment
+>>> e4 = lp.parser('exists y. (girl(y) & chase(x, y))')
+>>> m.satisfiers(e4, 'x', g) #check satisfiers of e4 wrt to x
+set(['r', 'f'])
 \end{verbatim}
-
 
 \section{Discourse Representation Theory}
 NLTK contains an extension to the \dhgcode{logic} module for working with Discourse Representation Theory (DRT) \cite{KampReyle}.  Using NLTK's \dhgcode{nltk.sem.drt} library, we can represent (\ref{drt2}) as (\ref{drt3}), where the first set of brackets holds a list of variables representing the discourse referents and the second set of brackets holds a list of expressions representing the discourse conditions.
 
-\enumsentence{\label{drt2}\dhgdrs{j,d}{(John = j)\\dog(d)\\sees(j,d)}}
-\enumsentence{\label{drt3}\dhgcode{DRS([j,d],[(John = j), dog(d), sees(j,d)])}}
+\enumsentence{\label{drt2} \dhgdrs{j,d}{(John = j)\\dog(d)\\sees(j,d)}}
+\enumsentence{\label{drt3} \dhgcode{DRS([j,d],[(John = j), dog(d), sees(j,d)])}}
 
 In addition to having the functionality available in the logic module for first order logic, DRT expressions have a ``DRS concatenation" operator, represented as the ``+" symbol.  The concatenation of two DRSs results in one DRS containing the discourse referents and the discourse conditions from both argument DRSs.  DRS concatenation will also automatically $\alpha$-convert bound variables to avoid name-clashes.  The ``+" symbol is recognized by the parser as well as being overloaded so that DRT expressions can be "added" together easily.
 
@@ -304,16 +409,16 @@ Glue Semantics is an approach to compositionality that tries to handle semantic 
 \subsection{Linear Logic}
 The variant of linear logic that we use has \emph{implication} as its only operator, so the primary operation during the proof is Modus Ponens.  Linear logic is an appropriate logic to serve as ``glue" because it is resource-sensitive.  This means that when modus ponens is used to combine two formulas to create a new one, the two original formulas are ``consumed", and cannot be used again in the proof.  Additionally, every premise must be used for the proof to be valid.  This is resource-sensitivity intuitive for the combining of words in a sentence because each word contributes its meaning exactly once to the meaning of the whole.
 
-\enumsentence{\label{glue1}A, (A $\multimap$ B) $\vdash$ B}
-\enumsentence{\label{glue2}A, (A $\multimap$ B) $\nvdash$ A, B}
-\enumsentence{\label{glue3}A, A, (A $\multimap$ B) $\nvdash$ B}
+\enumsentence{\label{glue1} A, (A $\multimap$ B) $\vdash$ B}
+\enumsentence{\label{glue2} A, (A $\multimap$ B) $\nvdash$ A, B}
+\enumsentence{\label{glue3} A, A, (A $\multimap$ B) $\nvdash$ B}
 
 NLTK's \dhgcode{nltk\_contrib.gluesemantics.linearlogic} module contains an implementation of linear logic.
 
 \subsection{Glue Formulas}
 The primary rule used to compose glue formulas is given as (\ref{glue4}).  This rule indicates that the application of meaning expressions should mirror the application of linear logic ``glue" expressions, which is what allows the glue to guide the construction of the meaning.
 
-\enumsentence{\label{glue4}$\phi$ : A, $\psi$ : (A $\multimap$ B) $\vdash$ $\psi$($\phi$) : B}
+\enumsentence{\label{glue4} $\phi$ : A, $\psi$ : (A $\multimap$ B) $\vdash$ $\psi$($\phi$) : B}
 
 NLTK includes a two modules for glue semantics: glue semantics with meaning expressions in first order logic uses \dhgcode{nltk\_contrib.gluesemantics.glue} while \dhgcode{nltk\_contrib.gluesemantics.drt\_glue} handles glue with DRT expressions as meaning.  This simple demonstration shows the basic way glue formulas are created and combined to generate the meaning of ``John walks'':
 
@@ -334,7 +439,7 @@ Some more complex types of words require a certain level of ambiguity in how the
 
 The quantified noun phrase ``every girl" is represented as (\ref{glue5}):
 
-\enumsentence{\label{glue5}\textbf{[every girl]} $\lambda Q.\forall x.(girl(x) \rightarrow Q(x))$ : ((g $\multimap$ G) $\multimap$ G)}
+\enumsentence{\label{glue5} \textbf{[every girl]} $\lambda Q.\forall x.(girl(x) \rightarrow Q(x))$ : ((g $\multimap$ G) $\multimap$ G)}
 
 The automated glue derivation procedure demonstrated below correctly generates two readings for the sentence ``Every girl chases a dog'':
 
