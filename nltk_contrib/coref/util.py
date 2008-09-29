@@ -206,7 +206,7 @@ def demo():
          treebank_chunk_tagger_demo, muc6_chunk_tagger_demo
     treebank_tagger_demo()
     treebank_chunk_tagger_demo()
-    #muc6_chunk_tagger_demo()
+    muc6_chunk_tagger_demo()
     
 if __name__ == '__main__':
     try:

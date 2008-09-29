@@ -161,6 +161,49 @@ class MUC6Mention(str):
             dict([(key, kwargs.get(key)) for key in mention_properties])
 
     def __add__(self, y):
+        return MUC6NamedEntity(str.__add__(self, y),
+                               self.iob_tag(), self.ne_type())
+
+    def iob_tag(self):
+        return self._iob
+
+    def ne_type(self):
+        return self._ne_type
+
+    def split(self, sep=None, maxsplit=-1):
+        if not sep:
+            tokens = PunktWordTokenizer().tokenize(self)
+        else:
+            tokens = self.split(sep, maxsplit)
+        result = []
+        for (index, token) in enumerate(tokens):
+            if self.iob_tag() == self.OUT:
+                iob_tag = self.OUT
+            elif self.iob_tag() == self.BEGINS and index == 0:
+                iob_tag = self.BEGINS
+            else:
+                iob_tag = self.IN
+            result.append(MUC6NamedEntity(token, iob_tag, self.ne_type()))
+        return result
+
+
+class MUC6Mention(str):
+    """
+    """
+
+    IN = 'I'
+    OUT = 'O'
+    BEGINS = 'B'
+
+    def __new__(self, s, **kwargs):
+        return str.__new__(self, s)
+
+    def __init__(self, s, **kwargs):
+        mention_properties = ['ne_type', 'id', 'coref_type', 'coref_id', 'min']
+        self._properties = \
+            dict([(key, kwargs.get(key)) for key in mention_properties])
+
+    def __add__(self, y):
         return MUC6NamedEntity(str.__add__(self, y), 
                                self.iob_tag(), self.ne_type())
 

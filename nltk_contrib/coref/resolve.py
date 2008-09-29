@@ -286,7 +286,7 @@ if __name__ == '__main__':
             pass
 
     if options.train_tagger:
-        treebank_train = load_treebank('0[2-9]|1[0-9]|2[01])')
+        treebank_train = load_treebank('0[2-9]|1[0-9]|2[01]')
         treebank_train_sequence = treebank_train.tagged_sents()
         treebank_test = load_treebank('24')
         treebank_test_sequence = treebank_test.tagged_sents()
