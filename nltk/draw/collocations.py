@@ -5,9 +5,15 @@
 # URL: <http://nltk.org>
 # For license information, see LICENSE.TXT
 #
+import nltk
 from nltk.draw import *
 from Tkinter import *
-from nltk.text import Text
+from nltk.text import Text as TextDomain
+from nltk.probability import FreqDist
+import threading
+
+CORPUS_LOADED_EVENT = '<<CL_EVENT>>'
+ERROR_LOADING_CORPUS_EVENT = '<<ELC_EVENT>>'
 
 _DEFAULT = 'English: Brown Corpus (Humor)'
 _CORPORA = {
@@ -59,10 +65,10 @@ class CollocationsView:
 		self.load_corpus(self.model.DEFAULT_CORPUS)
 
 	def _init_top(self, top):
-		top.geometry('500x500+50+50')
-		top.title('NLTK Concordance Search')
+		top.geometry('550x650+50+50')
+		top.title('NLTK Collocations List')
 		top.bind('<Control-q>', self.destroy)
-		top.minsize(500,500)
+		top.minsize(550,650)
 		
 	def _init_widgets(self, parent):
 		self.main_frame = Frame(parent, dict(background=self._BACKGROUND_COLOUR, padx=1, pady=1, border=1))		
@@ -110,6 +116,9 @@ class CollocationsView:
 		editmenu.add_cascade(label='Result Count', underline=0, menu=rescntmenu)
 		self.top.config(menu=menubar)		
 
+	def set_result_size(self, **kwargs):
+		self.model.result_count = self._result_size.get()
+
 	def _init_results_box(self, parent):
 		innerframe = Frame(parent)
 		i1 = Frame(innerframe)
@@ -122,8 +131,6 @@ class CollocationsView:
 								yscrollcommand=vscrollbar.set,
 								xscrollcommand=hscrollbar.set, wrap='none', width='40', height = '20', exportselection=1)
 		self.results_box.pack(side='left', fill='both', expand=True)
-		self.results_box.tag_config(self._HIGHLIGHT_WORD_TAG, foreground=self._HIGHLIGHT_WORD_COLOUR)
-		self.results_box.tag_config(self._HIGHLIGHT_LABEL_TAG, foreground=self._HIGHLIGHT_LABEL_COLOUR)
 		vscrollbar.pack(side='left', fill='y', anchor='e')
 		vscrollbar.config(command=self.results_box.yview)
 		hscrollbar.pack(side='left', fill='x', expand=True, anchor='w')
@@ -158,6 +165,10 @@ class CollocationsView:
 		self.unfreeze_editable()
 		self.clear_results_box()
 		
+	def corpus_selected(self, *args):
+		new_selection = self.var.get()
+		self.load_corpus(new_selection)
+
 	def previous(self):
 		self.model.prev(self.current_page - 1)
 		self.current_page= self.current_page - 1
@@ -171,6 +182,10 @@ class CollocationsView:
 			self.freeze_editable()
 			self.model.load_corpus(selection)		
 			
+	def freeze_editable(self):
+		self.prev['state'] = 'disabled'
+		self.next['state'] = 'disabled'			
+		
 	def clear_results_box(self):
 		self.results_box['state'] = 'normal'
 		self.results_box.delete("1.0", END)
@@ -179,19 +194,37 @@ class CollocationsView:
 	def fire_event(self, event):
 		#Firing an event so that rendering of widgets happen in the mainloop thread
 		self.top.event_generate(event, when='tail')
+
+	def destroy(self, *e):
+		if self.top is None: return
+		self.top.destroy()
+		self.top = None
 		
 	def mainloop(self, *args, **kwargs):
 		if in_idle(): return
 		self.top.mainloop(*args, **kwargs)
 	
+	def unfreeze_editable(self):
+		self.set_paging_button_states()
+		
+	def set_paging_button_states(self):
+		if self.current_page == 0 or self.current_page == 1:
+			self.prev['state'] = 'disabled'
+		else:
+			self.prev['state'] = 'normal'
+		if self.model.is_last_page(self.current_page):
+			self.next['state'] = 'disabled'
+		else:
+			self.next['state'] = 'normal'
 
 class CollocationsModel:
 	def __init__(self):
 		self.listeners = []
+		self.result_count = None
 		self.selected_corpus = None
 		self.collocations = None
 		self.CORPORA = _CORPORA
-        self.DEFAULT_CORPUS = _DEFAULT
+		self.DEFAULT_CORPUS = _DEFAULT
 	
 	def add_listener(self, listener):
 		self.listeners.append(listener)
@@ -200,12 +233,22 @@ class CollocationsModel:
 		for each in self.listeners:
 			each.fire_event(event)
 			
-	def load_corpus(self):
+	def load_corpus(self, name):
 		self.selected_corpus = name
 		self.collocations = None
 		runner_thread = self.LoadCorpus(name, self)
 		runner_thread.start()
 
+	def non_default_corpora(self):
+		copy = []
+		copy.extend(self.CORPORA.keys())
+		copy.remove(self.DEFAULT_CORPUS)
+		copy.sort()
+		return copy
+	
+	def is_last_page(self, number):
+		return False
+	
 	class LoadCorpus(threading.Thread):
 		def __init__(self, name, model):
 			self.model, self.name = model, name
@@ -214,17 +257,27 @@ class CollocationsModel:
 		def run(self):
 			try:
 				words = self.model.CORPORA[self.name]()
-				
+				print "got words " + str(len(words))
 				from operator import itemgetter
-				text = filter(lambda w: len(w) > 2, self)
+				text = filter(lambda w: len(w) > 2, words)
 				fd = FreqDist(tuple(text[i:i+2]) for i in range(len(text)-1))
+				print "creating scored"
 				scored = [((w1,w2), fd[(w1,w2)] ** 3 / float(self.vocab()[w1] * self.vocab()[w2])) for w1, w2 in fd]
+				print "got scored"
 				scored.sort(key=itemgetter(1), reverse=True)
-				self.collocations = map(itemgetter(0), scored)
+				print "sorted scored"
+				self.model.collocations = map(itemgetter(0), scored)
+				print "calling listener"
 				self.model.notify_listeners(CORPUS_LOADED_EVENT)
 			except Exception, e:
 				print e 
 				self.model.notify_listeners(ERROR_LOADING_CORPUS_EVENT)
+
+		def vocab(self):
+			if "_vocab" not in self.__dict__:
+				print "Building vocabulary index..."
+				self._vocab = FreqDist()
+			return self._vocab
 
 
 def collocations():
