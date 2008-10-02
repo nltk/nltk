@@ -2,10 +2,11 @@
 Utilities for converting chunked treebank into format that can be 
 input to Nivre's MaltParser.
 """
-from nltk.corpora import get_basedir
 from nltk import tokenize
 from itertools import islice
 import os
+from deptree import DepGraph
+from nltk.stem import WordnetStemmer
 
 def tag2tab(s, sep='/'):
     loc = s.rfind(sep)
@@ -25,7 +26,7 @@ def tabtagged(files = 'chunked', basedir= None):
     """       
     if type(files) is str: files = (files,)
 
-    if not basedir: basedir = get_basedir()
+    if not basedir: basedir = os.environ['NLTK_DATA']
 
     for file in files:
         path = os.path.join(get_basedir(), "treebank", file)
@@ -40,6 +41,31 @@ def tabtagged(files = 'chunked', basedir= None):
             l.append('\n')
             yield l
 
+def conll_to_depgraph(input_str, stem=False, verbose=False):
+    if stem: 
+        stemmer = WordnetStemmer()
+
+    tokenizer = tokenize.TabTokenizer()
+    depgraph_input = ''
+    for line in input_str.split('\n'):
+        tokens = tokenizer.tokenize(line.strip())
+        if len(tokens) > 1:
+            word = tokens[1]
+            if stem:
+                word_stem = stemmer.stem(word)
+                if word_stem:
+                    word = word_stem
+            depgraph_input += '%s\t%s\t%s\t%s\n' % (word, tokens[3], tokens[6], tokens[7])
+
+    assert depgraph_input, 'depgraph_input is empty'
+
+    if verbose:
+        print 'Begin DepGraph creation'
+        print 'depgraph_input=\n%s' % depgraph_input
+    
+    return DepGraph().read(depgraph_input)
+
+    
 def demo():
     from nltk.corpora import treebank
     #f = open('ptb_input.tab', 'w')

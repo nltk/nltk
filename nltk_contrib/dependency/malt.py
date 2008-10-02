@@ -10,7 +10,7 @@ import tempfile
 import subprocess
 from nltk import tokenize
 from nltk.stem.wordnet import WordnetStemmer
-from nltk_contrib.dependency import DepGraph
+from nltk_contrib.dependency import DepGraph, util
 from nltk_contrib.tag import tnt
 from nltk.internals import find_binary
 
@@ -124,38 +124,10 @@ def parse(sentence, mco='temp', tagger='tnt', stem=True, verbose=False):
         if verbose: print 'End parsing (exit code=%s)' % malt_exit
         
         f = open(output_file, 'r')
-        lines = f.readlines()
-        f.close()
-
-        if stem: 
-            stemmer = WordnetStemmer()
-
-        tokenizer = tokenize.TabTokenizer()
-        depgraph_input = ''
-        for line in lines:
-            tokens = tokenizer.tokenize(line.strip())
-            if len(tokens) > 1:
-                word = tokens[1]
-                if stem:
-                    word_stem = stemmer.stem(word)
-                    if word_stem:
-                        word = word_stem
-                depgraph_input += '%s\t%s\t%s\t%s\n' % (word, tokens[3], tokens[6], tokens[7])
-
-        assert depgraph_input, 'depgraph_input is empty'
-
-        if verbose:
-            print 'Begin DepGraph creation'
-            print 'depgraph_input=\n%s' % depgraph_input
-        
-        depgraph = DepGraph().read(depgraph_input)
-        if verbose:
-            print 'End DepGraph creation'
-            
+        return util.conll_to_depgraph(f.read(), stem, verbose)
+    
     finally:
         if f: f.close()
-
-    return depgraph
 
 def pos_tag(sentence, verbose=False):
     from nltk.corpus import treebank

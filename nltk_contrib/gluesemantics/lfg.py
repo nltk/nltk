@@ -6,6 +6,7 @@
 # For license information, see LICENSE.TXT
 
 from nltk.internals import Counter
+from nltk import defaultdict
 
 class FStructure(dict):
     def read_depgraph(depgraph):
@@ -31,7 +32,7 @@ class FStructure(dict):
             (word, tag) = (node['word'], node['tag'])
             if tag[:2] == 'VB':
                 if tag[2:3] == 'D':
-                    self['tense'] = ('PAST', 'tense')
+                    self.safeappend('tense', ('PAST', 'tense'))
                 self.pred = (word, tag[:2])
 
             if not self.pred:
@@ -39,11 +40,18 @@ class FStructure(dict):
     
             children = [depgraph.nodelist[idx] for idx in node['deps']]
             for child in children:
-                self[child['rel']] = FStructure._read_depgraph(child, depgraph, label_counter, self)
-    
+                self.safeappend(child['rel'], FStructure._read_depgraph(child, depgraph, label_counter, self))
+
             return self
 
     _read_depgraph = staticmethod(_read_depgraph)
+    
+    
+    def safeappend(self, key, item):
+        if key not in self:
+            self[key] = []
+        self[key].append(item)
+        
     
     def _make_label(value):
         """
@@ -220,69 +228,6 @@ class FStructure(dict):
 
     read_parsetree = staticmethod(read_parsetree)
 
-    def to_glueformula_list(self, glue_pos_dict, labels_added=[], current_subj=None, verbose=False):
-        from nltk.tree import Tree
-        glueformulas = []
-
-        if not current_subj:
-            current_subj = self
-
-        # lookup 'pred'
-        sem = self.pred[1]
-        lookup = glue_pos_dict.lookup(sem, self.pred[0], current_subj, self)
-        glueformulas.extend(lookup)
-
-        for feature in self:
-            if isinstance(self[feature], FStructure):
-                if not self[feature].label in labels_added:
-                    glueformulas.extend(self[feature].to_glueformula_list(glue_pos_dict, labels_added,self))
-                    labels_added.append(self[feature].label)
-            elif isinstance(self[feature], tuple):
-                glueformulas.extend(glue_pos_dict.lookup(self[feature][1], self[feature][0], None, self))
-            elif isinstance(self[feature], list):
-                for entry in self[feature]:
-                    glueformulas.extend(entry.to_glueformula_list(glue_pos_dict, labels_added))
-            else:
-                raise Exception, 'feature %s is not an FStruct, a list, or a tuple' % feature
-
-        return glueformulas
-
-    def initialize_label(self, expression, counter=None):
-        if not counter:
-            counter = Counter()
-        
-        try:
-            dot = expression.index('.')
-
-            before_dot = expression[:dot]
-            after_dot = expression[dot+1:]
-            if before_dot=='super':
-                return self.parent.initialize_label(after_dot)
-            else:
-                try:
-                    return self[before_dot].initialize_label(after_dot)
-                except KeyError:
-                    raise KeyError, "FStructure doesn't contain a feature %s" % before_dot
-        except ValueError:
-            lbl = self.label
-            if expression=='f':       return lbl
-            elif expression=='v':     return '%sv' % lbl
-            elif expression=='r':     return '%sr' % lbl
-            elif expression=='super': return self.parent.label
-            elif expression=='var':   return '%s%s' % (self.label.upper(), counter.get())
-            elif expression=='a':     return self['conjuncts'][0].label
-            elif expression=='b':     return self['conjuncts'][1].label
-            else:                     return self[expression].label
-
-    def head(node):
-        for (fname, fval) in sorted(node.items()):
-            display = getattr(fname, 'display', None)
-            if display == 'prefix':
-                  return fval
-        return None 
-    
-    head = staticmethod(head)
-
     def _get_n_and_adjs(pt, current_label, parent):
         """ This function is here to deal with N -o JJ N rules
             since we don't know exactly where the noun is.
@@ -304,34 +249,88 @@ class FStructure(dict):
     _get_n_and_adjs = staticmethod(_get_n_and_adjs)
     
     
-    
-    def __repr__(self):
+    def to_glueformula_list(self, glue_pos_dict, labels_added=[], current_subj=None, verbose=False):
         from nltk.tree import Tree
-        try:
-            accum = '%s:[' % self.label
-        except NameError:
-            accum = '['
-        try:
-            accum += 'pred \'%s\'' % self.pred[0]
-        except NameError:
-            pass
+        glueformulas = []
+
+        if not current_subj:
+            current_subj = self
+
+        # lookup 'pred'
+        sem = self.pred[1]
+        lookup = glue_pos_dict.lookup(sem, self.pred[0], current_subj, self)
+        glueformulas.extend(lookup)
 
         for feature in self:
-            if isinstance(self[feature], FStructure):
-                accum += ' %s %s' % (feature, self[feature].__repr__())
-            elif isinstance(self[feature], tuple):
-                accum += ' %s \'%s\'' % (feature, self[feature][0])
-            elif isinstance(self[feature], list):
-                accum += ' %s {' % (feature)
-                for entry in self[feature]:
-                    accum += '%s' % entry
-                accum += '}'
-            else: # ERROR
-                raise Exception, 'feature %s (%s) is not an FStruct, a list, or a tuple' % (feature, self[feature])
-        return accum+']'
+            for item in self[feature]:
+                if isinstance(item, FStructure):
+                    if not item.label in labels_added:
+                        glueformulas.extend(item.to_glueformula_list(glue_pos_dict, labels_added,self))
+                        labels_added.append(item.label)
+                elif isinstance(item, tuple):
+                    glueformulas.extend(glue_pos_dict.lookup(item[1], item[0], None, self))
+                elif isinstance(item, list):
+                    for entry in item:
+                        glueformulas.extend(entry.to_glueformula_list(glue_pos_dict, labels_added))
+                else:
+                    raise Exception, 'feature %s is not an FStruct, a list, or a tuple' % feature
+
+        return glueformulas
+
+    def initialize_label(self, expression, counter=None):
+        if not counter:
+            counter = Counter()
+        
+        try:
+            dot = expression.index('.')
+
+            before_dot = expression[:dot]
+            after_dot = expression[dot+1:]
+            if before_dot=='super':
+                return self.parent.initialize_label(after_dot)
+            else:
+                return self.lookup_unique(before_dot).initialize_label(after_dot)
+        except ValueError:
+            lbl = self.label
+            if expression=='f':       return lbl
+            elif expression=='v':     return '%sv' % lbl
+            elif expression=='r':     return '%sr' % lbl
+            elif expression=='super': return self.parent.label
+            elif expression=='var':   return '%s%s' % (self.label.upper(), counter.get())
+            elif expression=='a':     return self['conjuncts'][0].label
+            elif expression=='b':     return self['conjuncts'][1].label
+            else:                     return self.lookup_unique(expression).label
+
+
+    def lookup_unique(self, key):
+        """
+        Lookup 'key'.  There should be exactly one item in the associated list.
+        """
+        try:
+            value = self[key]
+            if len(value) == 1:
+                return value[0]
+            else:
+                raise KeyError('FStructure should only have one feature %s' % key)
+        except KeyError:
+            raise KeyError, "FStructure doesn't contain a feature %s" % key
+        
+
+
+    def head(node):
+        for (fname, fval) in sorted(node.items()):
+            display = getattr(fname, 'display', None)
+            if display == 'prefix':
+                  return fval
+        return None 
+    
+    head = staticmethod(head)
+
+
+    def __repr__(self):
+        return str(self).replace('\n', '')
 
     def __str__(self, indent=3):
-        from nltk.tree import Tree
         try:
             accum = '%s:[' % self.label
         except NameError:
@@ -342,15 +341,16 @@ class FStructure(dict):
             pass
 
         for feature in self:
-            if isinstance(self[feature], FStructure):
-                next_indent = indent+len(feature)+3+len(self.label)
-                accum += '\n%s%s %s' % (' '*(indent), feature, self[feature].__str__(next_indent))
-            elif isinstance(self[feature], tuple):
-                accum += '\n%s%s \'%s\'' % (' '*(indent), feature, self[feature][0])
-            elif isinstance(self[feature], list):
-                accum += '\n%s%s {%s}' % (' '*(indent), feature, ('\n%s' % (' '*(indent+len(feature)+2))).join(self[feature]))
-            else: # ERROR
-                raise Exception, 'feature %s is not an FStruct, a list, or a tuple' % feature
+            for item in self[feature]:
+                if isinstance(item, FStructure):
+                    next_indent = indent+len(feature)+3+len(self.label)
+                    accum += '\n%s%s %s' % (' '*(indent), feature, item.__str__(next_indent))
+                elif isinstance(item, tuple):
+                    accum += '\n%s%s \'%s\'' % (' '*(indent), feature, item[0])
+                elif isinstance(item, list):
+                    accum += '\n%s%s {%s}' % (' '*(indent), feature, ('\n%s' % (' '*(indent+len(feature)+2))).join(item))
+                else: # ERROR
+                    raise Exception, 'feature %s is not an FStruct, a list, or a tuple' % feature
         return accum+']'
 
 def demo_read_depgraph():
@@ -383,11 +383,9 @@ a       DT      5       SPEC
 dog     NNP     3       OBJ
 """)
 
-#    depgraphs = [dg1,dg2,dg3,dg4]
-#    for dg in depgraphs:
-#        print FStructure.read_depgraph(dg)
-
-    print FStructure.read_depgraph(dg3)
+    depgraphs = [dg1,dg2,dg3,dg4]
+    for dg in depgraphs:
+        print FStructure.read_depgraph(dg)
         
 def demo_depparse():
     from nltk_contrib.dependency import malt

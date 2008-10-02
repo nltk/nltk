@@ -382,7 +382,7 @@ class DrtGlueDemo(object):
                     self._readingCache[index] = self._readings
                 except Exception, e:
                     self._readings = []
-                    self._error = DrtVariableExpression('Error: ' + str(e))
+                    self._error = DrtVariableExpression(logic.Variable('Error: ' + str(e)))
                     self._readingCache[index] = self._error
     
                     #add a star to the end of the example

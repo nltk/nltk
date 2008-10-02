@@ -525,6 +525,25 @@ def demo(show_example=-1, dependency=False):
                 print reading.simplify()
             print ''
     
+def penn(verbose=False):
+    from nltk_contrib.dependency import util
+    
+    f = None
+    try:
+        f = open(os.environ['NLTK_DATA']+'/corpora/treebank/dep/wsj_0001.dep')
+        depgraph = util.conll_to_depgraph(f.read())
+        if verbose: print depgraph
+        
+        fstruct = lfg.FStructure.read_depgraph(depgraph)
+        if verbose: print fstruct
+        
+        print fstruct
+        
+        
+    finally:
+        if f: f.close()
+
+    
 if __name__ == '__main__':
     proof_demo()
     print "\n\n"
@@ -535,3 +554,5 @@ if __name__ == '__main__':
 #    demo(dependency=False)
     print "\n\n"
     demo(dependency=True)
+
+    penn()
