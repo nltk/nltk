@@ -342,6 +342,8 @@ class _PunktBaseClass(object):
     _Token = PunktToken
     """The token definition that should be used by this class. This allows for
     redefinition of some parameters of the token type."""
+
+    _sent_end_chars = ('?', '!', '.')
     
     def __init__(self):
         self._params = PunktParameters()
@@ -425,7 +427,7 @@ class _PunktBaseClass(object):
 
         tok = aug_tok.tok
 
-        if tok in ('?','!','.'):
+        if tok in self._sent_end_chars:
             aug_tok.sentbreak = True
         elif aug_tok.is_ellipsis:
             aug_tok.ellipsis = True
