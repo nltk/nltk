@@ -148,6 +148,23 @@ _punkt_period_context_regexp = re.compile(r"""
         \s+(\S+)                 # or whitespace and some other token
     )""", re.UNICODE | re.VERBOSE)
 
+#////////////////////////////////////////////////////////////
+#{ Helper Functions
+#////////////////////////////////////////////////////////////
+
+def _pair_iter(it):
+    """
+    Yields pairs of tokens from the given iterator such that each input
+    token will appear as the first element in a yielded tuple. The last
+    pair will have None as its second element.
+    """
+    it = iter(it)
+    prev = it.next()
+    for el in it:
+        yield (prev, el)
+        prev = el
+    yield (prev, None)
+
 ######################################################################
 #{ Punkt Parameters
 ######################################################################
@@ -349,24 +366,6 @@ class _PunktBaseClass(object):
         self._params = PunktParameters()
         """The collection of parameters that determines the behavior
         of the punkt tokenizer."""
-
-    #////////////////////////////////////////////////////////////
-    #{ Helper Functions
-    #////////////////////////////////////////////////////////////
-
-    @staticmethod
-    def pair_iter(it):
-        """
-        Yields pairs of tokens from the given iterator such that each input
-        token will appear as the first element in a yielded tuple. The last
-        pair will have None as its second element.
-        """
-        it = iter(it)
-        prev = it.next()
-        for el in it:
-            yield (prev, el)
-            prev = el
-        yield (prev, None)
 
     #////////////////////////////////////////////////////////////
     #{ Word tokenization
@@ -609,7 +608,7 @@ class PunktTrainer(_PunktBaseClass):
 
         # The remaining heuristics relate to pairs of tokens where the first
         # ends in a period.
-        for aug_tok1, aug_tok2 in self.pair_iter(tokens):
+        for aug_tok1, aug_tok2 in _pair_iter(tokens):
             if not aug_tok1.period_final or not aug_tok2:
                 continue
 
@@ -1102,7 +1101,7 @@ class PunktSentenceTokenizer(_PunktBaseClass,TokenizerI):
             ["(Sent1.)", "Sent2."].
         """
         realign = 0
-        for s1, s2 in self.pair_iter(sents):
+        for s1, s2 in _pair_iter(sents):
             s1 = s1[realign:]
             if not s2:
                 if s1:
@@ -1260,7 +1259,7 @@ class PunktSentenceTokenizer(_PunktBaseClass,TokenizerI):
         tokens, making use of the orthographic heuristic (4.1.1), collocation
         heuristic (4.1.2) and frequent sentence starter heuristic (4.1.3).
         """
-        for t1, t2 in self.pair_iter(tokens):
+        for t1, t2 in _pair_iter(tokens):
             self._second_pass_annotation(t1, t2)
             yield t1
 
