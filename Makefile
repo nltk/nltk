@@ -9,6 +9,7 @@
 PYTHON = python
 VERSION = $(shell python -c 'import nltk; print nltk.__version__')
 NLTK_URL = $(shell python -c 'import nltk; print nltk.__url__')
+UPLOAD = tools/googlecode_upload.py --project=nltk --config-dir=none
 
 .PHONY: usage all doc clean clean_code clean_up
 
@@ -22,7 +23,8 @@ usage:
 all: dist
 
 upload:
-	rsync -avP -e ssh dist/* $(USER)@frs.sourceforge.net:uploads/
+#	rsync -avP -e ssh dist/* $(USER)@frs.sourceforge.net:uploads/
+	$(PYTHON) $(UPLOAD) --user=$(GOOGLE_ACCT) --summary="NLTK $(VERSION) FILE_DESC" --labels=Featured FILE
 
 doc:
 	$(MAKE) -C doc all
