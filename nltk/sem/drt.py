@@ -164,7 +164,7 @@ class DRS(AbstractDrs, logic.Expression, RA.DRS):
         return False
     
     def str(self, syntax=logic.Tokens.NEW_NLTK):
-        return Tokens.DRS + '([' + ','.join([str(ref) for ref in self.refs]) + \
+        return '([' + ','.join([str(ref) for ref in self.refs]) + \
             '],[' + ', '.join([cond.str(syntax) for cond in self.conds]) + '])'
 
 def DrtVariableExpression(variable):
@@ -214,11 +214,14 @@ class DrtLambdaExpression(AbstractDrs, logic.LambdaExpression,
     def toFol(self):
         return logic.LambdaExpression(self.variable, self.term.toFol())
 
-class DrtOrExpression(AbstractDrs, logic.OrExpression, RA.OrExpression):
+class DrtBooleanExpression(AbstractDrs, logic.BooleanExpression):
+    pass
+
+class DrtOrExpression(DrtBooleanExpression, logic.OrExpression, RA.OrExpression):
     def toFol(self):
         return logic.OrExpression(self.first.toFol(), self.second.toFol())
 
-class DrtImpExpression(AbstractDrs, logic.ImpExpression, RA.ImpExpression):
+class DrtImpExpression(DrtBooleanExpression, logic.ImpExpression, RA.ImpExpression):
     def get_refs(self):
         return []
 
@@ -242,7 +245,8 @@ class DrtImpExpression(AbstractDrs, logic.ImpExpression, RA.ImpExpression):
             
         return accum
 
-class DrtIffExpression(AbstractDrs, logic.IffExpression, RA.IffExpression):
+class DrtIffExpression(DrtBooleanExpression, logic.IffExpression, 
+                       RA.IffExpression):
     def toFol(self):
         return logic.IffExpression(self.first.toFol(), self.second.toFol())
 
@@ -251,8 +255,7 @@ class DrtEqualityExpression(AbstractDrs, logic.EqualityExpression,
     def toFol(self):
         return logic.EqualityExpression(self.first.toFol(), self.second.toFol())
 
-class ConcatenationDRS(AbstractDrs, logic.BooleanExpression, 
-                       RA.ConcatenationDRS):
+class ConcatenationDRS(DrtBooleanExpression, RA.ConcatenationDRS):
     """DRS of the form '(DRS + DRS)'"""
     def replace(self, variable, expression, replace_bound=False):
         """Replace all instances of variable v with expression E in self,
@@ -340,6 +343,8 @@ class DrtApplicationExpression(AbstractDrs, logic.ApplicationExpression,
 
 class DrsDrawer:
     BUFFER = 3
+    TOPSPACE = 10
+    OUTERSPACE = 6
     
     def __init__(self, drs, size_canvas=True, canvas=None):
         """
@@ -360,8 +365,11 @@ class DrsDrawer:
                 canvas = Canvas(master, width=0, height=0)
                 canvas.font = font
                 self.canvas = canvas
-                (right, bottom) = self._visit(drs, self.BUFFER, self.BUFFER)
-                canvas = Canvas(master, width=max(right, 100), height=bottom)#, bg='white')
+                (right, bottom) = self._visit(drs, self.OUTERSPACE, self.TOPSPACE)
+                
+                width = max(right+self.OUTERSPACE, 100)
+                height = bottom+self.OUTERSPACE
+                canvas = Canvas(master, width=width, height=height)#, bg='white')
             else:
                 canvas = Canvas(master, width=300, height=300)
                 
@@ -376,7 +384,7 @@ class DrsDrawer:
         """Get the height of a line of text"""
         return self.canvas.font.metrics("linespace")
         
-    def draw(self, x=BUFFER, y=BUFFER):
+    def draw(self, x=OUTERSPACE, y=TOPSPACE):
         """Draw the DRS"""
         self._handle(self.drs, self._draw_command, x, y)
 
@@ -628,9 +636,13 @@ class DrtParser(logic.LogicParser):
             return self.handle_lambda(tok)
             
         elif tok == Tokens.OPEN:
-            return self.handle_open(tok)
+            if self.token(0) == Tokens.OPEN_BRACKET:
+                return self.handle_DRS()
+            else:
+                return self.handle_open(tok)
         
         elif tok.upper() == Tokens.DRS:
+            self.assertToken(self.token(), Tokens.OPEN)
             return self.handle_DRS()
 
         elif self.isvariable(tok):
@@ -641,7 +653,6 @@ class DrtParser(logic.LogicParser):
         
     def handle_DRS(self):
         # a DRS
-        self.assertToken(self.token(), Tokens.OPEN)
         self.assertToken(self.token(), Tokens.OPEN_BRACKET)
         refs = []
         while self.token(0) != Tokens.CLOSE_BRACKET:
@@ -651,7 +662,10 @@ class DrtParser(logic.LogicParser):
             else:
                 refs.append(logic.Variable(self.token()))
         self.token() # swallow the CLOSE_BRACKET token
-        self.assertToken(self.token(), Tokens.COMMA)
+        
+        if self.token(0) == Tokens.COMMA: #if there is a comma (it's optional)
+            self.assertToken(self.token(), Tokens.COMMA)
+            
         self.assertToken(self.token(), Tokens.OPEN_BRACKET)
         conds = []
         while self.token(0) != Tokens.CLOSE_BRACKET:
@@ -661,7 +675,8 @@ class DrtParser(logic.LogicParser):
             else:
                 conds.append(self.parse_Expression())
         self.token() # swallow the CLOSE_BRACKET token
-        self.assertToken(self.token(), Tokens.CLOSE) 
+        self.assertToken(self.token(), Tokens.CLOSE)
+         
         return DRS(refs, conds)
 
     def make_EqualityExpression(self, first, second):
