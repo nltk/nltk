@@ -204,6 +204,24 @@ class FreqDist(dict):
         """
         raise AttributeError, "Use indexing to look up an entry in a FreqDist, e.g. fd[item]"
 
+    def _cumulative_frequencies(self, samples=None):
+        """
+        Return the cumulative frequencies of the specified samples.
+        If no samples are specified, all counts are returned, starting
+        with the largest.
+
+        @return: The cumulative frequencies of the given samples.
+        @rtype: C{list} of C{float}
+        @param samples: the samples whose frequencies should be returned.
+        @type sample: any.
+        """
+        if not samples:
+            samples = self.sorted()
+        cf = 0.0
+        for sample in samples:
+            cf += self.freq(sample)
+            yield cf
+    
     def freq(self, sample):
         """
         Return the frequency of a given sample.  The frequency of a
@@ -249,7 +267,7 @@ class FreqDist(dict):
     def sorted_samples(self):
         raise AttributeError, "Use FreqDist.sorted() to get the sorted samples"
     
-    def plot(self, samples=None, num=50, *args, **kwargs):
+    def plot(self, samples=None, title=None, num=50, *args, **kwargs):
         """
         Plot the given samples from the frequency distribution (cumulative),
         displaying the most frequent sample first.
@@ -258,6 +276,8 @@ class FreqDist(dict):
         
         @param samples: The samples to plot (default is most frequent samples)
         @type samples: C{list}
+        @param title: The title for the graph
+        @type title: C{str}
         @param num: The maximum number of samples to plot (default=50).  Specify num=0 to get all samples (slow).
         @type num: C{int} 
         """
@@ -277,12 +297,13 @@ class FreqDist(dict):
             samples = samples[:num]
         
         # accumulate the values and scale them
-        values = [self[sample] for sample in samples]
-        values = [sum(values[:i+1]) * 100.0/self._N for i in range(len(values))]
+        freqs = list(self._cumulative_frequencies(samples))
+        percents = [f * 100 for f in freqs]
         
         pylab.grid(True, color="silver")
-        pylab.plot(values, *args, **kwargs)
+        pylab.plot(percents, *args, **kwargs)
         pylab.xticks(range(len(samples)), [str(s) for s in samples], rotation=90)
+        if title: pylab.title(title)
         pylab.xlabel("Samples")
         pylab.ylabel("Cumulative Percentage")
         pylab.show()
@@ -1300,7 +1321,7 @@ class ConditionalFreqDist(object):
             may contain zero sample outcomes.
         @rtype: C{list}
         """
-        return self._fdists.keys()
+        return sorted(self._fdists.keys())
 
     def __len__(self):
         """
@@ -1310,6 +1331,51 @@ class ConditionalFreqDist(object):
         """
         return len(self._fdists)
 
+    def plot(self, samples, title=None, conditions=None, *args, **kwargs):
+        """
+        Plot the given samples from the conditional frequency
+        distribution (cumulative).  (Requires Matplotlib to be installed.)
+        
+        @param samples: The samples to plot
+        @type samples: C{list}
+        @param title: The title for the graph
+        @type title: C{str}
+        @param conditions: The conditions to plot (default is all)
+        @type conditions: C{list}
+        """
+        try:
+            import pylab
+        except ImportError:
+            raise ValueError('The plot function requires the matplotlib package.'
+                         'See http://matplotlib.sourceforge.net/')
+        if not "linewidth" in kwargs:
+            kwargs["linewidth"] = 2
+        
+        if not conditions:
+            conditions = self.conditions()
+        
+        for condition in conditions:
+            freqs = list(self[condition]._cumulative_frequencies(samples))
+            percents = [f * 100 for f in freqs]
+            pylab.plot(percents, label=condition, *args, **kwargs) 
+
+        pylab.grid(True, color="silver")
+        pylab.xticks(range(len(samples)), [str(s) for s in samples], rotation=90)
+        pylab.legend(loc='lower right')
+        if title: pylab.title(title)
+        pylab.xlabel("Samples")
+        pylab.ylabel("Cumulative Percentage")
+        pylab.show()
+        
+    def __repr__(self):
+        """
+        @return: A string representation of this
+            C{ConditionalProbDist}.
+        @rtype: C{string}
+        """
+        return '<ConditionalProbDist with %d conditions>' % self.__len__()
+
+        
     def __repr__(self):
         """
         @return: A string representation of this
@@ -1454,15 +1520,6 @@ class ConditionalProbDist(ConditionalProbDistI):
     def __len__(self):
         return len(self._pdists)
 
-    def __repr__(self):
-        """
-        @return: A string representation of this
-            C{ConditionalProbDist}.
-        @rtype: C{string}
-        """
-        return '<ConditionalProbDist with %d conditions>' % self.__len__()
-
-        
 class DictionaryConditionalProbDist(ConditionalProbDistI):
     """
     An alternative ConditionalProbDist that simply wraps a dictionary of
