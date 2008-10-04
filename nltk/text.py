@@ -131,7 +131,7 @@ class Text(list):
         if '_word_context_map' not in self.__dict__:
             print "Building word-context index..."
             self._word_context_map = defaultdict(list)
-            for w1, w2, w3 in ngrams([w.lower() for w in self], 3): 
+            for w1, w2, w3 in ngrams([w.lower() for w in self if w.isalpha()], 3): 
                 self._word_context_map[w2].append( (w1, w3) )            
 
         word = word.lower()
