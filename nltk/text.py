@@ -6,6 +6,7 @@
 # For license information, see LICENSE.TXT
 
 import textwrap
+from math import log
 
 from probability import FreqDist, LidstoneProbDist
 from compat import defaultdict
@@ -171,7 +172,39 @@ class Text(list):
         @rtype: string
         """
         return self.__str__()
-        
+
+
+# Prototype only; this approach will be slow to load
+class TextCollection(Text):
+    """A collection of texts, which can be loaded with list of texts, or
+    with a corpus consisting of one or more texts, and which supports
+    counting, concordancing, collocation discovery, etc.  Initialize a
+    TextCollection as follows:
+    
+    >>> gutenberg = TextCollection(nltk.corpus.gutenberg)
+    >>> mytexts = TextCollection([text1, text2, text3])
+    
+    Iterating over a TextCollection produces all the tokens of all the
+    texts in order.
+    """
+    
+    def __init__(self, source):
+        if hasattr(source, 'words'): # bridge to the text corpus reader
+            self._texts = source.files()
+            list.__init__(self, source.words())
+        else: # source is a list of texts 
+            self._texts = source
+            list.__init__(self, [word for text in source for word in text])
+    
+    def tf(self, term, text, method=None):
+        return float(text.count(term)) / len(text)
+
+    def df(self, term, method=None):
+        return float(len(True for text in self._texts if term in text)) / len(self._texts)
+
+    def tf_idf(self, term, text):
+        return self.tf(term, text) / log(self.df(term))
+    
 def demo():
     from nltk.corpus import brown
     text = Text(brown.words(categories='a'))
