@@ -1,0 +1,96 @@
+    >>> import nltk
+    >>> from nltk.sem import logic, Variable
+    >>> lp = logic.LogicParser()
+    >>> e = lp.parse('all x.(girl(x) -> exists y.(dog(y) & chase(x,y)))')
+    >>> e
+    <AllExpression all x.(girl(x) -> exists y.(dog(y) & chase(x,y)))>
+
+    >>> e1 = lp.parse(r'\x.P(x)(y)')
+    >>> print e1.simplify()
+    P(y)
+    >>> e2 = lp.parse('all x.P(x,a,b)')
+    >>> print e2.free()
+    set([Variable('a'), Variable('b')])
+    >>> print e2.alpha_convert(Variable('z'))
+    all z.P(z,a,b)
+    >>> e3 = lp.parse('x')
+    >>> print e2.replace(Variable('b'), e3)
+    all z1.P(z1,a,x)
+
+    >>> from nltk.sem import parse_valuation, Model, Assignment
+    >>> v = """
+    ... suzie => s
+    ... fido => f
+    ... rover => r
+    ... girl => {s}
+    ... chase => {(f, s), (r, s), (s, f)}
+    ... """
+    >>> val = parse_valuation(v) #create a Valuation
+    >>> m = Model(val.domain, val) #initialize a Model
+    >>> g = Assignment(val.domain) #initialize an Assignment
+    >>> e4 = lp.parse('exists y. (girl(y) & chase(x, y))')
+    >>> m.satisfiers(e4, 'x', g) #check satisfiers of e4 wrt to x
+    set(['r', 'f'])
+
+    >>> from nltk.sem import drt
+    >>> dp = drt.DrtParser()
+    >>> d1 = dp.parse('([x][walk(x)]) + ([y][run(y)])')
+    >>> print d1
+    (([x],[walk(x)]) + ([y],[run(y)]))
+    >>> print d1.simplify()
+    ([x,y],[walk(x), run(y)])
+    >>> d2 = dp.parse('([x,y][Bill(x), Fred(y)])')
+    >>> d3 = dp.parse("""([][([u][Porsche(u), own(x,u)])
+    ...  ->  ([v][Ferrari(v),own(y,u)])])""")
+    >>> d4 = d2 + d3
+    >>> print d4.simplify()
+    ([x,y],[Bill(x), Fred(y),
+    (([u],[Porsche(u), own(x,u)]) -> ([v],[Ferrari(v), own(y,u)]))])
+
+    >>> from nltk.parse import load_earley
+    >>> parser = load_earley('grammars/sem1.fcfg', trace=0)
+    >>> tokens = 'a dog barks'.split()
+    >>> trees = parser.nbest_parse(tokens)
+    >>> print trees[0].node['sem'].simplify()
+    exists x.(dog(x) & bark(x))
+
+    >>> from nltk.sem import hole
+    >>> readings = hole.main('every girl chases a dog')
+    >>> for r in readings: print r
+    exists z3.(dog(z3) & all z8.(girl(z8) -> chase(z3,z8)))
+    all z8.(girl(z8) -> exists z3.(dog(z3) & chase(z3,z8)))
+
+    >>> from nltk_contrib.gluesemantics.glue import GlueFormula
+    >>> john = GlueFormula(r'john', 'g')
+    >>> walks = GlueFormula(r'\x.walk(x)', '(g -o f)')
+    >>> john_walks = walks.applyto(john)
+    >>> print john_walks.meaning.simplify()
+    walk(john)
+
+    >>> from nltk_contrib.gluesemantics.glue import GlueFormula, Glue
+    >>> a = GlueFormula(r'\Q.all x.(girl(x) -> Q(x))', '((g -o G) -o G)')
+    >>> b = GlueFormula(r'\x y.chase(x,y)', '(g -o (h -o f))')
+    >>> c = GlueFormula(r'\Q.exists x.(dog(x)&Q(x))', '((h -o H) -o H)')
+    >>> for reading in Glue.compile_to_meaning([a,b,c]):
+    ...     print reading.meaning.simplify()
+    all x.(girl(x) -> exists y.(dog(x) & chase(x,y)))
+    exists y.(dog(x) & all x.(girl(x) -> chase(x,y)))
+
+    >>> from nltk.inference import inference
+    >>> a = lp.parse('all x.(dog(x) -> bark(x))')
+    >>> b = lp.parse('dog(rover)')
+    >>> c = lp.parse('bark(rover)')
+    >>> prover = inference.get_prover(c, [a,b])
+    >>> prover.prove()
+    True
+
+    >>> a = lp.parse('all x.walk(x)')
+    >>> b = lp.parse('all y.walk(y)')
+    >>> a == b
+    True
+    >>> c = lp.parse('-(P(x) & Q(x))')
+    >>> d = lp.parse('-P(x) | -Q(x)')
+    >>> c == d
+    False
+    >>> c.tp_equals(d)
+    True
