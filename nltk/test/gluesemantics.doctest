@@ -331,18 +331,13 @@ Derivation:
 Automated Derivation
 --------------------
 	>>> logic._counter._value = 0
-
-    >>> glue = Glue(verbose=False, dependency=False)
+    >>> glue = Glue(verbose=False)
     >>> for reading in glue.parse_to_meaning('every girl chases a dog'): print reading.simplify()
-    all x.(girl(x) -> exists z1.(dog(z1) & chases(x,z1)))
-    exists x.(dog(x) & all z2.(girl(z2) -> chases(z2,x)))
+     all x.(girl(x) -> exists z1.(dog(z1) & exists e.(chase(e) & (subj(e,x) & obj(e,z1)))))
+    exists x.(dog(x) & all z2.(girl(z2) -> exists e.(chase(e) & (subj(e,z2) & obj(e,x)))))
 
-    >>> glue = Glue(verbose=False, dependency=True)
+	>>> logic._counter._value = 0
+    >>> glue = DrtGlue(verbose=False)
     >>> for reading in glue.parse_to_meaning('every girl chases a dog'): print reading.simplify()
-     all x.(girl(x) -> exists z3.(dog(z3) & exists e.(chase(e) & (subj(e,x) & obj(e,z3)))))
-    exists x.(dog(x) & all z4.(girl(z4) -> exists e.(chase(e) & (subj(e,z4) & obj(e,x)))))
-
-    >>> glue = DrtGlue(verbose=False, dependency=True)
-    >>> for reading in glue.parse_to_meaning('every girl chases a dog'): print reading.simplify()
-    DRS([],[(DRS([x],[girl(x)]) -> DRS([z5,e],[dog(z5), chase(e), subj(e,x), obj(e,z5)]))])
-    DRS([z6],[dog(z6), (DRS([x],[girl(x)]) -> DRS([e],[chase(e), subj(e,x), obj(e,z6)]))])
+    ([],[(([x],[girl(x)]) -> ([z1,e],[dog(z1), chase(e), subj(e,x), obj(e,z1)]))])
+    ([z2],[dog(z2), (([x],[girl(x)]) -> ([e],[chase(e), subj(e,x), obj(e,z2)]))])
