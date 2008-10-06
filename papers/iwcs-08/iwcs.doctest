@@ -1,10 +1,12 @@
-    >>> import nltk
-    >>> from nltk.sem import logic, Variable
+Done
+    >>> from nltk.sem import logic
     >>> lp = logic.LogicParser()
     >>> e = lp.parse('all x.(girl(x) -> exists y.(dog(y) & chase(x,y)))')
     >>> e
     <AllExpression all x.(girl(x) -> exists y.(dog(y) & chase(x,y)))>
 
+Done
+    >>> from nltk.sem import Variable
     >>> e1 = lp.parse(r'\x.P(x)(y)')
     >>> print e1.simplify()
     P(y)
@@ -17,6 +19,7 @@
     >>> print e2.replace(Variable('b'), e3)
     all z1.P(z1,a,x)
 
+Done
     >>> from nltk.sem import parse_valuation, Model, Assignment
     >>> v = """
     ... suzie => s
@@ -32,6 +35,7 @@
     >>> m.satisfiers(e4, 'x', g) #check satisfiers of e4 wrt to x
     set(['r', 'f'])
 
+Done
     >>> from nltk.sem import drt
     >>> dp = drt.DrtParser()
     >>> d1 = dp.parse('([x][walk(x)]) + ([y][run(y)])')
@@ -47,6 +51,11 @@
     ([x,y],[Bill(x), Fred(y),
     (([u],[Porsche(u), own(x,u)]) -> ([v],[Ferrari(v), own(y,u)]))])
 
+    >>> print d1.toFol()
+    (exists x.walk(x) & exists y.run(y))
+    >>> d4.simplify().draw()
+
+Done
     >>> from nltk.parse import load_earley
     >>> parser = load_earley('grammars/sem1.fcfg', trace=0)
     >>> tokens = 'a dog barks'.split()
@@ -54,12 +63,14 @@
     >>> print trees[0].node['sem'].simplify()
     exists x.(dog(x) & bark(x))
 
+Done
     >>> from nltk.sem import hole
     >>> readings = hole.main('every girl chases a dog')
     >>> for r in readings: print r
     exists z3.(dog(z3) & all z8.(girl(z8) -> chase(z3,z8)))
     all z8.(girl(z8) -> exists z3.(dog(z3) & chase(z3,z8)))
 
+FIX!
     >>> from nltk_contrib.gluesemantics.glue import GlueFormula
     >>> john = GlueFormula(r'john', 'g')
     >>> walks = GlueFormula(r'\x.walk(x)', '(g -o f)')
@@ -67,6 +78,7 @@
     >>> print john_walks.meaning.simplify()
     walk(john)
 
+FIX!
     >>> from nltk_contrib.gluesemantics.glue import GlueFormula, Glue
     >>> a = GlueFormula(r'\Q.all x.(girl(x) -> Q(x))', '((g -o G) -o G)')
     >>> b = GlueFormula(r'\x y.chase(x,y)', '(g -o (h -o f))')
@@ -76,6 +88,7 @@
     all x.(girl(x) -> exists y.(dog(x) & chase(x,y)))
     exists y.(dog(x) & all x.(girl(x) -> chase(x,y)))
 
+Done
     >>> from nltk.inference import inference
     >>> a = lp.parse('all x.(dog(x) -> bark(x))')
     >>> b = lp.parse('dog(rover)')
@@ -84,6 +97,7 @@
     >>> prover.prove()
     True
 
+Done
     >>> a = lp.parse('all x.walk(x)')
     >>> b = lp.parse('all y.walk(y)')
     >>> a == b
