@@ -12,6 +12,16 @@ from nltk.parse import *
 import lfg
 from nltk import data
 from nltk.internals import Counter
+from nltk_contrib.dependency import malt
+
+SPEC_SEMTYPES = {'a'       : 'ex_quant',
+                 'an'      : 'ex_quant',
+                 'every'   : 'univ_quant',
+                 'the'     : 'def_art',
+                 'no'      : 'no_quant',
+                 'default' : 'ex_quant'}
+
+OPTIONAL_RELATIONSHIPS = ['nmod', 'vmod']
 
 class GlueFormula:
     def __init__(self, meaning, glue, indices=None):
@@ -19,14 +29,14 @@ class GlueFormula:
             indices = set()
         
         if isinstance(meaning, str):
-            self.meaning = logic.LogicParser().parse(meaning)    # lp.parse('\\x.(<word> x)') -> LambdaExpression('x', '(<word> x)')
+            self.meaning = logic.LogicParser().parse(meaning)
         elif isinstance(meaning, logic.Expression):
             self.meaning = meaning
         else:
             raise RuntimeError, 'Meaning term neither string or expression: %s, %s' % (meaning, meaning.__class__)
             
         if isinstance(glue, str):
-            self.glue = linearlogic.LinearLogicParser().parse(glue) # llp.parse('(v -o r)') -> ApplicationExpression('(-o v)', 'r')
+            self.glue = linearlogic.LinearLogicParser().parse(glue)
         elif isinstance(glue, linearlogic.Expression):
             self.glue = glue
         else:
@@ -125,21 +135,21 @@ class GlueDict(dict):
 
             relationships = None
             
-            for (i, tok) in enumerate(parts[1]):
-                if tok == '(':
+            for (i, c) in enumerate(parts[1]):
+                if c == '(':
                     if parenCount == 0:             # if it's the first '(' of a tuple
                         tuple_start = i+1           # then save the index
                     parenCount += 1
-                elif tok == ')':
+                elif c == ')':
                     parenCount -= 1
                     if parenCount == 0:             # if it's the last ')' of a tuple
                         meaning_term =  parts[1][tuple_start:tuple_comma]   # '\\x.(<word> x)'
                         glue_term =     parts[1][tuple_comma+1:i]           # '(v-r)'
                         glue_formulas.append([meaning_term, glue_term])     # add the GlueFormula to the list
-                elif tok == ',':
+                elif c == ',':
                     if parenCount == 1:             # if it's a comma separating the parts of the tuple
                         tuple_comma = i             # then save the index
-                elif tok == '#':            # skip comments at the ends of lines
+                elif c == '#':            # skip comments at the ends of lines
                     if parenCount != 0:             # if the line hasn't parsed correctly so far
                         raise RuntimeError, 'Formula syntax is incorrect for entry ' + line
                     break                           # break to the next line
@@ -168,20 +178,33 @@ class GlueDict(dict):
                     accum += '\n'
         return accum
 
-    def lookup(self, sem, word, current_subj, fstruct):
-        relationships = frozenset([r for r in fstruct])
+    def get_semtype(self, sem, word, rel, current_subj, fstruct):
+        semtype_name = None
+        
+        if rel.lower() == 'spec':
+            if word.lower() in SPEC_SEMTYPES:
+                semtype_name = SPEC_SEMTYPES[word.lower()]
+            else:
+                semtype_name = SPEC_SEMTYPES['default']
+        elif rel.lower() == 'vmod':
+            semtype_name = 'vmod'
+        elif rel.lower() == 'nmod':
+            semtype_name = 'nmod'
+        else:
+            semtype_name = sem
+        
         try:
-            semtype = self[{'a'     : 'ex_quant',
-                            'an'    : 'ex_quant',
-                            'every' : 'univ_quant'
-                            }[word.lower()]]
-        except:
-            try:
-                semtype = self[sem]
-            except KeyError:
-                raise KeyError, "There is no GlueDict entry for sem type '%s' (for '%s')" %\
-                                (str(sem), word)
+            return self[semtype_name]
+        except KeyError:
+#            raise KeyError, "There is no GlueDict entry for sem type '%s' (for '%s')" % (str(sem), word)
+            return None
                                 
+    def lookup(self, sem, word, rel, current_subj, fstruct):
+        semtype = self.get_semtype(sem, word, rel, current_subj, fstruct)
+        if semtype is None: return []
+        
+        relationships = frozenset([r for r in fstruct if r not in OPTIONAL_RELATIONSHIPS])
+        
         try:
             lookup = semtype[relationships]
         except KeyError:
@@ -198,14 +221,18 @@ class GlueDict(dict):
                     best_match = None
                 else:
                     raise KeyError, "There is no GlueDict entry for sem type '%s' with the relationship set %s" %\
-                                    (str(sem),str(relationships))
+                                    (sem,list(relationships))
             lookup = semtype[best_match]
-                
+
+        return self.get_glueformulas_from_semtype_entry(lookup, word, fstruct)
+
+    def get_glueformulas_from_semtype_entry(self, lookup, word, fstruct):
         glueformulas = []
 
         glueFormulaFactory = self.get_GlueFormula_factory()
         for entry in lookup:
-            gf = glueFormulaFactory(entry[0].replace('<word>', word), entry[1])
+            meaning = self.get_meaning_formula(entry[0], word)
+            gf = glueFormulaFactory(meaning, entry[1])
             if len(glueformulas) == 0:
                 gf.word = word
             else:
@@ -223,21 +250,27 @@ class GlueDict(dict):
             glueformulas.append(gf)
         return glueformulas
 
+    def get_meaning_formula(self, generic, word):
+        """
+        @param generic: A meaning formula string containing the 
+        parameter "<word>"
+        @param word: The actual word to be replace "<word>"
+        """
+        word = word.replace('.', '')
+        return generic.replace('<word>', word)
+
     def get_GlueFormula_factory(self):
         return GlueFormula
 
 class Glue:
-    def __init__(self, verbose=False, dependency=False, semtype_file=None, remove_duplicates=False):
+    def __init__(self, verbose=False, semtype_file=None, remove_duplicates=False):
         self.verbose = verbose
-        self.dependency = dependency
         self.remove_duplicates = remove_duplicates
         
         if semtype_file:
             self.semtype_file = semtype_file
-        elif dependency:
-            self.semtype_file = 'glue_event.semtype'
         else:
-            self.semtype_file = 'glue.semtype'
+            self.semtype_file = 'glue_event.semtype'
     
     def parse_to_meaning(self, sentence):
         readings = []
@@ -322,21 +355,12 @@ class Glue:
             reading_list.append(glueformula.meaning)
         
     def parse_to_compiled(self, sentence='a man sees Mary'):
-        if self.dependency:
-            fstructs = [lfg.FStructure.read_depgraph(dep_graph) for dep_graph in self.dep_parse(sentence)]
-        else:
-            fstructs = [lfg.FStructure.read_parsetree(pt, [0]) for pt in self.earley_parse(sentence)]
+        fstructs = [lfg.read_depgraph(dep_graph) for dep_graph in self.dep_parse(sentence)]
         gfls = [self.fstruct_to_glue(f) for f in fstructs]
         return [self.gfl_to_compiled(gfl) for gfl in gfls]
     
     def dep_parse(self, sentence='every cat leaves'):
-        from nltk_contrib.dependency import malt
         return [malt.parse(sentence, 'glue', 'tnt', verbose=self.verbose)]
-    
-    def earley_parse(self, sentence='every cat leaves'):
-        from nltk.parse import load_earley
-        cp = load_earley(r'grammars/gluesemantics.fcfg')
-        return cp.nbest_parse(sentence.split())
     
     def fstruct_to_glue(self, fstruct):
         glueformulas = fstruct.to_glueformula_list(self.get_glue_dict(), [], verbose=self.verbose)
@@ -495,7 +519,7 @@ def proof_demo():
     every_girl_chases_a_dog = a_dog.applyto(every_girl_chases)
     print "      'every girl chases a dog': %s" % every_girl_chases_a_dog.simplify()
 
-def demo(show_example=-1, dependency=False):
+def demo(show_example=-1):
     examples = ['David sees Mary',
                 'David eats a sandwich',
                 'every man chases a dog',
@@ -513,15 +537,10 @@ def demo(show_example=-1, dependency=False):
                 'a former senator leaves']
 
     print '============== DEMO =============='
-    if dependency: 
-        print '     ====== DEPENDENCY ======     '
-    else: 
-        print '     ========= FCFG =========     '
-    
     for (i, sentence) in zip(range(len(examples)), examples):
         if i==show_example or show_example==-1:
             print '[[[Example %s]]]  %s' % (i, sentence)
-            for reading in Glue(verbose=False, dependency=dependency).parse_to_meaning(sentence):
+            for reading in Glue(verbose=False).parse_to_meaning(sentence):
                 print reading.simplify()
             print ''
     
@@ -534,25 +553,29 @@ def penn(verbose=False):
         depgraph = util.conll_to_depgraph(f.read())
         if verbose: print depgraph
         
-        fstruct = lfg.FStructure.read_depgraph(depgraph)
+        fstruct = lfg.read_depgraph(depgraph)
         if verbose: print fstruct
+
+        gfl = fstruct.to_glueformula_list(GlueDict('glue_event.semtype'))
+        if verbose: 
+            for gf in gfl: print gf
         
-        print fstruct
-        
+        readings = Glue().get_readings(Glue().gfl_to_compiled(gfl))
+        print 'Readings:', len(readings)
+        for r in readings:
+            print r
         
     finally:
         if f: f.close()
 
     
 if __name__ == '__main__':
-    proof_demo()
-    print "\n\n"
-    compile_demo()
-    print "\n\n"
-    compiled_proof_demo()
+#    proof_demo()
 #    print "\n\n"
-#    demo(dependency=False)
-    print "\n\n"
-    demo(dependency=True)
+#    compile_demo()
+#    print "\n\n"
+#    compiled_proof_demo()
+#    print "\n\n"
+#    demo()
 
-    penn()
+    penn(True)

@@ -377,7 +377,7 @@ class DrtGlueDemo(object):
                     self._error = cache
             else:
                 try:
-                    self._readings = DrtGlue(dependency=True, remove_duplicates=self._remove_duplicates).parse_to_meaning(example)
+                    self._readings = DrtGlue(remove_duplicates=self._remove_duplicates).parse_to_meaning(example)
                     self._error = None
                     self._readingCache[index] = self._readings
                 except Exception, e:

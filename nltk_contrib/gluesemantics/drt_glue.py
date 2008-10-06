@@ -47,17 +47,13 @@ class DrtGlueDict(glue.GlueDict):
         return DrtGlueFormula
 
 class DrtGlue(glue.Glue):
-    def __init__(self, verbose=False, dependency=False, semtype_file=None, remove_duplicates=False):
+    def __init__(self, verbose=False, semtype_file=None, remove_duplicates=False):
         self.verbose = verbose
-        self.dependency = dependency
         self.remove_duplicates = remove_duplicates
         
         if semtype_file:
             self.semtype_file = semtype_file
-        elif dependency:
-            self.semtype_file = 'drt_glue_event.semtype'
-        else:
-            self.semtype_file = 'drt_glue.semtype'
+        self.semtype_file = 'drt_glue_event.semtype'
 
     def get_glue_dict(self):
         return DrtGlueDict(self.semtype_file)
@@ -222,7 +218,7 @@ def demo(show_example=-1, remove_duplicates=False):
     for sentence in examples():
         if example_num==show_example or show_example==-1:
             print '[[[Example %s]]]  %s' % (example_num, sentence)
-            glueclass = DrtGlue(verbose=False, dependency=True, remove_duplicates=remove_duplicates)
+            glueclass = DrtGlue(verbose=False, remove_duplicates=remove_duplicates)
             readings = glueclass.parse_to_meaning(sentence)
             for reading in readings:
                 print reading.simplify().resolve_anaphora()
@@ -299,8 +295,7 @@ def test_malt_parse():
               #'a man ran'
               ]:
         print s
-        for reading in parse_to_meaning(s, dependency=True, verbose=True):
-            #print '    ', reading
+        for reading in parse_to_meaning(s, verbose=True):
             print '    ', reading.simplify()
             print '        ', reading.simplify().toFol()
 
