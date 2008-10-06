@@ -4,15 +4,22 @@
 # Entries are links from semantics types to Lists of Glue Formulas
 #############################
 
-art_def : (\P Q.exists x.(P(x) & all y.(Q(y) <-> (x = y))), ((v -o r) -o ((f -o Var) -o Var)))
-cc_clause : (\P Q.(P & Q), (a -o (b -o f)))
+#Quantifiers
+def_art : (\P Q.exists x.(P(x) & all y.(Q(y) <-> (x = y))), ((v -o r) -o ((f -o Var) -o Var)))
 ex_quant : (\P Q.exists x.(P(x) & Q(x)), ((v -o r) -o ((f -o Var) -o Var)))
-NN :  (\x.<word>(x), (v -o r)) : [spec]
-NN :  (\Q.exists x.(<word>(x) & Q(x)), ((f -o Var) -o Var)) : [] # treat a noun missing its spec as implicitly existentially quantified
-no_quant : (\P Q.-exists x.(P(x) & Q(x)), ((v -o r) -o ((f -o Var) -o Var)))
-NNP : (\P.exists x.(<word>(x) & P(x)), ((f -o Var) -o Var))
-PRP : (\P.exists x.(PRO(x) & P(x)), ((f -o Var) -o Var))
 univ_quant : (\P Q.all x.(P(x) -> Q(x)), ((v -o r) -o ((f -o Var) -o Var)))
+no_quant : (\P Q.-exists x.(P(x) & Q(x)), ((v -o r) -o ((f -o Var) -o Var)))
+
+#Nouns
+NN : (\x.<word>(x), (v -o r)) : [spec]
+NN : (\P Q.exists x.(P(x) & Q(x)), ((v -o r) -o ((f -o Var) -o Var))), (\x.<word>(x), (v -o r)) : [] # treat a noun missing its spec as implicitly existentially quantified
+NNP : (\P Q.exists x.(P(x) & Q(x)), ((v -o r) -o ((f -o Var) -o Var))), (\x.<word>(x), (v -o r))
+NNS : (\x.<word>(x), (v -o r)) : [spec]
+NNS : (\P Q.exists x.(P(x) & Q(x)), ((v -o r) -o ((f -o Var) -o Var))), (\x.<word>(x), (v -o r)) : [] # treat a noun missing its spec as implicitly existentially quantified
+PRP : (\P Q.exists x.(P(x) & Q(x)), ((v -o r) -o ((f -o Var) -o Var))), (\x.PRO(x), (v -o r))
+
+
+#Verbs
 VB : (\x.exists e.(<word>(e) & subj(e,x)), (subj -o f)) [subj] #iv
 VB : (\x y.exists e.(<word>(e) & subj(e,x) & obj(e,y)), (subj -o (obj -o f))) : [subj, obj] #tv
 VB : (\x y z.exists e.(<word>(e) & subj(e,x) & obj(e,y) & theme(e,z)), (subj -o (obj -o (theme -o f)))) : [subj, obj, theme] #dtv
@@ -23,3 +30,12 @@ VB : (\x y.exists e.(<word>(e) & subj(e,x) & comp(e,y) & P(e)), (subj -o (comp -
 VB : (\x P.exists e.(<word>(e) & subj(e,x) & xcomp(e,P)), (subj -o ((xcomp.subj -o xcomp) -o f))) : [subj, xcomp] #equi
 VB : (\x y P.exists e.(<word>(e) & subj(e,x) & obj(e,y) & (xcomp e P)), (subj -o (obj -o ((xcomp.subj -o xcomp) -o f)))) : [subj, obj, xcomp] # object equi
 VB : (\P.exists e.(<word>(e) & xcomp(e,P)), (xcomp -o f)) : [xcomp] #raising
+
+#Modifiers
+JJ : (\P x.(P(x) & <word>(x)), ((super.v -o super.r) -o (super.v -o super.r)))
+nmod : (\P x.(P(x) & <word>(x)), ((super.v -o super.r) -o (super.v -o super.r)))
+vmod : (\P x.(P(x) & <word>(x)), (f -o f))
+tense : (\P.<word>(P), (f -o f))
+
+#Conjunctions
+cc_clause : (\P Q.(P & Q), (a -o (b -o f)))
