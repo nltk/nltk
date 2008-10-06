@@ -319,8 +319,8 @@ In this case, each DRS is converted to a first order logic form, and then
 passed to the theorem prover.
 
     >>> from nltk.sem.drt import DrtParser
-    >>> a = DrtParser().parse(r'drs([x],[man(x), walks(x)])')
-    >>> b = DrtParser().parse(r'drs([x],[walks(x), man(x)])')
+    >>> a = DrtParser().parse(r'([x],[man(x), walks(x)])')
+    >>> b = DrtParser().parse(r'([x],[walks(x), man(x)])')
     >>> print a.tp_equals(b)
     True
 
@@ -336,8 +336,8 @@ For example, the ``drt_glue`` module generates two readings for the sentence
     >>> 
     >>> for drs in readings: print drs.simplify()
     ...
-    DRS([x,z1],[Mary(x), John(z1), sees(z1,x)])
-    DRS([x,z2],[John(x), Mary(z2), sees(x,z2)])
+    ([x,z1,e],[Mary(x), John(z1), see(e), subj(e,z1), obj(e,x)])
+    ([x,z2,e],[John(x), Mary(z2), see(e), subj(e,x), obj(e,z2)])
 
 However, it is easy to tell that these two readings are logically the
 same, and therefore one of them is superfluous.  We can use the theorem prover
@@ -345,7 +345,7 @@ to determine this equivalence, and then delete one of them.  A particular
 theorem prover may be specified, or the argument may be left off to use the
 default.
 
-    >>> readings[0].tp_equals(readings[1])
+    >>> readings[0].tp_equals(readings[1], 'Prover9')
     True
 
 --------------------------------
