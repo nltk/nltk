@@ -83,6 +83,7 @@ setup(
                 'nltk_contrib.mit.six863.tagging',
                 'nltk_contrib.readability',
                 'nltk_contrib.rte',
+                'nltk_contrib.tag',
                 'nltk_contrib.toolbox',
                 'yaml'
                 ],
