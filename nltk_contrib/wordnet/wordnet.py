@@ -13,7 +13,7 @@ VERB = 'v'
 
 _lemma_pos_offset_map = _collections.defaultdict(dict)
 _data_file_map = {}
-#_lexnames = []
+_lexnames = []
 
 class WordNetError(Exception):
     pass
@@ -357,8 +357,8 @@ class Synset(_WordNetObject):
             self.offset = int(next())
 
             # determine the lexicographer file name
-#            lexname_index = int(next())
-#            self.lexname = _lexnames[lexname_index]
+            lexname_index = int(next())
+            self.lexname = _lexnames[lexname_index]
 
             # get the part of speech
             self.pos = next()
@@ -480,11 +480,11 @@ def _load():
     _data_file_map[VERB] = open(_os.path.join(dict_dir, 'data.verb'))
 
     # load the lexnames
-#    lexnames_path = _os.path.join(dict_dir, 'lexnames')
-#    for i, line in enumerate(open(lexnames_path)):
-#        index, lexname, _ = line.split()
-#        assert int(index) == i
-#        _lexnames.append(lexname)
+    lexnames_path = _os.path.join(dict_dir, 'lexnames')
+    for i, line in enumerate(open(lexnames_path)):
+        index, lexname, _ = line.split()
+        assert int(index) == i
+        _lexnames.append(lexname)
 
     # load indices for lemmas and synset offsets
     for suffix in ['adj', 'adv', 'noun', 'verb']:
@@ -543,7 +543,7 @@ def demo():
     L = wn.Lemma
 
     move_synset = S('go.v.21')
-    print move_synset.name, move_synset.pos #, move_synset.lexname
+    print move_synset.name, move_synset.pos, move_synset.lexname
     print [lemma.name for lemma in move_synset.lemmas]
     print move_synset.definitions
     print move_synset.examples
@@ -551,8 +551,11 @@ def demo():
     zap_n = ['zap.n.01']
     zap_v = ['zap.v.01', 'zap.v.02', 'nuke.v.01', 'microwave.v.01']
 
-    zap_n_synsets = self._get_synsets(zap_n)
-    zap_v_synsets = self._get_synsets(zap_v)
+    def _get_synsets(synset_strings):
+        return [S(synset) for synset in synset_strings]
+
+    zap_n_synsets = _get_synsets(zap_n)
+    zap_v_synsets = _get_synsets(zap_v)
     zap_synsets = set(zap_n_synsets + zap_v_synsets)
 
     print zap_n_synsets
