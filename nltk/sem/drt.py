@@ -213,6 +213,15 @@ class DrtNegatedExpression(AbstractDrs, logic.NegatedExpression,
 
 class DrtLambdaExpression(AbstractDrs, logic.LambdaExpression, 
                           RA.LambdaExpression):
+    def alpha_convert(self, newvar):
+        """Rename all occurrences of the variable introduced by this variable
+        binder in the expression to @C{newvar}.
+        @param newvar: C{Variable}, for the new variable
+        """
+        return self.__class__(newvar, self.term.replace(self.variable, 
+                          DrtVariableExpression(newvar), True), 
+                          self._type_check)
+
     def toFol(self):
         return logic.LambdaExpression(self.variable, self.term.toFol())
 
@@ -719,59 +728,58 @@ class DrtParser(logic.LogicParser):
     
     def make_LambdaExpression(self, variables, term):
         return DrtLambdaExpression(variables, term)
+
     
 def demo():
-    n = Tokens.NEW_NLTK
     print '='*20 + 'TEST PARSE' + '='*20
     parser = DrtParser()
-    print parser.parse(r'DRS([x,y],[sees(x,y)])')
-    print parser.parse(r'DRS([x],[man(x), walks(x)])')
-    print parser.parse(r'\x.\y.DRS([],[sees(x,y)])')
-    print parser.parse(r'\x.DRS([],[walks(x)])(john)')
-    print parser.parse(r'(DRS([x],[walks(x)]) + DRS([y],[runs(y)]))')
-    print parser.parse(r'(DRS([],[walks(x)]) -> DRS([],[runs(x)]))')
-    print parser.parse(r'DRS([x],[PRO(x), sees(John,x)])')
-    print parser.parse(r'DRS([x],[man(x), -DRS([],[walks(x)])])')
-    print parser.parse(r'DRS([],[(DRS([x],[man(x)]) -> DRS([],[walks(x)]))])')
+    print parser.parse(r'([x,y],[sees(x,y)])')
+    print parser.parse(r'([x],[man(x), walks(x)])')
+    print parser.parse(r'\x.\y.([],[sees(x,y)])')
+    print parser.parse(r'\x.([],[walks(x)])(john)')
+    print parser.parse(r'(([x],[walks(x)]) + ([y],[runs(y)]))')
+    print parser.parse(r'(([],[walks(x)]) -> ([],[runs(x)]))')
+    print parser.parse(r'([x],[PRO(x), sees(John,x)])')
+    print parser.parse(r'([x],[man(x), -([],[walks(x)])])')
+    print parser.parse(r'([],[(([x],[man(x)]) -> ([],[walks(x)]))])')
 
     print '='*20 + 'Test toFol()' + '='*20
-    print parser.parse(r'DRS([x,y],[sees(x,y)])').toFol()
+    print parser.parse(r'([x,y],[sees(x,y)])').toFol()
 
 
     print '='*20 + 'Test alpha conversion and lambda expression equality' + '='*20
-    e1 = parser.parse(r'\x.drs([],[P(x)])')
+    e1 = parser.parse(r'\x.([],[P(x)])')
     print e1
-    e2 = e1.alpha_convert(DrtVariableExpression('z'))
+    e2 = e1.alpha_convert(Variable('z'))
     print e2
     print e1 == e2
 
     print '='*20 + 'Test resolve_anaphora()' + '='*20
-    print parser.parse(r'DRS([x,y,z],[dog(x), cat(y), walks(z), PRO(z)])').resolve_anaphora()
-    print parser.parse(r'DRS([],[(DRS([x],[dog(x)]) -> DRS([y],[walks(y), PRO(y)]))])').resolve_anaphora()
-    print parser.parse(r'(DRS([x,y],[]) + DRS([],[PRO(x)]))').resolve_anaphora()
-    print parser.parse(r'DRS([x],[walks(x), PRO(x)])').resolve_anaphora()
+    print parser.parse(r'([x,y,z],[dog(x), cat(y), walks(z), PRO(z)])').resolve_anaphora()
+    print parser.parse(r'([],[(([x],[dog(x)]) -> ([y],[walks(y), PRO(y)]))])').resolve_anaphora()
+    print parser.parse(r'(([x,y],[]) + ([],[PRO(x)]))').resolve_anaphora()
 
     print '='*20 + 'Test tp_equals()' + '='*20
-    a = parser.parse(r'DRS([x],[man(x), walks(x)])')
-    b = parser.parse(r'DRS([x],[walks(x), man(x)])')
+    a = parser.parse(r'([x],[man(x), walks(x)])')
+    b = parser.parse(r'([x],[walks(x), man(x)])')
     print a.tp_equals(b)
     
         
 def test_draw():
     expressions = [
             r'x',
-            r'DRS([],[])',
-            r'DRS([x],[])',
-            r'DRS([x],[man(x)])',
+            r'([],[])',
+            r'([x],[])',
+            r'([x],[man(x)])',
 
-            r'drs([x,y],[sees(x,y)])',
-            r'drs([x],[man(x), walks(x)])',
-            r'\x.drs([],[man(x), walks(x)])',
-            r'\x y.drs([],[sees(x,y)])',
-            r'drs([],[(drs([],[walks(x)]) + drs([],[runs(x)]))])',
+            r'([x,y],[sees(x,y)])',
+            r'([x],[man(x), walks(x)])',
+            r'\x.([],[man(x), walks(x)])',
+            r'\x y.([],[sees(x,y)])',
+            r'([],[(([],[walks(x)]) + ([],[runs(x)]))])',
             
-            r'drs([x],[man(x), -drs([],[walks(x)])])',
-            r'drs([],[(drs([x],[man(x)]) -> drs([],[walks(x)]))])'
+            r'([x],[man(x), -([],[walks(x)])])',
+            r'([],[(([x],[man(x)]) -> ([],[walks(x)]))])'
             ]
     
     for e in expressions:
