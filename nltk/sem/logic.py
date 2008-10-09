@@ -264,7 +264,7 @@ class Expression(SubstituteBindingsI):
         Find the expression's type.  
         For example the expression "\x.\y.see(x,y)" will yield "<e,<e,t>>"
         """
-        if self._type is None and self._type_check:
+        if self._type_check and self._type is None:
             self._type = self._gettype() #cache the type
         return self._type
 
@@ -1210,7 +1210,7 @@ def is_funcvar(expr):
 
 
 def demo():
-    lp = LogicParser()
+    p = LogicParser().parse
     print '='*20 + 'Test parser' + '='*20
     print p(r'john')
     print p(r'man(x)')
@@ -1234,7 +1234,7 @@ def demo():
     print '='*20 + 'Test alpha conversion and binder expression equality' + '='*20
     e1 = p('exists x.P(x)')
     print e1
-    e2 = e1.alpha_convert(VariableExpression('z'))
+    e2 = e1.alpha_convert(Variable('z'))
     print e2
     print e1 == e2
         
