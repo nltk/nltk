@@ -151,19 +151,6 @@ def _read_depgraph(node, depgraph, label_counter=None, parent=None):
         for child in children:
             self.safeappend(child['rel'], _read_depgraph(child, depgraph, label_counter, self))
 
-        # for auxillary verbs, link features to the main verb
-        if tag == 'MD':
-            for feature in self:
-                for item in self[feature]:
-                    if isinstance(item, FStructure) and \
-                       item.pred[1][:2] == 'VB':
-                        for feat in self:
-                            for it in self[feat]:
-                                if id(it) != id(item): #don't link to itself
-                                    item.safeappend(feat, it)
-            if word.lower() == 'will':
-                self.lookup_unique('main').safeappend('tense', ('FUTURE', 'tense'))
-
         return self
 
 

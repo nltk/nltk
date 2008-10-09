@@ -34,7 +34,8 @@ class DepGraph(object):
         self.stream = None
 
     def __str__(self):
-        return pformat(self.nodelist)
+#        return '\n'.join([str(n) for n in self.nodelist])
+        return '\n'.join([', '.join(['%s: %15s'%item for item in n.iteritems()]) for n in self.nodelist])
                         
     def load(self, file):
         """
