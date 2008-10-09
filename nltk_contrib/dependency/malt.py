@@ -8,6 +8,8 @@
 import os
 import tempfile
 import subprocess
+import glob
+from operator import add
 from nltk import tokenize
 from nltk.stem.wordnet import WordnetStemmer
 from nltk_contrib.dependency import DepGraph, util
@@ -41,19 +43,20 @@ def config_malt(bin=None, verbose=False):
     
     _malt_bin = malt_bin
     return _malt_bin
-    
-    
-        
   
 #: A list of directories that should be searched for the malt
 #: executables.  This list is used by L{config_malt} when searching
 #: for the malt executables.
-malt_path = ['.',
-             '/usr/lib/malt-1.0.4',
+_malt_path = ['.',
+             '/usr/lib/malt-1*',
              '/usr/local/bin',
-             '/usr/local/bin/malt-1.0.4',
-             '/usr/local/malt-1.0.4',
-             '/usr/local/share/malt-1.0.4']
+             '/usr/local/malt-1*',
+             '/usr/local/bin/malt-1*',
+             '/usr/local/malt-1*',
+             '/usr/local/share/malt-1*']
+
+# Expand wildcards in _malt_path:
+malt_path = reduce(add, map(glob.glob, _malt_path))
 
 ######################################################################
 #{ Interface to Binaries
