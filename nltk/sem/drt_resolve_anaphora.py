@@ -12,6 +12,11 @@ modified or swapped out to test different resolution techniques.
 
 from nltk.sem import logic
 
+
+class AnaphoraResolutionException(Exception):
+    pass
+
+
 class DRS:
     def resolve_anaphora(self, trail=[]):
         r_conds = []
@@ -19,8 +24,12 @@ class DRS:
             r_cond = cond.resolve_anaphora(trail + [self])
             
             # if the condition is of the form '(x = [])' then do not include it
-            if not isinstance(r_cond, EqualityExpression) or not r_cond.isNullResolution():
+            if not isinstance(r_cond, EqualityExpression) or \
+               not r_cond.isNullResolution():
                 r_conds.append(r_cond)
+            else:
+                raise AnaphoraResolutionException("Variable '%s' does not "
+                        "resolve to anything." % r_cond.get_assigned_variable())
                 
         return self.__class__(self.refs, r_conds)
     
@@ -60,6 +69,17 @@ class EqualityExpression(BinaryExpression):
     def isNullResolution(self):
         return (isinstance(self.second, PossibleAntecedents) and not self.second) or \
                 (isinstance(self.first, PossibleAntecedents) and not self.first)
+                
+    def get_assigned_variable(self):
+        """
+        Since an equality expression will assign a variable to something, but
+        that variable may be on either side of the equality sign, return the
+        variable no matter which side it is on.
+        """
+        if isinstance(self.first, AbstractVariableExpression):
+            return self.first
+        else:
+            return self.second
 
 class ConcatenationDRS(BooleanExpression):
     pass
@@ -69,12 +89,9 @@ class ApplicationExpression:
         if self.is_pronoun_function():
             possible_antecedents = PossibleAntecedents()
             for ancestor in trail:
-                try:
-                    refexs = [self.make_VariableExpression(ref) 
-                              for ref in ancestor.get_refs()]
-                    possible_antecedents.extend(refexs)
-                except AttributeError:
-                    pass #the ancestor does not have a get_refs method
+                refexs = [self.make_VariableExpression(ref) 
+                          for ref in ancestor.get_refs()]
+                possible_antecedents.extend(refexs)
                 
             #===============================================================================
             #   This line ensures that statements of the form ( x = x ) wont appear.

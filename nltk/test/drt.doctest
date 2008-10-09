@@ -105,6 +105,10 @@ Simplify
     >>> d2 = dp.parse(r'([x,z1],[man(x), walks(z1)])')
     >>> d1 == d2
     True
+    >>> d1 = dp.parse(r'([y],[boy(y), (([x],[dog(x)]) -> ([],[chase(x,y)]))])+([x],[run(x)])').simplify()
+    >>> d2 = dp.parse(r'([y,z1],[boy(y), (([x],[dog(x)]) -> ([],[chase(x,y)])), run(z1)])')
+    >>> d1 == d2
+    True
         
     >>> d1 = dp.parse(r'\Q.(([x],[john(x),walks(x)]) + Q)(([x],[PRO(x),leaves(x)]))').simplify()
     >>> d2 = dp.parse(r'([x,z1],[john(x), walks(x), PRO(z1), leaves(z1)])')
@@ -148,6 +152,7 @@ toFol()
     (P(x) & exists x.walks(x))
 
 resolve_anaphora()
+    >>> from nltk.sem.drt_resolve_anaphora import AnaphoraResolutionException
 
     >>> print dp.parse(r'([x,y,z],[dog(x), cat(y), walks(z), PRO(z)])').resolve_anaphora()
     ([x,y,z],[dog(x), cat(y), walks(z), (z = [x,y])])
@@ -155,8 +160,9 @@ resolve_anaphora()
     ([],[(([x],[dog(x)]) -> ([y],[walks(y), (y = x)]))])
     >>> print dp.parse(r'(([x,y],[]) + ([],[PRO(x)]))').resolve_anaphora().simplify()
     ([x,y],[(x = y)])
-    >>> print dp.parse(r'([x],[walks(x), PRO(x)])').resolve_anaphora()
-    ([x],[walks(x)])
+    >>> try: print dp.parse(r'([x],[walks(x), PRO(x)])').resolve_anaphora()
+    ... except AnaphoraResolutionException, e: print e
+    Variable 'x' does not resolve to anything.
     
     
 replace():

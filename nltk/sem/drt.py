@@ -120,18 +120,14 @@ class DRS(AbstractDrs, logic.Expression, RA.DRS):
                         for cond in self.conds])
 
     def variables(self):
-        """
-        @see: logic.Expression.variables()
-        """
+        """@see: logic.Expression.variables()"""
         conds_free = set()
         for cond in self.conds:
             conds_free |= cond.variables()
         return conds_free - set(self.refs)
     
     def free(self, indvar_only=True):
-        """
-        @see: logic.Expression.free()
-        """
+        """@see: logic.Expression.free()"""
         conds_free = set()
         for cond in self.conds:
             conds_free |= cond.free(indvar_only)
@@ -139,7 +135,10 @@ class DRS(AbstractDrs, logic.Expression, RA.DRS):
 
     def get_refs(self):
         return self.refs
-    
+        
+    def get_all_refs(self):
+        return self.refs + reduce(lambda x,y: x+y, [cond.get_all_refs() 
+                                                    for cond in self.conds], [])
     def simplify(self):
         return DRS(self.refs, [cond.simplify() for cond in self.conds])
     
@@ -189,6 +188,9 @@ class DrtAbstractVariableExpression(AbstractDrs,
     def get_refs(self):
         return []
 
+    def get_all_refs(self):
+        return []
+
 class DrtFunctionVariableExpression(DrtAbstractVariableExpression, 
                                     logic.FunctionVariableExpression, 
                                     RA.AbstractVariableExpression):
@@ -215,16 +217,17 @@ class DrtLambdaExpression(AbstractDrs, logic.LambdaExpression,
         return logic.LambdaExpression(self.variable, self.term.toFol())
 
 class DrtBooleanExpression(AbstractDrs, logic.BooleanExpression):
-    pass
+    def get_refs(self):
+        return []
+
+    def get_all_refs(self):
+        return self.first.get_all_refs() + self.second.get_all_refs()
 
 class DrtOrExpression(DrtBooleanExpression, logic.OrExpression, RA.OrExpression):
     def toFol(self):
         return logic.OrExpression(self.first.toFol(), self.second.toFol())
 
 class DrtImpExpression(DrtBooleanExpression, logic.ImpExpression, RA.ImpExpression):
-    def get_refs(self):
-        return []
-
     def toFol(self):
         first_drs = self.first
         second_drs = self.second
@@ -255,6 +258,12 @@ class DrtEqualityExpression(AbstractDrs, logic.EqualityExpression,
     def toFol(self):
         return logic.EqualityExpression(self.first.toFol(), self.second.toFol())
 
+    def get_refs(self):
+        return []
+
+    def get_all_refs(self):
+        return self.first.get_all_refs() + self.second.get_all_refs()
+
 class ConcatenationDRS(DrtBooleanExpression, RA.ConcatenationDRS):
     """DRS of the form '(DRS + DRS)'"""
     def replace(self, variable, expression, replace_bound=False):
@@ -265,7 +274,7 @@ class ConcatenationDRS(DrtBooleanExpression, RA.ConcatenationDRS):
 
         # If variable is bound by both first and second 
         if isinstance(first, DRS) and isinstance(second, DRS) and \
-           variable in (set(first.get_refs()) & set(second.get_refs())):
+           variable in (set(first.get_all_refs()) & set(second.get_all_refs())):
             first  = first.replace(variable, expression, True)
             second = second.replace(variable, expression, True)
             
@@ -283,7 +292,7 @@ class ConcatenationDRS(DrtBooleanExpression, RA.ConcatenationDRS):
 
         else:
             # alpha convert every ref that is free in 'expression'
-            for ref in (set(self.get_refs()) & expression.free()): 
+            for ref in (set(self.get_all_refs()) & expression.free()): 
                 v = DrtVariableExpression(unique_variable())
                 first  = first.replace(ref, v, True)
                 second = second.replace(ref, v, True)
@@ -293,16 +302,13 @@ class ConcatenationDRS(DrtBooleanExpression, RA.ConcatenationDRS):
             
         return self.__class__(first, second)
     
-    def get_refs(self):
-        return self.first.get_refs() + self.second.get_refs()
-            
     def simplify(self):
         first = self.first.simplify()
         second = self.second.simplify()
 
         if isinstance(first, DRS) and isinstance(second, DRS):
             # For any ref that is in both 'first' and 'second'
-            for ref in (set(first.refs) & set(second.refs)):
+            for ref in (set(first.get_all_refs()) & set(second.get_all_refs())):
                 # alpha convert the ref in 'second' to prevent collision
                 newvar = DrtVariableExpression(unique_variable())
                 second = second.replace(ref, newvar, True)
@@ -311,6 +317,9 @@ class ConcatenationDRS(DrtBooleanExpression, RA.ConcatenationDRS):
         else:
             return self.__class__(first,second)
         
+    def get_refs(self):
+        return self.first.get_all_refs() + self.second.get_all_refs()
+
     def getOp(self, syntax=logic.Tokens.NEW_NLTK):
         return Tokens.DRS_CONC
     
@@ -340,6 +349,9 @@ class DrtApplicationExpression(AbstractDrs, logic.ApplicationExpression,
 
     def get_refs(self):
         return []
+
+    def get_all_refs(self):
+        return self.function.get_all_refs() + self.argument.get_all_refs()
 
 class DrsDrawer:
     BUFFER = 3
