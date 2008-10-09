@@ -327,16 +327,36 @@ Derivation:
     >>> print g12345.simplify()
     exists x.(man(x) & walks(x)) : f : {1, 2, 3, 4, 5}
 
+---------------------------------
+Dependency Graph to Glue Formulas
+---------------------------------
+    >>> from nltk_contrib.dependency import util
+    >>> logic._counter._value = 0
+    >>> glue = Glue()
+    
+    >>> f = open(os.environ['NLTK_DATA'] + '/grammars/dep_test2.dep')
+    >>> depgraph = util.conll_to_depgraph(f.read())
+	>>> gfl = GlueDict('glue_event.semtype').to_glueformula_list(depgraph)
+    >>> for gf in gfl: print gf
+    \x y.exists e.(sees(e) & (subj(e,x) & obj(e,y))) : (f -o (i -o g))
+    \P Q.exists x.(P(x) & Q(x)) : ((fv -o fr) -o ((f -o F1) -o F1))
+    \x.John(x) : (fv -o fr)
+    \x.dog(x) : (iv -o ir)
+    \P Q.exists x.(P(x) & Q(x)) : ((iv -o ir) -o ((i -o I1) -o I1))
+    >>> for r in glue.get_readings(glue.gfl_to_compiled(gfl)): print r.simplify()
+    exists x.(John(x) & exists z1.(dog(z1) & exists e.(sees(e) & (subj(e,x) & obj(e,z1)))))
+    exists x.(dog(x) & exists z2.(John(z2) & exists e.(sees(e) & (subj(e,z2) & obj(e,x)))))
+
 --------------------
 Automated Derivation
 --------------------
-	>>> logic._counter._value = 0
+    >>> logic._counter._value = 0
     >>> glue = Glue(verbose=False)
     >>> for reading in glue.parse_to_meaning('every girl chases a dog'): print reading.simplify()
      all x.(girl(x) -> exists z1.(dog(z1) & exists e.(chase(e) & (subj(e,x) & obj(e,z1)))))
     exists x.(dog(x) & all z2.(girl(z2) -> exists e.(chase(e) & (subj(e,z2) & obj(e,x)))))
 
-	>>> logic._counter._value = 0
+    >>> logic._counter._value = 0
     >>> glue = DrtGlue(verbose=False)
     >>> for reading in glue.parse_to_meaning('every girl chases a dog'): print reading.simplify()
     ([],[(([x],[girl(x)]) -> ([z1,e],[dog(z1), chase(e), subj(e,x), obj(e,z1)]))])
