@@ -36,7 +36,7 @@ class DRS:
 class AbstractVariableExpression:
     def resolve_anaphora(self, trail=[]):
         return self
-
+    
 class NegatedExpression:
     def resolve_anaphora(self, trail=[]):
         return self.__class__(self.term.resolve_anaphora(trail + [self]))
@@ -89,23 +89,21 @@ class ApplicationExpression:
         if self.is_pronoun_function():
             possible_antecedents = PossibleAntecedents()
             for ancestor in trail:
-                refexs = [self.make_VariableExpression(ref) 
-                          for ref in ancestor.get_refs()]
-                possible_antecedents.extend(refexs)
+                for ref in ancestor.get_refs():
+                    refex = self.make_VariableExpression(ref)
+                    
+                    #==========================================================
+                    # Don't allow resolution to itself or other types
+                    #==========================================================
+                    if refex.__class__ == self.argument.__class__ and \
+                       not (refex == self.argument):
+                        possible_antecedents.append(refex)
                 
-            #===============================================================================
-            #   This line ensures that statements of the form ( x = x ) wont appear.
-            #   Possibly amend to remove antecedents with the wrong 'gender' 
-            #===============================================================================
-            possible_antecedents.remove(self.argument)
-            equalityExpression = self.get_EqualityExpression()
             if len(possible_antecedents) == 1:
-                equalityExp = equalityExpression(self.argument, 
-                                                 possible_antecedents[0])
+                resolution = possible_antecedents[0]
             else:
-                equalityExp = equalityExpression(self.argument, 
-                                                 possible_antecedents) 
-            return equalityExp
+                resolution = possible_antecedents 
+            return self.make_EqualityExpression(self.argument, resolution)
         else:
             r_function = self.function.resolve_anaphora(trail + [self])
             r_argument = self.argument.resolve_anaphora(trail + [self])

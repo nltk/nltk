@@ -357,6 +357,13 @@ Replace
     >>> print lp.parse(r'\x.give(x,y,z)').replace(z.variable, y, True)
     \x.give(x,y,y)
 
+	>>> logic._counter._value = 0
+    >>> e1 = lp.parse('e1')
+    >>> e2 = lp.parse('e2')
+    >>> print lp.parse('exists e1 e2.(walk(e1) & talk(e2))').replace(e1.variable, e2, True)
+    exists e2 e01.(walk(e2) & talk(e01))
+    
+
 Variables / Free
 
     >>> print lp.parse(r'walk(john)').variables()
