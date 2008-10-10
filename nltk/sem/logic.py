@@ -60,10 +60,14 @@ class Variable(object):
         """
         @param name: the name of the variable
         """
+        assert isinstance(name, str)
         self.name = name
 
     def __eq__(self, other):
         return isinstance(other, Variable) and self.name == other.name
+    
+    def __neq__(self, other):
+        return not (self == other)
     
     def __cmp__(self, other):
         assert isinstance(other, Variable)
@@ -86,8 +90,19 @@ class Variable(object):
     def __repr__(self):
         return 'Variable(\'' + self.name + '\')'
 
-def unique_variable():
-    return Variable('z' + str(_counter.get()))
+def unique_variable(pattern=None):
+    """
+    param pattern: C{Variable} that is being replaced.  The new variable must
+    be the same type.
+    """
+    if pattern is not None:
+        if is_eventvar(pattern.name):
+            prefix = 'e0'
+        else:
+            prefix = 'z'
+    else:
+        prefix = 'z'
+    return Variable(prefix + str(_counter.get()))
 
 
 class Type:
@@ -228,6 +243,9 @@ class Expression(SubstituteBindingsI):
     
     def __eq__(self, other):
         raise NotImplementedError()
+    
+    def __neq__(self, other):
+        return not (self == other)
     
     def tp_equals(self, other, prover_name='tableau'):
         """Pass the expression (self <-> other) to the theorem prover.   
@@ -542,7 +560,7 @@ class AbstractVariableExpression(Expression):
     
 class IndividualVariableExpression(AbstractVariableExpression):
     """This class represents variables that take the form of a single lowercase
-    character followed by zero or more digits."""
+    character (other than 'e') followed by zero or more digits."""
     def free(self, indvar_only=True):
         """@see: Expression.free()"""
         return set([self.variable])
@@ -565,6 +583,18 @@ class FunctionVariableExpression(AbstractVariableExpression):
     def _gettype(self):
         """@see Expression.gettype()"""
         return ANY_TYPE
+
+
+class EventVariableExpression(IndividualVariableExpression):
+    """This class represents variables that take the form of a single lowercase
+    'e' character followed by zero or more digits."""
+    def free(self, indvar_only=True):
+        """@see: Expression.free()"""
+        return set([self.variable])
+    
+    def _gettype(self):
+        """@see Expression.gettype()"""
+        return ENTITY_TYPE
 
 
 class ConstantExpression(AbstractVariableExpression):
@@ -591,6 +621,8 @@ def VariableExpression(variable, type_check=False):
         return IndividualVariableExpression(variable, type_check)
     elif is_funcvar(variable.name):
         return FunctionVariableExpression(variable, type_check)
+    elif is_eventvar(variable.name):
+        return EventVariableExpression(variable, type_check)
     else:
         return ConstantExpression(variable, type_check)
 
@@ -631,7 +663,7 @@ class VariableBinderExpression(Expression):
             # if the bound variable appears in the expression, then it must
             # be alpha converted to avoid a conflict
             if self.variable in expression.free():
-                self = self.alpha_convert(unique_variable())
+                self = self.alpha_convert(unique_variable(self.variable))
                 
             #replace in the term
             return self.__class__(self.variable,
@@ -972,7 +1004,7 @@ class LogicParser(object):
         accum = self.make_VariableExpression(tok)
         if self.inRange(0) and self.token(0) == Tokens.OPEN:
             #The predicate has arguments
-            if is_indvar(tok):
+            if isinstance(accum, IndividualVariableExpression):
                 raise ParseException('\'%s\' is an illegal predicate name.  '
                                      'Individual variables may not be used as '
                                      'predicates.' % tok)
@@ -989,7 +1021,7 @@ class LogicParser(object):
         return self.attempt_EqualityExpression(accum)
         
     def ensure_abstractable(self, tok):
-        if not is_indvar(tok) and not is_funcvar(tok):
+        if isinstance(VariableExpression(Variable(tok)), ConstantExpression):
             raise ParseException('\'%s\' is an illegal variable name.  '
                                  'Constants may not be abstracted.' % tok)
     
@@ -1033,7 +1065,8 @@ class LogicParser(object):
         accum = self.parse_Expression(False)
         while vars:
             var = vars.pop()
-            if not is_indvar(var):
+            if not isinstance(self.make_VariableExpression(var), 
+                              IndividualVariableExpression):
                 raise ParseException('\'%s\' is an illegal variable name.  '
                                      'Only individual variables may be '
                                      'quantified.' % var)
@@ -1181,18 +1214,17 @@ class UnexpectedTokenException(ParseException):
         
 def is_indvar(expr):
     """
-    An individual variable must be a single lowercase character followed by
-    zero or more digits.
+    An individual variable must be a single lowercase character other than 'e',
+    followed by zero or more digits.
     
     @param expr: C{str}
     @return: C{boolean} True if expr is of the correct form 
     """
     try:
-        return expr[0].isalpha() and expr[0].islower() and \
+        return expr[0].isalpha() and expr[0].islower() and expr[0] != 'e' and \
             (len(expr) == 1 or expr[1:].isdigit())
     except TypeError:
         return False
-
 
 def is_funcvar(expr):
     """
@@ -1207,6 +1239,20 @@ def is_funcvar(expr):
             (len(expr) == 1 or expr[1:].isdigit())
     except TypeError:
         return False
+
+def is_eventvar(expr):
+    """
+    An event variable must be a single lowercase 'e' character followed by
+    zero or more digits.
+    
+    @param expr: C{str}
+    @return: C{boolean} True if expr is of the correct form 
+    """
+    try:
+        return expr[0] == 'e' and (len(expr) == 1 or expr[1:].isdigit())
+    except TypeError:
+        return False
+
 
 
 def demo():

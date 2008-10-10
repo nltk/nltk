@@ -63,6 +63,14 @@ class AbstractDrs(object):
     def __add__(self, other):
         return ConcatenationDRS(self, other)
     
+    def get_refs(self, recursive=False):
+        """
+        Return the set of discourse referents in this DRS.
+        @param recursive: C{boolean} Also find discourse referents in subterms?
+        @return: C{list} of C{Variable}s 
+        """
+        raise NotImplementedError()
+    
     def is_pronoun_function(self):
         """ Is self of the form "PRO(x)"? """
         return isinstance(self, DrtApplicationExpression) and \
@@ -70,8 +78,8 @@ class AbstractDrs(object):
                self.function.variable.name == Tokens.PRONOUN and \
                isinstance(self.argument, DrtIndividualVariableExpression)
     
-    def get_EqualityExpression(self):
-        return DrtEqualityExpression
+    def make_EqualityExpression(self, first, second):
+        return DrtEqualityExpression(first, second)
 
     def make_VariableExpression(self, variable):
         return DrtVariableExpression(variable)
@@ -107,7 +115,7 @@ class DRS(AbstractDrs, logic.Expression, RA.DRS):
             # any bound variable that appears in the expression must
             # be alpha converted to avoid a conflict
             for ref in (set(self.refs) & expression.free()):
-                newvar = unique_variable() 
+                newvar = unique_variable(ref) 
                 newvarex = DrtVariableExpression(newvar)
                 i = self.refs.index(ref)
                 self = DRS(self.refs[:i]+[newvar]+self.refs[i+1:],
@@ -133,12 +141,16 @@ class DRS(AbstractDrs, logic.Expression, RA.DRS):
             conds_free |= cond.free(indvar_only)
         return conds_free - set(self.refs)
 
-    def get_refs(self):
-        return self.refs
+    def get_refs(self, recursive=False):
+        """@see: AbstractExpression.get_refs()"""
+        if recursive:
+            refs = []
+            for cond in self.conds:
+                refs += cond.get_refs(True)
+            return self.refs + refs
+        else:
+            return self.refs
         
-    def get_all_refs(self):
-        return self.refs + reduce(lambda x,y: x+y, [cond.get_all_refs() 
-                                                    for cond in self.conds], [])
     def simplify(self):
         return DRS(self.refs, [cond.simplify() for cond in self.conds])
     
@@ -175,6 +187,8 @@ def DrtVariableExpression(variable):
         return DrtIndividualVariableExpression(variable)
     elif logic.is_funcvar(variable.name):
         return DrtFunctionVariableExpression(variable)
+    elif logic.is_eventvar(variable.name):
+        return DrtEventVariableExpression(variable)
     else:
         return DrtConstantExpression(variable)
     
@@ -185,25 +199,28 @@ class DrtAbstractVariableExpression(AbstractDrs,
     def toFol(self):
         return self
     
-    def get_refs(self):
+    def get_refs(self, recursive=False):
+        """@see: AbstractExpression.get_refs()"""
         return []
-
-    def get_all_refs(self):
-        return []
+    
+class DrtIndividualVariableExpression(DrtAbstractVariableExpression, 
+                                      logic.IndividualVariableExpression, 
+                                      RA.AbstractVariableExpression):
+    pass
 
 class DrtFunctionVariableExpression(DrtAbstractVariableExpression, 
                                     logic.FunctionVariableExpression, 
                                     RA.AbstractVariableExpression):
     pass
 
+class DrtEventVariableExpression(DrtIndividualVariableExpression, 
+                                 logic.EventVariableExpression, 
+                                 RA.AbstractVariableExpression):
+    pass
+
 class DrtConstantExpression(DrtAbstractVariableExpression, 
                             logic.ConstantExpression, 
                             RA.AbstractVariableExpression):
-    pass
-
-class DrtIndividualVariableExpression(DrtAbstractVariableExpression, 
-                                      logic.IndividualVariableExpression, 
-                                      RA.AbstractVariableExpression):
     pass
 
 class DrtNegatedExpression(AbstractDrs, logic.NegatedExpression, 
@@ -226,11 +243,12 @@ class DrtLambdaExpression(AbstractDrs, logic.LambdaExpression,
         return logic.LambdaExpression(self.variable, self.term.toFol())
 
 class DrtBooleanExpression(AbstractDrs, logic.BooleanExpression):
-    def get_refs(self):
-        return []
-
-    def get_all_refs(self):
-        return self.first.get_all_refs() + self.second.get_all_refs()
+    def get_refs(self, recursive=False):
+        """@see: AbstractExpression.get_refs()"""
+        if recursive:
+            return self.first.get_refs(True) + self.second.get_refs(True)
+        else:
+            return []
 
 class DrtOrExpression(DrtBooleanExpression, logic.OrExpression, RA.OrExpression):
     def toFol(self):
@@ -267,11 +285,12 @@ class DrtEqualityExpression(AbstractDrs, logic.EqualityExpression,
     def toFol(self):
         return logic.EqualityExpression(self.first.toFol(), self.second.toFol())
 
-    def get_refs(self):
-        return []
-
-    def get_all_refs(self):
-        return self.first.get_all_refs() + self.second.get_all_refs()
+    def get_refs(self, recursive=False):
+        """@see: AbstractExpression.get_refs()"""
+        if recursive:
+            return self.first.get_refs(True) + self.second.get_refs(True)
+        else:
+            return []
 
 class ConcatenationDRS(DrtBooleanExpression, RA.ConcatenationDRS):
     """DRS of the form '(DRS + DRS)'"""
@@ -283,7 +302,7 @@ class ConcatenationDRS(DrtBooleanExpression, RA.ConcatenationDRS):
 
         # If variable is bound by both first and second 
         if isinstance(first, DRS) and isinstance(second, DRS) and \
-           variable in (set(first.get_all_refs()) & set(second.get_all_refs())):
+           variable in (set(first.get_refs(True)) & set(second.get_refs(True))):
             first  = first.replace(variable, expression, True)
             second = second.replace(variable, expression, True)
             
@@ -301,8 +320,8 @@ class ConcatenationDRS(DrtBooleanExpression, RA.ConcatenationDRS):
 
         else:
             # alpha convert every ref that is free in 'expression'
-            for ref in (set(self.get_all_refs()) & expression.free()): 
-                v = DrtVariableExpression(unique_variable())
+            for ref in (set(self.get_refs(True)) & expression.free()): 
+                v = DrtVariableExpression(unique_variable(ref))
                 first  = first.replace(ref, v, True)
                 second = second.replace(ref, v, True)
 
@@ -317,17 +336,18 @@ class ConcatenationDRS(DrtBooleanExpression, RA.ConcatenationDRS):
 
         if isinstance(first, DRS) and isinstance(second, DRS):
             # For any ref that is in both 'first' and 'second'
-            for ref in (set(first.get_all_refs()) & set(second.get_all_refs())):
+            for ref in (set(first.get_refs(True)) & set(second.get_refs(True))):
                 # alpha convert the ref in 'second' to prevent collision
-                newvar = DrtVariableExpression(unique_variable())
+                newvar = DrtVariableExpression(unique_variable(ref))
                 second = second.replace(ref, newvar, True)
             
             return DRS(first.refs + second.refs, first.conds + second.conds)
         else:
             return self.__class__(first,second)
         
-    def get_refs(self):
-        return self.first.get_all_refs() + self.second.get_all_refs()
+    def get_refs(self, recursive=False):
+        """@see: AbstractExpression.get_refs()"""
+        return self.first.get_refs(recursive) + self.second.get_refs(recursive)
 
     def getOp(self, syntax=logic.Tokens.NEW_NLTK):
         return Tokens.DRS_CONC
@@ -356,11 +376,12 @@ class DrtApplicationExpression(AbstractDrs, logic.ApplicationExpression,
         return logic.ApplicationExpression(self.function.toFol(), 
                                            self.argument.toFol())
 
-    def get_refs(self):
-        return []
-
-    def get_all_refs(self):
-        return self.function.get_all_refs() + self.argument.get_all_refs()
+    def get_refs(self, recursive=False):
+        """@see: AbstractExpression.get_refs()"""
+        if recursive:
+            return self.function.get_refs(True) + self.argument.get_refs(True)
+        else:
+            return []
 
 class DrsDrawer:
     BUFFER = 3
@@ -685,7 +706,7 @@ class DrtParser(logic.LogicParser):
         self.token() # swallow the CLOSE_BRACKET token
         
         if self.token(0) == Tokens.COMMA: #if there is a comma (it's optional)
-            self.assertToken(self.token(), Tokens.COMMA)
+            self.token() # swallow the comma
             
         self.assertToken(self.token(), Tokens.OPEN_BRACKET)
         conds = []
