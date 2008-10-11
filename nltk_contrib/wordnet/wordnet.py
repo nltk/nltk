@@ -1,9 +1,21 @@
-# Contributed by Steve Bethard
+# Natural Language Toolkit: Wordnet Similarity
+#
+# Copyright (C) 2001-2008 NLTK Project
+# Author: Steven Bethard <Steven.Bethard@colorado.edu>
+#         Steven Bird <sb@csse.unimelb.edu.au>
+# URL: <http://nltk.org>
+# For license information, see LICENSE.TXT
 
 import collections as _collections
 import glob as _glob
 import os as _os
 import warnings as _warnings
+import math
+
+from nltk import defaultdict
+from wordnet import *
+
+_INF = 1e300
 
 ADJ = 'a'
 ADJ_SAT = 's'
@@ -20,62 +32,62 @@ class WordNetError(Exception):
 
 class _WordNetObject(object):
 
-    def get_antonyms(self):
-        return self._get_related('!')
+    def antonyms(self):
+        return self._related('!')
 
-    def get_hypernyms(self):
-        return self._get_related('@')
+    def hypernyms(self):
+        return self._related('@')
 
-    def get_instance_hypernyms(self):
-        return self._get_related('@i')
+    def instance_hypernyms(self):
+        return self._related('@i')
 
-    def get_hyponyms(self):
-        return self._get_related('~')
+    def hyponyms(self):
+        return self._related('~')
 
-    def get_instance_hyponyms(self):
-        return self._get_related('~i')
+    def instance_hyponyms(self):
+        return self._related('~i')
 
-    def get_member_holonyms(self):
-        return self._get_related('#m')
+    def member_holonyms(self):
+        return self._related('#m')
 
-    def get_substance_holonyms(self):
-        return self._get_related('#s')
+    def substance_holonyms(self):
+        return self._related('#s')
 
-    def get_part_holonyms(self):
-        return self._get_related('#p')
+    def part_holonyms(self):
+        return self._related('#p')
 
-    def get_member_meronyms(self):
-        return self._get_related('%m')
+    def member_meronyms(self):
+        return self._related('%m')
 
-    def get_substance_meronyms(self):
-        return self._get_related('%s')
+    def substance_meronyms(self):
+        return self._related('%s')
 
-    def get_part_meronyms(self):
-        return self._get_related('%p')
+    def part_meronyms(self):
+        return self._related('%p')
 
-    def get_attributes(self):
-        return self._get_related('=')
+    def attributes(self):
+        return self._related('=')
 
-    def get_derivationally_related_forms(self):
-        return self._get_related('+')
+    def derivationally_related_forms(self):
+        return self._related('+')
 
-    def get_entailments(self):
-        return self._get_related('*')
+    def entailments(self):
+        return self._related('*')
 
-    def get_causes(self):
-        return self._get_related('>')
+    def causes(self):
+        return self._related('>')
 
-    def get_also_sees(self):
-        return self._get_related('^')
+    def also_sees(self):
+        return self._related('^')
 
-    def get_verb_groups(self):
-        return self._get_related('$')
+    def verb_groups(self):
+        return self._related('$')
 
-    def get_similar_tos(self):
-        return self._get_related('&')
+    def similar_tos(self):
+        return self._related('&')
 
-    def get_pertainyms(self):
-        return self._get_related('\\')
+    def pertainyms(self):
+        return self._related('\\')
 
     def __hash__(self):
         return hash(self.name)
@@ -113,25 +125,25 @@ class Lemma(_WordNetObject):
         http://wordnet.princeton.edu/man/wninput.5WN.html#sect3
     These methods all return lists of Lemmas.
 
-    get_antonyms
-    get_hypernyms
-    get_instance_hypernyms
-    get_hyponyms
-    get_instance_hyponyms
-    get_member_holonyms
-    get_substance_holonyms
-    get_part_holonyms
-    get_member_meronyms
-    get_substance_meronyms
-    get_part_meronyms
-    get_attributes
-    get_derivationally_related_forms
-    get_entailments
-    get_causes
-    get_also_sees
-    get_verb_groups
-    get_similar_tos
-    get_pertainyms
+    antonyms
+    hypernyms
+    instance_hypernyms
+    hyponyms
+    instance_hyponyms
+    member_holonyms
+    substance_holonyms
+    part_holonyms
+    member_meronyms
+    substance_meronyms
+    part_meronyms
+    attributes
+    derivationally_related_forms
+    entailments
+    causes
+    also_sees
+    verb_groups
+    similar_tos
+    pertainyms
     """
 
     def __init__(self, name):
@@ -162,7 +174,7 @@ class Lemma(_WordNetObject):
             self.name = lemma_name
             self.syntactic_marker = None
 
-    def _get_related(self, relation_symbol):
+    def _related(self, relation_symbol):
         get_synset = type(self.synset)._from_pos_and_offset
         return [get_synset(pos, offset).lemmas[lemma_index]
                 for pos, offset, lemma_index
@@ -195,31 +207,32 @@ class Synset(_WordNetObject):
         http://wordnet.princeton.edu/man/wninput.5WN.html#sect3
     These methods all return lists of Synsets.
 
-    get_antonyms
-    get_hypernyms
-    get_instance_hypernyms
-    get_hyponyms
-    get_instance_hyponyms
-    get_member_holonyms
-    get_substance_holonyms
-    get_part_holonyms
-    get_member_meronyms
-    get_substance_meronyms
-    get_part_meronyms
-    get_attributes
-    get_derivationally_related_forms
-    get_entailments
-    get_causes
-    get_also_sees
-    get_verb_groups
-    get_similar_tos
-    get_pertainyms
+    antonyms
+    hypernyms
+    instance_hypernyms
+    hyponyms
+    instance_hyponyms
+    member_holonyms
+    substance_holonyms
+    part_holonyms
+    member_meronyms
+    substance_meronyms
+    part_meronyms
+    attributes
+    derivationally_related_forms
+    entailments
+    causes
+    also_sees
+    verb_groups
+    similar_tos
+    pertainyms
 
     Additionally, Synsets support the following methods specific to the
     hypernym relation:
 
-    get_root_hypernyms
-    get_lowest_common_hypernyms
+    root_hypernyms
+    common_hypernyms
+    lowest_common_hypernyms
     """
 
     def __init__(self, name):
@@ -252,7 +265,7 @@ class Synset(_WordNetObject):
             raise WordNetError(message % lemma)
         assert self.pos == pos or (pos == 'a' and self.pos == 's')
 
-    def get_root_hypernyms(self):
+    def root_hypernyms(self):
         """Get the topmost hypernyms of this synset in WordNet."""
         result = []
         seen = set()
@@ -261,14 +274,95 @@ class Synset(_WordNetObject):
             next_synset = todo.pop()
             if next_synset not in seen:
                 seen.add(next_synset)
-                next_hypernyms = next_synset.get_hypernyms()
+                next_hypernyms = next_synset.hypernyms()
                 if not next_hypernyms:
                     result.append(next_synset)
                 else:
                     todo.extend(next_hypernyms)
         return result
 
-    def get_lowest_common_hypernyms(self, other):
+    def max_depth(self):
+        """
+        @return: The length of the longest hypernym path from this synset to the root.
+        """
+
+        if self.hypernyms() == []:
+            return 0
+        
+        deepest = 0
+        for hypernym in self.hypernyms():
+            depth = hypernym.max_depth()
+            if depth > deepest:
+                deepest = depth
+        return deepest + 1
+
+    def min_depth(self):
+        """
+        @return: The length of the shortest hypernym path from this synset to the root.
+        """
+
+        if self.hypernyms() == []:
+            return 0
+
+        shallowest = 1000
+        for hypernym in self.hypernyms():
+            depth = hypernym.max_depth()
+            if depth < shallowest:
+                shallowest = depth
+        return shallowest + 1
+
+    def closure(self, rel, depth=-1):
+        """Return the transitive closure of source under the rel relationship, breadth-first
+    
+        >>> dog = Synset('dog.n.01')
+        >>> hyp = lambda: s:s.hypernyms()
+        >>> dog.closure(hyp)
+        [{noun: dog, domestic dog, Canis familiaris}, {noun: canine, canid}, {noun: carnivore}, {noun: placental, placental mammal, eutherian, eutherian mammal}, {noun: mammal, mammalian}, {noun: vertebrate, craniate}, {noun: chordate}, {noun: animal, animate being, beast, brute, creature, fauna}, {noun: organism, being}, {noun: living thing, animate thing}, {noun: object, physical object}, {noun: physical entity}, {noun: entity}]
+        """
+        from nltk.util import breadth_first
+        synset_offsets = []
+        for synset in breadth_first(self, lambda s:s[rel], depth):
+            if synset.offset != self.offset and synset.offset not in synset_offsets:
+                synset_offsets.append(synset.offset)
+                yield synset
+
+    def hypernym_paths(self):
+        """
+        Get the path(s) from this synset to the root, where each path is a
+        list of the synset nodes traversed on the way to the root.
+
+        @return: A list of lists, where each list gives the node sequence
+           connecting the initial L{Synset} node and a root node.
+        """
+        paths = []
+
+        hypernyms = self.hypernyms()
+        if len(hypernyms) == 0:
+            paths = [[self]]
+
+        for hypernym in hypernyms:
+            for ancestor_list in hypernym.hypernym_paths():
+                ancestor_list.append(self)
+                paths.append(ancestor_list)
+        return paths
+
+    def common_hypernyms(self, other):
+        """
+        Find all synsets that are hypernyms of this synset and the other synset.
+
+        @type  other: L{Synset}
+        @param other: other input synset.
+        @return: The synsets that are hypernyms of both synsets.
+        """
+        self_synsets = set(self_synset
+                           for self_synsets in self._iter_hypernym_lists()
+                           for self_synset in self_synsets)
+        other_synsets = set(other_synset
+                           for other_synsets in other._iter_hypernym_lists()
+                           for other_synset in other_synsets)
+        return list(self_synsets.intersection(other_synsets))
+    
+    def lowest_common_hypernyms(self, other):
         """Get the lowest synset that both synsets have as a hypernym."""
         self_synsets = set(self_synset
                            for self_synsets in self._iter_hypernym_lists()
@@ -282,6 +376,130 @@ class Synset(_WordNetObject):
                 break
         return result
 
+    def hypernym_distances(self, distance=0):
+        """
+        Get the path(s) from this synset to the root, counting the distance
+        of each node from the initial node on the way. A set of
+        (synset, distance) tuples is returned.
+
+        @type  distance: C{int}
+        @param distance: the distance (number of edges) from this hypernym to
+            the original hypernym L{Synset} on which this method was called.
+        @return: A set of (L{Synset}, int) tuples where each L{Synset} is
+           a hypernym of the first L{Synset}.
+        """
+        distances = set([(self, distance)])
+        for hypernym in self.hypernyms():
+            distances |= hypernym.hypernym_distances(distance+1)
+        return distances
+
+    def shortest_path_distance(self, other):
+        """
+        Returns the distance of the shortest path linking the two synsets (if
+        one exists). For each synset, all the ancestor nodes and their distances
+        are recorded and compared. The ancestor node common to both synsets that
+        can be reached with the minimum number of traversals is used. If no
+        ancestor nodes are common, -1 is returned. If a node is compared with
+        itself 0 is returned.
+
+        @type  other: L{Synset}
+        @param other: The Synset to which the shortest path will be found.
+        @return: The number of edges in the shortest path connecting the two
+            nodes, or -1 if no path exists.
+        """
+
+        if self == other: return 0
+
+        path_distance = -1
+
+        dist_list1 = self.hypernym_distances()
+        dist_dict1 = {}
+
+        dist_list2 = other.hypernym_distances()
+        dist_dict2 = {}
+
+        # Transform each distance list into a dictionary. In cases where
+        # there are duplicate nodes in the list (due to there being multiple
+        # paths to the root) the duplicate with the shortest distance from
+        # the original node is entered.
+
+        for (l, d) in [(dist_list1, dist_dict1), (dist_list2, dist_dict2)]:
+            for (key, value) in l:
+                if key in d:
+                    if value < d[key]:
+                        d[key] = value
+                else:
+                    d[key] = value
+        
+        # For each ancestor synset common to both subject synsets, find the
+        # connecting path length. Return the shortest of these.
+
+        for synset1 in dist_dict1.keys():
+            for synset2 in dist_dict2.keys():
+                if synset1 == synset2:
+                    new_distance = dist_dict1[synset1] + dist_dict2[synset2]
+                    if path_distance < 0 or new_distance < path_distance:
+                        path_distance = new_distance
+
+        return path_distance
+
+
+    def tree(self, rel, depth=-1, cut_mark=None):
+        """
+        >>> dog = Synset('dog.n.01')        
+        >>> hyp = lambda s:s.hypernyms()
+        >>> from pprint import pprint
+        >>> pprint(dog.tree(hyp))
+        [Synset('dog.n.01'),
+         [Synset('domestic_animal.n.01'),
+          [Synset('animal.n.01'),
+           [Synset('organism.n.01'),
+            [Synset('living_thing.n.01'),
+             [Synset('whole.n.02'),
+              [Synset('object.n.01'),
+               [Synset('physical_entity.n.01'), [Synset('entity.n.01')]]]]]]]],
+         [Synset('canine.n.02'),
+          [Synset('carnivore.n.01'),
+           [Synset('placental.n.01'),
+            [Synset('mammal.n.01'),
+             [Synset('vertebrate.n.01'),
+              [Synset('chordate.n.01'),
+               [Synset('animal.n.01'),
+                [Synset('organism.n.01'),
+                 [Synset('living_thing.n.01'),
+                  [Synset('whole.n.02'),
+                   [Synset('object.n.01'),
+                    [Synset('physical_entity.n.01'),
+                     [Synset('entity.n.01')]]]]]]]]]]]]]]
+        """
+
+        tree = [self]        
+        if depth != 0:
+            tree += [x.tree(rel, depth-1, cut_mark) for x in rel(self)]
+        elif cut_mark:
+            tree += [cut_mark]
+        return tree
+
+    # interface to similarity methods
+     
+    def path_similarity(self, other, verbose=False):
+        return path_similarity(self, other, verbose)
+
+    def lch_similarity(self, other, verbose=False):
+        return lch_similarity(self, other, verbose)
+        
+    def wup_similarity(self, other, verbose=False):
+        return wup_similarity(self, other, verbose)
+
+    def res_similarity(self, other, ic, verbose=False):
+        return res_similarity(self, other, ic, verbose)
+
+    def jcn_similarity(self, other, ic, verbose=False):
+        return jcn_similarity(self, other, ic, verbose)
+    
+    def lin_similarity(self, other, ic, verbose=False):
+        return lin_similarity(self, other, ic, verbose)
+
     def _iter_hypernym_lists(self):
         todo = [self]
         seen = set()
@@ -291,7 +509,7 @@ class Synset(_WordNetObject):
             yield todo
             todo = [hypernym
                     for synset in todo
-                    for hypernym in synset.get_hypernyms()
+                    for hypernym in synset.hypernyms()
                     if hypernym not in seen]
 
     @classmethod
@@ -309,7 +527,7 @@ class Synset(_WordNetObject):
     def __repr__(self):
         return '%s(%r)' % (type(self).__name__, self.name)
 
-    def _get_related(self, relation_symbol):
+    def _related(self, relation_symbol):
         get_synset = type(self)._from_pos_and_offset
         pointer_tuples = self._pointers[relation_symbol]
         return [get_synset(pos, offset) for pos, offset in pointer_tuples]
@@ -537,6 +755,317 @@ def _load():
 
 _load()
 
+# Similarity metrics
+
+# TODO: Add in the option to manually add a new root node; this will be
+# useful for verb similarity as there exist multiple verb taxonomies.
+
+# More information about the metrics is available at
+# http://marimba.d.umn.edu/similarity/measures.html
+
+def path_similarity(synset1, synset2, verbose=False):
+    """
+    Path Distance Similarity:
+    Return a score denoting how similar two word senses are, based on the
+    shortest path that connects the senses in the is-a (hypernym/hypnoym)
+    taxonomy. The score is in the range 0 to 1, except in those cases
+    where a path cannot be found (will only be true for verbs as there are
+    many distinct verb taxonomies), in which case -1 is returned. A score of
+    1 represents identity i.e. comparing a sense with itself will return 1.
+
+    @type  synset2: L{Synset}
+    @param synset2: The L{Synset} that this L{Synset} is being compared to.
+
+    @return: A score denoting the similarity of the two L{Synset}s,
+        normally between 0 and 1. -1 is returned if no connecting path
+        could be found. 1 is returned if a L{Synset} is compared with
+        itself.
+    """
+
+    distance = synset1.shortest_path_distance(synset2)
+    if distance >= 0:
+        return 1.0 / (distance + 1)
+    else:
+        return -1
+
+def lch_similarity(synset1, synset2, verbose=False):
+    """
+    Leacock Chodorow Similarity:
+    Return a score denoting how similar two word senses are, based on the
+    shortest path that connects the senses (as above) and the maximum depth
+    of the taxonomy in which the senses occur. The relationship is given as
+    -log(p/2d) where p is the shortest path length and d is the taxonomy depth.
+
+    @type  synset2: L{Synset}
+    @param synset2: The L{Synset} that this L{Synset} is being compared to.
+
+    @return: A score denoting the similarity of the two L{Synset}s,
+        normally greater than 0. -1 is returned if no connecting path
+        could be found. If a L{Synset} is compared with itself, the
+        maximum score is returned, which varies depending on the taxonomy depth.
+    """
+
+    taxonomy_depths = {NOUN: 19, VERB: 13}
+    if synset1.pos not in taxonomy_depths.keys():
+        raise TypeError, "Can only calculate similarity for nouns or verbs"
+    depth = taxonomy_depths[synset1.pos]
+
+    distance = synset1.shortest_path_distance(synset2)
+    if distance >= 0:
+        return -math.log((distance + 1) / (2.0 * depth))
+    else:
+        return -1
+
+def wup_similarity(synset1, synset2, verbose=False):
+    """
+    Wu-Palmer Similarity:
+    Return a score denoting how similar two word senses are, based on the
+    depth of the two senses in the taxonomy and that of their Least Common
+    Subsumer (most specific ancestor node). Note that at this time the
+    scores given do _not_ always agree with those given by Pedersen's Perl
+    implementation of Wordnet Similarity.
+
+    The LCS does not necessarily feature in the shortest path connecting the
+    two senses, as it is by definition the common ancestor deepest in the
+    taxonomy, not closest to the two senses. Typically, however, it will so
+    feature. Where multiple candidates for the LCS exist, that whose
+    shortest path to the root node is the longest will be selected. Where
+    the LCS has multiple paths to the root, the longer path is used for
+    the purposes of the calculation.
+
+    @type  synset2: L{Synset}
+    @param synset2: The L{Synset} that this L{Synset} is being compared to.
+    @return: A float score denoting the similarity of the two L{Synset}s,
+        normally greater than zero. If no connecting path between the two
+        senses can be found, -1 is returned.
+    """
+
+    subsumers = synset1.lowest_common_hypernyms(synset2)
+
+    # If no LCS was found return -1
+    if len(subsumers) == 0:
+        return -1
+
+    subsumer = subsumers[0]
+    
+    # Get the longest path from the LCS to the root,
+    # including two corrections:
+    # - add one because the calculations include both the start and end nodes
+    # - add one to non-nouns since they have an imaginary root node
+    depth = subsumer.max_depth() + 1
+    if subsumer.pos != NOUN:
+        depth += 1
+
+    # Get the shortest path from the LCS to each of the synsets it is subsuming.
+    # Add this to the LCS path length to get the path length from each synset to the root.
+    len1 = synset1.shortest_path_distance(subsumer) + depth
+    len2 = synset2.shortest_path_distance(subsumer) + depth
+    return (2.0 * depth) / (len1 + len2)
+
+def res_similarity(synset1, synset2, ic, verbose=False):
+    """
+    Resnik Similarity:
+    Return a score denoting how similar two word senses are, based on the
+    Information Content (IC) of the Least Common Subsumer (most specific
+    ancestor node).
+
+    @type  synset1: L{Synset}
+    @param synset1: The first synset being compared
+    @type  synset2: L{Synset}
+    @param synset2: The second synset being compared
+    @type  ic: C{dict}
+    @param ic: an information content object (as returned by L{load_ic()}).
+    @return: A float score denoting the similarity of the two L{Synset}s.
+        Synsets whose LCS is the root node of the taxonomy will have a
+        score of 0 (e.g. N['dog'][0] and N['table'][0]). If no path exists
+        between the two synsets a score of -1 is returned.
+    """
+
+    ic1, ic2, lcs_ic = _lcs_ic(synset1, synset2, ic)
+    return lcs_ic
+
+def jcn_similarity(synset1, synset2, ic, verbose=False):
+    """
+    Jiang-Conrath Similarity:
+    Return a score denoting how similar two word senses are, based on the
+    Information Content (IC) of the Least Common Subsumer (most specific
+    ancestor node) and that of the two input Synsets. The relationship is
+    given by the equation 1 / (IC(s1) + IC(s2) - 2 * IC(lcs)).
+
+    @type  synset1: L{Synset}
+    @param synset1: The first synset being compared
+    @type  synset2: L{Synset}
+    @param synset2: The second synset being compared
+    @type  ic: C{dict}
+    @param ic: an information content object (as returned by L{load_ic()}).
+    @return: A float score denoting the similarity of the two L{Synset}s.
+        If no path exists between the two synsets a score of -1 is returned.
+    """
+
+    if synset1 == synset2:
+        return _INF
+    
+    ic1, ic2, lcs_ic = _lcs_ic(synset1, synset2, ic)
+
+    # If either of the input synsets are the root synset, or have a
+    # frequency of 0 (sparse data problem), return 0.
+    if ic1 == 0 or ic2 == 0:
+        return 0
+
+    return 1 / (ic1 + ic2 - 2 * lcs_ic)
+
+def lin_similarity(synset1, synset2, ic, verbose=False):
+    """
+    Lin Similarity:
+    Return a score denoting how similar two word senses are, based on the
+    Information Content (IC) of the Least Common Subsumer (most specific
+    ancestor node) and that of the two input Synsets. The relationship is
+    given by the equation 2 * IC(lcs) / (IC(s1) + IC(s2)).
+
+    @type  synset1: L{Synset}
+    @param synset1: The first synset being compared
+    @type  synset2: L{Synset}
+    @param synset2: The second synset being compared
+    @type  ic: C{dict}
+    @param ic: an information content object (as returned by L{load_ic()}).
+    @return: A float score denoting the similarity of the two L{Synset}s,
+        in the range 0 to 1. If no path exists between the two synsets a
+        score of -1 is returned.
+    """
+
+    ic1, ic2, lcs_ic = _lcs_ic(synset1, synset2, ic)
+    return (2.0 * lcs_ic) / (ic1 + ic2)
+
+def _lcs_by_depth(synset1, synset2, verbose=False):
+    """
+    Finds the least common subsumer of two synsets in a Wordnet taxonomy,
+    where the least common subsumer is defined as the ancestor node common
+    to both input synsets whose shortest path to the root node is the longest.
+
+    @type  synset1: L{Synset}
+    @param synset1: First input synset.
+    @type  synset2: L{Synset}
+    @param synset2: Second input synset.
+    @return: The ancestor synset common to both input synsets which is also the LCS.
+    """
+    subsumer = None
+    max_min_path_length = -1
+
+    subsumers = synset1.common_hypernyms(synset2)
+    
+    if verbose:
+        print "> Subsumers1:", subsumers
+
+    # Eliminate those synsets which are ancestors of other synsets in the
+    # set of subsumers.
+
+    eliminated = set()
+    for s1 in subsumers:
+        for s2 in subsumers:
+            if s2 in s1.closure(HYPERNYM):
+                eliminated.add(s2)
+    if verbose:
+        print "> Eliminated:", eliminated
+    
+    subsumers = [s for s in subsumers if s not in eliminated]
+
+    if verbose:
+        print "> Subsumers2:", subsumers
+
+    # Calculate the length of the shortest path to the root for each
+    # subsumer. Select the subsumer with the longest of these.
+
+    for candidate in subsumers:
+
+        paths_to_root = candidate.hypernym_paths()
+        min_path_length = -1
+
+        for path in paths_to_root:
+            if min_path_length < 0 or len(path) < min_path_length:
+                min_path_length = len(path)
+
+        if min_path_length > max_min_path_length:
+            max_min_path_length = min_path_length
+            subsumer = candidate
+
+    if verbose:
+        print "> LCS Subsumer by depth:", subsumer
+    return subsumer
+
+def _lcs_ic(synset1, synset2, ic, verbose=False):
+    """
+    Get the information content of the least common subsumer that has
+    the highest information content value.
+
+    @type  synset1: L{Synset}
+    @param synset1: First input synset.
+    @type  synset2: L{Synset}
+    @param synset2: Second input synset.
+    @type  ic: C{dict}
+    @param ic: an information content object (as returned by L{load_ic()}).
+    @return: The information content of the two synsets and their most informative subsumer
+    """
+
+    pos = synset1.pos
+    ic1 = information_content(synset1, ic)
+    ic2 = information_content(synset2, ic)
+    subsumer_ic = max(information_content(s, ic) for s in synset1.common_hypernyms(synset2))
+
+    if verbose:
+        print "> LCS Subsumer by content:", subsumer_ic
+    
+    return ic1, ic2, subsumer_ic
+
+# Utility functions
+
+def information_content(synset, ic):
+    pos = synset.pos
+    return -math.log(ic[pos][synset.offset] / ic[pos][0])
+
+# this load function would be more efficient if the data was pickled
+# Note that we can't use NLTK's frequency distributions because
+# synsets are overlapping (each instance of a synset also counts
+# as an instance of its hypernyms)
+def load_ic(icfile):
+    """
+    Load an information content file from the wordnet_ic corpus
+    and return a dictionary.  This dictionary has just two keys,
+    NOUN and VERB, whose values are dictionaries that map from
+    synsets to information content values.
+
+    @type  icfile: L{str}
+    @param icfile: The name of the wordnet_ic file (e.g. "ic-brown.dat")
+    @return: An information content dictionary
+    """
+    from nltk.data import find
+    icfile = find('corpora/wordnet_ic/' + icfile)
+    ic = {}
+    ic[NOUN] = defaultdict(int)
+    ic[VERB] = defaultdict(int)
+    for num, line in enumerate(open(icfile)):
+        if num == 0: # skip the header
+            continue
+        fields = line.split()
+        offset = int(fields[0][:-1])
+        value = float(fields[1])
+        pos = _get_pos(fields[0])
+        if num == 1: # store root count
+            ic[pos][0] = value
+        if value != 0:
+            ic[pos][offset] = value
+    return ic
+ 
+# get the part of speech (NOUN or VERB) from the information content record
+# (each identifier has a 'n' or 'v' suffix)
+def _get_pos(field):
+    if field[-1] == 'n':
+        return NOUN
+    elif field[-1] == 'v':
+        return VERB
+    else:
+        raise ValueError, "Unidentified part of speech in WordNet Information Content file"
+
+
 def demo():
     import wordnet as wn
     S = wn.Synset
@@ -562,47 +1091,57 @@ def demo():
     print zap_v_synsets
     
     print "Navigations:"
-    print S('travel.v.01').get_hypernyms()
-    print S('travel.v.02').get_hypernyms()
-    print S('travel.v.03').get_hypernyms()
+    print S('travel.v.01').hypernyms()
+    print S('travel.v.02').hypernyms()
+    print S('travel.v.03').hypernyms()
 
-    print L('zap.v.03.nuke').get_derivationally_related_forms()
-    print L('zap.v.03.atomize').get_derivationally_related_forms()
-    print L('zap.v.03.atomise').get_derivationally_related_forms()
-    print L('zap.v.03.zap').get_derivationally_related_forms()
+    print L('zap.v.03.nuke').derivationally_related_forms()
+    print L('zap.v.03.atomize').derivationally_related_forms()
+    print L('zap.v.03.atomise').derivationally_related_forms()
+    print L('zap.v.03.zap').derivationally_related_forms()
 
-    print S('dog.n.01').get_member_holonyms()
-    print S('dog.n.01').get_part_meronyms()
+    print S('dog.n.01').member_holonyms()
+    print S('dog.n.01').part_meronyms()
 
-    print S('breakfast.n.1').get_hypernyms()
-    print S('meal.n.1').get_hyponyms()
-    print S('Austen.n.1').get_instance_hypernyms()
-    print S('composer.n.1').get_instance_hyponyms()
+    print S('breakfast.n.1').hypernyms()
+    print S('meal.n.1').hyponyms()
+    print S('Austen.n.1').instance_hypernyms()
+    print S('composer.n.1').instance_hyponyms()
 
-    print S('faculty.n.2').get_member_meronyms()
-    print S('copilot.n.1').get_member_holonyms()
+    print S('faculty.n.2').member_meronyms()
+    print S('copilot.n.1').member_holonyms()
 
-    print S('table.n.2').get_part_meronyms()
-    print S('course.n.7').get_part_holonyms()
+    print S('table.n.2').part_meronyms()
+    print S('course.n.7').part_holonyms()
 
-    print S('water.n.1').get_substance_meronyms()
-    print S('gin.n.1').get_substance_holonyms()
+    print S('water.n.1').substance_meronyms()
+    print S('gin.n.1').substance_holonyms()
 
-    print L('leader.n.1.leader').get_antonyms()
-    print L('increase.v.1.increase').get_antonyms()
+    print L('leader.n.1.leader').antonyms()
+    print L('increase.v.1.increase').antonyms()
 
-    print S('snore.v.1').get_entailments()
-    print S('heavy.a.1').get_similar_tos()
-    print S('light.a.1').get_attributes()
-    print S('heavy.a.1').get_attributes()
+    print S('snore.v.1').entailments()
+    print S('heavy.a.1').similar_tos()
+    print S('light.a.1').attributes()
+    print S('heavy.a.1').attributes()
 
-    print L('English.a.1.English').get_pertainyms()
+    print L('English.a.1.English').pertainyms()
 
-    print S('person.n.01').get_root_hypernyms()
-    print S('sail.v.01').get_root_hypernyms()
-    print S('fall.v.12').get_root_hypernyms()
+    print S('person.n.01').root_hypernyms()
+    print S('sail.v.01').root_hypernyms()
+    print S('fall.v.12').root_hypernyms()
 
-    print S('person.n.01').get_lowest_common_hypernyms(S('dog.n.01'))
+    print S('person.n.01').lowest_common_hypernyms(S('dog.n.01'))
+    
+    print S('dog.n.01').path_similarity(S('cat.n.01'))
+    print S('dog.n.01').lch_similarity(S('cat.n.01'))
+    print S('dog.n.01').wup_similarity(S('cat.n.01'))
+    
+    ic = load_ic('ic-brown.dat')
+    print S('dog.n.01').jcn_similarity(S('cat.n.01'), ic)
+    
+    ic = load_ic('ic-semcor.dat')
+    print S('dog.n.01').lin_similarity(S('cat.n.01'), ic)
 
 if __name__ == '__main__':
     demo()

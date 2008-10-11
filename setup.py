@@ -85,6 +85,7 @@ setup(
                 'nltk_contrib.rte',
                 'nltk_contrib.tag',
                 'nltk_contrib.toolbox',
+                'nltk_contrib.wordnet',
                 'yaml'
                 ],
     )
