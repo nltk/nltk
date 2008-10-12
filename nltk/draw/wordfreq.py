@@ -19,7 +19,7 @@ import sys
 
 def plot_word_freq_dist(text):
     fd = text.vocab()
-    samples = fd.sorted()[:50]
+    samples = fd.keys()[:50]
     values = [fd[sample] for sample in samples]
     values = [sum(values[:i+1]) * 100.0/fd.N() for i in range(len(values))]
     plot_values(samples, values)
