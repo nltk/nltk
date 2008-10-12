@@ -72,17 +72,18 @@ class CMUDictCorpusReader(CorpusReader):
         """
         @return: a list of all words defined in the cmudict lexicon.
         """
-        return [word for (word, num, transcription) in self.entries()]
+        return [word.lower() for (word, num, transcription) in self.entries()]
 
     def transcriptions(self):
         """
         @return: the cmudict lexicon as a dictionary, whose keys are
-        upper case words and whose values are tuples of pronunciation
+        lowercase words and whose values are tuples of pronunciation
         entries.
         """
         lexicon = self.entries()
         d = {}
         for word, num, transcription in lexicon:
+            word = word.lower()
             if num == 1:
                 d[word] = (transcription,)
             else:
@@ -107,5 +108,5 @@ def read_cmudict_block(stream):
         line = stream.readline()
         if line == '': return entries # end of file.
         pieces = line.split()
-        entries.append( (pieces[0], int(pieces[1]), tuple(pieces[2:])) )
+        entries.append( (pieces[0].lower(), int(pieces[1]), tuple(pieces[2:])) )
     return entries
