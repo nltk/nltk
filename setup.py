@@ -84,6 +84,10 @@ setup(
                 'nltk_contrib.readability',
                 'nltk_contrib.rte',
                 'nltk_contrib.tag',
+                'nltk_contrib.tiger',
+                'nltk_contrib.tiger.indexer',
+                'nltk_contrib.tiger.query',
+                'nltk_contrib.tiger.utils',
                 'nltk_contrib.toolbox',
                 'nltk_contrib.wordnet',
                 'yaml'
