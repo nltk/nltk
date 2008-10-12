@@ -285,7 +285,7 @@ class InstancesTestCase(unittest.TestCase):
         path = datasetsDir(self) + 'numerical' + SEP + 'person'
         _training = training(path)
         class_freq_dist = _training.class_freq_dist()
-        self.assertEqual(['yes','no'], class_freq_dist.sorted())
+        self.assertEqual(['yes','no'], class_freq_dist.keys())
         
         
     def test_posterior_probablities_with_discrete_values(self):

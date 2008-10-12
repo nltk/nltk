@@ -19,7 +19,7 @@ class Classifier:
         self.attributes = attributes
         self.training = training
         self.convert_continuous_values_to_numbers(self.training)
-        sorted_klass_freqs = self.training.class_freq_dist().sorted()
+        sorted_klass_freqs = self.training.class_freq_dist().keys()
         sorted_klass_values = [each for each in sorted_klass_freqs]
         sorted_klass_values.extend([each for each in klass if not sorted_klass_values.__contains__(each)])
         self.klass = sorted_klass_values

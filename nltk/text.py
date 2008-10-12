@@ -141,7 +141,7 @@ class Text(list):
             fd = FreqDist(w for w in self._word_context_map
                           for c in self._word_context_map[w]
                           if c in contexts and not w == word)
-            words = fd.sorted()[:num]
+            words = fd.keys()[:num]
             print '\n'.join(textwrap.wrap(' '.join(words)))
         else:
             return "No matches"
@@ -226,12 +226,12 @@ def demo():
     text.dispersion_plot(['news', 'report', 'said', 'announced'])
     print
     print "Vocabulary plot:"
-    text.plot()
+    text.plot(50)
     print
     print "Indexing:"
     print "text[3]:", text[3]
     print "text[3:5]:", text[3:5]
-    print "text.vocab['news']:", text.vocab['news']
+    print "text.vocab()['news']:", text.vocab()['news']
                          
 if __name__ == '__main__':
     demo()

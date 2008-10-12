@@ -1,18 +1,6 @@
-# Natural Language Toolkit: Wordnet Similarity
-#
-# Copyright (C) 2001-2008 NLTK Project
-# Author: Oliver Steele <steele@osteele.com>
-#         David Ormiston Smith <daosmith@csse.unimelb.edu.au>>
-#         Steven Bird <sb@csse.unimelb.edu.au>
-# URL: <http://nltk.org>
-# For license information, see LICENSE.TXT
-
 import math
-
 from nltk import defaultdict
-
 from util import *
-
 _INF = 1e300
 
 # Similarity metrics

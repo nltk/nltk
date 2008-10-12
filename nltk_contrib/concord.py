@@ -801,7 +801,7 @@ class Aggregator(object):
             print name
             print "-"*(maxKeyLength + 7)
             # for each key:
-            for key in dist.sorted():
+            for key in dist.keys():
                 # keep track of how many samples shown, if using the showFirstX
                 # option
                 #if showFirstX > 0 and x >= showFirstX:

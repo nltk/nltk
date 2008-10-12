@@ -40,6 +40,7 @@ import math
 import random
 import warnings
 from operator import itemgetter
+from itertools import islice
 
 ##//////////////////////////////////////////////////////
 ##  Frequency Distributions
@@ -90,6 +91,7 @@ class FreqDist(dict):
         self._N = 0
         self._Nr_cache = None
         self._max_cache = None
+        self._item_cache = None
         if samples:
             for sample in samples:
                 self.inc(sample)
@@ -115,6 +117,7 @@ class FreqDist(dict):
         # Invalidate the Nr cache and max cache.
         self._Nr_cache = None
         self._max_cache = None
+        self._item_cache = None
 
     def N(self):
         """
@@ -135,6 +138,7 @@ class FreqDist(dict):
         """
         return len(self)
 
+    # deprecate this -- use keys() instead?
     def samples(self):
         """
         @return: A list of all samples that have been recorded as
@@ -215,8 +219,6 @@ class FreqDist(dict):
         @param samples: the samples whose frequencies should be returned.
         @type sample: any.
         """
-        if not samples:
-            samples = self.sorted()
         cf = 0.0
         for sample in samples:
             cf += self.freq(sample)
@@ -264,10 +266,7 @@ class FreqDist(dict):
             self._max_cache = best_sample
         return self._max_cache
 
-    def sorted_samples(self):
-        raise AttributeError, "Use FreqDist.sorted() to get the sorted samples"
-    
-    def plot(self, samples=None, title=None, num=50, *args, **kwargs):
+    def plot(self, *args, **kwargs):
         """
         Plot the given samples from the frequency distribution (cumulative),
         displaying the most frequent sample first.
@@ -286,47 +285,103 @@ class FreqDist(dict):
         except ImportError:
             raise ValueError('The plot function requires the matplotlib package.'
                          'See http://matplotlib.sourceforge.net/')
-        if not "linewidth" in kwargs:
-            kwargs["linewidth"] = 2
         
-        if not samples:
-            samples = self.sorted()
-        else:
-            samples = self.sorted(samples)
-        if num != 0:
-            samples = samples[:num]
+        samples = list(islice(self, *args))
         
         # accumulate the values and scale them
         freqs = list(self._cumulative_frequencies(samples))
         percents = [f * 100 for f in freqs]
         
         pylab.grid(True, color="silver")
-        pylab.plot(percents, *args, **kwargs)
+        if not "linewidth" in kwargs:
+            kwargs["linewidth"] = 2
+        pylab.plot(percents, **kwargs)
         pylab.xticks(range(len(samples)), [str(s) for s in samples], rotation=90)
-        if title: pylab.title(title)
+        if "title" in kwargs: pylab.title(kwargs["title"])
         pylab.xlabel("Samples")
         pylab.ylabel("Cumulative Percentage")
         pylab.show()
         
-    # SB: cache the sorted samples?
-    def sorted(self, samples=None):
-        """
-        Return the samples sorted in decreasing order of frequency.  Instances
-        with the same count will be arbitrarily ordered.  Instances with a
-        count of zero will be omitted. This method is C{O(N^2)}, where C{N} is
-        the number of samples, but will complete in a shorter time on average.
+    def sorted_samples(self):
+        raise AttributeError, "Use FreqDist.keys(), or iterate over the FreqDist to get its samples in sorted order (most frequent first)"
+    
+    def sorted(self):
+        raise AttributeError, "Use FreqDist.keys(), or iterate over the FreqDist to get its samples in sorted order (most frequent first)"
+    
+    def _sort_keys_by_value(self):
+        if not self._item_cache:
+            self._item_cache = sorted(dict.items(self), key=itemgetter(1),
+                                      reverse=True)
 
-        @param samples: an optional list of samples to sort by frequency
-        @type samples: C{list}
-        @return: The set of samples in sorted order.
-        @rtype: sequence of any
+    def keys(self):
         """
-        if samples:
-            items = [(sample, self[sample]) for sample in set(samples)]
-        else:
-            items = self.items()
-        return map(itemgetter(0), 
-                   sorted(items, key=itemgetter(1), reverse=True))
+        Return the samples sorted in decreasing order of frequency.
+
+        @return: A list of samples, in sorted order
+        @rtype: C{list} of any
+        """
+        self._sort_keys_by_value()
+        return map(itemgetter(0), self._item_cache)
+    
+    def values(self):
+        """
+        Return the samples sorted in decreasing order of frequency.
+
+        @return: A list of samples, in sorted order
+        @rtype: C{list} of any
+        """
+        self._sort_keys_by_value()
+        return map(itemgetter(1), self._item_cache)
+    
+    def items(self):
+        """
+        Return the items sorted in decreasing order of frequency.
+
+        @return: A list of items, in sorted order
+        @rtype: C{list} of C{tuple}
+        """
+        self._sort_keys_by_value()
+        return self._item_cache[:]
+    
+    def __iter__(self):
+        """
+        Return the samples sorted in decreasing order of frequency.
+
+        @return: An iterator over the samples, in sorted order
+        @rtype: C{iter}
+        """
+        return iter(self.keys())
+
+    def iterkeys(self):
+        """
+        Return the samples sorted in decreasing order of frequency.
+
+        @return: An iterator over the samples, in sorted order
+        @rtype: C{iter}
+        """
+        return iter(self.keys())
+
+    def itervalues(self):
+        """
+        Return the values sorted in decreasing order.
+
+        @return: An iterator over the values, in sorted order
+        @rtype: C{iter}
+        """
+        return iter(self.values())
+
+    def iteritems(self):
+        """
+        Return the items sorted in decreasing order of frequency.
+
+        @return: An iterator over the items, in sorted order
+        @rtype: C{iter} of any
+        """
+        return iter(self._item_cache)
+
+#        sort the supplied samples
+#        if samples:
+#            items = [(sample, self[sample]) for sample in set(samples)]
 
     def __repr__(self):
         """
@@ -340,7 +395,7 @@ class FreqDist(dict):
         @return: A string representation of this C{FreqDist}.
         @rtype: string
         """
-        items = ['%r: %r' % (s, self[s]) for s in self.sorted()]
+        items = ['%r: %r' % (s, self[s]) for s in self]
         return '<FreqDist: %s>' % ', '.join(items)
 
     def __getitem__(self, sample):
@@ -410,6 +465,7 @@ class ProbDistI(object):
         """
         raise AssertionError()
     
+    # deprecate this (use keys() instead?)
     def samples(self):
         """
         @return: A list of all samples that have nonzero
