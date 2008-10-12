@@ -92,7 +92,7 @@ List the 20 most frequent tags, in order of decreasing frequency:
 
     >>> tags = [simplify_tag(tag) for (word,tag) in floresta.tagged_words()]
     >>> fd = nltk.FreqDist(tags)
-    >>> fd.sorted()[:20] # doctest: +NORMALIZE_WHITESPACE
+    >>> fd.keys()[:20] # doctest: +NORMALIZE_WHITESPACE
     ['n', 'prp', 'art', 'v-fin', ',', 'prop', 'adj', 'adv', '.',
      'conj-c', 'v-inf', 'pron-det', 'v-pcp', 'num', 'pron-indp',
      'pron-pers', '\xab', '\xbb', 'conj-s', '}']
@@ -278,7 +278,7 @@ Now we can use these to filter text.  Let's find the most frequent words (other 
 and print them in descending order of frequency:
 
     >>> fd = nltk.FreqDist(w.lower() for w in floresta.words() if w not in stopwords)
-    >>> for word in fd.sorted()[:20]:
+    >>> for word in fd.keys()[:20]:
     ...     print word, fd[word]
     , 13444
     . 7725
