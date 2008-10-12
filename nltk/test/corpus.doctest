@@ -717,7 +717,7 @@ distribution of part-of-speech tags for reduplicated words.
     ...     lexeme = record.find('lx').text
     ...     if re.match(r'(.*)\1$', lexeme):
     ...         redup_pos_freqdist.inc(record.find('ps').text)
-    >>> for item in redup_pos_freqdist.sorted():
+    >>> for item in redup_pos_freqdist.keys():
     ...     print item, redup_pos_freqdist[item]
     V 41
     N 14
@@ -962,7 +962,7 @@ and ``p.attrib['user']``.  They also have text content, accessed using ``p.text`
     >>> print nltk.corpus.nps_chat.xml_posts() # doctest: +ELLIPSIS
     [<Element 'Post' at 0x...>, <Element 'Post' at 0x...>, ...]
     >>> posts = nltk.corpus.nps_chat.xml_posts()
-    >>> nltk.FreqDist(p.attrib['class'] for p in posts).sorted() # doctest: +NORMALIZE_WHITESPACE
+    >>> nltk.FreqDist(p.attrib['class'] for p in posts).keys() # doctest: +NORMALIZE_WHITESPACE
     ['Statement', 'System', 'Greet', 'Emotion', 'ynQuestion',
     'whQuestion', 'Accept', 'Bye', 'Emphasis', 'Continuer',
     'Reject', 'yAnswer', 'nAnswer', 'Clarify', 'Other']
