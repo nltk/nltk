@@ -15,12 +15,15 @@
 \usepackage{fancyvrb}
 \fvset{fontsize=\small, frame=lines}
 
+\newcommand{\BB}{\textsc{B{\small\&}B}}
 \newcommand{\DRS}{\textsc{drs}}
 \newcommand{\DRT}{\textsc{drt}}
 \newcommand{\FOL}{\textsc{fol}}
+\newcommand{\LF}{\textsc{lf}}
 \newcommand{\NLP}{\textsc{nlp}}
 \newcommand{\NLTK}{\textsc{nltk}}
-\newcommand{\LF}{\textsc{lf}}
+\newcommand{\RTE}{\textsc{rte}}
+
 
 %\pdfinfo{
 %   /Author 		(Dan Garrette and Ewan Klein)
@@ -85,6 +88,7 @@
 \title{An Extensible Toolkit for Computational Semantics}
 \author{Dan Garrette \and Ewan Klein}
 \date{\today}
+
 \maketitle
 
 \section{Introduction}
@@ -92,7 +96,8 @@
 In this paper we focus on the software for computational semantics provided
 by the Python-based Natural Language Toolkit (\NLTK). The semantics
 modules in \NLTK\ are
-inspired in large part by the approach developed in \citet{BB}.
+inspired in large part by the approach developed in \citet{BB}
+(henceforth referred to as \BB).
 Since Blackburn and Bos have also provided a software suite to
 accompany their excellent textbook, one might ask what the
 justification is for the \NLTK\ offering, which is similarly slanted
@@ -116,22 +121,23 @@ learning curve.
 
 Third, \NLTK\ is a rapidly developing, open source
 project\footnote{See \url{http://nltk.org}} with a broad coverage of
-natural language processing (\NLP); see \citet{Multidisciplinary} for
+natural language processing (\NLP) tools; see \citet{Multidisciplinary} for
 a recent overview. This wide functionality has a number of benefits,
 most notably that lexical, syntactic and semantic processing can be
 carried out within a uniform computational framework. As a result,
-\NLTK\ makes it much easier to include some computational semantics in
+\NLTK\ makes it much easier to include some computational semantics
+subject matter in
 a broad course on natural language analysis, rather than having to
 devote a whole course exclusively to the topic.
 
-Fourth, \NLTK\ is distributed along with a large collection of
-corpora, along with easy-to-use corpus readers.  This collection,
-which currently stands at 45 corpora, includes parsed, POS-tagged,
-plain text, categorized text, and
-lexicons.\footnote{\url{http://nltk.org/corpora.html}} This helps
-students to go beyond writing toy grammars, and instead to start 
-grappling with the complexities of semantically analysing realistic
-bodies of text.
+Fourth, \NLTK\ is accompanied by a substantial collection of corpora,
+plus easy-to-use corpus readers.  This collection, which currently
+stands at 45 corpora, includes parsed, POS-tagged, plain text,
+categorized text, and
+lexicons.\footnote{\url{http://nltk.org/corpora.html}} The
+availability of corpora can help encourage students to go beyond
+writing toy grammars, and instead to start grappling with the
+complexities of semantically analysing realistic bodies of text.
 
 Fifth, \NLTK\ is not just for students. Although Python is slower than
 languages like Java and C++, its suitability for rapid prototyping
@@ -153,7 +159,7 @@ assembly of quite sophisticated processing pipelines.
 %  \caption{Overview of semantic processing in NLTK}
 \end{wrapfigure}
 
-Like \citet{BB}, we assume that one of the most important tasks for
+Like \BB, we assume that one of the most important tasks for
 the teacher is to ground students in the basic concepts of first order
 logic and the lambda calculus, model-theoretic interpretation and
 inference. This provides a basis for exploring more modern approaches
@@ -170,16 +176,19 @@ of first order logic, supplemented with the lambda operator. However,
 we also admit Discourse Representation Structures (\DRS s) as \LF s,
 and underspecified \LF s can be built using either Hole Semantics
 \citep{BB} or Glue Semantics
-\citep{Dalrymple:1999:RRB,Dalrymple2001}. Once we have constructed \LF
+\citep{Dalrymple:1999:RRB}. 
+%\citep{Dalrymple:1999:RRB,Dalrymple2001}. 
+Once we have constructed \LF
 s, they can be evaluated in a first order model \citep{Klein06altw},
 tested for equivalence and validity in a variety of theorem provers,
-or tested for consistency in a model builder. Note that \NLTK\
-provides interfaces to third party inference tools, currently Prover9
+or tested for consistency in a model builder. The latter two tasks are
+aided by \NLTK\
+ interfaces to third-party inference tools, currently Prover9
 and Mace4 \citep{McCune}.
 
 We do not have space in this paper to discuss all of these components,
-but will try to present some of the key aspects, in particular noting
-some points of difference \textit{vis-\`a-vis} \citet{BB}.
+but will try to present some of the key aspects, and along the way
+noting certain points of difference \textit{vis-\`a-vis} \BB.
 
 
 \section{Logical Form}
@@ -190,7 +199,7 @@ that students have some grasp of the language of first order predicate
 logic (\FOL), and can also manipulate $\lambda$-abstraction.  The
 \texttt{nltk.sem.logic} module contains an object-oriented approach
 to representing \FOL\ plus
-$\lambda$-abstraction. Logical formulas are typically input to the
+$\lambda$-abstraction. Logical formulas are typically fed to the
 \texttt{logic} parser as strings, and then represented as instances of
 various subclasses of \texttt{Expression}, as we will see shortly.
 
@@ -208,25 +217,29 @@ Python interpreter's prompt.
 As illustrated, the result of parsing the formula at line~3 is an object
 \texttt{e} belonging to the class \texttt{AllExpression}, itself a
 subclass of \texttt{Expression}.  All such subclasses have numerous
-methods that can be used to perform standard logical operations. For
-example, the \texttt{simplify()} method is used to perform
-$\beta$-conversion; the \texttt{free()} method can be used to find
-all the free variables in an expression; and quantified expressions
-(such as \texttt{AllExpression}s) have an \texttt{alpha\_convert()}
-method that will perform $\alpha$-conversion.  The \texttt{logic}
-module will also $\alpha$-convert automatically when appropriate to
+methods that implement standard logical operations. For
+example, the \texttt{simplify()} method carries out
+$\beta$-conversion; the \texttt{free()} method finds
+all the free variables in an expression; and for quantified expressions
+(such as \texttt{AllExpression}s), there is an \texttt{alpha\_convert()}
+method.  The \texttt{logic}
+module will $\alpha$-convert automatically when appropriate to
 avoid name-clashes in the \texttt{replace()} method. Let's illustrate
+these methods
 with a formula involving $\lambda$-abstraction, namely
 \verb!\x.P(x)(y)!; we use \protect{\verb!\!} to represent
 $\lambda$. (Since \verb!\! is a special character in Python,
 we add the \texttt{r} prefix to strings containing it to preclude
 additional escape characters.)
+\newpage
 \begin{Verbatim}
 >>> from nltk.sem import Variable
 >>> e1 = lp.parse(r'\x.P(x)(y)')
 >>> print e1.simplify()
 P(y)
 >>> e2 = lp.parse('all x.P(x,a,b)')
+>>> print e2
+all x.P(x,a,b)
 >>> print e2.free()
 set([<Variable('a'), Variable('b')])
 >>> print e2.alpha_convert(Variable('z'))
@@ -255,13 +268,15 @@ all z1.P(z1,a,x)
 Allowing students to build simple first order models, and evaluate
 expressions in those models, can be useful for helping them clarify
 their intuitions about quantification. In the next example, we show
-one of the available methods in \NLTK\ for specifying a model, and
-then using it to determine the set of satisfiers of an open formula
-such as %\verb!exists y.(girl(y) & chase(x,y))!.
-$\exists x.(\mathit{girl}(y) \wedge \mathit{chase}(x,y))$.%
-\footnote{The triple
-  quotes \texttt{"""} allow us to break a logical line across several physical
-  lines.}
+one of the available methods in \NLTK\ for specifying a model and
+using it to determine the set of satisfiers of the open formula
+$\exists x.(\mathit{girl}(y) \wedge
+\mathit{chase}(x,y))$.\footnote{The triple quotes \texttt{"""} in
+  Python allow us to break a logical line across several physical
+  lines.},
+\footnote{Given a valuation \texttt{val}, the property
+  \texttt{val.domain} returns the set of all domain individuals
+  specified in the valuation.}
 \begin{Verbatim}
 >>> from nltk.sem import parse_valuation, Model, Assignment
 >>> v = """
@@ -279,51 +294,66 @@ $\exists x.(\mathit{girl}(y) \wedge \mathit{chase}(x,y))$.%
 set(['r', 'f'])
 \end{Verbatim}
 
-In \citet{BB}, $\lambda$-abstracts are second-class citizens, used
+In \BB, $\lambda$-abstracts are second-class citizens, used
 exclusively as a `glue' mechanism for composing meaning
 representations. Although we use $\lambda$-abstracts as glue too,
 abstracts over individual variables are interpreted in \NLTK, namely as
 characteristic functions.
 
-Additionally, \texttt{Expression}s in \NLTK\ can be optionally typed.  This 
-allows the user not only to display the \texttt{Expression}'s type, but to 
-prevent expressions that are grammatically sound, but that cause type errors.
-The parameter \texttt{type\_check=True} can be passed into the 
-\texttt{LogicParser} constructor to indicate that expressions created by
-the parser should be type checked.  Every typed expression has a method 
-\texttt{gettype()} that returns the expression's type.  When a type error 
-occurs during the construction of an \texttt{Expression}, a 
-\texttt{TypeException} is raised.
+\texttt{Expression}s in \NLTK\ can be optionally typed (using
+Montague-style types) by passing the parameter \texttt{type\_check=True} to
+\texttt{LogicParser}.  Apart from allowing the user to display the
+\texttt{Expression}'s type with \texttt{gettype()}, type checking will
+raise an exception for non-well typed expressions:
+% prevent expressions that are grammatically sound, but that cause type errors.
+%  Every typed expression has a method 
+% \texttt{gettype()} that returns the expression's type.  When a type error 
+% occurs during the construction of an \texttt{Expression}, a 
+% \texttt{TypeException} is raised.
+% \begin{Verbatim}
+% >>> tlp = logic.LogicParser(type_check=True)
+% >>> try: tlp.parse(r'\P.P(x,y)(\z.Q(z))')
+% ... except Exception, e: print e.__class__.__name__
+% TypeException
+% >>> a = tlp.parse(r'\P.P(x)')
+% >>> a.gettype()
+% <<e,t>,t>
+% >>> try: a(a)
+% ... except Exception, e: print e.__class__.__name__
+% TypeException
+% \end{Verbatim}
 \begin{Verbatim}
 >>> tlp = logic.LogicParser(type_check=True)
->>> try: tlp.parse(r'\P.P(x,y)(\z.Q(z))')
-... except Exception, e: print e.__class__.__name__
-TypeException
 >>> a = tlp.parse(r'\P.P(x)')
 >>> a.gettype()
 <<e,t>,t>
->>> try: a(a)
-... except Exception, e: print e.__class__.__name__
-TypeException
+>>> a(a)
+Traceback (most recent call last):
+  . . .
+TypeException: The function '\P.P(x)' is of type '<<e,t>,t>' and
+cannot be applied to '\P.P(x)' of type '<<e,t>,t>'.  Its argument
+must be of type '<e,t>'.
 \end{Verbatim}
+% Fix for code colorization: >>>>
 
 \subsection{Discourse Representation Theory}
 As mentioned earlier, \NLTK\ contains an extension to the
-\texttt{logic} module for working with Discourse Representation
-Theory (\DRT) \citep{KampReyle}.  \NLTK's \texttt{nltk.sem.drt}
-library introduces a \texttt{DRS()} constructor which takes the lists
-of discourse referents and conditions as parameters:
-\enumsentence{\label{drt3} \texttt{DRS([j,d],[John(j), dog(d), sees(j,d)])}} 
-In addition to the functionality available in the
-\texttt{logic} module for \FOL, \DRT\ expressions have a
-`\DRS-concatenation' operator, represented as the \texttt{+} symbol.
-The concatenation of two \DRS s is a single \DRS\ containing the
-merged discourse referents and the conditions from both arguments.
-\DRS-concatenation automatically $\alpha$-converts bound variables to
-avoid name-clashes.  The \texttt{+} symbol is overloaded so that \DRT\
-expressions can be added together easily. 
-The \texttt{nltk.sem.drt} module includes a parser which allows \DRS
-s to be specified more succinctly as strings.
+\texttt{logic} module for working with Discourse Representation Theory
+(\DRT) \citep{KampReyle}.  The \texttt{nltk.sem.drt} module introduces
+a \texttt{DRS()} constructor which takes lists of discourse referents
+and conditions as initialization parameters:
+\vspace{-2ex}
+\enumsentence{\label{drt3} \texttt{DRS([j,d],[John(j), dog(d),
+    sees(j,d)])}} 
+On top of the functionality available for \FOL\
+expressions, \DRT\ expressions have a `\DRS-concatenation' operator,
+represented as the \texttt{+} symbol.  The concatenation of two \DRS s
+is a single \DRS\ containing the merged discourse referents and the
+conditions from both arguments.  \DRS-concatenation automatically
+$\alpha$-converts bound variables to avoid name-clashes.  The
+\texttt{+} symbol is overloaded so that \DRT\ expressions can be added
+together easily.  The \texttt{nltk.sem.drt} parser allows \DRS s to be
+specified succinctly as strings.
 \begin{Verbatim}
 >>> from nltk.sem import drt
 >>> dp = drt.DrtParser()
@@ -342,31 +372,30 @@ s to be specified more succinctly as strings.
 \end{Verbatim}
 
 \begin{wrapfigure}{r}{0.2\textheight}
-\vspace{-5ex}
+\vspace{-3ex}
 \begin{center}
    \includegraphics[scale=.5]{drs.png}
-
  \end{center}
 \vspace{-4ex}
-\caption{DRS Screenshot} 
+\caption{\small DRS Screenshot} 
 \vspace{-5ex}
 \end{wrapfigure}
+
 \noindent
-\DRT\ expressions can be converted to their first-order predicate
-logic equivalents using the \texttt{toFol()} method. To assist
-visualization, the \texttt{draw()} method produces a graphical
-rendering of a \DRS.
+\DRT\ expressions can be converted to their first order predicate
+logic equivalents using the \texttt{toFol()} method and can be
+graphically rendered on screen with the \texttt{draw()} method.
 \begin{Verbatim}[frame=none]
 >>> print d1.toFol()
 (exists x.walk(x) & exists y.run(y))
 >>> d4.simplify().draw()
 \end{Verbatim}
 
-Since the $\lambda$ operator is also applicable to \DRT\ expressions,
-the \texttt{sem.drt} may be used as a replacement for
-\texttt{sem.logic} in building compositional semantics.
+Since the $\lambda$ operator can be combined with \DRT\ expressions,
+the \texttt{nltk.sem.drt} module works as a plug-in replacement for
+\texttt{nltk.sem.logic} in building compositional semantics.
 
-\section{Syntax, Scope Ambiguity and Underspecification}
+\section{Scope Ambiguity and Underspecification}
 
 Two key questions in introducing students to computational semantics are:
 \begin{enumerate}
@@ -375,22 +404,21 @@ Two key questions in introducing students to computational semantics are:
 \vspace{-2ex}
 \item[Q2:] What is scope ambiguity and how is it captured?
 \end{enumerate}
-A standard approach is to address (Q1) with a rule-to-rule induction of
-logical forms which fails to deal with scope ambiguity, while (Q2) is
-addressed with underspecified representations
-which can be resolved to produce different readings of ambiguous
-sentences. 
+A standard pedagogical approach is to address (Q1) with a simple
+syntax-driven induction of logical forms which fails to deal with
+scope ambiguity, while (Q2) is addressed by introducing underspecified
+representations which are resolved to produce different readings of
+ambiguous sentences.
 
 \NLTK\ includes a suite of parsing tools, amongst which is a chart
 parser for context free grammars augmented with feature structures. A
 `semantics' feature \texttt{sem} allows us to compose the
-contributions of constituents in order to build a logical form for a
-complete sentence.  To illustrate, the following simple grammar
-handles quantification and intransitive verbs (where values such as
-\texttt{?subj} and \texttt{?vp} are unification variables, while
-\texttt{P} and \texttt{Q} are $\lambda$-bound object language
-variables):
-
+contributions of constituents to build a logical form for a complete
+sentence.  To illustrate, the following minimal grammar
+\texttt{sem1.fcfg} handles quantification and intransitive verbs
+(where values such as \texttt{?subj} and \texttt{?vp} are unification
+variables, while \texttt{P} and \texttt{Q} are $\lambda$-bound object
+language variables):
 \begin{Verbatim}
 S[sem = <?subj(?vp)>] -> NP[sem=?subj] VP[sem=?vp]
 VP[sem=?v] -> IV[sem=?v]
@@ -399,15 +427,15 @@ Det[sem=<\P.\Q.exists x.(P(x) & Q(x))>] -> 'a'
 N[sem=<\x.dog(x)>] -> 'dog'
 IV[sem=<\x.bark(x)>] -> 'barks'
 \end{Verbatim}
-Using this grammar, we can parse the sentence \textit{A dog barks} and view
+Using \texttt{sem1.fcfg}, we can parse \textit{A dog barks} and view
 its semantics. 
 %  It should be noted that if the
 % \texttt{load\_earley()} method's argument \texttt{trace} is set to a
 % positive number, then the parser prints detailed information showing
 % how the sentence was parsed.  
 The \texttt{load\_earley()} method
-takes as an optional parameter \texttt{logic\_parser} the name of a
-logic-parser to process the value of the \texttt{sem} feature, thus
+takes an optional parameter \texttt{logic\_parser} which specifies the
+logic-parser for processing the value of the \texttt{sem} feature, thus
 allowing different kinds of logical forms to be constructed.
 \begin{Verbatim}
 >>> from nltk.parse import load_earley
@@ -421,7 +449,7 @@ Underspecified logical forms allow us to loosen the relation between
 syntactic and semantic representations. We consider two approaches to
 underspecification, namely Hole
 Semantics and Glue Semantics. Since the former will be familiar from 
-\citep{BB}, we devote most of our attention to presenting Glue
+\BB, we devote most of our attention to presenting Glue
 Semantics.
 
 \subsection{Hole Semantics}
@@ -431,13 +459,11 @@ Hole Semantics in \NLTK\ is handled by the
 generate an underspecified logical form.  Since the latter is itself a
 formula of first order logic, we can continue to use the \texttt{sem} feature
 in the context free grammar:
-\begin{Verbatim}[frame=none]
-N[sem=<\x h l.(PRED(l,dog,x) & LEQ(l,h) & HOLE(h) & LABEL(l))>] 
-     -> 'dog'
+\begin{Verbatim}[frame=none,fontsize=\small]
+N[sem=<\x h l.(PRED(l,dog,x) & LEQ(l,h) & HOLE(h) & LABEL(l))>] -> 'dog'
 \end{Verbatim}
-The Hole Semantics module uses a `plugging algorithm' to derive the
+The Hole Semantics module uses a standard plugging algorithm to derive the
 sentence's readings from the underspecified \LF.
-
 \begin{Verbatim}
 >>> from nltk.sem import hole
 >>> readings = hole.main('every girl chases a dog')
@@ -448,16 +474,15 @@ all z2.(girl(z2) -> exists z1.(dog(z1) & chase(z1,z2)))
 
 
 \subsection{Glue Semantics}
-Glue Semantics \citep{Dalrymple:1999:RRB,Dalrymple2001}, or Glue for
-short, is an approach
-to compositionality that tries to handle semantic ambiguity by using resource-sensitive logic to assemble meaning
-expressions.  
-
-The approach builds proofs over `meaning constructors'; these of the
+Glue Semantics \citep{Dalrymple:1999:RRB}, or Glue for
+short, is an approach to compositionality that tries to handle
+semantic ambiguity by using resource-sensitive logic to assemble
+meaning expressions.
+The approach builds proofs over `meaning constructors'; these are of the
 form $\cal{M}: \cal{G}$, where $\cal{M}$ is a meaning representation and
 $\cal{G}$ is a term of linear logic.  The linear logic term $\cal{G}$
 dictates how the meaning expression $\cal{M}$ can be combined.  Each
-different proof that can be derived reflects a different semantic
+distinct proof that can be derived reflects a different semantic
 reading of the entire sentence.
 
 The variant of linear logic that we use has \emph{(linear)
@@ -467,7 +492,7 @@ Ponens.  Linear logic is an appropriate logic to serve as `glue'
 because it is resource-sensitive.  This means that when Modus Ponens
 combines two terms to create a new one, the two original
 terms are `consumed', and cannot be used again in the proof;
-cf. (\ref{glue1}) vs.\ (\ref{glue2}).
+cf.\ (\ref{glue1}) vs.\ (\ref{glue2}).
 Additionally, every premise must be used for the proof to be valid;
 cf.\ (\ref{glue3}).
 This resource-sensitivity dictates that each word contributes its
@@ -478,28 +503,29 @@ meaning exactly once to the meaning of the whole.
 \NLTK's \texttt{nltk.gluesemantics.linearlogic} module
 contains an implementation of linear logic. 
 
-The primary rule used to compose Glue formulas is (\ref{glue4});
-function-argument application of meaning expressions is reflected (via
+The primary rule for composing Glue formulas is (\ref{glue4}).
+Function-argument application of meaning expressions is reflected (\textit{via}
 the Curry-Howard isomorphism) by the application of Modus Ponens in a
 linear logic proof. Note that $A$ and $B$ are meta-variables over
 constants of linear logic; these constants represent `attachment
 points' for meaning expressions in some kind of syntactically-derived
 representation (such as an LFG \textit{f}-structure).  It is
 (\ref{glue4}) which allows Glue to guide the construction of complex
-meaning expressions.  \enumsentence{\label{glue4} $\alpha : A,\;
-  \gamma : (A \multimap B) \vdash \gamma(\alpha) : B$} \NLTK\ includes
-\texttt{nltk.gluesemantics.glue} for Glue based on \FOL\
-meaning expressions, and a parallel module
-\texttt{nltk.gluesemantics.drt\_glue} for Glue based on
-\DRT.
+meaning expressions.  
+\vspace{-3ex}
+\enumsentence{\label{glue4} $\alpha : A,\;
+  \gamma : (A \multimap B) \vdash \gamma(\alpha) : B$} 
 
+The \NLTK\ modules \texttt{gluesemantics.glue} and
+\texttt{gluesemantics.drt\_glue} implement Glue for \FOL\ and
+\DRT\ meaning expressions, respectively.
 The following example shows the basic way that
 Glue formulas are created and combined to derive a logical form for
 \textit{John walks}: 
 
 \begin{Verbatim}
 >>> from nltk.gluesemantics.glue import GlueFormula
->>> john = GlueFormula(r'john', 'g')
+>>> john = GlueFormula('john', 'g')
 >>> walks = GlueFormula(r'\x.walk(x)', '(g -o f)')
 >>> john_walks = walks.applyto(john)
 >>> print john_walks.meaning.simplify()
@@ -540,13 +566,13 @@ all x.(girl(x) -> exists z14.(dog(z14) & chase(x,z14)))
 \section{Inference tools}
 In order to perform inference over semantic representations, \NLTK\
 can call both theorem provers and model builders.
-The library includes a pure Python tableau-based first-order theorem prover;
+The library includes a pure Python tableau-based first order theorem prover;
 this is intended to allow students to study 
 tableau methods for theorem proving, and provides an
 opportunity for experimentation.  In addition, \NLTK\ provides
 interfaces to two state-of-the-art tools, namely the theorem prover Prover9, 
-and the model builder Mace4  \citep{McCune}.  Both of these are
-powerful enough for research.
+and the model builder Mace4  \citep{McCune}.  % Both of these are
+% powerful enough for research.
 
 The \verb!get_prover(G, A)! method by default calls Prover9, and takes as
 parameters a proof goal \texttt{G} and a list \texttt{A} of assumptions.
@@ -611,13 +637,13 @@ True
 
 % The closed domain assumption states that the only domain entities that have a particular property are the entities that it can be proven have the property.  For a property ``$P$", the decorator finds any individuals ``$A$" such that ``$P(A)$" and any properties ``$Q$" such that ``$\forall x.(Q(x) \rightarrow P(x))$".  The decorator then \textbf{completes} ``$P$" by adding the assumption ``$\forall x.(P(x) \rightarrow (Q(x)~|~(x = A)))$".  In the case where no domain entities can be proven to have property ``$P$", then the assumption ``$\forall x.-P(x)$" is added.
 
-\section{Putting Things Together}
+\section{Discourse Processing}
 
-\subsection{Discourse Processing}
 \NLTK\ contains a discourse processing module,
-\texttt{nltk.inference.discourse}, similar to the CURT program
-presented in \cite{BB}.  This module processes sentences incrementally,
-keeping track of all possible threads when there is ambiguity.
+\texttt{nltk.inference.discourse}, similar to the \textsc{curt} program
+presented in \BB.  This module processes sentences incrementally,
+keeping track of all possible threads when there is ambiguity. For
+simplicity, the following example ignores scope ambiguity.
 \begin{Verbatim}[baselinestretch=.5]
 
 >>> from nltk.inference.discourse import DiscourseTester as DT
@@ -634,7 +660,8 @@ s1-r0: all x.(student(x) -> person(x))
 \end{Verbatim}
 When a new sentence is added to the current discourse, setting the
 parameter \texttt{consistchk=True} causes consistency to be checked
-by invoking the model checker. In this case, the user has the option
+by invoking the model checker for each `thread', i.e., discourse sequence of
+admissible readings. In this case, the user has the option
 of retracting the sentence in question.
 \begin{Verbatim}
 >>> dt.add_sentence('No person dances', consistchk=True)
@@ -658,13 +685,14 @@ Not informative relative to thread 'd0'
 It is also possible to pass in an additional set of assumptions as
 background knowledge and use these to filter out inconsistent readings.
 
-The \texttt{discourse} module also has the ability to handle semantic 
-ambiguity and to filter out readings that are not semantically viable.
-Using both Glue Semantics and \DRT, the following example processes the 
-two-sentence discourse "Every dog chases a boy.  He runs".  As is shown
-by the readings generated, the first sentence has two possible readings.
-The second sentence contains an anaphoric pronoun.
-\begin{Verbatim}
+The \texttt{discourse} module can accommodate semantic 
+ambiguity and filter out readings that are not admissable.
+By invoking both Glue Semantics and \DRT, the following example processes the 
+two-sentence discourse \textit{Every dog chases a boy.  He runs}.  As
+shown, the first sentence has two possible readings, while 
+the second sentence contains an anaphoric pronoun, indicated as \texttt{PRO(x)}.
+\begin{Verbatim}[baselinestretch=.5]
+
 >>> from nltk.inference.discourse import DrtGlueReadingCommand as RC
 >>> dt = DT(['Every dog chases a boy', 'He runs'], RC())
 >>> dt.readings()
@@ -678,19 +706,27 @@ s1 readings:
 ------------------------------
 s1-r0: ([x],[PRO(x), run(x)])
 \end{Verbatim}
-When we show the readings of the two possible threads we see that 
-that the first reading, where "every dog" out-scopes "a boy", is found
-to be invalid because the pronoun in the second sentence cannot be 
-resolved.  We are also able to filter out invalid readings using 
-\texttt{filter=True}.
+When we examine the two threads \texttt{d0} and \texttt{d1}, we see
+that that reading \texttt{s0-r0}, where \textit{every dog} out-scopes
+\texttt{a boy}, is deemed inadmissable because the pronoun in the
+second sentence cannot be resolved.  By contrast, in thread \texttt{d1} the
+pronoun (relettered to \texttt{z24}) has been bound \textit{via} the
+equation \texttt{(z24 = z20)}.  % Inadmissable readings are filtered out
+% by passing the parameter \texttt{filter=True}.
+% \begin{Verbatim}
+% >>> dt.readings(show_thread_readings=True)
+% d0: ['s0-r0', 's1-r0'] : INVALID: AnaphoraResolutionException
+% d1: ['s0-r1', 's1-r0'] : ([z20,z24],[boy(z20), (([x],[dog(x)]) -> 
+% ([],[chase(x,z20)])), (z24 = z20), run(z24)])
+% >>> dt.readings(filter=True, show_thread_readings=True)
+% d1: ['s0-r1', 's1-r0'] : ([z26,z29],[boy(z26), (([x],[dog(x)]) -> 
+% ([],[chase(x,z26)])), (z29 = z26), run(z29)])
+% \end{Verbatim}
 \begin{Verbatim}
 >>> dt.readings(show_thread_readings=True)
 d0: ['s0-r0', 's1-r0'] : INVALID: AnaphoraResolutionException
 d1: ['s0-r1', 's1-r0'] : ([z20,z24],[boy(z20), (([x],[dog(x)]) -> 
 ([],[chase(x,z20)])), (z24 = z20), run(z24)])
->>> dt.readings(filter=True, show_thread_readings=True)
-d1: ['s0-r1', 's1-r0'] : ([z26,z29],[boy(z26), (([x],[dog(x)]) -> 
-([],[chase(x,z26)])), (z29 = z26), run(z29)])
 \end{Verbatim}
 
 
@@ -758,7 +794,7 @@ d1: ['s0-r1', 's1-r0'] : ([z26,z29],[boy(z26), (([x],[dog(x)]) ->
 % entailment uses stemming and Glue Semantics uses dependency parsing.
 
 \NLTK's semantics functionality has been written with extensibility in
-mind.  Within the \texttt{logic} module, the \texttt{LogicParser}
+mind.  The \texttt{logic} module's \texttt{LogicParser}
 employs a basic parsing template and contains hooks that an extending
 module can use to supplement or substitute functionality.  Moreover, the
 base \texttt{Expression} class in \texttt{logic}, as well as any
@@ -767,35 +803,34 @@ existing functionality.  For example, the \DRT\ and linear logic modules
 are implemented as extensions to \texttt{logic.py}.
 
 The theorem prover and model builder code has also been carefully
-architected to allow extensions and the \texttt{nltk.inference.api}
+archi\-tected to allow extensions and the \texttt{nltk.inference.api}
 library exposes the framework for the inference architecture.  The
 library therefore provides a good starting point for creating
-interfaces with other theorem provers and model builders just as we
-have done with Prover9, Mace4, and the tableau prover.  % The
+interfaces with other theorem provers and model builders in addition to Prover9, Mace4, and the tableau prover.  % The
 % \texttt{ProverDecorator} base class is also available so that new
 % decorators for the theorem provers can be implemented, similar to
 % those in \texttt{nonmonotonic.py}.
 
-\NLTK\ also includes a framework for recognizing textual entailment 
-including the RTE data sets and a few simple modules to demonstrate
-RTE techniques.  For example, the Logical Entailment RTE tagger is a  
-semantically-oriented approach to RTE located in
-\texttt{nltk.rte.logicentail}.  Based on \cite{BosRTE}, the
-tagger begins by building a semantic representation in of both the text 
-and the hypothesis in \DRT.  It then runs a theorem prover 
-with the text as the assumption and the hypothesis as the goal in 
-order to check whether the text entails the hypothesis.  If a proof is 
-found, then we know that entailment holds.  The tagger is also capable 
-of adding background knowledge via an interface to the WordNet 
-dictionary in \texttt{nltk.wordnet} to make the entailment checking 
-more robust.  
+\NLTK\ already includes the beginnings of a framework for `recognizing
+textual entailment'; access to the \RTE\ data sets is provided and we
+are in the course of developing a few simple modules to demonstrate
+\RTE\ techniques.  For example, a Logical Entailment \RTE\ tagger
+based on \cite{BosRTE} begins by building a semantic
+representation of both the text and the hypothesis in \DRT.  It then
+runs a theorem prover with the text as the assumption and the
+hypothesis as the goal in order to check whether the text entails the
+hypothesis.The tagger is also capable of adding background knowledge
+\textit{via} an interface to the WordNet dictionary in
+\texttt{nltk.wordnet} as a first step in making the entailment
+checking more robust.
 
 
 % \section{Acknowledgments}
 % I would like to thank Ewan Klein for his continuous support and guidance on my work with \NLTK\ and on computational semantics in general, as well as initially inviting me to join the \NLTK\ project.  I would also like to thank Steven Bird and Edward Loper for their advice and feedback on my \NLTK\ contributions
 
 
-
+{\small
 \bibliography{sem}
+}
 
 \end{document}
