@@ -37,7 +37,7 @@ class RTEInferenceTagger(object):
         """
         Tag a RTEPair as to whether the hypothesis can be inferred from the text.
         """
-        glueclass = DrtGlue(dependency=True)
+        glueclass = DrtGlue()
         text_drs_list = glueclass.parse_to_meaning(text)
         if text_drs_list:
             text_ex = text_drs_list[0].simplify().toFol()
@@ -234,7 +234,7 @@ def demo_inference_tagger(verbose=False):
 #    text_ex = logic.LogicParser().parse('exists e x y.(david(x) & own(e)  & subj(e,x) & obj(e,y) & car(y))')
 #    hyp_ex  = logic.LogicParser().parse('exists e x y.(david(x) & have(e) & subj(e,x) & obj(e,y) & auto(y))')
 
-    glueclass = DrtGlue(dependency=True, verbose=verbose)
+    glueclass = DrtGlue(verbose=verbose)
     text_drs_list = glueclass.parse_to_meaning(text)
     if text_drs_list:
         text_ex = text_drs_list[0].simplify().toFol()
@@ -322,8 +322,8 @@ def tag(text, hyp):
     print ''
 
 if __name__ == '__main__':
-    test_check_consistency()
-    print '\n'
+#    test_check_consistency()
+#    print '\n'
     
     demo_inference_tagger(False)
     

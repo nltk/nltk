@@ -8,7 +8,6 @@
 
 from nltk.sem import drt
 import linearlogic
-import lfg
 import glue
 from nltk import data
 from nltk.inference.tableau import ProverParseError
@@ -101,11 +100,11 @@ def demo(show_example=-1, remove_duplicates=False):
 
 def test():
     parser = drt.DrtParser()
-    every = parser.parse(r'\P Q.drs([],[((drs([x],[])+P(x)) -> Q(x))])')
-    man = parser.parse(r'\x.drs([],[man(x)])')
-    chases = parser.parse(r'\x y.drs([],[chases(x,y)])')
-    a = parser.parse(r'\P Q.((drs([x],[])+P(x))+Q(x))')
-    dog = parser.parse(r'\x.drs([],[dog(x)])')
+    every = parser.parse(r'\P Q.([],[((([x],[])+P(x)) -> Q(x))])')
+    man = parser.parse(r'\x.([],[man(x)])')
+    chases = parser.parse(r'\x y.([],[chases(x,y)])')
+    a = parser.parse(r'\P Q.((([x],[])+P(x))+Q(x))')
+    dog = parser.parse(r'\x.([],[dog(x)])')
 
 def test1():
     cs = parse_to_compiled('David walks')
@@ -134,11 +133,11 @@ def testPnApp():
            without the reading (seems (some x.((x = john) and (vanish x))) because John, as a \n\
            named entity, is assumed to always exist.  This is accomplished by always adding \n\
            named entities to the outermost scope.  (See Kamp and Reyle for more)'
-    john = DrtGlueFormula(r'\P.(drs([x],[(x = john)])+P(x))', '((g -o G) -o G)')
+    john = DrtGlueFormula(r'\P.(([x],[(x = john)])+P(x))', '((g -o G) -o G)')
     print "'john':                      %s" % john
-    seems = DrtGlueFormula(r'\P.drs([],[seems(P)])', '(h -o f)')
+    seems = DrtGlueFormula(r'\P.([],[seems(P)])', '(h -o f)')
     print "'seems':                     %s" % seems
-    vanish = DrtGlueFormula(r'\x.drs([],[vanish(x)])', '(g -o h)')
+    vanish = DrtGlueFormula(r'\x.([],[vanish(x)])', '(g -o h)')
     print "'vanish':                    %s" % vanish
 
     print "  'John' can take wide scope: 'There is a John, and he seems to vanish'"
@@ -172,34 +171,34 @@ def test_malt_parse():
 
 def test_event_representations():
 #    This doesn't allow 'e' to be modified
-    a = DrtGlueFormula(r'\P Q.((drs([x],[]) + P(x)) + Q(x))', '((gv -o gr) -o ((g -o G) -o G))')
-    dog = DrtGlueFormula(r'\x.drs([],[dog(x)])', '(gv -o gr)')
-    walks = DrtGlueFormula(r'\x.drs([e],[walk(e), subj(x,e)])', '(g -o f)')
+    a = DrtGlueFormula(r'\P Q.((([x],[]) + P(x)) + Q(x))', '((gv -o gr) -o ((g -o G) -o G))')
+    dog = DrtGlueFormula(r'\x.([],[dog(x)])', '(gv -o gr)')
+    walks = DrtGlueFormula(r'\x.([e],[walk(e), subj(x,e)])', '(g -o f)')
     print '1) a dog walks'
     for r in get_readings(gfl_to_compiled([a,dog,walks])): print r.simplify()
     print ''
 
 #    This approach finishes with a '\e' in front
-    a = DrtGlueFormula(r'\P Q e.((drs([x],[]) + P(x)) + Q(x,e))', '((gv -o gr) -o ((g -o G) -o G))')
-    dog = DrtGlueFormula(r'\x.drs([],[dog(x)])', '(gv -o gr)')
-    walks = DrtGlueFormula(r'\x e.drs([],[walk(e), subj(x,e)])', '(g -o f)')
+    a = DrtGlueFormula(r'\P Q e.((([x],[]) + P(x)) + Q(x,e))', '((gv -o gr) -o ((g -o G) -o G))')
+    dog = DrtGlueFormula(r'\x.([],[dog(x)])', '(gv -o gr)')
+    walks = DrtGlueFormula(r'\x e.([],[walk(e), subj(x,e)])', '(g -o f)')
     print '2) a dog walks'
     for r in get_readings(gfl_to_compiled([a,dog,walks])): print r.simplify()
     print ''
 
 #    This approach finishes with a '\e' in front
-    a = DrtGlueFormula(r'\P Q e.((drs([x],[]) + P(x)) + Q(x,e))', '((gv -o gr) -o ((g -o G) -o G))')
-    dog = DrtGlueFormula(r'\x.drs([],[dog(x)])', '(gv -o gr)')
-    walks = DrtGlueFormula(r'\x e.drs([],[walk(e), subj(x,e)])', '(g -o f)')
+    a = DrtGlueFormula(r'\P Q e.((([x],[]) + P(x)) + Q(x,e))', '((gv -o gr) -o ((g -o G) -o G))')
+    dog = DrtGlueFormula(r'\x.([],[dog(x)])', '(gv -o gr)')
+    walks = DrtGlueFormula(r'\x e.([],[walk(e), subj(x,e)])', '(g -o f)')
     print '3) a dog walks'
     for r in get_readings(gfl_to_compiled([a,dog,walks])): print r.simplify()
     print ''
 
 #    This approach is a problem because the proof is ambiguous and 'finalize' isn't always 
 #    applied to the entire formula 
-    finalize = DrtGlueFormula(r'\P.drs([e],[P(e)])', '(f -o f)')
+    finalize = DrtGlueFormula(r'\P.([e],[P(e)])', '(f -o f)')
     print '4) a dog walks.'
-    x = drt.DrtParser().parse(r'(\P.drs([e],[P(e)]) \e.DRS([x],[dog(x),walk(e),subj(x,e)]))')
+    x = drt.DrtParser().parse(r'(\P.([e],[P(e)]) \e.([x],[dog(x),walk(e),subj(x,e)]))')
     print x.simplify()
     for r in get_readings(gfl_to_compiled([a,dog,walks,finalize])):
         print r 
@@ -207,14 +206,14 @@ def test_event_representations():
     print ''
 
 #    This approach always adds 'finalize' manually  
-    finalize = drt.DrtParser().parse(r'\P.(drs([e],[]) + P(e))')
+    finalize = drt.DrtParser().parse(r'\P.(([e],[]) + P(e))')
     print '5) a dog walks.'
     for r in get_readings(gfl_to_compiled([a,dog,walks])):
         print finalize.applyto(r).simplify()
     print ''
 
 #    This approach add 'finalize' as a GF, but not always at the end
-    finalize = DrtGlueFormula(r"\P.(drs([e],[]) + P(e))", "(f -o f')")
+    finalize = DrtGlueFormula(r"\P.(([e],[]) + P(e))", "(f -o f')")
     print '6) a dog walks.'
     for r in get_readings(gfl_to_compiled([a,dog,walks,finalize])):
         print r
@@ -222,7 +221,7 @@ def test_event_representations():
     print ''
 
 #    This approach finishes with a '\e' in front
-    quickly1 = DrtGlueFormula(r'\P x e.(P(x e) + drs([],[(quick e)]))', 'q')
+    quickly1 = DrtGlueFormula(r'\P x e.(P(x e) + ([],[(quick e)]))', 'q')
     quickly2 = DrtGlueFormula(r'\P Q.P(Q)', '(Q -o ((g -o f) -o (g -o f)))')
     print '7) a dog walks quickly'
     for r in get_readings(gfl_to_compiled([a,dog,walks, quickly1, quickly2])): 
@@ -230,16 +229,16 @@ def test_event_representations():
     print ''
 
 #    TV approach
-    every = DrtGlueFormula(r'\P Q e.((drs([x],[]) + P(x)) + Q(x,e))', '((hv -o hr) -o ((h -o H) -o H))')
-    cat = DrtGlueFormula(r'\x.drs([],[cat(x)])', '(hv -o hr)')
-    chases = DrtGlueFormula(r'\x y e.drs([],[chase(e), subj(x,e), obj(y,e)])', '(g -o (h -o f))')
+    every = DrtGlueFormula(r'\P Q e.((([x],[]) + P(x)) + Q(x,e))', '((hv -o hr) -o ((h -o H) -o H))')
+    cat = DrtGlueFormula(r'\x.([],[cat(x)])', '(hv -o hr)')
+    chases = DrtGlueFormula(r'\x y e.([],[chase(e), subj(x,e), obj(y,e)])', '(g -o (h -o f))')
     print '8) a dog chases every cat'
     for r in get_readings(gfl_to_compiled([a,dog,chases,every,cat])): print r.simplify()
     print ''
 
 #    S conjunction
-    f1 = DrtGlueFormula(r'DRS([e,x],[dog(x),walk(e),subj(x,e)])', 'a')
-    f2 = DrtGlueFormula(r'DRS([e,x],[cat(x),run(e), subj(x,e)])', 'b')
+    f1 = DrtGlueFormula(r'([e,x],[dog(x),walk(e),subj(x,e)])', 'a')
+    f2 = DrtGlueFormula(r'([e,x],[cat(x),run(e), subj(x,e)])', 'b')
     and1 = DrtGlueFormula(r'\P Q.(P + Q)', '(a -o (b -o f))')
     print '9) a dog walks and a cat runs'
     for r in get_readings(gfl_to_compiled([f1,and1,f2])): 
@@ -247,60 +246,21 @@ def test_event_representations():
         #print r.simplify()
     print ''
     
-    a_man = DrtGlueFormula(r'\Q e.(drs([x],[man(x)]) + Q(x,e))', '((g -o G) -o G)')
-    believes = DrtGlueFormula(r'\x R e1.(drs([e2],[believe(e1),subj(x,e1),comp(e2,e1)]) + (R e2))', '(g -o (i -o f))')
-    a_dog = DrtGlueFormula(r'\Q e.(drs([x],[dog(x)]) + Q(x,e))', '((h -o H) -o H)')
-    walks = DrtGlueFormula(r'\x e.drs([],[walk(e), subj(x,e)])', '(h -o i)')
-    finalize = DrtGlueFormula(r'\P.drs([e],[P(e)])', "(f -o f')")
+    a_man = DrtGlueFormula(r'\Q e.(([x],[man(x)]) + Q(x,e))', '((g -o G) -o G)')
+    believes = DrtGlueFormula(r'\x R e1.(([e2],[believe(e1),subj(x,e1),comp(e2,e1)]) + (R e2))', '(g -o (i -o f))')
+    a_dog = DrtGlueFormula(r'\Q e.(([x],[dog(x)]) + Q(x,e))', '((h -o H) -o H)')
+    walks = DrtGlueFormula(r'\x e.([],[walk(e), subj(x,e)])', '(h -o i)')
+    finalize = DrtGlueFormula(r'\P.([e],[P(e)])', "(f -o f')")
     print '10) a man believes a dog walks.'
     for r in get_readings(gfl_to_compiled([a_man, believes, a_dog, walks])): print r.simplify()
     print ''
 
 
-def discourse_demo():
-    from nltk.sem.drt_resolve_anaphora import AnaphoraResolutionException
-    
-    glue = DrtGlue(semtype_file='drt_glue.semtype')
-    
-    print "Sentence 1: 'every dog chases a boy'" 
-    readings1 = glue.parse_to_meaning('every dog chases a boy')
-    for r in readings1:
-        print r.simplify()
-    print
-        
-    print "Sentence 2: 'he runs'" 
-    readings2 = glue.parse_to_meaning('he runs')
-    for r in readings2:
-        print r.simplify()
-    print
-    
-    print 'Reading 1:'
-    full1 = (readings1[0] + readings2[0]).simplify()
-    print full1
-    try:
-        print full1.resolve_anaphora()
-    except AnaphoraResolutionException:
-        print 'REJECTED'
-    print
-    
-    print 'Reading 2:'
-    full2 = (readings1[1] + readings2[0]).simplify()
-    print full2
-    try:
-        print full2.resolve_anaphora()
-    except AnaphoraResolutionException:
-        print 'REJECTED'
-    print
-    
-
 if __name__ == '__main__':
-#    demo(remove_duplicates=False)
-#    print "\n\n\n"
-#    #testPnApp()
-#    print ''  
-#    test_malt_parse()
-#    print ''
-#    test_event_representations()
-    
-    discourse_demo()
-        
+    demo(remove_duplicates=False)
+    print "\n\n\n"
+    #testPnApp()
+    print ''  
+    test_malt_parse()
+    print ''
+    test_event_representations()
