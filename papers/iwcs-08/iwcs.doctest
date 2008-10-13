@@ -11,6 +11,8 @@ Done
     >>> print e1.simplify()
     P(y)
     >>> e2 = lp.parse('all x.P(x,a,b)')
+    >>> print e2
+    all x.P(x,a,b)
     >>> print e2.free()
     set([Variable('a'), Variable('b')])
     >>> print e2.alpha_convert(Variable('z'))
@@ -36,16 +38,24 @@ Done
     set(['r', 'f'])
 
 Typed Logic
-	>>> tlp = logic.LogicParser(type_check=True)
-	>>> try: tlp.parse(r'\P.P(x,y)(\z.Q(z))')
-	... except Exception, e: print e.__class__.__name__
-	TypeException
-	>>> a = tlp.parse(r'\P.P(x)')
-	>>> print a.gettype()
-	<<e,t>,t>
-	>>> try: a(a)
-	... except Exception, e: print e.__class__.__name__
-	TypeException
+    >>> tlp = logic.LogicParser(type_check=True)
+    >>> tlp.parse(r'\P.P(x,y)(\z.Q(z))')
+    Traceback (most recent call last):
+      . . .
+    TypeException: The function '\P.P(x,y)' is of type '<<e,<e,t>>,t>' and cannot be applied to '\z.Q(z)' of type '<e,t>'.  Its argument must be of type '<e,<e,t>>'.
+    >>> try: tlp.parse(r'\P.P(x,y)(\z.Q(z))')
+    ... except Exception, e: print e.__class__.__name__
+    TypeException
+    >>> a = tlp.parse(r'\P.P(x)')
+    >>> print a.gettype()
+    <<e,t>,t>
+    >>> a(a)
+    Traceback (most recent call last):
+      . . .
+    TypeException: The function '\P.P(x)' is of type '<<e,t>,t>' and cannot be applied to '\P.P(x)' of type '<<e,t>,t>'.  Its argument must be of type '<e,t>'.
+    >>> try: a(a)
+    ... except Exception, e: print e.__class__.__name__
+    TypeException
 
 Done
     >>> from nltk.sem import drt
@@ -65,7 +75,7 @@ Done
 Done
     >>> print d1.toFol()
     (exists x.walk(x) & exists y.run(y))
-    >>> d4.simplify().draw()
+    >>> #d4.simplify().draw()
 
 Done
     >>> from nltk.parse import load_earley
@@ -82,7 +92,7 @@ Done
     exists z3.(dog(z3) & all z8.(girl(z8) -> chase(z3,z8)))
     all z8.(girl(z8) -> exists z3.(dog(z3) & chase(z3,z8)))
 
-Done (except for tag.tnt problem)
+Done
     >>> from nltk_contrib.gluesemantics.glue import GlueFormula
     >>> john = GlueFormula(r'john', 'g')
     >>> walks = GlueFormula(r'\x.walk(x)', '(g -o f)')
