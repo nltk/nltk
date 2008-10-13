@@ -86,6 +86,7 @@ class AbstractDrs(object):
 
     def draw(self):
         DrsDrawer(self).draw()
+        
 
 class DRS(AbstractDrs, logic.Expression, RA.DRS):
     """A Discourse Representation Structure."""
@@ -175,8 +176,12 @@ class DRS(AbstractDrs, logic.Expression, RA.DRS):
         return False
     
     def str(self, syntax=logic.Tokens.NEW_NLTK):
-        return '([' + ','.join([str(ref) for ref in self.refs]) + \
-            '],[' + ', '.join([cond.str(syntax) for cond in self.conds]) + '])'
+        if syntax == logic.Tokens.PROVER9:
+            return self.toFol().str(syntax)
+        else:
+            return '([' + ','.join([str(ref) for ref in self.refs]) + \
+                '],[' + ', '.join([cond.str(syntax) for cond in self.conds]) + \
+                '])'
 
 def DrtVariableExpression(variable):
     """
