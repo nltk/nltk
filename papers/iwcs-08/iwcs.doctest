@@ -35,6 +35,18 @@ Done
     >>> m.satisfiers(e4, 'x', g) #check satisfiers of e4 wrt to x
     set(['r', 'f'])
 
+Typed Logic
+	>>> tlp = logic.LogicParser(type_check=True)
+	>>> try: tlp.parse(r'\P.P(x,y)(\z.Q(z))')
+	... except Exception, e: print e.__class__.__name__
+	TypeException
+	>>> a = tlp.parse(r'\P.P(x)')
+	>>> print a.gettype()
+	<<e,t>,t>
+	>>> try: a(a)
+	... except Exception, e: print e.__class__.__name__
+	TypeException
+
 Done
     >>> from nltk.sem import drt
     >>> dp = drt.DrtParser()
@@ -134,3 +146,24 @@ Done
     >>> dt.add_sentence('A person dances', informchk=True)
     Sentence 'A person dances' under reading 'exists x.(person(x) & dance(x))':
     Not informative relative to thread 'd0'
+    
+
+Discourse in DRT
+    >>> #from nltk.inference.discourse import DrtGlueReadingCommand as RC
+    >>> from nltk_contrib.gluesemantics.glue_discourse import DrtGlueReadingCommand as RC
+    >>> dt = DT(['Every dog chases a boy', 'He runs'], RC())
+    >>> dt.readings()
+    <BLANKLINE>
+    s0 readings:
+    ------------------------------
+    s0-r0: ([],[(([x],[dog(x)]) -> ([z15],[boy(z15), chase(x,z15)]))])
+    s0-r1: ([z16],[boy(z16), (([x],[dog(x)]) -> ([],[chase(x,z16)]))])
+    <BLANKLINE>
+    s1 readings:
+    ------------------------------
+    s1-r0: ([x],[PRO(x), run(x)])
+    >>> dt.readings(show_thread_readings=True)
+    d0: ['s0-r0', 's1-r0'] : INVALID: AnaphoraResolutionException
+    d1: ['s0-r1', 's1-r0'] : ([z20,z24],[boy(z20), (([x],[dog(x)]) -> ([],[chase(x,z20)])), (z24 = z20), run(z24)])
+    >>> dt.readings(filter=True, show_thread_readings=True)
+    d1: ['s0-r1', 's1-r0'] : ([z26,z29],[boy(z26), (([x],[dog(x)]) -> ([],[chase(x,z26)])), (z29 = z26), run(z29)])
