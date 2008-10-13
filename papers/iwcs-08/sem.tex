@@ -25,12 +25,12 @@
 \newcommand{\RTE}{\textsc{rte}}
 
 
-%\pdfinfo{
-%   /Author 		(Dan Garrette and Ewan Klein)
-%   /Title  		(An Extensible Toolkit for Computational Semantics)
-%   /Subject 		(Computational Semantics)
-%   /Keywords 		(Natural Language Processing;Computational Semantics;Natural Language Toolkit;NLTK)
-%}
+\pdfinfo{
+   /Author 		(Dan Garrette and Ewan Klein)
+   /Title  		(An Extensible Toolkit for Computational Semantics)
+   /Subject 		(Computational Semantics)
+   /Keywords 		(Natural Language Processing;Computational Semantics;Natural Language Toolkit;NLTK)
+}
 
 \usepackage[round]{natbib}
 % \bibpunct{[}{]}{;}{a}{,}{,}
@@ -109,7 +109,9 @@ tools for semantic analysis, even when there is some duplication of
 coverage; and this will become more true as computational semantics
 starts to be as widely studied as computational syntax. For example, 
 one rarely hears the objection that too many implementations of 
-syntactic parsers are available.
+syntactic parsers are available.  Moreover, the \NLTK\ software 
+significantly goes beyond \BB\ in providing an implementation of 
+Glue Semantics.
 
 Second, whatever the relative merits of Prolog vs.\ Python as
 programming languages, there is surely an advantage in offering
@@ -231,15 +233,12 @@ with a formula involving $\lambda$-abstraction, namely
 $\lambda$. (Since \verb!\! is a special character in Python,
 we add the \texttt{r} prefix to strings containing it to preclude
 additional escape characters.)
-\newpage
 \begin{Verbatim}
 >>> from nltk.sem import Variable
 >>> e1 = lp.parse(r'\x.P(x)(y)')
 >>> print e1.simplify()
 P(y)
 >>> e2 = lp.parse('all x.P(x,a,b)')
->>> print e2
-all x.P(x,a,b)
 >>> print e2.free()
 set([<Variable('a'), Variable('b')])
 >>> print e2.alpha_convert(Variable('z'))
@@ -345,6 +344,7 @@ and conditions as initialization parameters:
 \vspace{-2ex}
 \enumsentence{\label{drt3} \texttt{DRS([j,d],[John(j), dog(d),
     sees(j,d)])}} 
+
 On top of the functionality available for \FOL\
 expressions, \DRT\ expressions have a `\DRS-concatenation' operator,
 represented as the \texttt{+} symbol.  The concatenation of two \DRS s
@@ -371,20 +371,21 @@ specified succinctly as strings.
 (([u],[Porsche(u), own(x,u)]) -> ([v],[Ferrari(v), own(y,u)]))])
 \end{Verbatim}
 
+\noindent
+\DRT\ expressions can be converted to their first order predicate
+logic equivalents using the \texttt{toFol()} method and can be
+graphically rendered on screen with the \texttt{draw()} method.
+
 \begin{wrapfigure}{r}{0.2\textheight}
-\vspace{-3ex}
+\vspace{-16ex}
 \begin{center}
    \includegraphics[scale=.5]{drs.png}
  \end{center}
 \vspace{-4ex}
 \caption{\small DRS Screenshot} 
-\vspace{-5ex}
+\vspace{-10ex}
 \end{wrapfigure}
 
-\noindent
-\DRT\ expressions can be converted to their first order predicate
-logic equivalents using the \texttt{toFol()} method and can be
-graphically rendered on screen with the \texttt{draw()} method.
 \begin{Verbatim}[frame=none]
 >>> print d1.toFol()
 (exists x.walk(x) & exists y.run(y))
@@ -392,8 +393,9 @@ graphically rendered on screen with the \texttt{draw()} method.
 \end{Verbatim}
 
 Since the $\lambda$ operator can be combined with \DRT\ expressions,
-the \texttt{nltk.sem.drt} module works as a plug-in replacement for
+the \texttt{nltk.sem.drt} module can be used as a plug-in replacement for 
 \texttt{nltk.sem.logic} in building compositional semantics.
+
 
 \section{Scope Ambiguity and Underspecification}
 
@@ -497,6 +499,7 @@ Additionally, every premise must be used for the proof to be valid;
 cf.\ (\ref{glue3}).
 This resource-sensitivity dictates that each word contributes its
 meaning exactly once to the meaning of the whole.
+\newpage
 \enumsentence{\label{glue1} A, (A $\multimap$ B) $\vdash$ B}
 \enumsentence{\label{glue2} A, (A $\multimap$ B) $\nvdash$ A, B}
 \enumsentence{\label{glue3} A, A, (A $\multimap$ B) $\nvdash$ B}
@@ -600,7 +603,7 @@ of two expressions. Consequently, both the \texttt{logic} and
 \texttt{drt} modules in \NLTK\ 
 have a separate method, \texttt{tp\_equals}, for checking `equality'
 up to logical equivalence.
-
+\newpage
 \begin{Verbatim}
 >>> a = lp.parse('all x.walk(x)')
 >>> b = lp.parse('all y.walk(y)')
