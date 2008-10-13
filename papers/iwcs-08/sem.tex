@@ -1,11 +1,11 @@
 \documentclass[11pt, a4paper]{article}
 
-%\usepackage[pdftex,colorlinks=true,
-%                       pdfstartview=FitV,
-%                       linkcolor=blue,
-%                       citecolor=blue,
-%                       urlcolor=blue
-%           ]{hyperref}
+\usepackage[pdftex,colorlinks=true,
+                       pdfstartview=FitV,
+                       linkcolor=blue,
+                       citecolor=blue,
+                       urlcolor=blue
+           ]{hyperref}
 
 \usepackage{amssymb}
 \usepackage{amsmath}
@@ -23,8 +23,8 @@
 \newcommand{\LF}{\textsc{lf}}
 
 %\pdfinfo{
-%   /Author 		(Daniel H. Garrette)
-%   /Title  		(Computational Semantics in the Natural Language Toolkit)
+%   /Author 		(Dan Garrette and Ewan Klein)
+%   /Title  		(An Extensible Toolkit for Computational Semantics)
 %   /Subject 		(Computational Semantics)
 %   /Keywords 		(Natural Language Processing;Computational Semantics;Natural Language Toolkit;NLTK)
 %}
@@ -83,7 +83,7 @@
 
 
 \title{An Extensible Toolkit for Computational Semantics}
-\author{Daniel H. Garrette \and Ewan Klein}
+\author{Dan Garrette \and Ewan Klein}
 \date{\today}
 \maketitle
 
@@ -102,9 +102,9 @@ This question can be answered in a number of ways. First, we believe
 there is intrinsic merit in the availability of different software
 tools for semantic analysis, even when there is some duplication of
 coverage; and this will become more true as computational semantics
-starts to be as widely studied as computational syntax. For example, one rarely
-hears the objection that too many implementations of syntactic
-parsers are available.
+starts to be as widely studied as computational syntax. For example, 
+one rarely hears the objection that too many implementations of 
+syntactic parsers are available.
 
 Second, whatever the relative merits of Prolog vs.\ Python as
 programming languages, there is surely an advantage in offering
@@ -172,7 +172,7 @@ and underspecified \LF s can be built using either Hole Semantics
 \citep{BB} or Glue Semantics
 \citep{Dalrymple:1999:RRB,Dalrymple2001}. Once we have constructed \LF
 s, they can be evaluated in a first order model \citep{Klein06altw},
-tested for equivalance and validity in a variety of theorem provers,
+tested for equivalence and validity in a variety of theorem provers,
 or tested for consistency in a model builder. Note that \NLTK\
 provides interfaces to third party inference tools, currently Prover9
 and Mace4 \citep{McCune}.
@@ -285,14 +285,35 @@ representations. Although we use $\lambda$-abstracts as glue too,
 abstracts over individual variables are interpreted in \NLTK, namely as
 characteristic functions.
 
+Additionally, \texttt{Expression}s in \NLTK\ can be optionally typed.  This 
+allows the user not only to display the \texttt{Expression}'s type, but to 
+prevent expressions that are grammatically sound, but that cause type errors.
+The parameter \texttt{type\_check=True} can be passed into the 
+\texttt{LogicParser} constructor to indicate that expressions created by
+the parser should be type checked.  Every typed expression has a method 
+\texttt{gettype()} that returns the expression's type.  When a type error 
+occurs during the construction of an \texttt{Expression}, a 
+\texttt{TypeException} is raised.
+\begin{Verbatim}
+>>> tlp = logic.LogicParser(type_check=True)
+>>> try: tlp.parse(r'\P.P(x,y)(\z.Q(z))')
+... except Exception, e: print e.__class__.__name__
+TypeException
+>>> a = tlp.parse(r'\P.P(x)')
+>>> a.gettype()
+<<e,t>,t>
+>>> try: a(a)
+... except Exception, e: print e.__class__.__name__
+TypeException
+\end{Verbatim}
+
 \subsection{Discourse Representation Theory}
 As mentioned earlier, \NLTK\ contains an extension to the
 \texttt{logic} module for working with Discourse Representation
 Theory (\DRT) \citep{KampReyle}.  \NLTK's \texttt{nltk.sem.drt}
 library introduces a \texttt{DRS()} constructor which takes the lists
 of discourse referents and conditions as parameters:
-\enumsentence{\label{drt3} \texttt{DRS([j, d],[(John = j), dog(d),
-    sees(j, d)])}} 
+\enumsentence{\label{drt3} \texttt{DRS([j,d],[John(j), dog(d), sees(j,d)])}} 
 In addition to the functionality available in the
 \texttt{logic} module for \FOL, \DRT\ expressions have a
 `\DRS-concatenation' operator, represented as the \texttt{+} symbol.
@@ -306,14 +327,14 @@ s to be specified more succinctly as strings.
 \begin{Verbatim}
 >>> from nltk.sem import drt
 >>> dp = drt.DrtParser()
->>> d1 = dp.parse('([x][walk(x)]) + ([y][run(y)])')
+>>> d1 = dp.parse('([x],[walk(x)]) + ([y],[run(y)])')
 >>> print d1
 (([x],[walk(x)]) + ([y],[run(y)]))
 >>> print d1.simplify()
 ([x,y],[walk(x), run(y)])
->>> d2 = dp.parse('([x,y][Bill(x), Fred(y)])')
->>> d3 = dp.parse("""([][([u][Porsche(u), own(x,u)])
-...  ->  ([v][Ferrari(v),own(y,u)])])""")
+>>> d2 = dp.parse('([x,y],[Bill(x), Fred(y)])')
+>>> d3 = dp.parse("""([],[([u],[Porsche(u), own(x,u)])
+...  ->  ([v],[Ferrari(v), own(y,u)])])""")
 >>> d4 = d2 + d3
 >>> print d4.simplify()
 ([x,y],[Bill(x), Fred(y),
@@ -391,8 +412,7 @@ allowing different kinds of logical forms to be constructed.
 \begin{Verbatim}
 >>> from nltk.parse import load_earley
 >>> parser = load_earley('grammars/sem1.fcfg', trace=0)
->>> tokens = 'a dog barks'.split()
->>> trees = parser.nbest_parse(tokens)
+>>> trees = parser.nbest_parse('a dog barks'.split())
 >>> print trees[0].node['sem'].simplify()
 exists x.(dog(x) & bark(x))
 \end{Verbatim}
@@ -434,7 +454,7 @@ to compositionality that tries to handle semantic ambiguity by using resource-se
 expressions.  
 
 The approach builds proofs over `meaning constructors'; these of the
-form $\cal{M}: \cal{G}$, where $\cal{M}$ is a meaning represention and
+form $\cal{M}: \cal{G}$, where $\cal{M}$ is a meaning representation and
 $\cal{G}$ is a term of linear logic.  The linear logic term $\cal{G}$
 dictates how the meaning expression $\cal{M}$ can be combined.  Each
 different proof that can be derived reflects a different semantic
@@ -452,14 +472,10 @@ Additionally, every premise must be used for the proof to be valid;
 cf.\ (\ref{glue3}).
 This resource-sensitivity dictates that each word contributes its
 meaning exactly once to the meaning of the whole.
-% \eenumsentence{\item[a.] \label{glue1} A, (A $\multimap$ B) $\vdash$ B
-% \item[b.] \label{glue2} A, (A $\multimap$ B) $\nvdash$ A, B
-% \item[c.] \label{glue3} A, A, (A $\multimap$ B) $\nvdash$ B}
-
 \enumsentence{\label{glue1} A, (A $\multimap$ B) $\vdash$ B}
 \enumsentence{\label{glue2} A, (A $\multimap$ B) $\nvdash$ A, B}
 \enumsentence{\label{glue3} A, A, (A $\multimap$ B) $\nvdash$ B}
-\NLTK's \texttt{nltk\_contrib.gluesemantics.linearlogic} module
+\NLTK's \texttt{nltk.gluesemantics.linearlogic} module
 contains an implementation of linear logic. 
 
 The primary rule used to compose Glue formulas is (\ref{glue4});
@@ -472,9 +488,9 @@ representation (such as an LFG \textit{f}-structure).  It is
 (\ref{glue4}) which allows Glue to guide the construction of complex
 meaning expressions.  \enumsentence{\label{glue4} $\alpha : A,\;
   \gamma : (A \multimap B) \vdash \gamma(\alpha) : B$} \NLTK\ includes
-\texttt{nltk\_contrib.gluesemantics.glue} for Glue based on \FOL\
+\texttt{nltk.gluesemantics.glue} for Glue based on \FOL\
 meaning expressions, and a parallel module
-\texttt{nltk\_contrib.gluesemantics.drt\_glue} for Glue based on
+\texttt{nltk.gluesemantics.drt\_glue} for Glue based on
 \DRT.
 
 The following example shows the basic way that
@@ -482,7 +498,7 @@ Glue formulas are created and combined to derive a logical form for
 \textit{John walks}: 
 
 \begin{Verbatim}
->>> from nltk_contrib.gluesemantics.glue import GlueFormula
+>>> from nltk.gluesemantics.glue import GlueFormula
 >>> john = GlueFormula(r'john', 'g')
 >>> walks = GlueFormula(r'\x.walk(x)', '(g -o f)')
 >>> john_walks = walks.applyto(john)
@@ -509,7 +525,7 @@ $G$ is a linear logic variable):
 Then the Glue derivation shown below correctly
 generates two readings for the sentence \textit{Every girl chases a dog}:
 \begin{Verbatim}
->>> from nltk_contrib.gluesemantics.glue import GlueFormula, Glue
+>>> from nltk.gluesemantics.glue import GlueFormula, Glue
 >>> a = GlueFormula(r'\Q.all x.(girl(x) -> Q(x))', '((g -o G) -o G)')
 >>> b = GlueFormula(r'\x y.chase(x,y)', '(g -o (h -o f))')
 >>> c = GlueFormula(r'\Q.exists x.(dog(x)&Q(x))', '((h -o H) -o H)')
@@ -642,6 +658,42 @@ Not informative relative to thread 'd0'
 It is also possible to pass in an additional set of assumptions as
 background knowledge and use these to filter out inconsistent readings.
 
+The \texttt{discourse} module also has the ability to handle semantic 
+ambiguity and to filter out readings that are not semantically viable.
+Using both Glue Semantics and \DRT, the following example processes the 
+two-sentence discourse "Every dog chases a boy.  He runs".  As is shown
+by the readings generated, the first sentence has two possible readings.
+The second sentence contains an anaphoric pronoun.
+\begin{Verbatim}
+>>> from nltk.inference.discourse import DrtGlueReadingCommand as RC
+>>> dt = DT(['Every dog chases a boy', 'He runs'], RC())
+>>> dt.readings()
+
+s0 readings:
+------------------------------
+s0-r0: ([],[(([x],[dog(x)]) -> ([z15],[boy(z15), chase(x,z15)]))])
+s0-r1: ([z16],[boy(z16), (([x],[dog(x)]) -> ([],[chase(x,z16)]))])
+
+s1 readings:
+------------------------------
+s1-r0: ([x],[PRO(x), run(x)])
+\end{Verbatim}
+When we show the readings of the two possible threads we see that 
+that the first reading, where "every dog" out-scopes "a boy", is found
+to be invalid because the pronoun in the second sentence cannot be 
+resolved.  We are also able to filter out invalid readings using 
+\texttt{filter=True}.
+\begin{Verbatim}
+>>> dt.readings(show_thread_readings=True)
+d0: ['s0-r0', 's1-r0'] : INVALID: AnaphoraResolutionException
+d1: ['s0-r1', 's1-r0'] : ([z20,z24],[boy(z20), (([x],[dog(x)]) -> 
+([],[chase(x,z20)])), (z24 = z20), run(z24)])
+>>> dt.readings(filter=True, show_thread_readings=True)
+d1: ['s0-r1', 's1-r0'] : ([z26,z29],[boy(z26), (([x],[dog(x)]) -> 
+([],[chase(x,z26)])), (z29 = z26), run(z29)])
+\end{Verbatim}
+
+
 
 
 % \subsection{Anaphora Resolution}
@@ -657,51 +709,42 @@ background knowledge and use these to filter out inconsistent readings.
 
 % The anaphora resolution logic has been separated into a separate module so that users may write their own anaphora resolution procedures and swap them in.
 
-\subsection{Textual Entailment}
-Recognizing Textual Entailment is a task in which a computer is given
-a piece of text and a hypothesized conclusion and asked to determine
-whether the text entails the hypothesis.  For example if the text is
-``John owns a red convertible" and the hypothesis is ``John has a red
-car", then the computer would have to answer ``True" since ``owns" is
-a synonym of ``has" and a convertible is a type of car.
+% \subsection{Textual Entailment}
+% Recognizing Textual Entailment is a task in which a computer is given
+% a piece of text and a hypothesized conclusion and asked to determine
+% whether the text entails the hypothesis.  For example if the text is
+% ``John owns a red convertible" and the hypothesis is ``John has a red
+% car", then the computer would have to answer ``True" since ``owns" is
+% a synonym of ``has" and a convertible is a type of car.
 
-\NLTK\ includes a few simple modules to demonstrate how entailment can
-be recognized.  The simplest is the Bag of Words RTE tagger, located
-in \texttt{nltk\_contrib.rte.bow}.  The BOW tagger works by
-tokenizing both the text and the hypothesis, creating a set of the
-words in the text and a set for the words in the hypothesis, and
-computing the overlap by dividing the number of words that appear in
-both sets by the total number of words.  If the overlap is more than a
-certain percentage, say 33 percent, then the tagger deems that the
-hypothesis is entailed.  This approach is clearly overly simplistic
-for a real entailment system because it does not take into account any
-relationships between the words in sentences.
+% \NLTK\ includes a few simple modules to demonstrate how entailment can
+% be recognized.  The Logical Entailment RTE tagger is a  
+% semantically-oriented approach located in
+% \texttt{nltk.rte.logicentail}.  Based on \cite{BosRTE}, the
+% tagger begins by building a first-order logic semantic representation
+% of both the text and the hypothesis.  It then runs a theorem prover
+% and model builder in parallel with the text as the assumption and the
+% hypothesis as the goal to check whether the text entails the
+% hypothesis.  If a proof is found by the theorem prover, then we know
+% that entailment holds.  The tagger is also capable of adding background
+% knowledge via an interface to the WordNet dictionary in 
+% \texttt{nltk.wordnet} to make the entailment checking more robust.  
 
-A more sophisticated, and semantically-oriented, approach is seen in
-the Logical Entailment RTE tagger, located in
-\texttt{nltk\_contrib.rte.logicentail}.  Based on \cite{BosRTE}, the
-tagger begins by building a first-order logic semantic representation
-of both the text and the hypothesis.  It then runs a theorem prover
-and model builder in parallel with the text as the assumption and the
-hypothesis as the goal to check whether the text entails the
-hypothesis.  If a proof is found by the theorem prover, then we know
-that entailment holds.
-
-To add some robustness to the logical entailment, since it is unlikely
-that entailment will be proven without any additional information, if
-the first attempt fails, then the tagger will generate some background
-knowledge.  The background knowledge is a set of formulas
-automatically generated based on the words in text and hypothesis.
-For example, if both ``convertible" and ``car" appeared in the set of
-words in the text and hypothesis, then we should generate the formula
-``$\forall x.(convertible(x) \rightarrow car(x))$" since a convertible
-is a type of car.  The primary source of background knowledge is a
-computerized dictionary called WordNet.  \NLTK\ includes an interface
-to WordNet in \texttt{nltk.wordnet}.  The WordNet interface allows
-the user to find, for any given word, its synonyms, hypernyms,
-hyponyms, part holoyms, and member meronyms.  Each of these
-relationships can be converted into an appropriate formula for
-background knowledge.
+% To add some robustness to the logical entailment, since it is unlikely
+% that entailment will be proven without any additional information, if
+% the first attempt fails, then the tagger will generate some background
+% knowledge.  The background knowledge is a set of formulas
+% automatically generated based on the words in text and hypothesis.
+% For example, if both ``convertible" and ``car" appeared in the set of
+% words in the text and hypothesis, then we should generate the formula
+% ``$\forall x.(convertible(x) \rightarrow car(x))$" since a convertible
+% is a type of car.  The primary source of background knowledge is a
+% computerized dictionary called WordNet.  \NLTK\ includes an interface
+% to WordNet in \texttt{nltk.wordnet}.  The WordNet interface allows
+% the user to find, for any given word, its synonyms, hypernyms,
+% hyponyms, part holoyms, and member meronyms.  Each of these
+% relationships can be converted into an appropriate formula for
+% background knowledge.
 
 
 \section{Conclusions and Future Work}
@@ -733,6 +776,19 @@ have done with Prover9, Mace4, and the tableau prover.  % The
 % decorators for the theorem provers can be implemented, similar to
 % those in \texttt{nonmonotonic.py}.
 
+\NLTK\ also includes a framework for recognizing textual entailment 
+including the RTE data sets and a few simple modules to demonstrate
+RTE techniques.  For example, the Logical Entailment RTE tagger is a  
+semantically-oriented approach to RTE located in
+\texttt{nltk.rte.logicentail}.  Based on \cite{BosRTE}, the
+tagger begins by building a semantic representation in of both the text 
+and the hypothesis in \DRT.  It then runs a theorem prover 
+with the text as the assumption and the hypothesis as the goal in 
+order to check whether the text entails the hypothesis.  If a proof is 
+found, then we know that entailment holds.  The tagger is also capable 
+of adding background knowledge via an interface to the WordNet 
+dictionary in \texttt{nltk.wordnet} to make the entailment checking 
+more robust.  
 
 
 % \section{Acknowledgments}
