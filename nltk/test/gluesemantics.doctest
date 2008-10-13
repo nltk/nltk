@@ -347,6 +347,16 @@ Dependency Graph to Glue Formulas
     exists x.(John(x) & exists z1.(dog(z1) & exists e.(sees(e) & (subj(e,x) & obj(e,z1)))))
     exists x.(dog(x) & exists z2.(John(z2) & exists e.(sees(e) & (subj(e,z2) & obj(e,x)))))
 
+-----------------------------------
+Dependency Graph to LFG f-structure
+-----------------------------------
+    >>> from nltk_contrib.gluesemantics import lfg
+    >>> print lfg.read_depgraph(depgraph)
+    f:[pred 'sees(VB)'
+       obj h:[pred 'dog(NN)'
+              spec 'a(DT)']
+       subj g:[pred 'John(NNP)']]
+
 --------------------
 Automated Derivation
 --------------------

@@ -7,6 +7,7 @@
 # $Id$
 
 import os
+from operator import and_
 
 from nltk.sem import root_semrep, Expression
 from nltk import parse
@@ -37,8 +38,8 @@ I{reading ID} (C{rid}) of the form C{s}I{i} -C{r}I{j}. For example::
 
     s0 readings:
     ------------------------------
-    s0-r1: some x.((boxer x) and (walk x))
-    s0-r0: some x.((boxerdog x) and (walk x))
+    s0-r1: some x.(boxer(x) & walk(x))
+    s0-r0: some x.(boxerdog(x) & walk(x))
 
 A I{thread} is a list of readings, represented
 as a list of C{rid}s. Each thread receives a I{thread ID} (C{tid}) of the form C{d}I{i}. 
@@ -52,19 +53,68 @@ those threads which are consistent (taking into account any background assumptio
 """
 
 
+class ReadingCommand(object):
+    def parse_to_readings(self, sentence):
+        """
+        @param sentence: the sentence to read
+        @type sentence: C{str}
+        """
+        raise NotImplementedError()
+    
+    def process_thread(self, sentence_readings):
+        """
+        This method should be used to handle dependencies between readings such
+        as resolving anaphora.
+        
+        @param sentence_readings: readings to process
+        @type sentence_readings: C{list} of C{Expression}
+        @return: the list of readings after processing
+        @rtype: C{list} of C{Expression}   
+        """
+        return sentence_readings
+    
+    def combine_readings(self, readings):
+        """
+        @param readings: readings to combine
+        @type readings: C{list} of C{Expression}
+        @return: one combined reading
+        @rtype: C{Expression}
+        """
+        raise NotImplementedError()
+    
+class CfgReadingCommand(ReadingCommand):
+    def __init__(self, gramfile=None):
+        """
+        @parameter gramfile: name of file where grammar can be loaded
+        @type gramfile: C{str}
+        """
+        if gramfile is None:
+            self._gramfile = 'grammars/sem4.fcfg'
+        else:
+            self._gramfile = gramfile
+        self._parser = parse.load_earley(self._gramfile) 
+    
+    def parse_to_readings(self, sentence):
+        """@see: ReadingCommand.parse_to_readings()"""
+        tokens = sentence.split()
+        trees = self._parser.nbest_parse(tokens)
+        return [root_semrep(tree) for tree in trees]
+
+    def combine_readings(self, readings):
+        """@see: ReadingCommand.combine_readings()"""
+        return reduce(and_, readings)
+
 
 class DiscourseTester(object):
     """
     Check properties of an ongoing discourse.
     """
-    def __init__(self, input, gramfile=None, background=None):       
-        """
+    def __init__(self, input, reading_command=None, background=None):       
+        """\\\\\\
         Initialize a C{DiscourseTester}.
         
         @parameter input: the discourse sentences
         @type input: C{list} of C{str}
-        @parameter gramfile: name of file where grammar can be loaded
-        @type gramfile: C{str}
         @parameter background: Formulas which express background assumptions
         @type background: C{list} of L{logic.Expression}.
         """
@@ -72,13 +122,12 @@ class DiscourseTester(object):
         self._sentences = dict([('s%s' % i, sent) for i, sent in enumerate(input)])
         self._models = None
         self._readings = {}
-        if gramfile is None:
-            self._gramfile = 'grammars/sem4.fcfg'
+        if reading_command is None:
+            self._reading_command = CfgReadingCommand()
         else:
-            self._gramfile = gramfile
+            self._reading_command = reading_command
         self._threads = {}
         self._filtered_threads = {}
-        self._parser = parse.load_earley(self._gramfile) 
         if background is not None:
             for e in background:
                 assert isinstance(e, Expression)
@@ -153,7 +202,7 @@ class DiscourseTester(object):
         """
         Print out the grammar in use for parsing input sentences
         """
-        show_cfg(self._gramfile)
+        show_cfg(self._reading_command._gramfile)
         
     ###############################
     # Readings and Threads
@@ -165,9 +214,7 @@ class DiscourseTester(object):
         
         @rtype: C{list} of  L{logic.Expression}.
         """
-        tokens = sentence.split()
-        trees = self._parser.nbest_parse(tokens)
-        return [root_semrep(tree) for tree in trees]    
+        return self._reading_command.parse_to_readings(sentence)
                          
     def _construct_readings(self):
         """
@@ -175,9 +222,9 @@ class DiscourseTester(object):
         """
         # re-initialize self._readings in case we have retracted a sentence
         self._readings = {}
-        for sid in self._sentences:
-            readings = self._get_readings(self._sentences[sid])
-            self._readings[sid] = dict([("%s-r%s" % (sid, rid), reading)
+        for sid, sentence in self._sentences.iteritems():
+            readings = self._get_readings(sentence)
+            self._readings[sid] = dict([("%s-r%s" % (sid, rid), reading.simplify())
                                                         for rid, reading in enumerate(readings)])
                 
     def _construct_threads(self):
@@ -192,8 +239,9 @@ class DiscourseTester(object):
         # re-initialize the filtered threads
         self._filtered_threads = {}
         # keep the same ids, but only include threads which get models
+        consistency_checked = self._check_consistency(self._threads)
         for (tid, thread) in self._threads.items():
-            if (tid, True) in self._check_consistency(self._threads):
+            if (tid, True) in consistency_checked:
                 self._filtered_threads[tid] = thread
    
  
@@ -215,7 +263,7 @@ class DiscourseTester(object):
                     #TODO lf = lf.normalize('[xyz]\d*', 'z%d')
                     print "%s: %s" % (rid, lf)
     
-    def _show_threads(self, filter=False):
+    def _show_threads(self, filter=False, show_thread_readings=False):
         """
         Print out the value of C{self._threads} or C{self._filtered_hreads} 
         """
@@ -224,10 +272,22 @@ class DiscourseTester(object):
         else:
             threads = self._threads
         for tid in sorted(threads.keys()):
-            print "%s:" % tid, self._threads[tid] 
+            if show_thread_readings:
+                readings = [self._readings[rid.split('-')[0]][rid] 
+                            for rid in self._threads[tid]]
+                try:
+                    thread_reading = ": %s" % \
+                              self._reading_command.combine_readings(readings)
+                except Exception, e:
+                    thread_reading = ': INVALID: %s' % e.__class__.__name__
+            else:
+                thread_reading = ''
+                
+            print "%s:" % tid, self._threads[tid], thread_reading 
         
         
-    def readings(self, sentence=None, threaded=False, quiet=False, filter=False):
+    def readings(self, sentence=None, threaded=False, quiet=False, 
+                 filter=False, show_thread_readings=False):
         """
         Construct and show the readings of the discourse (or of a single sentence).
         
@@ -239,13 +299,15 @@ class DiscourseTester(object):
         self._construct_readings()
         self._construct_threads()
         
-        # if we are filtering, just show threads
-        if filter: threaded=True
+        # if we are filtering or showing thread readings, show threads
+        if filter or show_thread_readings: threaded=True
+        
         if not quiet:
             if not threaded:
                 self._show_readings(sentence=sentence)
             else:
-                self._show_threads(filter=filter)                            
+                self._show_threads(filter=filter, 
+                                   show_thread_readings=show_thread_readings)                            
     
     def expand_threads(self, thread_id, threads=None):
         """
@@ -271,10 +333,14 @@ class DiscourseTester(object):
         results = []
         for tid in sorted(threads.keys()):
             assumptions = [reading for (rid, reading) in self.expand_threads(tid, threads=threads)]
-            assumptions += self._background
-            # if Mace4 finds a model, it always seems to find it quickly
-            mb = MaceCommand(None, assumptions, timeout=2)
-            modelfound = mb.build_model()
+            assumptions = self._reading_command.process_thread(assumptions)
+            if assumptions:
+                assumptions += self._background
+                # if Mace4 finds a model, it always seems to find it quickly
+                mb = MaceCommand(None, assumptions, timeout=2)
+                modelfound = mb.build_model()
+            else:
+                modelfound = False
             results.append((tid, modelfound))
             if show:
                 spacer(80)
@@ -402,11 +468,12 @@ def parse_fol(s):
 # Demo
 ###############################    
 
-def discourse_demo():  
+def discourse_demo(reading_command=None):
     """
     Illustrate the various methods of C{DiscourseTester}
     """
-    dt = DiscourseTester(['A boxer walks', 'Every boxer chases a girl'])
+    dt = DiscourseTester(['A boxer walks', 'Every boxer chases a girl'], 
+                         reading_command)
     dt.models()
     print
     #dt.grammar()
@@ -424,7 +491,8 @@ def discourse_demo():
     print
     dt.readings(threaded=True)
     print
-    dt = DiscourseTester(['A student dances', 'Every student is a person'])
+    dt = DiscourseTester(['A student dances', 'Every student is a person'], 
+                         reading_command)
     print 
     dt.add_sentence('No person dances', consistchk=True)
     print
@@ -437,7 +505,9 @@ def discourse_demo():
     dt.readings('A person dances')
     print
     dt.add_sentence('A person dances', informchk=True)
-    dt = DiscourseTester(['Vincent is a boxer', 'Fido is a boxer', 'Vincent is married', 'Fido barks'])
+    dt = DiscourseTester(['Vincent is a boxer', 'Fido is a boxer', 
+                          'Vincent is married', 'Fido barks', 
+                          reading_command])
     dt.readings(filter=True)
     import nltk.data
     world = nltk.data.load('/grammars/world.fol')

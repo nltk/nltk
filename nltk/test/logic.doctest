@@ -503,7 +503,15 @@ matches()
     >>> eet.matches(ea)
     True
 
+
 parse()
     >>> try: tlp.parse(r'\x.man(x)(\x.man(x))')
     ... except TypeException, e: print e
     The function '\x.man(x)' is of type '<e,t>' and cannot be applied to '\x.man(x)' of type '<e,t>'.  Its argument must be of type 'e'.
+
+typed expressions()
+    >>> man = tlp.parse(r'\x.man(x)')
+    >>> try: man(man)
+    ... except TypeException, e: print e
+    The function '\x.man(x)' is of type '<e,t>' and cannot be applied to '\x.man(x)' of type '<e,t>'.  Its argument must be of type 'e'.
+    

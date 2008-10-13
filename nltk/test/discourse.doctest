@@ -360,7 +360,7 @@ by adding background information.
     all x.-(dog(x) & person(x))
     all x.(married(x) <-> exists y.marry(x,y))
     all x.(bark(x) -> dog(x))
-    all x.all y.(marry(x,y) -> (person(x) & person(y)))
+    all x y.(marry(x,y) -> (person(x) & person(y)))
     -(Vincent = Mia)
     -(Vincent = Fido)
     -(Mia = Fido)
