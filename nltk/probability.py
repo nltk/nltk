@@ -221,9 +221,11 @@ class FreqDist(dict):
         """
         cf = 0.0
         for sample in samples:
-            cf += self.freq(sample)
+            cf += self[sample]
             yield cf
     
+    # slightly odd nomenclature freq() if FreqDist does counts and ProbDist does probs,
+    # here, freq() does probs
     def freq(self, sample):
         """
         Return the frequency of a given sample.  The frequency of a
@@ -266,7 +268,7 @@ class FreqDist(dict):
             self._max_cache = best_sample
         return self._max_cache
 
-    def plot(self, *args, **kwargs):
+    def plot(self, cumulative=False, *args, **kwargs):
         """
         Plot the given samples from the frequency distribution (cumulative),
         displaying the most frequent sample first.
@@ -288,18 +290,22 @@ class FreqDist(dict):
         
         samples = list(islice(self, *args))
         
-        # accumulate the values and scale them
-        freqs = list(self._cumulative_frequencies(samples))
-        percents = [f * 100 for f in freqs]
+        if 'cumulative':
+            freqs = list(self._cumulative_frequencies(samples))
+            ylabel = "Cumulative Counts"
+        else:
+            freqs = [self[sample] for sample in samples]
+            ylabel = "Counts"
+        # percents = [f * 100 for f in freqs]  only in ProbDist?
         
         pylab.grid(True, color="silver")
         if not "linewidth" in kwargs:
             kwargs["linewidth"] = 2
-        pylab.plot(percents, **kwargs)
+        pylab.plot(freqs, **kwargs)
         pylab.xticks(range(len(samples)), [str(s) for s in samples], rotation=90)
         if "title" in kwargs: pylab.title(kwargs["title"])
         pylab.xlabel("Samples")
-        pylab.ylabel("Cumulative Percentage")
+        pylab.ylabel(ylabel)
         pylab.show()
         
     def sorted_samples(self):
@@ -1387,7 +1393,7 @@ class ConditionalFreqDist(object):
         """
         return len(self._fdists)
 
-    def plot(self, samples, title=None, conditions=None, *args, **kwargs):
+    def plot(self, samples, title=None, conditions=None, cumulative=False, *args, **kwargs):
         """
         Plot the given samples from the conditional frequency
         distribution (cumulative).  (Requires Matplotlib to be installed.)
@@ -1411,16 +1417,21 @@ class ConditionalFreqDist(object):
             conditions = self.conditions()
         
         for condition in conditions:
-            freqs = list(self[condition]._cumulative_frequencies(samples))
-            percents = [f * 100 for f in freqs]
-            pylab.plot(percents, label=condition, *args, **kwargs) 
+            if cumulative:
+                freqs = list(self[condition]._cumulative_frequencies(samples))
+                ylabel = "Cumulative Counts"
+            else:
+                freqs = [self[condition][sample] for sample in samples]
+                ylabel = "Counts"
+            # percents = [f * 100 for f in freqs] only in ConditionalProbDist?
+            pylab.plot(freqs, label=condition, *args, **kwargs) 
 
         pylab.grid(True, color="silver")
         pylab.xticks(range(len(samples)), [str(s) for s in samples], rotation=90)
         pylab.legend(loc='lower right')
         if title: pylab.title(title)
         pylab.xlabel("Samples")
-        pylab.ylabel("Cumulative Percentage")
+        pylab.ylabel(ylabel)
         pylab.show()
         
     def __repr__(self):
