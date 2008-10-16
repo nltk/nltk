@@ -268,17 +268,19 @@ class FreqDist(dict):
             self._max_cache = best_sample
         return self._max_cache
 
-    def plot(self, cumulative=False, *args, **kwargs):
+    def plot(self, *args, **kwargs):
         """
-        Plot the given samples from the frequency distribution (cumulative),
-        displaying the most frequent sample first.
-        If no samples are specified, use the most frequent num samples.
+        Plot samples from the frequency distribution (cumulative),
+        displaying the most frequent sample first.  If an integer
+        parameter is supplied, stop after this many samples have been
+        plotted.  If two integer parameters m, n are supplied, plot a
+        subset of the samples, beginning with m and stopping at n-1.
         (Requires Matplotlib to be installed.)
         
-        @param samples: The samples to plot (default is most frequent samples)
-        @type samples: C{list}
         @param title: The title for the graph
         @type title: C{str}
+        @param cumulative: A flag to specify whether the plot is cumulative (default = False)
+        @type title: C{bool}
         @param num: The maximum number of samples to plot (default=50).  Specify num=0 to get all samples (slow).
         @type num: C{int} 
         """
@@ -288,9 +290,12 @@ class FreqDist(dict):
             raise ValueError('The plot function requires the matplotlib package.'
                          'See http://matplotlib.sourceforge.net/')
         
+        if len(args) == 0:
+            args = [len(self)]
         samples = list(islice(self, *args))
         
-        if 'cumulative':
+        cumulative = _get_kwarg(kwargs, 'cumulative', False)
+        if cumulative:
             freqs = list(self._cumulative_frequencies(samples))
             ylabel = "Cumulative Counts"
         else:
@@ -307,6 +312,38 @@ class FreqDist(dict):
         pylab.xlabel("Samples")
         pylab.ylabel(ylabel)
         pylab.show()
+        
+    def tabulate(self, *args, **kwargs):
+        """
+        Tabulate the given samples from the frequency distribution (cumulative),
+        displaying the most frequent sample first.
+        If no samples are specified, use the most frequent num samples.
+        (Requires Matplotlib to be installed.)
+        
+        @param samples: The samples to plot (default is most frequent samples)
+        @type samples: C{list}
+        @param title: The title for the graph
+        @type title: C{str}
+        @param num: The maximum number of samples to plot (default=50).  Specify num=0 to get all samples (slow).
+        @type num: C{int} 
+        """
+        if len(args) == 0:
+            args = [len(self)]
+        samples = list(islice(self, *args))
+        
+        cumulative = _get_kwarg(kwargs, 'cumulative', False)
+        if cumulative:
+            freqs = list(self._cumulative_frequencies(samples))
+        else:
+            freqs = [self[sample] for sample in samples]
+        # percents = [f * 100 for f in freqs]  only in ProbDist?
+        
+        for i in range(len(samples)):
+            print "%4s" % str(samples[i]),
+        print
+        for i in range(len(samples)):
+            print "%4d" % freqs[i],
+        print
         
     def sorted_samples(self):
         raise AttributeError, "Use FreqDist.keys(), or iterate over the FreqDist to get its samples in sorted order (most frequent first)"
@@ -1393,7 +1430,7 @@ class ConditionalFreqDist(object):
         """
         return len(self._fdists)
 
-    def plot(self, samples=None, title=None, conditions=None, cumulative=False, *args, **kwargs):
+    def plot(self, *args, **kwargs):
         """
         Plot the given samples from the conditional frequency
         distribution (cumulative).  (Requires Matplotlib to be installed.)
@@ -1410,13 +1447,15 @@ class ConditionalFreqDist(object):
         except ImportError:
             raise ValueError('The plot function requires the matplotlib package.'
                          'See http://matplotlib.sourceforge.net/')
+
+        cumulative = _get_kwarg(kwargs, 'cumulative', False)
+        conditions = _get_kwarg(kwargs, 'conditions', self.conditions())
+        title = _get_kwarg(kwargs, 'title', '')
+        samples = _get_kwarg(kwargs, 'samples',
+                             sorted(set(v for c in conditions for v in self[c])))  # this computation could be wasted
         if not "linewidth" in kwargs:
             kwargs["linewidth"] = 2
-        
-        if not conditions:
-            conditions = self.conditions()
-        if not samples:
-            samples = sorted(set(v for c in conditions for v in self[c]))
+            
         for condition in conditions:
             if cumulative:
                 freqs = list(self[condition]._cumulative_frequencies(samples))
@@ -1427,16 +1466,51 @@ class ConditionalFreqDist(object):
                 ylabel = "Counts"
                 legend_loc = 'upper right'
             # percents = [f * 100 for f in freqs] only in ConditionalProbDist?
-            pylab.plot(freqs, label=condition, *args, **kwargs) 
+            kwargs['label'] = condition
+            pylab.plot(freqs, *args, **kwargs) 
 
         pylab.legend(loc=legend_loc)
         pylab.grid(True, color="silver")
         pylab.xticks(range(len(samples)), [str(s) for s in samples], rotation=90)
-        if title: pylab.title(title)
+        if title:
+            pylab.title(title)
         pylab.xlabel("Samples")
         pylab.ylabel(ylabel)
         pylab.show()
         
+    def tabulate(self, *args, **kwargs):
+        """
+        Tabulate the given samples from the conditional frequency distribution.
+        
+        @param samples: The samples to plot
+        @type samples: C{list}
+        @param title: The title for the graph
+        @type title: C{str}
+        @param conditions: The conditions to plot (default is all)
+        @type conditions: C{list}
+        """
+
+        cumulative = _get_kwarg(kwargs, 'cumulative', False)
+        conditions = _get_kwarg(kwargs, 'conditions', self.conditions())
+        samples = _get_kwarg(kwargs, 'samples',
+                             sorted(set(v for c in conditions for v in self[c])))  # this computation could be wasted
+            
+        condition_size = max(len(str(c)) for c in conditions)
+        print ' ' * condition_size,
+        for s in samples:
+            print "%4s" % str(s),
+        print
+        for c in conditions:
+            print "%*s" % (condition_size, str(c)),
+            if cumulative:
+                freqs = list(self[c]._cumulative_frequencies(samples))
+            else:
+                freqs = [self[c][sample] for sample in samples]
+
+            for f in freqs:
+                print "%4d" % f,
+            print
+
     def __repr__(self):
         """
         @return: A string representation of this
@@ -1741,6 +1815,16 @@ class ImmutableProbabilisticMixIn(ProbabilisticMixIn):
     def set_logprob(self, prob):
         raise ValueError, '%s is immutable' % self.__class__.__name__
 
+## Helper function for processing keyword arguments
+
+def _get_kwarg(kwargs, key, default):
+    if key in kwargs:
+        arg = kwargs[key]
+        del kwargs[key]
+    else:
+        arg = default
+    return arg
+            
 ##//////////////////////////////////////////////////////
 ##  Demonstration
 ##//////////////////////////////////////////////////////
