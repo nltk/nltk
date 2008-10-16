@@ -114,6 +114,8 @@ class CollocationsView:
 								 underline=0, value=100, command=self.set_result_size)
 		rescntmenu.invoke(1)
 		editmenu.add_cascade(label='Result Count', underline=0, menu=rescntmenu)
+		
+		menubar.add_cascade(label='Edit', underline=0, menu=editmenu)
 		self.top.config(menu=menubar)		
 
 	def set_result_size(self, **kwargs):
@@ -148,7 +150,10 @@ class CollocationsView:
 		self.next = next = Button(innerframe, text='Next', command=self.next, width='10', borderwidth=1, highlightthickness=1, state='disabled')
 		next.pack(side='right', anchor='center')
 		innerframe.pack(side='top', fill='y')
-		self.current_page = 0
+		self.reset_current_page()
+		
+	def reset_current_page(self):
+		self.current_page = -1
 		
 	def _bind_event_handlers(self):
 		self.top.bind(CORPUS_LOADED_EVENT, self.handle_corpus_loaded)
@@ -159,22 +164,37 @@ class CollocationsView:
 		self.unfreeze_editable()
 		self.clear_results_box()
 		self.freeze_editable()
+		self.reset_current_page()
 		
 	def handle_corpus_loaded(self, event):
 		self.status['text'] = self.var.get() + ' is loaded'
 		self.unfreeze_editable()
 		self.clear_results_box()
+		self.reset_current_page()
+		#self.next()
+		collocations = self.model.next(self.current_page + 1)
+                self.write_results(collocations)
+                self.current_page += 1
 		
 	def corpus_selected(self, *args):
 		new_selection = self.var.get()
 		self.load_corpus(new_selection)
 
 	def previous(self):
-		self.model.prev(self.current_page - 1)
+		self.freeze_editable()
+		collocations = self.model.prev(self.current_page - 1)
 		self.current_page= self.current_page - 1
+		self.clear_results_box()
+		self.write_results(collocations)
+		self.unfreeze_editable()
 	
 	def next(self):
-		self.model.next(self.current_page + 1)		
+		self.freeze_editable()
+		collocations = self.model.next(self.current_page + 1)		
+		self.clear_results_box()
+		self.write_results(collocations)
+		self.current_page += 1
+		self.unfreeze_editable()
 		
 	def load_corpus(self, selection):
 		if self.model.selected_corpus != selection:
@@ -208,7 +228,7 @@ class CollocationsView:
 		self.set_paging_button_states()
 		
 	def set_paging_button_states(self):
-		if self.current_page == 0 or self.current_page == 1:
+		if self.current_page == -1 or self.current_page == 0:
 			self.prev['state'] = 'disabled'
 		else:
 			self.prev['state'] = 'normal'
@@ -216,6 +236,14 @@ class CollocationsView:
 			self.next['state'] = 'disabled'
 		else:
 			self.next['state'] = 'normal'
+			
+	def write_results(self, results):
+		self.results_box['state'] = 'normal'
+		row = 1
+		for each in results:
+			self.results_box.insert(str(row) + '.0', each[0] + " " + each[1] + "\n")
+			row += 1
+		self.results_box['state'] = 'disabled'
 
 class CollocationsModel:
 	def __init__(self):
@@ -225,6 +253,11 @@ class CollocationsModel:
 		self.collocations = None
 		self.CORPORA = _CORPORA
 		self.DEFAULT_CORPUS = _DEFAULT
+		self.reset_results()
+		
+	def reset_results(self):
+		self.result_pages = []
+		self.results_returned = 0
 	
 	def add_listener(self, listener):
 		self.listeners.append(listener)
@@ -238,6 +271,7 @@ class CollocationsModel:
 		self.collocations = None
 		runner_thread = self.LoadCorpus(name, self)
 		runner_thread.start()
+		self.reset_results()
 
 	def non_default_corpora(self):
 		copy = []
@@ -247,8 +281,22 @@ class CollocationsModel:
 		return copy
 	
 	def is_last_page(self, number):
-		return False
+		if number < len(self.result_pages):
+			return False
+		return self.results_returned + (number - len(self.result_pages)) * self.result_count >= len(self.collocations)
+
+	def next(self, page):
+		if (len(self.result_pages) - 1) < page:
+			for i in range(page - (len(self.result_pages) - 1)):
+				self.result_pages.append(self.collocations[self.results_returned:self.results_returned+self.result_count])
+				self.results_returned += self.result_count
+		return self.result_pages[page]
 	
+	def prev(self, page):
+		if page == -1:
+			return []
+		return self.result_pages[page]
+		
 	class LoadCorpus(threading.Thread):
 		def __init__(self, name, model):
 			self.model, self.name = model, name
@@ -257,31 +305,19 @@ class CollocationsModel:
 		def run(self):
 			try:
 				words = self.model.CORPORA[self.name]()
-				print "got words " + str(len(words))
 				from operator import itemgetter
 				text = filter(lambda w: len(w) > 2, words)
 				fd = FreqDist(tuple(text[i:i+2]) for i in range(len(text)-1))
-				print "creating scored"
-				scored = [((w1,w2), fd[(w1,w2)] ** 3 / float(self.vocab()[w1] * self.vocab()[w2])) for w1, w2 in fd]
-				print "got scored"
+				vocab = FreqDist(text)
+				scored = [((w1,w2), fd[(w1,w2)] ** 3 / float(vocab[w1] * vocab[w2])) for w1, w2 in fd]
 				scored.sort(key=itemgetter(1), reverse=True)
-				print "sorted scored"
 				self.model.collocations = map(itemgetter(0), scored)
-				print "calling listener"
 				self.model.notify_listeners(CORPUS_LOADED_EVENT)
 			except Exception, e:
 				print e 
 				self.model.notify_listeners(ERROR_LOADING_CORPUS_EVENT)
 
-		def vocab(self):
-			if "_vocab" not in self.__dict__:
-				print "Building vocabulary index..."
-				self._vocab = FreqDist()
-			return self._vocab
-
-
 def collocations():
-
 	colloc_strings = [w1 + ' ' + w2 for w1, w2 in self._collocations[:num]]
 
 def launch_view():
