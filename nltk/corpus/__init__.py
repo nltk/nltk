@@ -99,8 +99,9 @@ genesis = LazyCorpusLoader(
     'genesis', PlaintextCorpusReader, r'(?!\.).*\.txt')
 gutenberg = LazyCorpusLoader(
     'gutenberg', PlaintextCorpusReader, r'(?!\.).*\.txt')
-hebrew_treebank = LazyCorpusLoader(
-    'hebrew_treebank', BracketParseCorpusReader, r'.*\.txt')
+# corpus not available with NLTK; these lines caused help(nltk.corpus) to break
+#hebrew_treebank = LazyCorpusLoader(
+#    'hebrew_treebank', BracketParseCorpusReader, r'.*\.txt')
 ieer = LazyCorpusLoader(
     'ieer', IEERCorpusReader, r'(?!README|\.).*')
 inaugural = LazyCorpusLoader(

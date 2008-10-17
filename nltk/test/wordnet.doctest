@@ -2,6 +2,9 @@
 WordNet Interface
 =================
 
+This document is in transition; it contains tests for two
+different WordNet APIs.
+
 -----
 Words
 -----
@@ -31,6 +34,27 @@ via index notation ``word[n]`` or via the ``word.getSenses()`` method.
 
 ..   >>> ADJ['clear'].getAdjectivePositions()
 ..   [None, 'predicative']
+
+Proposed API
+------------
+
+    >>> from nltk_contrib.wordnet import wordnet as wn
+    >>> wn.synsets('dog')
+    [Synset('dog.n.01'), Synset('frump.n.01'), Synset('dog.n.03'), Synset('cad.n.01'),
+    Synset('frank.n.02'), Synset('pawl.n.01'), Synset('andiron.n.01'), Synset('chase.v.01')]
+    >>> wn.Synset('dog.n.01')
+    Synset('dog.n.01')
+    >>> wn.Synset('dog.n.01').definitions
+    ['a member of the genus Canis (probably descended from the common wolf) that has been domesticated by man since prehistoric times',
+    'occurs in many breeds']
+    >>> wn.Synset('dog.n.01').examples
+    ['the dog barked all night']
+    >>> wn.Synset('dog.n.01').lemmas
+    [Lemma('dog.n.01.dog'), Lemma('dog.n.01.domestic_dog'),
+    Lemma('dog.n.01.Canis_familiaris')]
+    >>> wn.Lemma('dog.n.01.dog').synset
+    Synset('dog.n.01')
+
 
 -------
 Synsets
@@ -91,6 +115,20 @@ itself 0 is returned.
 getIC(self, freq_data):
 Get the Information Content (IC) value of this `Synset`, using
 the supplied dict 'freq_data'.
+
+Proposed API
+------------
+
+    >>> dog = wn.Synset('dog.n.01')
+    >>> dog.hypernyms()
+    [Synset('domestic_animal.n.01'), Synset('canine.n.02')]
+    >>> dog.hyponyms()
+    [Synset('puppy.n.01'), Synset('great_pyrenees.n.01'), Synset('basenji.n.01'), ...]
+    >>> dog.member_meronyms()
+    []  # wrong
+    >>> dog.root_hypernyms()
+    [Synset('entity.n.01')]
+
 
 -----------
 Word Senses
@@ -237,6 +275,26 @@ Lookup a sense by its sense number. Used by repr(sense).
 synset(pos, offset):
 Lookup a synset by its offset. Used by repr(synset).
 
+Proposed API
+------------
+
+    >>> dog = wn.Synset('dog.n.01')
+    >>> cat = wn.Synset('cat.n.01')
+    >>> dog.path_similarity(cat)
+    0.20000000000000001
+    >>> dog.lch_similarity(cat)
+    2.0281482472922856
+    >>> dog.wup_similarity(cat)
+    0.8571428571428571
+
+Using information content files:
+
+    >>> ic = wn.load_ic('ic-brown.dat')
+    >>> dog.jcn_similarity(cat, ic)
+    0.44977552855167391
+    >>> ic = wn.load_ic('ic-semcor.dat')
+    >>> dog.lin_similarity(cat, ic)
+    0.88632886280862277
 
 ------------------------------
 N, V, ADJ and ADV Dictionaries
@@ -291,6 +349,23 @@ this dictionary.
     True
     >>> N.has_key('inu')
     False
+
+Proposed API
+------------
+
+Get all the noun synsets:
+
+    >>> wn.all_synsets('n')
+    [Synset('entity.n.01'), Synset('physical_entity.n.01'), Synset('abstraction.n.06'),
+    Synset('thing.n.12'), Synset('object.n.01'), Synset('whole.n.02'),
+    Synset('congener.n.03'), Synset('living_thing.n.01'), Synset('organism.n.01'), ...]
+
+Get all synsets for this word, possibly restricted by POS:
+
+    >>> wn.synsets('dog')
+    [Synset('dog.n.01'), Synset('frump.n.01'), Synset('dog.n.03'), Synset('cad.n.01'), ...]
+    >>> wn.synsets('dog', pos='v')
+    [Synset('chase.v.01')]
 
 
 ---------------------------------------------------------------------------
