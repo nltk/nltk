@@ -226,25 +226,26 @@ class GlueDict(dict):
 
     def lookup(self, node, depgraph):
         semtype_names = self.get_semtypes(node)
-        semtypes = [self[name] for name in semtype_names if name in self]
-        if not len(semtypes):
+        
+        semtype = None
+        for name in semtype_names:
+            if name in self:
+                semtype = self[name]
+                break
+        if semtype is None:
 #            raise KeyError, "There is no GlueDict entry for sem type '%s' (for '%s')" % (sem, word)
             return []
         
         self.add_missing_dependencies(node, depgraph)
         
-        lookup = []
-        for semtype in semtypes:
-            l = self._lookup_semtype_option(semtype, node, depgraph)
-            if l is not None:
-                lookup.append(l)
+        lookup = self._lookup_semtype_option(semtype, node, depgraph)
         
         if not len(lookup):
             raise KeyError, "There is no GlueDict entry for sem type of '%s' " \
                     "with tag '%s', and rel '%s'" %\
                     (node['word'], node['tag'], node['rel'])
         
-        return self.get_glueformulas_from_semtype_entry(lookup[0], node['word'], 
+        return self.get_glueformulas_from_semtype_entry(lookup, node['word'], 
                                                         node, depgraph)
 
     def add_missing_dependencies(self, node, depgraph):
@@ -290,9 +291,9 @@ class GlueDict(dict):
         semtype_name = None
         
         rel = node['rel'].lower()
-        
+        word = node['word'].lower()
+
         if rel == 'spec':
-            word = node['word'].lower()
             if word in SPEC_SEMTYPES:
                 return [SPEC_SEMTYPES[word]]
             else:
@@ -541,60 +542,53 @@ def demo(show_example=-1):
                 print reading.simplify()
             print ''
     
-def treebank(verbosity=0):
-    from nltk_contrib.dependency import util
-    
-    f = None
-    try:
-        f = open(os.environ['NLTK_DATA']+'/corpora/treebank/dep/wsj_0001.dep')
-        depgraph = util.conll_to_depgraph(f.read())
-        if verbosity > 2: print depgraph
-        
-        gfl = GlueDict('glue_event.semtype').to_glueformula_list(depgraph)
-        if verbosity > 0: 
-            for gf in gfl: print gf
-        
-        import lfg
-        print lfg.read_depgraph(depgraph)
-        
-        cgfl = Glue().gfl_to_compiled(gfl)
-        if verbosity > 1:
-            for cgf in cgfl: print cgf
-        
-        readings = Glue().get_readings(cgfl)
-        print 'Readings:', len(readings)
-        for r in readings:
-            print r.simplify()
-        print ''
-        
-    finally:
-        if f: f.close()
+def treebank(idx, verbosity=0):
+    f = open(os.environ['NLTK_DATA']+'/corpora/treebank/dep/wsj_000%s.dep'%idx)
+    test_depgraph_to_glue(f.read(), verbosity)
 
 def test(idx, verbosity=0):
+    f = open(os.environ['NLTK_DATA'] + '/grammars/dep_test%s.dep'%idx)
+    test_depgraph_to_glue(f.read(), verbosity)
+    
+def test_depgraph_to_glue(depgraph_string, verbosity=0):
     from nltk_contrib.dependency import util
     
-    f = None
-    try:
-        f = open(os.environ['NLTK_DATA'] + '/grammars/dep_test%s.dep'%idx)
-        depgraph = util.conll_to_depgraph(f.read())
-        if verbosity > 2: print depgraph
-        
-        gfl = GlueDict('glue_event.semtype').to_glueformula_list(depgraph)
-        if verbosity > 0: 
-            for gf in gfl: print gf
-        
-        cgfl = Glue().gfl_to_compiled(gfl)
-        if verbosity > 1:
-            for cgf in cgfl: print cgf
-        
-        readings = Glue().get_readings(cgfl)
-        print 'Readings:', len(readings)
-        for r in readings:
-            print r.simplify()
-        print ''
-        
-    finally:
-        if f: f.close()
+    depgraph = util.conll_to_depgraph(depgraph_string)
+    if verbosity > 2: print depgraph
+    
+    gfl = GlueDict('glue_event.semtype').to_glueformula_list(depgraph)
+    if verbosity > 0: 
+        for gf in gfl: print gf
+    
+    cgfl = Glue().gfl_to_compiled(gfl)
+    if verbosity > 1:
+        for cgf in cgfl: print cgf
+    
+    readings = Glue().get_readings(cgfl)
+    print 'Readings:', len(readings)
+    for r in readings:
+        print r.simplify()
+    print ''
     
 if __name__ == '__main__':
-    demo()
+#    demo()
+
+#    treebank(1,2)
+    
+    test_depgraph_to_glue("""\
+1    John    _    NNP    _    _    2    SUBJ    _    _
+2    looks    _    VB    _    _    0    ROOT    _    _
+3    at    _    IN    _    _    2    VMOD    _    _
+4    Bill    _    NNP    _    _    3    SUBJ    _    _
+""", 1)
+    
+    john = GlueFormula(r"\Q e.exists x.(John(x) & Q(x,e))", "(g -o G) -o G")
+    look = GlueFormula(r"\x e.(look(e) & subj(e,x))", "g -o f")
+    at = GlueFormula(r"\P Q e.P(\x e3.(at(e3,x) & Q(e)),e)", "((j -o X) -o X) -o (f -o f)")
+    a_dog = GlueFormula(r"\Q e.exists y.(dog(y) & Q(y,e))", "((j -o J) -o J)")
+
+    john_look = john.applyto(look).simplify()
+    print john_look
+    at_a_dog = at.applyto(a_dog).simplify()
+    print at_a_dog
+    print at_a_dog.applyto(john_look).simplify()

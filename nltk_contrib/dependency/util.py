@@ -47,7 +47,7 @@ def conll_to_depgraph(input_str, stem=False, verbose=False):
 
     tokenizer = tokenize.TabTokenizer()
     depgraph_input = ''
-    for line in input_str.split('\n'):
+    for line in _normalize(input_str).split('\n'):
         tokens = tokenizer.tokenize(line.strip())
         if len(tokens) > 1:
             word = tokens[1]
@@ -65,7 +65,14 @@ def conll_to_depgraph(input_str, stem=False, verbose=False):
     
     return DepGraph().read(depgraph_input)
 
-    
+def _normalize(line):
+    """
+    Deal with lines in which spaces are used rather than tabs.
+    """
+    import re
+    SPC = re.compile(' +')
+    return re.sub(SPC, '\t', line)
+
 def demo():
     from nltk.corpora import treebank
     #f = open('ptb_input.tab', 'w')

@@ -7,6 +7,7 @@
 
 from nltk.internals import Counter
 from nltk import defaultdict
+from nltk_contrib.dependency.deptree import DepGraph
 
 
 class FStructure(dict):
@@ -27,71 +28,53 @@ class FStructure(dict):
         
     def __contains__(self, key):
         return dict.__contains__(self, key.lower())
+
+    def to_glueformula_list(self, glue_dict):
+        depgraph = self.to_depgraph()
+        return glue_dict.to_glueformula_list(depgraph)
+
+    def to_depgraph(self, rel=None):
+        depgraph = DepGraph()
+        nodelist = depgraph.nodelist
         
-    def to_glueformula_list(self, glue_dict, labels_added=[], current_subj=None, verbose=False):
-        from nltk.tree import Tree
-        glueformulas = []
+        self._to_depgraph(nodelist, 0, 'ROOT')
+        
+        #Add all the dependencies for all the nodes
+        for node_addr, node in enumerate(nodelist):
+            for n2 in nodelist[1:]:
+                if n2['head'] == node_addr:
+                    node['deps'].append(n2['address'])
+        
+        depgraph.root = nodelist[1]
 
-        if not current_subj:
-            current_subj = self
+        return depgraph
 
-        # lookup 'pred'
-        sem = self.pred[1]
-        lookup = glue_dict.lookup(sem, self.pred[0], 'pred', current_subj, self)
-        glueformulas.extend(lookup)
-
+    def _to_depgraph(self, nodelist, head, rel):
+        index = len(nodelist)
+        
+        nodelist.append({'address': index,
+                         'word': self.pred[0],
+                         'tag': self.pred[1],
+                         'head': head,
+                         'rel': rel,
+                         'deps': []})
+        
         for feature in self:
             for item in self[feature]:
                 if isinstance(item, FStructure):
-                    if not item.label in labels_added:
-                        glueformulas.extend(item.to_glueformula_list(glue_dict, labels_added, self))
-                        labels_added.append(item.label)
+                    item._to_depgraph(nodelist, index, feature)
                 elif isinstance(item, tuple):
-                    glueformulas.extend(glue_dict.lookup(item[1], item[0], feature, None, self))
+                    nodelist.append({'address': len(nodelist),
+                                     'word': item[0],
+                                     'tag': item[1],
+                                     'head': index,
+                                     'rel': feature,
+                                     'deps': []})
                 elif isinstance(item, list):
-                    for entry in item:
-                        glueformulas.extend(entry.to_glueformula_list(glue_dict, labels_added))
-                else:
+                    for n in item:
+                        n._to_depgraph(nodelist, index, feature)
+                else: # ERROR
                     raise Exception, 'feature %s is not an FStruct, a list, or a tuple' % feature
-
-        return glueformulas
-
-    def initialize_label(self, expression, counter=None):
-        if not counter:
-            counter = Counter()
-        
-        try:
-            dot = expression.index('.')
-
-            before_dot = expression[:dot]
-            after_dot = expression[dot+1:]
-            if before_dot=='super':
-                return self.parent.initialize_label(after_dot)
-            else:
-                return self.lookup_unique(before_dot).initialize_label(after_dot)
-        except ValueError:
-            lbl = self.label
-            if   expression=='f':     return lbl
-            elif expression=='v':     return '%sv' % lbl
-            elif expression=='r':     return '%sr' % lbl
-            elif expression=='super': return self.parent.label
-            elif expression=='var':   return '%s%s' % (self.label.upper(), counter.get())
-            elif expression=='a':     return self['conjuncts'][0].label
-            elif expression=='b':     return self['conjuncts'][1].label
-            else:                     return self.lookup_unique(expression).label
-
-    def lookup_unique(self, key):
-        """
-        Lookup 'key'.  There should be exactly one item in the associated list.
-        """
-        try:
-            value = self[key]
-            if len(value) == 1:
-                return value[0]
-            else:
-                raise KeyError, 'FStructure should only have one feature %s' % key
-        except KeyError:
-            raise KeyError, "FStructure doesn't contain a feature %s" % key
 
     def __repr__(self):
         return str(self).replace('\n', '')
@@ -102,7 +85,7 @@ class FStructure(dict):
         except NameError:
             accum = '['
         try:
-            accum += 'pred \'%s(%s)\'' % (self.pred[0], self.pred[1])
+            accum += 'pred \'%s\'' % (self.pred[0])
         except NameError:
             pass
 
@@ -112,7 +95,7 @@ class FStructure(dict):
                     next_indent = indent+len(feature)+3+len(self.label)
                     accum += '\n%s%s %s' % (' '*(indent), feature, item.__str__(next_indent))
                 elif isinstance(item, tuple):
-                    accum += '\n%s%s \'%s(%s)\'' % (' '*(indent), feature, item[0], item[1])
+                    accum += '\n%s%s \'%s\'' % (' '*(indent), feature, item[0])
                 elif isinstance(item, list):
                     accum += '\n%s%s {%s}' % (' '*(indent), feature, ('\n%s' % (' '*(indent+len(feature)+2))).join(item))
                 else: # ERROR
@@ -174,30 +157,30 @@ def demo_read_depgraph():
     from nltk_contrib.dependency import DepGraph
     dg1 = DepGraph().read("""\
 Esso       NNP     2       SUB
-said    VBD     0       ROOT
-the     DT      5       NMOD
-Whiting NNP     5       NMOD
-field   NN      6       SUB
-started VBD     2       VMOD
-production      NN      6       OBJ
-Tuesday NNP     6       VMOD
+said       VBD     0       ROOT
+the        DT      5       NMOD
+Whiting    NNP     5       NMOD
+field      NN      6       SUB
+started    VBD     2       VMOD
+production NN      6       OBJ
+Tuesday    NNP     6       VMOD
 """)
     dg2 = DepGraph().read("""\
-John       NNP     2       SUB
+John    NNP     2       SUB
 sees    VBP     0       ROOT
 Mary    NNP     2       OBJ
 """)
     dg3 = DepGraph().read("""\
-a  DT      2       SPEC
-man     N       3       SUBJ
-walks   IV      0       ROOT
+a       DT      2       SPEC
+man     NN      3       SUBJ
+walks   VB      0       ROOT
 """)
     dg4 = DepGraph().read("""\
-every      DT      2       SPEC
-girl    N       3       SUBJ
-chases  TV      0       ROOT
+every   DT      2       SPEC
+girl    NN      3       SUBJ
+chases  VB      0       ROOT
 a       DT      5       SPEC
-dog     NNP     3       OBJ
+dog     NN      3       OBJ
 """)
 
     depgraphs = [dg1,dg2,dg3,dg4]
@@ -208,8 +191,29 @@ def demo_depparse():
     from nltk_contrib.dependency import malt
     dg = malt.parse('John sees Mary', True)
     print read_depgraph(dg)
+
+def test_fstruct_to_glue():
+    from nltk_contrib.dependency import DepGraph
+    from nltk_contrib.gluesemantics.glue import GlueDict
+    
+    dg = DepGraph().read("""\
+every   DT    2   SPEC
+girl    NN    3   SUBJ
+chases  VB    0   ROOT
+a       DT    5   SPEC
+dog     NN    3   OBJ
+""")
+    fstruct = read_depgraph(dg)
+    print fstruct
+    print fstruct.to_depgraph()
+    for gf in fstruct.to_glueformula_list(GlueDict('glue.semtype')):
+        print gf
+    
         
 if __name__ == '__main__':
     demo_read_depgraph()
-    print '\n'
+    print
     demo_depparse()
+    print
+    test_fstruct_to_glue()
+    
