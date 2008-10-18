@@ -34,3 +34,13 @@ class WordListCorpusReader(CorpusReader):
         return self.words(items)
     #}
             
+class SwadeshCorpusReader(WordListCorpusReader):
+    def entries(self, files=None):
+        """
+        @return: a tuple of words for the specified files.
+        """
+        if not files:
+            files = self.files()
+
+        wordlists = [self.words(f) for f in files]
+        return zip(*wordlists)
