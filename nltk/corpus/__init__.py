@@ -141,6 +141,8 @@ state_union = LazyCorpusLoader(
     'state_union', PlaintextCorpusReader, r'(?!\.).*\.txt')
 stopwords = LazyCorpusLoader(
     'stopwords', WordListCorpusReader, r'(?!README|\.).*')
+swadesh = LazyCorpusLoader(
+    'swadesh', SwadeshCorpusReader, r'(?!README|\.).*')
 timit = LazyCorpusLoader(
     'timit', TimitCorpusReader)
 toolbox = LazyCorpusLoader(

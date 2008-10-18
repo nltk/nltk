@@ -107,5 +107,6 @@ __all__ = [
     'tagged_treebank_para_block_reader',
     'PropbankCorpusReader', 'VerbnetCorpusReader',
     'BNCCorpusReader', 'ConllCorpusReader',
-    'XMLCorpusReader', 'NPSChatCorpusReader'
+    'XMLCorpusReader', 'NPSChatCorpusReader',
+    'SwadeshCorpusReader'
 ]
