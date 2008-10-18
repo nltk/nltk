@@ -547,7 +547,8 @@ class Synset(_WordNetObject):
         self.name = None
 #        self.lexname = None
         self.lemmas = []
-        self.definitions = []
+#        self.definitions = []
+        definitions = []
         self.examples = []
 
         # lookup tables for pointers (set below)
@@ -566,7 +567,8 @@ class Synset(_WordNetObject):
                 if gloss_part.startswith('"'):
                     self.examples.append(gloss_part.strip('"'))
                 else:
-                    self.definitions.append(gloss_part)
+                    definitions.append(gloss_part)
+            self.definitions = '; '.join(definitions)
 
             # split the other info into fields
             next = iter(columns_str.split()).next
@@ -683,6 +685,7 @@ def all_synsets(pos=None):
     # return the list of all synsets
     return result
 
+# should load a pickled object
 def _load():
 
     # try to find the WordNet dict directory
