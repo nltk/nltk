@@ -626,34 +626,21 @@ class Synset(_WordNetObject):
 
 def synsets(lemma, pos=None):
     """Load all synsets with a given lemma and part of speech tag.
-
-    If pos is None, all synsets for all parts of speech will be loaded.
+    If no pos is specified, all synsets for all parts of speech will be loaded.
     """
     lemma = lemma.lower()
     get_synset = Synset._from_pos_and_offset
     index = _lemma_pos_offset_map
-    result = []
 
-    # if no part of speech is given, return synsets for all parts of speech
     if pos is None:
-        for pos in [NOUN, VERB, ADJ, ADV]:
-            for offset in index[lemma].get(pos, []):
-                result.append(get_synset(pos, offset))
-
-    # otherwise, return synsets for the selected lemma and pos
-    else:
-        offsets = index[lemma].get(pos)
-        if offsets is not None:
-            for offset in offsets:
-                result.append(get_synset(pos, offset))
-
-    # return the collected synsets
-    return result
+        pos = [NOUN, VERB, ADJ, ADV]
+    
+    return [get_synset(p, offset) for p in pos
+                for offset in index[lemma].get(p, [])]
 
 def all_synsets(pos=None):
     """Load all synsets with a given part of speech tag.
-
-    If pos is None, all synsets for all parts of speech will be loaded.
+    If no pos is specified, all synsets for all parts of speech will be loaded.
     """
     if pos is None:
         pos_tags = [NOUN, VERB, ADJ, ADV]
@@ -688,32 +675,26 @@ def all_synsets(pos=None):
 # should load a pickled object
 def _load():
 
-    # try to find the WordNet dict directory
-    dict_dir = '/usr/share/nltk_data/corpora/wordnet/'
-    if dict_dir is None:
-        return
-
+    from nltk.data import find
+    
     # open the data files
-    _data_file_map[ADJ] = open(_os.path.join(dict_dir, 'data.adj'))
+    _data_file_map[ADJ] = open(find('corpora/wordnet/data.adj'))
     _data_file_map[ADJ_SAT] = _data_file_map[ADJ]
-    _data_file_map[ADV] = open(_os.path.join(dict_dir, 'data.adv'))
-    _data_file_map[NOUN] = open(_os.path.join(dict_dir, 'data.noun'))
-    _data_file_map[VERB] = open(_os.path.join(dict_dir, 'data.verb'))
+    _data_file_map[ADV] = open(find('corpora/wordnet/data.adv'))
+    _data_file_map[NOUN] = open(find('corpora/wordnet/data.noun'))
+    _data_file_map[VERB] = open(find('corpora/wordnet/data.verb'))
 
     # load the lexnames
-    lexnames_path = _os.path.join(dict_dir, 'lexnames')
-    for i, line in enumerate(open(lexnames_path)):
+    for i, line in enumerate(open(find('corpora/wordnet/lexnames'))):
         index, lexname, _ = line.split()
         assert int(index) == i
         _lexnames.append(lexname)
 
     # load indices for lemmas and synset offsets
     for suffix in ['adj', 'adv', 'noun', 'verb']:
-        index_file_name = 'index.%s' % suffix
-        index_file_path = _os.path.join(dict_dir, index_file_name)
 
         # parse each line of the file (ignoring comment lines)
-        for i, line in enumerate(open(index_file_path)):
+        for i, line in enumerate(open(find('corpora/wordnet/index.%s' % suffix))):
             if line.startswith(' '):
                 continue
 
@@ -1041,11 +1022,10 @@ def load_ic(icfile):
     @return: An information content dictionary
     """
     from nltk.data import find
-    icfile = find('corpora/wordnet_ic/' + icfile)
     ic = {}
     ic[NOUN] = defaultdict(int)
     ic[VERB] = defaultdict(int)
-    for num, line in enumerate(open(icfile)):
+    for num, line in enumerate(open(find('corpora/wordnet_ic/' + icfile))):
         if num == 0: # skip the header
             continue
         fields = line.split()
