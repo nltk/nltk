@@ -50,11 +50,15 @@ VBD(VB) : (\P.PAST(P), (f -o f))
 VBZ(VB)
 
 #Modifiers
-nmod : (\x.([],[<word>(x)]), f), (\P Q x.(P(x)+Q(x)), (f -o ((super.v -o super.r) -o (super.v -o super.r))))
-JJ(nmod)
-vmod : (\x.([],[<word>(x)]), f), (\P Q x.P(Q(x)), (f -o (super -o super)))
-RB(vmod)
-tense : (\P.([],[<word>(P)]), (super.f -o super.f))
+nmod : (\x.([],[<word>(x)]), f), (\P Q x.(P(x)+Q(x)), (f -o ((super.v -o super.r) -o (super.v -o super.r)))) : []
+JJ(nmod) : []
+vmod : (\x.([],[<word>(x)]), f), (\P Q x.P(Q(x)), (f -o (super -o super))) : []
+RB(vmod) : []
+tense(vmod) : []
+
+#Prepositions
+IN : (\P Q e.P(\x e2.(Q(e2)+([],[<word>(e2,x)])),e), ((subj -o subj.var) -o subj.var) -o (super -o super)) : [subj]
+IN(vmod) : []
 
 #Conjunctions
 cc_clause : (\P Q.(P + Q), (a -o (b -o f)))
