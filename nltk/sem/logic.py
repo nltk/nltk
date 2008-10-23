@@ -270,7 +270,7 @@ class Expression(SubstituteBindingsI):
                     val = VariableExpression(val, self._type_check)
                 elif not isinstance(val, Expression):
                     raise ValueError('Can not substitute a non-expresion '
-                                     'value into an expression: %r' % val)
+                                     'value into an expression: %r' % (val,))
                 # Substitute bindings in the target value.
                 val = val.substitute_bindings(bindings)
                 # Replace var w/ the target value.
