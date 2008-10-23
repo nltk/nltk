@@ -750,11 +750,19 @@ def parse_fcfg(input, features=None, logic_parser=None, fstruct_parser=None):
 
     start = None
     productions = []
+    continue_line = ''
     for linenum, line in enumerate(lines):
-        line = line.strip()
+        line = continue_line + line.strip()
         if line.startswith('#') or line=='': continue
+        if line.endswith('\\'):
+            continue_line = line[:-1].rstrip()+' '
+            continue
+        continue_line = ''
         if line[0] == '%':
             parts = line[1:].split()
+            if len(parts) == 1:
+                raise ValueError('Bad directive on line %s: %r' %
+                                 (linenum+1, line))
             directive, args = line[1:].split(None, 1)
             if directive == 'start':
                 start = fstruct_parser.parse(args)
