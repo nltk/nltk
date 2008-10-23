@@ -5,12 +5,11 @@
 # URL: <http://nltk.org>
 # For license information, see LICENSE.TXT
 
-import textwrap
 from math import log
 
 from probability import FreqDist, LidstoneProbDist
 from compat import defaultdict
-from util import ngrams
+from util import ngrams, tokenwrap
 from model import NgramModel
 
 class Text(list):
@@ -98,7 +97,7 @@ class Text(list):
             self._collocations = map(itemgetter(0), scored)
 
         colloc_strings = [w1+' '+w2 for w1, w2 in self._collocations[:num]]
-        print '\n'.join(textwrap.wrap('; '.join(colloc_strings)))
+        print tokenwrap(colloc_strings, separator="; ")
 
     def readability(self, method):
         # code from nltk_contrib.readability
@@ -116,12 +115,19 @@ class Text(list):
             estimator = lambda fdist, bins: LidstoneProbDist(fdist, 0.2)
             self._model = NgramModel(3, self, estimator)
         text = self._model.generate(length)
-        print '\n'.join(textwrap.wrap(' '.join(text)))
-    
+        print tokenwrap(text)
+
+    def _build_word_context_map(self):    
+        if '_word_context_map' not in self.__dict__:
+            print "Building word-context index..."
+            self._word_context_map = defaultdict(list)
+            for w1, w2, w3 in ngrams([w.lower() for w in self if w.isalpha()], 3): 
+                self._word_context_map[w2].append( (w1, w3) )            
+
     def similar(self, word, num=20):
         """
         Distributional similarity: find other words which appear in the
-        same contexts as the specified word.
+        same contexts as the specified word; list most similar words first.
         
         @param word: The word used to seed the similarity search
         @type word: C{str} 
@@ -129,12 +135,7 @@ class Text(list):
         @type num: C{int} 
         """
         
-        if '_word_context_map' not in self.__dict__:
-            print "Building word-context index..."
-            self._word_context_map = defaultdict(list)
-            for w1, w2, w3 in ngrams([w.lower() for w in self if w.isalpha()], 3): 
-                self._word_context_map[w2].append( (w1, w3) )            
-
+        self._build_word_context_map()
         word = word.lower()
         if word in self._word_context_map:
             contexts = set(self._word_context_map[word])
@@ -142,10 +143,36 @@ class Text(list):
                           for c in self._word_context_map[w]
                           if c in contexts and not w == word)
             words = fd.keys()[:num]
-            print '\n'.join(textwrap.wrap(' '.join(words)))
+            print tokenwrap(words)
         else:
-            return "No matches"
+            print "No matches"
     
+    def common_contexts(self, words, num=20):
+        """
+        Find contexts where the specified words appear; list
+        most frequent common contexts first.
+        
+        @param word: The word used to seed the similarity search
+        @type word: C{str} 
+        @param num: The number of words to generate (default=20)
+        @type num: C{int} 
+        """
+        
+        self._build_word_context_map()
+        contexts = [set(self._word_context_map[w.lower()]) for w in words]
+        empty = [words[i] for i in range(len(words)) if not contexts[i]]
+        common = reduce(set.intersection, contexts)
+        if empty:
+            print "The following word(s) were not found:", " ".join(words)
+        elif not common:
+            print "No common contexts were found"
+        else:
+            fd = FreqDist(c for w in words
+                          for c in self._word_context_map[w]
+                          if c in common)
+            ranked_contexts = fd.keys()[:num]
+            print tokenwrap(w1+"_"+w2 for w1,w2 in ranked_contexts)
+
     def dispersion_plot(self, words):
         from nltk.draw import dispersion_plot
         dispersion_plot(self, words)
