@@ -408,12 +408,38 @@ class Model(object):
             return not self.satisfy(parsed.term, g)
         elif isinstance(parsed, BinaryExpression):
             op = parsed.getOp()
-            return OPS[op](self, self.satisfy(parsed.first, g), self.satisfy(parsed.second, g))
+            # Short-circuiting can make things much faster.
+            if op == '&':
+                return (self.satisfy(parsed.first, g) and
+                        self.satisfy(parsed.second, g))
+            elif op == '|':
+                return (self.satisfy(parsed.first, g) or
+                        self.satisfy(parsed.second, g))
+            elif op == '->':
+                return ((not self.satisfy(parsed.first, g)) or
+                        self.satisfy(parsed.second, g))
+            else:
+                return OPS[op](self, self.satisfy(parsed.first, g),
+                               self.satisfy(parsed.second, g))
         elif isinstance(parsed, AllExpression):
-            return self.ALL(self.satisfiers(parsed.term, parsed.variable, g))
+            # Short-circuiting can make things much faster.
+            #return self.ALL(self.satisfiers(parsed.term, parsed.variable, g))
+            new_g = g.copy()
+            for u in self.domain:
+                new_g.add(parsed.variable.name, u)
+                if not self.satisfy(parsed.term, new_g):
+                    return False
+            return True
         elif isinstance(parsed, ExistsExpression):
-            satisfiers = self.satisfiers(parsed.term, parsed.variable, g)
-            return self.EXISTS(satisfiers)
+            # Short-circuiting can make things much faster.
+            #satisfiers = self.satisfiers(parsed.term, parsed.variable, g)
+            #return self.EXISTS(satisfiers)
+            new_g = g.copy()
+            for u in self.domain:
+                new_g.add(parsed.variable.name, u)
+                if self.satisfy(parsed.term, new_g):
+                    return True
+            return False
         elif isinstance(parsed, LambdaExpression):
             cf = {}
             #varex = self.make_VariableExpression(parsed.variable)
