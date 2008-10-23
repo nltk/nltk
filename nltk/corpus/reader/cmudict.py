@@ -77,17 +77,16 @@ class CMUDictCorpusReader(CorpusReader):
     def transcriptions(self):
         """
         @return: the cmudict lexicon as a dictionary, whose keys are
-        lowercase words and whose values are tuples of pronunciation
-        entries.
+        lowercase words and whose values are lists of pronunciations.
         """
         lexicon = self.entries()
         d = {}
         for word, num, transcription in lexicon:
             word = word.lower()
             if num == 1:
-                d[word] = (transcription,)
+                d[word] = [transcription]
             else:
-                d[word] += (transcription,)
+                d[word].append(transcription)
         return d
         
     #{ Deprecated since 0.8
