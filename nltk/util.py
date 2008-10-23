@@ -63,6 +63,7 @@ def pr(data, start=0, end=None):
     """
     pprint(list(islice(data, start, end)))
 
+# shouldn't this use textwrap.wrap()?
 def print_string(s, width=70):
     """
     Pretty print a string, breaking lines on whitespace
@@ -81,6 +82,21 @@ def print_string(s, width=70):
             return
         print s[:i]
         s = s[i:]
+
+def tokenwrap(tokens, separator=" ", width=70):
+    """
+    Pretty print a list of text tokens, breaking lines on whitespace
+
+    @param tokens: the tokens to print
+    @type tokens: C{list}
+    @param separator: the string to use to separate tokens
+    @type separator: C{str}
+    @param width: the display width (default=70)
+    @type width: C{int}
+    """
+    
+    return '\n'.join(textwrap.wrap(separator.join(tokens), width=width))
+
 
 ##########################################################################
 # MINIMAL SETS
