@@ -12,9 +12,9 @@ Extension of chart parsing implementation to handle grammars with
 feature structures as nodes.
 """
 
-import yaml
+import yaml, sys
 
-from nltk.featstruct import FeatStruct, unify, FeatStructParser
+from nltk.featstruct import FeatStruct, unify, FeatStructParser, TYPE
 from nltk.sem import logic
 from nltk import cfg, defaultdict
 from nltk.cfg import FeatStructNonterminal
@@ -143,7 +143,8 @@ class FeatureFundamentalRule(FundamentalRule):
                 left_edge.is_incomplete() and
                 right_edge.is_complete() and
                 isinstance(left_edge, TreeEdge) and
-                isinstance(right_edge, TreeEdge)):
+                isinstance(right_edge, TreeEdge) and
+                left_edge.next()[TYPE] == right_edge.lhs()[TYPE]):
             return
 
         # Unify B1 (left_edge.next) with B2 (right_edge.lhs) to
@@ -186,7 +187,8 @@ class FeatureTopDownExpandRule(TopDownExpandRule):
         for prod in grammar.productions():
             # Note: we rename vars here, because we don't want variables
             # from the two different productions to match.
-            if unify(prod.lhs(), edge.next_with_bindings(), rename_vars=True):
+            if ((prod.lhs()[TYPE] == edge.next()[TYPE]) and 
+                unify(prod.lhs(), edge.next_with_bindings(), rename_vars=True)):
                 new_edge = FeatureTreeEdge(span=(edge.end(), edge.end()),
                                            lhs=prod.lhs(),
                                            rhs=prod.rhs(), dot=0)
@@ -218,7 +220,8 @@ class FeatureScannerRule(ScannerRule):
         index = edge.end()
         leaf = chart.leaf(index)
         for pos in self._word_to_pos.get(leaf, []):
-            if unify(pos, edge.next_with_bindings(), rename_vars=True):
+            if (pos[TYPE] == edge.next()[TYPE] and 
+                unify(pos, edge.next_with_bindings(), rename_vars=True)):
                 new_leaf_edge = LeafEdge(leaf, index)
                 if chart.insert(new_leaf_edge, ()):
                     yield new_leaf_edge
@@ -304,7 +307,8 @@ class EarleyChartParser(ParserI):
     #: The remainder of each line will be used to display edges.
     _trace_chart_width = 40
 
-    def nbest_parse(self, tokens, n=None, tree_class=Tree):
+    def nbest_parse(self, tokens, n=None, tree_class=Tree, trace=None):
+        if trace is not None: self._trace = trace
         tokens = list(tokens)
         self._check_lexicon_coverage(tokens)
         
@@ -313,7 +317,7 @@ class EarleyChartParser(ParserI):
 
         # Width, for printing trace edges.
         w = max(2, self._trace_chart_width/(chart.num_leaves()+1))
-        if self._trace > 0: print ' '*9, chart.pp_leaves(w)
+        if self._trace > 1: print ' '*9, chart.pp_leaves(w)
 
         # Initialize the chart with a special "starter" edge.
         chart.insert(self._starter_edge(grammar.start()), ())
@@ -324,22 +328,25 @@ class EarleyChartParser(ParserI):
         scanner = self._scanner_class(self._lexicon)
 
         for end in range(chart.num_leaves()+1):
-            if self._trace > 1: print 'Processing queue %d' % end
+            if self._trace > 2: print 'Processing queue %d' % end
+            if self._trace == 1:
+                sys.stdout.write('.'); sys.stdout.flush()
             for edge in chart.select(end=end):
                 if edge.is_complete():
                     for e in completer.apply_iter(chart, grammar, edge):
-                        if self._trace > 0:
+                        if self._trace > 1:
                             print 'Completer', chart.pp_edge(e,w)
                 if edge.is_incomplete():
                     for e in predictor.apply_iter(chart, grammar, edge):
-                        if self._trace > 1:
+                        if self._trace > 2:
                             print 'Predictor', chart.pp_edge(e,w)
                 if edge.is_incomplete():
                     for e in scanner.apply_iter(chart, grammar, edge):
-                        if self._trace > 0:
+                        if self._trace > 1:
                             print 'Scanner  ', chart.pp_edge(e,w)
 
         # Output a list of complete parses.
+        if self._trace == 1: print
         return self._parses(chart, grammar.start(), tree_class)[:n]
 
     # This is a separate method because FeatureEarleyChartParser needs
@@ -384,6 +391,7 @@ class FeatureEarleyChartParser(EarleyChartParser):
         trees = []
         for edge in chart.select(span=(0, chart.num_leaves())):
             if ( (not isinstance(edge, LeafEdge)) and
+                 (edge.lhs()[TYPE] == start[TYPE]) and
                  (unify(edge.lhs(), start, rename_vars=True)) ):
                 trees += chart.trees(edge, complete=True,
                                      tree_class=tree_class)
