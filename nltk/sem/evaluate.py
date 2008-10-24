@@ -153,6 +153,8 @@ class Valuation(dict):
         for val in self.values():
             if isinstance(val, str):
                 dom.append(val)
+            elif isinstance(val, bool):
+                pass
             else:
                 dom.extend([elem for tuple in val for elem in tuple if elem is not None])
         return set(dom)
@@ -272,7 +274,7 @@ class Model(object):
     The domain of M{V} should be a subset of M{D}.
     """
     
-    def __init__(self, domain, valuation, prop=None):
+    def __init__(self, domain, valuation):
         """
         Construct a new L{Model}.
         
@@ -286,11 +288,10 @@ class Model(object):
         assert isinstance(domain, set)
         self.domain = domain
         self.valuation = valuation
-        if prop is None:
-            if not domain.issuperset(valuation.domain):
-                raise Error,\
-                      "The valuation domain, %s, must be a subset of the model's domain, %s"\
-                      % (valuation.domain, domain)
+        if not domain.issuperset(valuation.domain):
+            raise Error,\
+                  "The valuation domain, %s, must be a subset of the model's domain, %s"\
+                  % (valuation.domain, domain)
 
     def __repr__(self):
         return "(%r, %r)" % (self.domain, self.valuation)
@@ -569,35 +570,37 @@ def propdemo(trace=None):
     """Example of a propositional model."""
     
     global val1, dom1, m1, g1
-    val1 = Valuation([('p', True), ('q', True), ('r', False)])
+    val1 = Valuation([('P', True), ('Q', True), ('R', False)])
     dom1 = set([])
-    m1 = Model(dom1, val1, prop=True)
+    m1 = Model(dom1, val1)
     g1 = Assignment(dom1)
 
     print
     print '*' * mult
     print "Propositional Formulas Demo"
     print '*' * mult
+    print '(Propositional constants treated as nullary predicates)'
+    print
     print "Model m1:\n", m1
     print '*' * mult
     sentences = [
-    '(p & q)',
-    '(p & r)',
-    '- p',
-    '- r',
-    '- - p',
-    '- (p & r)',
-    '(p | r)',
-    '(r | p)',
-    '(r | r)',
-    '(- p | r)',
-    '(p | - p)',
-    '(p -> q)',
-    '(p -> r)',
-    '(r -> p)',
-    '(p <-> p)',
-    '(r <-> r)',
-    '(p <-> r)',
+    '(P & Q)',
+    '(P & R)',
+    '- P',
+    '- R',
+    '- - P',
+    '- (P & R)',
+    '(P | R)',
+    '(R | P)',
+    '(R | R)',
+    '(- P | R)',
+    '(P | - P)',
+    '(P -> Q)',
+    '(P -> R)',
+    '(R -> P)',
+    '(P <-> P)',
+    '(R <-> R)',
+    '(P <-> R)',
     ]
 
     for sent in sentences:
