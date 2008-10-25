@@ -351,12 +351,24 @@ Dependency Graph to Glue Formulas
 Dependency Graph to LFG f-structure
 -----------------------------------
     >>> from nltk_contrib.gluesemantics import lfg
-    >>> print lfg.read_depgraph(depgraph)
-    f:[pred 'sees(VB)'
-       obj h:[pred 'dog(NN)'
-              spec 'a(DT)']
-       subj g:[pred 'John(NNP)']]
+    >>> fstruct = lfg.read_depgraph(depgraph)
+    >>> print fstruct
+    f:[pred 'sees'
+       obj h:[pred 'dog'
+              spec 'a']
+       subj g:[pred 'John']]
 
+---------------------------------
+LFG f-structure to Glue
+---------------------------------
+    >>> for gf in fstruct.to_glueformula_list(GlueDict('glue.semtype')):
+    ...     print gf
+    \x y.sees(x,y) : (i -o (g -o f))
+    \x.dog(x) : (gv -o gr)
+    \P Q.exists x.(P(x) & Q(x)) : ((gv -o gr) -o ((g -o G1) -o G1))
+    \P Q.exists x.(P(x) & Q(x)) : ((iv -o ir) -o ((i -o I1) -o I1))
+    \x.John(x) : (iv -o ir)
+    
 --------------------
 Automated Derivation
 --------------------

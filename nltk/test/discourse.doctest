@@ -2,6 +2,9 @@
 Discourse Checking
 ==================
 
+    >>> from nltk.sem import logic
+    >>> logic._counter._value = 0
+
 Introduction
 ============
 
