@@ -10,6 +10,8 @@ import tempfile
 import subprocess
 import glob
 from operator import add
+
+from nltk import data
 from nltk import tokenize
 from nltk.stem.wordnet import WordnetStemmer
 from nltk_contrib.dependency import DepGraph, util
@@ -164,7 +166,7 @@ def train(mco='temp', conll='temp_train.conll', verbose=False):
     """
     _malt_bin = config_malt(verbose=verbose)
     
-    input_file = os.path.join(os.environ['MALTPARSERHOME'], conll)
+    input_file = data.find(os.path.join('grammars', conll))
 
     execute_string = 'java -jar %s -w %s -c %s -i %s -m learn'
     if not verbose:

@@ -571,7 +571,7 @@ def test_depgraph_to_glue(depgraph_string, verbosity=0):
     print ''
     
 if __name__ == '__main__':
-#    demo()
+    demo()
 
 #    treebank(1,2)
     

@@ -138,7 +138,8 @@ class Agenda(object):
         elif isinstance(current, ApplicationExpression):
             return Categories.ATOM
         else:
-            raise ProverParseError()
+            raise ProverParseError("cannot categorize %s" % \
+                                   current.__class__.__name__)
     
     def _categorize_NegatedExpression(self, current):
         negated = current.term
