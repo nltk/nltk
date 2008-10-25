@@ -255,6 +255,9 @@ class Synset(object):
         # Integer offset into the part-of-speech file. Together with pos,
         # this can be used as a unique id.
         self.offset = offset
+        
+        # cache min and max depth
+        self._min_depth = self._max_depth = None
 
         # The synset entry can be broadly divided into two parts: the
         # synset and relational data, and its human readable description, or
@@ -448,30 +451,24 @@ class Synset(object):
         @return: The length of the longest hypernym path from this synset to the root.
         """
 
-        if self[HYPERNYM] == []:
-            return 0
-        
-        deepest = 0
-        for hypernym in self[HYPERNYM]:
-            depth = hypernym.max_depth()
-            if depth > deepest:
-                deepest = depth
-        return deepest + 1
+        if not self._max_depth:
+            if self[HYPERNYM] == []:
+                self._max_depth = 0
+            else:
+                self._max_depth = 1 + max(h.max_depth() for h in self[HYPERNYM])
+        return self._max_depth
 
     def min_depth(self):
         """
         @return: The length of the shortest hypernym path from this synset to the root.
         """
 
-        if self[HYPERNYM] == []:
-            return 0
-
-        shallowest = 1000
-        for hypernym in self[HYPERNYM]:
-            depth = hypernym.max_depth()
-            if depth < shallowest:
-                shallowest = depth
-        return shallowest + 1
+        if not self._min_depth:
+            if self[HYPERNYM] == []:
+                self._min_depth = 0
+            else:
+                self._min_depth = 1 + min(h.min_depth() for h in self[HYPERNYM])
+        return self._min_depth
 
     def closure(self, rel, depth=-1):
         """Return the transitive closure of source under the rel relationship, breadth-first
