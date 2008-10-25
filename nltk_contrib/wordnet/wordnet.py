@@ -239,7 +239,7 @@ class Synset(_WordNetObject):
         # split name into lemma, part of speech and synset number
         lemma, pos, synset_index_str = name.lower().split('.')
         synset_index = int(synset_index_str) - 1
-
+        
         # get the offset for this synset
         try:
             offset = _lemma_pos_offset_map[lemma][pos][synset_index]
@@ -286,30 +286,24 @@ class Synset(_WordNetObject):
         @return: The length of the longest hypernym path from this synset to the root.
         """
 
-        if self.hypernyms() == []:
-            return 0
-        
-        deepest = 0
-        for hypernym in self.hypernyms():
-            depth = hypernym.max_depth()
-            if depth > deepest:
-                deepest = depth
-        return deepest + 1
+        if "_max_depth" not in self.__dict__:
+            if self.hypernyms() == []:
+                self._max_depth = 0
+            else:
+                self._max_depth = 1 + max(h.max_depth() for h in self.hypernyms())
+        return self._max_depth
 
     def min_depth(self):
         """
         @return: The length of the shortest hypernym path from this synset to the root.
         """
 
-        if self.hypernyms() == []:
-            return 0
-
-        shallowest = 1000
-        for hypernym in self.hypernyms():
-            depth = hypernym.max_depth()
-            if depth < shallowest:
-                shallowest = depth
-        return shallowest + 1
+        if "_min_depth" not in self.__dict__:
+            if self.hypernyms() == []:
+                self._min_depth = 0
+            else:
+                self._min_depth = 1 + min(h.min_depth() for h in self.hypernyms())
+        return self._min_depth
 
     def closure(self, rel, depth=-1):
         """Return the transitive closure of source under the rel relationship, breadth-first
