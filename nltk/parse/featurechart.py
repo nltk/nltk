@@ -16,8 +16,8 @@ import yaml, sys
 
 from nltk.featstruct import FeatStruct, unify, FeatStructParser, TYPE
 from nltk.sem import logic
-from nltk import cfg, defaultdict
-from nltk.cfg import FeatStructNonterminal
+from nltk import Nonterminal, Production, ContextFreeGrammar, defaultdict
+from nltk.grammar import FeatStructNonterminal
 import nltk.data
 
 from api import *
@@ -277,7 +277,7 @@ class EarleyChartParser(ParserI):
         Create a new Earley chart parser, that uses C{grammar} to
         parse texts.
         
-        @type grammar: C{cfg.Grammar}
+        @type grammar: C{ContextFreeGrammar}
         @param grammar: The grammar used to parse texts.
         @type trace: C{int}
         @param trace: The level of tracing that should be used when
@@ -353,7 +353,7 @@ class EarleyChartParser(ParserI):
     # to replace it:
     def _starter_edge(self, start_sym):
         """Return a 'starter edge' that expands to the start symbol."""
-        root = cfg.Nonterminal('[INIT]')
+        root = Nonterminal('[INIT]')
         return TreeEdge((0,0), root, (start_sym,))
 
     # This is a separate method because FeatureEarleyChartParser needs
@@ -465,20 +465,20 @@ def demo():
 
     # Define some grammatical productions.
     grammatical_productions = [
-        cfg.Production(S, (NP, VP)),  cfg.Production(PP, (P, NP)),
-        cfg.Production(NP, (NP, PP)),
-        cfg.Production(VP, (VP, PP)), cfg.Production(VP, (V, NP)),
-        cfg.Production(VP, (V,)), cfg.Production(NP, (DetPl, NPl)),
-        cfg.Production(NP, (DetSg, NSg))]
+        Production(S, (NP, VP)),  Production(PP, (P, NP)),
+        Production(NP, (NP, PP)),
+        Production(VP, (VP, PP)), Production(VP, (V, NP)),
+        Production(VP, (V,)),     Production(NP, (DetPl, NPl)),
+        Production(NP, (DetSg, NSg))]
 
     # Define some lexical productions.
     lexical_productions = [
-        cfg.Production(NP, ('John',)), cfg.Production(NP, ('I',)),
-        cfg.Production(Det, ('the',)), cfg.Production(Det, ('my',)),
-        cfg.Production(Det, ('a',)),
-        cfg.Production(NSg, ('dog',)),   cfg.Production(NSg, ('cookie',)),
-        cfg.Production(V, ('ate',)),  cfg.Production(V, ('saw',)),
-        cfg.Production(P, ('with',)), cfg.Production(P, ('under',)),
+        Production(NP, ('John',)), Production(NP, ('I',)),
+        Production(Det, ('the',)), Production(Det, ('my',)),
+        Production(Det, ('a',)),
+        Production(NSg, ('dog',)), Production(NSg, ('cookie',)),
+        Production(V, ('ate',)),   Production(V, ('saw',)),
+        Production(P, ('with',)),  Production(P, ('under',)),
     ]
 
 
@@ -487,7 +487,7 @@ def demo():
         earley_lexicon[prod.rhs()[0]].append(prod.lhs())
     #print "Lexicon:"
     #print earley_lexicon
-    earley_grammar = cfg.Grammar(S, grammatical_productions, earley_lexicon)
+    earley_grammar = ContextFreeGrammar(S, grammatical_productions, earley_lexicon)
     print earley_grammar
     
     sent = 'I saw John with a dog with my cookie'

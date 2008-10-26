@@ -50,11 +50,11 @@ __author_email__ = __maintainer_email__
 # Import top-level functionality into top-level namespace
 
 from compat import *
-from cfg import *
 from containers import *
 from decorators import decorator, memoize
 from evaluate import *
 from featstruct import *
+from grammar import *
 from olac import *
 from probability import *
 from text import *

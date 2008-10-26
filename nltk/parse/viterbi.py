@@ -65,7 +65,7 @@ class ViterbiParser(ParserI):
                     = M{new_tree}
       - Return M{MLC}[0, len(M{text}), M{start_symbol}]
                 
-    @type _grammar: C{pcfg.Grammar}
+    @type _grammar: C{WeightedGrammar}
     @ivar _grammar: The grammar used to parse sentences.
     @type _trace: C{int}
     @ivar _trace: The level of tracing output that should be generated
@@ -76,7 +76,7 @@ class ViterbiParser(ParserI):
         Create a new C{ViterbiParser} parser, that uses {grammar} to
         parse texts.
 
-        @type grammar: C{pcfg.Grammar}
+        @type grammar: C{WeightedGrammar}
         @param grammar: The grammar used to parse texts.
         @type trace: C{int}
         @param trace: The level of tracing that should be used when

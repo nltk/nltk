@@ -46,7 +46,7 @@ def _semrep(node, beta_reduce=True):
     @parameter node: node of a parse L{Tree}
     @rtype: L{logic.Expression}
     """
-    assert isinstance(node, nltk.cfg.FeatStructNonterminal)
+    assert isinstance(node, nltk.grammar.FeatStructNonterminal)
     try:
         semrep = node['sem']
         if beta_reduce:

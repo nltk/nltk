@@ -188,7 +188,7 @@ class ParseI(ParserI, Deprecated):
     "Use ParserI instead."
 class AbstractParser(Deprecated, ParserI):
     """Use ParserI instead."""
-    @deprecated("Use nltk.cfg.Grammar.check_coverage() instead.")
+    @deprecated("Use nltk.ContextFreeGrammar.check_coverage() instead.")
     def _check_coverage(self, tokens):
         self._grammar.check_coverage(tokens)
 #}

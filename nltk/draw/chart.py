@@ -46,7 +46,7 @@ import string
 import os.path
 
 from nltk.parse.chart import *
-from nltk import tokenize, Tree, cfg
+from nltk import tokenize, Tree, Nonterminal, parse_cfg
 from nltk.draw import ShowText, EntryDialog, in_idle
 from nltk.draw import MutableOptionMenu
 from nltk.draw import ColorizedList, SymbolWidget, CanvasFrame
@@ -77,7 +77,7 @@ class EdgeList(ColorizedList):
         for i, elt in enumerate(item.rhs()):
             if i == item.dot():
                 contents.append((' *', 'dot'))
-            if isinstance(elt, cfg.Nonterminal):
+            if isinstance(elt, Nonterminal):
                 contents.append((' %s' % elt.symbol(), 'nonterminal'))
             else:
                 contents.append((' %r' % elt, 'terminal'))
@@ -1108,7 +1108,7 @@ class ChartView(object):
             lhs = edge.lhs()
             rhselts = []
             for elt in edge.rhs():
-                if isinstance(elt, cfg.Nonterminal):
+                if isinstance(elt, Nonterminal):
                     rhselts.append(str(elt.symbol()))
                 else:
                     rhselts.append(repr(elt))
@@ -1198,7 +1198,7 @@ class ChartView(object):
         if isinstance(edge, TreeEdge):
             rhs = []
             for elt in edge.rhs():
-                if isinstance(elt, cfg.Nonterminal):
+                if isinstance(elt, Nonterminal):
                     rhs.append(str(elt.symbol()))
                 else:
                     rhs.append(repr(elt))
@@ -2055,7 +2055,7 @@ class ChartDemo(object):
             if filename.endswith('.pickle'):
                 grammar = pickle.load(open(filename, 'r'))
             else:
-                grammar = cfg.parse_cfg(open(filename, 'r').read())
+                grammar = parse_cfg(open(filename, 'r').read())
             self.set_grammar(grammar)
         except Exception, e:
             tkMessageBox.showerror('Error Loading Grammar', 
@@ -2255,7 +2255,7 @@ class ChartDemo(object):
         self.apply_strategy(self._EARLEY, PseudoEarleyEdgeRule)
         
 def demo():
-    grammar = cfg.parse_cfg("""
+    grammar = parse_cfg("""
     # Grammatical productions.
         S -> NP VP
         VP -> VP PP | V NP | V

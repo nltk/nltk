@@ -8,7 +8,7 @@
 
 import string
 
-from nltk import tokenize, cfg
+from nltk import tokenize, Nonterminal, parse_cfg
 from nltk.tree import Tree
 
 from api import *
@@ -55,7 +55,7 @@ class ShiftReduceParser(ParserI):
     parses exists, C{ShiftReduceParser} will return at most one of
     them.
 
-    @see: C{nltk.cfg}
+    @see: C{nltk.grammar}
     """
     def __init__(self, grammar, trace=0):
         """
@@ -144,10 +144,10 @@ class ShiftReduceParser(ParserI):
         if len(rightmost_stack) != len(rhs): return 0
         for i in range(len(rightmost_stack)):
             if isinstance(rightmost_stack[i], Tree):
-                if not isinstance(rhs[i], cfg.Nonterminal): return 0
+                if not isinstance(rhs[i], Nonterminal): return 0
                 if rightmost_stack[i].node != rhs[i].symbol(): return 0
             else:
-                if isinstance(rhs[i], cfg.Nonterminal): return 0
+                if isinstance(rhs[i], Nonterminal): return 0
                 if rightmost_stack[i] != rhs[i]: return 0
         return 1
 
@@ -222,7 +222,7 @@ class ShiftReduceParser(ParserI):
         str = '  '+marker+' [ '
         for elt in stack:
             if isinstance(elt, Tree):
-                str += `cfg.Nonterminal(elt.node)` + ' '
+                str += `Nonterminal(elt.node)` + ' '
             else:
                 str += `elt` + ' '
         str += '* ' + string.join(remaining_text) + ']'
@@ -289,7 +289,7 @@ class SteppingShiftReduceParser(ShiftReduceParser):
     @ivar _history: A list of C{(stack, remaining_text)} pairs,
         containing all of the previous states of the parser.  This
         history is used to implement the C{undo} operation.
-    @see: C{nltk.cfg}
+    @see: C{nltk.grammar}
     """
     def __init__(self, grammar, trace=0):
         self._grammar = grammar
@@ -437,9 +437,9 @@ def demo():
     A demonstration of the shift-reduce parser.
     """
 
-    from nltk import parse, cfg
+    from nltk import parse, parse_cfg
 
-    grammar = cfg.parse_cfg("""
+    grammar = parse_cfg("""
     S -> NP VP
     NP -> Det N | Det N PP
     VP -> V NP | V NP PP
@@ -457,4 +457,5 @@ def demo():
     for p in parser.nbest_parse(sent):
         print p
 
-if __name__ == '__main__': demo()
+if __name__ == '__main__':
+    demo()

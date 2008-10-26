@@ -9,7 +9,7 @@
 #
 # $Id$
 
-from nltk import Tree, cfg, defaultdict
+from nltk import Tree, Nonterminal, earley_lexicon, defaultdict
 
 from api import *
 
@@ -289,7 +289,7 @@ class TreeEdge(EdgeI):
             
         for i in range(len(self._rhs)):
             if i == self._dot: str += ' *'
-            if (isinstance(self._rhs[i], cfg.Nonterminal) and
+            if (isinstance(self._rhs[i], Nonterminal) and
                 isinstance(self._rhs[i].symbol(), basestring)):
                 str += ' %s' % (self._rhs[i],)
             else:
@@ -1253,7 +1253,7 @@ class PredictorRule(CachedTopDownExpandRule):
 def makeEarleyStrategy(grammar):
     """Given a grammar with both grammatical and lexical productions,
     produce an Earley strategy that uses that lexicon."""
-    lexicon = cfg.earley_lexicon(grammar.productions())
+    lexicon = earley_lexicon(grammar.productions())
     strategy = [TopDownInitRule(), PredictorRule(), ScannerRule(lexicon), CompleterRule()]
     return strategy
     
@@ -1284,7 +1284,7 @@ class ChartParser(ParserI):
         Create a new chart parser, that uses C{grammar} to parse
         texts.
 
-        @type grammar: L{cfg.Grammar}
+        @type grammar: L{ContextFreeGrammar}
         @param grammar: The grammar used to parse texts.
         @type strategy: C{list} of L{ChartRuleI}
         @param strategy: A list of rules that should be used to decide
@@ -1494,30 +1494,32 @@ def demo():
     A demonstration of the chart parsers.
     """
     import sys, time
+    from nltk import nonterminals, Production, ContextFreeGrammar
     
     # Define some nonterminals
-    S, VP, NP, PP = cfg.nonterminals('S, VP, NP, PP')
-    V, N, P, Name, Det = cfg.nonterminals('V, N, P, Name, Det')
+    S, VP, NP, PP = nonterminals('S, VP, NP, PP')
+    V, N, P, Name, Det = nonterminals('V, N, P, Name, Det')
 
     # Define some grammatical productions.
     grammatical_productions = [
-        cfg.Production(S, [NP, VP]),  cfg.Production(PP, [P, NP]),
-        cfg.Production(NP, [Det, N]), cfg.Production(NP, [NP, PP]),
-        cfg.Production(VP, [VP, PP]), cfg.Production(VP, [V, NP]),
-        cfg.Production(VP, [V]),]
+        Production(S, [NP, VP]),  Production(PP, [P, NP]),
+        Production(NP, [Det, N]), Production(NP, [NP, PP]),
+        Production(VP, [VP, PP]), Production(VP, [V, NP]),
+        Production(VP, [V]),]
 
     # Define some lexical productions.
     lexical_productions = [
-        cfg.Production(NP, ['John']), cfg.Production(NP, ['I']), 
-        cfg.Production(Det, ['the']), cfg.Production(Det, ['my']),
-        cfg.Production(Det, ['a']),
-        cfg.Production(N, ['dog']),   cfg.Production(N, ['cookie']),
-        cfg.Production(V, ['ate']),  cfg.Production(V, ['saw']),
-        cfg.Production(P, ['with']), cfg.Production(P, ['under']),
+        Production(NP, ['John']), Production(NP, ['I']), 
+        Production(Det, ['the']), Production(Det, ['my']),
+        Production(Det, ['a']),
+        Production(N, ['dog']),   Production(N, ['cookie']),
+        Production(V, ['ate']),   Production(V, ['saw']),
+        Production(P, ['with']),  Production(P, ['under']),
         ]
 
     # The grammar for ChartParser and SteppingChartParser:
-    grammar = cfg.Grammar(S, grammatical_productions+lexical_productions)
+    grammar = ContextFreeGrammar(S, grammatical_productions +
+                                    lexical_productions)
 
     # Tokenize a sample sentence.
     sent = 'I saw John with a dog with my cookie'
