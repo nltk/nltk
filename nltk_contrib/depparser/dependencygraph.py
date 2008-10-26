@@ -1,7 +1,7 @@
 # Natural Language Toolkit: Dependency Grammars
 #
 # Copyright (C) 2001-2008 NLTK Project
-# Author: Ewan Klein <ewan@inf.ed.ac.uk>
+# Author: Jason Narad <jason.narad@gmail.com>
 #
 # URL: <http://nltk.org>
 # For license information, see LICENSE.TXT

@@ -387,13 +387,13 @@ def demo():
     summary of the results are displayed.
     """
     import sys, time
-    from nltk import tokenize, cfg
+    from nltk import tokenize, toy_pcfg1, toy_pcfg2
     from nltk.parse import pchart
 
     # Define two demos.  Each demo has a sentence and a grammar.
-    demos = [('I saw John with my telescope', cfg.toy_pcfg1),
+    demos = [('I saw John with my telescope', toy_pcfg1),
              ('the boy saw Jack with Bob under the table with a telescope',
-              cfg.toy_pcfg2)]
+              toy_pcfg2)]
 
     # Ask the user which demo they want to use.
     print

@@ -2,42 +2,42 @@
  Parsing
 =========
 
-Unit tests for the CFG (Context Free Grammar) class
----------------------------------------------------
+Unit tests for the Context Free Grammar class
+---------------------------------------------
 
-    >>> from nltk import cfg
+    >>> from nltk import Nonterminal, nonterminals, Production, parse_cfg, ContextFreeGrammar
 
-    >>> nt1 = cfg.Nonterminal('NP')
-    >>> nt2 = cfg.Nonterminal('VP')
+    >>> nt1 = Nonterminal('NP')
+    >>> nt2 = Nonterminal('VP')
 
     >>> nt1.symbol()
     'NP'
 
-    >>> nt1 == cfg.Nonterminal('NP')
+    >>> nt1 == Nonterminal('NP')
     True
 
     >>> nt1 == nt2
     False
 
-    >>> S, NP, VP, PP = cfg.nonterminals('S, NP, VP, PP')
-    >>> N, V, P, DT = cfg.nonterminals('N, V, P, DT') 
+    >>> S, NP, VP, PP = nonterminals('S, NP, VP, PP')
+    >>> N, V, P, DT = nonterminals('N, V, P, DT') 
 
-    >>> prod1 = cfg.Production(S, [NP, VP])
-    >>> prod2 = cfg.Production(NP, [DT, NP])
+    >>> prod1 = Production(S, [NP, VP])
+    >>> prod2 = Production(NP, [DT, NP])
 
     >>> prod1.lhs()
-    <S>
+    S
 
     >>> prod1.rhs()
-    (<NP>, <VP>)
+    (NP, VP)
 
-    >>> prod1 == cfg.Production(S, [NP, VP])
+    >>> prod1 == Production(S, [NP, VP])
     True
 
     >>> prod1 == prod2
     False
 
-    >>> grammar = cfg.parse_cfg("""
+    >>> grammar = parse_cfg("""
     ... S -> NP VP
     ... PP -> P NP
     ... NP -> DT N | N PP | DT N PP
@@ -124,7 +124,7 @@ Unit tests for the Chart parser class
 
 Define a grammar.
 
-    >>> grammar = cfg.parse_cfg("""
+    >>> grammar = parse_cfg("""
     ... S -> NP VP
     ... PP -> P NP
     ... NP -> DT N | N | NP PP
@@ -185,13 +185,13 @@ Redefine the chart parser to use a top-down strategy.
 Create and test the Earley variant chart parser. This requires a lexicon.
 
     >>> syntactic_productions = [
-    ... cfg.Production(S, [NP, VP]),
-    ... cfg.Production(PP, [P, NP]),
-    ... cfg.Production(NP, [DT, N]),
-    ... cfg.Production(NP, [N]),
-    ... cfg.Production(NP, [NP, PP]),
-    ... cfg.Production(VP, [V, NP]),
-    ... cfg.Production(VP, [VP, PP])
+    ... Production(S, [NP, VP]),
+    ... Production(PP, [P, NP]),
+    ... Production(NP, [DT, N]),
+    ... Production(NP, [N]),
+    ... Production(NP, [NP, PP]),
+    ... Production(VP, [V, NP]),
+    ... Production(VP, [VP, PP])
     ... ]
 
     >>> lexicon = {
@@ -201,7 +201,7 @@ Create and test the Earley variant chart parser. This requires a lexicon.
     ...     'in': [P]
     ...     }
 
-    >>> grammar = cfg.Grammar(S, syntactic_productions, lexicon)
+    >>> grammar = ContextFreeGrammar(S, syntactic_productions, lexicon)
 
     >>> parser = EarleyChartParser(grammar)
 
@@ -246,10 +246,11 @@ Unit tests for the Probabilistic CFG class
 
     >>> from nltk.corpus import treebank
     >>> from itertools import islice
+    >>> from nltk import parse_pcfg, induce_pcfg, toy_pcfg1, toy_pcfg2
 
 Create a set of probabilistic CFG productions.
 
-    >>> grammar = cfg.parse_pcfg("""
+    >>> grammar = parse_pcfg("""
     ... A -> B B [.3] | C B C [.7]
     ... B -> B D [.5] | C [.5]
     ... C -> 'a' [.1] | 'b' [0.9]
@@ -260,16 +261,16 @@ Create a set of probabilistic CFG productions.
     A -> B B [0.3]
 
     >>> prod.lhs()
-    <A>
+    A
 
     >>> prod.rhs()
-    (<B>, <B>)
+    (B, B)
 
     >>> prod.prob()
     0.29999999999999999
 
     >>> grammar.start()
-    <A>
+    A
 
     >>> grammar.productions()
     [A -> B B [0.3], A -> C B C [0.7], B -> B D [0.5], B -> C [0.5], C -> 'a' [0.1], C -> 'b' [0.9], D -> 'b' [1.0]]
@@ -281,7 +282,7 @@ Induce some productions using parsed Treebank data.
     ...     for t in treebank.parsed_sents(file):
     ...         productions += t.productions()
 
-    >>> grammar = cfg.induce_pcfg(S, productions)
+    >>> grammar = induce_pcfg(S, productions)
     >>> grammar
     <Grammar with 71 productions>
 
@@ -292,7 +293,7 @@ Unit tests for the Probabilistic Chart Parse classes
 ----------------------------------------------------
 
     >>> tokens = "Jack saw Bob with my cookie".split()
-    >>> grammar = cfg.toy_pcfg2
+    >>> grammar = toy_pcfg2
     >>> print grammar
     Grammar with 23 productions (start state = S)
         S -> NP VP [1.0]
@@ -397,7 +398,7 @@ Unit tests for the Viterbi Parse classes
 
     >>> from nltk.parse import ViterbiParser
     >>> tokens = "Jack saw Bob with my cookie".split()
-    >>> grammar = cfg.toy_pcfg2
+    >>> grammar = toy_pcfg2
 
 Parse the tokenized sentence.
 
@@ -443,11 +444,11 @@ Unit tests for the Feature Chart Parser classes
 Define some grammatical productions.
 
     >>> grammatical_productions = [
-    ...     cfg.Production(S, (NP, VP)),  cfg.Production(PP, (P, NP)),
-    ...     cfg.Production(NP, (NP, PP)),
-    ...     cfg.Production(VP, (VP, PP)), cfg.Production(VP, (V, NP)),
-    ...     cfg.Production(VP, (V,)), cfg.Production(NP, (DetPl, NPl)),
-    ...     cfg.Production(NP, (DetSg, NSg))]
+    ...     Production(S, (NP, VP)),  Production(PP, (P, NP)),
+    ...     Production(NP, (NP, PP)),
+    ...     Production(VP, (VP, PP)), Production(VP, (V, NP)),
+    ...     Production(VP, (V,)),     Production(NP, (DetPl, NPl)),
+    ...     Production(NP, (DetSg, NSg))]
 
 Define some lexical productions.
 
@@ -459,7 +460,7 @@ Define some lexical productions.
     ...     'with': [P], 'under': [P]
     ...     }
     
-    >>> earley_grammar = cfg.Grammar(S, grammatical_productions, lexicon)
+    >>> earley_grammar = ContextFreeGrammar(S, grammatical_productions, lexicon)
     >>> from nltk.compat import defaultdict
 
     >>> tokens = 'I saw John with a dog with my cookie'.split()

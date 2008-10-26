@@ -868,8 +868,8 @@ def demo():
     Create a recursive descent parser demo, using a simple grammar and
     text.
     """    
-    from nltk import cfg
-    grammar = cfg.parse_cfg("""
+    from nltk import parse_cfg
+    grammar = parse_cfg("""
     # Grammatical productions.
         S -> NP VP
         NP -> Det N PP | Det N

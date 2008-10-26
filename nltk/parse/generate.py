@@ -6,7 +6,7 @@
 # For license information, see LICENSE.TXT
 #
 
-from nltk import cfg
+from nltk import Nonterminal, parse_cfg 
 
 def generate(grammar, start=None):
     if not start:
@@ -16,7 +16,7 @@ def generate(grammar, start=None):
 def _generate_all(grammar, items):
     frags = []
     if len(items) == 1:
-        if isinstance(items[0], cfg.Nonterminal):
+        if isinstance(items[0], Nonterminal):
             for prod in grammar.productions(lhs=items[0]):
                 frags.append(_generate_all(grammar, prod.rhs()))
         else:
@@ -39,7 +39,7 @@ def _multiply(frag1, frag2):
             frags.append(f1+f2)
     return frags
 
-grammar = cfg.parse_cfg("""
+grammar = parse_cfg("""
   S -> NP VP
   NP -> Det N
   VP -> V NP

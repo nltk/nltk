@@ -9,11 +9,9 @@
 
 import math
 
-from dependencygrammar import *
+from nltk import parse_dependency_grammar
+
 from dependencygraph import *
-from pprint import pformat
-
-
 
 #################################################################
 # DependencyScorerI - Interface for Graph-Edge Weight Calculation
@@ -491,8 +489,8 @@ class NonprojectiveDependencyParser(object):
         """
         Creates a new C{NonprojectiveDependencyParser}.
 
-        param dependency_grammar: a grammar of word-to-word relations.
-        type depenency_grammar: C{DependencyGrammar}
+        @param dependency_grammar: a grammar of word-to-word relations.
+        @type depenedncy_grammar: C{DependencyGrammar}
 	    """
         self._grammar = dependency_grammar
 
@@ -616,12 +614,6 @@ class NonprojectiveDependencyParser(object):
                 graphs.append(graph)
         return graphs
 
-
-
-            
-            
-        
-        
 
 #################################################################
 # Demos

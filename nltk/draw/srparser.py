@@ -774,36 +774,36 @@ def demo():
     text. 
     """
     
-    from nltk import cfg
+    from nltk import Nonterminal, Production, ContextFreeGrammar
     nonterminals = 'S VP NP PP P N Name V Det'
-    (S, VP, NP, PP, P, N, Name, V, Det) = [cfg.Nonterminal(s)
+    (S, VP, NP, PP, P, N, Name, V, Det) = [Nonterminal(s)
                                            for s in nonterminals.split()]
     
     productions = (
         # Syntactic Productions
-        cfg.Production(S, [NP, VP]),
-        cfg.Production(NP, [Det, N]),
-        cfg.Production(NP, [NP, PP]),
-        cfg.Production(VP, [VP, PP]),
-        cfg.Production(VP, [V, NP, PP]),
-        cfg.Production(VP, [V, NP]),
-        cfg.Production(PP, [P, NP]),
+        Production(S, [NP, VP]),
+        Production(NP, [Det, N]),
+        Production(NP, [NP, PP]),
+        Production(VP, [VP, PP]),
+        Production(VP, [V, NP, PP]),
+        Production(VP, [V, NP]),
+        Production(PP, [P, NP]),
 
         # Lexical Productions
-        cfg.Production(NP, ['I']),   cfg.Production(Det, ['the']),
-        cfg.Production(Det, ['a']),  cfg.Production(N, ['man']),
-        cfg.Production(V, ['saw']),  cfg.Production(P, ['in']),
-        cfg.Production(P, ['with']), cfg.Production(N, ['park']),
-        cfg.Production(N, ['dog']),  cfg.Production(N, ['statue']),
-        cfg.Production(Det, ['my']),
+        Production(NP, ['I']),   Production(Det, ['the']),
+        Production(Det, ['a']),  Production(N, ['man']),
+        Production(V, ['saw']),  Production(P, ['in']),
+        Production(P, ['with']), Production(N, ['park']),
+        Production(N, ['dog']),  Production(N, ['statue']),
+        Production(Det, ['my']),
         )
 
-    grammar = cfg.Grammar(S, productions)
+    grammar = ContextFreeGrammar(S, productions)
 
     # tokenize the sentence
     sent = 'my dog saw a man in the park with a statue'.split()
 
     ShiftReduceDemo(grammar, sent).mainloop()
 
-if __name__ == '__main__': demo()
-        
+if __name__ == '__main__':
+    demo()
