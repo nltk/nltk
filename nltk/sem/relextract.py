@@ -262,10 +262,17 @@ def show_clause(reldict, relsym):
 ############################################
 # Example of in(ORG, LOC)
 ############################################
-def in_demo(trace=0):
+def in_demo(trace=0, sql=True):
  
     from nltk.corpus import ieer
-
+    if sql:
+        import sqlite3
+        connection =  sqlite3.connect(":memory:")
+        connection.text_factory = sqlite3.OptimizedUnicode
+        cur = connection.cursor()
+        cur.execute("""create table Locations
+        (OrgName text, LocationName text, DocID text)""")
+        
     IN = re.compile(r'.*\bin\b(?!\b.+ing\b)')
     
     print
@@ -279,7 +286,20 @@ def in_demo(trace=0):
                 print "=" * 15
             for rel in extract_rels('ORG', 'LOC', doc, pattern=IN):
                 print show_clause(rel, relsym='IN')
-
+                if sql:
+                    rtuple = (rel['subjtext'], rel['objtext'], doc.docno)
+                    cur.execute("""insert into Locations 
+                                values (?, ?, ?)""", rtuple)
+                    connection.commit()
+                    
+    if sql:           
+        cur.execute("""select OrgName from Locations
+                    where LocationName = 'Atlanta'""")
+        print
+        print "Extract data from SQL table: ORGs in Atlanta"
+        print "-" * 15
+        for row in cur:
+            print row    
 
 
 ############################################
@@ -341,7 +361,7 @@ def ieer_headlines():
     from nltk.corpus import ieer
     from nltk import Tree
     
-    print "IEER: Frist 20 Headlines"
+    print "IEER: First 20 Headlines"
     print "=" * 45
     
     trees = [doc.headline for file in ieer.files() for doc in ieer.parsed_docs(file)]
@@ -414,7 +434,6 @@ def conllesp():
 if __name__ == '__main__':
     in_demo(trace=0)
     roles_demo(trace=0)
-    ieer
     conllned()
     conllesp()
     ieer_headlines()
