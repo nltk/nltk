@@ -298,7 +298,7 @@ class Constraint:
         return '(%s < %s)' % (self.lhs, self.rhs)
 
 
-def main(sentence, grammar_filename=None, verbose=False):
+def hole_readings(sentence, grammar_filename=None, verbose=False):
     if not grammar_filename:
         grammar_filename = 'grammars/hole.fcfg'
 
@@ -360,11 +360,11 @@ def main(sentence, grammar_filename=None, verbose=False):
 
 
 if __name__ == '__main__':
-    for r in main('a dog barks'):
+    for r in hole_readings('a dog barks'):
         print r
     
     print
     
-    for r in main('every girl chases a dog'):
+    for r in hole_readings('every girl chases a dog'):
         print r
     
