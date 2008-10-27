@@ -77,7 +77,7 @@ alpino = LazyCorpusLoader(
     'alpino', AlpinoCorpusReader, tag_mapping_function=simplify_alpino_tag)
 brown = LazyCorpusLoader(
     'brown', CategorizedTaggedCorpusReader, r'c[a-z]\d\d',
-    cat_pattern=r'c([a-z])\d\d', tag_mapping_function=simplify_brown_tag)
+    cat_file='cats.txt', tag_mapping_function=simplify_brown_tag)
 cess_cat = LazyCorpusLoader(
     'cess_cat', BracketParseCorpusReader, r'(?!\.).*\.tbf',
     tag_mapping_function=simplify_tag)
