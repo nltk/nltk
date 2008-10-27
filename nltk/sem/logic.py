@@ -174,7 +174,7 @@ class TypeException(Exception):
     def __init__(self, msg):
         Exception.__init__(self, msg)
     
-class InconsistentTypeHeirarchyException(TypeException):
+class InconsistentTypeHierarchyException(TypeException):
     def __init__(self, variable, expression):
         msg = "The variable \'%s\' was found in multiple places with different"\
             " types in \'%s\'." % (variable, expression)
@@ -463,7 +463,7 @@ class ApplicationExpression(Expression):
         elif len(unique) == 1:
             return list(unique)[0]
         else:
-            raise InconsistentTypeHeirarchyException(variable, self)
+            raise InconsistentTypeHierarchyException(variable, self)
 
     def __eq__(self, other):
         return isinstance(other, ApplicationExpression) and \
@@ -845,7 +845,7 @@ class BinaryExpression(Expression):
         elif f == ANY_TYPE:
             return s
         else:
-            raise InconsistentTypeHeirarchyException(variable, self)
+            raise InconsistentTypeHierarchyException(variable, self)
 
     def __eq__(self, other):
         return (isinstance(self, other.__class__) or \
