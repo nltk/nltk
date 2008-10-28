@@ -64,7 +64,6 @@ setup(
                 'nltk_contrib.classifier_tests',
                 'nltk_contrib.coref',
                 'nltk_contrib.dependency',
-                'nltk_contrib.depparser',
                 'nltk_contrib.fst',
                 'nltk_contrib.fuf',
                 'nltk_contrib.gluesemantics',
