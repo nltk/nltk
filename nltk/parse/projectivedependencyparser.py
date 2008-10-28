@@ -184,7 +184,7 @@ class ProjectiveDependencyParser(object):
             chart.append([])
             for j in range(0, len(self._tokens) + 1):
                 chart[i].append(ChartCell(i,j))
-                if(i==j+1):
+                if i==j+1:
                     chart[i][j].add(DependencySpan(i-1,i,i-1,[-1], ['null']))
         for i in range(1,len(self._tokens)+1):
             for j in range(i-2,-1,-1):
@@ -201,8 +201,8 @@ class ProjectiveDependencyParser(object):
             for i in range(len(tokens)):
 #                malt_format += '%s\t%s\t%d\t%s\n' % (tokens[i], 'null', parse._arcs[i] + 1, 'null')
                 conll_format += '\t%d\t%s\t%s\t%s\t%s\t%s\t%d\t%s\t%s\t%s\n' % (i+1, tokens[i], tokens[i], 'null', 'null', 'null', parse._arcs[i] + 1, 'null', '-', '-')
-            dg = DepGraph().read(conll_format)
-#           if(self.meets_arity(dg)):
+            dg = DependencyGraph().read(conll_format)
+#           if self.meets_arity(dg):
             graphs.append(dg)
             trees.append(dg.deptree())
         return trees
@@ -221,28 +221,26 @@ class ProjectiveDependencyParser(object):
         rtype: A C{list} of L{DependencySpan}
         """
         spans = []
-        if(span1._start_index == span2._start_index):
+        if span1._start_index == span2._start_index:
             print 'Error: Mismatched spans - replace this with thrown error'
-        if(span1._start_index > span2._start_index):
+        if span1._start_index > span2._start_index:
             temp_span = span1
             span1 = span2
             span2 = temp_span
         # adjacent rightward covered concatenation
         new_arcs = span1._arcs + span2._arcs
         new_tags = span1._tags + span2._tags
-        if(self._grammar.contains(self._tokens[span1._head_index], self._tokens[span2._head_index])):
+        if self._grammar.contains(self._tokens[span1._head_index], self._tokens[span2._head_index]):
 #           print 'Performing rightward cover %d to %d' % (span1._head_index, span2._head_index)
             new_arcs[span2._head_index - span1._start_index] = span1._head_index
             spans.append(DependencySpan(span1._start_index, span2._end_index, span1._head_index, new_arcs, new_tags))
         # adjacent leftward covered concatenation
         new_arcs = span1._arcs + span2._arcs
-        if(self._grammar.contains(self._tokens[span2._head_index], self._tokens[span1._head_index])):
+        if self._grammar.contains(self._tokens[span2._head_index], self._tokens[span1._head_index]):
 #           print 'performing leftward cover %d to %d' % (span2._head_index, span1._head_index)
             new_arcs[span1._head_index - span1._start_index] = span2._head_index
             spans.append(DependencySpan(span1._start_index, span2._end_index, span2._head_index, new_arcs, new_tags))
         return spans
-
-
 
 
 
@@ -282,8 +280,8 @@ class ProbabilisticProjectiveDependencyParser(object):
             chart.append([])
             for j in range(0, len(self._tokens) + 1):
                 chart[i].append(ChartCell(i,j))
-                if(i==j+1):
-                    if(self._grammar._tags.has_key(tokens[i-1])):
+                if i==j+1:
+                    if self._grammar._tags.has_key(tokens[i-1]):
                         for tag in self._grammar._tags[tokens[i-1]]:
                             chart[i][j].add(DependencySpan(i-1,i,i-1,[-1], [tag]))
                     else:
@@ -306,9 +304,9 @@ class ProbabilisticProjectiveDependencyParser(object):
             for i in range(len(tokens)):
                 malt_format += '%s\t%s\t%d\t%s\n' % (tokens[i], 'null', parse._arcs[i] + 1, 'null')
                 conll_format += '\t%d\t%s\t%s\t%s\t%s\t%s\t%d\t%s\t%s\t%s\n' % (i+1, tokens[i], tokens[i], parse._tags[i], parse._tags[i], 'null', parse._arcs[i] + 1, 'null', '-', '-')
-            dg = DepGraph().read(conll_format)
+            dg = DependencyGraph().read(conll_format)
             score = self.compute_prob(dg)
-            if(score > max_score):
+            if score > max_score:
                 max_parse = dg.deptree()
                 max_score = score
         return [max_parse, max_score]
@@ -327,22 +325,22 @@ class ProbabilisticProjectiveDependencyParser(object):
         rtype: A C{list} of L{DependencySpan}
         """
         spans = []
-        if(span1._start_index == span2._start_index):
+        if span1._start_index == span2._start_index:
             print 'Error: Mismatched spans - replace this with thrown error'
-        if(span1._start_index > span2._start_index):
+        if span1._start_index > span2._start_index:
             temp_span = span1
             span1 = span2
             span2 = temp_span
         # adjacent rightward covered concatenation
         new_arcs = span1._arcs + span2._arcs
         new_tags = span1._tags + span2._tags
-        if(self._grammar.contains(self._tokens[span1._head_index], self._tokens[span2._head_index])):
+        if self._grammar.contains(self._tokens[span1._head_index], self._tokens[span2._head_index]):
             new_arcs[span2._head_index - span1._start_index] = span1._head_index
             spans.append(DependencySpan(span1._start_index, span2._end_index, span1._head_index, new_arcs, new_tags))
         # adjacent leftward covered concatenation
         new_arcs = span1._arcs + span2._arcs
         new_tags = span1._tags + span2._tags
-        if(self._grammar.contains(self._tokens[span2._head_index], self._tokens[span1._head_index])):
+        if self._grammar.contains(self._tokens[span2._head_index], self._tokens[span1._head_index]):
             new_arcs[span1._head_index - span1._start_index] = span2._head_index
             spans.append(DependencySpan(span1._start_index, span2._end_index, span2._head_index, new_arcs, new_tags))
         return spans
@@ -355,7 +353,7 @@ class ProbabilisticProjectiveDependencyParser(object):
         child-word, and child-tag relationships.
 
         param graphs: A list of dependency graphs to train from.
-        type: A list of C{DepGraph}
+        type: A list of C{DependencyGraph}
         """
         productions = []
         events = {}
@@ -369,7 +367,7 @@ class ProbabilisticProjectiveDependencyParser(object):
                 for child_index in range(0 - (nr_left_children + 1), nr_right_children + 2):
                     head_word = dg.nodelist[node_index]['word']
                     head_tag = dg.nodelist[node_index]['tag']
-                    if(tags.has_key(head_word)):
+                    if tags.has_key(head_word):
                         tags[head_word].add(head_tag)
                     else:
                         tags[head_word] = set([head_tag])
@@ -377,43 +375,43 @@ class ProbabilisticProjectiveDependencyParser(object):
                     child_tag = 'STOP'
                     prev_word = 'START'
                     prev_tag = 'START'
-                    if(child_index < 0):
+                    if child_index < 0:
                         array_index = child_index + nr_left_children
-                        if(array_index >= 0):
+                        if array_index >= 0:
                             child = dg.nodelist[children[array_index]]['word']
                             child_tag = dg.nodelist[children[array_index]]['tag']
-                        if(child_index != -1):
+                        if child_index != -1:
                             prev_word = dg.nodelist[children[array_index + 1]]['word']
                             prev_tag =  dg.nodelist[children[array_index + 1]]['tag']
-                        if(child != 'STOP'):
+                        if child != 'STOP':
                             productions.append(DependencyProduction(head_word, [child]))
                         head_event = '(head (%s %s) (mods (%s, %s, %s) left))' % (child, child_tag, prev_tag, head_word, head_tag)
                         mod_event = '(mods (%s, %s, %s) left))' % (prev_tag, head_word, head_tag)
-                        if(events.has_key(head_event)):
+                        if events.has_key(head_event):
                             events[head_event] += 1
                         else:
                             events[head_event] = 1
-                        if(events.has_key(mod_event)):
+                        if events.has_key(mod_event):
                             events[mod_event] += 1
                         else:
                             events[mod_event] = 1
-                    elif(child_index > 0):
+                    elif child_index > 0:
                         array_index = child_index + nr_left_children - 1
-                        if(array_index < nr_children):
+                        if array_index < nr_children:
                             child = dg.nodelist[children[array_index]]['word']
                             child_tag = dg.nodelist[children[array_index]]['tag']
-                        if(child_index != 1):
+                        if child_index != 1:
                             prev_word = dg.nodelist[children[array_index - 1]]['word']
                             prev_tag =  dg.nodelist[children[array_index - 1]]['tag']
-                        if(child != 'STOP'):
+                        if child != 'STOP':
                             productions.append(DependencyProduction(head_word, [child]))
                         head_event = '(head (%s %s) (mods (%s, %s, %s) right))' % (child, child_tag, prev_tag, head_word, head_tag)
                         mod_event = '(mods (%s, %s, %s) right))' % (prev_tag, head_word, head_tag)
-                        if(events.has_key(head_event)):
+                        if events.has_key(head_event):
                             events[head_event] += 1
                         else:
                             events[head_event] = 1
-                        if(events.has_key(mod_event)):
+                        if events.has_key(mod_event):
                             events[mod_event] += 1
                         else:
                             events[mod_event] = 1
@@ -427,7 +425,7 @@ class ProbabilisticProjectiveDependencyParser(object):
         statistical dependency grammar).
 
         param dg: A dependency graph to score.
-        type dg: a C{DepGraph}
+        type dg: a C{DependencyGraph}
         return: The probability of the dependency graph.
         rtype: A number/double.
         """
@@ -444,12 +442,12 @@ class ProbabilisticProjectiveDependencyParser(object):
                 child_tag = 'STOP'
                 prev_word = 'START'
                 prev_tag = 'START'
-                if(child_index < 0):
+                if child_index < 0:
                     array_index = child_index + nr_left_children
-                    if(array_index >= 0):
+                    if array_index >= 0:
                         child = dg.nodelist[children[array_index]]['word']
                         child_tag = dg.nodelist[children[array_index]]['tag']
-                    if(child_index != -1):
+                    if child_index != -1:
                         prev_word = dg.nodelist[children[array_index + 1]]['word']
                         prev_tag =  dg.nodelist[children[array_index + 1]]['tag']
                     head_event = '(head (%s %s) (mods (%s, %s, %s) left))' % (child, child_tag, prev_tag, head_word, head_tag)
@@ -457,12 +455,12 @@ class ProbabilisticProjectiveDependencyParser(object):
                     h_count = self._grammar._events[head_event]
                     m_count = self._grammar._events[mod_event]
                     prob *= (h_count / m_count)
-                elif(child_index > 0):
+                elif child_index > 0:
                     array_index = child_index + nr_left_children - 1
-                    if(array_index < nr_children):
+                    if array_index < nr_children:
                         child = dg.nodelist[children[array_index]]['word']
                         child_tag = dg.nodelist[children[array_index]]['tag']
-                    if(child_index != 1):
+                    if child_index != 1:
                         prev_word = dg.nodelist[children[array_index - 1]]['word']
                         prev_tag =  dg.nodelist[children[array_index - 1]]['tag']
                     head_event = '(head (%s %s) (mods (%s, %s, %s) right))' % (child, child_tag, prev_tag, head_word, head_tag)
@@ -552,15 +550,8 @@ def projective_prob_parse_demo():
     A demo showing the training and use of a projective 
     dependency parser.
     """
-    infile = open('conll_sample.txt',"r")
-    graphs = []
-    entry = ""
-    for line in infile.readlines():
-        if(line == '\n' and entry != ""):
-            graphs.append(DepGraph().read('\n' + entry))
-            entry = ''
-        else:
-            entry += '\t' + line
+    graphs = [DependencyGraph().read(entry)
+              for entry in conll_data2.split('\n\n') if entry]
     ppdp = ProbabilisticProjectiveDependencyParser()
     print 'Training Probabilistic Projective Dependency Parser...'
     ppdp.train(graphs)

@@ -22,7 +22,7 @@ class DependencyScorerI(object):
     A scorer for calculated the weights on the edges of a weighted 
     dependency graph.  This is used by a 
     C{ProbabilisticNonprojectiveParser} to initialize the edge  
-    weights of a C{DepGraph}.  While typically this would be done 
+    weights of a C{DependencyGraph}.  While typically this would be done 
     by training a binary classifier, any class that can return a 
     multidimensional list representation of the edge weights can 
     implement this interface.  As such, it has no necessary
@@ -35,7 +35,7 @@ class DependencyScorerI(object):
 
     def train(self, graphs):
         """
-        @type graphs: A list of C{DepGraph}
+        @type graphs: A list of C{DependencyGraph}
         @param graphs: A list of dependency graphs to train the scorer.
         Typically the edges present in the graphs can be used as
         positive training examples, and the edges not present as negative 
@@ -45,7 +45,7 @@ class DependencyScorerI(object):
 
     def score(self, graph):
         """
-        @type graph: A C{DepGraph}
+        @type graph: A C{DependencyGraph}
         @param graph: A dependency graph whose set of edges need to be 
         scored.  
         @rtype: A three-dimensional list of numbers.
@@ -101,7 +101,7 @@ class NaiveBayesDependencyScorer(DependencyScorerI):
         negative examples.  Uses a feature vector of head-word,
         head-tag, child-word, and child-tag.
         
-        @type graphs: A list of C{DepGraph}
+        @type graphs: A list of C{DependencyGraph}
         @param graphs: A list of dependency graphs to train the scorer.     
         """
 
@@ -111,7 +111,7 @@ class NaiveBayesDependencyScorer(DependencyScorerI):
             for head_node in graph.nodelist:
                 for child_index in range(len(graph.nodelist)):
                     child_node = graph.get_by_address(child_index)
-                    if(child_index in head_node['deps']):
+                    if child_index in head_node['deps']:
                         label = "T"
                     else:
                         label = "F"
@@ -129,7 +129,7 @@ class NaiveBayesDependencyScorer(DependencyScorerI):
         confidence of the classifier in assigning it to the 
         positive label.  Scores are returned in a multidimensional list.
         
-        @type graph: C{DepGraph}
+        @type graph: C{DependencyGraph}
         @param graph: A dependency graph to score.
         @rtype: 3 dimensional list
         @return: Edge scores for the graph parameter.
@@ -151,7 +151,7 @@ class NaiveBayesDependencyScorer(DependencyScorerI):
             print '%.4f %.4f' % (pdist.prob('T'), pdist.prob('F'))
             row.append([math.log(pdist.prob("T"))])
             count += 1
-            if(count == len(graph.nodelist)):
+            if count == len(graph.nodelist):
                 edge_scores.append(row)
                 row = []
                 count = 0
@@ -196,12 +196,12 @@ class ProbabilisticNonprojectiveParser(object):
 
     def train(self, graphs, dependency_scorer):
         """
-        Trains a C{DependencyScorerI} from a set of C{DepGraph} objects,
+        Trains a C{DependencyScorerI} from a set of C{DependencyGraph} objects,
         and establishes this as the parser's scorer.  This is used to 
-        initialize the scores on a C{DepGraph} during the parsing 
+        initialize the scores on a C{DependencyGraph} during the parsing 
         procedure.
         
-        @type graphs: A list of C{DepGraph}
+        @type graphs: A list of C{DependencyGraph}
         @param graphs: A list of dependency graphs to train the scorer.
         @type dependency_scorer: C{DependencyScorerI}
         @param dependency_scorer: A scorer which implements the
@@ -212,11 +212,11 @@ class ProbabilisticNonprojectiveParser(object):
 
     def initialize_edge_scores(self, graph):
         """
-        Assigns a score to every edge in the C{DepGraph} graph.
+        Assigns a score to every edge in the C{DependencyGraph} graph.
         These scores are generated via the parser's scorer which 
         was assigned during the training process.
         
-        @type graph: C{DepGraph}
+        @type graph: C{DependencyGraph}
         @param graph: A dependency graph to assign scores to.
         """
         self.scores = self._scorer.score(graph)
@@ -258,7 +258,7 @@ class ProbabilisticNonprojectiveParser(object):
         for i, row in enumerate(self.scores):
             for j, column in enumerate(self.scores[i]):
                 print self.scores[i][j]
-                if(j in cycle_path and not i in cycle_path and len(self.scores[i][j]) > 0):
+                if j in cycle_path and not i in cycle_path and len(self.scores[i][j]) > 0:
                     new_vals = []
                     subtract_val = self.compute_max_subtract_score(j, cycle_path)
                     print self.scores[i][j], ' - ', subtract_val
@@ -267,7 +267,7 @@ class ProbabilisticNonprojectiveParser(object):
                     self.scores[i][j] = new_vals
         for i, row in enumerate(self.scores):
             for j, cell in enumerate(self.scores[i]):
-                if(i in cycle_path and j in cycle_path):
+                if i in cycle_path and j in cycle_path:
                     self.scores[i][j] = []
         print 'After update:\n', self.scores
 
@@ -288,9 +288,9 @@ class ProbabilisticNonprojectiveParser(object):
             originals = []
             swapped = False
             for new_index in new_indexes:
-                if(self.inner_nodes.has_key(new_index)):
+                if self.inner_nodes.has_key(new_index):
                     for old_val in self.inner_nodes[new_index]:
-                        if(not old_val in originals):
+                        if not old_val in originals:
                             originals.append(old_val)
                             swapped = True
                 else:
@@ -314,7 +314,7 @@ class ProbabilisticNonprojectiveParser(object):
         max_score = -100000
         for row_index in cycle_indexes:
             for subtract_val in self.scores[row_index][column_index]:
-                if(subtract_val > max_score):
+                if subtract_val > max_score:
                     max_score = subtract_val
         return max_score
 
@@ -335,14 +335,14 @@ class ProbabilisticNonprojectiveParser(object):
         for row_index in range(len(self.scores)):
             for col_index in range(len(self.scores[row_index])):
 #               print self.scores[row_index][col_index]
-                if(col_index in originals and self.scores[row_index][col_index] > max_score):
+                if col_index in originals and self.scores[row_index][col_index] > max_score:
                     max_score = self.scores[row_index][col_index]
                     max_arc = row_index
                     print row_index, ',', col_index
         print max_score
         for key in self.inner_nodes:
             replaced_nodes = self.inner_nodes[key]
-            if(max_arc in replaced_nodes):
+            if max_arc in replaced_nodes:
                 return key
         return max_arc
         
@@ -356,7 +356,7 @@ class ProbabilisticNonprojectiveParser(object):
         max_orig = None
         for row_index in range(len(self.scores)):
             for col_index in range(len(self.scores[row_index])):
-                if(col_index in originals and self.scores[row_index][col_index] > max_score):
+                if col_index in originals and self.scores[row_index][col_index] > max_score:
                     max_score = self.scores[row_index][col_index]
                     max_arc = row_index
                     max_orig = col_index
@@ -378,30 +378,28 @@ class ProbabilisticNonprojectiveParser(object):
         """
         self.inner_nodes = {}
         # Initialize g_graph
-        g_graph = DepGraph()
+        g_graph = DependencyGraph()
         for index, token in enumerate(tokens):
             g_graph.nodelist.append({'word':token, 'tag':tags[index], 'deps':[], 'rel':'NTOP', 'address':index+1})
         # Fully connect non-root nodes in g_graph
         g_graph.connect_graph() 
-        original_graph = DepGraph()
+        original_graph = DependencyGraph()
         for index, token in enumerate(tokens):
             original_graph.nodelist.append({'word':token, 'tag':tags[index], 'deps':[], 'rel':'NTOP', 'address':index+1})
 
         # Initialize b_graph
-        b_graph = DepGraph()
+        b_graph = DependencyGraph()
         b_graph.nodelist = []
         # Initialize c_graph
-        c_graph = DepGraph()
-        c_graph.nodelist = []
-        for index, token in enumerate(tokens):
-            c_graph.nodelist.append({'word':token, 'tag':tags[index], 'deps':[], 'rel':'NTOP', 'address':index+1})
+        c_graph = DependencyGraph()
+        c_graph.nodelist = [{'word':token, 'tag':tags[index], 'deps':[],
+                             'rel':'NTOP', 'address':index+1}
+                            for index, token in enumerate(tokens)]
         # Assign initial scores to g_graph edges
         self.initialize_edge_scores(g_graph)
         print self.scores
         # Initialize a list of unvisited vertices (by node address)
-        unvisited_vertices = []
-        for vertex in c_graph.nodelist:
-            unvisited_vertices.append(vertex['address'])
+        unvisited_vertices = [vertex['address'] for vertex in c_graph.nodelist]
         # Iterate over unvisited vertices
         nr_vertices = len(tokens)
         betas = {}
@@ -423,7 +421,7 @@ class ProbabilisticNonprojectiveParser(object):
             # Beta(current node) = b  - stored for parse recovery
             # If b_graph contains a cycle, collapse it
             cycle_path = b_graph.contains_cycle()
-            if(cycle_path):
+            if cycle_path:
             # Create a new node v_n+1 with address = len(nodes) + 1
                 new_node = {'word': 'NONE', 'deps':[], 'rel': 'NTOP', 'address': nr_vertices + 1}
             # c_graph = Union(c_graph, v_n+1)
@@ -459,7 +457,7 @@ class ProbabilisticNonprojectiveParser(object):
         for i in range(len(tokens) + 1, nr_vertices + 1):
             betas[betas[i][1]] = betas[i]
         print 'Betas: ', betas
-        new_graph = DepGraph()
+        new_graph = DependencyGraph()
         for node in original_graph.nodelist:
             node['deps'] = []
         for i in range(1, len(tokens) + 1):
@@ -507,10 +505,10 @@ class NonprojectiveDependencyParser(object):
         param tokens: A list of tokens to parse.
         type tokens: A C{list} of L{String}.
         return: A set of non-projective parses.
-        rtype: A C{list} of L{DepGraph} 
+        rtype: A C{list} of L{DependencyGraph} 
         """
         # Create graph representation of tokens
-        self._graph = DepGraph()
+        self._graph = DependencyGraph()
         self._graph.nodelist = []  # Remove the default root
         for index, token in enumerate(tokens):
             self._graph.nodelist.append({'word':token, 'deps':[], 'rel':'NTOP', 'address':index})
@@ -528,23 +526,21 @@ class NonprojectiveDependencyParser(object):
             for j, head in enumerate(tokens):
                 if (i != j) and self._grammar.contains(head, word):
                     heads.append(j)
-            if(len(heads) == 0):
+            if len(heads) == 0:
                 roots.append(i)
             possible_heads.append(heads)
         # Set roots to attempt
-        if(len(roots) > 1):
+        if len(roots) > 1:
             print "No parses found."
             return False
-        elif(len(roots) == 0):
+        elif len(roots) == 0:
             for i in range(len(tokens)):
                 roots.append(i)
         # Traverse lattice
         analyses = []
         for root in roots:
             stack = []
-            analysis = []
-            for i in range(len(possible_heads)):
-                analysis.append([])
+            analysis = [[] for i in range(len(possible_heads))]
             i = 0
             forward = True
             while(i >= 0):
@@ -578,11 +574,8 @@ class NonprojectiveDependencyParser(object):
                         forward = True
 
 #                   print 'Index on stack:', i, index_on_stack
-                if(i + 1 == len(possible_heads)):
-                    new_analysis = []
-                    for item in analysis:
-                        new_analysis.append(item)
-                    analyses.append(new_analysis)
+                if i + 1 == len(possible_heads):
+                    analyses.append(analysis[:])
                     forward = False
                 if forward:
                     i += 1
@@ -598,19 +591,15 @@ class NonprojectiveDependencyParser(object):
                 if cell == -1:
                     root_count += 1
                     root = i
-            if(root_count == 1):
-                graph = DepGraph()
+            if root_count == 1:
+                graph = DependencyGraph()
                 graph.nodelist[0]['deps'] = root + 1
                 for i in range(len(tokens)):
                     node = {'word':tokens[i], 'address':i+1}
-                    deps = []
-                    for j in range(len(tokens)):
-                        if(analysis[j] == i):
-                            deps.append(j+1)
-                    node['deps'] = deps
+                    node['deps'] = [j+1 for j in range(len(tokens)) if analysis[j] == i] 
                     graph.nodelist.append(node)
 #                cycle = graph.contains_cycle()
-#                if(not cycle):
+#                if not cycle:
                 graphs.append(graph)
         return graphs
 
@@ -632,15 +621,8 @@ def hall_demo():
     print parse_graph
 
 def nonprojective_conll_parse_demo():
-    infile = open('conll_sample.txt',"r")
-    graphs = []
-    entry = ""
-    for line in infile.readlines():
-        if(line == '\n' and entry != ""):
-            graphs.append(DepGraph().read('\n' + entry))
-            entry = ''
-        else:
-            entry += '\t' + line
+    graphs = [DependencyGraph().read(entry)
+              for entry in conll_data2.split('\n\n') if entry]    
     npp = ProbabilisticNonprojectiveParser()
     npp.train(graphs, NaiveBayesDependencyScorer())
     parse_graph = npp.parse(['Cathy', 'zag', 'hen', 'zwaaien', '.'], ['N', 'V', 'Pron', 'Adj', 'N', 'Punc'])

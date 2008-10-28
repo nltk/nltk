@@ -49,6 +49,9 @@ from rd import *
 from sr import *
 from util import *
 from viterbi import *
+from dependencygraph import *
+from projectivedependencyparser import *
+from nonprojectivedependencyparser import *
 
 __all__ = [
     # Parser interface
@@ -61,7 +64,10 @@ __all__ = [
     'BottomUpChartParser', 'InsideChartParser', 'RandomChartParser',
     'UnsortedChartParser', 'LongestChartParser', 'ViterbiParser',
     'FeatureEarleyChartParser',
-
+    'DependencyGraph', 'nx_graph', 'ProjectiveDependencyParser',
+    'ProbabilisticProjectiveDependencyParser',
+    'NaiveBayesDependencyScorer', 'ProbabilisticNonprojectiveParser',
+    'NonprojectiveDependencyParser'
     ]
 
 ######################################################################

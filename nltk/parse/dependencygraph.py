@@ -14,15 +14,15 @@ The input is assumed to be in U{Malt-TAB<http://w3.msi.vxu.se/~nivre/research/Ma
 Currently only reads the first tree in a file.
 """
 
-from nltk.parse import Tree
+from nltk import Tree
 from pprint import pformat
 import re
 
 #################################################################
-# DepGraph Class
+# DependencyGraph Class
 #################################################################
 
-class DepGraph(object):
+class DependencyGraph(object):
     """
     A container for the nodes and labelled edges of a dependency structure.
     """
@@ -46,7 +46,7 @@ class DepGraph(object):
         node_index = len(self.nodelist) - 1
         while(node_index >= 0):
             node = self.nodelist[node_index]
-            if(node['address'] == address):
+            if node['address'] == address:
                 self.nodelist.pop(node_index)
             node_index -= 1
 
@@ -70,7 +70,7 @@ class DepGraph(object):
         node specified by the mod address.
         """
         for node in self.nodelist:
-            if(node['address'] == head_address and (not (mod_address in node['deps']))):
+            if node['address'] == head_address and (not (mod_address in node['deps'])):
                 node['deps'].append(mod_address)
 
     def connect_graph(self):
@@ -80,7 +80,7 @@ class DepGraph(object):
         """
         for node1 in self.nodelist:
             for node2 in self.nodelist:
-                if(node1['address'] != node2['address'] and node2['rel'] != 'TOP'):
+                if node1['address'] != node2['address'] and node2['rel'] != 'TOP':
                     node1['deps'].append(node2['address'])
 
     def get_by_address(self, node_address):
@@ -88,7 +88,7 @@ class DepGraph(object):
         Returns the node with the given address.
         """
         for node in self.nodelist:
-            if(node['address'] == node_address):
+            if node['address'] == node_address:
                 return node
         print 'THROW ERROR: address not found in -get_by_address-'
         return -1
@@ -99,7 +99,7 @@ class DepGraph(object):
         address, false otherwise.
         """
         for node in self.nodelist:
-            if(node['address'] == node_address):
+            if node['address'] == node_address:
                 return True
         return False
                     
@@ -143,7 +143,7 @@ class DepGraph(object):
         return count
     
     def add_node(self, node):
-        if(not self.contains_address(node['address'])):
+        if not self.contains_address(node['address']):
             self.nodelist.append(node)
 
     def read(self, input):
@@ -158,7 +158,7 @@ class DepGraph(object):
                 try:
                     nrCells = len(line.split('\t'))
                     head = 1
-                    if(nrCells == 4):
+                    if nrCells == 4:
                         (word, tag, head, rel) = line.split('\t')
                         head = int(head)
                         #not required, but useful for inspection
@@ -169,7 +169,7 @@ class DepGraph(object):
                         node['rel']= rel
                         node['deps'] = []
                         self.nodelist.append(node)
-                    elif(nrCells == 10):
+                    elif nrCells == 10:
                         (id, form, lemma, cpostag, postag, feats, head, deprel, phead, pdeprel) = line.split("\t")
                         head = int(head)
                         #not required, but useful for inspection - tag and word necessary for parsing
@@ -259,12 +259,12 @@ class DepGraph(object):
             new_entries = {}
             for pair1 in distances:
                 for pair2 in distances:
-                    if(pair1[1] == pair2[0]):
+                    if pair1[1] == pair2[0]:
                         key = tuple([pair1[0], pair2[1]])
                         new_entries[key] = distances[pair1] + distances[pair2]
             for pair in new_entries:
                 distances[pair] = new_entries[pair]
-                if(pair[0] == pair[1]):
+                if pair[0] == pair[1]:
                     print pair[0]
                     path = self.get_cycle_path(self.get_by_address(pair[0]), pair[0]) #self.nodelist[pair[0]], pair[0])
                     return path
@@ -273,11 +273,11 @@ class DepGraph(object):
 
     def get_cycle_path(self, curr_node, goal_node_index):
         for dep in curr_node['deps']:
-            if(dep == goal_node_index):
+            if dep == goal_node_index:
                 return [curr_node['address']]
         for dep in curr_node['deps']:
             path = self.get_cycle_path(self.get_by_address(dep), goal_node_index)#self.nodelist[dep], goal_node_index)
-            if(len(path) > 0):
+            if len(path) > 0:
                 path.insert(0, curr_node['address'])
                 return path
         return [] 
@@ -313,7 +313,7 @@ def malt_demo(nx=False):
     A demonstration of the result of reading a dependency
     version of the first sentence of the Penn Treebank.
     """
-    dg = DepGraph().read("""Pierre  NNP     2       NMOD
+    dg = DependencyGraph().read("""Pierre  NNP     2       NMOD
 Vinken  NNP     8       SUB
 ,       ,       2       P
 61      CD      5       NMOD
@@ -358,71 +358,153 @@ def conll_demo():
     A demonstration of how to read a string representation of 
     a CoNLL format dependency tree.
     """
-    dg = DepGraph().read("""
-    1   Ze                ze                Pron  Pron  per|3|evofmv|nom                 2   su      _  _
-    2   had               heb               V     V     trans|ovt|1of2of3|ev             0   ROOT    _  _
-    3   met               met               Prep  Prep  voor                             8   mod     _  _
-    4   haar              haar              Pron  Pron  bez|3|ev|neut|attr               5   det     _  _
-    5   moeder            moeder            N     N     soort|ev|neut                    3   obj1    _  _
-    6   kunnen            kan               V     V     hulp|ott|1of2of3|mv              2   vc      _  _
-    7   gaan              ga                V     V     hulp|inf                         6   vc      _  _
-    8   winkelen          winkel            V     V     intrans|inf                      11  cnj     _  _
-    9   ,                 ,                 Punc  Punc  komma                            8   punct   _  _
-    10  zwemmen           zwem              V     V     intrans|inf                      11  cnj     _  _
-    11  of                of                Conj  Conj  neven                            7   vc      _  _
-    12  terrassen         terras            N     N     soort|mv|neut                    11  cnj     _  _
-    13  .                 .                 Punc  Punc  punt                             12  punct   _  _
-    """)
+    dg = DependencyGraph().read(conll_data1)
     tree = dg.deptree()
     print tree.pprint()
     print dg
 
 def conll_file_demo():
     print 'Mass conll_read demo...'
-    infile = open('conll_sample.txt',"r")
-    graphs = []
-    entry = ""
-    for line in infile.readlines():
-        if(line == '\n' and entry != ""):
-            graphs.append(DepGraph().read('\n' + entry))
-            entry = ''
-        else:
-            entry += '\t' + line
+    graphs = [DependencyGraph().read(entry)
+              for entry in conll_data2.split('\n\n') if entry]
     for graph in graphs:
         tree = graph.deptree()
         print '\n' + tree.pprint()
 
 def cycle_finding_demo():
-    dg = DepGraph().read("""Pierre  NNP     2       NMOD
-    Vinken  NNP     8       SUB
-    ,       ,       2       P
-    61      CD      5       NMOD
-    years   NNS     6       AMOD
-    old     JJ      2       NMOD
-    ,       ,       2       P
-    will    MD      0       ROOT
-    join    VB      8       VC
-    the     DT      11      NMOD
-    board   NN      9       OBJ
-    as      IN      9       VMOD
-    a       DT      15      NMOD
-    nonexecutive    JJ      15      NMOD
-    director        NN      12      PMOD
-    Nov.    NNP     9       VMOD
-    29      CD      16      NMOD
-    .       .       9       VMOD
-    """)
+    dg = DependencyGraph().read(treebank_data)
     print dg.contains_cycle()
-    cyclic_dg = DepGraph()
-    top =    {'word':None, 'deps':[1],    'rel': 'TOP', 'address': 0}   
-    child1 = {'word':None, 'deps':[2],   'rel': 'NTOP', 'address': 1}
+    cyclic_dg = DependencyGraph()
+    top =    {'word':None, 'deps':[1], 'rel': 'TOP', 'address': 0}   
+    child1 = {'word':None, 'deps':[2], 'rel': 'NTOP', 'address': 1}
     child2 = {'word':None, 'deps':[4], 'rel': 'NTOP', 'address': 2}
-    child3 = {'word':None, 'deps':[1],   'rel': 'NTOP', 'address': 3}
-    child4 = {'word':None, 'deps':[3],   'rel': 'NTOP', 'address': 4}
+    child3 = {'word':None, 'deps':[1], 'rel': 'NTOP', 'address': 3}
+    child4 = {'word':None, 'deps':[3], 'rel': 'NTOP', 'address': 4}
     cyclic_dg.nodelist = [top, child1, child2, child3, child4]
     cyclic_dg.root = top
     print cyclic_dg.contains_cycle()
 
+treebank_data = """Pierre  NNP     2       NMOD
+Vinken  NNP     8       SUB
+,       ,       2       P
+61      CD      5       NMOD
+years   NNS     6       AMOD
+old     JJ      2       NMOD
+,       ,       2       P
+will    MD      0       ROOT
+join    VB      8       VC
+the     DT      11      NMOD
+board   NN      9       OBJ
+as      IN      9       VMOD
+a       DT      15      NMOD
+nonexecutive    JJ      15      NMOD
+director        NN      12      PMOD
+Nov.    NNP     9       VMOD
+29      CD      16      NMOD
+.       .       9       VMOD
+"""
+
+conll_data1 = """
+1   Ze                ze                Pron  Pron  per|3|evofmv|nom                 2   su      _  _
+2   had               heb               V     V     trans|ovt|1of2of3|ev             0   ROOT    _  _
+3   met               met               Prep  Prep  voor                             8   mod     _  _
+4   haar              haar              Pron  Pron  bez|3|ev|neut|attr               5   det     _  _
+5   moeder            moeder            N     N     soort|ev|neut                    3   obj1    _  _
+6   kunnen            kan               V     V     hulp|ott|1of2of3|mv              2   vc      _  _
+7   gaan              ga                V     V     hulp|inf                         6   vc      _  _
+8   winkelen          winkel            V     V     intrans|inf                      11  cnj     _  _
+9   ,                 ,                 Punc  Punc  komma                            8   punct   _  _
+10  zwemmen           zwem              V     V     intrans|inf                      11  cnj     _  _
+11  of                of                Conj  Conj  neven                            7   vc      _  _
+12  terrassen         terras            N     N     soort|mv|neut                    11  cnj     _  _
+13  .                 .                 Punc  Punc  punt                             12  punct   _  _
+"""
+
+conll_data2 = """1   Cathy             Cathy             N     N     eigen|ev|neut                    2   su      _  _
+2   zag               zie               V     V     trans|ovt|1of2of3|ev             0   ROOT    _  _
+3   hen               hen               Pron  Pron  per|3|mv|datofacc                2   obj1    _  _
+4   wild              wild              Adj   Adj   attr|stell|onverv                5   mod     _  _
+5   zwaaien           zwaai             N     N     soort|mv|neut                    2   vc      _  _
+6   .                 .                 Punc  Punc  punt                             5   punct   _  _
+
+1   Ze                ze                Pron  Pron  per|3|evofmv|nom                 2   su      _  _
+2   had               heb               V     V     trans|ovt|1of2of3|ev             0   ROOT    _  _
+3   met               met               Prep  Prep  voor                             8   mod     _  _
+4   haar              haar              Pron  Pron  bez|3|ev|neut|attr               5   det     _  _
+5   moeder            moeder            N     N     soort|ev|neut                    3   obj1    _  _
+6   kunnen            kan               V     V     hulp|ott|1of2of3|mv              2   vc      _  _
+7   gaan              ga                V     V     hulp|inf                         6   vc      _  _
+8   winkelen          winkel            V     V     intrans|inf                      11  cnj     _  _
+9   ,                 ,                 Punc  Punc  komma                            8   punct   _  _
+10  zwemmen           zwem              V     V     intrans|inf                      11  cnj     _  _
+11  of                of                Conj  Conj  neven                            7   vc      _  _
+12  terrassen         terras            N     N     soort|mv|neut                    11  cnj     _  _
+13  .                 .                 Punc  Punc  punt                             12  punct   _  _
+
+1   Dat               dat               Pron  Pron  aanw|neut|attr                   2   det     _  _
+2   werkwoord         werkwoord         N     N     soort|ev|neut                    6   obj1    _  _
+3   had               heb               V     V     hulp|ovt|1of2of3|ev              0   ROOT    _  _
+4   ze                ze                Pron  Pron  per|3|evofmv|nom                 6   su      _  _
+5   zelf              zelf              Pron  Pron  aanw|neut|attr|wzelf             3   predm   _  _
+6   uitgevonden       vind              V     V     trans|verldw|onverv              3   vc      _  _
+7   .                 .                 Punc  Punc  punt                             6   punct   _  _
+
+1   Het               het               Pron  Pron  onbep|neut|zelfst                2   su      _  _
+2   hoorde            hoor              V     V     trans|ovt|1of2of3|ev             0   ROOT    _  _
+3   bij               bij               Prep  Prep  voor                             2   ld      _  _
+4   de                de                Art   Art   bep|zijdofmv|neut                6   det     _  _
+5   warme             warm              Adj   Adj   attr|stell|vervneut              6   mod     _  _
+6   zomerdag          zomerdag          N     N     soort|ev|neut                    3   obj1    _  _
+7   die               die               Pron  Pron  betr|neut|zelfst                 6   mod     _  _
+8   ze                ze                Pron  Pron  per|3|evofmv|nom                 12  su      _  _
+9   ginds             ginds             Adv   Adv   gew|aanw                         12  mod     _  _
+10  achter            achter            Adv   Adv   gew|geenfunc|stell|onverv        12  svp     _  _
+11  had               heb               V     V     hulp|ovt|1of2of3|ev              7   body    _  _
+12  gelaten           laat              V     V     trans|verldw|onverv              11  vc      _  _
+13  .                 .                 Punc  Punc  punt                             12  punct   _  _
+
+1   Ze                ze                Pron  Pron  per|3|evofmv|nom                 2   su      _  _
+2   hadden            heb               V     V     trans|ovt|1of2of3|mv             0   ROOT    _  _
+3   languit           languit           Adv   Adv   gew|geenfunc|stell|onverv        11  mod     _  _
+4   naast             naast             Prep  Prep  voor                             11  mod     _  _
+5   elkaar            elkaar            Pron  Pron  rec|neut                         4   obj1    _  _
+6   op                op                Prep  Prep  voor                             11  ld      _  _
+7   de                de                Art   Art   bep|zijdofmv|neut                8   det     _  _
+8   strandstoelen     strandstoel       N     N     soort|mv|neut                    6   obj1    _  _
+9   kunnen            kan               V     V     hulp|inf                         2   vc      _  _
+10  gaan              ga                V     V     hulp|inf                         9   vc      _  _
+11  liggen            lig               V     V     intrans|inf                      10  vc      _  _
+12  .                 .                 Punc  Punc  punt                             11  punct   _  _
+
+1   Zij               zij               Pron  Pron  per|3|evofmv|nom                 2   su      _  _
+2   zou               zal               V     V     hulp|ovt|1of2of3|ev              7   cnj     _  _
+3   mams              mams              N     N     soort|ev|neut                    4   det     _  _
+4   rug               rug               N     N     soort|ev|neut                    5   obj1    _  _
+5   ingewreven        wrijf             V     V     trans|verldw|onverv              6   vc      _  _
+6   hebben            heb               V     V     hulp|inf                         2   vc      _  _
+7   en                en                Conj  Conj  neven                            0   ROOT    _  _
+8   mam               mam               V     V     trans|ovt|1of2of3|ev             7   cnj     _  _
+9   de                de                Art   Art   bep|zijdofmv|neut                10  det     _  _
+10  hare              hare              Pron  Pron  bez|3|ev|neut|attr               8   obj1    _  _
+11  .                 .                 Punc  Punc  punt                             10  punct   _  _
+
+1   Of                of                Conj  Conj  onder|metfin                     0   ROOT    _  _
+2   ze                ze                Pron  Pron  per|3|evofmv|nom                 3   su      _  _
+3   had               heb               V     V     hulp|ovt|1of2of3|ev              0   ROOT    _  _
+4   gewoon            gewoon            Adj   Adj   adv|stell|onverv                 10  mod     _  _
+5   met               met               Prep  Prep  voor                             10  mod     _  _
+6   haar              haar              Pron  Pron  bez|3|ev|neut|attr               7   det     _  _
+7   vriendinnen       vriendin          N     N     soort|mv|neut                    5   obj1    _  _
+8   rond              rond              Adv   Adv   deelv                            10  svp     _  _
+9   kunnen            kan               V     V     hulp|inf                         3   vc      _  _
+10  slenteren         slenter           V     V     intrans|inf                      9   vc      _  _
+11  in                in                Prep  Prep  voor                             10  mod     _  _
+12  de                de                Art   Art   bep|zijdofmv|neut                13  det     _  _
+13  buurt             buurt             N     N     soort|ev|neut                    11  obj1    _  _
+14  van               van               Prep  Prep  voor                             13  mod     _  _
+15  Trafalgar_Square  Trafalgar_Square  MWU   N_N   eigen|ev|neut_eigen|ev|neut      14  obj1    _  _
+16  .                 .                 Punc  Punc  punt                             15  punct   _  _
+"""
 
 if __name__ == '__main__':
     demo()
