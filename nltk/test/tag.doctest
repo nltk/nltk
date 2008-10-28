@@ -1,6 +1,6 @@
-=========
- Taggers
-=========
+=======
+Taggers
+=======
 
 Overview
 ~~~~~~~~
@@ -65,8 +65,8 @@ In the examples below, we'll look at developing automatic
 part-of-speech taggers based on the Brown Corpus.  Here are the
 training & test sets we'll use:
 
-    >>> brown_train = brown.tagged_sents(categories='a')[100:]
-    >>> brown_test = brown.tagged_sents(categories='b')[:100]
+    >>> brown_train = brown.tagged_sents(categories='news')[100:]
+    >>> brown_test = brown.tagged_sents(categories='news')[:100]
     >>> test_sent = nltk.tag.untag(brown_test[0])
 
 (Note that these are on the small side, to make the tests run faster
@@ -86,14 +86,16 @@ use a tagger that assigns 'NN' to all words as a baseline.
 
     >>> default_tagger = nltk.DefaultTagger('NN')
     >>> default_tagger.tag(test_sent) # doctest: +NORMALIZE_WHITESPACE
-    [('Assembly', 'NN'), ('session', 'NN'), ('brought', 'NN'),
-     ('much', 'NN'), ('good', 'NN')]
+    [('The', 'NN'), ('Fulton', 'NN'), ('County', 'NN'), ('Grand', 'NN'), ('Jury', 'NN'), ('said', 'NN'), ('Friday', 'NN'), ('an'
+, 'NN'), ('investigation', 'NN'), ('of', 'NN'), ("Atlanta's", 'NN'), ('recent', 'NN'), ('primary', 'NN'), ('election', 'NN'), ('
+produced', 'NN'), ('``', 'NN'), ('no', 'NN'), ('evidence', 'NN'), ("''", 'NN'), ('that', 'NN'), ('any', 'NN'), ('irregularities'
+, 'NN'), ('took', 'NN'), ('place', 'NN'), ('.', 'NN')]
 
 Using this baseline, we achieve about a fairly low accuracy:
 
     >>> print 'Accuracy: %4.1f%%' % (
     ...     100.0 * nltk.tag.accuracy(default_tagger, brown_test))
-    Accuracy: 16.0%
+    Accuracy: 14.6%
     
 Regexp Tagger
 -------------
@@ -114,15 +116,17 @@ of speech tag:
     ...      (r'.*', 'NN')                      # nouns (default)
     ... ])
     >>> regexp_tagger.tag(test_sent) # doctest: +NORMALIZE_WHITESPACE
-    [('Assembly', 'RB'), ('session', 'NN'), ('brought', 'NN'),
-     ('much', 'NN'), ('good', 'NN')]
+    [('The', 'AT'), ('Fulton', 'NN'), ('County', 'NN'), ('Grand', 'NN'), ('Jury', 'NN'), ('said', 'NN'), ('Friday', 'NN'), ('an'
+, 'AT'), ('investigation', 'NN'), ('of', 'NN'), ("Atlanta's", 'NNS'), ('recent', 'NN'), ('primary', 'NN'), ('election', 'NN'), (
+'produced', 'VBD'), ('``', 'NN'), ('no', 'NN'), ('evidence', 'NN'), ("''", 'NN'), ('that', 'NN'), ('any', 'NN'), ('irregularitie
+s', 'NNS'), ('took', 'NN'), ('place', 'NN'), ('.', 'NN')]
 
 This gives us a higher score than the default tagger, but accuracy is
 still fairly low:
 
     >>> print 'Accuracy: %4.1f%%' % (
     ...     100.0 * nltk.tag.accuracy(regexp_tagger, brown_test))
-    Accuracy: 33.8%
+    Accuracy: 33.1%
 
 Unigram Tagger
 --------------
@@ -132,14 +136,18 @@ to assign tags to new tokens.
 
     >>> unigram_tagger = nltk.UnigramTagger(brown_train)
     >>> unigram_tagger.tag(test_sent) # doctest: +NORMALIZE_WHITESPACE
-    [('Assembly', 'NN-TL'), ('session', 'NN'), ('brought', 'VBD'), ('much', 'AP'), ('good', 'JJ')]
+    [('The', 'AT'), ('Fulton', None), ('County', 'NN-TL'), ('Grand', 'JJ-TL'), ('Jury', None), ('said', 'VBD'), ('Friday', 'NR')
+, ('an', 'AT'), ('investigation', 'NN'), ('of', 'IN'), ("Atlanta's", 'NP$'), ('recent', 'JJ'), ('primary', 'NN'), ('election', '
+NN'), ('produced', 'VBD'), ('``', '``'), ('no', 'AT'), ('evidence', 'NN'), ("''", "''"), ('that', 'CS'), ('any', 'DTI'), ('irreg
+ularities', None), ('took', 'VBD'), ('place', 'NN'), ('.', '.')]
+
 
 This gives us a significantly higher accuracy score than the default
 tagger or the regexp tagger:
 
     >>> print 'Accuracy: %4.1f%%' % (
     ...     100.0 * nltk.tag.accuracy(unigram_tagger, brown_test))
-    Accuracy: 76.4%
+    Accuracy: 82.4%
 
 As was mentioned above, the unigram tagger will assign a tag of
 ``None`` to any words that it never saw in the training data.  We can
@@ -150,7 +158,7 @@ choose a tag:
     >>> unigram_tagger_2 = nltk.UnigramTagger(brown_train, backoff=regexp_tagger)
     >>> print 'Accuracy: %4.1f%%' % (
     ...     100.0 * nltk.tag.accuracy(unigram_tagger_2, brown_test))
-    Accuracy: 83.5%
+    Accuracy: 86.6%
 
 Using a backoff tagger has another advantage, as well -- it allows us
 to build a more compact unigram tagger, because the unigram tagger
@@ -179,7 +187,7 @@ tag that it just generated for the preceding word.
     1000
     >>> print 'Accuracy: %4.1f%%' % (
     ...     100.0 * nltk.tag.accuracy(bigram_tagger, brown_test))
-    Accuracy: 84.7%
+    Accuracy: 87.5%
 
 Trigram Tagger & N-Gram Tagger
 ------------------------------
@@ -196,7 +204,7 @@ statistics.
     543
     >>> print 'Accuracy: %4.1f%%' % (
     ...     100.0 * nltk.tag.accuracy(trigram_tagger, brown_test))
-    Accuracy: 84.6%
+    Accuracy: 87.0%
 
 Affix Tagger
 ------------
@@ -214,7 +222,7 @@ used.
     ...     backoff=default_tagger)
     >>> print 'Accuracy: %4.1f%%' % (
     ...     100.0 * nltk.tag.accuracy(affix_tagger, brown_test))
-    Accuracy: 32.1%
+    Accuracy: 30.1%
 
 Brill Tagger
 ------------
@@ -264,7 +272,7 @@ corpus, based on one or more "rule templates."
       72 121  49   4  | TO -> IN if the tag of words i+1...i+2 is 'NNS'
     >>> print 'Accuracy: %4.1f%%' % (
     ...     100.0 * nltk.tag.accuracy(brill_tagger, brown_test))
-    Accuracy: 85.2%
+    Accuracy: 88.5%
 
 HMM Tagger
 ----------
