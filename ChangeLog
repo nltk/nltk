@@ -1,3 +1,35 @@
+Version 0.9.6 2008-10-02
+
+NLTK:
+* moved nltk/cfg.py to nltk/grammar.py and incorporated dependency grammars
+* improved efficiency of unification algorithm
+* various enhancements to the semantics package
+* added plot() and tabulate() methods to FreqDist and ConditionalFreqDist
+* FreqDist.keys() provides keys reverse sorted by value, to avoid
+  the confusion caused by FreqDist.sorted()
+* new downloader package to support live downloading of corpora
+* fixed WordNet bug that caused min_depth() to sometimes give incorrect result
+* misc other bugfixes
+
+Contrib (work in progress):
+* new WordNet package by Steven Bethard
+* TIGERSearch implementation by Torsten Marek
+* extensions to hole and glue semantics modules by Dan Garrette
+* new coreference package by Joseph Frazee
+* MapReduce interface by Xinfan Meng
+
+Data:
+* Swadesh Corpus of comparative wordlists in 23 languages
+* Brown Corpus sections now have meaningful names (e.g. 'a' is now 'news')
+* Bug fix that forced users to manually unzip the WordNet corpus
+
+Book:
+* complete rewrite of first three chapters
+
+Distributions:
+* created Portfile to support Mac installation
+
+
 Version 0.9.5 2008-08-27
 
 NLTK:
