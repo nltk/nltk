@@ -234,7 +234,7 @@ class TextCollection(Text):
     
 def demo():
     from nltk.corpus import brown
-    text = Text(brown.words(categories='a'))
+    text = Text(brown.words(categories='news'))
     print text
     print
     print "Concordance:"

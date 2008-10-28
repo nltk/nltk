@@ -128,12 +128,12 @@ than just bare word strings.
     >>> print brown.tagged_sents() # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
     [[('The', 'AT'), ('Fulton', 'NP-TL')...],
      [('The', 'AT'), ('jury', 'NN'), ('further', 'RBR')...]...]
-    >>> print brown.paras(categories='c') # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+    >>> print brown.paras(categories='reviews') # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
     [[['It', 'is', 'not', 'news', 'that', 'Nathan', 'Milstein'...],
       ['Certainly', 'not', 'in', 'Orchestra', 'Hall', 'where'...]],
      [['There', 'was', 'about', 'that', 'song', 'something', ...],
       ['Not', 'the', 'noblest', 'performance', 'we', 'have', ...], ...], ...]
-    >>> print brown.tagged_paras(categories='c') # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+    >>> print brown.tagged_paras(categories='reviews') # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
     [[[('It', 'PPS'), ('is', 'BEZ'), ('not', '*'), ...],
       [('Certainly', 'RB'), ('not', '*'), ('in', 'IN'), ...]],
      [[('There', 'EX'), ('was', 'BEDZ'), ('about', 'IN'), ...],
@@ -384,7 +384,8 @@ method, e.g.:
 
     >>> from nltk.corpus import brown, movie_reviews, reuters
     >>> brown.categories()
-    ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'r']
+    ['adventure', 'belles_lettres', 'editorial', 'fiction', 'government', 'hobbies', 'humor',
+    'learned', 'lore', 'mystery', 'news', 'religion', 'reviews', 'romance', 'science_fiction']
     >>> movie_reviews.categories()
     ['neg', 'pos']
     >>> reuters.categories() # doctest: +NORMALIZE_WHITESPACE +ELLIPSIS
@@ -396,9 +397,9 @@ This method has an optional argument that specifies a document or a list
 of documents, allowing us to map from (one or more) documents to (one or more) categories:
 
     >>> brown.categories('ca01')
-    ['a']
+    ['news']
     >>> brown.categories(['ca01','cb01'])
-    ['a', 'b']
+    ['news', 'editorial']
     >>> reuters.categories('training/9865')
     ['barley', 'corn', 'grain', 'wheat']
     >>> reuters.categories(['training/9865', 'training/9880'])
@@ -416,9 +417,9 @@ In addition to mapping between categories and documents, these corpora permit
 direct access to their contents via the categories.  Instead of accessing a subset
 of a corpus by specifying one or more files, we can identify one or more categories, e.g.:
 
-    >>> brown.tagged_words(categories='a')
+    >>> brown.tagged_words(categories='news')
     [('The', 'AT'), ('Fulton', 'NP-TL'), ...]
-    >>> brown.sents(categories=['b','c']) # doctest: +NORMALIZE_WHITESPACE
+    >>> brown.sents(categories=['editorial','reviews']) # doctest: +NORMALIZE_WHITESPACE
     [['Assembly', 'session', 'brought', 'much', 'good'], ['The', 'General',
     'Assembly', ',', 'which', 'adjourns', 'today', ',', 'has', 'performed',
     'in', 'an', 'atmosphere', 'of', 'crisis', 'and', 'struggle', 'from',
@@ -429,7 +430,7 @@ Note that it is an error to specify both documents and categories.
 In the context of a text categorization system, we can easily test if the
 category assigned to a document is correct as follows:
 
-    >>> def classify(doc): return 'a'   # Trivial classifier
+    >>> def classify(doc): return 'news'   # Trivial classifier
     >>> doc = 'ca01'
     >>> classify(doc) in brown.categories(doc)
     True
@@ -1137,7 +1138,7 @@ In some corpora, the files are divided into distinct categories.  For
 these corpora, the ``files()`` method takes an optional argument,
 which can be used to get a list of the files within a specific category:
 
-    >>> nltk.corpus.brown.files('e') # doctest: +ELLIPSIS
+    >>> nltk.corpus.brown.files('hobbies') # doctest: +ELLIPSIS
     ['ce01', 'ce02', 'ce03', 'ce04', 'ce05', 'ce06', 'ce07', ...]
 
 The ``abspath()`` method can be used to find the absolute path to a
@@ -1626,7 +1627,8 @@ The Brown Corpus uses the tagged corpus reader:
     >>> brown.files() # doctest: +ELLIPSIS
     ('ca01', 'ca02', 'ca03', 'ca04', 'ca05', 'ca06', 'ca07', ...)
     >>> brown.categories() # doctest: +ELLIPSIS
-    ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'r']
+    ['adventure', 'belles_lettres', 'editorial', 'fiction', 'government', 'hobbies', 'humor',
+    'learned', 'lore', 'mystery', 'news', 'religion', 'reviews', 'romance', 'science_fiction']
     >>> brown.root # doctest: +ELLIPSIS
     FileSystemPathPointer('.../corpora/brown')
     >>> brown.words()
