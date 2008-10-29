@@ -21,6 +21,10 @@ distribution:
     >>> tokenizer.tokenize('Hello.  This is a test.  It works!')
     ['Hello.', 'This is a test.', 'It works!']
 
+It is important to note that there should be no space following the
+colon (':') in the URL; 'nltk: tokenizers/punkt/english.pickle' will
+not work!
+
 The ``nltk:`` protocol is used by default if no protocol is specified:
 
     >>> nltk.data.load('tokenizers/punkt/english.pickle') # doctest: +ELLIPSIS
@@ -237,7 +241,7 @@ Retrieving other Data Sources
     all x.-(dog(x) & person(x))
     all x.(married(x) <-> exists y.marry(x,y))
     all x.(bark(x) -> dog(x))
-    all x.all y.(marry(x,y) -> (person(x) & person(y)))
+    all x y.(marry(x,y) -> (person(x) & person(y)))
     -(Vincent = Mia)
     -(Vincent = Fido)
     -(Mia = Fido)
