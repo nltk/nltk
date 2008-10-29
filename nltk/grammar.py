@@ -380,6 +380,10 @@ class ContextFreeGrammar(object):
         """
         self._start = start
         self._productions = productions
+        if not lexicon:
+            lexical_productions = [prod for prod in productions if
+                (len(prod.rhs()) == 1 and isinstance(prod.rhs()[0], str))]
+            lexicon = earley_lexicon(lexical_productions)
         self._lexicon = lexicon
         self._lhs_index = {}
         self._rhs_index = {}
