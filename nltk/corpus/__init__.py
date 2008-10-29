@@ -69,7 +69,6 @@ from nltk.tag import simplify_brown_tag, simplify_wsj_tag,\
 
 from util import LazyCorpusLoader
 from reader import *
-import chat80
 
 abc = LazyCorpusLoader(
     'abc', PlaintextCorpusReader, r'(?!\.).*\.txt')
