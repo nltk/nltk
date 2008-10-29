@@ -1,10 +1,77 @@
-=========================
+===========    lambda          \
+    conjunction     &
+    disjunction     |
+    negation        -
+    implication     ->
+    equivalence     <->
+    equality        =
+    inequality      !=
+    dot             .
+    left-parens     (
+    right-parens    )
+    comma           ,
+lambda          \
+    conjunction     &
+    disjunction     |
+    negation        -
+    implication     ->
+    equivalence     <->
+    equality        =
+    inequality      !=
+    dot             .
+    left-parens     (
+    right-parens    )
+    comma           ,
+==========
  Logic & Lambda Calculus
 =========================
+
+The `nltk.logic` package allows expressions of First-Order Logic (FOL) to be
+parsed into ``Expression`` objects. In addition to FOL, the parser
+handles lambda-abstraction with variables of higher order.
+
+Section `Regression Tests`_
+("Regression Tests") contains regression tests for the parser
+and associated functions and classes.
+
+.. contents:: **Table of Contents**
+  :depth: 2
+  :backlinks: none
+
+
     >>> from nltk.sem import *
     >>> lp = LogicParser()
+
+The default inventory of logical constants is the following:
+
+    >>> names = ["lambda", "conjunction", "disjunction", "negation",
+    ...          "implication", "equivalence", "equality", "inequality",
+    ...          "existential", "universal"]
+    >>> for pair in zip(names, Tokens.LCONSTANTS):
+    ...     print "%-15s %s" %  pair
+    lambda          \
+    conjunction     &
+    disjunction     |
+    negation        -
+    implication     ->
+    equivalence     <->
+    equality        =
+    inequality      !=
+    existential     exists
+    universal       all
     
-Test for equality under alpha-conversion. 
+----------------
+Regression Tests
+----------------
+
+
+Untyped Logic
++++++++++++++
+
+
+    
+Test for equality under alpha-conversion
+======================================== 
 
     >>> e1 = lp.parse('exists x.P(x)')
     >>> print e1
@@ -22,6 +89,7 @@ Test for equality under alpha-conversion.
     True
 
 Test numerals
+=============
 
     >>> zero = lp.parse(r'\F x.x')
     >>> one = lp.parse(r'\F x.F(x)')
@@ -48,7 +116,7 @@ Test numerals
     >>> v5 == two
     True
     
-Overloaded operators also exist for convenience
+Overloaded operators also exist, for convenience.
 
     >>> print succ(zero).simplify() == one
     True
@@ -87,8 +155,9 @@ Python's built-in lambda operator can also be used with Expressions
 ``betaConversionTestSuite.pl``
 ------------------------------
 
-From B&B's *Representation and Inference for Natural Language*.
-
+Tests based on Blackburn & Bos' book, *Representation and Inference
+for Natural Language*. 
+ 
     >>> x1 = lp.parse(r'\P.P(mia)(\x.walk(x))').simplify()
     >>> x2 = lp.parse(r'walk(mia)').simplify()
     >>> x1 == x2
@@ -186,6 +255,7 @@ From B&B's *Representation and Inference for Natural Language*.
     True
 
 Test Parser
+===========
 
     >>> print lp.parse(r'john')
     john
@@ -274,7 +344,8 @@ Test Parser
     'x' is an illegal predicate name.  Individual variables may not be used as predicates.
     
 
-Simplify            
+Simplify
+========            
 
     >>> print lp.parse(r'\x.man(x)(john)').simplify()
     man(john)
@@ -310,6 +381,7 @@ Simplify
     Q(x,y)
     
 Replace
+=======
 
     >>> a = lp.parse(r'a')
     >>> x = lp.parse(r'x')
@@ -357,7 +429,7 @@ Replace
     >>> print lp.parse(r'\x.give(x,y,z)').replace(z.variable, y, True)
     \x.give(x,y,y)
 
-	>>> logic._counter._value = 0
+    >>> logic._counter._value = 0
     >>> e1 = lp.parse('e1')
     >>> e2 = lp.parse('e2')
     >>> print lp.parse('exists e1 e2.(walk(e1) & talk(e2))').replace(e1.variable, e2, True)
@@ -365,6 +437,7 @@ Replace
     
 
 Variables / Free
+================
 
     >>> print lp.parse(r'walk(john)').variables()
     set([Variable('john'), Variable('walk')])
@@ -406,12 +479,13 @@ Variables / Free
     set([Variable('john'), Variable('mary')])
 
 
------------
 Typed Logic
------------
++++++++++++
+
     >>> tlp = LogicParser(True)
 
-gettype()
+`gettype()`
+===========
 
     >>> print tlp.parse(r'man(x)').gettype()
     t
@@ -438,7 +512,8 @@ gettype()
     >>> print tlp.parse(r'\x.y').gettype()
     <?,e>
 
-findtype()
+`findtype()`
+============
 
     >>> print tlp.parse(r'man(x)').findtype(Variable('man'))
     <e,t>
@@ -452,7 +527,9 @@ findtype()
     >>> print tlp.parse(r'\P.((\P.P(x,y))(man)) & P(x)').findtype(Variable('P'))
     <e,t>
 
-Type.__eq__()
+`Type.__eq__()`
+===============
+
     >>> from nltk.sem.logic import *
     
     >>> e = ENTITY_TYPE
@@ -486,7 +563,8 @@ Type.__eq__()
     >>> ComplexType(a,ComplexType(a,a)) == a
     True
 
-matches()
+`matches()`
+===========
 
     >>> e.matches(t)
     False
@@ -504,12 +582,13 @@ matches()
     True
 
 
-parse()
+Self-Application
+================
+
     >>> try: tlp.parse(r'\x.man(x)(\x.man(x))')
     ... except TypeException, e: print e
     The function '\x.man(x)' is of type '<e,t>' and cannot be applied to '\x.man(x)' of type '<e,t>'.  Its argument must be of type 'e'.
 
-typed expressions()
     >>> man = tlp.parse(r'\x.man(x)')
     >>> try: man(man)
     ... except TypeException, e: print e

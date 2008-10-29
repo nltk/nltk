@@ -54,6 +54,7 @@ class Tokens:
     SYMBOLS = LAMBDA + PUNCT + [AND[1], OR[1], NOT[1], IMP[1], IFF[1]] +\
               EQ + NEQ 
 
+    LCONSTANTS = [SYM[1] for SYM in [LAMBDA, AND, OR, NOT, IMP, IFF, EQ, NEQ, EXISTS, ALL]] 
 
 class Variable(object):
     def __init__(self, name):
