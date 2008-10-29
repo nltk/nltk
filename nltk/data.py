@@ -52,7 +52,7 @@ try:
 except:
     from StringIO import StringIO
 
-from nltk import cfg, sem
+from nltk import grammar as cfg, sem
 
 ######################################################################
 # Search Path

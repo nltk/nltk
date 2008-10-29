@@ -15,7 +15,7 @@ syntax trees and morphological trees.
 import re
 import string
 
-import nltk.cfg
+import nltk.grammar
 from probability import ProbabilisticMixIn
 from util import slice_bounds
 
