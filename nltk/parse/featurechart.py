@@ -363,14 +363,12 @@ class EarleyChartParser(ParserI):
         return chart.parses(start_sym, tree_class=tree_class)
     
     def _check_lexicon_coverage(self, tokens):
-        try: 'x' in self._lexicon
-        except: raise ValueError('ow %r' % self._lexicon)
         missing = [tok for tok in tokens if tok not in self._lexicon]
         if missing:
             missing = ', '.join('%r' % (w,) for w in missing)
             raise ValueError("Grammar does not cover some of the "
                              "input words: " + missing)
-            
+
 class FeatureEarleyChartParser(EarleyChartParser):
     """
     A chart parser implementing the Earley parsing algorithm, allowing
