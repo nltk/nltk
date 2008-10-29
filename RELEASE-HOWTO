@@ -82,6 +82,7 @@ A. UPLOAD DISTRIBUTIONS
   3. add release: release name is just x.x (no nltk prefix)
   4. associate files to release; set types using earlier release as model
   5. past in ChangeLog
+  6. update any corpus releases that have changed
 
 B. WEBSITE
 
