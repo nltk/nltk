@@ -1211,10 +1211,12 @@ class ScannerRule(AbstractChartRule):
     of speech for C{w}.
     """
     NUM_EDGES = 1
-    def __init__(self, word_to_pos_lexicon):
+    def __init__(self, word_to_pos_lexicon=None):
         self._word_to_pos = word_to_pos_lexicon
 
-    def apply_iter(self, chart, gramar, edge):
+    def apply_iter(self, chart, grammar, edge):
+        if not self._word_to_pos:
+            self._word_to_pos = grammar.lexicon()
         if edge.is_complete() or edge.end()>=chart.num_leaves(): return
         index = edge.end()
         leaf = chart.leaf(index)
