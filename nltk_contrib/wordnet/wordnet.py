@@ -1063,7 +1063,7 @@ MORPHOLOGICAL_SUBSTITUTIONS = {
     ADJ:  [('er', ''), ('est', ''), ('er', 'e'), ('est', 'e')],
     ADV:  []}
 
-def morphy(form, pos=NOUN):
+def morphy(form, pos):
     '''Find a possible base form for the given form, with the given part of speech,
     by checking WordNet's list of exceptional forms, and by recursively stripping
     affixes for this part of speech until a form in WordNet is found.
@@ -1085,7 +1085,7 @@ def morphy(form, pos=NOUN):
     else:
         return None
 
-def _morphy(form, pos=NOUN):
+def _morphy(form, pos):
     exceptions = _exception_map[pos] 
     substitutions = MORPHOLOGICAL_SUBSTITUTIONS[pos]
 

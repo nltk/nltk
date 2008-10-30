@@ -367,6 +367,20 @@ Get all synsets for this word, possibly restricted by POS:
     >>> wn.synsets('dog', pos='v')
     [Synset('chase.v.01')]
 
+------
+Morphy
+------
+
+Look up forms not in WordNet, with the help of Morphy:
+
+    >>> wn.morphy('denied', wn.NOUN)
+    >>> wn.morphy('denied', wn.VERB)
+    'deny'
+    >>> wn.synsets('denied', wn.NOUN)
+    []
+    >>> wn.synsets('denied', wn.VERB)
+    [Synset('deny.v.01'), Synset('deny.v.02'), Synset('deny.v.03'), Synset('deny.v.04'),
+    Synset('deny.v.05'), Synset('traverse.v.03'), Synset('deny.v.07')]
 
 ---------------------------------------------------------------------------
 Regression Tests
