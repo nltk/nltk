@@ -11,20 +11,23 @@ import glob as _glob
 import os as _os
 import warnings as _warnings
 import math
+from itertools import islice
 
 from nltk import defaultdict
 from wordnet import *
 
 _INF = 1e300
 
-ADJ = 'a'
-ADJ_SAT = 's'
-ADV = 'r'
-NOUN = 'n'
-VERB = 'v'
+ADJ, ADJ_SAT, ADV, NOUN, VERB = 'a', 's', 'r', 'n', 'v'
+FILEMAP = {ADJ: 'adj', ADV: 'adv', NOUN: 'noun', VERB: 'verb'}
+BASEPATH = 'corpora/wordnet/'
+DATAPATH = BASEPATH + 'data.%s'
+INDEXPATH = BASEPATH + 'index.%s'
+EXCEPTIONPATH = BASEPATH + '%s.exc'
 
 _lemma_pos_offset_map = _collections.defaultdict(dict)
 _data_file_map = {}
+_exception_map = {}
 _lexnames = []
 
 class WordNetError(Exception):
@@ -627,17 +630,18 @@ def synsets(lemma, pos=None):
     index = _lemma_pos_offset_map
 
     if pos is None:
-        pos = [NOUN, VERB, ADJ, ADV]
-    
-    return [get_synset(p, offset) for p in pos
-                for offset in index[lemma].get(p, [])]
+        pos = FILEMAP.keys()
+
+    return [get_synset(p, offset)
+            for p in pos
+            for offset in index[morphy(lemma,p)].get(p, [])]
 
 def all_synsets(pos=None):
     """Load all synsets with a given part of speech tag.
     If no pos is specified, all synsets for all parts of speech will be loaded.
     """
     if pos is None:
-        pos_tags = [NOUN, VERB, ADJ, ADV]
+        pos_tags = FILEMAP.keys()
     else:
         pos_tags = [pos]
 
@@ -672,12 +676,12 @@ def _load():
     from nltk.data import find
     
     # open the data files
-    _data_file_map[ADJ] = open(find('corpora/wordnet/data.adj'))
+    _data_file_map[ADJ] = open(find(DATAPATH % FILEMAP[ADJ]))
+    _data_file_map[ADV] = open(find(DATAPATH % FILEMAP[ADV]))
+    _data_file_map[NOUN] = open(find(DATAPATH % FILEMAP[NOUN]))
+    _data_file_map[VERB] = open(find(DATAPATH % FILEMAP[VERB]))
     _data_file_map[ADJ_SAT] = _data_file_map[ADJ]
-    _data_file_map[ADV] = open(find('corpora/wordnet/data.adv'))
-    _data_file_map[NOUN] = open(find('corpora/wordnet/data.noun'))
-    _data_file_map[VERB] = open(find('corpora/wordnet/data.verb'))
-
+    
     # load the lexnames
     for i, line in enumerate(open(find('corpora/wordnet/lexnames'))):
         index, lexname, _ = line.split()
@@ -685,10 +689,10 @@ def _load():
         _lexnames.append(lexname)
 
     # load indices for lemmas and synset offsets
-    for suffix in ['adj', 'adv', 'noun', 'verb']:
+    for suffix in FILEMAP.values():
 
         # parse each line of the file (ignoring comment lines)
-        for i, line in enumerate(open(find('corpora/wordnet/index.%s' % suffix))):
+        for i, line in enumerate(open(find(INDEXPATH % suffix))):
             if line.startswith(' '):
                 continue
 
@@ -730,6 +734,13 @@ def _load():
             _lemma_pos_offset_map[lemma][pos] = synset_offsets
             if pos == ADJ:
                 _lemma_pos_offset_map[lemma][ADJ_SAT] = synset_offsets
+
+    # load the exception file data into memory
+    for pos in FILEMAP:
+        _exception_map[pos] = {}
+        for line in open(find(EXCEPTIONPATH % FILEMAP[pos]), 'rU'):
+            terms = line.split()
+            _exception_map[pos][terms[0]] = terms[1:]
 
 _load()
 
@@ -1041,6 +1052,64 @@ def _get_pos(field):
         return VERB
     else:
         raise ValueError, "Unidentified part of speech in WordNet Information Content file"
+
+# Morphy
+
+MORPHOLOGICAL_SUBSTITUTIONS = {
+    NOUN: [('s', ''), ('ses', 's'), ('ves', 'f'), ('xes', 'x'), ('zes', 'z'),
+           ('ches', 'ch'), ('shes', 'sh'), ('men', 'man'), ('ies', 'y')],
+    VERB: [('s', ''), ('ies', 'y'), ('es', 'e'), ('es', ''), ('ed', 'e'),
+           ('ed', ''), ('ing', 'e'), ('ing', '')],
+    ADJ:  [('er', ''), ('est', ''), ('er', 'e'), ('est', 'e')],
+    ADV:  []}
+
+def morphy(form, pos=NOUN):
+    '''Find a possible base form for the given form, with the given part of speech,
+    by checking WordNet's list of exceptional forms, and by recursively stripping
+    affixes for this part of speech until a form in WordNet is found.
+    
+    >>> morphy('dogs')
+    'dog'
+    >>> morphy('churches')
+    'church'
+    >>> morphy('aardwolves')
+    'aardwolf'
+    >>> morphy('abaci')
+    'abacus'
+    >>> morphy('hardrock', ADV)
+    '''
+    
+    first = list(islice(_morphy(form, pos), 1)) # get the first one we find
+    if len(first) == 1:
+        return first[0]
+    else:
+        return None
+
+def _morphy(form, pos=NOUN):
+    exceptions = _exception_map[pos] 
+    substitutions = MORPHOLOGICAL_SUBSTITUTIONS[pos]
+
+    def try_substitutions(form):
+        if form in _lemma_pos_offset_map:
+            yield form
+        for old, new in substitutions:
+            if form.endswith(old): # recurse
+                for f in try_substitutions(form[:-len(old)] + new):
+                    yield f
+            
+    # check if the form is exceptional
+    if form in exceptions:
+        for f in exceptions[form]:
+            yield f
+    if pos == NOUN and form.endswith('ful'):
+        suffix = 'ful'
+        form = form[:-3]
+    else:
+        suffix = ''
+
+    # look for substitutions
+    for f in try_substitutions(form):
+        yield f + suffix
 
 
 def demo():
