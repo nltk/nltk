@@ -442,7 +442,7 @@ class ContextFreeGrammar(object):
         if missing:
             missing = ', '.join('%r' % (w,) for w in missing)
             raise ValueError("Grammar does not cover some of the "
-                             "input words: %r." +missing)
+                             "input words: %r." % missing)
 
     # [xx] does this still get used anywhere, or does check_coverage
     # replace it?
@@ -943,7 +943,7 @@ def parse_fcfg(input, features=None, logic_parser=None, fstruct_parser=None):
     lexicon = earley_lexicon(lexical_productions)
     return ContextFreeGrammar(start, grammatical_productions, lexicon)
 
-@deprecated("Use nltk.cfg.parse_fcfg() instead.")
+@deprecated("Use nltk.parse_fcfg() instead.")
 def parse_featcfg(input): 
     return parse_fcfg(input)
 

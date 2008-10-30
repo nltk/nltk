@@ -11,8 +11,9 @@ A module for finite state automata.
 Operations are based on Aho, Sethi & Ullman (1986) Chapter 3.
 """
 
-from nltk import tokenize, Tree, cfg
-from nltk.parse import pchart
+from nltk import tokenize, Tree
+from nltk.grammar import WeightedProduction, Nonterminal, WeightedGrammar
+from nltk.parse import InsideChartParser
 import yaml
 
 epsilon = None
@@ -458,32 +459,32 @@ class FSA(yaml.YAMLObject):
 # (probabilities ensure that unary operators
 # have stronger associativity than juxtaposition)
 
-def grammar(terminals):
-    (S, Expr, Star, Plus, Qmk, Paren) = [cfg.Nonterminal(s) for s in 'SE*+?(']
-    rules = [cfg.WeightedProduction(Expr, [Star], prob=0.2),
-             cfg.WeightedProduction(Expr, [Plus], prob=0.2),
-             cfg.WeightedProduction(Expr, [Qmk], prob=0.2),
-             cfg.WeightedProduction(Expr, [Paren], prob=0.2),
-             cfg.WeightedProduction(S, [Expr], prob=0.5),
-             cfg.WeightedProduction(S, [S, Expr], prob=0.5),
-             cfg.WeightedProduction(Star, [Expr, '*'], prob=1),
-             cfg.WeightedProduction(Plus, [Expr, '+'], prob=1),
-             cfg.WeightedProduction(Qmk, [Expr, '?'], prob=1),
-             cfg.WeightedProduction(Paren, ['(', S, ')'], prob=1)]
+def regexp_grammar(terminals):
+    (S, Expr, Star, Plus, Qmk, Paren) = [Nonterminal(s) for s in 'SE*+?(']
+    rules = [WeightedProduction(Expr, [Star], prob=0.2),
+             WeightedProduction(Expr, [Plus], prob=0.2),
+             WeightedProduction(Expr, [Qmk], prob=0.2),
+             WeightedProduction(Expr, [Paren], prob=0.2),
+             WeightedProduction(S, [Expr], prob=0.5),
+             WeightedProduction(S, [S, Expr], prob=0.5),
+             WeightedProduction(Star, [Expr, '*'], prob=1),
+             WeightedProduction(Plus, [Expr, '+'], prob=1),
+             WeightedProduction(Qmk, [Expr, '?'], prob=1),
+             WeightedProduction(Paren, ['(', S, ')'], prob=1)]
 
     prob_term = 0.2/len(terminals) # divide remaining pr. mass
     for terminal in terminals:
-        rules.append(cfg.WeightedProduction(Expr, [terminal], prob=prob_term))
+        rules.append(WeightedProduction(Expr, [terminal], prob=prob_term))
 
-    return cfg.WeightedGrammar(S, rules)
+    return WeightedGrammar(S, rules)
 
-_parser = pchart.InsideParser(grammar('abcde'))
+_parser = InsideChartParser(regexp_grammar('abcde'))
 
 # create NFA from regexp (Thompson's construction)
 # assumes unique start and final states
 
-def re2nfa(fsa, re):
-    tokens = tokenize.regexp(re, pattern=r'.')
+def re2nfa(fsa, regexp):
+    tokens = tokenize.regexp_tokenize(regexp, pattern=r'.')
     tree = _parser.parse(tokens)
     if tree is None: raise ValueError('Bad Regexp')
     state = re2nfa_build(fsa, fsa.start(), tree)

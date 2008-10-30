@@ -15,7 +15,7 @@ syntax trees and morphological trees.
 import re
 import string
 
-import nltk.grammar
+from grammar import Production, Nonterminal
 from probability import ProbabilisticMixIn
 from util import slice_bounds
 
@@ -252,7 +252,7 @@ class Tree(list):
         if not isinstance(self.node, str):
             raise TypeError, 'Productions can only be generated from trees having node labels that are strings'
 
-        prods = [nltk.cfg.Production(nltk.cfg.Nonterminal(self.node), _child_names(self))]
+        prods = [Production(Nonterminal(self.node), _child_names(self))]
         for child in self:
             if isinstance(child, Tree):
                 prods += child.productions()
@@ -1293,7 +1293,7 @@ def _child_names(tree):
     names = []
     for child in tree:
         if isinstance(child, Tree):
-            names.append(nltk.cfg.Nonterminal(child.node))
+            names.append(Nonterminal(child.node))
         else:
             names.append(child)
     return names

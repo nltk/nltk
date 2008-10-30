@@ -25,7 +25,8 @@
 #  </parse-tree>
 #</document>
 
-from nltk import tokenize, parse, cfg
+from nltk import tokenize, parse
+from nltk.grammar import ContextFreeGrammar, nonterminals, Production
 from re import *
 
 class ParadigmQuery(object):
@@ -78,26 +79,26 @@ class ParadigmQuery(object):
         # Tokenize the query string, allowing only strings, parentheses,
         # forward slashes and commas.
         re_all = r'table[(]|\,|[)]|[/]|\w+'
-        data_tokens = tokenize.regexp(self.string, re_all)
+        data_tokens = tokenize.regexp_tokenize(self.string, re_all)
 
         # Develop a context free grammar
         # S = sentence, T = table, H = hierarchy, D = domain
-        O, T, H, D = cfg.nonterminals('O, T, H, D')
+        O, T, H, D = nonterminals('O, T, H, D')
 
         # Specify the grammar
         productions = (
             # A sentence can be either a table, hierarchy or domain
-            cfg.Production(O, [D]), cfg.Production(O, [H]), cfg.Production(O, [T]),
+            Production(O, [D]), Production(O, [H]), Production(O, [T]),
             
             # A table must be the following sequence:
             # "table(", sentence, comma, sentence, comma, sentence, ")" 
-            cfg.Production(T, ['table(', O, ',', O, ',', O, ')']),
+            Production(T, ['table(', O, ',', O, ',', O, ')']),
 
             # A hierarchy must be the following sequence:
             # domain, forward slash, domain
-            cfg.Production(H, [D, '/', D]),
+            Production(H, [D, '/', D]),
             # domain, forward slash, another operator
-            cfg.Production(H, [D, '/', O])
+            Production(H, [D, '/', O])
         )
 
         # Add domains to the cfg productions
@@ -106,11 +107,11 @@ class ParadigmQuery(object):
         # Try every token and add if it matches the above regular expression
         for tok in data_tokens:
             if re_domain.match(tok):
-                prod = cfg.Production(D,[tok]),
+                prod = Production(D,[tok]),
                 productions = productions + prod
 
         # Make a grammar out of our productions
-        grammar = cfg.Grammar(O, productions)
+        grammar = ContextFreeGrammar(O, productions)
         rd_parser = parse.RecursiveDescentParser(grammar)
        
         # Tokens need to be redefined. 
