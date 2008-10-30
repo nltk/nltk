@@ -2,6 +2,9 @@
 Semantics
 =========
 
+.. contents:: **Table of Contents**
+  :depth: 2
+  :backlinks: none
 
 Overview
 ========
@@ -306,27 +309,27 @@ Propositional Model Test
 ------------------------
 
     >>> tests = [
-    ...     ('p & q', True),
-    ...     ('p & r', False),
-    ...     ('- p', False),
-    ...     ('- r', True),
-    ...     ('- - p', True),
-    ...     ('- (p & r)', True),
-    ...     ('p | r', True),
-    ...     ('r | p', True),
-    ...     ('r | r', False),
-    ...     ('- p | r', False),
-    ...     ('p | - p', True),
-    ...     ('p -> q', True),
-    ...     ('p -> r', False),
-    ...     ('r -> p', True),
-    ...     ('p <-> p', True),
-    ...     ('r <-> r', True),
-    ...     ('p <-> r', False),
+    ...     ('P & Q', True),
+    ...     ('P & R', False),
+    ...     ('- P', False),
+    ...     ('- R', True),
+    ...     ('- - P', True),
+    ...     ('- (P & R)', True),
+    ...     ('P | R', True),
+    ...     ('R | P', True),
+    ...     ('R | R', False),
+    ...     ('- P | R', False),
+    ...     ('P | - P', True),
+    ...     ('P -> Q', True),
+    ...     ('P -> R', False),
+    ...     ('R -> P', True),
+    ...     ('P <-> P', True),
+    ...     ('R <-> R', True),
+    ...     ('P <-> R', False),
     ...     ]
-    >>> val = Valuation([('p', True), ('q', True), ('r', False)])
+    >>> val1 = Valuation([('P', True), ('Q', True), ('R', False)])
     >>> dom = set([])
-    >>> m = Model(dom, val, prop=True)
+    >>> m = Model(dom, val1)
     >>> g = Assignment(dom)
     >>> for (sent, testvalue) in tests:
     ...     semvalue = m.evaluate(sent, g)
