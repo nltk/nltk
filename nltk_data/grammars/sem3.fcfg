@@ -1,7 +1,6 @@
 ## Natural Language Toolkit: sem3.fcfg
 ##
 ## First attempt at HPSG-style feature-based semantics.
-## This version doesn't work properly!
 ## 
 ## Author: Ewan Klein <ewan@inf.ed.ac.uk> 
 ## URL: <http://nltk.sourceforge.net>
@@ -12,9 +11,14 @@
 
 % start S
 
-S[sem=?vp] -> NP[sem=?np] VP[subj=?np, sem=?vp]
-VP[sem=?v, subj=?np] -> IV[sem=?v, subj=?np]
+S[sem=?vp] -> NP[sem=?np] VP[sem=?vp, subj=[sem=?np]]
+
+VP[sem=?v, subj=?s] -> IV[sem=?v, subj=?s]
+VP[sem=?v, subj=?s] -> TV[sem=?v, subj=?s, obj=[sem=?np]] NP[sem=?np]
+
 NP[sem=[index='k',name='kim']] -> 'Kim'
-IV[sem=[rel='bark', arg=?i], subj=[sem=[index=?i]]] -> 'barks'
-#IV[fsem=[rel='bark', arg=(1)[]], subj=[fsem=[index->(1)]]] -> 'barks'
+NP[sem=[index='f',name='fido']] -> 'Fido'
+
+IV[sem=[rel='bark', arg1=?i], subj=[sem=[index=?i]]] -> 'barks'
+TV[sem=[rel='love', arg1=?i, arg2=?j], subj=[sem=[index=?i]], obj=[sem=[index=?j]]] -> 'loves'
 
