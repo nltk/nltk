@@ -352,9 +352,9 @@ def retrieve(resource_url, filename=None, verbose=True):
 FORMATS = {
     'pickle': "A serialized python object, stored using the pickle module.",
     'yaml': "A serialzied python object, stored using the yaml module.",
-    'cfg': "A context free grammar, parsed by nltk.cfg.parse_cfg().",
-    'pcfg': "A probabilistic CFG, parsed by nltk.cfg.parse_pcfg().",
-    'fcfg': "A feature CFG, parsed by nltk.cfg.parse_fcfg().",
+    'cfg': "A context free grammar, parsed by nltk.parse_cfg().",
+    'pcfg': "A probabilistic CFG, parsed by nltk.parse_pcfg().",
+    'fcfg': "A feature CFG, parsed by nltk.parse_fcfg().",
     'fol': "A list of first order logic expressions, parsed by "
             "nltk.sem.parse_fol() using nltk.sem.logic.LogicParser.",
     'logic': "A list of first order logic expressions, parsed by "
