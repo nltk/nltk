@@ -10,6 +10,7 @@
 import types
 
 import nltk.data
+from nltk.util import binary_search_file
 
 from util import *
 
@@ -26,7 +27,7 @@ class SenseCount(object):
     
     def __call__(self, key):
         self.load()
-        line = binarySearchFile(self._file, key)
+        line = binary_search_file(self._file, key)
         if line:
             return int(line.rsplit(' ', 1)[-1])
 

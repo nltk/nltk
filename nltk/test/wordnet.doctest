@@ -39,7 +39,7 @@ Proposed API
 ------------
 
     >>> from nltk_contrib.wordnet import wordnet as wn
-    >>> wn.synsets('dog')
+    >>> wn.synsets('dog') # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
     [Synset('dog.n.01'), Synset('frump.n.01'), Synset('dog.n.03'), Synset('cad.n.01'),
     Synset('frank.n.02'), Synset('pawl.n.01'), Synset('andiron.n.01'), Synset('chase.v.01')]
     >>> wn.Synset('dog.n.01')
@@ -49,8 +49,7 @@ Proposed API
     >>> wn.Synset('dog.n.01').examples
     ['the dog barked all night']
     >>> wn.Synset('dog.n.01').lemmas
-    [Lemma('dog.n.01.dog'), Lemma('dog.n.01.domestic_dog'),
-    Lemma('dog.n.01.Canis_familiaris')]
+    [Lemma('dog.n.01.dog'), Lemma('dog.n.01.domestic_dog'), Lemma('dog.n.01.Canis_familiaris')]
     >>> wn.Lemma('dog.n.01.dog').synset
     Synset('dog.n.01')
 
@@ -121,7 +120,7 @@ Proposed API
     >>> dog = wn.Synset('dog.n.01')
     >>> dog.hypernyms()
     [Synset('domestic_animal.n.01'), Synset('canine.n.02')]
-    >>> dog.hyponyms()
+    >>> dog.hyponyms() # doctest: +ELLIPSIS
     [Synset('puppy.n.01'), Synset('great_pyrenees.n.01'), Synset('basenji.n.01'), ...]
     >>> dog.member_holonyms()
     [Synset('pack.n.06'), Synset('canis.n.01')]
@@ -417,7 +416,7 @@ Proposed API
 
 Iterate over all the noun synsets:
 
-    >>> for synset in wn.all_synsets('n'):
+    >>> for synset in list(wn.all_synsets('n'))[:10]:
     ...     print synset
     ...
     Synset('entity.n.01')
@@ -430,12 +429,10 @@ Iterate over all the noun synsets:
     Synset('living_thing.n.01')
     Synset('organism.n.01')
     Synset('benthos.n.02')
-    Synset('dwarf.n.03')
-    ...
 
 Get all synsets for this word, possibly restricted by POS:
 
-    >>> wn.synsets('dog')
+    >>> wn.synsets('dog') # doctest: +ELLIPSIS
     [Synset('dog.n.01'), Synset('frump.n.01'), Synset('dog.n.03'), Synset('cad.n.01'), ...]
     >>> wn.synsets('dog', pos='v')
     [Synset('chase.v.01')]
@@ -463,7 +460,7 @@ Look up forms not in WordNet, with the help of Morphy:
     'deny'
     >>> wn.synsets('denied', wn.NOUN)
     []
-    >>> wn.synsets('denied', wn.VERB)
+    >>> wn.synsets('denied', wn.VERB) # doctest: +NORMALIZE_WHITESPACE 
     [Synset('deny.v.01'), Synset('deny.v.02'), Synset('deny.v.03'), Synset('deny.v.04'),
     Synset('deny.v.05'), Synset('traverse.v.03'), Synset('deny.v.07')]
 
