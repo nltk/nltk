@@ -397,7 +397,7 @@ def bigrams(sequence):
     @return: The bigrams
     @rtype: C{list} of C{tuple}s
     """
-    return bigrams(sequence, 2)
+    return ngrams(sequence, 2)
 
 def ingrams(sequence, n):
     """
