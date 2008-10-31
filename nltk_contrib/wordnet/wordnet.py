@@ -14,6 +14,9 @@ import math
 from itertools import islice
 
 from nltk import defaultdict
+from nltk.wordnet.util import binarySearchFile as _binary_search_file
+from nltk.wordnet.util import FILE_OPEN_MODE as _FILE_OPEN_MODE
+from nltk.data import find as _find
 from wordnet import *
 
 _INF = 1e300
@@ -24,11 +27,53 @@ BASEPATH = 'corpora/wordnet/'
 DATAPATH = BASEPATH + 'data.%s'
 INDEXPATH = BASEPATH + 'index.%s'
 EXCEPTIONPATH = BASEPATH + '%s.exc'
+VERB_FRAME_STRINGS = (
+    None,
+    "Something %s",
+    "Somebody %s",
+    "It is %sing",
+    "Something is %sing PP",
+    "Something %s something Adjective/Noun",
+    "Something %s Adjective/Noun",
+    "Somebody %s Adjective",
+    "Somebody %s something",
+    "Somebody %s somebody",
+    "Something %s somebody",
+    "Something %s something",
+    "Something %s to somebody",
+    "Somebody %s on something",
+    "Somebody %s somebody something",
+    "Somebody %s something to somebody",
+    "Somebody %s something from somebody",
+    "Somebody %s somebody with something",
+    "Somebody %s somebody of something",
+    "Somebody %s something on somebody",
+    "Somebody %s somebody PP",
+    "Somebody %s something PP",
+    "Somebody %s PP",
+    "Somebody's (body part) %s",
+    "Somebody %s somebody to INFINITIVE",
+    "Somebody %s somebody INFINITIVE",
+    "Somebody %s that CLAUSE",
+    "Somebody %s to somebody",
+    "Somebody %s to INFINITIVE",
+    "Somebody %s whether INFINITIVE",
+    "Somebody %s somebody into V-ing something",
+    "Somebody %s something with something",
+    "Somebody %s INFINITIVE",
+    "Somebody %s VERB-ing",
+    "It %s that CLAUSE",
+    "Something %s INFINITIVE")
 
 _lemma_pos_offset_map = _collections.defaultdict(dict)
 _data_file_map = {}
 _exception_map = {}
 _lexnames = []
+_pos_list = [NOUN, VERB, ADJ, ADV]
+_pos_numbers = {NOUN:1, VERB:2, ADJ:3, ADV:4, ADJ_SAT:5}
+_pos_names = dict(tup[::-1] for tup in _pos_numbers.items())
+_key_count_file = None
+_key_synset_file = None
 
 class WordNetError(Exception):
     pass
@@ -149,39 +194,96 @@ class Lemma(_WordNetObject):
     pertainyms
     """
 
-    def __init__(self, name):
+    def __new__(self, name):
         synset_name, lemma_name = name.rsplit('.', 1)
-        self._set_name(lemma_name)
-        self.synset = Synset(synset_name)
-        names = set(lemma.name for lemma in self.synset.lemmas)
-        if self.name not in names:
-            tup = self.name, self.synset
-            raise WordNetError('no lemma %r in %r' % tup)
+        synset = Synset(synset_name)
+        for lemma in synset.lemmas:
+            if lemma.name == lemma_name:
+                return lemma
+        raise WordNetError('no lemma %r in %r' % (lemma_name, synset_name))
+
 
     @classmethod
-    def _from_name_and_synset(cls, name, synset):
+    def from_key(cls, key):
+        # parse the key
+        lemma_name, lex_sense = key.split('%')
+        pos_number, lexname_index, lex_id, _, _ = lex_sense.split(':')
+        pos = _pos_names[int(pos_number)]
+
+        # open the key -> synset file if necessary
+        global _key_synset_file
+        if _key_synset_file is None:
+            path = _find('corpora/wordnet/index.sense')
+            _key_synset_file = open(path, _FILE_OPEN_MODE)
+
+        # find the synset for the lemma
+        synset_line = _binary_search_file(_key_synset_file, key)
+        if not synset_line:
+            raise WordNetError("No synset found for key %r" % key)
+        offset = int(synset_line.split()[1])
+        synset = Synset._from_pos_and_offset(pos, offset)
+
+        # return the corresponding lemma
+        for lemma in synset.lemmas:
+            if lemma.key == key:
+                return lemma
+        raise WordNetError("No lemma found for for key %r" % key)
+
+    @classmethod
+    def _from_synset_info(cls, synset, name, lexname_index, lex_id):
         obj = object.__new__(cls)
-        obj._set_name(name)
+        if '(' in name:
+            obj.name, syn_mark = name.split('(')
+            obj.syntactic_marker = syn_mark.rstrip(')')
+        else:
+            obj.name = name
+            obj.syntactic_marker = None
         obj.synset = synset
+        obj.frame_strings = []
+        obj.frame_ids = []
+        obj._lexname_index = lexname_index
+        obj._lex_id = lex_id
         return obj
+
+    def _set_key(self):
+        if self.synset.pos is ADJ_SAT:
+            head_lemma = self.synset.similar_tos()[0].lemmas[0]
+            head_name = head_lemma.name
+            head_id = '%02d' % head_lemma._lex_id
+        else:
+            head_name = head_id = ''
+        tup = (self.name, _pos_numbers[self.synset.pos], self._lexname_index,
+               self._lex_id, head_name, head_id)
+        self.key = '%s%%%d:%02d:%02d:%s:%s' % tup
+
+    def _add_frame(self, frame_index):
+        self.frame_ids.append(frame_index)
+        frame_format_string = VERB_FRAME_STRINGS[frame_index]
+        self.frame_strings.append(frame_format_string % self.name)
+
 
     def __repr__(self):
         tup = type(self).__name__, self.synset.name, self.name
         return "%s('%s.%s')" % tup
-
-    def _set_name(self, lemma_name):
-        if '(' in lemma_name:
-            self.name, syn_mark = lemma_name.split('(')
-            self.syntactic_marker = syn_mark.rstrip(')')
-        else:
-            self.name = lemma_name
-            self.syntactic_marker = None
 
     def _related(self, relation_symbol):
         get_synset = type(self.synset)._from_pos_and_offset
         return [get_synset(pos, offset).lemmas[lemma_index]
                 for pos, offset, lemma_index
                 in self.synset._lemma_pointers[self.name, relation_symbol]]
+
+    def count(self):
+        """Return the frequency count for this Lemma"""
+        # open the count file if we haven't already
+        global _key_count_file
+        if _key_count_file is None:
+            path = _find('corpora/wordnet/cntlist.rev')
+            _key_count_file = open(path, _FILE_OPEN_MODE)
+        # find the key in the counts file and return the count
+        line = _binary_search_file(_key_count_file, self.key)
+        if line:
+            return int(line.rsplit(' ', 1)[-1])
+
 
 class Synset(_WordNetObject):
     """Create a Synset from a "<lemma>.<pos>.<number>" string where:
@@ -543,7 +645,9 @@ class Synset(_WordNetObject):
         self.offset = None
         self.name = None
 #        self.lexname = None
+        self.frame_ids = []
         self.lemmas = []
+        lemma_infos = []
 #        self.definitions = []
         definitions = []
         self.examples = []
@@ -580,24 +684,18 @@ class Synset(_WordNetObject):
             # get the part of speech
             self.pos = next()
 
-            # collect the lemma names and set the canonical name
+            # create Lemma objects for each lemma
             n_lemmas = int(next(), 16)
             for _ in xrange(n_lemmas):
-                # create a Lemma object for each lemma
+                # get the lemma name
                 lemma_name = next()
-                lemma = Lemma._from_name_and_synset(lemma_name, self)
+                # get the lex_id (used for sense_keys)
+                lex_id = int(next(), 16)
+
+                # create the lemma object
+                info = self, lemma_name, lexname_index, lex_id
+                lemma = Lemma._from_synset_info(*info)
                 self.lemmas.append(lemma)
-
-                # ignore the parsed sense_index; it's wrong sometimes
-                int(next(), 16)
-
-                # the canonical name is based on the first lemma
-                if self.name is None:
-                    lemma_name = lemma.name.lower()
-                    offsets = _lemma_pos_offset_map[lemma_name][pos]
-                    sense_index = offsets.index(self.offset)
-                    tup = lemma_name, self.pos, sense_index + 1
-                    self.name = '%s.%s.%02i' % tup
 
             # collect the pointer tuples
             n_pointers = int(next())
@@ -616,9 +714,44 @@ class Synset(_WordNetObject):
                     tups = lemma_pointers[source_lemma_name, symbol]
                     tups.add((pos, offset, target_index))
 
+            # read the verb frames
+            try:
+                frame_count = int(next())
+            except StopIteration:
+                pass
+            else:
+                for _ in xrange(frame_count):
+                    # read the plus sign
+                    assert next() == '+'
+                    # read the frame and lemma number
+                    frame_number = int(next())
+                    frame_string_fmt = VERB_FRAME_STRINGS[frame_number]
+                    lemma_number = int(next(), 16)
+                    # lemma number of 00 means all words in the synset
+                    if lemma_number == 0:
+                        self.frame_ids.append(frame_number)
+                        for lemma in self.lemmas:
+                            lemma._add_frame(frame_number)
+                    # only a specific word in the synset
+                    else:
+                        lemma = self.lemmas[lemma_number - 1]
+                        lemma._add_frame(frame_number)
+
         # raise a more informative error with line text
         except ValueError, e:
             raise WordNetError('line %r: %s' % (data_file_line, e))
+
+        # set sense keys for Lemma objects - note that this has to be
+        # done afterwards so that the relations are available
+        for lemma in self.lemmas:
+            lemma._set_key()
+ 
+        # the canonical name is based on the first lemma
+        lemma_name = self.lemmas[0].name.lower()
+        offsets = _lemma_pos_offset_map[lemma_name][self.pos]
+        sense_index = offsets.index(self.offset)
+        tup = lemma_name, self.pos, sense_index + 1
+        self.name = '%s.%s.%02i' % tup
 
 
 def synsets(lemma, pos=None):
@@ -630,14 +763,20 @@ def synsets(lemma, pos=None):
     index = _lemma_pos_offset_map
 
     if pos is None:
-        pos = FILEMAP.keys()
+        pos = _pos_list
 
     return [get_synset(p, offset)
             for p in pos
             for offset in index[morphy(lemma,p)].get(p, [])]
 
+def lemmas(lemma, pos=None):
+    return [lemma_obj
+            for synset in synsets(lemma, pos)
+            for lemma_obj in synset.lemmas
+            if lemma_obj.name == lemma]
+
 def all_synsets(pos=None):
-    """Load all synsets with a given part of speech tag.
+    """Iterate over all synsets with a given part of speech tag.
     If no pos is specified, all synsets for all parts of speech will be loaded.
     """
     if pos is None:
@@ -646,33 +785,31 @@ def all_synsets(pos=None):
         pos_tags = [pos]
 
     # generate all synsets for each part of speech
-    result = []
     for pos_tag in pos_tags:
-        data_file = _data_file_map[pos_tag]
-        data_file.seek(0)
+        # open a new handle on the data file
+        data_file = open(_data_file_map[pos_tag].name)
+        try:
+            # generate synsets for each line in the POS file
+            for line in data_file:
+                if not line[0].isspace():
+                    synset = Synset._from_pos_and_line(pos_tag, line)
+                    # adjective satellites are in the same file as adjectives
+                    # so only yield the synset if it's actually a satellite
+                    if pos_tag == ADJ_SAT:
+                        if synset.pos == pos_tag:
+                            yield synset
 
-        # generate synsets for each line in the POS file
-        for line in data_file:
-            if not line[0].isspace():
-                synset = Synset._from_pos_and_line(pos_tag, line)
+                    # for all other POS tags, yield all synsets (this means
+                    # that adjectives also include adjective satellites)
+                    else:
+                        yield synset
+ 
+        # close the extra file handle we opened
+        finally:
+            data_file.close()
 
-                # adjective satellites are in the same file as adjectives
-                # so only yield the synset if it's actually a satellite
-                if pos_tag == ADJ_SAT:
-                    if synset.pos == pos_tag:
-                        result.append(synset)
 
-                # for all other POS tags, yield all synsets (this means
-                # that adjectives also include adjective satellites)
-                else:
-                    result.append(synset)
-
-    # return the list of all synsets
-    return result
-
-# should load a pickled object
 def _load():
-
     from nltk.data import find
     
     # open the data files
@@ -1191,4 +1328,3 @@ def demo():
 
 if __name__ == '__main__':
     demo()
-    

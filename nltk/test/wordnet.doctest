@@ -45,8 +45,7 @@ Proposed API
     >>> wn.Synset('dog.n.01')
     Synset('dog.n.01')
     >>> wn.Synset('dog.n.01').definitions
-    ['a member of the genus Canis (probably descended from the common wolf) that has been domesticated by man since prehistoric times',
-    'occurs in many breeds']
+    'a member of the genus Canis (probably descended from the common wolf) that has been domesticated by man since prehistoric times; occurs in many breeds'
     >>> wn.Synset('dog.n.01').examples
     ['the dog barked all night']
     >>> wn.Synset('dog.n.01').lemmas
@@ -124,8 +123,8 @@ Proposed API
     [Synset('domestic_animal.n.01'), Synset('canine.n.02')]
     >>> dog.hyponyms()
     [Synset('puppy.n.01'), Synset('great_pyrenees.n.01'), Synset('basenji.n.01'), ...]
-    >>> dog.member_meronyms()
-    []  # wrong
+    >>> dog.member_holonyms()
+    [Synset('pack.n.06'), Synset('canis.n.01')]
     >>> dog.root_hypernyms()
     [Synset('entity.n.01')]
 
@@ -151,6 +150,69 @@ eat (verb) 3
 'eat%2:34:02::'
 >>> WordSense(k).synset()
 {verb: feed, eat}
+
+Proposed API
+------------
+
+    >>> eat = wn.Lemma('eat.v.03.eat')
+    >>> eat
+    Lemma('feed.v.06.eat')
+    >>> eat.key
+    'eat%2:34:02::'
+    >>> eat.count()
+    4
+    >>> wn.Lemma.from_key(eat.key)
+    Lemma('feed.v.06.eat')
+    >>> wn.Lemma.from_key(eat.key).synset
+    Synset('feed.v.06')
+    >>> wn.Lemma.from_key('feebleminded%5:00:00:retarded:00')
+    Lemma('backward.s.03.feebleminded')
+    >>> for lemma in wn.Synset('eat.v.03').lemmas:
+    ...     print lemma, lemma.count()
+    ...
+    Lemma('feed.v.06.feed') 3
+    Lemma('feed.v.06.eat') 4
+    >>> for lemma in wn.lemmas('eat', 'v'):
+    ...     print lemma, lemma.count()
+    ...
+    Lemma('eat.v.01.eat') 61
+    Lemma('eat.v.02.eat') 13
+    Lemma('feed.v.06.eat') 4
+    Lemma('eat.v.04.eat') None
+    Lemma('consume.v.05.eat') None
+    Lemma('corrode.v.01.eat') None
+
+-----------
+Verb Frames
+-----------
+
+Proposed API
+------------
+
+    >>> wn.Synset('think.v.01').frame_ids
+    [5, 9]
+    >>> for lemma in wn.Synset('think.v.01').lemmas:
+    ...     print lemma, lemma.frame_ids
+    ...     print lemma.frame_strings
+    ...
+    Lemma('think.v.01.think') [5, 9]
+    ['Something think something Adjective/Noun', 'Somebody think somebody']
+    Lemma('think.v.01.believe') [5, 9]
+    ['Something believe something Adjective/Noun', 'Somebody believe somebody']
+    Lemma('think.v.01.consider') [5, 9]
+    ['Something consider something Adjective/Noun', 'Somebody consider somebody']
+    Lemma('think.v.01.conceive') [5, 9]
+    ['Something conceive something Adjective/Noun', 'Somebody conceive somebody']
+    >>> wn.Synset('stretch.v.02').frame_ids
+    [8]
+    >>> for lemma in wn.Synset('stretch.v.02').lemmas:
+    ...     print lemma, lemma.frame_ids
+    ...     print lemma.frame_strings
+    ...
+    Lemma('stretch.v.02.stretch') [8, 2]
+    ['Somebody stretch something', 'Somebody stretch']
+    Lemma('stretch.v.02.extend') [8]
+    ['Somebody extend something']
 
 ----------
 Similarity
@@ -353,12 +415,23 @@ this dictionary.
 Proposed API
 ------------
 
-Get all the noun synsets:
+Iterate over all the noun synsets:
 
-    >>> wn.all_synsets('n')
-    [Synset('entity.n.01'), Synset('physical_entity.n.01'), Synset('abstraction.n.06'),
-    Synset('thing.n.12'), Synset('object.n.01'), Synset('whole.n.02'),
-    Synset('congener.n.03'), Synset('living_thing.n.01'), Synset('organism.n.01'), ...]
+    >>> for synset in wn.all_synsets('n'):
+    ...     print synset
+    ...
+    Synset('entity.n.01')
+    Synset('physical_entity.n.01')
+    Synset('abstraction.n.06')
+    Synset('thing.n.12')
+    Synset('object.n.01')
+    Synset('whole.n.02')
+    Synset('congener.n.03')
+    Synset('living_thing.n.01')
+    Synset('organism.n.01')
+    Synset('benthos.n.02')
+    Synset('dwarf.n.03')
+    ...
 
 Get all synsets for this word, possibly restricted by POS:
 
@@ -366,6 +439,18 @@ Get all synsets for this word, possibly restricted by POS:
     [Synset('dog.n.01'), Synset('frump.n.01'), Synset('dog.n.03'), Synset('cad.n.01'), ...]
     >>> wn.synsets('dog', pos='v')
     [Synset('chase.v.01')]
+
+Walk through the noun synsets looking at their hypernyms:
+
+    >>> from itertools import islice
+    >>> for synset in islice(wn.all_synsets('n'), 5):
+    ...     print synset, synset.hypernyms()
+    ...
+    Synset('entity.n.01') []
+    Synset('physical_entity.n.01') [Synset('entity.n.01')]
+    Synset('abstraction.n.06') [Synset('entity.n.01')]
+    Synset('thing.n.12') [Synset('physical_entity.n.01')]
+    Synset('object.n.01') [Synset('physical_entity.n.01')]
 
 ------
 Morphy
