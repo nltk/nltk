@@ -1,4 +1,4 @@
-# Natural Language Toolkit: Wordnet Similarity
+# Natural Language Toolkit: Wordnet
 #
 # Copyright (C) 2001-2008 NLTK Project
 # Author: Steven Bethard <Steven.Bethard@colorado.edu>
@@ -14,12 +14,14 @@ import math
 from itertools import islice
 
 from nltk import defaultdict
-from nltk.wordnet.util import binarySearchFile as _binary_search_file
-from nltk.wordnet.util import FILE_OPEN_MODE as _FILE_OPEN_MODE
+from nltk.util import binary_search_file as _binary_search_file
 from nltk.data import find as _find
 from wordnet import *
 
 _INF = 1e300
+
+# Work around a Windows Python bug
+_FILE_OPEN_MODE = _os.name in ('dos', 'nt') and 'rb' or 'r'
 
 ADJ, ADJ_SAT, ADV, NOUN, VERB = 'a', 's', 'r', 'n', 'v'
 FILEMAP = {ADJ: 'adj', ADV: 'adv', NOUN: 'noun', VERB: 'verb'}
@@ -1190,7 +1192,7 @@ def _get_pos(field):
     else:
         raise ValueError, "Unidentified part of speech in WordNet Information Content file"
 
-# Morphy
+# Morphy, adapted from Oliver Steele's pywordnet
 
 MORPHOLOGICAL_SUBSTITUTIONS = {
     NOUN: [('s', ''), ('ses', 's'), ('ves', 'f'), ('xes', 'x'), ('zes', 'z'),

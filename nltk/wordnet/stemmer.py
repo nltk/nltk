@@ -11,6 +11,7 @@
 from itertools import islice
 
 import nltk.data
+from nltk.util import binary_search_file
 from nltk import defaultdict
 
 from dictionary import dictionaryFor
@@ -74,7 +75,7 @@ def _morphy(form, pos=NOUN):
                                                     substitutions[n+1:]):
                     yield f
             
-    exceptions = binarySearchFile(excfile, form)
+    exceptions = binary_search_file(excfile, form)
     if exceptions:
         forms = exceptions[exceptions.find(' ')+1:-1].split()
         for f in forms:

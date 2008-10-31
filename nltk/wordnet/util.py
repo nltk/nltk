@@ -13,6 +13,7 @@ import string
 import types
 
 import nltk.data
+from nltk.util import binary_search_file
 
 ANTONYM = 'antonym'
 HYPERNYM = 'hypernym'
@@ -170,71 +171,6 @@ def dataFilePathname(filenameroot):
     @return: the full path to the data file.
     """
 
-
-
-def binarySearchFile(file, key, cache={}, cacheDepth=-1):
-    """
-    Searches through a sorted file using the binary search algorithm.
-
-    @type  file: file
-    @param file: the file to be searched through.
-    @type  key: {string}
-    @param key: the identifier we are searching for.
-    @return: The line from the file with first word key.
-    """
-    from stat import ST_SIZE
-    
-    key = key + ' '
-    keylen = len(key)
-    start, end = 0, os.stat(file.name)[ST_SIZE] - 1
-    currentDepth = 0
-    
-    while start < end:
-        lastState = start, end
-        middle = (start + end) / 2
-
-        if cache.get(middle):
-            offset, line = cache[middle]
-
-        else:
-            line = ""
-            while True:
-                file.seek(max(0, middle - 1))
-                if middle > 0:
-                    file.readline()
-                offset = file.tell()
-                line = file.readline()
-                if line != "": break
-                # at EOF; try to find start of the last line
-                middle = (start + middle)/2
-                if middle == end -1:
-                    return None
-            if currentDepth < cacheDepth:
-                cache[middle] = (offset, line)
-                
-        if offset > end:
-            assert end != middle - 1, "infinite loop"
-            end = middle - 1
-        elif line[:keylen] == key:
-            return line
-        elif line > key:
-            assert end != middle - 1, "infinite loop"
-            end = middle - 1
-        elif line < key:
-            start = offset + len(line) - 1
-
-        currentDepth += 1
-        thisState = start, end
-
-        if lastState == thisState:
-            # Detects the condition where we're searching past the end
-            # of the file, which is otherwise difficult to detect
-            return None
-
-    return None
-
-
-
 # Low level IndexFile class and various file utilities,
 # to do the lookups in the Wordnet database files.
 
@@ -309,7 +245,7 @@ class IndexFile(object):
             if hasattr(self, 'indexCache'):
                 return self.indexCache[index]
 
-            return binarySearchFile(self.file, index, self.offsetLineCache, 8)
+            return binary_search_file(self.file, index, self.offsetLineCache, 8)
 
         elif type(index) == types.IntType:
             if hasattr(self, 'indexCache'):

@@ -11,6 +11,7 @@ import types
 import textwrap
 import pydoc
 import bisect
+import os
 
 from itertools import islice
 from pprint import pprint
@@ -974,3 +975,66 @@ class LazyMappedChain(Deprecated, LazyConcatenation):
     """Use LazyConcatenation(LazyMap(func, lists)) instead."""
     def __init__(self, lst, func):
         LazyConcatenation.__init__(self, LazyMap(func, lst))
+
+# inherited from pywordnet, by Oliver Steele
+def binary_search_file(file, key, cache={}, cacheDepth=-1):
+    """
+    Searches through a sorted file using the binary search algorithm.
+
+    @type  file: file
+    @param file: the file to be searched through.
+    @type  key: {string}
+    @param key: the identifier we are searching for.
+    @return: The line from the file with first word key.
+    """
+    from stat import ST_SIZE
+    
+    key = key + ' '
+    keylen = len(key)
+    start, end = 0, os.stat(file.name)[ST_SIZE] - 1
+    currentDepth = 0
+    
+    while start < end:
+        lastState = start, end
+        middle = (start + end) / 2
+
+        if cache.get(middle):
+            offset, line = cache[middle]
+
+        else:
+            line = ""
+            while True:
+                file.seek(max(0, middle - 1))
+                if middle > 0:
+                    file.readline()
+                offset = file.tell()
+                line = file.readline()
+                if line != "": break
+                # at EOF; try to find start of the last line
+                middle = (start + middle)/2
+                if middle == end -1:
+                    return None
+            if currentDepth < cacheDepth:
+                cache[middle] = (offset, line)
+                
+        if offset > end:
+            assert end != middle - 1, "infinite loop"
+            end = middle - 1
+        elif line[:keylen] == key:
+            return line
+        elif line > key:
+            assert end != middle - 1, "infinite loop"
+            end = middle - 1
+        elif line < key:
+            start = offset + len(line) - 1
+
+        currentDepth += 1
+        thisState = start, end
+
+        if lastState == thisState:
+            # Detects the condition where we're searching past the end
+            # of the file, which is otherwise difficult to detect
+            return None
+
+    return None
+

@@ -13,6 +13,7 @@ import string
 import re
 
 from nltk import defaultdict
+from nltk.util import binary_search_file
 
 from util import *
 import dictionary
@@ -153,7 +154,7 @@ class WordSense(object):
             path = nltk.data.find('corpora/wordnet/index.sense')
             WordSense._index = open(path, FILE_OPEN_MODE)
         
-        res = binarySearchFile(WordSense._index, self.senseKey)
+        res = binary_search_file(WordSense._index, self.senseKey)
         if res:
             return res
         raise ValueError("Count not find data for sense '%s'. "
