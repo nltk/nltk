@@ -61,15 +61,15 @@ class FreqDist(dict):
     every time it is an outcome of an experiment.  For example, the
     following code will produce a frequency distribution that encodes
     how often each word occurs in a text:
-    
+
         >>> fdist = FreqDist()
         >>> for word in tokenize.whitespace(sent):
         ...    fdist.inc(word.lower())
-    
+
     An equivalent way to do this is with the initializer:
-    
+
         >>> fdist = FreqDist(word.lower() for word in tokenize.whitespace(sent))
-        
+
     """
     def __init__(self, samples=None):
         """
@@ -82,7 +82,7 @@ class FreqDist(dict):
         distribution; and C{FreqDist(samples)} first creates an empty
         frequency distribution, and then calls C{inc} for each element
         in the list C{samples}.
-        
+
         @param samples: The samples to initialize the frequency
         distribution with.
         @type samples: Sequence
@@ -100,7 +100,7 @@ class FreqDist(dict):
         """
         Increment this C{FreqDist}'s count for the given
         sample.
-        
+
         @param sample: The sample whose count should be incremented.
         @type sample: any
         @param count: The amount to increment the sample's count by.
@@ -110,7 +110,7 @@ class FreqDist(dict):
                supported sample type.
         """
         if count == 0: return
-        
+
         self._N += count
         self[sample] = self.get(sample,0) + count
 
@@ -168,18 +168,18 @@ class FreqDist(dict):
             defaults to C{self.B()} (so Nr(0) will be 0).
         """
         if r < 0: raise IndexError, 'FreqDist.Nr(): r must be non-negative'
-        
+
         # Special case for Nr(0):
         if r == 0:
             if bins is None: return 0
             else: return bins-self.B()
-        
+
         # We have to search the entire distribution to find Nr.  Since
         # this is an expensive operation, and is likely to be used
         # repeatedly, cache the results.
         if self._Nr_cache is None:
             self._cache_Nr_values()
-            
+
         if r >= len(self._Nr_cache): return 0
         return self._Nr_cache[r]
 
@@ -199,7 +199,7 @@ class FreqDist(dict):
         recorded by this C{FreqDist}.  Counts are non-negative
         integers.  This method has been replaced by conventional
         dictionary indexing; use fd[item] instead of fd.count(item).
-        
+
         @return: The count of a given sample.
         @rtype: C{int}
         @param sample: the sample whose count
@@ -235,7 +235,7 @@ class FreqDist(dict):
         number of times that sample outcome was recorded by this
         C{FreqDist}.  Frequencies are always real numbers in the range
         [0, 1].
-        
+
         @return: The frequency of a given sample.
         @rtype: float
         @param sample: the sample whose frequency
@@ -432,7 +432,7 @@ class FreqDist(dict):
         @rtype: string
         """
         return '<FreqDist with %d samples>' % self.N()
-    
+
     def __str__(self):
         """
         @return: A string representation of this C{FreqDist}.
@@ -468,7 +468,7 @@ class ProbDistI(object):
     def __init__(self):
         if self.__class__ == ProbDistI:
             raise AssertionError, "Interfaces can't be instantiated"
-        
+
     def prob(self, sample):
         """
         @return: the probability for a given sample.  Probabilities
@@ -507,7 +507,7 @@ class ProbDistI(object):
         @rtype: any
         """
         raise AssertionError()
-    
+
     # deprecate this (use keys() instead?)
     def samples(self):
         """
@@ -616,7 +616,7 @@ class DictionaryProbDist(ProbDistI):
                     norm_factor = 1.0/value_sum
                     for (x, p) in self._prob_dict.items():
                         self._prob_dict[x] *= norm_factor
-                    
+
     def prob(self, sample):
         if self._log:
             if sample not in self._prob_dict: return 0
@@ -640,7 +640,7 @@ class DictionaryProbDist(ProbDistI):
         return self._prob_dict.keys()
     def __repr__(self):
         return '<ProbDist with %d samples>' % len(self._prob_dict)
-        
+
 class MLEProbDist(ProbDistI):
     """
     The maximum likelihood estimate for the probability distribution
@@ -661,9 +661,9 @@ class MLEProbDist(ProbDistI):
         if freqdist.N() == 0:
             raise ValueError('An MLE probability distribution must '+
                              'have at least one sample.')
-        
+
         self._freqdist = freqdist
-        
+
     def freqdist(self):
         """
         @return: The frequency distribution that this probability
@@ -671,16 +671,16 @@ class MLEProbDist(ProbDistI):
         @rtype: C{FreqDist}
         """        
         return self._freqdist
-    
+
     def prob(self, sample):
         return self._freqdist.freq(sample)
-    
+
     def max(self):
         return self._freqdist.max()
-    
+
     def samples(self):
         return self._freqdist.keys()
-    
+
     def __repr__(self):
         """
         @rtype: C{string}
@@ -732,14 +732,14 @@ class LidstoneProbDist(ProbDistI):
                              '(%d) must be greater than or equal to\n' % bins +
                              'the number of bins in the FreqDist used ' +
                              'to create it (%d).' % freqdist.N())
-        
+
         self._freqdist = freqdist
         self._gamma = float(gamma)
         self._N = self._freqdist.N()
 
         if bins is None: bins = freqdist.B()
         self._bins = bins
-        
+
     def freqdist(self):
         """
         @return: The frequency distribution that this probability
@@ -747,17 +747,17 @@ class LidstoneProbDist(ProbDistI):
         @rtype: C{FreqDist}
         """        
         return self._freqdist
-    
+
     def prob(self, sample):
         c = self._freqdist[sample]
         return (c + self._gamma) / (self._N + self._bins * self._gamma)
-    
+
     def max(self):
         # For Lidstone distributions, probability is monotonic with
         # frequency, so the most probable sample is the one that
         # occurs most frequently.
         return self._freqdist.max()
-    
+
     def samples(self):
         return self._freqdist.keys()
 
@@ -799,14 +799,14 @@ class LaplaceProbDist(LidstoneProbDist):
             C{bins} is not specified, it defaults to C{freqdist.B()}.
         """
         LidstoneProbDist.__init__(self, freqdist, 1, bins)
-        
+
     def __repr__(self):
         """
         @rtype: C{string}
         @return: A string representation of this C{ProbDist}.
         """
         return '<LaplaceProbDist based on %d samples>' % self._freqdist.N()
-        
+
 class ELEProbDist(LidstoneProbDist):
     """
     The expected likelihood estimate for the probability distribution
@@ -900,7 +900,7 @@ class HeldoutProbDist(ProbDistI):
             probabilities of the sample values to sum to one.  If
             C{bins} is not specified, it defaults to C{freqdist.B()}.
         """
-        
+
         self._base_fdist = base_fdist
         self._heldout_fdist = heldout_fdist
 
@@ -962,7 +962,7 @@ class HeldoutProbDist(ProbDistI):
         @rtype: C{FreqDist}
         """        
         return self._base_fdist
-    
+
     def heldout_fdist(self):
         """
         @return: The heldout frequency distribution that this
@@ -970,7 +970,7 @@ class HeldoutProbDist(ProbDistI):
         @rtype: C{FreqDist}
         """        
         return self._heldout_fdist
-    
+
     def samples(self):
         return self._base_fdist.keys()
 
@@ -1112,7 +1112,7 @@ class WittenBellProbDist(ProbDistI):
         @type  bins:        C{Int}
         """
         assert bins == None or bins >= freqdist.B(),\
-            'Bins parameter must not be less than freqdist.B()'
+               'Bins parameter must not be less than freqdist.B()'
         if bins == None:
             bins = freqdist.B()
         self._freqdist = freqdist
@@ -1130,7 +1130,7 @@ class WittenBellProbDist(ProbDistI):
 
     def max(self):
         return self._freqdist.max()
-    
+
     def samples(self):
         return self._freqdist.keys()
 
@@ -1188,7 +1188,7 @@ class GoodTuringProbDist(ProbDistI):
         @type  bins:        C{Int}
         """
         assert bins == None or bins >= freqdist.B(),\
-            'Bins parameter must not be less than freqdist.B()'
+               'Bins parameter must not be less than freqdist.B()'
         if bins == None:
             bins = freqdist.B()
         self._freqdist = freqdist
@@ -1208,7 +1208,7 @@ class GoodTuringProbDist(ProbDistI):
 
     def max(self):
         return self._freqdist.max()
-    
+
     def samples(self):
         return self._freqdist.keys()
 
@@ -1321,7 +1321,7 @@ def log_likelihood(test_pdist, actual_pdist):
         raise ValueError('expected a ProbDist.')
     # Is this right?
     return sum(actual_pdist.prob(s) * math.log(test_pdist.prob(s), 2)
-                for s in actual_pdist.keys())
+               for s in actual_pdist.keys())
 
 def entropy(pdist):
     probs = [pdist.prob(s) for s in pdist.samples()]
@@ -1369,11 +1369,11 @@ class ConditionalFreqDist(object):
         >>> for word in tokenize.whitespace(sent):
         ...     condition = len(word)
         ...     cfdist[condition].inc(word)
-    
+
     An equivalent way to do this is with the initializer:
-    
+
         >>> cfdist = ConditionalFreqDist((len(word), word) for word in tokenize.whitespace(sent))
-        
+
     """
     def __init__(self, cond_samples=None):
         """
@@ -1396,7 +1396,7 @@ class ConditionalFreqDist(object):
         under the given condition.  If the frequency distribution for
         the given condition has not been accessed before, then this
         will create a new empty C{FreqDist} for that condition.
-        
+
         @return: The frequency distribution that encodes the frequency
             of each sample outcome, given that the experiment was run
             under the given condition.
@@ -1544,7 +1544,7 @@ class ConditionalProbDistI(object):
     """
     def __init__(self):
         raise AssertionError, 'ConditionalProbDistI is an interface'
-    
+
     def __getitem__(self, condition):
         """
         @return: The probability distribution for the experiment run
@@ -1636,7 +1636,7 @@ class ConditionalProbDist(ConditionalProbDistI):
         self._cfdist = cfdist
         self._supply_condition = supply_condition
         self._factory_args = factory_args
-        
+
         self._pdists = {}
         for c in cfdist.conditions():
             if supply_condition:
@@ -1655,7 +1655,7 @@ class ConditionalProbDist(ConditionalProbDistI):
             # give a uniform prob dist.
             pdist = self._probdist_factory(FreqDist(), *self._factory_args)
             self._pdists[condition] = pdist
-            
+
         return self._pdists[condition]
 
     def conditions(self):
@@ -1766,7 +1766,7 @@ class ProbabilisticMixIn(object):
             ProbabilisticMixIn.set_logprob(self, kwargs['logprob'])
         else:
             self.__prob = self.__logprob = None
-            
+
     def set_prob(self, prob):
         """
         Set the probability associated with this object to C{prob}.
@@ -1801,7 +1801,7 @@ class ProbabilisticMixIn(object):
         """
         @return: C{log(p)}, where C{p} is the probability associated
         with this object.
-        
+
         @rtype: C{float}
         """
         if self.__logprob is None:
@@ -1889,7 +1889,7 @@ def demo(numsamples=6, numoutcomes=500):
         HeldoutProbDist(fdist2, fdist1, numsamples),
         CrossValidationProbDist([fdist1, fdist2, fdist3], numsamples),
         _create_sum_pdist(numsamples),
-        ]
+    ]
 
     # Find the probability of each sample.
     vals = []
@@ -1907,7 +1907,7 @@ def demo(numsamples=6, numoutcomes=500):
     FORMATSTR = '%3d   %8.6f ' + '%8.6f '*(len(pdists)-1) + '| %8.6f'
     for val in vals:
         print FORMATSTR % val
-    
+
     # Print the totals for each column (should all be 1.0)
     zvals = zip(*vals)
     def sum(lst): return reduce(lambda x,y:x+y, lst, 0)

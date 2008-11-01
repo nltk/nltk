@@ -79,7 +79,7 @@ class BaselineNamedEntityChunkTagger(ChunkTaggerI):
                     if index == 0:
                         iob_sent.append((word, self.BEGINS))
                     else:
-                        iob_sent.append((word, self.OUT))
+                        iob_sent.append((word, self.IN))
         return iob_sent
 
 
