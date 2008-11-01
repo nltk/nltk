@@ -129,7 +129,6 @@ import sys
 
 import nltk.data
 
-from util import *
 
 ###########################################################################
 # Chat-80 relation metadata bundles needed to build the valuation
@@ -239,7 +238,7 @@ class Concept(object):
     def __str__(self):
         _extension = ''
         for element in sorted(self.extension):
-             _extension += element + ','
+            _extension += element + ','
         _extension = _extension[:-1]
         return "Label = '%s'\nArity = %s\nExtension = {%s}" % \
                (self.prefLabel, self.arity, _extension)
@@ -566,7 +565,7 @@ def label_indivs(valuation, lexicon=False):
         lex = make_lex(entities)
         open("chat_pnames.cfg", mode='w').writelines(lex)
     # read the pairs into the valuation
-    valuation.read(pairs)
+    valuation.update(pairs)
     return valuation
 
 def make_lex(symbols):
