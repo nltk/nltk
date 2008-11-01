@@ -126,8 +126,9 @@ import re
 import shelve
 import os
 import sys
+import nltk
 
-import nltk.data
+
 
 
 ###########################################################################
@@ -238,7 +239,9 @@ class Concept(object):
     def __str__(self):
         _extension = ''
         for element in sorted(self.extension):
-            _extension += element + ','
+            if isinstance(element, tuple):
+                element = '(%s, %s)' % (element)
+            _extension += element + ', '
         _extension = _extension[:-1]
         return "Label = '%s'\nArity = %s\nExtension = {%s}" % \
                (self.prefLabel, self.arity, _extension)
@@ -321,7 +324,7 @@ class Concept(object):
 
                     
 
-def clause2concepts(filename, rel_name, closures, schema):
+def clause2concepts(filename, rel_name, schema, closures=[]):
     """
     Convert a file of Prolog clauses into a list of L{Concept} objects.
 
@@ -331,6 +334,8 @@ def clause2concepts(filename, rel_name, closures, schema):
     @type rel_name: string
     @param schema: the schema used in a set of relational tuples
     @type schema: list
+    @param closures: closure properties for the extension of the concept
+    @type closures: list
     @return: a list of L{Concept}s
     @rtype: list
     """
@@ -450,7 +455,7 @@ def process_bundle(rels):
         schema = rel['schema']
         filename = rel['filename']
 
-        concept_list = clause2concepts(filename, rel_name, closures, schema)
+        concept_list = clause2concepts(filename, rel_name, schema, closures)
         for c in concept_list:
             label = c.prefLabel
             if(label in concepts.keys()):
@@ -476,7 +481,7 @@ def make_valuation(concepts, read=False, lexicon=False):
     vals = []
     
     for c in concepts:
-         vals.append((c.prefLabel, c.extension))
+        vals.append((c.prefLabel, c.extension))
     if lexicon: read = True
     if read:
         from nltk.sem import Valuation
@@ -703,6 +708,9 @@ Valuation object for use in the NLTK semantics package.
         
 
 if __name__ == '__main__':
-    main()
+    schema = ['city', 'country', 'population']
+    for c in clause2concepts('cities.pl', 'city', schema):
+        print c
+    #main()
 
 
