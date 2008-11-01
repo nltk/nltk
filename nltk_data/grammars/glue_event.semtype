@@ -28,23 +28,23 @@ no_quant : (\P Q.-exists x.(P(x) & Q(x)), ((super.v -o super.r) -o ((super.f -o 
 
 #Nouns
 NN : (\x.<word>(x), (v -o r)) : [spec]
-NN : (\P Q.exists x.(P(x) & Q(x)), ((v -o r) -o ((f -o var) -o var))), (\x.<word>(x), (v -o r)) : [] # treat a noun missing its spec as implicitly existentially quantified
-NNP : (\P Q.exists x.(P(x) & Q(x)), ((v -o r) -o ((f -o var) -o var))), (\x.<word>(x), (v -o r))
+NN : (\P Q e.exists x.(P(x) & Q(x,e)), ((v -o r) -o ((f -o var) -o var))), (\x.<word>(x), (v -o r)) : [] # treat a noun missing its spec as implicitly existentially quantified
+NNP : (\P Q e.exists x.(P(x) & Q(x,e)), ((v -o r) -o ((f -o var) -o var))), (\x.<word>(x), (v -o r))
 NNS(NN)
-PRP : (\P Q.exists x.(P(x) & Q(x)), ((v -o r) -o ((f -o var) -o var))), (\x.PRO(x), (v -o r))
+PRP : (\P Q e.exists x.(P(x) & Q(x,e)), ((v -o r) -o ((f -o var) -o var))), (\x.PRO(x), (v -o r))
 
 #Verbs
-VB : (\x.exists e.(<word>(e) & subj(e,x)), (subj -o f)) : [subj] #iv
-VB : (\x y.exists e.(<word>(e) & subj(e,x) & obj(e,y)), (subj -o (obj -o f))) : [subj, obj] #tv
-VB : (\y.exists e x.(<word>(e) & subj(e,x) & obj(e,y)), (obj -o f)) : [obj] #incomplete tv
-VB : (\x y z.exists e.(<word>(e) & subj(e,x) & obj(e,y) & theme(e,z)), (subj -o (obj -o (theme -o f)))) : [subj, obj, theme] #dtv
-VB : (\y z.exists e x.(<word>(e) & subj(e,x) & obj(e,y) & theme(e,z)), obj -o (theme -o f)) : [obj, theme] #incomplete dtv
-VB : (\x z.exists e y.(<word>(e) & subj(e,x) & obj(e,y) & theme(e,z)), subj -o (theme -o f)) : [subj, theme] #incomplete dtv
-VB : (\z.exists e x y.(<word>(e) & subj(e,x) & obj(e,y) & theme(e,z)), theme -o f) : [theme] #incomplete dtv
-VB : (\x y.exists e.(<word>(e) & subj(e,x) & comp(e,y) & P(e)), (subj -o (comp -o f))) : [subj, comp] #tv_comp
-VB : (\x P.exists e.(<word>(e) & subj(e,x) & xcomp(e,P)), (subj -o ((xcomp.subj -o xcomp) -o f))) : [subj, xcomp] #equi
-VB : (\x y P.exists e.(<word>(e) & subj(e,x) & obj(e,y) & (xcomp e P)), (subj -o (obj -o ((xcomp.subj -o xcomp) -o f)))) : [subj, obj, xcomp] # object equi
-VB : (\P.exists e.(<word>(e) & xcomp(e,P)), (xcomp -o f)) : [xcomp] #raising
+VB : (\x e.(<word>(e) & subj(e,x)), (subj -o f)) : [subj] #iv
+VB : (\x y e.(<word>(e) & subj(e,x) & obj(e,y)), (subj -o (obj -o f))) : [subj, obj] #tv
+VB : (\y e.exists x.(<word>(e) & subj(e,x) & obj(e,y)), (obj -o f)) : [obj] #incomplete tv
+VB : (\x y z e.(<word>(e) & subj(e,x) & obj(e,y) & theme(e,z)), (subj -o (obj -o (theme -o f)))) : [subj, obj, theme] #dtv
+VB : (\y z e.exists x.(<word>(e) & subj(e,x) & obj(e,y) & theme(e,z)), obj -o (theme -o f)) : [obj, theme] #incomplete dtv
+VB : (\x z e.exists y.(<word>(e) & subj(e,x) & obj(e,y) & theme(e,z)), subj -o (theme -o f)) : [subj, theme] #incomplete dtv
+VB : (\z e.exists x y.(<word>(e) & subj(e,x) & obj(e,y) & theme(e,z)), theme -o f) : [theme] #incomplete dtv
+VB : (\x y e.(<word>(e) & subj(e,x) & comp(e,y) & P(e)), (subj -o (comp -o f))) : [subj, comp] #tv_comp
+VB : (\x P e.(<word>(e) & subj(e,x) & xcomp(e,P)), (subj -o ((xcomp.subj -o xcomp) -o f))) : [subj, xcomp] #equi
+VB : (\x y P e.(<word>(e) & subj(e,x) & obj(e,y) & (xcomp e P)), (subj -o (obj -o ((xcomp.subj -o xcomp) -o f)))) : [subj, obj, xcomp] # object equi
+VB : (\P e.(<word>(e) & xcomp(e,P)), (xcomp -o f)) : [xcomp] #raising
 VBD(VB) : (\P.PAST(P), (f -o f))
 VBZ(VB)
 
@@ -56,7 +56,7 @@ RB(vmod) : []
 tense : (\P.<word>(P), (super.f -o super.f)) : []
 
 #Prepositions
-IN : (\P Q e.P(\x e3.(<word>(e3,x) & Q(e3)),e), ((subj -o subj.var) -o subj.var) -o (super -o super)) : [subj]
+IN : (\P Q e1.P(\x e2.(<word>(e2,x) & Q(e2)),e1), ((subj -o subj.var) -o subj.var) -o (super -o super)) : [subj]
 IN(vmod) : []
 
 #Conjunctions

@@ -90,20 +90,19 @@ class ConstantExpression(AtomicExpression):
         If 'other' is a constant, then it must be equal to 'self'.  If 'other' is a variable,
         then it must not be bound to anything other than 'self'.
         
-        @param other: C{AtomicExpression}
+        @param other: C{Expression}
         @param bindings: C{BindingDict} A dictionary of all current bindings
         @return: C{BindingDict} A new combined dictionary of of 'bindings' and any new binding
         @raise UnificationException: If 'self' and 'other' cannot be unified in the context of 'bindings'
         """
-        assert isinstance(other, AtomicExpression)
-        if isinstance(other, ConstantExpression):
-            if self == other:
-                return bindings
-        elif isinstance(other, VariableExpression):
+        assert isinstance(other, Expression)
+        if isinstance(other, VariableExpression):
             try:
                 return bindings + BindingDict([(other, self)])
             except VariableBindingException:
                 pass
+        elif self == other:
+                return bindings
         raise UnificationException(self, other, bindings)
 
 class VariableExpression(AtomicExpression):
@@ -111,12 +110,12 @@ class VariableExpression(AtomicExpression):
         """
         'self' must not be bound to anything other than 'other'.
         
-        @param other: C{AtomicExpression}
+        @param other: C{Expression}
         @param bindings: C{BindingDict} A dictionary of all current bindings
         @return: C{BindingDict} A new combined dictionary of of 'bindings' and the new binding
         @raise UnificationException: If 'self' and 'other' cannot be unified in the context of 'bindings'
         """
-        assert isinstance(other, AtomicExpression)
+        assert isinstance(other, Expression)
         try:
             if self == other:
                 return bindings
@@ -274,11 +273,11 @@ class BindingDict:
         variable is already bound to its argument.
         
         @param variable: C{VariableExpression} The variable bind
-        @param binding: C{AtomicExpression} The atomic to which 'variable' should be bound
+        @param binding: C{Expression} The expression to which 'variable' should be bound
         @raise VariableBindingException: If the variable cannot be bound in this dictionary
         """
         assert isinstance(variable, VariableExpression)
-        assert isinstance(binding, AtomicExpression) 
+        assert isinstance(binding, Expression) 
         
         assert variable != binding
         
@@ -296,7 +295,7 @@ class BindingDict:
         """
         Return the expression to which 'variable' is bound
         """
-        assert isinstance(variable, AtomicExpression)
+        assert isinstance(variable, VariableExpression)
 
         intermediate = self.d[variable]
         while intermediate:
@@ -398,4 +397,9 @@ def demo():
 
 
 if __name__ == '__main__':
-    demo()
+#    demo()
+
+    gf = LinearLogicParser().parse('g -o f')
+    X = LinearLogicParser().parse('X')
+    print BindingDict([(X,gf)])
+    

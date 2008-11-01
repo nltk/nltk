@@ -571,7 +571,7 @@ def test_depgraph_to_glue(depgraph_string, verbosity=0):
     print ''
     
 if __name__ == '__main__':
-    demo()
+#    demo()
 
 #    treebank(1,2)
     
@@ -582,13 +582,14 @@ if __name__ == '__main__':
 4    Bill    _    NNP    _    _    3    SUBJ    _    _
 """, 1)
     
-    john = GlueFormula(r"\Q e.exists x.(John(x) & Q(x,e))", "(g -o G) -o G")
-    look = GlueFormula(r"\x e.(look(e) & subj(e,x))", "g -o f")
-    at = GlueFormula(r"\P Q e.P(\x e3.(at(e3,x) & Q(e)),e)", "((j -o X) -o X) -o (f -o f)")
-    a_dog = GlueFormula(r"\Q e.exists y.(dog(y) & Q(y,e))", "((j -o J) -o J)")
+    john = GlueFormula(r"\Q e1.exists x.(John(x) & Q(x,e1))", "(g -o G) -o G")
+    look = GlueFormula(r"\x e2.(look(e2) & subj(e2,x))", "g -o f")
+    at = GlueFormula(r"\P Q e4.P(\x e3.(at(e3,x) & Q(e3)),e4)", "((j -o J) -o J) -o (f -o f)")
+    bill = GlueFormula(r"\Q e5.exists y.(Bill(y) & Q(y,e5))", "((j -o J) -o J)")
 
     john_look = john.applyto(look).simplify()
     print john_look
-    at_a_dog = at.applyto(a_dog).simplify()
+    at_a_dog = at.applyto(bill).simplify()
     print at_a_dog
     print at_a_dog.applyto(john_look).simplify()
+    print 
