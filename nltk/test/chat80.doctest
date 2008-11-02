@@ -55,8 +55,8 @@ The fields in the table are mapped to binary predicates. The first
 argument of the predicate is the primary key, while the second
 argument is the data in the relevant field. Thus, in the above
 example, the third field is mapped to the binary predicate
-*population_of*, whose extension is a set of pairs such as ``'(athens,
-1368)'``.
+*population_of*, whose extension is a set of pairs such as
+``'(athens, 1368)'``.
 
 An exception to this general framework is required by the relations in
 the files ``borders.pl`` and ``contains.pl``. These contain facts of the
@@ -94,16 +94,45 @@ attributes, in particular a ``prefLabel``, an arity and ``extension``.
     >>> print c1
     Label = 'dog'
     Arity = 1
-    Extension = {d1,d2}
+    Extension = ['d2', 'd1']
 
 
-The ``extension`` attribut makes it easier to inspect the output of
-the extraction. In addition, the ``extension`` can be further
+
+The ``extension`` attribute makes it easier to inspect the output of
+the extraction.
+
+    >>> schema = ['city', 'country', 'population']
+    >>> concepts = chat80.clause2concepts('cities.pl', 'city', schema)
+    >>> concepts
+    [Concept('city'), Concept('country_of'), Concept('population_of')]
+    >>> for c in concepts:
+    ...     print "%s:\n\t%s" % (c.prefLabel, c.extension[:4])
+    city:
+    	['bucharest', 'hyderabad', 'mexico_city', 'los_angeles']
+    country_of:
+    	[('chungking', 'china'), ('karachi', 'pakistan'), ('singapore_city', 'singapore'), ('athens', 'greece')]
+    population_of:
+    	[('sian', '629'), ('dairen', '544'), ('peking', '2031'), ('istanbul', '1215')]
+
+In addition, the ``extension`` can be further
 processed: in the case of the ``'border'`` relation, we check that the
 relation is **symmetric**, and in the case of the ``'contain'``
 relation, we carry out the **transitive closure**. The closure
 properties associated with a concept is indicated in the relation
 metadata, as indicated earlier.
+
+    >>> borders = set([('a1', 'a2'), ('a2', 'a3')])
+    >>> c2 = chat80.Concept('borders', arity=2, extension=borders)
+    >>> print c2
+    Label = 'borders'
+    Arity = 2
+    Extension = [('a1', 'a2'), ('a2', 'a3')]
+    >>> c3 = chat80.Concept('borders', arity=2, closures=['symmetric'], extension=borders)
+    >>> c3.close()
+    >>> print c3
+    Label = 'borders'
+    Arity = 2
+    Extension = [('a2', 'a1'), ('a1', 'a2'), ('a3', 'a2'), ('a2', 'a3')]
 
 The ``extension`` of a ``Concept`` object is then incorporated into a
 ``Valuation`` object.
