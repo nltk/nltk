@@ -234,17 +234,21 @@ class Concept(object):
         self.arity = arity
         self.altLabels = altLabels
         self.closures = closures
-        self.extension = extension
+        #keep _extension internally as a set
+        self._extension = extension
+        #public access is via a list (for slicing)
+        self.extension = list(extension)
 
     def __str__(self):
-        _extension = ''
-        for element in sorted(self.extension):
-            if isinstance(element, tuple):
-                element = '(%s, %s)' % (element)
-            _extension += element + ', '
-        _extension = _extension[:-1]
-        return "Label = '%s'\nArity = %s\nExtension = {%s}" % \
-               (self.prefLabel, self.arity, _extension)
+        #_extension = ''
+        #for element in sorted(self.extension):
+            #if isinstance(element, tuple):
+                #element = '(%s, %s)' % (element)
+            #_extension += element + ', '
+        #_extension = _extension[:-1]
+
+        return "Label = '%s'\nArity = %s\nExtension = %s" % \
+               (self.prefLabel, self.arity, self.extension)
 
     def __repr__(self):
         return "Concept('%s')" % self.prefLabel
@@ -258,8 +262,9 @@ class Concept(object):
         @rtype: set
 
         """
-        self.extension.add(data)
-        return self.extension
+        self._extension.add(data)
+        self.extension = list(self._extension)
+        return self._extension
 
 
     def _make_graph(self, s):
@@ -308,20 +313,20 @@ class Concept(object):
 
         """
         from nltk.sem import is_rel
-        assert is_rel(self.extension)
+        assert is_rel(self._extension)
         if 'symmetric' in self.closures:
             pairs = []
-            for (x, y) in self.extension:
+            for (x, y) in self._extension:
                 pairs.append((y, x))
             sym = set(pairs)
-            self.extension = self.extension.union(sym)
+            self._extension = self._extension.union(sym)
         if 'transitive' in self.closures:
-            all =  self._make_graph(self.extension)
+            all =  self._make_graph(self._extension)
             closed =  self._transclose(all)
             trans = self._make_pairs(closed)
             #print sorted(trans)
-            self.extension = self.extension.union(trans)
-
+            self._extension = self._extension.union(trans)
+        self.extension = list(self._extension)
                     
 
 def clause2concepts(filename, rel_name, schema, closures=[]):
