@@ -176,3 +176,28 @@ using SQL statements.
     osaka      2547
     tokyo      8535
     yokohama   1143
+
+..
+    q = "SELECT * FROM city_table"
+    for answer in chat80.sql_query(path, q):
+    print answer
+    
+The (deliberately naive) grammar ``sql.fcfg`` translates from English
+to SQL:
+
+    >>> nltk.data.show_cfg('grammars/sql.fcfg')
+
+Given this grammar, we can express, and then execute, queries in English.
+
+    >>> from nltk.parse import load_earley
+    >>> from string import join
+    >>> cp = load_earley('grammars/sql.fcfg')
+    >>> query = 'Which cities are in USA'
+    >>> trees = cp.nbest_parse(query.split())
+    >>> answer = trees[0].node['sem']
+    >>> q = join(answer)
+    >>> print q
+    SELECT City FROM city_table WHERE Country="united_states"
+    >>> rows = chat80.sql_query(path, q)
+    >>> for r in rows: print "%s" % r,
+    chicago detroit los_angeles new_york philadelphia
