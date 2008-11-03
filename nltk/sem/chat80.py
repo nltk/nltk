@@ -124,6 +124,7 @@ current directory.
 
 import re
 import shelve
+import sqlite3
 import os
 import sys
 import nltk
@@ -309,8 +310,6 @@ class Concept(object):
 
         @return: a new extension for the C{Concept} in which the
                  relation is closed under a given property
-
-
         """
         from nltk.sem import is_rel
         assert is_rel(self._extension)
@@ -334,15 +333,15 @@ def clause2concepts(filename, rel_name, schema, closures=[]):
     Convert a file of Prolog clauses into a list of L{Concept} objects.
 
     @param filename: filename containing the relations
-    @type filename: string
+    @type filename: C{str}
     @param rel_name: name of the relation 
-    @type rel_name: string
+    @type rel_name: C{str}
     @param schema: the schema used in a set of relational tuples
-    @type schema: list
+    @type schema: C{list}
     @param closures: closure properties for the extension of the concept
-    @type closures: list
+    @type closures: C{list}
     @return: a list of L{Concept}s
-    @rtype: list
+    @rtype: C{list}
     """
     concepts = []
     # position of the subject of a binary relation
@@ -367,6 +366,55 @@ def clause2concepts(filename, rel_name, schema, closures=[]):
         concepts.append(binary_concept(field, closures, subj, obj, records))
 
     return concepts
+
+def cities2table(filename, rel_name, dbname, verbose=False, setup=False):
+    """
+    Convert a file of Prolog clauses into a database table.
+    
+    This is not generic, since it doesn't allow arbitrary
+    schemas to be set as a parameter.
+    
+    Intended usage::
+        
+        cities2table('cities.pl', 'city', 'city.db', verbose=True, setup=True) 
+
+    @param filename: filename containing the relations
+    @type filename: C{str}
+    @param rel_name: name of the relation 
+    @type rel_name: C{str}
+    @param dbname: filename of persistent store
+    @type schema: C{str}
+    """
+    records = _str2records(filename, rel_name)
+    connection =  sqlite3.connect(dbname)
+    cur = connection.cursor()
+    if setup:
+        cur.execute('''CREATE TABLE city_table
+        (City text, Country text, Population int)''')
+        
+    table_name = "city_table"
+    for t in records:
+        cur.execute('insert into %s values (?,?,?)' % table_name, t)
+        if verbose:
+            print "inserting values into %s: " % table_name, t
+    connection.commit()
+    if verbose:
+        print "Commiting update to %s" % dbname
+    cur.close()
+
+def sql_query(dbname, query):
+    """
+    Execute an SQL query over a database.
+    @param dbname: filename of persistent store
+    @type schema: C{str}
+    @param query: SQL query 
+    @type rel_name: C{str}
+    """
+    connection =  sqlite3.connect(dbname)
+    # return ASCII strings if possible
+    connection.text_factory = sqlite3.OptimizedUnicode
+    cur = connection.cursor()
+    return cur.execute(query)
 
 def _str2records(filename, rel):
     """
@@ -396,7 +444,7 @@ def unary_concept(label, subj, records):
     @param subj: position in the record of the subject of the predicate
     @type subj: int
     @param records: a list of records
-    @type records: list of lists
+    @type records: C{list} of C{list}s
     @return: L{Concept} of arity 1
     @rtype: L{Concept}
     """
@@ -421,15 +469,15 @@ def binary_concept(label, closures, subj, obj, records):
     
 
     @param label: the base part of the preferred label for the concept
-    @type label: string
+    @type label: C{str}
     @param closures: closure properties for the extension of the concept
-    @type closures: list
+    @type closures: C{list}
     @param subj: position in the record of the subject of the predicate
-    @type subj: int
+    @type subj: C{int}
     @param obj: position in the record of the object of the predicate
-    @type obj: int
+    @type obj: C{int}
     @param records: a list of records
-    @type records: list of lists
+    @type records: C{list} of C{list}s
     @return: L{Concept} of arity 2
     @rtype: L{Concept}
     """
@@ -449,9 +497,9 @@ def process_bundle(rels):
     dictionary of concepts, indexed by the relation name.
 
     @param rels: bundle of metadata needed for constructing a concept
-    @type rels: list of dictionaries
+    @type rels: C{list} of C{dict}
     @return: a dictionary of concepts, indexed by the relation name.
-    @rtype: dict
+    @rtype: C{dict}
     """
     concepts = {}
     for rel in rels:
@@ -480,8 +528,8 @@ def make_valuation(concepts, read=False, lexicon=False):
     @param concepts: concepts
     @type concepts: list of L{Concept}s
     @param read: if C{True}, C{(symbol, set)} pairs are read into a C{Valuation}
-    @type read: bool
-    @rtype: list or a L{Valuation}
+    @type read: C{bool}
+    @rtype: C{list} or a L{Valuation}
     """
     vals = []
     
@@ -504,7 +552,7 @@ def val_dump(rels, db):
     persistent database.
 
     @param rels: bundle of metadata needed for constructing a concept
-    @type rels: list of dictionaries
+    @type rels: C{list} of C{dict}
     @param db: name of file to which data is written.
                The suffix '.db' will be automatically appended.
     @type db: string
@@ -713,9 +761,9 @@ Valuation object for use in the NLTK semantics package.
         
 
 if __name__ == '__main__':
-    schema = ['city', 'country', 'population']
-    for c in clause2concepts('cities.pl', 'city', schema):
-        print c
+
+    for row in sql_query('city.db', "SELECT * FROM city_table"):
+        print row
     #main()
 
 
