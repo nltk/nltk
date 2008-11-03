@@ -105,7 +105,7 @@ the extraction.
     >>> concepts = chat80.clause2concepts('cities.pl', 'city', schema)
     >>> concepts
     [Concept('city'), Concept('country_of'), Concept('population_of')]
-    >>> for c in concepts:
+    >>> for c in concepts: # doctest: +NORMALIZE_WHITESPACE
     ...     print "%s:\n\t%s" % (c.prefLabel, c.extension[:4])
     city:
     	['bucharest', 'hyderabad', 'mexico_city', 'los_angeles']
@@ -157,3 +157,22 @@ following for each individual constant::
 
 The set of rules is written to the file ``chat_pnames.fcfg`` in the
 current directory.
+
+SQL Query
+=========
+
+The ``city`` relation is also available in RDB form and can be queried
+using SQL statements.
+
+    >>> import nltk
+    >>> path = nltk.data.find('samples/city.db')
+    >>> q = "SELECT City, Population FROM city_table WHERE Country = 'japan'"
+    >>> for answer in chat80.sql_query(path, q):
+    ...     print "%-10s %4s" % answer
+    kobe        765
+    kyoto      1204
+    nagoya     1337
+    nanking    1020
+    osaka      2547
+    tokyo      8535
+    yokohama   1143
