@@ -410,7 +410,8 @@ def sql_query(dbname, query):
     @param query: SQL query 
     @type rel_name: C{str}
     """
-    connection =  sqlite3.connect(dbname)
+    path = nltk.data.find('samples/' + dbname)
+    connection =  sqlite3.connect(path)
     # return ASCII strings if possible
     connection.text_factory = sqlite3.OptimizedUnicode
     cur = connection.cursor()
