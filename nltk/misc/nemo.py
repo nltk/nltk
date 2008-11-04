@@ -133,7 +133,7 @@ def launchRefresh(_):
     rz.fld.after_idle(rz.refresh)
 
 
-if __name__ == '__main__':
+def finding_nemo():
     root = tk.Tk()
     root.resizable(height=False,width=True)
     root.title(windowTitle)
@@ -148,3 +148,7 @@ if __name__ == '__main__':
     root.bind_all("<Key>",launchRefresh)
     launchRefresh(None)
     root.mainloop()
+
+if __name__ == '__main__':
+    finding_nemo()
+    

@@ -344,7 +344,7 @@ class FreqDist(dict):
         for i in range(len(samples)):
             print "%4d" % freqs[i],
         print
-        
+
     def sorted_samples(self):
         raise AttributeError, "Use FreqDist.keys(), or iterate over the FreqDist to get its samples in sorted order (most frequent first)"
     
@@ -426,6 +426,24 @@ class FreqDist(dict):
 #        if samples:
 #            items = [(sample, self[sample]) for sample in set(samples)]
 
+    def __eq__(self, other):
+        if not isinstance(other, FreqDist): return False
+        return self.items() == other.items() # items are already sorted
+    def __ne__(self, other):
+        return not (self == other)
+    def __le__(self, other):
+        if not isinstance(other, FreqDist): return False
+        return set(self).issubset(other) and not(sum(self[key] > other[key] for key in self))
+    def __lt__(self, other):
+        if not isinstance(other, FreqDist): return False
+        return self <= other and self != other
+    def __ge__(self, other):
+        if not isinstance(other, FreqDist): return False
+        return other <= self
+    def __gt__(self, other):
+        if not isinstance(other, FreqDist): return False
+        return other < self
+    
     def __repr__(self):
         """
         @return: A string representation of this C{FreqDist}.
@@ -1511,6 +1529,26 @@ class ConditionalFreqDist(object):
                 print "%4d" % f,
             print
 
+    def __eq__(self, other):
+        if not isinstance(other, ConditionalFreqDist): return False
+        return self.conditions() == other.conditions() \
+               and not (sum(self[c] != other[c] for c in self.conditions())) # conditions are already sorted
+    def __ne__(self, other):
+        return not (self == other)
+    def __le__(self, other):
+        if not isinstance(other, ConditionalFreqDist): return False
+        return set(self.conditions()).issubset(other.conditions()) \
+               and not(sum(self[c] > other[c] for c in self.conditions()))
+    def __lt__(self, other):
+        if not isinstance(other, ConditionalFreqDist): return False
+        return self <= other and self != other
+    def __ge__(self, other):
+        if not isinstance(other, ConditionalFreqDist): return False
+        return other <= self
+    def __gt__(self, other):
+        if not isinstance(other, ConditionalFreqDist): return False
+        return other < self
+    
     def __repr__(self):
         """
         @return: A string representation of this

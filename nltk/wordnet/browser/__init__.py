@@ -103,7 +103,7 @@ The second alternative to browse the database
 """
 
 # TODO: throughout this package variable names and docstrings need
-# modifying to be complaint with NLTK's coding standards.  Tests also
+# modifying to be compliant with NLTK's coding standards.  Tests also
 # need to be develop to ensure this continues to work in the face of
 # changes to other NLTK packages.
 

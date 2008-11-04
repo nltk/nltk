@@ -106,7 +106,7 @@ def wordfinder(words, rows=20, cols=20, attempts=50,
     
     return grid, used
 
-def demo():
+def word_finder():
     from nltk.corpus import words
     wordlist = words.words()
     random.shuffle(wordlist)
@@ -125,4 +125,4 @@ def demo():
         print "%d:" % (i+1), used[i]
 
 if __name__ == '__main__':
-    demo()
+    word_finder()
