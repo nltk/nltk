@@ -45,7 +45,7 @@ class PlaintextCorpusReader(CorpusReader):
         located at the given root directory.  Example usage:
 
             >>> root = '/...path to corpus.../'
-            >>> reader = PlaintextCorpusReader(root, '.*', '.txt')
+            >>> reader = PlaintextCorpusReader(root, '.*\.txt')
         
         @param root: The root directory for this corpus.
         @param files: A list or regexp specifying the files in this corpus.
