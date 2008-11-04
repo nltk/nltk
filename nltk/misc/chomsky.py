@@ -117,14 +117,14 @@ scope of a complex symbol.
 import textwrap, random
 from itertools import chain, islice, izip
 
-def chomsky(times=1, line_length=72):
+def generate_chomsky(times=5, line_length=72):
     parts = []
     for part in (leadins, subjects, verbs, objects):
         phraselist = map(str.strip, part.splitlines())
         random.shuffle(phraselist)
         parts.append(phraselist)
     output = chain(*islice(izip(*parts), 0, times))
-    return textwrap.fill(string.join(output), line_length)
+    print textwrap.fill(string.join(output), line_length)
 
-print chomsky(5)
-
+if __name__ == '__main__': 
+    generate_chomsky()

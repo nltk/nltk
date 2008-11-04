@@ -7,7 +7,7 @@
 # For license information, see LICENSE.TXT
 
 """Natural Language Toolkit: Wordnet Interface: Wordnet Text Mode Browser
-See also the NLTK Wordnet Graphical Browser in nltk_contrib.wordnet
+See also the NLTK Wordnet Graphical Browser in nltk.wordnet.browser
 """
 
 from textwrap import TextWrapper

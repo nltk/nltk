@@ -15,7 +15,7 @@ class WordListCorpusReader(CorpusReader):
     """
     List of words, one per line.  Blank lines are ignored.
     """
-    def words(self, files=None):
+    def words(self, files='en'):
         return line_tokenize(self.raw(files))
 
     def raw(self, files=None):

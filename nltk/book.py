@@ -26,7 +26,7 @@ text5 = Text(nps_chat.words(['10-26-teens_706posts.xml',
                              '11-08-teens_706posts.xml',
                              '11-09-teens_706posts.xml']),
                              name="Teen Chat Corpus")
-print "text5", text5.name
+print "text5:", text5.name
 
 text6 = Text(gutenberg.words('chesterton-thursday.txt'))
 print "text6:", text6.name

@@ -16,7 +16,6 @@ import os
 from itertools import islice
 from pprint import pprint
 from collections import defaultdict
-from UserDict import UserDict
 
 from nltk.internals import Deprecated, slice_bounds
 
@@ -453,19 +452,19 @@ def ibigrams(sequence):
 # Ordered Dictionary
 ##########################################################################
 
-class OrderedDict(UserDict):
+class OrderedDict(dict):
     def __init__(self, data=None, **kwargs):
         self._keys = self.keys(data, kwargs.get('keys'))
         self._default_factory = kwargs.get('default_factory')
-        UserDict.__init__(self, data)
+        dict.__init__(self, data)
 
     def __delitem__(self, key):
-        UserDict.__delitem__(self, key)
+        dict.__delitem__(self, key)
         self._keys.remove(key)
         
     def __getitem__(self, key):
         try:
-            return UserDict.__getitem__(self, key)
+            return dict.__getitem__(self, key)
         except KeyError:
             return self.__missing__(key)
 
@@ -479,18 +478,18 @@ class OrderedDict(UserDict):
             return self._default_factory()
         
     def __setitem__(self, key, item):
-        UserDict.__setitem__(self, key, item)
+        dict.__setitem__(self, key, item)
         if key not in self._keys:
             self._keys.append(key)
         
     def clear(self):
-        UserDict.clear(self)
+        dict.clear(self)
         self._keys.clear()
 
     def copy(self):
-        dict = UserDict.copy(self)
-        dict._keys = self._keys
-        return dict
+        d = dict.copy(self)
+        d._keys = self._keys
+        return d
 
     def items(self):
         return zip(self.keys(), self.values())
@@ -524,12 +523,12 @@ class OrderedDict(UserDict):
             raise KeyError()
 
     def setdefault(self, key, failobj=None):
-        UserDict.setdefault(self, key, failobj)
+        dict.setdefault(self, key, failobj)
         if key not in self._keys:
             self._keys.append(key)
 
     def update(self, data):
-        UserDict.update(self, data)
+        dict.update(self, data)
         for key in self.keys(data):
             if key not in self._keys:
                 self._keys.append(key)
@@ -976,6 +975,10 @@ class LazyMappedChain(Deprecated, LazyConcatenation):
     def __init__(self, lst, func):
         LazyConcatenation.__init__(self, LazyMap(func, lst))
 
+######################################################################
+# Binary Search in a File
+######################################################################
+
 # inherited from pywordnet, by Oliver Steele
 def binary_search_file(file, key, cache={}, cacheDepth=-1):
     """
@@ -1037,4 +1040,3 @@ def binary_search_file(file, key, cache={}, cacheDepth=-1):
             return None
 
     return None
-
