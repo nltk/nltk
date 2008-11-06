@@ -110,4 +110,5 @@ __all__ = [
     'BNCCorpusReader', 'ConllCorpusReader',
     'XMLCorpusReader', 'NPSChatCorpusReader',
     'SwadeshCorpusReader', 'WordNetCorpusReader',
+    'WordNetICCorpusReader',
 ]

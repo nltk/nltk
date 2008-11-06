@@ -174,6 +174,8 @@ webtext = LazyCorpusLoader(
     'webtext', PlaintextCorpusReader, r'(?!README|\.).*\.txt')
 wordnet = LazyCorpusLoader(
     'wordnet', WordNetCorpusReader)
+wordnet_ic = LazyCorpusLoader(
+    'wordnet_ic', WordNetICCorpusReader, '.*\.dat')
 words = LazyCorpusLoader(
     'words', WordListCorpusReader, r'(?!README|\.).*')
 ycoe = LazyCorpusLoader(
