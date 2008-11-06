@@ -368,12 +368,14 @@ class WordNetCorpusReader(CorpusReader):
                         synset.frame_ids.append(frame_number)
                         for lemma in synset.lemmas:
                             lemma.frame_ids.append(frame_number)
-                            lemma.frame_strings.append(frame_string_fmt)
+                            lemma.frame_strings.append(frame_string_fmt %
+                                                       lemma.name)
                     # only a specific word in the synset
                     else:
                         lemma = synset.lemmas[lemma_number - 1]
                         lemma.frame_ids.append(frame_number)
-                        lemma.frame_strings.append(frame_string_fmt)
+                        lemma.frame_strings.append(frame_string_fmt %
+                                                   lemma.name)
 
         # raise a more informative error with line text
         except ValueError, e:
@@ -421,13 +423,13 @@ class WordNetCorpusReader(CorpusReader):
                 for p in pos
                 for offset in index[self.morphy(lemma,p)].get(p, [])]
     
-    def lemmas(lemma, pos=None):
+    def lemmas(self, lemma, pos=None):
         return [lemma_obj
                 for synset in self.synsets(lemma, pos)
                 for lemma_obj in synset.lemmas
                 if lemma_obj.name == lemma]
 
-    def all_synsets(pos=None):
+    def all_synsets(self, pos=None):
         """Iterate over all synsets with a given part of speech tag.
         If no pos is specified, all synsets for all parts of speech
         will be loaded.
@@ -440,6 +442,7 @@ class WordNetCorpusReader(CorpusReader):
         # generate all synsets for each part of speech
         for pos_tag in pos_tags:
             data_file = self._data_file(pos)
+            data_file.seek(0)
             try:
                 # generate synsets for each line in the POS file
                 for line in data_file:
@@ -534,7 +537,7 @@ class WordNetCorpusReader(CorpusReader):
         ADV:  []}
 
     def _morphy(self, form, pos):
-        exceptions = _exception_map[pos] 
+        exceptions = self._exception_map[pos] 
         substitutions = self.MORPHOLOGICAL_SUBSTITUTIONS[pos]
     
         def try_substitutions(form):
