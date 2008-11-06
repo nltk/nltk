@@ -38,19 +38,19 @@ via index notation ``word[n]`` or via the ``word.getSenses()`` method.
 Proposed API
 ------------
 
-    >>> from nltk_contrib.wordnet import wordnet as wn
+    >>> from nltk.corpus import wordnet as wn
     >>> wn.synsets('dog') # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
     [Synset('dog.n.01'), Synset('frump.n.01'), Synset('dog.n.03'), Synset('cad.n.01'),
     Synset('frank.n.02'), Synset('pawl.n.01'), Synset('andiron.n.01'), Synset('chase.v.01')]
-    >>> wn.Synset('dog.n.01')
+    >>> wn.synset('dog.n.01')
     Synset('dog.n.01')
-    >>> wn.Synset('dog.n.01').definitions
+    >>> wn.synset('dog.n.01').definitions
     'a member of the genus Canis (probably descended from the common wolf) that has been domesticated by man since prehistoric times; occurs in many breeds'
-    >>> wn.Synset('dog.n.01').examples
+    >>> wn.synset('dog.n.01').examples
     ['the dog barked all night']
-    >>> wn.Synset('dog.n.01').lemmas
+    >>> wn.synset('dog.n.01').lemmas
     [Lemma('dog.n.01.dog'), Lemma('dog.n.01.domestic_dog'), Lemma('dog.n.01.Canis_familiaris')]
-    >>> wn.Lemma('dog.n.01.dog').synset
+    >>> wn.lemma('dog.n.01.dog').synset
     Synset('dog.n.01')
 
 
@@ -117,7 +117,7 @@ the supplied dict 'freq_data'.
 Proposed API
 ------------
 
-    >>> dog = wn.Synset('dog.n.01')
+    >>> dog = wn.synset('dog.n.01')
     >>> dog.hypernyms()
     [Synset('domestic_animal.n.01'), Synset('canine.n.02')]
     >>> dog.hyponyms() # doctest: +ELLIPSIS
@@ -153,20 +153,20 @@ eat (verb) 3
 Proposed API
 ------------
 
-    >>> eat = wn.Lemma('eat.v.03.eat')
+    >>> eat = wn.lemma('eat.v.03.eat')
     >>> eat
     Lemma('feed.v.06.eat')
     >>> eat.key
     'eat%2:34:02::'
     >>> eat.count()
     4
-    >>> wn.Lemma.from_key(eat.key)
+    >>> wn.lemma_from_key(eat.key)
     Lemma('feed.v.06.eat')
-    >>> wn.Lemma.from_key(eat.key).synset
+    >>> wn.lemma_from_key(eat.key).synset
     Synset('feed.v.06')
-    >>> wn.Lemma.from_key('feebleminded%5:00:00:retarded:00')
+    >>> wn.lemma_from_key('feebleminded%5:00:00:retarded:00')
     Lemma('backward.s.03.feebleminded')
-    >>> for lemma in wn.Synset('eat.v.03').lemmas:
+    >>> for lemma in wn.synset('eat.v.03').lemmas:
     ...     print lemma, lemma.count()
     ...
     Lemma('feed.v.06.feed') 3
@@ -188,9 +188,9 @@ Verb Frames
 Proposed API
 ------------
 
-    >>> wn.Synset('think.v.01').frame_ids
+    >>> wn.synset('think.v.01').frame_ids
     [5, 9]
-    >>> for lemma in wn.Synset('think.v.01').lemmas:
+    >>> for lemma in wn.synset('think.v.01').lemmas:
     ...     print lemma, lemma.frame_ids
     ...     print lemma.frame_strings
     ...
@@ -202,9 +202,9 @@ Proposed API
     ['Something consider something Adjective/Noun', 'Somebody consider somebody']
     Lemma('think.v.01.conceive') [5, 9]
     ['Something conceive something Adjective/Noun', 'Somebody conceive somebody']
-    >>> wn.Synset('stretch.v.02').frame_ids
+    >>> wn.synset('stretch.v.02').frame_ids
     [8]
-    >>> for lemma in wn.Synset('stretch.v.02').lemmas:
+    >>> for lemma in wn.synset('stretch.v.02').lemmas:
     ...     print lemma, lemma.frame_ids
     ...     print lemma.frame_strings
     ...
@@ -339,8 +339,8 @@ Lookup a synset by its offset. Used by repr(synset).
 Proposed API
 ------------
 
-    >>> dog = wn.Synset('dog.n.01')
-    >>> cat = wn.Synset('cat.n.01')
+    >>> dog = wn.synset('dog.n.01')
+    >>> cat = wn.synset('cat.n.01')
     >>> dog.path_similarity(cat)
     0.20000000000000001
     >>> dog.lch_similarity(cat)
@@ -350,10 +350,11 @@ Proposed API
 
 Using information content files:
 
-    >>> ic = wn.load_ic('ic-brown.dat')
+    >>> from nltk.corpus import wordnet_ic
+    >>> ic = wordnet_ic.ic('ic-brown.dat')
     >>> dog.jcn_similarity(cat, ic)
     0.44977552855167391
-    >>> ic = wn.load_ic('ic-semcor.dat')
+    >>> ic = wordnet_ic.ic('ic-semcor.dat')
     >>> dog.lin_similarity(cat, ic)
     0.88632886280862277
 
