@@ -441,8 +441,14 @@ class WordNetCorpusReader(CorpusReader):
     
         # generate all synsets for each part of speech
         for pos_tag in pos_tags:
-            data_file = self._data_file(pos)
-            data_file.seek(0)
+            # Open the file for reading.  Note that we can not re-use
+            # the file poitners from self._data_file_map here, because
+            # we're defining an iterator, and those file pointers might
+            # be moved while we're not looking.
+            if pos == ADJ_SAT: pos = ADJ
+            filename = 'data.%s' % self._FILEMAP[pos]
+            data_file = self.open(filename)
+            
             try:
                 # generate synsets for each line in the POS file
                 for line in data_file:
