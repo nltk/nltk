@@ -172,6 +172,8 @@ verbnet = LazyCorpusLoader(
     'verbnet', VerbnetCorpusReader, r'(?!\.).*\.xml')
 webtext = LazyCorpusLoader(
     'webtext', PlaintextCorpusReader, r'(?!README|\.).*\.txt')
+wordnet = LazyCorpusLoader(
+    'wordnet', WordNetCorpusReader)
 words = LazyCorpusLoader(
     'words', WordListCorpusReader, r'(?!README|\.).*')
 ycoe = LazyCorpusLoader(
