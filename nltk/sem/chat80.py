@@ -410,7 +410,7 @@ def sql_query(dbname, query):
     @param query: SQL query 
     @type rel_name: C{str}
     """
-    path = nltk.data.find('samples/' + dbname)
+    path = nltk.data.find(dbname)
     connection =  sqlite3.connect(path)
     # return ASCII strings if possible
     connection.text_factory = sqlite3.OptimizedUnicode
@@ -539,8 +539,8 @@ def make_valuation(concepts, read=False, lexicon=False):
     if lexicon: read = True
     if read:
         from nltk.sem import Valuation
-        val = Valuation(vals)
-        # val.read(vals)
+        val = Valuation({})
+        val.update(vals)
         # add labels for individuals
         val = label_indivs(val, lexicon=lexicon)
         return val
@@ -760,11 +760,18 @@ Valuation object for use in the NLTK semantics package.
                     print valuation
         
         
+def sql_demo():
+    """
+    Print out every row from the 'city.db' database.
+    """
+    print 
+    print "Using SQL to extract rows from 'city.db' RDB."
+    for row in sql_query('samples/city.db', "SELECT * FROM city_table"):
+        print row
+        
 
 if __name__ == '__main__':
-
-    for row in sql_query('city.db', "SELECT * FROM city_table"):
-        print row
-    #main()
+    main()
+    sql_demo()
 
 

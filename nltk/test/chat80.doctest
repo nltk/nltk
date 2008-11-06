@@ -1,5 +1,88 @@
 ========
-CHAT-80 
+    ('athens', 'greece', 1368)
+    ('bangkok', 'thailand', 1178)
+    ('barcelona', 'spain', 1280)
+    ('berlin', 'east_germany', 3481)
+    ('birmingham', 'united_kingdom', 1112)
+    ('bombay', 'india', 2839)
+    ('brussels', 'belgium', 986)
+    ('bucharest', 'romania', 1237)
+    ('budapest', 'hungary', 1757)
+    ('buenos_aires', 'argentina', 3404)
+    ('cairo', 'egypt', 2373)
+    ('calcutta', 'india', 2549)
+    ('canton', 'china', 1496)
+    ('caracas', 'venezuela', 488)
+    ('chicago', 'united_states', 3621)
+    ('chungking', 'china', 1100)
+    ('dairen', 'china', 544)
+    ('delhi', 'india', 1744)
+    ('detroit', 'united_states', 1850)
+    ('glasgow', 'united_kingdom', 1090)
+    ('hamburg', 'west_germany', 1700)
+    ('harbin', 'china', 760)
+    ('hongkong_city', 'hongkong', 2440)
+    ('hyderabad', 'india', 1086)
+    ('istanbul', 'turkey', 1215)
+    ('jakarta', 'indonesia', 533)
+    ('johannesburg', 'south_africa', 880)
+    ('karachi', 'pakistan', 1126)
+    ('kiev', 'soviet_union', 991)
+    ('kobe', 'japan', 765)
+    ('kowloon', 'china', 547)
+    ('kyoto', 'japan', 1204)
+    ('leningrad', 'soviet_union', 2800)
+    ('lima', 'peru', 835)
+    ('london', 'united_kingdom', 8346)
+    ('los_angeles', 'united_states', 1970)
+    ('madras', 'india', 1416)
+    ('madrid', 'spain', 1700)
+    ('manila', 'philippines', 1025)
+    ('melbourne', 'australia', 1595)
+    ('mexico_city', 'mexico', 3796)
+    ('milan', 'italy', 1269)
+    ('montreal', 'canada', 1109)
+    ('moscow', 'soviet_union', 4800)
+    ('mukden', 'china', 1551)
+    ('nagoya', 'japan', 1337)
+    ('nanking', 'japan', 1020)
+    ('naples', 'italy', 1012)
+    ('new_york', 'united_states', 7795)
+    ('osaka', 'japan', 2547)
+    ('paris', 'france', 2850)
+    ('peking', 'china', 2031)
+    ('philadelphia', 'united_states', 2072)
+    ('pusan', 'south_korea', 474)
+    ('rio_de_janeiro', 'brazil', 2413)
+    ('rome', 'italy', 1760)
+    ('saigon', 'vietnam', 695)
+    ('santiago', 'chile', 1350)
+    ('sao_paulo', 'brazil', 2228)
+    ('seoul', 'south_korea', 1446)
+    ('shanghai', 'china', 5407)
+    ('sian', 'china', 629)
+    ('singapore_city', 'singapore', 1264)
+    ('sydney', 'australia', 1898)
+    ('tehran', 'iran', 1010)
+    ('tientsin', 'china', 1795)
+    ('tokyo', 'japan', 8535)
+    ('toronto', 'canada', 668)
+    ('vienna', 'austria', 1766)
+    ('warsaw', 'poland', 965)
+    ('yokohama', 'japan', 1143)
+% start S
+    S[sem=(?np + ?vp)] -> NP[sem=?np] VP[sem=?vp]
+    VP[sem=(?v + ?pp)] -> IV[sem=?v] PP[sem=?pp]
+    VP[sem=(?v + ?np)] -> TV[sem=?v] NP[sem=?np]
+    NP[sem=(?det + ?n)] -> Det[sem=?det] N[sem=?n]
+    NP[sem='Country="japan"'] -> 'Japan'
+    NP[sem='Country="united_states"'] -> 'USA'
+    Det[sem='SELECT'] -> 'Which'
+    N[sem='City FROM city_table'] -> 'cities'
+    IV[sem='WHERE'] -> 'are'
+    PP[sem=?np] -> P[sem=?p] NP[sem=?np]
+    P -> 'in'
+-80 
 ========
 
 Chat-80 was a natural language system which allowed the user to
@@ -165,39 +248,143 @@ The ``city`` relation is also available in RDB form and can be queried
 using SQL statements.
 
     >>> import nltk
-    >>> path = nltk.data.find('samples/city.db')
-    >>> q = "SELECT City, Population FROM city_table WHERE Country = 'japan'"
-    >>> for answer in chat80.sql_query(path, q):
+    >>> q = "SELECT City, Population FROM city_table WHERE Country = 'china' and Population > 1000"
+    >>> for answer in chat80.sql_query('samples/city.db', q):
     ...     print "%-10s %4s" % answer
-    kobe        765
-    kyoto      1204
-    nagoya     1337
-    nanking    1020
-    osaka      2547
-    tokyo      8535
-    yokohama   1143
+    canton     1496
+    chungking  1100
+    mukden     1551
+    peking     2031
+    shanghai   5407
+    tientsin   1795
 
-..
-    q = "SELECT * FROM city_table"
-    for answer in chat80.sql_query(path, q):
-    print answer
+
+    >>> q = "SELECT * FROM city_table"
+    >>> for answer in chat80.sql_query('samples/city.db', q):
+    ...     print answer
+    ('athens', 'greece', 1368)
+    ('bangkok', 'thailand', 1178)
+    ('barcelona', 'spain', 1280)
+    ('berlin', 'east_germany', 3481)
+    ('birmingham', 'united_kingdom', 1112)
+    ('bombay', 'india', 2839)
+    ('brussels', 'belgium', 986)
+    ('bucharest', 'romania', 1237)
+    ('budapest', 'hungary', 1757)
+    ('buenos_aires', 'argentina', 3404)
+    ('cairo', 'egypt', 2373)
+    ('calcutta', 'india', 2549)
+    ('canton', 'china', 1496)
+    ('caracas', 'venezuela', 488)
+    ('chicago', 'united_states', 3621)
+    ('chungking', 'china', 1100)
+    ('dairen', 'china', 544)
+    ('delhi', 'india', 1744)
+    ('detroit', 'united_states', 1850)
+    ('glasgow', 'united_kingdom', 1090)
+    ('hamburg', 'west_germany', 1700)
+    ('harbin', 'china', 760)
+    ('hongkong_city', 'hongkong', 2440)
+    ('hyderabad', 'india', 1086)
+    ('istanbul', 'turkey', 1215)
+    ('jakarta', 'indonesia', 533)
+    ('johannesburg', 'south_africa', 880)
+    ('karachi', 'pakistan', 1126)
+    ('kiev', 'soviet_union', 991)
+    ('kobe', 'japan', 765)
+    ('kowloon', 'china', 547)
+    ('kyoto', 'japan', 1204)
+    ('leningrad', 'soviet_union', 2800)
+    ('lima', 'peru', 835)
+    ('london', 'united_kingdom', 8346)
+    ('los_angeles', 'united_states', 1970)
+    ('madras', 'india', 1416)
+    ('madrid', 'spain', 1700)
+    ('manila', 'philippines', 1025)
+    ('melbourne', 'australia', 1595)
+    ('mexico_city', 'mexico', 3796)
+    ('milan', 'italy', 1269)
+    ('montreal', 'canada', 1109)
+    ('moscow', 'soviet_union', 4800)
+    ('mukden', 'china', 1551)
+    ('nagoya', 'japan', 1337)
+    ('nanking', 'japan', 1020)
+    ('naples', 'italy', 1012)
+    ('new_york', 'united_states', 7795)
+    ('osaka', 'japan', 2547)
+    ('paris', 'france', 2850)
+    ('peking', 'china', 2031)
+    ('philadelphia', 'united_states', 2072)
+    ('pusan', 'south_korea', 474)
+    ('rio_de_janeiro', 'brazil', 2413)
+    ('rome', 'italy', 1760)
+    ('saigon', 'vietnam', 695)
+    ('santiago', 'chile', 1350)
+    ('sao_paulo', 'brazil', 2228)
+    ('seoul', 'south_korea', 1446)
+    ('shanghai', 'china', 5407)
+    ('sian', 'china', 629)
+    ('singapore_city', 'singapore', 1264)
+    ('sydney', 'australia', 1898)
+    ('tehran', 'iran', 1010)
+    ('tientsin', 'china', 1795)
+    ('tokyo', 'japan', 8535)
+    ('toronto', 'canada', 668)
+    ('vienna', 'austria', 1766)
+    ('warsaw', 'poland', 965)
+    ('yokohama', 'japan', 1143)
     
 The (deliberately naive) grammar ``sql.fcfg`` translates from English
 to SQL:
 
-    >>> nltk.data.show_cfg('grammars/sql.fcfg')
+    >>> nltk.data.show_cfg('grammars/sql0.fcfg')
+    % start S
+    S[sem=(?np + ?vp)] -> NP[sem=?np] VP[sem=?vp]
+    VP[sem=(?v + ?pp)] -> IV[sem=?v] PP[sem=?pp]
+    VP[sem=(?v + ?ap)] -> IV[sem=?v] AP[sem=?ap]
+    NP[sem=(?det + ?n)] -> Det[sem=?det] N[sem=?n]
+    PP[sem=?np] -> P[sem=?p] NP[sem=?np]
+    AP[sem=?pp] -> A[sem=?a] PP[sem=?pp]
+    NP[sem='Country="greece"'] -> 'Greece'
+    NP[sem='Country="china"'] -> 'China'
+    Det[sem='SELECT'] -> 'Which' | 'What'
+    N[sem='City FROM city_table'] -> 'cities'
+    IV[sem='WHERE'] -> 'are'
+    A -> 'located'
+    P -> 'in'
 
 Given this grammar, we can express, and then execute, queries in English.
 
     >>> from nltk.parse import load_earley
     >>> from string import join
-    >>> cp = load_earley('grammars/sql.fcfg')
-    >>> query = 'Which cities are in USA'
+    >>> cp = load_earley('grammars/sql0.fcfg', trace=2)
+    >>> query = 'What cities are in China'
     >>> trees = cp.nbest_parse(query.split())
+              |.W.c.a.i.C.|
+    Scanner   |[-] . . . .| [0:1] 'What'
+    Scanner   |[-] . . . .| [0:1] Det[sem='SELECT'] -> 'What' *
+    Completer |[-> . . . .| [0:1] NP[sem=(?det+?n)] -> Det[sem=?det] * N[sem=?n] {?det: 'SELECT'}
+    Scanner   |. [-] . . .| [1:2] 'cities'
+    Scanner   |. [-] . . .| [1:2] N[sem='City FROM city_table'] -> 'cities' *
+    Completer |[---] . . .| [0:2] NP[sem=(SELECT, City FROM city_table)] -> Det[sem='SELECT'] N[sem='City FROM city_table'] *
+    Completer |[---> . . .| [0:2] S[sem=(?np+?vp)] -> NP[sem=?np] * VP[sem=?vp] {?np: (SELECT, City FROM city_table)}
+    Scanner   |. . [-] . .| [2:3] 'are'
+    Scanner   |. . [-] . .| [2:3] IV[sem='WHERE'] -> 'are' *
+    Completer |. . [-> . .| [2:3] VP[sem=(?v+?pp)] -> IV[sem=?v] * PP[sem=?pp] {?v: 'WHERE'}
+    Completer |. . [-> . .| [2:3] VP[sem=(?v+?ap)] -> IV[sem=?v] * AP[sem=?ap] {?v: 'WHERE'}
+    Scanner   |. . . [-] .| [3:4] 'in'
+    Scanner   |. . . [-] .| [3:4] P[] -> 'in' *
+    Completer |. . . [-> .| [3:4] PP[sem=?np] -> P[sem=?p] * NP[sem=?np] {}
+    Scanner   |. . . . [-]| [4:5] 'China'
+    Scanner   |. . . . [-]| [4:5] NP[sem='Country="china"'] -> 'China' *
+    Completer |. . . [---]| [3:5] PP[sem='Country="china"'] -> P[sem=?p] NP[sem='Country="china"'] *
+    Completer |. . [-----]| [2:5] VP[sem=(WHERE, Country="china")] -> IV[sem='WHERE'] PP[sem='Country="china"'] *
+    Completer |[=========]| [0:5] S[sem=(SELECT, City FROM city_table, WHERE, Country="china")] -> NP[sem=(SELECT, City FROM city_table)] VP[sem=(WHERE, Country="china")] *
+    Completer |[=========]| [0:5] [INIT][] -> S[] *
     >>> answer = trees[0].node['sem']
     >>> q = join(answer)
     >>> print q
-    SELECT City FROM city_table WHERE Country="united_states"
-    >>> rows = chat80.sql_query(path, q)
+    SELECT City FROM city_table WHERE Country="china"
+    >>> rows = chat80.sql_query('samples/city.db', q)
     >>> for r in rows: print "%s" % r,
-    chicago detroit los_angeles new_york philadelphia
+    canton chungking dairen harbin kowloon mukden peking shanghai sian tientsin
