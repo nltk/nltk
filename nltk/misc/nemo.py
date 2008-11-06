@@ -10,7 +10,7 @@ Instant Regular Expressions
 Created by Aristide Grange
 """
 import Tkinter as tk
-import sre
+import re
 import itertools
 
 windowTitle = "Finding (and Replacing) Nemo"
@@ -80,7 +80,7 @@ class Zone:
         try:
             self.substitute()
             self.img.config(image = self.image)
-        except sre.error:
+        except re.error:
             self.img.config(image = self.imageDimmed)
 
 
@@ -97,16 +97,16 @@ class FindZone(Zone):
         for color in colors:
             self.txt.tag_remove(color,"1.0","end")
             self.txt.tag_remove("emph"+color,"1.0","end")
-        self.rex = sre.compile("") # default value in case of misformed regexp
-        self.rex = sre.compile(self.fld.get("1.0","end")[:-1],sre.MULTILINE)
+        self.rex = re.compile("") # default value in case of misformed regexp
+        self.rex = re.compile(self.fld.get("1.0","end")[:-1],re.MULTILINE)
         try:
-            sre.compile("(?P<emph>%s)" % self.fld.get(tk.SEL_FIRST,
+            re.compile("(?P<emph>%s)" % self.fld.get(tk.SEL_FIRST,
                                                       tk.SEL_LAST))
-            self.rexSel = sre.compile("%s(?P<emph>%s)%s" % (
+            self.rexSel = re.compile("%s(?P<emph>%s)%s" % (
                 self.fld.get("1.0",tk.SEL_FIRST),
                 self.fld.get(tk.SEL_FIRST,tk.SEL_LAST),
                 self.fld.get(tk.SEL_LAST,"end")[:-1],
-            ),sre.MULTILINE)
+            ),re.MULTILINE)
         except:
             self.rexSel = self.rex
         self.rexSel.sub(self.addTags,self.txt.get("1.0","end"))
@@ -134,6 +134,7 @@ def launchRefresh(_):
 
 
 def finding_nemo():
+    global root, sz, rz, rex0
     root = tk.Tk()
     root.resizable(height=False,width=True)
     root.title(windowTitle)
@@ -142,13 +143,12 @@ def finding_nemo():
     sz.fld.bind("<Button-1>",launchRefresh)
     sz.fld.bind("<ButtonRelease-1>",launchRefresh)
     sz.fld.bind("<B1-Motion>",launchRefresh)
-    sz.rexSel = sre.compile("")
+    sz.rexSel = re.compile("")
     rz = ReplaceZone("repl",initialRepl,"")
-    rex0 = sre.compile(r"(?<!\\)\\([0-9]+)")
+    rex0 = re.compile(r"(?<!\\)\\([0-9]+)")
     root.bind_all("<Key>",launchRefresh)
     launchRefresh(None)
     root.mainloop()
 
 if __name__ == '__main__':
     finding_nemo()
-    

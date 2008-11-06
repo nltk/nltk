@@ -21,7 +21,10 @@ class WordnetStemmer(StemmerI):
         pass
 
     def stem(self, word):
-        return morphy(word)
+        word_stem = morphy(word) 
+        if not word_stem:
+            word_stem = word
+        return word_stem
 
     def __repr__(self):
         return '<WordnetStemmer>'
