@@ -1006,6 +1006,8 @@ class FastBrillTaggerTrainer(object):
         score AND which has been tested against the entire corpus, we
         can conclude that it's the next best rule.
         """
+        if self._rules_by_score == {}:
+            return None
         max_score = max(self._rules_by_score)
 
         while max_score >= min_score:
