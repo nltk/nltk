@@ -81,9 +81,9 @@ import tkFont
 
 from nltk import parse, tokenize
 
-from nltk.draw.tree import *
-from nltk.draw import *
-from nltk.draw.cfg import CFGEditor
+from util import *
+from tree import *
+from cfg import CFGEditor
 
         
 class ShiftReduceDemo(object):

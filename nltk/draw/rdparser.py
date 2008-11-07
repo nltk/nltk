@@ -70,11 +70,11 @@ import string
 import tkFont
 from Tkinter import *
 
-from nltk import parse, tokenize
+from nltk import parse, tokenize, Tree
 
-from nltk.draw.tree import *
-from nltk.draw import *
-from nltk.draw.cfg import *
+from util import *
+from tree import *
+from cfg import *
         
 class RecursiveDescentDemo(object):
     """

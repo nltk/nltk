@@ -53,11 +53,13 @@ Operations:
     - if connected to top & bottom, then disconnect
 """
 
-from nltk.draw import *
-from nltk.grammar import *
 from Tkinter import *
-from nltk.tree import *
-from nltk.draw.tree import *
+
+from nltk.grammar import ContextFreeGrammar, Nonterminal, parse_cfg_production
+from nltk import Tree
+
+from util import *
+from tree import *
 
 
 ######################################################################
@@ -636,7 +638,6 @@ class CFGDemo(object):
         if self._treelet is not None: self._treelet.destroy()
 
         # Convert the production to a tree.
-        from nltk import Tree
         rhs = production.rhs()
         for (i, elt) in enumerate(rhs):
             if isinstance(elt, Nonterminal): elt = Tree(elt)
