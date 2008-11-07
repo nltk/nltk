@@ -14,9 +14,9 @@ Graphically display a C{Tree}.
 from Tkinter import *
 import sys
 
-from nltk import tree
+from nltk import Tree, bracket_parse
 
-from nltk.draw import *
+from util import *
 
 ##//////////////////////////////////////////////////////
 ##  Tree Segment
@@ -401,7 +401,7 @@ class TreeSegmentWidget(CanvasWidget):
 def _tree_to_treeseg(canvas, t, make_node, make_leaf,
                      tree_attribs, node_attribs,
                      leaf_attribs, loc_attribs):
-    if isinstance(t, tree.Tree):
+    if isinstance(t, Tree):
         node = make_node(canvas, t.node, **node_attribs)
         subtrees = [_tree_to_treeseg(canvas, child, make_node, make_leaf, 
                                      tree_attribs, node_attribs,
@@ -597,7 +597,7 @@ class TreeWidget(CanvasWidget):
         for node in self._nodes: node.bind_drag(callback, button)
             
     def _make_collapsed_trees(self, canvas, t, key):
-        if not isinstance(t, tree.Tree): return
+        if not isinstance(t, Tree): return
         make_node = self._make_node
         make_leaf = self._make_leaf
 
@@ -625,7 +625,7 @@ class TreeWidget(CanvasWidget):
         make_node = self._make_node
         make_leaf = self._make_leaf
 
-        if isinstance(t, tree.Tree):
+        if isinstance(t, Tree):
             node = make_node(canvas, t.node, **self._nodeattribs)
             self._nodes.append(node)
             children = t
@@ -886,7 +886,7 @@ def demo():
     
     cf = CanvasFrame(width=550, height=450, closeenough=2)
 
-    t = tree.bracket_parse('''
+    t = bracket_parse('''
     (S (NP the very big cat)
        (VP (Adv sorta) (V saw) (NP (Det the) (N dog))))''')
                 
@@ -905,7 +905,7 @@ def demo():
         return OvalWidget(canvas, TextWidget(canvas, text),
                           fill='cyan')
 
-    treetok = tree.bracket_parse('(S (NP this tree) (VP (V is) (AdjP shapeable)))')
+    treetok = bracket_parse('(S (NP this tree) (VP (V is) (AdjP shapeable)))')
     tc2 = TreeWidget(cf.canvas(), treetok, boxit, ovalit, shapeable=1)
     
     def color(node):
@@ -923,7 +923,7 @@ def demo():
     paren = ParenWidget(cf.canvas(), tc2)
     cf.add_widget(paren, tc.bbox()[2]+10, 10)
 
-    tree3 = tree.bracket_parse('''
+    tree3 = bracket_parse('''
     (S (NP this tree) (AUX was)
        (VP (V built) (PP (P with) (NP (N tree_to_treesegment)))))''')
     tc3 = tree_to_treesegment(cf.canvas(), tree3, tree_color='green4',
@@ -958,7 +958,7 @@ built from tree_to_treesegment."""
     textbox = BoxWidget(cf.canvas(), twidget, fill='white', draggable=1)
     cf.add_widget(textbox, tc3.bbox()[2]+10, tc2.bbox()[3]+10)
 
-    tree4 = tree.bracket_parse('(S (NP this tree) (VP (V is) (Adj horizontal)))')
+    tree4 = bracket_parse('(S (NP this tree) (VP (V is) (Adj horizontal)))')
     tc4 = TreeWidget(cf.canvas(), tree4, draggable=1,
                      line_color='brown2', roof_color='brown2',
                      node_font=('helvetica', -12, 'bold'),

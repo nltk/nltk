@@ -5,17 +5,19 @@
 # URL: <http://nltk.org>
 # For license information, see LICENSE.TXT
 #
-from nltk.draw import *
 from Tkinter import *
-from nltk.corpus import gutenberg
-from nltk.text import Text
-from nltk import FreqDist, bigrams
+import sys
 import matplotlib
 matplotlib.use('TkAgg')
 import pylab
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2TkAgg
 from matplotlib.figure import Figure
-import sys
+
+from nltk.corpus import gutenberg
+from nltk.text import Text
+from nltk import FreqDist, bigrams
+
+from util import *
 
 def plot_word_freq_dist(text):
     fd = text.vocab()

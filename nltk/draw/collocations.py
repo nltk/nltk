@@ -5,12 +5,15 @@
 # URL: <http://nltk.org>
 # For license information, see LICENSE.TXT
 #
-import nltk
-from nltk.draw import *
+
 from Tkinter import *
-from nltk.text import Text as TextDomain
-from nltk.probability import FreqDist
+import tkFont
 import threading
+
+from nltk import corpus, FreqDist
+from nltk.text import Text as TextDomain
+
+from util import *
 
 CORPUS_LOADED_EVENT = '<<CL_EVENT>>'
 ERROR_LOADING_CORPUS_EVENT = '<<ELC_EVENT>>'
@@ -18,37 +21,37 @@ ERROR_LOADING_CORPUS_EVENT = '<<ELC_EVENT>>'
 _DEFAULT = 'English: Brown Corpus (Humor)'
 _CORPORA = {
             'Catalan: CESS-CAT Corpus':
-                lambda: nltk.corpus.cess_cat.words(),
+                lambda: corpus.cess_cat.words(),
             'English: Brown Corpus':
-                lambda: nltk.corpus.brown.words(),
+                lambda: corpus.brown.words(),
             'English: Brown Corpus (Press)':
-                lambda: nltk.corpus.brown.words(categories='abc'),
+                lambda: corpus.brown.words(categories='abc'),
             'English: Brown Corpus (Religion)':
-                lambda: nltk.corpus.brown.words(categories='d'),
+                lambda: corpus.brown.words(categories='d'),
             'English: Brown Corpus (Learned)':
-                lambda: nltk.corpus.brown.words(categories='j'),
+                lambda: corpus.brown.words(categories='j'),
             'English: Brown Corpus (Science Fiction)':
-                lambda: nltk.corpus.brown.words(categories='m'),
+                lambda: corpus.brown.words(categories='m'),
             'English: Brown Corpus (Romance)':
-                lambda: nltk.corpus.brown.words(categories='p'),
+                lambda: corpus.brown.words(categories='p'),
             'English: Brown Corpus (Humor)':
-                lambda: nltk.corpus.brown.words(categories='r'),
+                lambda: corpus.brown.words(categories='r'),
             'English: NPS Chat Corpus':
-                lambda: nltk.corpus.nps_chat.words(),
+                lambda: corpus.nps_chat.words(),
             'English: Wall Street Journal Corpus':
-                lambda: nltk.corpus.treebank.words(),
+                lambda: corpus.treebank.words(),
             'Chinese: Sinica Corpus':
-                lambda: nltk.corpus.sinica_treebank.words(),
+                lambda: corpus.sinica_treebank.words(),
             'Dutch: Alpino Corpus':
-                lambda: nltk.corpus.alpino.words(),
+                lambda: corpus.alpino.words(),
             'Hindi: Indian Languages Corpus':
-                lambda: nltk.corpus.indian.words(files='hindi.pos'),
+                lambda: corpus.indian.words(files='hindi.pos'),
             'Portuguese: Floresta Corpus (Portugal)':
-                lambda: nltk.corpus.floresta.words(),
+                lambda: corpus.floresta.words(),
             'Portuguese: MAC-MORPHO Corpus (Brazil)':
-                lambda: nltk.corpus.mac_morpho.words(),
+                lambda: corpus.mac_morpho.words(),
             'Spanish: CESS-ESP Corpus':
-                lambda: nltk.corpus.cess_esp.words(),
+                lambda: corpus.cess_esp.words(),
            }
 
 class CollocationsView:

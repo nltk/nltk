@@ -67,7 +67,7 @@ from types import *
 from math import log, log10, ceil, floor
 import Tkinter, sys, time
 
-from nltk.draw import ShowText, in_idle
+from util import ShowText, in_idle
 
 class PlotFrameI(object):
     """
