@@ -303,7 +303,7 @@ class WordNetCorpusReader(CorpusReader):
                     synset.examples.append(gloss_part.strip('"'))
                 else:
                     definitions.append(gloss_part)
-            synset.definitions = '; '.join(definitions)
+            synset.definition = '; '.join(definitions)
 
             # split the other info into fields
             next = iter(columns_str.split()).next
@@ -781,7 +781,7 @@ class Synset(_WordNetObject):
     pos - The synset's part of speech, matching one of the module level
         attributes ADJ, ADJ_SAT, ADV, NOUN or VERB.
     lemmas - A list of the Lemma objects for this synset.
-    definitions - A list of definition strings for this synset.
+    definition - The definition for this synset.
     examples - A list of example strings for this synset.
     offset - The offset in the WordNet dict file of this synset.
     #lexname - The name of the lexicographer file containing this synset.
@@ -831,7 +831,7 @@ class Synset(_WordNetObject):
         self.frame_ids = []
         self.lemmas = []
         self.lemma_infos = []
-        self.definitions = None
+        self.definition = None
         self.examples = []
         self.lexname = None # lexicographer name
 
@@ -1390,7 +1390,7 @@ def demo():
     move_synset = S('go.v.21')
     print move_synset.name, move_synset.pos, move_synset.lexname
     print [lemma.name for lemma in move_synset.lemmas]
-    print move_synset.definitions
+    print move_synset.definition
     print move_synset.examples
 
     zap_n = ['zap.n.01']

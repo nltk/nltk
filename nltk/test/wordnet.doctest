@@ -44,7 +44,7 @@ Proposed API
     Synset('frank.n.02'), Synset('pawl.n.01'), Synset('andiron.n.01'), Synset('chase.v.01')]
     >>> wn.synset('dog.n.01')
     Synset('dog.n.01')
-    >>> wn.synset('dog.n.01').definitions
+    >>> wn.synset('dog.n.01').definition
     'a member of the genus Canis (probably descended from the common wolf) that has been domesticated by man since prehistoric times; occurs in many breeds'
     >>> wn.synset('dog.n.01').examples
     ['the dog barked all night']
