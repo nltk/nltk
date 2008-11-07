@@ -61,4 +61,7 @@ from similarity import *
 from synset import *
 from browse import *
 from stemmer import *
+from browser import *
+
+
 

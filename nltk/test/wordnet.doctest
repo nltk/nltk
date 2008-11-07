@@ -2,12 +2,44 @@
 WordNet Interface
 =================
 
-This document is in transition; it contains tests for two
-different WordNet APIs.
+The WordNet interface is new in NLTK 0.9.6.  To help with transition, information about the older
+pywordnet-based version is retained here.
+
+WordNet is now just another NLTK corpus reader, and can be imported like this:
+
+    >>> from nltk.corpus import wordnet as wn
 
 -----
 Words
 -----
+
+Look up a word using ``synsets()``; this function has an optional ``pos`` argument
+which lets you constrain the part of speech of the word:
+
+    >>> wn.synsets('dog') # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+    [Synset('dog.n.01'), Synset('frump.n.01'), Synset('dog.n.03'), Synset('cad.n.01'),
+    Synset('frank.n.02'), Synset('pawl.n.01'), Synset('andiron.n.01'), Synset('chase.v.01')]
+    >>> wn.synsets('dog', pos=wn.VERB)
+    [Synset('chase.v.01')]
+
+The other parts of speech are ``NOUN``, ``ADJ`` and ``ADV``.
+A synset is identified with a 3-part name of the form: word.pos.nn:
+
+    >>> wn.synset('dog.n.01')
+    Synset('dog.n.01')
+    >>> wn.synset('dog.n.01').definition
+    'a member of the genus Canis (probably descended from the common wolf) that has been domesticated by man since prehistoric times; occurs in many breeds'
+    >>> wn.synset('dog.n.01').examples
+    ['the dog barked all night']
+    >>> wn.synset('dog.n.01').lemmas
+    [Lemma('dog.n.01.dog'), Lemma('dog.n.01.domestic_dog'), Lemma('dog.n.01.Canis_familiaris')]
+    >>> [lemma.name for lemma in wn.synset('dog.n.01').lemmas]
+    ['dog', 'domestic_dog', 'Canis_familiaris']
+    >>> wn.lemma('dog.n.01.dog').synset
+    Synset('dog.n.01')
+
+Original API
+------------
 
 A `Word` is an index into the database. More specifically, a list of
 the Senses of the supplied word string. These senses can be accessed
@@ -32,26 +64,7 @@ via index notation ``word[n]`` or via the ``word.getSenses()`` method.
     >>> str(N['dog'])
     'dog (noun)'
 
-..   >>> ADJ['clear'].getAdjectivePositions()
-..   [None, 'predicative']
 
-Proposed API
-------------
-
-    >>> from nltk.corpus import wordnet as wn
-    >>> wn.synsets('dog') # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
-    [Synset('dog.n.01'), Synset('frump.n.01'), Synset('dog.n.03'), Synset('cad.n.01'),
-    Synset('frank.n.02'), Synset('pawl.n.01'), Synset('andiron.n.01'), Synset('chase.v.01')]
-    >>> wn.synset('dog.n.01')
-    Synset('dog.n.01')
-    >>> wn.synset('dog.n.01').definition
-    'a member of the genus Canis (probably descended from the common wolf) that has been domesticated by man since prehistoric times; occurs in many breeds'
-    >>> wn.synset('dog.n.01').examples
-    ['the dog barked all night']
-    >>> wn.synset('dog.n.01').lemmas
-    [Lemma('dog.n.01.dog'), Lemma('dog.n.01.domestic_dog'), Lemma('dog.n.01.Canis_familiaris')]
-    >>> wn.lemma('dog.n.01.dog').synset
-    Synset('dog.n.01')
 
 
 -------
@@ -60,18 +73,27 @@ Synsets
 
 `Synset`: a set of synonyms that share a common meaning.
 
+    >>> dog = wn.synset('dog.n.01')
+    >>> dog.hypernyms()
+    [Synset('domestic_animal.n.01'), Synset('canine.n.02')]
+    >>> dog.hyponyms() # doctest: +ELLIPSIS
+    [Synset('puppy.n.01'), Synset('great_pyrenees.n.01'), Synset('basenji.n.01'), ...]
+    >>> dog.member_holonyms()
+    [Synset('pack.n.06'), Synset('canis.n.01')]
+    >>> dog.root_hypernyms()
+    [Synset('entity.n.01')]
+
 Each synset contains one or more lemmas, which represent a specific
-sense of a specific word.  Senses can be retrieved via
+sense of a specific word.
+
+Original API
+------------
+
+Senses can be retrieved via
 synset.senses() or through the index notations synset[0],
 synset[string], or synset[word]. Synsets are related to other
 synsets, and we can get a dictionary of relations using the
 relations() function.
-
-    >>> V['think'][0].verbFrames
-    (5, 9)
-
-    >>> V['think'][0].verbFrameStrings
-    ['Something think something Adjective/Noun', 'Somebody think somebody']
 
     >>> N['dog'][0]
     {noun: dog, domestic_dog, Canis_familiaris}
@@ -114,44 +136,11 @@ getIC(self, freq_data):
 Get the Information Content (IC) value of this `Synset`, using
 the supplied dict 'freq_data'.
 
-Proposed API
-------------
-
-    >>> dog = wn.synset('dog.n.01')
-    >>> dog.hypernyms()
-    [Synset('domestic_animal.n.01'), Synset('canine.n.02')]
-    >>> dog.hyponyms() # doctest: +ELLIPSIS
-    [Synset('puppy.n.01'), Synset('great_pyrenees.n.01'), Synset('basenji.n.01'), ...]
-    >>> dog.member_holonyms()
-    [Synset('pack.n.06'), Synset('canis.n.01')]
-    >>> dog.root_hypernyms()
-    [Synset('entity.n.01')]
 
 
 -----------
 Word Senses
 -----------
-
-A pairing between a word and a sense.
-
->>> w = word('eat', 'v')
->>> w.senseCounts()
-[61, 13, 4, None, None, None]
->>> w[2].words
-['feed', 'eat']
->>> s = w[2].wordSense('eat')
->>> s
-eat (verb) 3
->>> s.count()
-4
->>> k = s.senseKey
->>> k
-'eat%2:34:02::'
->>> WordSense(k).synset()
-{verb: feed, eat}
-
-Proposed API
-------------
 
     >>> eat = wn.lemma('eat.v.03.eat')
     >>> eat
@@ -181,12 +170,30 @@ Proposed API
     Lemma('consume.v.05.eat') None
     Lemma('corrode.v.01.eat') None
 
+Original API
+------------
+
+A pairing between a word and a sense.
+
+    >>> w = word('eat', 'v')
+    >>> w.senseCounts()
+    [61, 13, 4, None, None, None]
+    >>> w[2].words
+    ['feed', 'eat']
+    >>> s = w[2].wordSense('eat')
+    >>> s
+    eat (verb) 3
+    >>> s.count()
+    4
+    >>> k = s.senseKey
+    >>> k
+    'eat%2:34:02::'
+    >>> WordSense(k).synset()
+    {verb: feed, eat}
+
 -----------
 Verb Frames
 -----------
-
-Proposed API
-------------
 
     >>> wn.synset('think.v.01').frame_ids
     [5, 9]
@@ -213,11 +220,24 @@ Proposed API
     Lemma('stretch.v.02.extend') [8]
     ['Somebody extend something']
 
+Original API
+------------
+
+    >>> V['think'][0].verbFrames
+    (5, 9)
+
+    >>> V['think'][0].verbFrameStrings
+    ['Something think something Adjective/Noun', 'Somebody think somebody']
+
+
 ----------
 Similarity
 ----------
 
-path_similarity(self, other_sense):
+    >>> dog = wn.synset('dog.n.01')
+    >>> cat = wn.synset('cat.n.01')
+
+``synset1.path_similarity(synset2):``
 Return a score denoting how similar two word senses are, based on the
 shortest path that connects the senses in the is-a (hypernym/hypnoym)
 taxonomy. The score is in the range 0 to 1, except in those cases
@@ -225,20 +245,10 @@ where a path cannot be found (will only be true for verbs as there are
 many distinct verb taxonomies), in which case -1 is returned. A score of
 1 represents identity i.e. comparing a sense with itself will return 1.
 
-    >>> N['poodle'][0].path_similarity(N['dalmatian'][1])
-    0.33333333333333331
-
-    >>> N['dog'][0].path_similarity(N['cat'][0])
+    >>> dog.path_similarity(cat)
     0.20000000000000001
 
-    >>> V['run'][0].path_similarity(V['walk'][0])
-    0.25
-
-    >>> V['run'][0].path_similarity(V['think'][0])
-    -1
-
-
-lch_similarity(self, other_sense):
+``synset1.lch_similarity(synset2):``
 Leacock-Chodorow Similarity:
 Return a score denoting how similar two word senses are, based on the
 shortest path that connects the senses (as above) and the maximum depth
@@ -246,19 +256,10 @@ of the taxonomy in which the senses occur. The relationship is given
 as -log(p/2d) where p is the shortest path length and d the taxonomy
 depth.
 
-    >>> N['poodle'][0].lch_similarity(N['dalmatian'][1])
-    2.5389738710582761
-
-    >>> N['dog'][0].lch_similarity(N['cat'][0])
+    >>> dog.lch_similarity(cat)
     2.0281482472922856
 
-    >>> V['run'][0].lch_similarity(V['walk'][0])
-    1.8718021769015913
-
-    >>> V['run'][0].lch_similarity(V['think'][0])
-    -1
-
-wup_similarity(self, other_sense):
+``synset1.wup_similarity(synset2):``
 Wu-Palmer Similarity:
 Return a score denoting how similar two word senses are, based on the
 depth of the two senses in the taxonomy and that of their Least Common
@@ -274,30 +275,75 @@ shortest path to the root node is the longest will be selected. Where
 the LCS has multiple paths to the root, the longer path is used for
 the purposes of the calculation.
 
-    >>> N['poodle'][0].wup_similarity(N['dalmatian'][1])
-    0.93333333333333335
-
-    >>> N['dog'][0].wup_similarity(N['cat'][0])
+    >>> dog.wup_similarity(cat)
     0.8571428571428571
 
-    >>> V['run'][0].wup_similarity(V['walk'][0])
-    0.5714285714285714
-
-    >>> V['run'][0].wup_similarity(V['think'][0])
-    -1
-
-information_content(icfile):
+``wordnet_ic``
 Information Content:
-Load an information content file from the wordnet_ic corpus
-and return a dictionary.  This dictionary has just two keys,
-NOUN and VERB, whose values are dictionaries that map from
-synsets to information content values.
+Load an information content file from the wordnet_ic corpus.
 
-res_similarity(self, other_sense, ic):
+    >>> from nltk.corpus import wordnet_ic
+    >>> brown_ic = wordnet_ic.ic('ic-brown.dat')
+    >>> semcor_ic = wordnet_ic.ic('ic-semcor.dat')
+
+``synset1.res_similarity(synset2, ic):``
 Resnik Similarity:
 Return a score denoting how similar two word senses are, based on the
 Information Content (IC) of the Least Common Subsumer (most specific
 ancestor node).
+
+    >>> dog.res_similarity(cat, brown_ic)
+    7.9116665090365768
+
+``synset1.jcn_similarity(synset2, ic):``
+Jiang-Conrath Similarity
+Return a score denoting how similar two word senses are, based on the
+Information Content (IC) of the Least Common Subsumer (most specific
+ancestor node) and that of the two input Synsets. The relationship is
+given by the equation 1 / (IC(s1) + IC(s2) - 2 * IC(lcs)).
+
+    >>> dog.jcn_similarity(cat, brown_ic)
+    0.44977552855167391
+
+``synset1.lin_similarity(synset2, ic):``
+Lin Similarity:
+Return a score denoting how similar two word senses are, based on the
+Information Content (IC) of the Least Common Subsumer (most specific
+ancestor node) and that of the two input Synsets. The relationship is
+given by the equation 2 * IC(lcs) / (IC(s1) + IC(s2)).
+
+    >>> dog.lin_similarity(cat, semcor_ic)
+    0.88632886280862277
+
+Original API
+------------
+
+    >>> N['poodle'][0].path_similarity(N['dalmatian'][1])
+    0.33333333333333331
+    >>> N['dog'][0].path_similarity(N['cat'][0])
+    0.20000000000000001
+    >>> V['run'][0].path_similarity(V['walk'][0])
+    0.25
+    >>> V['run'][0].path_similarity(V['think'][0])
+    -1
+
+    >>> N['poodle'][0].lch_similarity(N['dalmatian'][1])
+    2.5389738710582761
+    >>> N['dog'][0].lch_similarity(N['cat'][0])
+    2.0281482472922856
+    >>> V['run'][0].lch_similarity(V['walk'][0])
+    1.8718021769015913
+    >>> V['run'][0].lch_similarity(V['think'][0])
+    -1
+
+    >>> N['poodle'][0].wup_similarity(N['dalmatian'][1])
+    0.93333333333333335
+    >>> N['dog'][0].wup_similarity(N['cat'][0])
+    0.8571428571428571
+    >>> V['run'][0].wup_similarity(V['walk'][0])
+    0.5714285714285714
+    >>> V['run'][0].wup_similarity(V['think'][0])
+    -1
 
     >>> ic = nltk.wordnet.load_ic('ic-bnc-resnik.dat')
     >>> furnace = nltk.wordnet.N['furnace'][0]
@@ -305,23 +351,9 @@ ancestor node).
     >>> furnace.res_similarity(stove, ic) # doctest: +ELLIPSIS
     2.52024528...
 
-jcn_similarity(self, other_sense, ic):
-Jiang-Conrath Similarity
-Return a score denoting how similar two word senses are, based on the
-Information Content (IC) of the Least Common Subsumer (most specific
-ancestor node) and that of the two input Synsets. The relationship is
-given by the equation 1 / (IC(s1) + IC(s2) - 2 * IC(lcs)).
-
     >>> ic = nltk.wordnet.load_ic('ic-brown.dat')
     >>> furnace.jcn_similarity(stove, ic) # doctest: +ELLIPSIS
     0.0640910491...
-
-lin_similarity(self, other_sense, ic):
-Lin Similarity:
-Return a score denoting how similar two word senses are, based on the
-Information Content (IC) of the Least Common Subsumer (most specific
-ancestor node) and that of the two input Synsets. The relationship is
-given by the equation 2 * IC(lcs) / (IC(s1) + IC(s2)).
 
     >>> ic = nltk.wordnet.load_ic('ic-semcor.dat')
     >>> furnace.lin_similarity(stove, ic) # doctest: +ELLIPSIS
@@ -336,34 +368,51 @@ Lookup a sense by its sense number. Used by repr(sense).
 synset(pos, offset):
 Lookup a synset by its offset. Used by repr(synset).
 
-Proposed API
+
+---------------------
+Access to all Synsets
+---------------------
+
+Iterate over all the noun synsets:
+
+    >>> for synset in list(wn.all_synsets('n'))[:10]:
+    ...     print synset
+    ...
+    Synset('entity.n.01')
+    Synset('physical_entity.n.01')
+    Synset('abstraction.n.06')
+    Synset('thing.n.12')
+    Synset('object.n.01')
+    Synset('whole.n.02')
+    Synset('congener.n.03')
+    Synset('living_thing.n.01')
+    Synset('organism.n.01')
+    Synset('benthos.n.02')
+
+Get all synsets for this word, possibly restricted by POS:
+
+    >>> wn.synsets('dog') # doctest: +ELLIPSIS
+    [Synset('dog.n.01'), Synset('frump.n.01'), Synset('dog.n.03'), Synset('cad.n.01'), ...]
+    >>> wn.synsets('dog', pos='v')
+    [Synset('chase.v.01')]
+
+Walk through the noun synsets looking at their hypernyms:
+
+    >>> from itertools import islice
+    >>> for synset in islice(wn.all_synsets('n'), 5):
+    ...     print synset, synset.hypernyms()
+    ...
+    Synset('entity.n.01') []
+    Synset('physical_entity.n.01') [Synset('entity.n.01')]
+    Synset('abstraction.n.06') [Synset('entity.n.01')]
+    Synset('thing.n.12') [Synset('physical_entity.n.01')]
+    Synset('object.n.01') [Synset('physical_entity.n.01')]
+
+Original API
 ------------
 
-    >>> dog = wn.synset('dog.n.01')
-    >>> cat = wn.synset('cat.n.01')
-    >>> dog.path_similarity(cat)
-    0.20000000000000001
-    >>> dog.lch_similarity(cat)
-    2.0281482472922856
-    >>> dog.wup_similarity(cat)
-    0.8571428571428571
-
-Using information content files:
-
-    >>> from nltk.corpus import wordnet_ic
-    >>> ic = wordnet_ic.ic('ic-brown.dat')
-    >>> dog.jcn_similarity(cat, ic)
-    0.44977552855167391
-    >>> ic = wordnet_ic.ic('ic-semcor.dat')
-    >>> dog.lin_similarity(cat, ic)
-    0.88632886280862277
-
-------------------------------
-N, V, ADJ and ADV Dictionaries
-------------------------------
-
 Dictionary classes, which allow users to access
-Wordnet data via a handy dict notation (see below). Also defined are the
+Wordnet data via a handy dict notation. Also defined are the
 low level _IndexFile class and various file utilities, which do the actual
 lookups in the Wordnet database files.
 
@@ -411,44 +460,6 @@ this dictionary.
     True
     >>> N.has_key('inu')
     False
-
-Proposed API
-------------
-
-Iterate over all the noun synsets:
-
-    >>> for synset in list(wn.all_synsets('n'))[:10]:
-    ...     print synset
-    ...
-    Synset('entity.n.01')
-    Synset('physical_entity.n.01')
-    Synset('abstraction.n.06')
-    Synset('thing.n.12')
-    Synset('object.n.01')
-    Synset('whole.n.02')
-    Synset('congener.n.03')
-    Synset('living_thing.n.01')
-    Synset('organism.n.01')
-    Synset('benthos.n.02')
-
-Get all synsets for this word, possibly restricted by POS:
-
-    >>> wn.synsets('dog') # doctest: +ELLIPSIS
-    [Synset('dog.n.01'), Synset('frump.n.01'), Synset('dog.n.03'), Synset('cad.n.01'), ...]
-    >>> wn.synsets('dog', pos='v')
-    [Synset('chase.v.01')]
-
-Walk through the noun synsets looking at their hypernyms:
-
-    >>> from itertools import islice
-    >>> for synset in islice(wn.all_synsets('n'), 5):
-    ...     print synset, synset.hypernyms()
-    ...
-    Synset('entity.n.01') []
-    Synset('physical_entity.n.01') [Synset('entity.n.01')]
-    Synset('abstraction.n.06') [Synset('entity.n.01')]
-    Synset('thing.n.12') [Synset('physical_entity.n.01')]
-    Synset('object.n.01') [Synset('physical_entity.n.01')]
 
 ------
 Morphy
