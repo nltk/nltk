@@ -217,7 +217,17 @@ class ZipFilePathPointer(PathPointer):
         # Check that the entry exists:
         if entry:
             try: zipfile.getinfo(entry)
-            except: raise IOError('Zipfile %r does not contain %r' % 
+            except:
+                # Sometimes directories aren't explicitly listed in
+                # the zip file.  So if `entry` is a directory name,
+                # then check if the zipfile contains any files that
+                # are under the given directory.
+                if (entry.endswith('/') and 
+                    [n for n in zipfile.namelist() if n.startswith(entry)]):
+                    pass # zipfile contains a file in that directory.
+                else:
+                    # Otherwise, complain.
+                    raise IOError('Zipfile %r does not contain %r' % 
                                   (zipfile.filename, entry))
         self._zipfile = zipfile
         self._entry = entry
