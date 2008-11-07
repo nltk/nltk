@@ -445,8 +445,8 @@ class WordNetCorpusReader(CorpusReader):
             # the file poitners from self._data_file_map here, because
             # we're defining an iterator, and those file pointers might
             # be moved while we're not looking.
-            if pos == ADJ_SAT: pos = ADJ
-            filename = 'data.%s' % self._FILEMAP[pos]
+            if pos_tag == ADJ_SAT: pos_tag = ADJ
+            filename = 'data.%s' % self._FILEMAP[pos_tag]
             data_file = self.open(filename)
             
             try:
