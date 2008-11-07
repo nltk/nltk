@@ -1,7 +1,7 @@
 #!/bin/sh -x
 
 TEMP=`mktemp -t dbinfo_out.XXXXXXXX`
-OUTPUT="NLTK Wordnet Browser Database Info.html"
+OUTPUT="NLTK WordNet Browser Database Info.html"
 
 python dbinfo_html.py
 

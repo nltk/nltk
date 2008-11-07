@@ -1,4 +1,4 @@
-# Natural Language Toolkit: Wordnet
+# Natural Language Toolkit: WordNet
 #
 # Copyright (C) 2001-2008 NLTK Project
 # Author: Steven Bethard <Steven.Bethard@colorado.edu>
@@ -951,7 +951,7 @@ def wup_similarity(synset1, synset2, verbose=False):
     depth of the two senses in the taxonomy and that of their Least Common
     Subsumer (most specific ancestor node). Note that at this time the
     scores given do _not_ always agree with those given by Pedersen's Perl
-    implementation of Wordnet Similarity.
+    implementation of WordNet Similarity.
 
     The LCS does not necessarily feature in the shortest path connecting the
     two senses, as it is by definition the common ancestor deepest in the
@@ -1066,7 +1066,7 @@ def lin_similarity(synset1, synset2, ic, verbose=False):
 
 def _lcs_by_depth(synset1, synset2, verbose=False):
     """
-    Finds the least common subsumer of two synsets in a Wordnet taxonomy,
+    Finds the least common subsumer of two synsets in a WordNet taxonomy,
     where the least common subsumer is defined as the ancestor node common
     to both input synsets whose shortest path to the root node is the longest.
 

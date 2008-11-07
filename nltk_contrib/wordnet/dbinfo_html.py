@@ -1,4 +1,4 @@
-# Natural Language Toolkit: Wordnet Interface: Graphical Wordnet Browser
+# Natural Language Toolkit: WordNet Interface: Graphical WordNet Browser
 #
 # Copyright (C) 2007 - 2008 NLTK Project
 # Author: Jussi Salmela <jtsalmela@users.sourceforge.net>
@@ -106,7 +106,7 @@ def display_name_from_rk(rk):
 
 class Stats:
     """
-    Statistics gathered from the NLTK Wordnet database.
+    Statistics gathered from the NLTK WordNet database.
     """
     
     def __init__(self, counts, rel_counts, rel_words):
@@ -276,10 +276,10 @@ def main():
     """
     stats = get_stats_from_database()
     html = htmlize_stats(stats)
-    dbinfo_html_file = open('NLTK Wordnet Browser Database Info.html', 'wt')
+    dbinfo_html_file = open('NLTK WordNet Browser Database Info.html', 'wt')
     dbinfo_html_file.write(html)
     dbinfo_html_file.close()
-    print '\n\nCreation complete: NLTK Wordnet Browser Database Info.html'
+    print '\n\nCreation complete: NLTK WordNet Browser Database Info.html'
 
 
 if __name__ == '__main__':
