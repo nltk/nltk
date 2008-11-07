@@ -267,6 +267,7 @@ ADV = Dictionary(ADVERB, ADVERB)
 
 Dictionaries = {NOUN: N, VERB: V, ADJECTIVE: ADJ, ADVERB: ADV}
 
+@deprecated("Use nltk.corpus.wordnet instead.")    
 def dictionaryFor(pos):
     """
     Return the dictionary for the supplied part of speech.
@@ -287,11 +288,10 @@ def dictionaryFor(pos):
 
 # Lookup functions
 
-# Deprecated since 0.9.4
-@deprecated("Use dictionary.word() instead.")
 def getWord(form, pos=NOUN):
     return word(form, pos)
-    
+
+@deprecated("Use nltk.corpus.wordnet.Lemma() instead.")    
 def word(form, pos=NOUN):
     """
     Return a word with the given lexical form and pos.
@@ -306,11 +306,10 @@ def word(form, pos=NOUN):
     """
     return dictionaryFor(pos).word(form)
 
-# Deprecated since 0.9.4
-@deprecated("Use dictionary.sense() instead.")
 def getSense(form, pos=NOUN, senseno=0):
     return sense(form, pos, senseno)
     
+@deprecated("Use nltk.corpus.wordnet.Synset() instead.")    
 def sense(form, pos=NOUN, senseno=0):
     """
     Lookup a sense by its sense number. Used by repr(sense).
@@ -325,12 +324,11 @@ def sense(form, pos=NOUN, senseno=0):
     """
     return word(form, pos)[senseno]
 
-# Deprecated since 0.9.4
-@deprecated("Use dictionary.synset() instead.")
 def getSynset(pos, offset):
     return synset(pos, offset)
 
 # shadows module
+@deprecated("Use nltk.corpus.wordnet.Synset() instead.")    
 def synset(pos, offset):
     """
     Lookup a synset by its offset.

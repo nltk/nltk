@@ -14,6 +14,7 @@ import re
 
 from nltk import defaultdict
 from nltk.util import binary_search_file
+from nltk.internals import deprecated
 
 from util import *
 import dictionary
@@ -22,6 +23,8 @@ from frequency import *
 from lexname import Lexname
 
 class Word(object):
+    
+    @deprecated("Use nltk.corpus.wordnet.Lemma() instead.")
     def __init__(self, line):
         """
         Extract a word from a line of a WordNet POS file.
@@ -130,6 +133,7 @@ class WordSense(object):
     _ssTypeMap = {'n': 1, 'v': 2, 'a': 3, 'r': 4, 's':5}
     _ssTypeRevMap = dict((v,k) for k,v in _ssTypeMap.iteritems())
 
+    @deprecated("Use nltk.corpus.wordnet.Lemma() instead.")
     def __init__(self, senseKey):
         self.senseKey = senseKey
         self.lemma, remainder = senseKey.split('%', 1)
@@ -247,6 +251,7 @@ class Synset(object):
         Sense.verbFrames.) Defined only for verbs.
     """
     
+    @deprecated("Use nltk.corpus.wordnet.Synset() instead.")
     def __init__(self, pos, offset, line):
         """Initialize the synset from a line in a WordNet lexicographer file."""
 
