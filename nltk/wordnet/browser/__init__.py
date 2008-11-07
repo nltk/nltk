@@ -107,10 +107,9 @@ The second alternative to browse the database
 # need to be develop to ensure this continues to work in the face of
 # changes to other NLTK packages.
 
-from browserver import demo as start_web_browser
-from wxbrowse import demo as start_wx_browser
-
+from browserver import demo as browser
 
 def demo():
-    print "Use either start_web_browser or start_wx_browser"
+    browser()
+
 
