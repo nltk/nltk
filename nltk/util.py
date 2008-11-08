@@ -99,6 +99,33 @@ def tokenwrap(tokens, separator=" ", width=70):
 
 
 ##########################################################################
+# Indexing
+##########################################################################
+
+class Index(defaultdict):
+    
+    def __init__(self, pairs):
+        defaultdict.__init__(self, list)
+        for key, value in pairs:
+            self[key].append(value)
+
+    def __repr__(self):
+        """
+        @return: A string representation of this C{Index}.
+        @rtype: string
+        """
+        return '<Index with %d entries>' % len(self)
+
+    def __str__(self):
+        """
+        @return: A string representation of this C{Index}.
+        @rtype: string
+        """
+        items = ['%r: %r' % (s, self[s]) for s in self]
+        return '<Index: %s>' % ', '.join(items)
+
+
+##########################################################################
 # MINIMAL SETS
 ##########################################################################
 
