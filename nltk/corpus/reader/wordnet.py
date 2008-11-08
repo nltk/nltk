@@ -1,8 +1,9 @@
-# Natural Language Toolkit: Wordnet
+# Natural Language Toolkit: WordNet
 #
 # Copyright (C) 2001-2008 NLTK Project
 # Author: Steven Bethard <Steven.Bethard@colorado.edu>
 #         Steven Bird <sb@csse.unimelb.edu.au>
+#         Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://nltk.org>
 # For license information, see LICENSE.TXT
 
@@ -332,6 +333,7 @@ class WordNetCorpusReader(CorpusReader):
                 lemma = Lemma(self, synset, lemma_name, lexname_index,
                               lex_id, syn_mark)
                 synset.lemmas.append(lemma)
+                synset.lemma_names.append(lemma.name)
 
             # collect the pointer tuples
             n_pointers = int(next())
@@ -428,6 +430,9 @@ class WordNetCorpusReader(CorpusReader):
                 for synset in self.synsets(lemma, pos)
                 for lemma_obj in synset.lemmas
                 if lemma_obj.name == lemma]
+
+    def words(self, pos=None):
+        return [lemma.name for lemma in self.lemmas(pos)]
 
     def all_synsets(self, pos=None):
         """Iterate over all synsets with a given part of speech tag.
@@ -830,7 +835,8 @@ class Synset(_WordNetObject):
         self.name = None
         self.frame_ids = []
         self.lemmas = []
-        self.lemma_infos = []
+        self.lemma_names = []
+        self.lemma_infos = []  # never used?
         self.definition = None
         self.examples = []
         self.lexname = None # lexicographer name
@@ -1389,7 +1395,7 @@ def demo():
     print 'getting a synset for go'
     move_synset = S('go.v.21')
     print move_synset.name, move_synset.pos, move_synset.lexname
-    print [lemma.name for lemma in move_synset.lemmas]
+    print move_synset.lemma_names
     print move_synset.definition
     print move_synset.examples
 
