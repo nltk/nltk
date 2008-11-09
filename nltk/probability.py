@@ -433,7 +433,7 @@ class FreqDist(dict):
         return not (self == other)
     def __le__(self, other):
         if not isinstance(other, FreqDist): return False
-        return set(self).issubset(other) and not(sum(self[key] > other[key] for key in self))
+        return set(self).issubset(other) and all(self[key] <= other[key] for key in self)
     def __lt__(self, other):
         if not isinstance(other, FreqDist): return False
         return self <= other and self != other
@@ -1532,13 +1532,13 @@ class ConditionalFreqDist(object):
     def __eq__(self, other):
         if not isinstance(other, ConditionalFreqDist): return False
         return self.conditions() == other.conditions() \
-               and not (sum(self[c] != other[c] for c in self.conditions())) # conditions are already sorted
+               and all(self[c] == other[c] for c in self.conditions()) # conditions are already sorted
     def __ne__(self, other):
         return not (self == other)
     def __le__(self, other):
         if not isinstance(other, ConditionalFreqDist): return False
         return set(self.conditions()).issubset(other.conditions()) \
-               and not(sum(self[c] > other[c] for c in self.conditions()))
+               and all(self[c] <= other[c] for c in self.conditions())
     def __lt__(self, other):
         if not isinstance(other, ConditionalFreqDist): return False
         return self <= other and self != other
