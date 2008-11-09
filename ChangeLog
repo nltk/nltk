@@ -1,6 +1,8 @@
-Version 0.9.6 2008-10-02
+Version 0.9.6 2008-11-11
 
 NLTK:
+* new WordNet corpus reader (contributed by Steven Bethard)
+* incorporated dependency parsers into NLTK (was NLTK-Contrib) (contributed by Jason Narad)
 * moved nltk/cfg.py to nltk/grammar.py and incorporated dependency grammars
 * improved efficiency of unification algorithm
 * various enhancements to the semantics package
@@ -9,10 +11,12 @@ NLTK:
   the confusion caused by FreqDist.sorted()
 * new downloader package to support live downloading of corpora
 * fixed WordNet bug that caused min_depth() to sometimes give incorrect result
+* added nltk.util.Index as a wrapper around defaultdict(list) plus
+  a functional-style initializer
+* fixed bug in Earley chart parser that caused it to break
 * misc other bugfixes
 
 Contrib (work in progress):
-* new WordNet package by Steven Bethard
 * TIGERSearch implementation by Torsten Marek
 * extensions to hole and glue semantics modules by Dan Garrette
 * new coreference package by Joseph Frazee
@@ -22,9 +26,15 @@ Data:
 * Swadesh Corpus of comparative wordlists in 23 languages
 * Brown Corpus sections now have meaningful names (e.g. 'a' is now 'news')
 * Bug fix that forced users to manually unzip the WordNet corpus
+* Added movie script "Monty Python and the Holy Grail" to webtext corpus
+* Replaced words corpus data with a much larger list of English words
+* Dropped subsection numbering; moved exercises to end of chapters
 
 Book:
-* complete rewrite of first three chapters
+* complete rewrite of first three chapters to make the book accessible
+  to a wider audience
+* new chapter on data-intensive language processing
+* rewrite of chapter 12 on semantics
 
 Distributions:
 * created Portfile to support Mac installation
