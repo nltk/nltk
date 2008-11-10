@@ -211,20 +211,20 @@ class GlueDict(dict):
                     i += 1
         return accum
 
-    def to_glueformula_list(self, depgraph, node=None, labels_added=[], verbose=False):
+    def to_glueformula_list(self, depgraph, node=None, counter=None, verbose=False):
         if node is None:
             top = depgraph.nodelist[0]
             root = depgraph.nodelist[top['deps'][0]]
-            return self.to_glueformula_list(depgraph, root, labels_added, verbose)
+            return self.to_glueformula_list(depgraph, root, Counter(), verbose)
         
         glueformulas = []
-        glueformulas.extend(self.lookup(node, depgraph))
+        glueformulas.extend(self.lookup(node, depgraph, counter))
         for dep_idx in node['deps']:
             dep = depgraph.nodelist[dep_idx]
-            glueformulas.extend(self.to_glueformula_list(depgraph, dep, labels_added, verbose))
+            glueformulas.extend(self.to_glueformula_list(depgraph, dep, counter, verbose))
         return glueformulas
 
-    def lookup(self, node, depgraph):
+    def lookup(self, node, depgraph, counter):
         semtype_names = self.get_semtypes(node)
         
         semtype = None
@@ -241,12 +241,11 @@ class GlueDict(dict):
         lookup = self._lookup_semtype_option(semtype, node, depgraph)
         
         if not len(lookup):
-            raise KeyError, "There is no GlueDict entry for sem type of '%s' " \
-                    "with tag '%s', and rel '%s'" %\
+            raise KeyError, "There is no GlueDict entry for sem type of '%s'"\
+                    " with tag '%s', and rel '%s'" %\
                     (node['word'], node['tag'], node['rel'])
         
-        return self.get_glueformulas_from_semtype_entry(lookup, node['word'], 
-                                                        node, depgraph)
+        return self.get_glueformulas_from_semtype_entry(lookup, node['word'], node, depgraph, counter)
 
     def add_missing_dependencies(self, node, depgraph):
         rel = node['rel'].lower()
@@ -303,7 +302,7 @@ class GlueDict(dict):
         else:
             return [node['tag']]
                                 
-    def get_glueformulas_from_semtype_entry(self, lookup, word, node, depgraph):
+    def get_glueformulas_from_semtype_entry(self, lookup, word, node, depgraph, counter):
         glueformulas = []
 
         glueFormulaFactory = self.get_GlueFormula_factory()
@@ -314,7 +313,7 @@ class GlueDict(dict):
             else:
                 gf.word = '%s%s' % (word, len(glueformulas)+1)
 
-            gf.glue = self.initialize_labels(gf.glue, node, depgraph)
+            gf.glue = self.initialize_labels(gf.glue, node, depgraph, counter.get())
 
             glueformulas.append(gf)
         return glueformulas
@@ -328,38 +327,35 @@ class GlueDict(dict):
         word = word.replace('.', '')
         return generic.replace('<word>', word)
 
-    def initialize_labels(self, expr, node, depgraph):
+    def initialize_labels(self, expr, node, depgraph, unique_index):
         if isinstance(expr, linearlogic.AtomicExpression):
-            name = self.find_label_name(expr.name.lower(), node, depgraph)
+            name = self.find_label_name(expr.name.lower(), node, depgraph, unique_index)
             if name[0].isupper():
                 return linearlogic.VariableExpression(name)
             else:
                 return linearlogic.ConstantExpression(name)
         else:
             return linearlogic.ImpExpression(
-                       self.initialize_labels(expr.antecedent, node, depgraph),
-                       self.initialize_labels(expr.consequent, node, depgraph))
+                       self.initialize_labels(expr.antecedent, node, depgraph, unique_index),
+                       self.initialize_labels(expr.consequent, node, depgraph, unique_index))
 
-    def find_label_name(self, name, node, depgraph, counter=None):
-        if not counter:
-            counter = Counter()
-        
+    def find_label_name(self, name, node, depgraph, unique_index):
         try:
             dot = name.index('.')
 
             before_dot = name[:dot]
             after_dot = name[dot+1:]
             if before_dot == 'super':
-                return self.find_label_name(after_dot, depgraph.nodelist[node['head']], depgraph)
+                return self.find_label_name(after_dot, depgraph.nodelist[node['head']], depgraph, unique_index)
             else:
-                return self.find_label_name(after_dot, self.lookup_unique(before_dot, node, depgraph), depgraph)
+                return self.find_label_name(after_dot, self.lookup_unique(before_dot, node, depgraph), depgraph, unique_index)
         except ValueError:
             lbl = self.get_label(node)
             if   name=='f':     return lbl
             elif name=='v':     return '%sv' % lbl
             elif name=='r':     return '%sr' % lbl
             elif name=='super': return self.get_label(depgraph.nodelist[node['head']])
-            elif name=='var':   return '%s%s' % (lbl.upper(), counter.get())
+            elif name=='var':   return '%s%s' % (lbl.upper(), unique_index)
             elif name=='a':     return self.get_label(self.lookup_unique('conja', node, depgraph))
             elif name=='b':     return self.get_label(self.lookup_unique('conjb', node, depgraph))
             else:               return self.get_label(self.lookup_unique(name, node, depgraph))
@@ -406,7 +402,7 @@ class Glue(object):
         if semtype_file:
             self.semtype_file = semtype_file
         else:
-            self.semtype_file = 'glue_event.semtype'
+            self.semtype_file = 'glue.semtype'
     
     def parse_to_meaning(self, sentence):
         readings = []
@@ -542,54 +538,6 @@ def demo(show_example=-1):
                 print reading.simplify()
             print ''
     
-def treebank(idx, verbosity=0):
-    f = open(os.environ['NLTK_DATA']+'/corpora/treebank/dep/wsj_000%s.dep'%idx)
-    test_depgraph_to_glue(f.read(), verbosity)
 
-def test(idx, verbosity=0):
-    f = open(os.environ['NLTK_DATA'] + '/grammars/dep_test%s.dep'%idx)
-    test_depgraph_to_glue(f.read(), verbosity)
-    
-def test_depgraph_to_glue(depgraph_string, verbosity=0):
-    from nltk_contrib.dependency import util
-    
-    depgraph = util.conll_to_depgraph(depgraph_string)
-    if verbosity > 2: print depgraph
-    
-    gfl = GlueDict('glue_event.semtype').to_glueformula_list(depgraph)
-    if verbosity > 0: 
-        for gf in gfl: print gf
-    
-    cgfl = Glue().gfl_to_compiled(gfl)
-    if verbosity > 1:
-        for cgf in cgfl: print cgf
-    
-    readings = Glue().get_readings(cgfl)
-    print 'Readings:', len(readings)
-    for r in readings:
-        print r.simplify()
-    print ''
-    
 if __name__ == '__main__':
-#    demo()
-
-#    treebank(1,2)
-    
-    test_depgraph_to_glue("""\
-1    John    _    NNP    _    _    2    SUBJ    _    _
-2    looks    _    VB    _    _    0    ROOT    _    _
-3    at    _    IN    _    _    2    VMOD    _    _
-4    Bill    _    NNP    _    _    3    SUBJ    _    _
-""", 1)
-    
-    john = GlueFormula(r"\Q e1.exists x.(John(x) & Q(x,e1))", "(g -o G) -o G")
-    look = GlueFormula(r"\x e2.(look(e2) & subj(e2,x))", "g -o f")
-    at = GlueFormula(r"\P Q e4.P(\x e3.(at(e3,x) & Q(e3)),e4)", "((j -o J) -o J) -o (f -o f)")
-    bill = GlueFormula(r"\Q e5.exists y.(Bill(y) & Q(y,e5))", "((j -o J) -o J)")
-
-    john_look = john.applyto(look).simplify()
-    print john_look
-    at_a_dog = at.applyto(bill).simplify()
-    print at_a_dog
-    print at_a_dog.applyto(john_look).simplify()
-    print 
+    demo(1)

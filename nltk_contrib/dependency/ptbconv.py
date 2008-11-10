@@ -60,7 +60,7 @@ def _get_relation(word, pos, head):
         return 'ROOT'
     if pos == 'JJ':
         return 'MOD'
-    if pas == 'DT':
+    if pos == 'DT':
         return 'SPEC'
     if pos == '.' or pos == ',':
         return 'PUNCT'

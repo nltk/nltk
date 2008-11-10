@@ -48,6 +48,9 @@ VB : (\P e.(<word>(e) & xcomp(e,P)), (xcomp -o f)) : [xcomp] #raising
 VBD(VB) : (\P.PAST(P), (f -o f))
 VBZ(VB)
 
+#Auxillary Verbs
+MD : (\P Q e1.P(\x e2.(<word>(e2,x) & Q(e2)),e1), ((subj -o subj.var) -o subj.var) -o (main -o main)) : [subj]
+
 #Modifiers
 nmod : (\Q P x.(P(x) & Q(x)), (f -o ((super.v -o super.r) -o (super.v -o super.r)))), (\x.<word>(x), f) : []
 JJ(nmod) : []

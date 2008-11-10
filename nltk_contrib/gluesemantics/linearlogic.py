@@ -321,7 +321,8 @@ class BindingDict:
                 combined[v] = other.d[v]
             return combined
         except VariableBindingException:
-            raise VariableBindingException, 'Attempting to add two contradicting VariableBindingsLists'
+            raise VariableBindingException, 'Attempting to add two contradicting'\
+                        ' VariableBindingsLists: %s, %s' % (self, other)
 
     def __str__(self):
         return '{' + ', '.join(['%s: %s' % (v, self.d[v]) for v in self.d]) + '}'

@@ -336,16 +336,16 @@ Dependency Graph to Glue Formulas
     
     >>> f = open(os.environ['NLTK_DATA'] + '/grammars/dep_test2.dep')
     >>> depgraph = util.conll_to_depgraph(f.read())
-	>>> gfl = GlueDict('glue_event.semtype').to_glueformula_list(depgraph)
+	>>> gfl = GlueDict('glue.semtype').to_glueformula_list(depgraph)
     >>> for gf in gfl: print gf
-    \x y.exists e.(sees(e) & (subj(e,x) & obj(e,y))) : (f -o (i -o g))
-    \P Q.exists x.(P(x) & Q(x)) : ((fv -o fr) -o ((f -o F1) -o F1))
+    \x y.sees(x,y) : (f -o (i -o g))
+    \P Q.exists x.(P(x) & Q(x)) : ((fv -o fr) -o ((f -o F2) -o F2))
     \x.John(x) : (fv -o fr)
     \x.dog(x) : (iv -o ir)
-    \P Q.exists x.(P(x) & Q(x)) : ((iv -o ir) -o ((i -o I1) -o I1))
+    \P Q.exists x.(P(x) & Q(x)) : ((iv -o ir) -o ((i -o I5) -o I5))
     >>> for r in glue.get_readings(glue.gfl_to_compiled(gfl)): print r.simplify()
-    exists x.(John(x) & exists z1.(dog(z1) & exists e.(sees(e) & (subj(e,x) & obj(e,z1)))))
-    exists x.(dog(x) & exists z2.(John(z2) & exists e.(sees(e) & (subj(e,z2) & obj(e,x)))))
+    exists x.(dog(x) & exists z1.(John(z1) & sees(z1,x)))
+    exists x.(John(x) & exists z2.(dog(z2) & sees(x,z2)))
 
 -----------------------------------
 Dependency Graph to LFG f-structure
@@ -365,8 +365,8 @@ LFG f-structure to Glue
     ...     print gf
     \x y.sees(x,y) : (i -o (g -o f))
     \x.dog(x) : (gv -o gr)
-    \P Q.exists x.(P(x) & Q(x)) : ((gv -o gr) -o ((g -o G1) -o G1))
-    \P Q.exists x.(P(x) & Q(x)) : ((iv -o ir) -o ((i -o I1) -o I1))
+    \P Q.exists x.(P(x) & Q(x)) : ((gv -o gr) -o ((g -o G3) -o G3))
+    \P Q.exists x.(P(x) & Q(x)) : ((iv -o ir) -o ((i -o I4) -o I4))
     \x.John(x) : (iv -o ir)
     
 --------------------
@@ -375,11 +375,11 @@ Automated Derivation
     >>> logic._counter._value = 0
     >>> glue = Glue(verbose=False)
     >>> for reading in glue.parse_to_meaning('every girl chases a dog'): print reading.simplify()
-     all x.(girl(x) -> exists z1.(dog(z1) & exists e.(chase(e) & (subj(e,x) & obj(e,z1)))))
-    exists x.(dog(x) & all z2.(girl(z2) -> exists e.(chase(e) & (subj(e,z2) & obj(e,x)))))
+    all x.(girl(x) -> exists z1.(dog(z1) & chase(x,z1)))
+    exists x.(dog(x) & all z2.(girl(z2) -> chase(z2,x)))
 
     >>> logic._counter._value = 0
     >>> glue = DrtGlue(verbose=False)
     >>> for reading in glue.parse_to_meaning('every girl chases a dog'): print reading.simplify()
-    ([],[(([x],[girl(x)]) -> ([z1,e],[dog(z1), chase(e), subj(e,x), obj(e,z1)]))])
-    ([z2],[dog(z2), (([x],[girl(x)]) -> ([e],[chase(e), subj(e,x), obj(e,z2)]))])
+    ([],[(([x],[girl(x)]) -> ([z1],[dog(z1), chase(x,z1)]))])
+    ([z2],[dog(z2), (([x],[girl(x)]) -> ([],[chase(x,z2)]))])
