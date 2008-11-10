@@ -259,7 +259,7 @@ A logic parser can be passed as a parameter to load_earley
 
 Alternatively, a FeatStructParser can be passed with the logic_parser set on it
 	>>> from nltk.featstruct import FeatStructParser
-	>>> from nltk.cfg import FeatStructNonterminal
+	>>> from nltk.grammar import FeatStructNonterminal
 	>>> parser = load_earley('grammars/drt.fcfg', trace=0, fstruct_parser=FeatStructParser(fdict_class=FeatStructNonterminal, logic_parser=DrtParser()))
 	>>> trees = parser.nbest_parse('every girl chases a dog'.split())
 	>>> print trees[0].node['sem'].simplify()

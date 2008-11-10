@@ -336,8 +336,8 @@ For example, the ``drt_glue`` module generates two readings for the sentence
     >>> 
     >>> for drs in readings: print drs.simplify()
     ...
-    ([x,z1,e],[John(x), Mary(z1), see(e), subj(e,x), obj(e,z1)])
-    ([x,z2,e],[Mary(x), John(z2), see(e), subj(e,z2), obj(e,x)])
+    ([x,z1],[John(x), Mary(z1), see(x,z1)])
+    ([x,z2],[Mary(x), John(z2), see(z2,x)])
 
 However, it is easy to tell that these two readings are logically the
 same, and therefore one of them is superfluous.  We can use the theorem prover
