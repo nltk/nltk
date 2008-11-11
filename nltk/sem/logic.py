@@ -56,36 +56,34 @@ class Tokens:
 
     LCONSTANTS = [SYM[1] for SYM in [LAMBDA, AND, OR, NOT, IMP, IFF, EQ, NEQ, EXISTS, ALL]] 
     
-    BINOPS1 = [SYM[1] for SYM in [AND, OR, NOT, IMP, IFF]] 
+    BINOPS1 = [SYM[1] for SYM in [NOT, AND, OR, IMP, IFF]] 
     EQUALS1 = [SYM[1] for SYM in [EQ, NEQ]] 
     QUANTS1 = [SYM[1] for SYM in [EXISTS, ALL]] 
     
-    @staticmethod
-    def boolean_ops():
-        """
-        Boolean operators
-        """
-        names =  ["conjunction", "disjunction", "negation", "implication", "equivalence"]
-        for pair in zip(names, Tokens.BINOPS1):
-            print "%-15s\t%s" %  pair
-            
-    @staticmethod
-    def equality_preds():
-        """
-        Equality predicates
-        """
-        names =  ["equality", "inequality"]
-        for pair in zip(names, Tokens.EQUALS1):
-            print "%-15s\t%s" %  pair        
-                        
-    @staticmethod
-    def binding_ops():
-        """
-        Binding operators
-        """
-        names =  ["existential", "universal", "lambda"]
-        for pair in zip(names, Tokens.QUANTS1 + Tokens.LAMBDA[0:]):
-            print "%-15s\t%s" %  pair
+def boolean_ops():
+    """
+    Boolean operators
+    """
+    names =  ["negation", "conjunction", "disjunction", "implication", "equivalence"]
+    for pair in zip(names, Tokens.BINOPS1):
+        print "%-15s\t%s" %  pair
+        
+def equality_preds():
+    """
+    Equality predicates
+    """
+    names =  ["equality", "inequality"]
+    for pair in zip(names, Tokens.EQUALS1):
+        print "%-15s\t%s" %  pair        
+                    
+def binding_ops():
+    """
+    Binding operators
+    """
+    names =  ["existential", "universal", "lambda"]
+    for pair in zip(names, Tokens.QUANTS1 + Tokens.LAMBDA[0:]):
+        print "%-15s\t%s" %  pair
+
 
 class Variable(object):
     def __init__(self, name):
@@ -1317,5 +1315,5 @@ def demo():
     print e1 == e2
         
 if __name__ == '__main__':
-    Tokens.binding_ops()
+    boolean_ops()
     #demo()
