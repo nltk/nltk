@@ -32,7 +32,7 @@ __all__ = [
 
     # Stemmers
     'RegexpStemmer', 'PorterStemmer', 'LancasterStemmer',
-    'WordnetStemmer', 'RSLPStemmer'
+    'WordNetStemmer', 'RSLPStemmer'
     ]
 
 ######################################################################
@@ -47,7 +47,7 @@ class Porter(PorterStemmer, Deprecated):
     """Use nltk.PorterStemmer instead."""
 class Lancaster(LancasterStemmer, Deprecated):
     """Use nltk.LancasterStemmer instead."""
-class Wordnet(WordnetStemmer, Deprecated):
-    """Use nltk.WordnetStemmer instead."""
+class Wordnet(WordNetStemmer, Deprecated):
+    """Use nltk.WordNetStemmer instead."""
     
     

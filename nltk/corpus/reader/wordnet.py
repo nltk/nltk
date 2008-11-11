@@ -13,7 +13,7 @@ import os as _os
 import warnings as _warnings
 import math
 import re
-from itertools import islice
+from itertools import islice, chain
 
 from nltk import defaultdict
 from nltk.util import binary_search_file as _binary_search_file
@@ -42,6 +42,8 @@ _INF = 1e300
 #{ Part-of-speech constants
 ADJ, ADJ_SAT, ADV, NOUN, VERB = 'a', 's', 'r', 'n', 'v'
 #}
+
+POS_LIST = [NOUN, VERB, ADJ, ADV]
 
 #: A table of strings that are used to express verb frames.
 VERB_FRAME_STRINGS = (
@@ -102,7 +104,6 @@ class WordNetCorpusReader(CorpusReader):
     #}
 
     #{ Part of speech constants
-    _pos_list = [NOUN, VERB, ADJ, ADV]
     _pos_numbers = {NOUN:1, VERB:2, ADJ:3, ADV:4, ADJ_SAT:5}
     _pos_names = dict(tup[::-1] for tup in _pos_numbers.items())
     #}
@@ -419,7 +420,7 @@ class WordNetCorpusReader(CorpusReader):
         index = self._lemma_pos_offset_map
     
         if pos is None:
-            pos = self._pos_list
+            pos = POS_LIST
     
         return [get_synset(p, offset)
                 for p in pos
@@ -514,7 +515,7 @@ class WordNetCorpusReader(CorpusReader):
     #////////////////////////////////////////////////////////////
     # Morphy, adapted from Oliver Steele's pywordnet
 
-    def morphy(self, form, pos):
+    def morphy(self, form, pos=None):
         """
         Find a possible base form for the given form, with the given
         part of speech, by checking WordNet's list of exceptional
@@ -531,8 +532,14 @@ class WordNetCorpusReader(CorpusReader):
         'abacus'
         >>> morphy('hardrock', ADV)
         """
+        
+        if pos is None:
+            analyses = chain(a for p in POS_LIST for a in self._morphy(form, p))
+        else:
+            analyses = self._morphy(form, pos)
+        
         # get the first one we find
-        first = list(islice(self._morphy(form, pos), 1)) 
+        first = list(islice(analyses, 1)) 
         if len(first) == 1:
             return first[0]
         else:

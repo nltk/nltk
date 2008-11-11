@@ -11,7 +11,7 @@
 Tkinter widgets for displaying multi-column listboxes and tables.
 """
 
-from Tkinter import *
+from util import *
 import operator
 
 ######################################################################

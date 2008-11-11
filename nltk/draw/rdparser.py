@@ -67,8 +67,6 @@ Keyboard Shortcuts::
 """
 
 import string
-import tkFont
-from Tkinter import *
 
 from nltk import parse, tokenize, Tree
 

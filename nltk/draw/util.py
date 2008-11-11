@@ -46,8 +46,10 @@ homepage<http://www.ags.uni-sb.de/~konrad/clig.html>}.
     ScrollWatcherWidget
 @group Tkinter Widgets: CanvasFrame, EntryDialog, ShowText
 """
-from Tkinter import *
 
+from Tkinter import *
+import tkFont, tkMessageBox, tkFileDialog
+    
 ##//////////////////////////////////////////////////////
 ##  CanvasWidget
 ##//////////////////////////////////////////////////////

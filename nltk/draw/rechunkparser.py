@@ -17,9 +17,6 @@ parser (L{RegexpChunkParser<nltk.chunk.regex.RegexpChunkParser>}).
     and what part of the data is being used as the development set.
 """
 
-from Tkinter import *
-from tkFileDialog import asksaveasfilename, askopenfilename
-import tkFont
 import time
 import textwrap
 import re
@@ -1155,8 +1152,8 @@ class RegexpChunkDemo(object):
         if not filename:
             ftypes = [('Chunk Gramamr', '.chunk'),
                       ('All files', '*')]
-            filename = asksaveasfilename(filetypes=ftypes,
-                                         defaultextension='.chunk')
+            filename = tkFileDialog.asksaveasfilename(filetypes=ftypes,
+                                                      defaultextension='.chunk')
             if not filename: return
         if (self._history and self.normalized_grammar ==
             self.normalize_grammar(self._history[-1][0])):
@@ -1178,8 +1175,8 @@ class RegexpChunkDemo(object):
         if not filename:
             ftypes = [('Chunk Gramamr', '.chunk'),
                       ('All files', '*')]
-            filename = askopenfilename(filetypes=ftypes,
-                                       defaultextension='.chunk')
+            filename = tkFileDialog.askopenfilename(filetypes=ftypes,
+                                                    defaultextension='.chunk')
             if not filename: return
         self.grammarbox.delete('1.0', 'end')
         self.update()
@@ -1193,8 +1190,8 @@ class RegexpChunkDemo(object):
         if not filename:
             ftypes = [('Chunk Gramamr History', '.txt'),
                       ('All files', '*')]
-            filename = asksaveasfilename(filetypes=ftypes,
-                                         defaultextension='.txt')
+            filename = tkFileDialog.asksaveasfilename(filetypes=ftypes,
+                                                      defaultextension='.txt')
             if not filename: return
 
         out = open(filename, 'w')

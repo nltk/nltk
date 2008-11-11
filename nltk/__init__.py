@@ -74,10 +74,13 @@ from classify import *
 from model import *
 from misc import *
 
-# Corpus & Data Downloader
-from downloader import download, download_shell, download_gui
-
 from internals import config_java
 
-import chat, chunk, corpus, draw, parse, sem, stem, tag, tokenize, wordnet
+import chat, chunk, corpus, parse, sem, stem, tag, tokenize, wordnet
 
+# Import Tkinter-based modules if Tkinter is installed
+try:
+    import draw
+    from downloader import download, download_shell, download_gui  # should just be the GUI in here
+except ImportError:
+    print "Warning: draw and downloader modules not loaded (please install Tkinter library)."

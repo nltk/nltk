@@ -40,7 +40,6 @@ edge you wish to apply a rule to.
 
 import pickle
 from tkFileDialog import asksaveasfilename, askopenfilename
-import Tkinter, tkFont, tkMessageBox
 import math
 import string
 import os.path
@@ -48,8 +47,7 @@ import os.path
 from nltk.parse.chart import *
 from nltk import tokenize, Tree, Nonterminal, parse_cfg
 
-from util import ShowText, EntryDialog, in_idle, MutableOptionMenu
-from util import ColorizedList, SymbolWidget, CanvasFrame
+from util import *
 from cfg import CFGEditor
 from tree import tree_to_treesegment, TreeSegmentWidget
 
