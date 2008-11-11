@@ -8,8 +8,6 @@
 # $Id: concordance.py 6121 2008-07-11 02:10:33Z stevenbird $
 
 import re
-from Tkinter import *
-import tkFont
 from string import join
 import threading
 

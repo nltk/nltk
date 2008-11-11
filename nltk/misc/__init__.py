@@ -5,6 +5,5 @@
 # URL: <http://nltk.org>
 # For license information, see LICENSE.TXT
 
-from nemo import finding_nemo
 from chomsky import generate_chomsky
 from wordfinder import word_finder

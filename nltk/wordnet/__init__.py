@@ -1,4 +1,4 @@
-# Natural Language Toolkit: Wordnet Interface
+# Natural Language Toolkit: WordNet Interface
 #
 # Copyright (C) 2001-2008 NLTK Project
 # Author: Oliver Steele <steele@osteele.com>
@@ -8,7 +8,7 @@
 # For license information, see LICENSE.TXT
 
 """
-Wordnet interface, based on Oliver Steele's Pywordnet, together
+WordNet interface, based on Oliver Steele's Pywordnet, together
 with an implementation of Ted Pedersen's Wordnet::Similarity package.
 
 Usage

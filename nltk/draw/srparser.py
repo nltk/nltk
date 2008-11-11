@@ -76,8 +76,6 @@ Possible future improvements:
 """
 
 import string
-from Tkinter import *
-import tkFont
 
 from nltk import parse, tokenize
 

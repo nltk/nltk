@@ -65,9 +65,9 @@ __all__ = ['Plot']
 
 from types import *
 from math import log, log10, ceil, floor
-import Tkinter, sys, time
+import sys, time
 
-from util import ShowText, in_idle
+from util import *
 
 class PlotFrameI(object):
     """
@@ -112,17 +112,17 @@ class CanvasPlotFrame(PlotFrameI):
         self._original_rng = rng
         self._original_vals = vals
         
-        self._frame = Tkinter.Frame(root)
+        self._frame = Frame(root)
         self._frame.pack(expand=1, fill='both')
 
         # Set up the canvas
-        self._canvas = Tkinter.Canvas(self._frame, background='white')
+        self._canvas = Canvas(self._frame, background='white')
         self._canvas['scrollregion'] = (0,0,200,200)
 
         # Give the canvas scrollbars.
-        sb1 = Tkinter.Scrollbar(self._frame, orient='vertical')
+        sb1 = Scrollbar(self._frame, orient='vertical')
         sb1.pack(side='right', fill='y')
-        sb2 = Tkinter.Scrollbar(self._frame, orient='horizontal')
+        sb2 = Scrollbar(self._frame, orient='horizontal')
         sb2.pack(side='bottom', fill='x')
         self._canvas.pack(side='left', fill='both', expand=1)
 
@@ -321,7 +321,7 @@ class BLTPlotFrame(PlotFrameI):
 
         # Create top-level frame.
         self._root = root
-        self._frame = Tkinter.Frame(root)
+        self._frame = Frame(root)
         self._frame.pack(expand=1, fill='both')
         
         # Create the graph.
@@ -337,9 +337,9 @@ class BLTPlotFrame(PlotFrameI):
             raise ImportError('Pmw not installed!')
 
         # Add scrollbars.
-        sb1 = Tkinter.Scrollbar(self._frame, orient='vertical')
+        sb1 = Scrollbar(self._frame, orient='vertical')
         sb1.pack(side='right', fill='y')
-        sb2 = Tkinter.Scrollbar(self._frame, orient='horizontal')
+        sb2 = Scrollbar(self._frame, orient='horizontal')
         sb2.pack(side='bottom', fill='x')
         self._graph.pack(side='left', fill='both', expand='yes')
         self._yscroll = sb1
@@ -566,7 +566,7 @@ class Plot(object):
             raise ValueError("Nothing to plot")
         
         # Set up the tk window
-        self._root = Tkinter.Tk()
+        self._root = Tk()
         self._init_bindings(self._root)
 
         # Create the actual plot frame
@@ -576,8 +576,8 @@ class Plot(object):
             self._plot = CanvasPlotFrame(self._root, vals, rng)
 
         # Set up the axes
-        self._ilog = Tkinter.IntVar(self._root); self._ilog.set(0)
-        self._jlog = Tkinter.IntVar(self._root); self._jlog.set(0)
+        self._ilog = IntVar(self._root); self._ilog.set(0)
+        self._jlog = IntVar(self._root); self._jlog.set(0)
         scale = kwargs.get('scale', 'linear')
         if scale in ('log-linear', 'log_linear', 'log'): self._ilog.set(1)
         if scale in ('linear-log', 'linear_log', 'log'): self._jlog.set(1)
@@ -599,16 +599,16 @@ class Plot(object):
         self._root.bind('<F1>', self.help)
         
     def _init_menubar(self, parent):
-        menubar = Tkinter.Menu(parent)
+        menubar = Menu(parent)
 
-        filemenu = Tkinter.Menu(menubar, tearoff=0)
+        filemenu = Menu(menubar, tearoff=0)
         filemenu.add_command(label='Print to Postscript', underline=0,
                              command=self.postscript, accelerator='Ctrl-p')
         filemenu.add_command(label='Exit', underline=1,
                              command=self.destroy, accelerator='Ctrl-x')
         menubar.add_cascade(label='File', underline=0, menu=filemenu)
 
-        zoommenu = Tkinter.Menu(menubar, tearoff=0)
+        zoommenu = Menu(menubar, tearoff=0)
         zoommenu.add_command(label='Zoom in', underline=5,
                              command=self._zoom_in, accelerator='left click')
         zoommenu.add_command(label='Zoom out', underline=5,
@@ -617,7 +617,7 @@ class Plot(object):
                              accelerator='Ctrl-a')
         menubar.add_cascade(label='Zoom', underline=0, menu=zoommenu)
 
-        axismenu = Tkinter.Menu(menubar, tearoff=0)
+        axismenu = Menu(menubar, tearoff=0)
         if self._imin > 0: xstate = 'normal'
         else: xstate = 'disabled'
         if self._jmin > 0: ystate = 'normal'
@@ -630,7 +630,7 @@ class Plot(object):
                                  command=self._log)
         menubar.add_cascade(label='Axes', underline=0, menu=axismenu)
 
-        helpmenu = Tkinter.Menu(menubar, tearoff=0)
+        helpmenu = Menu(menubar, tearoff=0)
         helpmenu.add_command(label='About', underline=0,
                              command=self.about)
         helpmenu.add_command(label='Instructions', underline=0,

@@ -6,8 +6,6 @@
 # For license information, see LICENSE.TXT
 #
 
-from Tkinter import *
-import tkFont
 import threading
 
 from nltk import corpus, FreqDist

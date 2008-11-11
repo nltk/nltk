@@ -5,7 +5,6 @@
 # URL: <http://nltk.org>
 # For license information, see LICENSE.TXT
 #
-from Tkinter import *
 import sys
 import matplotlib
 matplotlib.use('TkAgg')

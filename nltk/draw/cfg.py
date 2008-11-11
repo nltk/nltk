@@ -53,8 +53,6 @@ Operations:
     - if connected to top & bottom, then disconnect
 """
 
-from Tkinter import *
-
 from nltk.grammar import ContextFreeGrammar, Nonterminal, parse_cfg_production
 from nltk import Tree
 
