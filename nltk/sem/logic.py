@@ -1315,5 +1315,4 @@ def demo():
     print e1 == e2
         
 if __name__ == '__main__':
-    boolean_ops()
-    #demo()
+    demo()
