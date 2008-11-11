@@ -1045,8 +1045,8 @@ and ``options`` are additional reader-specific options.  For example,
 we can create a customized corpus reader for the genesis corpus that
 uses a different sentence tokenizer as follows:
 
-    >>> # Find the directory where the corpus lives.
-    >>> genesis_dir = nltk.data.find('corpora/genesis')
+    >>> # Find the directory where the corpus lives.  
+    >>> genesis_dir = nltk.data.find('corpora/genesis.zip')
     >>> # Create our custom sentence tokenizer.
     >>> my_sent_tokenizer = nltk.RegexpTokenizer('[^.!?]+')
     >>> # Create the new corpus reader object.
@@ -1056,6 +1056,13 @@ uses a different sentence tokenizer as follows:
     >>> print my_genesis.sents('english-kjv.txt')[0] # doctest: +NORMALIZE_WHITESPACE
     ['In', 'the', 'beginning', 'God', 'created', 'the', 'heaven',
      'and', 'the', 'earth']
+
+If you wish to read your own plaintext corpus, which is stored in the
+directory '/usr/share/some-corpus', then you can create a corpus
+reader for it with::
+
+    >>> my_corpus = nltk.corpus.PlaintextCorpusReader(
+    ...     '/usr/share/some-corpus', '.*\.txt')
 
 For a complete list of corpus reader subclasses, see the API
 documentation for `nltk.corpus.CorpusReader`.
