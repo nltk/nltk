@@ -35,10 +35,12 @@ class YCOECorpusReader(CorpusReader):
     corpus of Old English prose texts.
     """
     def __init__(self, root, encoding=None):
+        CorpusReader.__init__(self, root, [], encoding)
+            
         self._psd_reader = YCOEParseCorpusReader(
-            os.path.join(root, 'psd'), '.*', '.psd', encoding=encoding)
+            self.root.join('psd'), '.*', '.psd', encoding=encoding)
         self._pos_reader = YCOETaggedCorpusReader(
-            os.path.join(root, 'pos'), '.*', '.pos', encoding=encoding)
+            self.root.join('pos'), '.*', '.pos', encoding=encoding)
 
         # Make sure we have a consistent set of items:
         documents = set(f[:-4] for f in self._psd_reader.files())
