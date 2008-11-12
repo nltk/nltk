@@ -329,7 +329,7 @@ class WordNetCorpusReader(CorpusReader):
                 lex_id = int(next(), 16)
                 # If the lemma has a syntactic marker, extract it.
                 m = re.match(r'(.*?)(\(.*\))?$', lemma_name)
-                name, syn_mark = m.groups()
+                lemma_name, syn_mark = m.groups()
                 # create the lemma object
                 lemma = Lemma(self, synset, lemma_name, lexname_index,
                               lex_id, syn_mark)
