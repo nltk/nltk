@@ -6,6 +6,7 @@
 # URL: <http://nltk.org>
 # For license information, see LICENSE.TXT
 
+from nltk.corpus.reader.wordnet import NOUN
 from nltk.corpus import wordnet
 from nltk.internals import Deprecated
 
@@ -21,7 +22,7 @@ class WordNetStemmer(StemmerI):
         """
         pass
 
-    def stem(self, word, pos=wordnet.NOUN):
+    def stem(self, word, pos=NOUN):
         
         word_stem = wordnet.morphy(word, pos) 
         if not word_stem:
