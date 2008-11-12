@@ -22,8 +22,8 @@ S[sem = <app(?subj,?vp)>] -> NP[num=?n,sem=?subj] VP[num=?n,sem=?vp]
 NP[num=?n,sem=<app(?det,?nom)> ] -> Det[num=?n,sem=?det]  Nom[num=?n,sem=?nom]
 NP[loc=?l,num=?n,sem=?np] -> PropN[loc=?l,num=?n,sem=?np]
 
-NP[-loc,num=sg,sem=<\Q. (not some x. (person(x) & Q(x)))>] -> 'nobody' | 'Nobody'
-NP[-loc,num=sg,sem=<\Q. some x. (person(x) & Q(x))>] -> 'somebody' | 'Somebody'
+NP[-loc,num=sg,sem=<\Q. (- exists x. (person(x) & Q(x)))>] -> 'nobody' | 'Nobody'
+NP[-loc,num=sg,sem=<\Q. exists x. (person(x) & Q(x))>] -> 'somebody' | 'Somebody'
 
 ## Copular predicates
 Pred[sem=?prd] -> PredN[sem=?prd] | PP[+loc,+pred,sem=?prd] | Adj[sem=?prd]
@@ -70,12 +70,12 @@ PropN[+loc, num=sg,sem=<\P.P(Noosa)>] -> 'Noosa'
 
 NP[-loc, num=sg, sem=<\P.\x.P(x)>] -> 'who' | 'Who'
 
-Det[num=sg,sem=<\P Q. all x. (P(x) implies Q(x))>] -> 'every' | 'Every' 
-Det[num=pl,sem=<\P Q. all x. (P(x) implies Q(x))>] -> 'all' | 'All'
-Det[sem=<\P Q. some x. (P(x) & Q(x))>] -> 'some' | 'Some'
-Det[num=sg,sem=<\P Q. some x. (P(x) & Q(x))>] -> 'a' | 'A'
-Det[num=sg,sem=<\P Q. (not some x. (P(x) & Q(x)))>] -> 'no' | 'No'
-Det[num=sg,sem=<\P Q. some x. ((P(x) & Q(x)) & all y. (P(y) implies (x = y)))>] -> 'the' | 'The' 
+Det[num=sg,sem=<\P Q. all x. (P(x) -> Q(x))>] -> 'every' | 'Every' 
+Det[num=pl,sem=<\P Q. all x. (P(x) -> Q(x))>] -> 'all' | 'All'
+Det[sem=<\P Q. exists x. (P(x) & Q(x))>] -> 'some' | 'Some'
+Det[num=sg,sem=<\P Q. exists x. (P(x) & Q(x))>] -> 'a' | 'A'
+Det[num=sg,sem=<\P Q. (- exists x. (P(x) & Q(x)))>] -> 'no' | 'No'
+Det[num=sg,sem=<\P Q. exists x. ((P(x) & Q(x)) & all y. (P(y) -> (x = y)))>] -> 'the' | 'The' 
 
 N[num=sg,sem=<boy>] -> 'boy'
 N[num=pl,sem=<boy>] -> 'boys' 
@@ -122,4 +122,4 @@ P[+loc,-pred,sem=<\X P x. X(\y. (P(x) & in(x,y)))>] -> 'in'
 P[+loc,+pred,sem=<\X x. X(\y. in(x,y))>] -> 'in'
 P[-loc,sem=<\X P x. X(\y. (P(x) & with(x,y)))>] -> 'with'
 
-Neg[sem=<\T P. T(\x.(not P(x)))>] -> 'not'
+Neg[sem=<\T P. T(\x.(- P(x)))>] -> 'not'

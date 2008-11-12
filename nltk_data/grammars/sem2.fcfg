@@ -43,10 +43,10 @@ PropN[+loc, num=sg,sem=<\P.P(noosa)>] -> 'Noosa'
 
 NP[-loc, num=sg, sem=<\P.\x.P(x)>] -> 'who'  
 
-Det[num=sg,sem=<\P Q. all x. (P(x) implies Q(x))>] -> 'every'
-Det[num=pl,sem=<\P Q. all x. (P(x) implies Q(x))>] -> 'all'
-Det[sem=<\P Q. exists x. (P(x) and Q(x))>] -> 'some'
-Det[num=sg,sem=<\P Q. exists x. (P(x) and Q(x))>] -> 'a'
+Det[num=sg,sem=<\P Q. all x. (P(x) -> Q(x))>] -> 'every'
+Det[num=pl,sem=<\P Q. all x. (P(x) -> Q(x))>] -> 'all'
+Det[sem=<\P Q. exists x. (P(x) & Q(x))>] -> 'some'
+Det[num=sg,sem=<\P Q. exists x. (P(x) & Q(x))>] -> 'a'
 
 N[num=sg,sem=<boy>] -> 'boy'
 N[num=pl,sem=<boy>] -> 'boys'
@@ -66,5 +66,5 @@ IV[num=pl,sem=<\x. bark(x)>,tns=pres] -> 'bark'
 IV[num=sg,sem=<\x. walk(x)>,tns=pres] -> 'walks'
 IV[num=pl,sem=<\x. walk(x)>,tns=pres] -> 'walk'
 
-P[+loc,sem=<\X P x. X(\y. (P(x) and in(x,y)))>] -> 'in'
-P[-loc,sem=<\X P x. X(\y. (P(x) and with(x,y)))>] -> 'with'
+P[+loc,sem=<\X P x. X(\y. (P(x) & in(x,y)))>] -> 'in'
+P[-loc,sem=<\X P x. X(\y. (P(x) & with(x,y)))>] -> 'with'
