@@ -776,7 +776,7 @@ class BrillTaggerTrainer(object):
         if self._trace > 2:
             print ('%4d%4d%4d%4d ' % (score, fixscore, fixscore-score,
                                       numchanges-fixscore*2+score)), '|',
-            print textwrap.fill(str(rule), initial_indent=' '*20,
+            print textwrap.fill(str(rule), initial_indent=' '*20, width=79,
                                 subsequent_indent=' '*18+'|   ').strip()
         else:
             print rule
@@ -1263,7 +1263,7 @@ def demo(num_sents=100, max_rules=200, min_score=3,
     training_data = tagged_data[:cutoff]
     gold_data = tagged_data[cutoff:num_sents]
     testing_data = [[t[0] for t in sent] for sent in gold_data]
-    print "Done lodaing."
+    print "Done loading."
 
     # Unigram tagger
     print "Training unigram tagger:"
