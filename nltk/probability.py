@@ -134,6 +134,7 @@ class FreqDist(dict):
         @return: The total number of sample values (or X{bins}) that
             have counts greater than zero.  For the total
             number of sample outcomes recorded, use C{FreqDist.N()}.
+            (FreqDist.B() is the same as len(FreqDist).)
         @rtype: C{int}
         """
         return len(self)
@@ -1447,6 +1448,14 @@ class ConditionalFreqDist(object):
         @rtype: C{int}
         """
         return len(self._fdists)
+
+    def N(self):
+        """
+        @return: The total number of sample outcomes that have been
+          recorded by this C{ConditionalFreqDist}.
+        @rtype: C{int}
+        """
+        return sum(fdist.N() for fdist in self._fdists.values())
 
     def plot(self, *args, **kwargs):
         """

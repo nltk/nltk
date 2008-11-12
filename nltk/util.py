@@ -372,6 +372,8 @@ def clean_url(url):
 # Ngram iteration
 ##########################################################################
 
+# add a flag to pad the sequence so we get peripheral ngrams?
+
 def ngrams(sequence, n):
     """
     A utility that produces a sequence of ngrams from a sequence of items.
@@ -410,6 +412,23 @@ def bigrams(sequence):
     """
     return ngrams(sequence, 2)
 
+def trigrams(sequence):
+    """
+    A utility that produces a sequence of trigrams from a sequence of items.
+    For example:
+    
+    >>> trigrams([1,2,3,4,5])
+    [(1, 2, 3), (2, 3, 4), (3, 4, 5)]
+    
+    Use itrigrams for an iterator version of this function.
+
+    @param sequence: the source data to be converted into trigrams
+    @type sequence: C{sequence} or C{iterator}
+    @return: The trigrams
+    @rtype: C{list} of C{tuple}s
+    """
+    return ngrams(sequence, 3)
+
 def ingrams(sequence, n):
     """
     A utility that produces an iterator over ngrams generated from a sequence of items.
@@ -445,7 +464,7 @@ def ibigrams(sequence):
     
     For example:
     
-    >>> list(ibigrams([1,2,3,4,5], 2))
+    >>> list(ibigrams([1,2,3,4,5]))
     [(1, 2), (2, 3), (3, 4), (4, 5)]
     
     Use bigrams for a list version of this function.
@@ -457,6 +476,26 @@ def ibigrams(sequence):
     """
 
     for item in ingrams(sequence, 2):
+        yield item
+        
+def itrigrams(sequence):
+    """
+    A utility that produces an iterator over trigrams generated from a sequence of items.
+    
+    For example:
+    
+    >>> list(itrigrams([1,2,3,4,5])
+    [(1, 2, 3), (2, 3, 4), (3, 4, 5)]
+    
+    Use trigrams for a list version of this function.
+
+    @param sequence: the source data to be converted into trigrams
+    @type sequence: C{sequence} or C{iterator}
+    @return: The trigrams
+    @rtype: C{iterator} of C{tuple}s
+    """
+
+    for item in ingrams(sequence, 3):
         yield item
         
 ##########################################################################
