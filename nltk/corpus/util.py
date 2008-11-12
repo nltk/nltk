@@ -34,7 +34,7 @@ class LazyCorpusLoader(object):
     def __init__(self, name, reader_cls, *args, **kwargs):
         from nltk.corpus.reader.api import CorpusReader
         assert issubclass(reader_cls, CorpusReader)
-        self.__name = name
+        self.__name = self.__name__ = name
         self.__reader_cls = reader_cls
         self.__args = args
         self.__kwargs = kwargs
@@ -71,8 +71,10 @@ class LazyCorpusLoader(object):
         return getattr(self, attr)
 
     def __repr__(self):
-        self.__load()
-        # This looks circular, but its not, since __load() changes our
-        # __class__ to something new:
-        return '%r' % self
-
+        try:
+            self.__load()
+            # This looks circular, but its not, since __load() changes our
+            # __class__ to something new:
+            return '%r' % self
+        except LookupError, e:
+            return str(e)
