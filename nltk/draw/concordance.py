@@ -35,17 +35,17 @@ _CORPORA = {
             'English: Brown Corpus (simplified)':
                 lambda: corpus.brown.tagged_sents(simplify_tags=True),
             'English: Brown Corpus (Press, simplified)':
-                lambda: corpus.brown.tagged_sents(categories='abc', simplify_tags=True),
+                lambda: corpus.brown.tagged_sents(categories=['news', 'editorial', 'reviews'], simplify_tags=True),
             'English: Brown Corpus (Religion, simplified)':
-                lambda: corpus.brown.tagged_sents(categories='d', simplify_tags=True),
+                lambda: corpus.brown.tagged_sents(categories='religion', simplify_tags=True),
             'English: Brown Corpus (Learned, simplified)':
-                lambda: corpus.brown.tagged_sents(categories='j', simplify_tags=True),
+                lambda: corpus.brown.tagged_sents(categories='learned', simplify_tags=True),
             'English: Brown Corpus (Science Fiction, simplified)':
-                lambda: corpus.brown.tagged_sents(categories='m', simplify_tags=True),
+                lambda: corpus.brown.tagged_sents(categories='science_fiction', simplify_tags=True),
             'English: Brown Corpus (Romance, simplified)':
-                lambda: corpus.brown.tagged_sents(categories='p', simplify_tags=True),
+                lambda: corpus.brown.tagged_sents(categories='romance', simplify_tags=True),
             'English: Brown Corpus (Humor, simplified)':
-                lambda: corpus.brown.tagged_sents(categories='r', simplify_tags=True),
+                lambda: corpus.brown.tagged_sents(categories='humor', simplify_tags=True),
             'English: NPS Chat Corpus':
                 lambda: corpus.nps_chat.tagged_posts(),
             'English: NPS Chat Corpus (simplified)':
