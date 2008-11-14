@@ -410,7 +410,8 @@ Test for formulas in Model
     ...     else:
     ...         print sent, semvalue
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-    
+
+   
 
 Satisfier Tests
 ---------------
@@ -463,6 +464,51 @@ Satisfier Tests
     'all y. (dog(y) -> (x = y))' gets value: False
     '- exists y. love(y, x)' gets value: False
     'exists y. (love(adam, y) & love(y, x))' gets value: True
+
+    >>> lp = LogicParser()
+    >>> for fmla in formulas:
+    ...     p = lp.parse(fmla)
+    ...     g.purge()
+    ...     print "Satisfiers of '%s':\n\t%s" % (p, m.satisfiers(p, 'x', g))
+    Satisfiers of 'boy(x)':
+    	set(['b1', 'b2'])
+    Satisfiers of '(x = x)':
+    	set(['g2', 'b2', 'b1', 'g1', 'd1'])
+    Satisfiers of '(boy(x) | girl(x))':
+    	set(['b2', 'b1', 'g1', 'g2'])
+    Satisfiers of '(boy(x) & girl(x))':
+    	set([])
+    Satisfiers of 'love(adam,x)':
+    	set(['g1'])
+    Satisfiers of 'love(x,adam)':
+    	set(['g2', 'g1'])
+    Satisfiers of '-(x = adam)':
+    	set(['g2', 'b2', 'g1', 'd1'])
+    Satisfiers of 'exists z22.love(x,z22)':
+    	set(['b2', 'b1', 'g1', 'g2'])
+    Satisfiers of 'exists y.love(y,x)':
+    	set(['b1', 'g1', 'g2'])
+    Satisfiers of 'all y.(girl(y) -> love(x,y))':
+    	set([])
+    Satisfiers of 'all y.(girl(y) -> love(y,x))':
+    	set(['b1'])
+    Satisfiers of 'all y.(girl(y) -> (boy(x) & love(y,x)))':
+    	set(['b1'])
+    Satisfiers of '(boy(x) & all y.(girl(y) -> love(x,y)))':
+    	set([])
+    Satisfiers of '(boy(x) & all y.(girl(y) -> love(y,x)))':
+    	set(['b1'])
+    Satisfiers of '(boy(x) & exists y.(girl(y) & love(y,x)))':
+    	set(['b1'])
+    Satisfiers of '(girl(x) -> dog(x))':
+    	set(['b1', 'b2', 'd1'])
+    Satisfiers of 'all y.(dog(y) -> (x = y))':
+    	set(['d1'])
+    Satisfiers of '-exists y.love(y,x)':
+    	set(['b2', 'd1'])
+    Satisfiers of 'exists y.(love(adam,y) & love(y,x))':
+    	set(['b1'])
+    
 
 Tests based on the Blackburn & Bos testsuite
 --------------------------------------------
