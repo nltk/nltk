@@ -20,10 +20,10 @@ from itertools import islice
 
 from nltk.corpus import brown
 from nltk.probability import FreqDist
-from nltk.stem.wordnet import morphy
 
 from util import *
 from dictionary import N, V
+from stemmer import morphy
 
 # Perform a binary search through the list of all compounds. The
 # search necessarily accepts partial matches. The search returns

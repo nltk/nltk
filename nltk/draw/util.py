@@ -34,17 +34,6 @@ are derived from C{CLIG}, a Tk-based grapher for linguistic data
 structures.  For more information, see U{the CLIG
 homepage<http://www.ags.uni-sb.de/~konrad/clig.html>}.
 
-@group Graphical Demonstrations: rdparser, srparser, chart
-@group Widgets: tree, cfg, plot
-@group Abstract Widget Superclasses: CanvasWidget, AbstractContainerWidget
-@sort: CanvasWidget, AbstractContainerWidget
-@group Canvas Widgets: BoxWidget, BracketWidget, OvalWidget, ParenWidget,
-    ScrollWatcherWidget, SequenceWidget, SpaceWidget, StackWidget,
-    SymbolWidget, TextWidget
-@sort: TextWidget, SymbolWidget, BoxWidget, OvalWidget, ParenWidget,
-    BracketWidget, SequenceWidget, StackWidget, SpaceWidget,
-    ScrollWatcherWidget
-@group Tkinter Widgets: CanvasFrame, EntryDialog, ShowText
 """
 
 from Tkinter import *
