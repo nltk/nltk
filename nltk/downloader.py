@@ -136,7 +136,7 @@ Changes I need to make:
   - when checking status: check both compressed & uncompressed size.
     uncompressed size is important to make sure we detect a problem
     if something got partially unzipped.  define new status values
-    to differentiate stale vs corrput vs corrputly-uncompressed??
+    to differentiate stale vs corrupt vs corruptly-uncompressed??
     (we shouldn't need to re-download the file if the zip file is ok
     but it didn't get uncompressed fully.)
   - add other fields to the index: author, license, copyright, contact,
@@ -352,7 +352,7 @@ class Downloader(object):
        server index will be considered 'stale,' and will be
        re-downloaded."""
     
-    DEFAULT_URL = 'http://nltk.org/nltk_data.xml'
+    DEFAULT_URL = 'http://nltk.googlecode.com/svn/trunk/nltk_data/downloader-index.xml'
     """The default URL for the NLTK data server's index.  An
        alternative URL can be specified when creating a new
        C{Downloader} object."""
@@ -661,7 +661,7 @@ class Downloader(object):
                         show('Package %s is already up-to-date!' %
                              msg.package.id, '  ')
                     elif isinstance(msg, StaleMessage):
-                        show('Package %s is out-of-date or corrput' %
+                        show('Package %s is out-of-date or corrupt' %
                              msg.package.id, '  ')
                     elif isinstance(msg, StartUnzipMessage):
                         show('Unzipping %s.' % msg.package.filename, '  ')
