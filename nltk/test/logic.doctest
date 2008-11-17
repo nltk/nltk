@@ -464,36 +464,63 @@ Typed Logic
 
     >>> tlp = LogicParser(True)
 
-`gettype()`
-===========
+gettype()
 
-    >>> print tlp.parse(r'man(x)').gettype()
+    >>> print tlp.parse(r'man(x)').type
     t
-    >>> print tlp.parse(r'-man(x)').gettype()
+    >>> print tlp.parse(r'-man(x)').type
     t
-    >>> print tlp.parse(r'(man(x) <-> tall(x))').gettype()
+    >>> print tlp.parse(r'(man(x) <-> tall(x))').type
     t
-    >>> print tlp.parse(r'exists x.(man(x) & tall(x))').gettype()
+    >>> print tlp.parse(r'exists x.(man(x) & tall(x))').type
     t
-    >>> print tlp.parse(r'\x.man(x)').gettype()
+    >>> print tlp.parse(r'\x.man(x)').type
     <e,t>
-    >>> print tlp.parse(r'john').gettype()
-    ?
-    >>> print tlp.parse(r'\x y.sees(x,y)').gettype()
+    >>> print tlp.parse(r'john').type
+    e
+    >>> print tlp.parse(r'\x y.sees(x,y)').type
     <e,<e,t>>
-    >>> print tlp.parse(r'\x.man(x)(john)').gettype()
+    >>> print tlp.parse(r'\x.man(x)(john)').type
     t
-    >>> print tlp.parse(r'\x.\y.sees(x,y)(john)').gettype()
+    >>> print tlp.parse(r'\x.\y.sees(x,y)(john)').type
     <e,t>
-    >>> print tlp.parse(r'\x.\y.sees(x,y)(john)(mary)').gettype()
+    >>> print tlp.parse(r'\x.\y.sees(x,y)(john)(mary)').type
     t
-    >>> print tlp.parse(r'\P.\Q.exists x.(P(x) & Q(x))').gettype()
-    <<e,t>,<<e,t>,t>>
-    >>> print tlp.parse(r'\x.y').gettype()
+    >>> print tlp.parse(r'\P.\Q.exists x.(P(x) & Q(x))').type
+    <<e,?>,<<e,?>,t>>
+    >>> print tlp.parse(r'\x.y').type
     <?,e>
+    >>> print tlp.parse(r'\P.P(x)').type
+    <<e,?>,?>
 
-`findtype()`
-============
+    >>> parsed = tlp.parse('see(john,mary)')
+    >>> print parsed.type
+    t
+    >>> print parsed.function
+    see(john)
+    >>> print parsed.function.type
+    <e,t>
+    >>> print parsed.function.function
+    see
+    >>> print parsed.function.function.type
+    <e,<e,t>>
+    
+    >>> parsed = tlp.parse('P(x,y)')
+    >>> print parsed
+    P(x,y)
+    >>> print parsed.type
+    ?
+    >>> print parsed.function
+    P(x)
+    >>> print parsed.function.type
+    <e,?>
+    >>> print parsed.function.function
+    P
+    >>> print parsed.function.function.type
+    <e,<e,?>>
+    
+
+findtype()
 
     >>> print tlp.parse(r'man(x)').findtype(Variable('man'))
     <e,t>
@@ -501,15 +528,11 @@ Typed Logic
     <e,<e,t>>
     >>> try: print tlp.parse(r'exists x y.(P(x) & P(x,y))').findtype(Variable('P')) 
     ... except Exception, e: print e
-    The variable 'P' was found in multiple places with different types in '(P(x) & P(x,y))'.
+    ?
     >>> print tlp.parse(r'P(Q(R(x)))').findtype(Variable('Q'))
-    <<e,t>,t>
-    >>> print tlp.parse(r'\P.((\P.P(x,y))(man)) & P(x)').findtype(Variable('P'))
-    <e,t>
+    <?,?>
 
-`Type.__eq__()`
-===============
-
+Type.__eq__()
     >>> from nltk.sem.logic import *
     
     >>> e = ENTITY_TYPE
@@ -519,6 +542,7 @@ Typed Logic
     >>> eet = ComplexType(e,ComplexType(e,t))
     >>> at = ComplexType(a,t)
     >>> ea = ComplexType(e,a)
+    >>> aa = ComplexType(a,a)
     
     >>> e == e
     True
@@ -538,13 +562,12 @@ Typed Logic
     False
     >>> et == a
     False
-    >>> a == ComplexType(a,ComplexType(a,a))
+    >>> a == ComplexType(a,aa)
     True
-    >>> ComplexType(a,ComplexType(a,a)) == a
+    >>> ComplexType(a,aa) == a
     True
 
-`matches()`
-===========
+matches()
 
     >>> e.matches(t)
     False
@@ -560,17 +583,24 @@ Typed Logic
     True
     >>> eet.matches(ea)
     True
+    >>> aa.matches(et)
+    True
+    >>> aa.matches(t)
+    True
 
+Type error during parsing
+=========================
 
-Self-Application
-================
-
-    >>> try: tlp.parse(r'\x.man(x)(\x.man(x))')
+    >>> try: tlp.parse(r'\x y.see(x,y)(\x.man(x))')
     ... except TypeException, e: print e
-    The function '\x.man(x)' is of type '<e,t>' and cannot be applied to '\x.man(x)' of type '<e,t>'.  Its argument must be of type 'e'.
+    The function '\x y.see(x,y)' is of type '<e,<e,t>>' and cannot be applied to '\x.man(x)' of type '<e,t>'.  Its argument must be of type 'e'.
+    
+Type error during application
+=============================
 
+    >>> see = tlp.parse(r'\x y.see(x,y)')
     >>> man = tlp.parse(r'\x.man(x)')
-    >>> try: man(man)
+    >>> try: see(man)
     ... except TypeException, e: print e
-    The function '\x.man(x)' is of type '<e,t>' and cannot be applied to '\x.man(x)' of type '<e,t>'.  Its argument must be of type 'e'.
+    The function '\x y.see(x,y)' is of type '<e,<e,t>>' and cannot be applied to '\x.man(x)' of type '<e,t>'.  Its argument must be of type 'e'.
     
