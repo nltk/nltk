@@ -19,26 +19,24 @@ and associated functions and classes.
 Overview
 --------
 
-    >>> from nltk.sem import *
-    >>> lp = LogicParser()
+    >>> from nltk.sem import logic
+
 
 The default inventory of logical constants is the following:
 
-    >>> names = ["lambda", "conjunction", "disjunction", "negation",
-    ...          "implication", "equivalence", "equality", "inequality",
-    ...          "existential", "universal"]
-    >>> for pair in zip(names, Tokens.LCONSTANTS):
-    ...     print "%-15s %s" %  pair
-    lambda          \
-    conjunction     &
-    disjunction     |
-    negation        -
-    implication     ->
-    equivalence     <->
-    equality        =
-    inequality      !=
-    existential     exists
-    universal       all
+    >>> logic.boolean_ops()
+    negation       	-
+    conjunction    	&
+    disjunction    	|
+    implication    	->
+    equivalence    	<->
+    >>> logic.equality_preds()
+    equality       	=
+    inequality     	!=
+    >>> logic.binding_ops()
+    existential    	exists
+    universal      	all
+    lambda         	\
     
 ----------------
 Regression Tests
@@ -53,6 +51,7 @@ Untyped Logic
 Test for equality under alpha-conversion
 ======================================== 
 
+    >>> lp = logic.LogicParser()
     >>> e1 = lp.parse('exists x.P(x)')
     >>> print e1
     exists x.P(x)
