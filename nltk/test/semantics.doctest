@@ -146,24 +146,21 @@ Sets of entities are converted into sets of singleton tuples
     >>> set2rel(set2rel(s3))
     set([('d1',), ('d2',)])
 
-Predication is carried out with ``app()``.
+Predication is evaluated by set membership.
 
-    >>> 
-    >>> app(s1, ('d1', 'd2'))
+    >>> ('d1', 'd2') in s1
     True
-    >>> app(s1, ('d2', 'd2'))
+    >>> ('d2', 'd2') in s1
     False
-    >>> app(s1, ('d1',))
+    >>> ('d1',) in s1
     False
-    >>> app(s1, 'd2')
+    >>> 'd2' in s1
     False
-    >>> app(set(), ('d1',))
+    >>> ('d1',) in s4
+    True
+    >>> ('d1',) in set()
     False
-    >>> app(s2, ('d1',))
-    Traceback (most recent call last):
-      . . .
-    ValueError: Set set([('d1', 'd2'), ('d1',)]) contains sequences of different lengths
-    >>> app(null_binary_rel, 'd1')
+    >>> 'd1' in  null_binary_rel
     False
 
 
@@ -440,7 +437,7 @@ Satisfier Tests
     >>> g.purge()
     >>> g.add('x', 'b1')
     {'x': 'b1'}
-    >>> for f in formulas:
+    >>> for f in formulas: # doctest: +NORMALIZE_WHITESPACE
     ...     try:
     ...         print "'%s' gets value: %s" % (f, m.evaluate(f, g))
     ...     except Undefined:
@@ -466,7 +463,7 @@ Satisfier Tests
     'exists y. (love(adam, y) & love(y, x))' gets value: True
 
     >>> lp = LogicParser()
-    >>> for fmla in formulas:
+    >>> for fmla in formulas: # doctest: +NORMALIZE_WHITESPACE
     ...     p = lp.parse(fmla)
     ...     g.purge()
     ...     print "Satisfiers of '%s':\n\t%s" % (p, m.satisfiers(p, 'x', g))
