@@ -6,6 +6,7 @@
 # For license information, see LICENSE.TXT
 
 from math import log
+import re
 
 from probability import FreqDist, LidstoneProbDist
 from compat import defaultdict
@@ -174,10 +175,20 @@ class Text(list):
             print tokenwrap(w1+"_"+w2 for w1,w2 in ranked_contexts)
 
     def dispersion_plot(self, words):
+        """
+        Produce a plot showing the distribution of the words through the text.
+        Requires pylab to be installed.
+        
+        @param words: The words to be plotted
+        @type word: C{str}
+        """
         from nltk.draw import dispersion_plot
         dispersion_plot(self, words)
 
     def plot(self, *args):
+        """
+        See documentation for FreqDist.plot()
+        """
         self.vocab().plot(*args)
     
     def vocab(self):
@@ -185,6 +196,45 @@ class Text(list):
             print "Building vocabulary index..."
             self._vocab = FreqDist(self)
         return self._vocab
+
+    def findall(self, regexp):
+        """
+        Find instances of the regular expression in the text.
+        The text is a list of tokens, and a regexp pattern to match
+        a single token must be surrounded by angle brackets.  E.g.
+        
+        >>> text5.findall("<.*><.*><bro>")
+        you rule bro; telling you bro; u twizted bro
+        >>> text1.findall("<a>(<.*>)<man>")
+        monied; nervous; dangerous; white; white; white; pious; queer; good;
+        mature; white; Cape; great; wise; wise; butterless; white; fiendish;
+        pale; furious; better; certain; complete; dismasted; younger; brave;
+        brave; brave; brave
+        >>> text9.findall("<th.*>{3,}")
+        thread through those; the thought that; that the thing; the thing
+        that; that that thing; through these than through; them that the;
+        through the thick; them that they; thought that the
+        
+        @param regexp: A regular expression
+        @type regexp: C{str}
+        """
+        
+        if "_raw" not in self.__dict__:
+            self._raw = ''.join('<'+w+'>' for w in self) 
+
+        # preprocess the regular expression
+        regexp = re.sub(r'\s', '', regexp)
+        regexp = re.sub(r'<', '(?:<(?:', regexp)
+        regexp = re.sub(r'>', ')>)', regexp)
+        regexp = re.sub(r'(?<!\\)\.', '[^>]', regexp)
+
+        # perform the search
+        hits = re.findall(regexp, self._raw)
+
+        # postprocess the output
+        hits = [re.sub(r'><', ' ', h) for h in hits]
+        hits = [re.sub(r'^<|>$', '', h) for h in hits]
+        print tokenwrap(hits, "; ") 
 
     def __str__(self):
         """
