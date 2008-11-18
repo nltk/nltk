@@ -88,7 +88,7 @@ def arity(rel):
         return 0
     return len(list(rel)[0])
 
-#@decorator(trace)
+@deprecated("Simply use 'args in rel'")
 def app(rel, args, trace=False):
     """
     Apply a relation (as set of tuples) to an argument.
@@ -391,7 +391,7 @@ class Model(object):
                 #It's a predicate expression ("P(x,y)"), so used uncurried arguments
                 funval = self.satisfy(function, g)
                 argvals = tuple([self.satisfy(arg, g) for arg in arguments])
-                return app(funval, argvals)
+                return argvals in funval
             else:
                 #It must be a lamba expression, so use curryed form
                 funval = self.satisfy(parsed.function, g)
@@ -652,9 +652,9 @@ def folmodel(quiet=False, trace=None):
             try:
                 funval = m2.i(lp.parse(fun), g2)
                 argsval = tuple(m2.i(lp.parse(arg), g2) for arg in args)
-                print "app(%s, %s) evaluates to %s" % (fun, args, app(funval, argsval))
+                print "%s(%s) evaluates to %s" % (fun, args, argsval in funval)
             except Undefined:
-                print "app(%s, %s) evaluates to Undefined" % (fun, args)
+                print "%s(%s) evaluates to Undefined" % (fun, args)
             
 # Demo 3: FOL
 #########
