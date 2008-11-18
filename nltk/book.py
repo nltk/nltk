@@ -29,7 +29,7 @@ text5 = Text(nps_chat.words(['10-26-teens_706posts.xml',
 print "text5:", text5.name
 
 text6 = Text(webtext.words('grail.txt'), name="Monty Python and the Holy Grail")
-print "text6:", text9.name
+print "text6:", text6.name
 
 text7 = Text(treebank.words(), name="Wall Street Journal")
 print "text7:", text7.name
@@ -38,7 +38,7 @@ text8 = Text(webtext.words('singles.txt'), name="Personals Corpus")
 print "text8:", text8.name
 
 text9 = Text(gutenberg.words('chesterton-thursday.txt'))
-print "text9:", text6.name
+print "text9:", text9.name
 
 def texts():
     print "text1:", text1.name
