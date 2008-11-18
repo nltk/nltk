@@ -163,7 +163,7 @@ they didn't download that model.
 default: unzip or not?
     
 """
-import time, re, os, zipfile, sys, md5, textwrap, threading, itertools
+import time, re, os, zipfile, sys, hashlib, textwrap, threading, itertools
 from cStringIO import StringIO
 from Tkinter import *
 from tkMessageBox import *
@@ -1820,7 +1820,7 @@ def md5_hexdigest(file):
     if isinstance(file, basestring):
         file = open(file, 'rb')
     
-    md5_digest = md5.new()
+    md5_digest = hashlib.md5()
     while True:
         block = file.read(1024*16) # 16k blocks
         if not block: break
