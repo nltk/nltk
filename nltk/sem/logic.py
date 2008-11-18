@@ -57,6 +57,35 @@ class Tokens:
               EQ + NEQ 
 
     LCONSTANTS = [SYM[1] for SYM in [LAMBDA, AND, OR, NOT, IMP, IFF, EQ, NEQ, EXISTS, ALL]] 
+    
+    BINOPS1 = [SYM[1] for SYM in [NOT, AND, OR, IMP, IFF]] 
+    EQUALS1 = [SYM[1] for SYM in [EQ, NEQ]] 
+    QUANTS1 = [SYM[1] for SYM in [EXISTS, ALL]] 
+    
+def boolean_ops():
+    """
+    Boolean operators
+    """
+    names =  ["negation", "conjunction", "disjunction", "implication", "equivalence"]
+    for pair in zip(names, Tokens.BINOPS1):
+        print "%-15s\t%s" %  pair
+        
+def equality_preds():
+    """
+    Equality predicates
+    """
+    names =  ["equality", "inequality"]
+    for pair in zip(names, Tokens.EQUALS1):
+        print "%-15s\t%s" %  pair        
+                    
+def binding_ops():
+    """
+    Binding operators
+    """
+    names =  ["existential", "universal", "lambda"]
+    for pair in zip(names, Tokens.QUANTS1 + Tokens.LAMBDA[0:]):
+        print "%-15s\t%s" %  pair
+
 
 class Variable(object):
     def __init__(self, name):
