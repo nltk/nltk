@@ -16,7 +16,6 @@ import re
 import nltk
 from logic import LogicParser, ParseException
 
-
 ##############################################################
 ## Utility functions for connecting parse output to semantics
 ##############################################################
@@ -27,19 +26,19 @@ def text_parse(inputs, grammar, trace=0):
     
     @parameter inputs: sentences to be parsed
     @type inputs: C{list} of C{str}
-    @parameter grammar: feature-based grammar to use in parsing
+    @parameter grammar: name of feature-based grammar to use in parsing
     @rtype: C{dict}
     @return: a mapping from input sentences to a list of L{Tree}s
     """
     parses = {}
-    cp = nltk.parse.FeatureEarleyChartParser(grammar, trace=trace)
+    cp = nltk.parse.load_earley(grammar, trace=trace)
     for sent in inputs:
         tokens = sent.split()
         syntrees = cp.nbest_parse(tokens)
         parses[sent] = syntrees
     return parses
 
-def _semrep(node, beta_reduce=True):
+def _semrep(node):
     """
     Find the semantic representation at a given tree node.
     
@@ -49,14 +48,12 @@ def _semrep(node, beta_reduce=True):
     assert isinstance(node, nltk.grammar.FeatStructNonterminal)
     try:
         semrep = node['sem']
-        if beta_reduce:
-            semrep = semrep.simplify()
         return semrep
     except KeyError:
         print "Node has no 'sem' feature specification"
     raise
 
-def root_semrep(syntree, beta_reduce=True, start='S'):
+def root_semrep(syntree, start='S'):
     """
     Find the semantic representation at the root of a tree.
     
@@ -65,33 +62,35 @@ def root_semrep(syntree, beta_reduce=True, start='S'):
     @return: the semantic representation at the root of a L{Tree}
     @rtype: L{logic.Expression}
     """
-    return _semrep(syntree.node, beta_reduce=beta_reduce)
+    return _semrep(syntree.node)
 
-def text_interpret(inputs, grammar, beta_reduce=True, start='S', syntrace=0):
+def text_interpret(inputs, grammar, start='S', trace=0):
     """
     Add the semantic representation to each syntactic parse tree
     of each input sentence.
     
     @parameter inputs: a list of sentences
-    @parameter grammar: a feature-based grammar
+    @parameter grammar: name of a feature-based grammar
     @return: a mapping from sentences to lists of pairs (parse-tree, semantic-representations)
     @rtype: C{dict}
     """
-    parses = text_parse(inputs, grammar, trace=syntrace)
+    parses = text_parse(inputs, grammar, trace=trace)
     semreps = {}
     for sent in inputs:
         syntrees = parses[sent]
         syn_sem = \
-           [(syn, root_semrep(syn, beta_reduce=beta_reduce, start=start))
+           [(syn, root_semrep(syn, start=start))
             for syn in syntrees]
         semreps[sent] = syn_sem
     return semreps
 
-def text_evaluate(inputs, grammar, model, assignment, semtrace=0):
+def text_evaluate(inputs, grammar, model, assignment, trace=0):
     """
     Add the truth-in-a-model value to each semantic representation
     for each syntactic parse of each input sentences.
     
+    @parameter inputs: a list of sentences
+    @parameter grammar: name of a feature-based grammar    
     @return: a mapping from sentences to lists of triples (parse-tree, semantic-representations, evaluation-in-model)
     @rtype: C{dict}
     """
@@ -101,7 +100,7 @@ def text_evaluate(inputs, grammar, model, assignment, semtrace=0):
     evaluations = {}
     for sent in inputs:
         syn_sem_val = \
-          [(syn, sem, m.evaluate(str(sem), g, trace=semtrace)) for (syn, sem) in semreps[sent]]
+          [(syn, sem, m.evaluate(str(sem), g, trace=trace)) for (syn, sem) in semreps[sent]]
         evaluations[sent] = syn_sem_val
     return evaluations
 
@@ -169,7 +168,7 @@ def parse_valuation(s):
 
 def parse_logic(s, logic_parser=None):
     """
-    Convert a  file of First Order Formulas into a list of {Expression}s.
+    Convert a file of First Order Formulas into a list of {Expression}s.
     
     @param s: the contents of the file
     @type s: C{str}
