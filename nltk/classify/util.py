@@ -57,7 +57,7 @@ def apply_features(feature_func, toks, labeled=None):
         auto-detect based on types.)
     """
     if labeled is None:
-        labeled = tokens and isinstance(tokens[0], (tuple, list))
+        labeled = toks and isinstance(toks[0], (tuple, list))
     if labeled:
         def lazy_func(labeled_token):
             return (feature_func(labeled_token[0]), labeled_token[1])
