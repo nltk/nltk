@@ -487,13 +487,13 @@ Bug 1796793: WordNet verbFrameStrings
     >>> s.verbFrameStrings
     ['Something fly', 'Somebody fly', 'Something is flying PP', 'Somebody fly PP']
 
-Bug 1940398 UnboundLocalError in wordnet.util line 426
-
-    >>> from nltk.wordnet import util
-    >>> util.getIndex('good-for-nothing')
-    good-for-nothing (noun)
-    >>> util.getIndex('good for nothing')
-    good-for-nothing (noun)
+#Bug 1940398 UnboundLocalError in wordnet.util line 426
+#
+#    >>> from nltk.wordnet import util
+#    >>> util.getIndex('good-for-nothing')
+#    good-for-nothing (noun)
+#    >>> util.getIndex('good for nothing')
+#    good-for-nothing (noun)
 
 Bug: __hash__ method not properly implemented for Synset, Word, WordSense
 
@@ -510,3 +510,15 @@ Bug: __hash__ method not properly implemented for Synset, Word, WordSense
     >>> sense2 = syn2.wordSenses[0]
     >>> hash(sense1) == hash(sense2)
     True
+
+Bug 85: morphy returns the base form of a word, if it's input is given
+as a base form for a POS for which that word is not defined:
+
+    >>> wn.synsets('book', wn.NOUN)
+    [Synset('book.n.01'), Synset('book.n.02'), Synset('record.n.05'), Synset('script.n.01'), Synset('ledger.n.01'), Synset('book.n.06'), Synset('book.n.07'), Synset('koran.n.01'), Synset('bible.n.01'), Synset('book.n.10'), Synset('book.n.11')]
+    >>> wn.synsets('book', wn.ADJ)
+    []
+    >>> wn.morphy('book', wn.NOUN)
+    'book'
+    >>> wn.morphy('book', wn.ADJ)
+
