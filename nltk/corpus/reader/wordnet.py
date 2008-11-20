@@ -531,6 +531,9 @@ class WordNetCorpusReader(CorpusReader):
         >>> morphy('abaci')
         'abacus'
         >>> morphy('hardrock', ADV)
+        >>> morphy('book', wn.NOUN)
+        'book'
+        >>> morphy('book', wn.ADJ)
         """
         
         if pos is None:
@@ -559,7 +562,8 @@ class WordNetCorpusReader(CorpusReader):
         substitutions = self.MORPHOLOGICAL_SUBSTITUTIONS[pos]
     
         def try_substitutions(form):
-            if form in self._lemma_pos_offset_map:
+            if form in self._lemma_pos_offset_map and \
+                    pos in self._lemma_pos_offset_map[form]:
                 yield form
             for old, new in substitutions:
                 if form.endswith(old): # recurse
