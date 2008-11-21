@@ -1932,7 +1932,7 @@ def build_index(root, base_url):
         uids.add(item.get('id'))
 
     # Put it all together
-    top_elt = ElementTree.Element('nltk-data')
+    top_elt = ElementTree.Element('nltk_data')
     top_elt.append(ElementTree.Element('packages'))
     for package in packages: top_elt[0].append(package)
     top_elt.append(ElementTree.Element('collections'))
