@@ -206,8 +206,9 @@ rsync:	clean_up
 # DATA
 ########################################################################
 
-nltk_data:
-	$(PYTHON) tools/build_pkg_index.py ../nltk_data http://nltk.googlecode.com/svn/trunk/nltk_data nltk_data.xml
+data_index:
+	$(PYTHON) tools/build_pkg_index.py ../nltk_data http://nltk.googlecode.com/svn/trunk/nltk_data/packages ../nltk_data/index.xml
+	echo commit: ../nltk_data/index.xml
 
 ########################################################################
 # CLEAN

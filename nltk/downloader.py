@@ -23,8 +23,8 @@ function with a single argument, giving the package identifier for the
 package that should be downloaded:
 
   >>> download('treebank') # doctest: +SKIP
-  [nltkdata] Downloading package 'treebank'...
-  [nltkdata]   Unzipping corpora/treebank.zip.
+  [nltk_data] Downloading package 'treebank'...
+  [nltk_data]   Unzipping corpora/treebank.zip.
 
 NLTK also provides a number of \"package collections\", consisting of
 a group of related packages.  To download all packages in a
@@ -32,13 +32,13 @@ colleciton, simply call C{download()} with the collection's
 identifier:
 
   >>> download('all-corpora') # doctest: +SKIP
-  [nltkdata] Downloading package 'abc'...
-  [nltkdata]   Unzipping corpora/abc.zip.
-  [nltkdata] Downloading package 'alpino'...
-  [nltkdata]   Unzipping corpora/alpino.zip.
+  [nltk_data] Downloading package 'abc'...
+  [nltk_data]   Unzipping corpora/abc.zip.
+  [nltk_data] Downloading package 'alpino'...
+  [nltk_data]   Unzipping corpora/alpino.zip.
     ...
-  [nltkdata] Downloading package 'words'...
-  [nltkdata]   Unzipping corpora/words.zip.
+  [nltk_data] Downloading package 'words'...
+  [nltk_data]   Unzipping corpora/words.zip.
 
 Download Directory
 ==================
@@ -55,9 +55,9 @@ NLTK Download Server
 Before downloading any packages, the corpus and module downloader
 contacts the NLTK download server, to retrieve an index file
 describing the available packages.  By default, this index file is
-loaded from C{<http://nltk.org/downloader-index.xml>}.  If necessary,
-it is possible to create a new L{Downloader} object, specifying a
-different URL for the package index file.
+loaded from C{<http://nltk.googlecode.com/svn/trunk/nltk_data/index.xml>}.
+If necessary, it is possible to create a new L{Downloader} object,
+specifying a different URL for the package index file.
 
 Command-Line Interface
 ======================
@@ -352,7 +352,7 @@ class Downloader(object):
        server index will be considered 'stale,' and will be
        re-downloaded."""
     
-    DEFAULT_URL = 'http://nltk.googlecode.com/svn/trunk/nltk_data/downloader-index.xml'
+    DEFAULT_URL = 'http://nltk.googlecode.com/svn/trunk/nltk_data/index.xml'
     """The default URL for the NLTK data server's index.  An
        alternative URL can be specified when creating a new
        C{Downloader} object."""
@@ -615,7 +615,7 @@ class Downloader(object):
         yield FinishPackageMessage(info)
 
     def download(self, info_or_id=None, download_dir=None, quiet=False,
-                 force=False, prefix='[nltkdata] ', halt_on_error=True,
+                 force=False, prefix='[nltk_data] ', halt_on_error=True,
                  raise_on_error=False):
         # If no info or id is given, then use the interactive shell.
         if info_or_id is None:
