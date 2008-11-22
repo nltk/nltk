@@ -253,6 +253,7 @@ class Expression(SubstituteBindingsI):
         return accum
     
     def applyto(self, other):
+        assert isinstance(other, Expression)
         return ApplicationExpression(self, other, self._type_check)
     
     def __neg__(self):
@@ -320,6 +321,7 @@ class Expression(SubstituteBindingsI):
         """
         Find the type of the given variable as it is used in this expression.
         For example, finding the type of "P" in "P(x) & Q(x,y)" yields "<e,t>"
+        @param variable: C{Variable}  
         """
         raise NotImplementedError() 
     
@@ -380,6 +382,8 @@ class ApplicationExpression(Expression):
         @param function: C{Expression}, for the function expression
         @param argument: C{Expression}, for the argument   
         """
+        assert isinstance(function, Expression)
+        assert isinstance(argument, Expression)
         self.function = function
         self.argument = argument
         Expression.__init__(self, type_check)
@@ -399,6 +403,8 @@ class ApplicationExpression(Expression):
         @param expression: C{Expression} The expression with which to replace it
         @param replace_bound: C{boolean} Should bound variables be replaced?  
         """
+        assert isinstance(variable, Variable)
+        assert isinstance(expression, Expression)
         function = self.function.replace(variable, expression, replace_bound)
         argument = self.argument.replace(variable, expression, replace_bound)
         return self.__class__(function, argument, self._type_check)
@@ -439,6 +445,7 @@ class ApplicationExpression(Expression):
         
     def findtype(self, variable):
         """@see Expression.findtype()"""
+        assert isinstance(variable, Variable)
         function, args = self.uncurry()
         if not isinstance(function, AbstractVariableExpression):
             #It's not a predicate expression ("P(x,y)"), so leave args curried
@@ -513,6 +520,7 @@ class AbstractVariableExpression(Expression):
         """
         @param variable: C{Variable}, for the variable
         """
+        assert isinstance(variable, Variable)
         self.variable = variable
         Expression.__init__(self, type_check)
 
@@ -526,6 +534,8 @@ class AbstractVariableExpression(Expression):
         @param expression: C{Expression} The expression with which to replace it
         @param replace_bound: C{boolean} Should bound variables be replaced?  
         """
+        assert isinstance(variable, Variable)
+        assert isinstance(expression, Expression)
         if self.variable == variable:
             return expression
         else:
@@ -548,6 +558,7 @@ class AbstractVariableExpression(Expression):
 
     def findtype(self, variable):
         """@see Expression.findtype()"""
+        assert isinstance(variable, Variable)
         if self.variable == variable:
             return self.type
         else:
@@ -606,6 +617,7 @@ def VariableExpression(variable, type_check=False):
     This is a factory method that instantiates and returns a subtype of 
     C{AbstractVariableExpression} appropriate for the given variable.
     """
+    assert isinstance(variable, Variable)
     if is_indvar(variable.name):
         return IndividualVariableExpression(variable, type_check)
     elif is_funcvar(variable.name):
@@ -624,6 +636,8 @@ class VariableBinderExpression(Expression):
         @param variable: C{Variable}, for the variable
         @param term: C{Expression}, for the term
         """
+        assert isinstance(variable, Variable)
+        assert isinstance(term, Expression)
         self.variable = variable
         self.term = term
         Expression.__init__(self, type_check)
@@ -639,10 +653,13 @@ class VariableBinderExpression(Expression):
         @param expression: C{Expression} The expression with which to replace it
         @param replace_bound: C{boolean} Should bound variables be replaced?  
         """
+        assert isinstance(variable, Variable)
+        assert isinstance(expression, Expression)
         #if the bound variable is the thing being replaced
         if self.variable == variable:
             if replace_bound: 
-                return self.__class__(expression, 
+                assert isinstance(expression, AbstractVariableExpression)
+                return self.__class__(expression.variable, 
                                       self.term.replace(variable, expression, 
                                                         True),
                                       self._type_check)
@@ -665,6 +682,7 @@ class VariableBinderExpression(Expression):
         binder in the expression to @C{newvar}.
         @param newvar: C{Variable}, for the new variable
         """
+        assert isinstance(newvar, Variable)
         return self.__class__(newvar, self.term.replace(self.variable, 
                           VariableExpression(newvar,self._type_check), 
                           True), self._type_check)
@@ -685,6 +703,7 @@ class VariableBinderExpression(Expression):
 
     def findtype(self, variable):
         """@see Expression.findtype()"""
+        assert isinstance(variable, Variable)
         if variable == self.variable:
             return ANY_TYPE
         else:
@@ -742,6 +761,7 @@ class AllExpression(QuantifiedExpression):
 
 class NegatedExpression(Expression):
     def __init__(self, term, type_check=False):
+        assert isinstance(term, Expression)
         self.term = term
         Expression.__init__(self, type_check)
         
@@ -755,6 +775,8 @@ class NegatedExpression(Expression):
         @param expression: C{Expression} The expression with which to replace it
         @param replace_bound: C{boolean} Should bound variables be replaced?  
         """
+        assert isinstance(variable, Variable)
+        assert isinstance(expression, Expression)
         return self.__class__(self.term.replace(variable, expression, 
                                                 replace_bound), 
                               self._type_check)
@@ -775,6 +797,7 @@ class NegatedExpression(Expression):
         assert self.term.type.matches(TRUTH_TYPE)
 
     def findtype(self, variable):
+        assert isinstance(variable, Variable)
         return self.term.findtype(variable)
         
     def __eq__(self, other):
@@ -790,6 +813,8 @@ class NegatedExpression(Expression):
         
 class BinaryExpression(Expression):
     def __init__(self, first, second, type_check=False):
+        assert isinstance(first, Expression)
+        assert isinstance(second, Expression)
         self.first = first
         self.second = second
         Expression.__init__(self, type_check)
@@ -805,6 +830,8 @@ class BinaryExpression(Expression):
         @param expression: C{Expression} The expression with which to replace it
         @param replace_bound: C{boolean} Should bound variables be replaced?  
         """
+        assert isinstance(variable, Variable)
+        assert isinstance(expression, Expression)
         return self.__class__(self.first.replace(variable, expression, 
                                                  replace_bound),
                               self.second.replace(variable, expression, 
@@ -828,9 +855,9 @@ class BinaryExpression(Expression):
 
     def findtype(self, variable):
         """@see Expression.findtype()"""
+        assert isinstance(variable, Variable)
         f = self.first.findtype(variable)
         s = self.second.findtype(variable)
-        #TODO: how to get to inconsistent type hierarchy?
         if f == s or s == ANY_TYPE:
             return f
         elif f == ANY_TYPE:
@@ -1299,4 +1326,15 @@ def demo():
     
 
 if __name__ == '__main__':
-    demo()
+#    demo()
+    
+    p = LogicParser().parse
+    a = p(r'a')
+    x = p(r'x')
+    y = p(r'y')
+    E = p(r'exists x.man(x)')
+    print E.replace(x.variable, a, True)
+    
+#    print p(r'exists x.man(x)').replace(x.variable, a, True)
+#    print p(r'\x y z.give(x,y,z)').replace(y.variable, a, True)
+    
