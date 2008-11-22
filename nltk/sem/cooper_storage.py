@@ -1,7 +1,7 @@
-# Natural Language Toolkit: Cooper-storage for Quantifier Ambiguity
+# Natural Language Toolkit: Cooper storage for Quantifier Ambiguity
 #
 # Copyright (C) 2001-2008 NLTK Project
-# Author: Ewan Klein <sb@csse.unimelb.edu.au>
+# Author: Ewan Klein <ewan@inf.ed.ac.uk>
 # URL: <http://nltk.org>
 # For license information, see LICENSE.TXT
 
@@ -37,7 +37,7 @@ def parse_with_bindops(sentence, grammar_fn=None, verbose=False):
     return parser.nbest_parse(tokens)
 
 
-def s_retrieval(featstruct):
+def s_retrieval(featstruct, verbose=False):
     """
     Carry out S-Retrieval of binding operators in store.
     
@@ -69,17 +69,27 @@ def s_retrieval(featstruct):
             quant, var = tuple(bindop.uncurry()[1])
             # use var to make an abstraction over the current term and tten
             # apply the quantifier to it
-            term = ApplicationExpression(quant, LambdaExpression(var, term)).simplify()
+            if verbose:
+                print
+                print "current term is", repr(term), ", bindop is", repr(quant)
+            term = ApplicationExpression(quant, LambdaExpression(var.variable, term))
+            print repr(term)
+            term = term.simplify()
+            if verbose:
+                print "new term is", term
         readings.append(term)
     return readings
 
 
 
 def demo():
-    from nltk.sem import cooper_storage as cs
-    sentence = "every man walks a dog"
+    #from nltk.sem import cooper_storage as cs
+    import cooper_storage as cs
+    sentence = "every man feeds a dog "
+    sentence = "Angus feeds a dog with a man"
     trees = cs.parse_with_bindops(sentence)
     for tree in trees:
+        #print tree
         cooper_semrep = tree.node['sem']
         print "Readings for sentence:", sentence
         for reading in cs.s_retrieval(cooper_semrep):
