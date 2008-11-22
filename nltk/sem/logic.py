@@ -1332,8 +1332,15 @@ if __name__ == '__main__':
     a = p(r'a')
     x = p(r'x')
     y = p(r'y')
-    E = p(r'exists x.man(x)')
-    print E.replace(x.variable, a, True)
+    E1 = p(r'exists x.man(x)')
+    print E1.replace(x.variable, a, True)
+    
+    angus = p(r'\P.P(angus)')
+    var = p('z1')
+    term = p('smile(z1)')
+    l = LambdaExpression(var, term)
+    E2 = ApplicationExpression(angus, l)
+    print E2.simplify()
     
 #    print p(r'exists x.man(x)').replace(x.variable, a, True)
 #    print p(r'\x y z.give(x,y,z)').replace(y.variable, a, True)
