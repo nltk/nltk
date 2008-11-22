@@ -19,7 +19,8 @@ and associated functions and classes.
 Overview
 --------
 
-    >>> from nltk.sem import logic
+	>>> from nltk.sem import logic
+    >>> from nltk.sem.logic import *
 
 
 The default inventory of logical constants is the following:
