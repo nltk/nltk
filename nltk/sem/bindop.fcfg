@@ -28,6 +28,9 @@ VP[sem=[core=<?v(?obj)>, store=(?b1+?b2)]] -> TV[sem=[core=?v, store=?b1]] NP[se
 VP[sem=?s] -> IV[sem=?s]
 
 NP[sem=[core=<@x>, store=((<bo(?det(?n),@x)>)+?b1+?b2)]] -> Det[sem=[core=?det, store=?b1]] N[sem=[core=?n, store=?b2]]
+NP[sem=[core=<@x>, store=((<bo(?det(\y.?n(y) & ?pp(y)),@x)>)+?b1+?b2+?b3)]] -> Det[sem=[core=?det, store=?b1]] N[sem=[core=?n, store=?b2]] PP[sem=[core=?pp, store=?b3]]
+
+PP[sem=[core=<?p(?np)>, store=(?b1+?b2)]] -> P[sem=[core=?p, store=?b1]] NP[sem=[core=?np, store=?b2]]
 
 # Lexical items:
 Det[sem=[core=<\Q P.exists x.(Q(x) & P(x))>, store=(/)]] -> 'a'
@@ -39,7 +42,6 @@ N[sem=[core=<man>, store=(/)]] -> 'man'
 IV[sem=[core=<\x.smile(x)>, store=(/)]] -> 'smiles' 
 IV[sem=[core=<\x.walk(x)>, store=(/)]] -> 'walks'
 TV[sem=[core=<\x y.feed(y,x)>, store=(/)]] -> 'feeds' 
-PTV[sem=[core=<\x y.take(y,x)>, store=(/)]] -> 'takes' 
-TV[sem=[core=<\x y.walk(y,x)>, store=(/)]] -> 'walks'
-NP[sem=[core=<@x>, store=(<bo(\P. P(angus),@x)>)]] -> 'Angus' 
-NP[sem=[core=<@x>, store=(<bo(\P. P(cyril),@x)>)]] -> 'Cyril'
+NP[sem=[core=<@x>, store=(<bo(\P.P(angus),@x)>)]] -> 'Angus' 
+NP[sem=[core=<@x>, store=(<bo(\P.P(cyril),@x)>)]] -> 'Cyril'
+P[sem=[core=<with>, store=(/)]] -> 'with'
