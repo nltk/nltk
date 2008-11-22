@@ -560,13 +560,13 @@ class NonprojectiveDependencyParser(object):
                         if stack_item[0] == i:
                             index_on_stack = True
                     orig_length = len(possible_heads[i])
-                    print len(possible_heads[i])
+#                    print len(possible_heads[i])
                     if index_on_stack and orig_length == 0:
                         for j in xrange(len(stack) -1, -1, -1):
                             stack_item = stack[j]
                             if stack_item[0] == i:
                                 possible_heads[i].append(stack.pop(j)[1])
-                        print stack
+#                        print stack
                     elif index_on_stack and orig_length > 0:
                         head = possible_heads[i].pop()
                         analysis[i] = head
@@ -621,7 +621,7 @@ def hall_demo():
     print parse_graph
 
 def nonprojective_conll_parse_demo():
-    graphs = [DependencyGraph().read(entry)
+    graphs = [DependencyGraph(entry)
               for entry in conll_data2.split('\n\n') if entry]    
     npp = ProbabilisticNonprojectiveParser()
     npp.train(graphs, NaiveBayesDependencyScorer())

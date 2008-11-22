@@ -2,6 +2,7 @@
 #
 # Copyright (C) 2001-2008 NLTK Project
 # Author: Jason Narad <jason.narad@gmail.com>
+#         Steven Bird <sb@csse.unimelb.edu.au> (modifications)
 #
 # URL: <http://nltk.org>
 # For license information, see LICENSE.TXT
@@ -26,7 +27,7 @@ class DependencyGraph(object):
     """
     A container for the nodes and labelled edges of a dependency structure.
     """
-    def __init__(self):
+    def __init__(self, tree_str=None):
         """
         We place a dummy 'top' node in the first position 
         in the nodelist, since the root node is often assigned '0'
@@ -37,6 +38,8 @@ class DependencyGraph(object):
         self.nodelist = [top]
         self.root = None
         self.stream = None
+        if tree_str:
+            self._parse(tree_str)
 
     def remove_by_address(self, address):
         """
@@ -70,7 +73,7 @@ class DependencyGraph(object):
         node specified by the mod address.
         """
         for node in self.nodelist:
-            if node['address'] == head_address and (not (mod_address in node['deps'])):
+            if node['address'] == head_address and (mod_address not in node['deps']):
                 node['deps'].append(mod_address)
 
     def connect_graph(self):
@@ -83,6 +86,7 @@ class DependencyGraph(object):
                 if node1['address'] != node2['address'] and node2['rel'] != 'TOP':
                     node1['deps'].append(node2['address'])
 
+    # fix error and return
     def get_by_address(self, node_address):
         """
         Returns the node with the given address.
@@ -105,101 +109,77 @@ class DependencyGraph(object):
                     
     def __str__(self):
         return pformat(self.nodelist)
+    
+    def __repr__(self):
+        return "<DependencyGraph with %d nodes>" % len(self.nodelist)
 
-    def load(self, file):
+    @staticmethod
+    def load(file):
         """
         @param file: a file in Malt-TAB format
         """
-        input = open(file).read()
-        return self.read(input)
+        return DependencyGraph(open(file).read())
 
-    def _normalize(self, line):
+    @staticmethod
+    def _normalize(line):
         """
         Deal with lines in which spaces are used rather than tabs.
         """
         SPC = re.compile(' +')
-        return re.sub(SPC, '\t', line)
+        return re.sub(SPC, '\t', line).strip()
 
     def left_children(self, node_index):
         """
         Returns the number of left children under the node specified
         by the given address.
         """
-        count = 0
-        for child in self.nodelist[node_index]['deps']:
-            if (child < int(self.nodelist[node_index]['address'])):
-                count += 1
-        return count
+        children = self.nodelist[node_index]['deps']
+        index = self.nodelist[node_index]['address']
+        return sum(1 for c in children if c < index)
 
     def right_children(self, node_index):
         """
         Returns the number of right children under the node specified
         by the given address.
         """        
-        count = 0
-        for child in self.nodelist[node_index]['deps']:
-            if (child > int(self.nodelist[node_index]['address'])):
-                count += 1
-        return count
-    
+        children = self.nodelist[node_index]['deps']
+        index = self.nodelist[node_index]['address']
+        return sum(1 for c in children if c > index)
+
     def add_node(self, node):
         if not self.contains_address(node['address']):
             self.nodelist.append(node)
 
-    def read(self, input):
-        lines = input.split('\n')
-        count = 1
+    def _parse(self, input):
+        lines = [DependencyGraph._normalize(line) for line in input.split('\n') if line.strip()]
         temp = []
-        for line in lines:
-            line = self._normalize(line).strip(' \t') # for safety, line assumed to be tab delimited
+        for index, line in enumerate(lines):
 #           print line
-            if line != '':
-                node = {}
+            try:
+                nrCells = len(line.split('\t'))
+                if nrCells == 4:
+                    (word, tag, head, rel) = line.split('\t')
+                elif nrCells == 10:
+                    (_, word, _, _, tag, _, head, rel, _, _) = line.split('\t')
+                else:
+                    raise ValueError('Number of tab-delimited fields (%d) not supported by CoNLL(10) or Malt-Tab(4) format' % (nrCells))
+
+                head = int(head)
+                self.nodelist.append({'address': index+1, 'word': word, 'tag': tag,
+                                      'head': head, 'rel': rel,
+                                      'deps': [d for (d,h) in temp if h == index+1]})
+
                 try:
-                    nrCells = len(line.split('\t'))
-                    head = 1
-                    if nrCells == 4:
-                        (word, tag, head, rel) = line.split('\t')
-                        head = int(head)
-                        #not required, but useful for inspection
-                        node['address'] = count        
-                        node['word'] = word
-                        node['tag'] = tag
-                        node['head'] = head
-                        node['rel']= rel
-                        node['deps'] = []
-                        self.nodelist.append(node)
-                    elif nrCells == 10:
-                        (id, form, lemma, cpostag, postag, feats, head, deprel, phead, pdeprel) = line.split("\t")
-                        head = int(head)
-                        #not required, but useful for inspection - tag and word necessary for parsing
-                        node['address'] = count #id
-                        node['word'] = form
-                        node['tag'] = postag
-                        node['head'] = head
-                        node['rel'] = deprel
-                        node['deps'] = []
-                        self.nodelist.append(node)
-                    else:
-                        # replace with formal error throw
-                        print 'Number of tab-delimited fields (%d) not supported by CoNLL(10) or Malt-Tab(4) format' % (nrCells)
-                    for(dep, hd) in temp:
-                        if hd == count: #count:
-                            node['deps'].append(dep)
-                    try:
-                        self.nodelist[head]['deps'].append(count)
-                    except IndexError:
-                        temp.append((count, head))
+                    self.nodelist[head]['deps'].append(index+1)
+                except IndexError:
+                    temp.append((index+1, head))
                         
-                    count += 1
-                    
-                except ValueError:
-                    break
+            except ValueError:
+                break
 
         root_address = self.nodelist[0]['deps'][0]
         self.root = self.nodelist[root_address]
-        return self
-
+        
     def _word(self, node, filter=True):
         w = node['word']
         if filter:
@@ -248,6 +228,7 @@ class DependencyGraph(object):
         except IndexError:
             return None  
 
+    # what's the return type?  Boolean or list?
     def contains_cycle(self):
         distances = {}
         for node in self.nodelist:
@@ -268,7 +249,7 @@ class DependencyGraph(object):
                     print pair[0]
                     path = self.get_cycle_path(self.get_by_address(pair[0]), pair[0]) #self.nodelist[pair[0]], pair[0])
                     return path
-        return False
+        return False  # return []?
         
 
     def get_cycle_path(self, curr_node, goal_node_index):
@@ -313,7 +294,7 @@ def malt_demo(nx=False):
     A demonstration of the result of reading a dependency
     version of the first sentence of the Penn Treebank.
     """
-    dg = DependencyGraph().read("""Pierre  NNP     2       NMOD
+    dg = DependencyGraph("""Pierre  NNP     2       NMOD
 Vinken  NNP     8       SUB
 ,       ,       2       P
 61      CD      5       NMOD
@@ -358,21 +339,21 @@ def conll_demo():
     A demonstration of how to read a string representation of 
     a CoNLL format dependency tree.
     """
-    dg = DependencyGraph().read(conll_data1)
+    dg = DependencyGraph(conll_data1)
     tree = dg.deptree()
     print tree.pprint()
     print dg
 
 def conll_file_demo():
     print 'Mass conll_read demo...'
-    graphs = [DependencyGraph().read(entry)
+    graphs = [DependencyGraph(entry)
               for entry in conll_data2.split('\n\n') if entry]
     for graph in graphs:
         tree = graph.deptree()
         print '\n' + tree.pprint()
 
 def cycle_finding_demo():
-    dg = DependencyGraph().read(treebank_data)
+    dg = DependencyGraph(treebank_data)
     print dg.contains_cycle()
     cyclic_dg = DependencyGraph()
     top =    {'word':None, 'deps':[1], 'rel': 'TOP', 'address': 0}   

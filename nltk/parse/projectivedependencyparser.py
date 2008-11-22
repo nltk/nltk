@@ -201,7 +201,7 @@ class ProjectiveDependencyParser(object):
             for i in range(len(tokens)):
 #                malt_format += '%s\t%s\t%d\t%s\n' % (tokens[i], 'null', parse._arcs[i] + 1, 'null')
                 conll_format += '\t%d\t%s\t%s\t%s\t%s\t%s\t%d\t%s\t%s\t%s\n' % (i+1, tokens[i], tokens[i], 'null', 'null', 'null', parse._arcs[i] + 1, 'null', '-', '-')
-            dg = DependencyGraph().read(conll_format)
+            dg = DependencyGraph(conll_format)
 #           if self.meets_arity(dg):
             graphs.append(dg)
             trees.append(dg.deptree())
@@ -304,7 +304,7 @@ class ProbabilisticProjectiveDependencyParser(object):
             for i in range(len(tokens)):
                 malt_format += '%s\t%s\t%d\t%s\n' % (tokens[i], 'null', parse._arcs[i] + 1, 'null')
                 conll_format += '\t%d\t%s\t%s\t%s\t%s\t%s\t%d\t%s\t%s\t%s\n' % (i+1, tokens[i], tokens[i], parse._tags[i], parse._tags[i], 'null', parse._arcs[i] + 1, 'null', '-', '-')
-            dg = DependencyGraph().read(conll_format)
+            dg = DependencyGraph(conll_format)
             score = self.compute_prob(dg)
             if score > max_score:
                 max_parse = dg.deptree()
@@ -506,7 +506,7 @@ def arity_parse_demo():
     created by a C{ProjectiveDependencyParser}.
     """
     print
-    print 'A grammar with no arity constraints. Each DependencProduction'
+    print 'A grammar with no arity constraints. Each DependencyProduction'
     print 'specifies a relationship between one head word and only one'
     print 'modifier word.:'
     grammar = parse_dependency_grammar("""
@@ -550,7 +550,7 @@ def projective_prob_parse_demo():
     A demo showing the training and use of a projective 
     dependency parser.
     """
-    graphs = [DependencyGraph().read(entry)
+    graphs = [DependencyGraph(entry)
               for entry in conll_data2.split('\n\n') if entry]
     ppdp = ProbabilisticProjectiveDependencyParser()
     print 'Training Probabilistic Projective Dependency Parser...'
