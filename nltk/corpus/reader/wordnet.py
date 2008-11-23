@@ -858,11 +858,28 @@ class Synset(_WordNetObject):
     def root_hypernyms(self):
         """Get the topmost hypernyms of this synset in WordNet."""
         
-        if not self.hypernyms():
-            return [self]
-        else:
-            return list(set(root for h in self.hypernyms()
-                            for root in h.root_hypernyms()))
+        result = []
+        seen = set()
+        todo = [self]
+        while todo:
+            next_synset = todo.pop()
+            if next_synset not in seen:
+                seen.add(next_synset)
+                next_hypernyms = next_synset.hypernyms()
+                if not next_hypernyms:
+                    result.append(next_synset)
+                else:
+                    todo.extend(next_hypernyms)
+        return result
+
+# Simpler implementation which makes incorrect assumption that
+# hypernym hierarcy is acyclic:
+#
+#        if not self.hypernyms():
+#            return [self]
+#        else:
+#            return list(set(root for h in self.hypernyms()
+#                            for root in h.root_hypernyms()))
 
     def max_depth(self):
         """
@@ -1063,21 +1080,27 @@ class Synset(_WordNetObject):
     # interface to similarity methods
      
     def path_similarity(self, other, verbose=False):
+        path_similarity.__doc__
         return path_similarity(self, other, verbose)
 
     def lch_similarity(self, other, verbose=False):
+        lch_similarity.__doc__
         return lch_similarity(self, other, verbose)
         
     def wup_similarity(self, other, verbose=False):
+        wup_similarity.__doc__
         return wup_similarity(self, other, verbose)
 
     def res_similarity(self, other, ic, verbose=False):
+        res_similarity.__doc__
         return res_similarity(self, other, ic, verbose)
 
     def jcn_similarity(self, other, ic, verbose=False):
+        jcn_similarity.__doc__
         return jcn_similarity(self, other, ic, verbose)
     
     def lin_similarity(self, other, ic, verbose=False):
+        lin_similarity.__doc__
         return lin_similarity(self, other, ic, verbose)
 
     def _iter_hypernym_lists(self):
