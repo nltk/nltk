@@ -857,19 +857,12 @@ class Synset(_WordNetObject):
 
     def root_hypernyms(self):
         """Get the topmost hypernyms of this synset in WordNet."""
-        result = []
-        seen = set()
-        todo = [self]
-        while todo:
-            next_synset = todo.pop()
-            if next_synset not in seen:
-                seen.add(next_synset)
-                next_hypernyms = next_synset.hypernyms()
-                if not next_hypernyms:
-                    result.append(next_synset)
-                else:
-                    todo.extend(next_hypernyms)
-        return result
+        
+        if not self.hypernyms():
+            return [self]
+        else:
+            return list(set(root for h in self.hypernyms()
+                            for root in h.root_hypernyms()))
 
     def max_depth(self):
         """
