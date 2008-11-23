@@ -944,17 +944,17 @@ class Synset(_WordNetObject):
     
     def lowest_common_hypernyms(self, other):
         """Get the lowest synset that both synsets have as a hypernym."""
-        self_synsets = set(self_synset
-                           for self_synsets in self._iter_hypernym_lists()
-                           for self_synset in self_synsets)
-        result = []
-        for other_synsets in other._iter_hypernym_lists():
-            for other_synset in other_synsets:
-                if other_synset in self_synsets:
-                    result.append(other_synset)
-            if result:
-                break
-        return result
+
+        self_hypernyms = self._iter_hypernym_lists()
+        other_hypernyms = other._iter_hypernym_lists()
+
+        synsets = set(s for synsets in self_hypernyms for s in synsets)
+        others = set(s for synsets in other_hypernyms for s in synsets)
+        synsets.intersection_update(others)
+        
+        max_depth = max(s.min_depth() for s in synsets) 
+
+        return [s for s in synsets if s.min_depth() == max_depth]
 
     def hypernym_distances(self, distance=0):
         """
