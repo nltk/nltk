@@ -19,22 +19,20 @@ and associated functions and classes.
 Overview
 --------
 
-	>>> from nltk.sem import logic
     >>> from nltk.sem.logic import *
-
 
 The default inventory of logical constants is the following:
 
-    >>> logic.boolean_ops()
+    >>> boolean_ops() # doctest: +NORMALIZE_WHITESPACE
     negation       	-
     conjunction    	&
     disjunction    	|
     implication    	->
     equivalence    	<->
-    >>> logic.equality_preds()
+    >>> equality_preds() # doctest: +NORMALIZE_WHITESPACE
     equality       	=
     inequality     	!=
-    >>> logic.binding_ops()
+    >>> binding_ops() # doctest: +NORMALIZE_WHITESPACE
     existential    	exists
     universal      	all
     lambda         	\
@@ -52,7 +50,7 @@ Untyped Logic
 Test for equality under alpha-conversion
 ======================================== 
 
-    >>> lp = logic.LogicParser()
+    >>> lp = LogicParser()
     >>> e1 = lp.parse('exists x.P(x)')
     >>> print e1
     exists x.P(x)
@@ -409,6 +407,7 @@ Replace
     >>> print lp.parse(r'\x.give(x,y,z)').replace(z.variable, y, True)
     \x.give(x,y,y)
 
+    >>> from nltk.sem import logic
     >>> logic._counter._value = 0
     >>> e1 = lp.parse('e1')
     >>> e2 = lp.parse('e2')
