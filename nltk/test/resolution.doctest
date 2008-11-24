@@ -164,6 +164,7 @@ Test proof()
     [4] {-man(Socrates)}        (1, 2) 
     [5] {mortal(Socrates)}      (2, 3) 
     [6] {}                      (1, 5) 
+    <BLANKLINE>
 
 ------------------
 Question Answering
@@ -187,6 +188,7 @@ One answer
     [7] {ANSWER(z6), -father_of(z6,john)}      (3, 4) 
     [8] {ANSWER(art)}                          (1, 7) 
     [9] {ANSWER(art)}                          (4, 5) 
+    <BLANKLINE>
 
 Multiple answers
     >>> p1 = lp.parse('father_of(art,john)')
@@ -212,3 +214,4 @@ Multiple answers
     [11] {ANSWER(ann)}                          (2, 10) 
     [12] {ANSWER(art)}                          (5, 6) 
     [13] {ANSWER(ann)}                          (5, 7) 
+    <BLANKLINE>
