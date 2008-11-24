@@ -599,7 +599,9 @@ def _relation_section(rel_name, word, synset_keys):
 def _w_b(word, overview):
     pos_forms = defaultdict(list)
     words = word.split(',')
-    words = [w.strip() for w in words if w.strip() != ""]
+    words = [w for w in [w.strip().lower().replace(' ', '_') 
+                         for w in words]
+             if w != ""]
     if len(words) == 0:
         # No words were found.
         return "", "Please specify a word to search for."
@@ -607,10 +609,9 @@ def _w_b(word, overview):
     # This looks up multiple words at once.  This is probably not
     # necessary and may lead to problems.
     for pos in [wordnet.NOUN, wordnet.VERB, wordnet.ADJ, wordnet.ADV]:
-        for w in words:
-            form = wordnet.morphy(w, pos)
-            if form and form not in pos_forms[pos]:
-                pos_forms[pos].append(form)
+        form = wordnet.morphy(w, pos)
+        if form and form not in pos_forms[pos]:
+            pos_forms[pos].append(form)
     body = ''
     for pos,pos_str,name in _pos_tuples:
         if pos in pos_forms:
@@ -637,7 +638,6 @@ def new_word_and_body(word):
     @return: The tuple (word,body)
     @rtype: Tuple (str,str)
     '''
-    word = word.lower().replace('_', ' ')
     return _w_b(word, False)
 
 def _ul_section_removed(page, index):
