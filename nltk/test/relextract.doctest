@@ -229,7 +229,7 @@ presented as something that looks more like a clause in a logical language.
     >>> DE = re.compile(de, re.VERBOSE)
     >>> rels = [rel for doc in conll2002.chunked_sents('esp.train')
     ...         for rel in relextract.extract_rels('ORG', 'LOC', doc, corpus='conll2002', pattern = DE)]
-    >>> for r in rels[:10]:
+    >>> for r in rels[:10]: # doctest: +NORMALIZE_WHITESPACE
     ...     print relextract.show_clause(r, relsym='DE')
     DE('tribunal_supremo', 'victoria')
     DE('museo_de_arte', 'alcorc\xc3\xb3n')
