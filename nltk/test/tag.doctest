@@ -86,10 +86,12 @@ use a tagger that assigns 'NN' to all words as a baseline.
 
     >>> default_tagger = nltk.DefaultTagger('NN')
     >>> default_tagger.tag(test_sent) # doctest: +NORMALIZE_WHITESPACE
-    [('The', 'NN'), ('Fulton', 'NN'), ('County', 'NN'), ('Grand', 'NN'), ('Jury', 'NN'), ('said', 'NN'), ('Friday', 'NN'), ('an'
-, 'NN'), ('investigation', 'NN'), ('of', 'NN'), ("Atlanta's", 'NN'), ('recent', 'NN'), ('primary', 'NN'), ('election', 'NN'), ('
-produced', 'NN'), ('``', 'NN'), ('no', 'NN'), ('evidence', 'NN'), ("''", 'NN'), ('that', 'NN'), ('any', 'NN'), ('irregularities'
-, 'NN'), ('took', 'NN'), ('place', 'NN'), ('.', 'NN')]
+    [('The', 'NN'), ('Fulton', 'NN'), ('County', 'NN'), ('Grand', 'NN'), ('Jury', 'NN'),
+    ('said', 'NN'), ('Friday', 'NN'), ('an', 'NN'), ('investigation', 'NN'), ('of', 'NN'),
+    ("Atlanta's", 'NN'), ('recent', 'NN'), ('primary', 'NN'), ('election', 'NN'),
+    ('produced', 'NN'), ('``', 'NN'), ('no', 'NN'), ('evidence', 'NN'), ("''", 'NN'),
+    ('that', 'NN'), ('any', 'NN'), ('irregularities', 'NN'), ('took', 'NN'),
+    ('place', 'NN'), ('.', 'NN')]
 
 Using this baseline, we achieve about a fairly low accuracy:
 
