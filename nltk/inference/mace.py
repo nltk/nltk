@@ -66,35 +66,42 @@ class MaceCommand(Prover9CommandParent, BaseModelBuilderCommand):
                 elif l.startswith('relation'):
                     name = l[l.index('(')+1:l.index('(', l.index('(')+1)].strip()
                     values = [int(v.strip()) for v in l[l.index('[')+1:l.index(']')].split(',')]
-                    d[name] = MaceCommand._make_model_dict(num_entities, values, [])
+                    d[name] = MaceCommand._make_relation_set(num_entities, values)
 
             valuation = Valuation(d.items())
         return valuation
         
-    def _make_model_dict(num_entities, values, accum):
+    @staticmethod
+    def _make_relation_set(num_entities, values):
         """
         Convert a Mace4-style relation table into a dictionary.
         
         @parameter num_entities: the number of entities in the model; determines the row length in the table.
         @type num_entities: C{int}
-        @parameter values: integers that represent semantic values in a Mace4 model.
+        @parameter values: a list of 1's and 0's that represent whether a relation holds in a Mace4 model.
         @type values: C{list} of C{int}
         """
-        if len(values) == 1:
-            if values[0] == 1:
-                return set(accum)
-            else:
-                return set()
-        else:
-            r = set()
-            for i in range(num_entities):
-                size = len(values) / num_entities
-                r |= MaceCommand._make_model_dict(num_entities, values[i*size:(i+1)*size], 
-                                                  accum+[MaceCommand._make_model_var(i)])
-            return r
-        
-    _make_model_dict = staticmethod(_make_model_dict)
+        r = set()
+        for position in [pos for (pos,v) in enumerate(values) if v == 1]:
+            r.add(tuple(MaceCommand._make_relation_tuple(position, values, num_entities)))
+        return r
                 
+    @staticmethod
+    def _make_relation_tuple(position, values, num_entities):
+        if len(values) == 1:
+           return []
+        else: 
+            sublist_size = len(values) / num_entities
+            sublist_start = position / sublist_size
+            sublist_position = position % sublist_size
+            
+            sublist = values[sublist_start*sublist_size:(sublist_start+1)*sublist_size]
+            return [MaceCommand._make_model_var(sublist_start)] + \
+                   MaceCommand._make_relation_tuple(sublist_position, 
+                                                    sublist, 
+                                                    num_entities)
+                
+    @staticmethod
     def _make_model_var(value):
         """
         Pick an alphabetic character as identifier for an entity in the model.
@@ -109,8 +116,6 @@ class MaceCommand(Prover9CommandParent, BaseModelBuilderCommand):
             return letter + str(num)
         else:
             return letter
-        
-    _make_model_var = staticmethod(_make_model_var)
                 
     def decorate_model(self, valuation_str, format):
         """
@@ -224,9 +229,10 @@ def test_transform_output(argument_pair):
         spacer()
         print m.model(format=format)
         
-def test_make_model_dict():
-    print MaceCommand._make_model_dict(num_entities=3, values=[1,0,1])
-    print MaceCommand._make_model_dict(num_entities=3, values=[0,0,0,0,0,0,1,0,0])
+def test_make_relation_set():
+    print MaceCommand._make_relation_set(num_entities=3, values=[1,0,1]) == set([('c',), ('a',)])
+    print MaceCommand._make_relation_set(num_entities=3, values=[0,0,0,0,0,0,1,0,0]) == set([('c', 'a')])
+    print MaceCommand._make_relation_set(num_entities=2, values=[0,0,1,0,0,0,1,0]) == set([('a', 'b', 'a'), ('b', 'b', 'a')])
     
 arguments = [
     ('mortal(Socrates)', ['all x.(man(x) -> mortal(x))', 'man(Socrates)']),
