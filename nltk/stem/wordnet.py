@@ -10,11 +10,9 @@ from nltk.corpus.reader.wordnet import NOUN
 from nltk.corpus import wordnet
 from nltk.internals import Deprecated
 
-from api import *
-
-class WordNetStemmer(StemmerI):
+class WordNetLemmatizer(object):
     """
-    A stemmer that uses WordNet's built-in morphy function.
+    A lemmatizer that uses WordNet's built-in morphy function.
     """
     def __init__(self):
         """
@@ -22,26 +20,33 @@ class WordNetStemmer(StemmerI):
         """
         pass
 
-    def stem(self, word, pos=NOUN):
+    def lemmatize(self, word, pos=NOUN):
         
-        word_stem = wordnet.morphy(word, pos) 
-        if not word_stem:
-            word_stem = word
-        return word_stem
+        lemma = wordnet.morphy(word, pos) 
+        if not lemma:
+            lemma = word
+        return lemma
 
     def __repr__(self):
-        return '<WordNetStemmer>'
+        return '<WordNetLemmatizer>'
 
 if __name__ == '__main__':
     from nltk import stem
-    stemmer = stem.WordNetStemmer()
-    print 'dogs ->', stemmer.stem('dogs')
-    print 'churches ->', stemmer.stem('churches')
-    print 'aardwolves ->', stemmer.stem('aardwolves')
-    print 'abaci ->', stemmer.stem('abaci')
-    print 'hardrock ->', stemmer.stem('hardrock')
+    wnl = stem.WordNetLemmatizer()
+    print 'dogs ->', wnl.lemmatize('dogs')
+    print 'churches ->', wnl.lemmatize('churches')
+    print 'aardwolves ->', wnl.lemmatize('aardwolves')
+    print 'abaci ->', wnl.lemmatize('abaci')
+    print 'hardrock ->', wnl.lemmatize('hardrock')
 
-class WordnetStemmer(Deprecated, WordNetStemmer):
-    """Use WordNetStemmer instead."""
+class WordnetStemmer(Deprecated, WordNetLemmatizer):
+    """Use WordNetLemmatizer instead."""
     def __init__(self):
-        WordNetStemmer.__init__(self)
+        WordNetLemmatizer.__init__(self)
+
+class WordNetStemmer(Deprecated, WordNetLemmatizer):
+    """Use WordNetLemmatizer instead."""
+    def __init__(self):
+        WordNetLemmatizer.__init__(self)
+
+
