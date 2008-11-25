@@ -583,19 +583,17 @@ Tests for mapping from syntax to semantics
 
 Load a valuation from a file.
 
-    >>> from nltk.parse import FeatureEarleyChartParser
     >>> import nltk.data
-    >>> grammar = nltk.data.load('grammars/sem2.fcfg')
     >>> val = nltk.data.load('grammars/valuation1.val')
     >>> dom = val.domain
     >>> m = Model(dom, val)
     >>> g = Assignment(dom)
-
+    >>> gramfile = 'grammars/sem2.fcfg'
     >>> inputs = ['John sees a girl', 'every dog barks']
     >>> for s in inputs:
     ...     print
     ...     print "Sentence: %s" % s
-    ...     for tree in text_parse(inputs, grammar)[s]:
+    ...     for tree in text_parse(inputs, gramfile)[s]:
     ...         print "Parse:\n %s" %tree
     ...     print "Semantics: %s" %  root_semrep(tree)
     <BLANKLINE>
@@ -622,7 +620,7 @@ Load a valuation from a file.
     Semantics: all x.(dog(x) -> bark(x))
 
     >>> sent = "every dog barks"
-    >>> result = nltk.sem.text_interpret([sent], grammar)
+    >>> result = nltk.sem.text_interpret([sent], gramfile)
     >>> for (syntree, semrep) in result[sent]:
     ...     print syntree
     ...     print
@@ -636,7 +634,7 @@ Load a valuation from a file.
     <BLANKLINE>
     all x.(dog(x) -> bark(x))
 
-    >>> result = nltk.sem.text_evaluate([sent], grammar, m, g)
+    >>> result = nltk.sem.text_evaluate([sent], gramfile, m, g)
     >>> for (syntree, semrel, value) in result[sent]:
     ...     print syntree
     ...     print

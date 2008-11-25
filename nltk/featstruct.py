@@ -2212,7 +2212,9 @@ class FeatStructParser(object):
         ('parse_sym_value', re.compile(r'[a-zA-Z_][a-zA-Z0-9_]*')),
         ('parse_app_value', re.compile(r'<(app)\((\?[a-z][a-z]*)\s*,'
                                        r'\s*(\?[a-z][a-z]*)\)>')),
-        ('parse_logic_value', re.compile(r'<([^>]*)>')),
+#       ('parse_logic_value', re.compile(r'<([^>]*)>')),
+        #lazily match any character after '<' until we hit a '>' not preceded by '-'
+        ('parse_logic_value', re.compile(r'<(.*?)(?<!-)>')), 
         ('parse_set_value', re.compile(r'{')),
         ('parse_tuple_value', re.compile(r'\(')),
         ]
