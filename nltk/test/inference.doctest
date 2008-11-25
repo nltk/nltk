@@ -327,29 +327,6 @@ passed to the theorem prover.
     True
 
 
-Checking for equality of two DRSs is very useful when generating readings of a sentence.
-For example, the ``drt_glue`` module generates two readings for the sentence 
-*John sees Mary*:
-
-    >>> from nltk.sem import logic
-    >>> from nltk.internals import Counter
-    >>> logic._counter = Counter()
-    >>> from nltk_contrib.gluesemantics.drt_glue import DrtGlue
-    >>> readings = DrtGlue().parse_to_meaning('John sees Mary')
-    >>> for drs in readings: print drs.simplify()
-    ...
-    ([x,z1],[John(x), Mary(z1), see(x,z1)])
-    ([x,z2],[Mary(x), John(z2), see(z2,x)])
-
-However, it is easy to tell that these two readings are logically the
-same, and therefore one of them is superfluous.  We can use the theorem prover
-to determine this equivalence, and then delete one of them.  A particular
-theorem prover may be specified, or the argument may be left off to use the
-default.
-
-    >>> readings[0].tp_equals(readings[1], 'Prover9')
-    True
-
 --------------------------------
 NLTK Interface to Model Builders
 --------------------------------
