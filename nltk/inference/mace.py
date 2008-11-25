@@ -66,12 +66,12 @@ class MaceCommand(Prover9CommandParent, BaseModelBuilderCommand):
                 elif l.startswith('relation'):
                     name = l[l.index('(')+1:l.index('(', l.index('(')+1)].strip()
                     values = [int(v.strip()) for v in l[l.index('[')+1:l.index(']')].split(',')]
-                    d[name] = MaceCommand._make_model_dict(num_entities, values)
-                    
+                    d[name] = MaceCommand._make_model_dict(num_entities, values, [])
+
             valuation = Valuation(d.items())
         return valuation
         
-    def _make_model_dict(num_entities, values):
+    def _make_model_dict(num_entities, values, accum):
         """
         Convert a Mace4-style relation table into a dictionary.
         
@@ -81,14 +81,17 @@ class MaceCommand(Prover9CommandParent, BaseModelBuilderCommand):
         @type values: C{list} of C{int}
         """
         if len(values) == 1:
-            return (values[0] == 1)
+            if values[0] == 1:
+                return set(accum)
+            else:
+                return set()
         else:
-            d = {}
+            r = set()
             for i in range(num_entities):
                 size = len(values) / num_entities
-                d[MaceCommand._make_model_var(i)] = \
-                    MaceCommand._make_model_dict(num_entities, values[i*size:(i+1)*size])
-            return d
+                r |= MaceCommand._make_model_dict(num_entities, values[i*size:(i+1)*size], 
+                                                  accum+[MaceCommand._make_model_var(i)])
+            return r
         
     _make_model_dict = staticmethod(_make_model_dict)
                 
