@@ -440,9 +440,7 @@ Show the model in 'tabular' format.
 The method ``convert2val()`` returns a ``Valuation``.
 
     >>> print mb.convert2val()
-    {'john': 'a',
-     'mary': 'b',
-     'see': {'a': {'a': False, 'b': False}, 'b': {'a': True, 'b': False}}}
+    {'john': 'a', 'mary': 'b', 'see': set([('a',), ('b',)])}
 
 We can return to our earlier example and inspect the model:
 
