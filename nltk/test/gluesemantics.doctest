@@ -333,10 +333,11 @@ Dependency Graph to Glue Formulas
     >>> from nltk_contrib.dependency import util
     >>> logic._counter._value = 0
     >>> glue = Glue()
-    
-    >>> f = open(os.environ['NLTK_DATA'] + '/grammars/dep_test2.dep')
+    >>> import nltk.data
+    >>> path = nltk.data.find('/grammars/dep_test2.dep')
+    >>> f = open(path)
     >>> depgraph = util.conll_to_depgraph(f.read())
-	>>> gfl = GlueDict('glue.semtype').to_glueformula_list(depgraph)
+    >>> gfl = GlueDict('glue.semtype').to_glueformula_list(depgraph)
     >>> for gf in gfl: print gf
     \x y.sees(x,y) : (f -o (i -o g))
     \P Q.exists x.(P(x) & Q(x)) : ((fv -o fr) -o ((f -o F2) -o F2))
