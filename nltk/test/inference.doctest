@@ -68,6 +68,7 @@ then the prover command will be unable to display a proof.
     [4] {-man(socrates)}        (1, 3) 
     [5] {mortal(socrates)}      (2, 3) 
     [6] {}                      (1, 5) 
+    <BLANKLINE>
     
 The prover command stores the result of proving so that if ``prove()`` is
 called again, then the command can return the result without executing the 
@@ -109,6 +110,7 @@ a call to ``prove()`` will execute the theorem prover.
     [1] {-mortal(socrates)}     A 
     [2] {-man(z6), mortal(z6)}  A 
     [3] {-man(socrates)}        (1, 2) 
+    <BLANKLINE>
     >>> prover.add_assumptions([lp.parse('man(socrates)')])
     >>> prover.prove()
     True
@@ -324,6 +326,7 @@ passed to the theorem prover.
     >>> print a.tp_equals(b)
     True
 
+
 Checking for equality of two DRSs is very useful when generating readings of a sentence.
 For example, the ``drt_glue`` module generates two readings for the sentence 
 *John sees Mary*:
@@ -333,7 +336,6 @@ For example, the ``drt_glue`` module generates two readings for the sentence
     >>> logic._counter = Counter()
     >>> from nltk_contrib.gluesemantics.drt_glue import DrtGlue
     >>> readings = DrtGlue().parse_to_meaning('John sees Mary')
-    >>> 
     >>> for drs in readings: print drs.simplify()
     ...
     ([x,z1],[John(x), Mary(z1), see(x,z1)])
