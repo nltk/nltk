@@ -18,6 +18,7 @@ models.
 """
 from pprint import pformat
 import inspect
+import textwrap
 from nltk.decorators import decorator
 from nltk.internals import deprecated
 
@@ -131,6 +132,11 @@ class Valuation(dict):
                 self[sym] = val
             elif isinstance(val, set):
                 self[sym] = set2rel(val)
+            else:
+                msg = textwrap.fill("Error in initializing Valuation. "
+                                    "Unrecognized value for symbol '%s':\n%s" % (sym, val), width=66)
+                
+                raise ValueError(msg)
 
     def __getitem__(self, key):
         if key in self:
