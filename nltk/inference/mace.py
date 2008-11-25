@@ -46,11 +46,10 @@ class MaceCommand(Prover9CommandParent, BaseModelBuilderCommand):
         @return: A model if one is generated; None otherwise.
         @rtype: L{nltk.sem.Valuation} 
         """
-        valuation = None
         if self.build_model():
             valuation_standard_format = self._transform_output('standard')
             
-            d = {}
+            val = []
             for line in valuation_standard_format.splitlines(False):
                 l = line.strip()
                 # find the number of entities in the model
@@ -61,15 +60,17 @@ class MaceCommand(Prover9CommandParent, BaseModelBuilderCommand):
                     name = l[l.index('(')+1:l.index(',')].strip()
                     if is_indvar(name):
                         name = name.upper()
-                    d[name] = MaceCommand._make_model_var(int(l[l.index('[')+1:l.index(']')].strip()))
+                    value = int(l[l.index('[')+1:l.index(']')].strip())
+                    val.append((name, MaceCommand._make_model_var(value)))
                 
                 elif l.startswith('relation'):
                     name = l[l.index('(')+1:l.index('(', l.index('(')+1)].strip()
                     values = [int(v.strip()) for v in l[l.index('[')+1:l.index(']')].split(',')]
-                    d[name] = MaceCommand._make_relation_set(num_entities, values)
+                    val.append((name, MaceCommand._make_relation_set(num_entities, values)))
 
-            valuation = Valuation(d.items())
-        return valuation
+            return Valuation(val)
+        else:
+            return None
         
     @staticmethod
     def _make_relation_set(num_entities, values):
