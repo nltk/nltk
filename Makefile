@@ -9,7 +9,8 @@
 PYTHON = python
 VERSION = $(shell python -c 'import nltk; print nltk.__version__')
 NLTK_URL = $(shell python -c 'import nltk; print nltk.__url__')
-UPLOAD = tools/googlecode_upload.py --project=nltk --config-dir=none
+GOOGLE_ACCT = StevenBird1
+UPLOAD = $(PYTHON) tools/googlecode_upload.py --project=nltk --config-dir=none --user=$(GOOGLE_ACCT) --labels=Featured
 
 .PHONY: usage all doc clean clean_code clean_up
 
@@ -24,7 +25,9 @@ all: dist
 
 upload:
 #	rsync -avP -e ssh dist/* $(USER)@frs.sourceforge.net:uploads/
-	$(PYTHON) $(UPLOAD) --user=$(GOOGLE_ACCT) --summary="NLTK $(VERSION) FILE_DESC" --labels=Featured FILE
+	$(UPLOAD) --summary="NLTK $(VERSION) for Windows" dist/nltk-$(VERSION).win32.exe
+	$(UPLOAD) --summary="NLTK $(VERSION) for Mac" dist/nltk-$(VERSION).dmg
+	$(UPLOAD) --summary="NLTK $(VERSION) Source" dist/nltk-$(VERSION).zip
 
 doc:
 	$(MAKE) -C doc all
@@ -69,10 +72,10 @@ nltk/nltk.jar: $(JAVA_SRC)
 dist: codedist docdist exampledist datadist contribdocdist
 	touch .dist.done
 
-codedist: gztardist zipdist rpmdist windist dmgdist
+codedist: zipdist rpmdist windist dmgdist
 
-gztardist: clean_code
-	$(PYTHON) setup.py -q sdist --format=gztar
+# gztardist: clean_code
+#	$(PYTHON) setup.py -q sdist --format=gztar
 zipdist: clean_code
 	$(PYTHON) setup.py -q sdist --format=zip
 rpmdist: clean_code
@@ -108,17 +111,15 @@ NLTK_PKG = nltk-$(VERSION).pkg
 NLTK_DMG = nltk-$(VERSION).dmg
 MACROOT = ./MacRoot
 LIB_PATH = $(MACROOT)/tmp/nltk-installer/
-DATA_PATH = $(MACROOT)/usr/share
 PM = /Developer/Applications/Utilities/PackageMaker.app/Contents/MacOS/PackageMaker 
 
 # this should work for both Leopard and Tiger, built under Leopard
 dmgdist:
 	rm -rf $(MACROOT)
-	mkdir -p $(DATA_PATH) $(LIB_PATH)
+	mkdir -p $(LIB_PATH)
 	unzip $(NLTK_ZIP) -d $(LIB_PATH)
 	mv $(LIB_PATH)/nltk-$(VERSION)/* $(LIB_PATH)
 	rmdir $(LIB_PATH)/nltk-$(VERSION)
-	cp -R nltk_data $(DATA_PATH)
 	chmod -R a+r $(MACROOT)
 	mkdir -p nltk-$(VERSION)
 	$(PM) -d ./nltk.pmdoc -o nltk-$(VERSION)/$(NLTK_PKG)
