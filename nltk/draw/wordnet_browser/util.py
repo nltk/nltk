@@ -20,7 +20,6 @@ __all__ = ['get_static_index_page',
            'relations_2', 
            'uniq_cntr']
 
-
 """
 WordNet Browser Utilities.
 
@@ -42,7 +41,11 @@ This provides a backend to both wxbrowse and browserver.py.
 # Line 695: MAY rewrite expression to build string so that it is more readable.
 #
 
-
+
+################################################################################
+#
+# Main logic for wordnet browser.
+#
 
 def relations_2(synsetObj, rel_name=None, word_match=False):
     """
@@ -95,9 +98,6 @@ def relations_2(synsetObj, rel_name=None, word_match=False):
         return synsetObj._relations.get(rel_name, [])
     else:
         return synsetObj._relations
-
-# XXX: I don't know the format of this datastrcutre so I wont try to
-# port it, if necessary I'll replace it.
 
 _pos_tuples = [
     (wordnet.NOUN,'N','noun'), 
@@ -295,9 +295,11 @@ def uniq_cntr():
     return _uniq_cntr
 
 def _get_synset(synset_key):
-    pos = _pos_match((None,synset_key[0],None))[2]
-    offset = int(synset_key[1:])
-    return dictionary.synset(pos, offset)
+    """
+    The synset key is the unique name of the synset, this can be
+    retrived via synset.name
+    """
+    return wordnet.synset(synset_key)
 
 def _collect_one_synset(word, synset, prev_synset_key):
     '''
@@ -313,7 +315,8 @@ def _collect_one_synset(word, synset, prev_synset_key):
     @rtype: str
     '''
     u_c = uniq_cntr()
-#    if isinstance(s_or_w, tuple): # It's a word
+    if isinstance(synset, tuple): # It's a word
+        raise NotImplementedError("word not supported by _collect_one_synset")
 #        form_str,(synset,oppo,forms) = s_or_w
 #        pos,offset,ind = oppo
 #        synset = dictionary.synset(pos, offset)
@@ -326,7 +329,7 @@ def _collect_one_synset(word, synset, prev_synset_key):
     typ = 'S'
     pos_tuple = _pos_match((synset.pos, None, None))
     assert pos_tuple != None, "pos_tuple is null: synset.pos: %s" % synset.pos
-    synset_key = "%s%s,%s" % (pos_tuple[1], str(synset.offset), prev_synset_key)
+    synset_key = "%s,%s" % (synset.name, prev_synset_key)
     descr = pos_tuple[2]
     s = '<li><a href="' + typ + quote_plus(word + '#' + synset_key + '#' + \
             str(u_c)) + '">' + typ + ':</a>' + ' (' + descr + ') '
@@ -350,26 +353,9 @@ def _collect_one_synset(word, synset, prev_synset_key):
                             '">' + w + '</a>'
     s += ', '.join([format_lemma(l.name) for l in synset.lemmas])
 
-    # Format the gloss part
-#    hyph_not_found = True
     gl = " (%s) <i>%s</i> " % \
         (synset.definition, 
          "; ".join(["\"%s\"" % e for e in synset.examples]))
-#    for g in synset.gloss.split('; '):
-#        if not g.startswith('"'):
-#            if gl: gl += '; '
-#            gl += g
-#        else:
-#            if hyph_not_found:
-#                gl += ') <i>'
-#                hyph_not_found = False
-#            else:
-#                gl += '; '
-#            gl += g
-#    if hyph_not_found: 
-#        gl += ')'
-#    else:
-#        gl += '</i>'
     return s + gl + '</li>\n'
 
 def _collect_all_synsets(word, pos):
@@ -407,6 +393,10 @@ def _synset_relations(word, link_type, synset_keys):
     @return: The HTML for a synset's relations
     @rtype: str
     '''
+    
+    if link_type == 'W':
+        raise NotImplementedError()
+
     sk,prev_sk = synset_keys.split(',')
     synset = _get_synset(sk.split(':')[0])
     rel_keys = relations_2(synset).keys()
@@ -755,6 +745,11 @@ def page_word(page, word, href):
             page = page[:ind] + s_r + page[ind:]
             return page, word
 
+
+################################################################################
+#
+# Static pages.
+#
 
 def get_static_page_by_path(path):
     """
