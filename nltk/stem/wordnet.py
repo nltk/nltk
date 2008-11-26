@@ -7,7 +7,7 @@
 # For license information, see LICENSE.TXT
 
 from nltk.corpus.reader.wordnet import NOUN
-from nltk.corpus import wordnet
+from nltk.corpus import wordnet as _wordnet
 from nltk.internals import Deprecated
 
 class WordNetLemmatizer(object):
@@ -22,7 +22,7 @@ class WordNetLemmatizer(object):
 
     def lemmatize(self, word, pos=NOUN):
         
-        lemma = wordnet.morphy(word, pos) 
+        lemma = _wordnet.morphy(word, pos) 
         if not lemma:
             lemma = word
         return lemma
