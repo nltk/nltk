@@ -120,43 +120,47 @@ def _pos_match(pos_tuple):
         if pt[n] == pos_tuple[n]: return pt
     return None
 
-implemented_rel_names = \
-    ['antonym',
-     'attribute',
-     'cause',
-     'derivationally related form',
-     'direct hypernym',
-     'direct hyponym',
-     'direct troponym',
-     'domain category',
-     'domain region',
-     'domain term category',
-     'domain term region',
-     'domain term usage',
-     'domain usage',
-     'entailment',
-     'full hyponym',
-     'full troponym',
-     'has instance',
-     'inherited hypernym',
-     'instance',
-     'member holonym',
-     'member meronym',
-     'Overview',
-     'part holonym',
-     'part meronym',
-     'participle',
-     'pertainym',
-     'phrasal verb',
-     'see also',
-     'sentence frame',
-     'similar to',
-     'sister term',
-     'substance holonym',
-     'substance meronym',
-     'synset',
-     'verb group'
-    ]
+# This structure is deprecated.
+
+#implemented_rel_names = \
+#    ['antonym',
+#     'attribute',
+#     'cause',
+#     'derivationally related form',
+#     'direct hypernym',
+#     'direct hyponym',
+#     'direct troponym',
+#     'domain category',
+#     'domain region',
+#     'domain term category',
+#     'domain term region',
+#     'domain term usage',
+#     'domain usage',
+#     'entailment',
+#     'full hyponym',
+#     'full troponym',
+#     'has instance',
+#     'inherited hypernym',
+#     'instance',
+#     'member holonym',
+#     'member meronym',
+#     'Overview',
+#     'part holonym',
+#     'part meronym',
+#     'participle',
+#     'pertainym',
+#     'phrasal verb',
+#     'see also',
+#     'sentence frame',
+#     'similar to',
+#     'sister term',
+#     'substance holonym',
+#     'substance meronym',
+#     'synset',
+#     'verb group'
+#    ]
+
+# This is deprecated.
 
 # Relation names in the order they will displayed. The first item of a tuple
 # is the internal i.e. DB name. The second item is the display name or if it
@@ -193,6 +197,79 @@ implemented_rel_names = \
 #     #sentence frame
 #     (PERTAINYM,PERTAINYM)
 #     ]
+
+HYPONYM = 0
+HYPERNYM = 1
+CLASS_REGIONAL = 2
+PART_HOLONYM = 3
+PART_MERONYM = 4
+ATTRIBUTE = 5
+SUBSTANCE_HOLONYM = 6
+SUBSTANCE_MERONYM = 7
+MEMBER_HOLONYM = 8
+MEMBER_MERONYM = 9
+VERB_GROUP = 10
+INSTANCE_HYPONYM = 12
+INSTANCE_HYPERNYM = 13
+CLAUSE = 14
+ALSO_SEE = 15
+SIMILAR = 16
+ENTAILMENT = 17
+ANTONYM = 18
+FRAMES = 19
+PERTAINYM = 20
+
+CLASS_CATEGORY = 21
+CLASS_USAGE = 22
+CLASS_REGIONAL = 23
+CLASS_USAGE = 24
+CLASS_CATEGORY = 11
+
+DERIVATIONALLY_RELATED_FORM = 25
+
+
+def get_relations_data(synset): 
+    """
+    Get synset relations data for a synset.  Note that this doesn't
+    yet support things such as full hyponym vs direct hyponym.
+    """
+    if synset.pos == wordnet.NOUN:
+        return ((HYPONYM, ['Hyponyms'], synset.hyponyms()),
+                (INSTANCE_HYPONYM , ['Instance hyponyms'], synset.instance_hyponyms()),
+                (HYPERNYM, ['Direct hypernyms', 'Inherited hypernyms', 'Sister terms'], 
+                   synset.hypernyms()),
+                (INSTANCE_HYPERNYM , ['Instance hypernyms'], synset.instance_hypernyms()),
+#            (CLASS_REGIONAL, ['domain term region'], ),
+                (PART_HOLONYM, ['Part holonyms'], synset.part_holonyms()),
+                (PART_MERONYM, ['Part meronyms'], synset.part_meronyms()),
+                (SUBSTANCE_HOLONYM, ['Substance holonyms'], synset.substance_holonyms()),
+                (SUBSTANCE_MERONYM, ['Substance meronyms'], synset.substance_meronyms()),
+                (MEMBER_HOLONYM, ['Member holonyms'], synset.member_holonyms()),
+                (MEMBER_MERONYM, ['Member meronyms'], synset.member_meronyms()),
+                (ATTRIBUTE, ['Attributes'], synset.attributes()),
+                (ANTONYM, ["antonyms"], synset.antonyms()),
+                (DERIVATIONALLY_RELATED_FORM, ["Derivationally related form"], 
+                   synset.derivationally_related_forms()))
+#            (VERB_GROUP , ),
+#            (CLAUSE , ),
+#            (ALSO_SEE , ),
+#            (SIMILAR , ),
+#            (ENTAILMENT , ),
+#            (FRAMES , ),
+#            (PERTAINYM , ),
+#            (CLASS_CATEGORY , ),
+#            (CLASS_USAGE , ),
+#            (CLASS_REGIONAL , ),
+#            (CLASS_USAGE , ),
+#            (CLASS_CATEGORY , ),
+    else:
+        return []
+
+def hyponym_or_troponym(synset):
+    if synset.pos == wordnet.VERB:
+        return "Troponyms"
+    else:
+        return "Hyponyms"
 
 def _dispname_to_dbname(dispname):
     for dbn,dispn in rel_order:
@@ -394,47 +471,57 @@ def _synset_relations(word, link_type, synset_keys):
     @rtype: str
     '''
     
-    if link_type == 'W':
+    if link_type != 'S':
         raise NotImplementedError()
+    
+    def make_synset_html((db_name, disp_names, rels)):
+        return ' <i>/</i> '.join(
+            (_rel_ref(word, synset_keys, r) for r in disp_names)) \
+            + '\n'
 
     sk,prev_sk = synset_keys.split(',')
     synset = _get_synset(sk.split(':')[0])
-    rel_keys = relations_2(synset).keys()
+#    rel_keys = relations_2(synset).keys()
 
-    html = ''
-    if link_type == 'W':
-        rel_names = [(ANTONYM, 'antonym'),
-                     (FRAMES,'derivationally related form')]
-    else:
-        rel_names = rel_order
-    for rel in rel_names:
-        db_name,disp_name = rel
-        if db_name == ALSO_SEE:
-            if synset.pos == 'verb' and disp_name != 'phrasal verb' or \
-               synset.pos != 'verb' and disp_name == 'phrasal verb':
-                continue
-        if db_name == HYPONYM:
-            if synset.pos == 'verb':
-                if disp_name.find('tropo') == -1:
-                    continue
-            else:
-                if disp_name.find('hypo') == -1:
-                    continue
-        if synset[db_name] or \
-                  db_name == ANTONYM and _anto_or_similar_anto(synset):
-            lst = [' <i>/</i> ' + _rel_ref(word, synset_keys, r)
-                   for r in disp_name.split('/')]
-            html += ''.join(lst)[10:] # drop the extra ' <i>/</i> '
-            html += '\n'
-            if db_name in rel_keys: rel_keys.remove(db_name)
-    if link_type == 'W':
-        html += _rel_ref(word, synset_keys, 'Overview') + '\n'
-        html += _rel_ref(word, synset_keys, 'synset') + '\n'
-    else:
-        for rel in rel_keys:
-            html += _rel_ref(word, synset_keys, rel) + '\n'
-        if synset.pos == 'verb' and synset.verbFrameStrings:
-            html += _rel_ref(word, synset_keys, 'sentence frame') + '\n'
+    html = ''.join((make_synset_html(x) for x 
+                      in get_relations_data(synset)
+                      if x[2] != []))
+
+
+#    if link_type == 'W':
+#        rel_names = [(ANTONYM, 'antonym'),
+#                     (FRAMES,'derivationally related form')]
+#    else:
+
+#    rel_names = rel_order
+#    for rel in rel_names:
+#        db_name,disp_name = rel
+#        if db_name == ALSO_SEE:
+#            if synset.pos == 'verb' and disp_name != 'phrasal verb' or \
+#               synset.pos != 'verb' and disp_name == 'phrasal verb':
+#                continue
+#        if db_name == HYPONYM:
+#            if synset.pos == 'verb':
+#                if disp_name.find('tropo') == -1:
+#                    continue
+#            else:
+#                if disp_name.find('hypo') == -1:
+#                    continue
+#        if synset[db_name] or \
+#                  db_name == ANTONYM and _anto_or_similar_anto(synset):
+#            lst = [' <i>/</i> ' + _rel_ref(word, synset_keys, r)
+#                   for r in disp_name.split('/')]
+#            html += ''.join(lst)[10:] # drop the extra ' <i>/</i> '
+#            html += '\n'
+#            if db_name in rel_keys: rel_keys.remove(db_name)
+#    if link_type == 'W':
+#        html += _rel_ref(word, synset_keys, 'Overview') + '\n'
+#        html += _rel_ref(word, synset_keys, 'synset') + '\n'
+#    else:
+#    for rel in rel_keys:
+#        html += _rel_ref(word, synset_keys, rel) + '\n'
+#    if synset.pos == 'verb' and synset.verbFrameStrings:
+#        html += _rel_ref(word, synset_keys, 'sentence frame') + '\n'
     return html
 
 def _hyponym_ul_structure(word, tree):
