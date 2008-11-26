@@ -116,7 +116,7 @@ Simplify
     >>> print dp.parse('([],[(([x],[dog(x)]) -> ([y,e],[boy(y), chase(e), subj(e,x), obj(e,y)]))])+([x,e],[PRO(x), run(e), subj(e,x)])').simplify()
     ([z1,e02],[(([x],[dog(x)]) -> ([y,e],[boy(y), chase(e), subj(e,x), obj(e,y)])), PRO(z1), run(e02), subj(e02,z1)])
     
-toFol()
+``toFol()``
 
     >>> print dp.parse(r'([x,y],[sees(x,y)])').toFol()
     exists x y.sees(x,y)
@@ -152,7 +152,8 @@ toFol()
     >>> print dp.parse(r'P(x) + ([x],[walks(x)])').toFol()
     (P(x) & exists x.walks(x))
 
-resolve_anaphora()
+``resolve_anaphora()``
+
     >>> from nltk.sem.drt_resolve_anaphora import AnaphoraResolutionException
 
     >>> print dp.parse(r'([x,y,z],[dog(x), cat(y), walks(z), PRO(z)])').resolve_anaphora()
@@ -168,7 +169,8 @@ resolve_anaphora()
     ([z6,z7,e1],[boy(z6), (z7 = z6), run(e1), subj(e1,z7)])
     
     
-replace():
+``replace()``:
+
     >>> a = dp.parse(r'a')
     >>> w = dp.parse(r'w')
     >>> x = dp.parse(r'x')
@@ -177,18 +179,21 @@ replace():
 
 
 replace bound
+
     >>> print dp.parse(r'([x],[give(x,y,z)])').replace(x.variable, a, False)
     ([x],[give(x,y,z)])
     >>> print dp.parse(r'([x],[give(x,y,z)])').replace(x.variable, a, True)
     ([a],[give(a,y,z)])
 
 replace unbound
+
     >>> print dp.parse(r'([x],[give(x,y,z)])').replace(y.variable, a, False)
     ([x],[give(x,a,z)])
     >>> print dp.parse(r'([x],[give(x,y,z)])').replace(y.variable, a, True)
     ([x],[give(x,a,z)])
 
 replace unbound with bound
+
     >>> dp.parse(r'([x],[give(x,y,z)])').replace(y.variable, x, False) == \
     ... dp.parse('([z1],[give(z1,x,z)])')
     True
@@ -197,6 +202,7 @@ replace unbound with bound
     True
 
 replace unbound with unbound
+
     >>> print dp.parse(r'([x],[give(x,y,z)])').replace(y.variable, z, False)
     ([x],[give(x,z,z)])
     >>> print dp.parse(r'([x],[give(x,y,z)])').replace(y.variable, z, True)
@@ -204,24 +210,28 @@ replace unbound with unbound
     
 
 replace unbound
+
     >>> print dp.parse(r'([x],[P(x,y,z)])+([y],[Q(x,y,z)])').replace(z.variable, a, False)
     (([x],[P(x,y,a)]) + ([y],[Q(x,y,a)]))
     >>> print dp.parse(r'([x],[P(x,y,z)])+([y],[Q(x,y,z)])').replace(z.variable, a, True)
     (([x],[P(x,y,a)]) + ([y],[Q(x,y,a)]))
 
 replace bound
+
     >>> print dp.parse(r'([x],[P(x,y,z)])+([y],[Q(x,y,z)])').replace(x.variable, a, False)
     (([x],[P(x,y,z)]) + ([y],[Q(x,y,z)]))
     >>> print dp.parse(r'([x],[P(x,y,z)])+([y],[Q(x,y,z)])').replace(x.variable, a, True)
     (([a],[P(a,y,z)]) + ([y],[Q(a,y,z)]))
 
 replace unbound with unbound
+
     >>> print dp.parse(r'([x],[P(x,y,z)])+([y],[Q(x,y,z)])').replace(z.variable, a, False)
     (([x],[P(x,y,a)]) + ([y],[Q(x,y,a)]))
     >>> print dp.parse(r'([x],[P(x,y,z)])+([y],[Q(x,y,z)])').replace(z.variable, a, True)
     (([x],[P(x,y,a)]) + ([y],[Q(x,y,a)]))
 
 replace unbound with bound on same side
+
     >>> dp.parse(r'([x],[P(x,y,z)])+([y],[Q(x,y,w)])').replace(z.variable, x, False) == \
     ... dp.parse(r'(([z1],[P(z1,y,x)]) + ([y],[Q(z1,y,w)]))')
     True
@@ -230,6 +240,7 @@ replace unbound with bound on same side
     True
 
 replace unbound with bound on other side
+
     >>> dp.parse(r'([x],[P(x,y,z)])+([y],[Q(x,y,w)])').replace(w.variable, x, False) == \
     ... dp.parse(r'(([z1],[P(z1,y,z)]) + ([y],[Q(z1,y,x)]))')
     True
@@ -238,6 +249,7 @@ replace unbound with bound on other side
     True
 
 replace unbound with double bound
+
     >>> dp.parse(r'([x],[P(x,y,z)])+([x],[Q(x,y,w)])').replace(z.variable, x, False) == \
     ... dp.parse(r'(([z1],[P(z1,y,x)]) + ([z1],[Q(z1,y,w)]))')
     True
@@ -248,16 +260,19 @@ replace unbound with double bound
 
 Parse to semantics
 ------------------
+
 	>>> logic._counter._value = 0
 
-A logic parser can be passed as a parameter to load_earley
+A logic parser can be passed as a parameter to ``load_earley()``
+
 	>>> from nltk.parse import load_earley
 	>>> parser = load_earley('grammars/drt.fcfg', trace=0, logic_parser=DrtParser())
 	>>> trees = parser.nbest_parse('a dog barks'.split())
 	>>> print trees[0].node['sem'].simplify()
 	([x],[dog(x), bark(x)])
 
-Alternatively, a FeatStructParser can be passed with the logic_parser set on it
+Alternatively, a ``FeatStructParser`` can be passed with the ``logic_parser`` set on it
+
 	>>> from nltk.featstruct import FeatStructParser
 	>>> from nltk.grammar import FeatStructNonterminal
 	>>> parser = load_earley('grammars/drt.fcfg', trace=0, fstruct_parser=FeatStructParser(fdict_class=FeatStructNonterminal, logic_parser=DrtParser()))
