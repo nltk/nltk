@@ -151,7 +151,7 @@ have any inherent meaning.)
 The semantic representation above is more easily interpreted as a
 graph.  Constraints are indicated by dashed lines.
 
-.. image:: hole1.png
+.. image:: images/hole1.png
    :align: center
 
 It is easy now to see that there are two ways to satisfy the
@@ -328,7 +328,7 @@ Graphical formula trees are easier to read::
 
     Sentence: some white rabid cat of every boxer who growls growls
 
-.. image:: hole2.png
+.. image:: images/hole2.png
    :scale: 60
 
 Note that I have chosen to represent "x of y" as OF(y,x) so both trees
