@@ -382,8 +382,8 @@ class ApplicationExpression(Expression):
         @param function: C{Expression}, for the function expression
         @param argument: C{Expression}, for the argument   
         """
-        assert isinstance(function, Expression), "%s is not an Expression" % function
-        assert isinstance(argument, Expression), "%s is not an Expression" % argument
+        #assert isinstance(function, Expression), "%s is not an Expression" % function
+        #assert isinstance(argument, Expression), "%s is not an Expression" % argument
         self.function = function
         self.argument = argument
         Expression.__init__(self, type_check)
@@ -637,7 +637,7 @@ class VariableBinderExpression(Expression):
         @param term: C{Expression}, for the term
         """
         assert isinstance(variable, Variable), "%s is not a Variable" % variable
-        assert isinstance(term, Expression), "%s is not an Expression" % expression
+        #assert isinstance(term, Expression), "%s is not an Expression" % term
         self.variable = variable
         self.term = term
         Expression.__init__(self, type_check)
