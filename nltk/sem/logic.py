@@ -92,7 +92,7 @@ class Variable(object):
         """
         @param name: the name of the variable
         """
-        assert isinstance(name, str)
+        assert isinstance(name, str), "%s is not a string" % name
         self.name = name
 
     def __eq__(self, other):
@@ -102,7 +102,7 @@ class Variable(object):
         return not (self == other)
     
     def __cmp__(self, other):
-        assert isinstance(other, Variable)
+        assert isinstance(other, Variable), "%s is not a Variable" % other
         if self.name == other.name:
             return 0
         elif self.name < other.name:
@@ -146,8 +146,8 @@ class Type:
     
 class ComplexType(Type):
     def __init__(self, first, second):
-        assert(isinstance(first, Type))
-        assert(isinstance(second, Type))
+        assert(isinstance(first, Type)), "%s is not a Type" % first
+        assert(isinstance(second, Type)), "%s is not a Type" % second
         self.first = first
         self.second = second
     
@@ -253,7 +253,7 @@ class Expression(SubstituteBindingsI):
         return accum
     
     def applyto(self, other):
-        assert isinstance(other, Expression)
+        assert isinstance(other, Expression), "%s is not an Expression" % other
         return ApplicationExpression(self, other, self._type_check)
     
     def __neg__(self):
@@ -263,19 +263,19 @@ class Expression(SubstituteBindingsI):
         return -self
     
     def __and__(self, other):
-        assert isinstance(other, Expression)
+        assert isinstance(other, Expression), "%s is not an Expression" % other
         return AndExpression(self, other, self._type_check)
     
     def __or__(self, other):
-        assert isinstance(other, Expression)
+        assert isinstance(other, Expression), "%s is not an Expression" % other
         return OrExpression(self, other, self._type_check)
     
     def __gt__(self, other):
-        assert isinstance(other, Expression)
+        assert isinstance(other, Expression), "%s is not an Expression" % other
         return ImpExpression(self, other, self._type_check)
     
     def __lt__(self, other):
-        assert isinstance(other, Expression)
+        assert isinstance(other, Expression), "%s is not an Expression" % other
         return IffExpression(self, other, self._type_check)
     
     def __eq__(self, other):
@@ -287,7 +287,7 @@ class Expression(SubstituteBindingsI):
     def tp_equals(self, other, prover_name='tableau'):
         """Pass the expression (self <-> other) to the theorem prover.   
         If the prover says it is valid, then the self and other are equal."""
-        assert isinstance(other, Expression)
+        assert isinstance(other, Expression), "%s is not an Expression" % other
         
         from nltk.inference import inference
         bicond = IffExpression(self.simplify(), other.simplify(), 
@@ -382,8 +382,8 @@ class ApplicationExpression(Expression):
         @param function: C{Expression}, for the function expression
         @param argument: C{Expression}, for the argument   
         """
-        assert isinstance(function, Expression)
-        assert isinstance(argument, Expression)
+        assert isinstance(function, Expression), "%s is not an Expression" % function
+        assert isinstance(argument, Expression), "%s is not an Expression" % argument
         self.function = function
         self.argument = argument
         Expression.__init__(self, type_check)
@@ -403,8 +403,8 @@ class ApplicationExpression(Expression):
         @param expression: C{Expression} The expression with which to replace it
         @param replace_bound: C{boolean} Should bound variables be replaced?  
         """
-        assert isinstance(variable, Variable)
-        assert isinstance(expression, Expression)
+        assert isinstance(variable, Variable), "%s is not a Variable" % variable
+        assert isinstance(expression, Expression), "%s is not an Expression" % expression
         function = self.function.replace(variable, expression, replace_bound)
         argument = self.argument.replace(variable, expression, replace_bound)
         return self.__class__(function, argument, self._type_check)
@@ -445,7 +445,7 @@ class ApplicationExpression(Expression):
         
     def findtype(self, variable):
         """@see Expression.findtype()"""
-        assert isinstance(variable, Variable)
+        assert isinstance(variable, Variable), "%s is not a Variable" % variable
         function, args = self.uncurry()
         if not isinstance(function, AbstractVariableExpression):
             #It's not a predicate expression ("P(x,y)"), so leave args curried
@@ -520,7 +520,7 @@ class AbstractVariableExpression(Expression):
         """
         @param variable: C{Variable}, for the variable
         """
-        assert isinstance(variable, Variable)
+        assert isinstance(variable, Variable), "%s is not a Variable" % variable
         self.variable = variable
         Expression.__init__(self, type_check)
 
@@ -534,8 +534,8 @@ class AbstractVariableExpression(Expression):
         @param expression: C{Expression} The expression with which to replace it
         @param replace_bound: C{boolean} Should bound variables be replaced?  
         """
-        assert isinstance(variable, Variable)
-        assert isinstance(expression, Expression)
+        assert isinstance(variable, Variable), "%s is not an Variable" % variable
+        assert isinstance(expression, Expression), "%s is not an Expression" % expression
         if self.variable == variable:
             return expression
         else:
@@ -558,7 +558,7 @@ class AbstractVariableExpression(Expression):
 
     def findtype(self, variable):
         """@see Expression.findtype()"""
-        assert isinstance(variable, Variable)
+        assert isinstance(variable, Variable), "%s is not a Variable" % variable
         if self.variable == variable:
             return self.type
         else:
@@ -617,7 +617,7 @@ def VariableExpression(variable, type_check=False):
     This is a factory method that instantiates and returns a subtype of 
     C{AbstractVariableExpression} appropriate for the given variable.
     """
-    assert isinstance(variable, Variable)
+    assert isinstance(variable, Variable), "%s is not a Variable" % variable
     if is_indvar(variable.name):
         return IndividualVariableExpression(variable, type_check)
     elif is_funcvar(variable.name):
@@ -636,8 +636,8 @@ class VariableBinderExpression(Expression):
         @param variable: C{Variable}, for the variable
         @param term: C{Expression}, for the term
         """
-        assert isinstance(variable, Variable)
-        assert isinstance(term, Expression)
+        assert isinstance(variable, Variable), "%s is not a Variable" % variable
+        assert isinstance(term, Expression), "%s is not an Expression" % expression
         self.variable = variable
         self.term = term
         Expression.__init__(self, type_check)
@@ -653,12 +653,13 @@ class VariableBinderExpression(Expression):
         @param expression: C{Expression} The expression with which to replace it
         @param replace_bound: C{boolean} Should bound variables be replaced?  
         """
-        assert isinstance(variable, Variable)
-        assert isinstance(expression, Expression)
+        assert isinstance(variable, Variable), "%s is not a Variable" % variable
+        assert isinstance(expression, Expression), "%s is not an Expression" % expression
         #if the bound variable is the thing being replaced
         if self.variable == variable:
             if replace_bound: 
-                assert isinstance(expression, AbstractVariableExpression)
+                assert isinstance(expression, AbstractVariableExpression),\
+                       "%s is not a AbstractVariableExpression" % expression
                 return self.__class__(expression.variable, 
                                       self.term.replace(variable, expression, 
                                                         True),
@@ -682,7 +683,7 @@ class VariableBinderExpression(Expression):
         binder in the expression to @C{newvar}.
         @param newvar: C{Variable}, for the new variable
         """
-        assert isinstance(newvar, Variable)
+        assert isinstance(newvar, Variable), "%s is not a Variable" % newvar
         return self.__class__(newvar, self.term.replace(self.variable, 
                           VariableExpression(newvar,self._type_check), 
                           True), self._type_check)
@@ -703,7 +704,7 @@ class VariableBinderExpression(Expression):
 
     def findtype(self, variable):
         """@see Expression.findtype()"""
-        assert isinstance(variable, Variable)
+        assert isinstance(variable, Variable), "%s is not a Variable" % variable
         if variable == self.variable:
             return ANY_TYPE
         else:
@@ -761,7 +762,7 @@ class AllExpression(QuantifiedExpression):
 
 class NegatedExpression(Expression):
     def __init__(self, term, type_check=False):
-        assert isinstance(term, Expression)
+        assert isinstance(term, Expression), "%s is not an Expression" % term
         self.term = term
         Expression.__init__(self, type_check)
         
@@ -775,8 +776,8 @@ class NegatedExpression(Expression):
         @param expression: C{Expression} The expression with which to replace it
         @param replace_bound: C{boolean} Should bound variables be replaced?  
         """
-        assert isinstance(variable, Variable)
-        assert isinstance(expression, Expression)
+        assert isinstance(variable, Variable), "%s is not a Variable" % variable
+        assert isinstance(expression, Expression), "%s is not an Expression" % expression
         return self.__class__(self.term.replace(variable, expression, 
                                                 replace_bound), 
                               self._type_check)
@@ -797,7 +798,7 @@ class NegatedExpression(Expression):
         assert self.term.type.matches(TRUTH_TYPE)
 
     def findtype(self, variable):
-        assert isinstance(variable, Variable)
+        assert isinstance(variable, Variable), "%s is not a Variable" % variable
         return self.term.findtype(variable)
         
     def __eq__(self, other):
@@ -813,8 +814,8 @@ class NegatedExpression(Expression):
         
 class BinaryExpression(Expression):
     def __init__(self, first, second, type_check=False):
-        assert isinstance(first, Expression)
-        assert isinstance(second, Expression)
+        assert isinstance(first, Expression), "%s is not an Expression" % first
+        assert isinstance(second, Expression), "%s is not an Expression" % second
         self.first = first
         self.second = second
         Expression.__init__(self, type_check)
@@ -830,8 +831,8 @@ class BinaryExpression(Expression):
         @param expression: C{Expression} The expression with which to replace it
         @param replace_bound: C{boolean} Should bound variables be replaced?  
         """
-        assert isinstance(variable, Variable)
-        assert isinstance(expression, Expression)
+        assert isinstance(variable, Variable), "%s is not a Variable" % variable
+        assert isinstance(expression, Expression), "%s is not an Expression" % expression
         return self.__class__(self.first.replace(variable, expression, 
                                                  replace_bound),
                               self.second.replace(variable, expression, 
@@ -855,7 +856,7 @@ class BinaryExpression(Expression):
 
     def findtype(self, variable):
         """@see Expression.findtype()"""
-        assert isinstance(variable, Variable)
+        assert isinstance(variable, Variable), "%s is not a Variable" % variable
         f = self.first.findtype(variable)
         s = self.second.findtype(variable)
         if f == s or s == ANY_TYPE:
@@ -1269,7 +1270,7 @@ def is_indvar(expr):
     @param expr: C{str}
     @return: C{boolean} True if expr is of the correct form 
     """
-    assert isinstance(expr, str)
+    assert isinstance(expr, str), "%s is not a string" % expr
     return re.match(r'^[a-df-z]\d*$', expr)
 
 def is_funcvar(expr):
@@ -1280,7 +1281,7 @@ def is_funcvar(expr):
     @param expr: C{str}
     @return: C{boolean} True if expr is of the correct form 
     """
-    assert isinstance(expr, str)
+    assert isinstance(expr, str), "%s is not a string" % expr
     return re.match(r'^[A-Z]\d*$', expr)
 
 def is_eventvar(expr):
@@ -1291,7 +1292,7 @@ def is_eventvar(expr):
     @param expr: C{str}
     @return: C{boolean} True if expr is of the correct form 
     """
-    assert isinstance(expr, str)
+    assert isinstance(expr, str), "%s is not a string" % expr
     return re.match(r'^e\d*$', expr)
 
 
@@ -1324,11 +1325,6 @@ def demo():
     print e2
     print e1 == e2
     
-
-if __name__ == '__main__':
-#    demo()
-    
-    p = LogicParser().parse
     a = p(r'a')
     x = p(r'x')
     y = p(r'y')
@@ -1338,10 +1334,9 @@ if __name__ == '__main__':
     angus = p(r'\P.P(angus)')
     var = p('z1')
     term = p('smile(z1)')
-    l = LambdaExpression(var, term)
+    l = LambdaExpression(var.variable, term)
     E2 = ApplicationExpression(angus, l)
     print E2.simplify()
-    
-#    print p(r'exists x.man(x)').replace(x.variable, a, True)
-#    print p(r'\x y z.give(x,y,z)').replace(y.variable, a, True)
-    
+
+if __name__ == '__main__':
+    demo()
