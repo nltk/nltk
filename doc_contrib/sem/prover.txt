@@ -8,7 +8,6 @@
 .. |multimap| unicode:: U+22B8
 .. |vdash| unicode:: U+22A6
 .. |nvdash| unicode:: U+22AC
-.. |Gamma| unicode:: U+0393
 .. |delta| unicode:: U+03B4
 .. |Delta| unicode:: U+0394
 .. |emptyset| unicode:: U+2205

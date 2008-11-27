@@ -122,3 +122,11 @@ rsync-en-beta:
 
 .txt.py:
 	$(PYTHON) $(EXAMPLES) $< > $@
+
+PUBLISH = ../../../doc/contrib/sem
+
+publish:
+	cp *.{pdf,html} $(PUBLISH)
+	cp images/*.png $(PUBLISH)/images
+	svn add $(PUBLISH)/* $(PUBLISH)/images/*
+	python ../../tools/svnmime.py $(PUBLISH)/* $(PUBLISH)/images/*

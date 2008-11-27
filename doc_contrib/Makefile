@@ -6,7 +6,7 @@
 # URL: <http://nltk.org>
 # For license information, see LICENSE.TXT
 
-WEB = $(USER)@shell.sourceforge.net:/home/groups/n/nl/nltk/htdocs
+#WEB = $(USER)@shell.sourceforge.net:/home/groups/n/nl/nltk/htdocs
 
 RST2HTML = ../doc/rst2html.py
 
@@ -18,7 +18,7 @@ RSYNC_OPTS = -lrtvz -e ssh --relative --cvs-exclude
 
 .SUFFIXES: .txt .html
 
-.PHONY: sem rsync
+.PHONY: sem
 
 all: sem
 
@@ -31,6 +31,10 @@ clean:
 sem:
 	$(MAKE) -C sem all
 
-rsync:
-	rsync $(RSYNC_OPTS) . $(WEB)/doc_contrib/
+#rsync:
+#	rsync $(RSYNC_OPTS) . $(WEB)/doc_contrib/
 
+PUBLISH = ../../doc/contrib
+
+publish:
+	$(MAKE) -C sem publish
