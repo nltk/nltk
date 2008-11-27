@@ -195,7 +195,7 @@ noting certain points of difference \textit{vis-\`a-vis} \BB.
 
 \section{Logical Form}
 
-\subsection{First Order Predicate Logic}
+\subsection{First Order Predicate Logic with Lambda Calculus}
 From a pedagogical point of view, it is usually important to ensure
 that students have some grasp of the language of first order predicate
 logic (\FOL), and can also manipulate $\lambda$-abstraction.  The
@@ -304,34 +304,17 @@ Montague-style types) by passing the parameter \texttt{type\_check=True} to
 \texttt{LogicParser}.  Apart from allowing the user to display the
 \texttt{Expression}'s type with \texttt{gettype()}, type checking will
 raise an exception for non-well typed expressions:
-% prevent expressions that are grammatically sound, but that cause type errors.
-%  Every typed expression has a method 
-% \texttt{gettype()} that returns the expression's type.  When a type error 
-% occurs during the construction of an \texttt{Expression}, a 
-% \texttt{TypeException} is raised.
-% \begin{Verbatim}
-% >>> tlp = logic.LogicParser(type_check=True)
-% >>> try: tlp.parse(r'\P.P(x,y)(\z.Q(z))')
-% ... except Exception, e: print e.__class__.__name__
-% TypeException
-% >>> a = tlp.parse(r'\P.P(x)')
-% >>> a.gettype()
-% <<e,t>,t>
-% >>> try: a(a)
-% ... except Exception, e: print e.__class__.__name__
-% TypeException
-% \end{Verbatim}
 \begin{Verbatim}
 >>> tlp = logic.LogicParser(type_check=True)
->>> a = tlp.parse(r'\P.P(x)')
+>>> a = tlp.parse(r'\x y.sees(x,y)')
 >>> a.gettype()
-<<e,t>,t>
->>> a(a)
+<e,<e,t>>
+>>> b = tlp.parse(r'\x y.see(x,y)(\x.man(x))')
 Traceback (most recent call last):
   . . .
-TypeException: The function '\P.P(x)' is of type '<<e,t>,t>' and
-cannot be applied to '\P.P(x)' of type '<<e,t>,t>'.  Its argument
-must be of type '<e,t>'.
+TypeException: The function '\x y.see(x,y)' is of type '<e,<e,t>>' 
+and cannot be applied to '\x.man(x)' of type '<e,t>'.  Its argument 
+must be of type 'e'.
 \end{Verbatim}
 % Fix for code colorization: >>>>
 
