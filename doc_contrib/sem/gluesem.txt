@@ -127,13 +127,13 @@ In order to produce the reading for the sentence from this linear logic proof, w
 
 .. _ex8:
 .. ex::
-    .. image:: gluesem_images/proof_app_abstract.png
+    .. image:: images/proof_app_abstract.png
 
 Therefore, all together we have the following proof that produces a semantic meaning for the sentence `John walks`:lx: in ex9_:
 
 .. _ex9:
 .. ex::
-    .. image:: gluesem_images/proof_app_concrete.png
+    .. image:: images/proof_app_concrete.png
 
 And |lambda|\ `x.walks(x)(John)`:mathit: |beta|\-reduces to `walk(John)`:mathit:.
 
@@ -167,17 +167,17 @@ The traditional way that syntactic relationships are shown in Glue literature is
 
 .. _ex10:
 .. ex::
-    .. image:: gluesem_images/fstruct_subj.png
+    .. image:: images/fstruct_subj.png
 
 This style of marking syntactic structure allows us to clearly see that `f`:mathit: represented the entire sentence and that `g`:mathit: represents the subject of the sentence. Let us compare this to the representation and subsequent proof (with |beta|\-reductions done as we progress) of the sentence `John sees Mary`:lx:, shown as ex11_ and ex12_ respectively:
         
 .. _ex11:
 .. ex::
-    .. image:: gluesem_images/fstruct_obj.png
+    .. image:: images/fstruct_obj.png
 
 .. _ex12:
 .. ex::
-    .. image:: gluesem_images/proof_trans.png
+    .. image:: images/proof_trans.png
 
 In this case the verb is transitive, so it must have a subject (`John`:lx:) and an object (`Mary`:lx:). 
 
@@ -211,7 +211,7 @@ For reference, let us give the LFG f-structure for the sentence `a man walks`:lx
 
 .. _ex16:
 .. ex::
-    .. image:: gluesem_images/fstruct_quant.png
+    .. image:: images/fstruct_quant.png
 
 We will examine the noun first.  The meaning of a noun can be viewed as a function from an individual to a truth value.  For example, the glue formula for the word `man`:lx: is given in ex13_:
 
@@ -223,13 +223,13 @@ The meaning term tells us that `man`:lx: is a function that takes an individual 
 
 .. _ex17:
 .. ex::
-    .. image:: gluesem_images/proof_quant_noun.png
+    .. image:: images/proof_quant_noun.png
 
 At this point we must pause to discuss the glue proposition `G`:mathit:.  In the glue for this quantified noun phrase, `G`:mathit: is a variable\ [#capitals]_ standing for an expression of type **Bool**. As one would expect from a variable, it may bind with any proposition of type **Bool** in the course of a proof. We can now see how the result from ex17_ can be combined with the word `walks`:lx: to give the reading of the entire sentence.  The proof is given in ex18_:
 
 .. _ex18:
 .. ex::
-    .. image:: gluesem_images/proof_quant_sent.png
+    .. image:: images/proof_quant_sent.png
 
 An existential quantifier such as `a`:lx: or `some`:lx: is represented as quanta_.  A universal quantifier such as `all`:lx: or `every`:lx: is represented as quantb_:
 
@@ -283,7 +283,7 @@ Glue semantics will allow us to generate both of these readings through the same
 
 .. _ex22:
 .. ex::
-    .. image:: gluesem_images/proof_abstraction.png
+    .. image:: images/proof_abstraction.png
 
 So, to generate readings for ex19_, we start with a list of premises:
 
@@ -331,11 +331,11 @@ verb `chases`:lx:.  The proofs are detailed as ex30_ and ex31_:
 
     .. _ex30:
     .. ex::
-        .. image:: gluesem_images/proof_semanticAmbiguity1.png
+        .. image:: images/proof_semanticAmbiguity1.png
         
     .. _ex31:
     .. ex::
-        .. image:: gluesem_images/proof_semanticAmbiguity2.png
+        .. image:: images/proof_semanticAmbiguity2.png
 
 Semantic Ambiguity in NLTK
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -450,15 +450,15 @@ The problem of having the computer automatically assemble a sentence's glue prem
 
     .. _ex32:
     .. ex::
-        .. image:: gluesem_images/proof_infLoop1.png
+        .. image:: images/proof_infLoop1.png
     
     .. _ex33:
     .. ex::
-        .. image:: gluesem_images/proof_infLoop2.png
+        .. image:: images/proof_infLoop2.png
     
     .. _ex34:
     .. ex::
-        .. image:: gluesem_images/proof_infLoop3.png
+        .. image:: images/proof_infLoop3.png
 
 It should be clear that we could generate an infinite number of proofs following this pattern of hypothesizing and retracting variables.  It should also be clear that a single proof could involve an infinite number of these actions, and thus cause "proving" to take forever.  This is a major problem because in glue semantics we want to generate all possible proofs so that we can have all possible readings since each new proof could potentially give a different reading. 
 
@@ -528,7 +528,7 @@ Naturally, we will have to incorporate the indices and dependencies into our app
 
 .. _ex38:
 .. ex::
-    .. image:: gluesem_images/proof_hornClauseApp.png
+    .. image:: images/proof_hornClauseApp.png
 
 You will notice that the set of indices of the conclusion is the sets of indices of both premises combined.  This means that a glue formula's set of indices is the set of premises that were consumed to generate that formula. It should be noted that |Gamma| and |Delta| will always be disjoint since the rules of linear logic say that no premise may be used more than once.  We also impose the condition that |alpha| must be a subset of |Gamma|.  This will ensure that the correct premises were used to generate the `A`:mathit: premise used in the application.
 
@@ -652,11 +652,11 @@ The distinction between skeletons and modifiers are important because for a give
 
     .. _mod2:
     .. ex::
-        .. image:: gluesem_images/proof_mod2.png
+        .. image:: images/proof_mod2.png
  
     .. _mod1:
     .. ex::
-        .. image:: gluesem_images/proof_mod1.png
+        .. image:: images/proof_mod1.png
     
 The advantage to removing modifiers is an decrease in the time it takes to find proofs.  This advantage is made even more obvious in a situation where many modifiers exist that are modifying the same thing.  In examples mod2_\ -\ mod1_ there was no difference in the number of proofs.  However, if we add another glue formula with the glue term `(g`:mathit: |multimap| `g)`:mathit:  then the  number of proofs increases to two.  If we add a third `(g`:mathit: |multimap| `g)`:mathit: then the number of proofs increases to six.  The number of possible proofs is `n!`:mathit: for `n`:mathit:  similar modifiers.
 
@@ -666,9 +666,8 @@ This large increase in number of proofs does not necessarily correspond to an in
 Further Reading
 ---------------
 
-See http://www-csli.stanford.edu/~iddolev/glue_bibliography.html for a
-comprehensive bibliography of glue semantics literature put together by Iddo
-Lev.
+See http://users.ox.ac.uk/~lina1301/GlueBibliography.htm for a
+comprehensive bibliography of glue semantics literature.
 
 ----------
 References
