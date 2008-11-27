@@ -1,4 +1,4 @@
-Version 0.9.6 2008-11-11
+Version 0.9.6 2008-12-0?
 
 NLTK:
 * new WordNet corpus reader (contributed by Steven Bethard)
@@ -9,7 +9,7 @@ NLTK:
 * added plot() and tabulate() methods to FreqDist and ConditionalFreqDist
 * FreqDist.keys() provides keys reverse sorted by value, to avoid
   the confusion caused by FreqDist.sorted()
-* new downloader package to support live downloading of corpora
+* new downloader module to support live downloading of corpora
 * fixed WordNet bug that caused min_depth() to sometimes give incorrect result
 * added nltk.util.Index as a wrapper around defaultdict(list) plus
   a functional-style initializer
@@ -34,7 +34,7 @@ Book:
 * complete rewrite of first three chapters to make the book accessible
   to a wider audience
 * new chapter on data-intensive language processing
-* rewrite of chapter 12 on semantics
+* extensive reworking of most chapters
 
 Distributions:
 * created Portfile to support Mac installation
