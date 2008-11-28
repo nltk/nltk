@@ -182,7 +182,7 @@ from nltk.draw import ShowText
 class Package(object):
     """
     A directory entry for a downloadable package.  These entries are
-    extracted from the XML index file that is downlaoded by
+    extracted from the XML index file that is downloaded by
     L{Downloader}.  Each package consists of a single file; but if
     that file is a zip file, then it can be automatically decompressed
     when the package is installed.
@@ -254,7 +254,7 @@ class Collection(object):
     """
     A directory entry for a collection of downloadable packages.
     These entries are extracted from the XML index file that is
-    downlaoded by L{Downloader}.
+    downloaded by L{Downloader}.
     """
     def __init__(self, id, children, name=None, **kw):
         self.id = id
@@ -2051,7 +2051,7 @@ def _find_packages(root):
 _downloader = Downloader()
 download = _downloader.download
 def download_shell(): DownloaderShell(_downloader).run()
-def download_gui(): DownlaoderGUI(_downloader).run()
+def download_gui(): DownloaderGUI(_downloader).run()
 
 if __name__ == '__main__':
     download()
