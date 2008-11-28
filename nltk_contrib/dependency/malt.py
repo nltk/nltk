@@ -13,7 +13,6 @@ from operator import add
 
 from nltk import data
 from nltk import tokenize
-from nltk.stem.wordnet import WordnetStemmer
 from nltk_contrib.dependency import DepGraph, util
 from nltk_contrib.tag import tnt
 from nltk.internals import find_binary

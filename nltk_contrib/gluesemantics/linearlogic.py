@@ -361,12 +361,15 @@ class LinearLogicParser(logic.LogicParser):
         elif tok == Tokens.OPEN:
             return self.handle_open(tok)
      
-    def get_BooleanExpression_factory(self):
-        if self.token(0) == Tokens.IMP:
+    def get_BooleanExpression_factory(self, tok):
+        if tok == Tokens.IMP:
             return ImpExpression
         else:
             return None
 
+    def make_BooleanExpression(self, factory, first, second):
+        return factory(first, second)
+    
     def attempt_ApplicationExpression(self, expression):
         """Attempt to make an application expression.  If the next tokens 
         are an argument in parens, then the argument expression is a
@@ -395,12 +398,8 @@ def demo():
     print llp.parse(r'(g -o f)(g)').simplify()
     print llp.parse(r'(H -o f)(g)').simplify()
     print llp.parse(r'((g -o G) -o G)((g -o f))').simplify()
+    print llp.parse(r'(H -o H)((g -o f))').simplify()
 
 
 if __name__ == '__main__':
-#    demo()
-
-    gf = LinearLogicParser().parse('g -o f')
-    X = LinearLogicParser().parse('X')
-    print BindingDict([(X,gf)])
-    
+    demo()

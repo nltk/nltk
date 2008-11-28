@@ -731,21 +731,23 @@ class DrtParser(logic.LogicParser):
         have different equality expression classes"""
         return DrtEqualityExpression(first, second)
 
-    def get_BooleanExpression_factory(self):
+    def get_BooleanExpression_factory(self, tok):
         """This method serves as a hook for other logic parsers that
         have different boolean operators"""
-        factory = None
-        op = self.token(0)
-        if op == Tokens.DRS_CONC:
-            factory = ConcatenationDRS
-        elif op in Tokens.OR:
-            factory = DrtOrExpression
-        elif op in Tokens.IMP:
-            factory = DrtImpExpression
-        elif op in Tokens.IFF:
-            factory = DrtIffExpression
-        return factory
+        if tok == Tokens.DRS_CONC:
+            return ConcatenationDRS
+        elif tok in Tokens.OR:
+            return DrtOrExpression
+        elif tok in Tokens.IMP:
+            return DrtImpExpression
+        elif tok in Tokens.IFF:
+            return DrtIffExpression
+        else:
+            return None
 
+    def make_BooleanExpression(self, factory, first, second):
+        return factory(first, second)
+    
     def make_ApplicationExpression(self, function, argument):
         return DrtApplicationExpression(function, argument)
     

@@ -6,7 +6,7 @@ from nltk import tokenize
 from itertools import islice
 import os
 from deptree import DepGraph
-from nltk.stem import WordnetStemmer
+from nltk.stem.wordnet import WordNetLemmatizer 
 
 def tag2tab(s, sep='/'):
     loc = s.rfind(sep)
@@ -43,7 +43,7 @@ def tabtagged(files = 'chunked', basedir= None):
 
 def conll_to_depgraph(input_str, stem=False, verbose=False):
     if stem: 
-        stemmer = WordnetStemmer()
+        stemmer = WordNetLemmatizer()
 
     tokenizer = tokenize.TabTokenizer()
     depgraph_input = ''
@@ -52,7 +52,7 @@ def conll_to_depgraph(input_str, stem=False, verbose=False):
         if len(tokens) > 1:
             word = tokens[1]
             if stem:
-                word_stem = stemmer.stem(word)
+                word_stem = stemmer.lemmatize(word)
                 if word_stem:
                     word = word_stem
             depgraph_input += '%s\t%s\t%s\t%s\n' % (word, tokens[3], tokens[6], tokens[7])
