@@ -590,7 +590,7 @@ class PunktTrainer(_PunktBaseClass):
                                (score, abbr))
             else:
                 if not is_add:
-                    self._params.remove_abbrev(abbr)
+                    self._params.abbrev_types.remove(abbr)
                     if verbose:
                         print ('  Removed abbreviation: [%6.4f] %s' %
                                (score, abbr))
