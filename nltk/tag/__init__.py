@@ -17,6 +17,7 @@ from util import *
 from simplify import *
 from sequential import *
 from brill import *
+from tnt import *
 
 __all__ = [
     # Tagger interface
