@@ -4,13 +4,14 @@
 
 .. include:: ../../doc/definitions.rst
 
-A DRS can be created with ``DRS()``. This takes two arguments: a list of
-discourse referents and list of conditions. 
+Overview
+========
+
+A DRS can be created with the ``DRS()`` constructor. This takes two arguments: a list of
+discourse referents and list of conditions. .
 
     >>> from nltk.sem.drt import *
-    
     >>> dp = DrtParser()
-    
     >>> man_x = dp.parse('man(x)')
     >>> walk_x = dp.parse('walk(x)')
     >>> x = dp.parse('x')
@@ -29,6 +30,8 @@ DRSs can be *merged* using the ``+`` operator.
 
     >>> drs2 = dp.parse('([y],[woman(y),stop(y)])')
     >>> drs3 = drs1 + drs2
+    >>> print drs3
+    (([x],[man(x), walk(x)]) + ([y],[woman(y), stop(y)]))
     >>> print drs3.simplify()
     ([x,y],[man(x), walk(x), woman(y), stop(y)])
 
@@ -38,8 +41,50 @@ We can embed DRSs as components of an ``implies`` condition.
     >>> print dp.parse(s)
     ([],[(([x],[man(x), walk(x)]) -> ([y],[woman(y), stop(y)]))])
 
+The ``toFol()`` method converts DRSs into FOL formulae.
+
+    >>> print dp.parse(r'([x],[man(x), walks(x)])').toFol()
+    exists x.(man(x) & walks(x))
+    >>> print dp.parse(r'([],[(([x],[man(x)]) -> ([],[walks(x)]))])').toFol()
+    all x.(man(x) -> walks(x))
+
+In order to visualize a DRS, the ``draw()`` method can be use.
+
+    >>> drs3.draw() # doctest: +SKIP
+    
+
+Parse to semantics
+------------------
+
+..
+    >>> logic._counter._value = 0
+
+DRSs can be used for building compositional semantics in a feature
+based grammar. To specify that we want to use DRSs, the appropriate
+logic parser needs be passed as a parameter to ``load_earley()``
+
+    >>> from nltk.parse import load_earley
+    >>> parser = load_earley('grammars/drt.fcfg', trace=0, logic_parser=DrtParser())
+    >>> trees = parser.nbest_parse('a dog barks'.split())
+    >>> print trees[0].node['sem'].simplify()
+    ([x],[dog(x), bark(x)])
+
+Alternatively, a ``FeatStructParser`` can be passed with the ``logic_parser`` set on it
+
+    >>> from nltk.featstruct import FeatStructParser
+    >>> from nltk.grammar import FeatStructNonterminal
+    >>> parser = load_earley('grammars/drt.fcfg', trace=0, fstruct_parser=FeatStructParser(fdict_class=FeatStructNonterminal, logic_parser=DrtParser()))
+    >>> trees = parser.nbest_parse('every girl chases a dog'.split())
+    >>> print trees[0].node['sem'].simplify()
+    ([],[(([x],[girl(x)]) -> ([z2],[dog(z2), chase(x,z2)]))])
+
+
+
+Unit Tests
+==========
 
 Parser
+------
     
     >>> print dp.parse(r'([x,y],[sees(x,y)])')
     ([x,y],[sees(x,y)])
@@ -86,7 +131,8 @@ Parser
     >>> print dp.parse(r'([x][walk(x)])')
     ([x],[walk(x)])
     
-Simplify
+``simplify()``
+--------------
 
     >>> print dp.parse(r'\x.([],[man(x), walks(x)])(john)').simplify()
     ([],[man(john), walks(john)])
@@ -117,6 +163,7 @@ Simplify
     ([z1,e02],[(([x],[dog(x)]) -> ([y,e],[boy(y), chase(e), subj(e,x), obj(e,y)])), PRO(z1), run(e02), subj(e02,z1)])
     
 ``toFol()``
+-----------
 
     >>> print dp.parse(r'([x,y],[sees(x,y)])').toFol()
     exists x y.sees(x,y)
@@ -153,6 +200,7 @@ Simplify
     (P(x) & exists x.walks(x))
 
 ``resolve_anaphora()``
+----------------------
 
     >>> from nltk.sem.drt_resolve_anaphora import AnaphoraResolutionException
 
@@ -167,9 +215,9 @@ Simplify
     Variable 'x' does not resolve to anything.
     >>> print dp.parse('([z6,z7,e1],[boy(z6), PRO(z7), run(e1), subj(e1,z7)])').resolve_anaphora()
     ([z6,z7,e1],[boy(z6), (z7 = z6), run(e1), subj(e1,z7)])
-    
-    
+
 ``replace()``:
+--------------
 
     >>> a = dp.parse(r'a')
     >>> w = dp.parse(r'w')
@@ -179,6 +227,7 @@ Simplify
 
 
 replace bound
+-------------
 
     >>> print dp.parse(r'([x],[give(x,y,z)])').replace(x.variable, a, False)
     ([x],[give(x,y,z)])
@@ -186,6 +235,7 @@ replace bound
     ([a],[give(a,y,z)])
 
 replace unbound
+---------------
 
     >>> print dp.parse(r'([x],[give(x,y,z)])').replace(y.variable, a, False)
     ([x],[give(x,a,z)])
@@ -193,6 +243,7 @@ replace unbound
     ([x],[give(x,a,z)])
 
 replace unbound with bound
+--------------------------
 
     >>> dp.parse(r'([x],[give(x,y,z)])').replace(y.variable, x, False) == \
     ... dp.parse('([z1],[give(z1,x,z)])')
@@ -202,6 +253,7 @@ replace unbound with bound
     True
 
 replace unbound with unbound
+----------------------------
 
     >>> print dp.parse(r'([x],[give(x,y,z)])').replace(y.variable, z, False)
     ([x],[give(x,z,z)])
@@ -210,6 +262,7 @@ replace unbound with unbound
     
 
 replace unbound
+---------------
 
     >>> print dp.parse(r'([x],[P(x,y,z)])+([y],[Q(x,y,z)])').replace(z.variable, a, False)
     (([x],[P(x,y,a)]) + ([y],[Q(x,y,a)]))
@@ -217,6 +270,7 @@ replace unbound
     (([x],[P(x,y,a)]) + ([y],[Q(x,y,a)]))
 
 replace bound
+-------------
 
     >>> print dp.parse(r'([x],[P(x,y,z)])+([y],[Q(x,y,z)])').replace(x.variable, a, False)
     (([x],[P(x,y,z)]) + ([y],[Q(x,y,z)]))
@@ -224,6 +278,7 @@ replace bound
     (([a],[P(a,y,z)]) + ([y],[Q(a,y,z)]))
 
 replace unbound with unbound
+----------------------------
 
     >>> print dp.parse(r'([x],[P(x,y,z)])+([y],[Q(x,y,z)])').replace(z.variable, a, False)
     (([x],[P(x,y,a)]) + ([y],[Q(x,y,a)]))
@@ -231,6 +286,7 @@ replace unbound with unbound
     (([x],[P(x,y,a)]) + ([y],[Q(x,y,a)]))
 
 replace unbound with bound on same side
+---------------------------------------
 
     >>> dp.parse(r'([x],[P(x,y,z)])+([y],[Q(x,y,w)])').replace(z.variable, x, False) == \
     ... dp.parse(r'(([z1],[P(z1,y,x)]) + ([y],[Q(z1,y,w)]))')
@@ -240,6 +296,7 @@ replace unbound with bound on same side
     True
 
 replace unbound with bound on other side
+----------------------------------------
 
     >>> dp.parse(r'([x],[P(x,y,z)])+([y],[Q(x,y,w)])').replace(w.variable, x, False) == \
     ... dp.parse(r'(([z1],[P(z1,y,z)]) + ([y],[Q(z1,y,x)]))')
@@ -249,6 +306,7 @@ replace unbound with bound on other side
     True
 
 replace unbound with double bound
+---------------------------------
 
     >>> dp.parse(r'([x],[P(x,y,z)])+([x],[Q(x,y,w)])').replace(z.variable, x, False) == \
     ... dp.parse(r'(([z1],[P(z1,y,x)]) + ([z1],[Q(z1,y,w)]))')
@@ -258,25 +316,5 @@ replace unbound with double bound
     True
 
 
-Parse to semantics
-------------------
 
-	>>> logic._counter._value = 0
-
-A logic parser can be passed as a parameter to ``load_earley()``
-
-	>>> from nltk.parse import load_earley
-	>>> parser = load_earley('grammars/drt.fcfg', trace=0, logic_parser=DrtParser())
-	>>> trees = parser.nbest_parse('a dog barks'.split())
-	>>> print trees[0].node['sem'].simplify()
-	([x],[dog(x), bark(x)])
-
-Alternatively, a ``FeatStructParser`` can be passed with the ``logic_parser`` set on it
-
-	>>> from nltk.featstruct import FeatStructParser
-	>>> from nltk.grammar import FeatStructNonterminal
-	>>> parser = load_earley('grammars/drt.fcfg', trace=0, fstruct_parser=FeatStructParser(fdict_class=FeatStructNonterminal, logic_parser=DrtParser()))
-	>>> trees = parser.nbest_parse('every girl chases a dog'.split())
-	>>> print trees[0].node['sem'].simplify()
-	([],[(([x],[girl(x)]) -> ([z2],[dog(z2), chase(x,z2)]))])
-	
+    

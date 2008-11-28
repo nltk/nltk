@@ -194,8 +194,7 @@ Parse a valuation from a string.
     ... """
     >>> val = parse_valuation(v)
 
-.. doctest-ignore::
-    >>> print val
+    >>> print val # doctest: +SKIP
     {'bark': set([('d1',), ('d2',)]),
      'boy': set([('b1',), ('b2',)]),
      'chase': set([('b1', 'g1'), ('g2', 'd2'), ('g1', 'd1'), ('b2', 'g1')]),
