@@ -43,6 +43,7 @@ setup(
                 'nltk.corpus.reader',
                 'nltk.cluster',
                 'nltk.draw',
+                'nltk.draw.wordnet_browser',
                 'nltk.inference',
                 'nltk.misc',
                 'nltk.model',
