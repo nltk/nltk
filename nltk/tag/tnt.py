@@ -1,22 +1,23 @@
+# Natural Language Toolkit: TnT Tagger
+#
+# Copyright (C) 2001-2008 NLTK Project
+# Author: Sam Huston <sjh900@gmail.com>
+#         Steven Bird <sb@csse.unimelb.edu.au> (modifications)
+#         
+# URL: <http://nltk.org>
+# For license information, see LICENSE.TXT
+
 '''
-Sam Huston 2007
-
-Project for 433-460: HLT
-
-Implementation of
-'TnT - A Statisical Part of Speech Tagger'
+Implementation of 'TnT - A Statisical Part of Speech Tagger'
 by Thorsten Brants
 
-a copy of the published paper is located at:
 http://acl.ldc.upenn.edu/A/A00/A00-1031.pdf
-
 '''
 
-
 from nltk import probability
-from nltk import tag
+from api import *
 
-class Tnt(tag.TaggerI):
+class TnT(TaggerI):
     '''
     TnT - Statistical POS tagger
 
@@ -26,8 +27,7 @@ class Tnt(tag.TaggerI):
       It is possible to provide an untrained POS tagger to
       create tags for unknown words, see __init__ function
 
-     
-    * SHOULD BE USED WITH SENTENCE DELIMITED INPUT
+    * SHOULD BE USED WITH SENTENCE-DELIMITED INPUT
       - Due to the nature of this tagger, it works best when
        trained over sentence delimited input.
      - However it still produces good results if the training
@@ -75,8 +75,8 @@ class Tnt(tag.TaggerI):
         Construct a TnT statistical tagger. Tagger must be trained
         before being used to tag input.
 
-        @param unk: instance of a POS tagger, conforms to nltk.TaggerI
-        @type  unk:(nltk.TaggerI)
+        @param unk: instance of a POS tagger, conforms to TaggerI
+        @type  unk:(TaggerI)
         @param Trained: Indication that the POS tagger is trained or not
         @type  Trained: boolean
         @param N: Beam search degree (see above)
@@ -492,13 +492,13 @@ def basic_sent_chop(data, raw=True):
 
 
 def demo():
-    import tnt
+    from nltk.tag import tnt
     from nltk.corpus import brown
     sents = list(brown.tagged_sents())
     test = list(brown.sents())
 
     # create and train the tagger
-    tagger = tnt.Tnt()
+    tagger = tnt.TnT()
     tagger.train(sents[200:1000])
 
     # tag some data
@@ -515,14 +515,13 @@ def demo():
 
 def demo2():
     from nltk import tag
+    from nltk.tag import tnt
     from nltk.corpus import treebank
-    import tnt
 
     d = list(treebank.tagged_sents())
 
-   
-    t = tnt.Tnt(N=1000, C=False)
-    s = tnt.Tnt(N=1000, C=True)
+    t = tnt.TnT(N=1000, C=False)
+    s = tnt.TnT(N=1000, C=True)
     t.train(d[(11)*100:])
     s.train(d[(11)*100:])
    
@@ -551,12 +550,10 @@ def demo2():
         print 'Percentage unknown:', sp_un
         print 'Accuracy over known words:', (sacc / sp_kn)   
 
-
 def demo3():
     from nltk import tag
-    from nltk.corpus import treebank
-    from nltk.corpus import brown
-    import tnt
+    from nltk.corpus import treebank, brown
+    from nltk.tag import tnt
 
     d = list(treebank.tagged_sents())
     e = list(brown.tagged_sents())
@@ -576,8 +573,8 @@ def demo3():
 
     for i in range(10):
 
-        t = tnt.Tnt(N=1000, C=False)
-        s = tnt.Tnt(N=1000, C=False)
+        t = tnt.TnT(N=1000, C=False)
+        s = tnt.TnT(N=1000, C=False)
 
         dtest = d[(i*d10):((i+1)*d10)]
         etest = e[(i*e10):((i+1)*e10)]
@@ -610,12 +607,12 @@ def demo3():
         #print i+1, (tacc / tp_kn), i+1, (sacc / tp_kn), i+1, tacc, i+1, sacc
       
 
-    print "brown: acc over words known:", 10*tknacc
-    print "     : overall accuracy:", 10*tallacc
-    print "     : words known:", 10*tknown
-    print "treebank: acc over words known:", 10*sknacc
-    print "        : overall accuracy:", 10*sallacc
-    print "        : words known:", 10*sknown
+    print "brown: acc over words known:", 10 * tknacc
+    print "     : overall accuracy:", 10 * tallacc
+    print "     : words known:", 10 * tknown
+    print "treebank: acc over words known:", 10 * sknacc
+    print "        : overall accuracy:", 10 * sallacc
+    print "        : words known:", 10 * sknown
 
 
 if __name__ == "__main__":
