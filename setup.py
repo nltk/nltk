@@ -89,7 +89,6 @@ setup(
                 'nltk_contrib.tiger.query',
                 'nltk_contrib.tiger.utils',
                 'nltk_contrib.toolbox',
-                'nltk_contrib.wordnet',
                 'yaml'
                 ],
     )
