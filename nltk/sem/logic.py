@@ -127,11 +127,8 @@ def unique_variable(pattern=None):
     param pattern: C{Variable} that is being replaced.  The new variable must
     be the same type.
     """
-    if pattern is not None:
-        if is_eventvar(pattern.name):
-            prefix = 'e0'
-        else:
-            prefix = 'z'
+    if pattern is not None and is_eventvar(pattern.name):
+        prefix = 'e0'
     else:
         prefix = 'z'
     return Variable(prefix + str(_counter.get()))
@@ -181,6 +178,9 @@ class ComplexType(Type):
     def __str__(self):
         return '<%s,%s>' % (self.first, self.second)
 
+    def str(self):
+        return '(%s -> %s)' % (self.first.str(), self.second.str())
+    
 class BasicType(Type):
     def __eq__(self, other):
         return isinstance(other, BasicType) and str(self) == str(other)
@@ -198,10 +198,16 @@ class EntityType(BasicType):
     def __str__(self):
         return 'e'
     
+    def str(self):
+        return 'IND'
+    
 class TruthValueType(BasicType):
     def __str__(self):
         return 't'
 
+    def str(self):
+        return 'BOOL'
+    
 class AnyType(BasicType, ComplexType):
     def __init__(self):
         pass
@@ -221,6 +227,9 @@ class AnyType(BasicType, ComplexType):
     def __str__(self):
         return '?'
 
+    def str(self):
+        return 'ANY'
+    
 
 TRUTH_TYPE = TruthValueType()
 ENTITY_TYPE = EntityType()
