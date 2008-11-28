@@ -43,7 +43,7 @@ class CooperStore(object):
                     yield (x,)+y
         else: yield ()   
 
-    def s_retrieve(self, hack=True):
+    def s_retrieve(self, hack=True, trace=False):
         """
         Carry out S-Retrieval of binding operators in store. If hack=True,
         serialize the bindop and core as strings and reparse. Ugh.
@@ -58,7 +58,11 @@ class CooperStore(object):
     
              bo(\P.all x.(man(x) -> P(x)),z1)
         """
+        perm = 0
         for store_perm in self._permute(self.store):
+            perm += 1
+            if trace:
+                print "Permutation %s" % perm
             term = self.core
             for bindop in store_perm:
                 # we just want the arguments that are wrapped by the 'bo' predicate
@@ -73,17 +77,19 @@ class CooperStore(object):
                     # use var to make an abstraction over the current term and tten
                     # apply the quantifier to it
                     term = ApplicationExpression(quant, LambdaExpression(varex.variable, term))
+                if trace:
+                    print "  ", term
                 term = term.simplify()
             self.readings.append(term)
 
 
-def parse_with_bindops(sentence, grammar_fn=None, trace=0):
+def parse_with_bindops(sentence, grammar=None, trace=0):
     """
     Use a grammar with Binding Operators to parse a sentence.
     """
-    if not grammar_fn:
-        grammar_fn = 'grammars/storage.fcfg'
-    parser = load_earley(grammar_fn, trace=trace, chart_class=InstantiateVarsChart)
+    if not grammar:
+        grammar = 'grammars/storage.fcfg'
+    parser = load_earley(grammar, trace=trace, chart_class=InstantiateVarsChart)
     # Parse the sentence.
     tokens = sentence.split()
     return parser.nbest_parse(tokens)
@@ -91,8 +97,8 @@ def parse_with_bindops(sentence, grammar_fn=None, trace=0):
 
 def demo():
     from nltk.sem import cooper_storage as cs
-    sentence = "every man feeds a dog"
-    sentence = "a man gives a bone to every dog"
+    sentence = "every girl chases a dog"
+    #sentence = "a man gives a bone to every dog"
     print
     print "Analyis of sentence '%s'" % sentence
     print "=" * 50    
@@ -108,9 +114,12 @@ def demo():
         print "-" * 15
         print semrep.core
         print 
+        print "S-Retrieval:"
+        print "-" * 15       
+        semrep.s_retrieve(trace=True)
         print "Readings:"
         print "-" * 15
-        semrep.s_retrieve()
+
         count = 1
         for reading in semrep.readings:
             print "%s: %s" % (count, reading)
