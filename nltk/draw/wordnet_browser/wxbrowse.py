@@ -84,7 +84,7 @@ class MyHtmlWindow(html.HtmlWindow):
                 self.parent.add_html_page(activate=True)
         self.parent.SetPageText(self.parent.current_page, word)
         self.parent.parent.search_word.SetValue(word)
-        page,word = util.page_word(self.GetParser().GetSource(), word, href)
+        page,word = util.page_word(word, href)
         if page:
             if word:
                 self.parent.SetPageText(self.parent.current_page, word)
