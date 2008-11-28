@@ -24,18 +24,18 @@ Overview
 The default inventory of logical constants is the following:
 
     >>> boolean_ops() # doctest: +NORMALIZE_WHITESPACE
-    negation       	-
-    conjunction    	&
-    disjunction    	|
-    implication    	->
-    equivalence    	<->
+    negation           -
+    conjunction        &
+    disjunction        |
+    implication        ->
+    equivalence        <->
     >>> equality_preds() # doctest: +NORMALIZE_WHITESPACE
-    equality       	=
-    inequality     	!=
+    equality           =
+    inequality         !=
     >>> binding_ops() # doctest: +NORMALIZE_WHITESPACE
-    existential    	exists
-    universal      	all
-    lambda         	\
+    existential        exists
+    universal          all
+    lambda             \
     
 ----------------
 Regression Tests
@@ -461,12 +461,13 @@ Variables / Free
 Typed Logic
 +++++++++++
 
+    >>> from nltk.sem.logic import *
     >>> tlp = LogicParser(True)
 
-gettype()
+.type
 
     >>> print tlp.parse(r'man(x)').type
-    t
+    ?
     >>> print tlp.parse(r'-man(x)').type
     t
     >>> print tlp.parse(r'(man(x) <-> tall(x))').type
@@ -474,19 +475,19 @@ gettype()
     >>> print tlp.parse(r'exists x.(man(x) & tall(x))').type
     t
     >>> print tlp.parse(r'\x.man(x)').type
-    <e,t>
+    <e,?>
     >>> print tlp.parse(r'john').type
     e
     >>> print tlp.parse(r'\x y.sees(x,y)').type
-    <e,<e,t>>
+    <e,<e,?>>
     >>> print tlp.parse(r'\x.man(x)(john)').type
-    t
+    ?
     >>> print tlp.parse(r'\x.\y.sees(x,y)(john)').type
-    <e,t>
+    <e,?>
     >>> print tlp.parse(r'\x.\y.sees(x,y)(john)(mary)').type
-    t
+    ?
     >>> print tlp.parse(r'\P.\Q.exists x.(P(x) & Q(x))').type
-    <<e,?>,<<e,?>,t>>
+    <<e,t>,<<e,t>,t>>
     >>> print tlp.parse(r'\x.y').type
     <?,e>
     >>> print tlp.parse(r'\P.P(x)').type
@@ -494,15 +495,15 @@ gettype()
 
     >>> parsed = tlp.parse('see(john,mary)')
     >>> print parsed.type
-    t
+    ?
     >>> print parsed.function
     see(john)
     >>> print parsed.function.type
-    <e,t>
+    <e,?>
     >>> print parsed.function.function
     see
     >>> print parsed.function.function.type
-    <e,<e,t>>
+    <e,<e,?>>
     
     >>> parsed = tlp.parse('P(x,y)')
     >>> print parsed
@@ -518,20 +519,114 @@ gettype()
     >>> print parsed.function.function.type
     <e,<e,?>>
     
+    >>> print tlp.parse(r'P').type
+    ?
+
+    >>> a = tlp.parse(r'P(x)')
+    >>> print a.type
+    ?
+    >>> print a.function.type
+    <e,?>
+    >>> print a.argument.type
+    e
+
+    >>> a = tlp.parse(r'P & Q')
+    >>> print a.type
+    t
+    >>> print a.first.type
+    t
+    >>> print a.second.type
+    t
+
+    >>> a = tlp.parse(r'(P(x) & Q(x))')
+    >>> print a.type
+    t
+    >>> print a.first.type
+    t
+    >>> print a.first.function.type
+    <e,t>
+    >>> print a.first.argument.type
+    e
+    >>> print a.second.type
+    t
+    >>> print a.second.function.type
+    <e,t>
+    >>> print a.second.argument.type
+    e
+
+    >>> a = tlp.parse(r'\x.P(x)')
+    >>> print a.type
+    <e,?>
+    >>> print a.term.function.type
+    <e,?>
+    >>> print a.term.argument.type
+    e
+
+    >>> a = tlp.parse(r'\P.P(x)')
+    >>> print a.type
+    <<e,?>,?>
+    >>> print a.term.function.type
+    <e,?>
+    >>> print a.term.argument.type
+    e
+
+    >>> a = tlp.parse(r'(\x.P(x)(john)) & Q(x)')
+    >>> print a.type
+    t
+    >>> print a.first.type
+    t
+    >>> print a.first.function.type
+    <e,t>
+    >>> print a.first.function.term.function.type
+    <e,t>
+    >>> print a.first.function.term.argument.type
+    e
+    >>> print a.first.argument.type
+    e
+
+    >>> a = tlp.parse(r'\x y.P(x,y)(john)(mary) & Q(x)')
+    >>> print a.type
+    t
+    >>> print a.first.type
+    t
+    >>> print a.first.function.type
+    <e,t>
+    >>> print a.first.function.function.type
+    <e,<e,t>>
+
+    >>> a = tlp.parse(r'--P')
+    >>> print a.type
+    t
+    >>> print a.term.type
+    t
+    >>> print a.term.term.type
+    t
 
 findtype()
 
     >>> print tlp.parse(r'man(x)').findtype(Variable('man'))
-    <e,t>
+    <e,?>
     >>> print tlp.parse(r'see(x,y)').findtype(Variable('see'))
-    <e,<e,t>>
+    <e,<e,?>>
     >>> try: print tlp.parse(r'exists x y.(P(x) & P(x,y))').findtype(Variable('P')) 
     ... except Exception, e: print e
     ?
     >>> print tlp.parse(r'P(Q(R(x)))').findtype(Variable('Q'))
     <?,?>
 
+parse_type()
+
+    >>> print parse_type('e')
+    e
+    >>> print parse_type('<e,t>')
+    <e,t>
+    >>> print parse_type('<<e,t>,<e,t>>')
+    <<e,t>,<e,t>>
+    >>> print parse_type('<<e,?>,?>')
+    <<e,?>,?>
+
 Type.__eq__()
+
     >>> from nltk.sem.logic import *
     
     >>> e = ENTITY_TYPE
@@ -592,8 +687,8 @@ Type error during parsing
 
     >>> try: tlp.parse(r'\x y.see(x,y)(\x.man(x))')
     ... except TypeException, e: print e
-    The function '\x y.see(x,y)' is of type '<e,<e,t>>' and cannot be applied to '\x.man(x)' of type '<e,t>'.  Its argument must be of type 'e'.
-    
+    The type of '\x y.see(x,y)', '<e,<e,?>>', cannot be resolved with type '<<e,?>,?>'
+        
 Type error during application
 =============================
 
