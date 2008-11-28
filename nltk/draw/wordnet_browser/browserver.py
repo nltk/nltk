@@ -50,20 +50,11 @@ import time
 import getopt
 import base64
 
-from util import page_word, uniq_cntr, html_header, html_trailer, \
-    get_static_index_page, get_static_page_by_path
+from util import html_header, html_trailer, \
+    get_static_index_page, get_static_page_by_path, \
+    page_from_word, page_from_href
 
-page = None
-word = None
 firstClient = True
-
-# For storing the HTML pages
-viewed_pages = {}
-curr_page_num = 1
-# For linking the unique counters to the numbers of the stored pages
-uc_to_pn = {}
-
-uc_pat = re.compile('(%23\d+">)')
 
 # True if we're not also running a web browser.  The value f server_mode
 # gets set by demo().
@@ -73,31 +64,13 @@ server_mode = None
 logfile = None
 
 
-def uc_updated_page(page, old_uc):
-    '''
-    Returns the page with old unique counters changeed to new ones
-    '''
-    page_parts = uc_pat.split(page)
-    page = ''
-    for part in page_parts:
-        if part.startswith('%23') and part.endswith('">'):
-            # Generate a new unique counter if this is an old counter
-            if int(part[3:-2]) < old_uc:
-                page += '%23' + str(uniq_cntr()) + '">'
-            else:
-                page += part
-        else:
-            page += part
-    return page
-
 class MyServerHandler(BaseHTTPRequestHandler):
 
     def do_HEAD(self):
         self.send_head()
 
     def do_GET(self):
-        global page, word, firstClient
-        global uc_to_pn, curr_page_num, viewed_pages
+        global firstClient
         sp = self.path[1:]
         if unquote_plus(sp) == 'SHUTDOWN THE SERVER':
             if server_mode:
@@ -113,7 +86,6 @@ class MyServerHandler(BaseHTTPRequestHandler):
             
         elif sp == '': # First request.
             type = 'text/html'
-            old_uc = uniq_cntr() # Trigger the update of old uc:s
             if not server_mode and firstClient:
                 firstClient = False
                 page = get_static_index_page(True)
@@ -121,9 +93,8 @@ class MyServerHandler(BaseHTTPRequestHandler):
                 page = get_static_index_page(False)
             word = 'green'
         
-        elif sp.endswith('.html'): # Trying to fetch a HTML file
+        elif sp.endswith('.html'): # Trying to fetch a HTML file TODO:
             type = 'text/html'
-            old_uc = uniq_cntr() # Trigger the update of old uc:s
             usp = unquote_plus(sp)
             if usp == 'NLTK Wordnet Browser Database Info.html':
                 word = '* Database Info *'
@@ -137,33 +108,28 @@ class MyServerHandler(BaseHTTPRequestHandler):
                         '<p><b>python dbinfo_html.py</b>' + \
                         '<p>to produce it.' + html_trailer
             else:
-                # TODO Handle files here.
+                # Handle files here.
                 word = sp
                 page = get_static_page_by_path(usp)
-        else:
+        elif sp.startswith("search"):
             type = 'text/html'
-            old_uc = uniq_cntr() # Trigger the update of old uc:s
-            
-            # Handle search queries.
-            if sp.startswith("search"):
-                parts = (sp.split("?")[1]).split("&")
-                word = [p.split("=")[1] 
-                          for p in parts if p.startswith("nextWord")][0]
-                sp = "M%s%%23%d" % (word, 0)
-            
-            uc = get_unique_counter_from_url(sp)
-            # Page lookup needs not and cannot be done for the search words
-            if uc:
-                if uc in uc_to_pn and uc_to_pn[uc] in viewed_pages:
-                    page = viewed_pages[uc_to_pn[uc]]
-            page,word = page_word(page, word, sp)
-            page = uc_updated_page(page, old_uc)
-            new_uc = uniq_cntr()
-            for uc in range(old_uc, new_uc):
-                uc_to_pn[uc] = curr_page_num
-            viewed_pages[curr_page_num] = page
-            curr_page_num += 1
-        
+            parts = (sp.split("?")[1]).split("&")
+            word = [p.split("=")[1] 
+                    for p in parts if p.startswith("nextWord")][0]
+            page, word = page_from_word(word)
+        elif sp.startswith("lookup_"):
+            type = 'text/html'
+            sp = sp.split("_")[1]
+            page, word = page_from_href(sp)
+        elif sp == "start_page":
+            # if this is the first request we should display help
+            # information, and possibly set a default word.
+            type = 'text/html'
+            page, word = page_from_word("wordnet")
+        else:
+            type = 'text/plain'
+            page = "Could not parse request: '%s'" % sp
+
         # Send result.
         self.send_head(type)
         self.wfile.write(page)
