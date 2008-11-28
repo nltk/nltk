@@ -5,10 +5,11 @@
 # URL: <http://nltk.org>
 # For license information, see LICENSE.TXT
 
-#from logic import LambdaExpression, ApplicationExpression, Variable
-from logic import *
+from logic import LambdaExpression, ApplicationExpression, Variable, LogicParser
 from nltk.parse import load_earley
 from nltk.parse.featurechart import InstantiateVarsChart
+
+lp = LogicParser()
 
 class CooperStore(object):
     """
@@ -42,15 +43,16 @@ class CooperStore(object):
                     yield (x,)+y
         else: yield ()   
 
-    def s_retrieve(self, verbose=False):
+    def s_retrieve(self, hack=True):
         """
-        Carry out S-Retrieval of binding operators in store.
+        Carry out S-Retrieval of binding operators in store. If hack=True,
+        serialize the bindop and core as strings and reparse. Ugh.
 
-        Each permutation of the store (i.e. list of binding operators) is taken to
-        be a possible scoping of quantifiers. We iterate through the binding
-        operators in each permutation, and successively apply them to the current
-        term, starting with the core semantic representation, working from the
-        inside out.
+        Each permutation of the store (i.e. list of binding operators) is
+        taken to be a possible scoping of quantifiers. We iterate through the
+        binding operators in each permutation, and successively apply them to
+        the current term, starting with the core semantic representation,
+        working from the inside out.
     
         Binding operators are of the form::
     
@@ -60,20 +62,18 @@ class CooperStore(object):
             term = self.core
             for bindop in store_perm:
                 # we just want the arguments that are wrapped by the 'bo' predicate
-                quant, var = tuple(bindop.uncurry()[1])
-                # use var to make an abstraction over the current term and tten
-                # apply the quantifier to it
-                if verbose:
-                    print
-                    print "current term is", repr(term), ", bindop is", repr(quant)
-                s = var.str()
-                newvar = Variable(s)
-                term = ApplicationExpression(quant, LambdaExpression(newvar, term))
-                if verbose: 
-                    print repr(term)
+                quant, varex = tuple(bindop.uncurry()[1])
+                if hack:
+                    quant_s = str(quant)
+                    var_s = str(varex)
+                    term_s = str(term)
+                    term_s = "%s(\\%s.%s)" % (quant_s, varex, term_s)
+                    term = lp.parse(term_s)
+                else:
+                    # use var to make an abstraction over the current term and tten
+                    # apply the quantifier to it
+                    term = ApplicationExpression(quant, LambdaExpression(varex.variable, term))
                 term = term.simplify()
-                if verbose:
-                    print "new term is", term
             self.readings.append(term)
 
 
@@ -83,7 +83,6 @@ def parse_with_bindops(sentence, grammar_fn=None, trace=0):
     """
     if not grammar_fn:
         grammar_fn = 'grammars/storage.fcfg'
-        grammar_fn = 'file:bindop.fcfg'
     parser = load_earley(grammar_fn, trace=trace, chart_class=InstantiateVarsChart)
     # Parse the sentence.
     tokens = sentence.split()
@@ -91,20 +90,32 @@ def parse_with_bindops(sentence, grammar_fn=None, trace=0):
 
 
 def demo():
-    #from nltk.sem import cooper_storage as cs
-    import cooper_storage as cs
-    sentence = "every man feeds a dog "
+    from nltk.sem import cooper_storage as cs
+    sentence = "every man feeds a dog"
+    sentence = "a man gives a bone to every dog"
+    print
+    print "Analyis of sentence '%s'" % sentence
+    print "=" * 50    
     trees = cs.parse_with_bindops(sentence, trace=0)
     for tree in trees:
-        #print tree
         semrep = cs.CooperStore(tree.node['sem'])
+        print
+        print "Binding operators:"
+        print "-" * 15  
         for s in semrep.store: print s
+        print 
+        print "Core:"
+        print "-" * 15
         print semrep.core
-        print "Readings for sentence:", sentence
+        print 
+        print "Readings:"
+        print "-" * 15
         semrep.s_retrieve()
+        count = 1
         for reading in semrep.readings:
-            print reading
+            print "%s: %s" % (count, reading)
             print
-
+            count += 1
+            
 if __name__ == '__main__':
     demo()
