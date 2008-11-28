@@ -112,12 +112,14 @@ class MyServerHandler(BaseHTTPRequestHandler):
                 word = sp
                 page = get_static_page_by_path(usp)
         elif sp.startswith("search"):
+            # This doesn't seem to work with MWEs.
             type = 'text/html'
             parts = (sp.split("?")[1]).split("&")
             word = [p.split("=")[1] 
                     for p in parts if p.startswith("nextWord")][0]
             page, word = page_from_word(word)
         elif sp.startswith("lookup_"):
+            # TODO add a variation of this that takes a non ecoded word or MWE.
             type = 'text/html'
             sp = sp[len("lookup_"):]
             page, word = page_from_href(sp)
