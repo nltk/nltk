@@ -625,6 +625,15 @@ parse_type()
     >>> print parse_type('<<e,?>,?>')
     <<e,?>,?>
 
+alternative type format
+
+    >>> print parse_type('e').str()
+    IND
+    >>> print parse_type('<e,?>').str()
+    (IND -> ANY)
+    >>> print parse_type('<<e,t>,t>').str()
+    ((IND -> BOOL) -> BOOL)
+
 Type.__eq__()
 
     >>> from nltk.sem.logic import *
