@@ -412,7 +412,10 @@ def _collect_one_synset(word, synset, synset_keys):
     assert pos_tuple != None, "pos_tuple is null: synset.pos: %s" % synset.pos
     descr = pos_tuple[2]
     ref = Reference(word, synset_keys.union(set([synset.name])))
-    s = '<li>%s (%s) ' % (make_lookup_link(ref, typ + ';'), descr) 
+    synset_label = typ + ";"
+    if synset.name in synset_keys:
+        synset_label = _bold(synset_label)
+    s = '<li>%s (%s) ' % (make_lookup_link(ref, synset_label), descr) 
 #    if isinstance(s_o%r_w, tuple): # It's a word
 #        s += '<a href="M' + quote_plus(oppo + '#' + str(uniq_cntr())) + \
 #                        '">' + oppo + '</a> ' + form_str
