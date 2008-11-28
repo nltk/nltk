@@ -119,7 +119,7 @@ class MyServerHandler(BaseHTTPRequestHandler):
             page, word = page_from_word(word)
         elif sp.startswith("lookup_"):
             type = 'text/html'
-            sp = sp.split("_")[1]
+            sp = sp[len("lookup_"):]
             page, word = page_from_href(sp)
         elif sp == "start_page":
             # if this is the first request we should display help
