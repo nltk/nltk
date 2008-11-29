@@ -525,18 +525,8 @@ class ApplicationExpression(Expression):
         if signature == None:
             signature = defaultdict(list)
         
-        self.function._set_type(ANY_TYPE, signature)
         self.argument._set_type(ANY_TYPE, signature)
-        
-        type = other_type
-        cur = self
-        while isinstance(cur, ApplicationExpression):
-            type = ComplexType(cur.argument.type, type)
-            cur = cur.function
-        if isinstance(cur, ConstantExpression):
-            cur.type = type
-        else:
-            cur._set_type(type, signature)
+        self.function._set_type(ComplexType(self.argument.type, other_type), signature)
         
         f_type = self.function.type
         a_type = self.argument.type
@@ -565,9 +555,10 @@ class ApplicationExpression(Expression):
         unique = []
         for f in found:
             if f != ANY_TYPE:
-                for u in unique:
-                    if f.matches(u):
-                        break
+                if unique:
+                    for u in unique:
+                        if f.matches(u):
+                            break
                 else:
                     unique.append(f)
             
@@ -663,15 +654,16 @@ class AbstractVariableExpression(Expression):
             signature = defaultdict(list)
         
         resolution = other_type
-        signature[self.variable.name].append(self)
         for varEx in signature[self.variable.name]:
             resolution = varEx.type.resolve(resolution)
             if not resolution:
                 if self._type_check: 
-                    raise TypeResolutionException(self, other_type)
+                    raise InconsistentTypeHierarchyException(self)
                 else:
                     resolution = ANY_TYPE
                     break
+            
+        signature[self.variable.name].append(self)
         for varEx in signature[self.variable.name]:
             varEx.type = resolution
 
@@ -696,12 +688,27 @@ class AbstractVariableExpression(Expression):
 class IndividualVariableExpression(AbstractVariableExpression):
     """This class represents variables that take the form of a single lowercase
     character (other than 'e') followed by zero or more digits."""
-    def settype(self, type):
-        if type != ENTITY_TYPE:
-            raise TypeException("Individual variable '%s' cannot be set to "
-                                "type '%s'." % (self, type))
+    def _set_type(self, other_type=ANY_TYPE, signature=None):
+        """
+        @see Expression._set_type()
+        """
+        assert isinstance(other_type, Type)
+        
+        if signature == None:
+            signature = defaultdict(list)
 
-    type = property(lambda self: ENTITY_TYPE, settype)
+        for varEx in signature[self.variable.name]:
+            if not varEx.type.matches(ENTITY_TYPE):
+                raise TypeException("Individual variable '%s' cannot have"
+                                    " type '%s'." % (self, varEx.type))
+
+        if not other_type.matches(ENTITY_TYPE):
+            raise TypeException("Individual variable '%s' cannot be set "
+                                "to type '%s'." % (self, other_type))
+            
+        signature[self.variable.name].append(self)
+                
+    type = property(lambda self: ENTITY_TYPE, _set_type)
     
     def free(self, indvar_only=True):
         """@see: Expression.free()"""
@@ -732,6 +739,33 @@ class ConstantExpression(AbstractVariableExpression):
     """This class represents variables that do not take the form of a single
     character followed by zero or more digits."""
     type = ENTITY_TYPE
+
+    def _set_type(self, other_type=ANY_TYPE, signature=None):
+        """
+        @see Expression._set_type()
+        """
+        assert isinstance(other_type, Type)
+        
+        if signature == None:
+            signature = defaultdict(list)
+        
+        if other_type == ANY_TYPE:
+            resolution = ENTITY_TYPE #entity type by default
+        else:
+            resolution = other_type
+            
+        for varEx in signature[self.variable.name]:
+            resolution = varEx.type.resolve(resolution)
+            if not resolution:
+                if self._type_check: 
+                    raise InconsistentTypeHierarchyException(self)
+                else:
+                    resolution = ANY_TYPE
+                    break
+            
+        signature[self.variable.name].append(self)
+        for varEx in signature[self.variable.name]:
+            varEx.type = resolution
 
     def free(self, indvar_only=True):
         """@see: Expression.free()"""

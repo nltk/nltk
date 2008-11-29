@@ -604,6 +604,11 @@ Typed Logic
     t
     >>> print a.term.term.type
     t
+    
+    >>> tlp.parse(r'\x y.see(x,y)').type
+    <e,<e,?>>
+    >>> tlp.parse(r'\x y.see(x,y)', {'see': '<e,<e,t>>'}).type
+    <e,<e,t>>
 
 findtype()
 
@@ -695,14 +700,14 @@ Type error during parsing
 =========================
 
     >>> try: print tlp.parse(r'exists x y.(P(x) & P(x,y))') 
-    ... except Exception, e: print e
-    The type of 'P', '<e,t>', cannot be resolved with type '<e,<e,t>>'
+    ... except TypeException, e: print e
+    The variable 'P' was found in multiple places with different types.
     >>> try: tlp.parse(r'\x y.see(x,y)(\x.man(x))')
     ... except TypeException, e: print e
     The type of '\x y.see(x,y)', '<e,<e,?>>', cannot be resolved with type '<<e,?>,?>'
 
-    >>> a = tlp.parse(r'talk(x)')
+    >>> a = tlp.parse(r'-talk(x)')
     >>> signature = a.typecheck()
-    >>> try: print tlp.parse(r'talk(x,y)', signature) 
+    >>> try: print tlp.parse(r'-talk(x,y)', signature) 
     ... except Exception, e: print e
-    The type of 'talk', 'e', cannot be resolved with type '?'
+    The variable 'talk' was found in multiple places with different types.
