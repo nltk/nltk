@@ -522,6 +522,9 @@ Typed Logic
     >>> print tlp.parse(r'P').type
     ?
 
+    >>> print tlp.parse(r'P', {'P': 't'}).type
+    t
+
     >>> a = tlp.parse(r'P(x)')
     >>> print a.type
     ?
@@ -697,3 +700,9 @@ Type error during parsing
     >>> try: tlp.parse(r'\x y.see(x,y)(\x.man(x))')
     ... except TypeException, e: print e
     The type of '\x y.see(x,y)', '<e,<e,?>>', cannot be resolved with type '<<e,?>,?>'
+
+    >>> a = tlp.parse(r'talk(x)')
+    >>> signature = a.typecheck()
+    >>> try: print tlp.parse(r'talk(x,y)', signature) 
+    ... except Exception, e: print e
+    The type of 'talk', 'e', cannot be resolved with type '?'
