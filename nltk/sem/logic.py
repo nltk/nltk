@@ -376,8 +376,23 @@ class Expression(SubstituteBindingsI):
                 expr = expr.replace(var, val)
         return expr.simplify()
 
-    def typecheck(self, typedict=None):
-        raise NotImplementedError()
+    def typecheck(self, signature=None):
+        """
+        Infer and check types.  Raise exceptions if necessary.
+        @param signature: C{dict<str, str>} that maps variable names to type 
+        strings
+        @return: C{dict<str, list<AbsractVariableExpression>>) 
+        """
+        sig = defaultdict(list)
+        if signature:
+            for (key, val) in signature.iteritems():
+                varEx = VariableExpression(Variable(key))
+                varEx.type = parse_type(val)
+                sig[key].append(varEx)
+
+        self._set_type(signature=sig)
+        
+        return sig
     
     def findtype(self, variable):
         """
@@ -387,6 +402,16 @@ class Expression(SubstituteBindingsI):
         """
         raise NotImplementedError() 
     
+    def _set_type(self, other_type=ANY_TYPE, signature=None):
+        """
+        Set the type of this expression to be the given type.  Raise type 
+        exceptions where applicable.
+        @param other_type: C{Type} to set
+        @param signature: C{dict<str, list<AbstractVariableExpression>>} store 
+        all variable expressions with a given name
+        """
+        raise NotImplementedError()
+
     def __repr__(self):
         return '<%s %s>' % (self.__class__.__name__, self)
     
@@ -483,43 +508,38 @@ class ApplicationExpression(Expression):
             return self.function.free(indvar_only) | \
                    self.argument.free(indvar_only) 
     
-    type = property(lambda self: self.function.type.second)
+    def _get_type(self):
+        if isinstance(self.function.type, ComplexType):
+            return self.function.type.second
+        else:
+            return ANY_TYPE
+            
+    type = property(_get_type)
     
-    def _set_type(self, other_type, signature=None):
+    def _set_type(self, other_type=ANY_TYPE, signature=None):
         """
-        @param other_type: C{Type} to set
-        @param signature: C{dict<str, list<AbstractVariableExpression>>} store 
-        all variable expressions with a given name
+        @see Expression._set_type()
         """
         assert isinstance(other_type, Type)
         
-        if not signature:
+        if signature == None:
             signature = defaultdict(list)
         
-#        if isinstance(self.function, LambdaExpression):
-#            self.function.term._set_type(other_type)
-#        else:
-        cur = self
+        self.function._set_type(ANY_TYPE, signature)
+        self.argument._set_type(ANY_TYPE, signature)
+        
         type = other_type
+        cur = self
         while isinstance(cur, ApplicationExpression):
             type = ComplexType(cur.argument.type, type)
             cur = cur.function
         if isinstance(cur, ConstantExpression):
             cur.type = type
         else:
-            cur._set_type(type)
-        
-    def typecheck(self, typedict=None):
-        """@see Expression.typecheck()"""
-        if typedict == None:
-            typedict = {}
-        
-        self.function.typecheck(typedict)
-        self.argument.typecheck(typedict)
+            cur._set_type(type, signature)
         
         f_type = self.function.type
         a_type = self.argument.type
-
         if not isinstance(f_type, ComplexType):
             raise TypeException("The expression '%s' is of type '%s', so it "
                                 "cannot take arguments." 
@@ -530,7 +550,7 @@ class ApplicationExpression(Expression):
                                 "Its argument must be of type '%s'." 
                                 % (self.function, f_type, self.argument, a_type,
                                    f_type.first))
-        
+
     def findtype(self, variable):
         """@see Expression.findtype()"""
         assert isinstance(variable, Variable), "%s is not a Variable" % variable
@@ -633,15 +653,13 @@ class AbstractVariableExpression(Expression):
         """@see: Expression.variables()"""
         return set([self.variable])
 
-    def _set_type(self, other_type, signature=None):
+    def _set_type(self, other_type=ANY_TYPE, signature=None):
         """
-        @param other_type: C{Type} to set
-        @param signature: C{dict<str, list<AbstractVariableExpression>>} store 
-        all variable expressions with a given name
+        @see Expression._set_type()
         """
         assert isinstance(other_type, Type)
         
-        if not signature:
+        if signature == None:
             signature = defaultdict(list)
         
         resolution = other_type
@@ -656,17 +674,6 @@ class AbstractVariableExpression(Expression):
                     break
         for varEx in signature[self.variable.name]:
             varEx.type = resolution
-
-    def typecheck(self, typedict=None):
-        """@see Expression.typecheck()"""
-        if typedict == None:
-            typedict = {}
-            
-        if self.variable in typedict:
-            if not typedict[self.variable].matches(self.type):
-                raise InconsistentTypeHierarchyException(self.variable)
-        else:
-            typedict[self.variable] = self.type
 
     def findtype(self, variable):
         """@see Expression.findtype()"""
@@ -818,12 +825,6 @@ class VariableBinderExpression(Expression):
         """@see: Expression.free()"""
         return self.term.free(indvar_only) - set([self.variable])
 
-    def typecheck(self, typedict=None):
-        """@see Expression.typecheck()"""
-        if typedict == None:
-            typedict = {}
-        self.term.typecheck(typedict)
-
     def findtype(self, variable):
         """@see Expression.findtype()"""
         assert isinstance(variable, Variable), "%s is not a Variable" % variable
@@ -851,20 +852,18 @@ class LambdaExpression(VariableBinderExpression):
     type = property(lambda self: 
                  ComplexType(self.term.findtype(self.variable), self.term.type))
 
-    def _set_type(self, other_type, signature=None):
+    def _set_type(self, other_type=ANY_TYPE, signature=None):
         """
-        @param other_type: C{Type} to set
-        @param signature: C{dict<str, list<AbstractVariableExpression>>} store 
-        all variable expressions with a given name
+        @see Expression._set_type()
         """
         assert isinstance(other_type, Type)
         
-        if not signature:
+        if signature == None:
             signature = defaultdict(list)
         
         if self._type_check and not self.type.resolve(other_type):
             raise TypeResolutionException(self, other_type)
-        self.term._set_type(other_type.second)
+        self.term._set_type(other_type.second, signature)
 
     def str(self, syntax=Tokens.NEW_NLTK):
         variables = [self.variable]
@@ -880,18 +879,16 @@ class LambdaExpression(VariableBinderExpression):
 class QuantifiedExpression(VariableBinderExpression):
     type = property(lambda self: TRUTH_TYPE)
 
-    def _set_type(self, other_type, signature=None):
+    def _set_type(self, other_type=ANY_TYPE, signature=None):
         """
-        @param other_type: C{Type} to set
-        @param signature: C{dict<str, list<AbstractVariableExpression>>} store 
-        all variable expressions with a given name
+        @see Expression._set_type()
         """
         assert isinstance(other_type, Type)
         
-        if not signature:
+        if signature == None:
             signature = defaultdict(list)
         
-        pass
+        self.term._set_type(TRUTH_TYPE, signature)
 
     def str(self, syntax=Tokens.NEW_NLTK):
         variables = [self.variable]
@@ -945,26 +942,16 @@ class NegatedExpression(Expression):
 
     type = property(lambda self: TRUTH_TYPE)
     
-    def _set_type(self, other_type, signature=None):
+    def _set_type(self, other_type=ANY_TYPE, signature=None):
         """
-        @param other_type: C{Type} to set
-        @param throw_errors: C{boolean} Throw exception on error?
-        @param signature: C{dict<str, list<AbstractVariableExpression>>} store 
-        all variable expressions with a given name
+        @see Expression._set_type()
         """
         assert isinstance(other_type, Type)
         
-        if not signature:
+        if signature == None:
             signature = defaultdict(list)
         
         self.term._set_type(TRUTH_TYPE, signature)
-
-    def typecheck(self, typedict=None):
-        """@see Expression.typecheck()"""
-        if typedict == None:
-            typedict = {}
-        self.term.typecheck(typedict)
-        assert self.term.type.matches(TRUTH_TYPE)
 
     def findtype(self, variable):
         assert isinstance(variable, Variable), "%s is not a Variable" % variable
@@ -1018,27 +1005,6 @@ class BinaryExpression(Expression):
 
     type = property(lambda self: TRUTH_TYPE)
     
-    def _set_type(self, other_type, signature=None):
-        """
-        @param other_type: C{Type} to set
-        @param throw_errors: C{boolean} Throw exception on error?
-        @param signature: C{dict<str, list<AbstractVariableExpression>>} store 
-        all variable expressions with a given name
-        """
-        assert isinstance(other_type, Type)
-        
-        if not signature:
-            signature = defaultdict(list)
-        
-        pass
-
-    def typecheck(self, typedict=None):
-        """@see Expression.typecheck()"""
-        if typedict == None:
-            typedict = {}
-        self.first.typecheck(typedict)
-        self.second.typecheck(typedict)
-
     def findtype(self, variable):
         """@see Expression.findtype()"""
         assert isinstance(variable, Variable), "%s is not a Variable" % variable
@@ -1062,10 +1028,17 @@ class BinaryExpression(Expression):
         
         
 class BooleanExpression(BinaryExpression):
-    def typecheck(self, typedict=None):
-        BinaryExpression.typecheck(self, typedict)
-        assert self.first.type.matches(TRUTH_TYPE)
-        assert self.second.type.matches(TRUTH_TYPE)
+    def _set_type(self, other_type=ANY_TYPE, signature=None):
+        """
+        @see Expression._set_type()
+        """
+        assert isinstance(other_type, Type)
+        
+        if signature == None:
+            signature = defaultdict(list)
+        
+        self.first._set_type(TRUTH_TYPE, signature)
+        self.second._set_type(TRUTH_TYPE, signature)
 
 class AndExpression(BooleanExpression):
     """This class represents conjunctions"""
@@ -1090,6 +1063,18 @@ class IffExpression(BooleanExpression):
 
 class EqualityExpression(BinaryExpression):
     """This class represents equality expressions like "(x = y)"."""
+    def _set_type(self, other_type=ANY_TYPE, signature=None):
+        """
+        @see Expression._set_type()
+        """
+        assert isinstance(other_type, Type)
+        
+        if signature == None:
+            signature = defaultdict(list)
+        
+        self.first._set_type(ENTITY_TYPE, signature)
+        self.second._set_type(ENTITY_TYPE, signature)
+
     def getOp(self, syntax=Tokens.NEW_NLTK):
         return Tokens.EQ[syntax]
 
@@ -1100,37 +1085,30 @@ class LogicParser(object):
     def __init__(self, type_check=False):
         """
         @param type_check: C{boolean} should type checking be performed?
-        @param signature: C{dict<str, list<Type>>} that maps variable names 
         to their types.
         """
         self._currentIndex = 0
         self._buffer = []
-        self._type_check = type_check 
+        self.type_check = type_check
 
     def parse(self, data, signature=None):
         """
         Parse the expression.
 
         @param data: C{str} for the input to be parsed
-        @param type_check: C{boolean} Fail on a type error?
+        @param signature: C{dict<str, str>} that maps variable names to type 
+        strings
         @returns: a parsed Expression
         """
         self._currentIndex = 0
         self._buffer = self.process(data).split()
 
-        self.signature = defaultdict(list)
-        if signature:
-            for (key, val) in signature.iteritems():
-                varEx = VariableExpression(Variable(key))
-                varEx.type = parse_type(val)
-                self.signature[key].append(varEx)
-
         result = self.parse_Expression()
         if self.inRange(0):
             raise UnexpectedTokenException(self.token(0))
 
-#        if self._type_check:
-#            result.typecheck()
+        if self.type_check:
+            result.typecheck(signature)
 
         return result
 
@@ -1219,9 +1197,7 @@ class LogicParser(object):
         return self.make_NegatedExpression(self.parse_Expression(False))
         
     def make_NegatedExpression(self, expression):
-        r = NegatedExpression(expression, self._type_check)
-        r.term._set_type(TRUTH_TYPE, self.signature)
-        return r
+        return NegatedExpression(expression, self.type_check)
         
     def handle_variable(self, tok):
         #It's either: 1) a predicate expression: sees(x,y)
@@ -1298,9 +1274,7 @@ class LogicParser(object):
             self.assertToken(tok, Tokens.QUANTS)
 
     def make_QuanifiedExpression(self, factory, variable, term):
-        r = factory(variable, term, self._type_check)
-        r.term._set_type(TRUTH_TYPE, self.signature)
-        return r
+        return factory(variable, term, self.type_check)
         
     def handle_open(self, tok):
         #Expression is in parens
@@ -1326,10 +1300,7 @@ class LogicParser(object):
     def make_EqualityExpression(self, first, second):
         """This method serves as a hook for other logic parsers that
         have different equality expression classes"""
-        r = EqualityExpression(first, second, self._type_check)
-        r.first._set_type(ENTITY_TYPE, self.signature)
-        r.second._set_type(ENTITY_TYPE, self.signature)
-        return r
+        return EqualityExpression(first, second, self.type_check)
 
     def attempt_BooleanExpression(self, expression):
         """Attempt to make a boolean expression.  If the next token is a boolean 
@@ -1358,10 +1329,7 @@ class LogicParser(object):
             return None
     
     def make_BooleanExpression(self, factory, first, second):
-        r = factory(first, second, self._type_check)
-        r.first._set_type(TRUTH_TYPE, self.signature)
-        r.second._set_type(TRUTH_TYPE, self.signature)
-        return r
+        return factory(first, second, self.type_check)
     
     def attempt_ApplicationExpression(self, expression):
         """Attempt to make an application expression.  The next tokens are
@@ -1389,15 +1357,13 @@ class LogicParser(object):
             return expression
 
     def make_ApplicationExpression(self, function, argument):
-        r = ApplicationExpression(function, argument)
-        r._set_type(ANY_TYPE, self.signature)
-        return r
+        return ApplicationExpression(function, argument)
     
     def make_VariableExpression(self, name):
-        return VariableExpression(Variable(name), self._type_check)
+        return VariableExpression(Variable(name), self.type_check)
     
     def make_LambdaExpression(self, variable, term):
-        return LambdaExpression(variable, term, self._type_check)
+        return LambdaExpression(variable, term, self.type_check)
     
     def assertToken(self, tok, expected):
         if isinstance(expected, list):
