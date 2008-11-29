@@ -13,6 +13,12 @@ functions can be used to read both the corpus files that are
 distributed in the NLTK corpus package, and corpus files that are part
 of external corpora.
 
+Available Corpora
+=================
+
+Please see http://nltk.googlecode.com/svn/trunk/nltk_data/index.xml
+for a complete list.  Install corpora using nltk.download().
+
 Corpus Reader Functions
 =======================
 Each corpus module defines one or more X{corpus reader functions},
