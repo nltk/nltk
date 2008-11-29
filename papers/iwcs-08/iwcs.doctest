@@ -39,23 +39,13 @@ Done
 
 Typed Logic
     >>> tlp = logic.LogicParser(type_check=True)
-    >>> tlp.parse(r'\P.P(x,y)(\z.Q(z))')
+    >>> a = tlp.parse(r'\x y.sees(x,y)')
+    >>> a.type
+    <e,<e,t>>
+    >>> b = tlp.parse(r'\x y.see(x,y)(\x.man(x))')
     Traceback (most recent call last):
       . . .
-    TypeException: The function '\P.P(x,y)' is of type '<<e,<e,t>>,t>' and cannot be applied to '\z.Q(z)' of type '<e,t>'.  Its argument must be of type '<e,<e,t>>'.
-    >>> try: tlp.parse(r'\P.P(x,y)(\z.Q(z))')
-    ... except Exception, e: print e.__class__.__name__
-    TypeException
-    >>> a = tlp.parse(r'\P.P(x)')
-    >>> print a.gettype()
-    <<e,t>,t>
-    >>> a(a)
-    Traceback (most recent call last):
-      . . .
-    TypeException: The function '\P.P(x)' is of type '<<e,t>,t>' and cannot be applied to '\P.P(x)' of type '<<e,t>,t>'.  Its argument must be of type '<e,t>'.
-    >>> try: a(a)
-    ... except Exception, e: print e.__class__.__name__
-    TypeException
+    TypeResolutionException: The type of '\x y.see(x,y)', '<e,<e,t>>', cannot be resolved with type '<<e,t>,?>'
 
 Done
     >>> from nltk.sem import drt
@@ -87,7 +77,7 @@ Done
 
 Done
     >>> from nltk.sem import hole
-    >>> readings = hole.main('every girl chases a dog')
+    >>> readings = hole.hole_readings('every girl chases a dog')
     >>> for r in readings: print r
     exists z3.(dog(z3) & all z8.(girl(z8) -> chase(z3,z8)))
     all z8.(girl(z8) -> exists z3.(dog(z3) & chase(z3,z8)))

@@ -46,8 +46,8 @@ class Constants(object):
     HOLE = 'HOLE'
     LABEL = 'LABEL'
 
-    MAP = {ALL: logic.AllExpression,
-           EXISTS: logic.ExistsExpression,
+    MAP = {ALL: lambda v,e: logic.AllExpression(v.variable, e),
+           EXISTS: lambda v,e: logic.ExistsExpression(v.variable, e),
            NOT: logic.NegatedExpression,
            AND: logic.AndExpression,
            OR: logic.OrExpression,

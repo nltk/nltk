@@ -176,10 +176,16 @@ class ComplexType(Type):
             return None
 
     def __str__(self):
-        return '<%s,%s>' % (self.first, self.second)
+        if self == ANY_TYPE:
+            return str(ANY_TYPE)
+        else:
+            return '<%s,%s>' % (self.first, self.second)
 
     def str(self):
-        return '(%s -> %s)' % (self.first.str(), self.second.str())
+        if self == ANY_TYPE:
+            return ANY_TYPE.str()
+        else:
+            return '(%s -> %s)' % (self.first.str(), self.second.str())
     
 class BasicType(Type):
     def __eq__(self, other):
@@ -538,8 +544,8 @@ class ApplicationExpression(Expression):
             raise TypeException("The function '%s' is of type '%s' and "
                                 "cannot be applied to '%s' of type '%s'.  "
                                 "Its argument must be of type '%s'." 
-                                % (self.function, f_type, self.argument, a_type,
-                                   f_type.first))
+                                % (self.function, f_type, self.argument, 
+                                   a_type, f_type.first))
 
     def findtype(self, variable):
         """@see Expression.findtype()"""
@@ -750,9 +756,16 @@ class ConstantExpression(AbstractVariableExpression):
             signature = defaultdict(list)
         
         if other_type == ANY_TYPE:
-            resolution = ENTITY_TYPE #entity type by default
+            #entity type by default, for individuals
+            resolution = ENTITY_TYPE
         else:
             resolution = other_type
+            
+            if resolution != ANY_TYPE and isinstance(resolution, ComplexType):
+                cur = resolution
+                while cur.second != ANY_TYPE and isinstance(cur.second, ComplexType):
+                    cur = cur.second
+                cur.second = TRUTH_TYPE
             
         for varEx in signature[self.variable.name]:
             resolution = varEx.type.resolve(resolution)
@@ -895,9 +908,9 @@ class LambdaExpression(VariableBinderExpression):
         if signature == None:
             signature = defaultdict(list)
         
+        self.term._set_type(other_type.second, signature)
         if self._type_check and not self.type.resolve(other_type):
             raise TypeResolutionException(self, other_type)
-        self.term._set_type(other_type.second, signature)
 
     def str(self, syntax=Tokens.NEW_NLTK):
         variables = [self.variable]
