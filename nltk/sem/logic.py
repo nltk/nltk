@@ -316,7 +316,7 @@ class Expression(SubstituteBindingsI):
     
     def applyto(self, other):
         assert isinstance(other, Expression), "%s is not an Expression" % other
-        return ApplicationExpression(self, other, self._type_check)
+        return ApplicationExpression(self, other, self._type_check or other._type_check)
     
     def __neg__(self):
         return NegatedExpression(self, self._type_check)
@@ -326,19 +326,19 @@ class Expression(SubstituteBindingsI):
     
     def __and__(self, other):
         assert isinstance(other, Expression), "%s is not an Expression" % other
-        return AndExpression(self, other, self._type_check)
+        return AndExpression(self, other, self._type_check or other._type_check)
     
     def __or__(self, other):
         assert isinstance(other, Expression), "%s is not an Expression" % other
-        return OrExpression(self, other, self._type_check)
+        return OrExpression(self, other, self._type_check or other._type_check)
     
     def __gt__(self, other):
         assert isinstance(other, Expression), "%s is not an Expression" % other
-        return ImpExpression(self, other, self._type_check)
+        return ImpExpression(self, other, self._type_check or other._type_check)
     
     def __lt__(self, other):
         assert isinstance(other, Expression), "%s is not an Expression" % other
-        return IffExpression(self, other, self._type_check)
+        return IffExpression(self, other, self._type_check or other._type_check)
     
     def __eq__(self, other):
         raise NotImplementedError()
