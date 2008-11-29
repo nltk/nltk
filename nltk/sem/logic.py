@@ -381,7 +381,7 @@ class Expression(SubstituteBindingsI):
         Infer and check types.  Raise exceptions if necessary.
         @param signature: C{dict<str, str>} that maps variable names to type 
         strings
-        @return: C{dict<str, list<AbsractVariableExpression>>) 
+        @return: the signature, plus any additional type mappings 
         """
         sig = defaultdict(list)
         if signature:
@@ -392,7 +392,7 @@ class Expression(SubstituteBindingsI):
 
         self._set_type(signature=sig)
         
-        return sig
+        return dict([(key, str(vars[0].type)) for (key, vars) in sig.iteritems()])
     
     def findtype(self, variable):
         """
