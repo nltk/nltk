@@ -291,12 +291,12 @@ raise an exception for non-well typed expressions:
 >>> tlp = logic.LogicParser(type_check=True)
 >>> a = tlp.parse(r'\x y.sees(x,y)')
 >>> a.type
-<e,<e,?>>
+<e,<e,t>>
 >>> b = tlp.parse(r'\x y.see(x,y)(\x.man(x))')
 Traceback (most recent call last):
   . . .
-TypeResolutionException: The type of '\x y.see(x,y)', '<e,<e,?>>', 
-cannot be resolved with type '<<e,?>,?>'
+TypeResolutionException: The type of '\x y.see(x,y)', '<e,<e,t>>', 
+cannot be resolved with type '<<e,t>,?>'
 \end{Verbatim}
 % Fix for code colorization: >>>>
 
@@ -429,7 +429,7 @@ The Hole Semantics module uses a standard plugging algorithm to derive the
 sentence's readings from the underspecified \LF.
 \begin{Verbatim}
 >>> from nltk.sem import hole
->>> readings = hole.main('every girl chases a dog')
+>>> readings = hole.hole_readings('every girl chases a dog')
 >>> for r in reading: print r
 exists z1.(dog(z1) & all z2.(girl(z2) -> chase(z1,z2)))
 all z2.(girl(z2) -> exists z1.(dog(z1) & chase(z1,z2)))
