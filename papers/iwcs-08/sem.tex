@@ -247,23 +247,6 @@ all z.P(z,a,b)
 >>> print e2.replace(Variable('b'), e3)
 all z1.P(z1,a,x)
 \end{Verbatim}
-% A feature of Python that lends itself well to working with logical
-% expressions is its operator overloading.  The operators \texttt{-},
-% \texttt{\&}, \texttt{$|$}, \texttt{$>$}, \texttt{$<$} can be used
-% for \emph{negation}, \emph{conjunction}, \emph{disjunction},
-% \emph{implication}, and \emph{biconditional}, respectively.  The
-% parenthesis of a function call are overloaded to perform function
-% application.  Python's built-in \texttt{lambda} operator can also be
-% used with logical expressions because it uses function calls.
-% \begin{Verbatim}
-% >>> P = parser.parse('P')
-% >>> x = parser.parse('x')
-% >>> y = parser.parse('y')
-% >>> print P(x) & P(y)
-% (P(x) & Q(y))
-% >>> print (lambda x: P(x))(y)
-% P(y)
-% \end{Verbatim}
 Allowing students to build simple first order models, and evaluate
 expressions in those models, can be useful for helping them clarify
 their intuitions about quantification. In the next example, we show
@@ -307,14 +290,13 @@ raise an exception for non-well typed expressions:
 \begin{Verbatim}
 >>> tlp = logic.LogicParser(type_check=True)
 >>> a = tlp.parse(r'\x y.sees(x,y)')
->>> a.gettype()
-<e,<e,t>>
+>>> a.type
+<e,<e,?>>
 >>> b = tlp.parse(r'\x y.see(x,y)(\x.man(x))')
 Traceback (most recent call last):
   . . .
-TypeException: The function '\x y.see(x,y)' is of type '<e,<e,t>>' 
-and cannot be applied to '\x.man(x)' of type '<e,t>'.  Its argument 
-must be of type 'e'.
+TypeResolutionException: The type of '\x y.see(x,y)', '<e,<e,?>>', 
+cannot be resolved with type '<<e,?>,?>'
 \end{Verbatim}
 % Fix for code colorization: >>>>
 
@@ -414,10 +396,6 @@ IV[sem=<\x.bark(x)>] -> 'barks'
 \end{Verbatim}
 Using \texttt{sem1.fcfg}, we can parse \textit{A dog barks} and view
 its semantics. 
-%  It should be noted that if the
-% \texttt{load\_earley()} method's argument \texttt{trace} is set to a
-% positive number, then the parser prints detailed information showing
-% how the sentence was parsed.  
 The \texttt{load\_earley()} method
 takes an optional parameter \texttt{logic\_parser} which specifies the
 logic-parser for processing the value of the \texttt{sem} feature, thus
@@ -601,29 +579,6 @@ False
 True
 \end{Verbatim}
 
-% \subsection{Nonmonotonic Reasoning}
-% \NLTK\ contains a few simple demonstrations of nonmonotonic reasoning techniques.  There are three nonmonotonic ``assumptions" implemented in NLTK.  Each assumption is implemented as a "decorator" of a theorem prover object.  The decorator works by modifying the list of assumptions and the goal that gets passed to the prover.  By using the decorator pattern, the theorem prover can be wrapped by more than one decorator, thus applying more than one nonmonotonic ``assumption" during the proof.
-
-% The closed domain assumption states that there are no entities in the domain other than the entities found in the assumptions and goal.  The closed domain decorator, therefore, finds all the domain entities and then removes quantifications by spelling out all the entire domain instead.  For example, if the domain contained ``$john$" and ``$mary$", then the assumption ``$\forall x.walk(x)$" would be replaced with ``$walk(john)~\&~walk(mary)$" and ``$\exists x.walk(x)$" would be replaced with ``$walk(john)~|~walk(mary)$".
-
-% \begin{Verbatim}
-% >>> p1 = lp.parse(r'walk(Socrates)')
-% >>> p2 = lp.parse(r'walk(Bill)')
-% >>> c = lp.parse(r'all x.walk(x)')
-% >>> prover = inference.get_prover(c, [p1,p2])
-% >>> prover.prove()
-% False
-% >>> cdp = ClosedDomainProver(prover)
-% >>> print cdp.goal()
-% (walk(Socrates) & walk(Bill))
-% >>> cdp.prove()
-% True
-% \end{Verbatim}
-
-% The unique names assumption states that two distinct names specify different domain entities unless it can be proven that they are equal.  For every pair of domain entities ``$d1$" and ``$d2$", if ``$d1 = d2$" cannot be proven from the starting list of assumptions, then the unique names decorator adds the assumption ``$-(d1 = d2)$".
-
-% The closed domain assumption states that the only domain entities that have a particular property are the entities that it can be proven have the property.  For a property ``$P$", the decorator finds any individuals ``$A$" such that ``$P(A)$" and any properties ``$Q$" such that ``$\forall x.(Q(x) \rightarrow P(x))$".  The decorator then \textbf{completes} ``$P$" by adding the assumption ``$\forall x.(P(x) \rightarrow (Q(x)~|~(x = A)))$".  In the case where no domain entities can be proven to have property ``$P$", then the assumption ``$\forall x.-P(x)$" is added.
-
 \section{Discourse Processing}
 
 \NLTK\ contains a discourse processing module,
@@ -699,16 +654,6 @@ that that reading \texttt{s0-r0}, where \textit{every dog} out-scopes
 second sentence cannot be resolved.  By contrast, in thread \texttt{d1} the
 pronoun (relettered to \texttt{z24}) has been bound \textit{via} the
 equation \texttt{(z24 = z20)}.  % Inadmissable readings are filtered out
-% by passing the parameter \texttt{filter=True}.
-% \begin{Verbatim}
-% >>> dt.readings(show_thread_readings=True)
-% d0: ['s0-r0', 's1-r0'] : INVALID: AnaphoraResolutionException
-% d1: ['s0-r1', 's1-r0'] : ([z20,z24],[boy(z20), (([x],[dog(x)]) -> 
-% ([],[chase(x,z20)])), (z24 = z20), run(z24)])
-% >>> dt.readings(filter=True, show_thread_readings=True)
-% d1: ['s0-r1', 's1-r0'] : ([z26,z29],[boy(z26), (([x],[dog(x)]) -> 
-% ([],[chase(x,z26)])), (z29 = z26), run(z29)])
-% \end{Verbatim}
 \begin{Verbatim}
 >>> dt.readings(show_thread_readings=True)
 d0: ['s0-r0', 's1-r0'] : INVALID: AnaphoraResolutionException
@@ -716,70 +661,7 @@ d1: ['s0-r1', 's1-r0'] : ([z20,z24],[boy(z20), (([x],[dog(x)]) ->
 ([],[chase(x,z20)])), (z24 = z20), run(z24)])
 \end{Verbatim}
 
-
-
-
-% \subsection{Anaphora Resolution}
-% \NLTK\ also includes a extension to the DRT module that allows the user to resolve anaphoric pronouns, located in \texttt{nltk.sem.drt\_resolve\_anaphora}.  For instance, the three sentence discourse ``John walks.  Bill runs.  He talks." is shown below, along with its resolution.  The anaphora resolution procedure used by \NLTK\ replaces any instance of the function``PRO(x)" with an expression equating ``x'' to a list of possible antecedents of ``x".  The list of possible antecedents contains any discourse referent in an accessible DRS.
-
-% \begin{Verbatim}
-% >>> d = drtparse(r'DRS([j,b,x],[(John=j), walk(j), (Bill=b), 
-% run(b), PRO(x), talk(x)])')
-% >>> print d.resolve_anaphora()
-% DRS([j,b,x],[(John=j), walk(j), (Bill=b), run(b), (x=[j,b]), 
-% talk(x)])
-% \end{Verbatim}
-
-% The anaphora resolution logic has been separated into a separate module so that users may write their own anaphora resolution procedures and swap them in.
-
-% \subsection{Textual Entailment}
-% Recognizing Textual Entailment is a task in which a computer is given
-% a piece of text and a hypothesized conclusion and asked to determine
-% whether the text entails the hypothesis.  For example if the text is
-% ``John owns a red convertible" and the hypothesis is ``John has a red
-% car", then the computer would have to answer ``True" since ``owns" is
-% a synonym of ``has" and a convertible is a type of car.
-
-% \NLTK\ includes a few simple modules to demonstrate how entailment can
-% be recognized.  The Logical Entailment RTE tagger is a  
-% semantically-oriented approach located in
-% \texttt{nltk.rte.logicentail}.  Based on \cite{BosRTE}, the
-% tagger begins by building a first-order logic semantic representation
-% of both the text and the hypothesis.  It then runs a theorem prover
-% and model builder in parallel with the text as the assumption and the
-% hypothesis as the goal to check whether the text entails the
-% hypothesis.  If a proof is found by the theorem prover, then we know
-% that entailment holds.  The tagger is also capable of adding background
-% knowledge via an interface to the WordNet dictionary in 
-% \texttt{nltk.wordnet} to make the entailment checking more robust.  
-
-% To add some robustness to the logical entailment, since it is unlikely
-% that entailment will be proven without any additional information, if
-% the first attempt fails, then the tagger will generate some background
-% knowledge.  The background knowledge is a set of formulas
-% automatically generated based on the words in text and hypothesis.
-% For example, if both ``convertible" and ``car" appeared in the set of
-% words in the text and hypothesis, then we should generate the formula
-% ``$\forall x.(convertible(x) \rightarrow car(x))$" since a convertible
-% is a type of car.  The primary source of background knowledge is a
-% computerized dictionary called WordNet.  \NLTK\ includes an interface
-% to WordNet in \texttt{nltk.wordnet}.  The WordNet interface allows
-% the user to find, for any given word, its synonyms, hypernyms,
-% hyponyms, part holoyms, and member meronyms.  Each of these
-% relationships can be converted into an appropriate formula for
-% background knowledge.
-
-
 \section{Conclusions and Future Work}
-% The primary advantage to using \NLTK\ is its wealth of NLP tools.
-% NLTK's code base includes support for corpus access, tokenizing,
-% stemming, tagging, chunking, parsing, clustering, classification,
-% language modeling, unification, and more within a unified environment
-% \cite{Multidisciplinary}.  This range of modules makes it quick and
-% easy to write complex functionality.  Many of the demonstrations of
-% the semantics modules utilize other NLP tools; for example, textual
-% entailment uses stemming and Glue Semantics uses dependency parsing.
-
 \NLTK's semantics functionality has been written with extensibility in
 mind.  The \texttt{logic} module's \texttt{LogicParser}
 employs a basic parsing template and contains hooks that an extending
@@ -793,10 +675,8 @@ The theorem prover and model builder code has also been carefully
 archi\-tected to allow extensions and the \texttt{nltk.inference.api}
 library exposes the framework for the inference architecture.  The
 library therefore provides a good starting point for creating
-interfaces with other theorem provers and model builders in addition to Prover9, Mace4, and the tableau prover.  % The
-% \texttt{ProverDecorator} base class is also available so that new
-% decorators for the theorem provers can be implemented, similar to
-% those in \texttt{nonmonotonic.py}.
+interfaces with other theorem provers and model builders in addition 
+to Prover9, Mace4, and the tableau prover.
 
 \NLTK\ already includes the beginnings of a framework for `recognizing
 textual entailment'; access to the \RTE\ data sets is provided and we
@@ -810,10 +690,6 @@ hypothesis.The tagger is also capable of adding background knowledge
 \textit{via} an interface to the WordNet dictionary in
 \texttt{nltk.wordnet} as a first step in making the entailment
 checking more robust.
-
-
-% \section{Acknowledgments}
-% I would like to thank Ewan Klein for his continuous support and guidance on my work with \NLTK\ and on computational semantics in general, as well as initially inviting me to join the \NLTK\ project.  I would also like to thank Steven Bird and Edward Loper for their advice and feedback on my \NLTK\ contributions
 
 
 {\small
