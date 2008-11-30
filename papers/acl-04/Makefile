@@ -2,7 +2,7 @@
 #
 # Copyright (C) 2001-2008 NLTK Project
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
-# URL: <http://nltk.org>
+# URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 #
 # $Id: Makefile,v 1.2 2004/04/27 04:26:37 stevenbird Exp $

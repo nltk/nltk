@@ -4,7 +4,7 @@
 # Author: Steven Bird <sb@csse.unimelb.edu.au>
 #         Edward Loper <edloper@seas.upenn.edu>
 #         Jason Narad <jason.narad@gmail.com>
-# URL: <http://nltk.org>
+# URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 #
 

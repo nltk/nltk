@@ -4,7 +4,7 @@
 #
 # Copyright (C) 2007 NLTK Project
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
-# URL: <http://nltk.org>
+# URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 #
 # $Id:$

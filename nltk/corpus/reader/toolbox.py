@@ -6,7 +6,7 @@
 # Author: Greg Aumann <greg_aumann@sil.org>
 #         Stuart Robinson <Stuart.Robinson@mpi.nl>
 #         Steven Bird <sb@csse.unimelb.edu.au>
-# URL: <http://nltk.org>
+# URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """

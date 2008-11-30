@@ -3,7 +3,7 @@
 # Copyright (C) 2001-2008 NLTK Project
 # Author: Steven Bird <sb@csse.unimelb.edu.au>
 #         Edward Loper <edloper@gradient.cis.upenn.edu>
-# URL: <http://nltk.org>
+# URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 #WEB = $(USER)@shell.sourceforge.net:/home/groups/n/nl/nltk/htdocs

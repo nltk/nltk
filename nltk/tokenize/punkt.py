@@ -6,7 +6,7 @@
 #         Steven Bird <sb@csse.unimelb.edu.au> (additions)
 #         Edward Loper <edloper@gradient.cis.upenn.edu> (rewrite)
 #         Joel Nothman <jnothman@student.usyd.edu.au> (almost rewrite)
-# URL: <http://nltk.org>
+# URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 #
 # $Id: probability.py 4865 2007-07-11 22:16:07Z edloper $

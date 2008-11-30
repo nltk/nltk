@@ -4,7 +4,7 @@
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
 #         Steven Bird <sb@csse.unimelb.edu.au> (additions)
 #         Trevor Cohn <tacohn@cs.mu.oz.au> (additions)
-# URL: <http://nltk.org>
+# URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 #
 # $Id$
@@ -1268,7 +1268,7 @@ class MutableProbDist(ProbDistI):
         try:
             import numpy
         except ImportError:
-            print "Error: Please install numpy; for instructions see http://nltk.org/install.html"
+            print "Error: Please install numpy; for instructions see http://www.nltk.org/"
             exit()
         self._samples = samples
         self._sample_dict = dict((samples[i], i) for i in range(len(samples)))

@@ -4,7 +4,7 @@
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
 #         Jean Mark Gawron <gawron@mail.sdsu.edu>
 #         Steven Bird <sb@csse.unimelb.edu.au>
-# URL: <http://nltk.org>
+# URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 #
 # $Id$

@@ -4,7 +4,7 @@
 #
 # Copyright (C) 2001-2008 NLTK Project
 # Author: Selina Dennis <selina@tranzfusion.net>
-# URL: <http://nltk.org>
+# URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
