@@ -724,10 +724,10 @@ Type error during parsing
     The variable 'P' was found in multiple places with different types.
     >>> try: tlp.parse(r'\x y.see(x,y)(\x.man(x))')
     ... except TypeException, e: print e
-    The type of '\x y.see(x,y)', '<e,<e,t>>', cannot be resolved with type '<<e,t>,?>'
+    The function '\x y.see(x,y)' is of type '<e,<e,t>>' and cannot be applied to '\x.man(x)' of type '<e,t>'.  Its argument must match type 'e'.
     >>> try: tlp.parse(r'\P x y.P(x,y)(\x.man(x))')
     ... except TypeException, e: print e
-    The type of '\P x y.P(x,y)', '<<e,<e,?>>,<e,<e,?>>>', cannot be resolved with type '<<e,t>,?>'
+    The function '\P x y.P(x,y)' is of type '<<e,<e,?>>,<e,<e,?>>>' and cannot be applied to '\x.man(x)' of type '<e,t>'.  Its argument must match type '<e,<e,?>>'.
 
     >>> a = tlp.parse(r'-talk(x)')
     >>> signature = a.typecheck()

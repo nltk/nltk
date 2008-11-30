@@ -290,6 +290,13 @@ class TypeResolutionException(TypeException):
                            "resolved with type '%s'" % \
                            (expression, expression.type, other_type))
 
+class IllegalTypeException(TypeException):
+    def __init__(self, expression, other_type, allowed_type):
+        Exception.__init__(self, "Cannot set type of %s '%s' to '%s'; "
+                           "must match type '%s'." % 
+                           (expression.__class__.__name__, expression, 
+                            other_type, allowed_type))
+
 
 class SubstituteBindingsI(object):
     """
@@ -534,25 +541,12 @@ class ApplicationExpression(Expression):
         self.argument._set_type(ANY_TYPE, signature)
         try:
             self.function._set_type(ComplexType(self.argument.type, other_type), signature)
-        except TypeException, e:
-            raise TypeException("The function '%s' is of type '%s' and "
-                                "cannot be applied to '%s' of type '%s'.  "
-                                "Its argument must be of type '%s'." 
-                                % (self.function, self.function.type, self.argument, 
-                                   self.argument.type, self.function.type.first))
-        
-        f_type = self.function.type
-        a_type = self.argument.type
-        if not isinstance(f_type, ComplexType):
-            raise TypeException("The expression '%s' is of type '%s', so it "
-                                "cannot take arguments." 
-                                % (self.function, f_type))
-        if not f_type.first.matches(a_type):
-            raise TypeException("The function '%s' is of type '%s' and "
-                                "cannot be applied to '%s' of type '%s'.  "
-                                "Its argument must be of type '%s'." 
-                                % (self.function, f_type, self.argument, 
-                                   a_type, f_type.first))
+        except TypeResolutionException, e:
+            raise TypeException(
+                    "The function '%s' is of type '%s' and cannot be applied " 
+                    "to '%s' of type '%s'.  Its argument must match type '%s'."
+                    % (self.function, self.function.type, self.argument, 
+                       self.argument.type, self.function.type.first))
 
     def findtype(self, variable):
         """@see Expression.findtype()"""
@@ -710,14 +704,8 @@ class IndividualVariableExpression(AbstractVariableExpression):
         if signature == None:
             signature = defaultdict(list)
 
-        for varEx in signature[self.variable.name]:
-            if not varEx.type.matches(ENTITY_TYPE):
-                raise TypeException("Individual variable '%s' cannot have"
-                                    " type '%s'." % (self, varEx.type))
-
         if not other_type.matches(ENTITY_TYPE):
-            raise TypeException("Individual variable '%s' cannot be set "
-                                "to type '%s'." % (self, other_type))
+            raise IllegalTypeException(self, other_type, ENTITY_TYPE)
             
         signature[self.variable.name].append(self)
                 
@@ -904,7 +892,8 @@ class VariableBinderExpression(Expression):
 
 class LambdaExpression(VariableBinderExpression):
     type = property(lambda self: 
-                 ComplexType(self.term.findtype(self.variable), self.term.type))
+                    ComplexType(self.term.findtype(self.variable), 
+                                self.term.type))
 
     def _set_type(self, other_type=ANY_TYPE, signature=None):
         """
@@ -942,6 +931,8 @@ class QuantifiedExpression(VariableBinderExpression):
         if signature == None:
             signature = defaultdict(list)
         
+        if self._type_check and not other_type.matches(TRUTH_TYPE):
+            raise IllegalTypeException(self, other_type, TRUTH_TYPE)
         self.term._set_type(TRUTH_TYPE, signature)
 
     def str(self, syntax=Tokens.NEW_NLTK):
@@ -1005,6 +996,8 @@ class NegatedExpression(Expression):
         if signature == None:
             signature = defaultdict(list)
         
+        if self._type_check and not other_type.matches(TRUTH_TYPE):
+            raise IllegalTypeException(self, other_type, TRUTH_TYPE)
         self.term._set_type(TRUTH_TYPE, signature)
 
     def findtype(self, variable):
@@ -1091,6 +1084,8 @@ class BooleanExpression(BinaryExpression):
         if signature == None:
             signature = defaultdict(list)
         
+        if self._type_check and not other_type.matches(TRUTH_TYPE):
+            raise IllegalTypeException(self, other_type, TRUTH_TYPE)
         self.first._set_type(TRUTH_TYPE, signature)
         self.second._set_type(TRUTH_TYPE, signature)
 
@@ -1126,6 +1121,8 @@ class EqualityExpression(BinaryExpression):
         if signature == None:
             signature = defaultdict(list)
         
+        if self._type_check and not other_type.matches(TRUTH_TYPE):
+            raise IllegalTypeException(self, other_type, TRUTH_TYPE)
         self.first._set_type(ENTITY_TYPE, signature)
         self.second._set_type(ENTITY_TYPE, signature)
 
@@ -1458,10 +1455,10 @@ class ParseException(Exception):
 class UnexpectedTokenException(ParseException):
     def __init__(self, tok, expected=None):
         if expected:
-            ParseException.__init__(self, "parse error, unexpected token: %s. "
+            ParseException.__init__(self, "parse error, unexpected token: '%s'. "
                                     "Expected token: %s" % (tok, expected))
         else:
-            ParseException.__init__(self, "parse error, unexpected token: %s" 
+            ParseException.__init__(self, "parse error, unexpected token: '%s'" 
                                             % tok)
         
         
@@ -1528,7 +1525,7 @@ def demo():
     print e2
     print e1 == e2
     
-def printex(ex):
+def printtype(ex):
     print ex.str() + ' : ' + str(ex.type)
 
 if __name__ == '__main__':
