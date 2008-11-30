@@ -23,7 +23,11 @@ B. NLTK VERSION
   6. Clone wiki download page for new version N.N, and call it Download-N.N
        and save in HTML format to /nltk
 
-C. ERROR CHECKING
+C. DATA
+
+  1. Update the data index (make data_index) and commit
+
+D. ERROR CHECKING
 
   1. install the new version, since its the installed code that is checked
   2. make doctest (run the tests in nltk.test)
@@ -33,12 +37,12 @@ C. ERROR CHECKING
   6. Check trackers: http://sourceforge.net/tracker/?group_id=30982
   7. Make dist, install .exe version on Windows, and test demos
 
-D. CHANGELOG
+E. CHANGELOG
 
   1. Update the ChangeLog ("svn log")
   2. Commit changes
   
-E. LINK CHECKING
+F. LINK CHECKING
   1. do a preliminary build of web content and check links
 
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
