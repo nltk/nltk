@@ -3,7 +3,7 @@
 # Copyright (C) 2001-2008 NLTK Project
 # Authors: Steven Bird <sb@csse.unimelb.edu.au>
 #          Edward Loper <edloper@gradient.cis.upenn.edu>
-# URL:     http://nltk.org/
+# URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -39,7 +39,7 @@ __keywords__ = ['NLP', 'CL', 'natural language processing',
                 'computational linguistics', 'parsing', 'tagging',
                 'tokenizing', 'syntax', 'linguistics', 'language',
                 'natural language']
-__url__ = "http://nltk.org/"
+__url__ = "http://www.nltk.org/"
 
 # Maintainer, contributors, etc.
 __maintainer__ = "Steven Bird, Edward Loper, Ewan Klein"

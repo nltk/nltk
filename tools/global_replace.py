@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-## Natural Language Toolkit: update svn repository to new UUID
+## Natural Language Toolkit: substitute a pattern with a replacement in every file
 #
 # Copyright (C) 2008 NLTK Project
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
