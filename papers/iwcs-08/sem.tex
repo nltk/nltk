@@ -134,9 +134,9 @@ devote a whole course exclusively to the topic.
 
 Fourth, \NLTK\ is accompanied by a substantial collection of corpora,
 plus easy-to-use corpus readers.  This collection, which currently
-stands at 45 corpora, includes parsed, POS-tagged, plain text,
+stands at over 50 corpora and trained models, includes parsed, POS-tagged, plain text,
 categorized text, and
-lexicons.\footnote{\url{http://www.nltk.org/corpora.html}} The
+lexicons. The
 availability of corpora can help encourage students to go beyond
 writing toy grammars, and instead to start grappling with the
 complexities of semantically analysing realistic bodies of text.
@@ -268,28 +268,28 @@ $\exists x.(\mathit{girl}(y) \wedge
 ... girl => {s}
 ... chase => {(f, s), (r, s), (s, f)}
 ... """
->>> val = parse_valuation(v) #create a Valuation
+>>> val = parse_valuation(v)   #create a Valuation
 >>> m = Model(val.domain, val) #initialize a Model
 >>> g = Assignment(val.domain) #initialize an Assignment
 >>> e4 = lp.parser('exists y. (girl(y) & chase(x, y))')
->>> m.satisfiers(e4, 'x', g) #check satisfiers of e4 wrt to x
+>>> m.satisfiers(e4, 'x', g)   #check satisfiers of e4 wrt to x
 set(['r', 'f'])
 \end{Verbatim}
 
 In \BB, $\lambda$-abstracts are second-class citizens, used
 exclusively as a `glue' mechanism for composing meaning
 representations. Although we use $\lambda$-abstracts as glue too,
-abstracts over individual variables are interpreted in \NLTK, namely as
+abstracts over individual variables are semantically interpreted in \NLTK, namely as
 characteristic functions.
 
 \texttt{Expression}s in \NLTK\ can be optionally typed (using
 Montague-style types) by passing the parameter \texttt{type\_check=True} to
 \texttt{LogicParser}.  Apart from allowing the user to display the
-\texttt{Expression}'s type with \texttt{gettype()}, type checking will
+\texttt{Expression}'s type with \texttt{type}, type checking will
 raise an exception for non-well typed expressions:
 \begin{Verbatim}
 >>> tlp = logic.LogicParser(type_check=True)
->>> a = tlp.parse(r'\x y.sees(x,y)')
+>>> a = tlp.parse(r'\x y.see(x,y)')
 >>> a.type
 <e,<e,t>>
 >>> b = tlp.parse(r'\x y.see(x,y)(\x.man(x))')
@@ -437,7 +437,7 @@ all z2.(girl(z2) -> exists z1.(dog(z1) & chase(z1,z2)))
 
 
 \subsection{Glue Semantics}
-Glue Semantics\footnote{\url{http://nltk.googlecode.com/svn/trunk/doc/contrib/sem/index.html}}
+Glue Semantics
  \citep{Dalrymple:1999:RRB}, or Glue for
 short, is an approach to compositionality that tries to handle
 semantic ambiguity by using resource-sensitive logic to assemble
@@ -462,9 +462,9 @@ cf.\ (\ref{glue3}).
 This resource-sensitivity dictates that each word contributes its
 meaning exactly once to the meaning of the whole.
 \newpage
-\enumsentence{\label{glue1} A, (A $\multimap$ B) $\vdash$ B}
-\enumsentence{\label{glue2} A, (A $\multimap$ B) $\nvdash$ A, B}
-\enumsentence{\label{glue3} A, A, (A $\multimap$ B) $\nvdash$ B}
+\enumsentence{\label{glue1} $A, (A \multimap B) \vdash B$}
+\enumsentence{\label{glue2} $A, (A \multimap B) \nvdash A, B$}
+\enumsentence{\label{glue3} $A, A, (A \multimap B) \nvdash B$}
 \NLTK's \texttt{nltk.gluesemantics.linearlogic} module
 contains an implementation of linear logic. 
 
@@ -482,11 +482,14 @@ meaning expressions.
   \gamma : (A \multimap B) \vdash \gamma(\alpha) : B$} 
 
 The \NLTK\ modules \texttt{gluesemantics.glue} and
-\texttt{gluesemantics.drt\_glue} implement Glue for \FOL\ and
-\DRT\ meaning expressions, respectively.
-The following example shows the basic way that
-Glue formulas are created and combined to derive a logical form for
-\textit{John walks}: 
+\texttt{gluesemantics.drt\_glue} implement Glue for \FOL\ and \DRT\
+meaning expressions,
+respectively.%
+\footnote{See
+  \url{http://nltk.googlecode.com/svn/trunk/doc/contrib/sem/index.html}
+for more details.}
+The following example shows how Glue formulas are
+created and combined to derive a logical form for \textit{John walks}:
 
 \begin{Verbatim}
 >>> from nltk.gluesemantics.glue import GlueFormula
@@ -535,7 +538,7 @@ The library includes a pure Python tableau-based first order theorem prover;
 this is intended to allow students to study 
 tableau methods for theorem proving, and provides an
 opportunity for experimentation.  In addition, \NLTK\ provides
-interfaces to two state-of-the-art tools, namely the theorem prover Prover9, 
+interfaces to two off-the-shelf tools, namely the theorem prover Prover9, 
 and the model builder Mace4  \citep{McCune}.  % Both of these are
 % powerful enough for research.
 
