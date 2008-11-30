@@ -311,7 +311,7 @@ def find(resource_name):
     # Display a friendly error message if the resource wasn't found:
     msg = textwrap.fill(
         'Resource %r not found.  Please use the NLTK Downloader to '
-        'obtain the resource: >>> nltk.download_shell().' %
+        'obtain the resource: >>> nltk.download().' %
         (resource_name,), initial_indent='  ', subsequent_indent='  ',
         width=66)
     msg += '\n  Searched in:' + ''.join('\n    - %r' % d for d in path)

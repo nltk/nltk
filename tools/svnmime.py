@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 
+# NB, this wouldn't be needed if everyone had .subversion/config
+# configured to automatically set mime types
+# http://code.google.com/p/support/wiki/FAQ
+
 import os
 import sys
 
@@ -21,7 +25,6 @@ types_map = {
     'png': 'image/png',
     'ppm': 'image/x-portable-pixmap',
     'py': 'text/x-python',
-    'pyc': 'application/x-python-code',
     'ps': 'application/postscript',
     'rst': 'text/plain',
     'tex': 'application/x-tex',
