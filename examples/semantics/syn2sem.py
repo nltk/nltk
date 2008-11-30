@@ -1,7 +1,7 @@
 # Natural Language Toolkit: Parsers
 #
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>
-# URL: <http://nltk.org>
+# URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 

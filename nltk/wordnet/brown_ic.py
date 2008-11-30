@@ -5,7 +5,7 @@
 #         David Ormiston Smith <daosmith@csse.unimelb.edu.au>>
 #         Steven Bird <sb@csse.unimelb.edu.au>
 #         Jordan Boyd-Graber <jbg@cs.princeton.edu>
-# URL: <http://nltk.org>
+# URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 # This module can be used to build information content files.

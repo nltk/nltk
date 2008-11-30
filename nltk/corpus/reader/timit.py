@@ -3,7 +3,7 @@
 # Copyright (C) 2001-2007 NLTK Project
 # Author: Haejoong Lee <haejoong@ldc.upenn.edu>
 #         Steven Bird <sb@ldc.upenn.edu>
-# URL: <http://nltk.org>
+# URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 # [xx] this docstring is out-of-date:

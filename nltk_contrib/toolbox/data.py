@@ -5,7 +5,7 @@
 #
 # Copyright (C) 2001-2006 NLTK Project
 # Author: Greg Aumann <greg_aumann@sil.org>
-# URL: <http://nltk.org>
+# URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """module for reading Toolbox data files

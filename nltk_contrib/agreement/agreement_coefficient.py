@@ -2,7 +2,7 @@
 #
 # Copyright (C) 2001-2008 NLTK Project
 # Author: Tom Lippincott <tom@cs.columbia.edu>
-# URL: <http://nltk.org>
+# URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 #
 from distance_metric import *

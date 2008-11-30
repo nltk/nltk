@@ -6,7 +6,7 @@
 #         Tiago Tresoldi <tiago@tresoldi.pro.br> (fixes)
 #         Steven Bird <sb@csse.unimelb.edu.au> (fixes)
 #         Joseph Frazee <jfrazee@mail.utexas.edu> (fixes)
-# URL: <http://nltk.org>
+# URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 #
 # $Id$

@@ -3,7 +3,7 @@
 # Copyright (C) 2001-2008 NLTK Project
 # Author: Steven Bird <sb@csse.unimelb.edu.au>
 #         Jussi Salmela <jtsalmela@users.sourceforge.net> (modifications)
-# URL: <http://nltk.org>
+# URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """Natural Language Toolkit: Wordnet Interface: Wordnet Text Mode Browser

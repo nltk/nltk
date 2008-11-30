@@ -2,7 +2,7 @@
 #     understands the command line interaction
 # Author: Sumukh Ghodke <sumukh dot ghodke at gmail dot com>
 #
-# URL: <http://nltk.org>
+# URL: <http://www.nltk.org/>
 # This software is distributed under GPL, for license information see LICENSE.TXT
 from nltk_contrib.classifier_tests import *
 from nltk_contrib.classifier import commandline as cl

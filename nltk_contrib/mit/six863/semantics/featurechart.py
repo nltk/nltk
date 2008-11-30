@@ -2,7 +2,7 @@
 #
 # Copyright (C) 2001-2007 NLTK Project
 # Author: Rob Speer <rspeer@mit.edu>
-# URL: <http://nltk.org>
+# URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 #
 # $Id: featurechart.py 4107 2007-02-01 00:07:42Z stevenbird $

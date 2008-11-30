@@ -2,7 +2,7 @@
 #
 # Copyright (C) 2001-2006 NLTK Project
 # Author: Stuart Robinson <stuart@zapata.org>
-# URL: <http://nltk.org>
+# URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """

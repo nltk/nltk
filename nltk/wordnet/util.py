@@ -5,7 +5,7 @@
 #         Steven Bird <sb@csse.unimelb.edu.au>
 #         David Ormiston Smith <daosmith@csse.unimelb.edu.au>>
 #         Jussi Salmela <jtsalmela@users.sourceforge.net>
-# URL: <http://nltk.org>
+# URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 import os

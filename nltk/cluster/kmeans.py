@@ -3,7 +3,7 @@
 # Copyright (C) 2001-2008 NLTK Project
 # Author: Trevor Cohn <tacohn@cs.mu.oz.au>
 # Porting: Steven Bird <sb@csse.unimelb.edu.au>
-# URL: <http://nltk.org>
+# URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 import numpy

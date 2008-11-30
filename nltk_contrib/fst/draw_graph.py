@@ -3,7 +3,7 @@
 # Copyright (C) 2001 NLTK Project
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
 #
-# URL: <http://nltk.org>
+# URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 #
 # $Id: graph.py,v 1.2 2004/03/18 21:02:36 edloper Exp $

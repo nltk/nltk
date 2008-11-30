@@ -2,7 +2,7 @@
 #
 # Copyright (C) 2005 University of Melbourne
 # Author: Will Hardy
-# URL: <http://nltk.org>
+# URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 # Front end to a Python implementation of David

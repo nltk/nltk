@@ -3,7 +3,7 @@
 #
 # Author: Sumukh Ghodke <sumukh dot ghodke at gmail dot com>
 #
-# URL: <http://nltk.org>
+# URL: <http://www.nltk.org/>
 # This software is distributed under GPL, for license information see LICENSE.TXT
 from nltk_contrib.classifier import split_ignore_space
 from nltk_contrib.classifier import format, cfile, commandline as cl, attribute as attr, classify as cy
