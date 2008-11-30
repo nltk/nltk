@@ -756,12 +756,6 @@ class ConstantExpression(AbstractVariableExpression):
         else:
             resolution = other_type
             
-            if resolution != ANY_TYPE and isinstance(resolution, ComplexType):
-                cur = resolution
-                while cur.second != ANY_TYPE and isinstance(cur.second, ComplexType):
-                    cur = cur.second
-                cur.second = TRUTH_TYPE
-            
         for varEx in signature[self.variable.name]:
             resolution = varEx.type.resolve(resolution)
             if not resolution:

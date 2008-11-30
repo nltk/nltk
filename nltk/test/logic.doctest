@@ -467,7 +467,7 @@ Typed Logic
 .type
 
     >>> print tlp.parse(r'man(x)').type
-    t
+    ?
     >>> print tlp.parse(r'-man(x)').type
     t
     >>> print tlp.parse(r'(man(x) <-> tall(x))').type
@@ -475,17 +475,17 @@ Typed Logic
     >>> print tlp.parse(r'exists x.(man(x) & tall(x))').type
     t
     >>> print tlp.parse(r'\x.man(x)').type
-    <e,t>
+    <e,?>
     >>> print tlp.parse(r'john').type
     e
     >>> print tlp.parse(r'\x y.sees(x,y)').type
-    <e,<e,t>>
+    <e,<e,?>>
     >>> print tlp.parse(r'\x.man(x)(john)').type
-    t
+    ?
     >>> print tlp.parse(r'\x.\y.sees(x,y)(john)').type
-    <e,t>
+    <e,?>
     >>> print tlp.parse(r'\x.\y.sees(x,y)(john)(mary)').type
-    t
+    ?
     >>> print tlp.parse(r'\P.\Q.exists x.(P(x) & Q(x))').type
     <<e,t>,<<e,t>,t>>
     >>> print tlp.parse(r'\x.y').type
@@ -495,15 +495,15 @@ Typed Logic
 
     >>> parsed = tlp.parse('see(john,mary)')
     >>> print parsed.type
-    t
+    ?
     >>> print parsed.function
     see(john)
     >>> print parsed.function.type
-    <e,t>
+    <e,?>
     >>> print parsed.function.function
     see
     >>> print parsed.function.function.type
-    <e,<e,t>>
+    <e,<e,?>>
     
     >>> parsed = tlp.parse('P(x,y)')
     >>> print parsed
@@ -628,14 +628,26 @@ Typed Logic
     >>> a.function.term.term.function.function.type
     <e,<e,?>>
     >>> a.argument.type
-    <e,<e,t>>
+    <e,<e,?>>
+    
+    >>> a = tlp.parse(r'exists c f.(father(c) = f)')
+    >>> a.type
+    t
+    >>> a.term.term.type
+    t
+    >>> a.term.term.first.type
+    e
+    >>> a.term.term.first.function.type
+    <e,e>
+    >>> a.term.term.second.type
+    e
 
 findtype()
 
     >>> print tlp.parse(r'man(x)').findtype(Variable('man'))
-    <e,t>
+    <e,?>
     >>> print tlp.parse(r'see(x,y)').findtype(Variable('see'))
-    <e,<e,t>>
+    <e,<e,?>>
     >>> print tlp.parse(r'P(Q(R(x)))').findtype(Variable('Q'))
     ?
 
@@ -724,10 +736,10 @@ Type error during parsing
     The variable 'P' was found in multiple places with different types.
     >>> try: tlp.parse(r'\x y.see(x,y)(\x.man(x))')
     ... except TypeException, e: print e
-    The function '\x y.see(x,y)' is of type '<e,<e,t>>' and cannot be applied to '\x.man(x)' of type '<e,t>'.  Its argument must match type 'e'.
-    >>> try: tlp.parse(r'\P x y.P(x,y)(\x.man(x))')
+    The function '\x y.see(x,y)' is of type '<e,<e,?>>' and cannot be applied to '\x.man(x)' of type '<e,?>'.  Its argument must match type 'e'.
+    >>> try: tlp.parse(r'\P x y.-P(x,y)(\x.-man(x))')
     ... except TypeException, e: print e
-    The function '\P x y.P(x,y)' is of type '<<e,<e,?>>,<e,<e,?>>>' and cannot be applied to '\x.man(x)' of type '<e,t>'.  Its argument must match type '<e,<e,?>>'.
+    The function '\P x y.-P(x,y)' is of type '<<e,<e,t>>,<e,<e,t>>>' and cannot be applied to '\x.-man(x)' of type '<e,t>'.  Its argument must match type '<e,<e,t>>'.
 
     >>> a = tlp.parse(r'-talk(x)')
     >>> signature = a.typecheck()
