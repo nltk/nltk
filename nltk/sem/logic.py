@@ -532,7 +532,14 @@ class ApplicationExpression(Expression):
             signature = defaultdict(list)
         
         self.argument._set_type(ANY_TYPE, signature)
-        self.function._set_type(ComplexType(self.argument.type, other_type), signature)
+        try:
+            self.function._set_type(ComplexType(self.argument.type, other_type), signature)
+        except TypeException, e:
+            raise TypeException("The function '%s' is of type '%s' and "
+                                "cannot be applied to '%s' of type '%s'.  "
+                                "Its argument must be of type '%s'." 
+                                % (self.function, self.function.type, self.argument, 
+                                   self.argument.type, self.function.type.first))
         
         f_type = self.function.type
         a_type = self.argument.type

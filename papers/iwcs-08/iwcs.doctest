@@ -39,13 +39,14 @@ Done
 
 Typed Logic
     >>> tlp = logic.LogicParser(type_check=True)
-    >>> a = tlp.parse(r'\x y.sees(x,y)')
-    >>> a.type
-    <e,<e,t>>
-    >>> b = tlp.parse(r'\x y.see(x,y)(\x.man(x))')
+    >>> a = tlp.parse(r'\x y.see(x,y)')
+    >>> b = tlp.parse(r'\x.man(x)')
+    >>> a.type, b.type
+    (<e,<e,t>>, <e,t>)
+    >>> tlp.parse(r'\x y.see(x,y)(\x.man(x))')
     Traceback (most recent call last):
       . . .
-    TypeResolutionException: The type of '\x y.see(x,y)', '<e,<e,t>>', cannot be resolved with type '<<e,t>,?>'
+    TypeException: The function '\x y.see(x,y)' is of type '<e,<e,t>>' and cannot be applied to '\x.man(x)' of type '<e,t>'.  Its argument must be of type 'e'.
 
 Done
     >>> from nltk.sem import drt

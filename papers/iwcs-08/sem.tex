@@ -296,8 +296,9 @@ raise an exception for non-well typed expressions:
 >>> tlp.parse(r'\x y.see(x,y)(\x.man(x))')
 Traceback (most recent call last):
   . . .
-TypeResolutionException: The type of '\x y.see(x,y)', '<e,<e,t>>', 
-cannot be resolved with type '<<e,t>,?>'
+TypeException: The function '\x y.see(x,y)' is of type '<e,<e,t>>' 
+and cannot be applied to '\x.man(x)' of type '<e,t>'.  Its argument 
+must be of type 'e'.
 \end{Verbatim}
 % Fix for code colorization: >>>>
 
