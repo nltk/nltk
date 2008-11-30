@@ -52,12 +52,13 @@ C{nltk.corpus.brown.words()}:
     >>> print brown.words()
     ['The', 'Fulton', 'County', 'Grand', 'Jury', 'said', ...]
 
+[Work in Progress:
 Corpus Metadata
 ===============
 Metadata about the NLTK corpora, and their individual documents, is
 stored using U{Open Language Archives Community (OLAC)
 <http://www.language-archives.org/>} metadata records.  These records
-can be accessed using C{nltk.corpus.I{corpus}.olac()}.
+can be accessed using C{nltk.corpus.I{corpus}.olac()}.]
 """
 
 from nltk.corpus.reader.plaintext import *
