@@ -1364,7 +1364,7 @@ def demo():
 
     # Demonstrate tree parsing.
     s = '(S (NP (DT the) (NN cat)) (VP (VBD ate) (NP (DT a) (NN cookie))))'
-    t = tree.bracket_parse(s)
+    t = Tree(s)
     print "Convert bracketed string into tree:"
     print t
     print t.__repr__()
