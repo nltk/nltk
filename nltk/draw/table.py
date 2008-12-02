@@ -490,7 +490,8 @@ class MultiListbox(Frame):
     def selection_set(self, *args, **kwargs):
         for lb in self._listboxes: lb.selection_set(*args, **kwargs)
     def yview(self, *args, **kwargs):
-        for lb in self._listboxes: lb.yview(*args, **kwargs)
+        for lb in self._listboxes: v = lb.yview(*args, **kwargs)
+        return v # if called with no arguments
     def yview_moveto(self, *args, **kwargs):
         for lb in self._listboxes: lb.yview_moveto(*args, **kwargs)
     def yview_scroll(self, *args, **kwargs):
@@ -621,9 +622,11 @@ class Table(object):
         if scrollbar:
             sb = Scrollbar(self._frame, orient='vertical',
                            command=self._mlb.yview)
+            self._mlb.listboxes[0]['yscrollcommand'] = sb.set
+            #for listbox in self._mlb.listboxes:
+            #    listbox['yscrollcommand'] = sb.set
             sb.pack(side='right', fill='y')
-            for listbox in self._mlb.listboxes:
-                listbox['yscrollcommand'] = sb.set
+            self._scrollbar = sb
             
         # Set up sorting
         self._sortkey = None
