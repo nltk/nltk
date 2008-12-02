@@ -165,8 +165,15 @@ default: unzip or not?
 """
 import time, re, os, zipfile, sys, hashlib, textwrap, threading, itertools
 from cStringIO import StringIO
-from Tkinter import *
-from tkMessageBox import *
+try:
+    raise ValueError()
+    TKINTER = True
+    from Tkinter import *
+    from tkMessageBox import *
+except:
+    TKINTER = False
+    TclError = ValueError
+    pass
 
 from nltk.etree import ElementTree
 import nltk
@@ -904,10 +911,12 @@ class Downloader(object):
     def _interactive_download(self):
         # Try the GUI first; if that doesn't work, try the simple
         # interactive shell.
-        try:
-            DownloaderGUI(self).mainloop()
-        except TclError:
-            raise # [xx] testing
+        if TKINTER:
+            try:
+                DownloaderGUI(self).mainloop()
+            except TclError:
+                DownloaderShell(self).run()
+        else:
             DownloaderShell(self).run()
 
 class DownloaderShell(object):
@@ -2020,7 +2029,11 @@ def _find_packages(root):
                 xmlfilename = os.path.join(dirname, filename)
                 zipfilename = xmlfilename[:-4]+'.zip'
                 zf = zipfile.ZipFile(zipfilename)
-                pkg_xml = ElementTree.parse(xmlfilename).getroot()
+                try: pkg_xml = ElementTree.parse(xmlfilename).getroot()
+                except Exception, e:
+                    raise ValueError('Error reading file %r!\n%s' %
+                                     (xmlfilename, e))
+                    
 
                 # Check that the UID matches the filename
                 uid = os.path.split(xmlfilename[:-4])[1]
@@ -2051,7 +2064,7 @@ def _find_packages(root):
 _downloader = Downloader()
 download = _downloader.download
 def download_shell(): DownloaderShell(_downloader).run()
-def download_gui(): DownloaderGUI(_downloader).run()
+def download_gui(): DownloaderGUI(_downloader).mainloop()
 
 if __name__ == '__main__':
     download()
