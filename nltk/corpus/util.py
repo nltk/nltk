@@ -71,10 +71,5 @@ class LazyCorpusLoader(object):
         return getattr(self, attr)
 
     def __repr__(self):
-        try:
-            self.__load()
-            # This looks circular, but its not, since __load() changes our
-            # __class__ to something new:
-            return '%r' % self
-        except LookupError, e:
-            return str(e)
+        return '<%s in %r (not loaded yet)>' % (
+            self.__reader_cls.__name__, '.../corpora/'+self.__name)
