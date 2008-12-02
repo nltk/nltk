@@ -86,6 +86,7 @@ from nltk.corpus.reader.verbnet import *
 from nltk.corpus.reader.bnc import *
 from nltk.corpus.reader.nps_chat import *
 from nltk.corpus.reader.wordnet import *
+from nltk.corpus.reader.switchboard import *
 
 # Make sure that nltk.corpus.reader.bracket_parse gives the module, not
 # the function bracket_parse() defined in nltk.tree:
@@ -111,5 +112,5 @@ __all__ = [
     'BNCCorpusReader', 'ConllCorpusReader',
     'XMLCorpusReader', 'NPSChatCorpusReader',
     'SwadeshCorpusReader', 'WordNetCorpusReader',
-    'WordNetICCorpusReader',
+    'WordNetICCorpusReader', 'SwitchboardCorpusReader',
 ]
