@@ -166,7 +166,6 @@ default: unzip or not?
 import time, re, os, zipfile, sys, hashlib, textwrap, threading, itertools
 from cStringIO import StringIO
 try:
-    raise ValueError()
     TKINTER = True
     from Tkinter import *
     from tkMessageBox import *
