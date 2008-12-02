@@ -148,6 +148,8 @@ stopwords = LazyCorpusLoader(
     'stopwords', WordListCorpusReader, r'(?!README|\.).*')
 swadesh = LazyCorpusLoader(
     'swadesh', SwadeshCorpusReader, r'(?!README|\.).*')
+switchboard = LazyCorpusLoader(
+    'switchboard', SwitchboardCorpusReader)
 timit = LazyCorpusLoader(
     'timit', TimitCorpusReader)
 toolbox = LazyCorpusLoader(
