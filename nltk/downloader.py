@@ -1421,6 +1421,16 @@ class DownloaderGUI(object):
         self._table.sort_by('Identifier', order='ascending')
         self._color_table()
         self._table.select(selected_row)
+        
+        # This is a hack, because the scrollbar isn't updating its
+        # position right -- I'm not sure what the underlying cause is
+        # though.  (This is on OS X w/ python 2.5)  The length of
+        # delay that's necessary seems to depend on how fast the
+        # comptuer is. :-/
+        self.top.after(150, self._table._scrollbar.set,
+                       *self._table._mlb.yview())
+        self.top.after(300, self._table._scrollbar.set,
+                       *self._table._mlb.yview())
 
     def _update_table_status(self):
         for row_num in range(len(self._table)):
