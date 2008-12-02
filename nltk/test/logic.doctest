@@ -212,7 +212,7 @@ for Natural Language*.
     >>> x1 == x2
     True
     
-    >>> x1 = lp.parse(r'\a.Z(a)(\c.\a.like(a,c))').simplify()
+    >>> x1 = lp.parse(r'\A.Z(A)(\c.\a.like(a,c))').simplify()
     >>> x2 = lp.parse(r'Z(\c.\a.like(a,c))').simplify()
     >>> x1 == x2
     True
@@ -642,6 +642,29 @@ Typed Logic
     >>> a.term.term.second.type
     e
 
+typecheck()
+
+    >>> a = tlp.parse('P(x)')
+    >>> b = tlp.parse('Q(x)')
+    >>> a.type
+    ?
+    >>> c = a & b
+    >>> c.first.type
+    ?
+    >>> c.typecheck() # doctest: +ELLIPSIS
+    {...}
+    >>> c.first.type
+    t
+    
+    >>> a = tlp.parse('P(x)')
+    >>> b = tlp.parse('P(x) & Q(x)')
+    >>> a.type
+    ?
+    >>> typecheck([a,b]) # doctest: +ELLIPSIS
+    {...}
+    >>> a.type
+    t
+
 findtype()
 
     >>> print tlp.parse(r'man(x)').findtype(Variable('man'))
@@ -732,7 +755,7 @@ Type error during parsing
 =========================
 
     >>> try: print tlp.parse(r'exists x y.(P(x) & P(x,y))') 
-    ... except TypeException, e: print e
+    ... except InconsistentTypeHierarchyException, e: print e
     The variable 'P' was found in multiple places with different types.
     >>> try: tlp.parse(r'\x y.see(x,y)(\x.man(x))')
     ... except TypeException, e: print e
@@ -744,5 +767,25 @@ Type error during parsing
     >>> a = tlp.parse(r'-talk(x)')
     >>> signature = a.typecheck()
     >>> try: print tlp.parse(r'-talk(x,y)', signature) 
-    ... except Exception, e: print e
+    ... except InconsistentTypeHierarchyException, e: print e
     The variable 'talk' was found in multiple places with different types.
+
+    >>> a = tlp.parse(r'-P(x)')
+    >>> b = tlp.parse(r'-P(x,y)')
+    >>> a.typecheck() # doctest: +ELLIPSIS
+    {...}
+    >>> b.typecheck() # doctest: +ELLIPSIS
+    {...}
+    >>> try: typecheck([a,b])
+    ... except InconsistentTypeHierarchyException, e: print e
+    The variable 'P' was found in multiple places with different types.
+
+    >>> a = tlp.parse(r'P(x)')
+    >>> b = tlp.parse(r'P(x,y)')
+    >>> signature = {'P': '<e,t>'}
+    >>> a.typecheck(signature) # doctest: +ELLIPSIS
+    {...}
+    >>> try: typecheck([a,b], signature)
+    ... except InconsistentTypeHierarchyException, e: print e
+    The variable 'P' was found in multiple places with different types. 
+    
