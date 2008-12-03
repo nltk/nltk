@@ -36,7 +36,7 @@ def find_collocations(tokens, num=20):
 class ContextIndex(object):
     """
     A bidrectional index between words and their 'contexts' in a text.
-    The context of a word is usually define to be the words that occur
+    The context of a word is usually defined to be the words that occur
     in a fixed window around the word; but other definitions may also
     be used by providing a custom context function.
     """

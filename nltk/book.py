@@ -6,7 +6,7 @@ from nltk.text import Text
 from nltk import FreqDist, bigrams
 
 print "*** Introductory Examples for the NLTK Book ***"
-print "Loading text1, ..., text8 and sent1, ..., sent8"
+print "Loading text1, ..., text9 and sent1, ..., sent9"
 print "Type the name of the text or sentence to view it."
 print "Type: 'texts()' or 'sents()' to list the materials."
 
