@@ -271,7 +271,7 @@ def demo():
     'John walks with a girl in Noosa',
     'who walks']
     
-    gramfile = 'grammars/sem2.fcfg'
+    gramfile = 'grammars/sample_grammars/sem2.fcfg'
         
     if options.sentences:
         sentsfile = options.sentences

@@ -300,7 +300,7 @@ class Constraint:
 
 def hole_readings(sentence, grammar_filename=None, verbose=False):
     if not grammar_filename:
-        grammar_filename = 'grammars/hole.fcfg'
+        grammar_filename = 'grammars/sample_grammars/hole.fcfg'
 
     if verbose: print 'Reading grammar file', grammar_filename
     

@@ -88,7 +88,7 @@ def parse_with_bindops(sentence, grammar=None, trace=0):
     Use a grammar with Binding Operators to parse a sentence.
     """
     if not grammar:
-        grammar = 'grammars/storage.fcfg'
+        grammar = 'grammars/book_grammars/storage.fcfg'
     parser = load_earley(grammar, trace=trace, chart_class=InstantiateVarsChart)
     # Parse the sentence.
     tokens = sentence.split()

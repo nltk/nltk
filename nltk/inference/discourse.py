@@ -89,7 +89,7 @@ class CfgReadingCommand(ReadingCommand):
         @type gramfile: C{str}
         """
         if gramfile is None:
-            self._gramfile = 'grammars/sem4.fcfg'
+            self._gramfile = 'grammars/sample_grammars/sem4.fcfg'
         else:
             self._gramfile = gramfile
         self._parser = parse.load_earley(self._gramfile) 

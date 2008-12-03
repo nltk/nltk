@@ -508,7 +508,7 @@ def run_profile():
 if __name__ == '__main__':
     demo()
     print
-    cp = load_earley('grammars/feat0.fcfg', trace=2)
+    cp = load_earley('grammars/book_grammars/feat0.fcfg', trace=2)
     sent = 'Kim likes children'
     tokens = sent.split()
     trees = cp.nbest_parse(tokens)
