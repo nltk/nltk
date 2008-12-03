@@ -29,6 +29,7 @@ types_map = {
     'rst': 'text/plain',
     'tex': 'application/x-tex',
     'txt': 'text/plain',
+    'xml': 'text/xml',
     'zip': 'application/zip',
     }
 
