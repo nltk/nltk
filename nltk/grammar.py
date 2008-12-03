@@ -1135,7 +1135,7 @@ def pcfg_demo():
 
 def fcfg_demo():
     import nltk.data
-    g = nltk.data.load('grammars/feat0.fcfg')
+    g = nltk.data.load('grammars/book_grammars/feat0.fcfg')
     print g
     print 
     

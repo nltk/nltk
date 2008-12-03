@@ -664,7 +664,7 @@ class Downloader(object):
 
                     # Package downloading messages:
                     elif isinstance(msg, StartPackageMessage):
-                        show('Downloading package %r...' % msg.package.id)
+                        show('Downloading package %r to %s...' % (msg.package.id, download_dir))
                     elif isinstance(msg, UpToDateMessage):
                         show('Package %s is already up-to-date!' %
                              msg.package.id, '  ')
@@ -1876,6 +1876,7 @@ def unzip(filename, root, verbose=True):
             dirpath = os.path.join(root, *pieces[:i+1])
             if not os.path.exists(dirpath):
                 os.mkdir(dirpath)
+
     # Extract files.
     for i, filename in enumerate(filelist):
         filepath = os.path.join(root, *filename.split('/'))
