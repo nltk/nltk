@@ -2076,4 +2076,19 @@ def download_shell(): DownloaderShell(_downloader).run()
 def download_gui(): DownloaderGUI(_downloader).mainloop()
 
 if __name__ == '__main__':
-    download()
+    from optparse import OptionParser
+    parser = OptionParser()
+    parser.add_option("-i", "--id", dest="id",
+                      help="download package ID", metavar="ID")
+    parser.add_option("-d", "--dir", dest="dir",
+                      help="download package to directory DIR", metavar="DIR")
+    parser.add_option("-q", "--quiet", dest="quiet", action="store_true", default=False, help="work quietly")
+    parser.add_option("-f", "--force", dest="force", action="store_true", default=False, help="force")
+
+    (options, args) = parser.parse_args()
+    
+    if options.id is None:
+        exit("No download package specified.")
+    
+    download(info_or_id=options.id, download_dir=options.dir,
+             quiet=options.quiet, force=options.force)
