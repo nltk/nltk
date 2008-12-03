@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 # Natural Language Toolkit: Corpus & Model Downloader
 #
 # Copyright (C) 2001-2008 NLTK Project
@@ -2087,8 +2089,8 @@ if __name__ == '__main__':
 
     (options, args) = parser.parse_args()
     
-    if options.id is None:
-        exit("No download package specified.")
+#    if options.id is None:
+#        exit("No download package specified.")
     
     download(info_or_id=options.id, download_dir=options.dir,
              quiet=options.quiet, force=options.force)
