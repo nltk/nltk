@@ -506,13 +506,13 @@ def discourse_demo(reading_command=None):
     print
     dt.add_sentence('A person dances', informchk=True)
     dt = DiscourseTester(['Vincent is a boxer', 'Fido is a boxer', 
-                          'Vincent is married', 'Fido barks', 
-                          reading_command])
+                          'Vincent is married', 'Fido barks'], 
+                          reading_command)
     dt.readings(filter=True)
     import nltk.data
-    world = nltk.data.load('/grammars/world.fol')
+    background = nltk.data.load('/grammars/sample_grammars/background1.fol')
     print
-    dt.add_background(world, quiet=True)
+    dt.add_background(background, quiet=True)
     dt.background()
     print
     dt.readings(filter=True)
