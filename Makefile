@@ -25,9 +25,10 @@ all: dist
 
 upload:
 #	rsync -avP -e ssh dist/* $(USER)@frs.sourceforge.net:uploads/
-	$(UPLOAD) --summary="NLTK $(VERSION) for Windows" dist/nltk-$(VERSION).win32.exe
-	$(UPLOAD) --summary="NLTK $(VERSION) for Mac" dist/nltk-$(VERSION).dmg
-	$(UPLOAD) --summary="NLTK $(VERSION) Source" dist/nltk-$(VERSION).zip
+	$(UPLOAD) --summary="NLTK $(VERSION) for Windows" dist/nltk-$(VERSION)*.win32.exe
+	$(UPLOAD) --summary="NLTK $(VERSION) for Mac" dist/nltk-$(VERSION)*.dmg
+	$(UPLOAD) --summary="NLTK $(VERSION) Source" dist/nltk-$(VERSION)*.zip
+	$(UPLOAD) --summary="NLTK $(VERSION) for Unix" dist/nltk-$(VERSION)*.rpm
 
 doc:
 	$(MAKE) -C doc all
@@ -67,12 +68,7 @@ nltk/nltk.jar: $(JAVA_SRC)
 # DISTRIBUTIONS
 ########################################################################
 
-.PHONY: dist codedist docdist datadist exampledist .dist.done
-
-dist: codedist docdist exampledist datadist contribdocdist
-	touch .dist.done
-
-codedist: zipdist rpmdist windist dmgdist
+dist: zipdist rpmdist windist dmgdist
 
 # gztardist: clean_code
 #	$(PYTHON) setup.py -q sdist --format=gztar
@@ -84,12 +80,6 @@ windist: clean_code
 	$(PYTHON) setup.py -q bdist --format=wininst
 docdist:
 	find doc -print | egrep -v '.svn|.DS_Store' | zip dist/nltk-doc-$(VERSION).zip -@
-
-contribdocdist:
-	find doc_contrib -print | egrep -v '.svn|.DS_Store' | zip dist/nltk-contribdoc-$(VERSION).zip -@
-
-exampledist:
-	find examples -print | egrep -v '.svn|.DS_Store' | zip dist/nltk-examples-$(VERSION).zip -@
 
 datadist:
 	find nltk_data -print | egrep -v '.svn|.DS_Store' | zip -n .zip:.gz dist/nltk-data-$(VERSION).zip -@

@@ -49,14 +49,33 @@ class AnnotationGraph(object):
                             result = [label]
                             result.extend(continuation)
                             yield result
+    
+    # proper analysis segments
+    def pas(self, Vr):
+        for i in range(self._len):
+            for p in self.pas2(Vr, i):
+                yield p
         
+    def pas2(self, Vr, left=0):
+        if left == self._len:
+            yield []
+        for (right, label) in self._index[left]:
+            for continuation in self.pas2(Vr, right):
+                if continuation == []:
+                    yield [label]
+                else:
+                    result = [label]
+                    result.extend(continuation)
+                    yield result
+
 
 def demo():
     s = '(S (NP (DT the) (NN cat)) (VP (VBD ate) (NP (DT a) (NN cookie))))'
+    s = '(VP (VBD ate) (NP (DT a) (NN cookie)))'
     t = Tree(s)
     ag = AnnotationGraph(t)
-    for ppa in ag.ppa(4):
-        print ppa
+    for p in ag.pas2([]):
+        print p
 
 if __name__ == '__main__':
     demo()
