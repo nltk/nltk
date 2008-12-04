@@ -40,6 +40,7 @@ edge you wish to apply a rule to.
 
 import pickle
 from tkFileDialog import asksaveasfilename, askopenfilename
+import Tkinter
 import math
 import string
 import os.path
