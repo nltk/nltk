@@ -199,7 +199,8 @@ class Package(object):
                  size=None, unzipped_size=None,
                  checksum=None, svn_revision=None,
                  copyright='Unknown', contact='Unknown',
-                 license='Unknown', author='Unknown', 
+                 license='Unknown', author='Unknown',
+                 unzip=True,
                  **kw):
         self.id = id
         """A unique identifier for this package."""
@@ -245,6 +246,10 @@ class Package(object):
         """The filename that should be used for this package's file.  It
            is formed by joining C{self.subdir} with C{self.id}, and
            using the same extension as C{url}."""
+
+        self.unzip = bool(int(unzip)) # '0' or '1'
+        """A flag indicating whether this corpus should be unzipped by
+           default."""
 
         # Include any other attributes provided by the XML file.
         self.__dict__.update(kw)
@@ -606,19 +611,19 @@ class Downloader(object):
         yield FinishDownloadMessage(info)
         yield ProgressMessage(80)
 
-        # If it's a zipfile, uncompress it.  [xx] we assume that it
-        # uncompresses into the right directory - do we?  I
-        # don't think so -- that's what topdir does?
-        # [xx] 
+        # If it's a zipfile, uncompress it.
         if info.filename.endswith('.zip'):
-            yield StartUnzipMessage(info)
             zipdir = os.path.join(download_dir, info.subdir)
-            try: unzip(filepath, zipdir, verbose=False)
-            except IOError, e:
-                yield ErrorMessage(info, 'Error unzipping %s:\n  %s' %
-                                   (info.filename, e))
-                return
-            yield FinishUnzipMessage(info)
+            # Unzip if we're unzipping by default; *or* if it's already
+            # been unzipped (presumably a previous version).
+            if info.unzip or os.path.exists(zipdir):
+                yield StartUnzipMessage(info)
+                try: unzip(filepath, zipdir, verbose=False)
+                except IOError, e:
+                    yield ErrorMessage(info, 'Error unzipping %s:\n  %s' %
+                                       (info.filename, e))
+                    return
+                yield FinishUnzipMessage(info)
 
         yield FinishPackageMessage(info)
 
