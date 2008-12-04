@@ -67,11 +67,11 @@ I still need to add a command-line interface.
 
 Usage::
 
-    python nltk/downloader.py [-d DATADIR] [-q] [-f] IDENTIFIER...
+    python nltk/downloader.py [-d DATADIR] [-q] [-f] -i IDENTIFIER
 
 or with py2.5+:
 
-    python -m nltk.downloader [-d DATADIR] [-q] [-f] IDENTIFIER...
+    python -m nltk.downloader [-d DATADIR] [-q] [-f] -i IDENTIFIER
 """
 #----------------------------------------------------------------------
 """

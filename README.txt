@@ -1,4 +1,4 @@
-Natural Language Toolkit (NLTK)   nltk.org
+Natural Language Toolkit (NLTK)   www.nltk.org
 
 Authors: Steven Bird <sb@csse.unimelb.edu.au>
          Edward Loper <edloper@gradient.cis.upenn.edu>
@@ -14,16 +14,14 @@ development in Natural Language Processing.
 
 Documentation: A substantial amount of documentation about how
 to use NLTK, including a textbook and API documention, is
-available from the NLTK website: http://nltk.org/
+available from the NLTK website: http://www.nltk.org/
 
   - The book covers a wide range of introductory topics in NLP, and
     shows how to do all the processing tasks using the toolkit.
-    http://nltk.org/book.html
 
   - The toolkit's reference documentation describes every module,
     interface, class, method, function, and variable in the toolkit.
     This documentation should be useful to both users and developers.  
-    http://nltk.org/doc/api/
 
 Mailing Lists: There are several mailing lists associated with NLTK:
 
