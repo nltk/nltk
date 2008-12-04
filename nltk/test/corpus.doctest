@@ -337,7 +337,7 @@ examples illustrate the use of the wordlist corpora:
     >>> words.files()
     ('en', 'en-basic')
     >>> words.words('en') # doctest: +ELLIPSIS
-    ['Aarhus', 'Aaron', 'Ababa', 'aback', 'abaft', 'abandon', ...]
+    ['A', 'a', 'aa', 'aal', 'aalii', 'aam', 'Aani', 'aardvark', 'aardwolf', ...]
     
     >>> stopwords.files() # doctest: +ELLIPSIS
     ('danish', 'dutch', 'english', 'french', ...)
