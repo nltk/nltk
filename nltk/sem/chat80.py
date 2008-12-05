@@ -124,13 +124,10 @@ current directory.
 
 import re
 import shelve
-import sqlite3
 import os
 import sys
 import nltk
-
-
-
+import sqlite3
 
 ###########################################################################
 # Chat-80 relation metadata bundles needed to build the valuation

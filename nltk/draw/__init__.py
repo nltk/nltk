@@ -27,4 +27,4 @@ try:
     import cfg, tree
 
 except ImportError:
-    print "Warning: draw modules not loaded (please install Tkinter library)."
+    print "Warning: nltk.draw package not loaded (please install Tkinter library)."
