@@ -1866,8 +1866,9 @@ def unzip(filename, root, verbose=True):
     
     try: zf = zipfile.ZipFile(filename) 
     except Exception, e:
-        raise ValueError('Error reading file %r!\n%s' % (filename, e))
-
+        yield ErrorMessage(filename, e)
+        return
+    
     # Get lists of directories & files
     namelist = zf.namelist()
     dirlist = [x for x in namelist if x.endswith('/')]
@@ -1891,7 +1892,8 @@ def unzip(filename, root, verbose=True):
         out = open(filepath, 'wb')
         try: contents = zf.read(filename)
         except Exception, e:
-            raise ValueError('Error reading file %r!\n%s' % (filename, e))
+            yield ErrorMessage(filename, e)
+            return
         out.write(contents)
         out.close()
         if verbose and (i*10/len(filelist) > (i-1)*10/len(filelist)):
@@ -2098,8 +2100,12 @@ if __name__ == '__main__':
                       help="download package ID", metavar="ID")
     parser.add_option("-d", "--dir", dest="dir",
                       help="download package to directory DIR", metavar="DIR")
-    parser.add_option("-q", "--quiet", dest="quiet", action="store_true", default=False, help="work quietly")
-    parser.add_option("-f", "--force", dest="force", action="store_true", default=False, help="force")
+    parser.add_option("-q", "--quiet", dest="quiet", action="store_true",
+                      default=False, help="work quietly")
+    parser.add_option("-f", "--force", dest="force", action="store_true",
+                      default=False, help="download even if already installed")
+    parser.add_option("-k", "--keep-going", dest="halt_on_error", action="store_false",
+                      default=True, help="keep going after errors, attempting to download each item")
 
     (options, args) = parser.parse_args()
     
@@ -2107,4 +2113,5 @@ if __name__ == '__main__':
 #        exit("No download package specified.")
     
     download(info_or_id=options.id, download_dir=options.dir,
-             quiet=options.quiet, force=options.force)
+             quiet=options.quiet, force=options.force,
+             halt_on_error=options.halt_on_error)
