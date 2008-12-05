@@ -1864,7 +1864,10 @@ def unzip(filename, root, verbose=True):
         sys.stdout.write('Unzipping %s' % os.path.split(filename)[1])
         sys.stdout.flush()
     
-    zf = zipfile.ZipFile(filename)
+    try: zf = zipfile.ZipFile(filename) 
+    except Exception, e:
+        raise ValueError('Error reading file %r!\n%s' % (filename, e))
+
     # Get lists of directories & files
     namelist = zf.namelist()
     dirlist = [x for x in namelist if x.endswith('/')]
@@ -1886,7 +1889,10 @@ def unzip(filename, root, verbose=True):
     for i, filename in enumerate(filelist):
         filepath = os.path.join(root, *filename.split('/'))
         out = open(filepath, 'wb')
-        out.write(zf.read(filename))
+        try: contents = zf.read(filename)
+        except Exception, e:
+            raise ValueError('Error reading file %r!\n%s' % (filename, e))
+        out.write(contents)
         out.close()
         if verbose and (i*10/len(filelist) > (i-1)*10/len(filelist)):
             sys.stdout.write('.')
