@@ -1,0 +1,17 @@
+% start S
+# ############################
+# Grammar Rules
+# ############################
+S -> SN S/SN
+S/?x -> SV/?x
+S/?x -> V[+aux] COMP SV/?x
+SN/SN ->
+SV/?x -> V[-aux] SN/?x
+# ############################
+# Lexical Rules
+# ############################
+V[-aux] -> 'adoras' | 'odias' 
+V[+aux] -> 'dices'
+ 
+SN -> 'quien' | 'que'
+COMP -> 'que'

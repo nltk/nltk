@@ -1,0 +1,131 @@
+% start S
+
+#############################
+# Grammar Rules
+#############################
+
+# S expansion rules
+S -> NP[num=?n, case=nom] VP[num=?n]
+S -> S CC[sem=cc_clause] S
+
+# NP expansion rules
+NP[num=?n, gender=?g] -> Det[num=?n] N[num=?n, gender=?g]
+NP[num=?n, gender=?g] -> PropN[num=?n, gender=?g]
+NP[num=?n, case=?c, gender=?g] -> Pro[num=?n, case=?c, gender=?g] 
+NP[num=pl, gender=?g] -> N[num=pl] 
+NP[num=?n, gender=?g] -> NP[num=?n, gender=?g] PP
+NP[num=pl] -> NP CC[sem=cc_np] NP
+
+# N's can have Adjectives in front
+N[num=?n] -> JJ[type=attributive] N[num=?n]
+
+# JJs can have ADVs in front
+JJ -> ADV JJ
+
+# VP expansion rules
+VP[tense=?t, num=?n] -> IV[tense=?t, num=?n]
+VP[tense=?t, num=?n] -> TV[tense=?t, num=?n] NP[case=acc]
+VP[tense=?t, num=?n] -> TVComp[tense=?t, num=?n] S
+VP[tense=?t, num=?n] -> DTV[tense=?t, num=?n] NP[case=acc] NP[case=acc]
+VP[tense=?t, num=?n] -> EquiV[tense=?t, num=?n] TO VP[tense=inf]
+VP[tense=?t, num=?n] -> ObjEquiV[tense=?t, num=?n] NP[case=acc] TO VP[tense=inf]
+VP[tense=?t, num=?n] -> RaisingV[tense=?t, num=?n] TO VP[tense=inf]
+VP[tense=?t, num=?n] -> ADV VP[tense=?t, num=?n]
+VP[tense=?t, num=?n] -> VP[tense=?t, num=?n] PP
+VP[tense=?t, num=?n] -> VP[tense=?t, num=?n] CC[sem=cc_vp] VP[tense=?t, num=?n]
+
+# PP expansion
+PP -> IN NP
+
+# Det types
+Det[num=sg] -> DT
+Det[num=pl] -> DTS
+Det         -> AT
+Det[num=?n] -> DTI[num=?n]
+Det[num=?n] -> ABN[num=?n]
+
+
+#############################
+# Lexical Rules
+#############################
+
+DT -> 'this' | 'each'
+DTS -> 'these'
+AT[num=sg, sem=ex_quant] -> 'a' | 'an'
+AT[sem=art_def] -> 'the'
+DTI[num=sg, sem=univ_quant] -> 'every'
+DTI[sem=ex_quant] -> 'some'
+ABN[num=sg] -> 'half'
+ABN[num=pl, sem=univ_quant] -> 'all'
+
+PropN[num=sg, gender=m, sem=pn] -> 'Kim' | 'Jody' | 'Mary' | 'Sue'
+PropN[num=sg, gender=m, sem=pn] -> 'David' | 'John' | 'Tom'
+PropN[num=pl, sem=pn] -> 'JM'
+
+N[num=sg, sem=n] -> 'boy' | 'car' | 'cat' | 'child' | 'criminal' | 'dog' | 'gift' | 'girl' | 'man' | 'mouse' | 'person' | 'pizza' | 'racketeer' | 'sandwich' | 'senator' | 'student' | 'telescope' | 'thing' | 'unicorn' | 'woman'
+N[num=pl, sem=n] -> 'boys' | 'cars' | 'cats' | 'children' | 'criminals' | 'dogs' | 'gifts' | 'girls' | 'men' | 'mice' | 'people' | 'pizzas' | 'racketeers' | 'sandwiches' | 'senators' | 'students' | 'telescopes' | 'things' | 'unicorns' | 'women'
+
+IV[tense=pres, num=sg, sem=iv] -> 'approaches' | 'comes' | 'disappears' | 'goes' | 'leaves' | 'vanishes' | 'walks' | 'yawns' 
+IV[tense=pres, num=pl, sem=iv] -> 'approach' | 'come' | 'disappear' | 'go' | 'leave' | 'vanish' | 'walk' | 'yawn'
+IV[tense=past, num=?n, sem=iv] -> 'approached' | 'came' | 'disappeared' | 'went' | 'left' | 'vanished' | 'walked' | 'yawned' 
+IV[tense=inf, num=na, sem=iv] -> 'approach' | 'come' | 'disappear' | 'go' | 'leave' | 'vanish' | 'walk' | 'yawn'
+
+TV[tense=pres, num=sg, sem=tv] -> 'chases' | 'eats' | 'finds' | 'likes' | 'sees' | 'orders'
+TV[tense=pres, num=pl, sem=tv] -> 'chase' | 'eat' | 'find' | 'like' | 'see' | 'order'
+TV[tense=past, num=?n, sem=tv] -> 'chased' | 'ate' | 'found' | 'liked' | 'saw' | 'ordered'
+TV[tense=inf, num=na, sem=tv] -> 'chase' | 'eat' | 'find' | 'like' | 'see' | 'order'
+
+DTV[tense=pres, num=sg, sem=dtv] -> 'gives'
+DTV[tense=pres, num=pl, sem=dtv] -> 'give'
+DTV[tense=past, num=?n, sem=dtv] -> 'gave'
+DTV[tense=inf, num=na, sem=dtv] -> 'give'
+
+TVComp[tense=pres, num=sg, sem=tv_comp] -> 'believes'
+TVComp[tense=pres, num=pl, sem=tv_comp] -> 'believe'
+TVComp[tense=past, num=?n, sem=tv_comp] -> 'believed'
+TVComp[tense=inf, num=na, sem=tv_comp] -> 'believe'
+
+EquiV[tense=pres, num=sg, sem=equi] -> 'tries'
+EquiV[tense=pres, num=pl, sem=equi] -> 'try'
+EquiV[tense=past, num=?n, sem=equi] -> 'tried'
+EquiV[tense=inf, num=na, sem=equi] -> 'try'
+
+ObjEquiV[tense=pres, num=sg, sem=obj_equi] -> 'persuades'
+ObjEquiV[tense=pres, num=pl, sem=obj_equi] -> 'persuade'
+ObjEquiV[tense=past, num=?n, sem=obj_equi] -> 'persuaded'
+ObjEquiV[tense=inf, num=na, sem=obj_equi] -> 'persuade'
+
+RaisingV[tense=pres, num=sg, sem=raising] -> 'seems'
+RaisingV[tense=pres, num=pl, sem=raising] -> 'seem'
+RaisingV[tense=past, num=?n, sem=raising] -> 'seemed'
+RaisingV[tense=inf, num=na, sem=raising] -> 'seem'
+
+#infinitive marker
+TO -> 'to'
+
+JJ[type=attributive, sem=adj_attributive_intersective] -> 'gray' | 'swedish'
+JJ[type=attributive, sem=adj_attributive_nonintersective] -> 'alleged'
+JJ[type=attributive, sem=adj_attributive_relative_intersective] -> 'big' | 'fat'
+JJ[type=attributive, sem=adj_attributive_relative_nonintersective] -> 'confessed' | 'former'
+JJ[type=predicative, sem=adj_predicative] -> 'gray' | 'swedish'
+
+ADV[sem=adv] -> 'apparently' | 'possibly' | 'very'
+ADV[sem=adv_ModifyingRelativeAdj] -> 'very'
+
+CC[sem=cc_clause] -> 'and'
+CC[sem=cc_np] -> 'and'
+CC[sem=cc_vp] -> 'and'
+
+IN -> 'at' | 'by' | 'from' | 'on' | 'with'
+
+Pro[num=sg, gender=m, -reflex, case=nom, sem=pro] -> 'he'
+Pro[num=sg, gender=m, -reflex, case=acc, sem=pro] -> 'him'
+Pro[num=sg, gender=m, +reflex, case=acc, sem=pro] -> 'himself'
+Pro[num=sg, gender=f, -reflex, sem=pro] -> 'her'
+Pro[num=sg, gender=f, +reflex, case=acc, sem=pro] -> 'herself'
+Pro[num=sg, gender=n, -reflex, sem=pro] -> 'it'
+Pro[num=sg, gender=n, +reflex, case=acc, sem=pro] -> 'itself'
+Pro[num=pl, -reflex, case=nom, sem=pro] -> 'they'
+Pro[num=pl, -reflex, case=acc, sem=pro] -> 'them'
+Pro[num=pl, +reflex, case=acc, sem=pro] -> 'themselves'
+Pro[num=pl, +reflex, case=acc, sem=recip] -> 'eachother'

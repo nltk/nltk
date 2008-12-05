@@ -1,0 +1,70 @@
+## Natural Language Toolkit: sem2.fcfg
+##
+## Longer feature-based grammar with more quantifers, and illustrating
+## transitive verbs and prepositional phrases (PPs). The
+## interpretation of PPs is a bit weird and could do with further
+## work.
+## 
+## Author: Ewan Klein <ewan@inf.ed.ac.uk> 
+## URL: <http://nltk.sourceforge.net>
+## For license information, see LICENSE.TXT
+##
+## $Id: sem2.cfg 4674 2007-06-14 08:55:32Z ehk $
+
+% start S
+############################
+# Grammar Rules
+#############################
+
+S[sem = <?subj(?vp)>] -> NP[num=?n,sem=?subj] VP[num=?n,sem=?vp]
+
+NP[num=?n,sem=<?det(?nom)> ] -> Det[num=?n,sem=?det]  Nom[num=?n,sem=?nom]
+NP[loc=?l,num=?n,sem=?np] -> PropN[loc=?l,num=?n,sem=?np]
+
+Nom[num=?n,sem=?nom] -> N[num=?n,sem=?nom]
+Nom[num=?n,sem=<?pp(?nom)>] -> N[num=?n,sem=?nom] PP[sem=?pp]
+
+VP[num=?n,sem=<?v(?obj)>] -> TV[num=?n,sem=?v] NP[sem=?obj]
+VP[num=?n,sem=?v] -> IV[num=?n,sem=?v]
+
+VP[num=?n,sem=<?pp(?vp)>] -> VP[num=?n,sem=?vp] PP[sem=?pp]
+
+PP[sem=<?p(?np)>] -> P[loc=?l,sem=?p] NP[loc=?l,sem=?np]
+
+#############################
+# Lexical Rules
+#############################
+
+PropN[-loc,num=sg,sem=<\P.P(john)>] -> 'John'
+PropN[-loc,num=sg,sem=<\P.P(mary)>] -> 'Mary'
+PropN[-loc,num=sg,sem=<\P.P(suzie)>] -> 'Suzie'
+PropN[-loc,num=sg,sem=<\P.P(fido)>] -> 'Fido'
+PropN[+loc, num=sg,sem=<\P.P(noosa)>] -> 'Noosa'
+
+NP[-loc, num=sg, sem=<\P.\x.P(x)>] -> 'who'  
+
+Det[num=sg,sem=<\P Q. all x. (P(x) -> Q(x))>] -> 'every'
+Det[num=pl,sem=<\P Q. all x. (P(x) -> Q(x))>] -> 'all'
+Det[sem=<\P Q. exists x. (P(x) & Q(x))>] -> 'some'
+Det[num=sg,sem=<\P Q. exists x. (P(x) & Q(x))>] -> 'a'
+
+N[num=sg,sem=<boy>] -> 'boy'
+N[num=pl,sem=<boy>] -> 'boys'
+N[num=sg,sem=<girl>] -> 'girl'
+N[num=pl,sem=<girl>] -> 'girls'
+N[num=sg,sem=<dog>] -> 'dog'
+N[num=pl,sem=<dog>] -> 'dogs'
+
+TV[num=sg,sem=<\X y. X(\x. chase(y,x))>,tns=pres] -> 'chases'
+TV[num=pl,sem=<\X y. X(\x. chase(y,x))>,tns=pres] -> 'chase'
+TV[num=sg,sem=<\X y. X(\x. see(y,x))>,tns=pres] -> 'sees'
+TV[num=pl,sem=<\X y. X(\x. see(y,x))>,tns=pres] -> 'see'
+TV[num=sg,sem=<\X y. X(\x. chase(y,x))>,tns=pres] -> 'chases'
+TV[num=pl,sem=<\X y. X(\x. chase(y,x))>,tns=pres] -> 'chase'
+IV[num=sg,sem=<\x. bark(x)>,tns=pres] -> 'barks'
+IV[num=pl,sem=<\x. bark(x)>,tns=pres] -> 'bark'
+IV[num=sg,sem=<\x. walk(x)>,tns=pres] -> 'walks'
+IV[num=pl,sem=<\x. walk(x)>,tns=pres] -> 'walk'
+
+P[+loc,sem=<\X P x. X(\y. (P(x) & in(x,y)))>] -> 'in'
+P[-loc,sem=<\X P x. X(\y. (P(x) & with(x,y)))>] -> 'with'

@@ -1,0 +1,27 @@
+1	John	_	NNP	_	_	2	SUBJ	_	_
+2	runs	_	VB	_	_	0	ROOT	_	_
+
+1	a	_	DT	_	_	2	SPEC	_	_
+2	man	_	NN	_	_	3	SUBJ	_	_
+3	runs	_	VB	_	_	0	ROOT	_	_
+
+1	John	_	NNP	_	_	2	SUBJ	_	_
+2	sees	_	VB	_	_	0	ROOT	_	_
+3	Mary	_	NNP	_	_	2	OBJ	_	_
+
+1	every	_	DT	_	_	2	SPEC	_	_
+2	girl	_	NN	_	_	3	SUBJ	_	_
+3	chases	_	VB	_	_	0	ROOT	_	_
+4	an	_	DT	_	_	5	SPEC	_	_
+5	animal	_	NN	_	_	3	OBJ	_	_
+
+1	Bill	_	NNP	_	_	2	SUBJ	_	_
+2	sees	_	VB	_	_	0	ROOT	_	_
+3	a	_	DT	_	_	4	SPEC	_	_
+4	dog	_	NN	_	_	2	OBJ	_	_
+
+1	every	_	DT	_	_	2	SPEC	_	_
+2	girl	_	NN	_	_	3	SUBJ	_	_
+3	chases	_	VB	_	_	0	ROOT	_	_
+4	John	_	NNP	_	_	3	OBJ	_	_
+
