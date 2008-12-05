@@ -15,6 +15,12 @@ set-theoretic models.
 from util import *
 from evaluate import *
 from logic import *
-from relextract import *
-from chat80 import *
 
+try:
+    import sqlite3
+    
+    from relextract import *
+    from chat80 import *
+
+except ImportError:
+    print "Warning: nltk.sem.relextract and nltk.sem.chat80 modules\nnot loaded (please install sqlite3 library)."
