@@ -1379,7 +1379,6 @@ def _lcs_ic(synset1, synset2, ic, verbose=False):
     @return: The information content of the two synsets and their most informative subsumer
     """
 
-    pos = synset1.pos
     ic1 = information_content(synset1, ic)
     ic2 = information_content(synset2, ic)
     subsumer_ic = max(information_content(s, ic)
@@ -1393,8 +1392,12 @@ def _lcs_ic(synset1, synset2, ic, verbose=False):
 # Utility functions
 
 def information_content(synset, ic):
-    pos = synset.pos
-    return -math.log(ic[pos][synset.offset] / ic[pos][0])
+    try:
+        icpos = ic[synset.pos]
+    except KeyError:
+        raise WordNetError('Information content file has no entries for part-of-speech: %s' % synset.pos)
+
+    return -math.log(icpos[synset.offset] / icpos[0])
 
  
 # get the part of speech (NOUN or VERB) from the information content record
