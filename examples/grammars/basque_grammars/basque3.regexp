@@ -1,0 +1,3 @@
+IS:
+     {<.*>+}           # Edozer Onartzen Duen Chunkerra
+     }<ADI.*|ADL.*|ADT.*|PUNT.*|POST.*|LOT.*|ADB.*>+{      # Chink Bezala Barneratu Aditzak (ADI.*, ADT.* eta ADL.*), Adberbioak (ADB.*), Preposizioak (POST.*), Loturak (LOT.*) Eta Puntuazio Ikurrak (PUNT.*)

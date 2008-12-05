@@ -1,0 +1,48 @@
+## Natural Language Toolkit: storage.fcfg
+##
+## Feature-based grammar that implements Cooper storage by dividing the
+## semantics for each phrase into two pieces: the core semantics
+## ('sem','core') and a sequence of binding operators ('sem','store').
+## Each binding operator is encoded as a logic term <bo(quant, var)>,
+## where <quant> is a quantifier expression and the individual variable
+## <@var> specifies the 'address' of the quantifier in the core
+## semantics.  and <predicate> is a predicate describing that variable.
+
+## In order for this grammar to generate the correct results, all
+## variables of the form <@var> must be instantiated (i.e., replaced
+## by unique new variables) whenever they are used.  This can be
+## accomplished by using the InstantiateVarsChart class when parsing.
+## 
+## Author: Edward Loper <edloper@gradient.cis.upenn.edu>,
+##         Ewan Klein <ewan@inf.ed.ac.uk> 
+## URL: <http://nltk.sourceforge.net>
+## For license information, see LICENSE.TXT
+##
+## $Id:$
+
+%start S
+
+S[sem=[core=<?vp(?subj)>, store=(?b1+?b2)]] -> NP[sem=[core=?subj, store=?b1]] VP[sem=[core=?vp, store=?b2]]
+
+VP[sem=?s] -> IV[sem=?s]
+VP[sem=[core=<?v(?obj)>, store=(?b1+?b2)]] -> TV[sem=[core=?v, store=?b1]] NP[sem=[core=?obj, store=?b2]]
+VP[sem=[core=<?v(?obj)>, store=(?b1+?b2+?b3)]] -> DTV[sem=[core=?v, store=?b1]] NP[sem=[core=?obj, store=?b2]] PP[+to, sem=[core=?pp, store=?b3]]
+
+NP[sem=[core=<@x>, store=((<bo(?det(?n),@x)>)+?b1+?b2)]] -> Det[sem=[core=?det, store=?b1]] N[sem=[core=?n, store=?b2]]
+
+PP[+to, sem=[core=?np, store=?b1]] -> P NP[sem=[core=?np, store=?b1]]
+
+# Lexical items:
+Det[sem=[core=<\Q P.exists x.(Q(x) & P(x))>, store=(/)]] -> 'a'
+Det[sem=[core=<\Q P.all x.(Q(x) implies P(x))>, store=(/)]] -> 'every'
+
+N[sem=[core=<dog>, store=(/)]] -> 'dog' 
+N[sem=[core=<bone>, store=(/)]] -> 'bone' 
+N[sem=[core=<man>, store=(/)]] -> 'man' 
+IV[sem=[core=<\x.smile(x)>, store=(/)]] -> 'smiles' 
+IV[sem=[core=<\x.walk(x)>, store=(/)]] -> 'walks'
+TV[sem=[core=<\y x.feed(x,y)>, store=(/)]] -> 'feeds' 
+DTV[sem=[core=<\y x.give(x,y, z)>, store=(/)]] -> 'gives' 
+NP[sem=[core=<@x>, store=(<bo(\P.P(angus),@x)>)]] -> 'Angus' 
+NP[sem=[core=<@x>, store=(<bo(\P.P(cyril),@x)>)]] -> 'Cyril'
+P[+to] -> 'to'

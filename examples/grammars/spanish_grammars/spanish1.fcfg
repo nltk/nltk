@@ -1,0 +1,32 @@
+% start S
+# ############################
+# Grammar Rules
+# ############################
+S -> SN[num=?n,gen=?g] SV[num=?n,tiempo=?t]
+SN[num=?n,gen=?g,+PROP] -> NP[num=?n]
+SN[num=?n,gen=?g,-PROP] -> DET[num=?n,gen=?g] NC[num=?n,gen=?g]
+SN[num=plural,gen=?g,-PROP] -> DET[num=plural,gen=?g] NC[num=plural,gen=?g]
+SV[tiempo=?t,num=?n] -> VI[tiempo=?t,num=?n]
+SV[tiempo=?t,num=?n] -> VT[tiempo=?t,num=?n] SN[-PROP]
+SV[tiempo=?t,num=?n] -> VT[tiempo=?t,num=?n] PREP SN
+# ############################
+# Lexical Rules
+# ############################
+DET[num=singular,gen=masculino] -> 'un' | 'el'
+DET[num=singular,gen=femenino] -> 'una' | 'la'
+DET[num=plural,gen=masculino] -> 'unos' | 'los'
+DET[num=plural,gen=femenino] -> 'unas' | 'las'
+PREP -> 'a'
+NP[num=singular] -> 'Miguel' | 'Sara' | 'Pedro'
+NC[num=singular,gen=masculino] -> 'perro' | 'gato' | 'vecino' | 'profesor'
+NC[num=singular,gen=femenino] -> 'perra' | 'gata' | 'vecina' | 'profesora'
+NC[num=plural,gen=masculino] -> 'perros' | 'gatos' | 'vecinos' | 'profesores'
+NC[num=plural,gen=femenino] -> 'perras' | 'gatas' | 'vecinas' | 'profesoras'
+VI[tiempo=pasado,num=singular] -> 'desaparecio' | 'anduvo' | 'murio'
+VI[tiempo=presente,num=singular] -> 'desaparece' | 'anda' | 'muere'
+VI[tiempo=pasado,num=plural] -> 'desaparecion' | 'anduvieron' | 'murieron'
+VI[tiempo=presente,num=plural] -> 'desaparecen' | 'andan' | 'mueren'
+VT[tiempo=pasado,num=singular] -> 'vio' | 'adoró' | 'gritó' | 'odio'
+VT[tiempo=presente,num=singular] -> 've' | 'adora' | 'grita' | 'odia'
+VT[tiempo=pasado,num=plural] -> 'vieron' | 'adoraron' | 'gritaron' | 'odiaron'
+VT[tiempo=presente,num=plural] -> 'ven' | 'adoran' | 'gritan' | 'odian'

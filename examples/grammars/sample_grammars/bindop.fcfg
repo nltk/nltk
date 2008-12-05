@@ -1,0 +1,44 @@
+## Natural Language Toolkit: sem0.fcfg
+##
+## Feature-based grammar that divides the semantics for each element
+## into two pieces: the core semantics ('sem','core') and a set of
+## binding operators ('sem','bo').  Each binding operator is encoded
+## as a lambda-calculus expression <(bo @var predicate)>, specifying
+## that <@var> is an individual variable that should be instantiated,
+## and <predicate> is a predicate describing that variable.
+##
+## In order for this grammar to generate the correct results, all
+## variables of the form <@var> must be instantiated (i.e., replaced
+## by unique new variables) whenever they are used.  This can be
+## accomplished by using the InstantiateVarsChart class when parsing.
+## 
+## Author: Edward Loper <edloper@gradient.cis.upenn.edu>,
+##         Ewan Klein <ewan@inf.ed.ac.uk> 
+## URL: <http://nltk.sourceforge.net>
+## For license information, see LICENSE.TXT
+##
+## $Id: sem0.cfg 4674 2007-06-14 08:55:32Z ehk $
+
+%start S
+## Grammar summary:
+##   S -> NP VP
+##   VP -> TV NP | IV
+##   NP -> Det N | proper nouns...
+##   TV -> transitive verbs...
+##   IV -> intransitive verbs...
+##   Det -> determiners...
+
+S[sem=[core=<?vp(?subj)>, bo={?b1+?b2}]] -> NP[sem=[core=?subj, bo=?b1]] VP[sem=[core=?vp, bo=?b2]]
+
+VP[sem=[core=<?v(?obj)>, bo={?b1+?b2}]] -> TV[sem=[core=?v, bo=?b1]] NP[sem=[core=?obj, bo=?b2]]
+
+VP[sem=?s] -> IV[sem=?s]
+
+NP[sem=[core=<@x>, bo={{<bo(?det(?n),@x)>}+?b1+?b2}]] -> Det[sem=[core=?det, bo=?b1]] N[sem=[core=?n, bo=?b2]]
+
+# Lexical items:
+Det[sem=[core=<\Q P.exists x.(Q(x) & P(x))>, bo={/}]] -> 'a'
+N[sem=[core=<dog>, bo={/}]] -> 'dog' | 'cat' | 'mouse' 
+IV[sem=[core=<\x.bark(x)>, bo={/}]] -> 'barks' | 'eats' | 'walks'
+TV[sem=[core=<\x y.feed(y,x)>, bo={/}]] -> 'feeds' | 'walks'
+NP[sem=[core=<@x>, bo={<bo(\P. P(John),@x)>}]] -> 'john' | 'alex'

@@ -1,0 +1,4 @@
+
+	NP: {<d.*>*<n.*><a.*>*} # Busca det + nombre + adjetivo
+	NP: {<d.*>*<n.*>+} # Busca seguidas de nombres
+

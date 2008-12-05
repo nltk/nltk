@@ -1,0 +1,4 @@
+	SN -> N [0.5]| N Adj [0.3]| SN Conj SN [0.2]
+	N -> 'hombres' [0.1]| 'mujeres' [0.2]| 'niños' [0.3]| N Conj N [0.4]
+	Adj -> 'mayores' [0.3]| 'jovenes' [0.7]
+	Conj -> 'y' [0.6]| 'o' [0.3] | 'e' [0.1]
