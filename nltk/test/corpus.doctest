@@ -383,7 +383,7 @@ and their categories (in both directions).  Access the categories using the ``ca
 method, e.g.:
 
     >>> from nltk.corpus import brown, movie_reviews, reuters
-    >>> brown.categories()
+    >>> brown.categories() # doctest: +NORMALIZE_WHITESPACE
     ['adventure', 'belles_lettres', 'editorial', 'fiction', 'government', 'hobbies', 'humor',
     'learned', 'lore', 'mystery', 'news', 'religion', 'reviews', 'romance', 'science_fiction']
     >>> movie_reviews.categories()
@@ -1046,7 +1046,7 @@ we can create a customized corpus reader for the genesis corpus that
 uses a different sentence tokenizer as follows:
 
     >>> # Find the directory where the corpus lives.  
-    >>> genesis_dir = nltk.data.find('corpora/genesis.zip')
+    >>> genesis_dir = nltk.data.find('corpora/genesis.zip').join('genesis/')
     >>> # Create our custom sentence tokenizer.
     >>> my_sent_tokenizer = nltk.RegexpTokenizer('[^.!?]+')
     >>> # Create the new corpus reader object.
@@ -1062,7 +1062,7 @@ directory '/usr/share/some-corpus', then you can create a corpus
 reader for it with::
 
     >>> my_corpus = nltk.corpus.PlaintextCorpusReader(
-    ...     '/usr/share/some-corpus', '.*\.txt')
+    ...     '/usr/share/some-corpus', '.*\.txt') # doctest: +SKIP
 
 For a complete list of corpus reader subclasses, see the API
 documentation for `nltk.corpus.CorpusReader`.
@@ -1633,7 +1633,7 @@ The Brown Corpus uses the tagged corpus reader:
     >>> from nltk.corpus import brown
     >>> brown.files() # doctest: +ELLIPSIS
     ('ca01', 'ca02', 'ca03', 'ca04', 'ca05', 'ca06', 'ca07', ...)
-    >>> brown.categories() # doctest: +ELLIPSIS
+    >>> brown.categories() # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
     ['adventure', 'belles_lettres', 'editorial', 'fiction', 'government', 'hobbies', 'humor',
     'learned', 'lore', 'mystery', 'news', 'religion', 'reviews', 'romance', 'science_fiction']
     >>> brown.root # doctest: +ELLIPSIS
@@ -1673,7 +1673,7 @@ Selecting classids based on various selectors:
     ['accompany-51.7']
     >>> verbnet.classids(fileid='approve-77.xml')
     ['approve-77']
-    >>> verbnet.classids(classid='admire-31_2') # subclasses
+    >>> verbnet.classids(classid='admire-31.2') # subclasses
     ['admire-31_2-1']
 
 vnclass() accepts filenames, long ids, and short ids:
