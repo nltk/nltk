@@ -22,10 +22,7 @@ print "text3:", text3.name
 text4 = Text(inaugural.words(), name="Inaugural Address Corpus")
 print "text4:", text4.name
 
-text5 = Text(nps_chat.words(['10-26-teens_706posts.xml',
-                             '11-08-teens_706posts.xml',
-                             '11-09-teens_706posts.xml']),
-                             name="Teen Chat Corpus")
+text5 = Text(nps_chat.words(), name="Chat Corpus")
 print "text5:", text5.name
 
 text6 = Text(webtext.words('grail.txt'), name="Monty Python and the Holy Grail")
