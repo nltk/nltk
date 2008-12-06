@@ -89,7 +89,7 @@ class ContextIndex(object):
         scores = self.word_similarity_dict(word)
         return sorted(scores, key=scores.get)[:n]
 
-    def common_contexts(self, words, n, fail_on_unknown=False):
+    def common_contexts(self, words, fail_on_unknown=False):
         """
         Find contexts where the specified words can all appear; and
         return a frequency distribution mapping each context to the
@@ -97,8 +97,6 @@ class ContextIndex(object):
         
         @param words: The words used to seed the similarity search
         @type words: C{str} 
-        @param num: The number of words to generate (default=20)
-        @type num: C{int}
         @param fail_on_unknown: If true, then raise a value error if
             any of the given words do not occur at all in the index.
         """
@@ -337,6 +335,18 @@ class Text(object):
         colloc_strings = [w1+' '+w2 for w1, w2 in self._collocations[:num]]
         print tokenwrap(colloc_strings, separator="; ")
 
+    def count(self, word):
+        """
+        Count the number of times this word appears in the text.
+        """
+        return self.tokens.count(word)
+
+    def index(self, word):
+        """
+        Find the index of the first occurrence of the word in the text.
+        """
+        return self.tokens.index(word)
+
     def readability(self, method):
         # code from nltk_contrib.readability
         raise NotImplementedError
@@ -395,7 +405,7 @@ class Text(object):
                 self.tokens, self._context, key=str.lower)
 
         try:
-            fd = self._word_context_index.common_contexts(words, n, True)
+            fd = self._word_context_index.common_contexts(words, True)
             if not fd:
                 print "No common contexts were found"
             else:
