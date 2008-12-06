@@ -86,10 +86,10 @@ class CMUDictCorpusReader(CorpusReader):
     @deprecated("Use .entries() or .transcriptions() instead.")
     def read(self, items='cmudict', format='listed'):
         if format == 'listed': return self.entries(items)
-        if format == 'dictionary': return self.transcriptions(items)
+        if format == 'dictionary': return self.dict(items)
         raise ValueError('bad format %r' % format)
-    @deprecated("Use .transcriptions() instead.")
-    def dictionary(self, items='cmudict'): return self.transcriptions(items)
+    @deprecated("Use .dict() instead.")
+    def dictionary(self, items='cmudict'): return self.dict(items)
     @deprecated("Use .entries() instead.")
     def listed(self, items='cmudict'): return self.entries(items)
     #}

@@ -63,11 +63,11 @@ specifying a different URL for the package index file.
 
 Usage::
 
-    python nltk/downloader.py [-d DATADIR] [-q] [-f] [-k] IDENTIFIER
+    python nltk/downloader.py [-d DATADIR] [-q] [-f] [-k] PACKAGE_IDS
 
 or with py2.5+:
 
-    python -m nltk.downloader [-d DATADIR] [-q] [-f] [-k] IDENTIFIER
+    python -m nltk.downloader [-d DATADIR] [-q] [-f] [-k] PACKAGE_IDS
 """
 #----------------------------------------------------------------------
 """
@@ -2098,8 +2098,6 @@ def download_gui(): DownloaderGUI(_downloader).mainloop()
 if __name__ == '__main__':
     from optparse import OptionParser
     parser = OptionParser()
-    parser.add_option("-i", "--id", dest="id",
-                      help="download package ID", metavar="ID")
     parser.add_option("-d", "--dir", dest="dir",
                       help="download package to directory DIR", metavar="DIR")
     parser.add_option("-q", "--quiet", dest="quiet", action="store_true",
@@ -2112,9 +2110,6 @@ if __name__ == '__main__':
     (options, args) = parser.parse_args()
     
     if args:
-        if options.id is not None:
-            parser.error('Specify packages with -i, or by listing them; '
-                         'not both.')
         for pkg_id in args:
             rv = download(info_or_id=pkg_id, download_dir=options.dir,
                           quiet=options.quiet, force=options.force,
@@ -2122,6 +2117,6 @@ if __name__ == '__main__':
             if rv==False and options.halt_on_error:
                 break
     else:
-        download(info_or_id=options.id, download_dir=options.dir,
+        download(download_dir=options.dir,
                  quiet=options.quiet, force=options.force,
                  halt_on_error=options.halt_on_error)
