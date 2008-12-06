@@ -11,21 +11,32 @@ Corpus reader for the Recognizing Textual Entailment (RTE) Challenge Corpora.
 The files were taken from the RTE1, RTE2 and RTE3 datasets and the filenames
 were regularized. 
 
-Filenames are of the form rte*_dev.xml and rte*_test.xml. The latter are the gold standard annotated files.
+Filenames are of the form rte*_dev.xml and rte*_test.xml. The latter are the
+gold standard annotated files.
 
-Each entailment corpus is a list of 'text'/'hypothesis' pairs. The following example is taken from RTE3::
+Each entailment corpus is a list of 'text'/'hypothesis' pairs. The following
+example is taken from RTE3::
 
  <pair id="1" entailment="YES" task="IE" length="short" >
-    <t>The sale was made to pay Yukos' US$ 27.5 billion tax bill, Yuganskneftegaz was originally sold for US$ 9.4 billion to a little known company Baikalfinansgroup which was later bought by the Russian state-owned oil company Rosneft .</t>
+ 
+    <t>The sale was made to pay Yukos' US$ 27.5 billion tax bill,
+    Yuganskneftegaz was originally sold for US$ 9.4 billion to a little known
+    company Baikalfinansgroup which was later bought by the Russian
+    state-owned oil company Rosneft .</t>
+    
    <h>Baikalfinansgroup was sold to Rosneft.</h>
  </pair>
 
-In order to provide globally unique IDs for each pair, a new attribute C{challenge} has been added to the root element C{entailment-corpus} of each file, taking values 1, 2 or 3.  The GID is formatted 'm-n', where 'm' is the challenge number and 'n' is the pair ID.
+In order to provide globally unique IDs for each pair, a new attribute
+C{challenge} has been added to the root element C{entailment-corpus} of each
+file, taking values 1, 2 or 3. The GID is formatted 'm-n', where 'm' is the
+challenge number and 'n' is the pair ID.
 """
 
-from util import *
-from api import *
-from xmldocs import XMLCorpusReader
+from nltk.corpus.reader.util import *
+from nltk.corpus.reader.api import *
+from nltk.corpus.reader.xmldocs import *
+
 
 def norm(value_string):
     """
@@ -90,17 +101,23 @@ class RTEPair:
             return '<RTEPair: id=%s>' % self.id
 
 
-# [xx] This could use more documentation!
 class RTECorpusReader(XMLCorpusReader):
     """
     Corpus reader for corpora in RTE challenges.
+    
+    This is just a wrapper around the XMLCorpusReader. See module docstring above for the expected 
+    structure of input documents. 
     """
+        
     def _read_etree(self, doc):
         """
-        Build a list of RTE text/hypothesis pairs from the XML input.
+        Map the XML input into an RTEPair.
+        
+        This uses the C{getiterator()} method from the ElementTree package to
+        find all the C{<pair>} elements.
         
         @param doc: a parsed XML document
-        @return: a list of C{RTEPair}s
+        @rtype: C{list} of L{RTEPair}s
         """
         try:
             challenge = doc.attrib['challenge']
@@ -110,17 +127,17 @@ class RTECorpusReader(XMLCorpusReader):
                 for pair in doc.getiterator("pair")]
 
 
-    def pairs(self, files=None):
+    def pairs(self, files):
         """
-        Build a list of RTE pairs from a RTE corpus.
+        Build a list of RTEPairs from a RTE corpus.
+        
+        @param files: a list of RTE corpus filenames
+        @type: C{list}
+        @rtype: C{list} of L{RTEPair}s
         """
-        doc = self.xml(files)
-        if doc.tag == 'documents':
-            return concat([self._read_etree(corpus)
-                           for corpus in doc.getchildren()])
-        else:
-            return self._read_etree(doc)
-
+        if isinstance(files, basestring): files = [files]
+        return concat([self._read_etree(self.xml(filename)) for filename in files])
+    
 
 
 
