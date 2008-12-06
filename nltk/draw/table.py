@@ -1046,6 +1046,7 @@ class Table(object):
 # Demo/Test Function
 ######################################################################
 
+# update this to use new WordNet API
 def demo():
     root = Tk()
     root.bind('<Control-q>', lambda e: root.destroy())

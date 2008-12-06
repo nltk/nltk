@@ -23,17 +23,17 @@ _CORPORA = {
             'English: Brown Corpus':
                 lambda: corpus.brown.words(),
             'English: Brown Corpus (Press)':
-                lambda: corpus.brown.words(categories='abc'),
+                lambda: corpus.brown.words(categories=['news', 'editorial', 'reviews']),
             'English: Brown Corpus (Religion)':
-                lambda: corpus.brown.words(categories='d'),
+                lambda: corpus.brown.words(categories='religion'),
             'English: Brown Corpus (Learned)':
-                lambda: corpus.brown.words(categories='j'),
+                lambda: corpus.brown.words(categories='learned'),
             'English: Brown Corpus (Science Fiction)':
-                lambda: corpus.brown.words(categories='m'),
+                lambda: corpus.brown.words(categories='science_fiction'),
             'English: Brown Corpus (Romance)':
-                lambda: corpus.brown.words(categories='p'),
+                lambda: corpus.brown.words(categories='romance'),
             'English: Brown Corpus (Humor)':
-                lambda: corpus.brown.words(categories='r'),
+                lambda: corpus.brown.words(categories='humor'),
             'English: NPS Chat Corpus':
                 lambda: corpus.nps_chat.words(),
             'English: Wall Street Journal Corpus':
