@@ -34,7 +34,7 @@ class XMLCorpusReader(CorpusReader):
         CorpusReader.__init__(self, root, files)
         
     def xml(self, fileid=None):
-        # Make sure we have exactly one file -- no concatinating xml.
+        # Make sure we have exactly one file -- no concatenating XML.
         if fileid is None and len(self._files) == 1:
             fileid = self._files[0]
         if not isinstance(fileid, basestring):
@@ -71,7 +71,7 @@ class XMLCorpusView(StreamBackedCorpusView):
     XML elements should be included in the view; and each (non-nested)
     element that matches this specification corresponds to one item in
     the view.  Tag specifications are regular expressions over tag
-    paths, where a tag path is a list of element tag names, sepaated
+    paths, where a tag path is a list of element tag names, separated
     by '/', indicating the ancestry of the element.  Some examples:
 
       - C{'foo'}: A top-level element whose tag is C{foo}.
