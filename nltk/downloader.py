@@ -617,7 +617,7 @@ class Downloader(object):
             zipdir = os.path.join(download_dir, info.subdir)
             # Unzip if we're unzipping by default; *or* if it's already
             # been unzipped (presumably a previous version).
-            if info.unzip or os.path.exists(zipdir):
+            if info.unzip or os.path.exists(os.path.join(zipdir, info.id)):
                 yield StartUnzipMessage(info)
                 try: unzip(filepath, zipdir, verbose=False)
                 except IOError, e:
@@ -747,11 +747,12 @@ class Downloader(object):
         if md5_hexdigest(filepath) != info.checksum:
             return self.STALE
 
-        # If it's a zipfile, then check if it's been fully unzipped.
+        # If it's a zipfile, and it's been at least partially
+        # unzipped, then check if it's been fully unzipped.
         if filepath.endswith('.zip'):
             unzipdir = filepath[:-4]
             if not os.path.exists(unzipdir):
-                return self.STALE
+                return self.INSTALLED # but not unzipped -- ok!
             if not os.path.isdir(unzipdir):
                 return self.STALE
 
