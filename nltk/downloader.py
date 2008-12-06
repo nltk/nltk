@@ -61,17 +61,13 @@ loaded from C{<http://nltk.googlecode.com/svn/trunk/nltk_data/index.xml>}.
 If necessary, it is possible to create a new L{Downloader} object,
 specifying a different URL for the package index file.
 
-Command-Line Interface
-======================
-I still need to add a command-line interface.
-
 Usage::
 
-    python nltk/downloader.py [-d DATADIR] [-q] [-f] -i IDENTIFIER
+    python nltk/downloader.py [-d DATADIR] [-q] [-f] [-k] IDENTIFIER
 
 or with py2.5+:
 
-    python -m nltk.downloader [-d DATADIR] [-q] [-f] -i IDENTIFIER
+    python -m nltk.downloader [-d DATADIR] [-q] [-f] [-k] IDENTIFIER
 """
 #----------------------------------------------------------------------
 """
