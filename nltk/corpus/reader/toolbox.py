@@ -15,11 +15,14 @@ Toolbox databases and settings files.
 """
 
 import os, re, codecs
-from nltk.corpus.reader.util import *
-from nltk.corpus.reader.api import *
 from StringIO import StringIO
+
 from nltk.etree.ElementTree import TreeBuilder, Element
 from nltk.internals import deprecated
+from nltk import data
+
+from util import *
+from api import *
 
 class ToolboxCorpusReader(CorpusReader):
     def xml(self, files, key=None):
@@ -395,8 +398,7 @@ def demo():
     from nltk.etree.ElementTree import ElementTree
     
     settings = ToolboxSettings()
-    # need a more general solution for the following line
-    settings.open(os.path.join(os.environ['NLTK_DATA'], 'corpora', 'toolbox', 'MDF', 'MDF_AltH.typ'))
+    settings.open(data.find('corpora/toolbox/MDF/MDF_AltH.typ'))
     tree = settings.parse(unwrap=False, encoding='cp1252')
     print tree.find('expset/expMDF/rtfPageSetup/paperSize').text
     settings_tree = ElementTree(tree)
