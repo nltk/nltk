@@ -518,7 +518,8 @@ class Downloader(object):
         # Look up the requested collection or package.
         try: info = self._info_or_id(info_or_id)
         except (IOError, ValueError), e:
-            yield ErrorMessage(info, e)
+            yield ErrorMessage(None, 'Error loading %s: %s' %
+                               (info_or_id, e))
             return
 
         # Handle collections.
@@ -637,7 +638,7 @@ class Downloader(object):
             # function should make a new copy of self to use?
             if download_dir is not None: self._download_dir = download_dir
             self._interactive_download()
-            return
+            return True
         
         else:
             # Define a helper function for displaying output:
@@ -652,7 +653,7 @@ class Downloader(object):
                     if raise_on_error:
                         raise ValueError(msg.message)
                     if halt_on_error:
-                        return
+                        return False
 
                 # All other messages
                 if not quiet:
@@ -669,7 +670,8 @@ class Downloader(object):
 
                     # Package downloading messages:
                     elif isinstance(msg, StartPackageMessage):
-                        show('Downloading package %r to %s...' % (msg.package.id, download_dir))
+                        show('Downloading package %r to %s...' %
+                             (msg.package.id, download_dir))
                     elif isinstance(msg, UpToDateMessage):
                         show('Package %s is already up-to-date!' %
                              msg.package.id, '  ')
@@ -682,6 +684,7 @@ class Downloader(object):
                     # Data directory message:
                     elif isinstance(msg, SelectDownloadDirMessage):
                         download_dir = msg.download_dir
+        return True
         
     def is_stale(self, info_or_id, download_dir=None):
         return self.status(info_or_id, download_dir) == self.STALE
@@ -1479,7 +1482,8 @@ class DownloaderGUI(object):
             self._show_progress(msg.progress)
         elif isinstance(msg, ErrorMessage):
             show(msg.message)
-            self._select(msg.package.id)
+            if msg.package is not None:
+                self._select(msg.package.id)
             self._show_progress(None)
             return # halt progress.
         elif isinstance(msg, StartCollectionMessage):
@@ -1788,7 +1792,8 @@ class DownloaderGUI(object):
                 self._show_progress(msg.progress)
             elif isinstance(msg, ErrorMessage):
                 show(msg.message)
-                self._select(msg.package.id)
+                if msg.package is not None:
+                    self._select(msg.package.id)
                 self._show_progress(None)
                 self._downloading = False
                 return # halt progress.
@@ -2109,9 +2114,17 @@ if __name__ == '__main__':
 
     (options, args) = parser.parse_args()
     
-#    if options.id is None:
-#        exit("No download package specified.")
-    
-    download(info_or_id=options.id, download_dir=options.dir,
-             quiet=options.quiet, force=options.force,
-             halt_on_error=options.halt_on_error)
+    if args:
+        if options.id is not None:
+            parser.error('Specify packages with -i, or by listing them; '
+                         'not both.')
+        for pkg_id in args:
+            rv = download(info_or_id=pkg_id, download_dir=options.dir,
+                          quiet=options.quiet, force=options.force,
+                          halt_on_error=options.halt_on_error)
+            if rv==False and options.halt_on_error:
+                break
+    else:
+        download(info_or_id=options.id, download_dir=options.dir,
+                 quiet=options.quiet, force=options.force,
+                 halt_on_error=options.halt_on_error)
