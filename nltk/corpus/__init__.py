@@ -190,7 +190,7 @@ ycoe = LazyCorpusLoader(
     'ycoe', YCOECorpusReader)
 # defined after treebank
 propbank = LazyCorpusLoader(
-    'propbank.zip', PropbankCorpusReader,
+    'propbank', PropbankCorpusReader,
     'prop.txt', 'frames/.*\.xml', 'verbs.txt',
     lambda filename: re.sub(r'^wsj/\d\d/', '', filename),
     treebank) # Must be defined *after* treebank corpus.
