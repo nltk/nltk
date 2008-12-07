@@ -209,7 +209,7 @@ class TokenSearcher(object):
     string where tokens are marked with angle brackets -- e.g.,
     C{'<the><window><is><still><open>'}.  The regular expression
     passed to the L{findall()} method is modified to treat angle
-    brackets as nongrouping parenthases, in addition to matching the
+    brackets as nongrouping parentheses, in addition to matching the
     token boundaries; and to have C{'.'} not match the angle brackets.
     """
     def __init__(self, tokens):
@@ -366,6 +366,18 @@ class Text(object):
         text = self._trigram_model.generate(length)
         print tokenwrap(text)
 
+    def search(self, pattern):
+        """
+        Search for instances of the regular expression pattern in the text.
+        
+        @seealso: L{TokenSearcher}
+        """
+        if '_token_searcher' not in self.__dict__:
+            print "Loading data..."
+            self._token_searcher = TokenSearcher(self.tokens)
+            
+        self._token_searcher.findall(pattern)
+    
     def similar(self, word, num=20):
         """
         Distributional similarity: find other words which appear in the
