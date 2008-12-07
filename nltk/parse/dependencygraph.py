@@ -157,10 +157,13 @@ class DependencyGraph(object):
 #           print line
             try:
                 nrCells = len(line.split('\t'))
+                if nrCells == 3:
+                    word, tag, head = line.split('\t')
+                    rel = ''
                 if nrCells == 4:
-                    (word, tag, head, rel) = line.split('\t')
+                    word, tag, head, rel = line.split('\t')
                 elif nrCells == 10:
-                    (_, word, _, _, tag, _, head, rel, _, _) = line.split('\t')
+                    _, word, _, _, tag, _, head, rel, _, _ = line.split('\t')
                 else:
                     raise ValueError('Number of tab-delimited fields (%d) not supported by CoNLL(10) or Malt-Tab(4) format' % (nrCells))
 

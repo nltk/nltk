@@ -11,7 +11,7 @@ A. THIRD-PARTY SOFTWARE VERSIONS
   2. Modify top level Makefile and commit
   3. Modify wiki download instructions with these new versions
   4. Save wiki download page and FAQ in HTML format to /nltk
-    5. Commit these changes
+  5. Commit these changes
 
 B. NLTK VERSION
 
@@ -32,16 +32,14 @@ D. ERROR CHECKING
   3. make demotest (run the demonstration code included in many modules)
   4. API docs (cd doc; make api)  (check latest version of epydoc is installed)
   5. Tutorial examples (cd doc/en; make errs)
-  6. Check trackers: http://sourceforge.net/tracker/?group_id=30982
+  6. Check issue tracker: http://code.google.com/p/nltk/issues/list
   7. Make dist, install .exe version on Windows, and test demos
 
 E. CHANGELOG
 
   1. Update the ChangeLog ("svn log")
   2. Commit changes
-  
-F. LINK CHECKING
-  1. do a preliminary build of web content and check links
+
 
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 @@@ BUILD
@@ -52,8 +50,8 @@ The build requires docutils, pdflatex, python imaging library, epydoc,
 
   1. Check out a clean copy of the subversion repository (or make clean)
      and install locally with python setup.py install; make clean
-  2. make doc (slow; see doc/ for the results)
-  3. make contribdoc
+  2. make doc (slow; see doc/ for the results) and commit
+  3. make contribdoc and commit
   4. make dist (fast; see dist/ for the results; may need "sudo make dist")
      - remove source rpm
   5. make python numpy pylab (potentially slow; to download all python distros if necessary)
@@ -62,14 +60,8 @@ The build requires docutils, pdflatex, python imaging library, epydoc,
   
 -rw-r--r--  1 sb  staff    2535567 Aug 27 16:39 nltk-0.9.5-1.noarch.rpm
 -rw-r--r--@ 1 sb  staff  204312289 Aug 28 17:39 nltk-0.9.5.dmg
--rw-r--r--  1 sb  staff  455899136 Aug 28 17:53 nltk-0.9.5.iso
--rw-r--r--  1 sb  staff    1177059 Aug 27 16:35 nltk-0.9.5.tar.gz
 -rw-r--r--  1 sb  staff    1433403 Aug 27 16:35 nltk-0.9.5.win32.exe
 -rw-r--r--  1 sb  staff    1382859 Aug 27 16:35 nltk-0.9.5.zip
--rw-r--r--  1 sb  staff    1691579 Aug 28 17:30 nltk-contribdoc-0.9.5.zip
--rw-r--r--  1 sb  staff  104049679 Aug 27 15:09 nltk-data-0.9.5.zip
--rw-r--r--  1 sb  staff   42504738 Aug 28 17:30 nltk-doc-0.9.5.zip
--rw-r--r--  1 sb  staff      85732 Aug 28 17:30 nltk-examples-0.9.5.zip
   
   (test the distributions?)
 
@@ -80,25 +72,18 @@ The build requires docutils, pdflatex, python imaging library, epydoc,
 A. UPLOAD DISTRIBUTIONS
 
   1. make upload
-  2. visit https://sourceforge.net/project/admin/editpackages.php?group_id=30982
-  3. add release: release name is just x.x (no nltk prefix)
-  4. associate files to release; set types using earlier release as model
-  5. past in ChangeLog
-  6. update any corpus releases that have changed
+  2. check result at http://code.google.com/p/nltk/downloads/list
+  3. change previous release to remove its "Featured" label
 
 B. WEBSITE
 
-  1. make rsync
-  2. add release notice to wiki
-  3. move wiki download page from Download-N.N to Download
-  4. post a news item on the sourceforge site
-       http://sourceforge.net/news/?group_id=30982
-  5. register with Python Cheeseshop
-       python setup.py register
-  6. post announcement to NLTK the mailing lists:
-       nltk-devel@lists.sourceforge.net     (for beta-releases)
-       nltk-announce@lists.sourceforge.net  (for non-beta-releases)
-  7. post announcement to external mailing lists, for major N.N releases only
+  1. move download page from Download-N.N to Download
+  2. post a news item
+  3. register with Python Cheeseshop: python setup.py register
+  4. post announcement to NLTK the mailing lists:
+       nltk-dev (for beta releases)
+       nltk (for final releases)
+  5. post announcement to external mailing lists, for major N.N releases only
        CORPORA@uib.no, linguist@linguistlist.org,
        PythonSIL@lists.sil.org, edu-sig@python.org
        mailing lists for any local courses using NLTK
@@ -108,4 +93,3 @@ C. INSTALLATION
   1. download and install new version on all machines
   2. contact relevant sysads to install new version
   3. copy dist directory to memory stick
-  4. check out svn repository to memory stick
