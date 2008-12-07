@@ -158,7 +158,7 @@ class ContextTagger(SequentialBackoffTagger):
     def __repr__(self):
         return '<%s: size=%d>' % (self.__class__.__name__, self.size())
 
-    def _train(self, tagged_corpus, cutoff=1, verbose=False):
+    def _train(self, tagged_corpus, cutoff=0, verbose=False):
         """
         Initialize this C{ContextTagger}'s L{_context_to_tag} table
         based on the given training data.  In particular, for each
@@ -250,7 +250,7 @@ class NgramTagger(ContextTagger, yaml.YAMLObject):
     yaml_tag = '!nltk.NgramTagger'
     
     def __init__(self, n, train=None, model=None, backoff=None,
-                 cutoff=1, verbose=False):
+                 cutoff=0, verbose=False):
         """
         Train a new C{NgramTagger} using the given training data or
         the supplied model.  In particular, construct a new tagger
@@ -288,7 +288,7 @@ class UnigramTagger(NgramTagger):
     yaml_tag = '!nltk.UnigramTagger'
 
     def __init__(self, train=None, model=None, backoff=None,
-                 cutoff=1, verbose=False):
+                 cutoff=0, verbose=False):
         NgramTagger.__init__(self, 1, train, model, backoff, cutoff, verbose)
 
     def context(self, tokens, index, history):
@@ -306,7 +306,7 @@ class BigramTagger(NgramTagger):
     yaml_tag = '!nltk.BigramTagger'
 
     def __init__(self, train=None, model=None, backoff=None,
-                 cutoff=1, verbose=False):
+                 cutoff=0, verbose=False):
         NgramTagger.__init__(self, 2, train, model, backoff, cutoff, verbose)
 
 
@@ -321,7 +321,7 @@ class TrigramTagger(NgramTagger):
     yaml_tag = '!nltk.TrigramTagger'
 
     def __init__(self, train=None, model=None, backoff=None,
-                 cutoff=1, verbose=False):
+                 cutoff=0, verbose=False):
         NgramTagger.__init__(self, 3, train, model, backoff, cutoff, verbose)
 
 
@@ -338,7 +338,7 @@ class AffixTagger(ContextTagger, yaml.YAMLObject):
     yaml_tag = '!nltk.AffixTagger'
 
     def __init__(self, train=None, model=None, affix_length=-3,
-                 min_stem_length=2, backoff=None, cutoff=1, verbose=False):
+                 min_stem_length=2, backoff=None, cutoff=0, verbose=False):
         """
         Construct a new affix tagger.
         
