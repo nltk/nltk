@@ -2074,7 +2074,6 @@ def _find_packages(root):
                 # name matches the uid.
                 if sum( (name!=uid and not name.startswith(uid+'/'))
                         for name in zf.namelist() ):
-                    print 'err 2'; continue
                     raise ValueError('Zipfile %s.zip does not expand to a '
                                      'single subdirectory %s/' % (uid, uid))
 
