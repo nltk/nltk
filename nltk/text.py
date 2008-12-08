@@ -9,6 +9,7 @@ from math import log
 import re
 
 from nltk.probability import FreqDist, LidstoneProbDist
+from nltk.probability import ConditionalFreqDist as CFD
 from nltk.compat import defaultdict
 from nltk.util import ngrams, tokenwrap, LazyConcatenation
 from nltk.model import NgramModel
@@ -42,30 +43,28 @@ class ContextIndex(object):
     """
     @staticmethod
     def _default_context(tokens, i):
-        """One left token and one right token"""
+        """One left token and one right token, normalized to lowercase"""
         if i == 0: left = '*START*'
-        else: left = tokens[i-1]
-        if i == len(tokens): right = '*END*'
-        else: right = tokens[i+1]
+        else: left = tokens[i-1].lower()
+        if i == len(tokens) - 1: right = '*END*'
+        else: right = tokens[i+1].lower()
         return (left, right)
         
-    def __init__(self, tokens, context_func=_default_context,
-                 key=lambda x:x):
-        self._word_to_contexts = defaultdict(list)
-        self._context_to_words = defaultdict(list)
+    def __init__(self, tokens, context_func=None, filter=None, key=lambda x:x):
         self._key = key
-        self._context_func = context_func
-
-        for i, word in enumerate(tokens):
-            word = self._key(word)
-            context = self._context_func(tokens, i)
-            self._word_to_contexts[word].append(context)
-            self._context_to_words[context].append(word)
+        if not context_func:
+            self._context_func = self._default_context
+        if filter:
+            tokens = [t for t in tokens if filter(t)]
+        self._word_to_contexts = CFD((self._key(w), self._context_func(tokens, i))
+                                     for i, w in enumerate(tokens))
+        self._context_to_words = CFD((self._context_func(tokens, i), self._key(w))
+                                     for i, w in enumerate(tokens))
 
     def tokens(self):
         """
         @rtype: C{list} of token
-        @return: The document that this concordance index was
+        @return: The document that this context index was
             created from.  
         """
         return self._tokens
@@ -86,7 +85,12 @@ class ContextIndex(object):
         return scores
 
     def similar_words(self, word, n=20):
-        scores = self.word_similarity_dict(word)
+        scores = defaultdict(int)
+        for c in self._word_to_contexts[self._key(word)]:
+            for w in self._context_to_words[c]:
+                if w != word:
+                    print w, c, self._context_to_words[c][word], self._context_to_words[c][w]  
+                    scores[w] += self._context_to_words[c][word] * self._context_to_words[c][w]  
         return sorted(scores, key=scores.get)[:n]
 
     def common_contexts(self, words, fail_on_unknown=False):
@@ -101,7 +105,7 @@ class ContextIndex(object):
             any of the given words do not occur at all in the index.
         """
         words = [self._key(w) for w in words]
-        contexts = [set(self._word_to_contexts(w)) for w in words]
+        contexts = [set(self._word_to_contexts[w]) for w in words]
         empty = [words[i] for i in range(len(words)) if not contexts[i]]
         common = reduce(set.intersection, contexts)
         if empty and fail_on_unknown:
@@ -112,7 +116,7 @@ class ContextIndex(object):
             return FreqDist()
         else:
             fd = FreqDist(c for w in words
-                          for c in self._word_context_map[w]
+                          for c in self._word_to_contexts[w]
                           if c in common)
             return fd
 
@@ -391,14 +395,21 @@ class Text(object):
         """
         if '_word_context_index' not in self.__dict__:
             print 'Building word-context index...'
-            self._word_context_index = ContextIndex(
-                self.tokens, self._context, key=str.lower)
+            self._word_context_index = ContextIndex(self.tokens, filter=lambda x:x.isalpha(), key=str.lower)
 
-        words = self._word_context_index.similar_words(word, num)
-        if words:
+#        words = self._word_context_index.similar_words(word, num)
+
+        word = word.lower()
+        wci = self._word_context_index._word_to_contexts
+        if word in wci.conditions():
+            contexts = set(wci[word])
+            fd = FreqDist(w for w in wci.conditions() for c in wci[w]
+                          if c in contexts and not w == word)
+            words = fd.keys()[:num]
             print tokenwrap(words)
         else:
             print "No matches"
+            
     
     def common_contexts(self, words, num=20):
         """
@@ -413,8 +424,7 @@ class Text(object):
         """
         if '_word_context_index' not in self.__dict__:
             print 'Building word-context index...'
-            self._word_context_index = ContextIndex(
-                self.tokens, self._context, key=str.lower)
+            self._word_context_index = ContextIndex(self.tokens, key=str.lower)
 
         try:
             fd = self._word_context_index.common_contexts(words, True)
