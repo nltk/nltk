@@ -316,7 +316,7 @@ class Text(object):
     # Interactive console methods
     #////////////////////////////////////////////////////////////
     
-    def concordance(self, word, width=75, lines=25):
+    def concordance(self, word, width=79, lines=25):
         """
         Print a concordance for C{word} with the specified context window.
         @seealso: L{ConcordanceIndex}
