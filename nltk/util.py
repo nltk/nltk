@@ -132,7 +132,7 @@ class MinimalSet(object):
         """
         self._targets = set()  # the contrastive information
         self._contexts = set() # what we are controlling for
-        self._seen = {}        # to record what we have seen
+        self._seen = defaultdict(set)  # to record what we have seen
         self._displays = {}    # what we will display
 
         if parameters:
@@ -152,8 +152,6 @@ class MinimalSet(object):
         @type display: C{string}
         """
         # Store the set of targets that occurred in this context
-        if context not in self._seen:
-           self._seen[context] = set()
         self._seen[context].add(target)
 
         # Keep track of which contexts and targets we have seen
@@ -174,7 +172,7 @@ class MinimalSet(object):
         return [c for c in self._contexts if len(self._seen[c]) >= minimum]
 
     def display(self, context, target, default=""):
-        if (context, target) not in self._displays:
+        if (context, target) in self._displays:
             return self._displays[(context, target)]
         else:
             return default
