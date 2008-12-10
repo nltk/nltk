@@ -80,10 +80,11 @@ B. WEBSITE
   1. move download page from Download-N.N to Download
   2. post a news item
   3. register with Python Cheeseshop: python setup.py register
-  4. post announcement to NLTK the mailing lists:
+  4. upload new portfiles to macports
+  5. post announcement to NLTK the mailing lists:
        nltk-dev (for beta releases)
        nltk (for final releases)
-  5. post announcement to external mailing lists, for major N.N releases only
+  6. post announcement to external mailing lists, for major N.N releases only
        CORPORA@uib.no, linguist@linguistlist.org,
        PythonSIL@lists.sil.org, edu-sig@python.org
        mailing lists for any local courses using NLTK
