@@ -68,10 +68,10 @@ nltk/nltk.jar: $(JAVA_SRC)
 # DISTRIBUTIONS
 ########################################################################
 
-dist: zipdist rpmdist windist dmgdist
+dist: zipdist gztardist rpmdist windist dmgdist
 
-# gztardist: clean_code
-#	$(PYTHON) setup.py -q sdist --format=gztar
+gztardist: clean_code
+	$(PYTHON) setup.py -q sdist --format=gztar
 zipdist: clean_code
 	$(PYTHON) setup.py -q sdist --format=zip
 rpmdist: clean_code
