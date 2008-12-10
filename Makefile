@@ -27,7 +27,8 @@ upload:
 #	rsync -avP -e ssh dist/* $(USER)@frs.sourceforge.net:uploads/
 	$(UPLOAD) --summary="NLTK $(VERSION) for Windows" dist/nltk-$(VERSION)*.win32.exe
 	$(UPLOAD) --summary="NLTK $(VERSION) for Mac" dist/nltk-$(VERSION)*.dmg
-	$(UPLOAD) --summary="NLTK $(VERSION) Source" dist/nltk-$(VERSION)*.zip
+	$(UPLOAD) --summary="NLTK $(VERSION) Source (zip)" dist/nltk-$(VERSION)*.zip
+	$(UPLOAD) --summary="NLTK $(VERSION) Source (tgz)" dist/nltk-$(VERSION)*.tar.gz
 	$(UPLOAD) --summary="NLTK $(VERSION) for Unix" dist/nltk-$(VERSION)*.rpm
 
 doc:
