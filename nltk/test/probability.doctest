@@ -1,0 +1,17 @@
+===========
+Probability
+===========
+
+    >>> from nltk.probability import *
+
+Squashed Bugs
+~~~~~~~~~~~~~
+
+In r7193, Lidstone breaks for N==0 and gamma=0, as reported in
+http://code.google.com/p/nltk/issues/detail?id=134
+
+    >>> fd = FreqDist()
+    >>> LidstoneProbDist(fd, 0)
+
+    
+    
