@@ -615,7 +615,11 @@ class Downloader(object):
             # been unzipped (presumably a previous version).
             if info.unzip or os.path.exists(os.path.join(zipdir, info.id)):
                 yield StartUnzipMessage(info)
-                try: unzip(filepath, zipdir, verbose=False)
+                # Is this try/except clause still necessary, now that
+                # _unzip_iter converts errors to messages?
+                try:
+                    for msg in _unzip_iter(filepath, zipdir, verbose=False):
+                        yield msg
                 except IOError, e:
                     yield ErrorMessage(info, 'Error unzipping %s:\n  %s' %
                                        (info.filename, e))
@@ -1862,6 +1866,11 @@ def unzip(filename, root, verbose=True):
     Extract the contents of the zip file C{filename} into the
     directory C{root}.
     """
+    for message in _unzip_iter(filename, root, verbose):
+        if isinstance(message, ErrorMessage):
+            raise e
+    
+def _unzip_iter(filename, root, verbose=True):
     if verbose:
         sys.stdout.write('Unzipping %s' % os.path.split(filename)[1])
         sys.stdout.flush()
