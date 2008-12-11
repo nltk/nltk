@@ -2,16 +2,92 @@
 Probability
 ===========
 
+    >>> import nltk
     >>> from nltk.probability import *
 
-Squashed Bugs
-~~~~~~~~~~~~~
+Testing some HMM estimators
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-In r7193, Lidstone breaks for N==0 and gamma=0, as reported in
-http://code.google.com/p/nltk/issues/detail?id=134
+We extract a small part (500 sentences) of the Brown corpus
 
-    >>> fd = FreqDist()
-    >>> LidstoneProbDist(fd, 0)
+    >>> corpus = nltk.corpus.brown.tagged_sents(categories='adventure')[:500]
+    >>> print len(corpus)
+    500
 
-    
-    
+We create a HMM trainer - note that we need the tags and symbols
+from the whole corpus, not just the training corpus
+
+    >>> tag_set = list(set([tag for sent in corpus for (word,tag) in sent]))
+    >>> print len(tag_set)
+    92
+    >>> symbols = list(set([word for sent in corpus for (word,tag) in sent]))
+    >>> print len(symbols)
+    1464
+    >>> trainer = nltk.HiddenMarkovModelTrainer(tag_set, symbols) 
+
+We divide the corpus into 90% training and 10% testing
+
+    >>> train_corpus = []
+    >>> test_corpus = []
+    >>> for i in range(len(corpus)):
+    ...     if i % 10: 
+    ...         train_corpus += [corpus[i]]
+    ...     else: 
+    ...         test_corpus += [corpus[i]]
+    >>> print len(train_corpus)
+    450
+    >>> print len(test_corpus)
+    50
+
+And now we can test the estimators
+
+    >>> def train_and_test(est):
+    ...     hmm = trainer.train_supervised(train_corpus, estimator=est)
+    ...     print '%.2f%%' % (100 * nltk.tag.accuracy(hmm, test_corpus))
+
+Maximum Likelihood Estimation
+- this resulted in an initialization error before r7209
+
+    >>> mle = lambda fd, bins: MLEProbDist(fd)
+    >>> train_and_test(mle)
+    14.43%
+
+Laplace (= Lidstone with gamma==1)
+
+    >>> train_and_test(LaplaceProbDist)
+    66.04%
+
+Expected Likelihood Estimation (= Lidstone with gamma==0.5)
+
+    >>> train_and_test(ELEProbDist)
+    73.01%
+
+Lidstone Estimation, for gamma==0.1, 0.5 and 1
+(the later two should be exactly equal to MLE and ELE above)
+
+    >>> def lidstone(gamma): 
+    ...     return lambda fd, bins: LidstoneProbDist(fd, gamma, bins)
+    >>> train_and_test(lidstone(0.1))
+    82.51%
+    >>> train_and_test(lidstone(0.5))
+    73.01%
+    >>> train_and_test(lidstone(1.0))
+    66.04%
+
+Witten Bell Estimation
+- This resulted in ZeroDivisionError before r7209
+
+    >>> train_and_test(WittenBellProbDist)
+    88.12%
+
+Good Turing Estimation
+- The accuracy is only 17%, see issues #26 and #133
+- The estimator should be fixed, and then this test
+
+    >>> train_and_test(GoodTuringProbDist)
+    THE GOOD TURING ESTIMATOR IS FLAWED
+
+Remains to be added: 
+- Tests for HeldoutProbDist, CrossValidationProbDist and MutableProbDist
+
+
