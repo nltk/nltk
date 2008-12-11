@@ -23,5 +23,7 @@ clean:
 %.zip: %
 	$(ZIP) -r $< $<  -x \*.svn*
 
-publish: $(PACKAGES)
+publish: zip
 	cp $(PACKAGES) $(PUBLISH)
+	svn commit -m "updated grammar files" ../../../nltk_data/packages/grammars
+	$(MAKE) -C ../.. data_index
