@@ -677,10 +677,6 @@ class MLEProbDist(ProbDistI):
         @param freqdist: The frequency distribution that the
             probability estimates should be based on.
         """
-        if freqdist.N() == 0:
-            raise ValueError('An MLE probability distribution must '+
-                             'have at least one sample.')
-
         self._freqdist = freqdist
 
     def freqdist(self):
@@ -1145,12 +1141,18 @@ class WittenBellProbDist(ProbDistI):
         self._T = self._freqdist.B()
         self._Z = bins - self._freqdist.B()
         self._N = self._freqdist.N()
+        # self._P0 is P(0), precalculated for efficiency:
+        if self._N==0: 
+            # if freqdist is empty, we approximate P(0) by a UniformProbDist:
+            self._P0 = 1.0 / self._Z
+        else:
+            self._P0 = self._T / float(self._Z * (self._N + self._T))
 
     def prob(self, sample):
         # inherit docs from ProbDistI
         c = self._freqdist[sample]
         if c == 0:
-            return self._T / float(self._Z * (self._N + self._T))
+            return self._P0
         else:
             return c / float(self._N + self._T)
 
