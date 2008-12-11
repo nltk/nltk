@@ -759,6 +759,13 @@ class LidstoneProbDist(ProbDistI):
         if bins is None: bins = freqdist.B()
         self._bins = bins
 
+        self._divisor = self._N + bins * gamma
+        if self._divisor == 0.0:
+            # In extreme cases we force the probability to be 0,
+            # which it will be, since the count will be 0:
+            self._gamma = 0
+            self._divisor = 1
+
     def freqdist(self):
         """
         @return: The frequency distribution that this probability
@@ -769,7 +776,7 @@ class LidstoneProbDist(ProbDistI):
 
     def prob(self, sample):
         c = self._freqdist[sample]
-        return (c + self._gamma) / (self._N + self._bins * self._gamma)
+        return (c + self._gamma) / self._divisor
 
     def max(self):
         # For Lidstone distributions, probability is monotonic with
