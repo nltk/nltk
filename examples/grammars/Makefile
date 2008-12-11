@@ -7,7 +7,7 @@
 
 PUBLISH = ../../../nltk_data/packages/grammars
 
-PACKAGE_DIRS = book_grammars sample_grammars basque_grammars spanish_grammars
+PACKAGE_DIRS = book_grammars sample_grammars #basque_grammars spanish_grammars
 PACKAGES := $(addsuffix .zip, $(PACKAGE_DIRS))
 
 
@@ -23,5 +23,5 @@ clean:
 %.zip: %
 	$(ZIP) -r $< $<  -x \*.svn*
 
-publish: zip
+publish: $(PACKAGES)
 	cp $(PACKAGES) $(PUBLISH)
