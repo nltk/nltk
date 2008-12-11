@@ -10,12 +10,10 @@ PUBLISH = ../../../nltk_data/packages/grammars
 PACKAGE_DIRS = book_grammars sample_grammars basque_grammars spanish_grammars
 PACKAGES := $(addsuffix .zip, $(PACKAGE_DIRS))
 
-NLTK_VERSION = $(shell python -c 'import nltk; print nltk.__version__')
-NLTK_URL = $(shell python -c 'import nltk; print nltk.__url__')
 
 ZIP = zip
 
-all: clean publish
+all: publish
 
 zip: $(PACKAGES)
 
