@@ -51,5 +51,5 @@ grammar = parse_cfg("""
 """)
 
 for sent in generate(grammar):
-    print sent
+    print ' '.join(sent)
     
