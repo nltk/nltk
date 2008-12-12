@@ -2,14 +2,16 @@
 #
 # Copyright (C) 2008 NLTK Project 
 # Author: Joseph Frazee <jfrazee@mail.utexas.edu>
+#         Ewan Klein <ewan@inf.ed.ac.uk> (modifications)
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 import re
 import math
+import nltk
 
-from nltk.corpus import CorpusReader, WordListCorpusReader
-from nltk.corpus.util import LazyCorpusLoader
+
+from nltk.corpus import names, gazetteers
 
 NUMBERS = ['one', 'two', 'three', 'four', 'five', 'six', 'seven',
            'eight', 'nine', 'ten', 'eleven', 'twelve', 'thirteen',
@@ -25,32 +27,28 @@ DAYS = ['monday', 'tuesday', 'wednesday', 'thursday',
         'friday', 'saturday', 'sunday']
 
 MONTHS = ['january', 'february', 'march', 'april', 'may', 'june', 'july',
-          'august', 'september', 'october', 'novemeber', 'december',
+          'august', 'september', 'october', 'november', 'december',
           'jan', 'feb', 'mar', 'apr', 'jun', 'jul', 'aug', 'sep', 'sept',
           'oct', 'nov', 'dec']
 
-NAMES = set([name.lower() for name in
-    LazyCorpusLoader('names', WordListCorpusReader,
-                     r'(?!\.).*\.txt').words()])
+                     
+NAMES = set([name.lower() for filename in ('male.txt', 'female.txt') for name
+             in names.words(filename)])
 
-CITIES = set([name.lower() for name in
-    LazyCorpusLoader('gazetteers', WordListCorpusReader,
-                     r'(?!\.).*cities\.txt').words()])
+USCITIES = set(gazetteers.words('uscities.txt'))
 
-COUNTRIES = set([name.lower() for name in
-    LazyCorpusLoader('gazetteers', WordListCorpusReader,
-                     r'(?!\.)countries\.txt').words()])
+# [XX] contains some non-ascii chars
+COUNTRIES = set([country for filename in ('isocountries.txt','countries.txt')
+                 for country in gazetteers.words(filename)])
+
+# States in North America
+NA_STATES = set([state.lower() for filename in
+                 ('usstates.txt','mexstates.txt','caprovinces.txt') for state in
+                 gazetteers.words(filename)])
                      
-STATES = set([name.lower() for name in
-    LazyCorpusLoader('gazetteers', WordListCorpusReader,
-                     r'(?!\.).*(states|provinces)\.txt').words()])
-                     
-STATE_ABBREVIATIONS = set(LazyCorpusLoader('gazetteers', WordListCorpusReader,
-                     r'(?!\.).*(state|province)abbrev\.txt').words())
-                     
-NATIONALITIES = set([name.lower() for name in
-    LazyCorpusLoader('gazetteers', WordListCorpusReader,
-                     r'(?!\.)nationalities\.txt').words()])                     
+US_STATE_ABBREVIATIONS = set(gazetteers.words('usstateabbrev.txt'))
+
+NATIONALITIES = set(gazetteers.words('nationalities.txt'))
                      
 PERSON_PREFIXES = ['mr', 'mrs', 'ms', 'miss', 'dr', 'rev', 'judge',
                    'justice', 'honorable', 'hon', 'rep', 'sen', 'sec',
@@ -223,29 +221,29 @@ def contains_name_sequence(s):
     return (count / len(words)) > 0.5
         
 def is_city(s):
-    return s.lower() in CITIES
+    return s.lower() in USCITIES
 
 def contains_city(s):
     if contains(is_city, s):
         return True
-    for city in CITIES:
+    for city in USCITIES:
         if city in s.lower():
             return True
     return False
 
 def part_of_city(s):
-    for city in CITIES:
+    for city in USCITIES:
         if s.lower() in city:
             return True
     return False
     
 def is_state(s):
-    return s.lower() in STATES or s in STATE_ABBREVIATIONS
+    return s.lower() in NA_STATES or s in US_STATE_ABBREVIATIONS
 
 def contains_state(s):
     if contains(is_state, s):
         return True
-    for state in STATES:
+    for state in NA_STATES:
         if state in s.lower():
             return True
     return False
@@ -366,7 +364,7 @@ def is_location(s):
 def contains_location(s):
     if contains(is_location, s):
         return True
-    for location in CITIES.union(COUNTRIES).union(STATES):
+    for location in USCITIES.union(COUNTRIES).union(NA_STATES):
         if location in s.lower():
             return True
     return False
@@ -429,3 +427,18 @@ def word_type(word):
         word_type.append('PUNCT')
 
     return tuple(word_type[:3])
+
+
+
+
+def demo():
+    from nltk.corpus import treebank
+    for word in treebank.words('wsj_0034.mrg'):
+        wt = word_type(word)
+        if len(wt) == 0: wt = None
+        if '*' in word: continue
+        print "%-20s\t%s" % (word, wt)
+        
+if __name__ == '__main__':
+    demo()
+

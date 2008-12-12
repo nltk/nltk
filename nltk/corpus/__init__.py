@@ -100,6 +100,8 @@ conll2002 = LazyCorpusLoader(
 floresta = LazyCorpusLoader(
     'floresta', BracketParseCorpusReader, r'(?!\.).*\.ptb', '#',
     tag_mapping_function=simplify_tag)
+gazetteers = LazyCorpusLoader(
+    'gazetteers', WordListCorpusReader, r'(?!LICENSE|\.).*\.txt')  
 genesis = LazyCorpusLoader(
     'genesis', PlaintextCorpusReader, r'(?!\.).*\.txt')
 gutenberg = LazyCorpusLoader(
