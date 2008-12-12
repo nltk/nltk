@@ -2,8 +2,6 @@
 Dependency Grammars
 ===================
 
-.. include:: ../../doc/definitions.rst
-
     >>> from nltk.grammar import *
     >>> from nltk.parse import *
 

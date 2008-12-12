@@ -140,11 +140,12 @@ to assign tags to new tokens.
 
     >>> unigram_tagger = nltk.UnigramTagger(brown_train)
     >>> unigram_tagger.tag(test_sent) # doctest: +NORMALIZE_WHITESPACE
-    [('The', 'AT'), ('Fulton', None), ('County', 'NN-TL'), ('Grand', 'JJ-TL'), ('Jury', None), ('said', 'VBD'), ('Friday', 'NR')
-, ('an', 'AT'), ('investigation', 'NN'), ('of', 'IN'), ("Atlanta's", 'NP$'), ('recent', 'JJ'), ('primary', 'NN'), ('election', '
-NN'), ('produced', 'VBD'), ('``', '``'), ('no', 'AT'), ('evidence', 'NN'), ("''", "''"), ('that', 'CS'), ('any', 'DTI'), ('irreg
-ularities', None), ('took', 'VBD'), ('place', 'NN'), ('.', '.')]
-
+    [('The', 'AT'), ('Fulton', None), ('County', 'NN-TL'), ('Grand', 'JJ-TL'),
+    ('Jury', None), ('said', 'VBD'), ('Friday', 'NR'), ('an', 'AT'),
+    ('investigation', 'NN'), ('of', 'IN'), ("Atlanta's", 'NP$'), ('recent', 'JJ'),
+    ('primary', 'NN'), ('election', 'NN'), ('produced', 'VBD'), ('``', '``'),
+    ('no', 'AT'), ('evidence', 'NN'), ("''", "''"), ('that', 'CS'), ('any', 'DTI'),
+    ('irregularities', None), ('took', 'VBD'), ('place', 'NN'), ('.', '.')]
 
 This gives us a significantly higher accuracy score than the default
 tagger or the regexp tagger:
