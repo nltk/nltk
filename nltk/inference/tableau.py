@@ -42,7 +42,7 @@ class Tableau(Prover):
         
 class Agenda(object):
     def __init__(self):
-        self.sets = tuple(set() for i in range(17))
+        self.sets = tuple(set() for i in range(19))
         
     def clone(self):
         new_agenda = Agenda()
@@ -137,6 +137,8 @@ class Agenda(object):
             return Categories.EXISTS
         elif isinstance(current, ApplicationExpression):
             return Categories.ATOM
+        elif isinstance(current, AbstractVariableExpression):
+            return Categories.PROP
         else:
             raise ProverParseError("cannot categorize %s" % \
                                    current.__class__.__name__)
@@ -162,8 +164,11 @@ class Agenda(object):
             return Categories.N_EXISTS
         elif isinstance(negated, ApplicationExpression):
             return Categories.N_ATOM
+        elif isinstance(negated, AbstractVariableExpression):
+            return Categories.N_PROP
         else:
-            raise ProverParseError()
+            raise ProverParseError("cannot categorize %s" % \
+                                   negated.__class__.__name__)
 
 def _attempt_proof(agenda, accessible_vars, atoms, debug):
     (current, category) = agenda.pop_first()
@@ -174,7 +179,9 @@ def _attempt_proof(agenda, accessible_vars, atoms, debug):
         return False
     
     proof_method = { Categories.ATOM:     _attempt_proof_atom,
+                     Categories.PROP:     _attempt_proof_prop,
                      Categories.N_ATOM:   _attempt_proof_n_atom,
+                     Categories.N_PROP:   _attempt_proof_n_prop,
                      Categories.N_EQ:     _attempt_proof_n_eq,
                      Categories.D_NEG:    _attempt_proof_d_neg,
                      Categories.N_ALL:    _attempt_proof_n_all,
@@ -234,6 +241,16 @@ def _attempt_proof_atom(current, agenda, accessible_vars, atoms, debug):
     args = current.uncurry()[1]
     return _attempt_proof(agenda, accessible_vars|set(args), atoms|set([(current, False)]), debug+1) 
     
+def _attempt_proof_prop(current, agenda, accessible_vars, atoms, debug):
+    # Check if the branch is closed.  Return 'True' if it is
+    if (current, True) in atoms:
+        debug.line('CLOSED', 1) 
+        return True
+
+    #mark all AllExpressions as 'not exhausted' into the agenda since we are (potentially) adding new accessible vars
+    agenda.mark_alls_fresh();
+    return _attempt_proof(agenda, accessible_vars, atoms|set([(current, False)]), debug+1) 
+    
 def _attempt_proof_n_atom(current, agenda, accessible_vars, atoms, debug):
     # Check if the branch is closed.  Return 'True' if it is
     if (current.term, False) in atoms:
@@ -244,6 +261,16 @@ def _attempt_proof_n_atom(current, agenda, accessible_vars, atoms, debug):
     agenda.mark_alls_fresh();
     args = current.term.uncurry()[1]
     return _attempt_proof(agenda, accessible_vars|set(args), atoms|set([(current.term, True)]), debug+1) 
+    
+def _attempt_proof_n_prop(current, agenda, accessible_vars, atoms, debug):
+    # Check if the branch is closed.  Return 'True' if it is
+    if (current.term, False) in atoms:
+        debug.line('CLOSED', 1) 
+        return True
+
+    #mark all AllExpressions as 'not exhausted' into the agenda since we are (potentially) adding new accessible vars
+    agenda.mark_alls_fresh();
+    return _attempt_proof(agenda, accessible_vars, atoms|set([(current.term, True)]), debug+1) 
     
 def _attempt_proof_n_eq(current, agenda, accessible_vars, atoms, debug):
     ###########################################################################
@@ -378,35 +405,40 @@ def _attempt_proof_all(current, agenda, accessible_vars, atoms, debug):
 
 class Categories:
     ATOM     = 0
-    N_ATOM   = 1
-    N_EQ     = 2
-    D_NEG    = 3
-    N_ALL    = 4
-    N_EXISTS = 5
-    AND      = 6
-    N_OR     = 7
-    N_IMP    = 8
-    OR       = 9
-    IMP      = 10
-    N_AND    = 11
-    IFF      = 12
-    N_IFF    = 13
-    EQ       = 14
-    EXISTS   = 15
-    ALL      = 16
+    PROP     = 1
+    N_ATOM   = 2
+    N_PROP   = 3
+    N_EQ     = 4
+    D_NEG    = 5
+    N_ALL    = 6
+    N_EXISTS = 7
+    AND      = 8
+    N_OR     = 9
+    N_IMP    = 10
+    OR       = 11
+    IMP      = 12
+    N_AND    = 13
+    IFF      = 14
+    N_IFF    = 15
+    EQ       = 16
+    EXISTS   = 17
+    ALL      = 18
 
 def testTableau():
-    tableau_test(r'man(x)')
-    tableau_test(r'(man(x) -> man(x))')
-    tableau_test(r'(man(x) -> --man(x))')
-    tableau_test(r'-(man(x) and -man(x))')
-    tableau_test(r'(man(x) or -man(x))')
-    tableau_test(r'(man(x) -> man(x))')
-    tableau_test(r'-(man(x) and -man(x))')
-    tableau_test(r'(man(x) or -man(x))')
-    tableau_test(r'(man(x) -> man(x))')
-    tableau_test(r'(man(x) iff man(x))')
-    tableau_test(r'-(man(x) iff -man(x))')
+    tableau_test('P | -P')
+    tableau_test('P & -P')
+    tableau_test('Q', ['P', '(P -> Q)'])
+    tableau_test('man(x)')
+    tableau_test('(man(x) -> man(x))')
+    tableau_test('(man(x) -> --man(x))')
+    tableau_test('-(man(x) and -man(x))')
+    tableau_test('(man(x) or -man(x))')
+    tableau_test('(man(x) -> man(x))')
+    tableau_test('-(man(x) and -man(x))')
+    tableau_test('(man(x) or -man(x))')
+    tableau_test('(man(x) -> man(x))')
+    tableau_test('(man(x) iff man(x))')
+    tableau_test('-(man(x) iff -man(x))')
     tableau_test('all x.man(x)')
     tableau_test('all x.all y.((x = y) -> (y = x))')
     tableau_test('all x.all y.all z.(((x = y) & (y = z)) -> (x = z))')
@@ -416,36 +448,41 @@ def testTableau():
     p1 = LogicParser().parse(r'all x.(man(x) -> mortal(x))')
     p2 = LogicParser().parse(r'man(Socrates)')
     c = LogicParser().parse(r'mortal(Socrates)')
-    print '%s, %s |- %s: %s' % (p1, p2, c, BaseProverCommand(Tableau(), c, [p1,p2]).prove())
+    print '%s, %s |- %s: %s' % (p1, p2, c, Tableau().prove(c, [p1,p2])[0])
     
     p1 = LogicParser().parse(r'all x.(man(x) -> walks(x))')
     p2 = LogicParser().parse(r'man(John)')
     c = LogicParser().parse(r'some y.walks(y)')
-    print '%s, %s |- %s: %s' % (p1, p2, c, BaseProverCommand(Tableau(), c, [p1,p2]).prove())
+    print '%s, %s |- %s: %s' % (p1, p2, c, Tableau().prove(c, [p1,p2])[0])
     
     p = LogicParser().parse(r'((x = y) & walks(y))')
     c = LogicParser().parse(r'walks(x)')
-    print '%s |- %s: %s' % (p, c, BaseProverCommand(Tableau(), c, [p]).prove())
+    print '%s |- %s: %s' % (p, c, Tableau().prove(c, [p])[0])
     
     p = LogicParser().parse(r'((x = y) & ((y = z) & (z = w)))')
     c = LogicParser().parse(r'(x = w)')
-    print '%s |- %s: %s' % (p, c, BaseProverCommand(Tableau(), c, [p]).prove())
+    print '%s |- %s: %s' % (p, c, Tableau().prove(c, [p])[0])
     
     p = LogicParser().parse(r'some e1.some e2.(believe(e1,john,e2) & walk(e2,mary))')
     c = LogicParser().parse(r'some e0.walk(e0,mary)')
-    print '%s |- %s: %s' % (p, c, BaseProverCommand(Tableau(), c, [p]).prove())
+    print '%s |- %s: %s' % (p, c, Tableau().prove(c, [p])[0])
     
     c = LogicParser().parse(r'(exists x.exists z3.((x = Mary) & ((z3 = John) & sees(z3,x))) <-> exists x.exists z4.((x = John) & ((z4 = Mary) & sees(x,z4))))')
-    print '|- %s: %s' % (c, BaseProverCommand(Tableau(), c, []).prove())
+    print '|- %s: %s' % (c, Tableau().prove(c)[0])
 
 #    p = LogicParser().parse(r'some e1.some e2.((believe e1 john e2) and (walk e2 mary))')
 #    c = LogicParser().parse(r'some x.some e3.some e4.((believe e3 x e4) and (walk e4 mary))')
-#    print '%s |- %s: %s' % (p, c, Tableau(c,[p]).prove())
+#    print '%s |- %s: %s' % (p, c, Tableau(c,[p])[0])
 
-def tableau_test(e, debug=False):
-    f = LogicParser().parse(e)
-    t = BaseProverCommand(Tableau(), f)
-    print '|- %s: %s' % (f, t.prove(debug))
+def tableau_test(c, ps=None, verbose=False):
+    pc = LogicParser().parse(c)
+    if ps:
+        pps = [LogicParser().parse(p) for p in ps]
+    else:
+        ps = []
+        pps = []
+    print '%s |- %s: %s' % (', '.join(ps), pc, Tableau().prove(pc, pps, verbose=verbose)[0])
 
 if __name__ == '__main__':
     testTableau()
+    
