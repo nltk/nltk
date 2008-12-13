@@ -36,10 +36,12 @@ class StringCategoryCorpusReader(CorpusReader):
         CorpusReader.__init__(self, root, files, encoding)
         self._delimiter = delimiter
 
-    def tuples(self, files):
+    def tuples(self, files=None):
+        if files is None: files = self._files
+        elif isinstance(files, basestring): files = [files]
         return concat([StreamBackedCorpusView(filename, self._read_tuple_block,
                                               encoding=enc)
-                       for (filename, enc) in self.abspaths(files)])
+                       for (filename, enc) in self.abspaths(files, True)])
 
     def raw(self, files=None):
         """

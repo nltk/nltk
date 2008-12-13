@@ -2208,3 +2208,11 @@ to return words from *all* files when just one file was specified.
     >>> reuters.words('training/5082')
     ['SHEPPARD', 'RESOURCES', 'TO', 'MERGE', 'WITH', ...]
 
+svn 7227 fixed a bug in the qc corpus reader, which prevented
+access to its tuples() method
+
+    >>> from nltk.corpus import qc
+    >>> qc.tuples('test.txt')
+    [('NUM:dist', 'How far is it from Denver to Aspen ?'), ('LOC:city', 'What county is Modesto , California in ?'), ...]
+
+
