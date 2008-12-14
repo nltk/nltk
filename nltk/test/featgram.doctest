@@ -39,7 +39,7 @@ inspect it as follows:
 
 .. _feat0cfg: http://nltk.svn.sourceforge.net/svnroot/nltk/trunk/nltk/data/grammars/feat0.fcfg
 
-    >>> nltk.data.show_cfg('grammars/feat0.fcfg')
+    >>> nltk.data.show_cfg('grammars/book_grammars/feat0.fcfg')
     % start S
     # ############################
     # Grammar Rules
@@ -75,7 +75,7 @@ Assuming we have saved feat0cfg_ as a file named
 read the grammar into NLTK, ready for use in parsing.
 
 
-    >>> cp = parse.load_earley('grammars/feat0.fcfg', trace=3)
+    >>> cp = parse.load_earley('grammars/book_grammars/feat0.fcfg', trace=3)
     >>> sent = 'Kim likes children'
     >>> tokens = sent.split()
     >>> tokens
@@ -316,7 +316,7 @@ things become really interesting.
 
     >>> sent = 'who do you claim that you like'
     >>> tokens = sent.split()
-    >>> cp = parse.load_earley('grammars/feat1.fcfg', trace=2)
+    >>> cp = parse.load_earley('grammars/book_grammars/feat1.fcfg', trace=2)
     >>> trees = cp.nbest_parse(tokens)
               |.w.d.y.c.t.y.l.|
     Scanner   |[-] . . . . . .| [0:1] 'who'
@@ -364,7 +364,7 @@ things become really interesting.
 
 Let's load a German grammar:
 
-    >>> cp = parse.load_earley('grammars/german.fcfg', trace=0)
+    >>> cp = parse.load_earley('grammars/book_grammars/german.fcfg', trace=0)
     >>> sent = 'die katze sieht den hund'
     >>> tokens = sent.split()
     >>> trees = cp.nbest_parse(tokens)
@@ -394,7 +394,7 @@ chart.  To do this, we use a special subclass of `Chart`, called
 `InstantiateVarsChart`.
 
     >>> from nltk.parse.featurechart import InstantiateVarsChart
-    >>> cp = parse.load_earley('grammars/bindop.fcfg', trace=2,
+    >>> cp = parse.load_earley('grammars/sample_grammars/bindop.fcfg', trace=2,
     ...                        chart_class=InstantiateVarsChart)
 
 A simple intransitive sentence:
@@ -448,7 +448,7 @@ A transitive sentence:
 
 Turn down the verbosity:
 
-    >>> cp = parse.load_earley('grammars/bindop.fcfg', trace=0,
+    >>> cp = parse.load_earley('grammars/sample_grammars/bindop.fcfg', trace=0,
     ...                        chart_class=InstantiateVarsChart)
 
 Reuse the same lexical item twice:

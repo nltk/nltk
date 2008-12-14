@@ -1,15 +1,17 @@
+# -*- coding: utf-8 -*-
 # Natural Language Toolkit: A Chart Parser
 #
 # Copyright (C) 2001-2008 NLTK Project
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
 #         Steven Bird <sb@csse.unimelb.edu.au>
 #         Jean Mark Gawron <gawron@mail.sdsu.edu>
+#         Peter Ljunglöf <peter.ljunglof@heatherleaf.se>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 #
 # $Id$
 
-from nltk import Tree, Nonterminal, earley_lexicon, defaultdict
+from nltk import Tree, Nonterminal, defaultdict
 
 from api import *
 
@@ -521,21 +523,21 @@ class Chart(object):
     # Edge Insertion
     #////////////////////////////////////////////////////////////
 
-    def insert(self, edge, child_pointer_list):
+    def insert(self, edge, *child_pointer_lists):
         """
         Add a new edge to the chart.
 
         @type edge: L{EdgeI}
         @param edge: The new edge
-        @type child_pointer_list: C{tuple} of L{EdgeI}
-        @param child_pointer_list: A list of the edges that were used to
-            form this edge.  This list is used to reconstruct the trees
-            (or partial trees) that are associated with C{edge}.
+        @type child_pointer_lists: C(sequence} of C{tuple} of L{EdgeI} 
+        @param child_pointer_lists: A sequence of lists of the edges that 
+            were used to form this edge.  This list is used to reconstruct 
+            the trees (or partial trees) that are associated with C{edge}.
         @rtype: C{bool}
         @return: True if this operation modified the chart.  In
             particular, return true iff the chart did not already
             contain C{edge}, or if it did not already associate
-            C{child_pointer_list} with C{edge}.
+            C{child_pointer_lists} with C{edge}.
         """
         # Is it a new edge?
         if edge not in self._edge_to_cpls:
@@ -545,20 +547,18 @@ class Chart(object):
             # Register with indexes
             for (restr_keys, index) in self._indexes.items():
                 vals = [getattr(edge, k)() for k in restr_keys]
-                index = self._indexes[restr_keys]
                 index.setdefault(tuple(vals),[]).append(edge)
 
         # Get the set of child pointer lists for this edge.
         cpls = self._edge_to_cpls.setdefault(edge,{})
-        child_pointer_list = tuple(child_pointer_list)
-
-        if child_pointer_list in cpls:
-            # We've already got this CPL; return false.
-            return False
-        else:
-            # It's a new CPL; register it, and return true.
-            cpls[child_pointer_list] = True
-            return True
+        chart_was_modified = False
+        for child_pointer_list in child_pointer_lists:
+            child_pointer_list = tuple(child_pointer_list)
+            if child_pointer_list not in cpls:
+                # It's a new CPL; register it, and return true.
+                cpls[child_pointer_list] = True
+                chart_was_modified = True
+        return chart_was_modified
 
     #////////////////////////////////////////////////////////////
     # Tree extraction & child pointer lists
@@ -962,13 +962,11 @@ class FundamentalRule(AbstractChartRule):
                             dot=left_edge.dot()+1)
 
         # Add it to the chart, with appropriate child pointers.
-        changed_chart = False
-        for cpl1 in chart.child_pointer_lists(left_edge):
-            if chart.insert(new_edge, cpl1+(right_edge,)):
-                changed_chart = True
+        cpls = chart.child_pointer_lists(left_edge)
+        new_cpls = [cpl+(right_edge,) for cpl in cpls]
+        if chart.insert(new_edge, *new_cpls):
+            yield new_edge
 
-        # If we changed the chart, then generate the edge.
-        if changed_chart: yield new_edge
 
 class SingleEdgeFundamentalRule(AbstractChartRule):
     """
@@ -1004,19 +1002,6 @@ class SingleEdgeFundamentalRule(AbstractChartRule):
 
     def __str__(self): return 'Fundamental Rule'
     
-class BottomUpInitRule(AbstractChartRule):
-    """
-    A rule licensing any edges corresponding to terminals in the
-    text.  In particular, this rule licenses the leaf edge:
-        - [wS{->}*][i:i+1]
-    for C{w} is a word in the text, where C{i} is C{w}'s index.
-    """
-    NUM_EDGES = 0
-    def apply_iter(self, chart, grammar):
-        for index in range(chart.num_leaves()):
-            new_edge = LeafEdge(chart.leaf(index), index)
-            if chart.insert(new_edge, ()):
-                yield new_edge
 
 #////////////////////////////////////////////////////////////
 # Top-Down Parsing
@@ -1166,36 +1151,20 @@ class BottomUpPredictRule(AbstractChartRule):
             if chart.insert(new_edge, ()):
                 yield new_edge
 
+class BottomUpPredictCombineRule(AbstractChartRule):
+    NUM_EDGES = 1
+    def apply_iter(self, chart, grammar, edge):
+        if edge.is_incomplete(): return
+        for prod in grammar.productions(rhs=edge.lhs()):
+            new_edge = TreeEdge(edge.span(), prod.lhs(), prod.rhs(), 1)
+            if chart.insert(new_edge, (edge,)):
+                yield new_edge
+
 #////////////////////////////////////////////////////////////
 # Earley Parsing
 #////////////////////////////////////////////////////////////
 
-class CompleterRule(AbstractChartRule):
-    """
-    A rule that joins a given complete edge with adjacent incomplete
-    edges in the chart, to form combined edges.  In particular, this
-    rule specifies that:
-        - [BS{->}S{gamma}*][j:k]
-    licenses the edge:
-        - [AS{->}S{alpha}B*S{beta}][i:j]
-    given that the chart contains:
-        - [AS{->}S{alpha}*BS{beta}][i:j]
-    @note: This is basically L{FundamentalRule}, with the left edge
-        left unspecified.
-    """
-    NUM_EDGES = 1
-    
-    _fundamental_rule = FundamentalRule()
-    
-    def apply_iter(self, chart, grammar, right_edge):
-        if right_edge.is_incomplete(): return
-        fr = self._fundamental_rule
-        for left_edge in chart.select(end=right_edge.start(),
-                                     is_complete=False,
-                                     next=right_edge.lhs()):
-            for e in fr.apply_iter(chart, grammar, left_edge, right_edge):
-                yield e
-
+class CompleterRule(SingleEdgeFundamentalRule):
     def __str__(self): return 'Completer Rule'
     
 class ScannerRule(AbstractChartRule):
@@ -1211,16 +1180,12 @@ class ScannerRule(AbstractChartRule):
     of speech for C{w}.
     """
     NUM_EDGES = 1
-    def __init__(self, word_to_pos_lexicon=None):
-        self._word_to_pos = word_to_pos_lexicon
 
     def apply_iter(self, chart, grammar, edge):
-        if not self._word_to_pos:
-            self._word_to_pos = grammar.lexicon()
         if edge.is_complete() or edge.end()>=chart.num_leaves(): return
         index = edge.end()
         leaf = chart.leaf(index)
-        if edge.next() in self._word_to_pos.get(leaf, []):
+        if edge.next() in [prod.lhs() for prod in grammar.productions(rhs=leaf)]:
             new_leaf_edge = LeafEdge(leaf, index)
             if chart.insert(new_leaf_edge, ()):
                 yield new_leaf_edge
@@ -1251,13 +1216,6 @@ class PredictorRule(CachedTopDownExpandRule):
         self._done[edge.next(), edge.end()] = (chart, grammar)
     
     def __str__(self): return 'Predictor Rule'
-
-def makeEarleyStrategy(grammar):
-    """Given a grammar with both grammatical and lexical productions,
-    produce an Earley strategy that uses that lexicon."""
-    lexicon = earley_lexicon(grammar.productions())
-    strategy = [TopDownInitRule(), PredictorRule(), ScannerRule(lexicon), CompleterRule()]
-    return strategy
     
 
 ########################################################################
@@ -1268,6 +1226,9 @@ TD_STRATEGY = [CachedTopDownInitRule(), CachedTopDownExpandRule(),
                TopDownMatchRule(), SingleEdgeFundamentalRule()]
 BU_STRATEGY = [BottomUpInitRule(), BottomUpPredictRule(),
                SingleEdgeFundamentalRule()]
+BUC_STRATEGY = [BottomUpInitRule(), BottomUpPredictCombineRule(),
+                SingleEdgeFundamentalRule()]
+EARLEY_STRATEGY = [TopDownInitRule(), PredictorRule(), ScannerRule(), CompleterRule()]
 
 class ChartParser(ParserI):
     """
@@ -1281,7 +1242,7 @@ class ChartParser(ParserI):
             - Apply I{rule} to any applicable edges in the chart.
         - Return any complete parses in the chart
     """
-    def __init__(self, grammar, strategy=TD_STRATEGY, trace=0):
+    def __init__(self, grammar, strategy=BU_STRATEGY, trace=0, use_agenda=True):
         """
         Create a new chart parser, that uses C{grammar} to parse
         texts.
@@ -1296,38 +1257,81 @@ class ChartParser(ParserI):
             parsing a text.  C{0} will generate no tracing output;
             and higher numbers will produce more verbose tracing
             output.
+        @type use_agenda: C{bool}
+        @param use_agenda: Use an optimized agenda-based algorithm, 
+            if possible.  
         """
         self._grammar = grammar
         self._strategy = strategy
         self._trace = trace
+        # If the strategy only consists of axioms (NUM_EDGES==0) and
+        # inference rules (NUM_EDGES==1), we can use an agenda-based algorithm:
+        self._use_agenda = use_agenda
+        self._axioms = []
+        self._inference_rules = []
+        for rule in strategy:
+            if rule.NUM_EDGES == 0:
+                self._axioms.append(rule)
+            elif rule.NUM_EDGES == 1:
+                self._inference_rules.append(rule)
+            else:
+                self._use_agenda = False
 
     def grammar(self):
         return self._grammar
 
-    def nbest_parse(self, tokens, n=None, tree_class=Tree):
+    def chart_parse(self, tokens):
+        """
+        @return: The final parse L{Chart}, 
+        from which all possible parse trees can be extracted.
+        
+        @param tokens: The sentence to be parsed
+        @type tokens: L{list} of L{string}
+        @rtype: L{Chart}
+        """
         tokens = list(tokens)
         self._grammar.check_coverage(tokens)
         chart = Chart(list(tokens))
         grammar = self._grammar
+        agenda = []
 
         # Width, for printing trace edges.
         w = 50/(chart.num_leaves()+1)
         if self._trace > 0: print chart.pp_leaves(w)
-        
-        edges_added = 1
-        while edges_added > 0:
-            edges_added = 0
-            for rule in self._strategy:
-                edges_added_by_rule = 0
-                for e in rule.apply_everywhere(chart, grammar):
-                    if self._trace > 0 and edges_added_by_rule == 0:
-                        print '%s:' % rule
-                    edges_added_by_rule += 1
-                    if self._trace > 1: print chart.pp_edge(e,w)
-                if self._trace == 1 and edges_added_by_rule > 0:
-                    print '  - Added %d edges' % edges_added_by_rule
-                edges_added += edges_added_by_rule
-        
+
+        def _trace_new_edges(rule, new_edges):
+            if self._trace > 0 and new_edges != []:
+                if self._trace > 1: print '%s:' % rule
+                for e in new_edges: print chart.pp_edge(e,w)
+
+        if self._use_agenda:
+            # Use an agenda-based algorithm.
+            for axiom in self._axioms:
+                new_edges = axiom.apply(chart, grammar)
+                agenda += new_edges
+                _trace_new_edges(axiom, new_edges)
+            while agenda != []:
+                edge = agenda.pop()
+                for rule in self._inference_rules:
+                    new_edges = rule.apply(chart, grammar, edge)
+                    agenda += new_edges
+                    _trace_new_edges(rule, new_edges)
+        else:
+            # Do not use an agenda-based algorithm.
+            edges_added = 1
+            while edges_added > 0:
+                edges_added = 0
+                for rule in self._strategy:
+                    new_edges = rule.apply_everywhere(chart, grammar)
+                    _trace_new_edges(rule, new_edges)
+                    edges_added += len(new_edges)
+
+        # Return the final chart.
+        return chart
+
+    def nbest_parse(self, tokens, n=None, tree_class=Tree):
+        chart = self.chart_parse(tokens)
+        grammar = self._grammar
         # Return a list of complete parses.
         return chart.parses(grammar.start(), tree_class=tree_class)[:n]
 
@@ -1351,7 +1355,7 @@ class SteppingChartParser(ChartParser):
         or chart has been changed.  If so, then L{step} must restart
         the parsing algorithm.
     """
-    def __init__(self, grammar, strategy=None, trace=0):
+    def __init__(self, grammar, strategy=[], trace=0):
         self._chart = None
         self._current_chartrule = None
         self._restart = False
@@ -1491,7 +1495,7 @@ class SteppingChartParser(ChartParser):
 ##  Demo Code
 ########################################################################
 
-def demo():
+def demo(choice=None, should_print_times=True, trace=2):
     """
     A demonstration of the chart parsers.
     """
@@ -1502,15 +1506,13 @@ def demo():
     S, VP, NP, PP = nonterminals('S, VP, NP, PP')
     V, N, P, Name, Det = nonterminals('V, N, P, Name, Det')
 
-    # Define some grammatical productions.
-    grammatical_productions = [
+    productions = [
+        # Define some grammatical productions.
         Production(S, [NP, VP]),  Production(PP, [P, NP]),
         Production(NP, [Det, N]), Production(NP, [NP, PP]),
         Production(VP, [VP, PP]), Production(VP, [V, NP]),
-        Production(VP, [V]),]
-
-    # Define some lexical productions.
-    lexical_productions = [
+        Production(VP, [V]),
+        # Define some lexical productions.
         Production(NP, ['John']), Production(NP, ['I']), 
         Production(Det, ['the']), Production(Det, ['my']),
         Production(Det, ['a']),
@@ -1518,65 +1520,65 @@ def demo():
         Production(V, ['ate']),   Production(V, ['saw']),
         Production(P, ['with']),  Production(P, ['under']),
         ]
-
+    
     # The grammar for ChartParser and SteppingChartParser:
-    grammar = ContextFreeGrammar(S, grammatical_productions +
-                                    lexical_productions)
+    grammar = ContextFreeGrammar(S, productions)
 
     # Tokenize a sample sentence.
     sent = 'I saw John with a dog with my cookie'
-    print "Sentence:\n", sent
+    print "* Sentence:" 
+    print sent
     tokens = sent.split()
-
     print tokens
-
-    # Ask the user which parser to test
-    print '  1: Top-down chart parser'
-    print '  2: Bottom-up chart parser'
-    print '  3: Earley parser'
-    print '  4: Stepping chart parser (alternating top-down & bottom-up)'
-    print '  5: All parsers'
-    print '\nWhich parser (1-5)? ',
-    choice = sys.stdin.readline().strip()
     print
-    if choice not in '12345':
+
+    # Ask the user which parser to test,
+    # if the parser wasn't provided as an argument
+    if choice is None:
+        print '  1: Top-down chart parser'
+        print '  2: Bottom-up chart parser'
+        print '  3: Bottom-up combine chart parser'
+        print '  4: Earley parser'
+        print '  5: Stepping chart parser (alternating top-down & bottom-up)'
+        print '  6: All parsers'
+        print '\nWhich parser (1-6)? ',
+        choice = sys.stdin.readline().strip()
+        print
+
+    choice = str(choice)
+    if choice not in ['1','2','3','4','5','6']:
         print 'Bad parser number'
         return
 
     # Keep track of how long each parser takes.
     times = {}
 
-    # Run the top-down parser, if requested.
-    if choice in ('1', '5'):
-        cp = ChartParser(grammar, TD_STRATEGY, trace=2)
-        t = time.time()
-        parses = cp.nbest_parse(tokens)
-        times['top down'] = time.time()-t
-        assert len(parses)==5, 'Not all parses found'
-        for tree in parses: print tree
+    strategies = {'1': ('Top-down', TD_STRATEGY),
+                  '2': ('Bottom-up', BU_STRATEGY),
+                  '3': ('Bottom-up combine', BUC_STRATEGY),
+                  '4': ('Earley', EARLEY_STRATEGY)}
+    choices = []
+    if strategies.has_key(choice): choices = [choice]
+    if choice=='6': choices = ['1','2','3','4']
 
-    # Run the bottom-up parser, if requested.
-    if choice in ('2', '5'):
-        cp = ChartParser(grammar, BU_STRATEGY, trace=2)
+    # Run the requested chart parser(s), except the stepping parser.
+    for strategy in choices:
+        print "* Strategy: " + strategies[strategy][0]
+        print
+        cp = ChartParser(grammar, strategies[strategy][1], trace=trace)
         t = time.time()
         parses = cp.nbest_parse(tokens)
-        times['bottom up'] = time.time()-t
+        times[strategies[strategy][0]] = time.time()-t
         assert len(parses)==5, 'Not all parses found'
         for tree in parses: print tree
-
-    # Run the earley, if requested.
-    if choice in ('3', '5'):
-        cp = ChartParser(grammar, makeEarleyStrategy(grammar), trace=2)
-        t = time.time()
-        parses = cp.nbest_parse(tokens)
-        times['Earley'] = time.time()-t
-        assert len(parses)==5, 'Not all parses found'
-        for tree in parses: print tree
+        print
 
     # Run the stepping parser, if requested.
-    if choice in ('4', '5'):
+    if choice in ('5', '6'):
+        print "* Strategy: Stepping (top-down vs bottom-up)"
+        print
         t = time.time()
-        cp = SteppingChartParser(grammar, trace=1)
+        cp = SteppingChartParser(grammar, trace=trace)
         cp.initialize(tokens)
         for i in range(5):
             print '*** SWITCH TO TOP DOWN'
@@ -1587,12 +1589,15 @@ def demo():
             cp.set_strategy(BU_STRATEGY)
             for j, e in enumerate(cp.step()):
                 if j>20 or e is None: break
-        times['stepping'] = time.time()-t
+        times['Stepping'] = time.time()-t
         assert len(cp.parses())==5, 'Not all parses found'
         for parse in cp.parses(): print parse
+        print
 
     # Print the times of all parsers:
-    if not times: return
+    if not (should_print_times and times): return
+    print "* Parsing times"
+    print
     maxlen = max(len(key) for key in times.keys())
     format = '%' + `maxlen` + 's parser: %6.3fsec'
     times_items = times.items()
