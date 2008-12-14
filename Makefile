@@ -199,6 +199,9 @@ rsync:	clean_up
 ########################################################################
 
 data_index:
+	echo "use make pkg_index"
+
+pkg_index:
 	$(PYTHON) tools/build_pkg_index.py ../nltk_data http://nltk.googlecode.com/svn/trunk/nltk_data/packages ../nltk_data/index.xml
 	svn commit -m "updated data index" ../nltk_data/index.xml
 
