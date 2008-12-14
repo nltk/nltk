@@ -67,7 +67,7 @@ class ParserI(object):
         """
         if overridden(self.batch_nbest_parse):
             return self.batch_nbest_parse([sent],n)[0]
-        elif overridden(self.parse) or overriden(self.batch_parse):
+        elif overridden(self.parse) or overridden(self.batch_parse):
             tree = self.parse(sent)
             if tree: return [tree]
             else: return []
@@ -88,7 +88,7 @@ class ParserI(object):
             return self.batch_iter_parse([sent])[0]
         elif overridden(self.nbest_parse) or overridden(self.batch_nbest_parse):
             return iter(self.nbest_parse(sent))
-        elif overridden(self.parse) or overriden(self.batch_parse):
+        elif overridden(self.parse) or overridden(self.batch_parse):
             tree = self.parse(sent)
             if tree: return iter([tree])
             else: return iter([])

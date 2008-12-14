@@ -1,9 +1,11 @@
+# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Context Free Grammars
 #
 # Copyright (C) 2001-2008 NLTK Project
 # Author: Steven Bird <sb@csse.unimelb.edu.au>
 #         Edward Loper <edloper@seas.upenn.edu>
 #         Jason Narad <jason.narad@gmail.com>
+#         Peter Ljunglöf <peter.ljunglof@heatherleaf.se>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 #
@@ -141,8 +143,10 @@ class Nonterminal(object):
         return not (self==other)
 
     def __cmp__(self, other):
-        if self == other: return 0
-        else: return -1
+        try: 
+            return cmp(self._symbol, other._symbol)
+        except: 
+            return -1
 
     def __hash__(self):
         return self._hash
@@ -368,7 +372,7 @@ class ContextFreeGrammar(object):
     If you need efficient key-based access to productions, you
     can use a subclass to implement it.
     """
-    def __init__(self, start, productions, lexicon=None):
+    def __init__(self, start, productions):
         """
         Create a new context-free grammar, from the given start state
         and set of C{Production}s.
@@ -380,11 +384,6 @@ class ContextFreeGrammar(object):
         """
         self._start = start
         self._productions = productions
-        if not lexicon:
-            lexical_productions = [prod for prod in productions if
-                (len(prod.rhs()) == 1 and isinstance(prod.rhs()[0], str))]
-            lexicon = earley_lexicon(lexical_productions)
-        self._lexicon = lexicon
         self._lhs_index = {}
         self._rhs_index = {}
         for prod in self._productions:
@@ -408,29 +407,16 @@ class ContextFreeGrammar(object):
 
         # only lhs specified so look up its index
         elif lhs and not rhs:
-            if lhs in self._lhs_index:
-                return self._lhs_index[lhs]
-            else:
-                return []
+            return self._lhs_index.get(lhs, [])
 
         # only rhs specified so look up its index
         elif rhs and not lhs:
-            if rhs in self._rhs_index:
-                return self._rhs_index[rhs]
-            else:
-                return []
+            return self._rhs_index.get(rhs, [])
 
         # intersect
         else:
-            if lhs in self._lhs_index:
-                return [prod for prod in self._lhs_index[lhs]
-                        if prod in self._rhs_index[rhs]]
-            else:
-                return []
-            
-    def lexicon(self):
-        return self._lexicon
-        
+            return [prod for prod in self._lhs_index.get(lhs,[])
+                    if prod in self._rhs_index.get(rhs,[])]
 
     def check_coverage(self, tokens):
         """
@@ -467,10 +453,6 @@ class ContextFreeGrammar(object):
         str += ' (start state = %s)' % self._start
         for production in self._productions:
             str += '\n    %s' % production
-        if self._lexicon:
-            str += '\n\n    Lexical Entries\n    ==============='
-            for word in sorted(self._lexicon):
-                str += '\n    %-15s: %s' % (word, self._lexicon[word])
         return str
 
 class Grammar(ContextFreeGrammar):
@@ -698,156 +680,36 @@ def induce_pcfg(start, productions):
 # Parsing Grammars
 #################################################################
 
-_PARSE_CFG_RE = re.compile(r'''^\s*                # leading whitespace
-                              (\w+(?:/\w+)?)\s*    # lhs
-                              (?:[-=]+>)\s*        # arrow
-                              (?:(                 # rhs:
-                                   "[^"]+"         # doubled-quoted terminal
-                                 | '[^']+'         # single-quoted terminal
-                                 | \w+(?:/\w+)?    # non-terminal
-                                 | \|              # disjunction
-                                 )
-                                 \s*)              # trailing space
-                                 *$''',            # zero or more copies
-                             re.VERBOSE)
-_SPLIT_CFG_RE = re.compile(r'''(\w+(?:/\w+)?|[-=]+>|"[^"]+"|'[^']+'|\|)''')
-
-
 def parse_cfg_production(s):
     """
     Returns a list of productions
     """
-    # Use _PARSE_CFG_RE to check that it's valid.
-    if not _PARSE_CFG_RE.match(s):
-        raise ValueError, 'Bad production string'
-    # Use _SPLIT_CFG_RE to process it.
-    pieces = _SPLIT_CFG_RE.split(s)
-    pieces = [p for i,p in enumerate(pieces) if i%2==1]
-    lhside = Nonterminal(pieces[0])
-    rhsides = [[]]
-    found_terminal = found_non_terminal = False
-    for piece in pieces[2:]:
-        if piece == '|':
-            rhsides.append([])                     # Vertical bar
-            found_terminal = found_non_terminal = False
-        elif piece[0] in ('"', "'"):
-            rhsides[-1].append(piece[1:-1])        # Terminal
-            found_terminal = True
-        else:
-            rhsides[-1].append(Nonterminal(piece)) # Nonterminal
-            found_non_terminal = True
-        if found_terminal and found_non_terminal:
-            raise ValueError('Bad right-hand-side: do not mix '
-                             'terminals and non-terminals')
-    return [Production(lhside, rhside) for rhside in rhsides]
+    return parse_production(s, standard_nonterm_parser)
 
 def parse_cfg(s):
-    productions = []
-    for linenum, line in enumerate(s.split('\n')):
-        line = line.strip()
-        if line.startswith('#') or line=='': continue
-        try: productions += parse_cfg_production(line)
-        except ValueError:
-            raise ValueError, 'Unable to parse line %s: %s' % (linenum, line)
-    if len(productions) == 0:
-        raise ValueError, 'No productions found!'
-    start = productions[0].lhs()
+    start, productions = parse_grammar(s, standard_nonterm_parser)
     return ContextFreeGrammar(start, productions)
 
 # Parsing PCFGs
-
-_PARSE_PCFG_RE = re.compile(r'''^\s*                 # leading whitespace
-                               (\w+(?:/\w+)?)\s*     # lhs
-                               (?:[-=]+>)\s*         # arrow
-                               (?:(                  # rhs:
-                                    "[^"]+"          # doubled-quoted terminal
-                                  | '[^']+'          # single-quoted terminal
-                                  | \w+(?:/\w+)?     # non-terminal
-                                  | \[[01]?\.\d+\]   # probability
-                                  | \|               # disjunction
-                                  )
-                                  \s*)               # trailing space
-                                  *$''',             # zero or more copies
-                            re.VERBOSE)
-_SPLIT_PCFG_RE = re.compile(r'(\w+(?:/\w+)?|\[[01]?\.\d+\]|[-=]+>|"[^"]+"'
-                            r"|'[^']+'|\|)")
 
 def parse_pcfg_production(s):
     """
     Returns a list of PCFG productions
     """
-    # Use _PARSE_PCFG_RE to check that it's valid.
-    if not _PARSE_PCFG_RE.match(s):
-        raise ValueError, 'Bad production string'
-    # Use _SPLIT_PCFG_RE to process it.
-    pieces = _SPLIT_PCFG_RE.split(s)
-    pieces = [p for i,p in enumerate(pieces) if i%2==1]
-    lhside = Nonterminal(pieces[0])
-    rhsides = [[]]
-    probabilities = [0.0]
-    found_terminal = found_non_terminal = False
-    for piece in pieces[2:]:
-        if piece == '|':
-            rhsides.append([])                     # Vertical bar
-            probabilities.append(0.0)
-            found_terminal = found_non_terminal = False
-        elif piece[0] in ('"', "'"):
-            if found_terminal:
-                raise ValueError('Bad right-hand-side: do not use '
-                                 'a sequence of terminals')
-            rhsides[-1].append(piece[1:-1])        # Terminal
-            found_terminal = True
-        elif piece[0] in "[":
-            probabilities[-1] = float(piece[1:-1]) # Probability
-        else:
-            rhsides[-1].append(Nonterminal(piece)) # Nonterminal
-            found_non_terminal = True
-        if found_terminal and found_non_terminal:
-            raise ValueError('Bad right-hand-side: do not mix '
-                             'terminals and non-terminals')
-    return [WeightedProduction(lhside, rhside, prob=probability)
-            for (rhside, probability) in zip(rhsides, probabilities)]
+    return parse_production(s, standard_nonterm_parser, probabilistic=True)
 
 def parse_pcfg(s):
-    productions = []
-    for linenum, line in enumerate(s.split('\n')):
-        line = line.strip()
-        if line.startswith('#') or line=='': continue
-        try: productions += parse_pcfg_production(line)
-        except ValueError:
-            raise ValueError, 'Unable to parse line %s: %s' % (linenum, line)
-    if len(productions) == 0:
-        raise ValueError, 'No productions found!'
-    start = productions[0].lhs()
+    start, productions = parse_grammar(s, standard_nonterm_parser, 
+                                       probabilistic=True)
     return WeightedGrammar(start, productions)
 
-# Parsing Feature-based CFGs
+# Parsing generic grammars
 
-def earley_lexicon(productions):
-    """
-    Convert CFG lexical productions into a dictionary indexed 
-    by the lexical string. 
-    """
-    from nltk import defaultdict
-    lexicon = defaultdict(list)
-    for prod in productions:
-        lexicon[prod.rhs()[0]].append(prod.lhs())
-    return lexicon
-
-class FeatStructNonterminal(FeatDict, Nonterminal):
-    """A feature structure that's also a nonterminal.  It acts as its
-    own symbol, and automatically freezes itself when hashed."""
-    def __hash__(self):
-        self.freeze()
-        return FeatStruct.__hash__(self)
-    def symbol(self):
-        return self
-
-def parse_fcfg_production(line, fstruct_parser):
+def parse_production(line, nonterm_parser, probabilistic=False):
     pos = 0
     
     # Parse the left-hand side.
-    lhs, pos = fstruct_parser.partial_parse(line, pos)
+    lhs, pos = nonterm_parser(line, pos)
 
     # Skip over the arrow.
     m = re.compile('\s*->\s*').match(line, pos)
@@ -855,48 +717,65 @@ def parse_fcfg_production(line, fstruct_parser):
     pos = m.end()
 
     # Parse the right hand side.
+    probabilities = [0.0]
+    found_terminal = found_non_terminal = False
     rhsides = [[]]
     while pos < len(line):
-        # String -- add nonterminal.
-        if line[pos] in "\'\"":
-            m = re.compile('("[^"]*"|'+"'[^']+')\s*").match(line, pos)
+        # Probability.
+        m = re.compile('(\[[\d\.]+\])\s*').match(line, pos) 
+        if probabilistic and m:
+            pos = m.end()
+            probabilities[-1] = float(m.group(1)[1:-1])
+            if probabilities[-1] > 1.0:
+                raise ValueError('Production probability %f, '
+                                 'should not be greater than 1.0' %
+                                 (probabilities[-1],))
+
+        # String -- add terminal.
+        elif line[pos] in "\'\"":
+            m = re.compile('("[^"]+"|'+"'[^']+')\s*").match(line, pos)
             if not m: raise ValueError('Unterminated string')
-            if rhsides[-1] != []: raise ValueError('Bad right-hand-side')
+            if found_terminal:
+                raise ValueError('Bad right-hand-side: do not use '
+                                 'a sequence of terminals')
+            found_terminal = True
             rhsides[-1].append(m.group(1)[1:-1])
             pos = m.end()
 
         # Vertical bar -- start new rhside.
         elif line[pos] == '|':
-            if len(rhsides[-1])==1 and isinstance(rhsides[-1], basestring):
-                raise ValueError('Bad right-hand-side')
+            probabilities.append(0.0)
+            found_terminal = found_non_terminal = False
             rhsides.append([])
             pos = re.compile('\\|\s*').match(line,pos).end()
 
-        # Anything else -- feature structure nonterminal.
+        # Anything else -- nonterminal.
         else:
-            fstruct, pos = fstruct_parser.partial_parse(line, pos)
-            rhsides[-1].append(fstruct)
+            nonterm, pos = nonterm_parser(line, pos)
+            rhsides[-1].append(nonterm)
+            found_non_terminal = True
             
-    return [Production(lhs, rhs) for rhs in rhsides]
+        if found_terminal and found_non_terminal:
+            raise ValueError('Bad right-hand-side: do not mix '
+                             'terminals and non-terminals')
 
-def parse_fcfg(input, features=None, logic_parser=None, fstruct_parser=None):
+    if probabilistic:
+        return [WeightedProduction(lhs, rhs, prob=probability) 
+                for (rhs, probability) in zip(rhsides, probabilities)]
+    else:
+        return [Production(lhs, rhs) for rhs in rhsides]
+
+
+def parse_grammar(input, nonterm_parser, probabilistic=False):
     """
-    Return a tuple (list of grammatical productions,
-    lexicon dict).
+    Return a starting category and a list of C{Production}s.
     
     @param input: a grammar, either in the form of a string or else 
     as a list of strings.
+    @param nonterm_parser: a function for parsing nonterminals.
+    It should take a C{(string,position)} as argument and return
+    a C{(nonterminal,position)} as result. 
     """
-    if features is None:
-        features = (SLASH, TYPE)
-    
-    if fstruct_parser is None:
-        fstruct_parser = FeatStructParser(features, FeatStructNonterminal, 
-                                          logic_parser=logic_parser)
-    elif logic_parser is not None:
-        raise Exception('\'logic_parser\' and \'fstruct_parser\' must '
-                        'not both be set')
-    
     if isinstance(input, str):
         lines = input.split('\n')
     else:
@@ -912,40 +791,78 @@ def parse_fcfg(input, features=None, logic_parser=None, fstruct_parser=None):
             continue_line = line[:-1].rstrip()+' '
             continue
         continue_line = ''
-        if line[0] == '%':
-            parts = line[1:].split()
-            if len(parts) == 1:
-                raise ValueError('Bad directive on line %s: %r' %
-                                 (linenum+1, line))
-            directive, args = line[1:].split(None, 1)
-            if directive == 'start':
-                start = fstruct_parser.parse(args)
-#             elif directive == 'include':
-#                 filename = args.strip('"')
-#                 # [XX] This is almost certainly a bug: [XX]
-#                 self.apply_file(filename)
-        else:
-            try:
+        try:
+            if line[0] == '%':
+                directive, args = line[1:].split(None, 1)
+                if directive == 'start':
+                    start, pos = nonterm_parser(args, 0)
+                    if pos != len(args):
+                        raise ValueError('Bad argument to start directive')
+                else:
+                    raise ValueError('Bad directive')
+            else:
                 # expand out the disjunctions on the RHS
-                productions += parse_fcfg_production(line, fstruct_parser)
-            except ValueError, e:
-                raise ValueError('Unable to parse line %s: %s\n%s' %
-                                 (linenum+1, line, e))
+                productions += parse_production(line, nonterm_parser, probabilistic)
+        except ValueError, e:
+            raise ValueError('Unable to parse line %s: %s\n%s' %
+                             (linenum+1, line, e))
 
     if not productions:
         raise ValueError, 'No productions found!'
-    grammatical_productions = [prod for prod in productions if not
-            (len(prod.rhs()) == 1 and isinstance(prod.rhs()[0], str))]
-    lexical_productions = [prod for prod in productions if
-            (len(prod.rhs()) == 1 and isinstance(prod.rhs()[0], str))]
     if not start:
         start = productions[0].lhs()
-    lexicon = earley_lexicon(lexical_productions)
-    return ContextFreeGrammar(start, grammatical_productions, lexicon)
+    return (start, productions)
+
+def standard_nonterm_parser(string, pos):
+    m = re.compile('([\w/]+)\s*').match(string, pos)
+    if not m: raise ValueError('Expected a nonterminal, found: ' 
+                               + string[pos:])
+    return (Nonterminal(m.group(1)), m.end())
 
 @deprecated("Use nltk.parse_fcfg() instead.")
 def parse_featcfg(input): 
     return parse_fcfg(input)
+
+
+# Parsing Feature-based CFGs
+
+class FeatStructNonterminal(FeatDict, Nonterminal):
+    """A feature structure that's also a nonterminal.  It acts as its
+    own symbol, and automatically freezes itself when hashed."""
+    def __hash__(self):
+        self.freeze()
+        return FeatStruct.__hash__(self)
+    def symbol(self):
+        return self
+
+def parse_fcfg_production(input, fstruct_parser):
+    return parse_production(input, fstruct_parser)
+
+def parse_fcfg(input, features=None, logic_parser=None, fstruct_parser=None):
+    """
+    Return a feature structure grammar.
+    
+    @param input: a grammar, either in the form of a string or else 
+    as a list of strings.
+    @param features: a tuple of features (default: SLASH, TYPE)
+    @param logic_parser: a parser for lambda-expressions 
+                         (default: LogicParser())
+    @param fstruct_parser: a feature structure parser 
+                           (only if features and logic_parser is None)
+    """
+    if features is None:
+        features = (SLASH, TYPE)
+    
+    if fstruct_parser is None:
+        fstruct_parser = FeatStructParser(features, FeatStructNonterminal, 
+                                          logic_parser=logic_parser)
+    elif logic_parser is not None:
+        raise Exception('\'logic_parser\' and \'fstruct_parser\' must '
+                        'not both be set')
+
+    start, productions = parse_grammar(input, fstruct_parser.partial_parse)
+    return ContextFreeGrammar(start, productions)
+
 
 #################################################################
 # Parsing Dependency Grammars
@@ -1187,10 +1104,11 @@ if __name__ == '__main__':
 __all__ = ['Nonterminal', 'nonterminals',
            'Production', 'DependencyProduction', 'WeightedProduction',
            'ContextFreeGrammar', 'WeightedGrammar', 'DependencyGrammar',
-           'StatisticalDependencyGrammar', 'earley_lexicon', 
+           'StatisticalDependencyGrammar', 
            'induce_pcfg', 'parse_cfg', 'parse_cfg_production',
            'parse_pcfg', 'parse_pcfg_production',
            'parse_fcfg', 'parse_fcfg_production',
+           'parse_grammar', 'parse_production',
            'parse_dependency_grammar', 'parse_dependency_production',
            'demo', 'cfg_demo', 'pcfg_demo', 'dg_demo', 'sdg_demo',
            'toy_pcfg1', 'toy_pcfg2']

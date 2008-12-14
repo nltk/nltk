@@ -1576,16 +1576,10 @@ class ChartView(object):
 #######################################################################
 # Pseudo Earley Rule
 #######################################################################
-# This isn't *true* Earley, since it doesn't use the separate lexicon
-# dictionary.  (I.e., it uses TopDownMatchRule instead of ScannerRule)
-# But it's close enough for demonstration purposes.
-# [SB] Subsequently modified to use ScannerRule();
-# ScannerRule modified to derive lexicon from grammar if it wasn't supplied in constructor
 
 class PseudoEarleyRule(AbstractChartRule):
     NUM_EDGES = 1
     _completer = CompleterRule()
-    #_scanner = TopDownMatchRule()
     _scanner = ScannerRule()
     _predictor = PredictorRule()
     def __init__(self):

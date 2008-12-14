@@ -1,7 +1,9 @@
+# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Chart Parser for Feature-Based Grammars
 #
 # Copyright (C) 2001-2008 NLTK Project
 # Author: Rob Speer <rspeer@mit.edu>
+#         Peter Ljunglöf <peter.ljunglof@heatherleaf.se>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 #
@@ -185,6 +187,9 @@ class FeatureTopDownExpandRule(TopDownExpandRule):
     def apply_iter(self, chart, grammar, edge):
         if edge.is_complete(): return
         for prod in grammar.productions():
+            # Be sure not to predict lexical edges. 
+            # (The ScannerRule takes care of those.)
+            if len(prod.rhs()) == 1 and isinstance(prod.rhs()[0], str): continue
             # Note: we rename vars here, because we don't want variables
             # from the two different productions to match.
             if ((prod.lhs()[TYPE] == edge.next()[TYPE]) and 
@@ -219,7 +224,7 @@ class FeatureScannerRule(ScannerRule):
         if edge.is_complete() or edge.end()>=chart.num_leaves(): return
         index = edge.end()
         leaf = chart.leaf(index)
-        for pos in self._word_to_pos.get(leaf, []):
+        for pos in [prod.lhs() for prod in gramar.productions(rhs=leaf)]:
             if (pos[TYPE] == edge.next()[TYPE] and 
                 unify(pos, edge.next_with_bindings(), rename_vars=True)):
                 new_leaf_edge = LeafEdge(leaf, index)
@@ -257,11 +262,6 @@ class EarleyChartParser(ParserI):
                 - Apply CompleterRule to I{edge}
         - Return any complete parses in the chart
 
-    C{EarleyChartParser} uses a X{lexicon} to decide whether a leaf
-    has a given part of speech.  This lexicon is encoded as a
-    dictionary that maps each word to a list of parts of speech that
-    word can have.
-
     @ivar _predictor_class, _completer_class, _scanner_class: The
     classes that are used to implement the three rules used by the
     Earley algorithm,  Replacement rules can be specified by
@@ -289,19 +289,14 @@ class EarleyChartParser(ParserI):
         """
         if isinstance(trace, dict):
             raise ValueError("Earley parser no longer takes a lexicon "
-                             "as a separate parameter; assign the "
-                             "lexicon when creating the grammar instead.")
+                             "as a separate parameter; the lexicon "
+                             "is calculated from the grammar instead.")
         self._grammar = grammar
-        self._lexicon = grammar.lexicon()
         self._trace = trace
         self._chart_class = chart_class
 
     def grammar(self):
         return self._grammar
-
-    def lexicon(self):
-        """@return: The lexicon used by this parser."""
-        return self._lexicon
 
     #: The default total width reserved for the chart in trace output.
     #: The remainder of each line will be used to display edges.
@@ -310,7 +305,7 @@ class EarleyChartParser(ParserI):
     def nbest_parse(self, tokens, n=None, tree_class=Tree, trace=None):
         if trace is not None: self._trace = trace
         tokens = list(tokens)
-        self._check_lexicon_coverage(tokens)
+        self._grammar.check_coverage(tokens)
         
         chart = self._chart_class(tokens)
         grammar = self._grammar
@@ -325,7 +320,7 @@ class EarleyChartParser(ParserI):
         # Create the 3 rules:
         predictor = self._predictor_class()
         completer = self._completer_class()
-        scanner = self._scanner_class(self._lexicon)
+        scanner = self._scanner_class()
 
         for end in range(chart.num_leaves()+1):
             if self._trace > 2: print 'Processing queue %d' % end
@@ -361,13 +356,6 @@ class EarleyChartParser(ParserI):
     def _parses(self, chart, start_sym, tree_class):
         """Return a list of parses in the given chart."""
         return chart.parses(start_sym, tree_class=tree_class)
-    
-    def _check_lexicon_coverage(self, tokens):
-        missing = [tok for tok in tokens if tok not in self._lexicon]
-        if missing:
-            missing = ', '.join('%r' % (w,) for w in missing)
-            raise ValueError("Grammar does not cover some of the "
-                             "input words: " + missing)
 
 class FeatureEarleyChartParser(EarleyChartParser):
     """
@@ -444,7 +432,7 @@ class InstantiateVarsChart(Chart):
 #////////////////////////////////////////////////////////////
 
 # TODO: update to use grammar parser
-def demo():
+def demo(should_print_times=True, trace=1):
     import sys, time
 
     S = FeatStructNonterminal('S')
@@ -461,16 +449,14 @@ def demo():
     NSg = FeatStructNonterminal('N[-pl]')
     NPl = FeatStructNonterminal('N[+pl]')
 
-    # Define some grammatical productions.
-    grammatical_productions = [
+    productions = [
+        # Define some grammatical productions.
         Production(S, (NP, VP)),  Production(PP, (P, NP)),
         Production(NP, (NP, PP)),
         Production(VP, (VP, PP)), Production(VP, (V, NP)),
         Production(VP, (V,)),     Production(NP, (DetPl, NPl)),
-        Production(NP, (DetSg, NSg))]
-
-    # Define some lexical productions.
-    lexical_productions = [
+        Production(NP, (DetSg, NSg)),
+        # Define some lexical productions.
         Production(NP, ('John',)), Production(NP, ('I',)),
         Production(Det, ('the',)), Production(Det, ('my',)),
         Production(Det, ('a',)),
@@ -479,22 +465,21 @@ def demo():
         Production(P, ('with',)),  Production(P, ('under',)),
     ]
 
-
-    earley_lexicon = defaultdict(list)
-    for prod in lexical_productions:
-        earley_lexicon[prod.rhs()[0]].append(prod.lhs())
-    #print "Lexicon:"
-    #print earley_lexicon
-    earley_grammar = ContextFreeGrammar(S, grammatical_productions, earley_lexicon)
+    earley_grammar = ContextFreeGrammar(S, productions)
     print earley_grammar
-    
+    print
+
     sent = 'I saw John with a dog with my cookie'
-    print "Sentence:\n", sent
+    print "Sentence:", 
+    print sent
+    print
     tokens = sent.split()
     t = time.time()
-    cp = FeatureEarleyChartParser(earley_grammar, trace=1)
+    cp = FeatureEarleyChartParser(earley_grammar, trace=trace)
     trees = cp.nbest_parse(tokens)
-    print "Time: %s" % (time.time() - t)
+    print
+    if should_print_times:
+        print "Time: %s" % (time.time() - t)
     for tree in trees: print tree
 
 def run_profile():
