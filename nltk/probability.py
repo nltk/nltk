@@ -1,11 +1,11 @@
-# -*- coding: utf8 -*-
+# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Probability and Statistics
 #
 # Copyright (C) 2001-2008 NLTK Project
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
 #         Steven Bird <sb@csse.unimelb.edu.au> (additions)
 #         Trevor Cohn <tacohn@cs.mu.oz.au> (additions)
-#         Peter Ljungl�f <peter.ljunglof@heatherleaf.se> (additions)
+#         Peter Ljunglöf <peter.ljunglof@heatherleaf.se> (additions)
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 #
