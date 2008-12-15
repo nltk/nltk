@@ -64,4 +64,35 @@ class TestGrammar(object):
                 print "All tests passed!"
 
 
+def extract_test_sentences(string, comment_chars="#%;"):
+    """
+    Parses a string with one test sentence per line.
+    Lines can optionally begin with:
+      - a C{bool}, saying if the sentence is grammatical or not, or
+      - an C{int}, giving the number of parse trees is should have,
+    The result information is followed by a colon, and then the sentence.
+    Empty lines and lines beginning with a comment char are ignored.
+
+    @return: a C{list} of C{tuple} of sentences and expected results,
+        where a sentence is a C{list} of C{str},
+        and a result is C{None}, or C{bool}, or C{int}
+
+    @param comment_chars: L{str} of possible comment characters.
+    """
+    sentences = []
+    for sentence in string.split('\n'):
+        if sentence=='' or sentence[0] in comment_chars: continue
+        split_info = sentence.split(':', 1)
+        result = None
+        if len(split_info)==2: 
+            if split_info[0] in ['True','true','False','false']:
+                result = split_info[0] in ['True','true']
+                sentence = split_info[1]
+            else: 
+                result = int(split_info[0])
+                sentence = split_info[1]
+        tokens = sentence.split()
+        if tokens==[]: continue
+        sentences += [(tokens, result)]
+    return sentences
 
