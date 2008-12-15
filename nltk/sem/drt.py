@@ -241,8 +241,7 @@ class DrtLambdaExpression(AbstractDrs, logic.LambdaExpression,
         @param newvar: C{Variable}, for the new variable
         """
         return self.__class__(newvar, self.term.replace(self.variable, 
-                          DrtVariableExpression(newvar), True), 
-                          self._type_check)
+                          DrtVariableExpression(newvar), True))
 
     def toFol(self):
         return logic.LambdaExpression(self.variable, self.term.toFol())
