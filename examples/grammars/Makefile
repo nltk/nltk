@@ -26,4 +26,4 @@ clean:
 publish: zip
 	cp $(PACKAGES) $(PUBLISH)
 	svn commit -m "updated grammar files" ../../../nltk_data/packages/grammars
-	$(MAKE) -C ../.. data_index
+	$(MAKE) -C ../.. pkg_index
