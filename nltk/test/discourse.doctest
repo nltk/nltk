@@ -87,7 +87,7 @@ the ``readings()`` method. Again, each thread is assigned an
 identifier of the form `d`\ :sub:`i`. Following the identifier is a
 list of the readings that constitute that thread.
 
-    >>> dt.readings(threaded=True)
+    >>> dt.readings(threaded=True) # doctest: +NORMALIZE_WHITESPACE
     d0: ['s0-r0', 's1-r0']
     d1: ['s0-r0', 's1-r1']
     d2: ['s0-r1', 's1-r0']
@@ -189,7 +189,7 @@ couple of them.
     ------------------------------
     s2-r0: boxerdog(John)
     s2-r1: boxer(John)
-    >>> dt.readings(threaded=True)
+    >>> dt.readings(threaded=True) # doctest: +NORMALIZE_WHITESPACE
     d0: ['s0-r0', 's1-r0', 's2-r0']
     d1: ['s0-r0', 's1-r0', 's2-r1']
     d2: ['s0-r0', 's1-r1', 's2-r0']
@@ -344,7 +344,7 @@ Let's build a new discourse, and look at the readings of the component sentences
 
 This gives us a lot of threads:
 
-    >>> dt.readings(threaded=True)
+    >>> dt.readings(threaded=True) # doctest: +NORMALIZE_WHITESPACE
     d0: ['s0-r0', 's1-r0', 's2-r0', 's3-r0']
     d1: ['s0-r0', 's1-r1', 's2-r0', 's3-r0']
     d2: ['s0-r1', 's1-r0', 's2-r0', 's3-r0']
@@ -355,7 +355,7 @@ We can eliminate some of the readings, and hence some of the threads,
 by adding background information.
 
     >>> import nltk.data
-    >>> bg = nltk.data.load('grammars/background1.fol')
+    >>> bg = nltk.data.load('grammars/sample_grammars/background1.fol')
     >>> dt.add_background(bg)
     >>> dt.background()
     all x.(boxerdog(x) -> dog(x))
@@ -372,7 +372,7 @@ The background information allows us to reject three of the threads as
 inconsistent. To see what remains, use the ``filter=True`` parameter
 on ``readings()``.
 
-    >>> dt.readings(filter=True)
+    >>> dt.readings(filter=True) # doctest: +NORMALIZE_WHITESPACE
     d2: ['s0-r1', 's1-r0', 's2-r0', 's3-r0']
 
 The ``models()`` method gives us more information about the surviving thread.
@@ -481,8 +481,8 @@ The ``models()`` method gives us more information about the surviving thread.
 In order to play around with your own version of background knowledge,
 you might want to start off with a local copy of ``background1.fol``:
 
-    >>> nltk.data.retrieve('grammars/background1.fol')
-    Retrieving 'grammars/background1.fol', saving to 'background1.fol'
+    >>> nltk.data.retrieve('grammars/sample_grammars/background1.fol')
+    Retrieving 'grammars/sample_grammars/background1.fol', saving to 'background1.fol'
 
 After you have modified the file, the ``parse_fol()`` function will parse the strings in the file into
 expressions of ``nltk.logic``.
@@ -498,3 +498,31 @@ manner shown earlier.
     ...     os.remove(os.path.join(tempdir, f))
     >>> os.rmdir(tempdir)
     >>> nltk.data.clear_cache()
+
+
+Regression Testing from book
+============================
+
+    >>> from nltk.inference.discourse import DrtGlueReadingCommand as RC
+    >>> dt = DT(['Every dog chases a boy', 'He runs'], RC())
+    >>> dt.readings()
+    s0 readings:
+    s0-r0: ([],[(([x],[dog(x)]) -> ([z15],[boy(z15), chase(x,z15)]))])
+    s0-r1: ([z16],[boy(z16), (([x],[dog(x)]) -> ([],[chase(x,z16)]))])
+    s1 readings:
+    s1-r0: ([x],[PRO(x), run(x)])
+    >>> dt.readings(show_thread_readings=True)
+    d0: ['s0-r0', 's1-r0'] : INVALID: AnaphoraResolutionException
+    d1: ['s0-r1', 's1-r0'] : ([z20,z24],[boy(z20), (([x],[dog(x)]) -> 
+    ([],[chase(x,z20)])), (z24 = z20), run(z24)])
+    >>> dt.readings(filter=True, show_thread_readings=True)
+    d1: ['s0-r1', 's1-r0'] : ([z26,z29],[boy(z26), (([x],[dog(x)]) -> 
+    ([],[chase(x,z26)])), (z29 = z26), run(z29)])
+
+
+
+    >>> from nltk.parse import load_earley
+    >>> parser = load_earley('grammars/book_grammars/drt.fcfg', trace=0, logic_parser=drt.DrtParser())
+    >>> trees = parser.nbest_parse('Angus owns a dog'.split())
+    >>> print trees[0].node['sem'].simplify()
+    ([x,z2],[Angus(x), dog(z2), own(x,z2)])
