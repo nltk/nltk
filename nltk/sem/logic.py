@@ -547,9 +547,7 @@ class ApplicationExpression(Expression):
     type = property(_get_type)
     
     def _set_type(self, other_type=ANY_TYPE, signature=None):
-        """
-        @see Expression._set_type()
-        """
+        """@see Expression._set_type()"""
         assert isinstance(other_type, Type)
         
         if signature == None:
@@ -668,9 +666,7 @@ class AbstractVariableExpression(Expression):
         return set([self.variable])
 
     def _set_type(self, other_type=ANY_TYPE, signature=None):
-        """
-        @see Expression._set_type()
-        """
+        """@see Expression._set_type()"""
         assert isinstance(other_type, Type)
         
         if signature == None:
@@ -708,9 +704,7 @@ class IndividualVariableExpression(AbstractVariableExpression):
     """This class represents variables that take the form of a single lowercase
     character (other than 'e') followed by zero or more digits."""
     def _set_type(self, other_type=ANY_TYPE, signature=None):
-        """
-        @see Expression._set_type()
-        """
+        """@see Expression._set_type()"""
         assert isinstance(other_type, Type)
         
         if signature == None:
@@ -754,9 +748,7 @@ class ConstantExpression(AbstractVariableExpression):
     type = ENTITY_TYPE
 
     def _set_type(self, other_type=ANY_TYPE, signature=None):
-        """
-        @see Expression._set_type()
-        """
+        """@see Expression._set_type()"""
         assert isinstance(other_type, Type)
         
         if signature == None:
@@ -767,6 +759,8 @@ class ConstantExpression(AbstractVariableExpression):
             resolution = ENTITY_TYPE
         else:
             resolution = other_type
+            if self.type != ENTITY_TYPE:
+                resolution = resolution.resolve(self.type)
             
         for varEx in signature[self.variable.name]:
             resolution = varEx.type.resolve(resolution)
@@ -893,9 +887,7 @@ class LambdaExpression(VariableBinderExpression):
                                 self.term.type))
 
     def _set_type(self, other_type=ANY_TYPE, signature=None):
-        """
-        @see Expression._set_type()
-        """
+        """@see Expression._set_type()"""
         assert isinstance(other_type, Type)
         
         if signature == None:
@@ -920,9 +912,7 @@ class QuantifiedExpression(VariableBinderExpression):
     type = property(lambda self: TRUTH_TYPE)
 
     def _set_type(self, other_type=ANY_TYPE, signature=None):
-        """
-        @see Expression._set_type()
-        """
+        """@see Expression._set_type()"""
         assert isinstance(other_type, Type)
         
         if signature == None:
@@ -982,9 +972,7 @@ class NegatedExpression(Expression):
     type = property(lambda self: TRUTH_TYPE)
     
     def _set_type(self, other_type=ANY_TYPE, signature=None):
-        """
-        @see Expression._set_type()
-        """
+        """@see Expression._set_type()"""
         assert isinstance(other_type, Type)
         
         if signature == None:
@@ -1065,9 +1053,7 @@ class BinaryExpression(Expression):
         
 class BooleanExpression(BinaryExpression):
     def _set_type(self, other_type=ANY_TYPE, signature=None):
-        """
-        @see Expression._set_type()
-        """
+        """@see Expression._set_type()"""
         assert isinstance(other_type, Type)
         
         if signature == None:
@@ -1102,9 +1088,7 @@ class IffExpression(BooleanExpression):
 class EqualityExpression(BinaryExpression):
     """This class represents equality expressions like "(x = y)"."""
     def _set_type(self, other_type=ANY_TYPE, signature=None):
-        """
-        @see Expression._set_type()
-        """
+        """@see Expression._set_type()"""
         assert isinstance(other_type, Type)
         
         if signature == None:
@@ -1518,4 +1502,15 @@ def printtype(ex):
     print ex.str() + ' : ' + str(ex.type)
 
 if __name__ == '__main__':
-    demo()
+#    demo()
+
+   lp = LogicParser(True)
+   e = lp.parse(r'man(x)')
+   print e.typecheck()
+   sig = {'man': '<e, t>'}
+   e = lp.parse(r'man(x)', sig)
+   print e.function.type
+   print e.typecheck()
+   print e.function.type
+   print e.typecheck(sig)
+   
