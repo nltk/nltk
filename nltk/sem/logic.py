@@ -1502,15 +1502,4 @@ def printtype(ex):
     print ex.str() + ' : ' + str(ex.type)
 
 if __name__ == '__main__':
-#    demo()
-
-   lp = LogicParser(True)
-   e = lp.parse(r'man(x)')
-   print e.typecheck()
-   sig = {'man': '<e, t>'}
-   e = lp.parse(r'man(x)', sig)
-   print e.function.type
-   print e.typecheck()
-   print e.function.type
-   print e.typecheck(sig)
-   
+    demo()
