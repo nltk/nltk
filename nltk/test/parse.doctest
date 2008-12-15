@@ -873,49 +873,52 @@ Reading the ATIS grammar.
 
 Reading the test sentences.
 
-    >>> sents = nltk.data.load('grammars/large_grammars/atis_sentences.txt', format='raw').split('\n')
-    >>> sents = [sent.split() for sent in sents if sent.split() != [] and sent[0] != ';']
-    >>> len(sents)
+    >>> sentences = nltk.data.load('grammars/large_grammars/atis_sentences.txt', format='raw')
+    >>> sentences = nltk.parse.util.extract_test_sentences(sentences)
+    >>> len(sentences)
     98
-    >>> sentence = sents[50]
-    >>> sentence
-    ['i', 'need', 'a', 'flight', 'from', 'los', 'angeles', 'to', 'minneapolis', 'thursday', 'afternoon', '.']
+    >>> testsentence = sentences[22]
+    >>> testsentence[0]
+    ['show', 'me', 'northwest', 'flights', 'to', 'detroit', '.']
+    >>> testsentence[1]
+    17
+    >>> sentence = testsentence[0]
 
 Bottom-up parsing.
 
     >>> parser = nltk.parse.ChartParser(grammar, nltk.parse.BU_STRATEGY)
     >>> chart = parser.chart_parse(sentence)
     >>> print chart.num_edges()
-    21025
+    7661
     >>> print len(chart.parses(grammar.start()))
-    295
+    17
 
 Bottom-up combine parsing.
 
     >>> parser = nltk.parse.ChartParser(grammar, nltk.parse.BUC_STRATEGY)
     >>> chart = parser.chart_parse(sentence)
     >>> print chart.num_edges()
-    15688
+    4986
     >>> print len(chart.parses(grammar.start()))
-    295
+    17
 
 Top-down parsing.
 
     >>> parser = nltk.parse.ChartParser(grammar, nltk.parse.TD_STRATEGY)
     >>> chart = parser.chart_parse(sentence)
     >>> print chart.num_edges()
-    54037
+    35090
     >>> print len(chart.parses(grammar.start()))
-    295
+    17
 
 Earley parsing.
 
     >>> parser = nltk.parse.ChartParser(grammar, nltk.parse.EARLEY_STRATEGY)
     >>> chart = parser.chart_parse(sentence)
     >>> print chart.num_edges()
-    44155
+    28345
     >>> print len(chart.parses(grammar.start()))
-    295
+    17
 
 
 Unit tests for the Probabilistic CFG class
