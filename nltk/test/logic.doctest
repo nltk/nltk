@@ -665,6 +665,20 @@ typecheck()
     >>> a.type
     t
 
+    >>> e = tlp.parse(r'man(x)')
+    >>> print e.typecheck()
+    {'x': e, 'man': <e,?>}
+    >>> sig = {'man': '<e, t>'}
+    >>> e = tlp.parse(r'man(x)', sig)
+    >>> print e.function.type
+    <e,t>
+    >>> print e.typecheck()
+    {'x': e, 'man': <e,t>}
+    >>> print e.function.type
+    <e,t>
+    >>> print e.typecheck(sig)
+    {'x': e, 'man': <e,t>}
+
 findtype()
 
     >>> print tlp.parse(r'man(x)').findtype(Variable('man'))
