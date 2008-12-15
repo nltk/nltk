@@ -1,0 +1,69 @@
+## Natural Language Toolkit: event.fcfg
+##
+## Illustrating Davidson-style event semantics
+## 
+## Author: Ewan Klein <ewan@inf.ed.ac.uk> 
+## URL: <http://nltk.sourceforge.net>
+## For license information, see LICENSE.TXT
+##
+## $Id: sem2.cfg 4674 2007-06-14 08:55:32Z ehk $
+
+% start S
+############################
+# Grammar Rules
+#############################
+
+S[sem = <some e.((?subj ?vp) e)>] -> NP[num=?n,sem=?subj] VP[num=?n,sem=?vp]
+
+NP[num=?n,sem=<app(?det,?nom)> ] -> Det[num=?n,sem=?det]  Nom[num=?n,sem=?nom]
+NP[loc=?l,num=?n,sem=?np] -> PropN[loc=?l,num=?n,sem=?np]
+
+Nom[num=?n,sem=?nom] -> N[num=?n,sem=?nom]
+Nom[num=?n,sem=<app(?pp,?nom)>] -> N[num=?n,sem=?nom] PP[sem=?pp]
+
+VP[num=?n,sem=<app(?v,?obj)>] -> TV[num=?n,sem=?v] NP[sem=?obj]
+VP[num=?n,sem=?v] -> IV[num=?n,sem=?v]
+
+VP[num=?n,sem=<app(?pp,?vp)>] -> VP[num=?n,sem=?vp] PP[sem=?pp]
+VP[num=?n,sem=<app(?adv,?vp)>] -> VP[num=?n,sem=?vp] Adv[sem=?adv]
+
+PP[sem=<app(?p,?np)>] -> P[loc=?l,sem=?p] NP[loc=?l,sem=?np]
+
+#############################
+# Lexical Rules
+#############################
+
+PropN[-loc,num=sg,sem=<\R e. (R john e)>] -> 'John'
+PropN[-loc,num=sg,sem=<\R e. (R mary e)>] -> 'Mary'
+PropN[-loc,num=sg,sem=<\R e. (R suzie e)>] -> 'Suzie'
+PropN[-loc,num=sg,sem=<\R e. (R fido e)>] -> 'Fido'
+PropN[+loc, num=sg,sem=<\P.(P noosa)>] -> 'Noosa'
+
+NP[-loc, num=sg, sem=<\P.\x.(P x)>] -> 'who'  
+
+Det[num=sg,sem=<\P R e. all x. ((P x) implies (R x e))>] -> 'every'
+Det[num=pl,sem=<\P R e. all x. ((P x) implies (R x e))>] -> 'all'
+Det[sem=<\P R e. some x. ((P x) and (R x e))>] -> 'some'
+Det[num=sg,sem=<\P R e. some x. ((P x) and (R x e))>] -> 'a'
+
+N[num=sg,sem=<boy>] -> 'boy'
+N[num=pl,sem=<boy>] -> 'boys'
+N[num=sg,sem=<girl>] -> 'girl'
+N[num=pl,sem=<girl>] -> 'girls'
+N[num=sg,sem=<dog>] -> 'dog'
+N[num=pl,sem=<dog>] -> 'dogs'
+
+TV[num=sg,sem=<\X y. (X \x e. ((agent y e) and ((chase e) and (patient x e))))>,tns=pres] -> 'chases'
+TV[num=pl,sem=<\X y. (X \x e. ((agent y e) and ((chase e) and (patient x e))))>,tns=pres] -> 'chase'
+TV[num=sg,sem=<\X y. (X \x e. ((agent y e) and ((see e) and (patient x e))))>,tns=pres] -> 'sees'
+TV[num=pl,sem=<\X y. (X \x e. ((agent y e) and ((see e) and (patient x e))))>,tns=pres] -> 'see'
+IV[num=sg,sem=<\x e. ((agent x e) and (bark e))>,tns=pres] -> 'barks'
+IV[num=pl,sem=<\x e. ((agent x e) and (bark e))>,tns=pres] -> 'bark'
+IV[num=sg,sem=<\x e. ((agent x e) and (walk e))>,tns=pres] -> 'walks'
+IV[num=pl,sem=<\x e. ((agent x e) and (walk e))>,tns=pres] -> 'walk'
+
+P[+loc,sem=<\X P x. (X \y. ((P x) and (in y x)))>] -> 'in'
+P[-loc,sem=<\X P x. (X \y. ((P x) and (with y x)))>] -> 'with'
+
+Adv[sem=<\R x e. ((slow e) and (R x e))>] -> 'slowly'
+Adv[sem=<\R x e. ((thoughtful e) and (R x e))>] -> 'thoughtfully'
