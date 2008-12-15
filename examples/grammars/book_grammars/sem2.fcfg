@@ -53,7 +53,7 @@ IV[num=pl,sem=<\x. bark(x)>,tns=pres] -> 'bark'
 IV[num=sg,sem=<\x. walk(x)>,tns=pres] -> 'walks'
 IV[num=pl,sem=<\x. walk(x)>,tns=pres] -> 'walk'
 TV[num=sg,sem=<\X x.X(\y.chase(x,y))>,tns=pres] -> 'chases'
-TV[num=pl,sem=<\X x.X(\y.chase(x,y))>,tns=pres] -> 'chase
+TV[num=pl,sem=<\X x.X(\y.chase(x,y))>,tns=pres] -> 'chase'
 TV[num=sg,sem=<\X x.X(\y.see(x,y))>,tns=pres] -> 'sees'
 TV[num=pl,sem=<\X x.X(\y.see(x,y))>,tns=pres] -> 'see'
 TV[num=sg,sem=<\X x.X(\y.bite(x,y))>,tns=pres] -> 'bites'
