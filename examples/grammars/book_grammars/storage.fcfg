@@ -38,7 +38,7 @@ Det[sem=[core=<\Q P.all x.(Q(x) implies P(x))>, store=(/)]] -> 'every'
 
 N[sem=[core=<dog>, store=(/)]] -> 'dog' 
 N[sem=[core=<bone>, store=(/)]] -> 'bone' 
-N[sem=[core=<man>, store=(/)]] -> 'girl' 
+N[sem=[core=<girl>, store=(/)]] -> 'girl' 
 N[sem=[core=<man>, store=(/)]] -> 'man'
 IV[sem=[core=<\x.smile(x)>, store=(/)]] -> 'smiles' 
 IV[sem=[core=<\x.walk(x)>, store=(/)]] -> 'walks'
