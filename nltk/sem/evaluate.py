@@ -190,17 +190,17 @@ class Assignment(dict):
     module. If a variable is not assigned a value by M{g}, it will raise
     an C{Undefined} exception.
     """
-    def __init__(self, domain, iter=None):
+    def __init__(self, domain, assign=None):
         """
         @param domain: the domain of discourse
         @type domain: C{set}
-        @param assignment: a map from variable names to values
-        @type domain: C{dict}
+        @param assign: a list of (varname, value) associations
+        @type assign: C{list}
         """
         dict.__init__(self)
         self.domain = domain
-        if iter:
-            for (var, val) in iter:
+        if assign:
+            for (var, val) in assign:
                 assert val in self.domain,\
                        "'%s' is not in the domain: %s" % (val, self.domain)
                 assert is_indvar(var),\
