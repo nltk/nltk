@@ -583,11 +583,11 @@ Tests for mapping from syntax to semantics
 Load a valuation from a file.
 
     >>> import nltk.data
-    >>> val = nltk.data.load('grammars/valuation1.val')
+    >>> val = nltk.data.load('grammars/sample_grammars/valuation1.val')
     >>> dom = val.domain
     >>> m = Model(dom, val)
     >>> g = Assignment(dom)
-    >>> gramfile = 'grammars/sem2.fcfg'
+    >>> gramfile = 'grammars/book_grammars/sem3.fcfg'
     >>> inputs = ['John sees a girl', 'every dog barks']
     >>> for s in inputs:
     ...     print
@@ -651,4 +651,48 @@ Load a valuation from a file.
     <BLANKLINE>
     True
 
- 
+    >>> sents = ['Irene walks', 'Cyril bites an ankle']
+    >>> results  = nltk.sem.text_interpret(sents, 'grammars/book_grammars/sem2.fcfg')
+    >>> for sent in sents:
+    ...     for (synrep, semrep) in results[sent]:
+    ...         print synrep
+    (S[sem=<walk(irene)>]
+      (NP[-loc, num='sg', sem=<\P.P(irene)>]
+        (PropN[-loc, num='sg', sem=<\P.P(irene)>] Irene))
+      (VP[num='sg', sem=<\x.walk(x)>]
+        (IV[num='sg', sem=<\x.walk(x)>, tns='pres'] walks)))
+    (S[sem=<exists z1.(ankle(z1) & bite(cyril,z1))>]
+      (NP[-loc, num='sg', sem=<\P.P(cyril)>]
+        (PropN[-loc, num='sg', sem=<\P.P(cyril)>] Cyril))
+      (VP[num='sg', sem=<\x.exists z1.(ankle(z1) & bite(x,z1))>]
+        (TV[num='sg', sem=<\X x.X(\y.bite(x,y))>, tns='pres'] bites)
+        (NP[num='sg', sem=<\Q.exists x.(ankle(x) & Q(x))>]
+          (Det[num='sg', sem=<\P Q.exists x.(P(x) & Q(x))>] an)
+          (Nom[num='sg', sem=<ankle>] (N[num='sg', sem=<ankle>] ankle)))))
+
+Cooper Storage
+--------------
+
+    >>> from nltk.sem import cooper_storage as cs
+    >>> sentence = 'every girl chases a dog'
+    >>> trees = cs.parse_with_bindops(sentence, grammar='grammars/book_grammars/storage.fcfg')
+    >>> semrep = trees[0].node['sem']
+    >>> cs_semrep = cs.CooperStore(semrep)
+    >>> print cs_semrep.core
+    chase(z2,z3)
+    >>> for bo in cs_semrep.store:
+    ...     print bo
+    bo(\P.all x.(girl(x) -> P(x)),z2)
+    bo(\P.exists x.(dog(x) & P(x)),z3)
+    >>> cs_semrep.s_retrieve(trace=True)
+    Permutation 1
+       (\P.all x.(girl(x) -> P(x)))(\z2.chase(z2,z3))
+       (\P.exists x.(dog(x) & P(x)))(\z3.all x.(girl(x) -> chase(x,z3)))
+    Permutation 2
+       (\P.exists x.(dog(x) & P(x)))(\z3.chase(z2,z3))
+       (\P.all x.(girl(x) -> P(x)))(\z2.exists x.(dog(x) & chase(z2,x)))
+
+    >>> for reading in cs_semrep.readings:
+    ...     print reading
+    exists x.(dog(x) & all z4.(girl(z4) -> chase(z4,x)))
+    all x.(girl(x) -> exists z5.(dog(z5) & chase(x,z5)))
