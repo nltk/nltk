@@ -162,7 +162,7 @@ using SQL statements.
 
     >>> import nltk
     >>> q = "SELECT City, Population FROM city_table WHERE Country = 'china' and Population > 1000"
-    >>> for answer in chat80.sql_query('samples/city.db', q):
+    >>> for answer in chat80.sql_query('corpora/city_database/city.db', q):
     ...     print "%-10s %4s" % answer
     canton     1496
     chungking  1100
@@ -174,7 +174,7 @@ using SQL statements.
 The (deliberately naive) grammar ``sql.fcfg`` translates from English
 to SQL:
 
-    >>> nltk.data.show_cfg('grammars/sql0.fcfg')
+    >>> nltk.data.show_cfg('grammars/book_grammars/sql0.fcfg')
     % start S
     S[sem=(?np + WHERE + ?vp)] -> NP[sem=?np] VP[sem=?vp]
     VP[sem=(?v + ?pp)] -> IV[sem=?v] PP[sem=?pp]
@@ -194,13 +194,33 @@ Given this grammar, we can express, and then execute, queries in English.
 
     >>> from nltk.parse import load_earley
     >>> from string import join
-    >>> cp = load_earley('grammars/sql0.fcfg')
+    >>> cp = load_earley('grammars/book_grammars/sql0.fcfg')
     >>> query = 'What cities are in China'
     >>> trees = cp.nbest_parse(query.split())
     >>> answer = trees[0].node['sem']
     >>> q = join(answer)
     >>> print q
     SELECT City FROM city_table WHERE   Country="china"
-    >>> rows = chat80.sql_query('samples/city.db', q)
+    >>> rows = chat80.sql_query('corpora/city_database/city.db', q)
     >>> for r in rows: print "%s" % r,
     canton chungking dairen harbin kowloon mukden peking shanghai sian tientsin
+
+
+Using Valuations
+-----------------
+
+In order to convert such an extension into a valuation, we use the
+``make_valuation()`` method; setting ``read=True`` creates and returns
+a new ``Valuation`` object which contains the results.
+
+   >>> val = chat80.make_valuation(concepts, read=True)
+   >>> 'calcutta' in val['city']
+   True
+   >>> [town for (town, country) in val['country_of'] if country == 'india']
+   ['bombay', 'delhi', 'madras', 'hyderabad', 'calcutta']
+   >>> dom = val.domain
+   >>> g = nltk.sem.Assignment(dom)
+   >>> m = nltk.sem.Model(dom, val)
+   >>> m.evaluate(r'\x .population_of(jakarta, x)', g)
+   {'533': True}
+
