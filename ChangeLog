@@ -1,3 +1,27 @@
+Version 0.9.7 2008-12-19
+
+NLTK:
+* improved design and efficiency of grammars and chart parsers
+  including new bottom-up combine strategy and a redesigned
+  Earley strategy (contribution by Peter Ljunglof)
+* improvements to classifiers [Edward?]
+* added support for propositions [Dan?]
+* RTE classifier [Ewan?]
+* fixed bugs in smoothed probability distributions and added
+  regression tests (contributed by Peter Ljunglof)
+
+Data:
+* A new package of large grammars (compiled by Peter Ljunglof)
+* A small gazetteer corpus and corpus reader
+* Organized example grammars into separate packages
+
+Contrib (work in progress):
+* fixes and demonstration for named-entity feature extractors in nltk_contrib.coref
+
+Book:
+* extensive changes throughout, including new chapter 5 on classification
+  and substantially revised chapter 11 on managing linguistic data
+
 Version 0.9.6 2008-12-07
 
 NLTK:
