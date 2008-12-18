@@ -750,8 +750,8 @@ def demo(train_size=100, test_size=100,
     # just the first 2 chars.
     def strip(corpus): return [[(w, t[:2]) for (w,t) in sent]
                                for sent in corpus]
-    brown_train = strip(brown.tagged_sents(categories='a')[:train_size])
-    brown_test = strip(brown.tagged_sents(categories='b')[:test_size])
+    brown_train = strip(brown.tagged_sents(categories='news')[:train_size])
+    brown_test = strip(brown.tagged_sents(categories='editorial')[:test_size])
 
     crf = MalletCRF.train(fd, brown_train, #'/tmp/crf-model',
                           transduction_type='VITERBI')

@@ -120,7 +120,7 @@ def demo():
     from nltk.probability import LidstoneProbDist, WittenBellProbDist
     estimator = lambda fdist, bins: LidstoneProbDist(fdist, 0.2)
 #    estimator = lambda fdist, bins: WittenBellProbDist(fdist, 0.2)
-    lm = NgramModel(3, brown.words(categories='a'), estimator)
+    lm = NgramModel(3, brown.words(categories='news'), estimator)
     print lm
 #    print lm.entropy(sent)
     text = lm.generate(100)
