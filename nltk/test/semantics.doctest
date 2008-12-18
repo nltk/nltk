@@ -225,15 +225,15 @@ Unit tests for function argument application in a Model
     >>> g = Assignment(dom)
     >>> print val['boy']
     set([('b1',), ('b2',)])
-    >>> print app(val['boy'], ('b1',))
+    >>> ('b1',) in val['boy'] 
     True
-    >>> print app(val['boy'], ('g1',))
+    >>> ('g1',) in val['boy']
     False
-    >>> print app(val['boy'], ('foo',))
+    >>> ('foo',) in val['boy']
     False
-    >>> print app(val['love'], ('b1', 'g1'))
+    >>> ('b1', 'g1') in val['love'] 
     True
-    >>> print app(val['kiss'], ('b1', 'b1'))
+    >>> ('b1', 'b1') in val['kiss'] 
     False
     >>> val.domain
     set(['d1', 'g1', 'b1', 'b2', 'g2'])

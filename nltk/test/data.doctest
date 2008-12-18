@@ -34,7 +34,7 @@ But it is also possible to load resources from ``http:``, ``ftp:``,
 and ``file:`` URLs:
 
     >>> # Load a grammar from the NLTK webpage.
-    >>> cfg = nltk.data.load('http://nltk.org/examples/parse/toy.cfg')
+    >>> cfg = nltk.data.load('http://example.com/path/to/toy.cfg')
     >>> print cfg # doctest: +ELLIPSIS
     Grammar with 14 productions (start state = S)
         S -> NP VP
@@ -44,7 +44,7 @@ and ``file:`` URLs:
         P -> 'in'
 
     >>> # Load a grammar using an absolute path.
-    >>> url = 'file:%s' % nltk.data.find('grammars/toy.cfg')
+    >>> url = 'file:%s' % nltk.data.find('grammars/sample_grammars/toy.cfg')
     >>> url # doctest: +ELLIPSIS
     'file:/.../grammars/toy.cfg'
     >>> print nltk.data.load(url) # doctest: +ELLIPSIS
@@ -76,7 +76,7 @@ currently supported by the data module are described by the dictionary
 `nltk.data.load()` will raise a ValueError if a bad format name is
 specified:
 
-    >>> nltk.data.load('grammars/toy.cfg', 'bar')
+    >>> nltk.data.load('grammars/sample_grammars/toy.cfg', 'bar')
     Traceback (most recent call last):
       . . .
     ValueError: Unknown format type!
@@ -109,7 +109,7 @@ Note that by explicitly specifying the ``format`` argument, you can
 override the load method's default processing behavior.  For example,
 to get the raw contents of any file, simply use ``format="raw"``:
 
-    >>> nltk.data.load('grammars/toy.cfg', 'raw') # doctest: +ELLIPSIS
+    >>> nltk.data.load('grammars/sample_grammars/toy.cfg', 'raw') # doctest: +ELLIPSIS
     "S -> NP VP\nPP -> P NP\nNP -> Det N | NP PP\nVP -> V NP | VP PP\n..."
 
 Making Local Copies
@@ -125,8 +125,8 @@ The function `nltk.data.retrieve()` copies a given resource to a local
 file.  This can be useful, for example, if you want to edit one of the
 sample grammars.
 
-    >>> nltk.data.retrieve('grammars/toy.cfg')
-    Retrieving 'grammars/toy.cfg', saving to 'toy.cfg'
+    >>> nltk.data.retrieve('grammars/sample_grammars/toy.cfg')
+    Retrieving 'grammars/sample_grammars/toy.cfg', saving to 'toy.cfg'
     
     >>> # Simulate editing the grammar.
     >>> s = open('toy.cfg').read().replace('NP', 'DP')
@@ -146,12 +146,12 @@ The second argument to `nltk.data.retrieve()` specifies the filename
 for the new copy of the file.  By default, the source file's filename
 is used.
 
-    >>> nltk.data.retrieve('grammars/toy.cfg', 'mytoy.cfg')
-    Retrieving 'grammars/toy.cfg', saving to 'mytoy.cfg'
+    >>> nltk.data.retrieve('grammars/sample_grammars/toy.cfg', 'mytoy.cfg')
+    Retrieving 'grammars/sample_grammars/toy.cfg', saving to 'mytoy.cfg'
     >>> os.path.isfile('./mytoy.cfg')
     True
-    >>> nltk.data.retrieve('grammars/np.fcfg')
-    Retrieving 'grammars/np.fcfg', saving to 'np.fcfg'
+    >>> nltk.data.retrieve('grammars/sample_grammars/np.fcfg')
+    Retrieving 'grammars/sample_grammars/np.fcfg', saving to 'np.fcfg'
     >>> os.path.isfile('./np.fcfg')
     True
 
@@ -161,7 +161,7 @@ ValueError exception.  It will *not* overwrite the file:
 
     >>> os.path.isfile('./toy.cfg')
     True
-    >>> nltk.data.retrieve('grammars/toy.cfg') # doctest: +ELLIPSIS
+    >>> nltk.data.retrieve('grammars/sample_grammars/toy.cfg') # doctest: +ELLIPSIS
     Traceback (most recent call last):
       . . .
     ValueError: File '.../toy.cfg' already exists!
@@ -202,18 +202,18 @@ have been loaded.  If you load a resource that is already stored in
 the cache, then the cached copy will be returned.  This behavior can
 be seen by the trace output generated when verbose=True:
 
-    >>> feat0 = nltk.data.load('grammars/feat0.fcfg', verbose=True)
-    <<Loading grammars/feat0.fcfg>>
-    >>> feat0 = nltk.data.load('grammars/feat0.fcfg', verbose=True)
-    <<Using cached copy of grammars/feat0.fcfg>>
+    >>> feat0 = nltk.data.load('grammars/book_grammars/feat0.fcfg', verbose=True)
+    <<Loading grammars/book_grammars/feat0.fcfg>>
+    >>> feat0 = nltk.data.load('grammars/book_grammars/feat0.fcfg', verbose=True)
+    <<Using cached copy of grammars/book_grammars/feat0.fcfg>>
 
 If you wish to load a resource from its source, bypassing the cache,
 use the ``cache=False`` argument to `nltk.data.load()`.  This can be
 useful, for example, if the resource is loaded from a local file, and
 you are actively editing that file:
 
-    >>> feat0 = nltk.data.load('grammars/feat0.fcfg',cache=False,verbose=True)
-    <<Loading grammars/feat0.fcfg>>
+    >>> feat0 = nltk.data.load('grammars/book_grammars/feat0.fcfg',cache=False,verbose=True)
+    <<Loading grammars/book_grammars/feat0.fcfg>>
 
 The cache uses weak references, so a resource wil automatically be
 expunged from the cache when no more objects are using it.  In the
@@ -224,8 +224,8 @@ it again, it is no longer in the cache, so `nltk.data.load()` must load
 it from the source file.
 
     >>> del feat0
-    >>> feat0 = nltk.data.load('grammars/feat0.fcfg', verbose=True)
-    <<Loading grammars/feat0.fcfg>>
+    >>> feat0 = nltk.data.load('grammars/book_grammars/feat0.fcfg', verbose=True)
+    <<Loading grammars/book_grammars/feat0.fcfg>>
 
 You can clear the entire contents of the cache, using
 `nltk.data.clear_cache()`:
@@ -258,15 +258,15 @@ Create a temp dir for tests that write files:
 The `retrieve()` function accepts all url types:
 
     >>> urls = ['http://nltk.org/examples/parse/toy.cfg',
-    ...         'file:%s' % nltk.data.find('grammars/toy.cfg'),
-    ...         'nltk:grammars/toy.cfg',
-    ...         'grammars/toy.cfg']
+    ...         'file:%s' % nltk.data.find('grammars/sample_grammars/toy.cfg'),
+    ...         'nltk:grammars/sample_grammars/toy.cfg',
+    ...         'grammars/sample_grammars/toy.cfg']
     >>> for i, url in enumerate(urls):
     ...     nltk.data.retrieve(url, 'toy-%d.cfg' % i) # doctest: +ELLIPSIS
     Retrieving 'http://nltk.org/examples/parse/toy.cfg', saving to 'toy-0.cfg'
-    Retrieving 'file:/.../data/grammars/toy.cfg', saving to 'toy-1.cfg'
-    Retrieving 'nltk:grammars/toy.cfg', saving to 'toy-2.cfg'
-    Retrieving 'grammars/toy.cfg', saving to 'toy-3.cfg'
+    Retrieving 'file:/.../data/grammars/sample_grammars/toy.cfg', saving to 'toy-1.cfg'
+    Retrieving 'nltk:grammars/sample_grammars/toy.cfg', saving to 'toy-2.cfg'
+    Retrieving 'grammars/sample_grammars/toy.cfg', saving to 'toy-3.cfg'
 
 
 Clean up the temp dir:
@@ -287,7 +287,7 @@ it is accessed or used in any way.  This is mainly intended for
 internal use by NLTK's corpus readers.
 
     >>> # Create a lazy loader for toy.cfg.
-    >>> ll = nltk.data.LazyLoader('grammars/toy.cfg')
+    >>> ll = nltk.data.LazyLoader('grammars/sample_grammars/toy.cfg')
 
     >>> # Show that it's not loaded yet:
     >>> object.__repr__(ll) # doctest: +ELLIPSIS
@@ -303,7 +303,7 @@ internal use by NLTK's corpus readers.
 
 
     >>> # Test that accessing an attribute also loads it:
-    >>> ll = nltk.data.LazyLoader('grammars/toy.cfg')
+    >>> ll = nltk.data.LazyLoader('grammars/sample_grammars/toy.cfg')
     >>> ll.start()
     <S>
     >>> object.__repr__(ll) # doctest: +ELLIPSIS

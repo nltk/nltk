@@ -256,7 +256,7 @@ statements as new assumptions.
     >>> prover.prove()
     False
     >>> import nltk.data
-    >>> new = nltk.data.load('grammars/background0.fol')
+    >>> new = nltk.data.load('grammars/sample_grammars/background0.fol')
     >>> for a in new:
     ...     print a
     all x.(boxerdog(x) -> dog(x))
