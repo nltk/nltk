@@ -32,15 +32,17 @@ def update(file, pattern, replacement, verbose=False):
     # restore permissions
     os.chmod(file, old_perm)
 
-if len(sys.argv) != 3:
-    exit("Usage: %s <pattern> <replacement>" % sys.argv[0])
+if __name__ == '__main__':
 
-pattern = sys.argv[1]
-replacement = sys.argv[2]
+    if len(sys.argv) != 3:
+        exit("Usage: %s <pattern> <replacement>" % sys.argv[0])
 
-for root, dirs, files in os.walk('.'):
-    if '/.svn' not in root:
-        for file in files:
-            path = os.path.join(root, file)
-            update(path, pattern, replacement)
+    pattern = sys.argv[1]
+    replacement = sys.argv[2]
+
+    for root, dirs, files in os.walk('.'):
+        if '/.svn' not in root:
+            for file in files:
+                path = os.path.join(root, file)
+                update(path, pattern, replacement)
 
