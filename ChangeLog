@@ -6,7 +6,7 @@ NLTK:
   Earley strategy (contribution by Peter Ljunglof)
 * improvements to classifiers [Edward?]
 * added support for propositions [Dan?]
-* RTE classifier [Ewan?]
+* simple word-overlap RTE classifier (Ewan Klein)
 * fixed bugs in smoothed probability distributions and added
   regression tests (contributed by Peter Ljunglof)
 
@@ -14,6 +14,7 @@ Data:
 * A new package of large grammars (compiled by Peter Ljunglof)
 * A small gazetteer corpus and corpus reader
 * Organized example grammars into separate packages
+* Childrens' stories added to gutenberg package.
 
 Contrib (work in progress):
 * fixes and demonstration for named-entity feature extractors in nltk_contrib.coref
