@@ -167,6 +167,8 @@ try:
     TKINTER = True
     from Tkinter import *
     from tkMessageBox import *
+    from nltk.draw.table import Table
+    from nltk.draw import ShowText
 except:
     TKINTER = False
     TclError = ValueError
@@ -175,8 +177,6 @@ except:
 from nltk.etree import ElementTree
 import nltk
 urllib2 = nltk.internals.import_from_stdlib('urllib2')
-from nltk.draw.table import Table
-from nltk.draw import ShowText
 
 
 ######################################################################
