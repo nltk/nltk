@@ -254,7 +254,7 @@ if(__name__ == '__main__'):
     parser.add_option("-a", "--agreement", dest="agreement", default="kappa",
                       help="agreement coefficient to calculate")
     parser.add_option("-e", "--exclude", dest="exclude", action="append",
-                      default=[], help="coder names to exclude (comma-separated), e.g. jane,mike")
+                      default=[], help="coder names to exclude (may be specified multiple times)")
     parser.add_option("-i", "--include", dest="include", action="append",
                       default=[],
                       help="coder names to include, same format as exclude")
