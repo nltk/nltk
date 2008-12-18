@@ -504,6 +504,7 @@ Regression Testing from book
 ============================
 
     >>> from nltk.inference.discourse import DrtGlueReadingCommand as RC
+    >>> from nltk.inference.discourse import DiscourseTester as DT
     >>> dt = DT(['Every dog chases a boy', 'He runs'], RC())
     >>> dt.readings()
     s0 readings:
