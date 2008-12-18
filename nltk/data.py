@@ -267,10 +267,33 @@ _resource_cache = weakref.WeakValueDictionary()
 
 def find(resource_name):
     """
-    Find the given resource from the NLTK data package, and return a
-    corresponding path name.  If the given resource is not found,
-    raise a C{LookupError}, whose message gives a pointer to the
-    installation instructions for the NLTK data package.
+    Find the given resource by searching through the directories and
+    zip files in L{nltk.data.path}, and return a corresponding path
+    name.  If the given resource is not found, raise a C{LookupError},
+    whose message gives a pointer to the installation instructions for
+    the NLTK downloader.
+
+    Zip File Handling:
+
+      - If C{resource_name} contains a component with a C{.zip}
+        extension, then it is assumed to be a zipfile; and the
+        remaining path components are used to look inside the zipfile.
+        
+      - If any element of C{nltk.data.path} has a C{.zip} extension,
+        then it is assumed to be a zipfile.
+
+      - If a given resource name that does not contain any zipfile
+        component is not found initially, then C{find()} will make a
+        second attempt to find that resource, by replacing each
+        component I{p} in the path with I{p.zip/p}.  For example, this
+        allows C{find()} to map the resource name
+        C{corpora/chat80/cities.pl} to a zip file path pointer to
+        C{corpora/chat80.zip/chat80/cities.pl}.
+
+      - When using C{find()} to locate a directory contained in a
+        zipfile, the resource name I{must} end with the C{'/'}
+        character.  Otherwise, C{find()} will not locate the
+        directory.
 
     @type resource_name: C{str}
     @param resource_name: The name of the resource to search for.
@@ -293,7 +316,7 @@ def find(resource_name):
             try: return ZipFilePathPointer(path_item, resource_name)
             except IOError: continue # resource not in zipfile
 
-        # Is the path item a path_item?
+        # Is the path item a directory?
         elif os.path.isdir(path_item):
             if zipfile is None:
                 p = os.path.join(path_item, *resource_name.split('/'))
@@ -307,6 +330,16 @@ def find(resource_name):
                 if os.path.exists(p):
                     try: return ZipFilePathPointer(p, zipentry)
                     except IOError: continue # resource not in zipfile
+
+    # Fallback: if the path doesn't include a zip file, then try
+    # again, assuming that one of the path components is inside a
+    # zipfile of the same name.
+    if zipfile is None:
+        pieces = resource_name.split('/')
+        for i in range(len(pieces)):
+            modified_name = '/'.join(pieces[:i]+[pieces[i]+'.zip']+pieces[i:])
+            try: return find(modified_name)
+            except LookupError: pass
 
     # Display a friendly error message if the resource wasn't found:
     msg = textwrap.fill(
