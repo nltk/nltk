@@ -1149,7 +1149,7 @@ def demo():
 def load_pos(num_sents):
     from nltk.corpus import brown
 
-    sentences = brown.tagged_sents(categories='a')[:num_sents]
+    sentences = brown.tagged_sents(categories='news')[:num_sents]
 
     tag_re = re.compile(r'[*]|--|[^+*-]+')
     tag_set = set()
