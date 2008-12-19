@@ -423,6 +423,7 @@ class FreqDist(dict):
         @return: An iterator over the items, in sorted order
         @rtype: C{iter} of any
         """
+        self._sort_keys_by_value()
         return iter(self._item_cache)
 
 #        sort the supplied samples
