@@ -53,8 +53,9 @@ corpus:
 
     >>> # Load the brown corpus.
     >>> from nltk.corpus import brown
-    >>> tagger = nltk.UnigramTagger(brown.tagged_sents()[:500])
-    >>> tagger.tag(brown.sents()[501]) # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+    >>> brown_news_tagged = brown.tagged_sents(categories='news')
+    >>> tagger = nltk.UnigramTagger(brown_news_tagged[:500])
+    >>> tagger.tag(brown_news_tagged[501]) # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
     [('Mitchell', 'NP'), ('decried', None), ('the', 'AT'), ('high', 'JJ'),
      ('rate', None), ('of', 'IN'), ('unemployment', None), ...]
 
@@ -65,8 +66,8 @@ In the examples below, we'll look at developing automatic
 part-of-speech taggers based on the Brown Corpus.  Here are the
 training & test sets we'll use:
 
-    >>> brown_train = brown.tagged_sents(categories='news')[100:]
-    >>> brown_test = brown.tagged_sents(categories='news')[:100]
+    >>> brown_train = brown_news_tagged[100:]
+    >>> brown_test = brown_news_tagged[:100]
     >>> test_sent = nltk.tag.untag(brown_test[0])
 
 (Note that these are on the small side, to make the tests run faster

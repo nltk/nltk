@@ -1,20 +1,21 @@
 Version 0.9.7 2008-12-19
 
 NLTK:
+* fixed problems with accessing zipped corpora   
 * improved design and efficiency of grammars and chart parsers
   including new bottom-up combine strategy and a redesigned
-  Earley strategy (contribution by Peter Ljunglof)
-* improvements to classifiers [Edward?]
-* added support for propositions [Dan?]
-* simple word-overlap RTE classifier (Ewan Klein)
+  Earley strategy (Peter Ljunglof)
 * fixed bugs in smoothed probability distributions and added
-  regression tests (contributed by Peter Ljunglof)
+  regression tests (Peter Ljunglof)
+* improvements to Punkt (Joel Nothman)
+* improvements to text classifiers
+* simple word-overlap RTE classifier
 
 Data:
-* A new package of large grammars (compiled by Peter Ljunglof)
+* A new package of large grammars (Peter Ljunglof)
 * A small gazetteer corpus and corpus reader
 * Organized example grammars into separate packages
-* Childrens' stories added to gutenberg package.
+* Childrens' stories added to gutenberg package
 
 Contrib (work in progress):
 * fixes and demonstration for named-entity feature extractors in nltk_contrib.coref
