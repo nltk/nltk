@@ -9,9 +9,11 @@ import sys
 
 types_map = {
     'ai': 'application/postscript',
+    'coverage': 'text/plain',
     'css': 'text/css',
-    'exe': 'application/octet-stream',
     'eps': 'application/postscript',
+    'exe': 'application/octet-stream',
+    'errs': 'text/plain',
     'gif': 'image/gif',
     'htm': 'text/html',
     'html': 'text/html',
