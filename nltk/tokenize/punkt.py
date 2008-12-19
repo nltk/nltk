@@ -96,53 +96,39 @@ class PunktWordTokenizer(TokenizerI):
     def tokenize(self, text):
         return punkt_word_tokenize(text)
 
+_word_start_regex = r"[^\(\"\`{\[:;&\#\*@\)}\]\-,]"
+"""Excludes some characters from starting word tokens"""
+
+_non_word_chars   = r"(?:[?!)\";}\]\*:@\'\({\[])"
+"""Characters that cannot appear within words"""
+
+_multi_char_punct = r"(?:\-{2,}|\.{2,}|(?:\.\s){2,}\.)"
+"""Hyphen and ellipsis are multi-character punctuation"""
+
+_punkt_word_tokenize_regexp = re.compile(
+    r"""(
+        %(MultiChar)s
+        |
+        (?=%(WordStart)s)\S+?  # Accept word characters until end is found
+        (?= # Sequences marking a word's end
+            \s|                                 # White-space
+            $|                                  # End-of-string
+            %(NonWord)s|%(MultiChar)s|          # Punctuation
+            ,(?=$|\s|%(NonWord)s|%(MultiChar)s) # Comma if at end of word
+        )
+        |
+        \S
+    )""" % {'NonWord':   _non_word_chars,
+            'MultiChar': _multi_char_punct,
+            'WordStart': _word_start_regex,
+           },
+    re.UNICODE | re.VERBOSE
+)
+"""Regular expression to split punctuation from words, excluding period."""
+
 def punkt_word_tokenize(s):
-    """
-    Tokenize a string using the rules from the Punkt word tokenizer.
-    """
-    for (regexp, repl) in _punkt_word_tokenize_regexps:
-        s = regexp.sub(repl, s)
-    return s.split()
+    return _punkt_word_tokenize_regexp.findall(s)
 
-#: A list of (regexp, repl) pairs applied in sequence by
-#: L{punkt_word_tokenize}.  The resulting string is split on
-#: whitespace.
-_punkt_word_tokenize_regexps = [
-    # Separate punctuation (except period) from words:
-    # Split "(`{[:;&#*@ from following text
-    (re.compile(r'(?=[\(\"\`{\[:;&\#\*@])(.)'), r'\1 '),
-    
-    # Split ?!)";}]8:@' from preceding text. Note ?!, etc. not split from following text
-    (re.compile(r'(.)(?=[?!)\";}\]\*:@\'])'), r'\1 '),
-    # Split )}] from following text
-    (re.compile(r'(?=[\)}\]])(.)'), r'\1 '),
-    # Split ({[ from preceding text
-    (re.compile(r'(.)(?=[({\[])'), r'\1 '), 
-    # Split - from following text if preceded by space
-    (re.compile(r'((^|\s)\-)(?=[^\-])'), r'\1 '), 
-
-    # Split -- from preceding and following text (treat double-hyphen as one token)
-    (re.compile(r'([^-])(\-\-+)([^-])'), r'\1 \2 \3'), 
-
-    # Split , from following text if preceded by space
-    (re.compile(r'(\s|^)(,)(?=(\S))'), r'\1\2 '), 
-    # Split , from preceding text if followed by space
-    (re.compile(r'(.)(,)(\s|$)'), r'\1 \2\3'),
-
-    # Combine dots separated by whitespace to be a single token:
-    (re.compile(r'\.\s\.\s\.'), r'...'),
-
-    # [xx] why is this one commented out?
-    ## Separate "No.6"
-    #(re.compile(r'([^\W\d]\.)(\d+)', re.UNICODE), r'\1 \2'),
-    
-    # Separate words from ellipses
-    (re.compile(r'([^\.]|^)(\.{2,})(.?)'), r'\1 \2 \3'),
-
-    # [xx] Do these handle any cases not handled by the previous expression?
-    (re.compile(r'(^|\s)(\.{2,})([^\.\s])'), r'\1\2 \3'),
-    (re.compile(r'([^\.\s])(\.{2,})($|\s)'), r'\1 \2\3'),
-    ]
 
 #: Regular expression to find only contexts that include a possible
 #: sentence boundary within a given text.
@@ -730,7 +716,7 @@ class PunktTrainer(_PunktBaseClass):
             # Find the case-normalized type of the token.  If it's a
             # sentence-final token, strip off the period.
             typ = aug_tok.type_no_sentperiod
-            
+
             # Update the orthographic context table.
             flag = _ORTHO_MAP.get((context, aug_tok.first_case), 0)
             if flag:
