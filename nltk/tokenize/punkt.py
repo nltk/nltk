@@ -109,18 +109,24 @@ def punkt_word_tokenize(s):
 #: whitespace.
 _punkt_word_tokenize_regexps = [
     # Separate punctuation (except period) from words:
+    # Split "(`{[:;&#*@ from following text
     (re.compile(r'(?=[\(\"\`{\[:;&\#\*@])(.)'), r'\1 '),
     
+    # Split ?!)";}]8:@' from preceding text. Note ?!, etc. not split from following text
     (re.compile(r'(.)(?=[?!)\";}\]\*:@\'])'), r'\1 '),
+    # Split )}] from following text
     (re.compile(r'(?=[\)}\]])(.)'), r'\1 '),
-    (re.compile(r'(.)(?=[({\[])'), r'\1 '),
-    (re.compile(r'((^|\s)\-)(?=[^\-])'), r'\1 '),
+    # Split ({[ from preceding text
+    (re.compile(r'(.)(?=[({\[])'), r'\1 '), 
+    # Split - from following text if preceded by space
+    (re.compile(r'((^|\s)\-)(?=[^\-])'), r'\1 '), 
 
-    # Treat double-hyphen as one token:
-    (re.compile(r'([^-])(\-\-+)([^-])'), r'\1 \2 \3'),
-    (re.compile(r'(\s|^)(,)(?=(\S))'), r'\1\2 '),
+    # Split -- from preceding and following text (treat double-hyphen as one token)
+    (re.compile(r'([^-])(\-\-+)([^-])'), r'\1 \2 \3'), 
 
-    # Only separate comma if space follows:
+    # Split , from following text if preceded by space
+    (re.compile(r'(\s|^)(,)(?=(\S))'), r'\1\2 '), 
+    # Split , from preceding text if followed by space
     (re.compile(r'(.)(,)(\s|$)'), r'\1 \2\3'),
 
     # Combine dots separated by whitespace to be a single token:
@@ -133,6 +139,7 @@ _punkt_word_tokenize_regexps = [
     # Separate words from ellipses
     (re.compile(r'([^\.]|^)(\.{2,})(.?)'), r'\1 \2 \3'),
 
+    # [xx] Do these handle any cases not handled by the previous expression?
     (re.compile(r'(^|\s)(\.{2,})([^\.\s])'), r'\1\2 \3'),
     (re.compile(r'([^\.\s])(\.{2,})($|\s)'), r'\1 \2\3'),
     ]
