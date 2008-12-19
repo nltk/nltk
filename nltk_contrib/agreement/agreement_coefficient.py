@@ -39,15 +39,6 @@ class AnnotationTask:
                                (x['coder'], x['item'].replace('_', "\t"),
                                 ",".join(x['labels'])), self.data))
 
-    def __getattr__(self, attr):
-        if(attr == "kappa"):
-            return self.kappa()
-        elif(attr == "alpha"):
-            return self.alpha()
-        elif(attr == "weighted_kappa"):
-            return self.weighted_kappa()
-        
-
     def load_array(self, array):
         """Load the results of annotation.
         
@@ -184,7 +175,7 @@ class AnnotationTask:
             Ae += (float(self.N(c=cA, k=k)) / float(len(self.I))) * (float(self.N(c=cB, k=k)) / float(len(self.I)))
         ret = (self.Ao(cA, cB) - Ae) / (1.0 - Ae)
         logging.debug("Expected agreement between %s and %s: %f", cA, cB, Ae)
-        logging.debug("Kappa between %s and %s: %f", cA, cB, ret)
+        logging.info("Kappa between %s and %s: %f", cA, cB, ret)
         return ret
 
     def kappa(self):
@@ -225,7 +216,7 @@ class AnnotationTask:
         logging.debug("Expected disagreement between %s and %s: %f", cA, cB, De)
         Do = self.Do_Kw_pairwise(cA, cB)
         ret = 1.0 - (Do / De)
-        logging.debug("Weighted kappa between %s and %s: %f", cA, cB, ret)
+        logging.warning("Weighted kappa between %s and %s: %f", cA, cB, ret)
         return ret
 
     def weighted_kappa(self):
@@ -241,6 +232,7 @@ class AnnotationTask:
         ret = sum(vals.values()) / float(len(vals))
         return ret
 
+
 if(__name__ == '__main__'):
 
     import re
@@ -255,8 +247,7 @@ if(__name__ == '__main__'):
                       help="agreement coefficient to calculate")
     parser.add_option("-e", "--exclude", dest="exclude", action="append",
                       default=[], help="coder names to exclude (may be specified multiple times)")
-    parser.add_option("-i", "--include", dest="include", action="append",
-                      default=[],
+    parser.add_option("-i", "--include", dest="include", action="append", default=[],
                       help="coder names to include, same format as exclude")
     parser.add_option("-f", "--file", dest="file",
                       help="file to read labelings from, each line with three columns: 'labeler item labels'")
@@ -268,7 +259,9 @@ if(__name__ == '__main__'):
                       help="char/string that separates labels (if labelers can assign more than one), defaults to comma")
     parser.add_option("-p", "--presence", dest="presence", default=None,
                       help="convert each labeling into 1 or 0, based on presence of LABEL")
-    (options,remainder) = parser.parse_args()
+    parser.add_option("-T", "--thorough", dest="thorough", default=False, action="store_true",
+                      help="calculate agreement for every subset of the annotators")
+    (options, remainder) = parser.parse_args()
 
     logging.basicConfig(level=50 - 10 * int(options.verbose))
 
@@ -277,12 +270,19 @@ if(__name__ == '__main__'):
     for l in open(options.file):
         toks = l.split(options.columnsep)
         coder, object, labels = toks[0], str(toks[1:-1]), frozenset(toks[-1].strip().split(options.labelsep))
-        if((options.include == options.exclude) or (len(options.include) > 0 and coder in options.include) or (len(options.exclude) > 0 and coder not in options.exclude)):
+        if((options.include == options.exclude) or
+           (len(options.include) > 0 and coder in options.include) or
+           (len(options.exclude) > 0 and coder not in options.exclude)):
             data.append((coder, object, labels))
 
     if(options.presence):
         task = AnnotationTask(data, getattr(distance_metric, options.distance)(options.presence))
     else:
         task = AnnotationTask(data, getattr(distance_metric, options.distance))
-    print getattr(task, options.agreement)()
+
+    if(options.thorough):
+        pass
+    else:
+        print getattr(task, options.agreement)()
+
     logging.shutdown()

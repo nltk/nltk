@@ -39,15 +39,25 @@ Pi (Scott 1955)
 
 
 TODO: Describe handling of multiple coders and missing data
+
+Perfect disagreement:
+>>> AnnotationTask(data=[("1","1","1"), ("2","1","2"), ("1","2","1"), ("2","2","2")]).pi()
+-1.0
+
+Artstein and Poesio:
+>>> t = AnnotationTask(data=[x.split() for x in open("%sartstein_poesio_example.txt" % (__file__.replace("__init__.py", "")))])
+>>> t.avg_Ao()
+0.88
+>>> t.pi()
+0.7995322418977614
+>>> t.S()
+0.81999999999999984
 """
 
-from api import *
-from util import *
 from distance_metric import *
 from agreement_coefficient import *
 
-__all__ = [
-    ]
-
 if(__name__=='__main__'):
-    pass
+    import doctest
+    doctest.testmod()
+
