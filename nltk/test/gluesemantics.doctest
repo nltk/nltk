@@ -334,7 +334,7 @@ Dependency Graph to Glue Formulas
     >>> logic._counter._value = 0
     >>> glue = Glue()
     >>> import nltk.data
-    >>> path = nltk.data.find('/grammars/dep_test2.dep')
+    >>> path = nltk.data.find('/grammars/sample_grammars/dep_test2.dep')
     >>> f = open(path)
     >>> depgraph = util.conll_to_depgraph(f.read())
     >>> gfl = GlueDict('glue.semtype').to_glueformula_list(depgraph)
