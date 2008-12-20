@@ -80,9 +80,10 @@ class PunktLanguageVars(object):
     """
     Stores variables, mostly regular expressions, which may be
     language-dependent for correct application of the algorithm.
-    An instance of this class may have its variables modified to suit
-    a language other than English and can then be passed as an argument
-    to PunktSentenceTokenizer and PunktTrainer constructors.
+    An extension of this class may modify its properties to suit
+    a language other than English; an instance can then be passed
+    as an argument to PunktSentenceTokenizer and PunktTrainer
+    constructors.
     """
 
     __slots__ = ('_re_period_context', '_re_word_tokenizer')
