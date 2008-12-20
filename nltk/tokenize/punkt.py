@@ -73,40 +73,40 @@ appropriate orthographic context flag."""
 ######################################################################
         
 ######################################################################
-#{ Regular expressions for annotation
+#{ Language-dependent variables
 ######################################################################
 
-_RE_NON_PUNCT = re.compile(r'[^\W\d]', re.UNICODE)
-"""Matches token types that are not merely punctuation. (Types for
-numeric tokens are changed to ##number## and hence contain alpha.)"""
+class PunktLanguageVars(object):
+    """
+    Stores variables, mostly regular expressions, which may be
+    language-dependent for correct application of the algorithm.
+    An instance of this class may have its variables modified to suit
+    a language other than English and can then be passed as an argument
+    to PunktSentenceTokenizer and PunktTrainer constructors.
+    """
 
-_RE_BOUNDARY_REALIGNMENT = re.compile(r'["\')\]}]+?(?: |(?=--)|$)',
-        re.MULTILINE)
-"""Used to realign punctuation that should be included in a sentence
-although it follows the period (or ?, !)."""
+    __slots__ = ('_re_period_context', '_re_word_tokenizer')
 
-#} (end regular expressions for annotation)
-######################################################################
+    sent_end_chars = ('.', '?', '!')
+    """Characters which are candidates for sentence boundaries"""
 
-######################################################################
-#{ Punkt Word Tokenizer
-######################################################################
+    _re_sent_end_chars = '[.?!]'
 
-class PunktWordTokenizer(TokenizerI):
-    def tokenize(self, text):
-        return punkt_word_tokenize(text)
+    re_boundary_realignment = re.compile(r'["\')\]}]+?(?: |(?=--)|$)',
+            re.MULTILINE)
+    """Used to realign punctuation that should be included in a sentence
+    although it follows the period (or ?, !)."""
 
-_word_start_regex = r"[^\(\"\`{\[:;&\#\*@\)}\]\-,]"
-"""Excludes some characters from starting word tokens"""
+    _re_word_start    = r"[^\(\"\`{\[:;&\#\*@\)}\]\-,]"
+    """Excludes some characters from starting word tokens"""
 
-_non_word_chars   = r"(?:[?!)\";}\]\*:@\'\({\[])"
-"""Characters that cannot appear within words"""
+    _re_non_word_chars   = r"(?:[?!)\";}\]\*:@\'\({\[])"
+    """Characters that cannot appear within words"""
 
-_multi_char_punct = r"(?:\-{2,}|\.{2,}|(?:\.\s){2,}\.)"
-"""Hyphen and ellipsis are multi-character punctuation"""
+    _re_multi_char_punct = r"(?:\-{2,}|\.{2,}|(?:\.\s){2,}\.)"
+    """Hyphen and ellipsis are multi-character punctuation"""
 
-_punkt_word_tokenize_regexp = re.compile(
-    r"""(
+    _word_tokenize_fmt = r'''(
         %(MultiChar)s
         |
         (?=%(WordStart)s)\S+?  # Accept word characters until end is found
@@ -118,28 +118,77 @@ _punkt_word_tokenize_regexp = re.compile(
         )
         |
         \S
-    )""" % {'NonWord':   _non_word_chars,
-            'MultiChar': _multi_char_punct,
-            'WordStart': _word_start_regex,
-           },
-    re.UNICODE | re.VERBOSE
-)
-"""Regular expression to split punctuation from words, excluding period."""
+    )'''
+    """Format of a regular expression to split punctuation from words,
+    excluding period."""
 
-def punkt_word_tokenize(s):
-    return _punkt_word_tokenize_regexp.findall(s)
+    def _word_tokenizer_re(self):
+        """Compiles and returns a regular expression for word tokenization"""
+        try:
+            return self._re_word_tokenizer
+        except AttributeError:
+            self._re_word_tokenizer = re.compile(
+                self._word_tokenize_fmt %
+                {
+                    'NonWord':   self._re_non_word_chars,
+                    'MultiChar': self._re_multi_char_punct,
+                    'WordStart': self._re_word_start,
+                },
+                re.UNICODE | re.VERBOSE
+            )
+            return self._re_word_tokenizer
+
+    def word_tokenize(self, s):
+        """Tokenize a string to split of punctuation other than periods"""
+        return self._word_tokenizer_re().findall(s)
+
+    _period_context_fmt = r"""
+        \S*                          # some word material
+        (%(SentEndChars)s)           # a potential sentence ending
+        (?:
+            (%(NonWord)s)            # either other punctuation
+            |
+            \s+(\S+)                 # or whitespace and some other token
+        )"""
+    """Format of a regulare expression to find contexts including possible
+    sentence boundaries."""
+
+    def period_context_re(self):
+        """Compiles and returns a regular expression to find contexts
+        including possible sentence boundaries."""
+        try:
+            return self._re_period_context
+        except:
+            self._re_period_context = re.compile(
+                self._period_context_fmt %
+                {
+                    'NonWord':      self._re_non_word_chars,
+                    'SentEndChars': self._re_sent_end_chars,
+                },
+                re.UNICODE | re.VERBOSE)
+            return self._re_period_context
 
 
-#: Regular expression to find only contexts that include a possible
-#: sentence boundary within a given text.
-_punkt_period_context_regexp = re.compile(r"""
-    \S*                          # some word material
-    ([.?!])                      # a potential sentence ending
-    (?:
-        ([?!)\";}\]\*:@\'({\[])  # either other punctuation
-        |
-        \s+(\S+)                 # or whitespace and some other token
-    )""", re.UNICODE | re.VERBOSE)
+_re_non_punct = re.compile(r'[^\W\d]', re.UNICODE)
+"""Matches token types that are not merely punctuation. (Types for
+numeric tokens are changed to ##number## and hence contain alpha.)"""
+
+#}
+######################################################################
+        
+
+######################################################################
+#{ Punkt Word Tokenizer
+######################################################################
+
+class PunktWordTokenizer(TokenizerI):
+    # Retained for backward compatibility with documentation
+    def tokenize(self, text, lang_vars=PunktLanguageVars()):
+        return lang_vars.word_tokenize(text)
+
+#}
+######################################################################
+
 
 #////////////////////////////////////////////////////////////
 #{ Helper Functions
@@ -301,7 +350,7 @@ class PunktToken(object):
     @property
     def is_non_punct(self):
         """True if the token is either a number or is alphabetic."""
-        return _RE_NON_PUNCT.search(self.type)
+        return _re_non_punct.search(self.type)
     
     #////////////////////////////////////////////////////////////
     #{ String representation
@@ -353,10 +402,9 @@ class _PunktBaseClass(object):
     """The token definition that should be used by this class. This allows for
     redefinition of some parameters of the token type."""
 
-    _sent_end_chars = ('?', '!', '.')
-    
-    def __init__(self):
-        self._params = PunktParameters()
+    def __init__(self, lang_vars=PunktLanguageVars(), params=PunktParameters()):
+        self._params = params
+        self._lang_vars = lang_vars
         """The collection of parameters that determines the behavior
         of the punkt tokenizer."""
 
@@ -375,7 +423,7 @@ class _PunktBaseClass(object):
         parastart = False
         for line in plaintext.split('\n'):
             if line.strip():
-                line_toks = iter(punkt_word_tokenize(line))
+                line_toks = iter(self._lang_vars.word_tokenize(line))
 
                 yield self._Token(line_toks.next(),
                         parastart=parastart, linestart=True)
@@ -419,7 +467,7 @@ class _PunktBaseClass(object):
 
         tok = aug_tok.tok
 
-        if tok in self._sent_end_chars:
+        if tok in self._lang_vars.sent_end_chars:
             aug_tok.sentbreak = True
         elif aug_tok.is_ellipsis:
             aug_tok.ellipsis = True
@@ -441,8 +489,10 @@ class _PunktBaseClass(object):
 class PunktTrainer(_PunktBaseClass):
     """Learns parameters used in Punkt sentence boundary detection."""
 
-    def __init__(self, train_text=None, verbose=False):
-        _PunktBaseClass.__init__(self)
+    def __init__(self, train_text=None, verbose=False,
+            lang_vars=PunktLanguageVars()):
+
+        _PunktBaseClass.__init__(self, lang_vars=lang_vars)
 
         self._type_fdist = FreqDist()
         """A frequency distribution giving the frequency of each
@@ -758,7 +808,7 @@ class PunktTrainer(_PunktBaseClass):
         for typ in types:
             # Check some basic conditions, to rule out words that are
             # clearly not abbrev_types.
-            if not _RE_NON_PUNCT.search(typ) or typ == '##number##':
+            if not _re_non_punct.search(typ) or typ == '##number##':
                 continue
             
             if typ.endswith('.'):
@@ -1024,12 +1074,13 @@ class PunktSentenceTokenizer(_PunktBaseClass,TokenizerI):
     This approach has been shown to work well for many European
     languages.
     """
-    def __init__(self, train_text=None, verbose=False):
+    def __init__(self, train_text=None, verbose=False,
+            lang_vars=PunktLanguageVars()):
         """
         train_text can either be the sole training text for this sentence
         boundary detector, or can be a PunktParameters object.
         """
-        _PunktBaseClass.__init__(self)
+        _PunktBaseClass.__init__(self, lang_vars=lang_vars)
         
         if train_text:
             self._params = self.train(train_text, verbose)
@@ -1068,7 +1119,7 @@ class PunktSentenceTokenizer(_PunktBaseClass,TokenizerI):
 
     def _sentences_from_text(self, text):
         last_break = 0
-        for match in _punkt_period_context_regexp.finditer(text):
+        for match in self._lang_vars.period_context_re().finditer(text):
             if self.text_contains_sentbreak(match.group(0)):
                 yield text[last_break:match.end(1)]
                 if match.group(3):
@@ -1101,7 +1152,7 @@ class PunktSentenceTokenizer(_PunktBaseClass,TokenizerI):
                     yield s1
                 continue
 
-            m = _RE_BOUNDARY_REALIGNMENT.match(s2)
+            m = _re_boundary_realignment.match(s2)
             if m:
                 yield s1 + m.group(0).strip()
                 realign = m.end()
