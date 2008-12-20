@@ -503,27 +503,30 @@ manner shown earlier.
 Regression Testing from book
 ============================
 
-    >>> from nltk.inference.discourse import DrtGlueReadingCommand as RC
+    >>> logic._counter._value = 0
+
+    >>> from nltk_contrib.gluesemantics.glue_discourse import DrtGlueReadingCommand as RC
     >>> from nltk.inference.discourse import DiscourseTester as DT
     >>> dt = DT(['Every dog chases a boy', 'He runs'], RC())
     >>> dt.readings()
+    <BLANKLINE>
     s0 readings:
-    s0-r0: ([],[(([x],[dog(x)]) -> ([z15],[boy(z15), chase(x,z15)]))])
-    s0-r1: ([z16],[boy(z16), (([x],[dog(x)]) -> ([],[chase(x,z16)]))])
+    ------------------------------
+    s0-r0: ([],[(([x],[dog(x)]) -> ([z1],[boy(z1), chase(x,z1)]))])
+    s0-r1: ([z2],[boy(z2), (([x],[dog(x)]) -> ([],[chase(x,z2)]))])
+    <BLANKLINE>
     s1 readings:
+    ------------------------------
     s1-r0: ([x],[PRO(x), run(x)])
     >>> dt.readings(show_thread_readings=True)
     d0: ['s0-r0', 's1-r0'] : INVALID: AnaphoraResolutionException
-    d1: ['s0-r1', 's1-r0'] : ([z20,z24],[boy(z20), (([x],[dog(x)]) -> 
-    ([],[chase(x,z20)])), (z24 = z20), run(z24)])
+    d1: ['s0-r1', 's1-r0'] : ([z6,z10],[boy(z6), (([x],[dog(x)]) -> ([],[chase(x,z6)])), (z10 = z6), run(z10)])
     >>> dt.readings(filter=True, show_thread_readings=True)
-    d1: ['s0-r1', 's1-r0'] : ([z26,z29],[boy(z26), (([x],[dog(x)]) -> 
-    ([],[chase(x,z26)])), (z29 = z26), run(z29)])
-
-
+    d1: ['s0-r1', 's1-r0'] : ([z12,z15],[boy(z12), (([x],[dog(x)]) -> ([],[chase(x,z12)])), (z15 = z12), run(z15)])
 
     >>> from nltk.parse import load_earley
-    >>> parser = load_earley('grammars/book_grammars/drt.fcfg', trace=0, logic_parser=drt.DrtParser())
+    >>> from nltk.sem.drt import DrtParser
+    >>> parser = load_earley('grammars/book_grammars/drt.fcfg', trace=0, logic_parser=DrtParser())
     >>> trees = parser.nbest_parse('Angus owns a dog'.split())
     >>> print trees[0].node['sem'].simplify()
-    ([x,z2],[Angus(x), dog(z2), own(x,z2)])
+    ([x,z17],[Angus(x), dog(z17), own(x,z17)])
