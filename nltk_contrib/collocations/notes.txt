@@ -1,0 +1,26 @@
+
+- we currently use f1, f2, f12, f_all
+- f1 is "number of times w1 is seen"
+- f12 is "number of times w1:w2 is seen"
+
+Notes from NSP (ngram.sf.net)
+=============================
+
+- uses n11=f12, n1p==f1, np1==f2, npp==f_all (marginals)
+- also refers to n11==o11, n12=o12 (w1:~w2), etc. (observed values)
+- i.e. overall, 1 = the word, p = any word, 2 = ~1
+- and m11, etc. (expected values): m11=n1p*np1/npp, m12=n1p*np2/npp, etc. np2=npp-np1, n2p=npp-n1p
+- performs integrity checks: n11 <= npp, n11 >= 0, etc.
+
+- give Chi2 in terms of observed vals and expected vals, give phi2 in terms of observed and marginals, and then claim chi2 = npp*phi2
+- t-score = (n11 - m11)/sqrt(n11)
+- calculates Chi2 and Phi2 by summing (n-m)**2/m (better than one big product? maybe not, as we don't need to calculate expected values independently)
+
+- Dice = 2 * n11 / (np1 + n1p)
+- Jaccard = n11 / (n11 + n12 + n21) = dice/(2*dice)
+
+- More Measures: MI stuff (Log-Likelihood, T(otal)MI, PMI, PS (Poisson Stirling); Fisher exact test (at least left-sided); odds
+
+- look for useful stuff in bin/utils
+
+- consider trigram stuff
