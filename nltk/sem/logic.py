@@ -1480,9 +1480,9 @@ def demo():
     print p(r'\x.man(x)')
     print p(r'\x.man(x)(john)')
     print p(r'\x y.sees(x,y)')
-    print p(r'\x  y.sees(x,y)(a,b)')
+    print p(r'\x y.sees(x,y)(a,b)')
     print p(r'(\x.exists y.walks(x,y))(x)')
-    print p(r'exists x.(x = john)')
+    print p(r'exists x.(x = y)')
     print p(r'\P Q.exists x.(P(x) & Q(x))')
     
     print '='*20 + 'Test simplify' + '='*20
