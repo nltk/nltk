@@ -5,7 +5,10 @@ Semantics
 .. contents:: **Table of Contents**
   :depth: 2
   :backlinks: none
-
+  
+    >>> from nltk.sem import logic
+    >>> logic._counter._value = 0
+  
 Overview
 ========
 
