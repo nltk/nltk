@@ -176,9 +176,10 @@ def test_model_found(arguments):
     """
     Try some proofs and exhibit the results.
     """
+    lp = LogicParser()
     for (goal, assumptions) in arguments:
-        g = LogicParser().parse(goal)
-        alist = [LogicParser().parse(a) for a in assumptions]
+        g = lp.parse(goal)
+        alist = [lp.parse(a) for a in assumptions]
         m = MaceCommand(g, assumptions=alist, timeout=5)
         found = m.build_model()
         for a in alist:
@@ -190,13 +191,14 @@ def test_build_model(arguments):
     """
     Try to build a L{nltk.sem.Valuation}.
     """
-    g = LogicParser().parse('all x.man(x)')
-    alist = [LogicParser().parse(a) for a in ['man(John)', 
-                                              'man(Socrates)', 
-                                              'man(Bill)', 
-                                              'some x.((not (x = John)) and (man(x) and sees(John,x)))',
-                                              'some x.((not (x = Bill)) and man(x))',
-                                              'all x.some y.(man(x) -> gives(Socrates,x,y))']]
+    lp = LogicParser()
+    g = lp.parse('all x.man(x)')
+    alist = [lp.parse(a) for a in ['man(John)', 
+                                   'man(Socrates)', 
+                                   'man(Bill)', 
+                                   'some x.(-(x = John) & man(x) & sees(John,x))',
+                                   'some x.(-(x = Bill) & man(x))',
+                                   'all x.some y.(man(x) -> gives(Socrates,x,y))']]
     
     m = MaceCommand(g, assumptions=alist)
     m.build_model()
@@ -217,8 +219,9 @@ def test_transform_output(argument_pair):
     """
     Transform the model into various Mace4 C{interpformat} formats.
     """
-    g = LogicParser().parse(argument_pair[0])
-    alist = [LogicParser().parse(a) for a in argument_pair[1]]
+    lp = LogicParser()
+    g = lp.parse(argument_pair[0])
+    alist = [lp.parse(a) for a in argument_pair[1]]
     m = MaceCommand(g, assumptions=alist)
     m.build_model()
     for a in alist:

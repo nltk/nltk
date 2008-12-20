@@ -10,7 +10,6 @@ from nltk.sem import drt
 import linearlogic
 import glue
 from nltk import data
-from nltk.inference.tableau import ProverParseError
 from nltk.internals import Counter
 from nltk_contrib.dependency import malt
 
