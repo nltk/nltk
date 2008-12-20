@@ -19,6 +19,9 @@ described in Kiss & Strunk (2006)::
     Boundary Detection.  Computational Linguistics 32: 485-525.
 """
 
+# TODO: Make orthographic heuristic less susceptible to overtraining
+# TODO: Frequent sentence starters optionally exclude always-capitalised words
+
 import re
 import math
 
