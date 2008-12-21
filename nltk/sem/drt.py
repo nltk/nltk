@@ -55,7 +55,6 @@ class AbstractDrs(object):
         If the prover says it is valid, then the self and other are equal."""
         assert isinstance(other, AbstractDrs)
         
-        from nltk.inference import inference
         f1 = self.simplify().toFol();
         f2 = other.simplify().toFol();
         return f1.tp_equals(f2, prover_name)

@@ -763,7 +763,7 @@ def sql_demo():
     """
     print 
     print "Using SQL to extract rows from 'city.db' RDB."
-    for row in sql_query('samples/city.db', "SELECT * FROM city_table"):
+    for row in sql_query('corpora/city_database/city.db', "SELECT * FROM city_table"):
         print row
         
 
