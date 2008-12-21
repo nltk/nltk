@@ -13,8 +13,7 @@ Michael R. Genesereth and Nils J. Nilsson.
 """
 
 from nltk.sem.logic import *
-from nltk.inference.util import get_prover
-from nltk.inference.api import Prover, ProverCommandDecorator
+from nltk.inference import get_prover, Prover, ProverCommandDecorator
 from nltk import defaultdict
 
 class ProverParseError(Exception): pass

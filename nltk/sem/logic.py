@@ -380,7 +380,7 @@ class Expression(SubstituteBindingsI):
         If the prover says it is valid, then the self and other are equal."""
         assert isinstance(other, Expression), "%s is not an Expression" % other
         
-        from nltk.inference.util import get_prover
+        from nltk.inference import get_prover
         bicond = IffExpression(self.simplify(), other.simplify())
         prover = get_prover(bicond, prover_name=prover_name)
         return prover.prove()
