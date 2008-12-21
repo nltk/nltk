@@ -13,7 +13,7 @@ Michael R. Genesereth and Nils J. Nilsson.
 """
 
 from nltk.sem.logic import *
-from nltk.inference import inference
+from nltk.inference.util import get_prover
 from nltk.inference.api import Prover, ProverCommandDecorator
 from nltk import defaultdict
 
@@ -105,7 +105,7 @@ class UniqueNamesProver(ProverCommandDecorator):
                 if b not in eq_sets[a]:
                     newEqEx = EqualityExpression(VariableExpression(a), 
                                                  VariableExpression(b))
-                    if inference.get_prover(newEqEx, assumptions).prove():
+                    if get_prover(newEqEx, assumptions).prove():
                         #we can prove that the names are the same entity.
                         #remember that they are equal so we don't re-check.
                         eq_sets[a].add(b)
@@ -312,7 +312,7 @@ def closed_domain_demo():
     p1 = lp.parse(r'exists x.walk(x)')
     p2 = lp.parse(r'man(Socrates)')
     c = lp.parse(r'walk(Socrates)')
-    prover = inference.get_prover(c, [p1,p2])
+    prover = get_prover(c, [p1,p2])
     print prover.prove()
     cdp = ClosedDomainProver(prover)
     print 'assumptions:'
@@ -324,7 +324,7 @@ def closed_domain_demo():
     p2 = lp.parse(r'man(Socrates)')
     p3 = lp.parse(r'-walk(Bill)')
     c = lp.parse(r'walk(Socrates)')
-    prover = inference.get_prover(c, [p1,p2,p3])
+    prover = get_prover(c, [p1,p2,p3])
     print prover.prove()
     cdp = ClosedDomainProver(prover)
     print 'assumptions:'
@@ -336,7 +336,7 @@ def closed_domain_demo():
     p2 = lp.parse(r'man(Socrates)')
     p3 = lp.parse(r'-walk(Bill)')
     c = lp.parse(r'walk(Socrates)')
-    prover = inference.get_prover(c, [p1,p2,p3])
+    prover = get_prover(c, [p1,p2,p3])
     print prover.prove()
     cdp = ClosedDomainProver(prover)
     print 'assumptions:'
@@ -347,7 +347,7 @@ def closed_domain_demo():
     p1 = lp.parse(r'walk(Socrates)')
     p2 = lp.parse(r'walk(Bill)')
     c = lp.parse(r'all x.walk(x)')
-    prover = inference.get_prover(c, [p1,p2])
+    prover = get_prover(c, [p1,p2])
     print prover.prove()
     cdp = ClosedDomainProver(prover)
     print 'assumptions:'
@@ -361,7 +361,7 @@ def closed_domain_demo():
     p4 = lp.parse(r'all x.(dog(x) -> -girl(x))')
     p5 = lp.parse(r'chase(mary, rover)')
     c = lp.parse(r'exists y.(dog(y) & all x.(girl(x) -> chase(x,y)))')
-    prover = inference.get_prover(c, [p1,p2,p3,p4,p5])
+    prover = get_prover(c, [p1,p2,p3,p4,p5])
     print prover.prove()
     cdp = ClosedDomainProver(prover)
     print 'assumptions:'
@@ -375,7 +375,7 @@ def unique_names_demo():
     p1 = lp.parse(r'man(Socrates)')
     p2 = lp.parse(r'man(Bill)')
     c = lp.parse(r'exists x.exists y.(x != y)')
-    prover = inference.get_prover(c, [p1,p2])
+    prover = get_prover(c, [p1,p2])
     print prover.prove()
     unp = UniqueNamesProver(prover)
     print 'assumptions:'
@@ -387,7 +387,7 @@ def unique_names_demo():
     p2 = lp.parse(r'Bill = William')
     p3 = lp.parse(r'Bill = Billy')
     c = lp.parse(r'-walk(William)')
-    prover = inference.get_prover(c, [p1,p2,p3])
+    prover = get_prover(c, [p1,p2,p3])
     print prover.prove()
     unp = UniqueNamesProver(prover)
     print 'assumptions:'
@@ -401,7 +401,7 @@ def closed_world_demo():
     p1 = lp.parse(r'walk(Socrates)')
     p2 = lp.parse(r'(Socrates != Bill)')
     c = lp.parse(r'-walk(Bill)')
-    prover = inference.get_prover(c, [p1,p2])
+    prover = get_prover(c, [p1,p2])
     print prover.prove()
     cwp = ClosedWorldProver(prover)
     print 'assumptions:'
@@ -414,7 +414,7 @@ def closed_world_demo():
     p3 = lp.parse(r'(Socrates != John)')
     p4 = lp.parse(r'(John != Mary)')
     c = lp.parse(r'-see(Socrates, Mary)')
-    prover = inference.get_prover(c, [p1,p2,p3,p4])
+    prover = get_prover(c, [p1,p2,p3,p4])
     print prover.prove()
     cwp = ClosedWorldProver(prover)
     print 'assumptions:'
@@ -427,7 +427,7 @@ def closed_world_demo():
     p3 = lp.parse(r'-ostrich(Sam)')
     p4 = lp.parse(r'Sam != Tweety')
     c = lp.parse(r'-bird(Sam)')
-    prover = inference.get_prover(c, [p1,p2,p3,p4])
+    prover = get_prover(c, [p1,p2,p3,p4])
     print prover.prove()
     cwp = ClosedWorldProver(prover)
     print 'assumptions:'
@@ -441,7 +441,7 @@ def combination_prover_demo():
     p1 = lp.parse(r'see(Socrates, John)')
     p2 = lp.parse(r'see(John, Mary)')
     c = lp.parse(r'-see(Socrates, Mary)')
-    prover = inference.get_prover(c, [p1,p2])
+    prover = get_prover(c, [p1,p2])
     print prover.prove()
     command = ClosedDomainProver(
                   UniqueNamesProver(
@@ -477,7 +477,7 @@ def default_reasoning_demo():
     premises.append(lp.parse(r'ostrich(O)'))
     
     #print the assumptions
-    prover = inference.get_prover(None, premises)
+    prover = get_prover(None, premises)
     command = UniqueNamesProver(ClosedWorldProver(prover))
     for a in command.assumptions(): print a
 
@@ -487,7 +487,7 @@ def default_reasoning_demo():
 
 def print_proof(goal, premises):
     lp = LogicParser()
-    prover = inference.get_prover(lp.parse(goal), premises)
+    prover = get_prover(lp.parse(goal), premises)
     command = UniqueNamesProver(ClosedWorldProver(prover))
     print goal, prover.prove(), command.prove()
 

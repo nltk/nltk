@@ -14,6 +14,6 @@ Classes and interfaces for theorem proving and model building.
 from api import *
 from mace import *
 from prover9 import *
-from inference import *
 from tableau import *
+from util import *
 from discourse import *

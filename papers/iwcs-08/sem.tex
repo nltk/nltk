@@ -549,7 +549,7 @@ parameters a proof goal \texttt{G} and a list \texttt{A} of assumptions.
 Here, we verify that if every dog barks, and Rover is a dog,
 then it is true that Rover barks:
 \begin{Verbatim}
->>> from nltk.inference import inference
+>>> from nltk import inference
 >>> a = lp.parse('all x.(dog(x) -> bark(x))')
 >>> b = lp.parse('dog(rover)')
 >>> c = lp.parse('bark(rover)')

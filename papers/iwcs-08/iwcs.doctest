@@ -103,7 +103,7 @@ Done
     all x.(girl(x) -> exists z14.(dog(z14) & chase(x,z14)))
 
 Done
-    >>> from nltk.inference import inference
+    >>> from nltk import inference
     >>> a = lp.parse('all x.(dog(x) -> bark(x))')
     >>> b = lp.parse('dog(rover)')
     >>> c = lp.parse('bark(rover)')
