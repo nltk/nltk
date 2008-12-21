@@ -2,7 +2,7 @@
 Nonmonotonic Reasoning
 ======================
 
-    >>> from nltk.inference.util import get_prover
+    >>> from nltk.inference import get_prover
     >>> from nltk.sem import logic
     >>> from nltk.inference.nonmonotonic import *
     >>> logic._counter._value = 0

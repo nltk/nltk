@@ -9,7 +9,7 @@
 
 from nltk.parse import load_earley
 from nltk.draw.tree import draw_trees
-from nltk.inference import resolution
+from nltk.inference.resolution import skolemize
 from nltk.sem import logic
 
 """
@@ -322,7 +322,7 @@ def hole_readings(sentence, grammar_filename=None, verbose=False):
         # Skolemize away all quantifiers.  All variables become unique.
         while isinstance(sem, logic.LambdaExpression):
             sem = sem.term
-        skolemized = resolution.skolemize(sem)
+        skolemized = skolemize(sem)
         
         if verbose: print 'Skolemized:', skolemized
 
