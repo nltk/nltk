@@ -128,5 +128,5 @@ class PossibleAntecedents(list, logic.Expression):
     def simplify(self):
         return self
 
-    def str(self, syntax=logic.Tokens.NEW_NLTK):
+    def str(self, syntax=logic.Tokens.NLTK):
         return '[' + ','.join([str(item) for item in self]) + ']'

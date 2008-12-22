@@ -5,6 +5,8 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
+import operator
+
 from nltk.internals import Counter
 from nltk.sem import logic
 from nltk.sem.logic import Variable, unique_variable
@@ -129,29 +131,26 @@ class DRS(AbstractDrs, logic.Expression, RA.DRS):
 
     def variables(self):
         """@see: logic.Expression.variables()"""
-        conds_free = set()
-        for cond in self.conds:
-            conds_free |= cond.variables()
-        return conds_free - set(self.refs)
+        conds_vars = reduce(operator.or_, 
+                            [c.variables() for c in self.conds], set())
+        return conds_vars - set(self.refs)
     
     def free(self, indvar_only=True):
         """@see: logic.Expression.free()"""
-        conds_free = set()
-        for cond in self.conds:
-            conds_free |= cond.free(indvar_only)
+        conds_free = reduce(operator.or_, 
+                            [c.free(indvar_only) for c in self.conds], set())
         return conds_free - set(self.refs)
 
     def get_refs(self, recursive=False):
         """@see: AbstractExpression.get_refs()"""
         if recursive:
-            refs = []
-            for cond in self.conds:
-                refs += cond.get_refs(True)
-            return self.refs + refs
+            cond_refs = reduce(operator.add, 
+                               [c.get_refs(True) for c in self.conds], [])
+            return self.refs + cond_refs
         else:
             return self.refs
         
-    def visit(self, function, combinator):
+    def visit(self, function, combinator, default):
         """@see: Expression.visit()"""
         return reduce(combinator, [function(e) for e in self.refs + self.conds])
     
@@ -159,9 +158,9 @@ class DRS(AbstractDrs, logic.Expression, RA.DRS):
         return DRS(self.refs, [cond.simplify() for cond in self.conds])
     
     def toFol(self):
-        accum = self.conds[-1].toFol()
-        for cond in self.conds[::-1][1:]:
-            accum = logic.AndExpression(cond.toFol(), accum)
+        if not self.conds:
+            raise Exception("Cannot convert DRS with no conditions to FOL.")
+        accum = reduce(logic.AndExpression, [c.toFol() for c in self.conds])
         for ref in self.refs[::-1]:
             accum = logic.ExistsExpression(ref, accum)
         return accum
@@ -178,7 +177,7 @@ class DRS(AbstractDrs, logic.Expression, RA.DRS):
                 return self.conds == converted_other.conds
         return False
     
-    def str(self, syntax=logic.Tokens.NEW_NLTK):
+    def str(self, syntax=logic.Tokens.NLTK):
         if syntax == logic.Tokens.PROVER9:
             return self.toFol().str(syntax)
         else:
@@ -266,10 +265,9 @@ class DrtImpExpression(DrtBooleanExpression, logic.ImpExpression, RA.ImpExpressi
         second_drs = self.second
 
         accum = None
-        if len(first_drs.conds):
-            accum = first_drs.conds[-1].toFol()
-            for cond in first_drs.conds[::-1][1:]:
-                accum = logic.AndExpression(cond.toFol(), accum) 
+        if first_drs.conds:
+            accum = reduce(logic.AndExpression, 
+                           [c.toFol() for c in first_drs.conds])
    
         if accum:
             accum = logic.ImpExpression(accum, second_drs.toFol())
@@ -355,7 +353,7 @@ class ConcatenationDRS(DrtBooleanExpression, RA.ConcatenationDRS):
         """@see: AbstractExpression.get_refs()"""
         return self.first.get_refs(recursive) + self.second.get_refs(recursive)
 
-    def getOp(self, syntax=logic.Tokens.NEW_NLTK):
+    def getOp(self, syntax=logic.Tokens.NLTK):
         return Tokens.DRS_CONC
     
     def __eq__(self, other):
@@ -400,7 +398,7 @@ class DrsDrawer:
         @param size_canvas: C{boolean}, True if the canvas size should be the exact size of the DRS
         @param canvas: C{Canvas} The canvas on which to draw the DRS.  If none is given, create a new canvas. 
         """
-        self.syntax = logic.Tokens.NEW_NLTK
+        self.syntax = logic.Tokens.NLTK
 
         master = None
         if not canvas:

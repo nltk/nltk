@@ -21,7 +21,7 @@ _counter = Counter()
 class Tokens:
     # Syntaxes
     OLD_NLTK = 0
-    NEW_NLTK = 1
+    NLTK = 1
     PROVER9  = 2
     
     
@@ -49,26 +49,25 @@ class Tokens:
     #Collection of tokens
     BINOPS = AND + OR + IMP + IFF
     QUANTS = EXISTS + ALL
-    PUNCT = [DOT[0], OPEN, CLOSE, COMMA]
+    PUNCT = [DOT[NLTK], OPEN, CLOSE, COMMA]
     
     TOKENS = BINOPS + EQ + NEQ + QUANTS + LAMBDA + PUNCT + NOT
     
     #Special
-    SYMBOLS = LAMBDA + PUNCT + [AND[1], OR[1], NOT[1], IMP[1], IFF[1]] +\
-              EQ + NEQ 
+    SYMBOLS = LAMBDA + PUNCT + EQ + NEQ + \
+              [AND[NLTK], OR[NLTK], NOT[NLTK], IMP[NLTK], IFF[NLTK]]
+               
 
-    LCONSTANTS = [SYM[1] for SYM in [LAMBDA, AND, OR, NOT, IMP, IFF, EQ, NEQ, EXISTS, ALL]] 
-    
-    BINOPS1 = [SYM[1] for SYM in [NOT, AND, OR, IMP, IFF]] 
-    EQUALS1 = [SYM[1] for SYM in [EQ, NEQ]] 
-    QUANTS1 = [SYM[1] for SYM in [EXISTS, ALL]] 
-    
 def boolean_ops():
     """
     Boolean operators
     """
     names =  ["negation", "conjunction", "disjunction", "implication", "equivalence"]
-    for pair in zip(names, Tokens.BINOPS1):
+    for pair in zip(names, [Tokens.NOT[Tokens.NLTK], 
+                            Tokens.AND[Tokens.NLTK], 
+                            Tokens.OR[Tokens.NLTK], 
+                            Tokens.IMP[Tokens.NLTK], 
+                            Tokens.IFF[Tokens.NLTK]]):
         print "%-15s\t%s" %  pair
         
 def equality_preds():
@@ -76,7 +75,8 @@ def equality_preds():
     Equality predicates
     """
     names =  ["equality", "inequality"]
-    for pair in zip(names, Tokens.EQUALS1):
+    for pair in zip(names, [Tokens.EQ[Tokens.NLTK], 
+                            Tokens.NEQ[Tokens.NLTK]]):
         print "%-15s\t%s" %  pair        
                     
 def binding_ops():
@@ -84,7 +84,9 @@ def binding_ops():
     Binding operators
     """
     names =  ["existential", "universal", "lambda"]
-    for pair in zip(names, Tokens.QUANTS1 + Tokens.LAMBDA[0:]):
+    for pair in zip(names, [Tokens.EXISTS[Tokens.NLTK], 
+                            Tokens.ALL[Tokens.NLTK],
+                            Tokens.LAMBDA[Tokens.NLTK]]):
         print "%-15s\t%s" %  pair
 
 
@@ -95,6 +97,12 @@ class Variable(object):
         """
         assert isinstance(name, str), "%s is not a string" % name
         self.name = name
+
+    def __eq__(self, other):
+        return isinstance(other, Variable) and self.name == other.name
+    
+    def __neq__(self, other):
+        return not (self == other)
 
     def __cmp__(self, other):
         assert isinstance(other, Variable), "%s is not a Variable" % other
@@ -446,6 +454,25 @@ class Expression(SubstituteBindingsI):
         """
         raise NotImplementedError()
     
+    def replace(self, variable, expression, replace_bound=False):
+        """
+        Replace every instance of 'variable' with 'expression'
+        @param variable: C{Variable} The variable to replace
+        @param expression: C{Expression} The expression with which to replace it
+        @param replace_bound: C{boolean} Should bound variables be replaced?  
+        """
+        assert isinstance(variable, Variable), "%s is not a Variable" % variable
+        assert isinstance(expression, Expression), "%s is not an Expression" % expression
+
+        def combinator(a, *additional):
+            if len(additional) == 0:
+                return self.__class__(a)
+            elif len(additional) == 1:
+                return self.__class__(a, additional[0])
+        
+        return self.visit(lambda e: e.replace(variable, expression, replace_bound), 
+                          combinator, set())
+    
     def normalize(self):
         """Rename auto-generated unique variables"""
         def f(e):
@@ -455,7 +482,8 @@ class Expression(SubstituteBindingsI):
                 else:
                     return set([])
             else: 
-                return e.visit(f, operator.or_)
+                combinator = lambda *parts: reduce(operator.or_, parts)
+                return e.visit(f, combinator, set())
         
         result = self
         for i,v in enumerate(sorted(list(f(self)))):
@@ -466,7 +494,7 @@ class Expression(SubstituteBindingsI):
             result = result.replace(v, VariableExpression(Variable(newVar)), True)
         return result
     
-    def visit(self, function, combinator):
+    def visit(self, function, combinator, default):
         """
         Recursively visit sub expressions
         @param function: C{Function} to call on each sub expression
@@ -488,7 +516,9 @@ class Expression(SubstituteBindingsI):
         This includes free (non-bound) variables as well as predicates.
         @return: C{set} of C{Variable}s
         """
-        raise NotImplementedError() 
+        return self.visit(lambda e: isinstance(e,Variable) and 
+                          set([e]) or e.variables(), 
+                          lambda *parts: reduce(operator.or_, parts), set())
 
     def free(self, indvar_only=True):
         """
@@ -497,7 +527,22 @@ class Expression(SubstituteBindingsI):
         @param indvar_only: C{boolean} only return individual variables?
         @return: C{set} of C{Variable}s
         """
-        raise NotImplementedError()
+        return self.visit(lambda e: isinstance(e,Variable) and 
+                          set([e]) or e.free(indvar_only), 
+                          lambda *parts: reduce(operator.or_, parts), set())
+
+    def simplify(self):
+        """
+        @return: beta-converted version of this expression
+        """
+        def combinator(a, *additional):
+            if len(additional) == 0:
+                return self.__class__(a)
+            elif len(additional) == 1:
+                return self.__class__(a, additional[0])
+        
+        return self.visit(lambda e: isinstance(e,Variable) 
+                          and e or e.simplify(), combinator, set())
 
 
 class ApplicationExpression(Expression):
@@ -525,8 +570,8 @@ class ApplicationExpression(Expression):
     The str() method will usually print the curried forms of application 
     expressions.  The one exception is when the the application expression is
     really a predicate expression (ie, underlying function is an 
-    C{AbstractVariableExpression}).  This means that the example from above will 
-    be returned as "(\x y.see(x,y)(john))(mary)".
+    C{AbstractVariableExpression}).  This means that the example from above  
+    will be returned as "(\x y.see(x,y)(john))(mary)".
     """
     def __init__(self, function, argument):
         """
@@ -546,23 +591,6 @@ class ApplicationExpression(Expression):
         else:
             return self.__class__(function, argument)
         
-    def replace(self, variable, expression, replace_bound=False):
-        """
-        Replace every instance of 'variable' with 'expression'
-        @param variable: C{Variable} The variable to replace
-        @param expression: C{Expression} The expression with which to replace it
-        @param replace_bound: C{boolean} Should bound variables be replaced?  
-        """
-        assert isinstance(variable, Variable), "%s is not a Variable" % variable
-        assert isinstance(expression, Expression), "%s is not an Expression" % expression
-        function = self.function.replace(variable, expression, replace_bound)
-        argument = self.argument.replace(variable, expression, replace_bound)
-        return self.__class__(function, argument)
-        
-    def variables(self):
-        """@see: Expression.variables()"""
-        return self.function.variables() | self.argument.variables() 
-
     def free(self, indvar_only=True):
         """@see: Expression.free()"""
         if isinstance(self.function, AbstractVariableExpression):
@@ -622,7 +650,7 @@ class ApplicationExpression(Expression):
         else:
             return ANY_TYPE
         
-    def visit(self, function, combinator):
+    def visit(self, function, combinator, default):
         """@see: Expression.visit()"""
         return combinator(function(self.function), function(self.argument))
         
@@ -631,7 +659,7 @@ class ApplicationExpression(Expression):
                 self.function == other.function and \
                 self.argument == other.argument 
 
-    def str(self, syntax=Tokens.NEW_NLTK):
+    def str(self, syntax=Tokens.NLTK):
         # uncurry the arguments and find the base function
         function, args = self.uncurry()
         if isinstance(function, AbstractVariableExpression):
@@ -685,12 +713,7 @@ class AbstractVariableExpression(Expression):
         return self
 
     def replace(self, variable, expression, replace_bound=False):
-        """
-        Replace every instance of 'variable' with 'expression'
-        @param variable: C{Variable} The variable to replace
-        @param expression: C{Expression} The expression with which to replace it
-        @param replace_bound: C{boolean} Should bound variables be replaced?  
-        """
+        """@see: Expression.replace()"""
         assert isinstance(variable, Variable), "%s is not an Variable" % variable
         assert isinstance(expression, Expression), "%s is not an Expression" % expression
         if self.variable == variable:
@@ -698,10 +721,6 @@ class AbstractVariableExpression(Expression):
         else:
             return self
     
-    def variables(self):
-        """@see: Expression.variables()"""
-        return set([self.variable])
-
     def _set_type(self, other_type=ANY_TYPE, signature=None):
         """@see Expression._set_type()"""
         assert isinstance(other_type, Type)
@@ -727,9 +746,9 @@ class AbstractVariableExpression(Expression):
         else:
             return ANY_TYPE
 
-    def visit(self, function, combinator):
+    def visit(self, function, combinator, default):
         """@see: Expression.visit()"""
-        return function(self.variable)
+        return combinator(function(self.variable))
 
     def __eq__(self, other):
         """Allow equality between instances of C{AbstractVariableExpression} 
@@ -737,7 +756,7 @@ class AbstractVariableExpression(Expression):
         return isinstance(other, AbstractVariableExpression) and \
                self.variable == other.variable
         
-    def str(self, syntax=Tokens.NEW_NLTK):
+    def str(self, syntax=Tokens.NLTK):
         return str(self.variable)
     
     
@@ -757,11 +776,7 @@ class IndividualVariableExpression(AbstractVariableExpression):
         signature[self.variable.name].append(self)
                 
     type = property(lambda self: ENTITY_TYPE, _set_type)
-    
-    def free(self, indvar_only=True):
-        """@see: Expression.free()"""
-        return set([self.variable])
-    
+
 class FunctionVariableExpression(AbstractVariableExpression):
     """This class represents variables that take the form of a single uppercase
     character followed by zero or more digits."""
@@ -778,10 +793,6 @@ class EventVariableExpression(IndividualVariableExpression):
     """This class represents variables that take the form of a single lowercase
     'e' character followed by zero or more digits."""
     type = EVENT_TYPE
-
-    def free(self, indvar_only=True):
-        """@see: Expression.free()"""
-        return set([self.variable])
 
 class ConstantExpression(AbstractVariableExpression):
     """This class represents variables that do not take the form of a single
@@ -849,16 +860,8 @@ class VariableBinderExpression(Expression):
         self.variable = variable
         self.term = term
 
-    def simplify(self):
-        return self.__class__(self.variable, self.term.simplify())
-
     def replace(self, variable, expression, replace_bound=False):
-        """
-        Replace every instance of 'variable' with 'expression'
-        @param variable: C{Variable} The variable to replace
-        @param expression: C{Expression} The expression with which to replace it
-        @param replace_bound: C{boolean} Should bound variables be replaced?  
-        """
+        """@see: Expression.replace()"""
         assert isinstance(variable, Variable), "%s is not a Variable" % variable
         assert isinstance(expression, Expression), "%s is not an Expression" % expression
         #if the bound variable is the thing being replaced
@@ -907,7 +910,7 @@ class VariableBinderExpression(Expression):
         else:
             return self.term.findtype(variable)
 
-    def visit(self, function, combinator):
+    def visit(self, function, combinator, default):
         """@see: Expression.visit()"""
         return combinator(function(self.variable), function(self.term))
         
@@ -942,7 +945,7 @@ class LambdaExpression(VariableBinderExpression):
         if not self.type.resolve(other_type):
             raise TypeResolutionException(self, other_type)
 
-    def str(self, syntax=Tokens.NEW_NLTK):
+    def str(self, syntax=Tokens.NLTK):
         variables = [self.variable]
         term = self.term
         if syntax != Tokens.PROVER9:
@@ -967,7 +970,7 @@ class QuantifiedExpression(VariableBinderExpression):
             raise IllegalTypeException(self, other_type, TRUTH_TYPE)
         self.term._set_type(TRUTH_TYPE, signature)
 
-    def str(self, syntax=Tokens.NEW_NLTK):
+    def str(self, syntax=Tokens.NLTK):
         variables = [self.variable]
         term = self.term
         if syntax != Tokens.PROVER9:
@@ -979,11 +982,11 @@ class QuantifiedExpression(VariableBinderExpression):
                Tokens.DOT[syntax] + term.str(syntax)
         
 class ExistsExpression(QuantifiedExpression):
-    def getQuantifier(self, syntax=Tokens.NEW_NLTK):
+    def getQuantifier(self, syntax=Tokens.NLTK):
         return Tokens.EXISTS[syntax]
 
 class AllExpression(QuantifiedExpression):
-    def getQuantifier(self, syntax=Tokens.NEW_NLTK):
+    def getQuantifier(self, syntax=Tokens.NLTK):
         return Tokens.ALL[syntax]
 
 
@@ -992,28 +995,6 @@ class NegatedExpression(Expression):
         assert isinstance(term, Expression), "%s is not an Expression" % term
         self.term = term
         
-    def simplify(self):
-        return self.__class__(self.term.simplify())
-
-    def replace(self, variable, expression, replace_bound=False):
-        """
-        Replace every instance of 'variable' with 'expression'
-        @param variable: C{Variable} The variable to replace
-        @param expression: C{Expression} The expression with which to replace it
-        @param replace_bound: C{boolean} Should bound variables be replaced?  
-        """
-        assert isinstance(variable, Variable), "%s is not a Variable" % variable
-        assert isinstance(expression, Expression), "%s is not an Expression" % expression
-        return self.__class__(self.term.replace(variable, expression, replace_bound))
-
-    def variables(self):
-        """@see: Expression.variables()"""
-        return self.term.variables()
-
-    def free(self, indvar_only=True):
-        """@see: Expression.free()"""
-        return self.term.free(indvar_only)
-
     type = property(lambda self: TRUTH_TYPE)
     
     def _set_type(self, other_type=ANY_TYPE, signature=None):
@@ -1031,14 +1012,14 @@ class NegatedExpression(Expression):
         assert isinstance(variable, Variable), "%s is not a Variable" % variable
         return self.term.findtype(variable)
         
-    def visit(self, function, combinator):
+    def visit(self, function, combinator, default):
         """@see: Expression.visit()"""
-        return function(self.term)
+        return combinator(function(self.term))
         
     def __eq__(self, other):
         return isinstance(other, NegatedExpression) and self.term == other.term
 
-    def str(self, syntax=Tokens.NEW_NLTK):
+    def str(self, syntax=Tokens.NLTK):
         if syntax == Tokens.PROVER9:
             return Tokens.NOT[syntax] + Tokens.OPEN + self.term.str(syntax) +\
                    Tokens.CLOSE
@@ -1052,29 +1033,6 @@ class BinaryExpression(Expression):
         assert isinstance(second, Expression), "%s is not an Expression" % second
         self.first = first
         self.second = second
-
-    def simplify(self):
-        return self.__class__(self.first.simplify(), self.second.simplify())
-
-    def replace(self, variable, expression, replace_bound=False):
-        """
-        Replace every instance of 'variable' with 'expression'
-        @param variable: C{Variable} The variable to replace
-        @param expression: C{Expression} The expression with which to replace it
-        @param replace_bound: C{boolean} Should bound variables be replaced?  
-        """
-        assert isinstance(variable, Variable), "%s is not a Variable" % variable
-        assert isinstance(expression, Expression), "%s is not an Expression" % expression
-        return self.__class__(self.first.replace(variable, expression, replace_bound),
-                              self.second.replace(variable, expression, replace_bound))
-
-    def variables(self):
-        """@see: Expression.variables()"""
-        return self.first.variables() | self.second.variables()
-
-    def free(self, indvar_only=True):
-        """@see: Expression.free()"""
-        return self.first.free(indvar_only) | self.second.free(indvar_only)
 
     type = property(lambda self: TRUTH_TYPE)
     
@@ -1090,7 +1048,7 @@ class BinaryExpression(Expression):
         else:
             return ANY_TYPE
 
-    def visit(self, function, combinator):
+    def visit(self, function, combinator, default):
         """@see: Expression.visit()"""
         return combinator(function(self.first), function(self.second))
         
@@ -1099,7 +1057,7 @@ class BinaryExpression(Expression):
                 isinstance(other, self.__class__)) and \
                self.first == other.first and self.second == other.second
 
-    def str(self, syntax=Tokens.NEW_NLTK):
+    def str(self, syntax=Tokens.NLTK):
         return Tokens.OPEN + self.first.str(syntax) + ' ' + self.getOp(syntax) \
                 + ' ' + self.second.str(syntax) + Tokens.CLOSE
         
@@ -1119,22 +1077,22 @@ class BooleanExpression(BinaryExpression):
 
 class AndExpression(BooleanExpression):
     """This class represents conjunctions"""
-    def getOp(self, syntax=Tokens.NEW_NLTK):
+    def getOp(self, syntax=Tokens.NLTK):
         return Tokens.AND[syntax]
 
 class OrExpression(BooleanExpression):
     """This class represents disjunctions"""
-    def getOp(self, syntax=Tokens.NEW_NLTK):
+    def getOp(self, syntax=Tokens.NLTK):
         return Tokens.OR[syntax]
 
 class ImpExpression(BooleanExpression):
     """This class represents implications"""
-    def getOp(self, syntax=Tokens.NEW_NLTK):
+    def getOp(self, syntax=Tokens.NLTK):
         return Tokens.IMP[syntax]
 
 class IffExpression(BooleanExpression):
     """This class represents biconditionals"""
-    def getOp(self, syntax=Tokens.NEW_NLTK):
+    def getOp(self, syntax=Tokens.NLTK):
         return Tokens.IFF[syntax]
 
 
@@ -1152,7 +1110,7 @@ class EqualityExpression(BinaryExpression):
         self.first._set_type(ENTITY_TYPE, signature)
         self.second._set_type(ENTITY_TYPE, signature)
 
-    def getOp(self, syntax=Tokens.NEW_NLTK):
+    def getOp(self, syntax=Tokens.NLTK):
         return Tokens.EQ[syntax]
 
 
@@ -1557,4 +1515,6 @@ def printtype(ex):
     print ex.str() + ' : ' + str(ex.type)
 
 if __name__ == '__main__':
-    demo()
+#    demo()
+    p = LogicParser().parse(r'-see(x)')
+    print p.simplify()
