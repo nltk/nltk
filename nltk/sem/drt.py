@@ -161,7 +161,7 @@ class DRS(AbstractDrs, logic.Expression, RA.DRS):
     def toFol(self):
         if not self.conds:
             raise Exception("Cannot convert DRS with no conditions to FOL.")
-        accum = reduce(logic.AndExpression, [c.toFol() for c in self.conds], set())
+        accum = reduce(logic.AndExpression, [c.toFol() for c in self.conds])
         for ref in self.refs[::-1]:
             accum = logic.ExistsExpression(ref, accum)
         return accum
@@ -268,7 +268,7 @@ class DrtImpExpression(DrtBooleanExpression, logic.ImpExpression, RA.ImpExpressi
         accum = None
         if first_drs.conds:
             accum = reduce(logic.AndExpression, 
-                           [c.toFol() for c in first_drs.conds], set())
+                           [c.toFol() for c in first_drs.conds])
    
         if accum:
             accum = logic.ImpExpression(accum, second_drs.toFol())
