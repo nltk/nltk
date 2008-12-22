@@ -1515,6 +1515,4 @@ def printtype(ex):
     print ex.str() + ' : ' + str(ex.type)
 
 if __name__ == '__main__':
-#    demo()
-    p = LogicParser().parse(r'-see(x)')
-    print p.simplify()
+    demo()
