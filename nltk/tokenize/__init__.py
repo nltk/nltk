@@ -53,5 +53,10 @@ def word(text):
 def line(text):
     return LineTokenizer().tokenize(text)
 
+@deprecated("Use method of nltk.tokenize.PunktWordTokenizer "
+            "instead.")
+def punkt_word_tokenize(text):
+    return PunktWordTokenizer().tokenize(text)
+
 #}
 
