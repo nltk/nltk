@@ -457,6 +457,9 @@ Variables / Free
     >>> print lp.parse(r'\x.see(john,x)(mary)').free(False)
     set([Variable('john'), Variable('mary')])
 
+`normalize`
+    >>> print lp.parse(r'\e083.(walk(e083, z472) & talk(e092, z938))').normalize()
+    \e01.(walk(e01,z3) & talk(e02,z4))
 
 Typed Logic
 +++++++++++

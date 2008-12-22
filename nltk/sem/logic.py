@@ -11,6 +11,7 @@ top of the typed lambda calculus.
 """
 
 import re
+import operator
 
 from nltk import defaultdict
 from nltk.internals import Counter
@@ -95,12 +96,6 @@ class Variable(object):
         assert isinstance(name, str), "%s is not a string" % name
         self.name = name
 
-    def __eq__(self, other):
-        return isinstance(other, Variable) and self.name == other.name
-    
-    def __neq__(self, other):
-        return not (self == other)
-    
     def __cmp__(self, other):
         assert isinstance(other, Variable), "%s is not a Variable" % other
         if self.name == other.name:
@@ -450,6 +445,36 @@ class Expression(SubstituteBindingsI):
         all variable expressions with a given name
         """
         raise NotImplementedError()
+    
+    def normalize(self):
+        """Rename auto-generated unique variables"""
+        def f(e):
+            if isinstance(e,Variable):
+                if re.match(r'^z\d+$', e.name) or re.match(r'^e0\d+$', e.name):
+                    return set([e])
+                else:
+                    return set([])
+            else: 
+                return e.visit(f, operator.or_)
+        
+        result = self
+        for i,v in enumerate(sorted(list(f(self)))):
+            if is_eventvar(v.name):
+                newVar = 'e0%s' % (i+1)
+            else:
+                newVar = 'z%s' % (i+1)
+            result = result.replace(v, VariableExpression(Variable(newVar)), True)
+        return result
+    
+    def visit(self, function, combinator):
+        """
+        Recursively visit sub expressions
+        @param function: C{Function} to call on each sub expression
+        @param combinator: C{Function} to combine the results of the 
+        function calls
+        @return: result of combination
+        """
+        raise NotImplementedError()
 
     def __repr__(self):
         return '<%s %s>' % (self.__class__.__name__, self)
@@ -596,7 +621,11 @@ class ApplicationExpression(Expression):
             return list(unique)[0]
         else:
             return ANY_TYPE
-
+        
+    def visit(self, function, combinator):
+        """@see: Expression.visit()"""
+        return combinator(function(self.function), function(self.argument))
+        
     def __eq__(self, other):
         return isinstance(other, ApplicationExpression) and \
                 self.function == other.function and \
@@ -697,6 +726,10 @@ class AbstractVariableExpression(Expression):
             return self.type
         else:
             return ANY_TYPE
+
+    def visit(self, function, combinator):
+        """@see: Expression.visit()"""
+        return function(self.variable)
 
     def __eq__(self, other):
         """Allow equality between instances of C{AbstractVariableExpression} 
@@ -874,6 +907,10 @@ class VariableBinderExpression(Expression):
         else:
             return self.term.findtype(variable)
 
+    def visit(self, function, combinator):
+        """@see: Expression.visit()"""
+        return combinator(function(self.variable), function(self.term))
+        
     def __eq__(self, other):
         r"""Defines equality modulo alphabetic variance.  If we are comparing 
         \x.M  and \y.N, then check equality of M and N[x/y]."""
@@ -994,6 +1031,10 @@ class NegatedExpression(Expression):
         assert isinstance(variable, Variable), "%s is not a Variable" % variable
         return self.term.findtype(variable)
         
+    def visit(self, function, combinator):
+        """@see: Expression.visit()"""
+        return function(self.term)
+        
     def __eq__(self, other):
         return isinstance(other, NegatedExpression) and self.term == other.term
 
@@ -1049,6 +1090,10 @@ class BinaryExpression(Expression):
         else:
             return ANY_TYPE
 
+    def visit(self, function, combinator):
+        """@see: Expression.visit()"""
+        return combinator(function(self.first), function(self.second))
+        
     def __eq__(self, other):
         return (isinstance(self, other.__class__) or \
                 isinstance(other, self.__class__)) and \

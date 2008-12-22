@@ -151,6 +151,10 @@ class DRS(AbstractDrs, logic.Expression, RA.DRS):
         else:
             return self.refs
         
+    def visit(self, function, combinator):
+        """@see: Expression.visit()"""
+        return reduce(combinator, [function(e) for e in self.refs + self.conds])
+    
     def simplify(self):
         return DRS(self.refs, [cond.simplify() for cond in self.conds])
     
@@ -178,9 +182,8 @@ class DRS(AbstractDrs, logic.Expression, RA.DRS):
         if syntax == logic.Tokens.PROVER9:
             return self.toFol().str(syntax)
         else:
-            return '([' + ','.join([str(ref) for ref in self.refs]) + \
-                '],[' + ', '.join([cond.str(syntax) for cond in self.conds]) + \
-                '])'
+            return '([%s],[%s])' % (','.join([str(r) for r in self.refs]),
+                                    ', '.join([c.str(syntax) for c in self.conds]))
 
 def DrtVariableExpression(variable):
     """
