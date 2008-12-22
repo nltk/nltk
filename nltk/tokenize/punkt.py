@@ -190,9 +190,12 @@ numeric tokens are changed to ##number## and hence contain alpha.)"""
 ######################################################################
 
 class PunktWordTokenizer(TokenizerI):
-    # Retained for backward compatibility with documentation
-    def tokenize(self, text, lang_vars=PunktLanguageVars()):
-        return lang_vars.word_tokenize(text)
+    # Retained for backward compatibility
+    def __init__(self, lang_vars=PunktLanguageVars()):
+        self._lang_vars = lang_vars
+
+    def tokenize(self, text):
+        return self._lang_vars.word_tokenize(text)
 
 #}
 ######################################################################
