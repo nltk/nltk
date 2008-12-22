@@ -406,13 +406,11 @@ class _PunktBaseClass(object):
     Includes common components of PunktTrainer and PunktSentenceTokenizer.
     """
     
-    _Token = PunktToken
-    """The token definition that should be used by this class. This allows for
-    redefinition of some parameters of the token type."""
-
-    def __init__(self, lang_vars=PunktLanguageVars(), params=PunktParameters()):
+    def __init__(self, lang_vars=PunktLanguageVars(), token_cls=PunktToken,
+            params=PunktParameters()):
         self._params = params
         self._lang_vars = lang_vars
+        self._Token = token_cls
         """The collection of parameters that determines the behavior
         of the punkt tokenizer."""
 
@@ -498,9 +496,10 @@ class PunktTrainer(_PunktBaseClass):
     """Learns parameters used in Punkt sentence boundary detection."""
 
     def __init__(self, train_text=None, verbose=False,
-            lang_vars=PunktLanguageVars()):
+            lang_vars=PunktLanguageVars(), token_cls=PunktToken):
 
-        _PunktBaseClass.__init__(self, lang_vars=lang_vars)
+        _PunktBaseClass.__init__(self, lang_vars=lang_vars,
+                token_cls=token_cls)
 
         self._type_fdist = FreqDist()
         """A frequency distribution giving the frequency of each
@@ -1079,12 +1078,13 @@ class PunktSentenceTokenizer(_PunktBaseClass,TokenizerI):
     languages.
     """
     def __init__(self, train_text=None, verbose=False,
-            lang_vars=PunktLanguageVars()):
+            lang_vars=PunktLanguageVars(), token_cls=PunktToken):
         """
         train_text can either be the sole training text for this sentence
         boundary detector, or can be a PunktParameters object.
         """
-        _PunktBaseClass.__init__(self, lang_vars=lang_vars)
+        _PunktBaseClass.__init__(self, lang_vars=lang_vars,
+                token_cls=token_cls)
         
         if train_text:
             self._params = self.train(train_text, verbose)
