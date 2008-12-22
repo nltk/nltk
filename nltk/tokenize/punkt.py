@@ -96,6 +96,10 @@ class PunktLanguageVars(object):
 
     _re_sent_end_chars = '[.?!]'
 
+    internal_punctuation = ',:;' # might want to extend this..
+    """sentence internal punctuation, which indicates an abbreviation if
+    preceded by a period-final token."""
+
     re_boundary_realignment = re.compile(r'["\')\]}]+?(?: |(?=--)|$)',
             re.MULTILINE)
     """Used to realign punctuation that should be included in a sentence
@@ -269,7 +273,7 @@ class PunktToken(object):
 
     def __init__(self, tok, **params):
         self.tok = tok
-        self.type = self._get_type()
+        self.type = self._get_type(tok)
         self.period_final = tok.endswith('.')
 
         for p in self._properties:
@@ -290,9 +294,9 @@ class PunktToken(object):
     #{ Derived properties
     #////////////////////////////////////////////////////////////
 
-    def _get_type(self):
+    def _get_type(self, tok):
         """Returns a case-normalized representation of the token."""
-        return self._RE_NUMERIC.sub('##number##', self.tok.lower())
+        return self._RE_NUMERIC.sub('##number##', tok)
 
     @property
     def type_no_period(self):
@@ -564,10 +568,6 @@ class PunktTrainer(_PunktBaseClass):
     SENT_STARTER = 30
     """minimal log-likelihood value that a token requires to be considered
     as a frequent sentence starter"""
-
-    INTERNAL_PUNCTUATION = ',:;' # might want to extend this..
-    """sentence internal punctuation, which indicates an abbreviation if
-    preceded by a period-final token."""
 
     INCLUDE_ALL_COLLOCS = False
     """this includes as potential collocations all word pairs where the first
@@ -896,7 +896,7 @@ class PunktTrainer(_PunktBaseClass):
         # Record this token as an abbreviation if the next
         # token is a sentence-internal punctuation mark.
         # [XX] :1 or check the whole thing??
-        if next_tok.tok[:1] in self.INTERNAL_PUNCTUATION:
+        if next_tok.tok[:1] in self._lang_vars.internal_punctuation:
             return True
 
         # Record this type as an abbreviation if the next
