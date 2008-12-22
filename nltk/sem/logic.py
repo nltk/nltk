@@ -214,6 +214,13 @@ class TruthValueType(BasicType):
     def str(self):
         return 'BOOL'
     
+class EventType(BasicType):
+    def __str__(self):
+        return 'v'
+
+    def str(self):
+        return 'EVENT'
+    
 class AnyType(BasicType, ComplexType):
     def __init__(self):
         pass
@@ -239,6 +246,7 @@ class AnyType(BasicType, ComplexType):
 
 TRUTH_TYPE = TruthValueType()
 ENTITY_TYPE = EntityType()
+EVENT_TYPE = EventType()
 ANY_TYPE = AnyType()
 
 
@@ -736,7 +744,7 @@ class FunctionVariableExpression(AbstractVariableExpression):
 class EventVariableExpression(IndividualVariableExpression):
     """This class represents variables that take the form of a single lowercase
     'e' character followed by zero or more digits."""
-    type = ANY_TYPE
+    type = EVENT_TYPE
 
     def free(self, indvar_only=True):
         """@see: Expression.free()"""
@@ -1151,11 +1159,12 @@ class LogicParser(object):
                     c = data[len(token)]
                 else:
                     break
-            if token:
+            if StringTrie.LEAF in st: 
+                #token is a complete symbol
                 out += ' '+token+' '
                 data = data[len(token):]
             else:
-                out += c
+                out += data[0]
                 data = data[1:]
         return out
 
@@ -1419,7 +1428,8 @@ class StringTrie(defaultdict):
             self[string[0]].insert(string[1:])
         else:
             #mark the string is complete
-            self[StringTrie.LEAF] = None 
+            self[StringTrie.LEAF] = None
+            
 
 class ParseException(Exception):
     def __init__(self, message):
