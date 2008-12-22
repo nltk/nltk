@@ -1159,7 +1159,7 @@ class PunktSentenceTokenizer(_PunktBaseClass,TokenizerI):
                     yield s1
                 continue
 
-            m = _re_boundary_realignment.match(s2)
+            m = self._lang_vars.re_boundary_realignment.match(s2)
             if m:
                 yield s1 + m.group(0).strip()
                 realign = m.end()
