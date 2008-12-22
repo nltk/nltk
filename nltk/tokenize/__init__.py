@@ -22,8 +22,7 @@ __all__ = ['WhitespaceTokenizer', 'SpaceTokenizer', 'TabTokenizer',
            'WordPunctTokenizer', 'WordTokenizer', 'blankline_tokenize',
            'wordpunct_tokenize', 'regexp_tokenize', 'word_tokenize',
            'SExprTokenizer', 'sexpr_tokenize', 'line_tokenize',
-           'PunktWordTokenizer', 'punkt_word_tokenize',
-           'PunktSentenceTokenizer',
+           'PunktWordTokenizer', 'PunktSentenceTokenizer',
            ]
 
 ######################################################################
