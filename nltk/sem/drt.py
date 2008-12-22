@@ -152,7 +152,8 @@ class DRS(AbstractDrs, logic.Expression, RA.DRS):
         
     def visit(self, function, combinator, default):
         """@see: Expression.visit()"""
-        return reduce(combinator, [function(e) for e in self.refs + self.conds])
+        return reduce(combinator, 
+                      [function(e) for e in self.refs + self.conds], default)
     
     def simplify(self):
         return DRS(self.refs, [cond.simplify() for cond in self.conds])
@@ -160,7 +161,7 @@ class DRS(AbstractDrs, logic.Expression, RA.DRS):
     def toFol(self):
         if not self.conds:
             raise Exception("Cannot convert DRS with no conditions to FOL.")
-        accum = reduce(logic.AndExpression, [c.toFol() for c in self.conds])
+        accum = reduce(logic.AndExpression, [c.toFol() for c in self.conds], set())
         for ref in self.refs[::-1]:
             accum = logic.ExistsExpression(ref, accum)
         return accum
@@ -267,7 +268,7 @@ class DrtImpExpression(DrtBooleanExpression, logic.ImpExpression, RA.ImpExpressi
         accum = None
         if first_drs.conds:
             accum = reduce(logic.AndExpression, 
-                           [c.toFol() for c in first_drs.conds])
+                           [c.toFol() for c in first_drs.conds], set())
    
         if accum:
             accum = logic.ImpExpression(accum, second_drs.toFol())
