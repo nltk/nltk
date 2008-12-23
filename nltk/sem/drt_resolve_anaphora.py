@@ -10,7 +10,7 @@ This module performs the anaphora resolution functionality for DRT.py.  It may b
 modified or swapped out to test different resolution techniques.
 """
 
-from nltk.sem import logic
+import logic
 
 
 class AnaphoraResolutionException(Exception):
