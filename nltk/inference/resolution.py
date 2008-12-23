@@ -6,10 +6,10 @@
 # URL: <http://www.nltk.org>
 # For license information, see LICENSE.TXT
 
+from nltk import defaultdict
 from nltk.sem.logic import *
 from nltk.internals import Counter
-from nltk.inference.api import Prover, BaseProverCommand
-from nltk import defaultdict
+from api import Prover, BaseProverCommand
 
 """
 Module for a resolution-based First Order theorem prover.

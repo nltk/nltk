@@ -11,11 +11,8 @@ import tempfile
 import subprocess
 from string import join
 
-from nltk.sem import logic 
-from nltk.sem.logic import LogicParser
-
+from nltk.sem.logic import LogicParser, Tokens as LogicTokens
 from nltk.internals import deprecated, Deprecated, find_binary
-
 from api import BaseProverCommand, Prover
 
 """
@@ -280,13 +277,13 @@ def convert_to_prover9(input):
         result = []
         for s in input:
             try:
-                result.append(s.simplify().str(logic.Tokens.PROVER9))
+                result.append(s.simplify().str(LogicTokens.PROVER9))
             except AssertionError:
                 print 'input %s cannot be converted to Prover9 input syntax' % input
         return result    
     else:
         try:
-            return input.simplify().str(logic.Tokens.PROVER9)
+            return input.simplify().str(LogicTokens.PROVER9)
         except AssertionError:
             print 'input %s cannot be converted to Prover9 input syntax' % input
 

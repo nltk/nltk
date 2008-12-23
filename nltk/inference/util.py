@@ -7,7 +7,6 @@
 # For license information, see LICENSE.TXT
 
 from nltk.sem import logic 
-
 import api
 import tableau
 import prover9
@@ -57,6 +56,7 @@ def get_parallel_prover_builder(goal=None, assumptions=None,
     return api.ParallelProverBuilderCommand(prover.get_prover(), 
                                             model_builder.get_model_builder(),
                                             goal, assumptions)
+
 
 def demo():
     lp = logic.LogicParser()
