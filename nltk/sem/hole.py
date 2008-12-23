@@ -9,8 +9,8 @@
 
 from nltk.parse import load_earley
 from nltk.draw.tree import draw_trees
-from nltk.inference.resolution import skolemize
-from nltk.sem import logic
+from util import skolemize
+import logic
 
 """
 An implementation of the Hole Semantics model, following Blackburn and Bos,
@@ -360,11 +360,7 @@ def hole_readings(sentence, grammar_filename=None, verbose=False):
 
 
 if __name__ == '__main__':
-    for r in hole_readings('a dog barks'):
-        print r
-    
+    for r in hole_readings('a dog barks'): print r
     print
-    
-    for r in hole_readings('every girl chases a dog'):
-        print r
+    for r in hole_readings('every girl chases a dog'): print r
     
