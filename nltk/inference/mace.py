@@ -8,13 +8,11 @@
 
 import os
 import tempfile
-from string import join
+
 from nltk.sem.logic import *
 from nltk.sem import Valuation
 from api import ModelBuilder, BaseModelBuilderCommand
-import prover9
-from prover9 import Prover9Parent, Prover9CommandParent, \
-                    call_mace4, call_interpformat
+from prover9 import *
 
 """
 A model builder that makes use of the external 'Mace4' package.
@@ -160,9 +158,10 @@ class Mace(Prover9Parent, ModelBuilder):
         stdout, returncode = call_mace4(self.prover9_input(goal, assumptions))
         return (returncode == 0, stdout)
 
+
 def spacer(num=30):
     print '-' * num
-    
+
 def decode_result(found):
     """
     Decode the result of model_found() 

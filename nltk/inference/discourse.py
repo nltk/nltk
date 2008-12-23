@@ -9,11 +9,11 @@
 import os
 from operator import and_
 
-from nltk.sem import root_semrep, Expression
 from nltk import parse
 from nltk.data import show_cfg
-
-from nltk.inference import MaceCommand, spacer, get_prover
+from nltk.sem import root_semrep, Expression
+from util import get_prover
+from mace import MaceCommand
 
 """
 Module for incrementally developing simple discourses, and checking for semantic ambiguity, 
@@ -520,6 +520,8 @@ def discourse_demo(reading_command=None):
     dt.models()
     
     
+def spacer(num=30):
+    print '-' * num
 
 if __name__ == '__main__':
     discourse_demo()
