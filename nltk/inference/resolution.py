@@ -8,14 +8,12 @@
 
 from nltk import defaultdict
 from nltk.sem.logic import *
-from nltk.internals import Counter
+from nltk.sem.util import skolemize
 from api import Prover, BaseProverCommand
 
 """
 Module for a resolution-based First Order theorem prover.
 """
-
-_skolem_function_counter = Counter()
 
 class ProverParseError(Exception): pass
 
@@ -447,104 +445,6 @@ def _clausify(expression):
     raise ProverParseError()
     
     
-def skolemize(expression, univ_scope=None):
-    """
-    Skolemize the expression and convert to conjunctive normal form (CNF)
-    """
-    if univ_scope is None:
-        univ_scope = set()
-
-    if isinstance(expression, AllExpression):
-        term = skolemize(expression.term, univ_scope|set([expression.variable]))
-        return term.replace(expression.variable, VariableExpression(unique_variable()))
-    elif isinstance(expression, AndExpression):
-        return skolemize(expression.first, univ_scope) &\
-               skolemize(expression.second, univ_scope)
-    elif isinstance(expression, OrExpression):
-        return to_cnf(skolemize(expression.first, univ_scope), 
-                      skolemize(expression.second, univ_scope))
-    elif isinstance(expression, ImpExpression):
-        return to_cnf(skolemize(-expression.first, univ_scope), 
-                      skolemize(expression.second, univ_scope))
-    elif isinstance(expression, IffExpression):
-        return to_cnf(skolemize(-expression.first, univ_scope), 
-                      skolemize(expression.second, univ_scope)) &\
-               to_cnf(skolemize(expression.first, univ_scope), 
-                      skolemize(-expression.second, univ_scope))
-    elif isinstance(expression, EqualityExpression):
-        return expression
-    elif isinstance(expression, NegatedExpression):
-        negated = expression.term
-        if isinstance(negated, AllExpression):
-            term = skolemize(-negated.term, univ_scope)
-            if univ_scope:
-                return term.replace(negated.variable, _get_skolem_function(univ_scope))
-            else:
-                skolem_constant = VariableExpression(unique_variable())
-                return term.replace(negated.variable, skolem_constant)
-        elif isinstance(negated, AndExpression):
-            return to_cnf(skolemize(-negated.first, univ_scope), 
-                          skolemize(-negated.second, univ_scope))
-        elif isinstance(negated, OrExpression):
-            return skolemize(-negated.first, univ_scope) &\
-                   skolemize(-negated.second, univ_scope)
-        elif isinstance(negated, ImpExpression):
-            return skolemize(negated.first, univ_scope) &\
-                   skolemize(-negated.second, univ_scope)
-        elif isinstance(negated, IffExpression):
-            return to_cnf(skolemize(-negated.first, univ_scope), 
-                          skolemize(-negated.second, univ_scope)) &\
-                   to_cnf(skolemize(negated.first, univ_scope), 
-                          skolemize(negated.second, univ_scope))
-        elif isinstance(negated, EqualityExpression):
-            return expression
-        elif isinstance(negated, NegatedExpression):
-            return skolemize(negated.term, univ_scope)
-        elif isinstance(negated, ExistsExpression):
-            term = skolemize(-negated.term, univ_scope|set([negated.variable]))
-            return term.replace(negated.variable, VariableExpression(unique_variable()))
-        elif isinstance(negated, ApplicationExpression):
-            return expression
-        else:
-            raise ProverParseError()
-    elif isinstance(expression, ExistsExpression):
-        term = skolemize(expression.term, univ_scope)
-        if univ_scope:
-            return term.replace(expression.variable, _get_skolem_function(univ_scope))
-        else:
-            skolem_constant = VariableExpression(unique_variable())
-            return term.replace(expression.variable, skolem_constant)
-    elif isinstance(expression, ApplicationExpression):
-        return expression
-    else:
-        raise ProverParseError('\'%s\' cannot be skolemized' % expression)
-
-def to_cnf(first, second):
-    """
-    Convert this split disjunction to conjunctive normal form (CNF)
-    """
-    if isinstance(first, AndExpression):
-        r_first = to_cnf(first.first, second)
-        r_second = to_cnf(first.second, second)
-        return r_first & r_second
-    elif isinstance(second, AndExpression):
-        r_first = to_cnf(first, second.first)
-        r_second = to_cnf(first, second.second)
-        return r_first & r_second
-    else:
-        return first | second
-
-def _get_skolem_function(univ_scope):
-    """
-    Return a skolem function over the variables in univ_scope
-    """
-    skolem_function = VariableExpression(
-                            Variable('F%s' % _skolem_function_counter.get()))
-    for v in list(univ_scope):
-        skolem_function = skolem_function(VariableExpression(v))
-    return skolem_function
-
-
 class BindingDict(object):
     def __init__(self, binding_list=None):
         """
