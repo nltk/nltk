@@ -10,7 +10,7 @@ import os
 
 from nltk.tag import RegexpTagger
 from nltk.parse.malt import MaltParser
-from nltk.sem import drt
+import drt
 import linearlogic
 import glue
 

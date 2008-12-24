@@ -13,7 +13,7 @@ from nltk.parse import *
 from nltk.parse.malt import MaltParser
 from nltk.corpus import brown
 from nltk.tag import *
-from nltk.sem import logic
+import logic
 import linearlogic
 
 SPEC_SEMTYPES = {'a'       : 'ex_quant',

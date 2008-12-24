@@ -67,7 +67,6 @@ setup(
                 'nltk_contrib.dependency',
                 'nltk_contrib.fst',
                 'nltk_contrib.fuf',
-                'nltk_contrib.gluesemantics',
                 'nltk_contrib.hadoop',
                 'nltk_contrib.hadoop.hadooplib',
                 'nltk_contrib.lambek',

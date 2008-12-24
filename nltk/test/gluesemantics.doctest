@@ -9,9 +9,9 @@
 Linear logic 
 ======================
 
-    >>> from nltk_contrib.gluesemantics.linearlogic import *
-    >>> from nltk_contrib.gluesemantics.glue import *
-    >>> from nltk_contrib.gluesemantics.drt_glue import *
+    >>> from nltk.sem.linearlogic import *
+    >>> from nltk.sem.glue import *
+    >>> from nltk.sem.drt_glue import *
     
     >>> llp = LinearLogicParser()
     
@@ -351,7 +351,7 @@ Dependency Graph to Glue Formulas
 -----------------------------------
 Dependency Graph to LFG f-structure
 -----------------------------------
-    >>> from nltk_contrib.gluesemantics.lfg import FStructure
+    >>> from nltk.sem.lfg import FStructure
     >>> fstruct = FStructure.read_depgraph(depgraph)
     >>> print fstruct
     f:[pred 'sees'
@@ -405,8 +405,7 @@ Checking for equality of two DRSs is very useful when generating readings of a s
 For example, the ``drt_glue`` module generates two readings for the sentence 
 *John sees Mary*:
 
-    >>> from nltk.sem import logic
-    >>> from nltk_contrib.gluesemantics.drt_glue import DrtGlue
+    >>> from nltk.sem.drt_glue import DrtGlue
     >>> readings = drtglue.parse_to_meaning('John sees Mary')
     >>> for drs in readings: 
     ...     print drs.simplify().normalize()

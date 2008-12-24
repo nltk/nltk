@@ -12,7 +12,7 @@ from nltk import data
 from nltk.tag import RegexpTagger
 from nltk.parse.malt import MaltParser
 from nltk.inference.discourse import DiscourseTester, ReadingCommand
-from nltk.sem.drt_resolve_anaphora import AnaphoraResolutionException
+from drt_resolve_anaphora import AnaphoraResolutionException
 from drt_glue import DrtGlue
 
 

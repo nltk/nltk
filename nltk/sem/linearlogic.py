@@ -5,9 +5,8 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
-from nltk.sem import logic
-from nltk.sem.logic import UnexpectedTokenException
 from nltk.internals import Counter
+from logic import LogicParser
 
 _counter = Counter()
 
@@ -349,7 +348,7 @@ class Tokens:
     PUNCT = [OPEN, CLOSE]
     TOKENS = PUNCT + [IMP] 
 
-class LinearLogicParser(logic.LogicParser):
+class LinearLogicParser(LogicParser):
     """A linear logic expression parser."""
     
     def get_all_symbols(self):

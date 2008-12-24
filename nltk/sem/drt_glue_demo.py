@@ -11,8 +11,8 @@ from tkFont import Font
 from nltk.draw import *
 from nltk.tag import RegexpTagger
 from nltk.parse.malt import MaltParser
-from nltk.sem.logic import Variable
-from nltk.sem.drt import DrsDrawer, DrtVariableExpression
+from logic import Variable
+from drt import DrsDrawer, DrtVariableExpression
 from drt_glue import DrtGlue
 
 class DrtGlueDemo(object):

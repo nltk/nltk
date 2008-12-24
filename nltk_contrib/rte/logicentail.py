@@ -11,8 +11,8 @@ from nltk import evaluate
 from nltk import wordnet
 from nltk.stem.wordnet import WordnetStemmer
 from nltk.tokenize import word_tokenize
-from nltk.sem import logic
-from nltk_contrib.gluesemantics.drt_glue import DrtGlue
+from nltk.sem.logic import LogicParser 
+from nltk.sem.drt_glue import DrtGlue
 from nltk import inference
 import bow
 
@@ -185,7 +185,7 @@ class RTEInferenceTagger(object):
         nym_text = nym_text.replace('.', '')
 
         exp_text = 'all x.(%s(x) %s %s(x))' % (word_text, operator, nym_text)
-        return (logic.LogicParser().parse(exp_text), dist)
+        return (LogicParser().parse(exp_text), dist)
 
     def _create_axiom_reverse(self, word_text, word_synset, nym_text, pos, operator):
         nym_text = nym_text.split('(')[0];
@@ -197,7 +197,7 @@ class RTEInferenceTagger(object):
         nym_text = nym_text.replace('.', '')
 
         exp_text = 'all x.(%s(x) %s %s(x))' % (nym_text, operator, word_text)
-        return (logic.LogicParser().parse(exp_text), dist)
+        return (LogicParser().parse(exp_text), dist)
 
     def _create_axiom_synset_sisters(self, text1, word1_synset, text2, word2_synset, pos):
         """
@@ -213,7 +213,7 @@ class RTEInferenceTagger(object):
         text2 = text2.replace('.', '')
 
         exp_text = 'all x.(%s(x) -> (not %s(x)))' % (text1, text2)
-        return (logic.LogicParser().parse(exp_text), dist)
+        return (LogicParser().parse(exp_text), dist)
     
     def _stem(self, word):
         stem = self.stemmer.stem(word)
@@ -231,8 +231,8 @@ def demo_inference_tagger(verbose=False):
     hyp = 'John watch an auto'
     print 'Hyp:  ', hyp
 
-#    text_ex = logic.LogicParser().parse('exists e x y.(david(x) & own(e)  & subj(e,x) & obj(e,y) & car(y))')
-#    hyp_ex  = logic.LogicParser().parse('exists e x y.(david(x) & have(e) & subj(e,x) & obj(e,y) & auto(y))')
+#    text_ex = LogicParser().parse('exists e x y.(david(x) & own(e)  & subj(e,x) & obj(e,y) & car(y))')
+#    hyp_ex  = LogicParser().parse('exists e x y.(david(x) & have(e) & subj(e,x) & obj(e,y) & auto(y))')
 
     glueclass = DrtGlue(verbose=verbose)
     text_drs_list = glueclass.parse_to_meaning(text)
@@ -310,8 +310,8 @@ def demo_inference_tagger(verbose=False):
         print 'Inconsistency -> Entailment unknown\n'
     
 def test_check_consistency():
-    a = logic.LogicParser().parse('man(j)')
-    b = logic.LogicParser().parse('-man(j)')
+    a = LogicParser().parse('man(j)')
+    b = LogicParser().parse('-man(j)')
     print '%s, %s: %s' % (a, b, RTEInferenceTagger().check_consistency([a,b], True))
     print '%s, %s: %s' % (a, a, RTEInferenceTagger().check_consistency([a,a], True))
 
