@@ -11,7 +11,6 @@ Linear logic
 
     >>> from nltk.sem.linearlogic import *
     >>> from nltk.sem.glue import *
-    >>> from nltk.sem.drt_glue import *
     
     >>> llp = LinearLogicParser()
     
@@ -402,10 +401,10 @@ With inference
 --------------
 
 Checking for equality of two DRSs is very useful when generating readings of a sentence.
-For example, the ``drt_glue`` module generates two readings for the sentence 
+For example, the ``glue`` module generates two readings for the sentence 
 *John sees Mary*:
 
-    >>> from nltk.sem.drt_glue import DrtGlue
+    >>> from nltk.sem.glue import DrtGlue
     >>> readings = drtglue.parse_to_meaning('John sees Mary')
     >>> for drs in readings: 
     ...     print drs.simplify().normalize()

@@ -150,8 +150,7 @@ Done
     
 
 Discourse in DRT
-    >>> #from nltk.inference.discourse import DrtGlueReadingCommand as RC
-    >>> from nltk.sem.glue_discourse import DrtGlueReadingCommand as RC
+    >>> from nltk.inference.discourse import DrtGlueReadingCommand as RC
     >>> dt = DT(['Every dog chases a boy', 'He runs'], RC())
     >>> dt.readings()
     <BLANKLINE>

@@ -7,13 +7,17 @@
 # $Id$
 
 import os
-from operator import and_
+from operator import and_, add
 
 from nltk import parse
 from nltk.data import show_cfg
 from nltk.sem import root_semrep, Expression
 from util import get_prover
 from mace import MaceCommand
+from nltk.tag import RegexpTagger
+from nltk.parse.malt import MaltParser
+from nltk.sem.drt_resolve_anaphora import AnaphoraResolutionException
+from nltk.sem.glue import DrtGlue
 
 """
 Module for incrementally developing simple discourses, and checking for semantic ambiguity, 
@@ -82,6 +86,7 @@ class ReadingCommand(object):
         """
         raise NotImplementedError()
     
+
 class CfgReadingCommand(ReadingCommand):
     def __init__(self, gramfile=None):
         """
@@ -103,6 +108,37 @@ class CfgReadingCommand(ReadingCommand):
     def combine_readings(self, readings):
         """@see: ReadingCommand.combine_readings()"""
         return reduce(and_, readings)
+
+
+class DrtGlueReadingCommand(ReadingCommand):
+    def __init__(self, semtype_file=None, remove_duplicates=False, 
+                 depparser=None):
+        """
+        @param semtype_file: name of file where grammar can be loaded
+        @param remove_duplicates: should duplicates be removed?
+        @param depparser: the dependency parser
+        """
+        if semtype_file is None:
+            semtype_file = 'drt_glue.semtype'
+        self._glue = DrtGlue(semtype_file=semtype_file, 
+                             remove_duplicates=remove_duplicates, 
+                             depparser=depparser)
+    
+    def parse_to_readings(self, sentence):
+        """@see: ReadingCommand.parse_to_readings()"""
+        return self._glue.parse_to_meaning(sentence)
+
+    def process_thread(self, sentence_readings):
+        """@see: ReadingCommand.process_thread()"""
+        try:
+            return [self.combine_readings(sentence_readings)]
+        except AnaphoraResolutionException:
+            return []
+
+    def combine_readings(self, readings):
+        """@see: ReadingCommand.combine_readings()"""
+        thread_reading = reduce(add, readings)
+        return thread_reading.simplify().resolve_anaphora()
 
 
 class DiscourseTester(object):
@@ -520,8 +556,36 @@ def discourse_demo(reading_command=None):
     dt.models()
     
     
+def drt_discourse_demo(reading_command=None):
+    """
+    Illustrate the various methods of C{DiscourseTester}
+    """
+    dt = DiscourseTester(['every dog chases a boy', 'he runs'], 
+                         reading_command)
+    dt.models()
+    print
+    dt.sentences()
+    print 
+    dt.readings()
+    print
+    dt.readings(show_thread_readings=True)
+    print
+    dt.readings(filter=True, show_thread_readings=True)
+
+
 def spacer(num=30):
     print '-' * num
 
 if __name__ == '__main__':
     discourse_demo()
+
+    tagger = RegexpTagger(
+        [('^(chases|runs)$', 'VB'),
+         ('^(a)$', 'ex_quant'),
+         ('^(every)$', 'univ_quant'),
+         ('^(dog|boy)$', 'NN'),
+         ('^(he)$', 'PRP')
+    ])
+    depparser = MaltParser(tagger=tagger)
+    drt_discourse_demo(DrtGlueReadingCommand(remove_duplicates=False, 
+                                             depparser=depparser))
