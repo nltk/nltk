@@ -6,12 +6,13 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
+import os
+
+from nltk.tag import RegexpTagger
+from nltk.parse.malt import MaltParser
 from nltk.sem import drt
 import linearlogic
 import glue
-from nltk import data
-from nltk.internals import Counter
-from nltk_contrib.dependency import malt
 
 class DrtGlueFormula(glue.GlueFormula):
     def __init__(self, meaning, glue, indices=None):
@@ -45,14 +46,11 @@ class DrtGlueDict(glue.GlueDict):
         return DrtGlueFormula
 
 class DrtGlue(glue.Glue):
-    def __init__(self, verbose=False, semtype_file=None, remove_duplicates=False):
-        self.verbose = verbose
-        self.remove_duplicates = remove_duplicates
-        
-        if semtype_file:
-            self.semtype_file = semtype_file
-        else:
-            self.semtype_file = 'drt_glue.semtype'
+    def __init__(self, semtype_file=None, remove_duplicates=False, 
+                 depparser=None, verbose=False):
+        if not semtype_file:
+            semtype_file = 'drt_glue.semtype'
+        glue.Glue.__init__(self, semtype_file, remove_duplicates, depparser, verbose)
 
     def get_glue_dict(self):
         return DrtGlueDict(self.semtype_file)
@@ -80,14 +78,25 @@ def examples():
                 'a dog walks and he leaves']
 
 def demo(show_example=-1, remove_duplicates=False):
-    malt.train('glue', 'glue_train.conll')
+    tagger = RegexpTagger(
+        [('^(David|Mary|John)$', 'NNP'),
+         ('^(sees|eats|chases|believes|gives|sleeps|chases|persuades|tries|seems|leaves)$', 'VB'),
+         ('^(go|order|vanish|find|approach)$', 'VB'),
+         ('^(a)$', 'ex_quant'),
+         ('^(every)$', 'univ_quant'),
+         ('^(sandwich|man|dog|pizza|unicorn|cat|senator)$', 'NN'),
+         ('^(big|gray|former)$', 'JJ'),
+         ('^(him|himself)$', 'PRP')
+    ])
+
+    depparser = MaltParser(tagger=tagger)
+    glueclass = DrtGlue(depparser=depparser, verbose=False, remove_duplicates=remove_duplicates)
     
     example_num = 0
     hit = False
     for sentence in examples():
         if example_num==show_example or show_example==-1:
             print '[[[Example %s]]]  %s' % (example_num, sentence)
-            glueclass = DrtGlue(verbose=False, remove_duplicates=remove_duplicates)
             readings = glueclass.parse_to_meaning(sentence)
             for reading in readings:
                 print reading.simplify().resolve_anaphora()

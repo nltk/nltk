@@ -6,12 +6,15 @@
 # For license information, see LICENSE.TXT
 
 import os
-from nltk.sem import logic
-import linearlogic
-from nltk.parse import *
+
 from nltk import data
 from nltk.internals import Counter
-from nltk_contrib.dependency import malt
+from nltk.parse import *
+from nltk.parse.malt import MaltParser
+from nltk.corpus import brown
+from nltk.tag import *
+from nltk.sem import logic
+import linearlogic
 
 SPEC_SEMTYPES = {'a'       : 'ex_quant',
                  'an'      : 'ex_quant',
@@ -113,7 +116,7 @@ class GlueDict(dict):
             self.clear()
 
         try:
-            f = open(data.find(os.path.join('grammars/sample_grammars', self.filename)))
+            f = open(data.find(os.path.join('grammars', 'sample_grammars', self.filename)))
         except LookupError:
             f = open(self.filename)
         lines = f.readlines()
@@ -217,8 +220,7 @@ class GlueDict(dict):
             root = depgraph.nodelist[top['deps'][0]]
             return self.to_glueformula_list(depgraph, root, Counter(), verbose)
         
-        glueformulas = []
-        glueformulas.extend(self.lookup(node, depgraph, counter))
+        glueformulas = self.lookup(node, depgraph, counter)
         for dep_idx in node['deps']:
             dep = depgraph.nodelist[dep_idx]
             glueformulas.extend(self.to_glueformula_list(depgraph, dep, counter, verbose))
@@ -395,14 +397,22 @@ class GlueDict(dict):
         return GlueFormula
 
 class Glue(object):
-    def __init__(self, verbose=False, semtype_file=None, remove_duplicates=False):
+    def __init__(self, semtype_file=None, remove_duplicates=False, 
+                 depparser=None, verbose=False):
         self.verbose = verbose
         self.remove_duplicates = remove_duplicates
+        self.depparser = depparser
         
         if semtype_file:
             self.semtype_file = semtype_file
         else:
             self.semtype_file = 'glue.semtype'
+        
+    def train_depparser(self, depgraphs=None):
+        if depgraphs:
+            self.depparser.train(depgraphs)
+        else:
+            self.depparser.train_from_file(data.find(os.path.join('grammars', 'sample_grammars', 'glue_train.conll')))
     
     def parse_to_meaning(self, sentence):
         readings = []
@@ -491,7 +501,13 @@ class Glue(object):
         return [self.gfl_to_compiled(gfl) for gfl in gfls]
     
     def dep_parse(self, sentence='every cat leaves'):
-        return [malt.parse(sentence, 'glue', 'tnt', verbose=self.verbose)]
+        #Lazy-initialize the depparser
+        if self.depparser is None:
+            self.depparser = MaltParser(tagger=self.get_pos_tagger())
+        if not self.depparser._trained:
+            self.train_depparser()
+
+        return [self.depparser.parse(sentence, verbose=self.verbose)]
     
     def depgraph_to_glue(self, depgraph):
         return self.get_glue_dict().to_glueformula_list(depgraph)
@@ -511,6 +527,31 @@ class Glue(object):
                 print cgf    
         
         return return_list
+    
+    def get_pos_tagger(self):
+        regexp_tagger = RegexpTagger(
+            [(r'^-?[0-9]+(.[0-9]+)?$', 'CD'),   # cardinal numbers
+             (r'(The|the|A|a|An|an)$', 'AT'),   # articles
+             (r'.*able$', 'JJ'),                # adjectives
+             (r'.*ness$', 'NN'),                # nouns formed from adjectives
+             (r'.*ly$', 'RB'),                  # adverbs
+             (r'.*s$', 'NNS'),                  # plural nouns
+             (r'.*ing$', 'VBG'),                # gerunds
+             (r'.*ed$', 'VBD'),                 # past tense verbs
+             (r'.*', 'NN')                      # nouns (default)
+        ])
+        brown_train = brown.tagged_sents(categories='news')
+        unigram_tagger = UnigramTagger(brown_train, backoff=regexp_tagger)
+        bigram_tagger = BigramTagger(brown_train, backoff=unigram_tagger)
+        trigram_tagger = TrigramTagger(brown_train, backoff=bigram_tagger)
+        
+        #Override particular words
+        main_tagger = RegexpTagger(
+            [(r'(A|a|An|an)$', 'ex_quant'),
+             (r'(Every|every|All|all)$', 'univ_quant')
+        ], backoff=trigram_tagger)
+        
+        return main_tagger
         
 
 def demo(show_example=-1):
@@ -520,24 +561,39 @@ def demo(show_example=-1):
                 'every man believes a dog sleeps',
                 'John gives David a sandwich',
                 'John chases himself',
-                'John persuades David to order a pizza',
-                'John tries to go',
-                'John tries to find a unicorn',
-                'John seems to vanish',
-                'a unicorn seems to approach',
+#                'John persuades David to order a pizza',
+#                'John tries to go',
+#                'John tries to find a unicorn',
+#                'John seems to vanish',
+#                'a unicorn seems to approach',
                 'every big cat leaves',
                 'every gray cat leaves',
                 'every big gray cat leaves',
                 'a former senator leaves']
 
     print '============== DEMO =============='
-    for (i, sentence) in zip(range(len(examples)), examples):
+    
+    tagger = RegexpTagger(
+        [('^(David|Mary|John)$', 'NNP'),
+         ('^(sees|eats|chases|believes|gives|sleeps|chases|persuades|tries|seems|leaves)$', 'VB'),
+         ('^(go|order|vanish|find|approach)$', 'VB'),
+         ('^(a)$', 'ex_quant'),
+         ('^(every)$', 'univ_quant'),
+         ('^(sandwich|man|dog|pizza|unicorn|cat|senator)$', 'NN'),
+         ('^(big|gray|former)$', 'JJ'),
+         ('^(him|himself)$', 'PRP')
+    ])
+
+    depparser = MaltParser(tagger=tagger)
+    glue = Glue(depparser=depparser, verbose=False)
+    
+    for (i, sentence) in enumerate(examples):
         if i==show_example or show_example==-1:
             print '[[[Example %s]]]  %s' % (i, sentence)
-            for reading in Glue(verbose=False).parse_to_meaning(sentence):
+            for reading in glue.parse_to_meaning(sentence):
                 print reading.simplify()
             print ''
     
 
 if __name__ == '__main__':
-    demo(1)
+    demo()

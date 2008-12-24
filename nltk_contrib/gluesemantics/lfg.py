@@ -7,7 +7,7 @@
 
 from nltk.internals import Counter
 from nltk import defaultdict
-from nltk_contrib.dependency.deptree import DepGraph
+from nltk.parse.dependencygraph import DependencyGraph
 
 
 class FStructure(dict):
@@ -34,7 +34,7 @@ class FStructure(dict):
         return glue_dict.to_glueformula_list(depgraph)
 
     def to_depgraph(self, rel=None):
-        depgraph = DepGraph()
+        depgraph = DependencyGraph()
         nodelist = depgraph.nodelist
         
         self._to_depgraph(nodelist, 0, 'ROOT')
@@ -76,6 +76,57 @@ class FStructure(dict):
                 else: # ERROR
                     raise Exception, 'feature %s is not an FStruct, a list, or a tuple' % feature
 
+    @staticmethod
+    def read_depgraph(depgraph):
+        return FStructure._read_depgraph(depgraph.root, depgraph)
+    
+    @staticmethod
+    def _read_depgraph(node, depgraph, label_counter=None, parent=None):
+        if not label_counter:
+            label_counter = Counter()
+        
+        if node['rel'].lower() in ['spec', 'punct']:
+            # the value of a 'spec' entry is a word, not an FStructure
+            return (node['word'], node['tag'])
+            
+        else:
+            fstruct = FStructure()
+            fstruct.pred = None
+            fstruct.label = FStructure._make_label(label_counter.get())
+    
+            fstruct.parent = parent
+            
+            word, tag = node['word'], node['tag']
+            if tag[:2] == 'VB':
+                if tag[2:3] == 'D':
+                    fstruct.safeappend('tense', ('PAST', 'tense'))
+                fstruct.pred = (word, tag[:2])
+    
+            if not fstruct.pred:
+                fstruct.pred = (word, tag)
+    
+            children = [depgraph.nodelist[idx] for idx in node['deps']]
+            for child in children:
+                fstruct.safeappend(child['rel'], FStructure._read_depgraph(child, depgraph, label_counter, fstruct))
+    
+            return fstruct
+
+    @staticmethod
+    def _make_label(value):
+        """
+        Pick an alphabetic character as identifier for an entity in the model.
+        
+        @parameter value: where to index into the list of characters
+        @type value: C{int}
+        """
+        letter = ['f','g','h','i','j','k','l','m','n','o','p','q','r','s',
+                  't','u','v','w','x','y','z','a','b','c','d','e'][value-1]
+        num = int(value) / 26
+        if num > 0:
+            return letter + str(num)
+        else:
+            return letter
+
     def __repr__(self):
         return str(self).replace('\n', '')
 
@@ -103,59 +154,9 @@ class FStructure(dict):
         return accum+']'
 
 
-def read_depgraph(depgraph):
-    return _read_depgraph(depgraph.root, depgraph)
-
-def _read_depgraph(node, depgraph, label_counter=None, parent=None):
-    if not label_counter:
-        label_counter = Counter()
-    
-    if node['rel'].lower() in ['spec', 'punct']:
-        # the value of a 'spec' entry is a word, not an FStructure
-        return (node['word'], node['tag'])
-        
-    else:
-        self = FStructure()
-        self.pred = None
-        self.label = _make_label(label_counter.get())
-
-        self.parent = parent
-        
-        word, tag = node['word'], node['tag']
-        if tag[:2] == 'VB':
-            if tag[2:3] == 'D':
-                self.safeappend('tense', ('PAST', 'tense'))
-            self.pred = (word, tag[:2])
-
-        if not self.pred:
-            self.pred = (word, tag)
-
-        children = [depgraph.nodelist[idx] for idx in node['deps']]
-        for child in children:
-            self.safeappend(child['rel'], _read_depgraph(child, depgraph, label_counter, self))
-
-        return self
-
-
-def _make_label(value):
-    """
-    Pick an alphabetic character as identifier for an entity in the model.
-    
-    @parameter value: where to index into the list of characters
-    @type value: C{int}
-    """
-    letter = ['f','g','h','i','j','k','l','m','n','o','p','q','r','s',
-              't','u','v','w','x','y','z','a','b','c','d','e'][value-1]
-    num = int(value) / 26
-    if num > 0:
-        return letter + str(num)
-    else:
-        return letter
-
         
 def demo_read_depgraph():
-    from nltk_contrib.dependency import DepGraph
-    dg1 = DepGraph().read("""\
+    dg1 = DependencyGraph("""\
 Esso       NNP     2       SUB
 said       VBD     0       ROOT
 the        DT      5       NMOD
@@ -165,17 +166,17 @@ started    VBD     2       VMOD
 production NN      6       OBJ
 Tuesday    NNP     6       VMOD
 """)
-    dg2 = DepGraph().read("""\
+    dg2 = DependencyGraph("""\
 John    NNP     2       SUB
 sees    VBP     0       ROOT
 Mary    NNP     2       OBJ
 """)
-    dg3 = DepGraph().read("""\
+    dg3 = DependencyGraph("""\
 a       DT      2       SPEC
 man     NN      3       SUBJ
 walks   VB      0       ROOT
 """)
-    dg4 = DepGraph().read("""\
+    dg4 = DependencyGraph("""\
 every   DT      2       SPEC
 girl    NN      3       SUBJ
 chases  VB      0       ROOT
@@ -185,35 +186,8 @@ dog     NN      3       OBJ
 
     depgraphs = [dg1,dg2,dg3,dg4]
     for dg in depgraphs:
-        print read_depgraph(dg)
-        
-def demo_depparse():
-    from nltk_contrib.dependency import malt
-    dg = malt.parse('John sees Mary', True)
-    print read_depgraph(dg)
-
-def test_fstruct_to_glue():
-    from nltk_contrib.dependency import DepGraph
-    from nltk_contrib.gluesemantics.glue import GlueDict
-    
-    dg = DepGraph().read("""\
-every   DT    2   SPEC
-girl    NN    3   SUBJ
-chases  VB    0   ROOT
-a       DT    5   SPEC
-dog     NN    3   OBJ
-""")
-    fstruct = read_depgraph(dg)
-    print fstruct
-    print fstruct.to_depgraph()
-    for gf in fstruct.to_glueformula_list(GlueDict('glue.semtype')):
-        print gf
-    
+        print FStructure.read_depgraph(dg)
         
 if __name__ == '__main__':
     demo_read_depgraph()
-    print
-    demo_depparse()
-    print
-    test_fstruct_to_glue()
     

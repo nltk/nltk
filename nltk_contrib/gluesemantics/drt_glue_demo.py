@@ -6,11 +6,14 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
-from nltk.draw import *
 from tkFont import Font
-from nltk.sem import logic
+
+from nltk.draw import *
+from nltk.tag import RegexpTagger
+from nltk.parse.malt import MaltParser
+from nltk.sem.logic import Variable
 from nltk.sem.drt import DrsDrawer, DrtVariableExpression
-from nltk_contrib.gluesemantics.drt_glue import DrtGlue
+from drt_glue import DrtGlue
 
 class DrtGlueDemo(object):
     def __init__(self, examples):
@@ -36,8 +39,9 @@ class DrtGlueDemo(object):
         self._readings = []
         self._drs = None
         self._drsWidget = None
-        self._remove_duplicates = False
         self._error = None
+
+        self._init_glue()
 
         # Create the basic frames.
         self._init_menubar(self._top)
@@ -52,6 +56,21 @@ class DrtGlueDemo(object):
     #########################################
     ##  Initialization Helpers
     #########################################
+    
+    def _init_glue(self):
+        tagger = RegexpTagger(
+            [('^(David|Mary|John)$', 'NNP'),
+             ('^(sees|eats|chases|believes|gives|sleeps|chases|persuades|tries|seems|leaves)$', 'VB'),
+             ('^(go|order|vanish|find|approach)$', 'VB'),
+             ('^(a)$', 'ex_quant'),
+             ('^(every)$', 'univ_quant'),
+             ('^(sandwich|man|dog|pizza|unicorn|cat|senator)$', 'NN'),
+             ('^(big|gray|former)$', 'JJ'),
+             ('^(him|himself)$', 'PRP')
+        ])
+    
+        depparser = MaltParser(tagger=tagger)
+        self._glue = DrtGlue(depparser=depparser, remove_duplicates=False)
         
     def _init_fonts(self, root):
         # See: <http://www.astro.washington.edu/owen/ROTKFolklore.html>
@@ -191,7 +210,7 @@ class DrtGlueDemo(object):
 
         optionmenu = Menu(menubar, tearoff=0)
         optionmenu.add_checkbutton(label='Remove Duplicates', underline=0,
-                                   variable=self._remove_duplicates, 
+                                   variable=self._glue.remove_duplicates, 
                                    command=self._toggle_remove_duplicates,
                                    accelerator='r')
         menubar.add_cascade(label='Options', underline=0, menu=optionmenu)
@@ -343,7 +362,7 @@ class DrtGlueDemo(object):
         self._redraw()
         
     def _toggle_remove_duplicates(self):
-        self._remove_duplicates = not self._remove_duplicates
+        self._glue.remove_duplicates = not self._glue.remove_duplicates
 
         self._exampleList.selection_clear(0, 'end')
         self._readings = []
@@ -377,12 +396,12 @@ class DrtGlueDemo(object):
                     self._error = cache
             else:
                 try:
-                    self._readings = DrtGlue(remove_duplicates=self._remove_duplicates).parse_to_meaning(example)
+                    self._readings = self._glue.parse_to_meaning(example)
                     self._error = None
                     self._readingCache[index] = self._readings
                 except Exception, e:
                     self._readings = []
-                    self._error = DrtVariableExpression(logic.Variable('Error: ' + str(e)))
+                    self._error = DrtVariableExpression(Variable('Error: ' + str(e)))
                     self._readingCache[index] = self._error
     
                     #add a star to the end of the example
@@ -410,8 +429,7 @@ class DrtGlueDemo(object):
         if reading:
             self._readingList.selection_set(index)
 
-            logic._counter._value = 0
-            self._drs = reading.simplify().resolve_anaphora()
+            self._drs = reading.simplify().normalize().resolve_anaphora()
             
             self._redraw()
 

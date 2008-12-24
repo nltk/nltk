@@ -5,21 +5,30 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
-from nltk.inference.discourse import DiscourseTester, ReadingCommand
-from nltk.sem.drt_resolve_anaphora import AnaphoraResolutionException
-from nltk_contrib.gluesemantics.drt_glue import DrtGlue
-
+import os
 from operator import add
 
+from nltk import data
+from nltk.tag import RegexpTagger
+from nltk.parse.malt import MaltParser
+from nltk.inference.discourse import DiscourseTester, ReadingCommand
+from nltk.sem.drt_resolve_anaphora import AnaphoraResolutionException
+from drt_glue import DrtGlue
+
+
 class DrtGlueReadingCommand(ReadingCommand):
-    def __init__(self, semtype_file=None):
+    def __init__(self, semtype_file=None, remove_duplicates=False, 
+                 depparser=None):
         """
-        @parameter gramfile: name of file where grammar can be loaded
-        @type gramfile: C{str}
+        @param semtype_file: name of file where grammar can be loaded
+        @param remove_duplicates: should duplicates be removed?
+        @param depparser: the dependency parser
         """
         if semtype_file is None:
             semtype_file = 'drt_glue.semtype'
-        self._glue = DrtGlue(semtype_file=semtype_file)
+        self._glue = DrtGlue(semtype_file=semtype_file, 
+                             remove_duplicates=remove_duplicates, 
+                             depparser=depparser)
     
     def parse_to_readings(self, sentence):
         """@see: ReadingCommand.parse_to_readings()"""
@@ -56,4 +65,13 @@ def discourse_demo(reading_command=None):
 
 
 if __name__ == '__main__':
-    discourse_demo(DrtGlueReadingCommand())
+    tagger = RegexpTagger(
+        [('^(chases|runs)$', 'VB'),
+         ('^(a)$', 'ex_quant'),
+         ('^(every)$', 'univ_quant'),
+         ('^(dog|boy)$', 'NN'),
+         ('^(he)$', 'PRP')
+    ])
+    depparser = MaltParser(tagger=tagger)
+
+    discourse_demo(DrtGlueReadingCommand(remove_duplicates=False, depparser=depparser))
