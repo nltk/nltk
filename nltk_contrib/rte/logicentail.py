@@ -9,12 +9,11 @@
 from nltk.corpus import rte
 from nltk import evaluate
 from nltk import wordnet
-from nltk.stem.wordnet import WordnetStemmer
+from nltk.stem.wordnet import WordNetLemmatizer
 from nltk.tokenize import word_tokenize
 from nltk.sem.logic import LogicParser 
-from nltk.sem.drt_glue import DrtGlue
+from nltk.sem.glue import DrtGlue
 from nltk import inference
-import bow
 
 class RTEInferenceTagger(object):
     """
@@ -25,7 +24,7 @@ class RTEInferenceTagger(object):
         self.threshold = threshold
         self.stop = stop
         self.stopwords = set(['a', 'the', 'it', 'they', 'of', 'in', 'is', 'are', 'were', 'and'])
-        self.stemmer = WordnetStemmer()
+        self.stemmer = WordNetLemmatizer()
     
     def tag(self, rtepair, verbose=False):
         """

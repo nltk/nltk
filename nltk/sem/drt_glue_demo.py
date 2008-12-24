@@ -13,7 +13,7 @@ from nltk.tag import RegexpTagger
 from nltk.parse.malt import MaltParser
 from logic import Variable
 from drt import DrsDrawer, DrtVariableExpression
-from drt_glue import DrtGlue
+from glue import DrtGlue
 
 class DrtGlueDemo(object):
     def __init__(self, examples):

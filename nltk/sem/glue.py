@@ -14,6 +14,7 @@ from nltk.parse.malt import MaltParser
 from nltk.corpus import brown
 from nltk.tag import *
 import logic
+import drt
 import linearlogic
 
 SPEC_SEMTYPES = {'a'       : 'ex_quant',
@@ -552,7 +553,49 @@ class Glue(object):
         ], backoff=trigram_tagger)
         
         return main_tagger
+
         
+class DrtGlueFormula(GlueFormula):
+    def __init__(self, meaning, glue, indices=None):
+        if not indices:
+            indices = set()
+
+        if isinstance(meaning, str):
+            self.meaning = drt.DrtParser().parse(meaning)
+        elif isinstance(meaning, drt.AbstractDrs):
+            self.meaning = meaning
+        else:
+            raise RuntimeError, 'Meaning term neither string or expression: %s, %s' % (meaning, meaning.__class__)
+            
+        if isinstance(glue, str):
+            self.glue = linearlogic.LinearLogicParser().parse(glue)
+        elif isinstance(glue, linearlogic.Expression):
+            self.glue = glue
+        else:
+            raise RuntimeError, 'Glue term neither string or expression: %s, %s' % (glue, glue.__class__)
+
+        self.indices = indices
+
+    def make_VariableExpression(self, name):
+        return drt.DrtVariableExpression(name)
+        
+    def make_LambdaExpression(self, variable, term):
+        return drt.DrtLambdaExpression(variable, term)
+        
+class DrtGlueDict(GlueDict):
+    def get_GlueFormula_factory(self):
+        return DrtGlueFormula
+
+class DrtGlue(Glue):
+    def __init__(self, semtype_file=None, remove_duplicates=False, 
+                 depparser=None, verbose=False):
+        if not semtype_file:
+            semtype_file = 'drt_glue.semtype'
+        Glue.__init__(self, semtype_file, remove_duplicates, depparser, verbose)
+
+    def get_glue_dict(self):
+        return DrtGlueDict(self.semtype_file)
+
 
 def demo(show_example=-1):
     examples = ['David sees Mary',

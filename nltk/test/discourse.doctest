@@ -505,8 +505,7 @@ Regression Testing from book
 
     >>> logic._counter._value = 0
 
-    >>> from nltk.sem.glue_discourse import DrtGlueReadingCommand
-    >>> from nltk.inference.discourse import DiscourseTester
+    >>> from nltk.inference.discourse import DiscourseTester, DrtGlueReadingCommand
     >>> from nltk.tag import RegexpTagger
     >>> from nltk.parse.malt import MaltParser
     >>> tagger = RegexpTagger(
