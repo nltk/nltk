@@ -84,7 +84,7 @@ Done
     all z8.(girl(z8) -> exists z3.(dog(z3) & chase(z3,z8)))
 
 Done
-    >>> from nltk_contrib.gluesemantics.glue import GlueFormula
+    >>> from nltk.sem.glue import GlueFormula
     >>> john = GlueFormula(r'john', 'g')
     >>> walks = GlueFormula(r'\x.walk(x)', '(g -o f)')
     >>> john_walks = walks.applyto(john)
@@ -92,7 +92,7 @@ Done
     walk(john)
 
 Done
-    >>> from nltk_contrib.gluesemantics.glue import GlueFormula, Glue
+    >>> from nltk.sem.glue import GlueFormula, Glue
     >>> a = GlueFormula(r'\Q.all x.(girl(x) -> Q(x))', '((g -o G) -o G)')
     >>> b = GlueFormula(r'\x y.chase(x,y)', '(g -o (h -o f))')
     >>> c = GlueFormula(r'\Q.exists x.(dog(x)&Q(x))', '((h -o H) -o H)')
@@ -151,7 +151,7 @@ Done
 
 Discourse in DRT
     >>> #from nltk.inference.discourse import DrtGlueReadingCommand as RC
-    >>> from nltk_contrib.gluesemantics.glue_discourse import DrtGlueReadingCommand as RC
+    >>> from nltk.sem.glue_discourse import DrtGlueReadingCommand as RC
     >>> dt = DT(['Every dog chases a boy', 'He runs'], RC())
     >>> dt.readings()
     <BLANKLINE>
