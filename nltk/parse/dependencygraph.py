@@ -156,14 +156,15 @@ class DependencyGraph(object):
         for index, line in enumerate(lines):
 #           print line
             try:
-                nrCells = len(line.split('\t'))
+                cells = line.split('\t')
+                nrCells = len(cells)
                 if nrCells == 3:
-                    word, tag, head = line.split('\t')
+                    word, tag, head = cells
                     rel = ''
-                if nrCells == 4:
-                    word, tag, head, rel = line.split('\t')
+                elif nrCells == 4:
+                    word, tag, head, rel = cells
                 elif nrCells == 10:
-                    _, word, _, _, tag, _, head, rel, _, _ = line.split('\t')
+                    _, word, _, _, tag, _, head, rel, _, _ = cells
                 else:
                     raise ValueError('Number of tab-delimited fields (%d) not supported by CoNLL(10) or Malt-Tab(4) format' % (nrCells))
 
@@ -266,6 +267,20 @@ class DependencyGraph(object):
                 return path
         return [] 
                 
+    def to_conll(self, style):
+        lines = []
+        for i, node in enumerate(self.nodelist[1:]):
+            word, tag, head, rel = node['word'], node['tag'], node['head'], node['rel']
+            if style == 3:
+                lines.append('%s\t%s\t%s\n' % (word, tag, head))
+            elif style == 4:
+                lines.append('%s\t%s\t%s\t%s\n' % (word, tag, head, rel))
+            elif style == 10:
+                lines.append('%s\t%s\t_\t%s\t%s\t_\t%s\t%s\t_\t_\n' % (i+1, word, tag, tag, head, rel))
+            else:
+                raise ValueError('Number of tab-delimited fields (%d) not supported by CoNLL(10) or Malt-Tab(4) format' % (style))
+        return ''.join(lines)
+
 
 def nx_graph(self):
     """
@@ -346,6 +361,7 @@ def conll_demo():
     tree = dg.deptree()
     print tree.pprint()
     print dg
+    print dg.to_conll(4)
 
 def conll_file_demo():
     print 'Mass conll_read demo...'

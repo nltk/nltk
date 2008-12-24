@@ -4,6 +4,8 @@
 
 .. include:: ../../doc/definitions.rst
 
+    >>> from nltk.sem import logic
+
 Overview
 ========
 
@@ -215,6 +217,15 @@ Parser
     Variable 'x' does not resolve to anything.
     >>> print dp.parse('([z6,z7,e1],[boy(z6), PRO(z7), run(e1), subj(e1,z7)])').resolve_anaphora()
     ([z6,z7,e1],[boy(z6), (z7 = z6), run(e1), subj(e1,z7)])
+
+``tp_equals()``:
+----------------
+
+    >>> a = dp.parse(r'([x],[man(x), walks(x)])')
+    >>> b = dp.parse(r'([x],[walks(x), man(x)])')
+    >>> print a.tp_equals(b)
+    True
+
 
 ``replace()``:
 --------------

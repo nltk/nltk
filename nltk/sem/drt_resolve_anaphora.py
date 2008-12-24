@@ -43,7 +43,7 @@ class NegatedExpression:
 
 class LambdaExpression:
     def resolve_anaphora(self, trail=[]):
-        return self.__class__(self.variables, self.term.resolve_anaphora(trail + [self]))
+        return self.__class__(self.variable, self.term.resolve_anaphora(trail + [self]))
 
 class BinaryExpression:
     def resolve_anaphora(self, trail=[]):

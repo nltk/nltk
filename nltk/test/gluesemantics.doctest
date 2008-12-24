@@ -330,13 +330,11 @@ Derivation:
 ---------------------------------
 Dependency Graph to Glue Formulas
 ---------------------------------
-    >>> from nltk_contrib.dependency import util
-    >>> logic._counter._value = 0
-    >>> glue = Glue()
-    >>> import nltk.data
-    >>> path = nltk.data.find('/grammars/sample_grammars/dep_test2.dep')
-    >>> f = open(path)
-    >>> depgraph = util.conll_to_depgraph(f.read())
+    >>> depgraph = DependencyGraph("""1	John	_	NNP	NNP	_	2	SUBJ	_	_
+    ... 2	sees	_	VB	VB	_	0	ROOT	_	_
+    ... 3	a	_	ex_quant	ex_quant	_	4	SPEC	_	_
+    ... 4	dog	_	NN	NN	_	2	OBJ	_	_
+    ... """)
     >>> gfl = GlueDict('glue.semtype').to_glueformula_list(depgraph)
     >>> for gf in gfl: print gf
     \x y.sees(x,y) : (f -o (i -o g))
@@ -344,15 +342,17 @@ Dependency Graph to Glue Formulas
     \x.John(x) : (fv -o fr)
     \x.dog(x) : (iv -o ir)
     \P Q.exists x.(P(x) & Q(x)) : ((iv -o ir) -o ((i -o I5) -o I5))
-    >>> for r in glue.get_readings(glue.gfl_to_compiled(gfl)): print r.simplify()
+    >>> glue = Glue()
+    >>> for r in glue.get_readings(glue.gfl_to_compiled(gfl)): 
+    ...     print r.simplify().normalize()
     exists x.(dog(x) & exists z1.(John(z1) & sees(z1,x)))
-    exists x.(John(x) & exists z2.(dog(z2) & sees(x,z2)))
+    exists x.(John(x) & exists z1.(dog(z1) & sees(x,z1)))
 
 -----------------------------------
 Dependency Graph to LFG f-structure
 -----------------------------------
-    >>> from nltk_contrib.gluesemantics import lfg
-    >>> fstruct = lfg.read_depgraph(depgraph)
+    >>> from nltk_contrib.gluesemantics.lfg import FStructure
+    >>> fstruct = FStructure.read_depgraph(depgraph)
     >>> print fstruct
     f:[pred 'sees'
        obj h:[pred 'dog'
@@ -370,21 +370,32 @@ LFG f-structure to Glue
     \P Q.exists x.(P(x) & Q(x)) : ((iv -o ir) -o ((i -o I4) -o I4))
     \x.John(x) : (iv -o ir)
     
+--------------------------------
+Initialize the Dependency Parser
+--------------------------------
+    >>> tagger = RegexpTagger(
+    ...     [('^(John|Mary)$', 'NNP'),
+    ...      ('^(sees|chases)$', 'VB'),
+    ...      ('^(a)$', 'ex_quant'),
+    ...      ('^(every)$', 'univ_quant'),
+    ...      ('^(girl|dog)$', 'NN')
+    ... ])
+    >>> depparser = MaltParser(tagger=tagger)
+
 --------------------
 Automated Derivation
 --------------------
-    >>> logic._counter._value = 0
-    >>> glue = Glue(verbose=False)
-    >>> for reading in glue.parse_to_meaning('every girl chases a dog'): print reading.simplify()
-    all x.(girl(x) -> exists z1.(dog(z1) & chase(x,z1)))
-    exists x.(dog(x) & all z2.(girl(z2) -> chase(z2,x)))
+    >>> glue = Glue(depparser=depparser)
+    >>> for reading in glue.parse_to_meaning('every girl chases a dog'): 
+    ...     print reading.simplify().normalize()
+    all x.(girl(x) -> exists z1.(dog(z1) & chases(x,z1)))
+    exists x.(dog(x) & all z1.(girl(z1) -> chases(z1,x)))
 
-    >>> logic._counter._value = 0
-    >>> glue = DrtGlue(verbose=False)
-    >>> for reading in glue.parse_to_meaning('every girl chases a dog'): print reading.simplify()
-    ([],[(([x],[girl(x)]) -> ([z1],[dog(z1), chase(x,z1)]))])
-    ([z2],[dog(z2), (([x],[girl(x)]) -> ([],[chase(x,z2)]))])
-
+    >>> drtglue = DrtGlue(depparser=depparser)
+    >>> for reading in drtglue.parse_to_meaning('every girl chases a dog'): 
+    ...     print reading.simplify().normalize()
+    ([],[(([x],[girl(x)]) -> ([z1],[dog(z1), chases(x,z1)]))])
+    ([z1],[dog(z1), (([x],[girl(x)]) -> ([],[chases(x,z1)]))])
 
 --------------
 With inference
@@ -395,15 +406,12 @@ For example, the ``drt_glue`` module generates two readings for the sentence
 *John sees Mary*:
 
     >>> from nltk.sem import logic
-    >>> from nltk.internals import Counter
-    >>> logic._counter = Counter()
     >>> from nltk_contrib.gluesemantics.drt_glue import DrtGlue
-    >>> readings = DrtGlue().parse_to_meaning('John sees Mary')
-    >>> 
-    >>> for drs in readings: print drs.simplify()
-    ...
-    ([x,z1],[John(x), Mary(z1), see(x,z1)])
-    ([x,z2],[Mary(x), John(z2), see(z2,x)])
+    >>> readings = drtglue.parse_to_meaning('John sees Mary')
+    >>> for drs in readings: 
+    ...     print drs.simplify().normalize()
+    ([x,z1],[John(x), Mary(z1), sees(x,z1)])
+    ([x,z1],[Mary(x), John(z1), sees(z1,x)])
 
 However, it is easy to tell that these two readings are logically the
 same, and therefore one of them is superfluous.  We can use the theorem prover

@@ -505,24 +505,34 @@ Regression Testing from book
 
     >>> logic._counter._value = 0
 
-    >>> from nltk_contrib.gluesemantics.glue_discourse import DrtGlueReadingCommand as RC
-    >>> from nltk.inference.discourse import DiscourseTester as DT
-    >>> dt = DT(['Every dog chases a boy', 'He runs'], RC())
+    >>> from nltk_contrib.gluesemantics.glue_discourse import DrtGlueReadingCommand
+    >>> from nltk.inference.discourse import DiscourseTester
+    >>> from nltk.tag import RegexpTagger
+    >>> from nltk.parse.malt import MaltParser
+    >>> tagger = RegexpTagger(
+    ...     [('^(chases|runs)$', 'VB'),
+    ...      ('^(a)$', 'ex_quant'),
+    ...      ('^(every)$', 'univ_quant'),
+    ...      ('^(dog|boy)$', 'NN'),
+    ...      ('^(He)$', 'PRP')
+    ... ])
+    >>> rc = DrtGlueReadingCommand(depparser=MaltParser(tagger=tagger))
+    >>> dt = DiscourseTester(['Every dog chases a boy', 'He runs'], rc)
     >>> dt.readings()
     <BLANKLINE>
     s0 readings:
     ------------------------------
-    s0-r0: ([],[(([x],[dog(x)]) -> ([z1],[boy(z1), chase(x,z1)]))])
-    s0-r1: ([z2],[boy(z2), (([x],[dog(x)]) -> ([],[chase(x,z2)]))])
+    s0-r0: ([],[(([x],[dog(x)]) -> ([z1],[boy(z1), chases(x,z1)]))])
+    s0-r1: ([z2],[boy(z2), (([x],[dog(x)]) -> ([],[chases(x,z2)]))])
     <BLANKLINE>
     s1 readings:
     ------------------------------
-    s1-r0: ([x],[PRO(x), run(x)])
+    s1-r0: ([x],[PRO(x), runs(x)])
     >>> dt.readings(show_thread_readings=True)
     d0: ['s0-r0', 's1-r0'] : INVALID: AnaphoraResolutionException
-    d1: ['s0-r1', 's1-r0'] : ([z6,z10],[boy(z6), (([x],[dog(x)]) -> ([],[chase(x,z6)])), (z10 = z6), run(z10)])
+    d1: ['s0-r1', 's1-r0'] : ([z6,z10],[boy(z6), (([x],[dog(x)]) -> ([],[chases(x,z6)])), (z10 = z6), runs(z10)])
     >>> dt.readings(filter=True, show_thread_readings=True)
-    d1: ['s0-r1', 's1-r0'] : ([z12,z15],[boy(z12), (([x],[dog(x)]) -> ([],[chase(x,z12)])), (z15 = z12), run(z15)])
+    d1: ['s0-r1', 's1-r0'] : ([z12,z15],[boy(z12), (([x],[dog(x)]) -> ([],[chases(x,z12)])), (z15 = z12), runs(z15)])
 
     >>> from nltk.parse import load_earley
     >>> from nltk.sem.drt import DrtParser
