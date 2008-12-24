@@ -14,11 +14,11 @@ from operator import add
 from nltk import data
 from nltk import tokenize
 from nltk import tag
+from api import ParserI
 from dependencygraph import DependencyGraph
 from nltk.internals import find_binary
 
-
-class MaltParser(object):
+class MaltParser(ParserI):
 
     def __init__(self, tagger=None):
         self.config_malt()
@@ -70,7 +70,6 @@ class MaltParser(object):
             searchpath=malt_path, env_vars=['MALTPARSERHOME'],
             url='http://w3.msi.vxu.se/~jha/maltparser/index.html',
             verbose=verbose)
-        self._malt_path = self._malt_bin.rsplit(os.sep,1)[0]
       
     def parse(self, sentence, verbose=False):
         """
@@ -104,9 +103,7 @@ class MaltParser(object):
             cmd = ['java', '-jar %s' % self._malt_bin, '-w %s' % tempfile.gettempdir(), 
                    '-c %s' % self.mco, '-i %s' % input_file, '-o %s' % output_file, '-m parse']
 
-            if not verbose: 
-                cmd.append(' > %s' % (os.path.join(tempfile.gettempdir(), 'malt_parse.out')))
-            os.system(' '.join(cmd))
+            self._execute(cmd, 'parse', verbose)
             
             return DependencyGraph.load(output_file)
         finally:
@@ -146,11 +143,15 @@ class MaltParser(object):
 #                             stdin=subprocess.PIPE)
 #        (stdout, stderr) = p.communicate()
                 
-        if not verbose: 
-            cmd.append(' > %s' % (os.path.join(tempfile.gettempdir(), 'malt_train.out')))
-        malt_exit = os.system(' '.join(cmd))
+        self._execute(cmd, 'train', verbose)
         
         self._trained = True
+        
+    def _execute(self, cmd, type, verbose=False):
+        if not verbose: 
+            temp_dir = os.path.join(tempfile.gettempdir(), '')
+            cmd.append(' > %smalt_%s.out 2> %smalt_%s.err' % ((temp_dir, type)*2))
+        malt_exit = os.system(' '.join(cmd))
 
 
 def demo():

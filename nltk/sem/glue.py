@@ -118,8 +118,11 @@ class GlueDict(dict):
 
         try:
             f = open(data.find(os.path.join('grammars', 'sample_grammars', self.filename)))
-        except LookupError:
-            f = open(self.filename)
+        except LookupError, e:
+            try:
+                f = open(self.filename)
+            except LookupError:
+                raise e
         lines = f.readlines()
         f.close()
 
