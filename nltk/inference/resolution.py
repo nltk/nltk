@@ -83,7 +83,7 @@ class Resolution(Prover):
         return (False, clauses)
         
 class ResolutionCommand(BaseProverCommand):
-    def __init__(self, goal=None, assumptions=None):
+    def __init__(self, goal=None, assumptions=None, prover=None):
         """
         @param goal: Input expression to prove
         @type goal: L{logic.Expression}
@@ -91,7 +91,12 @@ class ResolutionCommand(BaseProverCommand):
             the proof.
         @type assumptions: C{list} of L{logic.Expression}
         """
-        BaseProverCommand.__init__(self, Resolution(), goal, assumptions)
+        if prover is not None:
+            assert isinstance(prover, Resolution)
+        else:
+            prover = Resolution()
+
+        BaseProverCommand.__init__(self, prover, goal, assumptions)
         self._clauses = None
     
     def prove(self, verbose=False):
@@ -614,21 +619,21 @@ def testResolution():
     p1 = LogicParser().parse(r'all x.(man(x) -> mortal(x))')
     p2 = LogicParser().parse(r'man(Socrates)')
     c = LogicParser().parse(r'mortal(Socrates)')
-    print '%s, %s |- %s: %s' % (p1, p2, c, BaseProverCommand(Resolution(), c, [p1,p2]).prove())
+    print '%s, %s |- %s: %s' % (p1, p2, c, Resolution().prove(c, [p1,p2])[0])
     
     p1 = LogicParser().parse(r'all x.(man(x) -> walks(x))')
     p2 = LogicParser().parse(r'man(John)')
     c = LogicParser().parse(r'some y.walks(y)')
-    print '%s, %s |- %s: %s' % (p1, p2, c, BaseProverCommand(Resolution(), c, [p1,p2]).prove())
+    print '%s, %s |- %s: %s' % (p1, p2, c, Resolution().prove(c, [p1,p2])[0])
     
     p = LogicParser().parse(r'some e1.some e2.(believe(e1,john,e2) & walk(e2,mary))')
     c = LogicParser().parse(r'some e0.walk(e0,mary)')
-    print '%s |- %s: %s' % (p, c, BaseProverCommand(Resolution(), c, [p]).prove())
+    print '%s |- %s: %s' % (p, c, Resolution().prove(c, [p])[0])
     
 def resolution_test(e):
     f = LogicParser().parse(e)
-    t = BaseProverCommand(Resolution(), f)
-    print '|- %s: %s' % (f, t.prove())
+    t = Resolution().prove(f)
+    print '|- %s: %s' % (f, t[0])
 
 def test_clausify():
     lp = LogicParser()

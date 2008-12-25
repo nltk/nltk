@@ -36,20 +36,11 @@ class AbstractDrs(object):
     This is the base abstract abstract DRT Expression from which every DRT 
     Expression extends.
     """
-    def __call__(self, other, *additional):
-        accum = self.applyto(other)
-        for a in additional:
-            accum = accum(a)
-        return accum
-    
     def applyto(self, other):
         return DrtApplicationExpression(self, other)
     
     def __neg__(self):
         return DrtNegatedExpression(self)
-    
-    def negate(self):
-        return -self
     
     def __and__(self, other):
         raise NotImplementedError()
@@ -74,6 +65,11 @@ class AbstractDrs(object):
         f1 = self.simplify().toFol();
         f2 = other.simplify().toFol();
         return f1.tp_equals(f2, prover_name)
+    
+    def _get_type(self):
+        raise AttributeError("'%s' object has no attribute 'type'" % 
+                             self.__class__.__name__)
+    type = property(_get_type)
 
     def __add__(self, other):
         return ConcatenationDRS(self, other)
@@ -403,9 +399,9 @@ class DrtApplicationExpression(AbstractDrs, ApplicationExpression,
             return []
 
 class DrsDrawer:
-    BUFFER = 3
-    TOPSPACE = 10
-    OUTERSPACE = 6
+    BUFFER = 3     #Space between elements
+    TOPSPACE = 10  #Space above whole DRS
+    OUTERSPACE = 6 #Space to the left, right, and bottom of the whle DRS
     
     def __init__(self, drs, size_canvas=True, canvas=None):
         """

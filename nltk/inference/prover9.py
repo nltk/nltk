@@ -12,7 +12,7 @@ import subprocess
 from string import join
 
 from nltk.sem.logic import LogicParser, Tokens as LogicTokens
-from nltk.internals import deprecated, Deprecated, find_binary
+from nltk import internals
 from api import BaseProverCommand, Prover
 
 """
@@ -33,154 +33,8 @@ p9_return_codes = {
     7: "(ACTION)",      # A Prover9 action terminated the search.
     101: "(SIGSEGV)",   # Prover9 crashed, most probably due to a bug.   
  }
+
  
-######################################################################
-#{ Configuration
-######################################################################
-
-_prover9_bin = None
-_prooftrans_bin = None
-_mace4_bin = None
-_interpformat_bin = None
-def config_prover9(bin=None):
-    """
-    Configure NLTK's interface to the C{prover9} package.  This
-    searches for a directory containing the executables for
-    C{prover9}, C{mace4}, C{prooftrans}, and C{interpformat}.
-    
-    @param bin: The full path to the C{prover9} binary.  If not
-        specified, then nltk will search the system for a C{prover9}
-        binary; and if one is not found, it will raise a
-        C{LookupError} exception.
-    @type bin: C{string}
-    """
-    # Find the prover9 binary.
-    prover9_bin = find_binary('prover9', bin,
-        searchpath=prover9_path, env_vars=['PROVER9HOME'],
-        url='http://www.cs.unm.edu/~mccune/prover9/',
-        verbose=False)
-
-    # Make sure that mace4 and prooftrans are available, too.
-    basedir = os.path.split(prover9_bin)[0]
-    mace4_bin = os.path.join(basedir, 'mace4')
-    prooftrans_bin = os.path.join(basedir, 'prooftrans')
-    interpformat_bin = os.path.join(basedir, 'interpformat')
-    if not os.path.isfile(mace4_bin):
-        raise ValueError('prover9 was found, but mace4 was not -- '
-                         'incomplete prover9 installation?')
-    if not os.path.isfile(prooftrans_bin):
-        raise ValueError('prover9 was found, but prooftrans was not -- '
-                         'incomplete prover9 installation?')
-    if not os.path.isfile(interpformat_bin):
-        raise ValueError('prover9 was found, but interpformat was not -- '
-                         'incomplete prover9 installation?')
-
-    # Save the locations of all three binaries.
-    global _prover9_bin, _prooftrans_bin, _mace4_bin, _interpformat_bin
-    _prover9_bin = prover9_bin
-    _mace4_bin = mace4_bin
-    _prooftrans_bin = prooftrans_bin
-    _interpformat_bin = interpformat_bin
-
-#: A list of directories that should be searched for the prover9
-#: executables.  This list is used by L{config_prover9} when searching
-#: for the prover9 executables.
-prover9_path = ['/usr/local/bin/prover9',
-                '/usr/local/bin/prover9/bin',
-                '/usr/local/bin',
-                '/usr/bin',
-                '/usr/local/prover9',
-                '/usr/local/share/prover9']
-
-######################################################################
-#{ Interface to Binaries
-######################################################################
-
-def call_prover9(input_str, args=[]):
-    """
-    Call the C{prover9} binary with the given input.
-
-    @param input_str: A string whose contents are used as stdin.
-    @param args: A list of command-line arguments.
-    @return: A tuple (stdout, returncode)
-    @see: L{config_prover9}
-    """
-    if _prover9_bin is None:
-        config_prover9()
-        
-    # Call prover9 via a subprocess
-    cmd = [_prover9_bin] + args
-    p = subprocess.Popen(cmd, stdout=subprocess.PIPE,
-                         stderr=subprocess.STDOUT,
-                         stdin=subprocess.PIPE)
-    (stdout, stderr) = p.communicate(input_str)
-    return (stdout, p.returncode)
-
-def call_prooftrans(input_str, args=[]):
-    """
-    Call the C{prooftrans} binary with the given input.
-
-    @param input_str: A string whose contents are used as stdin.
-    @param args: A list of command-line arguments.
-    @return: A tuple (stdout, returncode)
-    @see: L{config_prover9}
-    """
-    if _prooftrans_bin is None:
-        config_prover9()
-        
-    # Call prooftrans via a subprocess
-    cmd = [_prooftrans_bin] + args
-    p = subprocess.Popen(cmd, stdout=subprocess.PIPE,
-                         stderr=subprocess.STDOUT,
-                         stdin=subprocess.PIPE)
-    (stdout, stderr) = p.communicate(input_str)
-    return (stdout, p.returncode)
-
-def call_mace4(input_str, args=[]):
-    """
-    Call the C{mace4} binary with the given input.
-
-    @param input_str: A string whose contents are used as stdin.
-    @param args: A list of command-line arguments.
-    @return: A tuple (stdout, returncode)
-    @see: L{config_prover9}
-    """
-    if _mace4_bin is None:
-        config_prover9()
-        
-    # Call mace4 via a subprocess
-    cmd = [_mace4_bin] + args
-    p = subprocess.Popen(cmd, 
-                         stdout=subprocess.PIPE,
-                         stderr=subprocess.STDOUT,
-                         stdin=subprocess.PIPE)
-    (stdout, stderr) = p.communicate(input_str)
-    return (stdout, p.returncode)
-
-def call_interpformat(input_str, args=[]):
-    """
-    Call the C{interpformat} binary with the given input.
-
-    @param input_str: A string whose contents are used as stdin.
-    @param args: A list of command-line arguments.
-    @return: A tuple (stdout, returncode)
-    @see: L{config_prover9}
-    """
-    if _interpformat_bin is None:
-        config_prover9()
-        
-    # Call interpformat via a subprocess
-    cmd = [_interpformat_bin] + args
-    p = subprocess.Popen(cmd, stdout=subprocess.PIPE,
-                         stderr=subprocess.STDOUT,
-                         stdin=subprocess.PIPE)
-    (stdout, stderr) = p.communicate(input_str)
-    return (stdout, p.returncode)
-
-######################################################################
-#{ Base Class
-######################################################################
-    
 class Prover9CommandParent(object):
     """
     A common base class used by both L{Prover9Command} and L{MaceCommand
@@ -208,7 +62,7 @@ class Prover9Command(Prover9CommandParent, BaseProverCommand):
     the a print_assumptions() method that is used to print the list
     of assumptions in multiple formats.
     """
-    def __init__(self, goal=None, assumptions=None, timeout=60):
+    def __init__(self, goal=None, assumptions=None, timeout=60, prover=None):
         """
         @param goal: Input expression to prove
         @type goal: L{logic.Expression}
@@ -218,18 +72,25 @@ class Prover9Command(Prover9CommandParent, BaseProverCommand):
         @param timeout: number of seconds before timeout; set to 0 for
             no timeout.
         @type timeout: C{int}
+        @param prover: a prover.  If not set, one will be created.
+        @type prover: C{Prover9}
         """
         if not assumptions:
             assumptions = []
-            
-        BaseProverCommand.__init__(self, Prover9(timeout), goal, assumptions)
+        
+        if prover is not None:
+            assert isinstance(prover, Prover9)
+        else:
+            prover = Prover9(timeout)
+         
+        BaseProverCommand.__init__(self, prover, goal, assumptions)
         
     def decorate_proof(self, proof_string, simplify=True):
         """
         @see BaseProverCommand.decorate_proof()
         """
         if simplify:
-            return call_prooftrans(proof_string, ['striplabels'])[0].rstrip()
+            return self._prover._call_prooftrans(proof_string, ['striplabels'])[0].rstrip()
         else:
             return proof_string.rstrip()
 
@@ -269,6 +130,48 @@ class Prover9Parent(object):
 
         return s
     
+    def _find_binary(self, name, verbose=False):
+        #: A list of directories that should be searched for the prover9
+        #: executables.  This list is used by L{config_prover9} when searching
+        #: for the prover9 executables.
+        prover9_path = ['/usr/local/bin/prover9',
+                        '/usr/local/bin/prover9/bin',
+                        '/usr/local/bin',
+                        '/usr/bin',
+                        '/usr/local/prover9',
+                        '/usr/local/share/prover9']
+    
+        return internals.find_binary(name, 
+            searchpath=prover9_path, env_vars=['PROVER9HOME'],
+            url='http://www.cs.unm.edu/~mccune/prover9/',
+            binary_names=[name, name + '.exe'],
+            verbose=verbose)
+    
+    def _call(self, input_str, binary, args=[], verbose=False):
+        """
+        Call the binary with the given input.
+    
+        @param input_str: A string whose contents are used as stdin.
+        @param binary: The location of the binary to call
+        @param args: A list of command-line arguments.
+        @return: A tuple (stdout, returncode)
+        @see: L{config_prover9}
+        """
+        # Call prover9 via a subprocess
+        cmd = [binary] + args
+        p = subprocess.Popen(cmd, stdout=subprocess.PIPE,
+                             stderr=subprocess.STDOUT,
+                             stdin=subprocess.PIPE)
+        (stdout, stderr) = p.communicate(input_str)
+        
+        if verbose:
+            print 'Return code:', p.returncode
+            if stdout: print 'stdout:', stdout
+            if stderr: print 'stderr:', stderr
+            
+        return (stdout, p.returncode)
+    
+
 def convert_to_prover9(input):
     """
     Convert C{logic.Expression}s to Prover9 format.
@@ -280,7 +183,7 @@ def convert_to_prover9(input):
                 result.append(s.simplify().str(LogicTokens.PROVER9))
             except AssertionError:
                 print 'input %s cannot be converted to Prover9 input syntax' % input
-        return result    
+        return result
     else:
         try:
             return input.simplify().str(LogicTokens.PROVER9)
@@ -288,12 +191,11 @@ def convert_to_prover9(input):
             print 'input %s cannot be converted to Prover9 input syntax' % input
 
 
-######################################################################
-#{ Prover9
-######################################################################
-
 class Prover9(Prover9Parent, Prover):
-    def prove(self, goal=None, assumptions=None, debug=False):
+    _prover9_bin = None
+    _prooftrans_bin = None
+    
+    def prove(self, goal=None, assumptions=None, verbose=False):
         """
         Use Prover9 to prove a theorem.
         @return: A pair whose first element is a boolean indicating if the 
@@ -303,8 +205,8 @@ class Prover9(Prover9Parent, Prover):
         if not assumptions:
             assumptions = []
             
-        stdout, returncode = call_prover9(self.prover9_input(goal, 
-                                                             assumptions))
+        stdout, returncode = self._call_prover9(self.prover9_input(goal, assumptions),
+                                                verbose=verbose)
         return (returncode == 0, stdout)
     
     def prover9_input(self, goal, assumptions):
@@ -314,7 +216,34 @@ class Prover9(Prover9Parent, Prover):
         s = 'clear(auto_denials).\n' #only one proof required
         return s + Prover9Parent.prover9_input(self, goal, assumptions)
         
+    def _call_prover9(self, input_str, args=[], verbose=False):
+        """
+        Call the C{prover9} binary with the given input.
+    
+        @param input_str: A string whose contents are used as stdin.
+        @param args: A list of command-line arguments.
+        @return: A tuple (stdout, returncode)
+        @see: L{config_prover9}
+        """
+        if self._prover9_bin is None:
+            self._prover9_bin = self._find_binary('prover9', verbose)
+        
+        return self._call(input_str, self._prover9_bin, args, verbose)
+    
+    def _call_prooftrans(self, input_str, args=[], verbose=False):
+        """
+        Call the C{prooftrans} binary with the given input.
+    
+        @param input_str: A string whose contents are used as stdin.
+        @param args: A list of command-line arguments.
+        @return: A tuple (stdout, returncode)
+        @see: L{config_prover9}
+        """
+        if self._prooftrans_bin is None:
+            self._prooftrans_bin = self._find_binary('prooftrans', verbose)
 
+        return self._call(input_str, self._prooftrans_bin, args, verbose)
+    
     
 ######################################################################
 #{ Tests and Demos
