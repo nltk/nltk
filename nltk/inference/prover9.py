@@ -96,6 +96,8 @@ class Prover9Command(Prover9CommandParent, BaseProverCommand):
 
 
 class Prover9Parent(object):
+    _binary_location = None
+    
     """
     A common class extended by both L{Prover9} and L{Mace <mace.Mace>}.  
     It contains the functionality required to convert NLTK-style 
@@ -106,6 +108,21 @@ class Prover9Parent(object):
         """The timeout value for prover9.  If a proof can not be found
            in this amount of time, then prover9 will return false.
            (Use 0 for no timeout.)"""
+           
+    def config_prover9(self, binary_location, verbose=False):
+        if binary_location is None:
+            self._binary_location = None
+            self._prover9_bin = None
+        else:
+            name = 'prover9'
+            self._prover9_bin = internals.find_binary(
+                                  name, 
+                                  path_to_bin=binary_location, 
+                                  env_vars=['PROVER9HOME'],
+                                  url='http://www.cs.unm.edu/~mccune/prover9/',
+                                  binary_names=[name, name + '.exe'],
+                                  verbose=verbose)
+            self._binary_location = self._prover9_bin.rsplit(os.path.sep, 1)
     
     def prover9_input(self, goal, assumptions):
         """
@@ -130,19 +147,24 @@ class Prover9Parent(object):
 
         return s
     
-    def _find_binary(self, name, verbose=False):
-        #: A list of directories that should be searched for the prover9
-        #: executables.  This list is used by L{config_prover9} when searching
-        #: for the prover9 executables.
-        prover9_path = ['/usr/local/bin/prover9',
-                        '/usr/local/bin/prover9/bin',
-                        '/usr/local/bin',
-                        '/usr/bin',
-                        '/usr/local/prover9',
-                        '/usr/local/share/prover9']
+    def binary_locations(self):
+        """
+        A list of directories that should be searched for the prover9
+        executables.  This list is used by L{config_prover9} when searching
+        for the prover9 executables.
+        """
+        return ['/usr/local/bin/prover9',
+                '/usr/local/bin/prover9/bin',
+                '/usr/local/bin',
+                '/usr/bin',
+                '/usr/local/prover9',
+                '/usr/local/share/prover9']
     
+    def _find_binary(self, name, verbose=False):
+        
         return internals.find_binary(name, 
-            searchpath=prover9_path, env_vars=['PROVER9HOME'],
+            searchpath=self.binary_locations()+[self._binary_location], 
+            env_vars=['PROVER9HOME'],
             url='http://www.cs.unm.edu/~mccune/prover9/',
             binary_names=[name, name + '.exe'],
             verbose=verbose)
