@@ -130,14 +130,27 @@ Install these into an appropriate location; the
 ``prover9_search`` variable is currently configured to look in the
 following locations:
 
-    >>> prover9_path # doctest: +NORMALIZE_WHITESPACE
-    ['/usr/local/bin/prover9', '/usr/local/bin/prover9/bin',
-    '/usr/local/bin', '/usr/bin', '/usr/local/prover9',
-    '/usr/local/share/prover9']
+    >>> p = Prover9() 
+    >>> p.binary_locations() # doctest: +NORMALIZE_WHITESPACE
+    ['/usr/local/bin/prover9', 
+     '/usr/local/bin/prover9/bin',
+     '/usr/local/bin', 
+     '/usr/bin', 
+     '/usr/local/prover9',
+     '/usr/local/share/prover9']
+     
+Alternatively, the environment variable ``PROVER9HOME`` may be configured with
+the binary's location.
 
+The path to the correct directory can be set manually in the following
+manner:
+
+    >>> config_prover9(path='/usr/local/bin') # doctest: +SKIP
+    [Found prover9: /usr/local/bin/prover9]
+    
 If the executables cannot be found, ``Prover9`` will issue a warning message:
 
-    >>> p = Prover9() # doctest: +SKIP
+    >>> p.prove() # doctest: +SKIP
     Traceback (most recent call last):
       ...
     LookupError: 
@@ -151,12 +164,6 @@ If the executables cannot be found, ``Prover9`` will issue a warning message:
         <http://www.cs.unm.edu/~mccune/prover9/>
     ===========================================================================
 
-The path to the correct directory can be set manually in the following
-manner:
-
-    >>> config_prover9(path='/usr/local/bin') # doctest: +SKIP
-    [Found prover9: /usr/local/bin/prover9]
-    
     
 Using Prover9
 ~~~~~~~~~~~~~
