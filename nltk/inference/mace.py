@@ -24,7 +24,9 @@ class MaceCommand(Prover9CommandParent, BaseModelBuilderCommand):
     the a print_assumptions() method that is used to print the list
     of assumptions in multiple formats.
     """
-    def __init__(self, goal=None, assumptions=None, timeout=60):
+    _interpformat_bin = None
+    
+    def __init__(self, goal=None, assumptions=None, timeout=60, model_builder=None):
         """
         @param goal: Input expression to prove
         @type goal: L{logic.Expression}
@@ -35,7 +37,12 @@ class MaceCommand(Prover9CommandParent, BaseModelBuilderCommand):
             no timeout.
         @type timeout: C{int}
         """
-        BaseModelBuilderCommand.__init__(self, Mace(timeout), goal, assumptions)
+        if model_builder is not None:
+            assert isinstance(model_builder, Mace)
+        else:
+            model_builder = Mace(timeout)
+        
+        BaseModelBuilderCommand.__init__(self, model_builder, goal, assumptions)
         
     def convert2val(self):
         """
@@ -140,11 +147,30 @@ class MaceCommand(Prover9CommandParent, BaseModelBuilderCommand):
         """
         if format in ['standard', 'standard2', 'portable', 'tabular', 
                       'raw', 'cooked', 'xml', 'tex']:
-            return call_interpformat(self._valuation, [format])[0]
+            return self._call_interpformat(self._valuation, [format])[0]
         else:
             raise LookupError("The specified format does not exist")
 
+    def _call_interpformat(self, input_str, args=[], verbose=False):
+        """
+        Call the C{interpformat} binary with the given input.
+    
+        @param input_str: A string whose contents are used as stdin.
+        @param args: A list of command-line arguments.
+        @return: A tuple (stdout, returncode)
+        @see: L{config_prover9}
+        """
+        if self._interpformat_bin is None:
+            self._interpformat_bin = self._modelbuilder._find_binary(
+                                                'interpformat', verbose)
+
+        return self._modelbuilder._call(input_str, self._interpformat_bin, 
+                                        args, verbose)
+
+
 class Mace(Prover9Parent, ModelBuilder):
+    _mace4_bin = None
+    
     def build_model(self, goal=None, assumptions=None, verbose=False):
         """
         Use Mace4 to build a first order model.
@@ -155,9 +181,24 @@ class Mace(Prover9Parent, ModelBuilder):
         if not assumptions:
             assumptions = []
             
-        stdout, returncode = call_mace4(self.prover9_input(goal, assumptions))
+        stdout, returncode = self._call_mace4(self.prover9_input(goal, assumptions),
+                                              verbose=verbose)
         return (returncode == 0, stdout)
 
+    def _call_mace4(self, input_str, args=[], verbose=False):
+        """
+        Call the C{mace4} binary with the given input.
+    
+        @param input_str: A string whose contents are used as stdin.
+        @param args: A list of command-line arguments.
+        @return: A tuple (stdout, returncode)
+        @see: L{config_prover9}
+        """
+        if self._mace4_bin is None:
+            self._mace4_bin = self._find_binary('mace4', verbose)
+
+        return self._call(input_str, self._mace4_bin, args, verbose)
+    
 
 def spacer(num=30):
     print '-' * num

@@ -6,7 +6,7 @@
 # For license information, see LICENSE.TXT
 
 from nltk.sem.logic import *
-from api import Prover, BaseProverCommand
+from api import Prover
 
 """
 Module for a tableau-based First Order theorem prover.

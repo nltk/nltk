@@ -171,18 +171,14 @@ class BaseTheoremToolCommand(TheoremToolCommand):
         @type assumptions: C{list} of L{logic.Expression}
         """
         self._goal = goal
-        """The logic expression to prove.
-           L{logic.Expression}"""
         
         if not assumptions:
-            assumptions = []
-            
-        self._assumptions = list(assumptions)
-        """The set of expressions to use as assumptions in the proof.
-           C{list} of L{logic.Expression}"""
+            self._assumptions = []
+        else:
+            self._assumptions = list(assumptions)
            
         self._result = None
-        """A holder for the result, so prevent unnecessary re-proving"""
+        """A holder for the result, to prevent unnecessary re-proving"""
         
     def add_assumptions(self, new_assumptions):
         """
@@ -191,7 +187,7 @@ class BaseTheoremToolCommand(TheoremToolCommand):
         @param new_assumptions: new assumptions
         @type new_assumptions: C{list} of L{sem.logic.Expression}s
         """
-        self._assumptions += new_assumptions
+        self._assumptions.extend(new_assumptions)
         self._result = None
     
     def retract_assumptions(self, retracted, debug=False):
@@ -204,7 +200,8 @@ class BaseTheoremToolCommand(TheoremToolCommand):
         @param retracted: assumptions to be retracted
         @type retracted: C{list} of L{sem.logic.Expression}s
         """
-        result_list = [a for a in self._assumptions if a not in set(retracted)]
+        retracted = set(retracted)
+        result_list = filter(lambda a: a not in retracted, self._assumptions)
         if debug and result_list == self._assumptions:
             print Warning("Assumptions list has not been changed:")
             self.print_assumptions()
