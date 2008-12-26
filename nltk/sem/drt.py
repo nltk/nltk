@@ -71,6 +71,9 @@ class AbstractDrs(object):
                              self.__class__.__name__)
     type = property(_get_type)
 
+    def typecheck(self, signature=None):
+        raise NotImplementedError()
+    
     def __add__(self, other):
         return ConcatenationDRS(self, other)
     
@@ -662,6 +665,8 @@ class DrsDrawer:
 
 class DrtParser(LogicParser):
     """A lambda calculus expression parser."""
+    def __init__(self):
+        LogicParser.__init__(self)
     
     def get_all_symbols(self):
         """This method exists to be overridden"""

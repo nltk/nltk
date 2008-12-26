@@ -9,8 +9,6 @@ from logic import LambdaExpression, ApplicationExpression, Variable, LogicParser
 from nltk.parse import load_earley
 from nltk.parse.featurechart import InstantiateVarsChart
 
-lp = LogicParser()
-
 class CooperStore(object):
     """
     A container for handling quantifier ambiguity via Cooper storage.
@@ -43,7 +41,7 @@ class CooperStore(object):
                     yield (x,)+y
         else: yield ()   
 
-    def s_retrieve(self, hack=True, trace=False):
+    def s_retrieve(self, trace=False):
         """
         Carry out S-Retrieval of binding operators in store. If hack=True,
         serialize the bindop and core as strings and reparse. Ugh.
@@ -58,25 +56,16 @@ class CooperStore(object):
     
              bo(\P.all x.(man(x) -> P(x)),z1)
         """
-        perm = 0
-        for store_perm in self._permute(self.store):
-            perm += 1
+        for perm, store_perm in enumerate(self._permute(self.store)):
             if trace:
-                print "Permutation %s" % perm
+                print "Permutation %s" % (perm+1)
             term = self.core
             for bindop in store_perm:
                 # we just want the arguments that are wrapped by the 'bo' predicate
                 quant, varex = tuple(bindop.uncurry()[1])
-                if hack:
-                    quant_s = str(quant)
-                    var_s = str(varex)
-                    term_s = str(term)
-                    term_s = "%s(\\%s.%s)" % (quant_s, varex, term_s)
-                    term = lp.parse(term_s)
-                else:
-                    # use var to make an abstraction over the current term and tten
-                    # apply the quantifier to it
-                    term = ApplicationExpression(quant, LambdaExpression(varex.variable, term))
+                # use var to make an abstraction over the current term and then
+                # apply the quantifier to it
+                term = ApplicationExpression(quant, LambdaExpression(varex.variable, term))
                 if trace:
                     print "  ", term
                 term = term.simplify()
@@ -108,7 +97,8 @@ def demo():
         print
         print "Binding operators:"
         print "-" * 15  
-        for s in semrep.store: print s
+        for s in semrep.store: 
+            print s
         print 
         print "Core:"
         print "-" * 15
@@ -120,11 +110,8 @@ def demo():
         print "Readings:"
         print "-" * 15
 
-        count = 1
-        for reading in semrep.readings:
-            print "%s: %s" % (count, reading)
-            print
-            count += 1
+        for i, reading in enumerate(semrep.readings):
+            print "%s: %s" % (i+1, reading)
             
 if __name__ == '__main__':
     demo()
