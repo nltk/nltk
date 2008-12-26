@@ -1122,6 +1122,8 @@ class LogicParser(object):
         @param type_check: C{boolean} should type checking be performed?
         to their types.
         """
+        assert isinstance(type_check, bool)
+        
         self._currentIndex = 0
         self._buffer = []
         self.type_check = type_check

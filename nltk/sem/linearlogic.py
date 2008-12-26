@@ -350,6 +350,8 @@ class Tokens:
 
 class LinearLogicParser(LogicParser):
     """A linear logic expression parser."""
+    def __init__(self):
+        LogicParser.__init__(self)
     
     def get_all_symbols(self):
         return Tokens.TOKENS
