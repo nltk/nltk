@@ -444,7 +444,7 @@ Show the model in 'tabular' format.
     - see(1,1).
     <BLANKLINE>
 
-The method ``valuation`` accesses the stored ``Valuation``.
+The property ``valuation`` accesses the stored ``Valuation``.
 
     >>> print mb.valuation
     {'john': 'a', 'mary': 'b', 'see': set([('b', 'a')])}
