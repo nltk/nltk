@@ -444,9 +444,9 @@ Show the model in 'tabular' format.
     - see(1,1).
     <BLANKLINE>
 
-The method ``convert2val()`` returns a ``Valuation``.
+The method ``valuation`` accesses the stored ``Valuation``.
 
-    >>> print mb.convert2val()
+    >>> print mb.valuation
     {'john': 'a', 'mary': 'b', 'see': set([('b', 'a')])}
 
 We can return to our earlier example and inspect the model:
