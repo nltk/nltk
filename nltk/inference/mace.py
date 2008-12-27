@@ -44,38 +44,37 @@ class MaceCommand(Prover9CommandParent, BaseModelBuilderCommand):
         
         BaseModelBuilderCommand.__init__(self, model_builder, goal, assumptions)
         
-    def convert2val(self):
+    valuation = property(lambda mbc: mbc.model('valuation'))
+        
+    def _convert2val(self, valuation_str):
         """
         Transform the output file into an NLTK-style Valuation. 
         
         @return: A model if one is generated; None otherwise.
         @rtype: L{nltk.sem.Valuation} 
         """
-        if self.build_model():
-            valuation_standard_format = self._transform_output('standard')
+        valuation_standard_format = self._transform_output(valuation_str, 'standard')
+        
+        val = []
+        for line in valuation_standard_format.splitlines(False):
+            l = line.strip()
+            # find the number of entities in the model
+            if l.startswith('interpretation'):
+                num_entities = int(l[l.index('(')+1:l.index(',')].strip())
+            # replace the integer identifier with a corresponding alphabetic character
+            elif l.startswith('function') and l.find('_') == -1:
+                name = l[l.index('(')+1:l.index(',')].strip()
+                if is_indvar(name):
+                    name = name.upper()
+                value = int(l[l.index('[')+1:l.index(']')].strip())
+                val.append((name, MaceCommand._make_model_var(value)))
             
-            val = []
-            for line in valuation_standard_format.splitlines(False):
-                l = line.strip()
-                # find the number of entities in the model
-                if l.startswith('interpretation'):
-                    num_entities = int(l[l.index('(')+1:l.index(',')].strip())
-                # replace the integer identifier with a corresponding alphabetic character
-                elif l.startswith('function') and l.find('_') == -1:
-                    name = l[l.index('(')+1:l.index(',')].strip()
-                    if is_indvar(name):
-                        name = name.upper()
-                    value = int(l[l.index('[')+1:l.index(']')].strip())
-                    val.append((name, MaceCommand._make_model_var(value)))
-                
-                elif l.startswith('relation'):
-                    name = l[l.index('(')+1:l.index('(', l.index('(')+1)].strip()
-                    values = [int(v.strip()) for v in l[l.index('[')+1:l.index(']')].split(',')]
-                    val.append((name, MaceCommand._make_relation_set(num_entities, values)))
+            elif l.startswith('relation'):
+                name = l[l.index('(')+1:l.index('(', l.index('(')+1)].strip()
+                values = [int(v.strip()) for v in l[l.index('[')+1:l.index(']')].split(',')]
+                val.append((name, MaceCommand._make_relation_set(num_entities, values)))
 
-            return Valuation(val)
-        else:
-            return None
+        return Valuation(val)
         
     @staticmethod
     def _make_relation_set(num_entities, values):
@@ -123,7 +122,7 @@ class MaceCommand(Prover9CommandParent, BaseModelBuilderCommand):
         else:
             return letter
                 
-    def decorate_model(self, valuation_str, format):
+    def _decorate_model(self, valuation_str, format):
         """
         Print out a Mace4 model using any Mace4 C{interpformat} format. 
         See U{http://www.cs.unm.edu/~mccune/mace4/manual/} for details.
@@ -134,11 +133,13 @@ class MaceCommand(Prover9CommandParent, BaseModelBuilderCommand):
         @return: C{str}
         """
         if not format:
-            return self._valuation
+            return valuation_str
+        elif format == 'valuation':
+            return self._convert2val(valuation_str)
         else:
-            return self._transform_output(format)
+            return self._transform_output(valuation_str, format)
 
-    def _transform_output(self, format):
+    def _transform_output(self, valuation_str, format):
         """
         Transform the output file into any Mace4 C{interpformat} format. 
         
@@ -147,7 +148,7 @@ class MaceCommand(Prover9CommandParent, BaseModelBuilderCommand):
         """
         if format in ['standard', 'standard2', 'portable', 'tabular', 
                       'raw', 'cooked', 'xml', 'tex']:
-            return self._call_interpformat(self._valuation, [format])[0]
+            return self._call_interpformat(valuation_str, [format])[0]
         else:
             raise LookupError("The specified format does not exist")
 
@@ -253,7 +254,7 @@ def test_build_model(arguments):
     #print m.model('cooked')
     print "Valuation"
     spacer()
-    print m.convert2val(), '\n'
+    print m.valuation, '\n'
 
 def test_transform_output(argument_pair):
     """
@@ -287,8 +288,3 @@ if __name__ == '__main__':
     test_model_found(arguments)
     test_build_model(arguments)
     test_transform_output(arguments[1])
-    
-    a = LogicParser().parse('(see(mary,john) & -(mary = john))')
-    mb = MaceCommand(assumptions=[a])
-    mb.build_model()
-    print mb.convert2val()

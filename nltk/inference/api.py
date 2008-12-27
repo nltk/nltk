@@ -304,7 +304,7 @@ class BaseModelBuilderCommand(BaseTheoremToolCommand, ModelBuilderCommand):
         
         BaseTheoremToolCommand.__init__(self, goal, assumptions)
         
-        self._valuation = None
+        self._model = None
 
     def build_model(self, verbose=False):
         """
@@ -312,7 +312,7 @@ class BaseModelBuilderCommand(BaseTheoremToolCommand, ModelBuilderCommand):
         re-building.
         """
         if self._result is None:
-            self._result, self._valuation = \
+            self._result, self._model = \
                     self._modelbuilder.build_model(self.goal(), 
                                                    self.assumptions(),
                                                    verbose)
@@ -329,9 +329,9 @@ class BaseModelBuilderCommand(BaseTheoremToolCommand, ModelBuilderCommand):
             raise LookupError('You have to call build_model() first to '
                               'get a model!')
         else:
-            return self.decorate_model(self._valuation, format)
+            return self._decorate_model(self._model, format)
         
-    def decorate_model(self, valuation_str, format=None):
+    def _decorate_model(self, valuation_str, format=None):
         """
         @param valuation_str: C{str} with the model builder's output 
         @param format: C{str} indicating the format for displaying
@@ -436,7 +436,7 @@ class ModelBuilderCommandDecorator(TheoremToolCommandDecorator, ModelBuilderComm
 
         #The decorator has its own versions of 'result' and 'valuation' 
         #because they may be different from the underlying command
-        self._valuation = None
+        self._model = None
         
     def build_model(self, verbose=False):
         """
@@ -445,7 +445,7 @@ class ModelBuilderCommandDecorator(TheoremToolCommandDecorator, ModelBuilderComm
         """
         if self._result is None:
             modelbuilder = self.get_model_builder()
-            self._result, self._valuation = \
+            self._result, self._model = \
                             modelbuilder.build_model(self.goal(), 
                                                      self.assumptions(),
                                                      verbose)
@@ -462,16 +462,16 @@ class ModelBuilderCommandDecorator(TheoremToolCommandDecorator, ModelBuilderComm
             raise LookupError('You have to call build_model() first to '
                               'get a model!')
         else:
-            return self.decorate_model(self._valuation, format)
+            return self._decorate_model(self._model, format)
     
-    def decorate_model(self, valuation_str, format=None):
+    def _decorate_model(self, valuation_str, format=None):
         """
         Modify and return the proof string
         @param valuation_str: C{str} with the model builder's output 
         @param format: C{str} indicating the format for displaying
         @return: C{str}
         """
-        return self._command.decorate_model(valuation_str, format)
+        return self._command._decorate_model(valuation_str, format)
 
     def get_model_builder(self):
         return self._command.get_prover()
