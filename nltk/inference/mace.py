@@ -58,11 +58,13 @@ class MaceCommand(Prover9CommandParent, BaseModelBuilderCommand):
         val = []
         for line in valuation_standard_format.splitlines(False):
             l = line.strip()
-            # find the number of entities in the model
+            
             if l.startswith('interpretation'):
+                # find the number of entities in the model
                 num_entities = int(l[l.index('(')+1:l.index(',')].strip())
-            # replace the integer identifier with a corresponding alphabetic character
+            
             elif l.startswith('function') and l.find('_') == -1:
+                # replace the integer identifier with a corresponding alphabetic character
                 name = l[l.index('(')+1:l.index(',')].strip()
                 if is_indvar(name):
                     name = name.upper()
@@ -70,9 +72,17 @@ class MaceCommand(Prover9CommandParent, BaseModelBuilderCommand):
                 val.append((name, MaceCommand._make_model_var(value)))
             
             elif l.startswith('relation'):
-                name = l[l.index('(')+1:l.index('(', l.index('(')+1)].strip()
-                values = [int(v.strip()) for v in l[l.index('[')+1:l.index(']')].split(',')]
-                val.append((name, MaceCommand._make_relation_set(num_entities, values)))
+                l = l[l.index('(')+1:]
+                if '(' in l:
+                    #relation is not nullary
+                    name = l[:l.index('(')].strip()
+                    values = [int(v.strip()) for v in l[l.index('[')+1:l.index(']')].split(',')]
+                    val.append((name, MaceCommand._make_relation_set(num_entities, values)))
+                else:
+                    #relation is nullary
+                    name = l[:l.index(',')].strip()
+                    value = int(l[l.index('[')+1:l.index(']')].strip())
+                    val.append((name, value == 1))
 
         return Valuation(val)
         
