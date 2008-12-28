@@ -179,6 +179,11 @@ class Prover9Parent(object):
         @return: A tuple (stdout, returncode)
         @see: L{config_prover9}
         """
+        if verbose:
+            print 'Calling:', binary
+            print 'Args:', args
+            print 'Input:\n', input_str, '\n'
+        
         # Call prover9 via a subprocess
         cmd = [binary] + args
         p = subprocess.Popen(cmd, stdout=subprocess.PIPE,
@@ -188,8 +193,8 @@ class Prover9Parent(object):
         
         if verbose:
             print 'Return code:', p.returncode
-            if stdout: print 'stdout:', stdout
-            if stderr: print 'stderr:', stderr
+            if stdout: print 'stdout:\n', stdout, '\n'
+            if stderr: print 'stderr:\n', stderr, '\n'
             
         return (stdout, p.returncode)
     

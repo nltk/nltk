@@ -178,7 +178,7 @@ initialized with a proof goal and, possibly, some assumptions. The
 ``prove()`` method attempts to find a proof of the goal, given the
 list of assumptions (in this case, none).
 
-    >>> goal = LogicParser().parse('(man(x) <-> --man(x))')
+    >>> goal = lp.parse('(man(x) <-> --man(x))')
     >>> prover = Prover9Command(goal)
     >>> prover.prove()
     True
@@ -216,8 +216,8 @@ provided by Prover9, shown in abbreviated form here::
 As mentioned earlier, we may want to list some assumptions for
 the proof, as shown here.
 
-    >>> g = LogicParser().parse('mortal(socrates)')
-    >>> a1 = LogicParser().parse('all x.(man(x) -> mortal(x))')
+    >>> g = lp.parse('mortal(socrates)')
+    >>> a1 = lp.parse('all x.(man(x) -> mortal(x))')
     >>> prover = Prover9Command(g, assumptions=[a1])
     >>> prover.print_assumptions()
     all x.(man(x) -> mortal(x))
@@ -229,7 +229,7 @@ However, the assumptions are not sufficient to derive the goal:
 
 So let's add another assumption:
 
-    >>> a2 = LogicParser().parse('man(socrates)')    
+    >>> a2 = lp.parse('man(socrates)')    
     >>> prover.add_assumptions([a2])
     >>> prover.print_assumptions()
     all x.(man(x) -> mortal(x))
@@ -258,7 +258,7 @@ Assumptions can be retracted from the list of assumptions.
 Statements can be loaded from a file and parsed. We can then add these
 statements as new assumptions.
 
-    >>> g = LogicParser().parse('all x.(boxer(x) -> -boxerdog(x))')
+    >>> g = lp.parse('all x.(boxer(x) -> -boxerdog(x))')
     >>> prover = Prover9Command(g)
     >>> prover.prove()
     False
@@ -318,8 +318,8 @@ two Expressions have the same meaning.
 The ``tp_equals()`` method calls a theorem prover to determine whether two 
 Expressions are logically equivalent.
 
-    >>> a = LogicParser().parse(r'exists x.(man(x) & walks(x))')
-    >>> b = LogicParser().parse(r'exists x.(walks(x) & man(x))')
+    >>> a = lp.parse(r'exists x.(man(x) & walks(x))')
+    >>> b = lp.parse(r'exists x.(walks(x) & man(x))')
     >>> print a.tp_equals(b)
     True
 
@@ -402,7 +402,7 @@ Using Mace4
 
 Check whether Mace4 can find a model.
 
-    >>> a = LogicParser().parse('(see(mary,john) & -(mary = john))')
+    >>> a = lp.parse('(see(mary,john) & -(mary = john))')
     >>> mb = MaceCommand(assumptions=[a])
     >>> mb.build_model()
     True
@@ -483,3 +483,12 @@ individual ``1`` is also a woman; and ``0`` loves ``1``. Thus, this is
 an interpretation in which there is a woman that every man loves but
 Adam doesn't love Eve.
 
+Mace can also be used with propositional logic.
+
+    >>> p = lp.parse('P')
+    >>> q = lp.parse('Q')
+    >>> mb = MaceCommand(q, [p, p>-q])
+    >>> mb.build_model()
+    True
+    >>> mb.valuation
+	{'Q': False, 'P': True}
