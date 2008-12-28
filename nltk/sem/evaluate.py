@@ -101,16 +101,7 @@ def app(rel, args, trace=False):
     assert is_rel(rel)
     return args in rel
 
-def make_VariableExpression(var):
-    """
-    Convert a string into an instance of L{AbstractVariableExpression}
-    
-    @type var: C{str}
-    @rtype: C{AbstractVariableExpression}
-    """
-    
-    return VariableExpression(Variable(var))
-        
+
 class Valuation(dict):
     """
     A dictionary which represents a model-theoretic Valuation of non-logical constants.
@@ -144,13 +135,6 @@ class Valuation(dict):
         else:
             raise Undefined,  "Unknown expression: '%s'" % key
 
-    #def __str__(self):
-        #return "{%s}" % ', '.join(map(str, self))
-
-    @deprecated("Call the valuation as an initialization parameter instead")        
-    def read(self, seq):
-        self.update(seq)
- 
     def __str__(self):
         return pformat(self)
 
@@ -159,9 +143,7 @@ class Valuation(dict):
         for val in self.values():
             if isinstance(val, str):
                 dom.append(val)
-            elif isinstance(val, bool):
-                pass
-            else:
+            elif not isinstance(val, bool):
                 dom.extend([elem for tuple in val for elem in tuple if elem is not None])
         return set(dom)
 
@@ -240,7 +222,7 @@ class Assignment(dict):
         """
         gstring = "g"
         for (val, var) in self.variant:
-            gstring = gstring + "[" + str(val) + "/" + str(var) + "]"
+            gstring += "[%s/%s]" % (val, var)
         return gstring
 
     def _addvariant(self):
@@ -262,10 +244,8 @@ class Assignment(dict):
         """
         assert val in self.domain,\
                "%s is not in the domain %s" % (val, self.domain)
-        #assert isinstance(var, IndividualVariableExpression),\
         assert is_indvar(var),\
                "Wrong format for an Individual Variable: '%s'" % var
-        #self[var.variable.name] = val
         self[var] = val
         self._addvariant()
         return self
@@ -304,49 +284,6 @@ class Model(object):
 
     def __str__(self):
         return "Domain = %s,\nValuation = \n%s" % (self.domain, self.valuation)
-
-    # Interpretations for the binary boolean operators
-    #############################
-
-    def AND(self, arg1, arg2):
-        return min(arg1, arg2)
-    
-
-    def OR(self, arg1, arg2):
-        return max(arg1, arg2)
-    
-
-    def IMPLIES(self, arg1, arg2):
-        return max(not arg1, arg2)
-    
-
-    def IFF(self, arg1, arg2):
-        return arg1 == arg2
-    
-    # EQUALITY
-    ########
-
-    def EQ(self, arg1, arg2):
-        return arg1 == arg2
-    
-    # Interpretations for the classical quantifiers
-    #########################
- 
-    def ALL(self, sat):
-        return sat == self.domain
-     
-    def EXISTS(self, sat):
-        for u in sat:
-            return True
-        return False
-           
-    OPS = {
-        '&': AND,
-        '|': OR,
-        '->': IMPLIES,
-        '<->': IFF,
-        '=': EQ,
-    }
 
     def evaluate(self, expr, g, trace=None):
         """
@@ -389,8 +326,6 @@ class Model(object):
         @param g: an assignment to individual variables.
         """
 
-        OPS = Model.OPS
-        
         if isinstance(parsed, ApplicationExpression):
             function, arguments = parsed.uncurry()
             if isinstance(function, AbstractVariableExpression):
@@ -399,38 +334,28 @@ class Model(object):
                 argvals = tuple([self.satisfy(arg, g) for arg in arguments])
                 return argvals in funval
             else:
-                #It must be a lamba expression, so use curryed form
+                #It must be a lambda expression, so use curried form
                 funval = self.satisfy(parsed.function, g)
                 argval = self.satisfy(parsed.argument, g)
                 return funval[argval]
-             
-        #if isinstance(parsed, ApplicationExpression):
-            #argval = self.satisfy(parsed.argument, g) 
-            #funval = self.satisfy(parsed.function, g)
-            #if isinstance(funval, dict):
-                #return funval[argval]
-            #else:
-                #return app(funval, argval)
         elif isinstance(parsed, NegatedExpression):
             return not self.satisfy(parsed.term, g)
-        elif isinstance(parsed, BinaryExpression):
-            op = parsed.getOp()
-            # Short-circuiting can make things much faster.
-            if op == '&':
-                return (self.satisfy(parsed.first, g) and
-                        self.satisfy(parsed.second, g))
-            elif op == '|':
-                return (self.satisfy(parsed.first, g) or
-                        self.satisfy(parsed.second, g))
-            elif op == '->':
-                return ((not self.satisfy(parsed.first, g)) or
-                        self.satisfy(parsed.second, g))
-            else:
-                return OPS[op](self, self.satisfy(parsed.first, g),
-                               self.satisfy(parsed.second, g))
+        elif isinstance(parsed, AndExpression):
+            return self.satisfy(parsed.first, g) and \
+                   self.satisfy(parsed.second, g)
+        elif isinstance(parsed, OrExpression):
+            return self.satisfy(parsed.first, g) or \
+                   self.satisfy(parsed.second, g)
+        elif isinstance(parsed, ImpExpression):
+            return (not self.satisfy(parsed.first, g)) or \
+                   self.satisfy(parsed.second, g)
+        elif isinstance(parsed, IffExpression):
+            return self.satisfy(parsed.first, g) == \
+                   self.satisfy(parsed.second, g)
+        elif isinstance(parsed, EqualityExpression):
+            return self.satisfy(parsed.first, g) == \
+                   self.satisfy(parsed.second, g)
         elif isinstance(parsed, AllExpression):
-            # Short-circuiting can make things much faster.
-            #return self.ALL(self.satisfiers(parsed.term, parsed.variable, g))
             new_g = g.copy()
             for u in self.domain:
                 new_g.add(parsed.variable.name, u)
@@ -438,9 +363,6 @@ class Model(object):
                     return False
             return True
         elif isinstance(parsed, ExistsExpression):
-            # Short-circuiting can make things much faster.
-            #satisfiers = self.satisfiers(parsed.term, parsed.variable, g)
-            #return self.EXISTS(satisfiers)
             new_g = g.copy()
             for u in self.domain:
                 new_g.add(parsed.variable.name, u)
@@ -449,7 +371,6 @@ class Model(object):
             return False
         elif isinstance(parsed, LambdaExpression):
             cf = {}
-            #varex = self.make_VariableExpression(parsed.variable)
             var = parsed.variable.name
             for u in self.domain:
                 val = self.satisfy(parsed.term, g.add(var, u))
@@ -489,19 +410,6 @@ class Model(object):
         else:
             raise Undefined, "Can't find a value for %s" % parsed
         
-        #try:
-            #if trace > 1:
-                #print "   i, %s('%s') = %s" % (g, expr, self.valuation[expr])
-            ## expr is a non-logical constant, i.e., in self.valuation.symbols
-            #return self.valuation[expr]
-        #except Undefined:
-            #if trace > 1:
-                #print "    (checking whether '%s' is an individual variable)" % expr
- 
-            ## expr wasn't a constant; maybe a variable that g knows about?
-            #return g[expr]
-        
- 
     def satisfiers(self, parsed, varex, g, trace=None, nesting=0):
         """
         Generate the entities from the model's domain that satisfy an open formula.
@@ -520,7 +428,7 @@ class Model(object):
         candidates = []
         
         if isinstance(varex, str):
-            var = make_VariableExpression(varex).variable
+            var = Variable(varex)
         else:
             var = varex
              
@@ -530,7 +438,6 @@ class Model(object):
                 print (spacer * nesting) + "Open formula is '%s' with assignment %s" % (parsed, g)
             for u in self.domain:
                 new_g = g.copy()
-                #new_g.add(u, self.make_VariableExpression(var))
                 new_g.add(var.name, u)
                 if trace > 1:
                     lowtrace = trace-1
@@ -545,7 +452,6 @@ class Model(object):
                 if value == False:
                     if trace:
                         print  indent + "value of '%s' under %s is False" % (parsed, new_g)
-                 
                     
                 # so g[u/var] is a satisfying assignment
                 else:
@@ -782,4 +688,4 @@ def demo(num=0, trace=None):
 
             
 if __name__ == "__main__":
-    demo(0, trace=0)
+    demo(2, trace=0)
