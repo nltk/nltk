@@ -30,7 +30,7 @@ measures are provided in L{bigram_measures} and L{trigram_measures}.
 # - add methods to compare different association measures' results
 # - is it better to refer to things as bigrams/trigrams, or pairs/triples?
 
-from finder import *
+from finders import *
 import bigram_measures
 import trigram_measures
 
