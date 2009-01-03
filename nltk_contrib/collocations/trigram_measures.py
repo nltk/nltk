@@ -9,3 +9,10 @@
 TODO: write comment
 """
 
+
+def raw_freq(n_iii,
+             n_ixx, n_xix, n_xxi,
+             n_iix, n_ixi, n_xii,
+             n_xxx):
+    return float(n_iii) / n_xxx
+

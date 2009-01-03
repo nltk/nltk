@@ -1,4 +1,4 @@
-# Natural Language Toolkit: Association Measures and Collocations
+# Natural Language Toolkit: Collocations and Association Measures 
 #
 # Copyright (C) 2001-2008 NLTK Project
 # Author: Joel Nothman <jnothman@student.usyd.edu.au>
@@ -6,7 +6,21 @@
 # For license information, see LICENSE.TXT
 #
 """
-TODO: write comment
+Tools to identify X{collocation}s --- words that often appear consecutively
+--- within corpora. They may also be used to find other X{association}s between
+word occurrences.
+See Manning and Schutze ch. 5 at http://nlp.stanford.edu/fsnlp/promo/colloc.pdf
+
+Finding collocations requires first calculating the frequencies of words and
+their appearance in the context of other words. Often the collection of words
+will then requiring filtering to only retain useful content terms. Each ngram
+of words may then be scored according to some X{association measure}, in order
+to determine the relative likelihood of each ngram being a collocation.
+
+The L{BigramCollocationFinder} and L{TrigramCollocationFinder} classes provide
+these functionalities, dependent on being provided a function which scores a
+ngram given appropriate frequency counts. A number of standard association
+measures are provided in L{bigram_measures} and L{trigram_measures}.
 """
 
 # Possible TODOs:

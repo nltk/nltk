@@ -6,22 +6,33 @@
 # For license information, see LICENSE.TXT
 #
 """
-TODO: write comment
+Classes to aid in the finding and ranking of collocations within a corpus.
 """
 
 import itertools as _itertools
 from operator import itemgetter as _itemgetter
 
-from nltk import FreqDist as _FreqDist
-
+from nltk.probability import FreqDist as _FreqDist
+from nltk.util import ingrams as _ingrams
 
 class AbstractCollocationFinder(object):
+    """
+    An abstract base class for X{collocation finder}s whose purpose is to
+    collect collocation candidate frequencies, filter and rank them.
+    """
+
     def __init__(self, word_fd, ngram_fd):
+        """As a minimum, collocation finders require the frequencies of each
+        word in a corpus, and the joint frequency of word tuples. This data
+        should be provided through L{nltk.probability.FreqDist} objects or an
+        identical interface."""
         self.word_fd = word_fd
         self.ngram_fd = ngram_fd
 
     @classmethod
     def from_documents(cls, documents):
+        """Constructs a collocation finder given a collection of documents,
+        each of which is a list (or iterable) of tokens."""
         return cls.from_words(_itertools.chain(*documents))
 
     @staticmethod
@@ -29,6 +40,8 @@ class AbstractCollocationFinder(object):
         return _FreqDist(tuple(words[i:i+n]) for i in range(len(words)-1))
 
     def _apply_filter(self, fn=lambda ngram, freq: False):
+        """Generic filter removes ngrams from the frequency distribution
+        if the function returns True when passed an ngram tuple."""
         for ngram, freq in self.ngram_fd.items():
             if fn(ngram, freq):
                 try:
@@ -37,25 +50,34 @@ class AbstractCollocationFinder(object):
                     pass
 
     def apply_freq_filter(self, min_freq):
+        """Removes candidate ngrams which have frequency less than min_freq."""
         self._apply_filter(lambda ng, freq: freq < min_freq)
 
     def apply_ngram_filter(self, fn):
+        """Removes candidate ngrams (w1, w2, ...) where fn(w1, w2, ...)
+        evaluates to True."""
         self._apply_filter(lambda ng, f: fn(*ng))
 
     def apply_word_filter(self, fn):
-        self._apply_filter(lambda ngram, f: [True for w in ngram if fn(w)])
+        """Removes candidate ngrams (w1, w2, ...) where any of (fn(w1), fn(w2),
+        ...) evaluates to True."""
+        self._apply_filter(lambda ng, f: any(fn(w) for w in ng))
  
     def score_ngrams(self, score_fn):
-        n_words = self.word_fd.N()
-        data = ((tup, self.score_ngram(*((score_fn,) + tup), **{'n_all':n_words}))
+        """Reutrns a sequence of (ngram, score) pairs ordered from highest to
+        lowest score, as determined by the scoring function provided."""
+        data = ((tup, self.score_ngram(*((score_fn,) + tup)))
                 for tup in self.ngram_fd)
         return sorted(data,
                       key=_itemgetter(1), reverse=True)
 
     def top_n(self, score_fn, n):
+        """Returns the top n ngrams when scored by the given function."""
         return [p for p,s in self.score_ngrams(score_fn)[:n]]
 
     def above_score(self, score_fn, min_score):
+        """Returns a sequence of ngrams, ordered by decreasing score, whose
+        scores each exceed the given minimum score."""
         for ngram, score in self.score_ngrams(score_fn):
             if score > min_score:
                 yield ngram
@@ -64,30 +86,26 @@ class AbstractCollocationFinder(object):
 
 
 class BigramCollocationFinder(AbstractCollocationFinder):
+    """A tool for the finding and ranking of bigram collocations or other
+    association measures."""
+
     @classmethod
     def from_words(cls, words):
+        """Construct a BigramCollocationFinder for all bigrams in the given
+        sequence."""
         wfd = _FreqDist()
         bfd = _FreqDist()
 
-        it1, it2 = _itertools.tee(words, 2)
-        wfd.inc(it2.next())
-        for w1, w2 in _itertools.izip(it1, it2):
-            wfd.inc(w2)
-            bfd.inc((w1, w2))
+        words = _itertools.chain(words, (None,))
+        for w1, w2 in _ingrams(words, 2):
+            wfd.inc(w1)
+            if w2:
+                bfd.inc((w1, w2))
         return cls(wfd, bfd)
-    
-    @classmethod
-    def for_document_cooccurrence(cls, documents, boolean=True):
-        if boolean:
-            documents = [list(set(d)) for d in documents]
-
-        word_fd = _FreqDist(w for d in documents for w in d)
-        pair_fd = _FreqDist((w1,w2) for d in documents
-                           for w1 in d for w2 in d
-                           if w1 < w2)
-        return cls(word_fd, pair_fd)
 
     def score_ngram(self, score_fn, w1, w2, n_all=None):
+        """Returns the score for a given bigram using the given scoring
+        function."""
         if n_all is None:
             n_all = self.word_fd.N()
         n_ii = self.ngram_fd[(w1, w2)]
@@ -97,33 +115,41 @@ class BigramCollocationFinder(AbstractCollocationFinder):
 
 
 class TrigramCollocationFinder(AbstractCollocationFinder):
+    """A tool for the finding and ranking of bigram collocations or other
+    association measures."""
+
     def __init__(self, word_fd, bigram_fd, wildcard_fd, trigram_fd):
+        """Construct a TrigramCollocationFinder, given FreqDists for
+        appearances of words, bigrams, two words with any word between them,
+        and trigrams."""
         AbstractCollocationFinder.__init__(self, word_fd, trigram_fd)
         self.wildcard_fd = wildcard_fd
         self.bigram_fd = bigram_fd
 
     @classmethod
     def from_words(cls, words):
+        """Construct a TrigramCollocationFinder for all trigrams in the given
+        sequence."""
         wfd = _FreqDist()
         wildfd = _FreqDist()
         bfd = _FreqDist()
         tfd = _FreqDist()
 
-        it1, it2, it3 = _itertools.tee(words, 3)
-
-        wfd.inc(it3.next())
-        w = it3.next()
-        wfd.inc(w)
-        bfd.inc((it2.next(), w))
-
-        for w1, w2, w3 in _itertools.izip(it1, it2, it3):
-            wfd.inc(w3)
-            bfd.inc((w2, w3))
+        words = _itertools.chain(words, (None,None,))
+        for w1, w2, w3 in _ingrams(words, 3):
+            wfd.inc(w1)
+            if not w2:
+                continue
+            bfd.inc((w1, w2))
+            if not w3:
+                continue
             wildfd.inc((w1, w3))
             tfd.inc((w1, w2, w3))
         return cls(wfd, bfd, wildfd, tfd)
 
-    def score_ngram(score_fn, w1, w2, w3, n_all=None):
+    def score_ngram(self, score_fn, w1, w2, w3, n_all=None):
+        """Returns the score for a given trigram using the given scoring
+        function."""
         if n_all is None:
             n_all = self.word_fd.N()
 
@@ -140,17 +166,15 @@ class TrigramCollocationFinder(AbstractCollocationFinder):
                         n_all)
 
 
-if __name__ == '__main__':
+def test():
+    """Finds bigram collocations in the files of the WebText corpus."""
+
     import sys
     import bigram_measures
     try:
         scorer = eval('bigram_measures.' + sys.argv[1])
     except IndexError:
         scorer = bigram_measures.mi_like
-    def contingency(self, n_ii, n_ix, n_xi, n_xx):
-        n_io = n_ix - n_ii
-        n_oi = n_xi - n_ii
-        return (n_ii, n_io, n_oi, n_xx - n_ii - n_io - n_oi)
 
     from nltk import corpus
         
@@ -165,6 +189,9 @@ if __name__ == '__main__':
         cf.apply_freq_filter(3)
         cf.apply_word_filter(word_filter)
 
-        print file, [w1+' '+w2
-                for w1, w2 in cf.top_n(scorer, 15)]
- 
+        print file, [' '.join(tup)
+                for tup in cf.top_n(scorer, 15)]
+
+
+if __name__ == '__main__':
+    test()
