@@ -10,14 +10,12 @@ TODO: write comment
 """
 
 import math as _math
+_ln = lambda x: _math.log(x, 2.0)
 
 
 class BigramAssociationMeasureI(object):
     def __call__(self, n_ii, n_ix, n_xi, n_xx):
         raise AssertionError, "This is an interface"
-
-
-_ln = lambda x: _math.log(x, 2.0)
 
 
 def _contingency(n_ii, n_ix, n_xi, n_xx):

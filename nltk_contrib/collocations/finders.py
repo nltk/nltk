@@ -87,7 +87,8 @@ class AbstractCollocationFinder(object):
 
 class BigramCollocationFinder(AbstractCollocationFinder):
     """A tool for the finding and ranking of bigram collocations or other
-    association measures."""
+    association measures. It is often useful to use from_words() rather than
+    constructing an instance directly."""
 
     @classmethod
     def from_words(cls, words):
@@ -116,7 +117,8 @@ class BigramCollocationFinder(AbstractCollocationFinder):
 
 class TrigramCollocationFinder(AbstractCollocationFinder):
     """A tool for the finding and ranking of bigram collocations or other
-    association measures."""
+    association measures. It is often useful to use from_words() rather than
+    constructing an instance directly."""
 
     def __init__(self, word_fd, bigram_fd, wildcard_fd, trigram_fd):
         """Construct a TrigramCollocationFinder, given FreqDists for
