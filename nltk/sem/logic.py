@@ -18,7 +18,7 @@ from nltk.internals import Counter
 
 _counter = Counter()
 
-class Tokens:
+class Tokens(object):
     # Syntaxes
     OLD_NLTK = 0
     NLTK = 1
@@ -137,7 +137,7 @@ def unique_variable(pattern=None):
     return Variable(prefix + str(_counter.get()))
 
 
-class Type:
+class Type(object):
     def __repr__(self):
         return str(self)
     

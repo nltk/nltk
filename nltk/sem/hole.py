@@ -5,7 +5,6 @@
 #
 # URL: <http://www.nltk.org>
 # For license information, see LICENSE.TXT
-# 
 
 from nltk.parse import load_earley
 from nltk.draw.tree import draw_trees
@@ -55,7 +54,7 @@ class Constants(object):
            IFF: logic.IffExpression,
            PRED: logic.ApplicationExpression}
 
-class HoleSemantics:
+class HoleSemantics(object):
     """
     This class holds the broken-down components of a hole semantics, i.e. it
     extracts the holes, labels, logic formula fragments and constraints out of
@@ -277,7 +276,7 @@ class HoleSemantics:
             return node
 
 
-class Constraint:
+class Constraint(object):
     """
     This class represents a constraint of the form (L =< N),
     where L is a label and N is a node (a label or a hole).

@@ -17,7 +17,7 @@ class AnaphoraResolutionException(Exception):
     pass
 
 
-class DRS:
+class DRS(object):
     def resolve_anaphora(self, trail=[]):
         r_conds = []
         for cond in self.conds:
@@ -33,19 +33,19 @@ class DRS:
                 
         return self.__class__(self.refs, r_conds)
     
-class AbstractVariableExpression:
+class AbstractVariableExpression(object):
     def resolve_anaphora(self, trail=[]):
         return self
     
-class NegatedExpression:
+class NegatedExpression(object):
     def resolve_anaphora(self, trail=[]):
         return self.__class__(self.term.resolve_anaphora(trail + [self]))
 
-class LambdaExpression:
+class LambdaExpression(object):
     def resolve_anaphora(self, trail=[]):
         return self.__class__(self.variable, self.term.resolve_anaphora(trail + [self]))
 
-class BinaryExpression:
+class BinaryExpression(object):
     def resolve_anaphora(self, trail=[]):
         return self.__class__(self.first.resolve_anaphora(trail + [self]), 
                               self.second.resolve_anaphora(trail + [self]))
@@ -84,7 +84,7 @@ class EqualityExpression(BinaryExpression):
 class ConcatenationDRS(BooleanExpression):
     pass
 
-class ApplicationExpression:
+class ApplicationExpression(object):
     def resolve_anaphora(self, trail=[]):
         if self.is_pronoun_function():
             possible_antecedents = PossibleAntecedents()

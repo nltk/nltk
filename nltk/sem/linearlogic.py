@@ -10,7 +10,7 @@ from logic import LogicParser
 
 _counter = Counter()
 
-class Expression:
+class Expression(object):
     def applyto(self, other, other_indices=None):
         return ApplicationExpression(self, other, other_indices)
     
@@ -255,7 +255,7 @@ class ApplicationExpression(Expression):
     def __hash__(self):
         return hash('%s%s%s' % (hash(self.antecedent), Tokens.OPEN, hash(self.consequent)))
 
-class BindingDict:
+class BindingDict(object):
     def __init__(self, binding_list=None):
         """
         @param binding_list: C{list} of (C{VariableExpression}, C{AtomicExpression}) to initialize the dictionary
@@ -337,7 +337,7 @@ class UnificationException(Exception):
 
 class LinearLogicApplicationException(Exception): pass
 
-class Tokens:
+class Tokens(object):
     #Punctuation
     OPEN = '('
     CLOSE = ')'
