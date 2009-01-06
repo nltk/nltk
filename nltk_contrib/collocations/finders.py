@@ -64,7 +64,7 @@ class AbstractCollocationFinder(object):
         self._apply_filter(lambda ng, f: any(fn(w) for w in ng))
  
     def score_ngrams(self, score_fn):
-        """Reutrns a sequence of (ngram, score) pairs ordered from highest to
+        """Returns a sequence of (ngram, score) pairs ordered from highest to
         lowest score, as determined by the scoring function provided."""
         data = ((tup, self.score_ngram(*((score_fn,) + tup)))
                 for tup in self.ngram_fd)
