@@ -146,7 +146,7 @@ class DiscourseTester(object):
     Check properties of an ongoing discourse.
     """
     def __init__(self, input, reading_command=None, background=None):       
-        """\\\\\\
+        """
         Initialize a C{DiscourseTester}.
         
         @parameter input: the discourse sentences
@@ -195,7 +195,7 @@ class DiscourseTester(object):
         """
         # check whether the new sentence is informative (i.e. not entailed by the previous discourse)       
         if informchk:
-            self.readings(quiet=True)
+            self.readings(verbose=False)
             for tid in sorted(self._threads.keys()):
                 assumptions = [reading for (rid, reading) in self.expand_threads(tid)]
                 assumptions += self._background
@@ -210,17 +210,17 @@ class DiscourseTester(object):
         # check whether adding the new sentence to the discourse preserves consistency (i.e. a model can be found for the combined set of
         # of assumptions
         if consistchk:
-            self.readings(quiet=True)
+            self.readings(verbose=False)
             self.models(show=False) 
                        
-    def retract_sentence(self, sentence, quiet=False):
+    def retract_sentence(self, sentence, verbose=True):
         """
         Remove a sentence from the current discourse.
         
         Updates C{self._input}, C{self._sentences} and C{self._readings}.
         @parameter sentence: An input sentence
         @type sentence: C{str}
-        @parameter quiet: If C{False},  report on the updated list of sentences.
+        @parameter verbose: If C{True},  report on the updated list of sentences.
         """
         try:
             self._input.remove(sentence)
@@ -229,8 +229,8 @@ class DiscourseTester(object):
             self.sentences()
             return None
         self._sentences = dict([('s%s' % i, sent) for i, sent in enumerate(self._input)])
-        self.readings(quiet=True)
-        if not quiet:
+        self.readings(verbose=False)
+        if verbose:
             print "Current sentences are "
             self.sentences()
             
@@ -322,7 +322,7 @@ class DiscourseTester(object):
             print "%s:" % tid, self._threads[tid], thread_reading 
         
         
-    def readings(self, sentence=None, threaded=False, quiet=False, 
+    def readings(self, sentence=None, threaded=False, verbose=True, 
                  filter=False, show_thread_readings=False):
         """
         Construct and show the readings of the discourse (or of a single sentence).
@@ -336,9 +336,10 @@ class DiscourseTester(object):
         self._construct_threads()
         
         # if we are filtering or showing thread readings, show threads
-        if filter or show_thread_readings: threaded=True
+        if filter or show_thread_readings: 
+            threaded = True
         
-        if not quiet:
+        if verbose:
             if not threaded:
                 self._show_readings(sentence=sentence)
             else:
@@ -365,7 +366,7 @@ class DiscourseTester(object):
     # Models and Background
     ###############################       
      
-    def _check_consistency(self, threads, show=False, quiet=True):
+    def _check_consistency(self, threads, show=False, verbose=False):
         results = []
         for tid in sorted(threads.keys()):
             assumptions = [reading for (rid, reading) in self.expand_threads(tid, threads=threads)]
@@ -382,7 +383,7 @@ class DiscourseTester(object):
                 spacer(80)
                 print "Model for Discourse Thread %s" % tid
                 spacer(80)
-                if not quiet:
+                if verbose:
                     for a in assumptions:
                         print a
                     spacer(80)
@@ -392,7 +393,7 @@ class DiscourseTester(object):
                     print "No model found!\n"
         return results
     
-    def models(self, thread_id=None, show=True, quiet=True):
+    def models(self, thread_id=None, show=True, verbose=False):
         """
         Call Mace4 to build a model for each current discourse thread.
         
@@ -407,7 +408,7 @@ class DiscourseTester(object):
         else:
             threads = {thread_id: self._threads[thread_id]}
         
-        for (tid, modelfound) in self._check_consistency(threads, show=show, quiet=quiet):            
+        for (tid, modelfound) in self._check_consistency(threads, show=show, verbose=verbose):            
             idlist = [rid for rid in threads[tid]]
             
             if not modelfound:
@@ -421,7 +422,7 @@ class DiscourseTester(object):
                     print "    %s: %s" % (rid, reading)
                 print 
         
-    def add_background(self, background, quiet=True):
+    def add_background(self, background, verbose=False):
         """
         Add a list of background assumptions for reasoning about the discourse.
         
@@ -431,7 +432,7 @@ class DiscourseTester(object):
         """
         for (count, e) in enumerate(background):
             assert isinstance(e, Expression)
-            if not quiet:
+            if verbose:
                 print "Adding assumption %s to background" % count
             self._background.append(e) 
             
@@ -534,7 +535,7 @@ def discourse_demo(reading_command=None):
     print
     dt.readings()
     print
-    dt.retract_sentence('No person dances', quiet=False)
+    dt.retract_sentence('No person dances', verbose=True)
     print 
     dt.models()
     print
@@ -548,7 +549,7 @@ def discourse_demo(reading_command=None):
     import nltk.data
     background = nltk.data.load('/grammars/sample_grammars/background1.fol')
     print
-    dt.add_background(background, quiet=True)
+    dt.add_background(background, verbose=False)
     dt.background()
     print
     dt.readings(filter=True)
