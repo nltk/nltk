@@ -401,7 +401,7 @@ class DrtApplicationExpression(AbstractDrs, ApplicationExpression,
         else:
             return []
 
-class DrsDrawer:
+class DrsDrawer(object):
     BUFFER = 3     #Space between elements
     TOPSPACE = 10  #Space above whole DRS
     OUTERSPACE = 6 #Space to the left, right, and bottom of the whle DRS
