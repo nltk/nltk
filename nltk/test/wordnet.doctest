@@ -522,3 +522,10 @@ as a base form for a POS for which that word is not defined:
     'book'
     >>> wn.morphy('book', wn.ADJ)
 
+Bug 160: wup_similarity breaks when the two synsets have no common hypernym
+
+    >>> t = wn.synsets('titan')[1]
+    >>> m = wn.synsets('male')[1]
+    >>> t.wup_similarity(m)
+    -1
+

@@ -968,10 +968,12 @@ class Synset(_WordNetObject):
         synsets = set(s for synsets in self_hypernyms for s in synsets)
         others = set(s for synsets in other_hypernyms for s in synsets)
         synsets.intersection_update(others)
-        
-        max_depth = max(s.min_depth() for s in synsets) 
 
-        return [s for s in synsets if s.min_depth() == max_depth]
+        try:
+            max_depth = max(s.min_depth() for s in synsets) 
+            return [s for s in synsets if s.min_depth() == max_depth]
+        except ValueError:
+            return []
 
     def hypernym_distances(self, distance=0):
         """
