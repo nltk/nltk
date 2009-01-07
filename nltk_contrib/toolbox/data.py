@@ -12,7 +12,7 @@
 """
 
 from nltk.etree.ElementTree import Element, SubElement, TreeBuilder
-from nltk.corpus.reader import toolbox
+from nltk import toolbox
 import re
 from datetime import date
 
@@ -20,21 +20,20 @@ class ToolboxData(toolbox.ToolboxData):
     def __init__(self):
         super(toolbox.ToolboxData, self).__init__()
 
-    def _tree2etree(self, parent, no_blanks):
+    def _tree2etree(self, parent):
         from nltk.parse import Tree
 
         root = Element(parent.node)
         for child in parent:
             if isinstance(child, Tree):
-                root.append(self._tree2etree(child, no_blanks))
+                root.append(self._tree2etree(child))
             else:
                 text, tag = child
-                if no_blanks == False or text:
-                    e = SubElement(root, tag)
-                    e.text = text
+                e = SubElement(root, tag)
+                e.text = text
         return root
 
-    def chunk_parse(self, grammar, no_blanks=True, top_node='record', trace=0, **kwargs):
+    def chunk_parse(self, grammar, top_node='record', trace=0, **kwargs):
         """
         Returns an element tree structure corresponding to a toolbox data file
         parsed according to the chunk grammar.
@@ -42,8 +41,6 @@ class ToolboxData(toolbox.ToolboxData):
         @type grammar: C{string}
         @param grammar: Contains the chunking rules used to parse the 
         database.  See L{chunk.RegExp} for documentation.
-        @type no_blanks: C{boolean}
-        @param no_blanks: blank fields that are not important to the structure are deleted
         @type top_node: C{string}
         @param top_node: The node value that should be used for the
             top node of the chunk structure.
@@ -67,7 +64,7 @@ class ToolboxData(toolbox.ToolboxData):
         tb_etree.append(header)
         for record in db.findall('record'):
             parsed = cp.parse([(elem.text, elem.tag) for elem in record])
-            tb_etree.append(self._tree2etree(parsed, no_blanks))
+            tb_etree.append(self._tree2etree(parsed))
         return tb_etree
 
     def _make_parse_table(self, grammar):
