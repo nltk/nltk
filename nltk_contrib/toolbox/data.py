@@ -17,9 +17,6 @@ import re
 from datetime import date
 
 class ToolboxData(toolbox.ToolboxData):
-    def __init__(self):
-        super(toolbox.ToolboxData, self).__init__()
-
     def _make_parse_table(self, grammar):
         """
         Return parsing state information used by tree_parser.

@@ -12,7 +12,6 @@
 functions to normalise ElementTree structures.
 """
 
-import re
 import nltk.etree.ElementTree as ET
 
 def remove_blanks(elem):
@@ -36,14 +35,9 @@ def add_default_fields(elem, default_fields):
     @param default_fields: fields to add to each type of element and subelement
     @type default_fields: dictionary of tuples
     """
-    try:
-        default = default_fields[elem.tag]
-    except KeyError:
-        pass
-    else:
-        for field in default:
-            if elem.find(field) is None:
-                ET.SubElement(elem, field)
+    for field in default_fields.get(elem.tag,  []):
+        if elem.find(field) is None:
+            ET.SubElement(elem, field)
     for child in elem:
         add_default_fields(child, default_fields)
 
@@ -63,7 +57,7 @@ def sort_fields(elem, field_orders):
     _sort_fields(elem, order_dicts)
 
 def _sort_fields(elem, orders_dicts):
-    "sort the children of elem"
+    """sort the children of elem"""
     try:
         order = orders_dicts[elem.tag]
     except KeyError:
@@ -108,15 +102,14 @@ def add_blank_lines(tree, blanks_before, blanks_between):
             last_elem = elem
 
 def demo():
-    from nltk.etree.ElementTree import ElementTree    
-    from nltk_contrib.toolbox.data import ToolboxData, to_sfm_string
-    from nltk_contrib.toolbox import iu_mien_hier as hierarchy
+    from nltk_contrib.toolbox import ToolboxData, to_sfm_string
+    from nltk_contrib.toolbox.data import iu_mien_hier as hierarchy
     import sys
     import os
+    from nltk.data import ZipFilePathPointer
 
-    fname = os.path.join(os.environ['NLTK_DATA'], 'corpora', 'toolbox', 'iu_mien_samp.db')
-    db =  ToolboxData()
-    db.open(fname)
+    zip_path = os.path.join(os.environ['NLTK_DATA'], 'corpora',  'toolbox.zip')
+    db = ToolboxData(ZipFilePathPointer(zip_path, entry='toolbox/iu_mien_samp.db'))
     lexicon = db.grammar_parse('toolbox', hierarchy.grammar, unwrap=False, encoding='utf8')
     db.close()
     remove_blanks(lexicon)
