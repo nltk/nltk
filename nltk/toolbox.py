@@ -133,8 +133,11 @@ class StandardFormat(object):
             pass
 
 class ToolboxData(StandardFormat):
-    def parse(self, *args, **kwargs):
-        return self._record_parse(*args, **kwargs)
+    def parse(self, grammar=None,  **kwargs):
+        if grammar:
+            return self._chunk_parse(grammar=grammar,  **kwargs)
+        else:
+            return self._record_parse(**kwargs)
 
     def _record_parse(self, key=None, **kwargs):
         """
@@ -211,6 +214,53 @@ class ToolboxData(StandardFormat):
             builder.end('header')
         builder.end('toolbox_data')
         return builder.close()
+
+    def _tree2etree(self, parent):
+        from nltk.parse import Tree
+
+        root = Element(parent.node)
+        for child in parent:
+            if isinstance(child, Tree):
+                root.append(self._tree2etree(child))
+            else:
+                text, tag = child
+                e = SubElement(root, tag)
+                e.text = text
+        return root
+
+    def _chunk_parse(self, grammar=None, top_node='record', trace=0, **kwargs):
+        """
+        Returns an element tree structure corresponding to a toolbox data file
+        parsed according to the chunk grammar.
+        
+        @type grammar: C{string}
+        @param grammar: Contains the chunking rules used to parse the 
+        database.  See L{chunk.RegExp} for documentation.
+        @type top_node: C{string}
+        @param top_node: The node value that should be used for the
+            top node of the chunk structure.
+        @type trace: C{int}
+        @param trace: The level of tracing that should be used when
+            parsing a text.  C{0} will generate no tracing output;
+            C{1} will generate normal tracing output; and C{2} or
+            higher will generate verbose tracing output.
+        @type kwargs: C{dictionary}
+        @param kwargs: Keyword arguments passed to L{toolbox.StandardFormat.fields()}
+        @rtype:   C{ElementTree._ElementInterface}
+        @return:  Contents of toolbox data parsed according to the rules in grammar
+        """
+        from nltk import chunk
+        from nltk.parse import Tree
+
+        cp = chunk.RegexpParser(grammar, top_node=top_node, trace=trace)
+        db = self.parse(**kwargs)
+        tb_etree = Element('toolbox_data')
+        header = db.find('header')
+        tb_etree.append(header)
+        for record in db.findall('record'):
+            parsed = cp.parse([(elem.text, elem.tag) for elem in record])
+            tb_etree.append(self._tree2etree(parsed))
+        return tb_etree
 
 _is_value = re.compile(r"\S")
 
