@@ -137,7 +137,7 @@ def unique_variable(pattern=None):
     return Variable(prefix + str(_counter.get()))
 
 
-class Type(object):
+class Type:
     def __repr__(self):
         return str(self)
     
