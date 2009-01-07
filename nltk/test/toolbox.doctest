@@ -2,7 +2,7 @@
 Unit test cases for ``toolbox``
 ===============================
 
-    >>> from nltk.corpus.reader import toolbox
+    >>> from nltk import toolbox
 
 --------------------------
 ``toolbox.StandardFormat``
