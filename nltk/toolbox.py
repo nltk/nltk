@@ -405,3 +405,5 @@ def demo():
 
 if __name__ == '__main__':
     demo()
+
+__all__ = ['StandardFormat', 'ToolboxData', 'ToolboxSettings']
