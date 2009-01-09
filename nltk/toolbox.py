@@ -16,7 +16,7 @@ Toolbox databases and settings files.
 
 import os, re, codecs
 from StringIO import StringIO
-from nltk.etree.ElementTree import TreeBuilder, Element
+from nltk.etree.ElementTree import TreeBuilder, Element, SubElement
 from nltk.data import PathPointer,  ZipFilePathPointer
 
 class StandardFormat(object):
@@ -32,7 +32,7 @@ class StandardFormat(object):
         """Open a standard format marker file for sequential reading. 
         
         @param sfm_file: name of the standard format marker input file
-        @type sfm_file: string
+        @type sfm_file: C{string}
         """
         if isinstance(sfm_file, PathPointer):
             # [xx] We don't use 'rU' mode here -- do we need to?
@@ -45,7 +45,7 @@ class StandardFormat(object):
         """Open a standard format marker string for sequential reading. 
         
         @param s: string to parse as a standard format marker input file
-        @type s: string
+        @type s: C{string}
         """
         self._file = StringIO(s)
 
@@ -87,16 +87,16 @@ class StandardFormat(object):
         """Return an iterator for the fields in the standard format marker file.
         
         @param strip: strip trailing whitespace from the last line of each field
-        @type strip: boolean
+        @type strip: C{boolean}
         @param unwrap: Convert newlines in a field to spaces.
-        @type unwrap: boolean
+        @type unwrap: C{boolean}
         @param encoding: Name of an encoding to use. If it is specified then 
             the C{fields} method returns unicode strings rather than non 
             unicode strings.
-        @type encoding: string or None
+        @type encoding: C{string} or C{None}
         @param errors: Error handling scheme for codec. Same as the C{decode} 
         inbuilt string method.
-        @type errors: string
+        @type errors: C{string}
         @param unicode_fields: Set of marker names whose values are UTF-8 encoded.
             Ignored if encoding is None. If the whole file is UTF-8 encoded set 
             C{encoding='utf8'} and leave C{unicode_fields} with its default
@@ -185,10 +185,10 @@ class ToolboxData(StandardFormat):
         @param key: Name of key marker at the start of each record. If set to 
         None (the default value) the first marker that doesn't begin with an 
         underscore is assumed to be the key.
-        @type key: string
+        @type key: C{string}
         @param kwargs: Keyword arguments passed to L{StandardFormat.fields()}
         @type kwargs: keyword arguments dictionary
-        @rtype:   ElementTree._ElementInterface
+        @rtype:   C{ElementTree._ElementInterface}
         @return:  contents of toolbox data divided into header and records
         """
         builder = TreeBuilder()
@@ -269,16 +269,16 @@ def to_sfm_string(tree, encoding=None, errors='strict', unicode_fields=None):
     data in tree (tree can be a toolbox database or a single record).
     
     @param tree: flat representation of toolbox data (whole database or single record)
-    @type tree: ElementTree._ElementInterface
+    @type tree: C{ElementTree._ElementInterface}
     @param encoding: Name of an encoding to use.
-    @type encoding: string
+    @type encoding: C{string}
     @param errors: Error handling scheme for codec. Same as the C{encode} 
         inbuilt string method.
-    @type errors: string
+    @type errors: C{string}
     @param unicode_fields:
-    @type unicode_fields: string
-    @rtype:   string
-    @return:  string using standard format markup
+    @type unicode_fields: C{dictionary} or C{set} of field names
+    @rtype:   C{string}
+    @return:  C{string} using standard format markup
     """
     if tree.tag == 'record':
         root = Element('toolbox_data')
@@ -322,12 +322,12 @@ class ToolboxSettings(StandardFormat):
         """Parses a settings file using ElementTree.
         
         @param encoding: encoding used by settings file
-        @type  encoding: string        
+        @type  encoding: C{string}        
         @param errors: Error handling scheme for codec. Same as C{.decode} inbuilt method.
-        @type errors: string
+        @type errors: C{string}
         @param kwargs: Keyword arguments passed to L{StandardFormat.fields()}
         @type kwargs: keyword arguments dictionary
-        @rtype:   ElementTree._ElementInterface
+        @rtype:   C{ElementTree._ElementInterface}
         @return:  contents of toolbox settings file with a nested structure
         """
         builder = TreeBuilder()
@@ -379,7 +379,7 @@ def _to_settings_string(node, l, **kwargs):
 def demo():
     from itertools import islice
 
-    zip_path = os.path.join(os.environ['NLTK_DATA'], 'corpora',  'toolbox.zip')
+    zip_path = os.path.join(os.environ['NLTK_DATA'], 'corpora', 'toolbox.zip')
     lexicon = ToolboxData(ZipFilePathPointer(zip_path, entry='toolbox/rotokas.dic')).parse()
     print 'first field in fourth record:'
     print lexicon[3][0].tag
@@ -405,5 +405,3 @@ def demo():
 
 if __name__ == '__main__':
     demo()
-
-__all__ = ['StandardFormat', 'ToolboxData', 'ToolboxSettings']
