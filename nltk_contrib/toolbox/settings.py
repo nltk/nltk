@@ -4,7 +4,7 @@
 # Natural Language Toolkit: Toolbox Settings Parser
 #
 # Copyright (C) 2001-2006 NLTK Project
-# Author: Greg Aumann <greg_aumann@sil.org>/Stuart Robinson <stuart@zapata.org>
+# Author: Stuart Robinson <stuart@zapata.org>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
@@ -465,15 +465,7 @@ class TextSettings(ToolboxSettings) :
             return None
 
 def demo():
-    from nltk.etree.ElementTree import ElementTree
-    
-    settings = ToolboxSettings()
-    settings.open('demos/MDF_AltH.typ')
-    tree = settings.parse(unwrap=False, encoding='gbk')
-    print tree.find('expset/expMDF/rtfPageSetup/paperSize').text
-    settings_tree = ElementTree(tree)
-    settings_tree.write('test.xml')
-    print to_settings_string(settings_tree).encode('gbk')
+    pass
 
 if __name__ == '__main__':
     demo()
