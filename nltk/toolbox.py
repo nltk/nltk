@@ -17,7 +17,8 @@ Toolbox databases and settings files.
 import os, re, codecs
 from StringIO import StringIO
 from nltk.etree.ElementTree import TreeBuilder, Element, SubElement
-from nltk.data import PathPointer,  ZipFilePathPointer
+from nltk.data import PathPointer, ZipFilePathPointer
+from nltk import data
 
 class StandardFormat(object):
     """
@@ -376,11 +377,100 @@ def _to_settings_string(node, l, **kwargs):
         l.append('\\-%s\n' % tag)
     return
     
+def remove_blanks(elem):
+    """Remove all elements and subelements with no text and no child elements.
+    
+    @param elem: toolbox data in an elementtree structure
+    @type elem: ElementTree._ElementInterface
+    """
+    out = list()
+    for child in elem:
+        remove_blanks(child)
+        if child.text or len(child) > 0:
+            out.append(child)
+    elem[:] = out
+
+def add_default_fields(elem, default_fields):
+    """Add blank elements and subelements specified in default_fields.
+    
+    @param elem: toolbox data in an elementtree structure
+    @type elem: ElementTree._ElementInterface
+    @param default_fields: fields to add to each type of element and subelement
+    @type default_fields: dictionary of tuples
+    """
+    for field in default_fields.get(elem.tag,  []):
+        if elem.find(field) is None:
+            ET.SubElement(elem, field)
+    for child in elem:
+        add_default_fields(child, default_fields)
+
+def sort_fields(elem, field_orders):
+    """Sort the elements and subelements in order specified in field_orders.
+    
+    @param elem: toolbox data in an elementtree structure
+    @type elem: ElementTree._ElementInterface
+    @param field_orders: order of fields for each type of element and subelement
+    @type field_orders: dictionary of tuples
+    """
+    order_dicts = dict()
+    for field, order in field_orders.items():
+        order_dicts[field] = order_key = dict()
+        for i, subfield in enumerate(order):
+            order_key[subfield] = i 
+    _sort_fields(elem, order_dicts)
+
+def _sort_fields(elem, orders_dicts):
+    """sort the children of elem"""
+    try:
+        order = orders_dicts[elem.tag]
+    except KeyError:
+        pass
+    else:
+        tmp = [((order.get(child.tag, 1e9), i), child) for i, child in enumerate(elem)]
+        tmp.sort()
+        elem[:] = [child for key, child in tmp]
+    for child in elem:
+        if len(child):
+            _sort_fields(child, orders_dicts)
+
+def add_blank_lines(tree, blanks_before, blanks_between):
+    """Add blank lines before all elements and subelements specified in blank_before.
+    
+    @param elem: toolbox data in an elementtree structure
+    @type elem: ElementTree._ElementInterface
+    @param blank_before: elements and subelements to add blank lines before
+    @type blank_before: dictionary of tuples
+    """
+    try:
+        before = blanks_before[tree.tag]
+        between = blanks_between[tree.tag]
+    except KeyError:
+        for elem in tree:
+            if len(elem):
+                add_blank_lines(elem, blanks_before, blanks_between)
+    else:
+        last_elem = None
+        for elem in tree:
+            tag = elem.tag
+            if last_elem is not None and last_elem.tag != tag:
+                if tag in before and last_elem is not None:
+                    e = last_elem.getiterator()[-1]
+                    e.text = (e.text or "") + "\n"
+            else:
+                if tag in between:
+                    e = last_elem.getiterator()[-1]
+                    e.text = (e.text or "") + "\n"
+            if len(elem):
+                add_blank_lines(elem, blanks_before, blanks_between)
+            last_elem = elem
+
 def demo():
     from itertools import islice
 
-    zip_path = os.path.join(os.environ['NLTK_DATA'], 'corpora', 'toolbox.zip')
-    lexicon = ToolboxData(ZipFilePathPointer(zip_path, entry='toolbox/rotokas.dic')).parse()
+#    zip_path = data.find('corpora/toolbox.zip')
+#    lexicon = ToolboxData(ZipFilePathPointer(zip_path, 'toolbox/rotokas.dic')).parse()
+    file_path = data.find('corpora/toolbox/rotokas.dic')
+    lexicon = ToolboxData(file_path).parse()
     print 'first field in fourth record:'
     print lexicon[3][0].tag
     print lexicon[3][0].text
@@ -396,8 +486,9 @@ def demo():
     from nltk.etree.ElementTree import ElementTree
     
     settings = ToolboxSettings()
-    # need a more general solution for the following line
-    settings.open(ZipFilePathPointer(zip_path, entry='toolbox/MDF/MDF_AltH.typ'))
+    file_path = data.find('corpora/toolbox/MDF/MDF_AltH.typ')
+    settings.open(file_path)
+#    settings.open(ZipFilePathPointer(zip_path, entry='toolbox/MDF/MDF_AltH.typ'))
     tree = settings.parse(unwrap=False, encoding='cp1252')
     print tree.find('expset/expMDF/rtfPageSetup/paperSize').text
     settings_tree = ElementTree(tree)
