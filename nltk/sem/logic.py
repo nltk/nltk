@@ -1306,11 +1306,10 @@ class LogicParser(object):
         while vars:
             var = vars.pop()
             varex = self.make_VariableExpression(var)
-            if not isinstance(varex, IndividualVariableExpression) and \
-               not isinstance(varex, FunctionVariableExpression):
+            if isinstance(varex, ConstantExpression):
                 raise ParseException('\'%s\' is an illegal variable name.  '
-                                     'Only individual variables and function '
-                                     'variables may be quantified.' % var)
+                                     'Constant expressions may not be ' 
+                                     'quantified.' % var)
             accum = self.make_QuanifiedExpression(factory, Variable(var), accum)
         return accum
     

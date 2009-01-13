@@ -316,7 +316,7 @@ Test Parser
     'walk' is an illegal variable name.  Constants may not be abstracted.
     >>> try: print lp.parse(r'all walk.walk(john)')
     ... except ParseException,e: print e
-    'walk' is an illegal variable name.  Only individual variables may be quantified.
+    'walk' is an illegal variable name.  Constant expressions may not be quantified.
     >>> try: print lp.parse(r'x(john)')
     ... except ParseException,e: print e
     'x' is an illegal predicate name.  Individual variables may not be used as predicates.
